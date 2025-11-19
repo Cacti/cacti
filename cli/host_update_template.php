@@ -62,7 +62,7 @@ $hostid   = '';
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter, 2);
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
 			$value = '';
@@ -123,7 +123,7 @@ if (strtolower($host_id) == 'all') {
 
 /* determine data queries to rerun */
 if (is_numeric($template) && $template > 0) {
-	$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . " host_template_id=$template";
+	$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . " host_template_id=$template";
 } else {
 	print "ERROR: You must specify a Host Template to proceed.\n\n";
 	display_help();

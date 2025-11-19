@@ -345,15 +345,15 @@ function profile_import_execute($json_data) {
 
 			if ($data_source_profile_id > 0) {
 				if (CACTI_WEB) {
-					$debug_data['success'][] = __esc('Data Source Profile \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
+					$debug_data['success'][] = __esc('Data Source Profile \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated') : __('Imported')));
 				} else {
-					$debug_data['success'][] = __('Data Source Profile \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
+					$debug_data['success'][] = __('Data Source Profile \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated') : __('Imported')));
 				}
 			} else {
 				if (CACTI_WEB) {
-					$debug_data['failure'][] = __esc('Data Source Profile \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
+					$debug_data['failure'][] = __esc('Data Source Profile \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update') : __('Import')));
 				} else {
-					$debug_data['failure'][] = __('Data Source Profile \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
+					$debug_data['failure'][] = __('Data Source Profile \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update') : __('Import')));
 				}
 			}
 		}
@@ -582,7 +582,7 @@ function form_save() {
 		}
 
 		if (isset_request_var('default')) {
-			$save['default'] = (isset_request_var('default') ? 'on':'');
+			$save['default'] = (isset_request_var('default') ? 'on' : '');
 			db_execute('UPDATE data_source_profiles SET `default` = ""');
 		}
 
@@ -869,16 +869,16 @@ function profile_item_remove_confirm() {
 	?>
 	<tr>
 		<td class='topBoxAlt'>
-			<p><?php print __('Click \'Continue\' to delete the following Data Source Profile RRA.');?></p>
-			<p><?php print __esc('Profile Name: %s', $profile['name']);?><br>
+			<p><?php print __('Click \'Continue\' to delete the following Data Source Profile RRA.'); ?></p>
+			<p><?php print __esc('Profile Name: %s', $profile['name']); ?><br>
 		</td>
 	</tr>
 	<tr>
 		<td class='right'>
-			<button type='button' class='ui-button ui-corner-all ui-widget' id='cancel'  onClick='$("#cdialog").dialog("close");' name='cancel'><?php print __esc('Cancel');?></button>
-			<button type='button' class='ui-button ui-corner-all ui-widget' id='continue' title='<?php print __esc('Remove Data Source Profile RRA');?>'><?php print __esc('Continue');?></button>
-			<input type='hidden' id='rra_profile_id' value='<?php print $profile['data_source_profile_id'];?>'>
-			<input type='hidden' id='rra_id' value='<?php print get_request_var('id');?>'>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='cancel'  onClick='$("#cdialog").dialog("close");' name='cancel'><?php print __esc('Cancel'); ?></button>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='continue' title='<?php print __esc('Remove Data Source Profile RRA'); ?>'><?php print __esc('Continue'); ?></button>
+			<input type='hidden' id='rra_profile_id' value='<?php print $profile['data_source_profile_id']; ?>'>
+			<input type='hidden' id='rra_id' value='<?php print get_request_var('id'); ?>'>
 		</td>
 	</tr>
 	<?php
@@ -898,7 +898,7 @@ function profile_item_remove_confirm() {
 
 			var data = {
 				__csrf_magic: csrfMagicToken,
-				id: <?php print get_request_var('id');?>
+				id: <?php print get_request_var('id'); ?>
 			}
 
 			postUrl(options, data);
@@ -907,7 +907,7 @@ function profile_item_remove_confirm() {
 
 	function removeDataSourceProfilesItemFinalize(data) {
 		$('#cdialog').dialog('close');
-		loadUrl({url:'data_source_profiles.php?action=edit&id=<?php print $profile['data_source_profile_id'];?>'})
+		loadUrl({url:'data_source_profiles.php?action=edit&id=<?php print $profile['data_source_profile_id']; ?>'})
 	}
 
 	</script>
@@ -991,7 +991,7 @@ function item_edit() {
 		WHERE id = ?',
 		[get_request_var('id')]);
 
-	html_start_box(__esc('RRA [edit: %s %s]', $name, ($readonly ? __('(Some Elements Read Only)'):'')), '100%', true, 3, 'center', '');
+	html_start_box(__esc('RRA [edit: %s %s]', $name, ($readonly ? __('(Some Elements Read Only)') : '')), '100%', true, 3, 'center', '');
 
 	draw_edit_form([
 		'config' => ['no_form_tag' => true],
@@ -1008,8 +1008,8 @@ function item_edit() {
 	?>
 	<script type='text/javascript'>
 
-	var profile_id=<?php print get_request_var('profile_id') != '' ? get_request_var('profile_id'):0;?>;
-	var readonly = <?php print($readonly ? 'true':'false');?>;
+	var profile_id=<?php print get_request_var('profile_id') != '' ? get_request_var('profile_id') : 0; ?>;
+	var readonly = <?php print($readonly ? 'true' : 'false'); ?>;
 
 	$(function() {
 		get_span();
@@ -1081,7 +1081,7 @@ function profile_edit() {
 			AND local_data_id > 0',
 			[get_request_var('id')]);
 
-		$header_label = __esc('Data Source Profile [edit: %s]', $profile['name'] . ($readonly ? ' (Read Only)':''));
+		$header_label = __esc('Data Source Profile [edit: %s]', $profile['name'] . ($readonly ? ' (Read Only)' : ''));
 	} else {
 		$header_label = __('Data Source Profile [new]');
 		$readonly     = false;
@@ -1133,7 +1133,7 @@ function profile_edit() {
 				form_selectable_cell(filter_value($rra['name'], '', $url), $i);
 
 				form_selectable_cell('<em>' . get_span($profile['step'] * $rra['steps'] * $rra['rows']) . '</em>', $i);
-				form_selectable_cell('<em>' . isset($timespans[$rra['timespan']]) ? $timespans[$rra['timespan']]:get_span($rra['timespan']) . '</em>', $i);
+				form_selectable_cell('<em>' . isset($timespans[$rra['timespan']]) ? $timespans[$rra['timespan']] : get_span($rra['timespan']) . '</em>', $i);
 				form_selectable_cell('<em>' . $rra['steps'] . '</em>', $i);
 				form_selectable_cell('<em>' . $rra['rows'] . '</em>', $i);
 
@@ -1157,7 +1157,7 @@ function profile_edit() {
 	?>
 	<script type='text/javascript'>
 
-	var profile_id=<?php print get_request_var('id') != '' ? get_request_var('id'):0;?>;
+	var profile_id=<?php print get_request_var('id') != '' ? get_request_var('id') : 0; ?>;
 
 	$(function() {
 		$('.cdialog').remove();
@@ -1165,7 +1165,7 @@ function profile_edit() {
 
         $('#consolidation_function_id').multiselect({
             selectedList: 4,
-            noneSelectedText: '<?php print __('Select Consolidation Function(s)');?>',
+            noneSelectedText: '<?php print __('Select Consolidation Function(s)'); ?>',
             header: false,
             groupColumns: true,
             groupColumnsWidth: 90,
@@ -1204,7 +1204,7 @@ function profile_edit() {
 					});
 
 					$('#cdialog').dialog({
-						title: '<?php print __('Delete Data Source Profile Item');?>',
+						title: '<?php print __('Delete Data Source Profile Item'); ?>',
 						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
 						minHeight: 80,
 						minWidth: 500
@@ -1357,7 +1357,7 @@ function profile() {
 	}
 
 	if (get_request_var('has_data') == 'true') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (dsp.data_sources > 0)';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' (dsp.data_sources > 0)';
 	}
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*)
@@ -1462,9 +1462,9 @@ function profile() {
 			form_alternate_row('line' . $profile['id'], false, $disabled);
 
 			form_selectable_cell(filter_value($profile['name'], get_request_var('filter'), 'data_source_profiles.php?action=edit&id=' . $profile['id']), $profile['id']);
-			form_selectable_cell($profile['default'] == 'on' ? __('Yes'):'', $profile['id'], '', 'right');
-			form_selectable_cell($disabled ? __('No'):__('Yes'), $profile['id'], '', 'right');
-			form_selectable_cell($readonly ? __('Yes'):__('No'), $profile['id'], '', 'right');
+			form_selectable_cell($profile['default'] == 'on' ? __('Yes') : '', $profile['id'], '', 'right');
+			form_selectable_cell($disabled ? __('No') : __('Yes'), $profile['id'], '', 'right');
+			form_selectable_cell($readonly ? __('Yes') : __('No'), $profile['id'], '', 'right');
 			form_selectable_cell($sampling_intervals[$profile['step']], $profile['id'], '', 'right');
 			form_selectable_cell($heartbeats[$profile['heartbeat']], $profile['id'], '', 'right');
 			form_selectable_cell($ds, $profile['id'], '', 'right');

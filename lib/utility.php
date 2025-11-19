@@ -22,15 +22,19 @@
  +-------------------------------------------------------------------------+
 */
 
-/* update_replication_crc - update hash stored in settings table to inform
-   remote pollers to replicate tables
-   @arg $poller_id - the id of the poller impacted by hash update
-   @arg $variable  - the variable name to store in the settings table */
+/** update_replication_crc - update hash stored in settings table to inform
+ * remote pollers to replicate tables
+ *
+ * @param mixed $poller_id
+ * @param mixed $variable
+ *
+ * @return null
+ */
 function update_replication_crc($poller_id, $variable) {
 	$hash = hash('ripemd160', date('Y-m-d H:i:s') . random_int(0, mt_getrandmax()) . $poller_id);
 
 	db_execute_prepared("REPLACE INTO settings
-		SET value = ?, name='$variable" . ($poller_id > 0 ? '_' . "$poller_id'":"'"),
+		SET value = ?, name='$variable" . ($poller_id > 0 ? '_' . "$poller_id'" : "'"),
 		[$hash]);
 }
 
@@ -803,20 +807,20 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 			FROM host WHERE id = ?',
 			[$host_id]);
 
-		$sql_where   .= ' AND dl.host_id=' . $host_id;
+		$sql_where .= ' AND dl.host_id=' . $host_id;
 		$sql_where_p .= ' dl.host_id=' . $host_id;
 	}
 
 	/* sql WHERE for local_data_id */
 	if ($local_data_id > 0) {
-		$sql_where   .= ' AND dl.id = ' . $local_data_id;
-		$sql_where_p .= ($sql_where_p != '' ? ' AND':'') . ' dl.id = ' . $local_data_id;
+		$sql_where .= ' AND dl.id = ' . $local_data_id;
+		$sql_where_p .= ($sql_where_p != '' ? ' AND' : '') . ' dl.id = ' . $local_data_id;
 	}
 
 	/* sql WHERE for data_template_id */
 	if ($data_template_id > 0) {
-		$sql_where   .= ' AND dtd.data_template_id = ' . $data_template_id;
-		$sql_where_p .= ($sql_where_p != '' ? ' AND':'') . ' dtd.data_template_id = ' . $data_template_id;
+		$sql_where .= ' AND dtd.data_template_id = ' . $data_template_id;
+		$sql_where_p .= ($sql_where_p != '' ? ' AND' : '') . ' dtd.data_template_id = ' . $data_template_id;
 	}
 
 	$data_sources = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . " dtd.id,
@@ -967,7 +971,7 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 	/**
 	 * Remove orphaned entries now
 	 */
-	$sql_where_p .= ($sql_where_p != '' ? ' AND ':'') . ' present = 0';
+	$sql_where_p .= ($sql_where_p != '' ? ' AND ' : '') . ' present = 0';
 
 	db_execute_prepared("DELETE pi
 		FROM poller_item AS pi
@@ -1266,7 +1270,7 @@ function utilities_get_mysql_recommendations() {
 					'value'   => '16',
 					'measure' => 'pinst',
 					'class'   => 'warning',
-					'comment' => ($database == 'MySQL' ? __('%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MySQL upto and including MySQL 8.0.  The max value is 64, but should not exceed more than the number of CPU cores/threads.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation up to the max of the number of CPU cores or 64.', $database): __('%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MariaDB less than 10.5.  The max value is 64, but should not exceed more than the number of CPU cores/threads.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation up to the max the number of CPU cores or 64.', $database))
+					'comment' => ($database == 'MySQL' ? __('%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MySQL upto and including MySQL 8.0.  The max value is 64, but should not exceed more than the number of CPU cores/threads.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation up to the max of the number of CPU cores or 64.', $database) : __('%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MariaDB less than 10.5.  The max value is 64, but should not exceed more than the number of CPU cores/threads.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation up to the max the number of CPU cores or 64.', $database))
 					],
 				'innodb_io_capacity' => [
 					'value'   => '5000',
@@ -1731,7 +1735,7 @@ function utilities_get_system_memory() {
 
 			foreach ($data as $l) {
 				if (trim($l) != '') {
-					list($key, $val) = explode(':', $l);
+					[$key, $val]     = explode(':', $l);
 					$val             = trim($val, " kBb\r\n");
 					$memInfo[$key]   = round($val * 1000,0);
 				}
@@ -1749,22 +1753,22 @@ function utilities_get_system_memory() {
 
 					switch ($parts[0]) {
 						case 'Mem:':
-							$memInfo['MemTotal']  = (isset($parts[1]) ? $parts[1] * 1000:0);
-							$memInfo['MemUsed']   = (isset($parts[2]) ? $parts[2] * 1000:0);
-							$memInfo['MemFree']   = (isset($parts[3]) ? $parts[3] * 1000:0);
-							$memInfo['MemShared'] = (isset($parts[4]) ? $parts[4] * 1000:0);
-							$memInfo['Buffers']   = (isset($parts[5]) ? $parts[5] * 1000:0);
-							$memInfo['Cached']    = (isset($parts[6]) ? $parts[6] * 1000:0);
+							$memInfo['MemTotal']  = (isset($parts[1]) ? $parts[1] * 1000 : 0);
+							$memInfo['MemUsed']   = (isset($parts[2]) ? $parts[2] * 1000 : 0);
+							$memInfo['MemFree']   = (isset($parts[3]) ? $parts[3] * 1000 : 0);
+							$memInfo['MemShared'] = (isset($parts[4]) ? $parts[4] * 1000 : 0);
+							$memInfo['Buffers']   = (isset($parts[5]) ? $parts[5] * 1000 : 0);
+							$memInfo['Cached']    = (isset($parts[6]) ? $parts[6] * 1000 : 0);
 
 							break;
 						case '-/+':
-							$memInfo['Active']    = (isset($parts[2]) ? $parts[3] * 1000:0);
-							$memInfo['Inactive']  = (isset($parts[3]) ? $parts[3] * 1000:0);
+							$memInfo['Active']    = (isset($parts[2]) ? $parts[3] * 1000 : 0);
+							$memInfo['Inactive']  = (isset($parts[3]) ? $parts[3] * 1000 : 0);
 
 							break;
 						case 'Swap:':
-							$memInfo['SwapTotal'] = (isset($parts[1]) ? $parts[1] * 1000:0);
-							$memInfo['SwapUsed']  = (isset($parts[2]) ? $parts[2] * 1000:0);
+							$memInfo['SwapTotal'] = (isset($parts[1]) ? $parts[1] * 1000 : 0);
+							$memInfo['SwapUsed']  = (isset($parts[2]) ? $parts[2] * 1000 : 0);
 
 							break;
 					}
@@ -1924,7 +1928,7 @@ function utility_php_verify_recommends(&$recommends, $source) {
 			'name'        => 'memory_limit',
 			'value'       => $rec_memory_mb,
 			'current'     => $memory_ini,
-			'status'      => (($memory_limit <= 0 || $memory_limit >= $rec_memory) ? DB_STATUS_SUCCESS :($memory_limit != $cfg_mem_limit ? DB_STATUS_RESTART :  DB_STATUS_WARNING)),
+			'status'      => (($memory_limit <= 0 || $memory_limit >= $rec_memory) ? DB_STATUS_SUCCESS : ($memory_limit != $cfg_mem_limit ? DB_STATUS_RESTART : DB_STATUS_WARNING)),
 		],
 		[
 			'name'        => 'max_execution_time',

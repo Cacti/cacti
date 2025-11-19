@@ -194,7 +194,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $auth_user = '', 
 		}
 
 		$command = cacti_escapeshellcmd(read_config_option('path_snmpget')) .
-			' -O fntevU' . ($value_output_format == SNMP_STRING_OUTPUT_HEX ? 'x ':' ') . $snmp_auth .
+			' -O fntevU' . ($value_output_format == SNMP_STRING_OUTPUT_HEX ? 'x ' : ' ') . $snmp_auth .
 			' -v ' . $version .
 			' -t ' . $timeout_s .
 			' -r ' . $retries .
@@ -293,7 +293,7 @@ function cacti_snmp_get_raw($hostname, $community, $oid, $version, $auth_user = 
 		}
 
 		$command = cacti_escapeshellcmd(read_config_option('path_snmpget')) .
-			' -O fntev' . ($value_output_format == SNMP_STRING_OUTPUT_HEX ? 'x ':' ') . $snmp_auth .
+			' -O fntev' . ($value_output_format == SNMP_STRING_OUTPUT_HEX ? 'x ' : ' ') . $snmp_auth .
 			' -v ' . $version .
 			' -t ' . $timeout_s .
 			' -r ' . $retries .
@@ -387,7 +387,7 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $auth_user = 
 		}
 
 		$command = cacti_escapeshellcmd(read_config_option('path_snmpgetnext')) .
-			' -O fntevU' . ($value_output_format == SNMP_STRING_OUTPUT_HEX ? 'x ':' ') . $snmp_auth .
+			' -O fntevU' . ($value_output_format == SNMP_STRING_OUTPUT_HEX ? 'x ' : ' ') . $snmp_auth .
 			' -v ' . $version .
 			' -t ' . $timeout_s .
 			' -r ' . $retries .
@@ -724,7 +724,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 
 		if (file_exists($path_snmpbulkwalk) && ($version > 1) && ($bulk_walk_size > 1)) {
 			$command = cacti_escapeshellcmd($path_snmpbulkwalk) .
-				' -O QnU'  . ($value_output_format == SNMP_STRING_OUTPUT_HEX ? 'x ':' ') . $snmp_auth .
+				' -O QnU'  . ($value_output_format == SNMP_STRING_OUTPUT_HEX ? 'x ' : ' ') . $snmp_auth .
 				' -v '     . $version .
 				' -t '     . $timeout_s .
 				' -r '     . $retries .
@@ -740,7 +740,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 			$temp_array = exec_into_array($command);
 		} else {
 			$command = cacti_escapeshellcmd(read_config_option('path_snmpwalk')) .
-				' -O QnU' . ($value_output_format == SNMP_STRING_OUTPUT_HEX ? 'x ':' ') . $snmp_auth .
+				' -O QnU' . ($value_output_format == SNMP_STRING_OUTPUT_HEX ? 'x ' : ' ') . $snmp_auth .
 				' -v '     . $version .
 				' -t '     . $timeout_s .
 				' -r '     . $retries .
@@ -935,7 +935,7 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 			/* convert the hex string into an ascii string */
 			foreach ($parts as $part) {
 				if ($possible_ip && hexdec($part) >= 0 && hexdec($part) <= 255) {
-					$ip_address .= ($ip_address != '' ? '.':'') . hexdec($part);
+					$ip_address .= ($ip_address != '' ? '.' : '') . hexdec($part);
 				} else {
 					$possible_ip = false;
 				}

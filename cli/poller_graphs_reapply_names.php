@@ -44,7 +44,7 @@ $filter  = '';
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter, 2);
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
 			$value = '';
@@ -109,7 +109,7 @@ if (strtolower($host_id) == 'all') {
 
 	foreach ($hosts as $host) {
 		if (is_numeric($host) && $host > 0) {
-			$host_str .= ($host_str != '' ? ', ':'') . $host;
+			$host_str .= ($host_str != '' ? ', ' : '') . $host;
 		}
 	}
 

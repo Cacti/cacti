@@ -419,7 +419,7 @@ function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe = null,
 		$cache_directory = read_config_option('boost_png_cache_directory');
 
 		if (read_config_option('business_hours_enable') == 'on') {
-			$bh_index = get_nfilter_request_var('business_hours') == 'true' ? '_bh_':'';
+			$bh_index = get_nfilter_request_var('business_hours') == 'true' ? '_bh_' : '';
 		} else {
 			$bh_index = '';
 		}
@@ -547,7 +547,7 @@ function boost_graph_set_file(&$output, $local_graph_id, $rra_id) {
 		$cache_directory = read_config_option('boost_png_cache_directory');
 
 		if (read_config_option('business_hours_enable') == 'on') {
-			$bh_index = get_nfilter_request_var('business_hours') == 'true' ? '_bh_':'';
+			$bh_index = get_nfilter_request_var('business_hours') == 'true' ? '_bh_' : '';
 		} else {
 			$bh_index = '';
 		}
@@ -602,9 +602,11 @@ function boost_graph_set_file(&$output, $local_graph_id, $rra_id) {
 	restore_error_handler();
 }
 
-/* boost_timer - allows you to time events in boost and provide stats
-   @arg $area - a text string that determines what area is being measured
-   @arg $type - either 'start' or 'end' to start or end the timing */
+/** boost_timer - allows you to time events in boost and provide stats
+ * @arg $area - a text string that determines what area is being measured
+ * @param mixed $area
+ * @param mixed $type
+ * @arg $type - either 'start' or 'end' to start or end the timing */
 function boost_timer($area, $type) {
 	global $boost_stats_log;
 
@@ -1109,10 +1111,10 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = null) {
 							continue;
 						}
 
-						$expected .= ($expected != '' ? ' ':'') . "$field:value";
+						$expected .= ($expected != '' ? ' ' : '') . "$field:value";
 
 						if ($reset_template) {
-							$rrd_tmpl .= ($rrd_tmpl != '' ? ':':'') . $field;
+							$rrd_tmpl .= ($rrd_tmpl != '' ? ':' : '') . $field;
 						}
 
 						$tv_tmpl[$field] = 'U';
@@ -1211,11 +1213,12 @@ function boost_determine_caching_state() {
 	}
 }
 
-/* boost_get_rrd_filename_and_template - pulls
-   1) the rrd_update template from the database in form of
-	  update decisions for multi-output RRDs
-   2) rrd filename
-   @arg $local_data_id - the data source to obtain information from */
+/** boost_get_rrd_filename_and_template - pulls
+ * 1) the rrd_update template from the database in form of
+ * update decisions for multi-output RRDs
+ * 2) rrd filename
+ * @param mixed $local_data_id
+ * @arg $local_data_id - the data source to obtain information from */
 function boost_get_rrd_filename_and_template($local_data_id) {
 	$rrd_path     = '';
 	$all_nulls    = true;
@@ -1473,7 +1476,7 @@ function boost_rrdtool_function_create($local_data_id, $show_source, $rrdtool_pi
 	}
 }
 
-/* boost_rrdtool_function_update - a re-write of the Cacti rrdtool update command
+/** boost_rrdtool_function_update - a re-write of the Cacti rrdtool update command
  * specifically designed for bulk updates.
  *
  * @param $local_data_id        - the data source to obtain information from
@@ -1557,7 +1560,7 @@ function boost_poller_bottom() {
 		boost_update_snmp_statistics();
 
 		$boost_log     = read_config_option('path_boost_log');
-		$boost_debug   = read_config_option('boost_debug_enabled') == 'on' ? true:false;
+		$boost_debug   = read_config_option('boost_debug_enabled') == 'on' ? true : false;
 		$boost_logdir  = dirname($boost_log);
 
 		if ($boost_debug && $boost_log != '') {

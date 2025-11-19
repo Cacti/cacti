@@ -49,7 +49,7 @@ $repaired_hosts = [];
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter, 2);
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
 			$value = '';
@@ -94,6 +94,7 @@ if (cacti_sizeof($parms)) {
 				display_help();
 
 				exit(0);
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 				display_help();
@@ -425,7 +426,7 @@ function detailed_checks() {
 			$total_repairs += $fixes;
 		}
 
-		printf('NOTE: Found ' . ($force ? 'and repaired ':'') . "$rows invalid GPRINT Preset rows in Graph Templates." . PHP_EOL);
+		printf('NOTE: Found ' . ($force ? 'and repaired ' : '') . "$rows invalid GPRINT Preset rows in Graph Templates." . PHP_EOL);
 	} else {
 		printf('NOTE: Found 0 invalid Cacti GPRINT Presets.' . PHP_EOL);
 	}
@@ -451,7 +452,7 @@ function detailed_checks() {
 			$total_repairs += $fixes;
 		}
 
-		printf('NOTE: Found ' . ($force ? 'and repaired ':'') . "$fixes of $rows invalid CDEFs in Graph Templates." . PHP_EOL);
+		printf('NOTE: Found ' . ($force ? 'and repaired ' : '') . "$fixes of $rows invalid CDEFs in Graph Templates." . PHP_EOL);
 	} else {
 		printf('NOTE: Found 0 invalid Cacti CDEFs.' . PHP_EOL);
 	}
@@ -477,7 +478,7 @@ function detailed_checks() {
 			$total_repairs += $fixes;
 		}
 
-		printf('NOTE: Found ' . ($force ? 'and repaired ':'') . "$fixes of $rows invalid Data Inputs in Data Templates." . PHP_EOL);
+		printf('NOTE: Found ' . ($force ? 'and repaired ' : '') . "$fixes of $rows invalid Data Inputs in Data Templates." . PHP_EOL);
 	} else {
 		printf('NOTE: Found 0 invalid Cacti Data Inputs.' . PHP_EOL);
 	}
@@ -530,7 +531,7 @@ function detailed_checks() {
 			}
 		}
 
-		printf('NOTE: Found ' . ($force ? 'and repaired ':'') . '%s Graphs from %s Graph Templates that had invalid item counts.' . PHP_EOL, $total_graphs, cacti_sizeof($rows));
+		printf('NOTE: Found ' . ($force ? 'and repaired ' : '') . '%s Graphs from %s Graph Templates that had invalid item counts.' . PHP_EOL, $total_graphs, cacti_sizeof($rows));
 	} else {
 		printf('NOTE: Found 0 Graph Templates whose Graphs had incorrect item counts.' . PHP_EOL);
 	}
@@ -556,7 +557,7 @@ function detailed_checks() {
 			update_replication_crc(0, 'poller_replicate_data_input_fields_crc');
 		}
 
-		printf('NOTE: Found ' . ($force ? 'and repaired ':'') . "$rows invalid Data Input fields in Data Templates." . PHP_EOL);
+		printf('NOTE: Found ' . ($force ? 'and repaired ' : '') . "$rows invalid Data Input fields in Data Templates." . PHP_EOL);
 	} else {
 		printf('NOTE: Found 0 invalid Cacti Data Input fields.' . PHP_EOL);
 	}
@@ -580,7 +581,7 @@ function detailed_checks() {
 				WHERE data_input_data.data_template_data_id NOT IN (SELECT id FROM data_template_data)');
 		}
 
-		printf('NOTE: Found ' . ($force ? 'and repaired ':'') . "$rows invalid Data Input Data rows in Data Templates" . PHP_EOL);
+		printf('NOTE: Found ' . ($force ? 'and repaired ' : '') . "$rows invalid Data Input Data rows in Data Templates" . PHP_EOL);
 	} else {
 		printf('NOTE: Found 0 invalid Cacti Data Input Data rows (Pass 1).' . PHP_EOL);
 	}
@@ -603,7 +604,7 @@ function detailed_checks() {
 				WHERE data_input_data.data_input_field_id NOT IN (SELECT id FROM data_input_fields)');
 		}
 
-		printf('NOTE: Found ' . ($force ? 'and repaired ':'') . "$rows invalid Data Input Data rows based upon field mappings in Data Templates." . PHP_EOL);
+		printf('NOTE: Found ' . ($force ? 'and repaired ' : '') . "$rows invalid Data Input Data rows based upon field mappings in Data Templates." . PHP_EOL);
 	} else {
 		printf('NOTE: Found 0 invalid Cacti Data Input Data rows (Pass 2).' . PHP_EOL);
 	}
@@ -718,7 +719,7 @@ function snmp_repairs() {
 }
 
 function print_separator($nl = false) {
-	print ($nl ? PHP_EOL:'') . str_repeat('-', 90) . PHP_EOL;
+	print ($nl ? PHP_EOL : '') . str_repeat('-', 90) . PHP_EOL;
 }
 
 function snmp_index_repairs() {

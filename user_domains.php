@@ -566,7 +566,7 @@ function domains() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') . '(domain_name LIKE ? OR type LIKE ?)';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . '(domain_name LIKE ? OR type LIKE ?)';
 
 		$sql_params[] = '%' . get_request_var('filter') . '%';
 		$sql_params[] = '%' . get_request_var('filter') . '%';

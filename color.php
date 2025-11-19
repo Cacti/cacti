@@ -162,7 +162,7 @@ function form_actions() {
 
 				$color = db_fetch_row_prepared('SELECT name, hex FROM colors WHERE id = ?', [$matches[1]]);
 
-				$ilist .= '<li>' . ($color['name'] != '' ? html_escape($color['name']): __('Unnamed Color')) . ' (<span style="background-color:#' . $color['hex'] . '">' . $color['hex'] . '</span>)</li>';
+				$ilist .= '<li>' . ($color['name'] != '' ? html_escape($color['name']) : __('Unnamed Color')) . ' (<span style="background-color:#' . $color['hex'] . '">' . $color['hex'] . '</span>)</li>';
 
 				$iarray[] = $matches[1];
 			}
@@ -344,9 +344,9 @@ function color_import() {
 
 	html_start_box(__('Import Colors'), '100%', false, 3, 'center', '');
 
-	form_alternate_row();?>
+	form_alternate_row(); ?>
 		<td width='50%'><font class='textEditTitle'><?php print __('Import Colors from Local File'); ?></font><br>
-			<?php print __('Please specify the location of the CSV file containing your Color information.');?>
+			<?php print __('Please specify the location of the CSV file containing your Color information.'); ?>
 		</td>
 		<td class='left'>
 			<div>
@@ -356,23 +356,23 @@ function color_import() {
 			</div>
 		</td>
 	</tr><?php
-	form_alternate_row();?>
-		<td width='50%'><font class='textEditTitle'><?php print __('Overwrite Existing Data?');?></font><br>
-			<?php print __('Should the import process be allowed to overwrite existing data?  Please note, this does not mean delete old rows, only update duplicate rows.');?>
+	form_alternate_row(); ?>
+		<td width='50%'><font class='textEditTitle'><?php print __('Overwrite Existing Data?'); ?></font><br>
+			<?php print __('Should the import process be allowed to overwrite existing data?  Please note, this does not mean delete old rows, only update duplicate rows.'); ?>
 		</td>
 		<td class='left'>
-			<input type='checkbox' name='allow_update' id='allow_update'><?php print __('Allow Existing Rows to be Updated?');?>
+			<input type='checkbox' name='allow_update' id='allow_update'><?php print __('Allow Existing Rows to be Updated?'); ?>
 		</td><?php
 
 	html_end_box(false);
 
 	html_start_box(__('Required File Format Notes'), '100%', false, 3, 'center', '');
 
-	form_alternate_row();?>
-		<td><strong><?php print __('The file must contain a header row with the following column headings.');?></strong>
+	form_alternate_row(); ?>
+		<td><strong><?php print __('The file must contain a header row with the following column headings.'); ?></strong>
 			<br><br>
-				<?php print __('<strong>name</strong> - The Color Name');?><br>
-				<?php print __('<strong>hex</strong> - The Hex Value');?><br>
+				<?php print __('<strong>name</strong> - The Color Name'); ?><br>
+				<?php print __('<strong>hex</strong> - The Hex Value'); ?><br>
 			<br>
 		</td>
 	</tr><?php
@@ -480,7 +480,7 @@ function color() {
 	}
 
 	if (get_request_var('has_graphs') == 'true') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' graphs > 0';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' graphs > 0';
 	}
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*)
@@ -571,9 +571,9 @@ function color() {
 
 			form_selectable_cell(filter_value($color['hex'], '', $url), $color['id']);
 			form_selectable_cell(filter_value($color['name'], get_request_var('filter')), $color['id']);
-			form_selectable_cell($color['read_only'] == 'on' ? __('Yes'):__('No'), $color['id']);
+			form_selectable_cell($color['read_only'] == 'on' ? __('Yes') : __('No'), $color['id']);
 			form_selectable_cell('', $color['id'], '', 'text-align:right;background-color:#' . $color['hex'] . ';min-width:30%');
-			form_selectable_cell($disabled ? __('No'):__('Yes'), $color['id'], '', 'text-align:right');
+			form_selectable_cell($disabled ? __('No') : __('Yes'), $color['id'], '', 'text-align:right');
 			form_selectable_cell(number_format_i18n($color['graphs'], -1), $color['id'], '', 'right');
 			form_selectable_cell(number_format_i18n($color['templates'], -1), $color['id'], '', 'right');
 			form_checkbox_cell($color['name'], $color['id'], $disabled);

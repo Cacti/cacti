@@ -35,7 +35,7 @@ class MibCache {
 
 	private $cache__tables_columns = [];
 
-	public function __construct($mib='CACTI-MIB') {
+	public function __construct($mib = 'CACTI-MIB') {
 		$this->active_mib = $mib;
 
 		return $this;
@@ -56,7 +56,7 @@ class MibCache {
 		}
 	}
 
-	public function install($path, $replace=false, $mib_name='optional') {
+	public function install($path, $replace = false, $mib_name = 'optional') {
 		include_once(CACTI_PATH_INCLUDE . '/vendor/phpsnmp/mib_parser.php');
 
 		$mp = new MibParser();
@@ -233,7 +233,7 @@ class MibCache {
 		return false;
 	}
 
-	public function select($column=false) {
+	public function select($column = false) {
 		$result = [];
 
 		if ($this->active_table_entry) {
@@ -311,9 +311,9 @@ class MibCache {
 					$entries_per_object = $num_entries / $num_columns;
 
 					for ($i = 0; $i < $entries_per_object; $i++) {
-						$result[$i]=[];
+						$result[$i] = [];
 
-						for ($j=0; $j < $num_columns; $j++) {
+						for ($j = 0; $j < $num_columns; $j++) {
 							$result[$i][$entries[$i + $j * $entries_per_object]['name']] = $entries[$i + $j * $entries_per_object]['value'];
 						}
 					}
@@ -348,9 +348,9 @@ class MibCache {
 					$entries_per_object = ceil($num_entries / $num_objects);
 
 					for ($i = 0; $i < $entries_per_object; $i++) {
-						$result[$i]=[];
+						$result[$i] = [];
 
-						for ($j=0; $j < $num_objects; $j++) {
+						for ($j = 0; $j < $num_objects; $j++) {
 							$index                                = (int) $i + ($j * $entries_per_object);
 							$result[$i][$entries[$index]['name']] = $entries[$index]['value'];
 						}

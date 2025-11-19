@@ -286,11 +286,11 @@ switch (get_request_var('action')) {
 			'local_graph_id' => get_request_var('local_graph_id'),
 			'top'            => get_request_var('top'),
 			'left'           => get_request_var('left'),
-			'ds_step'        => html_escape(isset($_SESSION['sess_realtime_ds_step']) ? $_SESSION['sess_realtime_ds_step']:$graph_data_array['ds_step']),
-			'graph_start'    => html_escape(isset($_SESSION['sess_realtime_graph_start']) ? $_SESSION['sess_realtime_graph_start']:$graph_data_array['graph_start']),
-			'size'           => html_escape(isset($_SESSION['sess_realtime_size']) ? $_SESSION['sess_realtime_size']:read_user_setting('realtime_size', 100)),
-			'thumbnails'     => html_escape(isset($_SESSION['sess_realtime_nolegend']) ? $_SESSION['sess_realtime_nolegend']:'false'),
-			'data'           => (isset($data) ? $data:''),
+			'ds_step'        => html_escape(isset($_SESSION['sess_realtime_ds_step']) ? $_SESSION['sess_realtime_ds_step'] : $graph_data_array['ds_step']),
+			'graph_start'    => html_escape(isset($_SESSION['sess_realtime_graph_start']) ? $_SESSION['sess_realtime_graph_start'] : $graph_data_array['graph_start']),
+			'size'           => html_escape(isset($_SESSION['sess_realtime_size']) ? $_SESSION['sess_realtime_size'] : read_user_setting('realtime_size', 100)),
+			'thumbnails'     => html_escape(isset($_SESSION['sess_realtime_nolegend']) ? $_SESSION['sess_realtime_nolegend'] : 'false'),
+			'data'           => (isset($data) ? $data : ''),
 			'image_format'   => $graph_data_array['image_format']
 		];
 
@@ -390,7 +390,7 @@ $sizes = [
 ?>
 <html>
 <head>
-	<?php html_common_header(__('Cacti Real-time Graphing'));?>
+	<?php html_common_header(__('Cacti Real-time Graphing')); ?>
     <?php require(CACTI_PATH_INCLUDE . '/global_session.php'); ?>
 </head>
 <body style='font-size:12px;'>
@@ -404,37 +404,37 @@ $sizes = [
 							$interval, $interval == abs(get_request_var('graph_start')) ? ' selected="selected"' : '', $text
 						);
 					}
-					?>
+?>
 				</select>
 				<select id='ds_step' onChange='imageOptionsChanged("interval")'>
 					<?php
-					$min_refresh = read_config_option('realtime_interval');
+$min_refresh = read_config_option('realtime_interval');
 
-					foreach ($realtime_refresh as $interval => $text) {
-						if ($interval >= $min_refresh) {
-							printf('<option value="%d"%s>%s</option>',
-								$interval, $interval == get_request_var('ds_step') ? ' selected="selected"' : '', $text
-							);
-						}
-					}
-					?>
+foreach ($realtime_refresh as $interval => $text) {
+	if ($interval >= $min_refresh) {
+		printf('<option value="%d"%s>%s</option>',
+			$interval, $interval == get_request_var('ds_step') ? ' selected="selected"' : '', $text
+		);
+	}
+}
+?>
 				</select>
 				<select id='size' onChange='imageOptionsChanged("interval")'>
 					<?php
-					foreach ($sizes as $key => $value) {
-						printf('<option value="%d"%s>%s</option>', $key, $key == get_request_var('size') ? ' selected="selected"' : '', $value);
-					}
-					?>
+foreach ($sizes as $key => $value) {
+	printf('<option value="%d"%s>%s</option>', $key, $key == get_request_var('size') ? ' selected="selected"' : '', $value);
+}
+?>
 				</select>
-				<input type='checkbox' id='thumbnails' onChange='imageOptionsChanged("interval")' <?php print get_request_var('graph_nolegend') == 'true' ? 'checked':'';?>>
-				<label for='thumbnails'><?php print __('Thumbnails');?></label>
+				<input type='checkbox' id='thumbnails' onChange='imageOptionsChanged("interval")' <?php print get_request_var('graph_nolegend') == 'true' ? 'checked' : ''; ?>>
+				<label for='thumbnails'><?php print __('Thumbnails'); ?></label>
 			</div>
 		</div>
 		<div class='cactiTable center'>
 			<span id='countdown'><?php print __('%d seconds left.',  get_request_var('ds_step')); ?></span>
 		</div>
 		<div id='image' class='center' style='padding:2px;'></div>
-		<input type='hidden' id='url_path' name='url_path' value='<?php print CACTI_PATH_URL;?>'/>
+		<input type='hidden' id='url_path' name='url_path' value='<?php print CACTI_PATH_URL; ?>'/>
 		<input type='hidden' id='local_graph_id' name='local_graph_id' value='<?php print get_request_var('local_graph_id'); ?>'/>
 		<script type='text/javascript'>
 
@@ -447,7 +447,7 @@ $sizes = [
 		var refreshPage=urlPath+'/graph_realtime.php?action=countdown&size='+$('#size').val();
 		var refreshMSeconds=999999999;
 		var myCountdown = {};
-		var secondsLeft = '<?php print __(' seconds left.');?>';
+		var secondsLeft = '<?php print __(' seconds left.'); ?>';
 
 		function countdown_update() {
 			ds_step--;

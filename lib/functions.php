@@ -1165,9 +1165,9 @@ function raise_message(string|int $message_id, string $message = '', int $messag
 function raise_message_javascript(string $title, string $header, string $message, int $level = MESSAGE_LEVEL_MIXED) {
 	?>
 	<script type='text/javascript'>
-	var mixedReasonTitle = DOMPurify.sanitize(<?php print json_encode($title, JSON_THROW_ON_ERROR);?>);
-	var mixedOnPage      = DOMPurify.sanitize(<?php print json_encode($header, JSON_THROW_ON_ERROR);?>);
-	var message          = DOMPurify.sanitize(<?php print json_encode($message, JSON_THROW_ON_ERROR);?>);
+	var mixedReasonTitle = DOMPurify.sanitize(<?php print json_encode($title, JSON_THROW_ON_ERROR); ?>);
+	var mixedOnPage      = DOMPurify.sanitize(<?php print json_encode($header, JSON_THROW_ON_ERROR); ?>);
+	var message          = DOMPurify.sanitize(<?php print json_encode($message, JSON_THROW_ON_ERROR); ?>);
 	var level            = <?php print $level; ?>;
 
 	$(function() {
@@ -1503,13 +1503,13 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 
 	/* format the message */
 	if ($environ == 'POLLER') {
-		$prefix = "$date - " . ($environ != '' ? "$environ: ":'') . 'Poller[' . POLLER_ID . '] PID[' . getmypid() . '] ';
+		$prefix = "$date - " . ($environ != '' ? "$environ: " : '') . 'Poller[' . POLLER_ID . '] PID[' . getmypid() . '] ';
 
 		if ($output) {
 			$oprefix = sprintf('Total[%3.4f] ', microtime(true) - $start);
 		}
 	} else {
-		$prefix  = "$date - " . ($environ != '' ? $environ . ' ':'');
+		$prefix  = "$date - " . ($environ != '' ? $environ . ' ' : '');
 
 		if ($output) {
 			$oprefix = $prefix;
@@ -1557,11 +1557,11 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 			}
 
 			if ($log_type == 'err' && read_config_option('log_perror')) {
-				syslog(LOG_CRIT, ($environ != '' ? $environ . ': ':'') . $string);
+				syslog(LOG_CRIT, ($environ != '' ? $environ . ': ' : '') . $string);
 			} elseif ($log_type == 'warn' && read_config_option('log_pwarn')) {
-				syslog(LOG_WARNING, ($environ != '' ? $environ . ': ':'') . $string);
+				syslog(LOG_WARNING, ($environ != '' ? $environ . ': ' : '') . $string);
 			} elseif (($log_type == 'stat' || $log_type == 'note') && read_config_option('log_pstats')) {
-				syslog(LOG_INFO, ($environ != '' ? $environ . ': ':'') . $string);
+				syslog(LOG_INFO, ($environ != '' ? $environ . ': ' : '') . $string);
 			}
 
 			closelog();
@@ -1587,7 +1587,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 			$skip--;
 		}
 
-		$s='';
+		$s = '';
 
 		foreach ($callers as $c) {
 			if (isset($c['line'])) {
@@ -1608,7 +1608,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 				$func = $c['class'] . $c['type'] . $func;
 			}
 
-			$s = ($file != '' ? $file . ':':'') . "$func" . (empty($s) ? '' : ', ') . $s;
+			$s = ($file != '' ? $file . ':' : '') . "$func" . (empty($s) ? '' : ', ') . $s;
 		}
 
 		if (!empty($s)) {
@@ -3576,12 +3576,12 @@ function get_rrd_cfs($local_data_id) {
  * @return mixed a letter-based representation of the input argument
  */
 function generate_graph_def_name($graph_item_id) {
-	$lookup_table = ['a','b','c','d','e','f','g','h','i','j'];
+	$lookup_table = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
 
 	$result    = '';
 	$strValGII = strval($graph_item_id);
 
-	for ($i=0; $i < strlen($strValGII); $i++) {
+	for ($i = 0; $i < strlen($strValGII); $i++) {
 		$result .= $lookup_table[substr($strValGII, $i, 1)];
 	}
 
@@ -3607,7 +3607,7 @@ function generate_data_input_field_sequences($string, $data_input_id) {
 	if (preg_match_all('/<([_a-zA-Z0-9]+)>/', $string, $matches)) {
 		$j = 0;
 
-		for ($i=0; ($i < cacti_count($matches[1])); $i++) {
+		for ($i = 0; ($i < cacti_count($matches[1])); $i++) {
 			if (in_array($matches[1][$i], $registered_cacti_names, true) == false) {
 				$j++;
 
@@ -3877,7 +3877,7 @@ function get_item($tblname, $field, $startid, $lmt_query, $direction) {
 
 	$new_item_id = db_fetch_cell("SELECT id
 		FROM $tblname
-		WHERE $field $sql_operator $current_sequence " . ($lmt_query != '' ? " AND $lmt_query":'') . "
+		WHERE $field $sql_operator $current_sequence " . ($lmt_query != '' ? " AND $lmt_query" : '') . "
 		ORDER BY $field $sql_order
 		LIMIT 1");
 
@@ -4030,7 +4030,7 @@ function draw_login_status($using_guest_account = false) {
 	if (isset($_SESSION[SESS_USER_ID]) && $_SESSION[SESS_USER_ID] === $guest_account) {
 		api_plugin_hook('nav_login_before');
 
-		print __('Logged in as') . " <span id='user' class='user usermenuup'>". __('guest') . "</span></div><div><ul class='menuoptions' style='display:none;'>" . ($auth_method != AUTH_METHOD_BASIC ? "<li><a href='" . CACTI_PATH_URL . "index.php?login=true'>" . __('Login as Regular User') . '</a></li>':"<li><a href='#'>" . __('Logged in a Guest') . '</a></li>');
+		print __('Logged in as') . " <span id='user' class='user usermenuup'>". __('guest') . "</span></div><div><ul class='menuoptions' style='display:none;'>" . ($auth_method != AUTH_METHOD_BASIC ? "<li><a href='" . CACTI_PATH_URL . "index.php?login=true'>" . __('Login as Regular User') . '</a></li>' : "<li><a href='#'>" . __('Logged in a Guest') . '</a></li>');
 
 		print "<li class='menuHr'><hr class='menu'></li>";
 		print "<li id='userCommunity'><a href='https://forums.cacti.net' target='_blank' rel='noopener'>" . __('User Community') . '</a></li>';
@@ -4051,9 +4051,9 @@ function draw_login_status($using_guest_account = false) {
 
 		print "<li><a href='#' class='loggedInAs' style='display:none;'>" . __esc('Logged in as %s', $user['username']) . "</a></li><hr class='menu'>";
 
-		print(is_realm_allowed(20) ? "<li><a href='" . html_escape(CACTI_PATH_URL . 'auth_profile.php?action=edit') . "'>" . __('Edit Profile') . '</a></li>':'');
-		print($user['password_change'] == 'on' && $user['realm'] == 0 ? "<li><a href='" . html_escape(CACTI_PATH_URL . 'auth_changepassword.php') . "'>" . __('Change Password') . '</a></li>':'');
-		print((is_realm_allowed(20) || ($user['password_change'] == 'on' && $user['realm'] == 0)) ? "<li class='menuHr'><hr class='menu'></li>":'');
+		print(is_realm_allowed(20) ? "<li><a href='" . html_escape(CACTI_PATH_URL . 'auth_profile.php?action=edit') . "'>" . __('Edit Profile') . '</a></li>' : '');
+		print($user['password_change'] == 'on' && $user['realm'] == 0 ? "<li><a href='" . html_escape(CACTI_PATH_URL . 'auth_changepassword.php') . "'>" . __('Change Password') . '</a></li>' : '');
+		print((is_realm_allowed(20) || ($user['password_change'] == 'on' && $user['realm'] == 0)) ? "<li class='menuHr'><hr class='menu'></li>" : '');
 
 		if (is_realm_allowed(28)) {
 			print "<li id='userCommunity'><a href='https://forums.cacti.net' target='_blank' rel='noopener'>" . __('User Community') . '</a></li>';
@@ -4061,7 +4061,7 @@ function draw_login_status($using_guest_account = false) {
 			print "<li class='menuHr'><hr class='menu'></li>";
 		}
 
-		print($auth_method != AUTH_METHOD_BASIC ? "<li><a href='" . html_escape(CACTI_PATH_URL . 'logout.php') . "'>" . __('Logout') . '</a></li>':'');
+		print($auth_method != AUTH_METHOD_BASIC ? "<li><a href='" . html_escape(CACTI_PATH_URL . 'logout.php') . "'>" . __('Logout') . '</a></li>' : '');
 		print '</ul>';
 
 		api_plugin_hook('nav_login_after');
@@ -4134,15 +4134,15 @@ function draw_navigation_text($type = 'url') {
 		} else {
 			// No 'url' was specified, so parse the breadcrumb path and use it
 			$parts = explode(':', $breadcrumb);
-			$url   = $parts[0] . (isset($parts[1]) && $parts[1] != '' ? '?action=' . $parts[1]:'');
+			$url   = $parts[0] . (isset($parts[1]) && $parts[1] != '' ? '?action=' . $parts[1] : '');
 		}
 
 		// Construct the list item and anchor from the 'url' if there was one.  There should always
 		// be one.
-		$current_nav .= "<li><a id='nav_$i' href='" . (empty($url) ? '#':html_escape($url)) . "'>";
+		$current_nav .= "<li><a id='nav_$i' href='" . (empty($url) ? '#' : html_escape($url)) . "'>";
 		$current_nav .= html_escape(resolve_navigation_variables($navigation[basename($breadcrumb)]['title']));
 		$current_nav .= '</a></li>';
-		$title       .= html_escape(resolve_navigation_variables($navigation[basename($breadcrumb)]['title'])) . ' > ';
+		$title .= html_escape(resolve_navigation_variables($navigation[basename($breadcrumb)]['title'])) . ' > ';
 
 		$nav_count++;
 	}
@@ -4246,7 +4246,7 @@ function draw_navigation_text($type = 'url') {
 			}
 		}
 
-		$tree_title = $tree_name . ($leaf_name != '' ? ' (' . trim($leaf_name):'') . ($leaf_sub != '' ? ':' . trim($leaf_sub) . ')':($leaf_name != '' ? ')':''));
+		$tree_title = $tree_name . ($leaf_name != '' ? ' (' . trim($leaf_name) : '') . ($leaf_sub != '' ? ':' . trim($leaf_sub) . ')' : ($leaf_name != '' ? ')' : ''));
 
 		if ($tree_title != '') {
 			$current_nav .= "<li><a id='nav_title' href='#'>" . html_escape($tree_title) . '</a></li>';
@@ -4324,7 +4324,7 @@ function resolve_navigation_variables(string $text): string {
 		$graphTitle = get_graph_title(get_request_var('local_graph_id'));
 
 		if (preg_match_all("/\|([a-zA-Z0-9_]+)\|/", $text, $matches)) {
-			for ($i=0; $i < cacti_count($matches[1]); $i++) {
+			for ($i = 0; $i < cacti_count($matches[1]); $i++) {
 				switch ($matches[1][$i]) {
 					case 'current_graph_title':
 						$text = str_replace('|' . $matches[1][$i] . '|', $graphTitle, $text);
@@ -4858,8 +4858,8 @@ function debug_log_return($type) {
  * @return mixed the sanitized search string
  */
 function sanitize_search_string($string) {
-	static $drop_char_match   = ['(',')','^', '$', '<', '>', '`', '\'', '"', '|', ',', '?', '+', '[', ']', '{', '}', '#', ';', '!', '=', '*'];
-	static $drop_char_replace = ['','',' ', ' ', ' ', ' ', '', '', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '];
+	static $drop_char_match   = ['(', ')', '^', '$', '<', '>', '`', '\'', '"', '|', ',', '?', '+', '[', ']', '{', '}', '#', ';', '!', '=', '*'];
+	static $drop_char_replace = ['', '', ' ', ' ', ' ', ' ', '', '', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '];
 
 	/* Replace line endings by a space */
 	$string = preg_replace('/[\n\r]/is', ' ', $string);
@@ -4894,7 +4894,7 @@ function sanitize_uri($uri) {
 
 	if (strpos($uri, 'graph_view.php')) {
 		if (!strpos($uri, 'action=')) {
-			$uri = $uri . (strpos($uri, '?') ? '&':'?') . 'action=' . get_nfilter_request_var('action');
+			$uri = $uri . (strpos($uri, '?') ? '&' : '?') . 'action=' . get_nfilter_request_var('action');
 		}
 	}
 
@@ -5022,7 +5022,7 @@ function cacti_escapeshellcmd($string) {
 	if (!empty($string)) {
 		$replacements = '#&;`|*?<>^()[]{}$\\';
 
-		for ($i=0; $i < strlen($replacements); $i++) {
+		for ($i = 0; $i < strlen($replacements); $i++) {
 			$string = str_replace($replacements[$i], ' ', $string);
 		}
 
@@ -5222,7 +5222,7 @@ function send_mail(array|string $to, string|array|null $from = null, string $sub
 				$full_name = db_fetch_cell_prepared('SELECT full_name
 					FROM user_auth
 					WHERE email_address = ?',
-					array($from));
+					[$from]);
 
 				if ($full_name != '') {
 					$name = $full_name;
@@ -5339,6 +5339,7 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 
 	// Setup i18n
 	$langparts = explode('-', $cacti_locale);
+
 	if (file_exists(CACTI_PATH_INCLUDE . '/vendor/phpmailer/phpmailer/language/phpmailer.lang-' . $langparts[0] . '.php')) {
 		$mail->setLanguage($langparts[0], CACTI_PATH_INCLUDE . '/vendor/phpmailer/phpmailer/language/');
 	}
@@ -5782,7 +5783,7 @@ function parse_email_details($emails, int $max_records = 0, array $details = [])
 				$has_email = array_key_exists('email', $check_email);
 
 				if ($has_name || $has_email) {
-					$name  = $has_name  ? $check_email['name']  : '';
+					$name  = $has_name ? $check_email['name'] : '';
 					$email = $has_email ? $check_email['email'] : '';
 				} else {
 					$name  = array_key_exists(1, $check_email) ? $check_email[1] : '';
@@ -5975,7 +5976,7 @@ function email_test() {
 		if (read_config_option('settings_ping_mail') == 0) {
 			$ping_results = ping_mail_server($smtp_host, $smtp_port, $smtp_username, $smtp_password, $smtp_timeout, $smtp_secure);
 
-			print __('Ping Results:') . ' ' . ($ping_results == 1 ? __('Success'):$ping_results) . '<br>';
+			print __('Ping Results:') . ' ' . ($ping_results == 1 ? __('Success') : $ping_results) . '<br>';
 
 			if ($ping_results != 1) {
 				$mail .= '<b>' . __('Ping Results') . '</b>: ' . $ping_results . '<br>';
@@ -6041,7 +6042,7 @@ function get_dns_from_ip($ip, $dns, $timeout = 1000) {
 	}
 
 	/* needs a byte to indicate the length of each segment of the request */
-	for ($x=3; $x >= 0; $x--) {
+	for ($x = 3; $x >= 0; $x--) {
 		switch (strlen($octets[$x])) {
 			case 1: // 1 byte long segment
 				$data .= "\1";
@@ -6196,7 +6197,7 @@ function cacti_debug_backtrace($entry = '', $html = false, $record = true, $limi
 		$skip--;
 	}
 
-	$s='';
+	$s = '';
 
 	foreach ($callers as $c) {
 		if (isset($c['line'])) {
@@ -6217,7 +6218,7 @@ function cacti_debug_backtrace($entry = '', $html = false, $record = true, $limi
 			$func = $c['class'] . $c['type'] . $func;
 		}
 
-		$s = ($file != '' ? $file . ':':'') . "$func" . (empty($s) ? '' : ', ') . $s;
+		$s = ($file != '' ? $file . ':' : '') . "$func" . (empty($s) ? '' : ', ') . $s;
 	}
 
 	if (!empty($s)) {
@@ -7624,7 +7625,7 @@ function version_to_bits(string $version, $hex = false): int {
 	 * Minor     -  8 of 15  = 5 bits
 	 * Reversion - 38 of 63  =
 	 */
-	static $bits = [0,4,6,15,32];
+	static $bits = [0, 4, 6, 15, 32];
 
 	// Assume no version
 	$newver = 0;
@@ -7655,7 +7656,7 @@ function version_to_bits(string $version, $hex = false): int {
 		// by the section
 		while (cacti_sizeof($parts) < $length) {
 			$part_count  = cacti_sizeof($parts);
-			$part_prefix = ($part_count < 3) ? '0':'9';
+			$part_prefix = ($part_count < 3) ? '0' : '9';
 			$part_length = ($part_count < 3) ? 0 : $part_count;
 
 			$parts[] = str_repeat($part_prefix, $part_length + 1);
@@ -7679,8 +7680,8 @@ function version_to_bits(string $version, $hex = false): int {
 				// If the part isn't numeric and we are on the 3rd
 				// section, try and break it up as it might be a hex
 				// string
-				$major  = strlen($part) > 0?char_to_dec($part[0]):'0';
-				$minor  = strlen($part) > 1?char_to_dec($part[1]):'0';
+				$major  = strlen($part) > 0 ? char_to_dec($part[0]) : '0';
+				$minor  = strlen($part) > 1 ? char_to_dec($part[1]) : '0';
 
 				if (empty($part[3])) {
 					// If patch (fourth section) has no number, then we
@@ -8379,13 +8380,13 @@ function cacti_pton($ipaddr) {
 	}
 
 	if (!is_numeric($subnet)) {
-		$subnet=$len;
+		$subnet = $len;
 	} else {
-		$subnet=(int)$subnet;
+		$subnet = (int)$subnet;
 	}
 
 	// Create a hex expression of the subnet mask
-	$mask=str_repeat('f',$subnet >> 2);
+	$mask = str_repeat('f',$subnet >> 2);
 
 	switch($subnet & 3) {
 		case 3:
@@ -8401,10 +8402,10 @@ function cacti_pton($ipaddr) {
 
 			break;
 	}
-	$mask=str_pad($mask,$len >> 2,'0');
+	$mask = str_pad($mask,$len >> 2,'0');
 
 	// Packed representation of netmask
-	$mask=pack('H*',$mask);
+	$mask = pack('H*',$mask);
 
 	$result = ['ip' => $addr, 'subnet' => $mask];
 
@@ -8777,9 +8778,9 @@ function cacti_time_zone_set($gmt_offset = null) {
 	$zone = timezone_name_from_abbr('', $gmt_offset);
 
 	if ($remaining == 0) {
-		putenv('TZ=GMT' . ($hours > 0 ? '-':'+') . abs($hours));
+		putenv('TZ=GMT' . ($hours > 0 ? '-' : '+') . abs($hours));
 
-		$sys_offset = 'GMT' . ($hours > 0 ? '-':'+') . abs($hours);
+		$sys_offset = 'GMT' . ($hours > 0 ? '-' : '+') . abs($hours);
 
 		if ($zone !== false) {
 			$php_offset = $zone;
@@ -8787,14 +8788,14 @@ function cacti_time_zone_set($gmt_offset = null) {
 		} else {
 			// Adding the rounding function as some timezones are Etc/GMT+5.5 which is
 			// not supported in PHP yet.
-			$php_offset = 'Etc/GMT' . ($hours > 0 ? '-':'+') . abs(round($hours));
-			ini_set('date.timezone', 'Etc/GMT' . ($hours > 0 ? '-':'+') . abs(round($hours)));
+			$php_offset = 'Etc/GMT' . ($hours > 0 ? '-' : '+') . abs(round($hours));
+			ini_set('date.timezone', 'Etc/GMT' . ($hours > 0 ? '-' : '+') . abs(round($hours)));
 		}
 
 		$_SESSION[SESS_BROWSER_SYSTEM_TZ] = $sys_offset;
 		$_SESSION[SESS_BROWSER_PHP_TZ]    = $php_offset;
 	} else {
-		$time = ($hours > 0 ? '-':'+') . abs($hours) . ':' . substr('00' . $remaining, -2);
+		$time = ($hours > 0 ? '-' : '+') . abs($hours) . ':' . substr('00' . $remaining, -2);
 
 		if ($zone === false) {
 			switch($time) {
@@ -9304,7 +9305,7 @@ function text_regex_graphs($matches, $link = false) {
 
 		foreach ($graph_ids as $id) {
 			$graph_add .= ($i > 0 ? '%2C' : '') . $id;
-			$title     .= ($title != '' ? ', ' : '') . html_escape((isset($graph_cache[$id]) ? html_escape($graph_cache[$id]) : $id));
+			$title .= ($title != '' ? ', ' : '') . html_escape((isset($graph_cache[$id]) ? html_escape($graph_cache[$id]) : $id));
 			$i++;
 		}
 
@@ -9413,13 +9414,12 @@ function cacti_unserialize($strobj) {
 	return unserialize($strobj, ['allowed_classes' => false]);
 }
 
-
 function detect_cpu_cores() {
-
 	$cpu_cores = 0;
 
 	if (str_starts_with(strtoupper(PHP_OS), 'WIN')) {
-		$output = shell_exec("powershell -Command \"Get-WmiObject Win32_Processor | Select-Object NumberOfLogicalProcessors\"");
+		$output = shell_exec('powershell -Command "Get-WmiObject Win32_Processor | Select-Object NumberOfLogicalProcessors"');
+
 		if (!is_null($output) && $output !== false) {
 			preg_match_all('/\d+/', $output, $matches);
 			$cpu_cores = array_sum($matches[0]);
@@ -9433,6 +9433,7 @@ function detect_cpu_cores() {
 			$cpu_cores = shell_exec('/bin/nproc');
 		} else {
 			$output = shell_exec('nproc');
+
 			if (!is_null($output) && $output !== false) {
 				$cpu_cores = $output;
 			}

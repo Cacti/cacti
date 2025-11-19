@@ -440,11 +440,11 @@ function form_actions() {
 
 				api_data_source_remove_multi($selected_items);
 			} elseif (get_nfilter_request_var('drp_action') == '2') { // data source disable
-				for ($i=0;($i < cacti_count($selected_items));$i++) {
+				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					api_data_source_disable($selected_items[$i]);
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '3') { // data source enable
-				for ($i=0;($i < cacti_count($selected_items));$i++) {
+				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					api_data_source_enable($selected_items[$i]);
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '4') { // change host
@@ -452,7 +452,7 @@ function form_actions() {
 
 				api_data_source_change_host($selected_items, get_request_var('host_id'));
 			} elseif (get_nfilter_request_var('drp_action') == '5') { // reapply suggested data source naming
-				for ($i=0;($i < cacti_count($selected_items));$i++) {
+				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					api_reapply_suggested_data_source_data($selected_items[$i]);
 					update_data_source_title_cache($selected_items[$i]);
 				}
@@ -915,12 +915,12 @@ function ds_edit() {
 				[
 					'display' => $debug_message,
 					'url'     => $debug_url,
-					'class'   => ($debug ? 'fa fa-bug disableDebug':'fa fa-bug enableDebug')
+					'class'   => ($debug ? 'fa fa-bug disableDebug' : 'fa fa-bug enableDebug')
 				],
 				[
 					'display' => $info_message,
 					'url'     => $info_url,
-					'class'   => ($info_on ? 'fa fa-qrcode disableDebug':'fa fa-qrcode editTemplate')
+					'class'   => ($info_on ? 'fa fa-qrcode disableDebug' : 'fa fa-qrcode editTemplate')
 				],
 			]
 		];
@@ -966,7 +966,7 @@ function ds_edit() {
 			$filters['links'][] = [
 				'display' => ($data['active'] == 'on' ? __('Disable Data Source') : __('Enable Data Source')),
 				'url'     => 'data_sources.php?action=ds_' . ($data['active'] == 'on' ? 'dis' : 'en') . 'able&id=' . get_request_var('id'),
-				'class'   => ($data['active'] == 'on' ? 'fas fa-circle-check deviceRecovering':'fas fa-circle-check deviceUp')
+				'class'   => ($data['active'] == 'on' ? 'fas fa-circle-check deviceRecovering' : 'fas fa-circle-check deviceUp')
 			];
 		}
 	} else {
@@ -1311,54 +1311,54 @@ function data_sources() {
 	}
 
 	if (isempty_request_var('host_id')) {
-		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' (dl.host_id = 0 OR dl.host_id IS NULL)';
+		$sql_where1 .= ($sql_where1 != '' ? ' AND' : 'WHERE') . ' (dl.host_id = 0 OR dl.host_id IS NULL)';
 		$sql_where2 .= ' AND (gl.host_id = 0 OR gl.host_id IS NULL)';
 	} elseif (get_request_var('host_id') > 0) {
-		$sql_where1   .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dl.host_id = ?';
+		$sql_where1 .= ($sql_where1 != '' ? ' AND' : 'WHERE') . ' dl.host_id = ?';
 		$sql_params1[] = get_request_var('host_id');
-		$sql_where2   .= ' AND gl.host_id = ?';
+		$sql_where2 .= ' AND gl.host_id = ?';
 		$sql_params2[] = get_request_var('host_id');
 	}
 
 	if (isset_request_var('errored') && get_request_var('errored') == 'true') {
-		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dl.errored = 1';
+		$sql_where1 .= ($sql_where1 != '' ? ' AND' : 'WHERE') . ' dl.errored = 1';
 	}
 
 	if (isempty_request_var('site_id')) {
-		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' (h.site_id=0 OR h.site_id IS NULL)';
+		$sql_where1 .= ($sql_where1 != '' ? ' AND' : 'WHERE') . ' (h.site_id=0 OR h.site_id IS NULL)';
 		$sql_where2 .= ' AND (h.site_id=0 OR h.site_id IS NULL)';
 	} elseif (get_request_var('site_id') > 0) {
-		$sql_where1   .= ($sql_where1 != '' ? ' AND':'WHERE') . ' h.site_id = ?';
+		$sql_where1 .= ($sql_where1 != '' ? ' AND' : 'WHERE') . ' h.site_id = ?';
 		$sql_params1[] = get_request_var('site_id');
-		$sql_where2   .= ' AND h.site_id = ?';
+		$sql_where2 .= ' AND h.site_id = ?';
 		$sql_params2[] = get_request_var('site_id');
 	}
 
 	if (get_request_var('template_id') == '0') {
-		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dtd.data_template_id = 0';
+		$sql_where1 .= ($sql_where1 != '' ? ' AND' : 'WHERE') . ' dtd.data_template_id = 0';
 	} elseif (get_request_var('template_id') > 0) {
-		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dtd.data_template_id = ?';
+		$sql_where1 .= ($sql_where1 != '' ? ' AND' : 'WHERE') . ' dtd.data_template_id = ?';
 		$sql_params1[] = get_request_var('template_id');
 	}
 
 	if (get_request_var('profile') > 0) {
-		$sql_where1   .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dtd.data_source_profile_id = ?';
+		$sql_where1 .= ($sql_where1 != '' ? ' AND' : 'WHERE') . ' dtd.data_source_profile_id = ?';
 		$sql_params1[] = get_request_var('profile');
 	}
 
 	if (get_request_var('status') == '1') {
-		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' (dtd.active = "on" AND h.disabled = "")';
+		$sql_where1 .= ($sql_where1 != '' ? ' AND' : 'WHERE') . ' (dtd.active = "on" AND h.disabled = "")';
 	} elseif (get_request_var('status') == '2') {
-		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' (dtd.active = "" OR h.disabled != "")';
+		$sql_where1 .= ($sql_where1 != '' ? ' AND' : 'WHERE') . ' (dtd.active = "" OR h.disabled != "")';
 	} elseif (get_request_var('status') == '3') {
-		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' (dl.snmp_index = "" AND dl.snmp_query_id > 0)';
+		$sql_where1 .= ($sql_where1 != '' ? ' AND' : 'WHERE') . ' (dl.snmp_index = "" AND dl.snmp_query_id > 0)';
 	}
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	if (get_request_var('orphans') == 'true') {
-		$sql_where1 .= ($sql_where1 != '' ? ' AND ':'WHERE ') . '((dl.snmp_index = "" AND dl.snmp_query_id > 0) OR graph_items = 0 IS NULL OR dl.orphan = 1)';
+		$sql_where1 .= ($sql_where1 != '' ? ' AND ' : 'WHERE ') . '((dl.snmp_index = "" AND dl.snmp_query_id > 0) OR graph_items = 0 IS NULL OR dl.orphan = 1)';
 
 		$orphan_join = "LEFT JOIN (
 			SELECT dtr.local_data_id, COUNT(DISTINCT gti.task_item_id) AS graph_items
@@ -1540,7 +1540,7 @@ function data_sources() {
 
 			form_selectable_cell(get_poller_interval($data_source['rrd_step'], $data_source['data_source_profile_id']), $data_source['local_data_id']);
 			form_selectable_cell(api_data_source_deletable($data_source['local_data_id']) ? __('Yes') : __('No'), $data_source['local_data_id']);
-			form_selectable_cell(($data_source['active'] == 'on' ? __('Yes'):__('No')), $data_source['local_data_id']);
+			form_selectable_cell(($data_source['active'] == 'on' ? __('Yes') : __('No')), $data_source['local_data_id']);
 			form_selectable_cell($data_template_name, $data_source['local_data_id']);
 			form_checkbox_cell($name, $data_source['local_data_id'], $disabled);
 

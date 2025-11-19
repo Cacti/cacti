@@ -156,7 +156,7 @@ if (cacti_sizeof($idbyhost)) {
 				$sql = '';
 
 				foreach ($output as $item) {
-					$sql .= ($sql != '' ? ', ':'')      . '(' .
+					$sql .= ($sql != '' ? ', ' : '')      . '(' .
 						db_qstr($item['local_data_id']) . ', ' .
 						db_qstr($item['rrd_name'])      . ', ' .
 						db_qstr($host_update_time)      . ', ' .

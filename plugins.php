@@ -306,7 +306,7 @@ switch($action) {
 				[$plugin], false, $local_db_cnn_id);
 		}
 
-		header('Location: plugins.php' . ($option != '' ? '&' . $option:''));
+		header('Location: plugins.php' . ($option != '' ? '&' . $option : ''));
 
 		break;
 	case 'remote_disable':
@@ -317,7 +317,7 @@ switch($action) {
 				[$plugin], false, $local_db_cnn_id);
 		}
 
-		header('Location: plugins.php' . ($option != '' ? '&' . $option:''));
+		header('Location: plugins.php' . ($option != '' ? '&' . $option : ''));
 
 		break;
 	case 'restore':
@@ -611,52 +611,52 @@ function update_show_current() {
 				<table class='filterTable'>
 					<tr class='noprint'>
 						<td>
-							<?php print __('Search');?>
+							<?php print __('Search'); ?>
 						</td>
 						<td>
-							<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
+							<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter'); ?>'>
 						</td>
 						<td>
-							<?php print __('Status');?>
+							<?php print __('Status'); ?>
 						</td>
 						<td>
-							<select id='state' name='state' onChange='applyFilter()' data-defaultLabel='<?php print __('Status');?>'>
-								<option value='-99'<?php if (get_request_var('state') == '-99') {?> selected<?php }?>><?php print __('Loaded on Disk');?></option>
-								<option value='0'<?php if (get_request_var('state') == '0') {?> selected<?php }?>><?php print __('Loaded and Not Installed');?></option>
-								<option value='1'<?php if (get_request_var('state') == '1') {?> selected<?php }?>><?php print __('Installed and Active');?></option>
-								<option value='4'<?php if (get_request_var('state') == '4') {?> selected<?php }?>><?php print __('Installed and Inactive');?></option>
-								<option value='5'<?php if (get_request_var('state') == '5') {?> selected<?php }?>><?php print __('Installed or Active');?></option>
-								<option value='2'<?php if (get_request_var('state') == '2') {?> selected<?php }?>><?php print __('Configuration Issues');?></option>
-								<option value='7'<?php if (get_request_var('state') == '7') {?> selected<?php }?>><?php print __('Plugin Errors');?></option>
-								<option value='6'<?php if (get_request_var('state') == '6') {?> selected<?php }?>><?php print __('Available for Install');?></option>
-								<option value='8'<?php if (get_request_var('state') == '8') {?> selected<?php }?>><?php print __('Archived');?></option>
+							<select id='state' name='state' onChange='applyFilter()' data-defaultLabel='<?php print __('Status'); ?>'>
+								<option value='-99'<?php if (get_request_var('state') == '-99') {?> selected<?php }?>><?php print __('Loaded on Disk'); ?></option>
+								<option value='0'<?php if (get_request_var('state') == '0') {?> selected<?php }?>><?php print __('Loaded and Not Installed'); ?></option>
+								<option value='1'<?php if (get_request_var('state') == '1') {?> selected<?php }?>><?php print __('Installed and Active'); ?></option>
+								<option value='4'<?php if (get_request_var('state') == '4') {?> selected<?php }?>><?php print __('Installed and Inactive'); ?></option>
+								<option value='5'<?php if (get_request_var('state') == '5') {?> selected<?php }?>><?php print __('Installed or Active'); ?></option>
+								<option value='2'<?php if (get_request_var('state') == '2') {?> selected<?php }?>><?php print __('Configuration Issues'); ?></option>
+								<option value='7'<?php if (get_request_var('state') == '7') {?> selected<?php }?>><?php print __('Plugin Errors'); ?></option>
+								<option value='6'<?php if (get_request_var('state') == '6') {?> selected<?php }?>><?php print __('Available for Install'); ?></option>
+								<option value='8'<?php if (get_request_var('state') == '8') {?> selected<?php }?>><?php print __('Archived'); ?></option>
 							</select>
 						</td>
 						<?php if (get_request_var('state') == 6 && read_config_option('github_allow_unsafe', true) == 'on') { ?>
 						<td>
-							<?php print __('Tag Type');?>
+							<?php print __('Tag Type'); ?>
 						</td>
 						<td>
-							<select id='type' name='type' onChange='applyFilter()' data-defaultLabel='<?php print __('All');?>'>
-								<option value='-1'<?php if (get_request_var('type') == '-1') {?> selected<?php }?>><?php print __('All');?></option>
-								<option value='1'<?php if (get_request_var('type') == '1') {?> selected<?php }?>><?php print __('Non Develop');?></option>
-								<option value='2'<?php if (get_request_var('type') == '2') {?> selected<?php }?>><?php print __('Develop');?></option>
-								<option value='3'<?php if (get_request_var('type') == '3') {?> selected<?php }?>><?php print __('Newer Than Installed');?></option>
+							<select id='type' name='type' onChange='applyFilter()' data-defaultLabel='<?php print __('All'); ?>'>
+								<option value='-1'<?php if (get_request_var('type') == '-1') {?> selected<?php }?>><?php print __('All'); ?></option>
+								<option value='1'<?php if (get_request_var('type') == '1') {?> selected<?php }?>><?php print __('Non Develop'); ?></option>
+								<option value='2'<?php if (get_request_var('type') == '2') {?> selected<?php }?>><?php print __('Develop'); ?></option>
+								<option value='3'<?php if (get_request_var('type') == '3') {?> selected<?php }?>><?php print __('Newer Than Installed'); ?></option>
 							</select>
 						</td>
 						<?php } else { ?>
 						<td><input type='hidden' id='type' value='-1'></td>
 						<?php } ?>
 						<td>
-							<?php print __('Plugins');?>
+							<?php print __('Plugins'); ?>
 						</td>
 						<td>
-							<select id='rows' name='rows' onChange='applyFilter()' data-defaultLabel='<?php print __('Plugins');?>'>
-								<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
+							<select id='rows' name='rows' onChange='applyFilter()' data-defaultLabel='<?php print __('Plugins'); ?>'>
+								<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>' : '>') . __('Default'); ?></option>
 								<?php
 								if (cacti_sizeof($item_rows) > 0) {
 									foreach ($item_rows as $key => $value) {
-										print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected':'') . '>' . html_escape($value) . '</option>';
+										print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 									}
 								}
 	?>
@@ -664,9 +664,9 @@ function update_show_current() {
 						</td>
 						<td>
 							<span>
-								<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-								<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
-								<input type='button' class='ui-button ui-corner-all ui-widget' id='latest' value='<?php print __esc('Check Latest');?>' title='<?php print __esc('Fetch the list of the latest Cacti Plugins');?>'>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go'); ?>' title='<?php print __esc('Set/Refresh Filters'); ?>'>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear'); ?>' title='<?php print __esc('Clear Filters'); ?>'>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='latest' value='<?php print __esc('Check Latest'); ?>' title='<?php print __esc('Fetch the list of the latest Cacti Plugins'); ?>'>
 							</span>
 						</td>
 					</tr>
@@ -773,9 +773,9 @@ function update_show_current() {
 			}
 
 			$(function() {
-				var sortColumn = '<?php print get_request_var('sort_column');?>';
-				var dndActive  = <?php print read_config_option('drag_and_drop') == 'on' ? 'true':'false';?>;
-				var tableState = <?php print get_request_var('state');?>
+				var sortColumn = '<?php print get_request_var('sort_column'); ?>';
+				var dndActive  = <?php print read_config_option('drag_and_drop') == 'on' ? 'true' : 'false'; ?>;
+				var tableState = <?php print get_request_var('state'); ?>
 
 				$('#refresh').click(function() {
 					applyFilter();
@@ -812,11 +812,11 @@ function update_show_current() {
 				$('.pirestore').off('click').on('click', function(event) {
 					event.preventDefault();
 
-					var dialogTitle    = '<?php print $resarchive_title;?>';
-					var dialogMessage  = '<?php print $resarchive_msg;?>';
+					var dialogTitle    = '<?php print $resarchive_title; ?>';
+					var dialogMessage  = '<?php print $resarchive_msg; ?>';
 					var dialogForm     = '';
-					var buttonContinue = '<?php print __('Restore Archive');?>';
-					var buttonCancel   = '<?php print __('Cancel');?>';
+					var buttonContinue = '<?php print __('Restore Archive'); ?>';
+					var buttonCancel   = '<?php print __('Cancel'); ?>';
 					var url            = $(this).attr('href');
 
 					displayDialog(url, dialogTitle, dialogMessage, dialogForm, buttonContinue, buttonCancel, 80, 400);
@@ -825,11 +825,11 @@ function update_show_current() {
 				$('.pirmarchive').off('click').on('click', function(event) {
 					event.preventDefault();
 
-					var dialogTitle    = '<?php print $rmarchive_title;?>';
-					var dialogMessage  = '<?php print $rmarchive_msg;?>';
+					var dialogTitle    = '<?php print $rmarchive_title; ?>';
+					var dialogMessage  = '<?php print $rmarchive_msg; ?>';
 					var dialogForm     = '';
-					var buttonContinue = '<?php print __('Delete Archive');?>';
-					var buttonCancel   = '<?php print __('Cancel');?>';
+					var buttonContinue = '<?php print __('Delete Archive'); ?>';
+					var buttonCancel   = '<?php print __('Cancel'); ?>';
 					var url            = $(this).attr('href');
 
 					displayDialog(url, dialogTitle, dialogMessage, dialogForm, buttonContinue, buttonCancel, 80, 400);
@@ -838,11 +838,11 @@ function update_show_current() {
 				$('.piarchive').off('click').on('click', function(event) {
 					event.preventDefault();
 
-					var dialogTitle    = '<?php print $archive_title;?>';
-					var dialogMessage  = '<?php print $archive_msg;?>';
-					var dialogForm     = '<?php print $archive_form;?>';
-					var buttonContinue = '<?php print __('Archive Plugin');?>';
-					var buttonCancel   = '<?php print __('Cancel');?>';
+					var dialogTitle    = '<?php print $archive_title; ?>';
+					var dialogMessage  = '<?php print $archive_msg; ?>';
+					var dialogForm     = '<?php print $archive_form; ?>';
+					var buttonContinue = '<?php print __('Archive Plugin'); ?>';
+					var buttonCancel   = '<?php print __('Cancel'); ?>';
 					var url            = $(this).attr('href');
 
 					displayDialog(url, dialogTitle, dialogMessage, dialogForm, buttonContinue, buttonCancel, 120, 600);
@@ -851,11 +851,11 @@ function update_show_current() {
 				$('.pirmdata').off('click').on('click', function(event) {
 					event.preventDefault();
 
-					var dialogTitle    = '<?php print $rmdata_title;?>';
-					var dialogMessage  = '<?php print $rmdata_msg;?>';
+					var dialogTitle    = '<?php print $rmdata_title; ?>';
+					var dialogMessage  = '<?php print $rmdata_msg; ?>';
 					var dialogForm     = '';
-					var buttonContinue = '<?php print __('Remove Data');?>';
-					var buttonCancel   = '<?php print __('Cancel');?>';
+					var buttonContinue = '<?php print __('Remove Data'); ?>';
+					var buttonCancel   = '<?php print __('Cancel'); ?>';
 					var url            = $(this).attr('href');
 
 					displayDialog(url, dialogTitle, dialogMessage, dialogForm, buttonContinue, buttonCancel, 80, 400);
@@ -864,11 +864,11 @@ function update_show_current() {
 				$('.piuninstall').off('click').on('click', function(event) {
 					event.preventDefault();
 
-					var dialogTitle    = '<?php print $uninstall_title;?>';
-					var dialogMessage  = '<?php print $uninstall_msg;?>';
+					var dialogTitle    = '<?php print $uninstall_title; ?>';
+					var dialogMessage  = '<?php print $uninstall_msg; ?>';
 					var dialogForm     = '';
-					var buttonContinue = '<?php print __('Uninstall');?>';
-					var buttonCancel   = '<?php print __('Cancel');?>';
+					var buttonContinue = '<?php print __('Uninstall'); ?>';
+					var buttonCancel   = '<?php print __('Cancel'); ?>';
 					var url            = $(this).attr('href');
 
 					displayDialog(url, dialogTitle, dialogMessage, dialogForm, buttonContinue, buttonCancel, 80, 400);
@@ -877,7 +877,7 @@ function update_show_current() {
 				$('.pireadme').off('click').on('click', function(event) {
 					event.preventDefault();
 
-					var dialogTitle   = '<?php print __esc('Plugin Reame File');?>';
+					var dialogTitle   = '<?php print __esc('Plugin Reame File'); ?>';
 					var url           = $(this).attr('href');
 
 					displayFileDialog(url, dialogTitle, 400, 700);
@@ -886,7 +886,7 @@ function update_show_current() {
 				$('.pichangelog').off('click').on('click', function(event) {
 					event.preventDefault();
 
-					var dialogTitle = '<?php print __esc('Plugin ChangeLog File');?>';
+					var dialogTitle = '<?php print __esc('Plugin ChangeLog File'); ?>';
 					var url         = $(this).attr('href');
 
 					displayFileDialog(url, dialogTitle, 400, 700);
@@ -946,38 +946,38 @@ function update_show_current() {
 		case 6:
 			/* show all matching plugins */
 			if (read_config_option('github_allow_unsafe') == '') {
-				$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' pa.tag_name != "develop"';
+				$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' pa.tag_name != "develop"';
 			} else {
 				if (get_request_var('type') == '1') {
-					$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' pa.tag_name != "develop"';
+					$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' pa.tag_name != "develop"';
 				} elseif (get_request_var('type') == '2') {
-					$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' pa.tag_name = "develop"';
+					$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' pa.tag_name = "develop"';
 				} elseif (get_request_var('type') == '3') {
-					$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . '(pi.last_updated != "0000-00-00" AND  pi.last_updated < pa.published_at)';
+					$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . '(pi.last_updated != "0000-00-00" AND  pi.last_updated < pa.published_at)';
 				}
 			}
 
 			break;
 		case 8:
-			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (pi.status IN(0,1,2,4,7) OR pi.status IS NULL)';
+			$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' (pi.status IN(0,1,2,4,7) OR pi.status IS NULL)';
 
 			break;
 		case 5:
-			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' pi.status IN(1,4)';
+			$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' pi.status IN(1,4)';
 
 			break;
 		case 0:
-			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (pi.status NOT IN(1,4) OR pi.status IS NULL)';
+			$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' (pi.status NOT IN(1,4) OR pi.status IS NULL)';
 
 			break;
 		case 7:
-			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' pi.status = 7';
+			$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' pi.status = 7';
 
 			break;
 		case -99:
 			break;
 		default:
-			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' pi.status = ' . get_request_var('state');
+			$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' pi.status = ' . get_request_var('state');
 
 			break;
 	}
@@ -1112,7 +1112,7 @@ function update_show_current() {
 					'tip'     => __('Hover over the Notes column to see the Archive notes.')
 				],
 				'pi.status' => [
-					'display' => POLLER_ID == 1 ? __('Status'):__('Main / Remote Status'),
+					'display' => POLLER_ID == 1 ? __('Status') : __('Main / Remote Status'),
 					'align'   => 'left',
 					'sort'    => 'ASC',
 					'tip'     => __('The Status of this available Plugin.  Loadable means it is currently not installed and can be loaded.')
@@ -1183,7 +1183,7 @@ function update_show_current() {
 					'tip'     => __('A description that the Plugins author has given to the Plugin.')
 				],
 				'status' => [
-					'display' => POLLER_ID == 1 ? __('Status'):__('Main / Remote Status'),
+					'display' => POLLER_ID == 1 ? __('Status') : __('Main / Remote Status'),
 					'align'   => 'left',
 					'sort'    => 'ASC',
 					'tip'     => __('The status of this Plugin.')
@@ -1260,7 +1260,7 @@ function update_show_current() {
 					'tip'     => __('A description that the Plugins author has given to the Plugin.')
 				],
 				'pi.status' => [
-					'display' => POLLER_ID == 1 ? __('Status'):__('Main / Remote Status'),
+					'display' => POLLER_ID == 1 ? __('Status') : __('Main / Remote Status'),
 					'align'   => 'left',
 					'sort'    => 'ASC',
 					'tip'     => __('The Status of this available Plugin.  Loadable means it is currently not installed and can be loaded.')
@@ -1326,7 +1326,7 @@ function update_show_current() {
 				$load_ordering = true;
 			}
 
-			print "<tr id='line{$plugin['id']}' class='tableRow selectable" . ($plugin['status'] <= 0 ? ' nodrag':'') . "'>";
+			print "<tr id='line{$plugin['id']}' class='tableRow selectable" . ($plugin['status'] <= 0 ? ' nodrag' : '') . "'>";
 
 			switch(get_request_var('state')) {
 				case 8:

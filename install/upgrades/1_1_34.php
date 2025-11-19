@@ -96,7 +96,7 @@ function upgrade_to_1_1_34() {
 		MODIFY COLUMN `type_code` varchar(40) DEFAULT "",
 		MODIFY COLUMN `allow_nulls` char(2) DEFAULT ""');
 
-	db_install_add_key('data_input_fields', 'index', 'type_code_data_input_id', ['type_code','data_input_id'], 'BTREE');
+	db_install_add_key('data_input_fields', 'index', 'type_code_data_input_id', ['type_code', 'data_input_id'], 'BTREE');
 
 	db_install_execute('ALTER TABLE `data_template_data`
 		MODIFY COLUMN `t_name` char(2) DEFAULT "",

@@ -233,7 +233,7 @@ function get_js_language_file(array $names, ?string $prefix = null, ?string $bas
 	global $config;
 
 	$extension = empty($extension) ? 'js' : $extension;
-	$prefix    = empty($prefix)    ? '' : $prefix;
+	$prefix    = empty($prefix) ? '' : $prefix;
 	$base_path = (empty($base_path) ? CACTI_PATH_INCLUDE : $base_path) . '/js/LC_MESSAGES/';
 
 	i18n_debug('get_js_language_file("' . $prefix . '", "' . $base_path . '", "' . $extension . '")');
@@ -255,7 +255,7 @@ function get_mo_language_file(array $names, ?string $prefix = null, ?string $bas
 	global $config;
 
 	$extension = empty($extension) ? 'mo' : $extension;
-	$prefix    = empty($prefix)    ? '' : $prefix;
+	$prefix    = empty($prefix) ? '' : $prefix;
 	$base_path = (empty($base_path) ? CACTI_PATH_BASE : $base_path) . '/locales/LC_MESSAGES/';
 
 	i18n_debug('get_mo_language_file("' . $prefix . '", "' . $base_path . '", "' . $extension . '")');
@@ -1082,7 +1082,7 @@ function number_format_i18n(mixed $number, int $decimals = null, int $baseu = 10
 
 	foreach ($origlocales as $locale_setting) {
 		if (str_contains($locale_setting, '=')) {
-			list($category, $locale) = explode('=', $locale_setting);
+			[$category, $locale] = explode('=', $locale_setting);
 		} else {
 			$category = LC_ALL;
 			$locale   = $locale_setting;

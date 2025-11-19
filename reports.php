@@ -97,11 +97,11 @@ switch (get_request_var('action')) {
 		$sql_where = '';
 
 		if (get_request_var('site_id') > 0) {
-			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'h.site_id = ' . get_request_var('site_id');
+			$sql_where .= ($sql_where != '' ? ' AND ' : '') . 'h.site_id = ' . get_request_var('site_id');
 		}
 
 		if (get_request_var('host_template_id') > 0) {
-			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'h.host_template_id = ' . get_request_var('host_template_id');
+			$sql_where .= ($sql_where != '' ? ' AND ' : '') . 'h.host_template_id = ' . get_request_var('host_template_id');
 		}
 
 		get_allowed_ajax_hosts(true, 'applyFilter', $sql_where);
@@ -113,19 +113,19 @@ switch (get_request_var('action')) {
 		$sql_where = '';
 
 		if (get_request_var('site_id') > 0) {
-			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'h.site_id = ' . get_request_var('site_id');
+			$sql_where .= ($sql_where != '' ? ' AND ' : '') . 'h.site_id = ' . get_request_var('site_id');
 		}
 
 		if (get_request_var('host_id') > 0) {
-			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.host_id = ' . get_request_var('host_id');
+			$sql_where .= ($sql_where != '' ? ' AND ' : '') . 'gl.host_id = ' . get_request_var('host_id');
 		}
 
 		if (get_request_var('graph_template_id') > 0) {
-			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.graph_template_id = ' . get_request_var('graph_template_id');
+			$sql_where .= ($sql_where != '' ? ' AND ' : '') . 'gl.graph_template_id = ' . get_request_var('graph_template_id');
 		}
 
 		if (get_request_var('host_template_id') > 0) {
-			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'h.host_template_id = ' . get_request_var('host_template_id');
+			$sql_where .= ($sql_where != '' ? ' AND ' : '') . 'h.host_template_id = ' . get_request_var('host_template_id');
 		}
 
 		get_allowed_ajax_graphs($sql_where);
@@ -137,15 +137,15 @@ switch (get_request_var('action')) {
 		$sql_where = '';
 
 		if (get_request_var('site_id') > 0) {
-			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'h.site_id = ' . get_request_var('site_id');
+			$sql_where .= ($sql_where != '' ? ' AND ' : '') . 'h.site_id = ' . get_request_var('site_id');
 		}
 
 		if (get_request_var('host_id') > 0) {
-			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'h.id = ' . get_request_var('host_id');
+			$sql_where .= ($sql_where != '' ? ' AND ' : '') . 'h.id = ' . get_request_var('host_id');
 		}
 
 		if (get_request_var('host_template_id') > 0) {
-			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'h.host_template_id = ' . get_request_var('host_template_id');
+			$sql_where .= ($sql_where != '' ? ' AND ' : '') . 'h.host_template_id = ' . get_request_var('host_template_id');
 		}
 
 		get_allowed_ajax_graph_templates(true, true, $sql_where);

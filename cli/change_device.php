@@ -56,7 +56,7 @@ $overrides = [];
 
 foreach ($parms as $parameter) {
 	if (strpos($parameter, '=')) {
-		list($arg, $value) = explode('=', $parameter, 2);
+		[$arg, $value] = explode('=', $parameter, 2);
 	} else {
 		$arg   = $parameter;
 		$value = '';
@@ -123,7 +123,7 @@ foreach ($parms as $parameter) {
 			if (is_numeric($value)) {
 				$overrides['disabled'] = intval($value) == 0 ? 'on' : '';
 			} else {
-				$overrides['disabled'] = $value == 'on' ? 'on': '';
+				$overrides['disabled'] = $value == 'on' ? 'on' : '';
 			}
 
 			break;

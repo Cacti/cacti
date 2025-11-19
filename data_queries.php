@@ -347,11 +347,11 @@ function form_actions() {
 
 		if ($selected_items != false) {
 			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
-				for ($i=0;($i < cacti_count($selected_items));$i++) {
+				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					data_query_remove($selected_items[$i]);
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
-				for ($i=0;($i < cacti_count($selected_items));$i++) {
+				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					data_query_duplicate($selected_items[$i], get_nfilter_request_var('name_format'));
 				}
 			}
@@ -550,15 +550,15 @@ function data_query_item_remove_confirm() {
 	?>
 	<tr>
 		<td class='topBoxAlt'>
-			<p><?php print __('Click \'Continue\' to delete the following Data Query Graph Association.');?></p>
-			<p><?php print __esc('Graph Name: %s', $graph_template['name']);?><br>
+			<p><?php print __('Click \'Continue\' to delete the following Data Query Graph Association.'); ?></p>
+			<p><?php print __esc('Graph Name: %s', $graph_template['name']); ?><br>
 		</td>
 	</tr>
 	<tr>
 		<td class='right'>
-			<button type='button' class='ui-button ui-corner-all ui-widget' id='cancel' onClick='$("#cdialog").dialog("close");' name='cancel'><?php print __esc('Cancel');?></button>
-			<button type='button' class='ui-button ui-corner-all ui-widget' id='continue' name='continue' title='<?php print __esc('Remove Data Query Graph Template');?>'><?php print __esc('Continue');?></button>
-			<input type='hidden' id='snmp_query_graph_id' value='<?php print get_request_var('id');?>'>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='cancel' onClick='$("#cdialog").dialog("close");' name='cancel'><?php print __esc('Cancel'); ?></button>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='continue' name='continue' title='<?php print __esc('Remove Data Query Graph Template'); ?>'><?php print __esc('Continue'); ?></button>
+			<input type='hidden' id='snmp_query_graph_id' value='<?php print get_request_var('id'); ?>'>
 		</td>
 	</tr>
 	<?php
@@ -578,8 +578,8 @@ function data_query_item_remove_confirm() {
 
 			var data = {
 				__csrf_magic: csrfMagicToken,
-				snmp_query_id: <?php print get_request_var('snmp_query_id');?>,
-				id: <?php print get_request_var('id');?>
+				snmp_query_id: <?php print get_request_var('snmp_query_id'); ?>,
+				id: <?php print get_request_var('id'); ?>
 			}
 
 			postUrl(options, data);
@@ -589,7 +589,7 @@ function data_query_item_remove_confirm() {
 
 	function removeDataQueryItemFinalize(data) {
 		$('#cdialog').dialog('close');
-		loadUrl({url:'data_queries.php?action=edit&id=<?php print get_request_var('snmp_query_id');?>'})
+		loadUrl({url:'data_queries.php?action=edit&id=<?php print get_request_var('snmp_query_id'); ?>'})
 	}
 	</script>
 	<?php
@@ -727,10 +727,10 @@ function data_query_item_edit() {
 							<table>
 								<tr>
 									<td style='width:200px;'>
-										<?php print __('Data Source');?>
+										<?php print __('Data Source'); ?>
 									</td>
 									<td style='width:200px;'>
-										<?php print $data_template_rrd['data_source_name'];?>
+										<?php print $data_template_rrd['data_source_name']; ?>
 									</td>
 									<td>
 										<?php
@@ -745,11 +745,11 @@ function data_query_item_edit() {
 							}
 						}
 
-						form_dropdown('dsdt_' . $data_template['id'] . '_' . $data_template_rrd['id'] . '_snmp_field_output',$xml_outputs,'','',empty($data_template_rrd['snmp_field_name'])?$data_template_rrd['data_source_name']:$data_template_rrd['snmp_field_name'],'','');?>
+						form_dropdown('dsdt_' . $data_template['id'] . '_' . $data_template_rrd['id'] . '_snmp_field_output',$xml_outputs,'','',empty($data_template_rrd['snmp_field_name']) ? $data_template_rrd['data_source_name'] : $data_template_rrd['snmp_field_name'],'',''); ?>
 									</td>
 									<td class='right'>
 										<?php form_checkbox('dsdt_' . $data_template['id'] . '_' . $data_template_rrd['id'] . '_check', $old_value, '', '', '', get_request_var('id'), '', __('If this Graph Template requires the Data Template Data Source to the left, select the correct XML output column and then to enable the mapping either check or toggle here.'));
-						print '<br>';?>
+						print '<br>'; ?>
 									</td>
 								</tr>
 							</table>
@@ -803,25 +803,25 @@ function data_query_item_edit() {
 
 				?>
 				<td class='left'>
-					<?php print html_escape($suggested_value['field_name']);?>
+					<?php print html_escape($suggested_value['field_name']); ?>
 				</td>
 				<td class='center'>
 					<?php if ($show_down) {?>
-					<a class='remover fa fa-caret-down moveArrow' title='<?php print __('Move Down');?>' href='<?php print html_escape('data_queries.php?action=item_movedown_gsv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&field_name=' . $suggested_value['field_name']);?>'></a>
+					<a class='remover fa fa-caret-down moveArrow' title='<?php print __('Move Down'); ?>' href='<?php print html_escape('data_queries.php?action=item_movedown_gsv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&field_name=' . $suggested_value['field_name']); ?>'></a>
 					<?php } else {?>
 					<span class='moveArrowNone'></span>
 					<?php } ?>
 					<?php if ($show_up) {?>
-					<a class='remover fa fa-caret-up moveArrow' title='<?php print __('Move Up');?>' href='<?php print html_escape('data_queries.php?action=item_moveup_gsv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&field_name=' . $suggested_value['field_name']);?>'></a>
+					<a class='remover fa fa-caret-up moveArrow' title='<?php print __('Move Up'); ?>' href='<?php print html_escape('data_queries.php?action=item_moveup_gsv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&field_name=' . $suggested_value['field_name']); ?>'></a>
 					<?php } else {?>
 					<span class='moveArrowNone'></span>
 					<?php } ?>
 				</td>
 				<td class='left'>
-					<?php print html_escape($suggested_value['text']);?>
+					<?php print html_escape($suggested_value['text']); ?>
 				</td>
 				<td class='right'>
-					<a class='remover deleteMarker fa fa-times' title='<?php print html_escape(__('Delete'));?>' href='<?php print html_escape('data_queries.php?action=item_remove_gsv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id'));?>'></a>
+					<a class='remover deleteMarker fa fa-times' title='<?php print html_escape(__('Delete')); ?>' href='<?php print html_escape('data_queries.php?action=item_remove_gsv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id')); ?>'></a>
 				</td>
 				<?php
 
@@ -839,19 +839,19 @@ function data_query_item_edit() {
 			<table>
 				<tr>
 					<td class='nowrap'>
-						<?php print __('Field Name');?>
+						<?php print __('Field Name'); ?>
 					</td>
 					<td>
 						<input type='text' class='ui-state-default ui-corner-all' id='svg_field' size='15'>
 					</td>
 					<td class='nowrap'>
-						<?php print __('Suggested Value');?>
+						<?php print __('Suggested Value'); ?>
 					</td>
 					<td>
 						<input type='text' class='ui-state-default ui-corner-all' id='svg_text' size='60'>
 					</td>
 					<td>
-						<input type='button' class='ui-button ui-corner-all ui-widget' id='svg_x' name='svg_x' value='<?php print __esc('Add');?>' title='<?php print __('Add Graph Title Suggested Name');?>'>
+						<input type='button' class='ui-button ui-corner-all ui-widget' id='svg_x' name='svg_x' value='<?php print __esc('Add'); ?>' title='<?php print __('Add Graph Title Suggested Name'); ?>'>
 					</td>
 				</tr>
 			</table>
@@ -911,25 +911,25 @@ function data_query_item_edit() {
 
 						?>
 						<td class='left'>
-							<?php print html_escape($suggested_value['field_name']);?>
+							<?php print html_escape($suggested_value['field_name']); ?>
 						</td>
 						<td class='center'>
 							<?php if ($show_down) {?>
-							<a class='remover fa fa-caret-down moveArrow' title='<?php print __('Move Down');?>' href='<?php print html_escape('data_queries.php?action=item_movedown_dssv&snmp_query_graph_id=' . get_request_var('id') . '&id='. $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']);?>'></a>
+							<a class='remover fa fa-caret-down moveArrow' title='<?php print __('Move Down'); ?>' href='<?php print html_escape('data_queries.php?action=item_movedown_dssv&snmp_query_graph_id=' . get_request_var('id') . '&id='. $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']); ?>'></a>
 							<?php } else {?>
 							<span class='moveArrowNone'></span>
 							<?php } ?>
 							<?php if ($show_up) {?>
-							<a class='remover fa fa-caret-up moveArrow' title='<?php print __('Move Up');?>' href='<?php print html_escape('data_queries.php?action=item_moveup_dssv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']);?>'></a>
+							<a class='remover fa fa-caret-up moveArrow' title='<?php print __('Move Up'); ?>' href='<?php print html_escape('data_queries.php?action=item_moveup_dssv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']); ?>'></a>
 							<?php } else {?>
 							<span class='moveArrowNone'></span>
 							<?php } ?>
 						</td>
 						<td class='nowrap left'>
-							<?php print html_escape($suggested_value['text']);?>
+							<?php print html_escape($suggested_value['text']); ?>
 						</td>
 						<td class='right'>
-							<a class='remover deleteMarker fa fa-times' title='<?php print __('Delete');?>' href='<?php print html_escape('data_queries.php?action=item_remove_dssv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&data_template_id=' . $data_template['id']);?>'></a>
+							<a class='remover deleteMarker fa fa-times' title='<?php print __('Delete'); ?>' href='<?php print html_escape('data_queries.php?action=item_remove_dssv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&data_template_id=' . $data_template['id']); ?>'></a>
 						</td>
 						<?php
 
@@ -948,19 +948,19 @@ function data_query_item_edit() {
 					<table>
 						<tr>
 							<td class='nowrap'>
-								<?php print __('Field Name');?>
+								<?php print __('Field Name'); ?>
 							</td>
 							<td>
-								<input type='text' class='svds_field ui-state-default ui-corner-all' id='svds_<?php print $data_template['id'];?>_field' size='15'>
+								<input type='text' class='svds_field ui-state-default ui-corner-all' id='svds_<?php print $data_template['id']; ?>_field' size='15'>
 							</td>
 							<td class='nowrap'>
-								<?php print __('Suggested Value');?>
+								<?php print __('Suggested Value'); ?>
 							</td>
 							<td>
-								<input type='text' class='svds_text ui-state-default ui-corner-all' id='svds_<?php print $data_template['id'];?>_text' size='60'>
+								<input type='text' class='svds_text ui-state-default ui-corner-all' id='svds_<?php print $data_template['id']; ?>_text' size='60'>
 							</td>
 							<td>
-								<input type='button' class='svds_x ui-button ui-corner-all ui-widget' id='svds_<?php print $data_template['id'];?>_x' value='<?php print __esc('Add');?>' title='<?php print __('Add Data Source Name Suggested Name');?>'>
+								<input type='button' class='svds_x ui-button ui-corner-all ui-widget' id='svds_<?php print $data_template['id']; ?>_x' value='<?php print __esc('Add'); ?>' title='<?php print __('Add Data Source Name Suggested Name'); ?>'>
 							</td>
 						</tr>
 					</table>
@@ -981,7 +981,7 @@ function data_query_item_edit() {
 
 	?>
 	<script type='text/javascript'>
-	var graph_template_id_prev=<?php print $item;?>;
+	var graph_template_id_prev=<?php print $item; ?>;
 
 	$('.remover').click(function(event) {
 		event.preventDefault();
@@ -1231,8 +1231,8 @@ function data_query_edit() {
 	?>
 	<script type='text/javascript'>
 
-	var snmp_query_id = '<?php print isset($snmp_query['id']) ? $snmp_query['id']:'0';?>';
-	var snmp_query_graph_id = '<?php print isset($snmp_query_graph['id']) ? $snmp_query_graph['id']:'0';?>';
+	var snmp_query_id = '<?php print isset($snmp_query['id']) ? $snmp_query['id'] : '0'; ?>';
+	var snmp_query_graph_id = '<?php print isset($snmp_query_graph['id']) ? $snmp_query_graph['id'] : '0'; ?>';
 
 	$(function() {
 		$('.cdialog').remove();
@@ -1262,7 +1262,7 @@ function data_query_edit() {
 					});
 
 					$('#cdialog').dialog({
-						title: '<?php print __('Delete Associated Graph');?>',
+						title: '<?php print __('Delete Associated Graph'); ?>',
 						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
 						minHeight: 80,
 						minWidth: 500
@@ -1383,7 +1383,7 @@ function data_query() {
 			form_alternate_row('line' . $snmp_query['id'], true, $disabled);
 			form_selectable_cell(filter_value($snmp_query['name'], get_request_var('filter'), 'data_queries.php?action=edit&id=' . $snmp_query['id']), $snmp_query['id']);
 			form_selectable_cell($snmp_query['id'], $snmp_query['id'], '', 'right');
-			form_selectable_cell($disabled ? __('No'):__('Yes'), $snmp_query['id'], '', 'right');
+			form_selectable_cell($disabled ? __('No') : __('Yes'), $snmp_query['id'], '', 'right');
 			form_selectable_cell(number_format_i18n($snmp_query['graphs'], -1), $snmp_query['id'], '', 'right');
 			form_selectable_cell(number_format_i18n($snmp_query['templates'], -1), $snmp_query['id'], '', 'right');
 			form_selectable_cell(filter_value($snmp_query['data_input_method'], get_request_var('filter')), $snmp_query['id'], '', 'right');

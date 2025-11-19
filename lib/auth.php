@@ -257,7 +257,7 @@ function get_basic_auth_username(): string|false {
 
 			if (cacti_sizeof($records)) {
 				foreach ($records as $r) {
-					list($basic, $shortform) = str_getcsv($r);
+					[$basic, $shortform] = str_getcsv($r);
 
 					if (trim($basic) == $username) {
 						$username = trim($shortform);
@@ -1323,7 +1323,7 @@ function get_allowed_tree_header_graphs(int $tree_id,int  $leaf_id = 0, string $
 	$sql_where = "WHERE (gti.graph_tree_id=$tree_id AND gti.parent=$leaf_id)" . $sql_where;
 
 	if (read_user_setting('hide_disabled', false, false, $user_id) == 'on') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(h.disabled = "" OR h.disabled IS NULL)';
+		$sql_where .= ($sql_where != '' ? ' AND ' : '') . '(h.disabled = "" OR h.disabled IS NULL)';
 	}
 
 	$graph_auth_method = read_config_option('graph_auth_method');
@@ -1460,7 +1460,7 @@ function get_allowed_graphs(string $sql_where = '', string $sql_order = 'gtg.tit
 	}
 
 	if (read_user_setting('hide_disabled', false, false, $user_id) == 'on') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(h.disabled = "" OR h.disabled IS NULL)';
+		$sql_where .= ($sql_where != '' ? ' AND ' : '') . '(h.disabled = "" OR h.disabled IS NULL)';
 	}
 
 	if ($sql_where != '') {
@@ -1569,7 +1569,7 @@ function get_allowed_aggregate_graphs(string $sql_where = '', string $sql_order 
 	}
 
 	if (read_user_setting('hide_disabled', false, false, $user_id) == 'on') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(h.disabled = "" OR h.disabled IS NULL)';
+		$sql_where .= ($sql_where != '' ? ' AND ' : '') . '(h.disabled = "" OR h.disabled IS NULL)';
 	}
 
 	if ($sql_where != '') {
@@ -1850,7 +1850,7 @@ function get_allowed_graph_templates(string $sql_where = '', string $sql_order =
 		$sql_where .= ($sql_where != '' ? ' AND ' : ' ') . "(gl.graph_template_id = $graph_template_id)";
 	}
 
-	$sql_where = 'WHERE ' . ($sql_where != '' ? $sql_where . ' AND ':' ') . '(gt.id IS NOT NULL) ';
+	$sql_where = 'WHERE ' . ($sql_where != '' ? $sql_where . ' AND ' : ' ') . '(gt.id IS NOT NULL) ';
 
 	/* see if permissions are simple */
 	$simple_perms = get_simple_graph_perms($user_id);
@@ -1926,15 +1926,15 @@ function get_policy_join_select(array $policies): array {
 	$j = 1;
 
 	foreach ($policies as $p) {
-		$sql_join   .= 'LEFT JOIN (SELECT * FROM user_auth_' . ($p['type'] == 'user' ? '' : 'group_') . 'perms WHERE ' . $p['type'] . '_id = ' . $p['id'] . ") AS uap$j ON (gl.id = uap$j.item_id AND uap$j.type = 1) ";
+		$sql_join .= 'LEFT JOIN (SELECT * FROM user_auth_' . ($p['type'] == 'user' ? '' : 'group_') . 'perms WHERE ' . $p['type'] . '_id = ' . $p['id'] . ") AS uap$j ON (gl.id = uap$j.item_id AND uap$j.type = 1) ";
 		$sql_select .= ($sql_select != '' ? ', ' : '') . "uap$j." . $p['type'] . "_id AS graph$i";
 		$j++;
 
-		$sql_join   .= 'LEFT JOIN (SELECT * FROM user_auth_' . ($p['type'] == 'user' ? '' : 'group_') . 'perms WHERE ' . $p['type'] . '_id = ' . $p['id'] . ") AS uap$j ON (gl.host_id = uap$j.item_id AND uap$j.type = 3) ";
+		$sql_join .= 'LEFT JOIN (SELECT * FROM user_auth_' . ($p['type'] == 'user' ? '' : 'group_') . 'perms WHERE ' . $p['type'] . '_id = ' . $p['id'] . ") AS uap$j ON (gl.host_id = uap$j.item_id AND uap$j.type = 3) ";
 		$sql_select .= ($sql_select != '' ? ', ' : '') . "uap$j." . $p['type'] . "_id AS device$i";
 		$j++;
 
-		$sql_join   .= 'LEFT JOIN (SELECT * FROM user_auth_' . ($p['type'] == 'user' ? '' : 'group_') . 'perms WHERE ' . $p['type'] . '_id = ' . $p['id'] . ") AS uap$j ON (gl.graph_template_id = uap$j.item_id AND uap$j.type = 4) ";
+		$sql_join .= 'LEFT JOIN (SELECT * FROM user_auth_' . ($p['type'] == 'user' ? '' : 'group_') . 'perms WHERE ' . $p['type'] . '_id = ' . $p['id'] . ") AS uap$j ON (gl.graph_template_id = uap$j.item_id AND uap$j.type = 4) ";
 		$sql_select .= ($sql_select != '' ? ', ' : '') . "uap$j." . $p['type'] . "_id AS template$i";
 		$j++;
 
@@ -1972,10 +1972,10 @@ function get_policy_where(string|int $graph_auth_method, array $policies, string
 
 		// Permissive means access to the graph, or access to either the host or template
 
-		$sql_where .= ($sql_where != '' ? ' AND (':'WHERE (');
+		$sql_where .= ($sql_where != '' ? ' AND (' : 'WHERE (');
 
 		foreach ($policies as $index => $p) {
-			$sql_where .= ($index > 0 ? ' OR (':'(');
+			$sql_where .= ($index > 0 ? ' OR (' : '(');
 
 			if ($p['type'] == 'user') {
 				if ($p['policy_graphs'] == 1) {
@@ -2044,10 +2044,10 @@ function get_policy_where(string|int $graph_auth_method, array $policies, string
 
 		// Restrictive means access to the graph, or access to both the host and template
 
-		$sql_where .= ($sql_where != '' ? ' AND (':'WHERE (');
+		$sql_where .= ($sql_where != '' ? ' AND (' : 'WHERE (');
 
 		foreach ($policies as $index => $p) {
-			$sql_where .= ($index == 0 ? '((':' OR ((');
+			$sql_where .= ($index == 0 ? '((' : ' OR ((');
 
 			if ($p['type'] == 'user') {
 				if ($p['policy_graphs'] == 1) {
@@ -2118,7 +2118,7 @@ function get_policy_where(string|int $graph_auth_method, array $policies, string
 		// 1 - Default Allow, all exceptions are denied
 		// 2 - Default Deny, all exceptions are allowed
 
-		$sql_where .= ($sql_where != '' ? ' AND (':'WHERE (');
+		$sql_where .= ($sql_where != '' ? ' AND (' : 'WHERE (');
 
 		foreach ($policies as $index => $p) {
 			$sql_where .= ($index == 0 ? '((' : ') OR ((');
@@ -2172,7 +2172,7 @@ function get_policy_where(string|int $graph_auth_method, array $policies, string
 		// 1 - Default Allow, all exceptions are denied
 		// 2 - Default Deny, all exceptions are allowed
 
-		$sql_where .= ($sql_where != '' ? ' AND (':'WHERE (');
+		$sql_where .= ($sql_where != '' ? ' AND (' : 'WHERE (');
 
 		foreach ($policies as $index => $p) {
 			$sql_where .= ($index == 0 ? '((' : ') OR ((');
@@ -2290,17 +2290,17 @@ function get_permission_string(array &$graph, array &$policies): string {
 			// Default is to allow
 			if (empty($graph["graph$i"])) {
 				// Allow the access at the level
-				$grantStr .= ($grantStr != '' ? ', ':'') . __esc('Graph:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+				$grantStr .= ($grantStr != '' ? ', ' : '') . __esc('Graph:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name'] : ''));
 			} else {
-				$rejectStr .= ($rejectStr != '' ? ', ':'') . __esc('Graph:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+				$rejectStr .= ($rejectStr != '' ? ', ' : '') . __esc('Graph:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name'] : ''));
 				$rejected++;
 			}
 		} else {
 			// Default is to Deny
 			if (!empty($graph["graph$i"])) {
-				$grantStr .= ($grantStr != '' ? ', ':'') . __esc('Graph:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+				$grantStr .= ($grantStr != '' ? ', ' : '') . __esc('Graph:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name'] : ''));
 			} else {
-				$rejectStr .= ($rejectStr != '' ? ', ':'') . __esc('Graph:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+				$rejectStr .= ($rejectStr != '' ? ', ' : '') . __esc('Graph:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name'] : ''));
 				$rejected++;
 			}
 		}
@@ -2313,13 +2313,13 @@ function get_permission_string(array &$graph, array &$policies): string {
 			case 1: // Permissive
 				if ($p['policy_hosts'] == 1) {
 					if (empty($graph["device$i"])) {
-						$grantStr .= ($grantStr != '' ? ', ':'') . __esc('Device:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+						$grantStr .= ($grantStr != '' ? ', ' : '') . __esc('Device:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name'] : ''));
 					} else {
 						$rejected++;
 					}
 				} else {
 					if (!empty($graph["device$i"])) {
-						$grantStr = $grantStr . ($grantStr != '' ? ', ':'') . __esc('Device:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+						$grantStr = $grantStr . ($grantStr != '' ? ', ' : '') . __esc('Device:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name'] : ''));
 					} else {
 						$rejected++;
 					}
@@ -2327,20 +2327,20 @@ function get_permission_string(array &$graph, array &$policies): string {
 
 				if ($p['policy_graph_templates'] == 1) {
 					if (empty($graph["template$i"])) {
-						$grantStr .= ($grantStr != '' ? ', ':'') . __esc('Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+						$grantStr .= ($grantStr != '' ? ', ' : '') . __esc('Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name'] : ''));
 					} else {
 						$rejected++;
 					}
 				} else {
 					if (!empty($graph["template$i"])) {
-						$grantStr .= ($grantStr != '' ? ', ':'') . __esc('Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+						$grantStr .= ($grantStr != '' ? ', ' : '') . __esc('Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name'] : ''));
 					} else {
 						$rejected++;
 					}
 				}
 
 				if ($rejected == 3) {
-					$rejectStr .= ($rejectStr != '' ? ', ':'') . __esc('Graph+Device+Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+					$rejectStr .= ($rejectStr != '' ? ', ' : '') . __esc('Graph+Device+Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name'] : ''));
 				}
 
 				break;
@@ -2377,24 +2377,24 @@ function get_permission_string(array &$graph, array &$policies): string {
 				}
 
 				if ($allowed == 2) {
-					$grantStr = $grantStr . ($grantStr != '' ? ', ':'') . __esc('Device+Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+					$grantStr = $grantStr . ($grantStr != '' ? ', ' : '') . __esc('Device+Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name'] : ''));
 				} else {
-					$rejectStr = $rejectStr . ($rejectStr != '' ? ', ':'') . __esc('Device+Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+					$rejectStr = $rejectStr . ($rejectStr != '' ? ', ' : '') . __esc('Device+Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name'] : ''));
 				}
 
 				break;
 			case 3: // Device
 				if ($p['policy_hosts'] == 1) {
 					if (empty($graph["device$i"])) {
-						$grantStr = $grantStr . ($grantStr != '' ? ', ':'') . __esc('Device:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+						$grantStr = $grantStr . ($grantStr != '' ? ', ' : '') . __esc('Device:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name'] : ''));
 					} else {
-						$rejectStr = $rejectStr . ($rejectStr != '' ? ', ':'') . __esc('Device:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+						$rejectStr = $rejectStr . ($rejectStr != '' ? ', ' : '') . __esc('Device:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name'] : ''));
 					}
 				} else {
 					if (!empty($graph["device$i"])) {
-						$grantStr = $grantStr . ($grantStr != '' ? ', ':'') . __esc('Device:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+						$grantStr = $grantStr . ($grantStr != '' ? ', ' : '') . __esc('Device:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name'] : ''));
 					} else {
-						$rejectStr = $rejectStr . ($rejectStr != '' ? ', ':'') . __esc('Device:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+						$rejectStr = $rejectStr . ($rejectStr != '' ? ', ' : '') . __esc('Device:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name'] : ''));
 					}
 				}
 
@@ -2402,15 +2402,15 @@ function get_permission_string(array &$graph, array &$policies): string {
 			case 4: // Graph Template
 				if ($p['policy_graph_templates'] == 1) {
 					if (empty($graph["template$i"])) {
-						$grantStr = $grantStr . ($grantStr != '' ? ', ':'') . __esc('Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+						$grantStr = $grantStr . ($grantStr != '' ? ', ' : '') . __esc('Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name'] : ''));
 					} else {
-						$rejectStr = $rejectStr . ($rejectStr != '' ? ', ':'') . __esc('Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+						$rejectStr = $rejectStr . ($rejectStr != '' ? ', ' : '') . __esc('Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name'] : ''));
 					}
 				} else {
 					if (!empty($graph["template$i"])) {
-						$grantStr = $grantStr . ($grantStr != '' ? ', ':'') . __esc('Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+						$grantStr = $grantStr . ($grantStr != '' ? ', ' : '') . __esc('Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name'] : ''));
 					} else {
-						$rejectStr = $rejectStr . ($rejectStr != '' ? ', ':'') . __esc('Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+						$rejectStr = $rejectStr . ($rejectStr != '' ? ', ' : '') . __esc('Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name'] : ''));
 					}
 				}
 
@@ -2423,11 +2423,11 @@ function get_permission_string(array &$graph, array &$policies): string {
 	$permStr = '';
 
 	if ($drejectStr != '') {
-		$reasonStr .= ($reasonStr != '' ? ', ':'') . __esc('Restricted By: ') . $drejectStr;
+		$reasonStr .= ($reasonStr != '' ? ', ' : '') . __esc('Restricted By: ') . $drejectStr;
 	}
 
 	if ($grantStr != '') {
-		$reasonStr .= ($reasonStr != '' ? ', ':'') . __esc('Granted By: ') . trim($grantStr, ',');
+		$reasonStr .= ($reasonStr != '' ? ', ' : '') . __esc('Granted By: ') . trim($grantStr, ',');
 
 		if ($rejectStr != '') {
 			$reasonStr .= ', ' . __esc('Restricted By: ') . trim($rejectStr, ',');
@@ -2439,7 +2439,7 @@ function get_permission_string(array &$graph, array &$policies): string {
 			$permStr = "<span data-tooltip='" . trim($reasonStr) . "' class='accessRestricted'>" . __('Restricted') . '</span>';
 		}
 	} elseif ($rejectStr != '') {
-		$reasonStr .= ($reasonStr != '' ? ', ':'') . __esc('Restricted By: ') . trim($rejectStr, ',');
+		$reasonStr .= ($reasonStr != '' ? ', ' : '') . __esc('Restricted By: ') . trim($rejectStr, ',');
 
 		$permStr   = "<span data-tooltip='" . $reasonStr . "' class='accessRestricted'>" . __('Restricted') . '</span>';
 	} else {
@@ -2504,21 +2504,21 @@ function get_allowed_trees(bool $edit = false, bool $return_sql = false, string 
 
 	foreach ($policies as $policy) {
 		if ($policy['policy_trees'] == '1') {
-			$sql_where1 .= ($sql_where1 != '' ? ' OR':'') . " uap$i." . $policy['type'] . '_id IS NULL';
+			$sql_where1 .= ($sql_where1 != '' ? ' OR' : '') . " uap$i." . $policy['type'] . '_id IS NULL';
 		} elseif ($policy['policy_trees'] == '2') {
-			$sql_where1 .= ($sql_where1 != '' ? ' OR':'') . " uap$i." . $policy['type'] . '_id IS NOT NULL';
+			$sql_where1 .= ($sql_where1 != '' ? ' OR' : '') . " uap$i." . $policy['type'] . '_id IS NOT NULL';
 		}
 
-		$sql_join .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'group' ? 'group_':'') . "perms AS uap$i
+		$sql_join .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'group' ? 'group_' : '') . "perms AS uap$i
 			ON (gt.id=uap$i.item_id AND uap$i.type=2 AND uap$i." . $policy['type'] . '_id=' . $policy['id'] . ') ';
 
 		$i++;
 	}
 
 	if ($sql_where != '') {
-		$sql_where = 'WHERE ' . ($edit == false ? '(gt.enabled="on") AND ':'') . '(' . $sql_where . ') AND (' . $sql_where1 . ')';
+		$sql_where = 'WHERE ' . ($edit == false ? '(gt.enabled="on") AND ' : '') . '(' . $sql_where . ') AND (' . $sql_where1 . ')';
 	} else {
-		$sql_where = 'WHERE ' . ($edit == false ? '(gt.enabled="on") AND ':'') . '(gt.enabled="on") AND (' . $sql_where1 . ')';
+		$sql_where = 'WHERE ' . ($edit == false ? '(gt.enabled="on") AND ' : '') . '(gt.enabled="on") AND (' . $sql_where1 . ')';
 	}
 
 	$sql = "SELECT id, name
@@ -2626,19 +2626,19 @@ function get_allowed_branches(string $sql_where = '', string $sql_order = 'name'
 
 	foreach ($policies as $policy) {
 		if ($policy['policy_trees'] == '1') {
-			$sql_where1 .= ($sql_where1 != '' ? ' OR':'') . " uap$i." . $policy['type'] . '_id IS NULL';
+			$sql_where1 .= ($sql_where1 != '' ? ' OR' : '') . " uap$i." . $policy['type'] . '_id IS NULL';
 		} elseif ($policy['policy_trees'] == '2') {
-			$sql_where1 .= ($sql_where1 != '' ? ' OR':'') . " uap$i." . $policy['type'] . '_id IS NOT NULL';
+			$sql_where1 .= ($sql_where1 != '' ? ' OR' : '') . " uap$i." . $policy['type'] . '_id IS NOT NULL';
 		}
 
-		$sql_join .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'group' ? 'group_':'') . "perms AS uap$i
+		$sql_join .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'group' ? 'group_' : '') . "perms AS uap$i
 			ON (gt.id=uap$i.item_id AND uap$i.type=2 AND uap$i." . $policy['type'] . '_id=' . $policy['id'] . ') ';
 
 		$i++;
 	}
 
 	if ($sql_where != '') {
-		$sql_where = 'WHERE gt.enabled="on" AND (' . $sql_where . ')' . ($sql_where1 != '' ? ' AND (' . $sql_where1 . ')':'');
+		$sql_where = 'WHERE gt.enabled="on" AND (' . $sql_where . ')' . ($sql_where1 != '' ? ' AND (' . $sql_where1 . ')' : '');
 	} elseif ($sql_where1 != '') {
 		$sql_where = 'WHERE gt.enabled="on" AND (' . $sql_where1 . ')';
 	}
@@ -2719,7 +2719,7 @@ function get_allowed_devices(string $sql_where = '', string $sql_order = 'descri
 	}
 
 	if (read_user_setting('hide_disabled', false, false, $user_id) == 'on') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(h.disabled = "" OR h.disabled IS NULL)';
+		$sql_where .= ($sql_where != '' ? ' AND ' : '') . '(h.disabled = "" OR h.disabled IS NULL)';
 	}
 
 	if ($sql_where != '') {
@@ -2895,7 +2895,7 @@ function get_allowed_site_devices(int $site_id, string $sql_where = '', string $
 	}
 
 	if (read_user_setting('hide_disabled', false, false, $user_id) == 'on') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(h.disabled = "" OR h.disabled IS NULL)';
+		$sql_where .= ($sql_where != '' ? ' AND ' : '') . '(h.disabled = "" OR h.disabled IS NULL)';
 	}
 
 	if ($sql_where != '') {
@@ -3686,7 +3686,7 @@ function local_auth_login_process(string $username): array {
 
 			$valid = compat_password_verify($password, $stored_pass);
 
-			cacti_log("DEBUG: User '" . $username . "' password for rehash is " . ($valid ? '':'in') . 'valid', false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+			cacti_log("DEBUG: User '" . $username . "' password for rehash is " . ($valid ? '' : 'in') . 'valid', false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
 			if ($valid) {
 				$user = db_fetch_row_prepared('SELECT *
@@ -4556,7 +4556,7 @@ function rsa_check_keypair(): void {
 
 		db_execute_prepared("INSERT INTO settings
 			(`name`, `value`) VALUES ('rsa_public_key', ?), ('rsa_private_key', ?), ('rsa_fingerprint', ?)",
-			array($public, $private, $fingerprint));
+			[$public, $private, $fingerprint]);
 	}
 }
 
@@ -4836,9 +4836,9 @@ function auth_login_redirect(string $login_opts = ''): void {
 					$referer = CACTI_PATH_URL . 'index.php';
 				} elseif (!str_contains($referer, CACTI_PATH_URL)) {
 					if (!is_realm_allowed(8)) {
-						$referer = CACTI_PATH_URL . 'graph_view.php' . ($newtheme ? '?newtheme=1':'');
+						$referer = CACTI_PATH_URL . 'graph_view.php' . ($newtheme ? '?newtheme=1' : '');
 					} else {
-						$referer = CACTI_PATH_URL . 'index.php' . ($newtheme ? '?newtheme=1':'');
+						$referer = CACTI_PATH_URL . 'index.php' . ($newtheme ? '?newtheme=1' : '');
 					}
 				}
 
@@ -4857,7 +4857,7 @@ function auth_login_redirect(string $login_opts = ''): void {
 				cacti_log(sprintf("DEBUG: Referer Short Circuit to '%s'", 'index.php'), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 			}
 
-			$referer .= ($newtheme ? (!str_contains($referer, '?') ? '?':'&') . 'newtheme=1':'');
+			$referer .= ($newtheme ? (!str_contains($referer, '?') ? '?' : '&') . 'newtheme=1' : '');
 
 			/* Strip out the login from the referer if present */
 			$referer  = str_replace('?action=login', '', $referer);
@@ -4877,14 +4877,14 @@ function auth_login_redirect(string $login_opts = ''): void {
 			break;
 		case '2': /* default console page */
 			if (!is_realm_allowed(8)) {
-				header('Location: ' . CACTI_PATH_URL . 'graph_view.php' . ($newtheme ? '?newtheme=1':''));
+				header('Location: ' . CACTI_PATH_URL . 'graph_view.php' . ($newtheme ? '?newtheme=1' : ''));
 			} else {
-				header('Location: ' . CACTI_PATH_URL . 'index.php' . ($newtheme ? '?newtheme=1':''));
+				header('Location: ' . CACTI_PATH_URL . 'index.php' . ($newtheme ? '?newtheme=1' : ''));
 			}
 
 			break;
 		case '3': /* default graph page */
-			header('Location: ' . CACTI_PATH_URL . 'graph_view.php' . ($newtheme ? '?newtheme=1':''));
+			header('Location: ' . CACTI_PATH_URL . 'graph_view.php' . ($newtheme ? '?newtheme=1' : ''));
 
 			break;
 		default:

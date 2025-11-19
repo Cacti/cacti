@@ -72,13 +72,13 @@ function view_user_log() {
 
 	/* filter by result */
 	if (get_request_var('result') != '-1') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ul.result = ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' ul.result = ?';
 		$sql_params[] = get_request_var('result');
 	}
 
 	/* filter by search string */
 	if (get_request_var('filter') != '') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' (
 			ul.username LIKE ? OR ul.time LIKE ? OR ua.full_name LIKE ? OR ul.ip LIKE ?)';
 
 		$sql_params[] = '%' . get_request_var('filter') . '%';
@@ -145,7 +145,7 @@ function view_user_log() {
 
 			form_selectable_cell(filter_value($item['time'], get_request_var('filter')), $i);
 
-			form_selectable_cell(($item['result'] == 0 ? __('Failed'):($item['result'] == 1 ? __('Success - Password'):($item['result'] == 3 ? __('Success - Password Change'):__('Success - Token')))), $i);
+			form_selectable_cell(($item['result'] == 0 ? __('Failed') : ($item['result'] == 1 ? __('Success - Password') : ($item['result'] == 3 ? __('Success - Password Change') : __('Success - Token')))), $i);
 
 			form_selectable_cell(filter_value($item['ip'], get_request_var('filter')), $i);
 

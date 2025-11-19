@@ -236,19 +236,19 @@ if (read_config_option('secpass_minlen') > 0) {
 }
 
 if (read_config_option('secpass_reqmixcase') == 'on') {
-	$secpass_body .= ($secpass_body != '' ? '<br>':'') . __('Must include mixed case');
+	$secpass_body .= ($secpass_body != '' ? '<br>' : '') . __('Must include mixed case');
 }
 
 if (read_config_option('secpass_reqnum') == 'on') {
-	$secpass_body .= ($secpass_body != '' ? '<br>':'') . __('Must include at least 1 number');
+	$secpass_body .= ($secpass_body != '' ? '<br>' : '') . __('Must include at least 1 number');
 }
 
 if (read_config_option('secpass_reqspec') == 'on') {
-	$secpass_body .= ($secpass_body != '' ? '<br>':'') . __('Must include at least 1 special character');
+	$secpass_body .= ($secpass_body != '' ? '<br>' : '') . __('Must include at least 1 special character');
 }
 
 if (read_config_option('secpass_history') != '0') {
-	$secpass_body .= ($secpass_body != '' ? '<br>':'') . __('Cannot be reused for %d password changes', read_config_option('secpass_history') + 1);
+	$secpass_body .= ($secpass_body != '' ? '<br>' : '') . __('Cannot be reused for %d password changes', read_config_option('secpass_history') + 1);
 }
 
 $secpass_tooltip .= $secpass_body;
@@ -274,26 +274,26 @@ html_auth_header('reset_password', __('Reset Password'), __('Reset Password'), $
 	<tr>
 		<td colspan='2' class='nowrap'>
 			<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' value='send'><?php print __esc('Send reset token by email'); ?></button>
-			<button type='button' class='ui-button ui-corner-all ui-widget' onClick='document.location="<?php print $return;?>"' value='return'><?php print __esc('Return');?></button>
+			<button type='button' class='ui-button ui-corner-all ui-widget' onClick='document.location="<?php print $return; ?>"' value='return'><?php print __esc('Return'); ?></button>
 		</td>
 	</tr>
 	<tr>
 		<td colspan='2'>
 			<input type='hidden' name='action' value='resetrequest'>
-			<input type='hidden' name='hash' value='<?php print get_nfilter_request_var('hash');?>'>
+			<input type='hidden' name='hash' value='<?php print get_nfilter_request_var('hash'); ?>'>
 		</td>
 	</tr>
 <?php }
 
 if ($action == 'formreset') {?>
 	<tr>
-		<td><?php print __('New password');?></td>
+		<td><?php print __('New password'); ?></td>
 		<td class='nowrap'>
-			<input type='password' class='ui-state-default ui-corner-all' id='password' name='password' autocomplete='off' size='15' maxlength='25' placeholder='********'><?php print display_tooltip($secpass_tooltip);?>
+			<input type='password' class='ui-state-default ui-corner-all' id='password' name='password' autocomplete='off' size='15' maxlength='25' placeholder='********'><?php print display_tooltip($secpass_tooltip); ?>
 		</td>
 	</tr>
 	<tr>
-		<td><?php print __('Confirm password');?></td>
+		<td><?php print __('Confirm password'); ?></td>
 		<td class='nowrap'>
 			<input type='password' class='ui-state-default ui-corner-all' id='password_confirm' name='password_confirm' autocomplete='off' size='15' maxlength='25' placeholder='********'>
 		</td>
@@ -301,13 +301,13 @@ if ($action == 'formreset') {?>
 	<tr>
 		<td colspan='2' class='nowrap'>
 			<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' value='save'><?php print __esc('Save'); ?></button>
-			<button type='button' class='ui-button ui-corner-all ui-widget' onClick='document.location="<?php print $return;?>"' value='return'><?php print __esc('Return');?></button>
+			<button type='button' class='ui-button ui-corner-all ui-widget' onClick='document.location="<?php print $return; ?>"' value='return'><?php print __esc('Return'); ?></button>
 		</td>
 	</tr>
 	<tr>
 		<td colspan='2'>
 			<input type='hidden' name='action' value='resetpassword'>
-			<input type='hidden' name='hash' value='<?php print get_nfilter_request_var('hash');?>'>
+			<input type='hidden' name='hash' value='<?php print get_nfilter_request_var('hash'); ?>'>
 		</td>
 	</tr>
 <?php

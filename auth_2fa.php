@@ -50,7 +50,7 @@ $tfaTime = time() - $tfaBase;
 
 // See if we have no 2FA time set, and if so, lets try and get it from the cookie
 if (empty($_SESSION[SESS_USER_2FA]) && isset($_COOKIE[session_name() . '_otp'])) {
-	list($tfaCookieTime, $tfaCookeHash) = explode(':', $_COOKIE[session_name() . '_otp']);
+	[$tfaCookieTime, $tfaCookeHash] = explode(':', $_COOKIE[session_name() . '_otp']);
 
 	if ($tfaCookieTime && $tfaCookeHash === hash_hmac('sha1', $user['username'] . ':' . $tfaMins . ':' . $tfaCookieTime . ':' . $_SERVER['HTTP_USER_AGENT'], $user['tfa_secret'])) {
 		$_SESSION[SESS_USER_2FA] = $tfaCookieTime;
@@ -144,10 +144,10 @@ html_auth_header('login_2fa', __('2nd Factor Authentication'), __('2FA Verificat
 ?>
 <tr>
 	<td>
-		<label for='login_token'><?php print __('Token');?></label>
+		<label for='login_token'><?php print __('Token'); ?></label>
 	</td>
 	<td>
-		<input type='textbox' class='ui-state-default ui-corner-all' id='login_token' name='token' placeholder='<?php print __('Token');?>'>
+		<input type='textbox' class='ui-state-default ui-corner-all' id='login_token' name='token' placeholder='<?php print __('Token'); ?>'>
 	</td>
 </tr>
 <tr>
@@ -159,7 +159,7 @@ html_auth_header('login_2fa', __('2nd Factor Authentication'), __('2FA Verificat
 <tr>
 	<td>&nbsp;</td>
 	<td>
-		<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' value='verify'><?php print __esc('Verify');?></button>
+		<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' value='verify'><?php print __esc('Verify'); ?></button>
 	</td>
 </tr>
 <?php

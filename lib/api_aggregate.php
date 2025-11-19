@@ -320,9 +320,9 @@ function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph
 						FROM graph_templates_item
 						WHERE color_id > 0
 						AND sequence = ' . $graph_item['sequence'] .
-						(cacti_sizeof($member_graphs) ? ' AND ' . array_to_sql_or($member_graphs, 'local_graph_id'):'') .
-						(cacti_sizeof($_skip) ? ' AND sequence NOT IN (' . implode(',', $_skip) . ')':'') .
-						(cacti_sizeof($_totali) ? ' AND sequence IN (' . implode(',', $_totali) . ')':'') . '
+						(cacti_sizeof($member_graphs) ? ' AND ' . array_to_sql_or($member_graphs, 'local_graph_id') : '') .
+						(cacti_sizeof($_skip) ? ' AND sequence NOT IN (' . implode(',', $_skip) . ')' : '') .
+						(cacti_sizeof($_totali) ? ' AND sequence IN (' . implode(',', $_totali) . ')' : '') . '
 						ORDER BY sequence ASC
 						LIMIT 1');
 				}
@@ -738,8 +738,8 @@ function aggregate_reorder_ds_graph(int $base, string $graph_template_id, int $a
 		/* get all different local_data_template_rrd_id's
 		 * respecting the order that the aggregated graph has
 		 */
-		$sql_where     = "WHERE gti.local_graph_id = $base" . ($base == 0 ? " AND gti.graph_template_id = $graph_template_id":'');
-		$sql_id_column = ($base == 0 ? 'id': 'local_data_template_rrd_id');
+		$sql_where     = "WHERE gti.local_graph_id = $base" . ($base == 0 ? " AND gti.graph_template_id = $graph_template_id" : '');
+		$sql_id_column = ($base == 0 ? 'id' : 'local_data_template_rrd_id');
 		$sql           = "SELECT DISTINCT dtr.$sql_id_column AS local_data_template_rrd_id
 			FROM data_template_rrd AS dtr
 			LEFT JOIN graph_templates_item AS gti
@@ -834,7 +834,7 @@ function aggregate_reorder_ds_graph(int $base, string $graph_template_id, int $a
 			$updates[] = 'UPDATE graph_templates_item
 				SET sequence = ' . $new_seq . ",
 				graph_type_id = $new_graph_type " .
-				($color_id != '' ? ', color_id = ' . $color_id:'') . '
+				($color_id != '' ? ', color_id = ' . $color_id : '') . '
 				WHERE id = ' . $item['id'];
 
 			$i++;
@@ -883,13 +883,13 @@ function aggregate_reorder_ds_graph(int $base, string $graph_template_id, int $a
  * @return void
  */
 function push_out_aggregates(int $aggregate_template_id, int $local_graph_id = 0): void {
-	$attribs                    = [];
-	$attribs['skipped_items']   = [];
-	$attribs['total_items']     = [];
-	$attribs['color_templates'] = [];
-	$attribs['graph_item_types']= [];
-	$attribs['cdefs']           = [];
-	$member_graphs              = [];
+	$attribs                     = [];
+	$attribs['skipped_items']    = [];
+	$attribs['total_items']      = [];
+	$attribs['color_templates']  = [];
+	$attribs['graph_item_types'] = [];
+	$attribs['cdefs']            = [];
+	$member_graphs               = [];
 
 	if ($local_graph_id > 0 && $aggregate_template_id == 0) {
 		$id = db_fetch_cell_prepared('SELECT id
@@ -1119,11 +1119,11 @@ function aggregate_create_update(int &$local_graph_id, array $member_graphs, arr
 		$_total_prefix        = ($attribs['total_prefix'] ?? '');
 		$_reorder             = ($attribs['reorder'] ?? 0);
 		$item_no              = ($attribs['item_no'] ?? 0);
-		$color_templates      = (is_array($attribs['color_templates']) ? $attribs['color_templates']:[]);
-		$graph_item_types     = (is_array($attribs['graph_item_types']) ? $attribs['graph_item_types']:[]);
-		$cdefs                = (is_array($attribs['cdefs']) ? $attribs['cdefs']:[]);
-		$skipped_items        = (is_array($attribs['skipped_items']) ? $attribs['skipped_items']:[]);
-		$total_items          = (is_array($attribs['total_items']) ? $attribs['total_items']:[]);
+		$color_templates      = (is_array($attribs['color_templates']) ? $attribs['color_templates'] : []);
+		$graph_item_types     = (is_array($attribs['graph_item_types']) ? $attribs['graph_item_types'] : []);
+		$cdefs                = (is_array($attribs['cdefs']) ? $attribs['cdefs'] : []);
+		$skipped_items        = (is_array($attribs['skipped_items']) ? $attribs['skipped_items'] : []);
+		$total_items          = (is_array($attribs['total_items']) ? $attribs['total_items'] : []);
 		$example_graph_id     = 0;
 
 		/* save the aggregate information */
@@ -1250,8 +1250,8 @@ function aggregate_create_update(int &$local_graph_id, array $member_graphs, arr
 				$cf_id = db_fetch_cell('SELECT consolidation_function_id
 					FROM graph_templates_item
 					WHERE color_id > 0' .
-					(cacti_sizeof($member_graphs) ? ' AND ' . array_to_sql_or($member_graphs, 'local_graph_id'):'') .
-					(cacti_sizeof($skipped_items) ? ' AND local_graph_id NOT IN(' . implode(',', $skipped_items) . ')':'') . '
+					(cacti_sizeof($member_graphs) ? ' AND ' . array_to_sql_or($member_graphs, 'local_graph_id') : '') .
+					(cacti_sizeof($skipped_items) ? ' AND local_graph_id NOT IN(' . implode(',', $skipped_items) . ')' : '') . '
 					ORDER BY sequence ASC
 					LIMIT 1');
 
@@ -1273,7 +1273,7 @@ function aggregate_create_update(int &$local_graph_id, array $member_graphs, arr
 				// now skip all items, that are
 				// - explicitly marked as skipped (based on $skipped_items)
 				// - OR NOT marked as 'totalling' items
-				for ($k=1; $k <= $item_no; $k++) {
+				for ($k = 1; $k <= $item_no; $k++) {
 					cacti_log(__FUNCTION__ . ' old skip: ' . ($skipped_items[$k] ?? ''), true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
 					// skip all items, that shall not be totalled
@@ -1386,8 +1386,8 @@ function aggregate_handle_ptile_type(array $member_graphs, array $skipped_items,
 		$comments_hrules = db_fetch_assoc('SELECT *
 			FROM graph_templates_item
 			WHERE graph_type_id IN(' . GRAPH_ITEM_TYPE_COMMENT . ',' . GRAPH_ITEM_TYPE_HRULE . ')' .
-			(cacti_sizeof($template_graph) ? ' AND ' . array_to_sql_or($template_graph, 'local_graph_id'):'') .
-			(cacti_sizeof($skipped_items) ? ' AND local_graph_id NOT IN(' . implode(',', $skipped_items) . ')':'') . '
+			(cacti_sizeof($template_graph) ? ' AND ' . array_to_sql_or($template_graph, 'local_graph_id') : '') .
+			(cacti_sizeof($skipped_items) ? ' AND local_graph_id NOT IN(' . implode(',', $skipped_items) . ')' : '') . '
 			AND (text_format != "" || value != "")
 			ORDER BY local_graph_id, sequence ASC');
 
@@ -1767,7 +1767,7 @@ function draw_aggregate_graph_items_list(int $_graph_id = 0, int $_graph_templat
 
 	if (cacti_sizeof($_object) > 0 && $_object['id'] > 0) {
 		/* drawing items for existing aggregate graph/template */
-		$is_edit =true;
+		$is_edit = true;
 
 		/* fetch existing item values */
 		if (isset($_object['aggregate_template_id']) && $_object['aggregate_template_id'] == 0) {
@@ -1807,7 +1807,7 @@ function draw_aggregate_graph_items_list(int $_graph_id = 0, int $_graph_templat
 	}
 
 	# draw list of graph items
-	html_start_box(($is_templated ? __('Graph Template Items'):__('Graph Items')), '100%', false, 3, 'center', '');
+	html_start_box(($is_templated ? __('Graph Template Items') : __('Graph Items')), '100%', false, 3, 'center', '');
 
 	# print column header
 	print "<tr class='tableHeader'>";
@@ -1954,7 +1954,7 @@ function draw_aggregate_graph_items_list(int $_graph_id = 0, int $_graph_templat
 			if (!empty($item['hex'])) {
 				print "<select id='agg_color_" . $item['id'] ."' name='agg_color_" . $item['id'] ."'>";
 				print "<option value='0' selected>None</option>";
-				html_create_list($color_templates, 'name', 'color_template_id', ($is_edit && isset($current_vals[$item['id']]['color_template']) ? $current_vals[$item['id']]['color_template']:''));
+				html_create_list($color_templates, 'name', 'color_template_id', ($is_edit && isset($current_vals[$item['id']]['color_template']) ? $current_vals[$item['id']]['color_template'] : ''));
 				print '</select>';
 			}
 			print '</td>';
@@ -1962,17 +1962,17 @@ function draw_aggregate_graph_items_list(int $_graph_id = 0, int $_graph_templat
 			/* column "Skip" */
 			if (!$force_skip) {
 				print "<td style='width:1%;text-align:center;'>";
-				print "<input class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . html_escape($item['text_format']) . "' " . ($is_edit && (!isset($current_vals[$item['id']]['item_total']) || (isset($current_vals[$item['id']]['item_skip']) && $current_vals[$item['id']]['item_skip'] == 'on')) ? 'checked':'') . "><label class='formCheckboxLabel' for='agg_skip_" . $item['id'] . "'>";
+				print "<input class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . html_escape($item['text_format']) . "' " . ($is_edit && (!isset($current_vals[$item['id']]['item_total']) || (isset($current_vals[$item['id']]['item_skip']) && $current_vals[$item['id']]['item_skip'] == 'on')) ? 'checked' : '') . "><label class='formCheckboxLabel' for='agg_skip_" . $item['id'] . "'>";
 				print '</td>';
 
 				/* column 'Total' */
 				print "<td style='width:1%;text-align:center;'>";
-				print "<input class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . html_escape($item['text_format']) . "' " . ($is_edit && isset($current_vals[$item['id']]['item_total']) && $current_vals[$item['id']]['item_total'] == 'on' ? 'checked':'') . "><label class='formCheckboxLabel' for='agg_total_" . $item['id'] . "'>";
+				print "<input class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . html_escape($item['text_format']) . "' " . ($is_edit && isset($current_vals[$item['id']]['item_total']) && $current_vals[$item['id']]['item_total'] == 'on' ? 'checked' : '') . "><label class='formCheckboxLabel' for='agg_total_" . $item['id'] . "'>";
 				print '</td>';
 			} else {
-				print "<td style='width:1%;text-align:center;'><input class='checkbox' id='dummy_" . $item['id'] . "' disabled='disabled' type='checkbox' name='dummy_" . $item['id'] . "'" . ($is_edit ? 'checked':'') . '></td>';
+				print "<td style='width:1%;text-align:center;'><input class='checkbox' id='dummy_" . $item['id'] . "' disabled='disabled' type='checkbox' name='dummy_" . $item['id'] . "'" . ($is_edit ? 'checked' : '') . '></td>';
 				print "<td style='width:1%;text-align:center;'><input class='checkbox' id='dummy1_" . $item['id'] . "' disabled='disabled' type='checkbox' name='dummy1_" . $item['id'] . "'>";
-				print "<input style='display:none;' class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . html_escape($item['text_format']) . "' " . ($is_edit ? 'checked':'') . "><label class='formCheckboxLabel' for='agg_skip_" . $item['id'] . "'>";
+				print "<input style='display:none;' class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . html_escape($item['text_format']) . "' " . ($is_edit ? 'checked' : '') . "><label class='formCheckboxLabel' for='agg_skip_" . $item['id'] . "'>";
 				print "<input style='display:none;' class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . html_escape($item['text_format']) . "'><label class='formCheckboxLabel' for='agg_total_" . ($item['id']) . "'></label></td>";
 			}
 

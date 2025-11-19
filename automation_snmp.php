@@ -348,7 +348,7 @@ function form_actions() {
 				db_execute('DELETE FROM automation_snmp WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('DELETE FROM automation_snmp_items WHERE ' . str_replace('id', 'snmp_id', array_to_sql_or($selected_items, 'id')));
 			} elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
-				for ($i=0;($i < cacti_count($selected_items));$i++) {
+				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					automation_duplicate_snmp_option($selected_items[$i], get_nfilter_request_var('name_format'));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '3') { /* export */
@@ -533,15 +533,15 @@ function automation_snmp_item_remove_confirm() {
 	<tr>
 		<td class='topBoxAlt'>
 			<p><?php print __('Click \'Continue\' to delete the following SNMP Option Item.'); ?></p>
-			<p><?php print __('SNMP Option:');?> <?php print html_escape($snmp['name']);?><br>
-			<?php print __('SNMP Version: <b>%s</b>', $item['snmp_version']);?><br>
-			<?php print __esc('SNMP Community/Username: <b>%s</b>', ($item['snmp_version'] != 3 ? $item['snmp_community']:$item['snmp_username']));?></p>
+			<p><?php print __('SNMP Option:'); ?> <?php print html_escape($snmp['name']); ?><br>
+			<?php print __('SNMP Version: <b>%s</b>', $item['snmp_version']); ?><br>
+			<?php print __esc('SNMP Community/Username: <b>%s</b>', ($item['snmp_version'] != 3 ? $item['snmp_community'] : $item['snmp_username'])); ?></p>
 		</td>
 	</tr>
 	<tr>
 		<td class='right'>
-			<button type='button' class='ui-button ui-corner-all ui-widget' id='cancel' name='cancel' onClick='$("#cdialog").dialog("close");'><?php print __esc('Cancel');?></button>
-			<button type='button' class='ui-button ui-corner-all ui-widget' id='continue' name='continue' title='<?php print __esc('Remove SNMP Item');?>'><?php print __esc('Continue');?></button>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='cancel' name='cancel' onClick='$("#cdialog").dialog("close");'><?php print __esc('Cancel'); ?></button>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='continue' name='continue' title='<?php print __esc('Remove SNMP Item'); ?>'><?php print __esc('Continue'); ?></button>
 		</td>
 	</tr>
 	<?php
@@ -561,8 +561,8 @@ function automation_snmp_item_remove_confirm() {
 
 			var data = {
 				__csrf_magic: csrfMagicToken,
-				item_id: <?php print get_request_var('item_id');?>,
-				id: <?php print get_request_var('id');?>
+				item_id: <?php print get_request_var('item_id'); ?>,
+				id: <?php print get_request_var('id'); ?>
 			}
 
 			postUrl(options, data);
@@ -571,7 +571,7 @@ function automation_snmp_item_remove_confirm() {
 
 	function automationSnmpRemoveItemFinalize(data) {
 		$('#cdialog').dialog('close');
-		loadUrl({url:'automation_snmp.php?action=edit&id=<?php print get_request_var('id');?>'})
+		loadUrl({url:'automation_snmp.php?action=edit&id=<?php print get_request_var('id'); ?>'})
 	}
 
 	</script>
@@ -701,7 +701,7 @@ function automation_snmp_edit() {
 
 	html_end_box(true, true);
 
-	form_hidden_box('id', (isset_request_var('id') ? get_request_var('id'): '0'), '');
+	form_hidden_box('id', (isset_request_var('id') ? get_request_var('id') : '0'), '');
 	form_hidden_box('save_component_automation_snmp', '1', '');
 
 	if (!isempty_request_var('id')) {
@@ -842,7 +842,7 @@ function automation_snmp_edit() {
 		<?php if (read_config_option('drag_and_drop') == 'on') { ?>
 		$('#snmp_item').tableDnD({
 			onDrop: function(table, row) {
-				loadUrl({url:'automation_snmp.php?action=ajax_dnd&id=<?php isset_request_var('id') ? print get_request_var('id') : print 0;?>&'+$.tableDnD.serialize()})
+				loadUrl({url:'automation_snmp.php?action=ajax_dnd&id=<?php isset_request_var('id') ? print get_request_var('id') : print 0; ?>&'+$.tableDnD.serialize()})
 			}
 		});
 		<?php } ?>
@@ -859,7 +859,7 @@ function automation_snmp_edit() {
 					applySkin();
 
 					$('#cdialog').dialog({
-						title: '<?php print __('Delete SNMP Option Item');?>',
+						title: '<?php print __('Delete SNMP Option Item'); ?>',
 						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
 						minHeight: 80,
 						minWidth: 500

@@ -78,7 +78,7 @@ class Net_Ping {
 		$this->timer_start_time = microtime(true);
 	}
 
-	function get_time($acc=2) {
+	function get_time($acc = 2) {
 		// format start time
 		$start_time = $this->timer_start_time;
 		// get and format end time
@@ -673,7 +673,7 @@ class Net_Ping {
 		}
 	} /* end ping_tcp */
 
-	function ping($avail_method = AVAIL_SNMP_AND_PING, $ping_type = PING_ICMP, $timeout=500, $retries=3) {
+	function ping($avail_method = AVAIL_SNMP_AND_PING, $ping_type = PING_ICMP, $timeout = 500, $retries = 3) {
 		$this->set_ping_error_handler();
 
 		/* initialize variables */

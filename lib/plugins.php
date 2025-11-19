@@ -838,11 +838,11 @@ function api_plugin_uninstall_integrated() {
 }
 
 function api_plugin_hooks_found($plugin) {
-	return db_fetch_cell_prepared('SELECT COUNT(*) FROM plugin_hooks WHERE name = ?', [$plugin]) ? true:false;
+	return db_fetch_cell_prepared('SELECT COUNT(*) FROM plugin_hooks WHERE name = ?', [$plugin]) ? true : false;
 }
 
 function api_plugin_realms_found($plugin) {
-	return db_fetch_cell_prepared('SELECT COUNT(*) FROM plugin_realms WHERE plugin = ?', [$plugin]) ? true:false;
+	return db_fetch_cell_prepared('SELECT COUNT(*) FROM plugin_realms WHERE plugin = ?', [$plugin]) ? true : false;
 }
 
 function api_plugin_uninstall($plugin, $tables = true) {
@@ -1192,7 +1192,7 @@ function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
 	$sql_where = '(';
 
 	foreach ($files as $tfile) {
-		$sql_where .= ($sql_where != '(' ? ' OR ':'') .
+		$sql_where .= ($sql_where != '(' ? ' OR ' : '') .
 			' (file = "' . $tfile . '" OR file LIKE "' . $tfile . ',%" OR file LIKE "%,' . $tfile . ',%" OR file LIKE "%,' . $tfile . '")';
 	}
 	$sql_where .= ')';
@@ -1373,7 +1373,7 @@ function api_plugin_reorder($new_order) {
 			if (isset($plugins_reorder[$id])) {
 				$plugins_reorder[$id]['id'] = $sequence;
 
-				$sql .= ($sequence > 1 ? ',':'') . '(?, ?, ?, ?, ?, ?, ?, ?)';
+				$sql .= ($sequence > 1 ? ',' : '') . '(?, ?, ?, ?, ?, ?, ?, ?)';
 
 				$params[] = $plugins_reorder[$id]['id'];
 				$params[] = $plugins_reorder[$id]['directory'];

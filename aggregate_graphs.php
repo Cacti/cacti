@@ -879,7 +879,7 @@ function form_actions() {
 				'item_array' => $iarray,
 				'item_list'  => $ilist,
 				'eaction'    => 'local_graph_id',
-				'eactionid'  => isset_request_var('local_graph_id') ? get_filter_request_var('local_graph_id'):'0'
+				'eactionid'  => isset_request_var('local_graph_id') ? get_filter_request_var('local_graph_id') : '0'
 			],
 			'options' => [
 				1 => [
@@ -1691,7 +1691,7 @@ function aggregate_items() {
 							<?php print __('Graphs'); ?>
 						</td>
 						<td>
-							<select id='rows' onChange='applyFilter()' data-defaultLabel='<?php print __('Graphs');?>'>
+							<select id='rows' onChange='applyFilter()' data-defaultLabel='<?php print __('Graphs'); ?>'>
 								<option value='-1' <?php print (get_request_var('rows') == '-1' ? ' selected>' : '>') . __('Default'); ?></option>
 								<?php
 								if (cacti_sizeof($item_rows) > 0) {
@@ -2001,16 +2001,16 @@ function aggregate_graph() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . '(gtg.title_cache LIKE ? OR ag.title_format LIKE ?)';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . '(gtg.title_cache LIKE ? OR ag.title_format LIKE ?)';
 
 		$sql_params[] = '%' . get_request_var('filter') . '%';
 		$sql_params[] = '%' . get_request_var('filter') . '%';
 	}
 
 	if (get_request_var('template_id') == '0') {
-		$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') . '(ag.aggregate_template_id = 0 OR ag.aggregate_template_id IS NULL)';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . '(ag.aggregate_template_id = 0 OR ag.aggregate_template_id IS NULL)';
 	} elseif (get_request_var('template_id') > 0) {
-		$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') . 'ag.aggregate_template_id= ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'ag.aggregate_template_id= ?';
 		$sql_params[] = get_request_var('template_id');
 	}
 

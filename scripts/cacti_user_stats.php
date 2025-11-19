@@ -175,12 +175,12 @@ function get_session_save_path() {
 		return realpath(sys_get_temp_dir());
 	}
 
-	if ($temp=getenv('TMP') | $temp=getenv('TEMP') | $temp=getenv('TMPDIR')) {
+	if ($temp = getenv('TMP') | $temp = getenv('TEMP') | $temp = getenv('TMPDIR')) {
 		/* try to use environment variables */
 		return $temp;
 	} else {
 		/* try to create a temp file */
-		$temp=tempnam(__FILE__,'');
+		$temp = tempnam(__FILE__,'');
 
 		if (file_exists($temp)) {
 			unlink($temp);

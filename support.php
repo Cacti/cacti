@@ -365,7 +365,7 @@ function show_database_processes() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') .
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') .
 			'(command LIKE ? OR info LIKE ?';
 
 		$sql_params[] = '%' . get_request_var('filter') . '%';
@@ -373,7 +373,7 @@ function show_database_processes() {
 	}
 
 	if (get_request_var('poller') == '0') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . 'info NOT LIKE "%poller_output%" AND ' .
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'info NOT LIKE "%poller_output%" AND ' .
 			'info NOT LIKE "%poller_item%" AND info NOT LIKE "%SQL_NO_CACHE%"';
 	}
 
@@ -388,12 +388,12 @@ function show_database_processes() {
 
 	$version   = db_get_global_variable('innodb_version');
 
-    if (db_column_exists('information_schema`.`processlist', 'query_id')) {
+	if (db_column_exists('information_schema`.`processlist', 'query_id')) {
 		$query_id = 'query_id';
-        $time_ms  = 'ROUND(time_ms/1000,2) AS runtime';
+		$time_ms  = 'ROUND(time_ms/1000,2) AS runtime';
 	} else {
 		$query_id = "'N/A' AS query_id";
-        $time_ms  = '`time` AS runtime';
+		$time_ms  = '`time` AS runtime';
 	}
 
 	$processes = db_fetch_assoc_prepared("SELECT id, $query_id, user, state, $time_ms, LENGTH(info) AS query_len,
@@ -616,7 +616,7 @@ function show_cacti_processes() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = ($sql_where != '' ? ' AND ':'WHERE ') .
+		$sql_where = ($sql_where != '' ? ' AND ' : 'WHERE ') .
 			'(taskname LIKE ? OR tasktype LIKE ?)';
 
 		$sql_params[] = '%' . get_request_var('filter') . '%';
@@ -635,7 +635,7 @@ function show_cacti_processes() {
 	foreach ($tables as $table => $name) {
 		switch($table) {
 			case 'poller_time':
-				$sql_inner .= ($sql_inner != '' ? ' UNION ':'') .
+				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
 					"SELECT pid, '" . __('Cacti Poller') . "' AS tasktype,
 						CONCAT('PollerID:', poller_id) AS taskname,
 						id AS taskid, '$poller_interval' AS timeout,
@@ -646,7 +646,7 @@ function show_cacti_processes() {
 
 				break;
 			case 'processes':
-				$sql_inner .= ($sql_inner != '' ? ' UNION ':'') .
+				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
 					"SELECT pid, CONCAT('$name (', tasktype, ')') AS tasktype,
 						taskname, taskid, timeout,
 						started, last_update,
@@ -655,7 +655,7 @@ function show_cacti_processes() {
 
 				break;
 			case 'grid_processes':
-				$sql_inner .= ($sql_inner != '' ? ' UNION ':'') .
+				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
 					"SELECT pid, '$name' AS tasktype,
 						taskname, taskid, 'N/A' AS timeout,
 						'-' AS started, heartbeat AS last_update,
@@ -664,7 +664,7 @@ function show_cacti_processes() {
 
 				break;
 			case 'automation_processes':
-				$sql_inner .= ($sql_inner != '' ? ' UNION ':'') .
+				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
 					"SELECT pid, '$name' AS tasktype,
 						CONCAT('" . __('Poller:') . "', an.poller_id) AS taskname,
 						network_id AS taskid, 'N/A' AS timeout, an.last_started AS started, ap.heartbeat AS last_update,
@@ -673,7 +673,7 @@ function show_cacti_processes() {
 
 				break;
 			case 'mac_track_processes':
-				$sql_inner .= ($sql_inner != '' ? ' UNION ':'') .
+				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
 					"SELECT process_id AS pid, '$name' AS tasktype,
 						CONCAT('" . __('Device:') . "', device_id) AS taskname, device_id AS taskid, 'N/A' AS timeout,
 						start_date AS started, 'N/A' AS last_updated,
@@ -682,7 +682,7 @@ function show_cacti_processes() {
 
 				break;
 			case 'plugin_hmib_processes':
-				$sql_inner .= ($sql_inner != '' ? ' UNION ':'') .
+				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
 					"SELECT pid, '$name' AS tasktype,
 						'" . __('Collector') . "' AS taskname, taskid, 'N/A' AS timeout,
 						started, 'N/A' AS last_update,
@@ -691,7 +691,7 @@ function show_cacti_processes() {
 
 				break;
 			case 'plugin_microtik_processes':
-				$sql_inner .= ($sql_inner != '' ? ' UNION ':'') .
+				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
 					"SELECT pid, '$name' AS tasktype,
 					'" . __('Collector') . "' AS taskname, taskid, 'N/A' AS timeout,
 					started, 'N/A' AS last_update,
@@ -700,7 +700,7 @@ function show_cacti_processes() {
 
 				break;
 			case 'plugin_webseer_processes':
-				$sql_inner .= ($sql_inner != '' ? ' UNION ':'') .
+				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
 					"SELECT pid, '$name' AS tasktype,
 						CONCAT('" . __('Poller:') . "', poller_id) AS taskname, url_id AS taskid, 'N/A' AS timeout,
 						time AS started, 'N/A' AS last_update,
@@ -709,7 +709,7 @@ function show_cacti_processes() {
 
 				break;
 			case 'plugin_servcheck_processes':
-				$sql_inner .= ($sql_inner != '' ? ' UNION ':'') .
+				$sql_inner .= ($sql_inner != '' ? ' UNION ' : '') .
 					"SELECT pid, '$name' AS tasktype,
 						CONCAT('" . __('Poller:') . "', poller_id) AS taskname, test_id AS taskid, 'N/A' AS timeout,
 						time AS started, 'N/A' AS last_update,
@@ -1034,7 +1034,7 @@ function show_database_settings() {
 			$s['Value'] = str_replace(',', ', ', $s['Value']);
 		}
 
-		print '<td>' . (is_numeric($s['Value']) ? number_format_i18n($s['Value'], -1):html_escape($s['Value'])) . '</td>';
+		print '<td>' . (is_numeric($s['Value']) ? number_format_i18n($s['Value'], -1) : html_escape($s['Value'])) . '</td>';
 		form_end_row();
 	}
 }
@@ -1097,7 +1097,7 @@ function show_database_status() {
 	foreach ($status as $s) {
 		form_alternate_row();
 		print '<td>' . html_escape($s['Variable_name']) . '</td>';
-		print '<td>' . (is_numeric($s['Value']) ? number_format_i18n($s['Value'], -1):html_escape($s['Value'])) . '</td>';
+		print '<td>' . (is_numeric($s['Value']) ? number_format_i18n($s['Value'], -1) : html_escape($s['Value'])) . '</td>';
 		form_end_row();
 	}
 }

@@ -220,7 +220,7 @@ function run_poller() {
 
 	debug('Cacti Data Collector');
 
-	$command = ' -q ' . CACTI_PATH_BASE . '/poller.php --force' . ($debug ? ' --debug':'');
+	$command = ' -q ' . CACTI_PATH_BASE . '/poller.php --force' . ($debug ? ' --debug' : '');
 
 	$php_binary = read_config_option('path_php_binary');
 

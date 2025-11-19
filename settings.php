@@ -119,7 +119,7 @@ function display_settings() {
 
 	if (cacti_sizeof($tabs)) {
 		foreach (array_keys($tabs) as $tab_short_name) {
-			print "<li id='$tab_short_name' class='subTab" . (!in_array($tab_short_name, $system_tabs, true) ? ' pluginTab':'') . "'><a " . (($tab_short_name == $current_tab) ? "class='selected'" : "class=''") . " href='" . html_escape("settings.php?tab=$tab_short_name") . "'>" . $tabs[$tab_short_name] . '</a></li>';
+			print "<li id='$tab_short_name' class='subTab" . (!in_array($tab_short_name, $system_tabs, true) ? ' pluginTab' : '') . "'><a " . (($tab_short_name == $current_tab) ? "class='selected'" : "class=''") . " href='" . html_escape("settings.php?tab=$tab_short_name") . "'>" . $tabs[$tab_short_name] . '</a></li>';
 		}
 	}
 
@@ -257,11 +257,11 @@ function display_settings() {
 	var rrdArchivePath = '';
 	var prevSearch     = $('#filter').val();
 	var smtpPath       = '';
-	var currentTab     = '<?php print $current_tab;?>';
-	var dataCollectors = '<?php print $data_collectors;?>';
-	var permsTitle     = '<?php print __esc('Changing Permission Model Warning');?>';
-	var permsHeader    = '<?php print __esc('Changing Permission Model will alter a users effective Graph permissions.');?>';
-	var permsMessage   = '<?php print __esc('After you change the Graph Permission Model you should audit your Users and User Groups Effective Graph permission to ensure that you still have adequate control of your Graphs.  NOTE: If you want to restrict all Graphs at the Device or Graph Template Graph Permission Model, the default Graph Policy should be set to \'Deny\'.');?>';
+	var currentTab     = '<?php print $current_tab; ?>';
+	var dataCollectors = '<?php print $data_collectors; ?>';
+	var permsTitle     = '<?php print __esc('Changing Permission Model Warning'); ?>';
+	var permsHeader    = '<?php print __esc('Changing Permission Model will alter a users effective Graph permissions.'); ?>';
+	var permsMessage   = '<?php print __esc('After you change the Graph Permission Model you should audit your Users and User Groups Effective Graph permission to ensure that you still have adequate control of your Graphs.  NOTE: If you want to restrict all Graphs at the Device or Graph Template Graph Permission Model, the default Graph Policy should be set to \'Deny\'.'); ?>';
 
 	$(function() {
 		$('#filter').keyup(function() {
@@ -285,11 +285,11 @@ function display_settings() {
 			loadUrl({url: strURL, scroll: true, force: false, loadType: 'noheader'});
 		});
 
-		$('input[value="<?php print __esc('Save');?>"]').unbind().click(function(event) {
+		$('input[value="<?php print __esc('Save'); ?>"]').unbind().click(function(event) {
 			event.preventDefault();
 
 			if (parseInt($('#cron_interval').val()) < parseInt($('#poller_interval').val())) {
-				$('#message_container').html('<div id="message" class="textError messageBox"><?php print __('Poller Interval must be less than Cron Interval');?></div>').show().delay(4000).slideUp('fast', function() {
+				$('#message_container').html('<div id="message" class="textError messageBox"><?php print __('Poller Interval must be less than Cron Interval'); ?></div>').show().delay(4000).slideUp('fast', function() {
 					$('#message_container').empty();
 				});
 				return false;
@@ -325,21 +325,21 @@ function display_settings() {
 				menuHeight: $(window).height()*.7,
 				menuWidth: 230,
 				linkInfo: faIcons,
-				noneSelectedText: '<?php print __('Select Plugin(s)');?>',
+				noneSelectedText: '<?php print __('Select Plugin(s)'); ?>',
 				selectedText: function(numChecked, numTotal, checkedItems) {
-					myReturn = numChecked + ' <?php print __('Plugins Selected');?>';
+					myReturn = numChecked + ' <?php print __('Plugins Selected'); ?>';
 					return myReturn;
 				},
-				checkAllText: '<?php print __('All');?>',
-				uncheckAllText: '<?php print __('None');?>',
+				checkAllText: '<?php print __('All'); ?>',
+				uncheckAllText: '<?php print __('None'); ?>',
 				uncheckall: function() {
 					$(this).multiselect('widget').find(':checkbox:first').each(function() {
 						$(this).prop('checked', true);
 					});
 				}
 			}).multiselectfilter( {
-				label: '<?php print __('Search');?>',
-				placeholder: '<?php print __('Enter keyword');?>',
+				label: '<?php print __('Search'); ?>',
+				placeholder: '<?php print __('Enter keyword'); ?>',
 				width: '150'
 			});
 
@@ -347,21 +347,21 @@ function display_settings() {
 				menuHeight: $(window).height()*.7,
 				menuWidth: 230,
 				linkInfo: faIcons,
-				noneSelectedText: '<?php print __('Select File(s)');?>',
+				noneSelectedText: '<?php print __('Select File(s)'); ?>',
 				selectedText: function(numChecked, numTotal, checkedItems) {
-					myReturn = numChecked + ' <?php print __('Files Selected');?>';
+					myReturn = numChecked + ' <?php print __('Files Selected'); ?>';
 					return myReturn;
 				},
-				checkAllText: '<?php print __('All');?>',
-				uncheckAllText: '<?php print __('None');?>',
+				checkAllText: '<?php print __('All'); ?>',
+				uncheckAllText: '<?php print __('None'); ?>',
 				uncheckAll: function() {
 					$(this).multiselect('widget').find(':checkbox:first').each(function() {
 						$(this).prop('checked', true);
 					});
 				}
 			}).multiselectfilter( {
-				label: '<?php print __('Search');?>',
-				placeholder: '<?php print __('Enter keyword');?>',
+				label: '<?php print __('Search'); ?>',
+				placeholder: '<?php print __('Enter keyword'); ?>',
 				width: '150'
 			});
 		} else if (currentTab == 'spikes') {
@@ -369,19 +369,19 @@ function display_settings() {
 				menuHeight: $(window).height()*.7,
 				menuWidth: 'auto',
 				linkInfo: faIcons,
-				noneSelectedText: '<?php print __('Select Template(s)');?>',
+				noneSelectedText: '<?php print __('Select Template(s)'); ?>',
 				selectedText: function(numChecked, numTotal, checkedItems) {
-					myReturn = numChecked + ' <?php print __('Templates Selected');?>';
+					myReturn = numChecked + ' <?php print __('Templates Selected'); ?>';
 					$.each(checkedItems, function(index, value) {
 						if (value.value == '0') {
-							myReturn='<?php print __('All Templates Selected');?>';
+							myReturn='<?php print __('All Templates Selected'); ?>';
 							return false;
 						}
 					});
 					return myReturn;
 				},
-				checkAllText: '<?php print __('All');?>',
-				uncheckAllText: '<?php print __('None');?>',
+				checkAllText: '<?php print __('All'); ?>',
+				uncheckAllText: '<?php print __('None'); ?>',
 				uncheckAll: function() {
 					$(this).multiselect('widget').find(':checkbox:first').each(function() {
 						$(this).prop('checked', true);
@@ -411,8 +411,8 @@ function display_settings() {
 					}
 				}
 			}).multiselectfilter( {
-				label: '<?php print __('Search');?>',
-				placeholder: '<?php print __('Enter keyword');?>',
+				label: '<?php print __('Search'); ?>',
+				placeholder: '<?php print __('Enter keyword'); ?>',
 				width: '150'
 			});
 		} else if (currentTab == 'data') {
@@ -448,8 +448,8 @@ function display_settings() {
 				}
 			}).trigger('change');
 		} else if (currentTab == 'mail') {
-			$('#row_settings_email_header div.formHeaderText').append('<div id="emailtest" class="emailtest"><?php print __('Send a Test Email');?></div>');
-			$('#row_settings_oauth2_header div.formHeaderText').append('<div id="oauth2token" class="emailtest"><?php print __('Generate OAuth2 Refresh Token in new window');?></div>');
+			$('#row_settings_email_header div.formHeaderText').append('<div id="emailtest" class="emailtest"><?php print __('Send a Test Email'); ?></div>');
+			$('#row_settings_oauth2_header div.formHeaderText').append('<div id="oauth2token" class="emailtest"><?php print __('Generate OAuth2 Refresh Token in new window'); ?></div>');
 
 			initMail();
 
@@ -460,7 +460,7 @@ function display_settings() {
 			$('#emailtest').click(function() {
 				$.get('settings.php?action=send_test')
 					.done(function(data) {
-						$('body').append('<div id="testmail" title="<?php print __esc('Test Email Results');?>"></div>');
+						$('body').append('<div id="testmail" title="<?php print __esc('Test Email Results'); ?>"></div>');
 						$('#testmail').html(data);
 
 						$('#testmail').dialog({
@@ -487,7 +487,7 @@ function display_settings() {
 			});
 
 			$('#oauth2token').click(function() {
-				window.open('<?php print read_config_option('settings_oauth2_redirect_uri');?>', '_blank');
+				window.open('<?php print read_config_option('settings_oauth2_redirect_uri'); ?>', '_blank');
 			});
 		} else if (currentTab == 'visual') {
 			currentTheme = $('#selected_theme').val();

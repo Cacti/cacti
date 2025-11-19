@@ -824,7 +824,7 @@ function form_hidden_box(string $form_name, int|string $form_previous_value, int
 function form_dropdown(string $form_name, array $form_data, string $column_display, int|string $column_id, mixed $form_previous_value, string $form_none_entry, mixed $form_default_value, string $class = '', string $on_change = '', string $display_name = '') : void {
 	global $form_id;
 
-    if ($form_previous_value == '') {
+	if ($form_previous_value == '') {
 		$form_previous_value = $form_default_value;
 	}
 
@@ -1719,9 +1719,9 @@ function form_confirm($title_text, $body_text, $cancel_url, $action_url) { ?>
 						<td class='textHeaderDark'><?php print $title_text; ?></td>
 					</tr>
 					<?php
-					    form_area($body_text);
-                	    form_confirm_buttons($action_url, $cancel_url);
-	                ?>
+						form_area($body_text);
+	form_confirm_buttons($action_url, $cancel_url);
+	?>
 				</table>
 			</td>
 		</tr>
@@ -1763,19 +1763,19 @@ function form_confirm_buttons($action_url, $cancel_url) {
  */
 function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $ajax = true) {
 	global $form_id;
-    $catp = 'cancel';
+	$catp = 'cancel';
 	$calt = __('Cancel');
 
 	if (empty($force_type) || $force_type == 'return') {
 		if (isempty_request_var($key_field)) {
-            $atp = 'create';
+			$atp = 'create';
 			$alt = __esc('Create');
 		} else {
 			$atp = 'save';
 			$alt = __esc('Save');
 
 			if ($force_type != '') {
-				$catp = 'return';
+				$catp   = 'return';
 				$calt   = __esc('Return');
 			} else {
 				$calt   = __esc('Cancel');
@@ -1786,7 +1786,7 @@ function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $aja
 		$alt = __esc('Save');
 	} elseif ($force_type == 'create') {
 		$atp = 'create';
-        $alt = __esc('Create');
+		$alt = __esc('Create');
 	} elseif ($force_type == 'close') {
 		$atp = 'close';
 		$alt = __esc('Close');
@@ -1847,8 +1847,8 @@ function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $aja
  * @return void
  */
 function form_save_buttons($buttons, $cancel_url = '', $force_type = '', $key_field = 'id', $ajax = true) {
-    global $form_id;
-    $catp = 'cancel';
+	global $form_id;
+	$catp = 'cancel';
 	$calt = __('Cancel');
 
 	if ($cancel_url == '') {
@@ -1867,7 +1867,7 @@ function form_save_buttons($buttons, $cancel_url = '', $force_type = '', $key_fi
 			$alt = __esc('Save');
 
 			if ($force_type != '') {
-				$catp = 'return';
+				$catp   = 'return';
 				$calt   = __esc('Return');
 			} else {
 				$calt   = __esc('Cancel');
@@ -1939,9 +1939,9 @@ function form_save_buttons($buttons, $cancel_url = '', $force_type = '', $key_fi
 						print " onclick='" . html_escape($onclick, ENT_QUOTES) . "'";
 					}
 
-                    if (!empty($form_id)) {
-                        print " form='" . $form_id . "'";
-                    }
+					if (!empty($form_id)) {
+						print " form='" . $form_id . "'";
+					}
 
 					print '>' . html_escape($b['value']) . '</button>' . PHP_EOL;
 				} ?>

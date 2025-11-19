@@ -74,15 +74,15 @@ function rrdcheck_display_problems() {
 	$secsback = get_request_var('age');
 
 	if (get_request_var('age') == 0) {
-		$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') . 'test_date >= ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'test_date >= ?';
 		$sql_params[] = date('Y-m-d H:i:s', time() - (7200));
 	} else {
-		$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') . 'test_date <= ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'test_date <= ?';
 		$sql_params[] = date('Y-m-d H:i:s', (time() - $secsback));
 	}
 
 	if (get_request_var('filter') != '') {
-		$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') .
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') .
 			'(message LIKE ? OR h.description LIKE ? OR dtd.name_cache LIKE ? OR dtd.local_data_id LIKE ?)';
 
 		$sql_params[] = '%' . get_request_var('filter') . '%';

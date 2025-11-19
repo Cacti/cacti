@@ -79,11 +79,11 @@ function check_tmp_dir() {
 	} else {
 		?>
 		<script type='text/javascript'>
-		var mixedReasonTitle = '<?php print __('Key Generation Required to Use Tool');?>';
-		var mixedOnPage      = '<?php print __esc('Packaging Key Information Not Found');?>';
+		var mixedReasonTitle = '<?php print __('Key Generation Required to Use Tool'); ?>';
+		var mixedOnPage      = '<?php print __esc('Packaging Key Information Not Found'); ?>';
 
 		sessionMessage = {
-			message: '<?php print __('In order to use this Packaging Tool, you must first run the <b><i class="deviceUp">genkey.php</i></b> script in the cli directory.  Once that is complete, you will have a public and private key used to sign your packages.');?>',
+			message: '<?php print __('In order to use this Packaging Tool, you must first run the <b><i class="deviceUp">genkey.php</i></b> script in the cli directory.  Once that is complete, you will have a public and private key used to sign your packages.'); ?>',
 			level: MESSAGE_LEVEL_MIXED
 		};
 
@@ -110,8 +110,8 @@ function form_actions() {
 
 	$package_location = get_filter_request_var('package_location');
 	$profile_id       = get_filter_request_var('data_source_profile');
-	$remove_orphans   = isset_request_var('remove_orphans') ? true:false;
-	$replace_svalues  = isset_request_var('replace_svalues') ? true:false;
+	$remove_orphans   = isset_request_var('remove_orphans') ? true : false;
+	$replace_svalues  = isset_request_var('replace_svalues') ? true : false;
 	$preview          = false;
 
 	$package = json_decode(get_repo_manifest_file($package_location), true);
@@ -258,7 +258,7 @@ function form_actions() {
 			$package  = '';
 
 			foreach ($packages as $index => $p) {
-				$package .= ($index > 0 ? ', ':'') . html_escape($p);
+				$package .= ($index > 0 ? ', ' : '') . html_escape($p);
 
 				$found_pkg_array[$p] = $p;
 			}
@@ -267,7 +267,7 @@ function form_actions() {
 			$status   = '';
 
 			foreach ($statuses as $index => $s) {
-				$status .= ($index > 0 ? ', ':'') . html_escape(ucfirst($s));
+				$status .= ($index > 0 ? ', ' : '') . html_escape(ucfirst($s));
 			}
 
 			$pkg_import_list .= '<tr>' .
@@ -378,8 +378,8 @@ function form_actions() {
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='package_location' value='" . get_request_var('package_location') . "'>
 			<input type='hidden' name='data_source_profile' value='" . get_request_var('data_source_profile') . "'>
-			<input type='hidden' name='remove_orphans' value='" . (isset_request_var('remove_orphans') ? 'on':'') . "'>
-			<input type='hidden' name='replace_svalues' value='" . (isset_request_var('replace_svalues') ? 'on':'') . "'>
+			<input type='hidden' name='remove_orphans' value='" . (isset_request_var('remove_orphans') ? 'on' : '') . "'>
+			<input type='hidden' name='replace_svalues' value='" . (isset_request_var('replace_svalues') ? 'on' : '') . "'>
 			<input type='hidden' name='selected_items' value='" . (isset($pkg_array) ? serialize($pkg_array) : '') . "'>
 			<input type='hidden' name='selected_hashes' value='" . (isset($pkg_import_array) ? serialize($pkg_import_array) : '') . "'>
 			<input type='hidden' name='selected_files' value='" . (isset($pkg_file_array) ? serialize($pkg_file_array) : '') . "'>
@@ -760,11 +760,11 @@ function package_verify_key() {
 		}
 
 		foreach ($authors as $author => $email) {
-			$message .= ($message != '' ? '<br>':'') . __('<b>Author:</b> &lt;%s&gt; %s.<br>', $package['author'], $package['email']);
+			$message .= ($message != '' ? '<br>' : '') . __('<b>Author:</b> &lt;%s&gt; %s.<br>', $package['author'], $package['email']);
 		}
 
 		foreach ($packages as $package) {
-			$message .= ($message != '' ? '<br>':'') . __('<b>Package:</b> %s', $package);
+			$message .= ($message != '' ? '<br>' : '') . __('<b>Package:</b> %s', $package);
 		}
 
 		$message .= '<br><br>' . __('Press \'Ok\' to start Trusting the Signer.  Press \'Cancel\' or hit escape to Cancel.');
@@ -845,8 +845,8 @@ function package_get_details() {
 	$package_ids      = get_filter_request_var('package_ids', FILTER_VALIDATE_IS_NUMERIC_LIST);
 	$package_location = get_filter_request_var('package_location');
 	$profile_id       = get_filter_request_var('data_source_profile');
-	$remove_orphans   = isset_request_var('remove_orphans') ? true:false;
-	$replace_svalues  = isset_request_var('replace_svalues') ? true:false;
+	$remove_orphans   = isset_request_var('remove_orphans') ? true : false;
+	$replace_svalues  = isset_request_var('replace_svalues') ? true : false;
 	$preview          = true;
 
 	$repo = json_decode(get_repo_manifest_file($package_location), true);
@@ -1017,7 +1017,7 @@ function import_display_package_data($templates, $files, $package_name, $filenam
 		html_header_checkbox($display_text, false, '', true, 'file');
 
 		foreach ($files as $pdata => $pfiles) {
-			list($file_package_file, $file_package_name) = explode('|', $pdata);
+			[$file_package_file, $file_package_name] = explode('|', $pdata);
 
 			foreach ($pfiles as $pfile => $status) {
 				$id = 'file_' . base64_encode(
@@ -1048,18 +1048,18 @@ function import_display_package_data($templates, $files, $package_name, $filenam
 							'&package_name=' . $file_package_name .
 							'&filename=' . str_replace(CACTI_PATH_BASE . '/', '', $pfile);
 
-						$nstatus .= ($nstatus != '' ? ', ':'') .
+						$nstatus .= ($nstatus != '' ? ', ' : '') .
 							"<a class='diffme linkEditMain' href='" . html_escape($url) . "'>" . __('Differences') . '</a>';
 					} elseif ($s == 'identical') {
-						$nstatus .= ($nstatus != '' ? ', ':'') . __('Unchanged');
+						$nstatus .= ($nstatus != '' ? ', ' : '') . __('Unchanged');
 					} elseif ($s == 'not writable') {
-						$nstatus .= ($nstatus != '' ? ', ':'') . __('Not Writable');
+						$nstatus .= ($nstatus != '' ? ', ' : '') . __('Not Writable');
 					} elseif ($s == 'writable') {
-						$nstatus .= ($nstatus != '' ? ', ':'') . __('Writable');
+						$nstatus .= ($nstatus != '' ? ', ' : '') . __('Writable');
 					} elseif ($s == 'new') {
-						$nstatus .= ($nstatus != '' ? ', ':'') . __('New');
+						$nstatus .= ($nstatus != '' ? ', ' : '') . __('New');
 					} else {
-						$nstatus .= ($nstatus != '' ? ', ':'') . __('Unknown');
+						$nstatus .= ($nstatus != '' ? ', ' : '') . __('Unknown');
 					}
 				}
 
@@ -1174,7 +1174,7 @@ function import_display_package_data($templates, $files, $package_name, $filenam
 				}
 
 				if (cacti_sizeof($orphan_array)) {
-					$diff_details .= ($diff_details != '' ? '<br>':'') . __('Orphans') . '<br>' . implode('<br>', $orphan_array);
+					$diff_details .= ($diff_details != '' ? '<br>' : '') . __('Orphans') . '<br>' . implode('<br>', $orphan_array);
 				}
 
 				form_selectable_cell($diff_details, $id, '', 'white-space:pre-wrap');
@@ -1231,7 +1231,7 @@ function import_display_package_data($templates, $files, $package_name, $filenam
 
 				$('#dialog').dialog({
 					autoOpen: true,
-					title: '<?php print __('File Differences for: ');?>' + filename,
+					title: '<?php print __('File Differences for: '); ?>' + filename,
 					width: '60%',
 					maxWidth: '90%',
 					maxHeight: 600
@@ -1368,7 +1368,7 @@ function get_import_form($repo_id, $default_profile) {
 			'method'        => 'drop_sql',
 			'sql'           => 'SELECT id, name FROM data_source_profiles ORDER BY name',
 			'none_value'    => __('Create New from Template'),
-			'value'         => isset_request_var('import_dsp') ? get_filter_request_var('import_dsp'):'',
+			'value'         => isset_request_var('import_dsp') ? get_filter_request_var('import_dsp') : '',
 			'default'       => $default_profile
 		],
 		'graph_header' => [
@@ -1937,7 +1937,7 @@ function get_repo_manifest_file($repo_id) {
 function is_tmp_writable() {
 	$tmp_dir  = sys_get_temp_dir();
 	$tmp_len  = strlen($tmp_dir);
-	$tmp_dir .= ($tmp_len !== 0 && substr($tmp_dir, -$tmp_len) === '/') ? '': '/';
+	$tmp_dir .= ($tmp_len !== 0 && substr($tmp_dir, -$tmp_len) === '/') ? '' : '/';
 	$is_tmp   = is_resource_writable($tmp_dir);
 
 	return $is_tmp;
@@ -1985,9 +1985,9 @@ function package_prepare_import_array(&$templates, &$files, $package_name, $pack
 					$templates[$hash]['package_file'] = $package_filename;
 					$templates[$hash]['status']       = $vals['type'];
 				} else {
-					$templates[$hash]['package']      .= '<br>' . $package_name;
+					$templates[$hash]['package'] .= '<br>' . $package_name;
 					$templates[$hash]['package_file'] .= '<br>' . $package_filename;
-					$templates[$hash]['status']       .= '<br>' . $vals['type'];
+					$templates[$hash]['status'] .= '<br>' . $vals['type'];
 				}
 
 				$templates[$hash]['type']      = $type;

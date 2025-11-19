@@ -408,7 +408,7 @@ function reports_form_actions() {
 
 		if ($selected_items != false) {
 			foreach ($selected_items as $report) {
-				list($type, $report_id) = explode('_', $report);
+				[$type, $report_id] = explode('_', $report);
 
 				if (get_nfilter_request_var('drp_action') == REPORTS_DELETE) { // delete
 					if ($type == 'reports') {
@@ -475,7 +475,7 @@ function reports_form_actions() {
 		/* loop through each of the graphs selected on the previous page and get more info about them */
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([a-z_0-9]+)$/', $var, $matches)) {
-				list($type, $id) = explode('_', $matches[1]);
+				[$type, $id] = explode('_', $matches[1]);
 				/* ================= input validation ================= */
 				input_validate_input_number($id);
 				/* ==================================================== */

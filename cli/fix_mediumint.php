@@ -37,7 +37,7 @@ $local = false;
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter, 2);
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
 			$value = '';
@@ -150,18 +150,18 @@ function database_fix_mediumint_columns() {
 				}
 
 				if (strtolower($attribs['Extra']) == 'auto_increment') {
-					$sql .= ($i == 0 ? '':', ') . ' MODIFY COLUMN ' . $c . ' int(10) unsigned NOT NULL AUTO_INCREMENT';
+					$sql .= ($i == 0 ? '' : ', ') . ' MODIFY COLUMN ' . $c . ' int(10) unsigned NOT NULL AUTO_INCREMENT';
 				} else {
 					if ($c != 'id') {
 						$known_columns[$c] = $c;
 					}
 
 					if ($attribs['Default'] != '') {
-						$sql .= ($i == 0 ? '':', ') . ' MODIFY COLUMN ' . $c . ' int(10) unsigned NOT NULL default "' . $attribs['Default'] . '"';
+						$sql .= ($i == 0 ? '' : ', ') . ' MODIFY COLUMN ' . $c . ' int(10) unsigned NOT NULL default "' . $attribs['Default'] . '"';
 					} elseif ($attribs['Null'] == 'NO') {
-						$sql .= ($i == 0 ? '':', ') . ' MODIFY COLUMN ' . $c . ' int(10) unsigned NOT NULL';
+						$sql .= ($i == 0 ? '' : ', ') . ' MODIFY COLUMN ' . $c . ' int(10) unsigned NOT NULL';
 					} else {
-						$sql .= ($i == 0 ? '':', ') . ' MODIFY COLUMN ' . $c . ' int(10) unsigned DEFAULT NULL';
+						$sql .= ($i == 0 ? '' : ', ') . ' MODIFY COLUMN ' . $c . ' int(10) unsigned DEFAULT NULL';
 					}
 				}
 
@@ -203,14 +203,14 @@ function database_fix_mediumint_columns() {
 					}
 
 					if (strtolower($attribs['Extra']) == 'auto_increment') {
-						$sql .= ($i == 0 ? '':', ') . ' MODIFY COLUMN ' . $field . ' int(10) unsigned NOT NULL AUTO_INCREMENT';
+						$sql .= ($i == 0 ? '' : ', ') . ' MODIFY COLUMN ' . $field . ' int(10) unsigned NOT NULL AUTO_INCREMENT';
 					} else {
 						if ($attribs['Default'] != '') {
-							$sql .= ($i == 0 ? '':', ') . ' MODIFY COLUMN ' . $field . ' int(10) unsigned NOT NULL default "' . $attribs['Default'] . '"';
+							$sql .= ($i == 0 ? '' : ', ') . ' MODIFY COLUMN ' . $field . ' int(10) unsigned NOT NULL default "' . $attribs['Default'] . '"';
 						} elseif ($attribs['Null'] == 'NO') {
-							$sql .= ($i == 0 ? '':', ') . ' MODIFY COLUMN ' . $field . ' int(10) unsigned NOT NULL';
+							$sql .= ($i == 0 ? '' : ', ') . ' MODIFY COLUMN ' . $field . ' int(10) unsigned NOT NULL';
 						} else {
-							$sql .= ($i == 0 ? '':', ') . ' MODIFY COLUMN ' . $field . ' int(10) unsigned DEFAULT NULL';
+							$sql .= ($i == 0 ? '' : ', ') . ' MODIFY COLUMN ' . $field . ' int(10) unsigned DEFAULT NULL';
 						}
 					}
 

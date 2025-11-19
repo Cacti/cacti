@@ -39,15 +39,15 @@ if ($config['poller_id'] > 1) {
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$debug		    = false;
-$host_id	   = 'all';
-$query_id	  = '';
-$host_descr	= '';
+$debug      = false;
+$host_id    = 'all';
+$query_id   = '';
+$host_descr = '';
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter, 2);
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
 			$value = '';

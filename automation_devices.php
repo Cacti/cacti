@@ -369,7 +369,7 @@ function display_discovery_page() {
 	$ping_method         = read_config_option('ping_method');
 	$availability_method = read_config_option('availability_method');
 
-	$status = ["<span class='deviceDown'>" . __('Down') . '</span>',"<span class='deviceUp'>" . __('Up') . '</span>'];
+	$status = ["<span class='deviceDown'>" . __('Down') . '</span>', "<span class='deviceUp'>" . __('Up') . '</span>'];
 
 	if (cacti_sizeof($results)) {
 		foreach ($results as $host) {
@@ -459,27 +459,27 @@ function get_discovery_results(&$total_rows = 0, $rows = 0, $export = false) {
 	$sql_params = [];
 
 	if ($status != '-1') {
-		$sql_where   .= 'WHERE up = ?';
+		$sql_where .= 'WHERE up = ?';
 		$sql_params[] = $status;
 	}
 
 	if ($network > 0) {
-		$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') . 'network_id = ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'network_id = ?';
 		$sql_params[] = $network;
 	}
 
 	if ($snmp != '-1') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . 'snmp = ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'snmp = ?';
 		$sql_params[] = $snmp;
 	}
 
 	if ($os != '-1' && in_array($os, $os_arr, true)) {
-		$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') . 'os = ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'os = ?';
 		$sql_params[] = $network;
 	}
 
 	if ($filter != '') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') .
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') .
 			'(hostname LIKE ? OR ip LIKE ? OR sysName LIKE ? OR sysDescr LIKE ? OR sysLocation LIKE ? OR sysContact LIKE ?)';
 
 		$sql_params[] = "%$filter%";
@@ -661,7 +661,7 @@ function export_discovery_results() {
 				$host['$h'] = str_replace(',','',$r);
 			}
 
-			print ($host['hostname'] == '' ? __('Not Detected'):$host['hostname']) . ',';
+			print ($host['hostname'] == '' ? __('Not Detected') : $host['hostname']) . ',';
 			print $host['ip'] . ',';
 			print export_data($host['sysName']) . ',';
 			print export_data($host['sysLocation']) . ',';
@@ -669,8 +669,8 @@ function export_discovery_results() {
 			print export_data($host['sysDescr']) . ',';
 			print export_data($host['os']) . ',';
 			print export_data($uptime) . ',';
-			print ($host['snmp'] == 1 ? __('Up'):__('Down')) . ',';
-			print ($host['up'] == 1 ? __('Up'):__('Down')) . "\n";
+			print ($host['snmp'] == 1 ? __('Up') : __('Down')) . ',';
+			print ($host['up'] == 1 ? __('Up') : __('Down')) . "\n";
 		}
 	}
 }

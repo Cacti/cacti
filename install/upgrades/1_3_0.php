@@ -368,7 +368,7 @@ function upgrade_to_1_3_0() {
 					$alter .= 'ALTER TABLE `' . $table_name . '`';
 				}
 
-				$alter .= ($count > 0 ? ',':'') . " ADD COLUMN `$column` int(10) UNSIGNED NOT NULL default '0' AFTER `$after`";
+				$alter .= ($count > 0 ? ',' : '') . " ADD COLUMN `$column` int(10) UNSIGNED NOT NULL default '0' AFTER `$after`";
 
 				$count++;
 
@@ -399,7 +399,7 @@ function upgrade_to_1_3_0() {
 	$data['columns'][]  = ['name' => 'repo_branch', 'type' => 'varchar(20)', 'NULL' => false, 'default' => ''];
 	$data['columns'][]  = ['name' => 'repo_api_key', 'type' => 'varchar(100)', 'NULL' => false, 'default' => ''];
 	$data['primary']    = 'id';
-	$data['keys'][]     = ['name' => 'location_branch', 'columns' => ['repo_location','repo_branch']];
+	$data['keys'][]     = ['name' => 'location_branch', 'columns' => ['repo_location', 'repo_branch']];
 	$data['type']       = 'InnoDB';
 	$data['charset']    = 'utf8mb4';
 	$data['collate']    = 'utf8mb4_unicode_ci';
@@ -423,8 +423,8 @@ function upgrade_to_1_3_0() {
 	$data['row_format'] = 'Dynamic';
 	db_update_table('package_public_keys', $data);
 
-	$repos[] = [1,'Local Packages','on','on',1,'/var/www/html/cacti/install/templates','',''];
-	$repos[] = [2,'TheWitness Percona','on','',0,'https://github.com/TheWitness/percona_packages','main',''];
+	$repos[] = [1, 'Local Packages', 'on', 'on', 1, '/var/www/html/cacti/install/templates', '', ''];
+	$repos[] = [2, 'TheWitness Percona', 'on', '', 0, 'https://github.com/TheWitness/percona_packages', 'main', ''];
 
 	$repos = db_fetch_cell('SELECT COUNT(*) FROM package_repositories');
 
@@ -580,7 +580,7 @@ function upgrade_to_1_3_0() {
 	$data['columns'][]  = ['name' => 'orphan', 'unsigned' => true, 'type' => 'tinyint(3)', 'NULL' => false, 'default' => '0'];
 	$data['columns'][]  = ['name' => 'errored', 'unsigned' => true, 'type' => 'tinyint(3)', 'NULL' => false, 'default' => '0'];
 	$data['primary']    = 'id';
-	$data['keys'][]     = ['name' => 'host_id_snmp_query_id', 'columns' => ['host_id','snmp_query_id']];
+	$data['keys'][]     = ['name' => 'host_id_snmp_query_id', 'columns' => ['host_id', 'snmp_query_id']];
 	$data['keys'][]     = ['name' => 'snmp_index', 'columns' => ['snmp_index']];
 	$data['keys'][]     = ['name' => 'data_template_id', 'columns' => ['data_template_id']];
 	$data['keys'][]     = ['name' => 'snmp_query_id', 'columns' => ['snmp_query_id']];
@@ -948,7 +948,7 @@ function upgrade_dsstats() {
 			}
 		}
 
-		$suffix = ($i > 0 ? ',':'') . ' DROP PRIMARY KEY,
+		$suffix = ($i > 0 ? ',' : '') . ' DROP PRIMARY KEY,
 			ADD PRIMARY KEY(local_data_id, rrd_name, cf)';
 
 		if ($db == 'mariadb') {

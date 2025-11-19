@@ -121,17 +121,17 @@ if ($graphs) {
 
 ?>
 <script type='text/javascript'>
-	var cactiVersion='<?php print $config['cacti_version'];?>';
-	var cactiServerOS='<?php print CACTI_SERVER_OS;?>';
-	var cactiAction='<?php print get_filter_request_var('action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([-a-zA-Z0-9_\s]+)$/']]);?>';
-	var theme='<?php print get_selected_theme();?>';
-	var refreshIsLogout=<?php print $refreshIsLogout;?>;
-	var refreshPage='<?php print $myrefresh['page'];?>';
-	var refreshMSeconds=<?php print $myrefresh['seconds'] * 1000;?>;
-	var refreshFunction='<?php print $refresh_function;?>';
+	var cactiVersion='<?php print $config['cacti_version']; ?>';
+	var cactiServerOS='<?php print CACTI_SERVER_OS; ?>';
+	var cactiAction='<?php print get_filter_request_var('action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([-a-zA-Z0-9_\s]+)$/']]); ?>';
+	var theme='<?php print get_selected_theme(); ?>';
+	var refreshIsLogout=<?php print $refreshIsLogout; ?>;
+	var refreshPage='<?php print $myrefresh['page']; ?>';
+	var refreshMSeconds=<?php print $myrefresh['seconds'] * 1000; ?>;
+	var refreshFunction='<?php print $refresh_function; ?>';
 	var previousPage='';
-	var sessionLocale='<?php print CACTI_LOCALE;?>';
-	var sessionNotices=<?php print display_output_messages();?>;
+	var sessionLocale='<?php print CACTI_LOCALE; ?>';
+	var sessionNotices=<?php print display_output_messages(); ?>;
     var sessionMessage={};
-	var csrfMagicToken='<?php print csrf_get_tokens();?>';
+	var csrfMagicToken='<?php print csrf_get_tokens(); ?>';
 </script>

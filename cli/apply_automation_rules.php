@@ -58,7 +58,7 @@ $ids         = [];
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter, 2);
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
 			$value = '';
@@ -128,7 +128,7 @@ if (cacti_sizeof($ids)) {
 
 // Check hostname
 if ($hostname != '') {
-	$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . '(';
+	$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . '(';
 	$regex = false;
 
 	if (validate_is_regex($hostname)) {
@@ -137,13 +137,13 @@ if ($hostname != '') {
 	}
 
 	$hostname = '%' . $hostname . '%';
-	$sql_where .= ($regex == true ? ' OR ':'') . 'h.hostname LIKE ' . db_qstr($hostname) . ')';
+	$sql_where .= ($regex == true ? ' OR ' : '') . 'h.hostname LIKE ' . db_qstr($hostname) . ')';
 }
 
 $dregex = false;
 
 if ($description != '') {
-	$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . '(';
+	$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . '(';
 	$regex = false;
 
 	if (validate_is_regex($description)) {
@@ -152,7 +152,7 @@ if ($description != '') {
 	}
 
 	$description = '%' . $description . '%';
-	$sql_where .= ($regex == true ? ' OR ':'') . 'h.description LIKE ' . db_qstr($description) . ')';
+	$sql_where .= ($regex == true ? ' OR ' : '') . 'h.description LIKE ' . db_qstr($description) . ')';
 }
 
 $devices = array_rekey(

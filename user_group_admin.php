@@ -400,21 +400,21 @@ function form_actions() {
 
 		if ($selected_items != false) {
 			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
-				for ($i=0;($i < cacti_count($selected_items));$i++) {
+				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					user_group_remove($selected_items[$i]);
 
 					api_plugin_hook_function('user_group_remove', $selected_items[$i]);
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '2') { /* copy */
-				for ($i=0;($i < cacti_count($selected_items));$i++) {
+				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					user_group_copy($selected_items[$i], get_nfilter_request_var('group_prefix'));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '3') { /* enable */
-				for ($i=0;($i < cacti_count($selected_items));$i++) {
+				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					user_group_enable($selected_items[$i]);
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '4') { /* disable */
-				for ($i=0;($i < cacti_count($selected_items));$i++) {
+				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					user_group_disable($selected_items[$i]);
 				}
 			}
@@ -617,14 +617,14 @@ function user_group_members_edit($header_label) {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = ($sql_where != '' ? ' AND ':'WHERE ') . '(username LIKE ? OR full_name LIKE ?)';
+		$sql_where = ($sql_where != '' ? ' AND ' : 'WHERE ') . '(username LIKE ? OR full_name LIKE ?)';
 
 		$sql_params[] = '%' . get_request_var('filter') . '%';
 		$sql_params[] = '%' . get_request_var('filter') . '%';
 	}
 
 	if (get_request_var('associated') != 'false') {
-		$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') . 'user_auth_group_members.group_id = ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'user_auth_group_members.group_id = ?';
 		$sql_params[] = get_request_var('id', 0);
 	}
 
@@ -685,7 +685,7 @@ function user_group_members_edit($header_label) {
 			} else {
 				form_selectable_cell('<span class="accessRestricted">' . __('Non Member') . '</span>', $g['id']);
 			}
-			form_selectable_cell(($g['enabled'] == 'on' ? __('Enabled'):__('Disabled')), $g['id']);
+			form_selectable_cell(($g['enabled'] == 'on' ? __('Enabled') : __('Disabled')), $g['id']);
 			form_selectable_cell($realm, $g['id']);
 
 			form_checkbox_cell($g['full_name'], $g['id']);
@@ -762,20 +762,20 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			?>
 			<tr class='even'>
 				<td><table><tr>
-				<td class='nowrap'><?php print __('Default Graph Policy for this User Group');?></td>
+				<td class='nowrap'><?php print __('Default Graph Policy for this User Group'); ?></td>
 				<td>
 					<?php form_dropdown('policy_graphs', $policy_array, '', '', $policy['policy_graphs'], '', ''); ?>
 				</td>
 				<td>
-					<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' name='update_policy'><?php print __esc('Update');?></button>
-					<input type='hidden' name='tab' value='<?php print $tab;?>'>
-					<input type='hidden' name='id' value='<?php print get_request_var('id');?>'>
+					<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' name='update_policy'><?php print __esc('Update'); ?></button>
+					<input type='hidden' name='tab' value='<?php print $tab; ?>'>
+					<input type='hidden' name='id' value='<?php print get_request_var('id'); ?>'>
 					<input type="hidden" name='update_policy' value='1'>
 				</td>
 				</tr></table></td>
 			</tr>
 			<tr class='even'>
-				<td><br><?php print $policy_note;?></td>
+				<td><br><?php print $policy_note; ?></td>
 			</tr>
 			<?php
 
@@ -805,9 +805,9 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			if (get_request_var('graph_template_id') == '-1') {
 				/* Show all items */
 			} elseif (get_request_var('graph_template_id') == '0') {
-				$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gtg.graph_template_id=0';
+				$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' gtg.graph_template_id=0';
 			} elseif (!isempty_request_var('graph_template_id')) {
-				$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gtg.graph_template_id=' . get_request_var('graph_template_id');
+				$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' gtg.graph_template_id=' . get_request_var('graph_template_id');
 			}
 
 			$policies = db_fetch_assoc_prepared("SELECT uag.id, 'group' AS type, uag.name,
@@ -946,14 +946,14 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			?>
 			<tr class='even'>
 				<td><table><tr>
-				<td class='nowrap'><?php print __('Default Device Policy for this User Group');?></td>
+				<td class='nowrap'><?php print __('Default Device Policy for this User Group'); ?></td>
 				<td>
 					<?php form_dropdown('policy_hosts',$policy_array,'','',$policy['policy_hosts'],'',''); ?>
 				</td>
 				<td>
-					<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' name='update_policy'><?php print __esc('Update');?></button>
-					<input type='hidden' name='tab' value='<?php print $tab;?>'>
-					<input type='hidden' name='id' value='<?php print get_request_var('id');?>'>
+					<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' name='update_policy'><?php print __esc('Update'); ?></button>
+					<input type='hidden' name='tab' value='<?php print $tab; ?>'>
+					<input type='hidden' name='id' value='<?php print get_request_var('id'); ?>'>
 					<input type="hidden" name='update_policy' value='1'>
 				</td>
 				</tr></table></td>
@@ -978,22 +978,22 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			/* form the 'where' clause for our main sql query */
 			/* form the 'where' clause for our main sql query */
 			if (get_request_var('filter') != '') {
-				$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') . 'h.deleted = "" AND (h.hostname LIKE ? OR h.description LIKE ?)';
+				$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'h.deleted = "" AND (h.hostname LIKE ? OR h.description LIKE ?)';
 				$sql_params[] = '%' . get_request_var('filter') . '%';
 				$sql_params[] = '%' . get_request_var('filter') . '%';
 			} else {
-				$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') . ' h.deleted = ""';
+				$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' h.deleted = ""';
 			}
 
 			if (get_request_var('host_template_id') == '0') {
-				$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') . ' h.host_template_id = 0';
+				$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' h.host_template_id = 0';
 			} elseif (get_request_var('host_template_id') > 0) {
-				$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') . ' h.host_template_id = ?';
+				$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' h.host_template_id = ?';
 				$sql_params[] = get_request_var('host_template_id');
 			}
 
 			if (get_request_var('associated') != 'false') {
-				$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' uagp.group_id = ?';
+				$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' uagp.group_id = ?';
 				$sql_params[] = get_request_var('id', 0);
 			}
 
@@ -1124,14 +1124,14 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			?>
 			<tr class='even'>
 				<td><table><tr>
-				<td class='nowrap'><?php print __('Default Graph Template Policy for this User Group');?></td>
+				<td class='nowrap'><?php print __('Default Graph Template Policy for this User Group'); ?></td>
 				<td>
 					<?php form_dropdown('policy_graph_templates',$policy_array,'','',$policy['policy_graph_templates'],'',''); ?>
 				</td>
 				<td>
-					<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' name='update_policy'><?php print __esc('Update');?></button>
-					<input type='hidden' name='tab' value='<?php print $tab;?>'>
-					<input type='hidden' name='id' value='<?php print get_request_var('id');?>'>
+					<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' name='update_policy'><?php print __esc('Update'); ?></button>
+					<input type='hidden' name='tab' value='<?php print $tab; ?>'>
+					<input type='hidden' name='id' value='<?php print get_request_var('id'); ?>'>
 					<input type="hidden" name='update_policy' value='1'>
 				</td>
 				</tr></table></td>
@@ -1158,7 +1158,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			}
 
 			if (get_request_var('associated') != 'false') {
-				$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (user_auth_group_perms.type = 4 AND user_auth_group_perms.group_id=' . get_request_var('id', 0) . ')';
+				$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' (user_auth_group_perms.type = 4 AND user_auth_group_perms.group_id=' . get_request_var('id', 0) . ')';
 			}
 
 			$total_rows = db_fetch_cell_prepared("SELECT
@@ -1269,14 +1269,14 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			?>
 			<tr class='even'>
 				<td><table><tr>
-				<td class='nowrap'><?php print __('Default Tree Policy for this User Group');?></td>
+				<td class='nowrap'><?php print __('Default Tree Policy for this User Group'); ?></td>
 				<td>
 					<?php form_dropdown('policy_trees',$policy_array,'','',$policy['policy_trees'],'',''); ?>
 				</td>
 				<td>
-					<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' name='update_policy'><?php print __esc('Update');?></button>
-					<input type='hidden' name='tab' value='<?php print $tab;?>'>
-					<input type='hidden' name='id' value='<?php print get_request_var('id');?>'>
+					<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' name='update_policy'><?php print __esc('Update'); ?></button>
+					<input type='hidden' name='tab' value='<?php print $tab; ?>'>
+					<input type='hidden' name='id' value='<?php print get_request_var('id'); ?>'>
 					<input type='hidden' name='update_policy' value='1'>
 				</td>
 				</tr></table></td>
@@ -1302,7 +1302,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			}
 
 			if (get_request_var('associated') != 'false') {
-				$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (user_auth_group_perms.type = 2 AND user_auth_group_perms.group_id=' . get_request_var('id', 0) . ')';
+				$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' (user_auth_group_perms.type = 2 AND user_auth_group_perms.group_id=' . get_request_var('id', 0) . ')';
 			}
 
 			$total_rows = db_fetch_cell('SELECT
@@ -1546,7 +1546,7 @@ function user_group_realms_edit($header_label) {
 
 			unset($all_realms[$realm]);
 
-			$pos = (strpos($user_auth_realms[$realm], '->') !== false ? strpos($user_auth_realms[$realm], '->') + 2:0);
+			$pos = (strpos($user_auth_realms[$realm], '->') !== false ? strpos($user_auth_realms[$realm], '->') + 2 : 0);
 
 			if ($i == 0) {
 				print "<tr class='tableHeader'><th colspan='2'>" . __('Plugin Permissions') . '</th></tr>';
@@ -1582,7 +1582,7 @@ function user_group_realms_edit($header_label) {
 				$old_value = '';
 			}
 
-			$pos = (strpos($user_auth_realms[$realm], '->') !== false ? strpos($user_auth_realms[$realm], '->') + 2:0);
+			$pos = (strpos($user_auth_realms[$realm], '->') !== false ? strpos($user_auth_realms[$realm], '->') + 2 : 0);
 
 			print '<div class="flexChild">';
 			form_checkbox('section' . $realm, $old_value, substr($user_auth_realms[$realm], $pos), '', '', '', '', $r['display'], true);
@@ -1675,7 +1675,7 @@ function user_group_settings_edit($header_label) {
 	?>
 	<script type='text/javascript'>
 
-	var themeFonts=<?php print read_config_option('font_method');?>;
+	var themeFonts=<?php print read_config_option('font_method'); ?>;
 
 	function graphSettings() {
 		var showField = $('#custom_fonts').is(':checked');
@@ -1775,7 +1775,7 @@ function group_edit() {
 
 			?>
 			<script type='text/javascript'>
-			var consoleAllowed=<?php print is_user_group_realm_allowed(8, (isset($group) ? $group['id'] : 0)) ? 'true':'false';?>;
+			var consoleAllowed=<?php print is_user_group_realm_allowed(8, (isset($group) ? $group['id'] : 0)) ? 'true' : 'false'; ?>;
 
 			$(function() {
 				if (!consoleAllowed) {
@@ -1863,7 +1863,7 @@ function user_group() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') . '(name LIKE ? OR description LIKE ?)';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . '(name LIKE ? OR description LIKE ?)';
 		$sql_params[] = '%' . get_request_var('filter') . '%';
 		$sql_params[] = '%' . get_request_var('filter') . '%';
 	} else {
@@ -1940,7 +1940,7 @@ function user_group() {
 			form_alternate_row('line' . $group['id'], true);
 
 			form_selectable_cell(filter_value($group['name'], get_request_var('filter'), 'user_group_admin.php?action=edit&tab=general&id=' . $group['id']), $group['id']);
-			form_selectable_cell(($group['members'] > 0 ? number_format_i18n($group['members'], 0):'None'), $group['id']);
+			form_selectable_cell(($group['members'] > 0 ? number_format_i18n($group['members'], 0) : 'None'), $group['id']);
 			form_selectable_cell(filter_value($group['description'], get_request_var('filter')), $group['id']);
 			form_selectable_cell(($group['policy_graphs'] == 1 ? __('ALLOW') : __('DENY')), $group['id']);
 			form_selectable_cell(($group['policy_hosts'] == 1 ? __('ALLOW') : __('DENY')), $group['id']);

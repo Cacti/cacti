@@ -211,7 +211,6 @@ if (empty($_SESSION[SESS_USER_ID])) {
 } else {
 	if (!$cookie_user && empty($_SESSION[SESS_USER_2FA]) && db_column_exists('user_auth', 'tfa_enabled')) {
 		if (read_config_option('secpass_2fa_enabled') == 'on') {
-
 			if (is_2fa_enabled($_SESSION[SESS_USER_ID])) {
 				header('Location: ' . CACTI_PATH_URL . 'auth_2fa.php');
 				exit;

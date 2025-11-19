@@ -179,6 +179,7 @@ $config
     'blank_line_before_statement'       => [
         'statements' => [
             'continue',
+            'break',
             'declare',
             'do',
             'for',

@@ -45,11 +45,13 @@ function update_data_source_title_cache_from_template($data_template_id) {
 	}
 }
 
-/* update_data_source_title_cache_from_query - updates the title cache for all data sources
+/** update_data_source_title_cache_from_query - updates the title cache for all data sources
  * that match a given data query/index combination
  *
  * @param  int     - The ID of the data query to match
  * @param  int     - The index within the data query to match
+ * @param mixed $snmp_query_id
+ * @param mixed $snmp_index
  *
  * @return string  - The modified string
  */
@@ -191,12 +193,15 @@ function update_graph_title_cache_from_query($snmp_query_id, $snmp_index) {
 	}
 }
 
-/* update_graph_title_cache_from_host - updates the title cache for all graphs
+/** update_graph_title_cache_from_host - updates the title cache for all graphs
  * that match a given host
  *
  * @param  int     - The ID of the host to match
  * @param  int     - The ID of the data query to match
  * @param  array   - An array of local_data_ids
+ * @param mixed $host_id
+ * @param mixed $query_id
+ * @param mixed $ids
  *
  * @return null
  */

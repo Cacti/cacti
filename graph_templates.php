@@ -222,8 +222,8 @@ function form_save() {
 		$save1['name']        = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
 		$save1['class']       = form_input_validate(get_nfilter_request_var('class'), 'class', '', true, 3);
 		$save1['version']     = form_input_validate(get_nfilter_request_var('version'), 'version', '', true, 3);
-		$save1['multiple']    = isset_request_var('multiple') ? 'on':'';
-		$save1['test_source'] = isset_request_var('test_source') ? 'on':'';
+		$save1['multiple']    = isset_request_var('multiple') ? 'on' : '';
+		$save1['test_source'] = isset_request_var('test_source') ? 'on' : '';
 
 		$save2['id']                            = get_nfilter_request_var('graph_template_graph_id');
 		$save2['local_graph_template_graph_id'] = 0;
@@ -1126,7 +1126,7 @@ function form_actions() {
 					SET graph_template_id=0
 					WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
 			} elseif (get_request_var('drp_action') == '2') { // duplicate
-				for ($i=0;($i < cacti_count($selected_items));$i++) {
+				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					api_duplicate_graph(0, $selected_items[$i], get_nfilter_request_var('title_format'));
 				}
 			} elseif (get_request_var('drp_action') == '3') { // change settings
@@ -1162,7 +1162,7 @@ function form_actions() {
 					}
 				}
 			} elseif (get_request_var('drp_action') == '4') { // retemplate
-				for ($i=0;($i < cacti_count($selected_items));$i++) {
+				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					retemplate_graphs($selected_items[$i]);
 
 					$graph_template_name = db_fetch_cell_prepared('SELECT name
@@ -1177,7 +1177,7 @@ function form_actions() {
 					}
 				}
 			} elseif (get_request_var('drp_action') == '5') { // resequence graphs with sequences off
-				for ($i=0;($i < cacti_count($selected_items));$i++) {
+				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					retemplate_graphs($selected_items[$i], 0, true);
 
 					$graph_template_name = db_fetch_cell_prepared('SELECT name
@@ -1375,10 +1375,10 @@ function item() {
 			form_alternate_row('', true);
 			?>
 			<td>
-				<a class='linkEditMain' href='<?php print html_escape('graph_templates.php?action=input_edit&id=' . $item['id'] . '&graph_template_id=' . get_request_var('id'));?>'><?php print html_escape($item['name']);?></a>
+				<a class='linkEditMain' href='<?php print html_escape('graph_templates.php?action=input_edit&id=' . $item['id'] . '&graph_template_id=' . get_request_var('id')); ?>'><?php print html_escape($item['name']); ?></a>
 			</td>
 			<td class='right'>
-				<a class='deleteMarker fa fa-times' title='<?php print __esc('Delete');?>' href='<?php print html_escape('graph_templates.php?action=input_remove&id=' . $item['id'] . '&graph_template_id=' . get_request_var('id') . '&nostate=true');?>'></a>
+				<a class='deleteMarker fa fa-times' title='<?php print __esc('Delete'); ?>' href='<?php print html_escape('graph_templates.php?action=input_remove&id=' . $item['id'] . '&graph_template_id=' . get_request_var('id') . '&nostate=true'); ?>'></a>
 			</td>
 		</tr>
 		<?php
@@ -1399,7 +1399,7 @@ function item() {
 		$('#item_ids').find('tr:first').addClass('nodrag').addClass('nodrop');
 		$('#item_ids').tableDnD({
 			onDrop: function(table, row) {
-				loadUrl({url:'graph_templates.php?action=ajax_dnd&id=<?php isset_request_var('id') ? print get_request_var('id') : print 0;?>&'+$.tableDnD.serialize()});
+				loadUrl({url:'graph_templates.php?action=ajax_dnd&id=<?php isset_request_var('id') ? print get_request_var('id') : print 0; ?>&'+$.tableDnD.serialize()});
 			}
 		});
 	});
@@ -1540,22 +1540,22 @@ function graph_templates() {
 	}
 
 	if (get_request_var('vdef_id') > '0') {
-		$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gti.vdef_id = ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' gti.vdef_id = ?';
 		$sql_params[] = get_request_var('vdef_id');
 	}
 
 	if (get_request_var('cdef_id') > '0') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gti.cdef_id = ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' gti.cdef_id = ?';
 		$sql_params[] = get_request_var('cdef_id');
 	}
 
 	if (get_request_var('class') != '-1') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gt.class = ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' gt.class = ?';
 		$sql_params[] = get_request_var('class');
 	}
 
 	if (get_request_var('has_graphs') == 'true') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gt.graphs > 0';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' gt.graphs > 0';
 	}
 
 	$total_rows = db_fetch_cell_prepared("SELECT COUNT(DISTINCT gt.id)
@@ -1688,7 +1688,7 @@ function graph_templates() {
 			form_selectable_cell($template['id'], $template['id'], '', 'right');
 			form_selectable_cell($graph_template_classes[$template['class']], $template['id'], '', 'right');
 			form_selectable_ecell($template['version'], $template['id'], '', 'right');
-			form_selectable_cell($disabled ? __('No'):__('Yes'), $template['id'], '', 'right');
+			form_selectable_cell($disabled ? __('No') : __('Yes'), $template['id'], '', 'right');
 			form_selectable_cell(number_format_i18n($template['graph_items'], -1), $template['id'], '', 'right');
 			form_selectable_cell(number_format_i18n($template['graphs'], -1), $template['id'], '', 'right');
 			form_selectable_cell($image_types[$template['image_format_id']], $template['id'], '', 'right');
@@ -1845,7 +1845,7 @@ function create_graph_templates_filter() {
 	if (isset_request_var('has_graphs')) {
 		$value = get_nfilter_request_var('has_graphs');
 	} else {
-		$value = read_config_option('default_has') == 'on' ? 'true':'false';
+		$value = read_config_option('default_has') == 'on' ? 'true' : 'false';
 	}
 
 	$graph_template_classes = $all + $graph_template_classes;

@@ -88,8 +88,8 @@ function form_save() {
 		$save['repo_location'] = get_nfilter_request_var('repo_location');
 		$save['repo_branch']   = get_nfilter_request_var('repo_branch');
 		$save['repo_api_key']  = get_nfilter_request_var('repo_api_key');
-		$save['enabled']       = (isset_request_var('enabled') ? 'on':'');
-		$save['default']       = (isset_request_var('default') ? 'on':'');
+		$save['enabled']       = (isset_request_var('enabled') ? 'on' : '');
+		$save['default']       = (isset_request_var('default') ? 'on' : '');
 
 		if (!is_error_message()) {
 			$id = sql_save($save, 'package_repositories', 'id');
@@ -153,22 +153,22 @@ function form_actions() {
 
 		if ($selected_items != false) {
 			if (get_nfilter_request_var('drp_action') == '1') { // delete
-				for ($i=0;($i < cacti_count($selected_items));$i++) {
+				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					package_remove($selected_items[$i]);
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '2') { // disable
-				for ($i=0;($i < cacti_count($selected_items));$i++) {
+				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					package_disable($selected_items[$i]);
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '3') { // enable
-				for ($i=0;($i < cacti_count($selected_items));$i++) {
+				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					package_enable($selected_items[$i]);
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '4') { // default
 				if (cacti_sizeof($selected_items) > 1) {
 					/* error message */
 				} else {
-					for ($i=0;($i < cacti_count($selected_items));$i++) {
+					for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 						package_default($selected_items[$i]);
 					}
 				}
@@ -432,7 +432,7 @@ function repos() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = ($sql_where != '' ? ' AND ':'WHERE ') .
+		$sql_where = ($sql_where != '' ? ' AND ' : 'WHERE ') .
 			'(name LIKE ? OR repo_branch LIKE ? OR repo_location LIKE ?)';
 
 		$sql_params[] = '%' . get_request_var('filter') . '%';
@@ -502,9 +502,9 @@ function repos() {
 			form_selectable_cell(filter_value($repo['name'], get_request_var('filter'), 'package_repos.php?action=edit&id=' . $repo['id']), $repo['id']);
 			form_selectable_cell($types[$repo['repo_type']], $repo['id']);
 			form_selectable_cell(filter_value($repo['repo_location'], get_request_var('filter')), $repo['id']);
-			form_selectable_ecell($repo['repo_type'] == 0 ? ($repo['repo_branch'] != '' ? $repo['repo_branch']:__('default')):__('N/A'), $repo['id'], '', 'center');
-			form_selectable_cell($repo['enabled'] == 'on' ? __('Yes'):__('No'), $repo['id'], '', 'center');
-			form_selectable_cell($repo['default'] == 'on' ? __('Yes'):__('No'), $repo['id'], '', 'center');
+			form_selectable_ecell($repo['repo_type'] == 0 ? ($repo['repo_branch'] != '' ? $repo['repo_branch'] : __('default')) : __('N/A'), $repo['id'], '', 'center');
+			form_selectable_cell($repo['enabled'] == 'on' ? __('Yes') : __('No'), $repo['id'], '', 'center');
+			form_selectable_cell($repo['default'] == 'on' ? __('Yes') : __('No'), $repo['id'], '', 'center');
 
 			form_checkbox_cell($repo['name'], $repo['id']);
 

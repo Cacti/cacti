@@ -162,7 +162,7 @@ function inject_form_variables(&$form_array, $arg1 = [], $arg2 = [], $arg3 = [],
  */
 function form_alternate_row_color($row_color1, $row_color2, $row_value, $row_id = '') {
 	if ($row_value % 2 == 1) {
-		$class         ='odd';
+		$class         = 'odd';
 		$current_color = $row_color1;
 	} else {
 		if ($row_color2 == '' || $row_color2 == 'E5E5E5') {
@@ -579,7 +579,7 @@ function form_process_visible_display_text($table_id, $display_text) {
  */
 function form_checkbox_cell($title, $id, $disabled = false, $checked = false) {
 	print "\t<td class='checkbox' style='width:1%;'>\n";
-	print "\t\t<input type='checkbox' title='" . html_escape($title) . "' class='checkbox" . ($disabled ? ' disabled':'') . "' " . ($disabled ? " disabled='disabled'":'') . ($checked ? " checked='checked'":'') . " id='chk_" . $id . "' name='chk_" . $id . "'><label class='formCheckboxLabel' for='chk_" . $id . "'></label>\n";
+	print "\t\t<input type='checkbox' title='" . html_escape($title) . "' class='checkbox" . ($disabled ? ' disabled' : '') . "' " . ($disabled ? " disabled='disabled'" : '') . ($checked ? " checked='checked'" : '') . " id='chk_" . $id . "' name='chk_" . $id . "'><label class='formCheckboxLabel' for='chk_" . $id . "'></label>\n";
 	print "\t</td>\n";
 }
 
@@ -1184,11 +1184,11 @@ function update_order_string($inplace = false) {
 
 		foreach ($_SESSION['sort_data'][$page] as $column => $direction) {
 			if ($column == 'ip' || $column == 'ip_address') {
-				$order .= ($order != '' ? ', ':'') . 'INET_ATON(' . $column . ') ' . $direction;
+				$order .= ($order != '' ? ', ' : '') . 'INET_ATON(' . $column . ') ' . $direction;
 			} elseif ($column == 'hostname' && $natural) {
-				$order .= ($order != '' ? ', ':'') . 'NATURAL_SORT_KEY(' . $column . ') ' . $direction;
+				$order .= ($order != '' ? ', ' : '') . 'NATURAL_SORT_KEY(' . $column . ') ' . $direction;
 			} else {
-				$order .= ($order != '' ? ', ':'') . $column . ' ' . $direction;
+				$order .= ($order != '' ? ', ' : '') . $column . ' ' . $direction;
 			}
 		}
 
@@ -1235,11 +1235,11 @@ function update_order_string($inplace = false) {
 
 			foreach ($_SESSION['sort_data'][$page] as $column => $direction) {
 				if ($column == 'ip' || $column == 'ip_address') {
-					$order .= ($order != '' ? ', ':'') . 'INET_ATON(' . $column . ') ' . $direction;
+					$order .= ($order != '' ? ', ' : '') . 'INET_ATON(' . $column . ') ' . $direction;
 				} elseif ($column == 'hostname' && $natural) {
-					$order .= ($order != '' ? ', ':'') . 'NATURAL_SORT_KEY(' . $del . implode($del . '.' . $del, explode('.', $column)) . $del . ') ' . $direction;
+					$order .= ($order != '' ? ', ' : '') . 'NATURAL_SORT_KEY(' . $del . implode($del . '.' . $del, explode('.', $column)) . $del . ') ' . $direction;
 				} else {
-					$order .= ($order != '' ? ', ':'') . $del . implode($del . '.' . $del, explode('.', $column)) . $del . ' ' . $direction;
+					$order .= ($order != '' ? ', ' : '') . $del . implode($del . '.' . $del, explode('.', $column)) . $del . ' ' . $direction;
 				}
 			}
 
@@ -1581,7 +1581,7 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 		}
 	}
 
-	for ($page_number=0; (($page_number + $start_page) <= $end_page); $page_number++) {
+	for ($page_number = 0; (($page_number + $start_page) <= $end_page); $page_number++) {
 		$page = $page_number + $start_page;
 
 		if ($page_number < $pages_per_screen) {
@@ -1615,7 +1615,7 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 		$return_to = 'main';
 	}
 
-	$url             .= $page_var;
+	$url .= $page_var;
 	$url_page_select .= "<script type='text/javascript'>
 	function goto$page_var(pageNo) {
 		if (typeof url_graph === 'function') {

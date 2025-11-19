@@ -581,11 +581,11 @@ function generate_report($schedule_id, $report, $force = false) {
 		$nl_bcc_emails = get_notification_emails($report['notify_list'], 'bcc');
 
 		if ($nl_to_emails != '') {
-			$report['email'] .= ($report['email'] != '' ? ', ':'') . $nl_to_emails;
+			$report['email'] .= ($report['email'] != '' ? ', ' : '') . $nl_to_emails;
 		}
 
 		if ($nl_bcc_emails != '') {
-			$report['bcc'] .= ($report['bcc'] != '' ? ', ':'') . $nl_bcc_emails;
+			$report['bcc'] .= ($report['bcc'] != '' ? ', ' : '') . $nl_bcc_emails;
 		}
 	}
 
@@ -908,7 +908,7 @@ function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$t
 		if ($format_ok) {
 			$outstr .= "\t<table class='report_table'>" . PHP_EOL;
 		} else {
-			$outstr .= "\t<table class='report_table' " . ($output == REPORTS_OUTPUT_STDOUT ? "style='background-color:#F9F9F9;'":'') . '>' . PHP_EOL;
+			$outstr .= "\t<table class='report_table' " . ($output == REPORTS_OUTPUT_STDOUT ? "style='background-color:#F9F9F9;'" : '') . '>' . PHP_EOL;
 		}
 
 		$outstr .= "\t\t<tr class='title_row'>" . PHP_EOL;
@@ -1084,7 +1084,7 @@ function reports_graph_image($report, $item, $timespan, $output, $theme = 'moder
 		$out = "<img class='image' alt='' src='" . html_escape(CACTI_PATH_URL . 'graph_image.php' .
 			'?graph_width=' . $report['graph_width'] .
 			'&graph_height=' . $report['graph_height'] .
-			($report['thumbnails'] == 'on' ? '&graph_nolegend=true':'') .
+			($report['thumbnails'] == 'on' ? '&graph_nolegend=true' : '') .
 			'&local_graph_id=' . $item['local_graph_id'] .
 			'&graph_start=' . $timespan['begin_now'] .
 			'&graph_end=' . $timespan['end_now'] .
@@ -1952,8 +1952,8 @@ function reports_poller_bottom() {
 
 /**
  * Setup the new dropdown action for Graph Management
- * @arg $action		actions to be performed from dropdown
- * @param mixed $action
+ *
+ * @param mixed $action - actions to be performed from dropdown
  */
 function reports_graphs_action_array($action) {
 	$action['reports'] = __('Add to Report');
@@ -1963,11 +1963,14 @@ function reports_graphs_action_array($action) {
 
 /**
  * reports_graphs_action_prepare - perform reports_graph prepare action
- * @param array $save - drp_action: selected action from dropdown
- *              graph_array: graphs titles selected from graph management's list
- *              graph_list: graphs selected from graph management's list
- * returns array $save				-
- *  */
+ *
+ * @param array $save
+ *     drp_action:  selected action from dropdown
+ *     graph_array: graphs titles selected from graph management's list
+ *     graph_list:  graphs selected from graph management's list
+ *
+ * @return array $save
+ */
 function reports_graphs_action_prepare($save) {
 	global $graph_timespans, $alignment;
 
@@ -2000,9 +2003,11 @@ function reports_graphs_action_prepare($save) {
 
 /**
  * reports_graphs_action_execute - perform reports_graph execute action
+ *
  * @param string $action - action to be performed
- * return -
- *  */
+ *
+ * @return string $action
+ */
 function reports_graphs_action_execute($action) {
 	if ($action == 'reports') { /* report */
 		$message = '';
@@ -2092,6 +2097,7 @@ function reports_graphs_action_execute($action) {
 		return $action;
 	}
 }
+
 /**
  * reports_log_and_notify - This function will perform the notification functions for Cacti reports.
  * It is being written to have a common platform to send notifications which can broaden to use
@@ -2106,7 +2112,7 @@ function reports_graphs_action_execute($action) {
  * @param  string    $source       - The plugin defined report source name.  For example: 'reports', 'reportit', 'flowview'
  * @param  int       $source_id    - The id as it is known to the source
  * @param  string    $subject      - The notification subject
- * #param  mixed     $raw_data     - Data required to reproduce the report output at a future date
+ * @param  mixed     $raw_data     - Data required to reproduce the report output at a future date
  * @param  string    $oput_raw     - The Raw HTML output without CSS
  * @param  string    $oput_html    - The Report Output with CSS
  * @param  string    $oput_text    - The text output if any
@@ -2200,7 +2206,7 @@ function reports_log_and_notify($id, $start_time, $report_type, $source, $source
 								$report_tag  = '';
 								$theme       = 'modern';
 								$output_html = '';
-								$format      = $list['format_file'] != '' ? $list['format_file']:'default';
+								$format      = $list['format_file'] != '' ? $list['format_file'] : 'default';
 
 								$format_ok = reports_load_format_file($format, $output, $report_tag, $theme);
 

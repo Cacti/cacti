@@ -34,37 +34,37 @@ array_shift($parms);
 
 if (sizeof($parms)) {
 	/* setup defaults */
-	$siteName      	= '';  					# Site Name
-	$siteAddr1	     = '';  					# Site Address 1
-	$siteAddr2	     = '';  					# Site Address 2
-	$siteCity	      = '';  					# Site City
-	$siteState	     = '';  					# Site State
-	$siteZip	       = '';  					# Site Zip/Postal Code
-	$siteCountry   	= '';  					# Site Country
-	$siteTimezone	  = '';  					# Site Timezone in PHP format http://php.net/manual/en/timezones.php
-	$siteLatitude  	= '';	 				# Site Latitude - preferably in dotted decimal, but will convert DMS backwards
-	$siteLongitude 	= '';					# Site Longitude - preferably in dotted decimal, but will convert DMS backwards
-	$siteAltname	   = '';					# Site Alternative Name
-	$siteNotes	     = 'Added by script: %DATE% %TIME%';	# Site Notes
-	$replaceSites	  = true;					# Default: Replace sites with the same name to stop duplicates being made
-	$displaySites	  = false;				# Default: Only when --display-sites is passed
-	$deviceMapRegex	= '';					# Map devices to site by regex
+	$siteName       = '';  					# Site Name
+	$siteAddr1      = '';  					# Site Address 1
+	$siteAddr2      = '';  					# Site Address 2
+	$siteCity       = '';  					# Site City
+	$siteState      = '';  					# Site State
+	$siteZip        = '';  					# Site Zip/Postal Code
+	$siteCountry    = '';  					# Site Country
+	$siteTimezone   = '';  					# Site Timezone in PHP format http://php.net/manual/en/timezones.php
+	$siteLatitude   = '';	 				# Site Latitude - preferably in dotted decimal, but will convert DMS backwards
+	$siteLongitude  = '';					# Site Longitude - preferably in dotted decimal, but will convert DMS backwards
+	$siteAltname    = '';					# Site Alternative Name
+	$siteNotes      = 'Added by script: %DATE% %TIME%';	# Site Notes
+	$replaceSites   = true;					# Default: Replace sites with the same name to stop duplicates being made
+	$displaySites   = false;				# Default: Only when --display-sites is passed
+	$deviceMapRegex = '';					# Map devices to site by regex
 	$deviceMapWild  = '';					# Map devices to site by mysql wildcard
-	$ipMapRegex	    = '';					# Map device IPs to site by regex
+	$ipMapRegex     = '';					# Map device IPs to site by regex
 	$ipMapWild      = '';					# Map device IPs to site by mysql wildcard
-	$doMap      	   = '';					# Must pass the --do-map to make it work
+	$doMap          = '';					# Must pass the --do-map to make it work
 	$geocodeAddress = false;				# Geocode addresses into GPS coordinates?
 	$geocodeApiKey  = '';					# Get from https://developers.google.com/maps/documentation/geocoding/get-api-key
-	$httpsProxy  	  = '';					# If this is set then load it as a default
+	$httpsProxy     = '';					# If this is set then load it as a default
 
-	$verbose	= false;
-	$debug		 = false;
-	$quiet		 = false;
-	$log		   = false;
+	$verbose = false;
+	$debug   = false;
+	$quiet   = false;
+	$log     = false;
 
 	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter);
+			[$arg, $value] = explode('=', $parameter);
 		} else {
 			$arg   = $parameter;
 			$value = '';
@@ -232,7 +232,7 @@ function addSite() {
 	fixCoordinates($siteLatitude, $siteLongitude);
 
 	if ($geocodeAddress) {
-		list($siteLatitude, $siteLongitude) = geocodeAddress($siteAddr1, $siteAddr2, $siteCity, $siteZip, $siteCountry);
+		[$siteLatitude, $siteLongitude] = geocodeAddress($siteAddr1, $siteAddr2, $siteCity, $siteZip, $siteCountry);
 	}
 
 	$dateNow       = date('Y-m-d');
@@ -257,18 +257,18 @@ function addSite() {
 		}
 
 		$params = [
-			$siteName      ? $siteName      : (isset($siteData[0]) ? $siteData[0]['name'] : ''),
-			$siteAddr1     ? $siteAddr1     : (isset($siteData[0]) ? $siteData[0]['address1'] : ''),
-			$siteAddr2     ? $siteAddr2     : (isset($siteData[0]) ? $siteData[0]['address2'] : ''),
-			$siteCity      ? $siteCity      : (isset($siteData[0]) ? $siteData[0]['city'] : ''),
-			$siteState     ? $siteState     : (isset($siteData[0]) ? $siteData[0]['state'] : ''),
-			$siteZip       ? $siteZip       : (isset($siteData[0]) ? $siteData[0]['postal_code'] : ''),
-			$siteCountry   ? $siteCountry 	: (isset($siteData[0]) ? $siteData[0]['country'] : ''),
-			$siteTimezone  ? $siteTimezone 	: (isset($siteData[0]) ? $siteData[0]['timezone'] : ''),
-			$siteLatitude  ? $siteLatitude 	: (isset($siteData[0]) ? $siteData[0]['latitude'] : ''),
+			$siteName ? $siteName : (isset($siteData[0]) ? $siteData[0]['name'] : ''),
+			$siteAddr1 ? $siteAddr1 : (isset($siteData[0]) ? $siteData[0]['address1'] : ''),
+			$siteAddr2 ? $siteAddr2 : (isset($siteData[0]) ? $siteData[0]['address2'] : ''),
+			$siteCity ? $siteCity : (isset($siteData[0]) ? $siteData[0]['city'] : ''),
+			$siteState ? $siteState : (isset($siteData[0]) ? $siteData[0]['state'] : ''),
+			$siteZip ? $siteZip : (isset($siteData[0]) ? $siteData[0]['postal_code'] : ''),
+			$siteCountry ? $siteCountry : (isset($siteData[0]) ? $siteData[0]['country'] : ''),
+			$siteTimezone ? $siteTimezone : (isset($siteData[0]) ? $siteData[0]['timezone'] : ''),
+			$siteLatitude ? $siteLatitude : (isset($siteData[0]) ? $siteData[0]['latitude'] : ''),
 			$siteLongitude ? $siteLongitude : (isset($siteData[0]) ? $siteData[0]['longitude'] : ''),
-			$siteAltname   ? $siteAltname 	: (isset($siteData[0]) ? $siteData[0]['alternate_id'] : ''),
-			$siteNotes     ? $siteNotes     : (isset($siteData[0]) ? $siteData[0]['notes'] : ''),
+			$siteAltname ? $siteAltname : (isset($siteData[0]) ? $siteData[0]['alternate_id'] : ''),
+			$siteNotes ? $siteNotes : (isset($siteData[0]) ? $siteData[0]['notes'] : ''),
 			isset($siteData[0]) ? $siteData[0]['id'] : 0,
 		];
 
@@ -291,18 +291,18 @@ function addSite() {
 	} else {
 		echoQuiet("Adding new site: $siteName\n");
 		$params = [
-			$siteName      ? $siteName           : '',
-			$siteAddr1     ? $siteAddr1          : '',
-			$siteAddr2     ? $siteAddr2          : '',
-			$siteCity      ? $siteCity           : '',
-			$siteState     ? $siteState          : '',
-			$siteZip       ? $siteZip            : '',
-			$siteCountry   ? $siteCountry        : '',
-			$siteTimezone  ? $siteTimezone       : '',
-			$siteLatitude  ? $siteLatitude       : '',
-			$siteLongitude ? $siteLongitude      : '',
-			$siteAltname   ? $siteAltname        : '',
-			$siteNotes     ? $siteNotes          : '',
+			$siteName ? $siteName : '',
+			$siteAddr1 ? $siteAddr1 : '',
+			$siteAddr2 ? $siteAddr2 : '',
+			$siteCity ? $siteCity : '',
+			$siteState ? $siteState : '',
+			$siteZip ? $siteZip : '',
+			$siteCountry ? $siteCountry : '',
+			$siteTimezone ? $siteTimezone : '',
+			$siteLatitude ? $siteLatitude : '',
+			$siteLongitude ? $siteLongitude : '',
+			$siteAltname ? $siteAltname : '',
+			$siteNotes ? $siteNotes : '',
 		];
 
 		db_execute_prepared('INSERT into sites
@@ -331,8 +331,8 @@ function mapDevices($siteId, $doMap) {
 	}
 
 	# Cheating and just expanding % into .+ regex matches to avoid having to do DB queries again
-	$deviceMapWild 	= $deviceMapWild ? '/' . str_replace('%', '.+', $deviceMapWild) . '/' : '';
-	$ipMapWild 	    = $ipMapWild ? '/' . str_replace('%', '.+', $ipMapWild) . '/' : '';
+	$deviceMapWild 	 = $deviceMapWild ? '/' . str_replace('%', '.+', $deviceMapWild) . '/' : '';
+	$ipMapWild 	     = $ipMapWild ? '/' . str_replace('%', '.+', $ipMapWild) . '/' : '';
 
 	$matchedDevices = [];
 
@@ -458,7 +458,7 @@ function fixCoordinates($lat, $lng) {
 
 	if (preg_match('/(\d+)\xB0(\d+)\'((?:[.]\d+|\d+(?:[.]\d*)?))"?([NS]) +(\d+)\xB0(\d+)\'((?:[.]\d+|\d+(?:[.]\d*)?))"?([EW])/', $utfCoord, $matches)) {
 		array_shift($matches);                                                          # Get rid of $matches[0]
-		list($degN, $minN, $secN, $NS, $degE, $minE, $secE, $EW) = $matches;             # Get the matches from the regex
+		[$degN, $minN, $secN, $NS, $degE, $minE, $secE, $EW] = $matches;             # Get the matches from the regex
 
 		$lat = sprintf('%0.6f', ($NS == 'S' ? -1 : 1) * ($degN + ($minN / 60) + ($secN / 3600)));
 		$lng = sprintf('%0.6f', ($EW == 'W' ? -1 : 1) * ($degE + ($minE / 60) + ($secE / 3600)));

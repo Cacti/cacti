@@ -29,32 +29,32 @@ $using_guest_account = false;
 
 if (!$is_request_ajax) { ?>
 <!DOCTYPE html>
-<html lang='<?php print CACTI_LOCALE;?>'>
+<html lang='<?php print CACTI_LOCALE; ?>'>
 <head>
-	<?php html_common_header($page_title);?>
+	<?php html_common_header($page_title); ?>
 </head>
 <body>
 	<a class='skip-link' href='#main' style='display:none'>Skip to main</a>
 	<div id='cactiPageHead' class='cactiPageHead' role='banner'>
-		<div id='tabs'><?php html_show_tabs_left();?></div>
-		<div class='cactiGraphHeaderBackground' style='display:none'><div id='gtabs'><?php print html_graph_tabs_right();?></div></div>
+		<div id='tabs'><?php html_show_tabs_left(); ?></div>
+		<div class='cactiGraphHeaderBackground' style='display:none'><div id='gtabs'><?php print html_graph_tabs_right(); ?></div></div>
 		<div class='cactiConsolePageHeadBackdrop'></div>
 	</div>
 	<div id='breadCrumbBar' class='breadCrumbBar'>
-		<div id='navBar' class='navBar'><?php print draw_navigation_text();?></div>
+		<div id='navBar' class='navBar'><?php print draw_navigation_text(); ?></div>
 		<div class='scrollBar'></div>
-		<div class='infoBar'><?php print draw_login_status($using_guest_account);?></div>
+		<div class='infoBar'><?php print draw_login_status($using_guest_account); ?></div>
 	</div>
 	<div class='cactiShadow'></div>
 	<?php } else { ?>
-	<div id='navBar' class='navBar'><?php print draw_navigation_text();?></div>
-	<title><?php print $page_title;?></title>
+	<div id='navBar' class='navBar'><?php print draw_navigation_text(); ?></div>
+	<title><?php print $page_title; ?></title>
 	<?php } ?>
 	<div id='cactiContent' class='cactiContent'>
 		<?php if (isset($user_menu) && is_array($user_menu)) {?>
 		<div style='display:none;' id='navigation' class='cactiConsoleNavigationArea'>
-			<?php draw_menu($user_menu);?>
-			<div class='cactiLogo' onclick='loadUrl({url:"<?php print CACTI_PATH_URL;?>about.php"})'></div>
+			<?php draw_menu($user_menu); ?>
+			<div class='cactiLogo' onclick='loadUrl({url:"<?php print CACTI_PATH_URL; ?>about.php"})'></div>
 		</div>
 		<?php } ?>
 		<div id='navigation_right' class='cactiConsoleContentArea'>

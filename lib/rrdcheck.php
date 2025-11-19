@@ -657,13 +657,13 @@ function rrdcheck_log_child_stats($type, $thread_id, $total_time) {
  * rrdcheck_error_handler - this routine logs all PHP error transactions
  *   to make sure they are properly logged.
  *
- * @param $errno    - (int) The errornum reported by the system
- * @param $errmsg   - (string) The error message provides by the error
- * @param $filename - (string) The filename that encountered the error
- * @param $linenum  - (int) The line number where the error occurred
- * @param $vars     - (mixed) The current state of PHP variables.
+ * @param int    $errno    - The errornum reported by the system
+ * @param string $errmsg   - The error message provides by the error
+ * @param string $filename - The filename that encountered the error
+ * @param int    $linenum  - The line number where the error occurred
+ * @param mixed  $vars     - The current state of PHP variables.
  *
- * @returns - (bool) always returns true for some reason
+ * @return bool     - always returns true for some reason
  */
 function rrdcheck_error_handler($errno, $errmsg, $filename, $linenum, $vars = []) {
 	if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
@@ -811,10 +811,10 @@ function rrdcheck_rrdtool_init() {
  *   This may not be the best method and may be changed after I have a conversation with a few
  *   developers.
  *
- * @param $command - (string) The rrdtool command to execute
- * @param $pipes   - (array) An array of stdin and stdout pipes to read and write data from
+ * @param string $command - The rrdtool command to execute
+ * @param array  $pipes   - An array of stdin and stdout pipes to read and write data from
  *
- * @returns - (string) The output from RRDtool
+ * @return string  - The output from RRDtool
  */
 function rrdcheck_rrdtool_execute($command, &$pipes) {
 	static $broken = false;
@@ -855,8 +855,9 @@ function rrdcheck_rrdtool_execute($command, &$pipes) {
  * rrdcheck_rrdtool_close - this routine closes the RRDtool process thus also
  *   closing the pipes.
  *
- * @return - NULL
  * @param mixed $process
+ *
+ * @return null
  */
 function rrdcheck_rrdtool_close($process) {
 	proc_close($process);
@@ -866,9 +867,9 @@ function rrdcheck_rrdtool_close($process) {
  * rrdcheck_launch_children - this function will launch collector children based upon
  *   the maximum number of threads and the process type
  *
- * @param $type - (string) The process type
+ * @param string $type - The process type
  *
- * @return - NULL
+ * @return null
  */
 function rrdcheck_launch_children($type) {
 	global $debug;
@@ -890,7 +891,7 @@ function rrdcheck_launch_children($type) {
 
 		cacti_log(sprintf('NOTE: Launching rrdcheck Process Number %s for Type %s', $i, $type), false, 'BOOST', POLLER_VERBOSITY_MEDIUM);
 
-		exec_background($php_binary, CACTI_PATH_BASE . "/poller_rrdcheck.php --type=$sub_type --child=$i" . ($debug ? ' --debug':''));
+		exec_background($php_binary, CACTI_PATH_BASE . "/poller_rrdcheck.php --type=$sub_type --child=$i" . ($debug ? ' --debug' : ''));
 	}
 
 	sleep(2);

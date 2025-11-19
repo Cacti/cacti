@@ -325,7 +325,7 @@ function plugin_installed($plugin) {
 		AND status = 1',
 		[$plugin]);
 
-	return $installed ? true:false;
+	return $installed ? true : false;
 }
 
 function repair_database($run = true) {
@@ -333,7 +333,7 @@ function repair_database($run = true) {
 
 	$alters = report_audit_results(false);
 
-	if (!db_has_permissions(['ALTER', 'DROP','INSERT','LOCK TABLES'])) {
+	if (!db_has_permissions(['ALTER', 'DROP', 'INSERT', 'LOCK TABLES'])) {
 		print 'ERROR: Required a required permission is missing for DB repair' . PHP_EOL;
 
 		exit(1);
@@ -797,7 +797,7 @@ function make_column_props(&$dbc) {
 
 function make_column_alter($table, $dbc) {
 	$alter_cmd = 'MODIFY COLUMN `' . $dbc['table_field'] . '` ' .
-		$dbc['table_type'] . ($dbc['table_null'] == 'NO' ? ' NOT NULL':'');
+		$dbc['table_type'] . ($dbc['table_null'] == 'NO' ? ' NOT NULL' : '');
 
 	$alter_cmd .= make_column_props($dbc);
 
@@ -812,7 +812,7 @@ function make_column_add($table, $dbc) {
 	}
 
 	$alter_cmd = 'ADD COLUMN `' . $dbc['table_field'] . '` ' .
-		$dbc['table_type'] . ($dbc['table_null'] == 'NO' ? ' NOT NULL':'');
+		$dbc['table_type'] . ($dbc['table_null'] == 'NO' ? ' NOT NULL' : '');
 
 	$alter_cmd .= make_column_props($dbc);
 
@@ -892,7 +892,7 @@ function make_index_alter($table, $key) {
 				}
 			}
 
-			$alter_cmd .= ($i > 0 ? ',':'') . '`' . $p['idx_column_name'] . '`';
+			$alter_cmd .= ($i > 0 ? ',' : '') . '`' . $p['idx_column_name'] . '`';
 
 			$i++;
 		}
@@ -995,7 +995,7 @@ function create_tables($load = true) {
 	}
 
 	if ($load) {
-		if (!db_has_permissions(['DROP','INSERT','LOCK TABLES'])) {
+		if (!db_has_permissions(['DROP', 'INSERT', 'LOCK TABLES'])) {
 			print 'ERROR: Required a required permission is missing for DB load' . PHP_EOL;
 
 			exit(1);
@@ -1057,7 +1057,7 @@ function load_audit_database() {
 
 	$db_name = 'Tables_in_' . $database_default;
 
-	if (!db_has_permissions(['DROP','INSERT','LOCK TABLES'])) {
+	if (!db_has_permissions(['DROP', 'INSERT', 'LOCK TABLES'])) {
 		print 'ERROR: Required a required permission is missing for DB load' . PHP_EOL;
 
 		exit(1);

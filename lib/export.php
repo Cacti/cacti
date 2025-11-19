@@ -1181,7 +1181,7 @@ function get_item_xml($type, $id, $follow_deps) {
 
 	$xml_array = explode("\n", $xml_text);
 
-	for ($i=0; $i < cacti_count($xml_array); $i++) {
+	for ($i = 0; $i < cacti_count($xml_array); $i++) {
 		$xml_indent .= "\t" . $xml_array[$i] . "\n";
 	}
 

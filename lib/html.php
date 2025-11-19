@@ -108,7 +108,7 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_url_or
 	if ($title != '') {
 		print "<div id='$table_id' class='cactiTable' style='width:$width;text-align:$align;'>";
 		print '<div class="cactiTableTitleRow">';
-		print "<div class='cactiTableTitle'>" . ($title != '' ? '<span>'.$title.'</span>' : '') . "</div>";
+		print "<div class='cactiTableTitle'>" . ($title != '' ? '<span>'.$title.'</span>' : '') . '</div>';
 		print "<div class='cactiTableButton'>";
 
 		$page      = get_current_page();
@@ -167,7 +167,7 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_url_or
 							$title = $add_label;
 						}
 
-						print "<span class='cactiFilterAdd' title='$title'><a" . (isset($icon['id']) ? " id='" . $icon['id'] . "'":'') . " class='$classo' href='$href'><i class='$classi'></i></a></span>";
+						print "<span class='cactiFilterAdd' title='$title'><a" . (isset($icon['id']) ? " id='" . $icon['id'] . "'" : '') . " class='$classo' href='$href'><i class='$classi'></i></a></span>";
 					}
 				}
 			} else {
@@ -229,7 +229,7 @@ function html_sub_tabs($tabs, $uri = '', $session_var = '') {
 		$session_var = basename(get_current_page(), '.php') . '_current_tab';
 	}
 
-	$page_name = get_current_page() . '?' . $uri . ($uri != '' ? '&':'');
+	$page_name = get_current_page() . '?' . $uri . ($uri != '' ? '&' : '');
 
 	/* set the default settings category */
 	if (!isset_request_var('tab')) {
@@ -334,14 +334,14 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 	if ($('#predefined_timespan').val() == 0) {
 		refreshMSeconds = 999999;
 	} else {
-		refreshMSeconds = <?php print read_user_setting('page_refresh') * 1000;?>;
+		refreshMSeconds = <?php print read_user_setting('page_refresh') * 1000; ?>;
 	}
 
-	refreshPage     = '<?php print get_current_page();?>?action=preview';
+	refreshPage     = '<?php print get_current_page(); ?>?action=preview';
 	refreshFunction = 'refreshGraphs()';
 
-	var graph_start = <?php print get_current_graph_start();?>;
-	var graph_end   = <?php print get_current_graph_end();?>;
+	var graph_start = <?php print get_current_graph_start(); ?>;
+	var graph_end   = <?php print get_current_graph_end(); ?>;
 	</script>
 	<?php
 
@@ -363,16 +363,16 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 			}
 
 			?>
-			<div class='graphWrapperOuter cols<?php print $columns;?>' data-disabled='<?php print($graph['disabled'] == 'on' ? 'true':'false');?>'>
+			<div class='graphWrapperOuter cols<?php print $columns; ?>' data-disabled='<?php print($graph['disabled'] == 'on' ? 'true' : 'false'); ?>'>
 				<div>
-					<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size'));?>'></div>
+					<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width']; ?>' graph_height='<?php print $graph['height']; ?>' title_font_size='<?php print((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size')); ?>'></div>
 					<?php if (is_realm_allowed(27)) { ?>
-					<div id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
-						<?php print graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons', $tree_id, $branch_id);?>
+					<div id='dd<?php print $graph['local_graph_id']; ?>' class='noprint graphDrillDown'>
+						<?php print graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons', $tree_id, $branch_id); ?>
 					</div>
 					<?php } ?>
 				</div>
-				<?php print(read_user_setting('show_graph_title') == 'on' ? '<div>' . html_escape($graph['title_cache']) . '</div>' : '');?>
+				<?php print(read_user_setting('show_graph_title') == 'on' ? '<div>' . html_escape($graph['title_cache']) . '</div>' : ''); ?>
 			</div>
 			<?php
 		}
@@ -417,14 +417,14 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 	if ($('#predefined_timespan').val() == 0) {
 		refreshMSeconds = 999999;
 	} else {
-		refreshMSeconds = <?php print read_user_setting('page_refresh') * 1000;?>;
+		refreshMSeconds = <?php print read_user_setting('page_refresh') * 1000; ?>;
 	}
 
-	refreshPage     = '<?php print get_current_page();?>?action=tree';
+	refreshPage     = '<?php print get_current_page(); ?>?action=tree';
 	refreshFunction = 'refreshGraphs()';
 
-	var graph_start = <?php print get_current_graph_start();?>;
-	var graph_end   = <?php print get_current_graph_end();?>;
+	var graph_start = <?php print get_current_graph_start(); ?>;
+	var graph_end   = <?php print get_current_graph_end(); ?>;
 	</script>
 	<?php
 
@@ -474,16 +474,16 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 			}
 
 			?>
-			<div class='graphWrapperOuter cols<?php print $columns;?>' data-disabled='<?php print($graph['disabled'] == 'on' ? 'true':'false');?>'>
+			<div class='graphWrapperOuter cols<?php print $columns; ?>' data-disabled='<?php print($graph['disabled'] == 'on' ? 'true' : 'false'); ?>'>
 				<div>
-					<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print read_user_setting('default_width');?>' graph_height='<?php print read_user_setting('default_height');?>'></div>
+					<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print read_user_setting('default_width'); ?>' graph_height='<?php print read_user_setting('default_height'); ?>'></div>
 					<?php if (is_realm_allowed(27)) { ?>
-					<div id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
-						<?php print graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons_thumbnails', $tree_id, $branch_id);?>
+					<div id='dd<?php print $graph['local_graph_id']; ?>' class='noprint graphDrillDown'>
+						<?php print graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons_thumbnails', $tree_id, $branch_id); ?>
 					</div>
 					<?php } ?>
 				</div>
-				<?php print(read_user_setting('show_graph_title') == 'on' ? "<div class='center'>" . html_escape($graph['title_cache']) . '</div>' : '');?>
+				<?php print(read_user_setting('show_graph_title') == 'on' ? "<div class='center'>" . html_escape($graph['title_cache']) . '</div>' : ''); ?>
 			</div>
 			<?php
 		}
@@ -565,7 +565,7 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_i
 		'hook'           => $type,
 		'local_graph_id' => $local_graph_id,
 		'rra'            => 0,
-		'view_type'      => $tree_id > 0 ? 'tree':'preview',
+		'view_type'      => $tree_id > 0 ? 'tree' : 'preview',
 		'tree_id'        => $tree_id,
 		'branch_id'      => $branch_id]
 	);
@@ -589,7 +589,7 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_i
  *
  * @return string The generated HTML for the navigation bar.
  */
-function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $total_rows, $colspan=30, $object = '', $page_var = 'page', $return_to = '', $page_count = true) {
+function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $total_rows, $colspan = 30, $object = '', $page_var = 'page', $return_to = '', $page_count = true) {
 	if ($object == '') {
 		$object = __('Rows');
 	}
@@ -605,13 +605,13 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 
 		$nav = "<div class='navBarNavigation'>
 			<div class='navBarNavigationPrevious'>
-				" . (($current_page > 1) ? "<a href='#' onClick='goto$page_var(" . ($current_page - 1) . ");return false;'><i class='fa fa-angle-double-left previous'></i>" . __('Previous'). '</a>':'') . "
+				" . (($current_page > 1) ? "<a href='#' onClick='goto$page_var(" . ($current_page - 1) . ");return false;'><i class='fa fa-angle-double-left previous'></i>" . __('Previous'). '</a>' : '') . "
 			</div>
 			<div class='navBarNavigationCenter'>
 				" . __('%d to %d of %s [ %s ]', (($rows_per_page * ($current_page - 1)) + 1), (($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page * $current_page)) ? $total_rows : $rows_per_page * $current_page), $total_rows, $url_page_select) . "
 			</div>
 			<div class='navBarNavigationNext'>
-				" . (($current_page * $rows_per_page) < $total_rows ? "<a href='#' onClick='goto$page_var(" . ($current_page + 1) . ");return false;'>" . __('Next'). "<i class='fa fa-angle-double-right next'></i></a>":'') . '
+				" . (($current_page * $rows_per_page) < $total_rows ? "<a href='#' onClick='goto$page_var(" . ($current_page + 1) . ");return false;'>" . __('Next'). "<i class='fa fa-angle-double-right next'></i></a>" : '') . '
 			</div>
 		</div>';
 	} elseif ($total_rows > 0) {
@@ -634,13 +634,13 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 
 			$nav = "<div class='navBarNavigation'>
 				<div class='navBarNavigationPrevious'>
-					" . (($current_page > 1) ? "<a href='#' onClick='goto$page_var(" . ($current_page - 1) . ");return false;'><i class='fa fa-angle-double-left previous'></i>" . __('Previous'). '</a>':'') . "
+					" . (($current_page > 1) ? "<a href='#' onClick='goto$page_var(" . ($current_page - 1) . ");return false;'><i class='fa fa-angle-double-left previous'></i>" . __('Previous'). '</a>' : '') . "
 				</div>
 				<div class='navBarNavigationCenter'>
 					" . __('Current Page: %s', $url_page_select) . "
 				</div>
 				<div class='navBarNavigationNext'>
-					" . ($total_rows >= $rows_per_page ? "<a href='#' onClick='goto$page_var(" . ($current_page + 1) . ");return false;'>" . __('Next'). "<i class='fa fa-angle-double-right next'></i></a>":'') . "
+					" . ($total_rows >= $rows_per_page ? "<a href='#' onClick='goto$page_var(" . ($current_page + 1) . ");return false;'>" . __('Next'). "<i class='fa fa-angle-double-right next'></i></a>" : '') . "
 				</div>
 			</div>\n";
 
@@ -850,10 +850,10 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		}
 
 		if (($db_column == '') || (substr_count($db_column, 'nosort'))) {
-			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'":'') . " class='$nohide $align' " . ((($i + 1) == cacti_count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . $display_text . '</th>';
+			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'" : '') . " class='$nohide $align' " . ((($i + 1) == cacti_count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . $display_text . '</th>';
 		} else {
-			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'":'') . " class='sortable $align $nohide $isSort'>";
-			print "<div class='sortinfo' sort-return='" . ($return_to == '' ? 'main':$return_to) . "' sort-page='" . ($url == '' ? html_escape(get_current_page(false)):$url) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>";
+			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'" : '') . " class='sortable $align $nohide $isSort'>";
+			print "<div class='sortinfo' sort-return='" . ($return_to == '' ? 'main' : $return_to) . "' sort-page='" . ($url == '' ? html_escape(get_current_page(false)) : $url) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>";
 		}
 
 		$i++;
@@ -1045,14 +1045,14 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}
 
 		if (($db_column == '') || (substr_count($db_column, 'nosort'))) {
-			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'":'') . " class='$align $nohide'>" . $display_text . '</th>';
+			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'" : '') . " class='$align $nohide'>" . $display_text . '</th>';
 		} else {
-			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'":'') . " class='sortable $align $nohide $isSort'>";
-			print "<div class='sortinfo' sort-return='" . ($return_to == '' ? 'main':$return_to) . "' sort-page='" . html_escape($form_action) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>";
+			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'" : '') . " class='sortable $align $nohide $isSort'>";
+			print "<div class='sortinfo' sort-return='" . ($return_to == '' ? 'main' : $return_to) . "' sort-page='" . html_escape($form_action) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>";
 		}
 	}
 
-	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' onClick='selectAll(\"$prefix\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All Rows') . "' for='selectall'></label></th>" . ($include_form ? "<th style='display:none;'><form id='$prefix' name='$prefix' method='post' action='$form_action'></th>":'');
+	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' onClick='selectAll(\"$prefix\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All Rows') . "' for='selectall'></label></th>" . ($include_form ? "<th style='display:none;'><form id='$prefix' name='$prefix' method='post' action='$form_action'></th>" : '');
 	print '</tr></thead>';
 
 	$page_count++;
@@ -1078,7 +1078,7 @@ function html_header($header_items, $last_item_colspan = 1, $resizable = true) {
 		'columns'  => $header_items
 	];
 
-	print "<thead><tr class='tableHeader " . ($last_item_colspan > 1 || !$resizable ? 'tableFixed':'') . "' data-columns='" . base64_encode(json_encode($table_visibility)) . "'>";
+	print "<thead><tr class='tableHeader " . ($last_item_colspan > 1 || !$resizable ? 'tableFixed' : '') . "' data-columns='" . base64_encode(json_encode($table_visibility)) . "'>";
 
 	$i = 0;
 
@@ -1107,7 +1107,7 @@ function html_header($header_items, $last_item_colspan = 1, $resizable = true) {
 				$tip = '';
 			}
 
-			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "' ":'') . "class='$nohide $align' " . ((($i + 1) == cacti_count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . html_escape($item['display']) . '</th>';
+			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "' " : '') . "class='$nohide $align' " . ((($i + 1) == cacti_count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . html_escape($item['display']) . '</th>';
 		} else {
 			print '<th ' . ((($i + 1) == cacti_count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . html_escape($item) . '</th>';
 		}
@@ -1131,10 +1131,10 @@ function html_header($header_items, $last_item_colspan = 1, $resizable = true) {
  * @return void
  */
 function html_section_header($header_item, $last_item_colspan = 1, $resizable = true) {
-	print "<tr class='tableHeader " . ($last_item_colspan > 1 || !$resizable ? 'tableFixed':'') . "'>";
+	print "<tr class='tableHeader " . ($last_item_colspan > 1 || !$resizable ? 'tableFixed' : '') . "'>";
 
 	if (is_array($header_item) && isset($header_item['display'])) {
-		print '<th ' . (isset($header_item['align']) ? "style='text-align:" . $header_item['align'] . ";'":'') . " colspan='$last_item_colspan'>" . $header_item['display'] . '</th>';
+		print '<th ' . (isset($header_item['align']) ? "style='text-align:" . $header_item['align'] . ";'" : '') . " colspan='$last_item_colspan'>" . $header_item['display'] . '</th>';
 	} else {
 		print "<th colspan='$last_item_colspan'>" . $header_item . '</th>';
 	}
@@ -1170,7 +1170,7 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 		'columns'  => $header_items
 	];
 
-	print "<thead><tr class='tableHeader " . (!$resizable ? 'tableFixed':'') . "' data-columns='" . base64_encode(json_encode($table_visibility)) . "'>";
+	print "<thead><tr class='tableHeader " . (!$resizable ? 'tableFixed' : '') . "' data-columns='" . base64_encode(json_encode($table_visibility)) . "'>";
 
 	foreach ($header_items as $item) {
 		if (is_array($item)) {
@@ -1197,13 +1197,13 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 				$tip = '';
 			}
 
-			print '<th ' . ($tip != '' ? " title='" . html_escape($tip) . "' ":'') . "class='$align $nohide'>" . html_escape($item['display']) . '</th>';
+			print '<th ' . ($tip != '' ? " title='" . html_escape($tip) . "' " : '') . "class='$align $nohide'>" . html_escape($item['display']) . '</th>';
 		} else {
 			print "<th class='left'>" . html_escape($item) . '</th>';
 		}
 	}
 
-	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' onClick='selectAll(\"$prefix\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All') . "' for='selectall'></label></th>" . ($include_form ? "<th style='display:none;'><form id='$prefix' name='$prefix' method='post' action='$form_action'></th>":'');
+	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' onClick='selectAll(\"$prefix\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All') . "' for='selectall'></label></th>" . ($include_form ? "<th style='display:none;'><form id='$prefix' name='$prefix' method='post' action='$form_action'></th>" : '');
 	print '</tr></thead>';
 }
 
@@ -1577,7 +1577,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 						$color1 = $item['hex']  . $item['alpha'];
 
 						if ($item['hex2'] != '') {
-							$color2 = $item['hex2'] . ($item['hex2'] != '' ? $item['alpha2']:'');
+							$color2 = $item['hex2'] . ($item['hex2'] != '' ? $item['alpha2'] : '');
 						} else {
 							$color2 = $blank;
 						}
@@ -1708,14 +1708,18 @@ function is_menu_pick_active($menu_url) {
 	}
 
 	$base_url_path = basename($url_array['path'] ?? '');
+
 	if (empty($base_url_path)) {
 		cacti_log('INFO: Empty url path detceted - ' . json_encode($url_array), false, 'MENU', POLLER_VERBOSITY_DEBUG);
+
 		return false;
 	}
 
 	$base_menu_path = basename($menu_array['path'] ?? '');
+
 	if (empty($base_menu_path)) {
 		cacti_log('INFO: Empty menu path detceted - ' . json_encode($menu_array), false, 'MENU', POLLER_VERBOSITY_DEBUG);
+
 		return false;
 	}
 
@@ -1915,7 +1919,7 @@ function draw_menu($user_menu = '') {
  * @return void
  */
 function draw_actions_dropdown($actions_array, $delete_action = 1) {
-    global $form_id;
+	global $form_id;
 
 	if ($actions_array === null || cacti_sizeof($actions_array) == 0) {
 		return;
@@ -1931,17 +1935,17 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 	<div class='actionsDropdown'>
 		<div>
 			<span class='actionsDropdownArrow'><img src='<?php print get_theme_paths('%s', 'images/arrow.gif') ?>' alt=''></span>
-			<?php form_dropdown('drp_action', $actions_array, '', '', '0', '', '');?>
-			<span class='actionsDropdownButton'><button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' id='submit' value='<?php print __esc('Go');?>' title='<?php print __esc('Execute Action');?>' form='<?php print $form_id;?>'><?php print __esc('Go');?></button></span>
+			<?php form_dropdown('drp_action', $actions_array, '', '', '0', '', ''); ?>
+			<span class='actionsDropdownButton'><button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' id='submit' value='<?php print __esc('Go'); ?>' title='<?php print __esc('Execute Action'); ?>' form='<?php print $form_id; ?>'><?php print __esc('Go'); ?></button></span>
 		</div>
 	</div>
-	<input type='hidden' id='action' name='action' value='actions' form='<?php print $form_id;?>'/>
+	<input type='hidden' id='action' name='action' value='actions' form='<?php print $form_id; ?>'/>
 	<script type='text/javascript'>
 
 	function setDisabled() {
 		$('tr[id^="line"]').addClass('selectable').prop('disabled', false).removeClass('disabled_row').unbind('click').prop('disabled', false);
 
-		if ($('#drp_action').val() == '<?php print $delete_action;?>') {
+		if ($('#drp_action').val() == '<?php print $delete_action; ?>') {
 			$(':checkbox.disabled').each(function(data) {
 				$(this).closest('tr').addClass('disabled_row');
 				if ($(this).is(':checked')) {
@@ -1970,7 +1974,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 					$(this).prop('disabled', true);
 				}
 			});
-		} else if ('<?php print $delete_action;?>' != 0) {
+		} else if ('<?php print $delete_action; ?>' != 0) {
 			$('#submit').each(function() {
 				if ($(this).button === 'function') {
 					$(this).button('enable');
@@ -2010,8 +2014,8 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
  */
 function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1) {
 	?>
-	<th style='height:1px;' colspan='<?php print $column_span;?>'>
-		<div class='textSubHeaderDark'><?php print $matrix_name;?></div>
+	<th style='height:1px;' colspan='<?php print $column_span; ?>'>
+		<div class='textSubHeaderDark'><?php print $matrix_name; ?></div>
 	</th>
 	<?php
 }
@@ -2031,7 +2035,7 @@ function form_area($text) {
 	?>
 	<tr>
 		<td class='textArea'>
-			<?php print html_escape($text);?>
+			<?php print html_escape($text); ?>
 		</td>
 	</tr>
 	<?php
@@ -2142,7 +2146,7 @@ function html_show_tabs_left() {
 			[
 				'title' => __('Logs'),
 				'id'	   => 'tab-logs',
-				'url'   => CACTI_PATH_URL . ($realm_allowed[18] ? 'clog.php':'clog_user.php'),
+				'url'   => CACTI_PATH_URL . ($realm_allowed[18] ? 'clog.php' : 'clog_user.php'),
 			];
 	}
 
@@ -2268,7 +2272,7 @@ function html_show_tabs_left() {
 			$i++;
 		}
 
-		print "<li><a id='$id' role='tab' class='lefttab" . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . html_escape($tab['url']) . "'><span class='fa glyph_$id'></span><span class='text_$id'>" . html_escape($tab['title']) . "</span></a><a id='menu-$id' class='maintabs-submenu' href='#'><i class='fa fa-chevron-down'></i></a></li>";
+		print "<li><a id='$id' role='tab' class='lefttab" . (isset($tab['selected']) ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . html_escape($tab['url']) . "'><span class='fa glyph_$id'></span><span class='text_$id'>" . html_escape($tab['title']) . "</span></a><a id='menu-$id' class='maintabs-submenu' href='#'><i class='fa fa-chevron-down'></i></a></li>";
 	}
 
 	print "<li class='ellipsis maintabs-submenu-ellipsis'><a id='menu-ellipsis' role='tab' aria-selected='false' class='submenu-ellipsis' href='#'><i class='fa fa-chevron-down'></i></a></li>";
@@ -2338,25 +2342,25 @@ function html_graph_tabs_right() {
 		switch($tab['id']) {
 			case 'tree':
 				if (isset($tab['image']) && $tab['image'] != '') {
-					print "<li><a id='treeview' role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
+					print "<li><a id='treeview' role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
 				} else {
-					print "<li><a role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
+					print "<li><a role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
 				}
 
 				break;
 			case 'list':
 				if (isset($tab['image']) && $tab['image'] != '') {
-					print "<li><a id='listview' role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
+					print "<li><a id='listview' role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
 				} else {
-					print "<li><a role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
+					print "<li><a role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
 				}
 
 				break;
 			case 'preview':
 				if (isset($tab['image']) && $tab['image'] != '') {
-					print "<li><a role='tab' id='preview' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
+					print "<li><a role='tab' id='preview' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
 				} else {
-					print "<li><a role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
+					print "<li><a role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
 				}
 
 				break;
@@ -2398,19 +2402,19 @@ function html_make_device_where() {
 	$sql_where = '';
 
 	if (isset_request_var('site_id') && get_filter_request_var('site_id') > 0) {
-		$sql_where .= ($sql_where != '' ? ' AND ':' (') . 'h.site_id = ' . get_request_var('site_id');
+		$sql_where .= ($sql_where != '' ? ' AND ' : ' (') . 'h.site_id = ' . get_request_var('site_id');
 	}
 
 	if (isset_request_var('location') && get_nfilter_request_var('location') != '-1') {
-		$sql_where .= ($sql_where != '' ? ' AND ':' (') . 'h.location = ' . db_qstr(get_nfilter_request_var('location'));
+		$sql_where .= ($sql_where != '' ? ' AND ' : ' (') . 'h.location = ' . db_qstr(get_nfilter_request_var('location'));
 	}
 
 	if (isset_request_var('host_template_id') && get_filter_request_var('host_template_id') > 0) {
-		$sql_where .= ($sql_where != '' ? ' AND ':' (') . 'h.location = ' . get_request_var('host_template_id');
+		$sql_where .= ($sql_where != '' ? ' AND ' : ' (') . 'h.location = ' . get_request_var('host_template_id');
 	}
 
 	if (isset_request_var('external_id') && get_nfilter_request_var('external_id') != '-1') {
-		$sql_where .= ($sql_where != '' ? ' AND ':' (') . 'h.external_id = ' . db_qstr(get_nfilter_request_var('external_id'));
+		$sql_where .= ($sql_where != '' ? ' AND ' : ' (') . 'h.external_id = ' . db_qstr(get_nfilter_request_var('external_id'));
 	}
 
 	if ($sql_where != '') {
@@ -2568,7 +2572,7 @@ function html_graph_order_filter_array() {
 }
 
 function html_thumbnails_filter($callBack = 'applyGraphFilter') {
-	$output  = "<input id='thumbnails' type='checkbox' onClick='$callBack()' " . (get_request_var('thumbnails') == 'true' ? 'checked':'') . '>';
+	$output  = "<input id='thumbnails' type='checkbox' onClick='$callBack()' " . (get_request_var('thumbnails') == 'true' ? 'checked' : '') . '>';
 	$output .= "<label for='thumbnails'>" . __('Thumbnails') . '</label>';
 
 	return $output;
@@ -2576,7 +2580,7 @@ function html_thumbnails_filter($callBack = 'applyGraphFilter') {
 
 function html_business_hours_filter($callBack = 'applyGraphFilter') {
 	if (read_config_option('business_hours_enable') == 'on') {
-		$output  = "<input id='business_hours' type='checkbox' onClick='$callBack()' " . (get_request_var('business_hours') == 'true' ? 'checked':'') . '>';
+		$output  = "<input id='business_hours' type='checkbox' onClick='$callBack()' " . (get_request_var('business_hours') == 'true' ? 'checked' : '') . '>';
 		$output .= "<label for='business_hours'>" . __('Business Hours') . '</label>';
 
 		return $output;
@@ -2608,19 +2612,19 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 	if (!read_config_option('autocomplete_enabled')) {
 		?>
 		<td>
-			<?php print __('Device');?>
+			<?php print __('Device'); ?>
 		</td>
 		<td>
-			<select id='host_id' name='host_id' onChange='<?php print $call_back;?>' data-defaultLabel='<?php print __('Device');?>'>
-				<?php if (!$noany) {?><option value='-1'<?php if ($host_id == '-1') {?> selected<?php }?>><?php print __('Any');?></option><?php }?>
-				<?php if (!$nonone) {?><option value='0'<?php if ($host_id == '0') {?> selected<?php }?>><?php print __('None');?></option><?php }?>
+			<select id='host_id' name='host_id' onChange='<?php print $call_back; ?>' data-defaultLabel='<?php print __('Device'); ?>'>
+				<?php if (!$noany) {?><option value='-1'<?php if ($host_id == '-1') {?> selected<?php }?>><?php print __('Any'); ?></option><?php }?>
+				<?php if (!$nonone) {?><option value='0'<?php if ($host_id == '0') {?> selected<?php }?>><?php print __('None'); ?></option><?php }?>
 				<?php
 
 				$devices = get_allowed_devices($sql_where);
 
 		if (cacti_sizeof($devices)) {
 			foreach ($devices as $device) {
-				print "<option value='{$device['id']}'" . ($host_id == $device['id'] ? ' selected':'') . '>' . html_escape(strip_domain($device['description'])) . '</option>';
+				print "<option value='{$device['id']}'" . ($host_id == $device['id'] ? ' selected' : '') . '>' . html_escape(strip_domain($device['description'])) . '</option>';
 			}
 		}
 		?>
@@ -2641,10 +2645,10 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 
 		?>
 		<td>
-			<?php print __('Device');?>
+			<?php print __('Device'); ?>
 		</td>
 		<td>
-			<?php print "<input id='host_id' name='host_id' type='text' class='drop-callback ui-state-default ui-corner-all' data-action='ajax_hosts' data-callback='$call_back' data-callback-id='host_id' data-value='" . html_escape($hostname) . "' value='" . html_escape($host_id) . "'>";?>
+			<?php print "<input id='host_id' name='host_id' type='text' class='drop-callback ui-state-default ui-corner-all' data-action='ajax_hosts' data-callback='$call_back' data-callback-id='host_id' data-value='" . html_escape($hostname) . "' value='" . html_escape($host_id) . "'>"; ?>
 		</td>
 	<?php
 	}
@@ -2674,19 +2678,19 @@ function html_site_filter($site_id = '-1', $call_back = 'applyFilter', $sql_wher
 
 	?>
 	<td>
-		<?php print __('Site');?>
+		<?php print __('Site'); ?>
 	</td>
 	<td>
-		<select id='site_id' onChange='<?php print $call_back;?>' data-defaultLabel='<?php print __('Site');?>'>
-			<?php if (!$noany) {?><option value='-1'<?php if ($site_id == '-1') {?> selected<?php }?>><?php print __('Any');?></option><?php }?>
-			<?php if (!$nonone) {?><option value='0'<?php if ($site_id == '0') {?> selected<?php }?>><?php print __('None');?></option><?php }?>
+		<select id='site_id' onChange='<?php print $call_back; ?>' data-defaultLabel='<?php print __('Site'); ?>'>
+			<?php if (!$noany) {?><option value='-1'<?php if ($site_id == '-1') {?> selected<?php }?>><?php print __('Any'); ?></option><?php }?>
+			<?php if (!$nonone) {?><option value='0'<?php if ($site_id == '0') {?> selected<?php }?>><?php print __('None'); ?></option><?php }?>
 			<?php
 
 			$sites = get_allowed_sites($sql_where);
 
 	if (cacti_sizeof($sites)) {
 		foreach ($sites as $site) {
-			print "<option value='" . $site['id'] . "'" . ($site_id == $site['id'] ? ' selected':'') . '>' . html_escape($site['name']) . '</option>';
+			print "<option value='" . $site['id'] . "'" . ($site_id == $site['id'] ? ' selected' : '') . '>' . html_escape($site['name']) . '</option>';
 		}
 	}
 	?>
@@ -2715,12 +2719,12 @@ function html_location_filter($location = '', $call_back = 'applyFilter', $sql_w
 
 	?>
 	<td>
-		<?php print __('Location');?>
+		<?php print __('Location'); ?>
 	</td>
 	<td>
-		<select id='location' onChange='<?php print $call_back;?>'>
-			<?php if (!$noany) {?><option value='-1'<?php if ($location == '-1') {?> selected<?php }?>><?php print __('Any');?></option><?php }?>
-			<?php if (!$nonone) {?><option value='0'<?php if ($location == '0') {?> selected<?php }?>><?php print __('None');?></option><?php }?>
+		<select id='location' onChange='<?php print $call_back; ?>'>
+			<?php if (!$noany) {?><option value='-1'<?php if ($location == '-1') {?> selected<?php }?>><?php print __('Any'); ?></option><?php }?>
+			<?php if (!$nonone) {?><option value='0'<?php if ($location == '0') {?> selected<?php }?>><?php print __('None'); ?></option><?php }?>
 			<?php
 
 			if ($sql_where != '' && !str_contains($sql_where, 'WHERE')) {
@@ -2741,7 +2745,7 @@ function html_location_filter($location = '', $call_back = 'applyFilter', $sql_w
 				continue;
 			}
 
-			print "<option value='" . html_escape($l) . "'" . ($location == $l ? ' selected':'') . '>' . html_escape($l) . '</option>';
+			print "<option value='" . html_escape($l) . "'" . ($location == $l ? ' selected' : '') . '>' . html_escape($l) . '</option>';
 		}
 	}
 	?>
@@ -2841,7 +2845,7 @@ function html_spikekill_menu_item($text, $icon = '', $class = '', $id = '', $dat
 		$output .= "data-graph='$data_graph' ";
 	}
 
-	$output .= 'class=\'' . (empty($class)?'': " $class") . '\'>';
+	$output .= 'class=\'' . (empty($class) ? '' : " $class") . '\'>';
 	$output .= '<span class=\'spikeKillMenuItem\'>';
 
 	if (!empty($icon)) {
@@ -2874,44 +2878,44 @@ function html_spikekill_menu_item($text, $icon = '', $class = '', $id = '', $dat
  */
 function html_spikekill_menu($local_graph_id) {
 	global $settings;
-	$ravgnan1 = html_spikekill_menu_item(__('Average'), html_spikekill_setting('spikekill_avgnan') == 'avg' ? 'fa fa-check':'fa', 'skmethod', 'method_avg');
-	$ravgnan2 = html_spikekill_menu_item(__('NaN\'s'), html_spikekill_setting('spikekill_avgnan') == 'nan' ? 'fa fa-check':'fa', 'skmethod', 'method_nan');
-	$ravgnan3 = html_spikekill_menu_item(__('Last Known Good'), html_spikekill_setting('spikekill_avgnan') == 'last' ? 'fa fa-check':'fa', 'skmethod', 'method_last');
+	$ravgnan1 = html_spikekill_menu_item(__('Average'), html_spikekill_setting('spikekill_avgnan') == 'avg' ? 'fa fa-check' : 'fa', 'skmethod', 'method_avg');
+	$ravgnan2 = html_spikekill_menu_item(__('NaN\'s'), html_spikekill_setting('spikekill_avgnan') == 'nan' ? 'fa fa-check' : 'fa', 'skmethod', 'method_nan');
+	$ravgnan3 = html_spikekill_menu_item(__('Last Known Good'), html_spikekill_setting('spikekill_avgnan') == 'last' ? 'fa fa-check' : 'fa', 'skmethod', 'method_last');
 
 	$ravgnan = html_spikekill_menu_item(__('Replacement Method'), '', '', '', '', $ravgnan1 . $ravgnan2 . $ravgnan3);
 
 	$rstddev = '';
 
 	foreach ($settings['spikes']['spikekill_deviations']['array'] as $key => $value) {
-		$rstddev .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_deviations') == $key ? 'fa fa-check':'fa', 'skstddev', 'stddev_' . $key);
+		$rstddev .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_deviations') == $key ? 'fa fa-check' : 'fa', 'skstddev', 'stddev_' . $key);
 	}
 	$rstddev  = html_spikekill_menu_item(__('Standard Deviations'), '', '', '', '', $rstddev);
 
 	$rvarpct = '';
 
 	foreach ($settings['spikes']['spikekill_percent']['array'] as $key => $value) {
-		$rvarpct .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_percent') == $key ? 'fa fa-check':'fa', 'skvarpct', 'varpct_' . $key);
+		$rvarpct .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_percent') == $key ? 'fa fa-check' : 'fa', 'skvarpct', 'varpct_' . $key);
 	}
 	$rvarpct = html_spikekill_menu_item(__('Variance Percentage'), '', '', '', '', $rvarpct);
 
 	$rvarout  = '';
 
 	foreach ($settings['spikes']['spikekill_outliers']['array'] as $key => $value) {
-		$rvarout .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_outliers') == $key ? 'fa fa-check':'fa', 'skvarout', 'varout_' . $key);
+		$rvarout .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_outliers') == $key ? 'fa fa-check' : 'fa', 'skvarout', 'varout_' . $key);
 	}
 	$rvarout  = html_spikekill_menu_item(__('Variance Outliers'), '', '', '', '', $rvarout);
 
 	$rkills  = '';
 
 	foreach ($settings['spikes']['spikekill_number']['array'] as $key => $value) {
-		$rkills .= html_spikekill_menu_item($value,html_spikekill_setting('spikekill_number') == $key ? 'fa fa-check':'fa', 'skills', 'kills_' . $key);
+		$rkills .= html_spikekill_menu_item($value,html_spikekill_setting('spikekill_number') == $key ? 'fa fa-check' : 'fa', 'skills', 'kills_' . $key);
 	}
 	$rkills  = html_spikekill_menu_item(__('Kills Per RRA'), '', '', '', '', $rkills);
 
 	$rabsmax  = '';
 
 	foreach ($settings['spikes']['spikekill_absmax']['array'] as $key => $value) {
-		$rabsmax .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_absmax') == $key ? 'fa fa-check':'fa', 'skabsmax', 'absmax_' . $key);
+		$rabsmax .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_absmax') == $key ? 'fa fa-check' : 'fa', 'skabsmax', 'absmax_' . $key);
 	}
 	$rabsmax = html_spikekill_menu_item(__('Absolute Max Value'), '', '', '', '', $rabsmax);
 
@@ -3154,139 +3158,139 @@ function html_common_header($title, $selectedTheme = '') {
 	<meta name='description' content='Monitoringauth tool of the Internet'>
 	<meta name='mobile-web-app-capable' content='yes'>
 	<meta name="theme-color" content="#161616"/>
-	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' https://api.qrserver.com <?php print $alternates;?> data: blob:; style-src 'self' 'unsafe-inline' <?php print $alternates;?>; script-src 'self' <?php print html_escape($script_policy);?> 'unsafe-inline' <?php print $alternates;?>; worker-src 'self' <?php print $alternates;?>;">
+	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' https://api.qrserver.com <?php print $alternates; ?> data: blob:; style-src 'self' 'unsafe-inline' <?php print $alternates; ?>; script-src 'self' <?php print html_escape($script_policy); ?> 'unsafe-inline' <?php print $alternates; ?>; worker-src 'self' <?php print $alternates; ?>;">
 	<meta name='robots' content='noindex,nofollow'>
 
 	<title><?php print $title; ?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
 	<link rel='manifest' href='/manifest.json'>
 	<script type='text/javascript'>
-		var urlPath='<?php print CACTI_PATH_URL;?>';
-		var aboutCacti = '<?php print __esc('About Cacti');?>';
-		var cactiCharts = '<?php print __esc('Charts');?>';
-		var cactiClient = '<?php print __esc('Client');?>';
-		var cactiCommunityForum = '<?php print __esc('User Community');?>';
-		var cactiConsole = '<?php print __esc('Console');?>';
-		var cactiConsoleAllowed=<?php print(is_realm_allowed(8) ? 'true':'false');?>;
-		var cactiContributeTo = '<?php print __esc('Contribute to the Cacti Project');?>';
-		var cactiDashboards = '<?php print __esc('Panels');?>';
-		var cactiDevHelp = '<?php print __esc('Help in Developing');?>';
-		var cactiDocumentation = '<?php print __esc('Documentation');?>';
-		var cactiDonate = '<?php print __esc('Donation & Sponsoring');?>';
-		var cactiGeneral = '<?php print __esc('General');?>';
-		var cactiGraphsAllowed=<?php print(is_realm_allowed(7) ? 'true':'false');?>;
-		var cactiHome = '<?php print __esc('Cacti Home');?>';
-		var cactiKeyboard = '<?php print __esc('Keyboard');?>';
-		var cactiMisc = '<?php print __esc('Miscellaneous');?>';
-		var cactiProfile = '<?php print __esc('Profile');?>';
-		var cactiProjectPage = '<?php print __esc('Cacti Project Page');?>';
-		var cactiRRDProxy = '<?php print __esc('RRDProxy');?>';
-		var cactiShortcuts = '<?php print __esc('Shortcuts');?>';
-		var cactiSpine = '<?php print __esc('Spine');?>';
-		var cactiTheme = '<?php print __esc('Theme');?>';
-		var cactiTranslate = '<?php print __esc('Help in Translating');?>';
-		var cactiUser = '<?php print __esc('User');?>';
-		var changePassword = '<?php print __esc('Change Password');?>';
-		var clearFilterTitle = '<?php print __esc('Clear Current Filter');?>';
-		var clipboard = '<?php print __esc('Clipboard');?>';
-		var clipboardCopyFailed = '<?php print __esc('Failed to find data to copy!');?>';
-		var clipboardID = '<?php print __esc('Clipboard ID');?>';
-		var clipboardNotAvailable = '<?php print __esc('Copy operation is unavailable at this time');?>';
-		var clipboardNotUpdated = '<?php print __esc('Sorry, your clipboard could not be updated at this time');?>';
-		var clipboardUpdated = '<?php print __esc('Clipboard has been updated');?>';
-		var compactGraphicalUserInterface = '<?php print __esc('Compact Mode');?>';
+		var urlPath='<?php print CACTI_PATH_URL; ?>';
+		var aboutCacti = '<?php print __esc('About Cacti'); ?>';
+		var cactiCharts = '<?php print __esc('Charts'); ?>';
+		var cactiClient = '<?php print __esc('Client'); ?>';
+		var cactiCommunityForum = '<?php print __esc('User Community'); ?>';
+		var cactiConsole = '<?php print __esc('Console'); ?>';
+		var cactiConsoleAllowed=<?php print(is_realm_allowed(8) ? 'true' : 'false'); ?>;
+		var cactiContributeTo = '<?php print __esc('Contribute to the Cacti Project'); ?>';
+		var cactiDashboards = '<?php print __esc('Panels'); ?>';
+		var cactiDevHelp = '<?php print __esc('Help in Developing'); ?>';
+		var cactiDocumentation = '<?php print __esc('Documentation'); ?>';
+		var cactiDonate = '<?php print __esc('Donation & Sponsoring'); ?>';
+		var cactiGeneral = '<?php print __esc('General'); ?>';
+		var cactiGraphsAllowed=<?php print(is_realm_allowed(7) ? 'true' : 'false'); ?>;
+		var cactiHome = '<?php print __esc('Cacti Home'); ?>';
+		var cactiKeyboard = '<?php print __esc('Keyboard'); ?>';
+		var cactiMisc = '<?php print __esc('Miscellaneous'); ?>';
+		var cactiProfile = '<?php print __esc('Profile'); ?>';
+		var cactiProjectPage = '<?php print __esc('Cacti Project Page'); ?>';
+		var cactiRRDProxy = '<?php print __esc('RRDProxy'); ?>';
+		var cactiShortcuts = '<?php print __esc('Shortcuts'); ?>';
+		var cactiSpine = '<?php print __esc('Spine'); ?>';
+		var cactiTheme = '<?php print __esc('Theme'); ?>';
+		var cactiTranslate = '<?php print __esc('Help in Translating'); ?>';
+		var cactiUser = '<?php print __esc('User'); ?>';
+		var changePassword = '<?php print __esc('Change Password'); ?>';
+		var clearFilterTitle = '<?php print __esc('Clear Current Filter'); ?>';
+		var clipboard = '<?php print __esc('Clipboard'); ?>';
+		var clipboardCopyFailed = '<?php print __esc('Failed to find data to copy!'); ?>';
+		var clipboardID = '<?php print __esc('Clipboard ID'); ?>';
+		var clipboardNotAvailable = '<?php print __esc('Copy operation is unavailable at this time'); ?>';
+		var clipboardNotUpdated = '<?php print __esc('Sorry, your clipboard could not be updated at this time'); ?>';
+		var clipboardUpdated = '<?php print __esc('Clipboard has been updated'); ?>';
+		var compactGraphicalUserInterface = '<?php print __esc('Compact Mode'); ?>';
 		var keyup_delay = <?php print get_keyup_delay(); ?>;
-		var darkColorMode = '<?php print __esc('Dark Color Mode');?>';
-		var defaultSNMPAuthProtocol = '<?php print read_config_option('snmp_auth_protocol');?>';
-		var defaultSNMPPrivProtocol = '<?php print read_config_option('snmp_priv_protocol');?>';
-		var defaultSNMPSecurityLevel = '<?php print read_config_option('snmp_security_level');?>';
-		var editProfile = '<?php print __esc('Edit Profile');?>';
-		var errorNumberPrefix = '<?php print __esc('Error:');?>';
-		var errorOnPage = '<?php print __esc('Sorry, we could not process your last action.');?>';
-		var errorReasonPrefix = '<?php print __esc('Reason:');?>';
-		var errorReasonTitle = '<?php print __esc('Action failed');?>';
-		var errorReasonUnexpected = '<?php print __esc('The response to the last action was unexpected.');?>';
-		var filterSettingsSaved = '<?php print __esc('Filter Settings Saved');?>';
-		var hScroll=<?php print read_user_setting('enable_hscroll', '') == 'on' ? 'true':'false';?>;
-		var help = '<?php print __esc('Help');?>';
-		var ignorePreferredColorTheme = '<?php print __esc('Ignore System Color');?>';
-		var justCacti = '<?php print __esc('Cacti');?>';
-		var lightColorMode = '<?php print __esc('Light Color Mode');?>';
-		var listView = '<?php print __esc('List View');?>';
-		var logout = '<?php print __esc('Logout');?>';
-		var mixedOnPage = '<?php print __esc('Note, we could not process all your actions.  Details are below.');?>';
-		var mixedReasonTitle = '<?php print __esc('Some Actions failed');?>';
-		var noFileSelected = '<?php print __esc('No file selected');?>';
-		var passwordMinChars = <?php print read_config_option('secpass_minlen');?>;
-		var passwordMatch = '<?php print __esc('Passphrases match');?>';
-		var passwordMatchTooShort = '<?php print __esc('Passphrase matches but too short');?>';
-		var passwordNotMatch = '<?php print __esc('Passphrases do not match');?>';
-		var passwordNotMatchTooShort = '<?php print __esc('Passphrase too short and not matching');?>';
-		var passwordPass = '<?php print __esc('Passphrase length meets 8 character minimum');?>';
-		var passwordTooShort = '<?php print __esc('Passphrase too short');?>';
-		var passwordValid = '<?php print __esc('Password Validation Passes');?>';
-		var previewView = '<?php print __esc('Preview View');?>';
-		var realtimeClickOff = '<?php print __esc('Click again to take this Graph out of Realtime');?>';
-		var realtimeClickOn = '<?php print __esc('Click to view just this Graph in Realtime');?>';
-		var reportABug = '<?php print __esc('Report a bug');?>';
-		var searchFilter = '<?php print __esc('Enter a search term');?>';
-		var searchRFilter = '<?php print __esc('Enter a regular expression');?>';
-		var searchSelect = '<?php print __esc('Select to Search');?>';
-		var searchPlaceholder = '<?php print __esc('Search');?>';
-		var searchEnterKeyword = '<?php print __esc('Enter keyword');?>';
-		var sessionMessageCancel = '<?php print __esc('Cancel');?>';
-		var sessionMessageContinue = '<?php print __esc('Continue');?>';
-		var sessionMessageOk = '<?php print __esc('Ok');?>';
-		var sessionMessagePause = '<?php print __esc('Pause');?>';
-		var sessionMessageSave = '<?php print __esc('The Operation was successful.  Details are below.');?>';
-		var sessionMessageTitle = '<?php print __esc('Operation successful');?>';
-		var showHideFilter = '<?php print __esc('Click to Show/Hide Filter');?>';
-		var spikeKillResults = '<?php print __esc('SpikeKill Results');?>';
-		var standardGraphicalUserInterface = '<?php print __esc('Standard Mode');?>';
-		var tableConstraints = '<?php print __esc('Allow or limit the table columns to extend beyond the current windows limits.');?>';
-		var testFailed = '<?php print __esc('Connection Failed');?>';
-		var testSuccessful = '<?php print __esc('Connection Successful');?>';
-		var theme = '<?php print $selectedTheme;?>';
-		var timeGraphView = '<?php print __esc('Time Graph View');?>';
-		var treeView = '<?php print __esc('Tree View');?>';
-		var usePreferredColorTheme = '<?php print __esc('Use System Color');?>';
-		var userSettings=<?php print is_view_allowed('graph_settings') ? 'true':'false';?>;
-		var utilityView = '<?php print __esc('Utility View');?>';
-		var allSelectedText = '<?php print __('All Graph Templates');?>';
-		var templatesSelected = '<?php print __esc('Templates Selected');?>';
-		var notTemplated = '<?php print __esc('Not Templated');?>';
-		var allText = '<?php __esc('All');?>';
-		var noneText = '<?php print __esc('None');?>';
-		var zoom_i18n_3rd_button = '<?php print __esc('3rd Mouse Button');?>';
-		var zoom_i18n_advanced = '<?php print __esc('Advanced');?>';
-		var zoom_i18n_auto = '<?php print __esc('Auto');?>';
-		var zoom_i18n_begin = '<?php print __esc('Begin with');?>';
-		var zoom_i18n_center = '<?php print __esc('Center');?>';
-		var zoom_i18n_close = '<?php print __esc('Close');?>';
-		var zoom_i18n_copy_graph = '<?php print __esc('Copy graph');?>';
-		var zoom_i18n_copy_graph_link = '<?php print __esc('Copy graph link');?>';
-		var zoom_i18n_disabled = '<?php print __esc('Disabled');?>';
-		var zoom_i18n_end = '<?php print __esc('End with');?>';
-		var zoom_i18n_graph = '<?php print __esc('Graph');?>';
-		var zoom_i18n_mode = '<?php print __esc('Zoom Mode');?>';
-		var zoom_i18n_newTab = '<?php print __esc('Open in new tab');?>';
-		var zoom_i18n_off = '<?php print __esc('Always Off');?>';
-		var zoom_i18n_on = '<?php print __esc('Always On');?>';
-		var zoom_i18n_quick = '<?php print __esc('Quick');?>';
-		var zoom_i18n_save_graph = '<?php print __esc('Save graph');?>';
-		var zoom_i18n_settings = '<?php print __esc('Settings');?>';
-		var zoom_i18n_timestamps = '<?php print __esc('Timestamps');?>';
-		var zoom_i18n_zoom_2 = '<?php print __esc('2x');?>';
-		var zoom_i18n_zoom_4 = '<?php print __esc('4x');?>';
-		var zoom_i18n_zoom_8 = '<?php print __esc('8x');?>';
-		var zoom_i18n_zoom_16 = '<?php print __esc('16x');?>';
-		var zoom_i18n_zoom_32 = '<?php print __esc('32x');?>';
-		var zoom_i18n_zoom_in = '<?php print __esc('Zoom In');?>';
-		var zoom_i18n_zoom_out = '<?php print __esc('Zoom Out');?>';
-		var zoom_i18n_zoom_out_factor = '<?php print __esc('Zoom Out Factor');?>';
-		var zoom_i18n_zoom_out_positioning = '<?php print __esc('Zoom Out Positioning');?>';
-		var zoom_outOfRangeTitle='<?php print __esc('Zoom Window Out of Range');?>';
-		var zoom_outOfRangeMessage='<?php print __esc('Zoom Dates before January 1, 1993 are not supported in Cacti!  Pick a more recent date.');?>';
+		var darkColorMode = '<?php print __esc('Dark Color Mode'); ?>';
+		var defaultSNMPAuthProtocol = '<?php print read_config_option('snmp_auth_protocol'); ?>';
+		var defaultSNMPPrivProtocol = '<?php print read_config_option('snmp_priv_protocol'); ?>';
+		var defaultSNMPSecurityLevel = '<?php print read_config_option('snmp_security_level'); ?>';
+		var editProfile = '<?php print __esc('Edit Profile'); ?>';
+		var errorNumberPrefix = '<?php print __esc('Error:'); ?>';
+		var errorOnPage = '<?php print __esc('Sorry, we could not process your last action.'); ?>';
+		var errorReasonPrefix = '<?php print __esc('Reason:'); ?>';
+		var errorReasonTitle = '<?php print __esc('Action failed'); ?>';
+		var errorReasonUnexpected = '<?php print __esc('The response to the last action was unexpected.'); ?>';
+		var filterSettingsSaved = '<?php print __esc('Filter Settings Saved'); ?>';
+		var hScroll=<?php print read_user_setting('enable_hscroll', '') == 'on' ? 'true' : 'false'; ?>;
+		var help = '<?php print __esc('Help'); ?>';
+		var ignorePreferredColorTheme = '<?php print __esc('Ignore System Color'); ?>';
+		var justCacti = '<?php print __esc('Cacti'); ?>';
+		var lightColorMode = '<?php print __esc('Light Color Mode'); ?>';
+		var listView = '<?php print __esc('List View'); ?>';
+		var logout = '<?php print __esc('Logout'); ?>';
+		var mixedOnPage = '<?php print __esc('Note, we could not process all your actions.  Details are below.'); ?>';
+		var mixedReasonTitle = '<?php print __esc('Some Actions failed'); ?>';
+		var noFileSelected = '<?php print __esc('No file selected'); ?>';
+		var passwordMinChars = <?php print read_config_option('secpass_minlen'); ?>;
+		var passwordMatch = '<?php print __esc('Passphrases match'); ?>';
+		var passwordMatchTooShort = '<?php print __esc('Passphrase matches but too short'); ?>';
+		var passwordNotMatch = '<?php print __esc('Passphrases do not match'); ?>';
+		var passwordNotMatchTooShort = '<?php print __esc('Passphrase too short and not matching'); ?>';
+		var passwordPass = '<?php print __esc('Passphrase length meets 8 character minimum'); ?>';
+		var passwordTooShort = '<?php print __esc('Passphrase too short'); ?>';
+		var passwordValid = '<?php print __esc('Password Validation Passes'); ?>';
+		var previewView = '<?php print __esc('Preview View'); ?>';
+		var realtimeClickOff = '<?php print __esc('Click again to take this Graph out of Realtime'); ?>';
+		var realtimeClickOn = '<?php print __esc('Click to view just this Graph in Realtime'); ?>';
+		var reportABug = '<?php print __esc('Report a bug'); ?>';
+		var searchFilter = '<?php print __esc('Enter a search term'); ?>';
+		var searchRFilter = '<?php print __esc('Enter a regular expression'); ?>';
+		var searchSelect = '<?php print __esc('Select to Search'); ?>';
+		var searchPlaceholder = '<?php print __esc('Search'); ?>';
+		var searchEnterKeyword = '<?php print __esc('Enter keyword'); ?>';
+		var sessionMessageCancel = '<?php print __esc('Cancel'); ?>';
+		var sessionMessageContinue = '<?php print __esc('Continue'); ?>';
+		var sessionMessageOk = '<?php print __esc('Ok'); ?>';
+		var sessionMessagePause = '<?php print __esc('Pause'); ?>';
+		var sessionMessageSave = '<?php print __esc('The Operation was successful.  Details are below.'); ?>';
+		var sessionMessageTitle = '<?php print __esc('Operation successful'); ?>';
+		var showHideFilter = '<?php print __esc('Click to Show/Hide Filter'); ?>';
+		var spikeKillResults = '<?php print __esc('SpikeKill Results'); ?>';
+		var standardGraphicalUserInterface = '<?php print __esc('Standard Mode'); ?>';
+		var tableConstraints = '<?php print __esc('Allow or limit the table columns to extend beyond the current windows limits.'); ?>';
+		var testFailed = '<?php print __esc('Connection Failed'); ?>';
+		var testSuccessful = '<?php print __esc('Connection Successful'); ?>';
+		var theme = '<?php print $selectedTheme; ?>';
+		var timeGraphView = '<?php print __esc('Time Graph View'); ?>';
+		var treeView = '<?php print __esc('Tree View'); ?>';
+		var usePreferredColorTheme = '<?php print __esc('Use System Color'); ?>';
+		var userSettings=<?php print is_view_allowed('graph_settings') ? 'true' : 'false'; ?>;
+		var utilityView = '<?php print __esc('Utility View'); ?>';
+		var allSelectedText = '<?php print __('All Graph Templates'); ?>';
+		var templatesSelected = '<?php print __esc('Templates Selected'); ?>';
+		var notTemplated = '<?php print __esc('Not Templated'); ?>';
+		var allText = '<?php __esc('All'); ?>';
+		var noneText = '<?php print __esc('None'); ?>';
+		var zoom_i18n_3rd_button = '<?php print __esc('3rd Mouse Button'); ?>';
+		var zoom_i18n_advanced = '<?php print __esc('Advanced'); ?>';
+		var zoom_i18n_auto = '<?php print __esc('Auto'); ?>';
+		var zoom_i18n_begin = '<?php print __esc('Begin with'); ?>';
+		var zoom_i18n_center = '<?php print __esc('Center'); ?>';
+		var zoom_i18n_close = '<?php print __esc('Close'); ?>';
+		var zoom_i18n_copy_graph = '<?php print __esc('Copy graph'); ?>';
+		var zoom_i18n_copy_graph_link = '<?php print __esc('Copy graph link'); ?>';
+		var zoom_i18n_disabled = '<?php print __esc('Disabled'); ?>';
+		var zoom_i18n_end = '<?php print __esc('End with'); ?>';
+		var zoom_i18n_graph = '<?php print __esc('Graph'); ?>';
+		var zoom_i18n_mode = '<?php print __esc('Zoom Mode'); ?>';
+		var zoom_i18n_newTab = '<?php print __esc('Open in new tab'); ?>';
+		var zoom_i18n_off = '<?php print __esc('Always Off'); ?>';
+		var zoom_i18n_on = '<?php print __esc('Always On'); ?>';
+		var zoom_i18n_quick = '<?php print __esc('Quick'); ?>';
+		var zoom_i18n_save_graph = '<?php print __esc('Save graph'); ?>';
+		var zoom_i18n_settings = '<?php print __esc('Settings'); ?>';
+		var zoom_i18n_timestamps = '<?php print __esc('Timestamps'); ?>';
+		var zoom_i18n_zoom_2 = '<?php print __esc('2x'); ?>';
+		var zoom_i18n_zoom_4 = '<?php print __esc('4x'); ?>';
+		var zoom_i18n_zoom_8 = '<?php print __esc('8x'); ?>';
+		var zoom_i18n_zoom_16 = '<?php print __esc('16x'); ?>';
+		var zoom_i18n_zoom_32 = '<?php print __esc('32x'); ?>';
+		var zoom_i18n_zoom_in = '<?php print __esc('Zoom In'); ?>';
+		var zoom_i18n_zoom_out = '<?php print __esc('Zoom Out'); ?>';
+		var zoom_i18n_zoom_out_factor = '<?php print __esc('Zoom Out Factor'); ?>';
+		var zoom_i18n_zoom_out_positioning = '<?php print __esc('Zoom Out Positioning'); ?>';
+		var zoom_outOfRangeTitle='<?php print __esc('Zoom Window Out of Range'); ?>';
+		var zoom_outOfRangeMessage='<?php print __esc('Zoom Dates before January 1, 1993 are not supported in Cacti!  Pick a more recent date.'); ?>';
 	</script>
 	<?php
 	/* Global icons */
@@ -3475,16 +3479,16 @@ function html_auth_header($section, $browser_title, $legend, $title, $hook_args 
 <html>
 <head>
 	<!-- <?php print "{$section}_title"; ?> -->
-	<?php html_common_header(api_plugin_hook_function("{$section}_title", $browser_title));?>
+	<?php html_common_header(api_plugin_hook_function("{$section}_title", $browser_title)); ?>
 </head>
 <body>
 <div class='cactiAuthBody'>
 	<div class='cactiAuthCenter'>
 		<div class='cactiAuthArea'>
-			<legend><?php print $legend;?></legend><hr />
-			<form id='auth' name='auth' method='post' action='<?php print get_current_page();?>'>
+			<legend><?php print $legend; ?></legend><hr />
+			<form id='auth' name='auth' method='post' action='<?php print get_current_page(); ?>'>
 				<input type='hidden' name='action' value='<?php print $section; ?>'>
-				<?php api_plugin_hook_function("{$section}_before", $hook_args);	?>
+				<?php api_plugin_hook_function("{$section}_before", $hook_args); ?>
 				<div class='cactiAuthTitle'>
 					<table class='cactiAuthTable'>
 						<tr><td><?php print $title; ?></td></tr>
@@ -3519,7 +3523,7 @@ function html_auth_footer($section, $error = '', $html = '') {
 				<?php print $error; ?>
 			</div>
 			<div class='versionInfo'>
-				<?php print __('Version %s | %s', CACTI_VERSION_BRIEF, COPYRIGHT_YEARS_SHORT);?>
+				<?php print __('Version %s | %s', CACTI_VERSION_BRIEF, COPYRIGHT_YEARS_SHORT); ?>
 			</div>
 		</div>
 		<div class='cactiAuthLogo'></div>

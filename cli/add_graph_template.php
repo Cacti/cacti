@@ -36,15 +36,16 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (cacti_sizeof($parms)) {
-	$displayHosts 			       = false;
-	$displayGraphTemplates 	= false;
-	$quietMode				          = false;
+	$displayHosts          = false;
+	$displayGraphTemplates = false;
+	$quietMode             = false;
+
 	unset($host_id);
 	unset($graph_template_id);
 
 	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter, 2);
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
 			$value = '';

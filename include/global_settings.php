@@ -3062,7 +3062,7 @@ $settings['spikes'] = [
 		'friendly_name' => __('Graph Templates to Spike Kill'),
 		'method'        => 'drop_multi',
 		'description'   => __('When performing batch spike removal, only the templates selected below will be acted on.'),
-		'array'         => [],//$spikekill_templates,
+		'array'         => [], //$spikekill_templates,
 	],
 	'spikekill_purge' => [
 		'friendly_name' => __('Backup Retention'),

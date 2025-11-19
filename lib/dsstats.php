@@ -124,7 +124,7 @@ function dsstats_get_and_store_ds_avgpeak_values($interval, $type, $thread_id = 
 
 	$max_threads = read_config_option('dsstats_parallel');
 	$mode        = read_config_option('dsstats_mode');
-	$peak        = read_config_option('dsstats_peak') == 'on' ? true: false;
+	$peak        = read_config_option('dsstats_peak') == 'on' ? true : false;
 
 	if (empty($max_threads)) {
 		$max_threads = 1;
@@ -252,14 +252,14 @@ function dsstats_write_buffer(&$stats_array, $interval, $mode) {
 
 					foreach ($cf_stats as $rrd_name => $stats) {
 						if ($mode == 0) {
-							$outbuf .= ($i == 1 ? ' ':', ') . "('" .
+							$outbuf .= ($i == 1 ? ' ' : ', ') . "('" .
 								$local_data_id      . "','" .
 								$rrd_name           . "','" .
 								$mycf               . "','" .
 								$stats['avg']       . "','" .
 								$stats['peak']      . "')";
 						} else {
-							$outbuf .= ($i == 1 ? ' ':', ') . "('" .
+							$outbuf .= ($i == 1 ? ' ' : ', ') . "('" .
 								$local_data_id      . "','" .
 								$rrd_name           . "','" .
 								$mycf               . "','" .
@@ -539,14 +539,14 @@ function dsstats_get_stats_command($local_data_id, $rrdfile, $use_proxy, $mode, 
 				$mydata_max = $defs[$j] . $defs[$i] . '_m';
 
 				if ($average) {
-					$def     .= 'DEF:' . $mydata_avg . '="' . $rrdfile . '":' . $dsname . ':AVERAGE ';
+					$def .= 'DEF:' . $mydata_avg . '="' . $rrdfile . '":' . $dsname . ':AVERAGE ';
 					$command .= " VDEF:{$mydata_avg}_aa=$mydata_avg,AVERAGE PRINT:{$mydata_avg}_aa:{$dsname}-avg_avg=%lf";
 					$command .= " VDEF:{$mydata_avg}_am=$mydata_avg,MAXIMUM PRINT:{$mydata_avg}_am:{$dsname}-peak_avg=%lf";
 					$i++;
 				}
 
 				if ($max && $peak) {
-					$def     .= 'DEF:' . $mydata_max . '="' . $rrdfile . '":' . $dsname . ':MAX ';
+					$def .= 'DEF:' . $mydata_max . '="' . $rrdfile . '":' . $dsname . ':MAX ';
 					$command .= " VDEF:{$mydata_max}_ma=$mydata_max,AVERAGE PRINT:{$mydata_max}_ma:{$dsname}-avg_max=%lf";
 					$command .= " VDEF:{$mydata_max}_mm=$mydata_max,MAXIMUM PRINT:{$mydata_max}_mm:{$dsname}-peak_max=%lf";
 					$i++;
@@ -736,13 +736,13 @@ function dsstats_log_child_stats($type, $thread_id, $total_time) {
  * dsstats_error_handler - this routine logs all PHP error transactions
  *   to make sure they are properly logged.
  *
- * @param $errno    - (int) The errornum reported by the system
- * @param $errmsg   - (string) The error message provides by the error
- * @param $filename - (string) The filename that encountered the error
- * @param $linenum  - (int) The line number where the error occurred
- * @param $vars     - (mixed) The current state of PHP variables.
+ * @param  int    $errno    - The errornum reported by the system
+ * @param  string $errmsg   - The error message provides by the error
+ * @param  string $filename - The filename that encountered the error
+ * @param  int    $linenum  - The line number where the error occurred
+ * @param  mixed  $vars     - The current state of PHP variables.
  *
- * @returns - (bool) always returns true for some reason
+ * @return bool             - always returns true for some reason
  */
 function dsstats_error_handler($errno, $errmsg, $filename, $linenum, $vars = []) {
 	if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
@@ -1233,10 +1233,10 @@ function dsstats_rrdtool_init() {
  *   This may not be the best method and may be changed after I have a conversation with a few
  *   developers.
  *
- * @param $command      - (string) The rrdtool command to execute
- * @param $rrd_process  - (array) An array of stdin and stdout pipes to read and write data from
+ * @param  string $command      - The rrdtool command to execute
+ * @param  array  $rrd_process  - An array of stdin and stdout pipes to read and write data from
  *
- * @returns - (string) The output from RRDtool
+ * @return string               - The output from RRDtool
  */
 function dsstats_rrdtool_execute($command, $rrd_process) {
 	static $broken = false;
@@ -1284,10 +1284,9 @@ function dsstats_rrdtool_execute($command, $rrd_process) {
  * dsstats_rrdtool_close - this routine closes the RRDtool process thus also
  *   closing the pipes.
  *
- * @param  mixed $process
  * @param mixed $rrd_process
  *
- * @return - null
+ * @return null
  */
 function dsstats_rrdtool_close($rrd_process) {
 	if (is_array($rrd_process)) {
@@ -1300,9 +1299,9 @@ function dsstats_rrdtool_close($rrd_process) {
  * dsstats_launch_children - this function will launch collector children based upon
  *   the maximum number of threads and the process type
  *
- * @param  $type - (string) The process type
+ * @param  string $type - The process type
  *
- * @return - null
+ * @return null
  */
 function dsstats_launch_children($type) {
 	global $debug;
@@ -1324,7 +1323,7 @@ function dsstats_launch_children($type) {
 
 		cacti_log(sprintf('NOTE: Launching DSStats Process Number %s for Type %s', $i, $type), false, 'BOOST', POLLER_VERBOSITY_MEDIUM);
 
-		exec_background($php_binary, CACTI_PATH_BASE . "/poller_dsstats.php --type=$sub_type --child=$i" . ($debug ? ' --debug':''));
+		exec_background($php_binary, CACTI_PATH_BASE . "/poller_dsstats.php --type=$sub_type --child=$i" . ($debug ? ' --debug' : ''));
 	}
 
 	sleep(2);
@@ -1332,11 +1331,11 @@ function dsstats_launch_children($type) {
 
 /**
  * dsstats_get_subtype - this function determine the applicable
- *   sub-type (child name) and return if based upon a type
+ * sub-type (child name) and return if based upon a type
  *
- * @param $type - (string) The process type
+ * @param  string $type - The process type
  *
- * @return - (string) The sub type
+ * @return string       - The sub type
  */
 function dsstats_get_subtype($type) {
 	switch($type) {
@@ -1358,9 +1357,9 @@ function dsstats_get_subtype($type) {
 
 /**
  * dsstats_kill_running_processes - this function is part of an interrupt
- *   handler to kill children processes when the parent is killed
+ * handler to kill children processes when the parent is killed
  *
- * @return - NULL
+ * @return null
  */
 function dsstats_kill_running_processes() {
 	global $type;
@@ -1393,11 +1392,11 @@ function dsstats_kill_running_processes() {
 
 /**
  * dsstats_processes_running - given a type, determine the number
- *   of sub-type or children that are currently running
+ * of sub-type or children that are currently running
  *
- * @param $type - (string) The process type
+ * @param  string $type - The process type
  *
- * @return - (int) The number of running processes
+ * @return int          - The number of running processes
  */
 function dsstats_processes_running($type) {
 	$sub_type = dsstats_get_subtype($type);
@@ -1417,14 +1416,12 @@ function dsstats_processes_running($type) {
 
 /**
  * dsstats_get_best_partition - given a time range, determine the
- *   best partition to use to gather graph statistics
+ * best partition to use to gather graph statistics
  *
- * @param  int      start_time as a unix timestamp
- * @param  int      end_time as a unix timestamp
- * @param mixed $start_time
- * @param mixed $end_time
+ * @param  int     $start_time  - as a unix timestamp
+ * @param  int     $end_time    - as a unix timestamp
  *
- * @return string   The table name of the best partition
+ * @return string  The table name of the best partition
  */
 function dsstats_get_best_partition($start_time, $end_time = 0) {
 	if ($end_time == 0) {

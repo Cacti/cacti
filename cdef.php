@@ -102,7 +102,7 @@ function draw_cdef_preview($cdef_id) {
 	?>
 	<tr class='even'>
 		<td style='padding:4px'>
-			<pre>cdef=<?php print html_escape(get_cdef($cdef_id, true));?></pre>
+			<pre>cdef=<?php print html_escape(get_cdef($cdef_id, true)); ?></pre>
 		</td>
 	</tr>
 	<?php
@@ -223,7 +223,7 @@ function form_actions() {
 				db_execute('DELETE FROM cdef WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('DELETE FROM cdef_items WHERE ' . array_to_sql_or($selected_items, 'cdef_id'));
 			} elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
-				for ($i=0;($i < cacti_count($selected_items));$i++) {
+				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					duplicate_cdef($selected_items[$i], get_nfilter_request_var('title_format'));
 				}
 			}
@@ -305,18 +305,18 @@ function cdef_item_remove_confirm() {
 	?>
 	<tr>
 		<td class='topBoxAlt'>
-			<p><?php print __('Click \'Continue\' to delete the following CDEF Item.');?></p>
-			<p><?php print __esc('CDEF Name: %s', $cdef['name']);?><br>
+			<p><?php print __('Click \'Continue\' to delete the following CDEF Item.'); ?></p>
+			<p><?php print __esc('CDEF Name: %s', $cdef['name']); ?><br>
 			<em><?php $cdef_item_type = $cdef_item['type'];
-	print $cdef_item_types[$cdef_item_type];?></em>: <strong><?php print html_escape(get_cdef_item_name($cdef_item['id']));?></strong></p>
+	print $cdef_item_types[$cdef_item_type]; ?></em>: <strong><?php print html_escape(get_cdef_item_name($cdef_item['id'])); ?></strong></p>
 		</td>
 	</tr>
 	<tr>
 		<td class='right'>
-			<button type='button' class='ui-button ui-corner-all ui-widget' id='cancel' onClick='$("#cdialog").dialog("close");$(".deleteMarker").blur();' name='cancel'><?php print __esc('Cancel');?></button>
-			<button type='button' class='ui-button ui-corner-all ui-widget' id='continue' name='continue' title='<?php print __esc('Remove CDEF Item');?>'><?php print __esc('Continue');?></button>
-			<input type='hidden' id='my_cdef_id' value='<?php print $cdef['id'];?>'>
-			<input type='hidden' id='my_id' value='<?php print $cdef_item['id'];?>'>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='cancel' onClick='$("#cdialog").dialog("close");$(".deleteMarker").blur();' name='cancel'><?php print __esc('Cancel'); ?></button>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='continue' name='continue' title='<?php print __esc('Remove CDEF Item'); ?>'><?php print __esc('Continue'); ?></button>
+			<input type='hidden' id='my_cdef_id' value='<?php print $cdef['id']; ?>'>
+			<input type='hidden' id='my_id' value='<?php print $cdef_item['id']; ?>'>
 		</td>
 	</tr>
 	<?php
@@ -336,8 +336,8 @@ function cdef_item_remove_confirm() {
 
 			var data = {
 				__csrf_magic: csrfMagicToken,
-				cdef_id: <?php print get_request_var('cdef_id');?>,
-				id: <?php print get_request_var('id');?>
+				cdef_id: <?php print get_request_var('cdef_id'); ?>,
+				id: <?php print get_request_var('id'); ?>
 			}
 
 			postUrl(options, data);
@@ -347,7 +347,7 @@ function cdef_item_remove_confirm() {
 	function removeCdefItemFinalize(data) {
 		$('#cdialog').dialog('close');
 		$('.deleteMarker').blur();
-		loadUrl({url:'cdef.php?action=edit&id=<?php print get_request_var('id');?>'})
+		loadUrl({url:'cdef.php?action=edit&id=<?php print get_request_var('id'); ?>'})
 	};
 	</script>
 	<?php
@@ -441,11 +441,11 @@ function item_edit() {
 			'method'        => 'drop_array',
 			'friendly_name' => __('CDEF Item Value'),
 			'description'   => __('Enter a value for this CDEF item.'),
-			'value'         => (isset($cdef['value']) ? $cdef['value']:'')
+			'value'         => (isset($cdef['value']) ? $cdef['value'] : '')
 		],
 		'id' => [
 			'method'        => 'hidden',
-			'value'         => isset_request_var('id') ?  get_request_var('id') : '0',
+			'value'         => isset_request_var('id') ? get_request_var('id') : '0',
 		],
 		'type' => [
 			'method'        => 'hidden',
@@ -647,7 +647,7 @@ function cdef_edit() {
 		$('#cdef_item').find('tr:first').addClass('nodrag').addClass('nodrop');
 		$('#cdef_item').tableDnD({
 			onDrop: function(table, row) {
-				loadUrl({url:'cdef.php?action=ajax_dnd&id=<?php isset_request_var('id') ? print get_request_var('id') : print 0;?>&'+$.tableDnD.serialize()})
+				loadUrl({url:'cdef.php?action=ajax_dnd&id=<?php isset_request_var('id') ? print get_request_var('id') : print 0; ?>&'+$.tableDnD.serialize()})
 			}
 		});
 		<?php } ?>
@@ -676,7 +676,7 @@ function cdef_edit() {
 					});
 
 					$('#cdialog').dialog({
-						title: '<?php print __('Delete CDEF Item');?>',
+						title: '<?php print __('Delete CDEF Item'); ?>',
 						minHeight: 80,
 						minWidth: 500
 					});
@@ -714,7 +714,7 @@ function cdef() {
 	}
 
 	if (get_request_var('has_graphs') == 'true') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' graphs > 0';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' graphs > 0';
 	}
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*)
@@ -780,7 +780,7 @@ function cdef() {
 			form_alternate_row('line' . $cdef['id'], false, $disabled);
 
 			form_selectable_cell(filter_value($cdef['name'], get_request_var('filter'), 'cdef.php?action=edit&id=' . $cdef['id']), $cdef['id']);
-			form_selectable_cell($disabled ? __('No'):__('Yes'), $cdef['id'], '', 'right');
+			form_selectable_cell($disabled ? __('No') : __('Yes'), $cdef['id'], '', 'right');
 			form_selectable_cell(filter_value(number_format_i18n($cdef['graphs'], -1), '', $graphs_url), $cdef['id'], '', 'right');
 			form_selectable_cell(filter_value(number_format_i18n($cdef['templates'], -1), '', $templates_url), $cdef['id'], '', 'right');
 

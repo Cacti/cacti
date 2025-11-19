@@ -557,7 +557,7 @@ function db_query_parallelize($sql, $log = true, $db_conn = false) {
 				}
 			}
 
-			$inner .= ($inner != '' ? ', ':'') . $outer[$index];
+			$inner .= ($inner != '' ? ', ' : '') . $outer[$index];
 		}
 
 		// Handle UNIONS into Partitions

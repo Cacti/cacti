@@ -110,7 +110,7 @@ function ss_host_disk($hostname = '', $host_id = 0, $snmp_auth = '', $cmd = 'ind
 			);
 
 			if (cacti_sizeof($arr)) {
-				for ($i=0;($i < cacti_sizeof($arr_index));$i++) {
+				for ($i = 0; ($i < cacti_sizeof($arr_index)); $i++) {
 					if (isset($arr[$i])) {
 						print $arr_index[$i] . '!' . $arr[$i] . "\n";
 					} else {
@@ -166,7 +166,7 @@ function ss_host_disk_reindex($arr) {
 	$return_arr = [];
 
 	if (cacti_sizeof($arr)) {
-		for ($i=0;($i < cacti_sizeof($arr));$i++) {
+		for ($i = 0; ($i < cacti_sizeof($arr)); $i++) {
 			if (!isset($arr[$i]['value'])) {
 				return [];
 			}

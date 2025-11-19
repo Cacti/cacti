@@ -43,7 +43,7 @@ switch (get_request_var('action')) {
 	case 'get_contents':
 		$export_type    = get_nfilter_request_var('export_type');
 		$export_item_id = get_nfilter_request_var('export_item_id');
-		$include_deps   = (get_nfilter_request_var('include_deps') == 'true' ? true:false);
+		$include_deps   = (get_nfilter_request_var('include_deps') == 'true' ? true : false);
 
 		print get_package_contents($export_type, $export_item_id);
 
@@ -160,7 +160,7 @@ function export() {
 		<td>
 			<table>
 				<tr>
-					<td><span class='formItemName'><?php print __('What would you like to Package?');?>&nbsp;</span></td>
+					<td><span class='formItemName'><?php print __('What would you like to Package?'); ?>&nbsp;</span></td>
 					<td>
 						<select id='export_type'>
 							<?php
@@ -311,7 +311,7 @@ function export() {
 			'method'        => 'drop_sql',
 			'friendly_name' => __('%s to Export', $export_types[get_nfilter_request_var('export_type')]['name']),
 			'description'   => __('Choose the exact items to export in the Package.'),
-			'value'         => (isset_request_var('export_item_id') ? get_filter_request_var('export_item_id'):'|arg1:export_item_id|'),
+			'value'         => (isset_request_var('export_item_id') ? get_filter_request_var('export_item_id') : '|arg1:export_item_id|'),
 			'sql'           => $export_types[get_nfilter_request_var('export_type')]['dropdown_sql']
 		],
 		'include_deps' => [
@@ -329,7 +329,7 @@ function export() {
 			'method'        => 'textbox',
 			'friendly_name' => __('Description'),
 			'description'   => __('The Package Description.'),
-			'value'         => (isset($info['description']) ? $info['description']:read_config_option('package_description', true)),
+			'value'         => (isset($info['description']) ? $info['description'] : read_config_option('package_description', true)),
 			'max_length'    => '255',
 			'size'          => '80'
 		],
@@ -337,7 +337,7 @@ function export() {
 			'method'        => 'drop_array',
 			'friendly_name' => __('Copyright'),
 			'description'   => __('The license type for this package.'),
-			'value'         => (isset($info['copyright']) ? $info['copyright']:'GNU General Public License'),
+			'value'         => (isset($info['copyright']) ? $info['copyright'] : 'GNU General Public License'),
 			'array'         => [
 				'Apache License 2.0'                 => __('Apache License 2.0'),
 				'Creative Commons'                   => __('Creative Commons'),
@@ -351,7 +351,7 @@ function export() {
 			'method'        => 'textbox',
 			'friendly_name' => __('Version'),
 			'description'   => __('The version number to publish for this Package.'),
-			'value'         => (isset($info['version']) ? $info['version']:read_config_option('package_version', true)),
+			'value'         => (isset($info['version']) ? $info['version'] : read_config_option('package_version', true)),
 			'max_length'    => '10',
 			'size'          => '10'
 		],
@@ -359,7 +359,7 @@ function export() {
 			'method'        => 'drop_array',
 			'friendly_name' => __('Class'),
 			'description'   => __('The Classification of the Package.'),
-			'value'         => (isset($info['class']) ? $info['class']:read_config_option('package_class', true)),
+			'value'         => (isset($info['class']) ? $info['class'] : read_config_option('package_class', true)),
 			'array'         => $classes,
 			'default'       => 'unassigned'
 		],
@@ -367,7 +367,7 @@ function export() {
 			'method'        => 'textarea',
 			'friendly_name' => __('Tags'),
 			'description'   => __('Assign various searchable attributes to the Package.'),
-			'value'         => (isset($info['tags']) ? $info['tags']:read_config_option('package_tags', true)),
+			'value'         => (isset($info['tags']) ? $info['tags'] : read_config_option('package_tags', true)),
 			'textarea_rows' => '2',
 			'textarea_cols' => '80'
 		],
@@ -375,7 +375,7 @@ function export() {
 			'method'        => 'textarea',
 			'friendly_name' => __('Installation Instructions'),
 			'description'   => __('Some Packages require additional changes outside of Cacti\'s scope such as setting up an SNMP Agent Extension on the Devices to be monitored.  You should add those instructions here..'),
-			'value'         => (isset($info['installation']) ? $info['installation']:read_config_option('package_installation', true)),
+			'value'         => (isset($info['installation']) ? $info['installation'] : read_config_option('package_installation', true)),
 			'textarea_rows' => '5',
 			'textarea_cols' => '80'
 		],
@@ -427,8 +427,8 @@ function export() {
 		<tr>
 			<td class='saveRow'>
 				<input type='hidden' name='action' value='save'>
-				<input type='hidden' id='name' name='name' value='<?php print $detail['name'];?>'>
-				<button class='export ui-button ui-corner-all ui-widget ui-state-active' type='submit'><?php print __('Package');?></button>
+				<input type='hidden' id='name' name='name' value='<?php print $detail['name']; ?>'>
+				<button class='export ui-button ui-corner-all ui-widget ui-state-active' type='submit'><?php print __('Package'); ?></button>
 			</td>
 		</tr>
 	</table>

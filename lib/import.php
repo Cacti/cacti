@@ -762,42 +762,42 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 								$params = [];
 
 								if ($dt['version'] == '' && $info['version'] != '' && !is_array($info['version'])) {
-									$sets .= ($sets != '' ? ', ':'') . 'version = ?';
+									$sets .= ($sets != '' ? ', ' : '') . 'version = ?';
 									$params[] = $info['version'];
 								}
 
 								if ($dt['class'] == '' && $info['class'] != '' && !is_array($info['class'])) {
-									$sets .= ($sets != '' ? ', ':'') . 'class = ?';
+									$sets .= ($sets != '' ? ', ' : '') . 'class = ?';
 									$params[] = $info['class'];
 								}
 
 								if ($dt['author'] == '' && $info['author'] != '' && !is_array($info['author'])) {
-									$sets .= ($sets != '' ? ', ':'') . 'author = ?';
+									$sets .= ($sets != '' ? ', ' : '') . 'author = ?';
 									$params[] = $info['author'];
 								}
 
 								if ($dt['email'] == '' && $info['email'] != '' && !is_array($info['email'])) {
-									$sets .= ($sets != '' ? ', ':'') . 'email = ?';
+									$sets .= ($sets != '' ? ', ' : '') . 'email = ?';
 									$params[] = $info['email'];
 								}
 
 								if ($dt['homepage'] == '' && $info['homepage'] != '' && !is_array($info['homepage'])) {
-									$sets .= ($sets != '' ? ', ':'') . 'homepage = ?';
+									$sets .= ($sets != '' ? ', ' : '') . 'homepage = ?';
 									$params[] = $info['homepage'];
 								}
 
 								if ($dt['copyright'] == '' && $info['copyright'] != '' && !is_array($info['copyright'])) {
-									$sets .= ($sets != '' ? ', ':'') . 'copyright = ?';
+									$sets .= ($sets != '' ? ', ' : '') . 'copyright = ?';
 									$params[] = $info['copyright'];
 								}
 
 								if ($dt['tags'] == '' && $info['tags'] != '' && !is_array($info['tags'])) {
-									$sets .= ($sets != '' ? ', ':'') . 'tags = ?';
+									$sets .= ($sets != '' ? ', ' : '') . 'tags = ?';
 									$params[] = $info['tags'];
 								}
 
 								if ($dt['installation'] == '' && $info['installation'] != '' && !is_array($info['installation'])) {
-									$sets .= ($sets != '' ? ', ':'') . 'installation = ?';
+									$sets .= ($sets != '' ? ', ' : '') . 'installation = ?';
 
 									$params[] = $info['installation'];
 								}
@@ -1141,10 +1141,10 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 	}
 
 	/* status information that will be presented to the user */
-	$import_debug_info['type']   = (empty($_graph_template_id) ? 'new' : ($status > 0 ? 'updated':'unchanged'));
+	$import_debug_info['type']   = (empty($_graph_template_id) ? 'new' : ($status > 0 ? 'updated' : 'unchanged'));
 	$import_debug_info['hash']   = $hash;
 	$import_debug_info['title']  = $xml_array['name'];
-	$import_debug_info['result'] = ($preview_only ? 'preview':(empty($graph_template_id) ? 'fail' : 'success'));
+	$import_debug_info['result'] = ($preview_only ? 'preview' : (empty($graph_template_id) ? 'fail' : 'success'));
 
 	if (isset($new_items) && cacti_sizeof($new_items)) {
 		$new_text = [];
@@ -1453,10 +1453,10 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 	}
 
 	/* status information that will be presented to the user */
-	$import_debug_info['type']   = (empty($_data_template_id) ? 'new' : ($status > 0 ? 'updated':'unchanged'));
+	$import_debug_info['type']   = (empty($_data_template_id) ? 'new' : ($status > 0 ? 'updated' : 'unchanged'));
 	$import_debug_info['hash']   = $hash;
 	$import_debug_info['title']  = $xml_array['name'];
-	$import_debug_info['result'] = ($preview_only ? 'preview':(empty($data_template_id) ? 'fail' : 'success'));
+	$import_debug_info['result'] = ($preview_only ? 'preview' : (empty($data_template_id) ? 'fail' : 'success'));
 
 	return $hash_cache;
 }
@@ -1721,10 +1721,10 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache, &$files, $replace_s
 	}
 
 	/* status information that will be presented to the user */
-	$import_debug_info['type']   = (empty($_data_query_id) ? 'new' : ($status > 0 ? 'updated':'unchanged'));
+	$import_debug_info['type']   = (empty($_data_query_id) ? 'new' : ($status > 0 ? 'updated' : 'unchanged'));
 	$import_debug_info['hash']   = $hash;
 	$import_debug_info['title']  = $xml_array['name'];
-	$import_debug_info['result'] = ($preview_only ? 'preview':(empty($data_query_id) ? 'fail' : 'success'));
+	$import_debug_info['result'] = ($preview_only ? 'preview' : (empty($data_query_id) ? 'fail' : 'success'));
 
 	return $hash_cache;
 }
@@ -1772,10 +1772,10 @@ function xml_to_gprint_preset($hash, &$xml_array, &$hash_cache) {
 	}
 
 	/* status information that will be presented to the user */
-	$import_debug_info['type']   = (empty($_gprint_preset_id) ? 'new' : ($status > 0 ? 'updated':'unchanged'));
+	$import_debug_info['type']   = (empty($_gprint_preset_id) ? 'new' : ($status > 0 ? 'updated' : 'unchanged'));
 	$import_debug_info['hash']   = $hash;
 	$import_debug_info['title']  = $xml_array['name'];
-	$import_debug_info['result'] = ($preview_only ? 'preview':(empty($gprint_preset_id) ? 'fail' : 'success'));
+	$import_debug_info['result'] = ($preview_only ? 'preview' : (empty($gprint_preset_id) ? 'fail' : 'success'));
 
 	return $hash_cache;
 }
@@ -1847,7 +1847,7 @@ function xml_to_data_source_profile($hash, &$xml_array, &$hash_cache, $import_as
 		$import_debug_info['type']   = 'new';
 		$import_debug_info['hash']   = $save['hash'];
 		$import_debug_info['title']  = $xml_array['name'] . ' (imported)';
-		$import_debug_info['result'] = ($preview_only ? 'preview':(empty($dsp_id) ? 'fail' : 'success'));
+		$import_debug_info['result'] = ($preview_only ? 'preview' : (empty($dsp_id) ? 'fail' : 'success'));
 
 		return $hash_cache;
 	} else {
@@ -2000,10 +2000,10 @@ function xml_to_host_template($hash, &$xml_array, &$hash_cache, &$host_template_
 	}
 
 	/* status information that will be presented to the user */
-	$import_debug_info['type']   = (empty($_host_template_id) ? 'new' : ($status > 0 ? 'updated':'unchanged'));
+	$import_debug_info['type']   = (empty($_host_template_id) ? 'new' : ($status > 0 ? 'updated' : 'unchanged'));
 	$import_debug_info['hash']   = $hash;
 	$import_debug_info['title']  = $xml_array['name'];
-	$import_debug_info['result'] = ($preview_only ? 'preview':(empty($host_template_id) ? 'fail' : 'success'));
+	$import_debug_info['result'] = ($preview_only ? 'preview' : (empty($host_template_id) ? 'fail' : 'success'));
 
 	return $hash_cache;
 }
@@ -2142,15 +2142,15 @@ function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 
 	/* status information that will be presented to the user */
 	if (!$damaged_items) {
-		$import_debug_info['type']   = (empty($_cdef_id) ? 'new' : ($status > 0 ? 'updated':'unchanged'));
+		$import_debug_info['type']   = (empty($_cdef_id) ? 'new' : ($status > 0 ? 'updated' : 'unchanged'));
 		$import_debug_info['hash']   = $hash;
 		$import_debug_info['title']  = $xml_array['name'];
-		$import_debug_info['result'] = ($preview_only ? 'preview':(empty($cdef_id) ? 'fail' : 'success'));
+		$import_debug_info['result'] = ($preview_only ? 'preview' : (empty($cdef_id) ? 'fail' : 'success'));
 	} else {
 		$import_debug_info['type']   = 'damaged';
 		$import_debug_info['hash']   = $hash;
 		$import_debug_info['title']  = $xml_array['name'];
-		$import_debug_info['result'] = ($preview_only ? 'preview':(empty($cdef_id) ? 'fail' : 'success'));
+		$import_debug_info['result'] = ($preview_only ? 'preview' : (empty($cdef_id) ? 'fail' : 'success'));
 	}
 
 	return $hash_cache;
@@ -2258,10 +2258,10 @@ function xml_to_vdef($hash, &$xml_array, &$hash_cache) {
 	}
 
 	/* status information that will be presented to the user */
-	$import_debug_info['type']   = (empty($_vdef_id) ? 'new' : ($status > 0 ? 'updated':'unchanged'));
+	$import_debug_info['type']   = (empty($_vdef_id) ? 'new' : ($status > 0 ? 'updated' : 'unchanged'));
 	$import_debug_info['hash']   = $hash;
 	$import_debug_info['title']  = $xml_array['name'];
-	$import_debug_info['result'] = ($preview_only ? 'preview':(empty($vdef_id) ? 'fail' : 'success'));
+	$import_debug_info['result'] = ($preview_only ? 'preview' : (empty($vdef_id) ? 'fail' : 'success'));
 
 	return $hash_cache;
 }
@@ -2447,10 +2447,10 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 	}
 
 	/* status information that will be presented to the user */
-	$import_debug_info['type']   = (empty($_data_input_id) ? 'new' : ($status > 0 ? 'updated':'unchanged'));
+	$import_debug_info['type']   = (empty($_data_input_id) ? 'new' : ($status > 0 ? 'updated' : 'unchanged'));
 	$import_debug_info['hash']   = $hash;
 	$import_debug_info['title']  = $xml_array['name'];
-	$import_debug_info['result'] = ($preview_only ? 'preview':(empty($data_input_id) ? 'fail' : 'success'));
+	$import_debug_info['result'] = ($preview_only ? 'preview' : (empty($data_input_id) ? 'fail' : 'success'));
 
 	return $hash_cache;
 }
@@ -2865,7 +2865,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 	ob_start();
 
 	if (cacti_sizeof($import_debug_info)) {
-		html_start_box(($preview ? __('Import Preview Results'):__('Import Results')), '100%', false, 3, 'center', '');
+		html_start_box(($preview ? __('Import Preview Results') : __('Import Results')), '100%', false, 3, 'center', '');
 
 		if (cacti_sizeof($filestatus)) {
 			if ($preview) {
@@ -2879,7 +2879,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 			print '<ul>' . PHP_EOL;
 
 			foreach ($filestatus as $filename => $status) {
-				print '<li>' . ($preview ? __('[preview] '):'') . html_escape($filename) . ' [' . $status . ']</li>' . PHP_EOL;
+				print '<li>' . ($preview ? __('[preview] ') : '') . html_escape($filename) . ' [' . $status . ']</li>' . PHP_EOL;
 			}
 
 			print '</ul>' . PHP_EOL;

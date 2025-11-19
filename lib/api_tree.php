@@ -255,7 +255,7 @@ function api_tree_create_node(int $tree_id, int|string $node_id, int $position, 
 	$orig  = $title;
 
 	while (true) {
-		$title     = $orig . ($found ? ' (' . $i . ')':'');
+		$title     = $orig . ($found ? ' (' . $i . ')' : '');
 		$exists_id = api_tree_branch_exists($tree_id, $data['leaf_id'], $title);
 
 		if ($exists_id == false) {
@@ -573,7 +573,7 @@ function api_tree_parse_node_data(string $variable): array {
 
 		if (cacti_sizeof($ndata)) {
 			foreach ($ndata as $data) {
-				list($type, $tid) = explode(':', $data);
+				[$type, $tid] = explode(':', $data);
 
 				/* watch out for monkey business */
 				input_validate_input_number($tid, 'tid');
@@ -663,7 +663,7 @@ function api_tree_rename_node(int $tree_id, ?string $node_id = '', string $title
 				return;
 			}
 
-			list($type, $tid) = explode(':', $data);
+			[$type, $tid] = explode(':', $data);
 
 			/* watch out for monkey business */
 			input_validate_input_number($tid, 'tid');

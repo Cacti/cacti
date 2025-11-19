@@ -1903,14 +1903,14 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 
 	printf('Cloning Criteria for Device Template are:'                                   . PHP_EOL);
 	printf('---------------------------------------------------------------------------' . PHP_EOL);
-	printf('NOTE: Include Graph Template: ' . ($include_gt != ''   ? $include_gt:'none') . PHP_EOL);
-	printf('NOTE: Include Data Query:     ' . ($include_dq != ''   ? $include_dq:'none') . PHP_EOL);
-	printf('NOTE: Include Data Template:  ' . ($include_dt != ''   ? $include_dt:'none') . PHP_EOL);
-	printf('NOTE: Clone Graph Template:   ' . ($clone_gt != ''     ? $clone_gt:'none')   . PHP_EOL);
-	printf('NOTE: Clone Data Query:       ' . ($clone_dq != ''     ? $clone_dq:'none')   . PHP_EOL);
-	printf('NOTE: Clone Data Template:    ' . ($clone_dt != ''     ? $clone_dt:'none')   . PHP_EOL);
-	printf('NOTE: Clone XML Files:        ' . ($clone_xml != ''    ? 'yes':'no')         . PHP_EOL);
-	printf('NOTE: Clone Script Files:     ' . ($clone_script != '' ? 'yes':'no')         . PHP_EOL);
+	printf('NOTE: Include Graph Template: ' . ($include_gt != '' ? $include_gt : 'none') . PHP_EOL);
+	printf('NOTE: Include Data Query:     ' . ($include_dq != '' ? $include_dq : 'none') . PHP_EOL);
+	printf('NOTE: Include Data Template:  ' . ($include_dt != '' ? $include_dt : 'none') . PHP_EOL);
+	printf('NOTE: Clone Graph Template:   ' . ($clone_gt != '' ? $clone_gt : 'none')   . PHP_EOL);
+	printf('NOTE: Clone Data Query:       ' . ($clone_dq != '' ? $clone_dq : 'none')   . PHP_EOL);
+	printf('NOTE: Clone Data Template:    ' . ($clone_dt != '' ? $clone_dt : 'none')   . PHP_EOL);
+	printf('NOTE: Clone XML Files:        ' . ($clone_xml != '' ? 'yes' : 'no')         . PHP_EOL);
+	printf('NOTE: Clone Script Files:     ' . ($clone_script != '' ? 'yes' : 'no')         . PHP_EOL);
 	printf('---------------------------------------------------------------------------' . PHP_EOL);
 
 	if ($include_gt == 'all' && $clone_gt != '') {
@@ -2106,7 +2106,7 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 					$parts = explode('.', $data_query['script_path']);
 					$name  = $data_query['name'];
 
-					$xml_script = $parts[0] . $suffix . (isset($parts[1]) ? '.' . $parts[1]:'');
+					$xml_script = $parts[0] . $suffix . (isset($parts[1]) ? '.' . $parts[1] : '');
 					$xml_base   = trim(str_replace(CACTI_PATH_BASE, '', $xml_script), '/');
 
 					if (file_exists($xml_script)) {
@@ -2134,7 +2134,7 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 					$parts = explode('.', $data_template['script_path']);
 					$name  = $data_template['name'];
 
-					$script_path = $parts[0] . $suffix . (isset($parts[1]) ? '.' . $parts[1]:'');
+					$script_path = $parts[0] . $suffix . (isset($parts[1]) ? '.' . $parts[1] : '');
 					$script_base = trim(str_replace(CACTI_PATH_BASE, '', $script_path), '/');
 
 					if (file_exists($script_path)) {
@@ -2994,7 +2994,7 @@ function api_device_template_download(string $type, array $ids): void {
 	$archive->compress(Phar::GZ);
 
 	$otmpfile  = $tmpfile;
-	$tmpfile  .= '.gz';
+	$tmpfile .= '.gz';
 	$filename .= '.gz';
 
 	header('Content-type: application/gzip');

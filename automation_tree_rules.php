@@ -391,19 +391,19 @@ function automation_tree_rules_form_actions() {
 				db_execute('DELETE FROM automation_tree_rule_items WHERE ' . array_to_sql_or($selected_items, 'rule_id'));
 				db_execute('DELETE FROM automation_match_rule_items WHERE ' . array_to_sql_or($selected_items, 'rule_id'));
 			} elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_TREE_DUPLICATE) { /* duplicate */
-				for ($i=0;($i < cacti_count($selected_items));$i++) {
+				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					automation_log('form_actions duplicate: ' . $selected_items[$i], AUTOMATION_LOG_HIGH);
 
 					duplicate_automation_tree_rules($selected_items[$i], get_nfilter_request_var('name_format'));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_TREE_ENABLE) { /* enable */
-				for ($i=0;($i < cacti_count($selected_items));$i++) {
+				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					automation_log('form_actions enable: ' . $selected_items[$i], AUTOMATION_LOG_HIGH);
 
 					db_execute_prepared("UPDATE automation_tree_rules SET enabled='on' WHERE id = ?", [$selected_items[$i]]);
 				}
 			} elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_TREE_DISABLE) { /* disable */
-				for ($i=0;($i < cacti_count($selected_items));$i++) {
+				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					automation_log('form_actions disable: ' . $selected_items[$i], AUTOMATION_LOG_HIGH);
 
 					db_execute_prepared("UPDATE automation_tree_rules SET enabled='' WHERE id = ?", [$selected_items[$i]]);
@@ -623,8 +623,8 @@ function automation_tree_rules_item_edit() {
 	toggle_operator();
 
 	function applyHeaderChange() {
-		if ($('#rule_type').val() == '<?php print AUTOMATION_RULE_TYPE_TREE_ACTION;?>') {
-			if ($('#field').val() == '<?php print AUTOMATION_TREE_ITEM_TYPE_STRING;?>') {
+		if ($('#rule_type').val() == '<?php print AUTOMATION_RULE_TYPE_TREE_ACTION; ?>') {
+			if ($('#field').val() == '<?php print AUTOMATION_TREE_ITEM_TYPE_STRING; ?>') {
 				$('#replace_pattern').val('');
 				$('#replace_pattern').prop('disabled', true);
 			} else {
@@ -635,7 +635,7 @@ function automation_tree_rules_item_edit() {
 
 	function toggle_operation() {
 		// right bracket ')' does not come with a field
-		if ($('operation').value == '<?php print AUTOMATION_OPER_RIGHT_BRACKET;?>') {
+		if ($('operation').value == '<?php print AUTOMATION_OPER_RIGHT_BRACKET; ?>') {
 			//alert('Sequence is '' + document.getElementById('sequence').value + ''');
 			$('#field').val('');
 			$('#field').prop('disabled', true);
@@ -652,7 +652,7 @@ function automation_tree_rules_item_edit() {
 
 	function toggle_operator() {
 		// if operator is not 'binary', disable the 'field' for matching strings
-		if ($('#operator').val() == '<?php print AUTOMATION_OPER_RIGHT_BRACKET;?>') {
+		if ($('#operator').val() == '<?php print AUTOMATION_OPER_RIGHT_BRACKET; ?>') {
 			//alert('Sequence is '' + document.getElementById('sequence').value + ''');
 		} else {
 		}
@@ -825,7 +825,7 @@ function automation_tree_rules_edit() {
 		$('#show_device_sql').click(function(event) {
 			event.stopPropagation();
 			$('#sql_device_query').dialog({
-				'title': '<?php print __('SQL Debug Output');?>',
+				'title': '<?php print __('SQL Debug Output'); ?>',
 				'autoOpen': true,
 				'width': 700
 			});
@@ -834,7 +834,7 @@ function automation_tree_rules_edit() {
 		$('#show_sql').click(function(event) {
 			event.stopPropagation();
 			$('#sql_query').dialog({
-				'title': '<?php print __('SQL Debug Output');?>',
+				'title': '<?php print __('SQL Debug Output'); ?>',
 				'autoOpen': true,
 				'width': 700
 			});
@@ -892,9 +892,9 @@ function automation_tree_rules_edit() {
 				var automationLeafTypeContainer = '<div id="automationLeafTypeContainer" style="display:none">' +
 					'<p style="display:table-cell;overflow:auto"> ' +
 					'<b><?php print __('WARNING:'); ?></b>' +
-					'<?php print __('You are changing the leaf type to "Device" which does not support Graph-based object matching/creation.');?>' +
-					'<?php print __('By changing the leaf type, all invalid rules will be automatically removed and will not be recoverable.');?> <br/><br/>' +
-					'<?php print __('Are you sure you wish to continue?');?>' +
+					'<?php print __('You are changing the leaf type to "Device" which does not support Graph-based object matching/creation.'); ?>' +
+					'<?php print __('By changing the leaf type, all invalid rules will be automatically removed and will not be recoverable.'); ?> <br/><br/>' +
+					'<?php print __('Are you sure you wish to continue?'); ?>' +
 					'</p>' +
 					'</div>';
 
@@ -922,9 +922,9 @@ function automation_tree_rules_edit() {
 				applyTreeChange('change_leaf',true);
 			}
 		} else {
-			if ($('#leaf_type').val() == '<?php print TREE_ITEM_TYPE_HOST;?>') {
+			if ($('#leaf_type').val() == '<?php print TREE_ITEM_TYPE_HOST; ?>') {
 				$('#row_host_grouping_type').show();
-			} else if ($('#leaf_type').val() == '<?php print TREE_ITEM_TYPE_GRAPH;?>') {
+			} else if ($('#leaf_type').val() == '<?php print TREE_ITEM_TYPE_GRAPH; ?>') {
 				$('#row_host_grouping_type').hide();
 			}
 			$('#leaf_type').selectmenu("refresh");
@@ -1046,9 +1046,9 @@ function automation_tree_rules() {
 	}
 
 	if (get_request_var('status') == '-2') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . " AND atr.enabled = 'on'";
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . " AND atr.enabled = 'on'";
 	} elseif (get_request_var('status') == '-3') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . " AND atr.enabled = ''";
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . " AND atr.enabled = ''";
 	}
 
 	$total_rows = db_fetch_cell_prepared("SELECT COUNT(atr.id)
@@ -1137,7 +1137,7 @@ function automation_tree_rules() {
 			form_selectable_cell($subtree_name, $automation_tree_rule['id']);
 			form_selectable_cell($tree_item_type_name, $automation_tree_rule['id']);
 			form_selectable_cell($tree_host_grouping_type, $automation_tree_rule['id']);
-			form_selectable_cell($automation_tree_rule['enabled'] ? __('Enabled'):__('Disabled'), $automation_tree_rule['id'], '', 'text-align:right');
+			form_selectable_cell($automation_tree_rule['enabled'] ? __('Enabled') : __('Disabled'), $automation_tree_rule['id'], '', 'text-align:right');
 			form_checkbox_cell($automation_tree_rule['name'], $automation_tree_rule['id']);
 
 			form_end_row();

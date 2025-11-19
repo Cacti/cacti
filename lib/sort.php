@@ -22,14 +22,17 @@
  +-------------------------------------------------------------------------+
 */
 
-/* usort_data_query_index - attempts to sort a data query index either numerically
-	 or alphabetically depending on which seems best. it also tries to strip out
-	 extra characters before sorting to improve accuracy when sorting things like
-	 switch ifNames, etc
-   @arg $a - the first string to compare
-   @arg $b - the second string to compare
-   @returns - '1' if $a is greater than $b, '-1' if $a is less than $b, or '0' if
-	 $b is equal to $b */
+/**
+ * usort_data_query_index - attempts to sort a data query index either numerically
+ * or alphabetically depending on which seems best. it also tries to strip out
+ * extra characters before sorting to improve accuracy when sorting things like
+ * switch ifNames, etc
+ *
+ * @param string $a
+ * @param string $b
+ *
+ * @return int - '1' if $a is greater than $b, '-1' if $a is less than $b, or '0' if
+ */
 function usort_data_query_index($a, $b) {
 	/* split strings to be compared into chunks
 	 * that shall be compared separately,
@@ -37,7 +40,7 @@ function usort_data_query_index($a, $b) {
 	$arr_a = explode('/', $a);
 	$arr_b = explode('/', $b);
 
-	for ($i=0; $i < min(cacti_count($arr_a), cacti_count($arr_b)); $i++) {
+	for ($i = 0; $i < min(cacti_count($arr_a), cacti_count($arr_b)); $i++) {
 		if ((is_numeric($arr_a[$i])) && (is_numeric($arr_b[$i]))) {
 			if (intval($arr_a[$i]) > intval($arr_b[$i])) {
 				return 1;
@@ -66,11 +69,14 @@ function usort_data_query_index($a, $b) {
 	return 0;
 }
 
-/* usort_numeric - sorts two values numerically (ie. 1, 34, 36, 76)
-   @arg $a - the first string to compare
-   @arg $b - the second string to compare
-   @returns - '1' if $a is greater than $b, '-1' if $a is less than $b, or '0' if
-	 $b is equal to $b */
+/**
+ * usort_numeric - sorts two values numerically (ie. 1, 34, 36, 76)
+ *
+ * @param string $a
+ * @param string $b
+ *
+ * @return int - '1' if $a is greater than $b, '-1' if $a is less than $b, or '0' if
+ */
 function usort_numeric($a, $b) {
 	if (intval($a) > intval($b)) {
 		return 1;
@@ -83,26 +89,39 @@ function usort_numeric($a, $b) {
 	}
 }
 
-/* usort_alphabetic - sorts two values alphabetically (ie. ab, by, ef, xy)
-   @arg $a - the first string to compare
-   @arg $b - the second string to compare
-   @returns - '1' if $a is greater than $b, '-1' if $a is less than $b, or '0' if
-	 $b is equal to $b */
+/**
+ * usort_alphabetic - sorts two values alphabetically (ie. ab, by, ef, xy)
+ *
+ * @param string $a
+ * @param string $b
+ *
+ * @return int - '1' if $a is greater than $b, '-1' if $a is less than $b, or '0' if
+ */
 function usort_alphabetic($a, $b) {
 	return strcmp($a, $b);
 }
 
-/* usort_natural - sorts two values naturally (ie. ab1, ab2, ab7, ab10, ab20)
-   @arg $a - the first string to compare
-   @arg $b - the second string to compare
-   @returns - '1' if $a is greater than $b, '-1' if $a is less than $b, or '0' if
-	 $b is equal to $b */
+/**
+ * usort_natural - sorts two values naturally (ie. ab1, ab2, ab7, ab10, ab20)
+ *
+ * @param string $a
+ * @param string $b
+ *
+ * @return int - '1' if $a is greater than $b, '-1' if $a is less than $b, or '0' if
+ */
 function usort_natural($a, $b) {
 	return strnatcmp($a, $b);
 }
 
-/* sort_by_subkey - takes the list of templates and perform a final sort
-   @returns - (array) an array of sorted templates */
+/**
+ * sort_by_subkey - takes the list of templates and perform a final sort
+ *
+ * @param mixed $array
+ * @param mixed $subkey
+ * @param mixed $sort
+ *
+ * @return array - an array of sorted templates
+ */
 function sort_by_subkey(&$array, $subkey, $sort = SORT_ASC) {
 	$keys = [];
 

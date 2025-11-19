@@ -56,8 +56,9 @@ $step              = false;
 
 /* optional for threading and verbose display */
 $threads           = detect_cpu_cores();
+
 if ($threads == 0) {
-        $threads = 2;
+	$threads = 2;
 }
 $seebug            = false;
 
@@ -68,7 +69,7 @@ $forcerun          = false;
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter, 2);
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
 			$value = '';
@@ -520,21 +521,21 @@ function float_master_handler($forcerun, $resume, $host_id, $host_template_id, $
 	}
 
 	if ($host_template_id !== false) {
-		$sql_where .= ($sql_where != '' ? 'AND ':'WHERE ') . 'h.host_template_id = ?';
+		$sql_where .= ($sql_where != '' ? 'AND ' : 'WHERE ') . 'h.host_template_id = ?';
 		$sql_params[] = $host_template_id;
 	}
 
 	if ($graph_template_id !== false) {
-		$sql_where .= ($sql_where != '' ? 'AND ':'WHERE ') . 'gti.graph_template_id = ?';
+		$sql_where .= ($sql_where != '' ? 'AND ' : 'WHERE ') . 'gti.graph_template_id = ?';
 		$sql_params[] = $graph_template_id;
 	}
 
 	if (cacti_sizeof($local_graph_ids)) {
-		$sql_where .= ($sql_where != '' ? 'AND ':'WHERE ') . '(';
+		$sql_where .= ($sql_where != '' ? 'AND ' : 'WHERE ') . '(';
 		$inner_where = '';
 
 		foreach ($local_graph_ids as $id) {
-			$inner_where .= ($inner_where != '' ? ' OR ':'') . 'gti.local_graph_id = ' . $id;
+			$inner_where .= ($inner_where != '' ? ' OR ' : '') . 'gti.local_graph_id = ' . $id;
 		}
 
 		$sql_where .= $inner_where . ')';
@@ -637,7 +638,7 @@ function float_launch_child($thread_id, $step, $start_time, $end_time) {
 
 	cacti_log(sprintf('NOTE: Launching Float Data Number %s for Type %s', $thread_id, 'child'), false, 'RFLOAT', POLLER_VERBOSITY_MEDIUM);
 
-	exec_background($php_binary, CACTI_PATH_CLI . "/float_rrdfiles.php --type=child --child=$thread_id --start=$start_time --end=$end_time" . ($step !== false ? ' --step=' . $step:'') . ($seebug ? ' --debug':''));
+	exec_background($php_binary, CACTI_PATH_CLI . "/float_rrdfiles.php --type=child --child=$thread_id --start=$start_time --end=$end_time" . ($step !== false ? ' --step=' . $step : '') . ($seebug ? ' --debug' : ''));
 }
 
 /**

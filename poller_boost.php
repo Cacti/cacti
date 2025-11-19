@@ -59,7 +59,7 @@ global $boost_debug, $boost_log, $cacti_log;
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter);
+			[$arg, $value] = explode('=', $parameter);
 		} else {
 			$arg   = $parameter;
 			$value = '';
@@ -122,7 +122,7 @@ $rrd_updates = -1;
 ini_set('max_execution_time', '0');
 boost_memory_limit();
 
-$boost_debug = read_config_option('boost_debug_enabled') == 'on' ? true:false;
+$boost_debug = read_config_option('boost_debug_enabled') == 'on' ? true : false;
 $boost_log   = read_config_option('path_boost_log');
 $cacti_log   = read_config_option('path_cactilog');
 
@@ -190,7 +190,7 @@ if ($child == false) {
 			exit(0);
 		}
 
-		boost_debug('Time to Run Boost, Force Run is ' . ($forcerun ? 'true!':'false.'));
+		boost_debug('Time to Run Boost, Force Run is ' . ($forcerun ? 'true!' : 'false.'));
 
 		/* Check if processes are running and kill them */
 		boost_kill_running_processes();
@@ -507,7 +507,7 @@ function boost_prune_memstats() {
 	db_execute_prepared('DELETE FROM settings
 		WHERE name LIKE "boost_peak_memory%"
 		AND REPLACE(name, "boost_peak_memory_", "") > ?',
-		array($processes));
+		[$processes]);
 }
 
 function boost_launch_children() {
@@ -539,7 +539,7 @@ function boost_launch_children() {
 
 		cacti_log('NOTE: Launching Boost Process Number ' . $i, true, 'BOOST', POLLER_VERBOSITY_MEDIUM);
 
-		exec_background($php_binary, CACTI_PATH_BASE . '/poller_boost.php --child=' . $i . ($debug ? ' --debug':''), $redirect_args);
+		exec_background($php_binary, CACTI_PATH_BASE . '/poller_boost.php --child=' . $i . ($debug ? ' --debug' : ''), $redirect_args);
 	}
 
 	sleep(2);
@@ -724,11 +724,14 @@ function boost_output_rrd_data($child) {
 	return $total_rows;
 }
 
-/* boost_process_local_data_ids - grabs data from the 'poller_output' table and feeds the *completed*
-	 results to RRDTool for processing
-   @arg $last_id - the last id to process
-   @arg $child - the current process
-   @arg $rrdtool_pipe - the socket that has been opened for the RRDtool operation */
+/**
+ * boost_process_local_data_ids - grabs data from the 'poller_output' table and feeds the *completed*
+ * results to RRDTool for processing
+ *
+ * @param int   $last_id - the last id to process
+ * @param int   $child - the current process
+ * @param mixed $rrdtool_pipe - the socket that has been opened for the RRDtool operation
+ */
 function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 	global $archive_table, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used, $current_lock;
 	global $boost_debug, $boost_log;
@@ -795,7 +798,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 	$sub_query_string = '';
 
 	foreach ($archive_tables as $table) {
-		$sub_query_string .= ($sub_query_string != '' ? ' UNION ALL ':'') .
+		$sub_query_string .= ($sub_query_string != '' ? ' UNION ALL ' : '') .
 			" SELECT $table.local_data_id, dl.data_template_id, UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output
 			FROM $table
 			INNER JOIN poller_output_boost_local_data_ids AS bpt
@@ -1035,7 +1038,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 							if ($reset_template) {
 								boost_debug("Parsed MULTI output field in path 1 '" . $matches[0] . "' [map " . $field . '->' . $field . ']');
 
-								$rrd_tmpl .= ($rrd_tmpl != '' ? ':':'') . $field;
+								$rrd_tmpl .= ($rrd_tmpl != '' ? ':' : '') . $field;
 							}
 
 							if (is_numeric($matches[1]) || ($matches[1] == 'U')) {
@@ -1091,7 +1094,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 									if ($reset_template) {
 										boost_debug("Parsed MULTI output field '" . $matches[0] . "' [map " . $matches[1] . '->' . $field . ']');
 
-										$rrd_tmpl .= ($rrd_tmpl != '' ? ':':'') . $field;
+										$rrd_tmpl .= ($rrd_tmpl != '' ? ':' : '') . $field;
 									}
 
 									if (is_numeric($matches[1]) || ($matches[1] == 'U')) {
@@ -1167,10 +1170,10 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 							continue;
 						}
 
-						$expected .= ($expected != '' ? ' ':'') . "$field:value";
+						$expected .= ($expected != '' ? ' ' : '') . "$field:value";
 
 						if ($reset_template) {
-							$rrd_tmpl .= ($rrd_tmpl != '' ? ':':'') . $field;
+							$rrd_tmpl .= ($rrd_tmpl != '' ? ':' : '') . $field;
 						}
 
 						$tv_tmpl[$field] = 'U';
@@ -1221,7 +1224,7 @@ function boost_process_output($local_data_id, $outarray, $rrd_path, $rrd_tmplp, 
 
 	if (cacti_sizeof($outarray)) {
 		foreach ($outarray as $tsdata) {
-			$outbuf .= ($outbuf != '' ? ' ':'') . implode(':', $tsdata);
+			$outbuf .= ($outbuf != '' ? ' ' : '') . implode(':', $tsdata);
 		}
 	}
 
@@ -1296,13 +1299,13 @@ function boost_log_statistics($rrd_updates) {
 
 		foreach ($order as $key) {
 			if ($key == 'TotalTime') {
-				$outstr .= ($outstr != '' ? ', ':'') . "$key:" . round($end - $start, 2);
+				$outstr .= ($outstr != '' ? ', ' : '') . "$key:" . round($end - $start, 2);
 			} elseif ($key == 'RRDUpdates') {
-				$outstr .= ($outstr != '' ? ', ':'') . "$key:" . round($output[$key], 0);
+				$outstr .= ($outstr != '' ? ', ' : '') . "$key:" . round($output[$key], 0);
 			} elseif (isset($output[$key])) {
-				$outstr .= ($outstr != '' ? ', ':'') . "$key:" . round($output[$key] / $processes, 0);
+				$outstr .= ($outstr != '' ? ', ' : '') . "$key:" . round($output[$key] / $processes, 0);
 			} else {
-				$outstr .= ($outstr != '' ? ', ':'') . "$key:0";
+				$outstr .= ($outstr != '' ? ', ' : '') . "$key:0";
 			}
 		}
 
@@ -1432,14 +1435,18 @@ function boost_purge_cached_png_files($forcerun) {
 	}
 }
 
-/* do NOT run this script through a web browser */
-/*  display_version - displays version information */
+/**
+ * display_version - displays version information
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
-	print "Cacti Boost RRD Update Poller, Version $version " . COPYRIGHT_YEARS . "\n";
+
+	print "Cacti Boost RRD Update Poller, Version $version " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-/*	display_help - displays the usage of the function */
+/**
+ * display_help - displays the usage of the function
+ */
 function display_help() {
 	display_version();
 

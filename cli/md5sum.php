@@ -52,7 +52,7 @@ $base_dir  = __DIR__.'/../';
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter, 2);
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
 			$value = '';
@@ -61,16 +61,16 @@ if (cacti_sizeof($parms)) {
 		switch ($arg) {
 			case '-b':
 			case '--basedir':
-				$base_dir=trim($value);
+				$base_dir = trim($value);
 
 				break;
 			case '-c':
 			case '--create':
-				$create=true;
+				$create = true;
 
 				break;
 			case '--confirm':
-				$confirm=true;
+				$confirm = true;
 
 				break;
 			case '-d':
@@ -81,13 +81,13 @@ if (cacti_sizeof($parms)) {
 				break;
 			case '-q':
 			case '--quiet':
-				$quiet=true;
+				$quiet = true;
 
 				break;
 			case '-s':
 			case '--show':
 			case '--show-hash':
-				$show_hash=true;
+				$show_hash = true;
 
 				break;
 			case '--version':
@@ -106,7 +106,7 @@ if (cacti_sizeof($parms)) {
 				if (strlen($md5_file)) {
 					fail(EXIT_ARGERR,$arg,true);
 				}
-				$md5_file=strlen($value)?"$arg=$value":"$arg";
+				$md5_file = strlen($value) ? "$arg=$value" : "$arg";
 
 				break;
 		}
@@ -152,12 +152,12 @@ $ignore_files = [
 	'/rra$'
 ];
 
-$ignore_regex='';
+$ignore_regex = '';
 
 foreach ($ignore_files as $ignore) {
-	$ignore_regex .= (strlen($ignore_regex)?'|':'').'('.$ignore.')';
+	$ignore_regex .= (strlen($ignore_regex) ? '|' : '').'('.$ignore.')';
 }
-$ignore_regex="~($ignore_regex)~";
+$ignore_regex = "~($ignore_regex)~";
 
 $file_array = dirToArray('',$base_dir,$ignore_regex);
 
@@ -198,7 +198,7 @@ if ($create) {
 
 		if (strlen($md5)) {
 			if ($md5[32] != ' ') {
-				fail(EXIT_MD5LIN,[$line,$md5]);
+				fail(EXIT_MD5LIN,[$line, $md5]);
 			}
 
 			$filename                = trim(substr($md5,33));
