@@ -29,7 +29,7 @@ $cacti_country = 'us';
 /* an array that will contains all textdomains being in use. */
 $cacti_textdomains = [];
 
-global $path2calendar, $path2timepicker, $path2colorpicker, $path2ms, $path2msfilter;
+global $path2calendar, $path2timepicker, $path2colorpicker, $path2ms, $path2msfilter, $lang2locale;
 
 /* get a list of locale settings */
 $lang2locale = get_list_of_locales();

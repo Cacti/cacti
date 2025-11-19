@@ -82,6 +82,7 @@
     },
     "scripts": {
         "lint": "phplint --no-cache ./ --exclude=include/vendor",
+        "phpstan": "phpstan analyse --level 8 ./",
         "phpcsfixer": "php-cs-fixer fix --dry-run --diff --config=./.php-cs-fixer.php --ansi",
         "phpcsfixit": "php-cs-fixer fix --ansi"
     },

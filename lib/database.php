@@ -163,12 +163,14 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 			];
 
 			// test if cacti database is imported from SQL file
-			$table_exists = db_fetch_cell("SELECT count(*) FROM information_schema.tables
-				WHERE table_schema = DATABASE() and TABLE_NAME = 'version'");
+			if (!defined('PHP_STAN')) {
+				$table_exists = db_fetch_cell("SELECT count(*) FROM information_schema.tables
+					WHERE table_schema = DATABASE() and TABLE_NAME = 'version'");
 
-			if (!$table_exists) {
-				error_log(sprintf('NOTE: Database %s does not contain cacti tables. Import cacti.sql first', $db_name));
-				die('ERROR: Database does not contain cacti tables. If this is a new installation, first import the SQL dump');
+				if (!$table_exists) {
+					error_log(sprintf('NOTE: Database %s does not contain cacti tables. Import cacti.sql first', $db_name));
+					die('ERROR: Database does not contain cacti tables. If this is a new installation, first import the SQL dump');
+				}
 			}
 
 			$ver = db_get_global_variable('version', $cnn_id);
@@ -437,7 +439,9 @@ function db_close(&$db_conn = false) {
 			error_log(sprintf('NOTE: Disconnecting from %s:%s/%s.', $database_hostname, $database_port, $database_default));
 		}
 
-		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
+			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		}
 
 		if (!is_object($db_conn)) {
 			if (!empty($config['DEBUG_SQL_CONNECT'])) {
@@ -936,7 +940,9 @@ function db_fetch_insert_id($db_conn = false) {
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
-		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
+			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		}
 	}
 
 	if (is_object($db_conn)) {
@@ -959,7 +965,9 @@ function db_affected_rows($db_conn = false) {
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
-		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
+			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		}
 
 		if (!is_object($db_conn)) {
 			return false;
@@ -985,7 +993,9 @@ function db_add_column($table, $column, $log = true, $db_conn = false) {
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
-		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
+			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		}
 
 		if (!is_object($db_conn)) {
 			return false;
@@ -1074,7 +1084,9 @@ function db_change_column($table, $column, $log = true, $db_conn = false) {
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
-		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
+			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		}
 
 		if (!is_object($db_conn)) {
 			return false;
@@ -1165,7 +1177,9 @@ function db_remove_column($table, $column, $log = true, $db_conn = false) {
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
-		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
+			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		}
 
 		if (!is_object($db_conn)) {
 			return false;
@@ -1367,7 +1381,11 @@ function db_table_exists($table, $log = true, $db_conn = false) {
 function db_cacti_initialized($is_web = true) {
 	global $database_sessions, $database_default, $config, $database_hostname, $database_port, $config;
 
-	$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+	if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+	} else {
+		$db_conn = false;
+	}
 
 	if (!is_object($db_conn)) {
 		return false;
@@ -1439,7 +1457,9 @@ function db_get_table_column_types($table, $db_conn = false) {
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
-		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
+			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		}
 
 		if (!is_object($db_conn)) {
 			return false;
@@ -1477,7 +1497,9 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
-		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
+			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		}
 
 		if (!is_object($db_conn)) {
 			return false;
@@ -1742,7 +1764,9 @@ function db_table_create($table, $data, $log = true, $db_conn = false) {
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
-		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
+			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		}
 
 		if (!is_object($db_conn)) {
 			return false;
@@ -1859,7 +1883,9 @@ function db_get_global_variable($variable, $db_conn = false) {
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
-		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
+			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		}
 
 		if (!is_object($db_conn)) {
 			return false;
@@ -1888,7 +1914,9 @@ function db_get_session_variable($variable, $db_conn = false) {
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
-		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
+			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		}
 
 		if (!is_object($db_conn)) {
 			return false;
@@ -1916,7 +1944,9 @@ function db_begin_transaction($db_conn = false) {
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
-		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
+			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		}
 
 		if (!is_object($db_conn)) {
 			return false;
@@ -1938,7 +1968,9 @@ function db_commit_transaction($db_conn = false) {
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
-		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
+			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		}
 
 		if (!is_object($db_conn)) {
 			return false;
@@ -1962,7 +1994,9 @@ function db_rollback_transaction($db_conn = false) {
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
-		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
+			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		}
 
 		if (!is_object($db_conn)) {
 			return false;
@@ -2012,7 +2046,9 @@ function db_replace($table_name, $array_items, $keyCols, $db_conn = false) {
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
-		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
+			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		}
 	}
 
 	cacti_log("DEVEL: SQL Replace on table '$table_name': '" . serialize($array_items) . "'", false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
@@ -2037,7 +2073,9 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCols) {
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
-		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
+			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		}
 
 		if (!is_object($db_conn)) {
 			return false;
@@ -2104,7 +2142,9 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, 
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
-		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
+			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		}
 	}
 
 	$log = true;
@@ -2191,7 +2231,9 @@ function db_qstr($s, $db_conn = false) {
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
-		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
+			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		}
 	}
 
 	if (is_null($s)) {

@@ -1318,13 +1318,13 @@ function force_session_data() {
  * '$arr[0] = array('id' => 23, 'name' => 'blah')' to the form
  * '$arr = array(23 => 'blah')'
  *
- * @param  array  $array		The original array to manipulate
+ * @param  mixed  $array		The original array to manipulate
  * @param  string $key		The name of the key
  * @param  string $key_value	The name of the key value
  *
  * @return array the modified array
  */
-function array_rekey(array $array, string $key, mixed $key_value): array {
+function array_rekey(mixed $array, string $key, mixed $key_value): array {
 	$ret_array = [];
 
 	if (is_array($array)) {

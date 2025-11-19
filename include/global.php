@@ -303,7 +303,9 @@ $lu = $config['is_web'] ? '</ul>' : '';
 $il = $config['is_web'] ? '</li>' : '';
 
 if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
-	$local_db_cnn_id = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca, $database_ssl_capath, $database_ssl_verify_server_cert);
+	if (!defined('PHP_STAN')) {
+		$local_db_cnn_id = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca, $database_ssl_capath, $database_ssl_verify_server_cert);
+	}
 
 	if (!isset($rdatabase_retries)) {
 		$rdatabase_retries  = 2;
@@ -351,7 +353,9 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	 * a remote poller, let's attempt to get back online.
 	 */
 	if ($conn_mode != 'offline') {
-		$remote_db_cnn_id = db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $database_retries, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca, $rdatabase_ssl_capath, $rdatabase_ssl_verify_server_cert);
+		if (!defined('PHP_STAN')) {
+			$remote_db_cnn_id = db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $database_retries, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca, $rdatabase_ssl_capath, $rdatabase_ssl_verify_server_cert);
+		}
 	}
 
 	if ($config['is_web'] && is_object($remote_db_cnn_id) && $config['connection'] != 'recovery' && $config['cacti_db_version'] != 'new_install' && !defined('IN_CACTI_INSTALL')) {
@@ -399,43 +403,47 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 		$database_ssl_verify_server_cert = false;
 	}
 
-	if (!db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca, $database_ssl_capath, $database_ssl_verify_server_cert)) {
-		print $ps . 'FATAL: Connection to Cacti database failed. Please ensure: ' . $ul;
-		print $li . 'the PHP MySQL module is installed and enabled.' . $il;
-		print $li . 'the database is running.' . $il;
-		print $li . 'the credentials in config.php are valid.' . $il;
-		print $lu . $sp;
-
-		if (isset($_REQUEST['display_db_errors']) && !empty($config['DATABASE_ERROR'])) {
-			print $ps . 'The following database errors occurred: ' . $ul;
-
-			foreach ($config['DATABASE_ERROR'] as $e) {
-				print $li . $e['Code'] . ': ' . $e['Error'] . $il;
-			}
+	if (!defined('PHP_STAN')) {
+		if (!db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca, $database_ssl_capath, $database_ssl_verify_server_cert)) {
+			print $ps . 'FATAL: Connection to Cacti database failed. Please ensure: ' . $ul;
+			print $li . 'the PHP MySQL module is installed and enabled.' . $il;
+			print $li . 'the database is running.' . $il;
+			print $li . 'the credentials in config.php are valid.' . $il;
 			print $lu . $sp;
-		}
 
-		exit;
+			if (isset($_REQUEST['display_db_errors']) && !empty($config['DATABASE_ERROR'])) {
+				print $ps . 'The following database errors occurred: ' . $ul;
+
+				foreach ($config['DATABASE_ERROR'] as $e) {
+					print $li . $e['Code'] . ': ' . $e['Error'] . $il;
+				}
+				print $lu . $sp;
+			}
+
+			exit;
+		}
 	}
 
-	if (!db_table_exists('settings') || !db_table_exists('version')) {
-		print $ps . 'FATAL: Connection to Cacti database succeed but `settings` table not found. Please ensure: ' . $ul;
-		print $li . 'the PHP MySQL module is installed and enabled.' . $il;
-		print $li . 'the database is running.' . $il;
-		print $li . 'the cacti.sql has been imported.' . $il;
-		print $li . 'the credentials in config.php are valid and correct.' . $il;
-		print $lu . $sp;
-
-		if (isset($_REQUEST['display_db_errors']) && !empty($config['DATABASE_ERROR'])) {
-			print $ps . 'The following database errors occurred: ' . $ul;
-
-			foreach ($config['DATABASE_ERROR'] as $e) {
-				print $li . $e['Code'] . ': ' . $e['Error'] . $il;
-			}
+	if (!defined('PHP_STAN')) {
+		if (!db_table_exists('settings') || !db_table_exists('version')) {
+			print $ps . 'FATAL: Connection to Cacti database succeeded but `settings` table not found. Please ensure: ' . $ul;
+			print $li . 'the PHP MySQL module is installed and enabled.' . $il;
+			print $li . 'the database is running.' . $il;
+			print $li . 'the cacti.sql has been imported.' . $il;
+			print $li . 'the credentials in config.php are valid and correct.' . $il;
 			print $lu . $sp;
-		}
 
-		exit;
+			if (isset($_REQUEST['display_db_errors']) && !empty($config['DATABASE_ERROR'])) {
+				print $ps . 'The following database errors occurred: ' . $ul;
+
+				foreach ($config['DATABASE_ERROR'] as $e) {
+					print $li . $e['Code'] . ': ' . $e['Error'] . $il;
+				}
+				print $lu . $sp;
+			}
+
+			exit;
+		}
 	}
 
 	/* gather the existing cactidb version */
