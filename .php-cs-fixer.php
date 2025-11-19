@@ -180,7 +180,6 @@ $config
         'statements' => [
             'continue',
             'declare',
-            'default',
             'do',
             'for',
             'foreach',
