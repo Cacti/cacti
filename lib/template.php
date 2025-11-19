@@ -682,7 +682,7 @@ function update_graph_data_source_output_type($local_graph_id, $output_type_id) 
  *
  * @param $graph_template_id
  *
- * @return boolean override allowed
+ * @return bool override allowed
  */
 function graph_template_has_override($graph_template_id) {
 	$graph_template = db_fetch_row_prepared('SELECT *

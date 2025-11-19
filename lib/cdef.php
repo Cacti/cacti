@@ -32,29 +32,30 @@
  *
  * @return string The name or value of the CDEF item.
  */
-function get_cdef_item_name($cdef_item_id) {
+function get_cdef_item_name(int $cdef_item_id) : string {
 	global $cdef_functions, $cdef_operators;
 
 	$cdef_item          = db_fetch_row_prepared('SELECT type, value FROM cdef_items WHERE id = ?', [$cdef_item_id]);
 	$current_cdef_value = $cdef_item['value'];
 
 	switch ($cdef_item['type']) {
-		case '1': return $cdef_functions[$current_cdef_value];
+		case '1': return (string) $cdef_functions[$current_cdef_value];
 
 			break;
-		case '2': return $cdef_operators[$current_cdef_value];
+		case '2': return (string) $cdef_operators[$current_cdef_value];
 
 			break;
-		case '4': return $current_cdef_value;
+		case '4': return (string) $current_cdef_value;
 
 			break;
-		case '5': return db_fetch_cell_prepared('SELECT name FROM cdef WHERE id = ?', [$current_cdef_value]);
+		case '5': return (string) db_fetch_cell_prepared('SELECT name FROM cdef WHERE id = ?', [$current_cdef_value]);
 
 			break;
-		case '6': return $current_cdef_value;
+		case '6': return (string) $current_cdef_value;
 
 			break;
 	}
+	return '';
 }
 /**
  * Resolves an entire CDEF into its text-based representation for use in the RRDtool 'graph'
@@ -67,7 +68,7 @@ function get_cdef_item_name($cdef_item_id) {
  *
  * @return string The constructed CDEF string.
  */
-function get_cdef($cdef_id) {
+function get_cdef(int $cdef_id) : string {
 	$cdef_items = db_fetch_assoc_prepared('SELECT id, type, value FROM cdef_items WHERE cdef_id = ? ORDER BY sequence', [$cdef_id]);
 
 	$i           = 0;

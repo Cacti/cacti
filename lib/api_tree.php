@@ -621,7 +621,7 @@ function api_tree_parse_node_data(string $variable): array {
  *
  * @return void
  */
-function api_tree_rename_node(int $tree_id, ?string $node_id = '', string $title = ''): void {
+function api_tree_rename_node(int $tree_id, string|null $node_id = '', string $title = ''): void {
 	input_validate_input_number($tree_id, 'tree_id');
 
 	// Basic Error Checking
@@ -712,7 +712,7 @@ function api_tree_rename_node(int $tree_id, ?string $node_id = '', string $title
  *
  * @return void
  */
-function api_tree_get_main(?string $tree_id, int $parent = 0): void {
+function api_tree_get_main(string|null $tree_id, int $parent = 0): void {
 	$is_root = false;
 
 	if ($parent == -1) {

@@ -1545,7 +1545,7 @@ function api_device_template_sync_template(int $device_template, array|string $d
  *
  * @return void
  */
-function api_device_ping_device(?string $device_id, bool $from_remote = false): void {
+function api_device_ping_device(string|null $device_id, bool $from_remote = false): void {
 	global $snmp_error;
 
 	if (empty($device_id)) {

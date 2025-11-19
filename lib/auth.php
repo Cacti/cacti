@@ -1810,7 +1810,7 @@ function get_simple_graph_template_perms(int $user_id): bool {
  *
  * @return array List of allowed graph templates.
  */
-function get_allowed_graph_templates(string $sql_where = '', string $sql_order = 'gt.name', string $sql_limit = '', ?int &$total_rows = 0, int $user_id = 0, int $graph_template_id = 0): array {
+function get_allowed_graph_templates(string $sql_where = '', string $sql_order = 'gt.name', string $sql_limit = '', int|null &$total_rows = 0, int $user_id = 0, int $graph_template_id = 0): array {
 	if (!auth_valid_user($user_id)) {
 		return [];
 	}
@@ -2970,7 +2970,7 @@ function get_allowed_site_devices(int $site_id, string $sql_where = '', string $
  *
  * @return array An associative array of allowed graph templates, keyed by their IDs and names.
  */
-function get_allowed_graph_templates_normalized(string $sql_where = '', string $sql_order = 'name', string $sql_limit = '', ?int &$total_rows = 0, int $user_id = 0, int $graph_template_id = 0): array {
+function get_allowed_graph_templates_normalized(string $sql_where = '', string $sql_order = 'name', string $sql_limit = '', int|null &$total_rows = 0, int $user_id = 0, int $graph_template_id = 0): array {
 	if (!auth_valid_user($user_id)) {
 		return [];
 	}

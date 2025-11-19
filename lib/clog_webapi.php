@@ -24,7 +24,19 @@
 
 include_once('functions.php');
 
-function clog_get_graphs_from_datasource($local_data_id) {
+/**
+ * Retrieves a list of graphs associated with a specific data source.
+ *
+ * This function queries the database to fetch all distinct graphs that are linked
+ * to the provided local data ID. The result is returned as an associative array
+ * where the keys are the graph IDs and the values are the graph names.
+ *
+ * @param int $local_data_id The ID of the local data source to fetch graphs for.
+ *
+ * @return array An associative array of graphs, where the keys are graph IDs
+ *               and the values are graph names.
+ */
+function clog_get_graphs_from_datasource(int $local_data_id) : array {
 	return array_rekey(db_fetch_assoc_prepared('SELECT DISTINCT
 		gtg.local_graph_id AS id,
 		gtg.title_cache AS name
@@ -38,7 +50,26 @@ function clog_get_graphs_from_datasource($local_data_id) {
 		[$local_data_id]), 'id', 'name');
 }
 
-function clog_validate_filename(&$file, &$filepath, &$filename, $filecheck = false) {
+/**
+ * Validates and processes a given filename, determining its path and base name.
+ *
+ * This function checks if the provided filename matches specific log file patterns
+ * (e.g., standard log, error log, or boost log) and extracts the corresponding
+ * file path and base name. Optionally, it can verify if the file exists.
+ *
+ * @param string $file      The input filename to validate. This will be modified
+ *                          to contain only the base name of the file.
+ * @param string|null $filepath  The output variable that will hold the directory path
+ *                          of the validated file.
+ * @param string|null $filename  The output variable that will hold the base name of
+ *                          the validated file.
+ * @param bool   $filecheck Optional. If true, the function will check if the
+ *                          resolved file exists. Defaults to false.
+ *
+ * @return bool Returns true if the file is valid (and exists if $filecheck is true),
+ *              or false otherwise.
+ */
+function clog_validate_filename(string &$file, string|null &$filepath, string|null &$filename, bool $filecheck = false) : bool {
 	$logfile = read_config_option('path_cactilog');
 
 	if ($logfile == '') {
@@ -75,7 +106,12 @@ function clog_validate_filename(&$file, &$filepath, &$filename, $filecheck = fal
 	return ($filecheck ? file_exists($filefull) : !empty($filefull));
 }
 
-function clog_purge_logfile() {
+/**
+ * Purges or clears a specified log file within the Cacti application.
+ *
+ * @return void
+ */
+function clog_purge_logfile() : void {
 	$filename = get_nfilter_request_var('filename');
 
 	if (!clog_validate_filename($filename, $logpath, $logname)) {
@@ -116,9 +152,12 @@ function clog_purge_logfile() {
 	}
 }
 
-function clog_view_logfile() {
-	global $base_page;
-
+/**
+ * Displays the log file viewer for Cacti, allowing users to view, filter, and manage log entries.
+ *
+ * @return void
+ */
+function clog_view_logfile() : void {
 	$exclude_reported = false;
 
 	$clogAdmin = clog_admin();
@@ -324,7 +363,14 @@ function clog_view_logfile() {
 	bottom_footer();
 }
 
-function filter_sort($a, $b) {
+/**
+ * Custom sorting function for log file names.
+ *
+ * @param string $a The first file name to compare.
+ * @param string $b The second file name to compare.
+ * @return int Returns < 0 if $a is less than $b, 0 if they are equal, and > 0 if $a is greater than $b.
+ */
+function filter_sort(string $a, string $b): int {
 	$a_parts = explode('-', $a);
 	$b_parts = explode('-', $b);
 
@@ -343,10 +389,19 @@ function filter_sort($a, $b) {
 	// Invert the order, replace _'s with +'s to make them sort after .'s, prefix the date
 	// This makes cacti_stderr.log appear after cacti.log in date descending order with
 	// no date files first
-	return strcmp($b_date . '-' . str_replace('_','+',$b_parts[0]), $a_date . '-' . str_replace('_','+',$a_parts[0]));
+	return strcmp($b_date . '-' . str_replace('_', '+', $b_parts[0]), $a_date . '-' . str_replace('_', '+', $a_parts[0]));
 }
 
-function clog_get_logfiles() {
+/**
+ * Retrieves a list of log files from the configured log directories.
+ *
+ * @return array An array of log file names, including standard, stderr, and boost logs.
+ *
+ * Notes:
+ * - If the configured log path is not readable, it defaults to 'cacti.log'.
+ * - The function ensures that archived log files are included in the result.
+ */
+function clog_get_logfiles() : array {
 	$stdFileArray  = $stdLogFileArray = $stdErrFileArray = $boostFileArray = [];
 	$configLogPath = read_config_option('path_cactilog');
 	$configLogBase = basename($configLogPath);
@@ -445,7 +500,17 @@ function clog_get_logfiles() {
 	return array_unique(array_merge($stdFileArray, $stdLogFileArray, $stdErrFileArray, $boostFileArray));
 }
 
-function create_clog_filter($logfile, $clogAdmin) {
+/**
+ * Creates a filter configuration for the clog (custom log) web API.
+ *
+ * @param string $logfile   The name of the log file to be filtered.
+ * @param bool   $clogAdmin Indicates whether the user has administrative
+ *                          privileges for clog operations.
+ *
+ * @return array The filter configuration array, including rows of filter options
+ *               and action buttons.
+ */
+function create_clog_filter(string $logfile, bool $clogAdmin) : array {
 	global $log_tail_lines, $page_refresh_interval;
 
 	$all     = ['-1' => __('All')];
@@ -611,7 +676,16 @@ function create_clog_filter($logfile, $clogAdmin) {
 	}
 }
 
-function draw_clog_filter($render = false, $logfile = false, $clogAdmin = false) {
+/**
+ * Draws the clog filter for log files and renders or sanitizes it based on the provided parameters.
+ *
+ * @param bool $render    Determines whether to render the filter or sanitize it. Defaults to false.
+ * @param bool|string $logfile  Specifies the logfile to filter. Defaults to false.
+ * @param bool $clogAdmin Indicates whether the filter is for an admin user. Defaults to false.
+ * 
+ * @return void
+ */
+function draw_clog_filter(bool $render = false, bool|string $logfile = false, bool $clogAdmin = false) : void {
 	$filters = create_clog_filter($logfile, $clogAdmin);
 
 	$page_nr = get_nfilter_request_var('page');
@@ -637,85 +711,223 @@ function draw_clog_filter($render = false, $logfile = false, $clogAdmin = false)
 	}
 }
 
-function clog_get_regex_array() {
+/**
+ * Retrieves an array of regular expressions.
+ *
+ * @deprecated Use text_get_regex_array() directly instead.
+ *
+ * @return array Returns an array of regular expressions.
+ */
+function clog_get_regex_array() : array {
 	cacti_depreciated(__FUNCTION__ . '()');
 
 	return text_get_regex_array();
 }
 
-function clog_regex_replace($id, $link, $url, $matches, $cache) {
+/**
+ * Performs a regex replacement on the provided text using the specified parameters.
+ *
+ * @deprecated Use `text_regex_replace` directly instead.
+ *
+ * @param int    $id      An identifier for the operation or context.
+ * @param string $link    A link or reference related to the operation.
+ * @param string $url     The URL to be processed.
+ * @param array  $matches An array of matches to be used in the replacement.
+ * @param mixed  $cache   Cache data to be used during the operation.
+ *
+ * @return mixed The result of the regex replacement operation.
+ */
+function clog_regex_replace(int $id, string $link, string $url, array $matches, mixed $cache) : mixed {
 	cacti_depreciated(__FUNCTION__ . '()');
 
 	return text_regex_replace($id, $link, $url, $matches, $cache);
 }
 
-function clog_regex_parser_html($matches) {
+/**
+ * Parses HTML content using a regular expression parser.
+ *
+ * @deprecated This function is deprecated and should not be used in new code.
+*
+ * @param array $matches An array of matches from a regular expression.
+ *
+ * @return mixed The result of the `text_regex_parser()` function.
+ */
+function clog_regex_parser_html(array $matches) : mixed {
 	cacti_depreciated(__FUNCTION__ . '()');
 
 	return text_regex_parser($matches, true);
 }
 
-function clog_regex_parser($matches, $link = false) {
+/**
+ * Parses the given matches using a regular expression and optionally generates a link.
+ *
+ * @deprecated This function is deprecated. Use `text_regex_parser()` directly instead.
+ *
+ * @param array $matches The matches to be parsed, typically from a regular expression.
+ * @param bool $link Optional. Whether to generate a link. Default is false.
+ * 
+ * @return mixed The result of the `text_regex_parser` function.
+ */
+function clog_regex_parser(array $matches, bool $link = false) : mixed {
 	cacti_depreciated(__FUNCTION__ . '()');
 
 	return text_regex_parser($matches, $link);
 }
 
-function clog_regex_device($matches, $link = false) {
+/**
+ * Processes a regex match for a device and optionally generates a link.
+ *
+ * @deprecated Use `text_regex_device()` directly instead.
+ *
+ * @param array $matches An array of regex matches to process.
+ * @param bool $link Optional. Whether to generate a link. Default is false.
+ * 
+ * @return mixed The result of the `text_regex_device` function.
+ */
+function clog_regex_device(array $matches, bool $link = false) : mixed {
 	cacti_depreciated(__FUNCTION__ . '()');
 
 	return text_regex_device($matches, $link);
 }
 
-function clog_regex_datasource($matches, $link = false) {
+/**
+ * Processes a regex match for a data source and optionally generates a link.
+ *
+ * @deprecated Use `text_regex_datasource()` directly instead.
+ *
+ * @param array $matches An array of regex matches to process.
+ * @param bool $link Optional. Whether to generate a link. Default is false.
+ * 
+ * @return mixed The result of the `text_regex_datasource()` function.
+ */
+function clog_regex_datasource(array $matches, bool $link = false) : mixed {
 	cacti_depreciated(__FUNCTION__ . '()');
 
 	return text_regex_datasource($matches, $link);
 }
 
-function clog_regex_poller($matches, $link = false) {
+/**
+ * Logs and processes regex matches for a poller.
+ *
+ * @deprecated Use `text_regex_poller()` directly instead.
+ *
+ * @param array $matches An array of regex matches to be processed.
+ * @param bool $link Optional. Whether to include a link in the processing. Default is false.
+ *
+ * @return mixed The result of the `text_regex_poller()` function.
+ */
+function clog_regex_poller(array $matches, bool $link = false) : mixed {
 	cacti_depreciated(__FUNCTION__ . '()');
 
 	return text_regex_poller($matches, $link);
 }
 
-function clog_regex_dataquery($matches, $link = false) {
+/**
+ * Processes regex matches for a data query and optionally generates a link.
+ *
+ * @deprecated Use `text_regex_dataquery` directly instead.
+ *
+ * @param array $matches An array of regex matches to process.
+ * @param bool $link Optional. Whether to generate a link. Default is false.
+ * 
+ * @return mixed The result of the `text_regex_dataquery` function.
+ */
+function clog_regex_dataquery(array $matches, bool $link = false) : mixed {
 	cacti_depreciated(__FUNCTION__ . '()');
 
 	return text_regex_dataquery($matches, $link);
 }
 
-function clog_regex_rra($matches, $link = false) {
+/**
+ * Processes regex matches for a RRA and optionally generates a link.
+ *
+ * @deprecated Use `text_regex_rra()` directly instead.
+ *
+ * @param array $matches An array of regex matches to process.
+ * @param bool $link Optional. Whether to generate a link. Default is false.
+ * 
+ * @return mixed The result of the `text_regex_rra` function.
+ */
+function clog_regex_rra(array $matches, bool $link = false) : mixed {
 	cacti_depreciated(__FUNCTION__ . '()');
 
 	return text_regex_rra($matches, $link);
 }
 
-function clog_regex_graphs($matches, $link = false) {
+/**
+ * Processes regex matches for graphs and optionally generates a link.
+ *
+ * @deprecated Use `text_regex_graphs()` directly instead.
+ *
+ * @param array $matches An array of regex matches to process.
+ * @param bool $link Optional. Whether to generate a link. Default is false.
+ * 
+ * @return mixed The result of the `text_regex_graphs` function.
+ */
+function clog_regex_graphs(array $matches, bool $link = false) : mixed {
 	cacti_depreciated(__FUNCTION__ . '()');
 
 	return text_regex_graphs($matches, $link);
 }
 
-function clog_regex_graphtemplates($matches, $link = false) {
+/**
+ * Processes regex matches for graph templates and optionally generates a link.
+ *
+ * @deprecated Use `text_regex_graphtemplates()` directly instead.
+ *
+ * @param array $matches An array of regex matches to process.
+ * @param bool $link Optional. Whether to generate a link. Default is false.
+ * 
+ * @return mixed The result of the `text_regex_graphtemplates` function.
+ */
+function clog_regex_graphtemplates(array $matches, bool $link = false) : mixed {
 	cacti_depreciated(__FUNCTION__ . '()');
 
 	return text_regex_graphtemplates($matches, $link);
 }
 
-function clog_regex_users($matches, $link = false) {
+/**
+ * Processes regex matches for users and optionally generates a link.
+ *
+ * @deprecated Use `text_regex_users()` directly instead.
+ *
+ * @param array $matches An array of regex matches to process.
+ * @param bool $link Optional. Whether to generate a link. Default is false.
+ * 
+ * @return mixed The result of the `text_regex_users` function.
+ */
+function clog_regex_users(array $matches, bool $link = false) : mixed {
 	cacti_depreciated(__FUNCTION__ . '()');
 
 	return text_regex_users($matches, $link);
 }
 
-function clog_regex_rule($matches, $link = false) {
+/**
+ * Processes regex matches for rules and optionally generates a link.
+ *
+ * @deprecated Use `text_regex_rule()` directly instead.
+ *
+ * @param array $matches An array of regex matches to process.
+ * @param bool $link Optional. Whether to generate a link. Default is false.
+ * 
+ * @return mixed The result of the `text_regex_rule` function.
+ */
+function clog_regex_rule(array $matches, bool $link = false) : mixed {
 	cacti_depreciated(__FUNCTION__ . '()');
 
 	return text_regex_rule($matches, $link);
 }
 
-function clog_get_datasource_titles($local_data_ids) {
+/**
+ * Retrieves the titles of data sources based on the provided local data IDs.
+ *
+ * @deprecated Use get_data_source_titles() directly instead.
+ *
+ * @param array $local_data_ids An array of local data IDs for which to retrieve titles.
+ *
+ * @return array An array of data source titles corresponding to the provided IDs.
+ */
+function clog_get_datasource_titles(array $local_data_ids) : array {
 	cacti_depreciated(__FUNCTION__ . '()');
 
 	return get_data_source_titles($local_data_ids);

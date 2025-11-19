@@ -229,7 +229,7 @@ set_language_constants([
  *
  * @return string The path to the JavaScript language file.
  */
-function get_js_language_file(array $names, ?string $prefix = null, ?string $base_path = null, ?string $extension = null): string {
+function get_js_language_file(array $names, string|null $prefix = null, string|null $base_path = null, string|null $extension = null): string {
 	global $config;
 
 	$extension = empty($extension) ? 'js' : $extension;
@@ -251,7 +251,7 @@ function get_js_language_file(array $names, ?string $prefix = null, ?string $bas
  *
  * @return string The path to the .mo language file.
  */
-function get_mo_language_file(array $names, ?string $prefix = null, ?string $base_path = null, ?string $extension = null): string {
+function get_mo_language_file(array $names, string|null $prefix = null, string|null $base_path = null, string|null $extension = null): string {
 	global $config;
 
 	$extension = empty($extension) ? 'mo' : $extension;
@@ -272,7 +272,7 @@ function get_mo_language_file(array $names, ?string $prefix = null, ?string $bas
  * @param string|null $base_path The base path where the language files are located. Defaults to CACTI_PATH_BASE if not provided.
  * @return string The path to the found language file, or an empty string if no file is found.
  */
-function get_language_file(string $extension, string $prefix, array $names, ?string $base_path = null): string {
+function get_language_file(string $extension, string $prefix, array $names, string|null $base_path = null): string {
 	global $config;
 
 	if (empty($extension)) {
@@ -304,7 +304,7 @@ function get_language_file(string $extension, string $prefix, array $names, ?str
  * @param string|null $i18n_handler The internationalization handler to use. If null or empty, defaults to checking both PHPGETTEXT and MOTRANSLATOR handlers.
  * @return array|null An array containing the handler, paths, and files for the selected internationalization provider, or null if no valid provider is found.
  */
-function get_src_language_files(?string $i18n_handler): ?array {
+function get_src_language_files(string|null $i18n_handler): array|null {
 	global $config;
 
 	$i18n_providers = [];
@@ -646,7 +646,7 @@ function set_language_constants(array $constants): void {
  * @param string $domain The domain to use for translation. Defaults to 'cacti'.
  * @return string The translated text, or the original text if translation is not available.
  */
-function __gettext(?string $text, string $domain = 'cacti'): string {
+function __gettext(string|null $text, string $domain = 'cacti'): string {
 	global $i18n;
 
 	$text ??= '';
@@ -683,7 +683,7 @@ function __gettext(?string $text, string $domain = 'cacti'): string {
  * @param string $domain The translation domain to use (default is 'cacti').
  * @return string The translated and pluralized string.
  */
-function __n(?string $singular, ?string $plural, int $number, string $domain = 'cacti'): string {
+function __n(string|null $singular, string|null $plural, int $number, string $domain = 'cacti'): string {
 	global $i18n;
 
 	$singular ??= '';
@@ -703,7 +703,7 @@ function __n(?string $singular, ?string $plural, int $number, string $domain = '
  *                          If null, an empty string will be used.
  * @return string The processed text with double percent signs replaced by single percent signs.
  */
-function __uf(?string $text): string {
+function __uf(string|null $text): string {
 	return str_replace('%%', '%', $text ?? '');
 }
 
