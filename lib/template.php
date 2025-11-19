@@ -1231,13 +1231,12 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = fal
  *   the Graph Item is new, it will update all graphs with a new item.  When
  *   the graph item exists, it'll just walk through all columns and update the values
  *
- * @param $graph_template_id - (int) The graph template id to update
- * @param $graph_template_item_id - (int) The graph template item id from the template
- * @param $task_item_changes - (boolean) Tells us if this is a new graph item or one that
- *   needs to be pushed to all graphs
- * @param mixed $task_item_changed
+ * @param int  $graph_template_id      - The graph template id to update
+ * @param int  $graph_template_item_id - The graph template item id from the template
+ * @param bool $task_item_changed      - Tells us if this is a new graph item or one that
+ *                                       needs to be pushed to all graphs
  *
- * @return null
+ * @return void
  */
 function update_graph_template_items($graph_template_id, $graph_template_item_id, $task_item_changed) {
 	global $struct_graph_item;

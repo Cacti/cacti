@@ -1369,7 +1369,7 @@ function cacti_log_file():string {
  * internally so do not refresh if called again after
  * updating the value.
  *
- * @return null|int
+ * @return int
  */
 function get_selective_log_level(): ?int {
 	static $force_level = null;
@@ -5087,7 +5087,7 @@ function cacti_escapeshellarg(string $string, bool $quote = true): string {
  *
  * @param  $refresh - an array containing the page, seconds, and logout
  *
- * @return null
+ * @return void
  */
 function set_page_refresh($refresh) {
 	if (isset($refresh['seconds'])) {

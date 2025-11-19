@@ -1928,9 +1928,9 @@ function update_data_query_cache($host_id, $data_query_id) {
  * @param int    $local_graph_id
  * @param mixed  $host_id
  * @param mixed  $data_query_id
- * @param mixed $previous_index
+ * @param mixed  $previous_index
  *
- * @return null
+ * @return void
  */
 function update_graph_data_query_cache($local_graph_id, $host_id = '', $data_query_id = '', $previous_index = '') {
 	global $data_query_id_cache;
@@ -2424,7 +2424,7 @@ function update_data_query_sort_cache($host_id, $data_query_id) {
  *
  * @param int $host_id
  *
- * @return null
+ * @return void
  */
 function update_data_query_sort_cache_by_host($host_id) {
 	$data_queries = db_fetch_assoc_prepared('SELECT snmp_query_id

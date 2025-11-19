@@ -1286,7 +1286,7 @@ function dsstats_rrdtool_execute($command, $rrd_process) {
  *
  * @param mixed $rrd_process
  *
- * @return null
+ * @return void
  */
 function dsstats_rrdtool_close($rrd_process) {
 	if (is_array($rrd_process)) {
@@ -1301,7 +1301,7 @@ function dsstats_rrdtool_close($rrd_process) {
  *
  * @param  string $type - The process type
  *
- * @return null
+ * @return void
  */
 function dsstats_launch_children($type) {
 	global $debug;
@@ -1359,7 +1359,7 @@ function dsstats_get_subtype($type) {
  * dsstats_kill_running_processes - this function is part of an interrupt
  * handler to kill children processes when the parent is killed
  *
- * @return null
+ * @return void
  */
 function dsstats_kill_running_processes() {
 	global $type;

@@ -28,7 +28,7 @@
  * @param mixed $poller_id
  * @param mixed $variable
  *
- * @return null
+ * @return void
  */
 function update_replication_crc($poller_id, $variable) {
 	$hash = hash('ripemd160', date('Y-m-d H:i:s') . random_int(0, mt_getrandmax()) . $poller_id);
@@ -2025,7 +2025,7 @@ function utility_php_set_installed(&$extensions) {
  * @param mixed $object_ids
  * @param mixed $diff
  *
- * @return null
+ * @return void
  */
 function object_cache_get_totals($class, $object_ids, $diff = false) {
 	global $object_totals, $object_totals_diff;

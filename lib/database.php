@@ -2337,7 +2337,7 @@ function db_get_column_length($table, $column) {
  * db_check_password_length - Get the length of the password column in the
  * user_auth table and adjust if the password length to 80 chars
  *
- * @return null
+ * @return void
  */
 function db_check_password_length() {
 	$len = db_get_column_length('user_auth', 'password');

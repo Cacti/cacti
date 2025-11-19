@@ -1311,7 +1311,7 @@ function remote_update_config_file() {
  * @param $value       - the values to be saved
  * @param mixed $name
  *
- * @return null        - nothing is returned
+ * @return void
  */
 function set_install_config_option($name, $value) {
 	global $local_db_cnn_id;

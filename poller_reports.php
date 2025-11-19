@@ -267,7 +267,8 @@ function display_help() {
  * sig_handler - provides a generic means to catch exceptions to the Cacti log.
  *
  * @param  int   $signo the signal that was thrown by the interface.
- * @return null
+ *
+ * @return void
  */
 function sig_handler($signo) {
 	switch ($signo) {

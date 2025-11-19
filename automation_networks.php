@@ -286,12 +286,10 @@ function api_networks_duplicate($network_id) {
  * api_networks_change_options - Given a network_id and the post
  *   variable, update a series of Network settings
  *
- * @param (mixed) A network id or an array of network ids
- * @param (array) An array of post variables
- * @param mixed $network_ids
- * @param mixed $post
+ * @param mixed $network_ids - A network id or an array of network ids
+ * @param array $post - An array of post variables
  *
- * @return (void)
+ * @return void
  */
 function api_networks_change_options($network_ids, $post) {
 	if (!is_array($network_ids)) {

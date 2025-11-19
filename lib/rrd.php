@@ -38,7 +38,7 @@ function escape_command($command) {
 
 /** set the language environment variable for rrdtool functions
  * @param string $lang		- the desired language to set
- * @return null
+ * @return void
  */
 function rrdtool_set_language($lang = -1) {
 	global $prev_lang;
@@ -52,8 +52,10 @@ function rrdtool_set_language($lang = -1) {
 	}
 }
 
-/** restore the default language environment variable after rrdtool functions
- * @return null
+/**
+ * restore the default language environment variable after rrdtool functions
+ *
+ * @return void
  */
 function rrdtool_reset_language() {
 	global $prev_lang;

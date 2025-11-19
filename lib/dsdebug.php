@@ -28,7 +28,7 @@
  *
  * @param mixed $message
  *
- * @return null
+ * @return void
  */
 function dsdebug_debug($message) {
 	global $debug;

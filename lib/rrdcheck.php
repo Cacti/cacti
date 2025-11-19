@@ -857,7 +857,7 @@ function rrdcheck_rrdtool_execute($command, &$pipes) {
  *
  * @param mixed $process
  *
- * @return null
+ * @return void
  */
 function rrdcheck_rrdtool_close($process) {
 	proc_close($process);
@@ -869,7 +869,7 @@ function rrdcheck_rrdtool_close($process) {
  *
  * @param string $type - The process type
  *
- * @return null
+ * @return void
  */
 function rrdcheck_launch_children($type) {
 	global $debug;

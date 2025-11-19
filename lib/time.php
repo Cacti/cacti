@@ -241,11 +241,11 @@ function shift_right_boundary(&$span, $direction, $shift_size) {
 /**
  * shift_time - shift given timespan left/right
  *
- * @param array &$span      - given timespan (start/end time as time-since-epoch and human readable)
- * @param string $direction - "-" for shifting left, "+" for shifting right
- * @param mixed $timeshift  - amount of shifting
+ * @param array  &$span      - given timespan (start/end time as time-since-epoch and human readable)
+ * @param string $direction  - "-" for shifting left, "+" for shifting right
+ * @param mixed  $timeshift  - amount of shifting
  *
- * @return null
+ * @return void
  */
 function shift_time(&$span, $direction, $shift_size) {
 	# move left/right according to $direction
