@@ -131,6 +131,7 @@ if (cacti_sizeof($parms)) {
 				display_help();
 
 				exit(0);
+
 			default:
 				print "FATAL: Invalid Argument: ($arg)\n\n";
 				display_help();

@@ -55,7 +55,7 @@ if (empty($github_actions) && CACTI_SERVER_OS == 'unix') {
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter, 2);
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
 			$value = '';

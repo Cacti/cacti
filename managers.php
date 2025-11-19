@@ -189,7 +189,7 @@ function manager_edit() {
 	if (!isset_request_var('tab')) {
 		set_request_var('tab', 'general');
 	}
-	$id	= (isset_request_var('id') ? get_request_var('id') : '0');
+	$id	 = (isset_request_var('id') ? get_request_var('id') : '0');
 
 	if ($id) {
 		$manager      = db_fetch_row_prepared('SELECT * FROM snmpagent_managers WHERE id = ?', [get_request_var('id')]);
@@ -377,13 +377,13 @@ function manager_notifications($id, $header_label) {
 
 	/* filter by host */
 	if (get_request_var('mib') != 'any' && get_request_var('mib') != '-1') {
-		$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') . ' snmpagent_cache.mib = ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' snmpagent_cache.mib = ?';
 		$sql_params[] = get_request_var('mib');
 	}
 
 	/* filter by search string */
 	if (get_request_var('filter') != 'any') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (`oid` LIKE ? OR `name` LIKE ? OR `mib` LIKE ?)';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' (`oid` LIKE ? OR `name` LIKE ? OR `mib` LIKE ?)';
 
 		$sql_params[] = '%' . get_request_var('filter') . '%';
 		$sql_params[] = '%' . get_request_var('filter') . '%';
@@ -457,7 +457,7 @@ function manager_notifications($id, $header_label) {
 			form_selectable_cell($mib, $row_id);
 			form_selectable_ecell($item['kind'], $row_id);
 			form_selectable_cell($item['max-access'],$row_id);
-			form_selectable_cell(((isset($notifications[$item['mib']]) && isset($notifications[$item['mib']][$item['name']])) ? '<span class="deviceUp">' . __('Enabled'):'<span class="deviceDown">' . __('Disabled')) . '</span>', $row_id);
+			form_selectable_cell(((isset($notifications[$item['mib']]) && isset($notifications[$item['mib']][$item['name']])) ? '<span class="deviceUp">' . __('Enabled') : '<span class="deviceDown">' . __('Disabled')) . '</span>', $row_id);
 			form_checkbox_cell($item['oid'], $row_id);
 
 			form_end_row();
@@ -592,13 +592,13 @@ function manager_logs($id, $header_label) {
 
 	/* filter by severity */
 	if (get_request_var('severity') > 0) {
-		$sql_where   .= ' AND snl.severity = ?';
+		$sql_where .= ' AND snl.severity = ?';
 		$sql_params[] = get_request_var('severity');
 	}
 
 	/* filter by search string */
 	if (get_request_var('filter') != '') {
-		$sql_where   .= ' AND (`varbinds` LIKE ?)';
+		$sql_where .= ' AND (`varbinds` LIKE ?)';
 		$sql_params[] = '%' . get_request_var('severity') . '%';
 	}
 
@@ -738,7 +738,7 @@ function form_save() {
 
 			if (!is_error_message()) {
 				$manager_id = sql_save($save, 'snmpagent_managers');
-				raise_message(($manager_id)? 1 : 2);
+				raise_message(($manager_id) ? 1 : 2);
 			}
 
 			break;
@@ -867,7 +867,7 @@ function form_actions() {
 				/* grep mib and notification name */
 				$row_id = substr($key, 4);
 
-				list($mib, $name) = explode('__', $row_id);
+				[$mib, $name] = explode('__', $row_id);
 
 				$ilist .= '<li>' . html_escape($name) . ' (' . html_escape($mib) .')</li>';
 

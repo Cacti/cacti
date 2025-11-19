@@ -47,7 +47,7 @@ $local       = false;
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter, 2);
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
 			$value = '';
@@ -257,7 +257,7 @@ if (cacti_sizeof($tables)) {
 					$sql .= (strlen($sql) ? ',' : '') . ' ENGINE=Innodb';
 				}
 
-				$status = db_execute("ALTER TABLE `$table`" . ($dynamic ? ' ROW_FORMAT=Dynamic, ':'') . $sql);
+				$status = db_execute("ALTER TABLE `$table`" . ($dynamic ? ' ROW_FORMAT=Dynamic, ' : '') . $sql);
 
 				if ($status === false) {
 					print_or_log($installer,  ' Failed' . PHP_EOL);

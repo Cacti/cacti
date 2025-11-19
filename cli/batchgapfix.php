@@ -53,8 +53,9 @@ $debug      = false;
 $force      = false;
 $host_ids   = false;
 $threads    = detect_cpu_cores();
+
 if ($threads == 0) {
-        $threads = 2;
+	$threads = 2;
 }
 
 $child      = 0;
@@ -76,7 +77,7 @@ $start = microtime(true);
 
 foreach ($parms as $parameter) {
 	if (strpos($parameter, '=')) {
-		list($arg, $value) = explode('=', $parameter, 2);
+		[$arg, $value] = explode('=', $parameter, 2);
 	} else {
 		$arg   = $parameter;
 		$value = '';
@@ -317,7 +318,7 @@ if ($child == 0) {
 
 	// Fork Child Binaries
 	for ($i = 1; $i <= $threads; $i++) {
-		$command = sprintf("%s/cli/batchgapfix.php --start='%s' --end='%s' --method=%s --avgnan=%s --child=%s" . ($force ? ' --force':'') . ($debug ? ' --debug':''),
+		$command = sprintf("%s/cli/batchgapfix.php --start='%s' --end='%s' --method=%s --avgnan=%s --child=%s" . ($force ? ' --force' : '') . ($debug ? ' --debug' : ''),
 			CACTI_PATH_BASE,
 			$start_date,
 			$end_date,
@@ -445,10 +446,13 @@ if ($child == 0) {
 
 exit(0);
 
-/** sig_handler - provides a generic means to catch exceptions to the Cacti log.
- * @arg $signo  - (int) the signal that was thrown by the interface.
+/**
+ * sig_handler - provides a generic means to catch exceptions to the Cacti log.
+ *
  * @param mixed $signo
- * @return      - null */
+ *
+ * @return      - null
+ */
 function sig_handler($signo) {
 	global $child, $type;
 
@@ -486,9 +490,9 @@ function display_help() {
 	display_version();
 
 	print PHP_EOL . 'This utility will fill gaps in graphs based upon a time range.' . PHP_EOL;
-        print 'This utility will run in parallel with the given number of threads.' . PHP_EOL;
-        print 'If threads argument is not specified, value is derived from the number of processor cores.' . PHP_EOL;
-        print 'In case of a detection problem, 2 threads are used.' . PHP_EOL . PHP_EOL;
+	print 'This utility will run in parallel with the given number of threads.' . PHP_EOL;
+	print 'If threads argument is not specified, value is derived from the number of processor cores.' . PHP_EOL;
+	print 'In case of a detection problem, 2 threads are used.' . PHP_EOL . PHP_EOL;
 
 	print 'selected by the user.' . PHP_EOL . PHP_EOL;
 	print 'usage: batchgapfix.php --start=\'YYYY-MM-DD HH:MM:SS\' --end=\'YYYY-MM-DD HH:MM:SS\' [--threads=N]' . PHP_EOL;

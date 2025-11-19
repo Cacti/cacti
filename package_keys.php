@@ -57,7 +57,7 @@ function form_actions() {
 
 		if ($selected_items != false) {
 			if (get_nfilter_request_var('drp_action') == '1') { // delete
-				for ($i=0;($i < cacti_count($selected_items));$i++) {
+				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					package_key_remove($selected_items[$i]);
 				}
 			}
@@ -149,7 +149,7 @@ function public_keys() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = ($sql_where != '' ? ' AND ':'WHERE ') .
+		$sql_where = ($sql_where != '' ? ' AND ' : 'WHERE ') .
 			'(author LIKE ? OR homepage LIKE ? OR email_address LIKE ?)';
 
 		$sql_params[] = '%' . get_request_var('filter') . '%';
@@ -217,7 +217,7 @@ function public_keys() {
 			form_selectable_cell($key['id'], $key['id']);
 			form_selectable_cell(filter_value($key['homepage'], get_request_var('filter')), $key['id']);
 			form_selectable_cell(filter_value($key['email_address'], get_request_var('filter')), $key['id']);
-			form_selectable_cell(strlen($pkey) < 200 ? 'SHA1':'SHA256', $key['id']);
+			form_selectable_cell(strlen($pkey) < 200 ? 'SHA1' : 'SHA256', $key['id']);
 
 			form_checkbox_cell($key['author'], $key['id']);
 

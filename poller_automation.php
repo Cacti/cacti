@@ -58,10 +58,13 @@ if (POLLER_ID > 1) {
 	}
 }
 
-/** sig_handler - provides a generic means to catch exceptions to the Cacti log.
- * @arg $signo  - (int) the signal that was thrown by the interface.
- * @param mixed $signo
- * @return      - null */
+/**
+ * sig_handler - provides a generic means to catch exceptions to the Cacti log.
+ *
+ * @param int $signo - the signal that was thrown by the interface.
+ *
+ * @return      - null
+ */
 function sig_handler($signo) {
 	global $network_id, $thread, $master, $poller_id;
 
@@ -142,14 +145,14 @@ $network_id   = 0;
 $poller_id    = POLLER_ID;
 $thread       = 0;
 $master       = false;
-$serial_scans = read_config_option('automation_serial_scans') == 'on' ? true:false;
+$serial_scans = read_config_option('automation_serial_scans') == 'on' ? true : false;
 
 global $debug, $poller_id, $network_id, $thread, $master, $dryrun;
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter);
+			[$arg, $value] = explode('=', $parameter);
 		} else {
 			$arg   = $parameter;
 			$value = '';
@@ -197,6 +200,7 @@ if (cacti_sizeof($parms)) {
 				display_help();
 
 				exit(0);
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
@@ -263,7 +267,7 @@ if ($master) {
 			if (api_scheduler_is_time_to_start($network) || $force) {
 				automation_debug("Launching Network Master for '" . $network['name'] . "'\n");
 
-				exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . '/poller_automation.php --poller=' . $poller_id . ' --network=' . $network['id'] . ($force ? ' --force':'') . ($debug ? ' --debug':''));
+				exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . '/poller_automation.php --poller=' . $poller_id . ' --network=' . $network['id'] . ($force ? ' --force' : '') . ($debug ? ' --debug' : ''));
 
 				$launched++;
 
@@ -345,7 +349,7 @@ if (!$master && $thread == 0) {
 
 	while ($curthread <= $threads) {
 		automation_debug("Launching Thread $curthread\n");
-		exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . '/poller_automation.php --poller=' . $poller_id . " --thread=$curthread --network=$network_id" . ($force ? ' --force':'') . ($debug ? ' --debug':''));
+		exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . '/poller_automation.php --poller=' . $poller_id . " --thread=$curthread --network=$network_id" . ($force ? ' --force' : '') . ($debug ? ' --debug' : ''));
 		$curthread++;
 	}
 
@@ -1110,7 +1114,7 @@ function reportNetworkStatus($network_id, $old_devices) {
 						return false;
 					}
 
-					$email = ($details['full_name'] != '' ? $details['full_name']:__('Cacti Primary Admin')) . ' <' . $details['notification_email'] . '>';
+					$email = ($details['full_name'] != '' ? $details['full_name'] : __('Cacti Primary Admin')) . ' <' . $details['notification_email'] . '>';
 				}
 			}
 

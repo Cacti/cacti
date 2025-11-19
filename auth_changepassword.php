@@ -86,6 +86,8 @@ $user = db_fetch_row_prepared('SELECT *
 
 $version = CACTI_VERSION;
 
+global $user_auth_realm_filenames;
+
 if (!cacti_sizeof($user) || $user['realm'] != 0) {
 	if (!cacti_sizeof($user)) {
 		raise_message(44);
@@ -332,19 +334,19 @@ if (read_config_option('secpass_minlen') > 0) {
 }
 
 if (read_config_option('secpass_reqmixcase') == 'on') {
-	$secpass_body .= ($secpass_body != '' ? '<br>':'') . __('Must include mixed case');
+	$secpass_body .= ($secpass_body != '' ? '<br>' : '') . __('Must include mixed case');
 }
 
 if (read_config_option('secpass_reqnum') == 'on') {
-	$secpass_body .= ($secpass_body != '' ? '<br>':'') . __('Must include at least 1 number');
+	$secpass_body .= ($secpass_body != '' ? '<br>' : '') . __('Must include at least 1 number');
 }
 
 if (read_config_option('secpass_reqspec') == 'on') {
-	$secpass_body .= ($secpass_body != '' ? '<br>':'') . __('Must include at least 1 special character');
+	$secpass_body .= ($secpass_body != '' ? '<br>' : '') . __('Must include at least 1 special character');
 }
 
 if (read_config_option('secpass_history') != '0') {
-	$secpass_body .= ($secpass_body != '' ? '<br>':'') . __('Cannot be reused for %d password changes', read_config_option('secpass_history') + 1);
+	$secpass_body .= ($secpass_body != '' ? '<br>' : '') . __('Cannot be reused for %d password changes', read_config_option('secpass_history') + 1);
 }
 
 $secpass_tooltip .= $secpass_body;
@@ -428,30 +430,30 @@ html_auth_header('change_password', __('Change Password'), __('Change Password')
 		<td>
 			<input type='hidden' name='action' value='changepassword'>
 			<input type='hidden' name='ref' value='<?php print html_escape(get_request_var('ref')); ?>'>
-			<input type='hidden' name='name' value='<?php print isset($user['username']) ? html_escape($user['username']) : '';?>'>
+			<input type='hidden' name='name' value='<?php print isset($user['username']) ? html_escape($user['username']) : ''; ?>'>
 			<input type='text'><input type='password'></td>
 		</td>
 	</tr>
 	<tr>
 <?php if ($skip_current) { ?>
-		<td><?php print __('Username');?></td>
-		<td class='nowrap'><input type='hidden' id='current' name='current_password' value=''><?php print $user['username'];?></td>
+		<td><?php print __('Username'); ?></td>
+		<td class='nowrap'><input type='hidden' id='current' name='current_password' value=''><?php print $user['username']; ?></td>
 <?php } else { ?>
-		<td><?php print __('Current password');?></td>
+		<td><?php print __('Current password'); ?></td>
 		<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='current' name='current_password' autocomplete='current-password' size='15' maxlength='25' placeholder='********'></td><td></td>
 <?php } ?>
 	</tr>
 	<tr>
-		<td><?php print __('New password');?></td>
-		<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='password' name='password' autocomplete='off' size='15' maxlength='25' placeholder='********'></td><td id='pass_details'><div id='pass' style='float:left;'></div><?php print display_tooltip($secpass_tooltip);?></td>
+		<td><?php print __('New password'); ?></td>
+		<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='password' name='password' autocomplete='off' size='15' maxlength='25' placeholder='********'></td><td id='pass_details'><div id='pass' style='float:left;'></div><?php print display_tooltip($secpass_tooltip); ?></td>
 	</tr>
 	<tr>
-		<td><?php print __('Confirm password');?></td>
+		<td><?php print __('Confirm password'); ?></td>
 		<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='password_confirm' name='password_confirm' autocomplete='off' size='15' maxlength='25' placeholder='********'></td><td id='pass_details_conf'><div id='passconfirm' style='float:left;'></div></td>
 	</tr>
 	<tr>
 		<td colspan='3' class='nowrap'><button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' value='save'><?php print __esc('Save'); ?></button>
-			<?php print $user['must_change_password'] != 'on' ? "<button type='button' class='ui-button ui-corner-all ui-widget' onClick='document.location=\"$return\"'>".  __esc('Return') . "'></button>":'';?>
+			<?php print $user['must_change_password'] != 'on' ? "<button type='button' class='ui-button ui-corner-all ui-widget' onClick='document.location=\"$return\"'>".  __esc('Return') . "'></button>" : ''; ?>
 		</td>
 	</tr>
 <?php

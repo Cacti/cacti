@@ -46,7 +46,7 @@ function upgrade_to_1_2_19() {
 
 	foreach ($indexes as $i) {
 		if (!db_index_exists('graph_templates_item', $i, false)) {
-			$alter .= ($alter != '' ? ', ':'') . " ADD INDEX $i($i)";
+			$alter .= ($alter != '' ? ', ' : '') . " ADD INDEX $i($i)";
 		}
 	}
 

@@ -399,73 +399,73 @@ $messages = [
 		'level'   => MESSAGE_LEVEL_ERROR]
 ];
 
-$cdef_operators = [1 =>
-	'+',
-	'-',
-	'*',
-	'/',
-	'%'
+$cdef_operators = [
+	1 => '+',
+	2 => '-',
+	3 => '*',
+	4 => '/',
+	5 => '%'
 ];
 
-$cdef_functions = [1 =>
-	'SIN',
-	'COS',
-	'LOG',
-	'EXP',
-	'FLOOR',
-	'CEIL',
-	'LT',
-	'LE',
-	'GT',
-	'GE',
-	'EQ',
-	'IF',
-	'MIN',
-	'MAX',
-	'LIMIT',
-	'DUP',
-	'EXC',
-	'POP',
-	'UN',
-	'UNKN',
-	'PREV',
-	'INF',
-	'NEGINF',
-	'NOW',
-	'TIME',
-	'LTIME',
-	'ADDNAN',
-	'TREND',
-	'TRENDNAN',
-	'PREDICT',
-	'PREDICTSIGMA',
-	'PREDICTPERC',
-	'SQRT',
-	'ATAN',
-	'ATAN2',
-	'POW',
-	'ISINF',
-	'MINNAN',
-	'MAXNAN',
-	'DEG2RAD',
-	'RAD2DEG',
-	'ABS',
-	'REV',
-	'SMIN',
-	'SMAX',
-	'MEDIAN',
-	'STDEV',
-	'PERCENT',
-	'COUNT',
-	'STEPWIDTH',
-	'NEWDAY',
-	'NEWWEEK',
-	'NEWMONTH',
-	'NEWYEAR',
-	'DEPTH',
-	'COPY',
-	'INDEX',
-	'ROLL'
+$cdef_functions = [
+	1  => 'SIN',
+	2  => 'COS',
+	3  => 'LOG',
+	4  => 'EXP',
+	5  => 'FLOOR',
+	6  => 'CEIL',
+	7  => 'LT',
+	8  => 'LE',
+	9  => 'GT',
+	10 => 'GE',
+	11 => 'EQ',
+	12 => 'IF',
+	13 => 'MIN',
+	14 => 'MAX',
+	15 => 'LIMIT',
+	16 => 'DUP',
+	17 => 'EXC',
+	18 => 'POP',
+	19 => 'UN',
+	20 => 'UNKN',
+	21 => 'PREV',
+	22 => 'INF',
+	23 => 'NEGINF',
+	24 => 'NOW',
+	25 => 'TIME',
+	26 => 'LTIME',
+	27 => 'ADDNAN',
+	28 => 'TREND',
+	29 => 'TRENDNAN',
+	30 => 'PREDICT',
+	31 => 'PREDICTSIGMA',
+	32 => 'PREDICTPERC',
+	33 => 'SQRT',
+	34 => 'ATAN',
+	35 => 'ATAN2',
+	36 => 'POW',
+	37 => 'ISINF',
+	38 => 'MINNAN',
+	39 => 'MAXNAN',
+	40 => 'DEG2RAD',
+	41 => 'RAD2DEG',
+	42 => 'ABS',
+	43 => 'REV',
+	44 => 'SMIN',
+	45 => 'SMAX',
+	46 => 'MEDIAN',
+	47 => 'STDEV',
+	48 => 'PERCENT',
+	49 => 'COUNT',
+	50 => 'STEPWIDTH',
+	51 => 'NEWDAY',
+	52 => 'NEWWEEK',
+	53 => 'NEWMONTH',
+	54 => 'NEWYEAR',
+	55 => 'DEPTH',
+	56 => 'COPY',
+	57 => 'INDEX',
+	58 => 'ROLL'
 ];
 
 $phperrors =  [
@@ -494,19 +494,19 @@ if (cacti_version_compare(get_rrdtool_version(), '1.8.0', '>=')) {
 	$cdef_functions[] = 'ROUND';
 }
 
-$vdef_functions = [1 =>
-	'MAXIMUM',
-	'MINIMUM',
-	'AVERAGE',
-	'STDEV',
-	'LAST',
-	'FIRST',
-	'TOTAL',
-	'PERCENT',
-	'PERCENTNAN',
-	'LSLSLOPE',
-	'LSLINT',
-	'LSLCORREL'
+$vdef_functions = [
+	1  => 'MAXIMUM',
+	2  => 'MINIMUM',
+	3  => 'AVERAGE',
+	4  => 'STDEV',
+	5  => 'LAST',
+	6  => 'FIRST',
+	7  => 'TOTAL',
+	8  => 'PERCENT',
+	9  => 'PERCENTNAN',
+	10 => 'LSLSLOPE',
+	11 => 'LSLINT',
+	12 => 'LSLCORREL'
 ];
 
 $vdef_item_types = [
@@ -549,17 +549,17 @@ $reindex_types_tips = [
 	DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION => __('Every polling cycle, a Re-Index will be performed.  Very expensive.')
 ];
 
-$snmp_query_field_actions = [1 =>
-	__('SNMP Field Name (Dropdown)'),
-	__('SNMP Field Value (From User)'),
-	__('SNMP Output Type (Dropdown)')
+$snmp_query_field_actions = [
+	1 => __('SNMP Field Name (Dropdown)'),
+	2 => __('SNMP Field Value (From User)'),
+	3 => __('SNMP Output Type (Dropdown)')
 ];
 
-$consolidation_functions = [1 =>
-	'AVERAGE',
-	'MIN',
-	'MAX',
-	'LAST'
+$consolidation_functions = [
+	1 => 'AVERAGE',
+	2 => 'MIN',
+	3 => 'MAX',
+	4 => 'LAST'
 ];
 
 $data_source_types = [
@@ -652,8 +652,7 @@ $snmp_security_levels = [
 	'authPriv'     => 'authPriv'
 ];
 
-$snmp_versions = [0 =>
-	__('Not In Use'),
+$snmp_versions = [0 => __('Not In Use'),
 	__('Version %d', 1),
 	__('Version %d', 2),
 	__('Version %d', 3)
@@ -685,10 +684,10 @@ $banned_snmp_strings = [
 	'No Such'
 ];
 
-$logfile_options = [1 =>
-	__('Logfile Only'),
-	__('Logfile and Syslog/Eventlog'),
-	__('Syslog/Eventlog Only')
+$logfile_options = [
+	1 => __('Logfile Only'),
+	2 => __('Logfile and Syslog/Eventlog'),
+	3 => __('Syslog/Eventlog Only')
 ];
 
 $availability_options = [
@@ -939,10 +938,10 @@ $registered_cacti_names = [
 	'path_cacti'
 ];
 
-$graph_views = [1 =>
-	__('Tree View'),
-	__('List View'),
-	__('Preview View')
+$graph_views = [
+	1 => __('Tree View'),
+	2 => __('List View'),
+	3 => __('Preview View')
 ];
 
 $auth_methods = [

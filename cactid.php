@@ -144,9 +144,9 @@ while (true) {
 
 /**
  * sig_handler - provides a generic means to catch exceptions to the Cacti log.
- * 
+ *
  * @param int $signo - the signal that was thrown by the interface.
- * 
+ *
  * @return void
  */
 function sig_handler(int $signo) {
@@ -159,8 +159,6 @@ function sig_handler(int $signo) {
 			admin_email(__('Cacti System Warning'), __('WARNING: Cacti Daemon PID[' . getmypid() . '] Terminated on Device[' . gethostname() . ']', true, 'CACTID'));
 
 			exit(1);
-
-			break;
 		default:
 			/* ignore all other signals */
 	}
@@ -170,8 +168,8 @@ function sig_handler(int $signo) {
  * wait_for_start
  *
  * @param  int $frequency
- * 
- * @return void
+ *
+ * @return int
  */
 function wait_for_start(int $frequency = -1) {
 	$prev_time = -1;
@@ -220,7 +218,7 @@ function run_poller() {
 
 	debug('Cacti Data Collector');
 
-	$command = ' -q ' . CACTI_PATH_BASE . '/poller.php --force' . ($debug ? ' --debug':'');
+	$command = ' -q ' . CACTI_PATH_BASE . '/poller.php --force' . ($debug ? ' --debug' : '');
 
 	$php_binary = read_config_option('path_php_binary');
 
@@ -240,7 +238,7 @@ function run_poller() {
 /**
  * get_options
  *
- * @return void
+ * @return array
  */
 function get_options() {
 	$parms = $_SERVER['argv'];
@@ -294,7 +292,7 @@ function get_options() {
  * debug
  *
  * @param  string $string
- * 
+ *
  * @return void
  */
 function debug(string $string) {

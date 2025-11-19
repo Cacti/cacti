@@ -590,7 +590,7 @@ function sites() {
 
 			form_selectable_cell(filter_value($site['name'], get_request_var('filter'), 'sites.php?action=edit&id=' . $site['id']), $site['id']);
 			form_selectable_cell($site['id'], $site['id'], '', 'right');
-			form_selectable_cell($site['disabled'] == 'on' ? __('Disabled'):__('Enabled'), $site['id'], '', 'right');
+			form_selectable_cell($site['disabled'] == 'on' ? __('Disabled') : __('Enabled'), $site['id'], '', 'right');
 			form_selectable_cell(filter_value(number_format_i18n($site['hosts'], -1), '', $devices_url), $site['id'], '', 'right');
 			form_selectable_ecell($site['city'], $site['id'], '', 'left');
 			form_selectable_ecell($site['state'], $site['id'], '', 'left');

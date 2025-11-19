@@ -60,7 +60,7 @@ function aggregate_build_children_url(int $local_graph_id, int $graph_start = -1
 				$graph_select .= $graph . '%2C';
 			}
 
-			return "<a class='hyperLink aggregates' href='" . html_escape(CACTI_PATH_URL . 'graph_view.php?reset=1&page=1&graph_template_id=-1&host_id=-1&filter=&style=selective&action=preview' . ($graph_start >= 0 ? '&graph_start=' . $graph_start:'') . ($graph_end >= 0 ? '&graph_end=' . $graph_end:'') . ($rra_id >= 0 ? '&rra_id=' . $rra_id:'') . '&' . $graph_select) . "'><i class='drillDown fa fa-sitemap expandAggregate' title='" . __esc('Display Graphs from this Aggregate') . "'></i></a><br>" . PHP_EOL;
+			return "<a class='hyperLink aggregates' href='" . html_escape(CACTI_PATH_URL . 'graph_view.php?reset=1&page=1&graph_template_id=-1&host_id=-1&filter=&style=selective&action=preview' . ($graph_start >= 0 ? '&graph_start=' . $graph_start : '') . ($graph_end >= 0 ? '&graph_end=' . $graph_end : '') . ($rra_id >= 0 ? '&rra_id=' . $rra_id : '') . '&' . $graph_select) . "'><i class='drillDown fa fa-sitemap expandAggregate' title='" . __esc('Display Graphs from this Aggregate') . "'></i></a><br>" . PHP_EOL;
 		}
 	}
 
@@ -242,6 +242,8 @@ function api_aggregate_disassociate(int $local_graph_id, array $graphs): void {
  * @return void
  */
 function api_aggregate_create(string $aggregate_name, array $graphs, int $agg_template_id = 0): void {
+	$graph_items = [];
+
 	/* get the first aggregate graph */
 	if ($agg_template_id == 0) {
 		$agg_template = db_fetch_row_prepared('SELECT *
@@ -299,7 +301,7 @@ function api_aggregate_create(string $aggregate_name, array $graphs, int $agg_te
 			$sql  = '';
 
 			foreach ($graph_items as $i) {
-				$sql .= ($aggs > 1 ? ',':'') . "($agg_id, " . $i['local_graph_id'] . ", $aggs)";
+				$sql .= ($aggs > 1 ? ',' : '') . "($agg_id, " . $i['local_graph_id'] . ", $aggs)";
 				$aggs++;
 			}
 
@@ -308,7 +310,7 @@ function api_aggregate_create(string $aggregate_name, array $graphs, int $agg_te
 		}
 
 		# update title cache
-		if (!empty($_local_graph_id)) {
+		if (!empty($local_graph_id)) {
 			update_graph_title_cache($local_graph_id);
 		}
 
@@ -399,7 +401,7 @@ function aggregate_error_handler(int $errno, string $errmsg, string $filename, i
  * @param string $key_field
  * @return int The next available sequence id
  */
-function get_next_sequence(int $id, string $field, string $table_name, string $group_query, string $key_field='id'): int {
+function get_next_sequence(int $id, string $field, string $table_name, string $group_query, string $key_field = 'id'): int {
 	cacti_log(__FUNCTION__ . '  called. Id: ' . $id . ' field: ' . $field . ' table: ' . $table_name, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 	if (empty($id)) {
@@ -451,12 +453,14 @@ function aggregate_is_pure_stacked_graph(int $_local_graph_id): bool {
 /**
  * find out, if graph has a STACK
  * @param int $_local_graph_id	- graph to be examined
+ *
  * @return bool					- true, if pure STACKed graph
  */
 function aggregate_is_stacked_graph(int $_local_graph_id): bool {
 	cacti_log(__FUNCTION__ . ' local_graph: ' . $_local_graph_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 	$_pure_stacked_graph = false;
+	$_stacked_graph      = false;
 
 	if (!empty($_local_graph_id)) {
 		# fetch all AREA graph items
@@ -742,6 +746,8 @@ function aggregate_cdef_totalling(int $_new_graph_id, int $_graph_item_sequence,
 	include_once(CACTI_PATH_LIBRARY . '/cdef.php');
 
 	cacti_log(__FUNCTION__ . ' called. Working on Graph: ' . $_new_graph_id . ' sequence: ' .  $_graph_item_sequence  . ' totalling: ' . $_total_type, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
+
+	$graph_template_items = [];
 
 	# take graph item data for the totalling items
 	if (!empty($_new_graph_id)) {

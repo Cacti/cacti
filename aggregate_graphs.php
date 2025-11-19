@@ -529,6 +529,8 @@ function item_edit() {
 		die('We should have redirected somewhere but we ended up here instead' . PHP_EOL);
 	}
 
+	$template_item = [];
+
 	if (!isempty_request_var('id')) {
 		$template_item = db_fetch_row_prepared('SELECT *
 			FROM graph_templates_item
@@ -551,7 +553,7 @@ function item_edit() {
 		$item_new = [
 			$id_field                 => get_request_var($id_field),
 			'graph_templates_item_id' => get_request_var('id'),
-			'sequence'                => $template_item['sequence']
+			'sequence'                => $template_item['sequence'] ?? 1
 		];
 
 		aggregate_graph_items_save([$item_new], $table_name);
@@ -563,14 +565,16 @@ function item_edit() {
 			[get_request_var($id_field), get_request_var('id')]);
 	}
 
-	foreach (array_keys($template_item) as $field_name) {
-		if (!array_key_exists($field_name, $item_overrides)) {
-			continue;
-		}
+	if (cacti_sizeof($template_item)) {
+		foreach (array_keys($template_item) as $field_name) {
+			if (!array_key_exists($field_name, $item_overrides)) {
+				continue;
+			}
 
-		# t_<field_name> column in aggregate table must be "on" to override
-		if (array_key_exists('t_'.$field_name, $item_overrides) && $item_overrides['t_'.$field_name] == 'on') {
-			$template_item[$field_name] = $item_overrides[$field_name];
+			# t_<field_name> column in aggregate table must be "on" to override
+			if (array_key_exists('t_'.$field_name, $item_overrides) && $item_overrides['t_'.$field_name] == 'on') {
+				$template_item[$field_name] = $item_overrides[$field_name];
+			}
 		}
 	}
 
@@ -591,8 +595,8 @@ function item_edit() {
 			];
 		}
 
-		$form_array[$field_name]['value']   = (isset($template_item) ? $template_item[$field_name] : '');
-		$form_array[$field_name]['form_id'] = (isset($template_item) ? $template_item['id'] : '0');
+		$form_array[$field_name]['value']   = (cacti_sizeof($template_item) ? $template_item[$field_name] : '');
+		$form_array[$field_name]['form_id'] = (cacti_sizeof($template_item) ? $template_item['id'] : '0');
 	}
 
 	draw_edit_form(
@@ -605,11 +609,11 @@ function item_edit() {
 	);
 
 	form_hidden_box('local_graph_id', get_request_var('local_graph_id'), '0');
-	form_hidden_box('graph_template_item_id', (isset($template_item) ? $template_item['id'] : '0'), '');
-	form_hidden_box('local_graph_template_item_id', (isset($template_item) ? $template_item['local_graph_template_item_id'] : '0'), '');
-	form_hidden_box('graph_template_id', (isset($template_item) ? $template_item['graph_template_id'] : '0'), '');
-	form_hidden_box('sequence', (isset($template_item) ? $template_item['sequence'] : '0'), '');
-	form_hidden_box('_graph_type_id', (isset($template_item) ? $template_item['graph_type_id'] : '0'), '');
+	form_hidden_box('graph_template_item_id', (cacti_sizeof($template_item) ? $template_item['id'] : '0'), '');
+	form_hidden_box('local_graph_template_item_id', (cacti_sizeof($template_item) ? $template_item['local_graph_template_item_id'] : '0'), '');
+	form_hidden_box('graph_template_id', (cacti_sizeof($template_item) ? $template_item['graph_template_id'] : '0'), '');
+	form_hidden_box('sequence', (cacti_sizeof($template_item) ? $template_item['sequence'] : '0'), '');
+	form_hidden_box('_graph_type_id', (cacti_sizeof($template_item) ? $template_item['graph_type_id'] : '0'), '');
 	form_hidden_box('save_component_item', '1', '');
 	form_hidden_box('invisible_alpha', $form_array['alpha']['value'], 'FF');
 	form_hidden_box('rrdtool_version', get_rrdtool_version(), '');
@@ -776,6 +780,8 @@ function form_actions() {
 
 		if (cacti_sizeof($iarray)) {
 			if (get_request_var('drp_action') == '2') {
+				$local_graph_ids = [];
+
 				/* determine the common graph template if any */
 				foreach ($_POST as $var => $val) {
 					if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
@@ -879,7 +885,7 @@ function form_actions() {
 				'item_array' => $iarray,
 				'item_list'  => $ilist,
 				'eaction'    => 'local_graph_id',
-				'eactionid'  => isset_request_var('local_graph_id') ? get_filter_request_var('local_graph_id'):'0'
+				'eactionid'  => isset_request_var('local_graph_id') ? get_filter_request_var('local_graph_id') : '0'
 			],
 			'options' => [
 				1 => [
@@ -1212,20 +1218,18 @@ function graph_edit() {
 
 			$helper_string = '|host_description|';
 
-			if (isset($template)) {
-				$data_query = db_fetch_cell_prepared('SELECT snmp_query_id
-					FROM snmp_query_graph
-					WHERE graph_template_id = ?',
-					[$template['graph_template_id']]
-				);
+			$data_query = db_fetch_cell_prepared('SELECT snmp_query_id
+				FROM snmp_query_graph
+				WHERE graph_template_id = ?',
+				[$template['graph_template_id']]
+			);
 
-				if ($data_query > 0) {
-					$data_query_info = get_data_query_array($data_query);
+			if ($data_query > 0) {
+				$data_query_info = get_data_query_array($data_query);
 
-					foreach ($data_query_info['fields'] as $field_name => $field_array) {
-						if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
-							$helper_string .= ($helper_string != '' ? ', ' : '') . '|query_' . $field_name . '|';
-						}
+				foreach ($data_query_info['fields'] as $field_name => $field_array) {
+					if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
+						$helper_string .= ($helper_string != '' ? ', ' : '') . '|query_' . $field_name . '|';
 					}
 				}
 			}
@@ -1242,15 +1246,13 @@ function graph_edit() {
 			draw_edit_form(
 				[
 					'config' => ['no_form_tag' => true],
-					'fields' => inject_form_variables($struct_aggregate_graph, (isset($aginfo) ? $aginfo : []))
+					'fields' => inject_form_variables($struct_aggregate_graph, $aginfo)
 				]
 			);
 
 			html_end_box(true, true);
 
-			if (isset($template)) {
-				draw_aggregate_graph_items_list(0, $template['graph_template_id'], $aginfo);
-			}
+			draw_aggregate_graph_items_list(0, $template['graph_template_id'], $aginfo);
 
 			form_hidden_box('save_component_template', '1', '');
 
@@ -1411,8 +1413,8 @@ function graph_edit() {
 		print "<div id='classic'>";
 
 		?>
-		<input type='hidden' id='graph_template_graph_id' name='graph_template_graph_id' value='<?php print(isset($graphs) ? $graphs['id'] : '0'); ?>'>
-		<input type='hidden' id='local_graph_template_graph_id' name='local_graph_template_graph_id' value='<?php print(isset($graphs) ? $graphs['local_graph_template_graph_id'] : '0'); ?>'>
+		<input type='hidden' id='graph_template_graph_id' name='graph_template_graph_id' value='<?php print(cacti_sizeof($graphs) ? $graphs['id'] : '0'); ?>'>
+		<input type='hidden' id='local_graph_template_graph_id' name='local_graph_template_graph_id' value='<?php print(cacti_sizeof($graphs) ? $graphs['local_graph_template_graph_id'] : '0'); ?>'>
 		<?php
 
 		if (empty($graphs['graph_template_id'])) {
@@ -1425,8 +1427,8 @@ function graph_edit() {
 					if ($field_name != 'title') {
 						$form_array += [$field_name => $struct_graph[$field_name]];
 
-						$form_array[$field_name]['value']   = (isset($graphs) ? $graphs[$field_name] : '');
-						$form_array[$field_name]['form_id'] = (isset($graphs) ? $graphs['id'] : '0');
+						$form_array[$field_name]['value']   = (cacti_sizeof($graphs) ? $graphs[$field_name] : '');
+						$form_array[$field_name]['form_id'] = (cacti_sizeof($graphs) ? $graphs['id'] : '0');
 
 						if (!(($use_graph_template == false) || ($graphs['t_' . $field_name] == 'on'))) {
 							$form_array[$field_name]['method']      = 'template_' . $form_array[$field_name]['method'];
@@ -1691,7 +1693,7 @@ function aggregate_items() {
 							<?php print __('Graphs'); ?>
 						</td>
 						<td>
-							<select id='rows' onChange='applyFilter()' data-defaultLabel='<?php print __('Graphs');?>'>
+							<select id='rows' onChange='applyFilter()' data-defaultLabel='<?php print __('Graphs'); ?>'>
 								<option value='-1' <?php print (get_request_var('rows') == '-1' ? ' selected>' : '>') . __('Default'); ?></option>
 								<?php
 								if (cacti_sizeof($item_rows) > 0) {
@@ -2001,16 +2003,16 @@ function aggregate_graph() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . '(gtg.title_cache LIKE ? OR ag.title_format LIKE ?)';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . '(gtg.title_cache LIKE ? OR ag.title_format LIKE ?)';
 
 		$sql_params[] = '%' . get_request_var('filter') . '%';
 		$sql_params[] = '%' . get_request_var('filter') . '%';
 	}
 
 	if (get_request_var('template_id') == '0') {
-		$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') . '(ag.aggregate_template_id = 0 OR ag.aggregate_template_id IS NULL)';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . '(ag.aggregate_template_id = 0 OR ag.aggregate_template_id IS NULL)';
 	} elseif (get_request_var('template_id') > 0) {
-		$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') . 'ag.aggregate_template_id= ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'ag.aggregate_template_id= ?';
 		$sql_params[] = get_request_var('template_id');
 	}
 

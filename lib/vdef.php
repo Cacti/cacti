@@ -22,9 +22,13 @@
  +-------------------------------------------------------------------------+
 */
 
-/* get_vdef_item_name - resolves a single VDEF item into its text-based representation
-   @param $vdef_item_id - the id of the individual vdef item
-   @returns - a text-based representation of the vdef item */
+/**
+ * get_vdef_item_name - resolves a single VDEF item into its text-based representation
+ *
+ * @param  int $vdef_item_id - the id of the individual vdef item
+ *
+ * @return string - a text-based representation of the vdef item
+ */
 function get_vdef_item_name($vdef_item_id) {
 	global $vdef_functions, $vdef_item_types;
 
@@ -38,10 +42,15 @@ function get_vdef_item_name($vdef_item_id) {
 	}
 }
 
-/* get_vdef - resolves an entire VDEF into its text-based representation for use in the RRDtool 'graph'
-	 string. this name will be resolved recursively if necessary
-   @param $vdef_id - the id of the vdef to resolve
-   @returns - a text-based representation of the vdef */
+/**
+ * get_vdef - resolves an entire VDEF into its text-based representation for use in the RRDtool 'graph'
+ * string. this name will be resolved recursively if necessary
+ *
+ * @param  int  $vdef_id - the id of the vdef to resolve
+ * @param  bool $display
+ *
+ * @return string - a text-based representation of the vdef
+ */
 function get_vdef($vdef_id, $display = false) {
 	$vdef_items = db_fetch_assoc_prepared('SELECT * FROM vdef_items WHERE vdef_id = ? ORDER BY sequence', [$vdef_id]);
 
@@ -51,7 +60,7 @@ function get_vdef($vdef_id, $display = false) {
 	if (cacti_sizeof($vdef_items)) {
 		foreach ($vdef_items as $vdef_item) {
 			if ($i > 0) {
-				$vdef_string .= ($display ? ', ':',');
+				$vdef_string .= ($display ? ', ' : ',');
 			}
 
 			if ($vdef_item['type'] == 5) {

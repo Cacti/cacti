@@ -159,13 +159,14 @@ class Installer implements JsonSerializable {
 
 	private $adminEmailAddress;
 
-	/*
+	/**
 	 * class Installer initialization
 	 *
 	 * usage:
 	 *    $installer = new Installer($installData)
 	 *
 	 * @arg installData - array of fields to update
+	 * @param mixed $install_params
 	 */
 	public function __construct($install_params = []) {
 		log_install_high('step', 'Install Parameters: ' . clean_up_lines(var_export($install_params, true)));
@@ -323,8 +324,9 @@ class Installer implements JsonSerializable {
 		return (isset($this->errors) && !empty($this->errors)) ? $this->errors : [];
 	}
 
-	/* processParameters - process array of parameters to override defaults
+	/** processParameters - process array of parameters to override defaults
 	 * @arg params_install - array of parameters to process where key
+	 * @param mixed $params_install
 	 *                       matches XXX from setXXX/getXXX functions */
 	protected function processParameters($params_install = []) {
 		if (empty($params_install) || !is_array($params_install)) {
@@ -423,8 +425,9 @@ class Installer implements JsonSerializable {
 		}
 	}
 
-	/* setDefaults - apply default values from array object
+	/** setDefaults - apply default values from array object
 	 * @arg install_params - optional key/value array where key matches
+	 * @param mixed $install_params
 	 *                       XXX from setXXX/getXXX functions  */
 	private function setDefaults($install_params = []) {
 		$this->tables             = $this->getTables();
@@ -457,9 +460,13 @@ class Installer implements JsonSerializable {
 		}
 	}
 
-	/* setTrueFalse() - determine whether @param can be mapped to either
+	/** setTrueFalse() - determine whether @param can be mapped to either
 	 *                  True or False and if so, assign result to $field
 	 * @param  - value to be set if it can be mapped to True or False
+	 * @param mixed $param
+	 * @param mixed $field
+	 * @param mixed $option
+	 * @param mixed $save
 	 * @field  - variable reference to be set
 	 * @option - name of the option */
 	private function setTrueFalse($param, &$field, $option = '', $save = true) {
@@ -485,11 +492,15 @@ class Installer implements JsonSerializable {
 		return $result;
 	}
 
-	/* addError() - adds a new error to the array or updates an existing one
+	/** addError() - adds a new error to the array or updates an existing one
 	 * @step    - Which step of the installer reports the error and
 	 *          - should be Installer::STEP_ constant
 	 * @section - Title of section causing a problem
 	 * @item    - Individual item that caused the problem
+	 * @param mixed $step
+	 * @param mixed $section
+	 * @param mixed $item
+	 * @param mixed $text
 	 * @text    - Descriptive text of the error */
 	public function addError($step, $section, $item, $text = false) {
 		if (!isset($this->errors[$section])) {
@@ -512,7 +523,8 @@ class Installer implements JsonSerializable {
 		log_install_debug('errors-json', clean_up_lines(var_export($this->errors, true)));
 	}
 
-	/* setProgress() - set the progress point of Installer::STEP_INSTALL
+	/** setProgress() - set the progress point of Installer::STEP_INSTALL
+	 * @param mixed $param_process
 	 * @param_progress - one of Installer::PROGRESS_ constants */
 	private function setProgress($param_process) {
 		log_install_medium('', "Progress: $param_process");
@@ -520,8 +532,10 @@ class Installer implements JsonSerializable {
 		set_install_config_option('install_updated', microtime(true));
 	}
 
-	/* sanitizeRRDVersion() - ensure version number is valid
+	/** sanitizeRRDVersion() - ensure version number is valid
 	 * @param_rrdver    - version to be sanitized
+	 * @param mixed $param_rrdver
+	 * @param mixed $default_version
 	 * @default_version - version to return if not sanitized */
 	private function sanitizeRRDVersion($param_rrdver, $default_version = '') {
 		$rrdver = $default_version;
@@ -649,8 +663,9 @@ class Installer implements JsonSerializable {
 		return $permissions;
 	}
 
-	/* setRuntime() - sets the runtime mode of the Installer
+	/** setRuntime() - sets the runtime mode of the Installer
 	 * @param_runtime - Default is 'unknown', acceptable modes are 'Cli'
+	 * @param mixed $param_runtime
 	 *                  and 'Json' */
 	public function setRuntime($param_runtime = 'unknown') {
 		if ($param_runtime == 'Web' || $param_runtime == 'Cli' || $param_runtime == 'Json') {
@@ -678,10 +693,11 @@ class Installer implements JsonSerializable {
 		return $language;
 	}
 
-	/* setLanguage() - sets the language of the Installer
+	/** setLanguage() - sets the language of the Installer
 	 * @param_language - Must be a valid language which is returned from
 	 *                   apply_locale() function located in Core
 	 *
+	 * @param mixed $param_language
 	 * Errors: will add an error at STEP_WELCOME if invalid language */
 	private function setLanguage($param_language = '') {
 		if (isset($param_language) && strlen($param_language)) {
@@ -707,9 +723,10 @@ class Installer implements JsonSerializable {
 		}
 	}
 
-	/* setEula() - sets whether the Eula was accepted or not
+	/** setEula() - sets whether the Eula was accepted or not
 	 * @param_eula - valid values are 'Accepted', 'True'
 	 *
+	 * @param mixed $param_eula
 	 * Errors: will add an error at STEP_WELCOME if not accepted */
 	private function setEula($param_eula = '') {
 		if ($param_eula == 'Accepted' || $param_eula === 'true') {
@@ -769,12 +786,14 @@ class Installer implements JsonSerializable {
 		$this->setProgress(Installer::PROGRESS_CSRF_END);
 	}
 
-	/* setRRDVersion() - sets the RRDVersion installer option, overrides
+	/** setRRDVersion() - sets the RRDVersion installer option, overrides
 	 *                 - system default.
 	 * @param_rrdver - a valid version number.
 	 * @prefix       - a display prefix, not used in values
 	 *
 	 * Errors: will add an error at STEP_BINARY_LOCATIONS if invalid version
+	 * @param mixed $param_rrdver
+	 * @param mixed $prefix
 	 *         was detected */
 	private function setRRDVersion($param_rrdver = '', $prefix = '') {
 		if (isset($param_rrdver) && strlen($param_rrdver)) {
@@ -809,10 +828,11 @@ class Installer implements JsonSerializable {
 		return $theme;
 	}
 
-	/* setTheme() - sets the Theme installer option, override the system default.
+	/** setTheme() - sets the Theme installer option, override the system default.
 	 * @param_theme - a valid theme which must exist in /include/themes/
 	 *
 	 * Errors: will add an error at STEP_BINARY_WELCOME if invalid theme
+	 * @param mixed $param_theme
 	 *         was detected */
 	private function setTheme($param_theme = '') {
 		if (isset($param_theme) && strlen($param_theme)) {
@@ -914,7 +934,7 @@ class Installer implements JsonSerializable {
 
 					if ($should_set) {
 						unset($this->errors['Paths'][$name]);
-						set_install_config_option($name, empty($path)?'':$path);
+						set_install_config_option($name, empty($path) ? '' : $path);
 					}
 
 					$this->paths[$name]['default'] = $path;
@@ -947,11 +967,12 @@ class Installer implements JsonSerializable {
 		return $db_profile;
 	}
 
-	/* setProfile() - sets the data source profile as the default one to be
+	/** setProfile() - sets the data source profile as the default one to be
 	 *                be used by the system.
 	 * @param_profile - must be an existing data_source_profile id
 	 *
 	 * Error: will add an error to STEP_PROFILE_AND_AUTOMATION when an
+	 * @param null|mixed $param_profile
 	 *        invalid id is passed */
 	private function setProfile($param_profile = null) {
 		if (db_table_exists('data_source_profiles')) {
@@ -997,11 +1018,12 @@ class Installer implements JsonSerializable {
 		return $enabled;
 	}
 
-	/* setAutomationMode() - sets whether the automation system should
+	/** setAutomationMode() - sets whether the automation system should
 	 *                       be enabled or disabled by default.
 	 * @param_mode - must be a valid true or false value
 	 *
 	 * Errors: will add an error to STEP_PROFILE_AND_AUTOMATION if an
+	 * @param null|mixed $param_mode
 	 *         invalid value is passed */
 	private function setAutomationMode($param_mode = null) {
 		if ($param_mode != null) {
@@ -1018,12 +1040,13 @@ class Installer implements JsonSerializable {
 		return read_config_option('install_automation_override', true);
 	}
 
-	/* setAutomationOverride() - sets whether the extra snmp options are to
+	/** setAutomationOverride() - sets whether the extra snmp options are to
 	 *                           be overwritten by the SnmpOptions provided
 	 *
 	 * @param_override - must be a valid true or false value
 	 *
 	 * Errors: will add an error to STEP_PROFILE_AND_AUTOMATION if an
+	 * @param null|mixed $param_override
 	 *         invalid value is passed */
 	private function setAutomationOverride($param_override = null) {
 		if ($param_override != null) {
@@ -1034,12 +1057,13 @@ class Installer implements JsonSerializable {
 		log_install_medium('automation', "setAutomationOverride($param_override) returns with $this->automationOverride");
 	}
 
-	/* setCronInterval() - sets the expected system cron interval but does
+	/** setCronInterval() - sets the expected system cron interval but does
 	 *                     not actually affect the system cron
 	 * @param_interval - a value that must exist in the system global
 	 *                   variables $cron_intervals
 	 *
 	 * Errors: will set an error in STEP_PROFILE_AND_AUTOMATION when an
+	 * @param null|mixed $param_interval
 	 *         invalid value is passed */
 	private function setCronInterval($param_interval = null) {
 		global $cron_intervals;
@@ -1081,13 +1105,14 @@ class Installer implements JsonSerializable {
 		return $result;
 	}
 
-	/* setAutomationRange() - sets the network range to be used by
+	/** setAutomationRange() - sets the network range to be used by
 	 *                        Automation when scanning the network
 	 * @param_range - a valid network range which is converted and returned
 	 *                by cacti_pton().  If the return value is false, it is
 	 *                considered invalid
 	 *
 	 * Errors: will add an error to STEP_PROFILE_AND_AUTOMATION if an
+	 * @param null|mixed $param_range
 	 *         invalid value is passed */
 	private function setAutomationRange($param_range = null) {
 		if (!empty($param_range)) {
@@ -1331,12 +1356,13 @@ class Installer implements JsonSerializable {
 		return $selected;
 	}
 
-	/* setTemplates() - sets a list of templates that should be installed
+	/** setTemplates() - sets a list of templates that should be installed
 	 *                  during the installServer() phase.
 	 * @param_templates - an array of templates to install in the form of
 	 *                    'template'=>(true|false)
 	 *
 	 * Errors: will add an error to STEP_TEMPLATE_INSTALL if a template is
+	 * @param mixed $param_templates
 	 *         passed that is not expected */
 	private function setTemplates($param_templates = []) {
 		if (is_array($param_templates)) {
@@ -1449,11 +1475,12 @@ class Installer implements JsonSerializable {
 		return $selected;
 	}
 
-	/* setTables - sets a list of tables to be converted to the latest
+	/** setTables - sets a list of tables to be converted to the latest
 	 *             default coalition
 	 * @param_tables - array of table names
 	 *
 	 * Errors: does not add errors as a table may not be present in the
+	 * @param mixed $param_tables
 	 *         conversion list due to being converted elsewhere */
 	private function setTables($param_tables = []) {
 		if (is_array($param_tables)) {
@@ -1552,9 +1579,10 @@ class Installer implements JsonSerializable {
 		return $mode;
 	}
 
-	/* setMode() - sets the current mode of operation
+	/** setMode() - sets the current mode of operation
 	 * @param_mode - the mode to set, must be one of the MODE_ constants
 	 *
+	 * @param mixed $param_mode
 	 * Errors: will add an error when an invalid value is passed */
 	private function setMode($param_mode = 0) {
 		if (intval($param_mode) > Installer::MODE_NONE && intval($param_mode) <= Installer::MODE_DOWNGRADE) {
@@ -1581,7 +1609,8 @@ class Installer implements JsonSerializable {
 		return $this->stepCurrent;
 	}
 
-	/* setStep() - sets the current step
+	/** setStep() - sets the current step
+	 * @param mixed $param_step
 	 * @param_step - must be a valid value as defined by STEP_ constants */
 	private function setStep($param_step = -1) {
 		$step = Installer::STEP_WELCOME;
@@ -1644,6 +1673,7 @@ class Installer implements JsonSerializable {
 
 	private function getAdminEmailAddress() {
 		$admin_email_address = db_fetch_cell("SELECT email_address FROM user_auth WHERE username = 'admin' LIMIT 1");
+
 		return $admin_email_address;
 	}
 

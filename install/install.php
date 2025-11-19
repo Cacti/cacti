@@ -107,7 +107,7 @@ print get_md5_include_css('install/install.css');
 <body>
 	<div class='cactiInstallTable'>
 		<div class='cactiTableTitleRow cactiBorderWall'>
-			<div class='textHeaderDark'><?php print __esc('Cacti Server v%s - Installation Wizard', CACTI_VERSION_BRIEF_FULL); ?><span style="float:right"><?php print $help_anchor;?><a class="menu_parent" id="installRefresh" href="#" title="<?php print __esc('Refresh current page');?>" style="padding:2px"><i class="fa fa-redo"></i></a></span></div>
+			<div class='textHeaderDark'><?php print __esc('Cacti Server v%s - Installation Wizard', CACTI_VERSION_BRIEF_FULL); ?><span style="float:right"><?php print $help_anchor; ?><a class="menu_parent" id="installRefresh" href="#" title="<?php print __esc('Refresh current page'); ?>" style="padding:2px"><i class="fa fa-redo"></i></a></span></div>
 		</div>
 		<div class='cactiInstallArea cactiBorderWall'>
 			<div class='cactiInstallAreaContent' id='installContent'>
@@ -139,13 +139,13 @@ if ($hasEverything) {
 			</div>
 		</div>
 		<div class='cactiInstallButtonArea saveRow'>
-			<button class='installButton' id='buttonPrevious' type='button' style='display: none'><?php print __esc('Previous');?></button>
-			<button class='installButton' id='buttonNext' type='button' style='display: none'><?php print __esc('Next');?></button>
-			<button class='installButton' id='buttonTest' type='button' style='display:none'><?php print __esc('Test');?></button>
+			<button class='installButton' id='buttonPrevious' type='button' style='display: none'><?php print __esc('Previous'); ?></button>
+			<button class='installButton' id='buttonNext' type='button' style='display: none'><?php print __esc('Next'); ?></button>
+			<button class='installButton' id='buttonTest' type='button' style='display:none'><?php print __esc('Test'); ?></button>
 			<input id='installData' type='hidden'>
 		</div>
 		<div id='installDebug'></div>
-		<div class='cactiInstallCopyrightArea textHeaderDark'><?php print COPYRIGHT_YEARS;?></div>
+		<div class='cactiInstallCopyrightArea textHeaderDark'><?php print COPYRIGHT_YEARS; ?></div>
 	</div>
 <?php
 include_once(__DIR__ . '/../include/global_session.php');

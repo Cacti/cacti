@@ -41,7 +41,7 @@ $kills     = 0;
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter);
+			[$arg, $value] = explode('=', $parameter);
 		} else {
 			$arg   = $parameter;
 			$value = '';
@@ -262,7 +262,7 @@ function kill_spikes($templates, &$found) {
 			debug("Removing Spikes from '$f'");
 
 			$response = exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
-				cacti_escapeshellarg(CACTI_PATH_CLI . '/removespikes.php') . ' --rrdfile=' . $f . ($debug ? ' --debug':''));
+				cacti_escapeshellarg(CACTI_PATH_CLI . '/removespikes.php') . ' --rrdfile=' . $f . ($debug ? ' --debug' : ''));
 
 			if (substr_count($response, 'Spikes Found and Remediated')) {
 				$found++;

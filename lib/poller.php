@@ -123,7 +123,7 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 function exec_background($filename, $args = '', $redirect_args = '') {
 	global $debug;
 
-	cacti_log("DEBUG: About to Spawn a Remote Process [CMD: $filename, ARGS: $args]", true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_DEBUG));
+	cacti_log("DEBUG: About to Spawn a Remote Process [CMD: $filename, ARGS: $args]", true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE : POLLER_VERBOSITY_DEBUG));
 
 	if ($filename != '') {
 		if (file_exists($filename)) {
@@ -379,17 +379,17 @@ function update_reindex_cache($host_id, $data_query_id) {
 					case DATA_INPUT_TYPE_SCRIPT_QUERY:
 						if (isset($data_query_xml['arg_num_indexes'])) { /* we have a specific request for counting indexes */
 							/* escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string? */
-							$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SCRIPT . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr(get_script_query_path((isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ': '') . $data_query_xml['arg_num_indexes'], $data_query_xml['script_path'], $host_id)) . ', 1)';
+							$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SCRIPT . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr(get_script_query_path((isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ' : '') . $data_query_xml['arg_num_indexes'], $data_query_xml['script_path'], $host_id)) . ', 1)';
 						} else { /* count all indexes found */
 							/* escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string? */
-							$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SCRIPT_COUNT . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr(get_script_query_path((isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ': '') . $data_query_xml['arg_index'], $data_query_xml['script_path'], $host_id)) . ', 1)';
+							$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SCRIPT_COUNT . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr(get_script_query_path((isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ' : '') . $data_query_xml['arg_index'], $data_query_xml['script_path'], $host_id)) . ', 1)';
 						}
 
 						break;
 					case DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER:
 						if (isset($data_query_xml['arg_num_indexes'])) { /* we have a specific request for counting indexes */
 							/* escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string? */
-							$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SCRIPT_PHP . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr(get_script_query_path($data_query_xml['script_function'] . ' ' . (isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ': '') . $data_query_xml['arg_num_indexes'], $data_query_xml['script_path'], $host_id)) . ', 1)';
+							$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SCRIPT_PHP . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr(get_script_query_path($data_query_xml['script_function'] . ' ' . (isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ' : '') . $data_query_xml['arg_num_indexes'], $data_query_xml['script_path'], $host_id)) . ', 1)';
 						} else { /* count all indexes found */
 							# TODO: push the correct assert value
 							/* escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string? */
@@ -414,9 +414,9 @@ function update_reindex_cache($host_id, $data_query_id) {
 						$assert_value = $index['field_value'];
 
 						if ($data_query_type == DATA_INPUT_TYPE_SNMP_QUERY) {
-							$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SNMP . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr(($data_query_xml['fields'][$data_query['sort_field']]['source'] == 'index') ? $data_query_xml['oid_index'] . '.' . $index['snmp_index']:$data_query_xml['fields'][$data_query['sort_field']]['oid'] . '.' . $index['snmp_index']) . ', 1)';
+							$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SNMP . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr(($data_query_xml['fields'][$data_query['sort_field']]['source'] == 'index') ? $data_query_xml['oid_index'] . '.' . $index['snmp_index'] : $data_query_xml['fields'][$data_query['sort_field']]['oid'] . '.' . $index['snmp_index']) . ', 1)';
 						} elseif ($data_query_type == DATA_INPUT_TYPE_SCRIPT_QUERY) {
-							$recache_stack[] = '(' . $host_id . ', ' . $data_query_id . ', ' . POLLER_ACTION_SCRIPT . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr(get_script_query_path((isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ': '') . $data_query_xml['arg_get'] . ' ' . $data_query_xml['fields'][$data_query['sort_field']]['query_name'] . ' "' . $index['snmp_index'] . '"', $data_query_xml['script_path'], $host_id)) . ', 1)';
+							$recache_stack[] = '(' . $host_id . ', ' . $data_query_id . ', ' . POLLER_ACTION_SCRIPT . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr(get_script_query_path((isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ' : '') . $data_query_xml['arg_get'] . ' ' . $data_query_xml['fields'][$data_query['sort_field']]['query_name'] . ' "' . $index['snmp_index'] . '"', $data_query_xml['script_path'], $host_id)) . ', 1)';
 						}
 					}
 				}
@@ -604,7 +604,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 								continue;
 							}
 
-							cacti_log("Parsed MULTI output field '" . $matches[0] . ':' . $matches[1] . "' [map " . $matches[0] . '->' . $field . ']' , true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_HIGH));
+							cacti_log("Parsed MULTI output field '" . $matches[0] . ':' . $matches[1] . "' [map " . $matches[0] . '->' . $field . ']' , true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE : POLLER_VERBOSITY_HIGH));
 
 							if (is_numeric($matches[1]) || ($matches[1] == 'U')) {
 								$rrd_update_array[$rrd_path]['times'][$unix_time][$field] = $matches[1];
@@ -616,7 +616,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 
 							$rrd_update_array[$rrd_path]['times'][$unix_time][$field] = $matches[1];
 
-							$rrd_tmpl .= ($rrd_tmpl != '' ? ':':'') . $field;
+							$rrd_tmpl .= ($rrd_tmpl != '' ? ':' : '') . $field;
 
 							$rrd_update_array[$rrd_path]['template'] = $rrd_tmpl;
 						} else {
@@ -653,7 +653,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 										continue;
 									}
 
-									cacti_log("Parsed MULTI output field '" . $matches[0] . ':' . $matches[1] . "' [map " . $matches[0] . '->' . $field . ']' , true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_HIGH));
+									cacti_log("Parsed MULTI output field '" . $matches[0] . ':' . $matches[1] . "' [map " . $matches[0] . '->' . $field . ']' , true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE : POLLER_VERBOSITY_HIGH));
 
 									if (is_numeric($matches[1]) || ($matches[1] == 'U')) {
 										$rrd_update_array[$rrd_path]['times'][$unix_time][$field] = $matches[1];
@@ -663,7 +663,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 										$rrd_update_array[$rrd_path]['times'][$unix_time][$field] = 'U';
 									}
 
-									$rrd_tmpl .= ($rrd_tmpl != '' ? ':':'') . $field;
+									$rrd_tmpl .= ($rrd_tmpl != '' ? ':' : '') . $field;
 								}
 							}
 
@@ -724,10 +724,10 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 							continue;
 						}
 
-						$expected .= ($expected != '' ? ' ':'') . "$field:value";
+						$expected .= ($expected != '' ? ' ' : '') . "$field:value";
 
 						$rrd_update_array[$rrd_path]['times'][$unix_time][$field] = 'U';
-						$rrd_tmpl .= ($rrd_tmpl != '' ? ':':'') . $field;
+						$rrd_tmpl .= ($rrd_tmpl != '' ? ':' : '') . $field;
 					}
 
 					$rrd_update_array[$rrd_path]['template'] = $rrd_tmpl;
@@ -1877,11 +1877,11 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id, $truncate
 			foreach ($cols as $col) {
 				if ($exclude !== false) {
 					if (array_search($col, $exclude, true) === false) {
-						$suffix .= ($i > 0 ? ', ':'') . " `$col`=VALUES($col)";
+						$suffix .= ($i > 0 ? ', ' : '') . " `$col`=VALUES($col)";
 						$i++;
 					}
 				} else {
-					$suffix .= ($i > 0 ? ', ':'') . " `$col`=VALUES($col)";
+					$suffix .= ($i > 0 ? ', ' : '') . " `$col`=VALUES($col)";
 					$i++;
 				}
 			}
@@ -1898,7 +1898,7 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id, $truncate
 			if (!db_column_exists($table, $c, false, $conn)) {
 				$skipcols[$index] = $c;
 			} else {
-				$prefix .= ($colcnt > 0 ? ', ':'') . "`$c`";
+				$prefix .= ($colcnt > 0 ? ', ' : '') . "`$c`";
 				$colcnt++;
 			}
 		}
@@ -1912,12 +1912,12 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id, $truncate
 
 			foreach ($row as $col => $value) {
 				if (array_search($col, $skipcols, true) === false) {
-					$sql_row .= ($colcnt > 0 ? ', ':'') . db_qstr($value);
+					$sql_row .= ($colcnt > 0 ? ', ' : '') . db_qstr($value);
 					$colcnt++;
 				}
 			}
 			$sql_row .= ')';
-			$sql     .= ($rowcnt > 0 ? ', ':'') . $sql_row;
+			$sql .= ($rowcnt > 0 ? ', ' : '') . $sql_row;
 
 			$rowcnt++;
 
@@ -2011,7 +2011,7 @@ function poller_push_reindex_data_to_poller($device_id = 0, $data_query_id = 0, 
 	$sql_where2  = '';
 
 	if ($device_id > 0) {
-		$sql_where  .= 'WHERE host_id = ?';
+		$sql_where .= 'WHERE host_id = ?';
 		$sql_where1 .= 'WHERE host_id = ?';
 
 		$sql_params[]  = $device_id;
@@ -2019,8 +2019,8 @@ function poller_push_reindex_data_to_poller($device_id = 0, $data_query_id = 0, 
 	}
 
 	if ($data_query_id > 0) {
-		$sql_where  .= ($sql_where  != '' ? ' AND':'WHERE') . ' snmp_query_id = ?';
-		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' snmp_query_id = ?';
+		$sql_where .= ($sql_where  != '' ? ' AND' : 'WHERE') . ' snmp_query_id = ?';
+		$sql_where1 .= ($sql_where1 != '' ? ' AND' : 'WHERE') . ' snmp_query_id = ?';
 
 		$sql_params[]  = $data_query_id;
 		$sql_params1[] = $data_query_id;
@@ -2033,7 +2033,7 @@ function poller_push_reindex_data_to_poller($device_id = 0, $data_query_id = 0, 
 		$sql_params);
 
 	if (!$force) {
-		$sql_where2    = $sql_where1 . ($sql_where1 != '' ? ' AND':'WHERE') . ' UNIX_TIMESTAMP(last_updated) > ?';
+		$sql_where2    = $sql_where1 . ($sql_where1 != '' ? ' AND' : 'WHERE') . ' UNIX_TIMESTAMP(last_updated) > ?';
 		$sql_params2   = $sql_params1;
 		$sql_params2[] = $min_reindex_cache;
 
@@ -2055,7 +2055,7 @@ function poller_push_reindex_data_to_poller($device_id = 0, $data_query_id = 0, 
 	}
 
 	if (cacti_sizeof($recache_hosts)) {
-		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' host_id IN (' . implode(', ', $recache_hosts) . ')';
+		$sql_where1 .= ($sql_where1 != '' ? ' AND' : 'WHERE') . ' host_id IN (' . implode(', ', $recache_hosts) . ')';
 
 		$local_data_ids = db_fetch_assoc_prepared("SELECT *
 			FROM data_local
@@ -2125,8 +2125,8 @@ function replicate_table_to_poller($conn, &$data, $table, $exclude = false) {
 			} elseif ($exclude !== false && array_search($c, $exclude, true) === true) {
 				// Do not update this column
 			} else {
-				$prefix .= ($colcnt > 0 ? ', ':'') . $c;
-				$suffix .= ($colcnt > 0 ? ', ':'') . "$c=VALUES($c)";
+				$prefix .= ($colcnt > 0 ? ', ' : '') . $c;
+				$suffix .= ($colcnt > 0 ? ', ' : '') . "$c=VALUES($c)";
 				$colcnt++;
 			}
 		}
@@ -2142,12 +2142,12 @@ function replicate_table_to_poller($conn, &$data, $table, $exclude = false) {
 
 			foreach ($row as $col => $value) {
 				if (array_search($col, $skipcols, true) === false) {
-					$sql_row .= ($colcnt > 0 ? ', ':'') . db_qstr($value);
+					$sql_row .= ($colcnt > 0 ? ', ' : '') . db_qstr($value);
 					$colcnt++;
 				}
 			}
 			$sql_row .= ')';
-			$sql     .= ($rowcnt > 0 ? ', ':'') . $sql_row;
+			$sql .= ($rowcnt > 0 ? ', ' : '') . $sql_row;
 
 			$rowcnt++;
 			$sqllen += strlen($sql_row);
@@ -2244,7 +2244,7 @@ function poller_push_data_to_main() {
 }
 
 function poller_push_table($db_cnn, $records, $table, $ignore = false, $dupes = []) {
-	$prefix = 'INSERT ' . ($ignore ? 'IGNORE':'') . ' INTO ' . $table . ' ';
+	$prefix = 'INSERT ' . ($ignore ? 'IGNORE' : '') . ' INTO ' . $table . ' ';
 	$first  = true;
 	$dupe   = '';
 
@@ -2258,7 +2258,7 @@ function poller_push_table($db_cnn, $records, $table, $ignore = false, $dupes = 
 			$string = '(';
 
 			foreach ($r as $c) {
-				$string .= ($string == '(' ? '':', ') . db_qstr($c);
+				$string .= ($string == '(' ? '' : ', ') . db_qstr($c);
 			}
 			$string .= ')';
 
@@ -2270,7 +2270,7 @@ function poller_push_table($db_cnn, $records, $table, $ignore = false, $dupes = 
 			$i    = 0;
 
 			foreach ($dupes as $item) {
-				$dupe .= ($i == 0 ? '':', ') . "$item=VALUES($item)";
+				$dupe .= ($i == 0 ? '' : ', ') . "$item=VALUES($item)";
 				$i++;
 			}
 		}
@@ -2288,12 +2288,11 @@ function poller_push_table($db_cnn, $records, $table, $ignore = false, $dupes = 
 
 /**
  * remote_poller_up - Given a remote poller id, check if it has responded
- *   recently, and if so, return true else return false.
+ * recently, and if so, return true else return false.
  *
- * @param   (int) The remote poller id
- * @param mixed $poller_id
+ * @param  int  - The remote poller id
  *
- * @returns (bool) True if up else false
+ * @return bool - True if up else false
  */
 function remote_poller_up($poller_id) {
 	$gone_time = read_config_option('poller_interval') * 2;

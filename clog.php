@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-$guest_account=true;
+$guest_account = true;
 
 require('./include/auth.php');
 require_once(CACTI_PATH_LIBRARY . '/clog_webapi.php');

@@ -49,17 +49,17 @@ if (cacti_sizeof($parms) == 0) {
 	$itemId   = 0;
 	$hostId   = 0;
 
-	$quietMode				          = false;
-	$displayGroups			       = false;
-	$displayUsers			        = false;
-	$displayTrees			        = false;
-	$displayHosts			        = false;
-	$displayGraphs			       = false;
-	$displayGraphTemplates 	= false;
+	$quietMode             = false;
+	$displayGroups         = false;
+	$displayUsers          = false;
+	$displayTrees          = false;
+	$displayHosts          = false;
+	$displayGraphs         = false;
+	$displayGraphTemplates = false;
 
 	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter, 2);
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
 			$value = '';

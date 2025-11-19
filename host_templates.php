@@ -594,7 +594,7 @@ function template_edit() {
 
 	/* we have to hide this button to make a form change in the main form trigger the correct
 	 * submit action */
-	print "<div style='display:none;'><button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active'>" . __esc('Default Submit Button') . "</button></div>";
+	print "<div style='display:none;'><button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active'>" . __esc('Default Submit Button') . '</button></div>';
 
 	html_end_box(true, true);
 
@@ -799,7 +799,7 @@ function create_template_filter() {
 	if (isset_request_var('has_hosts')) {
 		$value = get_nfilter_request_var('has_hosts');
 	} else {
-		$value = read_config_option('default_has') == 'on' ? 'true':'false';
+		$value = read_config_option('default_has') == 'on' ? 'true' : 'false';
 	}
 
 	if (get_request_var('class') == '-1' || isempty_request_var('class')) {
@@ -961,17 +961,17 @@ function device_templates() {
 	$sql_join   = '';
 
 	if (get_request_var('filter') != '') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . 'ht.name LIKE ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'ht.name LIKE ?';
 		$sql_params[] = '%' . get_request_var('filter') . '%';
 	}
 
 	if (get_request_var('class') != '-1') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . 'ht.class = ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'ht.class = ?';
 		$sql_params[] = get_request_var('class');
 	}
 
 	if (get_request_var('graph_template') != '-1') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . 'gt_id = ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'gt_id = ?';
 		$sql_params[] = get_request_var('graph_template');
 
 		$sql_join   = 'INNER JOIN (
@@ -1164,7 +1164,7 @@ function create_archive_filter() {
 	if (isset_request_var('has_hosts')) {
 		$value = get_nfilter_request_var('has_hosts');
 	} else {
-		$value = read_config_option('default_has') == 'on' ? 'true':'false';
+		$value = read_config_option('default_has') == 'on' ? 'true' : 'false';
 	}
 
 	$action_arr = [
@@ -1362,24 +1362,24 @@ function device_archives() {
 	$sql_join   = '';
 
 	if (get_request_var('filter') != '') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . 'ht.name LIKE ? OR ht.archive_note LIKE ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'ht.name LIKE ? OR ht.archive_note LIKE ?';
 
 		$sql_params[] = '%' . get_request_var('filter') . '%';
 		$sql_params[] = '%' . get_request_var('filter') . '%';
 	}
 
 	if (get_request_var('class') != '-1') {
-		$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') . 'ht.class = ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'ht.class = ?';
 		$sql_params[] = get_request_var('class');
 	}
 
 	if (get_request_var('host_template') != '-1') {
-		$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') . 'ht.host_template_id = ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'ht.host_template_id = ?';
 		$sql_params[] = get_request_var('host_template');
 	}
 
 	if (get_request_var('graph_template') != '-1') {
-		$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') . 'gt_id = ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'gt_id = ?';
 		$sql_params[] = get_request_var('graph_template');
 
 		$sql_join   = 'INNER JOIN (

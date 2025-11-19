@@ -268,7 +268,7 @@ function aggregate_form_save() {
 
 	raise_message(1);
 
-	header('Location: aggregate_templates.php?action=edit&id=' . (empty($id) ? get_nfilter_request_var('id') : $id));
+	header('Location: aggregate_templates.php?action=edit&id=' . $id);
 }
 
 function aggregate_get_graph_items($table, $id) {

@@ -100,7 +100,7 @@ array_shift($parms);
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter);
+			[$arg, $value] = explode('=', $parameter);
 		} else {
 			$arg   = $parameter;
 			$value = '';
@@ -218,7 +218,7 @@ $poller_interval = read_config_option('poller_interval');
 $poller_lastrun  = read_config_option('poller_lastrun_' . $poller_id);
 
 // is boost enabled
-$boost_enabled   = read_config_option('boost_rrd_update_enable') == 'on' ? true:false;
+$boost_enabled   = read_config_option('boost_rrd_update_enable') == 'on' ? true : false;
 
 // collect the system mibs every 4 hours
 if ($poller_lastrun % 14440 < $current_time % 14440 || empty($poller_lastrun)) {
@@ -630,7 +630,7 @@ while ($poller_runs_completed < $poller_runs) {
 		$issues_list = [];
 
 		foreach ($issues as $issue) {
-			$issues_list[]= $issue['local_data_id'];
+			$issues_list[] = $issue['local_data_id'];
 		}
 		$issue_list = 'DS[' . implode(', ', $issues_list) . ']';
 
@@ -759,7 +759,7 @@ while ($poller_runs_completed < $poller_runs) {
 				$host_count ++;
 
 				if ($change_proc) {
-					exec_background($command_string, "$extra_args --poller=$poller_id --first=$first_host --last=$last_host" . ($mibs ? ' --mibs':''), $extra_parms);
+					exec_background($command_string, "$extra_args --poller=$poller_id --first=$first_host --last=$last_host" . ($mibs ? ' --mibs' : ''), $extra_parms);
 					usleep(100000);
 
 					$host_count   = 1;
@@ -775,7 +775,7 @@ while ($poller_runs_completed < $poller_runs) {
 			if ($host_count > 1) {
 				$last_host = $item['id'];
 
-				exec_background($command_string, "$extra_args --poller=$poller_id --first=$first_host --last=$last_host" . ($mibs ? ' --mibs':''), $extra_parms);
+				exec_background($command_string, "$extra_args --poller=$poller_id --first=$first_host --last=$last_host" . ($mibs ? ' --mibs' : ''), $extra_parms);
 				usleep(100000);
 
 				$started_processes++;
@@ -982,8 +982,8 @@ while ($poller_runs_completed < $poller_runs) {
 
 		if ($pr_exceeded == 0 || debounce_run_notification('poller_runtime_exeeded', $pr_exceeded)) {
 			$message = 'Cacti Polling Cycle Exceeded Poller Interval by an average of %s seconds over the last %s hours.';
-			$memail  = __($message, round($exceedstot/$exceeds, 2), round($pr_exceeded/3600,2));
-			$mlog    = sprintf($message, round($exceedstot/$exceeds, 2), round($pr_exceeded/3600,2));
+			$memail  = __($message, round($exceedstot / $exceeds, 2), round($pr_exceeded / 3600,2));
+			$mlog    = sprintf($message, round($exceedstot / $exceeds, 2), round($pr_exceeded / 3600,2));
 
 			cacti_log('WARNING:' . $mlog, true, 'POLLER', $level);
 
@@ -1239,7 +1239,7 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 				$local_data_ids = array_unique(preg_split('/\s+/', $l['local_data_ids']), SORT_NUMERIC);
 
 				foreach ($local_data_ids as $ldi) {
-					$sql .= ($i == 0 ? '':',') . '(?, ?)';
+					$sql .= ($i == 0 ? '' : ',') . '(?, ?)';
 					$params[] = $l['host_id'];
 					$params[] = $ldi;
 

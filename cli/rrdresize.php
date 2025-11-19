@@ -44,7 +44,7 @@ if (sizeof($parms)) {
 
 	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter);
+			[$arg, $value] = explode('=', $parameter);
 		} else {
 			$arg   = $parameter;
 			$value = '';
@@ -917,7 +917,7 @@ function rrdtool_parse_info($lines) {
 	$lines = explode(PHP_EOL, trim($lines));
 
 	foreach ($lines as $line) {
-		list($raw_key, $raw_val) = explode(' = ', $line);
+		[$raw_key, $raw_val] = explode(' = ', $line);
 
 		$keys      = preg_split('/[\.\[\]]/', $raw_key, -1, PREG_SPLIT_NO_EMPTY);
 		$key_count = count($keys);

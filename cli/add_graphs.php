@@ -499,7 +499,7 @@ if (cacti_sizeof($parms)) {
 			$snmpValueRegex = '';
 
 			if ($dsGraph['snmpValue']) {
-				$snmpValue 	= $dsGraph['snmpValue'][$index_filter];
+				$snmpValue 	 = $dsGraph['snmpValue'][$index_filter];
 			} else {
 				$snmpValueRegex = $dsGraph['snmpValueRegex'][$index_filter];
 			}

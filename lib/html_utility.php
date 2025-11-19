@@ -162,7 +162,7 @@ function inject_form_variables(&$form_array, $arg1 = [], $arg2 = [], $arg3 = [],
  */
 function form_alternate_row_color($row_color1, $row_color2, $row_value, $row_id = '') {
 	if ($row_value % 2 == 1) {
-		$class         ='odd';
+		$class         = 'odd';
 		$current_color = $row_color1;
 	} else {
 		if ($row_color2 == '' || $row_color2 == 'E5E5E5') {
@@ -221,7 +221,7 @@ function form_alternate_row($row_id = '', $light = false, $disabled = false) {
  * This function creates a selectable table cell with the provided contents,
  * ensuring that the contents are properly escaped to prevent XSS attacks.
  *
- * @param ?string $contents The content to be displayed inside the cell.
+ * @param string|null $contents The content to be displayed inside the cell.
  * @param int|string $id The ID attribute for the cell.
  * @param string $width Optional. The width of the cell. Default is an empty string.
  * @param string $style_or_class Optional. The style or class attribute for the cell. Default is an empty string.
@@ -229,14 +229,14 @@ function form_alternate_row($row_id = '', $light = false, $disabled = false) {
  *
  * @return void
  */
-function form_selectable_ecell(?string $contents, int|string $id, string $width = '', string $style_or_class = '', string $title = '') : ?bool {
+function form_selectable_ecell(string|null $contents, int|string $id, string $width = '', string $style_or_class = '', string $title = '') : bool|null {
 	return form_selectable_cell(html_escape($contents), $id, $width, $style_or_class, $title);
 }
 
 /**
  * Format's a table row such that it can be highlighted using cacti's js actions
  *
- * @param ?string $contents The content to be placed inside the table cell.
+ * @param string|null $contents The content to be placed inside the table cell.
  * @param int|string $id The ID attribute for the table cell (not used in the function).
  * @param string $width Optional. The width of the table cell. Default is an empty string.
  * @param string $style_or_class Optional. The style or class attribute for the table cell.
@@ -246,7 +246,7 @@ function form_selectable_ecell(?string $contents, int|string $id, string $width 
  *
  * @return void
  */
-function form_selectable_cell(?string $contents, int|string $id, string $width = '', string $style_or_class = '', string $title = '') : ?bool {
+function form_selectable_cell(string|null $contents, int|string $id, string $width = '', string $style_or_class = '', string $title = '') : bool|null {
 	global $tableCount;
 
 	static $tableColumns = null;
@@ -326,7 +326,7 @@ function form_selectable_cell(?string $contents, int|string $id, string $width =
 	return true;
 }
 
-function form_get_table_id(?bool $increment = false) {
+function form_get_table_id(bool|null $increment = false) {
 	static $table_count = 0;
 
 	if ($increment) {
@@ -382,6 +382,7 @@ function form_selectable_vcell($contents, $table_id = '', $columnid = '', $style
 	}
 
 	$output = '';
+	$width  = '';	// Width was undefined, adding this until we know what was intended
 
 	if ($style_or_class != '') {
 		if (!str_contains($style_or_class, ':')) {
@@ -579,7 +580,7 @@ function form_process_visible_display_text($table_id, $display_text) {
  */
 function form_checkbox_cell($title, $id, $disabled = false, $checked = false) {
 	print "\t<td class='checkbox' style='width:1%;'>\n";
-	print "\t\t<input type='checkbox' title='" . html_escape($title) . "' class='checkbox" . ($disabled ? ' disabled':'') . "' " . ($disabled ? " disabled='disabled'":'') . ($checked ? " checked='checked'":'') . " id='chk_" . $id . "' name='chk_" . $id . "'><label class='formCheckboxLabel' for='chk_" . $id . "'></label>\n";
+	print "\t\t<input type='checkbox' title='" . html_escape($title) . "' class='checkbox" . ($disabled ? ' disabled' : '') . "' " . ($disabled ? " disabled='disabled'" : '') . ($checked ? " checked='checked'" : '') . " id='chk_" . $id . "' name='chk_" . $id . "'><label class='formCheckboxLabel' for='chk_" . $id . "'></label>\n";
 	print "\t</td>\n";
 }
 
@@ -679,7 +680,7 @@ function unset_request_var(string $variable): void {
  *
  * @param  string  $variable
  *
- * @return boolean
+ * @return bool
  */
 function isset_request_var(string $variable): bool {
 	return isset($_REQUEST[$variable]);
@@ -690,7 +691,7 @@ function isset_request_var(string $variable): bool {
  *
  * @param  string  $variable
  *
- * @return boolean
+ * @return bool
  */
 function isempty_request_var(string $variable): bool {
 	if (isset_request_var($variable)) {
@@ -785,7 +786,7 @@ function get_request_var_request(string $name, mixed $default = ''): mixed {
  *
  * @return mixed
  */
-function get_filter_request_var(string $name, int $filter = FILTER_VALIDATE_INT, array $options = []):mixed {
+function get_filter_request_var(string $name, int $filter = FILTER_VALIDATE_INT, array $options = []) : mixed {
 	if (isset_request_var($name)) {
 		if (isempty_request_var($name)) {
 			set_request_var($name, get_nfilter_request_var($name));
@@ -896,6 +897,8 @@ function get_filter_request_var(string $name, int $filter = FILTER_VALIDATE_INT,
 			return null;
 		}
 	}
+
+	return null;
 }
 
 /**
@@ -1034,7 +1037,7 @@ function validate_store_request_vars(array $filters, string $sess_prefix = ''):v
 				} elseif (isset_request_var('reset')) {
 					kill_session_var($session_variable);
 				} elseif (isset($options['pageset']) && $options['pageset'] == true) {
-					$changed += check_changed($variable, $session_variable);
+					$changed += check_changed($variable, (string) $session_variable);
 				}
 			}
 
@@ -1184,11 +1187,11 @@ function update_order_string($inplace = false) {
 
 		foreach ($_SESSION['sort_data'][$page] as $column => $direction) {
 			if ($column == 'ip' || $column == 'ip_address') {
-				$order .= ($order != '' ? ', ':'') . 'INET_ATON(' . $column . ') ' . $direction;
+				$order .= ($order != '' ? ', ' : '') . 'INET_ATON(' . $column . ') ' . $direction;
 			} elseif ($column == 'hostname' && $natural) {
-				$order .= ($order != '' ? ', ':'') . 'NATURAL_SORT_KEY(' . $column . ') ' . $direction;
+				$order .= ($order != '' ? ', ' : '') . 'NATURAL_SORT_KEY(' . $column . ') ' . $direction;
 			} else {
-				$order .= ($order != '' ? ', ':'') . $column . ' ' . $direction;
+				$order .= ($order != '' ? ', ' : '') . $column . ' ' . $direction;
 			}
 		}
 
@@ -1235,11 +1238,11 @@ function update_order_string($inplace = false) {
 
 			foreach ($_SESSION['sort_data'][$page] as $column => $direction) {
 				if ($column == 'ip' || $column == 'ip_address') {
-					$order .= ($order != '' ? ', ':'') . 'INET_ATON(' . $column . ') ' . $direction;
+					$order .= ($order != '' ? ', ' : '') . 'INET_ATON(' . $column . ') ' . $direction;
 				} elseif ($column == 'hostname' && $natural) {
-					$order .= ($order != '' ? ', ':'') . 'NATURAL_SORT_KEY(' . $del . implode($del . '.' . $del, explode('.', $column)) . $del . ') ' . $direction;
+					$order .= ($order != '' ? ', ' : '') . 'NATURAL_SORT_KEY(' . $del . implode($del . '.' . $del, explode('.', $column)) . $del . ') ' . $direction;
 				} else {
-					$order .= ($order != '' ? ', ':'') . $del . implode($del . '.' . $del, explode('.', $column)) . $del . ' ' . $direction;
+					$order .= ($order != '' ? ', ' : '') . $del . implode($del . '.' . $del, explode('.', $column)) . $del . ' ' . $direction;
 				}
 			}
 
@@ -1457,7 +1460,7 @@ function get_colored_device_status($disabled, $status, $thold_failure_count = -1
  * @return string  Returns a string containing html that represents the site's current
  *                 status and name
  */
-function get_colored_site_status(bool $disabled, ?string $site_name) {
+function get_colored_site_status(bool $disabled, string|null $site_name) {
 	$class = '';
 
 	if ($disabled) {
@@ -1581,7 +1584,7 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 		}
 	}
 
-	for ($page_number=0; (($page_number + $start_page) <= $end_page); $page_number++) {
+	for ($page_number = 0; (($page_number + $start_page) <= $end_page); $page_number++) {
 		$page = $page_number + $start_page;
 
 		if ($page_number < $pages_per_screen) {
@@ -1615,7 +1618,7 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 		$return_to = 'main';
 	}
 
-	$url             .= $page_var;
+	$url .= $page_var;
 	$url_page_select .= "<script type='text/javascript'>
 	function goto$page_var(pageNo) {
 		if (typeof url_graph === 'function') {

@@ -201,7 +201,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 
 			if (cacti_sizeof($current_def_value)) {
 				$struct_graph_item[$item['column_name']]['id'] = $current_def_value[$item['column_name']];
-				$struct_graph_item['task_item_id']['action']   = 'ajax_graph_items' . (isset($host_id) ? '&host_id=' . $host_id:'') . '&rrd_id=' . $current_def_value[$item['column_name']];
+				$struct_graph_item['task_item_id']['action']   = 'ajax_graph_items' . (isset($host_id) ? '&host_id=' . $host_id : '') . '&rrd_id=' . $current_def_value[$item['column_name']];
 			}
 
 			$form_array += [$form_field_name => $struct_graph_item[$item['column_name']]];
@@ -593,7 +593,7 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 					print "<div class='tableHeader' style='width:100%'><div class='tableSubHeaderColumn'>$header_title</div></div>\n";
 				}
 
-				print "<div class='formRow " . ($alternate_colors ? ($num_fields_drawn % 2 ? 'even':'odd'): 'odd') . "'>\n";
+				print "<div class='formRow " . ($alternate_colors ? ($num_fields_drawn % 2 ? 'even' : 'odd') : 'odd') . "'>\n";
 
 				print "<div class='formColumnLeft'><div class='formFieldName'>" . html_escape($field['name']) . "</div></div>\n";
 				print "<div class='formColumnRight'>";

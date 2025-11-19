@@ -172,6 +172,8 @@ function automation_export() {
 	if (isset_request_var('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
+		$snmp_option_ids = [];
+
 		if ($selected_items != false) {
 			if (cacti_sizeof($selected_items) == 1) {
 				$export_data = automation_device_rule_export($selected_items[0]);
@@ -270,6 +272,8 @@ function automation_import() {
 function automation_import_process() {
 	$json_data = json_decode(get_nfilter_request_var('import_text'), true);
 
+	$debug_data = [];
+
 	// If we have text, then we were trying to import text, otherwise we are uploading a file for import
 	if (empty($json_data)) {
 		$json_data = automation_validate_upload();
@@ -286,21 +290,21 @@ function automation_import_process() {
 	if (sizeof($return_data) && isset($return_data['success'])) {
 		foreach ($return_data['success'] as $message) {
 			$debug_data[] = '<span class="deviceUp">' . __('NOTE:') . '</span> ' . $message;
-			automation_log('NOTE: Automation Device Rules Import Succeeded!.  Message: '. $message, AUTOMATION_LOG_LOW);
+			automation_log('NOTE: Automation Device Rules Import Succeeded!  Message: ' . $message, AUTOMATION_LOG_LOW);
 		}
 	}
 
 	if (isset($return_data['errors'])) {
 		foreach ($return_data['errors'] as $error) {
 			$debug_data[] = '<span class="deviceDown">' . __('ERROR:') . '</span> ' . $error;
-			automation_log('NOTE: Automation Device Rules Import Error!.  Message: '. $message, AUTOMATION_LOG_LOW);
+			automation_log('NOTE: Automation Device Rules Import Error!  Message: ' . $error, AUTOMATION_LOG_LOW);
 		}
 	}
 
 	if (isset($return_data['failure'])) {
 		foreach ($return_data['failure'] as $message) {
 			$debug_data[] = '<span class="deviceDown">' . __('ERROR:') . '</span> ' . $message;
-			automation_log('NOTE: Automation Device Rules Import Failed!.  Message: '. $message, AUTOMATION_LOG_LOW);
+			automation_log('NOTE: Automation Device Rules Import Failed!  Message: ' . $message, AUTOMATION_LOG_LOW);
 		}
 	}
 
@@ -472,7 +476,7 @@ function automation_template_tree_item_dnd() {
 
 function automation_template_tree_exit_on_change() {
 	$id          = get_filter_request_var('id');
-	$newvalue    = get_filter_request_var('current') == 0 ? 1:0;
+	$newvalue    = get_filter_request_var('current') == 0 ? 1 : 0;
 	$template_id = get_filter_request_var('template_id');
 
 	db_execute_prepared('UPDATE automation_templates_rules
@@ -661,7 +665,7 @@ function form_save() {
 		$save['sysName']              = get_nfilter_request_var('sysName');
 		$save['sysOid']               = get_nfilter_request_var('sysOid');
 		$save['description_pattern']  = get_nfilter_request_var('description_pattern');
-		$save['populate_location']    = isset_request_var('populate_location') ? 'on':'';
+		$save['populate_location']    = isset_request_var('populate_location') ? 'on' : '';
 
 		if (function_exists('filter_var')) {
 			$save['sysDescr'] = filter_var($save['sysDescr'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -717,15 +721,15 @@ function automation_remove_ttr_confirm() {
 	?>
 	<tr>
 		<td class='topBoxAlt'>
-			<p><?php print __('Click \'Continue\' to Delete the following Threshold Template will be disassociated from the Device Rule.');?></p>
-			<p><?php print __("Threshold Template Name: '%s'", html_escape($name));?>
+			<p><?php print __('Click \'Continue\' to Delete the following Threshold Template will be disassociated from the Device Rule.'); ?></p>
+			<p><?php print __("Threshold Template Name: '%s'", html_escape($name)); ?>
 			<br>
 		</td>
 	</tr>
 	<tr>
 		<td class='right'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close")' name='cancel'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove Threshold Template');?>'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel'); ?>' onClick='$("#cdialog").dialog("close")' name='cancel'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue'); ?>' name='continue' title='<?php print __esc('Remove Threshold Template'); ?>'>
 		</td>
 	</tr>
 	<?php
@@ -743,9 +747,9 @@ function automation_remove_ttr_confirm() {
 
 		var data = {
 			__csrf_magic: csrfMagicToken,
-			id: <?php print get_request_var('id');?>,
-			template_id: <?php print get_request_var('template_id');?>,
-			rule_id: <?php print get_request_var('rule_id');?>
+			id: <?php print get_request_var('id'); ?>,
+			template_id: <?php print get_request_var('template_id'); ?>,
+			rule_id: <?php print get_request_var('rule_id'); ?>
 		}
 
 		$('#cdialog').dialog('close');
@@ -783,15 +787,15 @@ function automation_remove_agr_confirm() {
 	?>
 	<tr>
 		<td class='topBoxAlt'>
-			<p><?php print __('Click \'Continue\' to Delete the following Graph Rule will be disassociated from the Device Rule.');?></p>
-			<p><?php print __("Graph Rule Name: '%s'", html_escape($name));?>
+			<p><?php print __('Click \'Continue\' to Delete the following Graph Rule will be disassociated from the Device Rule.'); ?></p>
+			<p><?php print __("Graph Rule Name: '%s'", html_escape($name)); ?>
 			<br>
 		</td>
 	</tr>
 	<tr>
 		<td class='right'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close")' name='cancel'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove Graph Rule');?>'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel'); ?>' onClick='$("#cdialog").dialog("close")' name='cancel'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue'); ?>' name='continue' title='<?php print __esc('Remove Graph Rule'); ?>'>
 		</td>
 	</tr>
 	<?php
@@ -809,8 +813,8 @@ function automation_remove_agr_confirm() {
 
 		var data = {
 			__csrf_magic: csrfMagicToken,
-			template_id: <?php print get_request_var('template_id');?>,
-			rule_id: <?php print get_request_var('rule_id');?>
+			template_id: <?php print get_request_var('template_id'); ?>,
+			rule_id: <?php print get_request_var('rule_id'); ?>
 		}
 
 		$('#cdialog').dialog('close');
@@ -907,15 +911,15 @@ function automation_remove_atr_confirm() {
 	?>
 	<tr>
 		<td class='topBoxAlt'>
-			<p><?php print __('Click \'Continue\' to Delete the following Tree Rule(s) will be disassociated from the Device Rule.');?></p>
-			<p><?php print __("Tree Rule Name: '%s'", html_escape($name));?>
+			<p><?php print __('Click \'Continue\' to Delete the following Tree Rule(s) will be disassociated from the Device Rule.'); ?></p>
+			<p><?php print __("Tree Rule Name: '%s'", html_escape($name)); ?>
 			<br>
 		</td>
 	</tr>
 	<tr>
 		<td class='right'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close")' name='cancel'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove Tree Rule');?>'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel'); ?>' onClick='$("#cdialog").dialog("close")' name='cancel'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue'); ?>' name='continue' title='<?php print __esc('Remove Tree Rule'); ?>'>
 		</td>
 	</tr>
 	<?php
@@ -933,8 +937,8 @@ function automation_remove_atr_confirm() {
 
 		var data = {
 			__csrf_magic: csrfMagicToken,
-			template_id: <?php print get_request_var('template_id');?>,
-			rule_id: <?php print get_request_var('rule_id');?>
+			template_id: <?php print get_request_var('template_id'); ?>,
+			rule_id: <?php print get_request_var('rule_id'); ?>
 		}
 
 		$('#cdialog').dialog('close');
@@ -1114,6 +1118,8 @@ function template_edit() {
 		}
 	} else {
 		$header_label = __('Device Rules [new]');
+		$template     = [];
+
 		set_request_var('id', 0);
 	}
 
@@ -1124,7 +1130,7 @@ function template_edit() {
 	draw_edit_form(
 		[
 			'config' => ['no_form_tag' => 'true'],
-			'fields' => inject_form_variables($fields, (isset($template) ? $template : []))
+			'fields' => inject_form_variables($fields, $template)
 		]
 	);
 
@@ -1162,7 +1168,7 @@ function template_edit() {
 
 		html_header($display_text, false);
 
-		$dnd = read_config_option('drag_and_drop') == 'on' ? true:false;
+		$dnd = read_config_option('drag_and_drop') == 'on' ? true : false;
 
 		if (cacti_sizeof($graph_rules)) {
 			$i = 0;
@@ -1264,7 +1270,7 @@ function template_edit() {
 
 		html_header($display_text, false);
 
-		$dnd = read_config_option('drag_and_drop') == 'on' ? true:false;
+		$dnd = read_config_option('drag_and_drop') == 'on' ? true : false;
 
 		if (cacti_sizeof($tree_rules)) {
 			$i = 0;
@@ -1278,7 +1284,7 @@ function template_edit() {
 					'&id='         . $rule['id'] .
 					'&current='    . $rule['exit_rules'];
 
-				$exit_text   = $rule['exit_rules'] == 0 ? __('No'):__('Yes');
+				$exit_text   = $rule['exit_rules'] == 0 ? __('No') : __('Yes');
 
 				form_alternate_row($id, true);
 
@@ -1363,6 +1369,8 @@ function template_edit() {
 
 			html_header($display_text, false);
 
+			$action = '';
+
 			if (cacti_sizeof($graph_rules)) {
 				foreach ($thold_rules as $rule) {
 					$id = "tt{$rule['rule_id']}";
@@ -1417,7 +1425,7 @@ function template_edit() {
 	?>
 	<script type='text/javascript'>
 
-	var dnd = <?php print read_config_option('drag_and_drop') == 'on' ? 'true':'false';?>;
+	var dnd = <?php print read_config_option('drag_and_drop') == 'on' ? 'true' : 'false'; ?>;
 
 	$(function() {
 		$('#cdialog').remove();
@@ -1434,7 +1442,7 @@ function template_edit() {
 					applySkin();
 
 					$('#cdialog').dialog({
-						title: '<?php print __('Delete Item from Device Rule');?>',
+						title: '<?php print __('Delete Item from Device Rule'); ?>',
 						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
 						minHeight: 80,
 						minWidth: 500
@@ -1530,13 +1538,13 @@ function create_add_form_dropdown($field_label, $field_name, $field_array, $butt
 			<table>
 				<tr style='line-height:10px'>
 					<td class='nowrap templateAdd'>
-						<?php print $field_label;?>
+						<?php print $field_label; ?>
 					</td>
 					<td class='noHide'>
-						<?php form_dropdown($field_name, $field_array, 'name', 'id', '', '', '');?>
+						<?php form_dropdown($field_name, $field_array, 'name', 'id', '', '', ''); ?>
 					</td>
 					<td class='noHide'>
-						<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print $button_label;?>' id='<?php print $button_id;?>' title='<?php print $button_title;?>'>
+						<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print $button_label; ?>' id='<?php print $button_id; ?>' title='<?php print $button_title; ?>'>
 					</td>
 				</tr>
 			</table>

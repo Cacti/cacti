@@ -328,7 +328,7 @@ while (1) {
 }
 
 function parseArgs($string, &$str_list, $debug = false) {
-	$delimiters = ["'",'"'];
+	$delimiters = ["'", '"'];
 	$delimited  = false;
 	$str_list   = [];
 

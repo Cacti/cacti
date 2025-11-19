@@ -126,6 +126,8 @@ function automation_export() {
 	if (isset_request_var('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
+		$snmp_option_ids = [];
+
 		if ($selected_items != false) {
 			if (cacti_sizeof($selected_items) == 1) {
 				$export_data = automation_snmp_option_export($selected_items[0]);
@@ -220,12 +222,13 @@ function automation_import() {
 function automation_import_process() {
 	$json_data = json_decode(get_nfilter_request_var('import_text'), true);
 
+	$debug_data  = [];
+	$return_data = [];
+
 	// If we have text, then we were trying to import text, otherwise we are uploading a file for import
 	if (empty($json_data)) {
 		$json_data = automation_validate_upload();
 	}
-
-	$return_data = [];
 
 	if (is_array($json_data) && cacti_sizeof($json_data) && isset($json_data['snmp'])) {
 		foreach ($json_data['snmp'] as $snmp) {
@@ -236,21 +239,21 @@ function automation_import_process() {
 	if (cacti_sizeof($return_data) && isset($return_data['success'])) {
 		foreach ($return_data['success'] as $message) {
 			$debug_data[] = '<span class="deviceUp">' . __('NOTE:') . '</span> ' . $message;
-			automation_log('NOTE: SNMP Options Import Succeeded!.  Message: '. $message, AUTOMATION_LOG_LOW);
+			automation_log('NOTE: SNMP Options Import Succeeded!  Message: ' . $message, AUTOMATION_LOG_LOW);
 		}
 	}
 
 	if (isset($return_data['errors'])) {
 		foreach ($return_data['errors'] as $error) {
 			$debug_data[] = '<span class="deviceDown">' . __('ERROR:') . '</span> ' . $error;
-			automation_log('NOTE: SNMP Options Import Error!.  Message: '. $message, AUTOMATION_LOG_LOW);
+			automation_log('NOTE: SNMP Options Import Error!  Message: ' . $error, AUTOMATION_LOG_LOW);
 		}
 	}
 
 	if (isset($return_data['failure'])) {
 		foreach ($return_data['failure'] as $message) {
 			$debug_data[] = '<span class="deviceDown">' . __('ERROR:') . '</span> ' . $message;
-			automation_log('NOTE: Automation SNMP Option Import Failed!.  Message: '. $message, AUTOMATION_LOG_LOW);
+			automation_log('NOTE: Automation SNMP Option Import Failed!  Message: ' . $message, AUTOMATION_LOG_LOW);
 		}
 	}
 
@@ -311,6 +314,8 @@ function form_save() {
 		$save['max_oids']             = form_input_validate(get_nfilter_request_var('max_oids'), 'max_oids', '^[0-9]+$', false, 3);
 		$save['bulk_walk_size']       = form_input_validate(get_nfilter_request_var('bulk_walk_size'), 'bulk_walk_size', '^[\-0-9]+$', false, 3);
 
+		$item_id = null;
+
 		if (!is_error_message()) {
 			$item_id = sql_save($save, 'automation_snmp_items');
 
@@ -322,7 +327,7 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_snmp.php?action=item_edit&id=' . get_nfilter_request_var('id') . '&item_id=' . (empty($item_id) ? get_filter_request_var('id') : $item_id));
+			header('Location: automation_snmp.php?action=item_edit&id=' . get_nfilter_request_var('id') . '&item_id=' . ($item_id === null ? get_filter_request_var('id') : $item_id));
 		} else {
 			header('Location: automation_snmp.php?action=edit&id=' . get_nfilter_request_var('id'));
 		}
@@ -348,7 +353,7 @@ function form_actions() {
 				db_execute('DELETE FROM automation_snmp WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('DELETE FROM automation_snmp_items WHERE ' . str_replace('id', 'snmp_id', array_to_sql_or($selected_items, 'id')));
 			} elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
-				for ($i=0;($i < cacti_count($selected_items));$i++) {
+				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					automation_duplicate_snmp_option($selected_items[$i], get_nfilter_request_var('name_format'));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '3') { /* export */
@@ -533,15 +538,15 @@ function automation_snmp_item_remove_confirm() {
 	<tr>
 		<td class='topBoxAlt'>
 			<p><?php print __('Click \'Continue\' to delete the following SNMP Option Item.'); ?></p>
-			<p><?php print __('SNMP Option:');?> <?php print html_escape($snmp['name']);?><br>
-			<?php print __('SNMP Version: <b>%s</b>', $item['snmp_version']);?><br>
-			<?php print __esc('SNMP Community/Username: <b>%s</b>', ($item['snmp_version'] != 3 ? $item['snmp_community']:$item['snmp_username']));?></p>
+			<p><?php print __('SNMP Option:'); ?> <?php print html_escape($snmp['name']); ?><br>
+			<?php print __('SNMP Version: <b>%s</b>', $item['snmp_version']); ?><br>
+			<?php print __esc('SNMP Community/Username: <b>%s</b>', ($item['snmp_version'] != 3 ? $item['snmp_community'] : $item['snmp_username'])); ?></p>
 		</td>
 	</tr>
 	<tr>
 		<td class='right'>
-			<button type='button' class='ui-button ui-corner-all ui-widget' id='cancel' name='cancel' onClick='$("#cdialog").dialog("close");'><?php print __esc('Cancel');?></button>
-			<button type='button' class='ui-button ui-corner-all ui-widget' id='continue' name='continue' title='<?php print __esc('Remove SNMP Item');?>'><?php print __esc('Continue');?></button>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='cancel' name='cancel' onClick='$("#cdialog").dialog("close");'><?php print __esc('Cancel'); ?></button>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='continue' name='continue' title='<?php print __esc('Remove SNMP Item'); ?>'><?php print __esc('Continue'); ?></button>
 		</td>
 	</tr>
 	<?php
@@ -561,8 +566,8 @@ function automation_snmp_item_remove_confirm() {
 
 			var data = {
 				__csrf_magic: csrfMagicToken,
-				item_id: <?php print get_request_var('item_id');?>,
-				id: <?php print get_request_var('id');?>
+				item_id: <?php print get_request_var('item_id'); ?>,
+				id: <?php print get_request_var('id'); ?>
 			}
 
 			postUrl(options, data);
@@ -571,7 +576,7 @@ function automation_snmp_item_remove_confirm() {
 
 	function automationSnmpRemoveItemFinalize(data) {
 		$('#cdialog').dialog('close');
-		loadUrl({url:'automation_snmp.php?action=edit&id=<?php print get_request_var('id');?>'})
+		loadUrl({url:'automation_snmp.php?action=edit&id=<?php print get_request_var('id'); ?>'})
 	}
 
 	</script>
@@ -635,7 +640,7 @@ function automation_snmp_item_edit() {
 
 	draw_edit_form([
 		'config' => ['no_form_tag' => true],
-		'fields' => inject_form_variables($fields_automation_snmp_item_edit, (isset($automation_snmp_item) ? $automation_snmp_item : []))
+		'fields' => inject_form_variables($fields_automation_snmp_item_edit, $automation_snmp_item)
 	]);
 
 	html_end_box(true, true);
@@ -701,7 +706,7 @@ function automation_snmp_edit() {
 
 	html_end_box(true, true);
 
-	form_hidden_box('id', (isset_request_var('id') ? get_request_var('id'): '0'), '');
+	form_hidden_box('id', (isset_request_var('id') ? get_request_var('id') : '0'), '');
 	form_hidden_box('save_component_automation_snmp', '1', '');
 
 	if (!isempty_request_var('id')) {
@@ -842,7 +847,7 @@ function automation_snmp_edit() {
 		<?php if (read_config_option('drag_and_drop') == 'on') { ?>
 		$('#snmp_item').tableDnD({
 			onDrop: function(table, row) {
-				loadUrl({url:'automation_snmp.php?action=ajax_dnd&id=<?php isset_request_var('id') ? print get_request_var('id') : print 0;?>&'+$.tableDnD.serialize()})
+				loadUrl({url:'automation_snmp.php?action=ajax_dnd&id=<?php isset_request_var('id') ? print get_request_var('id') : print 0; ?>&'+$.tableDnD.serialize()})
 			}
 		});
 		<?php } ?>
@@ -859,7 +864,7 @@ function automation_snmp_edit() {
 					applySkin();
 
 					$('#cdialog').dialog({
-						title: '<?php print __('Delete SNMP Option Item');?>',
+						title: '<?php print __('Delete SNMP Option Item'); ?>',
 						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
 						minHeight: 80,
 						minWidth: 500

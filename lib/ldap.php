@@ -26,45 +26,47 @@
 LDAP functions
 */
 
-/* cacti_ldap_auth
-  @arg $username - username of the user
-  @arg $password - password of the user
-  @arg $dn - LDAP DN for binding
-  @arg $host - Hostname or IP of LDAP server, Default = Configured settings value
-  @arg $port - Port of the LDAP server uses, Default = Configured settings value
-  @arg $port_ssl - Port of the LDAP server uses for SSL, Default = Configured settings value
-  @arg $version - '2' or '3', LDAP protocol version, Default = Configured settings value
-  @arg $encryption - '0' None, '1' SSL, '2' TLS, Default = Configured settings value
-  @arg $referrals - '0' Referrals from server are ignored, '1' Referrals from server are processed, Default = Configured setting value
-  @arg $group_require - '0' Group membership is not required, '1' Group membership is required
-  @arg $group_dn - LDAP Group DN
-  @arg $group_attrib - Name of the LDAP Attrib that contains members
-  @arg $group_require - '1' DN or '2' Username, user group member ship type
-
-  @return - array of values
-	'error_num' = error number returned
-	'error_text' = error text
-
-Error codes:
-
-#	Text
-==============================================================
-0	Authentication Success
-1	Authentication Failure
-2	No username defined
-3	Protocol error, unable to set version
-4	Unable to set referrals option
-5	Protocol error, unable to start TLS communications
-6	Unable to create LDAP object
-7	Protocol error
-8	Insufficient access
-9	Unable to connect to server
-10	Timeout
-11	General bind error
-12	Group DN not found
-99	PHP LDAP not enabled
-
-*/
+/** cacti_ldap_auth
+ *
+ * Return values
+ * 'error_num' = error number returned
+ * 'error_text' = error text
+ *
+ * Error codes:
+ *
+ * #	Text
+ * ==============================================================
+ * 0	Authentication Success
+ * 1	Authentication Failure
+ * 2	No username defined
+ * 3	Protocol error, unable to set version
+ * 4	Unable to set referrals option
+ * 5	Protocol error, unable to start TLS communications
+ * 6	Unable to create LDAP object
+ * 7	Protocol error
+ * 8	Insufficient access
+ * 9	Unable to connect to server
+ * 10	Timeout
+ * 11	General bind error
+ * 12	Group DN not found
+ * 99	PHP LDAP not enabled
+ *
+ * @param string $username - username of the user
+ * @param string $password - password of the user
+ * @param string $dn - LDAP DN for binding
+ * @param string $host - Hostname or IP of LDAP server, Default = Configured settings value
+ * @param int $port - Port of the LDAP server uses, Default = Configured settings value
+ * @param int $port_ssl - Port of the LDAP server uses for SSL, Default = Configured settings value
+ * @param int $version - '2' or '3', LDAP protocol version, Default = Configured settings value
+ * @param int $encryption - '0' None, '1' SSL, '2' TLS, Default = Configured settings value
+ * @param int $referrals - '0' Referrals from server are ignored, '1' Referrals from server are processed, Default = Configured setting value
+ * @param int $group_require - '0' Group membership is not required, '1' Group membership is required
+ * @param string $group_dn - LDAP Group DN
+ * @param string $group_attrib - Name of the LDAP Attrib that contains members
+ * @param int $group_require - '1' DN or '2' Username, user group member ship type
+ *
+ * @return array  - Return values
+ */
 function cacti_ldap_auth($username, $password = '', $dn = '', $host = '', $port = '', $port_ssl = '', $version = '',
 	$encryption = '', $referrals = '', $group_require = '', $group_dn = '', $group_attrib = '', $group_member_type = '') {
 	$ldap = new Ldap;
@@ -139,49 +141,51 @@ function cacti_ldap_auth($username, $password = '', $dn = '', $host = '', $port 
 	return $response;
 }
 
-/* cacti_ldap_search_dn
-  @arg $username - username to search for in the LDAP directory
-  @arg $dn - configured LDAP DN for binding, '<username>' will be replaced with $username
-  @arg $host - Hostname or IP of LDAP server, Default = Configured settings value
-  @arg $port - Port of the LDAP server uses, Default = Configured settings value
-  @arg $port_ssl - Port of the LDAP server uses for SSL, Default = Configured settings value
-  @arg $version - '2' or '3', LDAP protocol version, Default = Configured settings value
-  @arg $encryption - '0' None, '1' SSL, '2' TLS, Default = Configured settings value
-  @arg $referrals - '0' Referrals from server are ignored, '1' Referrals from server are processed, Default = Configured setting value
-  @arg $mode - '0' No Searching, '1' Anonymous Searching, '2' Specific Searching, Default = Configured settings value
-  @arg $search_base - Search base DN, Default = Configured settings value
-  @arg $search_filter - Filter to find the user, Default = Configured settings value
-  @arg $specific_dn - DN for binding to perform user search, Default = Configured settings value
-  @arg $specific_password - Password for binding to perform user search, Default - Configured settings value
-
-  @return - array of values
-	'error_num' = error number returned
-	'error_text' = error text
-	'dn' = found dn of user
-
-Error codes:
-
-#	Text
-==============================================================
-0	Authentication Success
-1	No username defined
-2	Unable to create LDAP connection object
-3	Unable to find users DN
-4	Protocol error, unable to set version
-5	Protocol error, unable to start TLS communications
-6	Protocol error
-7	Invalid credential
-8	Insufficient access
-9	Unable to connect to server
-10	Timeout
-11	General bind error
-12	Unable to set referrals option
-13	More than one matching user found
-14	Specific DN and Password required
-15	Unable to find user from DN
-99	PHP LDAP not enabled
-
-*/
+/** cacti_ldap_search_dn
+ *
+ * Return Values:
+ * 'error_num' = error number returned
+ * 'error_text' = error text
+ * 'dn' = found dn of user
+ *
+ * Error codes:
+ *
+ * #	Text
+ * ==============================================================
+ * 0	Authentication Success
+ * 1	No username defined
+ * 2	Unable to create LDAP connection object
+ * 3	Unable to find users DN
+ * 4	Protocol error, unable to set version
+ * 5	Protocol error, unable to start TLS communications
+ * 6	Protocol error
+ * 7	Invalid credential
+ * 8	Insufficient access
+ * 9	Unable to connect to server
+ * 10	Timeout
+ * 11	General bind error
+ * 12	Unable to set referrals option
+ * 13	More than one matching user found
+ * 14	Specific DN and Password required
+ * 15	Unable to find user from DN
+ * 99	PHP LDAP not enabled
+ *
+ * @param string $username - username to search for in the LDAP directory
+ * @param string $dn - configured LDAP DN for binding, '<username>' will be replaced with $username
+ * @param string $host - Hostname or IP of LDAP server, Default = Configured settings value
+ * @param int $port - Port of the LDAP server uses, Default = Configured settings value
+ * @param int $port_ssl - Port of the LDAP server uses for SSL, Default = Configured settings value
+ * @param int $version - '2' or '3', LDAP protocol version, Default = Configured settings value
+ * @param int $encryption - '0' None, '1' SSL, '2' TLS, Default = Configured settings value
+ * @param int $referrals - '0' Referrals from server are ignored, '1' Referrals from server are processed, Default = Configured setting value
+ * @param int $mode - '0' No Searching, '1' Anonymous Searching, '2' Specific Searching, Default = Configured settings value
+ * @param string $search_base - Search base DN, Default = Configured settings value
+ * @param string $search_filter - Filter to find the user, Default = Configured settings value
+ * @param string $specific_dn - DN for binding to perform user search, Default = Configured settings value
+ * @param string $specific_password - Password for binding to perform user search, Default - Configured settings value
+ *
+ * @return - array of values
+ */
 function cacti_ldap_search_dn($username, $dn = '', $host = '', $port = '', $port_ssl = '', $version = '', $encryption = '',
 	$referrals = '', $mode = '', $search_base = '', $search_filter = '', $specific_dn = '', $specific_password = '') {
 	$ldap = new Ldap;
@@ -256,47 +260,51 @@ function cacti_ldap_search_dn($username, $dn = '', $host = '', $port = '', $port
 	return $response;
 }
 
-/* cacti_ldap_search_cn
-  @arg $username - username to search for in the LDAP directory
-  @arg $cn - array of CN to search on LDAP
-  @arg $dn - configured LDAP DN for binding, '<username>' will be replaced with $username
-  @arg $host - Hostname or IP of LDAP server, Default = Configured settings value
-  @arg $port - Port of the LDAP server uses, Default = Configured settings value
-  @arg $port_ssl - Port of the LDAP server uses for SSL, Default = Configured settings value
-  @arg $version - '2' or '3', LDAP protocol version, Default = Configured settings value
-  @arg $encryption - '0' None, '1' SSL, '2' TLS, Default = Configured settings value
-  @arg $referrals - '0' Referrals from server are ignored, '1' Referrals from server are processed, Default = Configured setting value
-  @arg $mode - '0' No Searching, '1' Anonymous Searching, '2' Specific Searching, Default = Configured settings value
-  @arg $search_base - Search base DN, Default = Configured settings value
-  @arg $search_filter - Filter to find the user, Default = Configured settings value
-  @arg $specific_dn - DN for binding to perform user search, Default = Configured settings value
-  @arg $specific_password - Password for binding to perform user search, Default - Configured settings value
-  @return - array of values
-	'cn' = array of values
-	'error_num' = error number returned
-	'error_text' = error text
-	'dn' = found dn of user
-Error codes:
-#       Text
-==============================================================
-0       User found
-1       No username defined
-2       Unable to create LDAP connection object
-3       Unable to find users DN
-4       Protocol error, unable to set version
-5       Protocol error, unable to start TLS communications
-6       Protocol error
-7       Invalid credential
-8       Insufficient access
-9       Unable to connect to server
-10      Timeout
-11      General bind error
-12      Unable to set referrals option
-13      More than one matching user found
-14      Specific DN and Password required
-15      CN unknown on LDAP
-99      PHP LDAP not enabled
-*/
+/** cacti_ldap_search_cn
+ *
+ * Return Values:
+ * 'cn' = array of values
+ * 'error_num' = error number returned
+ * 'error_text' = error text
+ * 'dn' = found dn of user
+ * Error codes:
+ * #       Text
+ * ==============================================================
+ * 0       User found
+ * 1       No username defined
+ * 2       Unable to create LDAP connection object
+ * 3       Unable to find users DN
+ * 4       Protocol error, unable to set version
+ * 5       Protocol error, unable to start TLS communications
+ * 6       Protocol error
+ * 7       Invalid credential
+ * 8       Insufficient access
+ * 9       Unable to connect to server
+ * 10      Timeout
+ * 11      General bind error
+ * 12      Unable to set referrals option
+ * 13      More than one matching user found
+ * 14      Specific DN and Password required
+ * 15      CN unknown on LDAP
+ * 99      PHP LDAP not enabled
+ *
+ * @param string $username - username to search for in the LDAP directory
+ * @param string $cn - array of CN to search on LDAP
+ * @param string $dn - configured LDAP DN for binding, '<username>' will be replaced with $username
+ * @param string $host - Hostname or IP of LDAP server, Default = Configured settings value
+ * @param int $port - Port of the LDAP server uses, Default = Configured settings value
+ * @param int $port_ssl - Port of the LDAP server uses for SSL, Default = Configured settings value
+ * @param int $version - '2' or '3', LDAP protocol version, Default = Configured settings value
+ * @param int $encryption - '0' None, '1' SSL, '2' TLS, Default = Configured settings value
+ * @param int $referrals - '0' Referrals from server are ignored, '1' Referrals from server are processed, Default = Configured setting value
+ * @param int $mode - '0' No Searching, '1' Anonymous Searching, '2' Specific Searching, Default = Configured settings value
+ * @param string $search_base - Search base DN, Default = Configured settings value
+ * @param string $search_filter - Filter to find the user, Default = Configured settings value
+ * @param string $specific_dn - DN for binding to perform user search, Default = Configured settings value
+ * @param string $specific_password - Password for binding to perform user search, Default - Configured settings value
+ *
+ * @return - array of values
+ */
 function cacti_ldap_search_cn($username, $cn = [], $dn = '', $host = '', $port = '', $port_ssl = '', $version = '', $encryption = '',
 	$referrals = '', $mode = '', $search_base = '', $search_filter = '', $specific_dn = '', $specific_password = '') {
 	$ldap = new Ldap;
@@ -1083,13 +1091,13 @@ class Ldap {
 
 	function isUserInLDAPGroup($ldapConn, $ldapbasedn, $groupDN, $ldapUser) {
 		$query       = "(&(distinguishedName=$ldapUser)(memberOf:1.2.840.113556.1.4.1941:=$groupDN))";
-		$ldapSearch  = ldap_search($ldapConn, $ldapbasedn, $query, ["dn"]);
+		$ldapSearch  = ldap_search($ldapConn, $ldapbasedn, $query, ['dn']);
 
 		if ($ldapSearch) {
 			$ldapResults = ldap_get_entries($ldapConn, $ldapSearch);
 
 			// user should only be returned once IF they're a member of the group
-			return isset($ldapResults['count']) && $ldapResults['count'] == 1 ? true:false;
+			return isset($ldapResults['count']) && $ldapResults['count'] == 1 ? true : false;
 		} else {
 			return false;
 		}

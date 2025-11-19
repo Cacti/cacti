@@ -51,7 +51,7 @@ $queue_id  = false;
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter);
+			[$arg, $value] = explode('=', $parameter);
 		} else {
 			$arg   = $parameter;
 			$value = '';
@@ -267,7 +267,8 @@ function display_help() {
  * sig_handler - provides a generic means to catch exceptions to the Cacti log.
  *
  * @param  int   $signo the signal that was thrown by the interface.
- * @return null
+ *
+ * @return void
  */
 function sig_handler($signo) {
 	switch ($signo) {

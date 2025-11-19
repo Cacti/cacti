@@ -331,44 +331,44 @@ function debug_get_filter(&$sql_where, &$sql_params, &$dd_join) {
 	}
 
 	if (isempty_request_var('host_id')) {
-		$sql_where   .= ($sql_where != '' ? ' AND':'WHERE') . ' (dl.host_id = 0 OR dl.host_id IS NULL)';
+		$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . ' (dl.host_id = 0 OR dl.host_id IS NULL)';
 	} elseif (get_request_var('host_id') > 0) {
-		$sql_where   .= ($sql_where != '' ? ' AND':'WHERE') . ' dl.host_id = ?';
+		$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . ' dl.host_id = ?';
 		$sql_params[] = get_request_var('host_id');
 	}
 
 	if (isempty_request_var('site_id')) {
-		$sql_where   .= ($sql_where != '' ? ' AND':'WHERE') . ' (h.site_id = 0 OR h.site_id IS NULL)';
+		$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . ' (h.site_id = 0 OR h.site_id IS NULL)';
 	} elseif (get_request_var('site_id') > 0) {
-		$sql_where   .= ($sql_where != '' ? ' AND':'WHERE') . ' h.site_id = ?';
+		$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . ' h.site_id = ?';
 		$sql_params[] = get_request_var('site_id');
 	}
 
 	if (get_request_var('template_id') == '0') {
-		$sql_where   .= ($sql_where != '' ? ' AND':'WHERE') . ' dtd.data_template_id = 0';
+		$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . ' dtd.data_template_id = 0';
 	} elseif (get_request_var('template_id') > 0) {
-		$sql_where   .= ($sql_where != '' ? ' AND':'WHERE') . ' dtd.data_template_id = ?';
+		$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . ' dtd.data_template_id = ?';
 		$sql_params[] = get_request_var('template_id');
 	}
 
 	if (get_request_var('profile') > '-1') {
-		$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . ' dtd.data_source_profile_id = ?';
+		$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . ' dtd.data_source_profile_id = ?';
 		$sql_params[] = get_request_var('profile');
 	}
 
 	if (get_request_var('status') == '0') {
-		$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . ' dd.issue != ""';
+		$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . ' dd.issue != ""';
 	} elseif (get_request_var('status') == '1') {
-		$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . ' dtd.active = "on"';
+		$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . ' dtd.active = "on"';
 	} elseif (get_request_var('status') != '-1') {
-		$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . ' dtd.active = ""';
+		$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . ' dtd.active = ""';
 	}
 
 	if (get_request_var('debug') == '-1') {
 		$dd_join = 'LEFT';
 	} elseif (get_request_var('debug') == 0) {
 		$dd_join = 'LEFT';
-		$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . ' dd.datasource IS NULL';
+		$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . ' dd.datasource IS NULL';
 	} else {
 		$dd_join = 'INNER';
 	}
@@ -554,7 +554,7 @@ function debug_wizard() {
 				form_selectable_ecell($check['username'], $check['local_data_id']);
 				form_selectable_cell(date($datefmt, $check['started']), $check['local_data_id'], '', 'right');
 				form_selectable_cell($check['local_data_id'], $check['local_data_id'], '', 'right');
-				form_selectable_cell(debug_icon(($check['done'] ? ($iline != '' ? 'off' : 'on'):'')), $check['local_data_id'], '', 'center');
+				form_selectable_cell(debug_icon(($check['done'] ? ($iline != '' ? 'off' : 'on') : '')), $check['local_data_id'], '', 'center');
 				form_selectable_cell(debug_icon($info['rrd_writable']), $check['local_data_id'], '', 'center');
 				form_selectable_cell(debug_icon($info['rrd_exists']), $check['local_data_id'], '', 'center');
 				form_selectable_cell(debug_icon($info['active']), $check['local_data_id'], '', 'center');

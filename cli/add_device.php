@@ -91,7 +91,7 @@ if (cacti_sizeof($parms)) {
 
 	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter, 2);
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
 			$value = '';
@@ -392,7 +392,6 @@ if (cacti_sizeof($parms)) {
 
 	if (isset($snmp_security_level)) {
 		switch ($snmp_security_level) {
-
 			case 'noauthnopriv':
 				if (empty($snmp_username)) {
 					print "ERROR: For SNMP security level noAuthNoPriv, you must enter a username\n";
@@ -401,6 +400,7 @@ if (cacti_sizeof($parms)) {
 					$snmp_auth_protocol = '[None]';
 					$snmp_priv_protocol = '[None]';
 				}
+
 				break;
 			case 'authnopriv':
 				if (empty($snmp_username) || empty($snmp_auth_protocol) || empty($snmp_password)) {
@@ -409,6 +409,7 @@ if (cacti_sizeof($parms)) {
 				} else {
 					$snmp_priv_protocol = '[None]';
 				}
+
 				break;
 			case 'authpriv':
 				if (empty($snmp_username) || empty($snmp_auth_protocol) || empty($snmp_password) || empty($snmp_priv_passphrase) || empty($snmp_priv_protocol)) {
@@ -449,11 +450,11 @@ if (cacti_sizeof($parms)) {
 			// assuming a proxy
 		} elseif ($phost['snmp_version'] == '3' && $snmp_ver == '3') {
 			$changed = 0;
-			$changed += ($phost['snmp_username'] != $snmp_username ? 1:0);
-			$changed += ($phost['snmp_context'] != $snmp_context ? 1:0);
-			$changed += ($phost['snmp_engine_id'] != $snmp_engine_id ? 1:0);
-			$changed += ($phost['snmp_auth_protocol'] != $snmp_auth_protocol ? 1:0);
-			$changed += ($phost['snmp_priv_protocol'] != $snmp_priv_protocol ? 1:0);
+			$changed += ($phost['snmp_username'] != $snmp_username ? 1 : 0);
+			$changed += ($phost['snmp_context'] != $snmp_context ? 1 : 0);
+			$changed += ($phost['snmp_engine_id'] != $snmp_engine_id ? 1 : 0);
+			$changed += ($phost['snmp_auth_protocol'] != $snmp_auth_protocol ? 1 : 0);
+			$changed += ($phost['snmp_priv_protocol'] != $snmp_priv_protocol ? 1 : 0);
 
 			if ($changed > 0) {
 				if ($proxy) {

@@ -204,7 +204,7 @@ class spikekill {
 
 		if (cacti_sizeof($this->errors)) {
 			foreach ($this->errors as $error) {
-				$output .= ($output != '' ? ($this->html ? '<br>':"\n"):'') . $error;
+				$output .= ($output != '' ? ($this->html ? '<br>' : "\n") : '') . $error;
 			}
 		}
 
@@ -396,11 +396,11 @@ class spikekill {
 		$this->strout = '';
 
 		if (!empty($this->out_start) && !$this->dryrun) {
-			$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') . 'NOTE: Removing Outliers in Range and Replacing with Last' . ($this->html ? "</p>\n":"\n");
+			$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . 'NOTE: Removing Outliers in Range and Replacing with Last' . ($this->html ? "</p>\n" : "\n");
 		}
 
 		/* execute the dump command */
-		$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') . "NOTE: Creating XML file '$xmlfile' from '$this->rrdfile'" . ($this->html ? "</p>\n":"\n");
+		$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . "NOTE: Creating XML file '$xmlfile' from '$this->rrdfile'" . ($this->html ? "</p>\n" : "\n");
 
 		if (!$this->dryrun) {
 			switch ($this->method) {
@@ -449,7 +449,7 @@ class spikekill {
 		/* backup the rrdfile if requested */
 		if ($this->backup && !$this->dryrun) {
 			if (copy($this->rrdfile, $bakfile)) {
-				$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') . "NOTE: RRDfile '$this->rrdfile' backed up to '$bakfile'" . ($this->html ? "</p>\n":"\n");
+				$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . "NOTE: RRDfile '$this->rrdfile' backed up to '$bakfile'" . ($this->html ? "</p>\n" : "\n");
 			} else {
 				$this->set_error("FATAL: RRDfile Backup of '$this->rrdfile' to '$bakfile' FAILED!");
 
@@ -640,11 +640,11 @@ class spikekill {
 		 *
 		 */
 		if (empty($this->out_start)) {
-			$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-				"NOTE: Searching for Spikes in XML file '$xmlfile'" . ($this->html ? "</p>\n":"\n");
+			$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
+				"NOTE: Searching for Spikes in XML file '$xmlfile'" . ($this->html ? "</p>\n" : "\n");
 		} else {
-			$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-				'NOTE: Limited to window: ' . date('M j, Y H:i:s',$this->out_start) . ' thru ' . date('M j, Y H:i:s',$this->out_end) . ($this->html ? "</p>\n":"\n");
+			$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
+				'NOTE: Limited to window: ' . date('M j, Y H:i:s',$this->out_start) . ' thru ' . date('M j, Y H:i:s',$this->out_end) . ($this->html ? "</p>\n" : "\n");
 			cacti_log('DEBUG: Limited to window: ' . date('M j, Y H:i:s',$this->out_start) . ' thru ' . date('M j, Y H:i:s',$this->out_end), false, 'SPIKE', POLLER_VERBOSITY_DEBUG);
 		}
 
@@ -676,11 +676,11 @@ class spikekill {
 					$output     = true;
 				}
 			} elseif (!empty($this->out_start)) {
-				$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-					"NOTE: No Window Spikes found in '$this->rrdfile'" . ($this->html ? "</p>\n":"\n");
+				$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
+					"NOTE: No Window Spikes found in '$this->rrdfile'" . ($this->html ? "</p>\n" : "\n");
 			} else {
-				$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-					"NOTE: No Standard Deviation Spikes found in '$this->rrdfile'" . ($this->html ? "</p>\n":"\n");
+				$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
+					"NOTE: No Standard Deviation Spikes found in '$this->rrdfile'" . ($this->html ? "</p>\n" : "\n");
 			}
 		} else {
 			/* variance subroutine */
@@ -692,11 +692,11 @@ class spikekill {
 					$output     = true;
 				}
 			} elseif (!empty($this->out_start)) {
-				$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-					"NOTE: No Window Fills found in '$this->rrdfile'" . ($this->html ? "</p>\n":"\n");
+				$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
+					"NOTE: No Window Fills found in '$this->rrdfile'" . ($this->html ? "</p>\n" : "\n");
 			} else {
-				$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-					"NOTE: No Variance Spikes found in '$this->rrdfile'" . ($this->html ? "</p>\n":"\n");
+				$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
+					"NOTE: No Variance Spikes found in '$this->rrdfile'" . ($this->html ? "</p>\n" : "\n");
 			}
 		}
 
@@ -706,26 +706,26 @@ class spikekill {
 				if ($this->writeXMLFile($new_output, $xmlfile)) {
 					if ($this->backupRRDFile($this->rrdfile)) {
 						$this->createRRDFileFromXML($xmlfile, $this->rrdfile);
-						$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-							"NOTE: Spikes Found and Remediated.  Total Spikes ($this->total_kills)" . ($this->html ? "</p>\n":"\n");
+						$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
+							"NOTE: Spikes Found and Remediated.  Total Spikes ($this->total_kills)" . ($this->html ? "</p>\n" : "\n");
 					} else {
-						$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-							"FATAL: Unable to backup '$this->rrdfile'" . ($this->html ? "</p>\n":"\n");
+						$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
+							"FATAL: Unable to backup '$this->rrdfile'" . ($this->html ? "</p>\n" : "\n");
 					}
 				} else {
-					$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-						"FATAL: Unable to write XML file '$xmlfile'" . ($this->html ? "</p>\n":"\n");
+					$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
+						"FATAL: Unable to write XML file '$xmlfile'" . ($this->html ? "</p>\n" : "\n");
 				}
 			} else {
-				$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-					'NOTE: No Spikes Found.' . ($this->html ? "</p>\n":"\n");
+				$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
+					'NOTE: No Spikes Found.' . ($this->html ? "</p>\n" : "\n");
 			}
 		} else {
-			$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-				'NOTE: Dryrun requested.  No updates performed' . ($this->html ? "</p>\n":"\n");
+			$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
+				'NOTE: Dryrun requested.  No updates performed' . ($this->html ? "</p>\n" : "\n");
 		}
 
-		$this->strout .= ($this->html ? '</table>':'');
+		$this->strout .= ($this->html ? '</table>' : '');
 
 		if ($this->total_kills > 0) {
 			cacti_log("WARNING: Removed '$this->total_kills' Spikes from '$this->rrdfile', Method:'$this->method'", false, 'WEBUI');
@@ -747,13 +747,13 @@ class spikekill {
 	/* All Functions */
 	private function createRRDFileFromXML($xmlfile, $rrdfile) {
 		/* execute the dump command */
-		$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-			"NOTE: Re-Importing '$xmlfile' to '$rrdfile'" . ($this->html ? "</p>\n":"\n");
+		$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
+			"NOTE: Re-Importing '$xmlfile' to '$rrdfile'" . ($this->html ? "</p>\n" : "\n");
 
 		$response = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' restore -f -r ' . cacti_escapeshellarg($xmlfile) . ' ' . cacti_escapeshellarg($rrdfile));
 
 		if ($response != '') {
-			$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') . $response . ($this->html ? "</p>\n":"\n");
+			$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . $response . ($this->html ? "</p>\n" : "\n");
 		}
 	}
 
@@ -774,8 +774,8 @@ class spikekill {
 			$newfile = basename($rrdfile);
 		}
 
-		$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-			"NOTE: Backing Up '$rrdfile' to '" . $backupdir . '/' .  $newfile . "'" . ($this->html ? "</p>\n":"\n");
+		$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
+			"NOTE: Backing Up '$rrdfile' to '" . $backupdir . '/' .  $newfile . "'" . ($this->html ? "</p>\n" : "\n");
 
 		return copy($rrdfile, $backupdir . '/' . $newfile);
 	}
@@ -976,15 +976,15 @@ class spikekill {
 					if (cacti_sizeof($dses)) {
 						foreach ($dses as $dskey => $ds) {
 							$this->strout .= sprintf('%10s %16s %10s %7s %7s ' .
-								($ds['average'] < 1E6 ? '%10s ':'%10.4e ') .
-								($ds['standard_deviation'] < 1E6 ? '%10s ':'%10.4e ') .
-								(isset($ds['max_value'])  ? ($ds['max_value'] < 1E6 ? '%10s ':'%10.4e ') : '%10s ') .
-								(isset($ds['min_value'])  ? ($ds['min_value'] < 1E6 ? '%10s ':'%10.4e ') : '%10s ') .
-								(isset($ds['max_cutoff']) ? ($ds['max_cutoff'] < 1E6 ? '%10s ':'%10.4e ') : '%10s ') .
-								(isset($ds['min_cutoff']) ? ($ds['min_cutoff'] < 1E6 ? '%10s ':'%10.4e ') : '%10s ') .
+								($ds['average'] < 1E6 ? '%10s ' : '%10.4e ') .
+								($ds['standard_deviation'] < 1E6 ? '%10s ' : '%10.4e ') .
+								(isset($ds['max_value']) ? ($ds['max_value'] < 1E6 ? '%10s ' : '%10.4e ') : '%10s ') .
+								(isset($ds['min_value']) ? ($ds['min_value'] < 1E6 ? '%10s ' : '%10.4e ') : '%10s ') .
+								(isset($ds['max_cutoff']) ? ($ds['max_cutoff'] < 1E6 ? '%10s ' : '%10.4e ') : '%10s ') .
+								(isset($ds['min_cutoff']) ? ($ds['min_cutoff'] < 1E6 ? '%10s ' : '%10.4e ') : '%10s ') .
 								'%10s %10s %10s ' .
-								(isset($ds['avgnksamples']) ? ($ds['avgnksamples'] < 1E6 ? '%10s ':'%10.4e ') : '%10.4E ') .
-								(isset($ds['variance_avg']) ? ($ds['variance_avg'] < 1E6 ? '%10s ':'%10.4e ') : '%10.4E ') . "\n",
+								(isset($ds['avgnksamples']) ? ($ds['avgnksamples'] < 1E6 ? '%10s ' : '%10.4e ') : '%10.4E ') .
+								(isset($ds['variance_avg']) ? ($ds['variance_avg'] < 1E6 ? '%10s ' : '%10.4e ') : '%10.4E ') . "\n",
 								$this->displayTime($this->rra_pdp[$rra_key]),
 								$this->ds_name[$dskey],
 								$this->rra_cf[$rra_key],
@@ -1015,15 +1015,15 @@ class spikekill {
 					if (cacti_sizeof($dses)) {
 						foreach ($dses as $dskey => $ds) {
 							$this->strout .= sprintf('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td>' .
-								($ds['average'] < 1E6 ? '<td>%s</td>':'<td>%.4e</td>') .
-								($ds['standard_deviation'] < 1E6 ? '<td>%s</td>':'<td>%.4e</td>') .
-								(isset($ds['max_value']) ? ($ds['max_value'] < 1E6 ? '<td>%s</td>':'<td>%.4e</td>') : '<td>%s</td>') .
-								(isset($ds['min_value']) ? ($ds['min_value'] < 1E6 ? '<td>%s</td>':'<td>%.4e</td>') : '<td>%s</td>') .
-								(isset($ds['max_cutoff']) ? ($ds['max_cutoff'] < 1E6 ? '<td>%s</td>':'<td>%.4e</td>') : '<td>%s</td>') .
-								(isset($ds['min_cutoff']) ? ($ds['min_cutoff'] < 1E6 ? '<td>%s</td>':'<td>%.4e</td>') : '<td>%s</td>') .
+								($ds['average'] < 1E6 ? '<td>%s</td>' : '<td>%.4e</td>') .
+								($ds['standard_deviation'] < 1E6 ? '<td>%s</td>' : '<td>%.4e</td>') .
+								(isset($ds['max_value']) ? ($ds['max_value'] < 1E6 ? '<td>%s</td>' : '<td>%.4e</td>') : '<td>%s</td>') .
+								(isset($ds['min_value']) ? ($ds['min_value'] < 1E6 ? '<td>%s</td>' : '<td>%.4e</td>') : '<td>%s</td>') .
+								(isset($ds['max_cutoff']) ? ($ds['max_cutoff'] < 1E6 ? '<td>%s</td>' : '<td>%.4e</td>') : '<td>%s</td>') .
+								(isset($ds['min_cutoff']) ? ($ds['min_cutoff'] < 1E6 ? '<td>%s</td>' : '<td>%.4e</td>') : '<td>%s</td>') .
 								'<td>%s</td><td>%s</td><td>%s</td>' .
-								(isset($ds['avgnksampled']) ? ($ds['avgnksamples'] < 1E6 ? '<td>%s</td>':'<td>%.4e</td>') : '<td>%s</td>') .
-								(isset($ds['variance_avg']) ? ($ds['variance_avg'] < 1E6 ? '<td>%s</td>':'<td>%.4e</td>') : '<td>%s</td>') .
+								(isset($ds['avgnksampled']) ? ($ds['avgnksamples'] < 1E6 ? '<td>%s</td>' : '<td>%.4e</td>') : '<td>%s</td>') .
+								(isset($ds['variance_avg']) ? ($ds['variance_avg'] < 1E6 ? '<td>%s</td>' : '<td>%.4e</td>') : '<td>%s</td>') .
 								"</tr>\n\n",
 								$this->displayTime($this->rra_pdp[$rra_key]),
 								$this->ds_name[$dskey],

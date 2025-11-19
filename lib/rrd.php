@@ -38,7 +38,7 @@ function escape_command($command) {
 
 /** set the language environment variable for rrdtool functions
  * @param string $lang		- the desired language to set
- * @return null
+ * @return void
  */
 function rrdtool_set_language($lang = -1) {
 	global $prev_lang;
@@ -52,8 +52,10 @@ function rrdtool_set_language($lang = -1) {
 	}
 }
 
-/** restore the default language environment variable after rrdtool functions
- * @return null
+/**
+ * restore the default language environment variable after rrdtool functions
+ *
+ * @return void
  */
 function rrdtool_reset_language() {
 	global $prev_lang;
@@ -958,7 +960,7 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = null) {
 				foreach ($field_array as $field_name => $value) {
 					if ($rrd_update_template != '') {
 						$rrd_update_template .= ':';
-						$rrd_update_values   .= ':';
+						$rrd_update_values .= ':';
 					}
 
 					$rrd_update_template .= $field_name;
@@ -972,9 +974,9 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = null) {
 				}
 
 				if (cacti_version_compare(get_rrdtool_version(), '1.5', '>=')) {
-					$update_options='--skip-past-updates';
+					$update_options = '--skip-past-updates';
 				} else {
-					$update_options='';
+					$update_options = '';
 				}
 
 				rrdtool_execute("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
@@ -2007,10 +2009,10 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			$cdef_graph_defs = '';
 
 			if ((!empty($graph_item['cdef_id'])) && (!isset($cdef_cache[$graph_item['cdef_id']][$graph_item['data_template_rrd_id']][$cf_id]))) {
-				$cdef_string 	= $graph_variables['cdef_cache'][$graph_item['graph_templates_item_id']];
-				$magic_item 	 = [];
-				$already_seen	= [];
-				$sources_seen	= [];
+				$cdef_string 	 = $graph_variables['cdef_cache'][$graph_item['graph_templates_item_id']];
+				$magic_item 	  = [];
+				$already_seen	 = [];
+				$sources_seen	 = [];
 
 				$count_all_ds_dups       = 0;
 				$count_all_ds_nodups     = 0;
@@ -2290,7 +2292,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 					$speed = rrdtool_function_interface_speed($local_data);
 
-					$cdef_string = str_replace(['|query_ifHighSpeed|','|query_ifSpeed|'], [$speed, $speed], $cdef_string);
+					$cdef_string = str_replace(['|query_ifHighSpeed|', '|query_ifSpeed|'], [$speed, $speed], $cdef_string);
 				}
 
 				/* replace query variables in cdefs */
@@ -2797,11 +2799,11 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		$xport_array = rrdxport2array(rrdtool_execute("xport $graph_opts$graph_defs$txt_graph_items", false, $output_flag, $rrdtool_pipe));
 
 		/* add host and graph information */
-		$xport_array['meta']['stacked_columns']= $stacked_columns;
-		$xport_array['meta']['title_cache']    = $graph['title_cache'];
-		$xport_array['meta']['vertical_label'] = $graph['vertical_label'];
-		$xport_array['meta']['local_graph_id'] = $local_graph_id;
-		$xport_array['meta']['host_id']        = $graph['host_id'];
+		$xport_array['meta']['stacked_columns'] = $stacked_columns;
+		$xport_array['meta']['title_cache']     = $graph['title_cache'];
+		$xport_array['meta']['vertical_label']  = $graph['vertical_label'];
+		$xport_array['meta']['local_graph_id']  = $local_graph_id;
+		$xport_array['meta']['host_id']         = $graph['host_id'];
 
 		return $xport_array;
 	}
@@ -3519,7 +3521,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
  *
  * @return (string) - html code
  */
-function rrdtool_info2html($info_array, $diff=[]) {
+function rrdtool_info2html($info_array, $diff = []) {
 	include_once(CACTI_PATH_LIBRARY . '/time.php');
 
 	html_start_box(__('RRD File Information'), '100%', false, 3, 'center', '');
@@ -3632,10 +3634,10 @@ function rrdtool_info2html($info_array, $diff=[]) {
 
 			form_selectable_cell($key, 'name', '', (isset($diff['rra'][$key]['error']) ? 'color:red' : ''));
 			form_selectable_cell(($value['cf'] ?? ''), 'cf');
-			form_selectable_cell(($value['rows'] ?? ''), 'rows', '', (isset($diff['rra'][$key]['rows']) 	? 'color:red;text-align:right' : 'text-align:right'));
+			form_selectable_cell(($value['rows'] ?? ''), 'rows', '', (isset($diff['rra'][$key]['rows']) ? 'color:red;text-align:right' : 'text-align:right'));
 			form_selectable_cell(($value['cur_row'] ?? ''), 'cur_row', '', 'text-align:right');
 			form_selectable_cell(($value['pdp_per_row'] ?? ''), 'pdp_per_row', '', 'text-align:right');
-			form_selectable_cell((isset($value['xff']) ? floatval($value['xff']) : ''), 'xff', '', (isset($diff['rra'][$key]['xff']) 	? 'color:red;text-align:right' : 'text-align:right'));
+			form_selectable_cell((isset($value['xff']) ? floatval($value['xff']) : ''), 'xff', '', (isset($diff['rra'][$key]['xff']) ? 'color:red;text-align:right' : 'text-align:right'));
 			form_selectable_cell((isset($value['cdp_prep'][0]['value']) ? ((strtolower($value['cdp_prep'][0]['value']) == 'nan') ? $value['cdp_prep'][0]['value'] : floatval($value['cdp_prep'][0]['value'])) : ''), 'value', '', 'text-align:right');
 			form_selectable_cell(($value['cdp_prep'][0]['unknown_datapoints'] ?? ''), 	'unknown_datapoints', '', 'text-align:right');
 
@@ -4408,19 +4410,19 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 	imagefill($image, 0, 0, $transparent);
 
 	/* background the entire image with the frame */
-	list($red, $green, $blue) = sscanf($shadeb, '%02x%02x%02x');
+	[$red, $green, $blue] = sscanf($shadeb, '%02x%02x%02x');
 
 	$shadeb = imagecolorallocate($image, $red, $green, $blue);
 
 	imagefill($image, 0, 0, $shadeb);
 
 	/* set the background color */
-	list($red, $green, $blue) = sscanf($shadea, '%02x%02x%02x');
+	[$red, $green, $blue]     = sscanf($shadea, '%02x%02x%02x');
 	$shadea                   = imagecolorallocate($image, $red, $green, $blue);
 	imagefilledrectangle($image, 1, 1, 448, 198, $shadea);
 
 	/* set the background color */
-	list($red, $green, $blue) = sscanf($back_color, '%02x%02x%02x');
+	[$red, $green, $blue]     = sscanf($back_color, '%02x%02x%02x');
 	$back_color               = imagecolorallocate($image, $red, $green, $blue);
 	imagefilledrectangle($image, 2, 2, 447, 197, $back_color);
 
@@ -4431,7 +4433,7 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 	imagecopy($image, $logo, 0, 0, 0, 0, 450, 200);
 
 	/* set the background color */
-	list($red, $green, $blue) = sscanf($font_color, '%02x%02x%02x');
+	[$red, $green, $blue]     = sscanf($font_color, '%02x%02x%02x');
 	$text_color               = imagecolorallocate($image, $red, $green, $blue);
 
 	/* see the size of the string */
@@ -4561,7 +4563,7 @@ function gradient($vname = false, $start_color = '#0000a0', $end_color = '#f0f0f
 	// We don't use alpha blending for the area right now
 	$alpha = 'ff';
 
-	for ($i=$steps; $i > 0; $i--) {
+	for ($i = $steps; $i > 0; $i--) {
 		$factor = $i / $steps;
 
 		$r = round($r1 + $diff_r * $factor);
@@ -4664,7 +4666,7 @@ function add_unknown_data($graph_array, &$xport_meta) {
 			$pluscnt = cacti_sizeof($graph_array['defs']) - 1;
 
 			foreach ($graph_array['defs'] as $d) {
-				$tmp_def .= ($tmp_def != '' ? ',':'') . "$d,UN";
+				$tmp_def .= ($tmp_def != '' ? ',' : '') . "$d,UN";
 			}
 
 			$graph_array['graph_defs'] .= "CDEF:unknowndata='$tmp_def" . str_repeat(',+', $pluscnt);
@@ -4731,7 +4733,7 @@ function add_business_hours($data, &$xport_meta) {
 		$num_of_days = round($datediff / (60 * 60 * 24)) + 1;
 
 		if ($num_of_days <= read_config_option('business_hours_max_days')) {
-			for ($day=0; $day < $num_of_days; $day++) {
+			for ($day = 0; $day < $num_of_days; $day++) {
 				$current_start_bh_time = mktime($bh_start_matches[1], $bh_start_matches[2], 0, date('m', $start_bh_time), date('d', $start_bh_time) + $day, date('Y', $start_bh_time));
 				$current_end_bh_time   = mktime($bh_end_matches[1], $bh_end_matches[2], 0, date('m', $start_bh_time), date('d', $start_bh_time) + $day, date('Y', $start_bh_time));
 

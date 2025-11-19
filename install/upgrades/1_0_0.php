@@ -677,12 +677,12 @@ function upgrade_to_1_0_0() {
 						host_template_id = ?,
 						graph_template_id = ?
 						WHERE id = ?',
-						array(
+						[
 							$host['id'],
 							$host['host_template_id'],
 							$graph_template['data'],
 							$row['id']
-						), false);
+						], false);
 				}
 			}
 		}
@@ -1991,7 +1991,7 @@ function upgrade_realms() {
 	}
 
 	/* add admin permissions */
-	$userid= db_install_fetch_cell("SELECT * FROM user_auth WHERE id='1' AND username='admin'");
+	$userid = db_install_fetch_cell("SELECT * FROM user_auth WHERE id='1' AND username='admin'");
 
 	if (!empty($userid['data'])) {
 		db_install_execute('REPLACE INTO `user_auth_realm` VALUES (19,1);');

@@ -47,7 +47,7 @@ define('log_install_echo', 'on');
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter, 2);
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
 			$value = '';
@@ -371,7 +371,7 @@ function process_install_errors($results) {
 			}
 		}
 
-		print PHP_EOL . 'Unable to continue as ' . $count . ' issue' . ($count == 1?'':'s') . ' in ' . $sections . ' section' . ($sections == 1?'':'s') . ' were found.' . PHP_EOL;
+		print PHP_EOL . 'Unable to continue as ' . $count . ' issue' . ($count == 1 ? '' : 's') . ' in ' . $sections . ' section' . ($sections == 1 ? '' : 's') . ' were found.' . PHP_EOL;
 
 		exit(1);
 	}

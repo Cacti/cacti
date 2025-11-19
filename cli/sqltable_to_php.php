@@ -41,7 +41,7 @@ $create = true;
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter, 2);
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
 			$value = '';
@@ -192,9 +192,9 @@ function sqltable_to_php($table, $create, $plugin = '') {
 			if (!empty($keys)) {
 				foreach ($keys as $n => $k) {
 					if ($plugin != '') {
-						$text .= "\$data['keys'][] = array('name' => '$n', " . (isset($unique_keys[$n]) ? "'unique' => true, ":'') . "'columns' => '" . implode('`,`', $k) . "');\n";
+						$text .= "\$data['keys'][] = array('name' => '$n', " . (isset($unique_keys[$n]) ? "'unique' => true, " : '') . "'columns' => '" . implode('`,`', $k) . "');\n";
 					} else {
-						$text .= "\$data['keys'][] = array('name' => '$n', " . (isset($unique_keys[$n]) ? "'unique' => true, ":'') . "'columns' => array('" . implode("','", $k) . "'));\n";
+						$text .= "\$data['keys'][] = array('name' => '$n', " . (isset($unique_keys[$n]) ? "'unique' => true, " : '') . "'columns' => array('" . implode("','", $k) . "'));\n";
 					}
 				}
 			}

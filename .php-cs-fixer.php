@@ -1,17 +1,30 @@
 <?php
 
 $finder = PhpCsFixer\Finder::create()
-	->exclude('include/vendor')
+    ->exclude('include/vendor')
+    ->exclude('rra')
+    ->exclude('cache')
+    ->exclude('log')
+    ->exclude('mib')
+    ->exclude('resource')
+    ->exclude('service')
+    ->exclude('tests')
+    ->exclude('locales')
+    ->exclude('images')
+    ->exclude('formats')
+    ->exclude('contrib')
+    ->exclude('docs')
     ->in(__DIR__)
     ->append(array(
         __DIR__.'/php-cs-fixer',
-    ));
+    )
+);
 
 $config = new PhpCsFixer\Config();
 $config
     ->setParallelConfig(PhpCsFixer\Runner\Parallel\ParallelConfigFactory::detect())
     ->setRiskyAllowed(true)
-    ->setIndent(str_pad('', 4))
+    ->setIndent("\t")
     ->setLineEnding("\n")
     ->setRules(array(
     //'@PHP56Migration' => true,
@@ -44,7 +57,7 @@ $config
     'no_trailing_whitespace'            => true,
     'method_chaining_indentation'       => true,
     'indentation_type'                  => true,
-    'constant_case'                       => true,
+    'constant_case'                     => true,
     'lowercase_keywords'                => true,
     'line_ending'                       => true,
     'magic_constant_casing'             => true,
@@ -142,7 +155,7 @@ $config
     'linebreak_after_opening_tag'       => false,
     'align_multiline_comment'           => ['comment_type' => 'phpdocs_like'],
     'phpdoc_add_missing_param_annotation' => true,
-    'no_extra_blank_lines'               => [
+    'no_extra_blank_lines'              => [
         'tokens' => [
             'break',
             'case',
@@ -160,14 +173,14 @@ $config
     ],
     'no_empty_statement'                => true,
     'multiline_whitespace_before_semicolons'      => true,
-    'no_singleline_whitespace_before_semicolons' => true,
+    'no_singleline_whitespace_before_semicolons'  => true,
     'semicolon_after_instruction'       => false,
     'space_after_semicolon'             => ['remove_in_empty_for_expressions' => true],
     'blank_line_before_statement'       => [
         'statements' => [
             'continue',
+            'break',
             'declare',
-            'default',
             'do',
             'for',
             'foreach',

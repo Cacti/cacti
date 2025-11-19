@@ -168,10 +168,13 @@ jQuery.ajaxQ = (function () {
 	};
 })();
 
-/** basename - this function will return the basename
- *  of the php script called
- *  @args path - the document.url
- *  @args suffix - remove the named suffix from the file */
+/**
+ * basename - this function will return the basename
+ * of the php script called
+ *
+ * @param path - the document.url
+ * @param suffix - remove the named suffix from the file
+ */
 function basename(path, suffix) {
 	var b = path;
 	var lastChar = b.charAt(b.length - 1);
@@ -221,20 +224,25 @@ function base64_encode(string) {
 	return btoa(unescape(encodeURIComponent(string)));
 }
 
-/** getQueryString - this function will return the value
- *  of the get request variable defined as input.
- *  @args name - the variable name to return */
+/**
+ * getQueryString - this function will return the value
+ * of the get request variable defined as input.
+ * @param name - the variable name to return
+ */
 function getQueryString(name) {
 	var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
 	return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
 }
 
 
-/** delayKeyup - this function will delay the keyup to
- *  provide debouncing of input strokes on the keyboard
- *  this preventing your backend server from becoming overloaded
- *  usage: $("#yourid").delayKeyup(function(){ console.log('do something'); }, 500);
- *  @args name - the variable name to return */
+/**
+ * delayKeyup - this function will delay the keyup to
+ * provide debouncing of input strokes on the keyboard
+ * this preventing your backend server from becoming overloaded
+ * usage: $("#yourid").delayKeyup(function(){ console.log('do something'); }, 500);
+ *
+ * @param name - the variable name to return
+ */
 $.fn.delayKeyup = function (callback, ms) {
 	var timer = 0;
 	if (typeof ms === 'undefined' || ms < 500) {
@@ -248,8 +256,10 @@ $.fn.delayKeyup = function (callback, ms) {
 	return $(this);
 };
 
-/** bindFirst - Function ensures that the event is found at the top
- * of the event stack. */
+/**
+ * bindFirst - Function ensures that the event is found at the top
+ * of the event stack.
+ */
 $.fn.bindFirst = function (which, handler) {
 	var $el = $(this);
 	$el.off(which, handler);
@@ -262,7 +272,9 @@ $.fn.bindFirst = function (which, handler) {
 	events[which] = registered;
 };
 
-/** replaceOptions - function replaces the options in a select dropdown */
+/**
+ * replaceOptions - function replaces the options in a select dropdown
+ */
 $.fn.replaceOptions = function (options, selected) {
 	var self, $option;
 
@@ -369,13 +381,14 @@ $.fn.disableOptions = function (values, valueCheckFunc) {
  * @param {function} valueCheckFunc The function be to called if anything changes
  * @returns
  */
-
 $.fn.enableOptions = function (values, valueCheckFunc) {
    return $(this).enableDisableOptions(values, true, valueCheckFunc);
 }
 
-/** textWidth - This function will return the natural width of a string
- *  without any wrapping. */
+/**
+ * textWidth - This function will return the natural width of a string
+ * without any wrapping.
+ */
 $.fn.textWidth = function (text) {
 	var org = $(this);
 	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px">' + (text || org.text()) + '</span>');
@@ -392,8 +405,10 @@ $.fn.textWidth = function (text) {
 	return width;
 };
 
-/** textBoxWidth - This function will return the natural width of a string
- *  without any wrapping. */
+/**
+ * textBoxWidth - This function will return the natural width of a string
+ * without any wrapping.
+ */
 $.fn.textBoxWidth = function () {
 	var org = $(this);
 	if (org.val()) {
@@ -414,8 +429,10 @@ $.fn.textBoxWidth = function () {
 	return width;
 };
 
-/** classes - This function will return an array of all
- *  classes of an element */
+/**
+ * classes - This function will return an array of all
+ * classes of an element
+ */
 $.fn.classes = function (callback) {
 	var classes = [];
 	$.each(this, function (i, v) {
@@ -435,8 +452,10 @@ $.fn.classes = function (callback) {
 	return classes;
 };
 
-/** These three functions will set the cursor into
- *  a textbox or textarea and optionally select characters */
+/**
+ * These three functions will set the cursor into
+ * a textbox or textarea and optionally select characters
+ */
 $.fn.setCursorPosition = function (position) {
 	if (this.length == 0) return this;
 	return this.setSelection(position, position);
@@ -739,9 +758,12 @@ function enableSelection() {
 	$('tr.selectable').css('user-select', '');
 }
 
-/** selectUpdateRow - Highlight a selectable row combined with checkbox
- *  @arg event - The click event to support multiple selections
- *  @arg element - The jQuery selected object */
+/**
+ * selectUpdateRow - Highlight a selectable row combined with checkbox
+ *
+ * @param event - The click event to support multiple selections
+ * @param element - The jQuery selected object
+ */
 function selectUpdateRow(event, element) {
 	var checkboxes = element.closest('table').find('input[type=checkbox]:not(:disabled)');
 
@@ -763,9 +785,12 @@ function selectUpdateRow(event, element) {
 	}
 }
 
-/** dqUpdateDeps - When a user changes the Graph dropdown for a data query
- *  we have to check to see if those graphs are already created.
- *  @arg snmp_query_id - The snmp query id the is current */
+/**
+ * dqUpdateDeps - When a user changes the Graph dropdown for a data query
+ * we have to check to see if those graphs are already created.
+ *
+ * @param snmp_query_id - The snmp query id the is current
+ */
 function dqUpdateDeps(snmp_query_id) {
 	$('tr[id^="dqline' + snmp_query_id + '_"]').addClass('selectable').removeClass('disabled_row').find(':checkbox').prop('disabled', false);
 
@@ -803,8 +828,10 @@ function dqUpdateDeps(snmp_query_id) {
 	});
 }
 
-/** selectAll - This function will select all non-disabled rows
- *  @arg attrib - The Graph Type either graph template, or data query */
+/**
+ * selectAll - This function will select all non-disabled rows
+ * @param attrib - The Graph Type either graph template, or data query
+ */
 function selectAll(attrib, checked) {
 	if (attrib == 'chk') {
 		if (checked == true) {
@@ -875,8 +902,10 @@ function applyTimespanFilterChange() {
 
 }
 
-/** cactiReturnTo - This function simply returns to the previous page
- *  @args href - the previous page */
+/**
+ * cactiReturnTo - This function simply returns to the previous page
+ * @param href - the previous page
+ */
 function cactiReturnTo(href) {
 	if (typeof href !== 'string' || href.trim() == '') {
 		href = document.referrer;
@@ -885,8 +914,10 @@ function cactiReturnTo(href) {
 	loadUrl({ url: href, force: true });
 }
 
-/** applySkin - This function re-asserts all javascript behavior to a page
- *  that can't be set using a live attribute 'on()' */
+/**
+ * applySkin - This function re-asserts all javascript behavior to a page
+ * that can't be set using a live attribute 'on()'
+ */
 function applySkin() {
 	pageName = basename($(location).attr('pathname'));
 

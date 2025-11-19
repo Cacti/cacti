@@ -243,7 +243,7 @@ function create_data_query_filter($session_var) {
 
 	if ($host_id > 0) {
 		/* for the templates dropdown */
-		$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') . 'h.id = ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'h.id = ?';
 		$sql_params[] = $host_id;
 
 		$hostname = db_fetch_cell_prepared('SELECT description
@@ -259,7 +259,7 @@ function create_data_query_filter($session_var) {
 	}
 
 	if (get_request_var('site_id') >= 0) {
-		$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') . 'site_id = ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'site_id = ?';
 		$sql_params[] = get_filter_request_var('site_id');
 	}
 
@@ -281,7 +281,7 @@ function create_data_query_filter($session_var) {
 	if (isset_request_var('with_index')) {
 		$value = get_nfilter_request_var('with_index');
 	} else {
-		$value = read_config_option('default_has') == 'on' ? 'true':'false';
+		$value = read_config_option('default_has') == 'on' ? 'true' : 'false';
 	}
 
 	return [
@@ -397,9 +397,9 @@ function utilities_view_snmp_cache() {
 
 	/* filter by host */
 	if (get_request_var('host_id') == '0') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' h.id=0';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' h.id=0';
 	} elseif (get_request_var('host_id') > 0) {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' h.id = ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' h.id = ?';
 		$sql_params[] = get_request_var('host_id');
 	}
 
@@ -407,12 +407,12 @@ function utilities_view_snmp_cache() {
 	if (get_request_var('snmp_query_id') == '-1') {
 		/* Show all items */
 	} elseif (!isempty_request_var('snmp_query_id')) {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' hsc.snmp_query_id=' . get_request_var('snmp_query_id');
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' hsc.snmp_query_id=' . get_request_var('snmp_query_id');
 	}
 
 	/* filter by search string */
 	if (get_request_var('filter') != '') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' (
 			h.description LIKE ?
 			OR sq.name LIKE ?
 			OR hsc.field_name LIKE ?
@@ -512,38 +512,38 @@ function utilities_view_poller_cache() {
 	$sql_params = [];
 
 	if (get_request_var('site_id') > 0) {
-		$sql_where   .= ($sql_where != '' ? ' AND ':' WHERE') . ' h.site_id = ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE') . ' h.site_id = ?';
 		$sql_params[] = get_request_var('site_id');
 	}
 
 	if (get_request_var('poller_action') != '-1') {
-		$sql_where   .= ($sql_where != '' ? ' AND ':' WHERE') . ' pi.action = ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE') . ' pi.action = ?';
 		$sql_params[] = get_request_var('poller_action');
 	}
 
 	if (get_request_var('host_id') == '0') {
-		$sql_where   .= ($sql_where != '' ? ' AND ':' WHERE') . ' pi.host_id = 0';
+		$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE') . ' pi.host_id = 0';
 	} elseif (get_request_var('host_id') > 0) {
-		$sql_where   .= ($sql_where != '' ? ' AND ':' WHERE') . ' pi.host_id = ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE') . ' pi.host_id = ?';
 		$sql_params[] = get_request_var('host_id');
 	}
 
 	if (get_request_var('template_id') == '0') {
-		$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') . ' dtd.data_template_id = 0';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' dtd.data_template_id = 0';
 	} elseif (get_request_var('template_id') > 0) {
-		$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') . ' dtd.data_template_id = ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' dtd.data_template_id = ?';
 		$sql_params[] = get_request_var('template_id');
 	}
 
 	if (get_request_var('status') == 0) {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (h.disabled = "on" OR dtd.active = "")';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' (h.disabled = "on" OR dtd.active = "")';
 	} elseif (get_request_var('status') == 1) {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (h.disabled = "" AND dtd.active = "on")';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' (h.disabled = "" AND dtd.active = "on")';
 	}
 
 	if (get_request_var('filter') != '') {
 		if (get_request_var('host_id') > 0) {
-			$sql_where .= ($sql_where != '' ? ' AND ':' WHERE ') .
+			$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') .
 				'(
 					dtd.name_cache LIKE ? OR
 					pi.arg1 LIKE ? OR
@@ -554,7 +554,7 @@ function utilities_view_poller_cache() {
 			$sql_params[] = '%' . get_request_var('filter') . '%';
 			$sql_params[] = '%' . get_request_var('filter') . '%';
 		} else {
-			$sql_where .= ($sql_where != '' ? ' AND ':' WHERE ') .
+			$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') .
 				'(
 					dtd.name_cache LIKE ? OR
 					h.description LIKE ? OR
@@ -700,7 +700,7 @@ function create_poller_cache_filter($session_var) {
 
 	if ($host_id > 0) {
 		/* for the templates dropdown */
-		$sql_where   .= ' AND h.id = ?';
+		$sql_where .= ' AND h.id = ?';
 		$sql_params[] = $host_id;
 
 		$hostname = db_fetch_cell_prepared('SELECT description
@@ -716,7 +716,7 @@ function create_poller_cache_filter($session_var) {
 	}
 
 	if (get_filter_request_var('site_id') >= 0) {
-		$sql_where   .= ' AND site_id = ?';
+		$sql_where .= ' AND site_id = ?';
 		$sql_params[] = get_request_var('site_id');
 	}
 
@@ -1055,10 +1055,10 @@ function boost_display_run_status() {
 			<table>
 				<tr>
 					<td class='nowrap'>
-						<?php print __('Refresh Interval');?>
+						<?php print __('Refresh Interval'); ?>
 					</td>
 					<td>
-						<select id='refresh' name='refresh' onChange='applyFilter()' data-defaultLabel='<?php print __('Refresh Interval');?>'>
+						<select id='refresh' name='refresh' onChange='applyFilter()' data-defaultLabel='<?php print __('Refresh Interval'); ?>'>
 						<?php
 						foreach ($boost_utilities_interval as $key => $interval) {
 							print '<option value="' . $key . '"';
@@ -1067,10 +1067,10 @@ function boost_display_run_status() {
 								print ' selected';
 							} print '>' . $interval . '</option>';
 						}
-						?>
+	?>
 					</td>
 					<td>
-						<button type='button' class='ui-button ui-corner-all ui-widget' onClick='applyFilter()'><?php print __esc('Refresh');?></button>
+						<button type='button' class='ui-button ui-corner-all ui-widget' onClick='applyFilter()'><?php print __esc('Refresh'); ?></button>
 					</td>
 				</tr>
 			</table>
@@ -1250,7 +1250,7 @@ function boost_display_run_status() {
 
 		if (CACTI_CONNECTION == 'online') {
 			form_alternate_row();
-			print '<td>' . __('Remaining Data Sources:') . '</td><td>' . ($pending_ds > 0 ? number_format_i18n($pending_ds) . " ($premaining %)":__('TBD')) . '</td>';
+			print '<td>' . __('Remaining Data Sources:') . '</td><td>' . ($pending_ds > 0 ? number_format_i18n($pending_ds) . " ($premaining %)" : __('TBD')) . '</td>';
 		}
 
 		form_alternate_row();
@@ -1334,6 +1334,7 @@ function boost_display_run_status() {
 		html_section_header(__('Previous Runtime Statistics'), 2);
 
 		form_alternate_row();
+
 		if (is_numeric($last_run_time)) {
 			print '<td class="utilityPick">' . __('Last Start Time:') . '</td><td>' . date('Y-m-d H:i:s', (int) $last_run_time) . '</td>';
 		} else {
@@ -1344,13 +1345,13 @@ function boost_display_run_status() {
 		$last_end_time = read_config_option('boost_last_end_time', true);
 
 		form_alternate_row();
-		print '<td class="utilityPick">' . __('Last End Time:') . '</td><td>' . ($last_end_time != '' ? date('Y-m-d H:i:s', (int) $last_end_time):__('Never Run')) . '</td>';
+		print '<td class="utilityPick">' . __('Last End Time:') . '</td><td>' . ($last_end_time != '' ? date('Y-m-d H:i:s', (int) $last_end_time) : __('Never Run')) . '</td>';
 
 		form_alternate_row();
 		print '<td class="utilityPick">' . __('Last Run Duration:') . '</td><td>';
 
 		if (is_numeric($boost_last_run_duration)) {
-			print ($boost_last_run_duration > 60 ? __('%d minutes', (int)$boost_last_run_duration / 60) . ', ': '') . __('%d seconds', (int) $boost_last_run_duration % 60);
+			print ($boost_last_run_duration > 60 ? __('%d minutes', (int)$boost_last_run_duration / 60) . ', ' : '') . __('%d seconds', (int) $boost_last_run_duration % 60);
 
 			if ($rrd_updates != '') {
 				print ' (' . __('%0.2f percent of update frequency)', round(100 * (float) $boost_last_run_duration / (float) $update_interval / 60));
@@ -1361,7 +1362,7 @@ function boost_display_run_status() {
 		print '</td>';
 
 		form_alternate_row();
-		print '<td class="utilityPick">' . __('RRD Updates:') . '</td><td>' . ($boost_rrds_updated != '' ? number_format_i18n($boost_rrds_updated):'-') . '</td>';
+		print '<td class="utilityPick">' . __('RRD Updates:') . '</td><td>' . ($boost_rrds_updated != '' ? number_format_i18n($boost_rrds_updated) : '-') . '</td>';
 
 		form_alternate_row();
 		print '<td class="utilityPick">' . __('Peak Poller Memory:') . '</td><td>' . ((read_config_option('boost_peak_memory') != '' && is_numeric(read_config_option('boost_peak_memory'))) ? (round(read_config_option('boost_peak_memory') / 1024 / 1024,2)) . ' ' . __('MBytes') : __('N/A')) . '</td>';
@@ -1409,7 +1410,7 @@ function boost_display_run_status() {
 				number_format_i18n($delete));
 		}
 
-		print '<td class="utilityPick">' . __('Previous Runtime Timers:') . '</td><td>' . (($detail_stats != '') ? $detail_stats:__('N/A')) . '</td>';
+		print '<td class="utilityPick">' . __('Previous Runtime Timers:') . '</td><td>' . (($detail_stats != '') ? $detail_stats : __('N/A')) . '</td>';
 
 		$runtimes = db_fetch_assoc('SELECT name, value, CAST(replace(name, "stats_boost_", "") AS signed) AS ome
 			FROM settings
@@ -1461,7 +1462,7 @@ function boost_display_run_status() {
 		print '<td class="utilityPick">' . __('Concurrent Processes:') . '</td><td>' . read_config_option('boost_parallel') . '</td>';
 
 		form_alternate_row();
-		print '<td class="utilityPick">' . __('Next Start Time:') . '</td><td>' . (is_numeric($next_run_time) ? date('Y-m-d H:i:s', (int) $next_run_time):$next_run_time) . '</td>';
+		print '<td class="utilityPick">' . __('Next Start Time:') . '</td><td>' . (is_numeric($next_run_time) ? date('Y-m-d H:i:s', (int) $next_run_time) : $next_run_time) . '</td>';
 
 		form_alternate_row();
 		print '<td class="utilityPick">' . __('Maximum Records:') . '</td><td>' . number_format_i18n($max_records) . ' ' . __('Records') . '</td>';
@@ -1591,13 +1592,13 @@ function snmpagent_utilities_run_cache() {
 
 	/* filter by host */
 	if (!isempty_request_var('mib') && get_request_var('mib') != 'any') {
-		$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') . 'snmpagent_cache.mib = ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'snmpagent_cache.mib = ?';
 		$sql_params[] = get_request_var('mib');
 	}
 
 	/* filter by search string */
 	if (get_request_var('filter') != '') {
-		$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') .
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') .
 			' (`oid` LIKE ? OR `name` LIKE ? OR `mib` LIKE ? OR `max-access` LIKE ?)';
 
 		$sql_params[] = '%' . get_request_var('filter') . '%';
@@ -1812,19 +1813,19 @@ function snmpagent_utilities_run_eventlog() {
 
 	/* filter by severity */
 	if (get_request_var('receiver') != '-1') {
-		$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') . ' snl.manager_id = ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' snl.manager_id = ?';
 		$sql_params[] = get_request_var('receiver');
 	}
 
 	/* filter by severity */
 	if (!isempty_request_var('severity') && get_request_var('severity') != '-1') {
-		$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') . ' snl.severity = ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' snl.severity = ?';
 		$sql_params[] = get_request_var('severity');
 	}
 
 	/* filter by search string */
 	if (get_request_var('filter') != '') {
-		$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (`varbinds` LIKE ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' (`varbinds` LIKE ?';
 		$sql_params[] = '%' . get_request_var('filter') . '%';
 	}
 

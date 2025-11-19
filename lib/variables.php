@@ -26,10 +26,9 @@
  * update_data_source_title_cache_from_template - updates the title cache for all data sources
  * that match a given data template
  *
- * @param  int     - The ID of the data template to match
- * @param mixed $data_template_id
+ * @param int   $data_template_id  - The ID of the data template to match
  *
- * @return null
+ * @return void
  */
 function update_data_source_title_cache_from_template($data_template_id) {
 	$data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' local_data_id
@@ -45,11 +44,13 @@ function update_data_source_title_cache_from_template($data_template_id) {
 	}
 }
 
-/* update_data_source_title_cache_from_query - updates the title cache for all data sources
+/** update_data_source_title_cache_from_query - updates the title cache for all data sources
  * that match a given data query/index combination
  *
  * @param  int     - The ID of the data query to match
  * @param  int     - The index within the data query to match
+ * @param mixed $snmp_query_id
+ * @param mixed $snmp_index
  *
  * @return string  - The modified string
  */
@@ -71,14 +72,11 @@ function update_data_source_title_cache_from_query($snmp_query_id, $snmp_index) 
  * update_data_source_title_cache_from_host - updates the title cache for all data sources
  * that match a given host
  *
- * @param  int     - The ID of the host to match
- * @param  int     - The ID of the snmp query
- * @param  array   - An array of local data ids
- * @param mixed $host_id
- * @param mixed $query_id
- * @param mixed $ids
+ * @param  int    $host_id  - The ID of the host to match
+ * @param  int    $query_id - The ID of the snmp query
+ * @param  array  $ids      - An array of local data ids
  *
- * @return null
+ * @return void
  */
 function update_data_source_title_cache_from_host($host_id, $query_id = 0, $ids = []) {
 	if ($query_id > 0 && !cacti_sizeof($ids)) {
@@ -111,10 +109,9 @@ function update_data_source_title_cache_from_host($host_id, $query_id = 0, $ids 
 /**
  * update_data_source_title_cache - updates the title cache for a single data source
  *
- * @param  int     - The ID of the data source to update the title cache for
- * @param mixed $local_data_id
+ * @param  int $local_data_id - The ID of the data source to update the title cache for
  *
- * @return null    - Output is returned through stdout
+ * @return void
  */
 function update_data_source_title_cache($local_data_id) {
 	$old_title = db_fetch_cell_prepared('SELECT name_cache
@@ -147,10 +144,9 @@ function update_data_source_title_cache($local_data_id) {
  * update_graph_title_cache_from_template - updates the title cache for all graphs
  * that match a given graph template
  *
- * @param  int     - The ID of the graph template to match
- * @param mixed $graph_template_id
+ * @param  int $graph_template_id - The ID of the graph template to match
  *
- * @return null
+ * @return void
  */
 function update_graph_title_cache_from_template($graph_template_id) {
 	$graphs = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' local_graph_id
@@ -170,12 +166,10 @@ function update_graph_title_cache_from_template($graph_template_id) {
  * update_graph_title_cache_from_query - updates the title cache for all graphs
  * that match a given data query/index combination
  *
- * @param  int     - The ID of the data query to match
- * @param  int     - The index within the data query to match
- * @param mixed $snmp_query_id
- * @param mixed $snmp_index
+ * @param  int  $snmp_query_id - The ID of the data query to match
+ * @param mixed $snmp_index    - The index within the data query to match
  *
- * @return null
+ * @return void
  */
 function update_graph_title_cache_from_query($snmp_query_id, $snmp_index) {
 	$graphs = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
@@ -191,14 +185,14 @@ function update_graph_title_cache_from_query($snmp_query_id, $snmp_index) {
 	}
 }
 
-/* update_graph_title_cache_from_host - updates the title cache for all graphs
+/** update_graph_title_cache_from_host - updates the title cache for all graphs
  * that match a given host
  *
- * @param  int     - The ID of the host to match
- * @param  int     - The ID of the data query to match
- * @param  array   - An array of local_data_ids
+ * @param  int   $host_id  - The ID of the host to match
+ * @param  int   $query_id - The ID of the data query to match
+ * @param  array $ids      - An array of local_data_ids
  *
- * @return null
+ * @return void
  */
 function update_graph_title_cache_from_host($host_id, $query_id = 0, $ids = []) {
 	if ($query_id > 0 && !cacti_sizeof($ids)) {
@@ -235,10 +229,9 @@ function update_graph_title_cache_from_host($host_id, $query_id = 0, $ids = []) 
 /**
  * update_graph_title_cache - updates the title cache for a single graph
  *
- * @param  int     - The ID of the graph to update the title cache for
- * @param mixed $local_graph_id
+ * @param  int $local_graph_id - The ID of the graph to update the title cache for
  *
- * @return null
+ * @return void
  */
 function update_graph_title_cache($local_graph_id) {
 	$old_title = db_fetch_cell_prepared('SELECT title_cache

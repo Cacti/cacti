@@ -284,7 +284,7 @@ if ($listGraphTemplates) {
 		$sql_cwhere = '';
 
 		foreach ($regex as $r) {
-			$sql_cwhere .= ($sql_cwhere == '' ? '':' OR ') . 'title_cache RLIKE "' . $r . '"';
+			$sql_cwhere .= ($sql_cwhere == '' ? '' : ' OR ') . 'title_cache RLIKE "' . $r . '"';
 		}
 
 		$sql_where .= $sql_cwhere . ')';
@@ -306,7 +306,7 @@ if ($listGraphTemplates) {
 		$sql_where");
 
 	if ($graphs != false && cacti_sizeof($graphs)) {
-		print 'There are ' . cacti_sizeof($graphs) . ' Graphs to Remove.' . (!$force ? '  Use the --force option to remove these Graphs.':'');
+		print 'There are ' . cacti_sizeof($graphs) . ' Graphs to Remove.' . (!$force ? '  Use the --force option to remove these Graphs.' : '');
 
 		if ($list) {
 			print PHP_EOL . "ID\tGraphName" . PHP_EOL;

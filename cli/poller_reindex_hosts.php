@@ -71,6 +71,7 @@ $host_descr   = false;
 
 /* optional for threading and verbose display */
 $threads           = detect_cpu_cores();
+
 if ($threads == 0) {
 	$threads = 2;
 }
@@ -80,7 +81,7 @@ $forcerun          = false;
 
 foreach ($parms as $parameter) {
 	if (strpos($parameter, '=')) {
-		list($arg, $value) = explode('=', $parameter);
+		[$arg, $value] = explode('=', $parameter);
 	} else {
 		$arg   = $parameter;
 		$value = '';
@@ -155,6 +156,7 @@ foreach ($parms as $parameter) {
 			display_version();
 
 			exit;
+
 		default:
 			print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 
@@ -385,7 +387,7 @@ function reindex_launch_child($thread_id, $threads) {
 
 	cacti_log(sprintf('NOTE: Launching Reindex hosts Number %s for Type %s', $thread_id, 'child'), true, 'REINDEX', POLLER_VERBOSITY_MEDIUM);
 
-	exec_background($php_binary, CACTI_PATH_CLI . "/poller_reindex_hosts.php --type=child --threads=$threads --child=$thread_id " . ($debug ? ' --debug':'') . ($host_id ? " --id=$host_id":'') . ($query_id ? " --qid=$query_id":'') . ($host_descr ? " --host-descr=$host_descr":'') . ($forcerun ? ' --force':''));
+	exec_background($php_binary, CACTI_PATH_CLI . "/poller_reindex_hosts.php --type=child --threads=$threads --child=$thread_id " . ($debug ? ' --debug' : '') . ($host_id ? " --id=$host_id" : '') . ($query_id ? " --qid=$query_id" : '') . ($host_descr ? " --host-descr=$host_descr" : '') . ($forcerun ? ' --force' : ''));
 }
 
 /**

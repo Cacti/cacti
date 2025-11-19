@@ -6,11 +6,20 @@ parameters:
     excludePaths:
         analyse:
            - include/vendor/*
+           - plugins/*
     paths:
         - include
         - lib
         - install
         - .
+    bootstrapFiles:
+        - .phpstan-bootstrap.php
+        - include/global_constants.php
+        - include/global.php
+        - include/global_languages.php
+        - include/global_arrays.php
+        - include/global_form.php
+        - include/global_settings.php
     reportUnmatchedIgnoredErrors: false
     ignoreErrors:
         - identifier: missingType.iterableValue

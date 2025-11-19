@@ -62,6 +62,7 @@ $data_template_id = false;
 
 /* optional for threading and verbose display */
 $threads           = detect_cpu_cores();
+
 if ($threads == 0) {
 	$threads = 2;
 }
@@ -71,7 +72,7 @@ $forcerun          = false;
 
 foreach ($parms as $parameter) {
 	if (strpos($parameter, '=')) {
-		list($arg, $value) = explode('=', $parameter, 2);
+		[$arg, $value] = explode('=', $parameter, 2);
 	} else {
 		$arg   = $parameter;
 		$value = '';
@@ -147,6 +148,7 @@ foreach ($parms as $parameter) {
 			display_version();
 
 			exit;
+
 		default:
 			print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 
@@ -165,15 +167,15 @@ foreach ($parms as $parameter) {
 $rp_type = '';
 
 if ($host_id !== false) {
-	$rp_type .= ($rp_type != '' ? ',':':') . "hi:$host_id";
+	$rp_type .= ($rp_type != '' ? ',' : ':') . "hi:$host_id";
 }
 
 if ($host_template_id !== false) {
-	$rp_type .= ($rp_type != '' ? ',':':') . "ht:$host_template_id";
+	$rp_type .= ($rp_type != '' ? ',' : ':') . "ht:$host_template_id";
 }
 
 if ($data_template_id !== false) {
-	$rp_type .= ($rp_type != '' ? ',':':') . "dt:$data_template_id";
+	$rp_type .= ($rp_type != '' ? ',' : ':') . "dt:$data_template_id";
 }
 
 /* install signal handlers for UNIX only */
@@ -356,7 +358,7 @@ function pushout_launch_child($thread_id, $threads) {
 
 	cacti_log(sprintf('NOTE: Launching Rebuild poller cache Number %s for Type %s', $thread_id, 'child'), true, 'PUSHOUT', POLLER_VERBOSITY_MEDIUM);
 
-	exec_background($php_binary, CACTI_PATH_CLI . "/rebuild_poller_cache.php --type=child --threads=$threads --child=$thread_id " . ($debug ? ' --debug':'') . ($host_template_id ? " --host-template-id=$host_template_id":'') . ($data_template_id ? " --data-template-id=$data_template_id":''));
+	exec_background($php_binary, CACTI_PATH_CLI . "/rebuild_poller_cache.php --type=child --threads=$threads --child=$thread_id " . ($debug ? ' --debug' : '') . ($host_template_id ? " --host-template-id=$host_template_id" : '') . ($data_template_id ? " --data-template-id=$data_template_id" : ''));
 }
 
 /**

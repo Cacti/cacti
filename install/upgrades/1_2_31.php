@@ -41,4 +41,3 @@ function upgrade_to_1_2_31() {
 
 	db_install_execute('ALTER TABLE settings_user MODIFY COLUMN name varchar(255) NOT NULL default ""');
 }
-

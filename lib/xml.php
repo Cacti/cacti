@@ -197,7 +197,7 @@ function get_rrd_children($vals, &$i, &$column, &$row) {
 						break;
 					case 'row':
 						$row++;
-						$column                 =0;
+						$column                 = 0;
 						$children['data'][$row] = get_rrd_children($vals,$i,$column,$row);
 
 						break;

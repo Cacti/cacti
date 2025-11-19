@@ -73,7 +73,7 @@ array_shift($parms);
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter);
+			[$arg, $value] = explode('=', $parameter);
 		} else {
 			$arg   = $parameter;
 			$value = '';
@@ -218,7 +218,7 @@ if ($host_id === false) {
 		foreach ($poller_commands as $command) {
 			switch ($command['action']) {
 				case POLLER_COMMAND_REINDEX:
-					list($device_id, $data_query_id) = explode(':', $command['command']);
+					[$device_id, $data_query_id] = explode(':', $command['command']);
 
 					if ($last_host_id != $device_id) {
 						$last_host_id = $device_id;
@@ -328,7 +328,7 @@ function commands_launch_child($host_id) {
 
 	cacti_log(sprintf('NOTE: Launching Commands Process Number %s for Type %s', $host_id, 'child'), false, 'CLEANUP', POLLER_VERBOSITY_MEDIUM);
 
-	exec_background($php_binary, CACTI_PATH_BASE . "/poller_commands.php --child=$host_id" . ($seebug ? ' --debug':''));
+	exec_background($php_binary, CACTI_PATH_BASE . "/poller_commands.php --child=$host_id" . ($seebug ? ' --debug' : ''));
 }
 
 /**

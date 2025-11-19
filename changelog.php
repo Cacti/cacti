@@ -142,7 +142,7 @@ function changelog_view() {
 		} elseif (!empty($line)) {
 			if (!empty($ver)) {
 				$vers[$ver] = $details;
-				$first      =true;
+				$first      = true;
 				$details    = [];
 			}
 

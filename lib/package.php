@@ -120,11 +120,11 @@ function check_get_author_info() {
 	} else {
 		?>
 		<script type='text/javascript'>
-		var mixedReasonTitle = '<?php print __('Key Generation Required to Use Tool');?>';
-		var mixedOnPage      = '<?php print __esc('Packaging Key Information Not Found');?>';
+		var mixedReasonTitle = '<?php print __('Key Generation Required to Use Tool'); ?>';
+		var mixedOnPage      = '<?php print __esc('Packaging Key Information Not Found'); ?>';
 
 		sessionMessage = {
-			message: '<?php print __('In order to use this Packaging Tool, you must first run the <b><i class="deviceUp">genkey.php</i></b> script in the cli directory.  Once that is complete, you will have a public and private key used to sign your packages.');?>',
+			message: '<?php print __('In order to use this Packaging Tool, you must first run the <b><i class="deviceUp">genkey.php</i></b> script in the cli directory.  Once that is complete, you will have a public and private key used to sign your packages.'); ?>',
 			level: MESSAGE_LEVEL_MIXED
 		};
 
@@ -255,7 +255,7 @@ function get_package_contents($export_type, $export_item_id, $include_deps = tru
 				$in = '';
 
 				foreach ($graph_templates as $gt) {
-					$in .= ($in != '' ? ',':'') . $gt['id'];
+					$in .= ($in != '' ? ',' : '') . $gt['id'];
 				}
 
 				$queries = db_fetch_assoc("SELECT sq.*
@@ -354,7 +354,7 @@ function get_package_contents($export_type, $export_item_id, $include_deps = tru
 		foreach ($queries as $q) {
 			$file   = str_replace('<path_cacti>', CACTI_PATH_BASE, $q['xml_path']);
 			$exists = file_exists($file);
-			$output .= '<div class="formRow"><div class="formColumnLeft nowrap">' . html_escape(basename($file)) . ($exists ? '<i class="fa-solid fa-circle-check deviceUp"></i>':'<i class="fa fa-cross deviceDown"></i>') . '</div></div>';
+			$output .= '<div class="formRow"><div class="formColumnLeft nowrap">' . html_escape(basename($file)) . ($exists ? '<i class="fa-solid fa-circle-check deviceUp"></i>' : '<i class="fa fa-cross deviceDown"></i>') . '</div></div>';
 		}
 
 		$output .= '</div>';
@@ -370,7 +370,7 @@ function get_package_contents($export_type, $export_item_id, $include_deps = tru
 			if (array_search($file, $found, true) === false) {
 				if (!str_contains($file['file'], '/resource/')) {
 					$exists = file_exists($file['file']);
-					$output .= '<div class="formRow"><div class="formColumnLeft nowrap">' . html_escape(basename($file['file'])) .  ($exists ? '<i class="fa-solid fa-circle-check deviceUp"></i>':'<i class="fa fa-cross deviceDown"></i>') . '</div></div>';
+					$output .= '<div class="formRow"><div class="formColumnLeft nowrap">' . html_escape(basename($file['file'])) .  ($exists ? '<i class="fa-solid fa-circle-check deviceUp"></i>' : '<i class="fa fa-cross deviceDown"></i>') . '</div></div>';
 				}
 
 				$found[] = $file;
@@ -573,47 +573,47 @@ function package_template(&$template, &$info, &$files, &$debug) {
 	$xml .= '     <name>' . $info['name'] . "</name>\n";
 
 	if (isset($info['author'])) {
-		$xml   .= '     <author>' . $info['author'] . "</author>\n";
+		$xml .= '     <author>' . $info['author'] . "</author>\n";
 		$debug .= ' Author     : ' . $info['author'] . "\n";
 	}
 
 	if (isset($info['homepage'])) {
-		$xml   .= '     <homepage>' . $info['homepage'] . "</homepage>\n";
+		$xml .= '     <homepage>' . $info['homepage'] . "</homepage>\n";
 		$debug .= ' Homepage   : ' . $info['homepage'] . "\n";
 	}
 
 	if (isset($info['email'])) {
-		$xml   .= '     <email>' . $info['email'] . "</email>\n";
+		$xml .= '     <email>' . $info['email'] . "</email>\n";
 		$debug .= ' Email      : ' . $info['email'] . "\n";
 	}
 
 	if (isset($info['description'])) {
-		$xml   .= '     <description>' . $info['description'] . "</description>\n";
+		$xml .= '     <description>' . $info['description'] . "</description>\n";
 		$debug .= ' Description: ' . $info['description'] . "\n";
 	}
 
 	if (isset($info['class'])) {
-		$xml   .= '     <class>' . $info['class'] . "</class>\n";
+		$xml .= '     <class>' . $info['class'] . "</class>\n";
 		$debug .= ' Class: ' . $info['class'] . "\n";
 	}
 
 	if (isset($info['tags'])) {
-		$xml   .= '     <tags>' . $info['tags'] . "</tags>\n";
+		$xml .= '     <tags>' . $info['tags'] . "</tags>\n";
 		$debug .= ' Tags: ' . $info['tags'] . "\n";
 	}
 
 	if (isset($info['installation'])) {
-		$xml   .= '     <installation>' . $info['installation'] . "</installation>\n";
+		$xml .= '     <installation>' . $info['installation'] . "</installation>\n";
 		$debug .= ' Instructions: ' . $info['installation'] . "\n";
 	}
 
 	if (isset($info['version'])) {
-		$xml   .= '     <version>' . $info['version'] . "</version>\n";
+		$xml .= '     <version>' . $info['version'] . "</version>\n";
 		$debug .= ' Version    : ' . $info['version'] . "\n";
 	}
 
 	if (isset($info['copyright'])) {
-		$xml   .= '     <copyright>' . $info['copyright'] . "</copyright>\n";
+		$xml .= '     <copyright>' . $info['copyright'] . "</copyright>\n";
 		$debug .= ' Copyright  : ' . $info['copyright'] . "\n";
 	}
 
@@ -639,7 +639,7 @@ function package_template(&$template, &$info, &$files, &$debug) {
 	if (cacti_sizeof($directories)) {
 		foreach ($directories as $dir) {
 			$debug .= "   Adding Directory: $dir\n";
-			$xml   .= '       <directory>' . str_replace($my_base, '', $dir) . "</directory>\n";
+			$xml .= '       <directory>' . str_replace($my_base, '', $dir) . "</directory>\n";
 		}
 	}
 	$xml .= "   </directories>\n";

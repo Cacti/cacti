@@ -756,9 +756,9 @@ function create_host_edit_filter($host, $content = '') {
 				'class'   => 'fa fa-sync reindexDevice'
 			],
 			[
-				'display' => ($debug ? __('Disable Device Debug'):__('Enable Device Debug')),
-				'url'     => 'host.php?action=' . ($debug ? 'disable_debug':'enable_debug') . '&host_id=' . $host['id'],
-				'class'   => ($debug ? 'fa fa-bug disableDebug':'fa fa-bug enableDebug')
+				'display' => ($debug ? __('Disable Device Debug') : __('Enable Device Debug')),
+				'url'     => 'host.php?action=' . ($debug ? 'disable_debug' : 'enable_debug') . '&host_id=' . $host['id'],
+				'class'   => ($debug ? 'fa fa-bug disableDebug' : 'fa fa-bug enableDebug')
 			],
 			[
 				'display' => __('Repopulate Poller Cache'),
@@ -1043,7 +1043,7 @@ function host_edit() {
 			$sql_where2 = ' WHERE';
 		}
 
-		$sql_where2   .= ' snmp_query.id NOT IN(SELECT snmp_query_id FROM host_snmp_query WHERE host_id = ?)';
+		$sql_where2 .= ' snmp_query.id NOT IN(SELECT snmp_query_id FROM host_snmp_query WHERE host_id = ?)';
 		$sql_params2[] = get_request_var('id');
 
 		$selected_data_queries = db_fetch_assoc_prepared("SELECT snmp_query.id, host_snmp_query.reindex_last_runtime,
@@ -1099,7 +1099,7 @@ function host_edit() {
 					<?php print $item['reindex_last_runtime']; ?>
 				</td>
 				<td class='nowrap left'>
-					<?php print ($item['reindex_last_duration'] == 0 ? '-' : __('%0.2f secs', $item['reindex_last_duration'])); ?>
+					<?php print($item['reindex_last_duration'] == 0 ? '-' : __('%0.2f secs', $item['reindex_last_duration'])); ?>
 				</td>
 				<td>
 					<?php print (($status == 'success') ? "<span class='success'>" . __('Success') . '</span>' : "<span class='failed'>" . __('Fail')) . '</span>' . __(' [%d Items, %d Rows]', $item['itemCount'], $item['rowCount']); ?>
@@ -1276,7 +1276,7 @@ function device_javascript(bool $hasHost = true) {
 						applySkin();
 
 						$('#cdialog').dialog({
-							title: '<?php print __('Delete Item from Device Template');?>',
+							title: '<?php print __('Delete Item from Device Template'); ?>',
 							close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
 							minHeight: 80,
 							minWidth: 500
@@ -1439,7 +1439,7 @@ function device_javascript(bool $hasHost = true) {
 					hostInfoHeight = $('.hostInfoHeader').height();
 				});
 			} else {
-					$('#ping_results').html('<?php print __('Device Status will appear once created');?>');
+					$('#ping_results').html('<?php print __('Device Status will appear once created'); ?>');
 			}
 		});
 
@@ -1453,7 +1453,7 @@ function device_javascript(bool $hasHost = true) {
 function get_device_records(&$total_rows, $rows) {
 	$sql_where     = '';
 	$sql_params    = [];
-	$maint_devices = array();
+	$maint_devices = [];
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
@@ -1500,20 +1500,20 @@ function get_device_records(&$total_rows, $rows) {
 		$sql_where .= ($sql_where == '' ? ' WHERE ' : ' AND ') . "NOT $host_where_disabled";
 	} elseif ($status == '-4') {
 		if (db_column_exists('host', 'thold_failure_count')) {
-			$sql_where .= ($sql_where == '' ? ' WHERE ':' AND ') .
+			$sql_where .= ($sql_where == '' ? ' WHERE ' : ' AND ') .
 				"(host.status != '3' OR $host_where_disabled OR (host.status != 2
 					AND thold_failure_count > 0
 					AND status_event_count >= thold_failure_count))";
 		} else {
-			$sql_where .= ($sql_where == '' ? ' WHERE ':' AND ') . " (host.status != '3' OR host.disabled = 'on')";
+			$sql_where .= ($sql_where == '' ? ' WHERE ' : ' AND ') . " (host.status != '3' OR host.disabled = 'on')";
 		}
 	} elseif ($status == -5 && api_plugin_is_enabled('maint')) {
 		if (cacti_sizeof($maint_devices)) {
-			$sql_where .= ($sql_where == '' ? ' WHERE ':' AND ') . 'host.id in (' . implode(',', $maint_devices) . ')';
+			$sql_where .= ($sql_where == '' ? ' WHERE ' : ' AND ') . 'host.id in (' . implode(',', $maint_devices) . ')';
 		}
 	} elseif ($status != '-1') {
 		if (db_column_exists('host', 'thold_failure_count')) {
-			$sql_where .= ($sql_where == '' ? ' WHERE ':' AND ') .
+			$sql_where .= ($sql_where == '' ? ' WHERE ' : ' AND ') .
 				"(host.status = ? OR (status != 2
 					AND thold_failure_count > 0
 					AND status_event_count >= thold_failure_count)
@@ -1521,7 +1521,7 @@ function get_device_records(&$total_rows, $rows) {
 
 			$sql_params[] = $status;
 		} else {
-			$sql_where .= ($sql_where == '' ? ' WHERE ':' AND ') . "(host.status = ? AND NOT $host_where_disabled)";
+			$sql_where .= ($sql_where == '' ? ' WHERE ' : ' AND ') . "(host.status = ? AND NOT $host_where_disabled)";
 
 			$sql_params[] = $status;
 		}
@@ -1533,16 +1533,16 @@ function get_device_records(&$total_rows, $rows) {
 	}
 
 	if (get_request_var('host_template_id') == '0') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' host.host_template_id = 0';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' host.host_template_id = 0';
 	} elseif (get_request_var('host_template_id') > '0') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . 'host.host_template_id = ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'host.host_template_id = ?';
 		$sql_params[] = get_request_var('host_template_id');
 	}
 
 	if (get_request_var('site_id') == '0') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . 'host.site_id = 0';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'host.site_id = 0';
 	} elseif (get_request_var('site_id') > '0') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . 'host.site_id = ?';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'host.site_id = ?';
 		$sql_params[] = get_request_var('site_id');
 	}
 
@@ -1573,7 +1573,7 @@ function get_device_records(&$total_rows, $rows) {
 			IF(UNIX_TIMESTAMP(status_rec_date) > 943916400, UNIX_TIMESTAMP() - UNIX_TIMESTAMP(status_rec_date),
 			IF(snmp_sysUptimeInstance>0 AND snmp_version > 0, snmp_sysUptimeInstance/100, UNIX_TIMESTAMP()
 		))))) AS unsigned) AS instate, " .
-		(cacti_sizeof($maint_devices) > 0 ? "IF(host.id in(" . implode(',', $maint_devices) . "), 1,0) as maint, " : '0 as maint, ') .
+		(cacti_sizeof($maint_devices) > 0 ? 'IF(host.id in(' . implode(',', $maint_devices) . '), 1,0) as maint, ' : '0 as maint, ') .
 		"s.name as site_name,
 		s.disabled as site_disabled
 		FROM host
@@ -2065,9 +2065,8 @@ function draw_hosts_filter($render = false) {
 	}
 }
 
-function get_maint_hosts () {
-
-	$maint_devices = array();
+function get_maint_hosts() {
+	$maint_devices = [];
 	$t             = time();
 	$schedules     = [];
 

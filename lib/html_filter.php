@@ -333,7 +333,7 @@ class CactiTableFilter {
 			if (isset_request_var('has_graphs')) {
 				$value = get_nfilter_request_var('has_graphs');
 			} else {
-				$value = read_config_option('default_has') == 'on' ? 'true':'false';
+				$value = read_config_option('default_has') == 'on' ? 'true' : 'false';
 			}
 
 			$this->filter_array['rows'][0] += [
@@ -342,7 +342,7 @@ class CactiTableFilter {
 					'friendly_name'  => __('Has Graphs'),
 					'filter'         => FILTER_VALIDATE_REGEXP,
 					'filter_options' => ['options' => ['regexp' => '(true|false)']],
-					'default'        => read_config_option('default_has') == 'on' ? 'true':'false',
+					'default'        => read_config_option('default_has') == 'on' ? 'true' : 'false',
 					'pageset'        => true,
 					'value'          => $value
 				]
@@ -353,7 +353,7 @@ class CactiTableFilter {
 			if (isset_request_var('has_data')) {
 				$value = get_nfilter_request_var('has_data');
 			} else {
-				$value = read_config_option('default_has') == 'on' ? 'true':'false';
+				$value = read_config_option('default_has') == 'on' ? 'true' : 'false';
 			}
 
 			$this->filter_array['rows'][0] += [
@@ -362,7 +362,7 @@ class CactiTableFilter {
 					'friendly_name'  => __('Has Data Sources'),
 					'filter'         => FILTER_VALIDATE_REGEXP,
 					'filter_options' => ['options' => ['regexp' => '(true|false)']],
-					'default'        => read_config_option('default_has') == 'on' ? 'true':'false',
+					'default'        => read_config_option('default_has') == 'on' ? 'true' : 'false',
 					'pageset'        => true,
 					'value'          => $value
 				]
@@ -373,7 +373,7 @@ class CactiTableFilter {
 			if (isset_request_var('named')) {
 				$value = get_nfilter_request_var('named');
 			} else {
-				$value = read_config_option('default_has') == 'on' ? 'true':'false';
+				$value = read_config_option('default_has') == 'on' ? 'true' : 'false';
 			}
 
 			$this->filter_array['rows'][0] += [
@@ -382,7 +382,7 @@ class CactiTableFilter {
 					'friendly_name'  => __('Named Colors'),
 					'filter'         => FILTER_VALIDATE_REGEXP,
 					'filter_options' => ['options' => ['regexp' => '(true|false)']],
-					'default'        => read_config_option('default_has') == 'on' ? 'true':'false',
+					'default'        => read_config_option('default_has') == 'on' ? 'true' : 'false',
 					'pageset'        => true,
 					'value'          => $value
 				]
@@ -393,7 +393,7 @@ class CactiTableFilter {
 			if (isset_request_var('associated')) {
 				$value = get_nfilter_request_var('associated');
 			} else {
-				$value = read_config_option('default_has') == 'on' ? 'true':'false';
+				$value = read_config_option('default_has') == 'on' ? 'true' : 'false';
 			}
 
 			$this->filter_array['rows'][0] += [
@@ -402,7 +402,7 @@ class CactiTableFilter {
 					'friendly_name'  => ($this->associated_label != '' ? $this->associated_label : __('Associated')),
 					'filter'         => FILTER_VALIDATE_REGEXP,
 					'filter_options' => ['options' => ['regexp' => '(true|false)']],
-					'default'        => read_config_option('default_has') == 'on' ? 'true':'false',
+					'default'        => read_config_option('default_has') == 'on' ? 'true' : 'false',
 					'pageset'        => true,
 					'value'          => $value
 				]
@@ -528,9 +528,9 @@ class CactiTableFilter {
 							print '<div class="filterColumnButton">' . PHP_EOL;
 
 							if (isset($field_array['display'])) {
-								print '<button type="button" class="ui-button ui-corner-all ui-widget" id="' . $field_name . '"' . (isset($field_array['title']) ? ' title="' . $field_array['title']:'') . '"><span class="button-text">' . $field_array['display'] . '</span></button>';
+								print '<button type="button" class="ui-button ui-corner-all ui-widget" id="' . $field_name . '"' . (isset($field_array['title']) ? ' title="' . $field_array['title'] : '') . '"><span class="button-text">' . $field_array['display'] . '</span></button>';
 							} else {
-								print '<button type="button" class="ui-button ui-corner-all ui-widget" id="' . $field_name . '"' . (isset($field_array['title']) ? ' title="' . $field_array['title']:'') . '"><i class="' . $field_array['class'] . '"></i></button>';
+								print '<button type="button" class="ui-button ui-corner-all ui-widget" id="' . $field_name . '"' . (isset($field_array['title']) ? ' title="' . $field_array['title'] : '') . '"><i class="' . $field_array['class'] . '"></i></button>';
 							}
 
 							print '</div>' . PHP_EOL;
@@ -538,13 +538,13 @@ class CactiTableFilter {
 							break;
 						case 'submit':
 							print '<div class="filterColumnButton">' . PHP_EOL;
-							print '<button type="submit" class="ui-button ui-corner-all ui-widget ui-state-active ' . $class . '" id="' . $field_name . '" ' . (isset($field_array['title']) ? ' title="' . $field_array['title']:'') . '"><span class="button-text">' . $field_array['display'] . '</span></button>';
+							print '<button type="submit" class="ui-button ui-corner-all ui-widget ui-state-active ' . $class . '" id="' . $field_name . '" ' . (isset($field_array['title']) ? ' title="' . $field_array['title'] : '') . '"><span class="button-text">' . $field_array['display'] . '</span></button>';
 							print '</div>' . PHP_EOL;
 
 							break;
 						case 'filter_checkbox':
 							print '<div class="filterColumn"><span>' . PHP_EOL;
-							print '<input type="checkbox" class="ui-button ui-corner-all ui-widget' . $class . '" id="' . $field_name . '"' . (isset($field_array['title']) ? ' title="' . $field_array['title']:'') . '"' . ($field_array['value'] == 'on' || $field_array['value'] == 'true' ? ' checked':'') . '>';
+							print '<input type="checkbox" class="ui-button ui-corner-all ui-widget' . $class . '" id="' . $field_name . '"' . (isset($field_array['title']) ? ' title="' . $field_array['title'] : '') . '"' . ($field_array['value'] == 'on' || $field_array['value'] == 'true' ? ' checked' : '') . '>';
 							print '&nbsp;<label for="' . $field_name . '">' . $field_array['friendly_name'] . '</label>';
 							print '</span></div>' . PHP_EOL;
 
@@ -562,7 +562,7 @@ class CactiTableFilter {
 
 							if (cacti_sizeof($this->timespans)) {
 								foreach ($this->timespans as $value => $text) {
-									print "<option value='$value'" . ($_SESSION['sess_current_timespan'] == $value ? ' selected':'') .  '>' . html_escape($text) . '</option>';
+									print "<option value='$value'" . ($_SESSION['sess_current_timespan'] == $value ? ' selected' : '') .  '>' . html_escape($text) . '</option>';
 								}
 							}
 							print '</select>';
@@ -601,8 +601,8 @@ class CactiTableFilter {
 								$end_val    = cacti_sizeof($this->timeshifts) + 1;
 
 								if (cacti_sizeof($this->timeshifts)) {
-									for ($shift_value=$start_val; $shift_value < $end_val; $shift_value++) {
-										print "<option value='$shift_value'" . ($_SESSION['sess_current_timeshift'] == $shift_value ? ' selected':'') . '>' . html_escape($this->timeshifts[$shift_value]) . '</option>';
+									for ($shift_value = $start_val; $shift_value < $end_val; $shift_value++) {
+										print "<option value='$shift_value'" . ($_SESSION['sess_current_timeshift'] == $shift_value ? ' selected' : '') . '>' . html_escape($this->timeshifts[$shift_value]) . '</option>';
 									}
 								}
 
@@ -738,9 +738,9 @@ class CactiTableFilter {
 			$separator = '&';
 		}
 
-		$applyFilter   .= $separator;
+		$applyFilter .= $separator;
 
-		$clearFilter   .= $separator . "clear=true'";
+		$clearFilter .= $separator . "clear=true'";
 		$defaultFilter .= $separator . "action=noaction'";
 
 		$changeChain   = '';
@@ -791,10 +791,10 @@ class CactiTableFilter {
 							break;
 						case 'filter_checkbox':
 							if ($this->dynamic) {
-								$clickChain .= ($clickChain != '' ? ', ':'') . '#' . $field_name;
+								$clickChain .= ($clickChain != '' ? ', ' : '') . '#' . $field_name;
 							}
 
-							$applyFilter .= ($filterLength == 0 ? '':"+'&") . $field_name . "='+$('#" . $field_name . "').is(':checked')";
+							$applyFilter .= ($filterLength == 0 ? '' : "+'&") . $field_name . "='+$('#" . $field_name . "').is(':checked')";
 							$filterLength++;
 
 							break;
@@ -842,14 +842,14 @@ class CactiTableFilter {
 						case 'drop_tree':
 							if ($field_array['method'] != 'textbox' && $this->dynamic) {
 								if (!isset($field_array['dynamic']) || $field_array['dynamic'] === true) {
-									$changeChain .= ($changeChain != '' ? ', ':'') . '#' . $field_name;
+									$changeChain .= ($changeChain != '' ? ', ' : '') . '#' . $field_name;
 								}
 							}
 
 							if ($field_name != 'rfilter') {
-								$applyFilter .= ($filterLength == 0 ? '':"+'&") . $field_name . "='+$('#" . $field_name . "').val()";
+								$applyFilter .= ($filterLength == 0 ? '' : "+'&") . $field_name . "='+$('#" . $field_name . "').val()";
 							} else {
-								$applyFilter .= ($filterLength == 0 ? '':"+'&") . $field_name . "='+base64_encode($('#" . $field_name . "').val())";
+								$applyFilter .= ($filterLength == 0 ? '' : "+'&") . $field_name . "='+base64_encode($('#" . $field_name . "').val())";
 							}
 							$filterLength++;
 

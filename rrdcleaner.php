@@ -217,7 +217,7 @@ function get_files() {
 			$files = explode("\n", $scan);            // Split based on \n
 
 			foreach ($files as $file) {
-				list($pathname, $size, $mtime) = explode(',', $file);
+				[$pathname, $size, $mtime]     = explode(',', $file);
 				$sql[]                         = "('" . str_replace($rra_path, '', $pathname) . "', " . $size . ", '" . date('Y-m-d H:i:s', $mtime) . "',0)";
 				$size++;
 
@@ -290,7 +290,7 @@ function list_rrd() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where   .= ' AND (rc.name LIKE ? OR rc.name_cache LIKE ? OR dt.name LIKE ?)';
+		$sql_where .= ' AND (rc.name LIKE ? OR rc.name_cache LIKE ? OR dt.name LIKE ?)';
 
 		$sql_params[] = '%' . get_request_var('filter') . '%';
 		$sql_params[] = '%' . get_request_var('filter') . '%';
@@ -300,10 +300,10 @@ function list_rrd() {
 	$secsback = get_request_var('age');
 
 	if (get_request_var('age') == 0) {
-		$sql_where   .= ' AND last_mod >= ?';
+		$sql_where .= ' AND last_mod >= ?';
 		$sql_params[] = date('Y-m-d H:i:s', time() - (86400 * 7));
 	} else {
-		$sql_where   .= ' AND last_mod <= ?';
+		$sql_where .= ' AND last_mod <= ?';
 		$sql_params[] = date('Y-m-d H:i:s', (time() - $secsback));
 	}
 

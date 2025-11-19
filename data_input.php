@@ -204,11 +204,11 @@ function form_actions() {
 
 		if ($selected_items != false) {
 			if (get_request_var('drp_action') == '1') { // delete
-				for ($i=0;($i < cacti_count($selected_items));$i++) {
+				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					api_data_input_remove($selected_items[$i]);
 				}
 			} elseif (get_request_var('drp_action') == '2') { // duplicate
-				for ($i=0;($i < cacti_count($selected_items));$i++) {
+				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					api_data_input_duplicate($selected_items[$i], get_nfilter_request_var('input_title'));
 				}
 			}
@@ -288,15 +288,15 @@ function field_remove_confirm() {
 	?>
 	<tr>
 		<td class='topBoxAlt'>
-			<p><?php print __('Click \'Continue\' to delete the following Data Input Field.');?></p>
-			<p><?php print __esc('Field Name: %s', $field['data_name']);?><br>
-			<p><?php print __esc('Friendly Name: %s', $field['name']);?><br>
+			<p><?php print __('Click \'Continue\' to delete the following Data Input Field.'); ?></p>
+			<p><?php print __esc('Field Name: %s', $field['data_name']); ?><br>
+			<p><?php print __esc('Friendly Name: %s', $field['name']); ?><br>
 		</td>
 	</tr>
 	<tr>
 		<td class='right'>
-			<button type='button' class='ui-button ui-corner-all ui-widget' id='cancel' name='cancel'><?php print __esc('Cancel');?></button>
-			<button type='button' class='ui-button ui-corner-all ui-widget' id='continue' name='continue' title='<?php print __esc('Remove Data Input Field');?>'><?php print __esc('Continue');?></button>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='cancel' name='cancel'><?php print __esc('Cancel'); ?></button>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='continue' name='continue' title='<?php print __esc('Remove Data Input Field'); ?>'><?php print __esc('Continue'); ?></button>
 		</td>
 	</tr>
 	<?php
@@ -316,8 +316,8 @@ function field_remove_confirm() {
 
 			var data = {
 				__csrf_magic: csrfMagicToken,
-				data_input_id: <?php print get_request_var('data_input_id');?>,
-				id: <?php print get_request_var('id');?>
+				data_input_id: <?php print get_request_var('data_input_id'); ?>,
+				id: <?php print get_request_var('id'); ?>
 			}
 
 			postUrl(options, data);
@@ -325,7 +325,7 @@ function field_remove_confirm() {
 	});
 
 	function removeDataInputFieldFinalize(data) {
-		loadUrl({url:'data_input.php?action=edit&id=<?php print get_request_var('data_input_id');?>'})
+		loadUrl({url:'data_input.php?action=edit&id=<?php print get_request_var('data_input_id'); ?>'})
 	}
 
 	</script>
@@ -353,7 +353,7 @@ function field_remove() {
 	if (($field['input_output'] == 'in') && (preg_match_all('/<([_a-zA-Z0-9]+)>/', db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', [$field['data_input_id']]), $matches))) {
 		$j = 0;
 
-		for ($i=0; ($i < cacti_count($matches[1])); $i++) {
+		for ($i = 0; ($i < cacti_count($matches[1])); $i++) {
 			if (in_array($matches[1][$i], $registered_cacti_names, true) == false) {
 				$j++;
 				db_execute_prepared("UPDATE data_input_fields SET sequence = ? WHERE data_input_id = ? AND input_output = 'in' AND data_name = ?", [$j, $field['data_input_id'], $matches[1][$i]]);
@@ -395,7 +395,7 @@ function field_edit() {
 
 	/* obtain a list of available fields for this given field type (input/output) */
 	if (($current_field_type == 'in') && (preg_match_all('/<([_a-zA-Z0-9]+)>/', db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', [!isempty_request_var('data_input_id') ? get_request_var('data_input_id') : $field['data_input_id']]), $matches))) {
-		for ($i=0; ($i < cacti_count($matches[1])); $i++) {
+		for ($i = 0; ($i < cacti_count($matches[1])); $i++) {
 			if (in_array($matches[1][$i], $registered_cacti_names, true) == false) {
 				$current_field_name                     = $matches[1][$i];
 				$array_field_names[$current_field_name] = $current_field_name;
@@ -694,7 +694,7 @@ function data_edit() {
 					applySkin();
 
 					$('#cdialog').dialog({
-						title: '<?php print __('Delete Data Input Field');?>',
+						title: '<?php print __('Delete Data Input Field'); ?>',
 						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
 						modal: false,
 						minHeight: 80,
@@ -808,7 +808,7 @@ function data() {
 
 			form_selectable_cell(filter_value($data_input['name'], get_request_var('filter'), 'data_input.php?action=edit&id=' . $data_input['id']), $data_input['id']);
 			form_selectable_cell($data_input['id'], $data_input['id'], '', 'right');
-			form_selectable_cell($disabled ? __('No'):__('Yes'), $data_input['id'], '', 'right');
+			form_selectable_cell($disabled ? __('No') : __('Yes'), $data_input['id'], '', 'right');
 			form_selectable_cell(number_format_i18n($data_input['data_sources'], -1), $data_input['id'],'', 'right');
 			form_selectable_cell(number_format_i18n($data_input['templates'], -1), $data_input['id'],'', 'right');
 			form_selectable_cell($input_types[$data_input['type_id']], $data_input['id'], '', 'right');

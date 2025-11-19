@@ -84,6 +84,8 @@ function automation_export() {
 	if (isset_request_var('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
+		$snmp_option_ids = [];
+
 		if ($selected_items != false) {
 			if (cacti_sizeof($selected_items) == 1) {
 				$export_data = automation_network_export($selected_items[0]);
@@ -175,6 +177,8 @@ function automation_import() {
 function automation_import_process() {
 	$json_data = json_decode(get_nfilter_request_var('import_text'), true);
 
+	$debug_data = [];
+
 	// If we have text, then we were trying to import text, otherwise we are uploading a file for import
 	if (empty($json_data)) {
 		$json_data = automation_validate_upload();
@@ -185,21 +189,21 @@ function automation_import_process() {
 	if (sizeof($return_data) && isset($return_data['success'])) {
 		foreach ($return_data['success'] as $message) {
 			$debug_data[] = '<span class="deviceUp">' . __('NOTE:') . '</span> ' . $message;
-			cacti_log('NOTE: Automation Network Rule Import Succeeded!.  Message: '. $message, false, 'AUTOM8');
+			cacti_log('NOTE: Automation Network Rule Import Succeeded!.  Message: ' . $message, false, 'AUTOM8');
 		}
 	}
 
 	if (isset($return_data['errors'])) {
 		foreach ($return_data['errors'] as $error) {
 			$debug_data[] = '<span class="deviceDown">' . __('ERROR:') . '</span> ' . $error;
-			cacti_log('NOTE: Automation Network Rule Import Error!.  Message: '. $message, false, 'AUTOM8');
+			cacti_log('NOTE: Automation Network Rule Import Error!.  Message: ' . $error, false, 'AUTOM8');
 		}
 	}
 
 	if (isset($return_data['failure'])) {
 		foreach ($return_data['failure'] as $message) {
 			$debug_data[] = '<span class="deviceDown">' . __('ERROR:') . '</span> ' . $message;
-			cacti_log('NOTE: Automation Network Rule Import Failed!.  Message: '. $message, false, 'AUTOM8');
+			cacti_log('NOTE: Automation Network Rule Import Failed!.  Message: ' . $message, false, 'AUTOM8');
 		}
 	}
 
@@ -282,12 +286,10 @@ function api_networks_duplicate($network_id) {
  * api_networks_change_options - Given a network_id and the post
  *   variable, update a series of Network settings
  *
- * @param (mixed) A network id or an array of network ids
- * @param (array) An array of post variables
- * @param mixed $network_ids
- * @param mixed $post
+ * @param mixed $network_ids - A network id or an array of network ids
+ * @param array $post - An array of post variables
  *
- * @return (void)
+ * @return void
  */
 function api_networks_change_options($network_ids, $post) {
 	if (!is_array($network_ids)) {
@@ -974,7 +976,7 @@ function network_edit() {
 	draw_edit_form(
 		[
 			'config' => ['no_form_tag' => 'true'],
-			'fields' => inject_form_variables($fields, (isset($network) ? $network : []))
+			'fields' => inject_form_variables($fields, $network)
 		]
 	);
 

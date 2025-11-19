@@ -275,7 +275,7 @@ function host_new_graphs_save($host_id) {
 
 		?>
 		<script type='text/javascript'>
-		var formData=<?php print $form_data;?>;
+		var formData=<?php print $form_data; ?>;
 
 		$(function() {
 			loadPageUsingPost('graphs_new.php', formData);
@@ -469,7 +469,7 @@ function graphs() {
 			WHERE id = ?',
 			[$host['host_template_id']]);
 
-		$header_label = __esc('New Graphs [ %s - %s ] [ %s ]', $host['description'], $host['hostname'], (!empty($host['host_template_id']) ? $name:''));
+		$header_label = __esc('New Graphs [ %s - %s ] [ %s ]', $host['description'], $host['hostname'], (!empty($host['host_template_id']) ? $name : ''));
 	} else {
 		$header_label = __('New Graphs [ Search for a Device First ]');
 	}
@@ -972,7 +972,7 @@ function graphs() {
 							<button type='button' class='ui-button ui-corner-all ui-widget default' id='default_" .  $snmp_query['id'] . "' title='" . __esc('Make selection default') . "'>" . __esc('Set Default') . "</button>
 						</td>
 						<td class='right'>
-							<select class='dqselect' name='sgg_" . $snmp_query['id'] . "' id='sgg_" . $snmp_query['id'] . "' onChange='dqUpdateDeps(" . $snmp_query['id'] . ',' . (isset($column_counter) ? $column_counter:'') . ");'>
+							<select class='dqselect' name='sgg_" . $snmp_query['id'] . "' id='sgg_" . $snmp_query['id'] . "' onChange='dqUpdateDeps(" . $snmp_query['id'] . ',' . (isset($column_counter) ? $column_counter : '') . ");'>
 								";
 					html_create_list($data_query_graphs, 'name', 'id', $selected);
 					print '
@@ -996,7 +996,7 @@ function graphs() {
 			});
 		});";
 
-		$script .= "$('.default').click(function() { $.get('graphs_new.php?action=ajax_save&query=" . (isset($snmp_query['id']) ? $snmp_query['id']:'') . "'+'&item='+$(\".dqselect\").val()).fail(function(data) { getPresentHTTPError(data); });}); $('tr.notemplate').tooltip();</script>";
+		$script .= "$('.default').click(function() { $.get('graphs_new.php?action=ajax_save&query=" . (isset($snmp_query['id']) ? $snmp_query['id'] : '') . "'+'&item='+$(\".dqselect\").val()).fail(function(data) { getPresentHTTPError(data); });}); $('tr.notemplate').tooltip();</script>";
 
 		print $script;
 	}

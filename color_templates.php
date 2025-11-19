@@ -271,11 +271,11 @@ function form_actions() {
 				db_execute('DELETE FROM color_templates WHERE ' . array_to_sql_or($selected_items, 'color_template_id'));
 				db_execute('DELETE FROM color_template_items WHERE ' . array_to_sql_or($selected_items, 'color_template_id'));
 			} elseif (get_nfilter_request_var('drp_action') == '2') { // duplicate
-				for ($i=0;($i < cacti_count($selected_items));$i++) {
+				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					duplicate_color_template($selected_items[$i], get_nfilter_request_var('title_format'));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '3') { // sync templates
-				for ($i=0;($i < cacti_count($selected_items));$i++) {
+				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					sync_color_templates($selected_items[$i]);
 				}
 			}
@@ -485,14 +485,14 @@ function color_item_remove_confirm() {
 	<tr>
 		<td class='topBoxAlt'>
 			<p><?php print __('Click \'Continue\' to delete the following Color Template Color.'); ?></p>
-			<p><?php print __('Color Name:');?> '<?php print html_escape($template['name']);?>'<br>
-			<?php print __('Color Hex:');?><strong><?php print $color_hex;?></p>
+			<p><?php print __('Color Name:'); ?> '<?php print html_escape($template['name']); ?>'<br>
+			<?php print __('Color Hex:'); ?><strong><?php print $color_hex; ?></p>
 		</td>
 	</tr>
 	<tr>
 		<td class='right'>
-			<button type='button' class='ui-button ui-corner-all ui-widget' id='cancel' onClick='$("#cdialog").dialog("close");' name='cancel'><?php print __esc('Cancel');?></button>
-			<button type='button' class='ui-button ui-corner-all ui-widget' id='continue' name='continue' title='<?php print __esc('Remove Color Item');?>'><?php print __esc('Continue');?></button>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='cancel' onClick='$("#cdialog").dialog("close");' name='cancel'><?php print __esc('Cancel'); ?></button>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='continue' name='continue' title='<?php print __esc('Remove Color Item'); ?>'><?php print __esc('Continue'); ?></button>
 		</td>
 	</tr>
 	<?php
@@ -507,13 +507,13 @@ function color_item_remove_confirm() {
 		$('#continue').click(function(data) {
 			var options = {
 				url: 'color_templates.php?action=item_remove',
-				redirect: 'color_templates.php?action=template_edit&color_template_id=<?php print get_request_var('id');?>'
+				redirect: 'color_templates.php?action=template_edit&color_template_id=<?php print get_request_var('id'); ?>'
 			}
 
 			var data = {
 				__csrf_magic: csrfMagicToken,
-				color_id: <?php print get_request_var('color_id');?>,
-				id: <?php print get_request_var('id');?>
+				color_id: <?php print get_request_var('color_id'); ?>,
+				id: <?php print get_request_var('id'); ?>
 			}
 
 			postUrl(options, data);
@@ -631,7 +631,7 @@ function color_item() {
 		<?php if (read_config_option('drag_and_drop') == 'on') { ?>
 		$('#color_item').tableDnD({
 			onDrop: function(table, row) {
-				loadUrl({url:'color_templates.php?action=ajax_dnd&id=<?php isset_request_var('color_template_id') ? print get_request_var('color_template_id') : print 0;?>&'+$.tableDnD.serialize()})
+				loadUrl({url:'color_templates.php?action=ajax_dnd&id=<?php isset_request_var('color_template_id') ? print get_request_var('color_template_id') : print 0; ?>&'+$.tableDnD.serialize()})
 			}
 		});
 		<?php } ?>
@@ -648,7 +648,7 @@ function color_item() {
 					applySkin();
 
 					$('#cdialog').dialog({
-						title: '<?php print __('Delete Color Item');?>',
+						title: '<?php print __('Delete Color Item'); ?>',
 						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
 						minHeight: 80,
 						minWidth: 500
@@ -848,7 +848,7 @@ function color_template() {
 			form_alternate_row('line' . $template['color_template_id'], true);
 
 			form_selectable_cell(filter_value($template['name'], get_request_var('filter'), 'color_templates.php?action=template_edit&color_template_id=' . $template['color_template_id'] . '&page=1'), $template['color_template_id']);
-			form_selectable_cell($disabled ? __('No'):__('Yes'), $template['color_template_id'], '', 'right');
+			form_selectable_cell($disabled ? __('No') : __('Yes'), $template['color_template_id'], '', 'right');
 			form_selectable_cell(number_format_i18n($template['graphs']), $template['color_template_id'], '', 'right');
 			form_selectable_cell(number_format_i18n($template['templates']), $template['color_template_id'], '', 'right');
 

@@ -36,7 +36,7 @@ $is_save = isset_request_var('save_component_import');
 
 $tmp_dir  = sys_get_temp_dir();
 $tmp_len  = strlen($tmp_dir);
-$tmp_dir .= ($tmp_len !== 0 && substr($tmp_dir, -$tmp_len) === '/') ? '': '/';
+$tmp_dir .= ($tmp_len !== 0 && substr($tmp_dir, -$tmp_len) === '/') ? '' : '/';
 $is_tmp   = is_tmp_writable();
 
 if ($is_tmp && $is_save && $action == 'save') {
@@ -135,7 +135,7 @@ function form_save() {
 			if (cacti_sizeof($import_messages)) {
 				foreach ($import_messages as $message) {
 					if (isset($messages[$message])) {
-						$message_text .= ($message_text != '' ? '<br>':'') . $messages[$message]['message'];
+						$message_text .= ($message_text != '' ? '<br>' : '') . $messages[$message]['message'];
 					}
 				}
 			}
@@ -351,7 +351,7 @@ function display_template_data(&$templates) {
 				}
 
 				if (cacti_sizeof($orphan_array)) {
-					$diff_details .= ($diff_details != '' ? '<br>':'') . __('Orphans', 'package') . '<br>' . implode('<br>', $orphan_array);
+					$diff_details .= ($diff_details != '' ? '<br>' : '') . __('Orphans', 'package') . '<br>' . implode('<br>', $orphan_array);
 				}
 
 				form_selectable_cell($diff_details, $id, '', 'white-space:pre-wrap');
@@ -534,7 +534,7 @@ function is_tmp_writable(string $tmp_dir = null) : bool {
 	}
 
 	$tmp_len  = strlen($tmp_dir);
-	$tmp_dir .= ($tmp_len !== 0 && substr($tmp_dir, -$tmp_len) === '/') ? '': '/';
+	$tmp_dir .= ($tmp_len !== 0 && substr($tmp_dir, -$tmp_len) === '/') ? '' : '/';
 
 	$is_tmp = is_resource_writable($tmp_dir);
 

@@ -59,7 +59,7 @@ if (cacti_sizeof($params) == 0) {
 
 	foreach ($params as $parameter) {
 		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter, 2);
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
 			$value = '';
@@ -131,6 +131,7 @@ if (cacti_sizeof($params) == 0) {
 				display_help();
 
 				exit(0);
+
 			default:
 				print "ERROR: Invalid Argument: ($arg)\n\n";
 				display_help();
