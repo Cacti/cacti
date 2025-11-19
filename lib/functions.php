@@ -862,23 +862,23 @@ function is_valid_theme(string|null &$theme, int $set_user = 0) : bool {
  * form_input_validate - validates the value of a form field and Takes the appropriate action if the input
  * is not valid
  *
- * @param string $field_value    value of the form field
- * @param string $field_name     name of the $_POST field as specified in the HTML
- * @param string $regexp_match   (optionally) enter a regular expression to match the value against
- * @param bool $allow_nulls      whether to allow an empty string as a value or not
- * @param int $custom_message    the ID of the message to raise upon an error which is defined in the
- *   $messages array in 'include/global_arrays.php'
- * @param mixed $message_id
+ * @param string|null $field_value    Value of the form field
+ * @param string      $field_name     Name of the $_POST field as specified in the HTML
+ * @param string      $regexp_match   Optionally enter a regular expression to match the value against
+ * @param bool        $allow_nulls    Whether to allow an empty string as a value or not
+ * @param int         $custom_message The ID of the message to raise upon an error which is defined in the
+ *                                    $messages array in 'include/global_arrays.php'
+ * @param mixed $message_id           The error message to raise in the case of an error
  *
  * @return string                the original $field_value
  */
-function form_input_validate(string $field_value, string $field_name, string $regexp_match, bool $allow_nulls, int $message_id = 3) : string {
+function form_input_validate(string|null $field_value, string $field_name, string $regexp_match, bool $allow_nulls, int $message_id = 3) : string {
 	global $messages;
 
 	/* write current values to the "field_values" array so we can retain them */
 	$_SESSION[SESS_FIELD_VALUES][$field_name] = $field_value;
 
-	if (($allow_nulls == true) && ($field_value == '')) {
+	if ($allow_nulls == true && $field_value == '') {
 		return $field_value;
 	}
 
@@ -1033,7 +1033,7 @@ function get_format_message_instance(array|string $current_message): string {
  * get_message_max_type - finds the message and returns its type
  *
  * @param array|null $output_messages the messages to check, if null it will check the session messages
- * 
+ *
  * @return int the message type
  */
 function get_message_max_type(array|null $output_messages = null) : int {
@@ -1071,7 +1071,7 @@ function get_message_max_type(array|null $output_messages = null) : int {
  * @param  string      $message        Text of the message to be displayed
  * @param  int         $message_level  Level of the message to be displayed
  * @param  string|null $message_title  Title of the message to be displayed
- * 
+ *
  * @return bool
  */
 function raise_message(string|int $message_id, string $message = '', int $message_level = MESSAGE_LEVEL_NONE, string|null $message_title = null) : bool {
@@ -1253,7 +1253,7 @@ function display_output_messages() : string|false {
  * This function raises a custom error message using the provided message.
  *
  * @param string $message The error message to be displayed.
- * 
+ *
  * @return void
  */
 function display_custom_error_message(string $message) : void {
@@ -8147,7 +8147,7 @@ function get_validated_theme(string|null $theme, string $defaultTheme) : string 
 
 /**
  * ****************** THIS FUNCTION DOESN'T APPEAR TO BE USED ANYWHERE *********************
- * 
+ *
  * Verifies that a language exists.  If the language
  * does exist, returns its name, otherwise returns
  * the default language.
