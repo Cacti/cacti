@@ -206,6 +206,38 @@ MariaDB/MySQL settings that caused the upgrade to fail.
 Also, use the `audit_database.php --report` script to tell you of any schema
 inconsistencies that you may have in your database.
 
+## Spine Data Collector SNMP Protocol support
+
+The Cacti spine data collector supports classic SNMPv1 and SNMPv2.  It also
+supports SNMPv3 and IPv6, but with some limitations.  Here they are.  When
+compiling spine, some support requires the underlying libraries to also support
+the various SNMPv3 Passphrase and Privacy Protocols.  Keep this in mind
+when preparing for any deployment.  
+
+| AuthProto  | Supported   |
+|------------|-------------|
+| MD5        | Yes (1)     |
+| SHA1       | Yes         |
+| SHA224     | Yes (2)     |
+| SHA256     | Yes (2)     |
+| SHA384     | No          |
+| SHA512     | No          |
+
+| PrivProto  | Supported   |
+|------------|-------------|
+| DES        | Yes (1)     |
+| AES128     | Yes         |
+| AES192     | Yes (2)     |
+| AES256     | Yes (2)     |
+| 3DES       | No          |
+
+### NOTES: ### 
+1. Additionally, certain distributions such as RHEL8/9 do not include lower level
+protocol support including MD5 and DES.
+2. Certain Linux varients do not compile their Net-SNMP binaries with advanced SNMPv3
+   support.  Therefore, you may need to re-compile Net-SNMP binaries to achieve these
+   higher levels of encryption.
+
 -----------------------------------------------------------------------------
 # About Cacti
 
