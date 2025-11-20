@@ -156,7 +156,7 @@ function changelog_view() {
 	krsort($vers);
 
 	foreach ($vers as $ver => $changelog) {
-		if (!empty($ver)) {
+		if ($ver != '') {
 			html_start_box(__('Version %s', $ver), '100%', false, 3, 'center', '');
 			ksort($changelog);
 
