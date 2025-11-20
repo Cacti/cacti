@@ -1715,7 +1715,7 @@ function user_realms_edit($header_label) {
 			$pos = (strpos($user_auth_realms[$realm], '->') !== false ? strpos($user_auth_realms[$realm], '->') + 2 : 0);
 
 			print '<div class="flexChild">';
-			form_checkbox('section' . $realm, $old_value, substr($user_auth_realms[$realm], $pos), '', '', '', '', $r['display'], true);
+			form_checkbox('section' . $realm, $old_value, substr($user_auth_realms[$realm], $pos), '', '', '', '', $name, true);
 			print '</div>';
 		}
 
