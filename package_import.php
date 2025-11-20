@@ -153,6 +153,8 @@ function form_actions() {
 
 		if (cacti_sizeof($import_packages)) {
 			foreach ($import_packages as $filename) {
+				$name = 'Unknown';
+
 				if (!isset($import_names[$filename])) {
 					foreach ($manifest as $index => $item) {
 						if ($item['filename'] == $filename) {
@@ -231,6 +233,8 @@ function form_actions() {
 	$pkg_file_array       = [];
 	$found_pkg_file_array = [];
 
+	$save_html = '';
+
 	/* loop through each of the graphs selected on the previous page and get more info about them */
 	foreach ($_POST as $var => $val) {
 		if (strpos($var, 'chk_file_') !== false) {
@@ -301,7 +305,7 @@ function form_actions() {
 
 	html_start_box(__('Package %s', $actions[get_nfilter_request_var('drp_action')]), '60%', false, 3, 'center', '');
 
-	if (isset($pkg_array) && cacti_sizeof($pkg_array)) {
+	if (cacti_sizeof($pkg_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { /* import */
 			if ($pkg_file_list != '' || $pkg_import_list != '') {
 				print "<tr>
@@ -380,9 +384,9 @@ function form_actions() {
 			<input type='hidden' name='data_source_profile' value='" . get_request_var('data_source_profile') . "'>
 			<input type='hidden' name='remove_orphans' value='" . (isset_request_var('remove_orphans') ? 'on' : '') . "'>
 			<input type='hidden' name='replace_svalues' value='" . (isset_request_var('replace_svalues') ? 'on' : '') . "'>
-			<input type='hidden' name='selected_items' value='" . (isset($pkg_array) ? serialize($pkg_array) : '') . "'>
-			<input type='hidden' name='selected_hashes' value='" . (isset($pkg_import_array) ? serialize($pkg_import_array) : '') . "'>
-			<input type='hidden' name='selected_files' value='" . (isset($pkg_file_array) ? serialize($pkg_file_array) : '') . "'>
+			<input type='hidden' name='selected_items' value='" . (cacti_sizeof($pkg_array) ? serialize($pkg_array) : '') . "'>
+			<input type='hidden' name='selected_hashes' value='" . serialize($pkg_import_array) . "'>
+			<input type='hidden' name='selected_files' value='" . serialize($pkg_file_array) . "'>
 			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
 			$save_html
 		</td>
@@ -536,12 +540,12 @@ function form_save() {
 }
 
 function package_file_get_contents($package_location, $package_file, $filename) {
+	$package_found = false;
+
 	if ($package_location > 0) {
 		$repo = json_decode(get_repo_manifest_file($package_location), true);
 
 		$manifest = $repo['manifest'];
-
-		$package_found = false;
 
 		if (cacti_sizeof($manifest)) {
 			foreach ($manifest as $m) {
@@ -760,11 +764,11 @@ function package_verify_key() {
 		}
 
 		foreach ($authors as $author => $email) {
-			$message .= ($message != '' ? '<br>' : '') . __('<b>Author:</b> &lt;%s&gt; %s.<br>', $package['author'], $package['email']);
+			$message .= ($message != '' ? '<br>' : '') . __('<b>Author:</b> &lt;%s&gt; %s.<br>', $author, $email);
 		}
 
 		foreach ($packages as $package) {
-			$message .= ($message != '' ? '<br>' : '') . __('<b>Package:</b> %s', $package);
+			$message .= ($message != '' ? '<br>' : '') . __('<b>Package:</b> %s', $package['name']);
 		}
 
 		$message .= '<br><br>' . __('Press \'Ok\' to start Trusting the Signer.  Press \'Cancel\' or hit escape to Cancel.');
