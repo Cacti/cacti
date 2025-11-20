@@ -28,6 +28,8 @@ error_reporting(0);
 /* get access to the database and open a session */
 include(__DIR__ . '/../include/cli_check.php');
 
+global $cacti_db_session;
+
 $user_logins_valid        = 'U';
 $user_logins_invalid      = 'U';
 $user_counter_active      = 'U';

@@ -39,6 +39,8 @@ if (!isset($called_by_script_server)) {
 }
 
 function ss_fping($hostname = '', $ping_sweeps = 6, $ping_type = 'ICMP', $port = 80) {
+	global $called_by_script_server;
+
 	/* record start time */
 	$ss_fping_start = microtime(true);
 
@@ -78,6 +80,10 @@ function ss_fping($hostname = '', $ping_sweeps = 6, $ping_type = 'ICMP', $port =
 			break;
 		case 'UDP':
 			$method = PING_UDP;
+
+			break;
+		default:
+			$method = PING_ICMP;
 
 			break;
 	}

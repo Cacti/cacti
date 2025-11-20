@@ -144,6 +144,8 @@ if ($version) {
 /* record the script start time */
 $start = microtime(true);
 
+$include_file = '';
+
 if (CACTI_SERVER_OS == 'win32') {
 	cacti_log('DEBUG: GETCWD: ' . strtolower(strtr(getcwd(),'\\','/')), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 	cacti_log('DEBUG: DIRNAM: ' . strtolower(strtr(__DIR__,'\\','/')), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
@@ -428,6 +430,8 @@ function parseArgs($string, &$str_list, $debug = false) {
 	}
 
 	/* Add the last str to the string array */
+	$msg = 'Unknown error message';
+
 	if ($indelim || $escaping) {
 		$parse_ok = false;
 		$msg      = 'Parse error attempting to parse string';
