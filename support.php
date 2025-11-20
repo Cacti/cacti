@@ -1360,13 +1360,13 @@ function show_tech_summary() {
 		$max_local_connections  = db_fetch_row('SHOW GLOBAL VARIABLES LIKE "max_connections"');
 	}
 
-	if (cacti_sizeof($max_connections)) {
+	if (isset($max_connections['Value'])) {
 		$max_connections = $max_connections['Value'];
 	} else {
 		$max_connections = 0;
 	}
 
-	if (cacti_sizeof($max_local_connections)) {
+	if (isset($max_local_connections['Value'])) {
 		$max_local_connections = $max_local_connections['Value'];
 	} else {
 		$max_local_connections = 0;
