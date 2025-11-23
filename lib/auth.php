@@ -224,6 +224,33 @@ function is_template_account(null|int|string $user_id): bool {
  *
  * @return string|false The username if found and processed, or false if no username is found.
  */
+/**
+ * Extracts the username from an LDAP Distinguished Name (DN)
+ *
+ * @param string $username The username or DN to extract from
+ *
+ * @return string The extracted username or the original value if not a DN
+ */
+function extract_username_from_dn(string $username): string {
+	/* Check if the username looks like an LDAP DN
+	 * DN format: cn=username,ou=People,dc=example,dc=com
+	 * We look for patterns like "cn=", "ou=", "dc=" which indicate a DN
+	 */
+	if (preg_match('/^cn=/i', $username) && preg_match('/[,=]/', $username)) {
+		/* Extract the CN (Common Name) value from the DN
+		 * Match: cn=value or CN=value at the start of the string
+		 */
+		if (preg_match('/^cn=([^,]+)/i', $username, $matches)) {
+			$extracted = trim($matches[1]);
+			cacti_log("DEBUG: Extracted username '$extracted' from DN '$username'", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+
+			return $extracted;
+		}
+	}
+
+	return $username;
+}
+
 function get_basic_auth_username(): string|false {
 	if (isset($_SERVER['PHP_AUTH_USER'])) {
 		$username = str_replace('\\', '\\\\', $_SERVER['PHP_AUTH_USER']);
@@ -242,6 +269,9 @@ function get_basic_auth_username(): string|false {
 	}
 
 	if ($username !== false) {
+		/* Extract username from LDAP DN if present */
+		$username = extract_username_from_dn($username);
+
 		if (str_contains($username, '@')) {
 			$upart    = explode('@', $username);
 			$username = $upart[0];
@@ -3431,6 +3461,8 @@ function auth_get_username(): string {
 		set_request_var('action', 'login');
 	} elseif (get_nfilter_request_var('action') == 'login') {
 		$username = get_nfilter_request_var('login_username');
+		/* Extract username from LDAP DN if present */
+		$username = extract_username_from_dn($username);
 	} else {
 		$username = '';
 	}
