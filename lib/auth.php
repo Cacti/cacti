@@ -227,21 +227,24 @@ function is_template_account(null|int|string $user_id): bool {
 /**
  * Extracts the username from an LDAP Distinguished Name (DN)
  *
+ * This function handles the case where web servers configured with LDAP
+ * authentication return the full DN (e.g., "cn=username,ou=People,dc=example,dc=com")
+ * instead of just the username in authentication variables.
+ *
  * @param string $username The username or DN to extract from
  *
  * @return string The extracted username or the original value if not a DN
  */
 function extract_username_from_dn(string $username): string {
-	/* Check if the username looks like an LDAP DN
+	/* Check if the username looks like an LDAP DN (RFC 4514 format)
 	 * DN format: cn=username,ou=People,dc=example,dc=com
-	 * We look for patterns like "cn=", "ou=", "dc=" which indicate a DN
+	 * Pattern matches "cn=" at start (case-insensitive) followed by comma-separated components
 	 */
-	if (preg_match('/^cn=/i', $username) && preg_match('/[,=]/', $username)) {
-		/* Extract the CN (Common Name) value from the DN
-		 * Match: cn=value or CN=value at the start of the string
-		 */
-		if (preg_match('/^cn=([^,]+)/i', $username, $matches)) {
-			$extracted = trim($matches[1]);
+	if (preg_match('/^cn=([^,]+)/i', $username, $matches)) {
+		$extracted = trim($matches[1]);
+
+		/* Only extract if we got a non-empty username */
+		if ($extracted !== '') {
 			cacti_log("DEBUG: Extracted username '$extracted' from DN '$username'", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
 			return $extracted;
