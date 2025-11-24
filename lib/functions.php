@@ -220,11 +220,10 @@ function set_user_setting(string $config_name, mixed $value, int|null $user = nu
 			cacti_log("ERROR: User setting name '$config_name' is too long, will be truncated", false, 'SYSTEM');
 		}
 
-		db_execute_prepared('REPLACE INTO settings_user
-			SET user_id = ?,
-			name = ?,
-			value = ?',
-			[$user, $config_name, $value]);
+		db_execute_prepared('INSERT INTO settings_user
+			(user_id, name, value) VALUES (?, ?, ?)
+			ON DUPLICATE KEY UPDATE values = VALUES(value)',
+			array($user, $config_name, $value));
 
 		$_SESSION[OPTIONS_USER][$config_name] = $value;
 		$settings_user[$config_name]['value'] = $value;
@@ -427,9 +426,10 @@ function set_config_option(string $config_name, mixed $value, bool $remote = fal
 		cacti_log("ERROR: Config option name '$config_name' is too long, will be truncated", false, 'SYSTEM');
 	}
 
-	db_execute_prepared('REPLACE INTO settings
-		SET name = ?, value = ?',
-		[$config_name, $value]);
+	db_execute_prepared('INSERT INTO settings
+		(name, value) VALUES (?, ?)
+		ON DUPLICATE KEY UPDATE value = VALUES(value)',
+		array($config_name, $value));
 
 	if ($remote && !is_remote_path_setting($config_name)) {
 		$gone_time = read_config_option('poller_interval') * 2;
