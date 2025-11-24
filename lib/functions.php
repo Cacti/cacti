@@ -211,10 +211,9 @@ function set_user_setting($config_name, $value, $user = -1) {
 			cacti_log("ERROR: User setting name '$config_name' is too long, will be truncated", false, 'SYSTEM');
 		}
 
-		db_execute_prepared('REPLACE INTO settings_user
-			SET user_id = ?,
-			name = ?,
-			value = ?',
+		db_execute_prepared('INSERT INTO settings_user
+			(user_id, name, value) VALUES (?, ?, ?)
+			ON DUPLICATE KEY UPDATE values = VALUES(value)',
 			array($user, $config_name, $value));
 
 		unset($_SESSION['sess_user_config_array']);
@@ -425,8 +424,9 @@ function set_config_option($config_name, $value, $remote = false) {
 		cacti_log("ERROR: Config option name '$config_name' is too long, will be truncated", false, 'SYSTEM');
 	}
 
-	db_execute_prepared('REPLACE INTO settings
-		SET name = ?, value = ?',
+	db_execute_prepared('INSERT INTO settings
+		(name, value) VALUES (?, ?)
+		ON DUPLICATE KEY UPDATE value = VALUES(value)',
 		array($config_name, $value));
 
 	if ($remote && !is_remote_path_setting($config_name)) {
