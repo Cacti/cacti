@@ -468,7 +468,7 @@ function boost_return_cached_image(&$graph_data_array) : bool {
  * @throws Exception If there are issues with the cache directory or file operations.
  *
  */
-function boost_graph_cache_check(int $local_graph_id, int $rra_id, mixed $rrdtool_pipe = null, array &$graph_data_array = [], bool $return = true) : string|false {
+function boost_graph_cache_check(int $local_graph_id, int|null $rra_id, mixed $rrdtool_pipe = null, array &$graph_data_array = [], bool $return = true) : string|false {
 	/* include poller processing routines */
 	include_once(CACTI_PATH_LIBRARY . '/poller.php');
 
@@ -683,7 +683,7 @@ function boost_prep_graph_array(array $graph_data_array) : array {
  *
  * @return void
  */
-function boost_graph_set_file( string|null &$output, int $local_graph_id, int $rra_id) : void {
+function boost_graph_set_file( string|null &$output, int $local_graph_id, int|null $rra_id) : void {
 	global $graph_data_array;
 
 	/* get access to the SNMP Cache of BOOST*/
