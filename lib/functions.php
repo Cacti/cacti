@@ -213,7 +213,7 @@ function set_user_setting($config_name, $value, $user = -1) {
 
 		db_execute_prepared('INSERT INTO settings_user
 			(user_id, name, value) VALUES (?, ?, ?)
-			ON DUPLICATE KEY UPDATE values = VALUES(value)',
+			ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)',
 			array($user, $config_name, $value));
 
 		unset($_SESSION['sess_user_config_array']);
@@ -426,15 +426,14 @@ function set_config_option($config_name, $value, $remote = false) {
 
 	db_execute_prepared('INSERT INTO settings
 		(name, value) VALUES (?, ?)
-		ON DUPLICATE KEY UPDATE value = VALUES(value)',
+		ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)',
 		array($config_name, $value));
 
 	if ($remote && !is_remote_path_setting($config_name)) {
 		$gone_time = read_config_option('poller_interval') * 2;
 
 		$pollers = array_rekey(
-			db_fetch_assoc('SELECT
-				id,
+			db_fetch_assoc('SELECT id,
 				UNIX_TIMESTAMP() - UNIX_TIMESTAMP(last_status) AS last_polled
 				FROM poller
 				WHERE id > 1
@@ -442,7 +441,9 @@ function set_config_option($config_name, $value, $remote = false) {
 			'id', 'last_polled'
 		);
 
-		$sql = 'INSERT INTO settings (name, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value=VALUES(value)';
+		$sql = 'INSERT INTO settings (name, value)
+			VALUES (?, ?)
+			ON DUPLICATE KEY UPDATE `value`= VALUES(`value`)';
 
 		foreach($pollers as $p => $t) {
 			if ($t > $gone_time) {
