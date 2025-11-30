@@ -2627,7 +2627,7 @@ function graph_edit() {
 	});
 
 	if (locked) {
-		$('input, select').not('input[value="<?php print __('Cancel'); ?>"]').prop('disabled', true);
+		$('input').not('input[value="cancel"]').not('input[value="return"]').prop('disabled', true);
 		$('.moveArrow, .deleteMarker, .linkOverDark, .linkEditMain').attr('href', '#').removeClass('moveArrow').removeClass('deleteMarker');
 		if ($('#submit').button('instance')) {
 			$('#submit').button('disable');
