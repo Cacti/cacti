@@ -230,6 +230,7 @@ Cacti CHANGELOG
 -issue#6444: Applying Title Cache Changes for Data Input Methods using |data_xxxx| not working
 -feature: Update PHPMailer to 6.10 to support SMTPUTF8
 -feature: Update phpseclib for the Service Check plugin
+-feature: Update DOMPurify to 3.3.0
 
 1.2.30
 -issue#6089: Cannot Add New User due to incorrect array structure
