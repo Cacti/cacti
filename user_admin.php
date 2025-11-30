@@ -572,6 +572,12 @@ function form_save() {
 			$save['failed_attempts'] = 0;
 		}
 
+		/* remove any stored tokens in case of account take over */
+		if ($save['must_change_password'] == 'on') {
+			db_execute_prepared('DELETE FROM user_auth_cache WHERE user_id = ?', array($save['id']));
+			db_execute_prepared('DELETE FROM sessions WHERE user_id = ?', array($save['id']));
+		}
+
 		$save = api_plugin_hook_function('user_admin_setup_sql_save', $save);
 
 		if (!is_error_message()) {
