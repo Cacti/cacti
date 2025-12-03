@@ -59,7 +59,7 @@ html_start_box(__('About Cacti'), '100%', '', '3', 'center', '');
 		</div>
 		<div class='flexChild' style='min-width:300px;'>
 		<p><strong><?php print __('Honorable Mentions'); ?></strong></p>
-		<p style='min-height:45px'><?php print __('Contributors to Docuemntation, QA, Packaging, the Forums and our YouTube page.'); ?></strong></p>
+		<p style='min-height:45px'><?php print __('Contributors to Documentation, QA, Packaging, the Forums and our YouTube page.'); ?></strong></p>
 		<ul type='disc'>
 			<li>Sean Mancini <i>(bmfmancini)</i></li>
 			<li>J.P. Pasnak, CD <i>(Linegod)</i></strong></li>
