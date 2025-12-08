@@ -4375,7 +4375,7 @@ function secpass_login_process(string $username): array {
 
 			if (!$error) {
 				$error     = true;
-				$error_msg = __('Access Denied! Login failed.') . ' <a href="auth_resetpassword.php">' . __('Reset password') . '</a>';
+				$error_msg = __('Access Denied! Login Failed.') . ' <a href="auth_resetpassword.php">' . __('Reset password') . '</a>';
 
 				cacti_log(sprintf('LOGIN FAILED: Local Login Failed for user %s from IP Address %s', $username, get_client_addr()), false, 'AUTH');
 			}
