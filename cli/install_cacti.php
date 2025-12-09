@@ -174,6 +174,25 @@ if (cacti_sizeof($parms)) {
 				set_install_option($options, 'Theme', 'Theme', $value);
 
 				break;
+			case '--notifyadmin':
+			case '-n':
+				$value = strtolower($value) == 'true' ? 'on' : '';
+				set_install_option($options, 'notify_admin', 'Notify Admin', $value);
+
+				break;
+
+			case '--adminemailaddress':
+			case '-e':
+				if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
+					set_install_option($options, 'AdminEmailAddress', 'Admin Email Address', $value);
+				} else {
+					print 'ERROR: Invalid email address' . PHP_EOL . PHP_EOL;
+
+					exit(1);
+				}
+
+				break;
+
 				/* Bad or unexpected parameter! */
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
@@ -389,27 +408,29 @@ function display_help() {
 	print '                         [--automationmode=] [--automationrange=] [--cron=]' . PHP_EOL;
 	print '                         [--language=] [--mode=] [--profile=] [--path=]' . PHP_EOL;
 	print '                         [--rrdtool=] [--snmp=] [--table=] [--template=]' . PHP_EOL;
-	print '                         [--theme=]' . PHP_EOL;
+	print '                         [--theme=] [--adminemailaddress=] [--notifyadmin=]' . PHP_EOL;
 	print PHP_EOL . 'A utility to install/upgrade Cacti to the currently sourced version' . PHP_EOL;
 	print PHP_EOL . 'Flags:' . PHP_EOL;
-	print '  -d  | --debug           - Display verbose output during execution' . PHP_EOL;
-	print '  -h  | --help            - Display this help' . PHP_EOL;
-	print '  -v  | --version         - Display version' . PHP_EOL;
-	print '  -f  | --force           - Override certain safety checks' . PHP_EOL;
+	print '  -d  | --debug             - Display verbose output during execution' . PHP_EOL;
+	print '  -h  | --help              - Display this help' . PHP_EOL;
+	print '  -v  | --version           - Display version' . PHP_EOL;
+	print '  -f  | --force             - Override certain safety checks' . PHP_EOL;
 	print PHP_EOL . 'Required:' . PHP_EOL;
-	print '  --accept-eula           - Accept the End User License Agreement' . PHP_EOL;
-	print '  --install               - Perform the installation' . PHP_EOL;
+	print '  --accept-eula             - Accept the End User License Agreement' . PHP_EOL;
+	print '  --install                 - Perform the installation' . PHP_EOL;
 	print PHP_EOL . 'Optional:' . PHP_EOL;
-	print '  -am | --automationmode  - Enable/Disable automatic network discovery' . PHP_EOL;
-	print '  -ar | --automationrange - Set automatic network discovery subnet' . PHP_EOL;
-	print '  -c  | --cron            - Set the cron interval' . PHP_EOL;
-	print '  -l  | --lang[uage]      - Set system language' . PHP_EOL;
-	print '  -m  | --mode            - Set the installation mode' . PHP_EOL;
-	print '  -p  | --profile         - Set the default Data Collector profile' . PHP_EOL;
-	print '  -r  | --rrdtool         - Set the RRD Tool version' . PHP_EOL;
-	print '  -t  | --theme           - Set system theme' . PHP_EOL;
-	print '  -i  | --ini             - Load settings from ini file' . PHP_EOL;
-	print '  -j  | --json            - Load settings from json file' . PHP_EOL;
+	print '  -am | --automationmode    - Enable/Disable automatic network discovery' . PHP_EOL;
+	print '  -ar | --automationrange   - Set automatic network discovery subnet' . PHP_EOL;
+	print '  -c  | --cron              - Set the cron interval' . PHP_EOL;
+	print '  -l  | --lang[uage]        - Set system language' . PHP_EOL;
+	print '  -m  | --mode              - Set the installation mode' . PHP_EOL;
+	print '  -p  | --profile           - Set the default Data Collector profile' . PHP_EOL;
+	print '  -r  | --rrdtool           - Set the RRD Tool version' . PHP_EOL;
+	print '  -t  | --theme             - Set system theme' . PHP_EOL;
+	print '  -i  | --ini               - Load settings from ini file' . PHP_EOL;
+	print '  -j  | --json              - Load settings from json file' . PHP_EOL;
+	print '  -e  | --adminemailaddress - Set admin email address' . PHP_EOL;
+	print '  -n  | --notifyadmin       - Enable/Disable email notify primary admin of issues (true/false)' . PHP_EOL;
 	print PHP_EOL . 'Multi-value optional:' . PHP_EOL;
 	print '  These options may be used more than once to apply multiple values.  All' . PHP_EOL;
 	print '  values should be in "option_key:option_value" format (see below). If an' . PHP_EOL;
