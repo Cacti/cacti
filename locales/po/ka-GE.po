@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2025-11-27 11:18+0000\n"
+"PO-Revision-Date: 2025-12-11 06:18+0000\n"
 "Last-Translator: Ekaterine papava <papava.e@gtu.ge>\n"
 "Language-Team: Georgian <https://translate.cacti.net/projects/cacti/core/ka/>"
 "\n"
@@ -3269,7 +3269,7 @@ msgstr ""
 
 #: automation_tree_rules.php:745
 msgid "Object Selection Criteria"
-msgstr ""
+msgstr "ობიექტის მონიშვნის პირობა"
 
 #: automation_tree_rules.php:748
 msgid "Tree Creation Criteria"
@@ -4140,7 +4140,7 @@ msgstr ""
 #: data_input.php:293
 #, php-format
 msgid "Field Name: %s"
-msgstr ""
+msgstr "ველის სახელი: %s"
 
 #: data_input.php:294
 #, php-format
@@ -13072,7 +13072,7 @@ msgstr ""
 
 #: include/global_settings.php:2277
 msgid "Internet Proxy Password"
-msgstr ""
+msgstr "ინერნეტ-პროქსის პაროლი"
 
 #: include/global_settings.php:2278
 msgid "If your Internet Proxy requires a password, enter it here."
@@ -18116,7 +18116,7 @@ msgstr "ვები"
 #: lib/installer.php:4007 lib/installer.php:4010
 #, php-format
 msgid "%s - No"
-msgstr ""
+msgstr "%s - არა"
 
 #: lib/installer.php:4010
 msgid "Cli"
@@ -18979,7 +18979,7 @@ msgstr "გარე ბმულის გათიშვა"
 
 #: links.php:208
 msgid "Disable External Links"
-msgstr ""
+msgstr "გარე ბმულების გამორთვა"
 
 #: links.php:211
 msgid "Click 'Continue' to Enable the following External Link."
