@@ -92,6 +92,8 @@ to periodically freshen your dependencies if CVE's occur in the various dependen
 packages.  With Cacti 1.2.31, you should not need to run it as all the required
 files will be included in the package, but starting with Cacti 1.3, you may
 be required to run the `composer update` periodically.
+For Windows, you may be required to run:
+`composer update --ignore-platform-req=ext-pcntl --ignore-platform-req=ext-posix`
 
 ### Steps to Fully Upgrade Database Schema
 
