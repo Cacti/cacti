@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2025-11-11 04:26+0000\n"
+"PO-Revision-Date: 2025-12-14 17:18+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core/sv/>"
 "\n"
@@ -8058,7 +8058,7 @@ msgstr "SNMP beskrivning"
 
 #: include/global_arrays.php:695
 msgid "SNMP getNext"
-msgstr "SNMP hämta nästa"
+msgstr "SNMP GetNext"
 
 #: include/global_arrays.php:696
 msgid "Ping"
