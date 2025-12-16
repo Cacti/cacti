@@ -147,7 +147,11 @@
     flex-direction: column;
 
     .mdw-PopOverTitle {
-
+        background-image: linear-gradient(90deg, var(--background-navigation-top-darkblue) 35%, var(--background-navigation-top-lightblue)) !important;
+        & * {
+            background: none;
+            color: snow !important;
+        }
     }
     .mdw-PopOverContent {
         flex: 1;
@@ -206,6 +210,11 @@
             .navBarNavigation {
                 display: none;
             }
+
+            & > iframe {
+                width: 100%;
+                height: calc(100% - 3px);
+            }
         }
 
         &:has(.saveRowParent) {
@@ -249,109 +258,135 @@
 
         & .mdw-DockLeft {
             grid-area: left;
-            height: auto;
-            /* border-right: 1px solid var(--border-color-semilight); */
-            width: min-content;
-
-            & .cactiTable {
-                width: 100% !important;
-                padding: 0 !important; /* again usage of inline style detected :(  */
-                margin: 0 !important;
-            }
-
-            & .filterTable {
-                white-space: unset;
-                display: flex;
-                width: 100%;
-
-                & tbody {
-                    flex: 1;
-                }
-
-                & td {
-                    display: inline-block;
-                    width: 100%;
-                }
-
-                & tr:has(input) {
-                    display: flex;
-                    flex-direction: column-reverse;
-                }
-
-                &:has(div) {
-
-                }
-            }
-            & .mdw-ConsoleNavigationBox:only-child {
-                height: 100%;
-            }
+            right: 0 !important;
         }
 
         & .mdw-DockRight {
             grid-area: right;
-            height: auto;
-            /* border-left: 1px solid var(--border-color-semilight); */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            box-shadow: 0 2px 5px -1px var(--box-shadow-color);
-            width: min-content;
-
-            & .mdw-ConsoleNavigationBox:only-child {
-                height: 100%;
-            }
-
-            & .navBox-header {
-                padding: 0 2px 0 10px;
-                text-align: unset;
-            }
-            & .navBox-header-button {
-                margin: 0 !important;
+            left: 0 !important;
+            & > div[class^="mdw-DockInner"] {
+                &:has(.visible) {
+                    padding-left: 10px;
+                }
             }
 
         }
 
+        & .mdw-DockRight,
+        & .mdw-DockLeft {
+            height: 100%;
+            width: min-content;
+            overflow: hidden;
+            background: var(--background-content);
+
+            &:has(.mdw-ConsoleNavigationBox.visible) {
+                min-width: 19rem;
+            }
+
+            & > .ui-resizable-handle {
+                width: 0;
+                left: 4px;
+                background: var(--border-color-semilight);
+                border-left: 1px solid var(--border-color);
+                &::before {
+                    display: inline-block;
+                    position: relative;
+                    border: 1px solid var(--border-color);
+                    border-radius: 4px;
+                    background: var(--background-content);
+                    top: calc(50% - 16px);
+                    left: -3px;
+                    width: 5px;
+                    height: 16px;
+                    content: '';
+                }
+                &:hover {
+                    border-color: var(--border-color-highlight);
+                    &::before {
+                        border-color: var(--border-color-highlight);
+                    }
+                }
+
+/*                &::before {
+                    top: 50%;
+                    font-size: var(--fs-regular);
+                    font-family: "Font Awesome 6 Free", serif;
+                    font-weight: 900;
+                    content: "\f0c8";
+                }
+  */
+            }
+
+            & > div[class^="mdw-DockInner"] {
+                min-height: 0;
+                height: calc(50% - 7px);
+                & .mdw-ConsoleNavigationBox {
+                    display: contents;
+                    border: none;
+                }
+            }
+
+            & .mdw-DockInnerTop {
+                & > .ui-resizable-handle {
+                    height: 0;
+                    bottom: 0;
+                    margin: 0 0 0 5px;
+                    border-top: 1px solid var(--border-color);
+                    &::before {
+                        display: inline-block;
+                        position: relative;
+                        border: 1px solid var(--border-color);
+                        border-radius: 4px;
+                        background: var(--background-content);
+                        left: calc(50% - 8px);
+                        top: -3px;
+                        width: 16px;
+                        height: 5px;
+                        content: '';
+                    }
+                    &:hover {
+                        border-color: var(--border-color-highlight);
+                        &::before {
+                            border-color: var(--border-color-highlight);
+                        }
+                    }
+                }
+                &:has(~ .mdw-DockInnerBottom:empty)
+                /*,
+                &:has(~ .mdw-DockInnerBottom:not(.visible))*/ {
+                    height: 100%;
+                    & > .ui-resizable-handle {
+                        display: none;
+                    }
+                }
+            }
+
+            & .mdw-DockInnerBottom {
+                &:has(~ .mdw-DockInnerTop:empty),
+                &:has(~ .mdw-DockInnerTop:not(.visible)) {
+                    height: 100%;
+                }
+            }
+
+
+        }
+
         & > div[class^="mdw-Dock"] {
-            background: var(--background-navigation-top);
-            overflow-x: hidden;
-            &:has(div) {
-                .cactiTable {
-                    display: block !important;
-                }
-                .cactiTableTitle,
-                .cactiTableButton {
-                    display: none;
-                }
-            }
-
-            & > div:first-of-type {
-                border-top: none;
-            }
-
-            & > div {
-                height: 100%;
-                position: unset;
-                transform: translate(0);
-                transition: 300ms;
-                background: transparent;
-                box-shadow: none;
-                border: none;
-            }
             .navBox-header {
                 font-size: var(--fs-regular);
+                border-top: none;
+                background: var(--background-navigation-top);
+                margin-left: -5px;
+                padding-left: 15px;
+            }
+            .navBox-content {
+                background: var(--background-content);
             }
 
             & .mdw-ConsoleNavigationBox {
-                visibility: visible;
-                height: clamp( 50%, 50%, 100%);                        /* we allow two Boxes per total per dock, in this case set initial height to 50% */
-                width: 100%;
+                visibility: visible !important;
+                transform: unset !important;
                 border-top: 1px solid var(--box-shadow-color);
-            }
-
-            & .mdw-ConsoleNavigationBox:first-of-type {
-                .navBox-header{
-                    border-top: none;
-                }
             }
         }
     }
@@ -370,7 +405,6 @@
                 justify-content: space-between;
                 align-items: center;
                 cursor: pointer;
-                padding-left: 10px;
                 @supports (-moz-appearance: none) {
                     padding: 0 10px;
                 }
@@ -434,7 +468,6 @@
                 overflow: hidden;
                 border-bottom: 1px solid var(--border-color-semilight);
                 line-height: 3rem;
-                padding-left: 10px;
                 @supports (-moz-appearance: none) {
                     padding: 0 10px;
                 }
@@ -692,8 +725,8 @@
             grid-template-rows: 3rem auto auto;
         }
         padding-left: 18px !important;
-        border-bottom: 1px solid var(--border-color);
-        background: none;
+        border-bottom: 1px solid var(--border-color-semilight);
+        background: var(--background-navigation-top);
         min-height: 0;
         max-width: calc(100% - 1px);
 

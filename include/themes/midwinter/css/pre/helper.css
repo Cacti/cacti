@@ -1,6 +1,6 @@
 /* Helper Classes */
 
-/* Helper Icon Class to generate FontAwesome Icons using pseudo elements */
+/* Helper Icon Class to generate FontAwesome Icons as well as Tabler Icons using pseudo elements */
 
 div[class*=" fa-icon-"], span[class*=" fa-icon-"] {
     font-family: "Font Awesome 5 Free", serif;
@@ -10,4 +10,14 @@ div[class*=" fa-icon-"], span[class*=" fa-icon-"] {
     &.fa-icon-minus::after      { content: "\f068"; }
     &.fa-icon-search::after     { content: "\f002"; }
     &.fa-icon-check::after      { content: "\f003"; }
+}
+
+div[class*=" ti-icon-"], span[class*=" ti-icon-"] {
+    font-family: 'tabler-icons';
+    font-weight: 600;
+
+    &.ti-icon-dots-vertical::after  { content: "\ea94"; }
+    &.ti-icon-minus::after          { content: "\eaf2"; }
+    &.ti-icon-search::after         { content: "\eb1c"; }
+    &.ti-icon-check::after          { content: "\ea5e"; }
 }

@@ -431,7 +431,13 @@ input[type="checkbox"]:focus-within + label:before {
             }
 
             & .cactiTable:has(.cactiTableTitleRow) {
-                display: none;
+                padding-left: 18px;
+                & .cactiTableTitleRow {
+                    display: none;
+                }
+                & * {
+                    padding-left: unset !important;
+                }
             }
 
             & .cactiTable:not(:has(~ .actionsDropdown)) {
@@ -682,48 +688,56 @@ label.ui-state-hover > span {
     width: 100%;
 }
 
-.deviceUp {
-    color: #009d00 !important;
-}
+span[class^="device"] {
+    width: 100%;
+    max-width: 10rem;
+    display: inline-block;
+    color: whitesmoke;
+    border-radius: 2px;
 
-.deviceDown {
-    color: #ff0000 !important;
-}
+    &.deviceUp {
+        background: #009d00;
+    }
 
-.deviceUnknown {
-    color: #0000ff !important;
-}
+    &.deviceDown {
+        background: #ff0000;
+    }
 
-.deviceDisabled {
-    color: #a1a1a1 !important;
-}
+    &.deviceUnknown {
+        background: #0000ff;
+    }
 
-.deviceRecovering {
-    color: yellow !important;
-}
+    &.deviceDisabled {
+        background: #a1a1a1;
+    }
 
-.deviceError {
-    color: #ffaa00 !important;
-}
+    &.deviceRecovering {
+        background: yellow;
+    }
 
-.deviceDownMuted {
-    color: #ffe333 !important;
-}
+    &.deviceError {
+        background: #ffaa00;
+    }
 
-.deviceThreshold {
-    color: #ffa833 !important;
-}
+    &.deviceDownMuted {
+        background: #ffe333;
+    }
 
-.deviceUnmonitored {
-    color: rgba(250, 253, 158, 0.8) !important;
-}
+    &.deviceThreshold {
+        background: #ffa833;
+    }
 
-.deviceWarning {
-    color: #aa7807 !important;
-}
+    &.deviceUnmonitored {
+        background: rgba(250, 253, 158, 0.8);
+    }
 
-.deviceAlert {
-    color: #660000 !important;
+    &.deviceWarning {
+        background: #aa7807;
+    }
+
+    &.deviceAlert {
+        background: #660000;
+    }
 }
 
 .deviceUpBg {
@@ -1377,16 +1391,17 @@ legend::before {
             padding: 0.5rem;
             border: 1px solid var(--border-color);
             border-bottom-left-radius: 4px;
-            border-top-right-radius: 2px;
+            border-top-right-radius: 4px;
             opacity: 0.98;
+            cursor: pointer;
         }
     }
 
 }
 
 .graphimage {
-    border: 1px solid var(--border-color);
-    border-radius: 2px;
+    border: 1px solid var(--border-color-semilight);
+    border-radius: 4px;
 }
 
 .cactiGraphContentArea {
@@ -2337,7 +2352,7 @@ tr {
 }
 
 #nav li ul li, .nav li ul li {
-    border: 1px solid var(--background-menu);
+    border: 1px solid transparent;
     border-radius: 4px;
     &:hover {
         color: var(--text-color-high-contrast);
@@ -2668,6 +2683,7 @@ button {
     white-space: nowrap;
     &:hover {
         border: 1px solid var(--border-color-highlight) !important;
+        &::before { color: snow !important; }
     }
     &::before {
         font-family: "Font Awesome 6 Free", serif;
@@ -2680,10 +2696,10 @@ button {
         color: green;
     }
 
-    &[type="submit"][value="Go"]        { &::before { content: "\f058" ; color: green; } }
-    &[type="submit"][value="continue"]  { &::before { content: "\f058" ; color: green; } }
-    &[value="create"]                   { &::before { content: "\f058" ; color: green; } }
-    &[value="cancel"]                   { &::before { content: "\f057" ; color: red;   } }
+    &[type="submit"][value="Go"]        { &::before { content: "\f058" ; } }
+    &[type="submit"][value="continue"]  { &::before { content: "\f058" ; } }
+    &[value="create"]                   { &::before { content: "\f058" ; } }
+    &[value="cancel"]                   { &::before { content: "\f057" ; color: red !important; } }
     &[value="return"]                   { &::before { content: "\f2ea" ; } }
     &[value="save"]                     { &::before { content: "\f058" ; } }
     &[value="clear"]                    { &::before { content: "\f057" ; } }

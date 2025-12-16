@@ -214,7 +214,7 @@ html {
     background: var(--background-navigation);
     grid-area: sidebar;
     padding-bottom: 2px;
-    box-shadow: -2px 10px 5px 2px var(--box-shadow-color);
+    border-right: 1px solid var(--box-shadow-color);
 
     .compact_nav_icon_menu {
         &:last-child {
@@ -228,6 +228,8 @@ html {
             height: 3.5rem;
             margin-bottom: 1.5rem;
             background: var(--background-navigation-top-blue);
+            border-right: 1px solid black;
+            margin-right: -1px;
         }
     }
 
@@ -292,9 +294,11 @@ html {
     flex-direction: column;
     justify-content: flex-start;
     width: auto;
-    background: var(--background-navigation);
+    /* background: var(--background-navigation); */
+    background: var(--background-content);
     align-items: center;
-    box-shadow: 3px 6px 5px 2px var(--box-shadow-color);
+    /* box-shadow: 3px 6px 5px 2px var(--box-shadow-color); */
+    border-left: 1px solid var(--border-color-semilight);
 
     &:has( div[class^="mdw-Action"]:not(:empty) ) {     /* only show ActionBar with content */
         display: flex;
@@ -343,6 +347,14 @@ html {
             margin: 0.4rem auto;
             width: 3rem;
         }
+    }
+
+    .mdw-ActionBarBottom {
+        display: flex;
+        align-items: stretch;
+        flex: 1;
+        flex-direction: column;
+        justify-content: flex-end;
     }
 }
 
@@ -401,11 +413,10 @@ html {
     height: calc(100dvh - 3.5rem);
     transition: visibility 0.5s linear, transform 0.5s ease-in-out;
     transform: translateX(-125%);
-    border-top: 1px solid var(--border-color-light);
-    border-right: 1px solid var(--background-navigation);
-    border-bottom: 1px solid var(--background-navigation);
+    border-right: 1px solid var(--border-color);
     border-radius: 2px;
-    background-color: var(--background-menu);
+    box-shadow: var(--box-shadow-color) 0 10px 5px;
+    background: var(--background-navigation);
 
     &[data-align="right"] {
         right: 3rem;
@@ -415,10 +426,12 @@ html {
         border-top: 1px solid var(--border-color-light);
         border-bottom: 1px solid var(--background-navigation);
         border-left: 1px solid var(--border-color);
-        box-shadow: 0 10px 5px 0 var(--box-shadow-color);
+        box-shadow: 0 10px 5px var(--box-shadow-color);
+        background: var(--background-content);
 
         .navBox-header {
-            padding: 0 10px;
+            padding: 1px 12px 1px 10px;
+
         }
 
         .navBox-header-title {
@@ -428,9 +441,10 @@ html {
 
         .navBox-content {
             overflow-y: auto;
-            padding: 0;
+            padding: 0 0 0 10px;
             flex: 1;
             scrollbar-gutter: stable;
+            border-top: 1px solid var(--border-color-semilight);
         }
 
 
@@ -458,6 +472,7 @@ html {
         bottom: 0;
         height: auto;
         max-height: 100dvh;
+        border-top: 1px solid var(--border-color);
     }
 
     &[data-height="half"] .navBox-header {
@@ -545,9 +560,8 @@ html {
     display: flex;
     align-items: center;
     flex-shrink: 0;
-    height: 3rem;
+    height: calc(3rem + 2px);
     text-align: center;
-    background: var(--background-navigation);
     padding: 2px 0.5rem 3px 0.75rem;
 }
 
@@ -663,9 +677,8 @@ html {
 .navBox-content {
     overflow: auto;
     padding: 1rem 0 0 1rem;
-    height: calc( 100% - 3.5rem );
+    height: calc( 100% - 3rem );
     border-top: 1px solid var(--background-navigation-top);
-    background-color: var(--background-menu);
 
     &:has(.mdw_tree) {
         padding: 1rem 1rem 0 1rem;

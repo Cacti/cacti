@@ -26,31 +26,50 @@ select2Setup = {
 	displayDefaultLabel : true
 }
 
-/* global midwinter variables */
-let midWinter_tap_count = 0;
-let midWinter_tap_clientX = 0;
-let midWinter_tap_clientY = 0;
+/* midwinter session object */
+let mdw = {
+    session: {
+        theme: {
+            boxes:      { animated: 'on' },
+            color:      { mode: 'dark', auto: 'off' },
+            controls:   { subTitle: 'off', tooltip: 'on' },
+            font:       { zoom: 75 },
+            mobile:     { autoTableLayout: 'off' },
+        },
+        dock: {
+            left:   { height: 'auto', width: 'auto', split: 50 },
+            right:  { height: 'auto', width: 'auto', split: 50 },
+            bottom: { height: 'auto', width: 'auto', split: 50 },
+        },
+        controls: {
+            leftTop: ['dashboards', 'settings', 'tree'],
+            leftBottom: [],
+            rightTop: ['filter', 'layout'],
+            rightBottom: [],
+            bottomLeft: ['help', 'user', 'logout'],
+            bottomRight: ['info'],
+        },
+        table: [],
+    },
+    obj: { box: {}, ctrl: {} },
+    cache: {
+        classes:    [],
+        path:       'include/js/',
+        storage:    Storages.localStorage,
+        tap:        { count: 0, clientX: 0, clientY: 0 }
+    }
+}
 
 /* cache local and vendor libs */
-let midWinter_classes = [];
-let midWinter_path = 'include/js/';
+loadScript('navigationBox',   mdw.cache.path + 'navigationBox.js');
+loadScript('navigationTree',  mdw.cache.path + 'navigationTree.jstree.js');
+loadScript('hotkeys',         mdw.cache.path + 'vendor/hotkeys/hotkeys.min.js');
+loadScript('mark',            mdw.cache.path + 'vendor/mark/jquery.mark.js');
+loadScript('moment',          mdw.cache.path + 'vendor/moment/moment.min.js');
+loadScript('daterangepicker', mdw.cache.path + 'vendor/daterangepicker/daterangepicker.js');
 
-loadScript('navigationBox',   midWinter_path + 'navigationBox.js');
-loadScript('navigationTree',  midWinter_path + 'navigationTree.jstree.js');
-loadScript('hotkeys',         midWinter_path + 'vendor/hotkeys/hotkeys.min.js');
-loadScript('mark',            midWinter_path + 'vendor/mark/jquery.mark.js');
-loadScript('moment',          midWinter_path + 'vendor/moment/moment.min.js');
-loadScript('daterangepicker', midWinter_path + 'vendor/daterangepicker/daterangepicker.js');
+restoreLocalStorage();
 
-/* global functionalities and default values */
-initStorageItem('midWinter_Color_Mode',        'dark', 'theme-color');
-initStorageItem('midWinter_Color_Mode_Auto',   'on',   'theme-color-auto');
-initStorageItem('midWinter_Font_Size',         '75',   'zoom-level');
-initStorageItem('midWinter_Animations',        'on',   'animations');
-initStorageItem('midWinter_Auto_Table_Layout', 'on',   'auto-table-layout');
-initStorageItem('midWinter_Controls_SubTitle', 'off',  'controls-subtitle');
-
-setHotKeys();
 
 function themeReady() {
 	setupTheme();
@@ -64,6 +83,8 @@ function themeReady() {
 	setupTree();
 	setupThemeActions();
 	themeLoader('off');
+
+    setHotKeys();
 }
 
 function hideConsoleNavigation() {
@@ -174,7 +195,7 @@ function setupTheme() {
 									break;
 								default:
 							}
-							$('<i class="fa fa-lock" data-helper="' + $(this).attr('id') + '" data-func="togglePwdInputField"></i>').insertAfter($(this));
+							$('<i class="ti ti-lock" data-helper="' + $(this).attr('id') + '" data-func="togglePwdInputField"></i>').insertAfter($(this));
 						}
 					}
 				}else {
@@ -188,7 +209,7 @@ function setupTheme() {
 
 		$('.versionInfo').detach().appendTo('.cactiAuthBody');
 
-		$('<i class="far fa-user"></i>').insertAfter('#login_username');
+		$('<i class="ti ti-user"></i>').insertAfter('#login_username');
 	}
 
 
@@ -221,10 +242,22 @@ function setupTheme() {
 				'<div id="navControl" class="navControl" ></div>' +
 			'</div>' +
 			'<div id="mdw-Main" class="mdw-Main">' +
-				'<div id="mdw-DockTop" class="mdw-DockTop invisible" ></div>' +
-				'<div id="mdw-DockLeft" class="mdw-DockLeft" data-helper="displayDockTop"></div>' +
-				'<div id="mdw-DockRight" class="mdw-DockRight invisible"></div>' +
-				'<div id="mdw-DockBottom" class="mdw-DockBottom invisible"></div>' +
+				'<div id="mdw-DockTop" class="mdw-DockTop" >' +
+                    '<div class="mdw-DockInnerLeft"></div>' +
+                    '<div class="mdw-DockInnerRight"></div>' +
+                '</div>' +
+				'<div id="mdw-DockLeft" class="mdw-DockLeft" data-helper="displayDockTop">' +
+                    '<div class="mdw-DockInnerTop"></div>' +
+                    '<div class="mdw-DockInnerBottom"></div>' +
+                '</div>' +
+				'<div id="mdw-DockRight" class="mdw-DockRight">' +
+                    '<div class="mdw-DockInnerTop"></div>' +
+                    '<div class="mdw-DockInnerBottom"></div>' +
+                '</div>' +
+				'<div id="mdw-DockBottom" class="mdw-DockBottom">' +
+                    '<div class="mdw-DockInnerLeft"></div>' +
+                    '<div class="mdw-DockInnerRight"></div>' +
+                '</div>' +
 			'</div>' +
 			'<div id="mdw-ActionBar" class="mdw-ActionBar">' +
 				'<div id="mdw-ActionBarTop" class="mdw-ActionBarTop"></div>' +
@@ -274,7 +307,7 @@ function setupTheme() {
 			);
 
 			/* dashboards */
-			new navigationButton('dashboards', 'Panels', 'Panels', 'far fa-map', '#compact_tab_menu').show();
+			new navigationButton('dashboards', 'Panels', 'Panels', 'ti ti-map', '#compact_tab_menu').show();
 			new navigationBox(cactiDashboards, 'dashboards', 'full','auto', {
 				close: true,
 				search: 'searchToHighlight',
@@ -283,7 +316,7 @@ function setupTheme() {
 
 			/* settings */
 			if (cactiConsoleAllowed) {
-				new navigationButton('settings', 'Setup', 'Settings', 'far fa-sun', '#compact_tab_menu');
+				new navigationButton('settings', 'Setup', 'Settings', 'ti ti-settings-cog', '#compact_tab_menu');
 				new navigationBox(zoom_i18n_settings, 'settings', 'full', 'auto', {
 					close: true,
 					search: 'searchToHighlight',
@@ -293,7 +326,7 @@ function setupTheme() {
 
 			/* tree */
 			if (cactiGraphsAllowed) {
-				new navigationButton('tree', 'Tree', 'Tree View','fa fa-seedling', '#compact_tab_menu').show();
+				new navigationButton('tree', 'Tree', 'Tree View','ti ti-seedling', '#compact_tab_menu').show();
 				new navigationBox( 'Tree', 'tree', 'full', 'auto', {
 					close: true,
 					search: 'searchCactiTree',
@@ -303,7 +336,7 @@ function setupTheme() {
 
 
 			/* user help */
-			new navigationButton('help', 'Help', 'Help', 'far fa-comments', '#compact_user_menu').show();
+			new navigationButton('help', 'Help', 'Help', 'ti ti-messages', '#compact_user_menu').show();
 			new navigationBox(help, 'help', 'half', '2', {
 				close: false,
 				search: false,
@@ -311,7 +344,7 @@ function setupTheme() {
 			}, 'left', justCacti+' &reg; v'+cactiVersion).build();
 
 			/* user settings */
-			new navigationButton('user', 'User', 'User Settings', 'far fa-user', '#compact_user_menu').show();
+			new navigationButton('user', 'User', 'User Settings', 'ti ti-user', '#compact_user_menu').show();
 			new navigationBox( cactiUser, 'user', 'half', '2', {
 				close: false,
 				search: false,
@@ -319,7 +352,7 @@ function setupTheme() {
 			}, 'left', $('.loggedInAs').text() ).build();
 
 			/* log out */
-			new navigationButton('logout', 'Exit', 'Sign Out','fas fa-right-from-bracket', '#compact_user_menu', 'redirect', urlPath+'logout.php').show();
+			new navigationButton('logout', 'Exit', 'Sign Out','ti ti-logout', '#compact_user_menu', 'redirect', urlPath+'logout.php').show();
 
 			/* table filters */
 	  		new navigationBox( 'Table Layout', 'displayOptions', 'full', '1', {
@@ -328,13 +361,33 @@ function setupTheme() {
 				resize: false,
 				dock: true,
 			}, 'right','Table Layout', 'auto').build();
-			new navigationButton('toggleColorMode', 'Color', 'Toggle light/dark Mode', 'fas fa-circle-half-stroke', '#navControl', 'toggleColorMode', 'on').show();
-			new navigationButton('kioskMode', 'Kiosk', 'Enable Kiosk Mode', 'fas fa-tv', '#navControl', 'kioskMode', 'on').show();
+			new navigationButton('toggleColorMode', 'Color', 'Toggle light/dark Mode', 'ti ti-contrast-filled', '#navControl', 'toggleColorMode', 'on').show();
+			new navigationButton('kioskMode', 'Kiosk', 'Enable Kiosk Mode', 'ti ti-device-desktop', '#navControl', 'kioskMode', 'on').show();
 
 			if ( document.fullscreenEnabled ) {
-				let icon = (!document.fullscreenElement) ? 'fas fa-expand' : 'fas fa-compress';
+				let icon = (!document.fullscreenElement) ? 'ti ti-maximize' : 'ti ti-minimize';
 				new navigationButton('fullScreen', 'Fullscreen', 'Switch to Fullscreen', icon, '#navControl', 'fullScreen').show();
 			}
+
+            /* theme setup */
+            /* MidWinter Info Icon */
+            new navigationBox( 'Theme', 'theme', 'full', '1', {
+                close: true,
+                search: false,
+                resize: false,
+                dock: true,
+            }, 'right','Theme', 'auto').build();
+            new navigationButton('theme', 'Theme Settings', 'Theme Settings', 'ti ti-color-swatch', '#mdw-ActionBarBottom').show();
+
+            /* display Filter */
+            mdw.obj.box.displayFilterOptions = new navigationBox('Filter', 'displayFilterOptions', 'auto', '1', {
+                close: true,
+                search: false,
+                resize: false,
+                dock: true,
+            }, 'right', 'Display Filter', '');
+            mdw.obj.box.displayFilterOptions.build();
+            mdw.obj.ctrl.displayFilterOptions = new navigationButton('displayFilterOptions', 'Filter', 'Show Display Filter', 'ti ti-filter', '#mdw-ActionBarTop');
 
 		}
 	}
@@ -450,9 +503,40 @@ function toggleCactiNavigationBoxPin(event) {
 	}
 
 	if(/^(?:Left|Right|Top|Bottom)$/.test(event.data.dock)) {
-		navigationBox.detach().appendTo($("#mdw-Dock" + event.data.dock));
+        let destination = $("#mdw-Dock" + event.data.dock + " > .mdw-DockInnerTop");
+        let make_resizeable = true;
+        if ( destination.is(':not(:empty)') ) {
+            destination = $("#mdw-Dock" + event.data.dock + " > .mdw-DockInnerBottom");
+            make_resizeable = false;
+        }
+
+        navigationBox.detach().appendTo(destination);
+
 		$("#mdw-Dock" + event.data.dock).removeClass('invisible');
-	}
+        if(make_resizeable) {
+            $("#mdw-Dock" + event.data.dock).resizable({
+                handles: 'w'
+            });
+
+            destination.resizable({
+                handles: 's',
+                resize: function (event, ui) {
+                    let parentHeight = $(this).parent().innerHeight();
+                    let newHeight = $(this).outerHeight() * 100 / parentHeight;
+                    $(this).css("height", newHeight + '%');
+                    /* update sibling */
+                    $(this).siblings('.mdw-DockInnerBottom').css('height', 100 - newHeight + '%');
+                }
+            });
+        }
+
+
+       // resize: function() {
+          //  $('.test:first-of-type').css('width', $('.test:first-of-type').outerWidth() * 100 / $(window).innerWidth() + '%');
+    //$('.test:nth-of-type(2)').css('width', 100 - ($('.test:first-of-type').outerWidth() * 100 / $(window).innerWidth()) + '%');
+
+    }
+
 }
 
 function toggleCactiDockNavigationBox(event) {
@@ -539,15 +623,14 @@ function togglePwdInputField(event) {
 		}else {
 			destination.attr('type', 'password');
 		}
-		event.target.classList.toggle('fa-lock')
-		event.target.classList.toggle('fa-lock-open');
+		event.target.classList.toggle('ti-lock')
+		event.target.classList.toggle('ti-lock-off');
 	}
 }
 
 function setupDefaultElements() {
 
 	let popover = $('#mdw-GridContainer-PopOver');
-console.log(popover.hasClass('hidden'));
 	if ( popover.hasClass('hidden') ) {
 
 		let storage = Storages.localStorage;
@@ -598,38 +681,9 @@ console.log(popover.hasClass('hidden'));
 			$('.stickyContainer').remove();
 		}
 
-		let btn_filter = new navigationButton('displayFilterOptions', 'Filter', 'Show Display Filter', 'fas fa-filter', '#mdw-ActionBarTop');
-		let btn_calendar = new navigationButton('daterangepicker', 'Calendar', 'Select Timeframe', 'fas fa-calendar-alt', '#mdw-ActionBarTop', '', '');
+		let btn_calendar = new navigationButton('daterangepicker', 'Calendar', 'Select Timeframe', 'ti ti-calendar-alt', '#mdw-ActionBarTop', '', '');
 
-		if ($("#main .filterTable").length) {
-			let filter;
-			filter = $("#main .filterTable:first").closest('div.cactiTable').detach();
-
-			if (!$('[class^="mdw-ConsoleNavigationBox"][data-helper="displayFilterOptions"]').length) {
-				new navigationBox('Filter', 'displayFilterOptions', 'auto', '1', {
-					close: true,
-					search: false,
-					resize: false,
-					dock: true,
-				}, 'right', 'Display Filter', '').build();
-			}
-			$('[class^="mdw-ConsoleNavigationBox"][data-helper="displayFilterOptions"] .navBox-content').html(filter);
-
-			/* custom content */
-			if ($("#main >div:first .filterTable:first").closest('div').length === 1) {
-				//	$("#main >div:first .filterTable:first").closest('div').detach().prependTo('#filterTableOnTop');
-				$(".break:first").detach().appendTo('#filterTableOnTop');
-
-				/* hide filter table title */
-				$('#filterTableOnTop .cactiTableTitle').detach();
-				$("#filterTableOnTop").removeClass('hide');
-			}
-			btn_filter.show();
-			$('[class^="mdw-ConsoleNavigationBox"][data-helper="displayFilterOptions"]').show();
-		} else {
-			btn_filter.hide();
-			$('[class^="mdw-ConsoleNavigationBox"][data-helper="displayFilterOptions"]').hide();
-		}
+        transform_filter_table();
 
 		// *********************************** Elements on Top (of Navigation right) ************************************
 		// ensure that elementsOnTop container is always available
@@ -672,9 +726,8 @@ console.log(popover.hasClass('hidden'));
 		}
 		// **************************************************************************************************************
 
-
 		/* display option: table layout */
-		let btn_table_layout = new navigationButton('displayOptions', 'Table', 'Setup Table Layout', 'fas fa-pencil', '#mdw-ActionBarTop');
+		let btn_table_layout = new navigationButton('displayOptions', 'Table', 'Setup Table Layout', 'ti ti-table-options', '#mdw-ActionBarTop');
 
 		if ($('thead>tr.tableHeader:has(th:nth-of-type(2))').length !== 0) {
 			let cArray = [];
@@ -776,7 +829,7 @@ console.log(popover.hasClass('hidden'));
 							+ '</div>'
 					}
 				})
-
+//[["no-col4","no-col5"],[[1,"name_cache","Data Source Name",1,1],[2,"local_data_id","ID",1,1],[3,"n/a","Graphs",1,1],[4,"n/a","Poller Interval",1,0],[5,"n/a","Deletable",1,0],[6,"active","Active",1,1],[7,"data_template_name","Template Name",1,1],[8,"n/a","n/a",0,1]],"en-US"]
 				columns_filter += '<div id="mdw-columns-reset" class="mdw-columns-reset'
 					+ ((storage_table_headers[0].length === 0) ? ' inactive' : '')
 					+ '" data-helper="' + tableHash + '">Reset</div>';
@@ -791,16 +844,16 @@ console.log(popover.hasClass('hidden'));
 		}
 
 		// Add nice search filter to filters
-		if ($('input[id="filter"]').length > 0 && $('input[id="filter"] > i[class="fa fa-search filter"]').length < 1) {
-			$('input[id="filter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
+		if ($('input[id="filter"]').length > 0 && $('input[id="filter"] > i[class="ti ti-search filter"]').length < 1) {
+			$('input[id="filter"]').after("<i class='ti ti-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
 		}
 
-		if ($('input[id="filterd"]').length > 0 && $('input[id="filterd"] > i[class="fa fa-search filter"]').length < 1) {
-			$('input[id="filterd"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
+		if ($('input[id="filterd"]').length > 0 && $('input[id="filterd"] > i[class="ti ti-search filter"]').length < 1) {
+			$('input[id="filterd"]').after("<i class='ti ti-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
 		}
 
-		if ($('input[id="rfilter"]').length > 0 && $('input[id="rfilter"] > i[class="fa fa-search filter"]').length < 1) {
-			$('input[id="rfilter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchRFilter).parent('td').css('white-space', 'nowrap');
+		if ($('input[id="rfilter"]').length > 0 && $('input[id="rfilter"] > i[class="ti ti-search filter"]').length < 1) {
+			$('input[id="rfilter"]').after("<i class='ti ti-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchRFilter).parent('td').css('white-space', 'nowrap');
 		}
 
 		$('input#filter, input#rfilter').addClass('ui-state-default ui-corner-all');
@@ -892,20 +945,49 @@ console.log(popover.hasClass('hidden'));
 	}
 }
 
-function initStorageItem(name, default_value, data_attribute= '') {
-	let storage = Storages.localStorage;
-	if (storage.isSet(name) === false) {
-		storage.set(name, default_value);
-	}
-	if (data_attribute !=='') {
-		setDocumentAttribute(data_attribute, storage.get(name));
-	}
-	return storage.get(name);
+function transform_filter_table() {
+    if ($("#main .filterTable").length) {
+        let filter;
+        filter = $("#main .filterTable:first").closest('div.cactiTable').detach();
+        $('[class^="mdw-ConsoleNavigationBox"][data-helper="displayFilterOptions"] .navBox-content').html(filter);
+
+        /* custom content */
+        if ($("#main >div:first .filterTable:first").closest('div').length === 1) {
+            //	$("#main >div:first .filterTable:first").closest('div').detach().prependTo('#filterTableOnTop');
+            $(".break:first").detach().appendTo('#filterTableOnTop');
+
+            /* hide filter table title */
+            $('#filterTableOnTop .cactiTableTitle').detach();
+            $("#filterTableOnTop").removeClass('hide');
+        }
+        mdw.obj.ctrl.displayFilterOptions.show();
+    } else {
+        mdw.obj.ctrl.displayFilterOptions.hide();
+      //  $('[class^="mdw-ConsoleNavigationBox"][data-helper="displayFilterOptions"]').hide();
+    }
+}
+
+function restoreLocalStorage() {
+    if (mdw.cache.storage.isSet('midWinter') === false) {
+        refreshLocalStorage();
+    } else {
+        mdw.session = JSON.parse(lzjs.decompress(mdw.cache.storage.get('midWinter')));
+    }
+    setDocumentAttribute('theme-color',         mdw.session.theme.color.mode );
+    setDocumentAttribute('theme-color-auto',    mdw.session.theme.color.auto );
+    setDocumentAttribute('zoom-level',          mdw.session.theme.font.zoom );
+    setDocumentAttribute('animations',          mdw.session.theme.boxes.animated );
+    setDocumentAttribute('auto-table-layout',   mdw.session.theme.mobile.autoTableLayout );
+    setDocumentAttribute('controls-subtitle',   mdw.session.theme.controls.subTitle );
+}
+
+function refreshLocalStorage() {
+    mdw.cache.storage.set('midWinter', lzjs.compress(JSON.stringify(mdw.session)));
 }
 
 function themeLoader(state='off', force = false) {
 	if (state === 'on') {
-		if (getDocumentAttribute('data-theme-state') !== 'ready' | force === true) {
+		if (getDocumentAttribute('data-theme-state') !== 'ready' || force === true) {
 			setDocumentAttribute('theme-state', 'loading');
 		}
 	} else {
@@ -930,83 +1012,61 @@ function getCookieValue(name) {
 }
 
 function toggleColorMode() {
-	let storage = Storages.localStorage;
-	let midWinter_Color_Mode = storage.get('midWinter_Color_Mode');
-	let midWinter_Color_Mode_Auto = storage.get('midWinter_Color_Mode_Auto');
-
-	if (midWinter_Color_Mode_Auto !== 'on') {
-		midWinter_Color_Mode = (midWinter_Color_Mode === 'dark') ? 'light' : 'dark';
-		storage.set('midWinter_Color_Mode', midWinter_Color_Mode);
-		setDocumentAttribute('theme-color', midWinter_Color_Mode);
-		setCookieValue('CactiColorMode', midWinter_Color_Mode);
+	if (mdw.session.theme.color.auto !== 'on') {
+        mdw.session.theme.color.mode = (mdw.session.theme.color.mode === 'dark') ? 'light' : 'dark';
+		refreshLocalStorage();
+		setDocumentAttribute('theme-color', mdw.session.theme.color.mode);
+		setCookieValue('CactiColorMode', mdw.session.theme.color.mode);
 		initializeGraphs(true);
 	}
 }
 
 function toggleColorModeAuto() {
-	let storage = Storages.localStorage;
-	let midWinter_Color_Mode = storage.get('midWinter_Color_Mode');
-	let midWinter_Color_Mode_Auto = storage.get('midWinter_Color_Mode_Auto');
-
-	midWinter_Color_Mode_Auto = (midWinter_Color_Mode_Auto === 'on') ? 'off' : 'on';
-	storage.set('midWinter_Color_Mode_Auto', midWinter_Color_Mode_Auto);
-	setDocumentAttribute('theme-color-auto', midWinter_Color_Mode_Auto);
+    mdw.session.theme.color.auto = (mdw.session.theme.color.auto === 'on') ? 'off' : 'on';
+    refreshLocalStorage();
+	setDocumentAttribute('theme-color-auto', mdw.session.theme.color.auto);
 	setThemeColor();
 	/* update output field beside input selector */
-	$('#mdw_themeColorModeAutoValue').val(midWinter_Color_Mode_Auto);
+	$('#mdw_themeColorModeAutoValue').val(mdw.session.theme.color.auto);
 }
 
 function changeGuiFontSize(change=true) {
-	let storage = Storages.localStorage;
-	let midWinter_Font_Size = storage.get('midWinter_Font_Size');
-	let midWinter_FontSizeValue = 0;
-	midWinter_Font_Size = $('#mdw_themeFontSize').val();
-	midWinter_FontSizeValue = parseFloat(midWinter_Font_Size) + 25;
-
-	storage.set('midWinter_Font_Size', midWinter_Font_Size);
+    mdw.session.theme.font.zoom = $('#mdw_themeFontSize').val();
 	if(change) {
-		setDocumentAttribute('zoom-level', midWinter_Font_Size);
+		refreshLocalStorage();
+        setDocumentAttribute('zoom-level', mdw.session.theme.font.zoom);
 	}
 	/* update output field beside input selector */
-	$('#mdw_themeFontSizeValue').val(midWinter_FontSizeValue.toFixed(1) + ' %');
+	$('#mdw_themeFontSizeValue').val((parseFloat(mdw.session.theme.font.zoom) + 25).toFixed(1) + ' %');
 }
 
 function toggleGuiAnimations() {
-	let storage = Storages.localStorage;
-	let midWinter_Animations = storage.get('midWinter_Animations');
-	midWinter_Animations = (midWinter_Animations === 'on') ? 'off' : 'on';
-	storage.set('midWinter_Animations', midWinter_Animations);
-	setDocumentAttribute('animations', midWinter_Animations);
+    mdw.session.theme.boxes.animated = (mdw.session.theme.boxes.animated === 'on') ? 'off' : 'on';
+    refreshLocalStorage();
+	setDocumentAttribute('animations', mdw.session.theme.boxes.animated);
 	/* update output field beside input selector */
-	$('#mdw_themeAnimationsValue').val(midWinter_Animations);
+	$('#mdw_themeAnimationsValue').val(mdw.session.theme.boxes.animated);
 }
 
 function toggleControlsSubtitle() {
-	let storage = Storages.localStorage;
-	let midWinter_Controls_SubTitle = storage.get('midWinter_Controls_SubTitle');
-	midWinter_Controls_SubTitle = (midWinter_Controls_SubTitle === 'on') ? 'off' : 'on';
-	storage.set('midWinter_Controls_SubTitle', midWinter_Controls_SubTitle);
-	setDocumentAttribute('controls-subtitle', midWinter_Controls_SubTitle);
+    mdw.session.theme.controls.subTitle = (mdw.session.theme.controls.subTitle === 'on') ? 'off' : 'on';
+    refreshLocalStorage();
+	setDocumentAttribute('controls-subtitle', mdw.session.theme.controls.subTitle);
 	/* update output field beside input selector */
-	$('#mdw_themeControlsSubTitleValue').val(midWinter_Controls_SubTitle);
+	$('#mdw_themeControlsSubTitleValue').val(mdw.session.theme.controls.subTitle);
 }
 
 function toggleAutoTableLayout() {
-	let storage = Storages.localStorage;
-	let midWinter_Auto_Table_Layout = storage.get('midWinter_Auto_Table_Layout');
-	midWinter_Auto_Table_Layout= (midWinter_Auto_Table_Layout === 'on') ? 'off' : 'on';
-	storage.set('midWinter_Auto_Table_Layout', midWinter_Auto_Table_Layout);
-	setDocumentAttribute('auto-table-layout', midWinter_Auto_Table_Layout);
+    mdw.session.theme.mobile.autoTableLayout = (mdw.session.theme.mobile.autoTableLayout === 'on') ? 'off' : 'on';
+    refreshLocalStorage();
+	setDocumentAttribute('auto-table-layout', mdw.session.theme.mobile.autoTableLayout);
 	/* update output field beside input selector */
-	$('#mdw_themeAutoTableLayoutValue').val(midWinter_Auto_Table_Layout);
+	$('#mdw_themeAutoTableLayoutValue').val(mdw.session.theme.mobile.autoTableLayout);
 }
 
 function setThemeColor() {
-	let storage = Storages.localStorage;
-	let auto = storage.get('midWinter_Color_Mode_Auto');
-
-	$('#mdw_themeColorMode').attr('disabled', (auto === 'on'));
-	detectSystemColorSetup(auto);
+	$('#mdw_themeColorMode').attr('disabled', (mdw.session.theme.color.auto === 'on'));
+	detectSystemColorSetup(mdw.session.theme.color.auto);
 }
 
 function detectSystemColorSetup(state) {
@@ -1020,7 +1080,7 @@ function detectSystemColorSetup(state) {
 		checkThemeColorSetup(systemColorMode.matches === true ? 'dark' : 'light');
 	}else {
 		systemColorMode.removeEventListener('change', _listener);
-		checkThemeColorSetup(storage.get('midWinter_Color_Mode'));
+		checkThemeColorSetup(mdw.session.theme.color.mode);
 	}
 }
 
@@ -1029,6 +1089,7 @@ function checkThemeColorSetup(color_mode) {
 	let cookie_color_mode = getCookieValue('CactiColorMode');
 
 	if (document_color_mode !== color_mode || cookie_color_mode !== color_mode) {
+        refreshLocalStorage();
 		setDocumentAttribute('theme-color', color_mode)
 		setCookieValue('CactiColorMode', color_mode);
 		initializeGraphs(true);
@@ -1092,9 +1153,9 @@ function fullScreen(event) {
 
 function fullScreenChangeHandler() {
 	if (document.fullscreenElement) {
-		$('.compact_nav_icon[data-helper="fullScreen"]>i').removeClass('fa-expand').addClass('fa-compress');
+		$('.compact_nav_icon[data-helper="fullScreen"]>i').removeClass('ti-maximize').addClass('ti-minimize');
 	}else {
-		$('.compact_nav_icon[data-helper="fullScreen"]>i').addClass('fa-expand').removeClass('fa-compress');
+		$('.compact_nav_icon[data-helper="fullScreen"]>i').addClass('ti-maximize').removeClass('ti-minimize');
 	}
 }
 
@@ -1111,30 +1172,30 @@ function kioskMode(event = false) {
 		if(isMobile.any() != null) {
 			$('#mdw-Main').off('click').on('click', function(e) {
 				let tap;
-				midWinter_tap_count++;
+				mdw.cache.tab.count++;
 
-				if(midWinter_tap_count === 1) {
-					midWinter_tap_clientX = e.clientX;
-					midWinter_tap_clientY = e.clientY;
+				if(mdw.cache.tab.count === 1) {
+					mdw.cache.tab.clientX = e.clientX;
+					mdw.cache.tab.clientY = e.clientY;
 
 					tap = setTimeout(function(){
-						midWinter_tap_count = 0;
-						midWinter_tap_clientX = 0;
-						midWinter_tap_clientY = 0;
+						mdw.cache.tab.count = 0;
+						mdw.cache.tab.clientX = 0;
+						mdw.cache.tab.clientY = 0;
 					},300);
-				}else if (midWinter_tap_count === 2) {
-					if(Math.abs(e.clientX-midWinter_tap_clientX) < 10 && Math.abs(e.clientY-midWinter_tap_clientY) < 10) {
+				}else if (mdw.cache.tab.count === 2) {
+					if(Math.abs(e.clientX-mdw.cache.tab.clientX) < 10 && Math.abs(e.clientY-mdw.cache.tab.clientY) < 10) {
 						e.preventDefault();
 						clearTimeout(tap);
-						midWinter_tap_count = 0;
-						midWinter_tap_clientX = 0;
-						midWinter_tap_clientY = 0;
+						mdw.cache.tab.count = 0;
+						mdw.cache.tab.clientX = 0;
+						mdw.cache.tab.clientY = 0;
 						kioskMode(false);
 					}
 				}else {
-					midWinter_tap_count = 0;
-					midWinter_tap_clientX = 0;
-					midWinter_tap_clientY = 0;
+					mdw.cache.tab.count = 0;
+					mdw.cache.tab.clientX = 0;
+					mdw.cache.tab.clientY = 0;
 					kioskMode(false);
 				}
 			});
@@ -1143,7 +1204,7 @@ function kioskMode(event = false) {
 }
 
 function setHotKeys() {
-	if(midWinter_classes.includes('hotkeys')) {
+	if(mdw.cache.classes.includes('hotkeys')) {
 		hotkeys('c+d,c+l,c+p,c+F1,F5,SHIFT+m+d, SHIFT+m+g, SHIFT+p, SHIFT+c+s, ESC', function (event, handler) {
 			event.preventDefault();
 			switch (handler.key) {
@@ -1190,16 +1251,15 @@ function loadScript(className, url='') {
 		let location = window.location.pathname;
 		let dirname = location.substring(0, location.lastIndexOf("/") + 1);
 		urlPath = (dirname.search('/install/') !== -1) ? dirname + '../' : dirname;
-		console.log(urlPath);
 	}
 
-	if(midWinter_classes.includes(className) === false) {
+	if(mdw.cache.classes.includes(className) === false) {
 		$.ajax({
 			dataType: 'script',
 			cache: false,
 			async: false,
 			url: urlPath + url,
-			success: midWinter_classes.push(className)
+			success: mdw.cache.classes.push(className)
 		}).fail(function(html) {
 			getPresentHTTPError(html);
 		});
@@ -1263,4 +1323,95 @@ function searchToHighlight(event) {
 			}
 		}
 	});
+}
+
+function get_theme_content() {
+
+    let midWinter_Color_Mode = mdw.session.theme.color.mode;
+    let midWinter_Color_Mode_Auto = mdw.session.theme.color.auto;
+    let midWinter_Font_Size = mdw.session.theme.font.zoom;
+  //  let midWinter_widthNavigationBox_dashboards = storage.get('midWinter_widthNavigationBox_dashboards');
+    let midWinter_Animations = mdw.session.theme.boxes.animated
+    let midWinter_ShownFontSizeValue = parseFloat(midWinter_Font_Size) + 25;
+    let midWinter_Auto_Table_Layout = mdw.session.theme.mobile.autoTableLayout;
+    let midWinter_Controls_SubTitle = mdw.session.theme.controls.subTitle;
+
+    return '<ul class="nav">'
+        +   '<li class="menuitem" id="menu_user_action">'
+        +       '<a class="menu_parent" href="#" inert>'
+        +           '<i class="menu_glyph ti ti-photo"></i>'
+        +           '<span>General</span>'
+        +       '</a>'
+        +       '<ul>'
+        +           '<li>'
+        +				'<div>' + 'Animations' + '</div>'
+        +				'<div>'
+        +					'<label class="checkboxSwitch">'
+        +						'<input data-scope="theme" id="mdw_themeAnimations" data-func="toggleGuiAnimations" class="formCheckbox" type="checkbox" name="mdw_themeAnimations" '+(midWinter_Animations === 'on' ? 'checked' : '')+'>'
+        +						'<span class="checkboxSlider checkboxRound"></span>'
+        +					'</label>'
+        +					'<label class="checkboxLabel checkboxLabelWanted" for="mdw_themeAnimations"></label>'
+        +                   '<output id="mdw_themeAnimationsValue">'+ midWinter_Animations +'</output>'
+        +				'</div>'
+        +           '</li>'
+        +           '<li>'
+        +				'<div>' + 'Show Control Names' + '</div>'
+        +				'<div>'
+        +					'<label class="checkboxSwitch">'
+        +						'<input data-scope="theme" id="mdw_themeControlsSubTitle" data-func="toggleControlsSubtitle" class="formCheckbox" type="checkbox" name="mdw_themeControlsSubtitle" '+(midWinter_Controls_SubTitle === 'on' ? 'checked' : '')+'>'
+        +						'<span class="checkboxSlider checkboxRound"></span>'
+        +					'</label>'
+        +					'<label class="checkboxLabel checkboxLabelWanted" for="mdw_themeControlsSubTitle"></label>'
+        +                   '<output id="mdw_themeControlsSubTitleValue">'+ midWinter_Controls_SubTitle +'</output>'
+        +				'</div>'
+        +           '</li>'
+        +           '<li>'
+        +				'<div>' + 'Zoom Level' + '</div>'
+        +				'<div>'
+        +						'<input data-scope="theme" class="mdw_themeFontSize" id="mdw_themeFontSize" onchange="changeGuiFontSize()" oninput="changeGuiFontSize(false)" type="range" min="50" max="100" step="2.5" value="'+ midWinter_Font_Size +'" defaultValue="75">'
+        +                       '<output id="mdw_themeFontSizeValue">'+midWinter_ShownFontSizeValue+'%</output>'
+        +				'</div>'
+        +           '</li>'
+        +       '</ul>'
+        +   '</li>'
+        +   '<li class="menuitem" id="menu_user_action">'
+        +       '<a class="menu_parent" href="#" inert>'
+        +           '<i class="menu_glyph ti ti-color-swatch"></i>'
+        +           '<span>Colors</span>'
+        +       '</a>'
+        +       '<ul>'
+        +           '<li>'
+        +				'<div>' + usePreferredColorTheme + '</div>'
+        +				'<div>'
+        +					'<label class="checkboxSwitch">'
+        +						'<input data-scope="theme" id="mdw_themeColorModeAuto" data-func="toggleColorModeAuto" class="formCheckbox" type="checkbox" name="mdw_themeColorModeAuto" '+(midWinter_Color_Mode_Auto === 'on' ? 'checked' : '')+'>'
+        +						'<span class="checkboxSlider checkboxRound"></span>'
+        +					'</label>'
+        +					'<label class="checkboxLabel checkboxLabelWanted" for="mdw_themeColorModeAuto"></label>'
+        +                   '<output id="mdw_themeColorModeAutoValue">'+ midWinter_Color_Mode_Auto +'</output>'
+        +				'</div>'
+        +           '</li>'
+
+        +       '</ul>'
+        +   '</li>'
+        +   '<li class="menuitem" id="menu_user_action">'
+        +       '<a class="menu_parent" href="#" inert>'
+        +           '<i class="menu_glyph ti ti-device-mobile"></i>'
+        +           '<span>Mobile Devices</span>'
+        +       '</a>'
+        +       '<ul>'
+        +           '<li>'
+        +				'<div>' + 'Auto Table Layout' + '</div>'
+        +				'<div>'
+        +					'<label class="checkboxSwitch">'
+        +						'<input data-scope="theme" id="mdw_themeAutoTableLayout" data-func="toggleAutoTableLayout" class="formCheckbox" type="checkbox" name="mdw_themeAutoTableLayout" '+(midWinter_Auto_Table_Layout === 'on' ? 'checked' : '')+'>'
+        +						'<span class="checkboxSlider checkboxRound"></span>'
+        +					'</label>'
+        +					'<label class="checkboxLabel checkboxLabelWanted" for="mdw_themeAutoTableLayout"></label>'
+        +                   '<output id="mdw_themeAutoTableLayoutValue">'+ midWinter_Auto_Table_Layout +'</output>'
+        +				'</div>'
+        +           '</li>'
+        +       '</ul>'
+        +   '</li>'
+        +'</ul>';
 }

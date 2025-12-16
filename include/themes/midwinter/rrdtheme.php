@@ -22,7 +22,7 @@
   +-------------------------------------------------------------------------+
 */
 
-$rrdcolors['back']   = 'f5f7f9';
+$rrdcolors['back']   = 'F3F3F3';
 $rrdcolors['canvas'] = 'f5f7f9';
 $rrdcolors['shadea'] = '0B0B0B';
 $rrdcolors['shadeb'] = '292929';
@@ -33,7 +33,7 @@ $rrdcolors['axis']   = '2C4D43';
 $rrdcolors['arrow']  = '2C4D43';
 $rrdcolors['frame']  = '141414';
 
-$rrdcolors_light['back']   = 'f5f7f9';
+$rrdcolors_light['back']   = 'F3F3F3';
 $rrdcolors_light['canvas'] = 'f5f7f9';
 $rrdcolors_light['shadea'] = '0B0B0B';
 $rrdcolors_light['shadeb'] = '292929';
@@ -44,16 +44,16 @@ $rrdcolors_light['axis']   = '2C4D43';
 $rrdcolors_light['arrow']  = '2C4D43';
 $rrdcolors_light['frame']  = '2C4D43';
 
-$rrdcolors_dark['back']   = '242639';
-$rrdcolors_dark['canvas'] = '242639';
+$rrdcolors_dark['back']   = '12131c'; //'242639';
+$rrdcolors_dark['canvas'] = '0a0b10'; //'242639';
 $rrdcolors_dark['shadea'] = '0B0B0B';
 $rrdcolors_dark['shadeb'] = '292929';
-$rrdcolors_dark['grid']   = '21212400';
-$rrdcolors_dark['mgrid']  = '6A6C6C';
-$rrdcolors_dark['font']   = 'c7d0d9';
-$rrdcolors_dark['axis']   = '2C4D43';
-$rrdcolors_dark['arrow']  = '2C4D43';
-$rrdcolors_dark['frame']  = '141414';
+$rrdcolors_dark['grid']   = '0a0b10'; //'21212400';
+$rrdcolors_dark['mgrid']  = '222327'; //'6A6C6C';
+$rrdcolors_dark['font']   = 'FFFFffaa'; //'c7d0d9';
+$rrdcolors_dark['axis']   = '3A3B3F'; //'2C4D43';
+$rrdcolors_dark['arrow']  = '3A3B3F'; //'2C4D43';
+$rrdcolors_dark['frame']  = '222327'; //'141414';
 
 # RRDtool graph fonts in RRDtool 1.2+
 $rrdfonts['title']['font']     = '';
