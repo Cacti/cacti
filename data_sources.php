@@ -915,12 +915,12 @@ function ds_edit() {
 				[
 					'display' => $debug_message,
 					'url'     => $debug_url,
-					'class'   => ($debug ? 'fa fa-bug disableDebug' : 'fa fa-bug enableDebug')
+					'class'   => ($debug ? 'ti ti-bug disableDebug' : 'ti ti-bug enableDebug')
 				],
 				[
 					'display' => $info_message,
 					'url'     => $info_url,
-					'class'   => ($info_on ? 'fa fa-qrcode disableDebug' : 'fa fa-qrcode editTemplate')
+					'class'   => ($info_on ? 'ti ti-qrcode disableDebug' : 'ti ti-qrcode editTemplate')
 				],
 			]
 		];
@@ -935,7 +935,7 @@ function ds_edit() {
 				$ins_buttons[] = [
 					'display' => __esc('Edit Graph: \'%s\'', $name),
 					'url'     => 'graphs.php?action=graph_edit&id=' . $id['local_graph_id'],
-					'class'   => 'fa fa-chart-line editGraph'
+					'class'   => 'ti ti-chart-area-line-filled editGraph'
 				];
 			}
 		}
@@ -944,7 +944,7 @@ function ds_edit() {
 			$ins_buttons[] = [
 				'display' => __('Edit Device'),
 				'url'     => 'host.php?action=edit&id=' . ($data_local['host_id'] > 0 ? $data_local['host_id'] : get_request_var('host_id')),
-				'class'   => 'fa fa-server editDevice'
+				'class'   => 'ti ti-server editDevice'
 			];
 		}
 
@@ -952,7 +952,7 @@ function ds_edit() {
 			$ins_buttons[] = [
 				'display' => __('Edit Data Template'),
 				'url'     => 'data_templates.php?action=template_edit&id=' . ($data_template['id'] > 0 ? $data_template['id'] : 0),
-				'class'   => 'fas fa-copy editTemplate'
+				'class'   => 'ti ti-copy editTemplate'
 			];
 		}
 
@@ -966,7 +966,7 @@ function ds_edit() {
 			$filters['links'][] = [
 				'display' => ($data['active'] == 'on' ? __('Disable Data Source') : __('Enable Data Source')),
 				'url'     => 'data_sources.php?action=ds_' . ($data['active'] == 'on' ? 'dis' : 'en') . 'able&id=' . get_request_var('id'),
-				'class'   => ($data['active'] == 'on' ? 'fas fa-circle-check deviceRecovering' : 'fas fa-circle-check deviceUp')
+				'class'   => ($data['active'] == 'on' ? 'ti ti-circle-check deviceRecovering' : 'ti ti-circle-check deviceUp')
 			];
 		}
 	} else {
@@ -1131,7 +1131,7 @@ function ds_edit() {
 				print "<div class='tabs' style='float:left;'><nav><ul role='tablist'>";
 
 				foreach ($template_data_rrds as $template_data_rrd) {
-					print "<li class='subTab'><a " . (($template_data_rrd['id'] == get_request_var('view_rrd')) ? "class='pic selected'" : "class='pic'") . " href='" . html_escape('data_sources.php?action=ds_edit&id=' . get_request_var('id') . '&view_rrd=' . $template_data_rrd['id']) . "'>$i: " . html_escape($template_data_rrd['data_source_name']) . '</a>' . ($use_data_template == false ? " <a class='pic deleteMarker fa fa-times' href='" . html_escape('data_sources.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&local_data_id=' . get_request_var('id')) . "' title='" . __esc('Delete') . "'></a>" : '') . '</li>';
+					print "<li class='subTab'><a " . (($template_data_rrd['id'] == get_request_var('view_rrd')) ? "class='pic selected'" : "class='pic'") . " href='" . html_escape('data_sources.php?action=ds_edit&id=' . get_request_var('id') . '&view_rrd=' . $template_data_rrd['id']) . "'>$i: " . html_escape($template_data_rrd['data_source_name']) . '</a>' . ($use_data_template == false ? " <a class='pic deleteMarker ti ti-x' href='" . html_escape('data_sources.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&local_data_id=' . get_request_var('id')) . "' title='" . __esc('Delete') . "'></a>" : '') . '</li>';
 
 					$i++;
 				}

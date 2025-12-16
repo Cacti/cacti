@@ -1783,14 +1783,14 @@ function display_reports_items($report_id) {
 			$form_data .= '<td>' . $size . '</td>';
 
 			if ($i == 1) {
-				$form_data .= '<td class="right nowrap"><a class="pic remover fa fa-caret-down moveArrow" style="padding:3px" title="' . __esc('Move Down') . '" href="' . html_escape(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<span style="padding:5ps" class="moveArrowNone"></span>';
+				$form_data .= '<td class="right nowrap"><a class="pic remover ti ti-caret-down-filled moveArrow" style="padding:3px" title="' . __esc('Move Down') . '" href="' . html_escape(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<span style="padding:5ps" class="moveArrowNone"></span>';
 			} elseif ($i > 1 && $i < cacti_sizeof($items)) {
-				$form_data .= '<td class="right nowrap"><a class="pic remover fa fa-caret-down moveArrow" style="padding:3px" title="' . __esc('Move Down') . '" href="' . html_escape(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<a class="remover fa fa-caret-up moveArrow" style="padding:3px" title="' . __esc('Move Up') . '" href="' . html_escape(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>';
+				$form_data .= '<td class="right nowrap"><a class="pic remover ti ti-caret-down-filled moveArrow" style="padding:3px" title="' . __esc('Move Down') . '" href="' . html_escape(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<a class="remover ti ti-caret-up-filled moveArrow" style="padding:3px" title="' . __esc('Move Up') . '" href="' . html_escape(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>';
 			} else {
-				$form_data .= '<td class="right nowrap"><span style="padding:3px" class="moveArrowNone"></span>' . '<a class="remover fa fa-caret-up moveArrow" style="padding:3px" title="' . __esc('Move Up') . '" href="' . html_escape(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>';
+				$form_data .= '<td class="right nowrap"><span style="padding:3px" class="moveArrowNone"></span>' . '<a class="remover ti ti-caret-up-filled moveArrow" style="padding:3px" title="' . __esc('Move Up') . '" href="' . html_escape(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>';
 			}
 
-			$form_data .= '<a class="pic deleteMarker fa fa-times" style="padding:3px" href="' . html_escape(get_reports_page() . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $report_id) . '" title="' . __esc('Delete') . '"></a>' . '</td></tr>';
+			$form_data .= '<a class="pic deleteMarker ti ti-x" style="padding:3px" href="' . html_escape(get_reports_page() . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $report_id) . '" title="' . __esc('Delete') . '"></a>' . '</td></tr>';
 
 			print $form_data;
 
@@ -2252,17 +2252,17 @@ function reports() {
 			$found  = false;
 
 			if ($report['email'] != '') {
-				$notify .= '<i class="fa fa-solid fa-envelope" title="' . __esc('To Emails in Use') . '"></i>';
+				$notify .= '<i class="ti ti-mail-filled" title="' . __esc('To Emails in Use') . '"></i>';
 				$found  = true;
 			}
 
 			if ($report['bcc'] != '') {
-				$notify .= '<i class="fa fa-solid fa-eye-slash" title="' . __('Blind Copy in Use') . '"></i>';
+				$notify .= '<i class="ti ti-eye-off" title="' . __('Blind Copy in Use') . '"></i>';
 				$found  = true;
 			}
 
 			if ($report['bcc'] != '') {
-				$notify .= '<i class="fa fa-solid fa-flag" title="' . __('Notification List in Use') . '"></i>';
+				$notify .= '<i class="ti ti-flag" title="' . __('Notification List in Use') . '"></i>';
 				$found  = true;
 			}
 
@@ -2272,7 +2272,7 @@ function reports() {
 
 			form_selectable_cell($notify, $id);
 
-			form_selectable_cell($report['enabled'] ? '<i class="fa fa-check deviceUp"></i>' : '<i class="fa fa-times deviceDown"></i>', $id, '', 'right');
+			form_selectable_cell($report['enabled'] ? '<i class="ti ti-check deviceUp"></i>' : '<i class="ti ti-x deviceDown"></i>', $id, '', 'right');
 
 			if ($report['sched_type'] != 1) {
 				form_selectable_cell(date($date_format, strtotime($report['next_start'])), $id, '', 'right');

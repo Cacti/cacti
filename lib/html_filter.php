@@ -466,7 +466,7 @@ class CactiTableFilter {
 					'href'     => $this->action_url,
 					'title'    => $this->action_label,
 					'callback' => true,
-					'class'    => 'fa fa-plus plusAdd'
+					'class'    => 'ti ti-plus plusAdd'
 				];
 			}
 
@@ -575,7 +575,7 @@ class CactiTableFilter {
 							print '<div class="filterColumn">';
 							print '<span>';
 							print '<input type="text" class="ui-state-default ui-corner-all' . $class . '" id="date1" size="18" value="' . ($_SESSION['sess_current_date1'] ?? '') . '">';
-							print '<i id="startDate" class="calendar fa fa-calendar-alt" title="' . __esc('Start Date Selector') . '"></i>';
+							print '<i id="startDate" class="calendar ti ti-calendar-clock" title="' . __esc('Start Date Selector') . '"></i>';
 							print '</span>';
 							print '</div>';
 
@@ -586,7 +586,7 @@ class CactiTableFilter {
 							print '<div class="filterColumn">';
 							print '<span>';
 							print '<input type="text" class="ui-state-default ui-corner-all' . $class . '" id="date2" size="18" value="' . ($_SESSION['sess_current_date2'] ?? '') . '">';
-							print '<i id="endDate" class="calendar fa fa-calendar-alt" title="' . __esc('End Date Selector') . '"></i>';
+							print '<i id="endDate" class="calendar ti ti-calendar-clock" title="' . __esc('End Date Selector') . '"></i>';
 							print '</span>';
 							print '</div>';
 
@@ -594,7 +594,7 @@ class CactiTableFilter {
 								print '<div class="filterColumn">';
 								print '<span>';
 
-								print '<i id="shift_left" class="shiftArrow fa fa-backward" title="' . __esc('Shift Time Backward') . '"></i>';
+								print '<i id="shift_left" class="shiftArrow ti ti-player-track-prev" title="' . __esc('Shift Time Backward') . '"></i>';
 								print '<select id="predefined_timeshift" title="' . __esc('Define Shifting Interval') . '" class="' . $class . '">';
 
 								$start_val  = 1;
@@ -607,7 +607,7 @@ class CactiTableFilter {
 								}
 
 								print '</select>';
-								print '<i id="shift_right" class="shiftArrow fa fa-forward" title="' . __esc('Shift Time Forward') . '"></i>';
+								print '<i id="shift_right" class="shiftArrow ti ti-player-track-next" title="' . __esc('Shift Time Forward') . '"></i>';
 
 								print '</span>';
 								print '</div>';

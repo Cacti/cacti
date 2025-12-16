@@ -803,19 +803,19 @@ function automation_snmp_edit() {
 
 				if (read_config_option('drag_and_drop') == '') {
 					if ($i < $total_items && $total_items > 1) {
-						$form_data .= '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape('automation_snmp.php?action=item_movedown&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . '" title="' . __esc('Move Down') . '"></a>';
+						$form_data .= '<a class="pic ti ti-caret-down-filled moveArrow" href="' . html_escape('automation_snmp.php?action=item_movedown&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . '" title="' . __esc('Move Down') . '"></a>';
 					} else {
 						$form_data .= '<span class="moveArrowNone"></span>';
 					}
 
 					if ($i > 1 && $i <= $total_items) {
-						$form_data .= '<a class="pic fa fa-caret-up moveArrow" href="' . html_escape('automation_snmp.php?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $item['snmp_id']) . '" title="' . __esc('Move Up') . '"></a>';
+						$form_data .= '<a class="pic ti ti-caret-up-filled moveArrow" href="' . html_escape('automation_snmp.php?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $item['snmp_id']) . '" title="' . __esc('Move Up') . '"></a>';
 					} else {
 						$form_data .= '<span class="moveArrowNone"></span>';
 					}
 				}
 
-				$form_data .= '<a class="delete deleteMarker fa fa-times" id="' . $item['id'] . '_' . $item['snmp_id'] . '" title="' . __esc('Delete') . '"></a>';
+				$form_data .= '<a class="delete deleteMarker ti ti-x" id="' . $item['id'] . '_' . $item['snmp_id'] . '" title="' . __esc('Delete') . '"></a>';
 				$form_data .= '</td>';
 
 				print $form_data;

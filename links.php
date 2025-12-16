@@ -336,10 +336,10 @@ function pages() {
 		foreach ($pages as $page) {
 			form_alternate_row('line' . $page['id']);
 
-			$menuicons = '<a class="pic"  href="' . html_escape('links.php?action=edit&id=' . $page['id']) . '" title="' . __esc('Edit Page') . '"><i class="fa fa-pen-to-square editTemplate"></i></a>';
+			$menuicons = '<a class="pic"  href="' . html_escape('links.php?action=edit&id=' . $page['id']) . '" title="' . __esc('Edit Page') . '"><i class="ti ti-edit editTemplate"></i></a>';
 
 			if ($page['enabled'] == 'on') {
-				$menuicons .= '<a class="pic" href="' . html_escape('link.php?id=' . $page['id']) . '" title="' . __esc('View Page') . '"><i class="fa fa-file deviceUp"></i></a>';
+				$menuicons .= '<a class="pic" href="' . html_escape('link.php?id=' . $page['id']) . '" title="' . __esc('View Page') . '"><i class="ti ti-file deviceUp"></i></a>';
 			}
 
 			form_selectable_cell($menuicons, $page['id'], '3%');
@@ -351,7 +351,7 @@ function pages() {
 
 			if (get_request_var('sort_column') == 'sortorder') {
 				if ($i != 0) {
-					$sort = '<a class="pic fa fa-caret-up moveArrow" href="' . html_escape('links.php?action=move_page_up&order=' . $page['sortorder'] . '&id=' . $page['id']) . '"></a>';
+					$sort = '<a class="pic ti ti-caret-up-filled moveArrow" href="' . html_escape('links.php?action=move_page_up&order=' . $page['sortorder'] . '&id=' . $page['id']) . '"></a>';
 				} else {
 					$sort = '<span class="moveArrowNone"></span>';
 				}
@@ -359,7 +359,7 @@ function pages() {
 				if ($i == cacti_sizeof($pages) - 1) {
 					$sort .= '<span class="moveArrowNone"></span>';
 				} else {
-					$sort .= '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape('links.php?action=move_page_down&order=' . $page['sortorder'] . '&id=' . $page['id']) . '"></a>';
+					$sort .= '<a class="pic ti ti-caret-down-filled moveArrow" href="' . html_escape('links.php?action=move_page_down&order=' . $page['sortorder'] . '&id=' . $page['id']) . '"></a>';
 				}
 
 				form_selectable_cell($sort, $page['id'], '', 'center');

@@ -743,27 +743,27 @@ function create_host_edit_filter($host, $content = '') {
 			[
 				'display' => __('Create New Device'),
 				'url'     => 'host.php?action=edit',
-				'class'   => 'fa fa-plus newDevice'
+				'class'   => 'ti ti-plus newDevice'
 			],
 			[
 				'display' => __('Create New Graphs'),
 				'url'     => 'graphs_new.php?reset=true&host_id=' . $host['id'],
-				'class'   => 'fas fa-chart-area newGraph'
+				'class'   => 'ti ti-chart-area newGraph'
 			],
 			[
 				'display' => __('Re-Index Device'),
 				'url'     => 'host.php?action=reindex&host_id=' . $host['id'],
-				'class'   => 'fa fa-sync reindexDevice'
+				'class'   => 'ti ti-refresh reindexDevice'
 			],
 			[
 				'display' => ($debug ? __('Disable Device Debug') : __('Enable Device Debug')),
 				'url'     => 'host.php?action=' . ($debug ? 'disable_debug' : 'enable_debug') . '&host_id=' . $host['id'],
-				'class'   => ($debug ? 'fa fa-bug disableDebug' : 'fa fa-bug enableDebug')
+				'class'   => ($debug ? 'ti ti-bug disableDebug' : 'ti ti-bug enableDebug')
 			],
 			[
 				'display' => __('Repopulate Poller Cache'),
 				'url'     => 'host.php?action=repopulate&host_id=' . $host['id'],
-				'class'   => 'fa fa-hammer repopulateCache'
+				'class'   => 'ti ti-hammer repopulateCache'
 			],
 			[
 				'display' => __('View Poller Cache'),
@@ -773,12 +773,12 @@ function create_host_edit_filter($host, $content = '') {
 			[
 				'display' => __('View Data Source List'),
 				'url'     => 'data_sources.php?reset=true&host_id=' . $host['id'] . '&ds_rows=30&filter=&template_id=-1&method_id=-1&page=1',
-				'class'   => 'fa fa-th-large viewSources'
+				'class'   => 'ti ti-brand-databricks viewSources'
 			],
 			[
 				'display' => __('View Graphs List'),
 				'url'     => 'graphs.php?reset=true&host_id=' . $host['id'] . '&graph_rows=30&filter=&template_id=-1&page=1',
-				'class'   => 'fa fa-th-large viewGraphs'
+				'class'   => 'ti ti-brand-databricks viewGraphs'
 			],
 		];
 	}
@@ -817,7 +817,7 @@ function create_host_edit_filter($host, $content = '') {
 				$filters['links'][] = [
 					'display' => $name,
 					'url'     => $href,
-					'class'   => 'fa fa-plug'
+					'class'   => 'ti ti-plug'
 				];
 			}
 		}
@@ -962,7 +962,7 @@ function host_edit() {
 					<?php print(($is_being_graphed == true) ? "<span class='beingGraphed'>" . __('Is Being Graphed') . "</span> (<a class='linkEditMain' href='" . html_escape('graphs.php?action=graph_edit&id=' . $item['graph_local_id']) . "'>" . __('Edit') . '</a>)' : "<span class='notBeingGraphed'>" . __('Not Being Graphed') . '</span>'); ?>
 				</td>
 				<td class='nowrap right'>
-					<span title='<?php print __esc('Delete Graph Template Association'); ?>' class='deletequery fa fa-times' id='gtremove<?php print $item['id']; ?>' data-id='<?php print $item['id']; ?>'></span>
+					<span title='<?php print __esc('Delete Graph Template Association'); ?>' class='deletequery ti ti-x' id='gtremove<?php print $item['id']; ?>' data-id='<?php print $item['id']; ?>'></span>
 				</td>
 		<?php
 
@@ -1004,8 +1004,8 @@ function host_edit() {
 					</div>
 					<div class='cactiTableButton'>
 						<span>
-							<a class='linkCopyDark cactiTableCopy fa fa-copy' id='copyToClipboard<?php print $dbg_copy_uid; ?>' title='<?php print __('Copy All Data to Clipboard'); ?>'></a>
-							<a id='dbghide' class='fa fa-trash-alt' href='#' title='<?php print __('Remove Debug Output'); ?>'></a>
+							<a class='linkCopyDark cactiTableCopy ti ti-copy' id='copyToClipboard<?php print $dbg_copy_uid; ?>' title='<?php print __('Copy All Data to Clipboard'); ?>'></a>
+							<a id='dbghide' class='ti ti-trash' href='#' title='<?php print __('Remove Debug Output'); ?>'></a>
 						</span>
 					</div>
 				</div>
@@ -1105,9 +1105,9 @@ function host_edit() {
 					<?php print (($status == 'success') ? "<span class='success'>" . __('Success') . '</span>' : "<span class='failed'>" . __('Fail')) . '</span>' . __(' [%d Items, %d Rows]', $item['itemCount'], $item['rowCount']); ?>
 				</td>
 				<td class='nowrap right' style='vertical-align:middle;'>
-					<span class='reloadquery fa fa-sync' id='reload<?php print $item['id']; ?>' title='<?php print __esc('Reload Query'); ?>' data-id='<?php print $item['id']; ?>'></span>
-					<span class='verbosequery fa fa-sync' id='verbose<?php print $item['id']; ?>' title='<?php print __esc('Verbose Query'); ?>' data-id='<?php print $item['id']; ?>'></span>
-					<span class='deletequery fa fa-times' id='remove<?php print $item['id']; ?>' title='<?php print __esc('Remove Query'); ?>' data-id='<?php print $item['id']; ?>'></span>
+					<span class='reloadquery ti ti-refresh' id='reload<?php print $item['id']; ?>' title='<?php print __esc('Reload Query'); ?>' data-id='<?php print $item['id']; ?>'></span>
+					<span class='verbosequery ti ti-refresh' id='verbose<?php print $item['id']; ?>' title='<?php print __esc('Verbose Query'); ?>' data-id='<?php print $item['id']; ?>'></span>
+					<span class='deletequery ti ti-x' id='remove<?php print $item['id']; ?>' title='<?php print __esc('Remove Query'); ?>' data-id='<?php print $item['id']; ?>'></span>
 				</td>
 		<?php
 					form_end_row();
@@ -1758,7 +1758,7 @@ function host() {
 
 			form_alternate_row('line' . $host['id'], true);
 
-			$maint = ($host['maint'] == 1 ? '<i class="fa fa-wrench" title="' . __('Maintenance') . '"></i>' : '');
+			$maint = ($host['maint'] == 1 ? '<i class="ti ti-tool" title="' . __('Maintenance') . '"></i>' : '');
 
 			form_selectable_cell(filter_value($host['description'], get_request_var('filter'), 'host.php?action=edit&id=' . $host['id']) . $maint, $host['id']);
 			form_selectable_cell(filter_value($host['hostname'], get_request_var('filter')), $host['id']);

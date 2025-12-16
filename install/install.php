@@ -88,7 +88,7 @@ if (CACTI_SERVER_OS == 'unix') {
 $help_anchor = '';
 
 if ($help != '') {
-	$help_anchor = '<a style="padding:2px" href="#" data-page="' . $help . '" title="' . __esc('Cacti Install Help') . '" class="helpPage menu_parent"><i class="fa fa-question-circle"></i></a>';
+	$help_anchor = '<a style="padding:2px" href="#" data-page="' . $help . '" title="' . __esc('Cacti Install Help') . '" class="helpPage menu_parent"><i class="ti ti-help"></i></a>';
 }
 
 ?>
@@ -107,7 +107,7 @@ print get_md5_include_css('install/install.css');
 <body>
 	<div class='cactiInstallTable'>
 		<div class='cactiTableTitleRow cactiBorderWall'>
-			<div class='textHeaderDark'><?php print __esc('Cacti Server v%s - Installation Wizard', CACTI_VERSION_BRIEF_FULL); ?><span style="float:right"><?php print $help_anchor; ?><a class="menu_parent" id="installRefresh" href="#" title="<?php print __esc('Refresh current page'); ?>" style="padding:2px"><i class="fa fa-redo"></i></a></span></div>
+			<div class='textHeaderDark'><?php print __esc('Cacti Server v%s - Installation Wizard', CACTI_VERSION_BRIEF_FULL); ?><span style="float:right"><?php print $help_anchor; ?><a class="menu_parent" id="installRefresh" href="#" title="<?php print __esc('Refresh current page'); ?>" style="padding:2px"><i class="ti ti-reload"></i></a></span></div>
 		</div>
 		<div class='cactiInstallArea cactiBorderWall'>
 			<div class='cactiInstallAreaContent' id='installContent'>

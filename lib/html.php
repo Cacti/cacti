@@ -129,16 +129,16 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_url_or
 		}
 
 		if ($help_file !== false && $help_count == 0 && is_realm_allowed(28)) {
-			print "<span class='cactiHelp' title='" . __esc('Get Page Help') . "'><a class='linkOverDark helpPage' data-page='" . html_escape(basename($help_file)) . "' href='#'><i class='fa fa-question-circle actionHelp'></i></a></span>";
+			print "<span class='cactiHelp' title='" . __esc('Get Page Help') . "'><a class='linkOverDark helpPage' data-page='" . html_escape(basename($help_file)) . "' href='#'><i class='ti ti-help actionHelp'></i></a></span>";
 			$help_count++;
 		}
 
 		if ($showcols) {
-			print "<span class='cactiFilterColumns' title='" . __esc('Select Columns for Display') . "'><a id='showColumns' href='#'><i class='fas fa-table-list threeBars'></i></a></span>";
+			print "<span class='cactiFilterColumns' title='" . __esc('Select Columns for Display') . "'><a id='showColumns' href='#'><i class='ti ti-table threeBars'></i></a></span>";
 		}
 
 		if ($add_url_or_buttons != '' && !is_array($add_url_or_buttons)) {
-			print "<span class='cactiFilterAdd' title='$add_label'><a class='linkOverDark' href='" . html_escape($add_url_or_buttons) . "'><i class='fa fa-plus plusAdd'></i></a></span>";
+			print "<span class='cactiFilterAdd' title='$add_label'><a class='linkOverDark' href='" . html_escape($add_url_or_buttons) . "'><i class='ti ti-plus plusAdd'></i></a></span>";
 		} else {
 			if (is_array($add_url_or_buttons)) {
 				if (cacti_sizeof($add_url_or_buttons)) {
@@ -152,7 +152,7 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_url_or
 						if (isset($icon['class']) && $icon['class'] !== '') {
 							$classi = $icon['class'];
 						} else {
-							$classi = 'fa fa-plus plusAdd';
+							$classi = 'ti ti-plus plusAdd';
 						}
 
 						if (isset($icon['href'])) {
@@ -522,9 +522,9 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_i
 		[$local_graph_id]);
 
 	print "<div class='iconWrapper'>";
-	print "<a class='iconLink utils' href='#' role='link' id='graph_" . $local_graph_id . "_util'><i class='drillDown fa fa-cog actionCog' title='" . __esc('Graph Details, Zooming and Debugging Utilities') . "'></i></a><br>";
-	print "<a class='iconLink csvexport' href='#' role='link' id='graph_" . $local_graph_id . "_csv'><i class='drillDown fa fa-file-csv fileCSV' title='" . __esc('CSV Export of Graph Data'). "'></i></a><br>";
-	print "<a class='iconLink mrtg' href='#' role='link' id='graph_" . $local_graph_id . "_mrtg'><i class='drillDown fa fas fa-table-list threeBars' title='" . __esc('Time Graph View'). "'></i></a><br>";
+	print "<a class='iconLink utils' href='#' role='link' id='graph_" . $local_graph_id . "_util'><i class='drillDown ti ti-settings-filled actionCog' title='" . __esc('Graph Details, Zooming and Debugging Utilities') . "'></i></a><br>";
+	print "<a class='iconLink csvexport' href='#' role='link' id='graph_" . $local_graph_id . "_csv'><i class='drillDown ti ti-file-type-csv fileCSV' title='" . __esc('CSV Export of Graph Data'). "'></i></a><br>";
+	print "<a class='iconLink mrtg' href='#' role='link' id='graph_" . $local_graph_id . "_mrtg'><i class='drillDown ti ti-table threeBars' title='" . __esc('Time Graph View'). "'></i></a><br>";
 
 	if (is_realm_allowed(3)) {
 		$host_id = db_fetch_cell_prepared('SELECT host_id
@@ -533,27 +533,27 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_i
 			[$local_graph_id]);
 
 		if ($host_id > 0) {
-			print "<a class='iconLink' href='" . html_escape(CACTI_PATH_URL . "host.php?action=edit&id=$host_id") . "' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_de'><i id='de" . $host_id . '_' . $rand . "' class='drillDown fa fa-server editDevice' title='" . __esc('Edit Device') . "'></i></a>";
+			print "<a class='iconLink' href='" . html_escape(CACTI_PATH_URL . "host.php?action=edit&id=$host_id") . "' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_de'><i id='de" . $host_id . '_' . $rand . "' class='drillDown ti ti-server editDevice' title='" . __esc('Edit Device') . "'></i></a>";
 			print '<br>';
 			$rand++;
 		}
 	}
 
 	if (is_realm_allowed(10) && $graph_template_id > 0) {
-		print "<a class='iconLink' role='link' href='" . html_escape(CACTI_PATH_URL . 'graph_templates.php?action=template_edit&id=' . $graph_template_id) . "'><i class='drillDown fa fa-edit editTemplate' title='" . __esc('Edit Graph Template') . "'></i></a>";
+		print "<a class='iconLink' role='link' href='" . html_escape(CACTI_PATH_URL . 'graph_templates.php?action=template_edit&id=' . $graph_template_id) . "'><i class='drillDown ti ti-edit editTemplate' title='" . __esc('Edit Graph Template') . "'></i></a>";
 		print '<br>';
 	}
 
 	if (read_config_option('realtime_enabled') == 'on' && is_realm_allowed(25)) {
 		if (read_user_setting('realtime_mode') == '' || read_user_setting('realtime_mode') == '1') {
-			print "<a class='iconLink realtime' href='#' role='link' id='graph_" . $local_graph_id . "_realtime'><i class='drillDown fas fa-chart-area realTime' title='" . __esc('Click to view just this Graph in Real-time'). "'></i></a><br>";
+			print "<a class='iconLink realtime' href='#' role='link' id='graph_" . $local_graph_id . "_realtime'><i class='drillDown ti ti-chart-area realTime' title='" . __esc('Click to view just this Graph in Real-time'). "'></i></a><br>";
 		} else {
-			print "<a class='iconLink' href='#' onclick=\"window.open('" . CACTI_PATH_URL . 'graph_realtime.php?top=0&left=0&local_graph_id=' . $local_graph_id . "', 'popup_" . $local_graph_id . "', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=yes,width=650,height=300');return false\"><i class='drillDown fas fa-chart-area realTime' title='" . __esc('Click to view just this Graph in Real-time') . "'></i></a><br>";
+			print "<a class='iconLink' href='#' onclick=\"window.open('" . CACTI_PATH_URL . 'graph_realtime.php?top=0&left=0&local_graph_id=' . $local_graph_id . "', 'popup_" . $local_graph_id . "', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=yes,width=650,height=300');return false\"><i class='drillDown ti ti-chart-area realTime' title='" . __esc('Click to view just this Graph in Real-time') . "'></i></a><br>";
 		}
 	}
 
 	if (is_realm_allowed(1043)) {
-		print "<a href='#' class='iconLink spikekill' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_sk'><i id='sk" . $local_graph_id . "' class='drillDown fa fa-paint-roller spikeKill' title='" . __esc('Kill Spikes in Graphs') . "'></i></a>";
+		print "<a href='#' class='iconLink spikekill' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_sk'><i id='sk" . $local_graph_id . "' class='drillDown ti ti-paint-filled spikeKill' title='" . __esc('Kill Spikes in Graphs') . "'></i></a>";
 		print '<br>';
 	}
 
@@ -605,13 +605,13 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 
 		$nav = "<div class='navBarNavigation'>
 			<div class='navBarNavigationPrevious'>
-				" . (($current_page > 1) ? "<a href='#' onClick='goto$page_var(" . ($current_page - 1) . ");return false;'><i class='fa fa-angle-double-left previous'></i>" . __('Previous'). '</a>' : '') . "
+				" . (($current_page > 1) ? "<a href='#' onClick='goto$page_var(" . ($current_page - 1) . ");return false;'><i class='ti ti-chevrons-left previous'></i>" . __('Previous'). '</a>' : '') . "
 			</div>
 			<div class='navBarNavigationCenter'>
 				" . __('%d to %d of %s [ %s ]', (($rows_per_page * ($current_page - 1)) + 1), (($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page * $current_page)) ? $total_rows : $rows_per_page * $current_page), $total_rows, $url_page_select) . "
 			</div>
 			<div class='navBarNavigationNext'>
-				" . (($current_page * $rows_per_page) < $total_rows ? "<a href='#' onClick='goto$page_var(" . ($current_page + 1) . ");return false;'>" . __('Next'). "<i class='fa fa-angle-double-right next'></i></a>" : '') . '
+				" . (($current_page * $rows_per_page) < $total_rows ? "<a href='#' onClick='goto$page_var(" . ($current_page + 1) . ");return false;'>" . __('Next'). "<i class='ti ti-chevrons-right next'></i></a>" : '') . '
 			</div>
 		</div>';
 	} elseif ($total_rows > 0) {
@@ -634,13 +634,13 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 
 			$nav = "<div class='navBarNavigation'>
 				<div class='navBarNavigationPrevious'>
-					" . (($current_page > 1) ? "<a href='#' onClick='goto$page_var(" . ($current_page - 1) . ");return false;'><i class='fa fa-angle-double-left previous'></i>" . __('Previous'). '</a>' : '') . "
+					" . (($current_page > 1) ? "<a href='#' onClick='goto$page_var(" . ($current_page - 1) . ");return false;'><i class='ti ti-chevrons-left previous'></i>" . __('Previous'). '</a>' : '') . "
 				</div>
 				<div class='navBarNavigationCenter'>
 					" . __('Current Page: %s', $url_page_select) . "
 				</div>
 				<div class='navBarNavigationNext'>
-					" . ($total_rows >= $rows_per_page ? "<a href='#' onClick='goto$page_var(" . ($current_page + 1) . ");return false;'>" . __('Next'). "<i class='fa fa-angle-double-right next'></i></a>" : '') . "
+					" . ($total_rows >= $rows_per_page ? "<a href='#' onClick='goto$page_var(" . ($current_page + 1) . ");return false;'>" . __('Next'). "<i class='ti ti-chevrons-right next'></i></a>" : '') . "
 				</div>
 			</div>\n";
 
@@ -842,11 +842,11 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		}
 
 		if (strtolower($icon) == 'asc') {
-			$icon = 'fa fa-caret-up';
+			$icon = 'ti ti-caret-up-filled';
 		} elseif (strtolower($icon) == 'desc') {
-			$icon = 'fa fa-caret-down';
+			$icon = 'ti ti-caret-down-filled';
 		} else {
-			$icon = 'fa fa-sort';
+			$icon = 'ti ti-caret-up-down-filled';
 		}
 
 		if (($db_column == '') || (substr_count($db_column, 'nosort'))) {
@@ -1037,11 +1037,11 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}
 
 		if (strtolower($icon) == 'asc') {
-			$icon = 'fa fa-caret-up';
+			$icon = 'ti ti-caret-up-filled';
 		} elseif (strtolower($icon) == 'desc') {
-			$icon = 'fa fa-caret-down';
+			$icon = 'ti ti-caret-down-filled';
 		} else {
-			$icon = 'fa fa-sort';
+			$icon = 'ti ti-caret-down-filled';
 		}
 
 		if (($db_column == '') || (substr_count($db_column, 'nosort'))) {
@@ -1238,7 +1238,7 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
  *   $dropdown_array = array(
  *     'server' => array(
  *        'display' => __('Some Value'),
- *        'class'   => 'fa fa-server',
+ *        'class'   => 'ti ti-server',
  *        'style'   => 'width:30px;...'
  *     ),
  *     ...
@@ -1637,18 +1637,18 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 				print "<td class='right nowrap'>";
 
 				if ($i != cacti_sizeof($item_list) - 1) {
-					print "<span><a class='moveArrow fa fa-caret-down' title='" . __esc('Move Down'). "' href='" . html_escape("$filename?action=item_movedown&id=" . $item['id'] . "&$url_data") . "'></a></span>";
+					print "<span><a class='moveArrow ti ti-caret-down-filled' title='" . __esc('Move Down'). "' href='" . html_escape("$filename?action=item_movedown&id=" . $item['id'] . "&$url_data") . "'></a></span>";
 				} else {
 					print "<span class='moveArrowNone'></span>";
 				}
 
 				if ($i > 0) {
-					print "<span><a class='moveArrow fa fa-caret-up' title='" . __esc('Move Up') . "' href='" . html_escape("$filename?action=item_moveup&id=" . $item['id'] . "&$url_data") . "'></a></span>";
+					print "<span><a class='moveArrow ti ti-caret-up-filled' title='" . __esc('Move Up') . "' href='" . html_escape("$filename?action=item_moveup&id=" . $item['id'] . "&$url_data") . "'></a></span>";
 				} else {
 					print "<span class='moveArrowNone'></span>";
 				}
 
-				print "<a class='deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape("$filename?action=item_remove&id=" . $item['id'] . "&nostate=true&$url_data") . "'></a>";
+				print "<a class='deleteMarker ti ti-x' title='" . __esc('Delete') . "' href='" . html_escape("$filename?action=item_remove&id=" . $item['id'] . "&nostate=true&$url_data") . "'></a>";
 
 				print '</td>';
 			}
@@ -1807,7 +1807,7 @@ function draw_menu($user_menu = '') {
 			if (isset($menu_glyphs[$header_name])) {
 				$glyph = '<i class="menu_glyph ' . $menu_glyphs[$header_name] . '"></i>';
 			} else {
-				$glyph = '<i class="menu_glyph fa fa-folder"></i>';
+				$glyph = '<i class="menu_glyph ti ti-folder-filled"></i>';
 			}
 
 			print "<li class='menuitem' role='menuitem' aria-haspopup='true' id='$id'><a class='menu_parent active' href='#'>$glyph<span>$header_name</span></a>";
@@ -2272,10 +2272,10 @@ function html_show_tabs_left() {
 			$i++;
 		}
 
-		print "<li><a id='$id' role='tab' class='lefttab" . (isset($tab['selected']) ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . html_escape($tab['url']) . "'><span class='fa glyph_$id'></span><span class='text_$id'>" . html_escape($tab['title']) . "</span></a><a id='menu-$id' class='maintabs-submenu' href='#'><i class='fa fa-chevron-down'></i></a></li>";
+		print "<li><a id='$id' role='tab' class='lefttab" . (isset($tab['selected']) ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . html_escape($tab['url']) . "'><span class='fa glyph_$id'></span><span class='text_$id'>" . html_escape($tab['title']) . "</span></a><a id='menu-$id' class='maintabs-submenu' href='#'><i class='ti ti-chevron-down'></i></a></li>";
 	}
 
-	print "<li class='ellipsis maintabs-submenu-ellipsis'><a id='menu-ellipsis' role='tab' aria-selected='false' class='submenu-ellipsis' href='#'><i class='fa fa-chevron-down'></i></a></li>";
+	print "<li class='ellipsis maintabs-submenu-ellipsis'><a id='menu-ellipsis' role='tab' aria-selected='false' class='submenu-ellipsis' href='#'><i class='ti ti-chevron-down'></i></a></li>";
 
 	print '</ul></nav></div>';
 }
@@ -2878,44 +2878,44 @@ function html_spikekill_menu_item($text, $icon = '', $class = '', $id = '', $dat
  */
 function html_spikekill_menu($local_graph_id) {
 	global $settings;
-	$ravgnan1 = html_spikekill_menu_item(__('Average'), html_spikekill_setting('spikekill_avgnan') == 'avg' ? 'fa fa-check' : 'fa', 'skmethod', 'method_avg');
-	$ravgnan2 = html_spikekill_menu_item(__('NaN\'s'), html_spikekill_setting('spikekill_avgnan') == 'nan' ? 'fa fa-check' : 'fa', 'skmethod', 'method_nan');
-	$ravgnan3 = html_spikekill_menu_item(__('Last Known Good'), html_spikekill_setting('spikekill_avgnan') == 'last' ? 'fa fa-check' : 'fa', 'skmethod', 'method_last');
+	$ravgnan1 = html_spikekill_menu_item(__('Average'), html_spikekill_setting('spikekill_avgnan') == 'avg' ? 'ti ti-check' : 'fa', 'skmethod', 'method_avg');
+	$ravgnan2 = html_spikekill_menu_item(__('NaN\'s'), html_spikekill_setting('spikekill_avgnan') == 'nan' ? 'ti ti-check' : 'fa', 'skmethod', 'method_nan');
+	$ravgnan3 = html_spikekill_menu_item(__('Last Known Good'), html_spikekill_setting('spikekill_avgnan') == 'last' ? 'ti ti-check' : 'fa', 'skmethod', 'method_last');
 
 	$ravgnan = html_spikekill_menu_item(__('Replacement Method'), '', '', '', '', $ravgnan1 . $ravgnan2 . $ravgnan3);
 
 	$rstddev = '';
 
 	foreach ($settings['spikes']['spikekill_deviations']['array'] as $key => $value) {
-		$rstddev .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_deviations') == $key ? 'fa fa-check' : 'fa', 'skstddev', 'stddev_' . $key);
+		$rstddev .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_deviations') == $key ? 'ti ti-check' : 'fa', 'skstddev', 'stddev_' . $key);
 	}
 	$rstddev  = html_spikekill_menu_item(__('Standard Deviations'), '', '', '', '', $rstddev);
 
 	$rvarpct = '';
 
 	foreach ($settings['spikes']['spikekill_percent']['array'] as $key => $value) {
-		$rvarpct .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_percent') == $key ? 'fa fa-check' : 'fa', 'skvarpct', 'varpct_' . $key);
+		$rvarpct .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_percent') == $key ? 'ti ti-check' : 'fa', 'skvarpct', 'varpct_' . $key);
 	}
 	$rvarpct = html_spikekill_menu_item(__('Variance Percentage'), '', '', '', '', $rvarpct);
 
 	$rvarout  = '';
 
 	foreach ($settings['spikes']['spikekill_outliers']['array'] as $key => $value) {
-		$rvarout .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_outliers') == $key ? 'fa fa-check' : 'fa', 'skvarout', 'varout_' . $key);
+		$rvarout .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_outliers') == $key ? 'ti ti-check' : 'fa', 'skvarout', 'varout_' . $key);
 	}
 	$rvarout  = html_spikekill_menu_item(__('Variance Outliers'), '', '', '', '', $rvarout);
 
 	$rkills  = '';
 
 	foreach ($settings['spikes']['spikekill_number']['array'] as $key => $value) {
-		$rkills .= html_spikekill_menu_item($value,html_spikekill_setting('spikekill_number') == $key ? 'fa fa-check' : 'fa', 'skills', 'kills_' . $key);
+		$rkills .= html_spikekill_menu_item($value,html_spikekill_setting('spikekill_number') == $key ? 'ti ti-check' : 'fa', 'skills', 'kills_' . $key);
 	}
 	$rkills  = html_spikekill_menu_item(__('Kills Per RRA'), '', '', '', '', $rkills);
 
 	$rabsmax  = '';
 
 	foreach ($settings['spikes']['spikekill_absmax']['array'] as $key => $value) {
-		$rabsmax .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_absmax') == $key ? 'fa fa-check' : 'fa', 'skabsmax', 'absmax_' . $key);
+		$rabsmax .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_absmax') == $key ? 'ti ti-check' : 'fa', 'skabsmax', 'absmax_' . $key);
 	}
 	$rabsmax = html_spikekill_menu_item(__('Absolute Max Value'), '', '', '', '', $rabsmax);
 
@@ -2923,19 +2923,19 @@ function html_spikekill_menu($local_graph_id) {
 	<div class='spikekillParent' style='display:none;z-index:20;position:absolute;text-align:left;white-space:nowrap;padding-right:2px;'>
 	<ul class='spikekillMenu' style='font-size:1em;'>
 	<?php
-	print html_spikekill_menu_item(__('Remove StdDev'), 'deviceUp fa fa-life-ring', 'rstddev', '',  $local_graph_id);
-	print html_spikekill_menu_item(__('Remove Variance'), 'deviceRecovering fa fa-life-ring', 'rvariance', '',  $local_graph_id);
-	print html_spikekill_menu_item(__('Gap Fill Range'), 'deviceUnknown fa fa-life-ring', 'routlier', '',  $local_graph_id);
-	print html_spikekill_menu_item(__('Float Range'), 'deviceDown fa fa-life-ring', 'rrangefill', '',  $local_graph_id);
-	print html_spikekill_menu_item(__('Absolute Maximum'), 'deviceError fa fa-life-ring', 'rabsolute', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Remove StdDev'), 'deviceUp ti ti-lifebuoy-filled', 'rstddev', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Remove Variance'), 'deviceRecovering ti ti-lifebuoy-filled', 'rvariance', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Gap Fill Range'), 'deviceUnknown ti ti-lifebuoy-filled', 'routlier', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Float Range'), 'deviceDown ti ti-lifebuoy-filled', 'rrangefill', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Absolute Maximum'), 'deviceError ti ti-lifebuoy-filled', 'rabsolute', '',  $local_graph_id);
 
-	print html_spikekill_menu_item(__('Dry Run StdDev'), 'deviceUp fa fa-check', 'dstddev', '',  $local_graph_id);
-	print html_spikekill_menu_item(__('Dry Run Variance'), 'deviceRecovering fa fa-check', 'dvariance', '',  $local_graph_id);
-	print html_spikekill_menu_item(__('Dry Run Gap Fill Range'), 'deviceUnknown fa fa-check', 'doutlier', '',  $local_graph_id);
-	print html_spikekill_menu_item(__('Dry Run Float Range'), 'deviceDown fa fa-check', 'drangefill', '',  $local_graph_id);
-	print html_spikekill_menu_item(__('Dry Run Absolute Maximum'), 'deviceError fa fa-check', 'dabsolute', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Dry Run StdDev'), 'deviceUp ti ti-check', 'dstddev', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Dry Run Variance'), 'deviceRecovering ti ti-check', 'dvariance', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Dry Run Gap Fill Range'), 'deviceUnknown ti ti-check', 'doutlier', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Dry Run Float Range'), 'deviceDown ti ti-check', 'drangefill', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Dry Run Absolute Maximum'), 'deviceError ti ti-check', 'dabsolute', '',  $local_graph_id);
 
-	print html_spikekill_menu_item(__('Settings'), 'fa fa-cog', '', '', '', $ravgnan . $rstddev . $rvarpct . $rvarout . $rkills . $rabsmax);
+	print html_spikekill_menu_item(__('Settings'), 'ti ti-settings-filled', '', '', '', $ravgnan . $rstddev . $rvarpct . $rvarout . $rkills . $rabsmax);
 }
 
 function html_spikekill_js() {
@@ -3049,8 +3049,8 @@ function html_spikekill_js() {
 		});
 
 		$('.skmethod').unbind().click(function() {
-			$('.skmethod').find('i').removeClass('fa fa-check');
-			$(this).find('i:first').addClass('fa fa-check');
+			$('.skmethod').find('i').removeClass('ti ti-check');
+			$(this).find('i:first').addClass('ti ti-check');
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 
 			strURL = '?action=spikesave&setting=ravgnan&id='+$(this).attr('id').replace('method_','');
@@ -3061,8 +3061,8 @@ function html_spikekill_js() {
 		});
 
 		$('.skills').unbind().click(function() {
-			$('.skills').find('i').removeClass('fa fa-check');
-			$(this).find('i:first').addClass('fa fa-check');
+			$('.skills').find('i').removeClass('ti ti-check');
+			$(this).find('i:first').addClass('ti ti-check');
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 
 			strURL = '?action=spikesave&setting=rkills&id='+$(this).attr('id').replace('kills_','');
@@ -3073,8 +3073,8 @@ function html_spikekill_js() {
 		});
 
 		$('.skstddev').unbind().click(function() {
-			$('.skstddev').find('i').removeClass('fa fa-check');
-			$(this).find('i:first').addClass('fa fa-check');
+			$('.skstddev').find('i').removeClass('ti ti-check');
+			$(this).find('i:first').addClass('ti ti-check');
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 
 			strURL = '?action=spikesave&setting=rstddev&id='+$(this).attr('id').replace('stddev_','');
@@ -3085,8 +3085,8 @@ function html_spikekill_js() {
 		});
 
 		$('.skvarpct').unbind().click(function() {
-			$('.skvarpct').find('i').removeClass('fa fa-check');
-			$(this).find('i:first').addClass('fa fa-check');
+			$('.skvarpct').find('i').removeClass('ti ti-check');
+			$(this).find('i:first').addClass('ti ti-check');
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 
 			strURL = '?action=spikesave&setting=rvarpct&id='+$(this).attr('id').replace('varpct_','');
@@ -3097,8 +3097,8 @@ function html_spikekill_js() {
 		});
 
 		$('.skvarout').unbind().click(function() {
-			$('.skvarout').find('i').removeClass('fa fa-check');
-			$(this).find('i:first').addClass('fa fa-check');
+			$('.skvarout').find('i').removeClass('ti ti-check');
+			$(this).find('i:first').addClass('ti ti-check');
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 
 			strURL = '?action=spikesave&setting=rvarout&id='+$(this).attr('id').replace('varout_','');
@@ -3109,8 +3109,8 @@ function html_spikekill_js() {
 		});
 
 		$('.skabsmax').unbind().click(function() {
-			$('.skabsmax').find('i').removeClass('fa fa-check');
-			$(this).find('i:first').addClass('fa fa-check');
+			$('.skabsmax').find('i').removeClass('ti ti-check');
+			$(this).find('i:first').addClass('ti ti-check');
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 
 			strURL = '?action=spikesave&setting=rabsmax&id='+$(this).attr('id').replace('absmax_','');
@@ -3298,6 +3298,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_icon('images', theme: $selectedTheme, file: 'cacti_logo.gif', rel: 'icon', sizes: '96x96');
 
 	/* Theme-based styles */
+	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'jquery.contextMenu.css');
 	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'jquery.zoom.css');
 	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'jquery-ui.css');
 	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'default/style.css');
@@ -3313,6 +3314,7 @@ function html_common_header($title, $selectedTheme = '') {
 	/* Global styles */
 	print get_md5_include_css('include/css/billboard.css');
 	print get_md5_include_css('include/fa/css/all.css');
+    print get_md5_include_css('include/tabler/dist/tabler-icons.min.css');
 	print get_md5_include_css('include/vendor/lipis/flag-icons/css/flag-icons.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/main.css');
 
@@ -3328,6 +3330,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/jquery.hotkeys.js', true);
 	print get_md5_include_js('include/js/jquery.tablednd.js');
 	print get_md5_include_js('include/js/jquery.zoom.js', true);
+    print get_md5_include_js('include/js/jquery.contextMenu.js', true);
 	print get_md5_include_js('include/js/jquery.multiselect.js');
 	print get_md5_include_js('include/js/jquery.multiselect.filter.js');
 	print get_md5_include_js('include/js/jquery.timepicker.js');

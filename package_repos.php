@@ -198,7 +198,7 @@ function form_actions() {
 
 	top_header();
 
-	form_start('package_repos.php');
+	form_start('package_repos.php', 'action_confirm');
 
 	html_start_box($actions[get_nfilter_request_var('drp_action')], '60%', false, 3, 'center', '');
 

@@ -897,9 +897,9 @@ function test_database_connection($poller = []) {
 
 	if (is_object($connection)) {
 		db_close($connection);
-		print '&nbsp;<i class="fa fa-check"></i>&nbsp;' . __('Connection Successful');
+		print '&nbsp;<i class="ti ti-check"></i>&nbsp;' . __('Connection Successful');
 	} else {
-		print '&nbsp;<i class="fa fa-times"></i>&nbsp;' . __('Connection Failed');
+		print '&nbsp;<i class="ti ti-x"></i>&nbsp;' . __('Connection Failed');
 	}
 }
 

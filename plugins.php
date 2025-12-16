@@ -1464,13 +1464,13 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering, $table) {
 		$row .= "<td class='nowrap right'>";
 
 		if (!$first_plugin) {
-			$row .= "<a class='pic fa fa-caret-up moveArrow' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=moveup&plugin=' . $plugin['plugin']) . "' title='" . __esc('Order Before Previous Plugin') . "'></a>";
+			$row .= "<a class='pic ti ti-caret-up-filled moveArrow' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=moveup&plugin=' . $plugin['plugin']) . "' title='" . __esc('Order Before Previous Plugin') . "'></a>";
 		} else {
 			$row .= '<span class="moveArrowNone"></span>';
 		}
 
 		if (!$last_plugin) {
-			$row .= "<a class='pic fa fa-caret-down moveArrow' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=movedown&plugin=' . $plugin['plugin']) . "' title='" . __esc('Order After Next Plugin') . "'></a>";
+			$row .= "<a class='pic ti ti-caret-down-filled moveArrow' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=movedown&plugin=' . $plugin['plugin']) . "' title='" . __esc('Order After Next Plugin') . "'></a>";
 		} else {
 			$row .= '<span class="moveArrowNone"></span>';
 		}
@@ -1509,39 +1509,39 @@ function format_available_plugin_row($plugin, $table) {
 		if (plugin_valid_dependencies($plugin['avail_requires'])) {
 			if ($plugin['version'] == '') {
 				if ($avail_version != 'develop') {
-					$row .= "<a class='piload' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=load&plugin=' . $plugin['plugin'] . '&tag=' . $plugin['avail_tag_name']) . "' title='" . __esc('Load this Plugin from available Cacti Plugins') . "' class='linkEditMain'><i class='fas fa-download deviceUp'></i></a>";
+					$row .= "<a class='piload' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=load&plugin=' . $plugin['plugin'] . '&tag=' . $plugin['avail_tag_name']) . "' title='" . __esc('Load this Plugin from available Cacti Plugins') . "' class='linkEditMain'><i class='ti ti-download deviceUp'></i></a>";
 				} else {
-					$row .= "<a class='piload' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=load&plugin=' . $plugin['plugin'] . '&tag=' . $plugin['avail_tag_name']) . "' title='" . __esc('Load this Plugin from the available Cacti Plugins') . "' class='linkEditMain'><i class='fas fa-download deviceDown'></i></a>";
+					$row .= "<a class='piload' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=load&plugin=' . $plugin['plugin'] . '&tag=' . $plugin['avail_tag_name']) . "' title='" . __esc('Load this Plugin from the available Cacti Plugins') . "' class='linkEditMain'><i class='ti ti-download deviceDown'></i></a>";
 				}
 
 				$status = __('Compatible, Loadable');
 			} elseif ($avail_version == 'develop') {
-				$row .= "<a class='piload' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=load&plugin=' . $plugin['plugin'] . '&tag=' . $plugin['avail_tag_name']) . "' title='" . __esc('Upgrade this Plugin from the available Cacti Plugins') . "' class='linkEditMain'><i class='fas fa-download deviceDown'></i></a>";
+				$row .= "<a class='piload' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=load&plugin=' . $plugin['plugin'] . '&tag=' . $plugin['avail_tag_name']) . "' title='" . __esc('Upgrade this Plugin from the available Cacti Plugins') . "' class='linkEditMain'><i class='ti ti-download deviceDown'></i></a>";
 				$status = __('Compatible, Upgrade');
 			} elseif (cacti_version_compare($avail_version, $plugin['version'], '<')) {
-				$row .= "<a class='piload' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=load&plugin=' . $plugin['plugin'] . '&tag=' . $plugin['avail_tag_name']) . "' title='" . __esc('Downgrade this Plugin from the available Cacti Plugins') . "' class='linkEditMain'><i class='fas fa-download deviceRecovering'></i></a>";
+				$row .= "<a class='piload' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=load&plugin=' . $plugin['plugin'] . '&tag=' . $plugin['avail_tag_name']) . "' title='" . __esc('Downgrade this Plugin from the available Cacti Plugins') . "' class='linkEditMain'><i class='ti ti-download deviceRecovering'></i></a>";
 				$status = __('Compatible, Downgrade');
 			} elseif (cacti_version_compare($avail_version, $plugin['version'], '=')) {
-				$row .= "<a class='piload' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=load&plugin=' . $plugin['plugin'] . '&tag=' . $plugin['avail_tag_name']) . "' title='" . __esc('Replace Plugin from the available Cacti Plugins') . "' class='linkEditMain'><i class='fas fa-download deviceUp'></i></a>";
+				$row .= "<a class='piload' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=load&plugin=' . $plugin['plugin'] . '&tag=' . $plugin['avail_tag_name']) . "' title='" . __esc('Replace Plugin from the available Cacti Plugins') . "' class='linkEditMain'><i class='ti ti-download deviceUp'></i></a>";
 				$status = __('Compatible, Same Version');
 			} else {
-				$row .= "<a class='piload' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=load&plugin=' . $plugin['plugin'] . '&tag=' . $plugin['avail_tag_name']) . "' title='" . __esc('Upgrade Plugin from the available Cacti Plugins') . "' class='linkEditMain'><i class='fas fa-download deviceUp'></i></a>";
+				$row .= "<a class='piload' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=load&plugin=' . $plugin['plugin'] . '&tag=' . $plugin['avail_tag_name']) . "' title='" . __esc('Upgrade Plugin from the available Cacti Plugins') . "' class='linkEditMain'><i class='ti ti-download deviceUp'></i></a>";
 				$status = __('Compatible, Upgrade');
 			}
 		} else {
-			$row .= "<a class='piload' href='#' title='" . __esc('Unable to Restore the Archive due to Plugin Dependencies not being met.') . "' class='linkEditMain'><i class='fas fa-download deviceDisabled'></i></a>";
+			$row .= "<a class='piload' href='#' title='" . __esc('Unable to Restore the Archive due to Plugin Dependencies not being met.') . "' class='linkEditMain'><i class='ti ti-download deviceDisabled'></i></a>";
 			$status = __('Not Compatible, Dependencies');
 		}
 	} else {
-		$row .= "<a class='piload' href='#' title='" . __esc('Unable to Load due to a bad Cacti version.') . "' class='linkEditMain'><i class='fas fa-download deviceDisabled'></i></a>";
+		$row .= "<a class='piload' href='#' title='" . __esc('Unable to Load due to a bad Cacti version.') . "' class='linkEditMain'><i class='ti ti-download deviceDisabled'></i></a>";
 		$status = __('Not Compatible, Cacti Version');
 	}
 
-	$row .= "<a class='pireadme' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=readme&plugin=' . $plugin['plugin'] . '&tag=' . $plugin['avail_tag_name']) . "' title='" . __esc('View the Plugins Readme File') . "' class='linkEditMain'><i class='fas fa-file deviceDisabled'></i></a>";
+	$row .= "<a class='pireadme' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=readme&plugin=' . $plugin['plugin'] . '&tag=' . $plugin['avail_tag_name']) . "' title='" . __esc('View the Plugins Readme File') . "' class='linkEditMain'><i class='ti ti-file deviceDisabled'></i></a>";
 
 	/* no link to the changelog unless it exists */
 	if ($plugin['changelog'] > 0) {
-		$row .= "<a class='pichangelog' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=changelog&plugin=' . $plugin['plugin'] . '&tag=' . $plugin['avail_tag_name']) . "' title='" . __esc('View the Plugins ChangeLog') . "' class='linkEditMain'><i class='fas fa-file deviceRecovering'></i></a>";
+		$row .= "<a class='pichangelog' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=changelog&plugin=' . $plugin['plugin'] . '&tag=' . $plugin['avail_tag_name']) . "' title='" . __esc('View the Plugins ChangeLog') . "' class='linkEditMain'><i class='ti ti-file deviceRecovering'></i></a>";
 	}
 
 	$row .= '</td>';
@@ -1631,28 +1631,28 @@ function format_archive_plugin_row($plugin, $table) {
 	if (plugin_valid_version_range($plugin['archive_compat'])) {
 		if (plugin_valid_dependencies($plugin['archive_requires'])) {
 			if ($plugin['version'] == '') {
-				$row .= "<a class='pirestore' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=restore&plugin=' . $plugin['plugin'] . '&id=' . $plugin['id']) . "' title='" . __esc('Load this Plugin from the archive') . "' class='linkEditMain'><i class='fas fa-download deviceRecovering'></i></a>";
+				$row .= "<a class='pirestore' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=restore&plugin=' . $plugin['plugin'] . '&id=' . $plugin['id']) . "' title='" . __esc('Load this Plugin from the archive') . "' class='linkEditMain'><i class='ti ti-download deviceRecovering'></i></a>";
 				$status = __('Compatible, Loadable');
 			} elseif (cacti_version_compare($plugin['archive_version'], $plugin['version'], '<')) {
-				$row .= "<a class='pirestore' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=restore&plugin=' . $plugin['plugin'] . '&id=' . $plugin['id']) . "' title='" . __esc('Downgrade this Plugin from the archive') . "' class='linkEditMain'><i class='fas fa-download deviceRecovering'></i></a>";
+				$row .= "<a class='pirestore' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=restore&plugin=' . $plugin['plugin'] . '&id=' . $plugin['id']) . "' title='" . __esc('Downgrade this Plugin from the archive') . "' class='linkEditMain'><i class='ti ti-download deviceRecovering'></i></a>";
 				$status = __('Compatible, Downgrade');
 			} elseif (cacti_version_compare($plugin['archive_version'], $plugin['version'], '=')) {
-				$row .= "<a class='pirestore' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=restore&plugin=' . $plugin['plugin'] . '&id=' . $plugin['id']) . "' title='" . __esc('Restore Plugin from the archive') . "' class='linkEditMain'><i class='fas fa-download deviceUp'></i></a>";
+				$row .= "<a class='pirestore' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=restore&plugin=' . $plugin['plugin'] . '&id=' . $plugin['id']) . "' title='" . __esc('Restore Plugin from the archive') . "' class='linkEditMain'><i class='ti ti-download deviceUp'></i></a>";
 				$status = __('Compatible, Same Version');
 			} else {
-				$row .= "<a class='pirestore' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=restore&plugin=' . $plugin['plugin'] . '&id=' . $plugin['id']) . "' title='" . __esc('Upgrade Plugin from the archive') . "' class='linkEditMain'><i class='fas fa-download deviceUp'></i></a>";
+				$row .= "<a class='pirestore' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=restore&plugin=' . $plugin['plugin'] . '&id=' . $plugin['id']) . "' title='" . __esc('Upgrade Plugin from the archive') . "' class='linkEditMain'><i class='ti ti-download deviceUp'></i></a>";
 				$status = __('Compatible, Upgradable');
 			}
 		} else {
-			$row .= "<a class='piload' href='#' title='" . __esc('Unable to Restore the archive due to Plugin Dependencies not being met.') . "' class='linkEditMain'><i class='fas fa-download deviceDisabled'></i></a>";
+			$row .= "<a class='piload' href='#' title='" . __esc('Unable to Restore the archive due to Plugin Dependencies not being met.') . "' class='linkEditMain'><i class='ti ti-download deviceDisabled'></i></a>";
 			$status = __('Not Compatible, Dependencies');
 		}
 	} else {
-		$row .= "<a class='piload' href='#' title='" . __esc('Unable to Restore the archive due to a bad Cacti version.') . "' class='linkEditMain'><i class='fas fa-download deviceDisabled'></i></a>";
+		$row .= "<a class='piload' href='#' title='" . __esc('Unable to Restore the archive due to a bad Cacti version.') . "' class='linkEditMain'><i class='ti ti-download deviceDisabled'></i></a>";
 		$status = __('Not Compatible, Cacti Version');
 	}
 
-	$row .= "<a class='pirmarchive' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=delete&plugin=' . $plugin['plugin'] . '&id=' . $plugin['id']) . "' title='" . __esc('Delete this Plugin archive') . "' class='linkEditMain'><i class='fa fa-trash deviceRecovering'></i></a>";
+	$row .= "<a class='pirmarchive' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=delete&plugin=' . $plugin['plugin'] . '&id=' . $plugin['id']) . "' title='" . __esc('Delete this Plugin archive') . "' class='linkEditMain'><i class='ti ti-trash deviceRecovering'></i></a>";
 	$row .= '</td>';
 
 	$uname = strtoupper($plugin['plugin']);
@@ -1789,22 +1789,22 @@ function plugin_get_install_links($plugin, $table) {
 
 	if ($plugin['status'] == 0) {
 		if (!file_exists("$path/setup.php")) {
-			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin directory \'%s\' is missing setup.php', $plugin['plugin']) . "' class='linkEditMain'><i class='fa fa-cog deviceUnknown'></i></a>";
+			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin directory \'%s\' is missing setup.php', $plugin['plugin']) . "' class='linkEditMain'><i class='ti ti-settings-filled deviceUnknown'></i></a>";
 		} elseif (!file_exists("$path/INFO")) {
-			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin is lacking an INFO file') . "' class='linkEditMain'><i class='fa fa-cog deviceUnknown'></i></a>";
+			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin is lacking an INFO file') . "' class='linkEditMain'><i class='ti ti-settings-filled deviceUnknown'></i></a>";
 		} else {
 			$not_installed = plugin_required_installed($plugin, $table);
 
 			if ($not_installed != '') {
-				$link .= "<a class='pierror' href='#' title='" . __esc('Unable to Install Plugin!  %s', $not_installed) . "' class='linkEditMain'><i class='fa fa-cog deviceDisabled'></i></a>";
+				$link .= "<a class='pierror' href='#' title='" . __esc('Unable to Install Plugin!  %s', $not_installed) . "' class='linkEditMain'><i class='ti ti-settings-filled deviceDisabled'></i></a>";
 			} else {
-				$link .= "<a href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=install&plugin=' . $plugin['plugin']) . "' title='" . __esc('Install Plugin') . "' class='piinstall linkEditMain'><i class='fa fa-cog deviceUp'></i></a>";
+				$link .= "<a href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=install&plugin=' . $plugin['plugin']) . "' title='" . __esc('Install Plugin') . "' class='piinstall linkEditMain'><i class='ti ti-settings-filled deviceUp'></i></a>";
 			}
 
-			$link .= "<a href='#' class='pidisable'><i class='fa fa-cog' style='color:transparent'></i></a>";
+			$link .= "<a href='#' class='pidisable'><i class='ti ti-settings-filled' style='color:transparent'></i></a>";
 		}
 
-		$link .= "<a href='#' title='" . __esc('Plugin \'%s\' can not be archived before it\'s been Installed.', $plugin['plugin']) . "' class='piarchive linkEditMain'><i class='fa fa-box deviceDisabled'></i></a>";
+		$link .= "<a href='#' title='" . __esc('Plugin \'%s\' can not be archived before it\'s been Installed.', $plugin['plugin']) . "' class='piarchive linkEditMain'><i class='ti ti-package-export deviceDisabled'></i></a>";
 
 		$setup_file = CACTI_PATH_BASE . '/plugins/' . $plugin['plugin'] . '/setup.php';
 
@@ -1815,7 +1815,7 @@ function plugin_get_install_links($plugin, $table) {
 			$rm_data_function  = "plugin_{$plugin['plugin']}_remove_data";
 
 			if (function_exists($has_data_function) && function_exists($rm_data_function) && $has_data_function()) {
-				$link .= "<a href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=remove_data&plugin=' . $plugin['plugin']) . "' title='" . __esc('Remove Plugin Data Tables and Settings') . "' class='pirmdata'><i class='fa fa-trash deviceDown'></i></a>";
+				$link .= "<a href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=remove_data&plugin=' . $plugin['plugin']) . "' title='" . __esc('Remove Plugin Data Tables and Settings') . "' class='pirmdata'><i class='ti ti-trash deviceDown'></i></a>";
 			}
 		}
 	}
@@ -1843,43 +1843,43 @@ function plugin_actions($plugin, $table) {
 			$required = plugin_required_for_others($plugin, $table);
 
 			if ($required != '') {
-				$link .= "<a class='pierror' href='#' title='" . __esc('Unable to Uninstall.  This Plugin is required by: \'%s\'', ucfirst($required)) . "'><i class='fa fa-cog deviceUnknown'></i></a>";
+				$link .= "<a class='pierror' href='#' title='" . __esc('Unable to Uninstall.  This Plugin is required by: \'%s\'', ucfirst($required)) . "'><i class='ti ti-settings-filled deviceUnknown'></i></a>";
 			} else {
-				$link .= "<a class='piuninstall' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=uninstall&plugin=' . $plugin['plugin']) . "' title='" . __esc('Uninstall Plugin') . "'><i class='fa fa-cog deviceDown'></i></a>";
+				$link .= "<a class='piuninstall' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=uninstall&plugin=' . $plugin['plugin']) . "' title='" . __esc('Uninstall Plugin') . "'><i class='ti ti-settings-filled deviceDown'></i></a>";
 			}
 
-			$link .= "<a class='pidisable' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=disable&plugin=' . $plugin['plugin']) . "' title='" . __esc('Disable Plugin') . "'><i class='fa fa-circle deviceRecovering'></i></a>";
+			$link .= "<a class='pidisable' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=disable&plugin=' . $plugin['plugin']) . "' title='" . __esc('Disable Plugin') . "'><i class='ti ti-circle-filled deviceRecovering'></i></a>";
 
 			if ($archived) {
-				$link .= "<a href='#' title='" . __esc('Plugin already archived and is Unchanged in the archive.') . "' class='piarchive linkEditMain'><i class='fa fa-box deviceDisabled'></i></a>";
+				$link .= "<a href='#' title='" . __esc('Plugin already archived and is Unchanged in the archive.') . "' class='piarchive linkEditMain'><i class='ti ti-package-export deviceDisabled'></i></a>";
 			} else {
-				$link .= "<a href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=archive&plugin=' . $plugin['plugin']) . "' title='" . __esc('archive the Plugin in its current state.') . "' class='piarchive linkEditMain'><i class='fa fa-box deviceUnknown'></i></a>";
+				$link .= "<a href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=archive&plugin=' . $plugin['plugin']) . "' title='" . __esc('archive the Plugin in its current state.') . "' class='piarchive linkEditMain'><i class='ti ti-package-export deviceUnknown'></i></a>";
 			}
 
 			break;
 		case '2': // Configuration issues
-			$link .= "<a href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=check&plugin=' . $plugin['plugin']) . "' title='" . __esc('Check Plugins Configuration') . "' class='piinstall linkEditMain'><i class='fa fa-cog deviceRecovering'></i></a>";
+			$link .= "<a href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=check&plugin=' . $plugin['plugin']) . "' title='" . __esc('Check Plugins Configuration') . "' class='piinstall linkEditMain'><i class='ti ti-settings-filled deviceRecovering'></i></a>";
 
-			$link .= "<a href='#' class='pidisable'><i class='fa fa-cog' style='color:transparent'></i></a>";
+			$link .= "<a href='#' class='pidisable'><i class='ti ti-settings-filled' style='color:transparent'></i></a>";
 
-			$link .= "<a href='#' title='" . __esc('A Plugin can not be archived when it has Configuration Issues.') . "' class='piarchive linkEditMain'><i class='fa fa-box deviceDisabled'></i></a>";
+			$link .= "<a href='#' title='" . __esc('A Plugin can not be archived when it has Configuration Issues.') . "' class='piarchive linkEditMain'><i class='ti ti-package-export deviceDisabled'></i></a>";
 
 			break;
 		case '4':	// Installed but not active
 			$required = plugin_required_for_others($plugin, $table);
 
 			if ($required != '') {
-				$link .= "<a class='pierror' href='#' title='" . __esc('Unable to Uninstall.  This Plugin is required by: \'%s\'', ucfirst($required)) . "'><i class='fa fa-cog deviceUnknown'></i></a>";
+				$link .= "<a class='pierror' href='#' title='" . __esc('Unable to Uninstall.  This Plugin is required by: \'%s\'', ucfirst($required)) . "'><i class='ti ti-settings-filled deviceUnknown'></i></a>";
 			} else {
-				$link .= "<a class='piuninstall' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=uninstall&plugin=' . $plugin['plugin']) . "' title='" . __esc('Uninstall Plugin') . "'><i class='fa fa-cog deviceDown'></i></a>";
+				$link .= "<a class='piuninstall' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=uninstall&plugin=' . $plugin['plugin']) . "' title='" . __esc('Uninstall Plugin') . "'><i class='ti ti-settings-filled deviceDown'></i></a>";
 			}
 
-			$link .= "<a class='pienable' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=enable&plugin=' . $plugin['plugin']) . "' title='" . __esc('Enable Plugin') . "'><i class='fa fa-circle deviceUp'></i></a>";
+			$link .= "<a class='pienable' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=enable&plugin=' . $plugin['plugin']) . "' title='" . __esc('Enable Plugin') . "'><i class='ti ti-circle-filled deviceUp'></i></a>";
 
 			if ($archived) {
-				$link .= "<a href='#' title='" . __esc('Plugin already archived and Unchanged in the archive.') . "' class='piarchive linkEditMain'><i class='fa fa-box deviceDisabled'></i></a>";
+				$link .= "<a href='#' title='" . __esc('Plugin already archived and Unchanged in the archive.') . "' class='piarchive linkEditMain'><i class='ti ti-package-export deviceDisabled'></i></a>";
 			} else {
-				$link .= "<a href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=archive&plugin=' . $plugin['plugin']) . "' title='" . __esc('Archive the Plugin in its current state.') . "' class='piarchive linkEditMain'><i class='fa fa-box deviceUnknown'></i></a>";
+				$link .= "<a href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=archive&plugin=' . $plugin['plugin']) . "' title='" . __esc('Archive the Plugin in its current state.') . "' class='piarchive linkEditMain'><i class='ti ti-package-export deviceUnknown'></i></a>";
 			}
 
 			break;
@@ -1887,47 +1887,47 @@ function plugin_actions($plugin, $table) {
 			$required = plugin_required_for_others($plugin, $table);
 
 			if ($required != '') {
-				$link .= "<a class='pierror' href='#' title='" . __esc('Unable to Uninstall.  This Plugin is required by: \'%s\'', ucfirst($required)) . "'><i class='fa fa-cog deviceUnknown'></i></a>";
+				$link .= "<a class='pierror' href='#' title='" . __esc('Unable to Uninstall.  This Plugin is required by: \'%s\'', ucfirst($required)) . "'><i class='ti ti-settings-filled deviceUnknown'></i></a>";
 			} else {
-				$link .= "<a class='piuninstall' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=uninstall&plugin=' . $plugin['plugin']) . "' title='" . __esc('Uninstall Plugin') . "'><i class='fa fa-cog deviceDown'></i></a>";
+				$link .= "<a class='piuninstall' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=uninstall&plugin=' . $plugin['plugin']) . "' title='" . __esc('Uninstall Plugin') . "'><i class='ti ti-settings-filled deviceDown'></i></a>";
 			}
 
-			$link .= "<a class='pienable' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=enable&plugin=' . $plugin['plugin']) . "' title='" . __esc('Plugin was Disabled due to a Plugin Error.  Click to Re-enable the Plugin.  Search for \'DISABLING\' in the Cacti log to find the reason.') . "'><i class='fa fa-circle deviceDown'></i></a>";
+			$link .= "<a class='pienable' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=enable&plugin=' . $plugin['plugin']) . "' title='" . __esc('Plugin was Disabled due to a Plugin Error.  Click to Re-enable the Plugin.  Search for \'DISABLING\' in the Cacti log to find the reason.') . "'><i class='ti ti-circle-filled deviceDown'></i></a>";
 
 			if ($archived) {
-				$link .= "<a href='#' title='" . __esc('Plugin already archived and Unchanged in the archive.') . "' class='piarchive linkEditMain'><i class='fa fa-box deviceDisabled'></i></a>";
+				$link .= "<a href='#' title='" . __esc('Plugin already archived and Unchanged in the archive.') . "' class='piarchive linkEditMain'><i class='ti ti-package-export deviceDisabled'></i></a>";
 			} else {
-				$link .= "<a href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=archive&plugin=' . $plugin['plugin']) . "' title='" . __esc('Archive the Plugin in its current state.') . "' class='piarchive linkEditMain'><i class='fa fa-box deviceUnknown'></i></a>";
+				$link .= "<a href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=archive&plugin=' . $plugin['plugin']) . "' title='" . __esc('Archive the Plugin in its current state.') . "' class='piarchive linkEditMain'><i class='ti ti-package-export deviceUnknown'></i></a>";
 			}
 
 			break;
 		case '-5': // Plugin directory missing
-			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin directory is missing!') . "' class='linkEditMain'><i class='fa fa-cog deviceUnknown'></i></a>";
+			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin directory is missing!') . "' class='linkEditMain'><i class='ti ti-settings-filled deviceUnknown'></i></a>";
 
 			break;
 		case '-4': // Plugins should have INFO file since 1.0.0
-			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin is not compatible (Pre-1.x)') . "' class='linkEditMain'><i class='fa fa-cog deviceUnknown'></i></a>";
+			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin is not compatible (Pre-1.x)') . "' class='linkEditMain'><i class='ti ti-settings-filled deviceUnknown'></i></a>";
 
 			break;
 		case '-3': // Plugins can have spaces in their names
-			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin directories can not include spaces') . "' class='linkEditMain'><i class='fa fa-cog deviceUnknown'></i></a>";
+			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin directories can not include spaces') . "' class='linkEditMain'><i class='ti ti-settings-filled deviceUnknown'></i></a>";
 
 			break;
 		case '-2': // Naming issues
-			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin directory is not correct.  Should be \'%s\' but is \'%s\'', strtolower($plugin['plugin']), $plugin['plugin']) . "' class='linkEditMain'><i class='fa fa-cog deviceUnknown'></i></a>";
+			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin directory is not correct.  Should be \'%s\' but is \'%s\'', strtolower($plugin['plugin']), $plugin['plugin']) . "' class='linkEditMain'><i class='ti ti-settings-filled deviceUnknown'></i></a>";
 
 			break;
 		default: // Old PIA
 			$path = CACTI_PATH_PLUGINS . '/' . $plugin['plugin'];
 
 			if (!file_exists("$path/setup.php")) {
-				$link .= "<a class='pierror' href='#' title='" . __esc('Plugin directory \'%s\' is missing setup.php', $plugin['plugin']) . "' class='linkEditMain'><i class='fa fa-cog deviceUnknown'></i></a>";
+				$link .= "<a class='pierror' href='#' title='" . __esc('Plugin directory \'%s\' is missing setup.php', $plugin['plugin']) . "' class='linkEditMain'><i class='ti ti-settings-filled deviceUnknown'></i></a>";
 			} elseif (!file_exists("$path/INFO")) {
-				$link .= "<a class='pierror' href='#' title='" . __esc('Plugin is lacking an INFO file') . "' class='linkEditMain'><i class='fa fa-cog deviceUnknown'></i></a>";
+				$link .= "<a class='pierror' href='#' title='" . __esc('Plugin is lacking an INFO file') . "' class='linkEditMain'><i class='ti ti-settings-filled deviceUnknown'></i></a>";
 			} elseif (in_array($plugin['plugin'], $plugins_integrated, true)) {
-				$link .= "<a class='pierror' href='#' title='" . __esc('Plugin is integrated into Cacti core') . "' class='linkEditMain'><i class='fa fa-cog deviceUnknown'></i></a>";
+				$link .= "<a class='pierror' href='#' title='" . __esc('Plugin is integrated into Cacti core') . "' class='linkEditMain'><i class='ti ti-settings-filled deviceUnknown'></i></a>";
 			} else {
-				$link .= "<a class='pierror' href='#' title='" . __esc('Plugin is not compatible') . "' class='linkEditMain'><i class='fa fa-cog deviceUnknown'></i></a>";
+				$link .= "<a class='pierror' href='#' title='" . __esc('Plugin is not compatible') . "' class='linkEditMain'><i class='ti ti-settings-filled deviceUnknown'></i></a>";
 			}
 
 			break;
@@ -1938,10 +1938,10 @@ function plugin_actions($plugin, $table) {
 			if ($plugin['remote_status'] == 1) { // Installed and Active
 				// ToDo: Disabling here does not make much sense as the main will be replicated
 				// with any change of any other plugin thus undoing.  Fix that moving forward
-				//$link .= "<a class='pidisable' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=remote_disable&plugin=' . $plugin['plugin']) . "' title='" . __esc('Disable Plugin Locally') . "'><i class='fa fa-cog deviceDown'></i></a>";
+				//$link .= "<a class='pidisable' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=remote_disable&plugin=' . $plugin['plugin']) . "' title='" . __esc('Disable Plugin Locally') . "'><i class='ti ti-settings-filled deviceDown'></i></a>";
 			} elseif ($plugin['remote_status'] == 4) { // Installed but inactive
 				if ($plugin['status'] == 1) {
-					$link .= "<a class='pienable' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=remote_enable&plugin=' . $plugin['plugin']) . "' title='" . __esc('Enable Plugin Locally') . "'><i class='fa fa-circle deviceUp'></i></a>";
+					$link .= "<a class='pienable' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=remote_enable&plugin=' . $plugin['plugin']) . "' title='" . __esc('Enable Plugin Locally') . "'><i class='ti ti-circle-filled deviceUp'></i></a>";
 				}
 			}
 		}

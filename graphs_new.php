@@ -374,7 +374,7 @@ function create_graphs_new_filter($host, $snmp_queries) {
 			[
 				'display' => __('Edit this Device'),
 				'url'     => 'host.php?action=edit&id=' . get_request_var('host_id'),
-				'class'   => 'fa fa-wrench newDevice'
+				'class'   => 'ti ti-tool newDevice'
 			],
 			[
 				'display' => __('Create New Device'),
@@ -743,7 +743,7 @@ function graphs() {
 							<span>" . __esc('Data Query [%s]', $snmp_query['name']) . "</span>
 						</div>
 						<div class='cactiTableButton'>
-							<span class='reloadquery fa fa-sync' id='reload" . $snmp_query['id'] . "' title='" . __esc('Reload Query') . "' data-id='" . $snmp_query['id'] . "'></span>
+							<span class='reloadquery ti ti-refresh' id='reload" . $snmp_query['id'] . "' title='" . __esc('Reload Query') . "' data-id='" . $snmp_query['id'] . "'></span>
 						</div>
 					</div>
 				</div>";

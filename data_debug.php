@@ -764,9 +764,9 @@ function debug_view() {
 	$debug_status = debug_process_status($id);
 
 	if ($debug_status == 'waiting') {
-		html_start_box(__('Data Source Troubleshooter [ Auto Refreshing till Complete ] %s', '<i class="reloadquery fa fa-sync" data-id="' . $id . '" title="' . __esc('Refresh Now') . '"></i>'), '100%', false, 3, 'center', '');
+		html_start_box(__('Data Source Troubleshooter [ Auto Refreshing till Complete ] %s', '<i class="reloadquery ti ti-refresh" data-id="' . $id . '" title="' . __esc('Refresh Now') . '"></i>'), '100%', false, 3, 'center', '');
 	} elseif ($debug_status == 'analysis') {
-		html_start_box(__('Data Source Troubleshooter [ Auto Refreshing till RRDfile Update ] %s', '<i class="reloadquery fa fa-sync" data-id="' . $id . '" title="' . __esc('Refresh Now') . '"></i>'), '100%', false, 3, 'center', '');
+		html_start_box(__('Data Source Troubleshooter [ Auto Refreshing till RRDfile Update ] %s', '<i class="reloadquery ti ti-refresh" data-id="' . $id . '" title="' . __esc('Refresh Now') . '"></i>'), '100%', false, 3, 'center', '');
 	} else {
 		html_start_box(__('Data Source Troubleshooter [ Analysis Complete! %s ]', '<a href="#" class="rerun linkEditMain" data-id="' . $id . '" style="cursor:pointer;">' . __('Rerun Analysis') . '</a>'), '100%', false, 3, 'center', '');
 	}
@@ -911,48 +911,48 @@ function debug_view() {
 
 function debug_icon_valid_result($result) {
 	if ($result === '' || $result === false) {
-		return '<i class="fa fa-spinner fa-pulse fa-fw"></i>';
+		return '<i class="ti ti-loader fa-pulse fa-fw"></i>';
 	}
 
 	if ($result === '-') {
-		return '<i class="fa fa-info-circle"></i>';
+		return '<i class="ti ti-info-circle-filled"></i>';
 	}
 
 	if (is_array($result)) {
 		foreach ($result as $variable => $value) {
 			if (!prepare_validate_result($value)) {
-				return '<i class="fa fa-times" style="color:red"></i>';
+				return '<i class="ti ti-x" style="color:red"></i>';
 			}
 		}
 
-		return '<i class="fa fa-check" style="color:green"></i>';
+		return '<i class="ti ti-check" style="color:green"></i>';
 	}
 
 	if (prepare_validate_result($result)) {
-		return '<i class="fa fa-check" style="color:green"></i>';
+		return '<i class="ti ti-check" style="color:green"></i>';
 	} else {
-		return '<i class="fa fa-times" style="color:red"></i>';
+		return '<i class="ti ti-x" style="color:red"></i>';
 	}
 }
 
 function debug_icon($result) {
 	if ($result === '' || $result === false) {
-		return '<i class="fa fa-spinner fa-pulse fa-fw"></i>';
+		return '<i class="ti ti-loader fa-pulse fa-fw"></i>';
 	}
 
 	if ($result === '-') {
-		return '<i class="fa fa-info-circle"></i>';
+		return '<i class="ti ti-info-circle-filled"></i>';
 	}
 
 	if ($result === 1 || $result === 'on') {
-		return '<i class="fa fa-check" style="color:green"></i>';
+		return '<i class="ti ti-check" style="color:green"></i>';
 	}
 
 	if ($result === 0 || $result === 'off') {
-		return '<i class="fa fa-times" style="color:red"></i>';
+		return '<i class="ti ti-x" style="color:red"></i>';
 	}
 
-	return '<i class="fa fa-exclamation-triangle" style="color:orange"></i>';
+	return '<i class="ti ti-alert-triangle-filled" style="color:orange"></i>';
 }
 
 function create_data_debug_filter($session_var) {

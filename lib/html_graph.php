@@ -1772,19 +1772,19 @@ function html_graph_single_view() {
 				print "<div id='dd" . get_request_var('local_graph_id') . "' style='vertical-align:top;' class='graphDrillDown noprint'>";
 
 				print "<a class='iconLink utils' href='#' id='graph_" . get_request_var('local_graph_id') . "_util' graph_start='" . $graph_start . "' graph_end='" . $graph_end . "' rra_id='" . $rra['id'] . "'>";
-				print "<i class='drillDown fa fa-cog actionCog' title='" . __esc('Graph Details, Zooming and Debugging Utilities') . "'></i></a><br>";
+				print "<i class='drillDown ti ti-settings-filled actionCog' title='" . __esc('Graph Details, Zooming and Debugging Utilities') . "'></i></a><br>";
 
 				print "<a id='graph_" . $rra['id'] . "_csv' class='iconLink csv' href='" . html_escape(CACTI_PATH_URL . 'graph_xport.php?local_graph_id=' . get_request_var('local_graph_id') . '&rra_id=' . $rra['id'] . '&view_type=' . get_request_var('view_type') .  '&graph_start=' . $graph_start . '&graph_end=' . $graph_end) . "'>";
-				print "<i class='drillDown fa fa-file-csv fileCSV' title='" . __esc('CSV Export') . "'></i></a><br>";
+				print "<i class='drillDown ti ti-file-type-csv fileCSV' title='" . __esc('CSV Export') . "'></i></a><br>";
 
 				if (is_realm_allowed(10) && $graph_template_id > 0) {
 					print "<a class='iconLink' role='link' href='" . html_escape(CACTI_PATH_URL . 'graph_templates.php?action=template_edit&id=' . $graph_template_id) . "'>";
-					print "<i class='drillDown fa fa-edit editTemplate' title='" . __esc('Edit Graph Template') . "'></i></a>";
+					print "<i class='drillDown ti ti-edit editTemplate' title='" . __esc('Edit Graph Template') . "'></i></a>";
 					print '<br>';
 				}
 
 				if (read_config_option('realtime_enabled') == 'on' || is_realm_allowed(25)) {
-					print "<a class='iconLink' href='#' onclick=\"window.open('" . CACTI_PATH_URL . 'graph_realtime.php?top=0&left=0&local_graph_id=' . get_request_var('local_graph_id') . "', 'popup_" . get_request_var('local_graph_id') . "', 'directories=no,toolbar=no,menubar=no,resizable=yes,location=no,scrollbars=no,status=no,titlebar=no,width=650,height=300');return false\"><i class='drillDown fas fa-chart-area realTime' title='" . __esc('Click to view just this Graph in Real-time') . "'></i></a><br>";
+					print "<a class='iconLink' href='#' onclick=\"window.open('" . CACTI_PATH_URL . 'graph_realtime.php?top=0&left=0&local_graph_id=' . get_request_var('local_graph_id') . "', 'popup_" . get_request_var('local_graph_id') . "', 'directories=no,toolbar=no,menubar=no,resizable=yes,location=no,scrollbars=no,status=no,titlebar=no,width=650,height=300');return false\"><i class='drillDown ti ti-chart-area realTime' title='" . __esc('Click to view just this Graph in Real-time') . "'></i></a><br>";
 				}
 
 				print($aggregate_url != '' ? $aggregate_url : '');
@@ -2065,16 +2065,16 @@ function html_graph_zoom() {
 				<?php if (is_realm_allowed(27)) { ?>
 				<div id='dd<?php print $graph['local_graph_id']; ?>' style='vertical-align:top;' class='graphDrillDown noprint'>
 					<a href='#' id='graph_<?php print $graph['local_graph_id']; ?>_properties' class='iconLink properties'>
-						<i class='drillDown fa fa-wrench viewSources' title='<?php print __esc('Graph Source/Properties'); ?>'></i>
+						<i class='drillDown ti ti-tool viewSources' title='<?php print __esc('Graph Source/Properties'); ?>'></i>
 					</a>
 					<br>
 					<a href='#' id='graph_<?php print $graph['local_graph_id']; ?>_csv' class='iconLink properties'>
-						<i class='drillDown fa fa-info-circle fileCSV' title='<?php print __esc('Graph Data'); ?>'></i>
+						<i class='drillDown ti ti-info-circle-filled fileCSV' title='<?php print __esc('Graph Data'); ?>'></i>
 					</a>
 					<br>
 					<?php
 					if (is_realm_allowed(10) && $graph_template_id > 0) {
-						print "<a class='iconLink' role='link' href='" . html_escape(CACTI_PATH_URL . 'graph_templates.php?action=template_edit&id=' . $graph_template_id) . "'><i class='drillDown fa fa-edit editTemplate' title='" . __esc('Edit Graph Template') . "'></i></a>";
+						print "<a class='iconLink' role='link' href='" . html_escape(CACTI_PATH_URL . 'graph_templates.php?action=template_edit&id=' . $graph_template_id) . "'><i class='drillDown ti ti-edit editTemplate' title='" . __esc('Edit Graph Template') . "'></i></a>";
 						print '<br>';
 					}
 

@@ -4762,7 +4762,7 @@ function debug_log_insert_section_start($type, $text, $allowcopy = false) {
 
 	if ($allowcopy) {
 		$uid           = generate_hash();
-		$copy_prefix   = '<div class=\'cactiTableButton debug\'><span><a class=\'linkCopyDark cactiTableCopy fa fa-copy\' id=\'copyToClipboard' . $uid . '\' title=\'' .  __esc('Copy Section Output to Clipboard') . '\'</a></span></div>';
+		$copy_prefix   = '<div class=\'cactiTableButton debug\'><span><a class=\'linkCopyDark cactiTableCopy ti ti-copy\' id=\'copyToClipboard' . $uid . '\' title=\'' .  __esc('Copy Section Output to Clipboard') . '\'</a></span></div>';
 		$copy_dataid   = ' id=\'clipboardData'.$uid.'\'';
 		$copy_headerid = ' id=\'clipboardHeader'.$uid.'\'';
 	}

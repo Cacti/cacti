@@ -612,7 +612,7 @@ function data_edit() {
 
 				form_selectable_cell($field['sequence'], $i);
 
-				form_selectable_cell("<a class='delete deleteMarker fa fa-times' href='" . html_escape('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id')) . "' title='" . __esc('Delete') . "'></a>", $i, '', 'right');
+				form_selectable_cell("<a class='delete deleteMarker ti ti-x' href='" . html_escape('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id')) . "' title='" . __esc('Delete') . "'></a>", $i, '', 'right');
 
 				form_end_row();
 
@@ -656,11 +656,11 @@ function data_edit() {
 				form_selectable_cell(html_boolean_friendly($field['update_rra']), $i);
 
 				if ($output_disabled) {
-					form_selectable_cell("<a class='deleteMarkerDisabled fa fa-times' href='#' title='" . __esc('Output Fields can not be removed when Data Sources are present') . "'></a>", $i);
+					form_selectable_cell("<a class='deleteMarkerDisabled ti ti-x' href='#' title='" . __esc('Output Fields can not be removed when Data Sources are present') . "'></a>", $i);
 				} else {
 					$url = html_escape('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));
 
-					form_selectable_cell("<a class='delete deleteMarker fa fa-times' href='$url' title='" . __esc('Delete') . "'></a>", $i, '', 'right');
+					form_selectable_cell("<a class='delete deleteMarker ti ti-x' href='$url' title='" . __esc('Delete') . "'></a>", $i, '', 'right');
 				}
 
 				form_end_row();

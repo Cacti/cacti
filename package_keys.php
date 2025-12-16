@@ -86,7 +86,7 @@ function form_actions() {
 
 	top_header();
 
-	form_start('package_keys.php');
+	form_start('package_keys.php', 'action_confirm');
 
 	html_start_box($actions[get_nfilter_request_var('drp_action')], '60%', false, 3, 'center', '');
 
@@ -99,7 +99,7 @@ function form_actions() {
 				</td>
 			</tr>";
 
-			$save_html = "<button type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>" . __esc('Cancel') . "</button><button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' title='" . __n('Delete Public Key', 'Delete Public Keys', cacti_sizeof($p_array)) . "'>" . __esc('Continue') . '</button>';
+			$save_html = "<button type='button' class='ui-button ui-corner-all ui-widget' value='cancel' onClick='cactiReturnTo()'>" . __esc('Cancel') . "</button><button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' title='" . __n('Delete Public Key', 'Delete Public Keys', cacti_sizeof($p_array)) . "' value='continue'>" . __esc('Continue') . '</button>';
 		}
 	} else {
 		raise_message(40);

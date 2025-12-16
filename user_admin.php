@@ -1768,7 +1768,7 @@ function settings_edit($header_label) {
 	html_start_box(__esc('User Settings %s', $header_label), '100%', true, 3, 'center', '');
 
 	foreach ($settings_user as $tab_short_name => $tab_fields) {
-		print "<div class='spacer formHeader collapsible' id='row_$tab_short_name'><div style='cursor:pointer;' class='tableSubHeaderColumn'>" . $tabs_graphs[$tab_short_name] . "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div></div></div>";
+		print "<div class='spacer formHeader collapsible' id='row_$tab_short_name'><div style='cursor:pointer;' class='tableSubHeaderColumn'>" . $tabs_graphs[$tab_short_name] . "<div style='float:right;padding-right:4px;'><i class='ti ti-chevrons-up'></i></div></div></div>";
 
 		$form_array = [];
 

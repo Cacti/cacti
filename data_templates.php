@@ -780,7 +780,7 @@ function template_edit() {
 			print "<div class='tabs' style='float:left;'><nav><ul role='tablist'>";
 
 			foreach ($template_data_rrds as $template_data_rrd) {
-				print "<li class='subTab'><a " . (($template_data_rrd['id'] == get_request_var('view_rrd')) ? "class='pic selected'" : "class='pic'") . " href='" . html_escape('data_templates.php?action=template_edit&id=' . get_request_var('id') . '&view_rrd=' . $template_data_rrd['id']) . "'>" . ($i + 1) . ': ' . html_escape($template_data_rrd['data_source_name']) . '</a>' . ($template_data['data_sources'] == 0 ? "<a class='pic deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape('data_templates.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&data_template_id=' . get_request_var('id')) . "'></a>" : "<a class='deleteMarkerDisabled fa fa-times' href='#' title='" . __esc('Data Templates in use can not be modified') . "'></a>") . '</li>';
+				print "<li class='subTab'><a " . (($template_data_rrd['id'] == get_request_var('view_rrd')) ? "class='pic selected'" : "class='pic'") . " href='" . html_escape('data_templates.php?action=template_edit&id=' . get_request_var('id') . '&view_rrd=' . $template_data_rrd['id']) . "'>" . ($i + 1) . ': ' . html_escape($template_data_rrd['data_source_name']) . '</a>' . ($template_data['data_sources'] == 0 ? "<a class='pic deleteMarker ti ti-x' title='" . __esc('Delete') . "' href='" . html_escape('data_templates.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&data_template_id=' . get_request_var('id')) . "'></a>" : "<a class='deleteMarkerDisabled ti ti-x' href='#' title='" . __esc('Data Templates in use can not be modified') . "'></a>") . '</li>';
 
 				$i++;
 			}

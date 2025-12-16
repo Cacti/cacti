@@ -2340,7 +2340,7 @@ function graph_edit() {
 			$ins_buttons[] = [
 				'display' => __esc('Edit Data Source: \'%s\'.', $name),
 				'url'     => 'data_sources.php?action=ds_edit&id=' . $ds['local_data_id'],
-				'class'   => 'fa fa-database newDevice'
+				'class'   => 'ti ti-affiliate newDevice'
 			];
 		}
 	} else {
@@ -2351,7 +2351,7 @@ function graph_edit() {
 		$ins_buttons[] = [
 			'display' => __('Edit Device'),
 			'url'     => 'host.php?action=edit&id=' . ($host_id > 0 ? $host_id : get_request_var('host_id')),
-			'class'   => 'fa fa-server editDevice'
+			'class'   => 'ti ti-server editDevice'
 		];
 	}
 
@@ -2414,12 +2414,12 @@ function graph_edit() {
 			[
 				'display' => $message,
 				'url'     => 'graphs.php?action=graph_edit&id=' . (isset_request_var('id') ? get_request_var('id') : '0') . '&debug=' . (isset($_SESSION['graph_debug_mode']) ? '0' : '1'),
-				'class'   => ($debug ? 'fa fa-bug disableDebug' : 'fa fa-bug enableDebug')
+				'class'   => ($debug ? 'ti ti-bug disableDebug' : 'ti ti-bug enableDebug')
 			],
 			[
 				'display' => __('Edit Graph Template'),
 				'url'     => 'graph_templates.php?action=template_edit&id=' . (isset($graph['graph_template_id']) ? $graph['graph_template_id'] : '0'),
-				'class'   => 'fa fa-edit editTemplate'
+				'class'   => 'ti ti-edit editTemplate'
 			],
 		]
 	];
@@ -2433,13 +2433,13 @@ function graph_edit() {
 	$filters['links'][] = [
 		'display' => ($locked ? __('Unlock Graph') : __('Lock Graph')),
 		'url'     => 'graphs.php?action=' . ($locked ? 'unlock' : 'lock') . '&id=' . get_request_var('id'),
-		'class'   => ($locked ? 'fa fa-lock-open' : 'fa fa-lock')
+		'class'   => ($locked ? 'ti ti-lock-off' : 'ti ti-lock')
 	];
 
 	$filters['links'][] = [
 		'display' => __('View Timespan Graphs'),
 		'url'     => 'graphs.php?action=view&rra_id=0&local_graph_id=' . get_request_var('id'),
-		'class'   => 'fa fa-chart-area threeBars'
+		'class'   => 'ti ti-chart-area-line-filled threeBars'
 	];
 
 	if (cacti_sizeof($graph)) {

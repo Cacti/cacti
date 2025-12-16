@@ -151,19 +151,19 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 
 				if (read_config_option('drag_and_drop') == '') {
 					if ($i < $total_items && $total_items > 1) {
-						print '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape('color_templates.php?action=item_movedown&color_template_item_id=' . $item['color_template_item_id'] . '&color_template_id=' . $item['color_template_id']) . '" title="' . __esc('Move Down') . '"></a>';
+						print '<a class="pic ti ti-caret-down-filled moveArrow" href="' . html_escape('color_templates.php?action=item_movedown&color_template_item_id=' . $item['color_template_item_id'] . '&color_template_id=' . $item['color_template_id']) . '" title="' . __esc('Move Down') . '"></a>';
 					} else {
 						print '<span class="moveArrowNone"></span>';
 					}
 
 					if ($i > 1 && $i <= $total_items) {
-						print '<a class="pic fa fa-caret-up moveArrow" href="' . html_escape('color_templates.php?action=item_moveup&color_template_item_id=' . $item['color_template_item_id'] . '&color_template_id=' . $item['color_template_id']) . '" title="' . __esc('Move Up') . '"></a>';
+						print '<a class="pic ti ti-caret-up-filled moveArrow" href="' . html_escape('color_templates.php?action=item_moveup&color_template_item_id=' . $item['color_template_item_id'] . '&color_template_id=' . $item['color_template_id']) . '" title="' . __esc('Move Up') . '"></a>';
 					} else {
 						print '<span class="moveArrowNone"></span>';
 					}
 				}
 
-				print "<a class='delete deleteMarker fa fa-times' id='" .  $item['color_template_id'] . '_' . $item['color_template_item_id'] . "' title='" . __esc('Delete') . "'></a>";
+				print "<a class='delete deleteMarker ti ti-x' id='" .  $item['color_template_id'] . '_' . $item['color_template_item_id'] . "' title='" . __esc('Delete') . "'></a>";
 
 				print "</td>\n";
 			}

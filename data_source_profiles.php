@@ -1138,7 +1138,7 @@ function profile_edit() {
 				form_selectable_cell('<em>' . $rra['rows'] . '</em>', $i);
 
 				if (!$readonly) {
-					form_selectable_cell("<a id='" . $profile['id'] . '_' . $rra['id'] . "' class='delete deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='#'></a>", $i, '', 'right');
+					form_selectable_cell("<a id='" . $profile['id'] . '_' . $rra['id'] . "' class='delete deleteMarker ti ti-x' title='" . __esc('Delete') . "' href='#'></a>", $i, '', 'right');
 				} else {
 					form_selectable_cell('', $i, '', 'right');
 				}

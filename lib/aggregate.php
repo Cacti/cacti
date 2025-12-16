@@ -60,7 +60,7 @@ function aggregate_build_children_url(int $local_graph_id, int $graph_start = -1
 				$graph_select .= $graph . '%2C';
 			}
 
-			return "<a class='hyperLink aggregates' href='" . html_escape(CACTI_PATH_URL . 'graph_view.php?reset=1&page=1&graph_template_id=-1&host_id=-1&filter=&style=selective&action=preview' . ($graph_start >= 0 ? '&graph_start=' . $graph_start : '') . ($graph_end >= 0 ? '&graph_end=' . $graph_end : '') . ($rra_id >= 0 ? '&rra_id=' . $rra_id : '') . '&' . $graph_select) . "'><i class='drillDown fa fa-sitemap expandAggregate' title='" . __esc('Display Graphs from this Aggregate') . "'></i></a><br>" . PHP_EOL;
+			return "<a class='hyperLink aggregates' href='" . html_escape(CACTI_PATH_URL . 'graph_view.php?reset=1&page=1&graph_template_id=-1&host_id=-1&filter=&style=selective&action=preview' . ($graph_start >= 0 ? '&graph_start=' . $graph_start : '') . ($graph_end >= 0 ? '&graph_end=' . $graph_end : '') . ($rra_id >= 0 ? '&rra_id=' . $rra_id : '') . '&' . $graph_select) . "'><i class='drillDown ti ti-sitemap-filled expandAggregate' title='" . __esc('Display Graphs from this Aggregate') . "'></i></a><br>" . PHP_EOL;
 		}
 	}
 

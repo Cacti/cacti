@@ -71,31 +71,31 @@ var previousMainWidth = null;
 var previousColumns = null;
 var faIcons = {
 	open: {
-		icon: '<i class="fa fa-caret-down" aria-hidden="true"></i>'
+		icon: '<i class="ti ti-caret-down-filled" aria-hidden="true"></i>'
 	},
 	close: {
-		icon: '<i class="fas fa-times-circle" aria-hidden="true"></i>'
+		icon: '<i class="ti ti-circle-x-filled" aria-hidden="true"></i>'
 	},
 	checkAll: {
-		icon: '<i class="fa fa-check" aria-hidden="true"></i>'
+		icon: '<i class="ti ti-check" aria-hidden="true"></i>'
 	},
 	uncheckAll: {
-		icon: '<i class="fas fa-ban" aria-hidden="true"></i>'
+		icon: '<i class="ti ti-ban" aria-hidden="true"></i>'
 	},
 	flipAll: {
-		icon: '<i class="fas fa-undo" aria-hidden="true"></i>'
+		icon: '<i class="ti ti-arrow-back-up" aria-hidden="true"></i>'
 	},
 	collapseAll: {
-		icon: '<i class="fa fa-angle-double-down" aria-hidden="true"></i>'
+		icon: '<i class="ti ti-chevrons-down" aria-hidden="true"></i>'
 	},
 	expandAll: {
-		icon: '<i class="fas fa-double-angle-right" aria-hidden="true"></i>'
+		icon: '<i class="ti ti-chevrons-right" aria-hidden="true"></i>'
 	},
 	collapse: {
-		icon: '<i class="fa fa-chevron-down" aria-hidden="true"></i>'
+		icon: '<i class="ti ti-chevron-down" aria-hidden="true"></i>'
 	},
 	expand: {
-		icon: '<i class="fas fa-chevron-right" aria-hidden="true"></i>'
+		icon: '<i class="ti ti-chevron-right" aria-hidden="true"></i>'
 	}
 };
 
@@ -1113,9 +1113,9 @@ function checkPasswordFinalize(options, data) {
 function checkPasswordConfirm() {
 	if ($('#password_confirm').val().length > 0) {
 		if ($('#password').val() != $('#password_confirm').val()) {
-			$('#passconfirm').replaceWith('<div id="passconfirm" style="float:left" class="badpassword fa fa-times" title="' + passwordNotMatch + '"></div>');
+			$('#passconfirm').replaceWith('<div id="passconfirm" style="float:left" class="badpassword ti ti-x" title="' + passwordNotMatch + '"></div>');
 		} else {
-			$('#passconfirm').replaceWith('<div id="passconfirm" style="float:left" class="goodpassword fa fa-check" title="' + passwordMatch + '"></div>');
+			$('#passconfirm').replaceWith('<div id="passconfirm" style="float:left" class="goodpassword ti ti-check" title="' + passwordMatch + '"></div>');
 		}
 	} else {
 		$('#passconfirm').empty();
@@ -1439,10 +1439,10 @@ function makeFiltersResponsive() {
 					if (filterHeader.find('.cactiSwitchConstraints').length == 0) {
 						if (hScroll) {
 							$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'visible' });
-							filterHeader.find('div.cactiTableButton').append('<span class="cactiSwitchConstraintWrapper"><a title="' + tableConstraints + '" class="linkOverDark cactiSwitchConstraints" href="#"><i id="overflow" class="fa fa-compress"></i></a></span>');
+							filterHeader.find('div.cactiTableButton').append('<span class="cactiSwitchConstraintWrapper"><a title="' + tableConstraints + '" class="linkOverDark cactiSwitchConstraints" href="#"><i id="overflow" class="ti ti-arrows-diagonal-minimize-2"></i></a></span>');
 						} else {
 							$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'hidden' });
-							filterHeader.find('div.cactiTableButton').append('<span class="cactiSwitchConstraintWrapper"><a title="' + tableConstraints + '" class="linkOverDark cactiSwitchConstraints" href="#"><i id="overflow" class="fa fa-expand"></i></a></span>');
+							filterHeader.find('div.cactiTableButton').append('<span class="cactiSwitchConstraintWrapper"><a title="' + tableConstraints + '" class="linkOverDark cactiSwitchConstraints" href="#"><i id="overflow" class="ti ti-arrows-diagonal"></i></a></span>');
 						}
 
 						$('.cactiSwitchConstraints').off('click').on('click', function (event) {
@@ -1467,7 +1467,7 @@ function makeFiltersResponsive() {
 
 				if (filterContents.find('#export').length) {
 					title = $('#export').attr('title');
-					filterHeader.find('div.cactiTableButton').append('<span title="' + title + '" style="display:none;" class="cactiFilterExport"><i class="fa fa-chevron-down"></i></span>');
+					filterHeader.find('div.cactiTableButton').append('<span title="' + title + '" style="display:none;" class="cactiFilterExport"><i class="ti ti-chevron-down"></i></span>');
 
 					$('.cactiFilterExport').off('click').on('click', function (event) {
 						event.stopPropagation();
@@ -1477,7 +1477,7 @@ function makeFiltersResponsive() {
 
 				if (filterContents.find('#import').length) {
 					title = $('#import').attr('title');
-					filterHeader.find('div.cactiTableButton').append('<span title="' + title + '" style="display:none;" class="cactiFilterImport"><i class="fa fa-chevron-up"></i></span>');
+					filterHeader.find('div.cactiTableButton').append('<span title="' + title + '" style="display:none;" class="cactiFilterImport"><i class="ti ti-chevron-up"></i></span>');
 
 					$('.cactiFilterImport').off('click').on('click', function (event) {
 						event.stopPropagation();
@@ -1487,7 +1487,7 @@ function makeFiltersResponsive() {
 
 				if (filterContents.find('#clear').length) {
 					if (filterHeader.find('.cactiFilterClear').length == 0) {
-						filterHeader.find('div.cactiTableButton').append('<span title="' + clearFilterTitle + '" style="display:none;" class="cactiFilterClear"><i class="fa fa-trash"></i></span>');
+						filterHeader.find('div.cactiTableButton').append('<span title="' + clearFilterTitle + '" style="display:none;" class="cactiFilterClear"><i class="ti ti-trash"></i></span>');
 					}
 
 					$('.cactiFilterClear').off('click').on('click', function(event) {
@@ -1506,13 +1506,13 @@ function makeFiltersResponsive() {
 
 				if (state == 'hidden') {
 					if (filterHeader.find('.cactiFilterState').length == 0) {
-						filterHeader.find('div.cactiTableButton').append('<a class="cactiFilterState" href="#"><i class="fa fa-angle-double-down"></i></a>');
+						filterHeader.find('div.cactiTableButton').append('<a class="cactiFilterState" href="#"><i class="ti ti-chevrons-down"></i></a>');
 					} else {
 						filterHeader.find('div.cactiTableButton').find('.cactiFilterState').removeClass('fa-angle-double-up').addClass('fa-angle-double-down');
 					}
 				} else {
 					if (filterHeader.find('.cactiFilterState').length == 0) {
-						filterHeader.find('div.cactiTableButton').append('<a class="cactiFilterState" href="#"><i class="fa fa-angle-double-up"></i></a>');
+						filterHeader.find('div.cactiTableButton').append('<a class="cactiFilterState" href="#"><i class="ti ti-chevrons-up"></i></a>');
 					} else {
 						filterHeader.find('div.cactiTableButton').find('.cactiFilterState').removeClass('fa-angle-double-down').addClass('fa-angle-double-up');
 					}
@@ -1538,8 +1538,8 @@ function makeFiltersResponsive() {
 				anchors.each(function () {
 					$(this).attr('title', $(this).text());
 				});
-				anchors.not('.cactiTableCopy').addClass('fa fa-trash');
-				anchors.filter('.cactiTableCopy').addClass('fa fa-copy');
+				anchors.not('.cactiTableCopy').addClass('ti ti-trash');
+				anchors.filter('.cactiTableCopy').addClass('ti ti-copy');
 				anchors.tooltip().text('');
 			}
 		});
@@ -4728,7 +4728,7 @@ function initializeGraphs(disable_cache) {
 
 			if (realtimeArray[graph_id]) {
 				$('#wrapper_' + graph_id).html(keepRealtime[graph_id]).change();
-				$(this).html("<i class='drillDown fa fa-chart-line realTime' title='" + realtimeClickOn + "'></i>");
+				$(this).html("<i class='drillDown ti ti-chart-area-line-filled realTime' title='" + realtimeClickOn + "'></i>");
 
 				$('graph_id' + graph_id).tooltip().zoom({
 					inputfieldStartTime: 'date1',
@@ -4740,7 +4740,7 @@ function initializeGraphs(disable_cache) {
 				setFilters();
 			} else {
 				keepRealtime[graph_id] = $('#wrapper_' + graph_id).html();
-				$(this).html("<i style='text-align:center;padding:0px;' title='" + realtimeClickOff + "' class='drillDown fa fa-circle-notch fa-spin'></i>");
+				$(this).html("<i style='text-align:center;padding:0px;' title='" + realtimeClickOff + "' class='drillDown ti ti-loader-2 fa-spin'></i>");
 				$(this).find('i').tooltip();
 				realtimeArray[graph_id] = true;
 				setFilters();
@@ -5532,11 +5532,11 @@ function checkSNMPPassphrase(type) {
 		$('#' + span + 'conf').remove();
 	} else if ($(pass).val().length < minChars) {
 		$('#' + span).remove();
-		$(pass).after('<span id="' + span + '"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;">' + passwordTooShort + '<span></span>');
+		$(pass).after('<span id="' + span + '"><i class="badpassword ti ti-x"></i><span style="padding-left:4px;">' + passwordTooShort + '<span></span>');
 		checkSNMPPassphraseConfirm(type);
 	} else {
 		$('#' + span).remove();
-		$(pass).after('<span id="' + span + '"><i class="goodpassword fa fa-check"></i><span style="padding-left:4px;">' + passwordPass + '</span></span>');
+		$(pass).after('<span id="' + span + '"><i class="goodpassword ti ti-check"></i><span style="padding-left:4px;">' + passwordPass + '</span></span>');
 		checkSNMPPassphraseConfirm(type);
 	}
 }
@@ -5561,19 +5561,19 @@ function checkSNMPPassphraseConfirm(type) {
 
 		if (passphrase.indexOf($(conf).val()) == 0) {
 			$('#' + spanconf).remove();
-			$(conf).after('<span id="' + spanconf + '"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;">' + passwordMatchTooShort + '<span></span>');
+			$(conf).after('<span id="' + spanconf + '"><i class="badpassword ti ti-x"></i><span style="padding-left:4px;">' + passwordMatchTooShort + '<span></span>');
 		} else {
 			$('#' + spanconf).remove();
-			$(conf).after('<span id="' + spanconf + '"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;">' + passwordNotMatchTooShort + '<span></span>');
+			$(conf).after('<span id="' + spanconf + '"><i class="badpassword ti ti-x"></i><span style="padding-left:4px;">' + passwordNotMatchTooShort + '<span></span>');
 		}
 	} else {
 		if ($(pass).val() != $(conf).val()) {
 			$('#' + spanconf).remove();
-			$(conf).after('<span id="' + spanconf + '"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;">' + passwordNotMatch + '</span></span>');
+			$(conf).after('<span id="' + spanconf + '"><i class="badpassword ti ti-x"></i><span style="padding-left:4px;">' + passwordNotMatch + '</span></span>');
 		} else {
 			$('#' + span).remove();
 			$('#' + spanconf).remove();
-			$(pass).after('<span id="' + spanconf + '"><i class="goodpassword fa fa-check"></i><span style="padding-left:4px;">' + passwordMatch + '</span></span>');
+			$(pass).after('<span id="' + spanconf + '"><i class="goodpassword ti ti-check"></i><span style="padding-left:4px;">' + passwordMatch + '</span></span>');
 		}
 	}
 }
