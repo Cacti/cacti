@@ -1,0 +1,20 @@
+{
+  "short_name": "Cacti",
+  "name": "Cacti",
+  "icons": [
+    {
+      "purpose": "any",
+      "src": "/images/icon512_rounded.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "purpose": "maskable",
+      "src": "/images/icon512_maskable.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "./index.php",
+  "display": "standalone"
+}
