@@ -26,16 +26,16 @@ function themeReady() {
 	setMenuVisibility();
 
 	// Add nice search filter to filters
-	if ($('input[id="filter"]').length > 0 && $('input[id="filter"]').next('i[class="fa fa-search filter"]').length < 1) {
-		$('input[id="filter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
+	if ($('input[id="filter"]').length > 0 && $('input[id="filter"]').next('i[class="ti ti-search filter"]').length < 1) {
+		$('input[id="filter"]').after("<i class='ti ti-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
 	}
 
-	if ($('input[id="filterd"]').length > 0 && $('input[id="filterd"]').next('i[class="fa fa-search filter"]').length < 1) {
-		$('input[id="filterd"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
+	if ($('input[id="filterd"]').length > 0 && $('input[id="filterd"]').next('i[class="ti ti-search filter"]').length < 1) {
+		$('input[id="filterd"]').after("<i class='ti ti-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
 	}
 
-	if ($('input[id="rfilter"]').length > 0 && $('input[id="rfilter"]').next('i[class="fa fa-search filter"]').length < 1) {
-		$('input[id="rfilter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchRFilter).parent('td').css('white-space', 'nowrap');
+	if ($('input[id="rfilter"]').length > 0 && $('input[id="rfilter"]').next('i[class="ti ti-search filter"]').length < 1) {
+		$('input[id="rfilter"]').after("<i class='ti ti-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchRFilter).parent('td').css('white-space', 'nowrap');
 	}
 
 	$('input#filter, input#rfilter').addClass('ui-state-default ui-corner-all');
@@ -45,15 +45,15 @@ function themeReady() {
 	/* Start clean up */
 
 	//login page
-	$('.cactiLoginLogo').html("<i class='fa fa-pawfa fa-paper-plane'/>");
-	$('.cactiLogoutLogo').html("<i class='fa fa-pawfa fa-paper-plane'/>");
+	$('.cactiLoginLogo').html("<i class='ti ti-pawti ti-send'/>");
+	$('.cactiLogoutLogo').html("<i class='ti ti-pawti ti-send'/>");
 
 	/* clean up the navigation menu */
 	$('.cactiConsoleNavigationArea').find('#menu').appendTo($('.cactiConsoleNavigationArea').find('#navigation'));
 	$('.cactiConsoleNavigationArea').find('#navigation > table').remove();
 
 	if ($('#cactiPageBottom').length == 0) {
-		$('<div id="cactiPageBottom" class="cactiPageBottom"><a class="bottom_scroll_up action-icon-user" href="#"><i class="fa fa-arrow-circle-o-up"></i></a></div>').insertAfter('#cactiContent');
+		$('<div id="cactiPageBottom" class="cactiPageBottom"><a class="bottom_scroll_up action-icon-user" href="#"><i class="ti ti-circle-arrow-up"></i></a></div>').insertAfter('#cactiContent');
 	}
 
 	$('.maintabs nav ul li a.lefttab').each( function() {
@@ -81,8 +81,8 @@ function themeReady() {
 		$('.menuHr').remove();
 		$('<div class="maintabs usertabs">'
 			+'<nav><ul>'
-				+'<li><a id="menu-user-help" class="usertabs-submenu" href="#"><i class="fa fa-question"></i></a></li>'
-				+'<li class="action-icon-user"><a class="pic" href="#"><i class="far fa-user"></i></a></li>'
+				+'<li><a id="menu-user-help" class="usertabs-submenu" href="#"><i class="ti ti-question-mark"></i></a></li>'
+				+'<li class="action-icon-user"><a class="pic" href="#"><i class="ti ti-user"></i></a></li>'
 			+'</ul></nav>'
 		+'</div>').insertAfter('.maintabs');
 

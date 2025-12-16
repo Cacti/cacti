@@ -31,16 +31,16 @@ function themeReady() {
 	setMenuVisibility();
 
 	// Add nice search filter to filters
-	if ($('input[id="filter"]').length > 0 && $('input[id="filter"]').next('i[class="fa fa-search filter"]').length < 1) {
-		$('input[id="filter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
+	if ($('input[id="filter"]').length > 0 && $('input[id="filter"]').next('i[class="ti ti-search filter"]').length < 1) {
+		$('input[id="filter"]').after("<i class='ti ti-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
 	}
 
-	if ($('input[id="filterd"]').length > 0 && $('input[id="filterd"]').next('i[class="fa fa-search filter"]').length < 1) {
-		$('input[id="filterd"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
+	if ($('input[id="filterd"]').length > 0 && $('input[id="filterd"]').next('i[class="ti ti-search filter"]').length < 1) {
+		$('input[id="filterd"]').after("<i class='ti ti-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
 	}
 
-	if ($('input[id="rfilter"]').length > 0 && $('input[id="rfilter"]').next('i[class="fa fa-search filter"]').length < 1) {
-		$('input[id="rfilter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchRFilter).parent('td').css('white-space', 'nowrap');
+	if ($('input[id="rfilter"]').length > 0 && $('input[id="rfilter"]').next('i[class="ti ti-search filter"]').length < 1) {
+		$('input[id="rfilter"]').after("<i class='ti ti-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchRFilter).parent('td').css('white-space', 'nowrap');
 	}
 
 	$('input#filter, input#rfilter').addClass('ui-state-default ui-corner-all');
