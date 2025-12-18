@@ -354,11 +354,6 @@ function display_settings() {
 				},
 				checkAllText: '<?php print __('All'); ?>',
 				uncheckAllText: '<?php print __('None'); ?>',
-				uncheckAll: function() {
-					$(this).multiselect('widget').find(':checkbox:first').each(function() {
-						$(this).prop('checked', true);
-					});
-				}
 			}).multiselectfilter( {
 				label: '<?php print __('Search'); ?>',
 				placeholder: '<?php print __('Enter keyword'); ?>',
