@@ -30,6 +30,7 @@ Cacti CHANGELOG
 -issue#6335: Fix incorrect parsing of email address containing whitespace
 -issue#6441: Spikekill Purge Using the wrong variable
 -issue#6444: Applying Title Cache Changes for Data Input Methods using |data_xxxx| not working
+-issue#6490: Selective Debug Setting in Cacti 'Clear All' button results in selecting the first item
 -feature: Close user sessions after a password change is forced
 -feature: Update PHPMailer to 6.10 to support SMTPUTF8
 -feature: Update phpseclib for the Service Check plugin
