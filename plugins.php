@@ -211,23 +211,31 @@ switch($action) {
 
 		break;
 	case 'latest':
-		$running = is_process_running('pfetch', 'master', 0);
+		if (read_config_option('github_access_token') != '') {
+			$running = is_process_running('pfetch', 'master', 0);
 
-		if ($running === false) {
-			$php_binary = read_config_option('path_php_binary');
+			if ($running === false) {
+				$php_binary = read_config_option('path_php_binary');
 
-			exec_background($php_binary, CACTI_PATH_CLI . '/fetch_plugins.php');
+				exec_background($php_binary, CACTI_PATH_CLI . '/fetch_plugins.php');
 
-			usleep(300000);
+				usleep(300000);
 
-			raise_message('fetch_background', __('The fetch latest plugins process has been launched into background.'), MESSAGE_LEVEL_INFO);
-		} elseif ($running === true) {
-			raise_message('fetch_background', __('The fetch latest plugins process has already been started.'), MESSAGE_LEVEL_WARN);
+				raise_message('fetch_background', __('The fetch latest plugins process has been launched into background.'), MESSAGE_LEVEL_INFO);
+			} elseif ($running === true) {
+				raise_message('fetch_background', __('The fetch latest plugins process has already been started.'), MESSAGE_LEVEL_WARN);
+			}
+
+			header('Location: plugins.php');
+
+			exit;
+		} else {
+			raise_message('get_latest1', __('You must enter your GitHub user, repo and personal access tokey before you can refresh the plugins.  You can set the GitHub defaults unser Console > Configuration > Settings > General.'), MESSAGE_LEVEL_ERROR);
+
+			header('Location: plugins.php');
+
+			exit;
 		}
-
-		header('Location: plugins.php');
-
-		exit;
 
 		break;
 	case 'install':
@@ -659,14 +667,14 @@ function update_show_current() {
 										print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 									}
 								}
-	?>
+								?>
 							</select>
 						</td>
 						<td>
 							<span>
-								<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go'); ?>' title='<?php print __esc('Set/Refresh Filters'); ?>'>
-								<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear'); ?>' title='<?php print __esc('Clear Filters'); ?>'>
-								<input type='button' class='ui-button ui-corner-all ui-widget' id='latest' value='<?php print __esc('Check Latest'); ?>' title='<?php print __esc('Fetch the list of the latest Cacti Plugins'); ?>'>
+								<button type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='go' title='<?php print __esc('Set/Refresh Filters'); ?>'><?php print __esc('Go'); ?></button>
+								<button type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='clear' title='<?php print __esc('Clear Filters'); ?>'><?php print __esc('Clear'); ?></button>
+								<button type='button' class='ui-button ui-corner-all ui-widget' id='latest' value='latest' <?php print read_config_option('github_access_token') == '' ? 'disabled=disabled':'';?> title='<?php print read_config_option('github_access_token') == '' ? __esc('To enable fetching of plugins, set your credentials under Console > Configuration > Settings > General') : __esc('Fetch the list of the latest Cacti Plugins'); ?>'><?php print __esc('Check Latest'); ?></button>
 							</span>
 						</td>
 					</tr>
