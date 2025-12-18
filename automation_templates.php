@@ -728,8 +728,8 @@ function automation_remove_ttr_confirm() {
 	</tr>
 	<tr>
 		<td class='right'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel'); ?>' onClick='$("#cdialog").dialog("close")' name='cancel'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue'); ?>' name='continue' title='<?php print __esc('Remove Threshold Template'); ?>'>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='cancel' onClick='$("#cdialog").dialog("close")' name='cancel'><?php print __esc('Cancel'); ?></button>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='continue' name='continue' title='<?php print __esc('Remove Threshold Template'); ?>'><?php print __esc('Continue'); ?></button>
 		</td>
 	</tr>
 	<?php
@@ -794,8 +794,8 @@ function automation_remove_agr_confirm() {
 	</tr>
 	<tr>
 		<td class='right'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel'); ?>' onClick='$("#cdialog").dialog("close")' name='cancel'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue'); ?>' name='continue' title='<?php print __esc('Remove Graph Rule'); ?>'>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='cancel' onClick='$("#cdialog").dialog("close")' name='cancel'><?php print __esc('Cancel'); ?></button>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='continue' name='continue' title='<?php print __esc('Remove Graph Rule'); ?>'><?php print __esc('Continue'); ?></button>
 		</td>
 	</tr>
 	<?php
@@ -918,8 +918,8 @@ function automation_remove_atr_confirm() {
 	</tr>
 	<tr>
 		<td class='right'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel'); ?>' onClick='$("#cdialog").dialog("close")' name='cancel'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue'); ?>' name='continue' title='<?php print __esc('Remove Tree Rule'); ?>'>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='cancel' onClick='$("#cdialog").dialog("close")' name='cancel'><?php print __esc('Cancel'); ?></button>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='continue' name='continue' title='<?php print __esc('Remove Tree Rule'); ?>'><?php print __esc('Cancel'); ?></button>
 		</td>
 	</tr>
 	<?php
@@ -1544,7 +1544,7 @@ function create_add_form_dropdown($field_label, $field_name, $field_array, $butt
 						<?php form_dropdown($field_name, $field_array, 'name', 'id', '', '', ''); ?>
 					</td>
 					<td class='noHide'>
-						<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print $button_label; ?>' id='<?php print $button_id; ?>' title='<?php print $button_title; ?>'>
+						<button type='button' class='ui-button ui-corner-all ui-widget' id='<?php print $button_id; ?>' title='<?php print $button_title; ?>'><?php print $button_label; ?></button>
 					</td>
 				</tr>
 			</table>

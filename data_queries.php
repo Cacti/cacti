@@ -851,7 +851,7 @@ function data_query_item_edit() {
 						<input type='text' class='ui-state-default ui-corner-all' id='svg_text' size='60'>
 					</td>
 					<td>
-						<input type='button' class='ui-button ui-corner-all ui-widget' id='svg_x' name='svg_x' value='<?php print __esc('Add'); ?>' title='<?php print __('Add Graph Title Suggested Name'); ?>'>
+						<button type='button' class='ui-button ui-corner-all ui-widget' id='svg_x' name='svg_x' value='add' title='<?php print __('Add Graph Title Suggested Name'); ?>'><?php print __esc('Add'); ?></button>
 					</td>
 				</tr>
 			</table>
@@ -960,7 +960,7 @@ function data_query_item_edit() {
 								<input type='text' class='svds_text ui-state-default ui-corner-all' id='svds_<?php print $data_template['id']; ?>_text' size='60'>
 							</td>
 							<td>
-								<input type='button' class='svds_x ui-button ui-corner-all ui-widget' id='svds_<?php print $data_template['id']; ?>_x' value='<?php print __esc('Add'); ?>' title='<?php print __('Add Data Source Name Suggested Name'); ?>'>
+								<button type='button' class='svds_x ui-button ui-corner-all ui-widget' id='svds_<?php print $data_template['id']; ?>_x' value='add' title='<?php print __('Add Data Source Name Suggested Name'); ?>'><?php print __esc('Add'); ?></button>
 							</td>
 						</tr>
 					</table>
