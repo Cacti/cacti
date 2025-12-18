@@ -1448,9 +1448,22 @@ function cacti_log(string $string, bool $output = false, string $environ = 'CMDP
 	global $database_log;
 
 	static $start = null;
+	static $depth = null;
 
 	if ($start == null) {
 		$start = microtime(true);
+	}
+
+	if ($depth == null) {
+		$depth = 1;
+	} else {
+		$depth++;
+	}
+
+	if ($depth > 1) {
+		print "Recursion Loop detected.  Check Database" . PHP_EOL;
+		print "Message: " . trim($string) . PHP_EOL;
+		exit;
 	}
 
 	if (!isset($database_log)) {
@@ -1483,11 +1496,15 @@ function cacti_log(string $string, bool $output = false, string $environ = 'CMDP
 					if ($level > POLLER_VERBOSITY_LOW) {
 						$database_log = $last_log;
 
+						$depth--;
+
 						return true;
 					}
 				}
 			} elseif ($level > $logVerbosity) {
 				$database_log = $last_log;
+
+				$depth--;
 
 				return true;
 			}
@@ -1625,6 +1642,8 @@ function cacti_log(string $string, bool $output = false, string $environ = 'CMDP
 
 		error_log($message . '-----------------' . $s);
 	}
+
+	$depth--;
 
 	return true;
 }
