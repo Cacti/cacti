@@ -236,7 +236,7 @@ when preparing for any deployment.
 ### NOTES: ### 
 1. Certain Linux distributions such as RHEL8/9 do not include lower level
    protocol support including MD5 and DES.
-2. Certain Linux varients do not compile their Net-SNMP binaries with advanced SNMPv3
+2. Certain Linux variants do not compile their Net-SNMP binaries with advanced SNMPv3
    support.  Therefore, you may need to re-compile Net-SNMP binaries to achieve these
    higher levels of encryption.
 
