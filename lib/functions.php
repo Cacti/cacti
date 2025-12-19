@@ -7991,8 +7991,9 @@ function get_theme_paths(string $format, string $path, string|null $theme = null
 
 	if (empty($output) && debounce_run_notification('missing: ' . $file)) {
 		foreach ($paths as &$srcpath) {
-			$srcpath = CACTI_PATH_BASE . str_replace(CACTI_PATH_BASE, '', $srcpath);
+			$srcpath = CACTI_PATH_BASE . DIRECTORY_SEPARATOR . str_replace(CACTI_PATH_BASE, '', $srcpath);
 		}
+
 
 		$npath = implode('", "', $paths);
 		$ntext = sprintf('WARNING: Key Cacti Include File "%s" missing.  Please locate and replace this file as we checked in "%s"', $file, $npath);
