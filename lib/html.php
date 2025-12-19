@@ -3313,6 +3313,7 @@ function html_common_header($title, $selectedTheme = '') {
 
 	/* Global styles */
 	print get_md5_include_css('include/css/billboard.css');
+	print get_md5_include_css('include/css/jquery.contextMenu.css');
 	print get_md5_include_css('include/fa/css/all.css');
     print get_md5_include_css('include/tabler/dist/tabler-icons.min.css');
 	print get_md5_include_css('include/vendor/lipis/flag-icons/css/flag-icons.css');
