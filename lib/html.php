@@ -3297,8 +3297,14 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_icon('images', theme: $selectedTheme, file: 'favicon.ico', rel: 'shortcut icon');
 	print get_md5_include_icon('images', theme: $selectedTheme, file: 'cacti_logo.gif', rel: 'icon', sizes: '96x96');
 
+	/* Global styles that can be overloaded by themes css as required. */
+	print get_md5_include_css('include/css/jquery.contextMenu.css');
+	print get_md5_include_css('include/css/billboard.css');
+	print get_md5_include_css('include/fa/css/all.css');
+    print get_md5_include_css('include/tabler/dist/tabler-icons.min.css');
+	print get_md5_include_css('include/vendor/lipis/flag-icons/css/flag-icons.css');
+
 	/* Theme-based styles */
-	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'jquery.contextMenu.css');
 	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'jquery.zoom.css');
 	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'jquery-ui.css');
 	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'default/style.css');
@@ -3312,11 +3318,6 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'main.css');
 
 	/* Global styles */
-	print get_md5_include_css('include/css/billboard.css');
-	print get_md5_include_css('include/css/jquery.contextMenu.css');
-	print get_md5_include_css('include/fa/css/all.css');
-    print get_md5_include_css('include/tabler/dist/tabler-icons.min.css');
-	print get_md5_include_css('include/vendor/lipis/flag-icons/css/flag-icons.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/main.css');
 
 	/* Global scripts */
