@@ -3,56 +3,65 @@ msgstr ""
 "Project-Id-Version: Cacti 1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2022-03-14 20:48-0400\n"
+"PO-Revision-Date: 2025-12-23 22:54+0000\n"
 "Last-Translator: Tadeo Briceño <tadeobriceno@vencable.com>\n"
-"Language-Team: Spanish <http://translate.cacti.net/projects/cacti/core-v1-2-x/es/>\n"
-"Language: es_ES\n"
+"Language-Team: Spanish <https://translate.cacti.net/projects/cacti/core/es/>"
+"\n"
+"Language: es-ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Weblate 5.11.4\n"
 
 #: about.php:29 include/global_arrays.php:2781 lib/html.php:3046
 msgid "About Cacti"
 msgstr "Acerca de Cacti"
 
 #: about.php:44
-#, fuzzy
 msgid "Cacti is designed to be a complete graphing solution based on the RRDtool Time Series Database (TSDB) and Graphing solution. Its goal is to make the Network Administrator's job easier by taking care of all the important details necessary to create meaningful Graphs."
-msgstr "Cacti está diseñado para ser una solución de gráficos completa basada en el framework de RRDtool. Su objetivo es hacer el trabajo de los administradores de red más fácil, ocupándose de todos los detalles necesarios para crear gráficos significativos."
+msgstr ""
+"Cacti está diseñado para ser una solución de gráficos completa basada en la "
+"base de datos de series de tiempo y solución gráfica RRDtool. Su objetivo es "
+"hacer el trabajo de los administradores de red más fácil, ocupándose de "
+"todos los detalles necesarios para crear gráficos significativos."
 
 #: about.php:46
-#, fuzzy, php-format
+#, php-format
 msgid "Please see the official %sCacti website%s for information on how to use Cacti, get support, and updates."
-msgstr "Ve al %ssitio web de Cacti%s oficial para información, soporte y actualizaciones."
+msgstr ""
+"Por favor ve al %ssitio web oficial de Cacti%s para información sobre como "
+"usar cacti, obtener soporte y actualizaciones."
 
 #: about.php:50
-#, fuzzy
 msgid "Active Developers"
-msgstr "Desarrolladores de Cacti"
+msgstr "Desarrolladores activos"
 
 #: about.php:51
 msgid "Developers working on Cacti, its Architecture, Documentation and Future Releases."
 msgstr ""
+"Desarroladores trabajando en Cacti, su arquitectura, documentación y futuros "
+"lanzamientos."
 
 #: about.php:63
-#, fuzzy
 msgid "Honorable Mentions"
-msgstr "Sección de Menu de Consola"
+msgstr "Menciones Honoríficas"
 
 #: about.php:64
 msgid "Contributors to Docuemntation, QA, Packaging, the Forums and our YouTube page."
 msgstr ""
+"Contribuyentes a la documentación, Q&A, empaquetado, el foro y a nuestra "
+"página de Youtube."
 
 #: about.php:74
-#, fuzzy
 msgid "Emeritus Members"
-msgstr "Miembro de grupo"
+msgstr "Miembros eméritos"
 
 #: about.php:75
 msgid "Members of the original Cacti Group that have since moved on in their careers.  We continue to wish them the best."
 msgstr ""
+"Miembros del grupo Cacti original que siguieron adelante con sus carreras. "
+"Les seguimos deseando lo mejor."
 
 #: about.php:85
 msgid "Thanks"
@@ -151,18 +160,20 @@ msgid "The selected Aggregate Graphs represent elements from more than one Graph
 msgstr "Los gráficos Agregados seleccionados representan elementos de mas de una Plantilla de gráficos."
 
 #: aggregate_graphs.php:810
-#, fuzzy
 msgid "In order to migrate the Aggregate Graphs below to a Template based Aggregate, they must only be using one Graph Template."
-msgstr "Para migrar los gráficos Agregados a continuación a un Agregado basado en Plantillas, primero crea una Plantilla de Agregados para la Plantilla de gráficos '%s'."
+msgstr ""
+"Para migrar los gráficos Agregados a continuación a un Agregado basado en "
+"Plantillas, los gráficos deben estar usando solo una plantilla de gráficos."
 
 #: aggregate_graphs.php:818
 msgid "The selected Aggregate Graphs does not appear to have any matching Aggregate Templates."
 msgstr "Los gráficos Agregados seleccionados no parecen coincidir con ninguna plantilla de gráficos."
 
 #: aggregate_graphs.php:819
-#, fuzzy
 msgid "In order to migrate the Aggregate Graphs below use an Aggregate Template, one must already exist."
-msgstr "Para migrar los gráficos Agregados use un plantilla de Agregados, debe existir por lo menos una. Por favor presione 'Regresar' y primero cree su plantilla de Agregados antes de reintentar."
+msgstr ""
+"Para migrar los gráficos Agregados use un plantilla de Agregados, debe "
+"existir por lo menos una."
 
 #: aggregate_graphs.php:844
 msgid "There are currently no Aggregate Templates defined for the selected Legacy Aggregates."
@@ -178,87 +189,83 @@ msgid "You currently have no reports defined."
 msgstr "Actualmente no tiene ningún Reporte definido."
 
 #: aggregate_graphs.php:886
-#, fuzzy
 msgid "Click 'Continue' to Delete the following Aggregate Graph."
-msgstr "Haga click en 'Continuar' para eliminar el/los siguientes Gragicos Agregado(s)."
+msgstr "Haga click en 'Continuar' para eliminar el siguiente Gráfico Agregado."
 
 #: aggregate_graphs.php:887
-#, fuzzy
 msgid "Click 'Continue' to Delete following Aggregate Graphs."
-msgstr "Haga click en 'Continuar' para eliminar el/los siguientes Gragicos Agregado(s)."
+msgstr ""
+"Haga click en 'Continuar' para eliminar los siguientes Gráficos Agregados."
 
 #: aggregate_graphs.php:888
-#, fuzzy
 msgid "Delete Aggregate Graph"
-msgstr "Crear Gráficos de Agregación"
+msgstr "Borrar Gráfico de Agregación"
 
 #: aggregate_graphs.php:889
-#, fuzzy
 msgid "Delete Aggregate Graphs"
-msgstr "Crear Gráficos de Agregación"
+msgstr "Borrar Gráficos de Agregación"
 
 #: aggregate_graphs.php:892
-#, fuzzy
 msgid "Click 'Continue' to Migrate the following Legacy Aggregate to a Templated Aggregate Graph."
-msgstr "Haga click en 'Continuar' para combinar el/los siguiente(s) gráfico(s) Agregado(s) en un simple gráfico Agregado."
+msgstr ""
+"Haga click en 'Continuar' para migrar el siguiente Agregado heredado a una "
+"plantilla de gráfico Agregado."
 
 #: aggregate_graphs.php:893
-#, fuzzy
 msgid "Click 'Continue' to Migrate the following Legacy Aggregates to Templated Aggregate Graphs."
-msgstr "Haga click en 'Continuar' para combinar el/los siguiente(s) gráfico(s) Agregado(s) en un simple gráfico Agregado."
+msgstr ""
+"Haga click en 'Continuar' para migrar los siguientes Agregados heredados en "
+"una plantilla de gráfico Agregado."
 
 #: aggregate_graphs.php:894
-#, fuzzy
 msgid "Migrate to Aggregate Graph"
-msgstr "Crear Gráficos de Agregación"
+msgstr "Migrar a Gráfico de Agregación"
 
 #: aggregate_graphs.php:895
-#, fuzzy
 msgid "Migrate to Aggregate Graphs"
-msgstr "Crear Gráficos de Agregación"
+msgstr "Migrar a Gráficos de Agregación"
 
 #: aggregate_graphs.php:900 aggregate_graphs.php:2121 graphs.php:1872
 msgid "Aggregate Template"
 msgstr "Plantilla de Agregados"
 
 #: aggregate_graphs.php:906
-#, fuzzy
 msgid "Click 'Continue' to Combine the following Aggregates into an Aggregate Graph."
-msgstr "Haga click en 'Continuar' para combinar el/los siguiente(s) gráfico(s) Agregado(s) en un simple gráfico Agregado."
+msgstr ""
+"Haga click en 'Continuar' para combinar los siguientes Agregados en un "
+"gráfico Agregado."
 
 #: aggregate_graphs.php:907
-#, fuzzy
 msgid "Combine Aggregate Graphs"
-msgstr "Gráficos Agregados"
+msgstr "Combinar Gráficos Agregados"
 
 #: aggregate_graphs.php:911
-#, fuzzy
 msgid "Aggregate Name"
-msgstr "Nombre de Agregado:"
+msgstr "Nombre de Agregado"
 
 #: aggregate_graphs.php:912
 msgid "New Aggregate"
 msgstr "Nuevo Agregado"
 
 #: aggregate_graphs.php:919
-#, fuzzy
 msgid "Click 'Continue' to Place the following Aggregate Graph on a Report."
-msgstr "Haga click en 'Continuar' para borrar las siguientes Plantillas de gráficos Agregados."
+msgstr ""
+"Haga click en 'Continuar' para colocar el siguiente Gráficos Agregado en el "
+"Reporte."
 
 #: aggregate_graphs.php:920
-#, fuzzy
 msgid "Click 'Continue' to Place the following Aggregate Graphs on a Report."
-msgstr "Haga click en 'Continuar' para eliminar el/los siguientes Gragicos Agregado(s)."
+msgstr ""
+"Haga click en 'Continuar' para colocar los siguientes Gráficos Agregados en "
+"el Reporte."
 
 #: aggregate_graphs.php:921
-#, fuzzy
 msgid "Place Aggregate Graph on Report"
-msgstr "Colocar gráficas en el Reporte"
+msgstr "Colocar gráficos Agregados en el Reporte"
 
 #: aggregate_graphs.php:922
-#, fuzzy
 msgid "Place Aggregate Graphs on Report"
-msgstr "Colocar gráficas en el Reporte"
+msgstr "Colocar gráfico Agregado en el Reporte"
 
 #: aggregate_graphs.php:926 graph_view.php:980 graphs.php:1886 host.php:538
 #: lib/html_reports.php:35 lib/html_reports.php:2060
@@ -275,84 +282,86 @@ msgid "Align"
 msgstr "Alinear"
 
 #: aggregate_graphs.php:945
-#, fuzzy
 msgid "Click 'Continue' to Convert the following Aggregate Graph to a Normal Graph."
-msgstr "Haga clic en 'Continuar' para convertir el/los siguiente(s) gráfico(s) Agregado(s) en un gráfico normal."
+msgstr ""
+"Haga clic en 'Continuar' para convertir el siguiente gráfico Agregado en un "
+"gráfico normal."
 
 #: aggregate_graphs.php:946
-#, fuzzy
 msgid "Click 'Continue' to Convert the following Aggregate Graphs to Normal Graphs."
-msgstr "Haga clic en 'Continuar' para convertir el/los siguiente(s) gráfico(s) Agregado(s) en un gráfico normal."
+msgstr ""
+"Haga clic en 'Continuar' para convertir los siguientes gráficos Agregados en "
+"un gráfico normal."
 
 #: aggregate_graphs.php:947
-#, fuzzy
 msgid "Convert Aggregate Graph"
-msgstr "Crear Gráficos de Agregación"
+msgstr "Convertir Gráfico de Agregación"
 
 #: aggregate_graphs.php:948
-#, fuzzy
 msgid "Convert Aggregate Graphs"
-msgstr "Crear Gráficos de Agregación"
+msgstr "Convertir Gráficos de Agregación"
 
 #: aggregate_graphs.php:951
-#, fuzzy
 msgid "Click 'Continue' to Associate the following Graph with the Aggregate Graph."
-msgstr "Haga click en 'Continuar' para asociar el/los siguiente(s) gráfico(s) con el gráfico Agregado."
+msgstr ""
+"Haga click en 'Continuar' para asociar el siguiente gráfico con el gráfico "
+"Agregado."
 
 #: aggregate_graphs.php:952
-#, fuzzy
 msgid "Click 'Continue' to Associate the following Graphs with the Aggregate Graph."
-msgstr "Haga click en 'Continuar' para asociar el/los siguiente(s) gráfico(s) con el gráfico Agregado."
+msgstr ""
+"Haga click en 'Continuar' para asociar los siguientes gráficos con el "
+"gráfico Agregado."
 
 #: aggregate_graphs.php:953
-#, fuzzy
 msgid "Associate Graph with Aggregate"
-msgstr "Asociar con Agregaciones"
+msgstr "Asociar gráfico con Agregaciones"
 
 #: aggregate_graphs.php:954
-#, fuzzy
 msgid "Associate Graphs with  Aggregate"
-msgstr "Asociar con Agregaciones"
+msgstr "Asociar gráficos con Agregaciones"
 
 #: aggregate_graphs.php:957
-#, fuzzy
 msgid "Click 'Continue' to Disassociate the following Graph from the Aggregate Graph."
-msgstr "Haga click en 'Continuar' para desasociar el/los siguiente gráfico(s) del Agregado."
+msgstr ""
+"Haga click en 'Continuar' para desasociar el siguiente gráfico del Gráfico "
+"Agregado."
 
 #: aggregate_graphs.php:958
-#, fuzzy
 msgid "Click 'Continue' to Disassociate the following Graphs from the Aggregate Graph."
-msgstr "Haga click en 'Continuar' para desasociar el/los siguiente gráfico(s) del Agregado."
+msgstr ""
+"Haga click en 'Continuar' para desasociar los siguiente gráficos del Gráfico "
+"Agregado."
 
 #: aggregate_graphs.php:959
-#, fuzzy
 msgid "Disassociate Graph with Aggregate"
-msgstr "Desasociar con Agregados"
+msgstr "Desasociar Gráfico con Agregados"
 
 #: aggregate_graphs.php:960
-#, fuzzy
 msgid "Disassociate Graphs with  Aggregate"
-msgstr "Desasociar con Agregados"
+msgstr "Desasociar gráficos con Agregados"
 
 #: aggregate_graphs.php:970
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Place the following Aggregate Graph on Tree %s."
-msgstr "Haga click en 'Continuar' para borrar las siguientes Plantillas de gráficos Agregados."
+msgstr ""
+"Haga click en 'Continuar' para colocar el siguiente gráfico Agregado en el "
+"Arbol %s."
 
 #: aggregate_graphs.php:971
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Duplicate following Aggregate Graphs on Tree %s."
-msgstr "Haga click en 'Continuar' para colocar el/los siguiente(s) gráfico(s) Agregado(s) bajo la rama del arbol."
+msgstr ""
+"Haga click en 'Continuar' para colocar los siguientes gráficos Agregados en "
+"el Arbol %s."
 
 #: aggregate_graphs.php:972
-#, fuzzy
 msgid "Place Aggregate Graph on Tree"
-msgstr "Colocar gráfico(s) en Arbol"
+msgstr "Colocar gráfico Agregado en Arbol"
 
 #: aggregate_graphs.php:973
-#, fuzzy
 msgid "Place Aggregate Graphs on Tree"
-msgstr "Colocar gráfico(s) en Arbol"
+msgstr "Colocar gráficos Agregados en Arbol"
 
 #: aggregate_graphs.php:977
 msgid "Destination Branch:"
@@ -426,9 +435,8 @@ msgid "Aggregate Graph %s"
 msgstr "Gráfico Agregado %s"
 
 #: aggregate_graphs.php:1238 aggregate_templates.php:405 graphs.php:1682
-#, fuzzy
 msgid "Prefix Replacement Values"
-msgstr "Patrón de reemplazo"
+msgstr "Valores de reemplazo para Prefijos"
 
 #: aggregate_graphs.php:1239 aggregate_templates.php:406 graphs.php:1683
 msgid "You may use these replacement values for the Prefix in the Aggregate Graph"
@@ -780,24 +788,24 @@ msgid "No Aggregate Graphs Found"
 msgstr "Gráficos Agregados no encontrados"
 
 #: aggregate_templates.php:333
-#, fuzzy
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template."
-msgstr "Haga click en 'Continuar' para borrar las siguientes Plantillas de gráficos Agregados."
+msgstr ""
+"Haga click en 'Continuar' para borrar la siguiente Plantilla de gráfico "
+"Agregado."
 
 #: aggregate_templates.php:334
-#, fuzzy
 msgid "Click 'Continue' to Delete following Aggregate Graph Templates."
-msgstr "Haga click en 'Continuar' para borrar las siguientes Plantillas de gráficos Agregados."
+msgstr ""
+"Haga click en 'Continuar' para borrar las siguientes Plantillas de gráfico "
+"Agregado."
 
 #: aggregate_templates.php:335
-#, fuzzy
 msgid "Delete Aggregate Graph Template"
-msgstr "Crear Aggregate desde plantilla"
+msgstr "Borrar plantilla de gráfico agregado"
 
 #: aggregate_templates.php:336
-#, fuzzy
 msgid "Delete Aggregate Graph Templates"
-msgstr "Borrar plantilla(s) de gráfico"
+msgstr "Borrar plantillas de gráfico agregado"
 
 #: aggregate_templates.php:363
 #, php-format
@@ -863,31 +871,27 @@ msgstr "No se encontraron plantillas de Agregados"
 
 #: auth_2fa.php:115
 msgid "Failed to verify token"
-msgstr ""
+msgstr "Verificación del token fallída"
 
 #: auth_2fa.php:135
-#, fuzzy
 msgid "2FA Verification"
-msgstr "Verificación de borrado"
+msgstr "Verificación de 2 pasos"
 
 #: auth_2fa.php:135
-#, fuzzy
 msgid "2nd Factor Authentication"
-msgstr "Autenticación Web básica"
+msgstr "2do factor de Autenticación"
 
 #: auth_2fa.php:135
-#, fuzzy
 msgid "Enter your token"
-msgstr "Ingresa palabra clave"
+msgstr "Ingresa tu token"
 
 #: auth_2fa.php:144 auth_2fa.php:147
 msgid "Token"
-msgstr ""
+msgstr "Token"
 
 #: auth_2fa.php:159
-#, fuzzy
 msgid "Verify"
-msgstr "Verificar todo"
+msgstr "Verificar"
 
 #: auth_changepassword.php:158
 msgid "You cannot use a previously entered password!"
@@ -938,6 +942,8 @@ msgstr "No puede ser re utilizada por %d cambios de contraseña"
 #: auth_changepassword.php:403
 msgid "There are problems with the Change Password page.  Contact your Cacti administrator right away."
 msgstr ""
+"Hay problemas con la pagína de cambio de contraseña. Contacta al "
+"administrador de Cacti inmediatamente."
 
 #: auth_changepassword.php:410
 msgid "Please enter your current password and your new<br>Cacti password."
@@ -966,9 +972,8 @@ msgid "New password"
 msgstr "Nueva contraseña"
 
 #: auth_changepassword.php:439 auth_resetpassword.php:297
-#, fuzzy
 msgid "Confirm password"
-msgstr "Confirmar nueva contraseña"
+msgstr "Confirma la contraseña"
 
 #: auth_changepassword.php:443 auth_profile.php:778 auth_resetpassword.php:303
 #: graphs_new.php:443 lib/html_form.php:1751 lib/html_form.php:1760
@@ -985,34 +990,37 @@ msgid "Return"
 msgstr "Regresar"
 
 #: auth_login.php:74
-#, fuzzy
 msgid "Cacti no longer supports No Authentication mode. Please contact your System Administrator."
-msgstr "Acceso denegado, póngase en contacto con su administrador de Cacti."
+msgstr ""
+"Cacti ya no soporta el metodo sin autenticación, póngase en contacto con su "
+"administrador de Cacti."
 
 #: auth_login.php:104
-#, fuzzy
 msgid "Unable to determine user Login Realm or Domain. Please contact your System Administrator."
-msgstr "Acceso denegado, póngase en contacto con su administrador de Cacti."
+msgstr ""
+"No fue posible determinar el Reino o el Dominio del usuario, por favor "
+"póngase en contacto con el administrador del sistema."
 
 #: auth_login.php:134
-#, fuzzy
 msgid "User was Authenticated, but the Template Account is disabled. Using Guest Account"
-msgstr "El usuario fue autenticado, pero la cuenta de plantilla está deshabilitada. Uso de la cuenta de invitado"
+msgstr ""
+"El usuario fue autenticado, pero la cuenta de plantilla está deshabilitada. "
+"Usando la cuenta de invitado"
 
 #: auth_login.php:141
-#, fuzzy, php-format
+#, php-format
 msgid "Access Denied!  Guest user id %s does not exist.  Please contact your Administrator."
-msgstr "Acceso denegado, póngase en contacto con su administrador de Cacti."
+msgstr ""
+"Acceso denegado, usuario invitado de id %s no existe. Por favor contacte a "
+"su administrador."
 
 #: auth_login.php:180
-#, fuzzy
 msgid "Access Denied!  User account disabled."
-msgstr "Acceso denegado, cuenta de usuario deshabilitada."
+msgstr "¡Acceso denegado! cuenta de usuario deshabilitada."
 
 #: auth_login.php:192
-#, fuzzy
 msgid "You do not have access to any area of Cacti.  Contact your administrator."
-msgstr "Si crees que este es un error. Por favor contacta a tu Administrador de Cacti."
+msgstr "No tienes acceso a ninguna area de Cacti. Contacta a tu Administrador."
 
 #: auth_login.php:291 lib/html_tree.php:237
 msgid "Login to Cacti"
@@ -1060,7 +1068,7 @@ msgstr "General"
 
 #: auth_profile.php:96
 msgid "2FA"
-msgstr ""
+msgstr "2FA"
 
 #: auth_profile.php:313
 msgid "User Account Details"
@@ -1136,44 +1144,44 @@ msgid "User Settings"
 msgstr "Configuraciones de Usuario"
 
 #: auth_profile.php:524
-#, fuzzy
 msgid "2FA Settings"
-msgstr "Opciones"
+msgstr "Configuración 2FA"
 
 #: auth_profile.php:547
-#, fuzzy
 msgid "2FA Enabled"
-msgstr "Habilitado"
+msgstr "2FA Habilitada"
 
 #: auth_profile.php:548
-#, fuzzy
 msgid "Whether 2FA is enabled for this user."
-msgstr "El nombre de inicio de sesión para este usuario."
+msgstr "Si la 2FA esta habilitada para este usuario."
 
 #: auth_profile.php:556
 msgid "2FA QA Code"
-msgstr ""
+msgstr "Código QA 2FA"
 
 #: auth_profile.php:557
 msgid "The 2FA QA Code to be scanned with Google Authenticator, Authy or any compatible 2FA app"
 msgstr ""
+"El Código QA 2FA a ser escaneado con Google Authenticator, Authy o cualquier "
+"app 2FA compatible"
 
 #: auth_profile.php:564
 msgid "2FA App Token"
-msgstr ""
+msgstr "Token de la app 2FA"
 
 #: auth_profile.php:565
 msgid "The token generated by Google Authenticator, Auth or any compatible 2FA app"
 msgstr ""
+"El token generado por Google Authenticator Auth o cualquier app 2FA "
+"compatible"
 
 #: auth_profile.php:572 auth_profile.php:574
-#, fuzzy
 msgid "Verify App Token"
-msgstr "Verificar todo"
+msgstr "Verificar token de la app"
 
 #: auth_profile.php:573
 msgid "Verify the 2FA App token entered above"
-msgstr ""
+msgstr "Verificar el token de la app 2FA ingresado arriba"
 
 #: auth_profile.php:602 auth_profile.php:647 automation_graph_rules.php:865
 #: automation_graph_rules.php:1033 automation_networks.php:1414
@@ -1215,7 +1223,7 @@ msgstr "Habilitado"
 
 #: auth_profile.php:604
 msgid "Enabling..."
-msgstr ""
+msgstr "Habilitando..."
 
 #: auth_profile.php:697
 msgid "Private Data Cleared"
@@ -1239,25 +1247,23 @@ msgstr "Restablecer"
 
 #: auth_resetpassword.php:56 auth_resetpassword.php:112
 msgid "Incorrect resetlink hash"
-msgstr ""
+msgstr "Hash del enlace de reinicio incorrecto"
 
 #: auth_resetpassword.php:98
 msgid "Reset password token was sent. Check your mailbox"
-msgstr ""
+msgstr "Contraseña de reinicio del token enviada. Por favor revise su correo"
 
 #: auth_resetpassword.php:261
-#, fuzzy
 msgid "Please enter your Cacti username or email address."
-msgstr "Por favor, ingrese su nueva contraseña de Cacti."
+msgstr "Por favor, ingrese su nombre de usuario o correo de Cacti."
 
 #: auth_resetpassword.php:265
 msgid "Reset password problem."
-msgstr ""
+msgstr "Problema de reinicio de contraseña."
 
 #: auth_resetpassword.php:268
-#, fuzzy
 msgid "Reset Password"
-msgstr "Contraseña de autenticación"
+msgstr "Reiniciar Contraseña"
 
 #: auth_resetpassword.php:278
 #, fuzzy
@@ -15409,9 +15415,8 @@ msgid "Access Denied! Login failed."
 msgstr "Acceso denegado, cuenta de usuario deshabilitada."
 
 #: lib/auth.php:4479
-#, fuzzy
 msgid "Reset password"
-msgstr "Nueva contraseña"
+msgstr "Reiniciar Contraseña"
 
 #: lib/auth.php:4508
 msgid "Your Cacti administrator has forced complex passwords for logins and your current Cacti password does not match the new requirements.  Therefore, you must change your password now."
