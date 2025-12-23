@@ -39,6 +39,7 @@ $actions = [
 	3 => __('Enable'),
 	4 => __('Change Device'),
 	5 => __('Reapply Suggested Names'),
+	6 => __('Change Data Source Profile')
 ];
 
 $actions = api_plugin_hook_function('data_source_action_array', $actions);
@@ -456,6 +457,67 @@ function form_actions() {
 					api_reapply_suggested_data_source_data($selected_items[$i]);
 					update_data_source_title_cache($selected_items[$i]);
 				}
+			} elseif (get_nfilter_request_var('drp_action') == '6') { // change data source profile
+				get_filter_request_var('data_source_profile_id');
+				
+				$new_profile = db_fetch_row_prepared('SELECT * FROM data_source_profiles WHERE id = ?', 
+					array(get_request_var('data_source_profile_id')));
+				
+				if (!empty($new_profile)) {
+					$rrd_changes = 0;
+					
+					for ($i=0;($i<cacti_count($selected_items));$i++) {
+						// Get current step value
+						$current_step = db_fetch_cell_prepared('SELECT rrd_step FROM data_template_data WHERE local_data_id = ?', 
+							array($selected_items[$i]));
+						
+						// Update all database tables
+						db_execute_prepared('UPDATE data_template_data 
+							SET data_source_profile_id = ?, rrd_step = ?
+							WHERE local_data_id = ?',
+							array(get_request_var('data_source_profile_id'), $new_profile['step'], $selected_items[$i])
+						);
+						
+						db_execute_prepared('UPDATE data_template_rrd 
+							SET rrd_heartbeat = ?
+							WHERE local_data_id = ?',
+							array($new_profile['heartbeat'], $selected_items[$i])
+						);
+						
+						db_execute_prepared('UPDATE poller_item 
+							SET rrd_step = ?
+							WHERE local_data_id = ?',
+							array($new_profile['step'], $selected_items[$i])
+						);
+						
+						update_poller_cache($selected_items[$i], true);
+						
+						// Handle RRD file if step changed
+						if ($current_step != $new_profile['step']) {
+							$rrd_path = get_data_source_path($selected_items[$i], true);
+							if (file_exists($rrd_path)) {
+								// Backup with timestamp and delete
+								$backup = $rrd_path . '.bak_' . date('ymd-His');
+								if (copy($rrd_path, $backup)) {
+									unlink($rrd_path);
+									$rrd_changes++;
+									cacti_log("RRD backed up and removed: $rrd_path -> $backup", false, 'DATASOURCE');
+								}
+							}
+						}
+					}
+					
+					raise_message(1);
+					
+					if ($rrd_changes > 0) {
+						$_SESSION['sess_messages']['custom_info'] = array(
+							'message' => sprintf(__('%d RRD files were backed up and will be recreated with new step value at next polling.'), $rrd_changes),
+							'type' => 'info'
+						);
+					}
+				} else {
+					raise_message(2);
+				}
 			} else {
 				api_plugin_hook_function('data_source_action_execute', get_nfilter_request_var('drp_action'));
 			}
@@ -590,6 +652,20 @@ function form_actions() {
 					'pmessage' => __('Click \'Continue\' to Reapply Suggested Names for the following Data Sources.'),
 					'scont'    => __('Reapply Suggested Names for Data Source'),
 					'pcont'    => __('Reapply Suggested Names for Data Sources')
+				],
+				9 => [
+					'smessage' => __('Click \'Continue\' to Change the Data Source Profile for the following Data Source.'),
+					'pmessage' => __('Click \'Continue\' to Change the Data Source Profile for the following Data Sources.'),
+					'scont'    => __('Change Data Source Profile'),
+					'pcont'    => __('Change Data Source Profiles'),
+					'extra'    => [
+						'data_source_profile_id' => [
+							'method'  => 'drop_sql',
+							'title'   => __('New Data Source Profile'),
+							'default' => '',
+							'sql'     => 'SELECT id, name FROM data_source_profiles ORDER BY name'
+						]
+					]
 				]
 			]
 		];
