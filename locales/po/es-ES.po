@@ -1,17 +1,5 @@
 msgid ""
-msgstr ""
-"Project-Id-Version: Cacti 1\n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2024-04-20 18:16-0400\n"
-"PO-Revision-Date: 2024-04-20 18:39-0400\n"
-"Last-Translator: Tadeo Briceño <tadeobriceno@vencable.com>\n"
-"Language-Team: Spanish <http://translate.cacti.net/projects/cacti/core-v1-2-x/es/>\n"
-"Language: es_ES\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 3.4.2\n"
+msgstr "Project-Id-Version: Cacti 1\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2025-12-23 22:54+0000\nLast-Translator: Tadeo Briceño <tadeobriceno@vencable.com>\nLanguage-Team: Spanish <https://translate.cacti.net/projects/cacti/core-v1-2-x/es/>\nLanguage: es-ES\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php:29 include/global_arrays.php:2630 lib/html.php:2543
 msgid "About Cacti"
@@ -19,36 +7,36 @@ msgstr "Acerca de Cacti"
 
 #: about.php:42
 msgid "Cacti is designed to be a complete graphing solution based on the RRDtool Time Series Database (TSDB) and Graphing solution. Its goal is to make the Network Administrator's job easier by taking care of all the important details necessary to create meaningful Graphs."
-msgstr "Cacti está diseñado para ser una solución de gráficos completa basada en el framework de RRDtool. Su objetivo es hacer el trabajo de los administradores de red más fácil, ocupándose de todos los detalles necesarios para crear gráficos significativos."
+msgstr "Cacti está diseñado para ser una solución de gráficos completa basada en la base de datos de series de tiempo y solución gráfica RRDtool. Su objetivo es hacer el trabajo de los administradores de red más fácil, ocupándose de todos los detalles necesarios para crear gráficos significativos."
 
 #: about.php:44
 #, php-format
 msgid "Please see the official %sCacti website%s for information on how to use Cacti, get support, and updates."
-msgstr "Ve al %ssitio web de Cacti%s oficial para información, soporte y actualizaciones."
+msgstr "Por favor ve al %ssitio web oficial de Cacti%s para información sobre como usar cacti, obtener soporte y actualizaciones."
 
 #: about.php:48
 msgid "Active Developers"
-msgstr "Desarrolladores de Cacti"
+msgstr "Desarrolladores activos"
 
 #: about.php:49
 msgid "Developers working on Cacti, its Architecture, Documentation and Future Releases."
-msgstr "Desarrolladores que trabajan en Cacti, su arquitectura, documentación y futuras versiones."
+msgstr "Desarroladores trabajando en Cacti, su arquitectura, documentación y futuros lanzamientos."
 
 #: about.php:61
 msgid "Honorable Mentions"
-msgstr "Sección de Menu de Consola"
+msgstr "Menciones Honoríficas"
 
 #: about.php:62
 msgid "Contributors to Docuemntation, QA, Packaging, the Forums and our YouTube page."
-msgstr "Colaboradores de Docuemntation, QA, Packaging, los Foros y nuestra página de YouTube."
+msgstr "Contribuyentes a la documentación, Q&A, empaquetado, el foro y a nuestra página de Youtube."
 
 #: about.php:72
 msgid "Emeritus Members"
-msgstr "Miembro de grupo"
+msgstr "Miembros eméritos"
 
 #: about.php:73
 msgid "Members of the original Cacti Group that have since moved on in their careers.  We continue to wish them the best."
-msgstr "Miembros del Grupo Cacti original que desde entonces han avanzado en sus carreras.  Seguimos deseándoles lo mejor."
+msgstr "Miembros del grupo Cacti original que siguieron adelante con sus carreras. Les seguimos deseando lo mejor."
 
 #: about.php:83
 msgid "Thanks"
@@ -405,7 +393,7 @@ msgstr "Gráfico Agregado %s"
 
 #: aggregate_graphs.php:787 aggregate_templates.php:394 graphs.php:1058
 msgid "Prefix Replacement Values"
-msgstr "Patrón de reemplazo"
+msgstr "Valores de reemplazo para Prefijos"
 
 #: aggregate_graphs.php:788 aggregate_templates.php:395 graphs.php:1059
 msgid "You may use these replacement values for the Prefix in the Aggregate Graph"
@@ -859,7 +847,7 @@ msgstr "No puede ser re utilizada por %d cambios de contraseña"
 
 #: auth_changepassword.php:380
 msgid "There are problems with the Change Password page.  Contact your Cacti administrator right away."
-msgstr "Hay problemas con la página Cambiar contraseña.  Póngase en contacto con su administrador de Cacti de inmediato."
+msgstr "Hay problemas con la pagína de cambio de contraseña. Contacta al administrador de Cacti inmediatamente."
 
 #: auth_changepassword.php:390 auth_changepassword.php:397
 #: include/global_form.php:1567 lib/functions.php:3683 lib/html.php:2512
@@ -920,11 +908,11 @@ msgstr "Las contraseñas coinciden"
 
 #: auth_login.php:75
 msgid "Cacti no longer supports No Authentication mode. Please contact your System Administrator."
-msgstr "Acceso denegado, póngase en contacto con su administrador de Cacti."
+msgstr "Cacti ya no soporta el metodo sin autenticación, póngase en contacto con su administrador de Cacti."
 
 #: auth_login.php:110
 msgid "Unable to determine user Login Realm or Domain. Please contact your System Administrator."
-msgstr "Acceso denegado, póngase en contacto con su administrador de Cacti."
+msgstr "No fue posible determinar el Reino o el Dominio del usuario, por favor póngase en contacto con el administrador del sistema."
 
 #: auth_login.php:138
 msgid "User was Authenticated, but the Template Account is disabled.  Using Guest Account"
@@ -933,15 +921,15 @@ msgstr "El usuario fue autenticado, pero la cuenta de plantilla está deshabilit
 #: auth_login.php:145
 #, php-format
 msgid "Access Denied!  Guest user id %s does not exist.  Please contact your Administrator."
-msgstr "¡Acceso denegado!  El ID de usuario invitado %s no existe.  Póngase en contacto con su administrador."
+msgstr "Acceso denegado, usuario invitado de id %s no existe. Por favor contacte a su administrador."
 
 #: auth_login.php:180
 msgid "Access Denied!  User account disabled."
-msgstr "Acceso denegado, cuenta de usuario deshabilitada."
+msgstr "¡Acceso denegado! cuenta de usuario deshabilitada."
 
 #: auth_login.php:191
 msgid "You do not have access to any area of Cacti.  Contact your administrator."
-msgstr "Si crees que este es un error. Por favor contacta a tu Administrador de Cacti."
+msgstr "No tienes acceso a ninguna area de Cacti. Contacta a tu Administrador."
 
 #: auth_login.php:279 lib/html_tree.php:164
 msgid "Login to Cacti"
