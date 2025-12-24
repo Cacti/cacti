@@ -917,7 +917,7 @@ function update_show_current() {
 					pi.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR
 					pi.author LIKE '	  . db_qstr('%' . get_request_var('filter') . '%') . ' OR
 					pa.plugin LIKE '	  . db_qstr('%' . get_request_var('filter') . '%') . ' OR
-					pa.webpage LIKE '	 . db_qstr('%' . get_request_var('filter') . '%') . ' OR
+					pa.webpage LIKE '	  . db_qstr('%' . get_request_var('filter') . '%') . ' OR
 					pa.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR
 					pa.author LIKE '	  . db_qstr('%' . get_request_var('filter') . '%') . ' OR
 					pi.plugin LIKE '	  . db_qstr('%' . get_request_var('filter') . '%') .
@@ -929,7 +929,7 @@ function update_show_current() {
 					pi.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR
 					pi.author LIKE '	  . db_qstr('%' . get_request_var('filter') . '%') . ' OR
 					pa.plugin LIKE '	  . db_qstr('%' . get_request_var('filter') . '%') . ' OR
-					pa.webpage LIKE '	 . db_qstr('%' . get_request_var('filter') . '%') . ' OR
+					pa.webpage LIKE '	  . db_qstr('%' . get_request_var('filter') . '%') . ' OR
 					pa.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR
 					pa.author LIKE '	  . db_qstr('%' . get_request_var('filter') . '%') . ' OR
 					pi.plugin LIKE '	  . db_qstr('%' . get_request_var('filter') . '%') .
@@ -939,9 +939,9 @@ function update_show_current() {
 			default:
 				$sql_where = 'WHERE (
 					pi.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR
-					pi.author LIKE '  . db_qstr('%' . get_request_var('filter') . '%') . ' OR
-					pi.webpage LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR
-					pi.plugin LIKE '  . db_qstr('%' . get_request_var('filter') . '%') .
+					pi.author LIKE '      . db_qstr('%' . get_request_var('filter') . '%') . ' OR
+					pi.webpage LIKE '     . db_qstr('%' . get_request_var('filter') . '%') . ' OR
+					pi.plugin LIKE '      . db_qstr('%' . get_request_var('filter') . '%') .
 				')';
 		}
 	}
@@ -1023,28 +1023,21 @@ function update_show_current() {
 
 	/* set order and limits */
 	$sql_order = get_order_string();
+	$sql_order = str_replace('`', '', $sql_order);
 	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
-	$sql_order = str_replace('`pa`.`version` ', 'INET_ATON(`pa`.`version`) ', $sql_order);
-	$sql_order = str_replace('`pi`.`version` ', 'INET_ATON(`pi`.`version`) ', $sql_order);
+	/* adjust order to remove properly sort, varies by state variable */
+	$sql_order = str_replace('pa.version', 'INET_ATON(pa.version)', $sql_order);
+	$sql_order = str_replace('pi.version', 'INET_ATON(pi.version)', $sql_order);
 	$sql_order = str_replace('id DESC', 'id ASC', $sql_order);
-
-	if (get_request_var('state') == 8) {
-		$sql_order = str_replace('`pi`.`plugin` ', '`pa`.`plugin` ', $sql_order);
-		$sql_order = str_replace('pi.plugin ', 'pa.plugin ', $sql_order);
-		$sql_order = str_replace('`pi`.last_updated ', '`pa`.`last_updated` ', $sql_order);
-	} elseif (get_request_var('state') == 6) {
-		$sql_order = str_replace('`pi`.`plugin` ', '`pa`.`plugin` ', $sql_order);
-		$sql_order = str_replace('pi.plugin ', 'pa.plugin ', $sql_order);
-		$sql_order = str_replace('`pi`.last_updated ', '`pa`.`last_updated` ', $sql_order);
-	} else {
-		$sql_order = str_replace('`pa`.`plugin` ', '`pi`.`plugin` ', $sql_order);
-		$sql_order = str_replace('pa.plugin ', 'pi.plugin ', $sql_order);
-		$sql_order = str_replace('`pa`.last_updated ', '`pi`.`last_updated` ', $sql_order);
-	}
 
 	switch(get_request_var('state')) {
 		case 8:
+			$sql_order = str_replace('pi.plugin', 'pa.plugin', $sql_order);
+			$sql_order = str_replace('pi.plugin', 'pa.plugin', $sql_order);
+			$sql_order = str_replace('pa.published_at', 'pa.last_updated', $sql_order);
+			$sql_order = str_replace('pi.last_updated', 'pa.last_updated', $sql_order);
+
 			$sql = "SELECT pa.id, pa.plugin, pa.description, pi.status, pi.remote_status,
 				pa.author, pa.webpage, pi.version, pi.capabilities, pi.requires, pi.last_updated,
 				pa.requires AS archive_requires, pa.compat AS archive_compat, pa.version AS archive_version,
@@ -1059,6 +1052,12 @@ function update_show_current() {
 
 			break;
 		case 6:
+			$sql_order = str_replace('pa.archive_length', 'pa.plugin', $sql_order);
+			$sql_order = str_replace('pi.plugin', 'pa.plugin', $sql_order);
+			$sql_order = str_replace('pi.plugin ', 'pa.plugin ', $sql_order);
+			$sql_order = str_replace('pi.last_updated', 'pa.last_updated', $sql_order);
+			$sql_order = str_replace('pi.last_updated', 'pa.last_updated', $sql_order);
+
 			$sql = "SELECT pi.id, pi.plugin, pi.status, pi.remote_status,
 				pi.author, pi.webpage, pi.version, pi.capabilities, pi.requires, pi.last_updated,
 				pa.plugin, pa.description AS avail_description,
@@ -1074,6 +1073,12 @@ function update_show_current() {
 
 			break;
 		default:
+			$sql_order = str_replace('pa.archive_length', 'pa.plugin', $sql_order);
+			$sql_order = str_replace('pa.compat', 'pi.compat', $sql_order);
+			$sql_order = str_replace('pa.plugin', 'pi.plugin', $sql_order);
+			$sql_order = str_replace('pa.published_at', 'pi.last_updated', $sql_order);
+			$sql_order = str_replace('pa.last_updated', 'pi.last_updated', $sql_order);
+
 			$sql = "SELECT *
 				FROM $table AS pi
 				$sql_where
@@ -1859,9 +1864,9 @@ function plugin_actions($plugin, $table) {
 			$link .= "<a class='pidisable' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=disable&plugin=' . $plugin['plugin']) . "' title='" . __esc('Disable Plugin') . "'><i class='ti ti-circle-filled deviceRecovering'></i></a>";
 
 			if ($archived) {
-				$link .= "<a href='#' title='" . __esc('Plugin already archived and is Unchanged in the archive.') . "' class='piarchive linkEditMain'><i class='ti ti-package-export deviceDisabled'></i></a>";
+				$link .= "<a href='#' title='" . __esc('Plugin already Archived and is Unchanged in the Archive') . "' class='piarchive linkEditMain'><i class='ti ti-package-export deviceDisabled'></i></a>";
 			} else {
-				$link .= "<a href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=archive&plugin=' . $plugin['plugin']) . "' title='" . __esc('archive the Plugin in its current state.') . "' class='piarchive linkEditMain'><i class='ti ti-package-export deviceUnknown'></i></a>";
+				$link .= "<a href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=archive&plugin=' . $plugin['plugin']) . "' title='" . __esc('Archive the Plugin in its current state') . "' class='piarchive linkEditMain'><i class='ti ti-package-export deviceUnknown'></i></a>";
 			}
 
 			break;
@@ -1870,14 +1875,14 @@ function plugin_actions($plugin, $table) {
 
 			$link .= "<a href='#' class='pidisable'><i class='ti ti-settings-filled' style='color:transparent'></i></a>";
 
-			$link .= "<a href='#' title='" . __esc('A Plugin can not be archived when it has Configuration Issues.') . "' class='piarchive linkEditMain'><i class='ti ti-package-export deviceDisabled'></i></a>";
+			$link .= "<a href='#' title='" . __esc('Plugin can not be archived when it has Configuration Issues') . "' class='piarchive linkEditMain'><i class='ti ti-package-export deviceDisabled'></i></a>";
 
 			break;
 		case '4':	// Installed but not active
 			$required = plugin_required_for_others($plugin, $table);
 
 			if ($required != '') {
-				$link .= "<a class='pierror' href='#' title='" . __esc('Unable to Uninstall.  This Plugin is required by: \'%s\'', ucfirst($required)) . "'><i class='ti ti-settings-filled deviceUnknown'></i></a>";
+				$link .= "<a class='pierror' href='#' title='" . __esc('Unable to Uninstall as this Plugin is required by: \'%s\'', ucfirst($required)) . "'><i class='ti ti-settings-filled deviceUnknown'></i></a>";
 			} else {
 				$link .= "<a class='piuninstall' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=uninstall&plugin=' . $plugin['plugin']) . "' title='" . __esc('Uninstall Plugin') . "'><i class='ti ti-settings-filled deviceDown'></i></a>";
 			}
@@ -1885,9 +1890,9 @@ function plugin_actions($plugin, $table) {
 			$link .= "<a class='pienable' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=enable&plugin=' . $plugin['plugin']) . "' title='" . __esc('Enable Plugin') . "'><i class='ti ti-circle-filled deviceUp'></i></a>";
 
 			if ($archived) {
-				$link .= "<a href='#' title='" . __esc('Plugin already archived and Unchanged in the archive.') . "' class='piarchive linkEditMain'><i class='ti ti-package-export deviceDisabled'></i></a>";
+				$link .= "<a href='#' title='" . __esc('Plugin already Archived and Unchanged in the Archive') . "' class='piarchive linkEditMain'><i class='ti ti-package-export deviceDisabled'></i></a>";
 			} else {
-				$link .= "<a href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=archive&plugin=' . $plugin['plugin']) . "' title='" . __esc('Archive the Plugin in its current state.') . "' class='piarchive linkEditMain'><i class='ti ti-package-export deviceUnknown'></i></a>";
+				$link .= "<a href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=archive&plugin=' . $plugin['plugin']) . "' title='" . __esc('Archive the Plugin in its current state') . "' class='piarchive linkEditMain'><i class='ti ti-package-export deviceUnknown'></i></a>";
 			}
 
 			break;
@@ -1895,7 +1900,7 @@ function plugin_actions($plugin, $table) {
 			$required = plugin_required_for_others($plugin, $table);
 
 			if ($required != '') {
-				$link .= "<a class='pierror' href='#' title='" . __esc('Unable to Uninstall.  This Plugin is required by: \'%s\'', ucfirst($required)) . "'><i class='ti ti-settings-filled deviceUnknown'></i></a>";
+				$link .= "<a class='pierror' href='#' title='" . __esc('Unable to Uninstall as this Plugin is required by: \'%s\'', ucfirst($required)) . "'><i class='ti ti-settings-filled deviceUnknown'></i></a>";
 			} else {
 				$link .= "<a class='piuninstall' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=uninstall&plugin=' . $plugin['plugin']) . "' title='" . __esc('Uninstall Plugin') . "'><i class='ti ti-settings-filled deviceDown'></i></a>";
 			}
@@ -1903,9 +1908,9 @@ function plugin_actions($plugin, $table) {
 			$link .= "<a class='pienable' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=enable&plugin=' . $plugin['plugin']) . "' title='" . __esc('Plugin was Disabled due to a Plugin Error.  Click to Re-enable the Plugin.  Search for \'DISABLING\' in the Cacti log to find the reason.') . "'><i class='ti ti-circle-filled deviceDown'></i></a>";
 
 			if ($archived) {
-				$link .= "<a href='#' title='" . __esc('Plugin already archived and Unchanged in the archive.') . "' class='piarchive linkEditMain'><i class='ti ti-package-export deviceDisabled'></i></a>";
+				$link .= "<a href='#' title='" . __esc('Plugin already Archived and Unchanged in the Archive') . "' class='piarchive linkEditMain'><i class='ti ti-package-export deviceDisabled'></i></a>";
 			} else {
-				$link .= "<a href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=archive&plugin=' . $plugin['plugin']) . "' title='" . __esc('Archive the Plugin in its current state.') . "' class='piarchive linkEditMain'><i class='ti ti-package-export deviceUnknown'></i></a>";
+				$link .= "<a href='" . html_escape(CACTI_PATH_URL . 'plugins.php?action=archive&plugin=' . $plugin['plugin']) . "' title='" . __esc('Archive the Plugin in its current state') . "' class='piarchive linkEditMain'><i class='ti ti-package-export deviceUnknown'></i></a>";
 			}
 
 			break;
