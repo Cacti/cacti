@@ -497,7 +497,7 @@ function form_actions() {
 							$rrd_path = get_data_source_path($selected_items[$i], true);
 							if (file_exists($rrd_path)) {
 								// Backup with timestamp and delete
-								$backup = $rrd_path . '.bak_' . date('ymd-His');
+								$backup = $rrd_path . '.bak_' . date('Ymd-His');
 								if (copy($rrd_path, $backup)) {
 									unlink($rrd_path);
 									$rrd_changes++;
