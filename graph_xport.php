@@ -92,7 +92,7 @@ $graph_data_array['export_csv'] = true;
 $xport_array = rrdtool_function_xport(get_request_var('local_graph_id'), get_request_var('rra_id'), $graph_data_array, $xport_meta, $_SESSION['sess_user_id']);
 
 /* Make graph title the suggested file name */
-if (is_array($xport_array['meta'])) {
+if (is_array($xport_array) && isset($xport_array['meta']) && is_array($xport_array['meta'])) {
 	$filename = $xport_array['meta']['title_cache'] . '.csv';
 } else {
 	$filename = 'graph_export.csv';
@@ -115,7 +115,7 @@ if (isset_request_var('format') && get_nfilter_request_var('format') == 'table')
 	$html = false;
 }
 
-if (is_array($xport_array['meta']) && isset($xport_array['meta']['start'])) {
+if (is_array($xport_array) && isset($xport_array['meta']['start'])) {
 	if (!$html) {
 		$output  = '"' . __('Title') . '","'          . $xport_array['meta']['title_cache']    . '"' . "\n";
 		$output .= '"' . __('Vertical Label') . '","' . $xport_array['meta']['vertical_label'] . '"' . "\n";

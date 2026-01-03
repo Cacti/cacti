@@ -32,6 +32,7 @@ Cacti CHANGELOG
 -issue#6444: Applying Title Cache Changes for Data Input Methods using |data_xxxx| not working
 -issue#6490: Selective Debug Setting in Cacti 'Clear All' button results in selecting the first item
 -issue#6507: Fix incorrect cli parameter when loading template information
+-issue#6508: PHP Error when exporting data 
 -feature: Close user sessions after a password change is forced
 -feature: Update PHPMailer to 6.10 to support SMTPUTF8
 -feature: Update phpseclib for the Service Check plugin
