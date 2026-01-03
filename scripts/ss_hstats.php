@@ -67,6 +67,10 @@ function ss_hstats($host_id = 0, $stat = '') {
 			$column = $stat;
 
 			break;
+		case 'current_errors':
+			$column = $stat;
+
+			break;
 		default:
 			return '0';
 	}
