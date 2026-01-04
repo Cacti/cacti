@@ -1477,7 +1477,7 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 	return $graph_opts;
 }
 
-function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rrdtool_pipe = null, &$xport_meta = [], $user = 0) {
+function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph_data_array, mixed $rrdtool_pipe = null, mixed &$xport_meta = [], int $user = 0) {
 	global $consolidation_functions, $graph_item_types, $encryption;
 
 	include_once(CACTI_PATH_LIBRARY . '/cdef.php');

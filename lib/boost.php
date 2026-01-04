@@ -177,15 +177,15 @@ function boost_error_handler(int $errno, string $errmsg, string $filename, int $
 /**
  * Checks and ensures that the Boost RRD update system is correctly enabled.
  *
- * This function verifies if either the `boost_rrd_update_enable` or 
- * `boost_rrd_update_system_enable` configuration options are set to 'on'. 
- * If `boost_rrd_update_enable` is enabled but `boost_rrd_update_system_enable` 
+ * This function verifies if either the `boost_rrd_update_enable` or
+ * `boost_rrd_update_system_enable` configuration options are set to 'on'.
+ * If `boost_rrd_update_enable` is enabled but `boost_rrd_update_system_enable`
  * is not, it updates the database to enable the system-level updates.
  *
- * If neither of the options is enabled, the function restores the default 
+ * If neither of the options is enabled, the function restores the default
  * error handler and returns false.
  *
- * @return bool Returns true if the Boost RRD update system is correctly enabled, 
+ * @return bool Returns true if the Boost RRD update system is correctly enabled,
  *              otherwise returns false.
  */
 function boost_check_correct_enabled() : bool {
@@ -458,7 +458,7 @@ function boost_return_cached_image(&$graph_data_array) : bool {
  * If the cache is invalid or unavailable, it falls back to Cacti's graphing functions.
  *
  * @param int    $local_graph_id   The ID of the local graph to check.
- * @param int    $rra_id           The RRA ID associated with the graph.
+ * @param mixed  $rra_id           The RRA ID associated with the graph.
  * @param mixed  $rrdtool_pipe     Optional RRDTool pipe for processing (default: null).
  * @param array  $graph_data_array Reference to an array containing graph data (default: empty array).
  * @param bool   $return           Whether to return the result (default: true).
@@ -468,7 +468,7 @@ function boost_return_cached_image(&$graph_data_array) : bool {
  * @throws Exception If there are issues with the cache directory or file operations.
  *
  */
-function boost_graph_cache_check(int $local_graph_id, int|null $rra_id, mixed $rrdtool_pipe = null, array &$graph_data_array = [], bool $return = true) : string|false {
+function boost_graph_cache_check(int $local_graph_id, mixed $rra_id, mixed $rrdtool_pipe = null, array &$graph_data_array = [], bool $return = true) : string|false {
 	/* include poller processing routines */
 	include_once(CACTI_PATH_LIBRARY . '/poller.php');
 
@@ -801,10 +801,10 @@ function boost_timer(string $area, int $type) : void {
 /**
  * Measures the overhead introduced by the `boost_timer` function.
  *
- * This function calculates the time taken to execute a series of 
- * `boost_timer` start and end calls for a specified number of iterations, 
- * defined by the `BOOST_TIMER_OVERHEAD_MULTIPLIER` constant. The measured 
- * overhead is then returned as a floating-point value representing the 
+ * This function calculates the time taken to execute a series of
+ * `boost_timer` start and end calls for a specified number of iterations,
+ * defined by the `BOOST_TIMER_OVERHEAD_MULTIPLIER` constant. The measured
+ * overhead is then returned as a floating-point value representing the
  * elapsed time in seconds.
  *
  * @return float The calculated overhead time in seconds.
@@ -827,12 +827,12 @@ function boost_timer_get_overhead() : float {
 /**
  * Retrieves the names of the archive tables related to poller output boost.
  *
- * @param string|nuull $latest_table Optional. The name of the latest table to check 
+ * @param string|nuull $latest_table Optional. The name of the latest table to check
  *                             if no other tables are found.
  *
- * @return array|false Returns an associative array of table names if found, 
- *                     where the keys and values are the table names. 
- *                     Returns false if no tables are found and the latest 
+ * @return array|false Returns an associative array of table names if found,
+ *                     where the keys and values are the table names.
+ *                     Returns false if no tables are found and the latest
  *                     table is not provided or does not exist.
  */
 function boost_get_arch_table_names(string|null $latest_table = '') : array|false {
