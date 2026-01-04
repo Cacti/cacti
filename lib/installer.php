@@ -2212,7 +2212,7 @@ class Installer implements JsonSerializable {
 
 		$output .= Installer::sectionSubTitle(__('PHP - Module Support (Optional)'), 'php_optional');
 
-		$output .= Installer::sectionNormal(__('The following PHP extensions are recommended, and should be installed before continuing your Cacti install.  NOTE: If you are planning on supporting SNMPv3 with IPv6, you should not install the php-snmp module at this time.'));
+		$output .= Installer::sectionNormal(__('The following PHP extensions are recommended, and should be installed before continuing your Cacti install.  NOTE: If you are planning on supporting SNMPv3 with IPv6 or SNMPv3 with stronger ciphers, you should not install the php-snmp module at this time.'));
 
 		$ext = utility_php_optionals();
 
