@@ -368,7 +368,7 @@ function csrf_get_secret() {
 				$fh = fopen($file, 'w');
 				fwrite($fh, $new_secret);
 				fclose($fh);
-				umask($old_mask);
+				umask($old_umask);
 				$secret = $new_secret;
 				break;
 			}
