@@ -80,6 +80,7 @@ if (!file_exists($path_csrf_secret)) {
 
 $new_secret = csrf_generate_secret();
 if (csrf_writable($path_csrf_secret)) {
+	umask(0027);
 	$fh = fopen($path_csrf_secret, 'w');
 	fwrite($fh, '<?php $secret = "' . $new_secret . '";' . PHP_EOL);
 	fclose($fh);
