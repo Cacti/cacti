@@ -80,6 +80,7 @@ if (!file_exists(CACTI_CSRF_SECRET)) {
 $new_secret = csrf_generate_secret();
 
 if (csrf_writable(CACTI_CSRF_SECRET)) {
+	umask(0027);
 	$fh = fopen(CACTI_CSRF_SECRET, 'w');
 	fwrite($fh, '<?php $secret = "' . $new_secret . '";' . PHP_EOL);
 	fclose($fh);
