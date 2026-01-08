@@ -403,11 +403,11 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 		foreach ($graph_array as $graph) {
 			if (!isset($graph['host_id'])) {
 				$gdata = db_fetch_row_prepared('SELECT host_id, disabled
-                    FROM graph_local AS gl
-                    LEFT JOIN host AS h
-                    ON gl.host_id = h.id
-                    WHERE gl.id = ?',
-                    array($graph['local_graph_id']));
+					FROM graph_local AS gl
+					LEFT JOIN host AS h
+					ON gl.host_id = h.id
+					WHERE gl.id = ?',
+					array($graph['local_graph_id']));
 
 				if (cacti_sizeof($gdata)) {
 					$graph['host_id']  = $gdata['host_id'];
