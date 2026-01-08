@@ -439,12 +439,19 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 
 		foreach ($graph_array as $graph) {
 			if (!isset($graph['host_id'])) {
-				[$graph['host_id'], $graph['disabled']] = db_fetch_row_prepared('SELECT host_id, disabled
-    				FROM graph_local AS gl
-	 				LEFT JOIN host AS h
-      				ON gl.host_id = h.id
-	   				WHERE gl.id = ?',
-					[$graph['local_graph_id']]);
+				$gdata = db_fetch_row_prepared('SELECT host_id, disabled
+					FROM graph_local AS gl
+					LEFT JOIN host AS h
+					ON gl.host_id = h.id
+					WHERE gl.id = ?',
+					array($graph['local_graph_id']));
+
+				if (cacti_sizeof($gdata)) {
+					$graph['host_id']  = $gdata['host_id'];
+					$graph['disabled'] = $gdata['disabled'];
+				} else {
+					continue;
+				}
 			}
 
 			if (isset($graph['graph_template_name'])) {
