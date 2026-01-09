@@ -188,6 +188,9 @@ function utilities_clear_logfile() {
 				$date = date('Y-m-d H:i:s');
 			}
 
+			$ext = date('Ymd-His');
+			rename($logfile, $logfile . '-' . $ext);
+
 			$log_fh = fopen($logfile, 'w');
 			fwrite($log_fh, __('%s - WEBUI NOTE: Cacti Log Cleared from Web Management Interface.', $date) . PHP_EOL);
 			fclose($log_fh);
