@@ -591,7 +591,7 @@ function logrotate_file_rotate($name, $log, $date) {
 		$group = filegroup($log);
 
 		if ($owner !== false) {
-			$ext = $date->format('Ymd');
+			$ext = $date->format('Ymd-His');
 
 			if (file_exists($log . '-' . $ext)) {
 				$ext_inc = 1;
