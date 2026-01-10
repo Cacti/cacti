@@ -903,7 +903,9 @@ function automation_graph_rules() {
 		COUNT(agr.id)
 		FROM automation_graph_rules AS agr
 		LEFT JOIN snmp_query AS sq
-		ON (agr.snmp_query_id=sq.id)
+		ON agr.snmp_query_id = sq.id
+		LEFT JOIN snmp_query_graph AS sqg
+		ON agr.graph_type_id = sqg.id
 		$sql_where");
 
 	$sql_order = get_order_string();
@@ -913,9 +915,9 @@ function automation_graph_rules() {
 		agr.enabled, sq.name AS snmp_query_name, sqg.name AS graph_type_name
 		FROM automation_graph_rules AS agr
 		LEFT JOIN snmp_query AS sq
-		ON (agr.snmp_query_id=sq.id)
+		ON agr.snmp_query_id = sq.id
 		LEFT JOIN snmp_query_graph AS sqg
-		ON (agr.graph_type_id=sqg.id)
+		ON agr.graph_type_id = sqg.id
 		$sql_where
 		$sql_order
 		$sql_limit");
