@@ -487,7 +487,10 @@ function user_disable(int $user_id): void {
 	input_validate_input_number($user_id, 'user_id');
 	/* ==================================================== */
 
-	db_execute_prepared("UPDATE user_auth SET enabled = '' WHERE id = ?", [$user_id]);
+	db_execute_prepared("UPDATE user_auth SET enabled = '' WHERE id = ?", array($user_id));
+	db_execute_prepared('DELETE FROM user_auth_cache WHERE user_id = ?', array($user_id));
+	db_execute_prepared('DELETE FROM user_auth_row_cache WHERE user_id = ?', array($user_id));
+	db_execute_prepared('DELETE FROM sessions WHERE user_id = ?', array($user_id));
 
 	reset_user_perms($user_id);
 }
