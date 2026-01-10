@@ -33,7 +33,7 @@ Cacti CHANGELOG
 -issue#6490: Selective Debug Setting in Cacti 'Clear All' button results in selecting the first item
 -issue#6507: Fix incorrect cli parameter when loading template information
 -issue#6508: PHP Error when exporting data 
--issue#6515: SQL Errors in Automation Graph Rules processing
+-issue#6516: SQL Errors in Automation Graph Rules processing
 -issue#6518: Ensure that the csrf-secret file is written in a less permissive way
 -issue#6519: Realtime generates errors in the Cacti Log after a Graph has been removed
 -feature: Close user sessions after a password change is forced
