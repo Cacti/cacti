@@ -223,71 +223,27 @@ case 'changepassword':
 		db_execute_prepared("UPDATE user_auth
 			SET must_change_password = '', password = ?
 			WHERE id = ?",
-			array(compat_password_hash($password,PASSWORD_DEFAULT), $user_id));
+			array(compat_password_hash($password, PASSWORD_DEFAULT), $user_id));
 
 		// Clear the auth cache for the user
-		$token = '';
-		if (isset($_SERVER['HTTP_COOKIE']) && strpos($_SERVER['HTTP_COOKIE'], 'cacti_remembers') !== false) {
-			$parts = explode(';', $_SERVER['HTTP_COOKIE']);
-			foreach($parts as $p) {
-				if (strpos($p, 'cacti_remembers') !== false) {
-					$pparts = explode('%2C', $p);
-					if (isset($pparts[1])) {
-						$token = $pparts[1];
-						break;
-					}
-				}
-			}
-		}
-
-		if ($token != '') {
-			$sql_where = 'AND token != ' . db_qstr(hash('sha512', $token, false));
-		} else {
-			$sql_where = '';
-		}
-
 		db_execute_prepared("DELETE FROM user_auth_cache
-			WHERE user_id = ?
-			$sql_where",
+			WHERE user_id = ?",
+			array($_SESSION['sess_user_id']));
+
+		// Delete any user login sessions if using database sessions
+		db_execute("DELETE FROM sessions
+			WHERE user_id = ?",
 			array($_SESSION['sess_user_id']));
 
 		kill_session_var('sess_change_password');
+		kill_session_var('sess_user_id');
 
 		raise_message('password_success');
 
-		/* ok, at the point the user has been successfully authenticated; so we must decide what to do next */
+		// Redirect to login with new password
+		header('Location: logout.php');
 
-		/* if no console permissions show graphs otherwise, pay attention to user setting */
-		$realm_id    = $user_auth_realm_filenames['index.php'];
-		$has_console = db_fetch_cell_prepared('SELECT realm_id
-			FROM user_auth_realm
-			WHERE user_id = ? AND realm_id = ?',
-			array($user_id, $realm_id));
-
-		if (basename(get_nfilter_request_var('ref')) == 'auth_changepassword.php' || basename(get_nfilter_request_var('ref')) == '') {
-			if ($has_console) {
-				set_request_var('ref', 'index.php');
-			} else {
-				set_request_var('ref', 'graph_view.php');
-			}
-		}
-
-		if (!empty($has_console)) {
-			switch ($user['login_opts']) {
-				case '1': /* referer */
-					header('Location: ' . sanitize_uri(get_nfilter_request_var('ref'))); break;
-				case '2': /* default console page */
-					header('Location: index.php'); break;
-				case '3': /* default graph page */
-					header('Location: graph_view.php'); break;
-				default:
-					api_plugin_hook_function('login_options_navigate', $user['login_opts']);
-			}
-		} else {
-			header('Location: graph_view.php');
-		}
 		exit;
-
 	} else {
 		$bad_password = true;
 	}
