@@ -482,6 +482,9 @@ function user_disable($user_id) {
 	/* ==================================================== */
 
 	db_execute_prepared("UPDATE user_auth SET enabled = '' WHERE id = ?", array($user_id));
+	db_execute_prepared('DELETE FROM user_auth_cache WHERE user_id = ?', array($user_id));
+	db_execute_prepared('DELETE FROM user_auth_row_cache WHERE user_id = ?', array($user_id));
+	db_execute_prepared('DELETE FROM sessions WHERE user_id = ?', array($user_id));
 
 	reset_user_perms($user_id);
 }
