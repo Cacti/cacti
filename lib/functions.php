@@ -7174,7 +7174,7 @@ function raise_ajax_permission_denied() {
 /**
  * cacti_session_start - Create a Cacti session from the settings set by the administrator
  *
- * @param int $regenerate - If you are logging in for the first time, regenerate the token
+ * @param bool $regenerate - If you are logging in for the first time, regenerate the token
  *
  * @return - null
  */
