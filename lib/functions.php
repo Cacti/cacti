@@ -7209,20 +7209,6 @@ function cacti_session_start($regenerate = false) {
 		$_SESSION = $session_data;
 	}
 
-	/* periodically regenerate the session id after a period of time */
-	if (isset($_SESSION['sess_last_reset'])) {
-		if (time() - $_SESSION['sess_last_reset'] > 600) {
-			$session_data = cacti_session_regenerate();
-
-			/* restore the session data after regeneration */
-			$_SESSION = $session_data;
-
-			$_SESSION['sess_last_reset'] = time();
-		}
-	} else {
-		$_SESSION['sess_last_reset'] = time();
-	}
-
 	if (!$session_result) {
 		cacti_log('Session "' . session_id() . '" ' . $session_restart . 'start failed! ' . cacti_debug_backtrace('', false, false, 0, 1), false, 'WARNING:');
 	}

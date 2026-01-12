@@ -43,6 +43,13 @@ get_filter_request_var('top');
 get_filter_request_var('left');
 /* ==================================================== */
 
+if (!isset($_SESSION['sess_realtime_hash'])) {
+	cacti_log('Generating new session');
+	$_SESSION['sess_realtime_hash'] = generate_hash();
+}
+
+$hash = $_SESSION['sess_realtime_hash'];
+
 set_default_action();
 
 switch (get_request_var('action')) {
@@ -204,9 +211,9 @@ case 'countdown':
 	$graph_data_array['image_format'] = $gtype;
 
 	/* call poller */
-	$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . hash('sha256', session_id()) . '_lgi_' . get_request_var('local_graph_id') . '.png';
+	$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . $hash . '_lgi_' . get_request_var('local_graph_id') . '.png';
 	$command   = read_config_option('path_php_binary');
-	$args      = sprintf('poller_realtime.php --graph=%s --interval=%d --poller_id=' . hash('sha256',session_id()), get_request_var('local_graph_id'), $graph_data_array['ds_step']);
+	$args      = sprintf('poller_realtime.php --graph=%s --interval=%d --poller_id=' . $hash, get_request_var('local_graph_id'), $graph_data_array['ds_step']);
 
 	shell_exec("$command $args");
 
@@ -288,7 +295,7 @@ case 'countdown':
 	exit;
 	break;
 case 'view':
-	$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . hash('sha256',session_id()) . '_lgi_' . get_request_var('local_graph_id') . '.png';
+	$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . $hash . '_lgi_' . get_request_var('local_graph_id') . '.png';
 
 	if (file_exists($graph_rrd)) {
 		print base64_encode(file_get_contents($graph_rrd));
