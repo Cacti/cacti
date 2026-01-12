@@ -7186,10 +7186,9 @@ function cacti_session_start($regenerate = false) {
 		die('PHP Session Management is missing, please install PHP Session module');
 	}
 
-	session_name($config['cacti_session_name']);
-
 	if (session_status() === PHP_SESSION_NONE) {
 		$session_restart = '';
+		session_name($config['cacti_session_name']);
 	} else {
 		$session_restart = 're';
 	}
