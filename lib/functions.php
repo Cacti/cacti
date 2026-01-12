@@ -7230,7 +7230,7 @@ function cacti_session_start($regenerate = false) {
 
 /**
  * cacti_session_regenerate - This function will regenerate a session token in cases
- * where the user login for the first time, or their session token has existed
+ * where the user logs in for the first time, or their session token has existed
  * too long. We forcibly destroy old session data as it will remove the entry from
  * the Cacti sessions table immediately thus reducing the number of inactive
  * sessions in the sessions table.
