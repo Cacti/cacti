@@ -557,7 +557,7 @@ function logrotate_rotatenow() {
 		$cleaned += logrotate_file_clean($name, $log, $date, $days);
 	}
 
-	$cleaned += logrotate_file_clean($name, $log, $date, $days);
+	//$cleaned += logrotate_file_clean($name, $log, $date, $days); //duplicate action
 
 	/* record the start time */
 	$poller_end = microtime(true);
@@ -631,12 +631,14 @@ function logrotate_file_rotate($name, $log, $date) {
  * @param mixed $rotation
  */
 function logrotate_file_clean($name, $log, $date, $rotation) {
+	$cleaned = 0;
+	
 	if (empty($log)) {
-		return false;
+		return $cleaned;
 	}
 
 	if ($rotation <= 0) {
-		return false;
+		return $cleaned;
 	}
 
 	$baselogdir  = dirname($log) . '/';
@@ -657,7 +659,7 @@ function logrotate_file_clean($name, $log, $date, $rotation) {
 			$matches   = false;
 
 			if (strpos($d, $baselogname) !== false) {
-				if ($fileparts > 1) {
+				if (cacti_sizeof($fileparts) > 1) {
 					foreach ($fileparts as $p) {
 						// Is it in the form YYYYMMDD?
 						if (is_numeric($p) && strlen($p) == 8) {
@@ -666,6 +668,7 @@ function logrotate_file_clean($name, $log, $date, $rotation) {
 							if ($p < $e) {
 								if (is_writable($baselogdir . $d)) {
 									@unlink($baselogdir . $d);
+									$cleaned++;
 									cacti_log('Cacti Log Rotation - Purging ' . $name  . ' Log : ' . $d, true, 'MAINT');
 								} else {
 									cacti_log('Cacti Log Rotation - ERROR: Can not purge ' . $name  . ' Log : ' . $d, true, 'MAINT');
@@ -673,18 +676,20 @@ function logrotate_file_clean($name, $log, $date, $rotation) {
 							} else {
 								cacti_log('Cacti Log Rotation - NOTE: Not expired, keeping ' . $name . ' Log : ' . $d, true, 'MAINT', POLLER_VERBOSITY_HIGH);
 							}
+							break;
 						}
 					}
 				}
-			}
-
-			if ($matches) {
-				cacti_log('Cacti Log Rotation - NOTE: File not in expected naming format, ignoring ' . $name . ' Log : ' . $d, true, 'MAINT', POLLER_VERBOSITY_DEBUG);
+				if ($matches) {
+					cacti_log('Cacti Log Rotation - NOTE: File not in expected naming format, ignoring ' . $name . ' Log : ' . $d, true, 'MAINT', POLLER_VERBOSITY_DEBUG);
+				}
 			}
 		}
 	}
 
 	clearstatcache();
+
+	return $cleaned;
 }
 
 /**
