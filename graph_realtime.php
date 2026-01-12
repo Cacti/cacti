@@ -44,7 +44,6 @@ get_filter_request_var('left');
 /* ==================================================== */
 
 if (!isset($_SESSION['sess_realtime_hash'])) {
-	cacti_log('Generating new session');
 	$_SESSION['sess_realtime_hash'] = generate_hash();
 }
 
