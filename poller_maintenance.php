@@ -537,7 +537,7 @@ function logrotate_rotatenow() {
 	set_config_option('logrotate_lastrun', $run_time);
 
 	$date     = new DateTime();
-	$date->setTimestamp($run_time)->modify('-1day');
+	$date->setTimestamp($run_time);
 
 	$rotated = 0;
 	$cleaned = 0;
