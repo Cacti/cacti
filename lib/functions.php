@@ -7188,6 +7188,7 @@ function cacti_session_start($regenerate = false) {
 
 	if (session_status() === PHP_SESSION_NONE) {
 		$session_restart = '';
+
 		session_name($config['cacti_session_name']);
 	} else {
 		$session_restart = 're';
@@ -7197,19 +7198,23 @@ function cacti_session_start($regenerate = false) {
 		$session_data = cacti_session_regenerate();
 	}
 
-	$session_result = session_start($config['cookie_options']);
+	if (session_status() === PHP_SESSION_NONE) {
+		$session_result = session_start($config['cookie_options']);
+	} else {
+		$session_result = true;
+	}
 
+	/* restore the session data after regeneration */
 	if ($regenerate) {
 		$_SESSION = $session_data;
 	}
 
-	/* periodically regenerate the session id after that time */
+	/* periodically regenerate the session id after a period of time */
 	if (isset($_SESSION['sess_last_reset'])) {
-		if (time() - $_SESSION['sess_last_reset'] > 3600) {
+		if (time() - $_SESSION['sess_last_reset'] > 600) {
 			$session_data = cacti_session_regenerate();
 
-			$session_result = session_start($config['cookie_options']);
-
+			/* restore the session data after regeneration */
 			$_SESSION = $session_data;
 
 			$_SESSION['sess_last_reset'] = time();
@@ -7226,18 +7231,16 @@ function cacti_session_start($regenerate = false) {
 /**
  * cacti_session_regenerate - This function will regenerate a session token in cases
  * where the user login for the first time, or their session token has existed
- * too long.
+ * too long. We forcibly destroy old session data as it will remove the entry from
+ * the Cacti sessions table immediately thus reducing the number of inactive
+ * sessions in the sessions table.
  *
  * @return array - The prior sessions data
  */
 function cacti_session_regenerate() {
-	$session_id = session_create_id();
-
 	$session_data = $_SESSION;
 
-	session_destroy();
-
-	session_id($session_id);
+	session_regenerate_id(true);
 
 	return $session_data;
 }
