@@ -7174,10 +7174,11 @@ function raise_ajax_permission_denied() {
 /**
  * cacti_session_start - Create a Cacti session from the settings set by the administrator
  *
+ * @param int $regenerate - If you are logging in for the first time, regenerate the token
+ *
  * @return - null
  */
-function cacti_session_start() {
-	/** @var array */
+function cacti_session_start($regenerate = false) {
 	global $config;
 
 	/* initialize php session */
@@ -7193,11 +7194,53 @@ function cacti_session_start() {
 		$session_restart = 're';
 	}
 
+	if ($regenerate) {
+		$session_data = cacti_session_regenerate();
+	}
+
 	$session_result = session_start($config['cookie_options']);
+
+	if ($regenerate) {
+		$_SESSION = $session_data;
+	}
+
+	/* periodically regenerate the session id after that time */
+	if (isset($_SESSION['sess_last_reset'])) {
+		if (time() - $_SESSION['sess_last_reset'] > 3600) {
+			$session_data = cacti_session_regenerate();
+
+			$session_result = session_start($config['cookie_options']);
+
+			$_SESSION = $session_data;
+
+			$_SESSION['sess_last_reset'] = time();
+		}
+	} else {
+		$_SESSION['sess_last_reset'] = time();
+	}
 
 	if (!$session_result) {
 		cacti_log('Session "' . session_id() . '" ' . $session_restart . 'start failed! ' . cacti_debug_backtrace('', false, false, 0, 1), false, 'WARNING:');
 	}
+}
+
+/**
+ * cacti_session_regenerate - This function will regenerate a session token in cases
+ * where the user login for the first time, or their session token has existed
+ * too long.
+ *
+ * @return array - The prior sessions data
+ */
+function cacti_session_regenerate() {
+	$session_id = session_create_id();
+
+	$session_data = $_SESSION;
+
+	session_destroy();
+
+	session_id($session_id);
+
+	return $session_data;
 }
 
 /**
