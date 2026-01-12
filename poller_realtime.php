@@ -211,8 +211,6 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 				/* replace path */
 				$command = str_replace($data_source_path, $rt_graph_path, $command);
 
-				cacti_log($command);
-
 				/* minimum refresh interval */
 				$step = read_config_option('realtime_interval');
 
