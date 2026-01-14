@@ -1252,9 +1252,9 @@ function db_index_exists(string $table, string $index, bool $log = true, mixed $
  * @param bool   $log     - Whether to log error messages, defaults to true
  * @param mixed  $db_conn - The connection to use or false to use the default
  *
- * @return bool - The output of the sql query as a single variable
+ * @return int - The output of the sql query as a single variable
  */
-function db_index_matches(string $table, string $index, array $columns, bool $log = true, mixed $db_conn = false) : bool {
+function db_index_matches(string $table, string $index, array $columns, bool $log = true, mixed $db_conn = false) : int {
 	global $database_log, $config;
 
 	if (!isset($database_log)) {
@@ -1309,7 +1309,7 @@ function db_index_matches(string $table, string $index, array $columns, bool $lo
 			. clean_up_lines(var_export($_cols, true)));
 	}
 
-	return $status ? true : false;
+	return $status;
 }
 
 /**
