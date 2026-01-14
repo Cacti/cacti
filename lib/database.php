@@ -2282,11 +2282,11 @@ function db_get_column_attributes(string $table, array $columns) : mixed {
  * db_get_columns_length - Get the length of a array of columns in a table
  *
  * @param string $table    - The name of the table
- * @param array  $columns  - An array of column names
+ * @param mixed  $columns  - An array of column names
  *
  * @return mixed - An array of column lengths on success or false if failed
  */
-function db_get_columns_length(string $table, array $columns) : mixed {
+function db_get_columns_length(string $table, mixed $columns) : mixed {
 	$column_data = db_get_column_attributes($table, $columns);
 
 	if (!empty($column_data)) {
