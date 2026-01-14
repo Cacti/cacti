@@ -2202,12 +2202,12 @@ function sql_save(array $array_items, string $table_name, mixed $key_cols = 'id'
  * db_qstr - Quote a string using the PDO function and also enclose
  * the remainder of the string in single quotes.
  *
- * @param string $s - The SQL to be escaped
+ * @param mixed $s - The SQL to be escaped.  Can include a null
  * @param mixed $db_conn - The database connection or false if to use the default
  *
  * @return string - The escaped SQL string
  */
-function db_qstr(string $s, mixed $db_conn = false) : string {
+function db_qstr(mixed $s, mixed $db_conn = false) : string {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
