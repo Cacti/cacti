@@ -1070,7 +1070,7 @@ function automation_tree_rules() {
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
-	$automation_tree_rules = db_fetch_assoc("SELECT atr.id, atr.name,
+	$automation_tree_rules = db_fetch_assoc_prepared("SELECT atr.id, atr.name,
 		atr.tree_id, atr.tree_item_id,
 		atr.leaf_type, atr.host_grouping_type, atr.enabled,
 		gt.name AS tree_name, gti.title AS subtree_name
