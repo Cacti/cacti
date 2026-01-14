@@ -49,10 +49,10 @@ if (cacti_sizeof($parms)) {
 	$description   = '';
 	$ip            = '';
 	$poller_id     = $config['poller_id'];
-	$site_id       = read_config_option('default_site') ?? 0;
-	$template_id   = (int) read_config_option('default_template') ?? 0;
+	$site_id       = intval(read_config_option('default_site') ?? 0);
+	$template_id   = intval(read_config_option('default_template') ?? 0);
 	$community     = read_config_option('snmp_community') ?? '';
-	$snmp_ver      = read_config_option('snmp_version') ?? 2;
+	$snmp_ver      = intval(read_config_option('snmp_version') ?? 2);
 	$disable       = 0;
 
 	$notes         = '';
@@ -66,9 +66,9 @@ if (cacti_sizeof($parms)) {
 	$snmp_priv_protocol   = read_config_option('snmp_priv_protocol') ?? '';
 	$snmp_context         = '';
 	$snmp_engine_id       = '';
-	$snmp_port            = read_config_option('snmp_port') ?? 161;
-	$snmp_timeout         = read_config_option('snmp_timeout') ?? 500;
-	$snmp_retries         = read_config_option('snmp_retries') ?? 3;
+	$snmp_port            = intval(read_config_option('snmp_port') ?? 161);
+	$snmp_timeout         = intval(read_config_option('snmp_timeout') ?? 500);
+	$snmp_retries         = intval(read_config_option('snmp_retries') ?? 3);
 	$snmp_options         = read_config_option('snmp_options') ?? '';
 
 	if (empty($snmp_options)) {
@@ -76,14 +76,14 @@ if (cacti_sizeof($parms)) {
 	}
 
 	$avail          = 1;
-	$ping_method    = read_config_option('ping_method') ?? 4;
-	$ping_port      = read_config_option('ping_port') ?? 22;
-	$ping_timeout   = read_config_option('ping_timeout') ?? 500;
-	$ping_retries   = read_config_option('ping_retries') ?? 2;
-	$max_oids       = read_config_option('max_get_size') ?? 5;
+	$ping_method    = intval(read_config_option('ping_method') ?? 4);
+	$ping_port      = intval(read_config_option('ping_port') ?? 22);
+	$ping_timeout   = intval(read_config_option('ping_timeout') ?? 500);
+	$ping_retries   = intval(read_config_option('ping_retries') ?? 2);
+	$max_oids       = intval(read_config_option('max_get_size') ?? 5);
 	$bulk_walk_size = -1;
 	$proxy          = false;
-	$device_threads = read_config_option('device_threads') ?? 1;
+	$device_threads = intval(read_config_option('device_threads') ?? 1);
 
 	$displayHostTemplates = false;
 	$displayCommunities   = false;
