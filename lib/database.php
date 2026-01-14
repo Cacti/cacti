@@ -1697,12 +1697,12 @@ function db_update_table(string $table, array $data, bool $removecolumns = false
  * db_format_index_create - Converts and array of indexes to a string
  * that is compatible with the cacti database table creation array.
  *
- * @param array $indexes - An array of indexes to process
+ * @param mixed $indexes - An array of indexes to process
  *
  * @return string - A list of preprocessed indexes into a form
  *                  compatible with the array definition
  */
-function db_format_index_create(array $indexes) : string {
+function db_format_index_create(mixed $indexes) : string {
 	if (is_array($indexes)) {
 		$outindex = '';
 
