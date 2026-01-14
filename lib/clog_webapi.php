@@ -591,12 +591,6 @@ function create_clog_filter(string $logfile, bool $clogAdmin) : array {
 	$newLogArray  = [];
 	$log_action   = read_config_option('log_action');
 
-	if ($log_action == LOG_ACTION_PURGE) {
-		$purge_title   = __('Purge all data from the existing Cacti Log');
-	} else {
-		$purge_title   = __('Rotate the Cacti Log');
-	}
-
 	if (cacti_sizeof($logFileArray)) {
 		foreach ($logFileArray as $logFile) {
 			$logParts              = explode('-', $logFile);
