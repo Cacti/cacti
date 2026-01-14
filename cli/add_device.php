@@ -76,14 +76,14 @@ if (cacti_sizeof($parms)) {
 	}
 
 	$avail          = 1;
-	$ping_method    = read_config_option('ping_method');
-	$ping_port      = read_config_option('ping_port');
-	$ping_timeout   = read_config_option('ping_timeout');
-	$ping_retries   = read_config_option('ping_retries');
-	$max_oids       = read_config_option('max_get_size');
+	$ping_method    = read_config_option('ping_method') ?? 4;
+	$ping_port      = read_config_option('ping_port') ?? 22;
+	$ping_timeout   = read_config_option('ping_timeout') ?? 500;
+	$ping_retries   = read_config_option('ping_retries') ?? 2;
+	$max_oids       = read_config_option('max_get_size') ?? 5;
 	$bulk_walk_size = -1;
 	$proxy          = false;
-	$device_threads = read_config_option('device_threads');
+	$device_threads = read_config_option('device_threads') ?? 1;
 
 	$displayHostTemplates = false;
 	$displayCommunities   = false;
