@@ -113,7 +113,7 @@ function clog_validate_filename(string &$file, string|null &$filepath, string|nu
  *
  * @return void
  */
-function clog_purge_logfile($action = 'purge') : void {
+function clog_purge_logfile(string $action = 'purge') : void {
 	$filename = get_nfilter_request_var('filename');
 
 	if (!clog_validate_filename($filename, $logpath, $logname)) {
