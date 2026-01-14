@@ -290,7 +290,7 @@ function clog_view_logfile() : void {
 			</tr>
 			<tr class='saveRow'>
 				<td colspan='2' class='right'>
-					<button type='button' class='ui-button ui-corner-all ui-widget' id='cancel'>" . __('Cancel') . "</button>
+					<button type='button' class='ui-button ui-corner-all ui-widget' id='cancel'>" . __esc('Cancel') . "</button>
 					<button type='button' class='ui-button ui-corner-all ui-widget' id='pc' name='purge_continue' title='$title'>" . __esc('Continue') . "</button>
 					<script type='text/javascript'>
 					$('#pc').click(function() {
