@@ -312,14 +312,21 @@ $settings['logging'] = [
 		'description'   => __('How will Cacti handle event logging.'),
 		'method'        => 'drop_array',
 		'default'       => 1,
-		'array'         => $logfile_options,
+		'array'         => $logfile_options
+	],
+	'log_action' => [
+		'friendly_name' => __('Log Actions'),
+		'description'   => __('What Log Actions do you wish to provide to the Cacti Administrator.  You can grant either purge, rotate, or both purge and rotate.  Base files can be both purged and rotated, and already rotated files can only be purged if you grant that permission.'),
+		'method'        => 'drop_array',
+		'default'       => LOG_ACTION_PURGE,
+		'array'         => $logfile_actions
 	],
 	'log_verbosity' => [
 		'friendly_name' => __('Generic Log Level'),
 		'description'   => __('What level of detail do you want sent to the log file.  WARNING: Leaving in any other status than NONE or LOW can exhaust your disk space rapidly.'),
 		'method'        => 'drop_array',
 		'default'       => POLLER_VERBOSITY_LOW,
-		'array'         => $logfile_verbosity,
+		'array'         => $logfile_verbosity
 	],
 	'log_expand' => [
 		'friendly_name' => __('Expand log details'),

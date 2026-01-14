@@ -690,6 +690,12 @@ $logfile_options = [
 	3 => __('Syslog/Eventlog Only')
 ];
 
+$logfile_actions = [
+	LOG_ACTION_PURGE        => __('Purge'),
+	LOG_ACTION_ROTATE       => __('Rotate'),
+	LOG_ACTION_PURGE_ROTATE => __('Purge and Rotate')
+];
+
 $availability_options = [
 	AVAIL_NONE             => __('None'),
 	AVAIL_SNMP_AND_PING    => __('Ping and SNMP Uptime'),

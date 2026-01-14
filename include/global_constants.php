@@ -302,6 +302,10 @@ define('LOG_EXPAND_FULL', 0);
 define('LOG_EXPAND_NONE', 1);
 define('LOG_EXPAND_DISPLAY', 2);
 
+define('LOG_ACTION_PURGE', 1);
+define('LOG_ACTION_ROTATE', 2);
+define('LOG_ACTION_PURGE_ROTATE', 3);
+
 define('CLOG_PERM_ADMIN', 0);
 define('CLOG_PERM_USER',  1);
 define('CLOG_PERM_NONE',  2);
