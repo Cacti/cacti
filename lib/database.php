@@ -38,7 +38,7 @@
  * @param  string $db_ssl_cert   - String that points to the client ssl cert file
  * @param  string $db_ssl_ca     - String that points to the ssl ca file
  * @param  string $db_ssl_capath - The path to the CA if required
- * @param  bool   $db_ssl_verify_server_cert - Set to true if you with to validate the cert
+ * @param  bool   $db_ssl_verify_server_cert - Set to true if you wish to validate the cert
  * @param  bool   $persist       - Set to true if you wish to use a persistent connection
  *
  * @return bool|object connection object on success, false for error
