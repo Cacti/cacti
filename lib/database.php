@@ -1331,7 +1331,7 @@ function db_table_exists(string $table, bool $log = true, mixed $db_conn = false
 	}
 
 	if (isset($results[$index][$table]) && !defined('IN_CACTI_INSTALL') && !defined('IN_PLUGIN_INSTALL')) {
-		return $results[$index][$table] ? true : false;
+		return $results[$index][$table];
 	}
 
 	// Separate the database from the table and remove backticks
@@ -1342,7 +1342,7 @@ function db_table_exists(string $table, bool $log = true, mixed $db_conn = false
 
 		$results[$index][$table] = (db_fetch_cell($sql, '', $log, $db_conn) ? true : false);
 
-		return $results[$index][$table] ? true : false;
+		return $results[$index][$table];
 	}
 
 	return false;
@@ -1415,12 +1415,12 @@ function db_column_exists(string $table, string $column, bool $log = true, mixed
 	}
 
 	if (isset($results[$index][$table][$column]) && !defined('IN_CACTI_INSTALL') && !defined('IN_PLUGIN_INSTALL')) {
-		return $results[$index][$table][$column] ? true : false;
+		return $results[$index][$table][$column];
 	}
 
 	$results[$index][$table][$column] = (db_fetch_cell("SHOW columns FROM `$table` LIKE '$column'", '', $log, $db_conn) ? true : false);
 
-	return $results[$index][$table][$column] ? true : false;
+	return $results[$index][$table][$column];
 }
 
 /**
