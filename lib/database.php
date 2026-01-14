@@ -2634,7 +2634,7 @@ function db_get_permissions(bool $include_unknown = false, bool $log = false, mi
 	return $perms;
 }
 
-function db_has_permissions(array $permissions, mixed $database = false, bool $log = false, mixed $db_conn = false) : bool {
+function db_has_permissions(mixed $permissions, mixed $database = false, bool $log = false, mixed $db_conn = false) : bool {
 	global $database_default;
 
 	if ($database == false) {
