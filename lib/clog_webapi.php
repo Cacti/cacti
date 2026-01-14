@@ -178,7 +178,7 @@ function clog_purge_logfile(string $action = 'purge') : void {
 					raise_message('clog_removed', __('Removal Failed due to the Administrator blocking removal of archived files.  The file \'%s\' can not be removed.', basename($purgefile)), MESSAGE_LEVEL_WARN);
 				}
 			} else {
-				if ($action !== 'rotate') {
+				if ($action === 'rotate') {
 					$ext = date('Ymd-His');
 					rename($logfile, $logfile . '-' . $ext);
 				}
