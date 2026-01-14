@@ -49,27 +49,27 @@ if (cacti_sizeof($parms)) {
 	$description   = '';
 	$ip            = '';
 	$poller_id     = $config['poller_id'];
-	$site_id       = read_config_option('default_site');
-	$template_id   = (int) read_config_option('default_template');
-	$community     = read_config_option('snmp_community');
-	$snmp_ver      = read_config_option('snmp_version');
+	$site_id       = read_config_option('default_site') ?? 0;
+	$template_id   = (int) read_config_option('default_template') ?? 0;
+	$community     = read_config_option('snmp_community') ?? '';
+	$snmp_ver      = read_config_option('snmp_version') ?? 2;
 	$disable       = 0;
 
 	$notes         = '';
 	$location      = '';
 	$external_id   = '';
 
-	$snmp_username        = read_config_option('snmp_username');
-	$snmp_password        = read_config_option('snmp_password');
-	$snmp_auth_protocol   = read_config_option('snmp_auth_protocol');
-	$snmp_priv_passphrase = read_config_option('snmp_priv_passphrase');
-	$snmp_priv_protocol   = read_config_option('snmp_priv_protocol');
+	$snmp_username        = read_config_option('snmp_username') ?? '';
+	$snmp_password        = read_config_option('snmp_password') ?? '';
+	$snmp_auth_protocol   = read_config_option('snmp_auth_protocol') ?? '';
+	$snmp_priv_passphrase = read_config_option('snmp_priv_passphrase') ?? '';
+	$snmp_priv_protocol   = read_config_option('snmp_priv_protocol') ?? '';
 	$snmp_context         = '';
 	$snmp_engine_id       = '';
-	$snmp_port            = read_config_option('snmp_port');
-	$snmp_timeout         = read_config_option('snmp_timeout');
-	$snmp_retries         = read_config_option('snmp_retries');
-	$snmp_options         = read_config_option('snmp_options');
+	$snmp_port            = read_config_option('snmp_port') ?? 161;
+	$snmp_timeout         = read_config_option('snmp_timeout') ?? 500;
+	$snmp_retries         = read_config_option('snmp_retries') ?? 3;
+	$snmp_options         = read_config_option('snmp_options') ?? '';
 
 	if (empty($snmp_options)) {
 		$snmp_options = 0;
