@@ -150,13 +150,6 @@ function clog_purge_logfile(string $action = 'purge') : void {
 		return;
 	}
 
-	/* fill in the current date for printing in the log */
-	if (defined('CACTI_DATE_TIME_FORMAT')) {
-		$date = date(CACTI_DATE_TIME_FORMAT);
-	} else {
-		$date = date('Y-m-d H:i:s');
-	}
-
 	if ($action == 'purge') {
 		$imessage = __('The Cacti Log File \'%s\' was Removed by user \'%s\'', basename($purgefile), get_username());
 		$message  = sprintf('The Cacti Log File \'%s\', Removed by user \'%s\'', basename($purgefile), get_username());
