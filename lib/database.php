@@ -2457,7 +2457,7 @@ function db_switch_main_to_local() : bool {
  *
  * @return int - return status of the executed command
  */
-function db_dump_data(string $database = '', string $tables = '', array $credentials = [], bool $output_file = false, string $options = '--extended-insert=FALSE') : int {
+function db_dump_data(string $database = '', string $tables = '', array $credentials = [], mixed $output_file = false, string $options = '--extended-insert=FALSE') : int {
 	global $database_default, $database_username, $database_password;
 
 	$credentials_string = '';
