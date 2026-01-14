@@ -52,6 +52,9 @@ log/**
 # Ignore Cacti rrd files/folders
 rra/**
 
+# Include composer files 
+include/vendor/*
+
 # Ignore Cacti cache files/folders
 cache/**
 *.cache
