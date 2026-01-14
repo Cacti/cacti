@@ -674,7 +674,7 @@ function update_show_current() {
 							<span>
 								<button type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='go' title='<?php print __esc('Set/Refresh Filters'); ?>'><?php print __esc('Go'); ?></button>
 								<button type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='clear' title='<?php print __esc('Clear Filters'); ?>'><?php print __esc('Clear'); ?></button>
-								<button type='button' class='ui-button ui-corner-all ui-widget' id='latest' value='latest' <?php print read_config_option('github_access_token') == '' ? 'disabled=disabled':'';?> title='<?php print read_config_option('github_access_token') == '' ? __esc('To enable fetching of plugins, set your credentials under Console > Configuration > Settings > General') : __esc('Fetch the list of the latest Cacti Plugins'); ?>'><?php print __esc('Check Latest'); ?></button>
+								<button type='button' class='ui-button ui-corner-all ui-widget' id='latest' value='latest' <?php print read_config_option('github_access_token') == '' ? 'disabled=disabled' : ''; ?> title='<?php print read_config_option('github_access_token') == '' ? __esc('To enable fetching of plugins, set your credentials under Console > Configuration > Settings > General') : __esc('Fetch the list of the latest Cacti Plugins'); ?>'><?php print __esc('Check Latest'); ?></button>
 							</span>
 						</td>
 					</tr>
@@ -915,24 +915,24 @@ function update_show_current() {
 			case 8:
 				$sql_where = 'WHERE (
 					pi.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR
-					pi.author LIKE '	  . db_qstr('%' . get_request_var('filter') . '%') . ' OR
-					pa.plugin LIKE '	  . db_qstr('%' . get_request_var('filter') . '%') . ' OR
-					pa.webpage LIKE '	  . db_qstr('%' . get_request_var('filter') . '%') . ' OR
+					pi.author LIKE '      . db_qstr('%' . get_request_var('filter') . '%') . ' OR
+					pa.plugin LIKE '      . db_qstr('%' . get_request_var('filter') . '%') . ' OR
+					pa.webpage LIKE '     . db_qstr('%' . get_request_var('filter') . '%') . ' OR
 					pa.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR
-					pa.author LIKE '	  . db_qstr('%' . get_request_var('filter') . '%') . ' OR
-					pi.plugin LIKE '	  . db_qstr('%' . get_request_var('filter') . '%') .
+					pa.author LIKE '      . db_qstr('%' . get_request_var('filter') . '%') . ' OR
+					pi.plugin LIKE '      . db_qstr('%' . get_request_var('filter') . '%') .
 				')';
 
 				break;
 			case 6:
 				$sql_where = 'WHERE (
 					pi.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR
-					pi.author LIKE '	  . db_qstr('%' . get_request_var('filter') . '%') . ' OR
-					pa.plugin LIKE '	  . db_qstr('%' . get_request_var('filter') . '%') . ' OR
-					pa.webpage LIKE '	  . db_qstr('%' . get_request_var('filter') . '%') . ' OR
+					pi.author LIKE '      . db_qstr('%' . get_request_var('filter') . '%') . ' OR
+					pa.plugin LIKE '      . db_qstr('%' . get_request_var('filter') . '%') . ' OR
+					pa.webpage LIKE '     . db_qstr('%' . get_request_var('filter') . '%') . ' OR
 					pa.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR
-					pa.author LIKE '	  . db_qstr('%' . get_request_var('filter') . '%') . ' OR
-					pi.plugin LIKE '	  . db_qstr('%' . get_request_var('filter') . '%') .
+					pa.author LIKE '      . db_qstr('%' . get_request_var('filter') . '%') . ' OR
+					pi.plugin LIKE '      . db_qstr('%' . get_request_var('filter') . '%') .
 				')';
 
 				break;

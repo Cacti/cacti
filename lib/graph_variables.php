@@ -645,7 +645,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
  * @param int   $graph_end          - the end time to use for the data calculation. this value can
  *                                    either be absolute (unix timestamp) or relative (to now)
  * @param int   $rra_step           - how many periods each sample in the RRA counts for, values
-                                      above '1' result in an averaged summation
+ *                                    above '1' result in an averaged summation
  * @param int   $ds_step            - how many seconds each period represents
  *
  * @return string - a string containing the bandwidth summation suitable for placing on the graph

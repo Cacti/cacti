@@ -134,12 +134,19 @@ function clog_purge_logfile($action = 'purge') : void {
 	/* basic checking */
 	if ($action == 'rotate' && $log_action == LOG_ACTION_PURGE) {
 		raise_message('rotate_failed', __('Cacti Log file rotation failed for Log File \'%s\'.  User \'%s\' wished to rotate, but rotating is disabled', basename($purgefile), get_username()), MESSAGE_LEVEL_ERROR);
+
 		return;
-	} elseif ($action == 'purge' && $log_action == LOG_ACTION_ROTATE) {
+	}
+
+	if ($action == 'purge' && $log_action == LOG_ACTION_ROTATE) {
 		raise_message('purge_failed', __('Cacti Log file purging failed for Log File \'%s\'.  User \'%s\' wished to purge, but purging is disabled', basename($purgefile), get_username()), MESSAGE_LEVEL_ERROR);
+
 		return;
-	} elseif ($filename != $cactiLog && $filename != $errorLog && $action == 'rotate') {
+	}
+
+	if ($filename != $cactiLog && $filename != $errorLog && $action == 'rotate') {
 		raise_message('rotate_failed', __('Cacti Log file rotation failed for Log File \'%s\'.  User \'%s\' wished to rotate, but rotating is not allowed on already rotated files', basename($purgefile), get_username()), MESSAGE_LEVEL_ERROR);
+
 		return;
 	}
 
@@ -853,7 +860,7 @@ function clog_regex_replace(int $id, string $link, string $url, array $matches, 
  * Parses HTML content using a regular expression parser.
  *
  * @deprecated This function is deprecated and should not be used in new code.
-*
+ *
  * @param array $matches An array of matches from a regular expression.
  *
  * @return mixed The result of the `text_regex_parser()` function.

@@ -223,7 +223,7 @@ function set_user_setting(string $config_name, mixed $value, int|null $user = nu
 		db_execute_prepared('INSERT INTO settings_user
 			(user_id, name, value) VALUES (?, ?, ?)
 			ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)',
-			array($user, $config_name, $value));
+			[$user, $config_name, $value]);
 
 		$_SESSION[OPTIONS_USER][$config_name] = $value;
 		$settings_user[$config_name]['value'] = $value;
@@ -429,7 +429,7 @@ function set_config_option(string $config_name, mixed $value, bool $remote = fal
 	db_execute_prepared('INSERT INTO settings
 		(name, value) VALUES (?, ?)
 		ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)',
-		array($config_name, $value));
+		[$config_name, $value]);
 
 	if ($remote && !is_remote_path_setting($config_name)) {
 		$gone_time = read_config_option('poller_interval') * 2;
@@ -924,6 +924,7 @@ function check_changed(string|int $request, string $session) : int {
 			return 1;
 		}
 	}
+
 	return 0;
 }
 
@@ -1284,6 +1285,7 @@ function clear_messages() : bool {
 	if ($need_session) {
 		cacti_session_close();
 	}
+
 	return true;
 }
 
@@ -1461,8 +1463,8 @@ function cacti_log(string $string, bool $output = false, string $environ = 'CMDP
 	}
 
 	if ($depth > 1) {
-		print "Recursion Loop detected.  Check Database" . PHP_EOL;
-		print "Message: " . trim($string) . PHP_EOL;
+		print 'Recursion Loop detected.  Check Database' . PHP_EOL;
+		print 'Message: ' . trim($string) . PHP_EOL;
 		exit;
 	}
 

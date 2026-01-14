@@ -1203,7 +1203,7 @@ function query_snmp_host(int $host_id, int $snmp_query_id) : bool {
 
 				if (isset($field_array['rewrite_index'])) {
 					$errmsg = [];
-					
+
 					$rewritten_indexes = data_query_rewrite_indexes($errmsg, $host_id, $snmp_query_id, $field_array['rewrite_index'], $snmp_indexes, $fields_processed);
 
 					if (cacti_sizeof($errmsg)) {
@@ -2020,6 +2020,7 @@ function decode_data_query_index(string $encoded_index, int $data_query_id, int 
 			}
 		}
 	}
+
 	return null;
 }
 
@@ -2132,7 +2133,6 @@ function update_graph_data_query_cache(int $local_graph_id, string $host_id = ''
 		update_graph_title_cache($local_graph_id);
 	}
 }
-
 
 /**
  * Updates the local data query cache for a particular data source

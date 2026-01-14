@@ -407,7 +407,7 @@ class MibCache {
 					db_execute('INSERT INTO `snmpagent_cache`
 						(name, value, oid)
 						VALUES ' . implode(', ', $sql) . '
-						ON DUPLICATE KEY UPDATE value=VALUES(value)', $sql);
+						ON DUPLICATE KEY UPDATE value=VALUES(value)');
 				}
 
 				return true;

@@ -244,6 +244,7 @@ function shift_right_boundary(&$span, $direction, $shift_size) {
  * @param array  &$span      - given timespan (start/end time as time-since-epoch and human readable)
  * @param string $direction  - "-" for shifting left, "+" for shifting right
  * @param mixed  $timeshift  - amount of shifting
+ * @param mixed $shift_size
  *
  * @return void
  */

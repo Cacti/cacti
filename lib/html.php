@@ -444,7 +444,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 					LEFT JOIN host AS h
 					ON gl.host_id = h.id
 					WHERE gl.id = ?',
-					array($graph['local_graph_id']));
+					[$graph['local_graph_id']]);
 
 				if (cacti_sizeof($gdata)) {
 					$graph['host_id']  = $gdata['host_id'];
@@ -3308,7 +3308,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_css('include/css/jquery.contextMenu.css');
 	print get_md5_include_css('include/css/billboard.css');
 	print get_md5_include_css('include/fa/css/all.css');
-    print get_md5_include_css('include/tabler/dist/tabler-icons.min.css');
+	print get_md5_include_css('include/tabler/dist/tabler-icons.min.css');
 	print get_md5_include_css('include/vendor/lipis/flag-icons/css/flag-icons.css');
 
 	/* Theme-based styles */
@@ -3339,7 +3339,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/jquery.hotkeys.js', true);
 	print get_md5_include_js('include/js/jquery.tablednd.js');
 	print get_md5_include_js('include/js/jquery.zoom.js', true);
-    print get_md5_include_js('include/js/jquery.contextMenu.js', true);
+	print get_md5_include_js('include/js/jquery.contextMenu.js', true);
 	print get_md5_include_js('include/js/jquery.multiselect.js');
 	print get_md5_include_js('include/js/jquery.multiselect.filter.js');
 	print get_md5_include_js('include/js/jquery.timepicker.js');

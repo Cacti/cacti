@@ -2291,6 +2291,7 @@ function poller_push_table($db_cnn, $records, $table, $ignore = false, $dupes = 
  * recently, and if so, return true else return false.
  *
  * @param  int  - The remote poller id
+ * @param mixed $poller_id
  *
  * @return bool - True if up else false
  */

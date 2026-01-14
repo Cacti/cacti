@@ -180,7 +180,6 @@ if (cacti_sizeof($parms)) {
 				set_install_option($options, 'notify_admin', 'Notify Admin', $value);
 
 				break;
-
 			case '--adminemailaddress':
 			case '-e':
 				if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
@@ -192,7 +191,6 @@ if (cacti_sizeof($parms)) {
 				}
 
 				break;
-
 				/* Bad or unexpected parameter! */
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;

@@ -413,8 +413,10 @@ function boost_fetch_cache_check(int $local_data_id, mixed $rrdtool_pipe = null)
 		if ($close_pipe) {
 			rrd_close($rrdtool_pipe);
 		}
+
 		return true;
 	}
+
 	return false;
 }
 
@@ -683,7 +685,7 @@ function boost_prep_graph_array(array $graph_data_array) : array {
  *
  * @return void
  */
-function boost_graph_set_file( string|null &$output, int $local_graph_id, int|null $rra_id) : void {
+function boost_graph_set_file(string|null &$output, int $local_graph_id, int|null $rra_id) : void {
 	global $graph_data_array;
 
 	/* get access to the SNMP Cache of BOOST*/
@@ -1713,7 +1715,7 @@ function boost_rrdtool_function_create(int $local_data_id, bool $show_source, mi
 /**
  * A re-write of the Cacti rrdtool update command specifically designed for bulk updates
  *
-  * @param int $local_data_id The ID of the local data source.
+ * @param int $local_data_id The ID of the local data source.
  * @param string $rrd_path The file path to the RRD file.
  * @param string $rrd_update_template The template string for the RRD update.
  * @param string &$rrd_update_values The values to update the RRD file with (passed by reference).
@@ -1773,6 +1775,7 @@ function boost_rrdtool_function_update(int $local_data_id, string $rrd_path, str
 
 		return 'OK';
 	}
+
 	return 'OK';
 }
 

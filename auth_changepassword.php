@@ -237,8 +237,8 @@ switch ($action) {
 				WHERE id = ?",
 				[compat_password_hash($password,PASSWORD_DEFAULT), $user_id]);
 
-			db_execute_prepared("DELETE FROM user_auth_cache
-				WHERE user_id = ?",
+			db_execute_prepared('DELETE FROM user_auth_cache
+				WHERE user_id = ?',
 				[$_SESSION[SESS_USER_ID]]);
 
 			kill_session_var(SESS_CHANGE_PASSWORD);

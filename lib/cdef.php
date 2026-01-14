@@ -55,6 +55,7 @@ function get_cdef_item_name(int $cdef_item_id) : string {
 
 			break;
 	}
+
 	return '';
 }
 /**
