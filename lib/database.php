@@ -2245,11 +2245,11 @@ function db_strip_control_chars(string $sql) : string {
  * db_get_column_attributes - Get the attributes for a column or columns
  *
  * @param string $table  - The name of the table
- * @param array $columns - A comma separated list of columns
+ * @param mixed $columns - A comma separated list of columns
  *
  * @return mixed - An array of column attributes on success or false if failed
  */
-function db_get_column_attributes(string $table, array $columns) : mixed {
+function db_get_column_attributes(string $table, mixed $columns) : mixed {
 	if (empty($columns) || empty($table)) {
 		return false;
 	}
