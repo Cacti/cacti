@@ -1848,7 +1848,7 @@ function db_table_create(string $table, array $data, bool $log = true, mixed $db
 		}
 	}
 
-	return false;
+	return true;
 }
 
 /**
