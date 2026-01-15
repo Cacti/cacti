@@ -220,7 +220,7 @@ function db_connect_real(string $device, string $user, string $pass, string $db_
 				$timezone = db_fetch_cell_prepared('SELECT timezone
 					FROM poller
 					WHERE id = ?',
-					[POLLER_ID], false);
+					[POLLER_ID], '', false);
 			} else {
 				$timezone = '';
 			}
@@ -274,23 +274,22 @@ function db_connect_real(string $device, string $user, string $pass, string $db_
  */
 function db_check_reconnect(mixed $db_conn = false, bool $log = true) : bool {
 	global $database_details;
+	global $database_hostname;
+	global $database_username;
+	global $database_password;
+	global $database_default;
+	global $database_type;
+	global $database_port;
+	global $database_retries;
+	global $database_ssl;
+	global $database_ssl_key;
+	global $database_ssl_cert;
+	global $database_ssl_ca;
+	global $database_ssl_capath;
+	global $database_ssl_verify_server_cert;
 
 	if (file_exists(CACTI_PATH_INCLUDE . '/config.php')) {
 		include(CACTI_PATH_INCLUDE . '/config.php');
-	} else {
-		global $database_hostname;
-		global $database_username;
-		global $database_password;
-		global $database_default;
-		global $database_type;
-		global $database_port;
-		global $database_retries;
-		global $database_ssl;
-		global $database_ssl_key;
-		global $database_ssl_cert;
-		global $database_ssl_ca;
-		global $database_ssl_capath;
-		global $database_ssl_verify_server_cert;
 	}
 
 	if (cacti_sizeof($database_details) && $db_conn !== false) {
@@ -387,7 +386,7 @@ function db_check_reconnect(mixed $db_conn = false, bool $log = true) : bool {
 	}
 }
 
-function db_warning_handler($errno, $errstr, $errfile, $errline, $errcontext = []) {
+function db_warning_handler(int $errno, string $errstr, string $errfile, int $errline, array $errcontext = []) : bool|null {
 	throw new Exception($errstr, $errno);
 }
 
@@ -576,7 +575,7 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 			db_echo_sql('db_' . $execute_name . ' Memory [Before]: ' . memory_get_usage() . ' / ' . memory_get_peak_usage() . "\n");
 		}
 
-		set_error_handler('db_warning_handler',E_WARNING | E_NOTICE);
+		set_error_handler('db_warning_handler', E_WARNING | E_NOTICE);
 
 		try {
 			if (empty($params) || cacti_count($params) == 0) {
@@ -589,6 +588,7 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 			$en        = $code;
 			$errorinfo = [1=>$code, 2=>$ex->getMessage()];
 		}
+
 		restore_error_handler();
 
 		if (!empty($config['DEBUG_SQL_CMD'])) {
@@ -623,17 +623,20 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 					if (!is_array($return_params)) {
 						$return_params = [$return_params];
 					}
+
 					$return_array = array_merge($return_array, $return_params);
 				}
 
 				if (!empty($config['DEBUG_SQL_FLOW'])) {
-					db_echo_sql('db_' . $execute_name . '_return_func: \'' . $return_func . '\' (' . function_exists($return_func) . ")\n");
+					db_echo_sql('db_' . $execute_name . '_return_func: \'' . $return_func . '\' (' . $return_func . ")\n");
 					db_echo_sql('db_' . $execute_name . '_return_func: params ' . clean_up_lines(var_export($return_array, true)) . "\n");
 				}
 
 				$return_value = call_user_func_array($return_func, $return_array);
 			}
+
 			$query->closeCursor();
+
 			unset($query);
 
 			if (!empty($config['DEBUG_SQL_FLOW'])) {
@@ -647,6 +650,7 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 			if (isset($query)) {
 				$query->closeCursor();
 			}
+
 			unset($query);
 
 			if (!db_column_exists('settings', 'name')) {
@@ -671,10 +675,10 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 					}
 
 					cacti_log('ERROR: A DB ' . $execute_name . ' Too Large!, Error: ' . $en . ', SQL: \'' . clean_up_lines($sql) . '\'', false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
-					cacti_log('ERROR: A DB ' . $execute_name . ' Too Large!, Error: ' . $errorinfo[2], false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
+					cacti_log('ERROR: A DB ' . $execute_name . ' Too Large!, Error: ' . ($errorinfo[2] ?? '<no error>'), false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
 					cacti_debug_backtrace('SQL', false, true, 0, 1);
 
-					$database_last_error = 'DB ' . $execute_name . ' Too Large!, Error ' . $en . ': ' . $errorinfo[2];
+					$database_last_error = 'DB ' . $execute_name . ' Too Large!, Error ' . $en . ': ' . ($errorinfo[2] ?? '<no error>');
 				} elseif ($en == 2002 || $en == 2006) {
 					$errors++;
 
@@ -690,7 +694,7 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 					}
 				} else {
 					cacti_log('ERROR: A DB ' . $execute_name . ' Failed!, Error: ' . $en . ', SQL: \'' . clean_up_lines($sql) . '\'', false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
-					cacti_log('ERROR: A DB ' . $execute_name . ' Failed!, Error: ' . $errorinfo[2], false);
+					cacti_log('ERROR: A DB ' . $execute_name . ' Failed!, Error: ' . ($errorinfo[2] ?? '<no error>'), false);
 					cacti_debug_backtrace('SQL', false, true, 0, 1);
 
 					$database_last_error = 'DB ' . $execute_name . ' Failed!, Error ' . $en . ': ' . ($errorinfo[2] ?? '<no error>');
@@ -704,14 +708,6 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 			return false;
 		}
 	}
-
-	unset($query);
-
-	if (!empty($config['DEBUG_SQL_FLOW'])) {
-		db_echo_sql($database_last_error);
-	}
-
-	return false;
 }
 
 /**
@@ -761,12 +757,12 @@ function db_fetch_cell_prepared(string $sql, array $params = [], string $col_nam
  * db_fetch_cell_return - Function to process and return data from the
  * db_fetch_cell function
  *
- * @param string $query - The SQL query to run
+ * @param PDOStatement $query - The SQL query to run
  * @param string $col_name - The column to return if the query is more row or associative
  *                           in the case of associated, returns the column from the first row.
- * @return bool|string - The value of the column or false if failed
+ * @return mixed - The value of the column or false if failed
  */
-function db_fetch_cell_return($query, $col_name = '') {
+function db_fetch_cell_return(PDOStatement $query, string $col_name = '') {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
@@ -892,7 +888,7 @@ function db_fetch_assoc_prepared(string $sql, array $params = [], bool $log = tr
  *
  * @param PDOStatement $query - The prepared Query
  *
- * @return bool|array - The associated array of data, or false on failure
+ * @return array - The associated array of data, or false on failure
  */
 function db_fetch_assoc_return(PDOStatement $query) : array {
 	global $config;
@@ -903,7 +899,7 @@ function db_fetch_assoc_return(PDOStatement $query) : array {
 
 	$r = $query->fetchAll(PDO::FETCH_ASSOC);
 
-	return (is_array($r)) ? $r : [];
+	return (cacti_sizeof($r)) ? $r : [];
 }
 
 /**
@@ -958,14 +954,14 @@ function db_affected_rows(mixed $db_conn = false) : mixed {
  * db_add_column - add a column to table
  *
  * @param string $table - The name of the table
- * @param string $column - Array of column data ex: array('name' => 'test' .
+ * @param array  $column - Array of column data ex: array('name' => 'test' .
  *                         rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false)
  * @param bool   $log - Whether to log error messages, defaults to true
  * @param mixed  $db_conn - The connection to use or false to use the default
  *
  * @return mixed - '1' for success, false for error
  */
-function db_add_column(string $table, string $column, bool $log = true, mixed $db_conn = false) : mixed {
+function db_add_column(string $table, array $column, bool $log = true, mixed $db_conn = false) : mixed {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	// check for a connection being passed, if not use legacy behavior
@@ -1050,13 +1046,13 @@ function db_add_column(string $table, string $column, bool $log = true, mixed $d
  * db_change_column - update a column to table
  *
  * @param string $table - the name of the table
- * @param string $column - array of column data ex: array('old_name' => 'test', 'name' => 'newtest' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false)
+ * @param array  $column - array of column data ex: array('old_name' => 'test', 'name' => 'newtest' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false)
  * @param bool   $log - whether to log error messages, defaults to true
  * @param mixed  $db_conn
  *
  * @return bool - '1' for success, '0' for error
  */
-function db_change_column(string $table, string $column, bool $log = true, mixed $db_conn = false) : bool {
+function db_change_column(string $table, array $column, bool $log = true, mixed $db_conn = false) : bool {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	// check for a connection being passed, if not use legacy behavior
@@ -1170,7 +1166,7 @@ function db_remove_column(string $table, string $column, bool $log = true, mixed
 		$columns[] = $arr['Field'];
 	}
 
-	if (isset($column) && in_array($column, $columns, true)) {
+	if (in_array($column, $columns, true)) {
 		$sql = 'ALTER TABLE `' . $table . '` DROP `' . $column . '`';
 
 		return db_execute($sql, $log, $db_conn);
@@ -1192,10 +1188,6 @@ function db_remove_column(string $table, string $column, bool $log = true, mixed
  * @return bool - The result of the operation true or false
  */
 function db_add_index(string $table, string $type, string $key, array $columns, bool $log = true, mixed $db_conn = false) : bool {
-	if (!is_array($columns)) {
-		$columns = [$columns];
-	}
-
 	$sql = 'ALTER TABLE `' . $table . '` ADD ' . $type . ' `' . $key . '`(`' . implode('`,`', $columns) . '`)';
 
 	if (db_index_exists($table, $key, false, $db_conn)) {
@@ -1259,10 +1251,6 @@ function db_index_matches(string $table, string $index, array $columns, bool $lo
 
 	if (!isset($database_log)) {
 		$database_log = false;
-	}
-
-	if (!is_array($columns)) {
-		$columns = [$columns];
 	}
 
 	$_log         = $database_log;
@@ -1337,7 +1325,7 @@ function db_table_exists(string $table, bool $log = true, mixed $db_conn = false
 	// Separate the database from the table and remove backticks
 	preg_match("/([`]{0,1}(?<database>[\w_]+)[`]{0,1}\.){0,1}[`]{0,1}(?<table>[\w_]+)[`]{0,1}/", $table, $matches);
 
-	if ($matches !== false && array_key_exists('table', $matches)) {
+	if (cacti_sizeof($matches) && array_key_exists('table', $matches)) {
 		$sql = 'SHOW TABLES LIKE \'' . $matches['table'] . '\'';
 
 		$results[$index][$table] = (db_fetch_cell($sql, '', $log, $db_conn) ? true : false);
@@ -1469,7 +1457,7 @@ function db_get_table_column_types(string $table, mixed $db_conn = false) : mixe
  * @param  bool   $log - Whether to log error messages, defaults to true
  * @param  mixed  $db_conn - The connection to use or false to use the default
  *
- * @return array - An array of column types indexed by the column names or false on error
+ * @return mixed - An array of column types indexed by the column names or false on error
  */
 function db_update_table(string $table, array $data, bool $removecolumns = false, bool $log = true, mixed $db_conn = false) : mixed {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
@@ -1960,6 +1948,8 @@ function db_commit_transaction(mixed $db_conn = false) : bool {
 
 	if (db_fetch_cell('SELECT @@in_transaction') > 0) {
 		return $db_conn->commit();
+	} else {
+		return false;
 	}
 }
 
@@ -2010,6 +2000,8 @@ function array_to_sql_or(array $array, string $sql_column) : mixed {
 
 		return $sql_or;
 	}
+
+	return '';
 }
 
 /**
@@ -2343,7 +2335,7 @@ function db_check_password_length() : void {
  * db_echo_sql - log the database call SQL to the systems tmpdir
  *
  * @param string $line  - The SQL data to be executed
- * @param mixed  $force - Not used
+ * @param bool   $force - Not used
  *
  * @return void
  */
