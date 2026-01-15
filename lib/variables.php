@@ -50,9 +50,9 @@ function update_data_source_title_cache_from_template(int $data_template_id) : v
  * @param int $snmp_query_id - The ID of the data query to match
  * @param int $snmp_index    - The index within the data query to match
  *
- * @return string - The modified string
+ * @return void
  */
-function update_data_source_title_cache_from_query($snmp_query_id, $snmp_index) {
+function update_data_source_title_cache_from_query($snmp_query_id, $snmp_index) : void {
 	$data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
 		FROM data_local
 		WHERE snmp_query_id = ?
@@ -260,7 +260,7 @@ function update_graph_title_cache($local_graph_id) {
  *
  * @param string $string - The string to clean out unsubstituted variables for
  *
- * @return         - The cleaned up string
+ * @return string - The cleaned up string
  */
 function null_out_substitutions($string) {
 	if ($string != '') {
@@ -279,7 +279,7 @@ function null_out_substitutions($string) {
  * @param  int    $snmp_index - The data query index to match
  * @param  string $title - The original string that contains the data query variables
  *
- * @return - the original string with all of the variable substitutions made
+ * @return string - the original string with all of the variable substitutions made
  */
 function expand_title($host_id, $snmp_query_id, $snmp_index, $title) {
 	if ((strstr($title, '|')) && (!empty($host_id))) {
@@ -489,7 +489,7 @@ function substitute_snmp_query_data($string, $host_id, $snmp_query_id, $snmp_ind
  * substitute_data_input_data - takes a string and substitutes all data input
  * variables contained in it.
  *
- * @param string $sring - The original string that contains the data input variables
+ * @param string $string - The original string that contains the data input variables
  * @param int    $graph - The local data id to match
  * @param int    $local_data_id - The maximum number of characters to substitute
  * @param int    $max_chars - The maximum number of characters to process
