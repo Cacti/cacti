@@ -27,11 +27,10 @@
  *
  * @param int|array $local_data_ids - the data source array to perform the Nth percentile calculation
  * @param int       $start_seconds - start seconds of time range
- * @param int       $stop_seconds - stop seconds of time range
+ * @param int       $end_seconds - stop seconds of time range
  * @param int       $percentile - Nth Percentile to calculate, integer between 1 and 99
  * @param int       $resolution - the accuracy of the data measured in seconds
- * @param mixed $end_seconds
- * @param mixed $peak
+ * @param bool      $peak
  *
  * @return double   an array containing each data source item, and its 95th percentile
  */
@@ -67,12 +66,11 @@ function nth_percentile($local_data_ids, $start_seconds, $end_seconds, $percenti
  *
  * @param int|array     $local_data_ids - the data source array to perform the Nth percentile calculation
  * @param int           $start_seconds - start seconds of time range
- * @param int           $stop_seconds - stop seconds of time range
+ * @param int           $end_seconds - stop seconds of time range
  * @param int           $percentile - Nth Percentile to calculate, integer between 1 and 99
  * @param int           $resolution - the accuracy of the data measured in seconds
+ * @param bool          $peak
  * @param resource|null $rrdtool_pipe - the RRDtool socket connection if there is one
- * @param mixed $end_seconds
- * @param mixed $peak
  *
  * @return string JSON data containing each data source item, and its 95th percentile
  */
@@ -449,6 +447,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 	global $graph_item_types;
 
 	$nth_cache = [];
+	$local_data_array = [];
 
 	if (cacti_sizeof($regexp_match_array) == 0) {
 		return 0;

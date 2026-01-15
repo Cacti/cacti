@@ -26,11 +26,11 @@
  * update_data_source_title_cache_from_template - updates the title cache for all data sources
  * that match a given data template
  *
- * @param int   $data_template_id  - The ID of the data template to match
+ * @param int  $data_template_id  - The ID of the data template to match
  *
  * @return void
  */
-function update_data_source_title_cache_from_template($data_template_id) {
+function update_data_source_title_cache_from_template(int $data_template_id) : void {
 	$data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' local_data_id
 		FROM data_template_data
 		WHERE data_template_id = ?
@@ -47,12 +47,10 @@ function update_data_source_title_cache_from_template($data_template_id) {
 /** update_data_source_title_cache_from_query - updates the title cache for all data sources
  * that match a given data query/index combination
  *
- * @param  int     - The ID of the data query to match
- * @param  int     - The index within the data query to match
- * @param mixed $snmp_query_id
- * @param mixed $snmp_index
+ * @param int $snmp_query_id - The ID of the data query to match
+ * @param int $snmp_index    - The index within the data query to match
  *
- * @return string  - The modified string
+ * @return string - The modified string
  */
 function update_data_source_title_cache_from_query($snmp_query_id, $snmp_index) {
 	$data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
@@ -166,7 +164,7 @@ function update_graph_title_cache_from_template($graph_template_id) {
  * update_graph_title_cache_from_query - updates the title cache for all graphs
  * that match a given data query/index combination
  *
- * @param  int  $snmp_query_id - The ID of the data query to match
+ * @param int   $snmp_query_id - The ID of the data query to match
  * @param mixed $snmp_index    - The index within the data query to match
  *
  * @return void
@@ -260,8 +258,7 @@ function update_graph_title_cache($local_graph_id) {
  * null_out_substitutions - takes a string and cleans out any host variables that
  * do not have values.
  *
- * @param  string  - The string to clean out unsubstituted variables for
- * @param mixed $string
+ * @param string $string - The string to clean out unsubstituted variables for
  *
  * @return         - The cleaned up string
  */
@@ -277,14 +274,10 @@ function null_out_substitutions($string) {
  * expand_title - takes a string and substitutes all data query variables contained
  * in it or cleans them out if no data query is in use.
  *
- * @param  int     - The host ID to match
- * @param  int     - The data query ID to match
- * @param  int     - The data query index to match
- * @param  string  - The original string that contains the data query variables
- * @param mixed $host_id
- * @param mixed $snmp_query_id
- * @param mixed $snmp_index
- * @param mixed $title
+ * @param  int    $host_id - The host ID to match
+ * @param  int    $snmp_query_id - The data query ID to match
+ * @param  int    $snmp_index - The data query index to match
+ * @param  string $title - The original string that contains the data query variables
  *
  * @return - the original string with all of the variable substitutions made
  */
@@ -319,8 +312,7 @@ function expand_title($host_id, $snmp_query_id, $snmp_index, $title) {
  * substitute_script_query_path - takes a string and substitutes all path
  * variables contained in it.
  *
- * @param  string  - The string to make path variable substitutions on
- * @param mixed $path
+ * @param string $path - The string to make path variable substitutions on
  *
  * @return string  - The original string with all of the variable substitutions made
  */
@@ -334,14 +326,10 @@ function substitute_script_query_path($path) {
 /**
  * substitute_host_data - takes a string and substitutes all host variables contained in it
  *
- * @param  string  - The string to make host variable substitutions on
- * @param  string  - The character used to escape each variable on the left side
- * @param  string  - The character used to escape each variable on the right side
- * @param  int     - The host ID to match
- * @param mixed $string
- * @param mixed $l_escape_string
- * @param mixed $r_escape_string
- * @param mixed $host_id
+ * @param string $string - The string to make host variable substitutions on
+ * @param string $l_escape_string - The character used to escape each variable on the left side
+ * @param string $r_escape_string - The character used to escape each variable on the right side
+ * @param int    $host_id - The host ID to match
  *
  * @return string   - the original string with all of the variable substitutions made
  */
@@ -453,16 +441,11 @@ function substitute_host_data($string, $l_escape_string, $r_escape_string, $host
  * substitute_snmp_query_data - takes a string and substitutes all data query
  * variables contained in it.
  *
- * @param  string  - The origina string that contains the data query variables
- * @param  int     - The host ID to match
- * @param  int     - The data query ID to match
- * @param  int     - The data query index to match
- * @param  int     - The maximum number of characters to substitute
- * @param mixed $string
- * @param mixed $host_id
- * @param mixed $snmp_query_id
- * @param mixed $snmp_index
- * @param mixed $max_chars
+ * @param string  $string - The origina string that contains the data query variables
+ * @param int     $host_id - The host ID to match
+ * @param int     $snmp_query_id - The data query ID to match
+ * @param int     $snmp_index - The data query index to match
+ * @param int     $max_chars - The maximum number of characters to substitute
  *
  * @return string  - the original string with all of the variable substitutions made
  */
@@ -506,13 +489,10 @@ function substitute_snmp_query_data($string, $host_id, $snmp_query_id, $snmp_ind
  * substitute_data_input_data - takes a string and substitutes all data input
  * variables contained in it.
  *
- * @param  string  - The original string that contains the data input variables
- * @param  int     - The local data id to match
- * @param  int     - The maximum number of characters to substitute
- * @param mixed $string
- * @param mixed $graph
- * @param mixed $local_data_id
- * @param mixed $max_chars
+ * @param string $sring - The original string that contains the data input variables
+ * @param int    $graph - The local data id to match
+ * @param int    $local_data_id - The maximum number of characters to substitute
+ * @param int    $max_chars - The maximum number of characters to process
  *
  * @return string  - the original string with all of the variable substitutions made
  */
@@ -572,13 +552,10 @@ function substitute_data_input_data($string, $graph, $local_data_id, $max_chars 
  * substitute_poller_data - takes a string and substitutes all data input
  * variables contained in it.
  *
- * @param  string  - The original string that contains the data input variables
- * @param  int     - The local data id to match
- * @param  int     - The maximum number of characters to substitute
- * @param mixed $string
- * @param mixed $graph
- * @param mixed $local_data_id
- * @param mixed $max_chars
+ * @param string $string - The original string that contains the data input variables
+ * @param int    $graph - The local data id to match
+ * @param int    $local_data_id - The maximum number of characters to substitute
+ * @param int    $max_chars - The maximum number of characters to process
  *
  * @return string  - the original string with all of the variable substitutions made
  */
@@ -634,14 +611,10 @@ function substitute_poller_data($string, $graph, $local_data_id, $max_chars = 0)
  * substitute_site_data - takes a string and substitutes all data input
  * variables contained in it.
  *
- * @param  string  - The original string that contains the data input variables
- * @param  array   - The Cacti graph object
- * @param  int     - The local data id to match
- * @param  int     - The maximum number of characters to substitute
- * @param mixed $string
- * @param mixed $graph
- * @param mixed $local_data_id
- * @param mixed $max_chars
+ * @param string $string - The original string that contains the data input variables
+ * @param array  $graph - The Cacti graph object
+ * @param int    $local_data_id - The local data id to match
+ * @param int    $max_chars - The maximum number of characters to substitute
  *
  * @return string  - the original string with all of the variable substitutions made
  */
