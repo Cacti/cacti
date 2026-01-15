@@ -32,11 +32,13 @@
  * @param int   $curr_time       - base date (time since epoch)
  * @param int   $timespan_given  - timespan as given by global_arrays.php($graph_timespans)
  * @param int   $first_weekdayid - first weekday (numeric representation)
+ *
+ * @return void
  */
-function get_timespan(&$span, $curr_time, $timespan_given, $first_weekdayid) {
+function get_timespan(array &$span, int $curr_time, int $timespan_given, int $first_weekdayid) : void {
 	// unless changed later, $span['end_now'] is always $curr_time
 	$span['begin_now'] 	 = $curr_time; // initialization only!
-	$span['end_now'] 	   = $curr_time;
+	$span['end_now'] 	 = $curr_time;
 
 	switch ($timespan_given) {
 		case GT_LAST_HALF_HOUR:
@@ -117,39 +119,39 @@ function get_timespan(&$span, $curr_time, $timespan_given, $first_weekdayid) {
 			break;
 		case GT_DAY_SHIFT:
 			// take this day, start and end time fetched from config_settings
-			$span['begin_now'] = strtotime(date('Y-m-d', $curr_time) . ' ' . read_user_setting('day_shift_start'));
+			$span['begin_now'] = (int) strtotime(date('Y-m-d', $curr_time) . ' ' . read_user_setting('day_shift_start'));
 			$span['end_now']   = strtotime(date('Y-m-d', $curr_time) . ' ' . read_user_setting('day_shift_end'));
 
 			break;
 		case GT_THIS_DAY:
 			// return Year-Month-Day for given 'time since epoch'
 			// and convert this to 'time since epoch' (Hour:Minute:Second set to 00:00:00)
-			$span['begin_now'] = strtotime(date('Y-m-d', $curr_time));
+			$span['begin_now'] = (int) strtotime(date('Y-m-d', $curr_time));
 			$span['end_now']   = strtotime('+1 day', $span['begin_now']) - 1;
 
 			break;
 		case GT_THIS_WEEK:
 			// compute offset to start-of-week
 			// remember: start-of-week may be > current-weekday, so do modulo calc
-			$offset            = (date('w',$curr_time) - $first_weekdayid + 7) % 7;
-			$span['begin_now'] = strtotime('-' . $offset . ' days' . date('Y-m-d', $curr_time));
+			$offset            = (date('w', $curr_time) - $first_weekdayid + 7) % 7;
+			$span['begin_now'] = (int) strtotime('-' . $offset . ' days' . date('Y-m-d', $curr_time));
 			$span['end_now']   = strtotime('+1 week', $span['begin_now']) - 1;
 
 			break;
 		case GT_THIS_MONTH:
 			// this date format set day-of-month to 01
-			$span['begin_now'] = strtotime(date('Y-m-01', $curr_time));
+			$span['begin_now'] = (int) strtotime(date('Y-m-01', $curr_time));
 			$span['end_now']   = strtotime('+1 month', $span['begin_now']) - 1;
 
 			break;
 		case GT_THIS_YEAR:
 			// this date format set day-of-month to 01 and month-of-year to 01
-			$span['begin_now'] = strtotime(date('Y-01-01', $curr_time));
+			$span['begin_now'] = (int) strtotime(date('Y-01-01', $curr_time));
 			$span['end_now']   = strtotime('+1 year', $span['begin_now']) - 1;
 
 			break;
 		case GT_PREV_DAY:
-			$span['begin_now'] = strtotime('-1 day' . date('Y-m-d', $curr_time));
+			$span['begin_now'] = (int) strtotime('-1 day' . date('Y-m-d', $curr_time));
 			$span['end_now']   = strtotime('+1 day', $span['begin_now']) - 1;
 
 			break;
@@ -157,17 +159,17 @@ function get_timespan(&$span, $curr_time, $timespan_given, $first_weekdayid) {
 			// compute offset to start-of-week
 			// remember: start-of-week may be > current-weekday, so do modulo calc
 			$offset            = (date('w',$curr_time) - $first_weekdayid + 7) % 7;
-			$span['begin_now'] = strtotime('-1 week -' . $offset . ' days' . date('Y-m-d', $curr_time));
+			$span['begin_now'] = (int) strtotime('-1 week -' . $offset . ' days' . date('Y-m-d', $curr_time));
 			$span['end_now']   = strtotime('+1 week', $span['begin_now']) - 1;
 
 			break;
 		case GT_PREV_MONTH:
-			$span['begin_now'] = strtotime('-1 month' . date('Y-m-01', $curr_time));
+			$span['begin_now'] = (int) strtotime('-1 month' . date('Y-m-01', $curr_time));
 			$span['end_now']   = strtotime('+1 month', $span['begin_now']) - 1;
 
 			break;
 		case GT_PREV_YEAR:
-			$span['begin_now'] = strtotime('-1 year' . date('Y-01-01', $curr_time));
+			$span['begin_now'] = (int) strtotime('-1 year' . date('Y-01-01', $curr_time));
 			$span['end_now']   = strtotime('+1 year', $span['begin_now']) - 1;
 
 			break;
@@ -178,8 +180,8 @@ function get_timespan(&$span, $curr_time, $timespan_given, $first_weekdayid) {
 	}
 
 	// reformat time-since-epoch start/end times to human readable format
-	$span['current_value_date1'] = date('Y-m-d H:i',$span['begin_now']);
-	$span['current_value_date2'] = date('Y-m-d H:i',$span['end_now']);
+	$span['current_value_date1'] = date('Y-m-d H:i', (int) $span['begin_now']);
+	$span['current_value_date2'] = date('Y-m-d H:i', (int) $span['end_now']);
 }
 
 /**
@@ -203,14 +205,15 @@ function month_shift($shift_size) {
  */
 function check_month_boundaries(&$span) {
 	// check left boundary -----------------------------------------------
-	$begin_of_month = strtotime(date('Y-m-01', $span['begin_now']));
-	$begin_match 	  = ($begin_of_month == $span['begin_now']);
+	$begin_of_month = (int) strtotime(date('Y-m-01', $span['begin_now']));
+	$begin_match 	= ($begin_of_month == $span['begin_now']);
 
 	// check right boundary ----------------------------------------------
 	// first, get a defined date of the month, $span['end_now'] belongs to
-	$begin_of_month = strtotime(date('Y-m-01', $span['end_now']));
+	$begin_of_month = (int) strtotime(date('Y-m-01', $span['end_now']));
+
 	// do "end of month" magic to get end_of_month for arbitrary months
-	$end_of_month = strtotime('+1 month', $begin_of_month) - 1;
+	$end_of_month   = (int) strtotime('+1 month', $begin_of_month) - 1;
 
 	// accept end of month if no seconds given (adjust for 59 missing seconds)
 	$end_match = ((($end_of_month - 59) <= $span['end_now']) && ($span['end_now'] <= $end_of_month));
@@ -221,18 +224,18 @@ function check_month_boundaries(&$span) {
 /**
  * shift_right_boundary - shift right boundary with end-of-month adjustment
  *
- * @param array $span       - timespan array
- * @param mixed $direction  - shift left/right (-/+)
- * @param mixed $shift_size - amount of shift
+ * @param array  $span       - timespan array
+ * @param string $direction  - shift left/right (-/+)
+ * @param mixed  $shift_size - amount of shift
  *
  * @return int        - time-since-epoch for shifted right boundary
  */
-function shift_right_boundary(&$span, $direction, $shift_size) {
+function shift_right_boundary(array &$span, string $direction, mixed $shift_size) : int {
 	// first, get begin of the month, $span['end_now'] belongs to
 	$begin = date('Y-m-01', $span['end_now']);
 
 	// shift the begin date to correct month
-	$begin_of_shifted_month	 = strtotime($direction . $shift_size . ' ' . $begin);
+	$begin_of_shifted_month	 = (int) strtotime($direction . $shift_size . ' ' . $begin);
 
 	// do "end of month" magic
 	return strtotime('+1 month', $begin_of_shifted_month) - 1;
@@ -243,12 +246,11 @@ function shift_right_boundary(&$span, $direction, $shift_size) {
  *
  * @param array  &$span      - given timespan (start/end time as time-since-epoch and human readable)
  * @param string $direction  - "-" for shifting left, "+" for shifting right
- * @param mixed  $timeshift  - amount of shifting
- * @param mixed $shift_size
+ * @param mixed  $shift_size - amount of shifting
  *
  * @return void
  */
-function shift_time(&$span, $direction, $shift_size) {
+function shift_time(array &$span, string $direction, mixed $shift_size) : void {
 	// move left/right according to $direction
 	// amount to be moved is derived from $shift_size
 	// base dates are taken from array $span
@@ -262,7 +264,7 @@ function shift_time(&$span, $direction, $shift_size) {
 	} else {
 		// 'normal' time shifting: use strtotime magic
 		$span['begin_now'] 	 = strtotime($direction . $shift_size . ' ' . $span['current_value_date1']);
-		$span['end_now'] 	   = strtotime($direction . $shift_size . ' ' . $span['current_value_date2']);
+		$span['end_now'] 	 = (int) strtotime($direction . $shift_size . ' ' . $span['current_value_date2']);
 	}
 
 	// convert to human readable format
