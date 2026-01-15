@@ -1306,7 +1306,7 @@ function html_create_list($form_data, $column_display, $column_id, $form_previou
  *
  * @return string $new_string - the escaped request variable to be returned.
  */
-function herv($string) {
+function htmlerv($string) {
 	return html_escape(gnrv($string));
 }
 
