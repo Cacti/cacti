@@ -26,7 +26,7 @@ function upgrade_to_1_2_26() {
 	db_install_execute("ALTER TABLE `settings` MODIFY `value` varchar(4096) not null default ''");
 	db_install_execute("ALTER TABLE `settings_user` MODIFY `value` varchar(4096) not null default ''");
 
-	/* rerun this function just in case for some reason it was missed */
+	// rerun this function just in case for some reason it was missed
 	$duplicates = db_install_fetch_assoc('SELECT hex, COUNT(*) AS totals
 		FROM colors
 		GROUP BY hex

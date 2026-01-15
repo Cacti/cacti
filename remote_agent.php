@@ -41,7 +41,7 @@ require_once(CACTI_PATH_LIBRARY . '/utility.php');
 $debug = false;
 
 if (POLLER_ID > 1 && CACTI_CONNECTION == 'online') {
-	if (get_nfilter_request_var('action') == 'runquery') {
+	if (gnrv('action') == 'runquery') {
 		db_force_remote_cnn();
 	}
 
@@ -58,7 +58,7 @@ if (!remote_client_authorized()) {
 
 set_default_action();
 
-switch (get_request_var('action')) {
+switch (grv('action')) {
 	case 'polldata':
 		// Only let realtime polling run for a short time
 		ini_set('max_execution_time', read_config_option('script_timeout'));
@@ -105,7 +105,7 @@ switch (get_request_var('action')) {
 
 		break;
 	default:
-		if (!api_plugin_hook_function('remote_agent', get_request_var('action'))) {
+		if (!api_plugin_hook_function('remote_agent', grv('action'))) {
 			debug('WARNING: Unknown Agent Request');
 			print 'Unknown Agent Request';
 		}
@@ -134,7 +134,7 @@ function remote_agent_strip_domain($host) {
 function remote_client_authorized() {
 	global $poller_db_cnn_id, $remote_agent_whitelist;
 
-	/* don't allow to run from the command line */
+	// don't allow to run from the command line
 	$client_addr = get_client_addr();
 
 	if ($client_addr === false) {
@@ -179,64 +179,64 @@ function remote_client_authorized() {
 }
 
 function get_graph_data() {
-	get_filter_request_var('graph_start');
-	get_filter_request_var('graph_end');
-	get_filter_request_var('graph_height');
-	get_filter_request_var('graph_width');
-	get_filter_request_var('local_graph_id');
-	get_filter_request_var('rra_id');
-	get_filter_request_var('graph_theme', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
-	get_filter_request_var('graph_nolegend', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
-	get_filter_request_var('effective_user');
+	gfrv('graph_start');
+	gfrv('graph_end');
+	gfrv('graph_height');
+	gfrv('graph_width');
+	gfrv('local_graph_id');
+	gfrv('rra_id');
+	gfrv('graph_theme', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
+	gfrv('graph_nolegend', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
+	gfrv('effective_user');
 
-	$local_graph_id   = get_filter_request_var('local_graph_id');
-	$rra_id           = get_filter_request_var('rra_id');
+	$local_graph_id   = gfrv('local_graph_id');
+	$rra_id           = gfrv('rra_id');
 
 	$graph_data_array = [];
 
-	/* override: graph start time (unix time) */
-	if (!isempty_request_var('graph_start') && get_request_var('graph_start') < FILTER_VALIDATE_MAX_DATE_AS_INT) {
-		$graph_data_array['graph_start'] = get_request_var('graph_start');
+	// override: graph start time (unix time)
+	if (!ierv('graph_start') && grv('graph_start') < FILTER_VALIDATE_MAX_DATE_AS_INT) {
+		$graph_data_array['graph_start'] = grv('graph_start');
 	}
 
-	/* override: graph end time (unix time) */
-	if (!isempty_request_var('graph_end') && get_request_var('graph_end') < FILTER_VALIDATE_MAX_DATE_AS_INT) {
-		$graph_data_array['graph_end'] = get_request_var('graph_end');
+	// override: graph end time (unix time)
+	if (!ierv('graph_end') && grv('graph_end') < FILTER_VALIDATE_MAX_DATE_AS_INT) {
+		$graph_data_array['graph_end'] = grv('graph_end');
 	}
 
-	/* override: graph height (in pixels) */
-	if (!isempty_request_var('graph_height') && get_request_var('graph_height') < 3000) {
-		$graph_data_array['graph_height'] = get_request_var('graph_height');
+	// override: graph height (in pixels)
+	if (!ierv('graph_height') && grv('graph_height') < 3000) {
+		$graph_data_array['graph_height'] = grv('graph_height');
 	}
 
-	/* override: graph width (in pixels) */
-	if (!isempty_request_var('graph_width') && get_request_var('graph_width') < 3000) {
-		$graph_data_array['graph_width'] = get_request_var('graph_width');
+	// override: graph width (in pixels)
+	if (!ierv('graph_width') && grv('graph_width') < 3000) {
+		$graph_data_array['graph_width'] = grv('graph_width');
 	}
 
-	/* override: skip drawing the legend? */
-	if (!isempty_request_var('graph_nolegend')) {
-		$graph_data_array['graph_nolegend'] = get_request_var('graph_nolegend');
+	// override: skip drawing the legend?
+	if (!ierv('graph_nolegend')) {
+		$graph_data_array['graph_nolegend'] = grv('graph_nolegend');
 	}
 
-	/* print RRDtool graph source? */
-	if (!isempty_request_var('show_source')) {
-		$graph_data_array['print_source'] = get_request_var('show_source');
+	// print RRDtool graph source?
+	if (!ierv('show_source')) {
+		$graph_data_array['print_source'] = grv('show_source');
 	}
 
-	/* disable cache check */
-	if (isset_request_var('disable_cache')) {
+	// disable cache check
+	if (isrv('disable_cache')) {
 		$graph_data_array['disable_cache'] = true;
 	}
 
-	/* set the theme */
-	if (isset_request_var('graph_theme')) {
-		$graph_data_array['graph_theme'] = get_request_var('graph_theme');
+	// set the theme
+	if (isrv('graph_theme')) {
+		$graph_data_array['graph_theme'] = grv('graph_theme');
 	}
 
-	/* set the theme */
-	if (isset_request_var('effective_user')) {
-		$user = get_request_var('effective_user');
+	// set the theme
+	if (isrv('effective_user')) {
+		$user = grv('effective_user');
 	} else {
 		$user = 0;
 	}
@@ -251,8 +251,8 @@ function get_graph_data() {
 }
 
 function get_snmp_data() {
-	$host_id = get_filter_request_var('host_id');
-	$oid     = get_nfilter_request_var('oid');
+	$host_id = gfrv('host_id');
+	$oid     = gnrv('oid');
 
 	if (!empty($host_id)) {
 		$host    = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', [$host_id]);
@@ -273,8 +273,8 @@ function get_snmp_data() {
 }
 
 function get_snmp_data_walk() {
-	$host_id = get_filter_request_var('host_id');
-	$oid     = get_nfilter_request_var('oid');
+	$host_id = gfrv('host_id');
+	$oid     = gnrv('oid');
 
 	if (!empty($host_id)) {
 		$host    = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', [$host_id]);
@@ -299,17 +299,17 @@ function get_snmp_data_walk() {
 }
 
 function ping_device() {
-	$host_id = get_filter_request_var('host_id');
+	$host_id = gfrv('host_id');
 	api_device_ping_device($host_id, true);
 }
 
 function poll_for_data() {
-	$local_data_ids = get_nfilter_request_var('local_data_ids');
-	$host_id        = get_filter_request_var('host_id');
-	$poller_id      = get_nfilter_request_var('poller_id');
+	$local_data_ids = gnrv('local_data_ids');
+	$host_id        = gfrv('host_id');
+	$poller_id      = gnrv('poller_id');
 	$return         = [];
 
-	/* ensure we have a valid poller_id */
+	// ensure we have a valid poller_id
 	if (!preg_match('/^[a-z0-9]+$/i', $poller_id)) {
 		return [];
 	}
@@ -336,7 +336,7 @@ function poll_for_data() {
 			if (cacti_sizeof($items)) {
 				foreach ($items as $item) {
 					switch ($item['action']) {
-						case POLLER_ACTION_SNMP: /* snmp */
+						case POLLER_ACTION_SNMP: // snmp
 							if (($item['snmp_version'] == 0) || (($item['snmp_community'] == '') && ($item['snmp_version'] != 3))) {
 								$output = 'U';
 							} else {
@@ -369,7 +369,7 @@ function poll_for_data() {
 							$return[$i]['local_data_id'] = $local_data_id;
 
 							break;
-						case POLLER_ACTION_SCRIPT: /* script (popen) */
+						case POLLER_ACTION_SCRIPT: // script (popen)
 							$output = trim(exec_poll($item['arg1']));
 
 							if (prepare_validate_result($output) === false) {
@@ -387,7 +387,7 @@ function poll_for_data() {
 							$return[$i]['local_data_id'] = $local_data_id;
 
 							break;
-						case POLLER_ACTION_SCRIPT_PHP: /* script (php script server) */
+						case POLLER_ACTION_SCRIPT_PHP: // script (php script server)
 							$cactides = [
 								0 => ['pipe', 'r'], // stdin is a pipe that the child will read from
 								1 => ['pipe', 'w'], // stdout is a pipe that the child will write to
@@ -423,7 +423,7 @@ function poll_for_data() {
 							$return[$i]['local_data_id'] = $local_data_id;
 
 							if (($using_proc_function == true) && ($script_server_calls > 0)) {
-								/* close php server process */
+								// close php server process
 								fwrite($pipes[0], "quit\r\n");
 								fclose($pipes[0]);
 								fclose($pipes[1]);
@@ -445,8 +445,8 @@ function poll_for_data() {
 }
 
 function run_remote_data_query() {
-	$host_id       = get_filter_request_var('host_id');
-	$data_query_id = get_filter_request_var('data_query_id');
+	$host_id       = gfrv('host_id');
+	$data_query_id = gfrv('data_query_id');
 
 	if ($host_id > 0 && $data_query_id > 0) {
 		run_data_query($host_id, $data_query_id);
@@ -455,13 +455,13 @@ function run_remote_data_query() {
 
 function run_remote_discovery() {
 	$poller_id = cacti_escapeshellarg(POLLER_ID);
-	$network   = cacti_escapeshellarg(get_filter_request_var('network'));
+	$network   = cacti_escapeshellarg(gfrv('network'));
 	$php       = cacti_escapeshellcmd(read_config_option('path_php_binary'));
 	$path      = cacti_escapeshellarg(read_config_option('path_webroot') . '/poller_automation.php');
 
 	$options   = ' --poller=' . $poller_id . ' --network=' . $network . ' --force';
 
-	if (isset_request_var('debug')) {
+	if (isrv('debug')) {
 		$options .= ' --debug';
 	}
 

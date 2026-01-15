@@ -27,31 +27,31 @@ require(__DIR__ . '/../include/cli_check.php');
 require_once(CACTI_PATH_LIBRARY . '/api_automation_tools.php');
 require_once(CACTI_PATH_LIBRARY . '/api_tree.php');
 
-/* switch to main database for cli's */
+// switch to main database for cli's
 if ($config['poller_id'] > 1) {
 	db_switch_remote_to_main();
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (cacti_sizeof($parms)) {
-	/* setup defaults */
-	$type       = '';  # tree or node
-	$name       = '';  # Name of a tree or node
-	$sortMethod = 'alpha'; # manual, alpha, natural, numeric
-	$parentNode = 0;   # When creating a node, the parent node of this node (or zero for root-node)
-	$treeId     = 0;   # When creating a node, it has to go in a tree
-	$nodeType   = '';  # Should be 'header', 'graph' or 'host' when creating a node
-	$graphId    = 0;   # The ID of the graph to add (gets added to parentNode)
-	$siteId     = 0;   # The ID of the site to add
+	// setup defaults
+	$type       = '';  // tree or node
+	$name       = '';  // Name of a tree or node
+	$sortMethod = 'alpha'; // manual, alpha, natural, numeric
+	$parentNode = 0;   // When creating a node, the parent node of this node (or zero for root-node)
+	$treeId     = 0;   // When creating a node, it has to go in a tree
+	$nodeType   = '';  // Should be 'header', 'graph' or 'host' when creating a node
+	$graphId    = 0;   // The ID of the graph to add (gets added to parentNode)
+	$siteId     = 0;   // The ID of the site to add
 
 	$sortMethods = ['manual' => 1, 'alpha' => 2, 'natural' => 4, 'numeric' => 3];
 	$nodeTypes   = ['header' => 1, 'graph' => 2, 'host' => 3];
 
 	$hostId         = 0;
-	$hostGroupStyle = 1; # 1 = Graph Template,  2 = Data Query Index
+	$hostGroupStyle = 1; // 1 = Graph Template,  2 = Data Query Index
 
 	$quietMode      = false;
 	$displayHosts   = false;
@@ -205,7 +205,7 @@ if (cacti_sizeof($parms)) {
 	}
 
 	if ($type == 'tree') {
-		# Add a new tree
+		// Add a new tree
 		if (empty($name)) {
 			print "ERROR: You must supply a name with --name\n";
 			display_help();
@@ -214,7 +214,7 @@ if (cacti_sizeof($parms)) {
 		}
 
 		$treeOpts              = [];
-		$treeOpts['id']        = 0; # Zero means create a new one rather than save over an existing one
+		$treeOpts['id']        = 0; // Zero means create a new one rather than save over an existing one
 		$treeOpts['name']      = $name;
 
 		if ($sortMethod == 'manual' ||
@@ -247,7 +247,7 @@ if (cacti_sizeof($parms)) {
 	}
 
 	if ($type == 'node') {
-		# Add a new node to a tree
+		// Add a new node to a tree
 		if ($nodeType == 'header' ||
 			$nodeType == 'graph' ||
 			$nodeType == 'site' ||
@@ -281,7 +281,7 @@ if (cacti_sizeof($parms)) {
 		}
 
 		if ($nodeType == 'header') {
-			# Header --name must be given
+			// Header --name must be given
 			if (empty($name)) {
 				print "ERROR: You must supply a name with --name\n";
 				display_help();
@@ -289,13 +289,13 @@ if (cacti_sizeof($parms)) {
 				exit(1);
 			}
 
-			# Blank out the graphId, hostID and host_grouping_style  fields
+			// Blank out the graphId, hostID and host_grouping_style  fields
 			$graphId        = 0;
 			$hostId         = 0;
 			$siteId         = 0;
 			$hostGroupStyle = 1;
 		} elseif ($nodeType == 'graph') {
-			# Blank out name, hostID, host_grouping_style
+			// Blank out name, hostID, host_grouping_style
 			$name           = '';
 			$hostId         = 0;
 			$siteId         = 0;
@@ -311,7 +311,7 @@ if (cacti_sizeof($parms)) {
 				exit(1);
 			}
 		} elseif ($nodeType == 'site') {
-			# Blank out graphId, name fields
+			// Blank out graphId, name fields
 			$graphId        = 0;
 			$hostId         = 0;
 			$name           = '';
@@ -322,7 +322,7 @@ if (cacti_sizeof($parms)) {
 				exit(1);
 			}
 		} elseif ($nodeType == 'host') {
-			# Blank out graphId, name fields
+			// Blank out graphId, name fields
 			$graphId        = 0;
 			$siteId         = 0;
 			$name           = '';
@@ -341,7 +341,7 @@ if (cacti_sizeof($parms)) {
 			}
 		}
 
-		# $nodeId could be a Header Node, a Graph Node, or a Host node.
+		// $nodeId could be a Header Node, a Graph Node, or a Host node.
 		$nodeId = api_tree_item_save(0, $treeId, $itemType, $parentNode, $name, $graphId, $hostId, $siteId, $hostGroupStyle, $sortMethods[$sortMethod], false);
 
 		print "Added Node node-id: ($nodeId)\n";
@@ -359,7 +359,7 @@ if (cacti_sizeof($parms)) {
 	exit(0);
 }
 
-/*  display_version - displays version information */
+// display_version - displays version information
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Add Tree Utility, Version $version, " . COPYRIGHT_YEARS . "\n";

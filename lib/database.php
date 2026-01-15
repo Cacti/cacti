@@ -114,7 +114,7 @@ function db_connect_real(string $device, string $user, string $pass, string $db_
 		}
 	}
 
-	/* set connection timeout for down servers */
+	// set connection timeout for down servers
 	$flags[PDO::ATTR_TIMEOUT] = 2;
 	$flage[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
 
@@ -252,8 +252,8 @@ function db_connect_real(string $device, string $user, string $pass, string $db_
 			];
 
 			// Must catch this exception or else PDO will display an error with our username/password
-			//print $e->getMessage();
-			//exit;
+			// print $e->getMessage();
+			// exit;
 		}
 
 		$i++;
@@ -432,7 +432,7 @@ function db_get_active_replicas() : array {
 function db_close(mixed &$db_conn = false) : bool {
 	global $config, $database_sessions, $error_logged, $database_default, $database_hostname, $database_port, $database_persist, $database_details;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (!empty($config['DEBUG_SQL_CONNECT'])) {
 			error_log(sprintf('NOTE: Disconnecting from %s:%s/%s.', $database_hostname, $database_port, $database_default));
@@ -472,12 +472,12 @@ function db_close(mixed &$db_conn = false) : bool {
 		}
 	}
 
-	/* forcibly close connection if not persistent */
+	// forcibly close connection if not persistent
 	if (!$database_persist) {
 		db_execute('KILL CONNECTION CONNECTIION_ID()', false, $db_conn);
 	}
 
-	/* unset the variables which should do the same */
+	// unset the variables which should do the same
 	$db_conn = null;
 
 	return true;
@@ -519,7 +519,7 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 		$database_log = false;
 	}
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -684,7 +684,7 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 
 					if (db_check_reconnect($db_conn)) {
 						if ($errors < 5) {
-							/* retry the query now */
+							// retry the query now
 							continue;
 						}
 					}
@@ -916,7 +916,7 @@ function db_fetch_assoc_return(PDOStatement $query) : array {
 function db_fetch_insert_id(mixed $db_conn = false) : mixed {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -940,7 +940,7 @@ function db_fetch_insert_id(mixed $db_conn = false) : mixed {
 function db_affected_rows(mixed $db_conn = false) : mixed {
 	global $database_sessions, $database_default, $database_hostname, $database_port, $affected_rows;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -968,7 +968,7 @@ function db_affected_rows(mixed $db_conn = false) : mixed {
 function db_add_column(string $table, string $column, bool $log = true, mixed $db_conn = false) : mixed {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -1059,7 +1059,7 @@ function db_add_column(string $table, string $column, bool $log = true, mixed $d
 function db_change_column(string $table, string $column, bool $log = true, mixed $db_conn = false) : bool {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -1152,7 +1152,7 @@ function db_change_column(string $table, string $column, bool $log = true, mixed
 function db_remove_column(string $table, string $column, bool $log = true, mixed $db_conn = false) : mixed {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -1434,7 +1434,7 @@ function db_column_exists(string $table, string $column, bool $log = true, mixed
 function db_get_table_column_types(string $table, mixed $db_conn = false) : mixed {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -1474,7 +1474,7 @@ function db_get_table_column_types(string $table, mixed $db_conn = false) : mixe
 function db_update_table(string $table, array $data, bool $removecolumns = false, bool $log = true, mixed $db_conn = false) : mixed {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -1741,7 +1741,7 @@ function db_format_index_create(mixed $indexes) : string {
 function db_table_create(string $table, array $data, bool $log = true, mixed $db_conn = false) : bool {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -1862,7 +1862,7 @@ function db_table_create(string $table, array $data, bool $log = true, mixed $db
 function db_get_global_variable(string $variable, mixed $db_conn = false) : mixed {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -1893,7 +1893,7 @@ function db_get_global_variable(string $variable, mixed $db_conn = false) : mixe
 function db_get_session_variable(string $variable, mixed $db_conn = false) : mixed {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -1923,7 +1923,7 @@ function db_get_session_variable(string $variable, mixed $db_conn = false) : mix
 function db_begin_transaction(mixed $db_conn = false) : bool {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -1947,7 +1947,7 @@ function db_begin_transaction(mixed $db_conn = false) : bool {
 function db_commit_transaction(mixed $db_conn = false) : bool {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -1973,7 +1973,7 @@ function db_commit_transaction(mixed $db_conn = false) : bool {
 function db_rollback_transaction(mixed $db_conn = false) : bool {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -2000,7 +2000,7 @@ function db_rollback_transaction(mixed $db_conn = false) : bool {
  * @return mixed - A string that can be placed in a SQL OR statement or null
  */
 function array_to_sql_or(array $array, string $sql_column) : mixed {
-	/* if the last item is null; pop it off */
+	// if the last item is null; pop it off
 	if (end($array) === null) {
 		array_pop($array);
 	}
@@ -2025,7 +2025,7 @@ function array_to_sql_or(array $array, string $sql_column) : mixed {
 function db_replace(string $table_name, array $array_items, string $keyCols, mixed $db_conn = false) : int {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -2052,7 +2052,7 @@ function db_replace(string $table_name, array $array_items, string $keyCols, mix
 function _db_replace(mixed $db_conn, string $table, array $fieldArray, mixed $keyCols) : mixed {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -2121,7 +2121,7 @@ function _db_replace(mixed $db_conn, string $table, array $fieldArray, mixed $ke
 function sql_save(array $array_items, string $table_name, mixed $key_cols = 'id', bool $autoinc = true, mixed $db_conn = false) : mixed {
 	global $database_sessions, $database_default, $database_hostname, $database_port, $database_last_error;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -2184,7 +2184,7 @@ function sql_save(array $array_items, string $table_name, mixed $key_cols = 'id'
 
 	$replace_result = _db_replace($db_conn, $table_name, $array_items, $key_cols);
 
-	/* get the last AUTO_ID and return it */
+	// get the last AUTO_ID and return it
 	if (!$replace_result || db_fetch_insert_id($db_conn) == '0') {
 		if (!is_array($key_cols)) {
 			if (isset($array_items[$key_cols])) {
@@ -2210,7 +2210,7 @@ function sql_save(array $array_items, string $table_name, mixed $key_cols = 'id'
 function db_qstr(mixed $s, mixed $db_conn = false) : string {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -2328,7 +2328,7 @@ function db_check_password_length() : void {
 	}
 
 	if ($len < 80) {
-		/* Ensure that the password length is increased before we start updating it */
+		// Ensure that the password length is increased before we start updating it
 		db_execute("ALTER TABLE user_auth MODIFY COLUMN password varchar(256) NOT NULL default ''");
 
 		$len = db_get_column_length('user_auth','password');
@@ -2470,7 +2470,7 @@ function db_dump_data(string $database = '', string $tables = '', array $credent
 		foreach ($credentials as $key => $value) {
 			$name = trim($key);
 
-			if (str_contains($name, '--')) {      //name like --host
+			if (str_contains($name, '--')) {      // name like --host
 				if ($name == '--password') {
 					$password = $value;
 				} elseif ($name == '--user') {
@@ -2478,7 +2478,7 @@ function db_dump_data(string $database = '', string $tables = '', array $credent
 				} else {
 					$credentials_string .= $name . '=' . $value . ' ';
 				}
-			} elseif (str_contains($name, '-')) { //name like -h
+			} elseif (str_contains($name, '-')) { // name like -h
 				if ($name == '-p') {
 					$password = $value;
 				} elseif ($name == '-u') {
@@ -2486,7 +2486,7 @@ function db_dump_data(string $database = '', string $tables = '', array $credent
 				} else {
 					$credentials_string .= $name . $value . ' ';
 				}
-			} else {                                  //name like host
+			} else {                                  // name like host
 				if ($name == 'password') {
 					$password = $value;
 				} elseif ($name == 'user') {

@@ -176,7 +176,7 @@ $app->group('/v1', function (RouteCollectorProxy $group) {
 			return $response->withHeader('Content-Type', 'application/json');
 		});
 
-		//automation status endpoint
+		// automation status endpoint
 		$statusGroup->get('/automation', function (Request $request, Response $response) {
 			$json = json_encode(get_automation_status());
 

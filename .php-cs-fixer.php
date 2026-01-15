@@ -154,7 +154,6 @@ $config
     'ternary_operator_spaces'           => true,
     'full_opening_tag'                  => false,
     'linebreak_after_opening_tag'       => false,
-    'align_multiline_comment'           => ['comment_type' => 'phpdocs_like'],
     'phpdoc_add_missing_param_annotation' => true,
     'no_extra_blank_lines'              => [
         'tokens' => [
@@ -201,7 +200,9 @@ $config
     'string_line_ending'                => true,
     'strict_param'                      => true,
     'whitespace_after_comma_in_array'   => true,
-    'single_line_comment_spacing'       => true
+    'align_multiline_comment'           => ['comment_type' => 'phpdocs_like'],
+    'single_line_comment_spacing'       => true,
+    'single_line_comment_style'         => true
     ))
     ->setFinder($finder);
 

@@ -22,12 +22,10 @@
  +-------------------------------------------------------------------------+
 */
 
-/*
- * Create a consistent responsive filter
- */
+// Create a consistent responsive filter
 
 class CactiTableFilter {
-	/* constructor variables */
+	// constructor variables
 	public $form_header      = '';
 
 	public $form_action      = '';
@@ -131,8 +129,8 @@ class CactiTableFilter {
 		];
 
 		if ($this->session_var == '') {
-			$action = get_nfilter_request_var('action');
-			$tab    = get_nfilter_request_var('tab');
+			$action = gnrv('action');
+			$tab    = gnrv('tab');
 
 			if ($action != '') {
 				$this->session_var .= basename(get_current_page(), '.php') . '_' . $action;
@@ -151,7 +149,7 @@ class CactiTableFilter {
 	}
 
 	private function create_default() {
-		/* default filter */
+		// default filter
 		return [
 			'rows' => [
 				[
@@ -252,16 +250,16 @@ class CactiTableFilter {
 			$this->initialize_filter();
 		}
 
-		/* validate filter variables */
+		// validate filter variables
 		$this->sanitize_filter_variables();
 
-		/* create the filter for the page */
+		// create the filter for the page
 		$filter = $this->create_filter();
 
-		/* if validation succeeds, print output the data */
+		// if validation succeeds, print output the data
 		print $filter;
 
-		/* create javascript to operate of the filter */
+		// create javascript to operate of the filter
 		print $this->create_javascript();
 
 		return true;
@@ -272,7 +270,7 @@ class CactiTableFilter {
 			$this->initialize_filter();
 		}
 
-		/* validate filter variables */
+		// validate filter variables
 		$this->sanitize_filter_variables();
 	}
 
@@ -311,8 +309,8 @@ class CactiTableFilter {
 
 		// Make common adjustments
 		if ($this->has_refresh) {
-			if (isset_request_var('refresh')) {
-				$value = get_nfilter_request_var('refresh');
+			if (isrv('refresh')) {
+				$value = gnrv('refresh');
 			} else {
 				$value = $this->def_refresh;
 			}
@@ -330,8 +328,8 @@ class CactiTableFilter {
 		}
 
 		if ($this->has_graphs) {
-			if (isset_request_var('has_graphs')) {
-				$value = get_nfilter_request_var('has_graphs');
+			if (isrv('has_graphs')) {
+				$value = gnrv('has_graphs');
 			} else {
 				$value = read_config_option('default_has') == 'on' ? 'true' : 'false';
 			}
@@ -350,8 +348,8 @@ class CactiTableFilter {
 		}
 
 		if ($this->has_data) {
-			if (isset_request_var('has_data')) {
-				$value = get_nfilter_request_var('has_data');
+			if (isrv('has_data')) {
+				$value = gnrv('has_data');
 			} else {
 				$value = read_config_option('default_has') == 'on' ? 'true' : 'false';
 			}
@@ -370,8 +368,8 @@ class CactiTableFilter {
 		}
 
 		if ($this->has_named) {
-			if (isset_request_var('named')) {
-				$value = get_nfilter_request_var('named');
+			if (isrv('named')) {
+				$value = gnrv('named');
 			} else {
 				$value = read_config_option('default_has') == 'on' ? 'true' : 'false';
 			}
@@ -390,8 +388,8 @@ class CactiTableFilter {
 		}
 
 		if ($this->has_associated) {
-			if (isset_request_var('associated')) {
-				$value = get_nfilter_request_var('associated');
+			if (isrv('associated')) {
+				$value = gnrv('associated');
 			} else {
 				$value = read_config_option('default_has') == 'on' ? 'true' : 'false';
 			}
@@ -562,7 +560,7 @@ class CactiTableFilter {
 
 							if (cacti_sizeof($this->timespans)) {
 								foreach ($this->timespans as $value => $text) {
-									print "<option value='$value'" . ($_SESSION['sess_current_timespan'] == $value ? ' selected' : '') . '>' . html_escape($text) . '</option>';
+									print "<option value='$value'" . ($_SESSION['sess_current_timespan'] == $value ? ' selected' : '') . '>' . htmle($text) . '</option>';
 								}
 							}
 							print '</select>';
@@ -602,7 +600,7 @@ class CactiTableFilter {
 
 								if (cacti_sizeof($this->timeshifts)) {
 									for ($shift_value = $start_val; $shift_value < $end_val; $shift_value++) {
-										print "<option value='$shift_value'" . ($_SESSION['sess_current_timeshift'] == $shift_value ? ' selected' : '') . '>' . html_escape($this->timeshifts[$shift_value]) . '</option>';
+										print "<option value='$shift_value'" . ($_SESSION['sess_current_timeshift'] == $shift_value ? ' selected' : '') . '>' . htmle($this->timeshifts[$shift_value]) . '</option>';
 									}
 								}
 
@@ -643,8 +641,8 @@ class CactiTableFilter {
 								print '<div class="filterColumn"><div class="filterFieldName"><label for="' . $field_name . '">' . $field_array['friendly_name'] . '</label></div></div>' . PHP_EOL;
 							}
 
-							if (isset_request_var($field_name) && !str_contains($field_array['method'], 'callback')) {
-								$field_array['value'] = get_nfilter_request_var($field_name);
+							if (isrv($field_name) && !str_contains($field_array['method'], 'callback')) {
+								$field_array['value'] = gnrv($field_name);
 							}
 
 							print '<div class="filterColumn">' . PHP_EOL;
@@ -881,8 +879,8 @@ class CactiTableFilter {
 			$globalAdd .= "\t\t" . trim($this->filter_array['javascript']['global']) . PHP_EOL;
 		}
 
-		if (!$this->has_refresh && isset_request_var('refresh') && get_request_var('refresh') > 0) {
-			$refreshMSeconds = get_request_var('refresh') * 1000;
+		if (!$this->has_refresh && isrv('refresh') && grv('refresh') > 0) {
+			$refreshMSeconds = grv('refresh') * 1000;
 		}
 
 		if ($clickChain != '') {
@@ -988,8 +986,8 @@ class CactiTableFilter {
 		$filters['page']['filter']  = FILTER_VALIDATE_INT;
 		$filters['page']['default'] = 1;
 
-		if (!isset_request_var('page')) {
-			set_request_var('page', 1);
+		if (!isrv('page')) {
+			srv('page', 1);
 		}
 
 		if (isset($this->filter_array['sort'])) {

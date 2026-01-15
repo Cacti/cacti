@@ -26,12 +26,12 @@
 require(__DIR__ . '/../include/cli_check.php');
 require_once(CACTI_PATH_LIBRARY . '/api_automation_tools.php');
 
-/* switch to main database for cli's */
+// switch to main database for cli's
 if ($config['poller_id'] > 1) {
 	db_switch_remote_to_main();
 }
 
-/* process calling arguments */
+// process calling arguments
 $params = $_SERVER['argv'];
 array_shift($params);
 
@@ -42,7 +42,7 @@ if (cacti_sizeof($params) == 0) {
 } else {
 	$groupId = 0;
 
-	/* TODO replace magic numbers by global constants, treat user_admin as well */
+	// TODO replace magic numbers by global constants, treat user_admin as well
 	$itemTypes = ['graph' => 1, 'tree' => 2, 'host' => 3, 'graph_template' => 4];
 
 	$itemType = 0;
@@ -71,7 +71,7 @@ if (cacti_sizeof($params) == 0) {
 
 				break;
 			case '--item-type':
-				/* TODO replace magic numbers by global constants, treat user_admin as well */
+				// TODO replace magic numbers by global constants, treat user_admin as well
 				if (($value == 'graph') || ($value == 'tree') || ($value == 'host') || ($value == 'graph_template')) {
 					$itemType     = $itemTypes[$value];
 					$itemTypeName = $value;
@@ -186,11 +186,11 @@ if (cacti_sizeof($params) == 0) {
 		exit(1);
 	}
 
-	/* verify, that a valid groupid is provided */
+	// verify, that a valid groupid is provided
 	$groupIds = [];
 
 	if (isset($groupId) && $groupId > 0) {
-		/* verify existing user id */
+		// verify existing user id
 		if (db_fetch_cell_prepared('SELECT id FROM user_auth_group WHERE id = ?', [$groupId])) {
 			array_push($groupIds, $groupId);
 		} else {
@@ -200,9 +200,9 @@ if (cacti_sizeof($params) == 0) {
 			exit(1);
 		}
 	}
-	/* now, we should have at least one verified groupid */
+	// now, we should have at least one verified groupid
 
-	/* verify --item-id */
+	// verify --item-id
 	if ($itemType == 0) {
 		print "ERROR: --item-type missing. Please specify.\n\n";
 		display_help();
@@ -217,9 +217,9 @@ if (cacti_sizeof($params) == 0) {
 		exit(1);
 	}
 
-	/* TODO replace magic numbers by global constants, treat user_admin as well */
+	// TODO replace magic numbers by global constants, treat user_admin as well
 	switch ($itemType) {
-		case 1: /* graph */
+		case 1: // graph
 			if (!db_fetch_cell_prepared('SELECT local_graph_id FROM graph_templates_graph WHERE local_graph_id = ?', [$itemId])) {
 				print "ERROR: Invalid Graph item id: ($itemId)\n\n";
 				display_help();
@@ -228,7 +228,7 @@ if (cacti_sizeof($params) == 0) {
 			}
 
 			break;
-		case 2: /* tree */
+		case 2: // tree
 			if (!db_fetch_cell_prepared('SELECT id FROM graph_tree WHERE id = ?', [$itemId])) {
 				print "ERROR: Invalid Tree item id: ($itemId)\n\n";
 				display_help();
@@ -237,7 +237,7 @@ if (cacti_sizeof($params) == 0) {
 			}
 
 			break;
-		case 3: /* host */
+		case 3: // host
 			if (!db_fetch_cell_prepared('SELECT id FROM host WHERE id = ?', [$itemId])) {
 				print "ERROR: Invalid Host item id: ($itemId)\n\n";
 				display_help();
@@ -246,7 +246,7 @@ if (cacti_sizeof($params) == 0) {
 			}
 
 			break;
-		case 4: /* graph_template */
+		case 4: // graph_template
 			if (!db_fetch_cell_prepared('SELECT id FROM graph_templates WHERE id = ?', [$itemId])) {
 				print "ERROR: Invalid Graph Template item id: ($itemId)\n\n";
 				display_help();
@@ -256,7 +256,7 @@ if (cacti_sizeof($params) == 0) {
 
 			break;
 	}
-	/* verified */
+	// verified
 
 	$groupOpts              = [];
 	$groupOpts['group_id']  = $groupId;
@@ -275,7 +275,7 @@ if (cacti_sizeof($params) == 0) {
 	exit(0);
 }
 
-/*  display_version - displays version information */
+// display_version - displays version information
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Add Group Permissions Utility, Version $version, " . COPYRIGHT_YEARS . "\n";

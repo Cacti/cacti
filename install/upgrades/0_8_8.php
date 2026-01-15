@@ -23,14 +23,14 @@
 */
 
 function upgrade_to_0_8_8() {
-	/* speed up the joins */
+	// speed up the joins
 	if (db_column_exists('poller_item', 'host_id')) {
 		db_install_execute("ALTER TABLE `poller_item` MODIFY COLUMN `host_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0'");
 	}
 
 	db_install_add_key('poller_output', 'key', 'PRIMARY', ['local_data_id', 'rrd_name', 'time']);
 
-	/* speed up user management */
+	// speed up user management
 	db_install_add_key('user_log', 'key', 'user_id', ['user_id']);
 
 	/* Plugin Architecture
@@ -91,9 +91,9 @@ function upgrade_to_0_8_8() {
 	db_install_execute("REPLACE INTO `plugin_realms` VALUES (1, 'internal', 'plugins.php', 'Plugin Management')");
 	db_install_execute("REPLACE INTO `plugin_hooks` VALUES (1, 'internal', 'config_arrays', '', 'plugin_config_arrays', 1)");
 	db_install_execute("REPLACE INTO `plugin_hooks` VALUES (2, 'internal', 'draw_navigation_text', '', 'plugin_draw_navigation_text', 1)");
-	/* allow admin user to access Plugin Management */
+	// allow admin user to access Plugin Management
 	db_install_execute('REPLACE INTO user_auth_realm VALUES (101,1)');
 
-	/* create index on data_template_data on data_input_id */
+	// create index on data_template_data on data_input_id
 	db_install_add_key('data_template_data', 'key', 'data_input_id', ['data_input_id']);
 }

@@ -360,10 +360,10 @@ function substitute_host_data($string, $l_escape_string, $r_escape_string, $host
 		$search  = [];
 		$replace = [];
 
-		$search[]  = $l_escape_string . 'host_management_ip' . $r_escape_string; /* for compatibility */
-		$replace[] = $host['hostname']; /* for compatibility */
+		$search[]  = $l_escape_string . 'host_management_ip' . $r_escape_string; // for compatibility
+		$replace[] = $host['hostname']; // for compatibility
 
-		/* common host columns */
+		// common host columns
 		$search[]  = $l_escape_string . 'host_id' . $r_escape_string;
 		$replace[] = $host['id'];
 		$search[]  = $l_escape_string . 'host_hostname' . $r_escape_string;
@@ -389,7 +389,7 @@ function substitute_host_data($string, $l_escape_string, $r_escape_string, $host
 		$search[]  = $l_escape_string . 'host_uptime' . $r_escape_string;
 		$replace[] = get_uptime($host);
 
-		/* snmp connectivity information */
+		// snmp connectivity information
 		$search[]  = $l_escape_string . 'host_snmp_community' . $r_escape_string;
 		$replace[] = $host['snmp_community'];
 		$search[]  = $l_escape_string . 'host_snmp_version' . $r_escape_string;
@@ -413,7 +413,7 @@ function substitute_host_data($string, $l_escape_string, $r_escape_string, $host
 		$search[]  = $l_escape_string . 'host_snmp_timeout' . $r_escape_string;
 		$replace[] = $host['snmp_timeout'];
 
-		/* snmp system information */
+		// snmp system information
 		$search[]  = $l_escape_string . 'host_snmp_sysDescr' . $r_escape_string;
 		$replace[] = $host['snmp_sysDescr'];
 		$search[]  = $l_escape_string . 'host_snmp_sysObjectID' . $r_escape_string;
@@ -432,7 +432,7 @@ function substitute_host_data($string, $l_escape_string, $r_escape_string, $host
 		$search[]  = $l_escape_string . 'host_max_oids' . $r_escape_string;
 		$replace[] = $host['max_oids'];
 
-		/* handle the external id */
+		// handle the external id
 		$search[]  = $l_escape_string . 'host_external_id' . $r_escape_string;
 		$replace[] = $host['external_id'];
 

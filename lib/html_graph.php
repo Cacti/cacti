@@ -56,30 +56,30 @@ function initialize_realtime_step_and_window() {
  * @return void
  */
 function set_default_graph_action() {
-	/* go through the settings and create a default */
+	// go through the settings and create a default
 	$modes = [
 		'tree'    => ['permission' => 'show_tree',    'id' => '1'],
 		'preview' => ['permission' => 'show_preview', 'id' => '3'],
 		'list'    => ['permission' => 'show_list',    'id' => '2'],
 	];
 
-	if (isset_request_var('action')) {
-		$action = get_nfilter_request_var('action');
+	if (isrv('action')) {
+		$action = gnrv('action');
 	} else {
 		$action = '';
 	}
 
 	if ($action == '') {
-		/* setup the default action */
+		// setup the default action
 		if (!isset($_SESSION['sess_graph_view_action'])) {
 			$user_setting = read_user_setting('default_view_mode');
 			$good_mode    = '';
 
-			/* check the defaults */
+			// check the defaults
 			foreach ($modes as $action => $info) {
 				if (is_view_allowed($info['permission']) && $user_setting == $info['id']) {
 					$good_mode = $action;
-					set_request_var('action', $action);
+					srv('action', $action);
 					$_SESSION['sess_graph_view_action'] = $good_mode;
 
 					break;
@@ -90,7 +90,7 @@ function set_default_graph_action() {
 				foreach ($modes as $action => $info) {
 					if (is_view_allowed($info['permission'])) {
 						$good_mode = $action;
-						set_request_var('action', $action);
+						srv('action', $action);
 						$_SESSION['sess_graph_view_action'] = $good_mode;
 
 						break;
@@ -103,7 +103,7 @@ function set_default_graph_action() {
 			}
 		} elseif (in_array($_SESSION['sess_graph_view_action'], array_keys($modes), true)) {
 			if (is_view_allowed('show_' . $_SESSION['sess_graph_view_action'])) {
-				set_request_var('action', $_SESSION['sess_graph_view_action']);
+				srv('action', $_SESSION['sess_graph_view_action']);
 			}
 		}
 	} elseif (in_array($action, ['get_node', 'tree_content'], true)) {
@@ -138,16 +138,16 @@ function create_preview_filter($session_var) {
 	);
 	$locations = $any + $none + $locations;
 
-	/* unset the ordering if we have a setup that does not support ordering */
-	if (isset_request_var('graph_template_id')) {
-		if (str_contains(get_nfilter_request_var('graph_template_id'), ',') || get_nfilter_request_var('graph_template_id') <= 0) {
-			set_request_var('graph_order', '');
-			set_request_var('graph_source', '');
+	// unset the ordering if we have a setup that does not support ordering
+	if (isrv('graph_template_id')) {
+		if (str_contains(gnrv('graph_template_id'), ',') || gnrv('graph_template_id') <= 0) {
+			srv('graph_order', '');
+			srv('graph_source', '');
 		}
 	}
 
-	if (isset_request_var('host_id')) {
-		$host_id = get_request_var('host_id');
+	if (isrv('host_id')) {
+		$host_id = grv('host_id');
 	} elseif (isset($_SESSION[$session_var . '_host_id'])) {
 		$host_id = $_SESSION[$session_var . '_host_id'];
 	} else {
@@ -199,14 +199,14 @@ function create_preview_filter($session_var) {
 
 	$metrics_array = html_graph_order_filter_array();
 
-	if (isset_request_var('business_hours')) {
-		$business_hours = get_nfilter_request_var('business_hours');
+	if (isrv('business_hours')) {
+		$business_hours = gnrv('business_hours');
 	} else {
 		$business_hours = read_user_setting('show_business_hours') == 'on' ? 'true' : 'false';
 	}
 
-	if (isset_request_var('thumbnails')) {
-		$thumbnails = get_nfilter_request_var('thumbnails');
+	if (isrv('thumbnails')) {
+		$thumbnails = gnrv('thumbnails');
 	} else {
 		$thumbnails = read_user_setting('thumbnail_section_preview') == 'on' ? 'true' : 'false';
 	}
@@ -258,7 +258,7 @@ function create_preview_filter($session_var) {
 					'class'          => 'graph-multiselect',
 					'pageset'        => true,
 					'array'          => $normalized_templates,
-					'value'          => get_nfilter_request_var('graph_template_id')
+					'value'          => gnrv('graph_template_id')
 				],
 			],
 			[
@@ -373,9 +373,9 @@ function create_preview_filter($session_var) {
 }
 
 function draw_preview_filter($render = false, $page = '', $action = 'get') {
-	$header = __('Graph Preview Filters') . (isset_request_var('style') && get_request_var('style') != '' ? ' ' . __('[ Custom Graph List Applied - Filtering from List ]') : '');
+	$header = __('Graph Preview Filters') . (isrv('style') && grv('style') != '' ? ' ' . __('[ Custom Graph List Applied - Filtering from List ]') : '');
 
-	/* create the page filter */
+	// create the page filter
 	$filters                 = create_preview_filter('sess_pview');
 	$pageFilter              = new CactiTableFilter($header, $page, 'form_graph_view', 'sess_pview', '', false, false);
 	$pageFilter->rows_label  = __('Graphs');
@@ -558,12 +558,12 @@ function html_graph_new_graphs($page, $host_id, $host_template_id, $selected_gra
 		}
 	}
 
-	/* no fields were actually drawn on the form; just save without prompting the user */
+	// no fields were actually drawn on the form; just save without prompting the user
 	if (!$output_started) {
 		/* since the user didn't actually click "Create" to POST the data; we have to
 		pretend like they did here */
-		set_request_var('save_component_new_graphs', '1');
-		set_request_var('selected_graphs_array', serialize($selected_graphs_array));
+		srv('save_component_new_graphs', '1');
+		srv('selected_graphs_array', serialize($selected_graphs_array));
 
 		host_new_graphs_save($host_id);
 
@@ -578,12 +578,12 @@ function html_graph_new_graphs($page, $host_id, $host_template_id, $selected_gra
 	form_hidden_box('selected_graphs_array', serialize($selected_graphs_array), '');
 
 	if (isset($_SERVER['HTTP_REFERER']) && !str_contains($_SERVER['HTTP_REFERER'], 'graphs_new')) {
-		set_request_var('returnto', basename($_SERVER['HTTP_REFERER']));
+		srv('returnto', basename($_SERVER['HTTP_REFERER']));
 	}
 
 	load_current_session_value('returnto', 'sess_grn_returnto', '');
 
-	form_save_button(get_nfilter_request_var('returnto'));
+	form_save_button(gnrv('returnto'));
 
 	bottom_footer();
 }
@@ -601,9 +601,9 @@ function html_graph_new_graphs($page, $host_id, $host_template_id, $selected_gra
  * @return array An array of output fields for the form.
  */
 function html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $form_type, $form_id1, $form_array2) {
-	/* ================= input validation ================= */
+	// ================= input validation =================
 	input_validate_input_number($form_id1, 'form_id1');
-	/* ==================================================== */
+	// ====================================================
 
 	$num_output_fields = [];
 	$display           = false;
@@ -617,14 +617,14 @@ function html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $fo
 
 		if (graph_template_has_override($graph_template_id)) {
 			$display = true;
-			$header  = __('Create Graph from %s', html_escape($graph_template_name));
+			$header  = __('Create Graph from %s', htmle($graph_template_name));
 		}
 	} elseif ($form_type == 'sg') {
 		foreach ($form_array2 as $form_id2 => $form_array3) {
-			/* ================= input validation ================= */
+			// ================= input validation =================
 			input_validate_input_number($snmp_query_id, 'snmp_query_id');
 			input_validate_input_number($form_id2, 'form_id2');
-			/* ==================================================== */
+			// ====================================================
 
 			$snmp_query_id       = $form_id1;
 			$snmp_query_graph_id = $form_id2;
@@ -645,9 +645,9 @@ function html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $fo
 			$display = true;
 
 			if ($num_graphs > 1) {
-				$header = __('Create %s Graphs from %s', $num_graphs, html_escape($snmp_query));
+				$header = __('Create %s Graphs from %s', $num_graphs, htmle($snmp_query));
 			} else {
-				$header = __('Create Graph from %s', html_escape($snmp_query));
+				$header = __('Create Graph from %s', htmle($snmp_query));
 			}
 		}
 	}
@@ -658,9 +658,9 @@ function html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $fo
 		html_start_box($header, '100%', false, 3, 'center', '');
 	}
 
-	/* ================= input validation ================= */
+	// ================= input validation =================
 	input_validate_input_number($graph_template_id, 'graph_template_id');
-	/* ==================================================== */
+	// ====================================================
 
 	$data_templates = db_fetch_assoc_prepared('SELECT
 		data_template.name AS data_template_name,
@@ -686,14 +686,14 @@ function html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $fo
 		AND gtg.local_graph_id = 0',
 		[$graph_template_id]);
 
-	array_push($num_output_fields, draw_nontemplated_fields_graph($graph_template_id, $graph_template, "g_$snmp_query_id" . '_' . $graph_template_id . '_|field|', __('Graph [Template: %s]', html_escape($graph_template['graph_template_name'])), true, false, ($snmp_query_graph_id ?? 0)));
+	array_push($num_output_fields, draw_nontemplated_fields_graph($graph_template_id, $graph_template, "g_$snmp_query_id" . '_' . $graph_template_id . '_|field|', __('Graph [Template: %s]', htmle($graph_template['graph_template_name'])), true, false, ($snmp_query_graph_id ?? 0)));
 
-	array_push($num_output_fields, draw_nontemplated_fields_graph_item($graph_template_id, 0, 'gi_' . $snmp_query_id . '_' . $graph_template_id . '_|id|_|field|', __('Graph Items [Template: %s]', html_escape($graph_template['graph_template_name'])), true));
+	array_push($num_output_fields, draw_nontemplated_fields_graph_item($graph_template_id, 0, 'gi_' . $snmp_query_id . '_' . $graph_template_id . '_|id|_|field|', __('Graph Items [Template: %s]', htmle($graph_template['graph_template_name'])), true));
 
-	/* DRAW: Data Sources */
+	// DRAW: Data Sources
 	if (cacti_sizeof($data_templates)) {
 		foreach ($data_templates as $data_template) {
-			array_push($num_output_fields, draw_nontemplated_fields_data_source($data_template['data_template_id'], 0, $data_template, 'd_' . $snmp_query_id . '_' . $graph_template_id . '_' . $data_template['data_template_id'] . '_|field|', __('Data Source [Template: %s]', html_escape($data_template['data_template_name'])), true, false, ($snmp_query_graph_id ?? 0)));
+			array_push($num_output_fields, draw_nontemplated_fields_data_source($data_template['data_template_id'], 0, $data_template, 'd_' . $snmp_query_id . '_' . $graph_template_id . '_' . $data_template['data_template_id'] . '_|field|', __('Data Source [Template: %s]', htmle($data_template['data_template_name'])), true, false, ($snmp_query_graph_id ?? 0)));
 
 			$data_template_items = db_fetch_assoc_prepared('SELECT
 				data_template_rrd.*
@@ -703,7 +703,7 @@ function html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $fo
 				[$data_template['data_template_id']]);
 
 			array_push($num_output_fields, draw_nontemplated_fields_data_source_item($data_template['data_template_id'], $data_template_items, 'di_' . $snmp_query_id . '_' . $graph_template_id . '_' . $data_template['data_template_id'] . '_|id|_|field|', '', true, false, false, ($snmp_query_graph_id ?? 0)));
-			array_push($num_output_fields, draw_nontemplated_fields_custom_data($data_template['id'], 'c_' . $snmp_query_id . '_' . $graph_template_id . '_' . $data_template['data_template_id'] . '_|id|', __('Custom Data [Template: %s]', html_escape($data_template['data_template_name'])), true, false, $snmp_query_id));
+			array_push($num_output_fields, draw_nontemplated_fields_custom_data($data_template['id'], 'c_' . $snmp_query_id . '_' . $graph_template_id . '_' . $data_template['data_template_id'] . '_|id|', __('Custom Data [Template: %s]', htmle($data_template['data_template_name'])), true, false, $snmp_query_id));
 		}
 	}
 
@@ -716,52 +716,52 @@ function html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $fo
 
 function html_save_graph_settings() {
 	if (is_view_allowed('graph_settings')) {
-		get_filter_request_var('columns');
-		get_filter_request_var('predefined_timespan');
-		get_filter_request_var('predefined_timeshift');
-		get_filter_request_var('graphs');
-		get_filter_request_var('thumbnails', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '(true|false)']]);
-		get_filter_request_var('business_hours', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '(true|false)']]);
+		gfrv('columns');
+		gfrv('predefined_timespan');
+		gfrv('predefined_timeshift');
+		gfrv('graphs');
+		gfrv('thumbnails', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '(true|false)']]);
+		gfrv('business_hours', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '(true|false)']]);
 
-		if (isset_request_var('predefined_timespan')) {
-			set_user_setting('default_timespan', get_request_var('predefined_timespan'));
+		if (isrv('predefined_timespan')) {
+			set_user_setting('default_timespan', grv('predefined_timespan'));
 		}
 
-		if (isset_request_var('predefined_timeshift')) {
-			set_user_setting('default_timeshift', get_request_var('predefined_timeshift'));
+		if (isrv('predefined_timeshift')) {
+			set_user_setting('default_timeshift', grv('predefined_timeshift'));
 		}
 
-		if (isset_request_var('business_hours')) {
-			set_user_setting('show_business_hours', get_request_var('business_hours') == 'true' ? 'on' : '');
+		if (isrv('business_hours')) {
+			set_user_setting('show_business_hours', grv('business_hours') == 'true' ? 'on' : '');
 		}
 
-		if (isset_request_var('section') && get_nfilter_request_var('section') == 'preview') {
-			if (isset_request_var('columns')) {
-				set_user_setting('num_columns', get_request_var('columns'));
+		if (isrv('section') && gnrv('section') == 'preview') {
+			if (isrv('columns')) {
+				set_user_setting('num_columns', grv('columns'));
 			}
 
-			if (isset_request_var('graphs')) {
-				if (get_request_var('graphs') != '-1') {
-					set_user_setting('preview_graphs_per_page', get_request_var('graphs'));
+			if (isrv('graphs')) {
+				if (grv('graphs') != '-1') {
+					set_user_setting('preview_graphs_per_page', grv('graphs'));
 				}
 			}
 
-			if (isset_request_var('thumbnails')) {
-				set_user_setting('thumbnail_section_preview', get_nfilter_request_var('thumbnails') == 'true' ? 'on' : '');
+			if (isrv('thumbnails')) {
+				set_user_setting('thumbnail_section_preview', gnrv('thumbnails') == 'true' ? 'on' : '');
 			}
 		} else {
-			if (isset_request_var('columns')) {
-				set_user_setting('num_columns_tree', get_request_var('columns'));
+			if (isrv('columns')) {
+				set_user_setting('num_columns_tree', grv('columns'));
 			}
 
-			if (isset_request_var('graphs')) {
-				if (get_request_var('graphs') != '-1') {
-					set_user_setting('treeview_graphs_per_page', get_request_var('graphs'));
+			if (isrv('graphs')) {
+				if (grv('graphs') != '-1') {
+					set_user_setting('treeview_graphs_per_page', grv('graphs'));
 				}
 			}
 
-			if (isset_request_var('thumbnails')) {
-				set_user_setting('thumbnail_section_tree', get_request_var('thumbnails') == 'true' ? 'on' : '');
+			if (isrv('thumbnails')) {
+				set_user_setting('thumbnail_section_tree', grv('thumbnails') == 'true' ? 'on' : '');
 			}
 		}
 	}
@@ -776,12 +776,12 @@ function html_graph_preview_view() {
 		exit;
 	}
 
-	if (isset_request_var('external_id')) {
-		$host_id = db_fetch_cell_prepared('SELECT id FROM host WHERE external_id = ?', [get_nfilter_request_var('external_id')]);
+	if (isrv('external_id')) {
+		$host_id = db_fetch_cell_prepared('SELECT id FROM host WHERE external_id = ?', [gnrv('external_id')]);
 
 		if (!empty($host_id)) {
-			set_request_var('host_id', $host_id);
-			set_request_var('reset',true);
+			srv('host_id', $host_id);
+			srv('reset',true);
 		}
 	}
 
@@ -798,33 +798,33 @@ function html_graph_preview_view() {
 		]
 	);
 
-	/* the user select a bunch of graphs of the 'list' view and wants them displayed here */
+	// the user select a bunch of graphs of the 'list' view and wants them displayed here
 	$sql_or = '';
 
-	if (isset_request_var('style')) {
-		if (get_request_var('style') == 'selective') {
+	if (isrv('style')) {
+		if (grv('style') == 'selective') {
 			$graph_list = [];
 
-			/* process selected graphs */
-			if (!isempty_request_var('graph_list')) {
-				foreach (explode(',', get_request_var('graph_list')) as $item) {
+			// process selected graphs
+			if (!ierv('graph_list')) {
+				foreach (explode(',', grv('graph_list')) as $item) {
 					if (is_numeric($item)) {
 						$graph_list[$item] = 1;
 					}
 				}
 			}
 
-			if (!isempty_request_var('graph_add')) {
-				foreach (explode(',', get_request_var('graph_add')) as $item) {
+			if (!ierv('graph_add')) {
+				foreach (explode(',', grv('graph_add')) as $item) {
 					if (is_numeric($item)) {
 						$graph_list[$item] = 1;
 					}
 				}
 			}
 
-			/* remove items */
-			if (!isempty_request_var('graph_remove')) {
-				foreach (explode(',', get_request_var('graph_remove')) as $item) {
+			// remove items
+			if (!ierv('graph_remove')) {
+				foreach (explode(',', grv('graph_remove')) as $item) {
 					unset($graph_list[$item]);
 				}
 			}
@@ -837,7 +837,7 @@ function html_graph_preview_view() {
 			}
 
 			if ((isset($graph_array)) && (cacti_sizeof($graph_array) > 0)) {
-				/* build sql string including each graph the user checked */
+				// build sql string including each graph the user checked
 				$sql_or = array_to_sql_or($graph_array, 'gtg.local_graph_id');
 			}
 		}
@@ -845,57 +845,57 @@ function html_graph_preview_view() {
 
 	$total_graphs = 0;
 
-	/* create filter for sql */
+	// create filter for sql
 	$sql_where  = '';
 
-	if (!isempty_request_var('rfilter')) {
-		$sql_where .= " gtg.title_cache RLIKE '" . get_request_var('rfilter') . "'";
+	if (!ierv('rfilter')) {
+		$sql_where .= " gtg.title_cache RLIKE '" . grv('rfilter') . "'";
 	}
 
 	$sql_where .= ($sql_or != '' && $sql_where != '' ? ' AND ' : '') . $sql_or;
 
-	if (!isempty_request_var('site_id') && get_request_var('site_id') > 0) {
-		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' h.site_id=' . get_request_var('site_id');
-	} elseif (isempty_request_var('site_id')) {
+	if (!ierv('site_id') && grv('site_id') > 0) {
+		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' h.site_id=' . grv('site_id');
+	} elseif (ierv('site_id')) {
 		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' h.site_id=0';
 	}
 
-	if (!isempty_request_var('host_id') && get_request_var('host_id') > 0) {
-		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' gl.host_id=' . get_request_var('host_id');
-	} elseif (isempty_request_var('host_id')) {
+	if (!ierv('host_id') && grv('host_id') > 0) {
+		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' gl.host_id=' . grv('host_id');
+	} elseif (ierv('host_id')) {
 		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' gl.host_id=0';
 	}
 
-	if (get_request_var('location') != '' && get_request_var('location') != '-1' && get_request_var('location') != '0') {
-		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' h.location = ' . db_qstr(get_request_var('location'));
-	} elseif (get_request_var('location') == '0') {
+	if (grv('location') != '' && grv('location') != '-1' && grv('location') != '0') {
+		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' h.location = ' . db_qstr(grv('location'));
+	} elseif (grv('location') == '0') {
 		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' h.location = ""';
 	}
 
-	if (!isempty_request_var('graph_template_id') && get_request_var('graph_template_id') != '-1' && get_request_var('graph_template_id') != '0') {
-		$graph_templates = html_transform_graph_template_ids(get_request_var('graph_template_id'));
+	if (!ierv('graph_template_id') && grv('graph_template_id') != '-1' && grv('graph_template_id') != '0') {
+		$graph_templates = html_transform_graph_template_ids(grv('graph_template_id'));
 
 		$sql_where .= ($sql_where != '' ? ' AND ' : '') . ' (gl.graph_template_id IN (' . $graph_templates . '))';
-	} elseif (get_request_var('graph_template_id') == '0') {
-		$sql_where .= ($sql_where != '' ? ' AND ' : '') . ' (gl.graph_template_id IN (' . get_request_var('graph_template_id') . '))';
+	} elseif (grv('graph_template_id') == '0') {
+		$sql_where .= ($sql_where != '' ? ' AND ' : '') . ' (gl.graph_template_id IN (' . grv('graph_template_id') . '))';
 	}
 
-	if (get_request_var('graphs') == '-1') {
+	if (grv('graphs') == '-1') {
 		$graph_rows = read_user_setting('preview_graphs_per_page', read_config_option('preview_graphs_per_page') ?? 20);
 	} else {
-		$graph_rows = get_request_var('graphs');
+		$graph_rows = grv('graphs');
 	}
 
-	$sql_limit = ($graph_rows * (get_request_var('page') - 1)) . ',' . $graph_rows;
+	$sql_limit = ($graph_rows * (grv('page') - 1)) . ',' . $graph_rows;
 
-	if (read_config_option('dsstats_enable') == 'on' && get_request_var('graph_source') != '' && get_request_var('graph_order') != '') {
+	if (read_config_option('dsstats_enable') == 'on' && grv('graph_source') != '' && grv('graph_order') != '') {
 		$sql_order = [
-			'data_source' => get_request_var('graph_source'),
-			'order'       => get_request_var('graph_order'),
+			'data_source' => grv('graph_source'),
+			'order'       => grv('graph_order'),
 			'start_time'  => get_current_graph_start(),
 			'end_time'    => get_current_graph_end(),
-			'cf'          => get_request_var('cf'),
-			'measure'     => get_request_var('measure')
+			'cf'          => grv('cf'),
+			'measure'     => grv('measure')
 		];
 	} else {
 		$sql_order  = 'gtg.title_cache';
@@ -903,16 +903,16 @@ function html_graph_preview_view() {
 
 	$graphs = get_allowed_graphs($sql_where, $sql_order, $sql_limit, $total_graphs);
 
-	$nav = html_nav_bar('graph_view.php', MAX_DISPLAY_PAGES, get_request_var('page'), $graph_rows, $total_graphs, get_request_var('columns'), __('Graphs'), 'page', 'main');
+	$nav = html_nav_bar('graph_view.php', MAX_DISPLAY_PAGES, grv('page'), $graph_rows, $total_graphs, grv('columns'), __('Graphs'), 'page', 'main');
 
 	print $nav;
 
 	html_start_box('', '100%', false, 3, 'center', '');
 
-	if (get_request_var('thumbnails') == 'true') {
-		html_graph_thumbnail_area($graphs, '', 'graph_start=' . get_current_graph_start() . '&graph_end=' . get_current_graph_end(), '', get_request_var('columns'));
+	if (grv('thumbnails') == 'true') {
+		html_graph_thumbnail_area($graphs, '', 'graph_start=' . get_current_graph_start() . '&graph_end=' . get_current_graph_end(), '', grv('columns'));
 	} else {
-		html_graph_area($graphs, '', 'graph_start=' . get_current_graph_start() . '&graph_end=' . get_current_graph_end(), '', get_request_var('columns'));
+		html_graph_area($graphs, '', 'graph_start=' . get_current_graph_start() . '&graph_end=' . get_current_graph_end(), '', grv('columns'));
 	}
 
 	html_end_box();
@@ -949,8 +949,8 @@ function create_listview_filter($session_var) {
 	);
 	$locations = $any + $none + $locations;
 
-	if (isset_request_var('host_id')) {
-		$host_id = get_request_var('host_id');
+	if (isrv('host_id')) {
+		$host_id = grv('host_id');
 	} elseif (isset($_SESSION[$session_var . '_host_id'])) {
 		$host_id = $_SESSION[$session_var . '_host_id'];
 	} else {
@@ -1049,7 +1049,7 @@ function create_listview_filter($session_var) {
 					'class'          => 'graph-multiselect',
 					'pageset'        => true,
 					'array'          => $normalized_templates,
-					'value'          => get_nfilter_request_var('graph_template_id')
+					'value'          => gnrv('graph_template_id')
 				],
 				'graphs' => [
 					'method'        => 'drop_array',
@@ -1120,9 +1120,9 @@ function create_listview_filter($session_var) {
 }
 
 function draw_listview_filter($render = false) {
-	$header = __('Graph List View Filters') . (isset_request_var('style') && get_request_var('style') != '' ? ' ' . __('[ Custom Graph List Applied - Filtering from List ]') : '');
+	$header = __('Graph List View Filters') . (isrv('style') && grv('style') != '' ? ' ' . __('[ Custom Graph List Applied - Filtering from List ]') : '');
 
-	/* create the page filter */
+	// create the page filter
 	$filters                 = create_listview_filter('sess_lview');
 	$pageFilter              = new CactiTableFilter($header, 'graph_view.php?action=list', 'form_graph_view', 'sess_lview');
 	$pageFilter->rows_label  = __('Graphs');
@@ -1145,65 +1145,65 @@ function html_graph_list_view() {
 		exit;
 	}
 
-	/* reset the graph list on a new viewing */
-	if (!isset_request_var('page')) {
-		set_request_var('graph_list', '');
+	// reset the graph list on a new viewing
+	if (!isrv('page')) {
+		srv('graph_list', '');
 	}
 
 	top_graph_header();
 
 	draw_listview_filter(true);
 
-	if (get_request_var('graphs') == '-1') {
+	if (grv('graphs') == '-1') {
 		$graph_rows = read_config_option('num_rows_table');
 	} else {
-		$graph_rows = get_request_var('graphs');
+		$graph_rows = grv('graphs');
 	}
 
-	/* check to see if site_id and location are mismatched */
-	if (get_request_var('site_id') >= 0) {
-		if (get_request_var('location') != '0' && get_request_var('location') != '-1') {
+	// check to see if site_id and location are mismatched
+	if (grv('site_id') >= 0) {
+		if (grv('location') != '0' && grv('location') != '-1') {
 			$exists = db_fetch_cell_prepared('SELECT COUNT(*)
 				FROM host
 				WHERE site_id = ?
 				AND location = ?',
-				[get_request_var('site_id'), get_request_var('location')]);
+				[grv('site_id'), grv('location')]);
 
 			if (!$exists) {
-				set_request_var('location', '-1');
+				srv('location', '-1');
 			}
 		}
 	}
 
 	$graph_list = [];
 
-	/* save selected graphs into url */
-	if (!isempty_request_var('graph_list')) {
-		foreach (explode(',', get_request_var('graph_list')) as $item) {
+	// save selected graphs into url
+	if (!ierv('graph_list')) {
+		foreach (explode(',', grv('graph_list')) as $item) {
 			if (is_numeric($item)) {
 				$graph_list[$item] = 1;
 			}
 		}
 	}
 
-	if (!isempty_request_var('graph_add')) {
-		foreach (explode(',', get_request_var('graph_add')) as $item) {
+	if (!ierv('graph_add')) {
+		foreach (explode(',', grv('graph_add')) as $item) {
 			if (is_numeric($item)) {
 				$graph_list[$item] = 1;
 			}
 		}
 	}
 
-	/* remove items */
-	if (!isempty_request_var('graph_remove')) {
-		foreach (explode(',', get_request_var('graph_remove')) as $item) {
+	// remove items
+	if (!ierv('graph_remove')) {
+		foreach (explode(',', grv('graph_remove')) as $item) {
 			unset($graph_list[$item]);
 		}
 	}
 
-	/* update the revised graph list session variable */
+	// update the revised graph list session variable
 	if (cacti_sizeof($graph_list)) {
-		set_request_var('graph_list', implode(',', array_keys($graph_list)));
+		srv('graph_list', implode(',', array_keys($graph_list)));
 	}
 
 	load_current_session_value('graph_list', 'sess_gl_graph_list', '');
@@ -1219,47 +1219,47 @@ function html_graph_list_view() {
 	form_hidden_box('action', 'list', '');
 	form_hidden_box('graph_add', '', '');
 	form_hidden_box('graph_remove', '', '');
-	form_hidden_box('graph_list', get_request_var('graph_list'), '');
+	form_hidden_box('graph_list', grv('graph_list'), '');
 
-	/* create filter for sql */
+	// create filter for sql
 	$sql_where  = '';
 
-	if (!isempty_request_var('rfilter')) {
-		$sql_where .= " gtg.title_cache RLIKE '" . get_request_var('rfilter') . "'";
+	if (!ierv('rfilter')) {
+		$sql_where .= " gtg.title_cache RLIKE '" . grv('rfilter') . "'";
 	}
 
-	if (!isempty_request_var('site_id') && get_request_var('site_id') > 0) {
-		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' h.site_id=' . get_request_var('site_id');
-	} elseif (isempty_request_var('site_id')) {
+	if (!ierv('site_id') && grv('site_id') > 0) {
+		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' h.site_id=' . grv('site_id');
+	} elseif (ierv('site_id')) {
 		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' h.site_id=0';
 	}
 
-	if (!isempty_request_var('host_id') && get_request_var('host_id') > 0) {
-		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' gl.host_id=' . get_request_var('host_id');
-	} elseif (isempty_request_var('host_id')) {
+	if (!ierv('host_id') && grv('host_id') > 0) {
+		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' gl.host_id=' . grv('host_id');
+	} elseif (ierv('host_id')) {
 		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' gl.host_id=0';
 	}
 
-	if (get_request_var('location') != '' && get_request_var('location') != '-1' && get_request_var('location') != '0') {
-		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' h.location = ' . db_qstr(get_request_var('location'));
-	} elseif (get_request_var('location') == '0') {
+	if (grv('location') != '' && grv('location') != '-1' && grv('location') != '0') {
+		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' h.location = ' . db_qstr(grv('location'));
+	} elseif (grv('location') == '0') {
 		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' h.location = ""';
 	}
 
-	if (!isempty_request_var('graph_template_id') && get_request_var('graph_template_id') != '-1' && get_request_var('graph_template_id') != '0') {
-		$graph_templates = html_transform_graph_template_ids(get_request_var('graph_template_id'));
+	if (!ierv('graph_template_id') && grv('graph_template_id') != '-1' && grv('graph_template_id') != '0') {
+		$graph_templates = html_transform_graph_template_ids(grv('graph_template_id'));
 
 		$sql_where .= ($sql_where != '' ? ' AND ' : '') . ' (gl.graph_template_id IN (' . $graph_templates . '))';
-	} elseif (get_request_var('graph_template_id') == '0') {
-		$sql_where .= ($sql_where != '' ? ' AND ' : '') . ' (gl.graph_template_id IN (' . get_request_var('graph_template_id') . '))';
+	} elseif (grv('graph_template_id') == '0') {
+		$sql_where .= ($sql_where != '' ? ' AND ' : '') . ' (gl.graph_template_id IN (' . grv('graph_template_id') . '))';
 	}
 
 	$total_rows = 0;
-	$sql_limit  = ($graph_rows * (get_request_var('page') - 1)) . ',' . $graph_rows;
+	$sql_limit  = ($graph_rows * (grv('page') - 1)) . ',' . $graph_rows;
 
 	$graphs = get_allowed_graphs($sql_where, 'gtg.title_cache', $sql_limit, $total_rows);
 
-	$nav = html_nav_bar('graph_view.php?action=list', MAX_DISPLAY_PAGES, get_request_var('page'), $graph_rows, $total_rows, 5, __('Graphs'), 'page', 'main');
+	$nav = html_nav_bar('graph_view.php?action=list', MAX_DISPLAY_PAGES, grv('page'), $graph_rows, $total_rows, 5, __('Graphs'), 'page', 'main');
 
 	print $nav;
 
@@ -1324,10 +1324,10 @@ function html_graph_list_view() {
 
 	if (cacti_sizeof($graphs)) {
 		foreach ($graphs as $graph) {
-			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
+			// we're escaping strings here, so no need to escape them on form_selectable_cell
 			$template_details = get_graph_template_details($graph['local_graph_id']);
 
-			if ($graph['graph_source'] == '0') { //Not Templated, customize graph source and template details.
+			if ($graph['graph_source'] == '0') { // Not Templated, customize graph source and template details.
 				$template_details = api_plugin_hook_function('customize_template_details', $template_details);
 				$graph            = api_plugin_hook_function('customize_graph', $graph);
 			}
@@ -1343,7 +1343,7 @@ function html_graph_list_view() {
 			$current_page = get_current_page();
 
 			form_alternate_row('line' . $graph['local_graph_id'], true);
-			form_selectable_cell(filter_value($graph['title_cache'], get_request_var('rfilter'), $current_page . '?action=view&local_graph_id=' . $graph['local_graph_id'] . '&rra_id=0'), $graph['local_graph_id']);
+			form_selectable_cell(filter_value($graph['title_cache'], grv('rfilter'), $current_page . '?action=view&local_graph_id=' . $graph['local_graph_id'] . '&rra_id=0'), $graph['local_graph_id']);
 
 			if (is_realm_allowed(10)) {
 				if ($graph['site_name'] != '') {
@@ -1359,8 +1359,8 @@ function html_graph_list_view() {
 				}
 
 				form_selectable_ecell($graph['description'], $graph['local_graph_id']);
-				form_selectable_cell(filter_value($graph_sources[$template_details['source']], get_request_var('rfilter')), $graph['local_graph_id'], '', 'right');
-				form_selectable_cell(filter_value($template_details['name'], get_request_var('rfilter'), $template_details['url']), $graph['local_graph_id'], '', 'left');
+				form_selectable_cell(filter_value($graph_sources[$template_details['source']], grv('rfilter')), $graph['local_graph_id'], '', 'right');
+				form_selectable_cell(filter_value($template_details['name'], grv('rfilter'), $template_details['url']), $graph['local_graph_id'], '', 'left');
 			}
 
 			form_selectable_ecell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id']);
@@ -1391,7 +1391,7 @@ function html_graph_list_view() {
 		$report_text .= '<div class="filterColumn"><select id="report_id">';
 
 		foreach ($reports as $report) {
-			$report_text .= '<option value="' . $report['id'] . '">' . html_escape($report['name']) . '</option>';
+			$report_text .= '<option value="' . $report['id'] . '">' . htmle($report['name']) . '</option>';
 		}
 		$report_text .= '</select></div></div>';
 
@@ -1427,7 +1427,7 @@ function html_graph_list_view() {
 		refreshMSeconds=999999999;
 		refreshFunction = 'refreshGraphs()';
 
-		var graph_list_array = new Array(<?php print get_request_var('graph_list'); ?>);
+		var graph_list_array = new Array(<?php print grv('graph_list'); ?>);
 
 		function initializeChecks() {
 			for (var i = 0; i < graph_list_array.length; i++) {
@@ -1490,7 +1490,7 @@ function html_graph_list_view() {
 					}
 				});
 
-				strURL = '&demon=1&graph_list=<?php print get_request_var('graph_list'); ?>&graph_add=' + strAdd + '&graph_remove=' + strDel;
+				strURL = '&demon=1&graph_list=<?php print grv('graph_list'); ?>&graph_add=' + strAdd + '&graph_remove=' + strDel;
 
 				return strNavURL + strURL;
 			} else {
@@ -1583,15 +1583,15 @@ function html_graph_list_view() {
 }
 
 function html_graph_update_timespan() {
-	if (isset_request_var('date1')) {
-		$_SESSION['sess_current_date1'] = get_request_var('date1');
+	if (isrv('date1')) {
+		$_SESSION['sess_current_date1'] = grv('date1');
 	}
 
-	if (isset_request_var('date2')) {
-		$_SESSION['sess_current_date2'] = get_request_var('date2');
+	if (isrv('date2')) {
+		$_SESSION['sess_current_date2'] = grv('date2');
 	}
 
-	if (isset_request_var('predefined_timespan')) {
+	if (isrv('predefined_timespan')) {
 		$return = [
 			'date1'      => $_SESSION['sess_current_date1'],
 			'date2'      => $_SESSION['sess_current_date2'],
@@ -1605,18 +1605,18 @@ function html_graph_update_timespan() {
 
 function html_graph_get_reports() {
 	// Add to a report
-	get_filter_request_var('report_id');
-	get_filter_request_var('timespan');
-	get_filter_request_var('align');
+	gfrv('report_id');
+	gfrv('timespan');
+	gfrv('align');
 
-	if (isset_request_var('graph_list')) {
-		$items = explode(',', get_request_var('graph_list'));
+	if (isrv('graph_list')) {
+		$items = explode(',', grv('graph_list'));
 
 		if (cacti_sizeof($items)) {
 			$good = true;
 
 			foreach ($items as $item) {
-				if (!reports_add_graphs(get_filter_request_var('report_id'), $item, get_request_var('timespan'), get_request_var('align'))) {
+				if (!reports_add_graphs(gfrv('report_id'), $item, grv('timespan'), grv('align'))) {
 					raise_message('reports_add_error');
 					$good = false;
 
@@ -1636,23 +1636,23 @@ function html_graph_get_reports() {
 }
 
 function html_graph_single_validate() {
-	/* ================= input validation ================= */
-	get_filter_request_var('rra_id', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([0-9]+|all)$/']]);
-	get_filter_request_var('local_graph_id');
-	get_filter_request_var('graph_end');
-	get_filter_request_var('graph_start');
-	get_filter_request_var('view_type', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-zA-Z0-9]+)$/']]);
-	get_filter_request_var('business_hours', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-zA-Z0-9]+)$/']]);
-	/* ==================================================== */
+	// ================= input validation =================
+	gfrv('rra_id', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([0-9]+|all)$/']]);
+	gfrv('local_graph_id');
+	gfrv('graph_end');
+	gfrv('graph_start');
+	gfrv('view_type', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-zA-Z0-9]+)$/']]);
+	gfrv('business_hours', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-zA-Z0-9]+)$/']]);
+	// ====================================================
 
-	if (isset_request_var('business_hours')) {
-		$_SESSION['sess_business_hours'] = get_request_var('business_hours');
+	if (isrv('business_hours')) {
+		$_SESSION['sess_business_hours'] = grv('business_hours');
 	} elseif (isset($_SESSION['sess_business_hours'])) {
-		set_request_var('business_hours', $_SESSION['sess_business_hours']);
+		srv('business_hours', $_SESSION['sess_business_hours']);
 	}
 
-	if (!isset_request_var('rra_id')) {
-		set_request_var('rra_id', 'all');
+	if (!isrv('rra_id')) {
+		srv('rra_id', 'all');
 	}
 }
 
@@ -1660,10 +1660,10 @@ function html_graph_check_access() {
 	$exists = db_fetch_cell_prepared('SELECT local_graph_id
 		FROM graph_templates_graph
 		WHERE local_graph_id = ?',
-		[get_request_var('local_graph_id')]
+		[grv('local_graph_id')]
 	);
 
-	/* make sure the graph requested exists (sanity) */
+	// make sure the graph requested exists (sanity)
 	if (!$exists) {
 		print '<strong><font class="txtErrorTextBox">' . __('GRAPH DOES NOT EXIST') . '</font></strong>';
 		bottom_footer();
@@ -1671,8 +1671,8 @@ function html_graph_check_access() {
 		exit;
 	}
 
-	/* take graph permissions into account here */
-	if (!is_graph_allowed(get_request_var('local_graph_id'))) {
+	// take graph permissions into account here
+	if (!is_graph_allowed(grv('local_graph_id'))) {
 		header('Location: permission_denied.php');
 
 		exit;
@@ -1683,14 +1683,14 @@ function html_graph_get_info() {
 	$rras        = [];
 	$graph_title = null;
 
-	if (get_request_var('rra_id') == 'all' || isempty_request_var('rra_id')) {
+	if (grv('rra_id') == 'all' || ierv('rra_id')) {
 		$sql_where = ' AND dspr.id IS NOT NULL';
 	} else {
-		$sql_where = ' AND dspr.id=' . get_request_var('rra_id');
+		$sql_where = ' AND dspr.id=' . grv('rra_id');
 	}
 
-	$rras        = get_associated_rras(get_request_var('local_graph_id'), $sql_where);
-	$graph_title = get_graph_title(get_request_var('local_graph_id'));
+	$rras        = get_associated_rras(grv('local_graph_id'), $sql_where);
+	$graph_title = get_graph_title(grv('local_graph_id'));
 
 	return ['rras' => $rras, 'title' => $graph_title];
 }
@@ -1716,7 +1716,7 @@ function html_graph_single_view() {
 		general_header();
 	}
 
-	if (str_contains(get_request_var('action'), 'tree')) {
+	if (str_contains(grv('action'), 'tree')) {
 		$suffix = 'tree';
 	} else {
 		$suffix = 'preview';
@@ -1729,10 +1729,10 @@ function html_graph_single_view() {
 	api_plugin_hook_function(
 		'page_buttons',
 		[
-			'lgid'   => get_request_var('local_graph_id'),
-			'leafid' => '', //$leaf_id,
+			'lgid'   => grv('local_graph_id'),
+			'leafid' => '', // $leaf_id,
 			'mode'   => 'mrtg',
-			'rraid'  => get_request_var('rra_id')
+			'rraid'  => grv('rra_id')
 		]
 	);
 
@@ -1743,7 +1743,7 @@ function html_graph_single_view() {
 		LEFT JOIN host AS h
 		ON gl.host_id = h.id
 		WHERE gtg.local_graph_id = ?',
-		[get_request_var('local_graph_id')]);
+		[grv('local_graph_id')]);
 
 	$graph_template_id = $graph['graph_template_id'];
 
@@ -1761,7 +1761,7 @@ function html_graph_single_view() {
 				$graph_start = $graph_end - ($rra['step'] * $rra['rows'] * $rra['steps']);
 			}
 
-			$aggregate_url = aggregate_build_children_url(get_request_var('local_graph_id'), $graph_start, $graph_end, $rra['id']);
+			$aggregate_url = aggregate_build_children_url(grv('local_graph_id'), $graph_start, $graph_end, $rra['id']);
 
 			print "<div class='graphWrapperOuter cols1' data-disabled='" . ($graph['disabled'] == 'on' ? 'true' : 'false') . "'>";
 			print '<div>';
@@ -1769,34 +1769,34 @@ function html_graph_single_view() {
 			print "<div class='graphWrapper' id='wrapper_" . $graph['local_graph_id'] . "' graph_id='" . $graph['local_graph_id'] . "' rra_id='" . $rra['id'] . "' graph_width='" . $graph['width'] . "' graph_height='" . $graph['height'] . "' graph_start='" . $graph_start . "' graph_end='" . $graph_end . "' title_font_size='" . ((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size')) . "'></div>";
 
 			if (is_realm_allowed(27)) {
-				print "<div id='dd" . get_request_var('local_graph_id') . "' style='vertical-align:top;' class='graphDrillDown noprint'>";
+				print "<div id='dd" . grv('local_graph_id') . "' style='vertical-align:top;' class='graphDrillDown noprint'>";
 
-				print "<a class='iconLink utils' href='#' id='graph_" . get_request_var('local_graph_id') . "_util' graph_start='" . $graph_start . "' graph_end='" . $graph_end . "' rra_id='" . $rra['id'] . "'>";
+				print "<a class='iconLink utils' href='#' id='graph_" . grv('local_graph_id') . "_util' graph_start='" . $graph_start . "' graph_end='" . $graph_end . "' rra_id='" . $rra['id'] . "'>";
 				print "<i class='drillDown ti ti-settings-filled actionCog' title='" . __esc('Graph Details, Zooming and Debugging Utilities') . "'></i></a><br>";
 
-				print "<a id='graph_" . $rra['id'] . "_csv' class='iconLink csv' href='" . html_escape(CACTI_PATH_URL . 'graph_xport.php?local_graph_id=' . get_request_var('local_graph_id') . '&rra_id=' . $rra['id'] . '&view_type=' . get_request_var('view_type') . '&graph_start=' . $graph_start . '&graph_end=' . $graph_end) . "'>";
+				print "<a id='graph_" . $rra['id'] . "_csv' class='iconLink csv' href='" . htmle(CACTI_PATH_URL . 'graph_xport.php?local_graph_id=' . grv('local_graph_id') . '&rra_id=' . $rra['id'] . '&view_type=' . grv('view_type') . '&graph_start=' . $graph_start . '&graph_end=' . $graph_end) . "'>";
 				print "<i class='drillDown ti ti-file-type-csv fileCSV' title='" . __esc('CSV Export') . "'></i></a><br>";
 
 				if (is_realm_allowed(10) && $graph_template_id > 0) {
-					print "<a class='iconLink' role='link' href='" . html_escape(CACTI_PATH_URL . 'graph_templates.php?action=template_edit&id=' . $graph_template_id) . "'>";
+					print "<a class='iconLink' role='link' href='" . htmle(CACTI_PATH_URL . 'graph_templates.php?action=template_edit&id=' . $graph_template_id) . "'>";
 					print "<i class='drillDown ti ti-edit editTemplate' title='" . __esc('Edit Graph Template') . "'></i></a>";
 					print '<br>';
 				}
 
 				if (read_config_option('realtime_enabled') == 'on' || is_realm_allowed(25)) {
-					print "<a class='iconLink' href='#' onclick=\"window.open('" . CACTI_PATH_URL . 'graph_realtime.php?top=0&left=0&local_graph_id=' . get_request_var('local_graph_id') . "', 'popup_" . get_request_var('local_graph_id') . "', 'directories=no,toolbar=no,menubar=no,resizable=yes,location=no,scrollbars=no,status=no,titlebar=no,width=650,height=300');return false\"><i class='drillDown ti ti-chart-area realTime' title='" . __esc('Click to view just this Graph in Real-time') . "'></i></a><br>";
+					print "<a class='iconLink' href='#' onclick=\"window.open('" . CACTI_PATH_URL . 'graph_realtime.php?top=0&left=0&local_graph_id=' . grv('local_graph_id') . "', 'popup_" . grv('local_graph_id') . "', 'directories=no,toolbar=no,menubar=no,resizable=yes,location=no,scrollbars=no,status=no,titlebar=no,width=650,height=300');return false\"><i class='drillDown ti ti-chart-area realTime' title='" . __esc('Click to view just this Graph in Real-time') . "'></i></a><br>";
 				}
 
 				print($aggregate_url != '' ? $aggregate_url : '');
 
-				api_plugin_hook('graph_buttons', ['hook' => 'view', 'local_graph_id' => get_request_var('local_graph_id'), 'rra' => $rra['id'], 'view_type' => get_request_var('view_type')]);
+				api_plugin_hook('graph_buttons', ['hook' => 'view', 'local_graph_id' => grv('local_graph_id'), 'rra' => $rra['id'], 'view_type' => grv('view_type')]);
 
 				print '</div>';
 			}
 
-			print '</div><div>' . html_escape($rra['name']) . '</div>';
-			print "<div><input type='hidden' id='thumbnails' value='" . html_escape(get_request_var('thumbnails')) . "'></input></div>";
-			print "<div><input type='hidden' id='business_hours' value='" . html_escape(get_request_var('business_hours')) . "'></input></div>";
+			print '</div><div>' . htmle($rra['name']) . '</div>';
+			print "<div><input type='hidden' id='thumbnails' value='" . htmle(grv('thumbnails')) . "'></input></div>";
+			print "<div><input type='hidden' id='business_hours' value='" . htmle(grv('business_hours')) . "'></input></div>";
 			print '</div>';
 
 			$i++;
@@ -1948,13 +1948,13 @@ function html_graph_zoom() {
 	$rras        = $info['rras'];
 	$graph_title = $info['title'];
 
-	if (str_contains(get_nfilter_request_var('action'), 'tree')) {
+	if (str_contains(gnrv('action'), 'tree')) {
 		$suffix = 'tree';
 	} else {
 		$suffix = 'preview';
 	}
 
-	/* find the maximum time span a graph can show */
+	// find the maximum time span a graph can show
 	$max_timespan = 1;
 
 	if (cacti_sizeof($rras)) {
@@ -1965,13 +1965,13 @@ function html_graph_zoom() {
 		}
 	}
 
-	/* fetch information for the current RRA */
-	if (isset_request_var('rra_id') && get_request_var('rra_id') > 0) {
+	// fetch information for the current RRA
+	if (isrv('rra_id') && grv('rra_id') > 0) {
 		$rra = db_fetch_row_prepared('SELECT dspr.id, step, steps, dspr.name, `rows`
 			FROM data_source_profiles_rra AS dspr
 			INNER JOIN data_source_profiles AS dsp
 			ON dsp.id=dspr.data_source_profile_id
-			WHERE dspr.id = ?', [get_request_var('rra_id')]);
+			WHERE dspr.id = ?', [grv('rra_id')]);
 
 		$rra['timespan'] = $rra['steps'] * $rra['step'] * $rra['rows'];
 	} else {
@@ -1984,39 +1984,39 @@ function html_graph_zoom() {
 		$rra['timespan'] = $rra['steps'] * $rra['step'] * $rra['rows'];
 	}
 
-	/* define the time span, which decides which rra to use */
+	// define the time span, which decides which rra to use
 	$timespan = - ($rra['timespan']);
 
-	/* find the step and how often this graph is updated with new data */
+	// find the step and how often this graph is updated with new data
 	$ds_step = db_fetch_cell_prepared('SELECT
 		data_template_data.rrd_step
 		FROM (data_template_data, data_template_rrd, graph_templates_item)
 		WHERE graph_templates_item.task_item_id = data_template_rrd.id
 		AND data_template_rrd.local_data_id = data_template_data.local_data_id
 		AND graph_templates_item.local_graph_id = ?
-		LIMIT 0,1', [get_request_var('local_graph_id')]);
+		LIMIT 0,1', [grv('local_graph_id')]);
 	$ds_step                       = empty($ds_step) ? 300 : $ds_step;
 	$seconds_between_graph_updates = ($ds_step * $rra['steps']);
 
 	$now = time();
 
-	if (isset_request_var('graph_end') && (get_request_var('graph_end') <= $now - $seconds_between_graph_updates)) {
-		$graph_end = get_request_var('graph_end');
+	if (isrv('graph_end') && (grv('graph_end') <= $now - $seconds_between_graph_updates)) {
+		$graph_end = grv('graph_end');
 	} else {
 		$graph_end = $now - $seconds_between_graph_updates;
 	}
 
-	if (isset_request_var('graph_start')) {
-		if (($graph_end - get_request_var('graph_start')) > $max_timespan) {
+	if (isrv('graph_start')) {
+		if (($graph_end - grv('graph_start')) > $max_timespan) {
 			$graph_start = $now - $max_timespan;
 		} else {
-			$graph_start = get_request_var('graph_start');
+			$graph_start = grv('graph_start');
 		}
 	} else {
 		$graph_start = $now + $timespan;
 	}
 
-	/* required for zoom out function */
+	// required for zoom out function
 	if ($graph_start == $graph_end) {
 		$graph_start--;
 	}
@@ -2028,7 +2028,7 @@ function html_graph_zoom() {
 		LEFT JOIN host AS h
 		ON gl.host_id = h.id
 		WHERE gtg.local_graph_id = ?',
-		[get_request_var('local_graph_id')]);
+		[grv('local_graph_id')]);
 
 	$graph_height      = $graph['height'];
 	$graph_width       = $graph['width'];
@@ -2074,13 +2074,13 @@ function html_graph_zoom() {
 					<br>
 					<?php
 					if (is_realm_allowed(10) && $graph_template_id > 0) {
-						print "<a class='iconLink' role='link' href='" . html_escape(CACTI_PATH_URL . 'graph_templates.php?action=template_edit&id=' . $graph_template_id) . "'><i class='drillDown ti ti-edit editTemplate' title='" . __esc('Edit Graph Template') . "'></i></a>";
+						print "<a class='iconLink' role='link' href='" . htmle(CACTI_PATH_URL . 'graph_templates.php?action=template_edit&id=' . $graph_template_id) . "'><i class='drillDown ti ti-edit editTemplate' title='" . __esc('Edit Graph Template') . "'></i></a>";
 						print '<br>';
 					}
 
-					api_plugin_hook('graph_buttons', ['hook' => 'zoom', 'local_graph_id' => get_request_var('local_graph_id'), 'rra' =>  get_request_var('rra_id'), 'view_type' => get_request_var('view_type')]); ?>
+					api_plugin_hook('graph_buttons', ['hook' => 'zoom', 'local_graph_id' => grv('local_graph_id'), 'rra' =>  grv('rra_id'), 'view_type' => grv('view_type')]); ?>
 				</div>
-				<?php print(read_user_setting('show_graph_title') == 'on' ? '<div>' . html_escape($graph['title_cache']) . '</div>' : ''); ?>
+				<?php print(read_user_setting('show_graph_title') == 'on' ? '<div>' . htmle($graph['title_cache']) . '</div>' : ''); ?>
 				<?php } ?>
 			</div>
 		</div>
@@ -2089,8 +2089,8 @@ function html_graph_zoom() {
 			<input type='hidden' id='date2' value=''>
 			<input type='hidden' id='graph_start' value='<?php print $graph_start; ?>'>
 			<input type='hidden' id='graph_end' value='<?php print $graph_end; ?>'>
-			<input type='hidden' id='thumbnails' value='<?php print html_escape_request_var('thumbnails'); ?>'></input>
-			<input type='hidden' id='business_hours' value='<?php print html_escape_request_var('business_hours'); ?>'></input>
+			<input type='hidden' id='thumbnails' value='<?php print htmlerv('thumbnails'); ?>'></input>
+			<input type='hidden' id='business_hours' value='<?php print htmlerv('business_hours'); ?>'></input>
 		</div>
 	</div>
 	<?php
@@ -2101,8 +2101,8 @@ function html_graph_zoom() {
 	<div class='cactiTable'><div id='data'></div></div>
 	<script type='text/javascript'>
 		var suffix = '<?php print $suffix; ?>';
-		var graph_id = <?php print get_request_var('local_graph_id') . ";\n"; ?>
-		var rra_id = <?php print get_request_var('rra_id') . ";\n"; ?>
+		var graph_id = <?php print grv('local_graph_id') . ";\n"; ?>
+		var rra_id = <?php print grv('rra_id') . ";\n"; ?>
 		var graph_start = 0;
 		var graph_end = 0;
 		var graph_height = 0;
@@ -2114,8 +2114,8 @@ function html_graph_zoom() {
 			loadUrl({
 				url: urlPath + '<?php print $current_page; ?>' + '?action=properties-' + suffix +
 					'&local_graph_id=' + graph_id +
-					'&rra_id=<?php print get_request_var('rra_id'); ?>' +
-					'&view_type=<?php print get_request_var('view_type'); ?>' +
+					'&rra_id=<?php print grv('rra_id'); ?>' +
+					'&view_type=<?php print grv('view_type'); ?>' +
 					'&business_hours=' + $('#business_hours').val() +
 					'&thumbnails=' + $('#thumbnails').val(),
 				noState: true,
@@ -2277,14 +2277,14 @@ function html_graph_properties() {
 
 	$graph_data_array['print_source'] = true;
 
-	/* override: graph start time (unix time) */
-	if (!isempty_request_var('graph_start')) {
-		$graph_data_array['graph_start'] = get_request_var('graph_start');
+	// override: graph start time (unix time)
+	if (!ierv('graph_start')) {
+		$graph_data_array['graph_start'] = grv('graph_start');
 	}
 
-	/* override: graph end time (unix time) */
-	if (!isempty_request_var('graph_end')) {
-		$graph_data_array['graph_end'] = get_request_var('graph_end');
+	// override: graph end time (unix time)
+	if (!ierv('graph_end')) {
+		$graph_data_array['graph_end'] = grv('graph_end');
 	}
 
 	$graph_data_array['output_flag']  = RRDTOOL_OUTPUT_STDERR;
@@ -2297,7 +2297,7 @@ function html_graph_properties() {
 				<span class='cactiTableTitleRow'><?php print __('RRDtool Command:'); ?></span>
 				<?php
 				$null_param = [];
-	print @rrdtool_function_graph(get_request_var('local_graph_id'), get_request_var('rra_id'), $graph_data_array, null, $null_param, $_SESSION[SESS_USER_ID]);
+	print @rrdtool_function_graph(grv('local_graph_id'), grv('rra_id'), $graph_data_array, null, $null_param, $_SESSION[SESS_USER_ID]);
 	unset($graph_data_array['print_source']);
 	?>
 				<br>
@@ -2305,7 +2305,7 @@ function html_graph_properties() {
 				<span class='left'>
 					<?php
 		if (POLLER_ID == 1) {
-			print @rrdtool_function_graph(get_request_var('local_graph_id'), get_request_var('rra_id'), $graph_data_array, null, $null_param, $_SESSION[SESS_USER_ID]);
+			print @rrdtool_function_graph(grv('local_graph_id'), grv('rra_id'), $graph_data_array, null, $null_param, $_SESSION[SESS_USER_ID]);
 		} else {
 			print __esc('Not Checked');
 		}

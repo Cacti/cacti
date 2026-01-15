@@ -30,11 +30,11 @@ define_exit('EXIT_UNKNOWN', -1, "ERROR: Failed due to unknown reason\n");
 define_exit('EXIT_NORMAL',  0, '');
 define_exit('EXIT_ARGERR',  1, "ERROR: Invalid Argument: (%s)\n\n");
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-/* setup defaults */
+// setup defaults
 $quiet = false;
 $debug = false;
 $dev   = false;
@@ -204,7 +204,7 @@ if ($dev) {
 	print 'Dev.: ' . CACTI_VERSION . '.99.' . time() . PHP_EOL;
 }
 
-/*  display_version - displays version information */
+// display_version - displays version information
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Version Utility, Version $version, " . COPYRIGHT_YEARS . "\n";

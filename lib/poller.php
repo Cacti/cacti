@@ -62,7 +62,7 @@ function exec_poll($command, $timeout = 5) {
 function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 	$output = '';
 
-	/* execute using php process */
+	// execute using php process
 	if ($using_proc_function == 1) {
 		if (is_resource($proc_fd)) {
 			/* $pipes now looks like this:
@@ -70,7 +70,7 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 			 * 1 => readable handle connected to child stdout
 			 * 2 => any error output will be sent to child stderr */
 
-			/* send command to the php server */
+			// send command to the php server
 			fwrite($pipes[0], $command . "\r\n");
 			fflush($pipes[0]);
 
@@ -80,9 +80,9 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 				$output = 'U';
 			}
 		}
-		/* execute the old fashion way */
+		// execute the old fashion way
 	} else {
-		/* formulate command */
+		// formulate command
 		$command = read_config_option('path_php_binary') . ' ' . $command;
 
 		if (function_exists('popen')) {
@@ -92,7 +92,7 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 				$fp = popen($command, 'rb');
 			}
 
-			/* return if the popen command was not successful */
+			// return if the popen command was not successful
 			if (!is_resource($fp)) {
 				cacti_log('WARNING; Problem with POPEN command.', false, 'POLLER');
 
@@ -269,7 +269,7 @@ function update_reindex_cache($host_id, $data_query_id) {
 	include_once(CACTI_PATH_LIBRARY . '/data_query.php');
 	include_once(CACTI_PATH_LIBRARY . '/snmp.php');
 
-	/* will be used to keep track of sql statements to execute later on */
+	// will be used to keep track of sql statements to execute later on
 	$recache_stack = [];
 
 	$host = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' *
@@ -369,32 +369,32 @@ function update_reindex_cache($host_id, $data_query_id) {
 				 */
 				switch ($data_query_type) {
 					case DATA_INPUT_TYPE_SNMP_QUERY:
-						if (isset($data_query_xml['oid_num_indexes'])) { /* we have a specific OID for counting indexes */
+						if (isset($data_query_xml['oid_num_indexes'])) { // we have a specific OID for counting indexes
 							$recache_stack[] = "($host_id, $data_query_id," . POLLER_ACTION_SNMP . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr($data_query_xml['oid_num_indexes']) . ', 1)';
-						} else { /* count all indexes found */
+						} else { // count all indexes found
 							$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SNMP_COUNT . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr($data_query_xml['oid_index']) . ', 1)';
 						}
 
 						break;
 					case DATA_INPUT_TYPE_SCRIPT_QUERY:
-						if (isset($data_query_xml['arg_num_indexes'])) { /* we have a specific request for counting indexes */
-							/* escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string? */
+						if (isset($data_query_xml['arg_num_indexes'])) { // we have a specific request for counting indexes
+							// escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string?
 							$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SCRIPT . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr(get_script_query_path((isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ' : '') . $data_query_xml['arg_num_indexes'], $data_query_xml['script_path'], $host_id)) . ', 1)';
-						} else { /* count all indexes found */
-							/* escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string? */
+						} else { // count all indexes found
+							// escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string?
 							$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SCRIPT_COUNT . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr(get_script_query_path((isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ' : '') . $data_query_xml['arg_index'], $data_query_xml['script_path'], $host_id)) . ', 1)';
 						}
 
 						break;
 					case DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER:
-						if (isset($data_query_xml['arg_num_indexes'])) { /* we have a specific request for counting indexes */
-							/* escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string? */
+						if (isset($data_query_xml['arg_num_indexes'])) { // we have a specific request for counting indexes
+							// escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string?
 							$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SCRIPT_PHP . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr(get_script_query_path($data_query_xml['script_function'] . ' ' . (isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ' : '') . $data_query_xml['arg_num_indexes'], $data_query_xml['script_path'], $host_id)) . ', 1)';
-						} else { /* count all indexes found */
-							# TODO: push the correct assert value
-							/* escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string? */
-							#$recache_stack[] = "($host_id, $data_query_id," . POLLER_ACTION_SCRIPT_PHP_COUNT . ", '=', " . db_qstr($assert_value) . ", " . db_qstr(get_script_query_path($data_query_xml['script_function'] . ' ' . (isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ': '') . $data_query_xml['arg_index'], $data_query_xml['script_path'], $host_id)) . ", 1)";
-							# omit the assert value until we are able to run an 'index' command through script server
+						} else { // count all indexes found
+							// TODO: push the correct assert value
+							// escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string?
+							// $recache_stack[] = "($host_id, $data_query_id," . POLLER_ACTION_SCRIPT_PHP_COUNT . ", '=', " . db_qstr($assert_value) . ", " . db_qstr(get_script_query_path($data_query_xml['script_function'] . ' ' . (isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ': '') . $data_query_xml['arg_index'], $data_query_xml['script_path'], $host_id)) . ", 1)";
+							// omit the assert value until we are able to run an 'index' command through script server
 						}
 
 						break;
@@ -431,21 +431,21 @@ function update_reindex_cache($host_id, $data_query_id) {
 }
 
 function poller_update_poller_reindex_from_buffer($host_id, $data_query_id, &$recache_stack) {
-	/* set all fields present value to 0, to mark the outliers when we are all done */
+	// set all fields present value to 0, to mark the outliers when we are all done
 	db_execute_prepared('UPDATE poller_reindex
 		SET present = 0
 		WHERE host_id = ?
 		AND data_query_id = ?',
 		[$host_id, $data_query_id]);
 
-	/* setup the database call */
+	// setup the database call
 	$sql_prefix   = 'INSERT INTO poller_reindex (host_id, data_query_id, action, op, assert_value, arg1, present) VALUES';
 	$sql_suffix   = ' ON DUPLICATE KEY UPDATE action=VALUES(action), op=VALUES(op), assert_value=VALUES(assert_value), present=VALUES(present)';
 
-	/* use a reasonable insert buffer, the default is 1MByte */
+	// use a reasonable insert buffer, the default is 1MByte
 	$max_packet   = 256000;
 
-	/* setup some defaults */
+	// setup some defaults
 	$overhead     = strlen($sql_prefix) + strlen($sql_suffix);
 	$buf_len      = 0;
 	$buf_count    = 0;
@@ -477,7 +477,7 @@ function poller_update_poller_reindex_from_buffer($host_id, $data_query_id, &$re
 		db_execute($sql_prefix . $buffer . $sql_suffix);
 	}
 
-	/* remove stale records FROM the poller reindex */
+	// remove stale records FROM the poller reindex
 	db_execute_prepared('DELETE FROM poller_reindex
 		WHERE host_id = ?
 		AND data_query_id = ?
@@ -503,7 +503,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 
 	include_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
-	/* let's count the number of rrd files we processed */
+	// let's count the number of rrd files we processed
 	$rrds_processed = 0;
 	$max_rows       = 40000;
 
@@ -515,7 +515,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 
 	$limit = 'LIMIT ' . $max_rows;
 
-	/* create/update the rrd files */
+	// create/update the rrd files
 	$results = db_fetch_assoc("SELECT po.output, po.time,
 		UNIX_TIMESTAMP(po.time) as unix_time, po.local_data_id, dl.data_template_id,
 		pi.rrd_path, pi.rrd_name, pi.rrd_num
@@ -537,9 +537,9 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 	}
 
 	if (cacti_sizeof($results)) {
-		/* create an array keyed off of each .rrd file */
+		// create an array keyed off of each .rrd file
 		foreach ($results as $item) {
-			/* trim the default characters, but add single and double quotes */
+			// trim the default characters, but add single and double quotes
 			$value            = $item['output'];
 			$unix_time        = $item['unix_time'];
 			$rrd_path         = $item['rrd_path'];
@@ -551,7 +551,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 			$rrd_update_array[$rrd_path]['local_data_id'] = $local_data_id;
 
 			if ((is_numeric($value)) || ($value == 'U' && $rrd_name != '')) {
-				/* single one value output */
+				// single one value output
 				$rrd_update_array[$rrd_path]['times'][$unix_time][$rrd_name] = $value;
 			} elseif (is_hexadecimal($value)) {
 				/**
@@ -575,7 +575,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 					$rrd_update_array[$rrd_path]['times'][$unix_time][$rrd_name] = 'U';
 				}
 			} elseif (str_contains($value, ':')) {
-				/* multiple value output */
+				// multiple value output
 				$values = preg_split('/\s+/', $value);
 
 				if ($data_template_id > 0) {
@@ -736,7 +736,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 				cacti_log(sprintf('WARNING: Invalid output! MULTI DS[%d] Encountered [%s] Expected[%s]', $item['local_data_id'], $value, $expected), false, 'POLLER');
 			}
 
-			/* fallback values */
+			// fallback values
 			if ((!isset($rrd_update_array[$rrd_path]['times'][$unix_time])) && ($rrd_name != '')) {
 				$rrd_update_array[$rrd_path]['times'][$unix_time][$rrd_name] = 'U';
 			} elseif ((!isset($rrd_update_array[$rrd_path]['times'][$unix_time])) && ($rrd_name == '')) {
@@ -744,7 +744,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 			}
 		}
 
-		/* make sure each .rrd file has complete data */
+		// make sure each .rrd file has complete data
 		$k        = 0;
 		$data_ids = [];
 
@@ -778,7 +778,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 			db_execute('DELETE FROM poller_output WHERE local_data_id IN (' . implode(',', $data_ids) . ')');
 		}
 
-		/* process dsstats information */
+		// process dsstats information
 		dsstats_poller_output($rrd_update_array);
 		dsdebug_poller_output($rrd_update_array);
 
@@ -791,11 +791,11 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 		$results          = null;
 		$rrd_update_array = null;
 
-		/* to much records in poller_output, process in chunks */
+		// to much records in poller_output, process in chunks
 		$rows = db_fetch_cell('SELECT COUNT(local_data_id)
 			FROM poller_output');
 
-		/* to much records in poller_output, process in chunks */
+		// to much records in poller_output, process in chunks
 		if ($rows && $remainder == $max_rows) {
 			$running = db_fetch_cell('SELECT COUNT(*)
 				FROM poller_time
@@ -899,7 +899,7 @@ function update_resource_cache($poller_id = 1) {
 					$extension = '';
 				}
 
-				/* exclude spurious extensions directories */
+				// exclude spurious extensions directories
 				$exclude = false;
 
 				if (array_search($extension, $excluded_extensions, true) !== false) {
@@ -918,7 +918,7 @@ function update_resource_cache($poller_id = 1) {
 			}
 		}
 
-		/* handle plugin paths */
+		// handle plugin paths
 		$files_and_dirs = array_diff(scandir($mpath . '/plugins'), ['..', '.']);
 
 		if (cacti_sizeof($files_and_dirs)) {
@@ -960,7 +960,7 @@ function update_resource_cache($poller_id = 1) {
 										$extension = '';
 									}
 
-									/* exclude spurious extensions */
+									// exclude spurious extensions
 									$exclude = false;
 
 									if (array_search($extension, $file_exclusions, true) !== false) {
@@ -982,7 +982,7 @@ function update_resource_cache($poller_id = 1) {
 			}
 		}
 
-		/* purge old entries */
+		// purge old entries
 		$cache = db_fetch_assoc('SELECT path FROM poller_resource_cache');
 
 		if (cacti_sizeof($cache)) {
@@ -1062,7 +1062,7 @@ function cache_in_path($path, $type, $recursive = true) {
 			$extension = '';
 		}
 
-		/* exclude spurious extensions directories */
+		// exclude spurious extensions directories
 		$exclude = false;
 
 		if (array_search($extension, $excluded_extensions, true) !== false) {
@@ -1082,7 +1082,7 @@ function cache_in_path($path, $type, $recursive = true) {
 			$exclude = true;
 		}
 
-		/* exclude spurious extensions */
+		// exclude spurious extensions
 		if (!$exclude) {
 			$curr_md5 = md5_file($path);
 			$last_md5 = db_fetch_cell_prepared('SELECT md5sum FROM poller_resource_cache WHERE path = ?', [$spath]);
@@ -1139,7 +1139,7 @@ function update_db_from_path($path, $type, $recursive = true) {
 						$extension = '';
 					}
 
-					/* exclude spurious extensions */
+					// exclude spurious extensions
 					if (array_search($extension, $excluded_extensions, true) !== false) {
 						continue;
 					}
@@ -1177,7 +1177,7 @@ function update_db_from_path($path, $type, $recursive = true) {
 				$extension = '';
 			}
 
-			/* exclude spurious extensions */
+			// exclude spurious extensions
 			if (array_search($extension, $excluded_extensions, true) === false) {
 				$spath = ltrim(trim(str_replace(CACTI_PATH_BASE, '', $path), '/ \\'), '/ \\');
 
@@ -1259,7 +1259,7 @@ function resource_cache_out($type, $path) {
 							WHERE id = ?',
 							[$e['id']], '', true, $remote_db_cnn_id), true);
 
-						/* if the file type is PHP check syntax */
+						// if the file type is PHP check syntax
 						if ($extension == 'php' && $contents != '') {
 							// Executable check
 							$executable = false;
@@ -1361,7 +1361,7 @@ function md5sum_path($path, $recursive = true) {
 				$extension = '';
 			}
 
-			/* exclude spurious extensions */
+			// exclude spurious extensions
 			if (array_search($extension, $excluded_extensions, true) !== false) {
 				continue;
 			}
@@ -1832,7 +1832,7 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
  */
 function replicate_out_table($conn, &$data, $table, $remote_poller_id, $truncate = true, $exclude = false, $level = POLLER_VERBOSITY_NONE) {
 	if (cacti_sizeof($data)) {
-		/* check if the table structure changed, and if so, recreate */
+		// check if the table structure changed, and if so, recreate
 		$local_columns  = db_fetch_assoc('SHOW COLUMNS FROM ' . $table);
 		$remote_columns = db_fetch_assoc('SHOW COLUMNS FROM ' . $table, false, $conn);
 		$remote_rows    = db_fetch_cell('SELECT COUNT(*) FROM ' . $table, '', false, $conn);

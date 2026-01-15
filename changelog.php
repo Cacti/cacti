@@ -30,12 +30,12 @@ require_once(CACTI_PATH_LIBRARY . '/clog_webapi.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
-/* set default action */
+// set default action
 set_default_action();
 
-switch (get_request_var('action')) {
+switch (grv('action')) {
 	default:
-		if (!api_plugin_hook_function('changelog_action', get_request_var('action'))) {
+		if (!api_plugin_hook_function('changelog_action', grv('action'))) {
 			top_header();
 			changelog_view();
 			bottom_footer();
@@ -47,21 +47,21 @@ switch (get_request_var('action')) {
 function changelog_view() {
 	global $database_default, $rrdtool_versions, $poller_options, $input_types, $local_db_cnn_id;
 
-	/* ================= input validation ================= */
-	get_filter_request_var('tab', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-z_A-Z]+)$/']]);
-	/* ==================================================== */
+	// ================= input validation =================
+	gfrv('tab', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-z_A-Z]+)$/']]);
+	// ====================================================
 
 	top_header();
 
-	/* present a tabbed interface */
+	// present a tabbed interface
 	$tabs = [
 		'highlights' => __('Highlights'),
 		'full'       => __('Full'),
 	];
 
-	/* set the default tab */
+	// set the default tab
 	load_current_session_value('tab', 'sess_cl_tabs', 'summary');
-	$current_tab = get_nfilter_request_var('tab');
+	$current_tab = gnrv('tab');
 
 	$page = 'changelog.php?tab=' . $current_tab;
 
@@ -74,12 +74,12 @@ function changelog_view() {
 	set_page_refresh($refresh);
 	$i = 0;
 
-	/* draw the tabs */
+	// draw the tabs
 	print "<div class='tabs'><nav><ul role='tablist'>";
 
 	foreach (array_keys($tabs) as $tab_short_name) {
 		print "<li class='subTab'><a class='tab" . (($tab_short_name == $current_tab) ? " selected'" : "'") .
-			" href='" . html_escape(CACTI_PATH_URL .
+			" href='" . htmle(CACTI_PATH_URL .
 			'changelog.php?tab=' . $tab_short_name) .
 			"'>" . $tabs[$tab_short_name] . '</a></li>';
 
@@ -90,7 +90,7 @@ function changelog_view() {
 
 	print '</ul></nav></div>';
 
-	$tab = get_request_var('tab');
+	$tab = grv('tab');
 
 	if (empty($tabs[$tab])) {
 		$tab_keys = array_keys($tabs);
@@ -98,7 +98,7 @@ function changelog_view() {
 	}
 	$header_label = __esc('Change Log [%s]', $tabs[$tab]);
 
-	/* Display tech information */
+	// Display tech information
 	$changelog = file(CACTI_PATH_BASE . '/CHANGELOG');
 
 	$full = $current_tab == 'full';
@@ -189,18 +189,18 @@ function changelog_view() {
 
 					if ($current_tab == 'full' || $highlight) {
 						if (!$output) {
-							html_section_header(html_escape($type), 4);
+							html_section_header(htmle($type), 4);
 							$output = true;
 						}
 
 						form_alternate_row();
 
-						print '<td>' . $icon . '</td><td>' . html_escape($type) . '</td><td>';
+						print '<td>' . $icon . '</td><td>' . htmle($type) . '</td><td>';
 
 						if (!empty($detail['issue'])) {
-							print '<a target="_blank" href="https://github.com/cacti/cacti/issues/' . html_escape($detail['issue']) . '">' . html_escape($detail['issue']) . '</a>';
+							print '<a target="_blank" href="https://github.com/cacti/cacti/issues/' . htmle($detail['issue']) . '">' . htmle($detail['issue']) . '</a>';
 						}
-						print '</td><td>' . html_escape($detail['desc']) . '</td>';
+						print '</td><td>' . htmle($detail['desc']) . '</td>';
 
 						form_end_row();
 					}

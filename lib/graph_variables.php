@@ -83,7 +83,7 @@ function rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $
 		return json_encode([]);
 	}
 
-	/* initialize some variables */
+	// initialize some variables
 	$sum_array       = [];
 	$fetch_array_avg = [];
 	$fetch_array_max = [];
@@ -99,7 +99,7 @@ function rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $
 		global $user_time, $system_time, $real_time;
 		global $total_user, $total_system, $total_real;
 
-		/* more error checking for invalid data */
+		// more error checking for invalid data
 		if ($ldi == 0) {
 			continue;
 		}
@@ -144,7 +144,7 @@ function rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $
 			$total_real   += $real_time;
 		}
 
-		/* clean up unwanted data source items from the AVERAGE cf data */
+		// clean up unwanted data source items from the AVERAGE cf data
 		if (isset($fetch_array_avg[$ldi]) && cacti_sizeof($fetch_array_avg[$ldi])) {
 			if (isset($fetch_array_avg[$ldi]['data_source_names'])) {
 				$good_data = true;
@@ -154,9 +154,9 @@ function rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $
 				continue;
 			}
 
-			/* discard the unused data sources, we will figure it out ourselves */
+			// discard the unused data sources, we will figure it out ourselves
 			foreach ($fetch_array_avg[$ldi]['data_source_names'] as $index => $name) {
-				/* clean up DS items that aren't defined on the graph */
+				// clean up DS items that aren't defined on the graph
 				if (!in_array($name, $local_data_ids[$ldi], true)) {
 					if (isset($fetch_array_avg[$ldi]['data_source_names'][$index])) {
 						unset($fetch_array_avg[$ldi]['data_source_names'][$index]);
@@ -169,7 +169,7 @@ function rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $
 			}
 		}
 
-		/* clean up unwanted data source items from the MAX cf data */
+		// clean up unwanted data source items from the MAX cf data
 		if (isset($fetch_array_max[$ldi]) && cacti_sizeof($fetch_array_max[$ldi])) {
 			if (isset($fetch_array_max[$ldi]['data_source_names'])) {
 				$good_data = true;
@@ -179,9 +179,9 @@ function rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $
 				continue;
 			}
 
-			/* discard the unused data sources, we will figure it out ourselves */
+			// discard the unused data sources, we will figure it out ourselves
 			foreach ($fetch_array_max[$ldi]['data_source_names'] as $index => $name) {
-				/* clean up DS items that aren't defined on the graph */
+				// clean up DS items that aren't defined on the graph
 				if (!in_array($name, $local_data_ids[$ldi], true)) {
 					if (isset($fetch_array_max[$ldi]['data_source_names'][$index])) {
 						unset($fetch_array_max[$ldi]['data_source_names'][$index]);
@@ -218,7 +218,7 @@ function rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $
 }
 
 function nth_percentile_fetch_statistics($percentile, &$local_data_ids, &$fetch_array, $cf) {
-	/* start by summing the data across local data ids, for the average cf */
+	// start by summing the data across local data ids, for the average cf
 	$asum_array = [];
 
 	foreach ($local_data_ids as $ldi => $data_source_name) {
@@ -237,9 +237,9 @@ function nth_percentile_fetch_statistics($percentile, &$local_data_ids, &$fetch_
 		}
 	}
 
-	//print '<pre>';print_r($asum_array);print '</pre>';
+	// print '<pre>';print_r($asum_array);print '</pre>';
 
-	/* next get the max values of all the data sources */
+	// next get the max values of all the data sources
 	$max_values_array = [];
 
 	if (cacti_sizeof($asum_array)) {
@@ -254,10 +254,10 @@ function nth_percentile_fetch_statistics($percentile, &$local_data_ids, &$fetch_
 		}
 	}
 
-	/* store some known information for legacy cacti behavior */
+	// store some known information for legacy cacti behavior
 	$asum_array['nth_percentile_maximum'] = $max_values_array;
 
-	/* get the sum data now across all data sources */
+	// get the sum data now across all data sources
 	$sum_values_array = [];
 
 	if (cacti_sizeof($asum_array)) {
@@ -276,10 +276,10 @@ function nth_percentile_fetch_statistics($percentile, &$local_data_ids, &$fetch_
 		}
 	}
 
-	/* store some known information for legacy cacti behavior */
+	// store some known information for legacy cacti behavior
 	$asum_array['nth_percentile_sum'] = $sum_values_array;
 
-	/* get some nice analytical statistics about the data */
+	// get some nice analytical statistics about the data
 	$stats     = [];
 	$agg_total = 0;
 
@@ -287,7 +287,7 @@ function nth_percentile_fetch_statistics($percentile, &$local_data_ids, &$fetch_
 		$cstats['stats_' . $ds_name] = cacti_stats_calc($data_by_timestamp, $percentile);
 		$stats[$ds_name]             = $cstats['stats_' . $ds_name]['p' . $percentile . 'n'];
 
-		/* scan all non built-in data sources for aggregate total data */
+		// scan all non built-in data sources for aggregate total data
 		if ($ds_name != 'nth_percentile_sum' &&
 			$ds_name    != 'nth_percentile_maximum') {
 			if ($agg_total < $cstats['stats_' . $ds_name]['p' . $percentile . 'n']) {
@@ -296,7 +296,7 @@ function nth_percentile_fetch_statistics($percentile, &$local_data_ids, &$fetch_
 		}
 	}
 
-	/* store some known information for legacy cacti behavior */
+	// store some known information for legacy cacti behavior
 	$stats['nth_percentile_aggregate_total'] = $agg_total;
 
 	$stats += $cstats;
@@ -397,7 +397,7 @@ function bandwidth_summation($local_data_id, $start_time, $end_time, $rra_steps,
 
 	$return_array = [];
 
-	/* loop through each regexp determined above (or each data source) */
+	// loop through each regexp determined above (or each data source)
 	for ($i = 0; $i < cacti_count($fetch_array['data_source_names']); $i++) {
 		if (isset($fetch_array['values'][$i])) {
 			$sum = array_sum($fetch_array['values'][$i]);
@@ -408,7 +408,7 @@ function bandwidth_summation($local_data_id, $start_time, $end_time, $rra_steps,
 				$sum = 0;
 			}
 
-			/* collect summation values in this array so we can return them */
+			// collect summation values in this array so we can return them
 			$return_array[$fetch_array['data_source_names'][$i]] = $sum;
 		}
 	}
@@ -467,7 +467,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 	$power      = $regexp_match_array[3];
 	$type       = $regexp_match_array[4];
 
-	/* determine the floating point precision */
+	// determine the floating point precision
 	if (is_numeric($regexp_match_array[5])) {
 		$round_to = $regexp_match_array[5];
 	} else {
@@ -502,7 +502,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 		}
 	}
 
-	/* Get the Nth percentile values */
+	// Get the Nth percentile values
 	if (!cacti_sizeof($nth_cache)) {
 		switch ($type) {
 			case 'current':
@@ -577,7 +577,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 
 	$nth = 0;
 
-	/* format the output according to args passed to the variable */
+	// format the output according to args passed to the variable
 	switch($type) {
 		case 'current': // Total of current data source from AVERAGE or MAX consolidation function
 			if (!empty($nth_cache[$graph_item['data_source_name']])) {
@@ -622,7 +622,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 			break;
 	}
 
-	/* return the final result and round off to two decimal digits */
+	// return the final result and round off to two decimal digits
 	return round($nth, $round_to);
 }
 
@@ -699,7 +699,7 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph, &$graph_ite
 
 	$summation = 0;
 
-	/* format the output according to args passed to the variable */
+	// format the output according to args passed to the variable
 	switch ($regexp_match_array[2]) {
 		case 'current':
 		case 'atomic':
@@ -759,14 +759,14 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph, &$graph_ite
 		}
 	}
 
-	/* determine the floating point precision */
+	// determine the floating point precision
 	if (is_numeric($regexp_match_array[3])) {
 		$round_to = $regexp_match_array[3];
 	} else {
 		$round_to = 2;
 	}
 
-	/* substitute in the final result and round off to two decimal digits */
+	// substitute in the final result and round off to two decimal digits
 	if (isset($summation_label)) {
 		return sprintf('%10s', number_format_i18n($summation, $round_to) . " $summation_label");
 	} else {

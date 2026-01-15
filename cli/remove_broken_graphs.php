@@ -27,12 +27,12 @@ require(__DIR__ . '/../include/cli_check.php');
 require_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
 require_once(CACTI_PATH_LIBRARY . '/api_graph.php');
 
-/* switch to main database for cli's */
+// switch to main database for cli's
 if ($config['poller_id'] > 1) {
 	db_switch_remote_to_main();
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -172,13 +172,13 @@ if (cacti_sizeof($entries)) {
 	}
 }
 
-/*  display_version - displays version information */
+// display_version - displays version information
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Remove Broken Graphs Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-/*  display_help - displays the usage of the function */
+// display_help - displays the usage of the function
 function display_help() {
 	display_version();
 

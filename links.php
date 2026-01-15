@@ -32,37 +32,37 @@ $actions = [
 
 set_default_action();
 
-switch (get_request_var('action')) {
+switch (grv('action')) {
 	case 'actions':
 		form_actions();
 
 		break;
 	case 'delete_page':
-		if (isset_request_var('id') && get_filter_request_var('id')) {
-			page_delete(get_request_var('id'));
+		if (isrv('id') && gfrv('id')) {
+			page_delete(grv('id'));
 		}
 
 		header('Location: links.php');
 
 		break;
 	case 'move_page_up':
-		if (isset_request_var('id') && get_filter_request_var('id') && isset_request_var('order') && get_filter_request_var('order')) {
-			page_move(get_request_var('id'), get_request_var('order'), '-1');
+		if (isrv('id') && gfrv('id') && isrv('order') && gfrv('order')) {
+			page_move(grv('id'), grv('order'), '-1');
 		}
 
 		header('Location: links.php');
 
 		break;
 	case 'move_page_down':
-		if (isset_request_var('id') && get_filter_request_var('id') && isset_request_var('order') && get_filter_request_var('order')) {
-			page_move(get_request_var('id'), get_request_var('order'), '1');
+		if (isrv('id') && gfrv('id') && isrv('order') && gfrv('order')) {
+			page_move(grv('id'), grv('order'), '1');
 		}
 
 		header('Location: links.php');
 
 		break;
 	case 'ajax_dnd':
-		$new_order = get_nfilter_request_var('dnd');
+		$new_order = gnrv('dnd');
 
 		links_reorder($new_order);
 
@@ -70,25 +70,25 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'save':
-		$save['id']      = isset_request_var('id') ? get_filter_request_var('id') : 0;
-		$save['title']   = form_input_validate(get_nfilter_request_var('title'), 'title', '', false, 3);
-		$save['style']   = get_nfilter_request_var('style');
-		$save['enabled'] = (isset_request_var('enabled') ? 'on' : '');
-		$save['refresh'] = form_input_validate(get_nfilter_request_var('refresh'), 'refresh', '^[0-9]+$', false, 3);
+		$save['id']      = isrv('id') ? gfrv('id') : 0;
+		$save['title']   = form_input_validate(gnrv('title'), 'title', '', false, 3);
+		$save['style']   = gnrv('style');
+		$save['enabled'] = (isrv('enabled') ? 'on' : '');
+		$save['refresh'] = form_input_validate(gnrv('refresh'), 'refresh', '^[0-9]+$', false, 3);
 
-		if (preg_match('/^((((ht|f)tp(s?))\:\/\/){1}\S+)/i', get_nfilter_request_var('fileurl')) && get_nfilter_request_var('filename') == '0') {
-			if (filter_var(get_nfilter_request_var('fileurl'), FILTER_VALIDATE_URL)) {
-				$save['contentfile'] = get_nfilter_request_var('fileurl');
+		if (preg_match('/^((((ht|f)tp(s?))\:\/\/){1}\S+)/i', gnrv('fileurl')) && gnrv('filename') == '0') {
+			if (filter_var(gnrv('fileurl'), FILTER_VALIDATE_URL)) {
+				$save['contentfile'] = gnrv('fileurl');
 			} else {
 				$_SESSION['sess_error_fields']['contentfile'] = 'contentfile';
 				raise_message('badurl', __('Your contentfile is not a valid URL.  Please enter a value URL'), MESSAGE_LEVEL_ERROR);
 			}
 		} else {
-			$save['contentfile'] = preg_replace('/[^A-Za-z0-9_\.-]/', '_', get_nfilter_request_var('filename'));
+			$save['contentfile'] = preg_replace('/[^A-Za-z0-9_\.-]/', '_', gnrv('filename'));
 		}
 
-		$consolesection    = get_nfilter_request_var('consolesection');
-		$consolenewsection = get_nfilter_request_var('consolenewsection');
+		$consolesection    = gnrv('consolesection');
+		$consolenewsection = gnrv('consolenewsection');
 		$extendedstyle     = '';
 		$lastsortorder     = db_fetch_cell('SELECT MAX(sortorder) FROM external_links');
 		$save['sortorder'] = $lastsortorder + 1;
@@ -120,7 +120,7 @@ switch (get_request_var('action')) {
 		} else {
 			raise_message(2);
 
-			header('Location: links.php?action=edit&id=' . (isset_request_var('id') ? get_filter_request_var('id') : ''));
+			header('Location: links.php?action=edit&id=' . (isrv('id') ? gfrv('id') : ''));
 
 			exit;
 		}
@@ -164,24 +164,24 @@ function links_reorder($new_order) {
 function form_actions() {
 	global $actions;
 
-	/* ================= input validation ================= */
-	get_filter_request_var('drp_action');
-	/* ==================================================== */
+	// ================= input validation =================
+	gfrv('drp_action');
+	// ====================================================
 
-	/* if we are to save this form, instead of display it */
-	if (isset_request_var('selected_items')) {
-		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
+	// if we are to save this form, instead of display it
+	if (isrv('selected_items')) {
+		$selected_items = sanitize_unserialize_selected_items(gnrv('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_request_var('drp_action') == '3') { // Enable Page
+			if (grv('drp_action') == '3') { // Enable Page
 				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					db_execute_prepared("UPDATE external_links SET enabled='on' WHERE id = ?", [$selected_items[$i]]);
 				}
-			} elseif (get_request_var('drp_action') == '2') { // Disable Page
+			} elseif (grv('drp_action') == '2') { // Disable Page
 				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					db_execute_prepared("UPDATE external_links SET enabled='' WHERE id = ?", [$selected_items[$i]]);
 				}
-			} elseif (get_request_var('drp_action') == '1') { // Delete Page
+			} elseif (grv('drp_action') == '1') { // Delete Page
 				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					db_execute_prepared('DELETE FROM external_links WHERE id = ?', [$selected_items[$i]]);
 					db_execute_prepared('DELETE FROM user_auth_realm WHERE realm_id = ?', [$selected_items[$i] + 10000]);
@@ -197,14 +197,14 @@ function form_actions() {
 		$ilist  = '';
 		$iarray = [];
 
-		/* loop through each of the pages selected on the previous page and get more info about them */
+		// loop through each of the pages selected on the previous page and get more info about them
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-				/* ================= input validation ================= */
+				// ================= input validation =================
 				input_validate_input_number($matches[1], 'chk[1]');
-				/* ==================================================== */
+				// ====================================================
 
-				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT title FROM external_links WHERE id = ?', [$matches[1]])) . '</li>';
+				$ilist .= '<li>' . htmle(db_fetch_cell_prepared('SELECT title FROM external_links WHERE id = ?', [$matches[1]])) . '</li>';
 
 				$iarray[] = $matches[1];
 			}
@@ -247,17 +247,17 @@ function form_actions() {
 function pages() {
 	global $item_rows, $actions;
 
-	/* create the page filter */
+	// create the page filter
 	$pageFilter = new CactiTableFilter(__('External Links'), 'links.php', 'links', 'sess_links', 'links.php?action=edit');
 
 	$pageFilter->rows_label = __('Receivers');
 	$pageFilter->set_sort_array('sortorder', 'ASC');
 	$pageFilter->render();
 
-	if (get_request_var('rows') == '-1') {
+	if (grv('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
 	} else {
-		$rows = get_request_var('rows');
+		$rows = grv('rows');
 	}
 
 	$style_translate = [
@@ -267,15 +267,15 @@ function pages() {
 		'FRONTTOP'   => __('Top Console')
 	];
 
-	if (get_request_var('filter') != '') {
-		$sql_where = ' WHERE title LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR contentfile LIKE ' . db_qstr('%' . get_request_var('filter') . '%');
+	if (grv('filter') != '') {
+		$sql_where = ' WHERE title LIKE ' . db_qstr('%' . grv('filter') . '%') . ' OR contentfile LIKE ' . db_qstr('%' . grv('filter') . '%');
 	} else {
 		$sql_where = '';
 	}
 
 	$sql_order = get_order_string();
 	$sql_order = str_replace('sortorder DESC', 'sortorder ASC', $sql_order);
-	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows;
 
 	$pages = db_fetch_assoc("SELECT *
 		FROM external_links
@@ -328,7 +328,7 @@ function pages() {
 		]
 	];
 
-	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'));
+	html_header_sort_checkbox($display_text, grv('sort_column'), grv('sort_direction'));
 
 	$i = 0;
 
@@ -336,10 +336,10 @@ function pages() {
 		foreach ($pages as $page) {
 			form_alternate_row('line' . $page['id']);
 
-			$menuicons = '<a class="pic"  href="' . html_escape('links.php?action=edit&id=' . $page['id']) . '" title="' . __esc('Edit Page') . '"><i class="ti ti-edit editTemplate"></i></a>';
+			$menuicons = '<a class="pic"  href="' . htmle('links.php?action=edit&id=' . $page['id']) . '" title="' . __esc('Edit Page') . '"><i class="ti ti-edit editTemplate"></i></a>';
 
 			if ($page['enabled'] == 'on') {
-				$menuicons .= '<a class="pic" href="' . html_escape('link.php?id=' . $page['id']) . '" title="' . __esc('View Page') . '"><i class="ti ti-file deviceUp"></i></a>';
+				$menuicons .= '<a class="pic" href="' . htmle('link.php?id=' . $page['id']) . '" title="' . __esc('View Page') . '"><i class="ti ti-file deviceUp"></i></a>';
 			}
 
 			form_selectable_cell($menuicons, $page['id'], '3%');
@@ -349,9 +349,9 @@ function pages() {
 
 			form_selectable_cell(($page['enabled'] == 'on' ? __('Yes') : __('No')), $page['id']);
 
-			if (get_request_var('sort_column') == 'sortorder') {
+			if (grv('sort_column') == 'sortorder') {
 				if ($i != 0) {
-					$sort = '<a class="pic ti ti-caret-up-filled moveArrow" href="' . html_escape('links.php?action=move_page_up&order=' . $page['sortorder'] . '&id=' . $page['id']) . '"></a>';
+					$sort = '<a class="pic ti ti-caret-up-filled moveArrow" href="' . htmle('links.php?action=move_page_up&order=' . $page['sortorder'] . '&id=' . $page['id']) . '"></a>';
 				} else {
 					$sort = '<span class="moveArrowNone"></span>';
 				}
@@ -359,7 +359,7 @@ function pages() {
 				if ($i == cacti_sizeof($pages) - 1) {
 					$sort .= '<span class="moveArrowNone"></span>';
 				} else {
-					$sort .= '<a class="pic ti ti-caret-down-filled moveArrow" href="' . html_escape('links.php?action=move_page_down&order=' . $page['sortorder'] . '&id=' . $page['id']) . '"></a>';
+					$sort .= '<a class="pic ti ti-caret-down-filled moveArrow" href="' . htmle('links.php?action=move_page_down&order=' . $page['sortorder'] . '&id=' . $page['id']) . '"></a>';
 				}
 
 				form_selectable_cell($sort, $page['id'], '', 'center');
@@ -386,7 +386,7 @@ function pages() {
 
 	form_end();
 
-	if (get_request_var('sort_column') == 'sortorder' && read_config_option('drag_and_drop') == 'on') {
+	if (grv('sort_column') == 'sortorder' && read_config_option('drag_and_drop') == 'on') {
 		?>
 		<script type='text/javascript'>
 		$(function() {
@@ -455,8 +455,8 @@ function edit_page() {
 	}
 	$sec_ar['__NEW__'] = 'New Name Below';
 
-	if (isset_request_var('id')) {
-		$data = db_fetch_row_prepared('SELECT * FROM external_links WHERE id = ?', [get_filter_request_var('id')]);
+	if (isrv('id')) {
+		$data = db_fetch_row_prepared('SELECT * FROM external_links WHERE id = ?', [gfrv('id')]);
 	} else {
 		$data = [];
 	}
@@ -468,7 +468,7 @@ function edit_page() {
 		'id' => [
 			'friendly_name' => __('Style'),
 			'method'        => 'hidden',
-			'value'         => isset_request_var('id') ? get_request_var('id') : 0
+			'value'         => isrv('id') ? grv('id') : 0
 		],
 		'style' => [
 			'friendly_name' => __('Style'),
@@ -540,7 +540,7 @@ function edit_page() {
 	form_start('links.php', 'link_edit');
 
 	if (isset($data['title'])) {
-		html_start_box(__('External Links [edit: %s]', html_escape($data['title'])), '100%', true, 3, 'center', '');
+		html_start_box(__('External Links [edit: %s]', htmle($data['title'])), '100%', true, 3, 'center', '');
 	} else {
 		html_start_box(__('External Links [new]'), '100%', true, 3, 'center', '');
 	}

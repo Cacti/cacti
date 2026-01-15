@@ -900,7 +900,7 @@ function install_setup_get_templates() {
 
 	foreach ($templates as $xmlfile) {
 		if ($canUnpack) {
-			//Loading Template Information from package
+			// Loading Template Information from package
 			$filename = "compress.zlib://$path/$xmlfile";
 
 			$xml    = file_get_contents($filename);
@@ -939,7 +939,7 @@ function install_setup_get_templates() {
 }
 
 function install_setup_get_tables() {
-	/* ensure all tables are utf8 enabled */
+	// ensure all tables are utf8 enabled
 	$db_tables = get_cacti_base_tables();
 
 	if ($db_tables === false) {
@@ -1054,7 +1054,7 @@ function install_file_paths() {
 
 	$input = [];
 
-	/* PHP Binary Path */
+	// PHP Binary Path
 	$input['path_php_binary'] = install_tool_path('php_binary',
 		[
 			'unix'  => '/bin/php',
@@ -1075,7 +1075,7 @@ function install_file_paths() {
 		}
 	}
 
-	/* RRDtool Binary Path */
+	// RRDtool Binary Path
 	$input['path_rrdtool'] = install_tool_path('rrdtool',
 		[
 			'unix'  => '/usr/bin/rrdtool',
@@ -1083,7 +1083,7 @@ function install_file_paths() {
 		]
 	);
 
-	/* snmpwalk Binary Path */
+	// snmpwalk Binary Path
 	$input['path_snmpwalk'] = install_tool_path('snmpwalk',
 		[
 			'unix'  => '/usr/bin/snmpwalk',
@@ -1091,7 +1091,7 @@ function install_file_paths() {
 		]
 	);
 
-	/* snmpget Binary Path */
+	// snmpget Binary Path
 	$input['path_snmpget'] = install_tool_path('snmpget',
 		[
 			'unix'  => '/usr/bin/snmpget',
@@ -1099,7 +1099,7 @@ function install_file_paths() {
 		]
 	);
 
-	/* snmpbulkwalk Binary Path */
+	// snmpbulkwalk Binary Path
 	$input['path_snmpbulkwalk'] = install_tool_path('snmpbulkwalk',
 		[
 			'unix'  => '/usr/bin/snmpbulkwalk',
@@ -1107,7 +1107,7 @@ function install_file_paths() {
 		]
 	);
 
-	/* snmpgetnext Binary Path */
+	// snmpgetnext Binary Path
 	$input['path_snmpgetnext'] = install_tool_path('snmpgetnext',
 		[
 			'unix'  => '/usr/bin/snmpgetnext',
@@ -1115,7 +1115,7 @@ function install_file_paths() {
 		]
 	);
 
-	/* snmptrap Binary Path */
+	// snmptrap Binary Path
 	$input['path_snmptrap'] = install_tool_path('snmptrap',
 		[
 			'unix'  => '/usr/bin/snmptrap',
@@ -1123,7 +1123,7 @@ function install_file_paths() {
 		]
 	);
 
-	/* fping Binary Path */
+	// fping Binary Path
 	$input['path_fping'] = install_tool_path('fping',
 		[
 			'unix'  => '/usr/sbin/fping',
@@ -1131,14 +1131,14 @@ function install_file_paths() {
 		]
 	);
 
-	/* sendmail Binary Path */
+	// sendmail Binary Path
 	$input['settings_sendmail_path'] = install_tool_path('settings_sendmail_path',
 		[
 			'unix'  => '/usr/sbin/sendmail',
 		]
 	);
 
-	/* spine Binary Path */
+	// spine Binary Path
 	$input['path_spine'] = install_tool_path('spine',
 		[
 			'unix'  => '/usr/local/spine/bin/spine',
@@ -1161,7 +1161,7 @@ function install_file_paths() {
 
 	$input['path_spine_config'] = $settings['path']['path_spine_config'];
 
-	/* log file path */
+	// log file path
 	if (!config_value_exists('path_cactilog')) {
 		$input['path_cactilog'] = $settings['path']['path_cactilog'];
 	} else {
@@ -1173,7 +1173,7 @@ function install_file_paths() {
 		$input['path_cactilog']['default'] = CACTI_PATH_LOG . '/cacti.log';
 	}
 
-	/* stderr log file path */
+	// stderr log file path
 	if (!config_value_exists('path_cactilog')) {
 		$input['path_stderrlog'] = $settings['path']['path_stderrlog'];
 
@@ -1185,7 +1185,7 @@ function install_file_paths() {
 		$input['path_stderrlog']['default'] = read_config_option('path_stderrlog');
 	}
 
-	/* RRDtool Version */
+	// RRDtool Version
 	if ((@file_exists($input['path_rrdtool']['default'])) && ((CACTI_SERVER_OS == 'win32') || (is_executable($input['path_rrdtool']['default'])))) {
 		$input['rrdtool_version'] = $settings['general']['rrdtool_version'] ?? [];
 
@@ -1316,7 +1316,7 @@ function remote_update_config_file() {
 function set_install_config_option($name, $value) {
 	global $local_db_cnn_id;
 
-	/* some additional extension checks */
+	// some additional extension checks
 	switch($name) {
 		case 'path_cactilog':
 			$extension = pathinfo($value, PATHINFO_EXTENSION);
@@ -1576,7 +1576,7 @@ function install_full_sync() {
 	$pinterval = read_config_option('poller_interval');
 	$gap_time  = $pinterval * 2;
 
-	/* counter arrays */
+	// counter arrays
 	$failed    = [];
 	$success   = [];
 	$skipped   = [];

@@ -26,7 +26,7 @@
 $dir = __DIR__;
 chdir($dir);
 
-/* Start Initialization Section */
+// Start Initialization Section
 require(__DIR__ . '/../include/cli_check.php');
 require_once(CACTI_PATH_LIBRARY . '/spikekill.php');
 
@@ -36,10 +36,10 @@ if ($config['poller_id'] > 1) {
 	exit(1);
 }
 
-/* allow more memory */
+// allow more memory
 ini_set('memory_limit', '-1');
 
-/* setup defaults */
+// setup defaults
 $debug     = false;
 $dryrun    = false;
 $out_start = '';
@@ -86,7 +86,7 @@ switch($method) {
 		$method = 'variance';
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -230,13 +230,13 @@ if (!$result) {
 	exit(0);
 }
 
-/*  display_version - displays version information */
+// display_version - displays version information
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Spike Remover Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-/* display_help - displays the usage of the function */
+// display_help - displays the usage of the function
 function display_help() {
 	display_version();
 

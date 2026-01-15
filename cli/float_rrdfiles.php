@@ -35,26 +35,26 @@ require(__DIR__ . '/../include/cli_check.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-/* system controlled parameters */
+// system controlled parameters
 $type              = 'rmaster';
 $thread_id         = 0;
 
-/* mandatory parameters */
+// mandatory parameters
 $start_time        = false;
 $end_time          = false;
 
-/* optional parameters for RRDfile selection */
+// optional parameters for RRDfile selection
 $host_id           = false;
 $host_template_id  = false;
 $graph_template_id = false;
 $local_graph_ids   = [];
 $step              = false;
 
-/* optional for threading and verbose display */
+// optional for threading and verbose display
 $threads           = detect_cpu_cores();
 
 if ($threads == 0) {
@@ -62,7 +62,7 @@ if ($threads == 0) {
 }
 $seebug            = false;
 
-/* optional for force handing and resume */
+// optional for force handing and resume
 $resume            = false;
 $forcerun          = false;
 
@@ -158,7 +158,7 @@ if (cacti_sizeof($parms)) {
  *
  */
 
-/* install signal handlers for UNIX only */
+// install signal handlers for UNIX only
 if (function_exists('pcntl_signal')) {
 	pcntl_signal(SIGTERM, 'sig_handler');
 	pcntl_signal(SIGINT, 'sig_handler');
@@ -170,7 +170,7 @@ if ($start_time == false || $end_time == false) {
 	exit(1);
 }
 
-/* validate the start time */
+// validate the start time
 if (!is_numeric($start_time)) {
 	$ost        = $start_time;
 	$start_time = strtotime($start_time);
@@ -182,7 +182,7 @@ if (!is_numeric($start_time)) {
 	}
 }
 
-/* validate the end time */
+// validate the end time
 if (!is_numeric($end_time)) {
 	$oet = $end_time;
 
@@ -195,42 +195,42 @@ if (!is_numeric($end_time)) {
 	}
 }
 
-/* validate the start and end times are sane */
+// validate the start and end times are sane
 if ($start_time >= $end_time) {
 	printf('ERROR: The Start Time \'%s\' is equal or grater to the End Time \'%s\' is not a valid date/time' . PHP_EOL, date('Y-m-d H:i:s', $start_time), date('Y-m-d H:i:s', $end_time));
 
 	exit(1);
 }
 
-/* perform some validation for host-id */
+// perform some validation for host-id
 if ($host_id !== false && ($host_id < 0 || !is_numeric($host_id))) {
 	printf('ERROR: The value of %s for --host-id is invalid!' . PHP_EOL, $host_id);
 
 	exit(1);
 }
 
-/* perform some validation for host-template-id */
+// perform some validation for host-template-id
 if ($host_template_id !== false && ($host_template_id < 0 || !is_numeric($host_template_id))) {
 	printf('ERROR: The value of %s for --host-template-id is invalid!' . PHP_EOL, $host_template_id);
 
 	exit(1);
 }
 
-/* perform some validation for graph-template-id */
+// perform some validation for graph-template-id
 if ($graph_template_id !== false && ($graph_template_id < 0 || !is_numeric($graph_template_id))) {
 	printf('ERROR: The value of %s for --graph-template-id is invalid!' . PHP_EOL, $graph_template_id);
 
 	exit(1);
 }
 
-/* perform some validation for step value */
+// perform some validation for step value
 if ($step !== false && ($step < 0 || !is_numeric($step))) {
 	printf('ERROR: The value of %s for --step is invalid!' . PHP_EOL, $step);
 
 	exit(1);
 }
 
-/* perform some validation for step value */
+// perform some validation for step value
 if (cacti_sizeof($local_graph_ids)) {
 	foreach ($local_graph_ids as $index => $value) {
 		$value                   = trim($value);
@@ -248,24 +248,24 @@ if (cacti_sizeof($local_graph_ids)) {
 	$threads = 1;
 }
 
-/* take time and log performance data */
+// take time and log performance data
 $start = microtime(true);
 
-/* let's give this script lot of time to run for ever */
+// let's give this script lot of time to run for ever
 ini_set('max_execution_time', '0');
 ini_set('memory_limit', '-1');
 
-/* send a gentle message to the log and stdout */
+// send a gentle message to the log and stdout
 float_debug('Polling Starting');
 
-/* silently end if the registered process is still running */
+// silently end if the registered process is still running
 if (!$forcerun) {
 	if (!register_process_start('rfloat', $type, $thread_id, 86400)) {
 		exit(0);
 	}
 }
 
-/* Collect data as determined by the type */
+// Collect data as determined by the type
 switch ($type) {
 	case 'rmaster':
 		float_master_handler($forcerun, $resume, $host_id, $host_template_id, $graph_template_id, $local_graph_ids, $threads, $step, $start_time, $end_time);
@@ -273,7 +273,7 @@ switch ($type) {
 		unregister_process('rfloat', 'rmaster', 0);
 
 		break;
-	case 'child':  /* Launched by the rmaster process */
+	case 'child':  // Launched by the rmaster process
 		$rrdfiles = db_fetch_assoc_prepared('SELECT *
 			FROM poller_float_rrdfiles_not_done
 			WHERE process = ?',
@@ -290,7 +290,7 @@ switch ($type) {
 		foreach ($rrdfiles as $data) {
 			print '.';
 
-			/* Update the rrdfile to current */
+			// Update the rrdfile to current
 			rrdtool_function_fetch($data['local_data_id'], time() - 120, time());
 
 			float_rrdfile($data['rrd_path'], $data['local_data_id'], $step, $start_time, $end_time);
@@ -398,7 +398,7 @@ function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time)
 						$in_database = false;
 						$line .= PHP_EOL;
 					} elseif ($in_database) {
-						/* split the database record into pieces */
+						// split the database record into pieces
 						$parts  = preg_split('/[\s]+/', trim($line));
 
 						$timestamp = $parts[5];
@@ -458,7 +458,7 @@ function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time)
 
 				fclose($fp);
 
-				/* restore the file */
+				// restore the file
 				$return  = 0;
 				$output  = [];
 				$command = "$rrdtool_bin restore -f $tmp_file $rrd_path";
@@ -499,7 +499,7 @@ function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time)
 function float_master_handler($forcerun, $resume, $host_id, $host_template_id, $graph_template_id, $local_graph_ids, $threads, $step, $start_time, $end_time) {
 	global $type;
 
-	/* Create table if first time use */
+	// Create table if first time use
 	if (!db_table_exists('poller_float_rrdfiles_not_done')) {
 		db_execute("CREATE TABLE `poller_float_rrdfiles_not_done` (
 			`process` int(10) unsigned NOT NULL DEFAULT 0,
@@ -541,11 +541,11 @@ function float_master_handler($forcerun, $resume, $host_id, $host_template_id, $
 		$sql_where .= $inner_where . ')';
 	}
 
-	/* Find out if there are unprocessed records */
+	// Find out if there are unprocessed records
 	if ($resume) {
 		$rows = db_fetch_cell('SELECT COUNT(*) FROM poller_float_rrdfiles_not_done');
 
-		/* If there are no unprocessed records, prime the collector */
+		// If there are no unprocessed records, prime the collector
 		if ($rows > 0) {
 			db_execute('UPDATE poller_float_rrdfiles_not_done SET process = 0');
 		} else {
@@ -745,7 +745,7 @@ function sig_handler($signo) {
 
 			break;
 		default:
-			/* ignore all other signals */
+			// ignore all other signals
 	}
 }
 

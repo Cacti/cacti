@@ -97,7 +97,7 @@ function repopulate_poller_cache() {
 		}
 	}
 
-	/* update the field mappings for the poller */
+	// update the field mappings for the poller
 	db_execute('TRUNCATE TABLE poller_data_template_field_mappings');
 	db_execute('INSERT IGNORE INTO poller_data_template_field_mappings
 		SELECT dtr.data_template_id, dif.data_name,
@@ -206,7 +206,7 @@ function update_poller_cache($data_source, $commit = false) {
 			return $poller_items;
 		}
 
-		/* we have to perform some additional sql queries if this is a 'query' */
+		// we have to perform some additional sql queries if this is a 'query'
 		if (($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) ||
 			($data_input['type_id'] == DATA_INPUT_TYPE_SCRIPT_QUERY) ||
 			($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER)) {
@@ -271,7 +271,7 @@ function update_poller_cache($data_source, $commit = false) {
 
 				$poller_items[] = api_poller_cache_item_add($data_source['host_id'], [], $data_source['id'], $data_input['rrd_step'], $action, $data_source_item_name, 1, $script_path);
 			} elseif ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP) {
-				/* get the host override fields */
+				// get the host override fields
 				if (!isset($data_source['data_template_id'])) {
 					$data_template_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' data_template_id
 						FROM data_template_data
@@ -293,7 +293,7 @@ function update_poller_cache($data_source, $commit = false) {
 					$template_data_template_data_id = $template_data_id_data[$data_template_id];
 				}
 
-				/* get host fields first */
+				// get host fields first
 				if (!isset($host_field_data[$data_input['data_template_data_id']])) {
 					$host_fields = array_rekey(
 						db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
@@ -349,7 +349,7 @@ function update_poller_cache($data_source, $commit = false) {
 			} elseif ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) {
 				$snmp_queries = get_data_query_array($data_source['snmp_query_id']);
 
-				/* get the host override fields */
+				// get the host override fields
 				if (!isset($data_source['data_template_id'])) {
 					$data_template_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' data_template_id
 						FROM data_template_data
@@ -371,7 +371,7 @@ function update_poller_cache($data_source, $commit = false) {
 					$template_data_template_data_id = $template_data_id_data[$data_template_id];
 				}
 
-				/* get host fields first */
+				// get host fields first
 				if (!isset($host_field_data[$data_input['data_template_data_id']])) {
 					$host_fields = array_rekey(
 						db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
@@ -437,7 +437,7 @@ function update_poller_cache($data_source, $commit = false) {
 				($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER)) {
 				$script_queries = get_data_query_array($data_source['snmp_query_id']);
 
-				/* get the host override fields */
+				// get the host override fields
 				if (!isset($data_source['data_template_id'])) {
 					$data_template_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' data_template_id
 						FROM data_template_data
@@ -453,7 +453,7 @@ function update_poller_cache($data_source, $commit = false) {
 					AND local_data_id = 0',
 					[$data_template_id]);
 
-				/* get host fields first */
+				// get host fields first
 				if (!isset($host_field_data[$data_input['data_template_data_id']])) {
 					$host_fields = array_rekey(
 						db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
@@ -611,7 +611,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 	$ids    = '';
 	$raised = false;
 
-	/* set all fields present value to 0, to mark the outliers when we are all done */
+	// set all fields present value to 0, to mark the outliers when we are all done
 	if (cacti_sizeof($local_data_ids)) {
 		$ids = implode(', ', $local_data_ids);
 
@@ -645,7 +645,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 		 *this would flush the whole table at bottom of this function */
 	}
 
-	/* setup the database call */
+	// setup the database call
 	$sql_prefix = 'INSERT INTO poller_item (local_data_id, poller_id, host_id, action, hostname, ' .
 		'snmp_community, snmp_version, snmp_timeout, snmp_retries, snmp_username, snmp_password, ' .
 		'snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context, snmp_engine_id, ' .
@@ -678,10 +678,10 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 		arg3 = VALUES(arg3),
 		present = 1';
 
-	/* use a reasonable insert buffer, the default is 1MByte */
+	// use a reasonable insert buffer, the default is 1MByte
 	$max_packet   = 256000;
 
-	/* setup some defaults */
+	// setup some defaults
 	$overhead     = strlen($sql_prefix) + strlen($sql_suffix);
 	$buf_len      = 0;
 	$buf_count    = 0;
@@ -689,7 +689,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 
 	if (cacti_sizeof($poller_items)) {
 		foreach ($poller_items as $record) {
-			/* take care of invalid entries */
+			// take care of invalid entries
 			if ($record == '') {
 				continue;
 			}
@@ -748,7 +748,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 		}
 	}
 
-	/* remove stale records FROM the poller cache */
+	// remove stale records FROM the poller cache
 	if ($ids != '') {
 		db_execute_prepared("DELETE FROM poller_item
 			WHERE present = 0
@@ -792,7 +792,7 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 	/* ok here's the deal: first we need to find every data source that uses this host.
 	then we go through each of those data sources, finding each one using a data input method
 	with "special fields". if we find one, fill it will the data here FROM this host */
-	/* setup the poller items array */
+	// setup the poller items array
 	$poller_items    = [];
 	$local_data_ids  = [];
 	$hosts           = [];
@@ -800,9 +800,9 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 	$sql_where       = '';
 	$sql_where_p     = '';
 
-	/* setup the sql where, and if using a host, get it's host information */
+	// setup the sql where, and if using a host, get it's host information
 	if ($host_id > 0) {
-		/* get all information about this host so we can write it to the data source */
+		// get all information about this host so we can write it to the data source
 		$hosts[$host_id] = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' id AS host_id, host.*
 			FROM host WHERE id = ?',
 			[$host_id]);
@@ -811,13 +811,13 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 		$sql_where_p .= ' dl.host_id=' . $host_id;
 	}
 
-	/* sql WHERE for local_data_id */
+	// sql WHERE for local_data_id
 	if ($local_data_id > 0) {
 		$sql_where .= ' AND dl.id = ' . $local_data_id;
 		$sql_where_p .= ($sql_where_p != '' ? ' AND' : '') . ' dl.id = ' . $local_data_id;
 	}
 
-	/* sql WHERE for data_template_id */
+	// sql WHERE for data_template_id
 	if ($data_template_id > 0) {
 		$sql_where .= ' AND dtd.data_template_id = ' . $data_template_id;
 		$sql_where_p .= ($sql_where_p != '' ? ' AND' : '') . ' dtd.data_template_id = ' . $data_template_id;
@@ -846,10 +846,10 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 		SET pi.present = 0
 		WHERE $sql_where_p");
 
-	/* loop through each matching data source */
+	// loop through each matching data source
 	if (cacti_sizeof($data_sources)) {
 		foreach ($data_sources as $data_source) {
-			/* set the host information */
+			// set the host information
 			if (!isset($hosts[$data_source['host_id']])) {
 				$hosts[$data_source['host_id']] = db_fetch_row_prepared('SELECT *
 					FROM host
@@ -937,7 +937,7 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 			 */
 			$local_data_ids[] = $data_source['local_data_id'];
 
-			/* create a new compatible structure */
+			// create a new compatible structure
 			$data       = $data_source;
 			$data['id'] = $data['local_data_id'];
 
@@ -1357,7 +1357,7 @@ function utilities_get_mysql_recommendations() {
 	if ($database == 'MariaDB') {
 		$variables_url = 'https://mariadb.com/kb/en/server-system-variables/';
 	} else {
-		$variables_url = html_escape('https://dev.mysql.com/doc/refman/' . $link_ver . '/en/server-system-variables.html');
+		$variables_url = htmle('https://dev.mysql.com/doc/refman/' . $link_ver . '/en/server-system-variables.html');
 	}
 
 	print '<tr class="tableHeader tableFixed">';
@@ -1655,7 +1655,7 @@ function utilities_php_modules() {
 	$php_info = ob_get_contents();
 	ob_end_clean();
 
-	/* Remove nasty style sheets, links and other junk */
+	// Remove nasty style sheets, links and other junk
 	$php_info = str_replace("\n", '', $php_info);
 	$php_info = preg_replace('/^.*\<body\>/', '', $php_info);
 	$php_info = preg_replace('/\<\/body\>.*$/', '', $php_info);
@@ -2034,15 +2034,15 @@ function object_cache_get_totals($class, $object_ids, $diff = false) {
 		$object_ids = explode(',', $object_ids);
 	}
 
-	/* temp variable for object array */
+	// temp variable for object array
 	$variable = [];
 
-	/* object totals loaded already */
+	// object totals loaded already
 	if (cacti_sizeof($object_totals) && $diff === false) {
 		return;
 	}
 
-	/* avoid an error if there are no objects */
+	// avoid an error if there are no objects
 	if (!cacti_sizeof($object_ids)) {
 		return;
 	}
@@ -2499,7 +2499,7 @@ function object_cache_update_totals($direction) {
 
 		return false;
 	} else {
-		/* scan the changes and then construct a new array with the deltas */
+		// scan the changes and then construct a new array with the deltas
 		$prev_object_totals = $object_totals;
 		$object_totals      = [];
 		$operator           = '+';

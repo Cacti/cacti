@@ -319,7 +319,7 @@ function api_scheduler_javascript(): void {
  * @return array The augmented save array with validated scheduler settings.
  */
 function api_scheduler_augment_save(array $save, array $post): array {
-	/* scheduler settings */
+	// scheduler settings
 	$save['sched_type']    = form_input_validate($post['sched_type'], 'sched_type', '^[0-9]+$', false, 3);
 	$save['start_at']      = form_input_validate($post['start_at'], 'start_at', '', false, 3);
 
@@ -335,7 +335,7 @@ function api_scheduler_augment_save(array $save, array $post): array {
 	$save['recur_every'] = form_input_validate($post['recur_every'], 'recur_every', '', true, 3);
 	$save['run_limit']   = form_input_validate($post['run_limit'], 'run_limit', '', true, 3);
 
-	/* convert arrays to strings */
+	// convert arrays to strings
 	$variables = ['day_of_week', 'month', 'day_of_month', 'monthly_week', 'monthly_day'];
 	$aposts    = [];
 
@@ -347,7 +347,7 @@ function api_scheduler_augment_save(array $save, array $post): array {
 		}
 	}
 
-	/* check for bad rules */
+	// check for bad rules
 	if ($save['sched_type'] == SCHEDULE_WEEKLY) {
 		if ($save['day_of_week'] == '') {
 			$save['enabled'] = '';
@@ -394,17 +394,17 @@ function api_scheduler_augment_save(array $save, array $post): array {
 		}
 
 		if ($start_at + $poller_int < $now_time) {
-			/* adjust to todays date and check if it's in the past */
+			// adjust to todays date and check if it's in the past
 			$timestamp = strtotime('12:00am') + date('H', $start_at) * 3600 + date('i', $start_at) * 60 + date('s', $start_at);
 
 			if ($timestamp < $now_time + $poller_int) {
-				/* if the time is in the past, adjust forward by one day */
+				// if the time is in the past, adjust forward by one day
 				$timestamp += 86400;
 			}
 
 			$save['next_start'] = date('Y-m-d H:i:s', $timestamp);
 		} else {
-			/* the time is in the future, we are safe to store it */
+			// the time is in the future, we are safe to store it
 			$save['next_start'] = date('Y-m-d H:i:s', $start_at);
 		}
 	}

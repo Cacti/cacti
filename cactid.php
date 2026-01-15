@@ -31,13 +31,13 @@ if (function_exists('pcntl_async_signals')) {
 
 ini_set('output_buffering', 'Off');
 
-/* let's report all errors */
+// let's report all errors
 error_reporting(E_ALL);
 
-/* allow the script to hang around waiting for connections. */
+// allow the script to hang around waiting for connections.
 set_time_limit(0);
 
-/* we do not need so much memory */
+// we do not need so much memory
 ini_set('memory_limit', '-1');
 ini_set('max_execution_time', '0');
 
@@ -50,7 +50,7 @@ $logrecon   = false;
 chdir(__DIR__);
 require_once('./include/cli_check.php');
 
-/* install signal handlers for Linux/UNIX only */
+// install signal handlers for Linux/UNIX only
 if (function_exists('pcntl_signal')) {
 	pcntl_signal(SIGTERM, 'sig_handler');
 	pcntl_signal(SIGINT, 'sig_handler');
@@ -160,7 +160,7 @@ function sig_handler(int $signo) {
 
 			exit(1);
 		default:
-			/* ignore all other signals */
+			// ignore all other signals
 	}
 }
 

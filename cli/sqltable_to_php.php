@@ -25,12 +25,12 @@
 
 require(__DIR__ . '/../include/cli_check.php');
 
-/* switch to main database for cli's */
+// switch to main database for cli's
 if ($config['poller_id'] > 1) {
 	db_switch_remote_to_main();
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -199,8 +199,8 @@ function sqltable_to_php($table, $create, $plugin = '') {
 				}
 			}
 		} else {
-			//print "ERROR: Obtaining list of indexes from $table\n";
-			//exit;
+			// print "ERROR: Obtaining list of indexes from $table\n";
+			// exit;
 		}
 
 		$result = db_fetch_row_prepared('SELECT ENGINE, TABLE_COMMENT, ROW_FORMAT, CHARACTER_SET_NAME
@@ -243,7 +243,7 @@ function sql_clean($text) {
 	return $text;
 }
 
-/*  display_version - displays version information */
+// display_version - displays version information
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti SQL to PHP Utility, Version $version, " . COPYRIGHT_YEARS . "\n";

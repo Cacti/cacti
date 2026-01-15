@@ -118,23 +118,23 @@ function sig_handler($signo) {
 
 			break;
 		default:
-			/* ignore all other signals */
+			// ignore all other signals
 	}
 }
 
-/* take time and log performance data */
+// take time and log performance data
 $start = microtime(true);
 
 // Unix Timestamp for Database
 $startTime = time();
 
-/* let PHP run just as long as it has to */
+// let PHP run just as long as it has to
 ini_set('max_execution_time', '0');
 
 $dir = __DIR__;
 chdir($dir);
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -210,7 +210,7 @@ if (cacti_sizeof($parms)) {
 	}
 }
 
-/* install signal handlers for UNIX only */
+// install signal handlers for UNIX only
 if (function_exists('pcntl_signal')) {
 	pcntl_signal(SIGTERM, 'sig_handler');
 	pcntl_signal(SIGINT, 'sig_handler');
@@ -390,7 +390,7 @@ if (!$master && $thread == 0) {
 				WHERE network_id = ?',
 				[$network_id]);
 
-			/* take time and log performance data */
+			// take time and log performance data
 			$end = microtime(true);
 
 			db_execute_prepared('UPDATE automation_networks
@@ -427,7 +427,7 @@ function discoverDevices($network_id, $thread) {
 
 	$dns = trim($network['dns_servers']);
 
-	/* Let's do some stats! */
+	// Let's do some stats!
 	$stats            = [];
 	$stats['scanned'] = 0;
 	$stats['ping']    = 0;
@@ -614,13 +614,13 @@ function discoverDevices($network_id, $thread) {
 					$device['snmp_options']         = '0';
 					$device['snmp_retries']         = '3';
 
-					/* create new ping socket for host pinging */
+					// create new ping socket for host pinging
 					$ping                   = new Net_Ping;
 					$ping->host['hostname'] = $device['ip_address'];
 					$ping->retries          = $network['ping_retries'];
 					$ping->port             = $network['ping_port'];
 
-					/* perform the appropriate ping check of the host */
+					// perform the appropriate ping check of the host
 					$bypass_ping = false;
 					$result      = false;
 
@@ -946,13 +946,13 @@ function discoverDevices($network_id, $thread) {
 	return true;
 }
 
-/*  display_version - displays version information */
+// display_version - displays version information
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Network Discovery Scanner, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-/*	display_help - displays the usage of the function */
+// display_help - displays the usage of the function
 function display_help() {
 	display_version();
 

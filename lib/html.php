@@ -95,12 +95,12 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_url_or
 
 	$table_prefix = basename(get_current_page(), '.php');
 
-	if (!isempty_request_var('action')) {
-		$table_prefix .= '_' . clean_up_name(get_nfilter_request_var('action'));
-	} elseif (!isempty_request_var('report')) {
-		$table_prefix .= '_' . clean_up_name(get_nfilter_request_var('report'));
-	} elseif (!isempty_request_var('tab')) {
-		$table_prefix .= '_' . clean_up_name(get_nfilter_request_var('tab'));
+	if (!ierv('action')) {
+		$table_prefix .= '_' . clean_up_name(gnrv('action'));
+	} elseif (!ierv('report')) {
+		$table_prefix .= '_' . clean_up_name(gnrv('report'));
+	} elseif (!ierv('tab')) {
+		$table_prefix .= '_' . clean_up_name(gnrv('tab'));
 	}
 
 	$table_id = $table_prefix . $table_suffix;
@@ -115,15 +115,15 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_url_or
 		$help_file = html_help_page($page);
 
 		if ($help_file === false) {
-			if (isset_request_var('tab')) {
-				$tpage     = $page . ':' . get_nfilter_request_var('tab');
+			if (isrv('tab')) {
+				$tpage     = $page . ':' . gnrv('tab');
 				$help_file = html_help_page($tpage);
 			}
 		}
 
 		if ($help_file === false) {
-			if (isset_request_var('action')) {
-				$tpage     = $page . ':' . get_nfilter_request_var('action');
+			if (isrv('action')) {
+				$tpage     = $page . ':' . gnrv('action');
 				$help_file = html_help_page($tpage);
 			}
 		}
@@ -224,35 +224,35 @@ function html_filter_start_box($title, $add_url_or_buttons = '', $div = false, $
  * @return void  - Output is printed to standard output
  */
 function html_sub_tabs($tabs, $uri = '', $session_var = '') {
-	/* determine the session variables if not set */
+	// determine the session variables if not set
 	if ($session_var == '') {
 		$session_var = basename(get_current_page(), '.php') . '_current_tab';
 	}
 
 	$page_name = get_current_page() . '?' . $uri . ($uri != '' ? '&' : '');
 
-	/* set the default settings category */
-	if (!isset_request_var('tab')) {
-		/* there is no selected tab; select the first one */
+	// set the default settings category
+	if (!isrv('tab')) {
+		// there is no selected tab; select the first one
 		if (isset($_SESSION[$session_var])) {
 			$current_tab = $_SESSION[$session_var];
 		} else {
 			$current_tab = array_keys($tabs)[0];
 		}
 	} else {
-		$current_tab = get_request_var('tab');
+		$current_tab = grv('tab');
 	}
 
-	/* Check to see if the tab exists, and if not, use the default */
+	// Check to see if the tab exists, and if not, use the default
 	if (!isset($tabs[$current_tab])) {
 		$current_tab = array_keys($tabs)[0];
 	}
 
 	$_SESSION[$session_var] = $current_tab;
 
-	set_request_var('tab', $current_tab);
+	srv('tab', $current_tab);
 
-	/* draw the categories tabs on the top of the page */
+	// draw the categories tabs on the top of the page
 	print '<div>';
 	print "<div class='tabs' style='float:left;'>
 		<nav>
@@ -635,7 +635,7 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 				$base_url = trim($base_url) . '&';
 			}
 
-			$url_page_select = "<ul class='pagination'>"; //for the same height as write in get_page_list()
+			$url_page_select = "<ul class='pagination'>"; // for the same height as write in get_page_list()
 			$url_page_select .= "<li>$current_page</a></li>";
 			$url_page_select .= '</ul>';
 
@@ -708,7 +708,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 
 	$header_items = form_process_visible_display_text($table_id, $header_items);
 
-	/* reverse the sort direction */
+	// reverse the sort direction
 	if ($sort_direction == 'ASC') {
 		$new_sort_direction = 'DESC';
 	} else {
@@ -717,18 +717,18 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 
 	$page = $page_count . '_' . str_replace('.php', '', basename($_SERVER['SCRIPT_NAME']));
 
-	if (isset_request_var('action')) {
-		$page .= '_' . get_request_var('action');
+	if (isrv('action')) {
+		$page .= '_' . grv('action');
 	}
 
-	if (isset_request_var('tab')) {
-		$page .= '_' . get_request_var('tab');
+	if (isrv('tab')) {
+		$page .= '_' . grv('tab');
 	}
 
 	if (isset($_SESSION['sort_data'][$page])) {
 		$order_data = $_SESSION['sort_data'][$page];
 	} else {
-		$order_data = [get_request_var('sort_column') => get_request_var('sort_direction')];
+		$order_data = [grv('sort_column') => grv('sort_direction')];
 	}
 
 	foreach ($order_data as $key => $direction) {
@@ -747,7 +747,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 	$i = 1;
 
 	foreach ($header_items as $db_column => $display_array) {
-		/* if the column is not visible, don't display it */
+		// if the column is not visible, don't display it
 		if (isset($display_array['visible']) && $display_array['visible'] === false) {
 			continue;
 		}
@@ -810,7 +810,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 				$tip = '';
 			}
 		} else {
-			/* by default, you will always sort ascending, with the exception of an already sorted column */
+			// by default, you will always sort ascending, with the exception of an already sorted column
 			if ($sort_column == $db_column) {
 				$icon         = $sort_direction;
 				$direction    = $new_sort_direction;
@@ -898,7 +898,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 
 	$header_items = form_process_visible_display_text($table_id, $header_items);
 
-	/* reverse the sort direction */
+	// reverse the sort direction
 	if ($sort_direction == 'ASC') {
 		$new_sort_direction = 'DESC';
 	} else {
@@ -907,18 +907,18 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 
 	$page = $page_count . '_' . str_replace('.php', '', basename($_SERVER['SCRIPT_NAME']));
 
-	if (isset_request_var('action')) {
-		$page .= '_' . get_request_var('action');
+	if (isrv('action')) {
+		$page .= '_' . grv('action');
 	}
 
-	if (isset_request_var('tab')) {
-		$page .= '_' . get_request_var('tab');
+	if (isrv('tab')) {
+		$page .= '_' . grv('tab');
 	}
 
 	if (isset($_SESSION['sort_data'][$page])) {
 		$order_data = $_SESSION['sort_data'][$page];
 	} else {
-		$order_data = [get_request_var('sort_column') => get_request_var('sort_direction')];
+		$order_data = [grv('sort_column') => grv('sort_direction')];
 	}
 
 	foreach ($order_data as $key => $direction) {
@@ -927,7 +927,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		break;
 	}
 
-	/* default to the 'current' file */
+	// default to the 'current' file
 	if ($form_action == '') {
 		$form_action = get_current_page();
 	}
@@ -940,7 +940,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 	print "<thead><tr class='tableHeader' data-columns='" . base64_encode(json_encode($table_visibility)) . "'>";
 
 	foreach ($header_items as $db_column => $display_array) {
-		/* if the column is not visible, don't display it */
+		// if the column is not visible, don't display it
 		if (isset($display_array['visible']) && $display_array['visible'] === false) {
 			continue;
 		}
@@ -1005,7 +1005,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 				$tip = '';
 			}
 		} else {
-			/* by default, you will always sort ascending, with the exception of an already sorted column */
+			// by default, you will always sort ascending, with the exception of an already sorted column
 			if ($sort_column == $db_column) {
 				$icon         = $sort_direction;
 				$direction    = $new_sort_direction;
@@ -1091,7 +1091,7 @@ function html_header($header_items, $last_item_colspan = 1, $resizable = true) {
 
 	foreach ($header_items as $item) {
 		if (is_array($item)) {
-			/* if the column is not visible, don't display it */
+			// if the column is not visible, don't display it
 			if (isset($display_array['visible']) && $display_array['visible'] === false) {
 				continue;
 			}
@@ -1167,7 +1167,7 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 
 	$header_items = form_process_visible_display_text($table_id, $header_items);
 
-	/* default to the 'current' file */
+	// default to the 'current' file
 	if ($form_action == '') {
 		$form_action = get_current_page();
 	}
@@ -1181,7 +1181,7 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 
 	foreach ($header_items as $item) {
 		if (is_array($item)) {
-			/* if the column is not visible, don't display it */
+			// if the column is not visible, don't display it
 			if (isset($display_array['visible']) && $display_array['visible'] === false) {
 				continue;
 			}
@@ -1300,6 +1300,17 @@ function html_create_list($form_data, $column_display, $column_id, $form_previou
 }
 
 /**
+ * alias of html_escape_request_var()
+ *
+ * @param  string $string - string the request variable to escape
+ *
+ * @return string $new_string - the escaped request variable to be returned.
+ */
+function herv($string) {
+	return html_escape(gnrv($string));
+}
+
+/**
  * html_escape_request_var - sanitizes a request variable for display
  *
  * @param  string $string - string the request variable to escape
@@ -1307,7 +1318,18 @@ function html_create_list($form_data, $column_display, $column_id, $form_previou
  * @return string $new_string - the escaped request variable to be returned.
  */
 function html_escape_request_var($string) {
-	return html_escape(get_nfilter_request_var($string));
+	return html_escape(gnrv($string));
+}
+
+/**
+ * alias of html_escape()
+ *
+ * @param  string $string - string the string to escape
+ *
+ * @return string $new_string - the escaped string to be returned.
+ */
+function htmle($string) {
+	return html_escape($string);
 }
 
 /**
@@ -1453,7 +1475,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 		foreach ($item_list as $item) {
 			$_graph_type_name = $graph_item_types[$item['graph_type_id']];
 
-			/* graph grouping display logic */
+			// graph grouping display logic
 			$this_row_style   = '';
 			$use_custom_class = false;
 			$hard_return      = '';
@@ -1472,7 +1494,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 				$group_counter++;
 			}
 
-			/* alternating row color */
+			// alternating row color
 			if ($use_custom_class == false) {
 				print "<tr id='{$item['id']}' class='tableRow selectable'>";
 			} else {
@@ -1522,30 +1544,30 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 				$display = html_escape($matric_title);
 			}
 
-			/* data source display */
+			// data source display
 			print "<td style='$this_row_style'>" . $display . $hard_return . '</td>';
 
-			/* sequence number */
+			// sequence number
 			print "<td class='center' style='$this_row_style'>" . $item['sequence'] . '</td>';
 
-			/* graph item type display */
+			// graph item type display
 			print "<td style='$this_row_style'>" . $graph_item_types[$item['graph_type_id']] . '</td>';
 
-			/* consolidation function display */
+			// consolidation function display
 			if (!preg_match('/(TICK|TEXTALIGN|HRULE|VRULE)/', $_graph_type_name)) {
 				print "<td style='$this_row_style'>" . $consolidation_functions[$item['consolidation_function_id']] . '</td>';
 			} else {
 				print '<td>-</td>';
 			}
 
-			/* export/hover legend */
+			// export/hover legend
 			if ($item['legend'] != '') {
 				print "<td style='$this_row_style'>" . html_escape($item['legend']) . '</td>';
 			} else {
 				print '<td>-</td>';
 			}
 
-			/* grpint display */
+			// grpint display
 			print "<td class='prewrap' style='$this_row_style'>";
 
 			if ($item['gprint_name'] != '') {
@@ -1555,7 +1577,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			}
 			print '</td>';
 
-			/* cdef display */
+			// cdef display
 			print "<td class='prewrap' style='$this_row_style'>";
 
 			if ($item['cdef_name'] != '') {
@@ -1565,7 +1587,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			}
 			print '</td>';
 
-			/* vdef display */
+			// vdef display
 			print "<td class='prewrap' style='$this_row_style'>";
 
 			if ($item['vdef_name'] != '') {
@@ -1575,7 +1597,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			}
 			print '</td>';
 
-			/* color display */
+			// color display
 			$blank = '-';
 
 			if (preg_match('/(AREA|STACK|TICK|LINE[123])/', $_graph_type_name)) {
@@ -1605,13 +1627,13 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 			if (!preg_match('/(TEXTALIGN)/', $_graph_type_name)) {
 				if (preg_match('/(AREA|STACK)/', $_graph_type_name)) {
-					/* color1 */
+					// color1
 					print "<td class='nowrap'>";
 					print "<div style='display:table-cell;min-width:16px;background-color:#{$color1}'></div>";
 					print "<div style='display:table-cell;padding-left:5px;'>{$color1}</div>";
 					print '</td>';
 
-					/* color2 */
+					// color2
 					print "<td class='nowrap'>";
 
 					if ($color2 != $blank) {
@@ -1622,7 +1644,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 					}
 					print '</td>';
 				} else {
-					/* color 1 */
+					// color 1
 					print "<td class='nowrap'>";
 
 					if ($color1 != $blank) {
@@ -1633,7 +1655,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 					}
 					print '</td>';
 
-					/* color2 */
+					// color2
 					print "<td>{$color2}</td>";
 				}
 			} else {
@@ -1681,7 +1703,7 @@ function is_menu_pick_active($menu_url) {
 
 	$menu_parts = [];
 
-	/* special case for host.php?action=edit&create=true */
+	// special case for host.php?action=edit&create=true
 	if (str_contains($_SERVER['REQUEST_URI'], 'host.php?action=edit&create=true')) {
 		if (str_contains($menu_url, 'host.php?action=edit&create=true')) {
 			return true;
@@ -1689,7 +1711,7 @@ function is_menu_pick_active($menu_url) {
 			return false;
 		}
 	} elseif (!is_array($url_array) || (is_array($url_array) && !cacti_sizeof($url_array))) {
-		/* break out the URL and variables */
+		// break out the URL and variables
 		$url_array = parse_url($_SERVER['REQUEST_URI']);
 
 		if (isset($url_array['query'])) {
@@ -1773,12 +1795,12 @@ function draw_menu($user_menu = '') {
 
 	print "<div id='menu'><ul id='nav' role='menu'>";
 
-	/* loop through each header */
+	// loop through each header
 	$i       = 0;
 	$headers = [];
 
 	foreach ($user_menu as $header_name => $header_array) {
-		/* pass 1: see if we are allowed to view any children */
+		// pass 1: see if we are allowed to view any children
 		$show_header_items = false;
 
 		foreach ($header_array as $item_url => $item_title) {
@@ -1820,7 +1842,7 @@ function draw_menu($user_menu = '') {
 			print "<li class='menuitem' role='menuitem' aria-haspopup='true' id='$id'><a class='menu_parent active' href='#'>$glyph<span>$header_name</span></a>";
 			print "<ul role='menu' id='{$id}_div' style='display:block;'>";
 
-			/* pass 2: loop through each top level item and render it */
+			// pass 2: loop through each top level item and render it
 			foreach ($header_array as $item_url => $item_title) {
 				$basename         = explode('?', basename($item_url));
 				$basename         = $basename[0];
@@ -1834,7 +1856,7 @@ function draw_menu($user_menu = '') {
 					$i = 0;
 
 					if ($current_realm_id == -1 || is_realm_allowed($current_realm_id) || !isset($user_auth_realm_filenames[$basename])) {
-						/* if the current page exists in the sub-items array, draw each sub-item */
+						// if the current page exists in the sub-items array, draw each sub-item
 						if (array_key_exists(get_current_page(), $item_title) == true) {
 							$draw_sub_items = true;
 						} else {
@@ -1877,7 +1899,7 @@ function draw_menu($user_menu = '') {
 					}
 				} else {
 					if ($current_realm_id == -1 || is_realm_allowed($current_realm_id) || !isset($user_auth_realm_filenames[$basename])) {
-						/* draw normal (non sub-item) menu item */
+						// draw normal (non sub-item) menu item
 						if (str_starts_with($item_url, 'EXTERNAL::')) {
 							$item_external = true;
 							$item_url      = substr($item_url, 10);
@@ -2007,9 +2029,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 	<?php
 }
 
-/*
- * Deprecated functions
- */
+// Deprecated functions
 /**
  * Draws a matrix header item in an HTML table.
  *
@@ -2256,7 +2276,7 @@ function html_show_tabs_left() {
 
 		if ($tab_base == 'graph_view.php' && ($me_base == 'graph_view.php' || $me_base == 'graph.php')) {
 			$tabs_left[$i]['selected'] = true;
-		} elseif (isset_request_var('id') && ($tab_base == 'link.php?id=' . get_nfilter_request_var('id')) && $me_base == 'link.php') {
+		} elseif (isrv('id') && ($tab_base == 'link.php?id=' . gnrv('id')) && $me_base == 'link.php') {
 			$tabs_left[$i]['selected'] = true;
 		} elseif ($tab_base == 'index.php' && is_console_page($me_base)) {
 			$tabs_left[$i]['selected'] = true;
@@ -2325,15 +2345,15 @@ function html_graph_tabs_right() {
 
 	foreach ($tabs_right as $tab) {
 		if ($tab['id'] == 'tree') {
-			if (isset_request_var('action') && get_nfilter_request_var('action') == 'tree') {
+			if (isrv('action') && gnrv('action') == 'tree') {
 				$tabs_right[$i]['selected'] = true;
 			}
 		} elseif ($tab['id'] == 'list') {
-			if (isset_request_var('action') && get_nfilter_request_var('action') == 'list') {
+			if (isrv('action') && gnrv('action') == 'list') {
 				$tabs_right[$i]['selected'] = true;
 			}
 		} elseif ($tab['id'] == 'preview') {
-			if (isset_request_var('action') && get_nfilter_request_var('action') == 'preview') {
+			if (isrv('action') && gnrv('action') == 'preview') {
 				$tabs_right[$i]['selected'] = true;
 			}
 		} elseif (strstr(get_current_page(false), $tab['url'])) {
@@ -2408,20 +2428,20 @@ function html_transform_graph_template_ids($ids) {
 function html_make_device_where() {
 	$sql_where = '';
 
-	if (isset_request_var('site_id') && get_filter_request_var('site_id') > 0) {
-		$sql_where .= ($sql_where != '' ? ' AND ' : ' (') . 'h.site_id = ' . get_request_var('site_id');
+	if (isrv('site_id') && gfrv('site_id') > 0) {
+		$sql_where .= ($sql_where != '' ? ' AND ' : ' (') . 'h.site_id = ' . grv('site_id');
 	}
 
-	if (isset_request_var('location') && get_nfilter_request_var('location') != '-1') {
-		$sql_where .= ($sql_where != '' ? ' AND ' : ' (') . 'h.location = ' . db_qstr(get_nfilter_request_var('location'));
+	if (isrv('location') && gnrv('location') != '-1') {
+		$sql_where .= ($sql_where != '' ? ' AND ' : ' (') . 'h.location = ' . db_qstr(gnrv('location'));
 	}
 
-	if (isset_request_var('host_template_id') && get_filter_request_var('host_template_id') > 0) {
-		$sql_where .= ($sql_where != '' ? ' AND ' : ' (') . 'h.location = ' . get_request_var('host_template_id');
+	if (isrv('host_template_id') && gfrv('host_template_id') > 0) {
+		$sql_where .= ($sql_where != '' ? ' AND ' : ' (') . 'h.location = ' . grv('host_template_id');
 	}
 
-	if (isset_request_var('external_id') && get_nfilter_request_var('external_id') != '-1') {
-		$sql_where .= ($sql_where != '' ? ' AND ' : ' (') . 'h.external_id = ' . db_qstr(get_nfilter_request_var('external_id'));
+	if (isrv('external_id') && gnrv('external_id') != '-1') {
+		$sql_where .= ($sql_where != '' ? ' AND ' : ' (') . 'h.external_id = ' . db_qstr(gnrv('external_id'));
 	}
 
 	if ($sql_where != '') {
@@ -2450,8 +2470,8 @@ function html_graph_order_filter_array() {
 		$mode = read_config_option('dsstats_mode'); // 0 - Peak/Average only, 1 - Kitchen Sink
 		$peak = read_config_option('dsstats_peak'); // '' - Average CF Only, 'on' - Average and Max CF's
 
-		if (isset_request_var('graph_template_id')) {
-			$graph_templates = html_transform_graph_template_ids(get_nfilter_request_var('graph_template_id'));
+		if (isrv('graph_template_id')) {
+			$graph_templates = html_transform_graph_template_ids(gnrv('graph_template_id'));
 
 			if (str_contains($graph_templates, ',') || $graph_templates == '' || $graph_templates <= 0) {
 				$show_sort    = false;
@@ -2472,12 +2492,12 @@ function html_graph_order_filter_array() {
 					'graph_source', 'graph_source'
 				);
 
-				if (get_nfilter_request_var('graph_source') == '' ||
-					get_nfilter_request_var('graph_source') == '-1' ||
-					!in_array(get_nfilter_request_var('graph_source'), $data_sources, true)) {
+				if (gnrv('graph_source') == '' ||
+					gnrv('graph_source') == '-1' ||
+					!in_array(gnrv('graph_source'), $data_sources, true)) {
 					if (cacti_sizeof($data_sources)) {
-						set_request_var('graph_source', array_keys($data_sources)[0]);
-						set_request_var('graph_order', 'desc');
+						srv('graph_source', array_keys($data_sources)[0]);
+						srv('graph_order', 'desc');
 					}
 				}
 			}
@@ -2519,7 +2539,7 @@ function html_graph_order_filter_array() {
 						'filter'         => FILTER_VALIDATE_INT,
 						'default'        => '0',
 						'array'          => $options,
-						'value'          => get_nfilter_request_var('cf')
+						'value'          => gnrv('cf')
 					];
 				}
 
@@ -2536,7 +2556,7 @@ function html_graph_order_filter_array() {
 						'filter_options' => ['options' => 'sanitize_search_string'],
 						'default'        => 'average',
 						'array'          => $options,
-						'value'          => get_nfilter_request_var('measure')
+						'value'          => gnrv('measure')
 					];
 				} else {
 					$options = [
@@ -2557,7 +2577,7 @@ function html_graph_order_filter_array() {
 						'filter_options' => ['options' => 'sanitize_search_string'],
 						'default'        => 'average',
 						'array'          => $options,
-						'value'          => get_nfilter_request_var('measure')
+						'value'          => gnrv('measure')
 					];
 				}
 			}
@@ -2579,7 +2599,7 @@ function html_graph_order_filter_array() {
 }
 
 function html_thumbnails_filter($callBack = 'applyGraphFilter') {
-	$output  = "<input id='thumbnails' type='checkbox' onClick='$callBack()' " . (get_request_var('thumbnails') == 'true' ? 'checked' : '') . '>';
+	$output  = "<input id='thumbnails' type='checkbox' onClick='$callBack()' " . (grv('thumbnails') == 'true' ? 'checked' : '') . '>';
 	$output .= "<label for='thumbnails'>" . __('Thumbnails') . '</label>';
 
 	return $output;
@@ -2587,7 +2607,7 @@ function html_thumbnails_filter($callBack = 'applyGraphFilter') {
 
 function html_business_hours_filter($callBack = 'applyGraphFilter') {
 	if (read_config_option('business_hours_enable') == 'on') {
-		$output  = "<input id='business_hours' type='checkbox' onClick='$callBack()' " . (get_request_var('business_hours') == 'true' ? 'checked' : '') . '>';
+		$output  = "<input id='business_hours' type='checkbox' onClick='$callBack()' " . (grv('business_hours') == 'true' ? 'checked' : '') . '>';
 		$output .= "<label for='business_hours'>" . __('Business Hours') . '</label>';
 
 		return $output;
@@ -2612,8 +2632,8 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 		$call_back .= '()';
 	}
 
-	if ($host_id == '-1' && isset_request_var('host_id')) {
-		$host_id = get_filter_request_var('host_id');
+	if ($host_id == '-1' && isrv('host_id')) {
+		$host_id = gfrv('host_id');
 	}
 
 	if (!read_config_option('autocomplete_enabled')) {
@@ -2679,8 +2699,8 @@ function html_site_filter($site_id = '-1', $call_back = 'applyFilter', $sql_wher
 		$call_back .= '()';
 	}
 
-	if ($site_id == '-1' && isset_request_var('site_id')) {
-		$site_id = get_filter_request_var('site_id');
+	if ($site_id == '-1' && isrv('site_id')) {
+		$site_id = gfrv('site_id');
 	}
 
 	?>
@@ -2770,15 +2790,15 @@ function html_location_filter($location = '', $call_back = 'applyFilter', $sql_w
  * @return void
  */
 function html_spikekill_actions() {
-	switch(get_nfilter_request_var('action')) {
+	switch(gnrv('action')) {
 		case 'spikemenu':
-			html_spikekill_menu(get_filter_request_var('local_graph_id'));
+			html_spikekill_menu(gfrv('local_graph_id'));
 
 			break;
 		case 'spikesave':
-			switch(get_nfilter_request_var('setting')) {
+			switch(gnrv('setting')) {
 				case 'ravgnan':
-					$id = get_nfilter_request_var('id');
+					$id = gnrv('id');
 
 					switch($id) {
 						case 'avg':
@@ -2791,23 +2811,23 @@ function html_spikekill_actions() {
 
 					break;
 				case 'rstddev':
-					set_user_setting('spikekill_deviations', get_filter_request_var('id'));
+					set_user_setting('spikekill_deviations', gfrv('id'));
 
 					break;
 				case 'rvarout':
-					set_user_setting('spikekill_outliers', get_filter_request_var('id'));
+					set_user_setting('spikekill_outliers', gfrv('id'));
 
 					break;
 				case 'rvarpct':
-					set_user_setting('spikekill_percent', get_filter_request_var('id'));
+					set_user_setting('spikekill_percent', gfrv('id'));
 
 					break;
 				case 'rkills':
-					set_user_setting('spikekill_number', get_filter_request_var('id'));
+					set_user_setting('spikekill_number', gfrv('id'));
 
 					break;
 				case 'rabsmax':
-					set_user_setting('spikekill_absmax', get_filter_request_var('id'));
+					set_user_setting('spikekill_absmax', gfrv('id'));
 
 					break;
 			}
@@ -3300,18 +3320,18 @@ function html_common_header($title, $selectedTheme = '') {
 		var zoom_outOfRangeMessage='<?php print __esc('Zoom Dates before January 1, 1993 are not supported in Cacti!  Pick a more recent date.'); ?>';
 	</script>
 	<?php
-	/* Global icons */
+	// Global icons
 	print get_md5_include_icon('images', theme: $selectedTheme, file: 'favicon.ico', rel: 'shortcut icon');
 	print get_md5_include_icon('images', theme: $selectedTheme, file: 'cacti_logo.gif', rel: 'icon', sizes: '96x96');
 
-	/* Global styles that can be overloaded by themes css as required. */
+	// Global styles that can be overloaded by themes css as required.
 	print get_md5_include_css('include/css/jquery.contextMenu.css');
 	print get_md5_include_css('include/css/billboard.css');
 	print get_md5_include_css('include/fa/css/all.css');
 	print get_md5_include_css('include/tabler/dist/tabler-icons.min.css');
 	print get_md5_include_css('include/vendor/lipis/flag-icons/css/flag-icons.css');
 
-	/* Theme-based styles */
+	// Theme-based styles
 	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'jquery.zoom.css');
 	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'jquery-ui.css');
 	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'default/style.css');
@@ -3324,10 +3344,10 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'jquery.toast.css');
 	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'main.css');
 
-	/* Global styles */
+	// Global styles
 	print get_md5_include_css('include/themes/' . $selectedTheme . '/main.css');
 
-	/* Global scripts */
+	// Global scripts
 	print get_md5_include_js('include/js/screenfull.js', true);
 	print get_md5_include_js('include/js/jquery.js');
 	print get_md5_include_js('include/js/jquery-ui.js');
@@ -3359,10 +3379,10 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/lzjs.js');
 	print get_md5_include_js('include/js/big.js');
 
-	/* Main theme based scripts (included last to allow overrides) */
+	// Main theme based scripts (included last to allow overrides)
 	print get_md5_include_js('include/css/', theme: $selectedTheme, file: 'main.js');
 
-	/* Language based scripts */
+	// Language based scripts
 	if (isset($path2calendar) && file_exists($path2calendar)) {
 		print get_md5_include_js($path2calendar);
 	}

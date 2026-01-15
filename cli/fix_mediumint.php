@@ -27,7 +27,7 @@ require(__DIR__ . '/../include/cli_check.php');
 
 ini_set('max_execution_time', '0');
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -184,7 +184,7 @@ function database_fix_mediumint_columns() {
 		$table   = $t['Tables_in_' . $database_default];
 		$columns = [];
 
-		//print "Checking $table" . PHP_EOL;
+		// print "Checking $table" . PHP_EOL;
 
 		if (!array_key_exists($table, $tables)) {
 			$columns = array_rekey(
@@ -242,7 +242,7 @@ function display_version() {
 	print "Cacti Fix Database Range Issue, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-/*	display_help - displays the usage of the function */
+// display_help - displays the usage of the function
 function display_help() {
 	display_version();
 	print 'usage: fix_mediumint.php [--debug]' . PHP_EOL . PHP_EOL;

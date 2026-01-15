@@ -43,7 +43,7 @@ if ($config['poller_id'] > 1) {
 ini_set('memory_limit', '-1');
 ini_set('max_execution_time', '0');
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -66,13 +66,13 @@ $start_time = false;
 $end_time   = false;
 $php_bin    = read_config_option('path_php_binary');
 
-/* install signal handlers for UNIX types only */
+// install signal handlers for UNIX types only
 if (function_exists('pcntl_signal')) {
 	pcntl_signal(SIGTERM, 'sig_handler');
 	pcntl_signal(SIGINT, 'sig_handler');
 }
 
-/* take the start time to log performance data */
+// take the start time to log performance data
 $start = microtime(true);
 
 foreach ($parms as $parameter) {
@@ -469,7 +469,7 @@ function sig_handler($signo) {
 
 			break;
 		default:
-			/* ignore all other signals */
+			// ignore all other signals
 	}
 }
 

@@ -51,15 +51,15 @@ function dsdebug_debug($message) {
 function log_dsdebug_statistics($type, $checks, $issues) {
 	global $start;
 
-	/* take time and log performance data */
+	// take time and log performance data
 	$end = microtime(true);
 
 	$cacti_stats = sprintf('ChecksPerformed:%d, TotalIssues:%d, Time:%01.4f ', $checks, $issues, round($end - $start,4));
 
-	/* log to the database */
+	// log to the database
 	set_config_option('stats_dsdebug_' . $type, $cacti_stats);
 
-	/* log to the logfile */
+	// log to the logfile
 	cacti_log('DSDEBUG STATS: Type:' . $type . ', ' . $cacti_stats , true, 'SYSTEM');
 }
 
@@ -77,7 +77,7 @@ function log_dsdebug_statistics($type, $checks, $issues) {
  */
 function dsdebug_error_handler($errno, $errmsg, $filename, $linenum, $vars = []) {
 	if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
-		/* define all error types */
+		// define all error types
 		$errortype = [
 			E_ERROR             => 'Error',
 			E_WARNING           => 'Warning',
@@ -97,12 +97,12 @@ function dsdebug_error_handler($errno, $errmsg, $filename, $linenum, $vars = [])
 			$errortype[E_RECOVERABLE_ERROR] = 'Catchable Fatal Error';
 		}
 
-		/* create an error string for the log */
+		// create an error string for the log
 		$err = "ERRNO:'" . $errno . "' TYPE:'" . $errortype[$errno] .
 			"' MESSAGE:'" . $errmsg . "' IN FILE:'" . $filename .
 			"' LINE NO:'" . $linenum . "'";
 
-		/* let's ignore some lesser issues */
+		// let's ignore some lesser issues
 		if (substr_count($errmsg, 'date_default_timezone')) {
 			return;
 		}
@@ -111,7 +111,7 @@ function dsdebug_error_handler($errno, $errmsg, $filename, $linenum, $vars = [])
 			return;
 		}
 
-		/* log the error to the Cacti log */
+		// log the error to the Cacti log
 		cacti_log('PROGERR: ' . $err, false, 'DSDEBUG');
 	}
 
@@ -119,17 +119,17 @@ function dsdebug_error_handler($errno, $errmsg, $filename, $linenum, $vars = [])
 }
 
 function dsdebug_poller_output(&$rrd_update_array) {
-	/* suppress warnings */
+	// suppress warnings
 	if (defined('E_DEPRECATED')) {
 		error_reporting(E_ALL ^ E_DEPRECATED);
 	} else {
 		error_reporting(E_ALL);
 	}
 
-	/* install the dsstats error handler */
+	// install the dsstats error handler
 	set_error_handler('dsdebug_error_handler');
 
-	/* do not make any calculations unless enabled */
+	// do not make any calculations unless enabled
 	$checks = db_fetch_assoc('SELECT * FROM data_debug WHERE `done` = 0');
 
 	if (cacti_sizeof($checks)) {
@@ -150,17 +150,17 @@ function dsdebug_poller_output(&$rrd_update_array) {
 		}
 	}
 
-	/* restore original error handler */
+	// restore original error handler
 	restore_error_handler();
 }
 
 function dsdebug_poller_bottom() {
 	global $start;
 
-	/* install the dsstats error handler */
+	// install the dsstats error handler
 	set_error_handler('dsdebug_error_handler');
 
-	/* take time and log performance data */
+	// take time and log performance data
 	$start = microtime(true);
 
 	if (!db_table_exists('data_debug')) {

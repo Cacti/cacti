@@ -25,7 +25,7 @@
 
 require(__DIR__ . '/../include/cli_check.php');
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -272,7 +272,7 @@ if ((file_exists($keypair_path . '/package.pem') || file_exists($keypair_path . 
 	}
 
 	// Generate a certificate
-	//$csr = openssl_csr_new($subject, $privKey, array('digest_alg' => 'sha256'));
+	// $csr = openssl_csr_new($subject, $privKey, array('digest_alg' => 'sha256'));
 	$csr = openssl_csr_new($subject, $privKey, $config);
 
 	if ($csr !== false) {
@@ -338,7 +338,7 @@ if ((file_exists($keypair_path . '/package.pem') || file_exists($keypair_path . 
 	print 'SUCCESS!!' . PHP_EOL;
 }
 
-/*  display_version - displays version information */
+// display_version - displays version information
 function display_version() {
 	if (defined('CACTI_VERSION')) {
 		$version = CACTI_VERSION;

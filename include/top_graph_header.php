@@ -51,7 +51,7 @@ if (!$is_request_ajax) {?>
 	<title><?php print $page_title; ?></title>
 	<?php } ?>
 	<div id='cactiContent' class='cactiContent'>
-		<?php if (get_current_page() == 'graph_view.php' && (get_nfilter_request_var('action') == 'tree' || (isset_request_var('view_type') && get_nfilter_request_var('view_type') == 'tree'))) { ?>
+		<?php if (get_current_page() == 'graph_view.php' && (gnrv('action') == 'tree' || (isrv('view_type') && gnrv('view_type') == 'tree'))) { ?>
 		<div style='display:none;' id='navigation' class='cactiTreeNavigationArea'><?php grow_dhtml_trees(); ?></div>
 		<?php } ?>
 		<div id='navigation_right' class='cactiGraphContentArea'>

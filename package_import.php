@@ -31,7 +31,7 @@ require_once(CACTI_PATH_LIBRARY . '/xml.php');
 require_once('./include/vendor/phpdiff/Diff.php');
 require_once('./include/vendor/phpdiff/Renderer/Html/Inline.php');
 
-/* set default action */
+// set default action
 set_default_action();
 
 check_tmp_dir();
@@ -40,7 +40,7 @@ $actions = [
 	1 => __('Import'),
 ];
 
-switch(get_request_var('action')) {
+switch(grv('action')) {
 	case 'save':
 		form_save();
 
@@ -100,18 +100,18 @@ function check_tmp_dir() {
 function form_actions() {
 	global $actions;
 
-	/* ================= input validation ================= */
-	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-zA-Z0-9_]+)$/']]);
-	get_filter_request_var('data_source_profile');
-	get_filter_request_var('package_location');
-	get_filter_request_var('remove_orphans', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/(on)/']]);
-	get_filter_request_var('replace_svalues', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/(on)/']]);
-	/* ==================================================== */
+	// ================= input validation =================
+	gfrv('drp_action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-zA-Z0-9_]+)$/']]);
+	gfrv('data_source_profile');
+	gfrv('package_location');
+	gfrv('remove_orphans', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/(on)/']]);
+	gfrv('replace_svalues', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/(on)/']]);
+	// ====================================================
 
-	$package_location = get_filter_request_var('package_location');
-	$profile_id       = get_filter_request_var('data_source_profile');
-	$remove_orphans   = isset_request_var('remove_orphans') ? true : false;
-	$replace_svalues  = isset_request_var('replace_svalues') ? true : false;
+	$package_location = gfrv('package_location');
+	$profile_id       = gfrv('data_source_profile');
+	$remove_orphans   = isrv('remove_orphans') ? true : false;
+	$replace_svalues  = isrv('replace_svalues') ? true : false;
 	$preview          = false;
 
 	$package = json_decode(get_repo_manifest_file($package_location), true);
@@ -119,11 +119,11 @@ function form_actions() {
 	$manifest = $package['manifest'];
 
 	// Import Execution
-	if (isset_request_var('selected_items')) {
-		$selected_items  = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
+	if (isrv('selected_items')) {
+		$selected_items  = sanitize_unserialize_selected_items(gnrv('selected_items'));
 
-		$hashes = unserialize(stripslashes(get_nfilter_request_var('selected_hashes')), ['allowed_classes' => false]);
-		$files  = unserialize(stripslashes(get_nfilter_request_var('selected_files')), ['allowed_classes' => false]);
+		$hashes = unserialize(stripslashes(gnrv('selected_hashes')), ['allowed_classes' => false]);
+		$files  = unserialize(stripslashes(gnrv('selected_files')), ['allowed_classes' => false]);
 
 		$import_packages = [];
 		$import_hashes   = [];
@@ -169,7 +169,7 @@ function form_actions() {
 					$name = $import_names[$filename];
 				}
 
-				if (get_request_var('drp_action') == 1) { // Import
+				if (grv('drp_action') == 1) { // Import
 					$data = get_repo_file($package_location, $filename);
 
 					if (isset($import_hashes[$filename]) && cacti_sizeof($import_hashes[$filename])) {
@@ -235,7 +235,7 @@ function form_actions() {
 
 	$save_html = '';
 
-	/* loop through each of the graphs selected on the previous page and get more info about them */
+	// loop through each of the graphs selected on the previous page and get more info about them
 	foreach ($_POST as $var => $val) {
 		if (strpos($var, 'chk_file_') !== false) {
 			$id = base64_decode(str_replace('chk_file_', '', $var), true);
@@ -245,8 +245,8 @@ function form_actions() {
 			$id['pfile'] = str_replace(CACTI_PATH_BASE . '/', '', $id['pfile']);
 
 			$pkg_file_list .= '<tr>' .
-				'<td style="width:50%">' . html_escape($id['package']) . '</td>' .
-				'<td style="width:50%">' . html_escape($id['pfile']) . '</td>' .
+				'<td style="width:50%">' . htmle($id['package']) . '</td>' .
+				'<td style="width:50%">' . htmle($id['pfile']) . '</td>' .
 			'</td>';
 
 			$pkg_file_array[] = $id;
@@ -262,7 +262,7 @@ function form_actions() {
 			$package  = '';
 
 			foreach ($packages as $index => $p) {
-				$package .= ($index > 0 ? ', ' : '') . html_escape($p);
+				$package .= ($index > 0 ? ', ' : '') . htmle($p);
 
 				$found_pkg_array[$p] = $p;
 			}
@@ -271,13 +271,13 @@ function form_actions() {
 			$status   = '';
 
 			foreach ($statuses as $index => $s) {
-				$status .= ($index > 0 ? ', ' : '') . html_escape(ucfirst($s));
+				$status .= ($index > 0 ? ', ' : '') . htmle(ucfirst($s));
 			}
 
 			$pkg_import_list .= '<tr>' .
 				'<td style="width:40%">' . $package . '</td>' .
-				'<td style="width:20%">' . html_escape($id['type']) . '</td>' .
-				'<td style="width:20%">' . html_escape($id['name']) . '</td>' .
+				'<td style="width:20%">' . htmle($id['type']) . '</td>' .
+				'<td style="width:20%">' . htmle($id['name']) . '</td>' .
 				'<td style="width:20%">' . $status . '</td>' .
 			'</td>';
 
@@ -290,10 +290,10 @@ function form_actions() {
 			$package = $manifest[$matches[1]]['name'];
 
 			if (isset($found_pkg_array[$package]) || isset($found_pkg_file_array[$package])) {
-				$pkg_list .= '<li>' . html_escape($package) . '</li>';
+				$pkg_list .= '<li>' . htmle($package) . '</li>';
 				$pkg_array[] = $matches[1];
 			} else {
-				$skp_list .= '<li>' . html_escape($package) . '</li>';
+				$skp_list .= '<li>' . htmle($package) . '</li>';
 				$skp_array[] = $matches[1];
 			}
 		}
@@ -303,10 +303,10 @@ function form_actions() {
 
 	form_start('package_import.php');
 
-	html_start_box(__('Package %s', $actions[get_nfilter_request_var('drp_action')]), '60%', false, 3, 'center', '');
+	html_start_box(__('Package %s', $actions[gnrv('drp_action')]), '60%', false, 3, 'center', '');
 
 	if (cacti_sizeof($pkg_array)) {
-		if (get_nfilter_request_var('drp_action') == '1') { /* import */
+		if (gnrv('drp_action') == '1') { // import
 			if ($pkg_file_list != '' || $pkg_import_list != '') {
 				print "<tr>
 					<td class='textArea'>
@@ -380,14 +380,14 @@ function form_actions() {
 	print "<tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='package_location' value='" . get_request_var('package_location') . "'>
-			<input type='hidden' name='data_source_profile' value='" . get_request_var('data_source_profile') . "'>
-			<input type='hidden' name='remove_orphans' value='" . (isset_request_var('remove_orphans') ? 'on' : '') . "'>
-			<input type='hidden' name='replace_svalues' value='" . (isset_request_var('replace_svalues') ? 'on' : '') . "'>
+			<input type='hidden' name='package_location' value='" . grv('package_location') . "'>
+			<input type='hidden' name='data_source_profile' value='" . grv('data_source_profile') . "'>
+			<input type='hidden' name='remove_orphans' value='" . (isrv('remove_orphans') ? 'on' : '') . "'>
+			<input type='hidden' name='replace_svalues' value='" . (isrv('replace_svalues') ? 'on' : '') . "'>
 			<input type='hidden' name='selected_items' value='" . (cacti_sizeof($pkg_array) ? serialize($pkg_array) : '') . "'>
 			<input type='hidden' name='selected_hashes' value='" . serialize($pkg_import_array) . "'>
 			<input type='hidden' name='selected_files' value='" . serialize($pkg_file_array) . "'>
-			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
+			<input type='hidden' name='drp_action' value='" . htmle(gnrv('drp_action')) . "'>
 			$save_html
 		</td>
 	</tr>";
@@ -404,11 +404,11 @@ function form_save() {
 
 	validate_request_vars();
 
-	if (isset_request_var('save_component_import')) {
+	if (isrv('save_component_import')) {
 		if (isset($_FILES['import_file']['tmp_name']) &&
 			($_FILES['import_file']['tmp_name'] != 'none') &&
 			($_FILES['import_file']['tmp_name'] != '')) {
-			/* file upload */
+			// file upload
 			$xmlfile = $_FILES['import_file']['tmp_name'];
 
 			$_SESSION['sess_import_package'] = file_get_contents($xmlfile);
@@ -424,33 +424,33 @@ function form_save() {
 			exit;
 		}
 
-		if (isset_request_var('trust_signer') && get_nfilter_request_var('trust_signer') == 'on') {
+		if (isrv('trust_signer') && gnrv('trust_signer') == 'on') {
 			import_validate_public_key($xmlfile, true);
 		}
 
-		if (get_filter_request_var('data_source_profile') == '0') {
+		if (gfrv('data_source_profile') == '0') {
 			$import_as_new = true;
 			$profile_id    = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
 		} else {
 			$import_as_new = false;
-			$profile_id    = get_request_var('data_source_profile');
+			$profile_id    = grv('data_source_profile');
 		}
 
-		if (get_nfilter_request_var('preview_only') == 'on') {
+		if (gnrv('preview_only') == 'on') {
 			$preview_only = true;
-		} elseif (get_nfilter_request_var('import_confirmed') == 'on') {
+		} elseif (gnrv('import_confirmed') == 'on') {
 			$preview_only = false;
 		} else {
 			$preview_only = true;
 		}
 
-		if (isset_request_var('remove_orphans') && get_nfilter_request_var('remove_orphans') == 'on') {
+		if (isrv('remove_orphans') && gnrv('remove_orphans') == 'on') {
 			$remove_orphans = true;
 		} else {
 			$remove_orphans = false;
 		}
 
-		if (isset_request_var('replace_svalues') && get_nfilter_request_var('replace_svalues') == 'on') {
+		if (isrv('replace_svalues') && gnrv('replace_svalues') == 'on') {
 			$replace_svalues = true;
 		} else {
 			$replace_svalues = false;
@@ -459,7 +459,7 @@ function form_save() {
 		$hashes = [];
 		$files  = [];
 
-		/* loop through each of the graphs selected on the previous page and get more info about them */
+		// loop through each of the graphs selected on the previous page and get more info about them
 		foreach ($_POST as $var => $val) {
 			if (strpos($var, 'chk_file_') !== false) {
 				$id = base64_decode(str_replace('chk_file_', '', $var), true);
@@ -514,7 +514,7 @@ function form_save() {
 
 		cacti_log('Package name is ' . $package_name);
 
-		/* obtain debug information if it's set */
+		// obtain debug information if it's set
 		$data = import_package($xmlfile, $profile_id, $remove_orphans, $replace_svalues, $preview_only, false, false, $hashes, $files);
 
 		if ($preview_only) {
@@ -577,7 +577,7 @@ function package_file_get_contents($package_location, $package_file, $filename) 
 
 				$fdata = base64_decode($file['data'], true);
 
-				/* provide two checks against the public key */
+				// provide two checks against the public key
 				$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA1);
 
 				if ($ok != 1) {
@@ -623,7 +623,7 @@ function package_file_get_contents($package_location, $package_file, $filename) 
 
 					$fdata = base64_decode($file['data'], true);
 
-					/* provide two checks against the public key */
+					// provide two checks against the public key
 					$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA1);
 
 					if ($ok != 1) {
@@ -648,9 +648,9 @@ function package_file_get_contents($package_location, $package_file, $filename) 
 }
 
 function package_diff_file() {
-	$package_location = get_filter_request_var('package_location');
-	$package_file     = get_request_var('package_file');
-	$filename         = get_request_var('filename');
+	$package_location = gfrv('package_location');
+	$package_file     = grv('package_file');
+	$filename         = grv('filename');
 
 	$options = [
 		'ignoreWhitespace' => true,
@@ -687,12 +687,12 @@ function package_diff_file() {
 }
 
 function package_verify_key() {
-	$package_location = get_filter_request_var('package_location');
+	$package_location = gfrv('package_location');
 
 	$failed = [];
 
 	if ($package_location > 0) {
-		$package_ids = get_filter_request_var('package_ids', FILTER_VALIDATE_IS_NUMERIC_LIST);
+		$package_ids = gfrv('package_ids', FILTER_VALIDATE_IS_NUMERIC_LIST);
 
 		$repo = json_decode(get_repo_manifest_file($package_location), true);
 
@@ -792,10 +792,10 @@ function package_verify_key() {
 }
 
 function package_accept_key() {
-	$package_location = get_filter_request_var('package_location');
+	$package_location = gfrv('package_location');
 
 	if ($package_location > 0) {
-		$package_ids = get_filter_request_var('package_ids', FILTER_VALIDATE_IS_NUMERIC_LIST);
+		$package_ids = gfrv('package_ids', FILTER_VALIDATE_IS_NUMERIC_LIST);
 
 		$repo = json_decode(get_repo_manifest_file($package_location), true);
 
@@ -846,11 +846,11 @@ function package_accept_key() {
 }
 
 function package_get_details() {
-	$package_ids      = get_filter_request_var('package_ids', FILTER_VALIDATE_IS_NUMERIC_LIST);
-	$package_location = get_filter_request_var('package_location');
-	$profile_id       = get_filter_request_var('data_source_profile');
-	$remove_orphans   = isset_request_var('remove_orphans') ? true : false;
-	$replace_svalues  = isset_request_var('replace_svalues') ? true : false;
+	$package_ids      = gfrv('package_ids', FILTER_VALIDATE_IS_NUMERIC_LIST);
+	$package_location = gfrv('package_location');
+	$profile_id       = gfrv('data_source_profile');
+	$remove_orphans   = isrv('remove_orphans') ? true : false;
+	$replace_svalues  = isrv('replace_svalues') ? true : false;
 	$preview          = true;
 
 	$repo = json_decode(get_repo_manifest_file($package_location), true);
@@ -1047,13 +1047,13 @@ function import_display_package_data($templates, $files, $package_name, $filenam
 					if ($s == 'differences') {
 						$url = 'package_import.php' .
 							'?action=diff' .
-							'&package_location=' . get_request_var('package_location') .
+							'&package_location=' . grv('package_location') .
 							'&package_file=' . $file_package_file .
 							'&package_name=' . $file_package_name .
 							'&filename=' . str_replace(CACTI_PATH_BASE . '/', '', $pfile);
 
 						$nstatus .= ($nstatus != '' ? ', ' : '') .
-							"<a class='diffme linkEditMain' href='" . html_escape($url) . "'>" . __('Differences') . '</a>';
+							"<a class='diffme linkEditMain' href='" . htmle($url) . "'>" . __('Differences') . '</a>';
 					} elseif ($s == 'identical') {
 						$nstatus .= ($nstatus != '' ? ', ' : '') . __('Unchanged');
 					} elseif ($s == 'not writable') {
@@ -1249,7 +1249,7 @@ function import_display_package_data($templates, $files, $package_name, $filenam
 function validate_request_vars() {
 	$default_profile = get_default_profile();
 
-	/* ================= input validation and session storage ================= */
+	// ================= input validation and session storage =================
 	$filters = [
 		'replace_svalues' => [
 			'filter'  => FILTER_VALIDATE_REGEXP,
@@ -1289,7 +1289,7 @@ function validate_request_vars() {
 	];
 
 	validate_store_request_vars($filters, 'sess_pimport');
-	/* ================= input validation ================= */
+	// ================= input validation =================
 }
 
 function get_import_form($repo_id, $default_profile) {
@@ -1297,44 +1297,44 @@ function get_import_form($repo_id, $default_profile) {
 
 	validate_request_vars();
 
-	if (isset_request_var('preview_only') && get_nfilter_request_var('preview_only') == 'on') {
+	if (isrv('preview_only') && gnrv('preview_only') == 'on') {
 		$preview_only = 'on';
 	} else {
 		$preview_only = '';
 	}
 
-	if (isset_request_var('replace_svalues') && get_nfilter_request_var('replace_svalues') == 'on') {
+	if (isrv('replace_svalues') && gnrv('replace_svalues') == 'on') {
 		$replace_svalues = 'on';
 	} else {
 		$replace_svalues = '';
 	}
 
-	if (isset_request_var('remove_orphans') && get_nfilter_request_var('remove_orphans') == 'on') {
+	if (isrv('remove_orphans') && gnrv('remove_orphans') == 'on') {
 		$remove_orphans = 'on';
 	} else {
 		$remove_orphans = '';
 	}
 
-	if (isset_request_var('trust_signer') && get_nfilter_request_var('trust_signer') == 'on') {
+	if (isrv('trust_signer') && gnrv('trust_signer') == 'on') {
 		$trust_signer = 'on';
 	} else {
 		$trust_signer = '';
 	}
 
-	if (isset_request_var('image_format')) {
-		$image_format = get_filter_request_var('image_format');
+	if (isrv('image_format')) {
+		$image_format = gfrv('image_format');
 	} else {
 		$image_format = read_config_option('default_image_format');
 	}
 
-	if (isset_request_var('graph_width')) {
-		$graph_width = get_filter_request_var('graph_width');
+	if (isrv('graph_width')) {
+		$graph_width = gfrv('graph_width');
 	} else {
 		$graph_width = read_config_option('default_graph_width');
 	}
 
-	if (isset_request_var('graph_height')) {
-		$graph_height = get_filter_request_var('graph_height');
+	if (isrv('graph_height')) {
+		$graph_height = gfrv('graph_height');
 	} else {
 		$graph_height = read_config_option('default_graph_height');
 	}
@@ -1372,7 +1372,7 @@ function get_import_form($repo_id, $default_profile) {
 			'method'        => 'drop_sql',
 			'sql'           => 'SELECT id, name FROM data_source_profiles ORDER BY name',
 			'none_value'    => __('Create New from Template'),
-			'value'         => isset_request_var('import_dsp') ? get_filter_request_var('import_dsp') : '',
+			'value'         => isrv('import_dsp') ? gfrv('import_dsp') : '',
 			'default'       => $default_profile
 		],
 		'graph_header' => [
@@ -1455,17 +1455,17 @@ function package_import() {
 		FROM package_repositories
 		WHERE `default` = "on"');
 
-	if (!isset_request_var('package_location')) {
-		set_request_var('package_location', $default);
+	if (!isrv('package_location')) {
+		srv('package_location', $default);
 	}
 
-	if (!isset_request_var('package_class')) {
-		set_request_var('package_class', '0');
+	if (!isrv('package_class')) {
+		srv('package_class', '0');
 	}
 
 	$device_classes = array_merge([0 => __('All')], $device_classes);
 
-	if (get_request_var('package_location') == 0) {
+	if (grv('package_location') == 0) {
 		form_start('package_import.php', 'import', true);
 	} else {
 		form_start('package_import.php', 'import');
@@ -1486,7 +1486,7 @@ function package_import() {
 			'friendly_name' => __('Package Location'),
 			'description'   => __('Select the Location of the Packages that you wish to Import.'),
 			'method'        => 'drop_array',
-			'value'         => isset_request_var('package_location') ? get_nfilter_request_var('package_location') : $default,
+			'value'         => isrv('package_location') ? gnrv('package_location') : $default,
 			'array'         => $repos,
 			'default'       => $default
 		]
@@ -1503,9 +1503,9 @@ function package_import() {
 			LIMIT 1');
 	}
 
-	$form = get_import_form(get_filter_request_var('package_location'), $default_profile);
+	$form = get_import_form(gfrv('package_location'), $default_profile);
 
-	if (isset_request_var('package_location') && get_nfilter_request_var('package_location') == 0) {
+	if (isrv('package_location') && gnrv('package_location') == 0) {
 		html_start_box(__('Package Import'), '100%', false, 3, 'center', '');
 
 		draw_edit_form(
@@ -1586,7 +1586,7 @@ function package_import() {
 
 		html_header_checkbox($display_text, false, '', true);
 
-		$id = get_filter_request_var('package_location');
+		$id = gfrv('package_location');
 
 		$repo = json_decode(get_repo_manifest_file($id), true);
 

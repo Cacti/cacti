@@ -37,37 +37,37 @@ require_once(CACTI_PATH_LIBRARY . '/utility.php');
 require_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 
-/* switch to main database for cli's */
+// switch to main database for cli's
 if ($config['poller_id'] > 1) {
 	db_switch_remote_to_main();
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-/* system controlled parameters */
+// system controlled parameters
 $type              = 'rmaster';
 $thread_id         = 0;
 
-/* mandatory parameters */
+// mandatory parameters
 $start_time        = false;
 $end_time          = false;
 
-/* optional parameters for host selection */
+// optional parameters for host selection
 $debug            = false;
 $host_id          = false;
 $host_template_id = false;
 $data_template_id = false;
 
-/* optional for threading and verbose display */
+// optional for threading and verbose display
 $threads           = detect_cpu_cores();
 
 if ($threads == 0) {
 	$threads = 2;
 }
 
-/* optional for force handing and resume */
+// optional for force handing and resume
 $forcerun          = false;
 
 foreach ($parms as $parameter) {
@@ -178,16 +178,16 @@ if ($data_template_id !== false) {
 	$rp_type .= ($rp_type != '' ? ',' : ':') . "dt:$data_template_id";
 }
 
-/* install signal handlers for UNIX only */
+// install signal handlers for UNIX only
 if (function_exists('pcntl_signal')) {
 	pcntl_signal(SIGTERM, 'sig_handler');
 	pcntl_signal(SIGINT, 'sig_handler');
 }
 
-/* take time and log performance data */
+// take time and log performance data
 $start = microtime(true);
 
-/* set new timeout and memory settings */
+// set new timeout and memory settings
 ini_set('max_execution_time', '0');
 ini_set('memory_limit', '-1');
 
@@ -204,20 +204,20 @@ if ($host_template_id > 0) {
 	$params[] = $host_template_id;
 }
 
-/* issue warnings and start message if applicable */
+// issue warnings and start message if applicable
 print 'WARNING: Do not interrupt this script.  Rebuilding Poller Cache can take quite some time' . PHP_EOL;
 
-/* send a gentle message to the log and stdout */
+// send a gentle message to the log and stdout
 pushout_debug('Rebuild poller cache starting');
 
-/* silently end if the registered process is still running  */
+// silently end if the registered process is still running
 if (!$forcerun) {
 	if (!register_process_start('pushout' . $rp_type, $type, $thread_id, 86400)) {
 		exit(0);
 	}
 }
 
-/* Collect data as determined by the type */
+// Collect data as determined by the type
 switch ($type) {
 	case 'rmaster':
 		pushout_master_handler($forcerun, $host_id, $host_template_id, $data_template_id, $threads);
@@ -225,7 +225,7 @@ switch ($type) {
 		unregister_process('pushout' . $rp_type, 'rmaster', 0);
 
 		break;
-	case 'child':  /* Launched by the rmaster process */
+	case 'child':  // Launched by the rmaster process
 		$child_start = microtime(true);
 
 		$sql_where  = '';
@@ -454,7 +454,7 @@ function sig_handler($signo) {
 
 			break;
 		default:
-			/* ignore all other signals */
+			// ignore all other signals
 	}
 }
 

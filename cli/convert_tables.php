@@ -25,7 +25,7 @@
 
 require(__DIR__ . '/../include/cli_check.php');
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -291,13 +291,13 @@ function record_log($installer, $text) {
 	}
 }
 
-/*  display_version - displays version information */
+// display_version - displays version information
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Database Conversion Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-/*	display_help - displays the usage of the function */
+// display_help - displays the usage of the function
 function display_help() {
 	display_version();
 

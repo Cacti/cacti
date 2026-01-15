@@ -34,7 +34,7 @@ while (false !== ($entry = $dir->read())) {
 asort($themes);
 $dir->close();
 
-/* tab information */
+// tab information
 $tabs = [
 	'general'        => __('General'),
 	'path'           => __('Paths'),
@@ -67,14 +67,14 @@ if (db_table_exists('plugin_config')) {
 	$logplugins = [];
 }
 
-/* get the files for selective logging */
+// get the files for selective logging
 $realm_files  = array_keys($user_auth_realm_filenames);
 
 foreach ($realm_files as $file) {
 	$logfiles[$file] = $file;
 }
 
-/* we need this list of files for selective debug */
+// we need this list of files for selective debug
 $no_http_header_files = [
 	'add_device.php',
 	'add_graphs.php',
@@ -137,7 +137,7 @@ if (CACTI_SERVER_OS == 'win32') {
 	unset($mail_methods[CACTI_MAIL_SENDMAIL]);
 }
 
-/* cache the admin account */
+// cache the admin account
 $admin_account = '0';
 
 if (isset($_SESSION['admin_account']) && isset($_SESSION[SESS_USER_ID])) {
@@ -154,7 +154,7 @@ if (isset($_SESSION['admin_account']) && isset($_SESSION[SESS_USER_ID])) {
 
 $settings = [];
 
-/* setting information */
+// setting information
 $settings['path'] = [
 	'dependent_header' => [
 		'friendly_name' => __('Required Tool Paths'),
@@ -1683,37 +1683,6 @@ $settings['poller'] = [
 			'90' => __('%d Percent', '90')
 		],
 	],
-	'data_collector_header' => [
-		'friendly_name' => __('Data Collector Defaults'),
-		'description'   => __('These settings are maintained at the Data Collector level.  The values here are only defaults used when first creating a Data Collector.'),
-		'collapsible'   => 'true',
-		'method'        => 'hidden',
-		//'method'        => 'spacer',
-	],
-	'concurrent_processes' => [
-		'friendly_name' => __('Data Collector Processes'),
-		'description'   => __('The default number of concurrent processes to execute per Data Collector.  NOTE: Starting from Cacti 1.2, this setting is maintained in the Data Collector.  Moving forward, this value is only a preset for the Data Collector.  Using a higher number when using cmd.php will improve performance.  Performance improvements in Spine are best resolved with the threads parameter.  When using Spine, we recommend a lower number and leveraging threads instead.  When using cmd.php, use no more than 2x the number of CPU cores.'),
-		'method'        => 'hidden',
-		//'method'        => 'textbox',
-		'default'       => '1',
-		'max_length'    => '10',
-		'size'          => '5'
-	],
-	'spine_header' => [
-		'friendly_name' => __('Spine Specific Execution Parameters'),
-		'collapsible'   => 'true',
-		'method'        => 'hidden',
-		//'method'        => 'spacer',
-	],
-	'max_threads' => [
-		'friendly_name' => __('Threads per Process'),
-		'description'   => __('The Default Threads allowed per process.  NOTE: Starting in Cacti 1.2+, this setting is maintained in the Data Collector, and this is simply the Preset.  Using a higher number when using Spine will improve performance.  However, ensure that you have enough MySQL/MariaDB connections to support the following equation: connections = data collectors * processes * (threads + script servers).  You must also ensure that you have enough spare connections for user login connections as well.'),
-		'method'        => 'hidden',
-		//'method'        => 'textbox',
-		'default'       => '1',
-		'max_length'    => '10',
-		'size'          => '5'
-	],
 ];
 
 $settings['scheduler'] = [
@@ -3069,7 +3038,7 @@ $settings['spikes'] = [
 		'friendly_name' => __('Graph Templates to Spike Kill'),
 		'method'        => 'drop_multi',
 		'description'   => __('When performing batch spike removal, only the templates selected below will be acted on.'),
-		'array'         => [], //$spikekill_templates,
+		'array'         => [],
 	],
 	'spikekill_purge' => [
 		'friendly_name' => __('Backup Retention'),

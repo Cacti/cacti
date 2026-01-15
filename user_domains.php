@@ -33,10 +33,10 @@ $actions = [
 	4 => __('Default')
 ];
 
-/* set default action */
+// set default action
 set_default_action();
 
-switch (get_request_var('action')) {
+switch (grv('action')) {
 	case 'save':
 		form_save();
 
@@ -66,18 +66,18 @@ switch (get_request_var('action')) {
 function form_save() {
 	global $registered_cacti_names;
 
-	if (isset_request_var('save_component_domain_ldap')) {
-		/* ================= input validation ================= */
-		get_filter_request_var('domain_id');
-		get_filter_request_var('type');
-		get_filter_request_var('user_id');
-		/* ==================================================== */
+	if (isrv('save_component_domain_ldap')) {
+		// ================= input validation =================
+		gfrv('domain_id');
+		gfrv('type');
+		gfrv('user_id');
+		// ====================================================
 
-		$save['domain_id']   = get_nfilter_request_var('domain_id');
-		$save['type']        = get_nfilter_request_var('type');
-		$save['user_id']     = get_nfilter_request_var('user_id');
-		$save['domain_name'] = form_input_validate(get_nfilter_request_var('domain_name'), 'domain_name', '', false, 3);
-		$save['enabled']     = (isset_request_var('enabled') ? form_input_validate(get_nfilter_request_var('enabled'), 'enabled', '', true,  3) : '');
+		$save['domain_id']   = gnrv('domain_id');
+		$save['type']        = gnrv('type');
+		$save['user_id']     = gnrv('user_id');
+		$save['domain_name'] = form_input_validate(gnrv('domain_name'), 'domain_name', '', false, 3);
+		$save['enabled']     = (isrv('enabled') ? form_input_validate(gnrv('enabled'), 'enabled', '', true,  3) : '');
 
 		if (is_error_message() === false) {
 			$domain_id = sql_save($save, 'user_domains', 'domain_id');
@@ -94,37 +94,37 @@ function form_save() {
 			}
 
 			if (is_error_message() === false) {
-				/* ================= input validation ================= */
-				get_filter_request_var('domain_id');
-				get_filter_request_var('port');
-				get_filter_request_var('port_ssl');
-				get_filter_request_var('proto_version');
-				get_filter_request_var('encryption');
-				get_filter_request_var('referrals');
-				get_filter_request_var('mode');
-				get_filter_request_var('group_member_type');
-				/* ==================================================== */
+				// ================= input validation =================
+				gfrv('domain_id');
+				gfrv('port');
+				gfrv('port_ssl');
+				gfrv('proto_version');
+				gfrv('encryption');
+				gfrv('referrals');
+				gfrv('mode');
+				gfrv('group_member_type');
+				// ====================================================
 
 				$save                        = [];
 				$save['domain_id']           = $domain_id;
-				$save['server']              = form_input_validate(get_nfilter_request_var('server'), 'server', '', false, 3);
-				$save['port']                = get_nfilter_request_var('port');
-				$save['port_ssl']            = get_nfilter_request_var('port_ssl');
-				$save['proto_version']       = get_nfilter_request_var('proto_version');
-				$save['encryption']          = get_nfilter_request_var('encryption');
-				$save['referrals']           = get_nfilter_request_var('referrals');
-				$save['mode']                = get_nfilter_request_var('mode');
-				$save['group_member_type']   = get_nfilter_request_var('group_member_type');
-				$save['dn']                  = form_input_validate(get_nfilter_request_var('dn'),                'dn',              '', true, 3);
-				$save['group_require']       = isset_request_var('group_require') ? 'on' : '';
-				$save['group_dn']            = form_input_validate(get_nfilter_request_var('group_dn'),          'group_dn',        '', true, 3);
-				$save['group_attrib']        = form_input_validate(get_nfilter_request_var('group_attrib'),      'group_attrib',    '', true, 3);
-				$save['search_base']         = form_input_validate(get_nfilter_request_var('search_base'),       'search_base',     '', true, 3);
-				$save['search_filter']       = form_input_validate(get_nfilter_request_var('search_filter'),     'search_filter',   '', true, 3);
-				$save['specific_dn']         = form_input_validate(get_nfilter_request_var('specific_dn'),         'specific_dn',       '', true, 3);
-				$save['specific_password']   = form_input_validate(get_nfilter_request_var('specific_password'),   'specific_password', '', true, 3);
-				$save['cn_full_name']        = get_nfilter_request_var('cn_full_name');
-				$save['cn_email']            = get_nfilter_request_var('cn_email');
+				$save['server']              = form_input_validate(gnrv('server'), 'server', '', false, 3);
+				$save['port']                = gnrv('port');
+				$save['port_ssl']            = gnrv('port_ssl');
+				$save['proto_version']       = gnrv('proto_version');
+				$save['encryption']          = gnrv('encryption');
+				$save['referrals']           = gnrv('referrals');
+				$save['mode']                = gnrv('mode');
+				$save['group_member_type']   = gnrv('group_member_type');
+				$save['dn']                  = form_input_validate(gnrv('dn'),                'dn',              '', true, 3);
+				$save['group_require']       = isrv('group_require') ? 'on' : '';
+				$save['group_dn']            = form_input_validate(gnrv('group_dn'),          'group_dn',        '', true, 3);
+				$save['group_attrib']        = form_input_validate(gnrv('group_attrib'),      'group_attrib',    '', true, 3);
+				$save['search_base']         = form_input_validate(gnrv('search_base'),       'search_base',     '', true, 3);
+				$save['search_filter']       = form_input_validate(gnrv('search_filter'),     'search_filter',   '', true, 3);
+				$save['specific_dn']         = form_input_validate(gnrv('specific_dn'),         'specific_dn',       '', true, 3);
+				$save['specific_password']   = form_input_validate(gnrv('specific_password'),   'specific_password', '', true, 3);
+				$save['cn_full_name']        = gnrv('cn_full_name');
+				$save['cn_email']            = gnrv('cn_email');
 
 				if (is_error_message() === false) {
 					$insert_id = sql_save($save, 'user_domains_ldap', 'domain_id', false);
@@ -137,18 +137,18 @@ function form_save() {
 				}
 			}
 		}
-	} elseif (isset_request_var('save_component_domain')) {
-		/* ================= input validation ================= */
-		get_filter_request_var('domain_id');
-		get_filter_request_var('type');
-		get_filter_request_var('user_id');
-		/* ==================================================== */
+	} elseif (isrv('save_component_domain')) {
+		// ================= input validation =================
+		gfrv('domain_id');
+		gfrv('type');
+		gfrv('user_id');
+		// ====================================================
 
-		$save['domain_id']   = get_nfilter_request_var('domain_id');
-		$save['domain_name'] = form_input_validate(get_nfilter_request_var('domain_name'), 'domain_name', '', false, 3);
-		$save['type']        = get_nfilter_request_var('type');
-		$save['user_id']     = get_nfilter_request_var('user_id');
-		$save['enabled']     = (isset_request_var('enabled') ? form_input_validate(get_nfilter_request_var('enabled'), 'enabled', '', true,  3) : '');
+		$save['domain_id']   = gnrv('domain_id');
+		$save['domain_name'] = form_input_validate(gnrv('domain_name'), 'domain_name', '', false, 3);
+		$save['type']        = gnrv('type');
+		$save['user_id']     = gnrv('user_id');
+		$save['enabled']     = (isrv('enabled') ? form_input_validate(gnrv('enabled'), 'enabled', '', true,  3) : '');
 
 		if (is_error_message() === false) {
 			$domain_id = sql_save($save, 'user_domains', 'domain_id');
@@ -161,32 +161,32 @@ function form_save() {
 		}
 	}
 
-	header('Location: user_domains.php?action=edit&domain_id=' . (empty($domain_id) ? get_nfilter_request_var('domain_id') : $domain_id));
+	header('Location: user_domains.php?action=edit&domain_id=' . (empty($domain_id) ? gnrv('domain_id') : $domain_id));
 }
 
 function form_actions() {
 	global $actions;
 
-	/* if we are to save this form, instead of display it */
-	if (isset_request_var('selected_items')) {
-		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
+	// if we are to save this form, instead of display it
+	if (isrv('selected_items')) {
+		$selected_items = sanitize_unserialize_selected_items(gnrv('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_nfilter_request_var('drp_action') == '1') { // delete
+			if (gnrv('drp_action') == '1') { // delete
 				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					domain_remove($selected_items[$i]);
 				}
-			} elseif (get_nfilter_request_var('drp_action') == '2') { // disable
+			} elseif (gnrv('drp_action') == '2') { // disable
 				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					domain_disable($selected_items[$i]);
 				}
-			} elseif (get_nfilter_request_var('drp_action') == '3') { // enable
+			} elseif (gnrv('drp_action') == '3') { // enable
 				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					domain_enable($selected_items[$i]);
 				}
-			} elseif (get_nfilter_request_var('drp_action') == '4') { // default
+			} elseif (gnrv('drp_action') == '4') { // default
 				if (cacti_sizeof($selected_items) > 1) {
-					/* error message */
+					// error message
 				} else {
 					for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 						domain_default($selected_items[$i]);
@@ -202,14 +202,14 @@ function form_actions() {
 		$ilist  = '';
 		$iarray = [];
 
-		/* loop through each of the data queries and process them */
+		// loop through each of the data queries and process them
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-				/* ================= input validation ================= */
+				// ================= input validation =================
 				input_validate_input_number($matches[1], 'chk[1]');
-				/* ==================================================== */
+				// ====================================================
 
-				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT domain_name FROM user_domains WHERE domain_id = ?', [$matches[1]])) . '</li>';
+				$ilist .= '<li>' . htmle(db_fetch_cell_prepared('SELECT domain_name FROM user_domains WHERE domain_id = ?', [$matches[1]])) . '</li>';
 				$iarray[] = $matches[1];
 			}
 		}
@@ -273,18 +273,18 @@ function domain_default($domain_id) {
 function domain_edit() {
 	global $ldap_versions, $ldap_encryption, $ldap_modes, $domain_types;
 
-	/* ================= input validation ================= */
-	get_filter_request_var('domain_id');
-	/* ==================================================== */
+	// ================= input validation =================
+	gfrv('domain_id');
+	// ====================================================
 
-	if (!isempty_request_var('domain_id')) {
-		$domain       = db_fetch_row_prepared('SELECT * FROM user_domains WHERE domain_id = ?', [get_request_var('domain_id')]);
+	if (!ierv('domain_id')) {
+		$domain       = db_fetch_row_prepared('SELECT * FROM user_domains WHERE domain_id = ?', [grv('domain_id')]);
 		$header_label = __esc('User Domain [edit: %s]', $domain['domain_name']);
 	} else {
 		$header_label = __('User Domain [new]');
 	}
 
-	/* file: data_input.php, action: edit */
+	// file: data_input.php, action: edit
 	$fields_domain_edit = [
 		'domain_name' => [
 			'method'        => 'textbox',
@@ -489,8 +489,8 @@ function domain_edit() {
 
 	html_end_box(true, true);
 
-	if (!isempty_request_var('domain_id')) {
-		$domain = db_fetch_row_prepared('SELECT * FROM user_domains_ldap WHERE domain_id = ?', [get_request_var('domain_id')]);
+	if (!ierv('domain_id')) {
+		$domain = db_fetch_row_prepared('SELECT * FROM user_domains_ldap WHERE domain_id = ?', [grv('domain_id')]);
 
 		html_start_box(__('Domain Properties'), '100%', true, 3, 'center', '');
 
@@ -548,28 +548,28 @@ function domain_edit() {
 function domains() {
 	global $domain_types, $actions, $item_rows;
 
-	/* create the page filter */
+	// create the page filter
 	$pageFilter = new CactiTableFilter(__('User Domains'), 'user_domains.php', 'form_domain', 'sess_domain', 'user_domains.php?action=edit');
 
 	$pageFilter->rows_label = __('Domains');
 	$pageFilter->set_sort_array('domain_name', 'ASC');
 	$pageFilter->render();
 
-	if (get_request_var('rows') == '-1') {
+	if (grv('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
 	} else {
-		$rows = get_request_var('rows');
+		$rows = grv('rows');
 	}
 
 	$sql_where  = '';
 	$sql_params = [];
 
-	/* form the 'where' clause for our main sql query */
-	if (get_request_var('filter') != '') {
+	// form the 'where' clause for our main sql query
+	if (grv('filter') != '') {
 		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . '(domain_name LIKE ? OR type LIKE ?)';
 
-		$sql_params[] = '%' . get_request_var('filter') . '%';
-		$sql_params[] = '%' . get_request_var('filter') . '%';
+		$sql_params[] = '%' . grv('filter') . '%';
+		$sql_params[] = '%' . grv('filter') . '%';
 	}
 
 	$total_rows = db_fetch_cell_prepared("SELECT COUNT(*)
@@ -580,8 +580,8 @@ function domains() {
 	$domains = db_fetch_assoc_prepared("SELECT *
 		FROM user_domains
 		$sql_where
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
-		LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows,
+		ORDER BY " . grv('sort_column') . ' ' . grv('sort_direction') . '
+		LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows,
 		$sql_params);
 
 	$display_text = [
@@ -615,7 +615,7 @@ function domains() {
 		]
 	];
 
-	$nav = html_nav_bar('user_user_domains.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('User Domains'), 'page', 'main');
+	$nav = html_nav_bar('user_user_domains.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 8, __('User Domains'), 'page', 'main');
 
 	form_start('user_domains.php', 'chk');
 
@@ -623,13 +623,13 @@ function domains() {
 
 	html_start_box('', '100%', false, 3, 'center', '');
 
-	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
+	html_header_sort_checkbox($display_text, grv('sort_column'), grv('sort_direction'), false);
 
 	$i = 0;
 
 	if (cacti_sizeof($domains)) {
 		foreach ($domains as $domain) {
-			/* hide system types */
+			// hide system types
 			form_alternate_row('line' . $domain['domain_id'], true);
 
 			$effective_id = db_fetch_cell_prepared('SELECT username
@@ -647,7 +647,7 @@ function domains() {
 				WHERE domain_id = ?',
 				[$domain['domain_id']]);
 
-			form_selectable_cell(filter_value($domain['domain_name'], get_request_var('filter'), 'user_domains.php?action=edit&domain_id=' . $domain['domain_id']), $domain['domain_id']);
+			form_selectable_cell(filter_value($domain['domain_name'], grv('filter'), 'user_domains.php?action=edit&domain_id=' . $domain['domain_id']), $domain['domain_id']);
 			form_selectable_cell($domain_types[$domain['type']], $domain['domain_id']);
 			form_selectable_cell(($domain['defdomain'] == '0' ? '--' : __('Yes')), $domain['domain_id']);
 			form_selectable_ecell(($domain['user_id'] == '0' ? __('None Selected') : $effective_id), $domain['domain_id']);
@@ -668,7 +668,7 @@ function domains() {
 		print $nav;
 	}
 
-	/* draw the dropdown containing a list of available actions for this form */
+	// draw the dropdown containing a list of available actions for this form
 	draw_actions_dropdown($actions);
 
 	form_end();

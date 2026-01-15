@@ -28,12 +28,12 @@ require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');
 
-/* switch to main database for cli's */
+// switch to main database for cli's
 if ($config['poller_id'] > 1) {
 	db_switch_remote_to_main();
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -81,7 +81,7 @@ if ($execute) {
 	print "NOTE: Performing Check of Templates\n";
 }
 
-/* repair data templates first */
+// repair data templates first
 if ($execute) {
 	print "NOTE: Repairing Data Templates\n";
 } else {
@@ -112,10 +112,10 @@ if (cacti_sizeof($damaged_template_ids)) {
 	print "NOTE: No Damaged Data Templates Found\n";
 }
 
-/* reset the array */
+// reset the array
 $damaged_templates = [];
 
-/* repair graph templates */
+// repair graph templates
 if ($execute) {
 	print "NOTE: Repairing Graph Templates\n";
 } else {
@@ -146,13 +146,13 @@ if (cacti_sizeof($damaged_template_ids)) {
 	print "NOTE: No Damaged Graph Templates Found\n";
 }
 
-/*  display_version - displays version information */
+// display_version - displays version information
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Database Template Repair Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-/* display_help - displays the usage of the function */
+// display_help - displays the usage of the function
 function display_help() {
 	display_version();
 

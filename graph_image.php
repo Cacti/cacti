@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-/* since we'll have additional headers, tell php when to flush them */
+// since we'll have additional headers, tell php when to flush them
 ob_start();
 
 $guest_account = true;
@@ -32,30 +32,30 @@ $gtype         = 'png';
 require('./include/auth.php');
 require_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
-/* ================= input validation ================= */
-get_filter_request_var('graph_start');
-get_filter_request_var('graph_end');
-get_filter_request_var('graph_height');
-get_filter_request_var('graph_width');
-get_filter_request_var('local_graph_id');
+// ================= input validation =================
+gfrv('graph_start');
+gfrv('graph_end');
+gfrv('graph_height');
+gfrv('graph_width');
+gfrv('local_graph_id');
 
-if (isset_request_var('graph_nolegend')) {
-	set_request_var('graph_nolegend', 'true');
+if (isrv('graph_nolegend')) {
+	srv('graph_nolegend', 'true');
 }
 
-get_filter_request_var('graph_theme', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
-/* ==================================================== */
+gfrv('graph_theme', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
+// ====================================================
 
 api_plugin_hook_function('graph_image');
 
 $graph_data_array = [];
 
 // Determine the graph type of the output
-if (!isset_request_var('image_format')) {
+if (!isrv('image_format')) {
 	$type   = db_fetch_cell_prepared('SELECT image_format_id
 		FROM graph_templates_graph
 		WHERE local_graph_id = ?',
-		[get_request_var('local_graph_id')]);
+		[grv('local_graph_id')]);
 
 	switch($type) {
 		case '1':
@@ -68,7 +68,7 @@ if (!isset_request_var('image_format')) {
 			break;
 	}
 } else {
-	switch(strtolower(get_nfilter_request_var('image_format'))) {
+	switch(strtolower(gnrv('image_format'))) {
 		case 'png':
 			$gtype = 'png';
 
@@ -88,51 +88,51 @@ $graph_data_array['image_format'] = $gtype;
 
 cacti_session_close();
 
-/* override: graph start time (unix time) */
-if (!isempty_request_var('graph_start') && get_request_var('graph_start') < FILTER_VALIDATE_MAX_DATE_AS_INT) {
-	$graph_data_array['graph_start'] = get_request_var('graph_start');
+// override: graph start time (unix time)
+if (!ierv('graph_start') && grv('graph_start') < FILTER_VALIDATE_MAX_DATE_AS_INT) {
+	$graph_data_array['graph_start'] = grv('graph_start');
 }
 
-/* override: graph end time (unix time) */
-if (!isempty_request_var('graph_end') && get_request_var('graph_end') < FILTER_VALIDATE_MAX_DATE_AS_INT) {
-	$graph_data_array['graph_end'] = get_request_var('graph_end');
+// override: graph end time (unix time)
+if (!ierv('graph_end') && grv('graph_end') < FILTER_VALIDATE_MAX_DATE_AS_INT) {
+	$graph_data_array['graph_end'] = grv('graph_end');
 }
 
-/* override: graph height (in pixels) */
-if (!isempty_request_var('graph_height') && get_request_var('graph_height') < 3000) {
-	$graph_data_array['graph_height'] = get_request_var('graph_height');
+// override: graph height (in pixels)
+if (!ierv('graph_height') && grv('graph_height') < 3000) {
+	$graph_data_array['graph_height'] = grv('graph_height');
 }
 
-/* override: graph width (in pixels) */
-if (!isempty_request_var('graph_width') && get_request_var('graph_width') < 3000) {
-	$graph_data_array['graph_width'] = get_request_var('graph_width');
+// override: graph width (in pixels)
+if (!ierv('graph_width') && grv('graph_width') < 3000) {
+	$graph_data_array['graph_width'] = grv('graph_width');
 }
 
-/* override: skip drawing the legend? */
-if (!isempty_request_var('graph_nolegend')) {
-	$graph_data_array['graph_nolegend'] = get_request_var('graph_nolegend');
+// override: skip drawing the legend?
+if (!ierv('graph_nolegend')) {
+	$graph_data_array['graph_nolegend'] = grv('graph_nolegend');
 }
 
-/* print RRDtool graph source? */
-if (!isempty_request_var('show_source')) {
-	$graph_data_array['print_source'] = get_request_var('show_source');
+// print RRDtool graph source?
+if (!ierv('show_source')) {
+	$graph_data_array['print_source'] = grv('show_source');
 }
 
-/* disable cache check */
-if (isset_request_var('disable_cache')) {
+// disable cache check
+if (isrv('disable_cache')) {
 	$graph_data_array['disable_cache'] = true;
 }
 
-/* set the theme */
-if (isset_request_var('graph_theme')) {
-	$graph_data_array['graph_theme'] = get_request_var('graph_theme');
+// set the theme
+if (isrv('graph_theme')) {
+	$graph_data_array['graph_theme'] = grv('graph_theme');
 }
 
-if (isset_request_var('rra_id')) {
-	if (get_nfilter_request_var('rra_id') == 'all') {
+if (isrv('rra_id')) {
+	if (gnrv('rra_id') == 'all') {
 		$rra_id = 'all';
 	} else {
-		$rra_id = get_filter_request_var('rra_id');
+		$rra_id = gfrv('rra_id');
 	}
 } else {
 	$rra_id = null;
@@ -140,10 +140,10 @@ if (isset_request_var('rra_id')) {
 
 if (POLLER_ID == 1 || read_config_option('storage_location')) {
 	$null_param = [];
-	$output     = rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
+	$output     = rrdtool_function_graph(grv('local_graph_id'), $rra_id, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
 } else {
 	$url  = CACTI_PATH_URL . 'remote_agent.php?action=graph_json';
-	$url .= '&local_graph_id=' . get_request_var('local_graph_id');
+	$url .= '&local_graph_id=' . grv('local_graph_id');
 	$url .= '&rra_id=' . $rra_id;
 
 	foreach ($graph_data_array as $variable => $value) {
@@ -165,7 +165,7 @@ if (POLLER_ID == 1 || read_config_option('storage_location')) {
 }
 
 if ($output !== false && $output != '') {
-	/* flush the headers now */
+	// flush the headers now
 	ob_end_clean();
 
 	header('Content-type: image/' . $gtype);
@@ -175,12 +175,12 @@ if ($output !== false && $output != '') {
 } else {
 	ob_start();
 
-	/* get the error string */
+	// get the error string
 	$graph_data_array['get_error'] = true;
 
 	$null_param = [];
 
-	rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, null, $null_param, $_SESSION['sess_user_id']);
+	rrdtool_function_graph(grv('local_graph_id'), $rra_id, $graph_data_array, null, $null_param, $_SESSION['sess_user_id']);
 
 	$error = ob_get_contents();
 

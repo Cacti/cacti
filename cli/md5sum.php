@@ -36,11 +36,11 @@ define_exit('EXIT_MD5MIS',  5, "ERROR: MD5 file '%s' is missing, cannot verify\n
 define_exit('EXIT_MD5CON',  6, "ERROR: Failed to read from MD5 file '%s'\n");
 define_exit('EXIT_MD5LIN',  7, "ERROR: Failed to parse line %d:\n      %s\n");
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-/* setup defaults */
+// setup defaults
 $confirm   = false;
 $create    = false;
 $quiet     = false;
@@ -294,7 +294,7 @@ function dirToArray($dir,$base,$ignore) {
 	return $result;
 }
 
-/*  display_version - displays version information */
+// display_version - displays version information
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti md5sum Utility, Version $version, " . COPYRIGHT_YEARS . "\n";

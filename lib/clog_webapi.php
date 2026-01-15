@@ -114,7 +114,7 @@ function clog_validate_filename(string &$file, string|null &$filepath, string|nu
  * @return void
  */
 function clog_purge_logfile(string $action = 'purge') : void {
-	$filename = get_nfilter_request_var('filename');
+	$filename = gnrv('filename');
 
 	if (!clog_validate_filename($filename, $logpath, $logname)) {
 		raise_message('clog_invalid');
@@ -127,11 +127,11 @@ function clog_purge_logfile(string $action = 'purge') : void {
 	$logfile    = $logpath . '/' . $logname;
 	$log_action = read_config_option('log_action');
 
-	/* get base filenames for rotate assessment */
+	// get base filenames for rotate assessment
 	$cactiLog  = basename(read_config_option('path_cactilog'));
 	$errorLog  = basename(read_config_option('path_stderrlog'));
 
-	/* basic checking */
+	// basic checking
 	if ($action == 'rotate' && $log_action == LOG_ACTION_PURGE) {
 		raise_message('rotate_failed', __('Cacti Log file rotation failed for Log File \'%s\'.  User \'%s\' wished to rotate, but rotating is disabled', basename($purgefile), get_username()), MESSAGE_LEVEL_ERROR);
 
@@ -204,11 +204,11 @@ function clog_view_logfile() : void {
 
 	$clogAdmin = clog_admin();
 
-	/* enable page refreshes */
+	// enable page refreshes
 	kill_session_var('custom');
 
-	if (isset_request_var('filename')) {
-		$logfile = basename(get_nfilter_request_var('filename'));
+	if (isrv('filename')) {
+		$logfile = basename(gnrv('filename'));
 	} elseif (isset($_SESSION['sess_clog']['filename'])) {
 		$logfile = basename($_SESSION['sess_clog']['filename']);
 	} else {
@@ -226,10 +226,10 @@ function clog_view_logfile() : void {
 	if ($clogAdmin) {
 		$redirect = false;
 
-		if (isset_request_var('purge_continue')) {
+		if (isrv('purge_continue')) {
 			$redirect = true;
 			clog_purge_logfile('purge');
-		} elseif (isset_request_var('rotate_continue')) {
+		} elseif (isrv('rotate_continue')) {
 			$redirect = true;
 			clog_purge_logfile('rotate');
 		}
@@ -243,11 +243,11 @@ function clog_view_logfile() : void {
 		}
 	}
 
-	$page_nr = get_nfilter_request_var('page');
+	$page_nr = gnrv('page');
 
 	if ($page_nr == '') {
 		$page_nr = 1;
-		set_request_var('page', 1);
+		srv('page', 1);
 	}
 
 	if (get_current_page() == 'clog.php' || get_current_page() == 'clog_user.php') {
@@ -257,15 +257,15 @@ function clog_view_logfile() : void {
 	}
 
 	if ($clogAdmin) {
-		if (get_nfilter_request_var('action') == 'purge' || get_nfilter_request_var('action') == 'rotate') {
-			if (get_nfilter_request_var('action') == 'purge') {
-				$message = __('Click \'Continue\' to Purge the Log File \'' . html_escape(basename($logfile)) . '\'.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog.');
+		if (gnrv('action') == 'purge' || gnrv('action') == 'rotate') {
+			if (gnrv('action') == 'purge') {
+				$message = __('Click \'Continue\' to Purge the Log File \'' . htmle(basename($logfile)) . '\'.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog.');
 				$action  = 'purge_continue';
 				$button  = __esc('Purge');
 				$title   = __esc('Purge Log');
 				$header  = $logfile_actions[LOG_ACTION_PURGE];
-			} elseif (get_nfilter_request_var('action') == 'rotate') {
-				$message = __('Click \'Continue\' to Rotate the existing Log File \'' . html_escape(basename($logfile)) . '\'.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog.');
+			} elseif (gnrv('action') == 'rotate') {
+				$message = __('Click \'Continue\' to Rotate the existing Log File \'' . htmle(basename($logfile)) . '\'.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog.');
 				$action  = 'rotate_continue';
 				$button  = __esc('Rotate');
 				$title   = __esc('Rotate Log');
@@ -311,23 +311,23 @@ function clog_view_logfile() : void {
 
 	draw_clog_filter(true, $logfile, $clogAdmin);
 
-	/* read logfile into an array and display */
+	// read logfile into an array and display
 	$total_rows      = 0;
-	$number_of_lines = get_request_var('tail_lines') < 0 ? read_config_option('max_display_rows') : get_request_var('tail_lines');
+	$number_of_lines = grv('tail_lines') < 0 ? read_config_option('max_display_rows') : grv('tail_lines');
 
-	if (get_request_var('expand') == 2) {
+	if (grv('expand') == 2) {
 		$should_expand = false;
-	} elseif (get_request_var('expand') == 1) {
+	} elseif (grv('expand') == 1) {
 		$should_expand = true;
 	} else {
 		$should_expand = read_config_option('log_expand') != LOG_EXPAND_NONE;
 	}
 
-	$reverse = get_request_var('reverse');
+	$reverse = grv('reverse');
 
-	$logcontents = tail_file($logfile, $number_of_lines, get_request_var('message_type'), get_request_var('rfilter'), $page_nr, $total_rows, get_request_var('matches'), $should_expand, $reverse);
+	$logcontents = tail_file($logfile, $number_of_lines, grv('message_type'), grv('rfilter'), $page_nr, $total_rows, grv('matches'), $should_expand, $reverse);
 
-	if (get_request_var('reverse') == 1) {
+	if (grv('reverse') == 1) {
 		$logcontents = array_reverse($logcontents);
 	}
 
@@ -344,7 +344,7 @@ function clog_view_logfile() : void {
 		$exclude_regex = '';
 	}
 
-	if (get_request_var('message_type') > 0 || get_request_var('rfilter') != '') {
+	if (grv('message_type') > 0 || grv('rfilter') != '') {
 		$start_string = __('Log [Total Lines: %d %s - Filter active]', $total_rows, $ad_filter);
 	} else {
 		$start_string = __('Log [Total Lines: %d %s - Unfiltered]', $total_rows, $ad_filter);
@@ -377,17 +377,17 @@ function clog_view_logfile() : void {
 	$hostDescriptions = [];
 
 	foreach ($hosts as $host) {
-		$hostDescriptions[$host['id']] = html_escape($host['description']);
+		$hostDescriptions[$host['id']] = htmle($host['description']);
 	}
 
 	foreach ($logcontents as $item) {
-		$new_item = html_escape($item);
+		$new_item = htmle($item);
 
 		if ($should_expand) {
 			$new_item = text_substitute($new_item, isHtml: true);
 		}
 
-		/* respect the exclusion filter */
+		// respect the exclusion filter
 		if ($exclude_regex != '' && !$clogAdmin) {
 			if (validate_is_regex($exclude_regex)) {
 				if (preg_match($exclude_regex, $new_item)) {
@@ -399,7 +399,7 @@ function clog_view_logfile() : void {
 			}
 		}
 
-		/* get the background color */
+		// get the background color
 		if (str_contains($new_item, 'ERROR') || str_contains($new_item, 'FATAL')) {
 			$class = 'clogError';
 		} elseif (str_contains($new_item, 'WARN')) {
@@ -586,7 +586,7 @@ function create_clog_filter(string $logfile, bool $clogAdmin) : array {
 	$none    = ['0'  => __('None')];
 	$deleted = ['-2' => __('Deleted/Invalid')];
 
-	/* transform the log directory as required */
+	// transform the log directory as required
 	$logFileArray = clog_get_logfiles();
 	$newLogArray  = [];
 	$log_action   = read_config_option('log_action');
@@ -788,7 +788,7 @@ function create_clog_filter(string $logfile, bool $clogAdmin) : array {
 function draw_clog_filter(bool $render = false, bool|string $logfile = false, bool $clogAdmin = false) : void {
 	$filters = create_clog_filter($logfile, $clogAdmin);
 
-	$page_nr = get_nfilter_request_var('page');
+	$page_nr = gnrv('page');
 
 	$current_page = get_current_page();
 
@@ -800,7 +800,7 @@ function draw_clog_filter(bool $render = false, bool|string $logfile = false, bo
 		$page       = $base_page . '?page=' . $page_nr;
 	}
 
-	/* create the page filter */
+	// create the page filter
 	$pageFilter = new CactiTableFilter(__('Log Filters'), $page, 'logfile', 'sess_clog', '', false, false);
 	$pageFilter->set_filter_array($filters);
 

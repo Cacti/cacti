@@ -26,12 +26,12 @@
 require(__DIR__ . '/../include/cli_check.php');
 require_once(CACTI_PATH_LIBRARY . '/api_automation_tools.php');
 
-/* switch to main database for cli's */
+// switch to main database for cli's
 if ($config['poller_id'] > 1) {
 	db_switch_remote_to_main();
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -108,7 +108,7 @@ if (cacti_sizeof($parms)) {
 		}
 	}
 
-	/* list options, recognizing $quiteMode */
+	// list options, recognizing $quiteMode
 	if ($displayHosts) {
 		$hosts = getHosts();
 		displayHosts($hosts, $quietMode);
@@ -139,9 +139,7 @@ if (cacti_sizeof($parms)) {
 		exit(1);
 	}
 
-	/*
-	 * verify valid host id and get a name for it
-	 */
+	// verify valid host id and get a name for it
 	$host_name = db_fetch_cell('SELECT hostname FROM host WHERE id = ' . $host_id);
 
 	if (!isset($host_name)) {
@@ -150,9 +148,7 @@ if (cacti_sizeof($parms)) {
 		exit(1);
 	}
 
-	/*
-	 * verify valid graph template and get a name for it
-	 */
+	// verify valid graph template and get a name for it
 	$graph_template_name = db_fetch_cell('SELECT name FROM graph_templates WHERE id = ' . $graph_template_id);
 
 	if (!isset($graph_template_name)) {
@@ -161,7 +157,7 @@ if (cacti_sizeof($parms)) {
 		exit(1);
 	}
 
-	/* check, if graph template was already associated */
+	// check, if graph template was already associated
 	$exists_already = db_fetch_cell("SELECT host_id FROM host_graph WHERE graph_template_id=$graph_template_id AND host_id=$host_id");
 
 	if ((isset($exists_already)) &&
@@ -201,7 +197,7 @@ if (cacti_sizeof($parms)) {
 	exit(0);
 }
 
-/*  display_version - displays version information */
+// display_version - displays version information
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Add Graph Template Utility, Version $version, " . COPYRIGHT_YEARS . "\n";

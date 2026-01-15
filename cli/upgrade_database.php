@@ -31,10 +31,10 @@ require_once(CACTI_PATH_INSTALL . '/functions.php');
 
 ini_set('max_execution_time', '0');
 
-/* make sure installer knows we are installing */
+// make sure installer knows we are installing
 define('IN_CACTI_INSTALL', 1);
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -99,17 +99,17 @@ if (!$local && $config['poller_id'] > 1) {
 	print 'NOTE: Repairing Tables for Local Database' . PHP_EOL;
 }
 
-/* we need to rerun the upgrade, force the current version */
+// we need to rerun the upgrade, force the current version
 if ($forcever == '') {
 	$old_cacti_version = format_cacti_version(get_cacti_db_version(),3);
 } else {
 	$old_cacti_version = format_cacti_version($forcever, 3);
 }
 
-/* try to find current (old) version in the array */
+// try to find current (old) version in the array
 $old_version_index = (array_key_exists($old_cacti_version, $cacti_version_codes) ? $old_cacti_version : '');
 
-/* do a version check */
+// do a version check
 if (cacti_version_compare($old_cacti_version,CACTI_VERSION,'=')) {
 	exit_version_error($old_cacti_version, 'Your Cacti is already up to date');
 } elseif (cacti_version_compare($old_cacti_version,'0.7','<')) {
@@ -225,13 +225,13 @@ function db_install_errors($cacti_version) {
 	return $error_status;
 }
 
-/*  display_version - displays version information */
+// display_version - displays version information
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Database Upgrade Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-/*  display_help - displays the usage of the function */
+// display_help - displays the usage of the function
 function display_help() {
 	display_version();
 

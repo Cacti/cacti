@@ -26,9 +26,9 @@ $guest_account = true;
 
 require('./include/auth.php');
 
-if (isset_request_var('error')) {
-	$page  = basename(get_nfilter_request_var('page'));
-	$error = get_filter_request_var('error');
+if (isrv('error')) {
+	$page  = basename(gnrv('page'));
+	$error = gfrv('error');
 
 	if (isset($_SESSION['sess_user_id'])) {
 		$username = get_username($_SESSION['sess_user_id']);
@@ -43,10 +43,10 @@ if (isset_request_var('error')) {
 	if (debounce_run_notification('page_error_' . $page)) {
 		admin_email(__('Cacti System Warning'), __('WARNING: Cacti Page:%s for User:%s Generated a Fatal Error %d!', $page, $username, $error));
 	}
-} elseif (isset_request_var('page')) {
-	get_filter_request_var('page', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
+} elseif (isrv('page')) {
+	gfrv('page', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
 
-	$page = str_replace('.html', '.md', get_request_var('page'));
+	$page = str_replace('.html', '.md', grv('page'));
 
 	$fgc_contextoption = [
 		'ssl' => [

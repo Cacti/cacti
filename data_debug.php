@@ -37,27 +37,27 @@ set_default_action();
 
 draw_data_debug_filter(false);
 
-switch (get_request_var('action')) {
+switch (grv('action')) {
 	case 'actions':
 		form_actions();
 
 		break;
 	case 'run_debug':
-		$id = get_filter_request_var('id');
+		$id = gfrv('id');
 
 		if ($id > 0) {
 			$selected_items = [$id];
 			debug_delete($selected_items);
 			debug_rerun($selected_items);
 			raise_message('rerun', __('Data Source debug started.'), MESSAGE_LEVEL_INFO);
-			header('Location: data_debug.php?action=view&id=' . get_filter_request_var('id'));
+			header('Location: data_debug.php?action=view&id=' . gfrv('id'));
 		} else {
 			raise_message('repair_error', __('Data Source debug received an invalid Data Source ID.'), MESSAGE_LEVEL_ERROR);
 		}
 
 		break;
 	case 'run_repair':
-		$id = get_filter_request_var('id');
+		$id = gfrv('id');
 
 		if ($id > 0) {
 			if (dsdebug_run_repair($id)) {
@@ -73,14 +73,14 @@ switch (get_request_var('action')) {
 
 			raise_message('rerun', __('Automatic Data Source debug being rerun after repair.'), MESSAGE_LEVEL_INFO);
 
-			header('Location: data_debug.php?action=view&id=' . get_filter_request_var('id'));
+			header('Location: data_debug.php?action=view&id=' . gfrv('id'));
 		} else {
 			raise_message('repair_error', __('Data Source repair received an invalid Data Source ID.'), MESSAGE_LEVEL_ERROR);
 		}
 
 		break;
 	case 'view':
-		$id = get_filter_request_var('id');
+		$id = gfrv('id');
 
 		$debug_status = debug_process_status($id);
 
@@ -109,8 +109,8 @@ switch (get_request_var('action')) {
 	case 'ajax_hosts':
 		$sql_where = '';
 
-		if (get_request_var('site_id') > 0) {
-			$sql_where = 'site_id = ' . get_request_var('site_id');
+		if (grv('site_id') > 0) {
+			$sql_where = 'site_id = ' . grv('site_id');
 		}
 
 		get_allowed_ajax_hosts(true, 'applyFilter', $sql_where);
@@ -119,8 +119,8 @@ switch (get_request_var('action')) {
 	case 'ajax_hosts_noany':
 		$sql_where = '';
 
-		if (get_request_var('site_id') > 0) {
-			$sql_where = 'site_id = ' . get_request_var('site_id');
+		if (grv('site_id') > 0) {
+			$sql_where = 'site_id = ' . grv('site_id');
 		}
 
 		get_allowed_ajax_hosts(false, 'applyFilter', $sql_where);
@@ -131,7 +131,7 @@ switch (get_request_var('action')) {
 
 	default:
 		$refresh = [
-			'seconds' => get_request_var('refresh'),
+			'seconds' => grv('refresh'),
 			'page'    => 'data_debug.php',
 			'logout'  => 'false'
 		];
@@ -225,31 +225,31 @@ function debug_process_status($id) {
 function form_actions() {
 	global $actions, $assoc_actions;
 
-	/* ================= input validation ================= */
-	get_filter_request_var('id');
-	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-zA-Z0-9_]+)$/']]);
-	/* ================= input validation ================= */
+	// ================= input validation =================
+	gfrv('id');
+	gfrv('drp_action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-zA-Z0-9_]+)$/']]);
+	// ================= input validation =================
 
 	$selected_items = [];
 
-	if (isset_request_var('save_list')) {
-		/* loop through each of the lists selected on the previous page and get more info about them */
+	if (isrv('save_list')) {
+		// loop through each of the lists selected on the previous page and get more info about them
 		foreach ($_POST as $var=>$val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-				/* ================= input validation ================= */
+				// ================= input validation =================
 				input_validate_input_number($matches[1], 'chk[1]');
-				/* ==================================================== */
+				// ====================================================
 
 				$selected_items[] = $matches[1];
 			}
 		}
 
-		/* if we are to save this form, instead of display it */
-		if (isset_request_var('save_list')) {
-			if (get_request_var('drp_action') == '2') { /* delete */
+		// if we are to save this form, instead of display it
+		if (isrv('save_list')) {
+			if (grv('drp_action') == '2') { // delete
 				debug_delete($selected_items);
 				header('Location: data_debug.php?debug=-1');
-			} elseif (get_request_var('drp_action') == '1') { /* Rerun */
+			} elseif (grv('drp_action') == '1') { // Rerun
 				debug_rerun($selected_items);
 				header('Location: data_debug.php?debug=1');
 			}
@@ -321,52 +321,52 @@ function debug_delete($selected_items) {
 }
 
 function debug_get_filter(&$sql_where, &$sql_params, &$dd_join) {
-	/* form the 'where' clause for our main sql query */
-	if (get_request_var('rfilter') != '') {
+	// form the 'where' clause for our main sql query
+	if (grv('rfilter') != '') {
 		$sql_where    = 'WHERE (dtd.name_cache RLIKE ? OR dtd.local_data_id RLIKE ? OR dt.name RLIKE ?)';
 
-		$sql_params[] = get_request_var('rfilter');
-		$sql_params[] = get_request_var('rfilter');
-		$sql_params[] = get_request_var('rfilter');
+		$sql_params[] = grv('rfilter');
+		$sql_params[] = grv('rfilter');
+		$sql_params[] = grv('rfilter');
 	}
 
-	if (isempty_request_var('host_id')) {
+	if (ierv('host_id')) {
 		$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . ' (dl.host_id = 0 OR dl.host_id IS NULL)';
-	} elseif (get_request_var('host_id') > 0) {
+	} elseif (grv('host_id') > 0) {
 		$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . ' dl.host_id = ?';
-		$sql_params[] = get_request_var('host_id');
+		$sql_params[] = grv('host_id');
 	}
 
-	if (isempty_request_var('site_id')) {
+	if (ierv('site_id')) {
 		$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . ' (h.site_id = 0 OR h.site_id IS NULL)';
-	} elseif (get_request_var('site_id') > 0) {
+	} elseif (grv('site_id') > 0) {
 		$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . ' h.site_id = ?';
-		$sql_params[] = get_request_var('site_id');
+		$sql_params[] = grv('site_id');
 	}
 
-	if (get_request_var('template_id') == '0') {
+	if (grv('template_id') == '0') {
 		$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . ' dtd.data_template_id = 0';
-	} elseif (get_request_var('template_id') > 0) {
+	} elseif (grv('template_id') > 0) {
 		$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . ' dtd.data_template_id = ?';
-		$sql_params[] = get_request_var('template_id');
+		$sql_params[] = grv('template_id');
 	}
 
-	if (get_request_var('profile') > '-1') {
+	if (grv('profile') > '-1') {
 		$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . ' dtd.data_source_profile_id = ?';
-		$sql_params[] = get_request_var('profile');
+		$sql_params[] = grv('profile');
 	}
 
-	if (get_request_var('status') == '0') {
+	if (grv('status') == '0') {
 		$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . ' dd.issue != ""';
-	} elseif (get_request_var('status') == '1') {
+	} elseif (grv('status') == '1') {
 		$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . ' dtd.active = "on"';
-	} elseif (get_request_var('status') != '-1') {
+	} elseif (grv('status') != '-1') {
 		$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . ' dtd.active = ""';
 	}
 
-	if (get_request_var('debug') == '-1') {
+	if (grv('debug') == '-1') {
 		$dd_join = 'LEFT';
-	} elseif (get_request_var('debug') == 0) {
+	} elseif (grv('debug') == 0) {
 		$dd_join = 'LEFT';
 		$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . ' dd.datasource IS NULL';
 	} else {
@@ -450,11 +450,11 @@ function debug_wizard() {
 		]
 	];
 
-	if (isset_request_var('purge')) {
+	if (isrv('purge')) {
 		db_execute('TRUNCATE TABLE data_debug');
 	}
 
-	/* fill in the current date for printing in the log */
+	// fill in the current date for printing in the log
 	if (defined('CACTI_DATE_TIME_FORMAT')) {
 		$datefmt = CACTI_DATE_TIME_FORMAT;
 	} else {
@@ -466,10 +466,10 @@ function debug_wizard() {
 	$total_rows = 0;
 	$checks     = [];
 
-	if (get_request_var('rows') == '-1') {
+	if (grv('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
 	} else {
-		$rows = get_request_var('rows');
+		$rows = grv('rows');
 	}
 
 	$sql_where  = '';
@@ -492,7 +492,7 @@ function debug_wizard() {
 		$sql_params);
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows;
 
 	$checks = db_fetch_assoc_prepared("SELECT dd.*, dtd.local_data_id,
 		dtd.name_cache, u.username
@@ -512,7 +512,7 @@ function debug_wizard() {
 		$sql_limit",
 		$sql_params);
 
-	$nav = html_nav_bar('data_debug.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Data Sources'), 'page', 'main');
+	$nav = html_nav_bar('data_debug.php', MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Data Sources'), 'page', 'main');
 
 	form_start('data_debug.php', 'chk');
 
@@ -520,7 +520,7 @@ function debug_wizard() {
 
 	html_start_box('', '100%', false, 3, 'center', '');
 
-	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
+	html_header_sort_checkbox($display_text, grv('sort_column'), grv('sort_direction'), false);
 
 	if (cacti_sizeof($checks)) {
 		foreach ($checks as $check) {
@@ -548,7 +548,7 @@ function debug_wizard() {
 
 			$url = 'data_debug.php?action=view&id=' . $check['local_data_id'];
 
-			form_selectable_cell(filter_value($check['name_cache'], get_request_var('rfilter'), $url), $check['local_data_id']);
+			form_selectable_cell(filter_value($check['name_cache'], grv('rfilter'), $url), $check['local_data_id']);
 
 			if (!empty($check['datasource'])) {
 				form_selectable_ecell($check['username'], $check['local_data_id']);
@@ -597,7 +597,7 @@ function debug_wizard() {
 
 	form_hidden_box('save_list', '1', '');
 
-	/* draw the dropdown containing a list of available actions for this form */
+	// draw the dropdown containing a list of available actions for this form
 	draw_actions_dropdown($actions);
 
 	form_end();
@@ -608,7 +608,7 @@ function debug_view() {
 
 	$refresh = 60;
 
-	$id = get_filter_request_var('id');
+	$id = gfrv('id');
 
 	$check = db_fetch_row_prepared('SELECT *
 		FROM data_debug
@@ -627,7 +627,7 @@ function debug_view() {
 		[$id]);
 
 	if (cacti_sizeof($dtd)) {
-		$real_path = html_escape(str_replace('<path_rra>', CACTI_PATH_RRA, $dtd['data_source_path']));
+		$real_path = htmle(str_replace('<path_rra>', CACTI_PATH_RRA, $dtd['data_source_path']));
 	} else {
 		$real_path = __('Not Found');
 	}
@@ -746,7 +746,7 @@ function debug_view() {
 		[
 			'name'  => 'convert_name',
 			'title' => __('Were we able to convert the title?'),
-			'value' => html_escape(get_data_source_title($check['datasource']))
+			'value' => htmle(get_data_source_title($check['datasource']))
 		],
 		[
 			'name'  => 'rrd_match',
@@ -999,8 +999,8 @@ function create_data_debug_filter($session_var) {
 	$sql_where  = '';
 	$sql_params = [];
 
-	if (isset_request_var('host_id')) {
-		$host_id = get_request_var('host_id');
+	if (isrv('host_id')) {
+		$host_id = grv('host_id');
 	} elseif (isset($_SESSION[$session_var . '_host_id'])) {
 		$host_id = $_SESSION[$session_var . '_host_id'];
 	} else {
@@ -1008,7 +1008,7 @@ function create_data_debug_filter($session_var) {
 	}
 
 	if ($host_id > 0) {
-		/* for the templates dropdown */
+		// for the templates dropdown
 		$sql_where    = 'AND h.id = ?';
 		$sql_params[] = $host_id;
 
@@ -1024,9 +1024,9 @@ function create_data_debug_filter($session_var) {
 		$hostname = __('Any');
 	}
 
-	if (get_request_var('site_id') > 0) {
+	if (grv('site_id') > 0) {
 		$sql_where    = 'AND site_id = ?';
-		$sql_params[] = get_request_var('site_id');
+		$sql_params[] = grv('site_id');
 	}
 
 	$templates = array_rekey(
@@ -1176,25 +1176,25 @@ function create_data_debug_filter($session_var) {
 function draw_data_debug_filter($render = false) {
 	$filters = create_data_debug_filter('sess_data_debug');
 
-	if (get_request_var('host_id') > 0) {
+	if (grv('host_id') > 0) {
 		$hostname = db_fetch_cell_prepared('SELECT CONCAT(description, " ( ", hostname, " )")
 			FROM host WHERE id = ?',
-			[get_request_var('host_id')]);
+			[grv('host_id')]);
 	} else {
 		$hostname = '';
 	}
 
 	if (empty($hostname)) {
-		if (get_request_var('host_id') == -1) {
+		if (grv('host_id') == -1) {
 			$header = __('All Devices');
 		} else {
 			$header = __('No Devices');
 		}
 	} else {
-		$header = html_escape($hostname);
+		$header = htmle($hostname);
 	}
 
-	/* create the page filter */
+	// create the page filter
 	$pageFilter = new CactiTableFilter($header, 'data_debug.php', 'form_data_debug', 'sess_data_debug');
 
 	$pageFilter->rows_label = __('Data Sources');

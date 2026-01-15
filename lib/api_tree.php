@@ -32,10 +32,10 @@
  * @return void
  */
 function api_tree_lock(int $tree_id, int $user_id = 0, bool $web = true): void {
-	/* ================= input validation ================= */
+	// ================= input validation =================
 	input_validate_input_number($tree_id, 'tree_id');
 	input_validate_input_number($user_id, 'user_id');
-	/* ==================================================== */
+	// ====================================================
 
 	db_execute_prepared('UPDATE graph_tree
 		SET `locked` = 1, locked_date = NOW(), last_modified = NOW(), modified_by = ?
@@ -53,10 +53,10 @@ function api_tree_lock(int $tree_id, int $user_id = 0, bool $web = true): void {
  * @return void
  */
 function api_tree_unlock(int $tree_id, int $user_id = 0, bool $web = true): void {
-	/* ================= input validation ================= */
+	// ================= input validation =================
 	input_validate_input_number($tree_id, 'tree_id');
 	input_validate_input_number($user_id, 'user_id');
-	/* ==================================================== */
+	// ====================================================
 
 	db_execute_prepared('UPDATE graph_tree
 		SET `locked` = 0, last_modified = NOW(), modified_by = ?
@@ -266,7 +266,7 @@ function api_tree_create_node(int $tree_id, int|string $node_id, int $position, 
 		}
 	}
 
-	/* watch out for monkey business */
+	// watch out for monkey business
 	input_validate_input_number($data['leaf_id'], 'leaf_id');
 
 	$save                       = [];
@@ -575,7 +575,7 @@ function api_tree_parse_node_data(string $variable): array {
 			foreach ($ndata as $data) {
 				[$type, $tid] = explode(':', $data);
 
-				/* watch out for monkey business */
+				// watch out for monkey business
 				input_validate_input_number($tid, 'tid');
 
 				switch ($type) {
@@ -665,7 +665,7 @@ function api_tree_rename_node(int $tree_id, string|null $node_id = '', string $t
 
 			[$type, $tid] = explode(':', $data);
 
-			/* watch out for monkey business */
+			// watch out for monkey business
 			input_validate_input_number($tid, 'tid');
 
 			switch ($type) {
@@ -725,7 +725,7 @@ function api_tree_get_main(string|null $tree_id, int $parent = 0): void {
 				WHERE id = ?',
 				[$tree_id]);
 
-			print "<ul><li class='jstree-closed' id='tree_anchor-$tree_id' data-jstree='{ \"type\" : \"tree\" }'><a href='" . html_escape('graph_view.php?action=tree&node=tree_anchor-' . $tree_id) . "'>" . html_escape($name) . "</a>\n";
+			print "<ul><li class='jstree-closed' id='tree_anchor-$tree_id' data-jstree='{ \"type\" : \"tree\" }'><a href='" . htmle('graph_view.php?action=tree&node=tree_anchor-' . $tree_id) . "'>" . htmle($name) . "</a>\n";
 
 			$hierarchy = draw_dhtml_tree_level_graphing($tree_id, $parent);
 
@@ -807,7 +807,7 @@ int $host_id, int $site_id, int $host_grouping_type, int $sort_children_type, bo
 	input_validate_input_number($tree_id, 'tree_id');
 	input_validate_input_number($parent_tree_item_id, 'parent_tree_item_id');
 
-	//api_tree_get_lock('tree-lock', 10);
+	// api_tree_get_lock('tree-lock', 10);
 
 	if ($local_graph_id > 0) {
 		$exists = db_fetch_cell_prepared('SELECT id
@@ -875,7 +875,7 @@ int $host_id, int $site_id, int $host_grouping_type, int $sort_children_type, bo
 		}
 	}
 
-	//api_tree_release_lock('tree-lock');
+	// api_tree_release_lock('tree-lock');
 
 	return $tree_item_id;
 }
@@ -999,7 +999,7 @@ function api_tree_sort_branch(int|string $leaf_id, int $tree_id = 0, bool $lock 
 	static $level = 1;
 
 	if ($lock) {
-		//api_tree_get_lock('tree-lock', 10);
+		// api_tree_get_lock('tree-lock', 10);
 	}
 
 	// Sorting will go in this order for anyone sorting:
@@ -1239,7 +1239,7 @@ function api_tree_sort_branch(int|string $leaf_id, int $tree_id = 0, bool $lock 
 	}
 
 	if ($lock) {
-		//api_tree_release_lock('tree-lock');
+		// api_tree_release_lock('tree-lock');
 	}
 }
 

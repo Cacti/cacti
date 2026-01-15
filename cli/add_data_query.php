@@ -36,12 +36,12 @@ require_once(CACTI_PATH_LIBRARY . '/sort.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
-/* switch to main database for cli's */
+// switch to main database for cli's
 if ($config['poller_id'] > 1) {
 	db_switch_remote_to_main();
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -150,7 +150,7 @@ if (cacti_sizeof($parms)) {
 		}
 	}
 
-	/* list options, recognizing $quietMode */
+	// list options, recognizing $quietMode
 	if ($displayHosts) {
 		$hosts = getHosts();
 		displayHosts($hosts, $quietMode);
@@ -187,9 +187,7 @@ if (cacti_sizeof($parms)) {
 		exit(1);
 	}
 
-	/*
-	 * verify valid host id and get a name for it
-	 */
+	// verify valid host id and get a name for it
 	$host_name = db_fetch_cell('SELECT hostname FROM host WHERE id = ' . $host_id);
 
 	if (!isset($host_name)) {
@@ -198,9 +196,7 @@ if (cacti_sizeof($parms)) {
 		exit(1);
 	}
 
-	/*
-	 * verify valid data query and get a name for it
-	 */
+	// verify valid data query and get a name for it
 	$data_query_name = db_fetch_cell('SELECT name FROM snmp_query WHERE id = ' . $data_query_id);
 
 	if (!isset($data_query_name)) {
@@ -209,9 +205,7 @@ if (cacti_sizeof($parms)) {
 		exit(1);
 	}
 
-	/*
-	 * Now, add the data query and run it once to get the cache filled
-	 */
+	// Now, add the data query and run it once to get the cache filled
 	$exists_already = db_fetch_cell("SELECT host_id FROM host_snmp_query WHERE host_id=$host_id AND snmp_query_id=$data_query_id AND reindex_method=$reindex_method");
 
 	if ((isset($exists_already)) &&
@@ -227,7 +221,7 @@ if (cacti_sizeof($parms)) {
 				$data_query_id . ',' .
 				$reindex_method . ')');
 
-		/* recache snmp data */
+		// recache snmp data
 		run_data_query($host_id, $data_query_id);
 	}
 
@@ -246,7 +240,7 @@ if (cacti_sizeof($parms)) {
 	exit;
 }
 
-/*  display_version - displays version information */
+// display_version - displays version information
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Add Data Query Utility, Version $version, " . COPYRIGHT_YEARS . "\n";

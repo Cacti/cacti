@@ -26,11 +26,11 @@ require('./include/global.php');
 
 set_default_action();
 
-$action = get_request_var('action');
+$action = grv('action');
 
 switch ($action) {
 	case 'checkpass':
-		$error = secpass_check_pass(get_nfilter_request_var('password'));
+		$error = secpass_check_pass(gnrv('password'));
 
 		if ($error != '') {
 			print $error;
@@ -107,7 +107,7 @@ if (!cacti_sizeof($user) || $user['realm'] != 0) {
 if ($user['password_change'] != 'on') {
 	raise_message('nopassword');
 
-	/* destroy session information */
+	// destroy session information
 	kill_session_var(SESS_USER_ID);
 	cacti_cookie_logout();
 
@@ -120,14 +120,14 @@ if ($user['password_change'] != 'on') {
 	exit;
 }
 
-/* find out if we are logged in as a 'guest user' or not, if we are redirect away from password change */
+// find out if we are logged in as a 'guest user' or not, if we are redirect away from password change
 if (cacti_sizeof($user) && $user['id'] === get_guest_account()) {
 	header('Location: graph_view.php');
 
 	exit;
 }
 
-/* default to !bad_password */
+// default to !bad_password
 $bad_password = false;
 $errorMessage = '';
 
@@ -137,11 +137,11 @@ switch ($action) {
 		$user_id = intval($_SESSION[SESS_USER_ID]);
 
 		// Get passwords entered for change
-		$password         = get_nfilter_request_var('password');
-		$password_confirm = get_nfilter_request_var('password_confirm');
+		$password         = gnrv('password');
+		$password_confirm = gnrv('password_confirm');
 
 		// Get current password as entered
-		$current_password = get_nfilter_request_var('current_password');
+		$current_password = gnrv('current_password');
 
 		// Secpass checking
 		$error = secpass_check_pass($password);
@@ -260,11 +260,11 @@ if (api_plugin_hook_function('custom_password', OPER_MODE_NATIVE) == OPER_MODE_R
 	exit;
 }
 
-if (get_request_var('action') == 'force') {
+if (grv('action') == 'force') {
 	$errorMessage = "<span class='loginErrors'>*** " . __('Forced password change') . ' ***</span>';
 }
 
-/* Create tooltip for password complexity */
+// Create tooltip for password complexity
 $secpass_tooltip = "<span style='font-weight:normal;'>" . __('Password requirements include:') . '</span><br>';
 $secpass_body    = '';
 
@@ -294,8 +294,8 @@ $selectedTheme = get_selected_theme();
 
 $skip_current = (empty($user['password']));
 
-if (isset_request_var('ref')) {
-	$ref_parts   = parse_url(get_nfilter_request_var('ref'));
+if (isrv('ref')) {
+	$ref_parts   = parse_url(gnrv('ref'));
 	$valid       = true;
 
 	if (isset($ref_parts['user']) || isset($ref_parts['pass'])) {
@@ -368,8 +368,8 @@ html_auth_header('change_password', __('Change Password'), __('Change Password')
 	<tr style='display:none'>
 		<td>
 			<input type='hidden' name='action' value='changepassword'>
-			<input type='hidden' name='ref' value='<?php print html_escape(get_request_var('ref')); ?>'>
-			<input type='hidden' name='name' value='<?php print isset($user['username']) ? html_escape($user['username']) : ''; ?>'>
+			<input type='hidden' name='ref' value='<?php print htmle(grv('ref')); ?>'>
+			<input type='hidden' name='name' value='<?php print isset($user['username']) ? htmle($user['username']) : ''; ?>'>
 			<input type='text'><input type='password'></td>
 		</td>
 	</tr>

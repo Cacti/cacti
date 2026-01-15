@@ -1254,9 +1254,9 @@ if ((isset($_SESSION[SESS_USER_ID]))) {
 		if (cacti_sizeof($consoles)) {
 			foreach ($consoles as $page) {
 				if (!CACTI_WEB || is_realm_allowed($page['id'] + 10000)) {
-					$menuname = (isset($page['extendedstyle']) && $page['extendedstyle'] != '' ? html_escape($page['extendedstyle']) : __('External Links'));
+					$menuname = (isset($page['extendedstyle']) && $page['extendedstyle'] != '' ? htmle($page['extendedstyle']) : __('External Links'));
 
-					$menu[$menuname]['link.php?id=' . $page['id']] = html_escape($page['title']);
+					$menu[$menuname]['link.php?id=' . $page['id']] = htmle($page['title']);
 				}
 			}
 		}
@@ -1878,7 +1878,7 @@ $agg_order_types = [
 	AGGREGATE_ORDER_BASE_GRAPH => __('Base Graph Order')
 ];
 
-# operators for use with SQL/pattern matching
+// operators for use with SQL/pattern matching
 $automation_op_array = [
 	'display' => [
 		AUTOMATION_OP_NONE         => __('None'),
@@ -3103,15 +3103,15 @@ $sched_types = [
 
 if (CACTI_SERVER_OS == 'unix') {
 	$dejavu_paths = [
-		'/usr/share/fonts/dejavu/', //RHEL/CentOS
-		'/usr/share/fonts/truetype/', //SLES
-		'/usr/share/fonts/truetype/dejavu/', //Ubuntu
-		'/usr/local/share/fonts/dejavu/', //FreeBSD
-		__DIR__ . '/fonts'  //Build-in
+		'/usr/share/fonts/dejavu/', // RHEL/CentOS
+		'/usr/share/fonts/truetype/', // SLES
+		'/usr/share/fonts/truetype/dejavu/', // Ubuntu
+		'/usr/local/share/fonts/dejavu/', // FreeBSD
+		__DIR__ . '/fonts'  // Build-in
 	];
 } else {
 	$dejavu_paths = [
-		'C:/Windows/Fonts/' //Windows
+		'C:/Windows/Fonts/' // Windows
 	];
 }
 

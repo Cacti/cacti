@@ -55,7 +55,7 @@ function api_plugin_hook($name) {
 	}
 
 	if (!isset($hook_cache[$name])) {
-		/* order the plugins by order */
+		// order the plugins by order
 		$result = db_fetch_assoc_prepared('SELECT ph.name, ph.file, ph.function
 			FROM plugin_hooks AS ph
 			LEFT JOIN plugin_config AS pc
@@ -103,8 +103,8 @@ function api_plugin_hook($name) {
 		}
 	}
 
-	/* Variable-length argument lists have a slight problem when */
-	/* passing values by reference. Pity. This is a workaround.  */
+	// Variable-length argument lists have a slight problem when
+	// passing values by reference. Pity. This is a workaround.
 	return $args;
 }
 
@@ -120,7 +120,7 @@ function api_plugin_hook_function($name, $parm = null) {
 	}
 
 	if (!isset($hook_cache[$name])) {
-		/* order the plugins by order */
+		// order the plugins by order
 		$result = db_fetch_assoc_prepared('SELECT ph.name, ph.file, ph.function
 			FROM plugin_hooks AS ph
 			LEFT JOIN plugin_config AS pc
@@ -177,8 +177,8 @@ function api_plugin_hook_function($name, $parm = null) {
 		}
 	}
 
-	/* Variable-length argument lists have a slight problem when */
-	/* passing values by reference. Pity. This is a workaround.  */
+	// Variable-length argument lists have a slight problem when
+	// passing values by reference. Pity. This is a workaround.
 	return $ret;
 }
 
@@ -1050,7 +1050,7 @@ function api_plugin_moveup($plugin) {
 			WHERE id < ?',
 			[$id]);
 
-		/* update the above plugin to the prior temp id */
+		// update the above plugin to the prior temp id
 		db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', [$temp_id, $prior_id]);
 		db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', [$prior_id, $id]);
 		db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', [$id, $temp_id]);
@@ -1064,7 +1064,7 @@ function api_plugin_movedown($plugin) {
 	$temp_id = db_fetch_cell('SELECT MAX(id) FROM plugin_config') + 1;
 	$next_id = db_fetch_cell_prepared('SELECT MIN(id) FROM plugin_config WHERE id > ?', [$id]);
 
-	/* update the above plugin to the prior temp id */
+	// update the above plugin to the prior temp id
 	db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', [$temp_id, $next_id]);
 	db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', [$next_id, $id]);
 	db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', [$id, $temp_id]);
@@ -1336,7 +1336,7 @@ function api_plugin_load_realms() {
 
 function api_plugin_user_realm_auth($filename = '') {
 	global $user_auth_realm_filenames;
-	/* list all realms that this user has access to */
+	// list all realms that this user has access to
 
 	if ($filename != '' && isset($user_auth_realm_filenames[basename($filename)])) {
 		if (is_realm_allowed($user_auth_realm_filenames[basename($filename)])) {
@@ -1388,10 +1388,10 @@ function api_plugin_reorder($new_order) {
 			}
 		}
 
-		/* resequence it one transaction */
+		// resequence it one transaction
 		db_execute_prepared($sql, $params);
 
-		/* remove anything invalid */
+		// remove anything invalid
 		db_execute_prepared('DELETE FROM plugin_config WHERE id >= ?', [$sequence]);
 	}
 }
@@ -1462,16 +1462,16 @@ function api_plugin_archive_restore($plugin, $id, $type = 'archive') {
 		$file_data = base64_decode($archive, true);
 
 		if ($file_data != '') {
-			/* set the restore path to the plugin directory */
+			// set the restore path to the plugin directory
 			$restore_path = CACTI_PATH_BASE . "/plugins/$plugin";
 
-			/* write the archive to the temporary directory */
+			// write the archive to the temporary directory
 			file_put_contents($tmpfile, $file_data);
 
-			/* open the archive */
+			// open the archive
 			$archive = new PharData($tmpfile);
 
-			/* create directory if required */
+			// create directory if required
 			if (!is_dir($restore_path)) {
 				if (!mkdir($restore_path, 0755, true)) {
 					if ($type == 'archive') {
@@ -1487,7 +1487,7 @@ function api_plugin_archive_restore($plugin, $id, $type = 'archive') {
 				}
 			}
 
-			/* get the list of files and directories from inside the archive file */
+			// get the list of files and directories from inside the archive file
 			$archive_files = [];
 
 			foreach (new RecursiveIteratorIterator($archive) as $file) {
@@ -1505,7 +1505,7 @@ function api_plugin_archive_restore($plugin, $id, $type = 'archive') {
 					$bad_path = array_shift($paths);
 					$tfile    = implode('/', $paths);
 
-					/* skip hidden files like .github* */
+					// skip hidden files like .github
 					if (str_starts_with($tfile, '.') && $tfile != '.htaccess') {
 						continue;
 					}
@@ -1518,7 +1518,7 @@ function api_plugin_archive_restore($plugin, $id, $type = 'archive') {
 				}
 			}
 
-			/* get the list of files in the current plugin directory */
+			// get the list of files in the current plugin directory
 			$dir_iterator = new RecursiveDirectoryIterator($restore_path);
 			$iterator     = new RecursiveIteratorIterator($dir_iterator, RecursiveIteratorIterator::SELF_FIRST);
 
@@ -1534,7 +1534,7 @@ function api_plugin_archive_restore($plugin, $id, $type = 'archive') {
 				$current_files[$file] = $file;
 			}
 
-			/* relative plugin data locations that should not be remove */
+			// relative plugin data locations that should not be remove
 			$info_file = CACTI_PATH_PLUGINS . '/' . $plugin . '/INFO';
 			$noremove  = [];
 
@@ -1546,7 +1546,7 @@ function api_plugin_archive_restore($plugin, $id, $type = 'archive') {
 				}
 			}
 
-			/* remove files that are not in the archive */
+			// remove files that are not in the archive
 			foreach ($current_files as $file) {
 				if (!is_dir("$restore_path/$file") && !isset($archive_files[$file])) {
 					if (basename($file) !== 'config.php' && basename($file) != 'config_local.php') {
@@ -1559,7 +1559,7 @@ function api_plugin_archive_restore($plugin, $id, $type = 'archive') {
 				}
 			}
 
-			/* load the archive into memory */
+			// load the archive into memory
 			Phar::loadPhar($tmpfile, 'my.tgz');
 
 			/**
@@ -1596,7 +1596,7 @@ function api_plugin_archive_restore($plugin, $id, $type = 'archive') {
 
 			$archive->__destruct();
 
-			/* remove the archive file */
+			// remove the archive file
 			unlink($tmpfile);
 
 			if ($type == 'archive') {
@@ -1655,15 +1655,15 @@ function api_plugin_archive($plugin, $note = '') {
 		$path     = CACTI_PATH_BASE . "/plugins/$plugin";
 		$md5sum   = md5sum_path($path);
 
-		/* create the tar file */
+		// create the tar file
 		$archive = new PharData($tmpfile);
 		$archive->buildFromDirectory($path);
 
-		/* create the tar.gz file */
+		// create the tar.gz file
 		$archive->compress(Phar::GZ);
 		$archive->__destruct();
 
-		/* delete the tar file */
+		// delete the tar file
 		unlink($tmpfile);
 
 		$info_file = CACTI_PATH_PLUGINS . '/' . $plugin . '/INFO';
@@ -1967,7 +1967,7 @@ function plugin_fetch_latest_plugins() {
 			if (cacti_sizeof($details)) {
 				$json_data = $details;
 
-				/* insert latest release */
+				// insert latest release
 				if (isset($json_data[0]['tag_name'])) {
 					$avail_plugins[$plugin_name][$json_data[0]['tag_name']]['body']         = $json_data[0]['body'];
 					$avail_plugins[$plugin_name][$json_data[0]['tag_name']]['published_at'] = date('Y-m-d H:i:s', strtotime($json_data[0]['published_at']));
@@ -2139,7 +2139,7 @@ function plugin_fetch_latest_plugins() {
 					$avail_plugins[$plugin_name]['develop']['body']         = '';
 					$avail_plugins[$plugin_name]['develop']['published_at'] = $published_at;
 
-					/* insert develop */
+					// insert develop
 					$files = [
 						'changelog' => "$repo/repos/$user/plugin_{$plugin_name}/contents/CHANGELOG.md?ref=develop",
 						'readme'    => "$repo/repos/$user/plugin_{$plugin_name}/contents/README.md?ref=develop",

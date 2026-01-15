@@ -33,19 +33,19 @@ require_once(CACTI_PATH_LIBRARY . '/reports.php');
 require_once(CACTI_PATH_LIBRARY . '/timespan_settings.php');
 require_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
-/* set the default graph action */
+// set the default graph action
 set_default_graph_action();
 
-/* perform spikekill action */
+// perform spikekill action
 html_spikekill_actions();
 
-/* process tree settings */
+// process tree settings
 process_tree_settings();
 
-/* setup realtime defaults if they are not set */
+// setup realtime defaults if they are not set
 initialize_realtime_step_and_window();
 
-switch (get_nfilter_request_var('action')) {
+switch (gnrv('action')) {
 	case 'ajax_hosts':
 		$sql_where = html_make_device_where();
 		get_allowed_ajax_hosts(true, true, $sql_where);

@@ -40,7 +40,7 @@ include_once(CACTI_PATH_LIBRARY . '/utility.php');
 include_once(CACTI_PATH_LIBRARY . '/xml.php');
 
 cacti_log('Checking arguments', false, 'INSTALL:');
-/* process calling arguments */
+// process calling arguments
 $params = $_SERVER['argv'];
 array_shift($params);
 

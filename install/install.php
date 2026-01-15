@@ -45,7 +45,7 @@ set_default_action();
 
 prime_default_settings();
 
-/***** SAFETY CHECKS FOR OLDER OR SECURED SYSTEMS ****/
+// SAFETY CHECKS FOR OLDER OR SECURED SYSTEMS
 $hasShellExec  = is_function_enabled('shell_exec');
 $hasExec       = is_function_enabled('exec');
 $hasJson       = interface_exists('JsonSerializable');

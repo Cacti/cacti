@@ -35,7 +35,7 @@ require_once($config['base_path'] . '/lib/snmp.php');
 require_once($config['base_path'] . '/lib/template.php');
 require_once($config['base_path'] . '/lib/utility.php');
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -45,7 +45,7 @@ if (! cacti_sizeof($parms)) {
 	exit(0);
 }
 
-/* setup defaults */
+// setup defaults
 $source_poller = '';
 $dest_poller   = '';
 $migrate_all   = false;

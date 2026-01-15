@@ -34,12 +34,12 @@ require_once(CACTI_PATH_LIBRARY . '/utility.php');
 ini_set('max_execution_time', '0');
 ini_set('memory_limit', '-1');
 
-/* switch to main database for cli's */
+// switch to main database for cli's
 if ($config['poller_id'] > 1) {
 	db_switch_remote_to_main();
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -340,7 +340,7 @@ if ($listGraphTemplates) {
 
 exit(0);
 
-/*  display_version - displays version information */
+// display_version - displays version information
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Remove Graphs Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;

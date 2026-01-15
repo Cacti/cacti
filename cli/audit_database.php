@@ -32,7 +32,7 @@ if ($config['poller_id'] > 1) {
 	exit(1);
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -527,13 +527,13 @@ function report_audit_results($output = true) {
 									}
 								}
 
-								/* work around MariaDB compatibility issue */
+								// work around MariaDB compatibility issue
 								$c[$col]     = ! $c[$col] ?: str_replace('current_timestamp()', 'CURRENT_TIMESTAMP', $c[$col]);
 								$c[$col]     = ! $c[$col] ?: str_replace('on update', 'ON UPDATE', $c[$col]);
 								$dbc[$dbcol] = ! $dbc[$dbcol] ?: str_replace('current_timestamp()', 'CURRENT_TIMESTAMP', $dbc[$dbcol]);
 								$dbc[$dbcol] = ! $dbc[$dbcol] ?: str_replace('on update', 'ON UPDATE', $dbc[$dbcol]);
 
-								/* work around MySQL 8.x simplified int columns */
+								// work around MySQL 8.x simplified int columns
 								if (strpos($dbc[$dbcol], 'int(') !== false) {
 									// Get the integer first
 									$parts   = explode('(', $dbc[$dbcol]);
@@ -551,7 +551,7 @@ function report_audit_results($output = true) {
 									$adbccol = $dbc[$dbcol];
 								}
 
-								/* Work Around for MySQL 8 */
+								// Work Around for MySQL 8
 								$c[$col] = trim(str_replace('DEFAULT_GENERATED', '', $c[$col]));
 
 								if (($c[$col] != $dbc[$dbcol] && $c[$col] != $adbccol) && $c[$col] != 'mediumtext') {
@@ -667,7 +667,7 @@ function report_audit_results($output = true) {
 					}
 				}
 
-				/* check for missing indexes and add them */
+				// check for missing indexes and add them
 
 				$db_indexes = db_fetch_assoc_prepared('SELECT *
 					FROM table_indexes
@@ -697,7 +697,7 @@ function report_audit_results($output = true) {
 
 							$curr_column_seq = get_column_sequence_number($table_name, $i['idx_key_name'], $i['idx_column_name']);
 
-							//print PHP_EOL . "Prop Seq:" . $prop_seq . ", Curr Seq:" . $curr_seq . PHP_EOL;
+							// print PHP_EOL . "Prop Seq:" . $prop_seq . ", Curr Seq:" . $curr_seq . PHP_EOL;
 
 							if ($curr_seq != $prop_seq || $curr_column_seq != $i['idx_seq_in_index']) {
 								if (array_search($i['idx_key_name'], $idx_dropped, true) === false) {
@@ -857,7 +857,7 @@ function make_index_alter($table, $key) {
 
 	$sequence_cnt = get_sequence_count($table, $key);
 
-	//print PHP_EOL . "NOTE: INDEX KEY is $key, Baseline Sequence: " . cacti_sizeof($parts) . ", Actual Sequence: $sequence_cnt" . PHP_EOL;
+	// print PHP_EOL . "NOTE: INDEX KEY is $key, Baseline Sequence: " . cacti_sizeof($parts) . ", Actual Sequence: $sequence_cnt" . PHP_EOL;
 
 	if ($sequence_cnt != cacti_sizeof($parts) && $sequence_cnt > 0) {
 		if ($key == 'PRIMARY') {
@@ -1145,7 +1145,7 @@ function load_audit_database() {
 	}
 }
 
-/*  display_version - displays version information */
+// display_version - displays version information
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Database Audit Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;

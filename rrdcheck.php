@@ -37,7 +37,7 @@ if (read_config_option('rrdcheck_enable') != 'on') {
 	html_end_box();
 }
 
-switch(get_request_var('action')) {
+switch(grv('action')) {
 	case 'purge':
 		rrdcheck_purge();
 
@@ -51,29 +51,27 @@ function rrdcheck_purge() {
 	db_execute('TRUNCATE TABLE rrdcheck');
 }
 
-/*
- * Display all rrdcheck entries
- */
+// Display all rrdcheck entries
 function rrdcheck_display_problems() {
 	global $item_rows;
 
-	/* suppress warnings */
+	// suppress warnings
 	error_reporting(0);
 
 	draw_rrdcheck_filter(true);
 
-	if (get_request_var('rows') == '-1') {
+	if (grv('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
 	} else {
-		$rows = get_request_var('rows');
+		$rows = grv('rows');
 	}
 
 	$sql_where  = '';
 	$sql_params = [];
 
-	$secsback = get_request_var('age');
+	$secsback = grv('age');
 
-	if (get_request_var('age') == 0) {
+	if (grv('age') == 0) {
 		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'test_date >= ?';
 		$sql_params[] = date('Y-m-d H:i:s', time() - (7200));
 	} else {
@@ -81,14 +79,14 @@ function rrdcheck_display_problems() {
 		$sql_params[] = date('Y-m-d H:i:s', (time() - $secsback));
 	}
 
-	if (get_request_var('filter') != '') {
+	if (grv('filter') != '') {
 		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') .
 			'(message LIKE ? OR h.description LIKE ? OR dtd.name_cache LIKE ? OR dtd.local_data_id LIKE ?)';
 
-		$sql_params[] = '%' . get_request_var('filter') . '%';
-		$sql_params[] = '%' . get_request_var('filter') . '%';
-		$sql_params[] = '%' . get_request_var('filter') . '%';
-		$sql_params[] = '%' . get_request_var('filter') . '%';
+		$sql_params[] = '%' . grv('filter') . '%';
+		$sql_params[] = '%' . grv('filter') . '%';
+		$sql_params[] = '%' . grv('filter') . '%';
+		$sql_params[] = '%' . grv('filter') . '%';
 	}
 
 	$total_rows = db_fetch_cell_prepared("SELECT COUNT(rc.local_data_id)
@@ -103,7 +101,7 @@ function rrdcheck_display_problems() {
 		$sql_params);
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows;
 
 	$problems = db_fetch_assoc_prepared("SELECT h.description, dtd.name_cache,
 		rc.local_data_id, rc.test_date, rc.message
@@ -119,7 +117,7 @@ function rrdcheck_display_problems() {
 		$sql_limit",
 		$sql_params);
 
-	$nav = html_nav_bar(CACTI_PATH_URL . 'rrdcheck.php?filter' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('RRDcheck Problems'), 'page', 'main');
+	$nav = html_nav_bar(CACTI_PATH_URL . 'rrdcheck.php?filter' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 8, __('RRDcheck Problems'), 'page', 'main');
 
 	form_start('rrdcheck.php');
 
@@ -152,7 +150,7 @@ function rrdcheck_display_problems() {
 		],
 	];
 
-	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
+	html_header_sort($display_text, grv('sort_column'), grv('sort_direction'), false);
 
 	if (cacti_sizeof($problems)) {
 		foreach ($problems as $p) {
@@ -166,10 +164,10 @@ function rrdcheck_display_problems() {
 				$p['name_cache'] = __('Deleted');
 			}
 
-			form_selectable_cell(filter_value($p['description'], get_request_var('filter')), $p['local_data_id']);
-			form_selectable_cell(filter_value($p['name_cache'], get_request_var('filter')), $p['local_data_id']);
-			form_selectable_cell(filter_value($p['local_data_id'], get_request_var('filter')), $p['local_data_id'], '', 'center');
-			form_selectable_cell(filter_value($p['message'], get_request_var('filter')), $p['local_data_id']);
+			form_selectable_cell(filter_value($p['description'], grv('filter')), $p['local_data_id']);
+			form_selectable_cell(filter_value($p['name_cache'], grv('filter')), $p['local_data_id']);
+			form_selectable_cell(filter_value($p['local_data_id'], grv('filter')), $p['local_data_id'], '', 'center');
+			form_selectable_cell(filter_value($p['message'], grv('filter')), $p['local_data_id']);
 			form_selectable_cell($p['test_date'], $p['local_data_id'], '', 'right');
 
 			form_end_row();
@@ -186,7 +184,7 @@ function rrdcheck_display_problems() {
 
 	form_end();
 
-	/* restore original error handler */
+	// restore original error handler
 	restore_error_handler();
 }
 
@@ -268,7 +266,7 @@ function create_rrdcheck_filter() {
 function draw_rrdcheck_filter($render = false) {
 	$filters = create_rrdcheck_filter();
 
-	/* create the page filter */
+	// create the page filter
 	$pageFilter = new CactiTableFilter(__('RRDfile Checker'), 'rrdcheck.php', 'form_rrdcheck', 'sess_rrdc');
 
 	$pageFilter->rows_label = __('Data Sources');

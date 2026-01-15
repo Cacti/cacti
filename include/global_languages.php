@@ -22,19 +22,19 @@
  +-------------------------------------------------------------------------+
 */
 
-/* default localization of Cacti */
+// default localization of Cacti
 $cacti_locale  = 'en-US';
 $cacti_country = 'us';
 
-/* an array that will contains all textdomains being in use. */
+// an array that will contains all textdomains being in use.
 $cacti_textdomains = [];
 
 global $path2calendar, $path2timepicker, $path2colorpicker, $path2ms, $path2msfilter, $lang2locale;
 
-/* get a list of locale settings */
+// get a list of locale settings
 $lang2locale = get_list_of_locales();
 
-/* use a fallback if i18n is disabled (default) */
+// use a fallback if i18n is disabled (default)
 if (!read_config_option('i18n_language_support') && read_config_option('i18n_language_support') != '') {
 	i18n_debug('load_fallback_procedure(1)');
 	load_fallback_procedure();
@@ -42,7 +42,7 @@ if (!read_config_option('i18n_language_support') && read_config_option('i18n_lan
 	return;
 }
 
-/* Repair legacy language support */
+// Repair legacy language support
 if (!empty($config['i18n_force_language'])) {
 	$_REQUEST['language'] = $config['i18n_force_language'];
 }
@@ -51,37 +51,37 @@ if (!empty($_REQUEST['language'])) {
 	$_REQUEST['language'] = repair_locale($_REQUEST['language']);
 }
 
-/* determine whether or not we can support the language */
+// determine whether or not we can support the language
 $user_locale = '';
 
 if (!empty($_REQUEST['language']) && !empty($lang2locale[$_REQUEST['language']])) {
-	/* user requests another language */
+	// user requests another language
 	$user_locale = apply_locale($_REQUEST['language']);
 	unset($_SESSION['sess_current_date1']);
 	unset($_SESSION['sess_current_date2']);
 
-	/* save customized language setting (authenticated users only) */
+	// save customized language setting (authenticated users only)
 	set_user_setting('language', $user_locale);
 } elseif (!empty($_SESSION['sess_user_language']) && !empty($lang2locale[$_SESSION['sess_user_language']])) {
-	/* language definition stored in the SESSION */
+	// language definition stored in the SESSION
 	$user_locale = apply_locale($_SESSION[SESS_USER_LANGUAGE]);
 } else {
-	/* look up for user customized language setting stored in Cacti DB */
+	// look up for user customized language setting stored in Cacti DB
 	$user_locale = apply_locale(read_user_i18n_setting('user_language'));
 }
 
-/* allow RRDtool to display i18n */
+// allow RRDtool to display i18n
 setlocale(LC_CTYPE, str_replace('-', '_', $user_locale) . '.UTF-8');
 
 if ($user_locale !== false && $user_locale !== '') {
 	$_SESSION[SESS_USER_LANGUAGE] = $user_locale;
 }
 
-/* define the path to the language file */
+// define the path to the language file
 $path2catalogue = get_mo_language_file([$cacti_locale, $lang2locale[$cacti_locale]['filename']]);
 $catalogue      = $path2catalogue;
 
-/* define the path to the language file of the DHTML calendar */
+// define the path to the language file of the DHTML calendar
 $path2timepicker  = '';
 $path2calendar    = '';
 $path2ms          = '';
@@ -100,7 +100,7 @@ if ($cacti_locale != '') {
 	$path2msfilter    = get_js_language_file($lang_names, 'jquery-ui-multiselect-filter-');
 }
 
-/* use fallback procedure if requested language is not available */
+// use fallback procedure if requested language is not available
 if (file_exists($path2catalogue)) {
 	$cacti_textdomains['cacti']['path2catalogue'] = $path2catalogue;
 } else {
@@ -110,7 +110,7 @@ if (file_exists($path2catalogue)) {
 	return;
 }
 
-/* search the correct textdomains for all plugins being installed */
+// search the correct textdomains for all plugins being installed
 $plugins = db_fetch_assoc('SELECT `directory`
 	FROM `plugin_config`
 	ORDER BY id');
@@ -128,7 +128,7 @@ if ($plugins && cacti_sizeof($plugins)) {
 		}
 	}
 
-	/* if i18n support is set to strict mode then check if all plugins support the requested language */
+	// if i18n support is set to strict mode then check if all plugins support the requested language
 	if (read_config_option('i18n_language_support') == 2) {
 		if (cacti_sizeof($plugins) != (cacti_sizeof($cacti_textdomains) - 1)) {
 			i18n_debug('load_fallback_procedure(3)');
@@ -141,7 +141,7 @@ if ($plugins && cacti_sizeof($plugins)) {
 
 i18n_debug('Attempt to find the handler');
 
-/* load php-gettext class if present */
+// load php-gettext class if present
 $i18n = [];
 
 // Is the handler defined in the db?
@@ -211,7 +211,7 @@ if (CACTI_LANGUAGE_HANDLER != CACTI_LANGUAGE_HANDLER_DEFAULT) {
 	unset($input);
 }
 
-/* load standard wrappers */
+// load standard wrappers
 set_language_constants([
 	'LOCALE'   => $cacti_locale,
 	'COUNTRY'  => $cacti_country,
@@ -504,7 +504,7 @@ function apply_locale(string $language): string|false {
 
 	// If the users has not elected a language and autodetect is on
 	if (!$locale_set && (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && (read_config_option('i18n_auto_detection') == '' || read_config_option('i18n_auto_detection') == '1'))) {
-		/* detect browser settings if auto detection is enabled */
+		// detect browser settings if auto detection is enabled
 		$accepted = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
 		$accepted = $accepted[0];
 
@@ -532,11 +532,11 @@ function apply_locale(string $language): string|false {
 	return false;
 }
 
-/* best effort function to repair locale */
+// best effort function to repair locale
 function repair_locale($language) {
 	global $lang2locale;
 
-	/* Repair legacy language support */
+	// Repair legacy language support
 	if ($language != '' && $language != null) {
 		$found_locale = '';
 		$locale       = str_replace('_','-', $language);
@@ -589,7 +589,7 @@ function __esc_xn(): string {
 function load_fallback_procedure(): void {
 	global $cacti_textdomains, $cacti_locale, $cacti_country, $lang2locale;
 
-	/* reset variables */
+	// reset variables
 	$_SESSION[SESS_USER_LANGUAGE] = '';
 
 	$cacti_textdomains = [];
@@ -721,21 +721,21 @@ function __(): false|string {
 	$args = func_get_args();
 	$num  = func_num_args();
 
-	/* this should not happen */
+	// this should not happen
 	if ($num < 1) {
 		return false;
-		/* convert pure text strings */
+		// convert pure text strings
 	}
 
 	if ($num == 1) {
 		return __gettext($args[0]);
-		/* convert pure text strings by using a different textdomain */
+		// convert pure text strings by using a different textdomain
 	}
 
 	/* only the last argument is allowed to initiate
 	   the use of a different textdomain */
 
-	/* get gettext string */
+	// get gettext string
 	if (isset($i18n[(string) $args[$num - 1]]) && $args[$num - 1] != 'cacti') {
 		$args[0] = __gettext($args[0], $args[$num - 1]);
 	} else {
@@ -776,7 +776,7 @@ function __(): false|string {
 	$valid_regexp = '/(' . implode(')|(', $valid_args) . ')/';
 
 	if (preg_match($valid_regexp, $args[0])) {
-		/* process return string against input arguments */
+		// process return string against input arguments
 		return __uf(call_user_func_array('sprintf', $args));
 	} else {
 		return $args[0];
@@ -818,7 +818,7 @@ function __x(): false|string {
 	$args = func_get_args();
 	$num  = func_num_args();
 
-	/* this should never happen */
+	// this should never happen
 	if ($num < 2) {
 		return false;
 	} else {
@@ -831,18 +831,18 @@ function __x(): false|string {
 		$args[0] = $xmsgid;
 
 		if ($num == 1) {
-			/* pure text string without placeholders and a change of the default textdomain */
+			// pure text string without placeholders and a change of the default textdomain
 			$msgstr = __gettext($args[0]);
 		} else {
-			/* get gettext string */
+			// get gettext string
 			$msgstr = isset($i18n[(string) $args[$num - 1]]) && $args[$num - 1] != 'cacti' ?
 			__gettext($args[0], $args[$num - 1]) : __gettext($args[0]);
 		}
 
-		/* use the raw message id if language catalogue does not contain a context specific message string */
+		// use the raw message id if language catalogue does not contain a context specific message string
 		$args[0] = ($msgstr == $xmsgid) ? $msgid : $msgstr;
 
-		/* process return string against input arguments */
+		// process return string against input arguments
 		return __uf(call_user_func_array('sprintf', $args));
 	}
 }
@@ -862,7 +862,7 @@ function __date(string $format, int|false $timestamp = false, string $domain = '
 		$timestamp = time();
 	}
 
-	/* placeholders will allow to fill in the translated weekdays, month and so on.. */
+	// placeholders will allow to fill in the translated weekdays, month and so on..
 	$i18n_date_placeholders = [
 		'#1' => __(date('D', $timestamp), $domain),
 		'#2' => __(date('M', $timestamp), $domain),
@@ -870,16 +870,16 @@ function __date(string $format, int|false $timestamp = false, string $domain = '
 		'#4' => __(date('l', $timestamp), $domain)
 	];
 
-	/* if defined exchange the format string for the configured locale */
+	// if defined exchange the format string for the configured locale
 	$format = __gettext($format, $domain);
 
-	/* replace special date chars by placeholders */
+	// replace special date chars by placeholders
 	$format = str_replace(['D', 'M', 'F', 'l'], ['#1', '#2', '#3', '#4'], $format);
 
-	/* get date string included placeholders */
+	// get date string included placeholders
 	$date = date($format, $timestamp);
 
-	/* fill in specific translations */
+	// fill in specific translations
 	$date = str_replace(array_keys($i18n_date_placeholders), array_values($i18n_date_placeholders), $date);
 
 	return __uf($date);
@@ -969,7 +969,7 @@ function get_installed_locales() {
 		];
 	}
 
-	/* create a list of all languages this Cacti system supports ... */
+	// create a list of all languages this Cacti system supports ...
 	$dhandle = opendir(CACTI_PATH_LOCALES . '/LC_MESSAGES');
 
 	if (is_resource($dhandle)) {
@@ -994,7 +994,7 @@ function get_installed_locales() {
 function read_user_i18n_setting(string $config_name): string|false {
 	global $config;
 
-	/* users must have cacti user auth turned on to use this, or the guest account must be active */
+	// users must have cacti user auth turned on to use this, or the guest account must be active
 	if (isset($_SESSION[SESS_USER_ID])) {
 		$effective_uid = $_SESSION[SESS_USER_ID];
 	} else {

@@ -32,7 +32,7 @@ $actions = [
 
 set_default_action();
 
-switch (get_request_var('action')) {
+switch (grv('action')) {
 	case 'save':
 		vdef_form_save();
 
@@ -50,19 +50,19 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'item_movedown':
-		get_filter_request_var('vdef_id');
+		gfrv('vdef_id');
 
 		item_movedown();
 
-		header('Location: vdef.php?action=edit&id=' . get_request_var('vdef_id'));
+		header('Location: vdef.php?action=edit&id=' . grv('vdef_id'));
 
 		break;
 	case 'item_moveup':
-		get_filter_request_var('vdef_id');
+		gfrv('vdef_id');
 
 		item_moveup();
 
-		header('Location: vdef.php?action=edit&id=' . get_request_var('vdef_id'));
+		header('Location: vdef.php?action=edit&id=' . grv('vdef_id'));
 
 		break;
 	case 'item_edit':
@@ -97,17 +97,17 @@ function draw_vdef_preview(int $vdef_id) : void {
 	?>
 	<tr class='even'>
 		<td style='padding:4px'>
-			<pre>vdef=<?php print html_escape(get_vdef($vdef_id, true)); ?></pre>
+			<pre>vdef=<?php print htmle(get_vdef($vdef_id, true)); ?></pre>
 		</td>
 	</tr>
 	<?php
 }
 
 function vdef_form_save() : void {
-	if (isset_request_var('save_component_vdef')) {
-		$save['id']   = get_filter_request_var('id');
-		$save['hash'] = get_hash_vdef(get_request_var('id'));
-		$save['name'] = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+	if (isrv('save_component_vdef')) {
+		$save['id']   = gfrv('id');
+		$save['hash'] = get_hash_vdef(grv('id'));
+		$save['name'] = form_input_validate(gnrv('name'), 'name', '', false, 3);
 
 		if (!is_error_message()) {
 			$vdef_id = sql_save($save, 'vdef');
@@ -119,16 +119,16 @@ function vdef_form_save() : void {
 			}
 		}
 
-		header('Location: vdef.php?action=edit&id=' . (empty($vdef_id) ? get_request_var('id') : $vdef_id));
-	} elseif (isset_request_var('save_component_item')) {
-		$sequence = get_sequence(get_filter_request_var('id'), 'sequence', 'vdef_items', 'vdef_id=' . get_filter_request_var('vdef_id'));
+		header('Location: vdef.php?action=edit&id=' . (empty($vdef_id) ? grv('id') : $vdef_id));
+	} elseif (isrv('save_component_item')) {
+		$sequence = get_sequence(gfrv('id'), 'sequence', 'vdef_items', 'vdef_id=' . gfrv('vdef_id'));
 
-		$save['id']       = get_filter_request_var('id');
-		$save['hash']     = get_hash_vdef(get_request_var('id'), 'vdef_item');
-		$save['vdef_id']  = get_filter_request_var('vdef_id');
+		$save['id']       = gfrv('id');
+		$save['hash']     = get_hash_vdef(grv('id'), 'vdef_item');
+		$save['vdef_id']  = gfrv('vdef_id');
 		$save['sequence'] = $sequence;
-		$save['type']     = get_nfilter_request_var('type');
-		$save['value']    = get_nfilter_request_var('value');
+		$save['type']     = gnrv('type');
+		$save['value']    = gnrv('value');
 
 		$vdef_item_id     = 0;
 
@@ -143,9 +143,9 @@ function vdef_form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: vdef.php?action=item_edit&vdef_id=' . get_request_var('vdef_id') . '&id=' . (empty($vdef_item_id) ? get_request_var('id') : $vdef_item_id));
+			header('Location: vdef.php?action=item_edit&vdef_id=' . grv('vdef_id') . '&id=' . (empty($vdef_item_id) ? grv('id') : $vdef_item_id));
 		} else {
-			header('Location: vdef.php?action=edit&id=' . get_request_var('vdef_id'));
+			header('Location: vdef.php?action=edit&id=' . grv('vdef_id'));
 		}
 	}
 }
@@ -156,10 +156,10 @@ function duplicate_vdef($_vdef_id, $vdef_title) {
 	$vdef       = db_fetch_row_prepared('SELECT * FROM vdef WHERE id = ?', [$_vdef_id]);
 	$vdef_items = db_fetch_assoc_prepared('SELECT * FROM vdef_items WHERE vdef_id = ?', [$_vdef_id]);
 
-	/* substitute the title variable */
+	// substitute the title variable
 	$vdef['name'] = str_replace('<vdef_title>', $vdef['name'], $vdef_title);
 
-	/* create new entry: device_template */
+	// create new entry: device_template
 	$save['id']   = 0;
 	$save['hash'] = get_hash_vdef(0);
 
@@ -173,7 +173,7 @@ function duplicate_vdef($_vdef_id, $vdef_title) {
 
 	$vdef_id = sql_save($save, 'vdef');
 
-	/* create new entry(s): vdef_items */
+	// create new entry(s): vdef_items
 	if (cacti_sizeof($vdef_items) > 0) {
 		foreach ($vdef_items as $vdef_item) {
 			unset($save);
@@ -193,18 +193,18 @@ function duplicate_vdef($_vdef_id, $vdef_title) {
 function vdef_form_actions() {
 	global $actions;
 
-	/* if we are to save this form, instead of display it */
-	if (isset_request_var('selected_items')) {
-		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
+	// if we are to save this form, instead of display it
+	if (isrv('selected_items')) {
+		$selected_items = sanitize_unserialize_selected_items(gnrv('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_nfilter_request_var('drp_action') === '1') { // delete
-				/* do a referential integrity check */
+			if (gnrv('drp_action') === '1') { // delete
+				// do a referential integrity check
 				if (cacti_sizeof($selected_items)) {
 					foreach ($selected_items as $vdef_id) {
-						/* ================= input validation ================= */
+						// ================= input validation =================
 						input_validate_input_number($vdef_id, 'vdef_id');
-						/* ==================================================== */
+						// ====================================================
 
 						$vdef_ids[] = $vdef_id;
 					}
@@ -214,13 +214,13 @@ function vdef_form_actions() {
 					db_execute('DELETE FROM vdef WHERE ' . array_to_sql_or($vdef_ids, 'id'));
 					db_execute('DELETE FROM vdef_items WHERE ' . array_to_sql_or($vdef_ids, 'vdef_id'));
 				}
-			} elseif (get_nfilter_request_var('drp_action') === '2') { // duplicate
+			} elseif (gnrv('drp_action') === '2') { // duplicate
 				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
-					/* ================= input validation ================= */
+					// ================= input validation =================
 					input_validate_input_number($selected_items[$i], "selected_items[$i]");
-					/* ==================================================== */
+					// ====================================================
 
-					duplicate_vdef($selected_items[$i], get_nfilter_request_var('title_format'));
+					duplicate_vdef($selected_items[$i], gnrv('title_format'));
 				}
 			}
 		}
@@ -232,14 +232,14 @@ function vdef_form_actions() {
 		$ilist  = '';
 		$iarray = [];
 
-		/* loop through each of the graphs selected on the previous page and get more info about them */
+		// loop through each of the graphs selected on the previous page and get more info about them
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-				/* ================= input validation ================= */
+				// ================= input validation =================
 				input_validate_input_number($matches[1], 'chk[1]');
-				/* ==================================================== */
+				// ====================================================
 
-				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM vdef WHERE id = ?', [$matches[1]])) . '</li>';
+				$ilist .= '<li>' . htmle(db_fetch_cell_prepared('SELECT name FROM vdef WHERE id = ?', [$matches[1]])) . '</li>';
 				$iarray[] = $matches[1];
 			}
 		}
@@ -283,20 +283,20 @@ function vdef_form_actions() {
 function vdef_item_remove_confirm() {
 	global $vdef_functions, $vdef_item_types, $custom_vdef_data_source_types;
 
-	/* ================= input validation ================= */
-	get_filter_request_var('id');
-	get_filter_request_var('vdef_id');
-	/* ==================================================== */
+	// ================= input validation =================
+	gfrv('id');
+	gfrv('vdef_id');
+	// ====================================================
 
-	/* sort the vdef functions */
+	// sort the vdef functions
 	asort($vdef_functions);
 
 	form_start('vdef.php');
 
 	html_start_box('', '100%', false, 3, 'center', '');
 
-	$vdef       = db_fetch_row_prepared('SELECT * FROM vdef WHERE id = ?', [get_request_var('id')]);
-	$vdef_item  = db_fetch_row_prepared('SELECT * FROM vdef_items WHERE id = ?', [get_request_var('vdef_id')]);
+	$vdef       = db_fetch_row_prepared('SELECT * FROM vdef WHERE id = ?', [grv('id')]);
+	$vdef_item  = db_fetch_row_prepared('SELECT * FROM vdef_items WHERE id = ?', [grv('vdef_id')]);
 
 	?>
 	<tr>
@@ -304,7 +304,7 @@ function vdef_item_remove_confirm() {
 			<p><?php print __('Click \'Continue\' to delete the following VDEF\'s.'); ?></p>
 			<p><?php print __esc('VDEF Name: %s', $vdef['name']); ?><br>
 			<em><?php $vdef_item_type = $vdef_item['type'];
-	print $vdef_item_types[$vdef_item_type]; ?></em>: <strong><?php print html_escape(get_vdef_item_name($vdef_item['id'])); ?></strong></p>
+	print $vdef_item_types[$vdef_item_type]; ?></em>: <strong><?php print htmle(get_vdef_item_name($vdef_item['id'])); ?></strong></p>
 		</td>
 	</tr>
 	<tr>
@@ -332,47 +332,47 @@ function vdef_item_remove_confirm() {
 
 			var data = {
 				__csrf_magic: csrfMagicToken,
-				vdef_id: <?php print get_request_var('vdef_id'); ?>,
-				id: <?php print get_request_var('id'); ?>
+				vdef_id: <?php print grv('vdef_id'); ?>,
+				id: <?php print grv('id'); ?>
 			}
 		});
 	});
 
 	function removeVdefItemFinalize(data) {
 		$('#cdialog').dialog('close');
-		loadUrl({url:'vdef.php?action=edit&id=<?php print get_request_var('id'); ?>'})
+		loadUrl({url:'vdef.php?action=edit&id=<?php print grv('id'); ?>'})
 	}
 	</script>
 	<?php
 }
 
 function vdef_item_remove() {
-	/* ================= input validation ================= */
-	get_filter_request_var('vdef_id');
-	/* ==================================================== */
+	// ================= input validation =================
+	gfrv('vdef_id');
+	// ====================================================
 
 	db_execute_prepared('DELETE FROM vdef_items
 		WHERE id = ?',
-		[get_request_var('id')]);
+		[grv('id')]);
 }
 
 function vdef_item_edit() {
 	global $vdef_functions, $vdef_item_types, $custom_vdef_data_source_types;
 
-	/* ================= input validation ================= */
-	get_filter_request_var('id');
-	get_filter_request_var('vdef_id');
-	get_filter_request_var('type_select');
-	/* ==================================================== */
+	// ================= input validation =================
+	gfrv('id');
+	gfrv('vdef_id');
+	gfrv('type_select');
+	// ====================================================
 
-	/* sort the vdef functions */
+	// sort the vdef functions
 	asort($vdef_functions);
 
-	if (!isempty_request_var('id')) {
+	if (!ierv('id')) {
 		$vdef = db_fetch_row_prepared('SELECT *
 			FROM vdef_items
 			WHERE id = ?',
-			[get_request_var('id')]);
+			[grv('id')]);
 
 		if (cacti_sizeof($vdef)) {
 			$current_type          = $vdef['type'];
@@ -383,14 +383,14 @@ function vdef_item_edit() {
 	}
 
 	html_start_box(__('VDEF Preview'), '100%', false, 3, 'center', '');
-	draw_vdef_preview(get_request_var('vdef_id'));
+	draw_vdef_preview(grv('vdef_id'));
 	html_end_box();
 
-	if (!isempty_request_var('vdef_id')) {
+	if (!ierv('vdef_id')) {
 		$name = db_fetch_cell_prepared('SELECT name
 			FROM vdef
 			WHERE id = ?',
-			[get_request_var('vdef_id')]);
+			[grv('vdef_id')]);
 
 		$header_label = __esc('VDEF Items [edit: %s]', $name);
 	} else {
@@ -401,8 +401,8 @@ function vdef_item_edit() {
 
 	html_start_box($header_label, '100%', false, 3, 'center', '');
 
-	if (isset_request_var('type_select')) {
-		$current_type = get_request_var('type_select');
+	if (isrv('type_select')) {
+		$current_type = grv('type_select');
 	} elseif (isset($vdef['type'])) {
 		$current_type = $vdef['type'];
 	} else {
@@ -425,7 +425,7 @@ function vdef_item_edit() {
 		],
 		'id' => [
 			'method'        => 'hidden',
-			'value'         => isset_request_var('id') ? get_request_var('id') : '0',
+			'value'         => isrv('id') ? grv('id') : '0',
 		],
 		'type' => [
 			'method'        => 'hidden',
@@ -433,7 +433,7 @@ function vdef_item_edit() {
 		],
 		'vdef_id' => [
 			'method'        => 'hidden',
-			'value'         => get_request_var('vdef_id')
+			'value'         => grv('vdef_id')
 		],
 		'save_component_item' => [
 			'method'        => 'hidden',
@@ -481,36 +481,36 @@ function vdef_item_edit() {
 
 	html_end_box();
 
-	form_save_button('vdef.php?action=edit&id=' . get_request_var('vdef_id'));
+	form_save_button('vdef.php?action=edit&id=' . grv('vdef_id'));
 }
 
 function item_movedown() {
-	/* ================= input validation ================= */
-	get_filter_request_var('id');
-	get_filter_request_var('vdef_id');
-	/* ==================================================== */
+	// ================= input validation =================
+	gfrv('id');
+	gfrv('vdef_id');
+	// ====================================================
 
-	move_item_down('vdef_items', get_request_var('id'), 'vdef_id=' . get_request_var('vdef_id'));
+	move_item_down('vdef_items', grv('id'), 'vdef_id=' . grv('vdef_id'));
 }
 
 function item_moveup() {
-	/* ================= input validation ================= */
-	get_filter_request_var('id');
-	get_filter_request_var('vdef_id');
-	/* ==================================================== */
+	// ================= input validation =================
+	gfrv('id');
+	gfrv('vdef_id');
+	// ====================================================
 
-	move_item_up('vdef_items', get_request_var('id'), 'vdef_id=' . get_request_var('vdef_id'));
+	move_item_up('vdef_items', grv('id'), 'vdef_id=' . grv('vdef_id'));
 }
 
 function vdef_item_dnd() {
-	/* ================= Input validation ================= */
-	get_filter_request_var('id');
-	/* ================= Input validation ================= */
+	// ================= Input validation =================
+	gfrv('id');
+	// ================= Input validation =================
 
 	$continue = true;
 
-	if (isset_request_var('vdef_item') && is_array(get_nfilter_request_var('vdef_item'))) {
-		$vdef_ids = get_nfilter_request_var('vdef_item');
+	if (isrv('vdef_item') && is_array(gnrv('vdef_item'))) {
+		$vdef_ids = gnrv('vdef_item');
 
 		if (cacti_sizeof($vdef_ids)) {
 			$sequence = 1;
@@ -529,21 +529,21 @@ function vdef_item_dnd() {
 		}
 	}
 
-	header('Location: vdef.php?action=edit&id=' . get_request_var('id'));
+	header('Location: vdef.php?action=edit&id=' . grv('id'));
 }
 
 function vdef_edit() {
 	global $vdef_item_types;
 
-	/* ================= input validation ================= */
-	get_filter_request_var('id');
-	/* ==================================================== */
+	// ================= input validation =================
+	gfrv('id');
+	// ====================================================
 
-	if (!isempty_request_var('id')) {
+	if (!ierv('id')) {
 		$vdef = db_fetch_row_prepared('SELECT *
 			FROM vdef
 			WHERE id = ?',
-			[get_request_var('id')]);
+			[grv('id')]);
 
 		$header_label = __esc('VDEFs [edit: %s]', $vdef['name']);
 	} else {
@@ -569,9 +569,9 @@ function vdef_edit() {
 	form_hidden_box('id', (isset($vdef['id']) ? $vdef['id'] : '0'), '');
 	form_hidden_box('save_component_vdef', '1', '');
 
-	if (cacti_sizeof($vdef) && !isempty_request_var('id')) {
+	if (cacti_sizeof($vdef) && !ierv('id')) {
 		html_start_box('', '100%', false, 3, 'center', '');
-		draw_vdef_preview(get_request_var('id'));
+		draw_vdef_preview(grv('id'));
 		html_end_box();
 
 		html_start_box(__('VDEF Items'), '100%', false, 3, 'center', 'vdef.php?action=item_edit&vdef_id=' . $vdef['id'], false, false);
@@ -587,7 +587,7 @@ function vdef_edit() {
 			FROM vdef_items
 			WHERE vdef_id = ?
 			ORDER BY sequence',
-			[get_request_var('id')]);
+			[grv('id')]);
 
 		$i           = 1;
 		$total_items = cacti_sizeof($vdef_items);
@@ -598,7 +598,7 @@ function vdef_edit() {
 
 				form_selectable_cell(filter_value(__('Item # %d', $i), '', 'vdef.php?action=item_edit&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef['id']), $vdef_item['id']);
 
-				$item_value = '<em>' . $vdef_item_types[$vdef_item['type']] . '</em>' . html_escape(get_vdef_item_name($vdef_item['id']));
+				$item_value = '<em>' . $vdef_item_types[$vdef_item['type']] . '</em>' . htmle(get_vdef_item_name($vdef_item['id']));
 
 				form_selectable_cell($item_value, $vdef_item['id']);
 
@@ -606,13 +606,13 @@ function vdef_edit() {
 
 				if (read_config_option('drag_and_drop') == '') {
 					if ($i < $total_items) {
-						$actions .= '<a class="pic ti ti-caret-down-filled moveArrow" href="' . html_escape('vdef.php?action=item_movedown&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __esc('Move Down') . '"></a>';
+						$actions .= '<a class="pic ti ti-caret-down-filled moveArrow" href="' . htmle('vdef.php?action=item_movedown&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __esc('Move Down') . '"></a>';
 					} else {
 						$actions .= '<span class="moveArrowNone"></span>';
 					}
 
 					if ($i > 1 && $i <= $total_items) {
-						$actions .= '<a class="pic ti ti-caret-up-filled moveArrow" href="' . html_escape('vdef.php?action=item_moveup&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __esc('Move Up') . '"></a>';
+						$actions .= '<a class="pic ti ti-caret-up-filled moveArrow" href="' . htmle('vdef.php?action=item_moveup&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __esc('Move Up') . '"></a>';
 					} else {
 						$actions .= '<span class="moveArrowNone"></span>';
 					}
@@ -645,7 +645,7 @@ function vdef_edit() {
 		$('#vdef_item').find('tr:first').addClass('nodrag').addClass('nodrop');
 		$('#vdef_item').unbind().tableDnD({
 			onDrop: function(table, row) {
-				loadUrl({url:'vdef.php?action=ajax_dnd&id=<?php isset_request_var('id') ? print get_request_var('id') : print 0; ?>&'+$.tableDnD.serialize()})
+				loadUrl({url:'vdef.php?action=ajax_dnd&id=<?php isrv('id') ? print grv('id') : print 0; ?>&'+$.tableDnD.serialize()})
 			}
 		});
 		<?php } ?>
@@ -690,14 +690,14 @@ function vdef_edit() {
 }
 
 function get_vdef_records(&$total_rows, &$rows) {
-	/* form the 'where' clause for our main sql query */
-	if (get_request_var('filter') != '') {
-		$sql_where = 'WHERE name LIKE ' . db_qstr('%' . get_request_var('filter') . '%');
+	// form the 'where' clause for our main sql query
+	if (grv('filter') != '') {
+		$sql_where = 'WHERE name LIKE ' . db_qstr('%' . grv('filter') . '%');
 	} else {
 		$sql_where = '';
 	}
 
-	if (get_request_var('has_graphs') == 'true') {
+	if (grv('has_graphs') == 'true') {
 		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' graphs > 0';
 	}
 
@@ -706,7 +706,7 @@ function get_vdef_records(&$total_rows, &$rows) {
         $sql_where");
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows;
 
 	return db_fetch_assoc("SELECT *
 		FROM vdef
@@ -718,7 +718,7 @@ function get_vdef_records(&$total_rows, &$rows) {
 function vdef($refresh = true) {
 	global $actions;
 
-	/* create the page filter */
+	// create the page filter
 	$pageFilter = new CactiTableFilter(__('VDEFs'), 'vdef.php', 'form_vdef', 'sess_vdef', 'vdef.php?action=edit');
 
 	$pageFilter->rows_label = __('VDEFs');
@@ -728,15 +728,15 @@ function vdef($refresh = true) {
 	$total_rows = 0;
 	$vdefs      = [];
 
-	if (get_request_var('rows') == '-1') {
+	if (grv('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
 	} else {
-		$rows = get_request_var('rows');
+		$rows = grv('rows');
 	}
 
 	$vdefs = get_vdef_records($total_rows, $rows);
 
-	$nav = html_nav_bar('vdef.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('VDEFs'), 'page', 'main');
+	$nav = html_nav_bar('vdef.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 5, __('VDEFs'), 'page', 'main');
 
 	form_start('vdef.php', 'chk');
 
@@ -770,7 +770,7 @@ function vdef($refresh = true) {
 		]
 	];
 
-	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
+	html_header_sort_checkbox($display_text, grv('sort_column'), grv('sort_direction'), false);
 
 	if (cacti_sizeof($vdefs)) {
 		foreach ($vdefs as $vdef) {
@@ -785,7 +785,7 @@ function vdef($refresh = true) {
 
 			form_alternate_row('line' . $vdef['id'], false, $disabled);
 
-			form_selectable_cell(filter_value($vdef['name'], get_request_var('filter'), 'vdef.php?action=edit&id=' . $vdef['id']), $vdef['id']);
+			form_selectable_cell(filter_value($vdef['name'], grv('filter'), 'vdef.php?action=edit&id=' . $vdef['id']), $vdef['id']);
 			form_selectable_cell($disabled ? __('No') : __('Yes'), $vdef['id'], '', 'right');
 			form_selectable_cell(filter_value(number_format_i18n($vdef['graphs'], -1), '', $graphs_url), $vdef['id'], '', 'right');
 			form_selectable_cell(filter_value(number_format_i18n($vdef['templates'], -1), '', $templates_url), $vdef['id'], '', 'right');
@@ -804,7 +804,7 @@ function vdef($refresh = true) {
 		print $nav;
 	}
 
-	/* draw the dropdown containing a list of available actions for this form */
+	// draw the dropdown containing a list of available actions for this form
 	draw_actions_dropdown($actions);
 
 	form_end();

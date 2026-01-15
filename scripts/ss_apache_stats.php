@@ -9,7 +9,7 @@ Tested and packged for Cacti 1.2.x  by Sean Mancini - bmfmancini - www.seanmanci
 
 $no_http_headers = true;
 
-/* display No errors */
+// display No errors
 error_reporting(0);
 
 if (!isset($called_by_script_server)) {
@@ -22,7 +22,7 @@ if (!isset($called_by_script_server)) {
 }
 
 function ss_apache_stats($host = '', $section = 'all') {
-	/* perform initial error checking */
+	// perform initial error checking
 	if (empty($host)) {
 		cacti_log('ERROR: ApacheStats08 - Host parameter missing, can not continue');
 	}
@@ -103,8 +103,8 @@ function ss_apache_stats($host = '', $section = 'all') {
 				}
 
 				break;
-		}//end switch
-	}//end foreach
+		}// end switch
+	}// end foreach
 
 	if (($section == 'threads') || ($section == 'all')) {
 		foreach ($threads as $type => $num_threads) {

@@ -33,17 +33,17 @@ require_once(CACTI_PATH_LIBRARY . '/snmp.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
-/* switch to main database for cli's */
+// switch to main database for cli's
 if ($config['poller_id'] > 1) {
 	db_switch_remote_to_main();
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (cacti_sizeof($parms)) {
-	/* setup defaults */
+	// setup defaults
 	$description = '';
 	$ip          = '';
 	$host_id     = '';
@@ -115,11 +115,11 @@ if (cacti_sizeof($parms)) {
 		}
 	}
 
-	/* process the various lists into validation arrays */
+	// process the various lists into validation arrays
 	$ids_host  = [];
 	$ids_ip    = [];
 
-	/* process host description */
+	// process host description
 	if ($description != '') {
 		if ($debug) {
 			print 'Searching hosts by description...' . PHP_EOL;

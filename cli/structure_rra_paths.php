@@ -45,7 +45,7 @@ $host_id          = false;
 $host_template_id = false;
 $proceed          = false;
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -122,12 +122,12 @@ if ($proceed == false) {
 	exit -1;
 }
 
-/* check ownership of the current base path */
+// check ownership of the current base path
 $base_rra_path = CACTI_PATH_RRA;
 $owner_id      = fileowner($base_rra_path);
 $group_id      = filegroup($base_rra_path);
 
-/* turn on extended paths from in the database */
+// turn on extended paths from in the database
 set_config_option('extended_paths', 'on');
 
 $pattern = read_config_option('extended_paths_type');
@@ -168,7 +168,7 @@ if ($host_template_id > 0) {
 	$sql_params[] = $host_template_id;
 }
 
-/* fetch all DS having wrong path */
+// fetch all DS having wrong path
 $data_sources = db_fetch_assoc_prepared("SELECT dtd.local_data_id, dl.host_id % $maxdirs AS hash_id,
 	dl.host_id, dtd.data_source_path, dl.snmp_query_id, h.description,
 	$pattern1
@@ -182,7 +182,7 @@ $data_sources = db_fetch_assoc_prepared("SELECT dtd.local_data_id, dl.host_id % 
 	$sql_where",
 	$sql_params);
 
-/* setup some counters */
+// setup some counters
 $total_count = cacti_sizeof($data_sources);
 $done_count  = 0;
 $warn_count  = 0;
@@ -191,10 +191,10 @@ $started     = false;
 
 printf('NOTE: Found:%s Data Sources.  Beginning Process' . PHP_EOL, number_format($total_count));
 
-/* truncate the data source command stats table */
+// truncate the data source command stats table
 db_execute('TRUNCATE TABLE data_source_stats_command_cache');
 
-/* scan all data sources */
+// scan all data sources
 foreach ($data_sources as $info) {
 	if (($done_count + $warn_count + $skip_count) % 100 == 0 && $started) {
 		printf('NOTE: Completed: %d of %d RRDfiles' . PHP_EOL, $done_count + $warn_count + $skip_count, $total_count);
@@ -207,14 +207,14 @@ foreach ($data_sources as $info) {
 	$old_rrd_path  = $info['rrd_path'];
 	$local_data_id = $info['local_data_id'];
 
-	/* acquire lock in order to prevent race conditions */
+	// acquire lock in order to prevent race conditions
 	while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds.$local_data_id', 1)")) {
 		usleep(50000);
 	}
 
-	/* create one subfolder for every host */
+	// create one subfolder for every host
 	if (!is_dir($new_base_path)) {
-		/* see if we can create the directory for the new file */
+		// see if we can create the directory for the new file
 		if (mkdir($new_base_path, 0775, true)) {
 			struct_debug("NOTE: New Directory '$new_base_path' Created for RRD Files");
 
@@ -239,7 +239,7 @@ foreach ($data_sources as $info) {
 	 * else update the database and set an error
 	 */
 	if (!file_exists($old_rrd_path)) {
-		/* check for file in other path */
+		// check for file in other path
 		$data_source_name = db_fetch_cell_prepared('SELECT data_source_name
 			FROM data_template_rrd
 			WHERE local_data_id = ?
@@ -268,7 +268,7 @@ foreach ($data_sources as $info) {
 			print "WARNING: Legacy RRA Path '$old_rrd_path' Does not exist, Skipping" . PHP_EOL;
 		}
 
-		/* alter database */
+		// alter database
 		update_database($info);
 	}
 
@@ -293,7 +293,7 @@ foreach ($data_sources as $info) {
 					}
 				}
 
-				/* alter database */
+				// alter database
 				update_database($info);
 			} else {
 				print "FATAL: Could not Move RRD File '$old_rrd_path' to '$new_rrd_path'" . PHP_EOL;
@@ -341,13 +341,13 @@ function struct_debug($string) {
  * @return (void)
  */
 function update_database($info) {
-	/* update table poller_item */
+	// update table poller_item
 	db_execute_prepared('UPDATE poller_item
 		SET rrd_path = ?
 		WHERE local_data_id = ?',
 		[$info['new_rrd_path'], $info['local_data_id']]);
 
-	/* update table data_template_data */
+	// update table data_template_data
 	db_execute_prepared('UPDATE data_template_data
 		SET data_source_path = ?
 		WHERE local_data_id = ?',

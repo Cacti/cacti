@@ -32,7 +32,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 	$goBack = "[<a href='#' onClick='window.history.back()'>" . __('Return') . "</a> | <a href='" . CACTI_PATH_URL . "logout.php'>" . __('Login Again') . '</a>]';
 }
 
-/* allow for plugin based permission denied page */
+// allow for plugin based permission denied page
 if (api_plugin_hook_function('custom_denied', OPER_MODE_NATIVE) === OPER_MODE_RESKIN) {
 	exit;
 }

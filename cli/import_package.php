@@ -38,7 +38,7 @@ if ($config['poller_id'] > 1) {
 	exit(1);
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -205,7 +205,7 @@ if (cacti_sizeof($parms)) {
 	exit(1);
 }
 
-/*  display_version - displays version information */
+// display_version - displays version information
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Import Template Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;

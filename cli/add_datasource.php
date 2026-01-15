@@ -29,12 +29,12 @@ require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');
 
-/* switch to main database for cli's */
+// switch to main database for cli's
 if ($config['poller_id'] > 1) {
 	db_switch_remote_to_main();
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -104,7 +104,7 @@ if (!isset($data_template_id)) {
 	exit(1);
 }
 
-//Following code was copied from data_sources.php->function form_save->save_component_data_source_new
+// Following code was copied from data_sources.php->function form_save->save_component_data_source_new
 
 $save['id']               = '0';
 $save['data_template_id'] = $data_template_id;
@@ -114,17 +114,17 @@ $local_data_id = sql_save($save, 'data_local');
 
 change_data_template($local_data_id, $data_template_id);
 
-/* update the title cache */
+// update the title cache
 update_data_source_title_cache($local_data_id);
 
-/* update host data */
+// update host data
 if (!empty($host_id)) {
 	push_out_host($host_id, $local_data_id);
 }
 
 print "DS Added - DS[$local_data_id]\n";
 
-/*  display_version - displays version information */
+// display_version - displays version information
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Add Data Source, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;

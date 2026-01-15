@@ -23,19 +23,19 @@
  +-------------------------------------------------------------------------+
 */
 
-/* Original script is located here https://forums.cacti.net/viewtopic.php?t=35816, but this one was modified quite a lot */
+// Original script is located here https://forums.cacti.net/viewtopic.php?t=35816, but this one was modified quite a lot
 
 require(__DIR__ . '/../include/cli_check.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');
 
-/* switch to main database for cli's */
+// switch to main database for cli's
 if ($config['poller_id'] > 1) {
 	db_switch_remote_to_main();
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -211,7 +211,7 @@ function display_version() {
 	print "Cacti Graph Repair Tool, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-/* display_help - displays the usage of the function */
+// display_help - displays the usage of the function
 function display_help() {
 	print "usage: repair_graphs.php [--host-id=ID] --data-template-id=[ID]\n";
 	print "	--graph-template-id=[ID] [--show-sql] [--execute]\n\n";

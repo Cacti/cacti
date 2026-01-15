@@ -290,12 +290,12 @@ function get_basic_auth_username(): string|false {
  * @return int|false The ID of the new user if successful, or false if the operation failed.
  */
 function user_copy(string $template_user, string $new_user, int $template_realm = 0, int $new_realm = 0, bool $overwrite = false, array $data_override = []): int|false {
-	/* ================= input validation ================= */
+	// ================= input validation =================
 	input_validate_input_number($template_realm, 'template_realm');
 	input_validate_input_number($new_realm, 'new_realm');
-	/* ==================================================== */
+	// ====================================================
 
-	/* Check get template users array */
+	// Check get template users array
 	$user_auth = db_fetch_row_prepared('SELECT *
 		FROM user_auth
 		WHERE username = ?
@@ -308,7 +308,7 @@ function user_copy(string $template_user, string $new_user, int $template_realm 
 
 	$template_id = $user_auth['id'];
 
-	/* Create update/insert for new/existing user */
+	// Create update/insert for new/existing user
 	$user_exist = db_fetch_row_prepared('SELECT *
 		FROM user_auth
 		WHERE username = ?
@@ -317,7 +317,7 @@ function user_copy(string $template_user, string $new_user, int $template_realm 
 
 	if (cacti_sizeof($user_exist)) {
 		if ($overwrite) {
-			/* Overwrite existing user */
+			// Overwrite existing user
 			$user_auth['id']                   = $user_exist['id'];
 			$user_auth['username']             = $user_exist['username'];
 			$user_auth['password']             = $user_exist['password'];
@@ -327,13 +327,13 @@ function user_copy(string $template_user, string $new_user, int $template_realm 
 			$user_auth['must_change_password'] = $user_exist['must_change_password'];
 			$user_auth['enabled']              = $user_exist['enabled'];
 		} else {
-			/* User already exists, duplicate users are bad */
+			// User already exists, duplicate users are bad
 			raise_message(19);
 
 			return false;
 		}
 	} else {
-		/* new user */
+		// new user
 		$user_auth['id']            = 0;
 		$user_auth['username']      = $new_user;
 		$user_auth['enabled']       = 'on';
@@ -342,7 +342,7 @@ function user_copy(string $template_user, string $new_user, int $template_realm 
 		$user_auth['realm']         = $new_realm;
 	}
 
-	/* Update data_override fields */
+	// Update data_override fields
 	if (is_array($data_override)) {
 		foreach ($data_override as $field => $value) {
 			if (isset($user_auth[$field]) && $field != 'id' && $field != 'username') {
@@ -351,10 +351,10 @@ function user_copy(string $template_user, string $new_user, int $template_realm 
 		}
 	}
 
-	/* Save the user */
+	// Save the user
 	$new_id = sql_save($user_auth, 'user_auth');
 
-	/* Create/Update permissions and settings */
+	// Create/Update permissions and settings
 	if (cacti_sizeof($user_exist) && $overwrite) {
 		db_execute_prepared('DELETE FROM user_auth_perms WHERE user_id = ?', [$user_exist['id']]);
 		db_execute_prepared('DELETE FROM user_auth_realm WHERE user_id = ?', [$user_exist['id']]);
@@ -410,7 +410,7 @@ function user_copy(string $template_user, string $new_user, int $template_realm 
 		}
 	}
 
-	/* apply group permissions for the user */
+	// apply group permissions for the user
 	$groups = db_fetch_assoc_prepared('SELECT group_id
 		FROM user_auth_group_members
 		WHERE user_id = ?',
@@ -438,17 +438,17 @@ function user_copy(string $template_user, string $new_user, int $template_realm 
  * @return void
  */
 function user_remove(int $user_id): void {
-	/* ================= input validation ================= */
+	// ================= input validation =================
 	input_validate_input_number($user_id, 'user_id');
-	/* ==================================================== */
+	// ====================================================
 
-	/* check for guest or template user */
+	// check for guest or template user
 	$username = db_fetch_cell_prepared('SELECT username
 		FROM user_auth
 		WHERE id = ?',
 		[$user_id]);
 
-	if ($username != get_nfilter_request_var('username')) {
+	if ($username != gnrv('username')) {
 		if (is_template_account($user_id)) {
 			raise_message(21);
 
@@ -483,9 +483,9 @@ function user_remove(int $user_id): void {
  * @return void
  */
 function user_disable(int $user_id): void {
-	/* ================= input validation ================= */
+	// ================= input validation =================
 	input_validate_input_number($user_id, 'user_id');
-	/* ==================================================== */
+	// ====================================================
 
 	db_execute_prepared("UPDATE user_auth SET enabled = '' WHERE id = ?", [$user_id]);
 	db_execute_prepared('DELETE FROM user_auth_cache WHERE user_id = ?', [$user_id]);
@@ -503,9 +503,9 @@ function user_disable(int $user_id): void {
  * @return void
  */
 function user_enable(int $user_id): void {
-	/* ================= input validation ================= */
+	// ================= input validation =================
 	input_validate_input_number($user_id, 'user_id');
-	/* ==================================================== */
+	// ====================================================
 
 	db_execute_prepared("UPDATE user_auth SET enabled = 'on' WHERE id = ?", [$user_id]);
 
@@ -604,20 +604,20 @@ function is_graph_allowed(int $local_graph_id, int $user_id = 0): bool {
 function auth_check_perms(array $objects, int $policy): bool {
 	$objectSize = cacti_sizeof($objects);
 
-	/* policy == allow AND matches = DENY */
+	// policy == allow AND matches = DENY
 	if ($objectSize && $policy == 1) {
 		return false;
-		/* policy == deny AND matches = ALLOW */
+		// policy == deny AND matches = ALLOW
 	}
 
 	if ($objectSize && $policy == 2) {
 		return true;
-		/* policy == allow AND no matches = ALLOW */
+		// policy == allow AND no matches = ALLOW
 	}
 
 	if (!$objectSize && $policy == 1) {
 		return true;
-		/* policy == deny AND no matches = DENY */
+		// policy == deny AND no matches = DENY
 	}
 
 	if (!$objectSize && $policy == 2) {
@@ -754,7 +754,7 @@ function is_tree_allowed(int $tree_id, int $user_id = 0): bool {
 		return true;
 	}
 
-	/* check for group perms */
+	// check for group perms
 	$groups = db_fetch_assoc_prepared("SELECT uag.policy_trees
 		FROM user_auth_group AS uag
 		INNER JOIN user_auth_group_members AS uagm
@@ -777,7 +777,7 @@ function is_tree_allowed(int $tree_id, int $user_id = 0): bool {
 		}
 	}
 
-	/* check for group trees */
+	// check for group trees
 	$gtrees = db_fetch_assoc_prepared("SELECT uagm.user_id
 		FROM user_auth_group AS uag
 		INNER JOIN user_auth_group_members AS uagm
@@ -925,7 +925,7 @@ function is_tree_branch_empty(int $tree_id, int $parent = 0): bool {
 	);
 
 	if (!cacti_sizeof($sites)) {
-		$total_rows = -1;	/* Adding to fix pass by reference error in get_allowed_devices */
+		$total_rows = -1;	// Adding to fix pass by reference error in get_allowed_devices
 
 		if (cacti_sizeof($hosts) && cacti_sizeof(get_allowed_devices('h.id IN(' . implode(',', $hosts) . ')', 'description', '', $total_rows)) > 0) {
 			return false;
@@ -942,7 +942,7 @@ function is_tree_branch_empty(int $tree_id, int $parent = 0): bool {
 				), 'id', 'id'
 			);
 		}
-		$total_rows = -1;	/* Adding to fix pass by reference error in get_allowed_devices */
+		$total_rows = -1;	// Adding to fix pass by reference error in get_allowed_devices
 
 		if (cacti_sizeof($site_hosts) && cacti_sizeof(get_allowed_devices('h.id IN(' . implode(',', $site_hosts) . ')', 'description', '', $total_rows)) > 0) {
 			return false;
@@ -982,14 +982,14 @@ function is_tree_branch_empty(int $tree_id, int $parent = 0): bool {
 function is_realm_allowed(int $realm, int|bool $check_user = false): bool {
 	global $config;
 
-	/* if we are only checking another users permission, don't check cache */
+	// if we are only checking another users permission, don't check cache
 	if ($check_user == false) {
-		/* user is not set, no permissions */
+		// user is not set, no permissions
 		if (!isset($_SESSION[SESS_USER_ID])) {
 			return false;
 		}
 
-		/* check to see if the admin invalidated a permission */
+		// check to see if the admin invalidated a permission
 		if (!is_user_perms_valid($_SESSION[SESS_USER_ID])) {
 			if (db_table_exists('user_auth_cache')) {
 				$enabled = db_fetch_cell_prepared('SELECT enabled
@@ -1038,7 +1038,7 @@ function is_realm_allowed(int $realm, int|bool $check_user = false): bool {
 			}
 		}
 
-		/* if the permission is already valid, the session variable will be set */
+		// if the permission is already valid, the session variable will be set
 		if (isset($_SESSION[SESS_USER_REALMS][$realm])) {
 			return $_SESSION[SESS_USER_REALMS][$realm];
 		}
@@ -1249,7 +1249,7 @@ function get_allowed_tree_content(int $tree_id, int $parent = 0, string $sql_whe
  * @return array An array of policies
  */
 function get_policies(int $user_id): array {
-	/* get policies for all user groups */
+	// get policies for all user groups
 	$policies = db_fetch_assoc_prepared("SELECT uag.id, 'group' AS type, uag.name,
 		uag.policy_graphs, uag.policy_hosts, uag.policy_graph_templates, uag.policy_trees
 		FROM user_auth_group AS uag
@@ -1259,7 +1259,7 @@ function get_policies(int $user_id): array {
 		AND uagm.user_id = ?",
 		[$user_id]);
 
-	/* get policies for the user */
+	// get policies for the user
 	$policies[] = db_fetch_row_prepared("SELECT id, 'user' AS type, 'user' AS name,
 		policy_graphs, policy_hosts, policy_graph_templates, policy_trees
 		FROM user_auth
@@ -1331,7 +1331,7 @@ function get_allowed_tree_header_graphs(int $tree_id,int  $leaf_id = 0, string $
 
 	$graph_auth_method = read_config_option('graph_auth_method');
 
-	/* get policies for all groups and user */
+	// get policies for all groups and user
 	$policies = get_policies($user_id);
 
 	$sql_where = get_policy_where($graph_auth_method, $policies, $sql_where);
@@ -1472,13 +1472,13 @@ function get_allowed_graphs(string $sql_where = '', string $sql_order = 'gtg.tit
 		$sql_where = "WHERE ((h.id > 0 AND h.deleted = '') OR h.id IS NULL)";
 	}
 
-	/* see if permissions are simple */
+	// see if permissions are simple
 	$simple_perms = get_simple_graph_perms($user_id);
 
-	/* in case we need to review get the graph_auth_method */
+	// in case we need to review get the graph_auth_method
 	$graph_auth_method = read_config_option('graph_auth_method');
 
-	/* get policies for all groups and user */
+	// get policies for all groups and user
 	$policies = get_policies($user_id);
 
 	if (!$simple_perms) {
@@ -1581,13 +1581,13 @@ function get_allowed_aggregate_graphs(string $sql_where = '', string $sql_order 
 		$sql_where = "WHERE ((h.id > 0 AND h.deleted = '') OR h.id IS NULL)";
 	}
 
-	/* see if permissions are simple */
+	// see if permissions are simple
 	$simple_perms = get_simple_graph_perms($user_id);
 
-	/* in case we need to review get the graph_auth_method */
+	// in case we need to review get the graph_auth_method
 	$graph_auth_method = read_config_option('graph_auth_method');
 
-	/* get policies for all groups and user */
+	// get policies for all groups and user
 	$policies = get_policies($user_id);
 
 	if (!$simple_perms) {
@@ -1855,16 +1855,16 @@ function get_allowed_graph_templates(string $sql_where = '', string $sql_order =
 
 	$sql_where = 'WHERE ' . ($sql_where != '' ? $sql_where . ' AND ' : ' ') . '(gt.id IS NOT NULL) ';
 
-	/* see if permissions are simple */
+	// see if permissions are simple
 	$simple_perms = get_simple_graph_perms($user_id);
 
-	/* in case we need to review get the graph_auth_method */
+	// in case we need to review get the graph_auth_method
 	$graph_auth_method = read_config_option('graph_auth_method');
 
-	/* get policies for all groups and user */
+	// get policies for all groups and user
 	$policies = get_policies($user_id);
 
-	/* short circuit if we don't have a user */
+	// short circuit if we don't have a user
 	if ($user_id == 0) {
 		return [];
 	}
@@ -2273,7 +2273,7 @@ function get_permission_string(array &$graph, array &$policies): string {
 	// 4 - Graph Template
 	$method = read_config_option('graph_auth_method');
 
-	if ($graph['disabled'] == 'on' && read_user_setting('hide_disabled', false, false, get_request_var('user_id'))) {
+	if ($graph['disabled'] == 'on' && read_user_setting('hide_disabled', false, false, grv('user_id'))) {
 		$drejectStr .= __esc('Device:(Hide Disabled)');
 	}
 
@@ -2491,7 +2491,7 @@ function get_allowed_trees(bool $edit = false, bool $return_sql = false, string 
 		}
 	}
 
-	/* get policies for all groups and user */
+	// get policies for all groups and user
 	$policies = db_fetch_assoc_prepared("SELECT uag.id, 'group' AS type, policy_trees FROM user_auth_group AS uag
 		INNER JOIN user_auth_group_members AS uagm
 		ON uag.id = uagm.group_id
@@ -2591,7 +2591,7 @@ function get_allowed_branches(string $sql_where = '', string $sql_order = 'name'
 
 	$simple_perms = get_simple_device_perms($user_id);
 
-	/* get policies for all groups and user */
+	// get policies for all groups and user
 	$policies = get_policies($user_id);
 
 	$sql_hosts_where = '';
@@ -2737,7 +2737,7 @@ function get_allowed_devices(string $sql_where = '', string $sql_order = 'descri
 
 	$graph_auth_method = read_config_option('graph_auth_method');
 
-	/* get policies for all groups and user */
+	// get policies for all groups and user
 	$policies = get_policies($user_id);
 
 	if (!$simple_perms) {
@@ -3193,7 +3193,7 @@ function get_allowed_ajax_hosts(bool $include_any = true, bool $include_none = t
 
 	$return = [];
 
-	$term = get_filter_request_var('term', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
+	$term = gfrv('term', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
 
 	if ($term != '') {
 		$sql_where .= ($sql_where != '' ? ' AND ' : '') .
@@ -3202,7 +3202,7 @@ function get_allowed_ajax_hosts(bool $include_any = true, bool $include_none = t
 			' OR notes LIKE ' . db_qstr("%$term%") . ')';
 	}
 
-	if (get_request_var('term') == '') {
+	if (grv('term') == '') {
 		if ($include_any) {
 			$return[] = ['label' => __('Any'), 'value' => 'Any', 'id' => '-1'];
 		}
@@ -3218,7 +3218,7 @@ function get_allowed_ajax_hosts(bool $include_any = true, bool $include_none = t
 
 	if (cacti_sizeof($hosts)) {
 		foreach ($hosts as $host) {
-			$return[] = ['label' => html_escape(strip_domain($host['description'])), 'value' => html_escape($host['description']), 'id' => $host['id']];
+			$return[] = ['label' => htmle(strip_domain($host['description'])), 'value' => htmle($host['description']), 'id' => $host['id']];
 		}
 	}
 
@@ -3246,13 +3246,13 @@ function get_allowed_ajax_graph_templates(bool $include_any = true, bool $includ
 
 	$return = [];
 
-	$term = get_filter_request_var('term', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
+	$term = gfrv('term', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
 
 	if ($term != '') {
 		$sql_where .= ($sql_where != '' ? ' AND ' : '') . 'name LIKE ' . db_qstr("%$term%");
 	}
 
-	if (get_request_var('term') == '') {
+	if (grv('term') == '') {
 		if ($include_any) {
 			$return[] = ['label' => __('Any'), 'value' => 'Any', 'id' => '-1'];
 		}
@@ -3268,7 +3268,7 @@ function get_allowed_ajax_graph_templates(bool $include_any = true, bool $includ
 
 	if (cacti_sizeof($templates)) {
 		foreach ($templates as $template) {
-			$return[] = ['label' => html_escape($template['name']), 'value' => html_escape($template['name']), 'id' => $template['id']];
+			$return[] = ['label' => htmle($template['name']), 'value' => htmle($template['name']), 'id' => $template['id']];
 		}
 	}
 
@@ -3295,7 +3295,7 @@ function get_allowed_ajax_graph_items(bool $include_none = true, string $sql_whe
 
 	$return    = [];
 
-	$term = get_filter_request_var('term', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
+	$term = gfrv('term', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
 
 	if ($term != '') {
 		$sql_where .= ($sql_where != '' ? ' AND ' : '') .
@@ -3303,7 +3303,7 @@ function get_allowed_ajax_graph_items(bool $include_none = true, string $sql_whe
 			' OR data_source_name LIKE ' . db_qstr("%$term%");
 	}
 
-	if (get_request_var('term') == '') {
+	if (grv('term') == '') {
 		if ($include_none) {
 			$return[] = ['label' => __('None'), 'value' => 'None', 'id' => '0'];
 		}
@@ -3313,7 +3313,7 @@ function get_allowed_ajax_graph_items(bool $include_none = true, string $sql_whe
 
 	if (cacti_sizeof($graph_items)) {
 		foreach ($graph_items as $gi) {
-			$return[] = ['label' => html_escape($gi['name']), 'value' => html_escape($gi['name']), 'id' => $gi['id']];
+			$return[] = ['label' => htmle($gi['name']), 'value' => htmle($gi['name']), 'id' => $gi['id']];
 		}
 	}
 
@@ -3339,7 +3339,7 @@ function get_allowed_ajax_graphs(string $sql_where = ''): array {
 
 	$return = [];
 
-	$term = get_filter_request_var('term', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
+	$term = gfrv('term', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
 
 	if ($term != '') {
 		$sql_where .= ($sql_where != '' ? ' AND ' : '') . 'title_cache LIKE ' . db_qstr("%$term%");
@@ -3351,7 +3351,7 @@ function get_allowed_ajax_graphs(string $sql_where = ''): array {
 
 	if (cacti_sizeof($graphs)) {
 		foreach ($graphs as $graph) {
-			$return[] = ['label' => html_escape($graph['title_cache']), 'value' => html_escape($graph['title_cache']), 'id' => $graph['local_graph_id']];
+			$return[] = ['label' => htmle($graph['title_cache']), 'value' => htmle($graph['title_cache']), 'id' => $graph['local_graph_id']];
 		}
 	}
 
@@ -3430,10 +3430,10 @@ function auth_get_username(): string {
 	if ($auth_method == AUTH_METHOD_BASIC) {
 		$username = get_basic_auth_username();
 
-		/* Get the Web Basic Auth username and set action so we login right away */
-		set_request_var('action', 'login');
-	} elseif (get_nfilter_request_var('action') == 'login') {
-		$username = get_nfilter_request_var('login_username');
+		// Get the Web Basic Auth username and set action so we login right away
+		srv('action', 'login');
+	} elseif (gnrv('action') == 'login') {
+		$username = gnrv('login_username');
 	} else {
 		$username = '';
 	}
@@ -3604,7 +3604,7 @@ function auth_process_lockout(string $username, int $realm): void {
 				} else {
 					cacti_log(sprintf("LOGIN FAILED: Local Login Failed for user '%s' from IP Address '%s'", $username, get_client_addr()), false, 'AUTH');
 
-					/* error */
+					// error
 					$error     = true;
 					$error_msg = __('Access Denied!  Login Failed.');
 				}
@@ -3638,7 +3638,7 @@ function basic_auth_login_process(string $username): array {
 		exit;
 	}
 
-	/* Locate user in database */
+	// Locate user in database
 	$user = db_fetch_row_prepared('SELECT *
 		FROM user_auth
 		WHERE username = ?
@@ -3685,7 +3685,7 @@ function local_auth_login_process(string $username): array {
 			[$username]);
 
 		if ($stored_pass != '') {
-			$password = get_nfilter_request_var('login_password');
+			$password = gnrv('login_password');
 
 			$valid = compat_password_verify($password, $stored_pass);
 
@@ -3725,7 +3725,7 @@ function local_auth_login_process(string $username): array {
 function ldap_login_process(string $username): array {
 	global $error, $error_msg;
 
-	$password = get_nfilter_request_var('login_password');
+	$password = gnrv('login_password');
 
 	if ($username == '') {
 		$error     = true;
@@ -3746,13 +3746,13 @@ function ldap_login_process(string $username): array {
 	$realm = 3;
 
 	if ($password != '') {
-		/* get user DN */
+		// get user DN
 		$ldap_dn_search_response = cacti_ldap_search_dn($username);
 
 		if ($ldap_dn_search_response['error_num'] == '0') {
 			$ldap_dn = $ldap_dn_search_response['dn'];
 		} else {
-			/* error searching */
+			// error searching
 			$error     = true;
 			$error_msg =  __('Access Denied!  LDAP Search Error: %s', $ldap_dn_search_response['error_text']);
 
@@ -3760,11 +3760,11 @@ function ldap_login_process(string $username): array {
 		}
 
 		if (!$error) {
-			/* auth user with LDAP */
+			// auth user with LDAP
 			$ldap_auth_response = cacti_ldap_auth($username, $password, $ldap_dn);
 
 			if ($ldap_auth_response['error_num'] == '0') {
-				/* Locate user in database */
+				// Locate user in database
 				cacti_log(sprintf("LOGIN: LDAP User '%s' from IP Address %s Authenticated", $username, get_client_addr()), false, 'AUTH');
 
 				$user = db_fetch_row_prepared('SELECT *
@@ -3773,7 +3773,7 @@ function ldap_login_process(string $username): array {
 					AND realm = ?',
 					[$username, $realm]);
 			} else {
-				/* error */
+				// error
 				$error     = true;
 				$error_msg = __('Access Denied!  LDAP Error: %s', $ldap_auth_response['error_text']);
 
@@ -3785,7 +3785,7 @@ function ldap_login_process(string $username): array {
 			}
 		}
 	} else {
-		/* error */
+		// error
 		$error     = true;
 		$error_msg = __('Access Denied!  No password provided by user.');
 
@@ -3818,8 +3818,8 @@ function ldap_login_process(string $username): array {
 function domains_login_process(string $username): array {
 	global $realm, $error, $error_msg;
 
-	$realm    = get_nfilter_request_var('realm');
-	$password = get_nfilter_request_var('login_password');
+	$realm    = gnrv('realm');
+	$password = gnrv('login_password');
 
 	if ($username == '') {
 		$error     = true;
@@ -3839,13 +3839,13 @@ function domains_login_process(string $username): array {
 	$user = [];
 
 	if ($realm > 3 && $password != '') {
-		/* get user DN */
+		// get user DN
 		$ldap_dn_search_response = domains_ldap_search_dn($username, $realm);
 
 		if ($ldap_dn_search_response['error_num'] == '0') {
 			$ldap_dn = $ldap_dn_search_response['dn'];
 		} else {
-			/* error searching */
+			// error searching
 			$error     = true;
 			$error_msg = __('LDAP Search Error: %s', $ldap_dn_search_response['error_text']);
 
@@ -3853,17 +3853,17 @@ function domains_login_process(string $username): array {
 		}
 
 		if (!$error) {
-			/* auth user with LDAP */
+			// auth user with LDAP
 			$ldap_auth_response = domains_ldap_auth($username, $password, $ldap_dn, $realm);
 
 			if ($ldap_auth_response['error_num'] == '0') {
-				/* User ok */
+				// User ok
 				$domain_name = db_fetch_cell_prepared('SELECT domain_name
 					FROM user_domains
 					WHERE domain_id = ?',
 					[$realm - 1000]);
 
-				/* Locate user in database */
+				// Locate user in database
 				cacti_log(sprintf("LOGIN: LDAP User '%s' Authenticated from Domain '%s' from IP address %s", $username, $domain_name, get_client_addr()), false, 'AUTH');
 
 				$user = db_fetch_row_prepared('SELECT *
@@ -3872,7 +3872,7 @@ function domains_login_process(string $username): array {
 					AND realm = ?',
 					[$username, $realm]);
 
-				/* Create user from template if requested */
+				// Create user from template if requested
 				$template_user = db_fetch_cell_prepared('SELECT user_id
 					FROM user_domains
 					WHERE domain_id = ?',
@@ -3886,14 +3886,14 @@ function domains_login_process(string $username): array {
 				if (!cacti_sizeof($user) && $template_user > 0 && $username != '') {
 					cacti_log("NOTE: User '" . $username . "' does not exist, copying template user", false, 'AUTH');
 
-					/* check that template user exists */
+					// check that template user exists
 					$user_template = db_fetch_row_prepared('SELECT *
 						FROM user_auth
 						WHERE id = ?',
 						[$template_user]);
 
 					if (cacti_sizeof($user_template)) {
-						/* template user found */
+						// template user found
 						$cn_full_name = db_fetch_cell_prepared('SELECT cn_full_name
 							FROM user_domains_ldap
 							WHERE domain_id = ?',
@@ -3931,14 +3931,14 @@ function domains_login_process(string $username): array {
 							user_copy($user_template['username'], $username, 0, $realm);
 						}
 
-						/* requery newly created user */
+						// requery newly created user
 						$user = db_fetch_row_prepared('SELECT *
 							FROM user_auth
 							WHERE username = ?
 							AND realm = ?',
 							[$username, $realm]);
 					} else {
-						/* error */
+						// error
 						$error     = true;
 						$error_msg = __('Access Denied!  Template user id %s does not exist.  Please contact your Administrator.', $template_user);
 
@@ -3946,7 +3946,7 @@ function domains_login_process(string $username): array {
 					}
 				}
 			} else {
-				/* error */
+				// error
 				$error     = true;
 				$error_msg = __('Access Denied!  LDAP Error: %s', $ldap_auth_response['error_text']);
 
@@ -3958,7 +3958,7 @@ function domains_login_process(string $username): array {
 			}
 		}
 	} elseif ($password == '') {
-		/* error */
+		// error
 		$error     = true;
 		$error_msg = __('Access Denied!  No password provided by user.');
 
@@ -4318,7 +4318,7 @@ function domains_ldap_search_cn(string $username, array $cn = [], int $realm = 0
 function secpass_login_process(string $username): array {
 	global $error, $error_msg;
 
-	$password = get_nfilter_request_var('login_password');
+	$password = gnrv('login_password');
 
 	if ($username == '') {
 		$error     = true;
@@ -4360,7 +4360,7 @@ function secpass_login_process(string $username): array {
 		}
 
 		if (trim($password) == '') {
-			/* error */
+			// error
 			$error     = true;
 			$error_msg = __('Access Denied!  No password provided by user.');
 
@@ -4386,7 +4386,7 @@ function secpass_login_process(string $username): array {
 			return [];
 		}
 	} else {
-		/* error */
+		// error
 		$error     = true;
 		$error_msg = __('Access Denied!  Login Failed.');
 
@@ -4774,10 +4774,10 @@ function auth_display_custom_error_message(string $message): void {
 		$custom_message = '';
 	}
 
-	/* kill the session */
+	// kill the session
 	cacti_cookie_logout();
 
-	/* print error */
+	// print error
 	print '<!DOCTYPE html>';
 	print '<html>';
 	print '<head>';
@@ -4819,7 +4819,7 @@ function auth_login_redirect(string $login_opts = ''): void {
 
 	// Decide what to do with an authenticated user
 	switch ($login_opts) {
-		case '1': /* referer */
+		case '1': // referer
 			/**
 			 * because we use plugins, we can't redirect back to graph_view.php if they don't
 			 * have console access
@@ -4862,7 +4862,7 @@ function auth_login_redirect(string $login_opts = ''): void {
 
 			$referer .= ($newtheme ? (!str_contains($referer, '?') ? '?' : '&') . 'newtheme=1' : '');
 
-			/* Strip out the login from the referer if present */
+			// Strip out the login from the referer if present
 			$referer  = str_replace('?action=login', '', $referer);
 
 			if (api_user_realm_auth(auth_basename($referer))) {
@@ -4878,7 +4878,7 @@ function auth_login_redirect(string $login_opts = ''): void {
 			}
 
 			break;
-		case '2': /* default console page */
+		case '2': // default console page
 			if (!is_realm_allowed(8)) {
 				header('Location: ' . CACTI_PATH_URL . 'graph_view.php' . ($newtheme ? '?newtheme=1' : ''));
 			} else {
@@ -4886,7 +4886,7 @@ function auth_login_redirect(string $login_opts = ''): void {
 			}
 
 			break;
-		case '3': /* default graph page */
+		case '3': // default graph page
 			header('Location: ' . CACTI_PATH_URL . 'graph_view.php' . ($newtheme ? '?newtheme=1' : ''));
 
 			break;
@@ -4934,10 +4934,10 @@ function auth_login_create_user_from_template(string $username, int $realm): arr
 		WHERE id = ?',
 		[get_template_account($username)]);
 
-	/* check that template user exists */
+	// check that template user exists
 	if (!empty($user_template)) {
 		if ($realm == 3) { // This is an ldap login
-			/* get user CN*/
+			// get user CN
 			$cn_full_name = read_config_option('cn_full_name');
 			$cn_email     = read_config_option('cn_email');
 
@@ -4973,14 +4973,14 @@ function auth_login_create_user_from_template(string $username, int $realm): arr
 			user_copy($user_template['username'], $username, $user_template['realm'], $realm);
 		}
 
-		/* requery newly created user */
+		// requery newly created user
 		$user = db_fetch_row_prepared('SELECT *
 			FROM user_auth
 			WHERE username = ?
 			AND realm = ?',
 			[$username, $realm]);
 	} else {
-		/* error */
+		// error
 		$error     = true;
 		$error_msg = __('Access Denied!  Template user id %s does not exist.  Please contact your Administrator.', read_config_option('user_template'));
 

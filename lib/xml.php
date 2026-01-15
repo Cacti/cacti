@@ -90,13 +90,13 @@ function rrdxport2array($data) {
 	// Bug force encoding to UTF-8
 	$data = str_replace(['US-ASCII', 'ISO-8859-1'], 'UTF-8', $data);
 
-	/* bug #1436 */
-	/* scan XML for bad data RRDtool 1.2.30 */
+	// bug #1436
+	// scan XML for bad data RRDtool 1.2.30
 	$array = explode("\n", $data);
 
 	if (cacti_sizeof($array)) {
 		if (str_starts_with(trim($array[0]), '<')) {
-			/* continue */
+			// continue
 		} else {
 			$new_array = [];
 

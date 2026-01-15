@@ -368,7 +368,7 @@ function do_rrdcheck($thread_id = 1) {
 					$info_array = rrdcheck_rrdtool_execute("fetch $file LAST -s $pstart -e $pend", $pipes);
 				}
 
-				/* don't do anything if RRDfile did not return data */
+				// don't do anything if RRDfile did not return data
 				$info_array = explode("\n", $info_array);
 
 				if (cacti_sizeof($info_array)) {
@@ -391,7 +391,7 @@ function do_rrdcheck($thread_id = 1) {
 						}
 
 						if ($first) {
-							/* get the data source names */
+							// get the data source names
 							$data_source_names = preg_split('/\s+/', $line);
 
 							foreach ($data_source_names as $index => $name) {
@@ -562,7 +562,7 @@ function rrdcheck_log_statistics($type) {
 		$sub_type = '';
 	}
 
-	/* take time and log performance data */
+	// take time and log performance data
 	$end = microtime(true);
 
 	if ($sub_type != '') {
@@ -603,13 +603,13 @@ function rrdcheck_log_statistics($type) {
 		$cacti_stats = sprintf('Time:%01.2f Type:%s', $end - $start, $type);
 	}
 
-	/* take time and log performance data */
+	// take time and log performance data
 	$start = microtime(true);
 
-	/* log to the database */
+	// log to the database
 	set_config_option('stats_rrdcheck_' . $type, $cacti_stats);
 
-	/* log to the logfile */
+	// log to the logfile
 	cacti_log('RRDCHECK STATS: ' . $cacti_stats , true, 'SYSTEM');
 }
 
@@ -667,7 +667,7 @@ function rrdcheck_log_child_stats($type, $thread_id, $total_time) {
  */
 function rrdcheck_error_handler($errno, $errmsg, $filename, $linenum, $vars = []) {
 	if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
-		/* define all error types */
+		// define all error types
 		$errortype = [
 			E_ERROR             => 'Error',
 			E_WARNING           => 'Warning',
@@ -687,12 +687,12 @@ function rrdcheck_error_handler($errno, $errmsg, $filename, $linenum, $vars = []
 			$errortype[E_RECOVERABLE_ERROR] = 'Catchable Fatal Error';
 		}
 
-		/* create an error string for the log */
+		// create an error string for the log
 		$err = "ERRNO:'" . $errno . "' TYPE:'" . $errortype[$errno] .
 			"' MESSAGE:'" . $errmsg . "' IN FILE:'" . $filename .
 			"' LINE NO:'" . $linenum . "'";
 
-		/* let's ignore some lesser issues */
+		// let's ignore some lesser issues
 		if (substr_count($errmsg, 'date_default_timezone')) {
 			return;
 		}
@@ -701,7 +701,7 @@ function rrdcheck_error_handler($errno, $errmsg, $filename, $linenum, $vars = []
 			return;
 		}
 
-		/* log the error to the Cacti log */
+		// log the error to the Cacti log
 		cacti_log('PROGERR: ' . $err, false, 'RRDCHECK');
 	}
 
@@ -719,13 +719,13 @@ function rrdcheck_boost_bottom() {
 	if (read_config_option('rrdcheck_enable') == 'on') {
 		include_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
-		/* run the daily stats. log to database to prevent secondary runs */
+		// run the daily stats. log to database to prevent secondary runs
 		set_config_option('rrdcheck_last_run_time', time());
 
-		/* run the daily stats */
+		// run the daily stats
 		rrdcheck_launch_children('bmaster');
 
-		/* Wait for all processes to continue */
+		// Wait for all processes to continue
 		while ($running = rrdcheck_processes_running('bmaster')) {
 			rrdcheck_debug(sprintf('%s Processes Running, Sleeping for 2 seconds.', $running));
 
@@ -788,7 +788,7 @@ function rrdcheck_rrdtool_init() {
 		];
 	}
 
-	/* set the rrdtool default font */
+	// set the rrdtool default font
 	if (read_config_option('path_rrdtool_default_font')) {
 		putenv('RRD_DEFAULT_FONT=' . read_config_option('path_rrdtool_default_font'));
 	}
@@ -797,7 +797,7 @@ function rrdcheck_rrdtool_init() {
 
 	$process = proc_open($command, $fds, $pipes);
 
-	/* make stdin/stdout/stderr non-blocking */
+	// make stdin/stdout/stderr non-blocking
 	stream_set_blocking($pipes[0], 0);
 	stream_set_blocking($pipes[1], 0);
 

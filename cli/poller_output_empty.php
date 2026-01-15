@@ -31,7 +31,7 @@ require_once(CACTI_PATH_LIBRARY . '/dsdebug.php');
 require_once(CACTI_PATH_LIBRARY . '/boost.php');
 require_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -67,10 +67,10 @@ if (cacti_sizeof($parms)) {
 	}
 }
 
-/* record the start time */
+// record the start time
 $start = microtime(true);
 
-/* open a pipe to rrdtool for writing */
+// open a pipe to rrdtool for writing
 $rrdtool_pipe = rrd_init();
 
 $rrds_processed = 0;

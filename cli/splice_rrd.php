@@ -23,10 +23,10 @@
  +-------------------------------------------------------------------------+
 */
 
-# ------------------------------------------------------------
-# If not running from Cacti, make sure you set the RRDtool
-# path on this line.
-# ------------------------------------------------------------
+// ------------------------------------------------------------
+// If not running from Cacti, make sure you set the RRDtool
+// path on this line.
+// ------------------------------------------------------------
 $rrdtool    = '/usr/bin/rrdtool';
 
 if (file_exists(__DIR__ . '/../include/cli_check.php')) {
@@ -88,7 +88,7 @@ if (!function_exists('is_resource_writable')) {
 ini_set('max_execution_time', '0');
 ini_set('display_errors', 'On');
 
-/* setup defaults */
+// setup defaults
 $debug     = false;
 $dryrun    = false;
 $backup    = false;
@@ -103,7 +103,7 @@ $time      = microtime(true);
 
 global $debug;
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -211,7 +211,7 @@ if ($from_cacti) {
 	print 'NOTE: Not running from the Cacti Server' . PHP_EOL;
 }
 
-/* additional error check */
+// additional error check
 if ($oldrrd == '') {
 	print 'FATAL: You must specify a old RRDfile!' . PHP_EOL . PHP_EOL;
 	display_help();
@@ -239,10 +239,10 @@ if ($finrrd == '') {
 
 debug('Entering Mainline');
 
-/* let's see if we can find rrdtool */
+// let's see if we can find rrdtool
 global $rrdtool, $use_db, $db;
 
-/* see if sqlLite is available */
+// see if sqlLite is available
 if (class_exists('SQLite3')) {
 	print 'NOTE: Using SQLite Database for performance.' . PHP_EOL;
 	$use_db = true;
@@ -251,7 +251,7 @@ if (class_exists('SQLite3')) {
 	$use_db = false;
 }
 
-/* verify the location of rrdtool */
+// verify the location of rrdtool
 if (function_exists('read_config_option')) {
 	$rrdtool = read_config_option('path_rrdtool');
 }
@@ -275,7 +275,7 @@ if (strlen($response)) {
 	exit(-1);
 }
 
-/* determine the temporary file name */
+// determine the temporary file name
 $seed = mt_rand();
 
 if (substr_count(PHP_OS, 'WIN')) {
@@ -294,18 +294,18 @@ if ($finrrd == '') {
 	$finrrd = dirname($newrrd) . '/' . basename($newrrd) . '.new';
 }
 
-/* execute the dump commands */
+// execute the dump commands
 debug("Creating XML file '$oldxmlfile' from '$oldrrd'");
 shell_exec("$rrdtool dump $oldrrd > $oldxmlfile");
 
 debug("Creating XML file '$newxmlfile' from '$newrrd'");
 shell_exec("$rrdtool dump $newrrd > $newxmlfile");
 
-/* read the xml files into arrays */
+// read the xml files into arrays
 if (file_exists($oldxmlfile)) {
 	$old_output = file($oldxmlfile);
 
-	/* remove the temp file */
+	// remove the temp file
 	unlink($oldxmlfile);
 } else {
 	print 'FATAL: RRDtool Command Failed on \'' . $oldrrd . '\'.  Please insure your RRDtool install is valid!' . PHP_EOL;
@@ -316,7 +316,7 @@ if (file_exists($oldxmlfile)) {
 if (file_exists($newxmlfile)) {
 	$new_output = file($newxmlfile);
 
-	/* remove the temp file */
+	// remove the temp file
 	unlink($newxmlfile);
 } else {
 	print 'FATAL: RRDtool Command Failed on \'' . $newrrd . '\'.  Please insure your RRDtool install is valid!' . PHP_EOL;
@@ -356,16 +356,16 @@ $new_xml = recreateXML($new_rrd);
 debug('Writing XML File to Disk');
 file_put_contents($newxmlfile, $new_xml);
 
-/* finally update the file XML file and Reprocess the RRDfile */
+// finally update the file XML file and Reprocess the RRDfile
 if (!$dryrun) {
 	debug('Creating New RRDfile');
 	createRRDFileFromXML($newxmlfile, $finrrd);
 }
 
-/* remove the temp file */
+// remove the temp file
 unlink($newxmlfile);
 
-/* change ownership */
+// change ownership
 if ($ownerset) {
 	if ($user == 'root') {
 		chown($finrrd, $owner);
@@ -421,7 +421,7 @@ function spliceRRDs(&$new_rrd, &$old_flat, &$old_dsnames) {
 
 							$new_value = $new_rrd['rra'][$rra_num]['database'][$cdp_ds_num][$time];
 
-							//print "DSName: $dsname, NewValue: $new_value, OrigValue: $v, OldValue: $old_value\n";
+							// print "DSName: $dsname, NewValue: $new_value, OrigValue: $v, OldValue: $old_value\n";
 						}
 					}
 				} else {
@@ -590,7 +590,7 @@ function recreateXML($new_rrd) {
 	return $rrd;
 }
 
-/* memoryUsage - Report the peak memory usage of the php script */
+// memoryUsage - Report the peak memory usage of the php script
 function memoryUsage() {
 	global $time;
 
@@ -872,11 +872,11 @@ function processXML(&$output) {
 	return $rrd;
 }
 
-/* All Functions */
+// All Functions
 function createRRDFileFromXML($xmlfile, $rrdfile) {
 	global $rrdtool;
 
-	/* execute the dump command */
+	// execute the dump command
 	print 'NOTE: Re-Importing \'' . $xmlfile . '\' to \'' . $rrdfile . '\'' . PHP_EOL;
 	$return_code = 0;
 	$output      = [];
@@ -932,11 +932,11 @@ function preProcessXML(&$output) {
 			if ($line == '') {
 				continue;
 			} else {
-				/* is there a comment, remove it */
+				// is there a comment, remove it
 				$comment_start = strpos($line, '<!--');
 
 				if ($comment_start === false) {
-					/* do nothing no line */
+					// do nothing no line
 				} else {
 					$comment_end = strpos($line, '-->');
 
@@ -963,7 +963,7 @@ function preProcessXML(&$output) {
 			}
 		}
 
-		/* transfer the new array back to the original array */
+		// transfer the new array back to the original array
 		return $new_array;
 	}
 }
@@ -980,10 +980,10 @@ function debug($string) {
  *  to hold the flattened XML file in for replay.
  */
 function createTable() {
-	/* table in memory */
+	// table in memory
 	$db = new SQLite3(':memory:');
 
-	/* create the table */
+	// create the table
 	$db->exec('CREATE TABLE dsData (
 		dsid             int,
 		cf               char(10) NOT NULL,

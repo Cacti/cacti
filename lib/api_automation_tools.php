@@ -689,7 +689,7 @@ function displayTreeNodes(int $tree_id, string $nodeType = '', int $parentNode =
 
 	if (cacti_sizeof($nodes)) {
 		foreach ($nodes as $node) {
-			/* taken from tree.php, function item_edit() */
+			// taken from tree.php, function item_edit()
 			$current_type = TREE_ITEM_TYPE_HEADER;
 
 			if ($node['local_graph_id'] > 0) {
@@ -731,7 +731,7 @@ function displayTreeNodes(int $tree_id, string $nodeType = '', int $parentNode =
 							print $parentNode . "\t";
 						}
 
-						/* fetch the title for that graph */
+						// fetch the title for that graph
 						$graph_title = db_fetch_cell_prepared('SELECT gtg.title_cache AS name
 							FROM graph_templates_graph AS gtg
 							WHERE gtg.local_graph_id = ?', [$node['local_graph_id']]);

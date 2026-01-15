@@ -29,23 +29,23 @@ require_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
 $config['force_storage_location_local'] = true;
 
-/* ================= input validation ================= */
-get_filter_request_var('graph_start');
-get_filter_request_var('graph_end');
-get_filter_request_var('graph_height');
-get_filter_request_var('graph_width');
-get_filter_request_var('graph_nolegend', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '(true|false)']]);
-get_filter_request_var('local_graph_id');
-get_filter_request_var('size');
-get_filter_request_var('ds_step');
-get_filter_request_var('count');
-get_filter_request_var('top');
-get_filter_request_var('left');
-/* ==================================================== */
+// ================= input validation =================
+gfrv('graph_start');
+gfrv('graph_end');
+gfrv('graph_height');
+gfrv('graph_width');
+gfrv('graph_nolegend', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '(true|false)']]);
+gfrv('local_graph_id');
+gfrv('size');
+gfrv('ds_step');
+gfrv('count');
+gfrv('top');
+gfrv('left');
+// ====================================================
 
 set_default_action();
 
-switch (get_request_var('action')) {
+switch (grv('action')) {
 	case 'init':
 	case 'timespan':
 	case 'interval':
@@ -54,7 +54,7 @@ switch (get_request_var('action')) {
 
 		$guest_account = true;
 
-		switch (get_request_var('action')) {
+		switch (grv('action')) {
 			case 'init':
 				load_current_session_value('ds_step',        'sess_realtime_ds_step',     read_user_setting('realtime_interval', 10));
 				load_current_session_value('graph_start',    'sess_realtime_graph_start', read_user_setting('realtime_gwindow', 60));
@@ -91,47 +91,47 @@ switch (get_request_var('action')) {
 
 		$graph_data_array = [];
 
-		/* ds */
+		// ds
 		$graph_data_array['ds_step'] = read_user_setting('realtime_interval', 10);
 
-		if (!isempty_request_var('ds_step')) {
-			$graph_data_array['ds_step']      = get_request_var('ds_step');
-			$_SESSION['sess_realtime_dsstep'] = get_request_var('ds_step');
+		if (!ierv('ds_step')) {
+			$graph_data_array['ds_step']      = grv('ds_step');
+			$_SESSION['sess_realtime_dsstep'] = grv('ds_step');
 		}
 
-		/* override: graph height (in pixels) */
-		if (!isempty_request_var('graph_height') && get_request_var('graph_height') < 3000) {
-			$graph_data_array['graph_height'] = get_request_var('graph_height');
+		// override: graph height (in pixels)
+		if (!ierv('graph_height') && grv('graph_height') < 3000) {
+			$graph_data_array['graph_height'] = grv('graph_height');
 		} else {
 			$graph_data_array['graph_height'] = 125;
 		}
 
-		/* override: graph width (in pixels) */
-		if (!isempty_request_var('graph_width') && get_request_var('graph_width') < 3000) {
-			$graph_data_array['graph_width'] = get_request_var('graph_width');
+		// override: graph width (in pixels)
+		if (!ierv('graph_width') && grv('graph_width') < 3000) {
+			$graph_data_array['graph_width'] = grv('graph_width');
 		} else {
 			$graph_data_array['graph_width'] = 425;
 		}
 
-		/* override: skip drawing the legend? */
-		if (get_request_var('graph_nolegend') == 'true') {
+		// override: skip drawing the legend?
+		if (grv('graph_nolegend') == 'true') {
 			$graph_data_array['graph_nolegend'] = 'true';
 		}
 
-		if (isset_request_var('size') && get_request_var('size') > 0) {
-			$_SESSION['sess_realtime_size'] = get_request_var('size');
-			$size                           = get_request_var('size');
+		if (isrv('size') && grv('size') > 0) {
+			$_SESSION['sess_realtime_size'] = grv('size');
+			$size                           = grv('size');
 		} elseif (isset($_SESSION['sess_realtime_size']) && $_SESSION['sess_realtime_size'] != '') {
 			$size = $_SESSION['sess_realtime_size'];
 		} else {
 			$size = 100;
 		}
 
-		if (isset_request_var('local_graph_id')) {
+		if (isrv('local_graph_id')) {
 			$graph_data = db_fetch_row_prepared('SELECT width, height
 			FROM graph_templates_graph
 			WHERE local_graph_id = ?',
-				[get_request_var('local_graph_id')]);
+				[grv('local_graph_id')]);
 
 			if (cacti_sizeof($graph_data)) {
 				$graph_data_array['graph_height'] = $graph_data['height'];
@@ -139,44 +139,44 @@ switch (get_request_var('action')) {
 			}
 		}
 
-		if (isset_request_var('size') && get_request_var('size') < 100) {
+		if (isrv('size') && grv('size') < 100) {
 			$graph_data_array['graph_height'] = $graph_data_array['graph_height'] * $size / 100;
 			$graph_data_array['graph_width']  = $graph_data_array['graph_width'] * $size / 100;
 		}
 
-		/* override: graph start */
-		if (!isempty_request_var('graph_start')) {
-			$graph_data_array['graph_start']  = get_request_var('graph_start');
+		// override: graph start
+		if (!ierv('graph_start')) {
+			$graph_data_array['graph_start']  = grv('graph_start');
 
 			if ($graph_data_array['graph_start'] < 0) {
 				$graph_data_array['graph_start'] = time() + $graph_data_array['graph_start'];
 			}
-			$_SESSION['sess_realtime_window'] = abs(get_request_var('graph_start'));
+			$_SESSION['sess_realtime_window'] = abs(grv('graph_start'));
 		}
 
-		/* override: graph end */
-		if (!isempty_request_var('graph_end')) {
-			$graph_data_array['graph_end'] = get_request_var('graph_end');
+		// override: graph end
+		if (!ierv('graph_end')) {
+			$graph_data_array['graph_end'] = grv('graph_end');
 		} else {
 			$graph_data_array['graph_end'] = time();
 		}
 
-		/* print RRDtool graph source? */
-		if (!isempty_request_var('show_source')) {
-			$graph_data_array['print_source'] = get_request_var('show_source');
+		// print RRDtool graph source?
+		if (!ierv('show_source')) {
+			$graph_data_array['print_source'] = grv('show_source');
 		}
 
-		/* check ds */
+		// check ds
 		if ($graph_data_array['ds_step'] < 1) {
 			$graph_data_array['ds_step'] = read_user_setting('realtime_interval', 10);
 		}
 
 		// Determine the graph type of the output
-		if (!isset_request_var('image_format')) {
+		if (!isrv('image_format')) {
 			$type   = db_fetch_cell_prepared('SELECT image_format_id
 			FROM graph_templates_graph
 			WHERE local_graph_id = ?',
-				[get_request_var('local_graph_id')]);
+				[grv('local_graph_id')]);
 
 			switch($type) {
 				case '1':
@@ -193,7 +193,7 @@ switch (get_request_var('action')) {
 					break;
 			}
 		} else {
-			switch(strtolower(get_nfilter_request_var('image_format'))) {
+			switch(strtolower(gnrv('image_format'))) {
 				case 'png':
 					$graph_data_array['image_format'] = 'png';
 
@@ -211,19 +211,19 @@ switch (get_request_var('action')) {
 
 		$graph_data_array['image_format'] = $gtype;
 
-		/* call poller */
-		$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . hash('sha256', session_id()) . '_lgi_' . get_request_var('local_graph_id') . '.png';
+		// call poller
+		$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . hash('sha256', session_id()) . '_lgi_' . grv('local_graph_id') . '.png';
 		$command   = read_config_option('path_php_binary');
-		$args      = sprintf('poller_realtime.php --graph=%s --interval=%d --poller_id=' . hash('sha256',session_id()), get_request_var('local_graph_id'), $graph_data_array['ds_step']);
+		$args      = sprintf('poller_realtime.php --graph=%s --interval=%d --poller_id=' . hash('sha256',session_id()), grv('local_graph_id'), $graph_data_array['ds_step']);
 
 		shell_exec("$command $args");
 
-		/* construct the image name  */
+		// construct the image name
 		$graph_data_array['export_realtime'] = $graph_rrd;
 		$graph_data_array['output_flag']     = RRDTOOL_OUTPUT_GRAPH_DATA;
 		$null_param                          = [];
 
-		$output = rrdtool_function_graph(get_request_var('local_graph_id'), '', $graph_data_array, '', $null_param, $_SESSION[SESS_USER_ID]);
+		$output = rrdtool_function_graph(grv('local_graph_id'), '', $graph_data_array, '', $null_param, $_SESSION[SESS_USER_ID]);
 
 		$error = '';
 
@@ -239,7 +239,7 @@ switch (get_request_var('action')) {
 		if (empty($output) && empty($error)) {
 			$graph_data_array['get_error'] = true;
 			$null_param                    = [];
-			rrdtool_function_graph(get_request_var('local_graph_id'), '', $graph_data_array, '', $null_param, $_SESSION[SESS_USER_ID]);
+			rrdtool_function_graph(grv('local_graph_id'), '', $graph_data_array, '', $null_param, $_SESSION[SESS_USER_ID]);
 
 			$error = ob_get_contents();
 
@@ -270,26 +270,26 @@ switch (get_request_var('action')) {
 			$data = '';
 		}
 
-		/* save user preferences */
-		set_user_setting('realtime_interval', get_request_var('ds_step'));
-		set_user_setting('realtime_gwindow', abs(get_request_var('graph_start')));
-		set_user_setting('realtime_size', get_request_var('size'));
-		set_user_setting('realtime_nolegend', get_request_var('graph_nolegend'));
+		// save user preferences
+		set_user_setting('realtime_interval', grv('ds_step'));
+		set_user_setting('realtime_gwindow', abs(grv('graph_start')));
+		set_user_setting('realtime_size', grv('size'));
+		set_user_setting('realtime_nolegend', grv('graph_nolegend'));
 
-		$_SESSION['sess_realtime_ds_step']     = get_request_var('ds_step');
-		$_SESSION['sess_realtime_graph_start'] = get_request_var('graph_start');
-		$_SESSION['sess_realtime_size']        = get_request_var('size');
-		$_SESSION['sess_realtime_nolegend']    = get_request_var('graph_nolegend');
+		$_SESSION['sess_realtime_ds_step']     = grv('ds_step');
+		$_SESSION['sess_realtime_graph_start'] = grv('graph_start');
+		$_SESSION['sess_realtime_size']        = grv('size');
+		$_SESSION['sess_realtime_nolegend']    = grv('graph_nolegend');
 
-		/* send text information back to browser as well as image information */
+		// send text information back to browser as well as image information
 		$return_array = [
-			'local_graph_id' => get_request_var('local_graph_id'),
-			'top'            => get_request_var('top'),
-			'left'           => get_request_var('left'),
-			'ds_step'        => html_escape(isset($_SESSION['sess_realtime_ds_step']) ? $_SESSION['sess_realtime_ds_step'] : $graph_data_array['ds_step']),
-			'graph_start'    => html_escape(isset($_SESSION['sess_realtime_graph_start']) ? $_SESSION['sess_realtime_graph_start'] : $graph_data_array['graph_start']),
-			'size'           => html_escape(isset($_SESSION['sess_realtime_size']) ? $_SESSION['sess_realtime_size'] : read_user_setting('realtime_size', 100)),
-			'thumbnails'     => html_escape(isset($_SESSION['sess_realtime_nolegend']) ? $_SESSION['sess_realtime_nolegend'] : 'false'),
+			'local_graph_id' => grv('local_graph_id'),
+			'top'            => grv('top'),
+			'left'           => grv('left'),
+			'ds_step'        => htmle(isset($_SESSION['sess_realtime_ds_step']) ? $_SESSION['sess_realtime_ds_step'] : $graph_data_array['ds_step']),
+			'graph_start'    => htmle(isset($_SESSION['sess_realtime_graph_start']) ? $_SESSION['sess_realtime_graph_start'] : $graph_data_array['graph_start']),
+			'size'           => htmle(isset($_SESSION['sess_realtime_size']) ? $_SESSION['sess_realtime_size'] : read_user_setting('realtime_size', 100)),
+			'thumbnails'     => htmle(isset($_SESSION['sess_realtime_nolegend']) ? $_SESSION['sess_realtime_nolegend'] : 'false'),
 			'data'           => (isset($data) ? $data : ''),
 			'image_format'   => $graph_data_array['image_format']
 		];
@@ -300,7 +300,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'view':
-		$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . hash('sha256',session_id()) . '_lgi_' . get_request_var('local_graph_id') . '.png';
+		$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . hash('sha256',session_id()) . '_lgi_' . grv('local_graph_id') . '.png';
 
 		if (file_exists($graph_rrd)) {
 			print base64_encode(file_get_contents($graph_rrd));
@@ -318,32 +318,32 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* ================= input validation ================= */
-get_filter_request_var('ds_step');
-get_filter_request_var('local_graph_id');
-get_filter_request_var('graph_start');
-get_filter_request_var('size');
-/* ==================================================== */
+// ================= input validation =================
+gfrv('ds_step');
+gfrv('local_graph_id');
+gfrv('graph_start');
+gfrv('size');
+// ====================================================
 
 $init = '';
 
 if (!isset($_SESSION['sess_realtime_ds_step'])) {
 	load_current_session_value('ds_step', 'sess_realtime_ds_step', read_user_setting('realtime_interval', 10));
 } else {
-	set_request_var('ds_step', $_SESSION['sess_realtime_ds_step']);
+	srv('ds_step', $_SESSION['sess_realtime_ds_step']);
 }
 
 if (!isset($_SESSION['sess_realtime_graph_start'])) {
 	load_current_session_value('graph_start', 'sess_realtime_graph_start', read_user_setting('realtime_gwindow', 60));
 } else {
-	set_request_var('graph_start', $_SESSION['sess_realtime_graph_start']);
+	srv('graph_start', $_SESSION['sess_realtime_graph_start']);
 }
 
-/* save user preferences */
-set_user_setting('realtime_interval', get_request_var('ds_step'));
-set_user_setting('realtime_gwindow', abs(get_request_var('graph_start')));
-set_user_setting('realtime_size', get_request_var('size'));
-set_user_setting('realtime_nolegend', get_request_var('graph_nolegend'));
+// save user preferences
+set_user_setting('realtime_interval', grv('ds_step'));
+set_user_setting('realtime_gwindow', abs(grv('graph_start')));
+set_user_setting('realtime_size', grv('size'));
+set_user_setting('realtime_nolegend', grv('graph_nolegend'));
 
 if (read_config_option('realtime_enabled') == '') {
 	print "<html>\n";
@@ -401,7 +401,7 @@ $sizes = [
 					<?php
 					foreach ($realtime_window as $interval => $text) {
 						printf('<option value="%d"%s>%s</option>',
-							$interval, $interval == abs(get_request_var('graph_start')) ? ' selected="selected"' : '', $text
+							$interval, $interval == abs(grv('graph_start')) ? ' selected="selected"' : '', $text
 						);
 					}
 ?>
@@ -413,7 +413,7 @@ $min_refresh = read_config_option('realtime_interval');
 foreach ($realtime_refresh as $interval => $text) {
 	if ($interval >= $min_refresh) {
 		printf('<option value="%d"%s>%s</option>',
-			$interval, $interval == get_request_var('ds_step') ? ' selected="selected"' : '', $text
+			$interval, $interval == grv('ds_step') ? ' selected="selected"' : '', $text
 		);
 	}
 }
@@ -422,20 +422,20 @@ foreach ($realtime_refresh as $interval => $text) {
 				<select id='size' onChange='imageOptionsChanged("interval")'>
 					<?php
 foreach ($sizes as $key => $value) {
-	printf('<option value="%d"%s>%s</option>', $key, $key == get_request_var('size') ? ' selected="selected"' : '', $value);
+	printf('<option value="%d"%s>%s</option>', $key, $key == grv('size') ? ' selected="selected"' : '', $value);
 }
 ?>
 				</select>
-				<input type='checkbox' id='thumbnails' onChange='imageOptionsChanged("interval")' <?php print get_request_var('graph_nolegend') == 'true' ? 'checked' : ''; ?>>
+				<input type='checkbox' id='thumbnails' onChange='imageOptionsChanged("interval")' <?php print grv('graph_nolegend') == 'true' ? 'checked' : ''; ?>>
 				<label for='thumbnails'><?php print __('Thumbnails'); ?></label>
 			</div>
 		</div>
 		<div class='cactiTable center'>
-			<span id='countdown'><?php print __('%d seconds left.',  get_request_var('ds_step')); ?></span>
+			<span id='countdown'><?php print __('%d seconds left.',  grv('ds_step')); ?></span>
 		</div>
 		<div id='image' class='center' style='padding:2px;'></div>
 		<input type='hidden' id='url_path' name='url_path' value='<?php print CACTI_PATH_URL; ?>'/>
-		<input type='hidden' id='local_graph_id' name='local_graph_id' value='<?php print get_request_var('local_graph_id'); ?>'/>
+		<input type='hidden' id='local_graph_id' name='local_graph_id' value='<?php print grv('local_graph_id'); ?>'/>
 		<script type='text/javascript'>
 
 		var url;

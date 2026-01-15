@@ -30,16 +30,16 @@ require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
 ini_set('max_execution_time', '0');
 
-/* switch to main database for cli's */
+// switch to main database for cli's
 if ($config['poller_id'] > 1) {
 	db_switch_remote_to_main();
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-/* utility requires input parameters */
+// utility requires input parameters
 if (cacti_sizeof($parms) == 0) {
 	print "ERROR: You must supply input parameters\n\n";
 	display_help();
@@ -99,7 +99,7 @@ if (cacti_sizeof($parms)) {
 	}
 }
 
-/* form the 'where' clause for our main sql query */
+// form the 'where' clause for our main sql query
 if ($filter != '') {
 	$sql_where = "AND (data_template_data.name_cache like '%" . $filter . "%'" .
 	" OR data_template_data.local_data_id like '%" . $filter . "%'" .
@@ -110,7 +110,7 @@ if ($filter != '') {
 }
 
 if (strtolower($host_id) == 'all') {
-	/* Act on all graphs */
+	// Act on all graphs
 } elseif (substr_count($host_id, ',')) {
 	$hosts    = explode(',', $host_id);
 	$host_str = '';
@@ -145,7 +145,7 @@ $data_source_list_sql = "SELECT data_template_data.local_data_id, data_template_
 
 $data_source_list = db_fetch_assoc($data_source_list_sql);
 
-/* issue warnings and start message if applicable */
+// issue warnings and start message if applicable
 if (cacti_sizeof($data_source_list) > 0) {
 	print "WARNING: Do not interrupt this script.  Interrupting during rename can cause issues\n";
 	debug("There are '" . cacti_sizeof($data_source_list) . "' Data Sources to rename");
@@ -174,13 +174,13 @@ $data_source_list_sql
 	print 'WARNING: No Data Sources where found matching the selected criteria.';
 }
 
-/*  display_version - displays version information */
+// display_version - displays version information
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Reapply Data Source Names Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-/*	display_help - displays the usage of the function */
+// display_help - displays the usage of the function
 function display_help() {
 	display_version();
 

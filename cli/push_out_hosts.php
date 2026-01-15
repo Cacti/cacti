@@ -32,7 +32,7 @@ require_once(CACTI_PATH_LIBRARY . '/utility.php');
 ini_set('max_execution_time', '0');
 ini_set('memory_limit', '-1');
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 

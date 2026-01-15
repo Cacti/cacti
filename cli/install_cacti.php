@@ -26,7 +26,7 @@
 require(__DIR__ . '/../include/cli_check.php');
 require_once(CACTI_PATH_INSTALL . '/functions.php');
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -54,7 +54,7 @@ if (cacti_sizeof($parms)) {
 		}
 
 		switch ($arg) {
-			/* Standard parameters */
+			// Standard parameters
 			case '-d':
 			case '--debug':
 				$logname  = 'log_install';
@@ -93,7 +93,7 @@ if (cacti_sizeof($parms)) {
 
 				exit(0);
 
-				/* Script specific parameters */
+				// Script specific parameters
 			case '--accept-eula':
 				set_install_option($options, 'Eula', 'End User License Agreement', 'Accepted');
 
@@ -191,7 +191,7 @@ if (cacti_sizeof($parms)) {
 				}
 
 				break;
-				/* Bad or unexpected parameter! */
+				// Bad or unexpected parameter!
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 
@@ -285,7 +285,7 @@ switch ($installer->getStep()) {
 }
 print PHP_EOL;
 
-/*  get_install_option - gets the install options from a json file */
+// get_install_option - gets the install options from a json file
 function get_install_option(&$options, $file, $json = true) {
 	if (empty($file)) {
 		print 'ERROR: Invalid file specified, unable to import options';
@@ -320,7 +320,7 @@ function get_install_option(&$options, $file, $json = true) {
 	}
 }
 
-/*  set_install_option - sets and optional displays debug line of action */
+// set_install_option - sets and optional displays debug line of action
 function set_install_option(&$options, $key, $display_name, $value) {
 	global $debug;
 
@@ -328,7 +328,7 @@ function set_install_option(&$options, $key, $display_name, $value) {
 	log_install_high('cli',sprintf('Setting %s to \'%s\'', $display_name, $value));
 }
 
-/*  set_install_multioption - sets sub-options that have multiple key/value combinations with optional prefix */
+// set_install_multioption - sets sub-options that have multiple key/value combinations with optional prefix
 function set_install_multioption(&$options, $key, $display_name, $value, $prefix, $replace_dots = false) {
 	$option_pos = strpos($value, ':');
 
@@ -394,13 +394,13 @@ function process_install_errors($results) {
 	}
 }
 
-/*  display_version - displays version information */
+// display_version - displays version information
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Install Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-/*	display_help - displays the usage of the function */
+// display_help - displays the usage of the function
 function display_help() {
 	print PHP_EOL . 'usage: install_cacti.php [--debug] --accept-eula ' . PHP_EOL;
 	print '                         [--automationmode=] [--automationrange=] [--cron=]' . PHP_EOL;

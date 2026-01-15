@@ -46,37 +46,37 @@ require_once(CACTI_PATH_LIBRARY . '/sort.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
-/* switch to main database for cli's */
+// switch to main database for cli's
 if ($config['poller_id'] > 1) {
 	db_switch_remote_to_main();
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-/* system controlled parameters */
+// system controlled parameters
 $type         = 'rmaster';
 $thread_id    = 0;
 
-/* mandatory parameters */
+// mandatory parameters
 $start_time   = false;
 $end_time     = false;
 
-/* optional parameters for host selection */
+// optional parameters for host selection
 $debug        = false;
 $host_id      = false;
 $query_id     = false;
 $host_descr   = false;
 
-/* optional for threading and verbose display */
+// optional for threading and verbose display
 $threads           = detect_cpu_cores();
 
 if ($threads == 0) {
 	$threads = 2;
 }
 
-/* optional for force handing and resume */
+// optional for force handing and resume
 $forcerun          = false;
 
 foreach ($parms as $parameter) {
@@ -166,16 +166,16 @@ foreach ($parms as $parameter) {
 	}
 }
 
-/* install signal handlers for UNIX only */
+// install signal handlers for UNIX only
 if (function_exists('pcntl_signal')) {
 	pcntl_signal(SIGTERM, 'sig_handler');
 	pcntl_signal(SIGINT, 'sig_handler');
 }
 
-/* take time and log performance data */
+// take time and log performance data
 $start = microtime(true);
 
-/* set new timeout and memory settings */
+// set new timeout and memory settings
 ini_set('max_execution_time', '0');
 ini_set('memory_limit', '-1');
 
@@ -192,7 +192,7 @@ if (is_numeric($query_id) && $query_id > 0) {
 	$params[] = $query_id;
 }
 
-/* allow for additional filtering on host description */
+// allow for additional filtering on host description
 if ($host_descr != '') {
 	$sql_where .= 'AND h.description LIKE ?';
 	$params[] = '%' . $host_descr . '%';
@@ -207,7 +207,7 @@ $rows = db_fetch_cell_prepared("SELECT COUNT(*)
 	$sql_where",
 	$params);
 
-/* issue warnings and start message if applicable */
+// issue warnings and start message if applicable
 print 'WARNING: Do not interrupt this script.  Reindexing can take quite some time' . PHP_EOL;
 reindex_debug('There are ' . $rows . ' data queries to run');
 
@@ -215,17 +215,17 @@ if ($type == 'rmaster') {
 	cacti_log('Poller reindex hosts process started', true, 'REINDEX');
 }
 
-/* send a gentle message to the log and stdout */
+// send a gentle message to the log and stdout
 reindex_debug('Reindex hosts starting');
 
-/* silently end if the registered process is still running  */
+// silently end if the registered process is still running
 if (!$forcerun) {
 	if (!register_process_start('reindex', $type, $thread_id, 86400)) {
 		exit(0);
 	}
 }
 
-/* Collect data as determined by the type */
+// Collect data as determined by the type
 switch ($type) {
 	case 'rmaster':
 		reindex_master_handler($forcerun, $host_id, $query_id, $host_descr, $threads);
@@ -233,7 +233,7 @@ switch ($type) {
 		unregister_process('reindex', 'rmaster', 0);
 
 		break;
-	case 'child':  /* Launched by the rmaster process */
+	case 'child':  // Launched by the rmaster process
 		$child_start = microtime(true);
 
 		$sql_where = 'WHERE IFNULL(TRIM(s.disabled),"") != "on" AND IFNULL(TRIM(h.disabled),"") != "on"';
@@ -249,7 +249,7 @@ switch ($type) {
 			$params[] = $query_id;
 		}
 
-		/* allow for additional filtering on host description */
+		// allow for additional filtering on host description
 		if ($host_descr != '') {
 			$sql_where .= 'AND h.description LIKE ?';
 			$params[] = '%' . $host_descr . '%';
@@ -314,7 +314,7 @@ function reindex_master_handler($forcerun, $host_id, $query_id, $host_descr, $th
 		$params[] = $query_id;
 	}
 
-	/* allow for additional filtering on host description */
+	// allow for additional filtering on host description
 	if ($host_descr != '') {
 		$sql_where .= 'AND h.description LIKE ?';
 		$params[] = '%' . $host_descr . '%';
@@ -483,7 +483,7 @@ function sig_handler($signo) {
 
 			break;
 		default:
-			/* ignore all other signals */
+			// ignore all other signals
 	}
 }
 

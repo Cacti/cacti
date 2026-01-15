@@ -40,13 +40,13 @@
 function inject_form_variables(&$form_array, $arg1 = [], $arg2 = [], $arg3 = [], $arg4 = []) {
 	$check_fields = ['id', 'value', 'array', 'friendly_name', 'description', 'sql', 'sql_print', 'form_id', 'items', 'tree_id'];
 
-	/* loop through each available field */
+	// loop through each available field
 	if (cacti_sizeof($form_array)) {
 		foreach ($form_array as $field_name => $field_array) {
-			/* loop through each sub-field that we are going to check for variables */
+			// loop through each sub-field that we are going to check for variables
 			foreach ($check_fields as $field_to_check) {
 				if (isset($field_array[$field_to_check]) && is_array($form_array[$field_name][$field_to_check])) {
-					/* if the field/sub-field combination is an array, resolve it recursively */
+					// if the field/sub-field combination is an array, resolve it recursively
 					$form_array[$field_name][$field_to_check] = inject_form_variables($form_array[$field_name][$field_to_check], $arg1);
 				} elseif (isset($field_array[$field_to_check]) && !is_array($field_array[$field_to_check])) {
 					$count = 0;
@@ -57,7 +57,7 @@ function inject_form_variables(&$form_array, $arg1 = [], $arg2 = [], $arg3 = [],
 					while (true) {
 						$matches = [];
 
-						//if (preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $form_array[$field_name][$field_to_check], $matches)) {
+						// if (preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $form_array[$field_name][$field_to_check], $matches)) {
 						if (preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $field_array[$field_to_check], $matches)) {
 							$string   = $field_array[$field_to_check];
 
@@ -65,13 +65,13 @@ function inject_form_variables(&$form_array, $arg1 = [], $arg2 = [], $arg3 = [],
 							$matches1 = $matches[1];
 							$matches2 = $matches[2];
 
-							/* an empty field name in the variable means don't treat this as an array */
+							// an empty field name in the variable means don't treat this as an array
 							if ($matches2 == '') {
 								if (is_array(${$matches1})) {
-									/* the existing value is already an array, leave it alone */
+									// the existing value is already an array, leave it alone
 									$form_array[$field_name][$field_to_check] = ${$matches1};
 								} else {
-									/* the existing value is probably a single variable */
+									// the existing value is probably a single variable
 									$form_array[$field_name][$field_to_check] = str_replace($matches0, ${$matches1}, $field_array[$field_to_check]);
 								}
 							} else {
@@ -230,7 +230,7 @@ function form_alternate_row($row_id = '', $light = false, $disabled = false) {
  * @return void
  */
 function form_selectable_ecell(string|null $contents, int|string $id, string $width = '', string $style_or_class = '', string $title = '') : bool|null {
-	return form_selectable_cell(html_escape($contents), $id, $width, $style_or_class, $title);
+	return form_selectable_cell(htmle($contents), $id, $width, $style_or_class, $title);
 }
 
 /**
@@ -284,7 +284,7 @@ function form_selectable_cell(string|null $contents, int|string $id, string $wid
 				return false;
 			}
 		} elseif ($col_num < cacti_sizeof($tableColumns)) {
-			/* We can have last item colspan > 1.  So, only log if column count is larger */
+			// We can have last item colspan > 1.  So, only log if column count is larger
 			cacti_log("The table with the Table ID $table_id is not using form_selectable_cell() correctly");
 			$logged[$table_id] = true;
 		}
@@ -431,7 +431,7 @@ function form_process_visible_display_text($table_id, $display_text) {
 	if (!isset($tableColumns[$table_id])) {
 		$tableCount[$table_id]   = 0;
 
-		/* this reset/clear functionality can be removed before production */
+		// this reset/clear functionality can be removed before production
 		if (isset_request_var('clear') || isset_request_var('reset')) {
 			db_execute_prepared('DELETE FROM settings_user
 				WHERE user_id = ? AND name = ?',
@@ -444,7 +444,7 @@ function form_process_visible_display_text($table_id, $display_text) {
 	} else {
 		$tableCount[$table_id]++;
 
-		/* this reset/clear functionality can be removed before production */
+		// this reset/clear functionality can be removed before production
 		if (isset_request_var('clear') || isset_request_var('reset')) {
 			db_execute_prepared('DELETE FROM settings_user
 				WHERE user_id = ? AND name = ?',
@@ -456,7 +456,7 @@ function form_process_visible_display_text($table_id, $display_text) {
 		}
 	}
 
-	/* reset if the developer is making changes to the page layout */
+	// reset if the developer is making changes to the page layout
 	if (cacti_sizeof($tableColumns[$table_id]) && cacti_sizeof($display_text) != cacti_sizeof($tableColumns[$table_id])) {
 		cacti_log('WARNING: Detected a change in base table topology', false, 'DEVELOP', POLLER_VERBOSITY_MEDIUM);
 
@@ -563,7 +563,7 @@ function form_process_visible_display_text($table_id, $display_text) {
 		set_user_setting("visible_columns_{$table_id}{$tableCount[$table_id]}", json_encode($coldata));
 	}
 
-	//cacti_log(json_encode($return_array));
+	// cacti_log(json_encode($return_array));
 
 	return $return_array;
 }
@@ -580,7 +580,7 @@ function form_process_visible_display_text($table_id, $display_text) {
  */
 function form_checkbox_cell($title, $id, $disabled = false, $checked = false) {
 	print "\t<td class='checkbox' style='width:1%;'>\n";
-	print "\t\t<input type='checkbox' title='" . html_escape($title) . "' class='checkbox" . ($disabled ? ' disabled' : '') . "' " . ($disabled ? " disabled='disabled'" : '') . ($checked ? " checked='checked'" : '') . " id='chk_" . $id . "' name='chk_" . $id . "'><label class='formCheckboxLabel' for='chk_" . $id . "'></label>\n";
+	print "\t\t<input type='checkbox' title='" . htmle($title) . "' class='checkbox" . ($disabled ? ' disabled' : '') . "' " . ($disabled ? " disabled='disabled'" : '') . ($checked ? " checked='checked'" : '') . " id='chk_" . $id . "' name='chk_" . $id . "'><label class='formCheckboxLabel' for='chk_" . $id . "'></label>\n";
 	print "\t</td>\n";
 }
 
@@ -642,7 +642,7 @@ function get_checkbox_style() {
  *
  * @return void
  */
-function set_default_action(string $default = ''):void {
+function set_default_action(string $default = '') : void {
 	if (!isset_request_var('action')) {
 		set_request_var('action', $default);
 	} elseif (is_array(get_nfilter_request_var('action'))) {
@@ -663,7 +663,7 @@ function set_default_action(string $default = ''):void {
  *
  * @return void
  */
-function unset_request_var(string $variable): void {
+function unset_request_var(string $variable) : void {
 	global $_CACTI_REQUEST;
 
 	if (isset($_CACTI_REQUEST[$variable])) {
@@ -676,24 +676,46 @@ function unset_request_var(string $variable): void {
 }
 
 /**
- *  checks to see if the $_REQUEST variable is set.
+ * alias of isset_request_var()
  *
  * @param  string  $variable
  *
  * @return bool
  */
-function isset_request_var(string $variable): bool {
+function isrv(string $variable) : bool {
+	return isset_request_var($variable);
+}
+
+/**
+ * checks to see if the $_REQUEST variable is set.
+ *
+ * @param  string  $variable
+ *
+ * @return bool
+ */
+function isset_request_var(string $variable) : bool {
 	return isset($_REQUEST[$variable]);
 }
 
 /**
- *  checks to see if the $_REQUEST variableis empty.
+ * alias of isempty_request_var()
  *
  * @param  string  $variable
  *
  * @return bool
  */
-function isempty_request_var(string $variable): bool {
+function ierv(string $variable) : bool {
+	return isempty_request_var($variable);
+}
+
+/**
+ * checks to see if the $_REQUEST variableis empty.
+ *
+ * @param  string  $variable
+ *
+ * @return bool
+ */
+function isempty_request_var(string $variable) : bool {
 	if (isset_request_var($variable)) {
 		$value = $_REQUEST[$variable];
 
@@ -706,6 +728,18 @@ function isempty_request_var(string $variable): bool {
 }
 
 /**
+ * alias of set_request_var()
+ *
+ * @param  string $variable The variable to set
+ * @param  mixed  $value    The value to set the variable to
+ *
+ * @return void
+ */
+function srv(string $variable, mixed $value) : void {
+	set_request_var($variable, $value);
+}
+
+/**
  * Sets a given $_REQUEST variable and Cacti global.
  *
  * @param  string $variable The variable to set
@@ -713,7 +747,7 @@ function isempty_request_var(string $variable): bool {
  *
  * @return void
  */
-function set_request_var(string $variable, mixed $value):void {
+function set_request_var(string $variable, mixed $value) : void {
 	global $_CACTI_REQUEST;
 
 	$_CACTI_REQUEST[$variable] = $value;
@@ -735,7 +769,7 @@ function set_request_var(string $variable, mixed $value):void {
  *
  * @return mixed
  */
-function get_request_var(string $name, mixed $default = ''): mixed {
+function get_request_var(string $name, mixed $default = '') : mixed {
 	global $_CACTI_REQUEST;
 
 	$log_validation = read_config_option('log_validation');
@@ -758,7 +792,7 @@ function get_request_var(string $name, mixed $default = ''): mixed {
 }
 
 /**
- * stub call for get_request_var
+ * alias of get_request_var()
  *
  * @deprecated v1.0
  *
@@ -769,8 +803,39 @@ function get_request_var(string $name, mixed $default = ''): mixed {
  *
  * @return mixed
  */
-function get_request_var_request(string $name, mixed $default = ''): mixed {
+function get_request_var_request(string $name, mixed $default = '') : mixed {
 	return get_request_var($name, $default);
+}
+
+/**
+ * alias of get_request_var()
+ *
+ * @deprecated v1.0
+ *
+ * @param  string $name     the name of the request variable. this should be a
+ *                          valid key in the $_REQUEST array
+ * @param  mixed  $default  the value to return if the specified name does not
+ *                          exist in the $_REQUEST array
+ *
+ * @return mixed
+ */
+function grv(string $name, mixed $default = '') : mixed {
+	return get_request_var($name, $default);
+}
+
+/**
+ * alias of get_filter_request_var()
+ *
+ * @param  string $name     the name of the request variable. this should be a
+ *                          valid key in the $_REQUEST array
+ * @param  int    $filter   the filter mode to use
+ * @param  array  $options  used to pass to filter_var function or to hold the
+ *                          default value to be returned
+ *
+ * @return mixed
+ */
+function gfrv(string $name, int $filter = FILTER_VALIDATE_INT, array $options = []) : mixed {
+	return get_filter_request_var($name, $filter, $options);
 }
 
 /**
@@ -878,7 +943,7 @@ function get_filter_request_var(string $name, int $filter = FILTER_VALIDATE_INT,
 
 		if ($value === false) {
 			if ($filter == FILTER_VALIDATE_IS_REGEX) {
-				raise_message('custom', __('The regular expression "%s" is not valid. Error is %s', html_escape(get_nfilter_request_var($name)), html_escape($custom_error)), MESSAGE_LEVEL_ERROR);
+				raise_message('custom', __('The regular expression "%s" is not valid. Error is %s', htmle(get_nfilter_request_var($name)), htmle($custom_error)), MESSAGE_LEVEL_ERROR);
 				set_request_var($name, '');
 			} else {
 				die_html_input_error($name, get_nfilter_request_var($name));
@@ -902,6 +967,20 @@ function get_filter_request_var(string $name, int $filter = FILTER_VALIDATE_INT,
 }
 
 /**
+ * alias of get_nfilter_request_var()
+ *
+ * @param  string $name     the name of the request variable. this should be a
+ *                          valid key in the $_REQUEST array
+ * @param  mixed  $default  the value to return if the specified name does not
+ *                          exist in the $_REQUEST array
+ *
+ * @return mixed
+ */
+function gnrv(string $name, mixed $default = '') : mixed {
+	return get_nfilter_request_var($name, $default);
+}
+
+/**
  * returns the current value of a PHP $_REQUEST variable, optionally
  * returning a default value if the request variable does not exist,
  * but without using any of the filtering checks.
@@ -916,7 +995,7 @@ function get_filter_request_var(string $name, int $filter = FILTER_VALIDATE_INT,
  *
  * @return mixed
  */
-function get_nfilter_request_var(string $name, mixed $default = ''):mixed {
+function get_nfilter_request_var(string $name, mixed $default = '') : mixed {
 	global $_CACTI_REQUEST;
 
 	if (isset($_CACTI_REQUEST[$name])) {
@@ -1014,7 +1093,7 @@ function get_request_var_post($name, $default = '') {
  *
  * @return void
  */
-function validate_store_request_vars(array $filters, string $sess_prefix = ''):void {
+function validate_store_request_vars(array $filters, string $sess_prefix = '') : void {
 	$changed      = 0;
 	$custom_error = '';
 
@@ -1120,10 +1199,10 @@ function validate_store_request_vars(array $filters, string $sess_prefix = ''):v
 
 				if ($value === false) {
 					if ($options['filter'] == FILTER_VALIDATE_IS_REGEX) {
-						raise_message('custom', __('The regular expression "%s" is not valid. Error is %s', html_escape(get_nfilter_request_var($variable)), html_escape($custom_error)), MESSAGE_LEVEL_ERROR);
+						raise_message('custom', __('The regular expression "%s" is not valid. Error is %s', htmle(get_nfilter_request_var($variable)), htmle($custom_error)), MESSAGE_LEVEL_ERROR);
 						set_request_var($variable, '');
 					} else {
-						die_html_input_error($variable, get_nfilter_request_var($variable), html_escape($custom_error));
+						die_html_input_error($variable, get_nfilter_request_var($variable), htmle($custom_error));
 					}
 				} else {
 					set_request_var($variable, $value);
@@ -1558,20 +1637,20 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 		$end_page   = $total_pages - 1;
 	} else {
 		$start_page = max(2, ($current_page - floor(($pages_per_screen - 3) / 2)));
-		/*When current_page > (pages_per_screen - 1) / 2*/
+		// When current_page > (pages_per_screen - 1) / 2
 		$end_page = min($total_pages - 1, ($current_page + floor(($pages_per_screen - 3) / 2)));
 
-		/* adjust if we are close to the beginning of the page list */
+		// adjust if we are close to the beginning of the page list
 		if ($current_page <= ceil(($pages_per_screen) / 2)) {
 			$end_page += ($pages_per_screen - $end_page - 1);
 		}
 
-		/* adjust if we are close to the end of the page list */
+		// adjust if we are close to the end of the page list
 		if (($total_pages - $current_page) < ceil(($pages_per_screen) / 2)) {
 			$start_page -= (($pages_per_screen - ($end_page - $start_page)) - 3);
 		}
 
-		/* stay within limits */
+		// stay within limits
 		$start_page = max(2, $start_page);
 		$end_page   = min($total_pages - 1, $end_page);
 	}

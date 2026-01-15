@@ -28,12 +28,12 @@ require_once(CACTI_PATH_LIBRARY . '/api_graph.php');
 
 ini_set('max_execution_time', '0');
 
-/* switch to main database for cli's */
+// switch to main database for cli's
 if ($config['poller_id'] > 1) {
 	db_switch_remote_to_main();
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -93,7 +93,7 @@ if (cacti_sizeof($parms)) {
 	exit(1);
 }
 
-/* form the 'where' clause for our main sql query */
+// form the 'where' clause for our main sql query
 if ($filter != '') {
 	$sql_where = "AND (graph_templates_graph.title_cache LIKE '%" . $filter . "%'" .
 		" OR graph_templates.name LIKE '%" . $filter . "%')";
@@ -102,7 +102,7 @@ if ($filter != '') {
 }
 
 if (strtolower($host_id) == 'all') {
-	/* Act on all graphs */
+	// Act on all graphs
 } elseif (substr_count($host_id, ',')) {
 	$hosts    = explode(',', $host_id);
 	$host_str = '';
@@ -138,7 +138,7 @@ $graph_list = db_fetch_assoc("SELECT
 	WHERE graph_local.id=graph_templates_graph.local_graph_id
 	$sql_where");
 
-/* issue warnings and start message if applicable */
+// issue warnings and start message if applicable
 print "WARNING: Do not interrupt this script.  Interrupting during rename can cause issues\n";
 debug("There are '" . cacti_sizeof($graph_list) . "' Graphs to rename");
 
@@ -155,13 +155,13 @@ foreach ($graph_list as $graph) {
 	$i++;
 }
 
-/*  display_version - displays version information */
+// display_version - displays version information
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Reapply graph Names Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-/*	display_help - displays the usage of the function */
+// display_help - displays the usage of the function
 function display_help() {
 	display_version();
 

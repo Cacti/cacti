@@ -63,7 +63,7 @@ $networks = array_rekey(db_fetch_assoc('SELECT an.id, an.name
 
 set_default_action();
 
-switch(get_request_var('action')) {
+switch(grv('action')) {
 	case 'purge':
 		purge_discovery_results();
 
@@ -85,23 +85,23 @@ switch(get_request_var('action')) {
 function form_actions() {
 	global $actions, $availability_options;
 
-	/* ================= input validation ================= */
-	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-zA-Z0-9_]+)$/']]);
-	/* ==================================================== */
+	// ================= input validation =================
+	gfrv('drp_action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-zA-Z0-9_]+)$/']]);
+	// ====================================================
 
-	/* if we are to save this form, instead of display it */
-	if (isset_request_var('selected_items')) {
-		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
+	// if we are to save this form, instead of display it
+	if (isrv('selected_items')) {
+		$selected_items = sanitize_unserialize_selected_items(gnrv('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_nfilter_request_var('drp_action') == '1') { /* add to cacti */
+			if (gnrv('drp_action') == '1') { // add to cacti
 				$i = 0;
 
 				foreach ($selected_items as $id) {
 					$d                        = db_fetch_row_prepared('SELECT * FROM automation_devices WHERE id = ?', [$id]);
-					$d['poller_id']           = get_filter_request_var('poller_id');
-					$d['host_template']       = get_filter_request_var('host_template');
-					$d['availability_method'] = get_filter_request_var('availability_method');
+					$d['poller_id']           = gfrv('poller_id');
+					$d['host_template']       = gfrv('host_template');
+					$d['availability_method'] = gfrv('availability_method');
 					$d['notes']               = __('Added manually through device automation interface.');
 					$d['snmp_sysName']        = $d['sysName'];
 
@@ -126,7 +126,7 @@ function form_actions() {
 
 					$i++;
 				}
-			} elseif (get_nfilter_request_var('drp_action') == 2) { /* remove device */
+			} elseif (gnrv('drp_action') == 2) { // remove device
 				foreach ($selected_items as $id) {
 					db_execute_prepared('DELETE FROM automation_devices WHERE id = ?', [$id]);
 				}
@@ -142,7 +142,7 @@ function form_actions() {
 		$ilist  = '';
 		$iarray = [];
 
-		/* default variables */
+		// default variables
 		$pollers        = [];
 		$host_templates = [];
 		$poller_id      = 0;
@@ -150,20 +150,20 @@ function form_actions() {
 		$availability_method = 0;
 		$host_template       = 0;
 
-		/* loop through each of the graphs selected on the previous page and get more info about them */
+		// loop through each of the graphs selected on the previous page and get more info about them
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-				/* ================= input validation ================= */
+				// ================= input validation =================
 				input_validate_input_number($matches[1], 'chk[1]');
-				/* ==================================================== */
+				// ====================================================
 
-				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT CONCAT(IF(hostname!="", hostname, "unknown"), " (", ip, ")") FROM automation_devices WHERE id = ?', [$matches[1]])) . '</li>';
+				$ilist .= '<li>' . htmle(db_fetch_cell_prepared('SELECT CONCAT(IF(hostname!="", hostname, "unknown"), " (", ip, ")") FROM automation_devices WHERE id = ?', [$matches[1]])) . '</li>';
 
 				$iarray[] = $matches[1];
 			}
 		}
 
-		if (cacti_sizeof($iarray) && get_request_var('drp_action') == '1') { /* add */
+		if (cacti_sizeof($iarray) && grv('drp_action') == '1') { // add
 			$pollers = array_rekey(
 				db_fetch_assoc_prepared('SELECT id, name
 					FROM poller
@@ -273,16 +273,16 @@ function display_discovery_page() {
 
 	$total_rows = 0;
 
-	if (get_request_var('rows') == '-1') {
+	if (grv('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
 	} else {
-		$rows = get_request_var('rows');
+		$rows = grv('rows');
 	}
 
 	$results = get_discovery_results($total_rows, $rows);
 
-	/* generate page list */
-	$nav = html_nav_bar('automation_devices.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 12, __('Devices'), 'page', 'main');
+	// generate page list
+	$nav = html_nav_bar('automation_devices.php', MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 12, __('Devices'), 'page', 'main');
 
 	form_start('automation_devices.php', 'chk');
 
@@ -358,7 +358,7 @@ function display_discovery_page() {
 		]
 	];
 
-	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
+	html_header_sort_checkbox($display_text, grv('sort_column'), grv('sort_direction'), false);
 
 	$snmp_version        = read_config_option('snmp_version');
 	$snmp_port           = read_config_option('snmp_port');
@@ -383,14 +383,14 @@ function display_discovery_page() {
 			}
 
 			form_selectable_cell(filter_value($description, ''), $host['id']);
-			form_selectable_cell(filter_value($host['hostname'], get_request_var('filter')), $host['id']);
-			form_selectable_cell(filter_value($host['ip'], get_request_var('filter')), $host['id']);
+			form_selectable_cell(filter_value($host['hostname'], grv('filter')), $host['id']);
+			form_selectable_cell(filter_value($host['ip'], grv('filter')), $host['id']);
 			form_selectable_cell(filter_value($network, ''), $host['id']);
-			form_selectable_cell(filter_value(snmp_data($host['sysName']), get_request_var('filter')), $host['id'], '', 'text-align:left');
-			form_selectable_cell(filter_value(snmp_data($host['sysLocation']), get_request_var('filter')), $host['id'], '', 'text-align:left');
-			form_selectable_cell(filter_value(snmp_data($host['sysContact']), get_request_var('filter')), $host['id'], '', 'text-align:left');
-			form_selectable_cell(filter_value(snmp_data($host['sysDescr']), get_request_var('filter')), $host['id'], '', 'text-align:left;white-space:normal;');
-			form_selectable_cell(filter_value(snmp_data($host['os']), get_request_var('filter')), $host['id'], '', 'text-align:left');
+			form_selectable_cell(filter_value(snmp_data($host['sysName']), grv('filter')), $host['id'], '', 'text-align:left');
+			form_selectable_cell(filter_value(snmp_data($host['sysLocation']), grv('filter')), $host['id'], '', 'text-align:left');
+			form_selectable_cell(filter_value(snmp_data($host['sysContact']), grv('filter')), $host['id'], '', 'text-align:left');
+			form_selectable_cell(filter_value(snmp_data($host['sysDescr']), grv('filter')), $host['id'], '', 'text-align:left;white-space:normal;');
+			form_selectable_cell(filter_value(snmp_data($host['os']), grv('filter')), $host['id'], '', 'text-align:left');
 			form_selectable_cell(snmp_data(get_uptime($host)), $host['id'], '', 'text-align:right');
 			form_selectable_cell($status[$host['snmp']], $host['id'], '', 'text-align:right');
 			form_selectable_cell($status[$host['up']], $host['id'], '', 'text-align:right');
@@ -409,7 +409,7 @@ function display_discovery_page() {
 		print $nav;
 	}
 
-	/* draw the dropdown containing a list of available actions for this form */
+	// draw the dropdown containing a list of available actions for this form
 	draw_actions_dropdown($actions);
 
 	form_end();
@@ -449,11 +449,11 @@ function get_discovery_results(&$total_rows = 0, $rows = 0, $export = false) {
 	global $os_arr, $status_arr, $networks, $actions;
 
 	$sql_where  = '';
-	$status     = get_request_var('status');
-	$network    = get_request_var('network');
-	$snmp       = get_request_var('snmp');
-	$os         = get_request_var('os');
-	$filter     = get_request_var('filter');
+	$status     = grv('status');
+	$network    = grv('network');
+	$snmp       = grv('snmp');
+	$os         = grv('os');
+	$filter     = grv('filter');
 
 	$sql_where  = '';
 	$sql_params = [];
@@ -503,7 +503,7 @@ function get_discovery_results(&$total_rows = 0, $rows = 0, $export = false) {
 			$sql_where",
 			$sql_params);
 
-		$page      = get_request_var('page');
+		$page      = grv('page');
 		$sql_order = get_order_string();
 		$sql_limit = ' LIMIT ' . ($rows * ($page - 1)) . ',' . $rows;
 
@@ -625,7 +625,7 @@ function draw_automation_devices_filter($render = false) {
 
 	$filters = create_automation_devices_filter();
 
-	/* create the page filter */
+	// create the page filter
 	$pageFilter = new CactiTableFilter(__('Discovered Devices'), 'automation_devices.php', 'form_devices', 'sess_autom_device');
 
 	$pageFilter->rows_label = __('Devices');
@@ -676,10 +676,10 @@ function export_discovery_results() {
 }
 
 function purge_discovery_results() {
-	get_filter_request_var('network');
+	gfrv('network');
 
-	if (get_request_var('network') > 0) {
-		db_execute_prepared('DELETE FROM automation_devices WHERE network_id = ?', [get_request_var('network')]);
+	if (grv('network') > 0) {
+		db_execute_prepared('DELETE FROM automation_devices WHERE network_id = ?', [grv('network')]);
 	} else {
 		db_execute('TRUNCATE TABLE automation_devices');
 	}
@@ -693,7 +693,7 @@ function snmp_data($item) {
 	if ($item == '') {
 		return __('N/A');
 	} else {
-		return html_escape(str_replace(':',' ', $item));
+		return htmle(str_replace(':',' ', $item));
 	}
 }
 

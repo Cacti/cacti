@@ -44,7 +44,7 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
 	$draw_any_items   = false;
 	$num_fields_drawn = 0;
 
-	/* fetch information about the graph template */
+	// fetch information about the graph template
 	$graph_template = db_fetch_row_prepared('SELECT *
 		FROM graph_templates_graph
 		WHERE graph_template_id = ?
@@ -52,12 +52,12 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
 		[$graph_template_id]);
 
 	foreach ($struct_graph as $field_name => $field_array) {
-		/* find our field name */
+		// find our field name
 		$form_field_name = str_replace('|field|', $field_name, $field_name_format);
 
 		$form_array += [$form_field_name => $struct_graph[$field_name]];
 
-		/* modifications to the default form array */
+		// modifications to the default form array
 		$form_array[$form_field_name]['value']   = ($values_array[$field_name] ?? '');
 		$form_array[$form_field_name]['form_id'] = ($values_array['id'] ?? '0');
 		unset($form_array[$form_field_name]['default']);
@@ -86,7 +86,7 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
 		}
 	}
 
-	/* setup form options */
+	// setup form options
 	if ($alternate_colors == true) {
 		$form_config_array = ['no_form_tag' => true];
 	} else {
@@ -126,14 +126,14 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 	$draw_any_items   = false;
 	$num_fields_drawn = 0;
 
-	/* fetch information about the graph template */
+	// fetch information about the graph template
 	$input_item_list = db_fetch_assoc_prepared('SELECT *
 		FROM graph_template_input
 		WHERE graph_template_id = ?
 		ORDER BY column_name, name',
 		[$graph_template_id]);
 
-	/* modifications to the default graph items array */
+	// modifications to the default graph items array
 	if (!empty($local_graph_id)) {
 		$host_id = db_fetch_cell_prepared('SELECT host_id
 			FROM graph_local
@@ -195,7 +195,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 					[$item['id'], $graph_template_id]);
 			}
 
-			/* find our field name */
+			// find our field name
 			$form_field_name = str_replace('|field|', $item['column_name'], $field_name_format);
 			$form_field_name = str_replace('|id|', $item['id'], $form_field_name);
 
@@ -206,7 +206,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 
 			$form_array += [$form_field_name => $struct_graph_item[$item['column_name']]];
 
-			/* modifications to the default form array */
+			// modifications to the default form array
 			$form_array[$form_field_name]['friendly_name'] = $item['name'];
 
 			if (isset($current_def_value[$item['column_name']])) {
@@ -262,7 +262,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 				$num_fields_drawn++;
 			}
 
-			/* setup form options */
+			// setup form options
 			if ($alternate_colors == true) {
 				$form_config_array = ['no_form_tag' => true];
 			} else {
@@ -309,7 +309,7 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
 	$draw_any_items   = false;
 	$num_fields_drawn = 0;
 
-	/* fetch information about the data template */
+	// fetch information about the data template
 	$data_template = db_fetch_row_prepared('SELECT *
 		FROM data_template_data
 		WHERE data_template_id = ?
@@ -317,12 +317,12 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
 		[$data_template_id]);
 
 	foreach ($struct_data_source as $field_name => $field_array) {
-		/* find our field name */
+		// find our field name
 		$form_field_name = str_replace('|field|', $field_name, $field_name_format);
 
 		$form_array += [$form_field_name => $struct_data_source[$field_name]];
 
-		/* modifications to the default form array */
+		// modifications to the default form array
 		$form_array[$form_field_name]['value']   = ($values_array[$field_name] ?? '');
 		$form_array[$form_field_name]['form_id'] = ($values_array['id'] ?? '0');
 		unset($form_array[$form_field_name]['default']);
@@ -358,7 +358,7 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
 		}
 	}
 
-	/* setup form options */
+	// setup form options
 	if ($alternate_colors == true) {
 		$form_config_array = ['no_form_tag' => true];
 	} else {
@@ -409,9 +409,9 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 				$draw_any_items = false;
 			}
 
-			if (empty($rrd['local_data_id'])) { /* this is a template */
+			if (empty($rrd['local_data_id'])) { // this is a template
 				$data_template_rrd = $rrd;
-			} else { /* this is not a template */
+			} else { // this is not a template
 				$data_template_rrd = db_fetch_row_prepared('SELECT *
 					FROM data_template_rrd
 					WHERE id = ?',
@@ -419,20 +419,20 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 			}
 
 			foreach ($struct_data_source_item as $field_name => $field_array) {
-				/* find our field name */
+				// find our field name
 				$form_field_name = str_replace('|field|', $field_name, $field_name_format);
 				$form_field_name = str_replace('|id|', $rrd['id'], $form_field_name);
 
 				$form_array += [$form_field_name => $struct_data_source_item[$field_name]];
 
-				/* modifications to the default form array */
+				// modifications to the default form array
 				$form_array[$form_field_name]['value']   = ($rrd[$field_name] ?? '');
 				$form_array[$form_field_name]['form_id'] = ($rrd['id'] ?? '0');
 				unset($form_array[$form_field_name]['default']);
 
-				/* append the data source item name so the user will recognize it */
+				// append the data source item name so the user will recognize it
 				if ($draw_title_for_each_item == false) {
-					$form_array[$form_field_name]['friendly_name'] .= ' [' . html_escape($rrd['data_source_name']) . ']';
+					$form_array[$form_field_name]['friendly_name'] .= ' [' . htmle($rrd['data_source_name']) . ']';
 				}
 
 				if ($data_template_rrd['t_' . $field_name] != 'on') {
@@ -451,7 +451,7 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 					if ($draw_any_items == false && $draw_title_for_each_item == false && $header_title != '') {
 						print "<div class='tableHeader'><div class='tableSubHeaderColumn'>$header_title</div></div>\n";
 					} elseif ($draw_any_items == false && $draw_title_for_each_item == true && $header_title != '') {
-						print "<div class='tableHeader'><div class='tableSubHeaderColumn'>$header_title [" . html_escape($rrd['data_source_name']) . "]</div></div>\n";
+						print "<div class='tableHeader'><div class='tableSubHeaderColumn'>$header_title [" . htmle($rrd['data_source_name']) . "]</div></div>\n";
 					}
 
 					$draw_any_items = true;
@@ -477,7 +477,7 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 				}
 			}
 
-			/* setup form options */
+			// setup form options
 			if ($alternate_colors == true) {
 				$form_config_array = ['no_form_tag' => true];
 			} else {
@@ -536,7 +536,7 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 		AND local_data_id = 0',
 		[$data['data_template_id']]);
 
-	/* get each INPUT field for this data input source */
+	// get each INPUT field for this data input source
 	$fields = db_fetch_assoc_prepared('SELECT *
 		FROM data_input_fields
 		WHERE data_input_id = ?
@@ -544,7 +544,7 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 		ORDER BY sequence',
 		[$data['data_input_id']]);
 
-	/* loop through each field found */
+	// loop through each field found
 	if (cacti_sizeof($fields)) {
 		foreach ($fields as $field) {
 			$data_input_data = db_fetch_row_prepared('SELECT *
@@ -559,7 +559,7 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 				$old_value = '';
 			}
 
-			/* if data template then get t_value from template, else always allow user input */
+			// if data template then get t_value from template, else always allow user input
 			if (empty($data['data_template_id'])) {
 				$can_template = 'on';
 			} else {
@@ -570,21 +570,21 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 					[$template_data['id'], $field['id']]);
 			}
 
-			/* find our field name */
+			// find our field name
 			$form_field_name = str_replace('|id|', $field['id'], $field_name_format);
 
 			if ((!empty($host_id)) && (preg_match('/^' . VALID_HOST_FIELDS . '$/i', $field['type_code'])) && (empty($can_template))) {
-				/* no host fields */
+				// no host fields
 				if ($include_hidden_fields == true) {
 					form_hidden_box($form_field_name, $old_value, '');
 				}
 			} elseif ((!empty($snmp_query_id)) && (preg_match('/^(index_type|index_value|output_type)$/i', $field['type_code']))) {
-				/* no data query fields */
+				// no data query fields
 				if ($include_hidden_fields == true) {
 					form_hidden_box($form_field_name, $old_value, '');
 				}
 			} elseif (empty($can_template)) {
-				/* no templated fields */
+				// no templated fields
 				if ($include_hidden_fields == true) {
 					form_hidden_box($form_field_name, $old_value, '');
 				}
@@ -595,7 +595,7 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 
 				print "<div class='formRow " . ($alternate_colors ? ($num_fields_drawn % 2 ? 'even' : 'odd') : 'odd') . "'>\n";
 
-				print "<div class='formColumnLeft'><div class='formFieldName'>" . html_escape($field['name']) . "</div></div>\n";
+				print "<div class='formColumnLeft'><div class='formFieldName'>" . htmle($field['name']) . "</div></div>\n";
 				print "<div class='formColumnRight'>";
 
 				draw_custom_data_row($form_field_name, $field['id'], $data['id'], $old_value);

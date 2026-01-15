@@ -37,7 +37,7 @@ if ($config['poller_id'] > 1) {
 	exit(1);
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -284,7 +284,7 @@ if (cacti_sizeof($parms)) {
 		}
 	}
 
-	/* proceed with the Clone here */
+	// proceed with the Clone here
 	printf('Proceeding with Device Template Cloning' . PHP_EOL);
 	printf('------------------------------------------------------' . PHP_EOL);
 

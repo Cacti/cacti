@@ -32,7 +32,7 @@
 global $config;
 $config = [];
 
-/* define if cacti is in CLI mode */
+// define if cacti is in CLI mode
 define('CACTI_CLI', (php_sapi_name() == 'cli'));
 define('CACTI_WEB', (php_sapi_name() != 'cli'));
 define('CACTI_SERVER_OS', (str_starts_with(PHP_OS, 'WIN')) ? 'win32' : 'unix');
@@ -41,11 +41,11 @@ if (defined('CACTI_CLI_ONLY') && CACTI_WEB) {
 	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
-/* this should be auto-detected, set it manually if needed */
+// this should be auto-detected, set it manually if needed
 $config['cacti_server_os'] = (str_starts_with(PHP_OS, 'WIN')) ? 'win32' : 'unix';
 $config['is_web']          = CACTI_WEB;
 
-/* load cacti version from file */
+// load cacti version from file
 $cacti_version_file = __DIR__ . '/cacti_version';
 
 if (!file_exists($cacti_version_file)) {
@@ -78,7 +78,7 @@ if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
 	$is_request_ajax = false;
 }
 
-/* Default database settings*/
+// Default database settings
 $database_type     = 'mysql';
 $database_default  = 'cacti';
 $database_hostname = 'localhost';
@@ -95,20 +95,20 @@ $database_ssl_capath             = '';
 $database_ssl_verify_server_cert = true;
 $database_persist                = true;
 
-/* Default session name - Session name must contain alpha characters */
+// Default session name - Session name must contain alpha characters
 $cacti_session_name = 'Cacti';
 
 if (isset($_COOKIE['CactiTab'])) {
 	$cacti_session_name = 'CactiTabId:' . $_COOKIE['CactiTab'];
 }
 
-/* define default url path */
+// define default url path
 $url_path = '/cacti/';
 
-/* disable log rotation setting */
+// disable log rotation setting
 $disable_log_rotation = false;
 
-/* Include configuration, or use the defaults */
+// Include configuration, or use the defaults
 if (file_exists(__DIR__ . '/config.php')) {
 	if (!is_readable(__DIR__ . '/config.php')) {
 		die('Configuration file include/config.php is present, but unreadable.' . PHP_EOL);
@@ -123,13 +123,13 @@ if (isset($config['cacti_version'])) {
 	exit;
 }
 
-/* Define global paths */
+// Define global paths
 include_once(__DIR__ . '/global_path.php');
 
-/* Should we allow proxy ip headers? */
+// Should we allow proxy ip headers?
 $config['proxy_headers'] = $proxy_headers ?? [];
 
-/* Set the poller_id */
+// Set the poller_id
 if (isset($poller_id)) {
 	$config['poller_id'] = $poller_id;
 	define('POLLER_ID', $poller_id);
@@ -180,12 +180,12 @@ if (!empty($db_missing_vars)) {
 	die("config.php is $db_missing_vars" . PHP_EOL);
 }
 
-/* set the local for international users */
+// set the local for international users
 setlocale(LC_CTYPE, 'en_US.UTF-8');
 
 $colors = [];
 
-/* required for Windows */
+// required for Windows
 if ($config['cacti_server_os'] == 'win32') {
 	putenv('MIB_DIRS=c:/usr/share/snmp/mibs');
 }
@@ -198,7 +198,7 @@ if (!empty($path_csrf_secret)) {
 
 define('CACTI_CSRF_SECRET', $config['path_csrf_secret']);
 
-/* built-in snmp support */
+// built-in snmp support
 if ((isset($php_snmp_support) && $php_snmp_support == false) || !function_exists('snmpget')) {
 	$config['php_snmp_support'] = false;
 } else {
@@ -207,19 +207,19 @@ if ((isset($php_snmp_support) && $php_snmp_support == false) || !function_exists
 
 define('CACTI_PHP_SNMP', $config['php_snmp_support']);
 
-/* PHP binary location */
+// PHP binary location
 if (isset($php_path)) {
 	$config['php_path'] = $php_path;
 }
 
-/* Set various debug fields */
+// Set various debug fields
 $config['DEBUG_READ_CONFIG_OPTION']         = defined('DEBUG_READ_CONFIG_OPTION');
 $config['DEBUG_READ_CONFIG_OPTION_DB_OPEN'] = defined('DEBUG_READ_CONFIG_OPTION_DB_OPEN');
 $config['DEBUG_SQL_CMD']                    = defined('DEBUG_SQL_CMD');
 $config['DEBUG_SQL_FLOW']                   = defined('DEBUG_SQL_FLOW');
 $config['DEBUG_SQL_CONNECT']                = defined('DEBUG_SQL_CONNECT');
 
-/* check for an empty database port */
+// check for an empty database port
 if (empty($database_port)) {
 	$database_port = '3306';
 }
@@ -229,9 +229,9 @@ if (isset($input_whitelist)) {
 	define('CACTI_WHITELIST', $input_whitelist);
 }
 
-/* define required path as constants */
+// define required path as constants
 
-/* define any additional paths as constants */
+// define any additional paths as constants
 foreach ($config as $key => $value) {
 	if (str_ends_with($key, '_path')) {
 		$path_name     = substr($key, 0, -5);
@@ -259,7 +259,7 @@ if (isset($i18n_text_log)) {
 	$config['i18n_text_log'] = $i18n_text_log;
 }
 
-/* include base modules */
+// include base modules
 include_once(CACTI_PATH_LIBRARY . '/database.php');
 include_once(CACTI_PATH_LIBRARY . '/functions.php');
 include_once(CACTI_PATH_INCLUDE . '/global_constants.php');
@@ -290,7 +290,7 @@ if ($config['is_web'] && ini_get('session.auto_start') == 1) {
 	exit;
 }
 
-/* set poller mode */
+// set poller mode
 global $local_db_cnn_id, $remote_db_cnn_id, $conn_mode;
 
 $config['connection'] = 'online';
@@ -345,7 +345,7 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 		}
 	}
 
-	/* gather the existing cactidb version */
+	// gather the existing cactidb version
 	$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1', false, $local_db_cnn_id);
 
 	/**
@@ -446,13 +446,13 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 		}
 	}
 
-	/* gather the existing cactidb version */
+	// gather the existing cactidb version
 	$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1');
 }
 
 define('CACTI_CONNECTION', $config['connection']);
 
-/* check cacti log is available */
+// check cacti log is available
 $log_filename = cacti_log_file();
 
 if (!is_resource_writable($log_filename)) {
@@ -472,7 +472,7 @@ if (!is_resource_writable($log_filename)) {
 	print $ps . 'Log: ' . $log_filename . $sp;
 }
 
-/* prime the most popular config settings */
+// prime the most popular config settings
 cache_common_config_settings();
 
 if ($config['poller_id'] > 1) {
@@ -508,7 +508,7 @@ if (!defined('IN_CACTI_INSTALL')) {
 	register_shutdown_function('CactiShutdownHandler');
 }
 
-/* verify the cacti database is initialized before moving past here */
+// verify the cacti database is initialized before moving past here
 db_cacti_initialized($config['is_web']);
 
 if ($config['is_web']) {
@@ -520,10 +520,10 @@ if ($config['is_web']) {
 		}
 	}
 
-	/* set the maximum post size */
+	// set the maximum post size
 	ini_set('post_max_size', '8M');
 
-	/* add additional cookie directives */
+	// add additional cookie directives
 	ini_set('session.cookie_httponly', true);
 	ini_set('session.cookie_path', CACTI_PATH_URL);
 	ini_set('session.use_strict_mode', true);
@@ -559,11 +559,11 @@ if ($config['is_web']) {
 		$cacti_db_session = false;
 	}
 
-	/* we don't want these pages cached */
+	// we don't want these pages cached
 	header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 	header('X-Frame-Options: SAMEORIGIN');
 
-	/* increased web hardening */
+	// increased web hardening
 	$script_policy = read_config_option('content_security_policy_script');
 
 	if ($script_policy == 'unsafe-eval') {
@@ -571,18 +571,18 @@ if ($config['is_web']) {
 	} else {
 		$script_policy = '';
 	}
-	$alternates = html_escape(read_config_option('content_security_alternate_sources'));
+	$alternates = htmle(read_config_option('content_security_alternate_sources'));
 
 	header("Content-Security-Policy: default-src *; img-src 'self' https://api.qrserver.com $alternates data: blob:; style-src 'self' 'unsafe-inline' $alternates; script-src 'self' $script_policy 'unsafe-inline' $alternates; frame-ancestors 'self'; worker-src 'self' $alternates;");
 
-	/* prevent IE from silently rejects cookies sent from third party sites. */
+	// prevent IE from silently rejects cookies sent from third party sites.
 	header('P3P: CP="CAO PSA OUR"');
 	header('Cache-Control: no-store, no-cache, must-revalidate');
 	header('Cache-Control: max-age=31536000');
 
 	cacti_session_start();
 
-	/* make sure to start only Cacti session at a time */
+	// make sure to start only Cacti session at a time
 	if (!isset($_SESSION[CACTI_CWD])) {
 		$_SESSION[CACTI_CWD] = CACTI_PATH_BASE;
 	} else {
@@ -591,13 +591,13 @@ if ($config['is_web']) {
 		}
 	}
 
-	/* Sanitize the http referer */
+	// Sanitize the http referer
 	if (isset($_SERVER['HTTP_REFERER'])) {
 		$_SERVER['HTTP_REFERER'] = sanitize_uri($_SERVER['HTTP_REFERER']);
 	}
 }
 
-/* emulate 'register_globals' = 'off' if turned on */
+// emulate 'register_globals' = 'off' if turned on
 if ((bool)ini_get('register_globals')) {
 	$not_unset = ['_GET', '_POST', '_COOKIE', '_SERVER', '_SESSION', '_ENV', '_FILES', 'database_type', 'database_default', 'database_hostname', 'database_username', 'database_password', 'config', 'colors'];
 
@@ -607,7 +607,7 @@ if ((bool)ini_get('register_globals')) {
 		$_SESSION = [];
 	}
 
-	/* Merge all into one extremely huge array; unset this later */
+	// Merge all into one extremely huge array; unset this later
 	$input = array_merge($_GET, $_POST, $_COOKIE, $_SERVER, $_SESSION, $_ENV, $_FILES);
 
 	unset($input['input']);
@@ -651,7 +651,7 @@ include_once(CACTI_PATH_INCLUDE . '/vendor/autoload.php');
 if ($config['is_web']) {
 	include_once(CACTI_PATH_INCLUDE . '/csrf.php');
 
-	/* raise a message and perform a page refresh if we've changed modes */
+	// raise a message and perform a page refresh if we've changed modes
 	if ($config['poller_id'] > 1) {
 		if (isset($_SESSION['connection_mode'])) {
 			$previous_mode = $_SESSION['connection_mode'];
@@ -689,8 +689,8 @@ if ($config['is_web']) {
 		}
 	}
 
-	if (isset_request_var('newtheme')) {
-		$newtheme     = get_nfilter_request_var('newtheme');
+	if (isrv('newtheme')) {
+		$newtheme     = gnrv('newtheme');
 		$newtheme_css = __DIR__ . "/themes/$newtheme/main.css";
 
 		if (is_valid_theme($newtheme)) {
@@ -698,13 +698,13 @@ if ($config['is_web']) {
 		}
 	}
 
-	if (isset_request_var('csrf_timeout')) {
+	if (isrv('csrf_timeout')) {
 		raise_message('csrf_ptimeout');
 	}
 
-	/* check for save actions using GET */
-	if (isset_request_var('action')) {
-		$action = get_nfilter_request_var('action');
+	// check for save actions using GET
+	if (isrv('action')) {
+		$action = gnrv('action');
 
 		$bad_actions = ['save', 'update_data', 'changepassword'];
 
@@ -722,5 +722,5 @@ if ($config['is_web']) {
 
 api_plugin_hook('config_insert');
 
-/* set config cacti_version for plugins */
+// set config cacti_version for plugins
 $config['cacti_version'] = CACTI_VERSION;

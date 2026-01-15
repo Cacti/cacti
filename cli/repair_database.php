@@ -28,7 +28,7 @@ require_once(CACTI_PATH_LIBRARY . '/template.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 include_once(CACTI_PATH_LIBRARY . '/data_query.php');
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -405,7 +405,7 @@ function detailed_checks() {
 
 	printf('NOTE: Searching for invalid Cacti GPRINT Presets.' . PHP_EOL);
 
-	/* remove invalid GPrint Presets from the Database, validated */
+	// remove invalid GPrint Presets from the Database, validated
 	$rows = db_fetch_cell('SELECT COUNT(*)
 		FROM graph_templates_item
 		LEFT JOIN graph_templates_gprint
@@ -433,7 +433,7 @@ function detailed_checks() {
 
 	printf('NOTE: Searching for invalid Cacti CDEFs.' . PHP_EOL);
 
-	/* remove invalid CDEF Items from the Database, validated */
+	// remove invalid CDEF Items from the Database, validated
 	$rows = db_fetch_cell('SELECT COUNT(*)
 		FROM cdef_items
 		LEFT JOIN cdef
@@ -459,7 +459,7 @@ function detailed_checks() {
 
 	printf('NOTE: Searching for invalid Cacti Data Inputs.' . PHP_EOL);
 
-	/* remove invalid Data Templates from the Database, validated */
+	// remove invalid Data Templates from the Database, validated
 	$rows = db_fetch_cell('SELECT COUNT(*)
 		FROM data_template_data
 		LEFT JOIN data_input
@@ -538,7 +538,7 @@ function detailed_checks() {
 
 	printf('NOTE: Searching for invalid Cacti Data Input fields.' . PHP_EOL);
 
-	/* remove invalid Data Input fields from the Database, validated */
+	// remove invalid Data Input fields from the Database, validated
 	$rows = db_fetch_cell('SELECT COUNT(*)
 		FROM data_input_fields
 		LEFT JOIN data_input
@@ -564,7 +564,7 @@ function detailed_checks() {
 
 	printf('NOTE: Searching for invalid Cacti Data Input Data rows (Pass 1).' . PHP_EOL);
 
-	/* remove invalid Data Input Data Rows from the Database in two passes */
+	// remove invalid Data Input Data Rows from the Database in two passes
 	$rows = db_fetch_cell('SELECT COUNT(*)
 		FROM data_input_data
 		LEFT JOIN data_template_data

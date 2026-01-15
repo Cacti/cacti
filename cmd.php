@@ -1003,7 +1003,7 @@ function ping_and_reindex_check(&$item, $mibs, $script_timeout) {
 				/* assert the result with the expected value in the
 				 * db; recache if the assert fails
 				 */
-				/* TODO: remove magic ":" from poller_command["command"]; this may interfere with scripts */
+				// TODO: remove magic ":" from poller_command["command"]; this may interfere with scripts
 				if (($index_item['op'] == '=') && ($index_item['assert_value'] != trim($output))) {
 					cacti_log("Device[$host_id] HT[1] DQ[" . $index_item['data_query_id'] . "] RECACHE ASSERT FAILED '" . $index_item['assert_value'] . '=' . trim($output), $print_data_to_stdout, 'POLLER');
 

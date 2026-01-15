@@ -33,7 +33,7 @@ if ($config['poller_id'] > 1) {
 	exit(1);
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 

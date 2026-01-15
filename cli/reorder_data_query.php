@@ -35,7 +35,7 @@ if ($config['poller_id'] > 1) {
 	exit(1);
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -99,9 +99,9 @@ if (cacti_sizeof($parms)) {
 
 $sql_where = "WHERE data_input_fields.type_code='output_type'";
 
-/* determine the hosts to reindex */
+// determine the hosts to reindex
 if (strtolower($host_id) == 'all') {
-	/* NOP */
+	// NOP
 } elseif (is_numeric($host_id)) {
 	$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . 'data_local.host_id = ' . $host_id;
 } else {
@@ -111,9 +111,9 @@ if (strtolower($host_id) == 'all') {
 	exit;
 }
 
-/* determine data queries to rerun */
+// determine data queries to rerun
 if (strtolower($query_id) == 'all') {
-	/* do nothing */
+	// do nothing
 } elseif (is_numeric($query_id)) {
 	$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . 'data_local.snmp_query_id= ' . $query_id;
 } else {
@@ -123,7 +123,7 @@ if (strtolower($query_id) == 'all') {
 	exit;
 }
 
-/* get all object that have to be scanned */
+// get all object that have to be scanned
 $data_queries = db_fetch_assoc("SELECT data_local.host_id, data_local.snmp_query_id,
 	data_local.snmp_index, data_template_data.local_data_id, data_template_data.data_input_id,
 	data_input_data.data_template_data_id, data_input_data.data_input_field_id, data_input_data.value
@@ -137,7 +137,7 @@ $data_queries = db_fetch_assoc("SELECT data_local.host_id, data_local.snmp_query
 	AND data_input_fields.id = data_input_data.data_input_field_id
 	$sql_where");
 
-/* issue warnings and start message if applicable */
+// issue warnings and start message if applicable
 print "WARNING: Do not interrupt this script.  Reordering can take quite some time\n";
 debug("There are '" . cacti_sizeof($data_queries) . "' data query index items to run");
 
@@ -148,11 +148,11 @@ if (cacti_sizeof($data_queries)) {
 		if (!$debug) {
 			print '.';
 		}
-		/* fetch current index_order from data_query XML definition and put it into host_snmp_query */
+		// fetch current index_order from data_query XML definition and put it into host_snmp_query
 		update_data_query_sort_cache($data_query['host_id'], $data_query['snmp_query_id']);
-		/* build array required for function call */
+		// build array required for function call
 		$data_query['snmp_index_on'] = get_best_data_query_index_type($data_query['host_id'], $data_query['snmp_query_id']);
-		/* as we request the output_type, 'value' gives the snmp_query_graph_id */
+		// as we request the output_type, 'value' gives the snmp_query_graph_id
 		$data_query['snmp_query_graph_id'] = $data_query['value'];
 		debug("Data Query #'" . $i . "' host: '" . $data_query['host_id'] .
 			"' SNMP Query Id: '" . $data_query['snmp_query_id'] .
@@ -164,13 +164,13 @@ if (cacti_sizeof($data_queries)) {
 	}
 }
 
-/*  display_version - displays version information */
+// display_version - displays version information
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Reorder Data Query Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-/*	display_help - displays the usage of the function */
+// display_help - displays the usage of the function
 function display_help() {
 	display_version();
 

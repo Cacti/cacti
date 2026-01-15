@@ -22,14 +22,14 @@
  +-------------------------------------------------------------------------+
 */
 
-/* setup constants */
+// setup constants
 define('SPIKE_METHOD_STDDEV',   1);
 define('SPIKE_METHOD_VARIANCE', 2);
 define('SPIKE_METHOD_FILL',     4);
 define('SPIKE_METHOD_FLOAT',    3);
 
 class spikekill {
-	/* setup defaults */
+	// setup defaults
 	private $std_kills = false;
 
 	private $var_kills = false;
@@ -122,7 +122,7 @@ class spikekill {
 		if (isset($_SESSION[SESS_USER_ID])) {
 			$this->user = $_SESSION[SESS_USER_ID];
 
-			/* confirm the user id is accurate */
+			// confirm the user id is accurate
 			$this->user_info = db_fetch_row_prepared('SELECT id, username
 				FROM user_auth
 				WHERE id = ?',
@@ -216,7 +216,7 @@ class spikekill {
 	}
 
 	private function initialize_spikekill() {
-		/* additional error check */
+		// additional error check
 		if ($this->rrdfile == '') {
 			$this->set_error('FATAL: You must specify an RRDfile!');
 		}
@@ -234,7 +234,7 @@ class spikekill {
 		$uoutliers = read_user_setting('spikekill_outliers', $this->doutliers, true);
 		$uavgnan   = read_user_setting('spikekill_avgnan', $this->davgnan, true);
 
-		/* set the correct value */
+		// set the correct value
 		if ($this->avgnan == '') {
 			if (!isset($uavgnan)) {
 				$this->avgnan = $this->davgnan;
@@ -332,7 +332,7 @@ class spikekill {
 		}
 
 		switch($this->method) {
-			/* the order of the following case statements reflects the order in the spikekill menu in the GUI. */
+			// the order of the following case statements reflects the order in the spikekill menu in the GUI.
 			case 'stddev':
 				$this->method = SPIKE_METHOD_STDDEV;
 
@@ -380,7 +380,7 @@ class spikekill {
 			return false;
 		}
 
-		/* determine the temporary file name */
+		// determine the temporary file name
 		$this->seed = mt_rand();
 
 		if (CACTI_SERVER_OS == 'win32') {
@@ -399,7 +399,7 @@ class spikekill {
 			$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . 'NOTE: Removing Outliers in Range and Replacing with Last' . ($this->html ? "</p>\n" : "\n");
 		}
 
-		/* execute the dump command */
+		// execute the dump command
 		$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . "NOTE: Creating XML file '$xmlfile' from '$this->rrdfile'" . ($this->html ? "</p>\n" : "\n");
 
 		if (!$this->dryrun) {
@@ -434,11 +434,11 @@ class spikekill {
 
 		shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' dump ' . cacti_escapeshellarg($this->rrdfile) . ' > ' . cacti_escapeshellarg($xmlfile));
 
-		/* read the xml file into an array*/
+		// read the xml file into an array
 		if (file_exists($xmlfile)) {
 			$output = file($xmlfile);
 
-			/* remove the temp file */
+			// remove the temp file
 			unlink($xmlfile);
 		} else {
 			$this->set_error('FATAL: RRDtool Command Failed.  Please verify that the RRDtool path is valid in Settings->Paths!');
@@ -446,7 +446,7 @@ class spikekill {
 			return false;
 		}
 
-		/* backup the rrdfile if requested */
+		// backup the rrdfile if requested
 		if ($this->backup && !$this->dryrun) {
 			if (copy($this->rrdfile, $bakfile)) {
 				$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . "NOTE: RRDfile '$this->rrdfile' backed up to '$bakfile'" . ($this->html ? "</p>\n" : "\n");
@@ -461,7 +461,7 @@ class spikekill {
 			return false;
 		}
 
-		/* process the xml file and remove all comments */
+		// process the xml file and remove all comments
 		$output = $this->removeComments($output);
 
 		/* Read all the rra's ds values and obtain the following pieces of information from each
@@ -529,7 +529,7 @@ class spikekill {
 				if (substr_count($line, '<v>')) {
 					$linearray = explode('<v>', $line);
 
-					/* get the timestamp */
+					// get the timestamp
 					$timestamp_part = $linearray[0];
 
 					if (str_contains($timestamp_part, '<timestamp>')) {
@@ -540,15 +540,15 @@ class spikekill {
 						$timestamp = 0;
 					}
 
-					/* discard the first piece of the exploded line */
+					// discard the first piece of the exploded line
 					array_shift($linearray);
 					$ds_num = 0;
 
 					foreach ($linearray as $dsvalue) {
-						/* peel off garbage */
+						// peel off garbage
 						$dsvalue = trim(str_replace('</row>', '', str_replace('</v>', '', $dsvalue)));
 
-						/* check for outlier territory */
+						// check for outlier territory
 						if ($timestamp > 0) {
 							if (!empty($this->out_start) && $timestamp < $this->out_start) {
 								$process = true;
@@ -589,7 +589,7 @@ class spikekill {
 							}
 						}
 
-						/* store the sample for standard deviation calculation */
+						// store the sample for standard deviation calculation
 						if ($timestamp == 0) {
 							$samples[$rra_num][$ds_num][] = $dsvalue;
 						} else {
@@ -627,7 +627,7 @@ class spikekill {
 		cacti_log("DEBUG: number of RRAs: {$rra_num}", false, 'SPIKE', POLLER_VERBOSITY_DEBUG);
 		cacti_log("DEBUG: number of DSes: {$ds_num}", false, 'SPIKE', POLLER_VERBOSITY_DEBUG);
 
-		/* For all the samples determine the average with the outliers removed */
+		// For all the samples determine the average with the outliers removed
 		$this->calculateVarianceAverages($rra, $samples);
 
 		/**
@@ -650,7 +650,7 @@ class spikekill {
 
 		$this->calculateOverallStatistics($rra, $samples);
 
-		/* debugging and/or status report */
+		// debugging and/or status report
 		if ($this->debug || $this->dryrun) {
 			if ($this->html) {
 				$this->strout .= "<table style='width:100%' class='spikekillData' id='spikekillData'>";
@@ -665,9 +665,9 @@ class spikekill {
 
 		$new_output = '';
 
-		/* create an output array */
+		// create an output array
 		if ($this->method == SPIKE_METHOD_STDDEV) {
-			/* standard deviation subroutine */
+			// standard deviation subroutine
 			if ($this->std_kills || $this->out_kills) {
 				$this->debug('Either std_kills or out_kills found');
 
@@ -683,7 +683,7 @@ class spikekill {
 					"NOTE: No Standard Deviation Spikes found in '$this->rrdfile'" . ($this->html ? "</p>\n" : "\n");
 			}
 		} else {
-			/* variance subroutine */
+			// variance subroutine
 			if ($this->var_kills || $this->out_kills) {
 				$this->debug('Either variance or out_kills found');
 
@@ -700,7 +700,7 @@ class spikekill {
 			}
 		}
 
-		/* finally update the file XML file and Reprocess the RRDfile */
+		// finally update the file XML file and Reprocess the RRDfile
 		if (!$this->dryrun) {
 			if ($output == true && $new_output != '') {
 				if ($this->writeXMLFile($new_output, $xmlfile)) {
@@ -744,9 +744,9 @@ class spikekill {
 		return true;
 	}
 
-	/* All Functions */
+	// All Functions
 	private function createRRDFileFromXML($xmlfile, $rrdfile) {
-		/* execute the dump command */
+		// execute the dump command
 		$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
 			"NOTE: Re-Importing '$xmlfile' to '$rrdfile'" . ($this->html ? "</p>\n" : "\n");
 
@@ -791,7 +791,7 @@ class spikekill {
 							} else {
 								$myds = $ds;
 
-								/* remove NaN entries from the data set */
+								// remove NaN entries from the data set
 								if (cacti_sizeof($myds)) {
 									foreach ($myds as $timestamp => $value) {
 										if (stripos($value, 'nan') !== false) {
@@ -800,11 +800,11 @@ class spikekill {
 									}
 								}
 
-								/* remove high outliers */
+								// remove high outliers
 								rsort($myds, SORT_NUMERIC);
 								$myds = array_slice($myds, $this->outliers);
 
-								/* remove low outliers */
+								// remove low outliers
 								sort($myds, SORT_NUMERIC);
 								$myds = array_slice($myds, $this->outliers);
 
@@ -873,12 +873,12 @@ class spikekill {
 							$rra[$rra_num][$ds_num]['sumnksamples'] = 0;
 							$rra[$rra_num][$ds_num]['avgnksamples'] = 0;
 
-							/* go through values and find cutoffs */
+							// go through values and find cutoffs
 							$rra[$rra_num][$ds_num]['stddev_killed']   = 0;
 							$rra[$rra_num][$ds_num]['variance_killed'] = 0;
 							$rra[$rra_num][$ds_num]['outwind_killed']  = 0;
 
-							/* count the number of kills required */
+							// count the number of kills required
 							if (cacti_sizeof($samples[$rra_num][$ds_num])) {
 								foreach ($samples[$rra_num][$ds_num] as $timestamp => $sample) {
 									if (!empty($this->out_start) && $timestamp >= $this->out_start && $timestamp <= $this->out_end) {
@@ -909,12 +909,12 @@ class spikekill {
 									}
 
 									if (!empty($this->out_start) && $timestamp >= $this->out_start && $timestamp <= $this->out_end) {
-										/* Already calculated */
+										// Already calculated
 									} elseif ($rra[$rra_num][$ds_num]['variance_avg'] == 'NAN') {
-										/* not enough samples to calculate */
+										// not enough samples to calculate
 									} elseif ($sample > ($rra[$rra_num][$ds_num]['variance_avg'] * (1 + $this->percent))) {
 										if ($this->method == SPIKE_METHOD_VARIANCE) {
-											/* kill based upon variance */
+											// kill based upon variance
 											$this->debug(sprintf("Var Kill: Value '%.4e', VarianceDev '%.4e', VarianceLimit '%.4e'", $sample, $rra[$rra_num][$ds_num]['variance_avg'], ($rra[$rra_num][$ds_num]['variance_avg'] * (1 + $this->percent))));
 
 											$rra[$rra_num][$ds_num]['variance_killed']++;
@@ -1049,7 +1049,7 @@ class spikekill {
 	}
 
 	private function updateXML(&$output, &$rra) {
-		/* variance subroutine */
+		// variance subroutine
 		$rra_num   = 0;
 		$ds_num    = 0;
 		$last_num  = [];
@@ -1060,7 +1060,7 @@ class spikekill {
 				if (substr_count($line, '<v>')) {
 					$linearray = explode('<v>', $line);
 
-					/* get the timestamp */
+					// get the timestamp
 					$timestamp_part = $linearray[0];
 
 					if (str_contains($timestamp_part, '<timestamp>')) {
@@ -1071,22 +1071,22 @@ class spikekill {
 						$timestamp = 0;
 					}
 
-					/* discard the first piece of the exploded line */
+					// discard the first piece of the exploded line
 					array_shift($linearray);
 
-					/* initialize variables */
+					// initialize variables
 					$ds_num         = 0;
 					$out_row        = '<row>';
 					$kills          = 0;
 
 					foreach ($linearray as $dsvalue) {
-						/* peel off garbage */
+						// peel off garbage
 						$dsvalue = trim(str_replace('</row>', '', str_replace('</v>', '', $dsvalue)));
 
 						if (strtolower($dsvalue) == 'nan' && !isset($last_num[$ds_num])) {
-							/* do nothing, it's a NaN, and the first one */
+							// do nothing, it's a NaN, and the first one
 						} elseif (!empty($this->out_start) && $timestamp > $this->out_start && $timestamp < $this->out_end) {
-							/* a window is specified, and the timestamp is inside the window */
+							// a window is specified, and the timestamp is inside the window
 							if ($this->method == SPIKE_METHOD_FLOAT) {
 								if ($this->avgnan == 'avg') {
 									cacti_log("DEBUG: replacing dsvalue {$dsvalue} with variance_avg {$rra[$rra_num][$ds_num]['variance_avg']}", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
@@ -1245,13 +1245,13 @@ class spikekill {
 				if ($line == '') {
 					continue;
 				} else {
-					/* is there a comment, remove it */
+					// is there a comment, remove it
 					$oline = $line;
 
 					$comment_start = strpos($line, '<!--');
 
 					if ($comment_start === false) {
-						/* do nothing no line */
+						// do nothing no line
 					} else {
 						$comment_end = strpos($line, '-->');
 
@@ -1262,7 +1262,7 @@ class spikekill {
 						}
 
 						if (str_contains($line, '<row>')) {
-							/* capture the timestamp */
+							// capture the timestamp
 							$stamp     = trim(substr($oline, $comment_start + 4, $comment_end - 4));
 							$stamp     = explode('/', $stamp);
 							$timestamp = trim($stamp[1]);
@@ -1276,7 +1276,7 @@ class spikekill {
 				}
 			}
 
-			/* transfer the new array back to the original array */
+			// transfer the new array back to the original array
 			return $new_array;
 		}
 	}
@@ -1331,7 +1331,7 @@ class spikekill {
 				$sum         = 0;
 				$total_items = 0;
 
-				/* remove NaN entries from the data set */
+				// remove NaN entries from the data set
 				if (cacti_sizeof($items)) {
 					foreach ($items as $key => $value) {
 						if (is_int($value) || is_float($value)) {

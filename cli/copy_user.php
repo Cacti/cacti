@@ -103,7 +103,7 @@ if (cacti_sizeof($parms)) {
 	}
 }
 
-/* switch to main database for cli's */
+// switch to main database for cli's
 if ($config['poller_id'] > 1) {
 	db_switch_remote_to_main();
 }
@@ -123,7 +123,7 @@ if (empty($salt)) {
 
 $data['password'] = compat_password_hash($salt . '_' . $new_user, PASSWORD_DEFAULT);
 
-/* Check that user exists */
+// Check that user exists
 $user_auth = db_fetch_row("SELECT * FROM user_auth WHERE username = '" . $template_user . "' AND realm = 0");
 
 if (! isset($user_auth)) {
@@ -172,7 +172,7 @@ function validate_boolean($field, $value) {
 	return $value;
 }
 
-/*  display_version - displays version information */
+// display_version - displays version information
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Copy User Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;

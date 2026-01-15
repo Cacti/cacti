@@ -187,17 +187,13 @@ if ($audit) {
 
 exit(0);
 
-/*
- * display_version - displays version information
- */
+// display_version - displays version information
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Data Input Whitelist Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-/*
- * display_help - displays the usage of the function
- */
+// display_help - displays the usage of the function
 function display_help() {
 	display_version();
 

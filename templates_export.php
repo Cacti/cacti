@@ -25,10 +25,10 @@
 require('./include/auth.php');
 require_once(CACTI_PATH_LIBRARY . '/export.php');
 
-/* set default action */
+// set default action
 set_default_action();
 
-switch (get_request_var('action')) {
+switch (grv('action')) {
 	case 'save':
 		form_save();
 
@@ -46,33 +46,33 @@ switch (get_request_var('action')) {
 function form_save() {
 	global $export_types, $export_errors;
 
-	/* ================= input validation ================= */
-	get_filter_request_var('export_item_id');
-	/* ==================================================== */
+	// ================= input validation =================
+	gfrv('export_item_id');
+	// ====================================================
 
-	if (isset_request_var('save_component_export')) {
+	if (isrv('save_component_export')) {
 		$export_errors = 0;
-		$xml_data      = get_item_xml(get_nfilter_request_var('export_type'), get_nfilter_request_var('export_item_id'), (((isset_request_var('include_deps') ? get_nfilter_request_var('include_deps') : '') == '') ? false : true));
+		$xml_data      = get_item_xml(gnrv('export_type'), gnrv('export_item_id'), (((isrv('include_deps') ? gnrv('include_deps') : '') == '') ? false : true));
 
-		if (get_nfilter_request_var('output_format') == '1') {
+		if (gnrv('output_format') == '1') {
 			top_header();
 
-			print "<table style='width:100%;' class='center'><tr><td style='text-align:left;'><pre>" . html_escape($xml_data) . '</pre></td></tr></table>';
+			print "<table style='width:100%;' class='center'><tr><td style='text-align:left;'><pre>" . htmle($xml_data) . '</pre></td></tr></table>';
 
 			bottom_footer();
-		} elseif (get_nfilter_request_var('output_format') == '2') {
+		} elseif (gnrv('output_format') == '2') {
 			header('Content-type: application/xml');
 
 			if ($export_errors) {
 				print __('WARNING: Export Errors Encountered. Refresh Browser Window for Details!') . "\n";
 			}
 			print $xml_data;
-		} elseif (get_nfilter_request_var('output_format') == '3') {
+		} elseif (gnrv('output_format') == '3') {
 			if ($export_errors) {
 				header('Location: templates_export.php');
 			} else {
 				header('Content-type: application/xml');
-				header('Content-Disposition: attachment; filename=cacti_' . get_nfilter_request_var('export_type') . '_' . strtolower(clean_up_file_name(db_fetch_cell(str_replace('|id|', get_nfilter_request_var('export_item_id'), $export_types[get_nfilter_request_var('export_type')]['title_sql'])))) . '.xml');
+				header('Content-Disposition: attachment; filename=cacti_' . gnrv('export_type') . '_' . strtolower(clean_up_file_name(db_fetch_cell(str_replace('|id|', gnrv('export_item_id'), $export_types[gnrv('export_type')]['title_sql'])))) . '.xml');
 				print $xml_data;
 			}
 		}
@@ -82,9 +82,9 @@ function form_save() {
 function export() {
 	global $export_types;
 
-	/* 'graph_template' should be the default */
-	if (!isset_request_var('export_type')) {
-		set_request_var('export_type', 'host_template');
+	// 'graph_template' should be the default
+	if (!isrv('export_type')) {
+		srv('export_type', 'host_template');
 	}
 
 	$type_found   = false;
@@ -93,13 +93,13 @@ function export() {
 	foreach ($export_types as $id => $type) {
 		$export_array[$id] = $type['name'];
 
-		if (get_nfilter_request_var('export_type') == $id) {
+		if (gnrv('export_type') == $id) {
 			$type_found = true;
 		}
 	}
 
 	if (!$type_found) {
-		set_request_var('export_type', 'host_template');
+		srv('export_type', 'host_template');
 	}
 
 	$form_template_export1 = [
@@ -107,7 +107,7 @@ function export() {
 			'friendly_name' => __('What would you like to export?'),
 			'description'   => __('Select the Template type that you wish to export from Cacti.'),
 			'method'        => 'drop_array',
-			'value'         => get_nfilter_request_var('export_type'),
+			'value'         => gnrv('export_type'),
 			'array'         => $export_array,
 			'default'       => 'host_template'
 		]
@@ -120,7 +120,7 @@ function export() {
 			'method'        => 'drop_sql',
 			'value'         => '0',
 			'default'       => '0',
-			'sql'           => $export_types[get_nfilter_request_var('export_type')]['dropdown_sql']
+			'sql'           => $export_types[gnrv('export_type')]['dropdown_sql']
 		],
 		'include_deps' => [
 			'friendly_name' => __('Include Dependencies'),
@@ -165,7 +165,7 @@ function export() {
 
 	html_end_box();
 
-	html_start_box(__('Available Templates [%s]', $export_types[get_nfilter_request_var('export_type')]['name']), '100%', false, 3, 'center', '');
+	html_start_box(__('Available Templates [%s]', $export_types[gnrv('export_type')]['name']), '100%', false, 3, 'center', '');
 
 	draw_edit_form(
 		[

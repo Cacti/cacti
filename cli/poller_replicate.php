@@ -35,11 +35,11 @@ if ($config['poller_id'] > 1) {
 $poller_id = 0;
 $class     = 'all';
 
-/* performing a full sync can take a lot of memory and time */
+// performing a full sync can take a lot of memory and time
 ini_set('memory_limit', '-1');
 ini_set('max_execution_time', '900');
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -93,7 +93,7 @@ if (!preg_match('/(all|data|auth|settings)/', $class)) {
 	exit(1);
 }
 
-/* record the start time */
+// record the start time
 $start = microtime(true);
 
 if ($poller_id < 0) {
@@ -141,13 +141,13 @@ if (cacti_sizeof($pollers)) {
 	exit(1);
 }
 
-/*  display_version - displays version information */
+// display_version - displays version information
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Poller Full Sync Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-/*	display_help - displays the usage of the function */
+// display_help - displays the usage of the function
 function display_help() {
 	display_version();
 

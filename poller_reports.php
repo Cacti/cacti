@@ -39,7 +39,7 @@ require_once(CACTI_PATH_LIBRARY . '/reports.php');
 
 global $current_user;
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -98,19 +98,19 @@ if (cacti_sizeof($parms)) {
 	}
 }
 
-/* install signal handlers for UNIX only */
+// install signal handlers for UNIX only
 if (function_exists('pcntl_signal')) {
 	pcntl_signal(SIGTERM, 'sig_handler');
 	pcntl_signal(SIGINT, 'sig_handler');
 }
 
-/* take time and log performance data */
+// take time and log performance data
 $start = microtime(true);
 
-/* let's give this script lot of time to run for ever */
+// let's give this script lot of time to run for ever
 ini_set('max_execution_time', '0');
 
-/* cacti upgrading */
+// cacti upgrading
 if (!db_table_exists('reports')) {
 	exit(0);
 }
@@ -119,13 +119,13 @@ if ($report_id === false) {
 	$number_sent = 0;
 
 	if (!$force) {
-		/* silently end if the registered process is still running, or process table missing */
+		// silently end if the registered process is still running, or process table missing
 		if (!register_process_start('reports', 'master', 0, read_config_option('scheduler_timeout'))) {
 			exit(0);
 		}
 	}
 
-	/* fetch all enabled reports that have a start time in the past */
+	// fetch all enabled reports that have a start time in the past
 	$reports = db_fetch_assoc("SELECT * FROM reports WHERE enabled='on'");
 
 	reports_log('Cacti Reports reports found: ' . cacti_sizeof($reports), true, 'REPORTS', POLLER_VERBOSITY_MEDIUM);
@@ -135,7 +135,7 @@ if ($report_id === false) {
 	$command  = read_config_option('path_php_binary');
 	$command .= ' ' . CACTI_PATH_BASE . '/poller_reports.php';
 
-	/* execute each of those reports */
+	// execute each of those reports
 	if (cacti_sizeof($reports)) {
 		foreach ($reports as $report) {
 			if (api_scheduler_is_time_to_start($report, 'reports') || $force) {
@@ -199,10 +199,10 @@ if ($report_id === false) {
 			}
 		}
 
-		/* record the end time */
+		// record the end time
 		$end = microtime(true);
 
-		/* log statistics */
+		// log statistics
 		$reports_stats = sprintf('Time:%01.4f Reports:%s', $end - $start, $number_sent);
 		reports_log('REPORTS STATS: ' . $reports_stats, true, 'REPORTS', POLLER_VERBOSITY_LOW);
 		db_execute_prepared('REPLACE INTO settings (name, value) VALUES ("stats_reports", ?)', [$reports_stats]);
@@ -280,6 +280,6 @@ function sig_handler($signo) {
 
 			break;
 		default:
-			/* ignore all other signals */
+			// ignore all other signals
 	}
 }

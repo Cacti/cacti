@@ -23,7 +23,7 @@
  +-------------------------------------------------------------------------+
 */
 
-/* do NOT run this script through a web browser */
+// do NOT run this script through a web browser
 if (php_sapi_name() != 'cli') {
 	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }

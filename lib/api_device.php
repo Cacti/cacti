@@ -221,7 +221,7 @@ function api_device_remove_multi(array $device_ids, int $delete_type = 2): void 
 			'id', 'id'
 		);
 
-		/* build the list */
+		// build the list
 		foreach ($device_ids as $device_id) {
 			if ($i == 0) {
 				$devices_to_delete .= $device_id;
@@ -229,7 +229,7 @@ function api_device_remove_multi(array $device_ids, int $delete_type = 2): void 
 				$devices_to_delete .= ', ' . $device_id;
 			}
 
-			/* poller commands go one at a time due to trashy logic */
+			// poller commands go one at a time due to trashy logic
 			db_execute_prepared('DELETE FROM poller_item    WHERE host_id = ?', [$device_id]);
 			db_execute_prepared('DELETE FROM poller_reindex WHERE host_id = ?', [$device_id]);
 			db_execute_prepared('DELETE FROM poller_command WHERE command LIKE ?', [$device_id . ':%']);
@@ -381,7 +381,7 @@ function api_device_enable_devices(array $device_ids): void {
 		 * enable behavior.
 		 */
 		if (!cacti_sizeof($poller_cache)) {
-			/* update poller cache */
+			// update poller cache
 			$data_sources = db_fetch_assoc_prepared('SELECT id
 				FROM data_local
 				WHERE host_id = ?',
@@ -441,15 +441,15 @@ function api_device_change_options(array $device_ids, array $post): void {
 						WHERE id = ?',
 						[$device_id]);
 
-					if ($old_poller > 1 && $old_poller != get_nfilter_request_var($field_name)) {
-						$previous_poller = get_nfilter_request_var($field_name);
+					if ($old_poller > 1 && $old_poller != gnrv($field_name)) {
+						$previous_poller = gnrv($field_name);
 
 						api_device_purge_from_remote($device_id, $old_poller);
 					}
 
 					// Update the local device and replicate
-					if ($old_poller !=  get_nfilter_request_var($field_name && get_nfilter_request_var($field_name) > 1)) {
-						api_device_replicate_out($device_id, get_nfilter_request_var($field_name));
+					if ($old_poller !=  gnrv($field_name && gnrv($field_name) > 1)) {
+						api_device_replicate_out($device_id, gnrv($field_name));
 					}
 				}
 
@@ -457,7 +457,7 @@ function api_device_change_options(array $device_ids, array $post): void {
 					SET $field_name = ?
 					WHERE id = ?
 					AND deleted = ''",
-					[get_nfilter_request_var($field_name), $device_id]);
+					[gnrv($field_name), $device_id]);
 
 				if (!isset($poller_ids[$device_id])) {
 					$poller_ids[$device_id] = db_fetch_cell_prepared('SELECT poller_id FROM host WHERE id = ?', [$device_id]);
@@ -472,7 +472,7 @@ function api_device_change_options(array $device_ids, array $post): void {
 								SET $field_name = ?
 								WHERE id = ?
 								AND deleted = ''",
-								[get_nfilter_request_var($field_name), $device_id], true, $rcnn_id);
+								[gnrv($field_name), $device_id], true, $rcnn_id);
 						} elseif (!isset($raised[$poller_id])) {
 							raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 							$raised[$poller_id] = true;
@@ -484,7 +484,7 @@ function api_device_change_options(array $device_ids, array $post): void {
 				}
 
 				if ($field_name == 'host_template_id') {
-					api_device_update_host_template($device_id, get_nfilter_request_var($field_name));
+					api_device_update_host_template($device_id, gnrv($field_name));
 				}
 			}
 		}
@@ -595,7 +595,7 @@ function api_device_dq_add(int $device_id, int $data_query_id, string $reindex_m
 		}
 	}
 
-	/* recache snmp data */
+	// recache snmp data
 	run_data_query($device_id, $data_query_id);
 }
 
@@ -692,7 +692,7 @@ function api_device_dq_change(int $device_id, int $data_query_id, string $reinde
 		}
 	}
 
-	/* finally rerun the data query */
+	// finally rerun the data query
 	run_data_query($device_id, $data_query_id);
 }
 
@@ -985,7 +985,7 @@ function api_device_save(int $id, int $device_template_id, string $description, 
 		$previous_poller = 0;
 	}
 
-	/* fetch some cache variables */
+	// fetch some cache variables
 	if (empty($id)) {
 		$_host_template_id = 0;
 	} else {
@@ -1095,12 +1095,12 @@ function api_device_save(int $id, int $device_template_id, string $description, 
 				}
 			}
 
-			/* clear the host session data for poller cache repopulation */
+			// clear the host session data for poller cache repopulation
 			if (isset($_SESSION['sess_host_cache_array'][$device_id])) {
 				unset($_SESSION['sess_host_cache_array'][$device_id]);
 			}
 
-			/* change reindex method for 'None' for non-snmp devices */
+			// change reindex method for 'None' for non-snmp devices
 			if ($save['snmp_version'] == 0) {
 				db_execute_prepared('UPDATE host_snmp_query
 					SET reindex_method = 0
@@ -1133,15 +1133,15 @@ function api_device_save(int $id, int $device_template_id, string $description, 
 
 			api_device_cache_crc_update($save['poller_id']);
 
-			/* push out relevant fields to data sources using this host */
+			// push out relevant fields to data sources using this host
 			if (!$quick_save) {
 				push_out_host($device_id, 0);
 			}
 
-			/* the host substitution cache is now stale; purge it */
+			// the host substitution cache is now stale; purge it
 			kill_session_var('sess_host_cache_array');
 
-			/* update title cache for graph and data source */
+			// update title cache for graph and data source
 			update_data_source_title_cache_from_host($device_id);
 			update_graph_title_cache_from_host($device_id);
 
@@ -1157,7 +1157,7 @@ function api_device_save(int $id, int $device_template_id, string $description, 
 			raise_message(2);
 		}
 
-		/* if the user changes the host template, add each snmp query associated with it */
+		// if the user changes the host template, add each snmp query associated with it
 		if ($device_template_id > 0 && $device_template_id != $_host_template_id) {
 			api_device_update_host_template($device_id, $device_template_id);
 		}
@@ -1195,7 +1195,7 @@ function api_device_save(int $id, int $device_template_id, string $description, 
 
 							if ((chown($host_dir, $owner_id)) &&
 								(chgrp($host_dir, $group_id))) {
-								/* permissions set ok */
+								// permissions set ok
 							} else {
 								cacti_log("ERROR: Unable to set directory permissions for '" . $host_dir . "'", false);
 							}
@@ -1209,7 +1209,7 @@ function api_device_save(int $id, int $device_template_id, string $description, 
 			}
 		}
 
-		# now that we have the id of the new host, we may plugin postprocessing code
+		// now that we have the id of the new host, we may plugin postprocessing code
 		$save['id'] = $device_id;
 
 		snmpagent_api_device_new($save);
@@ -1327,7 +1327,7 @@ function api_device_update_host_template(int $device_id, int $device_template_id
 		}
 	}
 
-	/* add all new snmp queries assigned to the device template */
+	// add all new snmp queries assigned to the device template
 	$snmp_queries = db_fetch_assoc_prepared('SELECT snmp_query_id
 		FROM host_template_snmp_query AS htsq
 		WHERE host_template_id = ?
@@ -1358,12 +1358,12 @@ function api_device_update_host_template(int $device_id, int $device_template_id
 				}
 			}
 
-			/* recache snmp data */
+			// recache snmp data
 			run_data_query($device_id, $snmp_query['snmp_query_id']);
 		}
 	}
 
-	/* add all graph templates assigned to the device template */
+	// add all graph templates assigned to the device template
 	$graph_templates = db_fetch_assoc_prepared('SELECT graph_template_id
 		FROM host_template_graph AS hg
 		WHERE host_template_id = ?
@@ -1401,7 +1401,7 @@ function api_device_update_host_template(int $device_id, int $device_template_id
 		}
 	}
 
-	/* remove unused graph templates not assigned to the device template */
+	// remove unused graph templates not assigned to the device template
 	$unused_graph_templates = db_fetch_assoc_prepared('SELECT DISTINCT
 		hg.graph_template_id AS id, gt.name, result.gtid
 		FROM host_graph AS hg
@@ -1633,8 +1633,8 @@ function api_device_ping_device(string|null $device_id, bool $from_remote = fals
 							[$device_id]);
 					}
 
-					/* modify for some system descriptions */
-					/* 0000937: System output in host.php poor for Alcatel */
+					// modify for some system descriptions
+					// 0000937: System output in host.php poor for Alcatel
 					if (substr_count($snmp_system, '00:')) {
 						$snmp_system = str_replace('00:', '', $snmp_system);
 						$snmp_system = str_replace(':', ' ', $snmp_system);
@@ -1683,13 +1683,13 @@ function api_device_ping_device(string|null $device_id, bool $from_remote = fals
 	if ($am == AVAIL_PING || $am == AVAIL_SNMP_AND_PING || $am == AVAIL_SNMP_OR_PING) {
 		$anym = true;
 
-		/* create new ping socket for host pinging */
+		// create new ping socket for host pinging
 		$ping = new Net_Ping;
 
 		$ping->host = $host;
 		$ping->port = $host['ping_port'];
 
-		/* perform the appropriate ping check of the host */
+		// perform the appropriate ping check of the host
 		$ping_results = $ping->ping(AVAIL_PING, $host['ping_method'], $host['ping_timeout'], $host['ping_retries']);
 
 		if ($ping_results == true) {
@@ -1725,10 +1725,10 @@ function api_duplicate_device_template(int $_host_template_id, string $host_temp
 	$host_template_data_queries = db_fetch_assoc_prepared('SELECT * FROM host_template_snmp_query WHERE host_template_id = ?', [$_host_template_id]);
 
 	if (cacti_sizeof($host_template)) {
-		/* substitute the title variable */
+		// substitute the title variable
 		$host_template['name'] = str_replace('<template_title>', $host_template['name'], $host_template_title);
 
-		/* create new entry: host_template */
+		// create new entry: host_template
 		$save['id']   = 0;
 		$save['hash'] = get_hash_host_template(0);
 
@@ -1740,7 +1740,7 @@ function api_duplicate_device_template(int $_host_template_id, string $host_temp
 
 		$host_template_id = sql_save($save, 'host_template');
 
-		/* create new entry(s): host_template_graph */
+		// create new entry(s): host_template_graph
 		if (cacti_sizeof($host_template_graphs)) {
 			foreach ($host_template_graphs as $host_template_graph) {
 				db_execute_prepared('INSERT INTO host_template_graph
@@ -1750,7 +1750,7 @@ function api_duplicate_device_template(int $_host_template_id, string $host_temp
 			}
 		}
 
-		/* create new entry(s): host_template_snmp_query */
+		// create new entry(s): host_template_snmp_query
 		if (cacti_sizeof($host_template_data_queries)) {
 			foreach ($host_template_data_queries as $host_template_data_query) {
 				db_execute_prepared('INSERT INTO host_template_snmp_query
@@ -1876,7 +1876,7 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 		WHERE id = ?',
 		[$device_template_id]);
 
-	/* first error check */
+	// first error check
 	if (!cacti_sizeof($device_template)) {
 		$return['errors'][] = sprintf('FATAL: Device Template %s does not exist!', $device_template_id);
 
@@ -1885,7 +1885,7 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 		$objects = api_clone_device_template_get_objects($device_template['id']);
 	}
 
-	/* second error check */
+	// second error check
 	if (!cacti_sizeof($objects)) {
 		$return['errors'][] = sprintf('FATAL: Device Template %s has no Objects!', $device_template_id);
 
@@ -2066,7 +2066,7 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 		$clone_dt = true;
 	}
 
-	/* now check for name collision xml files and scripts */
+	// now check for name collision xml files and scripts
 	if ($clone_xml) {
 		if ($clone_dq != '') {
 			foreach ($objects['data_queries'] as $id => $data_query) {
@@ -2154,7 +2154,7 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 		}
 	}
 
-	/* not issue some warnings for things to be cloned */
+	// not issue some warnings for things to be cloned
 	if ($device_template_name == '') {
 		$device_template_name = db_fetch_cell_prepared('SELECT name
 			FROM host_template
@@ -2196,7 +2196,7 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 		}
 	}
 
-	/* not issue some warnings for things to be cloned */
+	// not issue some warnings for things to be cloned
 	if ($clone_xml && !$clone_dq) {
 		$warnings++;
 		$return['warnings'][] = sprintf('WARNING: Ignoring --clone-xml as no Data Queries were selected to be cloned.');
@@ -2312,7 +2312,7 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 		}
 	}
 
-	//print_r($objects);
+	// print_r($objects);
 
 	return $return;
 }
@@ -2395,7 +2395,7 @@ function api_clone_device_template_get_objects(int $device_template_id): array {
 
 		if (cacti_sizeof($objects['data_templates'])) {
 			foreach ($objects['data_templates'] as $id => $data_template) {
-				/* peel the script from the input_string */
+				// peel the script from the input_string
 				if (isset($data_template['input_string'])) {
 					$parts = explode(' ', $data_template['input_string']);
 
@@ -2410,7 +2410,7 @@ function api_clone_device_template_get_objects(int $device_template_id): array {
 					}
 				}
 
-				/* let's get the list of graph templates that need updating */
+				// let's get the list of graph templates that need updating
 				$graph_templates = array_rekey(
 					db_fetch_assoc_prepared('SELECT DISTINCT graph_template_id AS id
 						FROM graph_templates_item AS gti
@@ -2479,7 +2479,7 @@ function api_clone_device_template_get_objects(int $device_template_id): array {
  */
 function api_clone_device_template(int $template_id, string $template_name, string $include_gt, string $clone_gt,
 	string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, string $suffix, bool $clone_xml, bool $clone_script, bool $cli = false): int|bool {
-	/* The list of duplicated Data Templates.  Dont do it more than once */
+	// The list of duplicated Data Templates.  Dont do it more than once
 	$duped_graph_templates[]    = [];
 	$duped_data_templates[]     = [];
 	$duped_data_input_methods[] = [];
@@ -2554,10 +2554,10 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 	 * that the clone should include it as well.
 	 */
 
-	/* get the list of exist Data Template Objects */
+	// get the list of exist Data Template Objects
 	$objects = api_clone_device_template_get_objects($template_id);
 
-	/* include graph templates */
+	// include graph templates
 	if ($include_gt != '' && $include_gt != 'all') {
 		$sql_where = 'AND graph_template_id IN (' . $include_gt . ')';
 	} elseif ($clone_gt == 'all') {
@@ -2585,7 +2585,7 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 		api_clone_message('NOTE: No Graph Templates to be Included');
 	}
 
-	/* include data queries */
+	// include data queries
 	if ($include_dq != '' && $include_dq != 'all') {
 		$sql_where = 'AND snmp_query_id IN (' . $include_dq . ')';
 	} elseif ($clone_dq == 'all') {
@@ -2670,7 +2670,7 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 
 									$new_script     = copy($old_scriptfile, $new_scriptfile);
 								} else {
-									/* skipping as we've already cloned */
+									// skipping as we've already cloned
 									$new_script     = true;
 									$new_scriptfile = $duped_scripts[$old_scriptfile];
 								}
@@ -2678,7 +2678,7 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 						}
 					}
 
-					/* update the XML with new values */
+					// update the XML with new values
 					if ($new_script) {
 						api_clone_message(sprintf('NOTE: Updating \'%s\' with new values', $new_xmlfile));
 
@@ -2687,7 +2687,7 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 						file_put_contents($new_xmlfile, $data);
 					}
 				} else {
-					/* skipping as we've already cloned */
+					// skipping as we've already cloned
 					$new_xmlfile = $duped_xmlfiles[$old_xmlfile];
 				}
 
@@ -2697,7 +2697,7 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 					[$new_xmlfile, $new_dq]);
 			}
 
-			/* Clone Data Query Graph Templates now */
+			// Clone Data Query Graph Templates now
 			$dqgt = $objects['data_query_graph_templates'];
 
 			foreach ($dqgt as $gt_id => $gt_data) {
@@ -2713,7 +2713,7 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 
 						$duped_graph_templates[$gt_id] = $new_gt;
 					} else {
-						/* skipping as we've already cloned */
+						// skipping as we've already cloned
 						$new_gt = $duped_graph_templates[$gt_id];
 					}
 
@@ -2840,7 +2840,7 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 
 								$duped_data_templates[$data_template_id] = $new_dt;
 							} else {
-								/* skipping as we've already cloned */
+								// skipping as we've already cloned
 								db_execute_prepared('UPDATE snmp_query_graph_rrd
 									SET data_template_id = ?
 									WHERE snmp_query_graph_id = ?',
@@ -2875,7 +2875,7 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 
 				$duped_graph_templates[$id] = $new_gt;
 			} else {
-				/* skipping as we've already cloned */
+				// skipping as we've already cloned
 				$new_gt = $duped_graph_templates[$id];
 			}
 
@@ -2888,7 +2888,7 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 
 	exit;
 
-	/* FIXME : Unused Code after exit */
+	// FIXME : Unused Code after exit
 	if ($clone_dt != '') {
 		api_clone_message('NOTE: Cloning Non Data Query Draph Templates');
 
@@ -2918,7 +2918,7 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 
 						$new_script = copy($old_scriptfile, $new_scriptfile);
 					} else {
-						/* skipping as we've already cloned */
+						// skipping as we've already cloned
 						$new_script = $duped_scripts[$old_scriptfile];
 					}
 
@@ -2930,7 +2930,7 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 
 				$duped_data_templates[$id] = $new_dt;
 			} else {
-				/* skipping as we've already cloned */
+				// skipping as we've already cloned
 				$new_dt = $duped_data_templates[$id];
 			}
 		}
@@ -2960,8 +2960,8 @@ function api_device_template_download(string $type, array $ids): void {
 		$filename = 'device_package_multiple_download.tar';
 	}
 
-	//$directory = sys_get_temp_dir() . '/ht_download_' . rand() . '/';
-	//mkdir($directory, 0755);
+	// $directory = sys_get_temp_dir() . '/ht_download_' . rand() . '/';
+	// mkdir($directory, 0755);
 
 	$tmpfile = sys_get_temp_dir() . '/' . $filename;
 
@@ -3048,7 +3048,7 @@ function api_device_template_archive_for_export(string $id): false|string {
 		if ($export_okay) {
 			$files = find_dependent_files($xml_data);
 
-			/* search xml files for scripts */
+			// search xml files for scripts
 			if (cacti_sizeof($files)) {
 				foreach ($files as $file) {
 					if (str_contains($file['file'], '.xml')) {
@@ -3131,7 +3131,7 @@ function api_device_template_archive(string $id, string $archive_note): bool {
 		if ($export_okay) {
 			$files = find_dependent_files($xml_data);
 
-			/* search xml files for scripts */
+			// search xml files for scripts
 			if (cacti_sizeof($files)) {
 				foreach ($files as $file) {
 					if (str_contains($file['file'], '.xml')) {

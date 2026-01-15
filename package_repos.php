@@ -39,10 +39,10 @@ $types = [
 	2 => __('Direct URL')
 ];
 
-/* set default action */
+// set default action
 set_default_action();
 
-switch (get_request_var('action')) {
+switch (grv('action')) {
 	case 'save':
 		form_save();
 
@@ -76,20 +76,20 @@ switch (get_request_var('action')) {
 function form_save() {
 	global $registered_cacti_names;
 
-	if (isset_request_var('save_component_repo')) {
-		/* ================= input validation ================= */
-		get_filter_request_var('id');
-		get_filter_request_var('repo_type');
-		/* ==================================================== */
+	if (isrv('save_component_repo')) {
+		// ================= input validation =================
+		gfrv('id');
+		gfrv('repo_type');
+		// ====================================================
 
-		$save['id']            = get_nfilter_request_var('id');
-		$save['name']          = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
-		$save['repo_type']     = get_nfilter_request_var('repo_type');
-		$save['repo_location'] = get_nfilter_request_var('repo_location');
-		$save['repo_branch']   = get_nfilter_request_var('repo_branch');
-		$save['repo_api_key']  = get_nfilter_request_var('repo_api_key');
-		$save['enabled']       = (isset_request_var('enabled') ? 'on' : '');
-		$save['default']       = (isset_request_var('default') ? 'on' : '');
+		$save['id']            = gnrv('id');
+		$save['name']          = form_input_validate(gnrv('name'), 'name', '', false, 3);
+		$save['repo_type']     = gnrv('repo_type');
+		$save['repo_location'] = gnrv('repo_location');
+		$save['repo_branch']   = gnrv('repo_branch');
+		$save['repo_api_key']  = gnrv('repo_api_key');
+		$save['enabled']       = (isrv('enabled') ? 'on' : '');
+		$save['default']       = (isrv('default') ? 'on' : '');
 
 		if (!is_error_message()) {
 			$id = sql_save($save, 'package_repositories', 'id');
@@ -141,32 +141,32 @@ function form_save() {
 		}
 	}
 
-	header('Location: package_repos.php?header=false&action=edit&id=' . (empty($id) ? get_nfilter_request_var('id') : $id));
+	header('Location: package_repos.php?header=false&action=edit&id=' . (empty($id) ? gnrv('id') : $id));
 }
 
 function form_actions() {
 	global $actions;
 
-	/* if we are to save this form, instead of display it */
-	if (isset_request_var('selected_items')) {
-		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
+	// if we are to save this form, instead of display it
+	if (isrv('selected_items')) {
+		$selected_items = sanitize_unserialize_selected_items(gnrv('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_nfilter_request_var('drp_action') == '1') { // delete
+			if (gnrv('drp_action') == '1') { // delete
 				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					package_remove($selected_items[$i]);
 				}
-			} elseif (get_nfilter_request_var('drp_action') == '2') { // disable
+			} elseif (gnrv('drp_action') == '2') { // disable
 				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					package_disable($selected_items[$i]);
 				}
-			} elseif (get_nfilter_request_var('drp_action') == '3') { // enable
+			} elseif (gnrv('drp_action') == '3') { // enable
 				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					package_enable($selected_items[$i]);
 				}
-			} elseif (get_nfilter_request_var('drp_action') == '4') { // default
+			} elseif (gnrv('drp_action') == '4') { // default
 				if (cacti_sizeof($selected_items) > 1) {
-					/* error message */
+					// error message
 				} else {
 					for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 						package_default($selected_items[$i]);
@@ -180,18 +180,18 @@ function form_actions() {
 		exit;
 	}
 
-	/* setup some variables */
+	// setup some variables
 	$p_list  = '';
 	$p_array = [];
 
-	/* loop through each of the data queries and process them */
+	// loop through each of the data queries and process them
 	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-			/* ================= input validation ================= */
+			// ================= input validation =================
 			input_validate_input_number($matches[1]);
-			/* ==================================================== */
+			// ====================================================
 
-			$p_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM package_repositories WHERE id = ?', [$matches[1]])) . '</li>';
+			$p_list .= '<li>' . htmle(db_fetch_cell_prepared('SELECT name FROM package_repositories WHERE id = ?', [$matches[1]])) . '</li>';
 			$p_array[] = $matches[1];
 		}
 	}
@@ -200,10 +200,10 @@ function form_actions() {
 
 	form_start('package_repos.php', 'action_confirm');
 
-	html_start_box($actions[get_nfilter_request_var('drp_action')], '60%', false, 3, 'center', '');
+	html_start_box($actions[gnrv('drp_action')], '60%', false, 3, 'center', '');
 
 	if (isset($p_array) && cacti_sizeof($p_array)) {
-		if (get_nfilter_request_var('drp_action') == '1') { // delete
+		if (gnrv('drp_action') == '1') { // delete
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __n('Click \'Continue\' to delete the following .', 'Click \'Continue\' to delete following Package Repositories.', cacti_sizeof($p_array)) . "</p>
@@ -213,7 +213,7 @@ function form_actions() {
 
 			$save_html = "<button type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()'>" . __esc('Cancel') . "</button>
 				<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' title='" . __n('Delete Package Repository', 'Delete Package Repositories', cacti_sizeof($p_array)) . "'>" . __esc('Continue') . '</button>';
-		} elseif (get_nfilter_request_var('drp_action') == '2') { // disable
+		} elseif (gnrv('drp_action') == '2') { // disable
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __n('Click \'Continue\' to disable the following Package Repository.', 'Click \'Continue\' to disable following Package Repositories.', cacti_sizeof($p_array)) . "</p>
@@ -223,7 +223,7 @@ function form_actions() {
 
 			$save_html = "<button type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()'>" . __esc('Cancel') . "</button>
 				<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' title='" . __n('Disable Package Repository', 'Disable Package Repositories', cacti_sizeof($p_array)) . "'>" . __esc('Continue') . '</button>';
-		} elseif (get_nfilter_request_var('drp_action') == '3') { // enable
+		} elseif (gnrv('drp_action') == '3') { // enable
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to enable the following Package Repository.', 'Click \'Continue\' to enable following Package Repositories.', cacti_sizeof($p_array)) . "</p>
@@ -233,7 +233,7 @@ function form_actions() {
 
 			$save_html = "<button type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()'>" . __esc('Cancel') . "</button>
 				<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' title='" . __n('Enabled Package Repository', 'Enable Package Repositories', cacti_sizeof($p_array)) . "'>" . __esc('Continue') . '</button>';
-		} elseif (get_nfilter_request_var('drp_action') == '4') { // default
+		} elseif (gnrv('drp_action') == '4') { // default
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to make the following the following Package Repository the default one.') . "</p>
@@ -255,7 +255,7 @@ function form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($p_array) ? serialize($p_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
+			<input type='hidden' name='drp_action' value='" . htmle(gnrv('drp_action')) . "'>
 			$save_html
 		</td>
 	</tr>";
@@ -288,12 +288,12 @@ function repo_default($id) {
 function repo_edit() {
 	global $types;
 
-	/* ================= input validation ================= */
-	get_filter_request_var('id');
-	/* ==================================================== */
+	// ================= input validation =================
+	gfrv('id');
+	// ====================================================
 
-	if (!isempty_request_var('id')) {
-		$repo         = db_fetch_row_prepared('SELECT * FROM package_repositories WHERE id = ?', [get_request_var('id')]);
+	if (!ierv('id')) {
+		$repo         = db_fetch_row_prepared('SELECT * FROM package_repositories WHERE id = ?', [grv('id')]);
 		$header_label = __esc('Package Repository [edit: %s]', $repo['name']);
 	} else {
 		$header_label = __('Package Repository [new]');
@@ -415,33 +415,33 @@ function repo_edit() {
 function repos() {
 	global $actions, $item_rows, $types;
 
-	/* create the page filter */
+	// create the page filter
 	$pageFilter = new CactiTableFilter(__('Package Repositorites'), 'package_repos.php', 'fors', 'sess_package_repos', 'package_repos.php?action=edit');
 
 	$pageFilter->rows_label = __('Repos');
 	$pageFilter->render();
 
-	if (get_request_var('rows') == '-1') {
+	if (grv('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
 	} else {
-		$rows = get_request_var('rows');
+		$rows = grv('rows');
 	}
 
 	$sql_where  = '';
 	$sql_params = [];
 
-	/* form the 'where' clause for our main sql query */
-	if (get_request_var('filter') != '') {
+	// form the 'where' clause for our main sql query
+	if (grv('filter') != '') {
 		$sql_where = ($sql_where != '' ? ' AND ' : 'WHERE ') .
 			'(name LIKE ? OR repo_branch LIKE ? OR repo_location LIKE ?)';
 
-		$sql_params[] = '%' . get_request_var('filter') . '%';
-		$sql_params[] = '%' . get_request_var('filter') . '%';
-		$sql_params[] = '%' . get_request_var('filter') . '%';
+		$sql_params[] = '%' . grv('filter') . '%';
+		$sql_params[] = '%' . grv('filter') . '%';
+		$sql_params[] = '%' . grv('filter') . '%';
 	}
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows;
 
 	$total_rows = db_fetch_cell_prepared("SELECT COUNT(*)
 		FROM package_repositories
@@ -485,7 +485,7 @@ function repos() {
 		],
 	];
 
-	$nav = html_nav_bar('package_repos.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, sizeof($display_text) + 1, __('Package Repositories'), 'page', 'main');
+	$nav = html_nav_bar('package_repos.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, sizeof($display_text) + 1, __('Package Repositories'), 'page', 'main');
 
 	form_start('package_repos.php', 'chk');
 
@@ -493,15 +493,15 @@ function repos() {
 
 	html_start_box('', '100%', false, 3, 'center', '');
 
-	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
+	html_header_sort_checkbox($display_text, grv('sort_column'), grv('sort_direction'), false);
 
 	if (cacti_sizeof($repos)) {
 		foreach ($repos as $repo) {
 			form_alternate_row('line' . $repo['id'], true);
 
-			form_selectable_cell(filter_value($repo['name'], get_request_var('filter'), 'package_repos.php?action=edit&id=' . $repo['id']), $repo['id']);
+			form_selectable_cell(filter_value($repo['name'], grv('filter'), 'package_repos.php?action=edit&id=' . $repo['id']), $repo['id']);
 			form_selectable_cell($types[$repo['repo_type']], $repo['id']);
-			form_selectable_cell(filter_value($repo['repo_location'], get_request_var('filter')), $repo['id']);
+			form_selectable_cell(filter_value($repo['repo_location'], grv('filter')), $repo['id']);
 			form_selectable_ecell($repo['repo_type'] == 0 ? ($repo['repo_branch'] != '' ? $repo['repo_branch'] : __('default')) : __('N/A'), $repo['id'], '', 'center');
 			form_selectable_cell($repo['enabled'] == 'on' ? __('Yes') : __('No'), $repo['id'], '', 'center');
 			form_selectable_cell($repo['default'] == 'on' ? __('Yes') : __('No'), $repo['id'], '', 'center');
@@ -520,7 +520,7 @@ function repos() {
 		print $nav;
 	}
 
-	/* draw the dropdown containing a list of available actions for this form */
+	// draw the dropdown containing a list of available actions for this form
 	draw_actions_dropdown($actions);
 
 	form_end();

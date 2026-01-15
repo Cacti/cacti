@@ -310,7 +310,7 @@ if ($poller_interval != $max_step) {
 
 set_config_option('active_profiles', $active_profiles);
 
-/* assume a scheduled task of either 60 or 300 seconds */
+// assume a scheduled task of either 60 or 300 seconds
 if (!empty($poller_interval)) {
 	$poller_runs = intval($cron_interval / $poller_interval);
 
@@ -404,11 +404,11 @@ if ((($poller_start - $poller_lastrun - 10) > MAX_POLLER_RUNTIME) && ($poller_la
 	admin_email(__('Cacti System Warning'), __('WARNING: %s is out of sync with the Poller Interval for Poller[%d]!  The Poller Interval is %d seconds, with a maximum of a %d seconds, but %d seconds have passed since the last poll!', $task_type, $poller_id, $poller_interval, $min_period, number_format_i18n($poller_start - $poller_lastrun, 1)));
 }
 
-/* used for current implementation for individual pollers */
+// used for current implementation for individual pollers
 set_config_option('poller_lastrun_' . $poller_id, (int)$poller_start);
 
 if ($poller_id == 1) {
-	/* used for legacy implementation for the main poller */
+	// used for legacy implementation for the main poller
 	set_config_option('poller_lastrun', (int)$poller_start);
 }
 
@@ -729,7 +729,7 @@ while ($poller_runs_completed < $poller_runs) {
 			$extra_args .= ' --mode=' . CACTI_CONNECTION;
 		}
 
-		/* Populate each execution file with appropriate information */
+		// Populate each execution file with appropriate information
 		if ($total_polling_hosts > 0) {
 			foreach ($polling_hosts as $item) {
 				if ($host_count == 1) {
@@ -811,7 +811,7 @@ while ($poller_runs_completed < $poller_runs) {
 					if ($poller_id == 1) {
 						$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe, true);
 					} elseif (CACTI_CONNECTION != 'online') {
-						/* truncate until formal remote management is supported */
+						// truncate until formal remote management is supported
 						db_execute('TRUNCATE poller_output');
 					}
 
@@ -831,7 +831,7 @@ while ($poller_runs_completed < $poller_runs) {
 					if ($poller_id == 1) {
 						$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe);
 					} elseif (CACTI_CONNECTION != 'online') {
-						/* truncate until formal remote management is supported */
+						// truncate until formal remote management is supported
 						db_execute('TRUNCATE poller_output');
 					}
 
@@ -1026,7 +1026,7 @@ function poller_heartbeat_check() {
 	}
 }
 
-/* start post data processing */
+// start post data processing
 if ($poller_id == 1) {
 	multiple_poller_boost_check();
 	poller_replicate_check();
@@ -1204,7 +1204,7 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 		WHERE id = ?',
 		[$poller_id], true, $poller_db_cnn_id);
 
-	/* update the host table error count first */
+	// update the host table error count first
 	db_execute_prepared('UPDATE host AS h
 		LEFT JOIN host_errors AS e
 		ON h.id = e.host_id
@@ -1435,7 +1435,7 @@ function spikekill_poller_bottom() {
 	exec_background($command_string, $extra_args);
 }
 
-/*  display_version - displays version information */
+// display_version - displays version information
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Main Poller, Version $version, " . COPYRIGHT_YEARS . "\n";

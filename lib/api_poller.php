@@ -72,7 +72,7 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 			$hosts[0] = $host;
 		}
 
-		/* the $host_field_override array can be used to override certain host fields in the poller cache */
+		// the $host_field_override array can be used to override certain host fields in the poller cache
 		if (cacti_sizeof($host_field_override)) {
 			$host = array_merge($host, $host_field_override);
 		}

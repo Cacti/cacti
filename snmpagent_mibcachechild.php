@@ -24,10 +24,10 @@
 
 require(__DIR__ . '/include/cli_check.php');
 
-/* let's report all errors */
+// let's report all errors
 error_reporting(E_ALL);
 
-/* allow the script to hang around. */
+// allow the script to hang around.
 set_time_limit(0);
 
 chdir(__DIR__);
@@ -38,7 +38,7 @@ $cache     = [];
 $path_mibcache      = CACTI_PATH_CACHE . '/mibcache/mibcache.tmp';
 $path_mibcache_lock = CACTI_PATH_CACHE . '/mibcache/mibcache.lock';
 
-/* check mib cache table status */
+// check mib cache table status
 $mibcache_changed = db_fetch_cell_prepared("SHOW TABLE STATUS
 	WHERE `Name` LIKE 'snmpagent_cache'
 	AND (UNIX_TIMESTAMP(`Update_time`)) >= ?",
@@ -57,7 +57,7 @@ if ($mibcache_changed !== null || file_exists($path_mibcache) === false) {
 			$object = ($object['otype'] == 'DATA' && $object['max-access'] != 'not-accessible') ? ['type' => $object['type'], 'value' => $object['value']] : false;
 		}
 
-		/* natural sorting with MySQL is not available - especially not for OIDs */
+		// natural sorting with MySQL is not available - especially not for OIDs
 		natsort($oids);
 
 		$last_accessible_object          = false;
@@ -86,15 +86,15 @@ if ($mibcache_changed !== null || file_exists($path_mibcache) === false) {
 		}
 	}
 
-	/* create lock file */
+	// create lock file
 	$lock = fopen($path_mibcache_lock, 'w');
 
-	/* Note: If SNMPAgent plugin has been disabled the cache will be truncated automatically */
+	// Note: If SNMPAgent plugin has been disabled the cache will be truncated automatically
 	if (cacti_sizeof($cache)) {
 		file_put_contents($path_mibcache, '<?php $cache = ' . var_export($cache, true) . ';', LOCK_EX);
 	}
 
-	/* destroy lock file */
+	// destroy lock file
 	fclose($lock);
 	unlink($path_mibcache_lock);
 }

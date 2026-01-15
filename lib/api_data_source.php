@@ -123,7 +123,7 @@ function api_data_source_remove(int $local_data_id, bool $update_totals = true):
 		}
 	}
 
-	/* base data */
+	// base data
 	db_execute_prepared('DELETE FROM data_template_data
 		WHERE local_data_id = ?', [$local_data_id]);
 
@@ -139,7 +139,7 @@ function api_data_source_remove(int $local_data_id, bool $update_totals = true):
 	db_execute_prepared('DELETE FROM data_debug
 		WHERE datasource = ?', [$local_data_id]);
 
-	/* dsstats */
+	// dsstats
 	db_execute_prepared('DELETE FROM data_source_stats_daily
 		WHERE local_data_id = ?', [$local_data_id]);
 
@@ -164,7 +164,7 @@ function api_data_source_remove(int $local_data_id, bool $update_totals = true):
 	db_execute_prepared('DELETE FROM data_source_stats_command_cache
 		WHERE local_data_id = ?', [$local_data_id]);
 
-	/* boost */
+	// boost
 	db_execute_prepared('DELETE FROM poller_output
 		WHERE local_data_id = ?', [$local_data_id]);
 
@@ -172,7 +172,7 @@ function api_data_source_remove(int $local_data_id, bool $update_totals = true):
 		WHERE local_data_id = ?', [$local_data_id]);
 
 	if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
-		/* base data */
+		// base data
 		db_execute_prepared('DELETE FROM data_template_data
 			WHERE local_data_id = ?', [$local_data_id], true, $rcnn_id);
 
@@ -185,7 +185,7 @@ function api_data_source_remove(int $local_data_id, bool $update_totals = true):
 		db_execute_prepared('DELETE FROM data_local
 			WHERE id = ?', [$local_data_id], true, $rcnn_id);
 
-		/* boost */
+		// boost
 		db_execute_prepared('DELETE FROM poller_output
 			WHERE local_data_id = ?', [$local_data_id], true, $rcnn_id);
 
@@ -193,7 +193,7 @@ function api_data_source_remove(int $local_data_id, bool $update_totals = true):
 			WHERE local_data_id = ?', [$local_data_id], true, $rcnn_id);
 	}
 
-	/* update the database to document the cache change */
+	// update the database to document the cache change
 	api_data_source_cache_crc_update($poller_id);
 
 	if ($update_totals) {
@@ -276,7 +276,7 @@ function api_data_source_remove_multi(array $local_data_ids, bool $update_totals
 			}
 		}
 
-		/* prepare auto-clean if enabled */
+		// prepare auto-clean if enabled
 		if ($autoclean == 'on') {
 			db_execute("INSERT INTO data_source_purge_action (local_data_id, name, action)
 				SELECT local_data_id, REPLACE(data_source_path, '<path_rra>/', ''), '" . $acmethod . "'
@@ -285,7 +285,7 @@ function api_data_source_remove_multi(array $local_data_ids, bool $update_totals
 				ON DUPLICATE KEY UPDATE action=VALUES(action)');
 		}
 
-		/* core data */
+		// core data
 		db_execute('DELETE FROM data_template_data
 			WHERE local_data_id IN (' . $ids_to_delete . ')');
 
@@ -301,7 +301,7 @@ function api_data_source_remove_multi(array $local_data_ids, bool $update_totals
 		db_execute('DELETE FROM data_debug
 			WHERE datasource IN (' . $ids_to_delete . ')');
 
-		/* dsstats */
+		// dsstats
 		db_execute('DELETE FROM data_source_stats_daily
 			WHERE local_data_id IN(' . $ids_to_delete . ')');
 
@@ -323,7 +323,7 @@ function api_data_source_remove_multi(array $local_data_ids, bool $update_totals
 		db_execute('DELETE FROM data_source_stats_yearly
 			WHERE local_data_id IN(' . $ids_to_delete . ')');
 
-		/* boost */
+		// boost
 		db_execute('DELETE FROM poller_output
 			WHERE local_data_id IN (' . $ids_to_delete . ')');
 
@@ -333,7 +333,7 @@ function api_data_source_remove_multi(array $local_data_ids, bool $update_totals
 		if (cacti_sizeof($poller_ids)) {
 			foreach ($poller_ids as $poller_id) {
 				if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
-					/* core data */
+					// core data
 					db_execute('DELETE FROM data_template_data
 						WHERE local_data_id IN (' . $ids_to_delete . ')', true, $rcnn_id);
 
@@ -346,7 +346,7 @@ function api_data_source_remove_multi(array $local_data_ids, bool $update_totals
 					db_execute('DELETE FROM data_local
 						WHERE id IN (' . $ids_to_delete . ')', true, $rcnn_id);
 
-					/* boost */
+					// boost
 					db_execute('DELETE FROM poller_output
 						WHERE local_data_id IN (' . $ids_to_delete . ')', true, $rcnn_id);
 
@@ -434,13 +434,13 @@ function api_data_source_disable(int $local_data_id): void {
  * @return void
  */
 function api_data_source_disable_multi(array $local_data_ids): void {
-	/* initialize variables */
+	// initialize variables
 	$ids_to_disable = '';
 	$poller_ids     = [];
 
 	$i = 0;
 
-	/* build the array */
+	// build the array
 	if (cacti_sizeof($local_data_ids)) {
 		foreach ($local_data_ids as $local_data_id) {
 			if ($i == 0) {
@@ -614,7 +614,7 @@ function api_reapply_suggested_data_source_data(int $local_data_id): void {
 		return;
 	}
 
-	/* require query type data sources only (snmp_query_id > 0) */
+	// require query type data sources only (snmp_query_id > 0)
 	$data_local = db_fetch_row_prepared('SELECT id, host_id,
 		data_template_id, snmp_query_id, snmp_index
 		FROM data_local
@@ -622,7 +622,7 @@ function api_reapply_suggested_data_source_data(int $local_data_id): void {
 		AND id = ?',
 		[$local_data_id]);
 
-	/* if this is not a data query graph, simply return */
+	// if this is not a data query graph, simply return
 	if (!isset($data_local['host_id'])) {
 		return;
 	}
@@ -637,7 +637,7 @@ function api_reapply_suggested_data_source_data(int $local_data_id): void {
 		AND dtd.local_data_id = ?",
 		[$data_local['id']]);
 
-	/* no snmp query graph id found */
+	// no snmp query graph id found
 	if ($snmp_query_graph_id == 0) {
 		return;
 	}
@@ -665,7 +665,7 @@ function api_reapply_suggested_data_source_data(int $local_data_id): void {
 					read_config_option('max_data_query_field_length'));
 			}
 
-			/* if there are no '|query' characters, all of the substitutions were successful */
+			// if there are no '|query' characters, all of the substitutions were successful
 			if (!str_contains($subs_string, '|query')) {
 				if (in_array($sv['field_name'], $matches, true)) {
 					continue;
@@ -728,7 +728,7 @@ function api_data_source_duplicate(int $_local_data_id, int $_data_template_id, 
 			WHERE data_template_data_id = ?',
 			[$data_template_data['id']]);
 
-		/* create new entry: data_local */
+		// create new entry: data_local
 		$save['id']               = 0;
 		$save['data_template_id'] = $data_local['data_template_id'];
 		$save['host_id']          = $data_local['host_id'];
@@ -765,7 +765,7 @@ function api_data_source_duplicate(int $_local_data_id, int $_data_template_id, 
 			WHERE data_template_data_id = ?',
 			[$data_template_data['id']]);
 
-		/* create new entry: data_template */
+		// create new entry: data_template
 		$save['id']   = 0;
 		$save['hash'] = get_hash_data_template(0);
 		$save['name'] = str_replace('<template_title>', $data_template['name'], $data_source_title);
@@ -776,7 +776,7 @@ function api_data_source_duplicate(int $_local_data_id, int $_data_template_id, 
 	unset($save);
 	unset($struct_data_source['data_source_path']);
 
-	/* create new entry: data_template_data */
+	// create new entry: data_template_data
 	$save['id']                          = 0;
 	$save['local_data_id']               = ($local_data_id ?? 0);
 	$save['local_data_template_data_id'] = ($data_template_data['local_data_template_data_id'] ?? 0);
@@ -793,7 +793,7 @@ function api_data_source_duplicate(int $_local_data_id, int $_data_template_id, 
 
 	$data_template_data_id = sql_save($save, 'data_template_data');
 
-	/* create new entry(s): data_template_rrd */
+	// create new entry(s): data_template_rrd
 	if (cacti_sizeof($data_template_rrds)) {
 		foreach ($data_template_rrds as $data_template_rrd) {
 			unset($save);
@@ -821,7 +821,7 @@ function api_data_source_duplicate(int $_local_data_id, int $_data_template_id, 
 		}
 	}
 
-	/* create new entry(s): data_input_data */
+	// create new entry(s): data_input_data
 	if (cacti_sizeof($data_input_datas)) {
 		foreach ($data_input_datas as $data_input_data) {
 			db_execute_prepared('INSERT IGNORE INTO data_input_data

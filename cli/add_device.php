@@ -35,17 +35,17 @@ require_once(CACTI_PATH_LIBRARY . '/snmp.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
-/* switch to main database for cli's */
+// switch to main database for cli's
 if ($config['poller_id'] > 1) {
 	db_switch_remote_to_main();
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (cacti_sizeof($parms)) {
-	/* setup defaults */
+	// setup defaults
 	$description   = '';
 	$ip            = '';
 	$poller_id     = $config['poller_id'];
@@ -215,7 +215,7 @@ if (cacti_sizeof($parms)) {
 			case '--avail':
 				switch($value) {
 					case 'none':
-						$avail = '0'; /* tried to use AVAIL_NONE, but then preg_match fails on validation, sigh */
+						$avail = '0'; // tried to use AVAIL_NONE, but then preg_match fails on validation, sigh
 
 						break;
 					case 'ping':
@@ -352,19 +352,19 @@ if (cacti_sizeof($parms)) {
 		exit(0);
 	}
 
-	/* process the various lists into validation arrays */
+	// process the various lists into validation arrays
 	$host_templates = getHostTemplates();
 	$hosts          = getHostsByDescription();
 	$addresses      = getAddresses();
 
-	/* process templates */
+	// process templates
 	if (!isset($host_templates[$template_id])) {
 		print "ERROR: Unknown template id ($template_id)\n";
 
 		exit(1);
 	}
 
-	/* process host description */
+	// process host description
 	if (isset($hosts[$description])) {
 		db_execute("UPDATE host SET hostname='$ip' WHERE deleted = '' AND id=" . $hosts[$description]);
 		print "This host already exists in the database ($description) device-id: (" . $hosts[$description] . ")\n";
@@ -426,7 +426,7 @@ if (cacti_sizeof($parms)) {
 		}
 	}
 
-	/* process ip */
+	// process ip
 	if (isset($addresses[$ip])) {
 		$id    = $addresses[$ip];
 		$phost = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', [$id]);
@@ -491,7 +491,7 @@ if (cacti_sizeof($parms)) {
 		exit(1);
 	}
 
-	/* process snmp information */
+	// process snmp information
 	if ($snmp_ver < 0 || $snmp_ver > 3) {
 		print "ERROR: Invalid snmp version ($snmp_ver)\n";
 
@@ -512,9 +512,9 @@ if (cacti_sizeof($parms)) {
 		}
 	}
 
-	/* community/user/password verification */
+	// community/user/password verification
 	if ($snmp_ver < 3) {
-		/* snmp community can be blank */
+		// snmp community can be blank
 	} else {
 		if ($snmp_username == '') {
 			print "ERROR: When using snmpv3 you must supply an username\n";
@@ -523,7 +523,7 @@ if (cacti_sizeof($parms)) {
 		}
 	}
 
-	/* validate the disable state */
+	// validate the disable state
 	if ($disable != 1 && $disable != 0) {
 		print "ERROR: Invalid disable flag ($disable)\n";
 
@@ -565,7 +565,7 @@ if (cacti_sizeof($parms)) {
 	exit(0);
 }
 
-/*  display_version - displays version information */
+// display_version - displays version information
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Add Device Utility, Version $version, " . COPYRIGHT_YEARS . "\n";

@@ -35,7 +35,7 @@ require_once(CACTI_PATH_LIBRARY . '/snmp.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -45,7 +45,7 @@ if (! cacti_sizeof($parms)) {
 	exit(0);
 }
 
-/* setup defaults */
+// setup defaults
 $device_id   = '';
 
 $displayHostTemplates = false;
@@ -190,7 +190,7 @@ foreach ($parms as $parameter) {
 		case '--avail':
 			switch($value) {
 				case 'none':
-					$overrides['availability_method'] = '0'; /* tried to use AVAIL_NONE, but then preg_match fails on validation, sigh */
+					$overrides['availability_method'] = '0'; // tried to use AVAIL_NONE, but then preg_match fails on validation, sigh
 
 					break;
 				case 'ping':
@@ -323,20 +323,20 @@ if (!cacti_sizeof($host)) {
 	exit(1);
 }
 
-/* merge overridden parameters onto host */
+// merge overridden parameters onto host
 $host    = array_merge($host, $overrides);
 
-/* exception for IP */
+// exception for IP
 if (isset($overrides['ip'])) {
 	$host['hostname'] = $overrides['ip'];
 }
 
-/* process the various lists into validation arrays */
+// process the various lists into validation arrays
 $host_templates = getHostTemplates();
 $hosts          = getHostsByDescription();
 $addresses      = getAddresses();
 
-/* process templates */
+// process templates
 if (!isset($host_templates[$host['host_template_id']])) {
 	print 'ERROR: Unknown template id (' . $host['host_template_id'] . ")\n";
 
@@ -373,7 +373,7 @@ if (!is_numeric($host['poller_id']) || $host['poller_id'] < 0) {
 	exit(1);
 }
 
-/* process snmp information */
+// process snmp information
 if ($host['snmp_version'] < 0 || $host['snmp_version'] > 3) {
 	print "ERROR: Invalid snmp version ({$host['snmp_version']})\n";
 
@@ -394,9 +394,9 @@ if ($host['snmp_version'] > 0) {
 	}
 }
 
-/* community/user/password verification */
+// community/user/password verification
 if ($host['snmp_version'] < 3) {
-	/* snmp community can be blank */
+	// snmp community can be blank
 } else {
 	if ($host['snmp_username'] == '' || $host['snmp_password'] == '') {
 		print "ERROR: When using snmpv3 you must supply an username and password\n";
@@ -429,7 +429,7 @@ if (is_error_message() || $host_id != $device_id) {
 	exit(0);
 }
 
-/*  display_version - displays version information */
+// display_version - displays version information
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Change Device Utility, Version $version, " . COPYRIGHT_YEARS . "\n";

@@ -26,12 +26,12 @@
 require(__DIR__ . '/../include/cli_check.php');
 require_once(CACTI_PATH_LIBRARY . '/api_automation_tools.php');
 
-/* switch to main database for cli's */
+// switch to main database for cli's
 if ($config['poller_id'] > 1) {
 	db_switch_remote_to_main();
 }
 
-/* process calling arguments */
+// process calling arguments
 $params = $_SERVER['argv'];
 array_shift($params);
 
@@ -127,11 +127,11 @@ if (cacti_sizeof($params) == 0) {
 		exit(1);
 	}
 
-	/* verify, that a valid userid is provided */
+	// verify, that a valid userid is provided
 	$groupIds = [];
 
 	if (isset($groupId) && $groupId > 0) {
-		/* verify existing user id */
+		// verify existing user id
 		if (db_fetch_cell_prepared('SELECT id FROM user_auth_group WHERE id = ?', [$groupId])) {
 			array_push($groupIds, $groupId);
 		} else {
@@ -144,7 +144,7 @@ if (cacti_sizeof($params) == 0) {
 }
 
 if ($type == 'add_group') {
-	# Add a new group
+	// Add a new group
 	if (empty($name)) {
 		print "ERROR: You must supply a name with --name\n";
 		display_help();
@@ -160,21 +160,21 @@ if ($type == 'add_group') {
 	}
 
 	$groupOpts                           = [];
-	$groupOpts['id']                     = 0; # Zero means create a new one rather than save over an existing one
+	$groupOpts['id']                     = 0; // Zero means create a new one rather than save over an existing one
 	$groupOpts['name']                   = $name;
 	$groupOpts['description']            = $description;
-	$groupOpts['graph_settings']         = 'on'; # Default
-	$groupOpts['login_opts']             = 1; # Default - needs option
-	$groupOpts['show_tree']              = 2; # Default - needs option
-	$groupOpts['show_list']              = 3; # Default - needs option
-	$groupOpts['show_preview']           = 2; # Default - needs option
-	$groupOpts['policy_graphs']          = 2; # Default - needs option
-	$groupOpts['policy_trees']           = 2; # Default - needs option
-	$groupOpts['policy_hosts']           = 2; # Default - needs option
-	$groupOpts['policy_graph_templates'] = 1; # Default - needs option
-	$groupOpts['enabled']                = 'on'; # Default - needs option
+	$groupOpts['graph_settings']         = 'on'; // Default
+	$groupOpts['login_opts']             = 1; // Default - needs option
+	$groupOpts['show_tree']              = 2; // Default - needs option
+	$groupOpts['show_list']              = 3; // Default - needs option
+	$groupOpts['show_preview']           = 2; // Default - needs option
+	$groupOpts['policy_graphs']          = 2; // Default - needs option
+	$groupOpts['policy_trees']           = 2; // Default - needs option
+	$groupOpts['policy_hosts']           = 2; // Default - needs option
+	$groupOpts['policy_graph_templates'] = 1; // Default - needs option
+	$groupOpts['enabled']                = 'on'; // Default - needs option
 
-	# Default - needs option
+	// Default - needs option
 	$existsAlready = db_fetch_cell_prepared('SELECT id FROM user_auth_group WHERE name = ?', [$name]);
 
 	if ($existsAlready) {
@@ -190,7 +190,7 @@ if ($type == 'add_group') {
 	exit(0);
 }
 
-/*  display_version - displays version information */
+// display_version - displays version information
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Add Permissions Utility, Version $version, " . COPYRIGHT_YEARS . "\n";

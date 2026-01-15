@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-/* include cacti base functions */
+// include cacti base functions
 require('./include/auth.php');
 require_once(CACTI_PATH_LIBRARY . '/api_scheduler.php');
 require_once(CACTI_PATH_LIBRARY . '/snmp.php');
@@ -39,12 +39,12 @@ $actions = [
 	5 => __('Cancel Discovery')
 ];
 
-/* set default action */
+// set default action
 set_default_action();
 
-switch (get_request_var('action')) {
+switch (grv('action')) {
 	case 'save':
-		if (isset_request_var('save_component_import')) {
+		if (isrv('save_component_import')) {
 			automation_import_process();
 		} else {
 			form_save();
@@ -80,9 +80,9 @@ switch (get_request_var('action')) {
 }
 
 function automation_export() {
-	/* if we are to save this form, instead of display it */
-	if (isset_request_var('selected_items')) {
-		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
+	// if we are to save this form, instead of display it
+	if (isrv('selected_items')) {
+		$selected_items = sanitize_unserialize_selected_items(gnrv('selected_items'));
 
 		$snmp_option_ids = [];
 
@@ -175,7 +175,7 @@ function automation_import() {
 }
 
 function automation_import_process() {
-	$json_data = json_decode(get_nfilter_request_var('import_text'), true);
+	$json_data = json_decode(gnrv('import_text'), true);
 
 	$debug_data = [];
 
@@ -217,10 +217,10 @@ function automation_import_process() {
 }
 
 function form_save() {
-	if (isset_request_var('save_component_network')) {
+	if (isrv('save_component_network')) {
 		$network_id = api_networks_save($_POST);
 
-		header('Location: automation_networks.php?action=edit&id=' . (empty($network_id) ? get_nfilter_request_var('id') : $network_id));
+		header('Location: automation_networks.php?action=edit&id=' . (empty($network_id) ? gnrv('id') : $network_id));
 	}
 }
 
@@ -304,7 +304,7 @@ function api_networks_change_options($network_ids, $post) {
 				db_execute_prepared("UPDATE automation_networks
 					SET $field_name = ?
 					WHERE id = ?",
-					[get_nfilter_request_var($field_name), $network_id]);
+					[gnrv($field_name), $network_id]);
 			}
 		}
 	}
@@ -363,7 +363,7 @@ function api_networks_save($post) {
 		$save['id']            = form_input_validate($post['id'], 'id', '^[0-9]+$', false, 3);
 		$save['hash']          = get_hash_automation($post['id'], 'automation_networks');
 
-		/* general information */
+		// general information
 		$save['name']          = form_input_validate($post['name'], 'name', '', false, 3);
 		$save['poller_id']     = form_input_validate($post['poller_id'], 'poller_id', '^[0-9]+$', false, 3);
 		$save['site_id']       = form_input_validate($post['site_id'], 'site_id', '^[0-9]+$', false, 3);
@@ -376,7 +376,7 @@ function api_networks_save($post) {
 
 		$save['enabled']              = (isset($post['enabled']) ? 'on' : '');
 
-		/* notification settings */
+		// notification settings
 		$save['notification_enabled'] = (isset($post['notification_enabled']) ? 'on' : '');
 		$save['notification_email']   = form_input_validate($post['notification_email'], 'notification_email', '', true, 3);
 
@@ -388,7 +388,7 @@ function api_networks_save($post) {
 		$save['same_sysname']         = (isset($post['same_sysname']) ? 'on' : '');
 		$save['rerun_data_queries']   = (isset($post['rerun_data_queries']) ? 'on' : '');
 
-		/* discovery connectivity settings */
+		// discovery connectivity settings
 		$save['snmp_id']       = form_input_validate($post['snmp_id'], 'snmp_id', '^[0-9]+$', false, 3);
 		$save['ping_method']   = form_input_validate($post['ping_method'], 'ping_method', '^[0-9]+$', false, 3);
 		$save['ping_port']     = form_input_validate($post['ping_port'], 'ping_port', '^[0-9]+$', false, 3);
@@ -397,7 +397,7 @@ function api_networks_save($post) {
 
 		$save = api_scheduler_augment_save($save, $post);
 
-		/* validate the network definitions and rais error if failed */
+		// validate the network definitions and rais error if failed
 		$continue  = true;
 		$total_ips = 0;
 		$networks  = explode(',', $save['subnet_range']);
@@ -440,41 +440,41 @@ function api_networks_save($post) {
 function form_actions() {
 	global $actions;
 
-	/* ================= input validation ================= */
-	get_filter_request_var('drp_action');
-	/* ==================================================== */
+	// ================= input validation =================
+	gfrv('drp_action');
+	// ====================================================
 
-	/* if we are to save this form, instead of display it */
-	if (isset_request_var('selected_items')) {
-		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
+	// if we are to save this form, instead of display it
+	if (isrv('selected_items')) {
+		$selected_items = sanitize_unserialize_selected_items(gnrv('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
+			if (gnrv('drp_action') == '1') { // delete
 				foreach ($selected_items as $item) {
 					api_networks_remove($item);
 				}
-			} elseif (get_nfilter_request_var('drp_action') == '3') { /* enable */
+			} elseif (gnrv('drp_action') == '3') { // enable
 				foreach ($selected_items as $item) {
 					api_networks_enable($item);
 				}
-			} elseif (get_nfilter_request_var('drp_action') == '2') { /* disable */
+			} elseif (gnrv('drp_action') == '2') { // disable
 				foreach ($selected_items as $item) {
 					api_networks_disable($item);
 				}
-			} elseif (get_nfilter_request_var('drp_action') == '4') { /* run now */
-				$discover_debug  = isset_request_var('discover_debug');
-				$discover_dryrun = isset_request_var('discover_dryrun');
+			} elseif (gnrv('drp_action') == '4') { // run now
+				$discover_debug  = isrv('discover_debug');
+				$discover_dryrun = isrv('discover_dryrun');
 
 				foreach ($selected_items as $item) {
 					api_networks_discover($item, $discover_debug, $discover_dryrun);
 				}
 
 				sleep(2);
-			} elseif (get_nfilter_request_var('drp_action') == '5') { /* cancel */
+			} elseif (gnrv('drp_action') == '5') { // cancel
 				foreach ($selected_items as $item) {
 					api_networks_cancel($item);
 				}
-			} elseif (get_nfilter_request_var('drp_action') == '6') { /* export */
+			} elseif (gnrv('drp_action') == '6') { // export
 				top_header();
 
 				print '<script text="text/javascript">
@@ -488,7 +488,7 @@ function form_actions() {
 
 					$(function() {
 						//debugger;
-						DownloadStart(\'automation_networks.php?action=export&selected_items=' . get_nfilter_request_var('selected_items') . '\');
+						DownloadStart(\'automation_networks.php?action=export&selected_items=' . gnrv('selected_items') . '\');
 					});
 				</script>
 				<iframe id="download_iframe" style="display:none;"></iframe>';
@@ -496,11 +496,11 @@ function form_actions() {
 				bottom_footer();
 
 				exit;
-			} elseif (get_nfilter_request_var('drp_action') == '7') { /* dupliciate */
+			} elseif (gnrv('drp_action') == '7') { // dupliciate
 				foreach ($selected_items as $item) {
 					api_networks_duplicate($item);
 				}
-			} elseif (get_nfilter_request_var('drp_action') == '8') { /* change options */
+			} elseif (gnrv('drp_action') == '8') { // change options
 				foreach ($selected_items as $item) {
 					api_networks_change_options($item, $_POST);
 				}
@@ -514,25 +514,25 @@ function form_actions() {
 		$ilist  = '';
 		$iarray = [];
 
-		/* defaults */
+		// defaults
 		$header_array = [];
 
-		/* loop through each of the device types selected on the previous page and get more info about them */
+		// loop through each of the device types selected on the previous page and get more info about them
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-				/* ================= input validation ================= */
+				// ================= input validation =================
 				input_validate_input_number($matches[1], 'chk[1]');
-				/* ==================================================== */
+				// ====================================================
 
 				$networks_info = db_fetch_row_prepared('SELECT name FROM automation_networks WHERE id = ?', [$matches[1]]);
 
-				$ilist .= '<li>' . html_escape($networks_info['name']) . '</li>';
+				$ilist .= '<li>' . htmle($networks_info['name']) . '</li>';
 
 				$iarray[] = $matches[1];
 			}
 		}
 
-		if (cacti_sizeof($iarray) && get_request_var('drp_action') == 8) {
+		if (cacti_sizeof($iarray) && grv('drp_action') == 8) {
 			$form_array = [];
 
 			$fields = network_get_field_array();
@@ -670,7 +670,7 @@ function network_get_field_array($network = []) {
 
 	$ping_methods[PING_SNMP] = __('SNMP Get');
 
-	/* file: mactrack_device_types.php, action: edit */
+	// file: mactrack_device_types.php, action: edit
 	$fields = [
 		'spacer0' => [
 			'method'        => 'spacer',
@@ -955,12 +955,12 @@ function network_edit() {
 
 	$ping_methods[PING_SNMP] = __('SNMP Get');
 
-	/* ================= input validation ================= */
-	get_filter_request_var('id');
-	/* ==================================================== */
+	// ================= input validation =================
+	gfrv('id');
+	// ====================================================
 
-	if (!isempty_request_var('id')) {
-		$network      = db_fetch_row_prepared('SELECT * FROM automation_networks WHERE id = ?', [get_request_var('id')]);
+	if (!ierv('id')) {
+		$network      = db_fetch_row_prepared('SELECT * FROM automation_networks WHERE id = ?', [grv('id')]);
 		$header_label = __esc('Network Discovery Range [edit: %s]', $network['name']);
 	} else {
 		$network      = [];
@@ -983,7 +983,7 @@ function network_edit() {
 	html_end_box(true, true);
 
 	form_hidden_box('save_component_network', '1', '');
-	form_hidden_box('id', !isempty_request_var('id') ? get_request_var('id') : 0, 0);
+	form_hidden_box('id', !ierv('id') ? grv('id') : 0, 0);
 
 	form_save_button('automation_networks.php', 'return');
 
@@ -991,14 +991,14 @@ function network_edit() {
 }
 
 function get_networks(&$sql_where, $rows, $apply_limits = true) {
-	if (get_request_var('filter') != '') {
-		$sql_where = ' WHERE (automation_networks.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
+	if (grv('filter') != '') {
+		$sql_where = ' WHERE (automation_networks.name LIKE ' . db_qstr('%' . grv('filter') . '%') . ')';
 	}
 
 	$sql_order = get_order_string();
 
 	if ($apply_limits) {
-		$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
+		$sql_limit = ' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows;
 	} else {
 		$sql_limit = '';
 	}
@@ -1017,7 +1017,7 @@ function get_networks(&$sql_where, $rows, $apply_limits = true) {
 function networks() {
 	global $actions, $networks, $item_rows, $sched_types;
 
-	/* create the page filter */
+	// create the page filter
 	$pageFilter = new CactiTableFilter(__('Network Rules'), 'automation_networks.php', 'networks', 'sess_networks', 'automation_networks.php?action=edit');
 
 	$pageFilter->rows_label  = __('Networks');
@@ -1025,12 +1025,12 @@ function networks() {
 	$pageFilter->def_refresh = 20;
 	$pageFilter->render();
 
-	if (get_request_var('rows') == -1) {
+	if (grv('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
-	} elseif (get_request_var('rows') == -2) {
+	} elseif (grv('rows') == -2) {
 		$rows = 99999999;
 	} else {
-		$rows = get_request_var('rows');
+		$rows = grv('rows');
 	}
 
 	$sql_where = '';
@@ -1039,7 +1039,7 @@ function networks() {
 
 	$total_rows = db_fetch_cell('SELECT COUNT(*) FROM automation_networks ' . $sql_where);
 
-	$nav = html_nav_bar('automation_networks.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 14, __('Networks'), 'page', 'main');
+	$nav = html_nav_bar('automation_networks.php', MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 14, __('Networks'), 'page', 'main');
 
 	form_start('automation_networks.php', 'chk');
 
@@ -1109,7 +1109,7 @@ function networks() {
 
 	$status = 'Idle';
 
-	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
+	html_header_sort_checkbox($display_text, grv('sort_column'), grv('sort_direction'), false);
 
 	if (cacti_sizeof($networks)) {
 		foreach ($networks as $network) {
@@ -1166,7 +1166,7 @@ function networks() {
 
 			form_alternate_row('line' . $network['id'], true);
 
-			form_selectable_cell('<a class="linkEditMain" href="' . html_escape('automation_networks.php?action=edit&id=' . $network['id']) . '">' . html_escape($network['name']) . '</a>', $network['id']);
+			form_selectable_cell('<a class="linkEditMain" href="' . htmle('automation_networks.php?action=edit&id=' . $network['id']) . '">' . htmle($network['name']) . '</a>', $network['id']);
 			form_selectable_ecell($network['data_collector'], $network['id']);
 			form_selectable_cell($sched_types[$network['sched_type']], $network['id']);
 			form_selectable_cell(number_format_i18n($network['total_ips']), $network['id'], '', 'right');
@@ -1191,7 +1191,7 @@ function networks() {
 		print $nav;
 	}
 
-	/* draw the dropdown containing a list of available actions for this form */
+	// draw the dropdown containing a list of available actions for this form
 	draw_actions_dropdown($actions);
 
 	form_end();

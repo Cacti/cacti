@@ -25,15 +25,15 @@
 require('./include/auth.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 
-/* set default action */
+// set default action
 set_default_action();
 
-get_filter_request_var('tab', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
-get_filter_request_var('filter', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
+gfrv('tab', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
+gfrv('filter', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
 
 global $disable_log_rotation, $local_db_cnn_id;
 
-switch (get_request_var('action')) {
+switch (grv('action')) {
 	case 'save':
 		save_settings();
 
@@ -63,15 +63,15 @@ function display_settings() {
 
 	print '<div class="settingsFilter">';
 	print '<div>' . __('Search') . '</div>';
-	print '<div><input class="ui-state-default ui-corner-all" type="text" size="25" id="filter" value="' . html_escape_request_var('filter') . '"></div>';
+	print '<div><input class="ui-state-default ui-corner-all" type="text" size="25" id="filter" value="' . htmlerv('filter') . '"></div>';
 	print '<div><span><button class="ui-state-default ui-corner-all" type="button" id="clear">' . __esc('Clear') . '</button></span></div>';
 	print '</div>';
 
 	html_end_box(false, true);
 
-	/* set the default settings category */
-	if (!isset_request_var('tab')) {
-		/* there is no selected tab; select the first one */
+	// set the default settings category
+	if (!isrv('tab')) {
+		// there is no selected tab; select the first one
 		if (isset($_SESSION['sess_settings_tab'])) {
 			$current_tab = $_SESSION['sess_settings_tab'];
 		} else {
@@ -79,7 +79,7 @@ function display_settings() {
 			$current_tab = $current_tab[0];
 		}
 	} else {
-		$current_tab = get_request_var('tab');
+		$current_tab = grv('tab');
 	}
 
 	// If the tab no longer exists, use the first
@@ -90,7 +90,7 @@ function display_settings() {
 
 	$_SESSION['sess_settings_tab'] = $current_tab;
 
-	set_request_var('tab', $current_tab);
+	srv('tab', $current_tab);
 
 	$data_collectors = db_fetch_cell('SELECT COUNT(*) FROM poller WHERE disabled=""');
 
@@ -113,13 +113,13 @@ function display_settings() {
 		'mail'
 	];
 
-	/* draw the categories tabs on the top of the page */
+	// draw the categories tabs on the top of the page
 	print '<div>';
 	print "<div id='settings' class='tabs' style='float:left;'><nav style='display:none;'><ul role='tablist'>";
 
 	if (cacti_sizeof($tabs)) {
 		foreach (array_keys($tabs) as $tab_short_name) {
-			print "<li id='$tab_short_name' class='subTab" . (!in_array($tab_short_name, $system_tabs, true) ? ' pluginTab' : '') . "'><a " . (($tab_short_name == $current_tab) ? "class='selected'" : "class=''") . " href='" . html_escape("settings.php?tab=$tab_short_name") . "'>" . $tabs[$tab_short_name] . '</a></li>';
+			print "<li id='$tab_short_name' class='subTab" . (!in_array($tab_short_name, $system_tabs, true) ? ' pluginTab' : '') . "'><a " . (($tab_short_name == $current_tab) ? "class='selected'" : "class=''") . " href='" . htmle("settings.php?tab=$tab_short_name") . "'>" . $tabs[$tab_short_name] . '</a></li>';
 		}
 	}
 
@@ -1260,7 +1260,7 @@ function display_settings() {
 }
 
 function validate_settings_filter() {
-	/* ================= input validation and session storage ================= */
+	// ================= input validation and session storage =================
 	$filters = [
 		'filter' => [
 			'filter'  => FILTER_DEFAULT,
@@ -1270,7 +1270,7 @@ function validate_settings_filter() {
 	];
 
 	validate_store_request_vars($filters, 'sess_settings');
-	/* ================= input validation ================= */
+	// ================= input validation =================
 }
 
 function settings_search() {
@@ -1278,7 +1278,7 @@ function settings_search() {
 
 	validate_settings_filter();
 
-	$filter = get_request_var('filter');
+	$filter = grv('filter');
 
 	$response = [
 		'tabs'    => [],
@@ -1347,11 +1347,11 @@ function save_settings() {
 	$errors  = [];
 	$inserts = [];
 
-	foreach ($settings[get_request_var('tab')] as $field_name => $field_array) {
+	foreach ($settings[grv('tab')] as $field_name => $field_array) {
 		if (($field_array['method'] == 'header') || ($field_array['method'] == 'spacer')) {
-			/* do nothing */
+			// do nothing
 		} elseif ($field_array['method'] == 'checkbox') {
-			if (isset_request_var($field_name)) {
+			if (isrv($field_name)) {
 				$inserts[] = '(' . db_qstr($field_name) . ', "on")';
 				db_execute_prepared("REPLACE INTO settings
 					(name, value)
@@ -1366,7 +1366,7 @@ function save_settings() {
 			}
 		} elseif ($field_array['method'] == 'checkbox_group') {
 			foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
-				if (isset_request_var($sub_field_name)) {
+				if (isrv($sub_field_name)) {
 					$inserts[] = '(' . db_qstr($field_name) . ', "on")';
 					db_execute_prepared("REPLACE INTO settings
 					(name, value)
@@ -1381,105 +1381,105 @@ function save_settings() {
 				}
 			}
 		} elseif ($field_array['method'] == 'dirpath') {
-			if (get_nfilter_request_var($field_name) != '' && !is_dir(get_nfilter_request_var($field_name))) {
+			if (gnrv($field_name) != '' && !is_dir(gnrv($field_name))) {
 				$_SESSION['sess_error_fields'][$field_name] = $field_name;
-				$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
+				$_SESSION['sess_field_values'][$field_name] = gnrv($field_name);
 				$errors[8]                                  = 8;
 			} else {
-				if (get_request_var('tab') == 'path' && is_remote_path_setting($field_name)) {
+				if (grv('tab') == 'path' && is_remote_path_setting($field_name)) {
 					db_execute_prepared('REPLACE INTO settings
 						(name, value)
 						VALUES (?, ?)',
-						[$field_name, get_nfilter_request_var($field_name)], true, $local_db_cnn_id);
+						[$field_name, gnrv($field_name)], true, $local_db_cnn_id);
 				} else {
-					$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(get_nfilter_request_var($field_name)) . ')';
+					$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(gnrv($field_name)) . ')';
 					db_execute_prepared('REPLACE INTO settings
 						(name, value)
 						VALUES (?, ?)',
-						[$field_name, get_nfilter_request_var($field_name)]);
+						[$field_name, gnrv($field_name)]);
 				}
 			}
 		} elseif ($field_array['method'] == 'filepath') {
 			if (isset($field_array['file_type']) &&
 				$field_array['file_type'] == 'binary' &&
-				get_nfilter_request_var($field_name) != '' &&
-				file_exists(get_nfilter_request_var($field_name)) === false) {
+				gnrv($field_name) != '' &&
+				file_exists(gnrv($field_name)) === false) {
 				$_SESSION['sess_error_fields'][$field_name] = $field_name;
-				$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
+				$_SESSION['sess_field_values'][$field_name] = gnrv($field_name);
 				$errors[36]                                 = 36;
 			} else {
 				$continue = true;
 
 				if ($field_name == 'path_cactilog' || $field_name == 'path_stderrlog') {
-					$extension = pathinfo(get_nfilter_request_var($field_name), PATHINFO_EXTENSION);
+					$extension = pathinfo(gnrv($field_name), PATHINFO_EXTENSION);
 
 					if ($extension != 'log') {
 						$_SESSION['sess_error_fields'][$field_name] = $field_name;
-						$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
+						$_SESSION['sess_field_values'][$field_name] = gnrv($field_name);
 						$errors[9]                                  = 9;
 						$continue                                   = false;
 					}
-				} elseif (get_nfilter_request_var($field_name) != '' && !is_valid_pathname(get_nfilter_request_var($field_name))) {
+				} elseif (gnrv($field_name) != '' && !is_valid_pathname(gnrv($field_name))) {
 					$_SESSION['sess_error_fields'][$field_name] = $field_name;
-					$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
+					$_SESSION['sess_field_values'][$field_name] = gnrv($field_name);
 					$errors[36]                                 = 36;
 				}
 
 				if ($continue) {
-					if (get_request_var('tab') == 'path' && is_remote_path_setting($field_name)) {
+					if (grv('tab') == 'path' && is_remote_path_setting($field_name)) {
 						db_execute_prepared('REPLACE INTO settings
 							(name, value)
 							VALUES (?, ?)',
-							[$field_name, get_nfilter_request_var($field_name)], true, $local_db_cnn_id);
+							[$field_name, gnrv($field_name)], true, $local_db_cnn_id);
 					} else {
-						$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(get_nfilter_request_var($field_name)) . ')';
+						$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(gnrv($field_name)) . ')';
 						db_execute_prepared('REPLACE INTO settings
 							(name, value)
 							VALUES (?, ?)',
-							[$field_name, get_nfilter_request_var($field_name)]);
+							[$field_name, gnrv($field_name)]);
 					}
 				}
 			}
 		} elseif ($field_array['method'] == 'textbox_password') {
-			if (isset_request_var($field_name . '_confirm') && get_nfilter_request_var($field_name) != get_nfilter_request_var($field_name . '_confirm')) {
+			if (isrv($field_name . '_confirm') && gnrv($field_name) != gnrv($field_name . '_confirm')) {
 				$_SESSION['sess_error_fields'][$field_name] = $field_name;
-				$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
+				$_SESSION['sess_field_values'][$field_name] = gnrv($field_name);
 				$errors[4]                                  = 4;
 
 				break;
 			}
 
-			if (!isempty_request_var($field_name)) {
-				$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(get_nfilter_request_var($field_name)) . ')';
+			if (!ierv($field_name)) {
+				$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(gnrv($field_name)) . ')';
 				db_execute_prepared('REPLACE INTO settings
 					(name, value)
 					VALUES (?, ?)',
-					[$field_name, get_nfilter_request_var($field_name)]);
+					[$field_name, gnrv($field_name)]);
 			}
 		} elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 			foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
-				if (isset_request_var($sub_field_name)) {
-					$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(get_nfilter_request_var($sub_field_name)) . ')';
+				if (isrv($sub_field_name)) {
+					$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(gnrv($sub_field_name)) . ')';
 					db_execute_prepared('REPLACE INTO settings
 					(name, value)
 					VALUES (?, ?)',
-						[$sub_field_name, get_nfilter_request_var($sub_field_name)]);
+						[$sub_field_name, gnrv($sub_field_name)]);
 				}
 			}
 		} elseif ($field_array['method'] == 'drop_multi') {
-			if (isset_request_var($field_name)) {
-				if (is_array(get_nfilter_request_var($field_name))) {
-					$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(implode(',', get_nfilter_request_var($field_name))) . ')';
+			if (isrv($field_name)) {
+				if (is_array(gnrv($field_name))) {
+					$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(implode(',', gnrv($field_name))) . ')';
 					db_execute_prepared('REPLACE INTO settings
 					(name, value)
 					VALUES (?, ?)',
-						[$field_name, implode(',', get_nfilter_request_var($field_name))]);
+						[$field_name, implode(',', gnrv($field_name))]);
 				} else {
-					$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(get_nfilter_request_var($field_name)) . ')';
+					$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(gnrv($field_name)) . ')';
 					db_execute_prepared('REPLACE INTO settings
 					(name, value)
 					VALUES (?, ?)',
-						[$field_name, get_nfilter_request_var($field_name)]);
+						[$field_name, gnrv($field_name)]);
 				}
 			} else {
 				$inserts[] = '(' . db_qstr($field_name) . ', "")';
@@ -1488,54 +1488,54 @@ function save_settings() {
 					VALUES (?, "")',
 					[$field_name]);
 			}
-		} elseif (isset_request_var($field_name)) {
+		} elseif (isrv($field_name)) {
 			if ($field_array['method'] == 'textbox' && isset($field_array['filter'])) {
 				if (isset($field_array['options'])) {
-					$value = filter_var(get_nfilter_request_var($field_name), $field_array['filter'], $field_array['options']);
+					$value = filter_var(gnrv($field_name), $field_array['filter'], $field_array['options']);
 				} else {
-					$value = filter_var(get_nfilter_request_var($field_name), $field_array['filter']);
+					$value = filter_var(gnrv($field_name), $field_array['filter']);
 				}
 
 				if ($value === false) {
 					$_SESSION['sess_error_fields'][$field_name] = $field_name;
-					$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
+					$_SESSION['sess_field_values'][$field_name] = gnrv($field_name);
 					$errors[3]                                  = 3;
 
 					continue;
 				}
 			}
 
-			if (is_array(get_nfilter_request_var($field_name))) {
-				$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(implode(',', get_nfilter_request_var($field_name))) . ')';
+			if (is_array(gnrv($field_name))) {
+				$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(implode(',', gnrv($field_name))) . ')';
 				db_execute_prepared('REPLACE INTO settings
 					(name, value)
 					VALUES (?, ?)',
-					[$field_name, implode(',', get_nfilter_request_var($field_name))]);
+					[$field_name, implode(',', gnrv($field_name))]);
 			} else {
-				$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(get_nfilter_request_var($field_name)) . ')';
+				$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(gnrv($field_name)) . ')';
 				db_execute_prepared('REPLACE INTO settings
 					(name, value)
 					VALUES (?, ?)',
-					[$field_name, get_nfilter_request_var($field_name)]);
+					[$field_name, gnrv($field_name)]);
 			}
 		}
 
 		if ($field_name == 'auth_method') {
-			if (get_nfilter_request_var($field_name) == '2') {
+			if (gnrv($field_name) == '2') {
 				db_execute('TRUNCATE TABLE user_auth_cache');
 			}
 		}
 	}
 
-	if (isset_request_var('log_verbosity')) {
-		if (!isset_request_var('selective_debug')) {
+	if (isrv('log_verbosity')) {
+		if (!isrv('selective_debug')) {
 			$inserts[] = '("selective_debug", "")';
 			db_execute('REPLACE INTO settings
 				(name, value)
 				VALUES ("selective_debug", "")');
 		}
 
-		if (!isset_request_var('selective_plugin_debug')) {
+		if (!isrv('selective_plugin_debug')) {
 			$inserts[] = '("selective_plugin_debug", "")';
 			db_execute('REPLACE INTO settings
 				(name, value)
@@ -1544,11 +1544,11 @@ function save_settings() {
 	}
 
 	// Disable template user from being able to login
-	if (isset_request_var('user_template')) {
+	if (isrv('user_template')) {
 		db_execute_prepared('UPDATE user_auth
 			SET enabled=""
 			WHERE id = ?',
-			[get_nfilter_request_var('user_template')]);
+			[gnrv('user_template')]);
 	}
 
 	// Update snmpcache
@@ -1568,7 +1568,7 @@ function save_settings() {
 		'id', 'last_polled'
 	);
 
-	if (get_request_var('tab') == 'path' && POLLER_ID > 1) {
+	if (grv('tab') == 'path' && POLLER_ID > 1) {
 		raise_message('poller_paths');
 	}
 
@@ -1610,12 +1610,12 @@ function save_settings() {
 		}
 	}
 
-	/* reset local settings cache so the user sees the new settings */
+	// reset local settings cache so the user sees the new settings
 	kill_session_var('sess_config_array');
 
-	if (isset_request_var('header') && get_nfilter_request_var('header') == 'false') {
-		header('Location: settings.php?header=false&tab=' . get_request_var('tab'));
+	if (isrv('header') && gnrv('header') == 'false') {
+		header('Location: settings.php?header=false&tab=' . grv('tab'));
 	} else {
-		header('Location: settings.php?tab=' . get_request_var('tab'));
+		header('Location: settings.php?tab=' . grv('tab'));
 	}
 }

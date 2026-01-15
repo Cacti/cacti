@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-/* display No errors */
+// display No errors
 error_reporting(0);
 
 if (!isset($called_by_script_server)) {

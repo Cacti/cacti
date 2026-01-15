@@ -38,16 +38,16 @@ require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
 ini_set('max_execution_time', '0');
 
-/* switch to main database for cli's */
+// switch to main database for cli's
 if ($config['poller_id'] > 1) {
 	db_switch_remote_to_main();
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-/* utility requires input parameters */
+// utility requires input parameters
 if (cacti_sizeof($parms) == 0) {
 	print "ERROR: You must supply input parameters\n\n";
 	display_help();
@@ -109,7 +109,7 @@ if (cacti_sizeof($parms)) {
 	}
 }
 
-/* determine the hosts to reindex */
+// determine the hosts to reindex
 if (strtolower($host_id) == 'all') {
 	$sql_where = '';
 } elseif (is_numeric($host_id)) {
@@ -121,7 +121,7 @@ if (strtolower($host_id) == 'all') {
 	exit(1);
 }
 
-/* determine data queries to rerun */
+// determine data queries to rerun
 if (is_numeric($template) && $template > 0) {
 	$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . " host_template_id=$template";
 } else {
@@ -131,7 +131,7 @@ if (is_numeric($template) && $template > 0) {
 	exit(1);
 }
 
-/* verify that the host template is accurate */
+// verify that the host template is accurate
 $exists = db_fetch_cell_prepared('SELECT id
 	FROM host_template
 	WHERE id = ?',
@@ -160,7 +160,7 @@ if ($exists > 0) {
 						VALUES (?, ?, ?)',
 						[$host['id'], $snmp_query['snmp_query_id'], DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME]);
 
-					/* recache snmp data */
+					// recache snmp data
 					run_data_query($host['id'], $snmp_query['snmp_query_id']);
 				}
 			}
@@ -201,14 +201,14 @@ if ($exists > 0) {
 	exit(1);
 }
 
-/*  display_version - displays version information */
+// display_version - displays version information
 function display_version() {
 	$version = get_cacti_cli_version();
 
 	print "Cacti Retemplate Host Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-/*	display_help - displays the usage of the function */
+// display_help - displays the usage of the function
 function display_help() {
 	display_version();
 

@@ -102,7 +102,7 @@ function upgrade_to_1_3_0() {
 		INNER JOIN data_local AS dl ON dl.id = dtd.local_data_id
 		SET did.host_id = dl.host_id');
 
-	/* remove all the legacy debounce entries */
+	// remove all the legacy debounce entries
 	db_install_execute('DELETE FROM settings WHERE name LIKE "debounce_%" AND value > 0');
 
 	$data               = [];
@@ -149,8 +149,8 @@ function upgrade_to_1_3_0() {
 	$data['row_format'] = 'Dynamic';
 	db_update_table('plugin_archive', $data);
 
-	//Not sure why we were adding this...
-	//db_install_add_column('user_domains', array('name' => 'tls_verify', 'type' => 'int', 'null' => false, 'default' => '0'));
+	// Not sure why we were adding this...
+	// db_install_add_column('user_domains', array('name' => 'tls_verify', 'type' => 'int', 'null' => false, 'default' => '0'));
 
 	db_install_execute('UPDATE host AS h
 		LEFT JOIN sites AS s
@@ -209,7 +209,7 @@ function upgrade_to_1_3_0() {
 	install_unlink('graph_templates_items.php');
 	install_unlink('graph_templates_inputs.php');
 
-	/* create new automation template rules table */
+	// create new automation template rules table
 	$data               = [];
 	$data['columns'][]  = ['name' => 'id', 'unsigned' => true, 'type' => 'int(10)', 'NULL' => false, 'auto_increment' => true];
 	$data['columns'][]  = ['name' => 'hash', 'type' => 'varchar(32)', 'NULL' => false, 'default' => ''];
@@ -227,7 +227,7 @@ function upgrade_to_1_3_0() {
 	$data['row_format'] = 'Dynamic';
 	db_update_table('automation_templates_rules', $data);
 
-	/* add automation hashes */
+	// add automation hashes
 	$tables = [
 		'automation_graph_rule_items',
 		'automation_graph_rules',
@@ -386,7 +386,7 @@ function upgrade_to_1_3_0() {
 	object_cache_update_graph_totals();
 	object_cache_update_aggregate_totals();
 
-	/* remove legacy files from old cacti releases */
+	// remove legacy files from old cacti releases
 	prune_deprecated_files();
 
 	$data               = [];
@@ -428,7 +428,7 @@ function upgrade_to_1_3_0() {
 
 	$repos = db_fetch_cell('SELECT COUNT(*) FROM package_repositories');
 
-	/* example repositories */
+	// example repositories
 	if ($repos == 0) {
 		foreach ($repos as $r) {
 			db_execute_prepared('INSERT INTO package_repositories
@@ -437,7 +437,7 @@ function upgrade_to_1_3_0() {
 		}
 	}
 
-	/* add package meta information to the host_template table */
+	// add package meta information to the host_template table
 	$data               = [];
 	$data['columns'][]  = ['name' => 'id', 'unsigned' => true, 'type' => 'mediumint(8)', 'NULL' => false, 'auto_increment' => true];
 	$data['columns'][]  = ['name' => 'hash', 'type' => 'varchar(32)', 'NULL' => false, 'default' => ''];
@@ -485,7 +485,7 @@ function upgrade_to_1_3_0() {
 	$data['row_format'] = 'Dynamic';
 	db_update_table('host_template_archive', $data);
 
-	/* provide the primary admin access to packages */
+	// provide the primary admin access to packages
 	$admin = read_config_option('admin_user');
 
 	if ($admin > 0) {
@@ -592,7 +592,7 @@ function upgrade_to_1_3_0() {
 	$data['row_format'] = 'Dynamic';
 	db_update_table('data_local', $data);
 
-	/* clear up setting change */
+	// clear up setting change
 	$exists = db_fetch_cell_prepared('SELECT name FROM settings WHERE name = "business_hours_hideWeekends"');
 
 	if ($exists != '') {
@@ -629,10 +629,10 @@ function upgrade_reports() {
 			ADD INDEX `last_started` (`last_started`),
 			ADD INDEX `next_start` (`next_start`)");
 
-		/* migrate the schedules as close as possible */
+		// migrate the schedules as close as possible
 		$reports = db_fetch_assoc('SELECT * FROM reports');
 
-		/* drop legacy columns */
+		// drop legacy columns
 		// `intrvl` smallint(2) unsigned NOT NULL default '0', - Sched type
 		//		10 - Minute, -- Attempt to convert to Hours
 		//		11 - Hours,  -- Keep
@@ -790,7 +790,7 @@ function upgrade_reports() {
 			DROP COLUMN `lastsent`');
 	}
 
-	/* get rid of legacy Lotus Notes setting */
+	// get rid of legacy Lotus Notes setting
 	db_execute_prepared('DELETE FROM settings WHERE name = ?', ['reports_allow_ln']);
 	db_execute_prepared('UPDATE reports SET attachment_type = ? WHERE attachment_type = ?', [REPORTS_TYPE_INLINE_PNG, 91]);
 	db_execute_prepared('UPDATE reports SET attachment_type = ? WHERE attachment_type = ?', [REPORTS_TYPE_INLINE_JPG, 92]);
@@ -846,7 +846,7 @@ function ldap_convert_1_3_0() {
 		if (cacti_sizeof($domain)) {
 			$domain_id = $domain['domain_id'];
 
-			/* Reset LDAP users to the new LDAP domain */
+			// Reset LDAP users to the new LDAP domain
 			db_execute_prepared('UPDATE user_auth
 				SET realm = ? + 1000
 				WHERE realm = 3',
@@ -957,7 +957,7 @@ function upgrade_dsstats() {
 
 		db_install_execute("$sql $suffix");
 
-		/* if re-upgrading, move existing partitions to aria */
+		// if re-upgrading, move existing partitions to aria
 		if ($db == 'mariadb') {
 			$tables = db_fetch_assoc("SELECT *
 				FROM information_schema.TABLES

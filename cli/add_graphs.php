@@ -37,17 +37,17 @@ require_once(CACTI_PATH_LIBRARY . '/sort.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
-/* switch to main database for cli's */
+// switch to main database for cli's
 if ($config['poller_id'] > 1) {
 	db_switch_remote_to_main();
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (cacti_sizeof($parms)) {
-	/* setup defaults */
+	// setup defaults
 	$graph_type                  = '';
 	$templateGraph               = [];
 	$dsGraph                     = [];
@@ -316,7 +316,7 @@ if (cacti_sizeof($parms)) {
 	}
 
 	if ($listGraphTemplates) {
-		/* is a Host Template Id is given, print the related Graph Templates */
+		// is a Host Template Id is given, print the related Graph Templates
 		if ($hostTemplateId > 0) {
 			$graphTemplates = getGraphTemplatesByHostTemplate($hostTemplateId);
 
@@ -353,7 +353,7 @@ if (cacti_sizeof($parms)) {
 		exit(0);
 	}
 
-	/* get the existing snmp queries */
+	// get the existing snmp queries
 	$snmpQueries = getSNMPQueries();
 
 	if ($listSNMPQueries) {
@@ -362,7 +362,7 @@ if (cacti_sizeof($parms)) {
 		exit(0);
 	}
 
-	/* Some sanity checking... */
+	// Some sanity checking...
 	if ($dsGraph['snmpQueryId'] != '') {
 		if (!isset($snmpQueries[$dsGraph['snmpQueryId']])) {
 			print 'ERROR: Unknown snmp-query-id (' . $dsGraph['snmpQueryId'] . ')' . PHP_EOL;
@@ -371,7 +371,7 @@ if (cacti_sizeof($parms)) {
 			exit(1);
 		}
 
-		/* get the snmp query types for comparison */
+		// get the snmp query types for comparison
 		$snmp_query_types = getSNMPQueryTypes($dsGraph['snmpQueryId']);
 
 		if ($listQueryTypes) {
@@ -389,8 +389,8 @@ if (cacti_sizeof($parms)) {
 			}
 		}
 
-		if (!($listHosts ||			# you really want to create a new graph
-			$listSNMPFields || 		# add this check to avoid reindexing on any list option
+		if (!($listHosts ||			// you really want to create a new graph
+			$listSNMPFields || 		// add this check to avoid reindexing on any list option
 			$listSNMPValues ||
 			$listQueryTypes ||
 			$listSNMPQueries ||
@@ -398,7 +398,7 @@ if (cacti_sizeof($parms)) {
 			/* if data query is not yet associated,
 			 * add it and run it once to get the cache filled */
 
-			/* is this data query already associated (independent of the reindex method)? */
+			// is this data query already associated (independent of the reindex method)?
 			$exists_already = db_fetch_cell_prepared('SELECT COUNT(host_id)
 				FROM host_snmp_query
 				WHERE host_id = ?
@@ -407,7 +407,7 @@ if (cacti_sizeof($parms)) {
 
 			if ((isset($exists_already)) &&
 				($exists_already > 0)) {
-				/* yes: do nothing, everything's fine */
+				// yes: do nothing, everything's fine
 			} else {
 				db_execute_prepared('REPLACE INTO host_snmp_query
 					(host_id, snmp_query_id, reindex_method)
@@ -423,7 +423,7 @@ if (cacti_sizeof($parms)) {
 		}
 	}
 
-	/* Verify the host's existence */
+	// Verify the host's existence
 	if (!isset($hosts[$host_id]) || $host_id == 0) {
 		print 'ERROR: Unknown Host ID ($host_id)' . PHP_EOL;
 		print 'Try --list-hosts' . PHP_EOL;
@@ -431,7 +431,7 @@ if (cacti_sizeof($parms)) {
 		exit(1);
 	}
 
-	/* process the snmp fields */
+	// process the snmp fields
 	if ($graph_type == 'dq' || $graph_type == 'ds' || $listSNMPFields || $listSNMPValues) {
 		$snmpFields = getSNMPFields($host_id, $dsGraph['snmpQueryId']);
 
@@ -443,8 +443,8 @@ if (cacti_sizeof($parms)) {
 
 		$snmpValues = [];
 
-		/* More sanity checking */
-		/* Testing SnmpValues and snmpFields args */
+		// More sanity checking
+		// Testing SnmpValues and snmpFields args
 		if ($dsGraph['snmpValue'] && $dsGraph['snmpValueRegex']) {
 			print 'ERROR: You can\'t supply --snmp-value and --snmp-value-regex at the same time' . PHP_EOL;
 
@@ -616,7 +616,7 @@ if (cacti_sizeof($parms)) {
 					$field_name       = $option_value[0];
 				}
 
-				/* check for the input fields existence */
+				// check for the input fields existence
 				$field_found = false;
 
 				if (cacti_sizeof($input_fields)) {
@@ -706,7 +706,7 @@ if (cacti_sizeof($parms)) {
 				}
 			}
 
-			/* add this graph template to the list of associated graph templates for this host */
+			// add this graph template to the list of associated graph templates for this host
 			db_execute_prepared('REPLACE INTO host_graph
 				(host_id, graph_template_id) VALUES
 				(?, ?)',
@@ -802,7 +802,7 @@ if (cacti_sizeof($parms)) {
 					continue;
 				}
 
-				$isempty = []; /* Suggested Values are not been implemented */
+				$isempty = []; // Suggested Values are not been implemented
 
 				$returnArray = create_complete_graph_from_template($template_id, $host_id, $snmp_query_array, $isempty);
 
@@ -877,7 +877,7 @@ if (cacti_sizeof($parms)) {
 	exit(1);
 }
 
-/*  display_version - displays version information */
+// display_version - displays version information
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Add Graphs Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;

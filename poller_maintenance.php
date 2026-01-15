@@ -33,7 +33,7 @@ require_once(CACTI_PATH_LIBRARY . '/utility.php');
 require_once(CACTI_PATH_LIBRARY . '/ping.php');
 require_once(CACTI_PATH_LIBRARY . '/snmp.php');
 
-/* let PHP run just as long as it has to */
+// let PHP run just as long as it has to
 ini_set('max_execution_time', '0');
 
 error_reporting(E_ALL);
@@ -42,10 +42,10 @@ chdir($dir);
 
 global $database_default, $archived, $purged, $disable_log_rotation, $poller_start;
 
-/* record the start time */
+// record the start time
 $poller_start = microtime(true);
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -96,7 +96,7 @@ if (cacti_sizeof($parms)) {
 
 maint_debug('Checking for Purge Actions');
 
-/* silently end if the registered process is still running, or process table missing */
+// silently end if the registered process is still running, or process table missing
 if (!$force) {
 	if (!register_process_start('maintenance', 'master', POLLER_ID, read_config_option('maintenance_timeout'))) {
 		cacti_log('INFO: Another maintenance session is already running', false, 'MAINTENANCE', POLLER_VERBOSITY_LOW);
@@ -421,7 +421,7 @@ function logrotate_check($force) {
 }
 
 function authcache_purge() {
-	/* removing security tokens older than 90 days */
+	// removing security tokens older than 90 days
 	if (read_config_option('auth_cache_enabled') == 'on') {
 		db_execute_prepared('DELETE FROM user_auth_cache
 			WHERE last_update < ?',
@@ -434,15 +434,15 @@ function authcache_purge() {
 function rrdfile_purge($force) {
 	global $archived, $purged, $poller_start;
 
-	/* are my tables already present? */
+	// are my tables already present?
 	$purge = db_fetch_cell('SELECT COUNT(*)
 		FROM data_source_purge_action');
 
-	/* if the table that holds the actions is present, work on it */
+	// if the table that holds the actions is present, work on it
 	if ($purge) {
 		maint_debug("Purging Required - Files Found $purge");
 
-		/* take the purge in steps */
+		// take the purge in steps
 		while (true) {
 			maint_debug('Grabbing 1000 RRDfiles to Remove');
 
@@ -456,7 +456,7 @@ function rrdfile_purge($force) {
 			}
 
 			if (cacti_sizeof($file_array) || $force) {
-				/* there's something to do for us now */
+				// there's something to do for us now
 				remove_files($file_array);
 
 				if ($force) {
@@ -467,7 +467,7 @@ function rrdfile_purge($force) {
 			}
 		}
 
-		/* record the start time */
+		// record the start time
 		set_config_option('rrdcleaner_last_run_time', time());
 
 		$poller_end = microtime(true);
@@ -484,7 +484,7 @@ function rrdfile_purge($force) {
  * that are older than 2 hours without changes
  */
 function realtime_purge_cache() {
-	/* remove all Realtime files over than 2 hours */
+	// remove all Realtime files over than 2 hours
 	if (read_config_option('realtime_cache_path') != '') {
 		$cache_path = read_config_option('realtime_cache_path');
 
@@ -507,9 +507,7 @@ function realtime_purge_cache() {
 	db_execute('DELETE FROM poller_output_realtime WHERE time < FROM_UNIXTIME(UNIX_TIMESTAMP()-300)');
 }
 
-/*
- * logrotate_rotatenow - Rotates the cacti log
- */
+// logrotate_rotatenow - Rotates the cacti log
 function logrotate_rotatenow() {
 	$poller_start = microtime(true);
 
@@ -559,7 +557,7 @@ function logrotate_rotatenow() {
 
 	$cleaned += logrotate_file_clean($name, $log, $date, $days);
 
-	/* record the start time */
+	// record the start time
 	$poller_end = microtime(true);
 	$string     = sprintf('LOGMAINT STATS: Time:%4.4f, Rotated:%d, Removed:%d, Days Retained:%d', ($poller_end - $poller_start), $rotated, $cleaned, $days);
 
@@ -738,9 +736,7 @@ function secpass_check_expired() {
 	}
 }
 
-/*
- * remove_files - remove all unwanted files; the list is given by table data_source_purge_action
- */
+// remove_files - remove all unwanted files; the list is given by table data_source_purge_action
 function remove_files($file_array) {
 	global $debug, $archived, $purged;
 
@@ -753,7 +749,7 @@ function remove_files($file_array) {
 
 		rrdtool_execute('setcnn timeout off', false, RRDTOOL_OUTPUT_NULL, $rrdtool_pipe, $logopt = 'POLLER');
 	} else {
-		/* let's prepare the archive directory */
+		// let's prepare the archive directory
 		$rrd_archive = read_config_option('rrd_archive', true);
 
 		if ($rrd_archive == '') {
@@ -764,9 +760,9 @@ function remove_files($file_array) {
 		rrdclean_create_path($rrd_archive);
 	}
 
-	/* now scan the files */
+	// now scan the files
 	foreach ($file_array as $file) {
-		/* the variables shouldn't be here, but I'm keeping them just in case */
+		// the variables shouldn't be here, but I'm keeping them just in case
 		$real_file = str_replace('<path_rra>', $rra_path, $file['name']);
 		$real_file = str_replace('<path_cacti>', CACTI_PATH_BASE, $real_file);
 
@@ -834,14 +830,14 @@ function remove_files($file_array) {
 			}
 		}
 
-		/* drop from data_source_purge_action table */
+		// drop from data_source_purge_action table
 		db_execute_prepared('DELETE FROM `data_source_purge_action`
 			WHERE name = ?',
 			[$file['name']]);
 
 		maint_debug('Delete from data_source_purge_action: ' . $file['name']);
 
-		//fetch all local_graph_id's according to this data source
+		// fetch all local_graph_id's according to this data source
 		$lgis = db_fetch_assoc_prepared('SELECT DISTINCT gl.id
 			FROM graph_local AS gl
 			INNER JOIN graph_templates_item AS gti
@@ -854,22 +850,22 @@ function remove_files($file_array) {
 			[$file['local_data_id']]);
 
 		if (cacti_sizeof($lgis)) {
-			/* anything found? */
+			// anything found?
 			maint_debug('Processing ' . cacti_sizeof($lgis) . ' Graphs for data source id: ' . $file['local_data_id']);
 
-			/* get them all */
+			// get them all
 			foreach ($lgis as $item) {
 				$remove_lgis[] = $item['id'];
 				maint_debug('remove local_graph_id=' . $item['id']);
 			}
 
-			/* and remove them in a single run */
+			// and remove them in a single run
 			if (!empty($remove_lgis)) {
 				api_graph_remove_multi($remove_lgis);
 			}
 		}
 
-		/* remove related data source if any */
+		// remove related data source if any
 		if ($file['local_data_id'] > 0) {
 			maint_debug('Removing Data Source: ' . $file['local_data_id']);
 			api_data_source_remove($file['local_data_id']);
@@ -904,21 +900,19 @@ function rrdclean_create_path($path) {
 	return is_dir($path) && is_writable($path);
 }
 
-/*
- * cleanup_ds_and_graphs - courtesy John Rembo
- */
+// cleanup_ds_and_graphs - courtesy John Rembo
 function cleanup_ds_and_graphs() {
 	$remove_ldis = [];
 	$remove_lgis = [];
 
 	maint_debug('RRDClean now cleans up all data sources and graphs');
 
-	//fetch all local_data_id's which have appropriate data-sources
+	// fetch all local_data_id's which have appropriate data-sources
 	$rrds = db_fetch_assoc("SELECT local_data_id, name_cache, data_source_path
 		FROM data_template_data
 		WHERE name_cache > ''");
 
-	//filter those whose rrd files doesn't exist
+	// filter those whose rrd files doesn't exist
 	foreach ($rrds as $item) {
 		$ldi      = $item['local_data_id'];
 		$name     = $item['name_cache'];
@@ -940,7 +934,7 @@ function cleanup_ds_and_graphs() {
 	}
 
 	maint_debug('Processing Graphs');
-	//fetch all local_graph_id's according to filtered rrds
+	// fetch all local_graph_id's according to filtered rrds
 	$lgis = db_fetch_assoc('SELECT DISTINCT gl.id
 		FROM graph_local AS gl
 		INNER JOIN graph_templates_item AS gti

@@ -107,8 +107,8 @@ function save_packager_metadata($hash, $info) {
 }
 
 function check_template_dependencies($export_type, $template_id) {
-	/* FIX ME: This function is not used */
-	//$error_message .= ($error_message != '' ? '<br>':'') . __('Script or Resource File \'%s\' does not exist.  Please repackage after locating and installing this file', $file['file']);
+	// FIX ME: This function is not used
+	// $error_message .= ($error_message != '' ? '<br>':'') . __('Script or Resource File \'%s\' does not exist.  Please repackage after locating and installing this file', $file['file']);
 }
 
 function check_get_author_info() {
@@ -278,7 +278,7 @@ function get_package_contents($export_type, $export_item_id, $include_deps = tru
 	if (!$export_errors) {
 		$files = find_dependent_files($xml_data, true);
 
-		/* search xml files for scripts */
+		// search xml files for scripts
 		if (cacti_sizeof($files)) {
 			foreach ($files as $file) {
 				if (str_contains($file['file'], '.xml')) {
@@ -300,7 +300,7 @@ function get_package_contents($export_type, $export_item_id, $include_deps = tru
 
 			$nfiles = find_dependent_files($xml_data, true);
 
-			/* search xml files for scripts */
+			// search xml files for scripts
 			if (cacti_sizeof($nfiles)) {
 				foreach ($nfiles as $file) {
 					if (str_contains($file['file'], '.xml')) {
@@ -354,7 +354,7 @@ function get_package_contents($export_type, $export_item_id, $include_deps = tru
 		foreach ($queries as $q) {
 			$file   = str_replace('<path_cacti>', CACTI_PATH_BASE, $q['xml_path']);
 			$exists = file_exists($file);
-			$output .= '<div class="formRow"><div class="formColumnLeft nowrap">' . html_escape(basename($file)) . ($exists ? '<i class="fa-solid fa-circle-check deviceUp"></i>' : '<i class="ti ti-cross deviceDown"></i>') . '</div></div>';
+			$output .= '<div class="formRow"><div class="formColumnLeft nowrap">' . htmle(basename($file)) . ($exists ? '<i class="fa-solid fa-circle-check deviceUp"></i>' : '<i class="ti ti-cross deviceDown"></i>') . '</div></div>';
 		}
 
 		$output .= '</div>';
@@ -370,7 +370,7 @@ function get_package_contents($export_type, $export_item_id, $include_deps = tru
 			if (array_search($file, $found, true) === false) {
 				if (!str_contains($file['file'], '/resource/')) {
 					$exists = file_exists($file['file']);
-					$output .= '<div class="formRow"><div class="formColumnLeft nowrap">' . html_escape(basename($file['file'])) . ($exists ? '<i class="fa-solid fa-circle-check deviceUp"></i>' : '<i class="ti ti-cross deviceDown"></i>') . '</div></div>';
+					$output .= '<div class="formRow"><div class="formColumnLeft nowrap">' . htmle(basename($file['file'])) . ($exists ? '<i class="fa-solid fa-circle-check deviceUp"></i>' : '<i class="ti ti-cross deviceDown"></i>') . '</div></div>';
 				}
 
 				$found[] = $file;
@@ -551,23 +551,23 @@ function package_template(&$template, &$info, &$files, &$debug) {
 	$public_key       = get_package_public_key();
 	$my_base          = CACTI_PATH_BASE . '/';
 
-	/* set new timeout and memory settings */
+	// set new timeout and memory settings
 	ini_set('max_execution_time', '0');
 	ini_set('memory_limit', '-1');
 	ini_set('zlib.output_compression', '0');
 
-	/* establish a temp directory */
+	// establish a temp directory
 	if (CACTI_SERVER_OS == 'unix') {
 		$tmpdir = '/tmp/';
 	} else {
 		$tmpdir = getenv('TEMP');
 	}
 
-	/* write the template to disk */
+	// write the template to disk
 	$xmlfile = $tmpdir . '/' . clean_up_name($info['name']) . '.xml';
 	file_put_contents($xmlfile, $template);
 
-	/* create the package xml file */
+	// create the package xml file
 	$xml = "<xml>\n";
 	$xml .= "   <info>\n";
 	$xml .= '     <name>' . $info['name'] . "</name>\n";
@@ -623,7 +623,7 @@ function package_template(&$template, &$info, &$files, &$debug) {
 
 	$debug .= ' Files Specified: ' . count($files) . "\n";
 
-	/* calculate directories */
+	// calculate directories
 	$directories = [];
 
 	if (cacti_sizeof($files)) {
@@ -711,7 +711,7 @@ function package_template(&$template, &$info, &$files, &$debug) {
 	$xml .= '   <publickeyname>' . $info['author'] . "</publickeyname>\n";
 	$xml .= '   <publickey>' . base64_encode($public_key) . "</publickey>\n";
 
-	/* get rid of the temp file */
+	// get rid of the temp file
 	unlink($files['template']['file']);
 
 	$debug .= "NOTE: Signing Plugin using SHA256\n";
@@ -739,7 +739,7 @@ function package_template(&$template, &$info, &$files, &$debug) {
 
 	$xml .= '   <signature>' . $basesig . "</signature>\n</xml>";
 
-	$name = get_item_name(get_request_var('export_type'), get_request_var('export_item_id'));
+	$name = get_item_name(grv('export_type'), grv('export_item_id'));
 
 	$debug .= 'NOTE: Creating compressed template xml "' . clean_up_name($name) . ".xml.gz\"\n";
 

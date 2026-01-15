@@ -2,11 +2,11 @@
 
 error_reporting(0);
 
-# include some cacti files for ease of use
+// include some cacti files for ease of use
 include(__DIR__ . '/../include/global.php');
 include(__DIR__ . '/../lib/snmp.php');
 
-# define all OIDs we need for further processing
+// define all OIDs we need for further processing
 $oids = [
 	'index'  => '.1.3.6.1.4.1.14823.2.3.3.1.1.7.1.1',
 	'wlan'   => '.1.3.6.1.4.1.14823.2.3.3.1.1.7.1.2',
@@ -48,21 +48,21 @@ if (!cacti_sizeof($host)) {
 	exit;
 }
 
-# -------------------------------------------------------------------------
-# main code starts here
-# -------------------------------------------------------------------------
+// -------------------------------------------------------------------------
+// main code starts here
+// -------------------------------------------------------------------------
 
-# -------------------------------------------------------------------------
-# script MUST respond to index queries
-#       the command for this is defined within the XML file as
-#       <arg_index>index</arg_index>
-#       you may replace the string "index" both in the XML and here
-# -------------------------------------------------------------------------
-#       php -q <script> <parms> index
-# will list all indices of the target values
-# e.g. in case of interfaces
-#      it has to respond with the list of interface indices
-# -------------------------------------------------------------------------
+// -------------------------------------------------------------------------
+// script MUST respond to index queries
+//       the command for this is defined within the XML file as
+//       <arg_index>index</arg_index>
+//       you may replace the string "index" both in the XML and here
+// -------------------------------------------------------------------------
+//       php -q <script> <parms> index
+// will list all indices of the target values
+// e.g. in case of interfaces
+//      it has to respond with the list of interface indices
+// -------------------------------------------------------------------------
 if ($cmd == 'index') {
 	$return_arr  = cacti_snmp_walk($host['hostname'],
 		$host['snmp_community'],
