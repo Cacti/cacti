@@ -510,7 +510,7 @@ FILTERED_LOG="$(grep -v \
 	-e "STATS:" \
 	-e "IMPORT Importing XML Data for " \
 	-e "CMDPHP Not Already Set" \
-	-e "ieee.org/out.txt" \
+	-e "ieee.org/oui.txt" \
 	-e "import_oui_database" \
 	-e "PCACHE NOTE" \
 	-e "LMSENSORS WARNING" \
