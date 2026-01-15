@@ -179,7 +179,7 @@ function automation_import() {
 	if ((isset($_SESSION['import_debug_info'])) && (is_array($_SESSION['import_debug_info']))) {
 		html_start_box(__('Import Results'), '60%', false, 3, 'center', '');
 
-		print '<tr class="tableHeader"><th>' . __('Cacti has Imported the following SNMP Options'). '</th></tr>';
+		print '<tr class="tableHeader"><th>' . __('Cacti has Imported the following SNMP Options') . '</th></tr>';
 
 		foreach ($_SESSION['import_debug_info'] as $line) {
 			print '<tr><td>' . $line . '</td></tr>';
@@ -787,18 +787,18 @@ function automation_snmp_edit() {
 				form_alternate_row('line' . $item['id'], true);
 
 				$form_data = "<td><a class='linkEditMain' href='" . html_escape('automation_snmp.php?action=item_edit&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . "'>" . __('Item # %d', $i) . '</a></td>';
-				$form_data .= '<td>' . 	$item['snmp_version'] . '</td>';
-				$form_data .= '<td class="left">' . 	($item['snmp_version'] == 3 ? __('none') : html_escape($item['snmp_community'])) . '</td>';
-				$form_data .= '<td class="right">' . 	$item['snmp_port'] . '</td>';
-				$form_data .= '<td class="right">' . 	$item['snmp_timeout'] . '</td>';
-				$form_data .= '<td class="right">' . 	$item['snmp_retries'] . '</td>';
-				$form_data .= '<td class="right">' . 	$item['max_oids'] . '</td>';
-				$form_data .= '<td>' . 	($item['snmp_version'] == 3 ? html_escape($item['snmp_username']) : __('N/A')) . '</td>';
-				$form_data .= '<td>' . 	(($item['snmp_version'] == 3 && $item['snmp_password'] !== '') ? '*********' : __('N/A')) . '</td>';
-				$form_data .= '<td>' . 	($item['snmp_version'] == 3 ? $item['snmp_auth_protocol'] : __('N/A')) . '</td>';
-				$form_data .= '<td>' . 	($item['snmp_version'] == 3 ? '*********' : __('N/A')) . '</td>';
-				$form_data .= '<td>' . 	($item['snmp_version'] == 3 ? $item['snmp_priv_protocol'] : __('N/A')) . '</td>';
-				$form_data .= '<td>' . 	($item['snmp_version'] == 3 ? html_escape($item['snmp_context']) : __('N/A')) . '</td>';
+				$form_data .= '<td>' . $item['snmp_version'] . '</td>';
+				$form_data .= '<td class="left">' . ($item['snmp_version'] == 3 ? __('none') : html_escape($item['snmp_community'])) . '</td>';
+				$form_data .= '<td class="right">' . $item['snmp_port'] . '</td>';
+				$form_data .= '<td class="right">' . $item['snmp_timeout'] . '</td>';
+				$form_data .= '<td class="right">' . $item['snmp_retries'] . '</td>';
+				$form_data .= '<td class="right">' . $item['max_oids'] . '</td>';
+				$form_data .= '<td>' . ($item['snmp_version'] == 3 ? html_escape($item['snmp_username']) : __('N/A')) . '</td>';
+				$form_data .= '<td>' . (($item['snmp_version'] == 3 && $item['snmp_password'] !== '') ? '*********' : __('N/A')) . '</td>';
+				$form_data .= '<td>' . ($item['snmp_version'] == 3 ? $item['snmp_auth_protocol'] : __('N/A')) . '</td>';
+				$form_data .= '<td>' . ($item['snmp_version'] == 3 ? '*********' : __('N/A')) . '</td>';
+				$form_data .= '<td>' . ($item['snmp_version'] == 3 ? $item['snmp_priv_protocol'] : __('N/A')) . '</td>';
+				$form_data .= '<td>' . ($item['snmp_version'] == 3 ? html_escape($item['snmp_context']) : __('N/A')) . '</td>';
 				$form_data .= '<td class="nowrap right">';
 
 				if (read_config_option('drag_and_drop') == '') {
@@ -809,7 +809,7 @@ function automation_snmp_edit() {
 					}
 
 					if ($i > 1 && $i <= $total_items) {
-						$form_data .= '<a class="pic ti ti-caret-up-filled moveArrow" href="' . html_escape('automation_snmp.php?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $item['snmp_id']) . '" title="' . __esc('Move Up') . '"></a>';
+						$form_data .= '<a class="pic ti ti-caret-up-filled moveArrow" href="' . html_escape('automation_snmp.php?action=item_moveup&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . '" title="' . __esc('Move Up') . '"></a>';
 					} else {
 						$form_data .= '<span class="moveArrowNone"></span>';
 					}

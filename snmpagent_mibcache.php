@@ -32,8 +32,8 @@ set_time_limit(0);
 
 chdir(__DIR__);
 
-$path_mibcache      = CACTI_PATH_CACHE. '/mibcache/mibcache.tmp';
-$path_mibcache_lock = CACTI_PATH_CACHE. '/mibcache/mibcache.lock';
+$path_mibcache      = CACTI_PATH_CACHE . '/mibcache/mibcache.tmp';
+$path_mibcache_lock = CACTI_PATH_CACHE . '/mibcache/mibcache.lock';
 
 /* remove temporary cache */
 if (file_exists($path_mibcache) && is_writable($path_mibcache)) {

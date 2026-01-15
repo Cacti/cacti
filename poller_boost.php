@@ -565,7 +565,7 @@ function boost_time_to_run($forcerun, $current_time, $last_run_time, $next_run_t
 		}
 
 		boost_debug('Last Runtime was ' . date('Y-m-d H:i:s', $last_run_time) . " ($last_run_time).");
-		boost_debug('Next Runtime is '  . date('Y-m-d H:i:s', $next_run_time) . " ($next_run_time).");
+		boost_debug('Next Runtime is ' . date('Y-m-d H:i:s', $next_run_time) . " ($next_run_time).");
 
 		/* determine the next start time */
 		if (empty($last_run_time)) {

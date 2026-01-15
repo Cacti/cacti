@@ -131,6 +131,7 @@ $config
             'yield_from'
         ]
     ],
+    'concat_space'                      => ['spacing' => 'one'],
     'switch_case_semicolon_to_colon'    => true,
     'switch_case_space'                 => true,
     'switch_continue_to_break'          => true,
@@ -199,7 +200,8 @@ $config
     'single_quote'                      => true,
     'string_line_ending'                => true,
     'strict_param'                      => true,
-    'whitespace_after_comma_in_array'   => true
+    'whitespace_after_comma_in_array'   => true,
+    'single_line_comment_spacing'       => true
     ))
     ->setFinder($finder);
 

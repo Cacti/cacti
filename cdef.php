@@ -617,7 +617,7 @@ function cdef_edit() {
 					}
 
 					if ($i > 1 && $i <= $total_items) {
-						$actions .= '<a class="pic ti ti-caret-up-filled moveArrow" href="' . html_escape('cdef.php?action=item_moveup&id=' . $cdef_item['id'] .	'&cdef_id=' . $cdef_item['cdef_id']) . '" title="' . __esc('Move Up') . '"></a>';
+						$actions .= '<a class="pic ti ti-caret-up-filled moveArrow" href="' . html_escape('cdef.php?action=item_moveup&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef_item['cdef_id']) . '" title="' . __esc('Move Up') . '"></a>';
 					} else {
 						$actions .= '<span class="moveArrowNone"></span>';
 					}

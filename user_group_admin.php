@@ -252,7 +252,7 @@ function update_policies() {
 		}
 	}
 
-	header('Location: user_group_admin.php?action=edit&tab=' .  get_nfilter_request_var('tab') . '&id=' . get_nfilter_request_var('id'));
+	header('Location: user_group_admin.php?action=edit&tab=' . get_nfilter_request_var('tab') . '&id=' . get_nfilter_request_var('id'));
 
 	exit;
 }
@@ -578,7 +578,7 @@ function form_save() {
 	}
 
 	/* redirect to the appropriate page */
-	header('Location: user_group_admin.php?action=edit&tab=general&id=' .  get_nfilter_request_var('id'));
+	header('Location: user_group_admin.php?action=edit&tab=general&id=' . get_nfilter_request_var('id'));
 }
 
 function perm_remove() {

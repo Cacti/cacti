@@ -606,7 +606,7 @@ function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp 
 					$transaction = decrypt($transaction);
 
 					if ($transaction === false) {
-						cacti_log('CACTI2RRDP ERROR: Proxy message decryption failed: ###'. $packet . '###', $log_to_stdout, $logopt, POLLER_VERBOSITY_LOW);
+						cacti_log('CACTI2RRDP ERROR: Proxy message decryption failed: ###' . $packet . '###', $log_to_stdout, $logopt, POLLER_VERBOSITY_LOW);
 
 						break 2;
 					}
@@ -745,7 +745,7 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = n
 	}
 
 	/* create the "--step" line */
-	$create_ds = RRD_NL . '--start 0 --step '. $rras[0]['rrd_step'] . ' ' . RRD_NL;
+	$create_ds = RRD_NL . '--start 0 --step ' . $rras[0]['rrd_step'] . ' ' . RRD_NL;
 
 	/**
 	 * We have to check for Non-Templated Data Source first as they may not include
@@ -2911,7 +2911,7 @@ function rrdtool_function_theme_font_options(&$graph_data_array) {
 		}
 
 		if (isset(${$themeborder}) && cacti_version_compare($rrdversion, '1.4', '>=')) {
-			$graph_opts .= '--border ' .  ${$themeborder} . RRD_NL;
+			$graph_opts .= '--border ' . ${$themeborder} . RRD_NL;
 		}
 
 		if (isset($rrdfonts)) {
@@ -4542,18 +4542,18 @@ function gradient($vname = false, $start_color = '#0000a0', $end_color = '#f0f0f
 	$diff_g       = $g2 - $g1;
 	$diff_b       = $b2 - $b1;
 	$spline       =  '';
-	$spline_vname = 'var'  . substr(sha1(random_int(0, mt_getrandmax())), 1, 4);
+	$spline_vname = 'var' . substr(sha1(random_int(0, mt_getrandmax())), 1, 4);
 	$vnamet       = $vname . substr(sha1(random_int(0, mt_getrandmax())), 1, 4);
 
 	if (preg_match('/^([0-9]{1,3})%$/', $lower, $matches)) {
 		$lower   = $matches[1];
-		$spline .= sprintf('CDEF:%sminimum=%s,100,/,%d,* '.RRD_NL, $vnamet, $vname, $lower);
+		$spline .= sprintf('CDEF:%sminimum=%s,100,/,%d,* ' . RRD_NL, $vnamet, $vname, $lower);
 	} elseif (preg_match('/^([0-9]+)$/', $lower, $matches)) {
 		$lower   = $matches[1];
-		$spline .= sprintf('CDEF:%sminimum=%s,%d,- '.RRD_NL, $vnamet, $vname, $lower);
+		$spline .= sprintf('CDEF:%sminimum=%s,%d,- ' . RRD_NL, $vnamet, $vname, $lower);
 	} else {
 		$lower   = 0;
-		$spline .= sprintf('CDEF:%sminimum=%s,%s,- '.RRD_NL, $vnamet, $vname, $vname);
+		$spline .= sprintf('CDEF:%sminimum=%s,%s,- ' . RRD_NL, $vnamet, $vname, $vname);
 	}
 
 	for ($i = $steps; $i > 0; $i--) {
@@ -4638,7 +4638,7 @@ function colourBrightness($hex, $percent) {
 		$hex .= $hexDigit;
 	}
 
-	return $hash.$hex;
+	return $hash . $hex;
 }
 
 /**
@@ -4777,7 +4777,7 @@ function add_business_hours($data, &$xport_meta) {
 				}
 
 				if (date('N', $current_start_bh_time) > 5 && read_config_option('business_hours_hide_weekends') == '') {
-					$data['graph_defs'] .= 'AREA:dslimit' . $day . '#'. $bh_color . RRD_NL;
+					$data['graph_defs'] .= 'AREA:dslimit' . $day . '#' . $bh_color . RRD_NL;
 				}
 
 				if (isset($xport_meta['ignoreItems'])) {

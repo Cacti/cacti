@@ -119,15 +119,15 @@ if (isset_request_var('format') && get_nfilter_request_var('format') == 'table')
 
 if (is_array($xport_array) && isset($xport_array['meta']['start'])) {
 	if (!$html) {
-		$output  = '"' . __('Title') . '","'          . $xport_array['meta']['title_cache']    . '"' . "\n";
+		$output  = '"' . __('Title') . '","' . $xport_array['meta']['title_cache'] . '"' . "\n";
 		$output .= '"' . __('Vertical Label') . '","' . $xport_array['meta']['vertical_label'] . '"' . "\n";
 
-		$output .= '"' . __('Start Date') . '","'     . date('Y-m-d H:i:s', $xport_array['meta']['start']) . '"' . "\n";
-		$output .= '"' . __('End Date') . '","'       . date('Y-m-d H:i:s', ($xport_array['meta']['end'] == $xport_array['meta']['start']) ? $xport_array['meta']['start'] + $xport_array['meta']['step'] * ($xport_array['meta']['rows'] - 1) : $xport_array['meta']['end']) . '"' . "\n";
-		$output .= '"' . __('Step') . '","'           . $xport_array['meta']['step']                       . '"' . "\n";
-		$output .= '"' . __('Total Rows') . '","'     . $xport_array['meta']['rows']                       . '"' . "\n";
-		$output .= '"' . __('Graph ID') . '","'       . $xport_array['meta']['local_graph_id']             . '"' . "\n";
-		$output .= '"' . __('Host ID') . '","'        . $xport_array['meta']['host_id']                    . '"' . "\n";
+		$output .= '"' . __('Start Date') . '","' . date('Y-m-d H:i:s', $xport_array['meta']['start']) . '"' . "\n";
+		$output .= '"' . __('End Date') . '","' . date('Y-m-d H:i:s', ($xport_array['meta']['end'] == $xport_array['meta']['start']) ? $xport_array['meta']['start'] + $xport_array['meta']['step'] * ($xport_array['meta']['rows'] - 1) : $xport_array['meta']['end']) . '"' . "\n";
+		$output .= '"' . __('Step') . '","' . $xport_array['meta']['step'] . '"' . "\n";
+		$output .= '"' . __('Total Rows') . '","' . $xport_array['meta']['rows'] . '"' . "\n";
+		$output .= '"' . __('Graph ID') . '","' . $xport_array['meta']['local_graph_id'] . '"' . "\n";
+		$output .= '"' . __('Host ID') . '","' . $xport_array['meta']['host_id'] . '"' . "\n";
 
 		if (isset($xport_meta['NthPercentile'])) {
 			foreach ($xport_meta['NthPercentile'] as $item) {
@@ -206,7 +206,7 @@ if (is_array($xport_array) && isset($xport_array['meta']['start'])) {
 		print "<tr class='odd'>";
 		print '<td style="width:25%">' . __('Graph ID') . '</td>';
 		print '<td style="width:25%">' . $xport_array['meta']['local_graph_id'] . '</td>';
-		print '<td style="width:25%">'  . __('Host ID') . '</td>';
+		print '<td style="width:25%">' . __('Host ID') . '</td>';
 		print '<td style="width:25%">' . $xport_array['meta']['host_id'] . '</td>';
 		print '</tr>';
 
@@ -288,14 +288,14 @@ if (is_array($xport_array) && isset($xport_array['meta']['start'])) {
 				print "<tr><td class='left'>" . date('Y-m-d H:i:s', (isset($row['timestamp']) ? $row['timestamp'] : $xport_array['meta']['start'] + $j * $xport_array['meta']['step'])) . '</td>';
 
 				for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
-					$row_data = floatval($row['col'. $i]);
+					$row_data = floatval($row['col' . $i]);
 
 					if ($row_data > 1) {
 						$row_data = trim(number_format_i18n(round($row_data, 3), 2, $graph_info['base_value']));
 					} elseif ($row_data == 0) {
 						$row_data = '-';
 
-						if (!is_numeric($row['col'.$i])) {
+						if (!is_numeric($row['col' . $i])) {
 							$row_data .= '(unexpected: ' . $row['col' . $i] . ')';
 						}
 					} elseif (is_numeric($row_data)) {

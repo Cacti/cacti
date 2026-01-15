@@ -246,7 +246,7 @@ function form_actions() {
 
 			$pkg_file_list .= '<tr>' .
 				'<td style="width:50%">' . html_escape($id['package']) . '</td>' .
-				'<td style="width:50%">' . html_escape($id['pfile'])   . '</td>' .
+				'<td style="width:50%">' . html_escape($id['pfile']) . '</td>' .
 			'</td>';
 
 			$pkg_file_array[] = $id;
@@ -275,10 +275,10 @@ function form_actions() {
 			}
 
 			$pkg_import_list .= '<tr>' .
-				'<td style="width:40%">' . $package                 . '</td>' .
+				'<td style="width:40%">' . $package . '</td>' .
 				'<td style="width:20%">' . html_escape($id['type']) . '</td>' .
 				'<td style="width:20%">' . html_escape($id['name']) . '</td>' .
-				'<td style="width:20%">' . $status                  . '</td>' .
+				'<td style="width:20%">' . $status . '</td>' .
 			'</td>';
 
 			$pkg_import_array[] = $id;
@@ -335,7 +335,7 @@ function form_actions() {
 							<table class='cactiTable itemlist'>
 								<tr class='tableHeader'>
 									<th>" . __('Package') . '</th>
-									<th>' . __('File')     . "</th>
+									<th>' . __('File') . "</th>
 								</tr>
 								$pkg_file_list
 							</table>
@@ -352,9 +352,9 @@ function form_actions() {
 							<table class='cactiTable itemlist'>
 								<tr class='tableHeader'>
 									<th>" . __('Package') . '</th>
-									<th>' . __('Type')     . '</th>
-									<th>' . __('Name')     . '</th>
-									<th>' . __('Status')   . "</th>
+									<th>' . __('Type') . '</th>
+									<th>' . __('Name') . '</th>
+									<th>' . __('Status') . "</th>
 								</tr>
 								$pkg_import_list
 							</table>

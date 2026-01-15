@@ -35,8 +35,8 @@ chdir(__DIR__);
 $last_time = time() - 30;
 $cache     = [];
 
-$path_mibcache      = CACTI_PATH_CACHE. '/mibcache/mibcache.tmp';
-$path_mibcache_lock = CACTI_PATH_CACHE. '/mibcache/mibcache.lock';
+$path_mibcache      = CACTI_PATH_CACHE . '/mibcache/mibcache.tmp';
+$path_mibcache_lock = CACTI_PATH_CACHE . '/mibcache/mibcache.lock';
 
 /* check mib cache table status */
 $mibcache_changed = db_fetch_cell_prepared("SHOW TABLE STATUS

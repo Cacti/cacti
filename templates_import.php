@@ -371,7 +371,7 @@ function display_template_data(&$templates) {
 function bad_tmp() {
 	html_start_box(__('Import Template'), '60%', false, 3, 'center', '');
 	form_alternate_row();
-	print "<td class='textarea'><p><strong>" . __('ERROR') . ':</strong> ' .__('Failed to access temporary folder, import functionality is disabled') . "</p></td></tr>\n";
+	print "<td class='textarea'><p><strong>" . __('ERROR') . ':</strong> ' . __('Failed to access temporary folder, import functionality is disabled') . "</p></td></tr>\n";
 	html_end_box();
 }
 

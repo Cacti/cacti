@@ -124,7 +124,7 @@ function clog_purge_logfile(string $action = 'purge') : void {
 	}
 
 	$purgefile  = $logpath . '/' . $filename;
-	$logfile    = $logpath . '/'. $logname;
+	$logfile    = $logpath . '/' . $logname;
 	$log_action = read_config_option('log_action');
 
 	/* get base filenames for rotate assessment */

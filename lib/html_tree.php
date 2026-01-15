@@ -463,7 +463,7 @@ function get_tree_path() {
 							break;
 						case 'dqi':
 							$nnodes[] = $nstack . '-dqi-' . $parts[1] . '-' . $parts[2];
-							$nnodes[] = $nstack . '-dq-'  . $parts[1];
+							$nnodes[] = $nstack . '-dq-' . $parts[1];
 
 							break;
 						default:
@@ -742,7 +742,7 @@ function create_host_branch($leaf, $site_id = -1, $ht = -1) {
 		$class = '';
 	}
 
-	$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . ($site_id > 0 ? '-site-' . $site_id : '') . ($ht > 0 ? '-ht-' . $ht : '') . '-host-' . $leaf['host_id'] . '-uid-' . $unique_id . "' data-jstree='{ \"type\" : \"device\" }'><a class='$class' href=\"" . html_escape(CACTI_PATH_URL . 'graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&host_id=' . $leaf['host_id'] . '&site_id=' . $site_id . '&host_template_id=' . $ht .'&hgd=') . '">' . html_escape(strip_domain($leaf['hostname'])) . "</a>\n";
+	$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . ($site_id > 0 ? '-site-' . $site_id : '') . ($ht > 0 ? '-ht-' . $ht : '') . '-host-' . $leaf['host_id'] . '-uid-' . $unique_id . "' data-jstree='{ \"type\" : \"device\" }'><a class='$class' href=\"" . html_escape(CACTI_PATH_URL . 'graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&host_id=' . $leaf['host_id'] . '&site_id=' . $site_id . '&host_template_id=' . $ht . '&hgd=') . '">' . html_escape(strip_domain($leaf['hostname'])) . "</a>\n";
 
 	if (read_user_setting('expand_hosts') == 'on') {
 		if ($leaf['host_grouping_type'] == HOST_GROUPING_DATA_QUERY_INDEX) {
@@ -934,7 +934,7 @@ function create_dhtml_tree() {
 
 	if (cacti_sizeof($tree_list)) {
 		foreach ($tree_list as $tree) {
-			$dhtml_tree['tree:'.$tree['id']] = true;
+			$dhtml_tree['tree:' . $tree['id']] = true;
 		}
 	}
 
@@ -1271,7 +1271,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			WHERE id = ?',
 			[$host_group_data_array[1]]);
 
-		$host_group_data_name = '<i class="bold">' . __('Graph Template:'). '</i> ' . html_escape($name);
+		$host_group_data_name = '<i class="bold">' . __('Graph Template:') . '</i> ' . html_escape($name);
 		$graph_template_id    = $host_group_data_array[1];
 	} elseif ($host_group_data_array[0] == 'dq') {
 		$name = db_fetch_cell_prepared('SELECT name
@@ -1437,7 +1437,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		if (isset_request_var('graph_template_id') && get_request_var('graph_template_id') != '' && get_request_var('graph_template_id') != -1) {
 			$graph_templates = html_transform_graph_template_ids(get_request_var('graph_template_id'));
 
-			$sql_where .= ($sql_where != '' ? ' AND ' : '') . ' (gl.graph_template_id IN (' . $graph_templates. '))';
+			$sql_where .= ($sql_where != '' ? ' AND ' : '') . ' (gl.graph_template_id IN (' . $graph_templates . '))';
 		}
 
 		$graph_list = get_allowed_tree_header_graphs($tree_id, $leaf_id, $sql_where);

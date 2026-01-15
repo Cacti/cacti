@@ -340,7 +340,7 @@ function update_reindex_cache($host_id, $data_query_id) {
 
 					$session->close();
 
-					$recache_stack[] = "('$host_id', '$data_query_id'," .  POLLER_ACTION_SNMP . ", '<', '$assert_value', '$oid_uptime', 1)";
+					$recache_stack[] = "('$host_id', '$data_query_id'," . POLLER_ACTION_SNMP . ", '<', '$assert_value', '$oid_uptime', 1)";
 				}
 
 				break;
@@ -370,9 +370,9 @@ function update_reindex_cache($host_id, $data_query_id) {
 				switch ($data_query_type) {
 					case DATA_INPUT_TYPE_SNMP_QUERY:
 						if (isset($data_query_xml['oid_num_indexes'])) { /* we have a specific OID for counting indexes */
-							$recache_stack[] = "($host_id, $data_query_id," .  POLLER_ACTION_SNMP . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr($data_query_xml['oid_num_indexes']) . ', 1)';
+							$recache_stack[] = "($host_id, $data_query_id," . POLLER_ACTION_SNMP . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr($data_query_xml['oid_num_indexes']) . ', 1)';
 						} else { /* count all indexes found */
-							$recache_stack[] = "($host_id, $data_query_id, " .  POLLER_ACTION_SNMP_COUNT . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr($data_query_xml['oid_index']) . ', 1)';
+							$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SNMP_COUNT . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr($data_query_xml['oid_index']) . ', 1)';
 						}
 
 						break;
@@ -1088,7 +1088,7 @@ function cache_in_path($path, $type, $recursive = true) {
 			$last_md5 = db_fetch_cell_prepared('SELECT md5sum FROM poller_resource_cache WHERE path = ?', [$spath]);
 
 			if (str_starts_with($spath, 'plugins/')) {
-				$ppath = CACTI_PATH_BASE . '/'. $spath;
+				$ppath = CACTI_PATH_BASE . '/' . $spath;
 			} else {
 				$ppath = $spath;
 			}
@@ -1367,7 +1367,7 @@ function md5sum_path($path, $recursive = true) {
 			}
 
 			if (is_dir($path . DIRECTORY_SEPARATOR . $entry) && $recursive) {
-				$filemd5s[] = md5sum_path($path . DIRECTORY_SEPARATOR. $entry, $recursive);
+				$filemd5s[] = md5sum_path($path . DIRECTORY_SEPARATOR . $entry, $recursive);
 			} elseif (is_dir($path . DIRECTORY_SEPARATOR . $entry)) {
 				// Ignore directories who are not recursive
 			} elseif (is_readable($path . DIRECTORY_SEPARATOR . $entry)) {

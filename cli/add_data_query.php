@@ -223,8 +223,8 @@ if (cacti_sizeof($parms)) {
 		db_execute('REPLACE INTO host_snmp_query
 			(host_id,snmp_query_id,reindex_method)
 			VALUES (' .
-				$host_id        . ',' .
-				$data_query_id  . ',' .
+				$host_id . ',' .
+				$data_query_id . ',' .
 				$reindex_method . ')');
 
 		/* recache snmp data */

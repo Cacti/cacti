@@ -120,10 +120,10 @@ class Net_Ping {
 		$this->sqn = $sqn;
 
 		// now lets build the actual icmp packet
-		$this->request = $type.$code.$chksm.$id.$sqn.$data;
+		$this->request = $type . $code . $chksm . $id . $sqn . $data;
 		$chksm         = $this->get_checksum($this->request);
 
-		$this->request     = $type.$code.$chksm.$id.$sqn.$data;
+		$this->request     = $type . $code . $chksm . $id . $sqn . $data;
 		$this->request_len = strlen($this->request);
 	}
 

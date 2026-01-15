@@ -141,7 +141,7 @@ if ($execute) {
 // Get all graphs for supplied graph template
 $graph = db_fetch_assoc('SELECT *
 	FROM graph_local
-	WHERE ' . (!isset($host_id) ? '' : 'host_id='.$host_id.' AND ') . ' graph_template_id=' . $graph_template_id . '');
+	WHERE ' . (!isset($host_id) ? '' : 'host_id=' . $host_id . ' AND ') . ' graph_template_id=' . $graph_template_id . '');
 
 if (cacti_sizeof($graph)) {
 	if (!$show_sql) {

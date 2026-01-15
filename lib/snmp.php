@@ -198,8 +198,8 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $auth_user = '', 
 			' -v ' . $version .
 			' -t ' . $timeout_s .
 			' -r ' . $retries .
-			' '    . cacti_escapeshellarg($hostname) . ':' . $port .
-			' '    . cacti_escapeshellarg($oid);
+			' ' . cacti_escapeshellarg($hostname) . ':' . $port .
+			' ' . cacti_escapeshellarg($oid);
 
 		if (isset($_SESSION)) {
 			debug_log_insert('data_query', __esc('SNMP Command is: %s', $command));
@@ -297,8 +297,8 @@ function cacti_snmp_get_raw($hostname, $community, $oid, $version, $auth_user = 
 			' -v ' . $version .
 			' -t ' . $timeout_s .
 			' -r ' . $retries .
-			' '    . cacti_escapeshellarg($hostname) . ':' . $port .
-			' '    . cacti_escapeshellarg($oid);
+			' ' . cacti_escapeshellarg($hostname) . ':' . $port .
+			' ' . cacti_escapeshellarg($oid);
 
 		if (isset($_SESSION)) {
 			debug_log_insert('data_query', __esc('SNMP Command is: %s', $command));
@@ -391,8 +391,8 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $auth_user = 
 			' -v ' . $version .
 			' -t ' . $timeout_s .
 			' -r ' . $retries .
-			' '    . cacti_escapeshellarg($hostname) . ':' . $port .
-			' '    . cacti_escapeshellarg($oid);
+			' ' . cacti_escapeshellarg($hostname) . ':' . $port .
+			' ' . cacti_escapeshellarg($oid);
 
 		if (isset($_SESSION)) {
 			debug_log_insert('data_query', __esc('SNMP Command is: %s', $command));
@@ -451,10 +451,10 @@ function cacti_get_snmpv3_auth($auth_proto, $auth_user, $auth_pass, $priv_proto,
 
 	return trim('-u ' . snmp_escape_string($auth_user) .
 		' -l ' . snmp_escape_string($sec_level) .
-		' '    . $sec_details .
-		' '    . $priv_pass .
-		' '    . $context .
-		' '    . $engineid);
+		' ' . $sec_details .
+		' ' . $priv_pass .
+		' ' . $context .
+		' ' . $engineid);
 }
 
 function cacti_snmp_session_walk($session, $oid, $dummy = false, $max_repetitions = null,
@@ -724,12 +724,12 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 
 		if (file_exists($path_snmpbulkwalk) && ($version > 1) && ($bulk_walk_size > 1)) {
 			$command = cacti_escapeshellcmd($path_snmpbulkwalk) .
-				' -O QnU'  . ($value_output_format == SNMP_STRING_OUTPUT_HEX ? 'x ' : ' ') . $snmp_auth .
-				' -v '     . $version .
-				' -t '     . $timeout_s .
-				' -r '     . $retries .
-				' -Cr'     . $bulk_walk_size .
-				' '        . $oidCheck . ' ' .
+				' -O QnU' . ($value_output_format == SNMP_STRING_OUTPUT_HEX ? 'x ' : ' ') . $snmp_auth .
+				' -v ' . $version .
+				' -t ' . $timeout_s .
+				' -r ' . $retries .
+				' -Cr' . $bulk_walk_size .
+				' ' . $oidCheck . ' ' .
 				cacti_escapeshellarg($hostname) . ':' . $port . ' ' .
 				cacti_escapeshellarg($oid);
 
@@ -741,12 +741,12 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 		} else {
 			$command = cacti_escapeshellcmd(read_config_option('path_snmpwalk')) .
 				' -O QnU' . ($value_output_format == SNMP_STRING_OUTPUT_HEX ? 'x ' : ' ') . $snmp_auth .
-				' -v '     . $version .
-				' -t '     . $timeout_s .
-				' -r '     . $retries .
-				' '        . $oidCheck . ' ' .
-				' '        . cacti_escapeshellarg($hostname) . ':' . $port .
-				' '        . cacti_escapeshellarg($oid);
+				' -v ' . $version .
+				' -t ' . $timeout_s .
+				' -r ' . $retries .
+				' ' . $oidCheck . ' ' .
+				' ' . cacti_escapeshellarg($hostname) . ':' . $port .
+				' ' . cacti_escapeshellarg($oid);
 
 			if (isset($_SESSION)) {
 				debug_log_insert('data_query', __esc('SNMP Command is: %s', $command));

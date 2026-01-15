@@ -266,7 +266,7 @@ while (1) {
 				continue;
 			}
 
-			cacti_log("DEBUG: PID[$pid] CTR[$ctr] INC: '". basename($include_file) .
+			cacti_log("DEBUG: PID[$pid] CTR[$ctr] INC: '" . basename($include_file) .
 				"' FUNC: '$function' PARMS: '" . implode('\', \'',$parameter_array) .
 				"'", false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 
@@ -314,7 +314,7 @@ while (1) {
 
 				$ctr++;
 			} else {
-				cacti_log("WARNING: Function does not exist  INC: '". basename($include_file) . "' FUNC: '" .$function . "' PARMS: '" . $parameters . "'", false, 'PHPSVR');
+				cacti_log("WARNING: Function does not exist  INC: '" . basename($include_file) . "' FUNC: '" . $function . "' PARMS: '" . $parameters . "'", false, 'PHPSVR');
 				fputs(STDOUT, "U\n");
 				fflush(STDOUT);
 			}

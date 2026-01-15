@@ -470,10 +470,10 @@ function discoverDevices($network_id, $thread) {
 		if (cacti_sizeof($device) && isset($device['ip_address'])) {
 			$count++;
 
-			cacti_log(automation_get_pid() . ' NOTE: Found device IP address \'' . $device['ip_address'] .'\' to check', false, 'AUTOM8', POLLER_VERBOSITY_MEDIUM);
+			cacti_log(automation_get_pid() . ' NOTE: Found device IP address \'' . $device['ip_address'] . '\' to check', false, 'AUTOM8', POLLER_VERBOSITY_MEDIUM);
 
 			if (!filter_var($device['ip_address'], FILTER_VALIDATE_IP)) {
-				cacti_log(automation_get_pid() . ' WARNING: IP address \'' . $device['ip_address'] .'\' is not a valid IP address.', false, 'AUTOM8');
+				cacti_log(automation_get_pid() . ' WARNING: IP address \'' . $device['ip_address'] . '\' is not a valid IP address.', false, 'AUTOM8');
 
 				markIPDone($device['ip_address'], $network_id);
 
@@ -858,25 +858,25 @@ function discoverDevices($network_id, $thread) {
 							// if the devices template is not discovered, add to found table
 							db_execute('REPLACE INTO automation_devices
 								(network_id, host_id, hostname, ip, snmp_community, snmp_version, snmp_port, snmp_username, snmp_password, snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context, sysName, sysLocation, sysContact, sysDescr, sysUptime, os, snmp, up, time) VALUES ('
-								. $network_id                              . ', '
-								. $host_id                                 . ', '
-								. db_qstr($device['dnsname'])              . ', '
-								. db_qstr($device['ip_address'])           . ', '
-								. db_qstr($device['snmp_community'])       . ', '
-								. db_qstr($device['snmp_version'])         . ', '
-								. db_qstr($device['snmp_port'])            . ', '
-								. db_qstr($device['snmp_username'])        . ', '
-								. db_qstr($device['snmp_password'])        . ', '
-								. db_qstr($device['snmp_auth_protocol'])   . ', '
+								. $network_id . ', '
+								. $host_id . ', '
+								. db_qstr($device['dnsname']) . ', '
+								. db_qstr($device['ip_address']) . ', '
+								. db_qstr($device['snmp_community']) . ', '
+								. db_qstr($device['snmp_version']) . ', '
+								. db_qstr($device['snmp_port']) . ', '
+								. db_qstr($device['snmp_username']) . ', '
+								. db_qstr($device['snmp_password']) . ', '
+								. db_qstr($device['snmp_auth_protocol']) . ', '
 								. db_qstr($device['snmp_priv_passphrase']) . ', '
-								. db_qstr($device['snmp_priv_protocol'])   . ', '
-								. db_qstr($device['snmp_context'])         . ', '
-								. db_qstr($device['snmp_sysName'])         . ', '
-								. db_qstr($device['snmp_sysLocation'])     . ', '
-								. db_qstr($device['snmp_sysContact'])      . ', '
-								. db_qstr($device['snmp_sysDescr'])        . ', '
-								. db_qstr($device['snmp_sysUptime'])       . ', '
-								. db_qstr($device['os'])                   . ', '
+								. db_qstr($device['snmp_priv_protocol']) . ', '
+								. db_qstr($device['snmp_context']) . ', '
+								. db_qstr($device['snmp_sysName']) . ', '
+								. db_qstr($device['snmp_sysLocation']) . ', '
+								. db_qstr($device['snmp_sysContact']) . ', '
+								. db_qstr($device['snmp_sysDescr']) . ', '
+								. db_qstr($device['snmp_sysUptime']) . ', '
+								. db_qstr($device['os']) . ', '
 								. '1, 1,' . time() . ')');
 
 							markIPDone($device['ip_address'], $network_id);
@@ -884,23 +884,23 @@ function discoverDevices($network_id, $thread) {
 					} elseif ($result) {
 						db_execute('REPLACE INTO automation_devices
 							(network_id, hostname, ip, snmp_community, snmp_version, snmp_port, snmp_username, snmp_password, snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context, sysName, sysLocation, sysContact, sysDescr, sysUptime, os, snmp, up, time) VALUES ('
-							. $network_id                              . ', '
-							. db_qstr($device['dnsname'])              . ', '
-							. db_qstr($device['ip_address'])           . ', '
-							. db_qstr($device['snmp_community'])       . ', '
-							. db_qstr($device['snmp_version'])         . ', '
-							. db_qstr($device['snmp_port'])            . ', '
-							. db_qstr($device['snmp_username'])        . ', '
-							. db_qstr($device['snmp_password'])        . ', '
-							. db_qstr($device['snmp_auth_protocol'])   . ', '
+							. $network_id . ', '
+							. db_qstr($device['dnsname']) . ', '
+							. db_qstr($device['ip_address']) . ', '
+							. db_qstr($device['snmp_community']) . ', '
+							. db_qstr($device['snmp_version']) . ', '
+							. db_qstr($device['snmp_port']) . ', '
+							. db_qstr($device['snmp_username']) . ', '
+							. db_qstr($device['snmp_password']) . ', '
+							. db_qstr($device['snmp_auth_protocol']) . ', '
 							. db_qstr($device['snmp_priv_passphrase']) . ', '
-							. db_qstr($device['snmp_priv_protocol'])   . ', '
-							. db_qstr($device['snmp_context'])         . ', '
-							. db_qstr($device['snmp_sysName'])         . ', '
-							. db_qstr($device['snmp_sysLocation'])     . ', '
-							. db_qstr($device['snmp_sysContact'])      . ', '
-							. db_qstr($device['snmp_sysDescr'])        . ', '
-							. db_qstr($device['snmp_sysUptime'])       . ', '
+							. db_qstr($device['snmp_priv_protocol']) . ', '
+							. db_qstr($device['snmp_context']) . ', '
+							. db_qstr($device['snmp_sysName']) . ', '
+							. db_qstr($device['snmp_sysLocation']) . ', '
+							. db_qstr($device['snmp_sysContact']) . ', '
+							. db_qstr($device['snmp_sysDescr']) . ', '
+							. db_qstr($device['snmp_sysUptime']) . ', '
 							. '"", 0, 1,' . time() . ')');
 
 						automation_debug(', Alive no SNMP!');
@@ -941,7 +941,7 @@ function discoverDevices($network_id, $thread) {
 		}
 	}
 
-	cacti_log(automation_get_pid() . ' Network ' . $network['name'] . " Thread $thread Finished, " . $stats['scanned'] . ' IPs Scanned, ' . $stats['ping'] . ' IPs Responded to Ping, ' . $stats['snmp'] . ' Responded to SNMP, ' . $stats['added'] . ' Device Added, ' . $count_graph .  ' Graphs Added to Cacti', true, 'AUTOM8');
+	cacti_log(automation_get_pid() . ' Network ' . $network['name'] . " Thread $thread Finished, " . $stats['scanned'] . ' IPs Scanned, ' . $stats['ping'] . ' IPs Responded to Ping, ' . $stats['snmp'] . ' Responded to SNMP, ' . $stats['added'] . ' Device Added, ' . $count_graph . ' Graphs Added to Cacti', true, 'AUTOM8');
 
 	return true;
 }
@@ -1184,7 +1184,7 @@ function reportNetworkStatus($network_id, $old_devices) {
 			$subject = 'Discovery of ' . $network['name'] . ' (' . $network['subnet_range'] . ') - ' . $status;
 			$output  = '<h1>Discovery of ' . $network['name'] . '</h1><hr><br>' .
 				'<h2>Summary</h2><table>' .
-				'<tr><td>Network:</td><td>' . $network['subnet_range'] . '</td></tr>'.
+				'<tr><td>Network:</td><td>' . $network['subnet_range'] . '</td></tr>' .
 				'<tr><td>Started:</td><td>' . $network['last_started'] . '</td></tr>' .
 				'<tr><td>Duration:</td><td>' . intval($network['last_runtime']) . '</td></tr>' .
 				'<tr><td>Existing:</td><td>' . $count_exist . ' devices</td></tr>' .

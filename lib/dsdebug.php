@@ -98,8 +98,8 @@ function dsdebug_error_handler($errno, $errmsg, $filename, $linenum, $vars = [])
 		}
 
 		/* create an error string for the log */
-		$err = "ERRNO:'"  . $errno   . "' TYPE:'"    . $errortype[$errno] .
-			"' MESSAGE:'" . $errmsg  . "' IN FILE:'" . $filename .
+		$err = "ERRNO:'" . $errno . "' TYPE:'" . $errortype[$errno] .
+			"' MESSAGE:'" . $errmsg . "' IN FILE:'" . $filename .
 			"' LINE NO:'" . $linenum . "'";
 
 		/* let's ignore some lesser issues */

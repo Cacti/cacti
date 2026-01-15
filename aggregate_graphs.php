@@ -572,7 +572,7 @@ function item_edit() {
 			}
 
 			# t_<field_name> column in aggregate table must be "on" to override
-			if (array_key_exists('t_'.$field_name, $item_overrides) && $item_overrides['t_'.$field_name] == 'on') {
+			if (array_key_exists('t_' . $field_name, $item_overrides) && $item_overrides['t_' . $field_name] == 'on') {
 				$template_item[$field_name] = $item_overrides[$field_name];
 			}
 		}
@@ -590,7 +590,7 @@ function item_edit() {
 			$form_array[$field_name]['sub_checkbox']  = [
 				'name'          => 't_' . $field_name,
 				'friendly_name' => __esc('Override this Value') . '<br>',
-				'value'         => ($item_overrides['t_'.$field_name] == 'on' ? 'on' : ''),
+				'value'         => ($item_overrides['t_' . $field_name] == 'on' ? 'on' : ''),
 				'on_change'     => 'toggleFieldEnabled(this.id);'
 			];
 		}
@@ -1136,7 +1136,7 @@ function graph_edit() {
 	}
 
 	if (!isempty_request_var('id') && $current_tab == 'preview') {
-		print "<ul style='float:right;'><li><a class='pic' href='" . html_escape('aggregate_graphs.php?action=edit&id=' . get_request_var('id') . '&tab=' . get_request_var('tab') .  '&debug=' . (isset($_SESSION['graph_debug_mode']) ? '0' : '1')) . "'>" . $message . '</a></li></ul></nav></div></div>';
+		print "<ul style='float:right;'><li><a class='pic' href='" . html_escape('aggregate_graphs.php?action=edit&id=' . get_request_var('id') . '&tab=' . get_request_var('tab') . '&debug=' . (isset($_SESSION['graph_debug_mode']) ? '0' : '1')) . "'>" . $message . '</a></li></ul></nav></div></div>';
 	} elseif (!isempty_request_var('id') && $current_tab == 'details' && (!cacti_sizeof($template))) {
 		print "<ul style='float:right;'><li><a id='toggle_items' class='pic' href='#'>" . __('Show Item Details') . '</a></li></ul></nav></div></div>';
 	} else {

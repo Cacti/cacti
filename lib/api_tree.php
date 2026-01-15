@@ -725,7 +725,7 @@ function api_tree_get_main(string|null $tree_id, int $parent = 0): void {
 				WHERE id = ?',
 				[$tree_id]);
 
-			print "<ul><li class='jstree-closed' id='tree_anchor-$tree_id' data-jstree='{ \"type\" : \"tree\" }'><a href='" . html_escape('graph_view.php?action=tree&node=tree_anchor-' . $tree_id). "'>" . html_escape($name) . "</a>\n";
+			print "<ul><li class='jstree-closed' id='tree_anchor-$tree_id' data-jstree='{ \"type\" : \"tree\" }'><a href='" . html_escape('graph_view.php?action=tree&node=tree_anchor-' . $tree_id) . "'>" . html_escape($name) . "</a>\n";
 
 			$hierarchy = draw_dhtml_tree_level_graphing($tree_id, $parent);
 

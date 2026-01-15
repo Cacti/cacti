@@ -370,7 +370,7 @@ function get_package_contents($export_type, $export_item_id, $include_deps = tru
 			if (array_search($file, $found, true) === false) {
 				if (!str_contains($file['file'], '/resource/')) {
 					$exists = file_exists($file['file']);
-					$output .= '<div class="formRow"><div class="formColumnLeft nowrap">' . html_escape(basename($file['file'])) .  ($exists ? '<i class="fa-solid fa-circle-check deviceUp"></i>' : '<i class="ti ti-cross deviceDown"></i>') . '</div></div>';
+					$output .= '<div class="formRow"><div class="formColumnLeft nowrap">' . html_escape(basename($file['file'])) . ($exists ? '<i class="fa-solid fa-circle-check deviceUp"></i>' : '<i class="ti ti-cross deviceDown"></i>') . '</div></div>';
 				}
 
 				$found[] = $file;
@@ -708,8 +708,8 @@ function package_template(&$template, &$info, &$files, &$debug) {
 	}
 
 	$xml .= "   </files>\n";
-	$xml .= '   <publickeyname>' . $info['author']                  . "</publickeyname>\n";
-	$xml .= '   <publickey>'     . base64_encode($public_key)       . "</publickey>\n";
+	$xml .= '   <publickeyname>' . $info['author'] . "</publickeyname>\n";
+	$xml .= '   <publickey>' . base64_encode($public_key) . "</publickey>\n";
 
 	/* get rid of the temp file */
 	unlink($files['template']['file']);

@@ -66,10 +66,10 @@ function graph_template_to_xml($graph_template_id) {
 	}
 
 	$xml_text .= '<hash_' . $hash['graph_template'] . ">\n";
-	$xml_text .= "\t<name>"        . xml_character_encode($graph_template['name'])        . "</name>\n";
-	$xml_text .= "\t<class>"       . xml_character_encode($graph_template['class'])       . "</class>\n";
-	$xml_text .= "\t<version>"     . xml_character_encode($graph_template['version'])     . "</version>\n";
-	$xml_text .= "\t<multiple>"    . xml_character_encode($graph_template['multiple'])    . "</multiple>\n";
+	$xml_text .= "\t<name>" . xml_character_encode($graph_template['name']) . "</name>\n";
+	$xml_text .= "\t<class>" . xml_character_encode($graph_template['class']) . "</class>\n";
+	$xml_text .= "\t<version>" . xml_character_encode($graph_template['version']) . "</version>\n";
+	$xml_text .= "\t<multiple>" . xml_character_encode($graph_template['multiple']) . "</multiple>\n";
 	$xml_text .= "\t<test_source>" . xml_character_encode($graph_template['test_source']) . "</test_source>\n";
 
 	$xml_text .= "\t<graph>\n";
@@ -276,7 +276,7 @@ function data_template_to_xml($data_template_id) {
 			$xml_text .= "\t\t<item_" . str_pad(strval($i), 3, '0', STR_PAD_LEFT) . ">\n";
 
 			$xml_text .= "\t\t\t<data_input_field_id>hash_" . get_hash_version('data_input_field') . get_hash_data_input($item['data_input_field_id'], 'data_input_field') . "</data_input_field_id>\n";
-			$xml_text .= "\t\t\t<data_template_id>hash_" .  $hash['data_template'] . "</data_template_id>\n";
+			$xml_text .= "\t\t\t<data_template_id>hash_" . $hash['data_template'] . "</data_template_id>\n";
 			$xml_text .= "\t\t\t<local_data_id>0</local_data_id>\n";
 			$xml_text .= "\t\t\t<host_id>0</host_id>\n";
 

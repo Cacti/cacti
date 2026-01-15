@@ -90,7 +90,7 @@ function update_policies() {
 		}
 	}
 
-	header('Location: user_admin.php?action=user_edit&tab=' .  get_nfilter_request_var('tab') . '&id=' . get_nfilter_request_var('id'));
+	header('Location: user_admin.php?action=user_edit&tab=' . get_nfilter_request_var('tab') . '&id=' . get_nfilter_request_var('id'));
 
 	exit;
 }
@@ -976,7 +976,7 @@ function graph_perms_edit($tab, $header_label) {
 			/* form the 'where' clause for our main sql query */
 			if (get_request_var('filter') != '') {
 				$sql_where = 'WHERE (
-				uag.name LIKE '		   . db_qstr('%' . get_request_var('filter') . '%') . '
+				uag.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
 				OR uag.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 			} else {
 				$sql_where = '';
@@ -2152,7 +2152,7 @@ function user() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE '). '(ua.username LIKE ? OR ua.full_name LIKE ?)';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . '(ua.username LIKE ? OR ua.full_name LIKE ?)';
 
 		$sql_params[] = '%' . get_request_var('filter') . '%';
 		$sql_params[] = '%' . get_request_var('filter') . '%';

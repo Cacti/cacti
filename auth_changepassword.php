@@ -392,7 +392,7 @@ html_auth_header('change_password', __('Change Password'), __('Change Password')
 	</tr>
 	<tr>
 		<td colspan='3' class='nowrap'><button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' value='save'><?php print __esc('Save'); ?></button>
-			<?php print $user['must_change_password'] != 'on' ? "<button type='button' class='ui-button ui-corner-all ui-widget' onClick='document.location=\"$return\"'>".  __esc('Return') . "'></button>" : ''; ?>
+			<?php print $user['must_change_password'] != 'on' ? "<button type='button' class='ui-button ui-corner-all ui-widget' onClick='document.location=\"$return\"'>" . __esc('Return') . "'></button>" : ''; ?>
 		</td>
 	</tr>
 <?php

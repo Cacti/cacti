@@ -703,8 +703,8 @@ function displayTreeNodes(int $tree_id, string $nodeType = '', int $parentNode =
 			switch ($current_type) {
 				case TREE_ITEM_TYPE_HEADER:
 					if ($nodeType == '' || $nodeType == 'header') {
-						print $tree_item_types[$current_type]."\t";
-						print $node['id']."\t";
+						print $tree_item_types[$current_type] . "\t";
+						print $node['id'] . "\t";
 
 						if ($parentNode == 0) {
 							print "N/A\t";
@@ -787,10 +787,10 @@ function displayRRAs(bool $quietMode = false): void {
 
 	if (cacti_sizeof($rras)) {
 		foreach ($rras as $rra) {
-			print $rra['id']    . "\t";
+			print $rra['id'] . "\t";
 			print $rra['steps'] . "\t";
-			print $rra['rows']  . "\t";
-			print $rra['name']  . PHP_EOL;
+			print $rra['rows'] . "\t";
+			print $rra['name'] . PHP_EOL;
 		}
 	}
 
@@ -846,7 +846,7 @@ function displayHostGraphs(int $host_id, bool $quietMode = false): void {
  */
 function displayUsers(bool $quietMode = false): void {
 	if (!$quietMode) {
-		print 'Known Users: (id, username, full_name)'. PHP_EOL;
+		print 'Known Users: (id, username, full_name)' . PHP_EOL;
 	}
 
 	$groups = db_fetch_assoc('SELECT id, username, full_name
@@ -855,8 +855,8 @@ function displayUsers(bool $quietMode = false): void {
 
 	if (cacti_sizeof($groups)) {
 		foreach ($groups as $group) {
-			print $group['id']        ."\t";
-			print $group['username']  ."\t";
+			print $group['id'] . "\t";
+			print $group['username'] . "\t";
 			print $group['full_name'] . PHP_EOL;
 		}
 	}
@@ -875,7 +875,7 @@ function displayUsers(bool $quietMode = false): void {
  */
 function displayGroups(bool $quietMode = false) {
 	if (!$quietMode) {
-		print 'Known Groups: (id, name, description)'. PHP_EOL;
+		print 'Known Groups: (id, name, description)' . PHP_EOL;
 	}
 
 	$groups = db_fetch_assoc('SELECT id, name, description
@@ -884,8 +884,8 @@ function displayGroups(bool $quietMode = false) {
 
 	if (cacti_sizeof($groups)) {
 		foreach ($groups as $group) {
-			print $group['id']      ."\t";
-			print $group['name']    ."\t";
+			print $group['id'] . "\t";
+			print $group['name'] . "\t";
 			print $group['description'] . PHP_EOL;
 		}
 	}

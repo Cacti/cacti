@@ -480,7 +480,7 @@ function api_data_source_disable_multi(array $local_data_ids): void {
 			$poller_ids += array_rekey(
 				db_fetch_assoc('SELECT poller_id
 					FROM poller_item
-					WHERE local_data_id IN(' . $ids_to_disable .')'),
+					WHERE local_data_id IN(' . $ids_to_disable . ')'),
 				'poller_id', 'poller_id'
 			);
 

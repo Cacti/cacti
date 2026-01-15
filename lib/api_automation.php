@@ -283,12 +283,12 @@ function automation_get_matching_device_sql(array &$rule, string $rule_type): ar
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
 		$sql_where = 'WHERE h.deleted = ""
-			AND (h.hostname LIKE '  . db_qstr('%' . get_request_var('filter') . '%') . '
+			AND (h.hostname LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
 			OR h.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR h.location LIKE '	. db_qstr('%' . get_request_var('filter') . '%') . '
+			OR h.location LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
 			OR h.external_id LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR s.site LIKE '		. db_qstr('%' . get_request_var('filter') . '%') . '
-			OR ht.name LIKE '		. db_qstr('%' . get_request_var('filter') . '%') . ')';
+			OR s.site LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR ht.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	} else {
 		$sql_where = "WHERE h.deleted = ''";
 	}
@@ -391,12 +391,12 @@ function automation_get_matching_graphs_sql(array $rule, string $rule_type): arr
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
 		$sql_where = 'WHERE (
-			gtg.title_cache LIKE '  . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR gt.name LIKE '	   . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR s.name LIKE '		. db_qstr('%' . get_request_var('filter') . '%') . '
+			gtg.title_cache LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR gt.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR s.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
 			OR h.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR h.location LIKE '	. db_qstr('%' . get_request_var('filter') . '%') . '
-			OR h.hostname LIKE '	. db_qstr('%' . get_request_var('filter') . '%') . ')';
+			OR h.location LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR h.hostname LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	} else {
 		$sql_where = '';
 	}
@@ -414,7 +414,7 @@ function automation_get_matching_graphs_sql(array $rule, string $rule_type): arr
 	} elseif (get_request_var('template_id') == '0') {
 		$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . ' gtg.graph_template_id = 0';
 	} elseif (!isempty_request_var('template_id')) {
-		$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') .' gtg.graph_template_id = ' . get_request_var('template_id');
+		$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . ' gtg.graph_template_id = ' . get_request_var('template_id');
 	}
 
 	/* get the WHERE clause for matching graphs */
@@ -1144,11 +1144,11 @@ function display_matching_trees(string $rule_id, $rule_type, array $item, string
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
 		$sql_where .= ' AND (
-			h.hostname LIKE '	   . db_qstr('%' . get_request_var('filter') . '%') . '
+			h.hostname LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
 			OR h.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR h.location LIKE '	. db_qstr('%' . get_request_var('filter') . '%') . '
-			OR s.name LIKE '		. db_qstr('%' . get_request_var('filter') . '%') . '
-			OR ht.name LIKE '	   . db_qstr('%' . get_request_var('filter') . '%') . ')';
+			OR h.location LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR s.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR ht.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	}
 
 	if (db_column_exists('sites', 'disabled')) {
@@ -1219,7 +1219,7 @@ function display_matching_trees(string $rule_id, $rule_type, array $item, string
 
 	$templates = db_fetch_assoc($sql_query, false);
 
-	cacti_log($function. ' templates sql: ' . str_replace("\n",' ', $sql_query), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
+	cacti_log($function . ' templates sql: ' . str_replace("\n",' ', $sql_query), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
 
 	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('Devices'), 'page', 'main');
 
@@ -1389,7 +1389,7 @@ function display_match_rule_items(string $title, array $rule, string $rule_type,
 
 			form_alternate_row();
 
-			$url = $module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type;
+			$url = $module . '?action=item_edit&id=' . $rule_id . '&item_id=' . $item['id'] . '&rule_type=' . $rule_type;
 
 			form_selectable_cell(filter_value(__('Item # %d', $i + 1), '', $url), $i);
 			form_selectable_cell($item['sequence'], $i);
@@ -1416,7 +1416,7 @@ function display_match_rule_items(string $title, array $rule, string $rule_type,
 			}
 
 			if ($i > 0) {
-				$url = $module . '?action=item_moveup&item_id=' . $item['id'] .   '&id=' . $rule_id . '&rule_type=' . $rule_type;
+				$url = $module . '?action=item_moveup&item_id=' . $item['id'] . '&id=' . $rule_id . '&rule_type=' . $rule_type;
 
 				$form_data .= '<a class="pic ti ti-caret-up-filled moveArrow"
 					href="' . html_escape($url) . '" title="' . __esc('Move Up') . '"></a>';
@@ -1426,7 +1426,7 @@ function display_match_rule_items(string $title, array $rule, string $rule_type,
 
 			form_selectable_cell($form_data, $i, '32px', 'right nowrap');
 
-			$url = $module . '?action=item_remove&item_id=' . $item['id'] .    '&id=' . $rule_id . '&rule_type=' . $rule_type;
+			$url = $module . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $rule_id . '&rule_type=' . $rule_type;
 
 			$form_data = '<a class="pid deleteMarker ti ti-x"
 				href="' . html_escape($url) . '" title="' . __esc('Delete') . '"></a>';
@@ -1495,7 +1495,7 @@ function display_graph_rule_items(string $title, array &$rule, string $rule_type
 
 			form_alternate_row();
 
-			$url = $module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type;
+			$url = $module . '?action=item_edit&id=' . $rule_id . '&item_id=' . $item['id'] . '&rule_type=' . $rule_type;
 
 			form_selectable_cell(filter_value(__('Item # %d', $i + 1), '', $url), $i);
 			form_selectable_cell($item['sequence'], $i);
@@ -1513,13 +1513,13 @@ function display_graph_rule_items(string $title, array &$rule, string $rule_type
 			$form_data = '';
 
 			if ($i != cacti_sizeof($items) - 1) {
-				$form_data .= '<a class="pic ti ti-caret-down-filled moveArrow" href="' . html_escape($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Move Down') . '"></a>';
+				$form_data .= '<a class="pic ti ti-caret-down-filled moveArrow" href="' . html_escape($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id . '&rule_type=' . $rule_type) . '" title="' . __esc('Move Down') . '"></a>';
 			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 
 			if ($i > 0) {
-				$form_data .= '<a class="pic ti ti-caret-up-filled moveArrow" href="' . html_escape($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Move Up') . '"></a>';
+				$form_data .= '<a class="pic ti ti-caret-up-filled moveArrow" href="' . html_escape($module . '?action=item_moveup&item_id=' . $item['id'] . '&id=' . $rule_id . '&rule_type=' . $rule_type) . '" title="' . __esc('Move Up') . '"></a>';
 			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
@@ -1527,7 +1527,7 @@ function display_graph_rule_items(string $title, array &$rule, string $rule_type
 			form_selectable_cell($form_data, $i, '32px', 'right nowrap');
 
 			$form_data = '<a class="pic deleteMarker ti ti-x"
-				href="' . html_escape($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Delete') . '"></a>';
+				href="' . html_escape($module . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $rule_id . '&rule_type=' . $rule_type) . '" title="' . __esc('Delete') . '"></a>';
 
 			form_selectable_cell($form_data, $i, '16px', 'right nowrap');
 
@@ -1601,7 +1601,7 @@ function display_tree_rule_items(string $title, array $rule, string $item_type, 
 
 			form_alternate_row();
 
-			$url = $module . '?action=item_edit&tab=rule&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type;
+			$url = $module . '?action=item_edit&tab=rule&id=' . $rule_id . '&item_id=' . $item['id'] . '&rule_type=' . $rule_type;
 
 			form_selectable_cell(filter_value(__('Item # %d', $i + 1), '', $url), $i);
 			form_selectable_cell($item['sequence'], $i);
@@ -1633,7 +1633,7 @@ function display_tree_rule_items(string $title, array $rule, string $item_type, 
 
 			form_selectable_cell($form_data, $i, '32px', 'right nowrap');
 
-			$url = $module . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $rule_id .  '&rule_type=' . $rule_type;
+			$url = $module . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $rule_id . '&rule_type=' . $rule_type;
 
 			$form_data = '<a class="pic deleteMarker ti ti-x"
 				href="' . html_escape($url) . '" title="' . __esc('Delete') . '"></a>';
@@ -2050,7 +2050,7 @@ function get_matching_hosts(array $rule, string $rule_type, string $sql_where = 
 		ON h.host_template_id = ht.id ";
 
 	/* get the WHERE clause for matching hosts */
-	$sql_filter = ' WHERE h.deleted = "" AND (' . build_matching_objects_filter($rule['id'], $rule_type) .')';
+	$sql_filter = ' WHERE h.deleted = "" AND (' . build_matching_objects_filter($rule['id'], $rule_type) . ')';
 
 	if ($sql_where != '') {
 		$sql_filter .= ' AND ' . $sql_where;
@@ -2594,7 +2594,7 @@ function automation_hook_graph_create_tree(array $data): array {
 	cacti_log($function . ' called: ' . json_encode($data), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
 	if (read_config_option('automation_tree_enabled') == '') {
-		cacti_log($function. ' skipped: Tree Creation Switch is: ' . (read_config_option('automation_tree_enabled') == '' ? 'off' : 'on'), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
+		cacti_log($function . ' skipped: Tree Creation Switch is: ' . (read_config_option('automation_tree_enabled') == '' ? 'off' : 'on'), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
 		return [];
 	}
@@ -3036,7 +3036,7 @@ function automation_execute_graph_create_tree(string $graph_id): void {
 	/* now walk all rules */
 	if (cacti_sizeof($rules)) {
 		foreach ($rules as $rule) {
-			cacti_log($function  . ' Graph[' . $graph_id . '], rule: ' . $rule['id'] . ', name: ' . $rule['name'] . ', type: ' . $rule['leaf_type'], false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
+			cacti_log($function . ' Graph[' . $graph_id . '], rule: ' . $rule['id'] . ', name: ' . $rule['name'] . ', type: ' . $rule['leaf_type'], false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
 			/* does this rule apply to the current graph?
 			 * test 'eligible objects' rule items */
@@ -3268,7 +3268,7 @@ function create_all_header_nodes(string $item_id, array $rule): int {
 				LEFT JOIN host_template AS ht
 				ON h.host_template_id=ht.id ';
 
-			$sql_where = 'WHERE h.id='. $item_id . ' AND h.deleted = "" ';
+			$sql_where = 'WHERE h.id=' . $item_id . ' AND h.deleted = "" ';
 		} elseif ($rule['leaf_type'] == TREE_ITEM_TYPE_GRAPH) {
 			/* graphs require a different set of tables to be joined */
 			$sql_tables = 'FROM host AS h
@@ -3374,7 +3374,7 @@ function create_header_node(string $title, array $rule, array $item, int $parent
 			$title, $local_graph_id, $host_id, $site_id, $rule['host_grouping_type'], $item['sort_type'], $propagate);
 
 		if (isset($new_item) && $new_item > 0) {
-			cacti_log('NOTE: ' . $function . ' Parent[' . $parent_tree_item_id . '] Tree Item - Added - id: (' . $new_item . ') Title: (' .$title . ')', false, 'AUTOM8');
+			cacti_log('NOTE: ' . $function . ' Parent[' . $parent_tree_item_id . '] Tree Item - Added - id: (' . $new_item . ') Title: (' . $title . ')', false, 'AUTOM8');
 		} else {
 			cacti_log('WARNING: ' . $function . ' Parent[' . $parent_tree_item_id . '] Tree Item - Not Added', false, 'AUTOM8');
 		}
@@ -3888,7 +3888,7 @@ function automation_get_network_info(string $range): array|false {
 				$network .= '0.';
 			}
 
-			return automation_get_network_info(rtrim($network,'.').'/'.rtrim($broadcast,'.'));
+			return automation_get_network_info(rtrim($network,'.') . '/' . rtrim($broadcast,'.'));
 		}
 	} elseif (str_contains($range, '-')) {
 		raise_message('automation_iprange', __('ERROR: IP ranges in the form of range1-range2 are no longer supported.'), MESSAGE_LEVEL_ERROR);

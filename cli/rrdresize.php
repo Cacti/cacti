@@ -595,7 +595,7 @@ if ($scanned_directory['folders']) {
 						$rrd_new_ds_definition__ds_definition_template = "\t<ds>" . PHP_EOL .
 							"\t\t<name> " . $rrd_info_ds_name . ' </name>' . PHP_EOL .
 							"\t\t<type> " . $rrd_info_ds_settings['type'] . ' </type>' . PHP_EOL .
-							"\t\t<minimal_heartbeat>" . $rrd_info_ds_settings['minimal_heartbeat'] . '</minimal_heartbeat>'  . PHP_EOL .
+							"\t\t<minimal_heartbeat>" . $rrd_info_ds_settings['minimal_heartbeat'] . '</minimal_heartbeat>' . PHP_EOL .
 							"\t\t<min>" . $rrd_info_ds_settings['min'] . '</min>' . PHP_EOL .
 							"\t\t<max>" . $rrd_info_ds_settings['max'] . '</max>' . PHP_EOL .
 							"\t\t<last_ds>" . $rrd_info_ds_settings['last_ds'] . '</last_ds>' . PHP_EOL .
@@ -651,7 +651,7 @@ if ($scanned_directory['folders']) {
 					for ($i = 0; $i < $data_template_ds_counter; $i++) {
 						$rrd_new_body__ds_definition_template = "\t\t\t<ds>" . PHP_EOL .
 							"\t\t\t<primary_value>__placeholder__$i</primary_value>" . PHP_EOL .
-							"\t\t\t<secondary_value>NaN</secondary_value>"  . PHP_EOL .
+							"\t\t\t<secondary_value>NaN</secondary_value>" . PHP_EOL .
 							"\t\t\t<value>NaN</value>" . PHP_EOL .
 							"\t\t\t<unknown_datapoints>0</unknown_datapoints>" . PHP_EOL .
 							"\t\t\t</ds>" . PHP_EOL;
@@ -693,7 +693,7 @@ if ($scanned_directory['folders']) {
 
 						/* There's no data available we could reuse. Fill these entries with NaNs and jump to the next one */
 						if ($selected_archive_index === false) {
-							$rrd_new_body .= "\t\t\t<!-- " . date('Y-m-d H:i:s ', ($timestamp)) . 'GMT / ' . ($timestamp) . ' --> <row><v>' . (is_array($row_copy_fake) ? implode('</v><v>', $row_copy_fake) : $row_copy_fake)  . '</v></row>' . PHP_EOL;
+							$rrd_new_body .= "\t\t\t<!-- " . date('Y-m-d H:i:s ', ($timestamp)) . 'GMT / ' . ($timestamp) . ' --> <row><v>' . (is_array($row_copy_fake) ? implode('</v><v>', $row_copy_fake) : $row_copy_fake) . '</v></row>' . PHP_EOL;
 
 							continue;
 						}
@@ -716,7 +716,7 @@ if ($scanned_directory['folders']) {
 									}
 								}
 
-								$rrd_new_body .= "\t\t\t<!-- " . date('Y-m-d H:i:s ', ($timestamp)) . 'GMT / ' . ($timestamp) . ' --> <row><v>' . (is_array($row_copy) ? implode('</v><v>', $row_copy) : $row_copy)  . '</v></row>' . PHP_EOL;
+								$rrd_new_body .= "\t\t\t<!-- " . date('Y-m-d H:i:s ', ($timestamp)) . 'GMT / ' . ($timestamp) . ' --> <row><v>' . (is_array($row_copy) ? implode('</v><v>', $row_copy) : $row_copy) . '</v></row>' . PHP_EOL;
 							} else {
 								f_notify(false, "\033[0;31m[FAILED]\033[0m");
 								print_r($rra_timespans);

@@ -184,10 +184,10 @@ function dsstats_get_and_store_ds_avgpeak_values($interval, $type, $thread_id = 
 		$total_real   += $real_time;
 		$total_dsses  += $dsses;
 
-		set_config_option('dsstats_rrd_system_'  . $type . '_' . $thread_id, $total_system);
-		set_config_option('dsstats_rrd_user_'    . $type . '_' . $thread_id, $total_user);
-		set_config_option('dsstats_rrd_real_'    . $type . '_' . $thread_id, $total_real);
-		set_config_option('dsstats_total_rrds_'  . $type . '_' . $thread_id, $rrd_files);
+		set_config_option('dsstats_rrd_system_' . $type . '_' . $thread_id, $total_system);
+		set_config_option('dsstats_rrd_user_' . $type . '_' . $thread_id, $total_user);
+		set_config_option('dsstats_rrd_real_' . $type . '_' . $thread_id, $total_real);
+		set_config_option('dsstats_total_rrds_' . $type . '_' . $thread_id, $rrd_files);
 		set_config_option('dsstats_total_dsses_' . $type . '_' . $thread_id, $total_dsses);
 	}
 }
@@ -253,27 +253,27 @@ function dsstats_write_buffer(&$stats_array, $interval, $mode) {
 					foreach ($cf_stats as $rrd_name => $stats) {
 						if ($mode == 0) {
 							$outbuf .= ($i == 1 ? ' ' : ', ') . "('" .
-								$local_data_id      . "','" .
-								$rrd_name           . "','" .
-								$mycf               . "','" .
-								$stats['avg']       . "','" .
-								$stats['peak']      . "')";
+								$local_data_id . "','" .
+								$rrd_name . "','" .
+								$mycf . "','" .
+								$stats['avg'] . "','" .
+								$stats['peak'] . "')";
 						} else {
 							$outbuf .= ($i == 1 ? ' ' : ', ') . "('" .
-								$local_data_id      . "','" .
-								$rrd_name           . "','" .
-								$mycf               . "','" .
-								$stats['avg']       . "','" .
-								$stats['peak']      . "','" .
-								$stats['p95n']      . "','" .
-								$stats['p90n']      . "','" .
-								$stats['p75n']      . "','" .
-								$stats['p50n']      . "','" .
-								$stats['p25n']      . "','" .
-								$stats['sum']       . "','" .
-								$stats['stddev']    . "','" .
-								$stats['lslslope']  . "','" .
-								$stats['lslint']    . "','" .
+								$local_data_id . "','" .
+								$rrd_name . "','" .
+								$mycf . "','" .
+								$stats['avg'] . "','" .
+								$stats['peak'] . "','" .
+								$stats['p95n'] . "','" .
+								$stats['p90n'] . "','" .
+								$stats['p75n'] . "','" .
+								$stats['p50n'] . "','" .
+								$stats['p25n'] . "','" .
+								$stats['sum'] . "','" .
+								$stats['stddev'] . "','" .
+								$stats['lslslope'] . "','" .
+								$stats['lslint'] . "','" .
 								$stats['lslcorrel'] . "')";
 						}
 
@@ -767,8 +767,8 @@ function dsstats_error_handler($errno, $errmsg, $filename, $linenum, $vars = [])
 		}
 
 		/* create an error string for the log */
-		$err = "ERRNO:'"  . $errno   . "' TYPE:'"    . $errortype[$errno] .
-			"' MESSAGE:'" . $errmsg  . "' IN FILE:'" . $filename .
+		$err = "ERRNO:'" . $errno . "' TYPE:'" . $errortype[$errno] .
+			"' MESSAGE:'" . $errmsg . "' IN FILE:'" . $filename .
 			"' LINE NO:'" . $linenum . "'";
 
 		/* let's ignore some lesser issues */
@@ -1435,7 +1435,7 @@ function dsstats_get_best_partition($start_time, $end_time = 0) {
 	if ($days <= 1) {
 		// Daily partition
 		$desired_suffix = '_v' . date('Y', $start_time) . substr('000' . date('z'), -3);
-		$current_suffix = '_v' . date('Y', $cur_time)   . substr('000' . date('z', $cur_time), -3);
+		$current_suffix = '_v' . date('Y', $cur_time) . substr('000' . date('z', $cur_time), -3);
 
 		if ($desired_suffix == $current_suffix) {
 			return 'data_source_stats_daily';
@@ -1449,7 +1449,7 @@ function dsstats_get_best_partition($start_time, $end_time = 0) {
 	} elseif ($days > 1 && $days <= 7) {
 		// Weekly partition
 		$desired_suffix = '_v' . date('Y', $start_time) . substr('000' . date('W'), -3);
-		$current_suffix = '_v' . date('Y', $cur_time)   . substr('000' . date('W', $cur_time), -3);
+		$current_suffix = '_v' . date('Y', $cur_time) . substr('000' . date('W', $cur_time), -3);
 
 		if ($desired_suffix == $current_suffix) {
 			return 'data_source_stats_weekly';
@@ -1463,7 +1463,7 @@ function dsstats_get_best_partition($start_time, $end_time = 0) {
 	} elseif ($days > 7 && $days <= 30) {
 		// Monthly partition
 		$desired_suffix = '_v' . date('Y', $start_time) . substr('000' . date('m'), -3);
-		$current_suffix = '_v' . date('Y', $cur_time)   . substr('000' . date('m', $cur_time), -3);
+		$current_suffix = '_v' . date('Y', $cur_time) . substr('000' . date('m', $cur_time), -3);
 
 		if ($desired_suffix == $current_suffix) {
 			return 'data_source_stats_monthly';

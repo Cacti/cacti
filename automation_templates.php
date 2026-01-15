@@ -231,7 +231,7 @@ function automation_import() {
 	if ((isset($_SESSION['import_debug_info'])) && (is_array($_SESSION['import_debug_info']))) {
 		html_start_box(__('Import Results'), '60%', false, 3, 'center', '');
 
-		print '<tr class="tableHeader"><th>' . __('Cacti has Imported the following Device Rules'). '</th></tr>';
+		print '<tr class="tableHeader"><th>' . __('Cacti has Imported the following Device Rules') . '</th></tr>';
 
 		foreach ($_SESSION['import_debug_info'] as $line) {
 			print '<tr><td>' . $line . '</td></tr>';
@@ -1280,9 +1280,9 @@ function template_edit() {
 
 				$exit_on_url = CACTI_PATH_URL . 'automation_templates.php' .
 					'?action=exitonchange' .
-					'&template_id='. get_request_var('id') .
-					'&id='         . $rule['id'] .
-					'&current='    . $rule['exit_rules'];
+					'&template_id=' . get_request_var('id') .
+					'&id=' . $rule['id'] .
+					'&current=' . $rule['exit_rules'];
 
 				$exit_text   = $rule['exit_rules'] == 0 ? __('No') : __('Yes');
 

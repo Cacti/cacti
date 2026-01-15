@@ -76,7 +76,7 @@ function filter_value(string|null $value, string $filter, string $href = '', str
 	}
 
 	if ($href != '') {
-		$value = '<a class="linkEditMain" href="' . html_escape($href) . '" title="' . html_escape($title) . '">' . $value  . '</a>';
+		$value = '<a class="linkEditMain" href="' . html_escape($href) . '" title="' . html_escape($title) . '">' . $value . '</a>';
 	}
 
 	return $value;
@@ -174,7 +174,7 @@ function save_user_settings(int|null $user = null) : void {
 						set_user_setting($sub_field_name, (isset_request_var($sub_field_name) ? 'on' : ''), $user);
 					}
 				} elseif ($field_array['method'] == 'textbox_password') {
-					if (get_nfilter_request_var($field_name) != get_nfilter_request_var($field_name.'_confirm')) {
+					if (get_nfilter_request_var($field_name) != get_nfilter_request_var($field_name . '_confirm')) {
 						$_SESSION[SESS_ERROR_FIELDS][$field_name] = $field_name;
 						$_SESSION[SESS_FIELD_VALUES][$field_name] = get_nfilter_request_var($field_name);
 
@@ -1629,7 +1629,7 @@ function cacti_log(string $string, bool $output = false, string $environ = 'CMDP
 				$file = $line;
 			}
 
-			$func = $c['function'].'()';
+			$func = $c['function'] . '()';
 
 			if (isset($c['class'])) {
 				$func = $c['class'] . $c['type'] . $func;
@@ -3011,7 +3011,7 @@ function get_data_source_item_name(int $data_template_rrd_id):string|false {
 	if (empty($data_source['data_source_name'])) {
 		/* limit input to 19 characters */
 		$data_source_name = clean_up_name($data_source['name']);
-		$data_source_name = substr(strtolower($data_source_name), 0, (19 - strlen('' .$data_template_rrd_id))) . $data_template_rrd_id;
+		$data_source_name = substr(strtolower($data_source_name), 0, (19 - strlen('' . $data_template_rrd_id))) . $data_template_rrd_id;
 
 		return $data_source_name;
 	} else {
@@ -4061,7 +4061,7 @@ function draw_login_status($using_guest_account = false) {
 	if (isset($_SESSION[SESS_USER_ID]) && $_SESSION[SESS_USER_ID] === $guest_account) {
 		api_plugin_hook('nav_login_before');
 
-		print __('Logged in as') . " <span id='user' class='user usermenuup'>". __('guest') . "</span></div><div><ul class='menuoptions' style='display:none;'>" . ($auth_method != AUTH_METHOD_BASIC ? "<li><a href='" . CACTI_PATH_URL . "index.php?login=true'>" . __('Login as Regular User') . '</a></li>' : "<li><a href='#'>" . __('Logged in a Guest') . '</a></li>');
+		print __('Logged in as') . " <span id='user' class='user usermenuup'>" . __('guest') . "</span></div><div><ul class='menuoptions' style='display:none;'>" . ($auth_method != AUTH_METHOD_BASIC ? "<li><a href='" . CACTI_PATH_URL . "index.php?login=true'>" . __('Login as Regular User') . '</a></li>' : "<li><a href='#'>" . __('Logged in a Guest') . '</a></li>');
 
 		print "<li class='menuHr'><hr class='menu'></li>";
 		print "<li id='userCommunity'><a href='https://forums.cacti.net' target='_blank' rel='noopener'>" . __('User Community') . '</a></li>';
@@ -4783,9 +4783,9 @@ function debug_log_insert_section_start($type, $text, $allowcopy = false) {
 
 	if ($allowcopy) {
 		$uid           = generate_hash();
-		$copy_prefix   = '<div class=\'cactiTableButton debug\'><span><a class=\'linkCopyDark cactiTableCopy ti ti-copy\' id=\'copyToClipboard' . $uid . '\' title=\'' .  __esc('Copy Section Output to Clipboard') . '\'</a></span></div>';
-		$copy_dataid   = ' id=\'clipboardData'.$uid.'\'';
-		$copy_headerid = ' id=\'clipboardHeader'.$uid.'\'';
+		$copy_prefix   = '<div class=\'cactiTableButton debug\'><span><a class=\'linkCopyDark cactiTableCopy ti ti-copy\' id=\'copyToClipboard' . $uid . '\' title=\'' . __esc('Copy Section Output to Clipboard') . '\'</a></span></div>';
+		$copy_dataid   = ' id=\'clipboardData' . $uid . '\'';
+		$copy_headerid = ' id=\'clipboardHeader' . $uid . '\'';
 	}
 
 	debug_log_insert($type, '<table class=\'cactiTable debug\'' . $copy_headerid . '><tr class=\'tableHeader\'><td>' . html_escape($text) . $copy_prefix . '</td></tr><tr><td style=\'padding:0px;\'><table style=\'display:none;\'' . $copy_dataid . '><tr><td><div style=\'font-family: monospace;\'>');
@@ -5979,7 +5979,7 @@ function email_test() {
 	if ($how == 0) {
 		$mail = __('PHP\'s Mailer Class');
 	} elseif ($how == 1) {
-		$mail     = __('Sendmail') . '<br><b>' . __('Sendmail Path'). '</b>: ';
+		$mail     = __('Sendmail') . '<br><b>' . __('Sendmail Path') . '</b>: ';
 		$sendmail = read_config_option('settings_sendmail_path');
 		$mail .= $sendmail;
 	} elseif ($how == 2) {
@@ -6039,7 +6039,7 @@ function email_test() {
 			$errors = __('Success!');
 		}
 	} else {
-		print __('Message Not Sent due to ping failure.'). '<br><br>';
+		print __('Message Not Sent due to ping failure.') . '<br><br>';
 	}
 
 	print '<center><table><tr><td>';
@@ -6243,7 +6243,7 @@ function cacti_debug_backtrace($entry = '', $html = false, $record = true, $limi
 			$file = $line;
 		}
 
-		$func = $c['function'].'()';
+		$func = $c['function'] . '()';
 
 		if (isset($c['class'])) {
 			$func = $c['class'] . $c['type'] . $func;
@@ -6774,11 +6774,11 @@ function CactiShutdownHandler() {
 					if ($error['type'] !== null && isset($phperrors[$error['type']])) {
 						$message = 'PHP ' . $phperrors[$error['type']] .
 							($plugin != '' ? " in  Plugin '$plugin'" : '') . ': ' . $error['message'] .
-							' in file: ' .  $error['file'] . ' on line: ' . $error['line'];
+							' in file: ' . $error['file'] . ' on line: ' . $error['line'];
 					} else {
 						$message = 'PHP Unknown Error' .
 							($plugin != '' ? " in  Plugin '$plugin'" : '') . ': ' . $error['message'] .
-							' in file: ' .  $error['file'] . ' on line: ' . $error['line'];
+							' in file: ' . $error['file'] . ' on line: ' . $error['line'];
 					}
 
 					cacti_log($message, false, 'ERROR');
@@ -6918,7 +6918,7 @@ function call_remote_data_collector(int $poller_id, string $url, string $logtype
 	$ra_start = microtime(true);
 
 	try {
-		$output = file_get_contents(get_url_type() .'://' . $hostname . $port . $url, false, $fgc_context);
+		$output = file_get_contents(get_url_type() . '://' . $hostname . $port . $url, false, $fgc_context);
 	} catch (ErrorException $e) {
 		$ra_end = microtime(true);
 
@@ -7987,7 +7987,7 @@ function get_theme_paths(string $format, string $path, string|null $theme = null
 		$relFile = get_include_relpath($srcFile);
 
 		if (!empty($relFile)) {
-			$output[] = sprintf($format, CACTI_PATH_URL . $relFile  . '?' . get_md5_hash($relFile), ...$args);
+			$output[] = sprintf($format, CACTI_PATH_URL . $relFile . '?' . get_md5_hash($relFile), ...$args);
 		}
 	}
 

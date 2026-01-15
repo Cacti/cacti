@@ -136,7 +136,7 @@ function automation_import() {
 	if ((isset($_SESSION['import_debug_info'])) && (is_array($_SESSION['import_debug_info']))) {
 		html_start_box(__('Import Results'), '60%', false, 3, 'center', '');
 
-		print '<tr class="tableHeader"><th>' . __('Cacti has imported the following items:'). '</th></tr>';
+		print '<tr class="tableHeader"><th>' . __('Cacti has imported the following items:') . '</th></tr>';
 
 		foreach ($_SESSION['import_debug_info'] as $line) {
 			print '<tr><td>' . $line . '</td></tr>';

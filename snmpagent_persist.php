@@ -153,8 +153,8 @@ function cache_get_next($oid) {
 function cache_refresh() {
 	global $cache, $cache_last_refresh;
 
-	$path_mibcache      = CACTI_PATH_CACHE. '/mibcache/mibcache.tmp';
-	$path_mibcache_lock = CACTI_PATH_CACHE. '/mibcache/mibcache.lock';
+	$path_mibcache      = CACTI_PATH_CACHE . '/mibcache/mibcache.tmp';
+	$path_mibcache_lock = CACTI_PATH_CACHE . '/mibcache/mibcache.lock';
 
 	/* check temporary cache file */
 	clearstatcache();

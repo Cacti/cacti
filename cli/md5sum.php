@@ -47,7 +47,7 @@ $quiet     = false;
 $debug     = false;
 $md5_file  = '';
 $show_hash = false;
-$base_dir  = __DIR__.'/../';
+$base_dir  = __DIR__ . '/../';
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
@@ -118,7 +118,7 @@ if (substr($base_dir, -1) == '/') {
 }
 $base_dir = realpath($base_dir);
 
-if (!file_exists($base_dir.'/include/config.php.dist')) {
+if (!file_exists($base_dir . '/include/config.php.dist')) {
 	fail(EXIT_NOTDIR,$base_dir);
 }
 
@@ -155,7 +155,7 @@ $ignore_files = [
 $ignore_regex = '';
 
 foreach ($ignore_files as $ignore) {
-	$ignore_regex .= (strlen($ignore_regex) ? '|' : '').'('.$ignore.')';
+	$ignore_regex .= (strlen($ignore_regex) ? '|' : '') . '(' . $ignore . ')';
 }
 $ignore_regex = "~($ignore_regex)~";
 
@@ -169,7 +169,7 @@ if ($create) {
 	}
 
 	if (!$quiet) {
-		print 'Writing '.cacti_sizeof($file_array)." entries to $md5_file\n";
+		print 'Writing ' . cacti_sizeof($file_array) . " entries to $md5_file\n";
 	}
 
 	if (!$confirm && file_exists($md5_file)) {
@@ -244,7 +244,7 @@ function dirToArray($dir,$base,$ignore) {
 	$fulldir = $base;
 
 	if (isset($dir) && strlen($dir)) {
-		$fulldir .= DIRECTORY_SEPARATOR.$dir;
+		$fulldir .= DIRECTORY_SEPARATOR . $dir;
 	}
 	$fulldir = realpath($fulldir);
 
@@ -262,7 +262,7 @@ function dirToArray($dir,$base,$ignore) {
 		$dir_list = [];
 
 		foreach ($cdir as $key => $value) {
-			$fullpath = $fulldir.DIRECTORY_SEPARATOR.$value;
+			$fullpath = $fulldir . DIRECTORY_SEPARATOR . $value;
 			$partpath = substr($fullpath,strlen($base));
 
 			if (preg_match($ignore,$partpath) == 0) {

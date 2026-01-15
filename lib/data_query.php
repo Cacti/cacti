@@ -1336,7 +1336,7 @@ function query_snmp_host(int $host_id, int $snmp_query_id) : bool {
 				$values = null;
 			} elseif (str_starts_with($field_array['source'], 'VALUE/REGEXP:')) {
 				foreach ($snmp_indexes as $oid => $index) {
-					$oid = $field_array['oid'] .  '.' . $index;
+					$oid = $field_array['oid'] . '.' . $index;
 					$oid .= isset($field_array['oid_suffix']) ? ('.' . $field_array['oid_suffix']) : '';
 
 					if (isset($field_array['output_format'])) {
@@ -1488,7 +1488,7 @@ function query_snmp_host(int $host_id, int $snmp_query_id) : bool {
 							}
 						}
 
-						$oid = $field_array['oid'] .  '.' . $parse_value;
+						$oid = $field_array['oid'] . '.' . $parse_value;
 
 						/* rewrite octet strings */
 						if (preg_match('/^\d{1,3}(\.\d{1,3}){2,}$/', $parse_value)) {
@@ -1539,7 +1539,7 @@ function query_snmp_host(int $host_id, int $snmp_query_id) : bool {
 							}
 						}
 
-						$oid      = $field_array['oid'] .  '.' . $parse_value;
+						$oid      = $field_array['oid'] . '.' . $parse_value;
 						$ip_value = '';
 
 						// Check for an IPv6 Address or Hex String
@@ -1834,7 +1834,7 @@ function data_query_rewrite_indexes(array &$errmsg, int $host_id, int $snmp_quer
 		$index = str_replace('|index|', trim($num_index), $index);
 
 		if (!preg_match('/^[0-9.]*$/', $index)) {
-			$errmsg[] = "@'" . $num_index ."': some portions of rewrite_index field were not parsed: '$index'";
+			$errmsg[] = "@'" . $num_index . "': some portions of rewrite_index field were not parsed: '$index'";
 
 			continue;
 		}

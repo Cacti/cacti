@@ -1428,8 +1428,8 @@ function reports_tabs($report_id) {
 
 		foreach ($tabs as $tab => $name) {
 			print "<li class='subTab'><a class='tab" . ($tab == $current_tab ? " selected'" : "'") .
-				" href='" . html_escape(CACTI_PATH_URL .  get_reports_page() .  '?action=edit' .
-					'&id='  . get_request_var('id') .  '&tab=' . $tab) .
+				" href='" . html_escape(CACTI_PATH_URL . get_reports_page() . '?action=edit' .
+					'&id=' . get_request_var('id') . '&tab=' . $tab) .
 				"'>" . $name . '</a></li>';
 		}
 
@@ -1785,9 +1785,9 @@ function display_reports_items($report_id) {
 			if ($i == 1) {
 				$form_data .= '<td class="right nowrap"><a class="pic remover ti ti-caret-down-filled moveArrow" style="padding:3px" title="' . __esc('Move Down') . '" href="' . html_escape(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<span style="padding:5ps" class="moveArrowNone"></span>';
 			} elseif ($i > 1 && $i < cacti_sizeof($items)) {
-				$form_data .= '<td class="right nowrap"><a class="pic remover ti ti-caret-down-filled moveArrow" style="padding:3px" title="' . __esc('Move Down') . '" href="' . html_escape(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<a class="remover ti ti-caret-up-filled moveArrow" style="padding:3px" title="' . __esc('Move Up') . '" href="' . html_escape(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>';
+				$form_data .= '<td class="right nowrap"><a class="pic remover ti ti-caret-down-filled moveArrow" style="padding:3px" title="' . __esc('Move Down') . '" href="' . html_escape(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<a class="remover ti ti-caret-up-filled moveArrow" style="padding:3px" title="' . __esc('Move Up') . '" href="' . html_escape(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>';
 			} else {
-				$form_data .= '<td class="right nowrap"><span style="padding:3px" class="moveArrowNone"></span>' . '<a class="remover ti ti-caret-up-filled moveArrow" style="padding:3px" title="' . __esc('Move Up') . '" href="' . html_escape(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>';
+				$form_data .= '<td class="right nowrap"><span style="padding:3px" class="moveArrowNone"></span>' . '<a class="remover ti ti-caret-up-filled moveArrow" style="padding:3px" title="' . __esc('Move Up') . '" href="' . html_escape(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>';
 			}
 
 			$form_data .= '<a class="pic deleteMarker ti ti-x" style="padding:3px" href="' . html_escape(get_reports_page() . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $report_id) . '" title="' . __esc('Delete') . '"></a>' . '</td></tr>';
@@ -2094,7 +2094,7 @@ function reports() {
 				FROM plugin_reportit_reports AS report
 				$sql_join
 				$sql_where
-				ORDER BY " .  get_request_var('sort_column') . ' ' .  get_request_var('sort_direction') .
+				ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
 				' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows);
 		} elseif (get_request_var('report_type') == 'reports') {
 			$total_rows = db_fetch_cell("SELECT COUNT(report.id)
@@ -2109,7 +2109,7 @@ function reports() {
 				FROM reports AS report
 				$sql_join
 				$sql_where
-				ORDER BY " .  get_request_var('sort_column') . ' ' .  get_request_var('sort_direction') .
+				ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
 				' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows);
 		} else {
 			$total_rows = db_fetch_cell("SELECT COUNT(report.id)
@@ -2124,7 +2124,7 @@ function reports() {
 				FROM plugin_reportit_reports AS report
 				$sql_join
 				$sql_where
-				ORDER BY " .  get_request_var('sort_column') . ' ' .  get_request_var('sort_direction') .
+				ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
 				' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows);
 		}
 	} else {
@@ -2140,7 +2140,7 @@ function reports() {
 			FROM reports AS report
 			$sql_join
 			$sql_where
-			ORDER BY " .  get_request_var('sort_column') . ' ' .  get_request_var('sort_direction') .
+			ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
 			' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows);
 	}
 

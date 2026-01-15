@@ -42,13 +42,13 @@ if (POLLER_ID == 1) {
 }
 
 $poller_status = [
-	POLLER_STATUS_NEW        => '<div class="deviceUnknown">'    . __('New/Idle')     . '</div>',
-	POLLER_STATUS_RUNNING    => '<div class="deviceUp">'         . __('Running')      . '</div>',
-	POLLER_STATUS_IDLE       => '<div class="deviceRecovering">' . __('Idle')         . '</div>',
-	POLLER_STATUS_DOWN       => '<div class="deviceDown">'       . __('Down')         . '</div>',
-	POLLER_STATUS_DISABLED   => '<div class="deviceDisabled">'   . __('Disabled')     . '</div>',
-	POLLER_STATUS_RECOVERING => '<div class="deviceDown">'       . __('Recovering')   . '</div>',
-	POLLER_STATUS_HEARTBEAT  => '<div class="deviceDown">'       . __('Heartbeat')    . '</div>',
+	POLLER_STATUS_NEW        => '<div class="deviceUnknown">' . __('New/Idle') . '</div>',
+	POLLER_STATUS_RUNNING    => '<div class="deviceUp">' . __('Running') . '</div>',
+	POLLER_STATUS_IDLE       => '<div class="deviceRecovering">' . __('Idle') . '</div>',
+	POLLER_STATUS_DOWN       => '<div class="deviceDown">' . __('Down') . '</div>',
+	POLLER_STATUS_DISABLED   => '<div class="deviceDisabled">' . __('Disabled') . '</div>',
+	POLLER_STATUS_RECOVERING => '<div class="deviceDown">' . __('Recovering') . '</div>',
+	POLLER_STATUS_HEARTBEAT  => '<div class="deviceDown">' . __('Heartbeat') . '</div>',
 ];
 
 $logfile_verbosity = array_merge([-1 => __('Use Cacti Log Level')], $logfile_verbosity);
@@ -1051,7 +1051,7 @@ function pollers() {
 				$poller['status'] = 6;
 			}
 
-			$mma = round($poller['avg_time'] ?: 0, 2) . '/' .  round(max($poller['max_time'] ?: 1, 1), 2);
+			$mma = round($poller['avg_time'] ?: 0, 2) . '/' . round(max($poller['max_time'] ?: 1, 1), 2);
 
 			if (empty($poller['name'])) {
 				$poller['name'] = '&lt;no name&gt;';

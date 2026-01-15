@@ -535,10 +535,10 @@ function do_rrdcheck($thread_id = 1) {
 		$total_real   += $real_time;
 		$total_dsses  += $dsses;
 
-		set_config_option('rrdcheck_rrd_system_'  . $type . '_' . $thread_id, $total_system);
-		set_config_option('rrdcheck_rrd_user_'    . $type . '_' . $thread_id, $total_user);
-		set_config_option('rrdcheck_rrd_real_'    . $type . '_' . $thread_id, $total_real);
-		set_config_option('rrdcheck_total_rrds_'  . $type . '_' . $thread_id, $rrd_files);
+		set_config_option('rrdcheck_rrd_system_' . $type . '_' . $thread_id, $total_system);
+		set_config_option('rrdcheck_rrd_user_' . $type . '_' . $thread_id, $total_user);
+		set_config_option('rrdcheck_rrd_real_' . $type . '_' . $thread_id, $total_real);
+		set_config_option('rrdcheck_total_rrds_' . $type . '_' . $thread_id, $rrd_files);
 		set_config_option('rrdcheck_total_dsses_' . $type . '_' . $thread_id, $total_dsses);
 	}
 }
@@ -688,8 +688,8 @@ function rrdcheck_error_handler($errno, $errmsg, $filename, $linenum, $vars = []
 		}
 
 		/* create an error string for the log */
-		$err = "ERRNO:'"  . $errno   . "' TYPE:'"    . $errortype[$errno] .
-			"' MESSAGE:'" . $errmsg  . "' IN FILE:'" . $filename .
+		$err = "ERRNO:'" . $errno . "' TYPE:'" . $errortype[$errno] .
+			"' MESSAGE:'" . $errmsg . "' IN FILE:'" . $filename .
 			"' LINE NO:'" . $linenum . "'";
 
 		/* let's ignore some lesser issues */

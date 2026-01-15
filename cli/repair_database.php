@@ -1211,7 +1211,7 @@ function snmp_index_repairs() {
 	if ($broken_ds > 0) {
 		print_separator(true);
 		printf('WARNING: There remain %s Data Sources with invalid SNMP index information.' . PHP_EOL, $broken_ds);
-		printf('         Go to Console > Management > Data Sources and filter for the'. PHP_EOL);
+		printf('         Go to Console > Management > Data Sources and filter for the' . PHP_EOL);
 		printf('         Status of Bad Indexes and repair by hand.' . PHP_EOL);
 	}
 }

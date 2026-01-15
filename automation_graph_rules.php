@@ -177,7 +177,7 @@ function automation_import() {
 	if ((isset($_SESSION['import_debug_info'])) && (is_array($_SESSION['import_debug_info']))) {
 		html_start_box(__('Import Results'), '60%', false, 3, 'center', '');
 
-		print '<tr class="tableHeader"><th>' . __('Cacti has Imported the following Graph Rules'). '</th></tr>';
+		print '<tr class="tableHeader"><th>' . __('Cacti has Imported the following Graph Rules') . '</th></tr>';
 
 		foreach ($_SESSION['import_debug_info'] as $line) {
 			print '<tr><td>' . $line . '</td></tr>';
@@ -230,21 +230,21 @@ function automation_import_process() {
 	if (sizeof($return_data) && isset($return_data['success'])) {
 		foreach ($return_data['success'] as $message) {
 			$debug_data[] = '<span class="deviceUp">' . __('NOTE:') . '</span> ' . $message;
-			automation_log('NOTE: Automation Graph Rules Import Succeeded!.  Message: '. $message, AUTOMATION_LOG_LOW);
+			automation_log('NOTE: Automation Graph Rules Import Succeeded!.  Message: ' . $message, AUTOMATION_LOG_LOW);
 		}
 	}
 
 	if (isset($return_data['errors'])) {
 		foreach ($return_data['errors'] as $error) {
 			$debug_data[] = '<span class="deviceDown">' . __('ERROR:') . '</span> ' . $error;
-			automation_log('NOTE: Automation Graph Rules Import Error!.  Message: '. $error, AUTOMATION_LOG_LOW);
+			automation_log('NOTE: Automation Graph Rules Import Error!.  Message: ' . $error, AUTOMATION_LOG_LOW);
 		}
 	}
 
 	if (isset($return_data['failure'])) {
 		foreach ($return_data['failure'] as $message) {
 			$debug_data[] = '<span class="deviceDown">' . __('ERROR:') . '</span> ' . $message;
-			automation_log('NOTE: Automation Graph Rules Import Failed!.  Message: '. $message, AUTOMATION_LOG_LOW);
+			automation_log('NOTE: Automation Graph Rules Import Failed!.  Message: ' . $message, AUTOMATION_LOG_LOW);
 		}
 	}
 
@@ -589,7 +589,7 @@ function automation_graph_rules_item_edit() {
 		form_hidden_box('save_component_automation_graph_rule_item', '1', '');
 	}
 
-	form_save_button('automation_graph_rules.php?action=edit&id=' . get_request_var('id') . '&rule_type='. get_request_var('rule_type'));
+	form_save_button('automation_graph_rules.php?action=edit&id=' . get_request_var('id') . '&rule_type=' . get_request_var('rule_type'));
 
 	?>
 	<script type='text/javascript'>

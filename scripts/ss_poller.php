@@ -231,8 +231,8 @@ function ss_poller_items() {
 	}
 
 	return trim(
-		'snmp:'          . $entries[0] . ' ' .
-		'script:'        . $entries[1] . ' ' .
+		'snmp:' . $entries[0] . ' ' .
+		'script:' . $entries[1] . ' ' .
 		'script_server:' . $entries[2]
 	);
 }

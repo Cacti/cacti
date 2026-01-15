@@ -196,7 +196,7 @@ function utilities_clear_logfile() {
 			print "<tr><td class='deviceDown'><b>" . __('Error: Unable to clear log, no write permissions.') . '<b></td></tr>';
 		}
 	} else {
-		print "<tr><td class='deviceDown'><b>" . __('Error: Unable to clear log, file does not exist.'). '</b></td></tr>';
+		print "<tr><td class='deviceDown'><b>" . __('Error: Unable to clear log, file does not exist.') . '</b></td></tr>';
 	}
 	html_end_box();
 }
@@ -1847,7 +1847,7 @@ function snmpagent_utilities_run_eventlog() {
 
 	$logs = db_fetch_assoc_prepared($sql_query, $sql_params);
 
-	$nav = html_nav_bar('utilities.php?action=view_snmpagent_events&severity='. get_request_var('severity').'&receiver='. get_request_var('receiver').'&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Log Entries'), 'page', 'main');
+	$nav = html_nav_bar('utilities.php?action=view_snmpagent_events&severity=' . get_request_var('severity') . '&receiver=' . get_request_var('receiver') . '&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Log Entries'), 'page', 'main');
 
 	form_start('managers.php', 'chk');
 

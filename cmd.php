@@ -337,11 +337,11 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 
 		$php_path = read_config_option('path_php_binary');
 
-		$command = $php_path     . ' -q ' .
+		$command = $php_path . ' -q ' .
 			CACTI_PATH_BASE . '/script_server.php ' .
-			' --environ=cmd '    .
-			' --poller='         . $poller_id .
-			' --mode='           . CACTI_CONNECTION;
+			' --environ=cmd ' .
+			' --poller=' . $poller_id .
+			' --mode=' . CACTI_CONNECTION;
 
 		$cactiphp = proc_open($command, $cactides, $pipes);
 		$output   = fgets($pipes[1], 1024);
@@ -551,10 +551,10 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 
 	cacti_log(sprintf(
 		'Time: %01.4f s, ' .
-			'Poller: %s, '     .
-			'Threads: N/A, '   .
-			'Devices: %d, '    .
-			'Items: %d, '      .
+			'Poller: %s, ' .
+			'Threads: N/A, ' .
+			'Devices: %d, ' .
+			'Items: %d, ' .
 			'Errors: %d',
 		round($end - $start, 4),
 		$poller_id,
@@ -595,7 +595,7 @@ if (cacti_sizeof($hosts)) {
 		// perform the appropriate ping check of the host
 		if ($ping->ping($host['availability_method'], $host['ping_method'], $host['ping_timeout'], $host['ping_retries'])) {
 			update_host_status(HOST_UP, $host['id'], $ping, $host['availability_method'], $print_data_to_stdout);
-			cacti_log('Device[' . $host['id'] ."] STATUS: Device '" . $host['hostname'] . "' is UP.", $print_data_to_stdout, 'POLLER', debug_level($host['id'], POLLER_VERBOSITY_MEDIUM));
+			cacti_log('Device[' . $host['id'] . "] STATUS: Device '" . $host['hostname'] . "' is UP.", $print_data_to_stdout, 'POLLER', debug_level($host['id'], POLLER_VERBOSITY_MEDIUM));
 		} else {
 			update_host_status(HOST_DOWN, $host['id'], $ping, $host['availability_method'], $print_data_to_stdout);
 			cacti_log('Device[' . $host['id'] . "] STATUS: Device '" . $host['hostname'] . "' is Down.", $print_data_to_stdout, 'POLLER', debug_level($host['id'], POLLER_VERBOSITY_MEDIUM));

@@ -1641,7 +1641,7 @@ function api_device_ping_device(string|null $device_id, bool $from_remote = fals
 					}
 
 					if ($snmp_system == '') {
-						print "<span class='hostDown'>" . __('Host') . ' ' .  __('SNMP error');
+						print "<span class='hostDown'>" . __('Host') . ' ' . __('SNMP error');
 
 						if ($snmp_error != '') {
 							print " - $snmp_error";
@@ -1901,16 +1901,16 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 	$clone_dq   = strtolower($clone_dq);
 	$clone_dt   = strtolower($clone_dt);
 
-	printf('Cloning Criteria for Device Template are:'                                   . PHP_EOL);
+	printf('Cloning Criteria for Device Template are:' . PHP_EOL);
 	printf('---------------------------------------------------------------------------' . PHP_EOL);
 	printf('NOTE: Include Graph Template: ' . ($include_gt != '' ? $include_gt : 'none') . PHP_EOL);
 	printf('NOTE: Include Data Query:     ' . ($include_dq != '' ? $include_dq : 'none') . PHP_EOL);
 	printf('NOTE: Include Data Template:  ' . ($include_dt != '' ? $include_dt : 'none') . PHP_EOL);
-	printf('NOTE: Clone Graph Template:   ' . ($clone_gt != '' ? $clone_gt : 'none')   . PHP_EOL);
-	printf('NOTE: Clone Data Query:       ' . ($clone_dq != '' ? $clone_dq : 'none')   . PHP_EOL);
-	printf('NOTE: Clone Data Template:    ' . ($clone_dt != '' ? $clone_dt : 'none')   . PHP_EOL);
-	printf('NOTE: Clone XML Files:        ' . ($clone_xml != '' ? 'yes' : 'no')         . PHP_EOL);
-	printf('NOTE: Clone Script Files:     ' . ($clone_script != '' ? 'yes' : 'no')         . PHP_EOL);
+	printf('NOTE: Clone Graph Template:   ' . ($clone_gt != '' ? $clone_gt : 'none') . PHP_EOL);
+	printf('NOTE: Clone Data Query:       ' . ($clone_dq != '' ? $clone_dq : 'none') . PHP_EOL);
+	printf('NOTE: Clone Data Template:    ' . ($clone_dt != '' ? $clone_dt : 'none') . PHP_EOL);
+	printf('NOTE: Clone XML Files:        ' . ($clone_xml != '' ? 'yes' : 'no') . PHP_EOL);
+	printf('NOTE: Clone Script Files:     ' . ($clone_script != '' ? 'yes' : 'no') . PHP_EOL);
 	printf('---------------------------------------------------------------------------' . PHP_EOL);
 
 	if ($include_gt == 'all' && $clone_gt != '') {

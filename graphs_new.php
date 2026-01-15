@@ -563,7 +563,7 @@ function graphs() {
 
 		print "<tr class='tableHeader'>
 			<th class='tableSubHeaderColumn'>" . __('Graph Template Name') . "</th>
-			<th class='tableSubHeaderCheckbox'><input class='checkbox' type='checkbox' id='all_cg' title='" . __esc('Select All') . "' onClick='selectAll(\"sg\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All Rows'). "' for='all_cg'></label></th>
+			<th class='tableSubHeaderCheckbox'><input class='checkbox' type='checkbox' id='all_cg' title='" . __esc('Select All') . "' onClick='selectAll(\"sg\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All Rows') . "' for='all_cg'></label></th>
 		</tr>";
 
 		if (get_request_var('filter') != '') {
@@ -871,7 +871,7 @@ function graphs() {
 						} else {
 							print "<tr class='tableHeader'>
 									$html_dq_header
-									<th class='tableSubHeaderCheckbox'><input class='checkbox' id='all_" . $snmp_query['id'] . "' type='checkbox' name='all_" . $snmp_query['id'] . "' title='" . __esc('Select All') . "' onClick='selectAll(\"sg_" . $snmp_query['id'] . "\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All Rows'). "' for='all_" . $snmp_query['id'] . "'></label></th>
+									<th class='tableSubHeaderCheckbox'><input class='checkbox' id='all_" . $snmp_query['id'] . "' type='checkbox' name='all_" . $snmp_query['id'] . "' title='" . __esc('Select All') . "' onClick='selectAll(\"sg_" . $snmp_query['id'] . "\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All Rows') . "' for='all_" . $snmp_query['id'] . "'></label></th>
 								</tr>";
 						}
 
@@ -969,7 +969,7 @@ function graphs() {
 							" . __('Select a Graph Type to Create') . "
 						</td>
 						<td class='right'>
-							<button type='button' class='ui-button ui-corner-all ui-widget default' id='default_" .  $snmp_query['id'] . "' title='" . __esc('Make selection default') . "'>" . __esc('Set Default') . "</button>
+							<button type='button' class='ui-button ui-corner-all ui-widget default' id='default_" . $snmp_query['id'] . "' title='" . __esc('Make selection default') . "'>" . __esc('Set Default') . "</button>
 						</td>
 						<td class='right'>
 							<select class='dqselect' name='sgg_" . $snmp_query['id'] . "' id='sgg_" . $snmp_query['id'] . "' onChange='dqUpdateDeps(" . $snmp_query['id'] . ',' . (isset($column_counter) ? $column_counter : '') . ");'>

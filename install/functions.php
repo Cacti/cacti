@@ -1409,7 +1409,7 @@ function log_install_and_file($level, $text, $section = '', $background = false)
 function log_install_section_level($section) {
 	$log_level   = POLLER_VERBOSITY_NONE;
 	$log_install = log_install_level('log_install', POLLER_VERBOSITY_NONE);
-	$log_section = log_install_level('log_install_'.$section, POLLER_VERBOSITY_NONE);
+	$log_section = log_install_level('log_install_' . $section, POLLER_VERBOSITY_NONE);
 
 	if ($log_install > $log_level) {
 		$log_level = $log_install;

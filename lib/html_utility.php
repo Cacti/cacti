@@ -1212,9 +1212,9 @@ function update_order_string($inplace = false) {
 			if ($column == 'ip' || $column == 'ip_address') {
 				$_SESSION['sort_string'][$page] = 'ORDER BY INET_ATON(' . $column . ') ' . $direction;
 			} elseif ($column == 'hostname' && $natural) {
-				$_SESSION['sort_string'][$page] = 'ORDER BY NATURAL_SORT_KEY(' . $del . implode($del . '.'. $del, explode('.', get_request_var('sort_column'))) . $del . ') ' . get_request_var('sort_direction');
+				$_SESSION['sort_string'][$page] = 'ORDER BY NATURAL_SORT_KEY(' . $del . implode($del . '.' . $del, explode('.', get_request_var('sort_column'))) . $del . ') ' . get_request_var('sort_direction');
 			} else {
-				$_SESSION['sort_string'][$page] = 'ORDER BY ' . $del . implode($del . '.'. $del, explode('.', get_request_var('sort_column'))) . $del . ' ' . get_request_var('sort_direction');
+				$_SESSION['sort_string'][$page] = 'ORDER BY ' . $del . implode($del . '.' . $del, explode('.', get_request_var('sort_column'))) . $del . ' ' . get_request_var('sort_direction');
 			}
 		} elseif (isset_request_var('sort_column')) {
 			if (isset_request_var('reset')) {

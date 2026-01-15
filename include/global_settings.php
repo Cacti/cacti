@@ -1198,7 +1198,7 @@ $settings['visual'] = [
 	],
 	'num_rows_table' => [
 		'friendly_name' => __('Rows Per Page'),
-		'description'   => __('The default number of rows to display on for a table.') . ' ' . __('.  This is limited by the php setting \'max_input_vars\', currently:') .  ' ' . ini_get('max_input_vars'),
+		'description'   => __('The default number of rows to display on for a table.') . ' ' . __('.  This is limited by the php setting \'max_input_vars\', currently:') . ' ' . ini_get('max_input_vars'),
 		'method'        => 'drop_array',
 		'default'       => '30',
 		'array'         => $item_rows
@@ -1215,7 +1215,7 @@ $settings['visual'] = [
 	],
 	'autocomplete_rows' => [
 		'friendly_name' => __('Autocomplete Rows'),
-		'description'   => __('The default number of rows to return from an autocomplete based select pattern match.') . ' ' . __('.  This is limited by the php setting \'max_input_vars\', currently:') .  ' ' . ini_get('max_input_vars'),
+		'description'   => __('The default number of rows to return from an autocomplete based select pattern match.') . ' ' . __('.  This is limited by the php setting \'max_input_vars\', currently:') . ' ' . ini_get('max_input_vars'),
 		'method'        => 'drop_array',
 		'default'       => '30',
 		'array'         => $item_rows
@@ -1365,7 +1365,7 @@ $settings['visual'] = [
 		'friendly_name' => __('Cache Directory'),
 		'description'   => __('This is the location, on the web server where the RRDfiles and PNG files will be cached.  This cache will be managed by the poller.  Make sure you have the correct read and write permissions on this folder'),
 		'method'        => 'dirpath',
-		'default'       => CACTI_PATH_CACHE. '/realtime/',
+		'default'       => CACTI_PATH_CACHE . '/realtime/',
 		'max_length'    => 255,
 		'size'          => 40,
 	],
@@ -2363,7 +2363,7 @@ $settings['mail'] = [
 		'description'   => __('Please check this URI. It could be accessible from internet.'),
 		'method'        => 'textbox',
 		'max_length'    => 255,
-		'default'       => get_url_type() .'://' . gethostname() . CACTI_PATH_URL . 'oauth2.php'
+		'default'       => get_url_type() . '://' . gethostname() . CACTI_PATH_URL . 'oauth2.php'
 	],
 	'settings_oauth2_refresh_token' => [
 		'friendly_name' => __('OAuth2 refresh token'),
@@ -2607,7 +2607,7 @@ $settings['boost'] = [
 		'description'   => __('Specify the location where Boost should place your image files.  These files will be automatically purged by the poller when they expire.'),
 		'method'        => 'dirpath',
 		'max_length'    => '255',
-		'default'       => CACTI_PATH_CACHE. '/boost/'
+		'default'       => CACTI_PATH_CACHE . '/boost/'
 	]
 ];
 
@@ -3035,7 +3035,7 @@ $settings['spikes'] = [
 		'friendly_name' => __('RRDfile Backup Directory'),
 		'description'   => __('If this directory is not empty, then your original RRDfiles will be backed up to this location.'),
 		'method'        => 'dirpath',
-		'default'       => CACTI_PATH_CACHE. '/spikekill/',
+		'default'       => CACTI_PATH_CACHE . '/spikekill/',
 		'max_length'    => '255',
 		'size'          => '60'
 	],

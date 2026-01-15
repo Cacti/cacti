@@ -435,7 +435,7 @@ function display_help() {
 	print '  option has a prefix, this is optional and is automatically added to the' . PHP_EOL;
 	print '  the option_key specified if it does not start with that prefix' . PHP_EOL . PHP_EOL;
 	print '  Note: reusing an option_key will replace its value with the last one' . PHP_EOL;
-	print '        specified.' .PHP_EOL . PHP_EOL;
+	print '        specified.' . PHP_EOL . PHP_EOL;
 	print '       --path             - Sets path locations. Example: ' . PHP_EOL;
 	print '                              --path=cactilog:/usr/share/cacti/log/cacti.log' . PHP_EOL;
 	print '                              --path=cactilog:c:\cacti\log\cacti.log' . PHP_EOL;

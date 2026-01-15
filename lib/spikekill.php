@@ -775,7 +775,7 @@ class spikekill {
 		}
 
 		$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
-			"NOTE: Backing Up '$rrdfile' to '" . $backupdir . '/' .  $newfile . "'" . ($this->html ? "</p>\n" : "\n");
+			"NOTE: Backing Up '$rrdfile' to '" . $backupdir . '/' . $newfile . "'" . ($this->html ? "</p>\n" : "\n");
 
 		return copy($rrdfile, $backupdir . '/' . $newfile);
 	}

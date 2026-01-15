@@ -89,17 +89,17 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 
 		return "($local_data_id, " . $host['poller_id'] . ', ' .
 			$host['id'] . ", $poller_action_id," .
-			db_qstr($host['hostname'])             . ', ' . db_qstr($host['snmp_community'])       . ', ' .
-			db_qstr($host['snmp_version'])         . ', ' . db_qstr($host['snmp_timeout'])         . ', ' .
-			db_qstr($host['snmp_retries'])         . ', ' . db_qstr($host['snmp_username'])        . ', ' .
-			db_qstr($host['snmp_password'])        . ', ' . db_qstr($host['snmp_auth_protocol'])   . ', ' .
-			db_qstr($host['snmp_priv_passphrase']) . ', ' . db_qstr($host['snmp_priv_protocol'])   . ', ' .
-			db_qstr($host['snmp_context'])         . ', ' . db_qstr($host['snmp_engine_id'])       . ', ' .
-			db_qstr($host['snmp_port'])            . ', ' . db_qstr($data_source_item_name)        . ', ' .
+			db_qstr($host['hostname']) . ', ' . db_qstr($host['snmp_community']) . ', ' .
+			db_qstr($host['snmp_version']) . ', ' . db_qstr($host['snmp_timeout']) . ', ' .
+			db_qstr($host['snmp_retries']) . ', ' . db_qstr($host['snmp_username']) . ', ' .
+			db_qstr($host['snmp_password']) . ', ' . db_qstr($host['snmp_auth_protocol']) . ', ' .
+			db_qstr($host['snmp_priv_passphrase']) . ', ' . db_qstr($host['snmp_priv_protocol']) . ', ' .
+			db_qstr($host['snmp_context']) . ', ' . db_qstr($host['snmp_engine_id']) . ', ' .
+			db_qstr($host['snmp_port']) . ', ' . db_qstr($data_source_item_name) . ', ' .
 			db_qstr(clean_up_path(get_data_source_path($local_data_id, true))) . ', ' .
-			db_qstr($num_rrd_items)                . ', ' . db_qstr($rrd_step)                     . ', ' .
-			db_qstr($rrd_next_step)                . ', ' . db_qstr($arg1)                         . ', ' .
-			db_qstr($arg2)                         . ', ' . db_qstr($arg3) . ", '1')";
+			db_qstr($num_rrd_items) . ', ' . db_qstr($rrd_step) . ', ' .
+			db_qstr($rrd_next_step) . ', ' . db_qstr($arg1) . ', ' .
+			db_qstr($arg2) . ', ' . db_qstr($arg3) . ", '1')";
 	}
 }
 

@@ -81,7 +81,7 @@ function set_auth_cookie(array $user): void {
 	if (db_table_exists('user_auth_cache')) {
 		clear_auth_cookie();
 
-		$nssecret = md5($_SERVER['REQUEST_TIME'] .  mt_rand(10000,10000000)) . md5(get_client_addr());
+		$nssecret = md5($_SERVER['REQUEST_TIME'] . mt_rand(10000,10000000)) . md5(get_client_addr());
 
 		$secret = hash('sha512', $nssecret, false);
 
@@ -2646,7 +2646,7 @@ function get_allowed_branches(string $sql_where = '', string $sql_order = 'name'
 		$sql_where = 'WHERE gt.enabled="on" AND (' . $sql_where1 . ')';
 	}
 
-	$sql = "(SELECT gti.id, CONCAT('". __('Branch:') . " ', gti.title) AS name
+	$sql = "(SELECT gti.id, CONCAT('" . __('Branch:') . " ', gti.title) AS name
 		FROM graph_tree AS gt
 		INNER JOIN graph_tree_items AS gti
 		ON gti.graph_tree_id = gt.id
@@ -4476,7 +4476,7 @@ function secpass_check_pass(string $password): string {
 			CURLOPT_TIMEOUT	       => 120,    // time-out on response
 		];
 
-		$ch = curl_init('https://api.pwnedpasswords.com/range/'.substr($sha1,0,5));
+		$ch = curl_init('https://api.pwnedpasswords.com/range/' . substr($sha1,0,5));
 		curl_setopt_array($ch, $options);
 
 		$content  = curl_exec($ch);

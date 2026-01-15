@@ -96,7 +96,7 @@ function db_fetch_row_parallel($sql, $threads = 2, $log = true, $db_conn = false
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
-		db_echo_sql('db_fetch_row(\'' . clean_up_lines($sql) . '\', $log = ' . $log . ', $db_conn = ' . ($db_conn ? 'true' : 'false') .')' . "\n");
+		db_echo_sql('db_fetch_row(\'' . clean_up_lines($sql) . '\', $log = ' . $log . ', $db_conn = ' . ($db_conn ? 'true' : 'false') . ')' . "\n");
 	}
 
 	return db_fetch_row_prepared($sql, [], $log, $db_conn);
@@ -122,7 +122,7 @@ function db_fetch_row_parallel_prepared($sql, $params = [], $threads = 2, $log =
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
-		db_echo_sql('db_fetch_row_prepared(\'' . clean_up_lines($sql) . '\', $params = (\'' . implode('\', \'', $params) . '\'), $log = ' . $log . ', $db_conn = ' . ($db_conn ? 'true' : 'false') .')' . "\n");
+		db_echo_sql('db_fetch_row_prepared(\'' . clean_up_lines($sql) . '\', $params = (\'' . implode('\', \'', $params) . '\'), $log = ' . $log . ', $db_conn = ' . ($db_conn ? 'true' : 'false') . ')' . "\n");
 	}
 
 	return db_execute_prepared($sql, $params, $log, $db_conn, 'Row', false, 'db_fetch_row_return');
@@ -283,31 +283,31 @@ function db_query_parallelize($sql, $log = true, $db_conn = false) {
 	 */
 	$disallowed =
 		// Import and export
-		'/(INFILE '             . // Import Option
-		'|OUTFILE '            . // Export Option
-		'|INTO DUMPFILE '      . // Export Option
-		'|INTO '               . // Export Option
+		'/(INFILE ' . // Import Option
+		'|OUTFILE ' . // Export Option
+		'|INTO DUMPFILE ' . // Export Option
+		'|INTO ' . // Export Option
 
 		// Aggregation Functions
-		'|VARIANCE'            . // Aggregation Function
-		'|VAR_'                . // Aggregation Function
-		'|STD'                 . // Aggregation Function
-		'|STDDEV'              . // Aggregation Function
-		'|COUNT\(DISTINCT'     . // Aggregation Function
+		'|VARIANCE' . // Aggregation Function
+		'|VAR_' . // Aggregation Function
+		'|STD' . // Aggregation Function
+		'|STDDEV' . // Aggregation Function
+		'|COUNT\(DISTINCT' . // Aggregation Function
 
 		// Oddball Query Options
 		'|LOCK IN SHARE MODE ' . // Query Option
-		'|FOR UPDATE '         . // Update Option
-		'|FOR SYSTEM TIME '    . // System Table Support
-		'|PROCEDURE '          . // Stored Procedures
-		'|PARTITION '          . // PARTITION specific query
+		'|FOR UPDATE ' . // Update Option
+		'|FOR SYSTEM TIME ' . // System Table Support
+		'|PROCEDURE ' . // Stored Procedures
+		'|PARTITION ' . // PARTITION specific query
 
 		// JSON Functions
-		'|JSON_'               . // Any JSON Functions
+		'|JSON_' . // Any JSON Functions
 
 		// Index Options
-		'|FORCE '              . // FORCE Index
-		'|IGNORE '             . // IGNORE Index
+		'|FORCE ' . // FORCE Index
+		'|IGNORE ' . // IGNORE Index
 		'| USE )/i';             // USE Index
 
 	/**

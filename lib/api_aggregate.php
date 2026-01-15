@@ -89,7 +89,7 @@ function aggregate_graph_local_save(int $id = 0): int {
  * @return int ID of record in graph_templates_graph
  */
 function aggregate_graph_templates_graph_save(int $local_graph_id, int $graph_template_id, string $graph_title = '', int $aggregate_template_id = 0, array $new_data = []): int {
-	cacti_log(__FUNCTION__ . ' local_graph: ' . $local_graph_id . ' template: ' . $graph_template_id . ' title: ' . $graph_title . ' aggregate template: '. $aggregate_template_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
+	cacti_log(__FUNCTION__ . ' local_graph: ' . $local_graph_id . ' template: ' . $graph_template_id . ' title: ' . $graph_title . ' aggregate template: ' . $aggregate_template_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 	/* base graph must exist */
 	if ($local_graph_id < 1) {
@@ -762,7 +762,7 @@ function aggregate_reorder_ds_graph(int $base, string $graph_template_id, int $a
 				AND dtr.local_data_template_rrd_id = " . $ds_id['local_data_template_rrd_id'] . '
 				ORDER BY sequence';
 
-			cacti_log(__FUNCTION__ .  ' sql: ' . $sql, false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+			cacti_log(__FUNCTION__ . ' sql: ' . $sql, false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
 			$items = db_fetch_assoc($sql);
 
@@ -816,7 +816,7 @@ function aggregate_reorder_ds_graph(int $base, string $graph_template_id, int $a
 			$color_ids = [];
 		}
 
-		cacti_log(__FUNCTION__ .  ' sql: ' . $sql, false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+		cacti_log(__FUNCTION__ . ' sql: ' . $sql, false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
 		$items = db_fetch_assoc($sql);
 		$i     = 0;
@@ -863,7 +863,7 @@ function aggregate_reorder_ds_graph(int $base, string $graph_template_id, int $a
 	# now run all updates
 	if (cacti_sizeof($updates)) {
 		foreach ($updates as $update) {
-			cacti_log(__FUNCTION__ .  ' update: ' . $update, false, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
+			cacti_log(__FUNCTION__ . ' update: ' . $update, false, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 			db_execute($update);
 		}
 	}
@@ -1777,7 +1777,7 @@ function draw_aggregate_graph_items_list(int $_graph_id = 0, int $_graph_templat
 				WHERE aggregate_graph_id = ?',
 				[$_object['id']]);
 
-			$item_editor_link_param = 'aggregate_graph_id='.$_object['id'].'&local_graph_id='.$_object['local_graph_id'];
+			$item_editor_link_param = 'aggregate_graph_id=' . $_object['id'] . '&local_graph_id=' . $_object['local_graph_id'];
 			$is_templated           = false;
 		} elseif (isset($_object['aggregate_template_id'])) {
 			/* this is aggregate graph from aggregate template */
@@ -1786,7 +1786,7 @@ function draw_aggregate_graph_items_list(int $_graph_id = 0, int $_graph_templat
 				WHERE aggregate_template_id = ?',
 				[$_object['aggregate_template_id']]);
 
-			$item_editor_link_param = 'aggregate_template_id='.$_object['aggregate_template_id'];
+			$item_editor_link_param = 'aggregate_template_id=' . $_object['aggregate_template_id'];
 			$is_templated           = true;
 		} else {
 			/* this is aggregate template */
@@ -1795,7 +1795,7 @@ function draw_aggregate_graph_items_list(int $_graph_id = 0, int $_graph_templat
 				WHERE aggregate_template_id = ?',
 				[$_object['id']]);
 
-			$item_editor_link_param = 'aggregate_template_id='.$_object['id'];
+			$item_editor_link_param = 'aggregate_template_id=' . $_object['id'];
 			$is_templated           = true;
 		}
 		/* key results on item id */
@@ -1952,7 +1952,7 @@ function draw_aggregate_graph_items_list(int $_graph_id = 0, int $_graph_templat
 			print '<td>';
 
 			if (!empty($item['hex'])) {
-				print "<select id='agg_color_" . $item['id'] ."' name='agg_color_" . $item['id'] ."'>";
+				print "<select id='agg_color_" . $item['id'] . "' name='agg_color_" . $item['id'] . "'>";
 				print "<option value='0' selected>None</option>";
 				html_create_list($color_templates, 'name', 'color_template_id', ($is_edit && isset($current_vals[$item['id']]['color_template']) ? $current_vals[$item['id']]['color_template'] : ''));
 				print '</select>';
@@ -2024,7 +2024,7 @@ function draw_aggregate_template_graph_config(int $aggregate_template_id, int $g
 
 			/* value from graph template or aggregate graph template
 			(based on value of t_$field_name of aggregate_template_graph) */
-			if (cacti_sizeof($aggregate_templates_graph) && $aggregate_templates_graph['t_'.$field_name] == 'on') {
+			if (cacti_sizeof($aggregate_templates_graph) && $aggregate_templates_graph['t_' . $field_name] == 'on') {
 				$value = $aggregate_templates_graph[$field_name];
 			} else {
 				$value = $graph_templates_graph[$field_name];
@@ -2033,7 +2033,7 @@ function draw_aggregate_template_graph_config(int $aggregate_template_id, int $g
 			$form_array[$field_name]['value']        = $value;
 			$form_array[$field_name]['sub_checkbox'] = [
 				'name'          => 't_' . $field_name,
-				'friendly_name' => __('Override this Value'). '<br>',
+				'friendly_name' => __('Override this Value') . '<br>',
 				'value'         => (cacti_sizeof($aggregate_templates_graph) ? $aggregate_templates_graph['t_' . $field_name] : ''),
 				'on_change'     => 'toggleFieldEnabled(this.id);'
 			];

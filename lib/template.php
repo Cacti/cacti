@@ -132,11 +132,11 @@ function push_out_data_source_custom_data($data_template_id) {
 							/* this is not a 'host field', so we should either push out the value if it is templated */
 							$did_vals .= ($did_cnt == 0 ? '' : ',') .
 								'(' .
-									$input_field['id']               . ', ' .
-									$data_source['id']               . ', ' .
+									$input_field['id'] . ', ' .
+									$data_source['id'] . ', ' .
 									$input_field['data_template_id'] . ', ' .
-									$input_field['local_data_id']    . ', ' .
-									$input_field['host_id']          . ', ' .
+									$input_field['local_data_id'] . ', ' .
+									$input_field['host_id'] . ', ' .
 									db_qstr($template_input_fields[$input_field['id']]['value']) .
 								')';
 
@@ -145,11 +145,11 @@ function push_out_data_source_custom_data($data_template_id) {
 							/* templated input field deviates from current data source, so update required */
 							$did_vals .= ($did_cnt == 0 ? '' : ',') .
 								'(' .
-									$input_field['id']               . ', ' .
-									$data_source['id']               . ', ' .
+									$input_field['id'] . ', ' .
+									$data_source['id'] . ', ' .
 									$input_field['data_template_id'] . ', ' .
-									$input_field['local_data_id']    . ', ' .
-									$input_field['host_id']          . ', ' .
+									$input_field['local_data_id'] . ', ' .
+									$input_field['host_id'] . ', ' .
 									db_qstr($template_input_fields[$input_field['id']]['value']) .
 								')';
 							$did_cnt++;

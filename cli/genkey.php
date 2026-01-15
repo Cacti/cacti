@@ -198,10 +198,10 @@ if (($pubkey != '' && $privkey == '') || ($privkey != '' && $pubkey == '')) {
 if ((file_exists($keypair_path . '/package.pem') || file_exists($keypair_path . '/package.info')) && !$replace) {
 	print 'FATAL: Package private key or info file exists.  You must use the --replace option to replace it' . PHP_EOL;
 } else {
-	$package_info  = '[info]'               . PHP_EOL;
-	$package_info .= "author = $author"     . PHP_EOL;
+	$package_info  = '[info]' . PHP_EOL;
+	$package_info .= "author = $author" . PHP_EOL;
 	$package_info .= "homepage = $homepage" . PHP_EOL;
-	$package_info .= "email = $email"       . PHP_EOL;
+	$package_info .= "email = $email" . PHP_EOL;
 
 	file_put_contents("$keypair_path/package.info", $package_info);
 
@@ -320,7 +320,7 @@ if ((file_exists($keypair_path . '/package.pem') || file_exists($keypair_path . 
 				exit(1);
 			}
 		} else {
-			print 'NOTE: Provided private key is the existing packaging private key package.key.'. PHP_EOL;
+			print 'NOTE: Provided private key is the existing packaging private key package.key.' . PHP_EOL;
 		}
 	}
 

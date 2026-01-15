@@ -127,7 +127,7 @@ if ($hasEverything) {
 	}
 
 	if (!($hasExec && $hasShellExec)) {
-		print '<li>' . __('The shell_exec() and/or exec() functions are currently blocked.') . '<br>' . __('See the PHP Manual: <a href="http://php.net/manual/en/ini.core.php#ini.disable-functions">Disable Functions</a>.') .'</li>';
+		print '<li>' . __('The shell_exec() and/or exec() functions are currently blocked.') . '<br>' . __('See the PHP Manual: <a href="http://php.net/manual/en/ini.core.php#ini.disable-functions">Disable Functions</a>.') . '</li>';
 	}
 	print '</ul></div>';
 }

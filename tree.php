@@ -803,7 +803,7 @@ function tree_edit($partial = false) {
 	} elseif (isset($tree['locked']) && $tree['locked'] == 1) {
 		$lockdiv = "<div style='padding:5px 5px 5px 0px'><table><tr>
 			<td><button type='button' class='ui-button ui-corner-all ui-widget' id='unlock'>" . __esc('Finish Editing Tree') . "</button></td>
-			<td><button type='button' class='ui-button ui-corner-all ui-widget' id='addbranch' onClick='createNode()'>" .  __esc('Add Root Branch') . "</button></td>
+			<td><button type='button' class='ui-button ui-corner-all ui-widget' id='addbranch' onClick='createNode()'>" . __esc('Add Root Branch') . "</button></td>
 			<td style='font-weight:bold;'>" . __('This tree has been locked for Editing on %s by %s.', $tree['locked_date'], get_username($tree['modified_by']));
 
 		if ($tree['modified_by'] == $_SESSION[SESS_USER_ID]) {
@@ -1923,9 +1923,9 @@ function tree_edit($partial = false) {
 function display_sites() {
 	if (get_nfilter_request_var('filter') != '') {
 		$sql_where = 'WHERE
-			name LIKE '	   . db_qstr('%' . get_nfilter_request_var('filter') . '%') . '
-			OR city LIKE '	. db_qstr('%' . get_nfilter_request_var('filter') . '%') . '
-			OR state LIKE '   . db_qstr('%' . get_nfilter_request_var('filter') . '%') . '
+			name LIKE ' . db_qstr('%' . get_nfilter_request_var('filter') . '%') . '
+			OR city LIKE ' . db_qstr('%' . get_nfilter_request_var('filter') . '%') . '
+			OR state LIKE ' . db_qstr('%' . get_nfilter_request_var('filter') . '%') . '
 			OR country LIKE ' . db_qstr('%' . get_nfilter_request_var('filter') . '%');
 	} else {
 		$sql_where = '';
@@ -1947,7 +1947,7 @@ function display_hosts() {
 
 	if (get_nfilter_request_var('filter') != '') {
 		$sql_where .= 'h.hostname LIKE ' . db_qstr('%' . get_nfilter_request_var('filter') . '%') . '
-			OR h.description LIKE '	  . db_qstr('%' . get_nfilter_request_var('filter') . '%');
+			OR h.description LIKE ' . db_qstr('%' . get_nfilter_request_var('filter') . '%');
 	}
 
 	if ($site_ids != '') {

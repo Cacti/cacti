@@ -363,8 +363,8 @@ function aggregate_error_handler(int $errno, string $errmsg, string $filename, i
 		];
 
 		/* create an error string for the log */
-		$err = "ERRNO:'"  . $errno   . "' TYPE:'"    . $errortype[$errno] .
-			"' MESSAGE:'" . $errmsg  . "' IN FILE:'" . $filename .
+		$err = "ERRNO:'" . $errno . "' TYPE:'" . $errortype[$errno] .
+			"' MESSAGE:'" . $errmsg . "' IN FILE:'" . $filename .
 			"' LINE NO:'" . $linenum . "'";
 
 		/* let's ignore some lesser issues */
@@ -745,7 +745,7 @@ function aggregate_cdef_make0(): int {
 function aggregate_cdef_totalling(int $_new_graph_id, int $_graph_item_sequence, int $_total_type): void {
 	include_once(CACTI_PATH_LIBRARY . '/cdef.php');
 
-	cacti_log(__FUNCTION__ . ' called. Working on Graph: ' . $_new_graph_id . ' sequence: ' .  $_graph_item_sequence  . ' totalling: ' . $_total_type, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
+	cacti_log(__FUNCTION__ . ' called. Working on Graph: ' . $_new_graph_id . ' sequence: ' . $_graph_item_sequence . ' totalling: ' . $_total_type, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 	$graph_template_items = [];
 

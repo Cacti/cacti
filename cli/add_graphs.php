@@ -383,7 +383,7 @@ if (cacti_sizeof($parms)) {
 		if ($dsGraph['snmpQueryType'] != '') {
 			if (!isset($snmp_query_types[$dsGraph['snmpQueryType']])) {
 				print 'ERROR: Unknown snmp-query-type-id (' . $dsGraph['snmpQueryType'] . ')' . PHP_EOL;
-				print 'Try --snmp-query-id=' . $dsGraph['snmpQueryId'] . ' --list-query-types'. PHP_EOL;
+				print 'Try --snmp-query-id=' . $dsGraph['snmpQueryId'] . ' --list-query-types' . PHP_EOL;
 
 				exit(1);
 			}
@@ -471,7 +471,7 @@ if (cacti_sizeof($parms)) {
 			}
 		} elseif ($nbSnmpValuesRegex) {
 			if ($nbSnmpFields != $nbSnmpValuesRegex) {
-				print "ERROR: number of --snmp-field ($nbSnmpFields) and --snmp-value-regex ($nbSnmpValuesRegex) does not match"  . PHP_EOL;
+				print "ERROR: number of --snmp-field ($nbSnmpFields) and --snmp-value-regex ($nbSnmpValuesRegex) does not match" . PHP_EOL;
 
 				exit(1);
 			}
@@ -517,7 +517,7 @@ if (cacti_sizeof($parms)) {
 
 				if (!$ok) {
 					print "ERROR: Unknown snmp-value for field $snmpField - $snmpValue" . PHP_EOL;
-					print "Try --snmp-field=$snmpField --list-snmp-values"  . PHP_EOL;
+					print "Try --snmp-field=$snmpField --list-snmp-values" . PHP_EOL;
 
 					exit(1);
 				}
@@ -548,7 +548,7 @@ if (cacti_sizeof($parms)) {
 		foreach ($dsGraph['snmpFieldExclude'] as $snmpField) {
 			if ($snmpField != '') {
 				if (!isset($snmpFields[$snmpField])) {
-					print 'ERROR: Unknown snmp-field-exclude ' . $dsGraph['snmpFieldExclude'][$index_filter] . " for host $host_id"  . PHP_EOL;
+					print 'ERROR: Unknown snmp-field-exclude ' . $dsGraph['snmpFieldExclude'][$index_filter] . " for host $host_id" . PHP_EOL;
 					print 'Try --list-snmp-fields' . PHP_EOL;
 
 					exit(1);
@@ -742,7 +742,7 @@ if (cacti_sizeof($parms)) {
 					SELECT DISTINCT snmp_index FROM host_snmp_cache WHERE host_id=' . $host_id . ' AND field_name = ' . db_qstr($snmpField);
 
 				if (isset($dsGraph['snmpValue'][$index_snmp_filter])) {
-					$req .= ' AND field_value = ' . db_qstr($dsGraph['snmpValue'][$index_snmp_filter]). ')';
+					$req .= ' AND field_value = ' . db_qstr($dsGraph['snmpValue'][$index_snmp_filter]) . ')';
 				} elseif (isset($dsGraph['snmpValueRegex'][$index_snmp_filter])) {
 					$req .= ' AND field_value REGEXP "' . addslashes($dsGraph['snmpValueRegex'][$index_snmp_filter]) . '")';
 				}

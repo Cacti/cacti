@@ -95,7 +95,7 @@ if (cacti_sizeof($parms)) {
 $start = microtime(true);
 
 if (read_config_option('boost_rrd_update_enable') !== 'on') {
-	print PHP_EOL . 'FATAL: Cacti\'s Performance Booster required to run this utility.'. PHP_DEOL;
+	print PHP_EOL . 'FATAL: Cacti\'s Performance Booster required to run this utility.' . PHP_DEOL;
 	display_help();
 
 	exit -1;
@@ -445,7 +445,7 @@ function display_help() {
 	print 'The when leveraging boost, the utility will work with or without the Cacti poller' . PHP_EOL;
 	print 'running.  The utility will use the set_lock() and release_lock() MySQL/MariaDB' . PHP_EOL;
 	print 'for interlocking, and therefore the utility is safe to run while the Cacti' . PHP_EOL;
-	print 'poller is running.'. PHP_DEOL;
+	print 'poller is running.' . PHP_DEOL;
 
 	print 'It is recommended that you not interrupt this script as files may not appear' . PHP_EOL;
 	print 'in the locations that the utility expects them to be which may cause issues.' . PHP_DEOL;
@@ -453,5 +453,5 @@ function display_help() {
 	print 'For Each File, it will:' . PHP_DEOL;
 	print '  1) Create the Structured Path, if Necessary' . PHP_EOL;
 	print '  2) Move the File to the Structured Path Using the New Name' . PHP_EOL;
-	print '  3) Alter the two Database Tables Required'. PHP_DEOL;
+	print '  3) Alter the two Database Tables Required' . PHP_DEOL;
 }

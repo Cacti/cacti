@@ -1361,7 +1361,7 @@ function utilities_get_mysql_recommendations() {
 	}
 
 	print '<tr class="tableHeader tableFixed">';
-	print '<th colspan="2">' . __('%s Tuning', $database) . ' (' . $location . ') - [ <a class="linkOverDark" target="_blank" href="' . $variables_url . '">' .  __('Documentation') . '</a> ] ' . __('Note: Many changes below require a database restart') . '</th>';
+	print '<th colspan="2">' . __('%s Tuning', $database) . ' (' . $location . ') - [ <a class="linkOverDark" target="_blank" href="' . $variables_url . '">' . __('Documentation') . '</a> ] ' . __('Note: Many changes below require a database restart') . '</th>';
 	print '</tr>';
 
 	form_alternate_row();
@@ -1369,11 +1369,11 @@ function utilities_get_mysql_recommendations() {
 	print "<table id='mysql' class='cactiTable' style='width:100%'>";
 	print '<thead>';
 	print "<tr class='tableHeader'>";
-	print "  <th class='tableSubHeaderColumn'>" . __('Variable')          . '</th>';
-	print "  <th class='tableSubHeaderColumn right'>" . __('Current Value'). '</th>';
+	print "  <th class='tableSubHeaderColumn'>" . __('Variable') . '</th>';
+	print "  <th class='tableSubHeaderColumn right'>" . __('Current Value') . '</th>';
 	print "  <th class='tableSubHeaderColumn center'>&nbsp;</th>";
 	print "  <th class='tableSubHeaderColumn'>" . __('Recommended Value') . '</th>';
-	print "  <th class='tableSubHeaderColumn'>" . __('Comments')          . '</th>';
+	print "  <th class='tableSubHeaderColumn'>" . __('Comments') . '</th>';
 	print '</tr>';
 	print '</thead>';
 

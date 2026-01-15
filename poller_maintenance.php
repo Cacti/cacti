@@ -408,7 +408,7 @@ function logrotate_check($force) {
 
 		// Make sure we clone the last date, or we end up modifying the same object!
 		$date_next = clone $date_last;
-		$date_next->modify('+'.$frequency.'day');
+		$date_next->modify('+' . $frequency . 'day');
 
 		cacti_log('Cacti Log Rotation - TIMECHECK Ran: ' . $date_orig->format('Y-m-d H:i:s')
 			. ', Now: ' . $date_now->format('Y-m-d H:i:s')
@@ -614,7 +614,7 @@ function logrotate_file_rotate($name, $log, $date) {
 				cacti_log('Cacti Log Rotation - ERROR: Could not rename ' . $name . ' Log "' . basename($log) . '" to "' . basename($log) . '-' . $ext . '"', true, 'MAINT');
 			}
 		} else {
-			cacti_log('Cacti Log Rotation - ERROR: Permissions issue.  Please check your ' . $name  . ' Log directory : ' . basename($log), true, 'MAINT');
+			cacti_log('Cacti Log Rotation - ERROR: Permissions issue.  Please check your ' . $name . ' Log directory : ' . basename($log), true, 'MAINT');
 		}
 	} else {
 		cacti_log('Cacti Log Rotation - ERROR: Permissions issue.  Please check your ' . $name . ' Log as directory or file are not writable : ' . $log, true, 'MAINT');
@@ -647,10 +647,10 @@ function logrotate_file_clean($name, $log, $date, $rotation) {
 
 	if (cacti_sizeof($dir)) {
 		$date_log = clone $date;
-		$date_log->modify('-'.$rotation.'day');
+		$date_log->modify('-' . $rotation . 'day');
 		$e = $date_log->format('Ymd');
 
-		cacti_log('Cacti Log Rotation - Purging all ' . $name . ' logs before '. $e, true, 'MAINT');
+		cacti_log('Cacti Log Rotation - Purging all ' . $name . ' logs before ' . $e, true, 'MAINT');
 
 		foreach ($dir as $d) {
 			$fileparts = explode('-', $d);
@@ -666,9 +666,9 @@ function logrotate_file_clean($name, $log, $date, $rotation) {
 							if ($p < $e) {
 								if (is_writable($baselogdir . $d)) {
 									@unlink($baselogdir . $d);
-									cacti_log('Cacti Log Rotation - Purging ' . $name  . ' Log : ' . $d, true, 'MAINT');
+									cacti_log('Cacti Log Rotation - Purging ' . $name . ' Log : ' . $d, true, 'MAINT');
 								} else {
-									cacti_log('Cacti Log Rotation - ERROR: Can not purge ' . $name  . ' Log : ' . $d, true, 'MAINT');
+									cacti_log('Cacti Log Rotation - ERROR: Can not purge ' . $name . ' Log : ' . $d, true, 'MAINT');
 								}
 							} else {
 								cacti_log('Cacti Log Rotation - NOTE: Not expired, keeping ' . $name . ' Log : ' . $d, true, 'MAINT', POLLER_VERBOSITY_HIGH);
@@ -1022,7 +1022,7 @@ function phpversion_check($force = false) {
 	$phpbad_ver = version_compare(PHP_VERSION,'7.4','<');
 
 	if ($phpbad_ver && ($date_next < $date_now || $force)) {
-		cacti_log('WARNING: PHP Version "' . PHP_VERSION .'"will not be supported by the develop branch in the future.  If you cannot upgrade to PHP 7.1 or higher, please switch branches', false, 'CACTI');
+		cacti_log('WARNING: PHP Version "' . PHP_VERSION . '"will not be supported by the develop branch in the future.  If you cannot upgrade to PHP 7.1 or higher, please switch branches', false, 'CACTI');
 		db_execute_prepared('REPLACE INTO settings (name, value) VALUES ("phpver_last", ?)', [$now]);
 	}
 }

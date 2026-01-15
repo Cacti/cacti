@@ -192,7 +192,7 @@ function display_help() {
 	print 'Optional:' . PHP_EOL;
 	print '     -e=<email address>     the email address to set' . PHP_EOL;
 	print '     -f=<full name>         the full name to set' . PHP_EOL;
-	print '     -l=<yes/no>            whether new user should be locked'  . PHP_EOL;
+	print '     -l=<yes/no>            whether new user should be locked' . PHP_EOL;
 	print '     -p=<salt>              the salt to prefix to hashed username' . PHP_EOL;
 	print '     -r=<yes/no>            whether new password must be changed' . PHP_EOL;
 	print '     -t=<secret>            the secret to use for TFA' . PHP_EOL . PHP_EOL;

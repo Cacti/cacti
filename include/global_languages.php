@@ -1037,7 +1037,7 @@ function number_format_i18n(mixed $number, int $decimals = null, int $baseu = 10
 	$country = strtoupper($cacti_country);
 
 	if (function_exists('numfmt_create')) {
-		$fmt_key = $cacti_locale . '_'. $country;
+		$fmt_key = $cacti_locale . '_' . $country;
 		$fmt     = numfmt_create($fmt_key, NumberFormatter::DECIMAL);
 
 		if ($decimals == null) {
@@ -1051,7 +1051,7 @@ function number_format_i18n(mixed $number, int $decimals = null, int $baseu = 10
 				return numfmt_format($fmt, $number);
 			}
 		}
-		cacti_log('DEBUG: Number format \'' . $fmt_key .'\' was unavailable, using older methods',false,'i18n',POLLER_VERBOSITY_HIGH);
+		cacti_log('DEBUG: Number format \'' . $fmt_key . '\' was unavailable, using older methods',false,'i18n',POLLER_VERBOSITY_HIGH);
 	}
 
 	$origlocales = explode(';', setlocale(LC_ALL, 0));

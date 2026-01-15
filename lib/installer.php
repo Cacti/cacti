@@ -588,12 +588,12 @@ class Installer implements JsonSerializable {
 			'snmp_queries'   => CACTI_PATH_RESOURCE . '/snmp_queries',
 			'script_server'  => CACTI_PATH_RESOURCE . '/script_server',
 			'script_queries' => CACTI_PATH_RESOURCE . '/script_queries',
-			'scripts'        => CACTI_PATH_SCRIPTS  . '',
+			'scripts'        => CACTI_PATH_SCRIPTS . '',
 		];
 
 		$always_paths = [
 			'sys_temp'  => sys_get_temp_dir(),
-			'log'       => CACTI_PATH_LOG   . '',
+			'log'       => CACTI_PATH_LOG . '',
 			'boost'     => CACTI_PATH_CACHE . '/boost',
 			'mibcache'  => CACTI_PATH_CACHE . '/mibcache',
 			'realtime'  => CACTI_PATH_CACHE . '/realtime',
@@ -645,7 +645,7 @@ class Installer implements JsonSerializable {
 			log_install_debug('permission',"($name) $path = $valid ($install_key)");
 
 			if (!$valid) {
-				$this->addError(Installer::STEP_PERMISSION_CHECK, 'Permission', $name.':'.$path, __('Path was not writable'));
+				$this->addError(Installer::STEP_PERMISSION_CHECK, 'Permission', $name . ':' . $path, __('Path was not writable'));
 			}
 		}
 
@@ -656,7 +656,7 @@ class Installer implements JsonSerializable {
 			log_install_debug('permission',"($name) $path = $valid ($install_key)");
 
 			if (!$valid) {
-				$this->addError(Installer::STEP_PERMISSION_CHECK, 'Permission', $name.':'.$path, __('Path was not writable'));
+				$this->addError(Installer::STEP_PERMISSION_CHECK, 'Permission', $name . ':' . $path, __('Path was not writable'));
 			}
 		}
 
@@ -2006,7 +2006,7 @@ class Installer implements JsonSerializable {
 			} else {
 				$flagName = strtolower($flags[0]);
 			}
-			$langOutput .= '<option value=\'' . $key . '\'' . $selected . ' data-class=\'fi-' . $flagName . '\'><span class="fi fis fi-'.$flagName.'"></span>' . $value . '</option>';
+			$langOutput .= '<option value=\'' . $key . '\'' . $selected . ' data-class=\'fi-' . $flagName . '\'><span class="fi fis fi-' . $flagName . '"></span>' . $value . '</option>';
 		}
 		$langOutput .= '</select>';
 
@@ -2089,7 +2089,7 @@ class Installer implements JsonSerializable {
 
 		// The path was not what we expected so print an error
 		if ($test_compare_result !== 0) {
-			$output .= Installer::sectionNormal('<span class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Please update config.php with the correct relative URI location of Cacti (url_path).') . '</span>');
+			$output .= Installer::sectionNormal('<span class="textError"><strong>' . __('ERROR:') . '</strong> ' . __('Please update config.php with the correct relative URI location of Cacti (url_path).') . '</span>');
 			$enabled['location'] = DB_STATUS_ERROR;
 		} else {
 			$output .= Installer::sectionNormal(__('Your Cacti configuration has the relative correct path (url_path) in config.php.'));
@@ -2250,11 +2250,11 @@ class Installer implements JsonSerializable {
 			$timezone_populated = db_fetch_cell('SELECT COUNT(*) FROM mysql.time_zone_name');
 
 			if (!$timezone_populated) {
-				$output .= Installer::sectionNormal('<span class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Your MySQL TimeZone database is not populated.  Please populate this database before proceeding.') . '</span>');
+				$output .= Installer::sectionNormal('<span class="textError"><strong>' . __('ERROR:') . '</strong> ' . __('Your MySQL TimeZone database is not populated.  Please populate this database before proceeding.') . '</span>');
 				$enabled['mysql_timezone'] = DB_STATUS_ERROR;
 			}
 		} else {
-			$output .= Installer::sectionNormal('<span class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Your Cacti database login account does not have access to the MySQL TimeZone database.  Please provide the Cacti database account "select" access to the "time_zone_name" table in the "mysql" database, and populate MySQL\'s TimeZone information before proceeding.') . '</span>');
+			$output .= Installer::sectionNormal('<span class="textError"><strong>' . __('ERROR:') . '</strong> ' . __('Your Cacti database login account does not have access to the MySQL TimeZone database.  Please provide the Cacti database account "select" access to the "time_zone_name" table in the "mysql" database, and populate MySQL\'s TimeZone information before proceeding.') . '</span>');
 			$enabled['mysql_timezone'] = DB_STATUS_ERROR;
 		}
 
@@ -2326,7 +2326,7 @@ class Installer implements JsonSerializable {
 				$output .= Installer::sectionNormal(
 					'<ul>' .
 						'<li><b><i>' . __('New Primary Server') . '</i></b> - ' . __('Choose this for the Primary site.') . '</li>' .
-						'<li><b><i>' . __('New Remote Poller')  . '</i></b> - ' . __('Remote Pollers are used to access networks that are not readily accessible to the Primary site.') . '</li>' .
+						'<li><b><i>' . __('New Remote Poller') . '</i></b> - ' . __('Remote Pollers are used to access networks that are not readily accessible to the Primary site.') . '</li>' .
 						'</ul>'
 				);
 
@@ -2861,7 +2861,7 @@ class Installer implements JsonSerializable {
 				if (!str_starts_with($p['homepage'], 'http://') && strncmp($p['homepage'], 'http://', 8) !== 0) {
 					$p['homepage'] = 'https://' . $p['homepage'];
 				}
-				$homepage = '<a href="'. $p['homepage'] . '" target="_new">' . $p['homepage'] . '</a>';
+				$homepage = '<a href="' . $p['homepage'] . '" target="_new">' . $p['homepage'] . '</a>';
 			} else {
 				$homepage = '';
 			}
@@ -2871,7 +2871,7 @@ class Installer implements JsonSerializable {
 			form_selectable_ecell($description, $id);
 			form_selectable_ecell($author, $id);
 			form_selectable_cell($homepage, $id);
-			form_checkbox_cell($p['name'], 'template_'  . str_replace('.', '_',  $p['filename']));
+			form_checkbox_cell($p['name'], 'template_' . str_replace('.', '_',  $p['filename']));
 			form_end_row();
 		}
 		html_end_box(false);
@@ -2964,7 +2964,7 @@ class Installer implements JsonSerializable {
 					form_selectable_cell($p['Rows'], $id, '', $style);
 
 					if ($enabled) {
-						form_checkbox_cell($p['Name'], 'table_'  . $p['Name']);
+						form_checkbox_cell($p['Name'], 'table_' . $p['Name']);
 					} else {
 						$show_warning = true;
 						form_selectable_cell('', $id, '', $style);
@@ -3054,19 +3054,19 @@ class Installer implements JsonSerializable {
 		);
 
 		$output .= Installer::sectionNormal(__('The following General Install Options will be applied.'));
-		$output .= Installer::sectionNormal('<b>' . __('EULA') . '</b>: '   . __('GPL License Accepted'));
+		$output .= Installer::sectionNormal('<b>' . __('EULA') . '</b>: ' . __('GPL License Accepted'));
 
 		switch ($opt['install_mode']) {
 			case Installer::MODE_INSTALL:
-				$output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('New Install'));
+				$output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: ' . __('New Install'));
 
 				break;
 			case Installer::MODE_UPGRADE:
-				$output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('Upgrade'));
+				$output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: ' . __('Upgrade'));
 
 				break;
 			case Installer::MODE_DOWNGRADE:
-				$output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('Downgrade'));
+				$output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: ' . __('Downgrade'));
 
 				break;
 			case Installer::MODE_POLLER:
@@ -3074,11 +3074,11 @@ class Installer implements JsonSerializable {
 
 				break;
 			case Installer::MODE_NONE:
-				$output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('None'));
+				$output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: ' . __('None'));
 
 				break;
 			default:
-				$output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('Unknown'));
+				$output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: ' . __('Unknown'));
 
 				break;
 		}
@@ -3092,8 +3092,8 @@ class Installer implements JsonSerializable {
 			FROM settings
 			WHERE name LIKE "install_table_%"');
 
-		$output .= Installer::sectionNormal('<b>' . __('RRDtool Version')  . '</b>: ' . html_escape($opt['install_rrdtool_version']));
-		$output .= Installer::sectionNormal('<b>' . __('Default Theme')    . '</b>: ' . ucfirst(html_escape($opt['install_theme'])));
+		$output .= Installer::sectionNormal('<b>' . __('RRDtool Version') . '</b>: ' . html_escape($opt['install_rrdtool_version']));
+		$output .= Installer::sectionNormal('<b>' . __('Default Theme') . '</b>: ' . ucfirst(html_escape($opt['install_theme'])));
 		$output .= Installer::sectionNormal('<b>' . __('Install Language') . '</b>: ' . html_escape($opt['install_language']));
 
 		$profile = db_fetch_cell_prepared('SELECT name

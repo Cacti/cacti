@@ -141,7 +141,7 @@ foreach ($cacti_version_codes as $cacti_upgrade_version => $hash_code) {
 	// check for upgrade version file, then include, check for function and execute
 	if (file_exists($upgrade_file)) {
 		print 'Performing Database Upgrade' . PHP_EOL;
-		print '  - from v' . $prev_cacti_version .' (DB ' . $orig_cacti_version . ')' . PHP_EOL;
+		print '  - from v' . $prev_cacti_version . ' (DB ' . $orig_cacti_version . ')' . PHP_EOL;
 		print '      to v' . $cacti_upgrade_version . PHP_EOL;
 		include($upgrade_file);
 

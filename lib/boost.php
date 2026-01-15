@@ -154,8 +154,8 @@ function boost_error_handler(int $errno, string $errmsg, string $filename, int $
 		}
 
 		/* create an error string for the log */
-		$err = "ERRNO:'"  . $errno   . "' TYPE:'"    . $errortype[$errno] .
-			"' MESSAGE:'" . $errmsg  . "' IN FILE:'" . $filename .
+		$err = "ERRNO:'" . $errno . "' TYPE:'" . $errortype[$errno] .
+			"' MESSAGE:'" . $errmsg . "' IN FILE:'" . $filename .
 			"' LINE NO:'" . $linenum . "'";
 
 		/* let's ignore some lesser issues */
@@ -274,7 +274,7 @@ function boost_poller_on_demand(array &$results) : bool {
 						$result['local_data_id'] . "','" .
 						$result['rrd_name'] . "','" .
 						$result['time'] . "','" .
-						$result['output'] .	"')";
+						$result['output'] . "')";
 
 					$tmp_length = strlen($tmp_buffer);
 
@@ -1567,7 +1567,7 @@ function boost_rrdtool_function_create(int $local_data_id, bool $show_source, mi
 	}
 
 	/* create the "--step" line */
-	$create_ds = RRD_NL . '--start 0 --step '. $rras[0]['rrd_step'] . ' ' . RRD_NL;
+	$create_ds = RRD_NL . '--start 0 --step ' . $rras[0]['rrd_step'] . ' ' . RRD_NL;
 
 	/**
 	 * We have to check for Non-Templated Data Source first as they may not include
@@ -1844,7 +1844,7 @@ function boost_poller_bottom() : void {
 
 		if ($boost_debug && $boost_log != '') {
 			if (CACTI_SERVER_OS == 'unix') {
-				$extra_args    = '-q '  . CACTI_PATH_BASE . '/poller_boost.php --debug';
+				$extra_args    = '-q ' . CACTI_PATH_BASE . '/poller_boost.php --debug';
 				$redirect_args =  '>> ' . $boost_log . ' 2>&1';
 			} else {
 				$extra_args    = '-q ' . CACTI_PATH_BASE . '/poller_boost.php --debug';

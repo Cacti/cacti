@@ -143,7 +143,7 @@ if (CACTI_WEB && isset($_SESSION[SESS_USER_ID])) {
 			if (($enabled == 0 && $admin_user != $_SESSION[SESS_USER_ID]) || $enabled == 1) {
 				general_header();
 				print '<h1>' . __('Cacti is Locked Out for Maintenance') . '</h1>';
-				print '<p>'. __('The primary Cacti administrator has locked out the Cacti user interface for maintenance for activities such as upgrades.  If you feel this is in error, please contact your Cacti adminnistrator.  This lockout will stay in place for approximately 30 minutes.') . '</p>';
+				print '<p>' . __('The primary Cacti administrator has locked out the Cacti user interface for maintenance for activities such as upgrades.  If you feel this is in error, please contact your Cacti adminnistrator.  This lockout will stay in place for approximately 30 minutes.') . '</p>';
 				bottom_footer();
 
 				exit;

@@ -667,7 +667,7 @@ function update_show_current() {
 										print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 									}
 								}
-								?>
+	?>
 							</select>
 						</td>
 						<td>
@@ -915,33 +915,33 @@ function update_show_current() {
 			case 8:
 				$sql_where = 'WHERE (
 					pi.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR
-					pi.author LIKE '      . db_qstr('%' . get_request_var('filter') . '%') . ' OR
-					pa.plugin LIKE '      . db_qstr('%' . get_request_var('filter') . '%') . ' OR
-					pa.webpage LIKE '     . db_qstr('%' . get_request_var('filter') . '%') . ' OR
+					pi.author LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR
+					pa.plugin LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR
+					pa.webpage LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR
 					pa.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR
-					pa.author LIKE '      . db_qstr('%' . get_request_var('filter') . '%') . ' OR
-					pi.plugin LIKE '      . db_qstr('%' . get_request_var('filter') . '%') .
+					pa.author LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR
+					pi.plugin LIKE ' . db_qstr('%' . get_request_var('filter') . '%') .
 				')';
 
 				break;
 			case 6:
 				$sql_where = 'WHERE (
 					pi.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR
-					pi.author LIKE '      . db_qstr('%' . get_request_var('filter') . '%') . ' OR
-					pa.plugin LIKE '      . db_qstr('%' . get_request_var('filter') . '%') . ' OR
-					pa.webpage LIKE '     . db_qstr('%' . get_request_var('filter') . '%') . ' OR
+					pi.author LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR
+					pa.plugin LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR
+					pa.webpage LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR
 					pa.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR
-					pa.author LIKE '      . db_qstr('%' . get_request_var('filter') . '%') . ' OR
-					pi.plugin LIKE '      . db_qstr('%' . get_request_var('filter') . '%') .
+					pa.author LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR
+					pi.plugin LIKE ' . db_qstr('%' . get_request_var('filter') . '%') .
 				')';
 
 				break;
 			default:
 				$sql_where = 'WHERE (
 					pi.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR
-					pi.author LIKE '      . db_qstr('%' . get_request_var('filter') . '%') . ' OR
-					pi.webpage LIKE '     . db_qstr('%' . get_request_var('filter') . '%') . ' OR
-					pi.plugin LIKE '      . db_qstr('%' . get_request_var('filter') . '%') .
+					pi.author LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR
+					pi.webpage LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR
+					pi.plugin LIKE ' . db_qstr('%' . get_request_var('filter') . '%') .
 				')';
 		}
 	}
@@ -1468,10 +1468,10 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering, $table) {
 	$plugin['compat'] = plugin_display_compat($plugin['compat']);
 
 	$row .= "<td class='prewrap'>" . filter_value($plugin['author'], get_request_var('filter')) . '</td>';
-	$row .= "<td class='left'>"    . html_escape($plugin['compat'])  . '</td>';
-	$row .= "<td class='nowrap'>"  . html_escape($requires)          . '</td>';
-	$row .= "<td class='right'>"   . html_escape($plugin['version']) . '</td>';
-	$row .= "<td class='right'>"   . $last_updated                   . '</td>';
+	$row .= "<td class='left'>" . html_escape($plugin['compat']) . '</td>';
+	$row .= "<td class='nowrap'>" . html_escape($requires) . '</td>';
+	$row .= "<td class='right'>" . html_escape($plugin['version']) . '</td>';
+	$row .= "<td class='right'>" . $last_updated . '</td>';
 
 	if ($include_ordering) {
 		$row .= "<td class='nowrap right'>";
@@ -1587,11 +1587,11 @@ function format_available_plugin_row($plugin, $table) {
 
 	$plugin['avail_compat'] = plugin_display_compat($plugin['avail_compat']);
 
-	$row .= "<td class='prewrap'>" . filter_value($plugin['avail_author'], get_request_var('filter'))    . '</td>';
-	$row .= "<td class='nowrap'>"  . html_escape($plugin['avail_compat'])    . '</td>';
+	$row .= "<td class='prewrap'>" . filter_value($plugin['avail_author'], get_request_var('filter')) . '</td>';
+	$row .= "<td class='nowrap'>" . html_escape($plugin['avail_compat']) . '</td>';
 
 	if ($plugin['version'] == '') {
-		$row .= "<td class='right'>" . __esc('Not Loaded')             . '</td>';
+		$row .= "<td class='right'>" . __esc('Not Loaded') . '</td>';
 	} else {
 		$row .= "<td class='right'>" . html_escape($plugin['version']) . '</td>';
 	}
@@ -1623,9 +1623,9 @@ function format_available_plugin_row($plugin, $table) {
 		$size /= 1024;
 	}
 
-	$row .= "<td class='right'>"  . number_format_i18n($size, 1) . $suffix   . '</td>';
+	$row .= "<td class='right'>" . number_format_i18n($size, 1) . $suffix . '</td>';
 
-	$row .= "<td class='right'>" . html_escape($requires)                    . '</td>';
+	$row .= "<td class='right'>" . html_escape($requires) . '</td>';
 
 	$row .= "<td class='right'>" . substr($plugin['avail_published'], 0, 16) . '</td>';
 
@@ -1704,14 +1704,14 @@ function format_archive_plugin_row($plugin, $table) {
 
 	$row .= "<td class='prewrap'>" . filter_value($plugin['author'], get_request_var('filter')) . '</td>';
 
-	$row .= "<td class='left'>"   . html_escape($plugin['archive_compat']) . '</td>';
+	$row .= "<td class='left'>" . html_escape($plugin['archive_compat']) . '</td>';
 
 	if ($plugin['version'] == '') {
 		$row .= "<td class='right'>" . __esc('Not Installed') .
-			' / ' . html_escape($plugin['archive_version'])           . '</td>';
+			' / ' . html_escape($plugin['archive_version']) . '</td>';
 	} else {
 		$row .= "<td class='right'>" . html_escape($plugin['version']) .
-			' / ' . html_escape($plugin['archive_version'])           . '</td>';
+			' / ' . html_escape($plugin['archive_version']) . '</td>';
 	}
 
 	$size   = $plugin['archive_length'];
@@ -1727,7 +1727,7 @@ function format_archive_plugin_row($plugin, $table) {
 		$size /= 1024;
 	}
 
-	$row .= "<td class='right'>"  . number_format_i18n($size, 1) . $suffix  . '</td>';
+	$row .= "<td class='right'>" . number_format_i18n($size, 1) . $suffix . '</td>';
 
 	$row .= "<td class='right'>" . html_escape($plugin['archive_requires']) . '</td>';
 

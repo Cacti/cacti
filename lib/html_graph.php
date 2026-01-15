@@ -1766,7 +1766,7 @@ function html_graph_single_view() {
 			print "<div class='graphWrapperOuter cols1' data-disabled='" . ($graph['disabled'] == 'on' ? 'true' : 'false') . "'>";
 			print '<div>';
 
-			print "<div class='graphWrapper' id='wrapper_" . $graph['local_graph_id'] . "' graph_id='" . $graph['local_graph_id'] . "' rra_id='" . $rra['id'] . "' graph_width='" . $graph['width'] . "' graph_height='" . $graph['height'] . "' graph_start='" . $graph_start . "' graph_end='" . $graph_end . "' title_font_size='" . ((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size')). "'></div>";
+			print "<div class='graphWrapper' id='wrapper_" . $graph['local_graph_id'] . "' graph_id='" . $graph['local_graph_id'] . "' rra_id='" . $rra['id'] . "' graph_width='" . $graph['width'] . "' graph_height='" . $graph['height'] . "' graph_start='" . $graph_start . "' graph_end='" . $graph_end . "' title_font_size='" . ((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size')) . "'></div>";
 
 			if (is_realm_allowed(27)) {
 				print "<div id='dd" . get_request_var('local_graph_id') . "' style='vertical-align:top;' class='graphDrillDown noprint'>";
@@ -1774,7 +1774,7 @@ function html_graph_single_view() {
 				print "<a class='iconLink utils' href='#' id='graph_" . get_request_var('local_graph_id') . "_util' graph_start='" . $graph_start . "' graph_end='" . $graph_end . "' rra_id='" . $rra['id'] . "'>";
 				print "<i class='drillDown ti ti-settings-filled actionCog' title='" . __esc('Graph Details, Zooming and Debugging Utilities') . "'></i></a><br>";
 
-				print "<a id='graph_" . $rra['id'] . "_csv' class='iconLink csv' href='" . html_escape(CACTI_PATH_URL . 'graph_xport.php?local_graph_id=' . get_request_var('local_graph_id') . '&rra_id=' . $rra['id'] . '&view_type=' . get_request_var('view_type') .  '&graph_start=' . $graph_start . '&graph_end=' . $graph_end) . "'>";
+				print "<a id='graph_" . $rra['id'] . "_csv' class='iconLink csv' href='" . html_escape(CACTI_PATH_URL . 'graph_xport.php?local_graph_id=' . get_request_var('local_graph_id') . '&rra_id=' . $rra['id'] . '&view_type=' . get_request_var('view_type') . '&graph_start=' . $graph_start . '&graph_end=' . $graph_end) . "'>";
 				print "<i class='drillDown ti ti-file-type-csv fileCSV' title='" . __esc('CSV Export') . "'></i></a><br>";
 
 				if (is_realm_allowed(10) && $graph_template_id > 0) {

@@ -1687,7 +1687,7 @@ function form_continue_confirmation($form_data, $plugin_hook = '', $save = []) {
 
 	print "<input type='hidden' name='selected_items' form='action_confirm' value='" . (isset($iarray) ? serialize($iarray) : '') . "'>";
 	print "<input type='hidden' name='drp_action' form='action_confirm' value='" . html_escape($drpval) . "'>";
-	print "<button type='button' class='ui-button ui-corner-all ui-widget' value='cancel' onClick='cactiReturnTo(\"$page\")' title='" . __('Return to previous page'). "'>" . __esc('Cancel') . '</button>';
+	print "<button type='button' class='ui-button ui-corner-all ui-widget' value='cancel' onClick='cactiReturnTo(\"$page\")' title='" . __('Return to previous page') . "'>" . __esc('Cancel') . '</button>';
 	print "<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' value='continue' title='$title' form='action_confirm'>" . __esc('Continue') . '</button>';
 	print '</div>';
 

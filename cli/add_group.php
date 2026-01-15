@@ -24,7 +24,7 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-require_once(CACTI_PATH_LIBRARY. '/api_automation_tools.php');
+require_once(CACTI_PATH_LIBRARY . '/api_automation_tools.php');
 
 /* switch to main database for cli's */
 if ($config['poller_id'] > 1) {

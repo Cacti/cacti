@@ -87,7 +87,7 @@ function manager() {
 
 	/* form the 'where' clause for our main sql query */
 	$sql_where = 'WHERE (
-		sm.hostname LIKE '	   . db_qstr('%' . get_request_var('filter') . '%') . '
+		sm.hostname LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
 		OR sm.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 
 	$total_rows = db_fetch_cell("SELECT
@@ -869,7 +869,7 @@ function form_actions() {
 
 				[$mib, $name] = explode('__', $row_id);
 
-				$ilist .= '<li>' . html_escape($name) . ' (' . html_escape($mib) .')</li>';
+				$ilist .= '<li>' . html_escape($name) . ' (' . html_escape($mib) . ')</li>';
 
 				$iarray[$mib][$name] = 1;
 			}

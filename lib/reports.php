@@ -650,7 +650,7 @@ function reports_load_format_file($format_file, &$output, &$report_tag_included,
 		$format_file = 'cacti_group.format';
 	}
 
-	$format_file = CACTI_PATH_FORMATS .  '/' . $format_file;
+	$format_file = CACTI_PATH_FORMATS . '/' . $format_file;
 
 	if (file_exists($format_file) && is_readable($format_file)) {
 		$contents = file($format_file);
@@ -1772,7 +1772,7 @@ function reports_graph_area($graphs, &$report, $item, $timespan, $output, $forma
 
 				if ($format_ok) {
 					$outstr .= "\t\t\t<td>" . PHP_EOL;
-					$outstr .= "\t\t\t\t<table>". PHP_EOL;
+					$outstr .= "\t\t\t\t<table>" . PHP_EOL;
 				} else {
 					$outstr .= "\t\t\t<td style='text-align:" . $alignment[$item['align']] . ";'>" . PHP_EOL;
 					$outstr .= "\t\t\t\t<table style='width:100%;'>" . PHP_EOL;
@@ -1903,7 +1903,7 @@ function png2gif($png_data) {
  */
 function reports_get_format_files() {
 	$formats = [];
-	$dir     = CACTI_PATH_FORMATS .  '';
+	$dir     = CACTI_PATH_FORMATS . '';
 
 	if (is_dir($dir)) {
 		if (function_exists('scandir')) {

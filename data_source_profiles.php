@@ -177,7 +177,7 @@ function profile_import() {
 	if ((isset($_SESSION['import_debug_info'])) && (is_array($_SESSION['import_debug_info']))) {
 		html_start_box(__('Import Results'), '60%', false, 3, 'center', '');
 
-		print '<tr class="tableHeader"><th>' . __('Cacti has imported the following items:'). '</th></tr>';
+		print '<tr class="tableHeader"><th>' . __('Cacti has imported the following items:') . '</th></tr>';
 
 		foreach ($_SESSION['import_debug_info'] as $line) {
 			print '<tr><td>' . $line . '</td></tr>';
@@ -395,21 +395,21 @@ function profile_import_process() {
 	if (sizeof($return_data) && isset($return_data['success'])) {
 		foreach ($return_data['success'] as $message) {
 			$debug_data[] = '<span class="deviceUp">' . __('NOTE:') . '</span> ' . $message;
-			cacti_log('NOTE: Data Source Profile Import Succeeded!.  Message: '. $message, false, 'AUTOM8');
+			cacti_log('NOTE: Data Source Profile Import Succeeded!.  Message: ' . $message, false, 'AUTOM8');
 		}
 	}
 
 	if (isset($return_data['errors'])) {
 		foreach ($return_data['errors'] as $error) {
 			$debug_data[] = '<span class="deviceDown">' . __('ERROR:') . '</span> ' . $error;
-			cacti_log('NOTE: Data Source Profile Import Error!.  Message: '. $message, false, 'AUTOM8');
+			cacti_log('NOTE: Data Source Profile Import Error!.  Message: ' . $message, false, 'AUTOM8');
 		}
 	}
 
 	if (isset($return_data['failure'])) {
 		foreach ($return_data['failure'] as $message) {
 			$debug_data[] = '<span class="deviceDown">' . __('ERROR:') . '</span> ' . $message;
-			cacti_log('NOTE: Data Source Profile Import Failed!.  Message: '. $message, false, 'AUTOM8');
+			cacti_log('NOTE: Data Source Profile Import Failed!.  Message: ' . $message, false, 'AUTOM8');
 		}
 	}
 

@@ -62,7 +62,7 @@ function sig_handler($signo) {
 			cacti_log('RECOVERY WARNING: Recovery Poller terminated by user', false, 'POLLER');
 
 			/* tell the main poller that we are done */
-			db_execute("REPLACE INTO settings (name, value) VALUES ('boost_poller_status', 'terminated - end time:" . date('Y-m-d G:i:s') ."')");
+			db_execute("REPLACE INTO settings (name, value) VALUES ('boost_poller_status', 'terminated - end time:" . date('Y-m-d G:i:s') . "')");
 
 			exit;
 
@@ -205,7 +205,7 @@ if ($run) {
 	poller_push_reindex_data_to_poller(0, 0, true);
 
 	while (true) {
-		cacti_log('RECOVERY: Getting max_time for '. $record_limit . ' records.', false, 'POLLER');
+		cacti_log('RECOVERY: Getting max_time for ' . $record_limit . ' records.', false, 'POLLER');
 
 		$max_time = db_fetch_cell("SELECT MAX(time)
 			FROM (

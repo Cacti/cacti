@@ -526,19 +526,19 @@ function getOldRRDValue(&$old_flat, $dsnum, $cf, $time) {
  */
 function recreateXML($new_rrd) {
 	$rrd = "<rrd>\n";
-	$rrd .= "\t<version> "    . $new_rrd['version']    . " </version>\n";
-	$rrd .= "\t<step> "       . $new_rrd['step']       . " </step>\n";
+	$rrd .= "\t<version> " . $new_rrd['version'] . " </version>\n";
+	$rrd .= "\t<step> " . $new_rrd['step'] . " </step>\n";
 	$rrd .= "\t<lastupdate> " . $new_rrd['lastupdate'] . " </lastupdate>\n";
 
 	foreach ($new_rrd['ds'] as $dsnum => $ds) {
 		$rrd .= "\t<ds>\n";
-		$rrd .= "\t\t<name> "        . $ds['name']        . " </name>\n";
-		$rrd .= "\t\t<type> "        . $ds['type']        . " </type>\n";
+		$rrd .= "\t\t<name> " . $ds['name'] . " </name>\n";
+		$rrd .= "\t\t<type> " . $ds['type'] . " </type>\n";
 		$rrd .= "\t\t<minimal_heartbeat> " . $ds['minimal_heartbeat'] . " </minimal_heartbeat>\n";
-		$rrd .= "\t\t<min> "         . $ds['min']         . " </min>\n";
-		$rrd .= "\t\t<max> "         . $ds['max']         . " </max>\n";
-		$rrd .= "\t\t<last_ds> "     . $ds['last_ds']     . " </last_ds>\n";
-		$rrd .= "\t\t<value> "       . $ds['value']       . " </value>\n";
+		$rrd .= "\t\t<min> " . $ds['min'] . " </min>\n";
+		$rrd .= "\t\t<max> " . $ds['max'] . " </max>\n";
+		$rrd .= "\t\t<last_ds> " . $ds['last_ds'] . " </last_ds>\n";
+		$rrd .= "\t\t<value> " . $ds['value'] . " </value>\n";
 		$rrd .= "\t\t<unknown_sec> " . $ds['unknown_sec'] . " </unknown_sec>\n";
 		$rrd .= "\t</ds>\n";
 	}
@@ -913,7 +913,7 @@ function backupRRDFile($rrdfile) {
 		$newfile = basename($rrdfile);
 	}
 
-	print 'NOTE: Backing Up \'' . $rrdfile . '\' to \'' . $backupdir . '/' .  $newfile . '\'' . PHP_EOL;
+	print 'NOTE: Backing Up \'' . $rrdfile . '\' to \'' . $backupdir . '/' . $newfile . '\'' . PHP_EOL;
 
 	return copy($rrdfile, $backupdir . '/' . $newfile);
 }

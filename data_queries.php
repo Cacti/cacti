@@ -305,7 +305,7 @@ function form_save() {
 				return;
 			}
 
-			$sequence = get_sequence(0, 'sequence', 'snmp_query_graph_rrd_sv', 'snmp_query_graph_id = ' . get_request_var('id')  . ' AND data_template_id = ' . $svds_id . ' AND field_name = ' . db_qstr(get_nfilter_request_var('svds_field')));
+			$sequence = get_sequence(0, 'sequence', 'snmp_query_graph_rrd_sv', 'snmp_query_graph_id = ' . get_request_var('id') . ' AND data_template_id = ' . $svds_id . ' AND field_name = ' . db_qstr(get_nfilter_request_var('svds_field')));
 
 			$hash = get_hash_data_query(0, 'data_query_sv_data_source');
 
@@ -915,7 +915,7 @@ function data_query_item_edit() {
 						</td>
 						<td class='center'>
 							<?php if ($show_down) {?>
-							<a class='remover ti ti-caret-down-filled moveArrow' title='<?php print __('Move Down'); ?>' href='<?php print html_escape('data_queries.php?action=item_movedown_dssv&snmp_query_graph_id=' . get_request_var('id') . '&id='. $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']); ?>'></a>
+							<a class='remover ti ti-caret-down-filled moveArrow' title='<?php print __('Move Down'); ?>' href='<?php print html_escape('data_queries.php?action=item_movedown_dssv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&data_template_id=' . $data_template['id'] . '&field_name=' . $suggested_value['field_name']); ?>'></a>
 							<?php } else {?>
 							<span class='moveArrowNone'></span>
 							<?php } ?>

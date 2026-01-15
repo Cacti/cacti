@@ -426,7 +426,7 @@ function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time)
 
 								unset($parts[7]);
 
-								$nline = $db_prefix . implode(' ', $parts) . ' ' .  $prev_data . PHP_EOL;
+								$nline = $db_prefix . implode(' ', $parts) . ' ' . $prev_data . PHP_EOL;
 
 								if ($seebug) {
 									fwrite($lf, sprintf('Pruning: CurDate:%s, StartDate:%s, EndDate:%s, Granularity:%s, Delta:%s' . PHP_EOL, date('Y-m-d H:i:s', $timestamp), date('Y-m-d H:i:s', $start_time), date('Y-m-d H:i:s', $end_time), $granularity, $delta_time));

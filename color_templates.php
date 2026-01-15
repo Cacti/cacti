@@ -163,7 +163,7 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 					}
 				}
 
-				print "<a class='delete deleteMarker ti ti-x' id='" .  $item['color_template_id'] . '_' . $item['color_template_item_id'] . "' title='" . __esc('Delete') . "'></a>";
+				print "<a class='delete deleteMarker ti ti-x' id='" . $item['color_template_id'] . '_' . $item['color_template_item_id'] . "' title='" . __esc('Delete') . "'></a>";
 
 				print "</td>\n";
 			}
@@ -857,7 +857,7 @@ function color_template() {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Color Templates Found') ."</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Color Templates Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);

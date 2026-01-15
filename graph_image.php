@@ -168,7 +168,7 @@ if ($output !== false && $output != '') {
 	/* flush the headers now */
 	ob_end_clean();
 
-	header('Content-type: image/'. $gtype);
+	header('Content-type: image/' . $gtype);
 	header('Cache-Control: max-age=15');
 
 	print $output;

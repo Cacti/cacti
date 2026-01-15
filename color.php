@@ -470,7 +470,7 @@ function color() {
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
 		$sql_where = 'WHERE (name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR hex LIKE ' . db_qstr('%' .  get_request_var('filter') . '%') . ')';
+			OR hex LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	} else {
 		$sql_where = '';
 	}
@@ -562,7 +562,7 @@ function color() {
 			}
 
 			if ($color['name'] == '') {
-				$color['name'] = 'Unnamed #'. $color['hex'];
+				$color['name'] = 'Unnamed #' . $color['hex'];
 			}
 
 			form_alternate_row('line' . $color['id'], false, $disabled);
@@ -602,7 +602,7 @@ function color_export() {
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
 		$sql_where = 'WHERE (name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR hex LIKE ' . db_qstr('%' .  get_request_var('filter') . '%') . ')';
+			OR hex LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	} else {
 		$sql_where = '';
 	}

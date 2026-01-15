@@ -22,7 +22,7 @@
   +-------------------------------------------------------------------------+
 */
 
-require_once(CACTI_PATH_INCLUDE .'/vendor/csrf/csrf-conf.php');
+require_once(CACTI_PATH_INCLUDE . '/vendor/csrf/csrf-conf.php');
 
 /* cross site request forgery library */
 function csrf_startup(): void {

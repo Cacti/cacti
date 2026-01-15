@@ -627,7 +627,7 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 				}
 
 				if (!empty($config['DEBUG_SQL_FLOW'])) {
-					db_echo_sql('db_' . $execute_name . '_return_func: \'' . $return_func .'\' (' . function_exists($return_func) . ")\n");
+					db_echo_sql('db_' . $execute_name . '_return_func: \'' . $return_func . '\' (' . function_exists($return_func) . ")\n");
 					db_echo_sql('db_' . $execute_name . '_return_func: params ' . clean_up_lines(var_export($return_array, true)) . "\n");
 				}
 
@@ -799,7 +799,7 @@ function db_fetch_row(string $sql, bool $log = true, mixed $db_conn = false) : b
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
-		db_echo_sql('db_fetch_row(\'' . clean_up_lines($sql) . '\', $log = ' . $log . ', $db_conn = ' . ($db_conn ? 'true' : 'false') .')' . "\n");
+		db_echo_sql('db_fetch_row(\'' . clean_up_lines($sql) . '\', $log = ' . $log . ', $db_conn = ' . ($db_conn ? 'true' : 'false') . ')' . "\n");
 	}
 
 	return db_fetch_row_prepared($sql, [], $log, $db_conn);
@@ -819,7 +819,7 @@ function db_fetch_row_prepared(string $sql, array $params = [], bool $log = true
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
-		db_echo_sql('db_fetch_row_prepared(\'' . clean_up_lines($sql) . '\', $params = (\'' . implode('\', \'', $params) . '\'), $log = ' . $log . ', $db_conn = ' . ($db_conn ? 'true' : 'false') .')' . "\n");
+		db_echo_sql('db_fetch_row_prepared(\'' . clean_up_lines($sql) . '\', $params = (\'' . implode('\', \'', $params) . '\'), $log = ' . $log . ', $db_conn = ' . ($db_conn ? 'true' : 'false') . ')' . "\n");
 	}
 
 	return db_execute_prepared($sql, $params, $log, $db_conn, 'Row', false, 'db_fetch_row_return');
@@ -1235,7 +1235,7 @@ function db_index_exists(string $table, string $index, bool $log = true, mixed $
 	$database_log = $_log;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
-		db_echo_sql('db_index_exists(\'' . $table . '\', \'' . $index .'\'): '
+		db_echo_sql('db_index_exists(\'' . $table . '\', \'' . $index . '\'): '
 			. in_array($index, $_keys, true) . ' - '
 			. clean_up_lines(var_export($_keys, true)));
 	}
@@ -1302,7 +1302,7 @@ function db_index_matches(string $table, string $index, array $columns, bool $lo
 	$database_log = $_log;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
-		db_echo_sql('db_index_matches(\'' . $table . '\', \'' . $index .'\'): '
+		db_echo_sql('db_index_matches(\'' . $table . '\', \'' . $index . '\'): '
 			. $status . "\n ::: "
 			. clean_up_lines(var_export($columns, true))
 			. ' ::: '

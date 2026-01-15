@@ -562,7 +562,7 @@ class CactiTableFilter {
 
 							if (cacti_sizeof($this->timespans)) {
 								foreach ($this->timespans as $value => $text) {
-									print "<option value='$value'" . ($_SESSION['sess_current_timespan'] == $value ? ' selected' : '') .  '>' . html_escape($text) . '</option>';
+									print "<option value='$value'" . ($_SESSION['sess_current_timespan'] == $value ? ' selected' : '') . '>' . html_escape($text) . '</option>';
 								}
 							}
 							print '</select>';

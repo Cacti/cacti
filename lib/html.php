@@ -108,7 +108,7 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_url_or
 	if ($title != '') {
 		print "<div id='$table_id' class='cactiTable' style='width:$width;text-align:$align;'>";
 		print '<div class="cactiTableTitleRow">';
-		print "<div class='cactiTableTitle'>" . ($title != '' ? '<span>'.$title.'</span>' : '') . '</div>';
+		print "<div class='cactiTableTitle'>" . ($title != '' ? '<span>' . $title . '</span>' : '') . '</div>';
 		print "<div class='cactiTableButton'>";
 
 		$page      = get_current_page();
@@ -530,8 +530,8 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_i
 
 	print "<div class='iconWrapper'>";
 	print "<a class='iconLink utils' href='#' role='link' id='graph_" . $local_graph_id . "_util'><i class='drillDown ti ti-settings-filled actionCog' title='" . __esc('Graph Details, Zooming and Debugging Utilities') . "'></i></a><br>";
-	print "<a class='iconLink csvexport' href='#' role='link' id='graph_" . $local_graph_id . "_csv'><i class='drillDown ti ti-file-type-csv fileCSV' title='" . __esc('CSV Export of Graph Data'). "'></i></a><br>";
-	print "<a class='iconLink mrtg' href='#' role='link' id='graph_" . $local_graph_id . "_mrtg'><i class='drillDown ti ti-table threeBars' title='" . __esc('Time Graph View'). "'></i></a><br>";
+	print "<a class='iconLink csvexport' href='#' role='link' id='graph_" . $local_graph_id . "_csv'><i class='drillDown ti ti-file-type-csv fileCSV' title='" . __esc('CSV Export of Graph Data') . "'></i></a><br>";
+	print "<a class='iconLink mrtg' href='#' role='link' id='graph_" . $local_graph_id . "_mrtg'><i class='drillDown ti ti-table threeBars' title='" . __esc('Time Graph View') . "'></i></a><br>";
 
 	if (is_realm_allowed(3)) {
 		$host_id = db_fetch_cell_prepared('SELECT host_id
@@ -553,7 +553,7 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_i
 
 	if (read_config_option('realtime_enabled') == 'on' && is_realm_allowed(25)) {
 		if (read_user_setting('realtime_mode') == '' || read_user_setting('realtime_mode') == '1') {
-			print "<a class='iconLink realtime' href='#' role='link' id='graph_" . $local_graph_id . "_realtime'><i class='drillDown ti ti-chart-area realTime' title='" . __esc('Click to view just this Graph in Real-time'). "'></i></a><br>";
+			print "<a class='iconLink realtime' href='#' role='link' id='graph_" . $local_graph_id . "_realtime'><i class='drillDown ti ti-chart-area realTime' title='" . __esc('Click to view just this Graph in Real-time') . "'></i></a><br>";
 		} else {
 			print "<a class='iconLink' href='#' onclick=\"window.open('" . CACTI_PATH_URL . 'graph_realtime.php?top=0&left=0&local_graph_id=' . $local_graph_id . "', 'popup_" . $local_graph_id . "', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=yes,width=650,height=300');return false\"><i class='drillDown ti ti-chart-area realTime' title='" . __esc('Click to view just this Graph in Real-time') . "'></i></a><br>";
 		}
@@ -612,13 +612,13 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 
 		$nav = "<div class='navBarNavigation'>
 			<div class='navBarNavigationPrevious'>
-				" . (($current_page > 1) ? "<a href='#' onClick='goto$page_var(" . ($current_page - 1) . ");return false;'><i class='ti ti-chevrons-left previous'></i>" . __('Previous'). '</a>' : '') . "
+				" . (($current_page > 1) ? "<a href='#' onClick='goto$page_var(" . ($current_page - 1) . ");return false;'><i class='ti ti-chevrons-left previous'></i>" . __('Previous') . '</a>' : '') . "
 			</div>
 			<div class='navBarNavigationCenter'>
 				" . __('%d to %d of %s [ %s ]', (($rows_per_page * ($current_page - 1)) + 1), (($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page * $current_page)) ? $total_rows : $rows_per_page * $current_page), $total_rows, $url_page_select) . "
 			</div>
 			<div class='navBarNavigationNext'>
-				" . (($current_page * $rows_per_page) < $total_rows ? "<a href='#' onClick='goto$page_var(" . ($current_page + 1) . ");return false;'>" . __('Next'). "<i class='ti ti-chevrons-right next'></i></a>" : '') . '
+				" . (($current_page * $rows_per_page) < $total_rows ? "<a href='#' onClick='goto$page_var(" . ($current_page + 1) . ");return false;'>" . __('Next') . "<i class='ti ti-chevrons-right next'></i></a>" : '') . '
 			</div>
 		</div>';
 	} elseif ($total_rows > 0) {
@@ -641,13 +641,13 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 
 			$nav = "<div class='navBarNavigation'>
 				<div class='navBarNavigationPrevious'>
-					" . (($current_page > 1) ? "<a href='#' onClick='goto$page_var(" . ($current_page - 1) . ");return false;'><i class='ti ti-chevrons-left previous'></i>" . __('Previous'). '</a>' : '') . "
+					" . (($current_page > 1) ? "<a href='#' onClick='goto$page_var(" . ($current_page - 1) . ");return false;'><i class='ti ti-chevrons-left previous'></i>" . __('Previous') . '</a>' : '') . "
 				</div>
 				<div class='navBarNavigationCenter'>
 					" . __('Current Page: %s', $url_page_select) . "
 				</div>
 				<div class='navBarNavigationNext'>
-					" . ($total_rows >= $rows_per_page ? "<a href='#' onClick='goto$page_var(" . ($current_page + 1) . ");return false;'>" . __('Next'). "<i class='ti ti-chevrons-right next'></i></a>" : '') . "
+					" . ($total_rows >= $rows_per_page ? "<a href='#' onClick='goto$page_var(" . ($current_page + 1) . ");return false;'>" . __('Next') . "<i class='ti ti-chevrons-right next'></i></a>" : '') . "
 				</div>
 			</div>\n";
 
@@ -1059,7 +1059,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}
 	}
 
-	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' onClick='selectAll(\"$prefix\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All Rows') . "' for='selectall'></label></th>" . ($include_form ? "<th style='display:none;'><form id='$prefix' name='$prefix' method='post' action='$form_action'></th>" : '');
+	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows') . "' onClick='selectAll(\"$prefix\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All Rows') . "' for='selectall'></label></th>" . ($include_form ? "<th style='display:none;'><form id='$prefix' name='$prefix' method='post' action='$form_action'></th>" : '');
 	print '</tr></thead>';
 
 	$page_count++;
@@ -1210,7 +1210,7 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 		}
 	}
 
-	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' onClick='selectAll(\"$prefix\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All') . "' for='selectall'></label></th>" . ($include_form ? "<th style='display:none;'><form id='$prefix' name='$prefix' method='post' action='$form_action'></th>" : '');
+	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows') . "' onClick='selectAll(\"$prefix\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All') . "' for='selectall'></label></th>" . ($include_form ? "<th style='display:none;'><form id='$prefix' name='$prefix' method='post' action='$form_action'></th>" : '');
 	print '</tr></thead>';
 }
 
@@ -1581,7 +1581,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			if (preg_match('/(AREA|STACK|TICK|LINE[123])/', $_graph_type_name)) {
 				if (preg_match('/(AREA|STACK)/', $_graph_type_name)) {
 					if ($item['hex'] != '') {
-						$color1 = $item['hex']  . $item['alpha'];
+						$color1 = $item['hex'] . $item['alpha'];
 
 						if ($item['hex2'] != '') {
 							$color2 = $item['hex2'] . ($item['hex2'] != '' ? $item['alpha2'] : '');
@@ -1644,7 +1644,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 				print "<td class='right nowrap'>";
 
 				if ($i != cacti_sizeof($item_list) - 1) {
-					print "<span><a class='moveArrow ti ti-caret-down-filled' title='" . __esc('Move Down'). "' href='" . html_escape("$filename?action=item_movedown&id=" . $item['id'] . "&$url_data") . "'></a></span>";
+					print "<span><a class='moveArrow ti ti-caret-down-filled' title='" . __esc('Move Down') . "' href='" . html_escape("$filename?action=item_movedown&id=" . $item['id'] . "&$url_data") . "'></a></span>";
 				} else {
 					print "<span class='moveArrowNone'></span>";
 				}
@@ -3325,7 +3325,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'main.css');
 
 	/* Global styles */
-	print get_md5_include_css('include/themes/' . $selectedTheme .'/main.css');
+	print get_md5_include_css('include/themes/' . $selectedTheme . '/main.css');
 
 	/* Global scripts */
 	print get_md5_include_js('include/js/screenfull.js', true);

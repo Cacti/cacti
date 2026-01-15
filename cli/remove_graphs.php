@@ -265,17 +265,17 @@ if ($listGraphTemplates) {
 	$all_option = true;
 
 	if (cacti_sizeof($host_ids) && $all === false) {
-		$sql_where .= ' AND gl.host_id IN (' . implode(',', $host_ids). ')';
+		$sql_where .= ' AND gl.host_id IN (' . implode(',', $host_ids) . ')';
 		$all_option = false;
 	}
 
 	if (cacti_sizeof($host_template_ids) && $all === false) {
-		$sql_where .= ' AND h.host_template_id IN (' . implode(',', $host_template_ids). ')';
+		$sql_where .= ' AND h.host_template_id IN (' . implode(',', $host_template_ids) . ')';
 		$all_option = false;
 	}
 
 	if (cacti_sizeof($graph_template_ids) && $all === false) {
-		$sql_where .= ' AND gl.graph_template_id IN (' . implode(',', $graph_template_ids). ')';
+		$sql_where .= ' AND gl.graph_template_id IN (' . implode(',', $graph_template_ids) . ')';
 		$all_option = false;
 	}
 

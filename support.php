@@ -870,9 +870,9 @@ function show_cacti_poller() {
 		print "<table id='tables' class='cactiTable'>";
 		print '<thead>';
 		print "<tr class='tableHeader'>";
-		print "  <th class='tableSubHeaderColumn'>"       . __('Description')         . '</th>';
-		print "  <th class='tableSubHeaderColumn right'>" . __('ID')                  . '</th>';
-		print "  <th class='tableSubHeaderColumn right'>" . __('Avg Polling Time')    . '</th>';
+		print "  <th class='tableSubHeaderColumn'>" . __('Description') . '</th>';
+		print "  <th class='tableSubHeaderColumn right'>" . __('ID') . '</th>';
+		print "  <th class='tableSubHeaderColumn right'>" . __('Avg Polling Time') . '</th>';
 		print "  <th class='tableSubHeaderColumn right'>" . __('Actual Polling Time') . '</th>';
 		print '</tr>';
 		print '</thead>';
@@ -913,8 +913,8 @@ function show_cacti_poller() {
 		print "<table id='tables' class='cactiTable'>";
 		print '<thead>';
 		print "<tr class='tableHeader'>";
-		print "  <th class='tableSubHeaderColumn'>"       . __('Description')        . '</th>';
-		print "  <th class='tableSubHeaderColumn right'>" . __('ID')                 . '</th>';
+		print "  <th class='tableSubHeaderColumn'>" . __('Description') . '</th>';
+		print "  <th class='tableSubHeaderColumn right'>" . __('ID') . '</th>';
 		print "  <th class='tableSubHeaderColumn right'>" . __('Failed/Total polls') . '</th>';
 		print '</tr>';
 		print '</thead>';
@@ -959,15 +959,15 @@ function show_database_tables() {
 		print "<table id='tables' class='cactiTable'>";
 		print '<thead>';
 		print "<tr class='tableHeader'>";
-		print "  <th class='tableSubHeaderColumn'>"       . __('Name')           . '</th>';
-		print "  <th class='tableSubHeaderColumn'>"       . __('Engine')         . '</th>';
-		print "  <th class='tableSubHeaderColumn right'>" . __('Rows')           . '</th>';
+		print "  <th class='tableSubHeaderColumn'>" . __('Name') . '</th>';
+		print "  <th class='tableSubHeaderColumn'>" . __('Engine') . '</th>';
+		print "  <th class='tableSubHeaderColumn right'>" . __('Rows') . '</th>';
 		print "  <th class='tableSubHeaderColumn right'>" . __('Avg Row Length') . '</th>';
-		print "  <th class='tableSubHeaderColumn right'>" . __('Data Length')    . '</th>';
-		print "  <th class='tableSubHeaderColumn right'>" . __('Index Length')   . '</th>';
-		print "  <th class='tableSubHeaderColumn'>"       . __('Collation')      . '</th>';
-		print "  <th class='tableSubHeaderColumn'>"       . __('Row Format')     . '</th>';
-		print "  <th class='tableSubHeaderColumn'>"       . __('Comment')        . '</th>';
+		print "  <th class='tableSubHeaderColumn right'>" . __('Data Length') . '</th>';
+		print "  <th class='tableSubHeaderColumn right'>" . __('Index Length') . '</th>';
+		print "  <th class='tableSubHeaderColumn'>" . __('Collation') . '</th>';
+		print "  <th class='tableSubHeaderColumn'>" . __('Row Format') . '</th>';
+		print "  <th class='tableSubHeaderColumn'>" . __('Comment') . '</th>';
 		print '</tr>';
 		print '</thead>';
 
@@ -975,13 +975,13 @@ function show_database_tables() {
 			form_alternate_row();
 			print '<td>' . $table['TABLE_NAME'] . '</td>';
 			print '<td>' . $table['ENGINE'] . '</td>';
-			print '<td class="right">' . number_format_i18n($table['TABLE_ROWS'], -1)     . '</td>';
+			print '<td class="right">' . number_format_i18n($table['TABLE_ROWS'], -1) . '</td>';
 			print '<td class="right">' . number_format_i18n($table['AVG_ROW_LENGTH'], -1) . '</td>';
-			print '<td class="right">' . number_format_i18n($table['DATA_LENGTH'], -1)    . '</td>';
-			print '<td class="right">' . number_format_i18n($table['INDEX_LENGTH'], -1)   . '</td>';
+			print '<td class="right">' . number_format_i18n($table['DATA_LENGTH'], -1) . '</td>';
+			print '<td class="right">' . number_format_i18n($table['INDEX_LENGTH'], -1) . '</td>';
 			print '<td>' . $table['TABLE_COLLATION'] . '</td>';
-			print '<td>' . $table['ROW_FORMAT']      . '</td>';
-			print '<td>' . $table['TABLE_COMMENT']   . '</td>';
+			print '<td>' . $table['ROW_FORMAT'] . '</td>';
+			print '<td>' . $table['TABLE_COMMENT'] . '</td>';
 			form_end_row();
 		}
 
@@ -1022,7 +1022,7 @@ function show_database_settings() {
 	print '<thead>';
 	print "<tr class='tableHeader'>";
 	print "  <th class='tableSubHeaderColumn'>" . __('Variable Name') . '</th>';
-	print "  <th class='tableSubHeaderColumn'>" . __('Value')         . '</th>';
+	print "  <th class='tableSubHeaderColumn'>" . __('Value') . '</th>';
 	print '</tr>';
 	print '</thead>';
 
@@ -1061,7 +1061,7 @@ function show_database_permissions() {
 				form_alternate_row("line$j");
 			}
 
-			print '<td>' . $key      . '</td>';
+			print '<td>' . $key . '</td>';
 			print '<td>' . $database . '</td>';
 			print '<td>' . ($value ? __('Yes') : __('No')) . '</td>';
 
@@ -1090,7 +1090,7 @@ function show_database_status() {
 	print '<thead>';
 	print "<tr class='tableHeader'>";
 	print "  <th class='tableSubHeaderColumn'>" . __('Variable Name') . '</th>';
-	print "  <th class='tableSubHeaderColumn'>" . __('Value')         . '</th>';
+	print "  <th class='tableSubHeaderColumn'>" . __('Value') . '</th>';
 	print '</tr>';
 	print '</thead>';
 

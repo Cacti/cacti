@@ -185,7 +185,7 @@ function automation_import() {
 	if ((isset($_SESSION['import_debug_info'])) && (is_array($_SESSION['import_debug_info']))) {
 		html_start_box(__('Import Results'), '60%', false, 3, 'center', '');
 
-		print '<tr class="tableHeader"><th>' . __('Cacti has Imported the following Tree Rules'). '</th></tr>';
+		print '<tr class="tableHeader"><th>' . __('Cacti has Imported the following Tree Rules') . '</th></tr>';
 
 		foreach ($_SESSION['import_debug_info'] as $line) {
 			print '<tr><td>' . $line . '</td></tr>';
@@ -1138,7 +1138,7 @@ function automation_tree_rules() {
 			$subtree_name            = ((empty($automation_tree_rule['subtree_name'])) ? '<em>' . __('ROOT') . '</em>' : html_escape($automation_tree_rule['subtree_name']));
 			$tree_host_grouping_type = ((empty($host_group_types[$automation_tree_rule['host_grouping_type']])) ? '' : $host_group_types[$automation_tree_rule['host_grouping_type']]);
 
-			form_alternate_row('line' .  $automation_tree_rule['id'], true);
+			form_alternate_row('line' . $automation_tree_rule['id'], true);
 
 			form_selectable_cell(filter_value($automation_tree_rule['name'], get_request_var('filter'), 'automation_tree_rules.php?action=edit&id=' . $automation_tree_rule['id'] . '&page=1'), $automation_tree_rule['id']);
 			form_selectable_cell($automation_tree_rule['id'], $automation_tree_rule['id'], '', 'text-align:right');
