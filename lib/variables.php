@@ -284,7 +284,8 @@ function null_out_substitutions($string) {
 function expand_title($host_id, $snmp_query_id, $snmp_index, $title) {
 	if ((strstr($title, '|')) && (!empty($host_id))) {
 		if (($snmp_query_id != '0') && ($snmp_index != '')) {
-			$title = substitute_snmp_query_data(null_out_substitutions(substitute_host_data($title, '|', '|', $host_id)), $host_id, $snmp_query_id, $snmp_index, read_config_option('max_data_query_field_length'));
+			$max_chars = intval(read_config_option('max_data_query_field_length'));
+			$title     = substitute_snmp_query_data(null_out_substitutions(substitute_host_data($title, '|', '|', $host_id)), $host_id, $snmp_query_id, $snmp_index, $max_chars);
 		} else {
 			$title = null_out_substitutions(substitute_host_data($title, '|', '|', $host_id));
 		}
@@ -562,7 +563,7 @@ function substitute_data_input_data($string, $graph, $local_data_id, $max_chars 
 function substitute_poller_data($string, $graph, $local_data_id, $max_chars = 0) {
 	if (empty($local_data_id)) {
 		if (isset($graph['local_graph_id'])) {
-			$poller = db_fetch_row('SELECT p.*
+			$poller = db_fetch_row_prepared('SELECT p.*
 				FROM host AS h
 				INNER JOIN poller AS p
 				ON h.poller_id = p.id
@@ -582,7 +583,7 @@ function substitute_poller_data($string, $graph, $local_data_id, $max_chars = 0)
 			}
 		}
 	} else {
-		$poller = db_fetch_row('SELECT p.*
+		$poller = db_fetch_row_prepared('SELECT p.*
 			FROM host AS h
 			INNER JOIN data_local AS dl
 			ON h.id = dl.host_id
@@ -621,7 +622,7 @@ function substitute_poller_data($string, $graph, $local_data_id, $max_chars = 0)
 function substitute_site_data($string, $graph, $local_data_id, $max_chars = 0) {
 	if (empty($local_data_id)) {
 		if (isset($graph['local_graph_id'])) {
-			$site = db_fetch_row('SELECT s.*
+			$site = db_fetch_row_prepared('SELECT s.*
 				FROM host AS h
 				INNER JOIN sites AS s
 				ON h.site_id = s.id
@@ -641,7 +642,7 @@ function substitute_site_data($string, $graph, $local_data_id, $max_chars = 0) {
 			}
 		}
 	} else {
-		$site = db_fetch_row('SELECT s.*
+		$site = db_fetch_row_prepared('SELECT s.*
 			FROM host AS h
 			INNER JOIN data_local AS dl
 			ON h.id = dl.host_id
