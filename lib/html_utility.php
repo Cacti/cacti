@@ -810,8 +810,6 @@ function get_request_var_request(string $name, mixed $default = '') : mixed {
 /**
  * alias of get_request_var()
  *
- * @deprecated v1.0
- *
  * @param  string $name     the name of the request variable. this should be a
  *                          valid key in the $_REQUEST array
  * @param  mixed  $default  the value to return if the specified name does not
@@ -1010,7 +1008,7 @@ function get_nfilter_request_var(string $name, mixed $default = '') : mixed {
 }
 
 /**
- * stub call for get_nfilteR_request_var
+ * alias of get_nfilteR_request_var
  *
  * @deprecated v1.0
  *
