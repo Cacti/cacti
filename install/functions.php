@@ -1504,7 +1504,7 @@ function log_install_to_file($section, $data, $flags = FILE_APPEND, $level = POL
 /** repair_automation() - Repairs mangled automation graph rules based
  *  upon the change in the way that Cacti imports the Graph Templates after
  *  Cacti 1.2.4.
- **/
+ */
 function repair_automation() {
 	log_install_always('', 'Repairing Automation Rules');
 

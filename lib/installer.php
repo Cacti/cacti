@@ -28,7 +28,7 @@ class Installer implements JsonSerializable {
 	const EXIT_DB_EMPTY = 1;
 	const EXIT_DB_OLD   = 2;
 
-	/***********************************************************
+	/*
 	 * The STEP_ constants are defined in the following files: *
 	 *                                                         *
 	 * lib/installer.php                                       *
@@ -36,7 +36,7 @@ class Installer implements JsonSerializable {
 	 *                                                         *
 	 * All files must be updated to match for the installation *
 	 * process to work properly                                *
-	 ***********************************************************/
+	 */
 
 	const STEP_NONE                   = 0;
 	const STEP_WELCOME                = 1;
@@ -564,7 +564,7 @@ class Installer implements JsonSerializable {
 		return $rrdver;
 	}
 
-	/******************************************************************
+	/*
 	 *                                                                *
 	 * Setters/Getters                                                *
 	 * ---------------                                                *
@@ -574,7 +574,7 @@ class Installer implements JsonSerializable {
 	 * to prevent external usage which must come via the installData  *
 	 * parameter when creating a new Installer class object           *
 	 *                                                                *
-	 ******************************************************************/
+	 */
 
 	/* getPermissions() - gets the permissions for folders that we require
 	 *                    to be available for writing during install or
@@ -1900,10 +1900,10 @@ class Installer implements JsonSerializable {
 		$this->buttonPrevious->setStep($this->stepPrevious);
 	}
 
-	/**************************************************
+	/*
 	 * The following sections of code are all related
 	 * to the installation process of the current step
-	 **************************************************/
+	 */
 	public function processCurrentStep() {
 		$exitReason = $this->shouldExitWithReason();
 
@@ -2518,7 +2518,7 @@ class Installer implements JsonSerializable {
 					break;
 			}
 
-			/*** Disable output of error for now, pending QA ***
+			/* Disable output of error for now, pending QA ***
 			if (isset($this->errors['Paths'][$name])) {
 				print Installer::sectionError(__($this->errors['Paths'][$name]));
 			}
@@ -4189,12 +4189,12 @@ class Installer implements JsonSerializable {
 		}
 	}
 
-	/*****************************************************************
+	/*
 	 *                                                               *
 	 * The following functions are for rendering output which is     *
 	 * returned when $this->Runtime is in Web mode only		 *
 	 *                                                               *
-	 *****************************************************************/
+	 */
 
 	public static function sectionTitleError($title = '') {
 		if (empty($title)) {

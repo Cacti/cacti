@@ -7650,7 +7650,7 @@ function version_to_decimal(string $version, int $length = 9, bool $hex = true):
  * @depends format_cacti_version
  */
 function version_to_bits(string $version, $hex = false): int {
-	/***************************************************
+	/*
 	 * Bits is how many bits to shift that section of a
 	 * version to the left within the integer.
 	 *
