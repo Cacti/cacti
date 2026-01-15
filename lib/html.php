@@ -129,7 +129,7 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_url_or
 		}
 
 		if ($help_file !== false && $help_count == 0 && is_realm_allowed(28)) {
-			print "<span class='cactiHelp' title='" . __esc('Get Page Help') . "'><a class='linkOverDark helpPage' data-page='" . html_escape(basename($help_file)) . "' href='#'><i class='ti ti-help actionHelp'></i></a></span>";
+			print "<span class='cactiHelp' title='" . __esc('Get Page Help') . "'><a class='linkOverDark helpPage' data-page='" . htmle(basename($help_file)) . "' href='#'><i class='ti ti-help actionHelp'></i></a></span>";
 			$help_count++;
 		}
 
@@ -138,7 +138,7 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_url_or
 		}
 
 		if ($add_url_or_buttons != '' && !is_array($add_url_or_buttons)) {
-			print "<span class='cactiFilterAdd' title='$add_label'><a class='linkOverDark' href='" . html_escape($add_url_or_buttons) . "'><i class='ti ti-plus plusAdd'></i></a></span>";
+			print "<span class='cactiFilterAdd' title='$add_label'><a class='linkOverDark' href='" . htmle($add_url_or_buttons) . "'><i class='ti ti-plus plusAdd'></i></a></span>";
 		} else {
 			if (is_array($add_url_or_buttons)) {
 				if (cacti_sizeof($add_url_or_buttons)) {
@@ -156,7 +156,7 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_url_or
 						}
 
 						if (isset($icon['href'])) {
-							$href = html_escape($icon['href']);
+							$href = htmle($icon['href']);
 						} else {
 							$href = '#';
 						}
@@ -263,12 +263,12 @@ function html_sub_tabs($tabs, $uri = '', $session_var = '') {
 			if (is_numeric($id)) {
 				print "<li class='subTab'>
 					<a class='pic" . ($name == $current_tab ? ' selected' : '') . "'
-					href='" . html_escape($page_name . 'tab=' . $name) . "'>" . strtoupper($name) . '</a>
+					href='" . htmle($page_name . 'tab=' . $name) . "'>" . strtoupper($name) . '</a>
 				</li>';
 			} else {
 				print "<li class='subTab'>
 					<a class='pic" . ($id == $current_tab ? ' selected' : '') . "'
-					href='" . html_escape($page_name . 'tab=' . $id) . "'>" . $name . '</a>
+					href='" . htmle($page_name . 'tab=' . $id) . "'>" . $name . '</a>
 				</li>';
 			}
 		}
@@ -372,7 +372,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 					</div>
 					<?php } ?>
 				</div>
-				<?php print(read_user_setting('show_graph_title') == 'on' ? '<div>' . html_escape($graph['title_cache']) . '</div>' : ''); ?>
+				<?php print(read_user_setting('show_graph_title') == 'on' ? '<div>' . htmle($graph['title_cache']) . '</div>' : ''); ?>
 			</div>
 			<?php
 		}
@@ -476,7 +476,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 				}
 
 				if ($print) {
-					print "<div class='tableHeaderGraph graphSubHeaderColumn textHeaderDark'><span>" . __('Data Query:') . ' ' . html_escape($graph['data_query_name']) . '</span></div>';
+					print "<div class='tableHeaderGraph graphSubHeaderColumn textHeaderDark'><span>" . __('Data Query:') . ' ' . htmle($graph['data_query_name']) . '</span></div>';
 				}
 			}
 
@@ -490,7 +490,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 					</div>
 					<?php } ?>
 				</div>
-				<?php print(read_user_setting('show_graph_title') == 'on' ? "<div class='center'>" . html_escape($graph['title_cache']) . '</div>' : ''); ?>
+				<?php print(read_user_setting('show_graph_title') == 'on' ? "<div class='center'>" . htmle($graph['title_cache']) . '</div>' : ''); ?>
 			</div>
 			<?php
 		}
@@ -540,14 +540,14 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_i
 			[$local_graph_id]);
 
 		if ($host_id > 0) {
-			print "<a class='iconLink' href='" . html_escape(CACTI_PATH_URL . "host.php?action=edit&id=$host_id") . "' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_de'><i id='de" . $host_id . '_' . $rand . "' class='drillDown ti ti-server editDevice' title='" . __esc('Edit Device') . "'></i></a>";
+			print "<a class='iconLink' href='" . htmle(CACTI_PATH_URL . "host.php?action=edit&id=$host_id") . "' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_de'><i id='de" . $host_id . '_' . $rand . "' class='drillDown ti ti-server editDevice' title='" . __esc('Edit Device') . "'></i></a>";
 			print '<br>';
 			$rand++;
 		}
 	}
 
 	if (is_realm_allowed(10) && $graph_template_id > 0) {
-		print "<a class='iconLink' role='link' href='" . html_escape(CACTI_PATH_URL . 'graph_templates.php?action=template_edit&id=' . $graph_template_id) . "'><i class='drillDown ti ti-edit editTemplate' title='" . __esc('Edit Graph Template') . "'></i></a>";
+		print "<a class='iconLink' role='link' href='" . htmle(CACTI_PATH_URL . 'graph_templates.php?action=template_edit&id=' . $graph_template_id) . "'><i class='drillDown ti ti-edit editTemplate' title='" . __esc('Edit Graph Template') . "'></i></a>";
 		print '<br>';
 	}
 
@@ -857,10 +857,10 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		}
 
 		if (($db_column == '') || (substr_count($db_column, 'nosort'))) {
-			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'" : '') . " class='$nohide $align' " . ((($i + 1) == cacti_count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . $display_text . '</th>';
+			print '<th ' . ($tip != '' ? "title='" . htmle($tip) . "'" : '') . " class='$nohide $align' " . ((($i + 1) == cacti_count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . $display_text . '</th>';
 		} else {
-			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'" : '') . " class='sortable $align $nohide $isSort'>";
-			print "<div class='sortinfo' sort-return='" . ($return_to == '' ? 'main' : $return_to) . "' sort-page='" . ($url == '' ? html_escape(get_current_page(false)) : $url) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>";
+			print '<th ' . ($tip != '' ? "title='" . htmle($tip) . "'" : '') . " class='sortable $align $nohide $isSort'>";
+			print "<div class='sortinfo' sort-return='" . ($return_to == '' ? 'main' : $return_to) . "' sort-page='" . ($url == '' ? htmle(get_current_page(false)) : $url) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>";
 		}
 
 		$i++;
@@ -1052,10 +1052,10 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}
 
 		if (($db_column == '') || (substr_count($db_column, 'nosort'))) {
-			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'" : '') . " class='$align $nohide'>" . $display_text . '</th>';
+			print '<th ' . ($tip != '' ? "title='" . htmle($tip) . "'" : '') . " class='$align $nohide'>" . $display_text . '</th>';
 		} else {
-			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'" : '') . " class='sortable $align $nohide $isSort'>";
-			print "<div class='sortinfo' sort-return='" . ($return_to == '' ? 'main' : $return_to) . "' sort-page='" . html_escape($form_action) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>";
+			print '<th ' . ($tip != '' ? "title='" . htmle($tip) . "'" : '') . " class='sortable $align $nohide $isSort'>";
+			print "<div class='sortinfo' sort-return='" . ($return_to == '' ? 'main' : $return_to) . "' sort-page='" . htmle($form_action) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>";
 		}
 	}
 
@@ -1114,9 +1114,9 @@ function html_header($header_items, $last_item_colspan = 1, $resizable = true) {
 				$tip = '';
 			}
 
-			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "' " : '') . "class='$nohide $align' " . ((($i + 1) == cacti_count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . html_escape($item['display']) . '</th>';
+			print '<th ' . ($tip != '' ? "title='" . htmle($tip) . "' " : '') . "class='$nohide $align' " . ((($i + 1) == cacti_count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . htmle($item['display']) . '</th>';
 		} else {
-			print '<th ' . ((($i + 1) == cacti_count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . html_escape($item) . '</th>';
+			print '<th ' . ((($i + 1) == cacti_count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . htmle($item) . '</th>';
 		}
 
 		$i++;
@@ -1204,9 +1204,9 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 				$tip = '';
 			}
 
-			print '<th ' . ($tip != '' ? " title='" . html_escape($tip) . "' " : '') . "class='$align $nohide'>" . html_escape($item['display']) . '</th>';
+			print '<th ' . ($tip != '' ? " title='" . htmle($tip) . "' " : '') . "class='$align $nohide'>" . htmle($item['display']) . '</th>';
 		} else {
-			print "<th class='left'>" . html_escape($item) . '</th>';
+			print "<th class='left'>" . htmle($item) . '</th>';
 		}
 	}
 
@@ -1264,12 +1264,12 @@ function html_create_list($form_data, $column_display, $column_id, $form_previou
 		foreach ($form_data as $key => $row) {
 			if (is_array($row)) {
 				if ($column_id != '') {
-					print "<option value='" . html_escape($row[$column_id]) . "'";
+					print "<option value='" . htmle($row[$column_id]) . "'";
 				} else {
-					print "<option value='" . html_escape($key) . "'";
+					print "<option value='" . htmle($key) . "'";
 				}
 			} else {
-				print "<option value='" . html_escape($key) . "'";
+				print "<option value='" . htmle($key) . "'";
 			}
 
 			if ($column_id != '' && isset($row[$column_id]) && $form_previous_value == $row[$column_id]) {
@@ -1287,13 +1287,13 @@ function html_create_list($form_data, $column_display, $column_id, $form_previou
 			}
 
 			if (!is_array($row)) {
-				print '>' . html_escape($row) . '</option>';
+				print '>' . htmle($row) . '</option>';
 			} elseif (isset($row['host_id'])) {
-				print '>' . html_escape($row[$column_display]) . '</option>';
+				print '>' . htmle($row[$column_display]) . '</option>';
 			} elseif (isset($row['display'])) {
-				print '>' . html_escape($row['display']) . '</option>';
+				print '>' . htmle($row['display']) . '</option>';
 			} elseif (isset($column_display) && isset($row[$column_display])) {
-				print '>' . html_escape(null_out_substitutions($row[$column_display])) . '</option>';
+				print '>' . htmle(null_out_substitutions($row[$column_display])) . '</option>';
 			}
 		}
 	}
@@ -1539,9 +1539,9 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			}
 
 			if ($disable_controls == false) {
-				$display = "<a class='linkEditMain' href='" . html_escape("$filename?action=item_edit&id=" . $item['id'] . "&$url_data") . "'>" . html_escape($matrix_title) . '</a>';
+				$display = "<a class='linkEditMain' href='" . htmle("$filename?action=item_edit&id=" . $item['id'] . "&$url_data") . "'>" . htmle($matrix_title) . '</a>';
 			} else {
-				$display = html_escape($matric_title);
+				$display = htmle($matric_title);
 			}
 
 			// data source display
@@ -1562,7 +1562,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 			// export/hover legend
 			if ($item['legend'] != '') {
-				print "<td style='$this_row_style'>" . html_escape($item['legend']) . '</td>';
+				print "<td style='$this_row_style'>" . htmle($item['legend']) . '</td>';
 			} else {
 				print '<td>-</td>';
 			}
@@ -1571,7 +1571,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			print "<td class='prewrap' style='$this_row_style'>";
 
 			if ($item['gprint_name'] != '') {
-				print html_escape($item['gprint_name']);
+				print htmle($item['gprint_name']);
 			} else {
 				print '-';
 			}
@@ -1666,18 +1666,18 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 				print "<td class='right nowrap'>";
 
 				if ($i != cacti_sizeof($item_list) - 1) {
-					print "<span><a class='moveArrow ti ti-caret-down-filled' title='" . __esc('Move Down') . "' href='" . html_escape("$filename?action=item_movedown&id=" . $item['id'] . "&$url_data") . "'></a></span>";
+					print "<span><a class='moveArrow ti ti-caret-down-filled' title='" . __esc('Move Down') . "' href='" . htmle("$filename?action=item_movedown&id=" . $item['id'] . "&$url_data") . "'></a></span>";
 				} else {
 					print "<span class='moveArrowNone'></span>";
 				}
 
 				if ($i > 0) {
-					print "<span><a class='moveArrow ti ti-caret-up-filled' title='" . __esc('Move Up') . "' href='" . html_escape("$filename?action=item_moveup&id=" . $item['id'] . "&$url_data") . "'></a></span>";
+					print "<span><a class='moveArrow ti ti-caret-up-filled' title='" . __esc('Move Up') . "' href='" . htmle("$filename?action=item_moveup&id=" . $item['id'] . "&$url_data") . "'></a></span>";
 				} else {
 					print "<span class='moveArrowNone'></span>";
 				}
 
-				print "<a class='deleteMarker ti ti-x' title='" . __esc('Delete') . "' href='" . html_escape("$filename?action=item_remove&id=" . $item['id'] . "&nostate=true&$url_data") . "'></a>";
+				print "<a class='deleteMarker ti ti-x' title='" . __esc('Delete') . "' href='" . htmle("$filename?action=item_remove&id=" . $item['id'] . "&nostate=true&$url_data") . "'></a>";
 
 				print '</td>';
 			}
@@ -1877,7 +1877,7 @@ function draw_menu($user_menu = '') {
 							if (($i == 0) || ($draw_sub_items)) {
 								if (is_menu_pick_active($item_sub_url)) {
 									print "<li><a role='menuitem' class='pic selected' href='";
-									print html_escape($item_sub_url) . "'";
+									print htmle($item_sub_url) . "'";
 
 									if ($item_sub_external) {
 										print " target='_blank' rel='noopener'";
@@ -1885,7 +1885,7 @@ function draw_menu($user_menu = '') {
 									print ">$item_sub_title</a></li>";
 								} else {
 									print "<li><a role='menuitem' class='pic' href='";
-									print html_escape($item_sub_url) . "'";
+									print htmle($item_sub_url) . "'";
 
 									if ($item_sub_external) {
 										print " target='_blank' rel='noopener'";
@@ -1910,7 +1910,7 @@ function draw_menu($user_menu = '') {
 
 						if (is_menu_pick_active($item_url)) {
 							print "<li><a role='menuitem' class='pic selected' href='";
-							print html_escape($item_url) . "'";
+							print htmle($item_url) . "'";
 
 							if ($item_external) {
 								print " target='_blank' rel='noopener'";
@@ -1918,7 +1918,7 @@ function draw_menu($user_menu = '') {
 							print ">$item_title</a></li>";
 						} else {
 							print "<li><a role='menuitem' class='pic' href='";
-							print html_escape($item_url) . "'";
+							print htmle($item_url) . "'";
 
 							if ($item_external) {
 								print " target='_blank' rel='noopener'";
@@ -2051,7 +2051,7 @@ function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1
  * Generates an HTML table row with a single cell containing the provided text.
  *
  * This function creates a table row (`<tr>`) with a single table data cell (`<td>`)
- * that contains the provided text. The text is escaped using the `html_escape` function
+ * that contains the provided text. The text is escaped using the `htmle` function
  * to prevent XSS attacks.
  *
  * @param string $text The text to be displayed inside the table cell.
@@ -2062,7 +2062,7 @@ function form_area($text) {
 	?>
 	<tr>
 		<td class='textArea'>
-			<?php print html_escape($text); ?>
+			<?php print htmle($text); ?>
 		</td>
 	</tr>
 	<?php
@@ -2299,7 +2299,7 @@ function html_show_tabs_left() {
 			$i++;
 		}
 
-		print "<li><a id='$id' role='tab' class='lefttab" . (isset($tab['selected']) ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . html_escape($tab['url']) . "'><span class='fa glyph_$id'></span><span class='text_$id'>" . html_escape($tab['title']) . "</span></a><a id='menu-$id' class='maintabs-submenu' href='#'><i class='ti ti-chevron-down'></i></a></li>";
+		print "<li><a id='$id' role='tab' class='lefttab" . (isset($tab['selected']) ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . htmle($tab['url']) . "'><span class='fa glyph_$id'></span><span class='text_$id'>" . htmle($tab['title']) . "</span></a><a id='menu-$id' class='maintabs-submenu' href='#'><i class='ti ti-chevron-down'></i></a></li>";
 	}
 
 	print "<li class='ellipsis maintabs-submenu-ellipsis'><a id='menu-ellipsis' role='tab' aria-selected='false' class='submenu-ellipsis' href='#'><i class='ti ti-chevron-down'></i></a></li>";
@@ -2369,25 +2369,25 @@ function html_graph_tabs_right() {
 		switch($tab['id']) {
 			case 'tree':
 				if (isset($tab['image']) && $tab['image'] != '') {
-					print "<li><a id='treeview' role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
+					print "<li><a id='treeview' role='tab' title='" . htmle($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
 				} else {
-					print "<li><a role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
+					print "<li><a role='tab' title='" . htmle($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
 				}
 
 				break;
 			case 'list':
 				if (isset($tab['image']) && $tab['image'] != '') {
-					print "<li><a id='listview' role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
+					print "<li><a id='listview' role='tab' title='" . htmle($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
 				} else {
-					print "<li><a role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
+					print "<li><a role='tab' title='" . htmle($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
 				}
 
 				break;
 			case 'preview':
 				if (isset($tab['image']) && $tab['image'] != '') {
-					print "<li><a role='tab' id='preview' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
+					print "<li><a role='tab' id='preview' title='" . htmle($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
 				} else {
-					print "<li><a role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
+					print "<li><a role='tab' title='" . htmle($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
 				}
 
 				break;
@@ -2651,7 +2651,7 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 
 		if (cacti_sizeof($devices)) {
 			foreach ($devices as $device) {
-				print "<option value='{$device['id']}'" . ($host_id == $device['id'] ? ' selected' : '') . '>' . html_escape(strip_domain($device['description'])) . '</option>';
+				print "<option value='{$device['id']}'" . ($host_id == $device['id'] ? ' selected' : '') . '>' . htmle(strip_domain($device['description'])) . '</option>';
 			}
 		}
 		?>
@@ -2675,7 +2675,7 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 			<?php print __('Device'); ?>
 		</td>
 		<td>
-			<?php print "<input id='host_id' name='host_id' type='text' class='drop-callback ui-state-default ui-corner-all' data-action='ajax_hosts' data-callback='$call_back' data-callback-id='host_id' data-value='" . html_escape($hostname) . "' value='" . html_escape($host_id) . "'>"; ?>
+			<?php print "<input id='host_id' name='host_id' type='text' class='drop-callback ui-state-default ui-corner-all' data-action='ajax_hosts' data-callback='$call_back' data-callback-id='host_id' data-value='" . htmle($hostname) . "' value='" . htmle($host_id) . "'>"; ?>
 		</td>
 	<?php
 	}
@@ -2717,7 +2717,7 @@ function html_site_filter($site_id = '-1', $call_back = 'applyFilter', $sql_wher
 
 	if (cacti_sizeof($sites)) {
 		foreach ($sites as $site) {
-			print "<option value='" . $site['id'] . "'" . ($site_id == $site['id'] ? ' selected' : '') . '>' . html_escape($site['name']) . '</option>';
+			print "<option value='" . $site['id'] . "'" . ($site_id == $site['id'] ? ' selected' : '') . '>' . htmle($site['name']) . '</option>';
 		}
 	}
 	?>
@@ -2772,7 +2772,7 @@ function html_location_filter($location = '', $call_back = 'applyFilter', $sql_w
 				continue;
 			}
 
-			print "<option value='" . html_escape($l) . "'" . ($location == $l ? ' selected' : '') . '>' . html_escape($l) . '</option>';
+			print "<option value='" . htmle($l) . "'" . ($location == $l ? ' selected' : '') . '>' . htmle($l) . '</option>';
 		}
 	}
 	?>
@@ -3177,7 +3177,7 @@ function html_common_header($title, $selectedTheme = '') {
 	} else {
 		$script_policy = '';
 	}
-	$alternates = html_escape(read_config_option('content_security_alternate_sources'));
+	$alternates = htmle(read_config_option('content_security_alternate_sources'));
 
 	?>
 	<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>
@@ -3185,7 +3185,7 @@ function html_common_header($title, $selectedTheme = '') {
 	<meta name='description' content='Monitoringauth tool of the Internet'>
 	<meta name='mobile-web-app-capable' content='yes'>
 	<meta name="theme-color" content="#161616"/>
-	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' https://api.qrserver.com <?php print $alternates; ?> data: blob:; style-src 'self' 'unsafe-inline' <?php print $alternates; ?>; script-src 'self' <?php print html_escape($script_policy); ?> 'unsafe-inline' <?php print $alternates; ?>; worker-src 'self' <?php print $alternates; ?>;">
+	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' https://api.qrserver.com <?php print $alternates; ?> data: blob:; style-src 'self' 'unsafe-inline' <?php print $alternates; ?>; script-src 'self' <?php print htmle($script_policy); ?> 'unsafe-inline' <?php print $alternates; ?>; worker-src 'self' <?php print $alternates; ?>;">
 	<meta name='robots' content='noindex,nofollow'>
 
 	<title><?php print $title; ?></title>

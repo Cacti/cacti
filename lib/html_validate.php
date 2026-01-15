@@ -88,7 +88,7 @@ function html_log_input_error($variable) {
  * @return void
  */
 function die_html_input_error($variable = null, $value = null, $message = '') {
-	$func = CACTI_CLI ? 'trim' : 'html_escape';
+	$func = CACTI_CLI ? 'trim' : 'htmle';
 
 	$variable = ($variable !== null ? ', Variable:' . $func($variable) : '');
 	$value    = ($value !== null ? ', Value:' . $func($value) : '');
