@@ -26,15 +26,15 @@
  * Create or update aggregate graph.
  * Save all graph definitions, but omit graph items. Wipe out host_id and graph_template_id.
  *
- * @param string $_local_graph_id The local graph ID.
- * @param string $_graph_template_id The graph template ID.
+ * @param int $_local_graph_id The local graph ID.
+ * @param int $_graph_template_id The graph template ID.
  * @param string $_graph_title The title of the graph.
  * @param int $_aggregate_template_id The aggregate template ID (optional, default is 0).
  * @param array $graph_data Additional graph data (optional).
  *
  * @return int The ID of the newly inserted graph.
  */
-function aggregate_graph_save(string $_local_graph_id, string $_graph_template_id, string $_graph_title, int $_aggregate_template_id = 0, array $graph_data = []): int {
+function aggregate_graph_save(int $_local_graph_id, int $_graph_template_id, string $_graph_title, int $_aggregate_template_id = 0, array $graph_data = []): int {
 	// suppress warnings
 	error_reporting(E_ALL);
 
@@ -67,7 +67,7 @@ function aggregate_graph_local_save(int $id = 0): int {
 	cacti_log(__FUNCTION__ . ' local_graph: ' . $id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 	// create or update entry: graph_local
-	$local_graph['id']                = ($id ?? 0);
+	$local_graph['id']                = $id;
 	$local_graph['graph_template_id'] = 0;  // no templating
 	$local_graph['host_id']           = 0;  // no host to be referred to
 	$local_graph['snmp_query_id']     = 0;  // no templating
@@ -175,27 +175,28 @@ function aggregate_graph_templates_graph_save(int $local_graph_id, int $graph_te
 /**
  * Inserts graph items from an old graph into a new graph.
  *
- * @param int $_new_graph_id The ID of the new graph.
- * @param int $_old_graph_id The ID of the old graph.
- * @param int $_graph_template_id The ID of the graph template.
- * @param array $_skip Array of items to skip.
- * @param array $_totali Array of total items.
- * @param int $_graph_item_sequence The sequence number of the graph item.
- * @param int $_selected_graph_index The index of the selected graph.
- * @param array $_color_templates Array of color templates.
- * @param array $_graph_item_types Array of graph item types.
- * @param array $_cdefs Array of CDEFs.
- * @param string $_graph_type The type of the graph.
+ * @param int    $_new_graph_id The ID of the new graph.
+ * @param int    $_old_graph_id The ID of the old graph.
+ * @param int    $_graph_template_id The ID of the graph template.
+ * @param array  $_skip Array of items to skip.
+ * @param array  $_totali Array of total items.
+ * @param int    $_graph_item_sequence The sequence number of the graph item.
+ * @param int    $_selected_graph_index The index of the selected graph.
+ * @param array  $_color_templates Array of color templates.
+ * @param array  $_graph_item_types Array of graph item types.
+ * @param array  $_cdefs Array of CDEFs.
+ * @param int    $_graph_type The type of the graph.
  * @param string $_gprint_prefix The prefix for GPRINT.
  * @param string $_gprint_format The format for GPRINT.
- * @param int $_total The total value.
+ * @param int    $_total The total value.
  * @param string $_total_type The type of the total (default is empty string).
- * @param array $member_graphs Array of member graphs (default is empty array).
+ * @param array  $member_graphs Array of member graphs (default is empty array).
+ *
  * @return int The next sequence number to be filled.
  */
 function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph_id, int $_graph_template_id,
 	array $_skip, array $_totali, int $_graph_item_sequence, int $_selected_graph_index, array $_color_templates, array $_graph_item_types, array $_cdefs,
-	string $_graph_type, string $_gprint_prefix, string $_gprint_format, int $_total, string $_total_type = '', array $member_graphs = []): int {
+	int $_graph_type, string $_gprint_prefix, string $_gprint_format, int $_total, string $_total_type = '', array $member_graphs = []): int {
 	global $struct_graph_item, $graph_item_types;
 
 	// Remove filter item
@@ -252,11 +253,11 @@ function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph
 		$_hr = auto_hr($_skip, $_hr);
 
 		// next entry will have to have a prepended text format
-		$prepend    = true;
-		$prepend_ct = 0;
-		$skip_graph = false;
-		$make0_cdef = aggregate_cdef_make0();
-		$i          = 0;
+		$prepend     = true;
+		$prepend_cnt = 0;
+		$skip_graph  = false;
+		$make0_cdef  = aggregate_cdef_make0();
+		$i           = 0;
 
 		foreach ($graph_items as $graph_item) {
 			// loop starts at 0, but $_skip starts at 1, so increment before comparing
@@ -430,7 +431,9 @@ function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph
 
 				// if this is a data query graph type, try to substitute
 				if (isset($graph_local['snmp_query_id']) && $graph_local['snmp_query_id'] > 0 && $graph_local['snmp_index'] != '') {
-					$save['text_format'] = substitute_snmp_query_data($save['text_format'], $graph_local['host_id'], $graph_local['snmp_query_id'], $graph_local['snmp_index'], read_config_option('max_data_query_field_length'));
+					$max_chars = intval(read_config_option('max_data_query_field_length'));
+
+					$save['text_format'] = substitute_snmp_query_data($save['text_format'], $graph_local['host_id'], $graph_local['snmp_query_id'], $graph_local['snmp_index'], $max_chars);
 
 					cacti_log(__FUNCTION__ . ' substituted:' . $save['text_format'] . ' for ' . $graph_local['host_id'] . ',' . $graph_local['snmp_query_id'] . ',' . $graph_local['snmp_index'], true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 				}
@@ -450,11 +453,11 @@ function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph
 			$save['sequence'] = $_graph_item_sequence;
 			cacti_log(__FUNCTION__ . '  hard return: ' . $save['hard_return'] . ' sequence: ' . $_graph_item_sequence, true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
-			$save['id'] 							                     = 0;
-			$save['local_graph_template_item_id']	  = 0;	// disconnect this graph item from the graph template item
-			$save['local_graph_id'] 				            = ($_new_graph_id ?? 0);
-			$save['graph_template_id'] 				         = 0;	// disconnect this graph item from the graph template
-			$save['hash']                           = '';   // remove any template attribs
+			$save['id']                           = 0;
+			$save['local_graph_template_item_id'] = 0;   // disconnect this graph item from the graph template item
+			$save['local_graph_id']               = $_new_graph_id;
+			$save['graph_template_id']            = 0;   // disconnect this graph item from the graph template
+			$save['hash']                         = '';  // remove any template attribs
 
 			$graph_item_mappings[$graph_item['id']] = sql_save($save, 'graph_templates_item');
 
@@ -514,7 +517,7 @@ function aggregate_graph_items_save(array $items, string $table): bool {
 		}
 
 		// convert to partial SQL statement
-		$items_sql[] .= sprintf(
+		$items_sql[] = sprintf(
 			' (%d, %d, %d, %d, %s, %d, %s, %d, %s, %s)',
 			$item[$id_field],
 			$item['graph_templates_item_id'],
@@ -717,7 +720,8 @@ function aggregate_reorder_ds_graph(int $base, string $graph_template_id, int $a
 	set_error_handler('aggregate_error_handler');
 
 	$new_seq       = 1;
-	$base_handlers = false;
+	$base_handler  = false;
+	$updates       = [];
 
 	// Get the order of items to re-arrange on the graph
 	if ($reorder == AGGREGATE_ORDER_NONE) {
@@ -725,6 +729,8 @@ function aggregate_reorder_ds_graph(int $base, string $graph_template_id, int $a
 
 		return true;
 	}
+
+	$sql_order = '';
 
 	if ($reorder == AGGREGATE_ORDER_DS_GRAPH) {
 		$sql_order = 'dtr.data_source_name, gti.sequence';
@@ -1149,8 +1155,10 @@ function aggregate_create_update(int &$local_graph_id, array $member_graphs, arr
 		$save1['aggregate_template_id'] = $aggregate_template;
 		$save1['template_propogation']  = $template_propogation;
 
-		if (isset($graph_title)) {
+		if ($graph_title != '') {
 			$save1['title_format'] = $graph_title;
+		} else {
+			$save1['title_format'] = 'New Graph';
 		}
 
 		$save1['local_graph_id']    = $local_graph_id;
@@ -1250,8 +1258,8 @@ function aggregate_create_update(int &$local_graph_id, array $member_graphs, arr
 				$cf_id = db_fetch_cell('SELECT consolidation_function_id
 					FROM graph_templates_item
 					WHERE color_id > 0' .
-					(cacti_sizeof($member_graphs) ? ' AND ' . array_to_sql_or($member_graphs, 'local_graph_id') : '') .
-					(cacti_sizeof($skipped_items) ? ' AND local_graph_id NOT IN(' . implode(',', $skipped_items) . ')' : '') . '
+					(cacti_sizeof($member_graphs) > 0 ? ' AND ' . array_to_sql_or($member_graphs, 'local_graph_id') : '') .
+					(cacti_sizeof($skipped_items) > 0 ? ' AND local_graph_id NOT IN(' . implode(',', $skipped_items) . ')' : '') . '
 					ORDER BY sequence ASC
 					LIMIT 1');
 
@@ -1357,8 +1365,9 @@ function aggregate_create_update(int &$local_graph_id, array $member_graphs, arr
  * @return void
  */
 function aggregate_handle_ptile_type(array $member_graphs, array $skipped_items, int $local_graph_id, int $_total, string $_total_type): void {
-	$special_comments = null;
-	$special_hrules   = null;
+	$special_comments  = null;
+	$special_hrules    = null;
+	$graph_template_id = 0;
 
 	$agg_info = db_fetch_row_prepared('SELECT *
 		FROM aggregate_graphs
@@ -1457,6 +1466,10 @@ function aggregate_handle_ptile_type(array $member_graphs, array $skipped_items,
 											$new_ppart = $pparts[3];
 
 											break;
+										default:
+											$new_ppart = 'max';
+
+											break;
 									}
 
 									$pparts[3] = $new_ppart;
@@ -1533,6 +1546,10 @@ function aggregate_handle_ptile_type(array $member_graphs, array $skipped_items,
 										case 'aggregate_current_peak':
 										case 'aggregate':
 											$new_ppart = $pparts[3];
+
+											break;
+										default:
+											$new_ppart = 'max';
 
 											break;
 									}
@@ -1656,14 +1673,14 @@ function aggregate_handle_stacked_lines(int $local_graph_id, string $_orig_graph
  * Retrieves data sources for aggregation.
  *
  * @param array $graph_array Array of graphs to aggregate.
- * @param array $data_sources Array to store the retrieved data sources.
+ * @param mixed $data_sources Array to store the retrieved data sources.
  * @param mixed $graph_template Template for the graphs.
  * @param string $message Optional. Message to store any errors or information.
  *
  * @return bool True on success, false on failure.
  */
-function aggregate_get_data_sources(array &$graph_array, array &$data_sources, mixed &$graph_template, string &$message = ''): bool {
-	if (isset($graph_array)) {
+function aggregate_get_data_sources(array &$graph_array, mixed &$data_sources, mixed &$graph_template, string &$message = ''): bool {
+	if (cacti_sizeof($graph_array)) {
 		// fetch all data sources for all selected graphs
 		$data_sources = db_fetch_assoc('SELECT dtd.local_data_id, dtd.name_cache
 			FROM data_template_rrd AS dtr
@@ -1714,24 +1731,22 @@ function aggregate_get_data_sources(array &$graph_array, array &$data_sources, m
 /**
  * Draws the list of aggregate graph items.
  *
- * @param int $_graph_id The ID of the graph. Default is 0.
- * @param int $_graph_template_id The ID of the graph template. Default is 0.
- * @param array $_object An array of objects related to the graph. Default is an empty array.
+ * @param int   $_graph_id - The ID of the graph. Default is 0.
+ * @param int   $_graph_template_id - The ID of the graph template. Default is 0.
+ * @param array $_object - An array of objects related to the graph. Default is an empty array.
  *
  * @return void
  */
 function draw_aggregate_graph_items_list(int $_graph_id = 0, int $_graph_template_id = 0, array $_object = []): void {
-	/**
-	 * @var array $consolidation_functions
-	 * @var array $graph_item_types
-	 */
-	include(CACTI_PATH_INCLUDE . '/global_arrays.php');
+	global $graph_item_types, $consolidation_functions;
 
 	cacti_log(__FUNCTION__ . '  called. graph: ' . $_graph_id . ' template: ' . $_graph_template_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 	if ($_graph_id == 0 && $_graph_template_id == 0) {
 		return;
 	}
+
+	$item_list_where = '';
 
 	// fetch graph items
 	if ($_graph_id == 0) {
@@ -1835,6 +1850,7 @@ function draw_aggregate_graph_items_list(int $_graph_id = 0, int $_graph_templat
 			$use_custom_class = false;
 			$hard_return      = '';
 			$matrix_title     = '';
+			$customClass      = '';
 
 			if (!preg_match('/(GPRINT|TEXTALIGN|HRULE|VRULE|TICK)/', $graph_item_types[$item['graph_type_id']])) {
 				$this_row_style   = 'font-weight: bold;';

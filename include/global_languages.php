@@ -715,7 +715,7 @@ function __uf(string|null $text): string {
  *
  * @return false|string Returns the translated and formatted string, or false if no arguments are provided.
  */
-function __(): false|string {
+function __(): string {
 	global $i18n;
 
 	$args = func_get_args();
@@ -723,8 +723,7 @@ function __(): false|string {
 
 	// this should not happen
 	if ($num < 1) {
-		return false;
-		// convert pure text strings
+		return '';
 	}
 
 	if ($num == 1) {

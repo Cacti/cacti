@@ -125,9 +125,9 @@ function boost_get_total_rows() : int {
  * @param array  $vars     (Optional) An array of variables that existed in the
  *                         scope the error was triggered in.
  *
- * @return void
+ * @return bool
  */
-function boost_error_handler(int $errno, string $errmsg, string $filename, int $linenum, array $vars = []) : void {
+function boost_error_handler(int $errno, string $errmsg, string $filename, int $linenum, array $vars = []) : bool {
 	if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
 		// define all error types
 		$errortype = [
@@ -160,18 +160,18 @@ function boost_error_handler(int $errno, string $errmsg, string $filename, int $
 
 		// let's ignore some lesser issues
 		if (substr_count($errmsg, 'date_default_timezone')) {
-			return;
+			return true;
 		}
 
 		if (substr_count($errmsg, 'Only variables')) {
-			return;
+			return true;
 		}
 
 		// log the error to the Cacti log
 		cacti_log('PROGERR: ' . $err, false, 'BOOST');
 	}
 
-	return;
+	return true;
 }
 
 /**

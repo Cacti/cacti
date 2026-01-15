@@ -1331,9 +1331,9 @@ function force_session_data() : bool {
  * '$arr[0] = array('id' => 23, 'name' => 'blah')' to the form
  * '$arr = array(23 => 'blah')'
  *
- * @param  mixed  $array		The original array to manipulate
- * @param  string $key		The name of the key
- * @param  string $key_value	The name of the key value
+ * @param  mixed  $array     - The original array to manipulate
+ * @param  string $key       - The name of the key
+ * @param  mixed  $key_value - The name of the key value
  *
  * @return array the modified array
  */
@@ -6656,7 +6656,7 @@ function IgnoreErrorHandler($message, $file = '', $line = null) {
 	return false;
 }
 
-function CactiErrorHandler($level, $message, $file, $line, $context = []) {
+function CactiErrorHandler(int $level, string $message, string $file, int $line, array $context = []) : bool {
 	global $phperrors;
 
 	if (defined('IN_CACTI_INSTALL')) {

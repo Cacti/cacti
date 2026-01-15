@@ -320,19 +320,21 @@ function api_aggregate_create(string $aggregate_name, array $graphs, int $agg_te
 
 /**
  * aggregate_error_handler	- PHP error handler
+ *
  * @param int $errno error id
  * @param string $errmsg error message
  * @param string $filename file name
  * @param int $linenum line of error
  * @param array $vars additional variables
- * @return void
+ *
+ * @return bool
  */
-function aggregate_error_handler(int $errno, string $errmsg, string $filename, int $linenum, array $vars = []): void {
+function aggregate_error_handler(int $errno, string $errmsg, string $filename, int $linenum, array $vars = []): bool {
 	$errno &= error_reporting();
 
 	// return if error handling disabled by @
 	if ($errno == 0) {
-		return;
+		return true;
 	}
 
 	// define constants not available with PHP 4
@@ -342,6 +344,10 @@ function aggregate_error_handler(int $errno, string $errmsg, string $filename, i
 
 	if (!defined('E_RECOVERABLE_ERROR')) {
 		define('E_RECOVERABLE_ERROR', 4096);
+	}
+
+	if (error_reporting() == 0) {
+		return true;
 	}
 
 	if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
@@ -369,11 +375,11 @@ function aggregate_error_handler(int $errno, string $errmsg, string $filename, i
 
 		// let's ignore some lesser issues
 		if (substr_count($errmsg, 'date_default_timezone')) {
-			return;
+			return true;
 		}
 
 		if (substr_count($errmsg, 'Only variables')) {
-			return;
+			return true;
 		}
 
 		// log the error to the Cacti log
@@ -389,6 +395,8 @@ function aggregate_error_handler(int $errno, string $errmsg, string $filename, i
 			}
 		}
 	}
+
+	return true;
 }
 
 /**
@@ -538,8 +546,6 @@ function aggregate_change_graph_type(int $graph_index, int $old_graph_type, int 
 		case GRAPH_ITEM_TYPE_HRULE:
 		case GRAPH_ITEM_TYPE_VRULE:
 			return $old_graph_type;
-
-			break;
 	}
 
 	// this item is eligible to a type change
@@ -547,8 +553,6 @@ function aggregate_change_graph_type(int $graph_index, int $old_graph_type, int 
 		case AGGREGATE_GRAPH_TYPE_KEEP:
 			// keep entry as defined by the Graph
 			return $old_graph_type;
-
-			break;
 		case GRAPH_ITEM_TYPE_STACK:
 			/* create an AREA/STACK graph
 			 * pay attention to AREA handling!
@@ -585,7 +589,6 @@ function aggregate_change_graph_type(int $graph_index, int $old_graph_type, int 
 			 * this will result in a pure STACKed graph, without any AREA
 			 * we will take care of this at the very end, after adding the last graph to the aggregate, during post-processing
 			 */
-			break;
 		case AGGREGATE_GRAPH_TYPE_KEEP_STACKED:
 			// Like GRAPH_ITEM_TYPE_STACK but don't convert first item to AREA
 			if ($graph_index == 0) {
@@ -597,40 +600,30 @@ function aggregate_change_graph_type(int $graph_index, int $old_graph_type, int 
 			} else {
 				return GRAPH_ITEM_TYPE_STACK;
 			}
-
-			break;
 		case AGGREGATE_GRAPH_TYPE_LINE1_STACK:
 			if ($graph_index == 0) {
 				return GRAPH_ITEM_TYPE_LINE1;
 			} else {
 				return GRAPH_ITEM_TYPE_LINESTACK;
 			}
-
-			break;
 		case AGGREGATE_GRAPH_TYPE_LINE2_STACK:
 			if ($graph_index == 0) {
 				return GRAPH_ITEM_TYPE_LINE2;
 			} else {
 				return GRAPH_ITEM_TYPE_LINESTACK;
 			}
-
-			break;
 		case AGGREGATE_GRAPH_TYPE_LINE3_STACK:
 			if ($graph_index == 0) {
 				return GRAPH_ITEM_TYPE_LINE3;
 			} else {
 				return GRAPH_ITEM_TYPE_LINESTACK;
 			}
-
-			break;
 		case GRAPH_ITEM_TYPE_LINE1:
 		case GRAPH_ITEM_TYPE_LINE2:
 		case GRAPH_ITEM_TYPE_LINE3:
 		case GRAPH_ITEM_TYPE_LINESTACK:
 		default:
 			return $new_graph_type;
-
-			break;
 	}
 }
 
