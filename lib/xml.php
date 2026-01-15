@@ -22,13 +22,23 @@
  +-------------------------------------------------------------------------+
 */
 
-function xml2array($data) {
-	/* mvo voncken@mailandnews.com
-	original ripped from  on the php-manual:gdemartini@bol.com.br
-	to be used for data retrieval(result-structure is Data oriented) */
+/**
+ * xml2array - Simple function to convert an XML string to an array
+ *
+ * @param string $data - The xml string
+ *
+ * @return mixed - The processed xml to an array
+ */
+function xml2array(string $data) : mixed {
+	/**
+	 * mvo voncken@mailandnews.com
+	 * original ripped from  on the php-manual:gdemartini@bol.com.br
+	 * to be used for data retrieval(result-structure is Data oriented)
+	 */
 	$p     = xml_parser_create();
 	$vals  = [];
 	$index = [];
+
 	xml_parser_set_option($p, XML_OPTION_SKIP_WHITE, 1);
 	xml_parser_set_option($p, XML_OPTION_CASE_FOLDING, 0);
 	xml_parse_into_struct($p, $data, $vals, $index);
@@ -41,7 +51,7 @@ function xml2array($data) {
 	return $tree;
 }
 
-function get_children($vals, &$i) {
+function get_children(mixed $vals, int &$i) : array {
 	$children = [];
 
 	if (isset($vals[$i]['value'])) {
@@ -81,12 +91,14 @@ function get_children($vals, &$i) {
 
 				break;
 			case 'close':
-				return $children;
+				break 2;
 		}
 	}
+
+	return $children;
 }
 
-function rrdxport2array($data) {
+function rrdxport2array(string $data) : array {
 	// Bug force encoding to UTF-8
 	$data = str_replace(['US-ASCII', 'ISO-8859-1'], 'UTF-8', $data);
 
@@ -133,7 +145,7 @@ function rrdxport2array($data) {
 	return $tree;
 }
 
-function get_rrd_children($vals, &$i, &$column, &$row) {
+function get_rrd_children(mixed $vals, int &$i, int &$column, int &$row) : array {
 	$children = [];
 
 	if (isset($vals[$i]['value'])) {
@@ -205,7 +217,9 @@ function get_rrd_children($vals, &$i, &$column, &$row) {
 
 				break;
 			case 'close':
-				return $children;
+				break 2;
 		}
 	}
+
+	return $children;
 }
