@@ -412,11 +412,13 @@ function reports_log($string, $output = false, $environ = 'REPORTS', $level = PO
 /**
  * generate_report - create the complete mail for a single report and send it
  *
- * @param array $schedule_id - the id of the queued up report that is being processed
+ * @param int   $schedule_id - the id of the queued up report that is being processed
  * @param array $report      - complete row of reports table for the report to work upon
- * @param bool $force        - when forced, lastsent time will not be entered (e.g. Send Now)
+ * @param bool  $force       - when forced, lastsent time will not be entered (e.g. Send Now)
+ *
+ * @return bool - The success of the report
  */
-function generate_report($schedule_id, $report, $force = false) {
+function generate_report(int $schedule_id, array $report, bool $force = false) : bool {
 	global $alignment, $reports_interval, $attach_types;
 
 	include_once(CACTI_PATH_LIBRARY . '/time.php');
