@@ -53,7 +53,7 @@ if ($is_tmp && $is_save && $action == 'save') {
 	bottom_footer();
 }
 
-function form_save() {
+function form_save() : void {
 	global $preview_only, $messages, $import_messages;
 
 	if (isrv('save_component_import')) {
@@ -109,8 +109,6 @@ function form_save() {
 			}
 		}
 
-		$import_messages = [];
-
 		// obtain debug information if it's set
 		$debug_data = import_xml_data($xml_data, $import_as_new, $profile_id, $remove_orphans, $replace_svalues, $import_hashes);
 
@@ -132,6 +130,11 @@ function form_save() {
 
 			$message_text = '';
 
+			/**
+			 * The variables $import_messages is populated as a global variable
+			 * set in the function import_xml_data().  It includes all the
+			 * errors encountered during the import pre-processing.
+			 */
 			if (cacti_sizeof($import_messages)) {
 				foreach ($import_messages as $message) {
 					if (isset($messages[$message])) {
@@ -145,7 +148,7 @@ function form_save() {
 	}
 }
 
-function prepare_template_display(&$import_info) {
+function prepare_template_display(array &$import_info) : array {
 	global $hash_type_names;
 
 	$templates = [];
@@ -205,7 +208,7 @@ function prepare_template_display(&$import_info) {
 	return $templates;
 }
 
-function display_template_data(&$templates) {
+function display_template_data(array &$templates) : void {
 	if (isset($templates['files'])) {
 		$files = $templates['files'];
 
@@ -368,14 +371,14 @@ function display_template_data(&$templates) {
 	}
 }
 
-function bad_tmp() {
+function bad_tmp() : void {
 	html_start_box(__('Import Template'), '60%', false, 3, 'center', '');
 	form_alternate_row();
 	print "<td class='textarea'><p><strong>" . __('ERROR') . ':</strong> ' . __('Failed to access temporary folder, import functionality is disabled') . "</p></td></tr>\n";
 	html_end_box();
 }
 
-function import() {
+function import() : void {
 	global $hash_type_names, $fields_template_import;
 
 	$default_profile = db_fetch_cell('SELECT id FROM data_source_profiles WHERE `default`="on"');

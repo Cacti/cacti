@@ -191,7 +191,7 @@ switch (grv('action')) {
 		break;
 }
 
-function tree_check_sequences() {
+function tree_check_sequences() : void {
 	$bad_seq = db_fetch_cell('SELECT COUNT(sequence)
 		FROM graph_tree
 		WHERE sequence <= 0');
@@ -220,17 +220,17 @@ function tree_check_sequences() {
 	}
 }
 
-function tree_sort_name_asc() {
+function tree_sort_name_asc() : void {
 	// resequence the list so it has no gaps, alphabetically ascending
 	db_execute('SET @seq = 0; UPDATE graph_tree SET sequence = (@seq:=@seq+1) ORDER BY name;');
 }
 
-function tree_sort_name_desc() {
+function tree_sort_name_desc() : void {
 	// resequence the list so it has no gaps, alphabetically ascending
 	db_execute('SET @seq = 0; UPDATE graph_tree SET sequence = (@seq:=@seq+1) ORDER BY name DESC;');
 }
 
-function tree_down() {
+function tree_down() : void {
 	tree_check_sequences();
 
 	$tree_id = gfrv('id');
@@ -259,7 +259,7 @@ function tree_down() {
 	exit;
 }
 
-function tree_up() {
+function tree_up() : void {
 	tree_check_sequences();
 
 	$tree_id = gfrv('id');
@@ -288,7 +288,7 @@ function tree_up() {
 	exit;
 }
 
-function tree_dnd() {
+function tree_dnd() : void {
 	if (isrv('tree_ids') && is_array(gnrv('tree_ids'))) {
 		$tids     = gnrv('tree_ids');
 		$sequence = 1;
@@ -317,7 +317,7 @@ function tree_dnd() {
 	exit;
 }
 
-function get_host_sort_type() {
+function get_host_sort_type() : void {
 	if (isrv('nodeid')) {
 		$ndata = explode('_', grv('nodeid'));
 
@@ -342,12 +342,10 @@ function get_host_sort_type() {
 				}
 			}
 		}
-	} else {
-		return '';
 	}
 }
 
-function set_host_sort_type() {
+function set_host_sort_type() : void {
 	$type   = '';
 	$branch = '';
 
@@ -383,11 +381,9 @@ function set_host_sort_type() {
 			}
 		}
 	}
-
-	return;
 }
 
-function get_branch_sort_type() {
+function get_branch_sort_type() : void {
 	if (isrv('nodeid')) {
 		$ndata = explode('_', grv('nodeid'));
 
@@ -441,7 +437,7 @@ function get_branch_sort_type() {
 	}
 }
 
-function set_branch_sort_type() {
+function set_branch_sort_type() : void {
 	$type   = '';
 	$branch = '';
 
@@ -511,7 +507,7 @@ function set_branch_sort_type() {
 	}
 }
 
-function form_save() {
+function form_save() : void {
 	// clear graph tree cache on save - affects current user only, other users should see changes in <5 minutes
 	if (isset($_SESSION['dhtml_tree'])) {
 		unset($_SESSION['dhtml_tree']);
@@ -580,7 +576,7 @@ function form_save() {
 	}
 }
 
-function sort_recursive($branch, $tree_id) {
+function sort_recursive(int $branch, int $tree_id) : void {
 	$leaves = db_fetch_assoc_prepared('SELECT *
 		FROM graph_tree_items
 		WHERE graph_tree_id = ?
@@ -609,7 +605,7 @@ function sort_recursive($branch, $tree_id) {
 	}
 }
 
-function leaves_exist($parent, $tree_id) {
+function leaves_exist(int $parent, int $tree_id) : int {
 	return db_fetch_assoc_prepared('SELECT COUNT(*)
 		FROM graph_tree_items
 		WHERE graph_tree_id = ?
@@ -619,7 +615,7 @@ function leaves_exist($parent, $tree_id) {
 		[$tree_id, $parent]);
 }
 
-function form_actions() {
+function form_actions() : void {
 	global $actions;
 
 	// ================= input validation =================
@@ -736,7 +732,7 @@ function form_actions() {
 	}
 }
 
-function tree_edit($partial = false) {
+function tree_edit(bool $partial = false) : void {
 	global $fields_tree_edit;
 
 	// ================= input validation =================
@@ -1920,7 +1916,7 @@ function tree_edit($partial = false) {
 	}
 }
 
-function display_sites() {
+function display_sites() : void {
 	if (gnrv('filter') != '') {
 		$sql_where = 'WHERE
 			name LIKE ' . db_qstr('%' . gnrv('filter') . '%') . '
@@ -1940,7 +1936,7 @@ function display_sites() {
 	}
 }
 
-function display_hosts() {
+function display_hosts() : void {
 	$sql_where = '';
 
 	$site_ids = gfrv('site_id', FILTER_VALIDATE_IS_NUMERIC_LIST);
@@ -1963,7 +1959,7 @@ function display_hosts() {
 	}
 }
 
-function display_graphs() {
+function display_graphs() : void {
 	$sql_where  = '';
 	$sql_params = [];
 
@@ -2033,7 +2029,7 @@ function display_graphs() {
 	}
 }
 
-function tree() {
+function tree() : void {
 	global $actions, $item_rows;
 
 	$button1 = [

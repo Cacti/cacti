@@ -76,7 +76,7 @@ exit(0);
 /*
  * Error handler function to cause exception on error and warnings
  */
-function error_handler($err_number, $err_string, $err_file, $err_line) {
+function error_handler(int $err_number, string $err_string, string $err_file, int $err_line) : bool {
 	$msg = $err_string . " in " . $err_file . " on line " . $err_line;
 
 	if ($err_number == E_NOTICE || $err_number == E_WARNING) {
@@ -84,4 +84,6 @@ function error_handler($err_number, $err_string, $err_file, $err_line) {
 	} else {
 		echo $msg;
 	}
+
+	return true;
 }

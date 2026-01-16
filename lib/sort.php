@@ -33,7 +33,7 @@
  *
  * @return int - '1' if $a is greater than $b, '-1' if $a is less than $b, or '0' if
  */
-function usort_data_query_index($a, $b) {
+function usort_data_query_index(string $a, string $b) : int {
 	/* split strings to be compared into chunks
 	 * that shall be compared separately,
 	 * e.g. for gi0/1, gi0/2, ... */
@@ -77,7 +77,7 @@ function usort_data_query_index($a, $b) {
  *
  * @return int - '1' if $a is greater than $b, '-1' if $a is less than $b, or '0' if
  */
-function usort_numeric($a, $b) {
+function usort_numeric(string $a, string $b) : int {
 	if (intval($a) > intval($b)) {
 		return 1;
 	}
@@ -97,7 +97,7 @@ function usort_numeric($a, $b) {
  *
  * @return int - '1' if $a is greater than $b, '-1' if $a is less than $b, or '0' if
  */
-function usort_alphabetic($a, $b) {
+function usort_alphabetic(string $a, string $b) : int {
 	return strcmp($a, $b);
 }
 
@@ -109,25 +109,25 @@ function usort_alphabetic($a, $b) {
  *
  * @return int - '1' if $a is greater than $b, '-1' if $a is less than $b, or '0' if
  */
-function usort_natural($a, $b) {
+function usort_natural(string $a, string $b) : int {
 	return strnatcmp($a, $b);
 }
 
 /**
  * sort_by_subkey - takes the list of templates and perform a final sort
  *
- * @param mixed $array
+ * @param array $array
  * @param mixed $subkey
- * @param mixed $sort
+ * @param int $sort
  *
- * @return array - an array of sorted templates
+ * @return bool - The result of the sort operation
  */
-function sort_by_subkey(&$array, $subkey, $sort = SORT_ASC) {
+function sort_by_subkey(array &$array, mixed $subkey, int $sort = SORT_ASC) : bool {
 	$keys = [];
 
 	foreach ($array as $subarray) {
 		$keys[] = $subarray[$subkey];
 	}
 
-	array_multisort($keys, $sort, $array);
+	return array_multisort($keys, $sort, $array);
 }

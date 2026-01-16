@@ -239,7 +239,7 @@ switch (grv('action')) {
 		break;
 }
 
-function form_save() {
+function form_save() : void {
 	if (isrv('save_component_site')) {
 		$save['id']           = gfrv('id');
 		$save['name']         = form_input_validate(gnrv('name'), 'name', '', false, 3);
@@ -281,7 +281,7 @@ function form_save() {
 	}
 }
 
-function disable_site($sites) {
+function disable_site(array $sites) : void {
 	if (cacti_sizeof($sites)) {
 		foreach ($sites as $id) {
 			db_execute_prepared('UPDATE sites SET disabled = "on" WHERE id = ?', [$id]);
@@ -296,7 +296,7 @@ function disable_site($sites) {
 	}
 }
 
-function enable_site($sites) {
+function enable_site(array $sites) : void {
 	if (cacti_sizeof($sites)) {
 		foreach ($sites as $id) {
 			db_execute_prepared('UPDATE sites SET disabled = "" WHERE id = ?', [$id]);
@@ -311,7 +311,7 @@ function enable_site($sites) {
 	}
 }
 
-function duplicate_site($template_id, $name) {
+function duplicate_site(mixed $template_id, string $name) : void {
 	if (!is_array($template_id)) {
 		$template_id = [$template_id];
 	}
@@ -359,7 +359,7 @@ function duplicate_site($template_id, $name) {
 	set_config_option('time_last_change_site_device', time());
 }
 
-function form_actions() {
+function form_actions() : void {
 	global $actions;
 
 	// ================= input validation =================
@@ -457,7 +457,7 @@ function form_actions() {
 	}
 }
 
-function site_edit() {
+function site_edit() : void {
 	global $fields_site_edit;
 
 	// ================= input validation =================
@@ -487,7 +487,7 @@ function site_edit() {
 	form_save_button('sites.php', 'return');
 }
 
-function sites() {
+function sites() : void {
 	global $actions, $item_rows;
 
 	// create the page filter

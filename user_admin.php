@@ -81,7 +81,7 @@ if (isrv('update_policy')) {
 	}
 }
 
-function update_policies() {
+function update_policies() : void {
 	$policies = ['policy_graphs', 'policy_trees', 'policy_hosts', 'policy_graph_templates'];
 
 	foreach ($policies as $p) {
@@ -95,7 +95,7 @@ function update_policies() {
 	exit;
 }
 
-function form_actions() {
+function form_actions() : void {
 	global $actions, $auth_realms;
 
 	// if we are to save this form, instead of display it
@@ -439,7 +439,7 @@ function form_actions() {
 	}
 }
 
-function form_save() {
+function form_save() : void {
 	global $settings_user;
 
 	// graph permissions
@@ -698,7 +698,7 @@ function form_save() {
 	header('Location: user_admin.php?action=user_edit&id=' . (empty($user_id) ? gfrv('id') : $user_id));
 }
 
-function perm_remove() {
+function perm_remove() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('user_id');
@@ -733,7 +733,7 @@ function perm_remove() {
 	header('Location: user_admin.php?action=user_edit&tab=graph_perms_edit&id=' . grv('user_id'));
 }
 
-function graph_perms_edit($tab, $header_label) {
+function graph_perms_edit(string $tab, string $header_label) : void {
 	// ================= input validation =================
 	gfrv('id');
 	// ====================================================
@@ -1536,7 +1536,7 @@ function graph_perms_edit($tab, $header_label) {
 	}
 }
 
-function user_realms_edit($header_label) {
+function user_realms_edit(string $header_label) : void {
 	global $user_auth_realms, $user_auth_roles;
 
 	// ================= input validation =================
@@ -1756,7 +1756,7 @@ function user_realms_edit($header_label) {
 	form_save_button('user_admin.php', 'return');
 }
 
-function settings_edit($header_label) {
+function settings_edit(string $header_label) : void {
 	global $settings_user, $tabs_graphs, $graph_views;
 
 	// ================= input validation =================
@@ -1837,7 +1837,7 @@ function settings_edit($header_label) {
 	<?php
 }
 
-function user_edit() {
+function user_edit() : void {
 	global $fields_user_edit;
 
 	// ================= input validation =================
@@ -2023,7 +2023,7 @@ function user_edit() {
 	}
 }
 
-function create_user_filter() {
+function create_user_filter() : array {
 	global $item_rows;
 
 	$all  = ['-1' => __('All')];
@@ -2128,7 +2128,7 @@ function create_user_filter() {
 	];
 }
 
-function user() {
+function user() : void {
 	global $auth_realms, $actions, $item_rows;
 
 	$filters = create_user_filter();
@@ -2332,7 +2332,7 @@ function user() {
 	form_end();
 }
 
-function create_graphs_filter() {
+function create_graphs_filter() : array {
 	global $item_rows;
 
 	$any  = ['-1' => __('Any')];
@@ -2398,7 +2398,7 @@ function create_graphs_filter() {
 	];
 }
 
-function graph_filter($header_label) {
+function graph_filter(string $header_label) : void {
 	$filters = create_graphs_filter();
 
 	// create the page filter
@@ -2416,7 +2416,7 @@ function graph_filter($header_label) {
 	form_hidden_box('id', grv('id'), '');
 }
 
-function group_filter($header_label) {
+function group_filter(string $header_label) : void {
 	// create the page filter
 	$pageFilter = new CactiTableFilter(__('Group Membership %s', $header_label), 'user_admin.php?action=user_edit&tab=permsgr&id=' . grv('id'), 'form_group', 'sess_ua_g');
 
@@ -2430,7 +2430,7 @@ function group_filter($header_label) {
 	form_hidden_box('id', grv('id'), '');
 }
 
-function create_device_filter() {
+function create_device_filter() : array {
 	global $item_rows;
 
 	$any  = ['-1' => __('Any')];
@@ -2494,7 +2494,7 @@ function create_device_filter() {
 	];
 }
 
-function device_filter($header_label) {
+function device_filter(string $header_label) : void {
 	$filters = create_device_filter();
 
 	// create the page filter
@@ -2512,7 +2512,7 @@ function device_filter($header_label) {
 	form_hidden_box('id', grv('id'), '');
 }
 
-function template_filter($header_label) {
+function template_filter(string $header_label) : void {
 	// create the page filter
 	$pageFilter = new CactiTableFilter(__('Template Permissions %s', $header_label), 'user_admin.php?action=user_edit&tab=permste&id=' . grv('id'), 'form_template', 'sess_ua_te');
 
@@ -2526,7 +2526,7 @@ function template_filter($header_label) {
 	form_hidden_box('id', grv('id'), '');
 }
 
-function tree_filter($header_label) {
+function tree_filter(string $header_label) : void {
 	// create the page filter
 	$pageFilter = new CactiTableFilter(__('Tree Permissions %s', $header_label), 'user_admin.php?action=user_edit&tab=permstr&id=' . grv('id'), 'form_tree', 'sess_ua_tr');
 

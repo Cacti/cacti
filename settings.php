@@ -52,7 +52,7 @@ switch (grv('action')) {
 		break;
 }
 
-function display_settings() {
+function display_settings() : void {
 	global $settings, $tabs, $local_db_cnn_id, $disable_log_rotation;
 
 	top_header();
@@ -129,10 +129,11 @@ function display_settings() {
 
 	form_start('settings.php', 'form_settings');
 
-	if (POLLER_ID > 1 && $current_tab == 'path') {
-		$suffix = ' [<span class="deviceDown">' . __('NOTE: Path Settings on this Tab are only saved locally!') . '</span>]';
-	} else {
-		$suffix = '';
+	$suffix = '';
+	if (POLLER_ID > 1) {
+		if ($current_tab == 'path') {
+			$suffix = ' [<span class="deviceDown">' . __('NOTE: Path Settings on this Tab are only saved locally!') . '</span>]';
+		}
 	}
 
 	html_start_box(__('Cacti Settings (%s)%s', $tabs[$current_tab], $suffix), '100%', true, 3, 'center', '');
@@ -1259,7 +1260,7 @@ function display_settings() {
 	bottom_footer();
 }
 
-function validate_settings_filter() {
+function validate_settings_filter() : void {
 	// ================= input validation and session storage =================
 	$filters = [
 		'filter' => [
@@ -1273,7 +1274,7 @@ function validate_settings_filter() {
 	// ================= input validation =================
 }
 
-function settings_search() {
+function settings_search() : void {
 	global $settings;
 
 	validate_settings_filter();
@@ -1341,7 +1342,7 @@ function settings_search() {
 	print json_encode($response);
 }
 
-function save_settings() {
+function save_settings() : void {
 	global $settings, $local_db_cnn_id;
 
 	$errors  = [];
@@ -1568,8 +1569,10 @@ function save_settings() {
 		'id', 'last_polled'
 	);
 
-	if (grv('tab') == 'path' && POLLER_ID > 1) {
-		raise_message('poller_paths');
+	if (POLLER_ID > 1) {
+		if (grv('tab') == 'path') {
+			raise_message('poller_paths');
+		}
 	}
 
 	if (cacti_sizeof($errors) == 0) {

@@ -42,7 +42,7 @@ switch(grv('action')) {
 		support_view_tech();
 }
 
-function support_lockout() {
+function support_lockout() : void {
 	$admin = read_config_option('admin_user', true);
 
 	if (read_config_option('admin_user') != $_SESSION[SESS_USER_ID]) {
@@ -66,7 +66,7 @@ function support_lockout() {
 	exit;
 }
 
-function support_view_tech() {
+function support_view_tech() : void {
 	global $database_hostname, $poller_options, $input_types, $local_db_cnn_id;
 
 	// ================= input validation =================
@@ -230,7 +230,7 @@ function support_view_tech() {
 	bottom_footer();
 }
 
-function create_database_process_filter() {
+function create_database_process_filter() : array {
 	global $item_rows;
 
 	$any  = ['-1' => __('Any')];
@@ -332,7 +332,7 @@ function create_database_process_filter() {
 	];
 }
 
-function draw_database_process_filter($render = false) {
+function draw_database_process_filter(bool $render = false) : void {
 	$filters = create_database_process_filter();
 
 	$header = __('Technical Support [ Database Queries ]');
@@ -349,7 +349,7 @@ function draw_database_process_filter($render = false) {
 	}
 }
 
-function show_database_processes() {
+function show_database_processes() : void {
 	global $item_rows;
 
 	draw_database_process_filter(true);
@@ -479,7 +479,7 @@ function show_database_processes() {
 	}
 }
 
-function create_cacti_process_filter($tables) {
+function create_cacti_process_filter(array $tables) : array {
 	global $item_rows;
 
 	$all  = ['all' => __('All')];
@@ -561,7 +561,7 @@ function create_cacti_process_filter($tables) {
 	];
 }
 
-function draw_cacti_process_filter($render = false, $tables = []) {
+function draw_cacti_process_filter(bool $render = false, array $tables = []) : void {
 	$filters = create_cacti_process_filter($tables);
 
 	$header = __('Technical Support [ Background Processes ]');
@@ -578,7 +578,7 @@ function draw_cacti_process_filter($render = false, $tables = []) {
 	}
 }
 
-function show_cacti_processes() {
+function show_cacti_processes() : void {
 	global $item_rows;
 
 	// the full set of process tables known to Cacti
@@ -832,19 +832,21 @@ function show_cacti_processes() {
 	}
 }
 
-function show_php_modules() {
+function show_php_modules() : void {
 	$php_info = utilities_php_modules();
 
 	html_section_header(__('PHP Module Information'), 2);
+
 	$php_info = str_replace(
 		['width="600"', 'th colspan="2"', ','],
 		['', 'th class="subHeaderColumn"', ', '],
 		$php_info
 	);
+
 	print "<tr><td colspan='2'>" . $php_info . '</td></tr>';
 }
 
-function show_cacti_poller() {
+function show_cacti_poller() : void {
 	if (db_column_exists('sites', 'disabled')) {
 		$sql_where = 'AND IFNULL(s.disabled, "") != "on"';
 	} else {
@@ -937,7 +939,7 @@ function show_cacti_poller() {
 	form_end_row();
 }
 
-function show_database_tables() {
+function show_database_tables() : void {
 	global $local_db_cnn_id;
 
 	// Get table status
@@ -995,7 +997,7 @@ function show_database_tables() {
 	form_end_row();
 }
 
-function show_cacti_changelog() {
+function show_cacti_changelog() : void {
 	$changelog = file(CACTI_PATH_BASE . '/CHANGELOG');
 
 	foreach ($changelog as $s) {
@@ -1015,7 +1017,7 @@ function show_cacti_changelog() {
 	}
 }
 
-function show_database_settings() {
+function show_database_settings() : void {
 	$status = db_fetch_assoc('show global variables');
 
 	print "<table id='tables' class='cactiTable'>";
@@ -1039,7 +1041,7 @@ function show_database_settings() {
 	}
 }
 
-function show_database_permissions() {
+function show_database_permissions() : void {
 	$status = db_get_permissions(true);
 
 	$display_text = [
@@ -1083,7 +1085,7 @@ function show_database_permissions() {
 	}
 }
 
-function show_database_status() {
+function show_database_status() : void {
 	$status = db_fetch_assoc('show global status');
 
 	print "<table id='tables' class='cactiTable'>";
@@ -1102,7 +1104,7 @@ function show_database_status() {
 	}
 }
 
-function show_tech_summary() {
+function show_tech_summary() : void {
 	global $database_hostname, $poller_options, $input_types, $local_db_cnn_id;
 
 	// Get poller stats
@@ -1350,26 +1352,14 @@ function show_tech_summary() {
 	form_end_row();
 
 	if (POLLER_ID == 1) {
-		$max_connections       = db_fetch_row('SHOW GLOBAL VARIABLES LIKE "max_connections"');
-		$max_local_connections = [];
-	} elseif (CACTI_CONNECTION == 'online') {
-		$max_connections        = db_fetch_row('SHOW GLOBAL VARIABLES LIKE "max_connections"');
-		$max_local_connections  = db_fetch_row('SHOW GLOBAL VARIABLES LIKE "max_connections"', false, $local_db_cnn_id);
-	} else {
-		$max_connections        = [];
-		$max_local_connections  = db_fetch_row('SHOW GLOBAL VARIABLES LIKE "max_connections"');
-	}
-
-	if (isset($max_connections['Value'])) {
-		$max_connections = $max_connections['Value'];
-	} else {
-		$max_connections = 0;
-	}
-
-	if (isset($max_local_connections['Value'])) {
-		$max_local_connections = $max_local_connections['Value'];
-	} else {
+		$max_connections       = db_get_global_variable('max_connections');
 		$max_local_connections = 0;
+	} elseif (CACTI_CONNECTION == 'online') {
+		$max_connections       = db_get_global_variable('max_connections');
+		$max_local_connections = db_get_global_variable('max_connections', $local_db_cnn_id);
+	} else {
+		$max_connections       = 0;
+		$max_local_connections = db_get_global_variable('max_connections');
 	}
 
 	$total_dc_threads = db_fetch_cell("SELECT
@@ -1680,12 +1670,7 @@ function show_tech_summary() {
 
 	form_alternate_row();
 	print '<td>' . __('PHP Version') . '</td>';
-
-	if (version_compare(PHP_VERSION, '5.5.0') >= 0) {
-		print '<td>' . PHP_VERSION . '</td>';
-	} else {
-		print '<td>' . PHP_VERSION . "</br><span class='deviceDown'>" . __('PHP Version 5.5.0+ is recommended due to strong password hashing support.') . '</span></td>';
-	}
+	print '<td>' . PHP_VERSION . '</td>';
 	form_end_row();
 
 	form_alternate_row();

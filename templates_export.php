@@ -43,7 +43,7 @@ switch (grv('action')) {
 		break;
 }
 
-function form_save() {
+function form_save() : void {
 	global $export_types, $export_errors;
 
 	// ================= input validation =================
@@ -79,7 +79,7 @@ function form_save() {
 	}
 }
 
-function export() {
+function export() : void {
 	global $export_types;
 
 	// 'graph_template' should be the default

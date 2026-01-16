@@ -63,7 +63,7 @@ switch (grv('action')) {
 		break;
 }
 
-function form_save() {
+function form_save() : void {
 	global $registered_cacti_names;
 
 	if (isrv('save_component_domain_ldap')) {
@@ -164,7 +164,7 @@ function form_save() {
 	header('Location: user_domains.php?action=edit&domain_id=' . (empty($domain_id) ? gnrv('domain_id') : $domain_id));
 }
 
-function form_actions() {
+function form_actions() : void {
 	global $actions;
 
 	// if we are to save this form, instead of display it
@@ -252,25 +252,25 @@ function form_actions() {
 	}
 }
 
-function domain_remove($domain_id) {
+function domain_remove(int $domain_id) : void {
 	db_execute_prepared('DELETE FROM user_domains WHERE domain_id = ?', [$domain_id]);
 	db_execute_prepared('DELETE FROM user_domains_ldap WHERE domain_id = ?', [$domain_id]);
 }
 
-function domain_disable($domain_id) {
+function domain_disable(int $domain_id) : void {
 	db_execute_prepared('UPDATE user_domains SET enabled = "" WHERE domain_id = ?', [$domain_id]);
 }
 
-function domain_enable($domain_id) {
+function domain_enable(int $domain_id) : void {
 	db_execute_prepared('UPDATE user_domains SET enabled = "on" WHERE domain_id = ?', [$domain_id]);
 }
 
-function domain_default($domain_id) {
+function domain_default(int $domain_id) : void {
 	db_execute('UPDATE user_domains SET defdomain = 0');
 	db_execute_prepared('UPDATE user_domains SET defdomain = 1 WHERE domain_id = ?', [$domain_id]);
 }
 
-function domain_edit() {
+function domain_edit() : void {
 	global $ldap_versions, $ldap_encryption, $ldap_modes, $domain_types;
 
 	// ================= input validation =================
@@ -545,7 +545,7 @@ function domain_edit() {
 		form_save_button('user_domains.php', 'return', 'domain_id');
 }
 
-function domains() {
+function domains() : void {
 	global $domain_types, $actions, $item_rows;
 
 	// create the page filter

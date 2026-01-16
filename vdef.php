@@ -150,7 +150,7 @@ function vdef_form_save() : void {
 	}
 }
 
-function duplicate_vdef($_vdef_id, $vdef_title) {
+function duplicate_vdef(int $_vdef_id, string $vdef_title) : void {
 	global $fields_vdef_edit;
 
 	$vdef       = db_fetch_row_prepared('SELECT * FROM vdef WHERE id = ?', [$_vdef_id]);
@@ -190,7 +190,7 @@ function duplicate_vdef($_vdef_id, $vdef_title) {
 	}
 }
 
-function vdef_form_actions() {
+function vdef_form_actions() : void {
 	global $actions;
 
 	// if we are to save this form, instead of display it
@@ -280,7 +280,7 @@ function vdef_form_actions() {
 	}
 }
 
-function vdef_item_remove_confirm() {
+function vdef_item_remove_confirm() : void {
 	global $vdef_functions, $vdef_item_types, $custom_vdef_data_source_types;
 
 	// ================= input validation =================
@@ -346,7 +346,7 @@ function vdef_item_remove_confirm() {
 	<?php
 }
 
-function vdef_item_remove() {
+function vdef_item_remove() : void {
 	// ================= input validation =================
 	gfrv('vdef_id');
 	// ====================================================
@@ -356,7 +356,7 @@ function vdef_item_remove() {
 		[grv('id')]);
 }
 
-function vdef_item_edit() {
+function vdef_item_edit() : void {
 	global $vdef_functions, $vdef_item_types, $custom_vdef_data_source_types;
 
 	// ================= input validation =================
@@ -484,7 +484,7 @@ function vdef_item_edit() {
 	form_save_button('vdef.php?action=edit&id=' . grv('vdef_id'));
 }
 
-function item_movedown() {
+function item_movedown() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('vdef_id');
@@ -493,7 +493,7 @@ function item_movedown() {
 	move_item_down('vdef_items', grv('id'), 'vdef_id=' . grv('vdef_id'));
 }
 
-function item_moveup() {
+function item_moveup() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('vdef_id');
@@ -502,7 +502,7 @@ function item_moveup() {
 	move_item_up('vdef_items', grv('id'), 'vdef_id=' . grv('vdef_id'));
 }
 
-function vdef_item_dnd() {
+function vdef_item_dnd() : void {
 	// ================= Input validation =================
 	gfrv('id');
 	// ================= Input validation =================
@@ -532,7 +532,7 @@ function vdef_item_dnd() {
 	header('Location: vdef.php?action=edit&id=' . grv('id'));
 }
 
-function vdef_edit() {
+function vdef_edit() : void {
 	global $vdef_item_types;
 
 	// ================= input validation =================
@@ -689,7 +689,7 @@ function vdef_edit() {
 	<?php
 }
 
-function get_vdef_records(&$total_rows, &$rows) {
+function get_vdef_records(int &$total_rows, int &$rows) : mixed {
 	// form the 'where' clause for our main sql query
 	if (grv('filter') != '') {
 		$sql_where = 'WHERE name LIKE ' . db_qstr('%' . grv('filter') . '%');
@@ -715,7 +715,7 @@ function get_vdef_records(&$total_rows, &$rows) {
 		$sql_limit");
 }
 
-function vdef($refresh = true) {
+function vdef(bool $refresh = true) : void {
 	global $actions;
 
 	// create the page filter

@@ -138,19 +138,19 @@ while (true) {
 	}
 }
 
-function cache_read($oid) {
+function cache_read(string $oid) : mixed {
 	global $cache;
 
 	return (isset($cache[$oid]) && $cache[$oid]) ? $cache[$oid] : false;
 }
 
-function cache_get_next($oid) {
+function cache_get_next(string $oid) : mixed {
 	global $cache;
 
 	return (isset($cache[$oid]['next'])) ? $cache[$oid]['next'] : false;
 }
 
-function cache_refresh() {
+function cache_refresh() : void {
 	global $cache, $cache_last_refresh;
 
 	$path_mibcache      = CACTI_PATH_CACHE . '/mibcache/mibcache.tmp';
@@ -177,11 +177,9 @@ function cache_refresh() {
 			require($path_mibcache);
 		}
 	}
-
-	return;
 }
 
-function get_options() {
+function get_options() : array {
 	$parms = $_SERVER['argv'];
 	array_shift($parms);
 
@@ -229,13 +227,13 @@ function get_options() {
 	return $options;
 }
 
-function display_version() {
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print 'The Cacti SNMP Agent Daemon, Version ' . $version . ', ' . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 // display_help - displays the usage of the function
-function display_help() {
+function display_help() : void {
 	display_version();
 
 	print PHP_EOL . 'usage: snmpagenet_persist.php' . PHP_EOL . PHP_EOL;

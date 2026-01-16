@@ -48,7 +48,7 @@ switch (grv('action')) {
 		break;
 }
 
-function view_user_log() {
+function view_user_log() : void {
 	global $auth_realms, $item_rows;
 
 	draw_user_log_filter(true);
@@ -160,7 +160,7 @@ function view_user_log() {
 	}
 }
 
-function clear_user_log() {
+function clear_user_log() : void {
 	$users = db_fetch_assoc('SELECT DISTINCT id, username FROM user_auth');
 
 	if (cacti_sizeof($users)) {
@@ -202,7 +202,7 @@ function clear_user_log() {
 	}
 }
 
-function purge_user_log() {
+function purge_user_log() : void {
 	form_start('user_log.php');
 
 	html_start_box(__('Purge User Log'), '60%', false, 3, 'center', '');
@@ -235,7 +235,7 @@ function purge_user_log() {
 	html_end_box();
 }
 
-function create_user_log_filter() {
+function create_user_log_filter() : array {
 	global $item_rows;
 
 	$all     = ['-1' => __('All')];
@@ -335,7 +335,7 @@ function create_user_log_filter() {
 	];
 }
 
-function draw_user_log_filter($render = false) {
+function draw_user_log_filter(bool $render = false) : void {
 	$filters = create_user_log_filter();
 
 	// create the page filter

@@ -147,7 +147,7 @@ switch (grv('action')) {
 		break;
 }
 
-function rebuild_resource_cache() {
+function rebuild_resource_cache() : void {
 	db_execute('DELETE FROM settings WHERE name LIKE "md5dirsum%"');
 	db_execute('TRUNCATE TABLE poller_resource_cache');
 
@@ -156,11 +156,11 @@ function rebuild_resource_cache() {
 	cacti_log('NOTE: Poller Resource Cache scheduled for rebuild by user ' . get_username($_SESSION[SESS_USER_ID]), false, 'WEBUI');
 }
 
-function utilities_view_logfile() {
+function utilities_view_logfile() : void {
 	clog_view_logfile();
 }
 
-function utilities_clear_logfile() {
+function utilities_clear_logfile() : void {
 	load_current_session_value('refresh', 'sess_logfile_refresh', read_config_option('log_refresh_interval'));
 
 	$refresh['seconds'] = grv('refresh');
@@ -198,10 +198,11 @@ function utilities_clear_logfile() {
 	} else {
 		print "<tr><td class='deviceDown'><b>" . __('Error: Unable to clear log, file does not exist.') . '</b></td></tr>';
 	}
+
 	html_end_box();
 }
 
-function create_data_query_filter($session_var) {
+function create_data_query_filter(string $session_var) : array {
 	global $item_rows;
 
 	$all     = ['-1' => __('All')];
@@ -365,7 +366,7 @@ function create_data_query_filter($session_var) {
 	];
 }
 
-function draw_data_query_filter($render = false) {
+function draw_data_query_filter(bool $render = false) : void {
 	$filters = create_data_query_filter('sess_usnmp');
 
 	// create the page filter
@@ -381,7 +382,7 @@ function draw_data_query_filter($render = false) {
 	}
 }
 
-function utilities_view_snmp_cache() {
+function utilities_view_snmp_cache() : void {
 	global $poller_actions, $item_rows;
 
 	draw_data_query_filter(true);
@@ -496,7 +497,7 @@ function utilities_view_snmp_cache() {
 	}
 }
 
-function utilities_view_poller_cache() {
+function utilities_view_poller_cache() : void {
 	global $poller_actions, $item_rows;
 
 	draw_poller_cache_filter(true);
@@ -658,7 +659,7 @@ function utilities_view_poller_cache() {
 	}
 }
 
-function create_poller_cache_filter($session_var) {
+function create_poller_cache_filter(string $session_var) : array {
 	global $item_rows;
 
 	$all     = ['-1' => __('All')];
@@ -832,7 +833,7 @@ function create_poller_cache_filter($session_var) {
 	];
 }
 
-function draw_poller_cache_filter($render = false) {
+function draw_poller_cache_filter(bool $render = false) : void {
 	$filters = create_poller_cache_filter('sess_pollerc');
 
 	$running = is_process_running('pushout', 'rmaster', 0);
@@ -873,7 +874,7 @@ function draw_poller_cache_filter($render = false) {
 	}
 }
 
-function utilities() {
+function utilities() : void {
 	global $utilities;
 
 	$utilities[__('Technical Support')] = [
@@ -988,7 +989,7 @@ function utilities() {
 	html_end_box();
 }
 
-function purge_data_source_statistics() {
+function purge_data_source_statistics() : void {
 	$tables = [
 		'data_source_stats_daily',
 		'data_source_stats_hourly',
@@ -1012,7 +1013,7 @@ function purge_data_source_statistics() {
 	}
 }
 
-function boost_display_run_status() {
+function boost_display_run_status() : void {
 	global $refresh_interval, $boost_utilities_interval, $boost_refresh_interval, $boost_max_runtime;
 
 	// ================= input validation =================
@@ -1489,7 +1490,7 @@ function boost_display_run_status() {
 	}
 }
 
-function create_snmp_agent_cache_filter() {
+function create_snmp_agent_cache_filter() : array {
 	global $item_rows;
 
 	$mibs = array_rekey(
@@ -1547,7 +1548,7 @@ function create_snmp_agent_cache_filter() {
 	];
 }
 
-function draw_snmp_agent_cache_filter($render = false) {
+function draw_snmp_agent_cache_filter(bool $render = false) : void {
 	$filters = create_snmp_agent_cache_filter();
 
 	// create the page filter
@@ -1568,7 +1569,7 @@ function draw_snmp_agent_cache_filter($render = false) {
  *
  * @return void
  */
-function snmpagent_utilities_run_cache() {
+function snmpagent_utilities_run_cache() : void {
 	$mibs = db_fetch_assoc('SELECT DISTINCT mib FROM snmpagent_cache');
 
 	$registered_mibs = [];
@@ -1674,7 +1675,7 @@ function snmpagent_utilities_run_cache() {
 	}
 }
 
-function create_snmp_agent_events_filter() {
+function create_snmp_agent_events_filter() : array {
 	global $item_rows, $severity_levels, $severity_colors, $receivers;
 
 	$any = ['-1' => __('Any')];
@@ -1752,7 +1753,7 @@ function create_snmp_agent_events_filter() {
 	];
 }
 
-function draw_snmp_agent_events_filter($render = false) {
+function draw_snmp_agent_events_filter(bool $render = false) : void {
 	$filters = create_snmp_agent_events_filter();
 
 	// create the page filter
@@ -1768,7 +1769,7 @@ function draw_snmp_agent_events_filter($render = false) {
 	}
 }
 
-function snmpagent_utilities_run_eventlog() {
+function snmpagent_utilities_run_eventlog() : void {
 	global $severity_levels, $severity_colors, $receivers;
 
 	$severity_levels = [
