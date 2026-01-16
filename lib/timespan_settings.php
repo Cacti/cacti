@@ -315,7 +315,7 @@ function set_timeshift() : int {
 	}
 
 	if (isset($graph_timeshifts_vals[$_SESSION['sess_current_timeshift']])) {
-		return $graph_timeshifts_vals[$_SESSION['sess_current_timeshift']];
+		return intval($graph_timeshifts_vals[$_SESSION['sess_current_timeshift']]);
 	} else {
 		return DEFAULT_TIMESHIFT;
 	}

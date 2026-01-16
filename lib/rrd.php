@@ -3787,9 +3787,10 @@ function rrd_datasource_add($file_array, $ds_array, $debug) {
 	foreach ($file_array as $file) {
 		// create a DOM object from an rrdtool dump
 		$dom = new domDocument;
-		$dom->loadXML(rrdtool_execute("dump $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL'));
 
-		if (!$dom) {
+		$success = $dom->loadXML(rrdtool_execute("dump $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL'));
+
+		if (!$success) {
 			$check['err_msg'] = __('Error while parsing the XML of rrdtool dump');
 
 			return $check;
@@ -3852,22 +3853,23 @@ function rrd_datasource_add($file_array, $ds_array, $debug) {
 /**
  * rrd_rra_delete - delete a (list of) rra(s) from an (array of) rrd file(s)
  *
- * @param  (array) $file_array - array of rrd files
- * @param  (array) $rra_array  - array of rra parameters
- * @param  (bool) $debug       - debug mode
+ * @param array $file_array - array of rrd files
+ * @param array $rra_array  - array of rra parameters
+ * @param bool  $debug      - debug mode
  *
- * @return (mixed) true for success (bool) or error message (array)
+ * @return mixed true for success (bool) or error message (array)
  */
-function rrd_rra_delete($file_array, $rra_array, $debug) {
+function rrd_rra_delete(array $file_array, array $rra_array, bool $debug) : mixed {
 	$rrdtool_pipe = rrd_init();
 
 	// iterate all given rrd files
 	foreach ($file_array as $file) {
 		// create a DOM document from an rrdtool dump
 		$dom = new domDocument;
-		$dom->loadXML(rrdtool_execute("dump $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL'));
 
-		if (!$dom) {
+		$success = $dom->loadXML(rrdtool_execute("dump $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL'));
+
+		if (!$success) {
 			$check['err_msg'] = __('Error while parsing the XML of RRDtool dump');
 
 			return $check;
@@ -3915,23 +3917,24 @@ function rrd_rra_delete($file_array, $rra_array, $debug) {
 /**
  * rrd_rra_clone - clone a (list of) rra(s) from an (array of) rrd file(s)
  *
- * @param  (array)  $file_array - array of rrd files
- * @param  (string) $cf         - new consolidation function
- * @param  (array)  $rra_array  - array of rra parameters
- * @param  (bool)   $debug      - debug mode
+ * @param array  $file_array - array of rrd files
+ * @param string $cf         - new consolidation function
+ * @param array  $rra_array  - array of rra parameters
+ * @param bool   $debug      - debug mode
  *
- * @return (mixed)  success (bool) or error message (array)
+ * @return mixed - success (bool) or error message (array)
  */
-function rrd_rra_clone($file_array, $cf, $rra_array, $debug) {
+function rrd_rra_clone(array $file_array, string $cf, array $rra_array, bool $debug) : mixed {
 	$rrdtool_pipe = rrd_init();
 
 	// iterate all given rrd files
 	foreach ($file_array as $file) {
 		// create a DOM document from an rrdtool dump
 		$dom = new domDocument;
-		$dom->loadXML(rrdtool_execute("dump $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL'));
 
-		if (!$dom) {
+		$success = $dom->loadXML(rrdtool_execute("dump $file", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'UTIL'));
+
+		if (!$success) {
 			$check['err_msg'] = __('Error while parsing the XML of RRDtool dump');
 
 			return $check;
@@ -3979,21 +3982,23 @@ function rrd_rra_clone($file_array, $cf, $rra_array, $debug) {
 /**
  * rrd_append_ds - appends a <DS> subtree to an RRD XML structure
  *
- * @param  (object) $dom     - the DOM object, where the RRD XML is stored
- * @param  (string) $version - rrd file version
- * @param  (string) $name    - name of the new ds
- * @param  (string) $type    - type of the new ds
- * @param  (int)    $min_hb  - heartbeat of the new ds
- * @param  (string) $min     - min value of the new ds or [NaN|U]
- * @param  (string) $max     - max value of the new ds or [NaN|U]
+ * @param object $dom     - the DOM object, where the RRD XML is stored
+ * @param string $version - rrd file version
+ * @param string $name    - name of the new ds
+ * @param string $type    - type of the new ds
+ * @param int    $min_hb  - heartbeat of the new ds
+ * @param string $min     - min value of the new ds or [NaN|U]
+ * @param string $max     - max value of the new ds or [NaN|U]
  *
- * @return (object) - modified DOM
+ * @return object - modified DOM
  */
-function rrd_append_ds($dom, $version, $name, $type, $min_hb, $min, $max) {
+function rrd_append_ds(object $dom, string $version, string $name, string $type, int $min_hb, string $min, string $max) : object {
 	// rrdtool version dependencies
 	if ($version === RRD_FILE_VERSION1) {
 		$last_ds = 'U';
 	} elseif ($version === RRD_FILE_VERSION3) {
+		$last_ds = 'UNKN';
+	} else {
 		$last_ds = 'UNKN';
 	}
 
@@ -4031,24 +4036,28 @@ function rrd_append_ds($dom, $version, $name, $type, $min_hb, $min, $max) {
 	$new_node = $dom->importNode($new_node, true);
 	// and insert it at the correct place
 	$insert->parentNode->insertBefore($new_node, $insert);
+
+	return $dom;
 }
 
 /**
  * rrd_append_compute_ds - COMPUTE DS: appends a <DS> subtree to an RRD XML structure
  *
- * @param  (object) $dom     - the DOM object, where the RRD XML is stored
- * @param  (string) $version - rrd file version
- * @param  (string) $name    - name of the new ds
- * @param  (string) $type    - type of the new ds
- * @param  (int)    $cdef    - the cdef rpn used for COMPUTE
+ * @param object $dom     - the DOM object, where the RRD XML is stored
+ * @param string $version - rrd file version
+ * @param string $name    - name of the new ds
+ * @param string $type    - type of the new ds
+ * @param int    $cdef    - the cdef rpn used for COMPUTE
  *
- * @return (object) - modified DOM
+ * @return object - modified DOM
  */
-function rrd_append_compute_ds($dom, $version, $name, $type, $cdef) {
+function rrd_append_compute_ds(object $dom, string $version, string $name, string $type, int $cdef) : object {
 	// rrdtool version dependencies
 	if ($version === RRD_FILE_VERSION1) {
 		$last_ds = 'U';
 	} elseif ($version === RRD_FILE_VERSION3) {
+		$last_ds = 'UNKN';
+	} else {
 		$last_ds = 'UNKN';
 	}
 
@@ -4083,17 +4092,19 @@ function rrd_append_compute_ds($dom, $version, $name, $type, $cdef) {
 	$new_node = $dom->importNode($new_node, true);
 	// and insert it at the correct place
 	$insert->parentNode->insertBefore($new_node, $insert);
+
+	return $dom;
 }
 
 /**
  * rrd_append_cdp_prep_ds - append a <DS> subtree to the <CDP_PREP> subtrees of a RRD XML structure
  *
- * @param (object) $dom     - the DOM object, where the RRD XML is stored
- * @param (string) $version - rrd file version
+ * @param object $dom     - the DOM object, where the RRD XML is stored
+ * @param string $version - rrd file version
  *
- * @return (object) - the modified DOM object
+ * @return object - the modified DOM object
  */
-function rrd_append_cdp_prep_ds($dom, $version) {
+function rrd_append_cdp_prep_ds(object $dom, string $version) : object {
 	// get all <cdp_prep><ds> entries
 	// $cdp_prep_list = $xpath->query('/rrd/rra/cdp_prep');
 	$cdp_prep_list = $dom->getElementsByTagName('rra')->item(0)->getElementsByTagName('cdp_prep');
@@ -4125,16 +4136,18 @@ function rrd_append_cdp_prep_ds($dom, $version) {
 			$cdp_prep->appendChild($new_ds);
 		}
 	}
+
+	return $dom;
 }
 
 /**
  * rrd_append_value - append a <V>alue element to the <DATABASE> subtrees of a RRD XML structure
  *
- * @param  (object) $dom - the DOM object, where the RRD XML is stored
+ * @param object $dom - the DOM object, where the RRD XML is stored
  *
- * @return (object) - the modified DOM object
+ * @return object - the modified DOM object
  */
-function rrd_append_value($dom) {
+function rrd_append_value(object $dom) : object {
 	// get XPATH notation required for positioning
 	// $xpath = new DOMXPath($dom);
 
@@ -4153,6 +4166,8 @@ function rrd_append_value($dom) {
 			$item->appendChild($new_v);
 		}
 	}
+
+	return $dom;
 }
 
 /**
@@ -4197,13 +4212,13 @@ function rrd_delete_rra($dom, $rra_parm) {
 /**
  * rrd_copy_rra - clone an <RRA> subtree of the <RRD> XML structure, replacing cf
  *
- * @param  (object) $dom     - the DOM document, where the RRD XML is stored
- * @param  (string) $cf      - new consolidation function
- * @param  (array) $rra_parm - a single rra parameter set, given by the user
+ * @param  object $dom      - the DOM document, where the RRD XML is stored
+ * @param  string $cf       - new consolidation function
+ * @param  array  $rra_parm - a single rra parameter set, given by the user
  *
- * @return (object) - the modified DOM object
+ * @return object - the modified DOM object
  */
-function rrd_copy_rra($dom, $cf, $rra_parm) {
+function rrd_copy_rra(object $dom, string $cf, array $rra_parm) : object {
 	// find all RRA DOMNodes
 	$rras = $dom->getElementsByTagName('rra');
 
@@ -4244,7 +4259,7 @@ function rrd_copy_rra($dom, $cf, $rra_parm) {
 	return $dom;
 }
 
-function rrdtool_replacement_legend($local_graph_id) {
+function rrdtool_replacement_legend(int $local_graph_id) : array {
 	$graph_data = db_fetch_assoc_prepared('SELECT gti.legend, dtr.data_source_name,
 		gti.consolidation_function_id, c.hex, gti.alpha, gti.text_format
 		FROM graph_templates_item AS gti
@@ -4308,19 +4323,21 @@ function rrdtool_replacement_legend($local_graph_id) {
 	return $legend;
 }
 
-function rrdtool_parse_error($string) {
+function rrdtool_parse_error(string $string) : string {
 	if (preg_match('/ERROR. opening \'(.*)\': (No such|Permiss).*/', $string, $matches)) {
 		if (cacti_sizeof($matches) >= 2) {
-			$filename = $matches[1];
-			$rra_name = basename($filename);
-			$rra_path = dirname($filename) . '/';
+			$filename  = (string) $matches[1];
+			$rra_name  = basename($filename);
+			$rra_path  = dirname($filename) . '/';
 
 			if (!is_resource_writable($rra_path)) {
 				$message  = __('Website does not have write access to %s, may be unable to create/update RRDs', 'folder');
 				$rra_name = str_replace(CACTI_PATH_RRA . '/', '', $rra_path);
 				$rra_path = '';
 			} else {
-				if (stripos($filename, CACTI_PATH_BASE) >= 0) {
+				$found = stripos($filename, CACTI_PATH_BASE);
+
+				if ($found > 0 || $found === 0) {
 					$rra_file = str_replace(CACTI_PATH_RRA . '/', '', $filename);
 					$rra_name = basename($rra_file);
 					$rra_path = dirname($rra_file);
@@ -4349,7 +4366,7 @@ function rrdtool_parse_error($string) {
 	return $string;
 }
 
-function rrdtool_create_error_image($string, $width = '', $height = '') {
+function rrdtool_create_error_image(string $string, mixed $width = '', mixed $height = '') : string {
 	global $dejavu_paths;
 
 	$string = rrdtool_parse_error($string);
@@ -4438,7 +4455,7 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 
 	// see the size of the string
 	$string    = trim($string);
-	$maxstring = ceil((450 - (125 + 10)) / ($font_size / 0.9));
+	$maxstring = intval(ceil((450 - (125 + 10)) / ($font_size / 0.9)));
 	$stringlen = strlen($string) * $font_size;
 	$padding   = 5;
 
@@ -4464,7 +4481,7 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 	if (isset($font_file) && file_exists($font_file) && is_readable($font_file) && function_exists('imagettftext')) {
 		foreach ($strings as $string) {
 			if (trim($string) != '') {
-				if (@imagettftext($image, $font_size, 0, $xpos, $ypos, $text_color, $font_file, $string) === false) {
+				if (@imagettftext($image, $font_size, 0, $xpos, intval($ypos), $text_color, $font_file, $string) === false) {
 					cacti_log('TTF text overlay failed');
 				}
 				$ypos -= ($font_size + $padding);
@@ -4473,7 +4490,7 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 	} else {
 		foreach ($strings as $string) {
 			if (trim($string) != '') {
-				if (@imagestring($image, $font_size, $xpos, $ypos, $string, $text_color) === false) {
+				if (@imagestring($image, $font_size, $xpos, intval($ypos), $string, $text_color) === false) {
 					cacti_log('Text overlay failed');
 				}
 				$ypos -= ($font_size + $padding);
@@ -4512,56 +4529,61 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 /**
  * gradient - Add gradient support for AREA type charts. This function adds several CDEF with different shading
  *
- * @param  (bool)   $vname       - the data source name
- * @param  (string) $start_color - the start color for the gradient
- * @param  (string) $end_color   - the end color for the gradient
- * @param  (bool)   $label       - any label attached to it
- * @param  (string) $steps       - defaults to 20
- * @param  (bool)   $lower       - defaults to faulse
- * @param  (string) $alpha       - Alpha channel to be used
+ * @param string $vname       - the data source name
+ * @param string $start_color - the start color for the gradient
+ * @param string $end_color   - the end color for the gradient
+ * @param string $label       - any label attached to it
+ * @param mixed  $steps       - defaults to 20
+ * @param string $lower       - defaults to faulse
+ * @param string $alpha       - Alpha channel to be used
  *
- * @return (string) - the additional CDEF/AREA command lines for rrdtool
+ * @return string - the additional CDEF/AREA command lines for rrdtool
  *
  * License: GPLv2
  * Original Code: https://github.com/lingej/pnp4nagios/blob/master/share/pnp/application/helpers/rrd.php
  */
-function gradient($vname = false, $start_color = '#0000a0', $end_color = '#f0f0f0', $label = false, $steps = 20, $lower = false, $alpha = 'FF') {
+function gradient(string $vname = '', string $start_color = '#0000a0', string $end_color = '#f0f0f0', string $label = '',
+	mixed $steps = 20, string $lower = '', string $alpha = 'FF') : string {
 	if (preg_match('/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i', $start_color, $matches)) {
 		$r1 = hexdec($matches[1]);
 		$g1 = hexdec($matches[2]);
 		$b1 = hexdec($matches[3]);
+	} else {
+		$r1 = $g1 = $b1 = 0;
 	}
 
 	if (preg_match('/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i', $end_color, $matches)) {
 		$r2 = hexdec($matches[1]);
 		$g2 = hexdec($matches[2]);
 		$b2 = hexdec($matches[3]);
+	} else {
+		$r2 = $g2 = $b2 = 0;
 	}
 
 	$diff_r       = $r2 - $r1;
 	$diff_g       = $g2 - $g1;
 	$diff_b       = $b2 - $b1;
 	$spline       =  '';
-	$spline_vname = 'var' . substr(sha1(random_int(0, mt_getrandmax())), 1, 4);
-	$vnamet       = $vname . substr(sha1(random_int(0, mt_getrandmax())), 1, 4);
+	$spline_vname = 'var_' . substr(sha1((string) random_int(0, mt_getrandmax())), 1, 4);
+	$vnamet       = $vname . substr(sha1((string) random_int(0, mt_getrandmax())), 1, 4);
 
 	if (preg_match('/^([0-9]{1,3})%$/', $lower, $matches)) {
 		$lower   = $matches[1];
-		$spline .= sprintf('CDEF:%sminimum=%s,100,/,%d,* ' . RRD_NL, $vnamet, $vname, $lower);
+		$spline .= sprintf('CDEF:%s_min=%s,100,/,%d,* ' . RRD_NL, $vnamet, $vname, $lower);
 	} elseif (preg_match('/^([0-9]+)$/', $lower, $matches)) {
 		$lower   = $matches[1];
-		$spline .= sprintf('CDEF:%sminimum=%s,%d,- ' . RRD_NL, $vnamet, $vname, $lower);
+		$spline .= sprintf('CDEF:%s_min=%s,%d,- ' . RRD_NL, $vnamet, $vname, $lower);
 	} else {
 		$lower   = 0;
-		$spline .= sprintf('CDEF:%sminimum=%s,%s,- ' . RRD_NL, $vnamet, $vname, $vname);
+		$spline .= sprintf('CDEF:%s_min=%s,%s,- ' . RRD_NL, $vnamet, $vname, $vname);
 	}
 
 	for ($i = $steps; $i > 0; $i--) {
-		$spline .= sprintf('CDEF:%s%d=%s,%sminimum,-,%d,/,%d,*,%sminimum,+ ' . RRD_NL, $spline_vname, $i, $vname, $vnamet, $steps, $i, $vnamet);
+		$spline .= sprintf('CDEF:%s%d=%s,%s_min,-,%d,/,%d,*,%s_min,+ ' . RRD_NL, $spline_vname, $i, $vname, $vnamet, $steps, $i, $vnamet);
 	}
 
 	// We don't use alpha blending for the area right now
-	$alpha = 'ff';
+	$alpha = 'FF';
 
 	for ($i = $steps; $i > 0; $i--) {
 		$factor = $i / $steps;
@@ -4570,14 +4592,14 @@ function gradient($vname = false, $start_color = '#0000a0', $end_color = '#f0f0f
 		$g = round($g1 + $diff_g * $factor);
 		$b = round($b1 + $diff_b * $factor);
 
-		if ($i == $steps && $label != false && strlen($label) > 2) {
+		if ($i == $steps && $label != '' && strlen($label) > 2) {
 			$spline .= sprintf('AREA:%s%d#%02X%02X%02X%s:%s ' . RRD_NL, $spline_vname, $i, $r, $g, $b, $alpha, $label);
 		} else {
 			$spline .= sprintf('AREA:%s%d#%02X%02X%02X%s ' . RRD_NL, $spline_vname, $i, $r, $g, $b, $alpha);
 		}
 	}
 
-	$spline .= sprintf('AREA:%s%d#%02X%02X%02X%s ' . RRD_NL, $spline_vname, $steps, $r2, $g2, $b2, '00', $label);
+	$spline .= sprintf('AREA:%s%d#%02X%02X%02X%s ' . RRD_NL, $spline_vname, $steps, $r2, $g2, $b2, '00');
 
 	return $spline;
 }
@@ -4585,15 +4607,15 @@ function gradient($vname = false, $start_color = '#0000a0', $end_color = '#f0f0f
 /**
  * colourBrightness - Add colourBrightness support for the gradient charts. This function calculates the darker version of a given color
  *
- * @param  (bool)   $hex     - The hex representation of a color
- * @param  (string) $percent - the percentage to darken the given color. decimal number ( 0.4 -> 40% )
+ * @param  string $hex     - The hex representation of a color
+ * @param  float  $percent - the percentage to darken the given color. decimal number ( 0.4 -> 40% )
  *
- * @return (string) - the darker version of the given color
+ * @return string - the darker version of the given color
  *
- * License:			GPLv2
- * Original Code		http://www.barelyfitz.com/projects/csscolor/
+ * License: GPLv2
+ * Original Code: http://www.barelyfitz.com/projects/csscolor/
  */
-function colourBrightness($hex, $percent) {
+function colourBrightness(string $hex, float $percent) : string {
 	// Work out if hash given
 	$hash = '';
 
@@ -4644,15 +4666,13 @@ function colourBrightness($hex, $percent) {
 /**
  * add_unknown_data - Add unknown data area fills to graphs if selected by the admin
  *
- * @param  array  $data  - The graph_array data containing all rrdtool graph options
- * @param  array  $xport_meta  - If the graph unknown data is true, set that in the
- *   xport meta output.
- * @param mixed $graph_array
+ * @param array $graph_array - The graph_array data containing all rrdtool graph options
+ * @param array $xport_meta - If the graph unknown data is true, set that in the
+ *              xport meta output.
  *
- * @return array  $data  - The graph_array modified to include unknown data ranges
- *
+ * @return array - The graph_array modified to include unknown data ranges
  */
-function add_unknown_data($graph_array, &$xport_meta) {
+function add_unknown_data(array $graph_array, array &$xport_meta) : array {
 	// add the cdef for unknown data
 	if (read_config_option('graph_unknown_data') == 'on') {
 		if (isset($xport_meta['ignoreItems'])) {
@@ -4672,7 +4692,7 @@ function add_unknown_data($graph_array, &$xport_meta) {
 			$graph_array['graph_defs'] .= "CDEF:unknowndata='$tmp_def" . str_repeat(',+', $pluscnt);
 			$graph_array['graph_defs'] .= ",INF,UNKN,IF'" . RRD_NL;
 
-			$ud_color   = read_config_option('graph_unknown_color');
+			$ud_color   = intval(read_config_option('graph_unknown_color'));
 
 			if ($ud_color > 0) {
 				$ud_color = get_color($ud_color);
@@ -4717,14 +4737,18 @@ function add_business_hours($data, &$xport_meta) {
 		preg_match('/(\d+)\:(\d+)/',read_config_option('business_hours_start'), $bh_start_matches);
 		preg_match('/(\d+)\:(\d+)/',read_config_option('business_hours_end'), $bh_end_matches);
 
-		$start_bh_time = mktime($bh_start_matches[1], $bh_start_matches[2], 0, date('m', $bh_graph_start), date('d', $bh_graph_start), date('Y', $bh_graph_start));
-		$end_bh_time   = mktime($bh_end_matches[1], $bh_end_matches[2], 0, date('m', $bh_graph_end), date('d', $bh_graph_end), date('Y', $bh_graph_end));
+		// Convert all the responses to integers
+		$bh_start_matches = array_map('intval', $bh_start_matches);
+		$bh_end_matches   = array_map('intval', $bh_end_matches);
+
+		$start_bh_time = mktime($bh_start_matches[1], $bh_start_matches[2], 0, intval(date('m', $bh_graph_start)), intval(date('d', $bh_graph_start)), intval(date('Y', $bh_graph_start)));
+		$end_bh_time   = mktime($bh_end_matches[1], $bh_end_matches[2], 0, intval(date('m', $bh_graph_end)), intval(date('d', $bh_graph_end)), intval(date('Y', $bh_graph_end)));
 
 		if ($start_bh_time < $bh_graph_start) {
 			if ($start_bh_time < $end_bh_time) {
 				$start_bh_time = $bh_graph_start;
 			} else {
-				$start_bh_time = mktime($bh_start_matches[1], $bh_start_matches[2], 0, date('m', $bh_graph_start), date('d', $bh_graph_start) + 1, date('Y', $bh_graph_start));
+				$start_bh_time = mktime($bh_start_matches[1], $bh_start_matches[2], 0, intval(date('m', $bh_graph_start)), date('d', $bh_graph_start) + 1, intval(date('Y', $bh_graph_start)));
 			}
 		}
 
@@ -4734,8 +4758,8 @@ function add_business_hours($data, &$xport_meta) {
 
 		if ($num_of_days <= read_config_option('business_hours_max_days')) {
 			for ($day = 0; $day < $num_of_days; $day++) {
-				$current_start_bh_time = mktime($bh_start_matches[1], $bh_start_matches[2], 0, date('m', $start_bh_time), date('d', $start_bh_time) + $day, date('Y', $start_bh_time));
-				$current_end_bh_time   = mktime($bh_end_matches[1], $bh_end_matches[2], 0, date('m', $start_bh_time), date('d', $start_bh_time) + $day, date('Y', $start_bh_time));
+				$current_start_bh_time = mktime($bh_start_matches[1], $bh_start_matches[2], 0, intval(date('m', $start_bh_time)), date('d', $start_bh_time) + $day, intval(date('Y', $start_bh_time)));
+				$current_end_bh_time   = mktime($bh_end_matches[1], $bh_end_matches[2], 0, intval(date('m', $start_bh_time)), date('d', $start_bh_time) + $day, intval(date('Y', $start_bh_time)));
 
 				if ($current_start_bh_time < $bh_graph_start) {
 					$current_start_bh_time = $bh_graph_start;
@@ -4748,14 +4772,14 @@ function add_business_hours($data, &$xport_meta) {
 				$data['graph_defs'] .= 'CDEF:officehours' . $day . '=a,POP,TIME,' . $current_start_bh_time . ',LT,1,0,IF,TIME,' . $current_end_bh_time . ',GT,1,0,IF,MAX,0,GT,0,1,IF' . RRD_NL;
 				$data['graph_defs'] .= 'CDEF:dslimit' . $day . '=INF,officehours' . $day . ',*' . RRD_NL;
 
-				$bh_color = read_config_option('business_hours_color');
+				$bh_color = intval(read_config_option('business_hours_color'));
 
-				if (!is_numeric($bh_color)) {
+				if (empty($bh_color)) {
 					$bh_color = 'CCCCCC';
 				} else {
 					$bh_color = get_color($bh_color);
 
-					if (empty($bh_color0)) {
+					if (empty($bh_color)) {
 						$bh_color = 'CCCCCC';
 					}
 				}
