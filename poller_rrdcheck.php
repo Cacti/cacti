@@ -128,6 +128,8 @@ if (function_exists('pcntl_signal')) {
 // take time and log performance data
 $start = microtime(true);
 
+$timeout = intval(read_config_option('rrdcheck_timeout'));
+
 // let's give this script lot of time to run for ever
 ini_set('max_execution_time', '0');
 
@@ -136,7 +138,7 @@ rrdcheck_debug('Polling Starting');
 
 // silently end if the registered process is still running
 if (!$forcerun) {
-	if (!register_process_start('rrdcheck', $type, $thread_id, read_config_option('rrdcheck_timeout'))) {
+	if (!register_process_start('rrdcheck', $type, $thread_id, $timeout)) {
 		exit(0);
 	}
 }
@@ -182,7 +184,7 @@ if (!$forcerun) {
 
 exit(0);
 
-function rrdcheck_master_handler($forcerun) {
+function rrdcheck_master_handler(bool $forcerun = false) : void {
 	global $type;
 
 	// read some important settings relative to timing from the database
@@ -235,7 +237,7 @@ function rrdcheck_master_handler($forcerun) {
 /**
  * display_version - displays version information
  */
-function display_version() {
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti RRD Check Poller, Version $version " . COPYRIGHT_YEARS . PHP_EOL;
 }
@@ -243,7 +245,7 @@ function display_version() {
 /**
  * display_help - generic help screen for utilities
  */
-function display_help() {
+function display_help() : void {
 	display_version();
 
 	print PHP_EOL . 'usage: poller_rrdcheck.php [--force] [--debug]' . PHP_EOL . PHP_EOL;
@@ -264,11 +266,11 @@ function display_help() {
 /**
  * sig_handler - provides a generic means to catch exceptions to the Cacti log.
  *
- * @param $signo - (int) the signal that was thrown by the interface.
+ * @param int $signo - The signal that was thrown by the interface.
  *
- * @return - null
+ * @return void
  */
-function sig_handler($signo) {
+function sig_handler(int $signo) : void {
 	global $type, $thread_id;
 
 	switch ($signo) {
@@ -288,8 +290,6 @@ function sig_handler($signo) {
 			unregister_process('rrdcheck', $type, $thread_id, getmypid());
 
 			exit(1);
-
-			break;
 		default:
 			// ignore all other signals
 	}

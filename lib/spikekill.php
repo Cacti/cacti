@@ -30,92 +30,56 @@ define('SPIKE_METHOD_FLOAT',    3);
 
 class spikekill {
 	// setup defaults
-	private $std_kills = false;
-
-	private $var_kills = false;
-
-	private $out_kills = false;
-
-	private $out_set   = false;
-
-	private $username  = '';
-
-	private $user      = '';
-
-	private $user_info = [];
+	private mixed $std_kills = false;
+	private mixed $var_kills = false;
+	private mixed $out_kills = false;
+	private string $username = '';
+	private string $user     = '';
+	private array $user_info = [];
 
 	// Required variables
-	public $rrdfile   = '';
-
-	public $method    = '';
-
-	public $avgnan    = '';
-
-	public $stddev    = '';
-
-	public $out_start = '';
-
-	public $out_end   = '';
-
-	public $outliers  = '';
-
-	public $percent   = '';
-
-	public $numspike  = '';
-
-	public $dsfilter  = '';
-
-	public $absmax  = '';
+	public string $rrdfile   = '';
+	public mixed $method     = '';
+	public mixed $avgnan     = '';
+	public mixed $stddev     = '';
+	public mixed $out_start  = '';
+	public mixed $out_end    = '';
+	public mixed $outliers   = '';
+	public mixed  $percent   = '';
+	public mixed $numspike   = '';
+	public mixed $dsfilter   = '';
+	public string $absmax    = '';
 
 	// Overridable
-	public $html      = true;
-
-	public $backup    = false;
-
-	public $debug     = false;
-
-	public $dryrun    = false;
+	public bool $html        = true;
+	public bool $backup      = false;
+	public bool $debug       = false;
+	public bool $dryrun      = false;
 
 	// Defaults from cacti settings
-	private $dmethod   = 1;
-
-	private $dnumspike = 10;
-
-	private $dstddev   = 10;
-
-	private $dpercent  = 500;
-
-	private $doutliers = 5;
-
-	private $davgnan   = 'last';
+	private int $dmethod     = 1;
+	private int $dnumspike   = 10;
+	private int $dstddev     = 10;
+	private int $dpercent    = 500;
+	private int $doutliers   = 5;
+	private string $davgnan  = 'last';
 
 	// Internal globals
-	private $tempdir     = '';
+	private string $tempdir  = '';
+	private mixed $seed      = '';
+	private string $strout   = '';
+	private array $ds_min    = [];
+	private array $ds_max    = [];
+	private int $total_kills = 0;
+	private array $rra_cf    = [];
+	private array $ds_name   = [];
+	private array $rra_pdp   = [];
+	private int $step        = 0;
+	private array $errors    = [];
 
-	private $seed        = '';
-
-	private $strout      = '';
-
-	private $ds_min      = [];
-
-	private $ds_max      = [];
-
-	private $total_kills = 0;
-
-	private $rra_cf      = [];
-
-	private $ds_name     = [];
-
-	private $rra_pdp     = [];
-
-	private $step        = 0;
-
-	// For error handling
-	private $errors = [];
-
-	public function __construct($rrdfile = '', $method = '', $avgnan = '', $stddev = '',
-		$out_start = '', $out_end = '', $outliers = '', $percent = '', $numspike = '',
-		$dsfilter = '', $absmax = '') {
+	public function __construct(string $rrdfile = '', string $method = '', string $avgnan = '', string $stddev = '',
+		string $out_start = '', string $out_end = '', string $outliers = '', string $percent = '', string $numspike = '',
+		string $dsfilter = '', string $absmax = '') {
 		$this->username  = 'OsUser:' . get_current_user();
 		$this->user_info = [];
 
@@ -177,29 +141,27 @@ class spikekill {
 			$this->absmax = $absmax;
 		}
 
-		$this->dmethod   = read_config_option('spikekill_method', true);
-		$this->dnumspike = read_config_option('spikekill_number', true);
-		$this->dstddev   = read_config_option('spikekill_deviations', true);
-		$this->dpercent  = read_config_option('spikekill_percent', true);
-		$this->doutliers = read_config_option('spikekill_outliers', true);
+		$this->dmethod   = intval(read_config_option('spikekill_method', true));
+		$this->dnumspike = intval(read_config_option('spikekill_number', true));
+		$this->dstddev   = intval(read_config_option('spikekill_deviations', true));
+		$this->dpercent  = intval(read_config_option('spikekill_percent', true));
+		$this->doutliers = intval(read_config_option('spikekill_outliers', true));
 		$this->davgnan   = read_config_option('spikekill_avgnan', true);
-
-		return true;
 	}
 
 	public function __destruct() {
-		return true;
+		// Empty destructor
 	}
 
-	private function set_error($string) {
+	private function set_error(string $string) : void {
 		$this->errors[] = $string;
 	}
 
-	private function is_error_set() {
+	private function is_error_set() : mixed {
 		return cacti_sizeof($this->errors);
 	}
 
-	public function get_errors() {
+	public function get_errors() : string {
 		$output = '';
 
 		if (cacti_sizeof($this->errors)) {
@@ -211,11 +173,11 @@ class spikekill {
 		return $output;
 	}
 
-	public function get_output($html = true) {
+	public function get_output(bool $html = true) : string {
 		return $this->strout;
 	}
 
-	private function initialize_spikekill() {
+	private function initialize_spikekill() : bool {
 		// additional error check
 		if ($this->rrdfile == '') {
 			$this->set_error('FATAL: You must specify an RRDfile!');
@@ -303,8 +265,6 @@ class spikekill {
 			if (!is_numeric($this->outliers) || ($this->outliers < 1)) {
 				$this->set_error('FATAL: The number of outliers to exclude must be a positive integer.');
 			}
-
-			$this->out_set = true;
 		}
 
 		if ($this->percent != '') {
@@ -373,7 +333,7 @@ class spikekill {
 		return false;
 	}
 
-	public function remove_spikes() {
+	public function remove_spikes() : bool {
 		$this->initialize_spikekill();
 
 		if ($this->is_error_set()) {
@@ -503,6 +463,7 @@ class spikekill {
 
 		$rra_num = 0;
 		$ds_num  = 0;
+		$samples = [];
 
 		$this->total_kills = 0;
 
@@ -620,7 +581,7 @@ class spikekill {
 					$in_rra = false;
 					$rra_num++;
 				} elseif (substr_count($line, '<step>')) {
-					$this->step = trim(str_replace('<step>', '', str_replace('</step>', '', trim($line))));
+					$this->step = intval(trim(str_replace('<step>', '', str_replace('</step>', '', trim($line)))));
 				}
 			}
 		}
@@ -745,7 +706,7 @@ class spikekill {
 	}
 
 	// All Functions
-	private function createRRDFileFromXML($xmlfile, $rrdfile) {
+	private function createRRDFileFromXML(string $xmlfile, string $rrdfile) : void {
 		// execute the dump command
 		$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
 			"NOTE: Re-Importing '$xmlfile' to '$rrdfile'" . ($this->html ? "</p>\n" : "\n");
@@ -757,11 +718,11 @@ class spikekill {
 		}
 	}
 
-	private function writeXMLFile($output, $xmlfile) {
+	private function writeXMLFile(array $output, string $xmlfile) : mixed {
 		return file_put_contents($xmlfile, $output);
 	}
 
-	private function backupRRDFile($rrdfile) {
+	private function backupRRDFile(string $rrdfile) : bool {
 		$backupdir = read_config_option('spikekill_backupdir');
 
 		if ($backupdir == '') {
@@ -780,7 +741,7 @@ class spikekill {
 		return copy($rrdfile, $backupdir . '/' . $newfile);
 	}
 
-	private function calculateVarianceAverages(&$rra, &$samples) {
+	private function calculateVarianceAverages(array &$rra, array &$samples) : void {
 		if (cacti_sizeof($samples)) {
 			foreach ($samples as $rra_num => $dses) {
 				if (cacti_sizeof($dses)) {
@@ -831,7 +792,7 @@ class spikekill {
 		}
 	}
 
-	private function calculateOverallStatistics(&$rra, &$samples) {
+	private function calculateOverallStatistics(array &$rra, array &$samples) : void {
 		$rra_num = 0;
 
 		if (cacti_sizeof($rra)) {
@@ -960,7 +921,7 @@ class spikekill {
 		}
 	}
 
-	private function outputStatistics($rra) {
+	private function outputStatistics(array $rra) : void {
 		if (cacti_sizeof($rra)) {
 			if (!$this->html) {
 				$this->strout .= "\n";
@@ -970,7 +931,7 @@ class spikekill {
 				$this->strout .= sprintf("%10s %16s %10s %7s %7s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s\n",
 					'----------', '---------------', '----------', '-------', '-------', '----------', '----------',
 					'----------', '----------', '----------', '----------', '----------', '----------', '----------',
-					'----------', '----------', '----------');
+					'----------', '----------');
 
 				foreach ($rra as $rra_key => $dses) {
 					if (cacti_sizeof($dses)) {
@@ -1048,7 +1009,7 @@ class spikekill {
 		}
 	}
 
-	private function updateXML(&$output, &$rra) {
+	private function updateXML(array &$output, array &$rra) : array {
 		// variance subroutine
 		$rra_num   = 0;
 		$ds_num    = 0;
@@ -1100,7 +1061,7 @@ class spikekill {
 									$this->total_kills++;
 								}
 							} elseif ($this->method == SPIKE_METHOD_FILL) {
-								if ($dsvalue > (1 + $this->percent) * $rra[$rra_num][$ds_num]['variance_avg'] || strtolower($dsvalue) == 'nan') {
+								if ($dsvalue > (1 + (float) $this->percent) * $rra[$rra_num][$ds_num]['variance_avg'] || strtolower($dsvalue) == 'nan') {
 									if ($this->avgnan == 'avg') {
 										cacti_log("DEBUG: replacing dsvalue {$dsvalue} with variance_avg {$rra[$rra_num][$ds_num]['variance_avg']}", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
 										$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
@@ -1163,7 +1124,7 @@ class spikekill {
 							}
 						} else {
 							if ($this->method == SPIKE_METHOD_VARIANCE) {
-								if ($dsvalue > (1 + $this->percent) * (float) $rra[$rra_num][$ds_num]['variance_avg']) {
+								if ($dsvalue > (1 + (float) $this->percent) * (float) $rra[$rra_num][$ds_num]['variance_avg']) {
 									if ($kills < $this->numspike) {
 										if ($this->avgnan == 'avg') {
 											cacti_log("DEBUG: replacing dsvalue {$dsvalue} with variance_avg {$rra[$rra_num][$ds_num]['variance_avg']}", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
@@ -1237,7 +1198,9 @@ class spikekill {
 		return $new_array;
 	}
 
-	private function removeComments(&$output) {
+	private function removeComments(array &$output) : array{
+		$new_array = [];
+
 		if (cacti_sizeof($output)) {
 			foreach ($output as $line) {
 				$line = trim($line);
@@ -1275,13 +1238,12 @@ class spikekill {
 					}
 				}
 			}
-
-			// transfer the new array back to the original array
-			return $new_array;
 		}
+
+		return $new_array;
 	}
 
-	private function displayTime($pdp) {
+	private function displayTime(mixed $pdp) : string {
 		$total_time = $pdp * $this->step; // seconds
 
 		if ($total_time < 60) {
@@ -1305,13 +1267,13 @@ class spikekill {
 		}
 	}
 
-	private function debug($string) {
+	private function debug(string $string) : void {
 		if ($this->debug) {
 			print 'DEBUG: ' . $string . "\n";
 		}
 	}
 
-	private function processStandardDeviationCalculation($samples) {
+	private function processStandardDeviationCalculation(array $samples) : mixed {
 		$my_samples = $samples;
 
 		if (!empty($this->out_start)) {
@@ -1325,45 +1287,7 @@ class spikekill {
 		return $this->calculateStandardDeviation($my_samples);
 	}
 
-	private function calculateStandardDeviation($items) {
-		if (!function_exists('stats_standard_deviation')) {
-			function stats_standard_deviation($items, $sample = false) {
-				$sum         = 0;
-				$total_items = 0;
-
-				// remove NaN entries from the data set
-				if (cacti_sizeof($items)) {
-					foreach ($items as $key => $value) {
-						if (is_int($value) || is_float($value)) {
-							$total_items++;
-							cacti_log(print_r($sum,true) . ':::' . print_r($value,true));
-							$sum += $value;
-						} else {
-							unset($items[$key]);
-						}
-					}
-				}
-
-				if (($sample && $total_items === 1) || $total_items === 0) {
-					return false;
-				}
-
-				$mean  = $sum / $total_items;
-				$carry = 0.0;
-
-				foreach ($items as $val) {
-					$d = ((double) $val) - $mean;
-					$carry += $d * $d;
-				}
-
-				if ($sample) {
-					--$total_items;
-				}
-
-				return sqrt($carry / $total_items);
-			}
-		}
-
+	private function calculateStandardDeviation(array $items) : mixed {
 		return stats_standard_deviation($items, false);
 	}
 }

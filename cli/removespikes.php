@@ -49,7 +49,6 @@ $std_kills = false;
 $var_kills = false;
 $html      = false;
 $backup    = false;
-$out_set   = false;
 $user      = get_current_user();
 
 $method   = read_config_option('spikekill_method',true);

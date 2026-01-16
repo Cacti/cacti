@@ -46,7 +46,7 @@ process_user_input($timespan, $timeshift);
 finalize_timespan($timespan);
 
 // initialize the timespan selector for first use
-function initialize_timespan(&$timespan) {
+function initialize_timespan(array &$timespan) : bool {
 	// initialize the default timespan if not set
 	if (isrv('button_clear')) {
 		reset_timespan_settings();
@@ -76,7 +76,7 @@ function initialize_timespan(&$timespan) {
 	return false;
 }
 
-function reset_timespan_settings() {
+function reset_timespan_settings() : void {
 	unset($_SESSION['sess_current_timespan']);
 	unset($_SESSION['sess_current_timeshift']);
 	unset($_SESSION['sess_current_date1']);
@@ -86,7 +86,7 @@ function reset_timespan_settings() {
 	unset($_SESSION['sess_current_timespan_end_now']);
 }
 
-function process_span_shift($type, &$allvals) {
+function process_span_shift(string $type, array &$allvals) : void {
 	$default = read_user_setting("default_$type");
 
 	if (isrv("predefined_$type")) {
@@ -108,7 +108,7 @@ function process_span_shift($type, &$allvals) {
 }
 
 // preformat for timespan selector
-function process_html_variables() {
+function process_html_variables() : void {
 	global $graph_timespans, $graph_timeshifts;
 
 	if (!isrv('date1') && !isrv('date2')) {
@@ -120,10 +120,12 @@ function process_html_variables() {
 /**
  * when a span time preselection has been defined update the span time fields
  * someone hit a button and not a dropdown
- * @param mixed $timespan
- * @param mixed $timeshift
+ * @param array $timespan
+ * @param int $timeshift
+ *
+ * @return void
  */
-function process_user_input(&$timespan, $timeshift) {
+function process_user_input(array &$timespan, int $timeshift) : void {
 	/**
 	 * perform cursory time checks to invalidate dates before 1993.  I picked
 	 * 1993 as that is the year that my son was born.
@@ -227,7 +229,7 @@ function process_user_input(&$timespan, $timeshift) {
 }
 
 // establish graph timespan from either a user select or the default
-function set_preset_timespan(&$timespan) {
+function set_preset_timespan(array &$timespan) : void {
 	// no current timespan: get default timespan
 	if (!isset($_SESSION['sess_current_timespan'])) {
 		$_SESSION['sess_current_timespan'] = read_user_setting('default_timespan');
@@ -259,7 +261,7 @@ function set_preset_timespan(&$timespan) {
 	$_SESSION['custom'] = 0;
 }
 
-function finalize_timespan(&$timespan) {
+function finalize_timespan(array &$timespan) : void {
 	if (!isset($timespan['current_value_date1'])) {
 		// default end date is now default time span
 		$timespan['current_value_date1'] = date('Y-m-d H:i', $timespan['begin_now']);
@@ -302,7 +304,7 @@ function finalize_timespan(&$timespan) {
 }
 
 // establish graph timeshift from either a user select or the default
-function set_timeshift() {
+function set_timeshift() : int {
 	global $graph_timeshifts_vals;
 
 	// no current timeshift: get default timeshift
