@@ -329,7 +329,7 @@ while (1) {
 	}
 }
 
-function parseArgs($string, &$str_list, $debug = false) {
+function parseArgs(string $string, array &$str_list, bool $debug = false) : bool {
 	$delimiters = ["'", '"'];
 	$delimited  = false;
 	$str_list   = [];
@@ -452,9 +452,12 @@ function parseArgs($string, &$str_list, $debug = false) {
 
 /**
  * sig_handler - properly handle signals and shutdown
- * @param mixed $signo
+ *
+ * @param int $signo
+ *
+ * @return void
  */
-function sig_handler($signo) {
+function sig_handler(int $signo) : void {
 	global $include_file, $function, $parameters;
 
 	switch ($signo) {
@@ -467,8 +470,6 @@ function sig_handler($signo) {
 			db_close();
 
 			exit;
-
-			break;
 		default:
 			cacti_log("WARNING: Script Server received signal '$signo' in file:'$include_file', function:'$function', params:'$parameters'", false, 'PHPSVR', POLLER_VERBOSITY_HIGH);
 
@@ -481,7 +482,7 @@ function sig_handler($signo) {
  *
  * @return (void)
  */
-function display_version() {
+function display_version() : void {
 	$version = get_cacti_version();
 	print "Cacti Script Server, Version $version " . COPYRIGHT_YEARS . PHP_EOL;
 }
@@ -491,7 +492,7 @@ function display_version() {
  *
  * @return (void)
  */
-function display_help() {
+function display_help() : void {
 	display_version();
 
 	print PHP_EOL;

@@ -73,7 +73,7 @@ switch (grv('action')) {
 }
 
 // Fill RRDCleaner's table
-function rrdclean_fill_table() {
+function rrdclean_fill_table() : void {
 	global $rra_path;
 
 	// suppress warnings
@@ -94,16 +94,18 @@ function rrdclean_fill_table() {
 }
 
 // Determine the last time the rrdcleaner table was updated
-function rrdcleaner_lastupdate() {
+function rrdcleaner_lastupdate() : mixed {
 	$status = db_fetch_row("SHOW TABLE STATUS LIKE 'data_source_purge_temp'");
 
 	if (cacti_sizeof($status)) {
 		return $status['Update_time'];
 	}
+
+	return false;
 }
 
 // Delete RRDCleaner's intermediate tables
-function rrdclean_truncate_tables() {
+function rrdclean_truncate_tables() : void {
 	// suppress warnings
 	error_reporting(0);
 
@@ -122,7 +124,7 @@ function rrdclean_truncate_tables() {
 }
 
 // PHP Error Handler
-function rrdclean_error_handler($errno, $errmsg, $filename, $linenum, $vars = []) {
+function rrdclean_error_handler(int $errno, string $errmsg, string $filename, int $linenum, array $vars = []) : bool {
 	global $debug;
 
 	if ($debug) {
@@ -150,24 +152,24 @@ function rrdclean_error_handler($errno, $errmsg, $filename, $linenum, $vars = []
 
 		// let's ignore some lesser issues
 		if (substr_count($errmsg, 'date_default_timezone')) {
-			return;
+			return true;
 		}
 
 		if (substr_count($errmsg, 'Only variables')) {
-			return;
+			return true;
 		}
 
 		print('PROGERR: ' . $err . "\n"); // print_r($vars); print('</pre>');
 	}
 
-	return;
+	return true;
 }
 
 /*
  * Find all unused files from Cacti tables
  * and get file system information for them
  */
-function get_files() {
+function get_files() : void {
 	global $rra_path;
 
 	// suppress warnings
@@ -209,8 +211,9 @@ function get_files() {
 			$files = explode("\n", $scan);            // Split based on \n
 
 			foreach ($files as $file) {
-				[$pathname, $size, $mtime]     = explode(',', $file);
-				$sql[]                         = "('" . str_replace($rra_path, '', $pathname) . "', " . $size . ", '" . date('Y-m-d H:i:s', $mtime) . "',0)";
+				[$pathname, $size, $mtime] = explode(',', $file);
+
+				$sql[] = "('" . str_replace($rra_path, '', $pathname) . "', " . $size . ", '" . date('Y-m-d H:i:s', intval($mtime)) . "',0)";
 				$size++;
 
 				if ($size == 400) {
@@ -258,7 +261,7 @@ function get_files() {
 }
 
 // Display all rrd file entries
-function list_rrd() {
+function list_rrd() : void {
 	global $item_rows, $ds_actions, $rra_path;
 
 	// suppress warnings
@@ -354,7 +357,7 @@ function list_rrd() {
 			form_selectable_cell($file['data_template_id'] > 0 ? $file['data_template_id'] : '<i>' . __('Deleted') . '</i>', $file['id']);
 			form_selectable_cell(filter_value($file['data_template_name'], grv('filter')), $file['id']);
 			form_selectable_cell($file['last_mod'], $file['id']);
-			form_selectable_cell(round($file['size'] / 1024, 2), $file['id']);
+			form_selectable_cell(number_format_i18n($file['size'] / 1024, 2), $file['id']);
 			form_checkbox_cell($file['id'], $file['id']);
 
 			form_end_row();
@@ -379,7 +382,7 @@ function list_rrd() {
 	restore_error_handler();
 }
 
-function rrdcleaner_legend($total_size) {
+function rrdcleaner_legend(mixed $total_size) : void {
 	html_start_box('', '100%', false, 3, 'center', '');
 	print '<tr>';
 	print '<td><b>' . __('Total Size [MB]:') . '</b> ' . round($total_size / 1024 / 1024, 2) . '</td>';
@@ -389,7 +392,7 @@ function rrdcleaner_legend($total_size) {
 	html_end_box(false);
 }
 
-function remove_all_rrds() {
+function remove_all_rrds() : void {
 	global $rra_path;
 
 	// suppress warnings
@@ -419,7 +422,7 @@ function remove_all_rrds() {
  * Read all checked list items and put them into
  * a temporary table for the poller
  */
-function do_rrd() {
+function do_rrd() : void {
 	global $rra_path;
 
 	// suppress warnings
@@ -452,7 +455,7 @@ function do_rrd() {
 	restore_error_handler();
 }
 
-function create_rrdcleaner_filter() {
+function create_rrdcleaner_filter() : array {
 	global $item_rows;
 
 	$ages = [
@@ -543,7 +546,7 @@ function create_rrdcleaner_filter() {
 	];
 }
 
-function draw_rrdcleaner_filter($render = false) {
+function draw_rrdcleaner_filter(bool $render = false) : void {
 	$filters = create_rrdcleaner_filter();
 
 	// create the page filter

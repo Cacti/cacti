@@ -29,6 +29,11 @@ require_once(CACTI_PATH_LIBRARY . '/poller.php');
 ini_set('memory_limit', '-1');
 ini_set('max_execution_time', '900');
 
+global $logfile_verbosity, $poller_sync_intervals;
+global $database_default, $database_username, $database_password, $database_port;
+global $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert;
+global $database_ssl_ca, $database_ssl_capath, $database_ssl_verify_server_cert;
+
 $actions = [
 	POLLER_DELETE      => __('Delete'),
 	POLLER_DISABLE     => __('Disable'),
@@ -303,7 +308,7 @@ switch (grv('action')) {
 		break;
 }
 
-function form_save() {
+function form_save() : void {
 	if (isrv('save_component_poller')) {
 		// Common data
 		$save['id']        = gfrv('id');
@@ -368,7 +373,7 @@ function form_save() {
 	}
 }
 
-function poller_check_duplicate_poller_id($poller_id, $hostname, $column) {
+function poller_check_duplicate_poller_id(int $poller_id, string $hostname, string $column) : bool {
 	$ip_addresses  = [];
 	$ip_hostnames  = [];
 
@@ -455,7 +460,7 @@ function poller_check_duplicate_poller_id($poller_id, $hostname, $column) {
 	}
 }
 
-function poller_host_duplicate($poller_id, $host) {
+function poller_host_duplicate(int $poller_id, string $host) : mixed {
 	if ($host == 'localhost') {
 		return true;
 	} else {
@@ -467,7 +472,7 @@ function poller_host_duplicate($poller_id, $host) {
 	}
 }
 
-function form_actions() {
+function form_actions() : void {
 	global $actions;
 
 	// ================= input validation =================
@@ -644,7 +649,7 @@ function form_actions() {
 	}
 }
 
-function poller_edit() {
+function poller_edit() : void {
 	global $fields_poller_edit;
 
 	// ================= input validation =================
@@ -698,7 +703,7 @@ function poller_edit() {
 	draw_edit_form(
 		[
 			'config' => ['no_form_tag' => true],
-			'fields' => inject_form_variables($fields_poller_edit, (isset($poller) ? $poller : []))
+			'fields' => inject_form_variables($fields_poller_edit, $poller)
 		]
 	);
 
@@ -714,7 +719,7 @@ function poller_edit() {
 
 	$pt = read_config_option('poller_type');
 
-	if (isset($poller) && cacti_sizeof($poller)) {
+	if (cacti_sizeof($poller)) {
 		if ($poller['id'] > 1) {
 			?>
 			<script type='text/javascript'>
@@ -837,7 +842,7 @@ function poller_edit() {
 	form_save_buttons($form_buttons);
 }
 
-function test_database_connection($poller = []) {
+function test_database_connection(array $poller = []) : bool {
 	if (!cacti_sizeof($poller)) {
 		$poller['dbtype'] = 'mysql';
 
@@ -901,9 +906,11 @@ function test_database_connection($poller = []) {
 	} else {
 		print '&nbsp;<i class="ti ti-x"></i>&nbsp;' . __('Connection Failed');
 	}
+
+	return true;
 }
 
-function pollers() {
+function pollers() : void {
 	global $actions, $poller_status, $item_rows;
 
 	// create the page filter

@@ -104,7 +104,7 @@ switch (grv('action')) {
 			$sql_where .= ($sql_where != '' ? ' AND ' : '') . 'h.host_template_id = ' . grv('host_template_id');
 		}
 
-		get_allowed_ajax_hosts(true, 'applyFilter', $sql_where);
+		get_allowed_ajax_hosts(true, true, $sql_where);
 
 		break;
 	case 'ajax_graphs':

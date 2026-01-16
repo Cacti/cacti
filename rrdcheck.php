@@ -47,12 +47,12 @@ switch(grv('action')) {
 
 bottom_footer();
 
-function rrdcheck_purge() {
+function rrdcheck_purge() : void {
 	db_execute('TRUNCATE TABLE rrdcheck');
 }
 
 // Display all rrdcheck entries
-function rrdcheck_display_problems() {
+function rrdcheck_display_problems() : void {
 	global $item_rows;
 
 	// suppress warnings
@@ -150,7 +150,7 @@ function rrdcheck_display_problems() {
 		],
 	];
 
-	html_header_sort($display_text, grv('sort_column'), grv('sort_direction'), false);
+	html_header_sort($display_text, grv('sort_column'), grv('sort_direction'));
 
 	if (cacti_sizeof($problems)) {
 		foreach ($problems as $p) {
@@ -188,7 +188,7 @@ function rrdcheck_display_problems() {
 	restore_error_handler();
 }
 
-function create_rrdcheck_filter() {
+function create_rrdcheck_filter() : array {
 	global $item_rows, $page_refresh_interval;
 
 	$all     = ['-1' => __('All')];
@@ -263,7 +263,7 @@ function create_rrdcheck_filter() {
 	];
 }
 
-function draw_rrdcheck_filter($render = false) {
+function draw_rrdcheck_filter(bool $render = false) : void {
 	$filters = create_rrdcheck_filter();
 
 	// create the page filter
