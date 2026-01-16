@@ -37,13 +37,13 @@ require_once(CACTI_PATH_LIBRARY . '/boost.php');
 require_once(CACTI_PATH_LIBRARY . '/dsstats.php');
 
 // display_version - displays version information
-function display_version() {
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Boost RRD Update Poller, Version $version " . COPYRIGHT_YEARS . "\n";
 }
 
 // display_help - displays the usage of the function
-function display_help() {
+function display_help() : void {
 	display_version();
 
 	print "\nusage: poller_recovery.php [--verbose] [--force] [--debug]\n\n";
@@ -55,7 +55,7 @@ function display_help() {
 	print "    --debug   - Display verbose output during execution\n\n";
 }
 
-function sig_handler($signo) {
+function sig_handler(int $signo) : void {
 	switch ($signo) {
 		case SIGTERM:
 		case SIGINT:
@@ -65,14 +65,12 @@ function sig_handler($signo) {
 			db_execute("REPLACE INTO settings (name, value) VALUES ('boost_poller_status', 'terminated - end time:" . date('Y-m-d G:i:s') . "')");
 
 			exit;
-
-			break;
 		default:
 			// ignore all other signals
 	}
 }
 
-function debug($string) {
+function debug(string $string) : void {
 	global $debug;
 
 	if ($debug) {
@@ -147,7 +145,7 @@ if (cacti_sizeof($parms)) {
 }
 
 // check for an invalid run location
-if ($poller_id == 1) {
+if ($poller_id == 1 && !defined('PHP_STAN')) {
 	print "ERROR: This command is only to be run on remote Cacti Data Collectors\n";
 
 	exit(1);

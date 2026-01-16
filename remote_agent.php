@@ -38,16 +38,19 @@ require_once(CACTI_PATH_LIBRARY . '/sort.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
+global $remote_db_cnn_id;
+
 $debug = false;
 
-if (POLLER_ID > 1 && CACTI_CONNECTION == 'online') {
-	if (gnrv('action') == 'runquery') {
-		db_force_remote_cnn();
-	}
+$poller_db_cnn_id = false;
+if (POLLER_ID > 1) {
+	if (CACTI_CONNECTION == 'online') {
+		if (gnrv('action') == 'runquery') {
+			db_force_remote_cnn();
+		}
 
-	$poller_db_cnn_id = $remote_db_cnn_id;
-} else {
-	$poller_db_cnn_id = false;
+		$poller_db_cnn_id = $remote_db_cnn_id;
+	}
 }
 
 if (!remote_client_authorized()) {
@@ -113,7 +116,7 @@ switch (grv('action')) {
 
 exit;
 
-function debug($message) {
+function debug(string $message) : void {
 	global $debug;
 
 	if ($debug) {
@@ -121,7 +124,7 @@ function debug($message) {
 	}
 }
 
-function remote_agent_strip_domain($host) {
+function remote_agent_strip_domain(string $host) : string {
 	if (strpos($host, '.') !== false) {
 		$parts = explode('.', $host);
 
@@ -131,7 +134,7 @@ function remote_agent_strip_domain($host) {
 	}
 }
 
-function remote_client_authorized() {
+function remote_client_authorized() : bool {
 	global $poller_db_cnn_id, $remote_agent_whitelist;
 
 	// don't allow to run from the command line
@@ -178,7 +181,7 @@ function remote_client_authorized() {
 	return false;
 }
 
-function get_graph_data() {
+function get_graph_data() : bool {
 	gfrv('graph_start');
 	gfrv('graph_end');
 	gfrv('graph_height');
@@ -250,9 +253,10 @@ function get_graph_data() {
 	return true;
 }
 
-function get_snmp_data() {
+function get_snmp_data() : void {
 	$host_id = gfrv('host_id');
 	$oid     = gnrv('oid');
+	$output  = '';
 
 	if (!empty($host_id)) {
 		$host    = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', [$host_id]);
@@ -272,9 +276,10 @@ function get_snmp_data() {
 	print $output;
 }
 
-function get_snmp_data_walk() {
+function get_snmp_data_walk() : void {
 	$host_id = gfrv('host_id');
 	$oid     = gnrv('oid');
+	$output  = '';
 
 	if (!empty($host_id)) {
 		$host    = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', [$host_id]);
@@ -298,12 +303,12 @@ function get_snmp_data_walk() {
 	}
 }
 
-function ping_device() {
+function ping_device() : void {
 	$host_id = gfrv('host_id');
 	api_device_ping_device($host_id, true);
 }
 
-function poll_for_data() {
+function poll_for_data() : mixed {
 	$local_data_ids = gnrv('local_data_ids');
 	$host_id        = gfrv('host_id');
 	$poller_id      = gnrv('poller_id');
@@ -394,9 +399,14 @@ function poll_for_data() {
 								2 => ['pipe', 'w']  // stderr is a pipe to write to
 							];
 
+							$cactiphp = false;
+							$pipes    = false;
+
 							if (function_exists('proc_open')) {
-								$cactiphp            = proc_open(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_BASE . '/script_server.php realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);
-								$output              = fgets($pipes[1], 1024);
+								$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_BASE . '/script_server.php realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);
+
+								$output = fgets($pipes[1], 1024);
+
 								$using_proc_function = true;
 							} else {
 								$using_proc_function = false;
@@ -442,9 +452,11 @@ function poll_for_data() {
 	}
 
 	print json_encode($return);
+
+	return false;
 }
 
-function run_remote_data_query() {
+function run_remote_data_query() : void {
 	$host_id       = gfrv('host_id');
 	$data_query_id = gfrv('data_query_id');
 
@@ -453,8 +465,8 @@ function run_remote_data_query() {
 	}
 }
 
-function run_remote_discovery() {
-	$poller_id = cacti_escapeshellarg(POLLER_ID);
+function run_remote_discovery() : void {
+	$poller_id = cacti_escapeshellarg((string) POLLER_ID);
 	$network   = cacti_escapeshellarg(gfrv('network'));
 	$php       = cacti_escapeshellcmd(read_config_option('path_php_binary'));
 	$path      = cacti_escapeshellarg(read_config_option('path_webroot') . '/poller_automation.php');
@@ -468,6 +480,4 @@ function run_remote_discovery() {
 	exec_background($php, '-q ' . $path . $options);
 
 	sleep(2);
-
-	return;
 }

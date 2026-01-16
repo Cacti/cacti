@@ -9469,7 +9469,7 @@ function cacti_unserialize(string $strobj) : mixed {
 	return unserialize($strobj, ['allowed_classes' => false]);
 }
 
-function detect_cpu_cores() : string {
+function detect_cpu_cores() : int {
 	$cpu_cores = 0;
 
 	if (str_starts_with(strtoupper(PHP_OS), 'WIN')) {
@@ -9495,7 +9495,7 @@ function detect_cpu_cores() : string {
 		}
 	}
 
-	return trim($cpu_cores);
+	return intval(trim($cpu_cores));
 }
 
 /**

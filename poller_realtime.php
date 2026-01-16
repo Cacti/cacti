@@ -62,15 +62,15 @@ if (cacti_sizeof($parms)) {
 
 				break;
 			case '--graph':
-				$graph_id = (int)$value;
+				$graph_id = intval($value);
 
 				break;
 			case '--interval':
-				$interval = (int)$value;
+				$interval = intval($value);
 
 				break;
 			case '--poller_id':
-				$poller_id = $value;
+				$poller_id = intval($value);
 
 				break;
 			case '--version':
@@ -171,12 +171,12 @@ rrd_close($rrdtool_pipe);
 db_close();
 
 // display_version - displays version information
-function display_version() {
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Realtime Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-function display_help() {
+function display_help() : void {
 	display_version();
 
 	print "\nusage: poller_realtime.php --graph=ID [--interval=SEC] [--force] [--debug]\n\n";
@@ -192,11 +192,12 @@ function display_help() {
 }
 
 // process_poller_output REAL TIME MODIFIED
-function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
+function process_poller_output_rt(mixed $rrdtool_pipe, int $poller_id, int $interval) : int {
 	require_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
 	// let's count the number of rrd files we processed
-	$rrds_processed = 0;
+	$rrds_processed   = 0;
+	$rrd_update_array = [];
 
 	// create/update the rrd files
 	$results = db_fetch_assoc_prepared('SELECT port.output, port.time, port.local_data_id,
@@ -254,8 +255,8 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 			$item['rrd_path'] = $rt_graph_path;
 
 			// cleanup the value
-			$value            = trim($item['output']);
-			$unix_time        = strtotime($item['time']);
+			$value     = trim($item['output']);
+			$unix_time = strtotime($item['time']);
 
 			$rrd_update_array[$item['rrd_path']]['local_data_id'] = $item['local_data_id'];
 
