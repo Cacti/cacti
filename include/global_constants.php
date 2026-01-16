@@ -141,6 +141,7 @@ define('ACTION_CHANGE', 21);
 define('POLLER_ACTION_SNMP', 0);
 define('POLLER_ACTION_SCRIPT', 1);
 define('POLLER_ACTION_SCRIPT_PHP', 2);
+define('POLLER_ACTION_NONE', 99);
 
 /* used for reindexing only:
  * in case we do not have OID_NUM_INDEXES|ARG_NUM_INDEXES
