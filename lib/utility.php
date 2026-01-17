@@ -2041,13 +2041,13 @@ function utility_php_set_installed(array &$extensions) : void {
  * This function is used to prime the previous values for processing
  * by object removal functions.
  *
- * @param int    $class - The class of object as above
+ * @param string $class - The class of object as above
  * @param mixed  $object_ids - The ids for the object class
  * @param bool   $diff - Load the objects into the diff array
  *
  * @return void
  */
-function object_cache_get_totals(int $class, mixed $object_ids, bool $diff = false) : void {
+function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = false) : void {
 	global $object_totals, $object_totals_diff;
 
 	if (!is_array($object_ids)) {

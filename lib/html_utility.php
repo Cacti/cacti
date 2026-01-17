@@ -221,7 +221,7 @@ function form_alternate_row($row_id = '', $light = false, $disabled = false) {
  * This function creates a selectable table cell with the provided contents,
  * ensuring that the contents are properly escaped to prevent XSS attacks.
  *
- * @param string|null $contents The content to be displayed inside the cell.
+ * @param mixed $contents The content to be displayed inside the cell.
  * @param int|string $id The ID attribute for the cell.
  * @param string $width Optional. The width of the cell. Default is an empty string.
  * @param string $style_or_class Optional. The style or class attribute for the cell. Default is an empty string.
@@ -229,14 +229,14 @@ function form_alternate_row($row_id = '', $light = false, $disabled = false) {
  *
  * @return void
  */
-function form_selectable_ecell(string|null $contents, int|string $id, string $width = '', string $style_or_class = '', string $title = '') : bool|null {
+function form_selectable_ecell(mixed $contents, int|string $id, string $width = '', string $style_or_class = '', string $title = '') : bool|null {
 	return form_selectable_cell(htmle($contents), $id, $width, $style_or_class, $title);
 }
 
 /**
  * Format's a table row such that it can be highlighted using cacti's js actions
  *
- * @param string|null $contents The content to be placed inside the table cell.
+ * @param mixed $contents The content to be placed inside the table cell.
  * @param int|string $id The ID attribute for the table cell (not used in the function).
  * @param string $width Optional. The width of the table cell. Default is an empty string.
  * @param string $style_or_class Optional. The style or class attribute for the table cell.
@@ -246,7 +246,7 @@ function form_selectable_ecell(string|null $contents, int|string $id, string $wi
  *
  * @return void
  */
-function form_selectable_cell(string|null $contents, int|string $id, string $width = '', string $style_or_class = '', string $title = '') : bool|null {
+function form_selectable_cell(mixed $contents, int|string $id, string $width = '', string $style_or_class = '', string $title = '') : bool|null {
 	global $tableCount;
 
 	static $tableColumns = null;
@@ -351,7 +351,7 @@ function form_get_table_id(bool|null $increment = false) {
 /**
  * Format's a table row such that it can be highlighted using cacti's js actions
  *
- * @param string $contents       The content to be placed inside the table cell.
+ * @param mixed  $contents       The content to be placed inside the table cell.
  * @param string $tableid        The ID attribute for the table cell (not used in the function).
  * @param string $columnid       Optional. The width of the table cell. Default is an empty string.
  * @param string $style_or_class Optional. The style or class attribute for the table cell.
@@ -362,7 +362,7 @@ function form_get_table_id(bool|null $increment = false) {
  *
  * @return void
  */
-function form_selectable_vcell($contents, $table_id = '', $columnid = '', $style_or_class = '', $title = '') {
+function form_selectable_vcell(mixed $contents, $table_id = '', $columnid = '', $style_or_class = '', $title = '') {
 	global $tableCount;
 
 	static $tableColumns = null;
@@ -654,6 +654,17 @@ function set_default_action(string $default = '') : void {
 	} else {
 		set_request_var('action', $_REQUEST['action']);
 	}
+}
+
+/**
+ * alias of unset_request_var
+ *
+ * @param  string  $variable
+ *
+ * @return void
+ */
+function unsrv(string $variable) : void {
+	unset_request_var($variable);
 }
 
 /**
