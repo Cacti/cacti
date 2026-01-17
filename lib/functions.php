@@ -867,17 +867,17 @@ function is_valid_theme(string|null &$theme, int $set_user = 0) : bool {
  * form_input_validate - validates the value of a form field and Takes the appropriate action if the input
  * is not valid
  *
- * @param string|null $field_value    Value of the form field
- * @param string      $field_name     Name of the $_POST field as specified in the HTML
- * @param string      $regexp_match   Optionally enter a regular expression to match the value against
- * @param bool        $allow_nulls    Whether to allow an empty string as a value or not
- * @param int         $custom_message The ID of the message to raise upon an error which is defined in the
- *                                    $messages array in 'include/global_arrays.php'
- * @param mixed $message_id           The error message to raise in the case of an error
+ * @param mixed  $field_value    Value of the form field
+ * @param string $field_name     Name of the $_POST field as specified in the HTML
+ * @param string $regexp_match   Optionally enter a regular expression to match the value against
+ * @param bool   $allow_nulls    Whether to allow an empty string as a value or not
+ * @param int    $custom_message The ID of the message to raise upon an error which is defined in the
+ *                               $messages array in 'include/global_arrays.php'
+ * @param mixed  $message_id     The error message to raise in the case of an error
  *
- * @return string|null                The original $field_value
+ * @return mixed - The original $field_value
  */
-function form_input_validate(string|null $field_value, string $field_name, string $regexp_match, bool $allow_nulls, int $message_id = 3) : string|null {
+function form_input_validate(mixed $field_value, string $field_name, string $regexp_match, bool $allow_nulls, int $message_id = 3) : mixed {
 	global $messages;
 
 	// write current values to the "field_values" array so we can retain them

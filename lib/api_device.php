@@ -25,8 +25,8 @@
 /**
  * Update hash stored in settings table to inform remote pollers to update their caches
  *
- * @param string $poller_id The ID of the poller for which the device cache CRC is being updated.
- * @param string $variable The base name of the variable to store the hash. Defaults to 'poller_replicate_device_cache_crc'.
+ * @param int    $poller_id - The ID of the poller for which the device cache CRC is being updated.
+ * @param string $variable  - The base name of the variable to store the hash. Defaults to 'poller_replicate_device_cache_crc'.
  *
  * @return void
  */
@@ -448,7 +448,7 @@ function api_device_change_options(array $device_ids, array $post): void {
 					}
 
 					// Update the local device and replicate
-					if ($old_poller !=  gnrv($field_name && gnrv($field_name) > 1)) {
+					if ($old_poller != gnrv($field_name) && gnrv($field_name) > 1) {
 						api_device_replicate_out($device_id, gnrv($field_name));
 					}
 				}
@@ -1850,19 +1850,19 @@ function api_clone_get_unique_filename(string $file_name): string|false {
  * This function will validate the input and return warnings and errors before allowing users to proceed.
  *   This option is skipped when using the quiet option.
  *
- * @param int $device_template_id The ID of the device template to clone.
- * @param string $device_template_name The name of the device template to clone.
- * @param string $include_gt Whether to include graph templates ('all', comma-separated list of IDs, or empty).
- * @param string $clone_gt Whether to clone graph templates ('all', comma-separated list of IDs, or empty).
- * @param string $include_dq Whether to include data queries ('all', comma-separated list of IDs, or empty).
- * @param string $clone_dq Whether to clone data queries ('all', comma-separated list of IDs, or empty).
- * @param string $include_dt Whether to include data templates ('all', comma-separated list of IDs, or empty).
- * @param string $clone_dt Whether to clone data templates ('all', comma-separated list of IDs, or empty).
- * @param string &$suffix The suffix to append to cloned items.
- * @param bool &$clone_xml Whether to clone XML files.
- * @param bool &$clone_script Whether to clone script files.
+ * @param int $device_template_id      - The ID of the device template to clone.
+ * @param string $device_template_name - The name of the device template to clone.
+ * @param string $include_gt           - Whether to include graph templates ('all', comma-separated list of IDs, or empty).
+ * @param string $clone_gt             - Whether to clone graph templates ('all', comma-separated list of IDs, or empty).
+ * @param string $include_dq           - Whether to include data queries ('all', comma-separated list of IDs, or empty).
+ * @param string $clone_dq             - Whether to clone data queries ('all', comma-separated list of IDs, or empty).
+ * @param string $include_dt           - Whether to include data templates ('all', comma-separated list of IDs, or empty).
+ * @param string $clone_dt             - Whether to clone data templates ('all', comma-separated list of IDs, or empty).
+ * @param string &$suffix              - The suffix to append to cloned items.
+ * @param bool &$clone_xml             - Whether to clone XML files.
+ * @param bool &$clone_script          - Whether to clone script files.
  *
- * @return array An array containing 'warnings' and 'errors' keys with respective messages.
+ * @return array - An array containing 'warnings' and 'errors' keys with respective messages.
  */
 function api_clone_device_template_check_for_errors(int $device_template_id, string $device_template_name, string $include_gt, string $clone_gt,
 string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, string &$suffix, bool &$clone_xml, bool &$clone_script): array {
@@ -2016,8 +2016,10 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 		}
 	}
 
+	$clone_dq_proceed = false;
+
 	if ($clone_dq != '' && $clone_dq != 'all') {
-		$clone_dq = true;
+		$clone_dq_proceed = true;
 
 		$dqc = explode(',', $clone_dq);
 
@@ -2031,7 +2033,7 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 			}
 		}
 	} elseif ($clone_dq == 'all') {
-		$clone_dq = true;
+		$clone_dq_proceed = true;
 	}
 
 	if ($include_dt != '' && $include_dt != 'all') {
@@ -2048,8 +2050,10 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 		}
 	}
 
+	$clone_dt_proceed = false;
+
 	if ($clone_dt != '' && $clone_dt != 'all') {
-		$clone_dt = true;
+		$clone_dt_proceed = true;
 
 		$dtc = explode(',', $clone_dt);
 
@@ -2063,12 +2067,12 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 			}
 		}
 	} elseif ($clone_dt == 'all') {
-		$clone_dt = true;
+		$clone_dt_proceed = true;
 	}
 
 	// now check for name collision xml files and scripts
 	if ($clone_xml) {
-		if ($clone_dq != '') {
+		if ($clone_dq_proceed) {
 			foreach ($objects['data_queries'] as $id => $data_query) {
 				if (!is_numeric($id) && $id <= 0) {
 					$errors++;
@@ -2097,7 +2101,7 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 	}
 
 	if ($clone_script) {
-		if ($clone_dq != '') {
+		if ($clone_dq_proceed) {
 			foreach ($objects['data_queries'] as $id => $data_query) {
 				if (!is_numeric($id) && $id <= 0) {
 					$errors++;
@@ -2125,12 +2129,12 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 			}
 		}
 
-		if ($clone_dt) {
+		if ($clone_dt_proceed) {
 			foreach ($objects['data_templates'] as $id => $data_template) {
 				if (!is_numeric($id) && $id <= 0) {
 					$errors++;
 					$return['errors'][] = sprintf('FATAL: Data Template to be cloned %s is not numeric', $id);
-				} elseif (isset($data_templates['script_path'])) {
+				} elseif (isset($data_template['script_path'])) {
 					$parts = explode('.', $data_template['script_path']);
 					$name  = $data_template['name'];
 
@@ -2197,19 +2201,19 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 	}
 
 	// not issue some warnings for things to be cloned
-	if ($clone_xml && !$clone_dq) {
+	if ($clone_xml && !$clone_dq_proceed) {
 		$warnings++;
 		$return['warnings'][] = sprintf('WARNING: Ignoring --clone-xml as no Data Queries were selected to be cloned.');
 		$clone_xml            = false;
 	}
 
-	if ($clone_script && (!$clone_dq && !$clone_dt)) {
+	if ($clone_script && (!$clone_dq_proceed && !$clone_dt_proceed)) {
 		$warnings++;
 		$return['warnings'][] = sprintf('WARNING: Ignoring --clone-script as no Data Queries or Templates were selected to be cloned.');
 		$clone_script         = false;
 	}
 
-	if ($clone_dq != '') {
+	if ($clone_dq_proceed) {
 		$ndq = [];
 
 		if ($clone_dq == 'all') {
@@ -2267,7 +2271,7 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 		}
 	}
 
-	if ($clone_dt != '') {
+	if ($clone_dt_proceed ) {
 		print 'Clone DT is "' . $clone_dt . '"' . PHP_EOL;
 
 		if ($clone_dt == 'all') {
@@ -2307,7 +2311,7 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 				}
 			} else {
 				$errors++;
-				$return['errors'][] = sprintf('FATAL: Data Template ID %s to be cloned is not numeric.', $dq_id);
+				$return['errors'][] = sprintf('FATAL: Data Template ID %s to be cloned is not numeric.', $dt_id);
 			}
 		}
 	}
@@ -2679,7 +2683,7 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 					}
 
 					// update the XML with new values
-					if ($new_script) {
+					if ($new_script && isset($old_scriptfile) && isset($new_scriptfile)) {
 						api_clone_message(sprintf('NOTE: Updating \'%s\' with new values', $new_xmlfile));
 
 						$data = file_get_contents($new_xmlfile);
@@ -2886,57 +2890,59 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 		}
 	}
 
-	exit;
+	if (1 == 1 ) {
+		return $new_template;
+	} else {
+		// FIXME : Unused Code after exit
+		if ($clone_dt != '') {
+			api_clone_message('NOTE: Cloning Non Data Query Draph Templates');
 
-	// FIXME : Unused Code after exit
-	if ($clone_dt != '') {
-		api_clone_message('NOTE: Cloning Non Data Query Draph Templates');
+			if ($clone_dt == 'all') {
+				$ids = array_keys($objects['data_templates']);
+			} else {
+				$ids = explode(',', $clone_dt);
+			}
 
-		if ($clone_dt == 'all') {
-			$ids = array_keys($objects['data_templates']);
-		} else {
-			$ids = explode(',', $clone_dt);
-		}
+			foreach ($ids as $id) {
+				$graph_templates = $objects['data_templates'][$id]['graph_templates'];
 
-		foreach ($ids as $id) {
-			$graph_templates = $objects['data_templates'][$id]['graph_templates'];
+				$old_name = $objects['data_templates'][$id]['name'];
+				$new_name = api_clone_get_unique_name($old_name, 'data_template', 'name');
 
-			$old_name = $objects['data_templates'][$id]['name'];
-			$new_name = api_clone_get_unique_name($old_name, 'data_template', 'name');
+				if (!isset($duped_data_templates[$id])) {
+					api_clone_message(sprintf('NOTE: Cloning Data Template \'%s\' to \'%s\'', $old_name, $new_name), true);
 
-			if (!isset($duped_data_templates[$id])) {
-				api_clone_message(sprintf('NOTE: Cloning Data Template \'%s\' to \'%s\'', $old_name, $new_name), true);
+					$new_dt = api_data_source_duplicate(0, $id, $new_name);
 
-				$new_dt = api_data_source_duplicate(0, $id, $new_name);
+					if (isset($objects['data_templates'][$id]['script_path'])) {
+						$old_scriptfile = $objects['data_queries'][$id]['script_path'];
+						$new_scriptfile = api_clone_get_unique_filename($old_scriptfile);
 
-				if (isset($objects['data_templates'][$id]['script_path'])) {
-					$old_scriptfile = $objects['data_queries'][$id]['script_path'];
-					$new_scriptfile = api_clone_get_unique_filename($old_scriptfile);
+						if (!isset($duped_scripts[$old_scriptfile])) {
+							api_clone_message(sprintf('NOTE: Cloning Data Input Script \'%s\' to \'%s\'', $old_scriptfile, $new_scriptfile), true);
 
-					if (!isset($duped_scripts[$old_scriptfile])) {
-						api_clone_message(sprintf('NOTE: Cloning Data Input Script \'%s\' to \'%s\'', $old_scriptfile, $new_scriptfile), true);
+							$new_script = copy($old_scriptfile, $new_scriptfile);
+						} else {
+							// skipping as we've already cloned
+							$new_script = $duped_scripts[$old_scriptfile];
+						}
 
-						$new_script = copy($old_scriptfile, $new_scriptfile);
-					} else {
-						// skipping as we've already cloned
-						$new_script = $duped_scripts[$old_scriptfile];
+						// TO-DO Data Input Duplication
+						//					db_execute('UPDATE data_input SET input_string=REPLACE(input_string, ?, ?)
+						//						WHERE data_input_id = ?',
+						//						array($old_scriptfile, $new_scriptfile, $new_di_id));
 					}
 
-					// TO-DO Data Input Duplication
-					//					db_execute('UPDATE data_input SET input_string=REPLACE(input_string, ?, ?)
-					//						WHERE data_input_id = ?',
-					//						array($old_scriptfile, $new_scriptfile, $new_di_id));
+					$duped_data_templates[$id] = $new_dt;
+				} else {
+					// skipping as we've already cloned
+					$new_dt = $duped_data_templates[$id];
 				}
-
-				$duped_data_templates[$id] = $new_dt;
-			} else {
-				// skipping as we've already cloned
-				$new_dt = $duped_data_templates[$id];
 			}
 		}
-	}
 
-	return $new_template;
+		return $new_template;
+	}
 }
 
 /**
@@ -2948,6 +2954,8 @@ function api_clone_device_template(int $template_id, string $template_name, stri
  * @return void
  */
 function api_device_template_download(string $type, array $ids): void {
+	$name = 'unknown';
+
 	if (cacti_sizeof($ids) == 1) {
 		if ($type == 'templates') {
 			$name = clean_up_name(db_fetch_cell_prepared('SELECT name FROM host_template WHERE id = ?', $ids));
@@ -2968,6 +2976,8 @@ function api_device_template_download(string $type, array $ids): void {
 	$archive = new PharData($tmpfile);
 
 	foreach ($ids as $id) {
+		$name = 'unknown';
+
 		if ($type == 'archives') {
 			$data = db_fetch_row_prepared('SELECT * FROM host_template_archive WHERE id = ?', [$id]);
 
