@@ -203,11 +203,11 @@ function api_graph_remove_bad_graphs(array &$local_graph_ids = []): void {
 /**
  * Removes aggregate items associated with the given local graph IDs.
  *
- * @param array|string $local_graph_ids An array of local graph IDs or a comma-separated string of local graph IDs.
+ * @param mixed $local_graph_ids - An array of local graph IDs or a comma-separated string of local graph IDs.
  *
  * @return void
  */
-function api_graph_remove_aggregate_items(array|string $local_graph_ids): void {
+function api_graph_remove_aggregate_items(mixed $local_graph_ids): void {
 	if (!is_array($local_graph_ids)) {
 		$local_graph_ids = explode(',', $local_graph_ids);
 	}
@@ -364,7 +364,13 @@ function api_reapply_suggested_graph_title(int $local_graph_id): bool {
 		foreach ($suggested_values as $suggested_value) {
 			// once we find a match; don't try to find more
 			if (!isset($suggested_values_graph[$suggested_value['field_name']])) {
-				$subs_string = substitute_snmp_query_data($suggested_value['text'], $graph_local['host_id'], $graph_local['snmp_query_id'], $graph_local['snmp_index'], read_config_option('max_data_query_field_length'));
+				$max_chars = intval(read_config_option('max_data_query_field_length'));
+
+				if (empty($max_chars)) {
+					$max_chars = 40;
+				}
+
+				$subs_string = substitute_snmp_query_data($suggested_value['text'], $graph_local['host_id'], $graph_local['snmp_query_id'], $graph_local['snmp_index'], $max_chars);
 
 				// if there are no '|' characters, all of the substitutions were successful
 				if (!substr_count($subs_string, '|query')) {
@@ -425,6 +431,13 @@ function api_get_graphs_from_datasource(int $local_data_id): array {
 function api_duplicate_graph(int $_local_graph_id, int $_graph_template_id, string $graph_title, bool $map_to_data_query = true): int|false {
 	global $struct_graph, $struct_graph_item;
 
+	$local_graph_id        = 0;
+	$graph_template_id     = 0;
+	$graph_template_inputs = [];
+	$graph_item_mappings   = [];
+	$graph_template_items  = [];
+	$graph_template_graph  = [];
+
 	if (!empty($_local_graph_id)) {
 		$graph_local = db_fetch_row_prepared('SELECT *
 			FROM graph_local
@@ -446,7 +459,9 @@ function api_duplicate_graph(int $_local_graph_id, int $_graph_template_id, stri
 			[$_local_graph_id]);
 
 		// create new entry: graph_local
-		$save['id']                = 0;
+		$save       = [];
+		$save['id'] = 0;
+
 		$save['graph_template_id'] = $graph_local['graph_template_id'];
 		$save['host_id']           = $graph_local['host_id'];
 		$save['snmp_query_id']     = $graph_local['snmp_query_id'];
@@ -483,7 +498,9 @@ function api_duplicate_graph(int $_local_graph_id, int $_graph_template_id, stri
 			[$_graph_template_id]);
 
 		// create new entry: graph_templates
-		$save['id']       = 0;
+		$save       = [];
+		$save['id'] = 0;
+
 		$save['hash']     = get_hash_graph_template(0);
 		$save['name']     = str_replace('<template_title>', $graph_template['name'], $graph_title);
 		$save['multiple'] = $graph_template['multiple'];
@@ -491,10 +508,10 @@ function api_duplicate_graph(int $_local_graph_id, int $_graph_template_id, stri
 		$graph_template_id = sql_save($save, 'graph_templates');
 	}
 
-	unset($save);
+	$save       = [];
+	$save['id'] = 0;
 
 	// create new entry: graph_templates_graph
-	$save['id']                            = 0;
 	$save['local_graph_id']                = ($local_graph_id ?? 0);
 	$save['local_graph_template_graph_id'] = ($graph_template_graph['local_graph_template_graph_id'] ?? 0);
 	$save['graph_template_id']             = (!empty($_local_graph_id) ? $graph_template_graph['graph_template_id'] : $graph_template_id);
@@ -513,9 +530,9 @@ function api_duplicate_graph(int $_local_graph_id, int $_graph_template_id, stri
 	// create new entry(s): graph_templates_item
 	if (cacti_sizeof($graph_template_items)) {
 		foreach ($graph_template_items as $graph_template_item) {
-			unset($save);
+			$save       = [];
+			$save['id'] = 0;
 
-			$save['id']                           = 0;
 			// save a hash only for graph_template copy operations
 			$save['hash']                         = (!empty($_graph_template_id) ? get_hash_graph_template(0, 'graph_template_item') : 0);
 			$save['local_graph_id']               = ($local_graph_id ?? 0);
@@ -534,9 +551,9 @@ function api_duplicate_graph(int $_local_graph_id, int $_graph_template_id, stri
 		// create new entry(s): graph_template_input (graph template only)
 		if (cacti_sizeof($graph_template_inputs)) {
 			foreach ($graph_template_inputs as $graph_template_input) {
-				unset($save);
+				$save       = [];
+				$save['id'] = 0;
 
-				$save['id']                = 0;
 				$save['graph_template_id'] = $graph_template_id;
 				$save['name']              = $graph_template_input['name'];
 				$save['description']       = $graph_template_input['description'];
@@ -577,18 +594,15 @@ function api_duplicate_graph(int $_local_graph_id, int $_graph_template_id, stri
 			[$_graph_template_id]);
 
 		if (cacti_sizeof($data_query_graphs)) {
-			unset($save);
-
 			$name = db_fetch_cell_prepared('SELECT name
 				FROM graph_templates
 				WHERE id = ?',
 				[$graph_template_id]);
 
 			foreach ($data_query_graphs as $dqg) {
-				// map the snmp_query_graph
-				unset($save);
+				$save       = [];
+				$save['id'] = 0;
 
-				$save['id']                = 0;
 				$save['hash']              = get_hash_data_query(0, 'data_query_graph');
 				$save['snmp_query_id']     = $dqg['snmp_query_id'];
 				$save['name']              = $name;
@@ -627,9 +641,9 @@ function api_duplicate_graph(int $_local_graph_id, int $_graph_template_id, stri
 
 				if (cacti_sizeof($snames)) {
 					foreach ($snames as $sn) {
-						unset($save);
+						$save       = [];
+						$save['id'] = 0;
 
-						$save['id']                  = 0;
 						$save['hash']                = get_hash_data_query(0, 'data_query_sv_data_source');
 						$save['snmp_query_graph_id'] = $snmp_query_graph_id;
 						$save['data_template_id']    = $sn['data_template_id'];
@@ -649,9 +663,9 @@ function api_duplicate_graph(int $_local_graph_id, int $_graph_template_id, stri
 
 				if (cacti_sizeof($snames)) {
 					foreach ($snames as $sn) {
-						unset($save);
+						$save       = [];
+						$save['id'] = 0;
 
-						$save['id']                  = 0;
 						$save['hash']                = get_hash_data_query(0, 'data_query_sv_graph');
 						$save['snmp_query_graph_id'] = $snmp_query_graph_id;
 						$save['sequence']            = $sn['sequence'];
