@@ -429,7 +429,7 @@ function api_device_change_options($device_ids, $post) {
 					}
 
 					// Update the local device and replicate
-					if ($old_poller !=  get_nfilter_request_var($field_name && get_nfilter_request_var($field_name) > 1)) {
+					if ($old_poller !=  get_nfilter_request_var($field_name) && get_nfilter_request_var($field_name) > 1) {
 						api_device_replicate_out($device_id, get_nfilter_request_var($field_name));
 					}
 				}
