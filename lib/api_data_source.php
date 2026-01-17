@@ -229,10 +229,7 @@ function api_data_source_remove_multi(array $local_data_ids, bool $update_totals
 	foreach ($local_data_ids_chunks as $ids_to_delete) {
 		$poller_ids = get_remote_poller_ids_from_data_sources($ids_to_delete);
 
-		if (is_array($ids_to_delete)) {
-			cacti_log('Found as an array');
-			$ids_to_delete = implode(', ', $ids_to_delete);
-		}
+		$ids_to_delete = implode(', ', $ids_to_delete);
 
 		$data_template_data_ids = db_fetch_assoc('SELECT id
 			FROM data_template_data
@@ -547,7 +544,7 @@ function api_data_source_get_interface_speed(array $data_local): int {
 			cacti_log('Interface Speed Detected by ifSpeed: "' . $speed . '"', false, 'DSTRACE');
 		}
 	} else {
-		$speed = read_config_option('default_interface_speed');
+		$speed = intval(read_config_option('default_interface_speed'));
 
 		if (empty($speed)) {
 			$speed = '10000000000000';
@@ -660,9 +657,14 @@ function api_reapply_suggested_data_source_data(int $local_data_id): void {
 				$subs_string = api_data_source_get_interface_speed($data_local);
 				$sv['text']  = $subs_string;
 			} else {
+				$max_chars = intval(read_config_option('max_data_query_field_length'));
+
+				if (empty($max_chars)) {
+					$max_chars = 40;
+				}
+
 				$subs_string = substitute_snmp_query_data($sv['text'],$data_local['host_id'],
-					$data_local['snmp_query_id'], $data_local['snmp_index'],
-					read_config_option('max_data_query_field_length'));
+					$data_local['snmp_query_id'], $data_local['snmp_index'], $max_chars);
 			}
 
 			// if there are no '|query' characters, all of the substitutions were successful
@@ -694,14 +696,20 @@ function api_reapply_suggested_data_source_data(int $local_data_id): void {
 /**
  * Duplicates a data source or data template.
  *
- * @param int $_local_data_id The ID of the local data to duplicate. If provided, the function will duplicate the data source.
- * @param int $_data_template_id The ID of the data template to duplicate. If provided, the function will duplicate the data template.
- * @param string $data_source_title The title for the new data source or data template.
+ * @param  int    $_local_data_id    - The ID of the local data to duplicate. If provided, the function will duplicate the data source.
+ * @param  int    $_data_template_id - The ID of the data template to duplicate. If provided, the function will duplicate the data template.
+ * @param  string $data_source_title - The title for the new data source or data template.
  *
- * @return int|false The ID of the newly created local data or data template, or false on failure.
+ * @return mixed - The ID of the newly created local data or data template, or false on failure.
  */
-function api_data_source_duplicate(int $_local_data_id, int $_data_template_id, string $data_source_title): int|false {
+function api_data_source_duplicate(int $_local_data_id, int $_data_template_id, string $data_source_title): mixed {
 	global $struct_data_source, $struct_data_source_item;
+
+	$data_template_id   = 0;
+	$local_data_id      = 0;
+	$data_template_data = [];
+	$data_input_datas   = [];
+	$data_template_rrds = [];
 
 	if (!empty($_local_data_id)) {
 		$data_local = db_fetch_row_prepared('SELECT *
@@ -773,10 +781,11 @@ function api_data_source_duplicate(int $_local_data_id, int $_data_template_id, 
 		$data_template_id = sql_save($save, 'data_template');
 	}
 
-	unset($save);
 	unset($struct_data_source['data_source_path']);
 
 	// create new entry: data_template_data
+	$save = [];
+
 	$save['id']                          = 0;
 	$save['local_data_id']               = ($local_data_id ?? 0);
 	$save['local_data_template_data_id'] = ($data_template_data['local_data_template_data_id'] ?? 0);
@@ -796,7 +805,7 @@ function api_data_source_duplicate(int $_local_data_id, int $_data_template_id, 
 	// create new entry(s): data_template_rrd
 	if (cacti_sizeof($data_template_rrds)) {
 		foreach ($data_template_rrds as $data_template_rrd) {
-			unset($save);
+			$save = [];
 
 			$save['id']                         = 0;
 			$save['local_data_id']              = ($local_data_id ?? 0);
@@ -858,18 +867,20 @@ function api_data_source_duplicate(int $_local_data_id, int $_data_template_id, 
 /**
  * Duplicates a data input entry and its associated fields.
  *
- * @param int $_data_input_id The ID of the data input entry to duplicate.
- * @param string $input_title The title for the new duplicated data input entry.
- * @return int|false The ID of the newly created data input entry on success, or false on failure.
+ * @param int    $_data_input_id - The ID of the data input entry to duplicate.
+ * @param string $input_title    - The title for the new duplicated data input entry.
+ *
+ * @return mixed - The ID of the newly created data input entry on success, or false on failure.
  */
-function api_data_input_duplicate(int $_data_input_id, string $input_title): int|false {
+function api_data_input_duplicate(int $_data_input_id, string $input_title): mixed {
 	$orig_input = db_fetch_row_prepared('SELECT *
 		FROM data_input
 		WHERE id = ?',
 		[$_data_input_id]);
 
 	if (cacti_sizeof($orig_input)) {
-		unset($save);
+		$save = [];
+
 		$save['id']           = 0;
 		$save['hash']         = get_hash_data_input(0);
 		$save['name']         = str_replace('<input_title>', $orig_input['name'], $input_title);
