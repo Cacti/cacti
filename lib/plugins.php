@@ -571,9 +571,8 @@ function api_plugin_db_changes_remove($plugin) {
 	if (cacti_count($tables)) {
 		foreach ($tables as $table) {
 			db_execute('DROP TABLE IF EXISTS `' . $table['table'] . '`;');
+			api_plugin_drop_remote_table($table['table']);
 		}
-
-		api_plugin_drop_remote_table($table['table']);
 
 		db_execute_prepared("DELETE FROM plugin_db_changes
 			WHERE plugin = ?
