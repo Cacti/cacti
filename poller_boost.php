@@ -48,7 +48,7 @@ array_shift($parms);
 $debug    = false;
 $forcerun = false;
 $verbose  = false;
-$child    = false;
+$child    = 0;
 
 // for releasing lock on SIGNAL
 $current_lock = false;
@@ -67,7 +67,7 @@ if (cacti_sizeof($parms)) {
 
 		switch ($arg) {
 			case '--child':
-				$child = $value;
+				$child = intval($value);
 
 				break;
 			case '-d':
@@ -311,7 +311,7 @@ if ($child == false) {
 	exit(0);
 }
 
-function sig_handler($signo) {
+function sig_handler(int $signo) : void {
 	global $child, $current_lock;
 
 	$rrdtool_version = read_config_option('rrdtool_version');
@@ -331,8 +331,6 @@ function sig_handler($signo) {
 			}
 
 			exit;
-
-			break;
 		default:
 			// ignore all other signals
 	}
@@ -346,7 +344,7 @@ function sig_handler($signo) {
 	}
 }
 
-function boost_kill_running_processes() {
+function boost_kill_running_processes() : void {
 	$processes = db_fetch_assoc_prepared('SELECT *
 		FROM processes
 		WHERE tasktype = "boost"
@@ -364,7 +362,7 @@ function boost_kill_running_processes() {
 	}
 }
 
-function boost_processes_running() {
+function boost_processes_running() : int {
 	$running = db_fetch_cell('SELECT COUNT(*)
 		FROM processes
 		WHERE tasktype = "boost"
@@ -373,7 +371,7 @@ function boost_processes_running() {
 	return $running;
 }
 
-function boost_prepare_process_table() {
+function boost_prepare_process_table() : bool {
 	global $start_time, $archive_table, $max_run_duration, $database_default, $debug, $get_memory, $memory_used;
 
 	boost_debug('Parallel Process Setup Begins.');
@@ -501,7 +499,7 @@ function boost_prepare_process_table() {
 	return true;
 }
 
-function boost_prune_memstats() {
+function boost_prune_memstats() : void {
 	$processes = read_config_option('boost_parallel');
 
 	db_execute_prepared('DELETE FROM settings
@@ -510,7 +508,7 @@ function boost_prune_memstats() {
 		[$processes]);
 }
 
-function boost_launch_children() {
+function boost_launch_children() : void {
 	global $debug, $boost_log, $boost_debug, $cacti_log;
 
 	$processes = read_config_option('boost_parallel');
@@ -545,7 +543,7 @@ function boost_launch_children() {
 	sleep(2);
 }
 
-function boost_time_to_run($forcerun, $current_time, $last_run_time, $next_run_time) {
+function boost_time_to_run(bool $forcerun, int $current_time, int $last_run_time, int $next_run_time) : bool {
 	$run_now = false;
 
 	boost_debug('Checking if Boost is ready to run.');
@@ -623,7 +621,7 @@ function boost_time_to_run($forcerun, $current_time, $last_run_time, $next_run_t
 	return $run_now;
 }
 
-function boost_output_rrd_data($child) {
+function boost_output_rrd_data(int $child) : mixed {
 	global $start, $archive_table, $max_run_duration, $database_default, $debug, $get_memory, $memory_used;
 
 	$rrd_updates      = 0;
@@ -665,7 +663,7 @@ function boost_output_rrd_data($child) {
 
 	boost_debug("Processes:$child, TotalRows:$total_rows");
 
-	$max_per_select = read_config_option('boost_rrd_update_max_records_per_select');
+	$max_per_select = intval(read_config_option('boost_rrd_update_max_records_per_select'));
 
 	$data_ids = db_fetch_cell_prepared('SELECT
 		COUNT(local_data_id)
@@ -731,8 +729,10 @@ function boost_output_rrd_data($child) {
  * @param int   $last_id - the last id to process
  * @param int   $child - the current process
  * @param mixed $rrdtool_pipe - the socket that has been opened for the RRDtool operation
+ *
+ * @return int - The number of processed local_data_ids
  */
-function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
+function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_pipe) : int {
 	global $archive_table, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used, $current_lock;
 	global $boost_debug, $boost_log;
 
@@ -768,9 +768,10 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 	set_error_handler('boost_error_handler');
 
 	// load system variables needed
-	$upd_string_len		    = read_config_option('boost_rrd_update_string_length');
-	$rrd_update_interval = read_config_option('boost_rrd_update_interval');
-	$data_ids_to_get     = read_config_option('boost_rrd_update_max_records_per_select');
+	$upd_string_len      = intval(read_config_option('boost_rrd_update_string_length'));
+	$rrd_update_interval = intval(read_config_option('boost_rrd_update_interval'));
+	$data_ids_to_get     = intval(read_config_option('boost_rrd_update_max_records_per_select'));
+	$rrd_field_names     = [];
 
 	if ($archive_tables === false) {
 		$archive_tables = boost_get_arch_table_names($archive_table);
@@ -839,6 +840,14 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 		// we are going to blow away all record if ok
 		$vals_in_buffer = 0;
 
+		// innitialize some variables
+		$rrd_tmpl           = '';
+		$rrd_tmplp          = [];
+		$rrd_tmplpts        = 0;
+		$rrd_path           = '';
+		$nt_rrd_field_names = [];
+		$tv_tmpl            = [];
+
 		boost_timer('results_cycle', BOOST_TIMER_START);
 
 		// go through each poller_output_boost entries and process
@@ -884,9 +893,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 
 				$reset_template = true;
 
-				if (isset($nt_rrd_field_names)) {
-					unset($nt_rrd_field_names);
-				}
+				$nt_rrd_field_names = [];
 
 				// release the previous lock
 				if (cacti_version_compare($rrdtool_version, '1.5', '<')) {
@@ -929,7 +936,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 				 * and creating the first value to include the timestamp.
 				 * We will use this for missing data detection.
 				 */
-				$rrd_tmplp   = array_fill_keys(array_values(explode(':', $rrd_tmpl)), 'U');
+				$rrd_tmplp   = array_fill_keys(explode(':', $rrd_tmpl), 'U');
 				$rrd_tmplpts = ['timestamp' => ''] + $rrd_tmplp;
 
 				$rrd_path    = $rrd_data['rrd_path'];
@@ -1186,7 +1193,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 		}
 
 		// process the last rrdupdate if applicable
-		if ($vals_in_buffer) {
+		if ($vals_in_buffer && $rrd_path != '' && cacti_sizeof($tv_tmpl)) {
 			// place the latest update at the end of the output array
 			$outarray[] = $tv_tmpl;
 
@@ -1194,7 +1201,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 		}
 
 		// release the last lock
-		if (cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
+		if (cacti_version_compare(get_rrdtool_version(), '1.5', '<') && isset($item['local_data_id'])) {
 			db_execute("SELECT RELEASE_LOCK('boost.single_ds." . $item['local_data_id'] . "')");
 		}
 
@@ -1219,7 +1226,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 	return cacti_sizeof($results);
 }
 
-function boost_process_output($local_data_id, $outarray, $rrd_path, $rrd_tmplp, $rrdtool_pipe) {
+function boost_process_output(int $local_data_id, array $outarray, string $rrd_path, array $rrd_tmplp, mixed $rrdtool_pipe) : void {
 	$outbuf = '';
 
 	if (cacti_sizeof($outarray)) {
@@ -1242,7 +1249,7 @@ function boost_process_output($local_data_id, $outarray, $rrd_path, $rrd_tmplp, 
 	}
 }
 
-function boost_log_statistics($rrd_updates) {
+function boost_log_statistics(int $rrd_updates) : void {
 	global $start, $boost_stats_log, $verbose;
 
 	// take time and log performance data
@@ -1336,7 +1343,7 @@ function boost_log_statistics($rrd_updates) {
 	db_execute('DELETE FROM settings WHERE name LIKE "stats_detail_boost_%"');
 }
 
-function boost_log_child_statistics($rrd_updates, $child) {
+function boost_log_child_statistics(int $rrd_updates, int $child) : void {
 	global $start, $boost_stats_log, $verbose;
 
 	// take time and log performance data
@@ -1393,7 +1400,7 @@ function boost_log_child_statistics($rrd_updates, $child) {
 	}
 }
 
-function boost_purge_cached_png_files($forcerun) {
+function boost_purge_cached_png_files(bool $forcerun) : void {
 	// remove stale png's from the cache.  I consider png's stale after 1 hour
 	if ((read_config_option('boost_png_cache_enable') == 'on') || $forcerun) {
 		$cache_directory = read_config_option('boost_png_cache_directory');
@@ -1437,8 +1444,10 @@ function boost_purge_cached_png_files($forcerun) {
 
 /**
  * display_version - displays version information
+ *
+ * @return void
  */
-function display_version() {
+function display_version() : void {
 	$version = get_cacti_cli_version();
 
 	print "Cacti Boost RRD Update Poller, Version $version " . COPYRIGHT_YEARS . PHP_EOL;
@@ -1446,8 +1455,10 @@ function display_version() {
 
 /**
  * display_help - displays the usage of the function
+ *
+ * @return void
  */
-function display_help() {
+function display_help() : void {
 	display_version();
 
 	print "\nusage: poller_boost.php [--verbose] [--force] [--debug]\n\n";
