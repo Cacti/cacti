@@ -153,7 +153,13 @@ if (read_config_option('dsstats_mode') != read_config_option('dsstats_temp_mode'
 
 // silently end if the registered process is still running
 if (!$force) {
-	if (!register_process_start('dsstats', $type, $thread_id, read_config_option('dsstats_timeout'))) {
+	$timeout = intval(read_config_option('dsstats_timeout'));
+
+	if (empty($timeout)) {
+		$timeout = 600;
+	}
+
+	if (!register_process_start('dsstats', $type, $thread_id, $timeout)) {
 		exit(0);
 	}
 }
@@ -212,7 +218,7 @@ if (!$force) {
 
 exit(0);
 
-function dsstats_purge_hourly_cache() {
+function dsstats_purge_hourly_cache() : void {
 	$hourly_window  = date('Y-m-d H:i:s', time() - (read_config_option('dsstats_hourly_duration') * 60));
 
 	// remove old records from the cache first
@@ -221,7 +227,7 @@ function dsstats_purge_hourly_cache() {
 	}
 }
 
-function dsstats_insert_hourly_data_into_cache() {
+function dsstats_insert_hourly_data_into_cache() : void {
 	// store the current averages into the hourly table
 	db_execute('INSERT INTO data_source_stats_hourly
 		(local_data_id, rrd_name, average, peak)
@@ -232,7 +238,7 @@ function dsstats_insert_hourly_data_into_cache() {
 		ON DUPLICATE KEY UPDATE average=VALUES(average), peak=VALUES(peak)');
 }
 
-function dsstats_master_handler($type, $force, $fpartition) {
+function dsstats_master_handler(string $type, bool $force, bool $fpartition) : void {
 	// read some important settings relative to timing from the database
 	$major_time     = date('H:i:s', strtotime(read_config_option('dsstats_major_update_time')));
 	$daily_interval = read_config_option('dsstats_daily_interval');
@@ -253,7 +259,7 @@ function dsstats_master_handler($type, $force, $fpartition) {
 	// Insert new rows into cache
 	dsstats_insert_hourly_data_into_cache();
 
-	dsstats_log_statistics('HOURLY', $type);
+	dsstats_log_statistics('HOURLY');
 
 	// see if boost is active or not
 	$boost_active = read_config_option('boost_rrd_update_enable');
@@ -265,7 +271,7 @@ function dsstats_master_handler($type, $force, $fpartition) {
 	if (read_config_option('dsstats_gdg_enable') == 'on') {
 		if (date('z', $last_major_time) != date('z', $current_time) || $fpartition) {
 			dsstats_create_partitions($last_major_time, $current_time, $fpartition);
-			dsstats_remove_old_partitions($current_time, $fpartition);
+			dsstats_remove_old_partitions();
 		}
 	}
 
@@ -300,7 +306,7 @@ function dsstats_master_handler($type, $force, $fpartition) {
 				sleep(2);
 			}
 
-			dsstats_log_statistics('DAILY', $type);
+			dsstats_log_statistics('DAILY');
 		}
 	}
 
@@ -331,7 +337,7 @@ function dsstats_master_handler($type, $force, $fpartition) {
 	}
 }
 
-function dsstats_create_partitions($last_major_time, $current_time, $fpartition = false) {
+function dsstats_create_partitions(int $last_major_time, int $current_time, bool $fpartition = false) : void {
 	$last_day     = date('z', $last_major_time);
 	$last_week    = date('W', $last_major_time);
 	$last_month   = date('n', $last_major_time);
@@ -361,11 +367,11 @@ function dsstats_create_partitions($last_major_time, $current_time, $fpartition 
 	}
 }
 
-function dsstats_remove_old_partitions($current_time, $fpartition = false) {
-	$daily_retention   = read_config_option('dsstats_daily_retention');
-	$weekly_retention  = read_config_option('dsstats_weekly_retention');
-	$monthly_retention = read_config_option('dsstats_monthly_retention');
-	$yearly_retention  = read_config_option('dsstats_yearly_retention');
+function dsstats_remove_old_partitions() : void {
+	$daily_retention   = intval(read_config_option('dsstats_daily_retention'));
+	$weekly_retention  = intval(read_config_option('dsstats_weekly_retention'));
+	$monthly_retention = intval(read_config_option('dsstats_monthly_retention'));
+	$yearly_retention  = intval(read_config_option('dsstats_yearly_retention'));
 
 	dsstats_prune_partitions('data_source_stats_daily', $daily_retention);
 	dsstats_prune_partitions('data_source_stats_weekly', $weekly_retention);
@@ -373,7 +379,7 @@ function dsstats_remove_old_partitions($current_time, $fpartition = false) {
 	dsstats_prune_partitions('data_source_stats_yearly', $yearly_retention);
 }
 
-function dsstats_prune_partitions($table_name, $partitions_to_keep) {
+function dsstats_prune_partitions(string $table_name, int $partitions_to_keep) : void {
 	global $database_default;
 
 	$tables = db_fetch_assoc_prepared("SELECT TABLE_NAME
@@ -410,7 +416,7 @@ function dsstats_prune_partitions($table_name, $partitions_to_keep) {
 	}
 }
 
-function dsstats_create_partition_from_table($table_name, $suffix) {
+function dsstats_create_partition_from_table(string $table_name, string $suffix) : void {
 	if (db_table_exists($table_name)) {
 		cacti_log("NOTE: Creating new partition $table_name", false, 'DSSTATS');
 
@@ -426,7 +432,7 @@ function dsstats_create_partition_from_table($table_name, $suffix) {
 /**
  * display_version - displays version information
  */
-function display_version() {
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Data Source Statistics Poller, Version $version " . COPYRIGHT_YEARS . PHP_EOL;
 }
@@ -434,7 +440,7 @@ function display_version() {
 /**
  * display_help - generic help screen for utilities
  */
-function display_help() {
+function display_help() : void {
 	display_version();
 
 	print PHP_EOL . 'usage: poller_dsstats.php [--force] [--debug]' . PHP_EOL . PHP_EOL;
@@ -455,11 +461,11 @@ function display_help() {
 /**
  * sig_handler - provides a generic means to catch exceptions to the Cacti log.
  *
- * @param $signo - (int) the signal that was thrown by the interface.
+ * @param int $signo - the signal that was thrown by the interface.
  *
- * @return - null
+ * @return void
  */
-function sig_handler($signo) {
+function sig_handler($signo) : void {
 	global $type, $thread_id;
 
 	switch ($signo) {
@@ -479,8 +485,6 @@ function sig_handler($signo) {
 			unregister_process('dsstats', $type, $thread_id, getmypid());
 
 			exit(1);
-
-			break;
 		default:
 			// ignore all other signals
 	}
