@@ -873,7 +873,7 @@ function api_plugin_is_enabled($plugin) {
 	$status = db_fetch_cell_prepared('SELECT status
 		FROM plugin_config
 		WHERE directory = ?',
-		array($plugin), false);
+		array($plugin), '', false);
 
 	if ($status == '1') {
 		$pstatus[$plugin] = true;
@@ -1009,7 +1009,7 @@ function api_plugin_register_hook($plugin, $hook, $function, $file, $enable = fa
 		FROM plugin_hooks
 		WHERE name = ?
 		AND hook = ?',
-		array($plugin, $hook), false);
+		array($plugin, $hook), '', false);
 
 	if (!$exists) {
 		// enable the hooks if they are system level hooks to enable configuration
@@ -1183,7 +1183,7 @@ function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
 				FROM plugin_realms
 				WHERE plugin = ?
 				AND file = ?',
-				array($plugin, $file), false);
+				array($plugin, $file), '', false);
 
 			$realm_id = $realm_id + 100;
 
