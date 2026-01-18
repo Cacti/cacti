@@ -247,7 +247,7 @@ function api_plugin_run_plugin_hook(string $hook, string $plugin, string $functi
 	return $args;
 }
 
-function api_plugin_run_plugin_hook_function(string $hook, string $plugin, string $function, array $ret) : mixed {
+function api_plugin_run_plugin_hook_function(string $hook, string $plugin, string $function, mixed $ret) : mixed {
 	if (POLLER_ID > 1) {
 		$required_capabilities = [
 			// Poller related
