@@ -852,7 +852,7 @@ function db_fetch_row_return(PDOStatement $query) : array {
  *
  * @return bool|array    - The entire result set or false on error
  */
-function db_fetch_assoc(string $sql, bool $log = true, mixed $db_conn = false) : bool|array {
+function db_fetch_assoc(string $sql, bool $log = true, mixed $db_conn = false) : mixed {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {

@@ -127,6 +127,8 @@ $pluginslist = plugins_retrieve_plugin_list();
 
 set_default_action('list');
 
+global $plugins_integrated;
+
 /**
  * this is for legacy support for plugins like syslog
  * that are dependent on the mode request variable
@@ -196,8 +198,6 @@ switch($action) {
 		header('Location: plugins.php?state=-99');
 
 		exit;
-
-		break;
 	case 'readme':
 		$tag = gnrv('tag');
 
@@ -227,14 +227,10 @@ switch($action) {
 			}
 
 			header('Location: plugins.php');
-
-			exit;
 		} else {
 			raise_message('get_latest1', __('You must enter your GitHub user, repo and personal access tokey before you can refresh the plugins.  You can set the GitHub defaults unser Console > Configuration > Settings > General.'), MESSAGE_LEVEL_ERROR);
 
 			header('Location: plugins.php');
-
-			exit;
 		}
 
 		break;
@@ -314,7 +310,7 @@ switch($action) {
 				[$plugin], false, $local_db_cnn_id);
 		}
 
-		header('Location: plugins.php' . ($option != '' ? '&' . $option : ''));
+		header('Location: plugins.php');
 
 		break;
 	case 'remote_disable':
@@ -325,7 +321,7 @@ switch($action) {
 				[$plugin], false, $local_db_cnn_id);
 		}
 
-		header('Location: plugins.php' . ($option != '' ? '&' . $option : ''));
+		header('Location: plugins.php');
 
 		break;
 	case 'restore':
@@ -364,7 +360,7 @@ switch($action) {
 
 exit;
 
-function plugins_retrieve_plugin_list() {
+function plugins_retrieve_plugin_list() : array {
 	$pluginslist = [];
 
 	$temp = db_fetch_assoc('SELECT directory AS plugin FROM plugin_config ORDER BY name');
@@ -376,11 +372,11 @@ function plugins_retrieve_plugin_list() {
 	return $pluginslist;
 }
 
-function plugins_temp_table_exists($table) {
+function plugins_temp_table_exists(string $table) : mixed {
 	return cacti_sizeof(db_fetch_row("SHOW TABLES LIKE '$table'"));
 }
 
-function plugins_load_temp_table() {
+function plugins_load_temp_table() : string {
 	global $plugins, $plugins_integrated, $local_db_cnn_id;
 
 	$table = 'plugin_temp_table_' . rand();
@@ -515,7 +511,7 @@ function plugins_load_temp_table() {
 					[$plugin['plugin']]);
 
 				if (!$exists) {
-					$md5sum = md5sum_path("$path$file");
+					$md5sum = md5sum_path($path);
 
 					db_execute_prepared("INSERT INTO $table
 						(plugin, description, status, author, webpage, version, requires, dir_md5sum)
@@ -532,7 +528,7 @@ function plugins_load_temp_table() {
 						]
 					);
 				} else {
-					$md5sum = md5sum_path("$path$file");
+					$md5sum = md5sum_path($path);
 
 					db_execute_prepared("UPDATE $table
 						SET status = ?, dir_md5sum = ?
@@ -546,7 +542,7 @@ function plugins_load_temp_table() {
 	return $table;
 }
 
-function update_show_current() {
+function update_show_current() : void {
 	global $plugins, $pluginslist, $status_names, $actions, $item_rows;
 
 	// ================= input validation and session storage =================
@@ -1377,7 +1373,7 @@ function update_show_current() {
 	db_execute("DROP TABLE $table");
 }
 
-function format_plugin_row($plugin, $last_plugin, $include_ordering, $table) {
+function format_plugin_row(array $plugin, bool $last_plugin, bool $include_ordering, string $table) : string {
 	global $status_names;
 	static $first_plugin = true;
 	static $row_id       = 1;
@@ -1482,7 +1478,7 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering, $table) {
 			$row .= '<span class="moveArrowNone"></span>';
 		}
 
-		if (!$last_plugin) {
+		if ($last_plugin === false) {
 			$row .= "<a class='pic ti ti-caret-down-filled moveArrow' href='" . htmle(CACTI_PATH_URL . 'plugins.php?action=movedown&plugin=' . $plugin['plugin']) . "' title='" . __esc('Order After Next Plugin') . "'></a>";
 		} else {
 			$row .= '<span class="moveArrowNone"></span>';
@@ -1501,7 +1497,7 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering, $table) {
 	return $row;
 }
 
-function plugin_check_available_status($plugin) {
+function plugin_check_available_status(array $plugin, string &$row) : void {
 	if (cacti_version_compare(CACTI_VERSION, $plugin['avail_compat'], '<')) {
 		$row .= "<td class='nowrap'>" . __('Cacti Upgrade Required') . '</td>';
 	} else {
@@ -1509,7 +1505,7 @@ function plugin_check_available_status($plugin) {
 	}
 }
 
-function format_available_plugin_row($plugin, $table) {
+function format_available_plugin_row(array $plugin, string $table) : string {
 	global $status_names;
 
 	// action icons
@@ -1634,7 +1630,7 @@ function format_available_plugin_row($plugin, $table) {
 	return $row;
 }
 
-function format_archive_plugin_row($plugin, $table) {
+function format_archive_plugin_row(array $plugin, string $table) : string {
 	global $status_names;
 	static $first_plugin = true;
 
@@ -1748,7 +1744,7 @@ function format_archive_plugin_row($plugin, $table) {
 	return $row;
 }
 
-function plugin_required_for_others($plugin, $table) {
+function plugin_required_for_others(array $plugin, string $table) : mixed {
 	$required_for_others = db_fetch_cell("SELECT GROUP_CONCAT(plugin)
 		FROM $table
 		WHERE requires LIKE '%" . $plugin['plugin'] . "%'
@@ -1767,7 +1763,7 @@ function plugin_required_for_others($plugin, $table) {
 	}
 }
 
-function plugin_required_installed($plugin, $table) {
+function plugin_required_installed(array $plugin, string $table) : string{
 	$not_installed = '';
 
 	api_plugin_can_install($plugin['plugin'], $not_installed);
@@ -1775,17 +1771,17 @@ function plugin_required_installed($plugin, $table) {
 	return $not_installed;
 }
 
-function plugin_display_compat($compat) {
+function plugin_display_compat(string $compat) : string {
 	$compat = explode(' ', $compat);
 
 	foreach ($compat as $index => $c) {
-		if (strpos($c, '>=') !== false) {
+		if (strpos($c, '>=') != false) {
 			$compat[$index] = str_replace('>=', '>= ', $c);
-		} elseif (strpos($c, '>=') !== false) {
+		} elseif (strpos($c, '>=') != false) {
 			$compat[$index] = str_replace('>=', '>= ', $c);
-		} elseif (strpos($c, '>') !== false) {
+		} elseif (strpos($c, '>') != false) {
 			$compat[$index] = str_replace('>', '> ', $c);
-		} elseif (strpos($c, '<') !== false) {
+		} elseif (strpos($c, '<') != false) {
 			$compat[$index] = str_replace('<', '< ', $c);
 		} else {
 			$compat[$index] = '>= ' . $c;
@@ -1795,7 +1791,7 @@ function plugin_display_compat($compat) {
 	return implode(' ', $compat);
 }
 
-function plugin_get_install_links($plugin, $table) {
+function plugin_get_install_links(array $plugin, string $table) : string {
 	$path = CACTI_PATH_PLUGINS . '/' . $plugin['plugin'];
 
 	$link = '';
@@ -1836,7 +1832,7 @@ function plugin_get_install_links($plugin, $table) {
 	return $link;
 }
 
-function plugin_actions($plugin, $table) {
+function plugin_actions(array $plugin, string $table) : string {
 	global $pluginslist, $plugins_integrated;
 
 	$link = '<td style="width:1%" class="nowrap">';
