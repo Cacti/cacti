@@ -47,6 +47,8 @@ require_once(CACTI_PATH_LIBRARY . '/sort.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
+global $rdatabase_hostname;
+
 if (POLLER_ID > 1) {
 	if (CACTI_CONNECTION == 'online') {
 		db_force_remote_cnn();
@@ -63,9 +65,9 @@ if (POLLER_ID > 1) {
  *
  * @param int $signo - the signal that was thrown by the interface.
  *
- * @return      - null
+ * @return void
  */
-function sig_handler($signo) {
+function sig_handler($signo) : void {
 	global $network_id, $thread, $master, $poller_id;
 
 	switch ($signo) {
@@ -115,8 +117,6 @@ function sig_handler($signo) {
 			}
 
 			exit(0);
-
-			break;
 		default:
 			// ignore all other signals
 	}
@@ -286,7 +286,7 @@ if ($master) {
 }
 
 // Check for Network Master
-if (!$master && $thread == 0) {
+if ($master === false && $thread == 0) {
 	automation_debug("Thread master about to launch collector threads\n");
 
 	// Remove any stale entries
@@ -376,7 +376,7 @@ if (!$master && $thread == 0) {
 			AND status="running"',
 			[$network_id]);
 
-		automation_debug("Found $running Threads\n");
+		automation_debug("Found $running Threads");
 
 		// Are there no more running tasks? Wait up to 15 seconds to
 		// allow processes to start before checking for failures
@@ -417,7 +417,7 @@ if (!$master && $thread == 0) {
 
 exit(0);
 
-function discoverDevices($network_id, $thread) {
+function discoverDevices(int $network_id, int $thread) : bool {
 	global $dryrun;
 
 	$network = db_fetch_row_prepared('SELECT *
@@ -946,14 +946,22 @@ function discoverDevices($network_id, $thread) {
 	return true;
 }
 
-// display_version - displays version information
-function display_version() {
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Network Discovery Scanner, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-// display_help - displays the usage of the function
-function display_help() {
+/**
+ * display_help - displays the usage of the function
+ *
+ * @return void
+ */
+function display_help() : void {
 	display_version();
 
 	print "\nusage: poller_automation.php -M [--poller=ID] | --network=network_id [-T=thread_id]\n";
@@ -973,15 +981,15 @@ function display_help() {
 	print "    --debug       - Display verbose output during execution\n\n";
 }
 
-function isProcessRunning($pid) {
+function isProcessRunning(int $pid) : bool {
 	return posix_kill($pid, 0);
 }
 
-function killProcess($pid) {
+function killProcess(int $pid) : bool {
 	return posix_kill($pid, SIGTERM);
 }
 
-function removeMyProcess($pid, $network_id) {
+function removeMyProcess(int $pid, int $network_id) : void {
 	db_execute_prepared('DELETE FROM automation_processes
 		WHERE pid = ?
 		AND network_id = ?',
@@ -993,7 +1001,7 @@ function removeMyProcess($pid, $network_id) {
 		[$pid, $network_id]);
 }
 
-function rerunDataQueries($host_id, &$network) {
+function rerunDataQueries(int $host_id, array &$network) : void {
 	if ($network['rerun_data_queries'] == 'on') {
 		$snmp_queries = db_fetch_assoc_prepared('SELECT snmp_query_id
 			FROM host_snmp_query
@@ -1008,14 +1016,14 @@ function rerunDataQueries($host_id, &$network) {
 	}
 }
 
-function registerTask($network_id, $pid, $poller_id, $task = 'collector') {
+function registerTask(int $network_id, int $pid, int $poller_id, string $task = 'collector') : void {
 	db_execute_prepared("REPLACE INTO automation_processes
 		(pid, poller_id, network_id, task, status, heartbeat, command)
 		VALUES (?, ?, ?, ?, 'running', NOW(), 'start')",
 		[$pid, $poller_id, $network_id, $task]);
 }
 
-function endTask($network_id, $pid) {
+function endTask(int $network_id, int $pid) : void {
 	db_execute_prepared("UPDATE automation_processes
 		SET status='done', heartbeat=NOW()
 		WHERE pid = ?
@@ -1023,12 +1031,12 @@ function endTask($network_id, $pid) {
 		[$pid, $network_id]);
 }
 
-function countCurrentTasks() {
+function countCurrentTasks() : mixed {
 	return db_fetch_cell('SELECT COUNT(*)
 		FROM automation_processes');
 }
 
-function addUpDevice($network_id, $pid) {
+function addUpDevice(int $network_id, int $pid) : void {
 	db_execute_prepared('UPDATE automation_processes
 		SET up_hosts=up_hosts+1, heartbeat=NOW()
 		WHERE pid = ?
@@ -1036,7 +1044,7 @@ function addUpDevice($network_id, $pid) {
 		[$pid, $network_id]);
 }
 
-function addSNMPDevice($network_id, $pid) {
+function addSNMPDevice(int $network_id, int $pid) : void {
 	db_execute_prepared('UPDATE automation_processes
 		SET snmp_hosts=snmp_hosts+1, heartbeat=NOW()
 		WHERE pid = ?
@@ -1044,7 +1052,7 @@ function addSNMPDevice($network_id, $pid) {
 		[$pid, $network_id]);
 }
 
-function reportNetworkStatus($network_id, $old_devices) {
+function reportNetworkStatus(int $network_id, array $old_devices) : bool {
 	$details = db_fetch_row_prepared('SELECT notification_enabled, notification_email,
 		notification_fromname, notification_fromemail
 		FROM automation_networks
@@ -1121,8 +1129,8 @@ function reportNetworkStatus($network_id, $old_devices) {
 			$new_devices = getNetworkDevices($network_id);
 
 			$ids = [];
-			populateDeviceIndex($ids, 0, $old_devices);
-			populateDeviceIndex($ids, 1, $new_devices);
+			populateDeviceIndex($ids, false, $old_devices);
+			populateDeviceIndex($ids, true, $new_devices);
 
 			$table_head_style = 'style="border-bottom: 1px solid black"';
 			$table_head       = '<tr>' .
@@ -1224,9 +1232,11 @@ function reportNetworkStatus($network_id, $old_devices) {
 			}
 		}
 	}
+
+	return true;
 }
 
-function populateDeviceIndex(&$ids, $is_new, $devices) {
+function populateDeviceIndex(array &$ids, bool $is_new, array $devices) : void {
 	$field = ($is_new ? 'new' : 'old');
 
 	foreach ($devices as $index => $device) {
@@ -1240,7 +1250,7 @@ function populateDeviceIndex(&$ids, $is_new, $devices) {
 	}
 }
 
-function clearTask($network_id, $pid) {
+function clearTask(int $network_id, int $pid) : void {
 	db_execute_prepared('DELETE
 		FROM automation_processes
 		WHERE pid = ?
@@ -1253,13 +1263,13 @@ function clearTask($network_id, $pid) {
 		[$network_id]);
 }
 
-function clearAllTasks($network_id) {
+function clearAllTasks(int $network_id) : void {
 	db_execute_prepared('DELETE FROM automation_processes
 		WHERE network_id = ?',
 		[$network_id]);
 }
 
-function markIPRunning($ip_address, $network_id) {
+function markIPRunning(string $ip_address, int $network_id) : void {
 	db_execute_prepared('UPDATE automation_ips
 		SET status=1
 		WHERE ip_address = ?
@@ -1267,7 +1277,7 @@ function markIPRunning($ip_address, $network_id) {
 		[$ip_address, $network_id]);
 }
 
-function markIPDone($ip_address, $network_id) {
+function markIPDone(string $ip_address, int $network_id) : void {
 	db_execute_prepared('UPDATE automation_ips
 		SET status=2
 		WHERE ip_address = ?
@@ -1275,7 +1285,7 @@ function markIPDone($ip_address, $network_id) {
 		[$ip_address, $network_id]);
 }
 
-function getNetworkDevices($network_id) {
+function getNetworkDevices(int $network_id) : mixed {
 	return db_fetch_assoc_prepared('SELECT id, hostname, ip, sysName, snmp, up, time
 		FROM automation_devices
 		WHERE network_id = ?
@@ -1283,7 +1293,7 @@ function getNetworkDevices($network_id) {
 		[$network_id]);
 }
 
-function updateDownDevice($network_id, $ip) {
+function updateDownDevice(int $network_id, string $ip) : void {
 	$exists = db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM automation_devices
 		WHERE ip = ?
