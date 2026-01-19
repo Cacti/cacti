@@ -26,7 +26,7 @@
 require(__DIR__ . '/../include/cli_check.php');
 chdir('..');
 
-if ($config['poller_id'] > 1) {
+if (POLLER_ID > 1) {
 	print 'FATAL: This utility is designed for the main Data Collector only' . PHP_EOL;
 
 	exit(1);
@@ -153,9 +153,7 @@ if (cacti_sizeof($parms)) {
 	exit(1);
 }
 
-function upgrade_database() {
-	global $config;
-
+function upgrade_database() : void {
 	$start = microtime(true);
 
 	cacti_log('NOTE: Upgrading Cacti, this will take a few minutes.', true, 'UPGRADE');
@@ -318,7 +316,7 @@ function upgrade_database() {
 	cacti_log(sprintf('NOTE: Audit Upgrade completed in %.2f seconds.', $end - $start), true, 'UPGRADE');
 }
 
-function plugin_installed($plugin) {
+function plugin_installed(string $plugin) : bool {
 	$installed = db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM plugin_config
 		WHERE directory = ?
@@ -328,7 +326,7 @@ function plugin_installed($plugin) {
 	return $installed ? true : false;
 }
 
-function repair_database($run = true) {
+function repair_database(bool $run = true) : void {
 	global $altersopt, $database_default;
 
 	$alters = report_audit_results(false);
@@ -397,7 +395,7 @@ function repair_database($run = true) {
 	}
 }
 
-function report_audit_results($output = true) {
+function report_audit_results(bool $output = true) : array {
 	global $database_default, $altersopt;
 
 	$db_name = 'Tables_in_' . $database_default;
@@ -751,7 +749,7 @@ function report_audit_results($output = true) {
 	return $alters;
 }
 
-function make_column_props(&$dbc) {
+function make_column_props(array &$dbc) : string {
 	$alter_cmd = '';
 
 	if (isset($dbc['table_default'])) {
@@ -795,7 +793,7 @@ function make_column_props(&$dbc) {
 	return $alter_cmd;
 }
 
-function make_column_alter($table, $dbc) {
+function make_column_alter(string $table, array $dbc) : string {
 	$alter_cmd = 'MODIFY COLUMN `' . $dbc['table_field'] . '` ' .
 		$dbc['table_type'] . ($dbc['table_null'] == 'NO' ? ' NOT NULL' : '');
 
@@ -804,7 +802,7 @@ function make_column_alter($table, $dbc) {
 	return $alter_cmd;
 }
 
-function make_column_add($table, $dbc) {
+function make_column_add(string $table, array $dbc) : string {
 	$after = get_previous_column($table, $dbc['table_field']);
 
 	if ($after != 'first') {
@@ -821,7 +819,7 @@ function make_column_add($table, $dbc) {
 	return $alter_cmd;
 }
 
-function get_previous_column($table, $column) {
+function get_previous_column(string $table, string $column) : string {
 	$sequence = db_fetch_cell_prepared('SELECT table_sequence
 		FROM table_columns
 		WHERE table_name = ?
@@ -840,10 +838,12 @@ function get_previous_column($table, $column) {
 
 			return $previous;
 		}
+	} else {
+		return 'unknown';
 	}
 }
 
-function make_index_alter($table, $key) {
+function make_index_alter(string $table, string $key) : array {
 	$alter_cmds      = [];
 	$alter_cmd       = '';
 	$primary_dropped = false;
@@ -876,13 +876,15 @@ function make_index_alter($table, $key) {
 	}
 
 	if (cacti_sizeof($parts)) {
-		$i = 0;
+		$i          = 0;
+		$index_type = '';
 
 		foreach ($parts as $p) {
 			if ($i == 0 && $p['idx_key_name'] == 'PRIMARY') {
 				if ($primary_dropped == false) {
 					$alter_cmd .= "DROP PRIMARY KEY,\n   ";
 				}
+
 				$alter_cmd .= 'ADD PRIMARY KEY (';
 			} elseif ($i == 0) {
 				if ($p['idx_non_unique'] == 1) {
@@ -892,12 +894,10 @@ function make_index_alter($table, $key) {
 				}
 			}
 
-			$alter_cmd .= ($i > 0 ? ',' : '') . '`' . $p['idx_column_name'] . '`';
+			$alter_cmd .= ($i > 0 ? ',' : '') . '`' . $p['idx_column_name'] . '`) USING ' . $p['idx_index_type'];
 
 			$i++;
 		}
-
-		$alter_cmd .= ') USING ' . $p['idx_index_type'];
 
 		$alter_cmds[] = $alter_cmd;
 	}
@@ -905,7 +905,7 @@ function make_index_alter($table, $key) {
 	return $alter_cmds;
 }
 
-function get_sequence_count($table, $index) {
+function get_sequence_count(string $table, string $index) : int {
 	$indexes      = db_fetch_assoc("SHOW INDEXES IN $table");
 	$sequence_cnt = 0;
 
@@ -920,7 +920,7 @@ function get_sequence_count($table, $index) {
 	return $sequence_cnt;
 }
 
-function get_column_sequence_number($table, $index, $column) {
+function get_column_sequence_number(string $table, string $index, string $column) : int {
 	$indexes = db_fetch_assoc("SHOW INDEXES IN $table");
 
 	if (cacti_sizeof($indexes)) {
@@ -938,8 +938,8 @@ function get_column_sequence_number($table, $index, $column) {
 	return -1;
 }
 
-function create_tables($load = true) {
-	global $config, $database_default, $database_username, $database_password, $database_port, $database_hostname;
+function create_tables(bool $load = true) : void {
+	global $database_default, $database_username, $database_password, $database_port, $database_hostname;
 	global $altersopt, $debug;
 
 	if (!db_has_permissions('CREATE')) {
@@ -1052,8 +1052,8 @@ function create_tables($load = true) {
 	}
 }
 
-function load_audit_database() {
-	global $config, $database_default, $database_username, $database_password;
+function load_audit_database() : void {
+	global $database_default, $database_username, $database_password;
 
 	$db_name = 'Tables_in_' . $database_default;
 
@@ -1145,22 +1145,28 @@ function load_audit_database() {
 	}
 }
 
-// display_version - displays version information
-function display_version() {
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Database Audit Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-function display_help() {
+function display_help() : void {
 	display_version();
 
 	print PHP_EOL . 'usage: audit_database.php --report | --repair [ --upgrade ]' . PHP_EOL . PHP_EOL;
 	print 'Cacti utility for auditing and correcting your Cacti database.  This utility can' . PHP_EOL;
 	print 'will scan your Cacti database and report any problems in the schema that it finds.' . PHP_EOL . PHP_EOL;
+
 	print 'Options:' . PHP_EOL;
 	print '    --report  - Report on any issues found in the audit of the database' . PHP_EOL;
 	print '    --repair  - Repair any issues found during the audit of the database' . PHP_EOL;
 	print '    --upgrade - Upgrade the Cacti database before running' . PHP_EOL . PHP_EOL;
+
 	print 'Developer Options:' . PHP_EOL;
 	print '    --create  - Initialize or Re-initialize the Audit Schema tables.' . PHP_EOL;
 	print '    --load    - Take a pristine Cacti install and create Audit Schema and file.' . PHP_EOL;

@@ -217,24 +217,28 @@ function getAddresses(): array {
 /**
  * Retrieves SNMP fields for a given host.
  *
- * @param string $hostId The ID of the host for which to retrieve SNMP fields.
- * @param string $snmp_query_id Optional. The ID of the SNMP query. Default is an empty string.
+ * @param int $hostId The ID of the host for which to retrieve SNMP fields.
+ * @param int $snmp_query_id Optional. The ID of the SNMP query. Default is an empty string.
+ *
  * @return array An array of SNMP fields for the specified host.
  */
-function getSNMPFields(string $hostId, string $snmp_query_id = ''): array {
+function getSNMPFields(int $hostId, int $snmp_query_id = 0): array {
 	$fieldNames = [];
+	$params     = [];
+	$params[]   = $hostId;
 
-	if ($snmp_query_id != '') {
-		$sql_where = " AND snmp_query_id=$snmp_query_id";
+	if ($snmp_query_id > 0) {
+		$sql_where = " AND snmp_query_id = ?";
+		$params[] = $snmp_query_id;
 	} else {
 		$sql_where = '';
 	}
 
-	$tmpArray   = db_fetch_assoc('SELECT DISTINCT field_name
+	$tmpArray   = db_fetch_assoc_prepared('SELECT DISTINCT field_name
 		FROM host_snmp_cache
-		WHERE host_id = ' . $hostId . "
+		WHERE host_id = ?
 		$sql_where
-		ORDER BY field_name");
+		ORDER BY field_name', $params);
 
 	if ($tmpArray !== false && cacti_sizeof($tmpArray)) {
 		foreach ($tmpArray as $f) {
@@ -253,21 +257,25 @@ function getSNMPFields(string $hostId, string $snmp_query_id = ''): array {
  * @param string $snmp_query_id Optional. The ID of the SNMP query to use. Default is an empty string.
  * @return array An array of SNMP values.
  */
-function getSNMPValues(string $hostId, string $field, string $snmp_query_id = ''): array {
+function getSNMPValues(int $hostId, string $field, int $snmp_query_id = 0): array {
 	$values   = [];
+	$params   = [];
+	$params[] = $hostId;
+	$params[] = $field;
 
-	if ($snmp_query_id != '') {
-		$sql_where = " AND snmp_query_id=$snmp_query_id";
+	if ($snmp_query_id > 0) {
+		$sql_where = " AND snmp_query_id = ?";
+		$params[] = $snmp_query_id;
 	} else {
 		$sql_where = '';
 	}
 
-	$tmpArray = db_fetch_assoc('SELECT field_value
+	$tmpArray = db_fetch_assoc_prepared('SELECT field_value
 		FROM host_snmp_cache
-		WHERE host_id=' . $hostId . "
-		AND field_name='" . $field . "'
+		WHERE host_id = ?
+		AND field_name = ?
 		$sql_where
-		ORDER BY field_value");
+		ORDER BY field_value', $params);
 
 	if ($tmpArray !== false && cacti_sizeof($tmpArray)) {
 		foreach ($tmpArray as $v) {
@@ -462,13 +470,13 @@ function displayCommunities(bool $quietMode = false): void {
 /**
  * Displays SNMP fields for a given host.
  *
- * @param mixed  $fields    - An array of SNMP fields to display.
- * @param string $hostId    - The ID of the host for which the SNMP fields are displayed.
- * @param bool   $quietMode - Optional. If true, suppresses output. Default is false.
+ * @param mixed $fields    - An array of SNMP fields to display.
+ * @param int   $hostId    - The ID of the host for which the SNMP fields are displayed.
+ * @param bool  $quietMode - Optional. If true, suppresses output. Default is false.
  *
  * @return void
  */
-function displaySNMPFields(mixed $fields, string $hostId, bool $quietMode = false): void {
+function displaySNMPFields(mixed $fields, int $hostId, bool $quietMode = false): void {
 	if (!$quietMode) {
 		print 'Known SNMP Fields for host-id ' . $hostId . ': (name)' . PHP_EOL;
 	}
@@ -488,13 +496,13 @@ function displaySNMPFields(mixed $fields, string $hostId, bool $quietMode = fals
  * Displays SNMP values for a given host.
  *
  * @param mixed  $values    - The SNMP values to display.
- * @param string $hostId    - The ID of the host.
+ * @param int    $hostId    - The ID of the host.
  * @param string $field     - The field to display.
  * @param bool   $quietMode - Optional. If true, suppresses output. Default is false.
  *
  * @return void
  */
-function displaySNMPValues(mixed $values, string $hostId, string $field, bool $quietMode = false): void {
+function displaySNMPValues(mixed $values, int $hostId, string $field, bool $quietMode = false): void {
 	if (!$quietMode) {
 		print 'Known SNMP Values for Field ' . $field . ' and host-id ' . $hostId . ': (name)' . PHP_EOL;
 	}

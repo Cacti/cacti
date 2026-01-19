@@ -30,7 +30,7 @@ require_once(CACTI_PATH_LIBRARY . '/utility.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');
 
 // switch to main database for cli's
-if ($config['poller_id'] > 1) {
+if (POLLER_ID > 1) {
 	db_switch_remote_to_main();
 }
 
@@ -93,13 +93,13 @@ foreach ($parms as $parameter) {
 }
 
 if (!isset($host_id)) {
-	print "ERROR: You must supply a valid host-id!\n";
+	print 'ERROR: You must supply a valid host-id!' . PHP_EOL;
 
 	exit(1);
 }
 
 if (!isset($data_template_id)) {
-	print "ERROR: You must supply a valid data-template-id!\n";
+	print 'ERROR: You must supply a valid data-template-id!' . PHP_EOL;
 
 	exit(1);
 }
@@ -122,18 +122,24 @@ if (!empty($host_id)) {
 	push_out_host($host_id, $local_data_id);
 }
 
-print "DS Added - DS[$local_data_id]\n";
+print "DS Added - DS[$local_data_id]" . PHP_EOL;
 
-// display_version - displays version information
-function display_version() {
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Add Data Source, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-function display_help() {
+function display_help() : void {
 	display_version();
-	print "usage: add_datasource.php --host-id=[ID] --data-template-id=[ID]\n\n";
-	print "Cacti utility for adding datasources via a command line interface.\n\n";
-	print "--host-id=id - The host id\n";
-	print "--data-template-id=id - The numerical ID of the data template to be added\n";
+
+	print PHP_EOL;
+	print 'usage: add_datasource.php --host-id=[ID] --data-template-id=[ID]' . PHP_EOL . PHP_EOL;
+	print 'Cacti utility for adding datasources via a command line interface.' . PHP_EOL . PHP_EOL;
+	print '--host-id=id - The host id' . PHP_EOL;
+	print '--data-template-id=id - The numerical ID of the data template to be added' . PHP_EOL;
 }

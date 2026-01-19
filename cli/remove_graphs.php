@@ -35,7 +35,7 @@ ini_set('max_execution_time', '0');
 ini_set('memory_limit', '-1');
 
 // switch to main database for cli's
-if ($config['poller_id'] > 1) {
+if (POLLER_ID > 1) {
 	db_switch_remote_to_main();
 }
 
@@ -340,13 +340,17 @@ if ($listGraphTemplates) {
 
 exit(0);
 
-// display_version - displays version information
-function display_version() {
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Remove Graphs Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-function display_help() {
+function display_help() : void {
 	display_version();
 
 	print PHP_EOL . 'usage: remove_graphs.php --graph-template-id=ID [--host-template-id=ID' . PHP_EOL;

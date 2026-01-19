@@ -38,7 +38,7 @@ require_once(CACTI_PATH_LIBRARY . '/template.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
 // switch to main database for cli's
-if ($config['poller_id'] > 1) {
+if (POLLER_ID > 1) {
 	db_switch_remote_to_main();
 }
 
@@ -83,8 +83,8 @@ if (cacti_sizeof($parms)) {
 	$listSNMPQueries    = false;
 	$listInputFields    = false;
 
-	$quietMode       = false;
-
+	$listme    = false;
+	$quietMode = false;
 	$shortopts = 'VvHh';
 
 	$longopts = [
@@ -132,15 +132,15 @@ if (cacti_sizeof($parms)) {
 
 				break;
 			case 'graph-template-id':
-				$template_id = $value;
+				$template_id = intval($value);
 
 				break;
 			case 'host-template-id':
-				$hostTemplateId = $value;
+				$hostTemplateId = intval($value);
 
 				break;
 			case 'host-id':
-				$host_id = $value;
+				$host_id = intval($value);
 
 				break;
 			case 'input-fields':
@@ -148,11 +148,11 @@ if (cacti_sizeof($parms)) {
 
 				break;
 			case 'snmp-query-id':
-				$dsGraph['snmpQueryId'] = $value;
+				$dsGraph['snmpQueryId'] = intval($value);
 
 				break;
 			case 'snmp-query-type-id':
-				$dsGraph['snmpQueryType'] = $value;
+				$dsGraph['snmpQueryType'] = intval($value);
 
 				break;
 			case 'snmp-field':
@@ -225,7 +225,7 @@ if (cacti_sizeof($parms)) {
 				if (is_numeric($value) &&
 					($value >= DATA_QUERY_AUTOINDEX_NONE) &&
 					($value <= DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION)) {
-					$dsGraph['reindex_method'] = $value;
+					$dsGraph['reindex_method'] = intval($value);
 				} else {
 					switch (strtolower($value)) {
 						case 'none':
@@ -253,23 +253,23 @@ if (cacti_sizeof($parms)) {
 
 				break;
 			case 'list-hosts':
-				$listHosts = true;
+				$listHosts = $listme = true;
 
 				break;
 			case 'list-snmp-fields':
-				$listSNMPFields = true;
+				$listSNMPFields = $listme = true;
 
 				break;
 			case 'list-snmp-values':
-				$listSNMPValues = true;
+				$listSNMPValues = $listme = true;
 
 				break;
 			case 'list-query-types':
-				$listQueryTypes = true;
+				$listQueryTypes = $listme = true;
 
 				break;
 			case 'list-snmp-queries':
-				$listSNMPQueries = true;
+				$listSNMPQueries = $listme = true;
 
 				break;
 			case 'force':
@@ -281,11 +281,11 @@ if (cacti_sizeof($parms)) {
 
 				break;
 			case 'list-input-fields':
-				$listInputFields = true;
+				$listInputFields = $listme = true;
 
 				break;
 			case 'list-graph-templates':
-				$listGraphTemplates = true;
+				$listGraphTemplates = $listme = true;
 
 				break;
 			case 'version':
@@ -308,7 +308,7 @@ if (cacti_sizeof($parms)) {
 				exit(1);
 		}
 
-		if (!$allow_multi && isset($value) && is_array($value)) {
+		if (!$allow_multi && is_array($value)) {
 			print "ERROR: Multiple values specified for non-multi argument: ($arg)" . PHP_EOL . PHP_EOL;
 
 			exit(1);
@@ -335,7 +335,8 @@ if (cacti_sizeof($parms)) {
 
 	if ($listInputFields) {
 		if ($template_id > 0) {
-			$input_fields = getInputFields($template_id, $quietMode);
+			$input_fields = getInputFields($template_id);
+
 			displayInputFields($input_fields, $quietMode);
 		} else {
 			print 'ERROR: You must supply an graph-template-id before you can list its input fields' . PHP_EOL;
@@ -389,12 +390,7 @@ if (cacti_sizeof($parms)) {
 			}
 		}
 
-		if (!($listHosts ||			// you really want to create a new graph
-			$listSNMPFields || 		// add this check to avoid reindexing on any list option
-			$listSNMPValues ||
-			$listQueryTypes ||
-			$listSNMPQueries ||
-			$listInputFields)) {
+		if (!$listme) {
 			/* if data query is not yet associated,
 			 * add it and run it once to get the cache filled */
 
@@ -589,8 +585,9 @@ if (cacti_sizeof($parms)) {
 		exit(1);
 	}
 
-	if ((!isset($template_id)) || (!isset($host_id))) {
+	if ($template_id == 0 || $host_id == 0) { // @phpstan-ignore equal.alwaysFalse
 		print 'ERROR: Must have at least a host-id and a graph-template-id' . PHP_EOL . PHP_EOL;
+
 		display_help();
 
 		exit(1);
@@ -600,7 +597,7 @@ if (cacti_sizeof($parms)) {
 		$fields = explode(' ', $cgInputFields);
 
 		if ($template_id > 0) {
-			$input_fields = getInputFields($template_id, $quietMode);
+			$input_fields = getInputFields($template_id);
 		}
 
 		if (cacti_sizeof($fields)) {
@@ -678,7 +675,7 @@ if (cacti_sizeof($parms)) {
 
 			exit(1);
 		} else {
-			$returnArray  = create_complete_graph_from_template($template_id, $host_id, null, $values['cg']);
+			$returnArray  = create_complete_graph_from_template($template_id, $host_id, [], $values['cg']);
 			$dataSourceId = '';
 		}
 
@@ -877,13 +874,17 @@ if (cacti_sizeof($parms)) {
 	exit(1);
 }
 
-// display_version - displays version information
-function display_version() {
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Add Graphs Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-function display_help() {
+function display_help() : void {
 	display_version();
 
 	print PHP_EOL . 'usage: add_graphs.php --graph-type=[cg|ds] --graph-template-id=[ID]' . PHP_EOL;

@@ -91,11 +91,13 @@ if (cacti_sizeof($parms)) {
 	}
 }
 
-if (POLLER_ID > 1) {
-	if (!$local) {
+if (!$local) {
+	if (POLLER_ID > 1) {
 		db_switch_remote_to_main();
 
 		print 'NOTE: Repairing Tables for Main Database' . PHP_EOL;
+	} else {
+		print 'NOTE: Repairing Tables for Local Database' . PHP_EOL;
 	}
 } else {
 	print 'NOTE: Repairing Tables for Local Database' . PHP_EOL;

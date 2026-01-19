@@ -28,7 +28,7 @@ require_once(CACTI_PATH_LIBRARY . '/api_automation_tools.php');
 require_once(CACTI_PATH_LIBRARY . '/api_tree.php');
 
 // switch to main database for cli's
-if ($config['poller_id'] > 1) {
+if (POLLER_ID > 1) {
 	db_switch_remote_to_main();
 }
 
@@ -86,11 +86,11 @@ if (cacti_sizeof($parms)) {
 
 				break;
 			case '--parent-node':
-				$parentNode = $value;
+				$parentNode = intval($value);
 
 				break;
 			case '--tree-id':
-				$treeId = $value;
+				$treeId = intval($value);
 
 				break;
 			case '--node-type':
@@ -98,11 +98,11 @@ if (cacti_sizeof($parms)) {
 
 				break;
 			case '--graph-id':
-				$graphId = $value;
+				$graphId = intval($value);
 
 				break;
 			case '--host-id':
-				$hostId = $value;
+				$hostId = intval($value);
 
 				break;
 			case '--quiet':
@@ -147,7 +147,7 @@ if (cacti_sizeof($parms)) {
 				exit(0);
 
 			default:
-				print "ERROR: Invalid Argument: ($arg)\n\n";
+				print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
 				display_help();
 
 				exit(1);
@@ -173,9 +173,9 @@ if (cacti_sizeof($parms)) {
 	}
 
 	if ($displayNodes) {
-		if (!isset($treeId)) {
-			print "ERROR: You must supply a tree_id before you can list its nodes\n";
-			print "Try --list-trees\n";
+		if ($treeId == 0) {
+			print "ERROR: You must supply a tree_id before you can list its nodes" . PHP_EOL;
+			print "Try --list-trees" . PHP_EOL;
 
 			exit(1);
 		}
@@ -192,9 +192,9 @@ if (cacti_sizeof($parms)) {
 	}
 
 	if ($displayGraphs) {
-		if (!isset($hostId) || $hostId == 0) {
-			print "ERROR: You must supply a host_id before you can list its graphs\n";
-			print "Try --list-hosts\n";
+		if ($hostId <= 0) {
+			print "ERROR: You must supply a host_id before you can list its graphs" . PHP_EOL;
+			print "Try --list-hosts" . PHP_EOL;
 
 			exit(1);
 		}
@@ -207,7 +207,7 @@ if (cacti_sizeof($parms)) {
 	if ($type == 'tree') {
 		// Add a new tree
 		if (empty($name)) {
-			print "ERROR: You must supply a name with --name\n";
+			print "ERROR: You must supply a name with --name" . PHP_EOL;
 			display_help();
 
 			exit(1);
@@ -223,7 +223,7 @@ if (cacti_sizeof($parms)) {
 			$sortMethod == 'natural') {
 			$treeOpts['sort_type'] = $sortMethods[$sortMethod];
 		} else {
-			print "ERROR: Invalid sort-method: ($sortMethod)\n";
+			print "ERROR: Invalid sort-method: ($sortMethod)" . PHP_EOL;
 			display_help();
 
 			exit(1);
@@ -232,7 +232,7 @@ if (cacti_sizeof($parms)) {
 		$existsAlready = db_fetch_cell("SELECT id FROM graph_tree WHERE name = '$name'");
 
 		if ($existsAlready) {
-			print "ERROR: Not adding tree - it already exists - tree-id: ($existsAlready)\n";
+			print "ERROR: Not adding tree - it already exists - tree-id: ($existsAlready)" . PHP_EOL;
 
 			exit(1);
 		}
@@ -241,7 +241,7 @@ if (cacti_sizeof($parms)) {
 
 		api_tree_sort_branch(0, $treeId);
 
-		print "Tree Created - tree-id: ($treeId)\n";
+		print "Tree Created - tree-id: ($treeId)" . PHP_EOL;
 
 		exit(0);
 	}
@@ -254,14 +254,14 @@ if (cacti_sizeof($parms)) {
 			$nodeType == 'host') {
 			$itemType = $nodeTypes[$nodeType];
 		} else {
-			print "ERROR: Invalid node-type: ($nodeType)\n";
+			print "ERROR: Invalid node-type: ($nodeType)" . PHP_EOL;
 			display_help();
 
 			exit(1);
 		}
 
-		if (!is_numeric($parentNode)) {
-			print "ERROR: parent-node $parentNode must be numeric > 0\n";
+		if ($parentNode < 0) {
+			print "ERROR: parent-node $parentNode must be numeric > 0" . PHP_EOL;
 			display_help();
 
 			exit(1);
@@ -274,7 +274,7 @@ if (cacti_sizeof($parms)) {
 				AND id=$parentNode");
 
 			if (!isset($parentNodeExists)) {
-				print "ERROR: parent-node $parentNode does not exist\n";
+				print "ERROR: parent-node $parentNode does not exist" . PHP_EOL;
 
 				exit(1);
 			}
@@ -283,7 +283,7 @@ if (cacti_sizeof($parms)) {
 		if ($nodeType == 'header') {
 			// Header --name must be given
 			if (empty($name)) {
-				print "ERROR: You must supply a name with --name\n";
+				print "ERROR: You must supply a name with --name" . PHP_EOL;
 				display_help();
 
 				exit(1);
@@ -306,7 +306,7 @@ if (cacti_sizeof($parms)) {
 				WHERE graph_local.id=' . $graphId);
 
 			if (!cacti_sizeof($graphs)) {
-				print "ERROR: No such graph-id ($graphId) exists. Try --list-graphs\n";
+				print "ERROR: No such graph-id ($graphId) exists. Try --list-graphs" . PHP_EOL;
 
 				exit(1);
 			}
@@ -317,7 +317,7 @@ if (cacti_sizeof($parms)) {
 			$name           = '';
 
 			if (!isset($sites[$siteId])) {
-				print "ERROR: No such site-id ($siteId) exists. Try --list-sites\n";
+				print "ERROR: No such site-id ($siteId) exists. Try --list-sites" . PHP_EOL;
 
 				exit(1);
 			}
@@ -328,13 +328,13 @@ if (cacti_sizeof($parms)) {
 			$name           = '';
 
 			if (!isset($hosts[$hostId])) {
-				print "ERROR: No such host-id ($hostId) exists. Try --list-hosts\n";
+				print "ERROR: No such host-id ($hostId) exists. Try --list-hosts" . PHP_EOL;
 
 				exit(1);
 			}
 
 			if ($hostGroupStyle != 1 && $hostGroupStyle != 2) {
-				print "ERROR: Host Group Style must be 1 or 2 (Graph Template or Data Query Index)\n";
+				print "ERROR: Host Group Style must be 1 or 2 (Graph Template or Data Query Index)" . PHP_EOL;
 				display_help();
 
 				exit(1);
@@ -344,11 +344,11 @@ if (cacti_sizeof($parms)) {
 		// $nodeId could be a Header Node, a Graph Node, or a Host node.
 		$nodeId = api_tree_item_save(0, $treeId, $itemType, $parentNode, $name, $graphId, $hostId, $siteId, $hostGroupStyle, $sortMethods[$sortMethod], false);
 
-		print "Added Node node-id: ($nodeId)\n";
+		print "Added Node node-id: ($nodeId)" . PHP_EOL;
 
 		exit(0);
 	} else {
-		print "ERROR: Unknown type: ($type)\n";
+		print "ERROR: Unknown type: ($type)" . PHP_EOL;
 		display_help();
 
 		exit(1);
@@ -359,39 +359,51 @@ if (cacti_sizeof($parms)) {
 	exit(0);
 }
 
-// display_version - displays version information
-function display_version() {
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
+function display_version() : void {
 	$version = get_cacti_cli_version();
-	print "Cacti Add Tree Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Add Tree Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-function display_help() {
+function display_help() : void {
 	display_version();
 
-	print "\nusage: add_tree.php  --type=[tree|node] [type-options] [--quiet]\n\n";
-	print "Tree options:\n";
-	print "    --name=[Tree Name]\n";
-	print "    --sort-method=[manual|alpha|natural|numeric]\n\n";
-	print "Node options:\n";
-	print "    --node-type=[header|site|host|graph]\n";
-	print "    --tree-id=[ID]\n";
-	print "    [--parent-node=[ID] [Node Type Options]]\n\n";
-	print "Header node options:\n";
-	print "    --name=[Name]\n\n";
-	print "Site node options:\n";
-	print "    --site-id=[ID]\n";
-	print "Host node options:\n";
-	print "    --host-id=[ID]\n";
-	print "    [--host-group-style=[1|2]]\n";
-	print "    (host group styles:\n";
-	print "     1 = Graph Template,\n";
-	print "     2 = Data Query Index)\n\n";
-	print "Graph node options:\n";
-	print "    --graph-id=[ID]\n\n";
-	print "List Options:\n";
-	print "    --list-sites\n";
-	print "    --list-hosts\n";
-	print "    --list-trees\n";
-	print "    --list-nodes --tree-id=[ID]\n";
-	print "    --list-graphs --host-id=[ID]\n";
+	print PHP_EOL;
+	print "usage: add_tree.php  --type=[tree|node] [type-options] [--quiet]" . PHP_EOL . PHP_EOL;
+
+	print "Tree options:" . PHP_EOL;
+	print "    --name=[Tree Name]" . PHP_EOL;
+	print "    --sort-method=[manual|alpha|natural|numeric]" . PHP_EOL . PHP_EOL;
+
+	print "Node options:" . PHP_EOL;
+	print "    --node-type=[header|site|host|graph]" . PHP_EOL;
+	print "    --tree-id=[ID]" . PHP_EOL;
+	print "    [--parent-node=[ID] [Node Type Options]]" . PHP_EOL . PHP_EOL;
+
+	print "Header node options:" . PHP_EOL;
+	print "    --name=[Name]" . PHP_EOL . PHP_EOL;
+
+	print "Site node options:" . PHP_EOL;
+	print "    --site-id=[ID]" . PHP_EOL . PHP_EOL;
+
+	print "Host node options:" . PHP_EOL;
+	print "    --host-id=[ID]" . PHP_EOL;
+	print "    [--host-group-style=[1|2]]" . PHP_EOL;
+	print "    (host group styles:" . PHP_EOL;
+	print "     1 = Graph Template," . PHP_EOL;
+	print "     2 = Data Query Index)" . PHP_EOL . PHP_EOL;
+
+	print "Graph node options:" . PHP_EOL;
+	print "    --graph-id=[ID]" . PHP_EOL . PHP_EOL;
+
+	print "List Options:" . PHP_EOL;
+	print "    --list-sites" . PHP_EOL;
+	print "    --list-hosts" . PHP_EOL;
+	print "    --list-trees" . PHP_EOL;
+	print "    --list-nodes --tree-id=[ID]" . PHP_EOL;
+	print "    --list-graphs --host-id=[ID]" . PHP_EOL;
 }

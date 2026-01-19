@@ -399,7 +399,9 @@ if ($scanned_directory['folders']) {
 					f_log('[ERROR] Unable to fetch RRDtool Info: ' . $file);
 
 					continue;
-				} elseif ($output == '') {
+				}
+
+				if ($output == '') {
 					f_notify(false, "\033[0;31m[FAILED]\033[0m");
 					f_log('[ERROR] Unable to fetch RRDtool Info: ' . $file);
 

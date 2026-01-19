@@ -40,11 +40,10 @@ if (cacti_sizeof($parms) == 0) {
 
 	exit(1);
 } else {
-	$userId    = 0;
-
 	// TODO replace magic numbers by global constants, treat user_admin as well
 	$itemTypes = ['graph' => 1, 'tree' => 2, 'host' => 3, 'graph_template' => 4];
 
+	$userId   = 0;
 	$itemType = 0;
 	$itemId   = 0;
 	$hostId   = 0;
@@ -75,7 +74,7 @@ if (cacti_sizeof($parms) == 0) {
 				if (($value == 'graph') || ($value == 'tree') || ($value == 'host') || ($value == 'graph_template')) {
 					$itemType = $itemTypes[$value];
 				} else {
-					print "ERROR: Invalid Item Type: ($value)\n\n";
+					print "ERROR: Invalid Item Type: ($value)" . PHP_EOL . PHP_EOL;
 					display_help();
 
 					exit(1);
@@ -132,7 +131,7 @@ if (cacti_sizeof($parms) == 0) {
 				exit(0);
 
 			default:
-				print "ERROR: Invalid Argument: ($arg)\n\n";
+				print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
 				display_help();
 
 				exit(1);
@@ -165,9 +164,9 @@ if (cacti_sizeof($parms) == 0) {
 	}
 
 	if ($displayGraphs) {
-		if (!isset($hostId) || ($hostId === 0) || (!db_fetch_cell("SELECT id FROM host WHERE id=$hostId"))) {
-			print "ERROR: You must supply a valid host_id before you can list its graphs\n";
-			print "Try --list-hosts\n";
+		if (!isset($hostId) || ($hostId === 0) || (!db_fetch_cell_prepared("SELECT id FROM host WHERE id = ?", [$hostId]))) {
+			print "ERROR: You must supply a valid host_id before you can list its graphs" . PHP_EOL;
+			print "Try --list-hosts" . PHP_EOL;
 			display_help();
 
 			exit(1);
@@ -196,10 +195,10 @@ if (cacti_sizeof($parms) == 0) {
 
 	if (isset($userId) && $userId > 0) {
 		// verify existing user id
-		if (db_fetch_cell("SELECT id FROM user_auth WHERE id=$userId")) {
+		if (db_fetch_cell_prepared("SELECT id FROM user_auth WHERE id = ?", [$userId])) {
 			array_push($userIds, $userId);
 		} else {
-			print "ERROR: Invalid Userid: ($value)\n\n";
+			print "ERROR: Invalid Userid: ($value)" . PHP_EOL . PHP_EOL;
 			display_help();
 
 			exit(1);
@@ -209,14 +208,14 @@ if (cacti_sizeof($parms) == 0) {
 
 	// verify --item-id
 	if ($itemType == 0) {
-		print "ERROR: --item-type missing. Please specify.\n\n";
+		print "ERROR: --item-type missing. Please specify." . PHP_EOL . PHP_EOL;
 		display_help();
 
 		exit(1);
 	}
 
 	if ($itemId == 0) {
-		print "ERROR: --item-id missing. Please specify.\n\n";
+		print "ERROR: --item-id missing. Please specify." . PHP_EOL . PHP_EOL;
 		display_help();
 
 		exit(1);
@@ -225,8 +224,8 @@ if (cacti_sizeof($parms) == 0) {
 	// TODO replace magic numbers by global constants, treat user_admin as well
 	switch ($itemType) {
 		case 1: // graph
-			if (!db_fetch_cell("SELECT local_graph_id FROM graph_templates_graph WHERE local_graph_id=$itemId")) {
-				print "ERROR: Invalid Graph item id: ($itemId)\n\n";
+			if (!db_fetch_cell_prepared("SELECT local_graph_id FROM graph_templates_graph WHERE local_graph_id = ?", [$itemId])) {
+				print "ERROR: Invalid Graph item id: ($itemId)" . PHP_EOL . PHP_EOL;
 				display_help();
 
 				exit(1);
@@ -234,8 +233,8 @@ if (cacti_sizeof($parms) == 0) {
 
 			break;
 		case 2: // tree
-			if (!db_fetch_cell("SELECT id FROM graph_tree WHERE id=$itemId")) {
-				print "ERROR: Invalid Tree item id: ($itemId)\n\n";
+			if (!db_fetch_cell_prepared("SELECT id FROM graph_tree WHERE id = ?", [$itemId])) {
+				print "ERROR: Invalid Tree item id: ($itemId)" . PHP_EOL . PHP_EOL;
 				display_help();
 
 				exit(1);
@@ -243,8 +242,8 @@ if (cacti_sizeof($parms) == 0) {
 
 			break;
 		case 3: // host
-			if (!db_fetch_cell("SELECT id FROM host WHERE id=$itemId")) {
-				print "ERROR: Invalid Host item id: ($itemId)\n\n";
+			if (!db_fetch_cell_prepared("SELECT id FROM host WHERE id = ?", [$itemId])) {
+				print "ERROR: Invalid Host item id: ($itemId)" . PHP_EOL . PHP_EOL;
 				display_help();
 
 				exit(1);
@@ -252,8 +251,8 @@ if (cacti_sizeof($parms) == 0) {
 
 			break;
 		case 4: // graph_template
-			if (!db_fetch_cell("SELECT id FROM graph_templates WHERE id=$itemId")) {
-				print "ERROR: Invalid Graph Template item id: ($itemId)\n\n";
+			if (!db_fetch_cell_prepared("SELECT id FROM graph_templates WHERE id = ?", [$itemId])) {
+				print "ERROR: Invalid Graph Template item id: ($itemId)" . PHP_EOL . PHP_EOL;
 				display_help();
 
 				exit(1);
@@ -264,26 +263,33 @@ if (cacti_sizeof($parms) == 0) {
 	// verified item-id
 
 	foreach ($userIds as $id) {
-		db_execute("REPLACE INTO user_auth_perms (user_id, item_id, type) VALUES ($id, $itemId, $itemType)");
+		db_execute_prepared("REPLACE INTO user_auth_perms (user_id, item_id, type) VALUES (?, ?, ?)", [$id, $itemId, $itemType]);
 	}
 }
 
-// display_version - displays version information
-function display_version() {
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
+function display_version() : void {
 	$version = get_cacti_cli_version();
-	print "Cacti Add Permissions Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Add Permissions Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL . PHP_EOL;
 }
 
-function display_help() {
+function display_help() : void {
 	display_version();
 
-	print "\nusage: add_perms.php [ --user-id=[ID] ]\n";
-	print "    --item-type=[graph|tree|host|graph_template]\n";
-	print "    --item-id [--quiet]\n\n";
-	print "Where item-id is the id of the object of type item-type\n\n";
-	print "List Options:\n";
-	print "    --list-users\n";
-	print "    --list-trees\n";
-	print "    --list-graph-templates\n";
-	print "    --list-graphs --host-id=[ID]\n";
+	print PHP_EOL;
+	print "usage: add_perms.php [ --user-id=[ID] ]" . PHP_EOL;
+	print "    --item-type=[graph|tree|host|graph_template]" . PHP_EOL;
+	print "    --item-id [--quiet]" . PHP_EOL . PHP_EOL;
+
+	print "Where item-id is the id of the object of type item-type" . PHP_EOL . PHP_EOL;
+
+	print "List Options:" . PHP_EOL;
+	print "    --list-users" . PHP_EOL;
+	print "    --list-trees" . PHP_EOL;
+	print "    --list-graph-templates" . PHP_EOL;
+	print "    --list-graphs --host-id=[ID]" . PHP_EOL;
 }

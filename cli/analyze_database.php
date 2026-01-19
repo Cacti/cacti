@@ -29,7 +29,7 @@ require(__DIR__ . '/../include/cli_check.php');
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-global $debug;
+global $debug, $database_default;
 
 $debug = false;
 $local = false;
@@ -69,7 +69,7 @@ if (cacti_sizeof($parms)) {
 				exit(0);
 
 			default:
-				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 				display_help();
 
 				exit(1);
@@ -77,12 +77,16 @@ if (cacti_sizeof($parms)) {
 	}
 }
 
-print "NOTE: Analyzing All Cacti Database Tables\n";
+print "NOTE: Analyzing All Cacti Database Tables" . PHP_EOL;
 
-if (!$local && $config['poller_id'] > 1) {
-	db_switch_remote_to_main();
+if (!$local) {
+	if (POLLER_ID > 1) {
+		db_switch_remote_to_main();
 
-	print 'NOTE: Repairing Tables for Main Database' . PHP_EOL;
+		print 'NOTE: Repairing Tables for Main Database' . PHP_EOL;
+	} else {
+		print 'NOTE: Repairing Tables for Local Database' . PHP_EOL;
+	}
 } else {
 	print 'NOTE: Repairing Tables for Local Database' . PHP_EOL;
 }
@@ -99,26 +103,35 @@ if (cacti_sizeof($tables)) {
 			$status = db_execute('ANALYZE TABLE ' . $table['Tables_in_' . $database_default] . $form);
 		}
 
-		print ($status == 0 ? ' Failed' : ' Successful') . "\n";
+		print ($status == 0 ? ' Failed' : ' Successful') . PHP_EOL;
 	}
 
 	cacti_log('ANALYSIS STATS: Analyzing Cacti Tables Complete.  Total time ' . (time() - $start) . ' seconds.', false, 'SYSTEM');
 }
 
-// display_version - displays version information
-function display_version() {
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
+function display_version() : void {
 	$version = get_cacti_cli_version();
-	print "Cacti Analyze Database Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Analyze Database Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-// display_help - displays the usage of the function
-function display_help() {
+/**
+ * display_help - displays the usage of the function
+ *
+ * @return void
+ */
+function display_help() : void {
 	display_version();
 
-	print "\nusage: analyze_database.php [-d|--debug]\n\n";
-	print "A utility to recalculate the cardinality of indexes within the Cacti database.\n";
-	print "It's important to periodically run this utility especially on larger systems.\n\n";
-	print "Optional:\n";
-	print "     --local   - Perform the action on the Remote Data Collector if run from there\n";
-	print "-d | --debug   - Display verbose output during execution\n\n";
+	print PHP_EOL;
+	print "usage: analyze_database.php [-d|--debug]" . PHP_EOL . PHP_EOL;
+	print "A utility to recalculate the cardinality of indexes within the Cacti database." . PHP_EOL;
+	print "It's important to periodically run this utility especially on larger systems." . PHP_EOL . PHP_EOL;
+	print "Optional:" . PHP_EOL;
+	print "     --local   - Perform the action on the Remote Data Collector if run from there" . PHP_EOL;
+	print "-d | --debug   - Display verbose output during execution" . PHP_EOL . PHP_EOL;
 }

@@ -37,9 +37,11 @@ require_once(CACTI_PATH_LIBRARY . '/template.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
 // switch to main database for cli's
-if ($config['poller_id'] > 1) {
+if (POLLER_ID > 1) {
 	db_switch_remote_to_main();
 }
+
+global $reindex_types;
 
 // process calling arguments
 $parms = $_SERVER['argv'];
@@ -71,7 +73,7 @@ if (cacti_sizeof($parms)) {
 				$host_id = trim($value);
 
 				if (!is_numeric($host_id)) {
-					print "ERROR: You must supply a valid host-id to run this script!\n";
+					print 'ERROR: You must supply a valid host-id to run this script!' . PHP_EOL;
 
 					exit(1);
 				}
@@ -81,7 +83,7 @@ if (cacti_sizeof($parms)) {
 				$data_query_id = $value;
 
 				if (!is_numeric($data_query_id)) {
-					print "ERROR: You must supply a numeric data-query-id for all hosts!\n";
+					print 'ERROR: You must supply a numeric data-query-id for all hosts!' . PHP_EOL;
 
 					exit(1);
 				}
@@ -111,7 +113,7 @@ if (cacti_sizeof($parms)) {
 
 							break;
 						default:
-							print "ERROR: You must supply a valid reindex method for all hosts!\n";
+							print 'ERROR: You must supply a valid reindex method for all hosts!' . PHP_EOL;
 
 							exit(1);
 					}
@@ -143,7 +145,7 @@ if (cacti_sizeof($parms)) {
 
 				break;
 			default:
-				print "ERROR: Invalid Argument: ($arg)\n\n";
+				print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
 				display_help();
 
 				exit(1);
@@ -170,19 +172,19 @@ if (cacti_sizeof($parms)) {
 	 * for update / insert options
 	 */
 	if (!isset($host_id)) {
-		print "ERROR: You must supply a valid host-id for all hosts!\n";
+		print 'ERROR: You must supply a valid host-id for all hosts!' . PHP_EOL;
 
 		exit(1);
 	}
 
 	if (!isset($data_query_id)) {
-		print "ERROR: You must supply a valid data-query-id for all hosts!\n";
+		print 'ERROR: You must supply a valid data-query-id for all hosts!' . PHP_EOL;
 
 		exit(1);
 	}
 
 	if (!isset($reindex_method)) {
-		print "ERROR: You must supply a valid reindex-method for all hosts!\n";
+		print 'ERROR: You must supply a valid reindex-method for all hosts!' . PHP_EOL;
 
 		exit(1);
 	}
@@ -191,7 +193,7 @@ if (cacti_sizeof($parms)) {
 	$host_name = db_fetch_cell('SELECT hostname FROM host WHERE id = ' . $host_id);
 
 	if (!isset($host_name)) {
-		print "ERROR: Unknown Host Id ($host_id)\n";
+		print "ERROR: Unknown Host Id ($host_id)" . PHP_EOL;
 
 		exit(1);
 	}
@@ -200,7 +202,7 @@ if (cacti_sizeof($parms)) {
 	$data_query_name = db_fetch_cell('SELECT name FROM snmp_query WHERE id = ' . $data_query_id);
 
 	if (!isset($data_query_name)) {
-		print "ERROR: Unknown Data Query Id ($data_query_id)\n";
+		print "ERROR: Unknown Data Query Id ($data_query_id)" . PHP_EOL;
 
 		exit(1);
 	}
@@ -210,7 +212,7 @@ if (cacti_sizeof($parms)) {
 
 	if ((isset($exists_already)) &&
 		($exists_already > 0)) {
-		print "ERROR: Data Query is already associated for host: ($host_id: $host_name) data query ($data_query_id: $data_query_name) reindex method ($reindex_method: " . $reindex_types[$reindex_method] . ")\n";
+		print "ERROR: Data Query is already associated for host: ($host_id: $host_name) data query ($data_query_id: $data_query_name) reindex method ($reindex_method: " . $reindex_types[$reindex_method] . ')' . PHP_EOL;
 
 		exit(1);
 	} else {
@@ -226,11 +228,11 @@ if (cacti_sizeof($parms)) {
 	}
 
 	if (is_error_message()) {
-		print "ERROR: Failed to add this data query for host ($host_id: $host_name) data query ($data_query_id: $data_query_name) reindex method ($reindex_method: " . $reindex_types[$reindex_method] . ")\n";
+		print "ERROR: Failed to add this data query for host ($host_id: $host_name) data query ($data_query_id: $data_query_name) reindex method ($reindex_method: " . $reindex_types[$reindex_method] . ')' . PHP_EOL;
 
 		exit(1);
 	} else {
-		print "Success - Host ($host_id: $host_name) data query ($data_query_id: $data_query_name) reindex method ($reindex_method: " . $reindex_types[$reindex_method] . ")\n";
+		print "Success - Host ($host_id: $host_name) data query ($data_query_id: $data_query_name) reindex method ($reindex_method: " . $reindex_types[$reindex_method] . ')' . PHP_EOL;
 
 		exit;
 	}
@@ -240,27 +242,32 @@ if (cacti_sizeof($parms)) {
 	exit;
 }
 
-// display_version - displays version information
-function display_version() {
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
+function display_version() : void {
 	$version = get_cacti_cli_version();
-	print "Cacti Add Data Query Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Add Data Query Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-function display_help() {
+function display_help() : void {
 	display_version();
 
-	print "\nusage: add_data_query.php --host-id=[ID] --data-query-id=[dq_id] --reindex-method=[method] [--quiet]\n\n";
-	print "Required Options:\n";
-	print "    --host-id         the numerical ID of the host\n";
-	print "    --data-query-id   the numerical ID of the data_query to be added\n";
-	print "    --reindex-method  the reindex method to be used for that data query\n";
-	print "                      0|None   = no reindexing\n";
-	print "                      1|Uptime = Uptime goes Backwards\n";
-	print "                      2|Index  = Index Count Changed\n";
-	print "                      3|Fields = Verify all Fields\n\n";
-	print "List Options:\n";
-	print "    --list-hosts\n";
-	print "    --list-data-queries\n";
-	print "    --quiet - batch mode value return\n\n";
-	print "If the data query was already associated, it will be reindexed.\n\n";
+	print PHP_EOL;
+	print 'usage: add_data_query.php --host-id=[ID] --data-query-id=[dq_id] --reindex-method=[method] [--quiet]' . PHP_EOL . PHP_EOL;
+	print 'Required Options:' . PHP_EOL;
+	print '    --host-id         the numerical ID of the host' . PHP_EOL;
+	print '    --data-query-id   the numerical ID of the data_query to be added' . PHP_EOL;
+	print '    --reindex-method  the reindex method to be used for that data query' . PHP_EOL;
+	print '                      0|None   = no reindexing' . PHP_EOL;
+	print '                      1|Uptime = Uptime goes Backwards' . PHP_EOL;
+	print '                      2|Index  = Index Count Changed' . PHP_EOL;
+	print '                      3|Fields = Verify all Fields' . PHP_EOL . PHP_EOL;
+	print 'List Options:' . PHP_EOL;
+	print '    --list-hosts' . PHP_EOL;
+	print '    --list-data-queries' . PHP_EOL;
+	print '    --quiet - batch mode value return' . PHP_EOL . PHP_EOL;
+	print 'If the data query was already associated, it will be reindexed.' . PHP_EOL . PHP_EOL;
 }

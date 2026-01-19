@@ -27,7 +27,7 @@ require(__DIR__ . '/../include/cli_check.php');
 require_once(CACTI_PATH_LIBRARY . '/api_automation_tools.php');
 
 // switch to main database for cli's
-if ($config['poller_id'] > 1) {
+if (POLLER_ID > 1) {
 	db_switch_remote_to_main();
 }
 
@@ -45,9 +45,10 @@ if (cacti_sizeof($params) == 0) {
 	// TODO replace magic numbers by global constants, treat user_admin as well
 	$itemTypes = ['graph' => 1, 'tree' => 2, 'host' => 3, 'graph_template' => 4];
 
-	$itemType = 0;
-	$itemId   = 0;
-	$hostId   = 0;
+	$itemType     = 0;
+	$itemTypeName = 'UNKNOWN';
+	$itemId       = 0;
+	$hostId       = 0;
 
 	$quietMode             = false;
 	$displayGroups         = false;
@@ -67,7 +68,7 @@ if (cacti_sizeof($params) == 0) {
 
 		switch ($arg) {
 			case '--group-id':
-				$groupId = $value;
+				$groupId = intval($value);
 
 				break;
 			case '--item-type':
@@ -76,7 +77,7 @@ if (cacti_sizeof($params) == 0) {
 					$itemType     = $itemTypes[$value];
 					$itemTypeName = $value;
 				} else {
-					print "ERROR: Invalid Item Type: ($value)\n\n";
+					print "ERROR: Invalid Item Type: ($value)" . PHP_EOL . PHP_EOL;
 					display_help();
 
 					exit(1);
@@ -84,11 +85,11 @@ if (cacti_sizeof($params) == 0) {
 
 				break;
 			case '--item-id':
-				$itemId = $value;
+				$itemId = intval($value);
 
 				break;
 			case '--host-id':
-				$hostId = $value;
+				$hostId = intval($value);
 
 				break;
 			case '--list-groups':
@@ -133,7 +134,7 @@ if (cacti_sizeof($params) == 0) {
 				exit(0);
 
 			default:
-				print "ERROR: Invalid Argument: ($arg)\n\n";
+				print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
 				display_help();
 
 				exit(1);
@@ -166,9 +167,10 @@ if (cacti_sizeof($params) == 0) {
 	}
 
 	if ($displayGraphs) {
-		if (!isset($hostId) || ($hostId === 0) || (!db_fetch_cell_prepared('SELECT id FROM host WHERE id = ?', [$hostId]))) {
-			print "ERROR: You must supply a valid host_id before you can list its graphs\n";
-			print "Try --list-hosts\n";
+		if ($hostId == 0 || (!db_fetch_cell_prepared('SELECT id FROM host WHERE id = ?', [$hostId]))) {
+			print "ERROR: You must supply a valid host_id before you can list its graphs" . PHP_EOL;
+			print "Try --list-hosts" . PHP_EOL;
+
 			display_help();
 
 			exit(1);
@@ -189,12 +191,12 @@ if (cacti_sizeof($params) == 0) {
 	// verify, that a valid groupid is provided
 	$groupIds = [];
 
-	if (isset($groupId) && $groupId > 0) {
+	if ($groupId > 0) {
 		// verify existing user id
 		if (db_fetch_cell_prepared('SELECT id FROM user_auth_group WHERE id = ?', [$groupId])) {
 			array_push($groupIds, $groupId);
 		} else {
-			print "ERROR: Invalid Groupid: ($value)\n\n";
+			print "ERROR: Invalid Groupid: ($groupId)" . PHP_EOL . PHP_EOL;
 			display_help();
 
 			exit(1);
@@ -204,14 +206,14 @@ if (cacti_sizeof($params) == 0) {
 
 	// verify --item-id
 	if ($itemType == 0) {
-		print "ERROR: --item-type missing. Please specify.\n\n";
+		print "ERROR: --item-type missing. Please specify." . PHP_EOL . PHP_EOL;
 		display_help();
 
 		exit(1);
 	}
 
 	if ($itemId == 0) {
-		print "ERROR: --item-id missing. Please specify.\n\n";
+		print "ERROR: --item-id missing. Please specify." . PHP_EOL . PHP_EOL;
 		display_help();
 
 		exit(1);
@@ -221,7 +223,7 @@ if (cacti_sizeof($params) == 0) {
 	switch ($itemType) {
 		case 1: // graph
 			if (!db_fetch_cell_prepared('SELECT local_graph_id FROM graph_templates_graph WHERE local_graph_id = ?', [$itemId])) {
-				print "ERROR: Invalid Graph item id: ($itemId)\n\n";
+				print "ERROR: Invalid Graph item id: ($itemId)" . PHP_EOL . PHP_EOL;
 				display_help();
 
 				exit(1);
@@ -230,7 +232,7 @@ if (cacti_sizeof($params) == 0) {
 			break;
 		case 2: // tree
 			if (!db_fetch_cell_prepared('SELECT id FROM graph_tree WHERE id = ?', [$itemId])) {
-				print "ERROR: Invalid Tree item id: ($itemId)\n\n";
+				print "ERROR: Invalid Tree item id: ($itemId)" . PHP_EOL . PHP_EOL;
 				display_help();
 
 				exit(1);
@@ -239,7 +241,7 @@ if (cacti_sizeof($params) == 0) {
 			break;
 		case 3: // host
 			if (!db_fetch_cell_prepared('SELECT id FROM host WHERE id = ?', [$itemId])) {
-				print "ERROR: Invalid Host item id: ($itemId)\n\n";
+				print "ERROR: Invalid Host item id: ($itemId)" . PHP_EOL . PHP_EOL;
 				display_help();
 
 				exit(1);
@@ -248,7 +250,7 @@ if (cacti_sizeof($params) == 0) {
 			break;
 		case 4: // graph_template
 			if (!db_fetch_cell_prepared('SELECT id FROM graph_templates WHERE id = ?', [$itemId])) {
-				print "ERROR: Invalid Graph Template item id: ($itemId)\n\n";
+				print "ERROR: Invalid Graph Template item id: ($itemId)" . PHP_EOL . PHP_EOL;
 				display_help();
 
 				exit(1);
@@ -270,29 +272,34 @@ if (cacti_sizeof($params) == 0) {
 	 * Right now it only does hostname */
 	$idName = db_fetch_cell_prepared('SELECT hostname FROM host WHERE id = ?', [$itemId]);
 
-	print "Group Permissions Created - Group-Name: ($groupId - \"$groupName\" ) Item-Type: ($itemType - $itemTypeName) Item-ID: ($itemId - $idName)\n";
+	print "Group Permissions Created - Group-Name: ($groupId - \"$groupName\" ) Item-Type: ($itemType - $itemTypeName) Item-ID: ($itemId - $idName)" . PHP_EOL;
 
 	exit(0);
 }
 
-// display_version - displays version information
-function display_version() {
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
+function display_version() : void {
 	$version = get_cacti_cli_version();
-	print "Cacti Add Group Permissions Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Add Group Permissions Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-function display_help() {
+function display_help() : void {
 	display_version();
 
-	print "\nusage: add_group_perms.php [ --group-id=[ID] ]\n";
-	print "    --item-type=[graph|tree|host|graph_template]\n";
-	print "    --item-id [--quiet]\n\n";
-	print "Where item-id is the id of the object of type item-type\n\n";
-	print "List Options:\n";
-	print "    --list-users\n";
-	print "    --list-trees\n";
-	print "    --list-hosts\n";
-	print "    --list-groups\n";
-	print "    --list-graph-templates\n";
-	print "    --list-graphs --host-id=[ID]\n";
+	print PHP_EOL;
+	print "usage: add_group_perms.php [ --group-id=[ID] ]" . PHP_EOL;
+	print "    --item-type=[graph|tree|host|graph_template]" . PHP_EOL;
+	print "    --item-id [--quiet]" . PHP_EOL . PHP_EOL;
+	print "Where item-id is the id of the object of type item-type" . PHP_EOL . PHP_EOL;
+	print "List Options:" . PHP_EOL;
+	print "    --list-users" . PHP_EOL;
+	print "    --list-trees" . PHP_EOL;
+	print "    --list-hosts" . PHP_EOL;
+	print "    --list-groups" . PHP_EOL;
+	print "    --list-graph-templates" . PHP_EOL;
+	print "    --list-graphs --host-id=[ID]" . PHP_EOL;
 }
