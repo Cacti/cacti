@@ -515,6 +515,8 @@ function recreateXML($new_rrd) {
 	}
 
 	foreach ($new_rrd['rra'] as $rra_num => $rra) {
+		$output = array();
+
 		$rrd .= "\t<rra>\n";
 		$rrd .= "\t\t<cf> " . $rra['cf'] . " </cf>\n";
 		$rrd .= "\t\t<pdp_per_row> " . $rra['pdp_per_row'] . " </pdp_per_row>\n";
@@ -530,8 +532,6 @@ function recreateXML($new_rrd) {
 			$rrd .= "\t\t\t\t<value> " . $pdp['value'] . " </value>\n";
 			$rrd .= "\t\t\t\t<unknown_datapoints> " . $pdp['unknown_datapoints'] . " </unknown_datapoints>\n";
 			$rrd .= "\t\t\t</ds>\n";
-
-			$output = array();
 
 			foreach ($new_rrd['rra'][$rra_num]['database'] as $dsnum => $v) {
 				foreach ($v as $time => $value) {

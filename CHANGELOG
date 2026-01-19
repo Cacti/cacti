@@ -37,6 +37,7 @@ Cacti CHANGELOG
 -issue#6518: Ensure that the csrf-secret file is written in a less permissive way
 -issue#6519: Realtime generates errors in the Cacti Log after a Graph has been removed
 -issue: Correct some PHPStan issues found in audit of Aggregate that can lead to warnings
+-issue: Using the rrd_splice.php cli can result in the loss of data
 -feature#6523: When disabling a users, ensure that their stored authentication cookies are remove and any sessions cleared
 -feature#6524: When changing your password, logout from all sessions
 -feature#6534: Periodically recycle the PHP Session ID to improve Cacti site security
