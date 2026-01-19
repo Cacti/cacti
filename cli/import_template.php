@@ -29,7 +29,7 @@ require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
 // switch to main database for cli's
-if ($config['poller_id'] > 1) {
+if (POLLER_ID > 1) {
 	db_switch_remote_to_main();
 }
 
@@ -77,7 +77,7 @@ if (cacti_sizeof($parms)) {
 
 				break;
 			case '--profile-id':
-				$profile_id = trim($value);
+				$profile_id = intval($value);
 
 				break;
 			case '--help':
@@ -150,20 +150,27 @@ if (cacti_sizeof($parms)) {
 	exit(1);
 }
 
-// display_version - displays version information
-function display_version() {
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Import Template Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-function display_help() {
+function display_help() : void {
 	display_version();
 
 	print PHP_EOL;
 	print 'usage: import_template.php --filename=[filename] [--with-profile | --profile-id=N]' . PHP_EOL . PHP_EOL;
+
 	print 'A utility to allow Cacti Templates to be imported from the command line.' . PHP_EOL . PHP_EOL;
+
 	print 'Required:' . PHP_EOL;
 	print '    --filename        The name of the XML file to import' . PHP_EOL . PHP_EOL;
+
 	print 'Optional:' . PHP_EOL;
 	print '    --preview         Preview the Template Import, do not import' . PHP_EOL;
 	print '    --with-profile    Use the default system Data Source Profile' . PHP_EOL;

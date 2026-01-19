@@ -39,7 +39,7 @@ require_once(CACTI_PATH_LIBRARY . '/utility.php');
 ini_set('max_execution_time', '0');
 
 // switch to main database for cli's
-if ($config['poller_id'] > 1) {
+if (POLLER_ID > 1) {
 	db_switch_remote_to_main();
 }
 
@@ -49,15 +49,16 @@ array_shift($parms);
 
 // utility requires input parameters
 if (cacti_sizeof($parms) == 0) {
-	print "ERROR: You must supply input parameters\n\n";
+	print "ERROR: You must supply input parameters" . PHP_EOL . PHP_EOL;
 	display_help();
 
 	exit(1);
 }
 
-$debug    = false;
-$template = '';
-$hostid   = '';
+$debug             = false;
+$host_template_id  = '';
+$host_id           = '';
+$params            = [];
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
@@ -71,7 +72,7 @@ if (cacti_sizeof($parms)) {
 		switch ($arg) {
 			case '--host-template':
 			case '--host-template-id':
-				$template = $value;
+				$host_template_id = $value;
 
 				break;
 			case '--host-id':
@@ -101,7 +102,7 @@ if (cacti_sizeof($parms)) {
 				exit(0);
 
 			default:
-				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 				display_help();
 
 				exit(1);
@@ -112,20 +113,22 @@ if (cacti_sizeof($parms)) {
 // determine the hosts to reindex
 if (strtolower($host_id) == 'all') {
 	$sql_where = '';
-} elseif (is_numeric($host_id)) {
-	$sql_where = ' WHERE id=' . $host_id;
+} elseif ($host_id > 0) {
+	$sql_where = ' WHERE id = ?';
+	$params[] = $host_id;
 } else {
-	print "ERROR: You must specify either a host_id or 'all' to proceed.\n\n";
+	print "ERROR: You must specify either a host_id or 'all' to proceed." . PHP_EOL . PHP_EOL;
 	display_help();
 
 	exit(1);
 }
 
 // determine data queries to rerun
-if (is_numeric($template) && $template > 0) {
-	$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . " host_template_id=$template";
+if ($host_template_id > 0) {
+	$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . " host_template_id = ?";
+	$params[] = $host_template_id;
 } else {
-	print "ERROR: You must specify a Host Template to proceed.\n\n";
+	print "ERROR: You must specify a Host Template to proceed." . PHP_EOL . PHP_EOL;
 	display_help();
 
 	exit(1);
@@ -135,14 +138,14 @@ if (is_numeric($template) && $template > 0) {
 $exists = db_fetch_cell_prepared('SELECT id
 	FROM host_template
 	WHERE id = ?',
-	[$template]);
+	[$host_template_id]);
 
 if ($exists > 0) {
-	$hosts = db_fetch_assoc("SELECT * FROM host $sql_where");
+	$hosts = db_fetch_assoc_prepared("SELECT * FROM host $sql_where", $params);
 
 	if (cacti_sizeof($hosts)) {
 		foreach ($hosts as $host) {
-			print "NOTE: Updating Host '" . $host['description'] . "'\n";
+			print "NOTE: Updating Host '" . $host['description'] . "'" . PHP_EOL;
 
 			$snmp_queries = db_fetch_assoc_prepared('SELECT snmp_query_id
 				FROM host_template_snmp_query
@@ -150,10 +153,10 @@ if ($exists > 0) {
 				[$host['host_template_id']]);
 
 			if (cacti_sizeof($snmp_queries) > 0) {
-				print "NOTE: Updating Data Queries. There were '" . cacti_sizeof($snmp_queries) . "' Found\n";
+				print "NOTE: Updating Data Queries. There were '" . cacti_sizeof($snmp_queries) . "' Found" . PHP_EOL;
 
 				foreach ($snmp_queries as $snmp_query) {
-					print "NOTE: Updating Data Query ID '" . $snmp_query['snmp_query_id'] . "'\n";
+					print "NOTE: Updating Data Query ID '" . $snmp_query['snmp_query_id'] . "'" . PHP_EOL;
 
 					db_execute_prepared('INSERT IGNORE INTO host_snmp_query
 						(host_id, snmp_query_id, reindex_method)
@@ -175,7 +178,7 @@ if ($exists > 0) {
 				[$host['host_template_id']]);
 
 			if (cacti_sizeof($graph_templates) > 0) {
-				print "NOTE: Updating Graph Templates. There were '" . cacti_sizeof($graph_templates) . "' Found\n";
+				print "NOTE: Updating Graph Templates. There were '" . cacti_sizeof($graph_templates) . "' Found" . PHP_EOL;
 
 				foreach ($graph_templates as $graph_template) {
 					db_execute_prepared('INSERT IGNORE INTO host_graph
@@ -196,37 +199,50 @@ if ($exists > 0) {
 		}
 	}
 } else {
-	print "ERROR: The selected Host Template does not exist, try --list-host-templates\n\n";
+	print "ERROR: The selected Host Template does not exist, try --list-host-templates" . PHP_EOL . PHP_EOL;
 
 	exit(1);
 }
 
-// display_version - displays version information
-function display_version() {
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
+function display_version() : void {
 	$version = get_cacti_cli_version();
 
-	print "Cacti Retemplate Host Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Retemplate Host Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-// display_help - displays the usage of the function
-function display_help() {
+/**
+ * display_help - displays the usage of the function
+ *
+ * @return void
+ */
+function display_help() : void {
 	display_version();
 
-	print "\nusage: host_update_template.php --host-id=[host-id|all] [--host-template=[ID]] [--debug]\n\n";
-	print "A utility to update Cacti devices with the latest Device Template\n\n";
-	print "Required:\n";
-	print "    --host-id=host_id|all - The host_id to have templates reapplied 'all' to do all hosts\n";
-	print "    --host-template=ID    - Which Host Template to Refresh\n\n";
-	print "Optional:\n";
-	print "    --debug               - Display verbose output during execution\n\n";
-	print "List Options:\n";
-	print "    --list-host-templates - Lists all available Host Templates\n\n";
+	print PHP_EOL;
+	print "usage: host_update_template.php --host-id=[host-id|all] [--host-template=[ID]] [--debug]" . PHP_EOL . PHP_EOL;
+
+	print "A utility to update Cacti devices with the latest Device Template" . PHP_EOL . PHP_EOL;
+
+	print "Required:" . PHP_EOL;
+	print "    --host-id=host_id|all - The host_id to have templates reapplied 'all' to do all hosts" . PHP_EOL;
+	print "    --host-template=ID    - Which Host Template to Refresh" . PHP_EOL . PHP_EOL;
+
+	print "Optional:" . PHP_EOL;
+	print "    --debug               - Display verbose output during execution" . PHP_EOL;
+
+	print "List Options:" . PHP_EOL;
+	print "    --list-host-templates - Lists all available Host Templates" . PHP_EOL;
 }
 
-function debug($message) {
+function debug(string $message) : void {
 	global $debug;
 
 	if ($debug) {
-		print('DEBUG: ' . $message . "\n");
+		print('DEBUG: ' . trim($message) . PHP_EOL);
 	}
 }

@@ -75,10 +75,14 @@ if (cacti_sizeof($parms)) {
 	}
 }
 
-if (!$local && $config['poller_id'] > 1) {
-	db_switch_remote_to_main();
+if (!$local) {
+	if (POLLER_ID > 1) {
+		db_switch_remote_to_main();
 
-	print 'NOTE: Fixing MediumInt Columns for Main Database' . PHP_EOL;
+		print 'NOTE: Fixing MediumInt Columns for Main Database' . PHP_EOL;
+	} else {
+		print 'NOTE: Fixing MediumInt Columns for Local Database' . PHP_EOL;
+	}
 } else {
 	print 'NOTE: Fixing MediumInt Columns for Local Database' . PHP_EOL;
 }
@@ -87,7 +91,7 @@ $total = database_fix_mediumint_columns();
 
 print "NOTE: Column widths adjusted on $total Tables!" . PHP_EOL;
 
-function database_fix_mediumint_columns() {
+function database_fix_mediumint_columns() : int {
 	global $database_default;
 
 	$total = 0;
@@ -225,11 +229,11 @@ function database_fix_mediumint_columns() {
 	return $total;
 }
 
-function database_get_column_attribs($table, $column) {
+function database_get_column_attribs(string $table, string $column) : mixed {
 	return db_fetch_row("SHOW COLUMNS FROM $table LIKE '$column'");
 }
 
-function debug($string) {
+function debug(string $string) : void {
 	global $debug;
 
 	if ($debug) {
@@ -237,15 +241,20 @@ function debug($string) {
 	}
 }
 
-function display_version() {
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Fix Database Range Issue, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-// display_help - displays the usage of the function
-function display_help() {
+/**
+ * display_help - displays the usage of the function
+ *
+ * @return void
+ */
+function display_help() : void {
 	display_version();
 	print 'usage: fix_mediumint.php [--debug]' . PHP_EOL . PHP_EOL;
+
 	print 'Options:' . PHP_EOL;
 	print '--debug    - Display verbose output during execution' . PHP_EOL;
 	print '--local    - Perform the action on the Remote Data Collector if run from there' . PHP_EOL . PHP_EOL;

@@ -29,27 +29,27 @@ require(__DIR__ . '/../include/cli_check.php');
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
+// Defaults
+$keypair_path = CACTI_PATH_PKI;
+$generate     = false;
+$replace      = false;
+
+$author       = -1;
+$homepage     = -1;
+$email        = -1;
+$privkey      = '';
+$pubkey       = '';
+
+// For certificate
+$country      = 'US';
+$state        = 'Zion';
+$org          = '.';
+$unit         = '.';
+$days         = 2048;
+
+$shortopts = 'VvHh';
+
 if (cacti_sizeof($parms)) {
-	// Defaults
-	$keypair_path = CACTI_PATH_PKI;
-	$generate     = false;
-	$replace      = false;
-
-	$author       = -1;
-	$homepage     = -1;
-	$email        = -1;
-	$privkey      = '';
-	$pubkey       = '';
-
-	// For certificate
-	$country      = 'US';
-	$state        = 'Zion';
-	$org          = '.';
-	$unit         = '.';
-	$days         = 2048;
-
-	$shortopts = 'VvHh';
-
 	$longopts = [
 		'privkey::',
 		'pubkey::',
@@ -133,7 +133,7 @@ if (cacti_sizeof($parms)) {
 				exit(0);
 
 			default:
-				print "FATAL: Invalid Argument: ($arg)\n\n";
+				print "FATAL: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
 				display_help();
 
 				exit(1);
@@ -141,10 +141,11 @@ if (cacti_sizeof($parms)) {
 	}
 }
 
-if (!isset($replace) && !isset($generate)) {
+if (!$replace && !$generate) {
+	print "ERROR: You must specify either --replace or --generate options." . PHP_EOL;
 	display_help();
 
-	exit(0);
+	exit(1);
 }
 
 if ($author == -1) {
@@ -338,38 +339,47 @@ if ((file_exists($keypair_path . '/package.pem') || file_exists($keypair_path . 
 	print 'SUCCESS!!' . PHP_EOL;
 }
 
-// display_version - displays version information
-function display_version() {
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
+function display_version() : void {
 	if (defined('CACTI_VERSION')) {
 		$version = CACTI_VERSION;
 	} else {
 		$version = get_cacti_version();
 	}
 
-	print "Cacti Package Genkey Tool, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Package Genkey Tool, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-function display_help() {
+function display_help() : void {
 	display_version();
 
-	print "\nusage: genkey.php [options]\n\n";
-	print "This script generates a Package Authors Certificate information based upon a valid ssh key pair.\n";
-	print "If you do not have an existing ssh key pair, use the ssh-keygen command to create one before\n";
-	print "running this script.  Otherwise, the script will create one for you.\n\n";
-	print "Options:\n";
-	print "    --generate        Generate a new key pair.\n";
-	print "    --replace         Replace the existing key pair.\n\n";
-	print "Required:\n";
-	print "    --author          Registered Author Name.\n";
-	print "    --homepage        Registered Authors Homepage.\n";
-	print "    --email           Registered Authors Email.\n\n";
-	print "Required For Certificate Generation:\n";
-	print "    --country         Registered Authors Country of the Package.\n";
-	print "    --state           Registered Authors State or Province.\n";
-	print "    --org             Registered Authors Organization.\n";
-	print "    --unit            Registered Authors Organizational Unit.\n";
-	print "    --days            The number of days for the certificate to remain valid.\n\n";
-	print "Optional:\n";
-	print "    --privkey=path    Path to an existing private key.\n";
-	print "    --pubkey=path     Path to an existing public key.\n";
+	print PHP_EOL;
+	print "usage: genkey.php [options]" . PHP_EOL . PHP_EOL;
+	print "This script generates a Package Authors Certificate information based upon a valid ssh key pair." . PHP_EOL;
+	print "If you do not have an existing ssh key pair, use the ssh-keygen command to create one before" . PHP_EOL;
+	print "running this script.  Otherwise, the script will create one for you." . PHP_EOL . PHP_EOL;
+
+	print "Options:" . PHP_EOL;
+	print "    --generate        Generate a new key pair." . PHP_EOL;
+	print "    --replace         Replace the existing key pair." . PHP_EOL . PHP_EOL;
+
+	print "Required:" . PHP_EOL;
+	print "    --author          Registered Author Name." . PHP_EOL;
+	print "    --homepage        Registered Authors Homepage." . PHP_EOL;
+	print "    --email           Registered Authors Email." . PHP_EOL . PHP_EOL;
+
+	print "Required For Certificate Generation:" . PHP_EOL;
+	print "    --country         Registered Authors Country of the Package." . PHP_EOL;
+	print "    --state           Registered Authors State or Province." . PHP_EOL;
+	print "    --org             Registered Authors Organization." . PHP_EOL;
+	print "    --unit            Registered Authors Organizational Unit." . PHP_EOL;
+	print "    --days            The number of days for the certificate to remain valid." . PHP_EOL;
+
+	print "Optional:" . PHP_EOL;
+	print "    --privkey=path    Path to an existing private key." . PHP_EOL;
+	print "    --pubkey=path     Path to an existing public key." . PHP_EOL;
 }
