@@ -25,7 +25,7 @@
 
 require(__DIR__ . '/../include/cli_check.php');
 
-if ($config['poller_id'] > 1) {
+if (POLLER_ID > 1) {
 	print 'FATAL: This utility is designed for the main Data Collector only' . PHP_EOL;
 
 	exit(1);
@@ -130,10 +130,12 @@ $group_id      = filegroup($base_rra_path);
 // turn on extended paths from in the database
 set_config_option('extended_paths', 'on');
 
-$pattern = read_config_option('extended_paths_type');
-$maxdirs = read_config_option('extended_paths_hashes');
+$pattern  = read_config_option('extended_paths_type');
+$maxdirs  = intval(read_config_option('extended_paths_hashes'));
+$pattern1 = '';
+$pattern2 = '';
 
-if (empty($maxdirs) || $maxdirs < 0 || !is_numeric($maxdirs)) {
+if (empty($maxdirs) || $maxdirs < 0) {
 	$maxdirs = 100;
 }
 
@@ -247,6 +249,7 @@ foreach ($data_sources as $info) {
 			[$local_data_id]);
 
 		$data_source_path1 = $base_rra_path . '/' . strtolower(clean_up_file_name($info['description'])) . '_' . $local_data_id . '.rrd';
+		$data_source_path2 = '';
 
 		if ($pattern == '' || $pattern == 'device') {
 			$data_source_path2 = $base_rra_path . '/' . $info['host_id'] . '/' . $info['snmp_query_id'] . '/' . $local_data_id . '.rrd';
@@ -260,7 +263,7 @@ foreach ($data_sources as $info) {
 
 		if (file_exists($data_source_path1)) {
 			$old_rrd_path = $data_source_path1;
-		} elseif (file_exists($data_source_path2)) {
+		} elseif ($data_source_path2 != '' && file_exists($data_source_path2)) {
 			$old_rrd_path = $data_source_path2;
 		} else {
 			$warn_count++;
@@ -319,12 +322,11 @@ print "NOTE: RRD Restructure Complete: $stats" . PHP_EOL;
 /**
  * struct_debug - Simple debug function for restructuring
  *
- * @param  (string) - The output string
- * @param mixed $string
+ * @param string $string - The output string
  *
- * @return (void)
+ * @return void
  */
-function struct_debug($string) {
+function struct_debug(string $string) : void {
 	global $debug;
 
 	if ($debug) {
@@ -336,11 +338,11 @@ function struct_debug($string) {
  * update database - update database pointers to point to the new
  * database location
  *
- * @param  (array) - $info - an array of local_data_id, new_rrd_path, and the new_data_source_path
+ * @param array $info - an array of local_data_id, new_rrd_path, and the new_data_source_path
  *
- * @return (void)
+ * @return void
  */
-function update_database($info) {
+function update_database(array $info) : void {
 	// update table poller_item
 	db_execute_prepared('UPDATE poller_item
 		SET rrd_path = ?
@@ -359,12 +361,12 @@ function update_database($info) {
 /**
  * sp_recursive_chown - Recursively chown on a path
  *
- * @param  (string)     $path
- * @param  (string|int) $user
+ * @param string $path
+ * @param mixed  $user
  *
- * @return (void)
+ * @return bool
  */
-function sp_recursive_chown($path, $user) {
+function sp_recursive_chown(string $path, mixed $user) : bool {
 	$directory = rtrim($path, '/');
 
 	if ($items = glob($path . '/*')) {
@@ -383,12 +385,12 @@ function sp_recursive_chown($path, $user) {
 /**
  * sp_recursive_chgrp - Recursively chgrp on a path
  *
- * @param  (string)     $path
- * @param  (string|int) $group
+ * @param string $path
+ * @param mixed  $group
  *
- * @return (void)
+ * @return bool
  */
-function sp_recursive_chgrp($path, $group) {
+function sp_recursive_chgrp(string $path, mixed $group) : bool {
 	$directory = rtrim($path, '/');
 
 	if ($items = glob($path . '/*')) {
@@ -406,16 +408,20 @@ function sp_recursive_chgrp($path, $group) {
 
 /**
  * display_version - displays version information
+ *
+ * @return void
  */
-function display_version() {
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Structured Paths Creation Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 /**
  * display_help - displays help information
+ *
+ * @return void
  */
-function display_help() {
+function display_help() : void {
 	display_version();
 
 	print PHP_EOL . 'usage: structure_rra_paths.php [--host-id=N] [--host-template-id=N] [--proceed]' . PHP_DEOL;

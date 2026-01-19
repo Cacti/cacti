@@ -36,32 +36,34 @@ if (file_exists(__DIR__ . '/../include/cli_check.php')) {
 	$from_cacti = false;
 }
 
-if ($from_cacti && $config['poller_id'] > 1) {
-	print 'FATAL: This utility is designed for the main Data Collector only' . PHP_EOL;
+if ($from_cacti) {
+	if (POLLER_ID > 1) {
+		print 'FATAL: This utility is designed for the main Data Collector only' . PHP_EOL;
 
-	exit(1);
+		exit(1);
+	}
 }
 
 if (!function_exists('cacti_sizeof')) {
-	function cacti_sizeof($array) {
+	function cacti_sizeof(mixed $array) : mixed {
 		return ($array === false || !is_array($array)) ? 0 : sizeof($array);
 	}
 
-	function cacti_count($array) {
+	function cacti_count(mixed $array) : mixed {
 		return ($array === false || !is_array($array)) ? 0 : count($array);
 	}
 }
 
 if (!function_exists('get_cacti_cli_version')) {
-	function get_cacti_cli_version() {
+	function get_cacti_cli_version() : mixed {
 		return db_fetch_cell('SELECT cacti FROM version');
 	}
 }
 
 if (!function_exists('is_resource_writable')) {
-	function is_resource_writable($path) {
+	function is_resource_writable(string $path) : bool {
 		if ($path[strlen($path) - 1] == '/') {
-			return is_resource_writable($path . uniqid(mt_rand()) . '.tmp');
+			return is_resource_writable($path . uniqid((string) mt_rand()) . '.tmp');
 		}
 
 		if (file_exists($path)) {
@@ -290,7 +292,7 @@ if (substr_count(PHP_OS, 'WIN')) {
 	$newxmlfile = '/tmp/' . str_replace('.rrd', '', basename($newrrd)) . '.dump.' . $seed;
 }
 
-if ($finrrd == '') {
+if ($finrrd === '') {
 	$finrrd = dirname($newrrd) . '/' . basename($newrrd) . '.new';
 }
 
@@ -348,7 +350,7 @@ $new_rrd    = processXML($new_output);
 // Splice new RRDfiles array with the flattened data
 debug('Splicing RRDfiles');
 
-spliceRRDs($new_rrd, $old_flat, $old_rrd['dsnames'], $db);
+spliceRRDs($new_rrd, $old_flat, $old_rrd['dsnames']);
 
 debug('Re-Creating XML File');
 $new_xml = recreateXML($new_rrd);
@@ -376,16 +378,20 @@ if ($ownerset) {
 
 memoryUsage();
 
-/** spliceRRDs - This function walks through the structure of the newrrd
- *  XML file array and for each value, if it's either '0' or 'NaN' the
- *  script will search the flattenedXML or SQLite table for the closest
- *  match and save that into the final array, that will then be written
- *  back out to an XML file and re-loaded into an RRDfile.
- * @param mixed $new_rrd
- * @param mixed $old_flat
- * @param mixed $old_dsnames
+/**
+ * spliceRRDs - This function walks through the structure of the newrrd
+ * XML file array and for each value, if it's either '0' or 'NaN' the
+ * script will search the flattenedXML or SQLite table for the closest
+ * match and save that into the final array, that will then be written
+ * back out to an XML file and re-loaded into an RRDfile.
+ *
+ * @param array $new_rrd
+ * @param array $old_flat
+ * @param array $old_dsnames
+ *
+ * @return void
  */
-function spliceRRDs(&$new_rrd, &$old_flat, &$old_dsnames) {
+function spliceRRDs(array &$new_rrd, array &$old_flat, array &$old_dsnames) : void {
 	if (cacti_sizeof($new_rrd) && cacti_sizeof($old_flat)) {
 		if (isset($new_rrd['rra'])) {
 			foreach ($new_rrd['rra'] as $rra_num => $rra) {
@@ -436,18 +442,22 @@ function spliceRRDs(&$new_rrd, &$old_flat, &$old_dsnames) {
 	}
 }
 
-/** getOldRRDValue - scan the flattened array for a good timestamp
- *  and return the nearest value for that timestamp.
+/**
+ * getOldRRDValue - scan the flattened array for a good timestamp
+ * and return the nearest value for that timestamp.
  *
- *  The flattened array is sorted by timestamp in reverse order.
- *  If the SQLite table is available, this function will prefer
- *  that table over traversing the array.
- * @param mixed $old_flat
- * @param mixed $dsnum
- * @param mixed $cf
- * @param mixed $time
+ * The flattened array is sorted by timestamp in reverse order.
+ * If the SQLite table is available, this function will prefer
+ * that table over traversing the array.
+ *
+ * @param array  $old_flat
+ * @param int    $dsnum
+ * @param string $cf
+ * @param int    $time
+ *
+ * @return string - The value from the old RRDfile
  */
-function getOldRRDValue(&$old_flat, $dsnum, $cf, $time) {
+function getOldRRDValue(array &$old_flat, int $dsnum, string $cf, int $time) : string {
 	global $use_db, $db;
 
 	if ($use_db) {
@@ -498,33 +508,37 @@ function getOldRRDValue(&$old_flat, $dsnum, $cf, $time) {
 	}
 }
 
-/** recreateXML - Take the data from the modified XML and re-create the XML file that
- *  will then be turned back into an RRDfile.
+/**
+ * recreateXML - Take the data from the modified XML and re-create the XML file that
+ * will then be turned back into an RRDfile.
  *
- *  The array structure is documented below.
+ * The array structure is documented below.
  *
- *  $rrd['version'];
- *  $rrd['step'];
- *  $rrd['lastupdate'];
- *  $rrd['ds'][$ds_num]['name'];
- *  $rrd['ds'][$ds_num]['type'];
- *  $rrd['ds'][$ds_num]['minimal_heartbeat'];
- *  $rrd['ds'][$ds_num]['min'];
- *  $rrd['ds'][$ds_num]['max'];
- *  $rrd['ds'][$ds_num]['last_ds'];
- *  $rrd['ds'][$ds_num]['value'];
- *  $rrd['ds'][$ds_num]['unknown_sec'];
- *  $rrd['rra'][$rra_num]['cf'];
- *  $rrd['rra'][$rra_num]['pdp_per_row'];
- *  $rrd['rra'][$rra_num]['params']['xff'];
- *  $rrd['rra'][$rra_num]['cdp_prep'][$cdp_ds_num]['primary_value'];
- *  $rrd['rra'][$rra_num]['cdp_prep'][$cdp_ds_num]['secondary_value'];
- *  $rrd['rra'][$rra_num]['cdp_prep'][$cdp_ds_num]['value'];
- *  $rrd['rra'][$rra_num]['cdp_prep'][$cdp_ds_num]['unknown_datapoints'];
- *  $rrd['rra'][$rra_num]['database'][$cdp_ds_num]['time'];
- * @param mixed $new_rrd
+ * $rrd['version'];
+ * $rrd['step'];
+ * $rrd['lastupdate'];
+ * $rrd['ds'][$ds_num]['name'];
+ * $rrd['ds'][$ds_num]['type'];
+ * $rrd['ds'][$ds_num]['minimal_heartbeat'];
+ * $rrd['ds'][$ds_num]['min'];
+ * $rrd['ds'][$ds_num]['max'];
+ * $rrd['ds'][$ds_num]['last_ds'];
+ * $rrd['ds'][$ds_num]['value'];
+ * $rrd['ds'][$ds_num]['unknown_sec'];
+ * $rrd['rra'][$rra_num]['cf'];
+ * $rrd['rra'][$rra_num]['pdp_per_row'];
+ * $rrd['rra'][$rra_num]['params']['xff'];
+ * $rrd['rra'][$rra_num]['cdp_prep'][$cdp_ds_num]['primary_value'];
+ * $rrd['rra'][$rra_num]['cdp_prep'][$cdp_ds_num]['secondary_value'];
+ * $rrd['rra'][$rra_num]['cdp_prep'][$cdp_ds_num]['value'];
+ * $rrd['rra'][$rra_num]['cdp_prep'][$cdp_ds_num]['unknown_datapoints'];
+ * $rrd['rra'][$rra_num]['database'][$cdp_ds_num]['time'];
+ *
+ * @param array $new_rrd - The Array structure of the new RRDfile
+ *
+ * @return string - The new RRDfile output
  */
-function recreateXML($new_rrd) {
+function recreateXML(array $new_rrd) : string {
 	$rrd = "<rrd>\n";
 	$rrd .= "\t<version> " . $new_rrd['version'] . " </version>\n";
 	$rrd .= "\t<step> " . $new_rrd['step'] . " </step>\n";
@@ -544,6 +558,8 @@ function recreateXML($new_rrd) {
 	}
 
 	foreach ($new_rrd['rra'] as $rra_num => $rra) {
+		$output = [];
+
 		$rrd .= "\t<rra>\n";
 		$rrd .= "\t\t<cf> " . $rra['cf'] . " </cf>\n";
 		$rrd .= "\t\t<pdp_per_row> " . $rra['pdp_per_row'] . " </pdp_per_row>\n";
@@ -559,8 +575,6 @@ function recreateXML($new_rrd) {
 			$rrd .= "\t\t\t\t<value> " . $pdp['value'] . " </value>\n";
 			$rrd .= "\t\t\t\t<unknown_datapoints> " . $pdp['unknown_datapoints'] . " </unknown_datapoints>\n";
 			$rrd .= "\t\t\t</ds>\n";
-
-			$output = [];
 
 			foreach ($new_rrd['rra'][$rra_num]['database'] as $dsnum => $v) {
 				foreach ($v as $time => $value) {
@@ -590,8 +604,12 @@ function recreateXML($new_rrd) {
 	return $rrd;
 }
 
-// memoryUsage - Report the peak memory usage of the php script
-function memoryUsage() {
+/**
+ * memoryUsage - Report the peak memory usage of the php script
+ *
+ * @return void
+ */
+function memoryUsage() : void {
 	global $time;
 
 	$mem_usage = memory_get_usage(true);
@@ -607,24 +625,27 @@ function memoryUsage() {
 	print 'NOTE: Time:' . round(microtime(true) - $time, 2) . ', RUsage:' . $memstr . PHP_EOL;
 }
 
-/** flattenXML - Take all the data from the various data sources and
- *  by Consolidation Function, sort the values by timestamp so that
- *  the new RRDfile can pull values that make sense to fill in the
- *  time where there may be no data.
+/**
+ * flattenXML - Take all the data from the various data sources and
+ * by Consolidation Function, sort the values by timestamp so that
+ * the new RRDfile can pull values that make sense to fill in the
+ * time where there may be no data.
  *
- *  Additionally, remove any NaN values and replace with the last
- *  good known value to fill gaps in the graphs.
+ * Additionally, remove any NaN values and replace with the last
+ * good known value to fill gaps in the graphs.
  *
- *  The form of the output array will be as follows:
+ * The form of the output array will be as follows:
  *
- *  $newxml[$datasourceid][$cf][$timestamp] = value
- *  $newxml['mintime'] = value
+ * $newxml[$datasourceid][$cf][$timestamp] = value
+ * $newxml['mintime'] = value
  *
- *  The data will only go back as far as the source RRDfile.
+ * The data will only go back as far as the source RRDfile.
  *
- * @param mixed $xml
+ * @param array $xml - The xml data to be flattened
+ *
+ * @return array - The flattened XML file
  */
-function flattenXML(&$xml) {
+function flattenXML(array &$xml) : array {
 	global $debug;
 
 	$newxml   = [];
@@ -705,11 +726,15 @@ function flattenXML(&$xml) {
 	return $newxml;
 }
 
-/** getMaxValue - Obtains the max value from the timestamp array
- *  for use in debug output.
- * @param mixed $data
+/**
+ * getMaxValue - Obtains the max value from the timestamp array
+ * for use in debug output.
+ *
+ * @param array $data - An array of objects to get the max from
+ *
+ * @return float - The maximum value
  */
-function getMaxValue(&$data) {
+function getMaxValue(array &$data) : float {
 	$max = 0;
 
 	foreach ($data as $timestamp => $value) {
@@ -721,11 +746,15 @@ function getMaxValue(&$data) {
 	return $max;
 }
 
-/** getAvgValue - Obtains the average value from the timestamp array
- *  for use in debug output.
- * @param mixed $data
+/**
+ * getAvgValue - Obtains the average value from the timestamp array
+ * for use in debug output.
+ *
+ * @param array $data - An array of objects to get the average from
+ *
+ * @return float - The average value
  */
-function getAvgValue(&$data) {
+function getAvgValue(mixed &$data) : float {
 	$entries = cacti_sizeof($data);
 	$total   = array_sum($data);
 
@@ -736,32 +765,36 @@ function getAvgValue(&$data) {
 	}
 }
 
-/** processXML - Read all the XML into an array. The format of the array
- *  will be as show below.  This way it can be processed reverted back
- *  to array format at the end of the merge process.
+/**
+ * processXML - Read all the XML into an array. The format of the array
+ * will be as show below.  This way it can be processed reverted back
+ * to array format at the end of the merge process.
  *
- *  $rrd['version'];
- *  $rrd['step'];
- *  $rrd['lastupdate'];
- *  $rrd['ds'][$ds_num]['name'];
- *  $rrd['ds'][$ds_num]['type'];
- *  $rrd['ds'][$ds_num]['minimal_heartbeat'];
- *  $rrd['ds'][$ds_num]['min'];
- *  $rrd['ds'][$ds_num]['max'];
- *  $rrd['ds'][$ds_num]['last_ds'];
- *  $rrd['ds'][$ds_num]['value'];
- *  $rrd['ds'][$ds_num]['unknown_sec'];
- *  $rrd['rra'][$rra_num]['cf'];
- *  $rrd['rra'][$rra_num]['pdp_per_row'];
- *  $rrd['rra'][$rra_num]['params']['xff'];
- *  $rrd['rra'][$rra_num]['cdp_prep'][$cdp_ds_num]['primary_value'];
- *  $rrd['rra'][$rra_num]['cdp_prep'][$cdp_ds_num]['secondary_value'];
- *  $rrd['rra'][$rra_num]['cdp_prep'][$cdp_ds_num]['value'];
- *  $rrd['rra'][$rra_num]['cdp_prep'][$cdp_ds_num]['unknown_datapoints'];
- *  $rrd['rra'][$rra_num]['database'][$cdp_ds_num]['time'];
- * @param mixed $output
+ * $rrd['version'];
+ * $rrd['step'];
+ * $rrd['lastupdate'];
+ * $rrd['ds'][$ds_num]['name'];
+ * $rrd['ds'][$ds_num]['type'];
+ * $rrd['ds'][$ds_num]['minimal_heartbeat'];
+ * $rrd['ds'][$ds_num]['min'];
+ * $rrd['ds'][$ds_num]['max'];
+ * $rrd['ds'][$ds_num]['last_ds'];
+ * $rrd['ds'][$ds_num]['value'];
+ * $rrd['ds'][$ds_num]['unknown_sec'];
+ * $rrd['rra'][$rra_num]['cf'];
+ * $rrd['rra'][$rra_num]['pdp_per_row'];
+ * $rrd['rra'][$rra_num]['params']['xff'];
+ * $rrd['rra'][$rra_num]['cdp_prep'][$cdp_ds_num]['primary_value'];
+ * $rrd['rra'][$rra_num]['cdp_prep'][$cdp_ds_num]['secondary_value'];
+ * $rrd['rra'][$rra_num]['cdp_prep'][$cdp_ds_num]['value'];
+ * $rrd['rra'][$rra_num]['cdp_prep'][$cdp_ds_num]['unknown_datapoints'];
+ * $rrd['rra'][$rra_num]['database'][$cdp_ds_num]['time'];
+ *
+ * @param array $output
+ *
+ * @return array - The processed XML data
  */
-function processXML(&$output) {
+function processXML(array &$output) : array {
 	$rrd        = [];
 	$dsnames    = [];
 	$rra_num    = 0;
@@ -873,7 +906,7 @@ function processXML(&$output) {
 }
 
 // All Functions
-function createRRDFileFromXML($xmlfile, $rrdfile) {
+function createRRDFileFromXML(string $xmlfile, string $rrdfile) : void {
 	global $rrdtool;
 
 	// execute the dump command
@@ -894,15 +927,15 @@ function createRRDFileFromXML($xmlfile, $rrdfile) {
 	}
 }
 
-function XMLrip($tag, $line) {
+function XMLrip(string $tag, string $line) : string {
 	return trim(str_replace("<$tag>", '', str_replace("</$tag>", '', $line)));
 }
 
-function writeXMLFile($output, $xmlfile) {
+function writeXMLFile(string $output, string $xmlfile) : mixed {
 	return file_put_contents($xmlfile, $output);
 }
 
-function backupRRDFile($rrdfile) {
+function backupRRDFile(string $rrdfile) : bool {
 	global $tempdir, $seed, $html;
 
 	$backupdir = $tempdir;
@@ -918,12 +951,18 @@ function backupRRDFile($rrdfile) {
 	return copy($rrdfile, $backupdir . '/' . $newfile);
 }
 
-/** preProcessXML - This function strips the timestamps off the XML dump
- *  and loads that data into an array along with the remainder of the
- *  XML data for future processing.
- * @param mixed $output
+/**
+ * preProcessXML - This function strips the timestamps off the XML dump
+ * and loads that data into an array along with the remainder of the
+ * XML data for future processing.
+ *
+ * @param array $output - The output from the RRDtool command
+ *
+ * @return array - The updated XML object
  */
-function preProcessXML(&$output) {
+function preProcessXML(array &$output) : array {
+	$new_array = [];
+
 	if (cacti_sizeof($output)) {
 		foreach ($output as $line) {
 			$line = trim($line);
@@ -962,13 +1001,18 @@ function preProcessXML(&$output) {
 				}
 			}
 		}
-
-		// transfer the new array back to the original array
-		return $new_array;
 	}
+
+	// transfer the new array back to the original array
+	return $new_array;
 }
 
-function debug($string) {
+/**
+ * Simple generic debug function
+ *
+ * @return void
+ */
+function debug(string $string) : void {
 	global $debug;
 
 	if ($debug) {
@@ -976,10 +1020,13 @@ function debug($string) {
 	}
 }
 
-/** createTable - This function creates a SQLite memory table
- *  to hold the flattened XML file in for replay.
+/**
+ * createTable - This function creates a SQLite memory table
+ * to hold the flattened XML file in for replay.
+ *
+ * @return object - The SQLite memory database object
  */
-function createTable() {
+function createTable() : object {
 	// table in memory
 	$db = new SQLite3(':memory:');
 
@@ -997,13 +1044,17 @@ function createTable() {
 	return $db;
 }
 
-/** loadTable - This function loads the flattened XML file into
+/**
+ * loadTable - This function loads the flattened XML file into
  *  the SQLite database for replaying the RRDfile dump data
  *  into the new XML file.
- * @param mixed $db
- * @param mixed $records
+ *
+ * @param object $db
+ * @param array  $records
+ *
+ * @return void
  */
-function loadTable($db, &$records) {
+function loadTable(object $db, array &$records) : void {
 	$db->exec('BEGIN TRANSACTION');
 
 	$sql = '';
@@ -1043,7 +1094,7 @@ function loadTable($db, &$records) {
 	$db->exec('COMMIT TRANSACTION');
 }
 
-function display_version() {
+function display_version() : void {
 	if (!defined('COPYRIGHT_YEARS')) {
 		define('COPYRIGHT_YEARS', '2004-2025');
 	}
@@ -1053,10 +1104,13 @@ function display_version() {
 	print 'Cacti RRDfile Splicer Utility, Version ' . $version . ', ' . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-/** display_help - Displays usage information about how to utilize
+/**
+ * display_help - Displays usage information about how to utilize
  *  this program.
+ *
+ * @return void
  */
-function display_help() {
+function display_help() : void {
 	display_version();
 
 	print PHP_EOL . 'usage: splice_rrd.php --oldrrd=file --newrrd=file [--finrrd=file]' . PHP_EOL;
