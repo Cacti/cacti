@@ -29,7 +29,7 @@ require_once(CACTI_PATH_LIBRARY . '/data_query.php');
 
 ini_set('max_execution_time', '0');
 
-if ($config['poller_id'] > 1) {
+if (POLLER_ID > 1) {
 	print 'FATAL: This utility is designed for the main Data Collector only' . PHP_EOL;
 
 	exit(1);
@@ -164,14 +164,22 @@ if (cacti_sizeof($data_queries)) {
 	}
 }
 
-// display_version - displays version information
-function display_version() {
+/**
+ * display_version - displays version information
+ *
+ * @teturn void
+ */
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Reorder Data Query Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-// display_help - displays the usage of the function
-function display_help() {
+/**
+ * display_help - displays the usage of the function
+ *
+ * @teturn void
+ */
+function display_help() : void {
 	display_version();
 
 	print "\nusage: reorder_data_query.php --host-id=[id|all] [--qid=[query_id]] [--debug|-d]\n\n";
@@ -183,7 +191,7 @@ function display_help() {
 	print "    --debug | -d   - Display verbose output during execution\n\n";
 }
 
-function debug($message) {
+function debug(string $message) : void {
 	global $debug;
 
 	if ($debug) {

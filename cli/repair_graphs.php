@@ -31,7 +31,7 @@ require_once(CACTI_PATH_LIBRARY . '/utility.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');
 
 // switch to main database for cli's
-if ($config['poller_id'] > 1) {
+if (POLLER_ID > 1) {
 	db_switch_remote_to_main();
 }
 
@@ -149,6 +149,9 @@ if (cacti_sizeof($graph)) {
 	}
 
 	foreach ($graph as $g) {
+		$graph_templates_item = [];
+		$task_item_id         = 0;
+
 		// Get datasource for supplied data template for current host
 		$ds = db_fetch_assoc('SELECT * FROM data_local where host_id=' . $g['host_id'] . ' and data_template_id=' . $data_template_id);
 
@@ -177,7 +180,24 @@ if (cacti_sizeof($graph)) {
 		// But I'm too lazy to write such a lot of code, so let's better make one long query below
 		*/
 
-		$graph_templates_items_wrong = db_fetch_assoc('select id, task_item_id from graph_templates_item WHERE task_item_id!=' . $rrd_data[0]['id'] . ' and graph_template_id=' . $graph_template_id . ' and local_graph_id=' . $g['id'] . ' and local_graph_template_item_id in (select id from graph_templates_item where local_graph_template_item_id=0 and local_graph_id=0 and task_item_id=(select id from data_template_rrd where local_data_template_rrd_id=0 and local_data_id=0 and data_template_id=' . $data_template_id . '))');
+		$graph_templates_items_wrong = db_fetch_assoc_prepared('SELECT id, task_item_id
+			FROM graph_templates_item
+			WHERE task_item_id != ?
+			AND graph_template_id = ?
+			AND local_graph_id = ?
+			AND local_graph_template_item_id IN (
+				SELECT id
+				FROM graph_templates_item
+				WHERE local_graph_template_item_id = 0
+				AND local_graph_id=0
+				AND task_item_id = (
+					SELECT id
+					FROM data_template_rrd
+					WHERE local_data_template_rrd_id = 0
+					AND local_data_id = 0
+					AND data_template_id = ?
+				)
+			)', [$rrd_data[0]['id'], $graph_template_id, $g['id'], $data_template_id]);
 
 		if (!cacti_sizeof($graph_templates_items_wrong)) {
 			// Everything correct here.
@@ -190,9 +210,12 @@ if (cacti_sizeof($graph)) {
 			}
 		}
 
-		print 'Host ' . $g['host_id'] . ', graph ' . $g['id'] . ', graph item ' . implode(',',$graph_templates_item) . ', task_item_id ' . implode(',',$task_item_id) . '->' . $rrd_data[0]['id'] . "\n";
+		print 'Host ' . $g['host_id'] .
+			', Graph ' . $g['id'] .
+			', Graph Item ' . implode(',',$graph_templates_item) .
+			', Task Item ID ' . implode(',',$task_item_id) . '->' . $rrd_data[0]['id'] . PHP_EOL;
 
-		$query = 'UPDATE graph_templates_item SET task_item_id=' . $rrd_data[0]['id'] . ' WHERE task_item_id!=' . $rrd_data[0]['id'] . ' and graph_template_id=' . $graph_template_id . ' and local_graph_id=' . $g['id'] . ' and id in (' . implode(',',$graph_templates_item) . ')';
+		$query = 'UPDATE graph_templates_item SET task_item_id =' . $rrd_data[0]['id'] . ' WHERE task_item_id != ' . $rrd_data[0]['id'] . ' AND graph_template_id = ' . $graph_template_id . ' AND local_graph_id=' . $g['id'] . ' AND id IN (' . implode(',', $graph_templates_item) . ')';
 
 		if ($show_sql) {
 			print $query . ";\n";
@@ -201,18 +224,25 @@ if (cacti_sizeof($graph)) {
 		if ($execute) {
 			db_execute($query);
 		}
-		unset($graph_templates_item);
-		unset($task_item_id);
 	}
 }
 
-function display_version() {
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Graph Repair Tool, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-// display_help - displays the usage of the function
-function display_help() {
+/**
+ * display_help - displays the usage of the function
+ *
+ * @return void
+ */
+function display_help() : void {
 	print "usage: repair_graphs.php [--host-id=ID] --data-template-id=[ID]\n";
 	print "	--graph-template-id=[ID] [--show-sql] [--execute]\n\n";
 	print "Cacti utility for repairing graph<->datasource relationship via a command line interface.\n\n";

@@ -113,13 +113,17 @@ if ($count % 2 == 1) {
 	print PHP_EOL;
 }
 
-// display_version - displays version information
-function display_version() {
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Database Permission Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-function display_help() {
+function display_help() : void {
 	display_version();
 
 	print PHP_EOL . 'usage: show_perms.php [--json]' . PHP_EOL . PHP_EOL;

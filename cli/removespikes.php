@@ -30,7 +30,7 @@ chdir($dir);
 require(__DIR__ . '/../include/cli_check.php');
 require_once(CACTI_PATH_LIBRARY . '/spikekill.php');
 
-if ($config['poller_id'] > 1) {
+if (POLLER_ID > 1) {
 	print 'FATAL: This utility is designed for the main Data Collector only' . PHP_EOL;
 
 	exit(1);
@@ -101,7 +101,7 @@ if (cacti_sizeof($parms)) {
 		switch ($arg) {
 			case '--user':
 			case '-U':
-				print "WARNING: The user --user and -U are deprecated\n";
+				print 'WARNING: The user --user and -U are deprecated' . PHP_EOL;
 
 				break;
 			case '--method':
@@ -186,7 +186,7 @@ if (cacti_sizeof($parms)) {
 
 				break;
 			default:
-				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 				display_help();
 
 				exit(-3);
@@ -219,7 +219,7 @@ if ($dryrun) {
 $result = $spiker->remove_spikes();
 
 if (!$result) {
-	print "ERROR: Remove Spikes experienced errors\n";
+	print 'ERROR: Remove Spikes experienced errors' . PHP_EOL;
 	print $spiker->get_errors();
 
 	exit(-1);
@@ -229,45 +229,54 @@ if (!$result) {
 	exit(0);
 }
 
-// display_version - displays version information
-function display_version() {
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
+function display_version() : void {
 	$version = get_cacti_cli_version();
-	print "Cacti Spike Remover Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Spike Remover Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-// display_help - displays the usage of the function
-function display_help() {
+/**
+ * display_help - displays the usage of the function
+ *
+ * @return void
+ */
+function display_help() : void {
 	display_version();
 
-	print "\nusage: removespikes.php -R|--rrdfile=rrdfile [-M|--method=stddev] [-A|--avgnan] [-S|--stddev=N]\n";
-	print "    [-O|--outliers=N | --outlier-start=YYYY-MM-DD HH:MM --outlier-end=YYYY-MM-DD HH:MM]\n";
-	print "    [-P|--percent=N] [-N|--number=N] [--absmax=<value>] [-D|--dryrun] [-d|--debug]\n";
-	print "    [--html] [--dsfilter=<filter>]\n\n";
+	print PHP_EOL;
+	print 'usage: removespikes.php -R|--rrdfile=rrdfile [-M|--method=stddev] [-A|--avgnan] [-S|--stddev=N]' . PHP_EOL;
+	print '    [-O|--outliers=N | --outlier-start=YYYY-MM-DD HH:MM --outlier-end=YYYY-MM-DD HH:MM]' . PHP_EOL;
+	print '    [-P|--percent=N] [-N|--number=N] [--absmax=<value>] [-D|--dryrun] [-d|--debug]' . PHP_EOL;
+	print '    [--html] [--dsfilter=<filter>]' . PHP_EOL . PHP_EOL;
 
-	print "A utility to programmatically remove spikes from Cacti graphs. If no optional input parameters\n";
-	print "are specified the defaults are taken from the Cacti database.\n\n";
+	print 'A utility to programmatically remove spikes from Cacti graphs. If no optional input parameters' . PHP_EOL;
+	print 'are specified the defaults are taken from the Cacti database.' . PHP_EOL . PHP_EOL;
 
-	print "Required:\n";
-	print "    --rrdfile=F   - The path to the RRDfile that will be de-spiked.\n\n";
+	print 'Required:' . PHP_EOL;
+	print '    --rrdfile=F   - The path to the RRDfile that will be de-spiked.' . PHP_EOL . PHP_EOL;
 
-	print "Optional:\n";
-	print "    --method        - The spike removal method to use.  Options are stddev|variance|fill|float|absolute\n";
-	print "    --avgnan        - The spike replacement method to use.  Options are last|avg|nan\n";
-	print "    --stddev        - The number of standard deviations +/- allowed\n";
-	print "    --percent       - The sample to sample percentage variation allowed\n";
-	print "    --number        - The maximum number of spikes to remove from the RRDfile\n";
-	print "    --absmax        - The absolute maximum value of a data point to remove from the RRDfile\n";
-	print "    --dsfilter      - Specifies the DSes inside an RRD upon which Spikekill will operate\n";
-	print "    --outlier-start - A start date of an incident where all data should be considered\n";
-	print "                      invalid data and should be excluded from average calculations.\n";
-	print "    --outlier-end   - An end date of an incident where all data should be considered\n";
-	print "                      invalid data and should be excluded from average calculations.\n";
-	print "    --outliers      - The number of outliers to ignore when calculating average.\n";
-	print "    --dryrun        - If specified, the RRDfile will not be changed.  Instead a summary of\n";
-	print "                      changes that would have been performed will be issued.\n";
-	print "    --backup        - Backup the original RRDfile to preserve prior values.\n\n";
+	print 'Optional:' . PHP_EOL;
+	print '    --method        - The spike removal method to use.  Options are stddev|variance|fill|float|absolute' . PHP_EOL;
+	print '    --avgnan        - The spike replacement method to use.  Options are last|avg|nan' . PHP_EOL;
+	print '    --stddev        - The number of standard deviations +/- allowed' . PHP_EOL;
+	print '    --percent       - The sample to sample percentage variation allowed' . PHP_EOL;
+	print '    --number        - The maximum number of spikes to remove from the RRDfile' . PHP_EOL;
+	print '    --absmax        - The absolute maximum value of a data point to remove from the RRDfile' . PHP_EOL;
+	print '    --dsfilter      - Specifies the DSes inside an RRD upon which Spikekill will operate' . PHP_EOL;
+	print '    --outlier-start - A start date of an incident where all data should be considered' . PHP_EOL;
+	print '                      invalid data and should be excluded from average calculations.' . PHP_EOL;
+	print '    --outlier-end   - An end date of an incident where all data should be considered' . PHP_EOL;
+	print '                      invalid data and should be excluded from average calculations.' . PHP_EOL;
+	print '    --outliers      - The number of outliers to ignore when calculating average.' . PHP_EOL;
+	print '    --dryrun        - If specified, the RRDfile will not be changed.  Instead a summary of' . PHP_EOL;
+	print '                      changes that would have been performed will be issued.' . PHP_EOL;
+	print '    --backup        - Backup the original RRDfile to preserve prior values.' . PHP_EOL . PHP_EOL;
 
-	print "The remainder of arguments are informational\n";
-	print "    --html          - Format the output for a web browser\n";
-	print "    --debug         - Display verbose output during execution\n";
+	print 'The remainder of arguments are informational' . PHP_EOL;
+	print '    --html          - Format the output for a web browser' . PHP_EOL;
+	print '    --debug         - Display verbose output during execution' . PHP_EOL;
 }
