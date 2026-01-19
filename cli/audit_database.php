@@ -858,12 +858,10 @@ function make_index_alter($table, $key) {
 				}
 			}
 
-			$alter_cmd .= ($i > 0 ? ',':'') . '`' . $p['idx_column_name'] . '`';
+			$alter_cmd .= ($i > 0 ? ',':'') . '`' . $p['idx_column_name'] . '`) USING ' . $p['idx_index_type'];
 
 			$i++;
 		}
-
-		$alter_cmd .= ') USING ' . $p['idx_index_type'];
 
 		$alter_cmds[] = $alter_cmd;
 	}
