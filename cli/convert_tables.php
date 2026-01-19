@@ -159,7 +159,7 @@ if ($innodb) {
 	$engines = db_fetch_assoc('SHOW ENGINES');
 
 	foreach($engines as $engine) {
-		if (strtolower($engine['Engine']) == 'innodb' && strtolower($engine['Support'] == 'off')) {
+		if (strtolower($engine['Engine']) == 'innodb' && strtolower($engine['Support']) == 'off') {
 			print_or_log($installer,  "InnoDB Engine is not enabled\n");
 			exit;
 		}
