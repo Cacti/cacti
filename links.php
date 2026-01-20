@@ -460,7 +460,7 @@ function page_resort() {
 	$i = 1;
 	if (cacti_sizeof($pages)) {
 		foreach ($pages as $page) {
-			db_execute_prepared('UPDATE external_links SET sortorder = ? WHERE id = ?' . array($i, $page['id']));
+			db_execute_prepared('UPDATE external_links SET sortorder = ? WHERE id = ?', array($i, $page['id']));
 			$i++;
 		}
 	}
