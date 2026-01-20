@@ -290,7 +290,7 @@ print PHP_EOL;
  */
 function get_install_option(array &$options, string $file, bool $json = true) : void {
 	if (empty($file)) {
-		printf('ERROR: You specifiedd an invalid options file.  Unable to import options' . PHP_EOL);
+		printf('ERROR: You specified an invalid options file.  Unable to import options' . PHP_EOL);
 
 		exit(1);
 	}
