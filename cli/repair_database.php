@@ -1007,7 +1007,7 @@ function snmp_index_repairs() : void {
 			printf('NOTE: Skipping attempt to repair %s Data Query indexes in (Pass 1).' . PHP_EOL, cacti_sizeof($broken_data_rows));
 		}
 	} else {
-		printf('NOTE: Found %d damaged Data Query indexes in (Pass 1).' . PHP_EOL, cacti_sizeof($broken_data_rows));
+		printf('NOTE: Found no damaged Data Query indexes in (Pass 1).' . PHP_EOL);
 	}
 
 	printf('NOTE: Searching for damaged Data Query indexes (Pass 2).' . PHP_EOL);
