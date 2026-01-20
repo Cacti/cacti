@@ -340,9 +340,11 @@ function form_save() {
 					}
 				}
 
-				// push out field mappings for the data collector
-				/* its important to delete first due to the possibility that
-				 * the field names were changed */
+				/**
+				 * push out field mappings for the data collector
+				 * its important to delete first due to the possibility that
+				 * the field names were changed
+				 */
 				db_execute_prepared('DELETE FROM poller_data_template_field_mappings
 					WHERE data_template_id = ?',
 					[$data_template_id]);
