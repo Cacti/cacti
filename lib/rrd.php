@@ -2093,10 +2093,11 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 						// only work on graph items, omit GRPINTs, COMMENTs and stuff
 						if ((preg_match('/(AREA|STACK|LINE[123])/', $graph_item_types[$gi_check['graph_type_id']])) && (!empty($gi_check['data_template_rrd_id']))) {
 							// if the user screws up CF settings, PHP will generate warnings if left unchecked
+							$magic_cf_ds_key = "{$gi_check['data_template_rrd_id']}:{$cf_id}";
 
 							// matching consolidation function?
-							if (isset($cf_ds_cache[$cf_ds_key])) {
-								$def_name = generate_graph_def_name($cf_ds_cache[$cf_ds_key]);
+							if (isset($cf_ds_cache[$magic_cf_ds_key])) {
+								$def_name = generate_graph_def_name($cf_ds_cache[$magic_cf_ds_key]);
 
 								// do we need ALL_DATA_SOURCES_DUPS?
 								if (isset($magic_item['ALL_DATA_SOURCES_DUPS'])) {
@@ -2198,7 +2199,7 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 					$cdef_string = str_replace('CURRENT_DATA_SOURCE_PI', read_config_option('poller_interval'), $cdef_string);
 				}
 
-				$cdef_string = str_replace('CURRENT_DATA_SOURCE', generate_graph_def_name($cf_ds_cache[$cf_ds_key]), $cdef_string);
+				$cdef_string = str_replace('CURRENT_DATA_SOURCE', generate_graph_def_name($cf_ds_cache[$cf_ds_key] ?? 0), $cdef_string);
 
 				// allow automatic rate calculations on raw gauge data
 				if (isset($graph_item['local_data_id'])) {

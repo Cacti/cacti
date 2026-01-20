@@ -3511,6 +3511,8 @@ function generate_graph_best_cf($local_data_id, $requested_cf) : string {
 		} else {
 			$chosen_cf = $requested_cf;
 		}
+	} else {
+		$chosen_cf = 1;
 	}
 
 	// if you can not figure it out return average
