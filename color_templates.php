@@ -221,9 +221,9 @@ function form_save() {
 				$sequence = get_next_sequence($sequence, 'sequence', 'color_template_items', 'color_template_id=' . gnrv('color_template_id'), 'color_template_id');
 			}
 
-			$save['color_template_item_id'] = htmlerv('color_template_item_id');
-			$save['color_template_id']      = htmlerv('color_template_id');
-			$save['color_id']               = form_input_validate((isset($item['color_id']) ? $item['color_id'] : gnrv('color_id')), 'color_id', '', true, 3);
+			$save['color_template_item_id'] = gfrv('color_template_item_id');
+			$save['color_template_id']      = gfrv('color_template_id');
+			$save['color_id']               = form_input_validate($item['color_id'] ?? gnrv('color_id'), 'color_id', '', true, 3);
 			$save['sequence']               = $sequence;
 
 			if (!is_error_message()) {
