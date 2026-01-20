@@ -490,10 +490,10 @@ function substitute_snmp_query_data(string $string, int $host_id, int $snmp_quer
  * substitute_data_input_data - takes a string and substitutes all data input
  * variables contained in it.
  *
- * @param string $string - The original string that contains the data input variables
- * @param array  $graph - The local data id to match
+ * @param string $string        - The original string that contains the data input variables
+ * @param array  $graph         - The local data id to match
  * @param int    $local_data_id - The maximum number of characters to substitute
- * @param int    $max_chars - The maximum number of characters to process
+ * @param int    $max_chars     - The maximum number of characters to process
  *
  * @return string  - the original string with all of the variable substitutions made
  */
