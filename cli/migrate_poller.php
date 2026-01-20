@@ -111,7 +111,7 @@ foreach ($parms as $parameter) {
 
 // Validate required arguments
 if ($source_poller <= 0 || $dest_poller <= 0) {
-	print 'ERROR: Both --source-poller and --dest-poller are required and most be positive integers.' . PHP_EOL . PHP_EOL;
+	print 'ERROR: Both --source-poller and --dest-poller are required and must be positive integers.' . PHP_EOL . PHP_EOL;
 	display_help();
 	exit(1);
 }
