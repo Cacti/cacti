@@ -63,17 +63,18 @@ if (cacti_sizeof($parms)) {
 			case '-V':
 			case '-v':
 				display_version();
-				exit(0);
 
+				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
-				exit(0);
 
+				exit(0);
 			default:
 				display_help();
-				print 'ERROR: Invalid Argument: (%s)' . PHP_EOL . PHP_EOL;
+				printf('ERROR: Invalid Argument: (%s)' . PHP_EOL . PHP_EOL, $arg);
+
 				exit(1);
 		}
 	}
