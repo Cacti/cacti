@@ -55,8 +55,8 @@ if (!function_exists('cacti_sizeof')) {
 }
 
 if (!function_exists('get_cacti_cli_version')) {
-	function get_cacti_cli_version() : mixed {
-		return db_fetch_cell('SELECT cacti FROM version');
+	function get_cacti_cli_version() : string {
+		return (string) db_fetch_cell('SELECT cacti FROM version');
 	}
 }
 
