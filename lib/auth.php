@@ -1374,7 +1374,7 @@ function get_allowed_tree_header_graphs(int $tree_id,int  $leaf_id = 0, string $
  *   where users will view the graphs that they are permitted to access
  *
  * @param string $sql_where The SQL where when searching for specific content
- * @param string|array $sql_order The SQL Order clause to use for the sorting of graphs, if using order by
+ * @param mixed  $sql_order The SQL Order clause to use for the sorting of graphs, if using order by
  *                      Data source, the following must be passed in an array
  *
  *                      array(
@@ -1392,7 +1392,7 @@ function get_allowed_tree_header_graphs(int $tree_id,int  $leaf_id = 0, string $
  *
  * @return array An array of allowed graphs.
  */
-function get_allowed_graphs(string $sql_where = '', string $sql_order = 'gtg.title_cache', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0, int $graph_id = 0): array {
+function get_allowed_graphs(string $sql_where = '', mixed $sql_order = 'gtg.title_cache', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0, int $graph_id = 0): array {
 	if (!auth_valid_user($user_id)) {
 		return [];
 	}
