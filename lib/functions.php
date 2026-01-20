@@ -3490,38 +3490,31 @@ function generate_data_source_path($local_data_id) {
  *
  * @param  int    $local_data_id
  * @param  mixed  $requested_cf
- * @param  int    $ds_step
  *
  * @return string the best cf to use
  */
-function generate_graph_best_cf($local_data_id, $requested_cf, int $ds_step = 60) : string {
+function generate_graph_best_cf($local_data_id, $requested_cf) : string {
 	static $best_cf;
 
-	if ($local_data_id > 0) {
+	if (isset($best_cf[$local_data_id][$requested_cf])) {
+		return $best_cf[$local_data_id][$requested_cf];
+	} elseif  ($local_data_id > 0) {
 		$avail_cf_functions = get_rrd_cfs($local_data_id);
 
-		if (cacti_sizeof($avail_cf_functions)) {
-			// workaround until we have RRA presets in 0.8.8
-			// check through the cf's and get the best
-			// if none was found, take the first
-			$best_cf = reset($avail_cf_functions);
+		foreach($avail_cf_functions as $cf) {
+			$best_cf[$local_data_id][$cf] = $cf;
+		}
 
-			foreach ($avail_cf_functions as $cf) {
-				if ($cf == $requested_cf) {
-					$best_cf = $requested_cf;
-				}
-			}
+		if (!isset($best_cf[$local_data_id][$requested_cf])) {
+			$best_cf[$local_data_id][$requested_cf] = 1;
+			$chosen_cf = 1;
 		} else {
-			$best_cf = '1';
+			$chosen_cf = $requested_cf;
 		}
 	}
 
-	if (empty($best_cf)) {
-		$best_cf = '1';
-	}
-
 	// if you can not figure it out return average
-	return $best_cf;
+	return $chosen_cf;
 }
 
 /**
@@ -3608,7 +3601,7 @@ function get_rrd_cfs($local_data_id) {
  *
  * @return mixed a letter-based representation of the input argument
  */
-function generate_graph_def_name($graph_item_id) {
+function generate_graph_def_name(int $graph_item_id) {
 	$lookup_table = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
 
 	$result    = '';

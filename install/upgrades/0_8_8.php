@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_0_8_8() {
+function upgrade_to_0_8_8() : void {
 	// speed up the joins
 	if (db_column_exists('poller_item', 'host_id')) {
 		db_install_execute("ALTER TABLE `poller_item` MODIFY COLUMN `host_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0'");

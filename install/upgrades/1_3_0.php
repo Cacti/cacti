@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_1_3_0() {
+function upgrade_to_1_3_0() : void {
 	db_install_change_column('version', ['name' => 'cacti', 'type' => 'char(30)', 'null' => false, 'default' => '']);
 
 	db_install_add_column('user_auth', ['name' => 'tfa_enabled', 'type' => 'char(3)', 'null' => false, 'default' => '']);
@@ -608,7 +608,7 @@ function upgrade_to_1_3_0() {
 	upgrade_reports();
 }
 
-function upgrade_reports() {
+function upgrade_reports() : void {
 	require_once(CACTI_PATH_BASE . '/lib/api_scheduler.php');
 
 	if (!db_column_exists('reports', 'next_start')) {
@@ -797,7 +797,7 @@ function upgrade_reports() {
 	db_execute_prepared('UPDATE reports SET attachment_type = ? WHERE attachment_type = ?', [REPORTS_TYPE_INLINE_GIF, 93]);
 }
 
-function ldap_convert_1_3_0() {
+function ldap_convert_1_3_0() : void {
 	$ldap_fields = [
 		'ldap_server'            => 'server',
 		'ldap_port'              => 'port',
@@ -897,7 +897,7 @@ function ldap_convert_1_3_0() {
 	}
 }
 
-function upgrade_dsstats() {
+function upgrade_dsstats() : void {
 	$columns = [
 		'p95n',
 		'p90n',

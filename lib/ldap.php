@@ -183,7 +183,7 @@ function cacti_ldap_auth($username, $password = '', $dn = '', $host = '', $port 
  * @param string $specific_dn - DN for binding to perform user search, Default = Configured settings value
  * @param string $specific_password - Password for binding to perform user search, Default - Configured settings value
  *
- * @return - array of values
+ * @return array - array of values
  */
 function cacti_ldap_search_dn($username, $dn = '', $host = '', $port = '', $port_ssl = '', $version = '', $encryption = '',
 	$referrals = '', $mode = '', $search_base = '', $search_filter = '', $specific_dn = '', $specific_password = '') {
@@ -302,7 +302,7 @@ function cacti_ldap_search_dn($username, $dn = '', $host = '', $port = '', $port
  * @param string $specific_dn - DN for binding to perform user search, Default = Configured settings value
  * @param string $specific_password - Password for binding to perform user search, Default - Configured settings value
  *
- * @return - array of values
+ * @return array - array of values
  */
 function cacti_ldap_search_cn($username, $cn = [], $dn = '', $host = '', $port = '', $port_ssl = '', $version = '', $encryption = '',
 	$referrals = '', $mode = '', $search_base = '', $search_filter = '', $specific_dn = '', $specific_password = '') {

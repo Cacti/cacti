@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_0_8_7() {
+function upgrade_to_0_8_7() : void {
 	// add slope mode as an option
 	db_install_add_column('graph_templates_graph', ['name' => 't_slope_mode', 'type' => 'CHAR(2)', 'default' => '0', 'after' => 'vertical_label']);
 	db_install_add_column('graph_templates_graph', ['name' => 'slope_mode', 'type' => 'CHAR(2)', 'default' => 'on', 'after' => 't_slope_mode']);

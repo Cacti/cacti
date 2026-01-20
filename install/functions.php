@@ -330,15 +330,13 @@ function install_rmdir($directory) {
  * install_rmdir_recursive - Simple function to recursively remove a directory
  *  structure.
  *
- * @param  string     - Directory name
- * @param  bool       - True, and the directory and contents will be
- *                      removed.  Otherwise the directory will remain.
- * @param mixed $directory
- * @param null|mixed $delete_parent
+ * @param  string - Directory name
+ * @param  bool   - True, and the directory and contents will be
+ *                  removed.  Otherwise the directory will remain.
  *
- * @return nill       - Nothing is returned
+ * @return void - Nothing is returned
  */
-function install_rmdir_recursive($directory, $delete_parent = null) {
+function install_rmdir_recursive(string $directory, bool $delete_parent = false) {
 	if (substr($directory, 0, 1) != '/') {
 		$directory = CACTI_PATH_BASE . '/' . $directory;
 	}

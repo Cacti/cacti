@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_1_2_3() {
+function upgrade_to_1_2_3() : void {
 	// Correct max values in templates and data sources: GAUGE/ABSOLUTE (1,4)
 	db_install_execute("UPDATE data_template_rrd
 		SET rrd_maximum='U'

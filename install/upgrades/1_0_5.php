@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_1_0_5() {
+function upgrade_to_1_0_5() : void {
 	db_install_execute('ALTER TABLE host_snmp_cache MODIFY COLUMN snmp_index varchar(191) NOT NULL default ""');
 	db_install_execute('ALTER TABLE poller_command MODIFY COLUMN command varchar(191) NOT NULL default ""');
 	db_install_execute('ALTER TABLE poller_data_template_field_mappings MODIFY COLUMN data_source_names varchar(191) NOT NULL default ""');

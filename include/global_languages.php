@@ -584,7 +584,7 @@ function __esc_xn(): string {
 /**
  * load_fallback_procedure - loads wrapper package if native language (English) has to be used
  *
- * @return
+ * @return void
  */
 function load_fallback_procedure(): void {
 	global $cacti_textdomains, $cacti_locale, $cacti_country, $lang2locale;
@@ -713,7 +713,7 @@ function __uf(string|null $text): string {
  * This function uses gettext for translation and sprintf for formatting.
  * It supports different text domains and various formatting options.
  *
- * @return false|string Returns the translated and formatted string, or false if no arguments are provided.
+ * @return mixed - Returns the translated and formatted string, or false if no arguments are provided.
  */
 function __(): string {
 	global $i18n;
@@ -988,9 +988,10 @@ function get_installed_locales() {
  * read_user_i18n_setting - finds the current value of a i18n configuration setting
  *
  * @param string $config_name The name of the configuration setting to retrieve.
- * @return mixed The value of the configuration setting if found, or false if not found.
+ *
+ * @return mixed - The value of the configuration setting if found, or false if not found.
  */
-function read_user_i18n_setting(string $config_name): string|false {
+function read_user_i18n_setting(string $config_name): mixed {
 	global $config;
 
 	// users must have cacti user auth turned on to use this, or the guest account must be active
@@ -1022,11 +1023,12 @@ function read_user_i18n_setting(string $config_name): string|false {
  * otherwise it falls back to using PHP's `number_format` function with locale settings.
  *
  * @param mixed $number The number to format.
- * @param int|null $decimals The number of decimal points. If null, defaults to 0.
- * @param int|null $baseu The base unit for formatting large numbers (default is 1024).
- * @return string The formatted number.
+ * @param mixed $decimals The number of decimal points. If null, defaults to 0.
+ * @param mixed $baseu The base unit for formatting large numbers (default is 1024).
+ *
+ * @return string - The formatted number.
  */
-function number_format_i18n(mixed $number, int $decimals = null, int $baseu = 1024): string {
+function number_format_i18n(mixed $number, mixed $decimals = null, mixed $baseu = 1024): string {
 	global $cacti_locale, $cacti_country;
 
 	if (is_null($number)) {

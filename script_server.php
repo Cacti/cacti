@@ -480,7 +480,7 @@ function sig_handler(int $signo) : void {
 /**
  * display_version - displays version information
  *
- * @return (void)
+ * @return void
  */
 function display_version() : void {
 	$version = get_cacti_version();
@@ -490,7 +490,7 @@ function display_version() : void {
 /**
  * display_help - displays help information
  *
- * @return (void)
+ * @return void
  */
 function display_help() : void {
 	display_version();

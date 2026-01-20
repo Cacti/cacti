@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_1_1_28() {
+function upgrade_to_1_1_28() : void {
 	db_install_add_key('poller', 'index', 'disabled', ['disabled']);
 	db_install_drop_key('host', 'key', 'poller_id');
 	db_install_add_key('host', 'index', 'poller_id_disabled', ['poller_id', 'disabled']);

@@ -358,15 +358,15 @@ function reports_interval_start($interval, $count, $offset, $timestamp) {
 /**
  * utime_add - add offsets to given timestamp
  *
- * @param int $timestamp- base timestamp
- * @param int $yr		- offset in years
- * @param int $mon		- offset in months
- * @param int $day		- offset in days
- * @param int $hr		- offset in hours
- * @param int $min		- offset in minutes
- * @param int $sec		- offset in seconds
+ * @param int $timestamp - base timestamp
+ * @param int $yr        - offset in years
+ * @param int $mon       - offset in months
+ * @param int $day       - offset in days
+ * @param int $hr        - offset in hours
+ * @param int $min       - offset in minutes
+ * @param int $sec       - offset in seconds
  *
- * @return				- unix time
+ * @return int - unix time
  */
 function utime_add($timestamp, $yr = 0, $mon = 0, $day = 0, $hr = 0, $min = 0, $sec = 0) {
 	$dt = localtime($timestamp, true);

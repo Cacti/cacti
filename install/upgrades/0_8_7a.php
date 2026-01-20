@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_0_8_7a() {
+function upgrade_to_0_8_7a() : void {
 	// add alpha channel to graph items
 	db_install_add_column('graph_templates_item', ['name' => 'alpha', 'type' => 'char(2)', 'NULL' => false, 'after' => 'color_id', 'default' => 'FF']);
 

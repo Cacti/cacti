@@ -317,7 +317,7 @@ function expand_title($host_id, $snmp_query_id, $snmp_index, $title) {
  *
  * @return string  - The original string with all of the variable substitutions made
  */
-function substitute_script_query_path($path) {
+function substitute_script_query_path(string $path) : string {
 	$path = clean_up_path(str_replace('|path_cacti|', CACTI_PATH_BASE, $path));
 	$path = clean_up_path(str_replace('|path_php_binary|', read_config_option('path_php_binary'), $path));
 
@@ -334,7 +334,7 @@ function substitute_script_query_path($path) {
  *
  * @return string   - the original string with all of the variable substitutions made
  */
-function substitute_host_data($string, $l_escape_string, $r_escape_string, $host_id) {
+function substitute_host_data(string $string, string $l_escape_string, string $r_escape_string, int $host_id) : string {
 	if (!empty($host_id)) {
 		$host = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' h.*, s.name AS site_name
 			FROM host AS h
@@ -445,12 +445,12 @@ function substitute_host_data($string, $l_escape_string, $r_escape_string, $host
  * @param string  $string - The origina string that contains the data query variables
  * @param int     $host_id - The host ID to match
  * @param int     $snmp_query_id - The data query ID to match
- * @param int     $snmp_index - The data query index to match
+ * @param string  $snmp_index - The data query index to match
  * @param int     $max_chars - The maximum number of characters to substitute
  *
  * @return string  - the original string with all of the variable substitutions made
  */
-function substitute_snmp_query_data($string, $host_id, $snmp_query_id, $snmp_index, $max_chars = 0) {
+function substitute_snmp_query_data(string $string, int $host_id, int $snmp_query_id, string $snmp_index, int $max_chars = 0) : string {
 	if ($host_id > 0) {
 		$snmp_cache_data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' field_name, field_value
 			FROM host_snmp_cache
@@ -491,13 +491,13 @@ function substitute_snmp_query_data($string, $host_id, $snmp_query_id, $snmp_ind
  * variables contained in it.
  *
  * @param string $string - The original string that contains the data input variables
- * @param int    $graph - The local data id to match
+ * @param array  $graph - The local data id to match
  * @param int    $local_data_id - The maximum number of characters to substitute
  * @param int    $max_chars - The maximum number of characters to process
  *
  * @return string  - the original string with all of the variable substitutions made
  */
-function substitute_data_input_data($string, $graph, $local_data_id, $max_chars = 0) {
+function substitute_data_input_data(string $string, array $graph, int $local_data_id, int $max_chars = 0) : string {
 	if (empty($local_data_id)) {
 		if (isset($graph['local_graph_id'])) {
 			$local_data_ids = array_rekey(db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' DISTINCT local_data_id
@@ -554,13 +554,13 @@ function substitute_data_input_data($string, $graph, $local_data_id, $max_chars 
  * variables contained in it.
  *
  * @param string $string - The original string that contains the data input variables
- * @param int    $graph - The local data id to match
+ * @param array  $graph - The local data id to match
  * @param int    $local_data_id - The maximum number of characters to substitute
  * @param int    $max_chars - The maximum number of characters to process
  *
  * @return string  - the original string with all of the variable substitutions made
  */
-function substitute_poller_data($string, $graph, $local_data_id, $max_chars = 0) {
+function substitute_poller_data(string $string, array $graph, int $local_data_id, int $max_chars = 0) : string {
 	if (empty($local_data_id)) {
 		if (isset($graph['local_graph_id'])) {
 			$poller = db_fetch_row_prepared('SELECT p.*
@@ -619,7 +619,7 @@ function substitute_poller_data($string, $graph, $local_data_id, $max_chars = 0)
  *
  * @return string  - the original string with all of the variable substitutions made
  */
-function substitute_site_data($string, $graph, $local_data_id, $max_chars = 0) {
+function substitute_site_data(string $string, array $graph, int $local_data_id, int $max_chars = 0) : string {
 	if (empty($local_data_id)) {
 		if (isset($graph['local_graph_id'])) {
 			$site = db_fetch_row_prepared('SELECT s.*

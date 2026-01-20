@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_1_2_21() {
+function upgrade_to_1_2_21() : void {
 	global $config;
 
 	db_install_drop_key('data_source_profiles_cf', 'index', 'data_source_profile_id');

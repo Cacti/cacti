@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_1_1_20() {
+function upgrade_to_1_1_20() : void {
 	db_install_execute('ALTER TABLE snmpagent_cache
 		MODIFY COLUMN `oid` VARCHAR(50) NOT NULL,
 		MODIFY COLUMN `name` VARCHAR(50) NOT NULL,

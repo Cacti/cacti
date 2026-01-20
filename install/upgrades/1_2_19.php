@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_1_2_19() {
+function upgrade_to_1_2_19() : void {
 	// Correct name values in data input fields
 	db_install_execute("UPDATE data_input_fields
 		SET name='SNMP Authenticaion Protocol (v3)'

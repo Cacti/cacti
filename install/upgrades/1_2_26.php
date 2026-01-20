@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_1_2_26() {
+function upgrade_to_1_2_26() : void {
 	db_install_execute("ALTER TABLE `settings` MODIFY `value` varchar(4096) not null default ''");
 	db_install_execute("ALTER TABLE `settings_user` MODIFY `value` varchar(4096) not null default ''");
 

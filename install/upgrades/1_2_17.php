@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_1_2_17() {
+function upgrade_to_1_2_17() : void {
 	// Correct max values in templates and data sources: GAUGE/ABSOLUTE (1,4)
 	db_install_execute('ALTER TABLE graph_templates_graph ROW_FORMAT=Dynamic, DROP INDEX title_cache, ADD INDEX title_cache(title_cache)');
 	db_install_execute('ALTER TABLE data_template_data ROW_FORMAT=Dynamic, DROP INDEX name_cache, ADD INDEX name_cache(name_cache)');

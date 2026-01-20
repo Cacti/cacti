@@ -7,6 +7,8 @@ parameters:
         analyse:
            - include/vendor/*
            - plugins/*
+           - scripts/*
+           - rector.php
     paths:
         - include
         - lib
@@ -14,6 +16,7 @@ parameters:
         - .
     bootstrapFiles:
         - .phpstan-bootstrap.php
+        - include/vendor/autoload.php
         - include/global_constants.php
         - include/global.php
         - include/global_languages.php

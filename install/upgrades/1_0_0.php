@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_1_0_0() {
+function upgrade_to_1_0_0() : void {
 	global $config, $plugins_integrated;
 
 	$default_engine_result = db_install_fetch_row("SHOW GLOBAL VARIABLES LIKE 'default_storage_engine'");
@@ -1825,7 +1825,7 @@ function upgrade_to_1_0_0() {
 	db_install_drop_key('data_input', 'index', 'name');
 }
 
-function upgrade_realms() {
+function upgrade_realms() : void {
 	$upgrade_realms = [
 		['new_realm' => 101, 'file_pattern' => 'plugins.php'],
 		['new_realm' => 23,  'file_pattern' => 'discovery.php'],

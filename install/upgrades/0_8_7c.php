@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_0_8_7c() {
+function upgrade_to_0_8_7c() : void {
 	// speed up the UI, missed in 0.8.7b upgrade, avoid failures if index already exists
 	db_install_add_key('data_local', 'index', 'host_id', ['host_id']);
 

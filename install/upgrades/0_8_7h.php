@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_0_8_7h() {
+function upgrade_to_0_8_7h() : void {
 	global $config;
 
 	require_once(CACTI_PATH_LIBRARY . '/poller.php');
