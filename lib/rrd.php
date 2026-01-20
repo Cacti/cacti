@@ -66,7 +66,7 @@ function rrdtool_reset_language() : void {
 	putenv('LANG=' . $prev_lang);
 }
 
-function rrd_init(bool $output_to_term = true) : bool {
+function rrd_init(bool $output_to_term = true) : mixed {
 	global $config;
 
 	$args = func_get_args();
@@ -78,7 +78,7 @@ function rrd_init(bool $output_to_term = true) : bool {
 	return call_user_func_array($function, $args);
 }
 
-function __rrd_init(bool $output_to_term = true) : bool {
+function __rrd_init(bool $output_to_term = true) : mixed {
 	// set the rrdtool default font
 	if (read_config_option('path_rrdtool_default_font')) {
 		putenv('RRD_DEFAULT_FONT=' . read_config_option('path_rrdtool_default_font'));
@@ -97,11 +97,10 @@ function __rrd_init(bool $output_to_term = true) : bool {
 	return popen($command, 'w');
 }
 
-function __rrd_proxy_init(string $logopt = 'WEBLOG') : bool {
+function __rrd_proxy_init(string $logopt = 'WEBLOG') : mixed {
 	global $encryption;
 	$terminator = "_EOT_\r\n";
 	$encryption = true;
-	$rsa        = new \phpseclib\phpseclib\phpseclib\Crypt\RSA();
 
 	$rrdp_socket = @socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 
@@ -185,8 +184,8 @@ function __rrd_proxy_init(string $logopt = 'WEBLOG') : bool {
 		}
 	}
 
-	$rsa->loadKey($rrdp_public_key);
-	$fingerprint = $rsa->getPublicKeyFingerprint();
+	$public = phpseclib3\Crypt\RSA::loadPublicKey($rrdp_public_key);
+	$fingerprint = $public->getFingerprint('md5');
 
 	if ($rrdp_fingerprint != $fingerprint) {
 		cacti_log('CACTI2RRDP ERROR: Mismatch RSA Fingerprint.', false, $logopt, POLLER_VERBOSITY_LOW);
@@ -216,7 +215,7 @@ function rrd_close() : void {
 
 	$function = ($local_storage === false && read_config_option('storage_location')) ? '__rrd_proxy_close' : '__rrd_close';
 
-	return call_user_func_array($function, $args);
+	call_user_func_array($function, $args);
 }
 
 function __rrd_close(mixed $rrdtool_pipe) : void {
@@ -243,15 +242,16 @@ function encrypt(string $output, string $rsa_key) : string {
 	global $encryption;
 
 	if ($encryption) {
-		$rsa     = new \phpseclib\phpseclib\phpseclib\Crypt\RSA();
-		$aes     = new \phpseclib\phpseclib\phpseclib\Crypt\Rijndael();
-		$aes_key = \phpseclib\phpseclib\phpseclib\Crypt\Random::string(192);
+		$private = phpseclib3\Crypt\RSA::loadPrivateKey($rsa_key);
+		$public  = $private->getPublicKey();
+
+		$aes     = new \phpseclib3\Crypt\Rijndael('stream');
+		$aes_key = phpseclib3\Crypt\Random::string(192);
 
 		$aes->setKey($aes_key);
-		$ciphertext = base64_encode($aes->encrypt($output));
-		$rsa->loadKey($rsa_key);
-		$aes_key        = base64_encode($rsa->encrypt($aes_key));
-		$aes_key_length = str_pad(dechex(strlen($aes_key)),3,'0',STR_PAD_LEFT);
+		$ciphertext     = base64_encode($aes->encrypt($output));
+		$aes_key        = base64_encode($public->encrypt($aes_key));
+		$aes_key_length = str_pad(dechex(strlen($aes_key)), 3, '0', STR_PAD_LEFT);
 
 		return $aes_key_length . $aes_key . $ciphertext;
 	} else {
@@ -263,17 +263,17 @@ function decrypt(string $input) : string {
 	global $encryption;
 
 	if ($encryption) {
-		$rsa = new \phpseclib\phpseclib\phpseclib\Crypt\RSA();
-		$aes = new \phpseclib\phpseclib\phpseclib\Crypt\Rijndael();
-
 		$rsa_private_key = read_config_option('rsa_private_key');
+		$private = phpseclib3\Crypt\RSA::loadPrivateKey($rsa_private_key);
+		$public  = $private->getPublicKey();
+
+		$aes = new \phpseclib3\Crypt\Rijndael('stream');
 
 		$aes_key_length = hexdec(substr($input, 0, 3));
 		$aes_key        = base64_decode(substr($input, 3, $aes_key_length), true);
 		$ciphertext     = base64_decode(substr($input, 3 + $aes_key_length), true);
 
-		$rsa->loadKey($rsa_private_key);
-		$aes_key = $rsa->decrypt($aes_key);
+		$aes_key = $public->decrypt($aes_key);
 		$aes->setKey($aes_key);
 		$plaintext = $aes->decrypt($ciphertext);
 
