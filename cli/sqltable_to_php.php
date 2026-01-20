@@ -254,7 +254,7 @@ function display_version() : void {
 }
 
 /**
- * display_version - displays help information
+ * display_help - displays help information
  *
  * @return void
  */
