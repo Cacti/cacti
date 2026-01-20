@@ -263,14 +263,18 @@ function display_help() : void {
 
 	print PHP_EOL;
 	print 'usage: sqltable_to_php.php --table=table_name [--plugin=name] [--update]' . PHP_EOL . PHP_EOL;
+
 	print 'A simple developers utility to create a save schema for a newly created or' . PHP_EOL;
 	print 'modified database table in a format that is consumable by Cacti.' . PHP_EOL . PHP_EOL;
+
 	print "These save schema's can be placed into a plugins setup.php file in order" . PHP_EOL;
 	print "to create the tables inside of a plugin as a part of it's install function." . PHP_EOL;
 	print 'The plugin parameter is optional, but if you want the table(s) automatically' . PHP_EOL;
 	print "removed from Cacti when uninstalling the plugin, specify it's name." . PHP_EOL . PHP_EOL;
+
 	print 'Required:' . PHP_EOL;
 	print '--table=table_name - The table that you want exported' . PHP_EOL . PHP_EOL;
+
 	print 'Optional:' . PHP_EOL;
 	print '--plugin=name      - The name of the plugin that will manage tables' . PHP_EOL;
 	print '--update           - The utility provides create syntax.  If the update flag is' . PHP_EOL;

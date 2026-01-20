@@ -241,9 +241,14 @@ function debug(string $string) : void {
 	}
 }
 
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
 function display_version() : void {
 	$version = get_cacti_cli_version();
-	print "Cacti Fix Database Range Issue, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Fix Database Range Issue, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 /**

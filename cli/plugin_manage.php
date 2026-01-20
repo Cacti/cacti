@@ -193,7 +193,7 @@ if (cacti_sizeof($plugins)) {
 	}
 }
 
-function plugin_manage_install_allrealms($plugin) {
+function plugin_manage_install_allrealms(string $plugin) : void {
 	print "NOTE: Enabling Plugin '$plugin' permissions for administrative accounts" . PHP_EOL;
 
 	$realms = db_fetch_assoc_prepared('SELECT *
@@ -208,16 +208,20 @@ function plugin_manage_install_allrealms($plugin) {
 
 /**
  * display_version - displays version information
+ *
+ * @return void
  */
-function display_version() {
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Install Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 /**
- *display_help - displays the usage of the function
+ * display_help - displays the usage of the function
+ *
+ * @return void
  */
-function display_help() {
+function display_help() : void {
 	print 'usage: plugin_manage.php [--plugin=S] [--install --enable --allperms] [--uninstall ] [--disable]' . PHP_EOL . PHP_EOL;
 
 	print 'A utility to install/uninstall a Cacti plugin or plugins' . PHP_EOL . PHP_EOL;

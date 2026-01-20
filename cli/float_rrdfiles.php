@@ -44,13 +44,13 @@ $type              = 'rmaster';
 $thread_id         = 0;
 
 // mandatory parameters
-$start_time        = false;
-$end_time          = false;
+$start_time        = 0;
+$end_time          = 0;
 
 // optional parameters for RRDfile selection
-$host_id           = false;
-$host_template_id  = false;
-$graph_template_id = false;
+$host_id           = 0;
+$host_template_id  = 0;
+$graph_template_id = 0;
 $local_graph_ids   = [];
 $step              = false;
 
@@ -164,7 +164,7 @@ if (function_exists('pcntl_signal')) {
 	pcntl_signal(SIGINT, 'sig_handler');
 }
 
-if ($start_time == false || $end_time == false) {
+if ($start_time == 0 || $end_time == 0) {
 	printf('ERROR: Both --start=TS and --end=TS are required and can be a timestamp or in date/time format' . PHP_EOL);
 
 	exit(1);
@@ -203,28 +203,28 @@ if ($start_time >= $end_time) {
 }
 
 // perform some validation for host-id
-if ($host_id !== false && ($host_id < 0 || !is_numeric($host_id))) {
+if ($host_id < 0) {
 	printf('ERROR: The value of %s for --host-id is invalid!' . PHP_EOL, $host_id);
 
 	exit(1);
 }
 
 // perform some validation for host-template-id
-if ($host_template_id !== false && ($host_template_id < 0 || !is_numeric($host_template_id))) {
+if ($host_template_id < 0) {
 	printf('ERROR: The value of %s for --host-template-id is invalid!' . PHP_EOL, $host_template_id);
 
 	exit(1);
 }
 
 // perform some validation for graph-template-id
-if ($graph_template_id !== false && ($graph_template_id < 0 || !is_numeric($graph_template_id))) {
+if ($graph_template_id < 0) {
 	printf('ERROR: The value of %s for --graph-template-id is invalid!' . PHP_EOL, $graph_template_id);
 
 	exit(1);
 }
 
 // perform some validation for step value
-if ($step !== false && ($step < 0 || !is_numeric($step))) {
+if ($step < 0) {
 	printf('ERROR: The value of %s for --step is invalid!' . PHP_EOL, $step);
 
 	exit(1);
@@ -317,20 +317,15 @@ exit(0);
  *   RRA's and will float around those ranges to ensure that there are
  *   no spikes.
  *
- * @param  (string) The RRDfile to update
- * @param  (int)    The local data id of the data source
- * @param  (int)    Any step size smaller than this will be skipped
- * @param  (int)    The float range start time as a unix timestamp
- * @param  (int)    The float range end time as a unix timestamp
- * @param mixed $rrd_path
- * @param mixed $local_data_id
- * @param mixed $step
- * @param mixed $start_time
- * @param mixed $end_time
+ * @param string $rrd_path      - The RRDfile to update
+ * @param int    $local_data_id - The local data id of the data source
+ * @param mixed  $step          - Any step size smaller than this will be skipped
+ * @param int    $start_time    - The float range start time as a unix timestamp
+ * @param int    $end_time      - The float range end time as a unix timestamp
  *
- * @return (bool)   True if successful otherwise false
+ * @return bool - True if successful otherwise false
  */
-function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time) {
+function float_rrdfile(string $rrd_path, int $local_data_id, mixed $step, int $start_time, int $end_time) {
 	global $seebug;
 
 	static $rrdtool_bin = false;
@@ -373,6 +368,9 @@ function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time)
 				$in_range    = false;
 				$prev_data   = '';
 				$curstep     = 0;
+				$prev_line   = '';
+				$granularity = '';
+				$gdelta      = 0;
 
 				foreach ($output as $line) {
 					if (strpos($line, '<pdp_per_row>') !== false) {
@@ -386,7 +384,7 @@ function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time)
 						 * We use this just in case we need to update
 						 * only one line in the RRA.
 						 */
-						$granularity = $parts[2];
+						$granularity = (float) $parts[2];
 						$gdelta      = $granularity / 2;
 						$curstep     = $granularity;
 
@@ -401,7 +399,7 @@ function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time)
 						// split the database record into pieces
 						$parts  = preg_split('/[\s]+/', trim($line));
 
-						$timestamp = $parts[5];
+						$timestamp = intval($parts[5]);
 
 						if ($timestamp <= $start_time && ($timestamp + $gdelta) < $end_time) {
 							$in_range = false;
@@ -465,6 +463,14 @@ function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time)
 
 				$response = exec($command, $output, $return);
 
+				if (!$seebug && file_exists($tmp_file)) {
+					unlink($tmp_file);
+				}
+
+				if ($seebug) {
+					fclose($lf);
+				}
+
 				if ($return == 0) {
 					cacti_log(sprintf('NOTE: Range floated for RRDfile %s', $rrd_path), false, 'RFLOAT');
 
@@ -473,11 +479,6 @@ function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time)
 					cacti_log(sprintf('WARNING: Range float FAILED for RRDfile %s.  Message is %s', $rrd_path, $response), false, 'RFLOAT');
 
 					return false;
-				}
-
-				if (!$seebug) {
-					unlink($tmp_file);
-					fclose($lf);
 				}
 			} else {
 				cacti_log(sprintf('WARNING: Unable to open file %s for writing', $tmp_file), false, 'RFLOAT');
@@ -496,7 +497,8 @@ function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time)
 	}
 }
 
-function float_master_handler($forcerun, $resume, $host_id, $host_template_id, $graph_template_id, $local_graph_ids, $threads, $step, $start_time, $end_time) {
+function float_master_handler(bool $forcerun, bool $resume, int $host_id, int $host_template_id, int $graph_template_id,
+	array $local_graph_ids, int $threads, mixed $step, int $start_time, int $end_time) : bool {
 	global $type;
 
 	// Create table if first time use
@@ -515,17 +517,17 @@ function float_master_handler($forcerun, $resume, $host_id, $host_template_id, $
 	$sql_where  = '';
 	$sql_params = [];
 
-	if ($host_id !== false) {
+	if ($host_id > 0) {
 		$sql_where .= 'WHERE h.id = ?';
 		$sql_params[] = $host_id;
 	}
 
-	if ($host_template_id !== false) {
+	if ($host_template_id > 0) {
 		$sql_where .= ($sql_where != '' ? 'AND ' : 'WHERE ') . 'h.host_template_id = ?';
 		$sql_params[] = $host_template_id;
 	}
 
-	if ($graph_template_id !== false) {
+	if ($graph_template_id > 0) {
 		$sql_where .= ($sql_where != '' ? 'AND ' : 'WHERE ') . 'gti.graph_template_id = ?';
 		$sql_params[] = $graph_template_id;
 	}
@@ -620,17 +622,17 @@ function float_master_handler($forcerun, $resume, $host_id, $host_template_id, $
 
 /**
  * float_launch_child - this function will launch collector children based upon
- *   the maximum number of threads and the process type
+ * the maximum number of threads and the process type
  *
- * @param $thread_id  (int)    The Thread id to launch
- * @param $start_time (int)    The float window start time as a timestamp
- * @param $end_time   (int)    The float window end time as a timestamp
- * @param mixed $step
+ * @param int   $thread_id  - The Thread id to launch
+ * @param mixed $step     - The RRDstep for the RRDfile
+ * @param int   $start_time - The float window start time as a timestamp
+ * @param int   $end_time   - The float window end time as a timestamp
  *
- * @return - NULL
+ * @return void
  */
-function float_launch_child($thread_id, $step, $start_time, $end_time) {
-	global $config, $seebug;
+function float_launch_child(int $thread_id, mixed $step, int $start_time, int $end_time) {
+	global $seebug;
 
 	$php_binary = read_config_option('path_php_binary');
 
@@ -643,32 +645,28 @@ function float_launch_child($thread_id, $step, $start_time, $end_time) {
 
 /**
  * float_processes_running - given a type, determine the number
- *   of sub-type or children that are currently running
+ * of sub-type or children that are currently running
  *
- * @return - (int) The number of running processes
+ * @return int - The number of running processes
  */
-function float_processes_running() {
+function float_processes_running() : int {
 	$running = db_fetch_cell('SELECT COUNT(*)
 		FROM processes
 		WHERE tasktype = "rfloat"
 		AND taskname = "child"');
 
-	if ($running == 0) {
-		return 0;
-	}
-
-	return $running;
+	return intval($running);
 }
 
 /**
  * float_debug - this simple routine prints a standard message to the console
- *   when running in debug mode.
+ * when running in debug mode.
  *
- * @param $message - (string) The message to display
+ * @param string $message - The message to display
  *
- * @return - NULL
+ * @return void
  */
-function float_debug($message) {
+function float_debug(string $message) : void {
 	global $seebug;
 
 	if ($seebug) {
@@ -677,17 +675,74 @@ function float_debug($message) {
 }
 
 /**
- * display_version - displays version information
+ * sig_handler - provides a generic means to catch exceptions to the Cacti log.
+ *
+ * @param int $signo - The signal that was thrown by the interface.
+ *
+ * @return void
  */
-function display_version() {
+function sig_handler(int $signo) : void {
+	global $type, $thread_id;
+
+	switch ($signo) {
+		case SIGTERM:
+		case SIGINT:
+			cacti_log('WARNING: RRDfile Data Float Tool terminated by user', false, 'RFLOAT');
+
+			if (strpos($type, 'rmaster') !== false) {
+				float_kill_running_processes();
+			}
+
+			unregister_process('rfloat', 'rmaster', $thread_id, getmypid());
+
+			exit(1);
+		default:
+			// ignore all other signals
+	}
+}
+
+/**
+ * float_kill_running_processes - this function is part of an interrupt
+ * handler to kill children processes when the parent is killed
+ *
+ * @return void
+ */
+function float_kill_running_processes() : void {
+	global $type;
+
+	$processes = db_fetch_assoc_prepared('SELECT *
+		FROM processes
+		WHERE tasktype = "rfloat"
+		AND taskname IN ("child")
+		AND pid != ?',
+		[getmypid()]);
+
+	if (cacti_sizeof($processes)) {
+		foreach ($processes as $p) {
+			cacti_log(sprintf('WARNING: Killing Cleanup %s PID %d due to another due to signal or overrun.', ucfirst($p['taskname']), $p['pid']), false, 'RFLOAT');
+			posix_kill($p['pid'], SIGTERM);
+
+			unregister_process($p['tasktype'], $p['taskname'], $p['taskid'], $p['pid']);
+		}
+	}
+}
+
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
+function display_version() : void {
 	$version = get_cacti_version();
 	print "Cacti RRDfile Data Float Tool, Version $version " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 /**
  * display_help - generic help screen for utilities
+ *
+ * @return void
  */
-function display_help() {
+function display_help() : void {
 	display_version();
 
 	print PHP_EOL . 'usage: float_rrdfiles.php --start=TS --end=TS [--threads=N --host-id=N --host-template-id=N --graph-template-id=N] [--debug]' . PHP_EOL . PHP_EOL;
@@ -708,7 +763,7 @@ function display_help() {
 	print 'Optional:' . PHP_EOL;
 	print '    --threads             - 10, The number of threads to use to update RRDfiles' . PHP_EOL;
 	print '    --resume              - False, Resume a canceled float process' . PHP_EOL;
-	print '    --host-id=N           - N/A, Update a specific devices RRDfiles' . PHP_EOL;
+	print '    --host-id=N           - N/A, Update a specific Devices RRDfiles' . PHP_EOL;
 	print '    --host-template-id=N  - N/A, Update a specific Device Templates RRDfiles' . PHP_EOL;
 	print '    --graph-template-id=N - N/A, Update a specific Graph Template RRDfiles' . PHP_EOL;
 	print '    --graph-ids=N,N,...   - N/A, A comma delimited list of graph ids to fix' . PHP_EOL;
@@ -718,59 +773,4 @@ function display_help() {
 	print 'System Controlled:' . PHP_EOL;
 	print '    --type      - The type and subtype of the float process' . PHP_EOL;
 	print '    --child     - The thread id of the child process' . PHP_EOL . PHP_EOL;
-}
-
-/**
- * sig_handler - provides a generic means to catch exceptions to the Cacti log.
- *
- * @param $signo - (int) the signal that was thrown by the interface.
- *
- * @return - null
- */
-function sig_handler($signo) {
-	global $type, $thread_id;
-
-	switch ($signo) {
-		case SIGTERM:
-		case SIGINT:
-			cacti_log('WARNING: RRDfile Data Float Tool terminated by user', false, 'RFLOAT');
-
-			if (strpos($type, 'rmaster') !== false) {
-				float_kill_running_processes();
-			}
-
-			unregister_process('rfloat', 'rmaster', $thread_id, getmypid());
-
-			exit(1);
-
-			break;
-		default:
-			// ignore all other signals
-	}
-}
-
-/**
- * float_kill_running_processes - this function is part of an interrupt
- *   handler to kill children processes when the parent is killed
- *
- * @return - NULL
- */
-function float_kill_running_processes() {
-	global $type;
-
-	$processes = db_fetch_assoc_prepared('SELECT *
-		FROM processes
-		WHERE tasktype = "rfloat"
-		AND taskname IN ("child")
-		AND pid != ?',
-		[getmypid()]);
-
-	if (cacti_sizeof($processes)) {
-		foreach ($processes as $p) {
-			cacti_log(sprintf('WARNING: Killing Cleanup %s PID %d due to another due to signal or overrun.', ucfirst($p['taskname']), $p['pid']), false, 'RFLOAT');
-			posix_kill($p['pid'], SIGTERM);
-
-			unregister_process($p['tasktype'], $p['taskname'], $p['taskid'], $p['pid']);
-		}
-	}
 }

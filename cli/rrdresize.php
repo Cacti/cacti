@@ -211,7 +211,7 @@ $rrdtool_process       = $rrdtool_process_pipes[0];
 $rrdtool_pipes         = $rrdtool_process_pipes[1];
 
 // scan the system to get an idea of how files and folders we have
-$scanned_directory = dirToArray($path_rra);
+$scanned_directory = dirToArrayOne($path_rra);
 /*
 $scanned_directory = array(
 	'files' => 0,
@@ -987,7 +987,7 @@ function rrdtool_pipe_execute(string $command, mixed $pipes) : string {
 	return $stdout;
 }
 
-function dirToArray(string $dir) : array {
+function dirToArrayOne(string $dir) : array {
 	global $total_files;
 
 	$files   = 0;
@@ -1002,7 +1002,7 @@ function dirToArray(string $dir) : array {
 			if (!in_array($value, ['.', '..'], true)) {
 				if (is_dir($dir . DIRECTORY_SEPARATOR . $value)) {
 					$folders++;
-					$result[$value] = dirToArray($dir . DIRECTORY_SEPARATOR . $value);
+					$result[$value] = dirToArrayOne($dir . DIRECTORY_SEPARATOR . $value);
 				} else {
 					if (substr($value, -4) == '.rrd') {
 						$result[] = $value;
@@ -1053,18 +1053,35 @@ function f_log(string $msg) : void {
 	}
 }
 
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
 function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti RRDfile Reassign Data Template, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
+/**
+ * display_help - displays help information
+ *
+ * @return void
+ */
 function display_help() : void {
 	display_version();
 
-	print "A simple command line utility to analyse and reassign data template settings\nto RRDfiles based upon." . PHP_EOL . PHP_EOL;
+	print PHP_EOL;
+	print 'A simple command line utility to analyse and reassign data template settings' . PHP_EOL;
+	print 'into RRDfiles based upon.' . PHP_EOL . PHP_EOL;
+
 	print 'usage: rrdresize.php --data-template-id=[ID] --backup=[PATH] [--dry-run] [--debug, -d]' . PHP_EOL . PHP_EOL;
+
+	print 'Required:' . PHP_EOL;
 	print '    --data-template-id          the numerical ID of the host' . PHP_EOL;
-	print '    --backup                    path to backup original RRDfiles' . PHP_EOL;
+	print '    --backup                    path to backup original RRDfiles' . PHP_EOL . PHP_EOL;
+
+	print 'Optional:' . PHP_EOL;
 	print '    --dry-run                   no boost cache update and no replacement of rrdfiles' . PHP_EOL;
 	print '    --debug, -d                 show detail processing data' . PHP_EOL;
 	print '    --list-data-templates       list all data templates' . PHP_EOL . PHP_EOL;

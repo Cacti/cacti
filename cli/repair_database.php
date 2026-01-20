@@ -145,16 +145,20 @@ if ($total_errors == 0 && $total_repairs == 0) { // @phpstan-ignore booleanAnd.a
 }
 
 function table_structural_repair() : void {
-	global $config, $local, $total_errors, $total_repairs;
+	global $local, $total_errors, $total_repairs;
 	global $debug, $force, $rtables, $form, $dynamic, $base_tables, $database_default;
 
 	print_separator();
 
 	if ($rtables) {
-		if (!$local && $config['poller_id'] > 1) {
-			db_switch_remote_to_main();
+		if (!$local) {
+			if (POLLER_ID > 1) {
+				db_switch_remote_to_main();
 
-			printf('NOTE: Repairing tables for main database' . PHP_EOL);
+				printf('NOTE: Repairing tables for main database' . PHP_EOL);
+			} else {
+				printf('NOTE: Repairing tables for local database' . PHP_EOL);
+			}
 		} else {
 			printf('NOTE: Repairing tables for local database' . PHP_EOL);
 		}

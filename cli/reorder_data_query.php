@@ -84,14 +84,14 @@ if (cacti_sizeof($parms)) {
 				exit(0);
 
 			default:
-				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 				display_help();
 
 				exit(1);
 		}
 	}
 } else {
-	print "ERROR: You must supply input parameters\n\n";
+	print 'ERROR: You must supply input parameters' . PHP_EOL . PHP_EOL;
 	display_help();
 
 	exit(1);
@@ -105,7 +105,7 @@ if (strtolower($host_id) == 'all') {
 } elseif (is_numeric($host_id)) {
 	$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . 'data_local.host_id = ' . $host_id;
 } else {
-	print "ERROR: You must specify either a host_id or 'all' to proceed.\n";
+	print "ERROR: You must specify either a host_id or 'all' to proceed." . PHP_EOL;
 	display_help();
 
 	exit;
@@ -117,7 +117,7 @@ if (strtolower($query_id) == 'all') {
 } elseif (is_numeric($query_id)) {
 	$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . 'data_local.snmp_query_id= ' . $query_id;
 } else {
-	print "ERROR: You must specify either a query_id or 'all' to proceed.\n";
+	print "ERROR: You must specify either a query_id or 'all' to proceed." . PHP_EOL;
 	display_help();
 
 	exit;
@@ -138,7 +138,7 @@ $data_queries = db_fetch_assoc("SELECT data_local.host_id, data_local.snmp_query
 	$sql_where");
 
 // issue warnings and start message if applicable
-print "WARNING: Do not interrupt this script.  Reordering can take quite some time\n";
+print 'WARNING: Do not interrupt this script.  Reordering can take quite some time' . PHP_EOL;
 debug("There are '" . cacti_sizeof($data_queries) . "' data query index items to run");
 
 $i = 1;
@@ -164,6 +164,14 @@ if (cacti_sizeof($data_queries)) {
 	}
 }
 
+function debug(string $message) : void {
+	global $debug;
+
+	if ($debug) {
+		print 'DEBUG: ' . trim($message) . PHP_EOL;
+	}
+}
+
 /**
  * display_version - displays version information
  *
@@ -171,7 +179,7 @@ if (cacti_sizeof($data_queries)) {
  */
 function display_version() : void {
 	$version = get_cacti_cli_version();
-	print "Cacti Reorder Data Query Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Reorder Data Query Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 /**
@@ -182,19 +190,15 @@ function display_version() : void {
 function display_help() : void {
 	display_version();
 
-	print "\nusage: reorder_data_query.php --host-id=[id|all] [--qid=[query_id]] [--debug|-d]\n\n";
-	print "A utility to Re-order Cacti Data Queries for a Device or system in batch mode.\n\n";
-	print "Required:\n";
-	print "    --qid=query_id - Only index on a specific data query id; or 'all' to reindex all data query id\n";
-	print "Optional:\n";
-	print "    --host-id=N    - The Device id to be reindexed; defaults to 'all' to reindex all Devices.\n\n";
-	print "    --debug | -d   - Display verbose output during execution\n\n";
-}
+	print PHP_EOL;
+	print 'usage: reorder_data_query.php --host-id=[id|all] [--qid=[query_id]] [--debug|-d]' . PHP_EOL . PHP_EOL;
 
-function debug(string $message) : void {
-	global $debug;
+	print 'A utility to Re-order Cacti Data Queries for a Device or system in batch mode.' . PHP_EOL . PHP_EOL;
 
-	if ($debug) {
-		print 'DEBUG: ' . trim($message) . "\n";
-	}
+	print 'Required:' . PHP_EOL;
+	print "    --qid=query_id - Only index on a specific data query id; or 'all' to reindex all data query id" . PHP_EOL . PHP_EOL;
+
+	print 'Optional:' . PHP_EOL;
+	print "    --host-id=N    - The Device id to be reindexed; defaults to 'all' to reindex all Devices." . PHP_EOL;
+	print '    --debug | -d   - Display verbose output during execution' . PHP_EOL . PHP_EOL;
 }

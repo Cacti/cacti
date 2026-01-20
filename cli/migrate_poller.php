@@ -24,16 +24,16 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-require_once(CACTI_PATH_LIBRARY. '/api_automation_tools.php');
-require_once(CACTI_PATH_LIBRARY. '/api_device.php');
-require_once(CACTI_PATH_LIBRARY. '/api_data_source.php');
-require_once(CACTI_PATH_LIBRARY. '/api_graph.php');
-require_once(CACTI_PATH_LIBRARY. '/api_tree.php');
-require_once(CACTI_PATH_LIBRARY. '/data_query.php');
-require_once(CACTI_PATH_LIBRARY. '/poller.php');
-require_once(CACTI_PATH_LIBRARY. '/snmp.php');
-require_once(CACTI_PATH_LIBRARY. '/template.php');
-require_once(CACTI_PATH_LIBRARY. '/utility.php');
+require_once(CACTI_PATH_LIBRARY . '/api_automation_tools.php');
+require_once(CACTI_PATH_LIBRARY . '/api_device.php');
+require_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
+require_once(CACTI_PATH_LIBRARY . '/api_graph.php');
+require_once(CACTI_PATH_LIBRARY . '/api_tree.php');
+require_once(CACTI_PATH_LIBRARY . '/data_query.php');
+require_once(CACTI_PATH_LIBRARY . '/poller.php');
+require_once(CACTI_PATH_LIBRARY . '/snmp.php');
+require_once(CACTI_PATH_LIBRARY . '/template.php');
+require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
 // process calling arguments
 $parms = $_SERVER['argv'];
@@ -111,47 +111,47 @@ foreach ($parms as $parameter) {
 
 // Validate required arguments
 if ($source_poller <= 0 || $dest_poller <= 0) {
-	print "ERROR: Both --source-poller and --dest-poller are required and most be positive integers." . PHP_EOL . PHP_EOL;
+	print 'ERROR: Both --source-poller and --dest-poller are required and most be positive integers.' . PHP_EOL . PHP_EOL;
 	display_help();
 	exit(1);
 }
 
 // Validate that source and destination pollers are different
 if ($source_poller == $dest_poller) {
-	print "ERROR: Source and destination pollers cannot be the same" . PHP_EOL;
+	print 'ERROR: Source and destination pollers cannot be the same' . PHP_EOL;
 	exit(1);
 }
 
 // Validate migration mode (exactly one of --all or --host-ids)
 if ($migrate_all && $host_ids != '') {
-	print "ERROR: Cannot specify both --all and --host-ids options" . PHP_EOL;
+	print 'ERROR: Cannot specify both --all and --host-ids options' . PHP_EOL;
 	display_help();
 	exit(1);
 }
 
 if (!$migrate_all && $host_ids == '') {
-	print "ERROR: Must specify exactly one migration option: --all or --host-ids" . PHP_EOL;
+	print 'ERROR: Must specify exactly one migration option: --all or --host-ids' . PHP_EOL;
 	display_help();
 	exit(1);
 }
 
 // Validate that both pollers exist
 if (!$quietMode) {
-	print "Validating pollers..." . PHP_EOL;
+	print 'Validating pollers...' . PHP_EOL;
 }
 
 if (!check_if_poller_exists($source_poller)) {
-	print "ERROR: Source poller validation failed" . PHP_EOL;
+	print 'ERROR: Source poller validation failed' . PHP_EOL;
 	exit(1);
 }
 
 if (!check_if_poller_exists($dest_poller)) {
-	print "ERROR: Destination poller validation failed" . PHP_EOL;
+	print 'ERROR: Destination poller validation failed' . PHP_EOL;
 	exit(1);
 }
 
 if (!$quietMode) {
-	print "All validations passed. Starting migration process..." . PHP_EOL . PHP_EOL;
+	print 'All validations passed. Starting migration process...' . PHP_EOL . PHP_EOL;
 }
 
 // Execute migration based on selected mode
@@ -163,7 +163,7 @@ if ($migrate_all) {
 
 if (!$quietMode) {
 	print PHP_EOL;
-	print "Script execution completed." . PHP_EOL;
+	print 'Script execution completed.' . PHP_EOL;
 }
 
 exit(0);
@@ -178,7 +178,7 @@ function check_if_poller_exists($poller_id) {
 
 	if (empty($poller)) {
 		print "ERROR: Poller ID $poller_id does not exist" . PHP_EOL;
-		print "Valid poller IDs are:" . PHP_EOL;
+		print 'Valid poller IDs are:' . PHP_EOL;
 		$pollers = get_poller_list();
 
 		foreach ($pollers as $p) {
@@ -327,24 +327,24 @@ function migrate_all_devices(int $source_poller, int $dest_poller, bool $quietMo
 		print "This will move ALL devices from Poller $source_poller to Poller $dest_poller" . PHP_EOL . PHP_EOL;
 
 		// Display devices to be migrated
-		print "Devices to be migrated:" . PHP_EOL;
+		print 'Devices to be migrated:' . PHP_EOL;
 
 		foreach ($devices as $device) {
-			print '  ID: ' . $device['id'] . ' - ' . $device['hostname'] . ' (' . $device['description'] . ")" . PHP_EOL;
+			print '  ID: ' . $device['id'] . ' - ' . $device['hostname'] . ' (' . $device['description'] . ')' . PHP_EOL;
 		}
 
 		print PHP_EOL;
-		print "Are you sure you want to continue? (y/N): ";
+		print 'Are you sure you want to continue? (y/N): ';
 		$confirmation = trim(fgets(STDIN));
 
 		if (strtolower($confirmation) !== 'y') {
-			print "Migration cancelled by user" . PHP_EOL;
+			print 'Migration cancelled by user' . PHP_EOL;
 
 			return false;
 		}
 
 		print PHP_EOL;
-		print "Starting migration of " . count($devices) . " device(s)..." . PHP_EOL;
+		print 'Starting migration of ' . count($devices) . ' device(s)...' . PHP_EOL;
 	}
 
 	$success_count = 0;
@@ -363,7 +363,7 @@ function migrate_all_devices(int $source_poller, int $dest_poller, bool $quietMo
 				}
 			} else {
 				$error_count++;
-				print 'ERROR: Failed to migrate device ' . $device['id'] . ' (' . $device['description'] . ")" . PHP_EOL;
+				print 'ERROR: Failed to migrate device ' . $device['id'] . ' (' . $device['description'] . ')' . PHP_EOL;
 			}
 		} else {
 			$error_count++;
@@ -373,7 +373,7 @@ function migrate_all_devices(int $source_poller, int $dest_poller, bool $quietMo
 
 	if (!$quietMode) {
 		print PHP_EOL;
-		print "Migration completed!" . PHP_EOL;
+		print 'Migration completed!' . PHP_EOL;
 		print "Successfully migrated: $success_count device(s)" . PHP_EOL;
 		print "Failed migrations: $error_count device(s)" . PHP_EOL;
 
@@ -405,18 +405,18 @@ function migrate_from_host_ids(string $host_ids_string, int $source_poller, int 
 	});
 
 	if (empty($host_id_array)) {
-		print "ERROR: No valid host IDs provided. Host IDs must be numeric and greater than 0." . PHP_EOL;
+		print 'ERROR: No valid host IDs provided. Host IDs must be numeric and greater than 0.' . PHP_EOL;
 
 		return false;
 	}
 
 	if (!$quietMode) {
-		print "Migration Mode: Specific host IDs" . PHP_EOL;
+		print 'Migration Mode: Specific host IDs' . PHP_EOL;
 		print 'Host IDs to migrate: ' . implode(', ', $host_id_array) . PHP_EOL;
 		print 'This will move ' . count($host_id_array) . " device(s) from any poller to Poller $dest_poller" . PHP_EOL . PHP_EOL;
 
 		// Display devices to be migrated
-		print "Devices to be migrated:" . PHP_EOL;
+		print 'Devices to be migrated:' . PHP_EOL;
 
 		foreach ($host_id_array as $host_id) {
 			$device = db_fetch_row_prepared('SELECT id, hostname, description, poller_id FROM host WHERE id = ?', [$host_id]);
@@ -429,17 +429,17 @@ function migrate_from_host_ids(string $host_ids_string, int $source_poller, int 
 		}
 
 		print PHP_EOL;
-		print "Are you sure you want to continue? (y/N): ";
+		print 'Are you sure you want to continue? (y/N): ';
 		$confirmation = trim(fgets(STDIN));
 
 		if (strtolower($confirmation) !== 'y') {
-			print "Migration cancelled by user" . PHP_EOL;
+			print 'Migration cancelled by user' . PHP_EOL;
 
 			return false;
 		}
 
 		print PHP_EOL;
-		print "Starting migration of " . count($host_id_array) . " device(s)..." . PHP_EOL;
+		print 'Starting migration of ' . count($host_id_array) . ' device(s)...' . PHP_EOL;
 	}
 
 	$success_count = 0;
@@ -458,7 +458,7 @@ function migrate_from_host_ids(string $host_ids_string, int $source_poller, int 
 				}
 			} else {
 				$error_count++;
-				print 'ERROR: Failed to migrate device ' . $device['id'] . ' (' . $device['description'] . ")" . PHP_EOL;
+				print 'ERROR: Failed to migrate device ' . $device['id'] . ' (' . $device['description'] . ')' . PHP_EOL;
 			}
 		} else {
 			$error_count++;
@@ -468,7 +468,7 @@ function migrate_from_host_ids(string $host_ids_string, int $source_poller, int 
 
 	if (!$quietMode) {
 		print PHP_EOL;
-		print "Migration completed!" . PHP_EOL;
+		print 'Migration completed!' . PHP_EOL;
 		print "Successfully migrated: $success_count device(s)" . PHP_EOL;
 		print "Failed migrations: $error_count device(s)" . PHP_EOL;
 
@@ -482,44 +482,54 @@ function migrate_from_host_ids(string $host_ids_string, int $source_poller, int 
 	return true;
 }
 
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
 function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Add Permissions Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
+/**
+ * display_help - displays the usage of the function
+ *
+ * @return void
+ */
 function display_help() : void {
 	display_version();
 
 	print PHP_EOL;
-	print "Purpose: This script is used to move devices off a given poller to another poller" . PHP_EOL . PHP_EOL;
+	print 'Purpose: This script is used to move devices off a given poller to another poller' . PHP_EOL . PHP_EOL;
 
-	print "Usage:" . PHP_EOL;
-	print 'php ' . basename(__FILE__) . " --source-poller=ID --dest-poller=ID [--all | --host-ids=ID1,ID2,...] [--quiet] [--help]" . PHP_EOL . PHP_EOL;
+	print 'Usage:' . PHP_EOL;
+	print 'php ' . basename(__FILE__) . ' --source-poller=ID --dest-poller=ID [--all | --host-ids=ID1,ID2,...] [--quiet] [--help]' . PHP_EOL . PHP_EOL;
 
-	print "Required Arguments:" . PHP_EOL;
-	print "    --source-poller=ID     Source Poller ID to move devices from" . PHP_EOL;
-	print "    --dest-poller=ID       Destination Poller ID to move devices to" . PHP_EOL . PHP_EOL;
+	print 'Required Arguments:' . PHP_EOL;
+	print '    --source-poller=ID     Source Poller ID to move devices from' . PHP_EOL;
+	print '    --dest-poller=ID       Destination Poller ID to move devices to' . PHP_EOL . PHP_EOL;
 
-	print "Migration Mode (choose exactly one):" . PHP_EOL;
-	print "    --all                  Migrate all devices off the source poller" . PHP_EOL;
-	print "    --host-ids=ID1,ID2,... Migrate specific devices by host ID (single ID or comma-separated list)" . PHP_EOL . PHP_EOL;
+	print 'Migration Mode (choose exactly one):' . PHP_EOL;
+	print '    --all                  Migrate all devices off the source poller' . PHP_EOL;
+	print '    --host-ids=ID1,ID2,... Migrate specific devices by host ID (single ID or comma-separated list)' . PHP_EOL . PHP_EOL;
 
-	print "Optional Arguments:" . PHP_EOL;
-	print "    --quiet                Suppress verbose output (batch mode)" . PHP_EOL;
-	print "    --help, -h             Display this help message" . PHP_EOL;
-	print "    --version, -v          Display version information" . PHP_EOL . PHP_EOL;
+	print 'Optional Arguments:' . PHP_EOL;
+	print '    --quiet                Suppress verbose output (batch mode)' . PHP_EOL;
+	print '    --help, -h             Display this help message' . PHP_EOL;
+	print '    --version, -v          Display version information' . PHP_EOL . PHP_EOL;
 
-	print "Output Files:" . PHP_EOL;
-	print "    migration_log.txt      Timestamped log of all migration activities" . PHP_EOL;
-	print "    migration_list.csv     Rollback data with original poller assignments" . PHP_EOL . PHP_EOL;
+	print 'Output Files:' . PHP_EOL;
+	print '    migration_log.txt      Timestamped log of all migration activities' . PHP_EOL;
+	print '    migration_list.csv     Rollback data with original poller assignments' . PHP_EOL . PHP_EOL;
 
-	print "Examples:" . PHP_EOL;
-	print "    # Migrate all devices from poller 1 to poller 2:" . PHP_EOL;
-	print '    php ' . basename(__FILE__) . " --source-poller=1 --dest-poller=2 --all" . PHP_EOL . PHP_EOL;
-	print "    # Migrate a single device by host ID:" . PHP_EOL;
-	print '    php ' . basename(__FILE__) . " --source-poller=1 --dest-poller=2 --host-ids=123" . PHP_EOL;
-	print "    # Migrate multiple devices by host IDs:" . PHP_EOL;
-	print '    php ' . basename(__FILE__) . " --source-poller=1 --dest-poller=2 --host-ids=123,124,125" . PHP_EOL . PHP_EOL;
+	print 'Examples:' . PHP_EOL;
+	print '    # Migrate all devices from poller 1 to poller 2:' . PHP_EOL;
+	print '    php ' . basename(__FILE__) . ' --source-poller=1 --dest-poller=2 --all' . PHP_EOL . PHP_EOL;
+	print '    # Migrate a single device by host ID:' . PHP_EOL;
+	print '    php ' . basename(__FILE__) . ' --source-poller=1 --dest-poller=2 --host-ids=123' . PHP_EOL;
+	print '    # Migrate multiple devices by host IDs:' . PHP_EOL;
+	print '    php ' . basename(__FILE__) . ' --source-poller=1 --dest-poller=2 --host-ids=123,124,125' . PHP_EOL . PHP_EOL;
 
-	print "Note: You must specify exactly one migration option: --all or --host-ids" . PHP_EOL . PHP_EOL;
+	print 'Note: You must specify exactly one migration option: --all or --host-ids' . PHP_EOL . PHP_EOL;
 }

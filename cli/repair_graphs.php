@@ -67,7 +67,7 @@ foreach ($parms as $parameter) {
 			$host_id = trim($value);
 
 			if (!is_numeric($host_id)) {
-				print "ERROR: You must supply a valid host-id to run this script!\n";
+				print 'ERROR: You must supply a valid host-id to run this script!' . PHP_EOL;
 
 				exit(1);
 			}
@@ -77,7 +77,7 @@ foreach ($parms as $parameter) {
 			$graph_template_id = $value;
 
 			if (!is_numeric($graph_template_id)) {
-				print "ERROR: You must supply a numeric graph-template-id!\n";
+				print 'ERROR: You must supply a numeric graph-template-id!' . PHP_EOL;
 
 				exit(1);
 			}
@@ -87,7 +87,7 @@ foreach ($parms as $parameter) {
 			$data_template_id = $value;
 
 			if (!is_numeric($data_template_id)) {
-				print "ERROR: You must supply a numeric data-template-id!\n";
+				print 'ERROR: You must supply a numeric data-template-id!' . PHP_EOL;
 
 				exit(1);
 			}
@@ -107,7 +107,7 @@ foreach ($parms as $parameter) {
 			exit(0);
 
 		default:
-			print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+			print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 			display_help();
 
 			exit(1);
@@ -121,21 +121,21 @@ if (!$show_sql && !$execute) {
 }
 
 if (!isset($data_template_id)) {
-	print "ERROR: You must supply a valid data-template-id!\n";
+	print 'ERROR: You must supply a valid data-template-id!' . PHP_EOL;
 
 	exit(1);
 }
 
 if (!isset($graph_template_id)) {
-	print "ERROR: You must supply a valid graph-template-id!\n";
+	print 'ERROR: You must supply a valid graph-template-id!' . PHP_EOL;
 
 	exit(1);
 }
 
 if ($execute) {
-	print "NOTE: Repairing Graphs\n";
+	print 'NOTE: Repairing Graphs' . PHP_EOL;
 } else {
-	print "NOTE: Performing Check of Graphs\n";
+	print 'NOTE: Performing Check of Graphs' . PHP_EOL;
 }
 
 // Get all graphs for supplied graph template
@@ -145,7 +145,8 @@ $graph = db_fetch_assoc('SELECT *
 
 if (cacti_sizeof($graph)) {
 	if (!$show_sql) {
-		print "\nCorrupted graphs:\n";
+		print PHP_EOL;
+		print 'Corrupted graphs:' . PHP_EOL;
 	}
 
 	foreach ($graph as $g) {
@@ -164,7 +165,7 @@ if (cacti_sizeof($graph)) {
 		$rrd_data = db_fetch_assoc('SELECT * FROM data_template_rrd where local_data_id=' . $ds['id']);
 
 		if (!cacti_sizeof($rrd_data)) {
-			print 'Could not get correct rrd id for datasource=' . $ds['id'] . "\n";
+			print 'Could not get correct rrd id for datasource=' . $ds['id'] . PHP_EOL;
 
 			continue;
 		}
@@ -218,7 +219,7 @@ if (cacti_sizeof($graph)) {
 		$query = 'UPDATE graph_templates_item SET task_item_id =' . $rrd_data[0]['id'] . ' WHERE task_item_id != ' . $rrd_data[0]['id'] . ' AND graph_template_id = ' . $graph_template_id . ' AND local_graph_id=' . $g['id'] . ' AND id IN (' . implode(',', $graph_templates_item) . ')';
 
 		if ($show_sql) {
-			print $query . ";\n";
+			print $query . ';' . PHP_EOL;
 		}
 
 		if ($execute) {
@@ -243,12 +244,15 @@ function display_version() : void {
  * @return void
  */
 function display_help() : void {
-	print "usage: repair_graphs.php [--host-id=ID] --data-template-id=[ID]\n";
-	print "	--graph-template-id=[ID] [--show-sql] [--execute]\n\n";
-	print "Cacti utility for repairing graph<->datasource relationship via a command line interface.\n\n";
-	print "--execute - Perform the repair\n";
-	print "--show-sql - Show SQL lines for the repair (optional)\n";
-	print "--host-id=id - The host_id to repair or leave empty to process all hosts\n";
-	print "--data-template-id=id - The numerical ID of the data template to be fixed\n";
-	print "--graph-template-id=id - The numerical ID of the graph template to be fixed\n";
+	print 'usage: repair_graphs.php [--host-id=ID] --data-template-id=[ID]' . PHP_EOL;
+	print '	--graph-template-id=[ID] [--show-sql] [--execute]' . PHP_EOL . PHP_EOL;
+
+	print 'Cacti utility for repairing graph<->datasource relationship via a command line interface.' . PHP_EOL . PHP_EOL;
+
+	print 'Optional:' . PHP_EOL;
+	print '--execute - Perform the repair' . PHP_EOL;
+	print '--show-sql - Show SQL lines for the repair (optional)' . PHP_EOL;
+	print '--host-id=id - The host_id to repair or leave empty to process all hosts' . PHP_EOL;
+	print '--data-template-id=id - The numerical ID of the data template to be fixed' . PHP_EOL;
+	print '--graph-template-id=id - The numerical ID of the graph template to be fixed' . PHP_EOL . PHP_EOL;
 }

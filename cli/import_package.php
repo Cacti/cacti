@@ -215,6 +215,11 @@ function display_version() : void {
 	print "Cacti Import Template Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
+/**
+ * display_help - displays the usage of the function
+ *
+ * @return void
+ */
 function display_help() : void {
 	display_version();
 

@@ -168,8 +168,8 @@ if (cacti_sizeof($params) == 0) {
 
 	if ($displayGraphs) {
 		if ($hostId == 0 || (!db_fetch_cell_prepared('SELECT id FROM host WHERE id = ?', [$hostId]))) {
-			print "ERROR: You must supply a valid host_id before you can list its graphs" . PHP_EOL;
-			print "Try --list-hosts" . PHP_EOL;
+			print 'ERROR: You must supply a valid host_id before you can list its graphs' . PHP_EOL;
+			print 'Try --list-hosts' . PHP_EOL;
 
 			display_help();
 
@@ -206,14 +206,14 @@ if (cacti_sizeof($params) == 0) {
 
 	// verify --item-id
 	if ($itemType == 0) {
-		print "ERROR: --item-type missing. Please specify." . PHP_EOL . PHP_EOL;
+		print 'ERROR: --item-type missing. Please specify.' . PHP_EOL . PHP_EOL;
 		display_help();
 
 		exit(1);
 	}
 
 	if ($itemId == 0) {
-		print "ERROR: --item-id missing. Please specify." . PHP_EOL . PHP_EOL;
+		print 'ERROR: --item-id missing. Please specify.' . PHP_EOL . PHP_EOL;
 		display_help();
 
 		exit(1);
@@ -287,19 +287,24 @@ function display_version() : void {
 	print "Cacti Add Group Permissions Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
+/**
+ * display_help - displays help information
+ *
+ * @return void
+ */
 function display_help() : void {
 	display_version();
 
 	print PHP_EOL;
-	print "usage: add_group_perms.php [ --group-id=[ID] ]" . PHP_EOL;
-	print "    --item-type=[graph|tree|host|graph_template]" . PHP_EOL;
-	print "    --item-id [--quiet]" . PHP_EOL . PHP_EOL;
-	print "Where item-id is the id of the object of type item-type" . PHP_EOL . PHP_EOL;
-	print "List Options:" . PHP_EOL;
-	print "    --list-users" . PHP_EOL;
-	print "    --list-trees" . PHP_EOL;
-	print "    --list-hosts" . PHP_EOL;
-	print "    --list-groups" . PHP_EOL;
-	print "    --list-graph-templates" . PHP_EOL;
-	print "    --list-graphs --host-id=[ID]" . PHP_EOL;
+	print 'usage: add_group_perms.php [ --group-id=[ID] ]' . PHP_EOL;
+	print '    --item-type=[graph|tree|host|graph_template]' . PHP_EOL;
+	print '    --item-id [--quiet]' . PHP_EOL . PHP_EOL;
+	print 'Where item-id is the id of the object of type item-type' . PHP_EOL . PHP_EOL;
+	print 'List Options:' . PHP_EOL;
+	print '    --list-users' . PHP_EOL;
+	print '    --list-trees' . PHP_EOL;
+	print '    --list-hosts' . PHP_EOL;
+	print '    --list-groups' . PHP_EOL;
+	print '    --list-graph-templates' . PHP_EOL;
+	print '    --list-graphs --host-id=[ID]' . PHP_EOL;
 }

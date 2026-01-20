@@ -60,7 +60,7 @@ if (cacti_sizeof($parms)) {
 				$host_id = trim($value);
 
 				if (!is_numeric($host_id)) {
-					print "ERROR: You must supply a valid host-id to run this script!" . PHP_EOL;
+					print 'ERROR: You must supply a valid host-id to run this script!' . PHP_EOL;
 
 					exit(1);
 				}
@@ -70,7 +70,7 @@ if (cacti_sizeof($parms)) {
 				$graph_template_id = $value;
 
 				if (!is_numeric($graph_template_id)) {
-					print "ERROR: You must supply a numeric graph-template-id for all hosts!" . PHP_EOL;
+					print 'ERROR: You must supply a numeric graph-template-id for all hosts!' . PHP_EOL;
 
 					exit(1);
 				}
@@ -128,13 +128,13 @@ if (cacti_sizeof($parms)) {
 	 * for update / insert options
 	 */
 	if (!isset($host_id)) {
-		print "ERROR: You must supply a valid host-id for all hosts!" . PHP_EOL;
+		print 'ERROR: You must supply a valid host-id for all hosts!' . PHP_EOL;
 
 		exit(1);
 	}
 
 	if (!isset($graph_template_id)) {
-		print "ERROR: You must supply a valid data-query-id for all hosts!" . PHP_EOL;
+		print 'ERROR: You must supply a valid data-query-id for all hosts!' . PHP_EOL;
 
 		exit(1);
 	}
@@ -203,19 +203,24 @@ function display_version() : void {
 	print "Cacti Add Graph Template Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
+/**
+ * display_help - displays help information
+ *
+ * @return void
+ */
 function display_help() : void {
 	display_version();
 
 	print PHP_EOL;
-	print "usage: add_graph_template.php --host-id=[ID] --graph-template-id=[ID]" . PHP_EOL;
-	print "    [--quiet]" . PHP_EOL . PHP_EOL;
+	print 'usage: add_graph_template.php --host-id=[ID] --graph-template-id=[ID]' . PHP_EOL;
+	print '    [--quiet]' . PHP_EOL . PHP_EOL;
 
-	print "Required:" . PHP_EOL;
-	print "    --host-id             the numerical ID of the host" . PHP_EOL;
-	print "    --graph-template-id   the numerical ID of the graph template to be added" . PHP_EOL . PHP_EOL;
+	print 'Required:' . PHP_EOL;
+	print '    --host-id             the numerical ID of the host' . PHP_EOL;
+	print '    --graph-template-id   the numerical ID of the graph template to be added' . PHP_EOL . PHP_EOL;
 
-	print "List Options:" . PHP_EOL;
-	print "    --list-hosts" . PHP_EOL;
-	print "    --list-graph-templates" . PHP_EOL;
-	print "    --quiet - batch mode value return" . PHP_EOL . PHP_EOL;
+	print 'List Options:' . PHP_EOL;
+	print '    --list-hosts' . PHP_EOL;
+	print '    --list-graph-templates' . PHP_EOL;
+	print '    --quiet - batch mode value return' . PHP_EOL . PHP_EOL;
 }

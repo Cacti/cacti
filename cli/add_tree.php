@@ -174,8 +174,8 @@ if (cacti_sizeof($parms)) {
 
 	if ($displayNodes) {
 		if ($treeId == 0) {
-			print "ERROR: You must supply a tree_id before you can list its nodes" . PHP_EOL;
-			print "Try --list-trees" . PHP_EOL;
+			print 'ERROR: You must supply a tree_id before you can list its nodes' . PHP_EOL;
+			print 'Try --list-trees' . PHP_EOL;
 
 			exit(1);
 		}
@@ -193,8 +193,8 @@ if (cacti_sizeof($parms)) {
 
 	if ($displayGraphs) {
 		if ($hostId <= 0) {
-			print "ERROR: You must supply a host_id before you can list its graphs" . PHP_EOL;
-			print "Try --list-hosts" . PHP_EOL;
+			print 'ERROR: You must supply a host_id before you can list its graphs' . PHP_EOL;
+			print 'Try --list-hosts' . PHP_EOL;
 
 			exit(1);
 		}
@@ -207,7 +207,7 @@ if (cacti_sizeof($parms)) {
 	if ($type == 'tree') {
 		// Add a new tree
 		if (empty($name)) {
-			print "ERROR: You must supply a name with --name" . PHP_EOL;
+			print 'ERROR: You must supply a name with --name' . PHP_EOL;
 			display_help();
 
 			exit(1);
@@ -283,7 +283,7 @@ if (cacti_sizeof($parms)) {
 		if ($nodeType == 'header') {
 			// Header --name must be given
 			if (empty($name)) {
-				print "ERROR: You must supply a name with --name" . PHP_EOL;
+				print 'ERROR: You must supply a name with --name' . PHP_EOL;
 				display_help();
 
 				exit(1);
@@ -334,7 +334,7 @@ if (cacti_sizeof($parms)) {
 			}
 
 			if ($hostGroupStyle != 1 && $hostGroupStyle != 2) {
-				print "ERROR: Host Group Style must be 1 or 2 (Graph Template or Data Query Index)" . PHP_EOL;
+				print 'ERROR: Host Group Style must be 1 or 2 (Graph Template or Data Query Index)' . PHP_EOL;
 				display_help();
 
 				exit(1);
@@ -369,41 +369,46 @@ function display_version() : void {
 	print "Cacti Add Tree Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
+/**
+ * display_help - displays help information
+ *
+ * @return void
+ */
 function display_help() : void {
 	display_version();
 
 	print PHP_EOL;
-	print "usage: add_tree.php  --type=[tree|node] [type-options] [--quiet]" . PHP_EOL . PHP_EOL;
+	print 'usage: add_tree.php  --type=[tree|node] [type-options] [--quiet]' . PHP_EOL . PHP_EOL;
 
-	print "Tree options:" . PHP_EOL;
-	print "    --name=[Tree Name]" . PHP_EOL;
-	print "    --sort-method=[manual|alpha|natural|numeric]" . PHP_EOL . PHP_EOL;
+	print 'Tree options:' . PHP_EOL;
+	print '    --name=[Tree Name]' . PHP_EOL;
+	print '    --sort-method=[manual|alpha|natural|numeric]' . PHP_EOL . PHP_EOL;
 
-	print "Node options:" . PHP_EOL;
-	print "    --node-type=[header|site|host|graph]" . PHP_EOL;
-	print "    --tree-id=[ID]" . PHP_EOL;
-	print "    [--parent-node=[ID] [Node Type Options]]" . PHP_EOL . PHP_EOL;
+	print 'Node options:' . PHP_EOL;
+	print '    --node-type=[header|site|host|graph]' . PHP_EOL;
+	print '    --tree-id=[ID]' . PHP_EOL;
+	print '    [--parent-node=[ID] [Node Type Options]]' . PHP_EOL . PHP_EOL;
 
-	print "Header node options:" . PHP_EOL;
-	print "    --name=[Name]" . PHP_EOL . PHP_EOL;
+	print 'Header node options:' . PHP_EOL;
+	print '    --name=[Name]' . PHP_EOL . PHP_EOL;
 
-	print "Site node options:" . PHP_EOL;
-	print "    --site-id=[ID]" . PHP_EOL . PHP_EOL;
+	print 'Site node options:' . PHP_EOL;
+	print '    --site-id=[ID]' . PHP_EOL . PHP_EOL;
 
-	print "Host node options:" . PHP_EOL;
-	print "    --host-id=[ID]" . PHP_EOL;
-	print "    [--host-group-style=[1|2]]" . PHP_EOL;
-	print "    (host group styles:" . PHP_EOL;
-	print "     1 = Graph Template," . PHP_EOL;
-	print "     2 = Data Query Index)" . PHP_EOL . PHP_EOL;
+	print 'Host node options:' . PHP_EOL;
+	print '    --host-id=[ID]' . PHP_EOL;
+	print '    [--host-group-style=[1|2]]' . PHP_EOL;
+	print '    (host group styles:' . PHP_EOL;
+	print '     1 = Graph Template,' . PHP_EOL;
+	print '     2 = Data Query Index)' . PHP_EOL . PHP_EOL;
 
-	print "Graph node options:" . PHP_EOL;
-	print "    --graph-id=[ID]" . PHP_EOL . PHP_EOL;
+	print 'Graph node options:' . PHP_EOL;
+	print '    --graph-id=[ID]' . PHP_EOL . PHP_EOL;
 
-	print "List Options:" . PHP_EOL;
-	print "    --list-sites" . PHP_EOL;
-	print "    --list-hosts" . PHP_EOL;
-	print "    --list-trees" . PHP_EOL;
-	print "    --list-nodes --tree-id=[ID]" . PHP_EOL;
-	print "    --list-graphs --host-id=[ID]" . PHP_EOL;
+	print 'List Options:' . PHP_EOL;
+	print '    --list-sites' . PHP_EOL;
+	print '    --list-hosts' . PHP_EOL;
+	print '    --list-trees' . PHP_EOL;
+	print '    --list-nodes --tree-id=[ID]' . PHP_EOL;
+	print '    --list-graphs --host-id=[ID]' . PHP_EOL;
 }

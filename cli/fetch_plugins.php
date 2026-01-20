@@ -119,6 +119,14 @@ debug(sprintf('Fetch Process has Completed in %0.2f seconds', $fend - $fstart));
 
 exit(0);
 
+function debug(string $message) : void {
+	global $debug;
+
+	if ($debug) {
+		print('DEBUG: ' . trim($message) . PHP_EOL);
+	}
+}
+
 /**
  * display_version - displays version information
  *
@@ -126,7 +134,7 @@ exit(0);
  */
 function display_version() : void {
 	$version = get_cacti_cli_version();
-	print "Cacti Fetch Latest Plugins Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Fetch Latest Plugins Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 /**
@@ -141,12 +149,4 @@ function display_help() : void {
 	print 'usage: fetch_plugins.php [ --debug ]' . PHP_EOL . PHP_EOL;
 	print 'A utility gathers the latest official plugins from the Cacti Group GitHub' . PHP_EOL;
 	print 'site and prepares them from loading and install' . PHP_EOL;
-}
-
-function debug(string $message) : void {
-	global $debug;
-
-	if ($debug) {
-		print('DEBUG: ' . $message . "\n");
-	}
 }

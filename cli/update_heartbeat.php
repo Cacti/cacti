@@ -325,6 +325,14 @@ if (cacti_sizeof($rrdfiles)) {
 	}
 }
 
+function debug(string $message) : void {
+	global $debug;
+
+	if ($debug) {
+		print 'DEBUG: ' . trim($message) . PHP_EOL;
+	}
+}
+
 /**
  * display_version - displays version information
  *
@@ -345,27 +353,23 @@ function display_help() : void {
 
 	print PHP_EOL;
 	print 'usage: update_heartbeat.php --new-heartbeat=N [--data-template-id=id] [--prev-heartbeat=N] [--force] [--debug|-d]' . PHP_EOL . PHP_EOL;
+
 	print 'A utility to update RRDfile heartbeats and the Cacti database to match.' . PHP_EOL . PHP_EOL;
+
 	print 'Required:' . PHP_EOL;
 	print '    --new-heartbeat=N     - A Heartbeat in seconds.  It must align with available Heartbeats in Cacti' . PHP_EOL;
 	print '                            Currently Heartbeats include from 20-172800 seconds.  The value must also' . PHP_EOL;
 	print '                            be at least two times the current Cacti poller interval.' . PHP_EOL;
+
 	print 'Optional:' . PHP_EOL;
 	print '    --data-template-id=N  - Only update Cacti Data Source Heartbeats that are associated with a Data Template id.' . PHP_EOL;
 	print '    --prev-heartbeat=N    - Only update Cacti Data Sources that currently have the Heartbeat specified.' . PHP_EOL;
 	print '    --force               - If the heartbeat selected does not match the Data Source Profile, update the' . PHP_EOL;
 	print '                            Data Source Profile to match the command.  Otherwise, the script will exit.' . PHP_EOL;
 	print '    --debug               - Display verbose output during execution' . PHP_EOL . PHP_EOL;
+
 	print 'List Options:' . PHP_EOL;
 	print '    --list-data-templates - List all Data Templates' . PHP_EOL;
 	print '    --list-heartbeats     - List all supported Heartbeats' . PHP_EOL;
 	print '    --list-profiles       - List all Data Source Profiles and their Heartbeats' . PHP_EOL . PHP_EOL;
-}
-
-function debug(string $message) : void {
-	global $debug;
-
-	if ($debug) {
-		print 'DEBUG: ' . trim($message) . PHP_EOL;
-	}
 }

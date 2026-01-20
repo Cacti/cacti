@@ -77,7 +77,7 @@ if (cacti_sizeof($parms)) {
 	}
 }
 
-print "NOTE: Analyzing All Cacti Database Tables" . PHP_EOL;
+print 'NOTE: Analyzing All Cacti Database Tables' . PHP_EOL;
 
 if (!$local) {
 	if (POLLER_ID > 1) {
@@ -128,10 +128,10 @@ function display_help() : void {
 	display_version();
 
 	print PHP_EOL;
-	print "usage: analyze_database.php [-d|--debug]" . PHP_EOL . PHP_EOL;
-	print "A utility to recalculate the cardinality of indexes within the Cacti database." . PHP_EOL;
+	print 'usage: analyze_database.php [-d|--debug]' . PHP_EOL . PHP_EOL;
+	print 'A utility to recalculate the cardinality of indexes within the Cacti database.' . PHP_EOL;
 	print "It's important to periodically run this utility especially on larger systems." . PHP_EOL . PHP_EOL;
-	print "Optional:" . PHP_EOL;
-	print "     --local   - Perform the action on the Remote Data Collector if run from there" . PHP_EOL;
-	print "-d | --debug   - Display verbose output during execution" . PHP_EOL . PHP_EOL;
+	print 'Optional:' . PHP_EOL;
+	print '     --local   - Perform the action on the Remote Data Collector if run from there' . PHP_EOL;
+	print '-d | --debug   - Display verbose output during execution' . PHP_EOL . PHP_EOL;
 }

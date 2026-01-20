@@ -148,14 +148,14 @@ if (cacti_sizeof($params) == 0) {
 if ($type == 'add_group') {
 	// Add a new group
 	if (empty($name)) {
-		print "ERROR: You must supply a name with --name" . PHP_EOL;
+		print 'ERROR: You must supply a name with --name' . PHP_EOL;
 		display_help();
 
 		exit(1);
 	}
 
 	if (empty($description)) {
-		print "ERROR: You must supply a description with --description" . PHP_EOL;
+		print 'ERROR: You must supply a description with --description' . PHP_EOL;
 		display_help();
 
 		exit(1);
@@ -206,14 +206,19 @@ function display_version() : void {
 	print "Cacti Add Permissions Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
+/**
+ * display_help - displays help information
+ *
+ * @return void
+ */
 function display_help() : void {
 	display_version();
 
 	print PHP_EOL;
-	print "usage: add_groups.php --type=[add_group|group_perm] --name=[name] --description=[description]" . PHP_EOL . PHP_EOL;
-	print "[--quiet]" . PHP_EOL . PHP_EOL;
-	print "List Options:" . PHP_EOL;
-	print "    --list-users" . PHP_EOL;
-	print "    --list-groups" . PHP_EOL;
-	print "    --list-hosts" . PHP_EOL;
+	print 'usage: add_groups.php --type=[add_group|group_perm] --name=[name] --description=[description]' . PHP_EOL . PHP_EOL;
+	print '[--quiet]' . PHP_EOL . PHP_EOL;
+	print 'List Options:' . PHP_EOL;
+	print '    --list-users' . PHP_EOL;
+	print '    --list-groups' . PHP_EOL;
+	print '    --list-hosts' . PHP_EOL;
 }

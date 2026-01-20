@@ -59,7 +59,7 @@ if (cacti_sizeof($parms)) {
 				exit(0);
 
 			default:
-				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 				display_help();
 
 				exit(1);
@@ -75,28 +75,34 @@ $rrdtool_pipe = rrd_init();
 
 $rrds_processed = 0;
 
-while (db_fetch_cell('SELECT count(*) FROM poller_output') > 0) {
-	$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe, false);
+while (db_fetch_cell('SELECT COUNT(*) FROM poller_output') > 0) {
+	$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe);
 }
 
-print "There were $rrds_processed RRD updates made this pass\n";
+print "There were $rrds_processed RRD updates made this pass" . PHP_EOL;
 
 rrd_close($rrdtool_pipe);
 
 /**
  * display_version - displays version information
+ *
+ * @return void
  */
-function display_version() {
+function display_version() : void {
 	$version = get_cacti_cli_version();
-	print "Cacti Process Poller Output Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Process Poller Output Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 /**
  * display_help - displays the usage of the function
+ *
+ * @return void
  */
-function display_help() {
+function display_help() : void {
 	display_version();
 
-	print "\nusage: poller_output_empty.php\n\n";
-	print "A utility to process the poller output table.  This tool is deprecated but should work.\n\n";
+	print PHP_EOL;
+	print 'usage: poller_output_empty.php' . PHP_EOL . PHP_EOL;
+
+	print 'A utility to process the poller output table.  This tool is deprecated but should work.' . PHP_EOL;
 }

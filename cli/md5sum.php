@@ -156,11 +156,11 @@ if ($create) {
 	$output = '';
 
 	foreach ($file_array as $filename => $md5) {
-		$output .= "$md5  $filename\n";
+		$output .= "$md5  $filename" . PHP_EOL;
 	}
 
 	if (!$quiet) {
-		print 'Writing ' . cacti_sizeof($file_array) . " entries to $md5_file\n";
+		print 'Writing ' . cacti_sizeof($file_array) . " entries to $md5_file" . PHP_EOL;
 	}
 
 	if (!$confirm && file_exists($md5_file)) {
@@ -184,6 +184,7 @@ if ($create) {
 		printf('ERROR: Failed to read from MD5 file \'%s\'' . PHP_EOL, $md5_file);
 		exit(6);
 	}
+
 	$contents     = explode("\n",$contents);
 	$line         = 0;
 	$verify_array = [];
@@ -222,11 +223,11 @@ if ($create) {
 				exit(8);
 			}
 
-			print "$filename: FAILED\n";
+			print "$filename: FAILED" . PHP_EOL;
 
 			if ($debug || $show_hash) {
-				print "  Read: [$hash_read]\n";
-				print "  File: [$hash_file]\n";
+				print "  Read: [$hash_read]" . PHP_EOL;
+				print "  File: [$hash_file]" . PHP_EOL;
 			}
 		}
 	}
@@ -281,7 +282,7 @@ function dirToArray(mixed $dir, string $base, string $ignore) : array {
 		}
 
 		foreach ($dir_list as $partpath) {
-			$result = array_merge($result,dirToArray($partpath, $base, $ignore));
+			$result = array_merge($result, dirToArray($partpath, $base, $ignore));
 		}
 	} elseif (!$quiet && ($debug || !strlen($dir))) {
 		$value = substr($dir,strlen(dirname($dir)) + 1);
@@ -298,7 +299,7 @@ function dirToArray(mixed $dir, string $base, string $ignore) : array {
  */
 function display_version() : void {
 	$version = get_cacti_cli_version();
-	print "Cacti md5sum Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti md5sum Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 /**
@@ -311,17 +312,19 @@ function display_help() : void {
 
 	print PHP_EOL;
 	print 'usage: md5sum.php [option] [filename]' . PHP_EOL . PHP_EOL;
+
 	print 'Options:' . PHP_EOL;
-	print '     -c          When specified used creates a file containing the md5 hash' . PHP_EOL;
-	print '    --create     followed by the name. Otherwise, the file is verified' . PHP_EOL . PHP_EOL;
-	print '     -d          logs additional output to the screen to aid in diagnosing' . PHP_EOL;
-	print '    --debug      potential issues' . PHP_EOL . PHP_EOL;
-	print '     -b          When specified, sets the base directory to search from. If' . PHP_EOL;
-	print '    --basedir    not specified, defaults to the directory above this script' . PHP_EOL . PHP_EOL;
-	print '     -q          When specified, quiet mode only returns an exit value that' . PHP_EOL;
-	print '    --quiet      corresponds to the point of exit.  Suppresses debug option' . PHP_EOL . PHP_EOL;
-	print '     -s          When specified, adds extra output to the verify mode which' . PHP_EOL;
-	print '    --show       shows both the stored and computed hash value that failed' . PHP_EOL;
-	print '    --show_hash  to match' . PHP_EOL . PHP_EOL;
+	print '--create     When specified used creates a file containing the md5 hash' . PHP_EOL;
+	print '             followed by the name. Otherwise, the file is verified' . PHP_EOL;
+	print '--debug      logs additional output to the screen to aid in diagnosing' . PHP_EOL;
+	print '             potential issues' . PHP_EOL . PHP_EOL;
+	print '--basedir    When specified, sets the base directory to search from. If' . PHP_EOL;
+	print '             not specified, defaults to the directory above this script' . PHP_EOL;
+	print '--quiet      When specified, quiet mode only returns an exit value that' . PHP_EOL;
+	print '             corresponds to the point of exit.  Suppresses debug option' . PHP_EOL;
+	print '--show       When specified, adds extra output to the verify mode which' . PHP_EOL;
+	print '             shows both the stored and computed hash value that failed' . PHP_EOL;
+	print '             to match' . PHP_EOL . PHP_EOL;
+
 	print 'When no filename is passed, .md5sum is assumed. Only one filename allowed' . PHP_EOL;
 }

@@ -367,25 +367,25 @@ if (cacti_sizeof($parms)) {
 	// process host description
 	if (isset($hosts[$description])) {
 		db_execute("UPDATE host SET hostname='$ip' WHERE deleted = '' AND id=" . $hosts[$description]);
-		print "This host already exists in the database ($description) device-id: (" . $hosts[$description] . ")" . PHP_EOL;
+		print "This host already exists in the database ($description) device-id: (" . $hosts[$description] . ')' . PHP_EOL;
 
 		exit(1);
 	}
 
 	if ($description == '') {
-		print "ERROR: You must supply a description for all hosts!" . PHP_EOL;
+		print 'ERROR: You must supply a description for all hosts!' . PHP_EOL;
 
 		exit(1);
 	}
 
 	if ($ip == '') {
-		print "ERROR: You must supply an IP address for all hosts!" . PHP_EOL;
+		print 'ERROR: You must supply an IP address for all hosts!' . PHP_EOL;
 
 		exit(1);
 	}
 
 	if ($snmp_ver > 3 || $snmp_ver < 0 || !is_numeric($snmp_ver)) {
-		print "ERROR: The snmp version must be between 0 and 3.  If you did not specify one, goto Configuration > Settings > Device Defaults and resave your defaults." . PHP_EOL;
+		print 'ERROR: The snmp version must be between 0 and 3.  If you did not specify one, goto Configuration > Settings > Device Defaults and resave your defaults.' . PHP_EOL;
 
 		exit(1);
 	}
@@ -394,7 +394,7 @@ if (cacti_sizeof($parms)) {
 		switch ($snmp_security_level) {
 			case 'noauthnopriv':
 				if (empty($snmp_username)) {
-					print "ERROR: For SNMP security level noAuthNoPriv, you must enter a username" . PHP_EOL;
+					print 'ERROR: For SNMP security level noAuthNoPriv, you must enter a username' . PHP_EOL;
 
 					exit(1);
 				} else {
@@ -405,7 +405,7 @@ if (cacti_sizeof($parms)) {
 				break;
 			case 'authnopriv':
 				if (empty($snmp_username) || empty($snmp_auth_protocol) || empty($snmp_password)) {
-					print "ERROR: For SNMP security level authNoPriv, you must enter username, password and SNMP auth protocol" . PHP_EOL;
+					print 'ERROR: For SNMP security level authNoPriv, you must enter username, password and SNMP auth protocol' . PHP_EOL;
 
 					exit(1);
 				} else {
@@ -415,14 +415,14 @@ if (cacti_sizeof($parms)) {
 				break;
 			case 'authpriv':
 				if (empty($snmp_username) || empty($snmp_auth_protocol) || empty($snmp_password) || empty($snmp_priv_passphrase) || empty($snmp_priv_protocol)) {
-					print "ERROR: For SNMP security level authNoPriv, you must enter username, password, SNMP auth protocol, priv protocol and priv passphrase" . PHP_EOL;
+					print 'ERROR: For SNMP security level authNoPriv, you must enter username, password, SNMP auth protocol, priv protocol and priv passphrase' . PHP_EOL;
 
 					exit(1);
 				}
 
 				break;
 			default:
-				print "ERROR: SNMP security level incorrect. Correct values are noAuthNoPriv, authNoPriv or authPriv." . PHP_EOL;
+				print 'ERROR: SNMP security level incorrect. Correct values are noAuthNoPriv, authNoPriv or authPriv.' . PHP_EOL;
 
 				exit(1);
 		}
@@ -475,20 +475,20 @@ if (cacti_sizeof($parms)) {
 
 		if ($fail) {
 			db_execute("UPDATE host SET description = '$description' WHERE deleted = '' AND id = " . $addresses[$ip]);
-			print "ERROR: This IP already exists in the database ($ip) device-id: (" . $addresses[$ip] . ")" . PHP_EOL;
+			print "ERROR: This IP already exists in the database ($ip) device-id: (" . $addresses[$ip] . ')' . PHP_EOL;
 
 			exit(1);
 		}
 	}
 
 	if (!is_numeric($site_id) || $site_id < 0) {
-		print "ERROR: You have specified an invalid site id!" . PHP_EOL;
+		print 'ERROR: You have specified an invalid site id!' . PHP_EOL;
 
 		exit(1);
 	}
 
 	if (!is_numeric($poller_id) || $poller_id < 0) {
-		print "ERROR: You have specified an invalid poller id!" . PHP_EOL;
+		print 'ERROR: You have specified an invalid poller id!' . PHP_EOL;
 
 		exit(1);
 	}
@@ -502,13 +502,13 @@ if (cacti_sizeof($parms)) {
 
 	if ($snmp_ver > 0) {
 		if ($snmp_port <= 1 || $snmp_port > 65534) {
-			print "ERROR: Invalid port.  Valid values are from 1-65534" . PHP_EOL;
+			print 'ERROR: Invalid port.  Valid values are from 1-65534' . PHP_EOL;
 
 			exit(1);
 		}
 
 		if ($snmp_timeout <= 0 || $snmp_timeout > 20000) {
-			print "ERROR: Invalid timeout.  Valid values are from 1 to 20000" . PHP_EOL;
+			print 'ERROR: Invalid timeout.  Valid values are from 1 to 20000' . PHP_EOL;
 
 			exit(1);
 		}
@@ -519,7 +519,7 @@ if (cacti_sizeof($parms)) {
 		// snmp community can be blank
 	} else {
 		if ($snmp_username == '') {
-			print "ERROR: When using snmpv3 you must supply an username" . PHP_EOL;
+			print 'ERROR: When using snmpv3 you must supply an username' . PHP_EOL;
 
 			exit(1);
 		}
@@ -553,7 +553,7 @@ if (cacti_sizeof($parms)) {
 		$poller_id, $site_id, $external_id, $location, $bulk_walk_size, $snmp_options, $snmp_retries);
 
 	if (is_error_message()) {
-		print "ERROR: Failed to add this device" . PHP_EOL;
+		print 'ERROR: Failed to add this device' . PHP_EOL;
 
 		exit(1);
 	} else {
@@ -577,40 +577,45 @@ function display_version() : void {
 	print "Cacti Add Device Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
+/**
+ * display_help - displays help information
+ *
+ * @return void
+ */
 function display_help() : void {
 	display_version();
 
 	print PHP_EOL;
-	print "usage: add_device.php --description=[description] --ip=[IP] --template=[ID] [--notes=\"[]\"] [--disable]" . PHP_EOL;
-	print "    [--poller=[id]] [--site=[id] [--external-id=[S]] [--proxy] [--threads=[1]" . PHP_EOL;
-	print "    [--avail=[ping]] --ping_method=[icmp] --ping_port=[N/A, 1-65534] --ping_timeout=[N] --ping_retries=[2]" . PHP_EOL;
-	print "    [--version=[0|1|2|3]] [--community=] [--port=161] [--timeout=500] [--retries=3] [--options=0]" . PHP_EOL;
-	print "    [--username= --password=] [--authproto=] [--privpass= --privproto=] [--context=] [--engineid=]" . PHP_EOL;
-	print "    [--quiet]" . PHP_EOL . PHP_EOL;
-	print "Required:" . PHP_EOL;
-	print "    --description    the name that will be displayed by Cacti in the graphs" . PHP_EOL;
-	print "    --ip             self explanatory (can also be a FQDN)" . PHP_EOL . PHP_EOL;
-	print "Optional:" . PHP_EOL;
-	print "    --proxy          if specified, allows adding a second host with same ip address" . PHP_EOL;
-	print "    --template       0, is a number (read below to get a list of templates)" . PHP_EOL;
+	print 'usage: add_device.php --description=[description] --ip=[IP] --template=[ID] [--notes="[]"] [--disable]' . PHP_EOL;
+	print '    [--poller=[id]] [--site=[id] [--external-id=[S]] [--proxy] [--threads=[1]' . PHP_EOL;
+	print '    [--avail=[ping]] --ping_method=[icmp] --ping_port=[N/A, 1-65534] --ping_timeout=[N] --ping_retries=[2]' . PHP_EOL;
+	print '    [--version=[0|1|2|3]] [--community=] [--port=161] [--timeout=500] [--retries=3] [--options=0]' . PHP_EOL;
+	print '    [--username= --password=] [--authproto=] [--privpass= --privproto=] [--context=] [--engineid=]' . PHP_EOL;
+	print '    [--quiet]' . PHP_EOL . PHP_EOL;
+	print 'Required:' . PHP_EOL;
+	print '    --description    the name that will be displayed by Cacti in the graphs' . PHP_EOL;
+	print '    --ip             self explanatory (can also be a FQDN)' . PHP_EOL . PHP_EOL;
+	print 'Optional:' . PHP_EOL;
+	print '    --proxy          if specified, allows adding a second host with same ip address' . PHP_EOL;
+	print '    --template       0, is a number (read below to get a list of templates)' . PHP_EOL;
 	print "    --location       '', The physical location of the Device." . PHP_EOL;
 	print "    --notes          '', General information about this host.  Must be enclosed using double quotes." . PHP_EOL;
 	print "    --external-id    '', An external ID to align Cacti devices with devices from other systems." . PHP_EOL;
-	print "    --disable        0, 1 to add this host but to disable checks and 0 to enable it" . PHP_EOL;
-	print "    --poller         0, numeric poller id that will perform data collection for the device." . PHP_EOL;
-	print "    --site           0, numeric site id that will be associated with the device." . PHP_EOL;
-	print "    --threads        1, numeric number of threads to poll device with." . PHP_EOL;
-	print "    --avail          pingsnmp, [ping][none, snmp, pingsnmp, pingorsnmp]" . PHP_EOL;
-	print "    --ping_method    tcp, icmp|tcp|udp" . PHP_EOL;
+	print '    --disable        0, 1 to add this host but to disable checks and 0 to enable it' . PHP_EOL;
+	print '    --poller         0, numeric poller id that will perform data collection for the device.' . PHP_EOL;
+	print '    --site           0, numeric site id that will be associated with the device.' . PHP_EOL;
+	print '    --threads        1, numeric number of threads to poll device with.' . PHP_EOL;
+	print '    --avail          pingsnmp, [ping][none, snmp, pingsnmp, pingorsnmp]' . PHP_EOL;
+	print '    --ping_method    tcp, icmp|tcp|udp' . PHP_EOL;
 	print "    --ping_port      '', 1-65534" . PHP_EOL;
-	print "    --ping_retries   2, the number of time to attempt to communicate with a host" . PHP_EOL;
-	print "    --ping_timeout   N, the ping timeout in milliseconds.  Defaults to database setting." . PHP_EOL;
-	print "    --version        1, 0|1|2|3, snmp version. 0 for no snmp" . PHP_EOL;
+	print '    --ping_retries   2, the number of time to attempt to communicate with a host' . PHP_EOL;
+	print '    --ping_timeout   N, the ping timeout in milliseconds.  Defaults to database setting.' . PHP_EOL;
+	print '    --version        1, 0|1|2|3, snmp version. 0 for no snmp' . PHP_EOL;
 	print "    --community      '', snmp community string for snmpv1 and snmpv2.  Leave blank for no community" . PHP_EOL;
-	print "    --port           161" . PHP_EOL;
-	print "    --timeout        500, The default snmp timeout" . PHP_EOL;
-	print "    --retries        3, The number of snmp retries" . PHP_EOL;
-	print "    --options        0, The SNMP Recovery Template Options set to use" . PHP_EOL;
+	print '    --port           161' . PHP_EOL;
+	print '    --timeout        500, The default snmp timeout' . PHP_EOL;
+	print '    --retries        3, The number of snmp retries' . PHP_EOL;
+	print '    --options        0, The SNMP Recovery Template Options set to use' . PHP_EOL;
 	print "    --security-level '', noAuthNoPriv|authNoPriv|authPriv, security level for snmpv3" . PHP_EOL;
 	print "    --username       '', snmp username for snmpv3" . PHP_EOL;
 	print "    --password       '', snmp password for snmpv3" . PHP_EOL;
@@ -619,10 +624,10 @@ function display_help() : void {
 	print "    --privproto      '', [None]|DES|AES|AES128|AES192|AES192C|AES256|AES256C$, snmp privacy protocol for snmpv3" . PHP_EOL;
 	print "    --context        '', snmp context for snmpv3" . PHP_EOL;
 	print "    --engineid       '', snmp engineid for snmpv3" . PHP_EOL;
-	print "    --max_oids       10, 1-60, the number of OIDs that can be obtained in a single SNMP Get request" . PHP_EOL . PHP_EOL;
-	print "    --bulk_walk      -1, 1-60, the bulk walk chunk size that will be used for bulk walks.  Use -1 for auto-tune." . PHP_EOL . PHP_EOL;
-	print "List Options:" . PHP_EOL;
-	print "    --list-host-templates" . PHP_EOL;
-	print "    --list-communities" . PHP_EOL;
-	print "    --quiet - batch mode value return" . PHP_EOL . PHP_EOL;
+	print '    --max_oids       10, 1-60, the number of OIDs that can be obtained in a single SNMP Get request' . PHP_EOL . PHP_EOL;
+	print '    --bulk_walk      -1, 1-60, the bulk walk chunk size that will be used for bulk walks.  Use -1 for auto-tune.' . PHP_EOL . PHP_EOL;
+	print 'List Options:' . PHP_EOL;
+	print '    --list-host-templates' . PHP_EOL;
+	print '    --list-communities' . PHP_EOL;
+	print '    --quiet - batch mode value return' . PHP_EOL . PHP_EOL;
 }

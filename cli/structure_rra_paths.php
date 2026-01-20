@@ -39,8 +39,6 @@ if ($storage_location > 0) {
 	exit(1);
 }
 
-define('PHP_DEOL', PHP_EOL . PHP_EOL);
-
 $host_id          = false;
 $host_template_id = false;
 $proceed          = false;
@@ -84,7 +82,7 @@ if (cacti_sizeof($parms)) {
 
 				break;
 			default:
-				print "ERROR: Invalid Argument: ($arg)" . PHP_DEOL;
+				print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
 				display_help();
 
 				exit(1);
@@ -95,28 +93,28 @@ if (cacti_sizeof($parms)) {
 $start = microtime(true);
 
 if (read_config_option('boost_rrd_update_enable') !== 'on') {
-	print PHP_EOL . 'FATAL: Cacti\'s Performance Booster required to run this utility.' . PHP_DEOL;
+	print PHP_EOL . 'FATAL: Cacti\'s Performance Booster required to run this utility.' . PHP_EOL . PHP_EOL;
 	display_help();
 
 	exit -1;
 }
 
 if ($host_id !== false && ($host_id <= 0 || !is_numeric($host_id))) {
-	print PHP_EOL . 'FATAL: When specifying a Device ID, you must pick on greater or equal than zero.' . PHP_DEOL;
+	print PHP_EOL . 'FATAL: When specifying a Device ID, you must pick on greater or equal than zero.' . PHP_EOL . PHP_EOL;
 	display_help();
 
 	exit -1;
 }
 
 if ($host_template_id !== false && ($host_template_id <= 0 || !is_numeric($host_template_id))) {
-	print PHP_EOL . 'FATAL: When specifying a Device Template ID, you must pick on greater or equal than zero.' . PHP_DEOL;
+	print PHP_EOL . 'FATAL: When specifying a Device Template ID, you must pick on greater or equal than zero.' . PHP_EOL . PHP_EOL;
 	display_help();
 
 	exit -1;
 }
 
 if ($proceed == false) {
-	print PHP_EOL . 'FATAL: You Must Explicitly Instruct This Script to Proceed with the \'--proceed\' Option' . PHP_DEOL;
+	print PHP_EOL . 'FATAL: You Must Explicitly Instruct This Script to Proceed with the \'--proceed\' Option' . PHP_EOL . PHP_EOL;
 	display_help();
 
 	exit -1;
@@ -424,40 +422,40 @@ function display_version() : void {
 function display_help() : void {
 	display_version();
 
-	print PHP_EOL . 'usage: structure_rra_paths.php [--host-id=N] [--host-template-id=N] [--proceed]' . PHP_DEOL;
+	print PHP_EOL . 'usage: structure_rra_paths.php [--host-id=N] [--host-template-id=N] [--proceed]' . PHP_EOL . PHP_EOL;
 
 	print 'A simple interactive command line utility that converts a Cacti system from using' . PHP_EOL;
 	print 'legacy RRA paths to using structured RRA paths with the following' . PHP_EOL;
-	print 'four naming patterns:' . PHP_DEOL;
+	print 'four naming patterns:' . PHP_EOL . PHP_EOL;
 
 	print 'device                 - <path_rra>/host_id/local_data_id.rrd' . PHP_EOL;
 	print 'device/data_query      - <path_rra>/host_id/data_query_id/local_data_id.rrd' . PHP_EOL;
 	print 'hash/device            - <path_rra>/hash_id/host_id/data_query_id/local_data_id.rrd' . PHP_EOL;
-	print 'hash/device/data_query - <path_rra>/hash_id/host_id/data_query_id/local_data_id.rrd' . PHP_DEOL;
+	print 'hash/device/data_query - <path_rra>/hash_id/host_id/data_query_id/local_data_id.rrd' . PHP_EOL . PHP_EOL;
 
 	print 'The pattern that you choose will depend on how many Devices and Graphs per Device' . PHP_EOL;
 	print 'you have.  It\'s possible that if your site has over 100k Devices, you may want' . PHP_EOL;
-	print 'to use one of last two options.' . PHP_DEOL;
+	print 'to use one of last two options.' . PHP_EOL . PHP_EOL;
 
 	print 'Optional:' . PHP_EOL;
 	print ' --host-id=N           Specify if you wish to switch on a single Device.' . PHP_EOL;
-	print ' --host-template-id=N  Specify if you wish to change for a class of Devices.' . PHP_DEOL;
+	print ' --host-template-id=N  Specify if you wish to change for a class of Devices.' . PHP_EOL . PHP_EOL;
 
 	print 'This utility is designed for very large Cacti systems or file systems that have' . PHP_EOL;
 	print 'problems with very large directories.  It will run interactively, but it first' . PHP_EOL;
-	print 'requires you to be using Cacti\'s performance boosting feature called Boost.' . PHP_DEOL;
+	print 'requires you to be using Cacti\'s performance boosting feature called Boost.' . PHP_EOL . PHP_EOL;
 
 	print 'On Linux/UNIX, the root user is required to apply file and directory ownership.' . PHP_EOL;
 	print 'The when leveraging boost, the utility will work with or without the Cacti poller' . PHP_EOL;
 	print 'running.  The utility will use the set_lock() and release_lock() MySQL/MariaDB' . PHP_EOL;
 	print 'for interlocking, and therefore the utility is safe to run while the Cacti' . PHP_EOL;
-	print 'poller is running.' . PHP_DEOL;
+	print 'poller is running.' . PHP_EOL . PHP_EOL;
 
 	print 'It is recommended that you not interrupt this script as files may not appear' . PHP_EOL;
-	print 'in the locations that the utility expects them to be which may cause issues.' . PHP_DEOL;
+	print 'in the locations that the utility expects them to be which may cause issues.' . PHP_EOL . PHP_EOL;
 
-	print 'For Each File, it will:' . PHP_DEOL;
+	print 'For Each File, it will:' . PHP_EOL . PHP_EOL;
 	print '  1) Create the Structured Path, if Necessary' . PHP_EOL;
 	print '  2) Move the File to the Structured Path Using the New Name' . PHP_EOL;
-	print '  3) Alter the two Database Tables Required' . PHP_DEOL;
+	print '  3) Alter the two Database Tables Required' . PHP_EOL . PHP_EOL;
 }

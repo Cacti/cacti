@@ -135,14 +135,14 @@ if (cacti_sizeof($parms)) {
 }
 
 if (cacti_sizeof($skip_tables) && $table_name != '') {
-	print_or_log($installer,  "ERROR: You can not specify a single table and skip tables at the same time." . PHP_EOL . PHP_EOL);
+	print_or_log($installer,  'ERROR: You can not specify a single table and skip tables at the same time.' . PHP_EOL . PHP_EOL);
 	display_help();
 
 	exit;
 }
 
 if (!($innodb || $utf8 || $latin)) {
-	print_or_log($installer,  "ERROR: Must select either UTF8, LATIN1 or InnoDB conversion." . PHP_EOL . PHP_EOL);
+	print_or_log($installer,  'ERROR: Must select either UTF8, LATIN1 or InnoDB conversion.' . PHP_EOL . PHP_EOL);
 	display_help();
 
 	exit;
@@ -152,12 +152,12 @@ if (!$local) {
 	if (POLLER_ID > 1) {
 		db_switch_remote_to_main();
 
-		print_or_log($installer, "NOTE: Repairing Tables for Main Database" . PHP_EOL);
+		print_or_log($installer, 'NOTE: Repairing Tables for Main Database' . PHP_EOL);
 	} else {
-		print_or_log($installer, "NOTE: Repairing Tables for Local Database" . PHP_EOL);
+		print_or_log($installer, 'NOTE: Repairing Tables for Local Database' . PHP_EOL);
 	}
 } else {
-	print_or_log($installer, "NOTE: Repairing Tables for Local Database" . PHP_EOL);
+	print_or_log($installer, 'NOTE: Repairing Tables for Local Database' . PHP_EOL);
 }
 
 if (cacti_sizeof($skip_tables)) {
@@ -185,7 +185,7 @@ if ($innodb) {
 	if (cacti_sizeof($engines)) {
 		foreach ($engines as $engine) {
 			if (strtolower($engine['Engine']) == 'innodb' && strtolower($engine['Support']) == 'off') {
-				print_or_log($installer,  "InnoDB Engine is not enabled" . PHP_EOL);
+				print_or_log($installer,  'InnoDB Engine is not enabled' . PHP_EOL);
 
 				exit;
 			}
@@ -316,22 +316,23 @@ function display_help() {
 	display_version();
 
 	print PHP_EOL;
-	print "usage: convert_tables.php [--debug] [--innodb] [--utf8] [--latin1] [--table=N] [--size=N] [--rebuild] [--dynamic]" . PHP_EOL . PHP_EOL;
-	print "A utility to convert a Cacti Database from MyISAM to the InnoDB table format." . PHP_EOL;
-	print "MEMORY tables are not converted to InnoDB in this process." . PHP_EOL . PHP_EOL;
+	print 'usage: convert_tables.php [--debug] [--innodb] [--utf8] [--latin1] [--table=N] [--size=N] [--rebuild] [--dynamic]' . PHP_EOL . PHP_EOL;
 
-	print "Required (one or more):" . PHP_EOL;
-	print "-i | --innodb  - Convert any MyISAM tables to InnoDB" . PHP_EOL . PHP_EOL;
-	print "-u | --utf8    - Convert any non-UTF8 tables to utf8mb4_unicode_ci" . PHP_EOL;
-	print "-l | --latin1  - Convert any non-latin1 tables to latin1" . PHP_EOL . PHP_EOL;
+	print 'A utility to convert a Cacti Database from MyISAM to the InnoDB table format.' . PHP_EOL;
+	print 'MEMORY tables are not converted to InnoDB in this process.' . PHP_EOL . PHP_EOL;
 
-	print "Optional:" . PHP_EOL;
-	print "-t | --table=S - The name of a single table to change" . PHP_EOL;
-	print "-n | --skip-innodb=\"table1 table2 ...\" - Skip converting tables to InnoDB" . PHP_EOL;
-	print "-s | --size=N  - The largest table size in records to convert.  Default is 1,000,000 rows." . PHP_EOL;
-	print "-r | --rebuild - Will compress/optimize existing InnoDB tables if found" . PHP_EOL;
-	print "     --dynamic - Convert a table to Dynamic row format if available" . PHP_EOL;
-	print "     --local   - Perform the action on the Remote Data Collector if run from there" . PHP_EOL;
-	print "-f | --force   - Proceed with conversion regardless of table size" . PHP_EOL;
-	print "-d | --debug   - Display verbose output during execution" . PHP_EOL;
+	print 'Required (one or more):' . PHP_EOL;
+	print '-i | --innodb  - Convert any MyISAM tables to InnoDB' . PHP_EOL . PHP_EOL;
+	print '-u | --utf8    - Convert any non-UTF8 tables to utf8mb4_unicode_ci' . PHP_EOL;
+	print '-l | --latin1  - Convert any non-latin1 tables to latin1' . PHP_EOL . PHP_EOL;
+
+	print 'Optional:' . PHP_EOL;
+	print '-t | --table=S - The name of a single table to change' . PHP_EOL;
+	print '-n | --skip-innodb="table1 table2 ..." - Skip converting tables to InnoDB' . PHP_EOL;
+	print '-s | --size=N  - The largest table size in records to convert.  Default is 1,000,000 rows.' . PHP_EOL;
+	print '-r | --rebuild - Will compress/optimize existing InnoDB tables if found' . PHP_EOL;
+	print '     --dynamic - Convert a table to Dynamic row format if available' . PHP_EOL;
+	print '     --local   - Perform the action on the Remote Data Collector if run from there' . PHP_EOL;
+	print '-f | --force   - Proceed with conversion regardless of table size' . PHP_EOL;
+	print '-d | --debug   - Display verbose output during execution' . PHP_EOL;
 }

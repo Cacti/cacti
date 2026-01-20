@@ -26,7 +26,7 @@
 require(__DIR__ . '/../include/cli_check.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 
-if ($config['poller_id'] > 1) {
+if (POLLER_ID > 1) {
 	print 'FATAL: This utility is designed for the main Data Collector only' . PHP_EOL;
 
 	exit(1);
@@ -79,7 +79,7 @@ if (cacti_sizeof($parms)) {
 				exit(0);
 
 			default:
-				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 				display_help();
 
 				exit(1);
@@ -141,21 +141,32 @@ if (cacti_sizeof($pollers)) {
 	exit(1);
 }
 
-// display_version - displays version information
-function display_version() {
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
+function display_version() : void {
 	$version = get_cacti_cli_version();
-	print "Cacti Poller Full Sync Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Poller Full Sync Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-// display_help - displays the usage of the function
-function display_help() {
+/**
+ * display_help - displays the usage of the function
+ *
+ * @return void
+ */
+function display_help() : void {
 	display_version();
 
-	print "\nA utility to fully Synchronize Remote Data Collectors.\n\n";
-	print "usage: poller_replicate.php [--poller=N] [--class=all|data|auth|settings]\n\n";
-	print "Optional:\n";
-	print "    --poller=N  The numeric id of the poller to replicate out.  Otherwise all\n";
-	print "                pollers.  The default is all.\n";
-	print "    --class=S   The class of data to replicate.  Includes all, data, auth\n";
-	print "                settings.  The default is all.\n";
+	print PHP_EOL;
+	print 'A utility to fully Synchronize Remote Data Collectors.' . PHP_EOL . PHP_EOL;
+
+	print 'usage: poller_replicate.php [--poller=N] [--class=all|data|auth|settings]' . PHP_EOL . PHP_EOL;
+
+	print 'Optional:' . PHP_EOL;
+	print '    --poller=N  The numeric id of the poller to replicate out.  Otherwise all' . PHP_EOL;
+	print '                pollers.  The default is all.' . PHP_EOL;
+	print '    --class=S   The class of data to replicate.  Includes all, data, auth' . PHP_EOL;
+	print '                settings.  The default is all.' . PHP_EOL;
 }

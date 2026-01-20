@@ -124,7 +124,7 @@ if (empty($salt)) {
 $data['password'] = compat_password_hash($salt . '_' . $new_user, PASSWORD_DEFAULT);
 
 // Check that user exists
-$user_auth = db_fetch_row_prepared("SELECT * FROM user_auth WHERE username = ? AND realm = 0", [$template_user]);
+$user_auth = db_fetch_row_prepared('SELECT * FROM user_auth WHERE username = ? AND realm = 0', [$template_user]);
 
 if (!cacti_sizeof($user_auth)) {
 	die(PHP_EOL . 'Error: Template user does not exist!' . PHP_EOL . PHP_EOL);
@@ -137,7 +137,7 @@ if (user_copy($template_user, $new_user, 0, 0, false, $data) === false) {
 	die(PHP_EOL . 'Error: User not copied!' . PHP_EOL . PHP_EOL);
 }
 
-$user_auth = db_fetch_row_prepared("SELECT * FROM user_auth WHERE username = ? AND realm = 0", [$new_user]);
+$user_auth = db_fetch_row_prepared('SELECT * FROM user_auth WHERE username = ? AND realm = 0', [$new_user]);
 
 if (!cacti_sizeof($user_auth)) {
 	die(PHP_EOL . 'Error: User missing!' . PHP_EOL . PHP_EOL);
@@ -173,12 +173,21 @@ function validate_boolean(string $field, string $value) : string {
 	return $value;
 }
 
-// display_version - displays version information
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
 function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Copy User Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
+/**
+ * display_help - displays help information
+ *
+ * @return void
+ */
 function display_help() : void {
 	display_version();
 

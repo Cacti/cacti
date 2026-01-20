@@ -231,13 +231,21 @@ function db_install_errors(string $cacti_version) : string {
 	return $error_status;
 }
 
-// display_version - displays version information
+/**
+ * display_version - displays version information
+ *
+ * @return (void)
+ */
 function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Database Upgrade Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-// display_help - displays the usage of the function
+/**
+ * display_help - displays help information
+ *
+ * @return void
+ */
 function display_help() : void {
 	display_version();
 

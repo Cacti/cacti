@@ -49,7 +49,7 @@ array_shift($parms);
 
 // utility requires input parameters
 if (cacti_sizeof($parms) == 0) {
-	print "ERROR: You must supply input parameters" . PHP_EOL . PHP_EOL;
+	print 'ERROR: You must supply input parameters' . PHP_EOL . PHP_EOL;
 	display_help();
 
 	exit(1);
@@ -115,7 +115,7 @@ if (strtolower($host_id) == 'all') {
 	$sql_where = '';
 } elseif ($host_id > 0) {
 	$sql_where = ' WHERE id = ?';
-	$params[] = $host_id;
+	$params[]  = $host_id;
 } else {
 	print "ERROR: You must specify either a host_id or 'all' to proceed." . PHP_EOL . PHP_EOL;
 	display_help();
@@ -125,10 +125,10 @@ if (strtolower($host_id) == 'all') {
 
 // determine data queries to rerun
 if ($host_template_id > 0) {
-	$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . " host_template_id = ?";
+	$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . ' host_template_id = ?';
 	$params[] = $host_template_id;
 } else {
-	print "ERROR: You must specify a Host Template to proceed." . PHP_EOL . PHP_EOL;
+	print 'ERROR: You must specify a Host Template to proceed.' . PHP_EOL . PHP_EOL;
 	display_help();
 
 	exit(1);
@@ -199,9 +199,17 @@ if ($exists > 0) {
 		}
 	}
 } else {
-	print "ERROR: The selected Host Template does not exist, try --list-host-templates" . PHP_EOL . PHP_EOL;
+	print 'ERROR: The selected Host Template does not exist, try --list-host-templates' . PHP_EOL . PHP_EOL;
 
 	exit(1);
+}
+
+function debug(string $message) : void {
+	global $debug;
+
+	if ($debug) {
+		print('DEBUG: ' . trim($message) . PHP_EOL);
+	}
 }
 
 /**
@@ -224,25 +232,17 @@ function display_help() : void {
 	display_version();
 
 	print PHP_EOL;
-	print "usage: host_update_template.php --host-id=[host-id|all] [--host-template=[ID]] [--debug]" . PHP_EOL . PHP_EOL;
+	print 'usage: host_update_template.php --host-id=[host-id|all] [--host-template=[ID]] [--debug]' . PHP_EOL . PHP_EOL;
 
-	print "A utility to update Cacti devices with the latest Device Template" . PHP_EOL . PHP_EOL;
+	print 'A utility to update Cacti devices with the latest Device Template' . PHP_EOL . PHP_EOL;
 
-	print "Required:" . PHP_EOL;
+	print 'Required:' . PHP_EOL;
 	print "    --host-id=host_id|all - The host_id to have templates reapplied 'all' to do all hosts" . PHP_EOL;
-	print "    --host-template=ID    - Which Host Template to Refresh" . PHP_EOL . PHP_EOL;
+	print '    --host-template=ID    - Which Host Template to Refresh' . PHP_EOL . PHP_EOL;
 
-	print "Optional:" . PHP_EOL;
-	print "    --debug               - Display verbose output during execution" . PHP_EOL;
+	print 'Optional:' . PHP_EOL;
+	print '    --debug               - Display verbose output during execution' . PHP_EOL;
 
-	print "List Options:" . PHP_EOL;
-	print "    --list-host-templates - Lists all available Host Templates" . PHP_EOL;
-}
-
-function debug(string $message) : void {
-	global $debug;
-
-	if ($debug) {
-		print('DEBUG: ' . trim($message) . PHP_EOL);
-	}
+	print 'List Options:' . PHP_EOL;
+	print '    --list-host-templates - Lists all available Host Templates' . PHP_EOL;
 }

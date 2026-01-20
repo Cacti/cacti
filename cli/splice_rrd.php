@@ -1094,6 +1094,11 @@ function loadTable(object $db, array &$records) : void {
 	$db->exec('COMMIT TRANSACTION');
 }
 
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
 function display_version() : void {
 	if (!defined('COPYRIGHT_YEARS')) {
 		define('COPYRIGHT_YEARS', '2004-2025');
@@ -1105,8 +1110,7 @@ function display_version() : void {
 }
 
 /**
- * display_help - Displays usage information about how to utilize
- *  this program.
+ * display_help - displays help information
  *
  * @return void
  */
@@ -1124,9 +1128,12 @@ function display_help() : void {
 	print 'The Old and New input parameters are mandatory.  If the finrrd option is' . PHP_EOL;
 	print 'not specified, it will be the newrrd plus a timestamp.' . PHP_EOL . PHP_EOL;
 
+	print 'Required:' . PHP_EOL;
 	print '--oldrrd=file    - The old RRDfile that contains old data.' . PHP_EOL;
-	print '--newrrd=file    - The new RRDfile that contains more recent data.' . PHP_EOL;
-	print '--finrrd=file    - The final RRDfile that contains data from both rrdfiles.' . PHP_EOL . PHP_EOL;
+	print '--newrrd=file    - The new RRDfile that contains more recent data.' . PHP_EOL . PHP_EOL;
+
+	print 'Optional:' . PHP_EOL;
+	print '--finrrd=file    - The final RRDfile that contains data from both rrdfiles.' . PHP_EOL;
 	print '--owner=apache   - Change the owner of the resulting file.  Note requires root.' . PHP_EOL;
 	print '--dryrun         - Simply test the splicing of the RRDfiles, don\'t write.' . PHP_EOL . PHP_EOL;
 }
