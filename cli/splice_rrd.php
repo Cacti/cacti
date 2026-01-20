@@ -45,11 +45,11 @@ if ($from_cacti) {
 }
 
 if (!function_exists('cacti_sizeof')) {
-	function cacti_sizeof(mixed $array) : mixed {
+	function cacti_sizeof(mixed $array) : int {
 		return ($array === false || !is_array($array)) ? 0 : sizeof($array);
 	}
 
-	function cacti_count(mixed $array) : mixed {
+	function cacti_count(mixed $array) : int {
 		return ($array === false || !is_array($array)) ? 0 : count($array);
 	}
 }
