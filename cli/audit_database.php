@@ -841,7 +841,7 @@ function make_index_alter($table, $key) {
 		}
 	}
 
-    $using = '';
+	$using = '';
 
 	if (cacti_sizeof($parts)) {
 		$i = 0;
@@ -860,9 +860,9 @@ function make_index_alter($table, $key) {
 				}
 			}
 
-            if ($using == '' && isset($p['idx_index_type']) && $p['idx_index_type'] != '') {
-                $using = $p['idx_index_type'];
-            }
+			if ($using == '' && isset($p['idx_index_type']) && $p['idx_index_type'] != '') {
+				$using = $p['idx_index_type'];
+			}
 
 			$alter_cmd .= ($i > 0 ? ',':'') . '`' . $p['idx_column_name'] . '`';
 
