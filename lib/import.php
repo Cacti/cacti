@@ -3002,12 +3002,12 @@ function import_display_results(array $import_debug_info, array $filestatus, boo
 	}
 }
 
-function xml_to_array(mixed $data) : array {
+function xml_to_array(mixed $data) : mixed {
 	if (is_object($data)) {
 		$data = get_object_vars($data);
 	}
 
-	return (is_array($data)) ? array_map(__FUNCTION__,$data) : $data;
+	return (is_array($data)) ? array_map(__FUNCTION__, $data) : $data;
 }
 
 function import_is_base64_encoded(string $string) : bool {
