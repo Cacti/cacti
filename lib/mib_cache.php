@@ -171,7 +171,7 @@ class MibCache {
 	public function gettype() : void {
 	}
 
-	public function set(string $value) : mixed {
+	public function set(mixed $value) : mixed {
 		return db_execute_prepared('UPDATE `snmpagent_cache`
 			SET `value` = ?
 			WHERE `mib` = ?
