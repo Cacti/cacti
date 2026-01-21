@@ -1668,7 +1668,7 @@ function aggregate_get_data_sources(&$graph_array, &$data_sources, &$graph_templ
  # @param int $_object            - either the aggregate or aggregate_template
  */
 function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0, $_object = array()) {
-	global $config, $graph_item_types, $consolidation_functions;;
+	global $config, $graph_item_types, $consolidation_functions;
 
 	/**
 	 * @var array $consolidation_functions
