@@ -55,7 +55,7 @@ function initialize_realtime_step_and_window() {
  *
  * @return void
  */
-function set_default_graph_action() {
+function set_default_graph_action() : void {
 	// go through the settings and create a default
 	$modes = [
 		'tree'    => ['permission' => 'show_tree',    'id' => '1'],
@@ -115,7 +115,7 @@ function set_default_graph_action() {
 	}
 }
 
-function create_preview_filter($session_var) {
+function create_graphs_preview_filter(string $session_var) : array {
 	global $item_rows;
 
 	$all     = ['-1'   => __('All')];
@@ -372,11 +372,11 @@ function create_preview_filter($session_var) {
 	return $filters;
 }
 
-function draw_preview_filter($render = false, $page = '', $action = 'get') {
+function draw_graphs_preview_filter(bool $render = false, string $page = '', string $action = 'get') : void {
 	$header = __('Graph Preview Filters') . (isrv('style') && grv('style') != '' ? ' ' . __('[ Custom Graph List Applied - Filtering from List ]') : '');
 
 	// create the page filter
-	$filters                 = create_preview_filter('sess_pview');
+	$filters                 = create_graphs_preview_filter('sess_pview');
 	$pageFilter              = new CactiTableFilter($header, $page, 'form_graph_view', 'sess_pview', '', false, false);
 	$pageFilter->rows_label  = __('Graphs');
 	$pageFilter->form_method = $action;
@@ -390,7 +390,7 @@ function draw_preview_filter($render = false, $page = '', $action = 'get') {
 	}
 }
 
-function inject_realtime_form() {
+function inject_realtime_form() : string {
 	global $graphs_per_page, $realtime_window, $realtime_refresh, $graph_timeshifts, $graph_timespans;
 
 	$content = "<div class='filterTable'>
@@ -452,7 +452,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 
 	initialize_realtime_step_and_window();
 
-	draw_preview_filter(true, $page, $action);
+	draw_graphs_preview_filter(true, $page, $action);
 
 	?>
 	<script type='text/javascript'>
@@ -532,8 +532,10 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
  * @param int $host_id The ID of the host for which the graphs are being generated.
  * @param int $host_template_id The ID of the host template used for generating the graphs.
  * @param array $selected_graphs_array An array of selected graphs to be generated.
+ *
+ * @return void
  */
-function html_graph_new_graphs($page, $host_id, $host_template_id, $selected_graphs_array) {
+function html_graph_new_graphs(string $page, int $host_id, int $host_template_id, array $selected_graphs_array) : void {
 	$snmp_query_id     = 0;
 	$num_output_fields = [];
 	$output_started    = false;
@@ -595,21 +597,25 @@ function html_graph_new_graphs($page, $host_id, $host_template_id, $selected_gra
  * @param int    $host_template_id  The ID of the host template.
  * @param int    $snmp_query_id     The ID of the SNMP query.
  * @param string $form_type         The type of form ('cg' for graph template, 'sg' for SNMP query).
- * @param int    $form_id1          The ID of the form element.
+ * @param string $form_id1          The ID of the form element.
  * @param array  $form_array2       An array of form elements.
  *
  * @return array An array of output fields for the form.
  */
-function html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $form_type, $form_id1, $form_array2) {
+function html_graph_custom_data(int $host_id, int $host_template_id, int $snmp_query_id, string $form_type, string $form_id1, array $form_array2) : array {
 	// ================= input validation =================
 	input_validate_input_number($form_id1, 'form_id1');
 	// ====================================================
 
 	$num_output_fields = [];
 	$display           = false;
+	$graph_template_id = 0;
+	$header            = '';
+	$snmp_query        = 0;
+	$num_graphs        = 0;
 
 	if ($form_type == 'cg') {
-		$graph_template_id   = $form_id1;
+		$graph_template_id   = intval($form_id1);
 		$graph_template_name = db_fetch_cell_prepared('SELECT name
 			FROM graph_templates
 			WHERE id = ?',
@@ -714,7 +720,7 @@ function html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $fo
 	return $num_output_fields;
 }
 
-function html_save_graph_settings() {
+function html_save_graph_settings() : void {
 	if (is_view_allowed('graph_settings')) {
 		gfrv('columns');
 		gfrv('predefined_timespan');
@@ -767,7 +773,7 @@ function html_save_graph_settings() {
 	}
 }
 
-function html_graph_preview_view() {
+function html_graph_preview_view() : void {
 	global $is_request_ajax;
 
 	if (!is_view_allowed('show_preview')) {
@@ -926,7 +932,7 @@ function html_graph_preview_view() {
 	}
 }
 
-function create_listview_filter($session_var) {
+function create_listview_filter(string $session_var) : array {
 	global $item_rows;
 
 	$all     = ['-1'   => __('All')];
@@ -1119,7 +1125,7 @@ function create_listview_filter($session_var) {
 	return $filters;
 }
 
-function draw_listview_filter($render = false) {
+function draw_listview_filter(bool $render = false) : void {
 	$header = __('Graph List View Filters') . (isrv('style') && grv('style') != '' ? ' ' . __('[ Custom Graph List Applied - Filtering from List ]') : '');
 
 	// create the page filter
@@ -1136,7 +1142,7 @@ function draw_listview_filter($render = false) {
 	}
 }
 
-function html_graph_list_view() {
+function html_graph_list_view() : void {
 	global $graph_timespans, $alignment, $graph_sources, $item_rows;
 
 	if (!is_view_allowed('show_list')) {
@@ -1582,7 +1588,7 @@ function html_graph_list_view() {
 	bottom_footer();
 }
 
-function html_graph_update_timespan() {
+function html_graph_update_timespan() : void {
 	if (isrv('date1')) {
 		$_SESSION['sess_current_date1'] = grv('date1');
 	}
@@ -1603,7 +1609,7 @@ function html_graph_update_timespan() {
 	}
 }
 
-function html_graph_get_reports() {
+function html_graph_get_reports() : void {
 	// Add to a report
 	gfrv('report_id');
 	gfrv('timespan');
@@ -1616,7 +1622,7 @@ function html_graph_get_reports() {
 			$good = true;
 
 			foreach ($items as $item) {
-				if (!reports_add_graphs(gfrv('report_id'), $item, grv('timespan'), grv('align'))) {
+				if (!reports_add_graphs(gfrv('report_id'), intval($item), grv('timespan'), grv('align'))) {
 					raise_message('reports_add_error');
 					$good = false;
 
@@ -1635,7 +1641,7 @@ function html_graph_get_reports() {
 	header('Location: graph_view.php?action=list');
 }
 
-function html_graph_single_validate() {
+function html_graph_single_validate() : void {
 	// ================= input validation =================
 	gfrv('rra_id', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([0-9]+|all)$/']]);
 	gfrv('local_graph_id');
@@ -1656,7 +1662,7 @@ function html_graph_single_validate() {
 	}
 }
 
-function html_graph_check_access() {
+function html_graph_check_access() : void {
 	$exists = db_fetch_cell_prepared('SELECT local_graph_id
 		FROM graph_templates_graph
 		WHERE local_graph_id = ?',
@@ -1679,7 +1685,7 @@ function html_graph_check_access() {
 	}
 }
 
-function html_graph_get_info() {
+function html_graph_get_info() : array {
 	$rras        = [];
 	$graph_title = null;
 
@@ -1695,7 +1701,7 @@ function html_graph_get_info() {
 	return ['rras' => $rras, 'title' => $graph_title];
 }
 
-function html_graph_single_view() {
+function html_graph_single_view() : void {
 	html_graph_single_validate();
 
 	html_graph_check_access();
@@ -1939,7 +1945,7 @@ function html_graph_single_view() {
 	bottom_footer();
 }
 
-function html_graph_zoom() {
+function html_graph_zoom() : void {
 	html_graph_single_validate();
 
 	html_graph_check_access();
@@ -2258,7 +2264,7 @@ function html_graph_zoom() {
 	bottom_footer();
 }
 
-function html_graph_properties() {
+function html_graph_properties() : void {
 	html_graph_single_validate();
 
 	html_graph_check_access();
@@ -2325,7 +2331,7 @@ function html_graph_properties() {
  * @return void
  */
 function html_graph_validate_preview_request_vars() {
-	$filters  = create_preview_filter('sess_pview');
+	$filters  = create_graphs_preview_filter('sess_pview');
 	$validate = [];
 
 	foreach ($filters['rows'] as $row) {

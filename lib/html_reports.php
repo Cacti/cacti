@@ -22,6 +22,9 @@
  +-------------------------------------------------------------------------+
 */
 
+//
+global $attach_types, $alignment;
+
 // get the format files
 $formats = reports_get_format_files();
 
@@ -410,12 +413,16 @@ function reports_form_actions() {
 			foreach ($selected_items as $report) {
 				[$type, $report_id] = explode('_', $report);
 
+				$report_id = intval($report_id);
+
 				if (gnrv('drp_action') == REPORTS_DELETE) { // delete
 					if ($type == 'reports') {
 						db_execute_prepared('DELETE FROM reports WHERE id = ?', [$report_id]);
 						db_execute_prepared('DELETE FROM reports_items WHERE report_id = ?', [$report_id]);
 					} elseif ($type == 'reportit') {
-						api_reportit_delete_report($report_id);
+						if (function_exists('api_reportit_delete_report')) {
+							api_reportit_delete_report($report_id);
+						}
 					}
 				} elseif (gnrv('drp_action') == REPORTS_OWN) { // take ownership
 					if ($type == 'reports') {
@@ -425,13 +432,17 @@ function reports_form_actions() {
 							[$_SESSION[SESS_USER_ID], $report_id]
 						);
 					} elseif ($type == 'reportit') {
-						api_reportit_take_ownership($report_id, $_SESSION[SESS_USER_ID]);
+						if (function_exists('api_reportit_take_ownership')) {
+							api_reportit_take_ownership($report_id, $_SESSION[SESS_USER_ID]);
+						}
 					}
 				} elseif (gnrv('drp_action') == REPORTS_DUPLICATE) { // duplicate
 					if ($type == 'reports') {
 						duplicate_reports($report_id, gnrv('name_format'));
 					} elseif ($type == 'reportit') {
-						api_reportit_duplicate_report($report_id);
+						if (function_exists('api_reportit_duplicate_report')) {
+							api_reportit_duplicate_report($report_id);
+						}
 					}
 				} elseif (gnrv('drp_action') == REPORTS_ENABLE) { // enable
 					if ($type == 'reports') {
@@ -441,7 +452,9 @@ function reports_form_actions() {
 							[$report_id]
 						);
 					} elseif ($type == 'reportit') {
-						api_reportit_enable_report($report_id);
+						if (function_exists('api_reportit_enable_report')) {
+							api_reportit_enable_report($report_id);
+						}
 					}
 				} elseif (gnrv('drp_action') == REPORTS_DISABLE) { // disable
 					if ($type == 'reports') {
@@ -451,13 +464,17 @@ function reports_form_actions() {
 							[$report_id]
 						);
 					} elseif ($type == 'reportit') {
-						api_reportit_disable_report($report_id);
+						if (function_exists('api_reportit_disable_report')) {
+							api_reportit_disable_report($report_id);
+						}
 					}
 				} elseif (gnrv('drp_action') == REPORTS_SEND_NOW) { // send now
 					if ($type == 'reports') {
 						reports_send($report_id);
 					} elseif ($type == 'reportit') {
-						api_reportit_run_report($report_id);
+						if (function_exists('api_reportit_run_report')) {
+							api_reportit_run_report($report_id);
+						}
 					}
 				}
 			}
@@ -891,11 +908,14 @@ function reports_item_validate() {
  *
  * @return void
  */
-function reports_item_edit() {
+function reports_item_edit() : void {
 	global $item_types, $graph_timespans, $alignment;
 
-	$trees           = [];
-	$branches        = [];
+	$trees    = [];
+	$branches = [];
+
+	$graph_template_description = '';
+	$host_description           = '';
 
 	$report_item                      = [];
 	$report_item['item_type']         = REPORTS_ITEM_GRAPH;
@@ -1188,7 +1208,7 @@ function reports_item_edit() {
 	draw_edit_form(
 		[
 			'config' => ['no_form_tag' => true],
-			'fields' => inject_form_variables($fields_reports_item_edit, ($report_item ?? []))
+			'fields' => inject_form_variables($fields_reports_item_edit, $report_item)
 		]
 	);
 
@@ -1408,7 +1428,7 @@ function reports_item_edit() {
  *
  * @return void
  */
-function reports_tabs($report_id) {
+function reports_tabs(int $report_id) : void {
 	if ($report_id > 0) {
 		$tabs = ['details' => __('Details'), 'items' => __('Items'), 'preview' => __('View Reports')];
 	} else {
@@ -1449,7 +1469,7 @@ function reports_tabs($report_id) {
  *
  * @return void
  */
-function reports_edit() {
+function reports_edit() : void {
 	global $attach_types, $alignment, $reports_interval, $fields_reports_edit;
 
 	// ================= input validation and session storage =================
@@ -1627,7 +1647,7 @@ function reports_edit() {
  *
  * @return void
  */
-function display_reports_items($report_id) {
+function display_reports_items(int $report_id) : void {
 	global $graph_timespans;
 	global $item_types, $alignment;
 
@@ -1784,7 +1804,7 @@ function display_reports_items($report_id) {
 
 			if ($i == 1) {
 				$form_data .= '<td class="right nowrap"><a class="pic remover ti ti-caret-down-filled moveArrow" style="padding:3px" title="' . __esc('Move Down') . '" href="' . htmle(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<span style="padding:5ps" class="moveArrowNone"></span>';
-			} elseif ($i > 1 && $i < cacti_sizeof($items)) {
+			} elseif ($i < cacti_sizeof($items)) {
 				$form_data .= '<td class="right nowrap"><a class="pic remover ti ti-caret-down-filled moveArrow" style="padding:3px" title="' . __esc('Move Down') . '" href="' . htmle(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<a class="remover ti ti-caret-up-filled moveArrow" style="padding:3px" title="' . __esc('Move Up') . '" href="' . htmle(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>';
 			} else {
 				$form_data .= '<td class="right nowrap"><span style="padding:3px" class="moveArrowNone"></span>' . '<a class="remover ti ti-caret-up-filled moveArrow" style="padding:3px" title="' . __esc('Move Up') . '" href="' . htmle(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>';
@@ -1806,7 +1826,7 @@ function display_reports_items($report_id) {
  *
  * @return string The path to the appropriate reports page.
  */
-function get_reports_page() {
+function get_reports_page() : string {
 	return 'reports.php';
 }
 
@@ -1815,11 +1835,11 @@ function get_reports_page() {
  *
  * @return bool Returns true if the user has reports administrative privileges, false otherwise.
  */
-function is_reports_admin() {
+function is_reports_admin() : bool {
 	return (is_realm_allowed(21) ? true : false);
 }
 
-function create_preview_filter() {
+function create_preview_filter() : array {
 	$id    = gfrv('id');
 	$rdate = gfrv('rdate');
 
@@ -1902,7 +1922,7 @@ function create_preview_filter() {
 	];
 }
 
-function draw_preview_filter($render = false, $header_label = '') {
+function draw_preview_filter(bool $render = false, string $header_label = '') : void {
 	$filters = create_preview_filter();
 
 	$report_id  = grv('id');
@@ -1922,7 +1942,7 @@ function draw_preview_filter($render = false, $header_label = '') {
 	}
 }
 
-function create_reports_filter() {
+function create_reports_filter() : array {
 	global $item_rows;
 
 	$any  = ['-1' => __('Any')];
@@ -2006,7 +2026,7 @@ function create_reports_filter() {
 	];
 }
 
-function draw_reports_filter($render = false) {
+function draw_reports_filter(bool $render = false) : void {
 	$filters = create_reports_filter();
 
 	$header = __('Reports [%s]', (is_reports_admin() ? __('Administrator Level') : __('User Level')));

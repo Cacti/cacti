@@ -51,15 +51,15 @@ function process_tree_settings() : void {
 /**
  * Generates a dropdown tree structure for a given tree ID.
  *
- * @param int $tree_id The ID of the tree to generate the dropdown for.
- * @param int $parent The parent ID to start building the tree from. Default is 0 (root).
+ * @param int    $tree_id The ID of the tree to generate the dropdown for.
+ * @param mixed  $parent The parent ID to start building the tree from. Default is 0 (root).
  * @param string $form_name The name attribute for the <select> element.
  * @param string $selected_tree_item_id The ID of the tree item to be selected by default.
- * @param int $tier The current tier level in the tree. Default is 0.
+ * @param int    $tier The current tier level in the tree. Default is 0.
  *
  * @return void
  */
-function grow_dropdown_tree(int $tree_id, int $parent = 0, string $form_name = '', string $selected_tree_item_id = '', int $tier = 0) : void {
+function grow_dropdown_tree(int $tree_id, mixed $parent = 0, string $form_name = '', string $selected_tree_item_id = '', int $tier = 0) : void {
 	$tier++;
 
 	$branches = db_fetch_assoc_prepared('SELECT gti.id, gti.title, parent

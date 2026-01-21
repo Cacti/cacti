@@ -566,7 +566,7 @@ function package_file_get_contents(string $package_location, string $package_fil
 	} elseif (isset($_SESSION['sess_import_package'])) {
 		$xmlfile = sys_get_temp_dir() . '/package_import_' . rand();
 
-		$binary_signature = ''
+		$binary_signature = '';
 
 		file_put_contents($xmlfile, $_SESSION['sess_import_package']);
 
@@ -612,7 +612,7 @@ function package_file_get_contents(string $package_location, string $package_fil
 				mkdir($tmp_dir);
 			}
 
-			$binary_signature = ''
+			$binary_signature = '';
 
 			$xmlfile = $tmp_dir . '/' . $package_file;
 

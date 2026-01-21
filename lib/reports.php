@@ -771,7 +771,7 @@ function reports_tree_has_graphs(int $tree_id,int  $branch_id,int  $effective_us
 	return cacti_sizeof($graphs);
 }
 
-function reports_generate_history_html(int $history_id, int $output = REPORTS_OUTPUT_STDOUT) : void {
+function reports_generate_history_html(int $history_id, int $output = REPORTS_OUTPUT_STDOUT) : string {
 	$data   = db_fetch_row_prepared('SELECT *
 		FROM reports_log
 		WHERE id = ?',
@@ -831,8 +831,10 @@ function reports_generate_history_html(int $history_id, int $output = REPORTS_OU
 				'<img class="graph" src="data:image/png;base64,' . $graph['attachment'] . '">', $report);
 		}
 
-		print $report;
+		return $report;
 	}
+
+	return '';
 }
 
 function reports_remove_history(int $history_id, int $report_id = 0) : void {
