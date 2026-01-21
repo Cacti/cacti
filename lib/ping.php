@@ -32,7 +32,7 @@ class Net_Ping {
 	public string $snmp_response;
 	public string $request;
 	public int $request_len;
-	public string $reply;
+	public mixed $reply;
 	public int $timeout;
 	public int $retries;
 	public int $precision;

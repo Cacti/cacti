@@ -117,10 +117,10 @@ function cacti_snmp_session(string $hostname, string $community, mixed $version,
 	return $session;
 }
 
-function cacti_snmp_get(string $hostname, string $community, string $oid, mixed $version, string $auth_user = '', string $auth_pass = '',
-	string $auth_proto = '', string $priv_pass = '', string $priv_proto = '', string $context = '',
+function cacti_snmp_get(string $hostname, mixed $community, string $oid, mixed $version, mixed $auth_user = '', mixed $auth_pass = '',
+	mixed $auth_proto = '', mixed $priv_pass = '', mixed $priv_proto = '', mixed $context = '',
 	mixed $port = 161, mixed $timeout_ms = 500, mixed $retries = 0, string $environ = 'SNMP',
-	string $engineid = '', int $value_output_format = SNMP_STRING_OUTPUT_GUESS) : string {
+	mixed $engineid = '', int $value_output_format = SNMP_STRING_OUTPUT_GUESS) : string {
 	global $snmp_error;
 
 	$max_oids   = 1;
@@ -1022,7 +1022,7 @@ function snmp_escape_string(string $string) : string {
 	return cacti_escapeshellarg($string);
 }
 
-function snmp_get_method(string $type = 'walk', mixed $version = 1, string $context = '', string $engineid = '',
+function snmp_get_method(string $type = 'walk', mixed $version = 1, mixed $context = '', mixed $engineid = '',
 	int $value_output_format = SNMP_STRING_OUTPUT_GUESS) : int {
 	if (!CACTI_PHP_SNMP) {
 		return SNMP_METHOD_BINARY;
