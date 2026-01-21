@@ -1102,7 +1102,7 @@ class Installer implements JsonSerializable {
 	 * @return string
 	 */
 	public function getAutomationOverride() : string {
-		return read_config_option('install_automation_override', true);
+		return (string) read_config_option('install_automation_override', true);
 	}
 
 	/**
