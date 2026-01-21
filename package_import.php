@@ -1489,11 +1489,13 @@ function package_import() : void {
 			'friendly_name' => __('Package Location'),
 			'description'   => __('Select the Location of the Packages that you wish to Import.'),
 			'method'        => 'drop_array',
-			'value'         => isrv('package_location') ? gnrv('package_location') : $default,
+			'value'         => isrv('package_location') ? gfrv('package_location') : $default,
 			'array'         => $repos,
 			'default'       => $default
 		]
 	];
+
+	$package_location = intval(grv('package_location'));
 
 	$default_profile = db_fetch_cell('SELECT id
 		FROM data_source_profiles
@@ -1506,7 +1508,7 @@ function package_import() : void {
 			LIMIT 1');
 	}
 
-	$form = get_import_form(gfrv('package_location'), $default_profile);
+	$form = get_import_form($package_location, $default_profile);
 
 	if (isrv('package_location') && gnrv('package_location') == 0) {
 		html_start_box(__('Package Import'), '100%', false, 3, 'center', '');
