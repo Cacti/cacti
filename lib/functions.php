@@ -7224,7 +7224,11 @@ function cacti_session_start($regenerate = false) {
  * @return array - The prior sessions data
  */
 function cacti_session_regenerate() {
-	$session_data = $_SESSION;
+	if (session_status() === PHP_SESSION_ACTIVE) {
+		$session_data = $_SESSION;
+	} else {
+		$session_data = array();
+	}
 
 	session_regenerate_id(true);
 
