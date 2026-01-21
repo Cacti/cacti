@@ -1,0 +1,33 @@
+<query>
+	<name>Net-SNMP - Sensors - Get Fan Sensors</name>
+	<description>Queries a list of fan sensors using Net-SNMP lmSensors</description>
+	<script_path>|path_cacti|/scripts/ss_netsnmp_lmsensors.php</script_path>
+	<script_function>ss_netsnmp_lmsensors</script_function>
+	<script_server>php</script_server>
+	<arg_prepend>|host_id| fan</arg_prepend>
+	<arg_index>index</arg_index>
+	<arg_query>query</arg_query>
+	<arg_get>get</arg_get>
+	<output_delimeter>:</output_delimeter>
+	<index_order>sensorDevice</index_order>
+	<index_order_type>numeric</index_order_type>
+	<index_title_format>|chosen_order_field|</index_title_format>
+	<fields>
+		<sensorDevice>
+			<name>Fan Sensor Device</name>
+			<direction>input</direction>
+			<query_name>sensorDevice</query_name>
+		</sensorDevice>
+		<sensorName>
+			<name>Fan Sensor Name</name>
+			<direction>input</direction>
+			<query_name>sensorName</query_name>
+		</sensorName>
+
+		<sensorReading>
+			<name>Fan Sensor Reading</name>
+			<direction>output</direction>
+			<query_name>sensorReading</query_name>
+		</sensorReading>
+	</fields>
+</query>
