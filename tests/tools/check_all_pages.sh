@@ -511,7 +511,7 @@ FILTERED_LOG="$(grep -v \
 	-e "IMPORT Importing XML Data for " \
 	-e "CMDPHP Not Already Set" \
 	-e "ieee.org/oui.txt" \
-	-e "import_oui_database" \	
+	-e "import_oui_database" \
 	-e "PCACHE NOTE" \
 	-e "LMSENSORS WARNING" \
 	-e "AUTOM8 \[PID\:" \
