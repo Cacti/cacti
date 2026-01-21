@@ -22,7 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
-function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphans = false, $replace_svalues = false, $import_hashes = []) {
+function import_xml_data(string &$xml_data, bool $import_as_new, int $profile_id,
+	bool $remove_orphans = false, bool $replace_svalues = false, array $import_hashes = []) : mixed {
 	global $hash_type_codes, $cacti_version_codes, $ignorable_hashes, $preview_only;
 	global $import_debug_info, $import_messages, $legacy_template;
 
@@ -133,15 +134,13 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 	$hash_cache_sql_union_selects = [];
 
 	foreach ($hash_types_to_db_info as $hash_type => $db_info) {
-		$db_id_field = (
-			$db_info['id_field'] ?? 'id'
-		);
 		$db_hash_field = (
 			$db_info['hash_field'] ?? 'hash'
 		);
+
 		$db_table = $db_info['table'];
 
-		$hash_cache_sql_union_selects[] = "SELECT '$hash_type' AS type, $db_id_field AS id, $db_hash_field AS hash
+		$hash_cache_sql_union_selects[] = "SELECT '$hash_type' AS type, id, $db_hash_field AS hash
 			FROM `$db_table`
 			WHERE $db_hash_field != ''";
 	}
@@ -312,7 +311,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 	return $info_array;
 }
 
-function is_cacti_public_key($public_key) {
+function is_cacti_public_key(string $public_key) : bool {
 	$public_key = trim($public_key);
 	$keys[]     = get_public_key_sha1();
 	$keys[]     = get_public_key_sha256();
@@ -326,23 +325,23 @@ function is_cacti_public_key($public_key) {
 	return false;
 }
 
-function get_public_key_sha1() {
+function get_public_key_sha1() : string {
 	return get_public_key();
 }
 
-function get_public_key_sha256() {
+function get_public_key_sha256() : string {
 	$public_key = "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApH0rQ6cEYMCeHh5b7zCw\n5Mxzrj5N6PNW4NJE6YvjpzR40SE/B+vGnwpQZB+bmAVPJcn7TgUf5+ZnPoLL7BNn\nfFhDOREzQYhcTGTxTFQ/AD/DdgzyALdWsV14mwkaxKchnY3XZY1Jg/tm+AFOBrEX\n3Oa4pkOf7+V2HXVhbMhWrsoW5/tI8AQBQtzadqxXDGMpwlwKb6QNlUPk1slQFn3e\nk9rpWgq/84OxsJs2MVFyo/Nh6ehu8cE7OYHOJ/1qQ+8w99ro+zllwLqStY3/Z3Bl\nQmGcllo3/LfnWc10aqdtpFOxWcJwzkQ1vvjzAuWYPmW/fNbft3+pRuS7sa2jj/oN\nvQIDAQAB\n-----END PUBLIC KEY-----";
 
 	return $public_key;
 }
 
-function get_public_key() {
+function get_public_key() : string {
 	$public_key = "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMbPpuQfwmg93oOGjdLKrAqwEPwvvNjC\nbk2YZiDglh8lQJxNQI9glG1Z/ptvqprFO3iSx9rTP4vzZ0Ek2+EMYTMCAwEAAQ==\n-----END PUBLIC KEY-----";
 
 	return $public_key;
 }
 
-function import_package_get_public_key($xmlfile) {
+function import_package_get_public_key(string $xmlfile) : string {
 	$data = import_package_get_details($xmlfile);
 
 	if (isset($data['public_key'])) {
@@ -352,7 +351,7 @@ function import_package_get_public_key($xmlfile) {
 	}
 }
 
-function import_package_get_name($xmlfile) {
+function import_package_get_name(string $xmlfile) : string {
 	$data = import_package_get_details($xmlfile);
 
 	if (isset($data['name'])) {
@@ -362,11 +361,11 @@ function import_package_get_name($xmlfile) {
 	}
 }
 
-function import_package_get_details($xmlfile) {
+function import_package_get_details(string $xmlfile) : array {
 	$filename = "compress.zlib://$xmlfile";
 
 	$return = [];
-	$data   = file_get_contents($filename, 'r');
+	$data   = file_get_contents($filename);
 	$xmlget = simplexml_load_string($data);
 	$pkgarr = xml_to_array($xmlget);
 	$return = $pkgarr['info'];
@@ -400,7 +399,7 @@ function import_package_get_details($xmlfile) {
 	return $return;
 }
 
-function import_validate_signature($xmlfile) {
+function import_validate_signature(string $xmlfile) : mixed {
 	// Cacti public key first
 	$cacti_key1   = get_public_key_sha1();
 	$cacti_key2   = get_public_key_sha256();
@@ -434,7 +433,7 @@ function import_validate_signature($xmlfile) {
 	}
 }
 
-function import_get_package_info($xmlfile) {
+function import_get_package_info(string $xmlfile) : mixed {
 	if (!file_exists($xmlfile)) {
 		return false;
 	}
@@ -491,7 +490,7 @@ function import_get_package_info($xmlfile) {
 	return false;
 }
 
-function import_read_package_data($xmlfile, &$public_key, $preview = false) {
+function import_read_package_data(string $xmlfile, string &$public_key, bool $preview = false) : mixed {
 	$public_key = import_package_get_public_key($xmlfile);
 
 	$filename = "compress.zlib://$xmlfile";
@@ -504,6 +503,8 @@ function import_read_package_data($xmlfile, &$public_key, $preview = false) {
 
 	$f   = fopen($filename, 'r');
 	$xml = '';
+
+	$binary_signature = '';
 
 	if (is_resource($f)) {
 		while (!feof($f)) {
@@ -566,33 +567,37 @@ function import_read_package_data($xmlfile, &$public_key, $preview = false) {
 
 /**
  * import_package - This function will selectively import some or all of the
- *   components of a Cacti, Provide a preview of the import, or provide information
- *   about the Package depending upon the settings provided below.
+ * components of a Cacti, Provide a preview of the import, or provide information
+ * about the Package depending upon the settings provided below.
  *
  * This function can also read from the $_REQUEST environment certain overrides for
  * Graph Size, and Image format when importing through the GUI.
  *
- * @param  (string)      $xmlfile - The XML file to process
- * @param  (int)         $profile_id - The Data Source Profile to use for the packages
- * @param  (bool)        $remove_orphans - Boolean true to remove Graph Template orphans after import
- * @param  (bool)        $replace_svalues - Boolean that if true, all suggested values for Graph Templates
- *                       and Data Templates will be replaced with the values in the
- *                       package.
- * @param  (bool)        $preview - If true, only generate a preview of what will be imported
- *                       and the corresponding changes.
- * @param  (bool)        $info_only - Return only the information about the package, not details
- * @param  (bool)        $limitex - Limit the execution time to 50 seconds to process for larger
- *                       packages.
- * @param  (array)       $import_hashes - The hashes to import from the package
- * @param  (array)       $import_files - The XML resource files and script files to import from the package
+ * @param string $xmlfile - The XML file to process
+ * @param int    $profile_id - The Data Source Profile to use for the packages
+ * @param bool   $remove_orphans - Boolean true to remove Graph Template orphans after import
+ * @param bool   $replace_svalues - Boolean that if true, all suggested values for Graph Templates
+ *               and Data Templates will be replaced with the values in the
+ *               package.
+ * @param bool   $preview - If true, only generate a preview of what will be imported
+ *               and the corresponding changes.
+ * @param bool   $info_only - Return only the information about the package, not details
+ * @param bool   $limitex - Limit the execution time to 50 seconds to process for larger
+ *               packages.
+ * @param array  $import_hashes - The hashes to import from the package
+ * @param array  $import_files - The XML resource files and script files to import from the package
  *
+ * @return mixed - The results of the import package
  */
-function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $replace_svalues = false,
-	$preview = false, $info_only = false, $limitex = true, $import_hashes = [], $import_files = []) {
+function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orphans = false,
+	bool $replace_svalues = false, bool $preview = false, bool $info_only = false, bool $limitex = true,
+	array $import_hashes = [], array $import_files = []) : mixed {
 	global $preview_only;
 
 	$preview_only = $preview;
 	$public_key   = '';
+	$debug_data   = [];
+	$existing     = '';
 
 	// set new timeout and memory settings
 	if ($limitex) {
@@ -729,7 +734,8 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 		}
 	}
 
-	/* update template data with the information from the package if it's not already set
+	/**
+	 * update template data with the information from the package if it's not already set
 	 * through import.  This is mainly for legacy templates
 	 */
 	if (!$preview) {
@@ -826,7 +832,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 	return [$debug_data, $filestatus];
 }
 
-function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, $remove_orphans = false) {
+function xml_to_graph_template(string $hash, array &$xml_array, array &$hash_cache, string $hash_version, bool $remove_orphans = false) : mixed {
 	global $struct_graph, $struct_graph_item, $fields_graph_template_input_edit, $cacti_version_codes;
 	global $preview_only, $graph_item_types, $import_debug_info;
 
@@ -874,15 +880,18 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 	$status += compare_data($save, $previous_data, 'graph_templates');
 
 	if (!$preview_only) {
-		$graph_template_id                   = sql_save($save, 'graph_templates');
+		$graph_template_id = sql_save($save, 'graph_templates');
+
 		$hash_cache['graph_template'][$hash] = $graph_template_id;
 	} else {
-		$graph_template_id                   = $_graph_template_id;
+		$graph_template_id = $_graph_template_id;
+
 		$hash_cache['graph_template'][$hash] = $graph_template_id;
 	}
 
 	// import into: graph_templates_graph
-	unset($save);
+	$save = [];
+
 	$save['id'] = (empty($_graph_template_id) ? '0' : db_fetch_cell_prepared('SELECT gtg.id
 		FROM graph_templates AS gt
 		INNER JOIN graph_templates_graph AS gtg
@@ -979,7 +988,8 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 				return false;
 			}
 
-			unset($save);
+			$save = [];
+
 			$_graph_template_item_id = db_fetch_cell_prepared('SELECT id
 				FROM graph_templates_item
 				WHERE hash = ?
@@ -1080,7 +1090,8 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 				return false;
 			}
 
-			unset($save);
+			$save = [];
+
 			$_graph_template_input_id = db_fetch_cell_prepared('SELECT id
 				FROM graph_template_input
 				WHERE hash = ?
@@ -1185,7 +1196,7 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 	return $hash_cache;
 }
 
-function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, $profile_id) {
+function xml_to_data_template(string $hash, array &$xml_array, array &$hash_cache, bool $import_as_new, int $profile_id) : mixed {
 	global $struct_data_source, $struct_data_source_item, $import_template_id, $preview_only;
 	global $ignorable_hashes, $import_debug_info, $legacy_template;
 
@@ -1225,7 +1236,8 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 	}
 
 	// import into: data_template_data
-	unset($save);
+	$save = [];
+
 	$save['id'] = (empty($_data_template_id) ? '0' : db_fetch_cell_prepared('SELECT dtd.id
 		FROM data_template AS dt
 		INNER JOIN data_template_data AS dtd
@@ -1303,7 +1315,8 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 				return false;
 			}
 
-			unset($save);
+			$save = [];
+
 			$_data_template_rrd_id = db_fetch_cell_prepared('SELECT id
 				FROM data_template_rrd
 				WHERE hash = ?
@@ -1403,7 +1416,8 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 					continue;
 				}
 
-				unset($save);
+				$save = [];
+
 				$save['data_template_data_id'] = $data_template_data_id;
 				$save['data_input_field_id']   = resolve_hash_to_id($item_array['data_input_field_id'], $hash_cache, 'data_input_data');
 				$save['data_template_id']      = $data_template_id;
@@ -1430,7 +1444,7 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 				if (!empty($save['data_input_field_id'])) {
 					sql_save($save, 'data_input_data', ['data_template_data_id', 'data_input_field_id'], false);
 				} else {
-					cacti_log('Import Error: Failed to insert into data_input_data table', false, POLLER_VERBOSITY_HIGH);
+					cacti_log('Import Error: Failed to insert into data_input_data table', false, 'IMPORT', POLLER_VERBOSITY_HIGH);
 				}
 			}
 		}
@@ -1461,7 +1475,7 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 	return $hash_cache;
 }
 
-function xml_to_data_query($hash, &$xml_array, &$hash_cache, &$files, $replace_svalues = false) {
+function xml_to_data_query(string $hash, array &$xml_array, array &$hash_cache, array &$files, bool $replace_svalues = false) : mixed {
 	global $fields_data_query_edit, $fields_data_query_item_edit, $preview_only, $import_debug_info;
 
 	// track changes
@@ -1535,7 +1549,8 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache, &$files, $replace_s
 				return false;
 			}
 
-			unset($save);
+			$save = [];
+
 			$_data_query_graph_id = db_fetch_cell_prepared('SELECT id
 				FROM snmp_query_graph
 				WHERE hash = ?
@@ -1578,7 +1593,8 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache, &$files, $replace_s
 				// import into: snmp_query_graph_rrd
 				if (is_array($item_array['rrd'])) {
 					foreach ($item_array['rrd'] as $sub_item_array) {
-						unset($save);
+						$save = [];
+
 						$save['snmp_query_graph_id']  = $data_query_graph_id;
 						$save['data_template_id']     = resolve_hash_to_id($sub_item_array['data_template_id'], $hash_cache, 'snmp_query_graph_rrd');
 						$save['data_template_rrd_id'] = resolve_hash_to_id($sub_item_array['data_template_rrd_id'], $hash_cache, 'snmp_query_graph_rrd');
@@ -1587,7 +1603,7 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache, &$files, $replace_s
 						if (!empty($save['data_template_id']) && !empty($save['data_template_rrd_id'])) {
 							sql_save($save, 'snmp_query_graph_rrd', ['snmp_query_graph_id', 'data_template_id', 'data_template_rrd_id'], false);
 						} else {
-							cacti_log('Import Error: inserting into snmp_query_graph_rrd', false, POLLER_VERBOSITY_HIGH);
+							cacti_log('Import Error: inserting into snmp_query_graph_rrd', false, 'IMPORT', POLLER_VERBOSITY_HIGH);
 						}
 					}
 				}
@@ -1619,7 +1635,8 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache, &$files, $replace_s
 						return false;
 					}
 
-					unset($save);
+					$save = [];
+
 					$_data_query_graph_sv_id = db_fetch_cell_prepared('SELECT id
 						FROM snmp_query_graph_sv
 						WHERE hash = ?
@@ -1677,7 +1694,8 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache, &$files, $replace_s
 						return false;
 					}
 
-					unset($save);
+					$save = [];
+
 					$_data_query_graph_rrd_sv_id = db_fetch_cell_prepared('SELECT id
 						FROM snmp_query_graph_rrd_sv
 						WHERE hash = ?
@@ -1707,11 +1725,11 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache, &$files, $replace_s
 					if (!$preview_only) {
 						if (!empty($save['data_template_id'])) {
 							$data_query_graph_rrd_sv_id = sql_save($save, 'snmp_query_graph_rrd_sv');
-						} else {
-							cacti_log('Import Error: Error Importing into snmp_query_graph_rrd_sv table', false, POLLER_VERBOSITY_HIGH);
-						}
 
-						$hash_cache['data_query_sv_data_source'][$parsed_hash['hash']] = $data_query_graph_rrd_sv_id;
+							$hash_cache['data_query_sv_data_source'][$parsed_hash['hash']] = $data_query_graph_rrd_sv_id;
+						} else {
+							cacti_log('Import Error: Error Importing into snmp_query_graph_rrd_sv table', false, 'IMPORT', POLLER_VERBOSITY_HIGH);
+						}
 					} else {
 						$hash_cache['data_query_sv_data_source'][$parsed_hash['hash']] = $_data_query_graph_rrd_sv_id;
 					}
@@ -1729,7 +1747,7 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache, &$files, $replace_s
 	return $hash_cache;
 }
 
-function xml_to_gprint_preset($hash, &$xml_array, &$hash_cache) {
+function xml_to_gprint_preset(string $hash, array &$xml_array, array &$hash_cache) : mixed {
 	global $fields_grprint_presets_edit, $preview_only, $import_debug_info;
 
 	// track changes
@@ -1780,7 +1798,7 @@ function xml_to_gprint_preset($hash, &$xml_array, &$hash_cache) {
 	return $hash_cache;
 }
 
-function xml_to_data_source_profile($hash, &$xml_array, &$hash_cache, $import_as_new, $profile_id) {
+function xml_to_data_source_profile(string $hash, array &$xml_array, array &$hash_cache, bool $import_as_new, int $profile_id) : mixed {
 	global $fields_profile_edit, $fields_profile_rra_edit, $import_template_id, $preview_only, $import_debug_info;
 
 	if ($import_as_new == true) {
@@ -1824,9 +1842,9 @@ function xml_to_data_source_profile($hash, &$xml_array, &$hash_cache, $import_as
 			// import into: data_source_profiles_rra
 			if (is_array($xml_array['items'])) {
 				foreach ($xml_array['items'] as $item_name => $item_array) {
-					unset($save);
+					$save       = [];
+					$save['id'] = 0;
 
-					$save['id']                     = 0;
 					$save['data_source_profile_id'] = $dsp_id;
 
 					foreach ($fields_profile_rra_edit as $field_name => $field_array) {
@@ -1855,7 +1873,7 @@ function xml_to_data_source_profile($hash, &$xml_array, &$hash_cache, $import_as
 	}
 }
 
-function xml_to_host_template($hash, &$xml_array, &$hash_cache, &$host_template_data) {
+function xml_to_host_template(string $hash, array &$xml_array, array &$hash_cache, array &$host_template_data) : mixed {
 	global $fields_host_template_edit, $preview_only, $import_debug_info;
 
 	// track changes
@@ -2008,7 +2026,7 @@ function xml_to_host_template($hash, &$xml_array, &$hash_cache, &$host_template_
 	return $hash_cache;
 }
 
-function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
+function xml_to_cdef(string $hash, array &$xml_array, array &$hash_cache) : mixed {
 	global $fields_cdef_edit, $preview_only, $import_debug_info;
 
 	// track changes
@@ -2073,7 +2091,8 @@ function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 				return false;
 			}
 
-			unset($save);
+			$save = [];
+
 			$_cdef_item_id = db_fetch_cell_prepared('SELECT id
 				FROM cdef_items
 				WHERE hash= ?
@@ -2156,7 +2175,7 @@ function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 	return $hash_cache;
 }
 
-function xml_to_vdef($hash, &$xml_array, &$hash_cache) {
+function xml_to_vdef(string $hash, array &$xml_array, array &$hash_cache) : mixed {
 	global $preview_only, $import_debug_info;
 
 	include_once(CACTI_PATH_LIBRARY . '/vdef.php');
@@ -2215,7 +2234,8 @@ function xml_to_vdef($hash, &$xml_array, &$hash_cache) {
 				return false;
 			}
 
-			unset($save);
+			$save = [];
+
 			$_vdef_item_id = db_fetch_cell_prepared('SELECT id
 				FROM vdef_items
 				WHERE hash = ?
@@ -2266,7 +2286,7 @@ function xml_to_vdef($hash, &$xml_array, &$hash_cache) {
 	return $hash_cache;
 }
 
-function xml_detect_ignorable_hash_cache($hash, &$xml_array) {
+function xml_detect_ignorable_hash_cache(string $hash, array &$xml_array) : bool {
 	global $ignorable_hashes;
 
 	$found = false;
@@ -2292,7 +2312,8 @@ function xml_detect_ignorable_hash_cache($hash, &$xml_array) {
 
 				if (array_search($hash, $valid_snmp_port_hashes, true) === false) {
 					$ignorable_hashes[$input_hash] = $hash;
-					$found                         = true;
+
+					$found = true;
 				}
 			}
 		}
@@ -2301,7 +2322,7 @@ function xml_detect_ignorable_hash_cache($hash, &$xml_array) {
 	return $found;
 }
 
-function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
+function xml_to_data_input_method(string $hash, array &$xml_array, array &$hash_cache) : mixed {
 	global $fields_data_input_edit, $fields_data_input_field_edit, $fields_data_input_field_edit_1;
 	global $preview_only, $import_debug_info, $ignorable_hashes;
 
@@ -2325,6 +2346,8 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 	} else {
 		$previous_data = [];
 	}
+
+	$save = [];
 
 	$save['id']   = (empty($_data_input_id) ? '0' : $_data_input_id);
 	$save['hash'] = $hash;
@@ -2388,7 +2411,8 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 				continue;
 			}
 
-			unset($save);
+			$save = [];
+
 			$_data_input_field_id = db_fetch_cell_prepared('SELECT id
 				FROM data_input_fields
 				WHERE hash= ?
@@ -2455,7 +2479,7 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 	return $hash_cache;
 }
 
-function compare_data($save, $previous_data, $table) {
+function compare_data(array $save, array $previous_data, string $table) : int {
 	global $preview_only, $import_debug_info;
 
 	if ($preview_only) {
@@ -2561,7 +2585,7 @@ function compare_data($save, $previous_data, $table) {
 	}
 }
 
-function hash_to_friendly_name($hash, $display_type_name) {
+function hash_to_friendly_name(string $hash, bool $display_type_name) : string {
 	global $hash_type_names;
 
 	// parse information from the hash
@@ -2581,85 +2605,61 @@ function hash_to_friendly_name($hash, $display_type_name) {
 	switch ($parsed_hash['type']) {
 		case 'graph_template':
 			return $prepend . htmle(db_fetch_cell_prepared('SELECT name
-			FROM graph_templates
-			WHERE hash = ?',
+				FROM graph_templates
+				WHERE hash = ?',
 				[$parsed_hash['hash']]));
-
-			break;
 		case 'data_template':
 			return $prepend . htmle(db_fetch_cell_prepared('SELECT name
-			FROM data_template
-			WHERE hash = ?',
+				FROM data_template
+				WHERE hash = ?',
 				[$parsed_hash['hash']]));
-
-			break;
 		case 'data_template_item':
 			return $prepend . htmle(db_fetch_cell_prepared('SELECT data_source_name
-			FROM data_template_rrd
-			WHERE hash = ?',
+				FROM data_template_rrd
+				WHERE hash = ?',
 				[$parsed_hash['hash']]));
-
-			break;
 		case 'host_template':
 			return $prepend . htmle(db_fetch_cell_prepared('SELECT name
-			FROM host_template
-			WHERE hash = ?',
+				FROM host_template
+				WHERE hash = ?',
 				[$parsed_hash['hash']]));
-
-			break;
 		case 'data_input_method':
 			return $prepend . htmle(db_fetch_cell_prepared('SELECT name
-			FROM data_input
-			WHERE hash = ?',
+				FROM data_input
+				WHERE hash = ?',
 				[$parsed_hash['hash']]));
-
-			break;
 		case 'data_input_field':
 			return $prepend . htmle(db_fetch_cell_prepared('SELECT name
-			FROM data_input_fields
-			WHERE hash = ?',
+				FROM data_input_fields
+				WHERE hash = ?',
 				[$parsed_hash['hash']]));
-
-			break;
 		case 'data_query':
 			return $prepend . htmle(db_fetch_cell_prepared('SELECT name
-			FROM snmp_query
-			WHERE hash = ?',
+				FROM snmp_query
+				WHERE hash = ?',
 				[$parsed_hash['hash']]));
-
-			break;
 		case 'gprint_preset':
 			return $prepend . htmle(db_fetch_cell_prepared('SELECT name
-			FROM graph_templates_gprint
-			WHERE hash = ?',
+				FROM graph_templates_gprint
+				WHERE hash = ?',
 				[$parsed_hash['hash']]));
-
-			break;
 		case 'cdef':
 			return $prepend . htmle(db_fetch_cell_prepared('SELECT name
-			FROM cdef
-			WHERE hash = ?',
+				FROM cdef
+				WHERE hash = ?',
 				[$parsed_hash['hash']]));
-
-			break;
 		case 'vdef':
 			return $prepend . htmle(db_fetch_cell_prepared('SELECT name
-			FROM vdef
-			WHERE hash = ?',
+				FROM vdef
+				WHERE hash = ?',
 				[$parsed_hash['hash']]));
-
-			break;
 		case 'data_source_profile':
 			return $prepend . htmle(db_fetch_cell_prepared('SELECT name
-			FROM data_source_profile
-			WHERE hash = ?',
+				FROM data_source_profile
+				WHERE hash = ?',
 				[$parsed_hash['hash']]));
-
-			break;
 		case 'round_robin_archive':
 			return $prepend;
-
-			break;
 		default:
 			$param            = [];
 			$param['hash']    = $parsed_hash['hash'];
@@ -2672,7 +2672,7 @@ function hash_to_friendly_name($hash, $display_type_name) {
 	}
 }
 
-function resolve_hash_to_id($hash, &$hash_cache_array, $table) {
+function resolve_hash_to_id(string $hash, array &$hash_cache_array, string $table) : mixed {
 	global $import_debug_info;
 
 	// parse information from the hash
@@ -2713,8 +2713,10 @@ function resolve_hash_to_id($hash, &$hash_cache_array, $table) {
 	}
 }
 
-function parse_xml_hash($hash) {
+function parse_xml_hash(string $hash) : mixed {
 	global $legacy_template, $import_messages;
+
+	$parsed_hash = [];
 
 	if (preg_match('/hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})/', $hash, $matches)) {
 		$parsed_hash['type']    = check_hash_type($matches[1]);
@@ -2766,7 +2768,7 @@ function parse_xml_hash($hash) {
 	return $parsed_hash;
 }
 
-function check_hash_type($hash_type) {
+function check_hash_type(string $hash_type) : mixed {
 	global $hash_type_codes, $import_messages;
 
 	// lets not mess up the pointer for other people
@@ -2787,8 +2789,10 @@ function check_hash_type($hash_type) {
 	return $current_type;
 }
 
-function check_hash_version($hash_version) {
+function check_hash_version(string $hash_version) : mixed {
 	global $cacti_version_codes, $import_messages;
+
+	$current_version = '';
 
 	foreach ($cacti_version_codes as $version => $code) {
 		if ($version == CACTI_VERSION) {
@@ -2826,7 +2830,7 @@ function check_hash_version($hash_version) {
 	return $current_version;
 }
 
-function get_version_index($string_version) {
+function get_version_index(string $string_version) : mixed {
 	global $cacti_version_codes;
 
 	$i = 0;
@@ -2843,7 +2847,7 @@ function get_version_index($string_version) {
 	return -1;
 }
 
-function xml_character_decode($text) {
+function xml_character_decode(string $text) : string {
 	if (function_exists('html_entity_decode')) {
 		return html_entity_decode($text, ENT_QUOTES, 'UTF-8');
 	} else {
@@ -2854,7 +2858,7 @@ function xml_character_decode($text) {
 	}
 }
 
-function import_display_results($import_debug_info, $filestatus, $web = false, $preview = false) {
+function import_display_results(array $import_debug_info, array $filestatus, bool $web = false, bool $preview = false) : void {
 	global $hash_type_names, $ignorable_hashes;
 
 	if (!cacti_sizeof($ignorable_hashes)) {
@@ -2950,8 +2954,9 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 				}
 
 				if (!$preview) {
-					$dep_text   = '';
-					$dep_errors = false;
+					$dep_text        = '';
+					$dep_errors      = false;
+					$dep_status_text = '';
 
 					if ((isset($vals['dep'])) && (cacti_sizeof($vals['dep']) > 0)) {
 						foreach ($vals['dep'] as $dep_hash => $dep_status) {
@@ -2997,7 +3002,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 	}
 }
 
-function xml_to_array($data) {
+function xml_to_array(mixed $data) : array {
 	if (is_object($data)) {
 		$data = get_object_vars($data);
 	}
@@ -3005,7 +3010,7 @@ function xml_to_array($data) {
 	return (is_array($data)) ? array_map(__FUNCTION__,$data) : $data;
 }
 
-function import_is_base64_encoded($string) {
+function import_is_base64_encoded(string $string) : bool {
 	if (preg_match('%^[a-zA-Z0-9/+]*={0,2}$%', $string)) {
 		return true;
 	} else {

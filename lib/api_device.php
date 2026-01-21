@@ -3019,11 +3019,11 @@ function api_device_template_download(string $type, array $ids): void {
 /**
  * Archives a device template for export.
  *
- * @param string $id The ID of the device template to archive for export.
+ * @param int $id  - The ID of the device template to archive for export.
  *
- * @return false|string The contents of the package file if successful, or false on failure.
+ * @return mixed - The contents of the package file if successful, or false on failure.
  */
-function api_device_template_archive_for_export(string $id): false|string {
+function api_device_template_archive_for_export(int $id): mixed {
 	global $export_errors, $debug, $package_file;
 
 	$export_okay = false;
@@ -3101,12 +3101,12 @@ function api_device_template_archive_for_export(string $id): false|string {
 /**
  * Archives a device template by exporting its data and saving it to the database.
  *
- * @param string $id The ID of the device template to archive.
- * @param string $archive_note A note to include with the archive.
+ * @param int    $id           - The ID of the device template to archive.
+ * @param string $archive_note - A note to include with the archive.
  *
  * @return bool Returns true if the device template was archived successfully, false otherwise.
  */
-function api_device_template_archive(string $id, string $archive_note): bool {
+function api_device_template_archive(int $id, string $archive_note): bool {
 	global $export_errors, $debug, $package_file;
 
 	$export_okay = false;

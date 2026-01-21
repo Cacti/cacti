@@ -56,7 +56,7 @@ switch (grv('action')) {
 		break;
 }
 
-function form_save() {
+function form_save() : void {
 	global $export_types, $export_errors, $debug, $package_file;
 
 	// ================= input validation =================
@@ -129,7 +129,7 @@ function form_save() {
 	}
 }
 
-function export() {
+function export() : void {
 	global $export_types, $device_classes, $graph_template_classes, $copyrights;
 
 	// 'graph_template' should be the default
@@ -194,7 +194,9 @@ function export() {
 
 	// Two methods, one with SQLite and one without
 
-	$data = [];
+	$data    = [];
+	$detail  = [];
+	$classes = [];
 
 	if (class_exists('SQLite3')) {
 		$data = get_packager_metadata($hash);

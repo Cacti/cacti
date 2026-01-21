@@ -27,7 +27,7 @@
  *
  * @return void
  */
-function process_tree_settings() {
+function process_tree_settings() : void {
 	global $current_user;
 
 	if (isrv('hide')) {
@@ -59,7 +59,7 @@ function process_tree_settings() {
  *
  * @return void
  */
-function grow_dropdown_tree($tree_id, $parent = 0, $form_name = '', $selected_tree_item_id = '', $tier = 0) {
+function grow_dropdown_tree(int $tree_id, int $parent = 0, string $form_name = '', string $selected_tree_item_id = '', int $tier = 0) : void {
 	$tier++;
 
 	$branches = db_fetch_assoc_prepared('SELECT gti.id, gti.title, parent
@@ -106,7 +106,7 @@ function grow_dropdown_tree($tree_id, $parent = 0, $form_name = '', $selected_tr
  *
  * @return void
  */
-function grow_dhtml_trees() {
+function grow_dhtml_trees() : void {
 	include_once(CACTI_PATH_LIBRARY . '/data_query.php');
 
 	draw_tree_filter();
@@ -407,7 +407,7 @@ function grow_dhtml_trees() {
  *
  * @return array An array of node identifiers representing the tree path.
  */
-function get_tree_path() {
+function get_tree_path() : array {
 	if (isrv('node')) {
 		$nodes  = [];
 		$nnodes = [];
@@ -512,7 +512,7 @@ function get_tree_path() {
  *
  * @return string
  */
-function get_device_leaf_class($host_id) {
+function get_device_leaf_class(int $host_id) : string {
 	$status = db_fetch_cell_prepared('SELECT status FROM host WHERE id = ?', [$host_id]);
 
 	switch($status) {
@@ -552,7 +552,7 @@ function get_device_leaf_class($host_id) {
  *
  * @return array An array of HTML strings representing the DHTML tree level.
  */
-function draw_dhtml_tree_level($tree_id, $parent = 0, $editing = false) {
+function draw_dhtml_tree_level(int $tree_id, int $parent = 0, bool $editing = false) : array {
 	$dhtml_tree = [];
 
 	$hierarchy = get_allowed_tree_level($tree_id, $parent, $editing);
@@ -589,7 +589,7 @@ function draw_dhtml_tree_level($tree_id, $parent = 0, $editing = false) {
  *
  * @return array The generated HTML structure as an array of strings.
  */
-function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
+function draw_dhtml_tree_level_graphing(int $tree_id, int $parent = 0) : array {
 	include_once(CACTI_PATH_LIBRARY . '/data_query.php');
 
 	$hierarchy = get_allowed_tree_content($tree_id, $parent);
@@ -635,7 +635,7 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
  *
  * @return array An array of strings representing the DHTML tree structure.
  */
-function create_site_branch($leaf) {
+function create_site_branch(array $leaf) : array {
 	global $unique_id;
 
 	$unique_id++;
@@ -708,7 +708,7 @@ function create_site_branch($leaf) {
  *
  * @return array An array containing the generated HTML for the leaf node.
  */
-function create_branch($leaf) {
+function create_branch(array $leaf) : array {
 	$dhtml_tree = [];
 
 	$children = db_fetch_cell_prepared('SELECT COUNT(*)
@@ -731,7 +731,7 @@ function create_branch($leaf) {
  *
  * @return array The DHTML tree structure with the host branch added.
  */
-function create_host_branch($leaf, $site_id = -1, $ht = -1) {
+function create_host_branch(array $leaf, int $site_id = -1, int $ht = -1) : array {
 	global $unique_id;
 
 	$unique_id++;
@@ -777,7 +777,7 @@ function create_host_branch($leaf, $site_id = -1, $ht = -1) {
  *
  * @return array An array of HTML list items representing the graph templates.
  */
-function create_graph_template_branch($leaf, $site_id = -1, $ht = -1) {
+function create_graph_template_branch(array $leaf, int $site_id = -1, int $ht = -1) : array {
 	global $unique_id;
 
 	$dhtml_tree = [];
@@ -811,7 +811,7 @@ function create_graph_template_branch($leaf, $site_id = -1, $ht = -1) {
  *
  * @return array The generated DHTML tree structure.
  */
-function create_data_query_branch($leaf, $site_id = -1, $ht = -1) {
+function create_data_query_branch(array $leaf, int $site_id = -1, int $ht = -1) : array {
 	global $unique_id;
 
 	$dhtml_tree = [];
@@ -927,7 +927,7 @@ function create_data_query_branch($leaf, $site_id = -1, $ht = -1) {
  * @return array An associative array where the keys are tree identifiers prefixed with 'tree:'
  *               and the values are set to true.
  */
-function create_dhtml_tree() {
+function create_dhtml_tree() : array {
 	$dhtml_tree = [];
 
 	$tree_list = get_allowed_trees();
@@ -941,7 +941,7 @@ function create_dhtml_tree() {
 	return $dhtml_tree;
 }
 
-function create_tree_filter() {
+function create_tree_filter() : array {
 	global $item_rows;
 
 	$all     = ['-1' => __('All')];
@@ -1132,7 +1132,7 @@ function create_tree_filter() {
 	return $filters;
 }
 
-function draw_tree_filter($render = false) {
+function draw_tree_filter(bool $render = false) : void {
 	$header = __('Graph Tree Filters') . (gnrv('rfilter') != '' ? ' [ ' . __('Filter') . " '" . htmlerv('rfilter') . "' " . __('Applied') . ' ]' : '');
 
 	// create the page filter
@@ -1201,12 +1201,10 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	$leaf_type = api_tree_get_item_type($leaf_id);
 
 	// get information for the headers
-	if (!empty($tree_id)) {
-		$tree_name = db_fetch_cell_prepared('SELECT name
-			FROM graph_tree
-			WHERE id = ?',
-			[$tree_id]);
-	}
+	$tree_name = db_fetch_cell_prepared('SELECT name
+		FROM graph_tree
+		WHERE id = ?',
+		[$tree_id]);
 
 	if (isset($leaf['title']) && $leaf['title'] != '') {
 		$leaf_names[] = $leaf['title'];
@@ -1280,15 +1278,15 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			[$host_group_data_array[1]]);
 
 		$host_group_data_name = '<i class="bold">' . __('Graph Template:') . '</i> ' . (empty($host_group_data_array[1]) ? __('Non Query Based') : htmle($name));
-		$data_query_id        = $host_group_data_array[1];
+		$data_query_id        = intval($host_group_data_array[1]);
 	} elseif ($host_group_data_array[0] == 'dqi') {
 		$name = db_fetch_cell_prepared('SELECT name
 			FROM snmp_query
 			WHERE id = ?',
 			[$host_group_data_array[1]]);
 
-		$host_group_data_name = '<i class="bold">' . __('Graph Template:') . '</i> ' . (empty($host_group_data_array[1]) ? __('Non Query Based') : htmle($name)) . '-> ' . (empty($host_group_data_array[2]) ? __('Template Based') : get_formatted_data_query_index($leaf['host_id'], $host_group_data_array[1], $host_group_data_array[2]));
-		$data_query_id        = $host_group_data_array[1];
+		$host_group_data_name = '<i class="bold">' . __('Graph Template:') . '</i> ' . (empty($host_group_data_array[1]) ? __('Non Query Based') : htmle($name)) . '-> ' . (empty($host_group_data_array[2]) ? __('Template Based') : get_formatted_data_query_index($leaf['host_id'], intval($host_group_data_array[1]), $host_group_data_array[2]));
+		$data_query_id        = intval($host_group_data_array[1]);
 		$data_query_index     = $host_group_data_array[2];
 	}
 
@@ -1576,14 +1574,14 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
  * Retrieves a list of graphs for a given host, graph template, and data query.
  *
  * @param int    $host_id             The ID of the host.
- * @param string $graph_template_id   The ID of the graph template.
+ * @param int    $graph_template_id   The ID of the graph template.
  * @param int    $data_query_id       The ID of the data query.
  * @param string $host_grouping_type  The type of host grouping (optional).
  * @param string $data_query_index    The index of the data query (optional).
  *
  * @return array An array of graphs for the specified host, graph template, and data query.
  */
-function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host_grouping_type = '', $data_query_index = '') {
+function get_host_graph_list(int $host_id, int $graph_template_id, int $data_query_id, string $host_grouping_type = '', string $data_query_index = '') : array {
 	$graph_list = [];
 	$sql_where  = '';
 
@@ -1763,8 +1761,9 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 
 					foreach ($graphs as $graph) {
 						$snmp_index_to_graph[$graph['snmp_index']][$graph['local_graph_id']] = $graph['title_cache'];
-						$graphs_height[$graph['local_graph_id']]                             = $graph['height'];
-						$graphs_width[$graph['local_graph_id']]                              = $graph['width'];
+
+						$graphs_height[$graph['local_graph_id']] = $graph['height'];
+						$graphs_width[$graph['local_graph_id']]  = $graph['width'];
 					}
 				}
 
@@ -1779,8 +1778,8 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 								'sort_field_value' => $sort_field_value,
 								'local_graph_id'   => $local_graph_id,
 								'title_cache'      => $graph_title,
-								'height'           => $graphs_height[$local_graph_id],
-								'width'            => $graphs_width[$local_graph_id]
+								'height'           => $graphs_height[$local_graph_id] ?? intval(read_config_option('default_graph_height')),
+								'width'            => $graphs_width[$local_graph_id]  ?? intval(read_config_option('default_graph_width'))
 							]);
 						}
 					}
@@ -1797,9 +1796,9 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
  * them as a JSON object to the page for filtering the tree list by matching
  * branch object.
  *
- * @return array An array of matching branch objects
+ * @return void
  */
-function get_matching_nodes() {
+function get_matching_nodes() : void {
 	$my_matches = [];
 	$match      = [];
 
@@ -1903,7 +1902,7 @@ function get_matching_nodes() {
 	}
 }
 
-function html_tree_init() {
+function html_tree_init() : void {
 	draw_tree_filter();
 
 	if (isrv('tree_id')) {
@@ -1922,7 +1921,7 @@ function html_tree_init() {
 	bottom_footer();
 }
 
-function html_tree_get_node() {
+function html_tree_get_node() : void {
 	$parent  = -1;
 	$tree_id = 0;
 
@@ -1973,7 +1972,7 @@ function html_tree_get_node() {
 	api_tree_get_main($tree_id, $parent);
 }
 
-function html_tree_get_content() {
+function html_tree_get_content() : void {
 	draw_tree_filter();
 
 	top_graph_header();

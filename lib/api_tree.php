@@ -228,13 +228,13 @@ function api_tree_release_lock(string $lockname): void {
  *   Data is not returned, it is printed to the screen.
  *
  * @param int    $tree_id  The ID of the tree where the node will be created.
- * @param int|string    $node_id  The ID of the node to be created.
+ * @param mixed  $node_id  The ID of the node to be created.
  * @param int    $position The position of the node within the tree.
  * @param string $title    The title of the node. Defaults to 'New Branch' if not provided.
  *
- * @return void
+ * @return bool
  */
-function api_tree_create_node(int $tree_id, int|string $node_id, int $position, string $title = ''): void {
+function api_tree_create_node(int $tree_id, mixed $node_id, int $position, string $title = ''): bool {
 	input_validate_input_number($tree_id, 'tree_id');
 	input_validate_input_number($position, 'position');
 
@@ -245,9 +245,9 @@ function api_tree_create_node(int $tree_id, int|string $node_id, int $position, 
 	$data  = api_tree_parse_node_data($node_id);
 
 	if ($data['leaf_id'] < 0) {
-		cacti_log("ERROR: Invalid BranchID: '" . ($data['leaf_id'] ?? '-') . "', Function create_node", false);
+		cacti_log("ERROR: Invalid BranchID: '" . $data['leaf_id'] . "', Function create_node", false);
 
-		return;
+		return false;
 	}
 
 	$i     = 0;
@@ -269,7 +269,8 @@ function api_tree_create_node(int $tree_id, int|string $node_id, int $position, 
 	// watch out for monkey business
 	input_validate_input_number($data['leaf_id'], 'leaf_id');
 
-	$save                       = [];
+	$save = [];
+
 	$save['parent']             = $data['leaf_id'];
 	$save['position']           = $position;
 	$save['graph_tree_id']      = $tree_id;
@@ -292,6 +293,8 @@ function api_tree_create_node(int $tree_id, int|string $node_id, int $position, 
 
 	header('Content-Type: application/json; charset=utf-8');
 	print json_encode(['id' => 'tbranch:' . $id, 'text' => $title]);
+
+	return true;
 }
 
 /**
@@ -301,9 +304,9 @@ function api_tree_create_node(int $tree_id, int|string $node_id, int $position, 
  * @param int $parent The parent ID of the branch to check.
  * @param string $title The title of the branch to check.
  *
- * @return int|false The ID of the branch if it exists, or false if it does not.
+ * @return mixed - The ID of the branch if it exists, or false if it does not.
  */
-function api_tree_branch_exists(int $tree_id, int $parent, string $title): int|false {
+function api_tree_branch_exists(int $tree_id, int $parent, string $title): mixed {
 	$id = db_fetch_cell_prepared('SELECT id
 		FROM graph_tree_items
 		WHERE graph_tree_id = ?
@@ -689,7 +692,7 @@ function api_tree_rename_node(int $tree_id, string|null $node_id = '', string $t
 		}
 	}
 
-	if (isset($leaf_id) && $leaf_id > 0) {
+	if ($leaf_id > 0) {
 		if ($host_id > 0 || $graph_id > 0 || $site_id > 0) {
 			// Ignore.  Need to customize context
 		} else {
@@ -707,12 +710,12 @@ function api_tree_rename_node(int $tree_id, string|null $node_id = '', string $t
 /**
  * Given the tree and the parent node information return tree elements
  *
- * @param string|null $tree_id The ID of the tree to retrieve. Can be null.
- * @param int $parent The parent node ID. Defaults to 0. If -1, it indicates the root node.
+ * @param mixed  $tree_id  - The ID of the tree to retrieve. Can be null.
+ * @param int    $parent   - The parent node ID. Defaults to 0. If -1, it indicates the root node.
  *
  * @return void
  */
-function api_tree_get_main(string|null $tree_id, int $parent = 0): void {
+function api_tree_get_main(mixed $tree_id, int $parent = 0): void {
 	$is_root = false;
 
 	if ($parent == -1) {
@@ -761,9 +764,9 @@ function api_tree_get_main(string|null $tree_id, int $parent = 0): void {
 /**
  * Given the tree and the node information return tree elements
  *
- * @param int  $tree_id The ID of the tree.
- * @param string $node_id The ID of the node. If the node ID is '#', the top-level hierarchy is fetched.
- * @param bool $editing Optional. Whether the tree is being edited. Default is false.
+ * @param int    $tree_id  - The ID of the tree.
+ * @param string $node_id  - The ID of the node. If the node ID is '#', the top-level hierarchy is fetched.
+ * @param bool   $editing  - Optional. Whether the tree is being edited. Default is false.
  *
  * @return void
  */

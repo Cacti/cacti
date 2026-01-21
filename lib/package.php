@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function get_export_hash($export_type, $export_item_id) {
+function get_export_hash(string $export_type, int $export_item_id) : mixed {
 	switch($export_type) {
 		case 'host_template':
 			if (!empty($export_item_id)) {
@@ -36,8 +36,6 @@ function get_export_hash($export_type, $export_item_id) {
 					ORDER BY name
 					LIMIT 1');
 			}
-
-			break;
 		case 'graph_template':
 			if (!empty($export_item_id)) {
 				return db_fetch_cell_prepared('SELECT hash
@@ -50,8 +48,6 @@ function get_export_hash($export_type, $export_item_id) {
 					ORDER BY name
 					LIMIT 1');
 			}
-
-			break;
 		case 'data_query':
 			if (!empty($export_item_id)) {
 				return db_fetch_cell_prepared('SELECT hash
@@ -64,16 +60,12 @@ function get_export_hash($export_type, $export_item_id) {
 					ORDER BY name
 					LIMIT 1');
 			}
-
-			break;
 		default:
 			return '';
-
-			break;
 	}
 }
 
-function save_packager_metadata($hash, $info) {
+function save_packager_metadata(string $hash, array $info) : bool {
 	if (class_exists('SQLite3')) {
 		$cnn = open_packager_metadata_table();
 
@@ -106,12 +98,12 @@ function save_packager_metadata($hash, $info) {
 	}
 }
 
-function check_template_dependencies($export_type, $template_id) {
+function check_template_dependencies(string $export_type, int $template_id) : void {
 	// FIX ME: This function is not used
 	// $error_message .= ($error_message != '' ? '<br>':'') . __('Script or Resource File \'%s\' does not exist.  Please repackage after locating and installing this file', $file['file']);
 }
 
-function check_get_author_info() {
+function check_get_author_info() : mixed {
 	if (file_exists(CACTI_PATH_PKI . '/package.info')) {
 		$info = parse_ini_file(CACTI_PATH_PKI . '/package.info', true);
 		$info = $info['info'];
@@ -138,7 +130,7 @@ function check_get_author_info() {
 	}
 }
 
-function open_packager_metadata_table() {
+function open_packager_metadata_table() : mixed {
 	$db_file   = CACTI_PATH_PKI . '/package.db';
 	$db_struct = 'CREATE TABLE package (
 		hash char(32) NOT NULL,
@@ -163,10 +155,8 @@ function open_packager_metadata_table() {
 
 		$cnn = new SQLite3($db_file);
 
-		if (is_object($cnn)) {
-			if ($create) {
-				$cnn->exec($db_struct);
-			}
+		if ($create) {
+			$cnn->exec($db_struct);
 		}
 
 		return $cnn;
@@ -177,7 +167,7 @@ function open_packager_metadata_table() {
 	return false;
 }
 
-function get_packager_metadata($hash) {
+function get_packager_metadata(string $hash) : bool {
 	$cnn = open_packager_metadata_table();
 
 	if (is_object($cnn)) {
@@ -199,7 +189,7 @@ function get_packager_metadata($hash) {
 	return false;
 }
 
-function get_package_contents($export_type, $export_item_id, $include_deps = true) {
+function get_package_contents(string $export_type, int $export_item_id, bool $include_deps = true) : string {
 	global $export_errors;
 
 	$types = [
@@ -275,7 +265,7 @@ function get_package_contents($export_type, $export_item_id, $include_deps = tru
 	$xml_data      = get_item_xml($export_type, $export_item_id, $include_deps);
 	$files         = [];
 
-	if (!$export_errors) {
+	if ($export_errors > 0) { // @phpstan-ignore-line - This values is set as a global in get_item_xml
 		$files = find_dependent_files($xml_data, true);
 
 		// search xml files for scripts
@@ -294,7 +284,7 @@ function get_package_contents($export_type, $export_item_id, $include_deps = tru
 	 * When exporting Graph Templates, you have to check for data queries
 	 * and process their XML files for additional scripts
 	 */
-	if ($export_type == 'graph_template' && cacti_sizeof($queries)) {
+	if ($export_type == 'graph_template' && cacti_sizeof($queries)) { // @phpstan-ignore-line - This values is set as a global in get_item_xml
 		foreach ($queries as $dq) {
 			$xml_data = get_item_xml('data_query', $dq['id'], $include_deps);
 
@@ -385,7 +375,7 @@ function get_package_contents($export_type, $export_item_id, $include_deps = tru
 	return $output;
 }
 
-function get_package_private_key() {
+function get_package_private_key() : mixed {
 	if (file_exists(CACTI_PATH_PKI . '/package.key')) {
 		return 'file://' . CACTI_PATH_PKI . '/package.key';
 	} else {
@@ -395,7 +385,7 @@ function get_package_private_key() {
 	}
 }
 
-function get_package_public_key() {
+function get_package_public_key() : mixed {
 	if (file_exists(CACTI_PATH_PKI . '/package.pem')) {
 		$key = openssl_pkey_get_public('file://' . CACTI_PATH_PKI . '/package.pem');
 
@@ -415,7 +405,7 @@ function get_package_public_key() {
 	}
 }
 
-function find_dependent_files($xml_data, $raise_message = false) {
+function find_dependent_files(string $xml_data, bool $raise_message = false) : array {
 	$files = [];
 	$data  = explode("\n", $xml_data);
 
@@ -444,7 +434,7 @@ function find_dependent_files($xml_data, $raise_message = false) {
 	return $files;
 }
 
-function process_paths($line, $files, $raise_message) {
+function process_paths(string $line, array $files, bool $raise_message) : array {
 	$paths = find_paths(trim($line));
 
 	if (cacti_sizeof($paths['paths'])) {
@@ -467,10 +457,13 @@ function process_paths($line, $files, $raise_message) {
  * xml          => location found in template xml <xml_path>
  * script       => location found in xml <input_string>
  * resource_xml => location found in resource xml file
- * @param mixed $input
- * @param mixed $type
+ *
+ * @param string $input
+ * @param string $type
+ *
+ * @return array
  */
-function find_paths($input, $type = 'cacti_xml') {
+function find_paths(string $input, string $type = 'cacti_xml') : array {
 	$excluded_paths = [
 		'/bin/',
 		'/usr/bin/',
@@ -542,7 +535,7 @@ function find_paths($input, $type = 'cacti_xml') {
 	return ['paths' => $paths, 'missing_paths' => $mpaths];
 }
 
-function package_template(&$template, &$info, &$files, &$debug) {
+function package_template(array &$template, array &$info, array &$files, string &$debug) : bool {
 	global $export_errors, $package_file;
 
 	$binary_signature = '';
@@ -752,7 +745,7 @@ function package_template(&$template, &$info, &$files, &$debug) {
 	return true;
 }
 
-function get_item_name($export_type, $export_id) {
+function get_item_name(string $export_type, int $export_id) : string {
 	$name = 'Unknown';
 
 	$name = match ($export_type) {

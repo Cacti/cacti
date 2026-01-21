@@ -614,13 +614,13 @@ function form_file($form_name, $form_size = 30, $form_accept = '') {
  * @param string $form_name - the name of this form element
  * @param string $form_previous_value - the current value of this form element
  * @param string $form_default_value - the value of this form element to use if there is no current value available
- * @param int $form_max_length - the maximum number of characters that can be entered into this textbox
- * @param int $form_size - the size (width) of the textbox
+ * @param mixed  $form_max_length - the maximum number of characters that can be entered into this textbox
+ * @param mixed  $form_size - the size (width) of the textbox
  * @param string $type - the type of textbox, either 'text' or 'password'
- * @param int $current_id - used to determine if a current value for this form element
- *   exists or not. a $current_id of '0' indicates that no current value exists,
- *   a non-zero value indicates that a current value does exist
- * @param mixed $data - array containing 'text' element for display and if 'error' element present, shows failure
+ * @param int    $current_id - used to determine if a current value for this form element
+ *               exists or not. a $current_id of '0' indicates that no current value exists,
+ *               a non-zero value indicates that a current value does exist
+ * @param mixed  $data - array containing 'text' element for display and if 'error' element present, shows failure
  *
  * @return void
  */
@@ -690,12 +690,12 @@ function form_filepath_box($form_name, $form_previous_value, $form_default_value
  * @param string $form_name - the name of this form element
  * @param string $form_previous_value - the current value of this form element
  * @param string $form_default_value - the value of this form element to use if there is no current value available
- * @param int $form_max_length - the maximum number of characters that can be entered into this textbox
- * @param int $form_size - the size (width) of the textbox
+ * @param mixed  $form_max_length - the maximum number of characters that can be entered into this textbox
+ * @param mixed  $form_size - the size (width) of the textbox
  * @param string $type - the type of textbox, either 'text' or 'password'
- * @param int $current_id - used to determine if a current value for this form element
- *   exists or not. a $current_id of '0' indicates that no current value exists,
- *   a non-zero value indicates that a current value does exist
+ * @param int    $current_id - used to determine if a current value for this form element
+ *               exists or not. a $current_id of '0' indicates that no current value exists,
+ *               a non-zero value indicates that a current value does exist
  *
  * @return void
  */
@@ -740,12 +740,12 @@ function form_dirpath_box($form_name, $form_previous_value, $form_default_value,
  * @param string $form_name - the name of this form element
  * @param string $form_previous_value - the current value of this form element
  * @param string $form_default_value - the value of this form element to use if there is no current value available
- * @param int $form_max_length - the maximum number of characters that can be entered into this textbox
- * @param int $form_size - the size (width) of the textbox
+ * @param mixed  $form_max_length - the maximum number of characters that can be entered into this textbox
+ * @param mixed  $form_size - the size (width) of the textbox
  * @param string $type - the type of textbox, either 'text' or 'password'
- * @param int $current_id - used to determine if a current value for this form element
- *   exists or not. a $current_id of '0' indicates that no current value exists,
- *   a non-zero value indicates that a current value does exist
+ * @param int    $current_id - used to determine if a current value for this form element
+ *               exists or not. a $current_id of '0' indicates that no current value exists,
+ *               a non-zero value indicates that a current value does exist
  * @param string $placeholder - place a placeholder over an empty field
  * @param string $title - use a title attribute when hovering over the textbox
  *
@@ -1356,14 +1356,14 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
  * @param string $form_name - the name of this form element
  * @param string $form_previous_value - the current value of this form element
  * @param string $form_default_value - the value of this form element to use if there is
- *   no current value available
- * @param int $form_max_length - the maximum number of characters that can be entered
- *   into this textbox
- * @param int $form_size - the size (width) of the textbox
+ *               no current value available
+ * @param mixed  $form_max_length - the maximum number of characters that can be entered
+ *               into this textbox
+ * @param mixed  $form_size - the size (width) of the textbox
  * @param string $type - the type of textbox, either 'text' or 'password'
- * @param int $current_id - used to determine if a current value for this form element
- *   exists or not. a $current_id of '0' indicates that no current value exists,
- *   a non-zero value indicates that a current value does exist
+ * @param int    $current_id - used to determine if a current value for this form element
+ *               exists or not. a $current_id of '0' indicates that no current value exists,
+ *               a non-zero value indicates that a current value does exist
  * @param string $placeholder The placeholder text for the input element. Default is an empty string.
  *
  * @return void

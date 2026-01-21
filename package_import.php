@@ -73,7 +73,7 @@ switch(grv('action')) {
 		break;
 }
 
-function check_tmp_dir() {
+function check_tmp_dir() : mixed {
 	if (is_tmp_writable()) {
 		return true;
 	} else {
@@ -97,7 +97,7 @@ function check_tmp_dir() {
 	}
 }
 
-function form_actions() {
+function form_actions() : void {
 	global $actions;
 
 	// ================= input validation =================
@@ -188,10 +188,12 @@ function form_actions() {
 						$tmp_dir = sys_get_temp_dir() . '/package' . $_SESSION[SESS_USER_ID];
 
 						if (!is_dir($tmp_dir)) {
-							if (!mkdir($tmp_dir, true)) {
+							if (!mkdir($tmp_dir, 0777, true)) {
 								raise_message('tmpdir_fail', __('Unable to create package temporary directory %s.', $tmp_dir), MESSAGE_LEVEL_ERROR);
 
-								return false;
+								header('Location: package_import.php?package_location=' . $package_location);
+
+								exit;
 							}
 						}
 
@@ -384,7 +386,7 @@ function form_actions() {
 			<input type='hidden' name='data_source_profile' value='" . grv('data_source_profile') . "'>
 			<input type='hidden' name='remove_orphans' value='" . (isrv('remove_orphans') ? 'on' : '') . "'>
 			<input type='hidden' name='replace_svalues' value='" . (isrv('replace_svalues') ? 'on' : '') . "'>
-			<input type='hidden' name='selected_items' value='" . (cacti_sizeof($pkg_array) ? serialize($pkg_array) : '') . "'>
+			<input type='hidden' name='selected_items' value='" . serialize($pkg_array) . "'>
 			<input type='hidden' name='selected_hashes' value='" . serialize($pkg_import_array) . "'>
 			<input type='hidden' name='selected_files' value='" . serialize($pkg_file_array) . "'>
 			<input type='hidden' name='drp_action' value='" . htmle(gnrv('drp_action')) . "'>
@@ -399,7 +401,7 @@ function form_actions() {
 	bottom_footer();
 }
 
-function form_save() {
+function form_save() : void {
 	global $preview_only;
 
 	validate_request_vars();
@@ -456,8 +458,9 @@ function form_save() {
 			$replace_svalues = false;
 		}
 
-		$hashes = [];
-		$files  = [];
+		$hashes    = [];
+		$files     = [];
+		$templates = [];
 
 		// loop through each of the graphs selected on the previous page and get more info about them
 		foreach ($_POST as $var => $val) {
@@ -539,7 +542,7 @@ function form_save() {
 	}
 }
 
-function package_file_get_contents($package_location, $package_file, $filename) {
+function package_file_get_contents(string $package_location, string $package_file, string $filename) : mixed {
 	$package_found = false;
 
 	if ($package_location > 0) {
@@ -647,7 +650,7 @@ function package_file_get_contents($package_location, $package_file, $filename) 
 	return false;
 }
 
-function package_diff_file() {
+function package_diff_file() : void {
 	$package_location = gfrv('package_location');
 	$package_file     = grv('package_file');
 	$filename         = grv('filename');
@@ -686,7 +689,7 @@ function package_diff_file() {
 	}
 }
 
-function package_verify_key() {
+function package_verify_key() : void {
 	$package_location = gfrv('package_location');
 
 	$failed = [];
@@ -791,7 +794,7 @@ function package_verify_key() {
 	}
 }
 
-function package_accept_key() {
+function package_accept_key() : void {
 	$package_location = gfrv('package_location');
 
 	if ($package_location > 0) {
@@ -845,7 +848,7 @@ function package_accept_key() {
 	}
 }
 
-function package_get_details() {
+function package_get_details() : void {
 	$package_ids      = gfrv('package_ids', FILTER_VALIDATE_IS_NUMERIC_LIST);
 	$package_location = gfrv('package_location');
 	$profile_id       = gfrv('data_source_profile');
@@ -904,7 +907,7 @@ function package_get_details() {
 	}
 }
 
-function import_validate_public_key($xmlfile, $accept = false) {
+function import_validate_public_key(string $xmlfile, bool $accept = false) : mixed {
 	$public_key1 = get_public_key_sha1();
 	$public_key2 = get_public_key_sha256();
 
@@ -949,7 +952,7 @@ function import_validate_public_key($xmlfile, $accept = false) {
 	return false;
 }
 
-function import_display_package_data($templates, $files, $package_name, $filename, $data, $multipackage = true) {
+function import_display_package_data(array $templates, array $files, string $package_name, string $filename, array $data, bool $multipackage = true) : void {
 	global $device_classes;
 
 	if (!$multipackage) {
@@ -1246,7 +1249,7 @@ function import_display_package_data($templates, $files, $package_name, $filenam
 	<?php
 }
 
-function validate_request_vars() {
+function validate_request_vars() : void {
 	$default_profile = get_default_profile();
 
 	// ================= input validation and session storage =================
@@ -1292,7 +1295,7 @@ function validate_request_vars() {
 	// ================= input validation =================
 }
 
-function get_import_form($repo_id, $default_profile) {
+function get_import_form(int $repo_id, int $default_profile) : array {
 	global $image_types;
 
 	validate_request_vars();
@@ -1429,7 +1432,7 @@ function get_import_form($repo_id, $default_profile) {
 	}
 }
 
-function get_default_profile() {
+function get_default_profile() : mixed {
 	$default_profile = db_fetch_cell('SELECT id
 		FROM data_source_profiles
 		WHERE `default`="on"');
@@ -1444,7 +1447,7 @@ function get_default_profile() {
 	return $default_profile;
 }
 
-function package_import() {
+function package_import() : void {
 	global $actions, $hash_type_names, $device_classes;
 
 	validate_request_vars();
@@ -1865,7 +1868,7 @@ function package_import() {
 	form_end();
 }
 
-function form_dialog_box() {
+function form_dialog_box() : void {
 	print '<div style="display:none">
 		<div id="import_dialog" title="">
 			<div id="import_message"></div>
@@ -1873,7 +1876,7 @@ function form_dialog_box() {
 	</div>';
 }
 
-function get_repo_file($repo_id, $filename = 'package.manifest', $javascript = false) {
+function get_repo_file(string $repo_id, string $filename = 'package.manifest', bool $javascript = false) : mixed {
 	$repo = db_fetch_row_prepared('SELECT *
 		FROM package_repositories
 		WHERE id = ?',
@@ -1934,11 +1937,11 @@ function get_repo_file($repo_id, $filename = 'package.manifest', $javascript = f
 	return false;
 }
 
-function get_repo_manifest_file($repo_id) {
+function get_repo_manifest_file(string $repo_id) : string {
 	return get_repo_file($repo_id, 'package.manifest');
 }
 
-function is_tmp_writable() {
+function is_tmp_writable() : bool {
 	$tmp_dir  = sys_get_temp_dir();
 	$tmp_len  = strlen($tmp_dir);
 	$tmp_dir .= ($tmp_len !== 0 && substr($tmp_dir, -$tmp_len) === '/') ? '' : '/';
@@ -1947,7 +1950,7 @@ function is_tmp_writable() {
 	return $is_tmp;
 }
 
-function package_prepare_import_array(&$templates, &$files, $package_name, $package_filename, $import_info) {
+function package_prepare_import_array(array &$templates, array &$files, string $package_name, string $package_filename, array $import_info) : void {
 	global $hash_type_names;
 
 	/**

@@ -217,10 +217,10 @@ function getAddresses(): array {
 /**
  * Retrieves SNMP fields for a given host.
  *
- * @param int $hostId The ID of the host for which to retrieve SNMP fields.
- * @param int $snmp_query_id Optional. The ID of the SNMP query. Default is an empty string.
+ * @param int $hostId        - The ID of the host for which to retrieve SNMP fields.
+ * @param int $snmp_query_id - Optional. The ID of the SNMP query. Default is an empty string.
  *
- * @return array An array of SNMP fields for the specified host.
+ * @return array - An array of SNMP fields for the specified host.
  */
 function getSNMPFields(int $hostId, int $snmp_query_id = 0): array {
 	$fieldNames = [];
@@ -252,9 +252,10 @@ function getSNMPFields(int $hostId, int $snmp_query_id = 0): array {
 /**
  * Retrieves SNMP values for a given host and field.
  *
- * @param string $hostId The ID of the host to query.
- * @param string $field The specific field to retrieve values for.
- * @param string $snmp_query_id Optional. The ID of the SNMP query to use. Default is an empty string.
+ * @param int    $hostId        - The ID of the host to query.
+ * @param string $field         - The specific field to retrieve values for.
+ * @param int    $snmp_query_id - Optional. The ID of the SNMP query to use. Default is an empty string.
+ *
  * @return array An array of SNMP values.
  */
 function getSNMPValues(int $hostId, string $field, int $snmp_query_id = 0): array {

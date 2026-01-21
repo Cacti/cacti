@@ -276,12 +276,12 @@ function null_out_substitutions($string) {
  *
  * @param  int    $host_id - The host ID to match
  * @param  int    $snmp_query_id - The data query ID to match
- * @param  int    $snmp_index - The data query index to match
+ * @param  string $snmp_index - The data query index to match
  * @param  string $title - The original string that contains the data query variables
  *
  * @return string - the original string with all of the variable substitutions made
  */
-function expand_title($host_id, $snmp_query_id, $snmp_index, $title) {
+function expand_title(int $host_id, int $snmp_query_id, string $snmp_index, string $title) : string {
 	if ((strstr($title, '|')) && (!empty($host_id))) {
 		if (($snmp_query_id != '0') && ($snmp_index != '')) {
 			$max_chars = intval(read_config_option('max_data_query_field_length'));

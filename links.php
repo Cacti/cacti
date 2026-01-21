@@ -47,7 +47,7 @@ switch (grv('action')) {
 		break;
 	case 'move_page_up':
 		if (isrv('id') && gfrv('id') && isrv('order') && gfrv('order')) {
-			page_move(grv('id'), grv('order'), '-1');
+			page_move(grv('id'), -1);
 		}
 
 		header('Location: links.php');
@@ -55,7 +55,7 @@ switch (grv('action')) {
 		break;
 	case 'move_page_down':
 		if (isrv('id') && gfrv('id') && isrv('order') && gfrv('order')) {
-			page_move(grv('id'), grv('order'), '1');
+			page_move(grv('id'), 1);
 		}
 
 		header('Location: links.php');
@@ -124,8 +124,6 @@ switch (grv('action')) {
 
 			exit;
 		}
-
-		break;
 	case 'edit':
 		top_header();
 
@@ -144,7 +142,7 @@ switch (grv('action')) {
 		break;
 }
 
-function links_reorder($new_order) {
+function links_reorder(array $new_order) : void {
 	if (cacti_sizeof($new_order)) {
 		$sort = 1;
 
@@ -161,7 +159,7 @@ function links_reorder($new_order) {
 	}
 }
 
-function form_actions() {
+function form_actions() : void {
 	global $actions;
 
 	// ================= input validation =================
@@ -244,7 +242,7 @@ function form_actions() {
 	}
 }
 
-function pages() {
+function pages() : void {
 	global $item_rows, $actions;
 
 	// create the page filter
@@ -404,7 +402,7 @@ function pages() {
 	}
 }
 
-function page_delete($id) {
+function page_delete(int $id) : void {
 	db_execute_prepared('DELETE FROM external_links WHERE id = ?', [$id]);
 	db_execute_prepared('DELETE FROM user_auth_realm WHERE realm_id = ?', [$id + 10000]);
 	db_execute_prepared('DELETE FROM user_auth_group_realm WHERE realm_id = ?', [$id + 10000]);
@@ -412,20 +410,20 @@ function page_delete($id) {
 	page_resort();
 }
 
-function page_resort() {
+function page_resort() : void {
 	$pages = db_fetch_assoc('SELECT * FROM external_links ORDER BY sortorder');
 
 	$i = 1;
 
 	if (cacti_sizeof($pages)) {
 		foreach ($pages as $page) {
-			db_execute_prepared('UPDATE external_links SET sortorder = ? WHERE id = ?' . [$i, $page['id']]);
+			db_execute_prepared('UPDATE external_links SET sortorder = ? WHERE id = ?', [$i, $page['id']]);
 			$i++;
 		}
 	}
 }
 
-function page_move($pageid, $junk, $direction) {
+function page_move(int $pageid, int $direction) : void {
 	$oldorder = db_fetch_cell_prepared('SELECT sortorder FROM external_links WHERE id = ?', [$pageid]);
 	$neworder = $oldorder + $direction;
 	$otherid  = db_fetch_cell_prepared('SELECT id FROM external_links WHERE sortorder = ?', [$neworder]);
@@ -436,7 +434,7 @@ function page_move($pageid, $junk, $direction) {
 	}
 }
 
-function edit_page() {
+function edit_page() : void {
 	global $poller_intervals;
 
 	$sections = db_fetch_assoc("SELECT extendedstyle

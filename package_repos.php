@@ -69,11 +69,7 @@ switch (grv('action')) {
 		break;
 }
 
-/* --------------------------
-	The Save Function
-   -------------------------- */
-
-function form_save() {
+function form_save() : void {
 	global $registered_cacti_names;
 
 	if (isrv('save_component_repo')) {
@@ -144,7 +140,7 @@ function form_save() {
 	header('Location: package_repos.php?header=false&action=edit&id=' . (empty($id) ? gnrv('id') : $id));
 }
 
-function form_actions() {
+function form_actions() : void {
 	global $actions;
 
 	// if we are to save this form, instead of display it
@@ -154,22 +150,22 @@ function form_actions() {
 		if ($selected_items != false) {
 			if (gnrv('drp_action') == '1') { // delete
 				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
-					package_remove($selected_items[$i]);
+					repo_remove($selected_items[$i]);
 				}
 			} elseif (gnrv('drp_action') == '2') { // disable
 				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
-					package_disable($selected_items[$i]);
+					repo_disable($selected_items[$i]);
 				}
 			} elseif (gnrv('drp_action') == '3') { // enable
 				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
-					package_enable($selected_items[$i]);
+					repo_enable($selected_items[$i]);
 				}
 			} elseif (gnrv('drp_action') == '4') { // default
 				if (cacti_sizeof($selected_items) > 1) {
 					// error message
 				} else {
 					for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
-						package_default($selected_items[$i]);
+						repo_default($selected_items[$i]);
 					}
 				}
 			}
@@ -202,7 +198,9 @@ function form_actions() {
 
 	html_start_box($actions[gnrv('drp_action')], '60%', false, 3, 'center', '');
 
-	if (isset($p_array) && cacti_sizeof($p_array)) {
+	if (cacti_sizeof($p_array)) {
+		$save_html = '';
+
 		if (gnrv('drp_action') == '1') { // delete
 			print "<tr>
 				<td class='textArea'>
@@ -254,7 +252,7 @@ function form_actions() {
 	print "<tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='selected_items' value='" . (isset($p_array) ? serialize($p_array) : '') . "'>
+			<input type='hidden' name='selected_items' value='" . serialize($p_array) . "'>
 			<input type='hidden' name='drp_action' value='" . htmle(gnrv('drp_action')) . "'>
 			$save_html
 		</td>
@@ -267,25 +265,25 @@ function form_actions() {
 	bottom_footer();
 }
 
-function repo_remove($id) {
+function repo_remove(int $id) : void {
 	db_execute_prepared('DELETE FROM package_repositories WHERE id = ?', [$id]);
 	db_execute_prepared('DELETE FROM package_repositories WHERE id = ?', [$id]);
 }
 
-function repo_disable($id) {
+function repo_disable(int $id) : void {
 	db_execute_prepared('UPDATE package_repositories SET enabled = "" WHERE id = ?', [$id]);
 }
 
-function repo_enable($id) {
+function repo_enable(int $id) : void {
 	db_execute_prepared('UPDATE package_repositories SET enabled = "on" WHERE id = ?', [$id]);
 }
 
-function repo_default($id) {
+function repo_default(int $id) : void {
 	db_execute('UPDATE package_repositories SET `default` = ""');
 	db_execute_prepared('UPDATE package_repositories SET `default` = "on" WHERE id = ?', [$id]);
 }
 
-function repo_edit() {
+function repo_edit() : void {
 	global $types;
 
 	// ================= input validation =================
@@ -381,7 +379,7 @@ function repo_edit() {
 	draw_edit_form(
 		[
 			'config' => [],
-			'fields' => inject_form_variables($fields_package, (isset($repo) ? $repo : []))
+			'fields' => inject_form_variables($fields_package, $repo)
 		]
 	);
 
@@ -412,7 +410,7 @@ function repo_edit() {
 	form_save_button('package_repos.php', 'return', 'id');
 }
 
-function repos() {
+function repos() : void {
 	global $actions, $item_rows, $types;
 
 	// create the page filter

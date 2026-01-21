@@ -87,8 +87,6 @@ switch ($providerName) {
 		cacti_log('ERROR: Unknown OAuth2 provider');
 
 		die('Provider missing');
-
-		break;
 }
 
 if (!isset($_GET['code'])) { // If we don't have an authorization code then get one

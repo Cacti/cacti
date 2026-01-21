@@ -48,7 +48,7 @@ switch (grv('action')) {
 		break;
 }
 
-function form_actions() {
+function form_actions() : void {
 	global $actions;
 
 	// if we are to save this form, instead of display it
@@ -90,7 +90,9 @@ function form_actions() {
 
 	html_start_box($actions[gnrv('drp_action')], '60%', false, 3, 'center', '');
 
-	if (isset($p_array) && cacti_sizeof($p_array)) {
+	if (cacti_sizeof($p_array)) {
+		$save_html = '';
+
 		if (gnrv('drp_action') == '1') { // delete
 			print "<tr>
 				<td class='textArea'>
@@ -111,11 +113,11 @@ function form_actions() {
 	print "<tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='selected_items' value='" . (isset($p_array) ? serialize($p_array) : '') . "'>
+			<input type='hidden' name='selected_items' value='" . serialize($p_array) . "'>
 			<input type='hidden' name='drp_action' value='" . htmle(gnrv('drp_action')) . "'>
 			$save_html
 		</td>
-	</tr>\n";
+	</tr>";
 
 	html_end_box();
 
@@ -124,11 +126,11 @@ function form_actions() {
 	bottom_footer();
 }
 
-function package_key_remove($id) {
+function package_key_remove(int $id) : void {
 	db_execute_prepared('DELETE FROM package_public_keys WHERE id = ?', [$id]);
 }
 
-function public_keys() {
+function public_keys() : void {
 	global $actions, $item_rows, $types;
 
 	// create the page filter

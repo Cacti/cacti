@@ -67,7 +67,7 @@ function inject_form_variables(&$form_array, $arg1 = [], $arg2 = [], $arg3 = [],
 
 							// an empty field name in the variable means don't treat this as an array
 							if ($matches2 == '') {
-								if (is_array(${$matches1})) {
+								if (is_array(${$matches1})) { // @phpstan-ignore-line
 									// the existing value is already an array, leave it alone
 									$form_array[$field_name][$field_to_check] = ${$matches1};
 								} else {
@@ -78,15 +78,13 @@ function inject_form_variables(&$form_array, $arg1 = [], $arg2 = [], $arg3 = [],
 								/* copy the value down from the array/key specified in the variable
 								 * replace up to three times for arg1:arg2:arg3 variables
 								 */
-								if (isset(${$matches1})) {
-									if (is_array(${$matches1})) {
-										$array = ${$matches1};
+								if (is_array(${$matches1})) { // @phpstan-ignore-line
+									$array = ${$matches1};
 
-										if (is_array($array) && isset($array[$matches2]) && $array[$matches2] != '') {
-											$string = str_replace($matches0, $array[$matches2], $string);
-										} else {
-											$string = str_replace($matches0, '', $string);
-										}
+									if (isset($array[$matches2]) && $array[$matches2] != '') {
+										$string = str_replace($matches0, $array[$matches2], $string);
+									} else {
+										$string = str_replace($matches0, '', $string);
 									}
 								}
 
@@ -221,32 +219,32 @@ function form_alternate_row($row_id = '', $light = false, $disabled = false) {
  * This function creates a selectable table cell with the provided contents,
  * ensuring that the contents are properly escaped to prevent XSS attacks.
  *
- * @param mixed $contents The content to be displayed inside the cell.
- * @param int|string $id The ID attribute for the cell.
- * @param string $width Optional. The width of the cell. Default is an empty string.
- * @param string $style_or_class Optional. The style or class attribute for the cell. Default is an empty string.
- * @param string $title Optional. The title attribute for the cell. Default is an empty string.
+ * @param mixed  $contents   - The content to be displayed inside the cell.
+ * @param mixed  $id         - The ID attribute for the cell.
+ * @param string $width      - Optional. The width of the cell. Default is an empty string.
+ * @param string $styleclass - Optional. The style or class attribute for the cell. Default is an empty string.
+ * @param string $title      - Optional. The title attribute for the cell. Default is an empty string.
  *
- * @return void
+ * @return bool
  */
-function form_selectable_ecell(mixed $contents, int|string $id, string $width = '', string $style_or_class = '', string $title = '') : bool|null {
-	return form_selectable_cell(htmle($contents), $id, $width, $style_or_class, $title);
+function form_selectable_ecell(mixed $contents, mixed $id, string $width = '', string $styleclass = '', string $title = '') : bool {
+	return form_selectable_cell(htmle($contents), $id, $width, $styleclass, $title);
 }
 
 /**
  * Format's a table row such that it can be highlighted using cacti's js actions
  *
- * @param mixed $contents The content to be placed inside the table cell.
- * @param int|string $id The ID attribute for the table cell (not used in the function).
- * @param string $width Optional. The width of the table cell. Default is an empty string.
- * @param string $style_or_class Optional. The style or class attribute for the table cell.
- *        Default is an empty string. If it contains a colon (:), it is treated as a style
- *        attribute; otherwise, as a class attribute.
- * @param string $title Optional. The tooltip text for the table cell. Default is an empty string.
+ * @param mixed  $contents   - The content to be placed inside the table cell.
+ * @param mixed  $id         - The ID attribute for the table cell (not used in the function).
+ * @param string $width      - Optional. The width of the table cell. Default is an empty string.
+ * @param string $styleclass - Optional. The style or class attribute for the table cell.
+ *                             Default is an empty string. If it contains a colon (:),
+ *                             it is treated as a style attribute; otherwise, as a class attribute.
+ * @param string $title      - Optional. The tooltip text for the table cell. Default is an empty string.
  *
- * @return void
+ * @return bool - false if an error is encountered
  */
-function form_selectable_cell(mixed $contents, int|string $id, string $width = '', string $style_or_class = '', string $title = '') : bool|null {
+function form_selectable_cell(mixed $contents, mixed $id, string $width = '', string $styleclass = '', string $title = '') : bool {
 	global $tableCount;
 
 	static $tableColumns = null;
@@ -279,7 +277,7 @@ function form_selectable_cell(mixed $contents, int|string $id, string $width = '
 			if ($tableColumns[$table_id][$columns[$col_num]] !== true) {
 				return false;
 			}
-		} elseif (isset($columns["autocol$col_num"])) {
+		} elseif (isset($columns["autocol$col_num"])) { // @phpstan-ignore-line
 			if ($tableColumns[$table_id][$columns["autocol$col_num"]] !== true) {
 				return false;
 			}
@@ -292,15 +290,15 @@ function form_selectable_cell(mixed $contents, int|string $id, string $width = '
 
 	$output = '';
 
-	if ($style_or_class != '') {
-		if (!str_contains($style_or_class, ':')) {
-			$output = "class='nowrap " . $style_or_class . "'";
+	if ($styleclass != '') {
+		if (!str_contains($styleclass, ':')) {
+			$output = "class='nowrap " . $styleclass . "'";
 
 			if ($width != '') {
 				$output .= " style='width:$width;'";
 			}
 		} else {
-			$output = "class='nowrap' style='" . $style_or_class;
+			$output = "class='nowrap' style='" . $styleclass;
 
 			if ($width != '') {
 				$output .= ";width:$width;";
@@ -326,7 +324,7 @@ function form_selectable_cell(mixed $contents, int|string $id, string $width = '
 	return true;
 }
 
-function form_get_table_id(bool|null $increment = false) {
+function form_get_table_id(mixed $increment = false) : string{
 	static $table_count = 0;
 
 	if ($increment) {
@@ -351,18 +349,17 @@ function form_get_table_id(bool|null $increment = false) {
 /**
  * Format's a table row such that it can be highlighted using cacti's js actions
  *
- * @param mixed  $contents       The content to be placed inside the table cell.
- * @param string $tableid        The ID attribute for the table cell (not used in the function).
- * @param string $columnid       Optional. The width of the table cell. Default is an empty string.
- * @param string $style_or_class Optional. The style or class attribute for the table cell.
- *        Default is an empty string. If it contains a colon (:), it is treated as a style
- *        attribute; otherwise, as a class attribute.
- * @param string $title          Optional. The tooltip text for the table cell. Default is an empty string.
- * @param mixed $table_id
+ * @param mixed  $contents   The content to be placed inside the table cell.
+ * @param string $table_id   The ID attribute for the table cell (not used in the function).
+ * @param string $columnid   Optional. The width of the table cell. Default is an empty string.
+ * @param string $styleclass Optional. The style or class attribute for the table cell.
+ *                           Default is an empty string. If it contains a colon (:), it is treated as a style
+ *                           attribute; otherwise, as a class attribute.
+ * @param string $title      Optional. The tooltip text for the table cell. Default is an empty string.
  *
- * @return void
+ * @return bool - false if errors are encountered
  */
-function form_selectable_vcell(mixed $contents, $table_id = '', $columnid = '', $style_or_class = '', $title = '') {
+function form_selectable_vcell(mixed $contents, $table_id = '', $columnid = '', $styleclass = '', $title = '') : bool {
 	global $tableCount;
 
 	static $tableColumns = null;
@@ -384,15 +381,15 @@ function form_selectable_vcell(mixed $contents, $table_id = '', $columnid = '', 
 	$output = '';
 	$width  = '';	// Width was undefined, adding this until we know what was intended
 
-	if ($style_or_class != '') {
-		if (!str_contains($style_or_class, ':')) {
-			$output = "class='nowrap " . $style_or_class . "'";
+	if ($styleclass != '') {
+		if (!str_contains($styleclass, ':')) {
+			$output = "class='nowrap " . $styleclass . "'";
 
 			if ($width != '') {
 				$output .= " style='width:$width;'";
 			}
 		} else {
-			$output = "class='nowrap' style='" . $style_or_class;
+			$output = "class='nowrap' style='" . $styleclass;
 
 			if ($width != '') {
 				$output .= ";width:$width;";
@@ -414,9 +411,11 @@ function form_selectable_vcell(mixed $contents, $table_id = '', $columnid = '', 
 	}
 
 	print "\t<td " . $output . '>' . $wrapper . "</td>\n";
+
+	return true;
 }
 
-function form_process_visible_display_text($table_id, $display_text) {
+function form_process_visible_display_text(string $table_id, array $display_text) : array {
 	global $tableCount;
 
 	static $tableColumns = null;
@@ -861,6 +860,8 @@ function gfrv(string $name, int $filter = FILTER_VALIDATE_INT, array $options = 
  * @return mixed
  */
 function get_filter_request_var(string $name, int $filter = FILTER_VALIDATE_INT, array $options = []) : mixed {
+	$custom_error = 'Unknown Error';
+
 	if (isset_request_var($name)) {
 		if (isempty_request_var($name)) {
 			set_request_var($name, get_nfilter_request_var($name));
@@ -887,8 +888,6 @@ function get_filter_request_var(string $name, int $filter = FILTER_VALIDATE_INT,
 				} else {
 					$value = '';
 				}
-			} elseif (isempty_request_var($name)) {
-				$value = '';
 			} elseif ($filter == FILTER_VALIDATE_IS_REGEX) {
 				if (is_base64_encoded($_REQUEST[$name])) {
 					$_REQUEST[$name] = mb_convert_encoding(base64_decode($_REQUEST[$name], true), 'UTF-8');
@@ -946,7 +945,7 @@ function get_filter_request_var(string $name, int $filter = FILTER_VALIDATE_INT,
 			}
 		}
 
-		if ($value === null && isset($options['default']) && $options['default'] === null) {
+		if ($value === null && $options['default'] === null) {
 			$value = '';
 		}
 
@@ -1039,8 +1038,8 @@ function get_request_var_post($name, $default = '') {
  * custom $_CACTI_REQUEST and desired session variables for
  * Cacti filtering.
  *
- * @param  array  $filters      an array keyed with the filter methods.
- * @param  string $session_prefix A string to use to prefix the session
+ * @param  array  $filters     - An array keyed with the filter methods.
+ * @param  string $sess_prefix - A string to use to prefix the session
  *                variable.
  *
  *    Valid filter include those from PHP filter_var() function syntax.
@@ -1098,13 +1097,12 @@ function get_request_var_post($name, $default = '') {
  *      FILTER_SANITIZE_URL                - Remove all characters except letters, digits, etc.
  *      FILTER_UNSAFE_RAW                  - Nothing and optional strip or encode
  *
- * @param  string $sess_prefix  the prefix for the session variable
- *
  * @return void
  */
 function validate_store_request_vars(array $filters, string $sess_prefix = '') : void {
-	$changed      = 0;
-	$custom_error = '';
+	$changed          = 0;
+	$custom_error     = '';
+	$session_variable = 'sess_fallback';
 
 	if (cacti_sizeof($filters)) {
 		foreach ($filters as $variable => $options) {
@@ -1625,9 +1623,9 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 	$url_page_select = "<ul class='pagination'>";
 
 	if (str_contains($url, '?')) {
-		$url . '&';
+		$url .= '&';
 	} else {
-		$url . '?';
+		$url .= '?';
 	}
 
 	$url_ellipsis = '<li><span>...</span></li>';

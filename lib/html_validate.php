@@ -73,8 +73,10 @@ function input_validate_input_regex($value, $regex, $variable = '') {
  * was not performed for the specified variable.
  *
  * @param string $variable The name of the variable for which input validation was not performed.
+ *
+ * @return void
  */
-function html_log_input_error($variable) {
+function html_log_input_error($variable) : void {
 	cacti_debug_backtrace("Input Validation Not Performed for '$variable'");
 }
 

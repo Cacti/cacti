@@ -69,7 +69,7 @@ switch (grv('action')) {
 		break;
 }
 
-function manager() {
+function manager() : void {
 	global $actions, $item_rows;
 
 	// create the page filter
@@ -178,7 +178,7 @@ function manager() {
 	form_end();
 }
 
-function manager_edit() {
+function manager_edit() : void {
 	global $snmp_auth_protocols, $snmp_priv_protocols, $snmp_versions,
 	$tabs_manager_edit, $fields_manager_edit, $mactions;
 
@@ -189,7 +189,8 @@ function manager_edit() {
 	if (!isrv('tab')) {
 		srv('tab', 'general');
 	}
-	$id	 = (isrv('id') ? grv('id') : '0');
+
+	$id	= (isrv('id') ? grv('id') : '0');
 
 	if ($id) {
 		$manager      = db_fetch_row_prepared('SELECT * FROM snmpagent_managers WHERE id = ?', [grv('id')]);
@@ -285,7 +286,7 @@ function manager_edit() {
 	<?php
 }
 
-function create_manager_notification_filter() {
+function create_manager_notification_filter() : array {
 	global $item_rows;
 
 	$mibs = array_rekey(
@@ -343,7 +344,7 @@ function create_manager_notification_filter() {
 	];
 }
 
-function draw_manager_notification_filter($render = false, $header_label = '') {
+function draw_manager_notification_filter(bool $render = false, string $header_label = '') : void {
 	$filters = create_manager_notification_filter();
 
 	// create the page filter
@@ -359,7 +360,7 @@ function draw_manager_notification_filter($render = false, $header_label = '') {
 	}
 }
 
-function manager_notifications($id, $header_label) {
+function manager_notifications(int $id, string $header_label) : void {
 	global $item_rows, $mactions;
 
 	draw_manager_notification_filter(true, $header_label);
@@ -479,7 +480,7 @@ function manager_notifications($id, $header_label) {
 	form_end();
 }
 
-function create_manager_log_filter($severity_levels) {
+function create_manager_log_filter(array $severity_levels) : array {
 	global $item_rows;
 
 	$all = ['-1' => __('All')];
@@ -540,7 +541,7 @@ function create_manager_log_filter($severity_levels) {
 	];
 }
 
-function draw_manager_log_filter($render = false, $severity_levels = '', $header_label = '') {
+function draw_manager_log_filter(bool $render = false, array $severity_levels = [], string $header_label = '') : void {
 	$filters = create_manager_log_filter($severity_levels);
 
 	// create the page filter
@@ -556,7 +557,7 @@ function draw_manager_log_filter($render = false, $severity_levels = '', $header
 	}
 }
 
-function manager_logs($id, $header_label) {
+function manager_logs(int $id, string $header_label) : void {
 	$severity_levels = [
 		SNMPAGENT_EVENT_SEVERITY_LOW      => 'LOW',
 		SNMPAGENT_EVENT_SEVERITY_MEDIUM   => 'MEDIUM',
@@ -678,7 +679,7 @@ function manager_logs($id, $header_label) {
 	<?php
 }
 
-function form_save() {
+function form_save() : void {
 	if (!isrv('tab')) {
 		srv('tab', 'general');
 	}
@@ -747,7 +748,7 @@ function form_save() {
 	header('Location: managers.php?action=edit&id=' . (empty($manager_id) ? gnrv('id') : $manager_id));
 }
 
-function form_actions() {
+function form_actions() : void {
 	global $actions, $mactions;
 
 	if (isrv('selected_items')) {

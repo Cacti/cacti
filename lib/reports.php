@@ -27,8 +27,10 @@
  *
  * @param int $_id       - id of the report
  * @param string $_title - title of the new report
+ *
+ * @return void
  */
-function duplicate_reports($_id, $_title) {
+function duplicate_reports(int $_id, string $_title) : void {
 	global $fields_reports_edit;
 	reports_log(__FUNCTION__ . ', id: ' . $_id, false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 
@@ -72,7 +74,7 @@ function duplicate_reports($_id, $_title) {
 	}
 }
 
-function reports_add_devices($report_id, $device_ids, $timespan, $align) {
+function reports_add_devices(int $report_id, array $device_ids, array $timespan, string $align) : bool {
 	$report_user = db_fetch_cell_prepared('SELECT user_id
 		FROM reports
 		WHERE id = ?',
@@ -160,7 +162,7 @@ function reports_add_devices($report_id, $device_ids, $timespan, $align) {
 	}
 }
 
-function reports_add_graphs($report_id, $local_graph_id, $timespan, $align) {
+function reports_add_graphs(int $report_id, int $local_graph_id, array $timespan, string $align) : bool {
 	$report_user = db_fetch_cell_prepared('SELECT user_id
 		FROM reports
 		WHERE id = ?',
@@ -328,11 +330,11 @@ function reports_interval_start($interval, $count, $offset, $timestamp) {
 
 			$date_str     = '+' . $count . ' months';
 			$month_base   = strtotime($date_str, $timestamp);
-			$new_month    = mktime(date('H', $month_base), date('i', $month_base), date('s', $month_base), date('m', $month_base), 1, date('Y', $month_base));
+			$new_month    = mktime((int) date('H', $month_base), (int) date('i', $month_base), (int) date('s', $month_base), (int) date('m', $month_base), 1, (int) date('Y', $month_base));
 
 			$date_str     = '+' . ($nth_weekday - 1) . ' week ' . $weekday;
 			$base         = strtotime($date_str, $new_month);
-			$ts           = mktime(date('H', $month_base), date('i', $month_base), date('s', $month_base), date('m', $base), date('d', $base), date('Y', $base));
+			$ts           = mktime((int) date('H', $month_base), (int) date('i', $month_base), (int) date('s', $month_base), (int) date('m', $base), (int) date('d', $base), (int) date('Y', $base));
 
 			break;
 		case REPORTS_SCHED_INTVL_YEAR:
@@ -389,9 +391,11 @@ function utime_add($timestamp, $yr = 0, $mon = 0, $day = 0, $hr = 0, $min = 0, $
  * @param string $string  - the string to append to the log file
  * @param bool $output    - whether to output the log line to the browser using pring() or not
  * @param string $environ - tell's from where the script was called from
- * @param mixed $level
+ * @param int $level      - The loging verbosity to use
+ *
+ * @return void
  */
-function reports_log($string, $output = false, $environ = 'REPORTS', $level = POLLER_VERBOSITY_NONE) {
+function reports_log(string $string, bool $output = false, string $environ = 'REPORTS', int $level = POLLER_VERBOSITY_NONE) : void {
 	// Define REPORTS_DEBUG if not already set
 	if (!defined('REPORTS_DEBUG')) {
 		if (function_exists('read_config_option')) {
@@ -474,10 +478,12 @@ function generate_report(int $schedule_id, array $report, bool $force = false) :
 
 	if (cacti_sizeof($graphs)) {
 		foreach ($graphs as $key => $local_graph_id) {
-			$arr    = explode(':', $key);
-			$timesp = $arr[1];
+			$arr            = explode(':', $key);
+			$timesp         = intval($arr[1]);
+			$local_graph_id = intval($local_graph_id);
 
 			$timespan = [];
+
 			// get start/end time-since-epoch for actual time (now()) and given current-session-timespan
 			get_timespan($timespan, $start_time, $timesp, $first_weekdayid);
 
@@ -598,7 +604,9 @@ function generate_report(int $schedule_id, array $report, bool $force = false) :
 	if ($schedule_id > 0) {
 		$raw_data = $output_raw = $output_text = '';
 
-		$error = reports_log_and_notify($schedule_id, $start_time, 'html', 'reports', $report['id'], $subject, $raw_data, $output_raw, $body, $output_text, $attachments, $headers);
+		reports_log_and_notify($schedule_id, $start_time, 'html', 'reports', $report['id'], $subject, $raw_data, $output_raw, $body, $output_text, $attachments, $headers);
+
+		$error = '';
 	} else {
 		$error = mailer(
 			[$report['from_email'], $report['from_name']],
@@ -631,21 +639,24 @@ function generate_report(int $schedule_id, array $report, bool $force = false) :
 		return false;
 	}
 
-	if (isset($_REQUEST)) {
+	if (cacti_sizeof($_REQUEST)) {
 		raise_message('report_message', __esc('Report \'%s\' Sent Successfully', $report['name']), MESSAGE_LEVEL_INFO);
 	}
 
 	return true;
 }
 
-/** reports_load_format_file  read the format file from disk and determines it's formatting
- * @param string $format_file		- the file to read from the formats directory
- * @param string $output			- the html and css output from that file
- * @param bool $report_tag_included - a boolean that informs the caller if the report tag is present
- * @param mixed $theme
- * @return bool						- whether or not the format file was processed correctly
+/**
+ * reports_load_format_file  read the format file from disk and determines it's formatting
+ *
+ * @param string $format_file - The file to read from the formats directory
+ * @param string $output      - The html and css output from that file
+ * @param bool   $report_tag  - A boolean that informs the caller if the report tag is present
+ * @param mixed  $theme       - The theme to use for display
+ *
+ * @return bool - whether or not the format file was processed correctly
  */
-function reports_load_format_file($format_file, &$output, &$report_tag_included, &$theme) {
+function reports_load_format_file(string $format_file, mixed &$output, bool &$report_tag = false, mixed &$theme = false) {
 	$contents = [];
 
 	if ($format_file == '') {
@@ -658,15 +669,14 @@ function reports_load_format_file($format_file, &$output, &$report_tag_included,
 		$contents = file($format_file);
 	}
 
-	$output              = '';
-	$report_tag_included = false;
+	$output = '';
 
 	if (cacti_sizeof($contents)) {
 		foreach ($contents as $line) {
 			$line = trim($line);
 
 			if (substr_count($line, '<REPORT>')) {
-				$report_tag_included = true;
+				$report_tag = true;
 			}
 
 			if (!str_starts_with($line, '#')) {
@@ -685,12 +695,15 @@ function reports_load_format_file($format_file, &$output, &$report_tag_included,
 
 /**
  * determine, if the given tree has graphs; taking permissions into account
+ *
  * @param int $tree_id			- tree id
  * @param int $branch_id		- branch id
  * @param int $effective_user	- user id
  * @param string $search_key	- search key
+ *
+ * @return int
  */
-function reports_tree_has_graphs($tree_id, $branch_id, $effective_user, $search_key) {
+function reports_tree_has_graphs(int $tree_id,int  $branch_id,int  $effective_user,string $search_key) : int {
 	include_once(CACTI_PATH_LIBRARY . '/html_tree.php');
 
 	$sql_where  = '';
@@ -758,7 +771,7 @@ function reports_tree_has_graphs($tree_id, $branch_id, $effective_user, $search_
 	return cacti_sizeof($graphs);
 }
 
-function reports_generate_history_html($history_id, $output = REPORTS_OUTPUT_STDOUT) {
+function reports_generate_history_html(int $history_id, int $output = REPORTS_OUTPUT_STDOUT) : void {
 	$data   = db_fetch_row_prepared('SELECT *
 		FROM reports_log
 		WHERE id = ?',
@@ -822,7 +835,7 @@ function reports_generate_history_html($history_id, $output = REPORTS_OUTPUT_STD
 	}
 }
 
-function reports_remove_history($history_id, $report_id = 0) {
+function reports_remove_history(int $history_id, int $report_id = 0) : void {
 	if ($report_id == 0) {
 		$report_id = db_fetch_cell_prepared('SELECT source_id FROM reports_log WHERE id = ?', [$history_id]);
 	}
@@ -838,13 +851,16 @@ function reports_remove_history($history_id, $report_id = 0) {
 	}
 }
 
-/** reports_generate_html  print report to html for online verification
- * @param int $reports_id	- id of report report
- * @param int $output		- type of output
- * @param mixed $theme
- * @return string			- generated html output
+/**
+ * reports_generate_html  print report to html for online verification
+ *
+ * @param int    $reports_id - id of report report
+ * @param int    $output     - type of output
+ * @param string $theme      - The format of the output
+ *
+ * @return string - generated html output
  */
-function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$theme = '') {
+function reports_generate_html(int $reports_id, int $output = REPORTS_OUTPUT_STDOUT, string &$theme = '') : string {
 	global $alignment;
 
 	include_once(CACTI_PATH_LIBRARY . '/time.php');
@@ -1046,7 +1062,7 @@ function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$t
 	}
 }
 
-function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme = 'modern') {
+function expand_branch(array &$report, array &$item, int $branch_id, int $output = REPORTS_OUTPUT_STDOUT, bool $format_ok = false, string $theme = 'modern') : string {
 	$outstr = '';
 
 	if (reports_tree_has_graphs($item['tree_id'], $branch_id, $report['user_id'], $item['graph_name_regexp'])) {
@@ -1072,14 +1088,16 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
 
 /**
  * return html code for an embedded image
- * @param array $report	- parameters for this report mail report
- * @param $item			- current graph item
- * @param $timespan		- timespan
- * @param $output		- type of output
- * @param mixed $theme
- * @return string		- generated html
+ *
+ * @param array  $report   - parameters for this report mail report
+ * @param array  $item     - current graph item
+ * @param array  $timespan - timespan
+ * @param int    $output   - type of output
+ * @param mixed  $theme    - The theme to render with
+ *
+ * @return string - generated html
  */
-function reports_graph_image($report, $item, $timespan, $output, $theme = 'modern') {
+function reports_graph_image($report, $item, $timespan, $output = REPORTS_OUTPUT_STDOUT, $theme = 'modern') {
 	$out = '';
 
 	if ($output == REPORTS_OUTPUT_STDOUT) {
@@ -1117,16 +1135,16 @@ function reports_graph_image($report, $item, $timespan, $output, $theme = 'moder
 /**
  * expand a device for including into report
  *
- * @param array $report		- parameters for this report mail report
- * @param int $item			- current graph item
- * @param int $device_id    - the id of the host to include
- * @param int $output		- type of output
- * @param bool $format_ok	- use css styling
- * @param mixed $theme
+ * @param array $report   - parameters for this report mail report
+ * @param array $item     - current graph item
+ * @param int $device_id  - the id of the host to include
+ * @param int $output     - type of output
+ * @param bool $format_ok - use css styling
+ * @param mixed $theme    - The theme to use for output
  *
- * @return string			- html
+ * @return string - html
  */
-function reports_expand_device(&$report, $item, $device_id, $output, $format_ok, $theme = 'modern') {
+function reports_expand_device(array &$report, array $item, int $device_id, int $output = REPORTS_OUTPUT_STDOUT, bool $format_ok = false, mixed $theme = 'modern') : string {
 	global $alignment;
 
 	include(CACTI_PATH_INCLUDE . '/global_arrays.php');
@@ -1153,6 +1171,7 @@ function reports_expand_device(&$report, $item, $device_id, $output, $format_ok,
 	$sql_where       = '';
 	$title_delimiter = '';
 	$search_key      = '';
+	$title           = '';
 
 	$description = db_fetch_cell_prepared('SELECT h.description
 		FROM host AS h
@@ -1265,17 +1284,16 @@ function reports_expand_device(&$report, $item, $device_id, $output, $format_ok,
 /**
  * expand a tree for including into report
  *
- * @param array $report		- parameters for this report mail report
- * @param int $item			- current graph item
- * @param int $output		- type of output
- * @param bool $format_ok	- use css styling
- * @param bool $nested		- nested tree?
- * @param mixed $parent
- * @param mixed $theme
+ * @param array $report    - parameters for this report mail report
+ * @param array $item      - current graph item
+ * @param int   $parent    - The tree parent
+ * @param int   $output    - The type of output
+ * @param bool $format_ok  - Use css styling
+ * @param bool $nested     - nested tree?
  *
- * @return string			- html
+ * @return string - html
  */
-function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $theme = 'modern', $nested = false) {
+function reports_expand_tree(array &$report, array $item, int $parent, int $output, bool $format_ok, string $theme = 'modern', bool $nested = false) : string {
 	global $alignment;
 
 	include(CACTI_PATH_INCLUDE . '/global_arrays.php');
@@ -1298,7 +1316,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 	get_timespan($timespan, $time, $item['timespan'], $first_weekdayid);
 
 	if (empty($tree_id)) {
-		return;
+		return '';
 	}
 
 	$device_id = db_fetch_cell_prepared('SELECT host_id
@@ -1328,6 +1346,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 	}
 
 	$graphs = [];
+	$title  = '';
 
 	if (cacti_sizeof($leaves)) {
 		foreach ($leaves as $leaf) {
@@ -1352,12 +1371,10 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 			}
 
 			// get information for the headers
-			if (!empty($tree_id)) {
-				$tree_name = db_fetch_cell_prepared('SELECT name
-					FROM graph_tree
-					WHERE id = ?',
-					[$tree_id]);
-			}
+			$tree_name = db_fetch_cell_prepared('SELECT name
+				FROM graph_tree
+				WHERE id = ?',
+				[$tree_id]);
 
 			if (!empty($parent)) {
 				$leaf_name = db_fetch_cell_prepared('SELECT title
@@ -1547,12 +1564,13 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 										}
 									}
 								}
+
 								$outgraphs = array_merge($outgraphs, $graphs);
 							}
 
 							if (cacti_sizeof($outgraphs)) {
 								// let's sort the graphs naturally
-								usort($outgraphs, 'necturally_sort_graphs');
+								usort($outgraphs, 'necturally_sort_graphs'); // @phpstan-ignore-line
 
 								// start graph display
 								if ($title != '') {
@@ -1740,26 +1758,30 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 
 /**
  * natural sort function
- * @param $a
- * @param $b
- * @return string
+ *
+ * @param mixed $a - The first string for sort
+ * @param mixed $b - The second string for sort
+ *
+ * @return int - The case comparison
  */
-function necturally_sort_graphs($a, $b) {
+function necturally_sort_graphs(mixed $a, mixed $b) : int {
 	return strnatcasecmp($a['title_cache'], $b['title_cache']);
 }
 
 /**
  * draw graph area
- * @param array $graphs		- array of graphs
- * @param array $report		- report parameters
- * @param int $item			- current item
- * @param int $timespan		- requested timespan
- * @param int $output		- type of output
- * @param bool $format_ok	- use css styling
- * @param mixed $theme
+ *
+ * @param array  $graphs    - array of graphs
+ * @param array  $report    - report parameters
+ * @param array  $item      - current item
+ * @param array  $timespan  - requested timespan
+ * @param int    $output    - type of output
+ * @param bool   $format_ok - use css styling
+ * @param string $theme     - The output format to use
+ *
  * @return string
  */
-function reports_graph_area($graphs, &$report, $item, $timespan, $output, $format_ok, $theme = 'modern') {
+function reports_graph_area(array $graphs, array &$report, array $item, array $timespan, int $output, bool $format_ok, string $theme = 'modern') : string {
 	global $alignment;
 
 	$outstr = '';
@@ -1822,10 +1844,13 @@ function reports_graph_area($graphs, &$report, $item, $timespan, $output, $forma
 /**
  * convert png images stream to jpeg using php-gd
  *
- * @param string $png_data	- the png image as a stream
- * @return string			- the jpeg image as a stream
+ * @param string $png_data - the png image as a stream
+ *
+ * @return string - the jpeg image as a stream
  */
-function png2jpeg($png_data) {
+function png2jpeg(string $png_data) : string {
+	$ImageData = '';
+
 	if ($png_data != '') {
 		$fn = '/tmp/' . time() . '.png';
 
@@ -1862,10 +1887,13 @@ function png2jpeg($png_data) {
 /**
  * convert png images stream to gif using php-gd
  *
- * @param string $png_data	- the png image as a stream
- * @return string			- the gif image as a stream
+ * @param string $png_data - the png image as a stream
+ *
+ * @return string - the gif image as a stream
  */
-function png2gif($png_data) {
+function png2gif(string $png_data) : string {
+	$ImageData = '';
+
 	if ($png_data != '') {
 		$fn = '/tmp/' . time() . '.png';
 
@@ -1901,10 +1929,12 @@ function png2gif($png_data) {
 
 /**
  * get available format files for cacti reporting
+ *
  * @return array	- available format files
  */
-function reports_get_format_files() {
+function reports_get_format_files() : array {
 	$formats = [];
+	$files   = [];
 	$dir     = CACTI_PATH_FORMATS . '';
 
 	if (is_dir($dir)) {
@@ -1944,7 +1974,7 @@ function reports_get_format_files() {
 /**
  * define the reports code that will be processed at the end of each polling event
  */
-function reports_poller_bottom() {
+function reports_poller_bottom() : void {
 	include_once(CACTI_PATH_LIBRARY . '/poller.php');
 
 	$command_string = read_config_option('path_php_binary');
@@ -1955,9 +1985,9 @@ function reports_poller_bottom() {
 /**
  * Setup the new dropdown action for Graph Management
  *
- * @param mixed $action - actions to be performed from dropdown
+ * @param array $action - actions to be performed from dropdown
  */
-function reports_graphs_action_array($action) {
+function reports_graphs_action_array(array $action) : array {
 	$action['reports'] = __('Add to Report');
 
 	return $action;
@@ -1971,9 +2001,9 @@ function reports_graphs_action_array($action) {
  *     graph_array: graphs titles selected from graph management's list
  *     graph_list:  graphs selected from graph management's list
  *
- * @return array $save
+ * @return mixed $save
  */
-function reports_graphs_action_prepare($save) {
+function reports_graphs_action_prepare(array $save) : mixed {
 	global $graph_timespans, $alignment;
 
 	if ($save['drp_action'] == 'reports') { // report
@@ -1998,6 +2028,8 @@ function reports_graphs_action_prepare($save) {
 		print '</p>
 			</td>
 		</tr>';
+
+		return false;
 	} else {
 		return $save;
 	}
@@ -2010,7 +2042,7 @@ function reports_graphs_action_prepare($save) {
  *
  * @return string $action
  */
-function reports_graphs_action_execute($action) {
+function reports_graphs_action_execute(string $action) : string {
 	if ($action == 'reports') { // report
 		$message = '';
 
@@ -2095,9 +2127,9 @@ function reports_graphs_action_execute($action) {
 		if ($message != '') {
 			raise_message('report_send', $message, MESSAGE_LEVEL_INFO);
 		}
-	} else {
-		return $action;
 	}
+
+	return $action;
 }
 
 /**
@@ -2118,12 +2150,13 @@ function reports_graphs_action_execute($action) {
  * @param  string    $oput_raw     - The Raw HTML output without CSS
  * @param  string    $oput_html    - The Report Output with CSS
  * @param  string    $oput_text    - The text output if any
- * @param  array     $attachments - The attachments required to reproduce the report
- * @param  array     $headers      - Any report specific Email headers
- * @param mixed $raw_data
+ * @param  array     $attachments  - The attachments required to reproduce the report
+ * @param  mixed     $headers      - Any report specific Email headers
+ *
+ * @return void
  */
-function reports_log_and_notify($id, $start_time, $report_type, $source, $source_id, $subject,
-	&$raw_data, &$oput_raw, &$oput_html, &$oput_text, $attachments = [], $headers = false) {
+function reports_log_and_notify(int $id, int $start_time, string $report_type, string $source, int $source_id, string $subject,
+	mixed &$raw_data, string &$oput_raw, string &$oput_html, string &$oput_text, array $attachments = [], mixed $headers = false) : void {
 	$report = db_fetch_row_prepared('SELECT *
 		FROM reports_queued
 		WHERE id = ?',
@@ -2205,18 +2238,18 @@ function reports_log_and_notify($id, $start_time, $report_type, $source, $source
 
 							if (cacti_sizeof($list)) {
 								// process the format file
-								$report_tag  = '';
+								$report_tag  = false;
 								$theme       = 'modern';
 								$output_html = '';
 								$format      = $list['format_file'] != '' ? $list['format_file'] : 'default';
 
-								$format_ok = reports_load_format_file($format, $output, $report_tag, $theme);
+								$format_ok = reports_load_format_file($format, $output_html, $report_tag, $theme);
 
 								if ($format_ok) {
 									if ($report_tag) {
-										$oput_html = str_replace('<REPORT>', $oput_html, $output);
+										$oput_html = str_replace('<REPORT>', $oput_html, $output_html);
 									} else {
-										$oput_html = $output . PHP_EOL . $oput_html;
+										$oput_html = $output_html . PHP_EOL . $oput_html;
 									}
 								}
 
@@ -2283,7 +2316,7 @@ function reports_log_and_notify($id, $start_time, $report_type, $source, $source
 	}
 }
 
-function reports_queue($name, $request_type, $source, $source_id, $command, $notification) {
+function reports_queue(string $name, int $request_type, string $source, int $source_id, string $command, array $notification) : mixed {
 	if (isset($_SESSION['sess_user_id'])) {
 		$requested_id = $_SESSION['sess_user_id'];
 		$requested_by = db_fetch_cell_prepared('SELECT username
@@ -2332,7 +2365,7 @@ function reports_queue($name, $request_type, $source, $source_id, $command, $not
 	return $id;
 }
 
-function reports_run($id) {
+function reports_run(int $id) : bool {
 	include_once(CACTI_PATH_BASE . '/lib/poller.php');
 
 	$report = db_fetch_row_prepared('SELECT *
@@ -2372,10 +2405,12 @@ function reports_run($id) {
 	cacti_log($stats, false, 'SYSTEM');
 
 	db_execute_prepared('DELETE FROM reports_queued WHERE id = ?', [$id]);
+
+	return true;
 }
 
-function get_notification_emails($id = '', $recipient = 'to') {
-	if ($id == '' || $id === null) {
+function get_notification_emails(int $id = 0, string $recipient = 'to') : string {
+	if ($id == 0 || $id === null) {
 		return '';
 	}
 
@@ -2383,7 +2418,7 @@ function get_notification_emails($id = '', $recipient = 'to') {
 		return '';
 	}
 
-	if (!empty($id)) {
+	if ($id > 0) {
 		if ($recipient == 'to') {
 			return trim(db_fetch_cell_prepared('SELECT emails
 				FROM plugin_notification_lists

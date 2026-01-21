@@ -513,7 +513,7 @@ function process_poller_output(mixed &$rrdtool_pipe, int $remainder = 0) : int {
 
 	cacti_log("Processing Poller Output with $remainder maximum items to be processed", false, 'POLLER', POLLER_VERBOSITY_HIGH);
 
-	if ($remainder == 0) {
+	if ($remainder === 0) {
 		$limit = 'LIMIT ' . $max_rows;
 	} else {
 		$limit = '';
