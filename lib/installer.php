@@ -117,7 +117,7 @@ class Installer implements JsonSerializable {
 	private mixed $buttonPrevious = null;
 	private mixed $buttonTest = null;
 	private array $iconClass;
-	private bool $eula;
+	private int $eula;
 	private int $cronInterval;
 	private array $defaultAutomation;
 	private array $permissions;
@@ -227,7 +227,7 @@ class Installer implements JsonSerializable {
 
 		$this->errors        = [];
 		$this->templates     = [];
-		$this->eula          = read_config_option('install_eula', true);
+		$this->eula          = intval(read_config_option('install_eula', true));
 		$this->cronInterval  = intval(read_config_option('cron_interval', true));
 		$this->locales       = get_installed_locales();
 		$this->stepData      = null;
