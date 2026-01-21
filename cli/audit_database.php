@@ -1003,6 +1003,8 @@ function create_tables($load = true) {
 
 		if (file_exists('/usr/bin/mariadb')) {
 			$mysql = '/usr/bin/mariadb';
+		} elseif (file_exists('/usr/local/bin/mariadb')) {
+			$mysql = '/usr/local/bin/mariadb';
 		} else {
 			$mysql = 'mysql';
 		}
