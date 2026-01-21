@@ -746,7 +746,7 @@ class Installer implements JsonSerializable {
 			$param_eula = 0;
 		}
 
-		$this->eula = ($param_eula > 0);
+		$this->eula = $param_eula;
 
 		if (!$this->eula) {
 			$this->addError(Installer::STEP_WELCOME, 'Eula', 'Eula not accepted');
