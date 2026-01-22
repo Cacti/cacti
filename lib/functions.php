@@ -2164,7 +2164,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 			$params   = array();
 			$params[] = $data_input['data_template_id'];
 
-			if ($field['output_type'] != '') {
+			if (isset($field['output_type']) && $field['output_type'] != '') {
 				$output_type_sql = ' AND sqgr.snmp_query_graph_id = ?';
 				$params[] = $field['output_type'];
 			} else {
