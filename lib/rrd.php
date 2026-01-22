@@ -3317,13 +3317,13 @@ function rrdtool_function_info_from_ds(int $data_source_id) : array {
 /**
  * rrdtool_function_contains_cf  verifies if the RRDfile contains the 'MAX' consolidation function
  *
- * @param int   $local_data_id - The id of the data source
- * @param int   $cf            - The consolidation function to search for
- * @param mixed $rrdtool_pipe  - The rrdtool pipe if available
+ * @param int    $local_data_id - The id of the data source
+ * @param string $cf            - The consolidation function to search for
+ * @param mixed  $rrdtool_pipe  - The rrdtool pipe if available
  *
  * @return bool - true or false depending on the result
  */
-function rrdtool_function_contains_cf(int $local_data_id, int $cf, mixed $rrdtool_pipe = null) : bool {
+function rrdtool_function_contains_cf(int $local_data_id, string $cf, mixed $rrdtool_pipe = null) : bool {
 	$info = rrdtool_function_info($local_data_id, $rrdtool_pipe);
 
 	if (cacti_sizeof($info)) {

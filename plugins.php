@@ -606,7 +606,7 @@ function update_show_current() : void {
 
 	$archive_title = __esc('Are you sure you want to Archive this Plugin?');
 
-	html_filter_start_box(__('Plugin Management'), '100%', false, 3, 'center', '');
+	html_filter_start_box(__('Plugin Management'), '100%', false, true, 'center', '');
 
 	?>
 	<tr class='even noprint'>

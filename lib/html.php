@@ -27,17 +27,17 @@
  *
  * @param string $title - the title of this box ("" for no title)
  * @param string $width - the width of the box in pixels or percent
- * @param bool $div - end with a starting div
- * @param int $cell_padding - the amount of cell padding to use inside of the box
+ * @param bool   $div - end with a starting div
+ * @param int    $cell_padding - the amount of cell padding to use inside of the box
  * @param string $align - the HTML alignment to use for the box (center, left, or right)
- * @param string|array $url_or_buttons - the url to use when the user clicks 'Add'
+ * @param mixed  $url_or_buttons - the url to use when the user clicks 'Add'
  *   in the upper-right corner of the box ("" for no 'Add' link)
  *   This function has two method.  This first is for legacy behavior where you
  *   you pass in a href to the function, and an optional label as $add_label
  *   The new format accepts an array of hrefs to add to the start box.  The format
  *   of the array is as follows:
  *
- *   $add_url_or_buttons = array(
+ *   $url_or_buttons = array(
  *      array(
  *        'id' => 'uniqueid',
  *        'href' => 'value',
@@ -54,14 +54,14 @@
  *   is a requirement to use fontawesome icon sets for this class, but it
  *   can include other classes.  In addition, the href can be a hash '#' if
  *   your page has a ready function that has it's own javascript.
- * @param bool|string $add_label - used with legacy behavior to add specific text to the link.
+ * @param mixed $add_label - used with legacy behavior to add specific text to the link.
  *   This parameter is only used in the legacy behavior.
  * @param bool $showcols - Show the column selector icon
- * @param mixed $add_url_or_buttons
  *
  * @return void
  */
-function html_start_box($title, $width, $div, $cell_padding, $align, $add_url_or_buttons, $add_label = false, $showcols = false) {
+function html_start_box(string $title, string $width, bool $div, int $cell_padding, string $align,
+	mixed $url_or_buttons, mixed $add_label = false, bool $showcols = false) {
 	static $table_suffix = 1;
 	static $help_count   = 0;
 	static $mode_count   = 0;
@@ -77,7 +77,7 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_url_or
 		$beta_count++;
 	}
 
-	if (POLLER_ID > 1 && $title != '' && $mode_count == 0) {
+	if (POLLER_ID > 1 && $title != '' && $mode_count == 0) { // @phpstan-ignore-line
 		$title .= ' [ ' . __('Remote Server') . ': ';
 
 		if (CACTI_CONNECTION == 'offline') {
@@ -137,12 +137,12 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_url_or
 			print "<span class='cactiFilterColumns' title='" . __esc('Select Columns for Display') . "'><a id='showColumns' href='#'><i class='ti ti-table threeBars'></i></a></span>";
 		}
 
-		if ($add_url_or_buttons != '' && !is_array($add_url_or_buttons)) {
-			print "<span class='cactiFilterAdd' title='$add_label'><a class='linkOverDark' href='" . htmle($add_url_or_buttons) . "'><i class='ti ti-plus plusAdd'></i></a></span>";
+		if ($url_or_buttons != '' && !is_array($url_or_buttons)) {
+			print "<span class='cactiFilterAdd' title='$add_label'><a class='linkOverDark' href='" . htmle($url_or_buttons) . "'><i class='ti ti-plus plusAdd'></i></a></span>";
 		} else {
-			if (is_array($add_url_or_buttons)) {
-				if (cacti_sizeof($add_url_or_buttons)) {
-					foreach ($add_url_or_buttons as $icon) {
+			if (is_array($url_or_buttons)) {
+				if (cacti_sizeof($url_or_buttons)) {
+					foreach ($url_or_buttons as $icon) {
 						if (isset($icon['callback']) && $icon['callback'] === true) {
 							$classo = 'pic';
 						} else {
@@ -197,15 +197,18 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_url_or
 /**
  * Wrapper function for the html_start_box to control filters which presently are displayed
  * as tables in Cacti.  This function will show the three bar show/hide column setting
- * @param mixed $title
- * @param mixed $add_url_or_buttons
- * @param mixed $div
- * @param mixed $showcols
- * @param mixed $add_label
- * @param mixed $width
+ *
+ * @param string  $title
+ * @param mixed   $url_or_buttons
+ * @param bool    $div
+ * @param bool    $showcols
+ * @param mixed   $add_label
+ * @param string  $width
+ *
+ * @return void
  */
-function html_filter_start_box($title, $add_url_or_buttons = '', $div = false, $showcols = true, $add_label = false, $width = '100%') {
-	html_start_box($title, $width, $div, 3, 'center', $add_url_or_buttons, $add_label, $showcols);
+function html_filter_start_box(string $title, mixed $url_or_buttons = '', bool $div = false, bool $showcols = true, mixed $add_label = false, string $width = '100%') : void {
+	html_start_box($title, $width, $div, 3, 'center', $url_or_buttons, $add_label, $showcols);
 }
 
 /**
@@ -223,7 +226,7 @@ function html_filter_start_box($title, $add_url_or_buttons = '', $div = false, $
  *
  * @return void  - Output is printed to standard output
  */
-function html_sub_tabs($tabs, $uri = '', $session_var = '') {
+function html_sub_tabs(array $tabs, string $uri = '', string $session_var = '') : void {
 	// determine the session variables if not set
 	if ($session_var == '') {
 		$session_var = basename(get_current_page(), '.php') . '_current_tab';
@@ -286,7 +289,7 @@ function html_sub_tabs($tabs, $uri = '', $session_var = '') {
  *
  * @return void
  */
-function html_end_box($trailing_br = true, $div = false) {
+function html_end_box(bool $trailing_br = true, bool $div = false) : void {
 	if ($div) {
 		print '</div></div>';
 	} else {
@@ -298,7 +301,7 @@ function html_end_box($trailing_br = true, $div = false) {
 	}
 }
 
-function html_filter_end_box() {
+function html_filter_end_box() : void {
 	html_end_box(true, true);
 }
 
@@ -368,7 +371,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 					<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width']; ?>' graph_height='<?php print $graph['height']; ?>' title_font_size='<?php print((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size')); ?>'></div>
 					<?php if (is_realm_allowed(27)) { ?>
 					<div id='dd<?php print $graph['local_graph_id']; ?>' class='noprint graphDrillDown'>
-						<?php print graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons', $tree_id, $branch_id); ?>
+						<?php graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons', $tree_id, $branch_id); ?>
 					</div>
 					<?php } ?>
 				</div>
@@ -486,7 +489,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 					<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print read_user_setting('default_width'); ?>' graph_height='<?php print read_user_setting('default_height'); ?>'></div>
 					<?php if (is_realm_allowed(27)) { ?>
 					<div id='dd<?php print $graph['local_graph_id']; ?>' class='noprint graphDrillDown'>
-						<?php print graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons_thumbnails', $tree_id, $branch_id); ?>
+						<?php graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons_thumbnails', $tree_id, $branch_id); ?>
 					</div>
 					<?php } ?>
 				</div>
@@ -518,7 +521,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
  *
  * @return void
  */
-function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_id = 0, $branch_id = 0) {
+function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_id = 0, $branch_id = 0) : void {
 	static $rand = 0;
 
 	$aggregate_url = aggregate_build_children_url($local_graph_id);
@@ -731,6 +734,8 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		$order_data = [grv('sort_column') => grv('sort_direction')];
 	}
 
+	$primarySort = '';
+
 	foreach ($order_data as $key => $direction) {
 		$primarySort = $key;
 
@@ -891,7 +896,8 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
  *
  * @return void
  */
-function html_header_sort_checkbox($header_items, $sort_column, $sort_direction, $include_form = true, $form_action = '', $return_to = '', $prefix = 'chk') {
+function html_header_sort_checkbox(array $header_items, string $sort_column, string $sort_direction,
+	bool $include_form = true, string $form_action = '', string $return_to = '', string $prefix = 'chk') : void {
 	static $page_count = 0;
 
 	$table_id = form_get_table_id();
@@ -920,6 +926,8 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 	} else {
 		$order_data = [grv('sort_column') => grv('sort_direction')];
 	}
+
+	$primarySort = '';
 
 	foreach ($order_data as $key => $direction) {
 		$primarySort = $key;
@@ -1068,14 +1076,15 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 /**
  * html_header - draws a header row suitable for display inside a box element
  *
- * @param array $header_items - an array containing a list of items to be included in the header
- *   alternatively and array of header names and alignment array('display' = 'blah', 'align' = 'blah')
- * @param int $last_item_colspan - the TD 'colspan' to apply to the last cell in the row
- * @param mixed $resizable
+ * @param array $header_items     - An array containing a list of items to be included in the header
+ *                                  alternatively and array of header names and alignment
+ *                                  array('display' = 'blah', 'align' = 'blah')
+ * @param int  $last_item_colspan - The TD 'colspan' to apply to the last cell in the row
+ * @param bool $resizable         - Is the header resizable
  *
  * @return void
  */
-function html_header($header_items, $last_item_colspan = 1, $resizable = true) {
+function html_header(array $header_items, int $last_item_colspan = 1, bool $resizable = true) : void {
 	$table_id = form_get_table_id();
 
 	$header_items = form_process_visible_display_text($table_id, $header_items);
@@ -1092,7 +1101,7 @@ function html_header($header_items, $last_item_colspan = 1, $resizable = true) {
 	foreach ($header_items as $item) {
 		if (is_array($item)) {
 			// if the column is not visible, don't display it
-			if (isset($display_array['visible']) && $display_array['visible'] === false) {
+			if (isset($header_items['visible']) && $header_items['visible'] === false) {
 				continue;
 			}
 
@@ -1129,15 +1138,14 @@ function html_header($header_items, $last_item_colspan = 1, $resizable = true) {
  * html_section_header - draws a header row suitable for display inside a box element
  * but for display as a section title and not as a series of table header columns
  *
- * @param array $header_name - an array of the display name of the header for the section and
- *   optional alignment.
- * @param int $last_item_colspan - the TD 'colspan' to apply to the last cell in the row
- * @param mixed $header_item
- * @param mixed $resizable
+ * @param mixed $header_item     - an array of the display name of the header for the section and
+ *                                 optional alignment.
+ * @param int $last_item_colspan - The TD 'colspan' to apply to the last cell in the row
+ * @param bool$resizable         - Will this header be resizable
  *
  * @return void
  */
-function html_section_header($header_item, $last_item_colspan = 1, $resizable = true) {
+function html_section_header(mixed $header_item, int $last_item_colspan = 1, bool $resizable = true) : void {
 	print "<tr class='tableHeader " . ($last_item_colspan > 1 || !$resizable ? 'tableFixed' : '') . "'>";
 
 	if (is_array($header_item) && isset($header_item['display'])) {
@@ -1154,15 +1162,16 @@ function html_section_header($header_item, $last_item_colspan = 1, $resizable = 
  * suitable for display inside a box element
  *
  * @param array $header_items - an array containing a list of items to be included in the header
- *   alternatively and array of header names and alignment array('display' = 'blah', 'align' = 'blah')
- * @param bool $include_form - whether to include the 'select all' form
+ *                              alternatively and array of header names and alignment
+ *                              array('display' = 'blah', 'align' = 'blah')
+ * @param bool $include_form  - whether to include the 'select all' form
  * @param string $form_action - the url to post the 'select all' form to
- * @param bool $resizable - whether the table is resizable
- * @param string $prefix - the prefix to use for the checkbox names
+ * @param bool $resizable     - whether the table is resizable
+ * @param string $prefix      - the prefix to use for the checkbox names
  *
  * @return void
  */
-function html_header_checkbox($header_items, $include_form = true, $form_action = '', $resizable = true, $prefix = 'chk') {
+function html_header_checkbox(array $header_items, bool $include_form = true, string $form_action = '', bool $resizable = true, string $prefix = 'chk') : void {
 	$table_id = form_get_table_id();
 
 	$header_items = form_process_visible_display_text($table_id, $header_items);
@@ -1182,7 +1191,7 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 	foreach ($header_items as $item) {
 		if (is_array($item)) {
 			// if the column is not visible, don't display it
-			if (isset($display_array['visible']) && $display_array['visible'] === false) {
+			if (isset($header_items['visible']) && $header_items['visible'] === false) {
 				continue;
 			}
 
@@ -1259,7 +1268,7 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
  *
  * @return void
  */
-function html_create_list($form_data, $column_display, $column_id, $form_previous_value) {
+function html_create_list(array $form_data, string $column_display, string $column_id, string $form_previous_value) {
 	if (cacti_sizeof($form_data)) {
 		foreach ($form_data as $key => $row) {
 			if (is_array($row)) {
@@ -1292,7 +1301,7 @@ function html_create_list($form_data, $column_display, $column_id, $form_previou
 				print '>' . htmle($row[$column_display]) . '</option>';
 			} elseif (isset($row['display'])) {
 				print '>' . htmle($row['display']) . '</option>';
-			} elseif (isset($column_display) && isset($row[$column_display])) {
+			} elseif (isset($row[$column_display])) {
 				print '>' . htmle(null_out_substitutions($row[$column_display])) . '</option>';
 			}
 		}
@@ -1339,7 +1348,7 @@ function htmle($string) {
  *
  * @return string $new_string - the escaped string to be returned.
  */
-function html_escape($string) {
+function html_escape(string $string = '') : string {
 	static $charset;
 
 	if ($charset == '') {
@@ -1351,7 +1360,7 @@ function html_escape($string) {
 	}
 
 	// Grave Accent character can lead to xss
-	if ($string !== null && $string != '') {
+	if ($string != '') {
 		$string = str_replace('`', '&#96;', $string);
 
 		return htmlspecialchars($string, ENT_QUOTES | ENT_HTML5, $charset, false);
@@ -1406,15 +1415,17 @@ function html_split_string($string, $length = 90, $forgiveness = 10) {
  * on an edit form
  *
  * @param array $item_list - an array representing the list of graph items. this array should
- *   come directly from the output of db_fetch_assoc()
+ *                           come directly from the output of db_fetch_assoc()
  * @param string $filename - the filename to use when referencing any external url
  * @param string $url_data - any extra GET url information to pass on when referencing any
- *   external url
+ *                           external url
  * @param bool $disable_controls - whether to hide all edit/delete functionality on this form
  *
  * @return void
  */
-function draw_graph_items_list($item_list, $filename, $url_data, $disable_controls) {
+function draw_graph_items_list(array $item_list, string $filename, string $url_data, bool $disable_controls) : void {
+	global $consolidation_functions, $graph_item_types;
+
 	include(CACTI_PATH_INCLUDE . '/global_arrays.php');
 
 	$display_text = [
@@ -1470,6 +1481,8 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 	$group_counter    = 0;
 	$_graph_type_name = '';
 	$i                = 0;
+	$matrix_title     = '';
+	$customClass      = '';
 
 	if (cacti_sizeof($item_list)) {
 		foreach ($item_list as $item) {
@@ -1541,7 +1554,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			if ($disable_controls == false) {
 				$display = "<a class='linkEditMain' href='" . htmle("$filename?action=item_edit&id=" . $item['id'] . "&$url_data") . "'>" . htmle($matrix_title) . '</a>';
 			} else {
-				$display = htmle($matric_title);
+				$display = htmle($matrix_title);
 			}
 
 			// data source display
@@ -1710,7 +1723,7 @@ function is_menu_pick_active($menu_url) {
 		} else {
 			return false;
 		}
-	} elseif (!is_array($url_array) || (is_array($url_array) && !cacti_sizeof($url_array))) {
+	} elseif (!is_array($url_array) || !cacti_sizeof($url_array)) {
 		// break out the URL and variables
 		$url_array = parse_url($_SERVER['REQUEST_URI']);
 
@@ -1732,11 +1745,11 @@ function is_menu_pick_active($menu_url) {
 		return false;
 	}
 
-	if (! array_key_exists('path', $menu_array)) {
+	if (!array_key_exists('path', $menu_array)) {
 		return false;
 	}
 
-	$base_url_path = basename($url_array['path'] ?? '');
+	$base_url_path = basename($url_array['path']);
 
 	if (empty($base_url_path)) {
 		cacti_log('INFO: Empty url path detceted - ' . json_encode($url_array), false, 'MENU', POLLER_VERBOSITY_DEBUG);
@@ -1744,7 +1757,7 @@ function is_menu_pick_active($menu_url) {
 		return false;
 	}
 
-	$base_menu_path = basename($menu_array['path'] ?? '');
+	$base_menu_path = basename($menu_array['path']);
 
 	if (empty($base_menu_path)) {
 		cacti_log('INFO: Empty menu path detceted - ' . json_encode($menu_array), false, 'MENU', POLLER_VERBOSITY_DEBUG);
@@ -1782,11 +1795,11 @@ function is_menu_pick_active($menu_url) {
 /**
  * draw_menu - draws the cacti menu for display in the console
  *
- * @param string $user_menu - the user menu to display
+ * @param mixed $user_menu - the user menu to display
  *
  * @return void
  */
-function draw_menu($user_menu = '') {
+function draw_menu(mixed $user_menu = '') {
 	global $user_auth_realm_filenames, $menu, $menu_glyphs;
 
 	if (!is_array($user_menu)) {
@@ -1941,13 +1954,13 @@ function draw_menu($user_menu = '') {
  * on one or more data elements
  *
  * @param array $actions_array - an array that contains a list of possible actions. this array should
- *   be compatible with the form_dropdown() function
- * @param int $delete_action - if there is a delete action that should suppress removal of rows
- *   specify it here.  If you don't want any delete actions, set to 0.
+ *                               be compatible with the form_dropdown() function
+ * @param int $delete_action   - if there is a delete action that should suppress removal of rows
+ *                               specify it here.  If you don't want any delete actions, set to 0.
  *
  * @return void
  */
-function draw_actions_dropdown($actions_array, $delete_action = 1) {
+function draw_actions_dropdown(array $actions_array, int $delete_action = 1) : void {
 	global $form_id;
 
 	if ($actions_array === null || cacti_sizeof($actions_array) == 0) {
@@ -2029,9 +2042,10 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 	<?php
 }
 
-// Deprecated functions
 /**
  * Draws a matrix header item in an HTML table.
+ *
+ * @deprecated This function is deprecated
  *
  * @param string $matrix_name The name to be displayed in the matrix header.
  * @param string $matrix_text_color The color of the text in the matrix header.
@@ -2039,7 +2053,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
  *
  * @return void
  */
-function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1) {
+function DrawMatrixHeaderItem(string $matrix_name, string $matrix_text_color, int $column_span = 1) : void {
 	?>
 	<th style='height:1px;' colspan='<?php print $column_span; ?>'>
 		<div class='textSubHeaderDark'><?php print $matrix_name; ?></div>
@@ -2058,7 +2072,7 @@ function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1
  *
  * @return void
  */
-function form_area($text) {
+function form_area(string $text) : void {
 	?>
 	<tr>
 		<td class='textArea'>
@@ -2071,12 +2085,11 @@ function form_area($text) {
 /**
  * is_console_page - determines if current passed url is considered to be a console page
  *
- * @param string url - url to be checked
- * @param mixed $url
+ * @param string $url - url to be checked
  *
  * @return bool true if console page, false if not
  */
-function is_console_page($url) {
+function is_console_page(string $url) : bool {
 	global $menu;
 
 	$basename = basename($url);
@@ -2116,7 +2129,7 @@ function is_console_page($url) {
 	return false;
 }
 
-function html_show_tabs_left() {
+function html_show_tabs_left() : void {
 	global $tabs_left;
 
 	$realm_allowed     = [];
@@ -2143,7 +2156,7 @@ function html_show_tabs_left() {
 	}
 
 	if ($realm_allowed[7]) {
-		if (POLLER_ID > 1 && CACTI_CONNECTION != 'online') {
+		if (POLLER_ID > 1 && CACTI_CONNECTION != 'online') { // @phpstan-ignore-line
 			// Don't show the graphs tab when offline
 		} else {
 			$tabs_left[] =
@@ -2245,7 +2258,7 @@ function html_show_tabs_left() {
 		$tabs_left[] = ['title' => ucwords($alt), 'id' => 'tab-' . $id, 'url' => $href];
 	}
 
-	if (POLLER_ID > 1 && CACTI_CONNECTION != 'online') {
+	if (POLLER_ID > 1 && CACTI_CONNECTION != 'online') { // @phpstan-ignore-line
 		// Only show external links when online
 	} else {
 		$external_links = db_fetch_assoc('SELECT id, title
@@ -2307,7 +2320,7 @@ function html_show_tabs_left() {
 	print '</ul></nav></div>';
 }
 
-function html_graph_tabs_right() {
+function html_graph_tabs_right() : void {
 	global $tabs_right;
 
 	$theme = get_selected_theme();
@@ -2397,7 +2410,7 @@ function html_graph_tabs_right() {
 	print '</ul></nav></div>';
 }
 
-function html_transform_graph_template_ids($ids) {
+function html_transform_graph_template_ids(mixed $ids) : string {
 	$return_ids = [];
 
 	if (str_contains($ids, ',')) {
@@ -2425,7 +2438,7 @@ function html_transform_graph_template_ids($ids) {
 	return implode(',', $return_ids);
 }
 
-function html_make_device_where() {
+function html_make_device_where() : string {
 	$sql_where = '';
 
 	if (isrv('site_id') && gfrv('site_id') > 0) {
@@ -2451,7 +2464,7 @@ function html_make_device_where() {
 	return $sql_where;
 }
 
-function html_graph_order_filter_array() {
+function html_graph_order_filter_array() : array {
 	$return  = [];
 
 	if (read_config_option('dsstats_enable') == '') {
@@ -2598,20 +2611,22 @@ function html_graph_order_filter_array() {
 	return $return;
 }
 
-function html_thumbnails_filter($callBack = 'applyGraphFilter') {
+function html_thumbnails_filter(string $callBack = 'applyGraphFilter') : string {
 	$output  = "<input id='thumbnails' type='checkbox' onClick='$callBack()' " . (grv('thumbnails') == 'true' ? 'checked' : '') . '>';
 	$output .= "<label for='thumbnails'>" . __('Thumbnails') . '</label>';
 
 	return $output;
 }
 
-function html_business_hours_filter($callBack = 'applyGraphFilter') {
+function html_business_hours_filter(string $callBack = 'applyGraphFilter') : string {
 	if (read_config_option('business_hours_enable') == 'on') {
 		$output  = "<input id='business_hours' type='checkbox' onClick='$callBack()' " . (grv('business_hours') == 'true' ? 'checked' : '') . '>';
 		$output .= "<label for='business_hours'>" . __('Business Hours') . '</label>';
 
 		return $output;
 	}
+
+	return '';
 }
 
 /**
@@ -2852,16 +2867,16 @@ function html_spikekill_setting($name) {
 /**
  * Generates an HTML list item for a spike kill menu.
  *
- * @param string $text The text content of the menu item.
- * @param string $icon (Optional) The icon class for the menu item.
- * @param string $class (Optional) Additional CSS classes for the menu item.
- * @param string $id (Optional) The ID attribute for the menu item.
- * @param string $data_graph (Optional) The data-graph attribute for the menu item.
- * @param string $subitem (Optional) Submenu items in HTML format.
+ * @param string $text       - The text content of the menu item.
+ * @param string $icon       - (Optional) The icon class for the menu item.
+ * @param string $class      - (Optional) Additional CSS classes for the menu item.
+ * @param string $id         - (Optional) The ID attribute for the menu item.
+ * @param mixed  $data_graph - (Optional) The data-graph attribute for the menu item.
+ * @param string $subitem    - (Optional) Submenu items in HTML format.
  *
  * @return string The generated HTML for the menu item.
  */
-function html_spikekill_menu_item($text, $icon = '', $class = '', $id = '', $data_graph = '', $subitem = '') {
+function html_spikekill_menu_item(string $text, string $icon = '', string $class = '', string $id = '', mixed $data_graph = '', string $subitem = '') : string {
 	$output = '<li ';
 
 	if (!empty($id)) {
@@ -2899,11 +2914,9 @@ function html_spikekill_menu_item($text, $icon = '', $class = '', $id = '', $dat
  *
  * @param int $local_graph_id The ID of the local graph.
  *
- * @global array $settings The global settings array containing SpikeKill configuration options.
- *
  * @return void
  */
-function html_spikekill_menu($local_graph_id) {
+function html_spikekill_menu(int $local_graph_id) : void {
 	global $settings;
 	$ravgnan1 = html_spikekill_menu_item(__('Average'), html_spikekill_setting('spikekill_avgnan') == 'avg' ? 'ti ti-check' : 'fa', 'skmethod', 'method_avg');
 	$ravgnan2 = html_spikekill_menu_item(__('NaN\'s'), html_spikekill_setting('spikekill_avgnan') == 'nan' ? 'ti ti-check' : 'fa', 'skmethod', 'method_nan');
@@ -2965,7 +2978,7 @@ function html_spikekill_menu($local_graph_id) {
 	print html_spikekill_menu_item(__('Settings'), 'ti ti-settings-filled', '', '', '', $ravgnan . $rstddev . $rvarpct . $rvarout . $rkills . $rabsmax);
 }
 
-function html_spikekill_js() {
+function html_spikekill_js() : void {
 	?>
 	<script type='text/javascript'>
 	var spikeKillOpen = false;
@@ -3154,14 +3167,12 @@ function html_spikekill_js() {
 /**
  * html_common_header - prints a common set of header, css and javascript links
  *
- * @param string title - the title of the page to place in the browser
- * @param string selectedTheme - optionally sets a specific theme over the current one
- * @param mixed $title
- * @param mixed $selectedTheme
+ * @param string $title - the title of the page to place in the browser
+ * @param string $selectedTheme - optionally sets a specific theme over the current one
  *
  * @return void
  */
-function html_common_header($title, $selectedTheme = '') {
+function html_common_header(string $title, string $selectedTheme = '') : void {
 	global $path2calendar, $path2timepicker, $path2colorpicker, $path2ms, $path2msfilter;
 
 	if ($selectedTheme == '') {

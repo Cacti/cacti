@@ -757,7 +757,7 @@ function cacti_snmp_walk(string $hostname, string $community, string $oid, mixed
 		}
 
 		// check for bad entries
-		if (is_array($temp_array) && cacti_sizeof($temp_array)) {
+		if (cacti_sizeof($temp_array)) {
 			foreach ($temp_array as $key => $value) {
 				foreach ($banned_snmp_strings as $item) {
 					if (strstr($value, $item) != '') {

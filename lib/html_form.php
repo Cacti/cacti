@@ -25,9 +25,9 @@
 /**
  * Draws an edit form based on the provided configuration and fields arrays.
  *
- * @param array $array an array that contains all of the information needed to draw
- *   the html form. see the arrays contained in include/global_settings.php
- *   for the extract syntax of this array
+ * @param array $array - an array that contains all of the information needed to draw
+ *                       the html form. see the arrays contained in include/global_settings.php
+ *                       for the extract syntax of this array
  *
  * @return void
  */

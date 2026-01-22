@@ -26,33 +26,20 @@
 
 class CactiTableFilter {
 	// constructor variables
-	public $form_header      = '';
-
-	public $form_action      = '';
-
-	public $form_id          = '';
-
-	public $form_method      = 'get';
-
-	public $session_var      = 'sess_';
-
-	public $action_url       = '';
-
-	public $action_label     = '';
-
-	public $show_columns     = true;
-
-	public $default_filter   = [];
-
-	public $rows_label       = '';
-
-	public $associated_label = '';
-
-	public $js_extra         = '';
-
-	public $dynamic          = true;
-
-	public $def_refresh      = 300;
+	public string $form_header      = '';
+	public string $form_action      = '';
+	public string $form_id          = '';
+	public string $form_method      = 'get';
+	public string $session_var      = 'sess_';
+	public string $action_url       = '';
+	public string $action_label     = '';
+	public bool $show_columns       = true;
+	public array $default_filter    = [];
+	public string $rows_label       = '';
+	public string $associated_label = '';
+	public string $js_extra         = '';
+	public bool $dynamic            = true;
+	public int $def_refresh         = 300;
 
 	/**
 	 * Custom hooks for common functionality.
@@ -60,48 +47,29 @@ class CactiTableFilter {
 	 * pages that will require a full stack replacement
 	 * filter.
 	 */
-	public $has_graphs     = false;
+	public bool   $has_graphs      = false;
+	public bool   $has_data        = false;
+	public bool   $has_save        = false;
+	public bool   $has_import      = false;
+	public bool   $has_export      = false;
+	public bool   $has_purge       = false;
+	public bool   $has_named       = false;
+	public bool   $has_associated  = false;
+	public bool   $has_refresh     = false;
+	public mixed  $inject_content  = false;
+	private bool  $initialized     = false;
+	private array $sort_array      = [];
+	private array $button_array    = [];
+	private array $link_array      = [];
+	private array $append_array    = [];
+	private array $item_rows       = [];
+	private array $timespans       = [];
+	private array $timeshifts      = [];
+	private array $filter_array    = [];
+	private array $frequencies     = [];
 
-	public $has_data       = false;
-
-	public $has_save       = false;
-
-	public $has_import     = false;
-
-	public $has_export     = false;
-
-	public $has_purge      = false;
-
-	public $has_named      = false;
-
-	public $has_associated = false;
-
-	public $has_refresh    = false;
-
-	public $inject_content = false;
-
-	private $initialized   = false;
-
-	private $sort_array    = [];
-
-	private $button_array  = [];
-
-	private $link_array    = [];
-
-	private $append_array  = [];
-
-	private $item_rows     = [];
-
-	private $timespans     = [];
-
-	private $timeshifts    = [];
-
-	private $filter_array  = [];
-
-	private $frequencies   = [];
-
-	public function __construct($form_header = '', $form_action = '', $form_id = '',
-		$session_var = '', $action_url = '', $action_label = false, $show_columns = true) {
+	public function __construct(string $form_header = '', string $form_action = '', string $form_id = '',
+		string $session_var = '', string $action_url = '', mixed $action_label = '', bool $show_columns = true) {
 		global $item_rows, $graph_timespans, $graph_timeshifts;
 
 		$this->form_header   = $form_header;
@@ -148,7 +116,7 @@ class CactiTableFilter {
 		$this->filter_array = $this->create_default();
 	}
 
-	private function create_default() {
+	private function create_default() : array {
 		// default filter
 		return [
 			'rows' => [
@@ -195,10 +163,9 @@ class CactiTableFilter {
 	}
 
 	public function __destruct() {
-		return true;
 	}
 
-	public function set_filter_row($array, $index = false) {
+	public function set_filter_row(array $array, bool $index = false) : void {
 		if ($index === false) {
 			$this->filter_array['rows'][] = $array;
 		} else {
@@ -206,7 +173,7 @@ class CactiTableFilter {
 		}
 	}
 
-	public function get_filter_row($index) {
+	public function get_filter_row(string $index) : bool {
 		if ($index === false) {
 			return false;
 		}
@@ -218,34 +185,34 @@ class CactiTableFilter {
 		}
 	}
 
-	public function set_filter_array($array) {
+	public function set_filter_array(array $array) : void {
 		$this->filter_array = $array;
 	}
 
-	public function get_filter() {
+	public function get_filter() : array {
 		return $this->filter_array;
 	}
 
-	public function set_sort_array($sort_column, $sort_direction) {
+	public function set_sort_array(string $sort_column, string $sort_direction) : void {
 		$this->sort_array = [
 			'sort_column'    => $sort_column,
 			'sort_direction' => $sort_direction
 		];
 	}
 
-	public function add_button($id, $button) {
+	public function add_button(string $id, array $button) : void {
 		$this->button_array[$id] = $button;
 	}
 
-	public function add_link($id, $link) {
+	public function add_link(string $id, string $link) : void {
 		$this->link_array[$id] = $link;
 	}
 
-	public function add_row_element($row, $id, $filter) {
+	public function add_row_element(string $row, string $id, array $filter) : void {
 		$this->append_array[$row][$id] = $filter;
 	}
 
-	public function render() {
+	public function render() : bool {
 		if (!$this->initialized) {
 			$this->initialize_filter();
 		}
@@ -265,7 +232,7 @@ class CactiTableFilter {
 		return true;
 	}
 
-	public function sanitize() {
+	public function sanitize() : void {
 		if (!$this->initialized) {
 			$this->initialize_filter();
 		}
@@ -274,7 +241,7 @@ class CactiTableFilter {
 		$this->sanitize_filter_variables();
 	}
 
-	private function initialize_filter() {
+	private function initialize_filter() : void {
 		if (!cacti_sizeof($this->filter_array)) {
 			$this->filter_array = $this->create_default();
 		}
@@ -449,7 +416,7 @@ class CactiTableFilter {
 		$this->initialized = true;
 	}
 
-	private function create_filter() {
+	private function create_filter() : string {
 		// Buffer output
 		ob_start();
 
@@ -673,7 +640,7 @@ class CactiTableFilter {
 		return ob_get_clean();
 	}
 
-	private function make_function($buttonId, $buttonArray, $buttonAction) {
+	private function make_function(string $buttonId, array $buttonArray, string $buttonAction) : string {
 		$func_nl        = "\n\t\t\t";
 		$func_el        = "\n\t\t";
 		$buttonFunction = '';
@@ -725,7 +692,7 @@ class CactiTableFilter {
 		return $buttonFunction;
 	}
 
-	private function create_javascript() {
+	private function create_javascript() : string {
 		$applyFilter   = "'" . $this->form_action;
 		$clearFilter   = $applyFilter;
 		$defaultFilter = $applyFilter;
@@ -949,7 +916,7 @@ class CactiTableFilter {
 	</script>" . PHP_EOL;
 	}
 
-	private function sanitize_filter_variables() {
+	private function sanitize_filter_variables() : void {
 		$filters = [];
 
 		if (isset($this->filter_array['rows'])) {
