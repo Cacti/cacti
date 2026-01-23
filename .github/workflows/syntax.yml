@@ -158,7 +158,7 @@ jobs:
         sudo find /home/runner/work/cacti -type f -exec chmod 777 {} \;
         sudo systemctl stop apparmor
         sudo systemctl disable apparmor
-        sudo chown -R www-data:runner /home/runner/work/cacti
+        #sudo chown -R www-data:runner /home/runner/work/cacti
         sudo chmod o+x /home
         sudo chmod o+x /home/runner
         sudo chmod o+x /home/runner/work
