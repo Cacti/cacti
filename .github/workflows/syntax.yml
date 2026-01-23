@@ -158,7 +158,6 @@ jobs:
         sudo find /home/runner/work/cacti -type f -exec chmod 777 {} \;
         sudo systemctl stop apparmor
         sudo systemctl disable apparmor
-        #sudo chown -R www-data:runner /home/runner/work/cacti
         sudo chmod o+x /home
         sudo chmod o+x /home/runner
         sudo chmod o+x /home/runner/work
@@ -200,6 +199,20 @@ jobs:
 
     - name: Install dependencies
       run: sudo composer install --prefer-dist --no-progress
+
+    - name: CHECK - Linter
+      run: composer run-script lint
+      working-directory: .
+
+    - name: CHECK - Coding Standards
+      run: composer run-script phpcsfixer
+      working-directory: .
+      env:
+        PHP_CS_FIXER_IGNORE_ENV: true
+
+    - name: CHECK - PHPStan
+      run: composer run-script phpstan
+      working-directory: .
 
     - name: Prime Cacti config.php File
       run: |
