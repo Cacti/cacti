@@ -1025,7 +1025,7 @@ class Installer implements JsonSerializable {
 	 * Error: will add an error to STEP_PROFILE_AND_AUTOMATION when an
 	 * invalid id is passed.
 	 */
-	private function setProfile(int $param_profile = null) {
+	private function setProfile(int $param_profile = 0) {
 		if (db_table_exists('data_source_profiles')) {
 			if (!empty($param_profile)) {
 				$valid = db_fetch_cell_prepared('SELECT id FROM data_source_profiles WHERE id = ?', [$param_profile]);
@@ -1085,8 +1085,8 @@ class Installer implements JsonSerializable {
 	 * Errors: will add an error to STEP_PROFILE_AND_AUTOMATION if an
 	 * invalid value is passed.
 	 */
-	private function setAutomationMode(int $param_mode = null) : void {
-		if ($param_mode != null) {
+	private function setAutomationMode(int $param_mode = -1) : void {
+		if ($param_mode != -1) {
 			if (!$this->setTrueFalse($param_mode, $this->automationMode, 'automation_mode')) {
 				$this->addError(Installer::STEP_PROFILE_AND_AUTOMATION, 'Automation', 'Mode', __('Failed to apply specified mode: %s', $param_mode));
 			}
@@ -1116,8 +1116,8 @@ class Installer implements JsonSerializable {
 	 * Errors: will add an error to STEP_PROFILE_AND_AUTOMATION if an
 	 * invalid value is passed.
 	 */
-	private function setAutomationOverride(string $param_override = null) : void {
-		if ($param_override != null) {
+	private function setAutomationOverride(string $param_override = '') : void {
+		if ($param_override != '') {
 			if (!$this->setTrueFalse($param_override, $this->automationOverride, 'automation_override')) {
 				$this->addError(Installer::STEP_PROFILE_AND_AUTOMATION, 'Automation', 'Override', __('Failed to apply specified automation override: %s', $param_override));
 			}
@@ -1196,8 +1196,8 @@ class Installer implements JsonSerializable {
 	 *
 	 * Errors: will add an error to STEP_PROFILE_AND_AUTOMATION if an invalid value is passed
 	 */
-	private function setAutomationRange(string $param_range = null) : void {
-		if (!empty($param_range)) {
+	private function setAutomationRange(string $param_range = '') : void {
+		if ($param_range != '') {
 			$param_array = explode(',', $param_range);
 
 			if (cacti_sizeof($param_array)) {

@@ -531,8 +531,8 @@ function import() : void {
 	<?php
 }
 
-function is_tmp_writable(string $tmp_dir = null) : bool {
-	if ($tmp_dir === null) {
+function is_tmp_writable(string $tmp_dir = '') : bool {
+	if ($tmp_dir === '') {
 		$tmp_dir = sys_get_temp_dir();
 	}
 

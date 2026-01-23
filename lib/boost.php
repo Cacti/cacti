@@ -888,7 +888,7 @@ function boost_get_arch_table_names(mixed $latest_table = '') : mixed {
  *
  * @return int
  */
-function boost_process_poller_output(int $local_data_id, array $rrdtool_pipe = null) : int {
+function boost_process_poller_output(int $local_data_id, array $rrdtool_pipe = []) : int {
 	global $database_default, $boost_sock, $boost_timeout, $get_memory, $memory_used;
 
 	static $archive_table = false;

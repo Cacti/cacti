@@ -5244,8 +5244,8 @@ function admin_email(string $subject, string $message) : bool {
 	return $result;
 }
 
-function send_mail(mixed $to, mixed $from = null, string $subject = null,
-	string $body = null, mixed $attachments = [], mixed $headers = [],
+function send_mail(mixed $to, mixed $from = null, string $subject = '',
+	string $body = '', mixed $attachments = [], mixed $headers = [],
 	bool $html = false, bool $expandIds = false) : string {
 	if (!is_array($from)) {
 		$name = '';
@@ -6616,7 +6616,7 @@ function cacti_oid_numeric_format() : void {
 	}
 }
 
-function IgnoreErrorHandler(string $message, string $file = '', int $line = null) : bool {
+function IgnoreErrorHandler(string $message, string $file = '', int $line = 0) : bool {
 	global $snmp_error;
 
 	$log_ignored_errors = read_config_option('log_ignored_errors');
