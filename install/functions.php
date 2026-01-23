@@ -990,9 +990,11 @@ function install_setup_get_tables() : mixed {
 	return $t;
 }
 
-function to_array(array $data) : array {
+function to_array(SimpleXMLElement|false $data) : array {
 	if (is_object($data)) {
 		$data = get_object_vars($data);
+	} else {
+		return [];
 	}
 
 	return (is_array($data)) ? array_map(__FUNCTION__, $data) : $data;
