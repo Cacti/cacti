@@ -39,7 +39,9 @@ env:
 
 jobs:
   check:
-    runs-on: ${{ matrix.os }}
+    runs-on: self-hosted
+    container: 
+      ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
