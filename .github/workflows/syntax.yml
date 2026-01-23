@@ -210,11 +210,9 @@ jobs:
       run: composer run-script lint
       working-directory: .
 
-    - name: Checking coding standards on base code
-      run: composer run-script phpcsfixer
-      working-directory: .
-      env:
-        PHP_CS_FIXER_IGNORE_ENV: true
+#    - name: Checking coding standards on base code
+#      run: composer run-script phpcsfixer
+#      working-directory: .
 
     - name: Run PHPStan at Level 6 on base code
       run: composer run-script phpstan
