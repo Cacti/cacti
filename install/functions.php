@@ -997,7 +997,7 @@ function to_array(SimpleXMLElement|false $data) : array {
 		return [];
 	}
 
-	return (is_array($data)) ? array_map(__FUNCTION__, $data) : $data;
+	return (cacti_sizeof($data)) ? array_map(__FUNCTION__, $data) : $data;
 }
 
 /**
