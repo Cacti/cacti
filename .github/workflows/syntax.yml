@@ -200,17 +200,17 @@ jobs:
     - name: Install dependencies
       run: sudo composer install --prefer-dist --no-progress
 
-    - name: CHECK - Linter
+    - name: Run Linter on base code
       run: composer run-script lint
       working-directory: .
 
-    - name: CHECK - Coding Standards
+    - name: Checking coding standards on base code
       run: composer run-script phpcsfixer
       working-directory: .
       env:
         PHP_CS_FIXER_IGNORE_ENV: true
 
-    - name: CHECK - PHPStan
+    - name: Run PHPStan at Level 6 on base code
       run: composer run-script phpstan
       working-directory: .
 
