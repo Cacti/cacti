@@ -78,6 +78,18 @@ jobs:
     - name: Check PHP version
       run: php -v
 
+    - name: Run Linter on base code
+      run: composer run-script lint
+      working-directory: .
+
+    - name: Checking coding standards on base code
+      run: composer run-script phpcsfixer
+      working-directory: .
+
+    - name: Run PHPStan at Level 6 on base code
+      run: composer run-script phpstan
+      working-directory: .
+
     - name: Install github if not already installed
       run: sudo apt-get -y install git
 
@@ -205,18 +217,6 @@ jobs:
 
     - name: Install dependencies
       run: sudo composer install --prefer-dist --no-progress
-
-    - name: Run Linter on base code
-      run: composer run-script lint
-      working-directory: .
-
-#    - name: Checking coding standards on base code
-#      run: composer run-script phpcsfixer
-#      working-directory: .
-
-    - name: Run PHPStan at Level 6 on base code
-      run: composer run-script phpstan
-      working-directory: .
 
     - name: Prime Cacti config.php File
       run: |
