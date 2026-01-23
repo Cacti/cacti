@@ -253,7 +253,7 @@ save_log_files() {
 set_cacti_admin_password() {
 	echo "NOTE: Setting Cacti admin password and unsetting forced password change"
 
-	mysql $MYSQL_AUTH_USR -e "UPDATE user_auth SET password=PASSWORD('$WAPASS') WHERE id = 1 ;" "$DBNAME"
+	mysql $MYSQL_AUTH_USR -e "UPDATE user_auth SET password=MD5('$WAPASS') WHERE id = 1 ;" "$DBNAME"
 	mysql $MYSQL_AUTH_USR -e "UPDATE user_auth SET password_change='', must_change_password='' WHERE id = 1 ;" "$DBNAME"
 	mysql $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('secpass_forceold', '') ;" "$DBNAME"
 }
