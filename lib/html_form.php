@@ -1233,7 +1233,7 @@ function form_text_area($form_name, $previous_val, $form_rows, $form_columns, $d
 function form_multi_dropdown(string $form_name, array $array_display, mixed $prev_vals, string $column_id, string $class = '', string $on_change = '') : void {
 	if (!is_array($prev_vals) && $prev_vals != '') {
 		$values              = explode(',', $prev_vals);
-		$prev_vals = [];
+		$prev_vals           = [];
 
 		foreach ($values as $value) {
 			$prev_vals[][$column_id] = $value;

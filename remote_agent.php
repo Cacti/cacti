@@ -43,6 +43,7 @@ global $remote_db_cnn_id;
 $debug = false;
 
 $poller_db_cnn_id = false;
+
 if (POLLER_ID > 1) {
 	if (CACTI_CONNECTION == 'online') {
 		if (gnrv('action') == 'runquery') {

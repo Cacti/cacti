@@ -383,7 +383,7 @@ function field_edit() : void {
 			WHERE id = ?',
 			[grv('id')]);
 	} else {
-		$field = [];
+		$field              = [];
 		$current_field_type = '';
 	}
 

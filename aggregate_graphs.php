@@ -393,7 +393,7 @@ function form_save() : void {
  */
 function form_save_aggregate() : mixed {
 	if (!isrv('save_component_item')) {
-		return false ;
+		return false;
 	}
 
 	// two possible tables to save to - aggregate template or aggregate graph

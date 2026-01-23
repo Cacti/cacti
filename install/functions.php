@@ -362,8 +362,8 @@ function install_rmdir_recursive(string $directory, bool $delete_parent = false)
 
 function install_test_local_database_connection() : string {
 	global $database_type, $database_hostname, $database_username, $database_password, $database_default,
-		$database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key,
-		$database_ssl_cert, $database_ssl_ca, $database_ssl_capath, $database_ssl_verify_server_cert;
+	$database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key,
+	$database_ssl_cert, $database_ssl_ca, $database_ssl_capath, $database_ssl_verify_server_cert;
 
 	if (!isset($database_ssl)) {
 		$database_ssl        = false;
@@ -416,8 +416,8 @@ function install_test_local_database_connection() : string {
 
 function install_test_remote_database_connection() : string {
 	global $rdatabase_type, $rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default,
-		$rdatabase_type, $rdatabase_port, $rdatabase_retries, $rdatabase_ssl, $rdatabase_ssl_key,
-		$rdatabase_ssl_cert, $rdatabase_ssl_ca, $rdatabase_ssl_capath, $rdatabase_ssl_verify_server_cert;
+	$rdatabase_type, $rdatabase_port, $rdatabase_retries, $rdatabase_ssl, $rdatabase_ssl_key,
+	$rdatabase_ssl_cert, $rdatabase_ssl_ca, $rdatabase_ssl_capath, $rdatabase_ssl_verify_server_cert;
 
 	if (!isset($rdatabase_ssl)) {
 		$rdatabase_ssl        = false;
@@ -1003,7 +1003,7 @@ function to_array(mixed $data) : array {
  * we want the user to input. The "name" field must exist in the 'settings' table for
  * this to work. Cacti also uses different default values depending on what OS it is
  * running on.
-*/
+ */
 
 function install_tool_path(string $name, array $defaultPaths) : mixed {
 	global $settings;
@@ -1215,13 +1215,13 @@ function install_file_paths() : array {
 
 function remote_update_config_file() : string {
 	global $rdatabase_type, $rdatabase_hostname, $rdatabase_username,
-		$rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_retries,
-		$rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca, $rdatabase_ssl_capath, $rdatabase_ssl_verify_server_cert;
+	$rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_retries,
+	$rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca, $rdatabase_ssl_capath, $rdatabase_ssl_verify_server_cert;
 
 	global $database_type, $database_hostname, $database_username,
-		$database_password, $database_default, $database_type, $database_port, $database_retries,
-		$database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca,
-		$database_ssl_capath, $database_ssl_verify_server_cert;
+	$database_password, $database_default, $database_type, $database_port, $database_retries,
+	$database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca,
+	$database_ssl_capath, $database_ssl_verify_server_cert;
 
 	$failure     = '';
 	$newfile     = [];

@@ -2271,7 +2271,7 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 		}
 	}
 
-	if ($clone_dt_proceed ) {
+	if ($clone_dt_proceed) {
 		print 'Clone DT is "' . $clone_dt . '"' . PHP_EOL;
 
 		if ($clone_dt == 'all') {
@@ -2890,7 +2890,7 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 		}
 	}
 
-	if (1 == 1 ) {
+	if (1 == 1) {
 		return $new_template;
 	} else {
 		// FIXME : Unused Code after exit

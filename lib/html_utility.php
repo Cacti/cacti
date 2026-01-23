@@ -324,7 +324,7 @@ function form_selectable_cell(mixed $contents, mixed $id, string $width = '', st
 	return true;
 }
 
-function form_get_table_id(mixed $increment = false) : string{
+function form_get_table_id(mixed $increment = false) : string {
 	static $table_count = 0;
 
 	if ($increment) {

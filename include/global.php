@@ -34,7 +34,7 @@ $config = [];
 
 // Workaround for PHPStan scanning
 global $rdatabase_default, $rdatabase_hostname, $rdatabase_password,
-	$rdatabase_port, $rdatabase_type, $rdatabase_username;
+$rdatabase_port, $rdatabase_type, $rdatabase_username;
 // Workaround End
 
 // define if cacti is in CLI mode
@@ -120,7 +120,9 @@ if (file_exists(__DIR__ . '/config.php')) {
 	}
 
 	include(__DIR__ . '/config.php');
-} if (defined('PHP_STAN') && file_exists(__DIR__ . '/config.php.dist')) {
+}
+
+if (defined('PHP_STAN') && file_exists(__DIR__ . '/config.php.dist')) {
 	if (!is_readable(__DIR__ . '/config.php.dist')) {
 		die('Configuration file include/config.php is present, but unreadable.' . PHP_EOL);
 	}

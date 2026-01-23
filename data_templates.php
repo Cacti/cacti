@@ -151,7 +151,7 @@ function form_save() : void {
 				$view_rrd_param         = '';
 
 				if (!ierv('current_rrd')) {
-					$current_rrd   = gnrv('current_rrd') ? gnrv('current_rrd') : grv('data_template_rrd_id');
+					$current_rrd    = gnrv('current_rrd') ? gnrv('current_rrd') : grv('data_template_rrd_id');
 					$view_rrd_param = '&view_rrd=' . $current_rrd;
 				}
 
@@ -230,7 +230,7 @@ function form_save() : void {
 
 		if (!is_error_message()) {
 			$save3['data_template_id'] = $data_template_id;
-			$data_template_rrd_id = sql_save($save3, 'data_template_rrd');
+			$data_template_rrd_id      = sql_save($save3, 'data_template_rrd');
 
 			if ($data_template_rrd_id) {
 				raise_message(1);

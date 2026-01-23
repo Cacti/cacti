@@ -449,7 +449,7 @@ function variable_nth_percentile(array &$regexp_match_array, array &$graph, arra
 	int $graph_start, int $graph_end) : string {
 	global $graph_item_types;
 
-	$nth_cache = [];
+	$nth_cache        = [];
 	$local_data_array = [];
 
 	if (cacti_sizeof($regexp_match_array) == 0) {

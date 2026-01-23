@@ -184,7 +184,7 @@ function __rrd_proxy_init(string $logopt = 'WEBLOG') : mixed {
 		}
 	}
 
-	$public = phpseclib3\Crypt\RSA::loadPublicKey($rrdp_public_key);
+	$public      = phpseclib3\Crypt\RSA::loadPublicKey($rrdp_public_key);
 	$fingerprint = $public->getFingerprint('md5');
 
 	if ($rrdp_fingerprint != $fingerprint) {
@@ -264,8 +264,8 @@ function decrypt(string $input) : string {
 
 	if ($encryption) {
 		$rsa_private_key = read_config_option('rsa_private_key');
-		$private = phpseclib3\Crypt\RSA::loadPrivateKey($rsa_private_key);
-		$public  = $private->getPublicKey();
+		$private         = phpseclib3\Crypt\RSA::loadPrivateKey($rsa_private_key);
+		$public          = $private->getPublicKey();
 
 		$aes = new \phpseclib3\Crypt\Rijndael('stream');
 
@@ -1700,7 +1700,7 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 		$graph_opts = rrd_function_process_graph_options($graph_start, $graph_end, $graph, $graph_data_array);
 	} else {
 		// basic export options
-		$graph_opts = '--start=' . ($graph_start - 1) . RRD_NL .  '--end=' . $graph_end . RRD_NL .  '--maxrows=10000' . RRD_NL;
+		$graph_opts = '--start=' . ($graph_start - 1) . RRD_NL . '--end=' . $graph_end . RRD_NL . '--maxrows=10000' . RRD_NL;
 	}
 
 	// +++++++++++++++++++++++ LEGEND: MAGIC +++++++++++++++++++++++
@@ -2270,6 +2270,7 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 
 				// special data source types for prediction/trending
 				$def_name = generate_graph_def_name($special_def);
+
 				if (preg_match('/CURRENT_DS_LSLSLOPE/', $cdef_string)) {
 					$vdef_name = 'vdef' . $def_name . 'slope';
 

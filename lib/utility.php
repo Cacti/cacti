@@ -1927,7 +1927,7 @@ function utility_php_verify_recommends(mixed &$recommends, string $source) : voi
 	$cfg_timezone   = empty($cfg_values['date.timezone']) ? '' : $cfg_values['date.timezone'];
 	$cfg_max_exec   = empty($cfg_values['max_execution_time']) ? '' : $cfg_values['max_execution_time'];
 
-	/* moving into local variable for phpstan */
+	// moving into local variable for phpstan
 	$php_version    = PHP_VERSION;
 
 	$recommends = [

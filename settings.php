@@ -130,6 +130,7 @@ function display_settings() : void {
 	form_start('settings.php', 'form_settings');
 
 	$suffix = '';
+
 	if (POLLER_ID > 1) {
 		if ($current_tab == 'path') {
 			$suffix = ' [<span class="deviceDown">' . __('NOTE: Path Settings on this Tab are only saved locally!') . '</span>]';

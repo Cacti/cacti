@@ -111,11 +111,11 @@ class Installer implements JsonSerializable {
 	private string $runtime;
 	private array $errors;
 	private int $profile;
-	private mixed $automationMode = null;
+	private mixed $automationMode     = null;
 	private mixed $automationOverride = null;
-	private mixed $buttonNext = null;
-	private mixed $buttonPrevious = null;
-	private mixed $buttonTest = null;
+	private mixed $buttonNext         = null;
+	private mixed $buttonPrevious     = null;
+	private mixed $buttonTest         = null;
 	private array $iconClass;
 	private int $eula;
 	private int $cronInterval;
@@ -4448,8 +4448,8 @@ class Installer implements JsonSerializable {
  * that appears in the GUI installer
  */
 class InstallerButton implements JsonSerializable {
-	public string $Text = '';
-	public int    $Step = 0;
+	public string $Text    = '';
+	public int    $Step    = 0;
 	public bool   $Visible = true;
 	public bool   $Enabled = true;
 

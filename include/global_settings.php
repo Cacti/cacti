@@ -28,21 +28,21 @@ $dir = dir(CACTI_PATH_INCLUDE . '/themes/');
 
 include_once(__DIR__ . '/global_arrays.php');
 
-global $attachment_sizes, $attach_types, $auth_methods, $automation_log_levels,
-	$availability_options, $boost_max_memory, $boost_max_rows_per_select,
-	$boost_max_runtime, $boost_refresh_interval, $config, $copyrights,
-	$cron_intervals, $daily_timespans, $datechar, $dateformats,
-	$dsstats_hourly_avg, $dsstats_max_memory, $dsstats_refresh_interval,
-	$graph_color_alpha, $graphs_per_page, $graph_timeshifts, $graph_timespans,
-	$graph_views, $graph_weekdays, $i18n_modes, $i18n_supported_languages,
-	$image_types, $item_rows, $logfile_actions, $logfile_expansion,
-	$logfile_options, $logfile_validation, $logfile_verbosity, $logrotate_frequency,
-	$log_tail_lines, $monthly_timespans, $page_refresh_interval, $ping_methods,
-	$poller_intervals, $poller_options, $poller_sync_intervals, $realtime_refresh,
-	$realtime_window, $reindex_types, $rrdcheck_intervals, $rrdtool_versions,
-	$snmp_auth_protocols, $snmp_priv_protocols, $snmp_security_levels,
-	$snmp_versions, $themes, $timespans, $user_auth_realm_filenames,
-	$weekly_timespans, $yearly_timespans;
+global $attachment_sizes, $attach_types, $auth_methods, $automation_log_levels;
+global $availability_options, $boost_max_memory, $boost_max_rows_per_select;
+global $boost_max_runtime, $boost_refresh_interval, $config, $copyrights;
+global $cron_intervals, $daily_timespans, $datechar, $dateformats;
+global $dsstats_hourly_avg, $dsstats_max_memory, $dsstats_refresh_interval;
+global $graph_color_alpha, $graphs_per_page, $graph_timeshifts, $graph_timespans;
+global $graph_views, $graph_weekdays, $i18n_modes, $i18n_supported_languages;
+global $image_types, $item_rows, $logfile_actions, $logfile_expansion;
+global $logfile_options, $logfile_validation, $logfile_verbosity, $logrotate_frequency;
+global $log_tail_lines, $monthly_timespans, $page_refresh_interval, $ping_methods;
+global $poller_intervals, $poller_options, $poller_sync_intervals, $realtime_refresh;
+global $realtime_window, $reindex_types, $rrdcheck_intervals, $rrdtool_versions;
+global $snmp_auth_protocols, $snmp_priv_protocols, $snmp_security_levels;
+global $snmp_versions, $themes, $timespans, $user_auth_realm_filenames;
+global $weekly_timespans, $yearly_timespans;
 
 // Workaround End
 

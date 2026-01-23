@@ -190,7 +190,7 @@ function manager_edit() : void {
 		srv('tab', 'general');
 	}
 
-	$id	= (isrv('id') ? grv('id') : '0');
+	$id	 = (isrv('id') ? grv('id') : '0');
 
 	if ($id) {
 		$manager      = db_fetch_row_prepared('SELECT * FROM snmpagent_managers WHERE id = ?', [grv('id')]);

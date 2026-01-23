@@ -900,7 +900,7 @@ function make_index_alter(string $table, string $key) : array {
 				$using = $p['idx_index_type'];
 			}
 
-			$alter_cmd .= ($i > 0 ? ',':'') . '`' . $p['idx_column_name'] . '`';
+			$alter_cmd .= ($i > 0 ? ',' : '') . '`' . $p['idx_column_name'] . '`';
 
 			$i++;
 		}

@@ -228,8 +228,8 @@ function getSNMPFields(int $hostId, int $snmp_query_id = 0): array {
 	$params[]   = $hostId;
 
 	if ($snmp_query_id > 0) {
-		$sql_where = " AND snmp_query_id = ?";
-		$params[] = $snmp_query_id;
+		$sql_where = ' AND snmp_query_id = ?';
+		$params[]  = $snmp_query_id;
 	} else {
 		$sql_where = '';
 	}
@@ -265,8 +265,8 @@ function getSNMPValues(int $hostId, string $field, int $snmp_query_id = 0): arra
 	$params[] = $field;
 
 	if ($snmp_query_id > 0) {
-		$sql_where = " AND snmp_query_id = ?";
-		$params[] = $snmp_query_id;
+		$sql_where = ' AND snmp_query_id = ?';
+		$params[]  = $snmp_query_id;
 	} else {
 		$sql_where = '';
 	}

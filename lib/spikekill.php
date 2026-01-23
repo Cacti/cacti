@@ -1198,7 +1198,7 @@ class spikekill {
 		return $new_array;
 	}
 
-	private function removeComments(array &$output) : array{
+	private function removeComments(array &$output) : array {
 		$new_array = [];
 
 		if (cacti_sizeof($output)) {

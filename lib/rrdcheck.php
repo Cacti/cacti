@@ -926,7 +926,7 @@ function rrdcheck_get_subtype(string $type) : string {
  *
  * @return void
  */
-function rrdcheck_kill_running_processes() : void{
+function rrdcheck_kill_running_processes() : void {
 	global $type;
 
 	if ($type == 'bmaster') {

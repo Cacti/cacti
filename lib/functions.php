@@ -3502,16 +3502,18 @@ function generate_graph_best_cf(mixed $local_data_id, mixed $requested_cf) : str
 
 	if (isset($best_cf[$local_data_id][$requested_cf])) {
 		return $best_cf[$local_data_id][$requested_cf];
-	} elseif  ($local_data_id > 0) {
+	}
+
+	if ($local_data_id > 0) {
 		$avail_cf_functions = get_rrd_cfs($local_data_id);
 
-		foreach($avail_cf_functions as $cf) {
+		foreach ($avail_cf_functions as $cf) {
 			$best_cf[$local_data_id][$cf] = $cf;
 		}
 
 		if (!isset($best_cf[$local_data_id][$requested_cf])) {
 			$best_cf[$local_data_id][$requested_cf] = 1;
-			$chosen_cf = 1;
+			$chosen_cf                              = 1;
 		} else {
 			$chosen_cf = $requested_cf;
 		}
@@ -4163,7 +4165,7 @@ function draw_navigation_text(string $type = 'url') : string {
 	$current_nav = "<ul id='breadcrumbs'>";
 	$title       = '';
 	$nav_count   = 0;
-	$i = 0;
+	$i           = 0;
 
 	// resolve all mappings to build the navigation string
 	// this process is more simple than you might think
@@ -7230,7 +7232,9 @@ if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' && !function_exists('posix_kill')
 				shell_exec($killCmd);
 
 				return true;
-			} elseif ($signal == SIGHUP) {
+			}
+
+			if ($signal == SIGHUP) {
 				cacti_log("WARNING: SIGHUP Signal for pid: $pid is not supported on Windows", false, 'POLLER');
 
 				return false;
@@ -8821,7 +8825,7 @@ function cacti_browser_zone_enabled() : bool {
  *
  * @return void
  */
-function cacti_time_zone_set(mixed $gmt_offset = null) : void{
+function cacti_time_zone_set(mixed $gmt_offset = null) : void {
 	if (!cacti_browser_zone_enabled()) {
 		return;
 	}

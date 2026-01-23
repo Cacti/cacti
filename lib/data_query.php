@@ -1514,6 +1514,7 @@ function query_snmp_host(int $host_id, int $snmp_query_id) : bool {
 
 								foreach ($octets as $octet) {
 									$octet = intval($octet);
+
 									if (($octet <= 31) || ($octet >= 127)) {
 										$isascii = false;
 									} else {

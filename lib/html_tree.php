@@ -1779,7 +1779,7 @@ function get_host_graph_list(int $host_id, int $graph_template_id, int $data_que
 								'local_graph_id'   => $local_graph_id,
 								'title_cache'      => $graph_title,
 								'height'           => $graphs_height[$local_graph_id] ?? intval(read_config_option('default_graph_height')),
-								'width'            => $graphs_width[$local_graph_id]  ?? intval(read_config_option('default_graph_width'))
+								'width'            => $graphs_width[$local_graph_id] ?? intval(read_config_option('default_graph_width'))
 							]);
 						}
 					}

@@ -107,7 +107,6 @@ if (cacti_sizeof($idbyhost)) {
 		AND host_id IN (' . implode(',', $hosts) . ')
 		AND local_data_id IN (' . implode(',', $ids) . ')');
 
-
 	$cactiphp = false;
 
 	// startup Cacti php polling server and include the include file for script processing

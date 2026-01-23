@@ -483,6 +483,7 @@ function load_gettext_oscarotero(string $domain): mixed {
 	i18n_debug("load_gettext_oscarotero($domain): " . $cacti_textdomains[$domain]['path2catalogue']);
 
 	$input = false;
+
 	if (class_exists('Gettext\Translations')) {
 		$input = Gettext\Translations::fromMoFile($cacti_textdomains[$domain]['path2catalogue']);
 	}

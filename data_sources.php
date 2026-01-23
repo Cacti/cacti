@@ -619,8 +619,8 @@ function data_edit(bool $incform = true) : void {
 			AND data_local.id = ?',
 			[grv('id')]);
 	} else {
-		$data = [];
-		$host = [];
+		$data          = [];
+		$host          = [];
 		$template_data = [];
 	}
 

@@ -1763,7 +1763,7 @@ function plugin_required_for_others(array $plugin, string $table) : mixed {
 	}
 }
 
-function plugin_required_installed(array $plugin, string $table) : string{
+function plugin_required_installed(array $plugin, string $table) : string {
 	$not_installed = '';
 
 	api_plugin_can_install($plugin['plugin'], $not_installed);

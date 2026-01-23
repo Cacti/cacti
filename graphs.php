@@ -1828,7 +1828,7 @@ function form_actions() : void {
 				if (cacti_sizeof($reports)) {
 					$reports = array_rekey($reports, 'id', 'name');
 				}
-		}
+			}
 		}
 
 		// for use by plugins

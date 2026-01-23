@@ -261,7 +261,7 @@ function api_networks_cancel(int $network_id) : void {
 	);
 }
 
-function api_networks_duplicate(int $network_id) : void{
+function api_networks_duplicate(int $network_id) : void {
 	$save = db_fetch_row_prepared('SELECT *
 		FROM automation_networks
 		WHERE id = ?',

@@ -26,15 +26,15 @@
 
 include_once(__DIR__ . '/global_arrays.php');
 
-global $agg_graph_types, $agg_order_types, $aggregation_levels, $agg_totals,
-	$agg_totals_type, $auth_realms, $automation_oper, $automation_tree_item_types,
-	$availability_options, $consolidation_functions, $copyrights, $data_source_types,
-	$device_classes, $device_threads, $graph_color_alpha, $graph_item_types,
-	$graph_template_classes, $heartbeats, $host_group_types, $image_types,
-	$input_types_script, $ping_methods, $rrd_axis_formatters, $rrd_legend_direction,
-	$rrd_legend_position, $rrd_textalign, $sampling_intervals, $snmp_auth_protocols,
-	$snmp_priv_protocols, $snmp_security_levels, $snmp_versions, $timespans,
-	$tree_sort_types;
+global $agg_graph_types, $agg_order_types, $aggregation_levels, $agg_totals;
+global $agg_totals_type, $auth_realms, $automation_oper, $automation_tree_item_types;
+global $availability_options, $consolidation_functions, $copyrights, $data_source_types;
+global $device_classes, $device_threads, $graph_color_alpha, $graph_item_types;
+global $graph_template_classes, $heartbeats, $host_group_types, $image_types;
+global $input_types_script, $ping_methods, $rrd_axis_formatters, $rrd_legend_direction;
+global $rrd_legend_position, $rrd_textalign, $sampling_intervals, $snmp_auth_protocols;
+global $snmp_priv_protocols, $snmp_security_levels, $snmp_versions, $timespans;
+global $tree_sort_types;
 
 // Workaround End
 

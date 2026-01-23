@@ -1296,6 +1296,7 @@ function boost_process_poller_output(int $local_data_id, array $rrdtool_pipe = n
 
 				// TODO: This is legacy code that does not get used. Find out why its still here.
 				$nt_rrd_field_names = [];
+
 				if (cacti_sizeof($nt_rrd_field_names) > 0) {
 					foreach ($nt_rrd_field_names as $field) { // @phpstan-ignore-line
 						if (cacti_sizeof($unused_data_source_names) && isset($unused_data_source_names[$field])) {

@@ -920,7 +920,7 @@ function display_new_graphs(array $rule, string $url): void {
 	$pageFilter->rows_label = __('Objects');
 	$pageFilter->render();
 
-	$details = automation_get_new_graphs_sql($rule);
+	$details        = automation_get_new_graphs_sql($rule);
 	$created_graphs = get_created_graphs($rule);
 
 	if (isset($details['rows_query']) && $details['rows_query'] != '') {

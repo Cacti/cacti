@@ -38,7 +38,7 @@
 function get_timespan(array &$span, int $curr_time, int $timespan_given, int $first_weekdayid) : void {
 	// unless changed later, $span['end_now'] is always $curr_time
 	$span['begin_now'] 	 = $curr_time; // initialization only!
-	$span['end_now'] 	 = $curr_time;
+	$span['end_now'] 	   = $curr_time;
 
 	switch ($timespan_given) {
 		case GT_LAST_HALF_HOUR:
@@ -206,7 +206,7 @@ function month_shift($shift_size) {
 function check_month_boundaries(&$span) {
 	// check left boundary -----------------------------------------------
 	$begin_of_month = (int) strtotime(date('Y-m-01', $span['begin_now']));
-	$begin_match 	= ($begin_of_month == $span['begin_now']);
+	$begin_match 	  = ($begin_of_month == $span['begin_now']);
 
 	// check right boundary ----------------------------------------------
 	// first, get a defined date of the month, $span['end_now'] belongs to
@@ -264,7 +264,7 @@ function shift_time(array &$span, string $direction, mixed $shift_size) : void {
 	} else {
 		// 'normal' time shifting: use strtotime magic
 		$span['begin_now'] 	 = strtotime($direction . $shift_size . ' ' . $span['current_value_date1']);
-		$span['end_now'] 	 = (int) strtotime($direction . $shift_size . ' ' . $span['current_value_date2']);
+		$span['end_now'] 	   = (int) strtotime($direction . $shift_size . ' ' . $span['current_value_date2']);
 	}
 
 	// convert to human readable format
