@@ -83,7 +83,7 @@
     "scripts": {
         "lint": "phplint --no-cache ./ --exclude=include/vendor",
         "phpstan": "phpstan analyse --level 6 ./",
-        "phpcsfixer": "php-cs-fixer fix --dry-run --diff --config=./.php-cs-fixer.php --ansi --parallel --processes=2",
+        "phpcsfixer": "php-cs-fixer fix --dry-run --diff --config=./.php-cs-fixer.php --ansi --sequential",
         "phpcsfixit": "php-cs-fixer fix --ansi"
     },
     "require-dev": {
