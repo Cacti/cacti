@@ -78,7 +78,7 @@ jobs:
       run: php -v
 
     - name: Install github if not already installed
-      run: sudo apt-get install git
+      run: sudo apt-get -y install git
 
     - name: Checkout Thold Plugin
       uses: GuillaumeFalourd/clone-github-repo-action@v2
@@ -146,7 +146,7 @@ jobs:
       run: if find ${{ github.workspace }} -name '*.php' -exec php -l {} 2>&1 \; | grep -iv 'no syntax errors detected'; then exit 1; fi
 
     - name: Run apt-get update
-      run: sudo apt-get update
+      run: sudo apt-get -y update
 
     - name: Install Apache and Tools
       run: sudo apt-get install apache2 snmp snmpd rrdtool fping libapache2-mod-php${{ matrix.php }}
