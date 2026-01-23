@@ -30,6 +30,8 @@
  * 'error_num' = error number returned
  * 'error_text' = error text
  *
+ * @deprecated: 1.3
+ *
  * Error codes:
  *
  * #	Text
@@ -67,7 +69,7 @@
  */
 function cacti_ldap_auth(string $username, string $password = '', string $dn = '', string $host = '', int $port = 0, int $port_ssl = 0, int $version = 0,
 	int $encryption = 0, int $referrals = 0, mixed $group_require = false, string $group_dn = '', string $group_attrib = '', int $group_member_type = 0) : array {
-	$ldap = new Ldap;
+	$ldap = new Ldap(0);
 
 	if (!empty($username)) {
 		$ldap->username = $username;
@@ -151,6 +153,8 @@ function cacti_ldap_auth(string $username, string $password = '', string $dn = '
  * 'error_text' = error text
  * 'dn' = found dn of user
  *
+ * @deprecated: 1.3
+ *
  * Error codes:
  *
  * #	Text
@@ -192,7 +196,7 @@ function cacti_ldap_auth(string $username, string $password = '', string $dn = '
 function cacti_ldap_search_dn(string $username, string $dn = '', string $host = '', int $port = 0, int $port_ssl = 0,
 	int $version = 0, int $encryption = 0, int $referrals = 0, int $mode = 0, string $search_base = '',
 	string $search_filter = '', string $specific_dn = '', string $specific_password = '') {
-	$ldap = new Ldap;
+	$ldap = new Ldap(0);
 
 	if (!empty($username)) {
 		$ldap->username = $username;
@@ -273,6 +277,9 @@ function cacti_ldap_search_dn(string $username, string $dn = '', string $host = 
  * 'error_num' = error number returned
  * 'error_text' = error text
  * 'dn' = found dn of user
+ *
+ * @deprecated: 1.3
+ *
  * Error codes:
  * #       Text
  * ==============================================================
@@ -315,7 +322,7 @@ function cacti_ldap_search_cn(string $username, array $cn = [], string $dn = '',
 	int $port = 0, int $port_ssl = 0, int $version = 0, int $encryption = 0,
 	int $referrals = 0, int $mode = 0, string $search_base = '', string $search_filter = '',
 	string $specific_dn = '', string $specific_password = '') : array {
-	$ldap = new Ldap;
+	$ldap = new Ldap(0);
 
 	if (!empty($username)) {
 		$ldap->username = $username;
@@ -444,15 +451,19 @@ abstract class LdapError {
 
 class Ldap {
 	public string $dn;
+	private array $connection = [];
 	public array  $cn;
 	public string $host;
-	public string $username;
-	public string $password;
+	public mixed $username   = '';
+	public mixed $password   = '';
 	public int    $port;
 	public int    $port_ssl;
 	public int    $version;
 	public int    $encryption;
 	public int    $referrals;
+	public int    $tls_certificate;
+	public int    $network_timeout;
+	public int    $bind_timeout;
 	public int    $debug;
 	public bool   $group_require;
 	public string $group_dn;
@@ -463,8 +474,53 @@ class Ldap {
 	public string $search_filter;
 	public string $specific_dn;
 	public string $specific_password;
+	public string $cn_full_name;
+	public string $cn_email;
 
-	function __construct() {
+	function __construct(int $domain_id) {
+		if ($domain_id > 0) {
+			$domain = db_fetch_row_prepared('SELECT *
+				FROM user_domains
+				WHERE domain_id = ?',
+				[$domain_id]);
+
+			if (cacti_sizeof($domain)) {
+				$settings = db_fetch_row_prepared('SELECT *
+					FROM user_domains_ldap
+					WHERE domain_id = ?',
+					[$domain_id]);
+
+		        /* Initialize LDAP parameters for Authenticate */
+		        $this->dn                = $settings['dn'];
+		        $this->host              = $settings['server'];
+		        $this->port              = $settings['port'];
+		        $this->port_ssl          = $settings['port_ssl'];
+		        $this->version           = $settings['proto_version'];
+		        $this->encryption        = $settings['encryption'];
+		        $this->referrals         = $settings['referrals'];
+		        $this->tls_certificate   = $settings['tls_certificate'];
+		        $this->network_timeout   = $settings['network_timeout'];
+		        $this->bind_timeout      = $settings['bind_timeout'];
+		        $this->debug             = $domain['debug'] == 'on' ? POLLER_VERBOSITY_LOW : POLLER_VERBOSITY_HIGH;
+
+				/* For group membership checks */
+				$this->group_require     = $settings['group_require'] == 'on' ? true : false;
+		        $this->group_dn          = $settings['group_dn'];
+		        $this->group_attrib      = $settings['group_attrib'];
+		        $this->group_member_type = $settings['group_member_type'];
+
+		        /* Initialize LDAP parameters for Search */
+		        $this->mode              = $settings['mode'];
+		        $this->search_base       = $settings['search_base'];
+		        $this->search_filter     = $settings['search_filter'];
+		        $this->specific_dn       = $settings['specific_dn'];
+		        $this->specific_password = $settings['specific_password'];
+
+				/* CN Search settings */
+		        $this->cn_full_name      = $settings['cn_full_name'];
+		        $this->cn_email          = $settings['cn_email'];
+			}
+		}
 	}
 
 	function __destruct() {
@@ -525,62 +581,62 @@ class Ldap {
 		 */
 
 		// Set debug if selective debug is enabled.  This places log data into the apache error_log
-		if (get_selective_log_level() == POLLER_VERBOSITY_DEBUG) {
+		if (get_selective_log_level() == POLLER_VERBOSITY_DEBUG || $this->debug == POLLER_VERBOSITY_DEBUG) {
 			cacti_log('LDAP: Setting php-ldap into DEBUG mode.  Check your Web Server error_log for details', false, 'AUTH', $this->debug);
 			ldap_set_option(null, LDAP_OPT_DEBUG_LEVEL, 7);
 		}
 
 		if (getenv('TLS_CERT') != '' && defined('LDAP_OPT_X_TLS_CERTFILE')) {
-			cacti_log('NOTE: Settings TLS_CERT to ' . getenv('TLS_CERT'), false, 'AUTH', $this->debug);
+			cacti_log('LDAP: Settings TLS_CERT to ' . getenv('TLS_CERT'), false, 'AUTH', $this->debug);
 			ldap_set_option(null, LDAP_OPT_X_TLS_CERTFILE, getenv('TLS_CERT'));
 		}
 
 		if (getenv('TLS_CACERT') != '' && defined('LDAP_OPT_X_TLS_CACERTFILE')) {
-			cacti_log('NOTE: Settings TLS_CACERT to ' . getenv('TLS_CACERT'), false, 'AUTH', $this->debug);
+			cacti_log('LDAP: Settings TLS_CACERT to ' . getenv('TLS_CACERT'), false, 'AUTH', $this->debug);
 			ldap_set_option(null, LDAP_OPT_X_TLS_CACERTFILE, getenv('TLS_CACERT'));
 		}
 
 		if (getenv('TLS_KEY') != '' && defined('LDAP_OPT_X_TLS_KEYFILE')) {
-			cacti_log('NOTE: Settings TLS_KEY to ' . getenv('TLS_KEY'), false, 'AUTH', $this->debug);
+			cacti_log('LDAP: Settings TLS_KEY to ' . getenv('TLS_KEY'), false, 'AUTH', $this->debug);
 			ldap_set_option(null, LDAP_OPT_X_TLS_KEYFILE, getenv('TLS_KEY'));
 		}
 
 		if (getenv('TLS_CACERTDIR') != '' && defined('LDAP_OPT_X_TLS_CACERTDIR')) {
-			cacti_log('NOTE: Settings TLS_CACERTDIR to ' . getenv('TLS_CACERTDIR'), false, 'AUTH', $this->debug);
+			cacti_log('LDAP: Settings TLS_CACERTDIR to ' . getenv('TLS_CACERTDIR'), false, 'AUTH', $this->debug);
 			ldap_set_option(null, LDAP_OPT_X_TLS_CACERTDIR, getenv('TLS_CACERTDIR'));
 		}
 
 		if ($this->encryption >= 1) {
-			$cert = read_config_option('ldap_tls_certificate');
+			$cert = $this->tls_certificate;
 
-			if ($cert == '') {
+			if ($cert === '') {
 				$cert = LDAP_OPT_X_TLS_NEVER;
 			}
 
 			// For good measure, we will use both the php function and set the environment
 			switch($cert) {
 				case LDAP_OPT_X_TLS_NEVER:
-					cacti_log('NOTE: Setting TLS Certificate Requirement to \'never\'', false, 'AUTH', $this->debug);
+					cacti_log('LDAP: Setting TLS Certificate Requirement to \'never\'', false, 'AUTH', $this->debug);
 					putenv('TLS_REQCERT=never');
 
 					break;
 				case LDAP_OPT_X_TLS_HARD:
-					cacti_log('NOTE: Setting TLS Certificate Requirement to \'hard\'', false, 'AUTH', $this->debug);
+					cacti_log('LDAP: Setting TLS Certificate Requirement to \'hard\'', false, 'AUTH', $this->debug);
 					putenv('TLS_REQCERT=hard');
 
 					break;
 				case LDAP_OPT_X_TLS_DEMAND:
-					cacti_log('NOTE: Setting TLS Certificate Requirement to \'demand\'', false, 'AUTH', $this->debug);
+					cacti_log('LDAP: Setting TLS Certificate Requirement to \'demand\'', false, 'AUTH', $this->debug);
 					putenv('TLS_REQCERT=demand');
 
 					break;
 				case LDAP_OPT_X_TLS_ALLOW:
-					cacti_log('NOTE: Setting TLS Certificate Requirement to \'allow\'', false, 'AUTH', $this->debug);
+					cacti_log('LDAP: Setting TLS Certificate Requirement to \'allow\'', false, 'AUTH', $this->debug);
 					putenv('TLS_REQCERT=allow');
 
 					break;
 				case LDAP_OPT_X_TLS_TRY:
-					cacti_log('NOTE: Setting TLS Certificate Requirement to \'try\'', false, 'AUTH', $this->debug);
+					cacti_log('LDAP: Setting TLS Certificate Requirement to \'try\'', false, 'AUTH', $this->debug);
 					putenv('TLS_REQCERT=try');
 
 					break;
@@ -590,7 +646,7 @@ class Ldap {
 		}
 
 		// Walk through ldap servers for a valid connections
-		if ($this->encryption == '1') {
+		if ($this->encryption == 1) {
 			cacti_log('LDAP: Connect using ldaps://' . $this->host . ':' . $this->port_ssl, false, 'AUTH', $this->debug);
 			$ldap_conn = ldap_connect('ldaps://' . $this->host . ':' . $this->port_ssl);
 		} else {
@@ -599,8 +655,10 @@ class Ldap {
 		}
 
 		if ($ldap_conn) {
+			cacti_log('LDAP: Successfully Connected to LDAP', false, 'AUTH', $this->debug);
+
 			// Set protocol version
-			cacti_log('LDAP: Setting protocol version to ' . $this->version, false, 'AUTH', POLLER_VERBOSITY_MEDIUM);
+			cacti_log('LDAP: Setting protocol version to ' . $this->version, false, 'AUTH', $this->debug);
 
 			if (!ldap_set_option($ldap_conn, LDAP_OPT_PROTOCOL_VERSION, $this->version)) {
 				$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorVersion, $ldap_conn, $this->host);
@@ -614,22 +672,22 @@ class Ldap {
 			}
 
 			// set reasonable timeouts
-			$network_timeout = read_config_option('ldap_network_timeout');
+			$network_timeout = $this->network_timeout;
 
 			if (defined('LDAP_OPT_NETWORK_TIMEOUT')) {
-				cacti_log("NOTE: Setting Network Timeout to $network_timeout seconds", false, 'AUTH', $this->debug);
+				cacti_log("LDAP: Setting Network Timeout to $network_timeout seconds", false, 'AUTH', $this->debug);
 				ldap_set_option($ldap_conn, LDAP_OPT_NETWORK_TIMEOUT, $network_timeout);
 			}
 
-			$bind_timeout = read_config_option('ldap_bind_timeout');
+			$bind_timeout = $this->bind_timeout;
 
 			if (defined('LDAP_OPT_TIMELIMIT')) {
-				cacti_log("NOTE: Setting Bind Timeout to $bind_timeout seconds", false, 'AUTH', $this->debug);
+				cacti_log("LDAP: Setting Bind Timeout to $bind_timeout seconds", false, 'AUTH', $this->debug);
 				ldap_set_option($ldap_conn, LDAP_OPT_TIMEOUT, $bind_timeout);
 			}
 
 			// set referrals
-			if ($this->referrals == '0') {
+			if ($this->referrals == 0) {
 				if (!ldap_set_option($ldap_conn, LDAP_OPT_REFERRALS, 0)) {
 					$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorReferral, $ldap_conn, $this->host);
 
@@ -645,7 +703,7 @@ class Ldap {
 			}
 
 			// start TLS if requested
-			if ($this->encryption == '2') {
+			if ($this->encryption == 2) {
 				if (!ldap_start_tls($ldap_conn)) {
 					$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorTls, $ldap_conn, $this->host);
 
@@ -662,6 +720,8 @@ class Ldap {
 
 			return ['ldap_conn' => $ldap_conn, 'output' => $output];
 		} else {
+			cacti_log('WARNING: Unable to Connect to LDAP', false, 'AUTH', $this->debug);
+
 			$output = LdapError::GetErrorDetails(LdapError::ConnectionUnavailable, $ldap_conn, $this->host);
 			Ldap::RecordError($output);
 
@@ -675,24 +735,28 @@ class Ldap {
 	function Authenticate() : array {
 		$output = [];
 
+		cacti_log('LDAP: Authentication Start', false, 'AUTH', $this->debug);
+
 		// Determine connection method and create LDAP Object
 		$this->SetLdapHandler();
 
-		$connection = $this->Connect();
-
-		if (cacti_sizeof($connection['output'])) {
-			$this->RestoreCactiHandler();
-
-			return $connection['output'];
+		if (empty($this->connection)) {
+			$this->connection = $this->Connect();
 		}
 
-		if ($connection['ldap_conn'] === false) {
+		if (cacti_sizeof($this->connection['output'])) {
+			$this->RestoreCactiHandler();
+
+			return $this->connection['output'];
+		}
+
+		if ($this->connection['ldap_conn'] === false) {
 			$this->RestoreCactiHandler();
 
 			return LdapError::GetErrorDetails(LdapError::MissingLdapObject, false, $this->host);
 		}
 
-		$ldap_conn = $connection['ldap_conn'];
+		$ldap_conn = $this->connection['ldap_conn'];
 
 		// Decode username, and remove bad characters
 		$this->username = html_entity_decode($this->username, $this->GetMask(), 'UTF-8');
@@ -705,11 +769,12 @@ class Ldap {
 		}
 
 		// Bind to the LDAP directory
-		cacti_log('LDAP: Binding with "' . $this->dn . '"', false, 'AUTH', $this->debug);
+		cacti_log(sprintf('LDAP: Binding User \'%s\' with DN \'%s\' on Server \'%s\'', $this->username, $this->dn, $this->host), false, 'AUTH', $this->debug);
+
 		$ldap_response = ldap_bind($ldap_conn, $this->dn, $this->password);
 
 		if ($ldap_response) {
-			if ($this->group_require) {
+			if ($this->group_require == 1) {
 				$ldap_group_response = false;
 
 				// Process group membership if required
@@ -811,21 +876,23 @@ class Ldap {
 		// Determine connection method and create LDAP Object
 		$this->SetLdapHandler();
 
-		$connection = $this->Connect();
-
-		if (cacti_sizeof($connection['output'])) {
-			$this->RestoreCactiHandler();
-
-			return $connection['output'];
+		if (empty($this->connection)) {
+			$this->connection = $this->Connect();
 		}
 
-		if ($connection['ldap_conn'] === false) {
+		if (cacti_sizeof($this->connection['output'])) {
+			$this->RestoreCactiHandler();
+
+			return $this->connection['output'];
+		}
+
+		if ($this->connection['ldap_conn'] === false) {
 			$this->RestoreCactiHandler();
 
 			return LdapError::GetErrorDetails(LdapError::MissingLdapObject, false, $this->host);
 		}
 
-		$ldap_conn = $connection['ldap_conn'];
+		$ldap_conn = $this->connection['ldap_conn'];
 
 		// Decode username, and remove bad characters
 		$this->username = html_entity_decode($this->username, $this->GetMask(), 'UTF-8');
@@ -929,21 +996,23 @@ class Ldap {
 		// Determine connection method and create LDAP Object
 		$this->SetLdapHandler();
 
-		$connection = $this->Connect();
-
-		if (cacti_sizeof($connection['output'])) {
-			$this->RestoreCactiHandler();
-
-			return $connection['output'];
+		if (empty($this->connection)) {
+			$this->connection = $this->Connect();
 		}
 
-		if ($connection['ldap_conn'] === false) {
+		if (cacti_sizeof($this->connection['output'])) {
+			$this->RestoreCactiHandler();
+
+			return $this->connection['output'];
+		}
+
+		if ($this->connection['ldap_conn'] === false) {
 			$this->RestoreCactiHandler();
 
 			return LdapError::GetErrorDetails(LdapError::MissingLdapObject, false, $this->host);
 		}
 
-		$ldap_conn = $connection['ldap_conn'];
+		$ldap_conn = $this->connection['ldap_conn'];
 
 		// Decode username, and remove bad characters
 		$this->username = html_entity_decode($this->username, $this->GetMask(), 'UTF-8');

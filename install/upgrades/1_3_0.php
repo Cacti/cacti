@@ -606,6 +606,18 @@ function upgrade_to_1_3_0() : void {
 	}
 
 	upgrade_reports();
+
+	if (!db_column_exists('user_domains', 'debug')) {
+		db_execute('ALTER TABLE user_domains ADD COLUMN debug CHAR(2) default "" AFTER enabled');
+	}
+
+	if (!db_column_exists('user_domains_ldap', 'network_timeout')) {
+		db_execute('ALTER TABLE user_domains_ldap ADD COLUMN network_timeout INT unsigned NOT NULL default 2 AFTER proto_version');
+	}
+
+	if (!db_column_exists('user_domains_ldap', 'bind_timeout')) {
+		db_execute('ALTER TABLE  user_domains_ldap ADD COLUMN bind_timeout INT unsigned NOT NULL default 2 AFTER network_timeout');
+	}
 }
 
 function upgrade_reports() : void {

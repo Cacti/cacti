@@ -3703,100 +3703,6 @@ function local_auth_login_process(string $username): array {
 }
 
 /**
- * Login to an LDAP account or generate an error
- *   if there is an error, the globals error and error_msg will be set to notify the caller
- *   that error and not to proceed with login.
- *
- * @param string $username The username to authenticate.
- *
- * @return array The authenticated user information or an empty array on failure.
- */
-function ldap_login_process(string $username): array {
-	global $error, $error_msg;
-
-	$password = gnrv('login_password');
-
-	if ($username == '') {
-		$error     = true;
-		$error_msg = __('Access Denied!  Login Failed.');
-
-		cacti_log('LOGIN FAILED: Empty LDAP Username provided. From IP address' . get_client_addr(), false, 'AUTH');
-
-		return [];
-	}
-
-	auth_checkclear_lockout($username, 3);
-
-	if (auth_process_lockout_check($username, 3)) {
-		return [];
-	}
-
-	$user    = [];
-	$realm   = 3;
-	$ldap_dn = '';
-
-	if ($password != '') {
-		// get user DN
-		$ldap_dn_search_response = cacti_ldap_search_dn($username);
-
-		if ($ldap_dn_search_response['error_num'] == '0') {
-			$ldap_dn = $ldap_dn_search_response['dn'];
-		} else {
-			// error searching
-			$error     = true;
-			$error_msg =  __('Access Denied!  LDAP Search Error: %s', $ldap_dn_search_response['error_text']);
-
-			cacti_log('LOGIN FAILED: LDAP Error: ' . $ldap_dn_search_response['error_text'] . '. From IP address ' . get_client_addr(), false, 'AUTH');
-		}
-
-		if (!$error) {
-			// auth user with LDAP
-			$ldap_auth_response = cacti_ldap_auth($username, $password, $ldap_dn);
-
-			if ($ldap_auth_response['error_num'] == '0') {
-				// Locate user in database
-				cacti_log(sprintf("LOGIN: LDAP User '%s' from IP Address %s Authenticated", $username, get_client_addr()), false, 'AUTH');
-
-				$user = db_fetch_row_prepared('SELECT *
-					FROM user_auth
-					WHERE username = ?
-					AND realm = ?',
-					[$username, $realm]);
-			} else {
-				// error
-				$error     = true;
-				$error_msg = __('Access Denied!  LDAP Error: %s', $ldap_auth_response['error_text']);
-
-				cacti_log('LOGIN FAILED: LDAP Error: ' . $ldap_auth_response['error_text'] . 'From IP address ' . get_client_addr(), false, 'AUTH');
-
-				if ($ldap_auth_response['error_num'] == 1) {
-					auth_process_lockout($username, $realm);
-				}
-			}
-		}
-	} else {
-		// error
-		$error     = true;
-		$error_msg = __('Access Denied!  No password provided by user.');
-
-		cacti_log(sprintf('LOGIN FAILED: LDAP No password provided for user %s from IP address %s', $username, get_client_addr()), false, 'AUTH');
-
-		auth_process_lockout($username, $realm);
-	}
-
-	return $user;
-}
-
-/**
- * domains_login_process - login to an LDAP domain account or generate an error
- *   if there is an error, the globals error and error_msg will be set to notify the caller
- *   that error and not to proceed with login.
- *
- * @param  (string) $username - The user to process
- *
- * @return (array)  $user - The valid user information, or empty array if user must be created
- */
-/**
  * Login to an LDAP domain account or generate an error
  *   if there is an error, the globals error and error_msg will be set to notify the caller
  *   that error and not to proceed with login.
@@ -3972,7 +3878,10 @@ function domains_login_process(string $username): array {
  * @return mixed - Returns an array with the authentication response if successful, or false if authentication fails.
  */
 function domains_ldap_auth(string $username, string $password = '', string $dn = '', int $realm = 0): mixed {
-	$ldap = new Ldap;
+	$ldap  = new Ldap($realm - 1000);
+	$debug = $ldap->debug;
+
+	cacti_log(sprintf('LDAP: Initiating login for User \'%s\'', $username), false, 'AUTH', $debug);
 
 	if (!empty($username)) {
 		$ldap->username = $username;
@@ -3982,101 +3891,28 @@ function domains_ldap_auth(string $username, string $password = '', string $dn =
 		$ldap->password = $password;
 	}
 
-	$ldap->dn = $dn;
+	/**
+	 * If the server list is a space delimited set of servers
+	 * process each server until you get a bind, or fail
+	 */
+	$ldap_servers = preg_split('/\s+/', $ldap->host);
 
-	$ld = db_fetch_row_prepared('SELECT *
-		FROM user_domains_ldap
-		WHERE domain_id = ?',
-		[$realm - 1000]);
+	$response = [];
 
-	if (cacti_sizeof($ld)) {
-		if (empty($dn) && !empty($ld['dn'])) {
-			$ldap->dn = $ld['dn'];
+	foreach ($ldap_servers as $ldap_server) {
+		$ldap->host = $ldap_server;
+
+		$response = $ldap->Authenticate();
+
+		if ($response['error_num'] == 0) {
+			cacti_log(sprintf('LDAP: Login for User \'%s\' Succeded on Server %s', $username, $ldap_server), false, 'AUTH', $debug);
+			return $response;
 		}
-
-		if (!empty($ld['server'])) {
-			$ldap->host = $ld['server'];
-		}
-
-		if (!empty($ld['port'])) {
-			$ldap->port = $ld['port'];
-		}
-
-		if (!empty($ld['port_ssl'])) {
-			$ldap->port_ssl = $ld['port_ssl'];
-		}
-
-		if (!empty($ld['proto_version'])) {
-			$ldap->version = $ld['proto_version'];
-		}
-
-		if (!empty($ld['encryption'])) {
-			$ldap->encryption = $ld['encryption'];
-		}
-
-		if (!empty($ld['referrals'])) {
-			$ldap->referrals = $ld['referrals'];
-		}
-
-		if (!empty($ld['mode'])) {
-			$ldap->mode = $ld['mode'];
-		}
-
-		if (!empty($ld['search_base'])) {
-			$ldap->search_base = $ld['search_base'];
-		}
-
-		if (!empty($ld['search_filter'])) {
-			$ldap->search_filter = $ld['search_filter'];
-		}
-
-		if (!empty($ld['specific_dn'])) {
-			$ldap->specific_dn = $ld['specific_dn'];
-		}
-
-		if (!empty($ld['specific_password'])) {
-			$ldap->specific_password = $ld['specific_password'];
-		}
-
-		if ($ld['group_require'] == 'on') {
-			$ldap->group_require = true;
-		} else {
-			$ldap->group_require = false;
-		}
-
-		if (!empty($ld['group_dn'])) {
-			$ldap->group_dn = $ld['group_dn'];
-		}
-
-		if (!empty($ld['group_attrib'])) {
-			$ldap->group_attrib = $ld['group_attrib'];
-		}
-
-		if (!empty($ld['group_member_type'])) {
-			$ldap->group_member_type = $ld['group_member_type'];
-		}
-
-		/* If the server list is a space delimited set of servers
-		 * process each server until you get a bind, or fail
-		 */
-		$ldap_servers = preg_split('/\s+/', $ldap->host);
-
-		$response = [];
-
-		foreach ($ldap_servers as $ldap_server) {
-			$ldap->host = $ldap_server;
-
-			$response = $ldap->Authenticate();
-
-			if ($response['error_num'] == 0) {
-				return $response;
-			}
-		}
-
-		return $response;
-	} else {
-		return false;
 	}
+
+	cacti_log(sprintf('LDAP: Login for User \'%s\' Failed on All Servers', $username), false, 'AUTH', $debug);
+
+	return $response;
 }
 
 /**
@@ -4088,105 +3924,38 @@ function domains_ldap_auth(string $username, string $password = '', string $dn =
  * @return mixed - Returns an array with the LDAP search response if successful, or false if the search fails.
  */
 function domains_ldap_search_dn(string $username, int $realm): mixed {
-	$ldap = new Ldap;
+	$ldap  = new Ldap($realm - 1000);
+	$debug = $ldap->debug;
+
+	cacti_log(sprintf('LDAP: Initiating search for User \'%s\'', $username), false, 'AUTH', $debug);
 
 	if (!empty($username)) {
 		$ldap->username = $username;
 	}
 
-	$ld = db_fetch_row_prepared('SELECT *
-		FROM user_domains_ldap
-		WHERE domain_id = ?',
-		[$realm - 1000]);
+	/**
+	 * If the server list is a space delimited set of servers
+	 * process each server until you get a bind, or fail
+	 */
+	$ldap_servers = preg_split('/\s+/', $ldap->host);
 
-	if (cacti_sizeof($ld)) {
-		if (!empty($ld['dn'])) {
-			$ldap->dn = $ld['dn'];
+	$response = [];
+
+	foreach ($ldap_servers as $ldap_server) {
+		$ldap->host = $ldap_server;
+
+		$response = $ldap->Search();
+
+		if ($response['error_num'] == 0) {
+			cacti_log(sprintf('LDAP: Search for User \'%s\' at Server \'%s\' Suceeded', $username, $ldap_server), false, 'AUTH', $debug);
+
+			return $response;
 		}
-
-		if (!empty($ld['server'])) {
-			$ldap->host = $ld['server'];
-		}
-
-		if (!empty($ld['port'])) {
-			$ldap->port = $ld['port'];
-		}
-
-		if (!empty($ld['port_ssl'])) {
-			$ldap->port_ssl = $ld['port_ssl'];
-		}
-
-		if (!empty($ld['proto_version'])) {
-			$ldap->version = $ld['proto_version'];
-		}
-
-		if (!empty($ld['encryption'])) {
-			$ldap->encryption = $ld['encryption'];
-		}
-
-		if (!empty($ld['referrals'])) {
-			$ldap->referrals = $ld['referrals'];
-		}
-
-		if (!empty($ld['mode'])) {
-			$ldap->mode = $ld['mode'];
-		}
-
-		if (!empty($ld['search_base'])) {
-			$ldap->search_base = $ld['search_base'];
-		}
-
-		if (!empty($ld['search_filter'])) {
-			$ldap->search_filter = $ld['search_filter'];
-		}
-
-		if (!empty($ld['specific_dn'])) {
-			$ldap->specific_dn = $ld['specific_dn'];
-		}
-
-		if (!empty($ld['specific_password'])) {
-			$ldap->specific_password = $ld['specific_password'];
-		}
-
-		if ($ld['group_require'] == 'on') {
-			$ldap->group_require = true;
-		} else {
-			$ldap->group_require = false;
-		}
-
-		if (!empty($ld['group_dn'])) {
-			$ldap->group_dn = $ld['group_dn'];
-		}
-
-		if (!empty($ld['group_attrib'])) {
-			$ldap->group_attrib = $ld['group_attrib'];
-		}
-
-		if (!empty($ld['group_member_type'])) {
-			$ldap->group_member_type = $ld['group_member_type'];
-		}
-
-		/* If the server list is a space delimited set of servers
-		 * process each server until you get a bind, or fail
-		 */
-		$ldap_servers = preg_split('/\s+/', $ldap->host);
-
-		$response = [];
-
-		foreach ($ldap_servers as $ldap_server) {
-			$ldap->host = $ldap_server;
-
-			$response = $ldap->Search();
-
-			if ($response['error_num'] == 0) {
-				return $response;
-			}
-		}
-
-		return $response;
-	} else {
-		return false;
 	}
+
+	cacti_log(sprintf('LDAP: Search for User \'%s\' on all Servers Failed', $username), false, 'AUTH', $debug);
+
+	return $response;
 }
 
 /**
@@ -4199,106 +3968,36 @@ function domains_ldap_search_dn(string $username, int $realm): mixed {
  * @return mixed - Returns an array with the LDAP response if successful, or false if the search fails.
  */
 function domains_ldap_search_cn(string $username, array $cn = [], int $realm = 0): mixed {
-	$ldap = new Ldap;
+	$ldap  = new Ldap($realm - 1000);
+	$debug = $ldap->debug;
+
+	cacti_log(sprintf('LDAP: Initiating CN Search for User \'%s\'', $username), false, 'AUTH', $debug);
 
 	if (!empty($username)) {
 		$ldap->username = $username;
 	}
 
-	$ld = db_fetch_row_prepared('SELECT *
-		FROM user_domains_ldap
-		WHERE domain_id = ?',
-		[$realm - 1000]);
+	/* If the server list is a space delimited set of servers
+	 * process each server until you get a bind, or fail
+	 */
+	$ldap_servers = preg_split('/\s+/', $ldap->host);
+	$response     = [];
 
-	if (cacti_sizeof($ld)) {
-		if (!empty($ld['dn'])) {
-			$ldap->dn = $ld['dn'];
+	foreach ($ldap_servers as $ldap_server) {
+		$ldap->host = $ldap_server;
+
+		$response = $ldap->Getcn();
+
+		if ($response['error_num'] == 0) {
+			cacti_log(sprintf('LDAP: Search for User \'%s\' CN at Server \'%s\' Suceeded', $username, $ldap_server), false, 'AUTH', $debug);
+
+			return $response;
 		}
-
-		if (!empty($ld['server'])) {
-			$ldap->host = $ld['server'];
-		}
-
-		if (!empty($ld['port'])) {
-			$ldap->port = $ld['port'];
-		}
-
-		if (!empty($ld['port_ssl'])) {
-			$ldap->port_ssl = $ld['port_ssl'];
-		}
-
-		if (!empty($ld['proto_version'])) {
-			$ldap->version = $ld['proto_version'];
-		}
-
-		if (!empty($ld['encryption'])) {
-			$ldap->encryption = $ld['encryption'];
-		}
-
-		if (!empty($ld['referrals'])) {
-			$ldap->referrals = $ld['referrals'];
-		}
-
-		if (!empty($ld['mode'])) {
-			$ldap->mode = $ld['mode'];
-		}
-
-		if (!empty($ld['search_base'])) {
-			$ldap->search_base = $ld['search_base'];
-		}
-
-		if (!empty($ld['search_filter'])) {
-			$ldap->search_filter = $ld['search_filter'];
-		}
-
-		if (!empty($ld['specific_dn'])) {
-			$ldap->specific_dn = $ld['specific_dn'];
-		}
-
-		if (!empty($ld['specific_password'])) {
-			$ldap->specific_password = $ld['specific_password'];
-		}
-
-		$ldap->cn = $cn;
-
-		if ($ld['group_require'] == 'on') {
-			$ldap->group_require = true;
-		} else {
-			$ldap->group_require = false;
-		}
-
-		if (!empty($ld['group_dn'])) {
-			$ldap->group_dn = $ld['group_dn'];
-		}
-
-		if (!empty($ld['group_attrib'])) {
-			$ldap->group_attrib = $ld['group_attrib'];
-		}
-
-		if (!empty($ld['group_member_type'])) {
-			$ldap->group_member_type = $ld['group_member_type'];
-		}
-
-		/* If the server list is a space delimited set of servers
-		 * process each server until you get a bind, or fail
-		 */
-		$ldap_servers = preg_split('/\s+/', $ldap->host);
-		$response     = [];
-
-		foreach ($ldap_servers as $ldap_server) {
-			$ldap->host = $ldap_server;
-
-			$response = $ldap->Getcn();
-
-			if ($response['error_num'] == 0) {
-				return $response;
-			}
-		}
-
-		return $response;
-	} else {
-		return false;
 	}
+
+	cacti_log(sprintf('LDAP: Search for User \'%s\' CN on all Servers Failed', $username), false, 'AUTH', $debug);
+
+	return $response;
 }
 
 /**

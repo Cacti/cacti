@@ -78,6 +78,7 @@ function form_save() : void {
 		$save['user_id']     = gnrv('user_id');
 		$save['domain_name'] = form_input_validate(gnrv('domain_name'), 'domain_name', '', false, 3);
 		$save['enabled']     = (isrv('enabled') ? form_input_validate(gnrv('enabled'), 'enabled', '', true,  3) : '');
+		$save['debug']       = (isrv('debug') ? form_input_validate(gnrv('debug'), 'debug', '', true,  3) : '');
 
 		if (is_error_message() === false) {
 			$domain_id = sql_save($save, 'user_domains', 'domain_id');
@@ -111,7 +112,10 @@ function form_save() : void {
 				$save['port']                = gnrv('port');
 				$save['port_ssl']            = gnrv('port_ssl');
 				$save['proto_version']       = gnrv('proto_version');
+				$save['network_timeout']     = gnrv('network_timeout');
+				$save['bind_timeout']        = gnrv('bind_timeout');
 				$save['encryption']          = gnrv('encryption');
+				$save['tls_certificate']     = gnrv('tls_certificate');
 				$save['referrals']           = gnrv('referrals');
 				$save['mode']                = gnrv('mode');
 				$save['group_member_type']   = gnrv('group_member_type');
@@ -271,7 +275,7 @@ function domain_default(int $domain_id) : void {
 }
 
 function domain_edit() : void {
-	global $ldap_versions, $ldap_encryption, $ldap_modes, $domain_types;
+	global $ldap_versions, $ldap_encryption, $ldap_modes, $domain_types, $ldap_tls_cert_req;
 
 	// ================= input validation =================
 	gfrv('domain_id');
@@ -317,6 +321,13 @@ function domain_edit() : void {
 			'value'         => '|arg1:enabled|',
 			'default'       => '',
 		],
+		'debug' => [
+			'method'        => 'checkbox',
+			'friendly_name' => __('Debug'),
+			'description'   => __('If testing the LDAP connection and your desire more details in your Cacti log, check this box.'),
+			'value'         => '|arg1:debug|',
+			'default'       => '',
+		],
 		'domain_id' => [
 			'method' => 'hidden_zero',
 			'value'  => '|arg1:domain_id|'
@@ -352,7 +363,7 @@ function domain_edit() : void {
 			'method'        => 'textbox',
 			'max_length'    => '5',
 			'value'         => '|arg1:port_ssl|',
-			'default'       => 686,
+			'default'       => 636,
 			'size'          => '5'
 		],
 		'proto_version' => [
@@ -362,12 +373,38 @@ function domain_edit() : void {
 			'value'         => '|arg1:proto_version|',
 			'array'         => $ldap_versions
 		],
+		'network_timeout' => [
+			'friendly_name' => __('Network Timeout'),
+			'description'   => __('The timeout to connect to the LDAP server in seconds.'),
+			'method'        => 'textbox',
+			'max_length'    => '5',
+			'value'         => '|arg1:network_timeout|',
+			'default'       => 2,
+			'size'          => '5'
+		],
+		'bind_timeout' => [
+			'friendly_name' => __('Bind Timeout'),
+			'description'   => __('The timeout to bind to the LDAP service in seconds.'),
+			'method'        => 'textbox',
+			'max_length'    => '5',
+			'value'         => '|arg1:bind_timeout|',
+			'default'       => 2,
+			'size'          => '5'
+		],
 		'encryption' => [
 			'friendly_name' => __('Encryption'),
 			'description'   => __('Encryption that the server supports. TLS is only supported by Protocol Version 3.'),
 			'method'        => 'drop_array',
 			'value'         => '|arg1:encryption|',
 			'array'         => $ldap_encryption
+		],
+		'tls_certificate' => [
+			'friendly_name' => __('TLS Certificate Requirements'),
+			'description'   => __('Should LDAP verify TLS Certificates when received by the Client.'),
+			'method'        => 'drop_array',
+			'value'         => '|arg1:tls_certificate|',
+			'default'       => LDAP_OPT_X_TLS_NEVER,
+			'array'         => $ldap_tls_cert_req
 		],
 		'referrals' => [
 			'friendly_name' => __('Referrals'),
