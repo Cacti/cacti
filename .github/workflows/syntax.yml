@@ -39,13 +39,14 @@ env:
 
 jobs:
   check:
-    runs-on: self-hosted
-    container: 
-      ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+#    runs-on: self-hosted
+#    container: 
+#      ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu:latest]
+        os: [ubuntu-latest]
         php: ['8.1', '8.2', '8.3', '8.4']
         experimental: [false]
 
