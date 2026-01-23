@@ -78,6 +78,21 @@ jobs:
     - name: Check PHP version
       run: php -v
 
+    - name: Validate composer.json and composer.lock
+      run: sudo composer validate --strict
+
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v3
+      with:
+        path: include/vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+
+    - name: Install dependencies
+      run: sudo composer install --prefer-dist --no-progress
+
     - name: Run Linter on base code
       run: composer run-script lint
       working-directory: .
@@ -202,21 +217,6 @@ jobs:
         mysql $MYSQL_AUTH_USR -e "FLUSH PRIVILEGES;"
         mysql $MYSQL_AUTH_USR cacti < ${{ github.workspace }}/cacti.sql
         mysql $MYSQL_AUTH_USR -e "INSERT INTO settings (name, value) VALUES ('path_php_binary', '/bin/php')" cacti
-
-    - name: Validate composer.json and composer.lock
-      run: sudo composer validate --strict
-
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v3
-      with:
-        path: include/vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
-
-    - name: Install dependencies
-      run: sudo composer install --prefer-dist --no-progress
 
     - name: Prime Cacti config.php File
       run: |
