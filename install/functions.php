@@ -1438,7 +1438,7 @@ function log_install_level(string $option, int $default_level) : int {
 }
 
 // TODO: Why is option passed to this function?
-function log_install_level_sanitize(int $level, int $default_level = POLLER_VERBOSITY_NONE, string $option = '') : int {
+function log_install_level_sanitize(mixed $level, int $default_level = POLLER_VERBOSITY_NONE, string $option = '') : int {
 	if ($level == 0) {
 		$level = $default_level;
 	}
