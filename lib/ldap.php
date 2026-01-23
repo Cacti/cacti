@@ -490,35 +490,35 @@ class Ldap {
 					WHERE domain_id = ?',
 					[$domain_id]);
 
-		        /* Initialize LDAP parameters for Authenticate */
-		        $this->dn                = $settings['dn'];
-		        $this->host              = $settings['server'];
-		        $this->port              = $settings['port'];
-		        $this->port_ssl          = $settings['port_ssl'];
-		        $this->version           = $settings['proto_version'];
-		        $this->encryption        = $settings['encryption'];
-		        $this->referrals         = $settings['referrals'];
-		        $this->tls_certificate   = $settings['tls_certificate'];
-		        $this->network_timeout   = $settings['network_timeout'];
-		        $this->bind_timeout      = $settings['bind_timeout'];
-		        $this->debug             = $domain['debug'] == 'on' ? POLLER_VERBOSITY_LOW : POLLER_VERBOSITY_HIGH;
+				// Initialize LDAP parameters for Authenticate
+				$this->dn                = $settings['dn'];
+				$this->host              = $settings['server'];
+				$this->port              = $settings['port'];
+				$this->port_ssl          = $settings['port_ssl'];
+				$this->version           = $settings['proto_version'];
+				$this->encryption        = $settings['encryption'];
+				$this->referrals         = $settings['referrals'];
+				$this->tls_certificate   = $settings['tls_certificate'];
+				$this->network_timeout   = $settings['network_timeout'];
+				$this->bind_timeout      = $settings['bind_timeout'];
+				$this->debug             = $domain['debug'] == 'on' ? POLLER_VERBOSITY_LOW : POLLER_VERBOSITY_HIGH;
 
-				/* For group membership checks */
+				// For group membership checks
 				$this->group_require     = $settings['group_require'] == 'on' ? true : false;
-		        $this->group_dn          = $settings['group_dn'];
-		        $this->group_attrib      = $settings['group_attrib'];
-		        $this->group_member_type = $settings['group_member_type'];
+				$this->group_dn          = $settings['group_dn'];
+				$this->group_attrib      = $settings['group_attrib'];
+				$this->group_member_type = $settings['group_member_type'];
 
-		        /* Initialize LDAP parameters for Search */
-		        $this->mode              = $settings['mode'];
-		        $this->search_base       = $settings['search_base'];
-		        $this->search_filter     = $settings['search_filter'];
-		        $this->specific_dn       = $settings['specific_dn'];
-		        $this->specific_password = $settings['specific_password'];
+				// Initialize LDAP parameters for Search
+				$this->mode              = $settings['mode'];
+				$this->search_base       = $settings['search_base'];
+				$this->search_filter     = $settings['search_filter'];
+				$this->specific_dn       = $settings['specific_dn'];
+				$this->specific_password = $settings['specific_password'];
 
-				/* CN Search settings */
-		        $this->cn_full_name      = $settings['cn_full_name'];
-		        $this->cn_email          = $settings['cn_email'];
+				// CN Search settings
+				$this->cn_full_name      = $settings['cn_full_name'];
+				$this->cn_email          = $settings['cn_email'];
 			}
 		}
 	}

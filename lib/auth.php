@@ -3906,6 +3906,7 @@ function domains_ldap_auth(string $username, string $password = '', string $dn =
 
 		if ($response['error_num'] == 0) {
 			cacti_log(sprintf('LDAP: Login for User \'%s\' Succeded on Server %s', $username, $ldap_server), false, 'AUTH', $debug);
+
 			return $response;
 		}
 	}
