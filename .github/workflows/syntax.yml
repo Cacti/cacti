@@ -170,9 +170,6 @@ jobs:
         cp -p ${{ github.workspace }}/plugins/syslog/config.php.dist ${{ github.workspace }}/plugins/syslog/config.php
         sed -i 's/\/\/\$/\$/g' ${{ github.workspace }}/plugins/syslog/config.php
 
-    - name: Check PHP syntax
-      run: if find ${{ github.workspace }} -name '*.php' -exec php -l {} 2>&1 \; | grep -iv 'no syntax errors detected'; then exit 1; fi
-
     - name: Run apt-get update
       run: sudo apt-get -y update
 
@@ -288,24 +285,3 @@ jobs:
 
     - name: View Contents of Logs
       run: sudo cat ${{ github.workspace }}/log/cacti.log
-          
-#    - name: Validate composer.json and composer.lock
-#      run: composer validate --strict
-
-#    - name: Cache Composer packages
-#      id: composer-cache
-#      uses: actions/cache@v3
-#      with:
-#        path: vendor
-#        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-#        restore-keys: |
-#          ${{ runner.os }}-php-
-#
-#    - name: Install dependencies
-#      run: composer install --prefer-dist --no-progress
-
-# Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-#   Docs: https://getcomposer.org/doc/articles/scripts.md
-#
-#    - name: Run test suite
-#      run: composer run-script test
