@@ -613,11 +613,11 @@ define('CACTI_DATE_TIME_FORMAT', date_time_format());
 
 include_once(CACTI_PATH_INCLUDE . '/global_languages.php');
 
-define('CACTI_VERSION_BRIEF', get_cacti_version_text(false,CACTI_VERSION));
-define('CACTI_VERSION_BRIEF_FULL', get_cacti_version_text(false,CACTI_VERSION_FULL));
-define('CACTI_VERSION_TEXT', get_cacti_version_text(true,CACTI_VERSION));
-define('CACTI_VERSION_TEXT_FULL', get_cacti_version_text(true,CACTI_VERSION_FULL));
-define('CACTI_VERSION_TEXT_CLI', get_cacti_cli_version(true,CACTI_VERSION_FULL));
+define('CACTI_VERSION_BRIEF', get_cacti_version_text(false, CACTI_VERSION));
+define('CACTI_VERSION_BRIEF_FULL', get_cacti_version_text(false, CACTI_VERSION_FULL));
+define('CACTI_VERSION_TEXT', get_cacti_version_text(true, CACTI_VERSION));
+define('CACTI_VERSION_TEXT_FULL', get_cacti_version_text(true, CACTI_VERSION_FULL));
+define('CACTI_VERSION_TEXT_CLI', get_cacti_cli_version(true, CACTI_VERSION_FULL)); // @phpstan-ignore-line
 
 include_once(CACTI_PATH_LIBRARY . '/auth.php');
 include_once(CACTI_PATH_LIBRARY . '/plugins.php');

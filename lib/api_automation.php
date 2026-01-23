@@ -5234,6 +5234,12 @@ function automation_tree_rule_export(mixed $tree_rule_ids): array {
 				WHERE id = ?',
 				[$rule_id]);
 
+			if (!cacti_sizeof($tree_rule)) {
+				raise_message('rule_missing', __('Can not find the Tree Rule with the ID %s', $rule_id), MESSAGE_LEVEL_ERROR);
+
+				return [];
+			}
+
 			// get the snmp options item data
 			$tree_rule_items = db_fetch_assoc_prepared('SELECT gri.*
 				FROM automation_tree_rule_items AS gri

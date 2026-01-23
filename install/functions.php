@@ -990,7 +990,7 @@ function install_setup_get_tables() : mixed {
 	return $t;
 }
 
-function to_array(mixed $data) : array {
+function to_array(array $data) : array {
 	if (is_object($data)) {
 		$data = get_object_vars($data);
 	}

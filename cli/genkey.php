@@ -148,19 +148,19 @@ if (!$replace && !$generate) {
 	exit(1);
 }
 
-if ($author == -1) {
+if ($author === -1) {
 	print 'FATAL: The parameter --author is required.' . PHP_EOL;
 
 	exit(1);
 }
 
-if ($homepage == -1) {
+if ($homepage === -1) {
 	print 'FATAL: The parameter --homepage is required.' . PHP_EOL;
 
 	exit(1);
 }
 
-if ($email == -1) {
+if ($email === -1) {
 	print 'FATAL: The parameter --email is required.' . PHP_EOL;
 
 	exit(1);

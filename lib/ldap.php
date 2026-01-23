@@ -871,12 +871,12 @@ class Ldap {
 			if ($ldap_results) {
 				$ldap_entries = ldap_get_entries($ldap_conn, $ldap_results);
 
-				if ($ldap_entries['count'] == 1) {
+				if ($ldap_entries !== false && $ldap_entries['count'] === 1) {
 					// single response return user dn
 					$output       = LdapError::GetErrorDetails(LdapError::Success);
 					$output['dn'] = $ldap_entries['0']['dn'];
 					Ldap::RecordError($output, 'LDAP_SEARCH');
-				} elseif ($ldap_entries['count'] > 1) {
+				} elseif ($ldap_entries !== false && $ldap_entries['count'] > 1) {
 					// more than 1 result
 					$output = LdapError::GetErrorDetails(LdapError::SearchFoundMultiUser);
 				} else {
@@ -987,7 +987,7 @@ class Ldap {
 				$ldap_entries =  ldap_get_entries($ldap_conn, $ldap_results);
 
 				// We find 1 entries
-				if ($ldap_entries['count'] == 1) {
+				if ($ldap_entries !== false && $ldap_entries['count'] == 1) {
 					$output = LdapError::GetErrorDetails(LdapError::Success);
 
 					// check if we got an full username entry
@@ -1054,7 +1054,11 @@ class Ldap {
 			$ldapResults = ldap_get_entries($ldapConn, $ldapSearch);
 
 			// user should only be returned once IF they're a member of the group
-			return isset($ldapResults['count']) && $ldapResults['count'] == 1 ? true : false;
+			if ($ldapResults !== false) {
+				return isset($ldapResults['count']) && $ldapResults['count'] == 1 ? true : false;
+			} else {
+				return false;
+			}
 		} else {
 			return false;
 		}

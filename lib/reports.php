@@ -2416,8 +2416,10 @@ function get_notification_emails(int $id = 0, string $recipient = 'to') : string
 		return '';
 	}
 
-	if (!thold_notification_list_enabled($id)) {
-		return '';
+	if (function_exists('thold_notification_list_enabled')) {
+		if (!thold_notification_list_enabled($id)) {
+			return '';
+		}
 	}
 
 	if ($id > 0) {

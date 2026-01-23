@@ -66,7 +66,7 @@ switch (grv('action')) {
 	case 'edit':
 		top_header();
 
-		data_edit();
+		data_input_edit();
 
 		bottom_footer();
 
@@ -485,7 +485,7 @@ function field_edit() : void {
 	form_save_button('data_input.php?action=edit&id=' . grv('data_input_id'));
 }
 
-function data_edit() : void {
+function data_input_edit() : void {
 	global $fields_data_input_edit;
 
 	// ================= input validation =================

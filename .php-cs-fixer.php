@@ -27,12 +27,9 @@ $config
     ->setIndent("\t")
     ->setLineEnding("\n")
     ->setRules(array(
-    //'@PHP56Migration' => true,
-    //'@PhpCsFixer' => true,
-    //'@PhpCsFixer:risky' => true,
     'header_comment' => false,
     //'header_comment' => ['header' => $header, 'comment_type' => 'comment', 'separate' => 'bottom'],
-    'comment_to_phpdoc'                              => true,
+    'comment_to_phpdoc'                           => true,
     'list_syntax'                                 => ['syntax' => 'short'],
     'array_syntax'                                => ['syntax' => 'short'],
     'trim_array_spaces'                           => false,
