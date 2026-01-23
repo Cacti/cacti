@@ -122,7 +122,7 @@ switch (grv('action')) {
 		break;
 }
 
-function profile_export() {
+function profile_export() : void {
 	// if we are to save this form, instead of display it
 	if (isrv('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(gnrv('selected_items'));
@@ -131,6 +131,8 @@ function profile_export() {
 			if (cacti_sizeof($selected_items) == 1) {
 				$export_data = profile_export_execute($selected_items[0]);
 			} else {
+				$profiles = [];
+
 				foreach ($selected_items as $id) {
 					$profiles[] = $id;
 				}
@@ -152,7 +154,7 @@ function profile_export() {
 	}
 }
 
-function profile_import() {
+function profile_import() : void {
 	$form_data = [
 		'import_file' => [
 			'friendly_name' => __('Import Data Source Profile from Local File'),
@@ -215,7 +217,7 @@ function profile_import() {
 	html_end_box();
 }
 
-function profile_import_execute($json_data) {
+function profile_import_execute(mixed $json_data) : array {
 	$debug_data = [];
 
 	/**
@@ -364,7 +366,7 @@ function profile_import_execute($json_data) {
 	return $debug_data;
 }
 
-function profile_validate_import_columns($table, &$data, &$debug_data, $exclude = []) {
+function profile_validate_import_columns(string $table, array &$data, array &$debug_data, array $exclude = []) : bool {
 	if (cacti_sizeof($data)) {
 		foreach ($data as $column => $cdata) {
 			if (!db_column_exists($table, $column) && !in_array($column, $exclude, true)) {
@@ -382,8 +384,9 @@ function profile_validate_import_columns($table, &$data, &$debug_data, $exclude 
 	return true;
 }
 
-function profile_import_process() {
-	$json_data = json_decode(gnrv('import_text'), true);
+function profile_import_process() : void {
+	$json_data  = json_decode(gnrv('import_text'), true);
+	$debug_data = [];
 
 	// If we have text, then we were trying to import text, otherwise we are uploading a file for import
 	if (empty($json_data)) {
@@ -402,7 +405,7 @@ function profile_import_process() {
 	if (isset($return_data['errors'])) {
 		foreach ($return_data['errors'] as $error) {
 			$debug_data[] = '<span class="deviceDown">' . __('ERROR:') . '</span> ' . $error;
-			cacti_log('NOTE: Data Source Profile Import Error!.  Message: ' . $message, false, 'AUTOM8');
+			cacti_log('NOTE: Data Source Profile Import Error!.  Message: ' . $error, false, 'AUTOM8');
 		}
 	}
 
@@ -422,7 +425,7 @@ function profile_import_process() {
 	exit();
 }
 
-function profile_validate_upload() {
+function profile_validate_upload() : bool {
 	// check file transfer if used
 	if (isset($_FILES['import_file'])) {
 		// check for errors first
@@ -478,7 +481,7 @@ function profile_validate_upload() {
 	return false;
 }
 
-function profile_export_execute($profile_ids) {
+function profile_export_execute(mixed $profile_ids) : array {
 	/**
 	 * Tables for export include:
 	 *
@@ -550,7 +553,7 @@ function profile_export_execute($profile_ids) {
 	return $json_array;
 }
 
-function form_save() {
+function form_save() : void {
 	// make sure ids are numeric
 	if (isrv('id') && ! is_numeric(gfrv('id'))) {
 		srv('id', 0);
@@ -582,7 +585,7 @@ function form_save() {
 		}
 
 		if (isrv('default')) {
-			$save['default'] = (isrv('default') ? 'on' : '');
+			$save['default'] = isrv('default') == true ? 'on' : '';
 			db_execute('UPDATE data_source_profiles SET `default` = ""');
 		}
 
@@ -678,6 +681,8 @@ function form_save() {
 			} else {
 				raise_message(2);
 			}
+		} else {
+			$profile_rra_id = 0;
 		}
 
 		if (is_error_message()) {
@@ -688,7 +693,7 @@ function form_save() {
 	}
 }
 
-function form_actions() {
+function form_actions() : void {
 	global $actions;
 
 	// ================= input validation =================
@@ -793,7 +798,7 @@ function form_actions() {
 	}
 }
 
-function duplicate_data_source_profile($source_profile, $title_format) {
+function duplicate_data_source_profile(mixed $source_profile, string $title_format) : void {
 	if (!is_array($source_profile)) {
 		$source_profile = [$source_profile];
 	}
@@ -851,7 +856,7 @@ function duplicate_data_source_profile($source_profile, $title_format) {
 	}
 }
 
-function profile_item_remove_confirm() {
+function profile_item_remove_confirm() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('profile_id');
@@ -914,7 +919,7 @@ function profile_item_remove_confirm() {
 	<?php
 }
 
-function profile_item_remove() {
+function profile_item_remove() : void {
 	// ================= input validation =================
 	gfrv('id');
 	// ====================================================
@@ -922,7 +927,7 @@ function profile_item_remove() {
 	db_execute_prepared('DELETE FROM data_source_profiles_rra WHERE id = ?', [grv('id')]);
 }
 
-function item_edit() {
+function item_edit() : void {
 	global $fields_profile_rra_edit, $aggregation_levels;
 
 	// ================= input validation =================
@@ -1062,7 +1067,7 @@ function item_edit() {
 	<?php
 }
 
-function profile_edit() {
+function profile_edit() : void {
 	global $fields_profile_edit, $timespans;
 
 	// ================= input validation =================
@@ -1083,6 +1088,8 @@ function profile_edit() {
 
 		$header_label = __esc('Data Source Profile [edit: %s]', $profile['name'] . ($readonly ? ' (Read Only)' : ''));
 	} else {
+		$profile      = [];
+		$readonly     = 0;
 		$header_label = __('Data Source Profile [new]');
 		$readonly     = false;
 	}
@@ -1091,9 +1098,10 @@ function profile_edit() {
 
 	html_start_box($header_label, '100%', true, 3, 'center', '');
 
-	draw_edit_form([
-		'config' => ['no_form_tag' => true],
-		'fields' => inject_form_variables($fields_profile_edit, (isset($profile) ? $profile : []))
+	draw_edit_form(
+		[
+			'config' => ['no_form_tag' => true],
+			'fields' => inject_form_variables($fields_profile_edit, $profile)
 		]
 	);
 
@@ -1133,7 +1141,7 @@ function profile_edit() {
 				form_selectable_cell(filter_value($rra['name'], '', $url), $i);
 
 				form_selectable_cell('<em>' . get_span($profile['step'] * $rra['steps'] * $rra['rows']) . '</em>', $i);
-				form_selectable_cell('<em>' . isset($timespans[$rra['timespan']]) ? $timespans[$rra['timespan']] : get_span($rra['timespan']) . '</em>', $i);
+				form_selectable_cell('<em>' . isset($timespans[$rra['timespan']]) ? $timespans[$rra['timespan']] : get_span($rra['timespan']) . '</em>', $i); // @phpstan-ignore-line
 				form_selectable_cell('<em>' . $rra['steps'] . '</em>', $i);
 				form_selectable_cell('<em>' . $rra['rows'] . '</em>', $i);
 
@@ -1244,7 +1252,7 @@ function profile_edit() {
 	<?php
 }
 
-function get_size($id, $type, $cfs = '', $rows = 1) {
+function get_size(int $id, string $type, string $cfs = '', int $rows = 1) : string {
 	// On x86_64 platform, here is the equation
 	// file_size = $header + (# data sources * 300) + (# cfs * #rows in all RRAs)
 	$header   = 284;
@@ -1279,7 +1287,7 @@ function get_size($id, $type, $cfs = '', $rows = 1) {
 	}
 }
 
-function get_span($duration) {
+function get_span(int $duration) : string {
 	$years  = '';
 	$months = '';
 	$weeks  = '';
@@ -1331,7 +1339,7 @@ function get_span($duration) {
 	return $output;
 }
 
-function profile() {
+function profile() : void {
 	global $actions, $item_rows, $sampling_intervals, $heartbeats;
 
 	// create the page filter

@@ -916,7 +916,7 @@ function display_new_graphs(array $rule, string $url): void {
 	global $item_rows;
 
 	// create the page filter
-	$pageFilter             = new CactiTableFilter(__('Matching Indexes'), $url, 'form', 'sess_auto_mo', false, false, false);
+	$pageFilter             = new CactiTableFilter(__('Matching Indexes'), $url, 'form', 'sess_auto_mo', '', false, false);
 	$pageFilter->rows_label = __('Objects');
 	$pageFilter->render();
 

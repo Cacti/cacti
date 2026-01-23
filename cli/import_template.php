@@ -73,7 +73,7 @@ if (cacti_sizeof($parms)) {
 
 				break;
 			case '--preview':
-				$preview_only = 1;
+				$preview_only = true;
 
 				break;
 			case '--profile-id':

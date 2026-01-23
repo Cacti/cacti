@@ -1966,7 +1966,7 @@ function user_group() : void {
 	form_end();
 }
 
-function create_graphs_filter() : array {
+function create_uggraphs_filter() : array {
 	global $item_rows;
 
 	$any  = ['-1' => __('Any')];
@@ -2033,7 +2033,7 @@ function create_graphs_filter() : array {
 }
 
 function graph_filter(string $header_label) : void {
-	$filters = create_graphs_filter();
+	$filters = create_uggraphs_filter();
 
 	// create the page filter
 	$pageFilter = new CactiTableFilter(__('Graph Permissions %s', $header_label), 'user_group_admin.php?action=edit&tab=permsd&id=' . grv('id'), 'form_template', 'sess_ua_d');

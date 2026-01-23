@@ -114,7 +114,7 @@ switch (grv('action')) {
 		break;
 }
 
-function automation_export() {
+function automation_export() : void {
 	draw_tree_rules_filter(true);
 
 	// if we are to save this form, instead of display it
@@ -153,7 +153,7 @@ function automation_export() {
 	}
 }
 
-function automation_import() {
+function automation_import() : void {
 	$form_data = [
 		'import_file' => [
 			'friendly_name' => __('Import Tree Rules from Local File'),
@@ -223,7 +223,7 @@ function automation_import() {
 	html_end_box();
 }
 
-function automation_import_process() {
+function automation_import_process() : void {
 	$json_data = json_decode(gnrv('import_text'), true);
 
 	$debug_data = [];
@@ -271,7 +271,7 @@ function automation_import_process() {
 	exit();
 }
 
-function form_save() {
+function form_save() : void {
 	if (isrv('save_component_automation_tree_rule')) {
 		// ================= input validation =================
 		gfrv('id');
@@ -383,7 +383,7 @@ function form_save() {
 	}
 }
 
-function automation_tree_rules_form_actions() {
+function automation_tree_rules_form_actions() : void {
 	global $actions;
 
 	// if we are to save this form, instead of display it
@@ -514,7 +514,7 @@ function automation_tree_rules_form_actions() {
 	}
 }
 
-function automation_tree_rules_change_leaf() {
+function automation_tree_rules_change_leaf() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('leaf_type');
@@ -523,7 +523,7 @@ function automation_tree_rules_change_leaf() {
 	automation_change_tree_rule_leaf_type(grv('leaf_type'), grv('id'));
 }
 
-function automation_tree_rules_item_movedown() {
+function automation_tree_rules_item_movedown() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('item_id');
@@ -537,7 +537,7 @@ function automation_tree_rules_item_movedown() {
 	}
 }
 
-function automation_tree_rules_item_moveup() {
+function automation_tree_rules_item_moveup() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('item_id');
@@ -551,7 +551,7 @@ function automation_tree_rules_item_moveup() {
 	}
 }
 
-function automation_tree_rules_item_remove() {
+function automation_tree_rules_item_remove() : void {
 	// ================= input validation =================
 	gfrv('item_id');
 	gfrv('rule_type');
@@ -564,7 +564,7 @@ function automation_tree_rules_item_remove() {
 	}
 }
 
-function automation_tree_rules_item_edit() {
+function automation_tree_rules_item_edit() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('item_id');
@@ -589,8 +589,6 @@ function automation_tree_rules_item_edit() {
 					$tabs['objects'] = __('Matching Items');
 				}
 			}
-		} elseif (isset($tabs['objects'])) {
-			unset($tabs['objects']);
 		}
 
 		html_sub_tabs($tabs, 'action=item_edit&id=' . grv('id') . '&item_id=' . grv('item_id') . '&rule_type=' . grv('rule_type'));
@@ -670,7 +668,7 @@ function automation_tree_rules_item_edit() {
 	<?php
 }
 
-function automation_tree_rules_remove() {
+function automation_tree_rules_remove() : void {
 	// ================= input validation =================
 	gfrv('id');
 	// ====================================================
@@ -689,7 +687,7 @@ function automation_tree_rules_remove() {
 		[grv('id')]);
 }
 
-function automation_tree_rules_edit() {
+function automation_tree_rules_edit() : void {
 	global $fields_automation_tree_rules_edit1, $fields_automation_tree_rules_edit2, $fields_automation_tree_rules_edit3;
 
 	require_once(CACTI_PATH_LIBRARY . '/html_tree.php');
@@ -943,7 +941,7 @@ function automation_tree_rules_edit() {
 	<?php
 }
 
-function create_tree_rules_filter() {
+function create_tree_rules_filter() : array {
 	global $item_rows;
 
 	$status_arr = [
@@ -1011,7 +1009,7 @@ function create_tree_rules_filter() {
 	];
 }
 
-function draw_tree_rules_filter($render = false) {
+function draw_tree_rules_filter(bool $render = false) : void {
 	$filters = create_tree_rules_filter();
 
 	// create the page filter
@@ -1027,7 +1025,7 @@ function draw_tree_rules_filter($render = false) {
 	}
 }
 
-function automation_tree_rules() {
+function automation_tree_rules() : void {
 	global $actions, $item_rows;
 	global $automation_tree_item_types, $host_group_types;
 

@@ -139,7 +139,7 @@ switch (grv('action')) {
 		break;
 }
 
-function api_auth_logout_everywhere() {
+function api_auth_logout_everywhere() : void {
 	$user = $_SESSION[SESS_USER_ID];
 
 	if (!empty($user)) {
@@ -150,7 +150,7 @@ function api_auth_logout_everywhere() {
 	}
 }
 
-function api_auth_clear_user_settings() {
+function api_auth_clear_user_settings() : void {
 	$user = $_SESSION[SESS_USER_ID];
 
 	if (!empty($user)) {
@@ -169,7 +169,7 @@ function api_auth_clear_user_settings() {
 	}
 }
 
-function api_auth_clear_user_setting($name) {
+function api_auth_clear_user_setting(string $name) : void {
 	global $settings_user;
 
 	$user = $_SESSION[SESS_USER_ID];
@@ -210,7 +210,7 @@ function api_auth_clear_user_setting($name) {
 	}
 }
 
-function api_auth_update_user_setting($name, $value) {
+function api_auth_update_user_setting(string $name, string $value) : void {
 	global $settings_user;
 
 	$user = $_SESSION[SESS_USER_ID];
@@ -242,8 +242,8 @@ function api_auth_update_user_setting($name, $value) {
 	}
 }
 
-function form_save() {
-	global $settings_user;
+function form_save() : void {
+	global $errors, $settings_user;
 
 	// Save the users profile information
 	if (isrv('full_name') && isrv('email_address') && isset($_SESSION[SESS_USER_ID])) {
@@ -272,7 +272,7 @@ function form_save() {
 	} else {
 		raise_message(35);
 
-		foreach ($errors as $error) {
+		foreach ($errors as $error) { // @phpstan-ignore-line
 			raise_message($error);
 		}
 	}
@@ -286,14 +286,14 @@ function form_save() {
 	header('Location: auth_profile.php' . $tab);
 }
 
-function settings() {
+function settings() : bool {
 	global $tabs_graphs, $settings_user, $current_user, $graph_views, $current_user;
 
 	// you cannot have per-user graph settings if cacti's user management is not turned on
 	if (read_config_option('auth_method') == AUTH_METHOD_NONE) {
 		raise_message(6);
 
-		return;
+		return false;
 	}
 
 	if (isset($_SERVER['HTTP_REFERER'])) {
@@ -323,7 +323,7 @@ function settings() {
 	);
 
 	if (!cacti_sizeof($current_user)) {
-		return;
+		return false;
 	}
 
 	// Set the graph views the user has permission to
@@ -423,7 +423,7 @@ function settings() {
 		foreach ($settings_user as $tab_short_name => $tab_fields) {
 			$collapsible = true;
 
-			print "<div class='spacer formHeader" . ($collapsible ? ' collapsible' : '') . "' id='row_$tab_short_name'><div class='formHeaderText'>" . $tabs_graphs[$tab_short_name] . ($collapsible ? "<div style='float:right;padding-right:4px;'><i class='ti ti-chevrons-up'></i></div>" : '') . '</div></div>';
+			print "<div class='spacer formHeader collapsible' id='row_$tab_short_name'><div class='formHeaderText'>" . $tabs_graphs[$tab_short_name] . "<div style='float:right;padding-right:4px;'><i class='ti ti-chevrons-up'></i></div>" . '</div></div>';
 
 			$form_array = [];
 
@@ -493,16 +493,18 @@ function settings() {
 	form_save_buttons($buttons, $_SESSION['profile_referer']);
 
 	form_end();
+
+	return true;
 }
 
-function settings_2fa() {
+function settings_2fa() : bool {
 	global $tabs_graphs, $settings_user, $current_user, $graph_views, $current_user;
 
 	// you cannot have per-user graph settings if cacti's user management is not turned on
 	if (read_config_option('auth_method') == AUTH_METHOD_NONE) {
 		raise_message(6);
 
-		return;
+		return false;
 	}
 
 	if (isset($_SERVER['HTTP_REFERER'])) {
@@ -532,7 +534,7 @@ function settings_2fa() {
 	);
 
 	if (!cacti_sizeof($current_user)) {
-		return;
+		return false;
 	}
 
 	$fields_user = [
@@ -667,12 +669,14 @@ function settings_2fa() {
 			});
 		});
 	</script>
-<?php
+	<?php
 
 	form_end();
+
+	return true;
 }
 
-function settings_javascript() {
+function settings_javascript() : void {
 	?>
 	<script type='text/javascript'>
 		var themeFonts = <?php print read_config_option('font_method'); ?>;

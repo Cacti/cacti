@@ -107,6 +107,9 @@ if (cacti_sizeof($idbyhost)) {
 		AND host_id IN (' . implode(',', $hosts) . ')
 		AND local_data_id IN (' . implode(',', $ids) . ')');
 
+
+	$cactiphp = false;
+
 	// startup Cacti php polling server and include the include file for script processing
 	if ($script_server_calls > 0) {
 		$cactides = [
@@ -121,9 +124,11 @@ if (cacti_sizeof($idbyhost)) {
 			$using_proc_function = true;
 		} else {
 			$using_proc_function = false;
+			$pipes               = false;
 		}
 	} else {
 		$using_proc_function = false;
+		$pipes               = false;
 	}
 
 	// all polled items need the same insert time
@@ -217,7 +222,7 @@ if (cacti_sizeof($idbyhost)) {
 
 							break;
 						case POLLER_ACTION_SCRIPT: // script (popen)
-							$output = trim(exec_poll($item['arg1']), 2);
+							$output = trim(exec_poll($item['arg1'], 2));
 
 							if (prepare_validate_result($output) === false) {
 								if (strlen($output) > 20) {
@@ -263,12 +268,16 @@ if (cacti_sizeof($idbyhost)) {
 	}
 
 	if (($using_proc_function == true) && ($script_server_calls > 0)) {
-		// close php server process
-		fwrite($pipes[0], "quit\r\n");
-		fclose($pipes[0]);
-		fclose($pipes[1]);
-		fclose($pipes[2]);
+		if ($cactiphp) {
+			// close php server process
+			if ($pipes !== false) {
+				fwrite($pipes[0], "quit\r\n");
+				fclose($pipes[0]);
+				fclose($pipes[1]);
+				fclose($pipes[2]);
+			}
 
-		$return_value = proc_close($cactiphp);
+			$return_value = proc_close($cactiphp);
+		}
 	}
 }

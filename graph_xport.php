@@ -92,7 +92,7 @@ $graph_data_array['export_csv'] = true;
 $xport_array = rrdtool_function_xport(grv('local_graph_id'), grv('rra_id'), $graph_data_array, $xport_meta, $_SESSION[SESS_USER_ID]);
 
 // Make graph title the suggested file name
-if (is_array($xport_array) && isset($xport_array['meta']) && is_array($xport_array['meta'])) {
+if (isset($xport_array['meta']) && is_array($xport_array['meta'])) {
 	$filename = $xport_array['meta']['title_cache'] . '.csv';
 } else {
 	$filename = 'graph_export.csv';
@@ -117,7 +117,7 @@ if (isrv('format') && gnrv('format') == 'table') {
 	$html = false;
 }
 
-if (is_array($xport_array) && isset($xport_array['meta']['start'])) {
+if (isset($xport_array['meta']['start'])) {
 	if (!$html) {
 		$output  = '"' . __('Title') . '","' . $xport_array['meta']['title_cache'] . '"' . "\n";
 		$output .= '"' . __('Vertical Label') . '","' . $xport_array['meta']['vertical_label'] . '"' . "\n";
@@ -211,6 +211,7 @@ if (is_array($xport_array) && isset($xport_array['meta']['start'])) {
 		print '</tr>';
 
 		$class = 'even';
+		$index = 0;
 
 		if (isset($xport_meta['NthPercentile'])) {
 			foreach ($xport_meta['NthPercentile'] as $index => $item) {
@@ -236,6 +237,8 @@ if (is_array($xport_array) && isset($xport_array['meta']['start'])) {
 				print '</tr>';
 			}
 		}
+
+		$index = 0;
 
 		if (isset($xport_meta['Summation'])) {
 			foreach ($xport_meta['Summation'] as $index => $item) {
@@ -298,10 +301,8 @@ if (is_array($xport_array) && isset($xport_array['meta']['start'])) {
 						if (!is_numeric($row['col' . $i])) {
 							$row_data .= '(unexpected: ' . $row['col' . $i] . ')';
 						}
-					} elseif (is_numeric($row_data)) {
-						$row_data = trim(number_format_i18n(round($row_data, 5), 4));
 					} else {
-						$row_data = 'U';
+						$row_data = trim(number_format_i18n(round($row_data, 5), 4));
 					}
 
 					print "<td class='right'>$row_data</td>";

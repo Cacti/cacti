@@ -56,7 +56,7 @@ if (cacti_sizeof($params) == 0) {
 }
 
 if (function_exists('register_process_start')) {
-	if (!register_process_start('install', 'master', '0', 600)) {
+	if (!register_process_start('install', 'master', 0, 600)) {
 		exit(0);
 	}
 } else {

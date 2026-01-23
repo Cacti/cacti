@@ -82,7 +82,7 @@ function upgrade_to_1_2_17() : void {
 		AND gl.snmp_query_graph_id = 0");
 }
 
-function database_fix_mediumint_columns() {
+function database_fix_mediumint_columns() : int {
 	global $database_default;
 
 	$total = 0;
@@ -217,6 +217,6 @@ function database_fix_mediumint_columns() {
 	return $total;
 }
 
-function database_get_column_attribs($table, $column) {
+function database_get_column_attribs(string $table, string $column) : mixed {
 	return db_fetch_row("SHOW COLUMNS FROM $table LIKE '$column'");
 }

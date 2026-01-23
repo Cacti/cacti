@@ -30,9 +30,6 @@
  *
  * @return array The sorted array.
  *
- * @param array $data The multi-dimensional array to be sorted. This is the first argument.
- * @param mixed ...$fields One or more fields to sort by. Each field can be a string
- *                         representing the key in the array or a sorting flag for `array_multisort`.
  */
 function boost_array_orderby() : array {
 	$args = func_get_args();
@@ -226,7 +223,7 @@ function boost_check_correct_enabled() : bool {
 function boost_poller_on_demand(array &$results) : bool {
 	global $remote_db_cnn_id;
 
-	if (POLLER_ID > 1 && CACTI_CONNECTION == 'online') {
+	if (POLLER_ID > 1 && CACTI_CONNECTION == 'online') { // @phpstan-ignore-line
 		$conn = $remote_db_cnn_id;
 	} else {
 		$conn = false;
@@ -829,15 +826,15 @@ function boost_timer_get_overhead() : float {
 /**
  * Retrieves the names of the archive tables related to poller output boost.
  *
- * @param string|nuull $latest_table Optional. The name of the latest table to check
- *                             if no other tables are found.
+ * @param mixed  $latest_table - Optional. The name of the latest table to check
+ *                               if no other tables are found.
  *
- * @return array|false Returns an associative array of table names if found,
- *                     where the keys and values are the table names.
- *                     Returns false if no tables are found and the latest
- *                     table is not provided or does not exist.
+ * @return mixed - Returns an associative array of table names if found,
+ *                 where the keys and values are the table names.
+ *                 Returns false if no tables are found and the latest
+ *                 table is not provided or does not exist.
  */
-function boost_get_arch_table_names(string|null $latest_table = '') : array|false {
+function boost_get_arch_table_names(mixed $latest_table = '') : mixed {
 	$tableData  = db_fetch_assoc("SHOW tables LIKE 'poller_output_boost_arch%'");
 	$tableNames = [];
 
@@ -886,12 +883,12 @@ function boost_get_arch_table_names(string|null $latest_table = '') : array|fals
  * 4) Merge the results together
  * 5) Process the entire result set
  *
- * @param int $local_data_id The local data id to update.
- * @param mixed rrdtool_pipe - a pointer to the rrdtool process
+ * @param int   $local_data_id - The local data id to update.
+ * @param array $rrdtool_pipe  - An array for the RRDtool process object
  *
  * @return int
  */
-function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = null) : int {
+function boost_process_poller_output(int $local_data_id, array $rrdtool_pipe = null) : int {
 	global $database_default, $boost_sock, $boost_timeout, $get_memory, $memory_used;
 
 	static $archive_table = false;
@@ -1050,6 +1047,7 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = n
 
 		// we are going to blow away all record if ok
 		$vals_in_buffer = 0;
+		$reset_template = false;
 
 		$upd_string_len = read_config_option('boost_rrd_update_string_length');
 
@@ -1296,8 +1294,10 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = n
 
 				$expected = '';
 
-				if (cacti_sizeof($nt_rrd_field_names)) {
-					foreach ($nt_rrd_field_names as $field) {
+				// TODO: This is legacy code that does not get used. Find out why its still here.
+				$nt_rrd_field_names = [];
+				if (cacti_sizeof($nt_rrd_field_names) > 0) {
+					foreach ($nt_rrd_field_names as $field) { // @phpstan-ignore-line
 						if (cacti_sizeof($unused_data_source_names) && isset($unused_data_source_names[$field])) {
 							continue;
 						}
@@ -1309,7 +1309,6 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = n
 						}
 
 						$tv_tmpl[$field] = 'U';
-						$buflen += 2;
 					}
 				}
 
@@ -1503,20 +1502,18 @@ function boost_get_rrd_filename_and_template(int $local_data_id) : array {
  * and RRA definitions. It also handles directory creation and permission settings for
  * structured paths.
  *
- * @param int $local_data_id The ID of the local data source to create.
- * @param bool $show_source If true, returns the RRDTool command instead of executing it.
- * @param mixed $rrdtool_pipe The RRDTool pipe resource for executing commands.
+ * @param int   $local_data_id - The ID of the local data source to create.
+ * @param bool  $show_source   - If true, returns the RRDTool command instead of executing it.
+ * @param array $rrdtool_pipe  - The RRDTool pipe resource for executing commands.
  *
- * @return string|int|bool Returns the RRDTool command string if $show_source is true,
- *                         -1 if the file already exists,
- *                         false if no RRA is associated with the data source,
- *                         or the result of the RRDTool execution.
+ * @return mixed - Returns the RRDTool command string if $show_source is true,
+ *                 -1 if the file already exists,
+ *                 false if no RRA is associated with the data source,
+ *                 or the result of the RRDTool execution.
  */
-function boost_rrdtool_function_create(int $local_data_id, bool $show_source, mixed $rrdtool_pipe) : string|int|bool {
-	/**
-	 * @var array $data_source_types
-	 * @var array $consolidation_functions
-	 */
+function boost_rrdtool_function_create(int $local_data_id, bool $show_source, array $rrdtool_pipe) : mixed {
+	global $consolidation_functions, $data_source_types;
+
 	include(CACTI_PATH_INCLUDE . '/global_arrays.php');
 
 	$data_source_path = get_data_source_path($local_data_id, true);

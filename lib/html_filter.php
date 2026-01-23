@@ -208,7 +208,7 @@ class CactiTableFilter {
 		$this->link_array[$id] = $link;
 	}
 
-	public function add_row_element(string $row, string $id, array $filter) : void {
+	public function add_row_element(int $row, string $id, array $filter) : void {
 		$this->append_array[$row][$id] = $filter;
 	}
 

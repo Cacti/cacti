@@ -113,7 +113,7 @@ switch (grv('action')) {
 		break;
 }
 
-function automation_export() {
+function automation_export() : void {
 	draw_graph_rules_filter(false);
 
 	$snmp_option_ids = [];
@@ -152,7 +152,7 @@ function automation_export() {
 	}
 }
 
-function automation_import() {
+function automation_import() : void {
 	$form_data = [
 		'import_file' => [
 			'friendly_name' => __('Import Graph Rules from Local File'),
@@ -215,7 +215,7 @@ function automation_import() {
 	html_end_box();
 }
 
-function automation_import_process() {
+function automation_import_process() : void {
 	$json_data = json_decode(gnrv('import_text'), true);
 
 	$debug_data = [];
@@ -257,7 +257,7 @@ function automation_import_process() {
 	exit();
 }
 
-function form_save() {
+function form_save() : void {
 	if (isrv('save_component_automation_graph_rule')) {
 		// ================= input validation =================
 		gfrv('id');
@@ -392,7 +392,7 @@ function form_save() {
 	}
 }
 
-function automation_graph_rules_form_actions() {
+function automation_graph_rules_form_actions() : void {
 	global $actions;
 
 	// ================= input validation =================
@@ -529,7 +529,7 @@ function automation_graph_rules_form_actions() {
 	}
 }
 
-function automation_graph_rules_item_movedown() {
+function automation_graph_rules_item_movedown() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('item_id');
@@ -543,7 +543,7 @@ function automation_graph_rules_item_movedown() {
 	}
 }
 
-function automation_graph_rules_item_moveup() {
+function automation_graph_rules_item_moveup() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('item_id');
@@ -557,7 +557,7 @@ function automation_graph_rules_item_moveup() {
 	}
 }
 
-function automation_graph_rules_item_remove() {
+function automation_graph_rules_item_remove() : void {
 	// ================= input validation =================
 	gfrv('item_id');
 	gfrv('rule_type');
@@ -570,7 +570,7 @@ function automation_graph_rules_item_remove() {
 	}
 }
 
-function automation_graph_rules_item_edit() {
+function automation_graph_rules_item_edit() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('item_id');
@@ -623,7 +623,7 @@ function automation_graph_rules_item_edit() {
 	<?php
 }
 
-function automation_graph_rules_remove() {
+function automation_graph_rules_remove() : void {
 	// ================= input validation =================
 	gfrv('id');
 	// ====================================================
@@ -642,7 +642,7 @@ function automation_graph_rules_remove() {
 		[grv('id')]);
 }
 
-function automation_change_query_type() {
+function automation_change_query_type() : void {
 	$id = gfrv('id');
 
 	if (isrv('snmp_query_id') && $id > 0) {
@@ -675,7 +675,7 @@ function automation_change_query_type() {
 	}
 }
 
-function automation_graph_rules_edit() {
+function automation_graph_rules_edit() : void {
 	global $fields_automation_graph_rules_edit1;
 	global $fields_automation_graph_rules_edit2;
 	global $fields_automation_graph_rules_edit3;
@@ -811,7 +811,7 @@ function automation_graph_rules_edit() {
 	<?php
 }
 
-function create_graph_rules_filter() {
+function create_graph_rules_filter() : array {
 	global $item_rows;
 
 	$any = [-1 => __('Any')];
@@ -901,7 +901,7 @@ function create_graph_rules_filter() {
 	];
 }
 
-function draw_graph_rules_filter($render = false) {
+function draw_graph_rules_filter(bool $render = false) : void {
 	$filters = create_graph_rules_filter();
 
 	// create the page filter
@@ -917,7 +917,7 @@ function draw_graph_rules_filter($render = false) {
 	}
 }
 
-function automation_graph_rules() {
+function automation_graph_rules() : void {
 	global $actions, $item_rows;
 
 	draw_graph_rules_filter(true);

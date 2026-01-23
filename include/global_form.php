@@ -22,6 +22,22 @@
  +-------------------------------------------------------------------------+
 */
 
+// Work aorund issue where phpstan is not detecting globals
+
+include_once(__DIR__ . '/global_arrays.php');
+
+global $agg_graph_types, $agg_order_types, $aggregation_levels, $agg_totals,
+	$agg_totals_type, $auth_realms, $automation_oper, $automation_tree_item_types,
+	$availability_options, $consolidation_functions, $copyrights, $data_source_types,
+	$device_classes, $device_threads, $graph_color_alpha, $graph_item_types,
+	$graph_template_classes, $heartbeats, $host_group_types, $image_types,
+	$input_types_script, $ping_methods, $rrd_axis_formatters, $rrd_legend_direction,
+	$rrd_legend_position, $rrd_textalign, $sampling_intervals, $snmp_auth_protocols,
+	$snmp_priv_protocols, $snmp_security_levels, $snmp_versions, $timespans,
+	$tree_sort_types;
+
+// Workaround End
+
 if (!defined('VALID_HOST_FIELDS')) {
 	$string = api_plugin_hook_function('valid_host_fields', '(hostname|host_id|location|snmp_community|snmp_username|snmp_password|snmp_auth_protocol|snmp_priv_passphrase|snmp_priv_protocol|snmp_context|snmp_engine_id|snmp_version|snmp_port|snmp_timeout|snmp_retries|external_id)');
 	define('VALID_HOST_FIELDS', $string);
@@ -2285,7 +2301,7 @@ $fields_automation_match_rule_item_edit = [
 		'method'        => 'drop_array',
 		'friendly_name' => __('Operator'),
 		'description'   => __('Operator.'),
-		'array'         => $automation_op_array['display'],
+		'array'         => $automation_op_array['display'] ?? [],
 		'value'         => '|arg1:operator|',
 		'on_change'     => 'toggle_operator()',
 	],
@@ -2327,7 +2343,7 @@ $fields_automation_graph_rule_item_edit = [
 		'method'        => 'drop_array',
 		'friendly_name' => __('Operator'),
 		'description'   => __('Operator.'),
-		'array'         => $automation_op_array['display'],
+		'array'         => $automation_op_array['display'] ?? [],
 		'value'         => '|arg1:operator|',
 		'on_change'     => 'toggle_operator()',
 	],
@@ -2455,7 +2471,7 @@ $fields_automation_tree_rule_item_edit = [
 		'description'   => __('Choose an Object to build a new Sub-header.'),
 		'array'         => [],			// later to be filled dynamically
 		'value'         => '|arg1:field|',
-		'none_value'    => $automation_tree_header_types[AUTOMATION_TREE_ITEM_TYPE_STRING],
+		'none_value'    => $automation_tree_header_types[AUTOMATION_TREE_ITEM_TYPE_STRING] ?? '',
 		'on_change'     => 'applyHeaderChange()',
 	],
 	'sort_type' => [

@@ -118,7 +118,7 @@ switch (grv('action')) {
 			$sql_where = 'site_id = ' . gfrv('site_id');
 		}
 
-		get_allowed_ajax_hosts(true, 'applyFilter', $sql_where);
+		get_allowed_ajax_hosts(true, true, $sql_where);
 
 		break;
 	case 'ajax_hosts_noany':
@@ -128,7 +128,7 @@ switch (grv('action')) {
 			$sql_where = 'site_id = ' . gfrv('site_id');
 		}
 
-		get_allowed_ajax_hosts(false, 'applyFilter', $sql_where);
+		get_allowed_ajax_hosts(false, true, $sql_where);
 
 		break;
 	case 'ajax_graph_items':
@@ -215,7 +215,7 @@ switch (grv('action')) {
 		break;
 }
 
-function get_ajax_graph_items() {
+function get_ajax_graph_items() : void {
 	$rrd_id  = gfrv('rrd_id');
 	$host_id = gfrv('host_id');
 
@@ -273,7 +273,7 @@ function get_ajax_graph_items() {
 	print json_encode($items);
 }
 
-function add_tree_names_to_actions_array() {
+function add_tree_names_to_actions_array() : void {
 	global $actions;
 
 	// add a list of tree names to the actions dropdown
@@ -288,7 +288,7 @@ function add_tree_names_to_actions_array() {
 	}
 }
 
-function parse_validate_graph_template_id($variable) {
+function parse_validate_graph_template_id(string $variable) : string {
 	$output_type_id = 0;
 
 	if (strpos(gnrv($variable), '_') !== false) {
@@ -309,7 +309,7 @@ function parse_validate_graph_template_id($variable) {
 	return $output_type_id;
 }
 
-function form_save() {
+function form_save() : void {
 	if (isrv('save_component_graph_new') || isrv('save_component_graph') || isrv('save_component_input')) {
 		// ================= input validation =================
 		gfrv('local_graph_id');
@@ -538,11 +538,17 @@ function form_save() {
 		$items[0] = [];
 
 		if ($graph_item_types[gnrv('graph_type_id')] == 'LEGEND') {
-			/* this can be a major time saver when creating lots of graphs with the typical
-			GPRINT LAST/AVERAGE/MAX legends */
+			/**
+			 * this can be a major time saver when creating lots of
+			 * graphs with the typical
+			 * GPRINT LAST/AVERAGE/MAX legends
+			 */
 			$items = [
 				0 => [
 					'color_id'                  => '0',
+					'color2_id'                 => '0',
+					'alpha'                     => '0',
+					'alpha2'                    => '0',
 					'graph_type_id'             => '9',
 					'consolidation_function_id' => '4',
 					'text_format'               => 'Cur:',
@@ -550,6 +556,9 @@ function form_save() {
 				],
 				1 => [
 					'color_id'                  => '0',
+					'color2_id'                 => '0',
+					'alpha'                     => '0',
+					'alpha2'                    => '0',
 					'graph_type_id'             => '9',
 					'consolidation_function_id' => '1',
 					'text_format'               => 'Avg:',
@@ -557,6 +566,9 @@ function form_save() {
 				],
 				2 => [
 					'color_id'                  => '0',
+					'color2_id'                 => '0',
+					'alpha'                     => '0',
+					'alpha2'                    => '0',
 					'graph_type_id'             => '9',
 					'consolidation_function_id' => '3',
 					'text_format'               => 'Max:',
@@ -564,11 +576,17 @@ function form_save() {
 				]
 			];
 		} elseif ($graph_item_types[gnrv('graph_type_id')] == 'LEGEND_CAMM') {
-			/* this can be a major time saver when creating lots of graphs with the typical
-				GPRINT LAST/AVERAGE/MAX legends */
+			/**
+			 * this can be a major time saver when creating lots of
+			 * graphs with the typical
+			 * GPRINT LAST/AVERAGE/MAX legends
+			 */
 			$items = [
 				0 => [
 					'color_id'                  => '0',
+					'color2_id'                 => '0',
+					'alpha'                     => '0',
+					'alpha2'                    => '0',
 					'graph_type_id'             => '9',
 					'consolidation_function_id' => '4',
 					'text_format'               => __('Cur:'),
@@ -576,6 +594,9 @@ function form_save() {
 				],
 				1 => [
 					'color_id'                  => '0',
+					'color2_id'                 => '0',
+					'alpha'                     => '0',
+					'alpha2'                    => '0',
 					'graph_type_id'             => '9',
 					'consolidation_function_id' => '1',
 					'text_format'               => __('Avg:'),
@@ -583,6 +604,9 @@ function form_save() {
 				],
 				2 => [
 					'color_id'                  => '0',
+					'color2_id'                 => '0',
+					'alpha'                     => '0',
+					'alpha2'                    => '0',
 					'graph_type_id'             => '9',
 					'consolidation_function_id' => '2',
 					'text_format'               => __('Min:'),
@@ -590,6 +614,9 @@ function form_save() {
 				],
 				3 => [
 					'color_id'                  => '0',
+					'color2_id'                 => '0',
+					'alpha'                     => '0',
+					'alpha2'                    => '0',
 					'graph_type_id'             => '9',
 					'consolidation_function_id' => '3',
 					'text_format'               => __('Max:'),
@@ -629,12 +656,12 @@ function form_save() {
 
 			$save['alpha']          = form_input_validate((isset($item['alpha']) ? $item['alpha'] : gnrv('alpha')), 'alpha', '', true, 3);
 			$save['alpha2']         = form_input_validate((isset($item['alpha2']) ? $item['alpha2'] : gnrv('alpha2')), 'alpha2', '', true, 3);
-			$save['gradheight']     = form_input_validate((isset($item['gradheight']) ? $item['gradheight'] : gnrv('gradheight')), 'gradheight', '', true, 3);
+			$save['gradheight']     = form_input_validate(gnrv('gradheight'), 'gradheight', '', true, 3);
 
 			$save['graph_type_id']  = form_input_validate((isset($item['graph_type_id']) ? $item['graph_type_id'] : gnrv('graph_type_id')), 'graph_type_id', '^[0-9]+$', true, 3);
 
-			if (isrv('line_width') || isset($item['line_width'])) {
-				$save['line_width'] = form_input_validate((isset($item['line_width']) ? $item['line_width'] : gnrv('line_width')), 'line_width', '(^[0-9]+[\.,0-9]+$|^[0-9]+$)', true, 3);
+			if (isrv('line_width')) {
+				$save['line_width'] = form_input_validate(gnrv('line_width'), 'line_width', '(^[0-9]+[\.,0-9]+$|^[0-9]+$)', true, 3);
 			} else { // make sure to transfer old LINEx style into line_width on save
 				switch ($save['graph_type_id']) {
 					case GRAPH_ITEM_TYPE_LINE1:
@@ -662,7 +689,7 @@ function form_save() {
 			$save['consolidation_function_id'] = form_input_validate((isset($item['consolidation_function_id']) ? $item['consolidation_function_id'] : gnrv('consolidation_function_id')), 'consolidation_function_id', '^[0-9]+$', true, 3);
 			$save['textalign']                 = form_input_validate((isrv('textalign') ? gnrv('textalign') : ''), 'textalign', '^[a-z]+$', true, 3);
 			$save['text_format']               = form_input_validate((isset($item['text_format']) ? $item['text_format'] : gnrv('text_format')), 'text_format', '', true, 3);
-			$save['legend']                    = form_input_validate((isset($item['legend']) ? $item['legend'] : gnrv('legend')), 'legend', '', true, 3);
+			$save['legend']                    = form_input_validate(gnrv('legend'), 'legend', '', true, 3);
 
 			$save['value']                     = form_input_validate(gnrv('value'), 'value', '', true, 3);
 			$save['hard_return']               = form_input_validate(((isset($item['hard_return']) ? $item['hard_return'] : (isrv('hard_return') ? gnrv('hard_return') : ''))), 'hard_return', '', true, 3);
@@ -706,7 +733,7 @@ function form_save() {
 	exit;
 }
 
-function item_movedown() {
+function item_movedown() : void {
 	global $graph_item_types;
 
 	// ================= input validation =================
@@ -724,7 +751,7 @@ function item_movedown() {
 	}
 }
 
-function item_moveup() {
+function item_moveup() : void {
 	global $graph_item_types;
 
 	// ================= input validation =================
@@ -742,7 +769,7 @@ function item_moveup() {
 	}
 }
 
-function item_remove() {
+function item_remove() : void {
 	// ================= input validation =================
 	gfrv('id');
 	// ====================================================
@@ -750,7 +777,7 @@ function item_remove() {
 	db_execute_prepared('DELETE FROM graph_templates_item WHERE id = ?', [grv('id')]);
 }
 
-function validate_item_vars() {
+function validate_item_vars() : void {
 	// ================= input validation and session storage =================
 	$filters = [
 		'host_id' => [
@@ -771,7 +798,7 @@ function validate_item_vars() {
 	// ================= input validation =================
 }
 
-function create_item_filter($session_var) {
+function create_item_filter(string $session_var) : array {
 	global $item_rows;
 
 	$all     = ['-1' => __('All')];
@@ -866,7 +893,7 @@ function create_item_filter($session_var) {
 	];
 }
 
-function draw_item_filter($render = false, $host) {
+function draw_item_filter(bool $render = false, array $host = []) : void {
 	$filters = create_item_filter('sess_graphs');
 
 	if (empty($host['hostname'])) {
@@ -887,7 +914,7 @@ function draw_item_filter($render = false, $host) {
 	}
 }
 
-function item_edit() {
+function item_edit() : void {
 	global $struct_graph_item, $graph_item_types, $consolidation_functions;
 
 	$id = (!ierv('id') ? '&id=' . grv('id') : '');
@@ -1201,7 +1228,7 @@ function item_edit() {
 <?php
 }
 
-function get_current_graph_template($local_graph_id) {
+function get_current_graph_template(int $local_graph_id) : string {
 	$graph_local = db_fetch_row_prepared('SELECT *
 		FROM graph_local
 		WHERE id = ?',
@@ -1251,7 +1278,7 @@ function get_current_graph_template($local_graph_id) {
 	}
 }
 
-function get_common_graph_templates(&$graph) {
+function get_common_graph_templates(array &$graph) : string {
 	$dqid = 0;
 
 	if (cacti_sizeof($graph)) {
@@ -1315,7 +1342,7 @@ function get_common_graph_templates(&$graph) {
 	return $gtsql;
 }
 
-function form_actions() {
+function form_actions() : void {
 	global $actions, $struct_aggregate;
 	global $alignment, $graph_timespans;
 
@@ -1593,6 +1620,8 @@ function form_actions() {
 		$atemplates   = [];
 		$reports      = [];
 		$data_sources = [];
+		$gtarray      = [];
+		$iarray       = [];
 
 		// loop through each of the graphs selected on the previous page and get more info about them
 		foreach ($_POST as $var => $val) {
@@ -1601,7 +1630,9 @@ function form_actions() {
 				input_validate_input_number($matches[1], 'chk[1]');
 				// ====================================================
 
-				$ilist .= '<li>' . htmle(get_graph_title($matches[1])) . '</li>';
+				$local_graph_id = intval($matches[1]);
+
+				$ilist .= '<li>' . htmle(get_graph_title($local_graph_id)) . '</li>';
 
 				$iarray[] = $matches[1];
 
@@ -1636,7 +1667,7 @@ function form_actions() {
 				}
 
 				// find out which (if any) data sources are being used by this graph, so we can tell the user
-				if (isset($iarray) && cacti_sizeof($iarray)) {
+				if (cacti_sizeof($iarray)) {
 					$data_sources = array_rekey(
 						db_fetch_assoc('SELECT DISTINCT dtd.local_data_id, dtd.name_cache
 							FROM data_template_data AS dtd
@@ -1797,13 +1828,13 @@ function form_actions() {
 				if (cacti_sizeof($reports)) {
 					$reports = array_rekey($reports, 'id', 'name');
 				}
-			}
+		}
 		}
 
 		// for use by plugins
 		$save['drp_action']  = gnrv('drp_action');
 		$save['graph_list']  = $ilist;
-		$save['graph_array'] = (isset($iarray) ? $iarray : []);
+		$save['graph_array'] = $iarray;
 
 		$form_data = [
 			'general' => [
@@ -1992,7 +2023,7 @@ function form_actions() {
 	}
 }
 
-function graph_aggregate_javascript() {
+function graph_aggregate_javascript() : void {
 	?>
 	<script type='text/javascript'>
 	function changeTotals() {
@@ -2107,7 +2138,7 @@ function graph_aggregate_javascript() {
 	<?php
 }
 
-function item() {
+function item() : void {
 	global $consolidation_functions, $graph_item_types, $struct_graph_item;
 
 	// ================= input validation =================
@@ -2190,7 +2221,7 @@ function item() {
 	html_end_box();
 }
 
-function is_multi_device_graph($local_graph_id) {
+function is_multi_device_graph(int $local_graph_id) : bool {
 	$devices = db_fetch_cell_prepared('SELECT COUNT(DISTINCT host_id)
 		FROM data_template_rrd AS dtr
 		INNER JOIN graph_templates_item AS gti
@@ -2203,7 +2234,7 @@ function is_multi_device_graph($local_graph_id) {
 	return $devices > 1 ? true : false;
 }
 
-function graph_edit() {
+function graph_edit() : void {
 	global $struct_graph, $image_types, $consolidation_functions, $graph_item_types, $struct_graph_item;
 
 	// ================= input validation =================
@@ -2315,6 +2346,11 @@ function graph_edit() {
 			ON dtr.id = gti.task_item_id
 			WHERE local_graph_id = ?',
 			[grv('id')]);
+	} else {
+		$debug   = false;
+		$message = '';
+
+		$data_sources = [];
 	}
 
 	if (!empty($graph['local_graph_id'])) {
@@ -2330,6 +2366,8 @@ function graph_edit() {
 			ORDER BY name';
 	}
 
+	$ins_buttons = [];
+
 	if (cacti_sizeof($data_sources)) {
 		foreach ($data_sources as $ds) {
 			$name = db_fetch_cell_prepared('SELECT name_cache
@@ -2343,8 +2381,6 @@ function graph_edit() {
 				'class'   => 'ti ti-affiliate newDevice'
 			];
 		}
-	} else {
-		$ins_buttons = [];
 	}
 
 	if (!ierv('host_id') || !empty($host_id)) {
@@ -2646,7 +2682,7 @@ function graph_edit() {
 	}
 }
 
-function validate_graph_request_vars() {
+function validate_graph_request_vars() : void {
 	// ================= input validation and session storage =================
 	$filters = [
 		'custom' => [
@@ -2666,7 +2702,7 @@ function validate_graph_request_vars() {
 	// ================= input validation =================
 }
 
-function graphs() {
+function graphs() : void {
 	global $actions, $graph_sources, $item_rows, $image_types;
 
 	// for custom non-stored request vars
@@ -2826,9 +2862,7 @@ function graphs() {
 		$orphan_join
 		$sql_where";
 
-	if ($orphan_join == '' || !cacti_sizeof($sql_params2)) {
-		$merged_params = $sql_params;
-	} elseif (cacti_sizeof($sql_params2)) {
+	if (cacti_sizeof($sql_params2)) {
 		$merged_params = array_merge($sql_params2, $sql_params);
 	} else {
 		$merged_params = $sql_params;
@@ -2970,7 +3004,7 @@ function graphs() {
 	form_end();
 }
 
-function create_graphs_filter($session_var) {
+function create_graphs_filter(string $session_var) : array {
 	global $item_rows;
 
 	$all     = ['-1' => __('All')];
@@ -3175,7 +3209,7 @@ function create_graphs_filter($session_var) {
 	];
 }
 
-function process_sanifize_draw_graphs_filter($render = false) {
+function process_sanifize_draw_graphs_filter(bool $render = false) : void {
 	$filters = create_graphs_filter('sess_graphs');
 
 	if (read_config_option('grds_creation_method') == 1) {

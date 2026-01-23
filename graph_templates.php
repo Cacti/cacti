@@ -190,7 +190,7 @@ switch (grv('action')) {
 		break;
 }
 
-function form_save() {
+function form_save() : void {
 	// sanitize ids
 	if (isrv('graph_template_id') && !is_numeric(gnrv('graph_template_id'))) {
 		$graph_template_id = 0;
@@ -336,6 +336,12 @@ function form_save() {
 			$items = [
 				0 => [
 					'color_id'                  => '0',
+					'color2_id'                 => '0',
+					'alpha'                     => '0',
+					'alpha2'                    => '0',
+					'line_width'                => '1',
+					'legend'                    => '',
+					'gradheight'                => '0',
 					'graph_type_id'             => '9',
 					'consolidation_function_id' => '4',
 					'text_format'               => __('Cur:'),
@@ -343,6 +349,12 @@ function form_save() {
 				],
 				1 => [
 					'color_id'                  => '0',
+					'color2_id'                 => '0',
+					'alpha'                     => '0',
+					'alpha2'                    => '0',
+					'line_width'                => '1',
+					'legend'                    => '',
+					'gradheight'                => '0',
 					'graph_type_id'             => '9',
 					'consolidation_function_id' => '1',
 					'text_format'               => __('Avg:'),
@@ -350,6 +362,12 @@ function form_save() {
 				],
 				2 => [
 					'color_id'                  => '0',
+					'color2_id'                 => '0',
+					'alpha'                     => '0',
+					'alpha2'                    => '0',
+					'line_width'                => '1',
+					'legend'                    => '',
+					'gradheight'                => '0',
 					'graph_type_id'             => '9',
 					'consolidation_function_id' => '3',
 					'text_format'               => __('Max:'),
@@ -362,6 +380,12 @@ function form_save() {
 			$items = [
 				0 => [
 					'color_id'                  => '0',
+					'color2_id'                 => '0',
+					'alpha'                     => '0',
+					'alpha2'                    => '0',
+					'line_width'                => '1',
+					'legend'                    => '',
+					'gradheight'                => '0',
 					'graph_type_id'             => '9',
 					'consolidation_function_id' => '4',
 					'text_format'               => __('Cur:'),
@@ -369,6 +393,12 @@ function form_save() {
 				],
 				1 => [
 					'color_id'                  => '0',
+					'color2_id'                 => '0',
+					'alpha'                     => '0',
+					'alpha2'                    => '0',
+					'line_width'                => '1',
+					'legend'                    => '',
+					'gradheight'                => '0',
 					'graph_type_id'             => '9',
 					'consolidation_function_id' => '1',
 					'text_format'               => __('Avg:'),
@@ -376,6 +406,12 @@ function form_save() {
 				],
 				2 => [
 					'color_id'                  => '0',
+					'color2_id'                 => '0',
+					'alpha'                     => '0',
+					'alpha2'                    => '0',
+					'line_width'                => '1',
+					'legend'                    => '',
+					'gradheight'                => '0',
 					'graph_type_id'             => '9',
 					'consolidation_function_id' => '2',
 					'text_format'               => __('Min:'),
@@ -383,6 +419,12 @@ function form_save() {
 				],
 				3 => [
 					'color_id'                  => '0',
+					'color2_id'                 => '0',
+					'alpha'                     => '0',
+					'alpha2'                    => '0',
+					'line_width'                => '1',
+					'legend'                    => '',
+					'gradheight'                => '0',
 					'graph_type_id'             => '9',
 					'consolidation_function_id' => '3',
 					'text_format'               => __('Max:'),
@@ -595,7 +637,7 @@ function form_save() {
 		$save['description']       = form_input_validate(gnrv('description'), 'description', '', true, 3);
 		$save['column_name']       = form_input_validate(gnrv('column_name'), 'column_name', '', true, 3);
 
-		if (!is_error_message()) {
+		if (is_error_message() === false) {
 			$graph_template_input_id = sql_save($save, 'graph_template_input');
 
 			if ($graph_template_input_id) {
@@ -621,17 +663,17 @@ function form_save() {
 
 						if (isset($db_selected_graph_item[$matches[1]])) {
 							// is selected and exists in the db; old item
-							$old_members[$matches[1]] = $matches[1];
+							$old_members[$matches[1]] = intval($matches[1]);
 						} else {
 							// is selected and does not exist the db; new item
-							$new_members[$matches[1]] = $matches[1];
+							$new_members[$matches[1]] = intval($matches[1]);
 						}
 					}
 				}
 
 				if ((isset($new_members)) && (cacti_sizeof($new_members) > 0)) {
 					foreach ($new_members as $item_id) {
-						push_out_graph_input($graph_template_input_id, $item_id, (isset($new_members) ? $new_members : []));
+						push_out_graph_input($graph_template_input_id, $item_id, $new_members);
 					}
 				}
 
@@ -666,7 +708,7 @@ function form_save() {
 	header('Location: graph_templates.php?action=template_edit&id=' . (empty($graph_template_id) ? gnrv('graph_template_id') : $graph_template_id));
 }
 
-function item_movedown() {
+function item_movedown() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('graph_template_id');
@@ -699,7 +741,7 @@ function item_movedown() {
 	}
 }
 
-function item_moveup() {
+function item_moveup() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('graph_template_id');
@@ -732,7 +774,7 @@ function item_moveup() {
 	}
 }
 
-function item_remove() {
+function item_remove() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('graph_template_id');
@@ -760,7 +802,7 @@ function item_remove() {
 	db_execute_prepared('DELETE FROM graph_template_input_defs WHERE graph_template_item_id = ?', [grv('id')]);
 }
 
-function item_edit() {
+function item_edit() : void {
 	global $struct_graph_item, $graph_item_types, $consolidation_functions;
 
 	// ================= input validation =================
@@ -1053,7 +1095,7 @@ function item_edit() {
 	<?php
 }
 
-function form_actions() {
+function form_actions() : void {
 	global $actions, $image_types, $graph_template_classes;
 
 	// ================= input validation =================
@@ -1299,7 +1341,7 @@ function form_actions() {
 	}
 }
 
-function item() {
+function item() : void {
 	global $consolidation_functions, $graph_item_types;
 
 	// ================= input validation =================
@@ -1409,7 +1451,7 @@ function item() {
 	html_end_box();
 }
 
-function template_edit() {
+function template_edit() : void {
 	global $struct_graph, $image_types, $fields_graph_template_template_edit;
 
 	// ================= input validation =================
@@ -1519,7 +1561,7 @@ function template_edit() {
 	<?php
 }
 
-function graph_templates() {
+function graph_templates() : void {
 	global $actions, $item_rows, $image_types, $graph_template_classes;
 
 	draw_graph_templates_filter(true);
@@ -1716,7 +1758,7 @@ function graph_templates() {
 	form_end();
 }
 
-function input_remove() {
+function input_remove() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('graph_template_id');
@@ -1726,7 +1768,7 @@ function input_remove() {
 	db_execute_prepared('DELETE FROM graph_template_input_defs WHERE graph_template_input_id = ?', [grv('id')]);
 }
 
-function input_edit() {
+function input_edit() : void {
 	global $consolidation_functions, $graph_item_types, $struct_graph_item, $fields_graph_template_input_edit;
 
 	// Remove filter item
@@ -1835,7 +1877,7 @@ function input_edit() {
 	form_save_button('graph_templates.php?action=template_edit&id=' . grv('graph_template_id'));
 }
 
-function create_graph_templates_filter() {
+function create_graph_templates_filter() : array {
 	global $item_rows, $graph_template_classes;
 
 	$all     = ['-1' => __('All')];
@@ -1978,7 +2020,7 @@ function create_graph_templates_filter() {
 	];
 }
 
-function draw_graph_templates_filter($render = false) {
+function draw_graph_templates_filter(bool $render = false) : void {
 	$filters = create_graph_templates_filter();
 
 	// create the page filter

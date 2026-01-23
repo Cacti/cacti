@@ -65,7 +65,16 @@ function form_save() : void {
 
 	$export_okay = false;
 
-	$xml_data = get_item_xml(gnrv('export_type'), gnrv('export_item_id'), (((isrv('include_deps') ? gnrv('include_deps') : '') == '') ? false : true));
+	$export_type    = gnrv('export_type');
+	$export_item_id = intval(gfrv('export_item_id'));
+
+	if (isrv('include_deps') && gnrv('include_deps') == '') {
+		$include_deps = false;
+	} else {
+		$include_deps = true;
+	}
+
+	$xml_data = get_item_xml($export_type, $export_item_id, $include_deps);
 
 	$info                 = [];
 	$info['name']         = gnrv('name');

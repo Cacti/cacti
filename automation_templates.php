@@ -167,7 +167,7 @@ switch (grv('action')) {
 		break;
 }
 
-function automation_export() {
+function automation_export() : void {
 	// if we are to save this form, instead of display it
 	if (isrv('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(gnrv('selected_items'));
@@ -199,7 +199,7 @@ function automation_export() {
 	}
 }
 
-function automation_import() {
+function automation_import() : void {
 	$form_data = [
 		'import_file' => [
 			'friendly_name' => __('Import Device Rules from Local File'),
@@ -269,7 +269,7 @@ function automation_import() {
 	html_end_box();
 }
 
-function automation_import_process() {
+function automation_import_process() : void {
 	$json_data = json_decode(gnrv('import_text'), true);
 
 	$debug_data = [];
@@ -317,7 +317,7 @@ function automation_import_process() {
 	exit();
 }
 
-function automation_template_dnd() {
+function automation_template_dnd() : void {
 	// ================= Input validation =================
 	gfrv('id');
 	// ================= Input validation =================
@@ -344,7 +344,7 @@ function automation_template_dnd() {
 	exit;
 }
 
-function automation_templates_item_movedown() {
+function automation_templates_item_movedown() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('template_id');
@@ -378,7 +378,7 @@ function automation_templates_item_movedown() {
 	automation_resequence_rules(grv('template_id'));
 }
 
-function automation_templates_item_moveup() {
+function automation_templates_item_moveup() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('template_id');
@@ -412,7 +412,7 @@ function automation_templates_item_moveup() {
 	automation_resequence_rules(grv('template_id'));
 }
 
-function automation_template_graph_item_dnd() {
+function automation_template_graph_item_dnd() : void {
 	// ================= Input validation =================
 	gfrv('id');
 	// ================= Input validation =================
@@ -443,7 +443,7 @@ function automation_template_graph_item_dnd() {
 	exit;
 }
 
-function automation_template_tree_item_dnd() {
+function automation_template_tree_item_dnd() : void {
 	// ================= Input validation =================
 	gfrv('id');
 	// ================= Input validation =================
@@ -474,7 +474,7 @@ function automation_template_tree_item_dnd() {
 	exit;
 }
 
-function automation_template_tree_exit_on_change() {
+function automation_template_tree_exit_on_change() : void {
 	$id          = gfrv('id');
 	$newvalue    = gfrv('current') == 0 ? 1 : 0;
 	$template_id = gfrv('template_id');
@@ -487,19 +487,19 @@ function automation_template_tree_exit_on_change() {
 	header('Location: automation_templates.php?action=edit&id=' . $template_id);
 }
 
-function automation_movedown() {
+function automation_movedown() : void {
 	move_item_down('automation_templates', gfrv('id'));
 }
 
-function automation_moveup() {
+function automation_moveup() : void {
 	move_item_up('automation_templates', gfrv('id'));
 }
 
-function automation_remove() {
+function automation_remove() : void {
 	db_execute_prepared('DELETE FROM automation_templates WHERE id = ?', [gfrv('id')]);
 }
 
-function automation_add_graph_rule() {
+function automation_add_graph_rule() : void {
 	// ================= input validation =================
 	gfrv('template_id');
 	gfrv('rule_id');
@@ -522,7 +522,7 @@ function automation_add_graph_rule() {
 	raise_message('rule_save', __('The Graph Rule has been added to the Device Rule'), MESSAGE_LEVEL_INFO);
 }
 
-function automation_add_threshold_template() {
+function automation_add_threshold_template() : void {
 	// ================= input validation =================
 	gfrv('template_id');
 	gfrv('thold_template_id');
@@ -544,7 +544,7 @@ function automation_add_threshold_template() {
 	raise_message('rule_save', __('The Threshold Template has been added to the Device Rule'), MESSAGE_LEVEL_INFO);
 }
 
-function automation_add_tree_rule() {
+function automation_add_tree_rule() : void {
 	// ================= input validation =================
 	gfrv('template_id');
 	gfrv('rule_id');
@@ -567,7 +567,7 @@ function automation_add_tree_rule() {
 	raise_message('rule_save', __('The Tree Rule has been added to the Device Rule'), MESSAGE_LEVEL_INFO);
 }
 
-function form_actions() {
+function form_actions() : void {
 	global $actions;
 
 	// ================= input validation =================
@@ -653,7 +653,7 @@ function form_actions() {
 	}
 }
 
-function form_save() {
+function form_save() : void {
 	if (isrv('save_component_template')) {
 		$redirect_back = false;
 
@@ -691,7 +691,7 @@ function form_save() {
 	}
 }
 
-function automation_remove_ttr_confirm() {
+function automation_remove_ttr_confirm() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('rule_id');
@@ -760,7 +760,7 @@ function automation_remove_ttr_confirm() {
 	<?php
 }
 
-function automation_remove_agr_confirm() {
+function automation_remove_agr_confirm() : void {
 	// ================= input validation =================
 	gfrv('rule_id');
 	gfrv('template_id');
@@ -825,7 +825,7 @@ function automation_remove_agr_confirm() {
 	<?php
 }
 
-function automation_remove_agr() {
+function automation_remove_agr() : void {
 	// ================= input validation =================
 	gfrv('rule_id');
 	gfrv('template_id');
@@ -842,7 +842,7 @@ function automation_remove_agr() {
 	raise_message('rule_remove', __('The Graph Rule has been removed from the Device Rule'), MESSAGE_LEVEL_INFO);
 }
 
-function automation_resequence_rules($template_id) {
+function automation_resequence_rules(int $template_id) : void {
 	$gr_seq = db_fetch_assoc_prepared('SELECT *
 		FROM automation_templates_rules
 		WHERE template_id = ?
@@ -884,7 +884,7 @@ function automation_resequence_rules($template_id) {
 	}
 }
 
-function automation_remove_atr_confirm() {
+function automation_remove_atr_confirm() : void {
 	// ================= input validation =================
 	gfrv('rule_id');
 	gfrv('template_id');
@@ -949,7 +949,7 @@ function automation_remove_atr_confirm() {
 	<?php
 }
 
-function automation_remove_atr() {
+function automation_remove_atr() : void {
 	// ================= input validation =================
 	gfrv('rule_id');
 	gfrv('template_id');
@@ -966,7 +966,7 @@ function automation_remove_atr() {
 	raise_message('rule_remove', __('The Tree Rule has been removed from the Device Automation Rule'), MESSAGE_LEVEL_INFO);
 }
 
-function automation_remove_ttr() {
+function automation_remove_ttr() : void {
 	// ================= input validation =================
 	gfrv('rule_id');
 	gfrv('template_id');
@@ -980,7 +980,7 @@ function automation_remove_ttr() {
 	raise_message('rule_remove', __('The Threshold Template has been removed from the Device Automation Rule'), MESSAGE_LEVEL_INFO);
 }
 
-function automation_get_child_branches($tree_id, $id, $spaces, $headers) {
+function automation_get_child_branches(int $tree_id, int $id, string $spaces, array $headers) : array {
 	$items = db_fetch_assoc_prepared('SELECT id, title
 		FROM graph_tree_items
 		WHERE graph_tree_id = ?
@@ -1002,7 +1002,7 @@ function automation_get_child_branches($tree_id, $id, $spaces, $headers) {
 	return $headers;
 }
 
-function automation_get_tree_headers() {
+function automation_get_tree_headers() : array {
 	$headers = [];
 	$trees   = db_fetch_assoc('SELECT id, name FROM graph_tree ORDER BY name');
 
@@ -1017,7 +1017,7 @@ function automation_get_tree_headers() {
 	return $headers;
 }
 
-function template_edit() {
+function template_edit() : void {
 	global $availability_options;
 
 	// ================= input validation =================
@@ -1166,7 +1166,7 @@ function template_edit() {
 			]
 		];
 
-		html_header($display_text, false);
+		html_header($display_text, 1);
 
 		$dnd = read_config_option('drag_and_drop') == 'on' ? true : false;
 
@@ -1268,7 +1268,7 @@ function template_edit() {
 			]
 		];
 
-		html_header($display_text, false);
+		html_header($display_text, 1);
 
 		$dnd = read_config_option('drag_and_drop') == 'on' ? true : false;
 
@@ -1315,8 +1315,12 @@ function template_edit() {
 				$i++;
 			}
 		} else {
-			print '<tr class="tableRow odd"><td colspan="3"><em>' . __('No Associated Tree Rules') . '</em></td></tr>';
+			print '<tr class="tableRow odd"><td colspan="4"><em>' . __('No Associated Tree Rules') . '</em></td></tr>';
 		}
+
+		html_end_box();
+
+		html_start_box('', '100%', false, 3, 'center', '');
 
 		$field_label  = __('Add Tree Rule');
 		$field_name   = 'tree_rule';
@@ -1367,7 +1371,7 @@ function template_edit() {
 				]
 			];
 
-			html_header($display_text, false);
+			html_header($display_text, 1);
 
 			$action = '';
 
@@ -1531,7 +1535,7 @@ function template_edit() {
 	<?php
 }
 
-function create_add_form_dropdown($field_label, $field_name, $field_array, $button_id, $button_label, $button_title) {
+function create_add_form_dropdown(string $field_label, string $field_name, array $field_array, string $button_id, string $button_label, string $button_title) : void {
 	?>
 	<tr class='odd'>
 		<td colspan='2'>
@@ -1553,7 +1557,7 @@ function create_add_form_dropdown($field_label, $field_name, $field_array, $butt
 	<?php
 }
 
-function template() {
+function template() : void {
 	global $actions, $item_rows, $availability_options;
 
 	automation_update_hashes();

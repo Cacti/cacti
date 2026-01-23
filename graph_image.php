@@ -138,7 +138,7 @@ if (isrv('rra_id')) {
 	$rra_id = null;
 }
 
-if (POLLER_ID == 1 || read_config_option('storage_location')) {
+if (POLLER_ID == 1 || read_config_option('storage_location')) { // @phpstan-ignore-line
 	$null_param = [];
 	$output     = rrdtool_function_graph(grv('local_graph_id'), $rra_id, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
 } else {
@@ -199,7 +199,7 @@ if ($output !== false && $output != '') {
 	header('Content-type: image/png');
 	header('Cache-Control: max-age=15');
 
-	if ($image !== false) {
+	if ($image != false) {
 		print $image;
 	} else {
 		print file_get_contents(__DIR__ . '/images/cacti_error_image.png');

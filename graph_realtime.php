@@ -43,6 +43,8 @@ gfrv('top');
 gfrv('left');
 // ====================================================
 
+global $realtime_refresh, $realtime_window;
+
 set_default_action();
 
 switch (grv('action')) {
@@ -171,6 +173,8 @@ switch (grv('action')) {
 			$graph_data_array['ds_step'] = read_user_setting('realtime_interval', 10);
 		}
 
+		$gtype = 'png';
+
 		// Determine the graph type of the output
 		if (!isrv('image_format')) {
 			$type   = db_fetch_cell_prepared('SELECT image_format_id
@@ -290,15 +294,13 @@ switch (grv('action')) {
 			'graph_start'    => htmle(isset($_SESSION['sess_realtime_graph_start']) ? $_SESSION['sess_realtime_graph_start'] : $graph_data_array['graph_start']),
 			'size'           => htmle(isset($_SESSION['sess_realtime_size']) ? $_SESSION['sess_realtime_size'] : read_user_setting('realtime_size', 100)),
 			'thumbnails'     => htmle(isset($_SESSION['sess_realtime_nolegend']) ? $_SESSION['sess_realtime_nolegend'] : 'false'),
-			'data'           => (isset($data) ? $data : ''),
+			'data'           => $data,
 			'image_format'   => $graph_data_array['image_format']
 		];
 
 		print json_encode($return_array);
 
 		exit;
-
-		break;
 	case 'view':
 		$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . hash('sha256',session_id()) . '_lgi_' . grv('local_graph_id') . '.png';
 
@@ -307,8 +309,6 @@ switch (grv('action')) {
 		}
 
 		exit;
-
-		break;
 	default:
 		load_current_session_value('ds_step',        'sess_realtime_ds_step',     read_user_setting('realtime_interval', 10));
 		load_current_session_value('graph_start',    'sess_realtime_graph_start', read_user_setting('realtime_gwindow', 60));
@@ -386,6 +386,7 @@ $sizes = [
 	'50'  => '50%',
 	'40'  => '40%'
 ];
+
 
 ?>
 <html>

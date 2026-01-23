@@ -2000,7 +2000,7 @@ function utility_php_optionals() : array {
 	return $opt;
 }
 
-function utility_php_verify_optionals(array &$optionals, string $source) : void {
+function utility_php_verify_optionals(mixed &$optionals, string $source) : void {
 	if (empty($optionals)) {
 		$optionals = [
 			'snmp'          => ['web' => false, 'cli' => false],

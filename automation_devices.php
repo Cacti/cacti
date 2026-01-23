@@ -82,7 +82,7 @@ switch(grv('action')) {
 		break;
 }
 
-function form_actions() {
+function form_actions() : void {
 	global $actions, $availability_options;
 
 	// ================= input validation =================
@@ -264,7 +264,7 @@ function form_actions() {
 	}
 }
 
-function display_discovery_page() {
+function display_discovery_page() : void {
 	global $item_rows, $os_arr, $status_arr, $networks, $actions;
 
 	top_header();
@@ -417,7 +417,7 @@ function display_discovery_page() {
 	bottom_footer();
 }
 
-function get_device_description($id) {
+function get_device_description(int $id) : string {
 	if ($id > 0) {
 		$description = db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', [$id]);
 
@@ -431,7 +431,7 @@ function get_device_description($id) {
 	}
 }
 
-function get_network_description($id) {
+function get_network_description(int $id) : string {
 	if ($id > 0) {
 		$description = db_fetch_cell_prepared('SELECT name FROM automation_networks WHERE id = ?', [$id]);
 
@@ -445,7 +445,7 @@ function get_network_description($id) {
 	}
 }
 
-function get_discovery_results(&$total_rows = 0, $rows = 0, $export = false) {
+function get_discovery_results(int &$total_rows = 0, int $rows = 0, bool $export = false) : array {
 	global $os_arr, $status_arr, $networks, $actions;
 
 	$sql_where  = '';
@@ -517,7 +517,7 @@ function get_discovery_results(&$total_rows = 0, $rows = 0, $export = false) {
 	}
 }
 
-function create_automation_devices_filter() {
+function create_automation_devices_filter() : array {
 	global $item_rows, $os_arr, $status_arr, $networks;
 
 	$any          = [-1 => __('Any')];
@@ -620,7 +620,7 @@ function create_automation_devices_filter() {
 	];
 }
 
-function draw_automation_devices_filter($render = false) {
+function draw_automation_devices_filter(bool $render = false) : void {
 	global $item_rows, $filters, $os_arr, $status_arr, $networks, $actions;
 
 	$filters = create_automation_devices_filter();
@@ -638,8 +638,10 @@ function draw_automation_devices_filter($render = false) {
 	}
 }
 
-function export_discovery_results() {
+function export_discovery_results() : void {
 	draw_automation_devices_filter(false);
+
+	$total_rows = 0;
 
 	$results = get_discovery_results($total_rows, 0, true);
 
@@ -675,7 +677,7 @@ function export_discovery_results() {
 	}
 }
 
-function purge_discovery_results() {
+function purge_discovery_results() : void {
 	gfrv('network');
 
 	if (grv('network') > 0) {
@@ -689,7 +691,7 @@ function purge_discovery_results() {
 	exit;
 }
 
-function snmp_data($item) {
+function snmp_data(string $item) : string {
 	if ($item == '') {
 		return __('N/A');
 	} else {
@@ -697,7 +699,7 @@ function snmp_data($item) {
 	}
 }
 
-function export_data($item) {
+function export_data(string $item) : string {
 	if ($item == '') {
 		return 'N/A';
 	} else {

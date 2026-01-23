@@ -98,7 +98,7 @@ switch (grv('action')) {
 		break;
 }
 
-function draw_cdef_preview($cdef_id) {
+function draw_cdef_preview(int $cdef_id) : void {
 	?>
 	<tr class='even'>
 		<td style='padding:4px'>
@@ -108,7 +108,7 @@ function draw_cdef_preview($cdef_id) {
 	<?php
 }
 
-function form_save() {
+function form_save() : void {
 	// make sure ids are numeric
 	if (isrv('id') && ! is_numeric(gfrv('id'))) {
 		srv('id', 0);
@@ -171,7 +171,7 @@ function form_save() {
 	}
 }
 
-function duplicate_cdef($_cdef_id, $cdef_title) {
+function duplicate_cdef(int $_cdef_id, string $cdef_title) : void {
 	global $fields_cdef_edit;
 
 	$cdef       = db_fetch_row_prepared('SELECT * FROM cdef WHERE id = ?', [$_cdef_id]);
@@ -209,7 +209,7 @@ function duplicate_cdef($_cdef_id, $cdef_title) {
 	}
 }
 
-function form_actions() {
+function form_actions() : void {
 	global $actions;
 
 	// ================= input validation =================
@@ -286,7 +286,7 @@ function form_actions() {
 	}
 }
 
-function cdef_item_remove_confirm() {
+function cdef_item_remove_confirm() : void {
 	global $cdef_functions, $cdef_item_types, $custom_cdef_data_source_types;
 
 	// ================= input validation =================
@@ -355,7 +355,7 @@ function cdef_item_remove_confirm() {
 	<?php
 }
 
-function item_movedown() {
+function item_movedown() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('cdef_id');
@@ -364,7 +364,7 @@ function item_movedown() {
 	move_item_down('cdef_items', grv('id'), 'cdef_id=' . grv('cdef_id'));
 }
 
-function item_moveup() {
+function item_moveup() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('cdef_id');
@@ -373,7 +373,7 @@ function item_moveup() {
 	move_item_up('cdef_items', grv('id'), 'cdef_id=' . grv('cdef_id'));
 }
 
-function cdef_item_remove() {
+function cdef_item_remove() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('cdef_id');
@@ -385,7 +385,7 @@ function cdef_item_remove() {
 		[grv('cdef_id'), grv('id')]);
 }
 
-function item_edit() {
+function item_edit() : void {
 	global $cdef_item_types, $cdef_functions, $cdef_operators, $custom_data_source_types;
 
 	// ================= input validation =================
@@ -515,7 +515,7 @@ function item_edit() {
 	form_save_button('cdef.php?action=edit&id=' . grv('cdef_id'));
 }
 
-function cdef_item_dnd() {
+function cdef_item_dnd() : void {
 	// ================= Input validation =================
 	gfrv('id');
 	// ================= Input validation =================
@@ -545,7 +545,7 @@ function cdef_item_dnd() {
 	header('Location: cdef.php?action=edit&id=' . grv('id'));
 }
 
-function cdef_edit() {
+function cdef_edit() : void {
 	global $cdef_item_types, $fields_cdef_edit;
 
 	// ================= input validation =================
@@ -693,7 +693,7 @@ function cdef_edit() {
 	<?php
 }
 
-function cdef() {
+function cdef() : void {
 	global $actions, $item_rows;
 
 	// create the page filter

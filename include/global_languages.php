@@ -338,10 +338,10 @@ function get_src_language_files(string|null $i18n_handler): array|null {
 
 	foreach ($i18n_providers as $i18n_provider) {
 		$found = true;
-		$all   = !empty($i18n_provider['all']);
+		$all   = false;
 
 		foreach ($i18n_provider['paths'] as $path) {
-			if (!$all) {
+			if ($all == false) {
 				$found = true;
 			}
 
@@ -358,12 +358,12 @@ function get_src_language_files(string|null $i18n_handler): array|null {
 					break;
 				}
 
-				if (!$all) {
+				if ($all == false) {
 					break;
 				}
 			}
 
-			if ($all && !$found) {
+			if ($all && $found == false) {
 				i18n_debug("get_src_language_provider($i18n_handler_text) : {$i18n_provider['handler']} - Requires all locations for all files, but missing one, skipped");
 
 				break;
@@ -372,7 +372,7 @@ function get_src_language_files(string|null $i18n_handler): array|null {
 			if ($found) {
 				$i18n_return = $i18n_provider;
 
-				if (!$all) {
+				if ($all == false) {
 					$i18n_return['paths'] = [ $path ];
 				}
 
@@ -407,7 +407,11 @@ function load_gettext_original(string $domain): \gettext_reader {
 
 	i18n_debug("load_gettext_original($domain): " . $cacti_textdomains[$domain]['path2catalogue']);
 
-	$input = new FileReader($cacti_textdomains[$domain]['path2catalogue']);
+	if (class_exists('FileReader')) {
+		$input = new FileReader($cacti_textdomains[$domain]['path2catalogue']);
+	} else {
+		$input = false;
+	}
 
 	if ($input == false) {
 		die('Unable to read file: ' . $cacti_textdomains[$domain]['path2catalogue'] . PHP_EOL);
@@ -415,7 +419,7 @@ function load_gettext_original(string $domain): \gettext_reader {
 
 	$i18n_domain = new gettext_reader($input);
 
-	if ($i18n_domain == false) {
+	if ($i18n_domain === false) {
 		die('Invalid language file: ' . $cacti_textdomains[$domain]['path2catalogue'] . PHP_EOL);
 	}
 
@@ -426,10 +430,12 @@ function load_gettext_original(string $domain): \gettext_reader {
  * Loads a gettext MO translator for the specified domain.
  *
  * @param string $domain The domain for which to load the translator.
- * @return \PhpMyAdmin\MoTranslator\Translator The initialized translator object.
+ *
+ * @return mixed - The initialized translator object.
+ *
  * @throws Exception If the translation file cannot be read.
  */
-function load_gettext_motranslator(string $domain): \PhpMyAdmin\MoTranslator\Translator {
+function load_gettext_motranslator(string $domain): mixed {
 	global $cacti_textdomains;
 
 	// Hide deprecation errors for PHP 8 if using this
@@ -440,9 +446,13 @@ function load_gettext_motranslator(string $domain): \PhpMyAdmin\MoTranslator\Tra
 
 	i18n_debug("load_gettext_mostranslator($domain): " . $cacti_textdomains[$domain]['path2catalogue']);
 
-	$input = new PhpMyAdmin\MoTranslator\Translator($cacti_textdomains[$domain]['path2catalogue']);
+	if (class_exists('PhpMyAdmin\MoTranslator\Translator')) {
+		$input = new PhpMyAdmin\MoTranslator\Translator($cacti_textdomains[$domain]['path2catalogue']);
+	} else {
+		$input = false;
+	}
 
-	if ($input == false) {
+	if ($input === false) {
 		die('Unable to read file: ' . $cacti_textdomains[$domain]['path2catalogue'] . PHP_EOL);
 	}
 
@@ -456,10 +466,12 @@ function load_gettext_motranslator(string $domain): \PhpMyAdmin\MoTranslator\Tra
  * instance, and loads the translations from the .mo file into the translator.
  *
  * @param string $domain The domain for which to load the translations.
- * @return \Gettext\Translator The translator instance loaded with the domain's translations.
+ *
+ * @return mixed - The translator instance loaded with the domain's translations.
+ *
  * @throws Exception If the .mo file cannot be read or is invalid.
  */
-function load_gettext_oscarotero(string $domain): \Gettext\Translator {
+function load_gettext_oscarotero(string $domain): mixed {
 	global $cacti_textdomains;
 
 	// Hide deprecation errors for PHP 8 if using this
@@ -470,16 +482,24 @@ function load_gettext_oscarotero(string $domain): \Gettext\Translator {
 
 	i18n_debug("load_gettext_oscarotero($domain): " . $cacti_textdomains[$domain]['path2catalogue']);
 
-	$input = Gettext\Translations::fromMoFile($cacti_textdomains[$domain]['path2catalogue']);
+	$input = false;
+	if (class_exists('Gettext\Translations')) {
+		$input = Gettext\Translations::fromMoFile($cacti_textdomains[$domain]['path2catalogue']);
+	}
 
 	if ($input == false) {
 		die('Unable to read file: ' . $cacti_textdomains[$domain]['path2catalogue'] . PHP_EOL);
 	}
 
-	$i18n_domain = new Gettext\Translator();
-	$i18n_domain->loadTranslations($input);
+	if (class_exists('Gettext\Translator')) {
+		$i18n_domain = new Gettext\Translator();
+		$i18n_domain->loadTranslations($input);
+	} else {
+		$i18n_domain = false;
+		die('WARNING: The Oscaro Tero Translated not installed' . PHP_EOL);
+	}
 
-	if ($i18n_domain == false) {
+	if ($i18n_domain === false) {
 		die('Invalid language file: ' . $cacti_textdomains[$domain]['path2catalogue'] . PHP_EOL);
 	}
 
@@ -489,10 +509,11 @@ function load_gettext_oscarotero(string $domain): \Gettext\Translator {
 /**
  * Applies the locale based on the provided language or autodetects it from the browser settings.
  *
- * @param string $language The language code to apply.
- * @return string|false The applied locale if successful, or false if no valid locale could be set.
+ * @param string $language - The language code to apply.
+ *
+ * @return mixed - The applied locale if successful, or false if no valid locale could be set.
  */
-function apply_locale(string $language): string|false {
+function apply_locale(string $language): mixed {
 	global $cacti_locale, $cacti_country, $lang2locale;
 
 	$locale_set = false;
@@ -513,9 +534,9 @@ function apply_locale(string $language): string|false {
 	}
 
 	if (!$locale_set) {
-		$language = repair_locale(read_config_option('i18n_default_language'));
+		$language = repair_locale(read_config_option('i18n_default_language') ?? '');
 
-		if ($language == false || $language == '') {
+		if ($language === null || $language == '') {
 			$language = repair_locale(read_default_config_option('i18n_default_language'));
 		}
 
@@ -533,7 +554,7 @@ function apply_locale(string $language): string|false {
 }
 
 // best effort function to repair locale
-function repair_locale($language) {
+function repair_locale(mixed $language) : string {
 	global $lang2locale;
 
 	// Repair legacy language support
@@ -713,7 +734,7 @@ function __uf(string|null $text): string {
  * This function uses gettext for translation and sprintf for formatting.
  * It supports different text domains and various formatting options.
  *
- * @return mixed - Returns the translated and formatted string, or false if no arguments are provided.
+ * @return string - Returns the translated and formatted string, or false if no arguments are provided.
  */
 function __(): string {
 	global $i18n;
@@ -1035,6 +1056,10 @@ function number_format_i18n(mixed $number, mixed $decimals = null, mixed $baseu 
 		return '0';
 	}
 
+	if (!is_numeric($number)) {
+		return '0';
+	}
+
 	$country = strtoupper($cacti_country);
 
 	if (function_exists('numfmt_create')) {
@@ -1045,17 +1070,16 @@ function number_format_i18n(mixed $number, mixed $decimals = null, mixed $baseu 
 			$decimals = 0;
 		}
 
-		if ($fmt !== false && $fmt !== null) {
+		if ($fmt !== null) {
 			numfmt_set_attribute($fmt, NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
 
-			if ($number !== null) {
-				return numfmt_format($fmt, $number);
-			}
+			return numfmt_format($fmt, $number);
 		}
-		cacti_log('DEBUG: Number format \'' . $fmt_key . '\' was unavailable, using older methods',false,'i18n',POLLER_VERBOSITY_HIGH);
+
+		cacti_log('DEBUG: Number format \'' . $fmt_key . '\' was unavailable, using older methods', false, 'i18n', POLLER_VERBOSITY_HIGH);
 	}
 
-	$origlocales = explode(';', setlocale(LC_ALL, 0));
+	$origlocales = explode(';', setlocale(LC_ALL, null));
 	setlocale(LC_ALL, $cacti_locale);
 	$locale = localeconv();
 

@@ -56,12 +56,6 @@ switch (grv('action')) {
 		template_rrd_remove();
 
 		break;
-	case 'template_remove':
-		template_remove();
-
-		header('Location: data_templates.php');
-
-		break;
 	case 'template_edit':
 		top_header();
 		template_edit();
@@ -76,7 +70,7 @@ switch (grv('action')) {
 		break;
 }
 
-function form_save() {
+function form_save() : void {
 	if (isrv('save_component_template')) {
 		// ================= input validation =================
 		gfrv('data_input_id');
@@ -153,7 +147,7 @@ function form_save() {
 
 				$_SESSION[SESS_ERROR_FIELDS]['rrd_maximum'] = 'rrd_maximum';
 
-				$data_template_id_param = empty($data_template_id) ? grv('data_template_id') : $data_template_id;
+				$data_template_id_param = grv('data_template_id');
 				$view_rrd_param         = '';
 
 				if (!ierv('current_rrd')) {
@@ -236,13 +230,15 @@ function form_save() {
 
 		if (!is_error_message()) {
 			$save3['data_template_id'] = $data_template_id;
-			$data_template_rrd_id      = sql_save($save3, 'data_template_rrd');
+			$data_template_rrd_id = sql_save($save3, 'data_template_rrd');
 
 			if ($data_template_rrd_id) {
 				raise_message(1);
 			} else {
 				raise_message(2);
 			}
+		} else {
+			$data_template_rrd_id = 0;
 		}
 
 		if (!is_error_message()) {
@@ -293,7 +289,7 @@ function form_save() {
 								$template_this_item = '';
 							}
 
-							if ((!empty($form_value)) || (!ierv('t_value_' . $input_field['data_name']))) {
+							if (!ierv('t_value_' . $input_field['data_name'])) {
 								/* unusual case where a form value comes back as an array
 								 * this should be cleaned up in the database repair script. */
 								$value = gnrv($form_value);
@@ -370,7 +366,7 @@ function form_save() {
 	}
 }
 
-function form_actions() {
+function form_actions() : void {
 	global $actions;
 
 	// ================= input validation =================
@@ -544,7 +540,7 @@ function form_actions() {
 	}
 }
 
-function template_rrd_remove() {
+function template_rrd_remove() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('data_template_id');
@@ -567,7 +563,7 @@ function template_rrd_remove() {
 	header('Location: data_templates.php?action=template_edit&id=' . grv('data_template_id'));
 }
 
-function template_rrd_add() {
+function template_rrd_add() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('local_data_id');
@@ -623,7 +619,7 @@ function template_rrd_add() {
 	header('Location: data_templates.php?action=template_edit&id=' . grv('id') . "&view_rrd=$data_template_rrd_id");
 }
 
-function data_template_is_stream($data_input_id) {
+function data_template_is_stream(int $data_input_id) : bool {
 	$id = db_fetch_cell_prepared('SELECT id
 		FROM data_input
 		WHERE hash = "7ed649bfa9cd627d7482b7700e88db53"
@@ -633,7 +629,7 @@ function data_template_is_stream($data_input_id) {
 	return !empty($id) ? true : false;
 }
 
-function data_template_is_snmp($data_input_id) {
+function data_template_is_snmp(int $data_input_id) : bool {
 	$id = db_fetch_cell_prepared('SELECT id
 		FROM data_input
 		WHERE hash = "3eb92bb845b9660a7445cf9740726522"
@@ -643,7 +639,7 @@ function data_template_is_snmp($data_input_id) {
 	return !empty($id) ? true : false;
 }
 
-function template_edit() {
+function template_edit() : void {
 	global $struct_data_source, $struct_data_source_item, $data_source_types, $fields_data_template_template_edit, $fields_host_edit, $hash_system_data_inputs;
 
 	// ================= input validation =================
@@ -707,16 +703,21 @@ function template_edit() {
 		<br>
 		<?php
 	} else {
-		$header_label = __('Data Templates [new]');
+		$template             = [];
+		$template_data        = [];
+		$template_data_rrds   = [];
+		$data_template_rrd_id = 0;
+		$header_label         = __('Data Templates [new]');
 	}
 
 	form_start('data_templates.php', 'data_templates');
 
 	html_start_box($header_label, '100%', true, 3, 'center', '');
 
-	draw_edit_form([
-		'config' => ['no_form_tag' => 'true'],
-		'fields' => inject_form_variables($fields_data_template_template_edit, (isset($template) ? $template : []), (isset($template_data) ? $template_data : []), $_REQUEST)
+	draw_edit_form(
+		[
+			'config' => ['no_form_tag' => 'true'],
+			'fields' => inject_form_variables($fields_data_template_template_edit, $template, $template_data, $_REQUEST)
 		]
 	);
 
@@ -736,7 +737,7 @@ function template_edit() {
 			$form_array[$field_name]['value'] = (isset($template_data[$field_name]) ? $template_data[$field_name] : '');
 		}
 
-		$form_array[$field_name]['form_id'] = (isset($template_data) ? $template_data['data_template_id'] : '0');
+		$form_array[$field_name]['form_id'] = $template_data['data_template_id'] ?? 0;
 
 		if ($field_array['flags'] == 'ALWAYSTEMPLATE') {
 			$form_array[$field_name]['description'] .= '<br><em>' . __('This field is always templated.') . '</em>';
@@ -755,7 +756,7 @@ function template_edit() {
 	draw_edit_form(
 		[
 			'config' => ['no_form_tag' => true],
-			'fields' => inject_form_variables($form_array, (isset($template_data) ? $template_data : []))
+			'fields' => inject_form_variables($form_array, $template_data)
 		]
 	);
 
@@ -798,7 +799,7 @@ function template_edit() {
 			}
 
 			print '</ul></nav></div>';
-		} elseif (cacti_sizeof($template_data_rrds) == 1) {
+		} elseif (cacti_sizeof($template_data_rrds) === 1) {
 			srv('view_rrd', $template_data_rrds[0]['id']);
 		}
 	}
@@ -1029,7 +1030,7 @@ function template_edit() {
 	<?php
 }
 
-function data_templates() {
+function data_templates() : void {
 	global $actions, $item_rows;
 
 	draw_data_template_filter(true);
@@ -1202,7 +1203,7 @@ function data_templates() {
 	form_end();
 }
 
-function create_data_template_filter() {
+function create_data_template_filter() : array {
 	global $item_rows, $page_refresh_interval;
 
 	$all     = ['-1' => __('All')];
@@ -1305,7 +1306,7 @@ function create_data_template_filter() {
 	];
 }
 
-function draw_data_template_filter($render = false) {
+function draw_data_template_filter(bool $render = false) : void {
 	$filters = create_data_template_filter();
 
 	// create the page filter

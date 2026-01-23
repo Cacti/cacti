@@ -58,7 +58,7 @@ switch (grv('action')) {
 		break;
 }
 
-function form_save() {
+function form_save() : void {
 	if (isrv('save_component_gprint_presets')) {
 		// ================= input validation =================
 		gfrv('id');
@@ -77,6 +77,8 @@ function form_save() {
 			} else {
 				raise_message(2);
 			}
+		} else {
+			$gprint_preset_id = 0;
 		}
 
 		if (is_error_message()) {
@@ -91,7 +93,7 @@ function form_save() {
 	}
 }
 
-function form_actions() {
+function form_actions() : void {
 	global $actions;
 
 	// ================= input validation =================
@@ -150,7 +152,7 @@ function form_actions() {
 	}
 }
 
-function gprint_presets_edit() {
+function gprint_presets_edit() : void {
 	global $fields_grprint_presets_edit;
 
 	// ================= input validation =================
@@ -180,7 +182,7 @@ function gprint_presets_edit() {
 	form_save_button('gprint_presets.php');
 }
 
-function gprint_presets() {
+function gprint_presets() : void {
 	global $actions, $item_rows;
 
 	// create the page filter

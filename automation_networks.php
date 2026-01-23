@@ -79,7 +79,7 @@ switch (grv('action')) {
 		break;
 }
 
-function automation_export() {
+function automation_export() : void {
 	// if we are to save this form, instead of display it
 	if (isrv('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(gnrv('selected_items'));
@@ -111,7 +111,7 @@ function automation_export() {
 	}
 }
 
-function automation_import() {
+function automation_import() : void {
 	$form_data = [
 		'import_file' => [
 			'friendly_name' => __('Import Network Discovery Rule from Local File'),
@@ -174,7 +174,7 @@ function automation_import() {
 	html_end_box();
 }
 
-function automation_import_process() {
+function automation_import_process() : void {
 	$json_data = json_decode(gnrv('import_text'), true);
 
 	$debug_data = [];
@@ -216,7 +216,7 @@ function automation_import_process() {
 	exit();
 }
 
-function form_save() {
+function form_save() : void {
 	if (isrv('save_component_network')) {
 		$network_id = api_networks_save($_POST);
 
@@ -224,7 +224,7 @@ function form_save() {
 	}
 }
 
-function api_networks_remove($network_id) {
+function api_networks_remove(int $network_id) : void {
 	db_execute_prepared('DELETE FROM automation_networks
 		WHERE id = ?',
 		[$network_id]
@@ -236,7 +236,7 @@ function api_networks_remove($network_id) {
 	);
 }
 
-function api_networks_enable($network_id) {
+function api_networks_enable(int $network_id) : void {
 	db_execute_prepared('UPDATE automation_networks
 		SET enabled="on"
 		WHERE id = ?',
@@ -244,7 +244,7 @@ function api_networks_enable($network_id) {
 	);
 }
 
-function api_networks_disable($network_id) {
+function api_networks_disable(int $network_id) : void {
 	db_execute_prepared('UPDATE automation_networks
 		SET enabled=""
 		WHERE id = ?',
@@ -252,7 +252,7 @@ function api_networks_disable($network_id) {
 	);
 }
 
-function api_networks_cancel($network_id) {
+function api_networks_cancel(int $network_id) : void {
 	db_execute_prepared('UPDATE IGNORE automation_processes
 		SET command="cancel"
 		WHERE task="tmaster"
@@ -261,7 +261,7 @@ function api_networks_cancel($network_id) {
 	);
 }
 
-function api_networks_duplicate($network_id) {
+function api_networks_duplicate(int $network_id) : void{
 	$save = db_fetch_row_prepared('SELECT *
 		FROM automation_networks
 		WHERE id = ?',
@@ -291,7 +291,7 @@ function api_networks_duplicate($network_id) {
  *
  * @return void
  */
-function api_networks_change_options($network_ids, $post) {
+function api_networks_change_options(mixed $network_ids, array $post) : void {
 	if (!is_array($network_ids)) {
 		$network_ids = [$network_ids];
 	}
@@ -310,7 +310,7 @@ function api_networks_change_options($network_ids, $post) {
 	}
 }
 
-function api_networks_discover($network_id, $discover_debug, $discover_dryrun) {
+function api_networks_discover(int $network_id, bool $discover_debug, bool $discover_dryrun) : void {
 	$enabled   = db_fetch_cell_prepared('SELECT enabled
 		FROM automation_networks
 		WHERE id = ?',
@@ -358,7 +358,7 @@ function api_networks_discover($network_id, $discover_debug, $discover_dryrun) {
 	force_session_data();
 }
 
-function api_networks_save($post) {
+function api_networks_save(array $post) : mixed {
 	if (empty($post['network_id'])) {
 		$save['id']            = form_input_validate($post['id'], 'id', '^[0-9]+$', false, 3);
 		$save['hash']          = get_hash_automation($post['id'], 'automation_networks');
@@ -435,9 +435,11 @@ function api_networks_save($post) {
 			return $network_id;
 		}
 	}
+
+	return false;
 }
 
-function form_actions() {
+function form_actions() : void {
 	global $actions;
 
 	// ================= input validation =================
@@ -665,7 +667,7 @@ function form_actions() {
 	}
 }
 
-function network_get_field_array($network = []) {
+function network_get_field_array(array $network = []) : array {
 	global $ping_methods, $sched_types;
 
 	$ping_methods[PING_SNMP] = __('SNMP Get');
@@ -908,7 +910,7 @@ function network_get_field_array($network = []) {
 	return $fields;
 }
 
-function network_edit_javascript() {
+function network_edit_javascript() : void {
 	api_scheduler_javascript();
 
 	?>
@@ -950,7 +952,7 @@ function network_edit_javascript() {
 	<?php
 }
 
-function network_edit() {
+function network_edit() : void {
 	global $ping_methods;
 
 	$ping_methods[PING_SNMP] = __('SNMP Get');
@@ -990,7 +992,7 @@ function network_edit() {
 	network_edit_javascript();
 }
 
-function get_networks(&$sql_where, $rows, $apply_limits = true) {
+function get_networks(string &$sql_where, int $rows, bool $apply_limits = true) : mixed {
 	if (grv('filter') != '') {
 		$sql_where = ' WHERE (automation_networks.name LIKE ' . db_qstr('%' . grv('filter') . '%') . ')';
 	}
@@ -1014,7 +1016,7 @@ function get_networks(&$sql_where, $rows, $apply_limits = true) {
 	return db_fetch_assoc($query_string);
 }
 
-function networks() {
+function networks() : void {
 	global $actions, $networks, $item_rows, $sched_types;
 
 	// create the page filter

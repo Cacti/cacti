@@ -58,7 +58,7 @@ function cacti_db_session_close(): bool {
 	return true;
 }
 
-function cacti_db_session_read(string $id) {
+function cacti_db_session_read(string $id) : string {
 	db_execute_prepared('UPDATE IGNORE sessions
 		SET access = ?
 		WHERE id = ?',
@@ -128,8 +128,12 @@ function cacti_db_session_destroy(string $id): bool {
 	return true;
 }
 
-function cacti_db_session_clean(int $max): bool {
-	$old = time() - $max;
+function cacti_db_session_clean(string $max): bool {
+	if (!is_numeric($max)) {
+		$old = time() - 14400;
+	} else {
+		$old = time() - intval($max);
+	}
 
 	db_execute_prepared('DELETE FROM sessions
 		WHERE access < ?',

@@ -77,8 +77,6 @@ if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 			auth_display_custom_error_message($error_msg);
 
 			exit;
-
-			break;
 		case AUTH_METHOD_CACTI: // Local authentication
 			cacti_log("DEBUG: Local User '" . $username . "' to attempt login.", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
@@ -107,8 +105,6 @@ if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 			auth_display_custom_error_message($error_msg);
 
 			exit;
-
-			break;
 	}
 
 	// Create user from template if available

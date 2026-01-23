@@ -103,7 +103,7 @@ switch (grv('action')) {
 		break;
 }
 
-function add_tree_names_to_actions_array() {
+function add_tree_names_to_actions_array() : void {
 	global $actions;
 
 	// add a list of tree names to the actions dropdown
@@ -116,11 +116,11 @@ function add_tree_names_to_actions_array() {
 	}
 }
 
-function form_save() {
+function form_save() : void {
 	if (!isrv('save_component_graph') && !isrv('save_component_input')) {
 		header('Location: aggregate_graphs.php?action=edit&id=' . gnrv('id'));
 
-		return null;
+		exit();
 	}
 
 	if (isrv('save_component_graph')) {
@@ -134,7 +134,7 @@ function form_save() {
 			raise_message(2);
 			header('Location: aggregate_graphs.php?action=edit&id=' . $local_graph_id);
 
-			return null;
+			exit();
 		}
 
 		// get the aggregate graph id
@@ -154,7 +154,7 @@ function form_save() {
 			raise_message(2);
 			header('Location: aggregate_graphs.php?action=edit&id=' . $local_graph_id);
 
-			return null;
+			exit();
 		}
 
 		// save graph data to cacti tables
@@ -179,7 +179,8 @@ function form_save() {
 		 */
 		if (!isrv('template_propogation')) {
 			// template propagation is disabled
-			$save                          = [];
+			$save = [];
+
 			$save['id']                    = $aggregate_graph_id;
 			$save['aggregate_template_id'] = $aggregate_template_id;
 			$save['template_propogation']  = '';
@@ -303,25 +304,33 @@ function form_save() {
 			$items = [
 				0 => [
 					'color_id'                  => '0',
+					'color2_id'                 => '0',
+					'alpha'                     => '0',
+					'alpha2'                    => '0',
 					'graph_type_id'             => '9',
 					'consolidation_function_id' => '4',
 					'text_format'               => 'Current:',
 					'hard_return'               => ''
-					],
+				],
 				1 => [
 					'color_id'                  => '0',
+					'color2_id'                 => '0',
+					'alpha'                     => '0',
 					'graph_type_id'             => '9',
 					'consolidation_function_id' => '1',
 					'text_format'               => 'Average:',
 					'hard_return'               => ''
-					],
+				],
 				2 => [
 					'color_id'                  => '0',
+					'color2_id'                 => '0',
+					'alpha'                     => '0',
 					'graph_type_id'             => '9',
 					'consolidation_function_id' => '3',
 					'text_format'               => 'Maximum:',
 					'hard_return'               => 'on'
-					]];
+				]
+			];
 		}
 
 		foreach ($items as $item) {
@@ -379,12 +388,12 @@ function form_save() {
 
 /**
  * form_save_aggregate - save aggregate graph item
- *   This saves any overrides to item properties from graph template item.
- *   Inserting new items here is not possible. Just editing existing ones.
+ * This saves any overrides to item properties from graph template item.
+ * Inserting new items here is not possible. Just editing existing ones.
  */
-function form_save_aggregate() {
+function form_save_aggregate() : mixed {
 	if (!isrv('save_component_item')) {
-		return;
+		return false ;
 	}
 
 	// two possible tables to save to - aggregate template or aggregate graph
@@ -453,7 +462,7 @@ function form_save_aggregate() {
 	}
 }
 
-function item_movedown() {
+function item_movedown() : void {
 	global $graph_item_types;
 
 	// ================= input validation =================
@@ -471,7 +480,7 @@ function item_movedown() {
 	}
 }
 
-function item_moveup() {
+function item_moveup() : void {
 	global $graph_item_types;
 
 	// ================= input validation =================
@@ -489,7 +498,7 @@ function item_moveup() {
 	}
 }
 
-function item_remove() {
+function item_remove() : void {
 	// ================= input validation =================
 	gfrv('id');
 	// ====================================================
@@ -497,7 +506,7 @@ function item_remove() {
 	db_execute_prepared('DELETE FROM graph_templates_item WHERE id = ?', [grv('id')]);
 }
 
-function item_edit() {
+function item_edit() : void {
 	global $struct_graph_item, $graph_item_types, $consolidation_functions;
 
 	// Remove filter item
@@ -686,7 +695,7 @@ function item_edit() {
 	<?php
 }
 
-function form_actions() {
+function form_actions() : void {
 	global $actions, $agg_item_actions;
 	global $alignment, $graph_timespans;
 
@@ -772,7 +781,7 @@ function form_actions() {
 				input_validate_input_number($matches[1], 'chk[1]');
 				// ====================================================
 
-				$ilist .= '<li>' . htmle(get_graph_title($matches[1])) . '</li>';
+				$ilist .= '<li>' . htmle(get_graph_title(intval($matches[1]))) . '</li>';
 
 				$iarray[] = $matches[1];
 			}
@@ -994,7 +1003,7 @@ function form_actions() {
 	}
 }
 
-function graph_edit() {
+function graph_edit() : bool {
 	global $struct_graph, $struct_aggregate_graph, $image_types;
 	global $consolidation_functions, $graph_item_types, $struct_graph_item;
 
@@ -1430,7 +1439,7 @@ function graph_edit() {
 						$form_array[$field_name]['value']   = (cacti_sizeof($graphs) ? $graphs[$field_name] : '');
 						$form_array[$field_name]['form_id'] = (cacti_sizeof($graphs) ? $graphs['id'] : '0');
 
-						if (!(($use_graph_template == false) || ($graphs['t_' . $field_name] == 'on'))) {
+						if ($use_graph_template && $graphs['t_' . $field_name] != 'on') {
 							$form_array[$field_name]['method']      = 'template_' . $form_array[$field_name]['method'];
 							$form_array[$field_name]['description'] = '';
 						}
@@ -1496,11 +1505,13 @@ function graph_edit() {
 				}
 			}
 		</script>
-	<?php
+		<?php
 	}
+
+	return true;
 }
 
-function aggregate_items() {
+function aggregate_items() : void {
 	global $agg_item_actions, $item_rows;
 
 	// ================= input validation and session storage =================
@@ -1804,7 +1815,7 @@ function aggregate_items() {
 	form_end();
 }
 
-function aggregate_make_sql_where($sql_where, $items, $field) {
+function aggregate_make_sql_where(string $sql_where, array $items, string $field) : string {
 	if ($sql_where != '') {
 		$sql_where .= ' AND (';
 	} else {
@@ -1861,7 +1872,7 @@ function aggregate_make_sql_where($sql_where, $items, $field) {
 	return trim($sql_where);
 }
 
-function aggregate_format_text($text, $filter) {
+function aggregate_format_text(string $text, string $filter) : string {
 	$items = explode(' ', $filter);
 	$tags  = [];
 
@@ -1874,7 +1885,7 @@ function aggregate_format_text($text, $filter) {
 			continue;
 		}
 
-		if (substr_count($text, $i) !== false) {
+		if (substr_count($text, $i) > 0) {
 			$tagno        = rand();
 			$tags[$tagno] = $i;
 			$text         = str_replace($i, "<<$tagno>>", $text);
@@ -1890,7 +1901,7 @@ function aggregate_format_text($text, $filter) {
 	return $text;
 }
 
-function create_aggregate_filter() {
+function create_aggregate_filter() : array {
 	global $item_rows;
 
 	$any  = ['-1' => __('Any')];
@@ -1970,7 +1981,7 @@ function create_aggregate_filter() {
 	];
 }
 
-function draw_aggregate_filter($render = false) {
+function draw_aggregate_filter(bool $render = false) : void {
 	$filters = create_aggregate_filter();
 
 	$header = __('Aggregate Graphs') . (grv('local_graph_ids') != '' ? __(' [ Custom Graphs List Applied - Clear to Reset ]') : '');
@@ -1987,7 +1998,7 @@ function draw_aggregate_filter($render = false) {
 	}
 }
 
-function aggregate_graph() {
+function aggregate_graph() : void {
 	global $actions, $item_rows;
 
 	draw_aggregate_filter(true);
@@ -2120,7 +2131,7 @@ function aggregate_graph() {
 	form_end();
 }
 
-function purge_old_graphs() {
+function purge_old_graphs() : void {
 	// workaround to handle purged graphs
 	$old_graphs = array_rekey(db_fetch_assoc('SELECT DISTINCT local_graph_id
 		FROM aggregate_graphs_items AS pagi

@@ -113,7 +113,7 @@ switch (grv('action')) {
 			$sql_where = 'site_id = ' . grv('site_id');
 		}
 
-		get_allowed_ajax_hosts(true, 'applyFilter', $sql_where);
+		get_allowed_ajax_hosts(true, true, $sql_where);
 
 		break;
 	case 'ajax_hosts_noany':
@@ -123,7 +123,7 @@ switch (grv('action')) {
 			$sql_where = 'site_id = ' . grv('site_id');
 		}
 
-		get_allowed_ajax_hosts(false, 'applyFilter', $sql_where);
+		get_allowed_ajax_hosts(false, true, $sql_where);
 
 		break;
 	case 'runall':
@@ -145,7 +145,7 @@ switch (grv('action')) {
 		break;
 }
 
-function debug_runall_filtered() {
+function debug_runall_filtered() : void {
 	$info = [
 		'rrd_folder_writable' => '',
 		'rrd_exists'          => '',
@@ -201,7 +201,7 @@ function debug_runall_filtered() {
 		$sql_params);
 }
 
-function debug_process_status($id) {
+function debug_process_status(int $id) : string {
 	$status = db_fetch_row_prepared('SELECT done, IFNULL(issue, "waiting") AS issue
 		FROM data_debug
 		WHERE datasource = ?',
@@ -222,7 +222,7 @@ function debug_process_status($id) {
 	}
 }
 
-function form_actions() {
+function form_actions() : void {
 	global $actions, $assoc_actions;
 
 	// ================= input validation =================
@@ -259,7 +259,7 @@ function form_actions() {
 	}
 }
 
-function debug_rerun($selected_items) {
+function debug_rerun(array $selected_items) : void {
 	$info = [
 		'rrd_folder_writable' => '',
 		'rrd_exists'          => '',
@@ -309,7 +309,7 @@ function debug_rerun($selected_items) {
 	}
 }
 
-function debug_delete($selected_items) {
+function debug_delete(array $selected_items) : void {
 	if (!empty($selected_items)) {
 		foreach ($selected_items as $id) {
 			db_execute_prepared('DELETE
@@ -320,7 +320,7 @@ function debug_delete($selected_items) {
 	}
 }
 
-function debug_get_filter(&$sql_where, &$sql_params, &$dd_join) {
+function debug_get_filter(string &$sql_where, array &$sql_params, string &$dd_join) : void {
 	// form the 'where' clause for our main sql query
 	if (grv('rfilter') != '') {
 		$sql_where    = 'WHERE (dtd.name_cache RLIKE ? OR dtd.local_data_id RLIKE ? OR dt.name RLIKE ?)';
@@ -374,7 +374,7 @@ function debug_get_filter(&$sql_where, &$sql_params, &$dd_join) {
 	}
 }
 
-function debug_wizard() {
+function debug_wizard() : void {
 	global $actions;
 
 	$display_text = [
@@ -603,7 +603,7 @@ function debug_wizard() {
 	form_end();
 }
 
-function debug_view() {
+function debug_view() : void {
 	global $refresh;
 
 	$refresh = 60;
@@ -617,7 +617,7 @@ function debug_view() {
 
 	$check_exists = cacti_sizeof($check);
 
-	if (isset($check) && is_array($check)) {
+	if (cacti_sizeof($check)) {
 		$check['info'] = cacti_unserialize($check['info']);
 	}
 
@@ -909,7 +909,7 @@ function debug_view() {
 	<?php
 }
 
-function debug_icon_valid_result($result) {
+function debug_icon_valid_result(mixed $result) : string {
 	if ($result === '' || $result === false) {
 		return '<i class="ti ti-loader fa-pulse fa-fw"></i>';
 	}
@@ -935,7 +935,7 @@ function debug_icon_valid_result($result) {
 	}
 }
 
-function debug_icon($result) {
+function debug_icon(mixed $result) : string {
 	if ($result === '' || $result === false) {
 		return '<i class="ti ti-loader fa-pulse fa-fw"></i>';
 	}
@@ -955,7 +955,7 @@ function debug_icon($result) {
 	return '<i class="ti ti-alert-triangle-filled" style="color:orange"></i>';
 }
 
-function create_data_debug_filter($session_var) {
+function create_data_debug_filter(string $session_var) : array {
 	global $item_rows, $page_refresh_interval;
 
 	$all     = ['-1' => __('All')];
@@ -1173,7 +1173,7 @@ function create_data_debug_filter($session_var) {
 	];
 }
 
-function draw_data_debug_filter($render = false) {
+function draw_data_debug_filter(bool $render = false) : void {
 	$filters = create_data_debug_filter('sess_data_debug');
 
 	if (grv('host_id') > 0) {

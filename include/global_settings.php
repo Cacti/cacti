@@ -24,6 +24,28 @@
 
 $dir = dir(CACTI_PATH_INCLUDE . '/themes/');
 
+// Work aorund issue where phpstan is not detecting globals
+
+include_once(__DIR__ . '/global_arrays.php');
+
+global $attachment_sizes, $attach_types, $auth_methods, $automation_log_levels,
+	$availability_options, $boost_max_memory, $boost_max_rows_per_select,
+	$boost_max_runtime, $boost_refresh_interval, $config, $copyrights,
+	$cron_intervals, $daily_timespans, $datechar, $dateformats,
+	$dsstats_hourly_avg, $dsstats_max_memory, $dsstats_refresh_interval,
+	$graph_color_alpha, $graphs_per_page, $graph_timeshifts, $graph_timespans,
+	$graph_views, $graph_weekdays, $i18n_modes, $i18n_supported_languages,
+	$image_types, $item_rows, $logfile_actions, $logfile_expansion,
+	$logfile_options, $logfile_validation, $logfile_verbosity, $logrotate_frequency,
+	$log_tail_lines, $monthly_timespans, $page_refresh_interval, $ping_methods,
+	$poller_intervals, $poller_options, $poller_sync_intervals, $realtime_refresh,
+	$realtime_window, $reindex_types, $rrdcheck_intervals, $rrdtool_versions,
+	$snmp_auth_protocols, $snmp_priv_protocols, $snmp_security_levels,
+	$snmp_versions, $themes, $timespans, $user_auth_realm_filenames,
+	$weekly_timespans, $yearly_timespans;
+
+// Workaround End
+
 while (false !== ($entry = $dir->read())) {
 	if ($entry != '.' && $entry != '..') {
 		if (is_dir(CACTI_PATH_INCLUDE . '/themes/' . $entry)) {
@@ -68,10 +90,12 @@ if (db_table_exists('plugin_config')) {
 }
 
 // get the files for selective logging
-$realm_files  = array_keys($user_auth_realm_filenames);
+if (is_array($user_auth_realm_filenames)) {
+	$realm_files  = array_keys($user_auth_realm_filenames);
 
-foreach ($realm_files as $file) {
-	$logfiles[$file] = $file;
+	foreach ($realm_files as $file) {
+		$logfiles[$file] = $file;
+	}
 }
 
 // we need this list of files for selective debug
@@ -114,12 +138,6 @@ $no_http_header_files = [
 	'ss_sql.php',
 	'structure_rra_paths.php',
 ];
-
-$nohead_files = array_values($no_http_header_files);
-
-foreach ($nohead_files as $file) {
-	$logfiles[$file] = $file;
-}
 
 $logfiles['poller_realtime.php'] = 'poller_realtime.php';
 $logfiles['cmd_realtime.php']    = 'cmd_realtime.php';

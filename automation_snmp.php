@@ -121,7 +121,7 @@ switch (grv('action')) {
 		break;
 }
 
-function automation_export() {
+function automation_export() : void {
 	// if we are to save this form, instead of display it
 	if (isrv('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(gnrv('selected_items'));
@@ -154,7 +154,7 @@ function automation_export() {
 	}
 }
 
-function automation_import() {
+function automation_import() : void {
 	$form_data = [
 		'import_file' => [
 			'friendly_name' => __('Import SNMP Options from Local File'),
@@ -219,7 +219,7 @@ function automation_import() {
 	html_end_box();
 }
 
-function automation_import_process() {
+function automation_import_process() : void {
 	$json_data = json_decode(gnrv('import_text'), true);
 
 	$debug_data  = [];
@@ -266,7 +266,7 @@ function automation_import_process() {
 	exit();
 }
 
-function form_save() {
+function form_save() : void {
 	if (isrv('save_component_automation_snmp')) {
 		// ================= input validation =================
 		gfrv('id');
@@ -337,7 +337,7 @@ function form_save() {
 	}
 }
 
-function form_actions() {
+function form_actions() : void {
 	global $actions;
 
 	// ================= input validation =================
@@ -443,7 +443,7 @@ function form_actions() {
 	}
 }
 
-function automation_duplicate_snmp_option($id, $new_name) {
+function automation_duplicate_snmp_option(int $id, string $new_name) : void {
 	$name = db_fetch_cell_prepared('SELECT name
 		FROM automation_snmp
 		WHERE id = ?', [$id]);
@@ -476,7 +476,7 @@ function automation_duplicate_snmp_option($id, $new_name) {
 	}
 }
 
-function automation_snmp_item_dnd() {
+function automation_snmp_item_dnd() : void {
 	// ================= Input validation =================
 	gfrv('id');
 	// ================= Input validation =================
@@ -503,7 +503,7 @@ function automation_snmp_item_dnd() {
 	exit;
 }
 
-function automation_snmp_item_movedown() {
+function automation_snmp_item_movedown() : void {
 	// ================= input validation =================
 	gfrv('item_id');
 	gfrv('id');
@@ -512,7 +512,7 @@ function automation_snmp_item_movedown() {
 	move_item_down('automation_snmp_items', grv('item_id'), 'snmp_id=' . grv('id'));
 }
 
-function automation_snmp_item_moveup() {
+function automation_snmp_item_moveup() : void {
 	// ================= input validation =================
 	gfrv('item_id');
 	gfrv('id');
@@ -521,7 +521,7 @@ function automation_snmp_item_moveup() {
 	move_item_up('automation_snmp_items', grv('item_id'), 'snmp_id=' . grv('id'));
 }
 
-function automation_snmp_item_remove_confirm() {
+function automation_snmp_item_remove_confirm() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('item_id');
@@ -583,7 +583,7 @@ function automation_snmp_item_remove_confirm() {
 	<?php
 }
 
-function automation_snmp_item_remove() {
+function automation_snmp_item_remove() : void {
 	// ================= input validation =================
 	gfrv('item_id');
 	// ====================================================
@@ -591,7 +591,7 @@ function automation_snmp_item_remove() {
 	db_execute_prepared('DELETE FROM automation_snmp_items WHERE id = ?', [grv('item_id')]);
 }
 
-function automation_snmp_item_edit() {
+function automation_snmp_item_edit() : void {
 	global $snmp_auth_protocols, $snmp_priv_protocols, $snmp_versions, $snmp_security_levels;
 
 	// require_once(CACTI_PATH_LIBRARY . '/automation_functions.php');
@@ -664,7 +664,7 @@ function automation_snmp_item_edit() {
 	<?php
 }
 
-function automation_snmp_edit() {
+function automation_snmp_edit() : void {
 	global $fields_automation_snmp_edit;
 
 	// ================= input validation =================
@@ -802,7 +802,7 @@ function automation_snmp_edit() {
 				$form_data .= '<td class="nowrap right">';
 
 				if (read_config_option('drag_and_drop') == '') {
-					if ($i < $total_items && $total_items > 1) {
+					if ($i < $total_items) {
 						$form_data .= '<a class="pic ti ti-caret-down-filled moveArrow" href="' . htmle('automation_snmp.php?action=item_movedown&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . '" title="' . __esc('Move Down') . '"></a>';
 					} else {
 						$form_data .= '<span class="moveArrowNone"></span>';
@@ -879,7 +879,7 @@ function automation_snmp_edit() {
 	<?php
 }
 
-function automation_snmp() {
+function automation_snmp() : void {
 	global $item_rows, $actions;
 
 	// create the page filter

@@ -535,7 +535,7 @@ function find_paths(string $input, string $type = 'cacti_xml') : array {
 	return ['paths' => $paths, 'missing_paths' => $mpaths];
 }
 
-function package_template(array &$template, array &$info, array &$files, string &$debug) : bool {
+function package_template(string &$template, array &$info, array &$files, string &$debug) : bool {
 	global $export_errors, $package_file;
 
 	$binary_signature = '';

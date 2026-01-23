@@ -1078,7 +1078,7 @@ $copyrights = [
 	'Eclipse Public License version 2.0' => __('Eclipse Public License version 2.0'),
 ];
 
-if (POLLER_ID || $config['connection'] == 'online') {
+if (POLLER_ID || $config['connection'] == 'online') { // @phpstan-ignore-line
 	$menu = [
 		__('Main Console') => [
 			'index.php' => __('Console Page')
@@ -2952,12 +2952,6 @@ $navigation = [
 		'mapping' => 'index.php:,aggregate_graphs.php:',
 		'url'     => '',
 		'level'   => '2'
-	],
-	'aggregate_graphs.php:' => [
-		'title'   => __('Aggregate Items'),
-		'mapping' => 'index.php:',
-		'url'     => 'aggregate_graphs.php',
-		'level'   => '1'
 	],
 	'aggregate_graphs.php:item_edit' => [
 		'title'   => __('(Edit)'),

@@ -65,12 +65,12 @@ switch (grv('action')) {
 /**
  * aggregate_form_save	the save function
  */
-function aggregate_form_save() {
+function aggregate_form_save() : void {
 	// make sure we are saving aggregate template
 	if (!isrv('save_component_template')) {
 		header('Location: aggregate_templates.php?action=edit&id=' . gnrv('id'));
 
-		return null;
+		exit();
 	}
 
 	$save1 = [];
@@ -117,7 +117,7 @@ function aggregate_form_save() {
 	if (is_error_message()) {
 		header('Location: aggregate_templates.php?action=edit&id=' . gnrv('id'));
 
-		return null;
+		exit;
 	}
 
 	cacti_log('AGGREGATE GRAPH TEMPLATE Saved ID: ' . $save1['id'] . ' Name: ' . $save1['name'], false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
@@ -165,9 +165,10 @@ function aggregate_form_save() {
 
 	if (!$id) {
 		raise_message(2);
+
 		header('Location: aggregate_templates.php?action=edit&id=' . gnrv('id'));
 
-		return null;
+		exit;
 	}
 
 	// save extra graph parameters
@@ -199,7 +200,7 @@ function aggregate_form_save() {
 	}
 
 	// save only if all posted form fields passed validation
-	if ($params_changed && !is_error_message()) {
+	if ($params_changed && is_error_message() == false) {
 		sql_save($params_new, 'aggregate_graph_templates_graph', 'aggregate_template_id', false);
 	}
 
@@ -271,13 +272,10 @@ function aggregate_form_save() {
 	header('Location: aggregate_templates.php?action=edit&id=' . $id);
 }
 
-function aggregate_get_graph_items($table, $id) {
-}
-
 /**
  * aggregate_form_actions - the action function
  */
-function aggregate_form_actions() {
+function aggregate_form_actions() : void {
 	global $actions;
 
 	// ================= input validation =================
@@ -342,7 +340,7 @@ function aggregate_form_actions() {
 /**
  * aggregate_template_edit	edit the color template
  */
-function aggregate_template_edit() {
+function aggregate_template_edit() : void {
 	global $image_types, $struct_aggregate_template;
 
 	// ================= input validation =================
@@ -532,7 +530,7 @@ function aggregate_template_edit() {
 /**
  * aggregate_template
  */
-function aggregate_template() {
+function aggregate_template() : void {
 	global $actions, $item_rows;
 
 	// create the page filter

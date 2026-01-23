@@ -1657,7 +1657,7 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 		colors.hex, colors2.hex AS hex2, gti.alpha, gti.alpha2, gti.gradheight,
 		gti.line_width, gti.dashes, gti.shift,
 		gti.dash_offset, gti.textalign, dl.snmp_query_id, dl.snmp_index, gti.legend,
-		dtr.id AS data_template_rrd_id, dtr.local_data_id,
+		dtr.id AS data_template_rrd_id, dl.id AS local_data_id,
 		dtr.rrd_minimum, dtr.rrd_maximum, dtr.data_source_name, dtr.local_data_template_rrd_id
 		FROM graph_templates_item AS gti
 		LEFT JOIN data_template_rrd AS dtr

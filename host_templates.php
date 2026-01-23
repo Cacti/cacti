@@ -131,7 +131,7 @@ switch (grv('action')) {
 		break;
 }
 
-function form_save() {
+function form_save() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('host_template_id');
@@ -166,7 +166,7 @@ function form_save() {
 	}
 }
 
-function template_item_add_dq() {
+function template_item_add_dq() : void {
 	// ================= input validation =================
 	gfrv('host_template_id');
 	gfrv('snmp_query_id');
@@ -181,7 +181,7 @@ function template_item_add_dq() {
 	raise_message(41);
 }
 
-function template_item_add_gt() {
+function template_item_add_gt() : void {
 	// ================= input validation =================
 	gfrv('host_template_id');
 	gfrv('graph_template_id');
@@ -196,7 +196,7 @@ function template_item_add_gt() {
 	raise_message(41);
 }
 
-function form_actions() {
+function form_actions() : void {
 	global $actions;
 
 	// ================= input validation =================
@@ -407,7 +407,7 @@ function form_actions() {
 	}
 }
 
-function template_item_remove_gt_confirm() {
+function template_item_remove_gt_confirm() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('host_template_id');
@@ -461,7 +461,7 @@ function template_item_remove_gt_confirm() {
 	<?php
 }
 
-function template_item_remove_gt() {
+function template_item_remove_gt() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('host_template_id');
@@ -476,7 +476,7 @@ function template_item_remove_gt() {
 	raise_message(41);
 }
 
-function template_item_remove_dq_confirm() {
+function template_item_remove_dq_confirm() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('host_template_id');
@@ -527,7 +527,7 @@ function template_item_remove_dq_confirm() {
 	<?php
 }
 
-function template_item_remove_dq() {
+function template_item_remove_dq() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('host_template_id');
@@ -542,7 +542,7 @@ function template_item_remove_dq() {
 	raise_message(41);
 }
 
-function template_edit() {
+function template_edit() : void {
 	global $fields_host_template_edit, $copyrights;
 
 	// ================= input validation =================
@@ -588,7 +588,7 @@ function template_edit() {
 	draw_edit_form(
 		[
 			'config' => ['no_form_tag' => 'true'],
-			'fields' => inject_form_variables($fields_host_template_edit, (isset($host_template) ? $host_template : []))
+			'fields' => inject_form_variables($fields_host_template_edit, $host_template)
 		]
 	);
 
@@ -784,7 +784,7 @@ function template_edit() {
 	<?php
 }
 
-function create_template_filter() {
+function create_template_filter() : array {
 	global $item_rows, $device_classes;
 
 	$all  = ['-1' => __('All')];
@@ -929,7 +929,7 @@ function create_template_filter() {
 	];
 }
 
-function draw_template_filter($render = false) {
+function draw_template_filter(bool $render = false) : void {
 	$filters = create_template_filter();
 
 	// create the page filter
@@ -944,7 +944,7 @@ function draw_template_filter($render = false) {
 	}
 }
 
-function device_templates() {
+function device_templates() : void {
 	global $actions, $item_rows, $device_classes;
 
 	draw_template_filter(true);
@@ -1154,7 +1154,7 @@ function device_templates() {
 	form_end();
 }
 
-function create_archive_filter() {
+function create_archive_filter() : array {
 	global $item_rows, $device_classes;
 
 	$all  = ['-1' => __('All')];
@@ -1330,7 +1330,7 @@ function create_archive_filter() {
 	];
 }
 
-function draw_archive_filter($render = false) {
+function draw_archive_filter(bool $render = false) : void {
 	$filters = create_archive_filter();
 
 	// create the page filter
@@ -1345,7 +1345,7 @@ function draw_archive_filter($render = false) {
 	}
 }
 
-function device_archives() {
+function device_archives() : void {
 	global $actions, $item_rows, $device_classes;
 
 	draw_archive_filter(true);

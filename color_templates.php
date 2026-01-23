@@ -109,7 +109,7 @@ switch (grv('action')) {
  *   								  external url
  * @param bool $disable_controls 	- whether to hide all edit/delete functionality on this form
  */
-function draw_color_template_items_list($item_list, $filename, $url_data, $disable_controls) {
+function draw_color_template_items_list(array $item_list, string $filename, string $url_data, bool $disable_controls) : void {
 	global $struct_color_template_item;
 
 	$display_text = [
@@ -150,7 +150,7 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 				print "<td class='right nowrap'>";
 
 				if (read_config_option('drag_and_drop') == '') {
-					if ($i < $total_items && $total_items > 1) {
+					if ($i < $total_items) {
 						print '<a class="pic ti ti-caret-down-filled moveArrow" href="' . htmle('color_templates.php?action=item_movedown&color_template_item_id=' . $item['color_template_item_id'] . '&color_template_id=' . $item['color_template_id']) . '" title="' . __esc('Move Down') . '"></a>';
 					} else {
 						print '<span class="moveArrowNone"></span>';
@@ -180,7 +180,7 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 /**
  * form_save	the save function
  */
-function form_save() {
+function form_save() : void {
 	if (isrv('save_component_color')) {
 		if (isrv('color_template_id')) {
 			$save1['color_template_id'] = gnrv('color_template_id');
@@ -223,7 +223,7 @@ function form_save() {
 
 			$save['color_template_item_id'] = gfrv('color_template_item_id');
 			$save['color_template_id']      = gfrv('color_template_id');
-			$save['color_id']               = form_input_validate($item['color_id'] ?? gnrv('color_id'), 'color_id', '', true, 3);
+			$save['color_id']               = form_input_validate(gnrv('color_id'), 'color_id', '', true, 3);
 			$save['sequence']               = $sequence;
 
 			if (!is_error_message()) {
@@ -254,7 +254,7 @@ function form_save() {
 /**
  * form_actions	the action function
  */
-function form_actions() {
+function form_actions() : void {
 	global $actions;
 	require_once(CACTI_PATH_LIBRARY . '/api_aggregate.php');
 
@@ -347,7 +347,7 @@ function form_actions() {
 	}
 }
 
-function color_templates_item_dnd() {
+function color_templates_item_dnd() : void {
 	// ================= Input validation =================
 	gfrv('id');
 	// ================= Input validation =================
@@ -379,7 +379,7 @@ function color_templates_item_dnd() {
 /**
  * color_item_movedown move item down
  */
-function color_item_movedown() {
+function color_item_movedown() : void {
 	// ================= input validation =================
 	gfrv('color_template_item_id');
 	gfrv('color_template_id');
@@ -391,7 +391,7 @@ function color_item_movedown() {
 		[grv('color_template_item_id')]);
 
 	cacti_log('movedown Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'],
-		false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+		false, 'WEBUI', POLLER_VERBOSITY_DEBUG);
 
 	$next_sequence = db_fetch_row_prepared('SELECT color_template_item_id, sequence
 		FROM color_template_items
@@ -401,7 +401,7 @@ function color_item_movedown() {
 		[$current_sequence['sequence'], grv('color_template_id')]);
 
 	cacti_log('movedown Id: ' . $next_sequence['color_template_item_id'] . ' Seq:' . $next_sequence['sequence'],
-		false, POLLER_VERBOSITY_DEBUG);
+		false, 'WEBUI', POLLER_VERBOSITY_DEBUG);
 
 	db_execute_prepared('UPDATE color_template_items
 		SET sequence = ?
@@ -419,7 +419,7 @@ function color_item_movedown() {
 /**
  * color_item_moveup move item up
  */
-function color_item_moveup() {
+function color_item_moveup() : void {
 	// ================= input validation =================
 	gfrv('color_template_item_id');
 	gfrv('color_template_id');
@@ -456,7 +456,7 @@ function color_item_moveup() {
 		[$current_sequence['sequence'], grv('color_template_id'), $previous_sequence['color_template_item_id']]);
 }
 
-function color_item_remove_confirm() {
+function color_item_remove_confirm() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('color_id');
@@ -526,7 +526,7 @@ function color_item_remove_confirm() {
 /**
  * color_item_remove remove item
  */
-function color_item_remove() {
+function color_item_remove() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('color_id');
@@ -540,7 +540,7 @@ function color_item_remove() {
 /**
  * color_item_edit edit item
  */
-function color_item_edit() {
+function color_item_edit() : void {
 	global $struct_color_template_item;
 
 	// ================= input validation =================
@@ -571,7 +571,7 @@ function color_item_edit() {
 
 	draw_edit_form([
 		'config' => ['no_form_tag' => true],
-		'fields' => inject_form_variables($struct_color_template_item, (isset($template_item) ? $template_item : []))
+		'fields' => inject_form_variables($struct_color_template_item, $template_item)
 	]);
 
 	html_end_box(true, true);
@@ -587,7 +587,7 @@ function color_item_edit() {
 /**
  * color_item show all color template items
  */
-function color_item() {
+function color_item() : void {
 	// ================= input validation =================
 	gfrv('color_template_id');
 	// ====================================================
@@ -666,7 +666,7 @@ function color_item() {
 /**
  * color_template_edit	edit the color template
  */
-function color_template_edit() {
+function color_template_edit() :void {
 	global $image_types, $fields_color_template_template_edit, $struct_aggregate;
 
 	require_once(CACTI_PATH_LIBRARY . '/api_aggregate.php');
@@ -706,7 +706,7 @@ function color_template_edit() {
 	form_save_button('color_templates.php', 'return', 'color_template_id');
 }
 
-function sync_color_templates($color_template) {
+function sync_color_templates(int $color_template) : void {
 	require_once(CACTI_PATH_LIBRARY . '/api_aggregate.php');
 
 	$name = db_fetch_cell_prepared('SELECT name
@@ -763,7 +763,7 @@ function sync_color_templates($color_template) {
 /**
  * color_template maintain color templates
  */
-function color_template() {
+function color_template() : void {
 	global $actions, $item_rows;
 
 	require_once(CACTI_PATH_LIBRARY . '/api_aggregate.php');

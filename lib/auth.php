@@ -73,7 +73,7 @@ function clear_auth_cookie(): void {
 /**
  * set_auth_cookie - sets a users security token
  *
- * @param array user is the user_auth row for the user
+ * @param array $user - Is the user_auth row for the user
  *
  * @return void
  */
@@ -280,16 +280,16 @@ function get_basic_auth_username(): string|false {
 /**
  * Copies a user from a template user to a new user, optionally overwriting an existing user.
  *
- * @param string $template_user The username of the template user to copy from.
- * @param string $new_user The username of the new user to create.
- * @param int $template_realm The realm of the template user. Default is 0.
- * @param int $new_realm The realm of the new user. Default is 0.
- * @param bool $overwrite Whether to overwrite an existing user with the same username and realm. Default is false.
- * @param array $data_override An associative array of fields to override in the new user's data. Default is an empty array.
+ * @param string $template_user  - The username of the template user to copy from.
+ * @param string $new_user       - The username of the new user to create.
+ * @param int    $template_realm - The realm of the template user. Default is 0.
+ * @param int    $new_realm      - The realm of the new user. Default is 0.
+ * @param bool   $overwrite      - Whether to overwrite an existing user with the same username and realm. Default is false.
+ * @param array  $data_override  - An associative array of fields to override in the new user's data. Default is an empty array.
  *
- * @return int|false The ID of the new user if successful, or false if the operation failed.
+ * @return mixed - The ID of the new user if successful, or false if the operation failed.
  */
-function user_copy(string $template_user, string $new_user, int $template_realm = 0, int $new_realm = 0, bool $overwrite = false, array $data_override = []): int|false {
+function user_copy(string $template_user, string $new_user, int $template_realm = 0, int $new_realm = 0, bool $overwrite = false, array $data_override = []): mixed {
 	// ================= input validation =================
 	input_validate_input_number($template_realm, 'template_realm');
 	input_validate_input_number($new_realm, 'new_realm');
@@ -343,7 +343,7 @@ function user_copy(string $template_user, string $new_user, int $template_realm 
 	}
 
 	// Update data_override fields
-	if (is_array($data_override)) {
+	if (cacti_sizeof($data_override)) {
 		foreach ($data_override as $field => $value) {
 			if (isset($user_auth[$field]) && $field != 'id' && $field != 'username') {
 				$user_auth[$field] = $value;
@@ -417,6 +417,8 @@ function user_copy(string $template_user, string $new_user, int $template_realm 
 		[$template_id]);
 
 	if (cacti_sizeof($groups)) {
+		$sql = [];
+
 		foreach ($groups as $g) {
 			$sql[] = '(' . $new_id . ', ' . $g['group_id'] . ')';
 		}
@@ -1145,29 +1147,21 @@ function get_allowed_tree_level(int  $tree_id, int  $parent_id, bool $editing = 
 /**
  * Gathers items and statistics of those items that are permitted on the tree specified
  *
- * @param int $tree_id The ID of the tree to retrieve content for.
- * @param int $parent The parent ID to filter the tree content. Default is 0.
- * @param string $sql_where Additional SQL WHERE conditions. Default is an empty string.
- * @param string $sql_order SQL ORDER BY clause. Default is an empty string.
- * @param string $sql_limit SQL LIMIT clause. Default is an empty string.
- * @param int &$total_rows Reference to a variable to store the total number of rows. Default is 0.
- * @param int $user_id The ID of the user to filter the allowed trees. Default is 0.
+ * @param int    $tree_id    - The ID of the tree to retrieve content for.
+ * @param int    $parent     - The parent ID to filter the tree content. Default is 0.
+ * @param string $sql_where  - Additional SQL WHERE conditions. Default is an empty string.
+ * @param string $sql_order  - SQL ORDER BY clause. Default is an empty string.
+ * @param string $sql_limit  - SQL LIMIT clause. Default is an empty string.
+ * @param int    $total_rows - Reference to a variable to store the total number of rows. Default is 0.
+ * @param int    $user_id    - The ID of the user to filter the allowed trees. Default is 0.
  *
- * @return array An array of allowed tree content.
+ * @return array - An array of allowed tree content.
  */
 function get_allowed_tree_content(int $tree_id, int $parent = 0, string $sql_where = '', string $sql_order = '', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0): array {
 	if ($sql_limit != '' && $sql_limit != -1) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
 		$sql_limit = '';
-	}
-
-	if (!is_numeric($tree_id)) {
-		return [];
-	}
-
-	if (!is_numeric($parent)) {
-		return [];
 	}
 
 	if ($sql_order != '') {
@@ -1189,6 +1183,8 @@ function get_allowed_tree_content(int $tree_id, int $parent = 0, string $sql_whe
 		get_allowed_trees(false, false, '', '', '', $total_rows, $user_id),
 		'id', 'name'
 	);
+
+	$hierarchy = [];
 
 	if ($tree_id > 0) {
 		if (cacti_sizeof($trees)) {
@@ -1242,11 +1238,11 @@ function get_allowed_tree_content(int $tree_id, int $parent = 0, string $sql_whe
 
 /**
  * Searches both the users and the users groups and returns a policy
- *   array to be used for determining object permissions.
+ * array to be used for determining object permissions.
  *
- * @param int $user_id The ID of the user for whom to retrieve policies.
+ * @param int    $user_id - The ID of the user for whom to retrieve policies.
  *
- * @return array An array of policies
+ * @return array - An array of policies
  */
 function get_policies(int $user_id): array {
 	// get policies for all user groups
@@ -1272,26 +1268,18 @@ function get_policies(int $user_id): array {
 /**
  * Returns the graphs that are permitted at the branch/leaf id specified
  *
- * @param int $tree_id The ID of the tree.
- * @param int $leaf_id The ID of the leaf (default is 0).
- * @param string $sql_where Additional SQL WHERE conditions (default is '').
- * @param string $sql_order SQL ORDER BY clause (default is 'gti.position').
- * @param string $sql_limit SQL LIMIT clause (default is '').
- * @param int &$total_rows Reference to a variable to store the total number of rows (default is 0).
- * @param int $user_id The ID of the user (default is 0).
+ * @param int    $tree_id    - The ID of the tree.
+ * @param int    $leaf_id    - The ID of the leaf (default is 0).
+ * @param string $sql_where  - Additional SQL WHERE conditions (default is '').
+ * @param string $sql_order  - SQL ORDER BY clause (default is 'gti.position').
+ * @param string $sql_limit  - SQL LIMIT clause (default is '').
+ * @param int    $total_rows - Reference to a variable to store the total number of rows (default is 0).
+ * @param int    $user_id    - The ID of the user (default is 0).
  *
- * @return array An array of allowed tree header graphs.
+ * @return array - An array of allowed tree header graphs.
  */
-function get_allowed_tree_header_graphs(int $tree_id,int  $leaf_id = 0, string $sql_where = '', string $sql_order = 'gti.position', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0): array {
+function get_allowed_tree_header_graphs(int $tree_id, int $leaf_id = 0, string $sql_where = '', string $sql_order = 'gti.position', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0): array {
 	if (!auth_valid_user($user_id)) {
-		return [];
-	}
-
-	if (!is_numeric($tree_id)) {
-		return [];
-	}
-
-	if (!is_numeric($leaf_id)) {
 		return [];
 	}
 
@@ -3163,7 +3151,8 @@ function get_total_row_data(int $user_id, string $sql, array $sql_params = [], s
  * @return array An array of strings, each containing the description and hostname of a device.
  */
 function get_host_array(): array {
-	$total_rows = -1;
+	$total_rows     = -1;
+	$return_devices = [];
 
 	$hosts = get_allowed_devices('', 'description', '', $total_rows);
 
@@ -3742,8 +3731,9 @@ function ldap_login_process(string $username): array {
 		return [];
 	}
 
-	$user  = [];
-	$realm = 3;
+	$user    = [];
+	$realm   = 3;
+	$ldap_dn = '';
 
 	if ($password != '') {
 		// get user DN
@@ -3836,7 +3826,8 @@ function domains_login_process(string $username): array {
 		return [];
 	}
 
-	$user = [];
+	$user    = [];
+	$ldap_dn = '';
 
 	if ($realm > 3 && $password != '') {
 		// get user DN
@@ -3973,14 +3964,14 @@ function domains_login_process(string $username): array {
 /**
  * Authentications a LDAP domain login
  *
- * @param string $username The username to authenticate.
- * @param string $password The password for the user. Default is an empty string.
- * @param string $dn The distinguished name (DN) for the LDAP search. Default is an empty string.
- * @param int $realm The realm ID for the LDAP domain. Default is 0.
+ * @param string $username  - The username to authenticate.
+ * @param string $password  - The password for the user. Default is an empty string.
+ * @param string $dn        - The distinguished name (DN) for the LDAP search. Default is an empty string.
+ * @param int    $realm     - The realm ID for the LDAP domain. Default is 0.
  *
- * @return array|false Returns an array with the authentication response if successful, or false if authentication fails.
+ * @return mixed - Returns an array with the authentication response if successful, or false if authentication fails.
  */
-function domains_ldap_auth(string $username, string $password = '', string $dn = '', int $realm = 0): array|false {
+function domains_ldap_auth(string $username, string $password = '', string $dn = '', int $realm = 0): mixed {
 	$ldap = new Ldap;
 
 	if (!empty($username)) {
@@ -4004,43 +3995,43 @@ function domains_ldap_auth(string $username, string $password = '', string $dn =
 		}
 
 		if (!empty($ld['server'])) {
-			$ldap->host              = $ld['server'];
+			$ldap->host = $ld['server'];
 		}
 
 		if (!empty($ld['port'])) {
-			$ldap->port              = $ld['port'];
+			$ldap->port = $ld['port'];
 		}
 
 		if (!empty($ld['port_ssl'])) {
-			$ldap->port_ssl          = $ld['port_ssl'];
+			$ldap->port_ssl = $ld['port_ssl'];
 		}
 
 		if (!empty($ld['proto_version'])) {
-			$ldap->version           = $ld['proto_version'];
+			$ldap->version = $ld['proto_version'];
 		}
 
 		if (!empty($ld['encryption'])) {
-			$ldap->encryption        = $ld['encryption'];
+			$ldap->encryption = $ld['encryption'];
 		}
 
 		if (!empty($ld['referrals'])) {
-			$ldap->referrals         = $ld['referrals'];
+			$ldap->referrals = $ld['referrals'];
 		}
 
 		if (!empty($ld['mode'])) {
-			$ldap->mode              = $ld['mode'];
+			$ldap->mode = $ld['mode'];
 		}
 
 		if (!empty($ld['search_base'])) {
-			$ldap->search_base       = $ld['search_base'];
+			$ldap->search_base = $ld['search_base'];
 		}
 
 		if (!empty($ld['search_filter'])) {
-			$ldap->search_filter     = $ld['search_filter'];
+			$ldap->search_filter = $ld['search_filter'];
 		}
 
 		if (!empty($ld['specific_dn'])) {
-			$ldap->specific_dn       = $ld['specific_dn'];
+			$ldap->specific_dn = $ld['specific_dn'];
 		}
 
 		if (!empty($ld['specific_password'])) {
@@ -4054,11 +4045,11 @@ function domains_ldap_auth(string $username, string $password = '', string $dn =
 		}
 
 		if (!empty($ld['group_dn'])) {
-			$ldap->group_dn          = $ld['group_dn'];
+			$ldap->group_dn = $ld['group_dn'];
 		}
 
 		if (!empty($ld['group_attrib'])) {
-			$ldap->group_attrib      = $ld['group_attrib'];
+			$ldap->group_attrib = $ld['group_attrib'];
 		}
 
 		if (!empty($ld['group_member_type'])) {
@@ -4069,6 +4060,8 @@ function domains_ldap_auth(string $username, string $password = '', string $dn =
 		 * process each server until you get a bind, or fail
 		 */
 		$ldap_servers = preg_split('/\s+/', $ldap->host);
+
+		$response = [];
 
 		foreach ($ldap_servers as $ldap_server) {
 			$ldap->host = $ldap_server;
@@ -4089,12 +4082,12 @@ function domains_ldap_auth(string $username, string $password = '', string $dn =
 /**
  * Searches the user dn for existence
  *
- * @param string $username The username to search for in the LDAP directory.
- * @param int $realm The realm identifier used to fetch LDAP domain configuration from the database.
+ * @param string $username - The username to search for in the LDAP directory.
+ * @param int    $realm    - The realm identifier used to fetch LDAP domain configuration from the database.
  *
- * @return array|false Returns an array with the LDAP search response if successful, or false if the search fails.
+ * @return mixed - Returns an array with the LDAP search response if successful, or false if the search fails.
  */
-function domains_ldap_search_dn(string $username, int $realm): array|false {
+function domains_ldap_search_dn(string $username, int $realm): mixed {
 	$ldap = new Ldap;
 
 	if (!empty($username)) {
@@ -4108,47 +4101,47 @@ function domains_ldap_search_dn(string $username, int $realm): array|false {
 
 	if (cacti_sizeof($ld)) {
 		if (!empty($ld['dn'])) {
-			$ldap->dn                = $ld['dn'];
+			$ldap->dn = $ld['dn'];
 		}
 
 		if (!empty($ld['server'])) {
-			$ldap->host              = $ld['server'];
+			$ldap->host = $ld['server'];
 		}
 
 		if (!empty($ld['port'])) {
-			$ldap->port              = $ld['port'];
+			$ldap->port = $ld['port'];
 		}
 
 		if (!empty($ld['port_ssl'])) {
-			$ldap->port_ssl          = $ld['port_ssl'];
+			$ldap->port_ssl = $ld['port_ssl'];
 		}
 
 		if (!empty($ld['proto_version'])) {
-			$ldap->version           = $ld['proto_version'];
+			$ldap->version = $ld['proto_version'];
 		}
 
 		if (!empty($ld['encryption'])) {
-			$ldap->encryption        = $ld['encryption'];
+			$ldap->encryption = $ld['encryption'];
 		}
 
 		if (!empty($ld['referrals'])) {
-			$ldap->referrals         = $ld['referrals'];
+			$ldap->referrals = $ld['referrals'];
 		}
 
 		if (!empty($ld['mode'])) {
-			$ldap->mode              = $ld['mode'];
+			$ldap->mode = $ld['mode'];
 		}
 
 		if (!empty($ld['search_base'])) {
-			$ldap->search_base       = $ld['search_base'];
+			$ldap->search_base = $ld['search_base'];
 		}
 
 		if (!empty($ld['search_filter'])) {
-			$ldap->search_filter     = $ld['search_filter'];
+			$ldap->search_filter = $ld['search_filter'];
 		}
 
 		if (!empty($ld['specific_dn'])) {
-			$ldap->specific_dn       = $ld['specific_dn'];
+			$ldap->specific_dn = $ld['specific_dn'];
 		}
 
 		if (!empty($ld['specific_password'])) {
@@ -4162,11 +4155,11 @@ function domains_ldap_search_dn(string $username, int $realm): array|false {
 		}
 
 		if (!empty($ld['group_dn'])) {
-			$ldap->group_dn          = $ld['group_dn'];
+			$ldap->group_dn = $ld['group_dn'];
 		}
 
 		if (!empty($ld['group_attrib'])) {
-			$ldap->group_attrib      = $ld['group_attrib'];
+			$ldap->group_attrib = $ld['group_attrib'];
 		}
 
 		if (!empty($ld['group_member_type'])) {
@@ -4177,6 +4170,8 @@ function domains_ldap_search_dn(string $username, int $realm): array|false {
 		 * process each server until you get a bind, or fail
 		 */
 		$ldap_servers = preg_split('/\s+/', $ldap->host);
+
+		$response = [];
 
 		foreach ($ldap_servers as $ldap_server) {
 			$ldap->host = $ldap_server;
@@ -4197,13 +4192,13 @@ function domains_ldap_search_dn(string $username, int $realm): array|false {
 /**
  * Searches for a common name (CN) in an LDAP directory based on the provided username and realm.
  *
- * @param string $username The username to search for in the LDAP directory.
- * @param array $cn An array of common names (CN) to search for.
- * @param int $realm The realm ID used to fetch LDAP domain configuration from the database.
+ * @param string $username - The username to search for in the LDAP directory.
+ * @param array  $cn       - An array of common names (CN) to search for.
+ * @param int    $realm    - The realm ID used to fetch LDAP domain configuration from the database.
  *
- * @return array|false Returns an array with the LDAP response if successful, or false if the search fails.
+ * @return mixed - Returns an array with the LDAP response if successful, or false if the search fails.
  */
-function domains_ldap_search_cn(string $username, array $cn = [], int $realm = 0): array|false {
+function domains_ldap_search_cn(string $username, array $cn = [], int $realm = 0): mixed {
 	$ldap = new Ldap;
 
 	if (!empty($username)) {
@@ -4217,47 +4212,47 @@ function domains_ldap_search_cn(string $username, array $cn = [], int $realm = 0
 
 	if (cacti_sizeof($ld)) {
 		if (!empty($ld['dn'])) {
-			$ldap->dn                = $ld['dn'];
+			$ldap->dn = $ld['dn'];
 		}
 
 		if (!empty($ld['server'])) {
-			$ldap->host              = $ld['server'];
+			$ldap->host = $ld['server'];
 		}
 
 		if (!empty($ld['port'])) {
-			$ldap->port              = $ld['port'];
+			$ldap->port = $ld['port'];
 		}
 
 		if (!empty($ld['port_ssl'])) {
-			$ldap->port_ssl          = $ld['port_ssl'];
+			$ldap->port_ssl = $ld['port_ssl'];
 		}
 
 		if (!empty($ld['proto_version'])) {
-			$ldap->version           = $ld['proto_version'];
+			$ldap->version = $ld['proto_version'];
 		}
 
 		if (!empty($ld['encryption'])) {
-			$ldap->encryption        = $ld['encryption'];
+			$ldap->encryption = $ld['encryption'];
 		}
 
 		if (!empty($ld['referrals'])) {
-			$ldap->referrals         = $ld['referrals'];
+			$ldap->referrals = $ld['referrals'];
 		}
 
 		if (!empty($ld['mode'])) {
-			$ldap->mode              = $ld['mode'];
+			$ldap->mode = $ld['mode'];
 		}
 
 		if (!empty($ld['search_base'])) {
-			$ldap->search_base       = $ld['search_base'];
+			$ldap->search_base = $ld['search_base'];
 		}
 
 		if (!empty($ld['search_filter'])) {
-			$ldap->search_filter     = $ld['search_filter'];
+			$ldap->search_filter = $ld['search_filter'];
 		}
 
 		if (!empty($ld['specific_dn'])) {
-			$ldap->specific_dn       = $ld['specific_dn'];
+			$ldap->specific_dn = $ld['specific_dn'];
 		}
 
 		if (!empty($ld['specific_password'])) {
@@ -4273,11 +4268,11 @@ function domains_ldap_search_cn(string $username, array $cn = [], int $realm = 0
 		}
 
 		if (!empty($ld['group_dn'])) {
-			$ldap->group_dn          = $ld['group_dn'];
+			$ldap->group_dn = $ld['group_dn'];
 		}
 
 		if (!empty($ld['group_attrib'])) {
-			$ldap->group_attrib      = $ld['group_attrib'];
+			$ldap->group_attrib = $ld['group_attrib'];
 		}
 
 		if (!empty($ld['group_member_type'])) {
@@ -4288,6 +4283,7 @@ function domains_ldap_search_cn(string $username, array $cn = [], int $realm = 0
 		 * process each server until you get a bind, or fail
 		 */
 		$ldap_servers = preg_split('/\s+/', $ldap->host);
+		$response     = [];
 
 		foreach ($ldap_servers as $ldap_server) {
 			$ldap->host = $ldap_server;

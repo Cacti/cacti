@@ -51,6 +51,8 @@ $hasExec       = is_function_enabled('exec');
 $hasJson       = interface_exists('JsonSerializable');
 $hasEverything = $hasJson && $hasShellExec && $hasExec;
 
+global $config;
+
 if ($hasEverything) {
 	include_once('../lib/installer.php');
 }
@@ -96,12 +98,15 @@ if ($help != '') {
 <html>
 <head>
 <?php
-print html_common_header(__('Cacti Server v%s - Maintenance', format_cacti_version_text(CACTI_VERSION)));
+
+html_common_header(__('Cacti Server v%s - Maintenance', format_cacti_version_text(CACTI_VERSION)));
 
 if ($hasEverything) {
 	print get_md5_include_js('install/install.js');
 }
+
 print get_md5_include_css('install/install.css');
+
 ?>
 </head>
 <body>

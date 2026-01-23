@@ -2496,7 +2496,7 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
 			$params   = [];
 			$params[] = $data_input['data_template_id'];
 
-			if ($field['output_type'] != '') {
+			if (isset($field['output_type']) && $field['output_type'] != '') {
 				$output_type_sql = ' AND sqgr.snmp_query_graph_id = ?';
 				$params[]        = $field['output_type'];
 			} else {
@@ -3487,13 +3487,18 @@ function generate_data_source_path($local_data_id) {
  * the list of available consolidation functions for the consolidation functions and returns
  * the most appropriate.  Typically, this will be the requested value
  *
- * @param int    $local_data_id
- * @param mixed  $requested_cf
+ * @param mixed  $local_data_id - This needs to be mixed to accomodate special types that are null
+ * @param mixed  $requested_cf  - The requested CF in the Graph
  *
  * @return string - The best cf to use
  */
-function generate_graph_best_cf(int $local_data_id, mixed $requested_cf) : string {
+function generate_graph_best_cf(mixed $local_data_id, mixed $requested_cf) : string {
 	static $best_cf;
+
+	// Accomodate a special graph type that does not have a local_graph_id
+	if ($local_data_id === null) {
+		return $requested_cf;
+	}
 
 	if (isset($best_cf[$local_data_id][$requested_cf])) {
 		return $best_cf[$local_data_id][$requested_cf];

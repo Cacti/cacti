@@ -426,10 +426,10 @@ function upgrade_to_1_3_0() : void {
 	$repos[] = [1, 'Local Packages', 'on', 'on', 1, '/var/www/html/cacti/install/templates', '', ''];
 	$repos[] = [2, 'TheWitness Percona', 'on', '', 0, 'https://github.com/TheWitness/percona_packages', 'main', ''];
 
-	$repos = db_fetch_cell('SELECT COUNT(*) FROM package_repositories');
+	$repo_cnt = db_fetch_cell('SELECT COUNT(*) FROM package_repositories');
 
 	// example repositories
-	if ($repos == 0) {
+	if ($repo_cnt == 0) {
 		foreach ($repos as $r) {
 			db_execute_prepared('INSERT INTO package_repositories
 				(id, name, enabled, `default`, repo_type, repo_location, repo_branch, repo_api_key)
@@ -833,7 +833,8 @@ function ldap_convert_1_3_0() : void {
 	$ldap_server = read_config_option('ldap_server');
 
 	if (!empty($ldap_server)) {
-		$domain = db_fetch_row('SELECT * FROM user_domains WHERE domain_name = \'LDAP\'');
+		$domain    = db_fetch_row('SELECT * FROM user_domains WHERE domain_name = \'LDAP\'');
+		$domain_id = 0;
 
 		if (!cacti_sizeof($domain)) {
 			cacti_log('NOTE: Creating new LDAP domain', true, 'INSTALL');
@@ -926,6 +927,8 @@ function upgrade_dsstats() : void {
 		} else {
 			$db = 'mysql';
 		}
+	} else {
+		$db = 'mysql'; // On the safe side, use MyISAM
 	}
 
 	foreach ($tables as $table) {

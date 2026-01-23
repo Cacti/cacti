@@ -43,7 +43,8 @@ function upgrade_to_1_2_26() : void {
 				[$duplicate['hex']], true);
 			$hexes = $hexes_results['data'];
 
-			$first = true;
+			$first   = true;
+			$keephex = 0;
 
 			foreach ($hexes as $hex) {
 				if ($first) {

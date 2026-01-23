@@ -44,7 +44,7 @@ switch (grv('action')) {
 		break;
 }
 
-function changelog_view() {
+function changelog_view() : void {
 	global $database_default, $rrdtool_versions, $poller_options, $input_types, $local_db_cnn_id;
 
 	// ================= input validation =================

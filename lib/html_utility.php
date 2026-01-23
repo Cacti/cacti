@@ -30,14 +30,14 @@
  * levels of argument replacement (arg1, arg2, arg3).
  *
  * @param array &$form_array The form array to process. This array is passed by reference.
- * @param array $arg1 Optional. Represents the |arg1:| variable (see include/global_form.php for more details)
- * @param array $arg2 Optional. Represents the |arg2:| variable (see include/global_form.php for more details)
- * @param array $arg3 Optional. Represents the |arg3:| variable (see include/global_form.php for more details)
- * @param array $arg4 Optional. Represents the |arg4:| variable (see include/global_form.php for more details)
+ * @param mixed $arg1 Optional. Represents the |arg1:| variable (see include/global_form.php for more details)
+ * @param mixed $arg2 Optional. Represents the |arg2:| variable (see include/global_form.php for more details)
+ * @param mixed $arg3 Optional. Represents the |arg3:| variable (see include/global_form.php for more details)
+ * @param mixed $arg4 Optional. Represents the |arg4:| variable (see include/global_form.php for more details)
  *
  * @return array The processed form array with injected variables.
  */
-function inject_form_variables(&$form_array, $arg1 = [], $arg2 = [], $arg3 = [], $arg4 = []) {
+function inject_form_variables(array &$form_array, mixed $arg1 = [], mixed $arg2 = [], mixed $arg3 = [], mixed $arg4 = []) {
 	$check_fields = ['id', 'value', 'array', 'friendly_name', 'description', 'sql', 'sql_print', 'form_id', 'items', 'tree_id'];
 
 	// loop through each available field

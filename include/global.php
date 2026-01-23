@@ -32,6 +32,11 @@
 global $config;
 $config = [];
 
+// Workaround for PHPStan scanning
+global $rdatabase_default, $rdatabase_hostname, $rdatabase_password,
+	$rdatabase_port, $rdatabase_type, $rdatabase_username;
+// Workaround End
+
 // define if cacti is in CLI mode
 define('CACTI_CLI', (php_sapi_name() == 'cli'));
 define('CACTI_WEB', (php_sapi_name() != 'cli'));
@@ -84,7 +89,7 @@ $database_default  = 'cacti';
 $database_hostname = 'localhost';
 $database_username = 'cactiuser';
 $database_password = 'cactiuser';
-$database_port     = '3306';
+$database_port     = 3306;
 $database_retries  = 2;
 
 $database_ssl                    = false;
@@ -115,12 +120,16 @@ if (file_exists(__DIR__ . '/config.php')) {
 	}
 
 	include(__DIR__ . '/config.php');
+} if (defined('PHP_STAN') && file_exists(__DIR__ . '/config.php.dist')) {
+	if (!is_readable(__DIR__ . '/config.php.dist')) {
+		die('Configuration file include/config.php is present, but unreadable.' . PHP_EOL);
+	}
+
+	include(__DIR__ . '/config.php.dist');
 }
 
-if (isset($config['cacti_version'])) {
+if (isset($config['cacti_version'])) { // @phpstan-ignore-line
 	die('Invalid include/config.php file detected.' . PHP_EOL);
-
-	exit;
 }
 
 // Define global paths
@@ -220,8 +229,8 @@ $config['DEBUG_SQL_FLOW']                   = defined('DEBUG_SQL_FLOW');
 $config['DEBUG_SQL_CONNECT']                = defined('DEBUG_SQL_CONNECT');
 
 // check for an empty database port
-if (empty($database_port)) {
-	$database_port = '3306';
+if (empty($database_port)) { // @phpstan-ignore-line
+	$database_port = 3306;
 }
 
 if (isset($input_whitelist)) {
@@ -277,7 +286,7 @@ $filename = get_current_page();
 if (isset($no_http_headers) && $no_http_headers == true) {
 	$config['is_web'] = false;
 
-	if (isset($_REQUEST) && cacti_sizeof($_REQUEST) || !isset($_SERVER['argv'])) {
+	if (!str_contains(php_sapi_name(), 'cli') || !isset($_SERVER['argv'])) {
 		print 'FATAL: This file can only be called from the command line.' . PHP_EOL;
 
 		exit;
@@ -346,7 +355,7 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	}
 
 	// gather the existing cactidb version
-	$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1', false, $local_db_cnn_id);
+	$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1', '', false, $local_db_cnn_id);
 
 	/**
 	 * If we have not been forced offline by the $conn_mode global and since we are
@@ -379,30 +388,6 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 		$config['connection'] = 'offline';
 	}
 } else {
-	if (!isset($database_ssl)) {
-		$database_ssl        = false;
-	}
-
-	if (!isset($database_ssl_key)) {
-		$database_ssl_key    = false;
-	}
-
-	if (!isset($database_ssl_cert)) {
-		$database_ssl_cert   = false;
-	}
-
-	if (!isset($database_ssl_ca)) {
-		$database_ssl_ca     = false;
-	}
-
-	if (!isset($database_ssl_capath)) {
-		$database_ssl_capath = false;
-	}
-
-	if (!isset($database_ssl_verify_server_cert)) {
-		$database_ssl_verify_server_cert = false;
-	}
-
 	if (!defined('PHP_STAN')) {
 		if (!db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca, $database_ssl_capath, $database_ssl_verify_server_cert)) {
 			print $ps . 'FATAL: Connection to Cacti database failed. Please ensure: ' . $ul;
@@ -411,10 +396,10 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 			print $li . 'the credentials in config.php are valid.' . $il;
 			print $lu . $sp;
 
-			if (isset($_REQUEST['display_db_errors']) && !empty($config['DATABASE_ERROR'])) {
+			if (isset($_REQUEST['display_db_errors']) && !empty($config['DATABASE_ERROR'])) { // @phpstan-ignore-line
 				print $ps . 'The following database errors occurred: ' . $ul;
 
-				foreach ($config['DATABASE_ERROR'] as $e) {
+				foreach ($config['DATABASE_ERROR'] as $e) { // @phpstan-ignore-line
 					print $li . $e['Code'] . ': ' . $e['Error'] . $il;
 				}
 				print $lu . $sp;
@@ -433,10 +418,10 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 			print $li . 'the credentials in config.php are valid and correct.' . $il;
 			print $lu . $sp;
 
-			if (isset($_REQUEST['display_db_errors']) && !empty($config['DATABASE_ERROR'])) {
+			if (isset($_REQUEST['display_db_errors']) && !empty($config['DATABASE_ERROR'])) { // @phpstan-ignore-line
 				print $ps . 'The following database errors occurred: ' . $ul;
 
-				foreach ($config['DATABASE_ERROR'] as $e) {
+				foreach ($config['DATABASE_ERROR'] as $e) { // @phpstan-ignore-line
 					print $li . $e['Code'] . ': ' . $e['Error'] . $il;
 				}
 				print $lu . $sp;

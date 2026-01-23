@@ -505,7 +505,7 @@ function upgrade_to_1_0_0() : void {
 
 						$pos_array[$parent_id] = $position;
 
-						$postion = $position_result['data'] + 1;
+						$postion = $position_result['data'] ?? 0 + 1;
 
 						db_install_execute('UPDATE graph_tree_items
 							SET parent = ?, position = ?
@@ -1286,7 +1286,8 @@ function upgrade_to_1_0_0() : void {
 				[$duplicate['hex']], true);
 			$hexes = $hexes_results['data'];
 
-			$first = true;
+			$first   = true;
+			$keephex = 0;
 
 			foreach ($hexes as $hex) {
 				if ($first) {
@@ -1492,7 +1493,7 @@ function upgrade_to_1_0_0() : void {
 				$save                   = [];
 				$save['id']             = 0;
 				$save['name']           = 'Upgrade Profile ' . $i;
-				$save['hash']           = get_hash_data_source_profile($save['name']);
+				$save['hash']           = get_hash_data_source_profile(0);
 				$save['step']           = $profile['rrd_step'];
 				$save['heartbeat']      = $profile['rrd_heartbeat'];
 				$save['x_files_factor'] = $profile['x_files_factor'];

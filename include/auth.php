@@ -325,6 +325,8 @@ if (empty($_SESSION[SESS_USER_ID])) {
 			$goBack = "<td colspan='2' class='center'>[<a href='" . $_SERVER['HTTP_REFERER'] . "'>" . __('Return') . "</a> | <a href='" . CACTI_PATH_URL . "logout.php'>" . __('Login Again') . '</a>]</td>';
 		} elseif ($auth_method != AUTH_METHOD_BASIC) {
 			$goBack = "<td colspan='2' class='center'>[<a href='" . CACTI_PATH_URL . "logout.php'>" . __('Login Again') . '</a>]</td>';
+		} else {
+			$goBack = '';
 		}
 
 		raise_ajax_permission_denied();

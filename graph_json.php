@@ -146,7 +146,7 @@ if (!isrv('image_format')) {
 
 $graph_data_array['image_format'] = $gtype;
 
-if (POLLER_ID == 1 || read_config_option('storage_location')) {
+if (POLLER_ID == 1 || read_config_option('storage_location')) { // @phpstan-ignore-line
 	$xport_meta = [];
 
 	$output = rrdtool_function_graph(grv('local_graph_id'), $rra_id, $graph_data_array, null, $xport_meta, $_SESSION[SESS_USER_ID]);
@@ -185,7 +185,7 @@ $output = trim($output);
 $oarray = ['type' => $gtype, 'local_graph_id' => grv('local_graph_id'), 'rra_id' => $rra_id];
 
 // Check if we received back something populated from rrdtool
-if ($output !== false && $output != '' && strpos($output, 'image = ') !== false) {
+if ($output != false && $output != '' && strpos($output, 'image = ') !== false) {
 	// Find the beginning of the image definition row
 	$image_begin_pos = strpos($output, 'image = ');
 
@@ -313,7 +313,7 @@ if ($output !== false && $output != '' && strpos($output, 'image = ') !== false)
 			[grv('local_graph_id')]), 0);
 	}
 
-	if ($image !== false) {
+	if ($image != false) {
 		$oarray['image'] = base64_encode($image);
 	} else {
 		$oarray['image'] = base64_encode(file_get_contents(__DIR__ . '/images/cacti_error_image.png'));

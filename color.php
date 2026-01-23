@@ -40,12 +40,6 @@ switch (grv('action')) {
 		form_actions();
 
 		break;
-	case 'remove':
-		color_remove();
-
-		header('Location: color.php');
-
-		break;
 	case 'edit':
 		top_header();
 
@@ -76,7 +70,7 @@ switch (grv('action')) {
 		break;
 }
 
-function form_save() {
+function form_save() : void {
 	if (isrv('save_component_color')) {
 		// ================= input validation =================
 		gfrv('id');
@@ -92,7 +86,7 @@ function form_save() {
 			$save['read_only'] = 'on';
 		}
 
-		if (!is_error_message()) {
+		if (is_error_message() === false) {
 			$color_id = sql_save($save, 'colors');
 
 			if ($color_id) {
@@ -100,6 +94,8 @@ function form_save() {
 			} else {
 				raise_message(2);
 			}
+		} else {
+			$color_id = isrv('id') ? grv('color_id') : 0;
 		}
 
 		if (is_error_message()) {
@@ -129,7 +125,7 @@ function form_save() {
 	exit;
 }
 
-function form_actions() {
+function form_actions() : void {
 	global $actions;
 
 	// ================= input validation =================
@@ -190,7 +186,7 @@ function form_actions() {
 	}
 }
 
-function color_import_processor(&$colors) {
+function color_import_processor(array &$colors) : array {
 	$i            = 0;
 	$hexcol       = 0;
 	$return_array = [];
@@ -261,11 +257,11 @@ function color_import_processor(&$colors) {
 
 				if (cacti_sizeof($line_array)) {
 					foreach ($line_array as $line_item) {
-						if (in_array($j, $insert_columns, true)) {
+						if (in_array($j, $insert_columns, true)) { // @phpstan-ignore-line
 							$line_item = trim(str_replace("'", '', $line_item));
 							$line_item = trim(str_replace('"', '', $line_item));
 
-							if (!$first_column) {
+							if ($first_column === false) {
 								$save_value .= ',';
 							} else {
 								$first_column = false;
@@ -273,7 +269,7 @@ function color_import_processor(&$colors) {
 
 							$save_value .= "'" . $line_item . "'";
 
-							if ($j == $hexcol) {
+							if ($j === $hexcol) {
 								$sql_where = "WHERE hex='$line_item'";
 							}
 						}
@@ -321,7 +317,7 @@ function color_import_processor(&$colors) {
 	return $return_array;
 }
 
-function color_import() {
+function color_import() : void {
 	form_start('color.php?action=import', '', true);
 
 	if ((isset($_SESSION['import_debug_info'])) && (is_array($_SESSION['import_debug_info']))) {
@@ -384,7 +380,7 @@ function color_import() {
 	form_save_button('color.php', 'import');
 }
 
-function color_edit() {
+function color_edit() : void {
 	global $fields_color_edit;
 
 	// ================= input validation =================
@@ -440,7 +436,7 @@ function color_edit() {
 	<?php
 }
 
-function process_sanitize_render_filter($render = false) {
+function process_sanitize_render_filter(bool $render = false) : void {
 	$pageFilter = new CactiTableFilter(__('Colors'), 'color.php', 'form_color', 'sess_color', 'color.php?action=edit');
 
 	$pageFilter->rows_label = __('Colors');
@@ -456,7 +452,7 @@ function process_sanitize_render_filter($render = false) {
 	}
 }
 
-function color() {
+function color() : void {
 	global $actions, $item_rows;
 
 	process_sanitize_render_filter(true);
@@ -596,7 +592,7 @@ function color() {
 	form_end();
 }
 
-function color_export() {
+function color_export() : void {
 	process_sanitize_render_filter(false);
 
 	// form the 'where' clause for our main sql query

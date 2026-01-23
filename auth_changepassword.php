@@ -39,8 +39,6 @@ switch ($action) {
 		}
 
 		exit;
-
-		break;
 	default:
 		// If the user is not logged in, redirect them to the login page
 		if (!isset($_SESSION[SESS_USER_ID])) {
@@ -296,13 +294,24 @@ $skip_current = (empty($user['password']));
 
 if (isrv('ref')) {
 	$ref_parts   = parse_url(gnrv('ref'));
-	$valid       = true;
+	$valid       = false;
 
+	// It's an array, so valid URL
+	if (is_array($ref_parts)) {
+		$valid = true;
+	}
+
+	// Someone trying to login via a get is bad!
 	if (isset($ref_parts['user']) || isset($ref_parts['pass'])) {
 		$valid = false;
-	} elseif (!isset($ref_parts['host'])) {
-		$value = true;
-	} elseif (isset($ref_parts['host'])) {
+	}
+
+	// Someone trying to send an invalid host
+	if (!isset($ref_parts['host'])) {
+		$valid = false;
+	}
+
+	if ($valid) {
 		$server_addr = $_SERVER['SERVER_ADDR'];
 
 		if (!filter_var($_SERVER['SERVER_NAME'], FILTER_VALIDATE_IP)) {

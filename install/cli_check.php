@@ -31,7 +31,7 @@ ini_set('memory_limit','-1');
 include(__DIR__ . '/../include/cli_check.php');
 include(__DIR__ . '/../lib/utility.php');
 
-if ($argv !== false && $argc != false && $argc > 1) {
+if (is_array($argv) && $argc > 1) {
 	$value = strtolower($argv[1]);
 
 	if ($value == 'extensions') {

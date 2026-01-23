@@ -3297,7 +3297,7 @@ class Installer implements JsonSerializable {
 			set_install_config_option('install_started', $backgroundTime);
 		}
 
-		log_install_debug('background', 'backgroundTime = ' . $backgroundTime, 0);
+		log_install_debug('background', 'backgroundTime = ' . $backgroundTime, false);
 		log_install_debug('background', 'backgroundNeeded = ' . $backgroundNeeded);
 
 		// Check if background started too long ago
@@ -3676,13 +3676,13 @@ class Installer implements JsonSerializable {
 		return '';
 	}
 
-	private function installPoller() : bool {
+	private function installPoller() : string {
 		log_install_always('', __('Updating remote configuration file'));
 		global $local_db_cnn_id;
 
 		$failure = remote_update_config_file();
 
-		if (empty($failure)) {
+		if ($failure == '') {
 			// change cacti version
 			db_execute('DELETE FROM version', true, $local_db_cnn_id);
 			db_execute("INSERT INTO version (cacti) VALUES ('" . CACTI_VERSION_FULL . "')", true, $local_db_cnn_id);

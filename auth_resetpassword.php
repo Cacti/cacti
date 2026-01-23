@@ -41,8 +41,6 @@ switch ($action) {
 		}
 
 		exit;
-
-		break;
 	case 'formreset': // check correct hash, if incorrect lets start again
 		$user_hash = gfrv('hash', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^[a-zA-Z0-9]+$/']]);
 

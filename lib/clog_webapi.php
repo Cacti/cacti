@@ -31,10 +31,10 @@ include_once('functions.php');
  * to the provided local data ID. The result is returned as an associative array
  * where the keys are the graph IDs and the values are the graph names.
  *
- * @param int $local_data_id The ID of the local data source to fetch graphs for.
+ * @param int $local_data_id - The ID of the local data source to fetch graphs for.
  *
- * @return array An associative array of graphs, where the keys are graph IDs
- *               and the values are graph names.
+ * @return array - An associative array of graphs, where the keys are graph IDs
+ *                 and the values are graph names.
  */
 function clog_get_graphs_from_datasource(int $local_data_id) : array {
 	return array_rekey(db_fetch_assoc_prepared('SELECT DISTINCT
@@ -57,19 +57,19 @@ function clog_get_graphs_from_datasource(int $local_data_id) : array {
  * (e.g., standard log, error log, or boost log) and extracts the corresponding
  * file path and base name. Optionally, it can verify if the file exists.
  *
- * @param string $file      The input filename to validate. This will be modified
- *                          to contain only the base name of the file.
- * @param string|null $filepath  The output variable that will hold the directory path
- *                          of the validated file.
- * @param string|null $filename  The output variable that will hold the base name of
- *                          the validated file.
- * @param bool   $filecheck Optional. If true, the function will check if the
- *                          resolved file exists. Defaults to false.
+ * @param string $file      - The input filename to validate. This will be modified
+ *                            to contain only the base name of the file.
+ * @param string $filepath  - The output variable that will hold the directory path
+ *                            of the validated file.
+ * @param string $filename  - The output variable that will hold the base name of
+ *                            the validated file.
+ * @param bool   $filecheck - If true, the function will check if the
+ *                            resolved file exists. Defaults to false.
  *
- * @return bool Returns true if the file is valid (and exists if $filecheck is true),
- *              or false otherwise.
+ * @return bool - Returns true if the file is valid (and exists if $filecheck is true),
+ *                or false otherwise.
  */
-function clog_validate_filename(string &$file, string|null &$filepath, string|null &$filename, bool $filecheck = false) : bool {
+function clog_validate_filename(string &$file, string &$filepath = '', string &$filename = '', bool $filecheck = false) : bool {
 	$logfile = read_config_option('path_cactilog');
 
 	if ($logfile == '') {
@@ -115,6 +115,9 @@ function clog_validate_filename(string &$file, string|null &$filepath, string|nu
  */
 function clog_purge_logfile(string $action = 'purge') : void {
 	$filename = gnrv('filename');
+
+	$logpath = '';
+	$logname = '';
 
 	if (!clog_validate_filename($filename, $logpath, $logname)) {
 		raise_message('clog_invalid');
@@ -216,6 +219,7 @@ function clog_view_logfile() : void {
 	}
 
 	$logname = '';
+	$logpath = '';
 
 	if (!clog_validate_filename($logfile, $logpath, $logname, true)) {
 		$logfile = read_config_option('path_cactilog');
@@ -251,13 +255,19 @@ function clog_view_logfile() : void {
 	}
 
 	if (get_current_page() == 'clog.php' || get_current_page() == 'clog_user.php') {
-		general_header(true);
+		general_header();
 	} else {
-		top_header(true);
+		top_header();
 	}
 
 	if ($clogAdmin) {
 		if (gnrv('action') == 'purge' || gnrv('action') == 'rotate') {
+			// Keep phpstan happy
+			$action  = '';
+			$title   = '';
+			$message = '';
+			$header  = '';
+
 			if (gnrv('action') == 'purge') {
 				$message = __('Click \'Continue\' to Purge the Log File \'' . htmle(basename($logfile)) . '\'.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog.');
 				$action  = 'purge_continue';
@@ -489,6 +499,8 @@ function clog_get_logfiles() : array {
 	} else {
 		$files = ['cacti.log'];
 	}
+
+	$logName = '';
 
 	// Defaults go first and second
 	$stdFileArray[] = basename($configLogPath);

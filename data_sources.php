@@ -79,12 +79,6 @@ switch (grv('action')) {
 		ds_enable();
 
 		break;
-	case 'ds_remove':
-		ds_remove();
-
-		header('Location: data_sources.php');
-
-		break;
 	case 'ds_edit':
 		ds_edit();
 
@@ -96,7 +90,7 @@ switch (grv('action')) {
 			$sql_where = 'site_id = ' . grv('site_id');
 		}
 
-		get_allowed_ajax_hosts(true, 'applyFilter', $sql_where);
+		get_allowed_ajax_hosts(true, true, $sql_where);
 
 		break;
 	case 'ajax_hosts_noany':
@@ -106,7 +100,7 @@ switch (grv('action')) {
 			$sql_where = 'site_id = ' . grv('site_id');
 		}
 
-		get_allowed_ajax_hosts(false, 'applyFilter', $sql_where);
+		get_allowed_ajax_hosts(false, true, $sql_where);
 
 		break;
 	default:
@@ -119,7 +113,7 @@ switch (grv('action')) {
 		break;
 }
 
-function form_save() {
+function form_save() : void {
 	if ((isrv('save_component_data_source_new')) && (!ierv('data_template_id'))) {
 		$save['id']               = gfrv('local_data_id');
 		$save['host_id']          = gfrv('host_id');
@@ -189,12 +183,14 @@ function form_save() {
 						$allow_nulls = true;
 					} elseif (empty($input_field['allow_nulls'])) {
 						$allow_nulls = false;
+					} else {
+						$allow_nulls = true;
 					}
 
 					// run regexp match on input string
 					$form_value = form_input_validate($form_value, 'value_' . $input_field['id'], $input_field['regexp_match'], $allow_nulls, 3);
 
-					if (!is_error_message()) {
+					if (is_error_message() == false) {
 						db_execute_prepared("REPLACE INTO data_input_data
 							(data_input_field_id, data_template_data_id, data_template_id, local_data_id, host_id, t_value, value)
 							VALUES
@@ -239,7 +235,7 @@ function form_save() {
 		$save2['data_source_profile_id']      = form_input_validate(grv('data_source_profile_id'), 'data_source_profile_id', '^[0-9]+$', false, 3);
 		$save2['rrd_step']                    = form_input_validate(grv('rrd_step'), 'rrd_step', '^[0-9]+$', false, 3);
 
-		if (!is_error_message()) {
+		if (is_error_message() == false) {
 			$local_data_id = sql_save($save1, 'data_local');
 
 			$save2['local_data_id'] = $local_data_id;
@@ -260,7 +256,7 @@ function form_save() {
 			}
 		}
 
-		if (!is_error_message()) {
+		if (is_error_message() == false) {
 			/* if this is a new data source and a template has been selected, skip item creation this time
 			otherwise it throws off the template creation because of the NULL data */
 			if (!ierv('local_data_id') || ierv('data_template_id')) {
@@ -329,7 +325,7 @@ function form_save() {
 			}
 		}
 
-		if (!is_error_message()) {
+		if (is_error_message() == false) {
 			if (grv('data_template_id') != grv('_data_template_id')) {
 				// update all necessary template information
 				change_data_template($local_data_id, grv('data_template_id'));
@@ -369,7 +365,7 @@ function form_save() {
 	}
 }
 
-function form_actions() {
+function form_actions() : void {
 	global $actions;
 
 	// ================= input validation =================
@@ -490,13 +486,13 @@ function form_actions() {
 				input_validate_input_number($matches[1], 'chk[1]');
 				// ====================================================
 
-				$ilist .= '<li>' . htmle(get_data_source_title($matches[1])) . '</li>';
+				$ilist .= '<li>' . htmle(get_data_source_title(intval($matches[1]))) . '</li>';
 
 				$iarray[] = $matches[1];
 			}
 		}
 
-		if (isset($iarray) && cacti_sizeof($iarray)) {
+		if (cacti_sizeof($iarray)) {
 			if (gnrv('drp_action') == '1') { // delete
 				$graphs = db_fetch_assoc('SELECT
 					graph_templates_graph.local_graph_id,
@@ -600,7 +596,7 @@ function form_actions() {
 	}
 }
 
-function data_edit($incform = true) {
+function data_edit(bool $incform = true) : void {
 	// ================= input validation =================
 	gfrv('id');
 	// ====================================================
@@ -622,6 +618,10 @@ function data_edit($incform = true) {
 			WHERE data_local.host_id = host.id
 			AND data_local.id = ?',
 			[grv('id')]);
+	} else {
+		$data = [];
+		$host = [];
+		$template_data = [];
 	}
 
 	if ($incform) {
@@ -630,7 +630,7 @@ function data_edit($incform = true) {
 
 	$i = 0;
 
-	if (!empty($data['data_input_id'])) {
+	if ($data['data_input_id'] > 0) {
 		// get each INPUT field for this data input source
 		$fields = db_fetch_assoc_prepared('SELECT *
 			FROM data_input_fields
@@ -704,14 +704,14 @@ function data_edit($incform = true) {
 	}
 
 	if ($incform) {
-		form_hidden_box('local_data_id', (isset($data) ? $data['local_data_id'] : '0'), '');
-		form_hidden_box('data_template_data_id', (isset($data) ? $data['id'] : '0'), '');
+		form_hidden_box('local_data_id', $data['local_data_id'] ?? 0, '');
+		form_hidden_box('data_template_data_id', $data['id'] ?? 0, '');
 	}
 
 	form_hidden_box('save_component_data', '1', '');
 }
 
-function ds_rrd_remove() {
+function ds_rrd_remove() : void {
 	// ================= input validation =================
 	gfrv('id');
 	// ====================================================
@@ -728,7 +728,7 @@ function ds_rrd_remove() {
 	header('Location: data_sources.php?action=ds_edit&id=' . grv('local_data_id'));
 }
 
-function ds_rrd_add() {
+function ds_rrd_add() : void {
 	// ================= input validation =================
 	gfrv('id');
 	// ====================================================
@@ -743,7 +743,7 @@ function ds_rrd_add() {
 	header('Location: data_sources.php?action=ds_edit&id=' . grv('id') . "&view_rrd=$data_template_rrd_id");
 }
 
-function ds_disable() {
+function ds_disable() : void {
 	// ================= input validation =================
 	gfrv('id');
 	// ====================================================
@@ -752,7 +752,7 @@ function ds_disable() {
 	header('Location: data_sources.php?action=ds_edit&id=' . grv('id'));
 }
 
-function ds_enable() {
+function ds_enable() : void {
 	// ================= input validation =================
 	gfrv('id');
 	// ====================================================
@@ -761,7 +761,7 @@ function ds_enable() {
 	header('Location: data_sources.php?action=ds_edit&id=' . grv('id'));
 }
 
-function ds_edit() {
+function ds_edit() : void {
 	global $struct_data_source, $struct_data_source_item;
 
 	// ================= input validation =================
@@ -856,7 +856,7 @@ function ds_edit() {
 				$dtids[] = $dtid['data_template_id'];
 			}
 
-			$dtsql = 'SELECT id, name FROM data_template WHERE id IN(' . implode(',', $dtids) . ') ORDER BY name';
+			$dtsql = 'SELECT id, name FROM data_template WHERE id IN(' . implode(',', $dtids) . ') ORDER BY name'; // @phpstan-ignore-line
 		} else {
 			$dtsql = 'SELECT id, name FROM data_template ORDER BY name';
 		}
@@ -1121,6 +1121,11 @@ function ds_edit() {
 			$header_label = __('[edit: %s]', $rrd['data_source_name']);
 		} else {
 			$header_label = '';
+
+			$local_data_template_rrd_id = 0;
+
+			$rrd          = [];
+			$rrd_template = [];
 		}
 
 		$i = 0;
@@ -1137,7 +1142,7 @@ function ds_edit() {
 				}
 
 				print '</ul></nav></div>';
-			} elseif (cacti_sizeof($template_data_rrds) == 1) {
+			} elseif (cacti_sizeof($template_data_rrds) === 1) {
 				srv('view_rrd', $template_data_rrds[0]['id']);
 			}
 		}
@@ -1170,7 +1175,7 @@ function ds_edit() {
 					$form_array[$field_name]['description'] = '';
 				}
 
-				$form_array[$field_name]['value'] = (isset($rrd) ? $rrd[$field_name] : '');
+				$form_array[$field_name]['value'] = $rrd[$field_name] ?? '';
 
 				if (!(($use_data_template == false) || ($rrd_template['t_' . $field_name] == 'on'))) {
 					$form_array[$field_name]['method'] = 'template_' . $form_array[$field_name]['method'];
@@ -1184,11 +1189,11 @@ function ds_edit() {
 				'fields' => [
 					'data_template_rrd_id' => [
 						'method' => 'hidden',
-						'value'  => (isset($rrd) ? $rrd['id'] : '0')
+						'value'  => $rrd['id'] ?? 0
 					],
 					'local_data_template_rrd_id' => [
 						'method' => 'hidden',
-						'value'  => (isset($rrd) ? $rrd['local_data_template_rrd_id'] : '0')
+						'value'  => $rrd['local_data_template_rrd_id'] ?? 0
 					]
 				] + $form_array
 			]
@@ -1253,7 +1258,7 @@ function ds_edit() {
 	bottom_footer();
 }
 
-function get_poller_interval($seconds, $data_source_profile_id) {
+function get_poller_interval(int $seconds, int $data_source_profile_id) : string {
 	if ($seconds == 0 || $data_source_profile_id == 0) {
 		return '<em>' . __('External') . '</em>';
 	}
@@ -1269,7 +1274,7 @@ function get_poller_interval($seconds, $data_source_profile_id) {
 	}
 }
 
-function data_sources() {
+function data_sources() : void {
 	global $actions, $item_rows, $sampling_intervals;
 
 	draw_data_source_filter(true);
@@ -1562,7 +1567,7 @@ function data_sources() {
 	form_end();
 }
 
-function get_graphs_aggregates_url($local_data_id) {
+function get_graphs_aggregates_url(int $local_data_id) : string {
 	$graphs = db_fetch_row_prepared('SELECT GROUP_CONCAT(DISTINCT gl.id) AS graphs, COUNT(DISTINCT gl.id) AS total
 		FROM data_local AS dl
 		INNER JOIN data_template_rrd AS dtr
@@ -1607,7 +1612,7 @@ function get_graphs_aggregates_url($local_data_id) {
 	return $url;
 }
 
-function create_data_sources_filter($session_var) {
+function create_data_sources_filter(string $session_var) : array {
 	global $item_rows, $page_refresh_interval;
 
 	$all     = ['-1' => __('All')];
@@ -1803,7 +1808,7 @@ function create_data_sources_filter($session_var) {
 	];
 }
 
-function draw_data_source_filter($render = false) {
+function draw_data_source_filter(bool $render = false) : void {
 	$filters = create_data_sources_filter('sess_ds');
 
 	if (read_config_option('grds_creation_method') == 1) {

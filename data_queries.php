@@ -98,12 +98,6 @@ switch (grv('action')) {
 		bottom_footer();
 
 		break;
-	case 'remove':
-		data_query_remove();
-
-		header('Location: data_queries.php');
-
-		break;
 	case 'edit':
 		top_header();
 
@@ -122,7 +116,7 @@ switch (grv('action')) {
 		break;
 }
 
-function form_save() {
+function form_save() : void {
 	if (isrv('save_component_snmp_query')) {
 		gfrv('id');
 		gfrv('data_input_id');
@@ -334,7 +328,7 @@ function form_save() {
 	}
 }
 
-function form_actions() {
+function form_actions() : void {
 	global $actions;
 
 	// ================= input validation =================
@@ -420,7 +414,7 @@ function form_actions() {
 	}
 }
 
-function data_query_item_movedown_gsv() {
+function data_query_item_movedown_gsv() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('snmp_query_graph_id');
@@ -429,7 +423,7 @@ function data_query_item_movedown_gsv() {
 	move_item_down('snmp_query_graph_sv', grv('id'), 'snmp_query_graph_id=' . grv('snmp_query_graph_id') . ' AND field_name = ' . db_qstr(gnrv('field_name')));
 }
 
-function data_query_item_moveup_gsv() {
+function data_query_item_moveup_gsv() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('snmp_query_graph_id');
@@ -438,7 +432,7 @@ function data_query_item_moveup_gsv() {
 	move_item_up('snmp_query_graph_sv', grv('id'), 'snmp_query_graph_id=' . grv('snmp_query_graph_id') . ' AND field_name = ' . db_qstr(gnrv('field_name')));
 }
 
-function data_query_item_remove_gsv() {
+function data_query_item_remove_gsv() : void {
 	// ================= input validation =================
 	gfrv('id');
 	// ====================================================
@@ -448,7 +442,7 @@ function data_query_item_remove_gsv() {
 		[grv('id')]);
 }
 
-function data_query_item_movedown_dssv() {
+function data_query_item_movedown_dssv() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('data_template_id');
@@ -458,7 +452,7 @@ function data_query_item_movedown_dssv() {
 	move_item_down('snmp_query_graph_rrd_sv', grv('id'), 'data_template_id=' . grv('data_template_id') . ' AND snmp_query_graph_id=' . grv('snmp_query_graph_id') . ' AND field_name = ' . db_qstr(gnrv('field_name')));
 }
 
-function data_query_item_moveup_dssv() {
+function data_query_item_moveup_dssv() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('data_template_id');
@@ -468,7 +462,7 @@ function data_query_item_moveup_dssv() {
 	move_item_up('snmp_query_graph_rrd_sv', grv('id'), 'data_template_id=' . grv('data_template_id') . ' AND snmp_query_graph_id=' . grv('snmp_query_graph_id') . ' AND field_name = ' . db_qstr(gnrv('field_name')));
 }
 
-function data_query_sv_check_sequences($type, $snmp_query_graph_id, $field_name) {
+function data_query_sv_check_sequences(string $type, int $snmp_query_graph_id, string $field_name) : bool {
 	if ($type == 'ds' || $type == 'gr') {
 		if ($type == 'ds') {
 			$table = 'snmp_query_graph_rrd_sv';
@@ -517,9 +511,11 @@ function data_query_sv_check_sequences($type, $snmp_query_graph_id, $field_name)
 			ORDER BY sequence, id;",
 			[$field_name, $snmp_query_graph_id]);
 	}
+
+	return true;
 }
 
-function data_query_item_remove_dssv() {
+function data_query_item_remove_dssv() : void {
 	// ================= input validation =================
 	gfrv('id');
 	// ====================================================
@@ -530,7 +526,7 @@ function data_query_item_remove_dssv() {
 		[grv('id')]);
 }
 
-function data_query_item_remove_confirm() {
+function data_query_item_remove_confirm() : void {
 	global $vdef_functions, $vdef_item_types, $custom_vdef_data_source_types;
 
 	// ================= input validation =================
@@ -595,7 +591,7 @@ function data_query_item_remove_confirm() {
 	<?php
 }
 
-function data_query_item_remove() {
+function data_query_item_remove() : void {
 	// ================= input validation =================
 	gfrv('id');
 	// ====================================================
@@ -621,7 +617,7 @@ function data_query_item_remove() {
 		[grv('id')]);
 }
 
-function data_query_item_edit() {
+function data_query_item_edit() : void {
 	global $fields_data_query_item_edit;
 
 	// ================= input validation =================
@@ -1050,7 +1046,7 @@ function data_query_item_edit() {
 	form_save_button('data_queries.php?action=edit&id=' . grv('snmp_query_id'), 'return');
 }
 
-function data_query_remove($id) {
+function data_query_remove(int $id) : void {
 	$snmp_query_graph = db_fetch_assoc_prepared('SELECT id
 		FROM snmp_query_graph
 		WHERE snmp_query_id = ?',
@@ -1093,7 +1089,7 @@ function data_query_remove($id) {
 	update_replication_crc(0, 'poller_replicate_snmp_query_crc');
 }
 
-function data_query_edit() {
+function data_query_edit() : void {
 	global $fields_data_query_edit;
 
 	// ================= input validation =================
@@ -1278,7 +1274,7 @@ function data_query_edit() {
 	<?php
 }
 
-function data_query() {
+function data_query() : void {
 	global $actions, $item_rows;
 
 	// create the page filter

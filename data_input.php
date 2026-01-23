@@ -84,7 +84,7 @@ switch (grv('action')) {
 /**
  * form_save - Saves the data input method
  */
-function form_save() {
+function form_save() : void {
 	global $registered_cacti_names;
 
 	if (isrv('save_component_data_input')) {
@@ -140,13 +140,13 @@ function form_save() {
 		$save['regexp_match']  = form_input_validate((isrv('regexp_match') ? gnrv('regexp_match') : ''), 'regexp_match', '', true, 3);
 		$save['allow_nulls']   = form_input_validate((isrv('allow_nulls') ? gnrv('allow_nulls') : ''), 'allow_nulls', '', true, 3);
 
-		if (!is_error_message()) {
+		if (is_error_message() === false) {
 			$data_input_field_id = sql_save($save, 'data_input_fields');
 
 			if ($data_input_field_id) {
 				data_input_save_message(grv('data_input_id'), 'field');
 
-				if ((!empty($data_input_field_id)) && (grv('input_output') == 'in')) {
+				if ($data_input_field_id > 0 && grv('input_output') == 'in') {
 					generate_data_input_field_sequences(db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', [grv('data_input_id')]), grv('data_input_id'));
 				}
 
@@ -154,6 +154,8 @@ function form_save() {
 			} else {
 				raise_message(2);
 			}
+		} else {
+			$data_input_field_id = 0;
 		}
 
 		if (is_error_message()) {
@@ -164,7 +166,7 @@ function form_save() {
 	}
 }
 
-function data_input_save_message($data_input_id, $type = 'input') {
+function data_input_save_message(int $data_input_id, string $type = 'input') : void {
 	$counts = db_fetch_row_prepared('SELECT
 		SUM(CASE WHEN dtd.local_data_id=0 THEN 1 ELSE 0 END) AS templates,
 		SUM(CASE WHEN dtd.local_data_id>0 THEN 1 ELSE 0 END) AS data_sources
@@ -191,7 +193,7 @@ function data_input_save_message($data_input_id, $type = 'input') {
 	}
 }
 
-function form_actions() {
+function form_actions() : void {
 	global $actions;
 
 	// ================= input validation =================
@@ -270,7 +272,7 @@ function form_actions() {
 	}
 }
 
-function field_remove_confirm() {
+function field_remove_confirm() : void {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('data_input_id');
@@ -332,7 +334,7 @@ function field_remove_confirm() {
 	<?php
 }
 
-function field_remove() {
+function field_remove() : void {
 	global $registered_cacti_names;
 
 	// ================= input validation =================
@@ -364,7 +366,7 @@ function field_remove() {
 	update_replication_crc(0, 'poller_replicate_data_input_fields_crc');
 }
 
-function field_edit() {
+function field_edit() : void {
 	global $registered_cacti_names, $fields_data_input_field_edit_1, $fields_data_input_field_edit_2, $fields_data_input_field_edit;
 
 	// ================= input validation =================
@@ -380,12 +382,17 @@ function field_edit() {
 			FROM data_input_fields
 			WHERE id = ?',
 			[grv('id')]);
+	} else {
+		$field = [];
+		$current_field_type = '';
 	}
 
 	if (!ierv('type')) {
 		$current_field_type = grv('type');
-	} else {
+	} elseif (cacti_sizeof($field)) {
 		$current_field_type = $field['input_output'];
+	} else {
+		$current_field_type = '';
 	}
 
 	$data_input = db_fetch_row_prepared('SELECT type_id, name
@@ -393,14 +400,19 @@ function field_edit() {
 		WHERE id = ?',
 		[grv('data_input_id')]);
 
+	$input_string = db_fetch_cell_prepared('SELECT input_string
+		FROM data_input
+		WHERE id = ?',
+		[!ierv('data_input_id') ? grv('data_input_id') : $field['data_input_id']]);
+
 	// obtain a list of available fields for this given field type (input/output)
-	if (($current_field_type == 'in') && (preg_match_all('/<([_a-zA-Z0-9]+)>/', db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', [!ierv('data_input_id') ? grv('data_input_id') : $field['data_input_id']]), $matches))) {
+	if ($current_field_type == 'in' && (preg_match_all('/<([_a-zA-Z0-9]+)>/', $input_string, $matches))) {
 		for ($i = 0; ($i < cacti_count($matches[1])); $i++) {
 			if (in_array($matches[1][$i], $registered_cacti_names, true) == false) {
 				$current_field_name                     = $matches[1][$i];
 				$array_field_names[$current_field_name] = $current_field_name;
 
-				if (!isset($field)) {
+				if (!cacti_sizeof($field)) {
 					$field_id = db_fetch_cell_prepared('SELECT id FROM data_input_fields
 						WHERE data_name = ?
 						AND data_input_id = ?',
@@ -417,7 +429,7 @@ function field_edit() {
 	}
 
 	// if there are no input fields to choose from, complain
-	if ((!isset($array_field_names)) && (isrv('type') ? grv('type') == 'in' : false) && ($data_input['type_id'] == '1')) {
+	if ((!cacti_sizeof($array_field_names)) && (isrv('type') ? grv('type') == 'in' : false) && ($data_input['type_id'] == 1)) {
 		raise_message('invalid_inputs', __('This script appears to have no input values, therefore there is nothing to add.'), MESSAGE_LEVEL_WARN);
 		header('Location: data_input.php?action=edit&id=' . gfrv('data_input_id'));
 
@@ -430,11 +442,15 @@ function field_edit() {
 	} elseif ($current_field_type == 'in') {
 		$header_name = __esc('Input Fields [edit: %s]', $data_input['name']);
 		$dfield      = __('Input Field');
+	} else {
+		$dfield      = __('Unknown');
+		$header_name = '';
 	}
 
-	if (isset($field)) {
+	if (isset($field['data_name'])) {
 		$dfield .= ' ' . htmle($field['data_name']);
 	}
+
 	form_start('data_input.php', 'data_input');
 
 	html_start_box($header_name, '100%', true, 3, 'center', '');
@@ -442,10 +458,10 @@ function field_edit() {
 	$form_array = [];
 
 	// field name
-	if ((($data_input['type_id'] == '1') || ($data_input['type_id'] == '5')) && ($current_field_type == 'in')) { // script
-		$form_array = inject_form_variables($fields_data_input_field_edit_1, $dfield, $array_field_names, (isset($field) ? $field : []));
+	if ((($data_input['type_id'] == 1) || ($data_input['type_id'] == 5)) && ($current_field_type == 'in')) { // script
+		$form_array = inject_form_variables($fields_data_input_field_edit_1, $dfield, $array_field_names, $field);
 	} elseif ($current_field_type == 'out' || ($data_input['type_id'] != 1 && $data_input['type_id'] != 5)) {
-		$form_array = inject_form_variables($fields_data_input_field_edit_2, $dfield, (isset($field) ? $field : []));
+		$form_array = inject_form_variables($fields_data_input_field_edit_2, $dfield, $field);
 	}
 
 	// ONLY if the field is an input
@@ -460,7 +476,7 @@ function field_edit() {
 	draw_edit_form(
 		[
 			'config' => ['no_form_tag' => true],
-			'fields' => $form_array + inject_form_variables($fields_data_input_field_edit, (isset($field) ? $field : []), $current_field_type, $_REQUEST)
+			'fields' => $form_array + inject_form_variables($fields_data_input_field_edit, $field, $current_field_type, $_REQUEST)
 		]
 	);
 
@@ -469,7 +485,7 @@ function field_edit() {
 	form_save_button('data_input.php?action=edit&id=' . grv('data_input_id'));
 }
 
-function data_edit() {
+function data_edit() : void {
 	global $fields_data_input_edit;
 
 	// ================= input validation =================
@@ -711,7 +727,7 @@ function data_edit() {
 	<?php
 }
 
-function data() {
+function data() : void {
 	global $input_types, $actions, $item_rows, $hash_system_data_inputs;
 
 	// create the page filter
