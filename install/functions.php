@@ -22,6 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
+include_once(CACTI_PATH_LIBRARY . '/xml.php');
+
 function prune_deprecated_files() : void {
 	$files = [
 		'reports_admin.php',
@@ -990,14 +992,12 @@ function install_setup_get_tables() : mixed {
 	return $t;
 }
 
-function to_array(SimpleXMLElement|false $data) : array {
-	if (is_object($data)) {
-		$data = get_object_vars($data);
-	} else {
-		return [];
-	}
+function to_array(SimpleXMLElement|false|string|array $data) : mixed {
+    if (is_object($data)) {
+        $data = get_object_vars($data);
+    }
 
-	return (cacti_sizeof($data)) ? array_map(__FUNCTION__, $data) : $data;
+    return (is_array($data)) ? array_map(__FUNCTION__, $data) : $data;
 }
 
 /**

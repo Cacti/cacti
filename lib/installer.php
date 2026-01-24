@@ -95,12 +95,12 @@ class Installer implements JsonSerializable {
 	private string $old_cacti_version;
 
 	// Common variables
-	private int $mode = 0;
+	private int $mode = 1;
 	private int $stepCurrent;
 	private int $stepPrevious;
 	private int $stepNext;
 	private mixed $stepData = null;
-	private mixed $stepError;
+	private mixed $stepError = 0;
 	private string $output;
 	private array $templates;
 	private array $paths;
@@ -359,7 +359,7 @@ class Installer implements JsonSerializable {
 
 					break;
 				case 'AutomationMode':
-					$this->setAutomationMode($value);
+					$this->setAutomationMode(intval($value));
 
 					break;
 				case 'AutomationOverride':
@@ -4119,7 +4119,7 @@ class Installer implements JsonSerializable {
 		Installer::setPhpOption('memory_limit', -1);
 
 		try {
-			$backgroundTime = (string) microtime(true);
+			$backgroundTime = microtime(true);
 
 			if ($installer == null) {
 				$installer = new Installer();
@@ -4130,7 +4130,7 @@ class Installer implements JsonSerializable {
 			log_install_always('', __('Exception occurred during installation: #%s - %s', $e->getCode(), $e->getMessage()));
 		}
 
-		$backgroundDone = (string) microtime(true);
+		$backgroundDone = microtime(true);
 		set_install_config_option('install_complete', $backgroundDone);
 		set_install_config_option('install_step', Installer::STEP_COMPLETE);
 
@@ -4485,7 +4485,7 @@ class InstallerButton implements JsonSerializable {
 		$this->Enabled = !empty($this->Step);
 	}
 
-	public function jsonSerialize(): mixed {
+	public function jsonSerialize(): array {
 		return [
 			'Text'    => $this->Text,
 			'Step'    => $this->Step,
