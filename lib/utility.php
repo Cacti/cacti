@@ -1882,10 +1882,10 @@ function utility_get_formatted_bytes(mixed $input_value, string $wanted_type, mi
 	];
 
 	if ($input_value > 0 && preg_match('/([0-9.]+)([BKMG]){0,1}/i',$input_value,$matches)) {
-		$input_value = intval($matches[1]);
+		$input_value = floatval($matches[1]);
 
 		if (isset($matches[2])) {
-			$default_type = intval($matches[2]);
+			$default_type = $matches[2];
 		}
 
 		if (isset($multiplier[$default_type])) {
@@ -1902,6 +1902,8 @@ function utility_get_formatted_bytes(mixed $input_value, string $wanted_type, mi
 	} else {
 		$output_value = $input_value . 'B';
 	}
+
+	cacti_log("Input values $input_value, Wanted Type $wanted_type, Output Value $output_value");
 
 	return $input_value;
 }

@@ -1315,7 +1315,7 @@ function html_create_list(array $form_data, string $column_display, string $colu
  *
  * @return string $new_string - the escaped request variable to be returned.
  */
-function htmlerv($string) {
+function htmlerv(string $string) {
 	return html_escape(gnrv($string));
 }
 
@@ -1326,7 +1326,7 @@ function htmlerv($string) {
  *
  * @return string $new_string - the escaped request variable to be returned.
  */
-function html_escape_request_var($string) {
+function html_escape_request_var(mixed $string) {
 	return html_escape(gnrv($string));
 }
 
@@ -1337,18 +1337,18 @@ function html_escape_request_var($string) {
  *
  * @return string $new_string - the escaped string to be returned.
  */
-function htmle($string) {
+function htmle(mixed $string) {
 	return html_escape($string);
 }
 
 /**
  * html_escape - sanitizes a string for display
  *
- * @param  string $string - string the string to escape
+ * @param  mixed $string - string the string to escape
  *
  * @return string $new_string - the escaped string to be returned.
  */
-function html_escape(string $string = '') : string {
+function html_escape(mixed $string = '') : string {
 	static $charset;
 
 	if ($charset == '') {
@@ -1365,7 +1365,7 @@ function html_escape(string $string = '') : string {
 
 		return htmlspecialchars($string, ENT_QUOTES | ENT_HTML5, $charset, false);
 	} else {
-		return $string;
+		return '';
 	}
 }
 
@@ -3197,7 +3197,7 @@ function html_common_header(string $title, string $selectedTheme = '') : void {
 	<meta name='mobile-web-app-capable' content='yes'>
 	<meta name="theme-color" content="#161616"/>
 	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' https://api.qrserver.com <?php print $alternates; ?> data: blob:; style-src 'self' 'unsafe-inline' <?php print $alternates; ?>; script-src 'self' <?php print htmle($script_policy); ?> 'unsafe-inline' <?php print $alternates; ?>; worker-src 'self' <?php print $alternates; ?>;">
-	<meta name='robots' content='noindex,nofollow'>
+	
 
 	<title><?php print $title; ?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>

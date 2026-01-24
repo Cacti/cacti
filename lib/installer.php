@@ -95,7 +95,7 @@ class Installer implements JsonSerializable {
 	private string $old_cacti_version;
 
 	// Common variables
-	private int $mode;
+	private int $mode = 0;
 	private int $stepCurrent;
 	private int $stepPrevious;
 	private int $stepNext;
@@ -2630,7 +2630,9 @@ class Installer implements JsonSerializable {
 		print '</div>';
 
 		$html = ob_get_contents();
+
 		$output .= Installer::sectionNormal($html);
+
 		ob_end_clean();
 
 		return $output;
@@ -2660,7 +2662,8 @@ class Installer implements JsonSerializable {
 			$permissions .= Installer::sectionSubTitle(__('Required Writable at Install Time Only'), 'writable_install');
 
 			$sections['writable_install'] = DB_STATUS_SUCCESS;
-			$class                        = 'even';
+
+			$class = 'even';
 
 			foreach ($this->permissions['install'] as $path => $valid) {
 				$class = ($class == 'even' ? 'odd' : 'even');
@@ -4194,6 +4197,7 @@ class Installer implements JsonSerializable {
 
 	public static function setPhpOption(string $option_name, mixed $option_value) : void {
 		log_install_always('', __('Setting PHP Option %s = %s', $option_name, $option_value));
+
 		$value = ini_get($option_name);
 
 		if ($value != $option_value) {

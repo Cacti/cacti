@@ -30,13 +30,24 @@
 # set -x
 
 # On a hunch
-sudo systemctl restart apache2
-sudo systemctl status apache2
-sudo systemctl stop firewalld
+sudo systemctl restart apache2 2>/dev/null
+sudo systemctl status apache2 2>/dev/null
+sudo systemctl stop firewalld 2>/dev/null
 
 echo "---------------------------------------------------------------------"
 echo "NOTE: Check all Pages Script Starting"
 echo "---------------------------------------------------------------------"
+
+# --- Check for MariaDB or MySQL
+if [ $(which mariadb | wc -l) -gt 0 ]; then
+	dbshell="mariadb"
+	dbdump="mariadb-dump"
+	dbadmin="mariadb-admin"
+else
+	dbshell="mysql"
+	dbdump="mysqldump"
+	dbadmin="mysqladmin"
+fi
 
 # --- Website defaults
 WEBHOST="http://127.0.0.1/cacti";
@@ -47,11 +58,11 @@ WAPASS="admin";
 DBFILE="./.my.cnf";
 DBHOST="localhost";
 DBNAME="cacti";
-DBPASS="cacti_user";
-DBUSER="cacti_user";
+DBPASS="cactiuser";
+DBUSER="cactiuser";
 DBSLEEP=2
-DBCLIENT=$(mysql --version | awk '{print $3}')
-DBSERVER=$(mysql -e "show global variables like 'version'" | awk '{print $2}')
+DBCLIENT=$($dbshell --version | awk '{print $3}')
+DBSERVER=$($dbshell -e "show global variables like 'version'" | awk '{print $2}')
 
 # --- Shell defaults
 WSOWNER="apache"
@@ -255,39 +266,39 @@ save_log_files() {
 set_cacti_admin_password() {
 	echo "NOTE: Setting Cacti admin password and unsetting forced password change"
 
-	mysql $MYSQL_AUTH_USR -e "UPDATE user_auth SET password=MD5('$WAPASS') WHERE id = 1 ;" "$DBNAME"
-	mysql $MYSQL_AUTH_USR -e "UPDATE user_auth SET password_change='', must_change_password='' WHERE id = 1 ;" "$DBNAME"
-	mysql $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('secpass_forceold', '') ;" "$DBNAME"
+	$dbshell $MYSQL_AUTH_USR -e "UPDATE user_auth SET password=MD5('$WAPASS') WHERE id = 1 ;" "$DBNAME"
+	$dbshell $MYSQL_AUTH_USR -e "UPDATE user_auth SET password_change='', must_change_password='' WHERE id = 1 ;" "$DBNAME"
+	$dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('secpass_forceold', '') ;" "$DBNAME"
 }
 
 enable_log_validation() {
 	echo "NOTE: Setting Cacti log validation to on to validate improperly validated variables"
 
-	mysql $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_validation','on') ;" "$DBNAME"
+	$dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_validation','on') ;" "$DBNAME"
 }
 
 set_log_level_none() {
 	echo "NOTE: Setting Cacti log verbosity to none"
 
-	mysql $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_verbosity', '1') ;" "$DBNAME"
+	$dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_verbosity', '1') ;" "$DBNAME"
 }
 
 set_log_level_normal() {
 	echo "NOTE: Setting Cacti log verbosity to low"
 
-	mysql $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_verbosity', '2') ;" "$DBNAME"
+	$dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_verbosity', '2') ;" "$DBNAME"
 }
 
 set_log_level_debug() {
 	echo "NOTE: Setting Cacti log verbosity to DEBUG"
 
-	mysql $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_verbosity', '6') ;" "$DBNAME"
+	$dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_verbosity', '6') ;" "$DBNAME"
 }
 
 set_stderr_logging() {
 	echo "NOTE: Setting Cacti standard error log location"
 
-	mysql $MYSQL_AUTH_USR -e "REPLACE INTO cacti.settings (name, value) VALUES ('path_stderrlog', '${CACTI_ERRLOG}');" "$DBNAME"
+	$dbshell $MYSQL_AUTH_USR -e "REPLACE INTO cacti.settings (name, value) VALUES ('path_stderrlog', '${CACTI_ERRLOG}');" "$DBNAME"
 }
 
 allow_index_following() {
