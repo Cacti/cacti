@@ -74,7 +74,7 @@ function get_rrdfiles(int $thread_id = 1, int $max_threads = 1) : array {
  *
  * @return void
  */
-function rrdcheck_debug($message) {
+function rrdcheck_debug(string $message) : void {
 	global $debug;
 
 	if ($debug) {
@@ -717,7 +717,7 @@ function rrdcheck_error_handler(int $errno, string $errmsg, string $filename, in
  *
  * @return void
  */
-function rrdcheck_boost_bottom() {
+function rrdcheck_boost_bottom() : void {
 	if (read_config_option('rrdcheck_enable') == 'on') {
 		include_once(CACTI_PATH_LIBRARY . '/rrd.php');
 

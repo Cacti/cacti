@@ -37,7 +37,7 @@
  *
  * @return array The processed form array with injected variables.
  */
-function inject_form_variables(array &$form_array, mixed $arg1 = [], mixed $arg2 = [], mixed $arg3 = [], mixed $arg4 = []) {
+function inject_form_variables(array &$form_array, mixed $arg1 = [], mixed $arg2 = [], mixed $arg3 = [], mixed $arg4 = []) : array {
 	$check_fields = ['id', 'value', 'array', 'friendly_name', 'description', 'sql', 'sql_print', 'form_id', 'items', 'tree_id'];
 
 	// loop through each available field
@@ -158,7 +158,7 @@ function inject_form_variables(array &$form_array, mixed $arg1 = [], mixed $arg2
  *
  * @return string The current color used for the row.
  */
-function form_alternate_row_color($row_color1, $row_color2, $row_value, $row_id = '') {
+function form_alternate_row_color(string $row_color1, string $row_color2, int $row_value, string $row_id = '') : string {
 	if ($row_value % 2 == 1) {
 		$class         = 'odd';
 		$current_color = $row_color1;
@@ -189,7 +189,7 @@ function form_alternate_row_color($row_color1, $row_color2, $row_value, $row_id 
  *
  * @return void
  */
-function form_alternate_row($row_id = '', $light = false, $disabled = false) {
+function form_alternate_row(string $row_id = '', bool $light = false, bool $disabled = false) : void {
 	static $i = 1;
 
 	if ($i % 2 == 1) {
@@ -359,7 +359,7 @@ function form_get_table_id(mixed $increment = false) : string {
  *
  * @return bool - false if errors are encountered
  */
-function form_selectable_vcell(mixed $contents, $table_id = '', $columnid = '', $styleclass = '', $title = '') : bool {
+function form_selectable_vcell(mixed $contents, string $table_id = '', string $columnid = '', string $styleclass = '', string $title = '') : bool {
 	global $tableCount;
 
 	static $tableColumns = null;
@@ -577,7 +577,7 @@ function form_process_visible_display_text(string $table_id, array $display_text
  *
  * @return void
  */
-function form_checkbox_cell($title, $id, $disabled = false, $checked = false) {
+function form_checkbox_cell(string $title, string $id, bool $disabled = false, bool $checked = false) : void {
 	print "\t<td class='checkbox' style='width:1%;'>\n";
 	print "\t\t<input type='checkbox' title='" . htmle($title) . "' class='checkbox" . ($disabled ? ' disabled' : '') . "' " . ($disabled ? " disabled='disabled'" : '') . ($checked ? " checked='checked'" : '') . " id='chk_" . $id . "' name='chk_" . $id . "'><label class='formCheckboxLabel' for='chk_" . $id . "'></label>\n";
 	print "\t</td>\n";
@@ -588,7 +588,7 @@ function form_checkbox_cell($title, $id, $disabled = false, $checked = false) {
  *
  * @return void
  */
-function form_end_row() {
+function form_end_row() : void {
 	print "</tr>\n";
 }
 
@@ -602,7 +602,7 @@ function form_end_row() {
  *
  * @return bool Returns true if the input string is 'on', otherwise false.
  */
-function html_boolean($html_boolean) {
+function html_boolean(string $html_boolean) : bool {
 	return ($html_boolean == 'on');
 }
 
@@ -613,9 +613,10 @@ function html_boolean($html_boolean) {
  * returns a user-friendly string indicating whether the value is selected or not.
  *
  * @param string $html_boolean The HTML boolean value to convert. Expected values are 'on' or 'off'.
+ *
  * @return string Returns 'Selected' if the input is 'on', otherwise returns 'Not Selected'.
  */
-function html_boolean_friendly($html_boolean) {
+function html_boolean_friendly(string $html_boolean) : string {
 	if ($html_boolean == 'on') {
 		return __('Selected');
 	} else {
@@ -630,7 +631,7 @@ function html_boolean_friendly($html_boolean) {
  *
  * @return string An empty string representing the checkbox style.
  */
-function get_checkbox_style() {
+function get_checkbox_style() : string {
 	return '';
 }
 
@@ -1029,7 +1030,7 @@ function get_nfilter_request_var(string $name, mixed $default = '') : mixed {
  *
  * @return mixed
  */
-function get_request_var_post($name, $default = '') {
+function get_request_var_post(string $name, mixed $default = '') : mixed {
 	return get_nfilter_request_var($name, $default);
 }
 
@@ -1248,7 +1249,7 @@ function validate_store_request_vars(array $filters, string $sess_prefix = '') :
  *
  * @return void
  */
-function update_order_string($inplace = false) {
+function update_order_string(bool $inplace = false) : void {
 	$page = get_order_string_page();
 
 	$order = '';
@@ -1349,7 +1350,7 @@ function update_order_string($inplace = false) {
  *
  * @return string The generated ORDER BY clause.
  */
-function get_order_string() {
+function get_order_string() : string {
 	$page = get_order_string_page();
 
 	if (!str_contains(get_request_var('sort_column'), '(') && !str_contains(get_request_var('sort_column'), '`')) {
@@ -1376,7 +1377,7 @@ function get_order_string() {
  *
  * @return void
  */
-function remove_column_from_order_string($column) {
+function remove_column_from_order_string(string $column) : void {
 	$page = get_order_string_page();
 
 	if (isset($_SESSION['sort_data'][$page][$column])) {
@@ -1395,7 +1396,7 @@ function remove_column_from_order_string($column) {
  *
  * @return string A unique order string for the current page.
  */
-function get_order_string_page() {
+function get_order_string_page() : string {
 	static $page_count = 0;
 
 	$page = $page_count . '_' . str_replace('.php', '', get_current_page());
@@ -1424,7 +1425,7 @@ function get_order_string_page() {
  *
  * @return mixed Returns true if the regular expression is valid, otherwise returns an error message.
  */
-function validate_is_regex($regex) {
+function validate_is_regex(string $regex) : mixed {
 	if ($regex == '') {
 		return true;
 	}
@@ -1493,7 +1494,7 @@ function validate_is_regex($regex) {
  *
  * @return void
  */
-function load_current_session_value($request_var_name, $session_var_name, $default_value) {
+function load_current_session_value(string $request_var_name, string $session_var_name, mixed $default_value) : void {
 	if (isset_request_var($request_var_name)) {
 		$_SESSION[$session_var_name] = get_request_var($request_var_name);
 	} elseif (isset($_SESSION[$session_var_name])) {
@@ -1517,7 +1518,7 @@ function load_current_session_value($request_var_name, $session_var_name, $defau
  *
  * @return string The HTML span element with the appropriate class and status text.
  */
-function get_colored_device_status($disabled, $status, $thold_failure_count = -1, $status_event_count = -1) {
+function get_colored_device_status(bool $disabled, int $status, int $thold_failure_count = -1, int $status_event_count = -1) : string {
 	if ($disabled) {
 		return "<span class='deviceDisabled'>" . __('Disabled') . '</span>';
 	} else {
@@ -1546,7 +1547,7 @@ function get_colored_device_status($disabled, $status, $thold_failure_count = -1
  * @return string  Returns a string containing html that represents the site's current
  *                 status and name
  */
-function get_colored_site_status(bool $disabled, string|null $site_name) {
+function get_colored_site_status(bool $disabled, string|null $site_name) : string {
 	$class = '';
 
 	if ($disabled) {
@@ -1561,7 +1562,7 @@ function get_colored_site_status(bool $disabled, string|null $site_name) {
  *
  * @return mixed The current graph start time if set and numeric, otherwise a default timespan value.
  */
-function get_current_graph_start() {
+function get_current_graph_start() : mixed {
 	if (isset($_SESSION['sess_current_timespan_begin_now']) && is_numeric($_SESSION['sess_current_timespan_begin_now'])) {
 		return $_SESSION['sess_current_timespan_begin_now'];
 	} else {
@@ -1574,7 +1575,7 @@ function get_current_graph_start() {
  *
  * @return mixed The current graph end time if set and numeric, otherwise '0'.
  */
-function get_current_graph_end() {
+function get_current_graph_end() : mixed {
 	if (isset($_SESSION['sess_current_timespan_end_now']) && is_numeric($_SESSION['sess_current_timespan_end_now'])) {
 		return $_SESSION['sess_current_timespan_end_now'];
 	} else {
@@ -1594,7 +1595,7 @@ function get_current_graph_end() {
  * @return string The HTML string for the tooltip element if text is provided,
  *                otherwise an empty string.
  */
-function display_tooltip($text) {
+function display_tooltip(string $text) : string {
 	if ($text != '') {
 		return '<div class="cactiTooltipHint ti ti-help"><span style="display:none;">' . $text . "</span></div>\n";
 	} else {
@@ -1615,7 +1616,7 @@ function display_tooltip($text) {
  *
  * @return string The HTML for the pagination control.
  */
-function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_rows, $url, $page_var = 'page', $return_to = '') {
+function get_page_list(int $current_page, int $pages_per_screen, int $rows_per_page, int $total_rows, string $url, string $page_var = 'page', string $return_to = '') : string {
 	// By current design, $pages_per_screen means number of page no in mid of nav bar
 	// when $total_pages is larger than $pages_per_screen + 2(first and last)
 	// So actual $pages_per_screen should be $pages_per_screen+2

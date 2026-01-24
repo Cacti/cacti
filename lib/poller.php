@@ -30,7 +30,7 @@
  *
  * @return string - the output of $command after execution
  */
-function exec_poll($command, $timeout = 5) {
+function exec_poll(string $command, int $timeout = 5) : string {
 	$output = [];
 	$return = 0;
 
@@ -119,7 +119,7 @@ function exec_poll_php(string $command, bool $using_proc_function, array $pipes,
  *
  * @return void
  */
-function exec_background($filename, $args = '', $redirect_args = '') {
+function exec_background(string $filename, string $args = '', string $redirect_args = '') : void {
 	global $debug;
 
 	cacti_log("DEBUG: About to Spawn a Remote Process [CMD: $filename, ARGS: $args]", true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE : POLLER_VERBOSITY_DEBUG));
@@ -264,7 +264,7 @@ function file_escaped(string $file) : bool {
  *
  * @return void
  */
-function update_reindex_cache(int $host_id, int $data_query_id) {
+function update_reindex_cache(int $host_id, int $data_query_id) : void {
 	include_once(CACTI_PATH_LIBRARY . '/data_query.php');
 	include_once(CACTI_PATH_LIBRARY . '/snmp.php');
 
@@ -1043,7 +1043,7 @@ function update_resource_cache($poller_id = 1) : bool {
  *
  * @return void
  */
-function cache_in_path($path, $type, $recursive = true) {
+function cache_in_path(string $path, string $type, bool $recursive = true) : void {
 	if (is_dir($path)) {
 		$curr_md5      = md5sum_path($path, $recursive);
 		$settings_path = "md5dirsum_$type";
@@ -1117,7 +1117,7 @@ function cache_in_path($path, $type, $recursive = true) {
  *
  * @return void
  */
-function update_db_from_path($path, $type, $recursive = true) {
+function update_db_from_path(string $path, string $type, bool $recursive = true) : void {
 	$excluded_extensions = ['tar', 'gz', 'zip', 'tgz', 'ttf', 'z', 'exe', 'pack', 'swp', 'swo'];
 
 	if (is_dir($path)) {
@@ -1347,7 +1347,7 @@ function resource_cache_out(string $type, array $path) : void {
  *
  * @return mixed
  */
-function md5sum_path($path, $recursive = true) {
+function md5sum_path(string $path, bool $recursive = true) : mixed {
 	if (!is_dir($path)) {
 		return false;
 	}

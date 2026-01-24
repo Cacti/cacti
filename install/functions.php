@@ -516,7 +516,7 @@ function db_install_execute(string $sql, array $params = [], bool $log = true) :
  *
  * @return array
  */
-function db_install_fetch_function(string $func, string $sql, array $params = [], bool $log = true): array {
+function db_install_fetch_function(string $func, string $sql, array $params = [], bool $log = true) : array {
 	global $database_last_error;
 
 	$database_last_error = false;

@@ -149,7 +149,7 @@ while (true) {
  *
  * @return void
  */
-function sig_handler(int $signo) {
+function sig_handler(int $signo) : void {
 	global $hostname;
 
 	switch ($signo) {
@@ -171,7 +171,7 @@ function sig_handler(int $signo) {
  *
  * @return int
  */
-function wait_for_start(int $frequency = -1) {
+function wait_for_start(int $frequency = -1) : int {
 	$prev_time = -1;
 	$i         = 0;
 
@@ -213,7 +213,7 @@ function wait_for_start(int $frequency = -1) {
  *
  * @return void
  */
-function run_poller() {
+function run_poller() : void {
 	global $debug;
 
 	debug('Cacti Data Collector');
@@ -240,7 +240,7 @@ function run_poller() {
  *
  * @return array
  */
-function get_options() {
+function get_options() : array {
 	$parms = $_SERVER['argv'];
 	array_shift($parms);
 
@@ -295,7 +295,7 @@ function get_options() {
  *
  * @return void
  */
-function debug(string $string) {
+function debug(string $string) : void {
 	global $debug;
 
 	if ($debug) {
@@ -310,7 +310,7 @@ function debug(string $string) {
  *
  * @return void
  */
-function display_version() {
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print 'The Cacti Daemon (cactid), Version ' . $version . ', ' . COPYRIGHT_YEARS . PHP_EOL;
 }
@@ -320,7 +320,7 @@ function display_version() {
  *
  * @return void
  */
-function display_help() {
+function display_help() : void {
 	display_version();
 
 	print PHP_EOL . 'usage: cactid.php [ --foreground ] [ --debug ]' . PHP_EOL . PHP_EOL;

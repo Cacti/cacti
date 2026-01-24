@@ -1162,7 +1162,7 @@ function draw_tree_filter(bool $render = false) : void {
  *
  * @return void
  */
-function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
+function grow_right_pane_tree(int $tree_id, int $leaf_id, string $host_group_data) : void {
 	global $current_user, $graphs_per_page, $graph_timeshifts;
 
 	include(CACTI_PATH_INCLUDE . '/global_arrays.php');

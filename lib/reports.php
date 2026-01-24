@@ -229,7 +229,7 @@ function reports_add_graphs(int $report_id, int $local_graph_id, array $timespan
  *
  * @return string - string defining the datetime format specific to this user
  */
-function reports_date_time_format() {
+function reports_date_time_format() : string {
 	$datechar = [
 		GDC_HYPHEN => '-',
 		GDC_SLASH  => '/',
@@ -290,7 +290,7 @@ function reports_date_time_format() {
  *
  * @return int - new timestamp
  */
-function reports_interval_start($interval, $count, $offset, $timestamp) {
+function reports_interval_start(int $interval, int $count, int $offset, int $timestamp) : int {
 	global $reports_interval;
 	reports_log(__FUNCTION__ . ', interval: ' . $reports_interval[$interval] . ' count: ' . $count . ' offset: ' . $offset . ' timestamp: ' . date('Y/m/d H:i:s', $timestamp), false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 
@@ -370,7 +370,8 @@ function reports_interval_start($interval, $count, $offset, $timestamp) {
  *
  * @return int - unix time
  */
-function utime_add($timestamp, $yr = 0, $mon = 0, $day = 0, $hr = 0, $min = 0, $sec = 0) {
+function utime_add(int $timestamp, int $yr = 0, int $mon = 0,
+	int $day = 0, int $hr = 0, int $min = 0, int $sec = 0) : int {
 	$dt = localtime($timestamp, true);
 
 	$unixnewtime = mktime(
@@ -656,7 +657,7 @@ function generate_report(int $schedule_id, array $report, bool $force = false) :
  *
  * @return bool - whether or not the format file was processed correctly
  */
-function reports_load_format_file(string $format_file, mixed &$output, bool &$report_tag = false, mixed &$theme = false) {
+function reports_load_format_file(string $format_file, mixed &$output, bool &$report_tag = false, mixed &$theme = false) : bool {
 	$contents = [];
 
 	if ($format_file == '') {

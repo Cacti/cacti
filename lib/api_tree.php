@@ -31,7 +31,7 @@
  *
  * @return void
  */
-function api_tree_lock(int $tree_id, int $user_id = 0, bool $web = true): void {
+function api_tree_lock(int $tree_id, int $user_id = 0, bool $web = true) : void {
 	// ================= input validation =================
 	input_validate_input_number($tree_id, 'tree_id');
 	input_validate_input_number($user_id, 'user_id');
@@ -52,7 +52,7 @@ function api_tree_lock(int $tree_id, int $user_id = 0, bool $web = true): void {
  *
  * @return void
  */
-function api_tree_unlock(int $tree_id, int $user_id = 0, bool $web = true): void {
+function api_tree_unlock(int $tree_id, int $user_id = 0, bool $web = true) : void {
 	// ================= input validation =================
 	input_validate_input_number($tree_id, 'tree_id');
 	input_validate_input_number($user_id, 'user_id');
@@ -74,7 +74,7 @@ function api_tree_unlock(int $tree_id, int $user_id = 0, bool $web = true): void
  *
  * @return void
  */
-function api_tree_copy_node(int $tree_id, int|string $node_id, int|string $new_parent, int $new_position): void {
+function api_tree_copy_node(int $tree_id, int|string $node_id, int|string $new_parent, int $new_position) : void {
 	input_validate_input_number($tree_id, 'tree_id');
 	input_validate_input_number($new_position, 'new_position');
 
@@ -193,7 +193,7 @@ function api_tree_copy_node(int $tree_id, int|string $node_id, int|string $new_p
  *
  * @return bool Returns true if the lock is acquired, false otherwise.
  */
-function api_tree_get_lock(string $lockname, int $timeout = 10): bool {
+function api_tree_get_lock(string $lockname, int $timeout = 10) : bool {
 	input_validate_input_number($timeout, 'timeout');
 	$lockname = sanitize_search_string($lockname);
 
@@ -219,7 +219,7 @@ function api_tree_get_lock(string $lockname, int $timeout = 10): bool {
  *
  * @return void
  */
-function api_tree_release_lock(string $lockname): void {
+function api_tree_release_lock(string $lockname) : void {
 	unregister_process('tree_lock', $lockname, 0);
 }
 
@@ -234,7 +234,7 @@ function api_tree_release_lock(string $lockname): void {
  *
  * @return bool
  */
-function api_tree_create_node(int $tree_id, mixed $node_id, int $position, string $title = ''): bool {
+function api_tree_create_node(int $tree_id, mixed $node_id, int $position, string $title = '') : bool {
 	input_validate_input_number($tree_id, 'tree_id');
 	input_validate_input_number($position, 'position');
 
@@ -306,7 +306,7 @@ function api_tree_create_node(int $tree_id, mixed $node_id, int $position, strin
  *
  * @return mixed - The ID of the branch if it exists, or false if it does not.
  */
-function api_tree_branch_exists(int $tree_id, int $parent, string $title): mixed {
+function api_tree_branch_exists(int $tree_id, int $parent, string $title) : mixed {
 	$id = db_fetch_cell_prepared('SELECT id
 		FROM graph_tree_items
 		WHERE graph_tree_id = ?
@@ -326,7 +326,7 @@ function api_tree_branch_exists(int $tree_id, int $parent, string $title): mixed
  *
  * @return int|false The ID of the site if it exists, or false if it does not exist.
  */
-function api_tree_site_exists(int $tree_id, int $parent, int $site_id): int|false {
+function api_tree_site_exists(int $tree_id, int $parent, int $site_id) : int|false {
 	$id = db_fetch_cell_prepared('SELECT id
 		FROM graph_tree_items
 		WHERE graph_tree_id = ?
@@ -346,7 +346,7 @@ function api_tree_site_exists(int $tree_id, int $parent, int $site_id): int|fals
  *
  * @return int|false The ID of the host if it exists, or false if it does not.
  */
-function api_tree_host_exists(int $tree_id, int $parent, int $host_id): int|false {
+function api_tree_host_exists(int $tree_id, int $parent, int $host_id) : int|false {
 	$id = db_fetch_cell_prepared('SELECT id
 		FROM graph_tree_items
 		WHERE graph_tree_id = ?
@@ -366,7 +366,7 @@ function api_tree_host_exists(int $tree_id, int $parent, int $host_id): int|fals
  *
  * @return int|false The ID of the graph if it exists, or false if it does not.
  */
-function api_tree_graph_exists(int $tree_id, int $parent, int $local_graph_id): int|false {
+function api_tree_graph_exists(int $tree_id, int $parent, int $local_graph_id) : int|false {
 	$id = db_fetch_cell_prepared('SELECT id
 		FROM graph_tree_items
 		WHERE graph_tree_id = ?
@@ -385,7 +385,7 @@ function api_tree_graph_exists(int $tree_id, int $parent, int $local_graph_id): 
  *
  * @return void
  */
-function api_tree_delete_node(int $tree_id, int|string $node_id): void {
+function api_tree_delete_node(int $tree_id, int|string $node_id) : void {
 	input_validate_input_number($tree_id, 'tree_id');
 
 	// Basic Error Checking
@@ -429,7 +429,7 @@ function api_tree_delete_node(int $tree_id, int|string $node_id): void {
  *
  * @return void
  */
-function api_tree_delete_node_content(int $tree_id, int $leaf_id): void {
+function api_tree_delete_node_content(int $tree_id, int $leaf_id) : void {
 	$children = db_fetch_assoc_prepared('SELECT *
 		FROM graph_tree_items
 		WHERE graph_tree_id = ? AND parent = ?', [$tree_id, $leaf_id]);
@@ -464,7 +464,7 @@ function api_tree_delete_node_content(int $tree_id, int $leaf_id): void {
  *
  * @return void
  */
-function api_tree_move_node(int $tree_id, int|string $node_id, int|string $new_parent, int $new_position): void {
+function api_tree_move_node(int $tree_id, int|string $node_id, int|string $new_parent, int $new_position) : void {
 	input_validate_input_number($tree_id, 'tree_id');
 	input_validate_input_number($new_position, 'new_position');
 
@@ -563,7 +563,7 @@ function api_tree_move_node(int $tree_id, int|string $node_id, int|string $new_p
  *
  * @return array An associative array containing the parsed node data
  */
-function api_tree_parse_node_data(string $variable): array {
+function api_tree_parse_node_data(string $variable) : array {
 	// Initialize some variables
 	$leaf_id   = 0;
 	$graph_id  = 0;
@@ -624,7 +624,7 @@ function api_tree_parse_node_data(string $variable): array {
  *
  * @return void
  */
-function api_tree_rename_node(int $tree_id, string|null $node_id = '', string $title = ''): void {
+function api_tree_rename_node(int $tree_id, string|null $node_id = '', string $title = '') : void {
 	input_validate_input_number($tree_id, 'tree_id');
 
 	// Basic Error Checking
@@ -715,7 +715,7 @@ function api_tree_rename_node(int $tree_id, string|null $node_id = '', string $t
  *
  * @return void
  */
-function api_tree_get_main(mixed $tree_id, int $parent = 0): void {
+function api_tree_get_main(mixed $tree_id, int $parent = 0) : void {
 	$is_root = false;
 
 	if ($parent == -1) {
@@ -770,7 +770,7 @@ function api_tree_get_main(mixed $tree_id, int $parent = 0): void {
  *
  * @return void
  */
-function api_tree_get_node(int $tree_id, string $node_id, bool $editing = false): void {
+function api_tree_get_node(int $tree_id, string $node_id, bool $editing = false) : void {
 	if ($node_id == '#') {
 		$hierarchy = draw_dhtml_tree_level($tree_id, 0, $editing);
 	} else {
@@ -806,7 +806,7 @@ function api_tree_get_node(int $tree_id, string $node_id, bool $editing = false)
  * @return int|false The ID of the saved tree item, or false if the item already exists.
  */
 function api_tree_item_save(int $id, int $tree_id, int $type, int $parent_tree_item_id, string $title, int $local_graph_id,
-int $host_id, int $site_id, int $host_grouping_type, int $sort_children_type, bool $propagate_changes): int|false {
+int $host_id, int $site_id, int $host_grouping_type, int $sort_children_type, bool $propagate_changes) : int|false {
 	input_validate_input_number($tree_id, 'tree_id');
 	input_validate_input_number($parent_tree_item_id, 'parent_tree_item_id');
 
@@ -890,7 +890,7 @@ int $host_id, int $site_id, int $host_grouping_type, int $sort_children_type, bo
  *
  * @return string The type of the tree item.
  */
-function api_tree_get_item_type(int $tree_item_id): string {
+function api_tree_get_item_type(int $tree_item_id) : string {
 	$tree_item = db_fetch_row_prepared('SELECT title, local_graph_id, site_id, host_id
 		FROM graph_tree_items
 		WHERE id = ?',
@@ -930,7 +930,7 @@ function api_tree_get_item_type(int $tree_item_id): string {
  *
  * @return int Returns < 0 if $a is less than $b; > 0 if $a is greater than $b, and 0 if they are equal.
  */
-function naturally_sort_graphs(array $a, array $b): int {
+function naturally_sort_graphs(array $a, array $b) : int {
 	return strnatcasecmp($a['title_cache'], $b['title_cache']);
 }
 
@@ -942,7 +942,7 @@ function naturally_sort_graphs(array $a, array $b): int {
  *
  * @return int The branch ordering type. Returns 1 if the leaf node is not found.
  */
-function api_tree_get_branch_ordering(int $leaf_id): int {
+function api_tree_get_branch_ordering(int $leaf_id) : int {
 	$leaf = db_fetch_row_prepared('SELECT sort_children_type, parent, graph_tree_id FROM graph_tree_items WHERE id = ?', [$leaf_id]);
 
 	if (cacti_sizeof($leaf)) {
@@ -971,7 +971,7 @@ function api_tree_get_branch_ordering(int $leaf_id): int {
  *
  * @return string The title of the branch.
  */
-function api_tree_get_branch_name(int $tree_id, int $leaf_id): string {
+function api_tree_get_branch_name(int $tree_id, int $leaf_id) : string {
 	return db_fetch_cell_prepared('SELECT title FROM graph_tree_items WHERE graph_tree_id = ? AND id = ?', [$tree_id, $leaf_id]);
 }
 
@@ -984,7 +984,7 @@ function api_tree_get_branch_name(int $tree_id, int $leaf_id): string {
  *
  * @return int|null The ID of the branch if found, or null if not found.
  */
-function api_tree_get_branch_id(int $tree_id, int $parent, string $title): int|null {
+function api_tree_get_branch_id(int $tree_id, int $parent, string $title) : int|null {
 	return db_fetch_cell_prepared('SELECT id FROM graph_tree_items WHERE graph_tree_id = ? AND parent = ? AND title = ?', [$tree_id, $parent, $title]);
 }
 
@@ -998,7 +998,7 @@ function api_tree_get_branch_id(int $tree_id, int $parent, string $title): int|n
  *
  * @return void
  */
-function api_tree_sort_branch(int|string $leaf_id, int $tree_id = 0, bool $lock = true): void {
+function api_tree_sort_branch(int|string $leaf_id, int $tree_id = 0, bool $lock = true) : void {
 	static $level = 1;
 
 	if ($lock) {
@@ -1251,7 +1251,7 @@ function api_tree_sort_branch(int|string $leaf_id, int $tree_id = 0, bool $lock 
  *
  * @return int The maximum sequence number, or 0 if no sequences are found.
  */
-function api_tree_get_max_sequence(): int {
+function api_tree_get_max_sequence() : int {
 	$max_seq = db_fetch_cell('SELECT MAX(sequence) FROM graph_tree');
 
 	if ($max_seq == null) {

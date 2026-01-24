@@ -31,7 +31,7 @@
  *
  * @return void
  */
-function input_validate_input_equals($value, $c_value, $variable = '') {
+function input_validate_input_equals(mixed $value, mixed $c_value, string $variable = '') : void {
 	if ($value != $c_value) {
 		die_html_input_error($variable, $value);
 	}
@@ -45,7 +45,7 @@ function input_validate_input_equals($value, $c_value, $variable = '') {
  *
  * @return void
  */
-function input_validate_input_number($value, $variable = '') {
+function input_validate_input_number(mixed $value, string $variable = '') : void {
 	if ((!is_numeric($value)) && ($value != '')) {
 		die_html_input_error($variable, $value);
 	}
@@ -60,7 +60,7 @@ function input_validate_input_number($value, $variable = '') {
  *
  * @return void
  */
-function input_validate_input_regex($value, $regex, $variable = '') {
+function input_validate_input_regex(string $value, string $regex, string $variable = '') : void {
 	if ($value != null && $value != '' && (!preg_match('/' . $regex . '/', $value))) {
 		die_html_input_error($variable, $value);
 	}
@@ -76,20 +76,20 @@ function input_validate_input_regex($value, $regex, $variable = '') {
  *
  * @return void
  */
-function html_log_input_error($variable) : void {
+function html_log_input_error(string $variable) : void {
 	cacti_debug_backtrace("Input Validation Not Performed for '$variable'");
 }
 
 /**
  * Terminates the script execution and outputs an error message for HTML input validation errors.
  *
- * @param string|null $variable The name of the variable that caused the validation error.
- * @param string|null $value The value of the variable that caused the validation error.
- * @param string $message An optional custom error message.
+ * @param mixed  $variable - The name of the variable that caused the validation error.
+ * @param mixed  $value    - The value of the variable that caused the validation error.
+ * @param string $message  - An optional custom error message.
  *
  * @return void
  */
-function die_html_input_error($variable = null, $value = null, $message = '') {
+function die_html_input_error(mixed $variable = null, mixed $value = null, string $message = '') : void {
 	$func = CACTI_CLI ? 'trim' : 'htmle';
 
 	$variable = ($variable !== null ? ', Variable:' . $func($variable) : '');

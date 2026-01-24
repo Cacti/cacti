@@ -3713,7 +3713,7 @@ function rrdtool_info2html(array $info_array, array $diff = []) : void {
  *
  * @return void
  */
-function print_leaves($array) {
+function print_leaves(array $array) : void {
 	foreach ($array as $key => $line) {
 		if (!is_array($line)) {
 			if (CACTI_CLI) {
@@ -4240,12 +4240,12 @@ function rrd_append_value(object $dom) : object {
 /**
  * rrd_delete_rra - delete an <RRA> subtree from the <RRD> XML structure
  *
- * @param  (object) $dom     - the DOM document, where the RRD XML is stored
- * @param  (array) $rra_parm - a single rra parameter set, given by the user
+ * @param object $dom      - The DOM document, where the RRD XML is stored
+ * @param array  $rra_parm - A single rra parameter set, given by the user
  *
- * @return (object) - the modified DOM object
+ * @return object - The modified DOM object
  */
-function rrd_delete_rra($dom, $rra_parm) {
+function rrd_delete_rra(object $dom, array $rra_parm) : object {
 	// find all RRA DOMNodes
 	$rras = $dom->getElementsByTagName('rra');
 
@@ -4785,13 +4785,13 @@ function add_unknown_data(array $graph_array, array &$xport_meta) : array {
 /**
  * add_business_hours - Add business hours highlight support for all rrdtool based charts
  *
- * @param  (array)  $data    - The graph_array data containing all rrdtool graph options
- * @param mixed $xport_meta
+ * @param array  $data - The graph_array data containing all rrdtool graph options
+ * @param mixed  $xport_meta
  *
- * @return (array) - the graph_array containing AREA definitions for the business hours
+ * @return array - the graph_array containing AREA definitions for the business hours
  *
  */
-function add_business_hours($data, &$xport_meta) {
+function add_business_hours(array $data, mixed &$xport_meta) : array {
 	if (read_config_option('business_hours_enable') == 'on' && gnrv('business_hours') == 'true') {
 		if ($data['start'] < 0) {
 			$bh_graph_start = time() + $data['start'];

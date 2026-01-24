@@ -195,7 +195,7 @@ function cacti_ldap_auth(string $username, string $password = '', string $dn = '
  */
 function cacti_ldap_search_dn(string $username, string $dn = '', string $host = '', int $port = 0, int $port_ssl = 0,
 	int $version = 0, int $encryption = 0, int $referrals = 0, int $mode = 0, string $search_base = '',
-	string $search_filter = '', string $specific_dn = '', string $specific_password = '') {
+	string $search_filter = '', string $specific_dn = '', string $specific_password = '') : array {
 	$ldap = new Ldap(0);
 
 	if (!empty($username)) {

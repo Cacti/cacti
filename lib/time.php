@@ -191,7 +191,7 @@ function get_timespan(array &$span, int $curr_time, int $timespan_given, int $fi
  *
  * @return bool - true, if month shifting required, else false
  */
-function month_shift($shift_size) {
+function month_shift(string $shift_size) : bool {
 	// is monthly shifting required?
 	return (strpos(strtolower($shift_size), 'month') > 0);
 }
@@ -203,7 +203,7 @@ function month_shift($shift_size) {
  *
  * @return bool       - true, if begin AND end match month begin/end boundaries
  */
-function check_month_boundaries(&$span) {
+function check_month_boundaries(array &$span) : bool {
 	// check left boundary -----------------------------------------------
 	$begin_of_month = (int) strtotime(date('Y-m-01', $span['begin_now']));
 	$begin_match 	  = ($begin_of_month == $span['begin_now']);

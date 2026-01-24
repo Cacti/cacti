@@ -61,7 +61,7 @@
  * @return void
  */
 function html_start_box(string $title, string $width, bool $div, int $cell_padding, string $align,
-	mixed $url_or_buttons, mixed $add_label = false, bool $showcols = false) {
+	mixed $url_or_buttons, mixed $add_label = false, bool $showcols = false) : void {
 	static $table_suffix = 1;
 	static $help_count   = 0;
 	static $mode_count   = 0;
@@ -321,7 +321,8 @@ function html_filter_end_box() : void {
  *
  * @return void
  */
-function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args = '', $header = '', $columns = 0, $tree_id = 0, $branch_id = 0) {
+function html_graph_area(array &$graph_array, string $no_graphs_message = '', string $extra_url_args = '',
+	string $header = '', int $columns = 0, int $tree_id = 0, int $branch_id = 0) : void {
 	$i = 0;
 	$k = 0;
 	$j = 0;
@@ -404,7 +405,8 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
  *
  * @return void
  */
-function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extra_url_args = '', $header = '', $columns = 0, $tree_id = 0, $branch_id = 0) {
+function html_graph_thumbnail_area(array &$graph_array, string $no_graphs_message = '', string $extra_url_args = '', string $header = '',
+	int $columns = 0, int $tree_id = 0, int $branch_id = 0) : void {
 	$i = 0;
 	$k = 0;
 	$j = 0;
@@ -521,7 +523,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
  *
  * @return void
  */
-function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_id = 0, $branch_id = 0) : void {
+function graph_drilldown_icons(int $local_graph_id, string $type = 'graph_buttons', int $tree_id = 0, int $branch_id = 0) : void {
 	static $rand = 0;
 
 	$aggregate_url = aggregate_build_children_url($local_graph_id);
@@ -599,7 +601,8 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_i
  *
  * @return string The generated HTML for the navigation bar.
  */
-function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $total_rows, $colspan = 30, $object = '', $page_var = 'page', $return_to = '', $page_count = true) {
+function html_nav_bar(string $base_url, int $max_pages, int $current_page, int $rows_per_page, int $total_rows,
+	int $colspan = 30, string $object = '', string $page_var = 'page', string $return_to = '', bool $page_count = true) : string {
 	if ($object == '') {
 		$object = __('Rows');
 	}
@@ -704,7 +707,7 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
  *
  * @return void
  */
-function html_header_sort($header_items, $sort_column, $sort_direction, $last_item_colspan = 1, $url = '', $return_to = '') {
+function html_header_sort(array $header_items, string $sort_column, string $sort_direction, int $last_item_colspan = 1, string $url = '', string $return_to = '') : void {
 	static $page_count = 0;
 
 	$table_id = form_get_table_id();
@@ -1268,7 +1271,7 @@ function html_header_checkbox(array $header_items, bool $include_form = true, st
  *
  * @return void
  */
-function html_create_list(array $form_data, string $column_display, string $column_id, string $form_previous_value) {
+function html_create_list(array $form_data, string $column_display, string $column_id, string $form_previous_value) : void {
 	if (cacti_sizeof($form_data)) {
 		foreach ($form_data as $key => $row) {
 			if (is_array($row)) {
@@ -1315,7 +1318,7 @@ function html_create_list(array $form_data, string $column_display, string $colu
  *
  * @return string $new_string - the escaped request variable to be returned.
  */
-function htmlerv(string $string) {
+function htmlerv(string $string) : string {
 	return html_escape(gnrv($string));
 }
 
@@ -1326,7 +1329,7 @@ function htmlerv(string $string) {
  *
  * @return string $new_string - the escaped request variable to be returned.
  */
-function html_escape_request_var(mixed $string) {
+function html_escape_request_var(mixed $string) : string {
 	return html_escape(gnrv($string));
 }
 
@@ -1337,7 +1340,7 @@ function html_escape_request_var(mixed $string) {
  *
  * @return string $new_string - the escaped string to be returned.
  */
-function htmle(mixed $string) {
+function htmle(mixed $string) : string {
 	return html_escape($string);
 }
 
@@ -1379,7 +1382,7 @@ function html_escape(mixed $string = '') : string {
  *
  * @return string $new_string - the modified string to be returned.
  */
-function html_split_string($string, $length = 90, $forgiveness = 10) {
+function html_split_string(string $string, int $length = 90, int $forgiveness = 10) : string {
 	$new_string = '';
 	$j          = 0;
 	$done       = false;
@@ -1711,7 +1714,7 @@ function draw_graph_items_list(array $item_list, string $filename, string $url_d
  *
  * @return bool true if active, false if not
  */
-function is_menu_pick_active($menu_url) {
+function is_menu_pick_active(string $menu_url) : bool {
 	static $url_array, $url_parts;
 
 	$menu_parts = [];
@@ -1799,7 +1802,7 @@ function is_menu_pick_active($menu_url) {
  *
  * @return void
  */
-function draw_menu(mixed $user_menu = '') {
+function draw_menu(mixed $user_menu = '') : void {
 	global $user_auth_realm_filenames, $menu, $menu_glyphs;
 
 	if (!is_array($user_menu)) {
@@ -2632,15 +2635,15 @@ function html_business_hours_filter(string $callBack = 'applyGraphFilter') : str
 /**
  * Generates an HTML host filter dropdown or input field based on configuration.
  *
- * @param int|string $host_id The ID of the host to be selected by default. Defaults to '-1'.
- * @param string $call_back The JavaScript function to call when the selection changes. Defaults to 'applyFilter'.
- * @param string $sql_where Additional SQL WHERE clause to filter the devices. Defaults to an empty string.
- * @param bool $noany Whether to exclude the 'Any' option from the dropdown. Defaults to false.
- * @param bool $nonone Whether to exclude the 'None' option from the dropdown. Defaults to false.
+ * @param mixed  $host_id   - The ID of the host to be selected by default. Defaults to '-1'.
+ * @param string $call_back - The JavaScript function to call when the selection changes. Defaults to 'applyFilter'.
+ * @param string $sql_where - Additional SQL WHERE clause to filter the devices. Defaults to an empty string.
+ * @param bool   $noany     - Whether to exclude the 'Any' option from the dropdown. Defaults to false.
+ * @param bool   $nonone    - Whether to exclude the 'None' option from the dropdown. Defaults to false.
  *
  * @return void
  */
-function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_where = '', $noany = false, $nonone = false) {
+function html_host_filter(mixed $host_id = -1, string $call_back = 'applyFilter', string $sql_where = '', bool $noany = false, bool $nonone = false) : void {
 	$theme = get_selected_theme();
 
 	if (!str_contains($call_back, '()')) {
@@ -2699,15 +2702,15 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 /**
  * Generates an HTML dropdown filter for selecting a site.
  *
- * @param int|string $site_id The ID of the site to be selected by default. Defaults to '-1'.
- * @param string $call_back The JavaScript function to call when the selection changes. Defaults to 'applyFilter'.
- * @param string $sql_where Additional SQL WHERE clause to filter the sites. Defaults to an empty string.
- * @param bool $noany Whether to exclude the 'Any' option from the dropdown. Defaults to false.
- * @param bool $nonone Whether to exclude the 'None' option from the dropdown. Defaults to false.
+ * @param mixed  $site_id   - The ID of the site to be selected by default. Defaults to '-1'.
+ * @param string $call_back - The JavaScript function to call when the selection changes. Defaults to 'applyFilter'.
+ * @param string $sql_where - Additional SQL WHERE clause to filter the sites. Defaults to an empty string.
+ * @param bool   $noany     - Whether to exclude the 'Any' option from the dropdown. Defaults to false.
+ * @param bool   $nonone    - Whether to exclude the 'None' option from the dropdown. Defaults to false.
  *
  * @return void
  */
-function html_site_filter($site_id = '-1', $call_back = 'applyFilter', $sql_where = '', $noany = false, $nonone = false) {
+function html_site_filter(mixed $site_id = -1, string $call_back = 'applyFilter', string $sql_where = '', bool $noany = false, bool $nonone = false) : void {
 	$theme = get_selected_theme();
 
 	if (!str_contains($call_back, '()')) {
@@ -2752,7 +2755,7 @@ function html_site_filter($site_id = '-1', $call_back = 'applyFilter', $sql_wher
  *
  * @return void
  */
-function html_location_filter($location = '', $call_back = 'applyFilter', $sql_where = '', $noany = false, $nonone = false) {
+function html_location_filter(string $location = '', string $call_back = 'applyFilter', string $sql_where = '', bool $noany = false, bool $nonone = false) : void {
 	$theme = get_selected_theme();
 
 	if (!str_contains($call_back, '()')) {
@@ -2804,7 +2807,7 @@ function html_location_filter($location = '', $call_back = 'applyFilter', $sql_w
  *
  * @return void
  */
-function html_spikekill_actions() {
+function html_spikekill_actions() : void {
 	switch(gnrv('action')) {
 		case 'spikemenu':
 			html_spikekill_menu(gfrv('local_graph_id'));
@@ -2858,9 +2861,10 @@ function html_spikekill_actions() {
  * setting is not available, it falls back to the default configuration option.
  *
  * @param string $name The name of the setting to retrieve.
+ *
  * @return mixed The value of the spike kill setting.
  */
-function html_spikekill_setting($name) {
+function html_spikekill_setting(string $name) : mixed {
 	return read_user_setting($name, read_config_option($name), true);
 }
 
@@ -3197,7 +3201,7 @@ function html_common_header(string $title, string $selectedTheme = '') : void {
 	<meta name='mobile-web-app-capable' content='yes'>
 	<meta name="theme-color" content="#161616"/>
 	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' https://api.qrserver.com <?php print $alternates; ?> data: blob:; style-src 'self' 'unsafe-inline' <?php print $alternates; ?>; script-src 'self' <?php print htmle($script_policy); ?> 'unsafe-inline' <?php print $alternates; ?>; worker-src 'self' <?php print $alternates; ?>;">
-	
+
 
 	<title><?php print $title; ?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
@@ -3430,9 +3434,9 @@ function html_common_header(string $title, string $selectedTheme = '') : void {
  *
  * @param string $page The page for which the help URL is to be generated.
  *
- * @return string|false The URL to the help documentation if the page is found, false otherwise.
+ * @return mixed - The URL to the help documentation if the page is found, false otherwise.
  */
-function html_help_page($page) {
+function html_help_page(string $page) : mixed {
 	global $help;
 
 	$help = [
@@ -3514,7 +3518,7 @@ function html_help_page($page) {
  *
  * @return void
  */
-function html_auth_header($section, $browser_title, $legend, $title, $hook_args = []) {
+function html_auth_header(string $section, string $browser_title, string $legend, string $title, array $hook_args = []) : void {
 	global $themes;
 
 	?>
@@ -3555,7 +3559,7 @@ function html_auth_header($section, $browser_title, $legend, $title, $hook_args 
  *
  * @return void
  */
-function html_auth_footer($section, $error = '', $html = '') {
+function html_auth_footer(string $section, string $error = '', string $html = '') : void {
 	?>
 					</table>
 				</div>

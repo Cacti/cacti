@@ -48,11 +48,11 @@ function update_data_source_title_cache_from_template(int $data_template_id) : v
  * that match a given data query/index combination
  *
  * @param int $snmp_query_id - The ID of the data query to match
- * @param int $snmp_index    - The index within the data query to match
+ * @param string $snmp_index - The index within the data query to match
  *
  * @return void
  */
-function update_data_source_title_cache_from_query($snmp_query_id, $snmp_index) : void {
+function update_data_source_title_cache_from_query(int $snmp_query_id, string $snmp_index) : void {
 	$data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
 		FROM data_local
 		WHERE snmp_query_id = ?
@@ -76,7 +76,7 @@ function update_data_source_title_cache_from_query($snmp_query_id, $snmp_index) 
  *
  * @return void
  */
-function update_data_source_title_cache_from_host($host_id, $query_id = 0, $ids = []) {
+function update_data_source_title_cache_from_host(int $host_id, int $query_id = 0, array $ids = []) : void {
 	if ($query_id > 0 && !cacti_sizeof($ids)) {
 		$data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
 		FROM data_local
@@ -111,7 +111,7 @@ function update_data_source_title_cache_from_host($host_id, $query_id = 0, $ids 
  *
  * @return void
  */
-function update_data_source_title_cache($local_data_id) {
+function update_data_source_title_cache(int $local_data_id) : void {
 	$old_title = db_fetch_cell_prepared('SELECT name_cache
 		FROM data_template_data
 		WHERE local_data_id = ?',
@@ -146,7 +146,7 @@ function update_data_source_title_cache($local_data_id) {
  *
  * @return void
  */
-function update_graph_title_cache_from_template($graph_template_id) {
+function update_graph_title_cache_from_template(int $graph_template_id) : void {
 	$graphs = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' local_graph_id
 		FROM graph_templates_graph
 		WHERE graph_template_id = ?
@@ -165,11 +165,11 @@ function update_graph_title_cache_from_template($graph_template_id) {
  * that match a given data query/index combination
  *
  * @param int   $snmp_query_id - The ID of the data query to match
- * @param mixed $snmp_index    - The index within the data query to match
+ * @param string $snmp_index   - The index within the data query to match
  *
  * @return void
  */
-function update_graph_title_cache_from_query($snmp_query_id, $snmp_index) {
+function update_graph_title_cache_from_query(int $snmp_query_id, string $snmp_index) : void {
 	$graphs = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
 		FROM graph_local
 		WHERE snmp_query_id = ?
@@ -192,7 +192,7 @@ function update_graph_title_cache_from_query($snmp_query_id, $snmp_index) {
  *
  * @return void
  */
-function update_graph_title_cache_from_host($host_id, $query_id = 0, $ids = []) {
+function update_graph_title_cache_from_host(int $host_id, int $query_id = 0, array $ids = []) : void {
 	if ($query_id > 0 && !cacti_sizeof($ids)) {
 		$graphs = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
 		FROM graph_local
@@ -231,7 +231,7 @@ function update_graph_title_cache_from_host($host_id, $query_id = 0, $ids = []) 
  *
  * @return void
  */
-function update_graph_title_cache($local_graph_id) {
+function update_graph_title_cache(int $local_graph_id) : void {
 	$old_title = db_fetch_cell_prepared('SELECT title_cache
 		FROM graph_templates_graph
 		WHERE local_graph_id = ?',
@@ -262,7 +262,7 @@ function update_graph_title_cache($local_graph_id) {
  *
  * @return string - The cleaned up string
  */
-function null_out_substitutions($string) {
+function null_out_substitutions(string $string) : string {
 	if ($string != '') {
 		return preg_replace("/\|host_" . VALID_HOST_FIELDS . "\|( - )?/i", '', $string);
 	} else {

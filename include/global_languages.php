@@ -229,7 +229,7 @@ set_language_constants([
  *
  * @return string The path to the JavaScript language file.
  */
-function get_js_language_file(array $names, string|null $prefix = null, string|null $base_path = null, string|null $extension = null): string {
+function get_js_language_file(array $names, string|null $prefix = null, string|null $base_path = null, string|null $extension = null) : string {
 	global $config;
 
 	$extension = empty($extension) ? 'js' : $extension;
@@ -251,7 +251,7 @@ function get_js_language_file(array $names, string|null $prefix = null, string|n
  *
  * @return string The path to the .mo language file.
  */
-function get_mo_language_file(array $names, string|null $prefix = null, string|null $base_path = null, string|null $extension = null): string {
+function get_mo_language_file(array $names, string|null $prefix = null, string|null $base_path = null, string|null $extension = null) : string {
 	global $config;
 
 	$extension = empty($extension) ? 'mo' : $extension;
@@ -272,7 +272,7 @@ function get_mo_language_file(array $names, string|null $prefix = null, string|n
  * @param string|null $base_path The base path where the language files are located. Defaults to CACTI_PATH_BASE if not provided.
  * @return string The path to the found language file, or an empty string if no file is found.
  */
-function get_language_file(string $extension, string $prefix, array $names, string|null $base_path = null): string {
+function get_language_file(string $extension, string $prefix, array $names, string|null $base_path = null) : string {
 	global $config;
 
 	if (empty($extension)) {
@@ -304,7 +304,7 @@ function get_language_file(string $extension, string $prefix, array $names, stri
  * @param string|null $i18n_handler The internationalization handler to use. If null or empty, defaults to checking both PHPGETTEXT and MOTRANSLATOR handlers.
  * @return array|null An array containing the handler, paths, and files for the selected internationalization provider, or null if no valid provider is found.
  */
-function get_src_language_files(string|null $i18n_handler): array|null {
+function get_src_language_files(string|null $i18n_handler) : array|null {
 	global $config;
 
 	$i18n_providers = [];
@@ -396,7 +396,7 @@ function get_src_language_files(string|null $i18n_handler): array|null {
  * @return \gettext_reader The gettext_reader object for the specified domain.
  * @throws Exception If the translation file cannot be read or is invalid.
  */
-function load_gettext_original(string $domain): \gettext_reader {
+function load_gettext_original(string $domain) : \gettext_reader {
 	global $cacti_textdomains;
 
 	// Hide deprecation errors for PHP 8 if using this
@@ -435,7 +435,7 @@ function load_gettext_original(string $domain): \gettext_reader {
  *
  * @throws Exception If the translation file cannot be read.
  */
-function load_gettext_motranslator(string $domain): mixed {
+function load_gettext_motranslator(string $domain) : mixed {
 	global $cacti_textdomains;
 
 	// Hide deprecation errors for PHP 8 if using this
@@ -471,7 +471,7 @@ function load_gettext_motranslator(string $domain): mixed {
  *
  * @throws Exception If the .mo file cannot be read or is invalid.
  */
-function load_gettext_oscarotero(string $domain): mixed {
+function load_gettext_oscarotero(string $domain) : mixed {
 	global $cacti_textdomains;
 
 	// Hide deprecation errors for PHP 8 if using this
@@ -514,7 +514,7 @@ function load_gettext_oscarotero(string $domain): mixed {
  *
  * @return mixed - The applied locale if successful, or false if no valid locale could be set.
  */
-function apply_locale(string $language): mixed {
+function apply_locale(string $language) : mixed {
 	global $cacti_locale, $cacti_country, $lang2locale;
 
 	$locale_set = false;
@@ -587,19 +587,19 @@ function repair_locale(mixed $language) : string {
 /**
  * Universal escaping wrappers
  */
-function __esc(): string {
+function __esc() : string {
 	return htmlspecialchars(call_user_func_array('__', func_get_args()), ENT_QUOTES);
 }
 
-function __esc_n(): string {
+function __esc_n() : string {
 	return htmlspecialchars(call_user_func_array('__n', func_get_args()), ENT_QUOTES);
 }
 
-function __esc_x(): string {
+function __esc_x() : string {
 	return htmlspecialchars(call_user_func_array('__x', func_get_args()), ENT_QUOTES);
 }
 
-function __esc_xn(): string {
+function __esc_xn() : string {
 	return htmlspecialchars(call_user_func_array('__xn', func_get_args()), ENT_QUOTES);
 }
 
@@ -608,7 +608,7 @@ function __esc_xn(): string {
  *
  * @return void
  */
-function load_fallback_procedure(): void {
+function load_fallback_procedure() : void {
 	global $cacti_textdomains, $cacti_locale, $cacti_country, $lang2locale;
 
 	// reset variables
@@ -632,7 +632,7 @@ function load_fallback_procedure(): void {
  *
  * @return void
  */
-function set_language_constants(array $constants): void {
+function set_language_constants(array $constants) : void {
 	foreach ($constants as $key => $value) {
 		$upperKey = strtoupper($key);
 
@@ -668,7 +668,7 @@ function set_language_constants(array $constants): void {
  * @param string $domain The domain to use for translation. Defaults to 'cacti'.
  * @return string The translated text, or the original text if translation is not available.
  */
-function __gettext(string|null $text, string $domain = 'cacti'): string {
+function __gettext(string|null $text, string $domain = 'cacti') : string {
 	global $i18n;
 
 	$text ??= '';
@@ -705,7 +705,7 @@ function __gettext(string|null $text, string $domain = 'cacti'): string {
  * @param string $domain The translation domain to use (default is 'cacti').
  * @return string The translated and pluralized string.
  */
-function __n(string|null $singular, string|null $plural, int $number, string $domain = 'cacti'): string {
+function __n(string|null $singular, string|null $plural, int $number, string $domain = 'cacti') : string {
 	global $i18n;
 
 	$singular ??= '';
@@ -725,7 +725,7 @@ function __n(string|null $singular, string|null $plural, int $number, string $do
  *                          If null, an empty string will be used.
  * @return string The processed text with double percent signs replaced by single percent signs.
  */
-function __uf(string|null $text): string {
+function __uf(string|null $text) : string {
 	return str_replace('%%', '%', $text ?? '');
 }
 
@@ -737,7 +737,7 @@ function __uf(string|null $text): string {
  *
  * @return string - Returns the translated and formatted string, or false if no arguments are provided.
  */
-function __(): string {
+function __() : string {
 	global $i18n;
 
 	$args = func_get_args();
@@ -815,7 +815,7 @@ function __(): string {
  *
  * @return string The translated and correctly pluralized string.
  */
-function __xn(string $context, string $singular, string $plural, int $number, string $domain = 'cacti'): string {
+function __xn(string $context, string $singular, string $plural, int $number, string $domain = 'cacti') : string {
 	$xsingular = $context . chr(4) . $singular;
 	$xplural   = $context . chr(4) . $plural;
 
@@ -833,7 +833,7 @@ function __xn(string $context, string $singular, string $plural, int $number, st
  *
  * @return false|string The translated and formatted message string, or false if the number of arguments is less than 2.
  */
-function __x(): false|string {
+function __x() : false|string {
 	global $i18n;
 
 	$args = func_get_args();
@@ -876,7 +876,7 @@ function __x(): false|string {
  * @param string $domain The translation domain to use for translating date components. Default is 'cacti'.
  * @return string The formatted and translated date string.
  */
-function __date(string $format, int|false $timestamp = false, string $domain = 'cacti'): string {
+function __date(string $format, int|false $timestamp = false, string $domain = 'cacti') : string {
 	global $i18n_date_placeholders;
 
 	if (!$timestamp) {
@@ -911,7 +911,7 @@ function __date(string $format, int|false $timestamp = false, string $domain = '
  *
  * @return array - a multi-dimensional array with the locale code as main key
  */
-function get_list_of_locales(): array {
+function get_list_of_locales() : array {
 	$lang2locale = [
 		'sq-AL' => ['language' => 'Albanian',            'direction' => 'ltr', 'country' => 'al', 'filename' => 'albanian_albania'],
 		'ar-SA' => ['language' => 'Arabic',              'direction' => 'rtl', 'country' => 'sa', 'filename' => 'arabic_saudi_arabia'],
@@ -1013,7 +1013,7 @@ function get_installed_locales() {
  *
  * @return mixed - The value of the configuration setting if found, or false if not found.
  */
-function read_user_i18n_setting(string $config_name): mixed {
+function read_user_i18n_setting(string $config_name) : mixed {
 	global $config;
 
 	// users must have cacti user auth turned on to use this, or the guest account must be active
@@ -1050,7 +1050,7 @@ function read_user_i18n_setting(string $config_name): mixed {
  *
  * @return string - The formatted number.
  */
-function number_format_i18n(mixed $number, mixed $decimals = null, mixed $baseu = 1024): string {
+function number_format_i18n(mixed $number, mixed $decimals = null, mixed $baseu = 1024) : string {
 	global $cacti_locale, $cacti_country;
 
 	if (is_null($number)) {
@@ -1135,7 +1135,7 @@ function number_format_i18n(mixed $number, mixed $decimals = null, mixed $baseu 
  *
  * @return string The default language code for a new user.
  */
-function get_new_user_default_language(): string {
+function get_new_user_default_language() : string {
 	$accepted = repair_locale(read_config_option('i18n_default_language'));
 
 	if ($accepted == '') {
@@ -1154,7 +1154,7 @@ function get_new_user_default_language(): string {
  *
  * @return void
  */
-function i18n_debug(string $text, int $mode = FILE_APPEND, string $eol = PHP_EOL): void {
+function i18n_debug(string $text, int $mode = FILE_APPEND, string $eol = PHP_EOL) : void {
 	global $config;
 
 	if (!empty($config['i18n_log']) && is_writable($config['i18n_log'])) {
@@ -1171,7 +1171,7 @@ function i18n_debug(string $text, int $mode = FILE_APPEND, string $eol = PHP_EOL
  *
  * @return void
  */
-function i18n_text_debug(string $text, int $mode = FILE_APPEND, string $eol = PHP_EOL): void {
+function i18n_text_debug(string $text, int $mode = FILE_APPEND, string $eol = PHP_EOL) : void {
 	global $config;
 
 	if (!empty($config['i18n_text_log']) && is_writable($config['i18n_log'])) {

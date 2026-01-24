@@ -34,7 +34,7 @@ use PHPMailer\PHPMailer\Exception;
  * @return string the truncated string if len($text) is greater than $max_length, else
  *   the original string
  */
-function title_trim(string $text, int $max_length): string {
+function title_trim(string $text, int $max_length) : string {
 	if (strlen($text) > $max_length) {
 		return mb_substr($text, 0, $max_length) . '...';
 	} else {
@@ -298,7 +298,7 @@ function clear_user_setting(string $config_name, mixed $user = null) : void {
  *
  * @return string the default value of the configuration option
  */
-function read_default_user_setting(string $config_name): string {
+function read_default_user_setting(string $config_name) : string {
 	global $settings_user;
 
 	$result = '';
@@ -678,7 +678,7 @@ function cache_common_config_settings() : array {
  *
  * @return mixed - The current value of the configuration option
  */
-function read_config_option(string $config_name, bool $force = false): mixed {
+function read_config_option(string $config_name, bool $force = false) : mixed {
 	global $config, $database_hostname, $database_default, $database_port, $database_sessions;
 
 	$loaded = false;
@@ -1001,7 +1001,7 @@ function get_message_title(array $current_message) : mixed {
  *
  * @return string a formatted message
  */
-function get_format_message_instance(mixed $current_message): string {
+function get_format_message_instance(mixed $current_message) : string {
 	if (is_array($current_message) && isset($current_message['message'])) {
 		$fmessage = $current_message['message'];
 		$level    = get_message_level($current_message);
@@ -1334,7 +1334,7 @@ function force_session_data() : bool {
  *
  * @return array the modified array
  */
-function array_rekey(mixed $array, string $key, mixed $key_value): array {
+function array_rekey(mixed $array, string $key, mixed $key_value) : array {
 	$ret_array = [];
 
 	if (is_array($array)) {
@@ -3027,7 +3027,7 @@ function get_data_source_item_name(int $data_template_rrd_id) : mixed {
  *
  * @return string the full path to the data source or an empty string for an error
  */
-function get_data_source_path(int $local_data_id, bool $expand_paths): string {
+function get_data_source_path(int $local_data_id, bool $expand_paths) : string {
 	static $data_source_path_cache = [];
 
 	if (empty($local_data_id)) {
@@ -9022,7 +9022,7 @@ function substring_index(string $subject, string $delim, int $count) : string {
 	}
 }
 
-function cacti_format_ipv6_colon(string $address): string {
+function cacti_format_ipv6_colon(string $address) : string {
 	if (!filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
 		return $address;
 	}

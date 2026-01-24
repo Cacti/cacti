@@ -666,7 +666,7 @@ function color_item() : void {
 /**
  * color_template_edit	edit the color template
  */
-function color_template_edit() :void {
+function color_template_edit() : void {
 	global $image_types, $fields_color_template_template_edit, $struct_aggregate;
 
 	require_once(CACTI_PATH_LIBRARY . '/api_aggregate.php');

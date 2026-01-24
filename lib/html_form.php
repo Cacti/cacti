@@ -558,7 +558,7 @@ function draw_edit_control(string $field_name, array &$field_array) : void {
  *
  * @return void
  */
-function form_button($form_name, $value, $title = '', $action = '') {
+function form_button(string $form_name, string $value, string $title = '', string $action = '') : void {
 	print "<button type='button' class='ui-button ui-corner-all ui-widget' " .
 		"id='$form_name' " .
 		"name='$form_name' " .
@@ -577,7 +577,7 @@ function form_button($form_name, $value, $title = '', $action = '') {
  *
  * @return void
  */
-function form_submit($form_name, $value, $title = '', $action = '') {
+function form_submit(string $form_name, string $value, string $title = '', string $action = '') : void {
 	print "<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' " .
 		"id='$form_name' " .
 		"name='$form_name' " .
@@ -595,7 +595,7 @@ function form_submit($form_name, $value, $title = '', $action = '') {
  *
  * @return void
  */
-function form_file($form_name, $form_size = 30, $form_accept = '') {
+function form_file(string $form_name, int $form_size = 30, string $form_accept = '') : void {
 	print '<div>';
 	print "<label class='import_label' for='$form_name'>" . __('Select a File') . '</label>';
 	print "<input type='file'";
@@ -629,7 +629,8 @@ function form_file($form_name, $form_size = 30, $form_accept = '') {
  * @return void
  */
 
-function form_filepath_box($form_name, $previous_val, $default_value, $form_max_length, $form_size = 30, $type = 'text', $current_id = 0, $data = false) {
+function form_filepath_box(string $form_name, string $previous_val, string $default_value, mixed $form_max_length,
+	mixed $form_size = 30, string $type = 'text', int $current_id = 0, mixed $data = false) : void {
 	if (($previous_val == '') && (empty($current_id))) {
 		$previous_val = $default_value;
 	}
@@ -703,7 +704,8 @@ function form_filepath_box($form_name, $previous_val, $default_value, $form_max_
  *
  * @return void
  */
-function form_dirpath_box($form_name, $previous_val, $default_value, $form_max_length, $form_size = 30, $type = 'text', $current_id = 0) {
+function form_dirpath_box(string $form_name, string $previous_val, string $default_value, mixed $form_max_length,
+	mixed $form_size = 30, string $type = 'text', int $current_id = 0) : void {
 	if (($previous_val == '') && (empty($current_id))) {
 		$previous_val = $default_value;
 	}
@@ -755,7 +757,8 @@ function form_dirpath_box($form_name, $previous_val, $default_value, $form_max_l
  *
  * @return void
  */
-function form_text_box($form_name, $previous_val, $default_value, $form_max_length, $form_size = 30, $type = 'text', $current_id = 0, $placeholder = '', $title = '') {
+function form_text_box(string $form_name, string $previous_val, string $default_value, mixed $form_max_length,
+	mixed $form_size = 30, string $type = 'text', int $current_id = 0, string $placeholder = '', string $title = '') : void {
 	if (($previous_val == '') && (empty($current_id))) {
 		$previous_val = $default_value;
 	}
@@ -826,7 +829,9 @@ function form_hidden_box(string $form_name, int|string $previous_val, int|string
  *
  * @return void
  */
-function form_dropdown(string $form_name, array $form_data, string $column_display, mixed $column_id, mixed $previous_val, string $none_entry, mixed $default_value, string $class = '', string $on_change = '', string $display_name = '') : void {
+function form_dropdown(string $form_name, array $form_data, string $column_display, mixed $column_id,
+	mixed $previous_val, string $none_entry, mixed $default_value, string $class = '',
+	string $on_change = '', string $display_name = '') : void {
 	global $form_id;
 
 	if ($previous_val == '') {
@@ -903,7 +908,7 @@ function form_dropdown(string $form_name, array $form_data, string $column_displ
  * @return void
  */
 function form_dropicon(string $form_name, array $form_data, string $column_display, string $column_id,
-	mixed $previous_val, string $none_entry, mixed $default_value, string $class = '', string $on_change = '') {
+	mixed $previous_val, string $none_entry, mixed $default_value, string $class = '', string $on_change = '') : void {
 	if ($previous_val == '') {
 		$previous_val = $default_value;
 	}
@@ -956,7 +961,9 @@ function form_dropicon(string $form_name, array $form_data, string $column_displ
  *
  * @return void
  */
-function form_droplanguage($form_name, $column_display, $column_id, $previous_val, $none_entry, $default_value, $class = '', $on_change = '') {
+function form_droplanguage(string $form_name, string $column_display, string $column_id,
+	string $previous_val, string $none_entry, string $default_value, string $class = '',
+	string $on_change = '') : void {
 	if ($previous_val == '') {
 		$previous_val = $default_value;
 	}
@@ -1026,7 +1033,9 @@ function form_droplanguage($form_name, $column_display, $column_id, $previous_va
  *
  * @return void
  */
-function form_callback($form_name, $classic_sql, $column_display, $column_id, $action, $previous_id, $previous_value, $none_entry, $default_value, $class = '', $on_change = '', $display_name = '', $request_vars = '') {
+function form_callback(string $form_name, string $classic_sql, string $column_display, string $column_id,
+	string $action, string $previous_id, string $previous_value, string $none_entry, string $default_value,
+	string $class = '', string $on_change = '', string $display_name = '', string $request_vars = '') : void {
 	if ($previous_value == '') {
 		$previous_value = $default_value;
 	}
@@ -1086,7 +1095,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $a
  */
 
 function form_checkbox(string $form_name, mixed $previous_val, string $form_caption, mixed $default_value,
-	mixed $current_id = 0, string $class = '', string $on_change = '', string $title = '', bool $show_label = false) {
+	mixed $current_id = 0, string $class = '', string $on_change = '', string $title = '', bool $show_label = false) : void {
 	if (($previous_val === null) && (empty($current_id))) {
 		$previous_val = $default_value;
 	}
@@ -1136,7 +1145,8 @@ function form_checkbox(string $form_name, mixed $previous_val, string $form_capt
  *
  * @return void
  */
-function form_radio_button($form_name, $previous_val, $form_current_value, $form_caption, $default_value, $class = '', $on_change = '') {
+function form_radio_button(string $form_name, string $previous_val, string $form_current_value,
+	string $form_caption, string $default_value, string $class = '', string $on_change = '') : void {
 	if ($previous_val == '') {
 		$previous_val = $default_value;
 	}
@@ -1185,7 +1195,8 @@ function form_radio_button($form_name, $previous_val, $form_current_value, $form
  *
  * @return void
  */
-function form_text_area($form_name, $previous_val, $form_rows, $form_columns, $default_value, $class = '', $on_change = '', $placeholder = '') {
+function form_text_area(string $form_name, string $previous_val, int $form_rows, int $form_columns,
+	string $default_value, string $class = '', string $on_change = '', string $placeholder = '') : void {
 	if ($previous_val == '') {
 		$previous_val = $default_value;
 	}
@@ -1230,7 +1241,8 @@ function form_text_area($form_name, $previous_val, $form_rows, $form_columns, $d
  *
  * @return void
  */
-function form_multi_dropdown(string $form_name, array $array_display, mixed $prev_vals, string $column_id, string $class = '', string $on_change = '') : void {
+function form_multi_dropdown(string $form_name, array $array_display, mixed $prev_vals,
+	string $column_id, string $class = '', string $on_change = '') : void {
 	if (!is_array($prev_vals) && $prev_vals != '') {
 		$values              = explode(',', $prev_vals);
 		$prev_vals           = [];
@@ -1301,7 +1313,8 @@ function form_multi_dropdown(string $form_name, array $array_display, mixed $pre
  *
  * @return void
  */
-function form_color_dropdown($form_name, $previous_val, $none_entry, $default_value, $class = '', $on_change = '') {
+function form_color_dropdown(string $form_name, string $previous_val, string $none_entry, string $default_value,
+	string $class = '', string $on_change = '') : void {
 	if ($previous_val == '') {
 		$previous_val = $default_value;
 	}
@@ -1378,7 +1391,9 @@ function form_color_dropdown($form_name, $previous_val, $none_entry, $default_va
  *
  * @return void
  */
-function form_font_box($form_name, $previous_val, $default_value, $form_max_length, $form_size = 30, $type = 'text', $current_id = 0, $placeholder = '') {
+function form_font_box(string $form_name, string $previous_val, string $default_value,
+	mixed $form_max_length, mixed $form_size = 30, string $type = 'text', int $current_id = 0,
+	string $placeholder = '') : void {
 	if (($previous_val == '') && (empty($current_id))) {
 		$previous_val = $default_value;
 	}
@@ -1487,7 +1502,7 @@ function form_font_box($form_name, $previous_val, $default_value, $form_max_leng
  *
  * @return void - Data is streamed through stdout
  */
-function form_continue_confirmation($form_data, $plugin_hook = '', $save = []) {
+function form_continue_confirmation(array $form_data, string $plugin_hook = '', array $save = []) : void {
 	$page      = $form_data['general']['page'];
 	$actions   = $form_data['general']['actions'];
 	$drpvar    = $form_data['general']['optvar'];
@@ -1717,11 +1732,10 @@ function form_continue_confirmation($form_data, $plugin_hook = '', $save = []) {
  * @param string $body_text - the text to prompt the user with on this form
  * @param string $cancel_url - the url to go to when the user clicks 'cancel'
  * @param string $action_url - the url to go to when the user clicks 'delete'
- * @param mixed $title_text
  *
  * @return void
  */
-function form_confirm($title_text, $body_text, $cancel_url, $action_url) { ?>
+function form_confirm(string $title_text, string $body_text, string $cancel_url, $action_url) : void { ?>
 	<br>
 	<table style='width:60%;'>
 		<tr>
@@ -1750,7 +1764,7 @@ function form_confirm($title_text, $body_text, $cancel_url, $action_url) { ?>
  *
  * @return void
  */
-function form_confirm_buttons($action_url, $cancel_url) {
+function form_confirm_buttons(string $action_url, string $cancel_url) : void {
 	?>
 	<tr>
 		<td class='right'>
@@ -1773,7 +1787,8 @@ function form_confirm_buttons($action_url, $cancel_url) {
  *
  * @return void
  */
-function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $ajax = true) {
+function form_save_button(string $cancel_url, string $force_type = '',
+	string $key_field = 'id', bool $ajax = true) : void {
 	global $form_id;
 	$catp = 'cancel';
 	$atp  = 'save';
@@ -1860,7 +1875,8 @@ function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $aja
  *
  * @return void
  */
-function form_save_buttons($buttons, $cancel_url = '', $force_type = '', $key_field = 'id', $ajax = true) {
+function form_save_buttons(array $buttons, string $cancel_url = '', string $force_type = '',
+	string $key_field = 'id', bool $ajax = true) : void {
 	global $form_id;
 	$catp = 'cancel';
 	$calt = __('Cancel');
@@ -1976,7 +1992,7 @@ function form_save_buttons($buttons, $cancel_url = '', $force_type = '', $key_fi
  *
  * @return void
  */
-function form_start($action, $id = '', $multipart = false) {
+function form_start(string $action, string $id = '', bool $multipart = false) : void {
 	global $form_id, $form_action;
 	static $counter = 1;
 
@@ -2002,7 +2018,7 @@ function form_start($action, $id = '', $multipart = false) {
  *
  * @return void
  */
-function form_end($ajax = true) {
+function form_end(bool $ajax = true) : void {
 	global $form_id, $form_action;
 
 	print '</form>' . PHP_EOL;

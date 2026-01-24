@@ -448,7 +448,7 @@ function clog_view_logfile() : void {
  * @param string $b The second file name to compare.
  * @return int Returns < 0 if $a is less than $b, 0 if they are equal, and > 0 if $a is greater than $b.
  */
-function filter_sort(string $a, string $b): int {
+function filter_sort(string $a, string $b) : int {
 	$a_parts = explode('-', $a);
 	$b_parts = explode('-', $b);
 

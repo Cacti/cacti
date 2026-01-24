@@ -37,7 +37,8 @@
  *
  * @return int The number of fields drawn.
  */
-function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $field_name_format = '|field|', $header_title = '', $alternate_colors = true, $include_hidden_fields = true, $snmp_query_graph_id = 0) {
+function draw_nontemplated_fields_graph(int $graph_template_id, array &$values_array, string $field_name_format = '|field|',
+	string $header_title = '', bool $alternate_colors = true, bool $include_hidden_fields = true, int $snmp_query_graph_id = 0) : int {
 	global $struct_graph;
 
 	$form_array       = [];
@@ -118,9 +119,11 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
  * @param string $header_title The title for the header. Default is an empty string.
  * @param bool $alternate_colors Whether to alternate row colors. Default is true.
  * @param string $locked Whether the fields are locked. Default is 'false'.
+ *
  * @return int The number of fields drawn.
  */
-function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id, $field_name_format = '|field|_|id|', $header_title = '', $alternate_colors = true, $locked = 'false') {
+function draw_nontemplated_fields_graph_item(int $graph_template_id, int $local_graph_id, string $field_name_format = '|field|_|id|',
+	string $header_title = '', bool $alternate_colors = true, string $locked = 'false') : int {
 	global $struct_graph_item;
 
 	$draw_any_items   = false;
@@ -302,7 +305,9 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
  *
  * @return int The number of fields drawn.
  */
-function draw_nontemplated_fields_data_source($data_template_id, $local_data_id, &$values_array, $field_name_format = '|field|', $header_title = '', $alternate_colors = true, $include_hidden_fields = true, $snmp_query_graph_id = 0) {
+function draw_nontemplated_fields_data_source(int $data_template_id, int $local_data_id, array &$values_array,
+	string $field_name_format = '|field|', string $header_title = '', bool $alternate_colors = true,
+	bool $include_hidden_fields = true, int $snmp_query_graph_id = 0) : int {
 	global $struct_data_source;
 
 	$form_array       = [];
@@ -388,9 +393,12 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
  * @param bool $alternate_colors Whether to alternate row colors. Default is true.
  * @param bool $include_hidden_fields Whether to include hidden fields. Default is true.
  * @param int $snmp_query_graph_id The ID of the SNMP query graph. Default is 0.
+ *
  * @return int The number of fields drawn.
  */
-function draw_nontemplated_fields_data_source_item($data_template_id, &$values_array, $field_name_format = '|field_id|', $header_title = '', $draw_title_for_each_item = true, $alternate_colors = true, $include_hidden_fields = true, $snmp_query_graph_id = 0) {
+function draw_nontemplated_fields_data_source_item(int $data_template_id, array &$values_array,
+	string $field_name_format = '|field_id|', string $header_title = '', bool $draw_title_for_each_item = true,
+	bool $alternate_colors = true, bool $include_hidden_fields = true, int $snmp_query_graph_id = 0) : int {
 	global $struct_data_source_item;
 
 	$form_array       = [];
@@ -505,16 +513,17 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
  * It supports various customization options such as field name formatting, header titles,
  * alternating row colors, and inclusion of hidden fields.
  *
- * @param int $data_template_data_id The ID of the data template data.
- * @param string $field_name_format The format for the field names. Default is '|field|'.
- * @param string $header_title The title to display as the header. Default is an empty string.
- * @param bool $alternate_colors Whether to alternate row colors. Default is true.
- * @param bool $include_hidden_fields Whether to include hidden fields. Default is true.
- * @param int $snmp_query_id The SNMP query ID. Default is 0.
+ * @param int    $data_template_data_id - The ID of the data template data.
+ * @param string $field_name_format     - The format for the field names. Default is '|field|'.
+ * @param string $header_title          - The title to display as the header. Default is an empty string.
+ * @param bool   $alternate_colors      - Whether to alternate row colors. Default is true.
+ * @param bool   $include_hidden_fields - Whether to include hidden fields. Default is true.
+ * @param int    $snmp_query_id         - The SNMP query ID. Default is 0.
+ *
  * @return int The number of fields drawn.
  */
-function draw_nontemplated_fields_custom_data($data_template_data_id, $field_name_format = '|field|',
-	$header_title = '', $alternate_colors = true, $include_hidden_fields = true, $snmp_query_id = 0) {
+function draw_nontemplated_fields_custom_data(int $data_template_data_id, string $field_name_format = '|field|',
+	string $header_title = '', bool $alternate_colors = true, bool $include_hidden_fields = true, int $snmp_query_id = 0) : int {
 	$draw_any_items   = false;
 	$num_fields_drawn = 0;
 
@@ -624,7 +633,7 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
  *
  * @return void
  */
-function draw_custom_data_row($field_name, $data_input_field_id, $data_template_data_id, $current_value) {
+function draw_custom_data_row(string $field_name, int $data_input_field_id, int $data_template_data_id, mixed $current_value) : void {
 	$field = db_fetch_row_prepared('SELECT data_name, type_code
 		FROM data_input_fields
 		WHERE id = ?',

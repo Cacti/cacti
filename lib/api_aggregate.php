@@ -34,7 +34,7 @@
  *
  * @return int The ID of the newly inserted graph.
  */
-function aggregate_graph_save(int $_local_graph_id, int $_graph_template_id, string $_graph_title, int $_aggregate_template_id = 0, array $graph_data = []): int {
+function aggregate_graph_save(int $_local_graph_id, int $_graph_template_id, string $_graph_title, int $_aggregate_template_id = 0, array $graph_data = []) : int {
 	// suppress warnings
 	error_reporting(E_ALL);
 
@@ -63,7 +63,7 @@ function aggregate_graph_save(int $_local_graph_id, int $_graph_template_id, str
  *
  * @return int ID of graph.
  */
-function aggregate_graph_local_save(int $id = 0): int {
+function aggregate_graph_local_save(int $id = 0) : int {
 	cacti_log(__FUNCTION__ . ' local_graph: ' . $id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 	// create or update entry: graph_local
@@ -88,7 +88,7 @@ function aggregate_graph_local_save(int $id = 0): int {
  *
  * @return int ID of record in graph_templates_graph
  */
-function aggregate_graph_templates_graph_save(int $local_graph_id, int $graph_template_id, string $graph_title = '', int $aggregate_template_id = 0, array $new_data = []): int {
+function aggregate_graph_templates_graph_save(int $local_graph_id, int $graph_template_id, string $graph_title = '', int $aggregate_template_id = 0, array $new_data = []) : int {
 	cacti_log(__FUNCTION__ . ' local_graph: ' . $local_graph_id . ' template: ' . $graph_template_id . ' title: ' . $graph_title . ' aggregate template: ' . $aggregate_template_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 	// base graph must exist
@@ -196,7 +196,7 @@ function aggregate_graph_templates_graph_save(int $local_graph_id, int $graph_te
  */
 function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph_id, int $_graph_template_id,
 	array $_skip, array $_totali, int $_graph_item_sequence, int $_selected_graph_index, array $_color_templates, array $_graph_item_types, array $_cdefs,
-	int $_graph_type, string $_gprint_prefix, string $_gprint_format, int $_total, string $_total_type = '', array $member_graphs = []): int {
+	int $_graph_type, string $_gprint_prefix, string $_gprint_format, int $_total, string $_total_type = '', array $member_graphs = []) : int {
 	global $struct_graph_item, $graph_item_types;
 
 	// Remove filter item
@@ -479,7 +479,7 @@ function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph
  * @param string $table
  * @return bool true if save was successful, false otherwise
  */
-function aggregate_graph_items_save(array $items, string $table): bool {
+function aggregate_graph_items_save(array $items, string $table) : bool {
 	$defaults = [];
 
 	if ($table == 'aggregate_graphs_graph_item') {
@@ -558,7 +558,7 @@ function aggregate_graph_items_save(array $items, string $table): bool {
  * @param bool $has_override - form had override checkboxes
  * @return array             - cleaned up graph parameters
  */
-function aggregate_validate_graph_params(array $posted, bool $has_override = false): array {
+function aggregate_validate_graph_params(array $posted, bool $has_override = false) : array {
 	$check_post_params = [
 		'alt_y_grid'           => ['type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''],
 		'auto_padding'         => ['type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''],
@@ -629,7 +629,7 @@ function aggregate_validate_graph_params(array $posted, bool $has_override = fal
  * @param array $graph_items - reference to graph items array to update with form values
  * @return void
  */
-function aggregate_validate_graph_items(array $posted, array &$graph_items): void {
+function aggregate_validate_graph_items(array $posted, array &$graph_items) : void {
 	foreach ($_POST as $var => $val) {
 		// work on color_templates
 		if (preg_match('/^agg_color_([0-9]+)$/', $var, $matches)) {
@@ -684,7 +684,7 @@ function aggregate_validate_graph_items(array $posted, array &$graph_items): voi
  *
  * @return void
  */
-function aggregate_graphs_cleanup(int $base, int $aggregate, int $reorder): void {
+function aggregate_graphs_cleanup(int $base, int $aggregate, int $reorder) : void {
 	include_once(CACTI_PATH_LIBRARY . '/api_aggregate.php');
 
 	cacti_log(__FUNCTION__ . ' called. Base ' . $base . ' Aggregate ' . $aggregate . ' Reorder: ' . $reorder, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
@@ -710,7 +710,7 @@ function aggregate_graphs_cleanup(int $base, int $aggregate, int $reorder): void
  *
  * @return bool
  */
-function aggregate_reorder_ds_graph(int $base, string $graph_template_id, int $aggregate, int $reorder, int $graph_type): bool {
+function aggregate_reorder_ds_graph(int $base, string $graph_template_id, int $aggregate, int $reorder, int $graph_type) : bool {
 	cacti_log(__FUNCTION__ . ' called. Base Graph ' . $base . ' Graph Template ' . $graph_template_id . ' Aggregate Graph ' . $aggregate . ' Reorder: ' . $reorder, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 	// suppress warnings
@@ -888,7 +888,7 @@ function aggregate_reorder_ds_graph(int $base, string $graph_template_id, int $a
  *
  * @return void
  */
-function push_out_aggregates(int $aggregate_template_id, int $local_graph_id = 0): void {
+function push_out_aggregates(int $aggregate_template_id, int $local_graph_id = 0) : void {
 	$attribs                     = [];
 	$attribs['skipped_items']    = [];
 	$attribs['total_items']      = [];
@@ -1102,7 +1102,7 @@ function push_out_aggregates(int $aggregate_template_id, int $local_graph_id = 0
  *
  * @return void
  */
-function aggregate_create_update(int &$local_graph_id, array $member_graphs, array $attribs): void {
+function aggregate_create_update(int &$local_graph_id, array $member_graphs, array $attribs) : void {
 	cacti_log(__FUNCTION__ . ' called. Graph id: ' . $local_graph_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 	// suppress warnings
@@ -1364,7 +1364,7 @@ function aggregate_create_update(int &$local_graph_id, array $member_graphs, arr
  *
  * @return void
  */
-function aggregate_handle_ptile_type(array $member_graphs, array $skipped_items, int $local_graph_id, int $_total, string $_total_type): void {
+function aggregate_handle_ptile_type(array $member_graphs, array $skipped_items, int $local_graph_id, int $_total, string $_total_type) : void {
 	$special_comments  = null;
 	$special_hrules    = null;
 	$graph_template_id = 0;
@@ -1601,7 +1601,7 @@ function aggregate_handle_ptile_type(array $member_graphs, array $skipped_items,
  *
  * @return void
  */
-function aggregate_handle_stacked_lines(int $local_graph_id, string $_orig_graph_type, int $_total, string $_total_type, string $_total_prefix): void {
+function aggregate_handle_stacked_lines(int $local_graph_id, string $_orig_graph_type, int $_total, string $_total_type, string $_total_prefix) : void {
 	// Handle the stacked line cases switch line widths
 	$width        = '0.01';
 	$special_type = '';
@@ -1679,7 +1679,7 @@ function aggregate_handle_stacked_lines(int $local_graph_id, string $_orig_graph
  *
  * @return bool True on success, false on failure.
  */
-function aggregate_get_data_sources(array &$graph_array, mixed &$data_sources, mixed &$graph_template, string &$message = ''): bool {
+function aggregate_get_data_sources(array &$graph_array, mixed &$data_sources, mixed &$graph_template, string &$message = '') : bool {
 	if (cacti_sizeof($graph_array)) {
 		// fetch all data sources for all selected graphs
 		$data_sources = db_fetch_assoc('SELECT dtd.local_data_id, dtd.name_cache
@@ -1737,7 +1737,7 @@ function aggregate_get_data_sources(array &$graph_array, mixed &$data_sources, m
  *
  * @return void
  */
-function draw_aggregate_graph_items_list(int $_graph_id = 0, int $_graph_template_id = 0, array $_object = []): void {
+function draw_aggregate_graph_items_list(int $_graph_id = 0, int $_graph_template_id = 0, array $_object = []) : void {
 	global $graph_item_types, $consolidation_functions;
 
 	cacti_log(__FUNCTION__ . '  called. graph: ' . $_graph_id . ' template: ' . $_graph_template_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
@@ -2013,7 +2013,7 @@ function draw_aggregate_graph_items_list(int $_graph_id = 0, int $_graph_templat
  *
  * @return void
  */
-function draw_aggregate_template_graph_config(int $aggregate_template_id, int $graph_template_id): void {
+function draw_aggregate_template_graph_config(int $aggregate_template_id, int $graph_template_id) : void {
 	global $struct_graph;
 
 	html_start_box(__('Graph Configuration'), '100%', true, 3, 'center', '');

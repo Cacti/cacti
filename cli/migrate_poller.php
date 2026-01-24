@@ -170,10 +170,12 @@ exit(0);
 
 /**
  * Check if a poller exists in the database
+ *
  * @param int $poller_id The poller ID to check
+ *
  * @return bool True if poller exists, false otherwise
  */
-function check_if_poller_exists($poller_id) {
+function check_if_poller_exists(int $poller_id) : bool {
 	$poller = db_fetch_row_prepared('SELECT id, name FROM poller WHERE id = ?', [$poller_id]);
 
 	if (empty($poller)) {

@@ -31,7 +31,7 @@
  *
  * @return void
  */
-function initialize_realtime_step_and_window() {
+function initialize_realtime_step_and_window() : void {
 	if (!isset($_SESSION['sess_realtime_dsstep'])) {
 		$_SESSION['sess_realtime_dsstep'] = read_config_option('realtime_interval');
 	}
@@ -447,7 +447,7 @@ function inject_realtime_form() : string {
  *
  * @return void
  */
-function html_graph_preview_filter($page, $action, $devices_where = '', $templates_where = '') {
+function html_graph_preview_filter(string $page, string $action, string $devices_where = '', string $templates_where = '') : void {
 	global $graphs_per_page, $realtime_window, $realtime_refresh, $graph_timeshifts, $graph_timespans;
 
 	initialize_realtime_step_and_window();
@@ -2330,7 +2330,7 @@ function html_graph_properties() : void {
  *
  * @return void
  */
-function html_graph_validate_preview_request_vars() {
+function html_graph_validate_preview_request_vars() : void {
 	$filters  = create_graphs_preview_filter('sess_pview');
 	$validate = [];
 

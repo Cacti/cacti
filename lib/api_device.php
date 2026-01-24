@@ -30,7 +30,7 @@
  *
  * @return void
  */
-function api_device_cache_crc_update(int $poller_id, string $variable = 'poller_replicate_device_cache_crc'): void {
+function api_device_cache_crc_update(int $poller_id, string $variable = 'poller_replicate_device_cache_crc') : void {
 	$hash = hash('ripemd160', date('Y-m-d H:i:s') . random_int(0, mt_getrandmax()) . "$poller_id");
 
 	db_execute_prepared("REPLACE INTO settings SET value = ?, name='$variable" . '_' . "$poller_id'", [$hash]);
@@ -42,7 +42,7 @@ function api_device_cache_crc_update(int $poller_id, string $variable = 'poller_
  * @param int $device_id The ID of the device to be removed.
  * @return void
  */
-function api_device_remove(int $device_id): void {
+function api_device_remove(int $device_id) : void {
 	$poller_id = db_fetch_cell_prepared('SELECT poller_id
 		FROM host WHERE id = ?',
 		[$device_id]);
@@ -109,7 +109,7 @@ function api_device_remove(int $device_id): void {
  *
  * @return void
  */
-function api_device_purge_from_remote(array|int $device_ids, int $poller_id = 0): void {
+function api_device_purge_from_remote(array|int $device_ids, int $poller_id = 0) : void {
 	if (!is_array($device_ids)) {
 		$device_ids = [$device_ids];
 	}
@@ -154,7 +154,7 @@ function api_device_purge_from_remote(array|int $device_ids, int $poller_id = 0)
  *
  * @return void
  */
-function api_device_purge_deleted_devices(): void {
+function api_device_purge_deleted_devices() : void {
 	$devices = db_fetch_assoc_prepared('SELECT id, poller_id
 		FROM host
 		WHERE deleted = "on"
@@ -188,7 +188,7 @@ function api_device_purge_deleted_devices(): void {
  *
  * @return void
  */
-function api_device_remove_multi(array $device_ids, int $delete_type = 2): void {
+function api_device_remove_multi(array $device_ids, int $delete_type = 2) : void {
 	$devices_to_delete = '';
 	$i                 = 0;
 
@@ -292,7 +292,7 @@ function api_device_remove_multi(array $device_ids, int $delete_type = 2): void 
  *
  * @return void
  */
-function api_device_disable_devices(array $device_ids): void {
+function api_device_disable_devices(array $device_ids) : void {
 	$raised = [];
 
 	foreach ($device_ids as $device_id) {
@@ -331,7 +331,7 @@ function api_device_disable_devices(array $device_ids): void {
  *
  * @return void
  */
-function api_device_enable_devices(array $device_ids): void {
+function api_device_enable_devices(array $device_ids) : void {
 	$raised = [];
 
 	foreach ($device_ids as $device_id) {
@@ -425,7 +425,7 @@ function api_device_enable_devices(array $device_ids): void {
  *
  * @return void
  */
-function api_device_change_options(array $device_ids, array $post): void {
+function api_device_change_options(array $device_ids, array $post) : void {
 	global $fields_host_edit;
 
 	$previous_poller = -1;
@@ -500,7 +500,7 @@ function api_device_change_options(array $device_ids, array $post): void {
  *
  * @return void
  */
-function api_device_clear_statistics(array $device_ids): void {
+function api_device_clear_statistics(array $device_ids) : void {
 	$raised = [];
 
 	foreach ($device_ids as $device_id) {
@@ -550,7 +550,7 @@ function api_device_clear_statistics(array $device_ids): void {
  *
  * @return void
  */
-function api_device_sync_device_templates(array $device_ids): void {
+function api_device_sync_device_templates(array $device_ids) : void {
 	foreach ($device_ids as $device_id) {
 		$device_template_id = db_fetch_cell_prepared('SELECT host_template_id
 			FROM host
@@ -572,7 +572,7 @@ function api_device_sync_device_templates(array $device_ids): void {
  *
  * @return void
  */
-function api_device_dq_add(int $device_id, int $data_query_id, string $reindex_method): void {
+function api_device_dq_add(int $device_id, int $data_query_id, string $reindex_method) : void {
 	db_execute_prepared('REPLACE INTO host_snmp_query
 		(host_id, snmp_query_id, reindex_method)
 		VALUES (?, ?, ?)',
@@ -606,7 +606,7 @@ function api_device_dq_add(int $device_id, int $data_query_id, string $reindex_m
  * @param int $data_query_id The ID of the data query to be removed.
  * @return void
  */
-function api_device_dq_remove(int $device_id, int $data_query_id): void {
+function api_device_dq_remove(int $device_id, int $data_query_id) : void {
 	db_execute_prepared('DELETE FROM host_snmp_cache
 		WHERE snmp_query_id = ?
 		AND host_id = ?',
@@ -659,7 +659,7 @@ function api_device_dq_remove(int $device_id, int $data_query_id): void {
  *
  * @return void
  */
-function api_device_dq_change(int $device_id, int $data_query_id, string $reindex_method): void {
+function api_device_dq_change(int $device_id, int $data_query_id, string $reindex_method) : void {
 	db_execute_prepared('INSERT INTO host_snmp_query
 		(host_id, snmp_query_id, reindex_method)
 		VALUES (?, ?, ?)
@@ -704,7 +704,7 @@ function api_device_dq_change(int $device_id, int $data_query_id, string $reinde
  *
  * @return void
  */
-function api_device_gt_remove(int $device_id, int $graph_template_id): void {
+function api_device_gt_remove(int $device_id, int $graph_template_id) : void {
 	db_execute_prepared('DELETE FROM host_graph
 		WHERE graph_template_id = ?
 		AND host_id = ?',
@@ -735,7 +735,7 @@ function api_device_gt_remove(int $device_id, int $graph_template_id): void {
  * @param int $poller_id The ID of the poller to replicate to. Defaults to 1.
  * @return bool Returns true on success, false on failure.
  */
-function api_device_replicate_out(int $device_id, int $poller_id = 1): bool {
+function api_device_replicate_out(int $device_id, int $poller_id = 1) : bool {
 	$rcnn_id = false;
 
 	if ($poller_id > 1) {
@@ -963,7 +963,7 @@ function api_device_save(int $id, int $device_template_id, string $description, 
 	int $availability_method, int $ping_method, int $ping_port, int $ping_timeout, int $ping_retries,
 	string $notes, string $snmp_auth_protocol, string $snmp_priv_passphrase, string $snmp_priv_protocol, string $snmp_context, string $snmp_engine_id,
 	int $max_oids = 5, int $device_threads = 1, int $poller_id = 1, int $site_id = 1, string $external_id = '', string $location = '', int $bulk_walk_size = -1,
-	int $snmp_options = 0, int $snmp_retries = 3): int {
+	int $snmp_options = 0, int $snmp_retries = 3) : int {
 	include_once(CACTI_PATH_LIBRARY . '/utility.php');
 	include_once(CACTI_PATH_LIBRARY . '/variables.php');
 	include_once(CACTI_PATH_LIBRARY . '/data_query.php');
@@ -1250,7 +1250,7 @@ function api_device_save(int $id, int $device_template_id, string $description, 
  *
  * @return bool Returns true if the device information has not changed, false otherwise.
  */
-function api_device_quick_save(array &$save): bool {
+function api_device_quick_save(array &$save) : bool {
 	if ($save['id'] > 0) {
 		$device = db_fetch_row_prepared('SELECT *
 			FROM host
@@ -1294,7 +1294,7 @@ function api_device_quick_save(array &$save): bool {
  *
  * @return void
  */
-function api_device_update_host_template(int $device_id, int $device_template_id): void {
+function api_device_update_host_template(int $device_id, int $device_template_id) : void {
 	static $raised = [];
 
 	if ($device_id > 0) {
@@ -1470,7 +1470,7 @@ function api_device_update_host_template(int $device_id, int $device_template_id
  *
  * @return bool Returns true if the field name matches any rule, otherwise false.
  */
-function api_device_change_field_match(string $field_name): bool {
+function api_device_change_field_match(string $field_name) : bool {
 	global $device_change_fields;
 
 	$matches = false;
@@ -1505,7 +1505,7 @@ function api_device_change_field_match(string $field_name): bool {
  *
  * @return void
  */
-function api_device_template_sync_template(int $device_template, array|string $device_ids = '', bool $down_devices = false): void {
+function api_device_template_sync_template(int $device_template, array|string $device_ids = '', bool $down_devices = false) : void {
 	if ($down_devices == true) {
 		$status_where = '';
 	} else {
@@ -1545,7 +1545,7 @@ function api_device_template_sync_template(int $device_template, array|string $d
  *
  * @return void
  */
-function api_device_ping_device(string|null $device_id, bool $from_remote = false): void {
+function api_device_ping_device(string|null $device_id, bool $from_remote = false) : void {
 	global $snmp_error;
 
 	if (empty($device_id)) {
@@ -1717,7 +1717,7 @@ function api_device_ping_device(string|null $device_id, bool $from_remote = fals
  *
  * @return int|bool The result of the duplication process.
  */
-function api_duplicate_device_template(int $_host_template_id, string $host_template_title): int|bool {
+function api_duplicate_device_template(int $_host_template_id, string $host_template_title) : int|bool {
 	global $fields_host_template_edit;
 
 	$host_template              = db_fetch_row_prepared('SELECT * FROM host_template WHERE id = ?', [$_host_template_id]);
@@ -1774,7 +1774,7 @@ function api_duplicate_device_template(int $_host_template_id, string $host_temp
  *
  * @return void
  */
-function api_clone_message($message, $force = false): void {
+function api_clone_message($message, $force = false) : void {
 	global $debug;
 
 	if ($debug || $force) {
@@ -1794,7 +1794,7 @@ function api_clone_message($message, $force = false): void {
  * @param string $column The name of the column in the table to check for the name. Default is 'name'.
  * @return string|false The unique name if found, or false if a unique name could not be generated within 20 attempts.
  */
-function api_clone_get_unique_name(string $name, string $table, string $column = 'name'): string|false {
+function api_clone_get_unique_name(string $name, string $table, string $column = 'name') : string|false {
 	$i = 0;
 
 	while ($i < 20) {
@@ -1825,7 +1825,7 @@ function api_clone_get_unique_name(string $name, string $table, string $column =
  * @param string $file_name The original file name to be used as the base for generating a unique filename.
  * @return string|false The unique filename if found, or false if no unique filename could be generated within 20 attempts.
  */
-function api_clone_get_unique_filename(string $file_name): string|false {
+function api_clone_get_unique_filename(string $file_name) : string|false {
 	$i = 1;
 
 	$file_data = pathinfo($file_name);
@@ -1865,7 +1865,7 @@ function api_clone_get_unique_filename(string $file_name): string|false {
  * @return array - An array containing 'warnings' and 'errors' keys with respective messages.
  */
 function api_clone_device_template_check_for_errors(int $device_template_id, string $device_template_name, string $include_gt, string $clone_gt,
-string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, string &$suffix, bool &$clone_xml, bool &$clone_script): array {
+string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, string &$suffix, bool &$clone_xml, bool &$clone_script) : array {
 	$return = [
 		'warnings' => [],
 		'errors'   => []
@@ -2330,7 +2330,7 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
  *
  * @return array An associative array containing the following keys:
  */
-function api_clone_device_template_get_objects(int $device_template_id): array {
+function api_clone_device_template_get_objects(int $device_template_id) : array {
 	$objects = [
 		'graph_templates'               => [],
 		'data_templates'                => [],
@@ -2482,7 +2482,7 @@ function api_clone_device_template_get_objects(int $device_template_id): array {
  * @return int|bool The ID of the newly created template.
  */
 function api_clone_device_template(int $template_id, string $template_name, string $include_gt, string $clone_gt,
-	string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, string $suffix, bool $clone_xml, bool $clone_script, bool $cli = false): int|bool {
+	string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, string $suffix, bool $clone_xml, bool $clone_script, bool $cli = false) : int|bool {
 	// The list of duplicated Data Templates.  Dont do it more than once
 	$duped_graph_templates[]    = [];
 	$duped_data_templates[]     = [];
@@ -2953,7 +2953,7 @@ function api_clone_device_template(int $template_id, string $template_name, stri
  *
  * @return void
  */
-function api_device_template_download(string $type, array $ids): void {
+function api_device_template_download(string $type, array $ids) : void {
 	$name = 'unknown';
 
 	if (cacti_sizeof($ids) == 1) {
@@ -3023,7 +3023,7 @@ function api_device_template_download(string $type, array $ids): void {
  *
  * @return mixed - The contents of the package file if successful, or false on failure.
  */
-function api_device_template_archive_for_export(int $id): mixed {
+function api_device_template_archive_for_export(int $id) : mixed {
 	global $export_errors, $debug, $package_file;
 
 	$export_okay = false;
@@ -3106,7 +3106,7 @@ function api_device_template_archive_for_export(int $id): mixed {
  *
  * @return bool Returns true if the device template was archived successfully, false otherwise.
  */
-function api_device_template_archive(int $id, string $archive_note): bool {
+function api_device_template_archive(int $id, string $archive_note) : bool {
 	global $export_errors, $debug, $package_file;
 
 	$export_okay = false;

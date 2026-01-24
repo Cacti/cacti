@@ -35,7 +35,7 @@ use phpseclib3\Crypt\RSA;
  *
  * @return void
  */
-function clear_auth_cookie(): void {
+function clear_auth_cookie() : void {
 	if (isset($_COOKIE['cacti_remembers']) && read_config_option('auth_cache_enabled') == 'on') {
 		$parts = explode(',', $_COOKIE['cacti_remembers']);
 
@@ -77,7 +77,7 @@ function clear_auth_cookie(): void {
  *
  * @return void
  */
-function set_auth_cookie(array $user): void {
+function set_auth_cookie(array $user) : void {
 	if (db_table_exists('user_auth_cache')) {
 		clear_auth_cookie();
 
@@ -100,7 +100,7 @@ function set_auth_cookie(array $user): void {
  *
  * @return int|false The user of the session cookie, otherwise false
  */
-function check_auth_cookie(): int|false {
+function check_auth_cookie() : int|false {
 	if (isset($_COOKIE['cacti_remembers']) &&
 		read_config_option('auth_cache_enabled') == 'on' &&
 		db_table_exists('user_auth_cache')) {
@@ -180,7 +180,7 @@ function check_auth_cookie(): int|false {
  *
  * @return bool True if the user is a template account, false otherwise.
  */
-function is_template_account(null|int|string $user_id): bool {
+function is_template_account(null|int|string $user_id) : bool {
 	if (is_string($user_id)) {
 		$user_id = db_fetch_cell_prepared('SELECT id FROM user_auth WHERE username = ?', [$user_id]);
 	}
@@ -224,7 +224,7 @@ function is_template_account(null|int|string $user_id): bool {
  *
  * @return string|false The username if found and processed, or false if no username is found.
  */
-function get_basic_auth_username(): string|false {
+function get_basic_auth_username() : string|false {
 	if (isset($_SERVER['PHP_AUTH_USER'])) {
 		$username = str_replace('\\', '\\\\', $_SERVER['PHP_AUTH_USER']);
 	} elseif (isset($_SERVER['REMOTE_USER'])) {
@@ -289,7 +289,7 @@ function get_basic_auth_username(): string|false {
  *
  * @return mixed - The ID of the new user if successful, or false if the operation failed.
  */
-function user_copy(string $template_user, string $new_user, int $template_realm = 0, int $new_realm = 0, bool $overwrite = false, array $data_override = []): mixed {
+function user_copy(string $template_user, string $new_user, int $template_realm = 0, int $new_realm = 0, bool $overwrite = false, array $data_override = []) : mixed {
 	// ================= input validation =================
 	input_validate_input_number($template_realm, 'template_realm');
 	input_validate_input_number($new_realm, 'new_realm');
@@ -439,7 +439,7 @@ function user_copy(string $template_user, string $new_user, int $template_realm 
  *
  * @return void
  */
-function user_remove(int $user_id): void {
+function user_remove(int $user_id) : void {
 	// ================= input validation =================
 	input_validate_input_number($user_id, 'user_id');
 	// ====================================================
@@ -484,7 +484,7 @@ function user_remove(int $user_id): void {
  *
  * @return void
  */
-function user_disable(int $user_id): void {
+function user_disable(int $user_id) : void {
 	// ================= input validation =================
 	input_validate_input_number($user_id, 'user_id');
 	// ====================================================
@@ -504,7 +504,7 @@ function user_disable(int $user_id): void {
  *
  * @return void
  */
-function user_enable(int $user_id): void {
+function user_enable(int $user_id) : void {
 	// ================= input validation =================
 	input_validate_input_number($user_id, 'user_id');
 	// ====================================================
@@ -521,7 +521,7 @@ function user_enable(int $user_id): void {
  *
  * @return array An array of authentication realms
  */
-function get_auth_realms(bool $login = false): array {
+function get_auth_realms(bool $login = false) : array {
 	if (read_config_option('auth_method') == AUTH_METHOD_DOMAIN) {
 		$drealms = db_fetch_assoc('SELECT domain_id, domain_name
 			FROM user_domains
@@ -587,7 +587,7 @@ function get_auth_realms(bool $login = false): array {
  *
  * @return bool True if the graph is allowed for the user, false otherwise.
  */
-function is_graph_allowed(int $local_graph_id, int $user_id = 0): bool {
+function is_graph_allowed(int $local_graph_id, int $user_id = 0) : bool {
 	$rows  = 0;
 
 	get_allowed_graphs('', '', '', $rows, $user_id, $local_graph_id);
@@ -603,7 +603,7 @@ function is_graph_allowed(int $local_graph_id, int $user_id = 0): bool {
  *
  * @return bool Returns true or false based on the policy and the presence of objects
  */
-function auth_check_perms(array $objects, int $policy): bool {
+function auth_check_perms(array $objects, int $policy) : bool {
 	$objectSize = cacti_sizeof($objects);
 
 	// policy == allow AND matches = DENY
@@ -637,7 +637,7 @@ function auth_check_perms(array $objects, int $policy): bool {
  *
  * @return void
  */
-function auth_augment_roles(string $role_name, array $files): void {
+function auth_augment_roles(string $role_name, array $files) : void {
 	global $user_auth_roles, $user_auth_realm_filenames;
 
 	foreach ($files as $file) {
@@ -686,7 +686,7 @@ function auth_augment_roles(string $role_name, array $files): void {
  * @param string $auth_name The authentication name to look up the realm ID.
  * @return void
  */
-function auth_augment_roles_byname(string $role_name, string $auth_name): void {
+function auth_augment_roles_byname(string $role_name, string $auth_name) : void {
 	global $user_auth_roles, $user_auth_realm_filenames;
 
 	if (isset($_SESSION[SESS_AUTH_NAMES][$auth_name])) {
@@ -719,7 +719,7 @@ function auth_augment_roles_byname(string $role_name, string $auth_name): void {
  *
  * @return bool True if the user is allowed to access the tree, false otherwise.
  */
-function is_tree_allowed(int $tree_id, int $user_id = 0): bool {
+function is_tree_allowed(int $tree_id, int $user_id = 0) : bool {
 	if ($user_id == -1) {
 		return true;
 	}
@@ -812,7 +812,7 @@ function is_tree_allowed(int $tree_id, int $user_id = 0): bool {
  *
  * @return bool True if the device is allowed for the user, false otherwise.
  */
-function is_device_allowed(int $device_id, int $user_id = 0): bool {
+function is_device_allowed(int $device_id, int $user_id = 0) : bool {
 	$total_rows = -2;
 	get_allowed_devices('', '', '', $total_rows, $user_id, $device_id);
 
@@ -827,7 +827,7 @@ function is_device_allowed(int $device_id, int $user_id = 0): bool {
  *
  * @return bool Returns true if the graph template is allowed for the user, false otherwise.
  */
-function is_graph_template_allowed(int $graph_template_id, int $user = 0): bool {
+function is_graph_template_allowed(int $graph_template_id, int $user = 0) : bool {
 	$total_rows = -2;
 	get_allowed_graph_templates('', '', '', $total_rows, $user, $graph_template_id);
 
@@ -842,7 +842,7 @@ function is_graph_template_allowed(int $graph_template_id, int $user = 0): bool 
  *
  * @return bool Returns true if the view is allowed for the user, false otherwise.
  */
-function is_view_allowed(string $view = 'show_tree'): bool {
+function is_view_allowed(string $view = 'show_tree') : bool {
 	if (!isset($_SESSION[SESS_USER_ID])) {
 		return false;
 	}
@@ -889,7 +889,7 @@ function is_view_allowed(string $view = 'show_tree'): bool {
  *
  * @return bool Returns true if the branch is empty, false otherwise.
  */
-function is_tree_branch_empty(int $tree_id, int $parent = 0): bool {
+function is_tree_branch_empty(int $tree_id, int $parent = 0) : bool {
 	$graphs = array_rekey(
 		db_fetch_assoc_prepared('SELECT local_graph_id
 			FROM graph_tree_items
@@ -981,7 +981,7 @@ function is_tree_branch_empty(int $tree_id, int $parent = 0): bool {
  *
  * @return bool True if the user has permission to access the realm, false otherwise.
  */
-function is_realm_allowed(int $realm, int|bool $check_user = false): bool {
+function is_realm_allowed(int $realm, int|bool $check_user = false) : bool {
 	global $config;
 
 	// if we are only checking another users permission, don't check cache
@@ -1105,7 +1105,7 @@ function is_realm_allowed(int $realm, int|bool $check_user = false): bool {
  *
  * @return array The list of allowed tree items.
  */
-function get_allowed_tree_level(int  $tree_id, int  $parent_id, bool $editing = false, int  $user_id = 0): array {
+function get_allowed_tree_level(int  $tree_id, int  $parent_id, bool $editing = false, int  $user_id = 0) : array {
 	$items = db_fetch_assoc_prepared('SELECT gti.id, gti.title, gti.host_id,
 		gti.site_id, gti.local_graph_id, gti.host_grouping_type,
 		h.description AS hostname, s.name AS sitename
@@ -1157,7 +1157,7 @@ function get_allowed_tree_level(int  $tree_id, int  $parent_id, bool $editing = 
  *
  * @return array - An array of allowed tree content.
  */
-function get_allowed_tree_content(int $tree_id, int $parent = 0, string $sql_where = '', string $sql_order = '', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0): array {
+function get_allowed_tree_content(int $tree_id, int $parent = 0, string $sql_where = '', string $sql_order = '', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0) : array {
 	if ($sql_limit != '' && $sql_limit != -1) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
@@ -1244,7 +1244,7 @@ function get_allowed_tree_content(int $tree_id, int $parent = 0, string $sql_whe
  *
  * @return array - An array of policies
  */
-function get_policies(int $user_id): array {
+function get_policies(int $user_id) : array {
 	// get policies for all user groups
 	$policies = db_fetch_assoc_prepared("SELECT uag.id, 'group' AS type, uag.name,
 		uag.policy_graphs, uag.policy_hosts, uag.policy_graph_templates, uag.policy_trees
@@ -1278,7 +1278,7 @@ function get_policies(int $user_id): array {
  *
  * @return array - An array of allowed tree header graphs.
  */
-function get_allowed_tree_header_graphs(int $tree_id, int $leaf_id = 0, string $sql_where = '', string $sql_order = 'gti.position', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0): array {
+function get_allowed_tree_header_graphs(int $tree_id, int $leaf_id = 0, string $sql_where = '', string $sql_order = 'gti.position', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0) : array {
 	if (!auth_valid_user($user_id)) {
 		return [];
 	}
@@ -1380,7 +1380,7 @@ function get_allowed_tree_header_graphs(int $tree_id, int $leaf_id = 0, string $
  *
  * @return array An array of allowed graphs.
  */
-function get_allowed_graphs(string $sql_where = '', mixed $sql_order = 'gtg.title_cache', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0, int $graph_id = 0): array {
+function get_allowed_graphs(string $sql_where = '', mixed $sql_order = 'gtg.title_cache', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0, int $graph_id = 0) : array {
 	if (!auth_valid_user($user_id)) {
 		return [];
 	}
@@ -1526,7 +1526,7 @@ function get_allowed_graphs(string $sql_where = '', mixed $sql_order = 'gtg.titl
  *
  * @return array The list of allowed aggregate graphs.
  */
-function get_allowed_aggregate_graphs(string $sql_where = '', string $sql_order = 'gtg.title_cache', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0, int $graph_id = 0): array {
+function get_allowed_aggregate_graphs(string $sql_where = '', string $sql_order = 'gtg.title_cache', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0, int $graph_id = 0) : array {
 	if (!auth_valid_user($user_id)) {
 		return [];
 	}
@@ -1636,7 +1636,7 @@ function get_allowed_aggregate_graphs(string $sql_where = '', string $sql_order 
  *
  * @return bool True if the user has simple device permissions, false otherwise.
  */
-function get_simple_device_perms(int $user): bool {
+function get_simple_device_perms(int $user) : bool {
 	$policy_hosts = db_fetch_cell_prepared('SELECT policy_hosts
 		FROM user_auth
 		WHERE id = ?',
@@ -1683,7 +1683,7 @@ function get_simple_device_perms(int $user): bool {
  *
  * @return bool True if the user has simple graph permissions, false otherwise.
  */
-function get_simple_graph_perms(int $user_id): bool {
+function get_simple_graph_perms(int $user_id) : bool {
 	if (isset($_SESSION[SESS_SIMPLE_PERMS])) {
 		return $_SESSION[SESS_SIMPLE_PERMS];
 	}
@@ -1740,7 +1740,7 @@ function get_simple_graph_perms(int $user_id): bool {
  *
  * @return bool True if the user has simple graph template permissions, false otherwise.
  */
-function get_simple_graph_template_perms(int $user_id): bool {
+function get_simple_graph_template_perms(int $user_id) : bool {
 	if (isset($_SESSION[SESS_SIMPLE_TEMPLATE_PERMS])) {
 		return $_SESSION[SESS_SIMPLE_TEMPLATE_PERMS];
 	}
@@ -1801,7 +1801,7 @@ function get_simple_graph_template_perms(int $user_id): bool {
  *
  * @return array List of allowed graph templates.
  */
-function get_allowed_graph_templates(string $sql_where = '', string $sql_order = 'gt.name', string $sql_limit = '', int|null &$total_rows = 0, int $user_id = 0, int $graph_template_id = 0): array {
+function get_allowed_graph_templates(string $sql_where = '', string $sql_order = 'gt.name', string $sql_limit = '', int|null &$total_rows = 0, int $user_id = 0, int $graph_template_id = 0) : array {
 	if (!auth_valid_user($user_id)) {
 		return [];
 	}
@@ -1909,7 +1909,7 @@ function get_allowed_graph_templates(string $sql_where = '', string $sql_order =
  *
  * @return array An associative array containing both $sql_select and $sql_join
  */
-function get_policy_join_select(array $policies): array {
+function get_policy_join_select(array $policies) : array {
 	$sql_join   = '';
 	$sql_select = '';
 
@@ -1945,7 +1945,7 @@ function get_policy_join_select(array $policies): array {
  *
  * @return string Updated sql_where value
  */
-function get_policy_where(string|int $graph_auth_method, array $policies, string $sql_where): string {
+function get_policy_where(string|int $graph_auth_method, array $policies, string $sql_where) : string {
 	if ($graph_auth_method == 1) {
 		// Policy Rows include
 		// id, type (group|user), policy_graphs, policy_hosts, policy_graph_templates
@@ -2248,7 +2248,7 @@ function get_policy_where(string|int $graph_auth_method, array $policies, string
  *
  * @return string The permission string
  */
-function get_permission_string(array &$graph, array &$policies): string {
+function get_permission_string(array &$graph, array &$policies) : string {
 	$grantStr   = '';
 	$rejectStr  = '';
 	$reasonStr  = '';
@@ -2454,7 +2454,7 @@ function get_permission_string(array &$graph, array &$policies): string {
  *
  * @return array|string The allowed graph trees or the SQL query string if $return_sql is true.
  */
-function get_allowed_trees(bool $edit = false, bool $return_sql = false, string $sql_where = '', string $sql_order = 'name', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0): array|string {
+function get_allowed_trees(bool $edit = false, bool $return_sql = false, string $sql_where = '', string $sql_order = 'name', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0) : array|string {
 	if (!auth_valid_user($user_id)) {
 		return [];
 	}
@@ -2547,7 +2547,7 @@ function get_allowed_trees(bool $edit = false, bool $return_sql = false, string 
  *
  * @return array An array of allowed branches.
  */
-function get_allowed_branches(string $sql_where = '', string $sql_order = 'name', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0): array {
+function get_allowed_branches(string $sql_where = '', string $sql_order = 'name', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0) : array {
 	if (!auth_valid_user($user_id)) {
 		return [];
 	}
@@ -2678,7 +2678,7 @@ function get_allowed_branches(string $sql_where = '', string $sql_order = 'name'
  *
  * @return array An array of allowed devices for the user.
  */
-function get_allowed_devices(string $sql_where = '', string $sql_order = 'description', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0, int $device_id = 0): array {
+function get_allowed_devices(string $sql_where = '', string $sql_order = 'description', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0, int $device_id = 0) : array {
 	if (!auth_valid_user($user_id)) {
 		return [];
 	}
@@ -2790,7 +2790,7 @@ function get_allowed_devices(string $sql_where = '', string $sql_order = 'descri
  * @param int $site_id Optional site ID to filter the sites by a specific site. Default is 0.
  * @return array An associative array of allowed sites.
  */
-function get_allowed_sites(string $sql_where = '', string $sql_order = 'name', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0, int $site_id = 0): array {
+function get_allowed_sites(string $sql_where = '', string $sql_order = 'name', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0, int $site_id = 0) : array {
 	if (!auth_valid_user($user_id)) {
 		return [];
 	}
@@ -2854,7 +2854,7 @@ function get_allowed_sites(string $sql_where = '', string $sql_order = 'name', s
  *
  * @return array An associative array of allowed site devices.
  */
-function get_allowed_site_devices(int $site_id, string $sql_where = '', string $sql_order = 'description', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0): array {
+function get_allowed_site_devices(int $site_id, string $sql_where = '', string $sql_order = 'description', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0) : array {
 	if (!auth_valid_user($user_id)) {
 		return [];
 	}
@@ -2961,7 +2961,7 @@ function get_allowed_site_devices(int $site_id, string $sql_where = '', string $
  *
  * @return array An associative array of allowed graph templates, keyed by their IDs and names.
  */
-function get_allowed_graph_templates_normalized(string $sql_where = '', string $sql_order = 'name', string $sql_limit = '', int|null &$total_rows = 0, int $user_id = 0, int $graph_template_id = 0): array {
+function get_allowed_graph_templates_normalized(string $sql_where = '', string $sql_order = 'name', string $sql_limit = '', int|null &$total_rows = 0, int $user_id = 0, int $graph_template_id = 0) : array {
 	if (!auth_valid_user($user_id)) {
 		return [];
 	}
@@ -3014,7 +3014,7 @@ function get_allowed_graph_templates_normalized(string $sql_where = '', string $
  *
  * @return bool True if the user exists, false otherwise.
  */
-function auth_valid_user(int $user_id): bool {
+function auth_valid_user(int $user_id) : bool {
 	static $users = [];
 
 	// perform a check if the user exists
@@ -3053,7 +3053,7 @@ function auth_valid_user(int $user_id): bool {
  *
  * @return void
  */
-function auth_row_cache_purge(int $user_id, string $class = 'all'): void {
+function auth_row_cache_purge(int $user_id, string $class = 'all') : void {
 	if ($user_id > 0) {
 		if ($class == 'all') {
 			db_execute_prepared('DELETE
@@ -3095,7 +3095,7 @@ function auth_row_cache_purge(int $user_id, string $class = 'all'): void {
  *
  * @return int The total number of rows retrieved by the SQL query.
  */
-function get_total_row_data(int $user_id, string $sql, array $sql_params = [], string $class = '', int $timeout = 86400): int {
+function get_total_row_data(int $user_id, string $sql, array $sql_params = [], string $class = '', int $timeout = 86400) : int {
 	$execute  = true;
 	$now_time = time();
 
@@ -3150,7 +3150,7 @@ function get_total_row_data(int $user_id, string $sql, array $sql_params = [], s
  *
  * @return array An array of strings, each containing the description and hostname of a device.
  */
-function get_host_array(): array {
+function get_host_array() : array {
 	$total_rows     = -1;
 	$return_devices = [];
 
@@ -3173,7 +3173,7 @@ function get_host_array(): array {
  *
  * @return array List of allowed AJAX hosts.
  */
-function get_allowed_ajax_hosts(bool $include_any = true, bool $include_none = true, string $sql_where = ''): array {
+function get_allowed_ajax_hosts(bool $include_any = true, bool $include_none = true, string $sql_where = '') : array {
 	$user_id = $_SESSION['sess_user_id'];
 
 	if (!auth_valid_user($user_id)) {
@@ -3226,7 +3226,7 @@ function get_allowed_ajax_hosts(bool $include_any = true, bool $include_none = t
  *
  * @return array Outputs a JSON-encoded array of graph templates.
  */
-function get_allowed_ajax_graph_templates(bool $include_any = true, bool $include_none = true, string $sql_where = ''): array {
+function get_allowed_ajax_graph_templates(bool $include_any = true, bool $include_none = true, string $sql_where = '') : array {
 	$user_id = $_SESSION['sess_user_id'];
 
 	if (!auth_valid_user($user_id)) {
@@ -3275,7 +3275,7 @@ function get_allowed_ajax_graph_templates(bool $include_any = true, bool $includ
  *
  * @return array An array of allowed graph items formatted for AJAX response.
  */
-function get_allowed_ajax_graph_items(bool $include_none = true, string $sql_where = ''): array {
+function get_allowed_ajax_graph_items(bool $include_none = true, string $sql_where = '') : array {
 	$user_id = $_SESSION['sess_user_id'];
 
 	if (!auth_valid_user($user_id)) {
@@ -3319,7 +3319,7 @@ function get_allowed_ajax_graph_items(bool $include_none = true, string $sql_whe
  *
  * @return array Outputs a JSON-encoded array of allowed graphs.
  */
-function get_allowed_ajax_graphs(string $sql_where = ''): array {
+function get_allowed_ajax_graphs(string $sql_where = '') : array {
 	$user_id = $_SESSION['sess_user_id'];
 
 	if (!auth_valid_user($user_id)) {
@@ -3359,7 +3359,7 @@ function get_allowed_ajax_graphs(string $sql_where = ''): array {
  *
  * @return array An array of allowed graph items, each containing 'id' and 'name'.
  */
-function get_allowed_graph_items(string $sql_where, string $sql_order = 'name', int|string $sql_limit = 20, int $user_id = 0): array {
+function get_allowed_graph_items(string $sql_where, string $sql_order = 'name', int|string $sql_limit = 20, int $user_id = 0) : array {
 	if (!auth_valid_user($user_id)) {
 		return [];
 	}
@@ -3413,7 +3413,7 @@ function get_allowed_graph_items(string $sql_where, string $sql_order = 'name', 
  *
  * @return string The sanitized username based on the authentication method or an empty string if not available.
  */
-function auth_get_username(): string {
+function auth_get_username() : string {
 	$auth_method = read_config_option('auth_method');
 
 	if ($auth_method == AUTH_METHOD_BASIC) {
@@ -3440,7 +3440,7 @@ function auth_get_username(): string {
  *
  * @return void
  */
-function auth_checkclear_lockout(string $username, int $realm): void {
+function auth_checkclear_lockout(string $username, int $realm) : void {
 	// Unlock the user account if timing permits
 	$secPassLockFailed = read_config_option('secpass_lockfailed');
 
@@ -3490,7 +3490,7 @@ function auth_checkclear_lockout(string $username, int $realm): void {
  *
  * @return bool Returns true if the account is locked, false otherwise.
  */
-function auth_process_lockout_check(string $username, int $realm): bool {
+function auth_process_lockout_check(string $username, int $realm) : bool {
 	global $error, $error_msg;
 
 	// Mark failed login attempts
@@ -3531,7 +3531,7 @@ function auth_process_lockout_check(string $username, int $realm): bool {
  *
  * @return void
  */
-function auth_process_lockout(string $username, int $realm): void {
+function auth_process_lockout(string $username, int $realm) : void {
 	global $error, $error_msg;
 
 	// Mark failed login attempts
@@ -3617,7 +3617,7 @@ function auth_process_lockout(string $username, int $realm): void {
  *
  * @return array The user data from the database if authentication is successful.
  */
-function basic_auth_login_process(string $username): array {
+function basic_auth_login_process(string $username) : array {
 	global $error, $error_msg;
 
 	if (empty($username)) {
@@ -3657,7 +3657,7 @@ function basic_auth_login_process(string $username): array {
  *
  * @return array The valid user information, or empty array if user must be created
  */
-function local_auth_login_process(string $username): array {
+function local_auth_login_process(string $username) : array {
 	$user = [];
 
 	if (!api_plugin_hook_function('login_process', false)) {
@@ -3711,7 +3711,7 @@ function local_auth_login_process(string $username): array {
  *
  * @return array The user information if the login was successful, otherwise an empty array.
  */
-function domains_login_process(string $username): array {
+function domains_login_process(string $username) : array {
 	global $realm, $error, $error_msg;
 
 	$realm    = gnrv('realm');
@@ -3877,7 +3877,7 @@ function domains_login_process(string $username): array {
  *
  * @return mixed - Returns an array with the authentication response if successful, or false if authentication fails.
  */
-function domains_ldap_auth(string $username, string $password = '', string $dn = '', int $realm = 0): mixed {
+function domains_ldap_auth(string $username, string $password = '', string $dn = '', int $realm = 0) : mixed {
 	$ldap  = new Ldap($realm - 1000);
 	$debug = $ldap->debug;
 
@@ -3924,7 +3924,7 @@ function domains_ldap_auth(string $username, string $password = '', string $dn =
  *
  * @return mixed - Returns an array with the LDAP search response if successful, or false if the search fails.
  */
-function domains_ldap_search_dn(string $username, int $realm): mixed {
+function domains_ldap_search_dn(string $username, int $realm) : mixed {
 	$ldap  = new Ldap($realm - 1000);
 	$debug = $ldap->debug;
 
@@ -3968,7 +3968,7 @@ function domains_ldap_search_dn(string $username, int $realm): mixed {
  *
  * @return mixed - Returns an array with the LDAP response if successful, or false if the search fails.
  */
-function domains_ldap_search_cn(string $username, array $cn = [], int $realm = 0): mixed {
+function domains_ldap_search_cn(string $username, array $cn = [], int $realm = 0) : mixed {
 	$ldap  = new Ldap($realm - 1000);
 	$debug = $ldap->debug;
 
@@ -4011,7 +4011,7 @@ function domains_ldap_search_cn(string $username, array $cn = [], int $realm = 0
  *
  * @return array The user data if login is successful, otherwise an empty array.
  */
-function secpass_login_process(string $username): array {
+function secpass_login_process(string $username) : array {
 	global $error, $error_msg;
 
 	$password = gnrv('login_password');
@@ -4134,7 +4134,7 @@ function secpass_login_process(string $username): array {
  *
  * @return string Returns 'ok' if the password meets all criteria, otherwise returns an error message.
  */
-function secpass_check_pass(string $password): string {
+function secpass_check_pass(string $password) : string {
 	$minlen = read_config_option('secpass_minlen');
 
 	if (strlen($password) < $minlen) {
@@ -4205,7 +4205,7 @@ function secpass_check_pass(string $password): string {
  *
  * @return bool Returns true if the password is not in the history, false otherwise.
  */
-function secpass_check_history(int $id, string $password): bool {
+function secpass_check_history(int $id, string $password) : bool {
 	$history = intval(read_config_option('secpass_history'));
 
 	if ($history > 0) {
@@ -4245,7 +4245,7 @@ function secpass_check_history(int $id, string $password): bool {
  *
  * @return void
  */
-function rsa_check_keypair(): void {
+function rsa_check_keypair() : void {
 	$public_key = read_config_option('rsa_public_key');
 
 	if (!$public_key) {
@@ -4267,7 +4267,7 @@ function rsa_check_keypair(): void {
  *
  * @return void
  */
-function reset_group_perms(int $group_id): void {
+function reset_group_perms(int $group_id) : void {
 	$users = array_rekey(db_fetch_assoc_prepared('SELECT user_id
 		FROM user_auth_group_members
 		WHERE group_id = ?',
@@ -4288,7 +4288,7 @@ function reset_group_perms(int $group_id): void {
  *
  * @return void
  */
-function reset_user_perms(int $user_id): void {
+function reset_user_perms(int $user_id) : void {
 	db_execute_prepared('UPDATE user_auth
 		SET reset_perms=FLOOR(RAND() * 4294967295) + 1
 		WHERE id = ?',
@@ -4309,7 +4309,7 @@ function reset_user_perms(int $user_id): void {
  *
  * @return bool Returns true if the user's permissions are valid, false otherwise.
  */
-function is_user_perms_valid(int $user_id): bool {
+function is_user_perms_valid(int $user_id) : bool {
 	global $config;
 
 	static $valid = null;
@@ -4347,7 +4347,7 @@ function is_user_perms_valid(int $user_id): bool {
  *
  * @return bool Returns true if the password matches the hash, false otherwise.
  */
-function compat_password_verify(string $password, string $hash): bool {
+function compat_password_verify(string $password, string $hash) : bool {
 	if (function_exists('password_verify')) {
 		if (password_verify($password, $hash)) {
 			return true;
@@ -4377,7 +4377,7 @@ function compat_password_verify(string $password, string $hash): bool {
  *
  * @return string The hashed password.
  */
-function compat_password_hash(string $password, string|int $algo, array $options = []): string {
+function compat_password_hash(string $password, string|int $algo, array $options = []) : string {
 	if (function_exists('password_hash')) {
 		// Check if options array has anything, only pass when required
 		return (cacti_sizeof($options) > 0) ?
@@ -4398,7 +4398,7 @@ function compat_password_hash(string $password, string|int $algo, array $options
  *
  * @return bool Returns true if the password needs to be rehashed, false otherwise.
  */
-function compat_password_needs_rehash(string $password, string|int $algo, array $options = []): bool {
+function compat_password_needs_rehash(string $password, string|int $algo, array $options = []) : bool {
 	if (function_exists('password_needs_rehash')) {
 		// Check if options array has anything, only pass when required
 		return (cacti_sizeof($options) > 0) ?
@@ -4416,7 +4416,7 @@ function compat_password_needs_rehash(string $password, string|int $algo, array 
  *
  * @return bool True if the user has access, false otherwise.
  */
-function auth_user_has_access(array $user): bool {
+function auth_user_has_access(array $user) : bool {
 	// See if they have access to any realms
 	$realms = db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM user_auth_realm
@@ -4470,7 +4470,7 @@ function auth_user_has_access(array $user): bool {
  *
  * @return void
  */
-function auth_display_custom_error_message(string $message): void {
+function auth_display_custom_error_message(string $message) : void {
 	$auth_method = read_config_option('auth_method');
 
 	if ($auth_method == AUTH_METHOD_BASIC) {
@@ -4507,7 +4507,7 @@ function auth_display_custom_error_message(string $message): void {
  *
  * @return void
  */
-function auth_login_redirect(string $login_opts = ''): void {
+function auth_login_redirect(string $login_opts = '') : void {
 	if ($login_opts == '') {
 		$login_opts = db_fetch_cell_prepared('SELECT login_opts
 			FROM user_auth
@@ -4609,7 +4609,7 @@ function auth_login_redirect(string $login_opts = ''): void {
  *
  * @return string The base name of the referer URL or file path.
  */
-function auth_basename(string $referer): string {
+function auth_basename(string $referer) : string {
 	$parts = explode('?', $referer);
 
 	return basename($parts[0]);
@@ -4627,7 +4627,7 @@ function auth_basename(string $referer): string {
  *
  * @return array The copied new user account details
  */
-function auth_login_create_user_from_template(string $username, int $realm): array {
+function auth_login_create_user_from_template(string $username, int $realm) : array {
 	global $error, $error_msg;
 
 	cacti_log("NOTE: User '" . $username . "' does not exist, copying template user", false, 'AUTH');
@@ -4709,7 +4709,7 @@ function auth_login_create_user_from_template(string $username, int $realm): arr
  *
  * @return bool Returns false if no administrative account is found, otherwise does not return.
  */
-function check_reset_no_authentication(int $auth_method): bool {
+function check_reset_no_authentication(int $auth_method) : bool {
 	global $error, $error_msg;
 
 	if ($auth_method == AUTH_METHOD_NONE) {
@@ -4798,7 +4798,7 @@ function check_reset_no_authentication(int $auth_method): bool {
  *
  * @return string JSON-encoded result with status and text message.
  */
-function disable_2fa(int $user_id): string {
+function disable_2fa(int $user_id) : string {
 	$current_user = db_fetch_row_prepared('SELECT *
 		FROM user_auth
 		WHERE id = ?',
@@ -4838,7 +4838,7 @@ function disable_2fa(int $user_id): string {
  *
  * @return string JSON-encoded result containing the status and message of the operation.
  */
-function enable_2fa(int $user_id): string {
+function enable_2fa(int $user_id) : string {
 	$current_user = db_fetch_row_prepared(
 		'SELECT *
 		FROM user_auth
@@ -4884,7 +4884,7 @@ function enable_2fa(int $user_id): string {
  *
  * @return string JSON encoded array containing the status and message of the verification process.
  */
-function verify_2fa(int $user_id, string $code): string {
+function verify_2fa(int $user_id, string $code) : string {
 	$current_user = db_fetch_row_prepared('SELECT *
 		FROM user_auth
 		WHERE id = ?',
@@ -4922,7 +4922,7 @@ function verify_2fa(int $user_id, string $code): string {
  *
  * @return bool Returns true if 2FA is enabled for the user, false otherwise.
  */
-function is_2fa_enabled(int $user_id): bool {
+function is_2fa_enabled(int $user_id) : bool {
 	if (read_config_option('secpass_2fa_enabled') == 'on') {
 		$current_user = db_fetch_row_prepared('SELECT *
 			FROM user_auth

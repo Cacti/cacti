@@ -30,7 +30,7 @@
  *
  * @return void
  */
-function api_data_source_cache_crc_update(int $poller_id, string $variable = 'poller_replicate_data_source_cache_crc'): void {
+function api_data_source_cache_crc_update(int $poller_id, string $variable = 'poller_replicate_data_source_cache_crc') : void {
 	$hash = hash('ripemd160', date('Y-m-d H:i:s') . random_int(0, mt_getrandmax()) . "$poller_id");
 
 	db_execute_prepared("REPLACE INTO settings
@@ -44,7 +44,7 @@ function api_data_source_cache_crc_update(int $poller_id, string $variable = 'po
  * @param int $local_data_id The ID of the local data source to check.
  * @return bool Returns true if the data source can be deleted, false otherwise.
  */
-function api_data_source_deletable(int $local_data_id): bool {
+function api_data_source_deletable(int $local_data_id) : bool {
 	$graphs = db_fetch_cell_prepared('SELECT COUNT(DISTINCT gti.local_graph_id)
 		FROM data_local AS dl
 		INNER JOIN data_template_rrd AS dtr
@@ -70,7 +70,7 @@ function api_data_source_deletable(int $local_data_id): bool {
  *
  * @return void
  */
-function api_data_source_remove(int $local_data_id, bool $update_totals = true): void {
+function api_data_source_remove(int $local_data_id, bool $update_totals = true) : void {
 	if (empty($local_data_id)) {
 		return;
 	}
@@ -209,7 +209,7 @@ function api_data_source_remove(int $local_data_id, bool $update_totals = true):
  *
  * @return void
  */
-function api_data_source_remove_multi(array $local_data_ids, bool $update_totals = true): void {
+function api_data_source_remove_multi(array $local_data_ids, bool $update_totals = true) : void {
 	// Shortcut out if no data
 	if (!cacti_sizeof($local_data_ids)) {
 		return;
@@ -368,7 +368,7 @@ function api_data_source_remove_multi(array $local_data_ids, bool $update_totals
  *
  * @return void
  */
-function api_data_source_enable(int $local_data_id): void {
+function api_data_source_enable(int $local_data_id) : void {
 	db_execute_prepared("UPDATE data_template_data
 		SET active = 'on'
 		WHERE local_data_id = ?",
@@ -396,7 +396,7 @@ function api_data_source_enable(int $local_data_id): void {
  *
  * @return void
  */
-function api_data_source_disable(int $local_data_id): void {
+function api_data_source_disable(int $local_data_id) : void {
 	db_execute_prepared('DELETE FROM poller_item
 		WHERE local_data_id = ?',
 		[$local_data_id]);
@@ -430,7 +430,7 @@ function api_data_source_disable(int $local_data_id): void {
  *
  * @return void
  */
-function api_data_source_disable_multi(array $local_data_ids): void {
+function api_data_source_disable_multi(array $local_data_ids) : void {
 	// initialize variables
 	$ids_to_disable = '';
 	$poller_ids     = [];
@@ -512,7 +512,7 @@ function api_data_source_disable_multi(array $local_data_ids): void {
  *
  * @return int The interface speed in bits per second.
  */
-function api_data_source_get_interface_speed(array $data_local): int {
+function api_data_source_get_interface_speed(array $data_local) : int {
 	$ifHighSpeed = db_fetch_cell_prepared('SELECT field_value
 		FROM host_snmp_cache
 		WHERE host_id = ?
@@ -572,7 +572,7 @@ function api_data_source_get_interface_speed(array $data_local): int {
  *
  * @return void
  */
-function api_data_source_change_host(array $data_sources, int $device_id): void {
+function api_data_source_change_host(array $data_sources, int $device_id) : void {
 	if (cacti_sizeof($data_sources)) {
 		foreach ($data_sources as $data_source) {
 			db_execute_prepared('UPDATE data_local
@@ -601,7 +601,7 @@ function api_data_source_change_host(array $data_sources, int $device_id): void 
  *
  * @return void
  */
-function api_reapply_suggested_data_source_data(int $local_data_id): void {
+function api_reapply_suggested_data_source_data(int $local_data_id) : void {
 	$data_template_data_id = db_fetch_cell_prepared('SELECT id
 		FROM data_template_data
 		WHERE local_data_id = ?',
@@ -702,7 +702,7 @@ function api_reapply_suggested_data_source_data(int $local_data_id): void {
  *
  * @return mixed - The ID of the newly created local data or data template, or false on failure.
  */
-function api_data_source_duplicate(int $_local_data_id, int $_data_template_id, string $data_source_title): mixed {
+function api_data_source_duplicate(int $_local_data_id, int $_data_template_id, string $data_source_title) : mixed {
 	global $struct_data_source, $struct_data_source_item;
 
 	$data_template_id   = 0;
@@ -872,7 +872,7 @@ function api_data_source_duplicate(int $_local_data_id, int $_data_template_id, 
  *
  * @return mixed - The ID of the newly created data input entry on success, or false on failure.
  */
-function api_data_input_duplicate(int $_data_input_id, string $input_title): mixed {
+function api_data_input_duplicate(int $_data_input_id, string $input_title) : mixed {
 	$orig_input = db_fetch_row_prepared('SELECT *
 		FROM data_input
 		WHERE id = ?',
@@ -928,7 +928,7 @@ function api_data_input_duplicate(int $_data_input_id, string $input_title): mix
  *
  * @return void
  */
-function api_data_input_remove(int $id): void {
+function api_data_input_remove(int $id) : void {
 	$data_input_fields = db_fetch_assoc_prepared('SELECT id
 		FROM data_input_fields
 		WHERE data_input_id = ?',
@@ -961,7 +961,7 @@ function api_data_input_remove(int $id): void {
  * @param string $input_string The input string containing the input fields.
  * @return bool Returns true if the number of input fields in the input string is greater than the existing input fields, otherwise false.
  */
-function api_data_input_more_inputs(int $id, string $input_string): bool {
+function api_data_input_more_inputs(int $id, string $input_string) : bool {
 	$input_string = str_replace('<path_cacti>', '', $input_string);
 	$inputs       = substr_count($input_string, '<');
 

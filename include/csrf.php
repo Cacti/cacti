@@ -25,7 +25,7 @@
 require_once(CACTI_PATH_INCLUDE . '/vendor/csrf/csrf-conf.php');
 
 // cross site request forgery library
-function csrf_startup(): void {
+function csrf_startup() : void {
 	if (CACTI_WEB) {
 		// If you need to debug CSRF, uncomment the following line
 		// csrf_conf('log_file', dirname(read_config_option('path_cactilog')) . '/csrf.log');
@@ -41,7 +41,7 @@ function csrf_startup(): void {
 	}
 }
 
-function csrf_error_callback(): void {
+function csrf_error_callback() : void {
 	// Resolve session fixation for PHP 5.4
 	session_regenerate_id();
 	raise_message('csrf_timeout');

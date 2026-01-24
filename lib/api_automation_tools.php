@@ -27,7 +27,7 @@
  *
  * @return array An associative array of host templates with template IDs as keys and template names as values.
  */
-function getHostTemplates(): array {
+function getHostTemplates() : array {
 	$tmpArray = db_fetch_assoc('SELECT id, name FROM host_template ORDER BY id');
 
 	$host_templates[0] = 'None';
@@ -48,7 +48,7 @@ function getHostTemplates(): array {
  *
  * @return mixed - Returns an array of hosts that match the given description, or false on failure.
  */
-function getHostsByDescription(mixed $hostTemplateIds = false): mixed {
+function getHostsByDescription(mixed $hostTemplateIds = false) : mixed {
 	$hosts = [];
 
 	if ($hostTemplateIds !== false) {
@@ -90,7 +90,7 @@ function getHostsByDescription(mixed $hostTemplateIds = false): mixed {
  *
  * @return array An array containing the list of sites.
  */
-function getSites(): array {
+function getSites() : array {
 	$sites    = [];
 	$tmpArray = db_fetch_assoc('SELECT * FROM sites ORDER BY id');
 
@@ -154,7 +154,7 @@ function getHosts(mixed $hostTemplateIds = false) : mixed {
  * @param int $templateId The ID of the template to retrieve input fields for.
  * @return array An array of input fields associated with the specified template ID.
  */
-function getInputFields(int $templateId): array {
+function getInputFields(int $templateId) : array {
 	$fields = [];
 
 	$tmpArray = db_fetch_assoc_prepared("SELECT DISTINCT dif.data_name AS `name`, dif.name AS `description`,
@@ -201,7 +201,7 @@ function getInputFields(int $templateId): array {
  *
  * @return array An array of addresses.
  */
-function getAddresses(): array {
+function getAddresses() : array {
 	$addresses = [];
 	$tmpArray  = db_fetch_assoc('SELECT id, hostname FROM host ORDER BY hostname');
 
@@ -222,7 +222,7 @@ function getAddresses(): array {
  *
  * @return array - An array of SNMP fields for the specified host.
  */
-function getSNMPFields(int $hostId, int $snmp_query_id = 0): array {
+function getSNMPFields(int $hostId, int $snmp_query_id = 0) : array {
 	$fieldNames = [];
 	$params     = [];
 	$params[]   = $hostId;
@@ -258,7 +258,7 @@ function getSNMPFields(int $hostId, int $snmp_query_id = 0): array {
  *
  * @return array An array of SNMP values.
  */
-function getSNMPValues(int $hostId, string $field, int $snmp_query_id = 0): array {
+function getSNMPValues(int $hostId, string $field, int $snmp_query_id = 0) : array {
 	$values   = [];
 	$params   = [];
 	$params[] = $hostId;
@@ -292,7 +292,7 @@ function getSNMPValues(int $hostId, string $field, int $snmp_query_id = 0): arra
  *
  * @return array An array containing SNMP queries.
  */
-function getSNMPQueries(): array {
+function getSNMPQueries() : array {
 	$queries  = [];
 	$tmpArray = db_fetch_assoc('SELECT id, name FROM snmp_query ORDER by id');
 
@@ -311,7 +311,7 @@ function getSNMPQueries(): array {
  * @param int $snmpQueryId The ID of the SNMP query.
  * @return array An array of SNMP query types.
  */
-function getSNMPQueryTypes(int $snmpQueryId): array {
+function getSNMPQueryTypes(int $snmpQueryId) : array {
 	$types    = [];
 
 	$tmpArray = db_fetch_assoc_prepared('SELECT id, name
@@ -334,7 +334,7 @@ function getSNMPQueryTypes(int $snmpQueryId): array {
  *
  * @return array An array of graph templates.
  */
-function getGraphTemplates(): array {
+function getGraphTemplates() : array {
 	$graph_templates = [];
 
 	$tmpArray = db_fetch_assoc('SELECT id, name FROM graph_templates ORDER BY id');
@@ -356,7 +356,7 @@ function getGraphTemplates(): array {
  *
  * @return mixed - Returns an array of graph templates if found, or false on failure.
  */
-function getGraphTemplatesByHostTemplate(mixed $host_template_ids = false): mixed {
+function getGraphTemplatesByHostTemplate(mixed $host_template_ids = false) : mixed {
 	$graph_templates = [];
 
 	if ($host_template_ids !== false) {
@@ -401,7 +401,7 @@ function getGraphTemplatesByHostTemplate(mixed $host_template_ids = false): mixe
  *
  * @return void
  */
-function displayQueryTypes(mixed $types, bool $quietMode = false): void {
+function displayQueryTypes(mixed $types, bool $quietMode = false) : void {
 	if (!$quietMode) {
 		print 'Known SNMP Query Types: (id, name)' . PHP_EOL;
 	}
@@ -425,7 +425,7 @@ function displayQueryTypes(mixed $types, bool $quietMode = false): void {
  *
  * @return void
  */
-function displayHostTemplates(mixed $host_templates, bool $quietMode = false): void {
+function displayHostTemplates(mixed $host_templates, bool $quietMode = false) : void {
 	if (!$quietMode) {
 		print 'Valid Device Templates: (id, name)' . PHP_EOL;
 	}
@@ -448,7 +448,7 @@ function displayHostTemplates(mixed $host_templates, bool $quietMode = false): v
  *
  * @return void
  */
-function displayCommunities(bool $quietMode = false): void {
+function displayCommunities(bool $quietMode = false) : void {
 	if (!$quietMode) {
 		print 'Known SNMP Communities: (community)' . PHP_EOL;
 	}
@@ -477,7 +477,7 @@ function displayCommunities(bool $quietMode = false): void {
  *
  * @return void
  */
-function displaySNMPFields(mixed $fields, int $hostId, bool $quietMode = false): void {
+function displaySNMPFields(mixed $fields, int $hostId, bool $quietMode = false) : void {
 	if (!$quietMode) {
 		print 'Known SNMP Fields for host-id ' . $hostId . ': (name)' . PHP_EOL;
 	}
@@ -503,7 +503,7 @@ function displaySNMPFields(mixed $fields, int $hostId, bool $quietMode = false):
  *
  * @return void
  */
-function displaySNMPValues(mixed $values, int $hostId, string $field, bool $quietMode = false): void {
+function displaySNMPValues(mixed $values, int $hostId, string $field, bool $quietMode = false) : void {
 	if (!$quietMode) {
 		print 'Known SNMP Values for Field ' . $field . ' and host-id ' . $hostId . ': (name)' . PHP_EOL;
 	}
@@ -527,7 +527,7 @@ function displaySNMPValues(mixed $values, int $hostId, string $field, bool $quie
  *
  * @return void
  */
-function displaySNMPQueries(mixed $queries, bool $quietMode = false): void {
+function displaySNMPQueries(mixed $queries, bool $quietMode = false) : void {
 	if (!$quietMode) {
 		print 'Known SNMP Queries: (id, name)' . PHP_EOL;
 	}
@@ -551,7 +551,7 @@ function displaySNMPQueries(mixed $queries, bool $quietMode = false): void {
  *
  * @return void
  */
-function displayInputFields(mixed $input_fields, bool $quietMode = false): void {
+function displayInputFields(mixed $input_fields, bool $quietMode = false) : void {
 	if (!$quietMode) {
 		print 'Known Input Fields: (name, default, description)' . PHP_EOL;
 	}
@@ -575,7 +575,7 @@ function displayInputFields(mixed $input_fields, bool $quietMode = false): void 
  *
  * @return void
  */
-function displayGraphTemplates(mixed $templates, bool $quietMode = false): void {
+function displayGraphTemplates(mixed $templates, bool $quietMode = false) : void {
 	if (!$quietMode) {
 		print 'Known Graph Templates: (id, name)' . PHP_EOL;
 	}
@@ -599,7 +599,7 @@ function displayGraphTemplates(mixed $templates, bool $quietMode = false): void 
  *
  * @return void
  */
-function displayHosts(mixed $hosts, bool $quietMode = false): void {
+function displayHosts(mixed $hosts, bool $quietMode = false) : void {
 	if (!$quietMode) {
 		print 'Known Devices: (id, hostname, template, description)' . PHP_EOL;
 	}
@@ -623,7 +623,7 @@ function displayHosts(mixed $hosts, bool $quietMode = false): void {
  *
  * @return void
  */
-function displaySites(mixed $sites, bool $quietMode = false): void {
+function displaySites(mixed $sites, bool $quietMode = false) : void {
 	if (!$quietMode) {
 		print 'Known Sites: (id, name)' . PHP_EOL;
 	}
@@ -646,7 +646,7 @@ function displaySites(mixed $sites, bool $quietMode = false): void {
  *
  * @return void
  */
-function displayTrees(bool $quietMode = false): void {
+function displayTrees(bool $quietMode = false) : void {
 	global $tree_sort_types;
 
 	if (!$quietMode) {
@@ -680,7 +680,7 @@ function displayTrees(bool $quietMode = false): void {
  *
  * @return void
  */
-function displayTreeNodes(int $tree_id, string $nodeType = '', int $parentNode = 0, bool $quietMode = false): void {
+function displayTreeNodes(int $tree_id, string $nodeType = '', int $parentNode = 0, bool $quietMode = false) : void {
 	global $tree_sort_types, $tree_item_types, $host_group_types;
 
 	if ($parentNode == 0) {
@@ -789,7 +789,7 @@ function displayTreeNodes(int $tree_id, string $nodeType = '', int $parentNode =
  *
  * @return void
  */
-function displayRRAs(bool $quietMode = false): void {
+function displayRRAs(bool $quietMode = false) : void {
 	if (!$quietMode) {
 		print 'Known RRAs: (id, steps, rows, name)' . PHP_EOL;
 	}
@@ -818,7 +818,7 @@ function displayRRAs(bool $quietMode = false): void {
  *
  * @return void
  */
-function displayHostGraphs(int $host_id, bool $quietMode = false): void {
+function displayHostGraphs(int $host_id, bool $quietMode = false) : void {
 	if (!$quietMode) {
 		print 'Known Device Graphs: (id, name, template)' . PHP_EOL;
 	}
@@ -855,7 +855,7 @@ function displayHostGraphs(int $host_id, bool $quietMode = false): void {
  *
  * @return void
  */
-function displayUsers(bool $quietMode = false): void {
+function displayUsers(bool $quietMode = false) : void {
 	if (!$quietMode) {
 		print 'Known Users: (id, username, full_name)' . PHP_EOL;
 	}

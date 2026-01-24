@@ -216,7 +216,7 @@ if (!api_plugin_installed('thold')) {
  *
  * @return void
  */
-function reports_item_dnd() {
+function reports_item_dnd() : void {
 	// ================= Input validation =================
 	gfrv('id');
 	// ================= Input validation =================
@@ -254,7 +254,7 @@ function reports_item_dnd() {
  *
  * @return void
  */
-function reports_form_save() {
+function reports_form_save() : void {
 	global $messages;
 
 	if (isrv('save_component_report')) {
@@ -397,7 +397,7 @@ function reports_form_save() {
  *
  * @return void
  */
-function reports_form_actions() {
+function reports_form_actions() : void {
 	global $reports_actions;
 
 	// ================= input validation =================
@@ -578,7 +578,7 @@ function reports_form_actions() {
  *
  * @return void
  */
-function reports_send($id) {
+function reports_send(int $id) : void {
 	// ================= input validation =================
 	input_validate_input_number($id, 'id');
 	// ====================================================
@@ -620,7 +620,7 @@ function reports_send($id) {
  *
  * @return void
  */
-function reports_item_movedown() {
+function reports_item_movedown() : void {
 	// ================= input validation =================
 	gfrv('item_id');
 	gfrv('id');
@@ -638,7 +638,7 @@ function reports_item_movedown() {
  *
  * @return void
  */
-function reports_item_moveup() {
+function reports_item_moveup() : void {
 	// ================= input validation =================
 	gfrv('item_id');
 	gfrv('id');
@@ -654,7 +654,7 @@ function reports_item_moveup() {
  *
  * @return void
  */
-function reports_item_remove() {
+function reports_item_remove() : void {
 	// ================= input validation =================
 	gfrv('item_id');
 	// ====================================================
@@ -671,7 +671,7 @@ function reports_item_remove() {
  *
  * @return void
  */
-function reports_item_resequence($report_id) {
+function reports_item_resequence(int $report_id) : void {
 	$items = db_fetch_assoc_prepared('SELECT *
 		FROM reports_items
 		WHERE report_id = ?
@@ -703,7 +703,7 @@ function reports_item_resequence($report_id) {
  *
  * @return string JSON encoded array of reset request variables.
  */
-function reports_item_validate() {
+function reports_item_validate() : string {
 	// ================= input validation and session storage =================
 	$filters = [
 		'tree_id' => [
@@ -2048,7 +2048,7 @@ function draw_reports_filter(bool $render = false) : void {
  *
  * @return void
  */
-function reports() {
+function reports() : void {
 	global $item_rows, $reports_interval;
 	global $reports_actions, $attach_types, $sched_types;
 
@@ -2368,7 +2368,7 @@ function reports() {
  *
  * @return mixed The ID of the user if the account exists, or false if it does not.
  */
-function reports_html_account_exists($user_id) {
+function reports_html_account_exists(int $user_id) : mixed {
 	return db_fetch_cell_prepared('SELECT id FROM user_auth WHERE id = ?', [$user_id]);
 }
 
@@ -2379,7 +2379,7 @@ function reports_html_account_exists($user_id) {
  *
  * @return void
  */
-function reports_html_report_disable($report_id) {
+function reports_html_report_disable(int $report_id) : void {
 	db_execute_prepared('UPDATE reports SET enabled="" WHERE id = ?', [$report_id]);
 }
 
@@ -2391,7 +2391,7 @@ function reports_html_report_disable($report_id) {
  *
  * @return array The modified reports item array.
  */
-function set_reports_item_var($reports_item, $var_id) {
+function set_reports_item_var(array $reports_item, string $var_id) : array {
 	// if a different host_id was selected, use it
 	if (isrv($var_id) && gfrv($var_id) >= 0) {
 		$reports_item[$var_id] = grv($var_id);
@@ -2412,7 +2412,7 @@ function set_reports_item_var($reports_item, $var_id) {
  *
  * @return string The HTML select element as a string.
  */
-function reports_get_branch_select($tree_id) {
+function reports_get_branch_select(int $tree_id) : string {
 	$sql_where = '';
 
 	if ($tree_id > 0) {

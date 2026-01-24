@@ -325,7 +325,7 @@ exit(0);
  *
  * @return bool - True if successful otherwise false
  */
-function float_rrdfile(string $rrd_path, int $local_data_id, mixed $step, int $start_time, int $end_time) {
+function float_rrdfile(string $rrd_path, int $local_data_id, mixed $step, int $start_time, int $end_time) : bool {
 	global $seebug;
 
 	static $rrdtool_bin = false;
@@ -631,7 +631,7 @@ function float_master_handler(bool $forcerun, bool $resume, int $host_id, int $h
  *
  * @return void
  */
-function float_launch_child(int $thread_id, mixed $step, int $start_time, int $end_time) {
+function float_launch_child(int $thread_id, mixed $step, int $start_time, int $end_time) : void {
 	global $seebug;
 
 	$php_binary = read_config_option('path_php_binary');

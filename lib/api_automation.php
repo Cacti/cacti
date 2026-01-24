@@ -28,7 +28,7 @@
  * @param string $rows_label Optional. The label for the rows. Default is an empty string.
  * @return array The filter for tree devices.
  */
-function create_tree_devices_filter(string $rows_label = ''): array {
+function create_tree_devices_filter(string $rows_label = '') : array {
 	global $item_rows;
 
 	if ($rows_label == '') {
@@ -154,7 +154,7 @@ function draw_tree_devices_filter(bool $render = false, string $url = '') : void
  *
  * @return void
  */
-function display_matching_hosts(array $rule, int $rule_type, string $url): void {
+function display_matching_hosts(array $rule, int $rule_type, string $url) : void {
 	global $device_actions, $item_rows;
 
 	draw_tree_devices_filter(true, $url);
@@ -267,7 +267,7 @@ function display_matching_hosts(array $rule, int $rule_type, string $url): void 
  *
  * @return array - The SQL query and parameters to find matching devices.
  */
-function automation_get_matching_device_sql(array &$rule, int $rule_type): array {
+function automation_get_matching_device_sql(array &$rule, int $rule_type) : array {
 	// if the number of rows is -1, set it to the default
 	if (grv('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
@@ -376,7 +376,7 @@ function automation_get_matching_device_sql(array &$rule, int $rule_type): array
  *
  * @return array - The SQL query to fetch matching graphs.
  */
-function automation_get_matching_graphs_sql(array $rule, int $rule_type): array {
+function automation_get_matching_graphs_sql(array $rule, int $rule_type) : array {
 	// if the number of rows is -1, set it to the default
 	if (grv('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
@@ -480,7 +480,7 @@ function automation_get_matching_graphs_sql(array $rule, int $rule_type): array 
  *
  * @return array An array of tree graphs that match the filter criteria.
  */
-function create_tree_graphs_filter(): array {
+function create_tree_graphs_filter() : array {
 	global $item_rows;
 
 	$any  = ['-1' => __('Any')];
@@ -623,7 +623,7 @@ function draw_tree_graphs_filter(bool $render = false, string $url = '') : void 
  *
  * @return void
  */
-function display_matching_graphs(array $rule, int $rule_type, string $url): void {
+function display_matching_graphs(array $rule, int $rule_type, string $url) : void {
 	global $graph_actions, $item_rows;
 
 	draw_tree_graphs_filter(true, $url);
@@ -722,7 +722,7 @@ function display_matching_graphs(array $rule, int $rule_type, string $url): void
  *
  * @return mixed - Returns an array of new graphs if successful, or false on failure.
  */
-function automation_get_new_graphs_sql(array $rule): mixed {
+function automation_get_new_graphs_sql(array $rule) : mixed {
 	// ================= input validation =================
 	gfrv('id');
 	gfrv('snmp_query_id');
@@ -912,7 +912,7 @@ function automation_get_new_graphs_sql(array $rule): mixed {
  *
  * @return void
  */
-function display_new_graphs(array $rule, string $url): void {
+function display_new_graphs(array $rule, string $url) : void {
 	global $item_rows;
 
 	// create the page filter
@@ -1072,7 +1072,7 @@ function draw_tree_items_filter(bool $render = false, string $url = '') : void {
  *
  * @return void
  */
-function display_matching_trees(int $rule_id, int $rule_type, array $item, string $url): void {
+function display_matching_trees(int $rule_id, int $rule_type, array $item, string $url) : void {
 	global $automation_tree_header_types;
 	global $device_actions, $item_rows;
 
@@ -1295,7 +1295,7 @@ function display_matching_trees(int $rule_id, int $rule_type, array $item, strin
  * @param array $tables An array of table names to search for the column.
  * @return bool Returns true if the column exists in any of the tables, false otherwise.
  */
-function api_automation_column_exists(string $column, array $tables): bool {
+function api_automation_column_exists(string $column, array $tables) : bool {
 	$column = str_replace(['h.', 'ht.', 'gt.', 'gl.', 'gtg.'], ['', '', '', '', ''], $column);
 
 	if (cacti_sizeof($tables)) {
@@ -1319,7 +1319,7 @@ function api_automation_column_exists(string $column, array $tables): bool {
  *
  * @return void
  */
-function display_match_rule_items(string $title, array $rule, int $rule_type, string $module): void {
+function display_match_rule_items(string $title, array $rule, int $rule_type, string $module) : void {
 	global $automation_op_array, $automation_oper, $automation_tree_header_types;
 
 	$rule_id = $rule['id'];
@@ -1447,7 +1447,7 @@ function display_match_rule_items(string $title, array $rule, int $rule_type, st
  *
  * @return void
  */
-function display_graph_rule_items(string $title, array &$rule, int $rule_type, string $module): void {
+function display_graph_rule_items(string $title, array &$rule, int $rule_type, string $module) : void {
 	global $automation_op_array, $automation_oper, $automation_tree_header_types;
 
 	$rule_id = $rule['id'];
@@ -1548,7 +1548,7 @@ function display_graph_rule_items(string $title, array &$rule, int $rule_type, s
  *
  * @return void
  */
-function display_tree_rule_items(string $title, array $rule, string $item_type, int $rule_type, string $module): void {
+function display_tree_rule_items(string $title, array $rule, string $item_type, int $rule_type, string $module) : void {
 	global $automation_tree_header_types, $tree_sort_types, $host_group_types;
 
 	$rule_id = $rule['id'];
@@ -1644,7 +1644,7 @@ function display_tree_rule_items(string $title, array $rule, string $item_type, 
  *
  * @return void
  */
-function duplicate_automation_graph_rules(int $_id, string $_title): void {
+function duplicate_automation_graph_rules(int $_id, string $_title) : void {
 	global $fields_automation_graph_rules_edit1, $fields_automation_graph_rules_edit2, $fields_automation_graph_rules_edit3;
 
 	$rule = db_fetch_row_prepared('SELECT *
@@ -1711,7 +1711,7 @@ function duplicate_automation_graph_rules(int $_id, string $_title): void {
  *
  * @return void
  */
-function duplicate_automation_tree_rules(int $_id, string $_title): void {
+function duplicate_automation_tree_rules(int $_id, string $_title) : void {
 	global $fields_automation_tree_rules_edit1, $fields_automation_tree_rules_edit2, $fields_automation_tree_rules_edit3;
 
 	$rule = db_fetch_row_prepared('SELECT *
@@ -1780,7 +1780,7 @@ function duplicate_automation_tree_rules(int $_id, string $_title): void {
  *
  * @return string The generated SQL HAVING clause if the filter is not empty, otherwise null.
  */
-function build_graph_object_sql_having(array $rule, string $filter): string {
+function build_graph_object_sql_having(array $rule, string $filter) : string {
 	if ($filter != '') {
 		$field_names = get_field_names($rule['snmp_query_id']);
 		$sql_having  = '';
@@ -1811,7 +1811,7 @@ function build_graph_object_sql_having(array $rule, string $filter): string {
  *
  * @return string The constructed SQL query string.
  */
-function build_data_query_sql(array $rule): string {
+function build_data_query_sql(array $rule) : string {
 	$function = automation_function_with_pid(__FUNCTION__);
 	cacti_log($function . ' called: ' . json_encode($rule), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
@@ -1860,7 +1860,7 @@ function build_data_query_sql(array $rule): string {
  *
  * @return string - The constructed SQL filter string.
  */
-function build_matching_objects_filter(int $rule_id, int $rule_type): string {
+function build_matching_objects_filter(int $rule_id, int $rule_type) : string {
 	$function = automation_function_with_pid(__FUNCTION__);
 
 	cacti_log($function . " called rule id: $rule_id", false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
@@ -1898,7 +1898,7 @@ function build_matching_objects_filter(int $rule_id, int $rule_type): string {
  * @param string $prefix An optional prefix to be added to the filter string.
  * @return string The constructed filter string.
  */
-function build_rule_item_filter(array $automation_rule_items, string $prefix = ''): string {
+function build_rule_item_filter(array $automation_rule_items, string $prefix = '') : string {
 	global $automation_op_array, $automation_oper;
 
 	$function = automation_function_with_pid(__FUNCTION__);
@@ -1968,7 +1968,7 @@ function build_rule_item_filter(array $automation_rule_items, string $prefix = '
  *
  * @return string - The built sort order
  */
-function build_sort_order(string $index_order, string $default_order = ''): string {
+function build_sort_order(string $index_order, string $default_order = '') : string {
 	$function = automation_function_with_pid(__FUNCTION__);
 
 	cacti_log($function . " called: $index_order/$default_order", false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
@@ -2003,7 +2003,7 @@ function build_sort_order(string $index_order, string $default_order = ''): stri
  *
  * @return array - The list of matching hosts.
  */
-function get_matching_hosts(array $rule, int $rule_type, string $sql_where = ''): array {
+function get_matching_hosts(array $rule, int $rule_type, string $sql_where = '') : array {
 	$function = automation_function_with_pid(__FUNCTION__);
 
 	cacti_log($function . ' called: ' . json_encode($rule) . ' type: ' . $rule_type, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
@@ -2058,7 +2058,7 @@ function get_matching_hosts(array $rule, int $rule_type, string $sql_where = '')
  *
  * @return array The list of matching graphs.
  */
-function get_matching_graphs(array $rule, int $rule_type, string $sql_where = ''): array {
+function get_matching_graphs(array $rule, int $rule_type, string $sql_where = '') : array {
 	$function = automation_function_with_pid(__FUNCTION__);
 
 	cacti_log($function . ' called: ' . json_encode($rule) . ' type: ' . $rule_type, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
@@ -2116,7 +2116,7 @@ function get_matching_graphs(array $rule, int $rule_type, string $sql_where = ''
  *
  * @return array An array of graphs that match the specified rule.
  */
-function get_created_graphs(array $rule): array {
+function get_created_graphs(array $rule) : array {
 	$function = automation_function_with_pid(__FUNCTION__);
 
 	cacti_log($function . ' called: ' . json_encode($rule), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
@@ -2178,7 +2178,7 @@ function get_created_graphs(array $rule): array {
  *
  * @return string|false The SQL query string if successful, or false on failure.
  */
-function make_host_snnp_cache_sql(): string|false {
+function make_host_snnp_cache_sql() : string|false {
 	$fields = db_fetch_assoc('SELECT DISTINCT field_name FROM host_snmp_cache ORDER BY field_name');
 
 	if (cacti_sizeof($fields)) {
@@ -2203,7 +2203,7 @@ function make_host_snnp_cache_sql(): string|false {
  * @param array $excluded_fields An array of field names to exclude from the result.
  * @return array An array of field names from the table, excluding the specified fields.
  */
-function get_query_fields(string $table, array $excluded_fields): array {
+function get_query_fields(string $table, array $excluded_fields) : array {
 	$function = automation_function_with_pid(__FUNCTION__);
 	cacti_log($function . ' called', false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
@@ -2273,7 +2273,7 @@ function get_query_fields(string $table, array $excluded_fields): array {
  *
  * @return array An array of field names associated with the specified SNMP query ID.
  */
-function get_field_names(string $snmp_query_id): array {
+function get_field_names(string $snmp_query_id) : array {
 	$function = automation_function_with_pid(__FUNCTION__);
 	cacti_log($function . " called: $snmp_query_id", false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
@@ -2325,7 +2325,7 @@ function array_to_list(array $array, string $sql_column) : string {
  * @param array $small_array The array containing elements to subtract from the first array.
  * @return array The resulting array after subtraction.
  */
-function array_minus(array $big_array, array $small_array): array {
+function array_minus(array $big_array, array $small_array) : array {
 	// remove all unwanted fields
 	if (cacti_sizeof($small_array)) {
 		foreach ($small_array as $exclude) {
@@ -2346,7 +2346,7 @@ function array_minus(array $big_array, array $small_array): array {
  * @param string $target The string being searched and replaced on.
  * @return array The resulting string after the replacements have been made.
  */
-function automation_string_replace(string $search, array|string $replace, string $target): array {
+function automation_string_replace(string $search, array|string $replace, string $target) : array {
 	$repl = preg_replace('/' . $search . '/i', $replace, $target);
 
 	return preg_split('/\\\\n/', $repl, -1, PREG_SPLIT_NO_EMPTY);
@@ -2361,7 +2361,7 @@ function automation_string_replace(string $search, array|string $replace, string
  *
  * @return void
  */
-function global_item_edit(int $rule_id, int $rule_item_id, int $rule_type): void {
+function global_item_edit(int $rule_id, int $rule_item_id, int $rule_type) : void {
 	global $fields_automation_match_rule_item_edit, $fields_automation_graph_rule_item_edit;
 	global $fields_automation_tree_rule_item_edit, $automation_tree_header_types;
 	global $automation_op_array;
@@ -2563,7 +2563,7 @@ function global_item_edit(int $rule_id, int $rule_item_id, int $rule_type): void
  *
  * @return void
  */
-function automation_hook_graph_template(int $host_id, int $graph_template_id): void {
+function automation_hook_graph_template(int $host_id, int $graph_template_id) : void {
 	$function = automation_function_with_pid(__FUNCTION__);
 
 	cacti_log($function . ' called: Device[' . $host_id . '], GT[' . $graph_template_id . ']', false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
@@ -2587,7 +2587,7 @@ function automation_hook_graph_template(int $host_id, int $graph_template_id): v
  *
  * @return array
  */
-function automation_hook_graph_create_tree(array $data): array {
+function automation_hook_graph_create_tree(array $data) : array {
 	$function = automation_function_with_pid(__FUNCTION__);
 
 	cacti_log($function . ' called: ' . json_encode($data), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
@@ -2612,7 +2612,7 @@ function automation_hook_graph_create_tree(array $data): array {
  *
  * @return void
  */
-function automation_execute_data_query(int $host_id, int $snmp_query_id): void {
+function automation_execute_data_query(int $host_id, int $snmp_query_id) : void {
 	$function = automation_function_with_pid(__FUNCTION__);
 
 	cacti_log($function . ' Device[' . $host_id . "] - start - data query: $snmp_query_id", false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
@@ -2705,7 +2705,7 @@ function automation_execute_data_query(int $host_id, int $snmp_query_id): void {
  *
  * @return bool eligibility
  */
-function automation_graph_automation_eligible(int $graph_template_id): bool {
+function automation_graph_automation_eligible(int $graph_template_id) : bool {
 	$graph_template = db_fetch_row_prepared('SELECT *
 		FROM graph_templates_graph
 		WHERE graph_template_id = ?
@@ -2790,7 +2790,7 @@ function automation_graph_automation_eligible(int $graph_template_id): bool {
  *
  * @return void
  */
-function automation_execute_graph_template(int $host_id, int $graph_template_id): void {
+function automation_execute_graph_template(int $host_id, int $graph_template_id) : void {
 	include_once(CACTI_PATH_LIBRARY . '/template.php');
 	include_once(CACTI_PATH_LIBRARY . '/api_automation_tools.php');
 	include_once(CACTI_PATH_LIBRARY . '/utility.php');
@@ -2878,7 +2878,7 @@ function automation_execute_graph_template(int $host_id, int $graph_template_id)
  *
  * @return void
  */
-function automation_execute_device_create_tree(int $host_id): void {
+function automation_execute_device_create_tree(int $host_id) : void {
 	/* the $data array holds all information about the host we're just working on
 	 * even if we selected multiple hosts, the calling code will scan through the list
 	 * so we only have a single host here
@@ -2973,7 +2973,7 @@ function automation_execute_device_create_tree(int $host_id): void {
  *
  * @return void
  */
-function automation_execute_graph_create_tree(int $graph_id): void {
+function automation_execute_graph_create_tree(int $graph_id) : void {
 	/* the $data array holds all information about the graph we're just working on
 	 * even if we selected multiple graphs, the calling code will scan through the list
 	 * so we only have a single graph here
@@ -3071,7 +3071,7 @@ function automation_execute_graph_create_tree(int $graph_id): void {
  *
  * @return bool
  */
-function create_dq_graphs(int $host_id, int $snmp_query_id, array $rule): bool {
+function create_dq_graphs(int $host_id, int $snmp_query_id, array $rule) : bool {
 	global $automation_op_array, $automation_oper;
 
 	$function = automation_function_with_pid(__FUNCTION__);
@@ -3239,7 +3239,7 @@ function create_dq_graphs(int $host_id, int $snmp_query_id, array $rule): bool {
  *
  * @return int the last tree item that was hooked into the tree
  */
-function create_all_header_nodes(int $item_id, array $rule): int {
+function create_all_header_nodes(int $item_id, array $rule) : int {
 	global $automation_tree_header_types;
 
 	// get all related rules that are enabled
@@ -3328,7 +3328,7 @@ function create_all_header_nodes(int $item_id, array $rule): int {
  *
  * @return int
  */
-function create_multi_header_node(string $object, array $rule, array $tree_item, int $parent_tree_item_id): int {
+function create_multi_header_node(string $object, array $rule, array $tree_item, int $parent_tree_item_id) : int {
 	$function = automation_function_with_pid(__FUNCTION__);
 	cacti_log($function . " - object: '" . $object . "', Header: '" . $tree_item['search_pattern'] . "', parent: " . $parent_tree_item_id, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
@@ -3360,7 +3360,7 @@ function create_multi_header_node(string $object, array $rule, array $tree_item,
  *
  * @return int|bool
  */
-function create_header_node(string $title, array $rule, array $item, int $parent_tree_item_id): int|bool {
+function create_header_node(string $title, array $rule, array $item, int $parent_tree_item_id) : int|bool {
 	$id             = 0;  // create a new entry
 	$local_graph_id = 0;  // headers don't need no graph_id
 	$host_id        = 0;  // or a host_id
@@ -3401,7 +3401,7 @@ function create_header_node(string $title, array $rule, array $item, int $parent
  *
  * @return int id of new item
  */
-function create_device_node(int $host_id, int $parent, array $rule): int {
+function create_device_node(int $host_id, int $parent, array $rule) : int {
 	$id             = 0;      // create a new entry
 	$local_graph_id = 0;      // hosts don't need no graph_id
 	$site_id        = 0;      // hosts don't need no site_id
@@ -3442,7 +3442,7 @@ function create_device_node(int $host_id, int $parent, array $rule): int {
  *
  * @return int id of new item
  */
-function create_site_node(int $site_id, int $parent, array $rule): int {
+function create_site_node(int $site_id, int $parent, array $rule) : int {
 	$id             = 0;      // create a new entry
 	$local_graph_id = 0;      // hosts don't need no graph_id
 	$host_id        = 0;      // hosts don't need no host_id
@@ -3483,7 +3483,7 @@ function create_site_node(int $site_id, int $parent, array $rule): int {
  *
  * @return int id of new item
  */
-function create_graph_node(int $graph_id, int $parent, array $rule): int {
+function create_graph_node(int $graph_id, int $parent, array $rule) : int {
 	$id        = 0;      // create a new entry
 	$host_id   = 0;      // graphs don't need no host_id
 	$site_id   = 0;      // graphs don't need no site_id
@@ -3520,7 +3520,7 @@ function create_graph_node(int $graph_id, int $parent, array $rule): int {
  *
  * @return void
  */
-function automation_poller_bottom(): void {
+function automation_poller_bottom() : void {
 	$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
 
 	// If its not set, just assume its in the path
@@ -3541,7 +3541,7 @@ function automation_poller_bottom(): void {
  *
  * @return int The ID of the device that was added.
  */
-function automation_add_device(array $device, bool $web = false): int {
+function automation_add_device(array $device, bool $web = false) : int {
 	global $plugins;
 
 	$template_id          = $device['host_template'];
@@ -3608,7 +3608,7 @@ function automation_add_device(array $device, bool $web = false): int {
  *
  * @return void
  */
-function automation_add_tree(int $host_id, int $tree): void {
+function automation_add_tree(int $host_id, int $tree) : void {
 	automation_debug("     Adding to tree\n");
 
 	if ($tree > 1000000) {
@@ -3636,7 +3636,7 @@ function automation_add_tree(int $host_id, int $tree): void {
  *
  * @return array|false The identified operating system.
  */
-function automation_find_os(string $sysDescr, string $sysObject, string $sysName): array|false {
+function automation_find_os(string $sysDescr, string $sysObject, string $sysName) : array|false {
 	$sql_where  = '';
 	$params     = [];
 
@@ -3682,7 +3682,7 @@ function automation_find_os(string $sysDescr, string $sysObject, string $sysName
  *
  * @return void
  */
-function automation_debug(string $text): void {
+function automation_debug(string $text) : void {
 	global $debug;
 	static $message = '';
 
@@ -3717,7 +3717,7 @@ function automation_debug(string $text): void {
  * @param string $mask The subnet mask to convert.
  * @return float|false The CIDR notation as a float, or false on failure.
  */
-function automation_masktocidr(string $mask): float|false {
+function automation_masktocidr(string $mask) : float|false {
 	$cidr = false;
 	$long = ip2long($mask);
 
@@ -3735,7 +3735,7 @@ function automation_masktocidr(string $mask): float|false {
  * @param string $range The range of IP addresses to validate.
  * @return string|false Returns a valid IP address as a string if found, or false if no valid IP address is found.
  */
-function automation_get_valid_ip(string $range): string|false {
+function automation_get_valid_ip(string $range) : string|false {
 	$long = ip2long($range);
 
 	return $long === false ? false : long2ip($long);
@@ -3748,7 +3748,7 @@ function automation_get_valid_ip(string $range): string|false {
  * @return array|false Returns an array containing the valid subnet CIDR if found,
  *                     otherwise returns false if the range is invalid.
  */
-function automation_get_valid_subnet_cidr(string $range): array|false {
+function automation_get_valid_subnet_cidr(string $range) : array|false {
 	$long = ip2long($range);
 	$cidr = 0;
 
@@ -3784,7 +3784,7 @@ function automation_get_valid_subnet_cidr(string $range): array|false {
  * @param string $range The range for which to get the valid mask.
  * @return array|false The valid mask for the specified range.
  */
-function automation_get_valid_mask(string $range): array|false {
+function automation_get_valid_mask(string $range) : array|false {
 	$cidr = false;
 
 	if (is_numeric($range)) {
@@ -3818,7 +3818,7 @@ function automation_get_valid_mask(string $range): array|false {
  * @param string $range The network range to retrieve information for.
  * @return array|false An associative array containing network information.
  */
-function automation_get_network_info(string $range): array|false {
+function automation_get_network_info(string $range) : array|false {
 	$network   = false;
 	$broadcast = false;
 	$mask      = [];
@@ -3934,7 +3934,7 @@ function automation_get_network_info(string $range): array|false {
  * @param string $range The range value used to calculate the start time.
  * @return string|false The calculated start time.
  */
-function automation_calculate_start(string $range): string|false {
+function automation_calculate_start(string $range) : string|false {
 	$detail = automation_get_network_info($range);
 
 	if ($detail) {
@@ -3952,7 +3952,7 @@ function automation_calculate_start(string $range): string|false {
  * @param string $range The IP range in CIDR notation (e.g., '192.168.1.0/24').
  * @return int|false The total number of IPs in the specified range.
  */
-function automation_calculate_total_ips(string $range): int|false {
+function automation_calculate_total_ips(string $range) : int|false {
 	$detail = automation_get_network_info($range);
 
 	if ($detail) {
@@ -3973,7 +3973,7 @@ function automation_calculate_total_ips(string $range): int|false {
  * @param string $range The range within which to retrieve the next host.
  * @return string|false Returns the next host as a string, or false if no more hosts are available.
  */
-function automation_get_next_host(string $start, int $total, int $count, string $range): string|false {
+function automation_get_next_host(string $start, int $total, int $count, string $range) : string|false {
 	if ($count == $total || $total < 1) {
 		return false;
 	}
@@ -4010,7 +4010,7 @@ function automation_get_next_host(string $start, int $total, int $count, string 
  *
  * @return void
  */
-function automation_primeIPAddressTable(int $network_id): void {
+function automation_primeIPAddressTable(int $network_id) : void {
 	$subNets = db_fetch_cell_prepared('SELECT subnet_range
 		FROM automation_networks
 		WHERE id = ?',
@@ -4082,7 +4082,7 @@ function automation_primeIPAddressTable(int $network_id): void {
  *
  * @return bool Returns true if the device is a valid SNMP device, false otherwise.
  */
-function automation_valid_snmp_device(array &$device): bool {
+function automation_valid_snmp_device(array &$device) : bool {
 	global $snmp_logging;
 
 	// initialize variable
@@ -4227,7 +4227,7 @@ function automation_valid_snmp_device(array &$device): bool {
  * @param int $timeout The timeout for the DNS lookup in milliseconds. Default is 1000 ms.
  * @return string The DNS name associated with the IP address, or null if not found.
  */
-function automation_get_dns_from_ip(string $ip, string $dns, int $timeout = 1000): string {
+function automation_get_dns_from_ip(string $ip, string $dns, int $timeout = 1000) : string {
 	// random transaction number (for routers etc to get the reply back)
 	$data = (string) random_int(10, 99);
 
@@ -4342,7 +4342,7 @@ function automation_get_dns_from_ip(string $ip, string $dns, int $timeout = 1000
  *
  * @return mixed - Returns the netbios name is successful or false otherwise
  */
-function ping_netbios_name(string $ip, int $timeout_ms = 1000): mixed {
+function ping_netbios_name(string $ip, int $timeout_ms = 1000) : mixed {
 	$handle = @fsockopen("udp://$ip", 137);
 
 	if (is_resource($handle)) {
@@ -4400,7 +4400,7 @@ function ping_netbios_name(string $ip, int $timeout_ms = 1000): mixed {
  *
  * @return void
  */
-function automation_update_device(int $host_id): void {
+function automation_update_device(int $host_id) : void {
 	$function = automation_function_with_pid(__FUNCTION__);
 	cacti_log($function . ' Device[' . $host_id . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
@@ -4467,7 +4467,7 @@ function automation_update_device(int $host_id): void {
  * @param string $functionName The name of the function to be executed.
  * @return string The function name with the process ID appended.
  */
-function automation_function_with_pid(string $functionName): string {
+function automation_function_with_pid(string $functionName) : string {
 	return automation_get_pid() . ' ' . $functionName . '()';
 }
 
@@ -4476,7 +4476,7 @@ function automation_function_with_pid(string $functionName): string {
  *
  * @return string The PID of the automation process.
  */
-function automation_get_pid(): string {
+function automation_get_pid() : string {
 	static $pid;
 
 	if (!isset($pid)) {
@@ -4494,7 +4494,7 @@ function automation_get_pid(): string {
  *
  * @return void
  */
-function automation_change_tree_rule_leaf_type(string $leaf_type, string $rule_id): void {
+function automation_change_tree_rule_leaf_type(string $leaf_type, string $rule_id) : void {
 	$function = automation_function_with_pid(__FUNCTION__);
 
 	$leaf_old = db_fetch_cell_prepared('SELECT leaf_type
@@ -4564,7 +4564,7 @@ function automation_change_tree_rule_leaf_type(string $leaf_type, string $rule_i
  * @param string $type The type of automation to convert.
  * @return string The name of the corresponding database table.
  */
-function automation_type_to_table(string $type): string {
+function automation_type_to_table(string $type) : string {
 	$table = '';
 
 	$table = match ($type) {
@@ -4591,7 +4591,7 @@ function automation_type_to_table(string $type): string {
  *
  * @return mixed - The resulting hash.
  */
-function automation_id_to_hash(string $table, int $id): mixed {
+function automation_id_to_hash(string $table, int $id) : mixed {
 	$table = automation_type_to_table($table);
 
 	if ($table != '') {
@@ -4608,7 +4608,7 @@ function automation_id_to_hash(string $table, int $id): mixed {
  * @param string $hash The hash value that needs to be converted to an ID.
  * @return int|false The ID corresponding to the given hash and type.
  */
-function automation_hash_to_id(string $type, string $hash): int|false {
+function automation_hash_to_id(string $type, string $hash) : int|false {
 	$table = automation_type_to_table($type);
 
 	if ($table != '') {
@@ -4628,7 +4628,7 @@ function automation_hash_to_id(string $type, string $hash): int|false {
  *
  * @return void
  */
-function automation_update_hashes(): void {
+function automation_update_hashes() : void {
 	$tables = [
 		'automation_templates',
 		'automation_templates_rules',
@@ -4665,7 +4665,7 @@ function automation_update_hashes(): void {
  *
  * @return array An array containing the exported network data.
  */
-function automation_network_export(mixed $network_ids): array {
+function automation_network_export(mixed $network_ids) : array {
 	if (!is_array($network_ids)) {
 		$export_name = db_fetch_cell_prepared("SELECT CONCAT('automation_network_', name)
 			FROM automation_networks
@@ -4765,7 +4765,7 @@ function automation_network_export(mixed $network_ids): array {
  *
  * @return array An array containing the exported device rules.
  */
-function automation_device_rule_export(mixed $template_ids): array {
+function automation_device_rule_export(mixed $template_ids) : array {
 	if (!is_array($template_ids)) {
 		$export_name = db_fetch_cell_prepared("SELECT CONCAT('automation_device_rule_', name)
 			FROM automation_templates AS at
@@ -5008,7 +5008,7 @@ function automation_device_rule_export(mixed $template_ids): array {
  *
  * @return array The resulting tree structure as an associative array.
  */
-function automation_tree_rule_create_tree(array $tree_data, array $branch_data): array {
+function automation_tree_rule_create_tree(array $tree_data, array $branch_data) : array {
 	if (cacti_sizeof($tree_data)) {
 		$tree_id = db_fetch_cell_prepared('SELECT id FROM graph_tree WHERE name = ?', [$tree_data['name']]);
 
@@ -5075,7 +5075,7 @@ function automation_tree_rule_create_tree(array $tree_data, array $branch_data):
  * @param int $branch_id The ID of the branch.
  * @return array The exported branches.
  */
-function automation_device_rule_export_branches(int $tree_id, int $branch_id): array {
+function automation_device_rule_export_branches(int $tree_id, int $branch_id) : array {
 	if ($branch_id == 0) {
 		return [];
 	}
@@ -5121,7 +5121,7 @@ function automation_device_rule_export_branches(int $tree_id, int $branch_id): a
  *
  * @return array The exported graph rules.
  */
-function automation_graph_rule_export(mixed $graph_rule_ids): array {
+function automation_graph_rule_export(mixed $graph_rule_ids) : array {
 	if (!is_array($graph_rule_ids)) {
 		$export_name = db_fetch_cell_prepared("SELECT CONCAT('automation_graphs_rule_', name)
 			FROM automation_graph_rules
@@ -5207,7 +5207,7 @@ function automation_graph_rule_export(mixed $graph_rule_ids): array {
  *
  * @return array The exported tree rules.
  */
-function automation_tree_rule_export(mixed $tree_rule_ids): array {
+function automation_tree_rule_export(mixed $tree_rule_ids) : array {
 	if (!is_array($tree_rule_ids)) {
 		$export_name = db_fetch_cell_prepared("SELECT CONCAT('automation_tree_rule_', name)
 			FROM automation_tree_rules
@@ -5293,7 +5293,7 @@ function automation_tree_rule_export(mixed $tree_rule_ids): array {
  *
  * @return array An array containing the exported SNMP options.
  */
-function automation_snmp_option_export(mixed $snmp_option_ids): array {
+function automation_snmp_option_export(mixed $snmp_option_ids) : array {
 	if (!is_array($snmp_option_ids)) {
 		$export_name = db_fetch_cell_prepared("SELECT CONCAT('automation_snmp_option_', name)
 			FROM automation_snmp
@@ -5364,7 +5364,7 @@ function automation_snmp_option_export(mixed $snmp_option_ids): array {
  *
  * @return array|bool An array containing the uploaded data if the file is valid, or false if the file is invalid.
  */
-function automation_validate_upload(): array|bool {
+function automation_validate_upload() : array|bool {
 	// check file transfer if used
 	if (isset($_FILES['import_file'])) {
 		// check for errors first
@@ -5426,7 +5426,7 @@ function automation_validate_upload(): array|bool {
  * @param array $snmp An array containing SNMP options to be imported.
  * @return array An array containing the results of the import operation.
  */
-function automation_snmp_option_import(array $snmp): array {
+function automation_snmp_option_import(array $snmp) : array {
 	$debug_data = [];
 
 	$snmp_id = 0;
@@ -5508,7 +5508,7 @@ function automation_snmp_option_import(array $snmp): array {
  *
  * @return array An array containing the results of the import operation.
  */
-function automation_network_import(mixed $json_data): array {
+function automation_network_import(mixed $json_data) : array {
 	$debug_data = [];
 
 	/**
@@ -5612,7 +5612,7 @@ function automation_network_import(mixed $json_data): array {
  *
  * @return array An array containing the results of the import process.
  */
-function automation_graph_rule_import(mixed $json_data): array {
+function automation_graph_rule_import(mixed $json_data) : array {
 	$debug_data = [];
 
 	/**
@@ -5767,7 +5767,7 @@ function automation_graph_rule_import(mixed $json_data): array {
  *
  * @return array An array containing the results of the import process.
  */
-function automation_tree_rule_import(mixed $json_data, bool $tree_branches = false): array {
+function automation_tree_rule_import(mixed $json_data, bool $tree_branches = false) : array {
 	$debug_data = [];
 
 	/**
@@ -5900,7 +5900,7 @@ function automation_tree_rule_import(mixed $json_data, bool $tree_branches = fal
  *
  * @return array An array containing the result of the import process.
  */
-function automation_template_import(mixed $json_data, bool $tree_branches = false): array {
+function automation_template_import(mixed $json_data, bool $tree_branches = false) : array {
 	$debug_data = [];
 
 	/**
@@ -6353,7 +6353,7 @@ function automation_template_import(mixed $json_data, bool $tree_branches = fals
  * @param array &$debug_data An array to store debug information.
  * @return bool Returns true if the columns are valid, false otherwise.
  */
-function automation_validate_import_columns(string $table, array &$data, array &$debug_data): bool {
+function automation_validate_import_columns(string $table, array &$data, array &$debug_data) : bool {
 	if (cacti_sizeof($data)) {
 		foreach ($data as $column => $cdata) {
 			if (!db_column_exists($table, $column)) {
@@ -6379,7 +6379,7 @@ function automation_validate_import_columns(string $table, array &$data, array &
  *
  * @return void
  */
-function automation_log(string $string, int $level = AUTOMATION_LOG_LOW): void {
+function automation_log(string $string, int $level = AUTOMATION_LOG_LOW) : void {
 	if (!defined('AUTOMATION_LEVEL')) {
 		define('AUTOMATION_LEVEL', read_config_option('automation_log_level'));
 	}

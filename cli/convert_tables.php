@@ -302,7 +302,7 @@ function record_log(bool $installer, string $text) : void {
  *
  * @return void
  */
-function display_version() {
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Database Conversion Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
@@ -312,7 +312,7 @@ function display_version() {
  *
  * @return void
  */
-function display_help() {
+function display_help() : void {
 	display_version();
 
 	print PHP_EOL;

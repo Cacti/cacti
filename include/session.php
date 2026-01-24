@@ -32,7 +32,7 @@ if (php_sapi_name() == 'cli') {
 	return;
 }
 
-function cacti_db_session_check(): void {
+function cacti_db_session_check() : void {
 	if (!db_column_exists('sessions', 'user_id')) {
 		db_execute('ALTER TABLE sessions
 			ADD COLUMN user_id int unsigned NOT NULL default "0",
@@ -46,14 +46,14 @@ function cacti_db_session_check(): void {
 	}
 }
 
-function cacti_db_session_open(string $savePath = '', string $sessionName = ''): bool {
+function cacti_db_session_open(string $savePath = '', string $sessionName = '') : bool {
 	// Cacti database is already active
 	cacti_db_session_check();
 
 	return true;
 }
 
-function cacti_db_session_close(): bool {
+function cacti_db_session_close() : bool {
 	// Cacti database is not closed by sessions
 	return true;
 }
@@ -77,7 +77,7 @@ function cacti_db_session_read(string $id) : string {
 	return $session;
 }
 
-function cacti_db_session_write(string $id, string $data): bool {
+function cacti_db_session_write(string $id, string $data) : bool {
 	$access = time();
 
 	cacti_db_session_check();
@@ -120,7 +120,7 @@ function cacti_db_session_write(string $id, string $data): bool {
 	return true;
 }
 
-function cacti_db_session_destroy(string $id): bool {
+function cacti_db_session_destroy(string $id) : bool {
 	db_execute_prepared('DELETE FROM sessions
 		WHERE id = ?',
 		[$id]);
@@ -128,7 +128,7 @@ function cacti_db_session_destroy(string $id): bool {
 	return true;
 }
 
-function cacti_db_session_clean(string $max): bool {
+function cacti_db_session_clean(string $max) : bool {
 	if (!is_numeric($max)) {
 		$old = time() - 14400;
 	} else {

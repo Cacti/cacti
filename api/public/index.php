@@ -30,7 +30,7 @@ $app->get('/', function (Request $request, Response $response) {
  * @param array $allowed_params Array of allowed parameter names
  * @return string|null Returns an error message if invalid parameters are found, otherwise null
  */
-function validate_parameters($params, $allowed_params) {
+function validate_parameters(array $params, array $allowed_params) : string|null {
 	foreach ($params as $key => $value) {
 		if (!in_array($key, $allowed_params, true)) {
 			return 'ERROR: Invalid parameter passed: "' . htmlspecialchars($key) . '"';

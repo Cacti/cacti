@@ -762,7 +762,7 @@ function db_fetch_cell_prepared(string $sql, array $params = [], string $col_nam
  *                           in the case of associated, returns the column from the first row.
  * @return mixed - The value of the column or false if failed
  */
-function db_fetch_cell_return(PDOStatement $query, string $col_name = '') {
+function db_fetch_cell_return(PDOStatement $query, string $col_name = '') : mixed {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
