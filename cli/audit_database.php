@@ -1011,7 +1011,7 @@ function create_tables(bool $load = true) : void {
 			exit(1);
 		}
 
-        // Handle case to address Mariadb dropping the mysql command
+		// Handle case to address Mariadb dropping the mysql command
 		if (file_exists('/usr/bin/mariadb')) {
 			$db_shell = '/usr/bin/mariadb';
 		} elseif (file_exists('/usr/bin/mysql')) {
