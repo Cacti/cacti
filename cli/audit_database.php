@@ -969,13 +969,13 @@ function create_tables($load = true) {
 
 		//Handle case to address Mariadb dropping the mysql command
 		if (file_exists('/usr/bin/mariadb')) {
-			$mysql = '/usr/bin/mariadb';
-		} elseif (file_exists('/usr/local/bin/mariadb')) {
-			$mysql = '/usr/local/bin/mariadb';
+			$db_shell = '/usr/bin/mariadb';
 		} elseif (file_exists('/usr/bin/mysql')) {
-			$mysql = '/usr/bin/mariadb';
+			$db_shell = '/usr/bin/mariadb';
+		} elseif (file_exists('/usr/local/bin/mariadb')) {
+			$db_shell = '/usr/local/bin/mariadb';
 		} elseif (file_exists('/usr/local/bin/mysql')) {
-			$mysql = '/usr/local/bin/mariadb';
+			$db_shell = '/usr/local/bin/mysql';
 		} else {
 			$db_shell = shell_exec('which mysql');
 
