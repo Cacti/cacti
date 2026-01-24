@@ -884,11 +884,11 @@ function boost_get_arch_table_names(mixed $latest_table = '') : mixed {
  * 5) Process the entire result set
  *
  * @param int   $local_data_id - The local data id to update.
- * @param array $rrdtool_pipe  - An array for the RRDtool process object
+ * @param mixed $rrdtool_pipe  - An array for the RRDtool process object
  *
  * @return int
  */
-function boost_process_poller_output(int $local_data_id, array $rrdtool_pipe = []) : int {
+function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = []) : int {
 	global $database_default, $boost_sock, $boost_timeout, $get_memory, $memory_used;
 
 	static $archive_table = false;
