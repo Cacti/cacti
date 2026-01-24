@@ -2164,7 +2164,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 			$params   = array();
 			$params[] = $data_input['data_template_id'];
 
-			if ($field['output_type'] != '') {
+			if (isset($field['output_type']) && $field['output_type'] != '') {
 				$output_type_sql = ' AND sqgr.snmp_query_graph_id = ?';
 				$params[] = $field['output_type'];
 			} else {
@@ -7174,10 +7174,11 @@ function raise_ajax_permission_denied() {
 /**
  * cacti_session_start - Create a Cacti session from the settings set by the administrator
  *
+ * @param bool $regenerate - If you are logging in for the first time, regenerate the token
+ *
  * @return - null
  */
-function cacti_session_start() {
-	/** @var array */
+function cacti_session_start($regenerate = false) {
 	global $config;
 
 	/* initialize php session */
@@ -7185,19 +7186,53 @@ function cacti_session_start() {
 		die('PHP Session Management is missing, please install PHP Session module');
 	}
 
-	session_name($config['cacti_session_name']);
-
 	if (session_status() === PHP_SESSION_NONE) {
 		$session_restart = '';
+
+		session_name($config['cacti_session_name']);
 	} else {
 		$session_restart = 're';
 	}
 
-	$session_result = session_start($config['cookie_options']);
+	if ($regenerate) {
+		$session_data = cacti_session_regenerate();
+	}
+
+	if (session_status() === PHP_SESSION_NONE) {
+		$session_result = session_start($config['cookie_options']);
+	} else {
+		$session_result = true;
+	}
+
+	/* restore the session data after regeneration */
+	if ($regenerate) {
+		$_SESSION = $session_data;
+	}
 
 	if (!$session_result) {
 		cacti_log('Session "' . session_id() . '" ' . $session_restart . 'start failed! ' . cacti_debug_backtrace('', false, false, 0, 1), false, 'WARNING:');
 	}
+}
+
+/**
+ * cacti_session_regenerate - This function will regenerate a session token in cases
+ * where the user logs in for the first time, or their session token has existed
+ * too long. We forcibly destroy old session data as it will remove the entry from
+ * the Cacti sessions table immediately thus reducing the number of inactive
+ * sessions in the sessions table.
+ *
+ * @return array - The prior sessions data
+ */
+function cacti_session_regenerate() {
+	if (session_status() === PHP_SESSION_ACTIVE) {
+		$session_data = $_SESSION;
+	} else {
+		$session_data = array();
+	}
+
+	session_regenerate_id(true);
+
+	return $session_data;
 }
 
 /**

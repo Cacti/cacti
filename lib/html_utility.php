@@ -1019,9 +1019,9 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 	$url_page_select = "<ul class='pagination'>";
 
 	if (strpos($url, '?') !== false) {
-		$url . '&';
+		$url .= '&';
 	} else {
-		$url . '?';
+		$url .= '?';
 	}
 
 	$url_ellipsis = '<li><span>...</span></li>';

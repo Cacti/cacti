@@ -38,8 +38,11 @@ Cacti CHANGELOG
 -issue#6519: Realtime generates errors in the Cacti Log after a Graph has been removed
 -issue#6546: Add missing xml and script files for NetSNMP LMSensor
 -issue#6551: Fix paths in audit_database script (FreeBSD)
+-issue: Correct some PHPStan issues found in audit of Aggregate that can lead to warnings
+-issue: Using the rrd_splice.php cli can result in the loss of data
 -feature#6523: When disabling a users, ensure that their stored authentication cookies are remove and any sessions cleared
 -feature#6524: When changing your password, logout from all sessions
+-feature#6534: Recycle the PHP Session ID on user login to improve Cacti site security
 -feature: Close user sessions after a password change is forced
 -feature: Update PHPMailer to 6.10 to support SMTPUTF8
 -feature: Update phpseclib for the Service Check plugin

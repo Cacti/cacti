@@ -841,6 +841,8 @@ function make_index_alter($table, $key) {
 		}
 	}
 
+	$using = '';
+
 	if (cacti_sizeof($parts)) {
 		$i = 0;
 
@@ -858,12 +860,18 @@ function make_index_alter($table, $key) {
 				}
 			}
 
+			if ($using == '' && isset($p['idx_index_type']) && $p['idx_index_type'] != '') {
+				$using = $p['idx_index_type'];
+			}
+
 			$alter_cmd .= ($i > 0 ? ',':'') . '`' . $p['idx_column_name'] . '`';
 
 			$i++;
 		}
 
-		$alter_cmd .= ') USING ' . $p['idx_index_type'];
+		if ($using != '') {
+			$alter_cmd .= ') USING ' . $using;
+		}
 
 		$alter_cmds[] = $alter_cmd;
 	}
@@ -961,16 +969,20 @@ function create_tables($load = true) {
 
 		//Handle case to address Mariadb dropping the mysql command
 		if (file_exists('/usr/bin/mariadb')) {
-			$mysql = '/usr/bin/mariadb';
-		} elseif (file_exists('/usr/local/bin/mariadb')) {
-			$mysql = '/usr/local/bin/mariadb';
+			$db_shell = '/usr/bin/mariadb';
 		} elseif (file_exists('/usr/bin/mysql')) {
-			$mysql = '/usr/bin/mariadb';
+			$db_shell = '/usr/bin/mysql';
+		} elseif (file_exists('/usr/local/bin/mariadb')) {
+			$db_shell = '/usr/local/bin/mariadb';
 		} elseif (file_exists('/usr/local/bin/mysql')) {
-			$mysql = '/usr/local/bin/mariadb';
+			$db_shell = '/usr/local/bin/mysql';
 		} else {
-			print 'FATAL: mysql or mariadb command not found' . PHP_EOL;
-			exit;
+			$db_shell = shell_exec('which mysql');
+
+			if ($db_shell == '') {
+				print 'FATAL: mysql or mariadb command not found' . PHP_EOL;
+				exit;
+			}
 		}
 
 		if (file_exists($config['base_path'] . '/docs/audit_schema.sql')) {

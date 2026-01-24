@@ -1625,7 +1625,14 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			if (!empty($graph_item['local_data_id']) && !isset($cf_ds_cache[$graph_item['data_template_rrd_id']][$graph_cf])) {
 				/* use a user-specified ds path if one is entered */
 				if (isset($graph_data_array['export_realtime'])) {
-					$data_source_path = $realtimeCachePath . '/user_' . hash('sha256',session_id()) . '_' . $graph_item['local_data_id'] . '.rrd';
+					if (!isset($_SESSION['sess_realtime_hash'])) {
+						cacti_log('WARNING: Unable to locate the Realtime Hash for Realtime Graph', false, 'REALTIME');
+						return false;
+					}
+
+					$hash = $_SESSION['sess_realtime_hash'];
+
+					$data_source_path = $realtimeCachePath . '/user_' . $hash . '_' . $graph_item['local_data_id'] . '.rrd';
 				} else {
 					$data_source_path = get_data_source_path($graph_item['local_data_id'], true);
 				}

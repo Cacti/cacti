@@ -207,6 +207,9 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == 2) {
 		}
 
 		if (!$error) {
+			/* avoid session fixation */
+			cacti_session_start(true);
+
 			/* set the php session */
 			$_SESSION['sess_user_id'] = $user['id'];
 

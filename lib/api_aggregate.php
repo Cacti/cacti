@@ -249,11 +249,11 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 		$_hr = auto_hr($_skip, $_hr);
 
 		# next entry will have to have a prepended text format
-		$prepend    = true;
-		$prepend_ct = 0;
-		$skip_graph = false;
-		$make0_cdef = aggregate_cdef_make0();
-		$i = 0;
+		$prepend     = true;
+		$prepend_cnt = 0;
+		$skip_graph  = false;
+		$make0_cdef  = aggregate_cdef_make0();
+		$i           = 0;
 
 		foreach ($graph_items as $graph_item) {
 			# loop starts at 0, but $_skip starts at 1, so increment before comparing
@@ -508,7 +508,7 @@ function aggregate_graph_items_save($items, $table) {
 		}
 
 		// convert to partial SQL statement
-		$items_sql[] .= sprintf(
+		$items_sql[] = sprintf(
 			' (%d, %d, %d, %d, %s, %d, %s, %d, %s, %s)',
 			$item[$id_field],
 			$item['graph_templates_item_id'],
@@ -700,8 +700,9 @@ function aggregate_reorder_ds_graph($base, $graph_template_id, $aggregate, $reor
 	/* install own error handler */
 	set_error_handler('aggregate_error_handler');
 
-	$new_seq = 1;
-	$base_handlers = false;
+	$new_seq      = 1;
+	$base_handler = false;
+	$updates      = array();
 
 	// Get the order of items to re-arrange on the graph
 	if ($reorder == AGGREGATE_ORDER_NONE) {
@@ -1316,8 +1317,9 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 }
 
 function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_graph_id, $_total, $_total_type) {
-	$special_comments = null;
-	$special_hrules   = null;
+	$special_comments  = null;
+	$special_hrules    = null;
+	$graph_template_id = 0;
 
 	$agg_info = db_fetch_row_prepared('SELECT *
 		FROM aggregate_graphs
@@ -1411,6 +1413,9 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 										case 'aggregate_peak':
 											$new_ppart = $pparts[3];
 											break;
+										default:
+											$new_ppart = 'max';
+											break;
 									}
 
 									$pparts[3] = $new_ppart;
@@ -1481,6 +1486,9 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 										case 'aggregate_current_peak':
 										case 'aggregate':
 											$new_ppart = $pparts[3];
+											break;
+										default:
+											$new_ppart = 'max';
 											break;
 									}
 
@@ -1660,7 +1668,7 @@ function aggregate_get_data_sources(&$graph_array, &$data_sources, &$graph_templ
  # @param int $_object            - either the aggregate or aggregate_template
  */
 function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0, $_object = array()) {
-	global $config;
+	global $config, $graph_item_types, $consolidation_functions;
 
 	/**
 	 * @var array $consolidation_functions
@@ -1673,6 +1681,8 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 	if ($_graph_id == 0 && $_graph_template_id == 0) {
 		return null;
 	}
+
+	$item_list_where = '';
 
 	/* fetch graph items */
 	if ($_graph_id == 0) {
@@ -1762,6 +1772,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 			$use_custom_class = false;
 			$hard_return      = '';
 			$matrix_title     = '';
+			$customClass      = '';
 
 			if (!preg_match('/(GPRINT|TEXTALIGN|HRULE|VRULE|TICK)/', $graph_item_types[$item['graph_type_id']])) {
 				$this_row_style = 'font-weight: bold;';
