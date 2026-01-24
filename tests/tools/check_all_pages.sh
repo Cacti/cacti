@@ -62,7 +62,6 @@ DBPASS="cactiuser";
 DBUSER="cactiuser";
 DBSLEEP=2
 DBCLIENT=$($dbshell --version | awk '{print $3}')
-DBSERVER=$($dbshell -e "SHOW GLOBAL VARIABLES LIKE 'version'" | grep -v Value | awk '{print $2}')
 
 # --- Shell defaults
 WSOWNER="apache"
@@ -159,18 +158,6 @@ while [ -n "$1" ]; do
 done
 
 # --- Website defaults
-echo "Using the following values:";
-for v in WEBHOST WAUSER WAPASS DBCLIENT DBSERVER DBFILE DBHOST DBNAME DBPASS DBUSER DBSLEEP WSOWNER WSERROR WSACCESS; do
-	name="$v"
-	if [[ $name == "WAPASS" || $name == "DBPASS" ]]; then
-		value="*******"
-	else
-		value="${!v}"
-	fi
-
-	printf "\t%10s | %s\n" "$name" "$value"
-done
-
 export MYSQL_AUTH_USR="-u${DBUSER} -p${DBPASS}"
 if [ -f "$DBFILE" ]; then
     echo "NOTE: GitHub integration using ${DBFILE}"
@@ -184,6 +171,21 @@ else
 
 	export MYSQL_AUTH_USR="-u${DBUSER} -p${DBPASS} -h${DBHOST}"
 fi
+
+# --- Get the server version and dump the key variables
+DBSERVER=$($dbshell $MYSQL_AUTH_USR -e "SHOW GLOBAL VARIABLES LIKE 'version'" | grep -v Value | awk '{print $2}')
+
+echo "Using the following values:";
+for v in WEBHOST WAUSER WAPASS DBCLIENT DBSERVER DBFILE DBHOST DBNAME DBPASS DBUSER DBSLEEP WSOWNER WSERROR WSACCESS; do
+	name="$v"
+	if [[ $name == "WAPASS" || $name == "DBPASS" ]]; then
+		value="*******"
+	else
+		value="${!v}"
+	fi
+
+	printf "\t%10s | %s\n" "$name" "$value"
+done
 
 # ------------------------------------------------------------------------------
 # Debugging
