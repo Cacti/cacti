@@ -1015,7 +1015,7 @@ function create_tables(bool $load = true) : void {
 		if (file_exists('/usr/bin/mariadb')) {
 			$db_shell = '/usr/bin/mariadb';
 		} elseif (file_exists('/usr/bin/mysql')) {
-			$db_shell = '/usr/bin/mariadb';
+			$db_shell = '/usr/bin/mysql';
 		} elseif (file_exists('/usr/local/bin/mariadb')) {
 			$db_shell = '/usr/local/bin/mariadb';
 		} elseif (file_exists('/usr/local/bin/mysql')) {
