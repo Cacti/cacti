@@ -1428,7 +1428,7 @@ function reports_item_edit() : void {
  *
  * @return void
  */
-function reports_tabs(int $report_id) : void {
+function reports_tabs(mixed $report_id) : void {
 	if ($report_id > 0) {
 		$tabs = ['details' => __('Details'), 'items' => __('Items'), 'preview' => __('View Reports')];
 	} else {
