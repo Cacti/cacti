@@ -1057,7 +1057,7 @@ if ($poller_id == 1) {
 }
 
 function host_status_cache_check() : void {
-	$current = db_fetch_cell("SELECT MD5(variable)
+	$current = db_fetch_cell("SELECT SHA2(variable, 256)
 		FROM (
 			SELECT GROUP_CONCAT(CONCAT(status, '|', hosts)) AS variable
 			FROM (

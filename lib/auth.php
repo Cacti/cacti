@@ -4339,7 +4339,8 @@ function is_user_perms_valid(int $user_id): bool {
 
 /**
  * If the secure function exists, verify against that first.
- *   If that checks fails or does not exist, check against older md5 version
+ * If that checks fails or does not exist, check against older md5 version.
+ * If the md5 function is missing, we will go with sha256.
  *
  * @param string $password The password to verify.
  * @param string $hash The hash to verify against.
@@ -4353,9 +4354,17 @@ function compat_password_verify(string $password, string $hash): bool {
 		}
 	}
 
-	$md5 = md5($password);
+	if (function_exists('md5')) {
+		$md5 = md5($password);
 
-	return ($md5 === $hash);
+		if ($md5 == $hash) {
+			return true;
+		}
+	}
+
+	$sha256 = hash('sha256', $password);
+
+	return ($sha256 === $hash);
 }
 
 /**
