@@ -50,6 +50,7 @@ DBNAME="cacti";
 DBPASS="cacti_user";
 DBUSER="cacti_user";
 DBSLEEP=2
+DBVERSION=$(mysql --version | awk '{print $3}')
 
 # --- Shell defaults
 WSOWNER="apache"
@@ -147,7 +148,7 @@ done
 
 # --- Website defaults
 echo "Using the following values:";
-for v in WEBHOST WAUSER WAPASS DBFILE DBHOST DBNAME DBPASS DBUSER DBSLEEP WSOWNER WSERROR WSACCESS; do
+for v in WEBHOST WAUSER WAPASS DBVERSION DBFILE DBHOST DBNAME DBPASS DBUSER DBSLEEP WSOWNER WSERROR WSACCESS; do
 	name="$v"
 	if [[ $name == "WAPASS" || $name == "DBPASS" ]]; then
 		value="*******"
