@@ -62,7 +62,7 @@ DBPASS="cactiuser";
 DBUSER="cactiuser";
 DBSLEEP=2
 DBCLIENT=$($dbshell --version | awk '{print $3}')
-DBSERVER=$($dbshell -e "show global variables like 'version'" | awk '{print $2}')
+DBSERVER=$($dbshell -e "SHOW GLOBAL VARIABLES LIKE 'version'" | grep -v Value | awk '{print $2}')
 
 # --- Shell defaults
 WSOWNER="apache"
