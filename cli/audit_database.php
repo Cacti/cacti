@@ -977,8 +977,12 @@ function create_tables($load = true) {
 		} elseif (file_exists('/usr/local/bin/mysql')) {
 			$mysql = '/usr/local/bin/mariadb';
 		} else {
-			print 'FATAL: mysql or mariadb command not found' . PHP_EOL;
-			exit;
+			$db_shell = shell_exec('which mysql');
+
+			if ($db_shell == '') {
+				print 'FATAL: mysql or mariadb command not found' . PHP_EOL;
+				exit;
+			}
 		}
 
 		if (file_exists($config['base_path'] . '/docs/audit_schema.sql')) {
