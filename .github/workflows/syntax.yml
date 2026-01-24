@@ -51,8 +51,8 @@ jobs:
         experimental: [false]
 
     services:
-      mariadb:
-        image: mariadb:11
+      mysql:
+        image: mysql:latest
         env:
           MYSQL_DATABASE: cacti
           MYSQL_HOST: 127.0.0.1
