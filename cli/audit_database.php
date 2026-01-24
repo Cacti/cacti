@@ -1011,10 +1011,22 @@ function create_tables(bool $load = true) : void {
 			exit(1);
 		}
 
+        // Handle case to address Mariadb dropping the mysql command
 		if (file_exists('/usr/bin/mariadb')) {
-			$mysql = '/usr/bin/mariadb';
+			$db_shell = '/usr/bin/mariadb';
+		} elseif (file_exists('/usr/bin/mysql')) {
+			$db_shell = '/usr/bin/mariadb';
+		} elseif (file_exists('/usr/local/bin/mariadb')) {
+			$db_shell = '/usr/local/bin/mariadb';
+		} elseif (file_exists('/usr/local/bin/mysql')) {
+			$db_shell = '/usr/local/bin/mysql';
 		} else {
-			$mysql = 'mysql';
+			$db_shell = shell_exec('which mysql');
+
+			if ($db_shell == '') {
+				print 'FATAL: mysql or mariadb command not found!' . PHP_EOL;
+				exit(1);
+			}
 		}
 
 		if ($database_hostname != 'localhost') {
@@ -1032,7 +1044,7 @@ function create_tables(bool $load = true) : void {
 		if (file_exists(CACTI_PATH_DOCS . '/audit_schema.sql')) {
 			$password = ' --password=' . cacti_escapeshellarg($database_password);
 
-			$cmd = $mysql . ' --user=' . cacti_escapeshellarg($database_username) .
+			$cmd = $db_shell . ' --user=' . cacti_escapeshellarg($database_username) .
 				$password .
 				' --host=' . cacti_escapeshellarg($database_hostname) .
 				$port .
