@@ -4119,7 +4119,7 @@ class Installer implements JsonSerializable {
 		Installer::setPhpOption('memory_limit', -1);
 
 		try {
-			$backgroundTime = microtime(true);
+			$backgroundTime = (string) microtime(true);
 
 			if ($installer == null) {
 				$installer = new Installer();
@@ -4130,7 +4130,7 @@ class Installer implements JsonSerializable {
 			log_install_always('', __('Exception occurred during installation: #%s - %s', $e->getCode(), $e->getMessage()));
 		}
 
-		$backgroundDone = microtime(true);
+		$backgroundDone = (string) microtime(true);
 		set_install_config_option('install_complete', $backgroundDone);
 		set_install_config_option('install_step', Installer::STEP_COMPLETE);
 
