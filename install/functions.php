@@ -993,11 +993,11 @@ function install_setup_get_tables() : mixed {
 }
 
 function to_array(SimpleXMLElement|false|string|array $data) : mixed {
-    if (is_object($data)) {
-        $data = get_object_vars($data);
-    }
+	if (is_object($data)) {
+		$data = get_object_vars($data);
+	}
 
-    return (is_array($data)) ? array_map(__FUNCTION__, $data) : $data;
+	return (is_array($data)) ? array_map(__FUNCTION__, $data) : $data;
 }
 
 /**

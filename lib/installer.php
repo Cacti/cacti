@@ -99,7 +99,7 @@ class Installer implements JsonSerializable {
 	private int $stepCurrent;
 	private int $stepPrevious;
 	private int $stepNext;
-	private mixed $stepData = null;
+	private mixed $stepData  = null;
 	private mixed $stepError = 0;
 	private string $output;
 	private array $templates;
