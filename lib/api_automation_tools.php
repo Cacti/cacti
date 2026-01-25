@@ -308,7 +308,7 @@ function getSNMPQueries() : array {
 /**
  * Retrieves the SNMP query types for a given SNMP query ID.
  *
- * @param  int   $snmpQueryId The ID of the SNMP query.
+ * @param int $snmpQueryId The ID of the SNMP query.
  *
  * @return array An array of SNMP query types.
  */

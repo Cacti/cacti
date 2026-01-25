@@ -25,9 +25,9 @@
 /**
  * Creates a filter for tree devices.
  *
- * @param  string $rows_label Optional. The label for the rows. Default is an empty string.
+ * @param string $rows_label Optional. The label for the rows. Default is an empty string.
  *
- * @return array  The filter for tree devices.
+ * @return array The filter for tree devices.
  */
 function create_tree_devices_filter(string $rows_label = '') : array {
 	global $item_rows;
@@ -1895,8 +1895,8 @@ function build_matching_objects_filter(int $rule_id, int $rule_type) : string {
 /**
  * Builds a filter string for automation rule items.
  *
- * @param  array  $automation_rule_items An array of automation rule items to be filtered.
- * @param  string $prefix                An optional prefix to be added to the filter string.
+ * @param array  $automation_rule_items An array of automation rule items to be filtered.
+ * @param string $prefix                An optional prefix to be added to the filter string.
  *
  * @return string The constructed filter string.
  */
@@ -2201,10 +2201,10 @@ function make_host_snnp_cache_sql() : string|false {
 /**
  * Retrieves the fields of a given table, excluding specified fields.
  *
- * @param  string $table           The name of the table to retrieve fields from.
- * @param  array  $excluded_fields An array of field names to exclude from the result.
+ * @param string $table           The name of the table to retrieve fields from.
+ * @param array  $excluded_fields An array of field names to exclude from the result.
  *
- * @return array  An array of field names from the table, excluding the specified fields.
+ * @return array An array of field names from the table, excluding the specified fields.
  */
 function get_query_fields(string $table, array $excluded_fields) : array {
 	$function = automation_function_with_pid(__FUNCTION__);
@@ -2324,8 +2324,8 @@ function array_to_list(array $array, string $sql_column) : string {
 /**
  * Subtracts the elements of one array from another.
  *
- * @param  array $big_array   The array from which elements will be subtracted.
- * @param  array $small_array The array containing elements to subtract from the first array.
+ * @param array $big_array   The array from which elements will be subtracted.
+ * @param array $small_array The array containing elements to subtract from the first array.
  *
  * @return array The resulting array after subtraction.
  */
@@ -2345,11 +2345,11 @@ function array_minus(array $big_array, array $small_array) : array {
 /**
  * Replaces all occurrences of the search string with the replacement string in the target string.
  *
- * @param  string       $search  The value being searched for.
- * @param  array|string $replace The replacement value that replaces found search values.
- * @param  string       $target  The string being searched and replaced on.
+ * @param string       $search  The value being searched for.
+ * @param array|string $replace The replacement value that replaces found search values.
+ * @param string       $target  The string being searched and replaced on.
  *
- * @return array        The resulting string after the replacements have been made.
+ * @return array The resulting string after the replacements have been made.
  */
 function automation_string_replace(string $search, array|string $replace, string $target) : array {
 	$repl = preg_replace('/' . $search . '/i', $replace, $target);

@@ -757,9 +757,9 @@ function db_fetch_cell_prepared(string $sql, array $params = [], string $col_nam
  * db_fetch_cell_return - Function to process and return data from the
  * db_fetch_cell function
  *
- * @param  PDOStatement $query    The SQL query to run
- * @param  string       $col_name The column to return if the query is more row or associative
- *                                in the case of associated, returns the column from the first row.
+ * @param PDOStatement $query    The SQL query to run
+ * @param string       $col_name The column to return if the query is more row or associative
+ *                               in the case of associated, returns the column from the first row.
  *
  * @return mixed The value of the column or false if failed
  */

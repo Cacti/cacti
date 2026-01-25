@@ -723,8 +723,8 @@ function api_device_gt_remove(int $device_id, int $graph_template_id) : void {
 /**
  * Replace device settings to the remote data collectors
  *
- * @param  int  $device_id The ID of the device to replicate.
- * @param  int  $poller_id The ID of the poller to replicate to. Defaults to 1.
+ * @param int $device_id The ID of the device to replicate.
+ * @param int $poller_id The ID of the poller to replicate to. Defaults to 1.
  *
  * @return bool Returns true on success, false on failure.
  */
@@ -1782,9 +1782,9 @@ function api_clone_message($message, $force = false) : void {
 /**
  * Get a unique name for a cacti object based upon the table and column name
  *
- * @param  string       $name   The base name to check for uniqueness.
- * @param  string       $table  The name of the database table to check.
- * @param  string       $column The name of the column in the table to check for the name. Default is 'name'.
+ * @param string $name   The base name to check for uniqueness.
+ * @param string $table  The name of the database table to check.
+ * @param string $column The name of the column in the table to check for the name. Default is 'name'.
  *
  * @return string|false The unique name if found, or false if a unique name could not be generated within 20 attempts.
  */
@@ -1816,7 +1816,7 @@ function api_clone_get_unique_name(string $name, string $table, string $column =
 /**
  * Get a unique file name for a Cacti object based upon the file name
  *
- * @param  string $file_name The original file name to be used as the base for generating a unique filename.
+ * @param string $file_name The original file name to be used as the base for generating a unique filename.
  *
  * @return string|false The unique filename if found, or false if no unique filename could be generated within 20 attempts.
  */

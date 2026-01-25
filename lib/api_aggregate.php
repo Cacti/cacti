@@ -554,8 +554,8 @@ function aggregate_graph_items_save(array $items, string $table) : bool {
  * Validate extra graph parameters posted from graph edit form.
  * You can check for validation errors with cacti function is_error_message
  *
- * @param  array $posted       values posted from form
- * @param  bool  $has_override form had override checkboxes
+ * @param array $posted       values posted from form
+ * @param bool  $has_override form had override checkboxes
  *
  * @return array - cleaned up graph parameters
  */
@@ -626,8 +626,8 @@ function aggregate_validate_graph_params(array $posted, bool $has_override = fal
  * Populate graph items array with posted values.
  * $graph_items array must be keyed on graph item id.
  *
- * @param  array $posted      Values posted from form
- * @param  array $graph_items Reference to graph items array to update with form values
+ * @param array $posted      Values posted from form
+ * @param array $graph_items Reference to graph items array to update with form values
  *
  * @return void
  */

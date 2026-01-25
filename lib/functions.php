@@ -268,11 +268,11 @@ function user_setting_exists(string $config_name, mixed $user_id) : bool {
 /**
  * If a value exists for the current user/setting specified, removes it
  *
- * @param  string $config_name The name of the configuration setting as
- *                             specified $settings_user array in
- *                             'include/global_settings.php'
- * @param  mixed  $user        The id of the user to check the
- *                             configuration value for
+ * @param string $config_name The name of the configuration setting as
+ *                            specified $settings_user array in
+ *                            'include/global_settings.php'
+ * @param mixed  $user        The id of the user to check the
+ *                            configuration value for
  *
  * @return void
  */
@@ -9515,8 +9515,8 @@ function detect_cpu_cores() : int {
 /**
  * wrapper function to emulate pecl stats if it's not installed
  *
- * @param array $items A lits of items to calculate the standard deviation for
- * @param bool $sample
+ * @param array $items  A lits of items to calculate the standard deviation for
+ * @param bool  $sample
  *
  * @return mixed False on failure, double otherwise
  */

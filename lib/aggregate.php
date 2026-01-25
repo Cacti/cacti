@@ -30,10 +30,10 @@
  * graph data and its associated child graph IDs. If child graph IDs are found, it constructs a URL
  * with the appropriate query parameters and returns it as a hyperlink.
  *
- * @param  int    $local_graph_id The ID of the local graph.
- * @param  int    $graph_start    Optional. The start time for the graph. Default is -1.
- * @param  int    $graph_end      Optional. The end time for the graph. Default is -1.
- * @param  int    $rra_id         Optional. The RRA ID for the graph. Default is -1.
+ * @param int $local_graph_id The ID of the local graph.
+ * @param int $graph_start    Optional. The start time for the graph. Default is -1.
+ * @param int $graph_end      Optional. The end time for the graph. Default is -1.
+ * @param int $rra_id         Optional. The RRA ID for the graph. Default is -1.
  *
  * @return string The constructed URL as a hyperlink.
  */
@@ -403,13 +403,13 @@ function aggregate_error_handler(int $errno, string $errmsg, string $filename, i
 /**
  * get_next_sequence 			- returns the next available sequence id
  *
- * @param  int    $id          The current id
- * @param  string $field       The field name that contains the target id
- * @param  string $table_name  The table name that contains the target id
- * @param  string $group_query An SQL 'where' clause to limit the query
- * @param  string $key_field
+ * @param int    $id          The current id
+ * @param string $field       The field name that contains the target id
+ * @param string $table_name  The table name that contains the target id
+ * @param string $group_query An SQL 'where' clause to limit the query
+ * @param string $key_field
  *
- * @return int    The next available sequence id
+ * @return int The next available sequence id
  */
 function get_next_sequence(int $id, string $field, string $table_name, string $group_query, string $key_field = 'id') : int {
 	cacti_log(__FUNCTION__ . '  called. Id: ' . $id . ' field: ' . $field . ' table: ' . $table_name, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
@@ -432,7 +432,7 @@ function get_next_sequence(int $id, string $field, string $table_name, string $g
 /**
  * find out, if this is a pure STACKed graph
  *
- * @param  int  $_local_graph_id graph to be examined
+ * @param int $_local_graph_id graph to be examined
  *
  * @return bool true, if pure STACKed graph
  */
@@ -529,9 +529,9 @@ function aggregate_conditional_convert_graph_type(int $_graph_id, int $_old_type
 /**
  * Changes the graph type of an aggregate graph item based on the provided old and new graph types.
  *
- * @param  int $graph_index    The index of the graph item within the aggregate.
- * @param  int $old_graph_type The current graph type of the item.
- * @param  int $new_graph_type The desired new graph type for the item.
+ * @param int $graph_index    The index of the graph item within the aggregate.
+ * @param int $old_graph_type The current graph type of the item.
+ * @param int $new_graph_type The desired new graph type for the item.
  *
  * @return int The resulting graph type after applying the change.
  */
@@ -636,8 +636,8 @@ function aggregate_change_graph_type(int $graph_index, int $old_graph_type, int 
 /**
  * duplicate_color_template				- duplicate color template
  *
- * @param  int    $_color_template_id   - id of the base color template
- * @param  string $color_template_title - title of the duplicated color template
+ * @param int    $_color_template_id   - id of the base color template
+ * @param string $color_template_title - title of the duplicated color template
  *
  * @return void
  */
@@ -739,9 +739,9 @@ function aggregate_cdef_make0() : int {
 /**
  * aggregate_cdef_totalling			- create a totalling CDEF, if need be
  *
- * @param  int  $_new_graph_id        - id of new graph
- * @param  int  $_graph_item_sequence - current graph item sequence
- * @param  int  $_total_type          - what type of totalling is required?
+ * @param int $_new_graph_id        - id of new graph
+ * @param int $_graph_item_sequence - current graph item sequence
+ * @param int $_total_type          - what type of totalling is required?
  *
  * @return void
  */
@@ -892,8 +892,8 @@ function aggregate_cdef_totalling(int $_new_graph_id, int $_graph_item_sequence,
 
 /** auto_hr			- set a new hr when items are skipped
  *
- * @param  array $s - array of skipped items
- * @param  array $h - array of items with HR
+ * @param array $s - array of skipped items
+ * @param array $h - array of items with HR
  *
  * @return array - array with new HR markers
  */
@@ -921,7 +921,7 @@ function auto_hr(array $s, array $h) : array {
 
 /** auto_title					- generate a title suggested to the user
  *
- * @param  int    $_local_graph_id - the id of the graph stanza
+ * @param int $_local_graph_id - the id of the graph stanza
  *
  * @return string - the title
  */
@@ -955,7 +955,7 @@ function auto_title(int $_local_graph_id) : string {
 /**
  * Removes multiple aggregate graphs and their associated items from the database.
  *
- * @param  array $graphs An array of graph IDs to be removed.
+ * @param array $graphs An array of graph IDs to be removed.
  *
  * @return void
  */

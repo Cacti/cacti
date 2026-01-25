@@ -428,21 +428,21 @@ function is_graphable_item(string $item) : bool {
  * variable_nth_percentile - given a Nth percentile variable, calculate the Nth percentile
  * and format it for display on the graph
  *
- * @param  array  $regexp_match_array The array that contains each argument in the Nth percentile variable. it
- *                                    should be formatted like so:
- *                                    $arr[0] // full variable string
- *                                    $arr[1] // Nth percentile
- *                                    $arr[2] // bits or bytes
- *                                    $arr[3] // power of 10 divisor
- *                                    $arr[4] // current, total, max, total_peak, all_max_current, all_max_peak
- *                                    $arr[5] // digits of floating point precision
- * @param  array  $graph              An array that contains the current graph data
- * @param  array  $graph_item         An array that contains the current graph item
- * @param  array  $graph_items        An array that contains all graph items
- * @param  int    $graph_start        The start time to use for the data calculation. this value can
- *                                    either be absolute (unix timestamp) or relative (to now)
- * @param  int    $graph_end          The end time to use for the data calculation. this value can
- *                                    either be absolute (unix timestamp) or relative (to now)
+ * @param array $regexp_match_array The array that contains each argument in the Nth percentile variable. it
+ *                                  should be formatted like so:
+ *                                  $arr[0] // full variable string
+ *                                  $arr[1] // Nth percentile
+ *                                  $arr[2] // bits or bytes
+ *                                  $arr[3] // power of 10 divisor
+ *                                  $arr[4] // current, total, max, total_peak, all_max_current, all_max_peak
+ *                                  $arr[5] // digits of floating point precision
+ * @param array $graph              An array that contains the current graph data
+ * @param array $graph_item         An array that contains the current graph item
+ * @param array $graph_items        An array that contains all graph items
+ * @param int   $graph_start        The start time to use for the data calculation. this value can
+ *                                  either be absolute (unix timestamp) or relative (to now)
+ * @param int   $graph_end          The end time to use for the data calculation. this value can
+ *                                  either be absolute (unix timestamp) or relative (to now)
  *
  * @return string - a string containing the Nth percentile suitable for placing on the graph
  */

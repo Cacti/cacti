@@ -682,8 +682,8 @@ function auth_augment_roles(string $role_name, array $files) : void {
 /**
  * A helper function to extend Cacti roles with additional realms or to add a new role.
  *
- * @param  string $role_name The name of the role to augment.
- * @param  string $auth_name The authentication name to look up the realm ID.
+ * @param string $role_name The name of the role to augment.
+ * @param string $auth_name The authentication name to look up the realm ID.
  *
  * @return void
  */

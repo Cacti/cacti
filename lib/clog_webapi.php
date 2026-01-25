@@ -444,10 +444,10 @@ function clog_view_logfile() : void {
 /**
  * Custom sorting function for log file names.
  *
- * @param  string $a The first file name to compare.
- * @param  string $b The second file name to compare.
+ * @param string $a The first file name to compare.
+ * @param string $b The second file name to compare.
  *
- * @return int    Returns < 0 if $a is less than $b, 0 if they are equal, and > 0 if $a is greater than $b.
+ * @return int Returns < 0 if $a is less than $b, 0 if they are equal, and > 0 if $a is greater than $b.
  */
 function filter_sort(string $a, string $b) : int {
 	$a_parts = explode('-', $a);

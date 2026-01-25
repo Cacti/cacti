@@ -617,26 +617,26 @@ function form_file(string $form_name, int $form_size = 30, string $form_accept =
 /**
  * Draws a standard html textbox and provides status of a files existence
  *
- * @param string $form_name     - The name of this form element
- * @param string $prev_val      - The current value of this form element
- * @param string $default_value - The value of this form element to use if there is no current value available
- * @param mixed  $max_length    - The maximum number of characters that can be entered into this textbox
- * @param mixed  $form_size     - The size (width) of the textbox
- * @param string $type          - The type of textbox, either 'text' or 'password'
- * @param mixed  $current_id    - Used to determine if a current value for this form element
- *                              exists or not. a $current_id of '0' indicates that no
- *                              current value exists, a non-zero value indicates that
- *                              a current value does exist
- * @param mixed  $data          - Array containing 'text' element for display and if
- *                              'error' element present, shows failure
+ * @param string $form_name   The name of this form element
+ * @param mixed  $prev_val    The current value of this form element
+ * @param mixed  $default_val The value of this form element to use if there is no current value available
+ * @param mixed  $max_length  The maximum number of characters that can be entered into this textbox
+ * @param mixed  $form_size   The size (width) of the textbox
+ * @param string $type        The type of textbox, either 'text' or 'password'
+ * @param mixed  $current_id  Used to determine if a current value for this form element
+ *                            exists or not. a $current_id of '0' indicates that no
+ *                            current value exists, a non-zero value indicates that
+ *                            a current value does exist
+ * @param mixed  $data        Array containing 'text' element for display and if
+ *                            'error' element present, shows failure
  *
  * @return void
  */
 
-function form_filepath_box(string $form_name, string $prev_val, string $default_value, mixed $max_length,
+function form_filepath_box(string $form_name, mixed $prev_val, mixed $default_val, mixed $max_length,
 	mixed $form_size = 30, string $type = 'text', mixed $current_id = 0, mixed $data = false) : void {
 	if (($prev_val == '') && (empty($current_id))) {
-		$prev_val = $default_value;
+		$prev_val = $default_val;
 	}
 
 	print "<input type='$type'";
@@ -696,22 +696,22 @@ function form_filepath_box(string $form_name, string $prev_val, string $default_
 /**
  * Draws a standard html textbox and provides status of a directories existence
  *
- * @param string $form_name     - the name of this form element
- * @param string $prev_val      - the current value of this form element
- * @param string $default_value - the value of this form element to use if there is no current value available
- * @param mixed  $max_length    - the maximum number of characters that can be entered into this textbox
- * @param mixed  $form_size     - the size (width) of the textbox
- * @param string $type          - the type of textbox, either 'text' or 'password'
- * @param mixed  $current_id    - used to determine if a current value for this form element
- *                              exists or not. a $current_id of '0' indicates that no current value exists,
- *                              a non-zero value indicates that a current value does exist
+ * @param string $form_name   The name of this form element
+ * @param mixed  $prev_val    The current value of this form element
+ * @param mixed  $default_val The value of this form element to use if there is no current value available
+ * @param mixed  $max_length  The maximum number of characters that can be entered into this textbox
+ * @param mixed  $form_size   The size (width) of the textbox
+ * @param string $type        The type of textbox, either 'text' or 'password'
+ * @param mixed  $current_id  Used to determine if a current value for this form element
+ *                            exists or not. a $current_id of '0' indicates that no current value exists,
+ *                            a non-zero value indicates that a current value does exist
  *
  * @return void
  */
-function form_dirpath_box(string $form_name, string $prev_val, string $default_value, mixed $max_length,
+function form_dirpath_box(string $form_name, mixed $prev_val, mixed $default_val, mixed $max_length,
 	mixed $form_size = 30, string $type = 'text', mixed $current_id = 0) : void {
 	if (($prev_val == '') && (empty($current_id))) {
-		$prev_val = $default_value;
+		$prev_val = $default_val;
 	}
 
 	print "<input type='$type'";
@@ -747,24 +747,24 @@ function form_dirpath_box(string $form_name, string $prev_val, string $default_v
 /**
  * Draws a standard html textbox
  *
- * @param string $form_name     - the name of this form element
- * @param string $prev_val      - the current value of this form element
- * @param string $default_value - the value of this form element to use if there is no current value available
- * @param mixed  $max_length    - the maximum number of characters that can be entered into this textbox
- * @param mixed  $form_size     - the size (width) of the textbox
- * @param string $type          - the type of textbox, either 'text' or 'password'
- * @param mixed  $current_id    - used to determine if a current value for this form element
- *                              exists or not. a $current_id of '0' indicates that no current value exists,
- *                              a non-zero value indicates that a current value does exist
- * @param string $placeholder   - place a placeholder over an empty field
- * @param string $title         - use a title attribute when hovering over the textbox
+ * @param string $form_name   The name of this form element
+ * @param mixed  $prev_val    The current value of this form element
+ * @param mixed  $default_val The value of this form element to use if there is no current value available
+ * @param mixed  $max_length  The maximum number of characters that can be entered into this textbox
+ * @param mixed  $form_size   The size (width) of the textbox
+ * @param string $type        The type of textbox, either 'text' or 'password'
+ * @param mixed  $current_id  Used to determine if a current value for this form element
+ *                            exists or not. a $current_id of '0' indicates that no current value exists,
+ *                            a non-zero value indicates that a current value does exist
+ * @param string $placeholder Place a placeholder over an empty field
+ * @param string $title       Use a title attribute when hovering over the textbox
  *
  * @return void
  */
-function form_text_box(string $form_name, string $prev_val, string $default_value, mixed $max_length,
+function form_text_box(string $form_name, mixed $prev_val, mixed $default_val, mixed $max_length,
 	mixed $form_size = 30, string $type = 'text', mixed $current_id = 0, string $placeholder = '', string $title = '') : void {
 	if (($prev_val == '') && (empty($current_id))) {
-		$prev_val = $default_value;
+		$prev_val = $default_val;
 	}
 
 	print "<input type='$type' " . ($type == 'password' || $type == 'password_confirm' ? 'autocomplete="off" readonly onfocus="this.removeAttribute(\'readonly\');"' : '') . ($title != '' ? ' title="' . htmle($title) . '"' : '');
@@ -792,16 +792,16 @@ function form_text_box(string $form_name, string $prev_val, string $default_valu
 /**
  * Draws a standard html hidden element
  *
- * @param string     $form_name     - the name of this form element
- * @param int|string $prev_val      - the current value of this form element
- * @param int|string $default_value - the value of this form element to use if there is no current value available
- * @param mixed      $in_form
+ * @param string $form_name   The name of this form element
+ * @param mixed  $prev_val    The current value of this form element
+ * @param mixed  $default_val The value of this form element to use if there is no current value available
+ * @param mixed  $in_form
  *
  * @return void
  */
-function form_hidden_box(string $form_name, int|string $prev_val, int|string $default_value, mixed $in_form = false) : void {
+function form_hidden_box(string $form_name, mixed $prev_val, mixed $default_val, mixed $in_form = false) : void {
 	if ($prev_val == '') {
-		$prev_val = $default_value;
+		$prev_val = $default_val;
 	}
 
 	print "<div style='display:none;'><input style='height:0px;' type='hidden' id='$form_name' name='$form_name' value='" . htmle($prev_val) . "'></div>";
@@ -810,36 +810,36 @@ function form_hidden_box(string $form_name, int|string $prev_val, int|string $de
 /**
  * Draws a standard html dropdown box
  *
- * @param string $form_name      - the name of this form element
- * @param array  $form_data      - an array containing data for this dropdown. it can be formatted
+ * @param string $form_name      The name of this form element
+ * @param array  $form_data      An array containing data for this dropdown. it can be formatted
  *                               in one of two ways:
  *                               $array["id"] = "value";
  *                               -- or --
  *                               $array[0]["id"] = 43;
  *                               $array[0]["name"] = "Red";
- * @param string $column_display - used to identify the key to be used for display data. this
+ * @param string $column_display Used to identify the key to be used for display data. this
  *                               is only applicable if the array is formatted using
  *                               the second method above
- * @param mixed  $column_id      - used to identify the key to be used for id data. this
+ * @param mixed  $column_id      Used to identify the key to be used for id data. this
  *                               is only applicable if the array is formatted using
  *                               the second method above
- * @param mixed  $prev_val       - the current value of this form element
- * @param string $none_entry     - the name to use for a default 'none' element in the dropdown
- * @param mixed  $default_value  - the value of this form element to use if there is
+ * @param mixed  $prev_val       The current value of this form element
+ * @param string $none_entry     The name to use for a default 'none' element in the dropdown
+ * @param mixed  $default_val    The value of this form element to use if there is
  *                               no current value available
- * @param string $class          - any css that needs to be applied to this form element
- * @param string $on_change      - onChange modifier
- * @param string $display_name   - The display name for this form object
+ * @param string $class          any css that needs to be applied to this form element
+ * @param string $on_change      The onChange modifier
+ * @param string $display_name   The display name for this form object
  *
  * @return void
  */
 function form_dropdown(string $form_name, array $form_data, string $column_display, mixed $column_id,
-	mixed $prev_val, string $none_entry, mixed $default_value, string $class = '',
+	mixed $prev_val, string $none_entry, mixed $default_val, string $class = '',
 	string $on_change = '', string $display_name = '') : void {
 	global $form_id;
 
 	if ($prev_val == '') {
-		$prev_val = $default_value;
+		$prev_val = $default_val;
 	}
 
 	if (isset($_SESSION[SESS_ERROR_FIELDS])) {
@@ -896,25 +896,25 @@ function form_dropdown(string $form_name, array $form_data, string $column_displ
  *     ...
  *   );
  *
- * @param string $column_display - used to identify the key to be used for display data. this
+ * @param string $column_display Used to identify the key to be used for display data. this
  *                               is only applicable if the array is formatted using the
  *                               second method above
- * @param string $column_id      - used to identify the key to be used for id data. this
+ * @param string $column_id      Used to identify the key to be used for id data. this
  *                               is only applicable if the array is formatted using the
  *                               second method above.
- * @param string $prev_val       - the current value of this form element
- * @param string $none_entry     - the name to use for a default 'none' element in the dropdown
- * @param string $default_value  - the value of this form element to use if there is no current value available
- * @param string $class          - any css that needs to be applied to this form element
- * @param string $on_change      - onChange modifier
- * @param string $class          - The CSS Class for the object
+ * @param mixed  $prev_val       The current value of this form element
+ * @param string $none_entry     The name to use for a default 'none' element in the dropdown
+ * @param mixed  $default_val    The value of this form element to use if there is no current value available
+ * @param string $class          Any css that needs to be applied to this form element
+ * @param string $on_change      The onChange modifier
+ * @param string $class          The CSS Class for the object
  *
  * @return void
  */
 function form_dropicon(string $form_name, array $form_data, string $column_display, string $column_id,
-	mixed $prev_val, string $none_entry, mixed $default_value, string $class = '', string $on_change = '') : void {
+	mixed $prev_val, string $none_entry, mixed $default_val, string $class = '', string $on_change = '') : void {
 	if ($prev_val == '') {
-		$prev_val = $default_value;
+		$prev_val = $default_val;
 	}
 
 	if (isset($_SESSION[SESS_ERROR_FIELDS])) {
@@ -957,19 +957,19 @@ function form_dropicon(string $form_name, array $form_data, string $column_displ
  * @param string $form_name      The name attribute for the select element.
  * @param string $column_display Not used in the function.
  * @param string $column_id      Not used in the function.
- * @param string $prev_val       The previously selected value.
+ * @param mixed  $prev_val       The previously selected value.
  * @param string $none_entry     Not used in the function.
- * @param string $default_value  The default value if no previous value is set.
+ * @param mixed  $default_val    The default value if no previous value is set.
  * @param string $class          Optional. Additional CSS classes for the select element.
  * @param string $on_change      Optional. JavaScript code to execute on change event.
  *
  * @return void
  */
 function form_droplanguage(string $form_name, string $column_display, string $column_id,
-	string $prev_val, string $none_entry, string $default_value, string $class = '',
+	mixed  $prev_val, string $none_entry, mixed $default_val, string $class = '',
 	string $on_change = '') : void {
 	if ($prev_val == '') {
-		$prev_val = $default_value;
+		$prev_val = $default_val;
 	}
 
 	if (isset($_SESSION[SESS_ERROR_FIELDS])) {
@@ -1027,9 +1027,9 @@ function form_droplanguage(string $form_name, string $column_display, string $co
  * @param string $column_id      The column name to be used as the value in the form element.
  * @param mixed  $action         The action to be performed on form element change.
  * @param string $previous_id    The previous ID value of the form element.
- * @param string $prev_val       The previous value of the form element.
+ * @param mixed  $prev_val       The previous value of the form element.
  * @param string $none_entry     The text to display for a "none" entry.
- * @param string $default_value  The default value for the form element.
+ * @param mixed  $default_val    The default value for the form element.
  * @param string $class          Optional. Additional CSS classes for the form element.
  * @param string $on_change      Optional. JavaScript function to call on form element change.
  * @param string $display_name   Optional. The display name for the column.
@@ -1038,10 +1038,10 @@ function form_droplanguage(string $form_name, string $column_display, string $co
  * @return void
  */
 function form_callback(string $form_name, string $classic_sql, string $column_display, string $column_id,
-	mixed $action, string $previous_id, string $prev_val, string $none_entry, string $default_value,
+	mixed $action, string $previous_id, mixed $prev_val, string $none_entry, mixed $default_val,
 	string $class = '', string $on_change = '', string $display_name = '', string $request_vars = '') : void {
 	if ($prev_val == '') {
-		$prev_val = $default_value;
+		$prev_val = $default_val;
 	}
 
 	if (isset($_SESSION[SESS_ERROR_FIELDS])) {
@@ -1081,27 +1081,27 @@ function form_callback(string $form_name, string $classic_sql, string $column_di
 /**
  * Draws a standard html checkbox
  *
- * @param string $form_name     - the name of this form element
- * @param mixed  $prev_val      - the current value of this form element
- * @param string $form_caption  - the text to display to the right of the checkbox
- * @param mixed  $default_value - the value of this form element to use if there is
- *                              no current value available
- * @param mixed  $current_id    - used to determine if a current value for this form element
- *                              exists or not. a $current_id of '0' indicates
- *                              that no current value exists, a non-zero value indicates
- *                              that a current value does exist.
- * @param string $class         - specify a css class
- * @param string $on_change     - specify a javascript onchange action
- * @param string $title         - specify a title for the checkbox on hover
- * @param bool   $show_label    - show the form caption in the checkbox
+ * @param string $form_name    The name of this form element
+ * @param mixed  $prev_val     The current value of this form element
+ * @param string $form_caption The text to display to the right of the checkbox
+ * @param mixed  $default_val  The value of this form element to use if there is
+ *                             no current value available
+ * @param mixed  $current_id   Used to determine if a current value for this form element
+ *                             exists or not. a $current_id of '0' indicates
+ *                             that no current value exists, a non-zero value indicates
+ *                             that a current value does exist.
+ * @param string $class        Specify a css class
+ * @param string $on_change    Specify a javascript onchange action
+ * @param string $title        Specify a title for the checkbox on hover
+ * @param bool   $show_label   Show the form caption in the checkbox
  *
  * @return void
  */
 
-function form_checkbox(string $form_name, mixed $prev_val, string $form_caption, mixed $default_value,
+function form_checkbox(string $form_name, mixed $prev_val, string $form_caption, mixed $default_val,
 	mixed $current_id = 0, string $class = '', string $on_change = '', string $title = '', bool $show_label = false) : void {
 	if (($prev_val === null) && (empty($current_id))) {
-		$prev_val = $default_value;
+		$prev_val = $default_val;
 	}
 
 	if (isset($_SESSION[SESS_FIELD_VALUES])) {
@@ -1139,20 +1139,20 @@ function form_checkbox(string $form_name, mixed $prev_val, string $form_caption,
 /**
  * Draws a standard html radio button
  *
- * @param string $form_name          - the name of this form element
- * @param string $prev_val           - the current value of this form element (selected or not)
- * @param string $form_current_value - the current value of this form element (element id)
- * @param string $form_caption       - the text to display to the right of the checkbox
- * @param string $default_value      - the value of this form element to use if there is
- * @param string $class              - The object class for customization
- * @param string $on_change          - An onChange event to attach to the form object no current value available
+ * @param string $form_name    The name of this form element
+ * @param mixed  $prev_val     The current value of this form element (selected or not)
+ * @param mixed  $current_val  The current value of this form element (element id)
+ * @param string $form_caption The text to display to the right of the checkbox
+ * @param mixed  $default_val  The value of this form element to use if there is
+ * @param string $class        The object class for customization
+ * @param string $on_change    An onChange event to attach to the form object no current value available
  *
  * @return void
  */
-function form_radio_button(string $form_name, string $prev_val, string $form_current_value,
-	string $form_caption, string $default_value, string $class = '', string $on_change = '') : void {
+function form_radio_button(string $form_name, mixed $prev_val, mixed $current_val,
+	string $form_caption, mixed $default_val, string $class = '', string $on_change = '') : void {
 	if ($prev_val == '') {
-		$prev_val = $default_value;
+		$prev_val = $default_val;
 	}
 
 	if (isset($_SESSION[SESS_FIELD_VALUES])) {
@@ -1169,16 +1169,16 @@ function form_radio_button(string $form_name, string $prev_val, string $form_cur
 		$on_change = " onChange='$on_change' ";
 	}
 
-	if ($prev_val == $form_current_value) {
+	if ($prev_val == $current_val) {
 		$checked = " checked aria-checked='true'";
 	} else {
 		$checked = " aria-checked='false'";
 	}
 
-	$css_id = $form_name . '_' . $form_current_value;
+	$css_id = $form_name . '_' . $current_val;
 
 	print "<span class='nowrap'>";
-	print "<label class='radioSwitch'><input value='" . htmle($form_current_value) .
+	print "<label class='radioSwitch'><input value='" . htmle($current_val) .
 		"' class='formCheckbox$class' type='radio' id='$css_id' name='$form_name'" .
 		$on_change . $checked . "><span class='radioSlider radioRound'></span></label>";
 	print "<label class='radioLabelWanted' for='$css_id'>" . htmle($form_caption) . '</label>';
@@ -1188,21 +1188,21 @@ function form_radio_button(string $form_name, string $prev_val, string $form_cur
 /**
  * Draws a standard html text area box
  *
- * @param string $form_name     - the name of this form element
- * @param string $prev_val      - the current value of this form element (selected or not)
- * @param int    $form_rows     - the number of rows in the text area box
- * @param int    $form_columns  - the number of columns in the text area box
- * @param string $default_value - the value of this form element to use if there is no current value available
- * @param string $class         Optional. Additional CSS classes to apply to the textarea element. Default is an empty string.
- * @param string $on_change     Optional. JavaScript code to execute when the textarea value changes. Default is an empty string.
- * @param string $placeholder   Optional. Placeholder text for the textarea element. Default is an empty string.
+ * @param string $form_name    The name of this form element
+ * @param mixed  $prev_val     The current value of this form element (selected or not)
+ * @param int    $form_rows    The number of rows in the text area box
+ * @param int    $form_columns The number of columns in the text area box
+ * @param mixed  $default_val  The value of this form element to use if there is no current value available
+ * @param string $class        Additional CSS classes to apply to the textarea element. Default is an empty string.
+ * @param string $on_change    JavaScript code to execute when the textarea value changes. Default is an empty string.
+ * @param string $placeholder  Placeholder text for the textarea element. Default is an empty string.
  *
  * @return void
  */
-function form_text_area(string $form_name, string $prev_val, int $form_rows, int $form_columns,
-	string $default_value, string $class = '', string $on_change = '', string $placeholder = '') : void {
+function form_text_area(string $form_name, mixed $prev_val, int $form_rows, int $form_columns,
+	mixed $default_val, string $class = '', string $on_change = '', string $placeholder = '') : void {
 	if ($prev_val == '') {
-		$prev_val = $default_value;
+		$prev_val = $default_val;
 	}
 
 	if (isset($_SESSION[SESS_ERROR_FIELDS])) {
@@ -1308,19 +1308,19 @@ function form_multi_dropdown(string $form_name, array $array_display, mixed $pre
  *   of css magic to make the dropdown item background color represent each color in
  *   the list
  *
- * @param string $form_name     - the name of this form element
- * @param string $prev_val      - the current value of this form element
- * @param string $none_entry    - the name to use for a default 'none' element in the dropdown
- * @param string $default_value - the value of this form element to use if there is no current value available
- * @param string $class         - Optional. Additional CSS classes for the dropdown.
- * @param string $on_change     - Optional. JavaScript code to execute on change event.
+ * @param string $form_name   The name of this form element
+ * @param mixed  $prev_val    The current value of this form element
+ * @param string $none_entry  The name to use for a default 'none' element in the dropdown
+ * @param mixed  $default_val The value of this form element to use if there is no current value available
+ * @param string $class       Additional CSS classes for the dropdown.
+ * @param string $on_change   JavaScript code to execute on change event.
  *
  * @return void
  */
-function form_color_dropdown(string $form_name, string $prev_val, string $none_entry, string $default_value,
+function form_color_dropdown(string $form_name, mixed $prev_val, string $none_entry, mixed $default_val,
 	string $class = '', string $on_change = '') : void {
 	if ($prev_val == '') {
-		$prev_val = $default_value;
+		$prev_val = $default_val;
 	}
 
 	if ($class != '') {
@@ -1380,28 +1380,28 @@ function form_color_dropdown(string $form_name, string $prev_val, string $none_e
 /**
  * Draws a standard html textbox and provides status of a fonts existence
  *
- * @param string $form_name     - The name of this form element
- * @param string $prev_val      - The current value of this form element
- * @param string $default_value - The value of this form element to use if there is
- *                              no current value available
- * @param mixed  $max_length    - The maximum number of characters that can be entered
- *                              into this textbox
- * @param mixed  $form_size     - The size (width) of the textbox
- * @param string $type          - The type of textbox, either 'text' or 'password'
- * @param mixed  $current_id    - Used to determine if a current value for this
- *                              form element exists or not. a $current_id of '0'
- *                              indicates that no current value exists,
- *                              a non-zero value indicates that a current
- *                              value does exist.
- * @param string $placeholder   - The placeholder text for the input element. Default is an empty string.
+ * @param string $form_name   The name of this form element
+ * @param mixed  $prev_val    The current value of this form element
+ * @param mixed  $default_val The value of this form element to use if there is
+ *                            no current value available
+ * @param mixed  $max_length  The maximum number of characters that can be entered
+ *                            into this textbox
+ * @param mixed  $form_size   The size (width) of the textbox
+ * @param string $type        The type of textbox, either 'text' or 'password'
+ * @param mixed  $current_id  Used to determine if a current value for this
+ *                            form element exists or not. a $current_id of '0'
+ *                            indicates that no current value exists,
+ *                            a non-zero value indicates that a current
+ *                            value does exist.
+ * @param string $placeholder The placeholder text for the input element. Default is an empty string.
  *
  * @return void
  */
-function form_font_box(string $form_name, string $prev_val, string $default_value,
+function form_font_box(string $form_name, mixed $prev_val, mixed $default_val,
 	mixed $max_length, mixed $form_size = 30, string $type = 'text', mixed $current_id = 0,
 	string $placeholder = '') : void {
 	if (($prev_val == '') && (empty($current_id))) {
-		$prev_val = $default_value;
+		$prev_val = $default_val;
 	}
 
 	print "<input type='$type'";
