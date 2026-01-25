@@ -176,6 +176,26 @@ if (cacti_sizeof($parms)) {
 	exit(0);
 }
 
+if ($out_start != '' false && !is_numeric($out_start)) {
+	$orig_out_start = $out_end;
+	$out_start = strtotime($out_start);
+
+	if ($out_start == false) {
+		print "ERROR: The outlier start value '$orig_out_start' is invalid.  Use either a timestamp of a datetime format" . PHP_EOL;
+		exit(1);
+	}
+}
+
+if ($out_end != '' && !is_numeric($out_end)) {
+	$orig_out_end = $out_end;
+	$out_end = strtotime($out_end);
+
+	if ($out_end == false) {
+		print "ERROR: The outlier start value '$orig_out_end' is invalid.  Use either a timestamp of a datetime format" . PHP_EOL;
+		exit(1);
+	}
+}
+
 $spiker = new spikekill($rrdfile, $method, $avgnan, $stddev, $out_start, $out_end, $outliers, $percent, $numspike);
 
 if ($debug) {
@@ -232,9 +252,9 @@ function display_help () {
 	print "    --stddev        - The number of standard deviations +/- allowed\n";
 	print "    --percent       - The sample to sample percentage variation allowed\n";
 	print "    --number        - The maximum number of spikes to remove from the RRDfile\n";
-	print "    --outlier-start - A start date of an incident where all data should be considered\n";
+	print "    --outlier-start - A start date or timestamp of an incident where all data should be considered\n";
 	print "                      invalid data and should be excluded from average calculations.\n";
-	print "    --outlier-end   - An end date of an incident where all data should be considered\n";
+	print "    --outlier-end   - An end date or timestamp of an incident where all data should be considered\n";
 	print "                      invalid data and should be excluded from average calculations.\n";
 	print "    --outliers      - The number of outliers to ignore when calculating average.\n";
 	print "    --dryrun        - If specified, the RRDfile will not be changed.  Instead a summary of\n";
