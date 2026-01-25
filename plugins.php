@@ -230,7 +230,7 @@ switch($action) {
 
 			exit;
 		} else {
-			raise_message('get_latest1', __('You must enter your GitHub user, repo and personal access token before you can refresh the plugins.  You can set the GitHub defaults unser Console > Configuration > Settings > General.'), MESSAGE_LEVEL_ERROR);
+			raise_message('get_latest1', __('You must enter your GitHub user, repo and personal access token before you can refresh the plugins.  You can set the GitHub defaults under Console > Configuration > Settings > General.'), MESSAGE_LEVEL_ERROR);
 
 			header('Location: plugins.php');
 
