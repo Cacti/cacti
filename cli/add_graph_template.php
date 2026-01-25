@@ -26,12 +26,12 @@
 require(__DIR__ . '/../include/cli_check.php');
 require_once(CACTI_PATH_LIBRARY . '/api_automation_tools.php');
 
-/* switch to main database for cli's */
-if ($config['poller_id'] > 1) {
+// switch to main database for cli's
+if (POLLER_ID > 1) {
 	db_switch_remote_to_main();
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -60,7 +60,7 @@ if (cacti_sizeof($parms)) {
 				$host_id = trim($value);
 
 				if (!is_numeric($host_id)) {
-					print "ERROR: You must supply a valid host-id to run this script!\n";
+					print 'ERROR: You must supply a valid host-id to run this script!' . PHP_EOL;
 
 					exit(1);
 				}
@@ -70,7 +70,7 @@ if (cacti_sizeof($parms)) {
 				$graph_template_id = $value;
 
 				if (!is_numeric($graph_template_id)) {
-					print "ERROR: You must supply a numeric graph-template-id for all hosts!\n";
+					print 'ERROR: You must supply a numeric graph-template-id for all hosts!' . PHP_EOL;
 
 					exit(1);
 				}
@@ -101,14 +101,14 @@ if (cacti_sizeof($parms)) {
 
 				break;
 			default:
-				print "ERROR: Invalid Argument: ($arg)\n\n";
+				print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
 				display_help();
 
 				exit(1);
 		}
 	}
 
-	/* list options, recognizing $quiteMode */
+	// list options, recognizing $quiteMode
 	if ($displayHosts) {
 		$hosts = getHosts();
 		displayHosts($hosts, $quietMode);
@@ -128,45 +128,41 @@ if (cacti_sizeof($parms)) {
 	 * for update / insert options
 	 */
 	if (!isset($host_id)) {
-		print "ERROR: You must supply a valid host-id for all hosts!\n";
+		print 'ERROR: You must supply a valid host-id for all hosts!' . PHP_EOL;
 
 		exit(1);
 	}
 
 	if (!isset($graph_template_id)) {
-		print "ERROR: You must supply a valid data-query-id for all hosts!\n";
+		print 'ERROR: You must supply a valid data-query-id for all hosts!' . PHP_EOL;
 
 		exit(1);
 	}
 
-	/*
-	 * verify valid host id and get a name for it
-	 */
+	// verify valid host id and get a name for it
 	$host_name = db_fetch_cell('SELECT hostname FROM host WHERE id = ' . $host_id);
 
 	if (!isset($host_name)) {
-		print "ERROR: Unknown Host Id ($host_id)\n";
+		print "ERROR: Unknown Host Id ($host_id)" . PHP_EOL;
 
 		exit(1);
 	}
 
-	/*
-	 * verify valid graph template and get a name for it
-	 */
+	// verify valid graph template and get a name for it
 	$graph_template_name = db_fetch_cell('SELECT name FROM graph_templates WHERE id = ' . $graph_template_id);
 
 	if (!isset($graph_template_name)) {
-		print "ERROR: Unknown Graph Template Id ($graph_template_id)\n";
+		print "ERROR: Unknown Graph Template Id ($graph_template_id)" . PHP_EOL;
 
 		exit(1);
 	}
 
-	/* check, if graph template was already associated */
+	// check, if graph template was already associated
 	$exists_already = db_fetch_cell("SELECT host_id FROM host_graph WHERE graph_template_id=$graph_template_id AND host_id=$host_id");
 
 	if ((isset($exists_already)) &&
 		($exists_already > 0)) {
-		print "ERROR: Graph Template is already associated for host: ($host_id: $host_name) - graph-template: ($graph_template_id: $graph_template_name)\n";
+		print "ERROR: Graph Template is already associated for host: ($host_id: $host_name) - graph-template: ($graph_template_id: $graph_template_name)" . PHP_EOL;
 
 		exit(1);
 	} else {
@@ -187,11 +183,11 @@ if (cacti_sizeof($parms)) {
 	}
 
 	if (is_error_message()) {
-		print "ERROR: Failed to add this graph template for host: ($host_id: $host_name) - graph-template: ($graph_template_id: $graph_template_name)\n";
+		print "ERROR: Failed to add this graph template for host: ($host_id: $host_name) - graph-template: ($graph_template_id: $graph_template_name)" . PHP_EOL;
 
 		exit(1);
 	} else {
-		print "Success: Graph Template associated for host: ($host_id: $host_name) - graph-template: ($graph_template_id: $graph_template_name)\n";
+		print "Success: Graph Template associated for host: ($host_id: $host_name) - graph-template: ($graph_template_id: $graph_template_name)" . PHP_EOL;
 
 		exit(0);
 	}
@@ -201,22 +197,30 @@ if (cacti_sizeof($parms)) {
 	exit(0);
 }
 
-/*  display_version - displays version information */
-function display_version() {
+// display_version - displays version information
+function display_version() : void {
 	$version = get_cacti_cli_version();
-	print "Cacti Add Graph Template Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Add Graph Template Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-function display_help() {
+/**
+ * display_help - displays help information
+ *
+ * @return void
+ */
+function display_help() : void {
 	display_version();
 
-	print "\nusage: add_graph_template.php --host-id=[ID] --graph-template-id=[ID]\n";
-	print "    [--quiet]\n\n";
-	print "Required:\n";
-	print "    --host-id             the numerical ID of the host\n";
-	print "    --graph-template-id   the numerical ID of the graph template to be added\n\n";
-	print "List Options:\n";
-	print "    --list-hosts\n";
-	print "    --list-graph-templates\n";
-	print "    --quiet - batch mode value return\n\n";
+	print PHP_EOL;
+	print 'usage: add_graph_template.php --host-id=[ID] --graph-template-id=[ID]' . PHP_EOL;
+	print '    [--quiet]' . PHP_EOL . PHP_EOL;
+
+	print 'Required:' . PHP_EOL;
+	print '    --host-id             the numerical ID of the host' . PHP_EOL;
+	print '    --graph-template-id   the numerical ID of the graph template to be added' . PHP_EOL . PHP_EOL;
+
+	print 'List Options:' . PHP_EOL;
+	print '    --list-hosts' . PHP_EOL;
+	print '    --list-graph-templates' . PHP_EOL;
+	print '    --quiet - batch mode value return' . PHP_EOL . PHP_EOL;
 }

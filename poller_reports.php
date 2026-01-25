@@ -39,7 +39,7 @@ require_once(CACTI_PATH_LIBRARY . '/reports.php');
 
 global $current_user;
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -59,11 +59,11 @@ if (cacti_sizeof($parms)) {
 
 		switch ($arg) {
 			case '--report-id':
-				$report_id = $value;
+				$report_id = intval($value);
 
 				break;
 			case '--queue-id':
-				$queue_id = $value;
+				$queue_id = intval($value);
 
 				break;
 			case '-f':
@@ -98,19 +98,19 @@ if (cacti_sizeof($parms)) {
 	}
 }
 
-/* install signal handlers for UNIX only */
+// install signal handlers for UNIX only
 if (function_exists('pcntl_signal')) {
 	pcntl_signal(SIGTERM, 'sig_handler');
 	pcntl_signal(SIGINT, 'sig_handler');
 }
 
-/* take time and log performance data */
+// take time and log performance data
 $start = microtime(true);
 
-/* let's give this script lot of time to run for ever */
+// let's give this script lot of time to run for ever
 ini_set('max_execution_time', '0');
 
-/* cacti upgrading */
+// cacti upgrading
 if (!db_table_exists('reports')) {
 	exit(0);
 }
@@ -119,13 +119,19 @@ if ($report_id === false) {
 	$number_sent = 0;
 
 	if (!$force) {
-		/* silently end if the registered process is still running, or process table missing */
-		if (!register_process_start('reports', 'master', 0, read_config_option('scheduler_timeout'))) {
+		$timeout = intval(read_config_option('scheduler_timeout'));
+
+		if (empty($timeout)) {
+			$timeout = 300;
+		}
+
+		// silently end if the registered process is still running, or process table missing
+		if (!register_process_start('reports', 'master', 0, $timeout)) {
 			exit(0);
 		}
 	}
 
-	/* fetch all enabled reports that have a start time in the past */
+	// fetch all enabled reports that have a start time in the past
 	$reports = db_fetch_assoc("SELECT * FROM reports WHERE enabled='on'");
 
 	reports_log('Cacti Reports reports found: ' . cacti_sizeof($reports), true, 'REPORTS', POLLER_VERBOSITY_MEDIUM);
@@ -135,7 +141,7 @@ if ($report_id === false) {
 	$command  = read_config_option('path_php_binary');
 	$command .= ' ' . CACTI_PATH_BASE . '/poller_reports.php';
 
-	/* execute each of those reports */
+	// execute each of those reports
 	if (cacti_sizeof($reports)) {
 		foreach ($reports as $report) {
 			if (api_scheduler_is_time_to_start($report, 'reports') || $force) {
@@ -199,10 +205,10 @@ if ($report_id === false) {
 			}
 		}
 
-		/* record the end time */
+		// record the end time
 		$end = microtime(true);
 
-		/* log statistics */
+		// log statistics
 		$reports_stats = sprintf('Time:%01.4f Reports:%s', $end - $start, $number_sent);
 		reports_log('REPORTS STATS: ' . $reports_stats, true, 'REPORTS', POLLER_VERBOSITY_LOW);
 		db_execute_prepared('REPLACE INTO settings (name, value) VALUES ("stats_reports", ?)', [$reports_stats]);
@@ -212,7 +218,13 @@ if ($report_id === false) {
 		unregister_process('reports', 'master', 0);
 	}
 } else {
-	if (!register_process_start('reports', 'child', $report_id, read_config_option('scheduler_timeout'))) {
+	$timeout = intval(read_config_option('scheduler_timeout'));
+
+	if (empty($timeout)) {
+		$timeout = 300;
+	}
+
+	if (!register_process_start('reports', 'child', $report_id, $timeout)) {
 		exit(0);
 	}
 
@@ -232,7 +244,7 @@ if ($report_id === false) {
 				WHERE id = ?',
 				[date('Y-m-d H:i:s'), $report['id']]);
 
-			generate_report($queue_id, $report, false, 'poller');
+			generate_report($queue_id, $report, false);
 		}
 	}
 
@@ -242,9 +254,28 @@ if ($report_id === false) {
 exit(0);
 
 /**
+ * sig_handler - provides a generic means to catch exceptions to the Cacti log.
+ *
+ * @param int $signo the signal that was thrown by the interface.
+ *
+ * @return void
+ */
+function sig_handler(int $signo) : void {
+	switch ($signo) {
+		case SIGTERM:
+		case SIGINT:
+			reports_log('WARNING: Reports Poller terminated by user', false, 'REPORTS TRACE', POLLER_VERBOSITY_LOW);
+
+			exit(1);
+		default:
+			// ignore all other signals
+	}
+}
+
+/**
  * display_version - displays version information
  */
-function display_version() {
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Reporting Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
@@ -252,7 +283,7 @@ function display_version() {
 /**
  * display_help - generic help screen for utilities
  */
-function display_help() {
+function display_help() : void {
 	display_version();
 
 	print "\nusage: poller_reports.php [--force] [--debug]\n\n";
@@ -261,25 +292,4 @@ function display_help() {
 	print "Optional:\n";
 	print "    --force     - Force all Reports to be sent\n";
 	print "    --debug     - Display verbose output during execution\n\n";
-}
-
-/**
- * sig_handler - provides a generic means to catch exceptions to the Cacti log.
- *
- * @param  int   $signo the signal that was thrown by the interface.
- *
- * @return void
- */
-function sig_handler($signo) {
-	switch ($signo) {
-		case SIGTERM:
-		case SIGINT:
-			reports_log('WARNING: Reports Poller terminated by user', false, 'REPORTS TRACE', POLLER_VERBOSITY_LOW);
-
-			exit(1);
-
-			break;
-		default:
-			/* ignore all other signals */
-	}
 }

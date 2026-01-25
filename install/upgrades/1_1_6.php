@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_1_1_6() {
+function upgrade_to_1_1_6() : void {
 	db_install_execute('ALTER TABLE `data_input`
 		MODIFY COLUMN `input_string` varchar(512) default NULL'
 	);

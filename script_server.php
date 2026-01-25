@@ -45,19 +45,19 @@ if (function_exists('pcntl_signal')) {
 
 error_reporting(0);
 
-/* define STDOUT/STDIN file descriptors if not running under CLI */
+// define STDOUT/STDIN file descriptors if not running under CLI
 if (php_sapi_name() != 'cli') {
 	define('STDIN', fopen('php://stdin', 'r'));
 	define('STDOUT', fopen('php://stdout', 'w'));
 }
 
-/* make sure data is flushed immediately */
+// make sure data is flushed immediately
 ob_implicit_flush();
 ini_set('output_buffering', 'Off');
 
 global $environ, $poller_id, $connection;
 
-/* some debugging */
+// some debugging
 $pid         = getmypid();
 $ctr         = 0;
 $poller_id   = 1;
@@ -141,7 +141,7 @@ if ($version) {
 	exit(0);
 }
 
-/* record the script start time */
+// record the script start time
 $start = microtime(true);
 
 $include_file = '';
@@ -157,7 +157,7 @@ if (CACTI_SERVER_OS == 'win32') {
 cacti_log('DEBUG: SERVER: ' . $environ . ' PARENT: ' . $parent_pid, false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 cacti_log('DEBUG: FILENM: ' . __FILE__, false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 
-/* if multiple polling intervals are defined, compensate for them */
+// if multiple polling intervals are defined, compensate for them
 $polling_interval = read_config_option('poller_interval');
 
 if (!empty($polling_interval)) {
@@ -166,16 +166,16 @@ if (!empty($polling_interval)) {
 	define('MAX_POLLER_RUNTIME', 300);
 }
 
-/* Let PHP only run 1 second longer than the max runtime */
+// Let PHP only run 1 second longer than the max runtime
 ini_set('max_execution_time', MAX_POLLER_RUNTIME + 1);
 
-/* send status back to the server */
+// send status back to the server
 cacti_log('PHP Script Server has Started - Parent is ' . $environ, false, 'PHPSVR', POLLER_VERBOSITY_HIGH);
 
 fputs(STDOUT, 'PHP Script Server has Started - Parent is ' . $environ . "\n");
 fflush(STDOUT);
 
-/* process waits for input and then calls functions as required */
+// process waits for input and then calls functions as required
 while (1) {
 	$result = '';
 
@@ -225,7 +225,7 @@ while (1) {
 		}
 
 		if ($input_string != '') {
-			/* pull off the parameters */
+			// pull off the parameters
 			$i = 0;
 
 			while (true) {
@@ -234,19 +234,19 @@ while (1) {
 				if ($pos > 0) {
 					switch ($i) {
 						case 0:
-							/* cut off include file as first part of input string and keep rest for further parsing */
+							// cut off include file as first part of input string and keep rest for further parsing
 							$include_file = trim(substr($input_string,0,$pos));
 							$input_string = trim(strchr($input_string, ' ')) . ' ';
 
 							break;
 						case 1:
-							/* cut off function as second part of input string and keep rest for further parsing */
+							// cut off function as second part of input string and keep rest for further parsing
 							$function     = trim(substr($input_string,0,$pos), "' ");
 							$input_string = trim(strchr($input_string, ' ')) . ' ';
 
 							break;
 						case 2:
-							/* take the rest as parameter(s) to the function stripped off previously */
+							// take the rest as parameter(s) to the function stripped off previously
 							$parameters = trim($input_string);
 
 							break 2;
@@ -266,11 +266,11 @@ while (1) {
 				continue;
 			}
 
-			cacti_log("DEBUG: PID[$pid] CTR[$ctr] INC: '". basename($include_file) .
+			cacti_log("DEBUG: PID[$pid] CTR[$ctr] INC: '" . basename($include_file) .
 				"' FUNC: '$function' PARMS: '" . implode('\', \'',$parameter_array) .
 				"'", false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 
-			/* validate the existence of the function, and include if applicable */
+			// validate the existence of the function, and include if applicable
 			if (!function_exists($function)) {
 				if (file_exists($include_file)) {
 					/**
@@ -287,7 +287,7 @@ while (1) {
 					 */
 					$called_by_script_server = true;
 
-					/* turn on output buffering to avoid problems with nasty scripts */
+					// turn on output buffering to avoid problems with nasty scripts
 					ob_start();
 					require_once($include_file);
 					ob_end_clean();
@@ -314,14 +314,14 @@ while (1) {
 
 				$ctr++;
 			} else {
-				cacti_log("WARNING: Function does not exist  INC: '". basename($include_file) . "' FUNC: '" .$function . "' PARMS: '" . $parameters . "'", false, 'PHPSVR');
+				cacti_log("WARNING: Function does not exist  INC: '" . basename($include_file) . "' FUNC: '" . $function . "' PARMS: '" . $parameters . "'", false, 'PHPSVR');
 				fputs(STDOUT, "U\n");
 				fflush(STDOUT);
 			}
 		}
 	}
 
-	/* end the process if the runtime exceeds MAX_POLLER_RUNTIME */
+	// end the process if the runtime exceeds MAX_POLLER_RUNTIME
 	if (($start + MAX_POLLER_RUNTIME) < time()) {
 		cacti_log('Maximum runtime of ' . MAX_POLLER_RUNTIME . ' seconds exceeded for the Script Server. Exiting.', true, 'PHPSVR');
 
@@ -329,7 +329,7 @@ while (1) {
 	}
 }
 
-function parseArgs($string, &$str_list, $debug = false) {
+function parseArgs(string $string, array &$str_list, bool $debug = false) : bool {
 	$delimiters = ["'", '"'];
 	$delimited  = false;
 	$str_list   = [];
@@ -346,7 +346,7 @@ function parseArgs($string, &$str_list, $debug = false) {
 		}
 	}
 
-	/* process the simple case */
+	// process the simple case
 	if (!$delimited) {
 		$str_list = explode(' ', $string);
 
@@ -357,7 +357,7 @@ function parseArgs($string, &$str_list, $debug = false) {
 		return true;
 	}
 
-	/* Break str down into an array of characters and process */
+	// Break str down into an array of characters and process
 	$char_array = str_split($string);
 	$escaping   = false;
 	$indelim    = false;
@@ -429,7 +429,7 @@ function parseArgs($string, &$str_list, $debug = false) {
 		}
 	}
 
-	/* Add the last str to the string array */
+	// Add the last str to the string array
 	$msg = 'Unknown error message';
 
 	if ($indelim || $escaping) {
@@ -452,9 +452,12 @@ function parseArgs($string, &$str_list, $debug = false) {
 
 /**
  * sig_handler - properly handle signals and shutdown
- * @param mixed $signo
+ *
+ * @param int $signo
+ *
+ * @return void
  */
-function sig_handler($signo) {
+function sig_handler(int $signo) : void {
 	global $include_file, $function, $parameters;
 
 	switch ($signo) {
@@ -467,8 +470,6 @@ function sig_handler($signo) {
 			db_close();
 
 			exit;
-
-			break;
 		default:
 			cacti_log("WARNING: Script Server received signal '$signo' in file:'$include_file', function:'$function', params:'$parameters'", false, 'PHPSVR', POLLER_VERBOSITY_HIGH);
 
@@ -479,9 +480,9 @@ function sig_handler($signo) {
 /**
  * display_version - displays version information
  *
- * @return (void)
+ * @return void
  */
-function display_version() {
+function display_version() : void {
 	$version = get_cacti_version();
 	print "Cacti Script Server, Version $version " . COPYRIGHT_YEARS . PHP_EOL;
 }
@@ -489,9 +490,9 @@ function display_version() {
 /**
  * display_help - displays help information
  *
- * @return (void)
+ * @return void
  */
-function display_help() {
+function display_help() : void {
 	display_version();
 
 	print PHP_EOL;

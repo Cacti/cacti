@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_1_2_5() {
+function upgrade_to_1_2_5() : void {
 	db_install_execute('UPDATE graph_local AS gl
 		INNER JOIN graph_templates_item AS gti
 		ON gti.local_graph_id = gl.id

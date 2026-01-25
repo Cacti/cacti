@@ -25,7 +25,7 @@
 
 require(__DIR__ . '/../include/cli_check.php');
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -113,18 +113,29 @@ if ($count % 2 == 1) {
 	print PHP_EOL;
 }
 
-/*  display_version - displays version information */
-function display_version() {
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Database Permission Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-function display_help() {
+/**
+ * display_help - displays help information
+ *
+ * @return void
+ */
+function display_help() : void {
 	display_version();
 
 	print PHP_EOL . 'usage: show_perms.php [--json]' . PHP_EOL . PHP_EOL;
+
 	print 'Cacti utility for auditing your Cacti database permissions.  This utility' . PHP_EOL;
 	print 'will scan your Cacti database and report any permissions that it finds.' . PHP_EOL . PHP_EOL;
-	print 'Options:' . PHP_EOL;
-	print '    --json - Report on any permissions found in the database' . PHP_EOL;
+
+	print 'Optional:' . PHP_EOL;
+	print '    --json - Report on any permissions found in the database' . PHP_EOL . PHP_EOL;
 }

@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_1_2_31() {
+function upgrade_to_1_2_31() : void {
 	global $config;
 
 	db_install_execute('ALTER TABLE automation_devices MODIFY COLUMN snmp_priv_protocol char(7) default ""');

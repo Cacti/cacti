@@ -185,6 +185,7 @@ Cacti CHANGELOG
 -feature#6191: Adding Natural sorting options for Hostname
 -feature#6228: Add admin's email to installer and enable "Notify primary admin of issues" 
 -feature#6454: Create a logging recursion ticket that helps against recusion loops in cacti_log
+-feature#6539: Allow Standard Cacti Log Files to be Rotated on Demand from the Cacti UI
 -feature: Allow messages to be popup notifications
 -feature: Upgrade billboard.js to version 3.14.1
 -feature: Upgrade jQueryUI to version 1.14.1
@@ -198,6 +199,7 @@ Cacti CHANGELOG
 -feature: Allow Reports to be sent to a Notification List if thold is installed
 -feature: Remove legacy Lotus Notes Attachment Types from Reports
 -feature: Fortigate firewall template extension with SDWAN tests
+-feature: Continue to support MD5() for the password verifications but also support SHA256
 
 1.2.31
 -issue#6168: RRD cleaner does not purge files
@@ -230,6 +232,13 @@ Cacti CHANGELOG
 -issue#6441: Spikekill Purge Using the wrong variable
 -issue#6444: Applying Title Cache Changes for Data Input Methods using |data_xxxx| not working
 -issue#6490: Selective Debug Setting in Cacti 'Clear All' button results in selecting the first item
+-issue#6507: Fix incorrect cli parameter when loading template information
+-issue#6508: PHP Error when exporting data 
+-issue#6516: SQL Errors in Automation Graph Rules processing
+-issue#6518: Ensure that the csrf-secret file is written in a less permissive way
+-issue#6519: Realtime generates errors in the Cacti Log after a Graph has been removed
+-feature#6523: When disabling a users, ensure that their stored authentication cookies are remove and any sessions cleared
+-feature#6524: When changing your password, logout from all sessions
 -feature: Close user sessions after a password change is forced
 -feature: Update PHPMailer to 6.10 to support SMTPUTF8
 -feature: Update phpseclib for the Service Check plugin

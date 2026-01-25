@@ -30,10 +30,10 @@ $actions = [
 	2 => __('Duplicate')
 ];
 
-/* set default action */
+// set default action
 set_default_action();
 
-switch (get_request_var('action')) {
+switch (grv('action')) {
 	case 'save':
 		form_save();
 
@@ -49,23 +49,23 @@ switch (get_request_var('action')) {
 	case 'item_remove':
 		cdef_item_remove();
 
-		header('Location: cdef.php?action=edit&id=' . get_request_var('cdef_id'));
+		header('Location: cdef.php?action=edit&id=' . grv('cdef_id'));
 
 		break;
 	case 'item_movedown':
-		get_filter_request_var('cdef_id');
+		gfrv('cdef_id');
 
 		item_movedown();
 
-		header('Location: cdef.php?action=edit&id=' . get_request_var('cdef_id'));
+		header('Location: cdef.php?action=edit&id=' . grv('cdef_id'));
 
 		break;
 	case 'item_moveup':
-		get_filter_request_var('cdef_id');
+		gfrv('cdef_id');
 
 		item_moveup();
 
-		header('Location: cdef.php?action=edit&id=' . get_request_var('cdef_id'));
+		header('Location: cdef.php?action=edit&id=' . grv('cdef_id'));
 
 		break;
 	case 'item_edit':
@@ -98,30 +98,30 @@ switch (get_request_var('action')) {
 		break;
 }
 
-function draw_cdef_preview($cdef_id) {
+function draw_cdef_preview(int $cdef_id) : void {
 	?>
 	<tr class='even'>
 		<td style='padding:4px'>
-			<pre>cdef=<?php print html_escape(get_cdef($cdef_id)); ?></pre>
+			<pre>cdef=<?php print htmle(get_cdef($cdef_id)); ?></pre>
 		</td>
 	</tr>
 	<?php
 }
 
-function form_save() {
+function form_save() : void {
 	// make sure ids are numeric
-	if (isset_request_var('id') && ! is_numeric(get_filter_request_var('id'))) {
-		set_request_var('id', 0);
+	if (isrv('id') && ! is_numeric(gfrv('id'))) {
+		srv('id', 0);
 	}
 
-	if (isset_request_var('cdef_id') && ! is_numeric(get_filter_request_var('cdef_id'))) {
-		set_request_var('cdef_id', 0);
+	if (isrv('cdef_id') && ! is_numeric(gfrv('cdef_id'))) {
+		srv('cdef_id', 0);
 	}
 
-	if (isset_request_var('save_component_cdef')) {
-		$save['id']     = form_input_validate(get_nfilter_request_var('id'), 'id', '^[0-9]+$', false, 3);
-		$save['hash']   = get_hash_cdef(get_nfilter_request_var('id'));
-		$save['name']   = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+	if (isrv('save_component_cdef')) {
+		$save['id']     = form_input_validate(gnrv('id'), 'id', '^[0-9]+$', false, 3);
+		$save['hash']   = get_hash_cdef(gnrv('id'));
+		$save['name']   = form_input_validate(gnrv('name'), 'name', '', false, 3);
 		$save['system'] = 0;
 
 		if (!is_error_message()) {
@@ -134,22 +134,22 @@ function form_save() {
 			}
 		}
 
-		header('Location: cdef.php?action=edit&id=' . (empty($cdef_id) ? get_nfilter_request_var('id') : $cdef_id));
-	} elseif (isset_request_var('save_component_item')) {
-		/* ================= input validation ================= */
-		get_filter_request_var('id');
-		get_filter_request_var('cdef_id');
-		get_filter_request_var('type');
-		/* ==================================================== */
+		header('Location: cdef.php?action=edit&id=' . (empty($cdef_id) ? gnrv('id') : $cdef_id));
+	} elseif (isrv('save_component_item')) {
+		// ================= input validation =================
+		gfrv('id');
+		gfrv('cdef_id');
+		gfrv('type');
+		// ====================================================
 
-		$sequence = get_sequence(get_nfilter_request_var('id'), 'sequence', 'cdef_items', 'cdef_id=' . get_nfilter_request_var('cdef_id'));
+		$sequence = get_sequence(gnrv('id'), 'sequence', 'cdef_items', 'cdef_id=' . gnrv('cdef_id'));
 
-		$save['id']       = form_input_validate(get_nfilter_request_var('id'), 'id', '^[0-9]+$', false, 3);
-		$save['hash']     = get_hash_cdef(get_nfilter_request_var('id'), 'cdef_item');
-		$save['cdef_id']  = form_input_validate(get_nfilter_request_var('cdef_id'), 'cdef_id', '^[0-9]+$', false, 3);
+		$save['id']       = form_input_validate(gnrv('id'), 'id', '^[0-9]+$', false, 3);
+		$save['hash']     = get_hash_cdef(gnrv('id'), 'cdef_item');
+		$save['cdef_id']  = form_input_validate(gnrv('cdef_id'), 'cdef_id', '^[0-9]+$', false, 3);
 		$save['sequence'] = $sequence;
-		$save['type']     = form_input_validate(get_nfilter_request_var('type'), 'type', '^[0-9]+$', false, 3);
-		$save['value']    = form_input_validate(get_nfilter_request_var('value'), 'value', '', false, 3);
+		$save['type']     = form_input_validate(gnrv('type'), 'type', '^[0-9]+$', false, 3);
+		$save['value']    = form_input_validate(gnrv('value'), 'value', '', false, 3);
 
 		$cdef_item_id = null;
 
@@ -164,23 +164,23 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: cdef.php?action=item_edit&cdef_id=' . get_nfilter_request_var('cdef_id') . '&id=' . ($cdef_item_id === null ? get_nfilter_request_var('id') : $cdef_item_id));
+			header('Location: cdef.php?action=item_edit&cdef_id=' . gnrv('cdef_id') . '&id=' . ($cdef_item_id === null ? gnrv('id') : $cdef_item_id));
 		} else {
-			header('Location: cdef.php?action=edit&id=' . get_nfilter_request_var('cdef_id'));
+			header('Location: cdef.php?action=edit&id=' . gnrv('cdef_id'));
 		}
 	}
 }
 
-function duplicate_cdef($_cdef_id, $cdef_title) {
+function duplicate_cdef(int $_cdef_id, string $cdef_title) : void {
 	global $fields_cdef_edit;
 
 	$cdef       = db_fetch_row_prepared('SELECT * FROM cdef WHERE id = ?', [$_cdef_id]);
 	$cdef_items = db_fetch_assoc_prepared('SELECT * FROM cdef_items WHERE cdef_id = ?', [$_cdef_id]);
 
-	/* substitute the title variable */
+	// substitute the title variable
 	$cdef['name'] = str_replace('<cdef_title>', $cdef['name'], $cdef_title);
 
-	/* create new entry: host_template */
+	// create new entry: host_template
 	$save['id']   = 0;
 	$save['hash'] = get_hash_cdef(0);
 
@@ -192,7 +192,7 @@ function duplicate_cdef($_cdef_id, $cdef_title) {
 
 	$cdef_id = sql_save($save, 'cdef');
 
-	/* create new entry(s): cdef_items */
+	// create new entry(s): cdef_items
 	if (cacti_sizeof($cdef_items) > 0) {
 		foreach ($cdef_items as $cdef_item) {
 			unset($save);
@@ -209,24 +209,24 @@ function duplicate_cdef($_cdef_id, $cdef_title) {
 	}
 }
 
-function form_actions() {
+function form_actions() : void {
 	global $actions;
 
-	/* ================= input validation ================= */
-	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-zA-Z0-9_]+)$/']]);
-	/* ==================================================== */
+	// ================= input validation =================
+	gfrv('drp_action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-zA-Z0-9_]+)$/']]);
+	// ====================================================
 
-	/* if we are to save this form, instead of display it */
-	if (isset_request_var('selected_items')) {
-		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
+	// if we are to save this form, instead of display it
+	if (isrv('selected_items')) {
+		$selected_items = sanitize_unserialize_selected_items(gnrv('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
+			if (gnrv('drp_action') == '1') { // delete
 				db_execute('DELETE FROM cdef WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('DELETE FROM cdef_items WHERE ' . array_to_sql_or($selected_items, 'cdef_id'));
-			} elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
+			} elseif (gnrv('drp_action') == '2') { // duplicate
 				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
-					duplicate_cdef($selected_items[$i], get_nfilter_request_var('title_format'));
+					duplicate_cdef($selected_items[$i], gnrv('title_format'));
 				}
 			}
 		}
@@ -238,14 +238,14 @@ function form_actions() {
 		$ilist  = '';
 		$iarray = [];
 
-		/* loop through each of the graphs selected on the previous page and get more info about them */
+		// loop through each of the graphs selected on the previous page and get more info about them
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-				/* ================= input validation ================= */
+				// ================= input validation =================
 				input_validate_input_number($matches[1], 'chk[1]');
-				/* ==================================================== */
+				// ====================================================
 
-				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM cdef WHERE id = ?', [$matches[1]])) . '</li>';
+				$ilist .= '<li>' . htmle(db_fetch_cell_prepared('SELECT name FROM cdef WHERE id = ?', [$matches[1]])) . '</li>';
 				$iarray[] = $matches[1];
 			}
 		}
@@ -286,23 +286,23 @@ function form_actions() {
 	}
 }
 
-function cdef_item_remove_confirm() {
+function cdef_item_remove_confirm() : void {
 	global $cdef_functions, $cdef_item_types, $custom_cdef_data_source_types;
 
-	/* ================= input validation ================= */
-	get_filter_request_var('id');
-	get_filter_request_var('cdef_id');
-	/* ==================================================== */
+	// ================= input validation =================
+	gfrv('id');
+	gfrv('cdef_id');
+	// ====================================================
 
-	/* sort the cdef functions */
+	// sort the cdef functions
 	asort($cdef_functions);
 
 	form_start('cdef.php');
 
 	html_start_box('', '100%', false, 3, 'center', '');
 
-	$cdef       = db_fetch_row_prepared('SELECT * FROM cdef WHERE id = ?', [get_request_var('id')]);
-	$cdef_item  = db_fetch_row_prepared('SELECT * FROM cdef_items WHERE id = ?', [get_request_var('cdef_id')]);
+	$cdef       = db_fetch_row_prepared('SELECT * FROM cdef WHERE id = ?', [grv('id')]);
+	$cdef_item  = db_fetch_row_prepared('SELECT * FROM cdef_items WHERE id = ?', [grv('cdef_id')]);
 
 	?>
 	<tr>
@@ -310,7 +310,7 @@ function cdef_item_remove_confirm() {
 			<p><?php print __('Click \'Continue\' to delete the following CDEF Item.'); ?></p>
 			<p><?php print __esc('CDEF Name: %s', $cdef['name']); ?><br>
 			<em><?php $cdef_item_type = $cdef_item['type'];
-	print $cdef_item_types[$cdef_item_type]; ?></em>: <strong><?php print html_escape(get_cdef_item_name($cdef_item['id'])); ?></strong></p>
+	print $cdef_item_types[$cdef_item_type]; ?></em>: <strong><?php print htmle(get_cdef_item_name($cdef_item['id'])); ?></strong></p>
 		</td>
 	</tr>
 	<tr>
@@ -338,8 +338,8 @@ function cdef_item_remove_confirm() {
 
 			var data = {
 				__csrf_magic: csrfMagicToken,
-				cdef_id: <?php print get_request_var('cdef_id'); ?>,
-				id: <?php print get_request_var('id'); ?>
+				cdef_id: <?php print grv('cdef_id'); ?>,
+				id: <?php print grv('id'); ?>
 			}
 
 			postUrl(options, data);
@@ -349,58 +349,58 @@ function cdef_item_remove_confirm() {
 	function removeCdefItemFinalize(data) {
 		$('#cdialog').dialog('close');
 		$('.deleteMarker').blur();
-		loadUrl({url:'cdef.php?action=edit&id=<?php print get_request_var('id'); ?>'})
+		loadUrl({url:'cdef.php?action=edit&id=<?php print grv('id'); ?>'})
 	};
 	</script>
 	<?php
 }
 
-function item_movedown() {
-	/* ================= input validation ================= */
-	get_filter_request_var('id');
-	get_filter_request_var('cdef_id');
-	/* ==================================================== */
+function item_movedown() : void {
+	// ================= input validation =================
+	gfrv('id');
+	gfrv('cdef_id');
+	// ====================================================
 
-	move_item_down('cdef_items', get_request_var('id'), 'cdef_id=' . get_request_var('cdef_id'));
+	move_item_down('cdef_items', grv('id'), 'cdef_id=' . grv('cdef_id'));
 }
 
-function item_moveup() {
-	/* ================= input validation ================= */
-	get_filter_request_var('id');
-	get_filter_request_var('cdef_id');
-	/* ==================================================== */
+function item_moveup() : void {
+	// ================= input validation =================
+	gfrv('id');
+	gfrv('cdef_id');
+	// ====================================================
 
-	move_item_up('cdef_items', get_request_var('id'), 'cdef_id=' . get_request_var('cdef_id'));
+	move_item_up('cdef_items', grv('id'), 'cdef_id=' . grv('cdef_id'));
 }
 
-function cdef_item_remove() {
-	/* ================= input validation ================= */
-	get_filter_request_var('id');
-	get_filter_request_var('cdef_id');
-	/* ==================================================== */
+function cdef_item_remove() : void {
+	// ================= input validation =================
+	gfrv('id');
+	gfrv('cdef_id');
+	// ====================================================
 
 	db_execute_prepared('DELETE FROM cdef_items
 		WHERE cdef_id = ?
 		AND id = ?',
-		[get_request_var('cdef_id'), get_request_var('id')]);
+		[grv('cdef_id'), grv('id')]);
 }
 
-function item_edit() {
+function item_edit() : void {
 	global $cdef_item_types, $cdef_functions, $cdef_operators, $custom_data_source_types;
 
-	/* ================= input validation ================= */
-	get_filter_request_var('id');
-	get_filter_request_var('cdef_id');
-	/* ==================================================== */
+	// ================= input validation =================
+	gfrv('id');
+	gfrv('cdef_id');
+	// ====================================================
 
-	/* sort the cdef functions */
+	// sort the cdef functions
 	asort($cdef_functions);
 
-	if (!isempty_request_var('id')) {
+	if (!ierv('id')) {
 		$cdef = db_fetch_row_prepared('SELECT *
 			FROM cdef_items
 			WHERE id = ?',
-			[get_request_var('id')]);
+			[grv('id')]);
 
 		if (cacti_sizeof($cdef)) {
 			$current_type          = $cdef['type'];
@@ -411,7 +411,7 @@ function item_edit() {
 	}
 
 	html_start_box(__('CDEF Preview'), '100%', false, 3, 'center', '');
-	draw_cdef_preview(get_request_var('cdef_id'));
+	draw_cdef_preview(grv('cdef_id'));
 	html_end_box();
 
 	form_start('cdef.php', 'chk');
@@ -419,12 +419,12 @@ function item_edit() {
 	$cdef_name = db_fetch_cell_prepared('SELECT name
 		FROM cdef
 		WHERE id = ?',
-		[get_request_var('cdef_id')]);
+		[grv('cdef_id')]);
 
 	html_start_box(__esc('CDEF Items [edit: %s]', $cdef_name), '100%', false, 3, 'center', '');
 
-	if (isset_request_var('type_select')) {
-		$current_type = get_request_var('type_select');
+	if (isrv('type_select')) {
+		$current_type = grv('type_select');
 	} elseif (isset($cdef['type'])) {
 		$current_type = $cdef['type'];
 	} else {
@@ -447,7 +447,7 @@ function item_edit() {
 		],
 		'id' => [
 			'method'        => 'hidden',
-			'value'         => isset_request_var('id') ? get_request_var('id') : '0',
+			'value'         => isrv('id') ? grv('id') : '0',
 		],
 		'type' => [
 			'method'        => 'hidden',
@@ -455,7 +455,7 @@ function item_edit() {
 		],
 		'cdef_id' => [
 			'method'        => 'hidden',
-			'value'         => get_request_var('cdef_id')
+			'value'         => grv('cdef_id')
 		],
 		'save_component_item' => [
 			'method'        => 'hidden',
@@ -512,18 +512,18 @@ function item_edit() {
 
 	html_end_box();
 
-	form_save_button('cdef.php?action=edit&id=' . get_request_var('cdef_id'));
+	form_save_button('cdef.php?action=edit&id=' . grv('cdef_id'));
 }
 
-function cdef_item_dnd() {
-	/* ================= Input validation ================= */
-	get_filter_request_var('id');
-	/* ================= Input validation ================= */
+function cdef_item_dnd() : void {
+	// ================= Input validation =================
+	gfrv('id');
+	// ================= Input validation =================
 
 	$continue = true;
 
-	if (isset_request_var('cdef_item') && is_array(get_nfilter_request_var('cdef_item'))) {
-		$cdef_ids = get_nfilter_request_var('cdef_item');
+	if (isrv('cdef_item') && is_array(gnrv('cdef_item'))) {
+		$cdef_ids = gnrv('cdef_item');
 
 		if (cacti_sizeof($cdef_ids)) {
 			$sequence = 1;
@@ -542,18 +542,18 @@ function cdef_item_dnd() {
 		}
 	}
 
-	header('Location: cdef.php?action=edit&id=' . get_request_var('id'));
+	header('Location: cdef.php?action=edit&id=' . grv('id'));
 }
 
-function cdef_edit() {
+function cdef_edit() : void {
 	global $cdef_item_types, $fields_cdef_edit;
 
-	/* ================= input validation ================= */
-	get_filter_request_var('id');
-	/* ==================================================== */
+	// ================= input validation =================
+	gfrv('id');
+	// ====================================================
 
-	if (!isempty_request_var('id')) {
-		$cdef         = db_fetch_row_prepared('SELECT * FROM cdef WHERE id = ?', [get_request_var('id')]);
+	if (!ierv('id')) {
+		$cdef         = db_fetch_row_prepared('SELECT * FROM cdef WHERE id = ?', [grv('id')]);
 		$header_label = __esc('CDEF [edit: %s]', $cdef['name']);
 	} else {
 		$cdef         = [];
@@ -573,9 +573,9 @@ function cdef_edit() {
 
 	html_end_box(true, true);
 
-	if (!isempty_request_var('id') && cacti_sizeof($cdef)) {
+	if (!ierv('id') && cacti_sizeof($cdef)) {
 		html_start_box('', '100%', false, 3, 'center', '');
-		draw_cdef_preview(get_request_var('id'));
+		draw_cdef_preview(grv('id'));
 		html_end_box();
 
 		html_start_box(__('CDEF Items'), '100%', false, 3, 'center', 'cdef.php?action=item_edit&cdef_id=' . $cdef['id'], false, false);
@@ -591,7 +591,7 @@ function cdef_edit() {
 			FROM cdef_items
 			WHERE cdef_id = ?
 			ORDER BY sequence',
-			[get_request_var('id')]);
+			[grv('id')]);
 
 		$i = 1;
 
@@ -603,7 +603,7 @@ function cdef_edit() {
 
 				form_selectable_cell(filter_value(__('Item # %d', $i), '', 'cdef.php?action=item_edit&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef['id']), $cdef_item['id']);
 
-				$item_value = '<em>' . $cdef_item_types[$cdef_item['type']] . '</em>' . html_escape(get_cdef_item_name($cdef_item['id']));
+				$item_value = '<em>' . $cdef_item_types[$cdef_item['type']] . '</em>' . htmle(get_cdef_item_name($cdef_item['id']));
 
 				form_selectable_cell($item_value, $cdef_item['id']);
 
@@ -611,13 +611,13 @@ function cdef_edit() {
 
 				if (read_config_option('drag_and_drop') == '') {
 					if ($i < $total_items) {
-						$actions .= '<a class="pic ti ti-caret-down-filled moveArrow" href="' . html_escape('cdef.php?action=item_movedown&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef_item['cdef_id']) . '" title="' . __esc('Move Down') . '"></a>';
+						$actions .= '<a class="pic ti ti-caret-down-filled moveArrow" href="' . htmle('cdef.php?action=item_movedown&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef_item['cdef_id']) . '" title="' . __esc('Move Down') . '"></a>';
 					} else {
 						$actions .= '<span class="moveArrowNone"></span>';
 					}
 
 					if ($i > 1 && $i <= $total_items) {
-						$actions .= '<a class="pic ti ti-caret-up-filled moveArrow" href="' . html_escape('cdef.php?action=item_moveup&id=' . $cdef_item['id'] .	'&cdef_id=' . $cdef_item['cdef_id']) . '" title="' . __esc('Move Up') . '"></a>';
+						$actions .= '<a class="pic ti ti-caret-up-filled moveArrow" href="' . htmle('cdef.php?action=item_moveup&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef_item['cdef_id']) . '" title="' . __esc('Move Up') . '"></a>';
 					} else {
 						$actions .= '<span class="moveArrowNone"></span>';
 					}
@@ -650,7 +650,7 @@ function cdef_edit() {
 		$('#cdef_item').find('tr:first').addClass('nodrag').addClass('nodrop');
 		$('#cdef_item').tableDnD({
 			onDrop: function(table, row) {
-				loadUrl({url:'cdef.php?action=ajax_dnd&id=<?php isset_request_var('id') ? print get_request_var('id') : print 0; ?>&'+$.tableDnD.serialize()})
+				loadUrl({url:'cdef.php?action=ajax_dnd&id=<?php isrv('id') ? print grv('id') : print 0; ?>&'+$.tableDnD.serialize()})
 			}
 		});
 		<?php } ?>
@@ -693,30 +693,30 @@ function cdef_edit() {
 	<?php
 }
 
-function cdef() {
+function cdef() : void {
 	global $actions, $item_rows;
 
-	/* create the page filter */
+	// create the page filter
 	$pageFilter = new CactiTableFilter(__('CDEFs'), 'cdef.php', 'form_cdef', 'sess_cdef', 'cdef.php?action=edit');
 
 	$pageFilter->rows_label = __('CDEFs');
 	$pageFilter->has_graphs = true;
 	$pageFilter->render();
 
-	if (get_request_var('rows') == '-1') {
+	if (grv('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
 	} else {
-		$rows = get_request_var('rows');
+		$rows = grv('rows');
 	}
 
-	/* form the 'where' clause for our main sql query */
-	if (get_request_var('filter') != '') {
-		$sql_where = 'WHERE (name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' AND `system` = 0)';
+	// form the 'where' clause for our main sql query
+	if (grv('filter') != '') {
+		$sql_where = 'WHERE (name LIKE ' . db_qstr('%' . grv('filter') . '%') . ' AND `system` = 0)';
 	} else {
 		$sql_where = 'WHERE `system` = 0';
 	}
 
-	if (get_request_var('has_graphs') == 'true') {
+	if (grv('has_graphs') == 'true') {
 		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' graphs > 0';
 	}
 
@@ -725,7 +725,7 @@ function cdef() {
 		$sql_where");
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows;
 
 	$cdef_list = db_fetch_assoc("SELECT *
 		FROM cdef
@@ -733,7 +733,7 @@ function cdef() {
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar('cdef.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('CDEFs'), 'page', 'main');
+	$nav = html_nav_bar('cdef.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 5, __('CDEFs'), 'page', 'main');
 
 	form_start('cdef.php', 'chk');
 
@@ -767,7 +767,7 @@ function cdef() {
 		]
 	];
 
-	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
+	html_header_sort_checkbox($display_text, grv('sort_column'), grv('sort_direction'), false);
 
 	if (cacti_sizeof($cdef_list)) {
 		foreach ($cdef_list as $cdef) {
@@ -782,7 +782,7 @@ function cdef() {
 
 			form_alternate_row('line' . $cdef['id'], false, $disabled);
 
-			form_selectable_cell(filter_value($cdef['name'], get_request_var('filter'), 'cdef.php?action=edit&id=' . $cdef['id']), $cdef['id']);
+			form_selectable_cell(filter_value($cdef['name'], grv('filter'), 'cdef.php?action=edit&id=' . $cdef['id']), $cdef['id']);
 			form_selectable_cell($disabled ? __('No') : __('Yes'), $cdef['id'], '', 'right');
 			form_selectable_cell(filter_value(number_format_i18n($cdef['graphs'], -1), '', $graphs_url), $cdef['id'], '', 'right');
 			form_selectable_cell(filter_value(number_format_i18n($cdef['templates'], -1), '', $templates_url), $cdef['id'], '', 'right');
@@ -801,7 +801,7 @@ function cdef() {
 		print $nav;
 	}
 
-	/* draw the dropdown containing a list of available actions for this form */
+	// draw the dropdown containing a list of available actions for this form
 	draw_actions_dropdown($actions);
 
 	form_end();

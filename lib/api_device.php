@@ -25,12 +25,12 @@
 /**
  * Update hash stored in settings table to inform remote pollers to update their caches
  *
- * @param string $poller_id The ID of the poller for which the device cache CRC is being updated.
- * @param string $variable The base name of the variable to store the hash. Defaults to 'poller_replicate_device_cache_crc'.
+ * @param int    $poller_id The ID of the poller for which the device cache CRC is being updated.
+ * @param string $variable  The base name of the variable to store the hash. Defaults to 'poller_replicate_device_cache_crc'.
  *
  * @return void
  */
-function api_device_cache_crc_update(int $poller_id, string $variable = 'poller_replicate_device_cache_crc'): void {
+function api_device_cache_crc_update(int $poller_id, string $variable = 'poller_replicate_device_cache_crc') : void {
 	$hash = hash('ripemd160', date('Y-m-d H:i:s') . random_int(0, mt_getrandmax()) . "$poller_id");
 
 	db_execute_prepared("REPLACE INTO settings SET value = ?, name='$variable" . '_' . "$poller_id'", [$hash]);
@@ -39,10 +39,10 @@ function api_device_cache_crc_update(int $poller_id, string $variable = 'poller_
 /**
  * Removes a device from the system.
  *
- * @param int $device_id The ID of the device to be removed.
+ * @param  int  $device_id The ID of the device to be removed.
  * @return void
  */
-function api_device_remove(int $device_id): void {
+function api_device_remove(int $device_id) : void {
 	$poller_id = db_fetch_cell_prepared('SELECT poller_id
 		FROM host WHERE id = ?',
 		[$device_id]);
@@ -105,11 +105,11 @@ function api_device_remove(int $device_id): void {
  * Removes a device from a remote data collectors
  *
  * @param array|int $device_ids An array of device IDs or a single device ID to be purged.
- * @param int $poller_id The ID of the remote poller. Default is 0.
+ * @param int       $poller_id  The ID of the remote poller. Default is 0.
  *
  * @return void
  */
-function api_device_purge_from_remote(array|int $device_ids, int $poller_id = 0): void {
+function api_device_purge_from_remote(array|int $device_ids, int $poller_id = 0) : void {
 	if (!is_array($device_ids)) {
 		$device_ids = [$device_ids];
 	}
@@ -154,7 +154,7 @@ function api_device_purge_from_remote(array|int $device_ids, int $poller_id = 0)
  *
  * @return void
  */
-function api_device_purge_deleted_devices(): void {
+function api_device_purge_deleted_devices() : void {
 	$devices = db_fetch_assoc_prepared('SELECT id, poller_id
 		FROM host
 		WHERE deleted = "on"
@@ -183,12 +183,12 @@ function api_device_purge_deleted_devices(): void {
 /**
  * Removes multiple devices in one call
  *
- * @param array $device_ids An array of device IDs to be removed.
- * @param int $delete_type The type of deletion to perform
+ * @param array $device_ids  An array of device IDs to be removed.
+ * @param int   $delete_type The type of deletion to perform
  *
  * @return void
  */
-function api_device_remove_multi(array $device_ids, int $delete_type = 2): void {
+function api_device_remove_multi(array $device_ids, int $delete_type = 2) : void {
 	$devices_to_delete = '';
 	$i                 = 0;
 
@@ -221,7 +221,7 @@ function api_device_remove_multi(array $device_ids, int $delete_type = 2): void 
 			'id', 'id'
 		);
 
-		/* build the list */
+		// build the list
 		foreach ($device_ids as $device_id) {
 			if ($i == 0) {
 				$devices_to_delete .= $device_id;
@@ -229,7 +229,7 @@ function api_device_remove_multi(array $device_ids, int $delete_type = 2): void 
 				$devices_to_delete .= ', ' . $device_id;
 			}
 
-			/* poller commands go one at a time due to trashy logic */
+			// poller commands go one at a time due to trashy logic
 			db_execute_prepared('DELETE FROM poller_item    WHERE host_id = ?', [$device_id]);
 			db_execute_prepared('DELETE FROM poller_reindex WHERE host_id = ?', [$device_id]);
 			db_execute_prepared('DELETE FROM poller_command WHERE command LIKE ?', [$device_id . ':%']);
@@ -292,7 +292,7 @@ function api_device_remove_multi(array $device_ids, int $delete_type = 2): void 
  *
  * @return void
  */
-function api_device_disable_devices(array $device_ids): void {
+function api_device_disable_devices(array $device_ids) : void {
 	$raised = [];
 
 	foreach ($device_ids as $device_id) {
@@ -331,7 +331,7 @@ function api_device_disable_devices(array $device_ids): void {
  *
  * @return void
  */
-function api_device_enable_devices(array $device_ids): void {
+function api_device_enable_devices(array $device_ids) : void {
 	$raised = [];
 
 	foreach ($device_ids as $device_id) {
@@ -381,7 +381,7 @@ function api_device_enable_devices(array $device_ids): void {
 		 * enable behavior.
 		 */
 		if (!cacti_sizeof($poller_cache)) {
-			/* update poller cache */
+			// update poller cache
 			$data_sources = db_fetch_assoc_prepared('SELECT id
 				FROM data_local
 				WHERE host_id = ?',
@@ -421,11 +421,11 @@ function api_device_enable_devices(array $device_ids): void {
  *  Given an array of device ids and the post variable, update a series of Device settings.
  *
  * @param array $device_ids An array of device IDs to update.
- * @param array $post An associative array containing the POST data with the new options.
+ * @param array $post       An associative array containing the POST data with the new options.
  *
  * @return void
  */
-function api_device_change_options(array $device_ids, array $post): void {
+function api_device_change_options(array $device_ids, array $post) : void {
 	global $fields_host_edit;
 
 	$previous_poller = -1;
@@ -441,15 +441,15 @@ function api_device_change_options(array $device_ids, array $post): void {
 						WHERE id = ?',
 						[$device_id]);
 
-					if ($old_poller > 1 && $old_poller != get_nfilter_request_var($field_name)) {
-						$previous_poller = get_nfilter_request_var($field_name);
+					if ($old_poller > 1 && $old_poller != gnrv($field_name)) {
+						$previous_poller = gnrv($field_name);
 
 						api_device_purge_from_remote($device_id, $old_poller);
 					}
 
 					// Update the local device and replicate
-					if ($old_poller !=  get_nfilter_request_var($field_name && get_nfilter_request_var($field_name) > 1)) {
-						api_device_replicate_out($device_id, get_nfilter_request_var($field_name));
+					if ($old_poller != gnrv($field_name) && gnrv($field_name) > 1) {
+						api_device_replicate_out($device_id, gnrv($field_name));
 					}
 				}
 
@@ -457,7 +457,7 @@ function api_device_change_options(array $device_ids, array $post): void {
 					SET $field_name = ?
 					WHERE id = ?
 					AND deleted = ''",
-					[get_nfilter_request_var($field_name), $device_id]);
+					[gnrv($field_name), $device_id]);
 
 				if (!isset($poller_ids[$device_id])) {
 					$poller_ids[$device_id] = db_fetch_cell_prepared('SELECT poller_id FROM host WHERE id = ?', [$device_id]);
@@ -472,7 +472,7 @@ function api_device_change_options(array $device_ids, array $post): void {
 								SET $field_name = ?
 								WHERE id = ?
 								AND deleted = ''",
-								[get_nfilter_request_var($field_name), $device_id], true, $rcnn_id);
+								[gnrv($field_name), $device_id], true, $rcnn_id);
 						} elseif (!isset($raised[$poller_id])) {
 							raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 							$raised[$poller_id] = true;
@@ -484,7 +484,7 @@ function api_device_change_options(array $device_ids, array $post): void {
 				}
 
 				if ($field_name == 'host_template_id') {
-					api_device_update_host_template($device_id, get_nfilter_request_var($field_name));
+					api_device_update_host_template($device_id, gnrv($field_name));
 				}
 			}
 		}
@@ -500,7 +500,7 @@ function api_device_change_options(array $device_ids, array $post): void {
  *
  * @return void
  */
-function api_device_clear_statistics(array $device_ids): void {
+function api_device_clear_statistics(array $device_ids) : void {
 	$raised = [];
 
 	foreach ($device_ids as $device_id) {
@@ -536,21 +536,13 @@ function api_device_clear_statistics(array $device_ids): void {
 
 /**
  * api_device_sync_device_templates - Sync an array of device ids with their
- *   parent Device Template
+ * parent Device Template
  *
- * @param (array) An array of device ids
- * @param mixed $device_ids
- *
- * @return (void)
- */
-/**
- * SSync an array of device ids with their parent Device Template
- *
- * @param array $device_ids An array of device IDs to synchronize templates for.
+ * @param array $device_ids An array of device ids
  *
  * @return void
  */
-function api_device_sync_device_templates(array $device_ids): void {
+function api_device_sync_device_templates(array $device_ids) : void {
 	foreach ($device_ids as $device_id) {
 		$device_template_id = db_fetch_cell_prepared('SELECT host_template_id
 			FROM host
@@ -566,13 +558,13 @@ function api_device_sync_device_templates(array $device_ids): void {
 /**
  * Adds a device->data query mapping
  *
- * @param int $device_id The ID of the device to which the data query is being added.
- * @param int $data_query_id The ID of the data query to be added.
+ * @param int    $device_id      The ID of the device to which the data query is being added.
+ * @param int    $data_query_id  The ID of the data query to be added.
  * @param string $reindex_method The method used for reindexing.
  *
  * @return void
  */
-function api_device_dq_add(int $device_id, int $data_query_id, string $reindex_method): void {
+function api_device_dq_add(int $device_id, int $data_query_id, string $reindex_method) : void {
 	db_execute_prepared('REPLACE INTO host_snmp_query
 		(host_id, snmp_query_id, reindex_method)
 		VALUES (?, ?, ?)',
@@ -595,18 +587,18 @@ function api_device_dq_add(int $device_id, int $data_query_id, string $reindex_m
 		}
 	}
 
-	/* recache snmp data */
+	// recache snmp data
 	run_data_query($device_id, $data_query_id);
 }
 
 /**
  * Removes a device->data query mapping
  *
- * @param int $device_id The ID of the device.
- * @param int $data_query_id The ID of the data query to be removed.
+ * @param  int  $device_id     The ID of the device.
+ * @param  int  $data_query_id The ID of the data query to be removed.
  * @return void
  */
-function api_device_dq_remove(int $device_id, int $data_query_id): void {
+function api_device_dq_remove(int $device_id, int $data_query_id) : void {
 	db_execute_prepared('DELETE FROM host_snmp_cache
 		WHERE snmp_query_id = ?
 		AND host_id = ?',
@@ -653,13 +645,13 @@ function api_device_dq_remove(int $device_id, int $data_query_id): void {
 /**
  * Changes a device->data query mapping
  *
- * @param int $device_id The ID of the device.
- * @param int $data_query_id The ID of the data query.
+ * @param int    $device_id      The ID of the device.
+ * @param int    $data_query_id  The ID of the data query.
  * @param string $reindex_method The reindex method to be used.
  *
  * @return void
  */
-function api_device_dq_change(int $device_id, int $data_query_id, string $reindex_method): void {
+function api_device_dq_change(int $device_id, int $data_query_id, string $reindex_method) : void {
 	db_execute_prepared('INSERT INTO host_snmp_query
 		(host_id, snmp_query_id, reindex_method)
 		VALUES (?, ?, ?)
@@ -692,19 +684,19 @@ function api_device_dq_change(int $device_id, int $data_query_id, string $reinde
 		}
 	}
 
-	/* finally rerun the data query */
+	// finally rerun the data query
 	run_data_query($device_id, $data_query_id);
 }
 
 /**
  * Removes a device->graph template mapping
  *
- * @param int $device_id The ID of the device.
+ * @param int $device_id         The ID of the device.
  * @param int $graph_template_id The ID of the graph template.
  *
  * @return void
  */
-function api_device_gt_remove(int $device_id, int $graph_template_id): void {
+function api_device_gt_remove(int $device_id, int $graph_template_id) : void {
 	db_execute_prepared('DELETE FROM host_graph
 		WHERE graph_template_id = ?
 		AND host_id = ?',
@@ -733,9 +725,10 @@ function api_device_gt_remove(int $device_id, int $graph_template_id): void {
  *
  * @param int $device_id The ID of the device to replicate.
  * @param int $poller_id The ID of the poller to replicate to. Defaults to 1.
+ *
  * @return bool Returns true on success, false on failure.
  */
-function api_device_replicate_out(int $device_id, int $poller_id = 1): bool {
+function api_device_replicate_out(int $device_id, int $poller_id = 1) : bool {
 	$rcnn_id = false;
 
 	if ($poller_id > 1) {
@@ -924,37 +917,37 @@ function api_device_replicate_out(int $device_id, int $poller_id = 1): bool {
  *   device level settings will simply be updated, otherwise the poller cache will be refreshed
  *   for the device.
  *
- * @param int $id The ID of the device. If 0, a new device will be created.
- * @param int $device_template_id The ID of the device template.
- * @param string $description The description of the device.
- * @param string $hostname The hostname of the device.
- * @param string $snmp_community The SNMP community string.
- * @param int $snmp_version The SNMP version.
- * @param string $snmp_username The SNMP username (for SNMP v3).
- * @param string $snmp_password The SNMP password (for SNMP v3).
- * @param int $snmp_port The SNMP port.
- * @param int $snmp_timeout The SNMP timeout.
- * @param string $disabled Whether the device is disabled ('on' or '').
- * @param int $availability_method The availability method.
- * @param int $ping_method The ping method.
- * @param int $ping_port The ping port.
- * @param int $ping_timeout The ping timeout.
- * @param int $ping_retries The number of ping retries.
- * @param string $notes Notes about the device.
- * @param string $snmp_auth_protocol The SNMP authentication protocol (for SNMP v3).
+ * @param int    $id                   The ID of the device. If 0, a new device will be created.
+ * @param int    $device_template_id   The ID of the device template.
+ * @param string $description          The description of the device.
+ * @param string $hostname             The hostname of the device.
+ * @param string $snmp_community       The SNMP community string.
+ * @param int    $snmp_version         The SNMP version.
+ * @param string $snmp_username        The SNMP username (for SNMP v3).
+ * @param string $snmp_password        The SNMP password (for SNMP v3).
+ * @param int    $snmp_port            The SNMP port.
+ * @param int    $snmp_timeout         The SNMP timeout.
+ * @param string $disabled             Whether the device is disabled ('on' or '').
+ * @param int    $availability_method  The availability method.
+ * @param int    $ping_method          The ping method.
+ * @param int    $ping_port            The ping port.
+ * @param int    $ping_timeout         The ping timeout.
+ * @param int    $ping_retries         The number of ping retries.
+ * @param string $notes                Notes about the device.
+ * @param string $snmp_auth_protocol   The SNMP authentication protocol (for SNMP v3).
  * @param string $snmp_priv_passphrase The SNMP privacy passphrase (for SNMP v3).
- * @param string $snmp_priv_protocol The SNMP privacy protocol (for SNMP v3).
- * @param string $snmp_context The SNMP context (for SNMP v3).
- * @param string $snmp_engine_id The SNMP engine ID (for SNMP v3).
- * @param int $max_oids The maximum number of OIDs.
- * @param int $device_threads The number of device threads.
- * @param int $poller_id The poller ID.
- * @param int $site_id The site ID.
- * @param string $external_id The external ID.
- * @param string $location The location of the device.
- * @param int $bulk_walk_size The bulk walk size.
- * @param int $snmp_options The SNMP options.
- * @param int $snmp_retries The number of SNMP retries.
+ * @param string $snmp_priv_protocol   The SNMP privacy protocol (for SNMP v3).
+ * @param string $snmp_context         The SNMP context (for SNMP v3).
+ * @param string $snmp_engine_id       The SNMP engine ID (for SNMP v3).
+ * @param int    $max_oids             The maximum number of OIDs.
+ * @param int    $device_threads       The number of device threads.
+ * @param int    $poller_id            The poller ID.
+ * @param int    $site_id              The site ID.
+ * @param string $external_id          The external ID.
+ * @param string $location             The location of the device.
+ * @param int    $bulk_walk_size       The bulk walk size.
+ * @param int    $snmp_options         The SNMP options.
+ * @param int    $snmp_retries         The number of SNMP retries.
  *
  * @return int The ID of the saved device.
  */
@@ -963,7 +956,7 @@ function api_device_save(int $id, int $device_template_id, string $description, 
 	int $availability_method, int $ping_method, int $ping_port, int $ping_timeout, int $ping_retries,
 	string $notes, string $snmp_auth_protocol, string $snmp_priv_passphrase, string $snmp_priv_protocol, string $snmp_context, string $snmp_engine_id,
 	int $max_oids = 5, int $device_threads = 1, int $poller_id = 1, int $site_id = 1, string $external_id = '', string $location = '', int $bulk_walk_size = -1,
-	int $snmp_options = 0, int $snmp_retries = 3): int {
+	int $snmp_options = 0, int $snmp_retries = 3) : int {
 	include_once(CACTI_PATH_LIBRARY . '/utility.php');
 	include_once(CACTI_PATH_LIBRARY . '/variables.php');
 	include_once(CACTI_PATH_LIBRARY . '/data_query.php');
@@ -985,7 +978,7 @@ function api_device_save(int $id, int $device_template_id, string $description, 
 		$previous_poller = 0;
 	}
 
-	/* fetch some cache variables */
+	// fetch some cache variables
 	if (empty($id)) {
 		$_host_template_id = 0;
 	} else {
@@ -1095,12 +1088,12 @@ function api_device_save(int $id, int $device_template_id, string $description, 
 				}
 			}
 
-			/* clear the host session data for poller cache repopulation */
+			// clear the host session data for poller cache repopulation
 			if (isset($_SESSION['sess_host_cache_array'][$device_id])) {
 				unset($_SESSION['sess_host_cache_array'][$device_id]);
 			}
 
-			/* change reindex method for 'None' for non-snmp devices */
+			// change reindex method for 'None' for non-snmp devices
 			if ($save['snmp_version'] == 0) {
 				db_execute_prepared('UPDATE host_snmp_query
 					SET reindex_method = 0
@@ -1133,15 +1126,15 @@ function api_device_save(int $id, int $device_template_id, string $description, 
 
 			api_device_cache_crc_update($save['poller_id']);
 
-			/* push out relevant fields to data sources using this host */
+			// push out relevant fields to data sources using this host
 			if (!$quick_save) {
 				push_out_host($device_id, 0);
 			}
 
-			/* the host substitution cache is now stale; purge it */
+			// the host substitution cache is now stale; purge it
 			kill_session_var('sess_host_cache_array');
 
-			/* update title cache for graph and data source */
+			// update title cache for graph and data source
 			update_data_source_title_cache_from_host($device_id);
 			update_graph_title_cache_from_host($device_id);
 
@@ -1157,7 +1150,7 @@ function api_device_save(int $id, int $device_template_id, string $description, 
 			raise_message(2);
 		}
 
-		/* if the user changes the host template, add each snmp query associated with it */
+		// if the user changes the host template, add each snmp query associated with it
 		if ($device_template_id > 0 && $device_template_id != $_host_template_id) {
 			api_device_update_host_template($device_id, $device_template_id);
 		}
@@ -1195,7 +1188,7 @@ function api_device_save(int $id, int $device_template_id, string $description, 
 
 							if ((chown($host_dir, $owner_id)) &&
 								(chgrp($host_dir, $group_id))) {
-								/* permissions set ok */
+								// permissions set ok
 							} else {
 								cacti_log("ERROR: Unable to set directory permissions for '" . $host_dir . "'", false);
 							}
@@ -1209,7 +1202,7 @@ function api_device_save(int $id, int $device_template_id, string $description, 
 			}
 		}
 
-		# now that we have the id of the new host, we may plugin postprocessing code
+		// now that we have the id of the new host, we may plugin postprocessing code
 		$save['id'] = $device_id;
 
 		snmpagent_api_device_new($save);
@@ -1250,7 +1243,7 @@ function api_device_save(int $id, int $device_template_id, string $description, 
  *
  * @return bool Returns true if the device information has not changed, false otherwise.
  */
-function api_device_quick_save(array &$save): bool {
+function api_device_quick_save(array &$save) : bool {
 	if ($save['id'] > 0) {
 		$device = db_fetch_row_prepared('SELECT *
 			FROM host
@@ -1289,12 +1282,12 @@ function api_device_quick_save(array &$save): bool {
 /**
  * Changes the host template of a host
  *
- * @param int $device_id The ID of the device to update.
+ * @param int $device_id          The ID of the device to update.
  * @param int $device_template_id The ID of the new device template to assign to the device.
  *
  * @return void
  */
-function api_device_update_host_template(int $device_id, int $device_template_id): void {
+function api_device_update_host_template(int $device_id, int $device_template_id) : void {
 	static $raised = [];
 
 	if ($device_id > 0) {
@@ -1327,7 +1320,7 @@ function api_device_update_host_template(int $device_id, int $device_template_id
 		}
 	}
 
-	/* add all new snmp queries assigned to the device template */
+	// add all new snmp queries assigned to the device template
 	$snmp_queries = db_fetch_assoc_prepared('SELECT snmp_query_id
 		FROM host_template_snmp_query AS htsq
 		WHERE host_template_id = ?
@@ -1358,12 +1351,12 @@ function api_device_update_host_template(int $device_id, int $device_template_id
 				}
 			}
 
-			/* recache snmp data */
+			// recache snmp data
 			run_data_query($device_id, $snmp_query['snmp_query_id']);
 		}
 	}
 
-	/* add all graph templates assigned to the device template */
+	// add all graph templates assigned to the device template
 	$graph_templates = db_fetch_assoc_prepared('SELECT graph_template_id
 		FROM host_template_graph AS hg
 		WHERE host_template_id = ?
@@ -1401,7 +1394,7 @@ function api_device_update_host_template(int $device_id, int $device_template_id
 		}
 	}
 
-	/* remove unused graph templates not assigned to the device template */
+	// remove unused graph templates not assigned to the device template
 	$unused_graph_templates = db_fetch_assoc_prepared('SELECT DISTINCT
 		hg.graph_template_id AS id, gt.name, result.gtid
 		FROM host_graph AS hg
@@ -1470,7 +1463,7 @@ function api_device_update_host_template(int $device_id, int $device_template_id
  *
  * @return bool Returns true if the field name matches any rule, otherwise false.
  */
-function api_device_change_field_match(string $field_name): bool {
+function api_device_change_field_match(string $field_name) : bool {
 	global $device_change_fields;
 
 	$matches = false;
@@ -1499,13 +1492,13 @@ function api_device_change_field_match(string $field_name): bool {
 /**
  * Updates the device template mapping for all devices mapped to a template
  *
- * @param int $device_template The ID of the device template to synchronize.
- * @param array|string $device_ids An array or comma-separated string of device IDs to update. Default is an empty string.
- * @param bool $down_devices Whether to include down devices in the synchronization. Default is false.
+ * @param int          $device_template The ID of the device template to synchronize.
+ * @param array|string $device_ids      An array or comma-separated string of device IDs to update. Default is an empty string.
+ * @param bool         $down_devices    Whether to include down devices in the synchronization. Default is false.
  *
  * @return void
  */
-function api_device_template_sync_template(int $device_template, array|string $device_ids = '', bool $down_devices = false): void {
+function api_device_template_sync_template(int $device_template, array|string $device_ids = '', bool $down_devices = false) : void {
 	if ($down_devices == true) {
 		$status_where = '';
 	} else {
@@ -1540,12 +1533,12 @@ function api_device_template_sync_template(int $device_template, array|string $d
  * Given a device id and optional indicator of where the ping request came from, ping the device.
  *   The ping results are echoed to standard output for the browser
  *
- * @param string|null $device_id The ID of the device to ping. If null or empty, an error message is printed.
- * @param bool $from_remote Indicates if the request is from a remote source. Default is false.
+ * @param string|null $device_id   The ID of the device to ping. If null or empty, an error message is printed.
+ * @param bool        $from_remote Indicates if the request is from a remote source. Default is false.
  *
  * @return void
  */
-function api_device_ping_device(string|null $device_id, bool $from_remote = false): void {
+function api_device_ping_device(string|null $device_id, bool $from_remote = false) : void {
 	global $snmp_error;
 
 	if (empty($device_id)) {
@@ -1633,15 +1626,15 @@ function api_device_ping_device(string|null $device_id, bool $from_remote = fals
 							[$device_id]);
 					}
 
-					/* modify for some system descriptions */
-					/* 0000937: System output in host.php poor for Alcatel */
+					// modify for some system descriptions
+					// 0000937: System output in host.php poor for Alcatel
 					if (substr_count($snmp_system, '00:')) {
 						$snmp_system = str_replace('00:', '', $snmp_system);
 						$snmp_system = str_replace(':', ' ', $snmp_system);
 					}
 
 					if ($snmp_system == '') {
-						print "<span class='hostDown'>" . __('Host') . ' ' .  __('SNMP error');
+						print "<span class='hostDown'>" . __('Host') . ' ' . __('SNMP error');
 
 						if ($snmp_error != '') {
 							print " - $snmp_error";
@@ -1683,13 +1676,13 @@ function api_device_ping_device(string|null $device_id, bool $from_remote = fals
 	if ($am == AVAIL_PING || $am == AVAIL_SNMP_AND_PING || $am == AVAIL_SNMP_OR_PING) {
 		$anym = true;
 
-		/* create new ping socket for host pinging */
+		// create new ping socket for host pinging
 		$ping = new Net_Ping;
 
 		$ping->host = $host;
 		$ping->port = $host['ping_port'];
 
-		/* perform the appropriate ping check of the host */
+		// perform the appropriate ping check of the host
 		$ping_results = $ping->ping(AVAIL_PING, $host['ping_method'], $host['ping_timeout'], $host['ping_retries']);
 
 		if ($ping_results == true) {
@@ -1712,12 +1705,12 @@ function api_device_ping_device(string|null $device_id, bool $from_remote = fals
 /**
  * Duplicates a device template.
  *
- * @param int $_host_template_id The ID of the host template to duplicate.
+ * @param int    $_host_template_id   The ID of the host template to duplicate.
  * @param string $host_template_title The title of the new host template.
  *
  * @return int|bool The result of the duplication process.
  */
-function api_duplicate_device_template(int $_host_template_id, string $host_template_title): int|bool {
+function api_duplicate_device_template(int $_host_template_id, string $host_template_title) : int|bool {
 	global $fields_host_template_edit;
 
 	$host_template              = db_fetch_row_prepared('SELECT * FROM host_template WHERE id = ?', [$_host_template_id]);
@@ -1725,10 +1718,10 @@ function api_duplicate_device_template(int $_host_template_id, string $host_temp
 	$host_template_data_queries = db_fetch_assoc_prepared('SELECT * FROM host_template_snmp_query WHERE host_template_id = ?', [$_host_template_id]);
 
 	if (cacti_sizeof($host_template)) {
-		/* substitute the title variable */
+		// substitute the title variable
 		$host_template['name'] = str_replace('<template_title>', $host_template['name'], $host_template_title);
 
-		/* create new entry: host_template */
+		// create new entry: host_template
 		$save['id']   = 0;
 		$save['hash'] = get_hash_host_template(0);
 
@@ -1740,7 +1733,7 @@ function api_duplicate_device_template(int $_host_template_id, string $host_temp
 
 		$host_template_id = sql_save($save, 'host_template');
 
-		/* create new entry(s): host_template_graph */
+		// create new entry(s): host_template_graph
 		if (cacti_sizeof($host_template_graphs)) {
 			foreach ($host_template_graphs as $host_template_graph) {
 				db_execute_prepared('INSERT INTO host_template_graph
@@ -1750,7 +1743,7 @@ function api_duplicate_device_template(int $_host_template_id, string $host_temp
 			}
 		}
 
-		/* create new entry(s): host_template_snmp_query */
+		// create new entry(s): host_template_snmp_query
 		if (cacti_sizeof($host_template_data_queries)) {
 			foreach ($host_template_data_queries as $host_template_data_query) {
 				db_execute_prepared('INSERT INTO host_template_snmp_query
@@ -1770,11 +1763,11 @@ function api_duplicate_device_template(int $_host_template_id, string $host_temp
  * Displays a clone specific log message if there to CLI and the Cacti log
  *
  * @param string $message The message to be logged.
- * @param bool $force Optional. If true, forces the message to be logged regardless of the debug setting. Default is false.
+ * @param bool   $force   If true, forces the message to be logged regardless of the debug setting. Default is false.
  *
  * @return void
  */
-function api_clone_message($message, $force = false): void {
+function api_clone_message($message, $force = false) : void {
 	global $debug;
 
 	if ($debug || $force) {
@@ -1789,12 +1782,13 @@ function api_clone_message($message, $force = false): void {
 /**
  * Get a unique name for a cacti object based upon the table and column name
  *
- * @param string $name The base name to check for uniqueness.
- * @param string $table The name of the database table to check.
+ * @param string $name   The base name to check for uniqueness.
+ * @param string $table  The name of the database table to check.
  * @param string $column The name of the column in the table to check for the name. Default is 'name'.
+ *
  * @return string|false The unique name if found, or false if a unique name could not be generated within 20 attempts.
  */
-function api_clone_get_unique_name(string $name, string $table, string $column = 'name'): string|false {
+function api_clone_get_unique_name(string $name, string $table, string $column = 'name') : string|false {
 	$i = 0;
 
 	while ($i < 20) {
@@ -1823,9 +1817,10 @@ function api_clone_get_unique_name(string $name, string $table, string $column =
  * Get a unique file name for a Cacti object based upon the file name
  *
  * @param string $file_name The original file name to be used as the base for generating a unique filename.
+ *
  * @return string|false The unique filename if found, or false if no unique filename could be generated within 20 attempts.
  */
-function api_clone_get_unique_filename(string $file_name): string|false {
+function api_clone_get_unique_filename(string $file_name) : string|false {
 	$i = 1;
 
 	$file_data = pathinfo($file_name);
@@ -1850,22 +1845,22 @@ function api_clone_get_unique_filename(string $file_name): string|false {
  * This function will validate the input and return warnings and errors before allowing users to proceed.
  *   This option is skipped when using the quiet option.
  *
- * @param int $device_template_id The ID of the device template to clone.
- * @param string $device_template_name The name of the device template to clone.
- * @param string $include_gt Whether to include graph templates ('all', comma-separated list of IDs, or empty).
- * @param string $clone_gt Whether to clone graph templates ('all', comma-separated list of IDs, or empty).
- * @param string $include_dq Whether to include data queries ('all', comma-separated list of IDs, or empty).
- * @param string $clone_dq Whether to clone data queries ('all', comma-separated list of IDs, or empty).
- * @param string $include_dt Whether to include data templates ('all', comma-separated list of IDs, or empty).
- * @param string $clone_dt Whether to clone data templates ('all', comma-separated list of IDs, or empty).
- * @param string &$suffix The suffix to append to cloned items.
- * @param bool &$clone_xml Whether to clone XML files.
- * @param bool &$clone_script Whether to clone script files.
+ * @param int    $device_template_id   - The ID of the device template to clone.
+ * @param string $device_template_name - The name of the device template to clone.
+ * @param string $include_gt           - Whether to include graph templates ('all', comma-separated list of IDs, or empty).
+ * @param string $clone_gt             - Whether to clone graph templates ('all', comma-separated list of IDs, or empty).
+ * @param string $include_dq           - Whether to include data queries ('all', comma-separated list of IDs, or empty).
+ * @param string $clone_dq             - Whether to clone data queries ('all', comma-separated list of IDs, or empty).
+ * @param string $include_dt           - Whether to include data templates ('all', comma-separated list of IDs, or empty).
+ * @param string $clone_dt             - Whether to clone data templates ('all', comma-separated list of IDs, or empty).
+ * @param string &$suffix              - The suffix to append to cloned items.
+ * @param bool   &$clone_xml           - Whether to clone XML files.
+ * @param bool   &$clone_script        - Whether to clone script files.
  *
- * @return array An array containing 'warnings' and 'errors' keys with respective messages.
+ * @return array - An array containing 'warnings' and 'errors' keys with respective messages.
  */
 function api_clone_device_template_check_for_errors(int $device_template_id, string $device_template_name, string $include_gt, string $clone_gt,
-string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, string &$suffix, bool &$clone_xml, bool &$clone_script): array {
+string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, string &$suffix, bool &$clone_xml, bool &$clone_script) : array {
 	$return = [
 		'warnings' => [],
 		'errors'   => []
@@ -1876,7 +1871,7 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 		WHERE id = ?',
 		[$device_template_id]);
 
-	/* first error check */
+	// first error check
 	if (!cacti_sizeof($device_template)) {
 		$return['errors'][] = sprintf('FATAL: Device Template %s does not exist!', $device_template_id);
 
@@ -1885,7 +1880,7 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 		$objects = api_clone_device_template_get_objects($device_template['id']);
 	}
 
-	/* second error check */
+	// second error check
 	if (!cacti_sizeof($objects)) {
 		$return['errors'][] = sprintf('FATAL: Device Template %s has no Objects!', $device_template_id);
 
@@ -1901,16 +1896,16 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 	$clone_dq   = strtolower($clone_dq);
 	$clone_dt   = strtolower($clone_dt);
 
-	printf('Cloning Criteria for Device Template are:'                                   . PHP_EOL);
+	printf('Cloning Criteria for Device Template are:' . PHP_EOL);
 	printf('---------------------------------------------------------------------------' . PHP_EOL);
 	printf('NOTE: Include Graph Template: ' . ($include_gt != '' ? $include_gt : 'none') . PHP_EOL);
 	printf('NOTE: Include Data Query:     ' . ($include_dq != '' ? $include_dq : 'none') . PHP_EOL);
 	printf('NOTE: Include Data Template:  ' . ($include_dt != '' ? $include_dt : 'none') . PHP_EOL);
-	printf('NOTE: Clone Graph Template:   ' . ($clone_gt != '' ? $clone_gt : 'none')   . PHP_EOL);
-	printf('NOTE: Clone Data Query:       ' . ($clone_dq != '' ? $clone_dq : 'none')   . PHP_EOL);
-	printf('NOTE: Clone Data Template:    ' . ($clone_dt != '' ? $clone_dt : 'none')   . PHP_EOL);
-	printf('NOTE: Clone XML Files:        ' . ($clone_xml != '' ? 'yes' : 'no')         . PHP_EOL);
-	printf('NOTE: Clone Script Files:     ' . ($clone_script != '' ? 'yes' : 'no')         . PHP_EOL);
+	printf('NOTE: Clone Graph Template:   ' . ($clone_gt != '' ? $clone_gt : 'none') . PHP_EOL);
+	printf('NOTE: Clone Data Query:       ' . ($clone_dq != '' ? $clone_dq : 'none') . PHP_EOL);
+	printf('NOTE: Clone Data Template:    ' . ($clone_dt != '' ? $clone_dt : 'none') . PHP_EOL);
+	printf('NOTE: Clone XML Files:        ' . ($clone_xml != '' ? 'yes' : 'no') . PHP_EOL);
+	printf('NOTE: Clone Script Files:     ' . ($clone_script != '' ? 'yes' : 'no') . PHP_EOL);
 	printf('---------------------------------------------------------------------------' . PHP_EOL);
 
 	if ($include_gt == 'all' && $clone_gt != '') {
@@ -2016,8 +2011,10 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 		}
 	}
 
+	$clone_dq_proceed = false;
+
 	if ($clone_dq != '' && $clone_dq != 'all') {
-		$clone_dq = true;
+		$clone_dq_proceed = true;
 
 		$dqc = explode(',', $clone_dq);
 
@@ -2031,7 +2028,7 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 			}
 		}
 	} elseif ($clone_dq == 'all') {
-		$clone_dq = true;
+		$clone_dq_proceed = true;
 	}
 
 	if ($include_dt != '' && $include_dt != 'all') {
@@ -2048,8 +2045,10 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 		}
 	}
 
+	$clone_dt_proceed = false;
+
 	if ($clone_dt != '' && $clone_dt != 'all') {
-		$clone_dt = true;
+		$clone_dt_proceed = true;
 
 		$dtc = explode(',', $clone_dt);
 
@@ -2063,12 +2062,12 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 			}
 		}
 	} elseif ($clone_dt == 'all') {
-		$clone_dt = true;
+		$clone_dt_proceed = true;
 	}
 
-	/* now check for name collision xml files and scripts */
+	// now check for name collision xml files and scripts
 	if ($clone_xml) {
-		if ($clone_dq != '') {
+		if ($clone_dq_proceed) {
 			foreach ($objects['data_queries'] as $id => $data_query) {
 				if (!is_numeric($id) && $id <= 0) {
 					$errors++;
@@ -2097,7 +2096,7 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 	}
 
 	if ($clone_script) {
-		if ($clone_dq != '') {
+		if ($clone_dq_proceed) {
 			foreach ($objects['data_queries'] as $id => $data_query) {
 				if (!is_numeric($id) && $id <= 0) {
 					$errors++;
@@ -2125,12 +2124,12 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 			}
 		}
 
-		if ($clone_dt) {
+		if ($clone_dt_proceed) {
 			foreach ($objects['data_templates'] as $id => $data_template) {
 				if (!is_numeric($id) && $id <= 0) {
 					$errors++;
 					$return['errors'][] = sprintf('FATAL: Data Template to be cloned %s is not numeric', $id);
-				} elseif (isset($data_templates['script_path'])) {
+				} elseif (isset($data_template['script_path'])) {
 					$parts = explode('.', $data_template['script_path']);
 					$name  = $data_template['name'];
 
@@ -2154,7 +2153,7 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 		}
 	}
 
-	/* not issue some warnings for things to be cloned */
+	// not issue some warnings for things to be cloned
 	if ($device_template_name == '') {
 		$device_template_name = db_fetch_cell_prepared('SELECT name
 			FROM host_template
@@ -2196,20 +2195,20 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 		}
 	}
 
-	/* not issue some warnings for things to be cloned */
-	if ($clone_xml && !$clone_dq) {
+	// not issue some warnings for things to be cloned
+	if ($clone_xml && !$clone_dq_proceed) {
 		$warnings++;
 		$return['warnings'][] = sprintf('WARNING: Ignoring --clone-xml as no Data Queries were selected to be cloned.');
 		$clone_xml            = false;
 	}
 
-	if ($clone_script && (!$clone_dq && !$clone_dt)) {
+	if ($clone_script && (!$clone_dq_proceed && !$clone_dt_proceed)) {
 		$warnings++;
 		$return['warnings'][] = sprintf('WARNING: Ignoring --clone-script as no Data Queries or Templates were selected to be cloned.');
 		$clone_script         = false;
 	}
 
-	if ($clone_dq != '') {
+	if ($clone_dq_proceed) {
 		$ndq = [];
 
 		if ($clone_dq == 'all') {
@@ -2267,7 +2266,7 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 		}
 	}
 
-	if ($clone_dt != '') {
+	if ($clone_dt_proceed) {
 		print 'Clone DT is "' . $clone_dt . '"' . PHP_EOL;
 
 		if ($clone_dt == 'all') {
@@ -2307,12 +2306,12 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 				}
 			} else {
 				$errors++;
-				$return['errors'][] = sprintf('FATAL: Data Template ID %s to be cloned is not numeric.', $dq_id);
+				$return['errors'][] = sprintf('FATAL: Data Template ID %s to be cloned is not numeric.', $dt_id);
 			}
 		}
 	}
 
-	//print_r($objects);
+	// print_r($objects);
 
 	return $return;
 }
@@ -2326,7 +2325,7 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
  *
  * @return array An associative array containing the following keys:
  */
-function api_clone_device_template_get_objects(int $device_template_id): array {
+function api_clone_device_template_get_objects(int $device_template_id) : array {
 	$objects = [
 		'graph_templates'               => [],
 		'data_templates'                => [],
@@ -2395,7 +2394,7 @@ function api_clone_device_template_get_objects(int $device_template_id): array {
 
 		if (cacti_sizeof($objects['data_templates'])) {
 			foreach ($objects['data_templates'] as $id => $data_template) {
-				/* peel the script from the input_string */
+				// peel the script from the input_string
 				if (isset($data_template['input_string'])) {
 					$parts = explode(' ', $data_template['input_string']);
 
@@ -2410,7 +2409,7 @@ function api_clone_device_template_get_objects(int $device_template_id): array {
 					}
 				}
 
-				/* let's get the list of graph templates that need updating */
+				// let's get the list of graph templates that need updating
 				$graph_templates = array_rekey(
 					db_fetch_assoc_prepared('SELECT DISTINCT graph_template_id AS id
 						FROM graph_templates_item AS gti
@@ -2462,24 +2461,24 @@ function api_clone_device_template_get_objects(int $device_template_id): array {
  * Clones a device template and in some cases also updates duplicates Graph Templates,
  *   Data Templates, Data Input Methods and making copies of scripts, and XML files as well.
  *
- * @param int $template_id The ID of the template to clone.
+ * @param int    $template_id   The ID of the template to clone.
  * @param string $template_name The name for the new template. If empty, the original name with a suffix will be used.
- * @param string $include_gt Comma-separated list of graph template IDs to include. If 'all', includes all graph templates.
- * @param string $clone_gt Comma-separated list of graph template IDs to clone. If 'all', clones all graph templates.
- * @param string $include_dq Comma-separated list of data query IDs to include. If 'all', includes all data queries.
- * @param string $clone_dq Comma-separated list of data query IDs to clone. If 'all', clones all data queries.
- * @param string $include_dt Comma-separated list of data template IDs to include. If 'all', includes all data templates.
- * @param string $clone_dt Comma-separated list of data template IDs to clone. If 'all', clones all data templates.
- * @param string $suffix The suffix to append to the new template name if no name is provided.
- * @param bool $clone_xml Whether to clone XML files associated with data queries.
- * @param bool $clone_script Whether to clone script files associated with data queries.
- * @param bool $cli Whether the function is being called from the command line interface.
+ * @param string $include_gt    Comma-separated list of graph template IDs to include. If 'all', includes all graph templates.
+ * @param string $clone_gt      Comma-separated list of graph template IDs to clone. If 'all', clones all graph templates.
+ * @param string $include_dq    Comma-separated list of data query IDs to include. If 'all', includes all data queries.
+ * @param string $clone_dq      Comma-separated list of data query IDs to clone. If 'all', clones all data queries.
+ * @param string $include_dt    Comma-separated list of data template IDs to include. If 'all', includes all data templates.
+ * @param string $clone_dt      Comma-separated list of data template IDs to clone. If 'all', clones all data templates.
+ * @param string $suffix        The suffix to append to the new template name if no name is provided.
+ * @param bool   $clone_xml     Whether to clone XML files associated with data queries.
+ * @param bool   $clone_script  Whether to clone script files associated with data queries.
+ * @param bool   $cli           Whether the function is being called from the command line interface.
  *
  * @return int|bool The ID of the newly created template.
  */
 function api_clone_device_template(int $template_id, string $template_name, string $include_gt, string $clone_gt,
-	string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, string $suffix, bool $clone_xml, bool $clone_script, bool $cli = false): int|bool {
-	/* The list of duplicated Data Templates.  Dont do it more than once */
+	string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, string $suffix, bool $clone_xml, bool $clone_script, bool $cli = false) : int|bool {
+	// The list of duplicated Data Templates.  Dont do it more than once
 	$duped_graph_templates[]    = [];
 	$duped_data_templates[]     = [];
 	$duped_data_input_methods[] = [];
@@ -2554,10 +2553,10 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 	 * that the clone should include it as well.
 	 */
 
-	/* get the list of exist Data Template Objects */
+	// get the list of exist Data Template Objects
 	$objects = api_clone_device_template_get_objects($template_id);
 
-	/* include graph templates */
+	// include graph templates
 	if ($include_gt != '' && $include_gt != 'all') {
 		$sql_where = 'AND graph_template_id IN (' . $include_gt . ')';
 	} elseif ($clone_gt == 'all') {
@@ -2585,7 +2584,7 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 		api_clone_message('NOTE: No Graph Templates to be Included');
 	}
 
-	/* include data queries */
+	// include data queries
 	if ($include_dq != '' && $include_dq != 'all') {
 		$sql_where = 'AND snmp_query_id IN (' . $include_dq . ')';
 	} elseif ($clone_dq == 'all') {
@@ -2670,7 +2669,7 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 
 									$new_script     = copy($old_scriptfile, $new_scriptfile);
 								} else {
-									/* skipping as we've already cloned */
+									// skipping as we've already cloned
 									$new_script     = true;
 									$new_scriptfile = $duped_scripts[$old_scriptfile];
 								}
@@ -2678,8 +2677,8 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 						}
 					}
 
-					/* update the XML with new values */
-					if ($new_script) {
+					// update the XML with new values
+					if ($new_script && isset($old_scriptfile) && isset($new_scriptfile)) {
 						api_clone_message(sprintf('NOTE: Updating \'%s\' with new values', $new_xmlfile));
 
 						$data = file_get_contents($new_xmlfile);
@@ -2687,7 +2686,7 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 						file_put_contents($new_xmlfile, $data);
 					}
 				} else {
-					/* skipping as we've already cloned */
+					// skipping as we've already cloned
 					$new_xmlfile = $duped_xmlfiles[$old_xmlfile];
 				}
 
@@ -2697,7 +2696,7 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 					[$new_xmlfile, $new_dq]);
 			}
 
-			/* Clone Data Query Graph Templates now */
+			// Clone Data Query Graph Templates now
 			$dqgt = $objects['data_query_graph_templates'];
 
 			foreach ($dqgt as $gt_id => $gt_data) {
@@ -2713,7 +2712,7 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 
 						$duped_graph_templates[$gt_id] = $new_gt;
 					} else {
-						/* skipping as we've already cloned */
+						// skipping as we've already cloned
 						$new_gt = $duped_graph_templates[$gt_id];
 					}
 
@@ -2840,7 +2839,7 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 
 								$duped_data_templates[$data_template_id] = $new_dt;
 							} else {
-								/* skipping as we've already cloned */
+								// skipping as we've already cloned
 								db_execute_prepared('UPDATE snmp_query_graph_rrd
 									SET data_template_id = ?
 									WHERE snmp_query_graph_id = ?',
@@ -2875,7 +2874,7 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 
 				$duped_graph_templates[$id] = $new_gt;
 			} else {
-				/* skipping as we've already cloned */
+				// skipping as we've already cloned
 				$new_gt = $duped_graph_templates[$id];
 			}
 
@@ -2886,68 +2885,72 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 		}
 	}
 
-	exit;
+	if (1 == 1) {
+		return $new_template;
+	} else {
+		// FIXME : Unused Code after exit
+		if ($clone_dt != '') {
+			api_clone_message('NOTE: Cloning Non Data Query Draph Templates');
 
-	/* FIXME : Unused Code after exit */
-	if ($clone_dt != '') {
-		api_clone_message('NOTE: Cloning Non Data Query Draph Templates');
+			if ($clone_dt == 'all') {
+				$ids = array_keys($objects['data_templates']);
+			} else {
+				$ids = explode(',', $clone_dt);
+			}
 
-		if ($clone_dt == 'all') {
-			$ids = array_keys($objects['data_templates']);
-		} else {
-			$ids = explode(',', $clone_dt);
-		}
+			foreach ($ids as $id) {
+				$graph_templates = $objects['data_templates'][$id]['graph_templates'];
 
-		foreach ($ids as $id) {
-			$graph_templates = $objects['data_templates'][$id]['graph_templates'];
+				$old_name = $objects['data_templates'][$id]['name'];
+				$new_name = api_clone_get_unique_name($old_name, 'data_template', 'name');
 
-			$old_name = $objects['data_templates'][$id]['name'];
-			$new_name = api_clone_get_unique_name($old_name, 'data_template', 'name');
+				if (!isset($duped_data_templates[$id])) {
+					api_clone_message(sprintf('NOTE: Cloning Data Template \'%s\' to \'%s\'', $old_name, $new_name), true);
 
-			if (!isset($duped_data_templates[$id])) {
-				api_clone_message(sprintf('NOTE: Cloning Data Template \'%s\' to \'%s\'', $old_name, $new_name), true);
+					$new_dt = api_data_source_duplicate(0, $id, $new_name);
 
-				$new_dt = api_data_source_duplicate(0, $id, $new_name);
+					if (isset($objects['data_templates'][$id]['script_path'])) {
+						$old_scriptfile = $objects['data_queries'][$id]['script_path'];
+						$new_scriptfile = api_clone_get_unique_filename($old_scriptfile);
 
-				if (isset($objects['data_templates'][$id]['script_path'])) {
-					$old_scriptfile = $objects['data_queries'][$id]['script_path'];
-					$new_scriptfile = api_clone_get_unique_filename($old_scriptfile);
+						if (!isset($duped_scripts[$old_scriptfile])) {
+							api_clone_message(sprintf('NOTE: Cloning Data Input Script \'%s\' to \'%s\'', $old_scriptfile, $new_scriptfile), true);
 
-					if (!isset($duped_scripts[$old_scriptfile])) {
-						api_clone_message(sprintf('NOTE: Cloning Data Input Script \'%s\' to \'%s\'', $old_scriptfile, $new_scriptfile), true);
+							$new_script = copy($old_scriptfile, $new_scriptfile);
+						} else {
+							// skipping as we've already cloned
+							$new_script = $duped_scripts[$old_scriptfile];
+						}
 
-						$new_script = copy($old_scriptfile, $new_scriptfile);
-					} else {
-						/* skipping as we've already cloned */
-						$new_script = $duped_scripts[$old_scriptfile];
+						// TO-DO Data Input Duplication
+						//					db_execute('UPDATE data_input SET input_string=REPLACE(input_string, ?, ?)
+						//						WHERE data_input_id = ?',
+						//						array($old_scriptfile, $new_scriptfile, $new_di_id));
 					}
 
-					// TO-DO Data Input Duplication
-					//					db_execute('UPDATE data_input SET input_string=REPLACE(input_string, ?, ?)
-					//						WHERE data_input_id = ?',
-					//						array($old_scriptfile, $new_scriptfile, $new_di_id));
+					$duped_data_templates[$id] = $new_dt;
+				} else {
+					// skipping as we've already cloned
+					$new_dt = $duped_data_templates[$id];
 				}
-
-				$duped_data_templates[$id] = $new_dt;
-			} else {
-				/* skipping as we've already cloned */
-				$new_dt = $duped_data_templates[$id];
 			}
 		}
-	}
 
-	return $new_template;
+		return $new_template;
+	}
 }
 
 /**
  * Downloads device templates or archives as a compressed tar file.
  *
  * @param string $type The type of download, either 'templates' or 'archives'.
- * @param array $ids An array of template or archive IDs to be included in the download.
+ * @param array  $ids  An array of template or archive IDs to be included in the download.
  *
  * @return void
  */
-function api_device_template_download(string $type, array $ids): void {
+function api_device_template_download(string $type, array $ids) : void {
+	$name = 'unknown';
+
 	if (cacti_sizeof($ids) == 1) {
 		if ($type == 'templates') {
 			$name = clean_up_name(db_fetch_cell_prepared('SELECT name FROM host_template WHERE id = ?', $ids));
@@ -2960,14 +2963,16 @@ function api_device_template_download(string $type, array $ids): void {
 		$filename = 'device_package_multiple_download.tar';
 	}
 
-	//$directory = sys_get_temp_dir() . '/ht_download_' . rand() . '/';
-	//mkdir($directory, 0755);
+	// $directory = sys_get_temp_dir() . '/ht_download_' . rand() . '/';
+	// mkdir($directory, 0755);
 
 	$tmpfile = sys_get_temp_dir() . '/' . $filename;
 
 	$archive = new PharData($tmpfile);
 
 	foreach ($ids as $id) {
+		$name = 'unknown';
+
 		if ($type == 'archives') {
 			$data = db_fetch_row_prepared('SELECT * FROM host_template_archive WHERE id = ?', [$id]);
 
@@ -3009,11 +3014,11 @@ function api_device_template_download(string $type, array $ids): void {
 /**
  * Archives a device template for export.
  *
- * @param string $id The ID of the device template to archive for export.
+ * @param int $id The ID of the device template to archive for export.
  *
- * @return false|string The contents of the package file if successful, or false on failure.
+ * @return mixed - The contents of the package file if successful, or false on failure.
  */
-function api_device_template_archive_for_export(string $id): false|string {
+function api_device_template_archive_for_export(int $id) : mixed {
 	global $export_errors, $debug, $package_file;
 
 	$export_okay = false;
@@ -3048,7 +3053,7 @@ function api_device_template_archive_for_export(string $id): false|string {
 		if ($export_okay) {
 			$files = find_dependent_files($xml_data);
 
-			/* search xml files for scripts */
+			// search xml files for scripts
 			if (cacti_sizeof($files)) {
 				foreach ($files as $file) {
 					if (str_contains($file['file'], '.xml')) {
@@ -3091,12 +3096,12 @@ function api_device_template_archive_for_export(string $id): false|string {
 /**
  * Archives a device template by exporting its data and saving it to the database.
  *
- * @param string $id The ID of the device template to archive.
+ * @param int    $id           The ID of the device template to archive.
  * @param string $archive_note A note to include with the archive.
  *
  * @return bool Returns true if the device template was archived successfully, false otherwise.
  */
-function api_device_template_archive(string $id, string $archive_note): bool {
+function api_device_template_archive(int $id, string $archive_note) : bool {
 	global $export_errors, $debug, $package_file;
 
 	$export_okay = false;
@@ -3131,7 +3136,7 @@ function api_device_template_archive(string $id, string $archive_note): bool {
 		if ($export_okay) {
 			$files = find_dependent_files($xml_data);
 
-			/* search xml files for scripts */
+			// search xml files for scripts
 			if (cacti_sizeof($files)) {
 				foreach ($files as $file) {
 					if (str_contains($file['file'], '.xml')) {

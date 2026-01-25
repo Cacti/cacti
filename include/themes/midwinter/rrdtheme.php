@@ -44,18 +44,18 @@ $rrdcolors_light['axis']   = '2C4D43';
 $rrdcolors_light['arrow']  = '2C4D43';
 $rrdcolors_light['frame']  = '2C4D43';
 
-$rrdcolors_dark['back']   = '12131c'; //'242639';
-$rrdcolors_dark['canvas'] = '0a0b10'; //'242639';
+$rrdcolors_dark['back']   = '12131c'; // '242639';
+$rrdcolors_dark['canvas'] = '0a0b10'; // '242639';
 $rrdcolors_dark['shadea'] = '0B0B0B';
 $rrdcolors_dark['shadeb'] = '292929';
-$rrdcolors_dark['grid']   = '0a0b10'; //'21212400';
-$rrdcolors_dark['mgrid']  = '222327'; //'6A6C6C';
-$rrdcolors_dark['font']   = 'FFFFffaa'; //'c7d0d9';
-$rrdcolors_dark['axis']   = '3A3B3F'; //'2C4D43';
-$rrdcolors_dark['arrow']  = '3A3B3F'; //'2C4D43';
-$rrdcolors_dark['frame']  = '222327'; //'141414';
+$rrdcolors_dark['grid']   = '0a0b10'; // '21212400';
+$rrdcolors_dark['mgrid']  = '222327'; // '6A6C6C';
+$rrdcolors_dark['font']   = 'FFFFffaa'; // 'c7d0d9';
+$rrdcolors_dark['axis']   = '3A3B3F'; // '2C4D43';
+$rrdcolors_dark['arrow']  = '3A3B3F'; // '2C4D43';
+$rrdcolors_dark['frame']  = '222327'; // '141414';
 
-# RRDtool graph fonts in RRDtool 1.2+
+// RRDtool graph fonts in RRDtool 1.2+
 $rrdfonts['title']['font']     = '';
 $rrdfonts['title']['size']     = '10';
 $rrdfonts['axis']['font']      = '';
@@ -67,7 +67,7 @@ $rrdfonts['unit']['size']      = '8';
 $rrdfonts['watermark']['font'] = '';
 $rrdfonts['watermark']['size'] = '6';
 
-# Only supported in RRDtool 1.4+
+// Only supported in RRDtool 1.4+
 $rrdborder       = 0;
 $rrdborder_light = 0;
 $rrdborder_dark  = 0;

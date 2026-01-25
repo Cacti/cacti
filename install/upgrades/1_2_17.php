@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_1_2_17() {
+function upgrade_to_1_2_17() : void {
 	// Correct max values in templates and data sources: GAUGE/ABSOLUTE (1,4)
 	db_install_execute('ALTER TABLE graph_templates_graph ROW_FORMAT=Dynamic, DROP INDEX title_cache, ADD INDEX title_cache(title_cache)');
 	db_install_execute('ALTER TABLE data_template_data ROW_FORMAT=Dynamic, DROP INDEX name_cache, ADD INDEX name_cache(name_cache)');
@@ -82,7 +82,7 @@ function upgrade_to_1_2_17() {
 		AND gl.snmp_query_graph_id = 0");
 }
 
-function database_fix_mediumint_columns() {
+function database_fix_mediumint_columns() : int {
 	global $database_default;
 
 	$total = 0;
@@ -217,6 +217,6 @@ function database_fix_mediumint_columns() {
 	return $total;
 }
 
-function database_get_column_attribs($table, $column) {
+function database_get_column_attribs(string $table, string $column) : mixed {
 	return db_fetch_row("SHOW COLUMNS FROM $table LIKE '$column'");
 }

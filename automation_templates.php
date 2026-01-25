@@ -33,12 +33,12 @@ $actions = [
 	2 => __('Export')
 ];
 
-/* set default action */
+// set default action
 set_default_action();
 
-switch (get_request_var('action')) {
+switch (grv('action')) {
 	case 'save':
-		if (isset_request_var('save_component_import')) {
+		if (isrv('save_component_import')) {
 			automation_import_process();
 		} else {
 			form_save();
@@ -74,13 +74,13 @@ switch (get_request_var('action')) {
 	case 'item_movedown':
 		automation_templates_item_movedown();
 
-		header('Location: automation_templates.php?action=edit&id=' . get_filter_request_var('template_id'));
+		header('Location: automation_templates.php?action=edit&id=' . gfrv('template_id'));
 
 		break;
 	case 'item_moveup':
 		automation_templates_item_moveup();
 
-		header('Location: automation_templates.php?action=edit&id=' . get_filter_request_var('template_id'));
+		header('Location: automation_templates.php?action=edit&id=' . gfrv('template_id'));
 
 		break;
 	case 'actions':
@@ -90,7 +90,7 @@ switch (get_request_var('action')) {
 	case 'item_add_agr':
 		automation_add_graph_rule();
 
-		header('Location: automation_templates.php?action=edit&id=' . get_filter_request_var('template_id'));
+		header('Location: automation_templates.php?action=edit&id=' . gfrv('template_id'));
 
 		break;
 	case 'item_remove_agr_confirm':
@@ -104,19 +104,19 @@ switch (get_request_var('action')) {
 	case 'item_remove_agr':
 		automation_remove_agr();
 
-		header('Location: automation_templates.php?action=edit&id=' . get_filter_request_var('template_id'));
+		header('Location: automation_templates.php?action=edit&id=' . gfrv('template_id'));
 
 		break;
 	case 'item_add_atr':
 		automation_add_tree_rule();
 
-		header('Location: automation_templates.php?action=edit&id=' . get_filter_request_var('template_id'));
+		header('Location: automation_templates.php?action=edit&id=' . gfrv('template_id'));
 
 		break;
 	case 'item_add_ttr':
 		automation_add_threshold_template();
 
-		header('Location: automation_templates.php?action=edit&id=' . get_filter_request_var('template_id'));
+		header('Location: automation_templates.php?action=edit&id=' . gfrv('template_id'));
 
 		break;
 	case 'item_remove_atr_confirm':
@@ -126,13 +126,13 @@ switch (get_request_var('action')) {
 	case 'item_remove_atr':
 		automation_remove_atr();
 
-		header('Location: automation_templates.php?action=edit&id=' . get_filter_request_var('template_id'));
+		header('Location: automation_templates.php?action=edit&id=' . gfrv('template_id'));
 
 		break;
 	case 'item_remove_ttr':
 		automation_remove_ttr();
 
-		header('Location: automation_templates.php?action=edit&id=' . get_filter_request_var('id'));
+		header('Location: automation_templates.php?action=edit&id=' . gfrv('id'));
 
 		break;
 	case 'movedown':
@@ -167,10 +167,10 @@ switch (get_request_var('action')) {
 		break;
 }
 
-function automation_export() {
-	/* if we are to save this form, instead of display it */
-	if (isset_request_var('selected_items')) {
-		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
+function automation_export() : void {
+	// if we are to save this form, instead of display it
+	if (isrv('selected_items')) {
+		$selected_items = sanitize_unserialize_selected_items(gnrv('selected_items'));
 
 		$snmp_option_ids = [];
 
@@ -199,7 +199,7 @@ function automation_export() {
 	}
 }
 
-function automation_import() {
+function automation_import() : void {
 	$form_data = [
 		'import_file' => [
 			'friendly_name' => __('Import Device Rules from Local File'),
@@ -231,7 +231,7 @@ function automation_import() {
 	if ((isset($_SESSION['import_debug_info'])) && (is_array($_SESSION['import_debug_info']))) {
 		html_start_box(__('Import Results'), '60%', false, 3, 'center', '');
 
-		print '<tr class="tableHeader"><th>' . __('Cacti has Imported the following Device Rules'). '</th></tr>';
+		print '<tr class="tableHeader"><th>' . __('Cacti has Imported the following Device Rules') . '</th></tr>';
 
 		foreach ($_SESSION['import_debug_info'] as $line) {
 			print '<tr><td>' . $line . '</td></tr>';
@@ -269,8 +269,8 @@ function automation_import() {
 	html_end_box();
 }
 
-function automation_import_process() {
-	$json_data = json_decode(get_nfilter_request_var('import_text'), true);
+function automation_import_process() : void {
+	$json_data = json_decode(gnrv('import_text'), true);
 
 	$debug_data = [];
 
@@ -279,7 +279,7 @@ function automation_import_process() {
 		$json_data = automation_validate_upload();
 	}
 
-	if (isset_request_var('import_trees_branches')) {
+	if (isrv('import_trees_branches')) {
 		$trees = true;
 	} else {
 		$trees = false;
@@ -317,13 +317,13 @@ function automation_import_process() {
 	exit();
 }
 
-function automation_template_dnd() {
-	/* ================= Input validation ================= */
-	get_filter_request_var('id');
-	/* ================= Input validation ================= */
+function automation_template_dnd() : void {
+	// ================= Input validation =================
+	gfrv('id');
+	// ================= Input validation =================
 
-	if (isset_request_var('template_ids') && is_array(get_nfilter_request_var('template_ids'))) {
-		$aids     = get_nfilter_request_var('template_ids');
+	if (isrv('template_ids') && is_array(gnrv('template_ids'))) {
+		$aids     = gnrv('template_ids');
 		$sequence = 1;
 
 		foreach ($aids as $id) {
@@ -344,83 +344,83 @@ function automation_template_dnd() {
 	exit;
 }
 
-function automation_templates_item_movedown() {
-	/* ================= input validation ================= */
-	get_filter_request_var('id');
-	get_filter_request_var('template_id');
-	get_filter_request_var('rule_type');
-	/* ==================================================== */
+function automation_templates_item_movedown() : void {
+	// ================= input validation =================
+	gfrv('id');
+	gfrv('template_id');
+	gfrv('rule_type');
+	// ====================================================
 
 	$cur_sequence = db_fetch_cell_prepared('SELECT sequence
 		FROM automation_templates_rules
 		WHERE template_id = ?
 		AND rule_type = ?
 		AND id = ?',
-		[get_request_var('template_id'), get_request_var('rule_type'), get_request_var('id')]);
+		[grv('template_id'), grv('rule_type'), grv('id')]);
 
 	$other_id = db_fetch_cell_prepared('SELECT id
 		FROM automation_templates_rules
 		WHERE template_id = ?
 		AND rule_type = ?
 		AND sequence = ?',
-		[get_request_var('template_id'), get_request_var('rule_type'), $cur_sequence + 1]);
+		[grv('template_id'), grv('rule_type'), $cur_sequence + 1]);
 
 	db_execute_prepared('UPDATE automation_templates_rules
 		SET sequence = ?
 		WHERE id = ?',
-		[$cur_sequence + 1, get_request_var('id')]);
+		[$cur_sequence + 1, grv('id')]);
 
 	db_execute_prepared('UPDATE automation_templates_rules
 		SET sequence = ?
 		WHERE id = ?',
 		[$cur_sequence, $other_id]);
 
-	automation_resequence_rules(get_request_var('template_id'));
+	automation_resequence_rules(grv('template_id'));
 }
 
-function automation_templates_item_moveup() {
-	/* ================= input validation ================= */
-	get_filter_request_var('id');
-	get_filter_request_var('template_id');
-	get_filter_request_var('rule_type');
-	/* ==================================================== */
+function automation_templates_item_moveup() : void {
+	// ================= input validation =================
+	gfrv('id');
+	gfrv('template_id');
+	gfrv('rule_type');
+	// ====================================================
 
 	$cur_sequence = db_fetch_cell_prepared('SELECT sequence
 		FROM automation_templates_rules
 		WHERE template_id = ?
 		AND rule_type = ?
 		AND id = ?',
-		[get_request_var('template_id'), get_request_var('rule_type'), get_request_var('id')]);
+		[grv('template_id'), grv('rule_type'), grv('id')]);
 
 	$other_id = db_fetch_cell_prepared('SELECT id
 		FROM automation_templates_rules
 		WHERE template_id = ?
 		AND rule_type = ?
 		AND sequence = ?',
-		[get_request_var('template_id'), get_request_var('rule_type'), $cur_sequence - 1]);
+		[grv('template_id'), grv('rule_type'), $cur_sequence - 1]);
 
 	db_execute_prepared('UPDATE automation_templates_rules
 		SET sequence = ?
 		WHERE id = ?',
-		[$cur_sequence - 1, get_request_var('id')]);
+		[$cur_sequence - 1, grv('id')]);
 
 	db_execute_prepared('UPDATE automation_templates_rules
 		SET sequence = ?
 		WHERE id = ?',
 		[$cur_sequence, $other_id]);
 
-	automation_resequence_rules(get_request_var('template_id'));
+	automation_resequence_rules(grv('template_id'));
 }
 
-function automation_template_graph_item_dnd() {
-	/* ================= Input validation ================= */
-	get_filter_request_var('id');
-	/* ================= Input validation ================= */
+function automation_template_graph_item_dnd() : void {
+	// ================= Input validation =================
+	gfrv('id');
+	// ================= Input validation =================
 
-	if (isset_request_var('graph_rules') && is_array(get_nfilter_request_var('graph_rules'))) {
-		$aids        = get_nfilter_request_var('graph_rules');
+	if (isrv('graph_rules') && is_array(gnrv('graph_rules'))) {
+		$aids        = gnrv('graph_rules');
 		$sequence    = 1;
-		$template_id = get_request_var('id');
+		$template_id = grv('id');
 
 		foreach ($aids as $id) {
 			$id = str_replace('gr', '', $id);
@@ -438,20 +438,20 @@ function automation_template_graph_item_dnd() {
 		}
 	}
 
-	header('Location: automation_templates.php?action=edit&id=' . get_request_var('id'));
+	header('Location: automation_templates.php?action=edit&id=' . grv('id'));
 
 	exit;
 }
 
-function automation_template_tree_item_dnd() {
-	/* ================= Input validation ================= */
-	get_filter_request_var('id');
-	/* ================= Input validation ================= */
+function automation_template_tree_item_dnd() : void {
+	// ================= Input validation =================
+	gfrv('id');
+	// ================= Input validation =================
 
-	if (isset_request_var('template_ids') && is_array(get_nfilter_request_var('template_ids'))) {
-		$aids        = get_nfilter_request_var('template_ids');
+	if (isrv('template_ids') && is_array(gnrv('template_ids'))) {
+		$aids        = gnrv('template_ids');
 		$sequence    = 1;
-		$template_id = get_request_var('id');
+		$template_id = grv('id');
 
 		foreach ($aids as $id) {
 			$id = str_replace('tr', '', $id);
@@ -469,15 +469,15 @@ function automation_template_tree_item_dnd() {
 		}
 	}
 
-	header('Location: automation_templates.php?action=edit&id=' . get_request_var('id'));
+	header('Location: automation_templates.php?action=edit&id=' . grv('id'));
 
 	exit;
 }
 
-function automation_template_tree_exit_on_change() {
-	$id          = get_filter_request_var('id');
-	$newvalue    = get_filter_request_var('current') == 0 ? 1 : 0;
-	$template_id = get_filter_request_var('template_id');
+function automation_template_tree_exit_on_change() : void {
+	$id          = gfrv('id');
+	$newvalue    = gfrv('current') == 0 ? 1 : 0;
+	$template_id = gfrv('template_id');
 
 	db_execute_prepared('UPDATE automation_templates_rules
 		SET exit_rules = ?
@@ -487,101 +487,101 @@ function automation_template_tree_exit_on_change() {
 	header('Location: automation_templates.php?action=edit&id=' . $template_id);
 }
 
-function automation_movedown() {
-	move_item_down('automation_templates', get_filter_request_var('id'));
+function automation_movedown() : void {
+	move_item_down('automation_templates', gfrv('id'));
 }
 
-function automation_moveup() {
-	move_item_up('automation_templates', get_filter_request_var('id'));
+function automation_moveup() : void {
+	move_item_up('automation_templates', gfrv('id'));
 }
 
-function automation_remove() {
-	db_execute_prepared('DELETE FROM automation_templates WHERE id = ?', [get_filter_request_var('id')]);
+function automation_remove() : void {
+	db_execute_prepared('DELETE FROM automation_templates WHERE id = ?', [gfrv('id')]);
 }
 
-function automation_add_graph_rule() {
-	/* ================= input validation ================= */
-	get_filter_request_var('template_id');
-	get_filter_request_var('rule_id');
-	/* ==================================================== */
+function automation_add_graph_rule() : void {
+	// ================= input validation =================
+	gfrv('template_id');
+	gfrv('rule_id');
+	// ====================================================
 
 	$save = [];
 
 	$save['id']          = 0;
 	$save['hash']        = get_hash_automation(0, 'automation_templates_rules');
-	$save['template_id'] = get_request_var('template_id');
+	$save['template_id'] = grv('template_id');
 	$save['rule_type']   = 1;
-	$save['rule_id']     = get_request_var('rule_id');
+	$save['rule_id']     = grv('rule_id');
 	$save['sequence']    = db_fetch_cell('SELECT MAX(sequence)+1 FROM automation_templates_rules WHERE rule_type = 1');
 	$save['exit_rules']  = 0;
 
 	sql_save($save, 'automation_templates_rules');
 
-	automation_resequence_rules(get_request_var('template_id'));
+	automation_resequence_rules(grv('template_id'));
 
 	raise_message('rule_save', __('The Graph Rule has been added to the Device Rule'), MESSAGE_LEVEL_INFO);
 }
 
-function automation_add_threshold_template() {
-	/* ================= input validation ================= */
-	get_filter_request_var('template_id');
-	get_filter_request_var('thold_template_id');
-	/* ==================================================== */
+function automation_add_threshold_template() : void {
+	// ================= input validation =================
+	gfrv('template_id');
+	gfrv('thold_template_id');
+	// ====================================================
 
 	$host_template_id = db_fetch_cell_prepared('SELECT host_template
 		FROM automation_templates
 		WHERE id = ?',
-		[get_request_var('template_id')]);
+		[grv('template_id')]);
 
 	$save = [];
 
 	$save['id']                = 0;
 	$save['host_template_id']  = $host_template_id;
-	$save['thold_template_id'] = get_request_var('thold_template_id');
+	$save['thold_template_id'] = grv('thold_template_id');
 
 	sql_save($save, 'plugin_thold_host_template');
 
 	raise_message('rule_save', __('The Threshold Template has been added to the Device Rule'), MESSAGE_LEVEL_INFO);
 }
 
-function automation_add_tree_rule() {
-	/* ================= input validation ================= */
-	get_filter_request_var('template_id');
-	get_filter_request_var('rule_id');
-	/* ==================================================== */
+function automation_add_tree_rule() : void {
+	// ================= input validation =================
+	gfrv('template_id');
+	gfrv('rule_id');
+	// ====================================================
 
 	$save = [];
 
 	$save['id']          = 0;
 	$save['hash']        = get_hash_automation(0, 'automation_templates_rules');
-	$save['template_id'] = get_request_var('template_id');
+	$save['template_id'] = grv('template_id');
 	$save['rule_type']   = 2;
-	$save['rule_id']     = get_request_var('rule_id');
+	$save['rule_id']     = grv('rule_id');
 	$save['sequence']    = db_fetch_cell('SELECT MAX(sequence)+1 FROM automation_templates_rules WHERE rule_type = 2');
 	$save['exit_rules']  = 0;
 
 	sql_save($save, 'automation_templates_rules');
 
-	automation_resequence_rules(get_request_var('template_id'));
+	automation_resequence_rules(grv('template_id'));
 
 	raise_message('rule_save', __('The Tree Rule has been added to the Device Rule'), MESSAGE_LEVEL_INFO);
 }
 
-function form_actions() {
+function form_actions() : void {
 	global $actions;
 
-	/* ================= input validation ================= */
-	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-zA-Z0-9_]+)$/']]);
-	/* ==================================================== */
+	// ================= input validation =================
+	gfrv('drp_action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-zA-Z0-9_]+)$/']]);
+	// ====================================================
 
-	/* if we are to save this form, instead of display it */
-	if (isset_request_var('selected_items')) {
-		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
+	// if we are to save this form, instead of display it
+	if (isrv('selected_items')) {
+		$selected_items = sanitize_unserialize_selected_items(gnrv('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
+			if (gnrv('drp_action') == '1') { // delete
 				db_execute('DELETE FROM automation_templates WHERE ' . array_to_sql_or($selected_items, 'id'));
-			} elseif (get_nfilter_request_var('drp_action') == '2') { /* export */
+			} elseif (gnrv('drp_action') == '2') { // export
 				top_header();
 
 				print '<script text="text/javascript">
@@ -595,7 +595,7 @@ function form_actions() {
 
 					$(function() {
 						//debugger;
-						DownloadStart(\'automation_templates.php?action=export&selected_items=' . get_nfilter_request_var('selected_items') . '\');
+						DownloadStart(\'automation_templates.php?action=export&selected_items=' . gnrv('selected_items') . '\');
 					});
 				</script>
 				<iframe id="download_iframe" style="display:none;"></iframe>';
@@ -615,11 +615,11 @@ function form_actions() {
 
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-				/* ================= input validation ================= */
+				// ================= input validation =================
 				input_validate_input_number($matches[1], 'chk[1]');
-				/* ==================================================== */
+				// ====================================================
 
-				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT ht.name FROM automation_templates AS at INNER JOIN host_template AS ht ON ht.id=at.host_template WHERE at.id = ?', [$matches[1]])) . '</li>';
+				$ilist .= '<li>' . htmle(db_fetch_cell_prepared('SELECT ht.name FROM automation_templates AS at INNER JOIN host_template AS ht ON ht.id=at.host_template WHERE at.id = ?', [$matches[1]])) . '</li>';
 
 				$iarray[] = $matches[1];
 			}
@@ -653,19 +653,19 @@ function form_actions() {
 	}
 }
 
-function form_save() {
-	if (isset_request_var('save_component_template')) {
+function form_save() : void {
+	if (isrv('save_component_template')) {
 		$redirect_back = false;
 
-		$save['id']                   = get_nfilter_request_var('id');
-		$save['hash']                 = get_hash_automation(get_request_var('id'), 'automation_templates');
-		$save['host_template']        = form_input_validate(get_nfilter_request_var('host_template'), 'host_template', '', false, 3);
-		$save['availability_method']  = form_input_validate(get_nfilter_request_var('availability_method'), 'availability_method', '', false, 3);
-		$save['sysDescr']             = get_nfilter_request_var('sysDescr');
-		$save['sysName']              = get_nfilter_request_var('sysName');
-		$save['sysOid']               = get_nfilter_request_var('sysOid');
-		$save['description_pattern']  = get_nfilter_request_var('description_pattern');
-		$save['populate_location']    = isset_request_var('populate_location') ? 'on' : '';
+		$save['id']                   = gnrv('id');
+		$save['hash']                 = get_hash_automation(grv('id'), 'automation_templates');
+		$save['host_template']        = form_input_validate(gnrv('host_template'), 'host_template', '', false, 3);
+		$save['availability_method']  = form_input_validate(gnrv('availability_method'), 'availability_method', '', false, 3);
+		$save['sysDescr']             = gnrv('sysDescr');
+		$save['sysName']              = gnrv('sysName');
+		$save['sysOid']               = gnrv('sysOid');
+		$save['description_pattern']  = gnrv('description_pattern');
+		$save['populate_location']    = isrv('populate_location') ? 'on' : '';
 
 		if (function_exists('filter_var')) {
 			$save['sysDescr'] = filter_var($save['sysDescr'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -683,29 +683,29 @@ function form_save() {
 			}
 		}
 
-		if (is_error_message() || isempty_request_var('id')) {
-			header('Location: automation_templates.php?id=' . (empty($template_id) ? get_nfilter_request_var('id') : $template_id));
+		if (is_error_message() || ierv('id')) {
+			header('Location: automation_templates.php?id=' . (empty($template_id) ? gnrv('id') : $template_id));
 		} else {
 			header('Location: automation_templates.php');
 		}
 	}
 }
 
-function automation_remove_ttr_confirm() {
-	/* ================= input validation ================= */
-	get_filter_request_var('id');
-	get_filter_request_var('rule_id');
-	get_filter_request_var('template_id');
-	/* ==================================================== */
+function automation_remove_ttr_confirm() : void {
+	// ================= input validation =================
+	gfrv('id');
+	gfrv('rule_id');
+	gfrv('template_id');
+	// ====================================================
 
-	form_start('automation_templates.php?action=edit&id=' . get_request_var('id'));
+	form_start('automation_templates.php?action=edit&id=' . grv('id'));
 
 	html_start_box('', '100%', false, 3, 'center', '');
 
 	$rule = db_fetch_row_prepared('SELECT *
 		FROM plugin_thold_host_template
 		WHERE id = ?',
-		[get_request_var('rule_id')]);
+		[grv('rule_id')]);
 
 	if (cacti_sizeof($rule)) {
 		$name = db_fetch_cell_prepared('SELECT tt.name
@@ -713,7 +713,7 @@ function automation_remove_ttr_confirm() {
 			INNER JOIN plugin_thold_host_template AS tht
 			ON tt.id = tht.thold_template_id
 			WHERE tht.id = ?',
-			[get_request_var('rule_id')]);
+			[grv('rule_id')]);
 	} else {
 		$name = __('Unknown');
 	}
@@ -722,7 +722,7 @@ function automation_remove_ttr_confirm() {
 	<tr>
 		<td class='topBoxAlt'>
 			<p><?php print __('Click \'Continue\' to Delete the following Threshold Template will be disassociated from the Device Rule.'); ?></p>
-			<p><?php print __("Threshold Template Name: '%s'", html_escape($name)); ?>
+			<p><?php print __("Threshold Template Name: '%s'", htmle($name)); ?>
 			<br>
 		</td>
 	</tr>
@@ -747,9 +747,9 @@ function automation_remove_ttr_confirm() {
 
 		var data = {
 			__csrf_magic: csrfMagicToken,
-			id: <?php print get_request_var('id'); ?>,
-			template_id: <?php print get_request_var('template_id'); ?>,
-			rule_id: <?php print get_request_var('rule_id'); ?>
+			id: <?php print grv('id'); ?>,
+			template_id: <?php print grv('template_id'); ?>,
+			rule_id: <?php print grv('rule_id'); ?>
 		}
 
 		$('#cdialog').dialog('close');
@@ -760,20 +760,20 @@ function automation_remove_ttr_confirm() {
 	<?php
 }
 
-function automation_remove_agr_confirm() {
-	/* ================= input validation ================= */
-	get_filter_request_var('rule_id');
-	get_filter_request_var('template_id');
-	/* ==================================================== */
+function automation_remove_agr_confirm() : void {
+	// ================= input validation =================
+	gfrv('rule_id');
+	gfrv('template_id');
+	// ====================================================
 
-	form_start('automation_templates.php?action=edit&id=' . get_request_var('template_id'));
+	form_start('automation_templates.php?action=edit&id=' . grv('template_id'));
 
 	html_start_box('', '100%', false, 3, 'center', '');
 
 	$rule = db_fetch_row_prepared('SELECT *
 		FROM automation_templates_rules
 		WHERE id = ?',
-		[get_request_var('rule_id')]);
+		[grv('rule_id')]);
 
 	if (cacti_sizeof($rule)) {
 		$name = db_fetch_cell_prepared('SELECT name
@@ -788,7 +788,7 @@ function automation_remove_agr_confirm() {
 	<tr>
 		<td class='topBoxAlt'>
 			<p><?php print __('Click \'Continue\' to Delete the following Graph Rule will be disassociated from the Device Rule.'); ?></p>
-			<p><?php print __("Graph Rule Name: '%s'", html_escape($name)); ?>
+			<p><?php print __("Graph Rule Name: '%s'", htmle($name)); ?>
 			<br>
 		</td>
 	</tr>
@@ -813,8 +813,8 @@ function automation_remove_agr_confirm() {
 
 		var data = {
 			__csrf_magic: csrfMagicToken,
-			template_id: <?php print get_request_var('template_id'); ?>,
-			rule_id: <?php print get_request_var('rule_id'); ?>
+			template_id: <?php print grv('template_id'); ?>,
+			rule_id: <?php print grv('rule_id'); ?>
 		}
 
 		$('#cdialog').dialog('close');
@@ -825,24 +825,24 @@ function automation_remove_agr_confirm() {
 	<?php
 }
 
-function automation_remove_agr() {
-	/* ================= input validation ================= */
-	get_filter_request_var('rule_id');
-	get_filter_request_var('template_id');
-	/* ==================================================== */
+function automation_remove_agr() : void {
+	// ================= input validation =================
+	gfrv('rule_id');
+	gfrv('template_id');
+	// ====================================================
 
 	db_execute_prepared('DELETE FROM automation_templates_rules
 		WHERE id = ?
 		AND rule_type = 1
 		AND template_id = ?',
-		[get_request_var('rule_id'), get_request_var('template_id')]);
+		[grv('rule_id'), grv('template_id')]);
 
-	automation_resequence_rules(get_request_var('template_id'));
+	automation_resequence_rules(grv('template_id'));
 
 	raise_message('rule_remove', __('The Graph Rule has been removed from the Device Rule'), MESSAGE_LEVEL_INFO);
 }
 
-function automation_resequence_rules($template_id) {
+function automation_resequence_rules(int $template_id) : void {
 	$gr_seq = db_fetch_assoc_prepared('SELECT *
 		FROM automation_templates_rules
 		WHERE template_id = ?
@@ -884,20 +884,20 @@ function automation_resequence_rules($template_id) {
 	}
 }
 
-function automation_remove_atr_confirm() {
-	/* ================= input validation ================= */
-	get_filter_request_var('rule_id');
-	get_filter_request_var('template_id');
-	/* ==================================================== */
+function automation_remove_atr_confirm() : void {
+	// ================= input validation =================
+	gfrv('rule_id');
+	gfrv('template_id');
+	// ====================================================
 
-	form_start('automation_templates.php?action=edit&id=' . get_request_var('template_id'));
+	form_start('automation_templates.php?action=edit&id=' . grv('template_id'));
 
 	html_start_box('', '100%', false, 3, 'center', '');
 
 	$rule = db_fetch_row_prepared('SELECT *
 		FROM automation_templates_rules
 		WHERE id = ?',
-		[get_request_var('rule_id')]);
+		[grv('rule_id')]);
 
 	if (cacti_sizeof($rule)) {
 		$name = db_fetch_cell_prepared('SELECT name
@@ -912,7 +912,7 @@ function automation_remove_atr_confirm() {
 	<tr>
 		<td class='topBoxAlt'>
 			<p><?php print __('Click \'Continue\' to Delete the following Tree Rule(s) will be disassociated from the Device Rule.'); ?></p>
-			<p><?php print __("Tree Rule Name: '%s'", html_escape($name)); ?>
+			<p><?php print __("Tree Rule Name: '%s'", htmle($name)); ?>
 			<br>
 		</td>
 	</tr>
@@ -937,8 +937,8 @@ function automation_remove_atr_confirm() {
 
 		var data = {
 			__csrf_magic: csrfMagicToken,
-			template_id: <?php print get_request_var('template_id'); ?>,
-			rule_id: <?php print get_request_var('rule_id'); ?>
+			template_id: <?php print grv('template_id'); ?>,
+			rule_id: <?php print grv('rule_id'); ?>
 		}
 
 		$('#cdialog').dialog('close');
@@ -949,38 +949,38 @@ function automation_remove_atr_confirm() {
 	<?php
 }
 
-function automation_remove_atr() {
-	/* ================= input validation ================= */
-	get_filter_request_var('rule_id');
-	get_filter_request_var('template_id');
-	/* ==================================================== */
+function automation_remove_atr() : void {
+	// ================= input validation =================
+	gfrv('rule_id');
+	gfrv('template_id');
+	// ====================================================
 
 	db_execute_prepared('DELETE FROM automation_templates_rules
 		WHERE id = ?
 		AND rule_type = 2
 		AND template_id = ?',
-		[get_request_var('rule_id'), get_request_var('template_id')]);
+		[grv('rule_id'), grv('template_id')]);
 
-	automation_resequence_rules(get_request_var('template_id'));
+	automation_resequence_rules(grv('template_id'));
 
 	raise_message('rule_remove', __('The Tree Rule has been removed from the Device Automation Rule'), MESSAGE_LEVEL_INFO);
 }
 
-function automation_remove_ttr() {
-	/* ================= input validation ================= */
-	get_filter_request_var('rule_id');
-	get_filter_request_var('template_id');
-	/* ==================================================== */
+function automation_remove_ttr() : void {
+	// ================= input validation =================
+	gfrv('rule_id');
+	gfrv('template_id');
+	// ====================================================
 
 	db_execute_prepared('DELETE FROM plugin_thold_host_template
 		WHERE id = ?
 		AND host_template_id = ?',
-		[get_request_var('rule_id'), get_request_var('template_id')]);
+		[grv('rule_id'), grv('template_id')]);
 
 	raise_message('rule_remove', __('The Threshold Template has been removed from the Device Automation Rule'), MESSAGE_LEVEL_INFO);
 }
 
-function automation_get_child_branches($tree_id, $id, $spaces, $headers) {
+function automation_get_child_branches(int $tree_id, int $id, string $spaces, array $headers) : array {
 	$items = db_fetch_assoc_prepared('SELECT id, title
 		FROM graph_tree_items
 		WHERE graph_tree_id = ?
@@ -1002,7 +1002,7 @@ function automation_get_child_branches($tree_id, $id, $spaces, $headers) {
 	return $headers;
 }
 
-function automation_get_tree_headers() {
+function automation_get_tree_headers() : array {
 	$headers = [];
 	$trees   = db_fetch_assoc('SELECT id, name FROM graph_tree ORDER BY name');
 
@@ -1017,12 +1017,12 @@ function automation_get_tree_headers() {
 	return $headers;
 }
 
-function template_edit() {
+function template_edit() : void {
 	global $availability_options;
 
-	/* ================= input validation ================= */
-	get_filter_request_var('id');
-	/* ==================================================== */
+	// ================= input validation =================
+	gfrv('id');
+	// ====================================================
 
 	$host_template_names = db_fetch_assoc('SELECT id, name FROM host_template');
 
@@ -1105,11 +1105,11 @@ function template_edit() {
 		]
 	];
 
-	if (!isempty_request_var('id')) {
+	if (!ierv('id')) {
 		$template = db_fetch_row_prepared('SELECT *
 			FROM automation_templates
 			WHERE id = ?',
-			[get_request_var('id')]);
+			[grv('id')]);
 
 		if (isset($template_names[$template['host_template']])) {
 			$header_label = __esc('Device Rules [edit: %s]', $template_names[$template['host_template']]);
@@ -1120,7 +1120,7 @@ function template_edit() {
 		$header_label = __('Device Rules [new]');
 		$template     = [];
 
-		set_request_var('id', 0);
+		srv('id', 0);
 	}
 
 	form_start('automation_templates.php', 'form_network');
@@ -1136,7 +1136,7 @@ function template_edit() {
 
 	html_end_box();
 
-	if (!isempty_request_var('id')) {
+	if (!ierv('id')) {
 		/**
 		 * Start Graph Rules here.
 		 */
@@ -1149,7 +1149,7 @@ function template_edit() {
 			AND atr.rule_type = 1
 			WHERE template_id = ?
 			ORDER BY sequence',
-			[get_request_var('id')]);
+			[grv('id')]);
 
 		$display_text = [
 			[
@@ -1166,7 +1166,7 @@ function template_edit() {
 			]
 		];
 
-		html_header($display_text, false);
+		html_header($display_text, 1);
 
 		$dnd = read_config_option('drag_and_drop') == 'on' ? true : false;
 
@@ -1185,19 +1185,19 @@ function template_edit() {
 
 				if (!$dnd) {
 					if ($i != cacti_sizeof($graph_rules) - 1) {
-						$action .= '<a class="pic ti ti-caret-down-filled moveArrow" href="' . html_escape('automation_templates.php?action=item_movedown&template_id=' . get_request_var('id') . '&id=' . $rule['id'] . '&rule_type=1') . '" title="' . __esc('Move Down') . '"></a>';
+						$action .= '<a class="pic ti ti-caret-down-filled moveArrow" href="' . htmle('automation_templates.php?action=item_movedown&template_id=' . grv('id') . '&id=' . $rule['id'] . '&rule_type=1') . '" title="' . __esc('Move Down') . '"></a>';
 					} else {
 						$action .= '<a href="#" class="moveArrowNone"></a>';
 					}
 
 					if ($i > 0) {
-						$action .= '<a class="pic ti ti-caret-up-filled moveArrow" href="' . html_escape('automation_templates.php?action=item_moveup&template_id=' . get_request_var('id') . '&id=' . $rule['id'] . '&rule_type=1') . '" title="' . __esc('Move Up') . '"></a>';
+						$action .= '<a class="pic ti ti-caret-up-filled moveArrow" href="' . htmle('automation_templates.php?action=item_moveup&template_id=' . grv('id') . '&id=' . $rule['id'] . '&rule_type=1') . '" title="' . __esc('Move Up') . '"></a>';
 					} else {
 						$action .= '<a href="#" class="moveArrowNone"></a>';
 					}
 				}
 
-				form_selectable_cell("$action<a class='delete deleteMarker ti ti-x' title='" . __esc('Delete') . "' href='" . html_escape('automation_templates.php?action=item_remove_agr_confirm&template_id=' . get_request_var('id') . '&rule_id=' . $rule['id']) . "'></a>", $id, '40', 'right');
+				form_selectable_cell("$action<a class='delete deleteMarker ti ti-x' title='" . __esc('Delete') . "' href='" . htmle('automation_templates.php?action=item_remove_agr_confirm&template_id=' . grv('id') . '&rule_id=' . $rule['id']) . "'></a>", $id, '40', 'right');
 
 				form_end_row();
 
@@ -1225,7 +1225,7 @@ function template_edit() {
 				AND template_id = ?
 			)
 			ORDER BY ar.name',
-			[get_request_var('id')]);
+			[grv('id')]);
 
 		$button_id     = 'add_agr';
 		$button_label  = __esc('Add');
@@ -1247,7 +1247,7 @@ function template_edit() {
 			AND atr.rule_type = 2
 			WHERE template_id = ?
 			ORDER BY sequence',
-			[get_request_var('id')]);
+			[grv('id')]);
 
 		$display_text = [
 			[
@@ -1268,7 +1268,7 @@ function template_edit() {
 			]
 		];
 
-		html_header($display_text, false);
+		html_header($display_text, 1);
 
 		$dnd = read_config_option('drag_and_drop') == 'on' ? true : false;
 
@@ -1280,9 +1280,9 @@ function template_edit() {
 
 				$exit_on_url = CACTI_PATH_URL . 'automation_templates.php' .
 					'?action=exitonchange' .
-					'&template_id='. get_request_var('id') .
-					'&id='         . $rule['id'] .
-					'&current='    . $rule['exit_rules'];
+					'&template_id=' . grv('id') .
+					'&id=' . $rule['id'] .
+					'&current=' . $rule['exit_rules'];
 
 				$exit_text   = $rule['exit_rules'] == 0 ? __('No') : __('Yes');
 
@@ -1296,27 +1296,31 @@ function template_edit() {
 
 				if (!$dnd) {
 					if ($i != cacti_sizeof($tree_rules) - 1) {
-						$action .= '<a class="pic ti ti-caret-down-filled moveArrow" href="' . html_escape('automation_templates.php?action=item_movedown&template_id=' . get_request_var('id') . '&id=' . $rule['id'] . '&rule_type=2') . '" title="' . __esc('Move Down') . '"></a>';
+						$action .= '<a class="pic ti ti-caret-down-filled moveArrow" href="' . htmle('automation_templates.php?action=item_movedown&template_id=' . grv('id') . '&id=' . $rule['id'] . '&rule_type=2') . '" title="' . __esc('Move Down') . '"></a>';
 					} else {
 						$action .= '<a href="#" class="moveArrowNone"></a>';
 					}
 
 					if ($i > 0) {
-						$action .= '<a class="pic ti ti-caret-up-filled moveArrow" href="' . html_escape('automation_templates.php?action=item_moveup&template_id=' . get_request_var('id') . '&id=' . $rule['id'] . '&rule_type=2') . '" title="' . __esc('Move Up') . '"></a>';
+						$action .= '<a class="pic ti ti-caret-up-filled moveArrow" href="' . htmle('automation_templates.php?action=item_moveup&template_id=' . grv('id') . '&id=' . $rule['id'] . '&rule_type=2') . '" title="' . __esc('Move Up') . '"></a>';
 					} else {
 						$action .= '<a href="#" class="moveArrowNone"></a>';
 					}
 				}
 
-				form_selectable_cell("$action<a class='delete deleteMarker ti ti-x' title='" . __esc('Delete') . "' href='" . html_escape('automation_templates.php?action=item_remove_atr_confirm&template_id=' . get_request_var('id') . '&rule_id=' . $rule['id']) . "'></a>", $id, '40', 'right');
+				form_selectable_cell("$action<a class='delete deleteMarker ti ti-x' title='" . __esc('Delete') . "' href='" . htmle('automation_templates.php?action=item_remove_atr_confirm&template_id=' . grv('id') . '&rule_id=' . $rule['id']) . "'></a>", $id, '40', 'right');
 
 				form_end_row();
 
 				$i++;
 			}
 		} else {
-			print '<tr class="tableRow odd"><td colspan="3"><em>' . __('No Associated Tree Rules') . '</em></td></tr>';
+			print '<tr class="tableRow odd"><td colspan="4"><em>' . __('No Associated Tree Rules') . '</em></td></tr>';
 		}
+
+		html_end_box();
+
+		html_start_box('', '100%', false, 3, 'center', '');
 
 		$field_label  = __('Add Tree Rule');
 		$field_name   = 'tree_rule';
@@ -1332,7 +1336,7 @@ function template_edit() {
 				AND template_id = ?
 			)
 			ORDER BY ar.name',
-			[get_request_var('id')]);
+			[grv('id')]);
 
 		$button_id     = 'add_atr';
 		$button_label  = __esc('Add');
@@ -1367,7 +1371,7 @@ function template_edit() {
 				]
 			];
 
-			html_header($display_text, false);
+			html_header($display_text, 1);
 
 			$action = '';
 
@@ -1379,7 +1383,7 @@ function template_edit() {
 
 					form_selectable_ecell($rule['name'], $id);
 
-					form_selectable_cell("$action<a class='delete deleteMarker ti ti-x' title='" . __esc('Delete') . "' href='" . html_escape('automation_templates.php?action=item_remove_ttr_confirm&id=' . get_request_var('id') . '&template_id=' . $template['host_template'] . '&rule_id=' . $rule['rule_id']) . "'></a>", $id, '40', 'right');
+					form_selectable_cell("$action<a class='delete deleteMarker ti ti-x' title='" . __esc('Delete') . "' href='" . htmle('automation_templates.php?action=item_remove_ttr_confirm&id=' . grv('id') . '&template_id=' . $template['host_template'] . '&rule_id=' . $rule['rule_id']) . "'></a>", $id, '40', 'right');
 
 					form_end_row();
 				}
@@ -1390,7 +1394,7 @@ function template_edit() {
 			$host_template_id = db_fetch_cell_prepared('SELECT host_template
 				FROM automation_templates
 				WHERE id = ?',
-				[get_request_var('id')]);
+				[grv('id')]);
 
 			html_end_box();
 
@@ -1531,7 +1535,7 @@ function template_edit() {
 	<?php
 }
 
-function create_add_form_dropdown($field_label, $field_name, $field_array, $button_id, $button_label, $button_title) {
+function create_add_form_dropdown(string $field_label, string $field_name, array $field_array, string $button_id, string $button_label, string $button_title) : void {
 	?>
 	<tr class='odd'>
 		<td colspan='2'>
@@ -1553,30 +1557,30 @@ function create_add_form_dropdown($field_label, $field_name, $field_array, $butt
 	<?php
 }
 
-function template() {
+function template() : void {
 	global $actions, $item_rows, $availability_options;
 
 	automation_update_hashes();
 
-	/* create the page filter */
+	// create the page filter
 	$pageFilter = new CactiTableFilter(__('Device Rules'), 'automation_templates.php', 'snmp_at', 'sess_autot', 'automation_templates.php?action=edit');
 
 	$pageFilter->rows_label = __('Templates');
 	$pageFilter->has_import = true;
 	$pageFilter->render();
 
-	if (get_request_var('rows') == '-1') {
+	if (grv('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
 	} else {
-		$rows = get_request_var('rows');
+		$rows = grv('rows');
 	}
 
-	/* form the 'where' clause for our main sql query */
-	if (get_request_var('filter') != '') {
-		$sql_where = 'WHERE (name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR ' .
-			'sysName LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR ' .
-			'sysDescr LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR ' .
-			'sysOID LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
+	// form the 'where' clause for our main sql query
+	if (grv('filter') != '') {
+		$sql_where = 'WHERE (name LIKE ' . db_qstr('%' . grv('filter') . '%') . ' OR ' .
+			'sysName LIKE ' . db_qstr('%' . grv('filter') . '%') . ' OR ' .
+			'sysDescr LIKE ' . db_qstr('%' . grv('filter') . '%') . ' OR ' .
+			'sysOID LIKE ' . db_qstr('%' . grv('filter') . '%') . ')';
 	} else {
 		$sql_where = '';
 	}
@@ -1593,9 +1597,9 @@ function template() {
 		ON ht.id=at.host_template
 		$sql_where
 		ORDER BY sequence " .
-		' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows);
+		' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows);
 
-	$nav = html_nav_bar('automation_templates.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Templates'), 'page', 'main');
+	$nav = html_nav_bar('automation_templates.php', MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 7, __('Templates'), 'page', 'main');
 
 	form_start('automation_templates.php', 'chk');
 
@@ -1646,23 +1650,23 @@ function template() {
 
 			form_alternate_row('line' . $dt['id'], true);
 
-			form_selectable_cell(filter_value($name, get_request_var('filter'), 'automation_templates.php?action=edit&id=' . $dt['id']), $dt['id']);
+			form_selectable_cell(filter_value($name, grv('filter'), 'automation_templates.php?action=edit&id=' . $dt['id']), $dt['id']);
 			form_selectable_cell($availability_options[$dt['availability_method']], $dt['id']);
-			form_selectable_cell(filter_value($dt['sysDescr'], get_request_var('filter')), $dt['id']);
-			form_selectable_cell(filter_value($dt['sysName'], get_request_var('filter')), $dt['id']);
-			form_selectable_cell(filter_value($dt['sysOid'], get_request_var('filter')), $dt['id']);
+			form_selectable_cell(filter_value($dt['sysDescr'], grv('filter')), $dt['id']);
+			form_selectable_cell(filter_value($dt['sysName'], grv('filter')), $dt['id']);
+			form_selectable_cell(filter_value($dt['sysOid'], grv('filter')), $dt['id']);
 
 			if (read_config_option('drag_and_drop') == '') {
 				$add_text = '';
 
 				if ($i < $total_items && $total_items > 1) {
-					$add_text .= '<a class="pic ti ti-caret-down-filled moveArrow" href="' . html_escape('automation_templates.php?action=movedown&id=' . $dt['id']) . '" title="' . __esc('Move Down') . '"></a>';
+					$add_text .= '<a class="pic ti ti-caret-down-filled moveArrow" href="' . htmle('automation_templates.php?action=movedown&id=' . $dt['id']) . '" title="' . __esc('Move Down') . '"></a>';
 				} else {
 					$add_text .= '<span class="moveArrowNone"></span>';
 				}
 
 				if ($i > 1 && $i <= $total_items) {
-					$add_text .= '<a class="pic ti ti-caret-up-filled moveArrow" href="' . html_escape('automation_templates.php?action=moveup&id=' . $dt['id']) . '" title="' . __esc('Move Up') . '"></a>';
+					$add_text .= '<a class="pic ti ti-caret-up-filled moveArrow" href="' . htmle('automation_templates.php?action=moveup&id=' . $dt['id']) . '" title="' . __esc('Move Up') . '"></a>';
 				} else {
 					$add_text .= '<span class="moveArrowNone"></span>';
 				}
@@ -1686,7 +1690,7 @@ function template() {
 		print $nav;
 	}
 
-	/* draw the dropdown containing a list of available actions for this form */
+	// draw the dropdown containing a list of available actions for this form
 	draw_actions_dropdown($actions);
 
 	form_end();

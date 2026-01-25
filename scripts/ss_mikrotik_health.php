@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2025 The Cacti Group                                 |
+ | Copyright (C) 2004-2022 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ | Cacti: The Complete RRDTool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -22,4 +22,24 @@
  +-------------------------------------------------------------------------+
 */
 
-header("Location:../index.php");
+// display no errors
+error_reporting(0);
+
+if (!isset($called_by_script_server)) {
+	include(__DIR__ . '/../include/cli_check.php');
+	array_shift($_SERVER['argv']);
+	print call_user_func_array('ss_mikrotik_health', $_SERVER['argv']);
+}
+
+function ss_mikrotik_health($host_id = '', $column = 'no') {
+	$value = db_fetch_cell_prepared("SELECT $column
+		FROM plugin_mikrotik_system_health
+		WHERE host_id = ?",
+		[$host_id]);
+
+	if ($value == '') {
+		$value = 'U';
+	}
+
+	return $value;
+}

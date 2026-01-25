@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_1_1_36() {
+function upgrade_to_1_1_36() : void {
 	// Repair locales
 	$def_locale = repair_locale(read_config_option('i18n_default_language'));
 	set_config_option('i18n_default_language', $def_locale);

@@ -518,7 +518,7 @@ CREATE TABLE `automation_tree_rules` (
 -- Table structure for table `cdef`
 --
 
-CREATE TABLE cdef (
+CREATE TABLE `cdef` (
   `id` mediumint(8) unsigned NOT NULL auto_increment,
   `hash` varchar(32) NOT NULL default '',
   `system` mediumint(8) unsigned NOT NULL default '0',
@@ -545,7 +545,7 @@ INSERT INTO cdef VALUES (15,'068984b5ccdfd2048869efae5166f722',0,'Total All Data
 -- Table structure for table `cdef_items`
 --
 
-CREATE TABLE cdef_items (
+CREATE TABLE `cdef_items` (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
   cdef_id mediumint(8) unsigned NOT NULL default '0',
@@ -660,7 +660,7 @@ INSERT INTO `color_template_items` VALUES (44,4,92,16);
 -- Table structure for table `colors`
 --
 
-CREATE TABLE colors (
+CREATE TABLE `colors` (
   `id` mediumint(8) unsigned NOT NULL auto_increment,
   `name` varchar(40) default '',
   `hex` varchar(6) NOT NULL default '',
@@ -1116,7 +1116,7 @@ INSERT INTO colors VALUES (439,'Milk White','FEFCFF','on', 0, 0);
 -- Table structure for table `data_input`
 --
 
-CREATE TABLE data_input (
+CREATE TABLE `data_input` (
   `id` mediumint(8) unsigned NOT NULL auto_increment,
   `hash` varchar(32) NOT NULL default '',
   `name` varchar(200) NOT NULL default '',
@@ -1149,7 +1149,7 @@ INSERT INTO data_input VALUES (12,'332111d8b54ac8ce939af87a7eac0c06','Get Script
 -- Table structure for table `data_input_data`
 --
 
-CREATE TABLE data_input_data (
+CREATE TABLE `data_input_data` (
   data_input_field_id mediumint(8) unsigned NOT NULL default '0',
   data_template_data_id int(10) unsigned NOT NULL default '0',
   data_template_id int(10) unsigned NOT NULL default '0',
@@ -1224,7 +1224,7 @@ INSERT INTO `data_input_data` VALUES (3,30,0,0,0,'','');
 -- Table structure for table `data_input_fields`
 --
 
-CREATE TABLE data_input_fields (
+CREATE TABLE `data_input_fields` (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
   data_input_id mediumint(8) unsigned NOT NULL default '0',
@@ -1637,7 +1637,7 @@ CREATE TABLE `data_source_stats_yearly` (
 -- Table structure for table `data_template`
 --
 
-CREATE TABLE data_template (
+CREATE TABLE `data_template` (
   `id` mediumint(8) unsigned NOT NULL auto_increment,
   `hash` varchar(32) NOT NULL default '',
   `name` varchar(150) NOT NULL default '',
@@ -1656,7 +1656,7 @@ CREATE TABLE data_template (
 -- Table structure for table `data_template_data`
 --
 
-CREATE TABLE data_template_data (
+CREATE TABLE `data_template_data` (
   id int(10) unsigned NOT NULL auto_increment,
   local_data_template_data_id int(10) unsigned NOT NULL default '0',
   local_data_id int(10) unsigned NOT NULL default '0',
@@ -1687,7 +1687,7 @@ CREATE TABLE data_template_data (
 -- Table structure for table `data_template_rrd`
 --
 
-CREATE TABLE data_template_rrd (
+CREATE TABLE `data_template_rrd` (
   id int(10) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
   local_data_template_rrd_id int(10) unsigned NOT NULL default '0',
@@ -1715,7 +1715,7 @@ CREATE TABLE data_template_rrd (
 -- Dumping data for table `data_template_rrd`
 --
 
-CREATE TABLE external_links (
+CREATE TABLE `external_links` (
   id int(10) unsigned NOT NULL AUTO_INCREMENT,
   sortorder int(10) unsigned NOT NULL default '0',
   enabled char(2) default 'on',
@@ -1731,7 +1731,7 @@ CREATE TABLE external_links (
 -- Table structure for table `graph_local`
 --
 
-CREATE TABLE graph_local (
+CREATE TABLE `graph_local` (
   id int(10) unsigned NOT NULL auto_increment,
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
   host_id mediumint(8) unsigned NOT NULL default '0',
@@ -1754,7 +1754,7 @@ CREATE TABLE graph_local (
 -- Table structure for table `graph_template_input`
 --
 
-CREATE TABLE graph_template_input (
+CREATE TABLE `graph_template_input` (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
@@ -1772,7 +1772,7 @@ CREATE TABLE graph_template_input (
 -- Table structure for table `graph_template_input_defs`
 --
 
-CREATE TABLE graph_template_input_defs (
+CREATE TABLE `graph_template_input_defs` (
   graph_template_input_id int(10) unsigned NOT NULL default '0',
   graph_template_item_id int(10) unsigned NOT NULL default '0',
   PRIMARY KEY (graph_template_input_id,graph_template_item_id)
@@ -1786,7 +1786,7 @@ CREATE TABLE graph_template_input_defs (
 -- Table structure for table `graph_templates`
 --
 
-CREATE TABLE graph_templates (
+CREATE TABLE `graph_templates` (
   `id` mediumint(8) unsigned NOT NULL auto_increment,
   `hash` char(32) NOT NULL default '',
   `name` char(255) NOT NULL default '',
@@ -1809,7 +1809,7 @@ CREATE TABLE graph_templates (
 -- Table structure for table `graph_templates_gprint`
 --
 
-CREATE TABLE graph_templates_gprint (
+CREATE TABLE `graph_templates_gprint` (
   `id` mediumint(8) unsigned NOT NULL auto_increment,
   `hash` varchar(32) NOT NULL default '',
   `name` varchar(100) NOT NULL default '',
@@ -1832,7 +1832,7 @@ INSERT INTO graph_templates_gprint VALUES (4,'304a778405392f878a6db435afffc1e9',
 -- Table structure for table `graph_templates_graph`
 --
 
-CREATE TABLE graph_templates_graph (
+CREATE TABLE `graph_templates_graph` (
   id int(10) unsigned NOT NULL auto_increment,
   local_graph_template_graph_id int(10) unsigned NOT NULL default '0',
   local_graph_id int(10) unsigned NOT NULL default '0',
@@ -1916,7 +1916,7 @@ CREATE TABLE graph_templates_graph (
 -- Table structure for table `graph_templates_item`
 --
 
-CREATE TABLE graph_templates_item (
+CREATE TABLE `graph_templates_item` (
   id int(10) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
   local_graph_template_item_id int(10) unsigned NOT NULL default '0',
@@ -1963,7 +1963,7 @@ CREATE TABLE graph_templates_item (
 -- Table structure for table `graph_tree`
 --
 
-CREATE TABLE graph_tree (
+CREATE TABLE `graph_tree` (
   `id` smallint(5) unsigned NOT NULL auto_increment,
   `enabled` char(2) default 'on',
   `locked` tinyint(3) unsigned default '0',
@@ -1989,7 +1989,7 @@ INSERT INTO graph_tree VALUES (1,'on',0,'0000-00-00',1,'Default Tree',1,1,'0000-
 -- Table structure for table `graph_tree_items`
 --
 
-CREATE TABLE graph_tree_items (
+CREATE TABLE `graph_tree_items` (
   id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   parent bigint(20) unsigned default NULL,
   position int(10) unsigned default NULL,
@@ -2018,7 +2018,7 @@ CREATE TABLE graph_tree_items (
 -- Table structure for table `host`
 --
 
-CREATE TABLE host (
+CREATE TABLE `host` (
   id mediumint(8) unsigned NOT NULL auto_increment,
   poller_id int(10) unsigned NOT NULL default '1',
   site_id int(10) unsigned NOT NULL default '1',
@@ -2070,7 +2070,7 @@ CREATE TABLE host (
   cur_time decimal(10,5) default '0.00000',
   avg_time decimal(10,5) default '0.00000',
   polling_time DOUBLE default '0',
-  current_errors int(10) unsigned default '0',
+  current_errors int(10) unsigned NOT NULL default '0',
   total_polls int(10) unsigned default '0',
   failed_polls int(10) unsigned default '0',
   availability decimal(8,5) NOT NULL default '100.00000',
@@ -2112,7 +2112,7 @@ CREATE TABLE `host_errors` (
 -- Table structure for table `host_graph`
 --
 
-CREATE TABLE host_graph (
+CREATE TABLE `host_graph` (
   host_id mediumint(8) unsigned NOT NULL default '0',
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY (host_id,graph_template_id)
@@ -2126,7 +2126,7 @@ CREATE TABLE host_graph (
 -- Table structure for table `host_snmp_cache`
 --
 
-CREATE TABLE host_snmp_cache (
+CREATE TABLE `host_snmp_cache` (
   host_id mediumint(8) unsigned NOT NULL default '0',
   snmp_query_id mediumint(8) unsigned NOT NULL default '0',
   field_name varchar(50) NOT NULL default '',
@@ -2153,7 +2153,7 @@ CREATE TABLE host_snmp_cache (
 -- Table structure for table `host_snmp_query`
 --
 
-CREATE TABLE host_snmp_query (
+CREATE TABLE `host_snmp_query` (
   host_id mediumint(8) unsigned NOT NULL default '0',
   snmp_query_id mediumint(8) unsigned NOT NULL default '0',
   sort_field varchar(50) NOT NULL default '',
@@ -2172,7 +2172,7 @@ CREATE TABLE host_snmp_query (
 -- Table structure for table `host_value_cache`
 --
 
-CREATE TABLE host_value_cache (
+CREATE TABLE `host_value_cache` (
   host_id mediumint(8) unsigned NOT NULL default '0',
   dimension varchar(40) NOT NULL default '',
   value varchar(8192) NOT NULL default '',
@@ -2189,7 +2189,7 @@ CREATE TABLE host_value_cache (
 -- Table structure for table `host_template`
 --
 
-CREATE TABLE host_template (
+CREATE TABLE `host_template` (
   `id` mediumint(8) unsigned NOT NULL auto_increment,
   `hash` varchar(32) NOT NULL default '',
   `name` varchar(100) NOT NULL default '',
@@ -2214,7 +2214,7 @@ CREATE TABLE host_template (
 -- Table structure for table `host_template_archive`
 --
 
-CREATE TABLE host_template_archive (
+CREATE TABLE `host_template_archive` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `host_template_id` mediumint(8) unsigned NOT NULL default '0',
   `hash` varchar(32) NOT NULL default '',
@@ -2244,7 +2244,7 @@ CREATE TABLE host_template_archive (
 -- Table structure for table `host_template_graph`
 --
 
-CREATE TABLE host_template_graph (
+CREATE TABLE `host_template_graph` (
   host_template_id mediumint(8) unsigned NOT NULL default '0',
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY (host_template_id,graph_template_id)
@@ -2258,7 +2258,7 @@ CREATE TABLE host_template_graph (
 -- Table structure for table `host_template_snmp_query`
 --
 
-CREATE TABLE host_template_snmp_query (
+CREATE TABLE `host_template_snmp_query` (
   host_template_id mediumint(8) unsigned NOT NULL default '0',
   snmp_query_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY (host_template_id, snmp_query_id)
@@ -2470,7 +2470,7 @@ INSERT INTO poller (id,name,hostname) VALUES (1,'Main Poller', 'localhost');
 -- Table structure for table `poller_command`
 --
 
-CREATE TABLE poller_command (
+CREATE TABLE `poller_command` (
   poller_id smallint(5) unsigned NOT NULL default '1',
   time timestamp NOT NULL default '0000-00-00 00:00:00',
   action tinyint(3) unsigned NOT NULL default '0',
@@ -2496,7 +2496,7 @@ CREATE TABLE `poller_data_template_field_mappings` (
 -- Table structure for table `poller_item`
 --
 
-CREATE TABLE poller_item (
+CREATE TABLE `poller_item` (
   `local_data_id` int(10) unsigned NOT NULL default '0',
   `poller_id` int(10) unsigned NOT NULL default '1',
   `host_id` mediumint(8) unsigned NOT NULL default '0',
@@ -2538,7 +2538,7 @@ CREATE TABLE poller_item (
 -- Table structure for table `poller_output`
 --
 
-CREATE TABLE poller_output (
+CREATE TABLE `poller_output` (
   local_data_id int(10) unsigned NOT NULL default '0',
   rrd_name varchar(19) NOT NULL default '',
   time timestamp NOT NULL default '0000-00-00 00:00:00',
@@ -2586,7 +2586,7 @@ CREATE TABLE `poller_output_boost_processes` (
 -- Table structure for table `poller_output_realtime`
 --
 
-CREATE TABLE poller_output_realtime (
+CREATE TABLE `poller_output_realtime` (
   local_data_id int(10) unsigned NOT NULL default '0',
   rrd_name varchar(19) NOT NULL default '',
   `time` timestamp NOT NULL default '0000-00-00 00:00:00',
@@ -2601,7 +2601,7 @@ CREATE TABLE poller_output_realtime (
 -- Table structure for table `poller_reindex`
 --
 
-CREATE TABLE poller_reindex (
+CREATE TABLE `poller_reindex` (
   host_id mediumint(8) unsigned NOT NULL default '0',
   data_query_id mediumint(8) unsigned NOT NULL default '0',
   action tinyint(3) unsigned NOT NULL default '0',
@@ -2617,7 +2617,7 @@ CREATE TABLE poller_reindex (
 -- Table structure for table `poller_resource_cache`
 --
 
-CREATE TABLE poller_resource_cache (
+CREATE TABLE `poller_resource_cache` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `resource_type` varchar(20) default NULL,
   `md5sum` varchar(32) default NULL,
@@ -2633,7 +2633,7 @@ CREATE TABLE poller_resource_cache (
 -- Table structure for table `poller_time`
 --
 
-CREATE TABLE poller_time (
+CREATE TABLE `poller_time` (
   id bigint(20) unsigned NOT NULL auto_increment,
   pid int(10) unsigned NOT NULL default '0',
   poller_id int(10) unsigned NOT NULL default '1',
@@ -2647,7 +2647,7 @@ CREATE TABLE poller_time (
 -- Table structure for table `poller_time_stats`
 --
 
-CREATE TABLE poller_time_stats (
+CREATE TABLE `poller_time_stats` (
   id bigint(20) unsigned NOT NULL auto_increment,
   poller_id int(10) unsigned NOT NULL default '1',
   total_time double default NULL,
@@ -2799,7 +2799,7 @@ CREATE TABLE `reports_queued` (
 -- Table structure for table `settings`
 --
 
-CREATE TABLE settings (
+CREATE TABLE `settings` (
   name varchar(255) NOT NULL default '',
   value varchar(4096) NOT NULL default '',
   PRIMARY KEY (name)
@@ -2818,7 +2818,7 @@ INSERT INTO settings VALUES ('notify_admin', 'on');
 -- Table structure for table `settings_user`
 --
 
-CREATE TABLE settings_user (
+CREATE TABLE `settings_user` (
   user_id smallint(8) unsigned NOT NULL default '0',
   name varchar(255) NOT NULL default '',
   value varchar(4096) NOT NULL default '',
@@ -2833,7 +2833,7 @@ CREATE TABLE settings_user (
 -- Table structure for table `settings_user_group`
 --
 
-CREATE TABLE settings_user_group (
+CREATE TABLE `settings_user_group` (
   group_id smallint(8) unsigned NOT NULL default '0',
   name varchar(50) NOT NULL default '',
   value varchar(2048) NOT NULL default '',
@@ -2844,7 +2844,7 @@ CREATE TABLE settings_user_group (
 -- Table structure for table `settings_tree`
 --
 
-CREATE TABLE settings_tree (
+CREATE TABLE `settings_tree` (
   user_id mediumint(8) unsigned NOT NULL default '0',
   graph_tree_item_id int(10) unsigned NOT NULL default '0',
   status tinyint(4) NOT NULL default '0',
@@ -2860,7 +2860,7 @@ CREATE TABLE settings_tree (
 -- Table structure for table `snmp_query`
 --
 
-CREATE TABLE snmp_query (
+CREATE TABLE `snmp_query` (
   `id` mediumint(8) unsigned NOT NULL auto_increment,
   `hash` varchar(32) NOT NULL default '',
   `xml_path` varchar(255) NOT NULL default '',
@@ -2883,7 +2883,7 @@ CREATE TABLE snmp_query (
 -- Table structure for table `snmp_query_graph`
 --
 
-CREATE TABLE snmp_query_graph (
+CREATE TABLE `snmp_query_graph` (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
   snmp_query_id mediumint(8) unsigned NOT NULL default '0',
@@ -2902,7 +2902,7 @@ CREATE TABLE snmp_query_graph (
 -- Table structure for table `snmp_query_graph_rrd`
 --
 
-CREATE TABLE snmp_query_graph_rrd (
+CREATE TABLE `snmp_query_graph_rrd` (
   snmp_query_graph_id mediumint(8) unsigned NOT NULL default '0',
   data_template_id mediumint(8) unsigned NOT NULL default '0',
   data_template_rrd_id int(10) unsigned NOT NULL default '0',
@@ -2919,7 +2919,7 @@ CREATE TABLE snmp_query_graph_rrd (
 -- Table structure for table `snmp_query_graph_rrd_sv`
 --
 
-CREATE TABLE snmp_query_graph_rrd_sv (
+CREATE TABLE `snmp_query_graph_rrd_sv` (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
   snmp_query_graph_id mediumint(8) unsigned NOT NULL default '0',
@@ -2940,7 +2940,7 @@ CREATE TABLE snmp_query_graph_rrd_sv (
 -- Table structure for table `snmp_query_graph_sv`
 --
 
-CREATE TABLE snmp_query_graph_sv (
+CREATE TABLE `snmp_query_graph_sv` (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
   snmp_query_graph_id mediumint(8) unsigned NOT NULL default '0',
@@ -2959,7 +2959,7 @@ CREATE TABLE snmp_query_graph_sv (
 -- Table structure for table `user_auth`
 --
 
-CREATE TABLE user_auth (
+CREATE TABLE `user_auth` (
   `id` mediumint(8) unsigned NOT NULL auto_increment,
   `username` varchar(50) NOT NULL default '0',
   `password` varchar(256) NOT NULL default '',
@@ -3111,7 +3111,7 @@ CREATE TABLE `user_auth_group_realm` (
 -- Table structure for table `user_auth_perms`
 --
 
-CREATE TABLE user_auth_perms (
+CREATE TABLE `user_auth_perms` (
   user_id mediumint(8) unsigned NOT NULL default '0',
   item_id mediumint(8) unsigned NOT NULL default '0',
   type tinyint(3) unsigned NOT NULL default '0',
@@ -3128,7 +3128,7 @@ CREATE TABLE user_auth_perms (
 -- Table structure for table `user_auth_realm`
 --
 
-CREATE TABLE user_auth_realm (
+CREATE TABLE `user_auth_realm` (
   realm_id mediumint(8) unsigned NOT NULL default '0',
   user_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY (realm_id,user_id),
@@ -3175,7 +3175,7 @@ INSERT INTO user_auth_realm VALUES (1043,1);
 -- Table structure for table `user_auth_row_cache`
 --
 
-CREATE TABLE user_auth_row_cache (
+CREATE TABLE `user_auth_row_cache` (
   `user_id` mediumint(8) NOT NULL default '0',
   `class` varchar(20) NOT NULL default '',
   `hash` varchar(32) NOT NULL default '0',
@@ -3192,7 +3192,7 @@ CREATE TABLE user_auth_row_cache (
 -- Table structure for table `user_log`
 --
 
-CREATE TABLE user_log (
+CREATE TABLE `user_log` (
   `username` varchar(50) NOT NULL default '0',
   `user_id` mediumint(8) NOT NULL default '0',
   `time` timestamp NOT NULL default '0000-00-00 00:00:00',
@@ -3215,6 +3215,7 @@ CREATE TABLE `user_domains` (
   `domain_name` varchar(20) NOT NULL,
   `type` int(10) unsigned NOT NULL default '0',
   `enabled` char(2) NOT NULL default 'on',
+  `debug` char(2) NOT NULL default '',
   `defdomain` tinyint(3) unsigned NOT NULL default '0',
   `user_id` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY (`domain_id`)
@@ -3234,6 +3235,8 @@ CREATE TABLE `user_domains_ldap` (
   `port` int(10) unsigned NOT NULL,
   `port_ssl` int(10) unsigned NOT NULL,
   `proto_version` tinyint(3) unsigned NOT NULL,
+  `network_timeout` int unsigned NOT NULL default 2,
+  `bind_timeout` int unsigned NOT NULL default 2,
   `encryption` tinyint(3) unsigned NOT NULL,
   `tls_certificate` tinyint(3) unsigned NOT NULL default '3',
   `referrals` tinyint(3) unsigned NOT NULL,
@@ -3455,7 +3458,7 @@ CREATE TABLE `snmpagent_notifications_log` (
 -- Table structure for table `vdef`
 --
 
-CREATE TABLE vdef (
+CREATE TABLE `vdef` (
   `id` mediumint(8) unsigned NOT NULL auto_increment,
   `hash` varchar(32) NOT NULL default '',
   `name` varchar(255) NOT NULL default '',
@@ -3482,7 +3485,7 @@ INSERT INTO vdef VALUES(7, 'c80d12b0f030af3574da68b28826cd39', '95th Percentage:
 -- Table structure for table `vdef_items`
 --
 
-CREATE TABLE vdef_items (
+CREATE TABLE `vdef_items` (
   `id` mediumint(8) unsigned NOT NULL auto_increment,
   `hash` varchar(32) NOT NULL default '',
   `vdef_id` mediumint(8) unsigned NOT NULL default '0',
@@ -3517,7 +3520,7 @@ INSERT INTO vdef_items VALUES(15, 'e7ae90275bc1efada07c19ca3472d9db', 7, 3, 1, '
 -- Table structure for table `rrdcheck`
 --
 
-CREATE TABLE rrdcheck (
+CREATE TABLE `rrdcheck` (
   `local_data_id` mediumint(8) unsigned NOT NULL,
   `test_date` timestamp NOT NULL default '0000-00-00 00:00:00',
   `message` varchar(250) default ''
@@ -3527,7 +3530,7 @@ CREATE TABLE rrdcheck (
 -- Table structure for table `version`
 --
 
-CREATE TABLE version (
+CREATE TABLE `version` (
   cacti char(30) default '',
   PRIMARY KEY (cacti)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;

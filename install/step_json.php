@@ -22,18 +22,18 @@
  +-------------------------------------------------------------------------+
 */
 
-/* since we'll have additional headers, tell php when to flush them */
+// since we'll have additional headers, tell php when to flush them
 ob_start();
 
 // Prevent redirect to /install/
 define('IN_CACTI_INSTALL', 1);
 chdir(__DIR__ . '/../');
 
-/* set the json variable for request validation handling */
+// set the json variable for request validation handling
 include_once('lib/functions.php');
 include_once('lib/html_utility.php');
 
-set_request_var('json', true);
+srv('json', true);
 $auth_json = true;
 
 include_once('include/auth.php');
@@ -41,18 +41,18 @@ include_once('install/functions.php');
 include_once('lib/installer.php');
 include_once('lib/utility.php');
 
-set_request_var('json', true);
+srv('json', true);
 $auth_json = true;
 
 $debug = false;
 
 $initialData = [];
-/* ================= input validation ================= */
-get_nfilter_request_var('data', []);
+// ================= input validation =================
+gnrv('data', []);
 
-if (isset_request_var('data') && get_nfilter_request_var('data')) {
+if (isrv('data') && gnrv('data')) {
 	log_install_debug('json','Using supplied data');
-	$initialData = get_nfilter_request_var('data');
+	$initialData = gnrv('data');
 
 	if (!is_array($initialData)) {
 		$initialData = [$initialData];

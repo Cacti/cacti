@@ -28,12 +28,12 @@ require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');
 
-/* switch to main database for cli's */
-if ($config['poller_id'] > 1) {
+// switch to main database for cli's
+if (POLLER_ID > 1) {
 	db_switch_remote_to_main();
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -67,7 +67,7 @@ if (cacti_sizeof($parms)) {
 				exit(0);
 
 			default:
-				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 				display_help();
 
 				exit(1);
@@ -76,16 +76,16 @@ if (cacti_sizeof($parms)) {
 }
 
 if ($execute) {
-	print "NOTE: Repairing All Duplicated Templates\n";
+	print 'NOTE: Repairing All Duplicated Templates' . PHP_EOL;
 } else {
-	print "NOTE: Performing Check of Templates\n";
+	print 'NOTE: Performing Check of Templates' . PHP_EOL;
 }
 
-/* repair data templates first */
+// repair data templates first
 if ($execute) {
-	print "NOTE: Repairing Data Templates\n";
+	print 'NOTE: Repairing Data Templates' . PHP_EOL;
 } else {
-	print "NOTE: Performing Check of Data Templates\n";
+	print 'NOTE: Performing Check of Data Templates' . PHP_EOL;
 }
 
 $damaged_template_ids = db_fetch_assoc("SELECT DISTINCT data_template_id FROM data_template_rrd WHERE hash='' AND local_data_id=0");
@@ -93,13 +93,13 @@ $damaged_template_ids = db_fetch_assoc("SELECT DISTINCT data_template_id FROM da
 if (cacti_sizeof($damaged_template_ids)) {
 	foreach ($damaged_template_ids as $id) {
 		$template_name = db_fetch_cell('SELECT name FROM data_template WHERE id=' . $id['data_template_id']);
-		print "NOTE: Data Template '$template_name' is Damaged and can be repaired\n";
+		print "NOTE: Data Template '$template_name' is Damaged and can be repaired" . PHP_EOL;
 	}
 
 	$damaged_templates = db_fetch_assoc("SELECT * FROM data_template_rrd WHERE hash='' AND local_data_id=0");
 
 	if (cacti_sizeof($damaged_templates)) {
-		print "NOTE: -- Damaged Data Templates Objects Found is '" . cacti_sizeof($damaged_templates) . "'\n";
+		print "NOTE: -- Damaged Data Templates Objects Found is '" . cacti_sizeof($damaged_templates) . "'" . PHP_EOL;
 
 		if ($execute) {
 			foreach ($damaged_templates as $template) {
@@ -109,17 +109,17 @@ if (cacti_sizeof($damaged_template_ids)) {
 		}
 	}
 } else {
-	print "NOTE: No Damaged Data Templates Found\n";
+	print 'NOTE: No Damaged Data Templates Found' . PHP_EOL;
 }
 
-/* reset the array */
+// reset the array
 $damaged_templates = [];
 
-/* repair graph templates */
+// repair graph templates
 if ($execute) {
-	print "NOTE: Repairing Graph Templates\n";
+	print 'NOTE: Repairing Graph Templates' . PHP_EOL;
 } else {
-	print "NOTE: Performing Check of Graph Templates\n";
+	print 'NOTE: Performing Check of Graph Templates' . PHP_EOL;
 }
 
 $damaged_template_ids = db_fetch_assoc("SELECT DISTINCT graph_template_id FROM graph_template_input WHERE hash=''");
@@ -127,13 +127,13 @@ $damaged_template_ids = db_fetch_assoc("SELECT DISTINCT graph_template_id FROM g
 if (cacti_sizeof($damaged_template_ids)) {
 	foreach ($damaged_template_ids as $id) {
 		$template_name = db_fetch_cell('SELECT name FROM graph_templates WHERE id=' . $id['graph_template_id']);
-		print "NOTE: Graph Template '$template_name' is Damaged and can be repaired\n";
+		print "NOTE: Graph Template '$template_name' is Damaged and can be repaired" . PHP_EOL;
 	}
 
 	$damaged_templates = db_fetch_assoc("SELECT * FROM graph_template_input WHERE hash=''");
 
 	if (cacti_sizeof($damaged_templates)) {
-		print "NOTE: -- Damaged Graph Templates Objects Found is '" . cacti_sizeof($damaged_templates) . "'\n";
+		print "NOTE: -- Damaged Graph Templates Objects Found is '" . cacti_sizeof($damaged_templates) . "'" . PHP_EOL;
 
 		if ($execute) {
 			foreach ($damaged_templates as $template) {
@@ -143,22 +143,33 @@ if (cacti_sizeof($damaged_template_ids)) {
 		}
 	}
 } else {
-	print "NOTE: No Damaged Graph Templates Found\n";
+	print 'NOTE: No Damaged Graph Templates Found' . PHP_EOL;
 }
 
-/*  display_version - displays version information */
-function display_version() {
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
+function display_version() : void {
 	$version = get_cacti_cli_version();
-	print "Cacti Database Template Repair Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Database Template Repair Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-/* display_help - displays the usage of the function */
-function display_help() {
+/**
+ * display_help - displays the usage of the function
+ *
+ * @return void
+ */
+function display_help() : void {
 	display_version();
 
-	print "\nusage: repair_templates.php [--execute]\n\n";
-	print "A utility designed to repair any damaged Cacti Graph and Data Templates.  That lacked a hash.\n";
-	print "This utility should not need to be used in any modern Cacti install.\n\n";
-	print "Optional:\n";
-	print "    --execute  - Perform the repair.  Otherwise check for errors.\n";
+	print PHP_EOL;
+	print 'usage: repair_templates.php [--execute]' . PHP_EOL . PHP_EOL;
+
+	print 'A utility designed to repair any damaged Cacti Graph and Data Templates.  That lacked a hash.' . PHP_EOL;
+	print 'This utility should not need to be used in any modern Cacti install.' . PHP_EOL . PHP_EOL;
+
+	print 'Optional:' . PHP_EOL;
+	print '    --execute  - Perform the repair.  Otherwise check for errors.' . PHP_EOL . PHP_EOL;
 }

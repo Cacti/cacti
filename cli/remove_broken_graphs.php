@@ -27,12 +27,12 @@ require(__DIR__ . '/../include/cli_check.php');
 require_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
 require_once(CACTI_PATH_LIBRARY . '/api_graph.php');
 
-/* switch to main database for cli's */
-if ($config['poller_id'] > 1) {
+// switch to main database for cli's
+if (POLLER_ID > 1) {
 	db_switch_remote_to_main();
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -142,60 +142,82 @@ if (cacti_sizeof($entries)) {
 	} else {
 		print 'Broken Graph Report Removal' . PHP_EOL;
 	}
+
 	print '-------------------------------------------------------------------------------------' . PHP_EOL;
 
 	foreach ($entries as $e) {
 		if ($report) {
 			printf('Graph Template: %s, Contains \'%s\' broken Graphs' . PHP_EOL, $e['name'], $e['graphs']);
+
 			print 'Graphs:' . PHP_EOL;
 			print '-------------------------------------------------------------------------------------' . PHP_EOL;
 			print wordwrap($e['local_graph_ids'], $columns - 5, PHP_EOL) . PHP_EOL;
 			print '-------------------------------------------------------------------------------------' . PHP_EOL;
 		} else {
 			print '-------------------------------------------------------------------------------------' . PHP_EOL;
+
 			$local_graph_ids = explode(', ', $e['local_graph_ids']);
+
 			printf('Started removing \'%s\' broken Graphs for Graph Template %s' . PHP_EOL, $e['graphs'], $e['name']);
+
 			print '-------------------------------------------------------------------------------------' . PHP_EOL;
 
 			if (cacti_sizeof($local_graph_ids)) {
 				foreach ($local_graph_ids as $local_graph_id) {
+					$local_graph_id = intval($local_graph_id);
+
 					$title = get_graph_title_cache($local_graph_id);
+
 					printf('Removing Graph %s, "%s"' . PHP_EOL, $title, $local_graph_id);
+
 					$id                  = [];
 					$id[$local_graph_id] = $local_graph_id;
-					api_delete_graphs($id, '2');
+
+					api_delete_graphs($id, 2);
 				}
 			}
+
 			print '-------------------------------------------------------------------------------------' . PHP_EOL;
+
 			printf('Completed removing Graphs for Graph Template %s' . PHP_EOL, $e['name']);
 		}
 	}
 }
 
-/*  display_version - displays version information */
-function display_version() {
-	$version = get_cacti_cli_version();
-	print "Cacti Remove Broken Graphs Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
-}
-
-/*  display_help - displays the usage of the function */
-function display_help() {
-	display_version();
-
-	print PHP_EOL . 'usage: remove_broken_graphs.php [--report | --remove] [-d|--debug]' . PHP_EOL . PHP_EOL;
-	print 'A utility to remove broken graphs from Cacti.  A broken Graph is one that.' . PHP_EOL;
-	print 'lacks Data Sources.  This can happen from time to time when working with and modifying templates.' . PHP_EOL;
-	print 'It\'s important to periodically run this utility especially on larger systems.' . PHP_EOL . PHP_EOL;
-	print 'Optional:' . PHP_EOL;
-	print '--report  - Display the Graph Templates and Count of Broken Graphs' . PHP_EOL;
-	print '--remove  - Remove the Broken Graphs as Reported using the --report Option' . PHP_EOL;
-	print '--debug   - Display verbose output during execution' . PHP_EOL . PHP_EOL;
-}
-
-function debug($message) {
+function debug(string $message) : void {
 	global $debug;
 
 	if ($debug) {
 		print date('H:i:s') . ' DEBUG: ' . trim($message) . PHP_EOL;
 	}
+}
+
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
+function display_version() : void {
+	$version = get_cacti_cli_version();
+	print "Cacti Remove Broken Graphs Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+}
+
+/**
+ * display_help - displays the usage of the function
+ *
+ * @return void
+ */
+function display_help() : void {
+	display_version();
+
+	print PHP_EOL . 'usage: remove_broken_graphs.php [--report | --remove] [-d|--debug]' . PHP_EOL . PHP_EOL;
+
+	print 'A utility to remove broken graphs from Cacti.  A broken Graph is one that.' . PHP_EOL;
+	print 'lacks Data Sources.  This can happen from time to time when working with and modifying templates.' . PHP_EOL;
+	print 'It\'s important to periodically run this utility especially on larger systems.' . PHP_EOL . PHP_EOL;
+
+	print 'Optional:' . PHP_EOL;
+	print '--report  - Display the Graph Templates and Count of Broken Graphs' . PHP_EOL;
+	print '--remove  - Remove the Broken Graphs as Reported using the --report Option' . PHP_EOL;
+	print '--debug   - Display verbose output during execution' . PHP_EOL . PHP_EOL;
 }

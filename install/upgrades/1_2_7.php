@@ -22,6 +22,6 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_1_2_7() {
+function upgrade_to_1_2_7() : void {
 	db_install_add_key('data_input_data', 'index', 'data_template_data_id', ['data_template_data_id']);
 }

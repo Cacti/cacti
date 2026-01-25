@@ -60,7 +60,7 @@ if (!isset($called_by_script_server)) {
 	}
 }
 
-function ss_thold_time() {
+function ss_thold_time() : mixed {
 	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_thold"'));
 
 	$stats = '';
@@ -74,7 +74,7 @@ function ss_thold_time() {
 	return empty($stats) ? '0' : trim($stats);
 }
 
-function ss_thold_checks() {
+function ss_thold_checks() : mixed {
 	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_thold"'));
 
 	$stats = '';
@@ -88,7 +88,7 @@ function ss_thold_checks() {
 	return empty($stats) ? '0' : trim($stats);
 }
 
-function ss_thold_hstats() {
+function ss_thold_hstats() : mixed {
 	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_thold"'));
 
 	$stats = '';
@@ -104,7 +104,7 @@ function ss_thold_hstats() {
 	return empty($stats) ? 'TotalDevices:0 DownDevices:0' : trim($stats);
 }
 
-function ss_monitor_time() {
+function ss_monitor_time() : mixed {
 	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_monitor"'));
 
 	$stats = '';
@@ -118,7 +118,7 @@ function ss_monitor_time() {
 	return empty($stats) ? '0' : trim($stats);
 }
 
-function ss_monitor_stats() {
+function ss_monitor_stats() : mixed {
 	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_monitor"'));
 
 	$stats = '';
@@ -138,7 +138,7 @@ function ss_monitor_stats() {
 	return empty($stats) ? 'Reboots:0 DownDevices:0 Notifications:0 Purges:0' : trim($stats);
 }
 
-function ss_syslog_time() {
+function ss_syslog_time() : mixed {
 	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="syslog_stats"'));
 
 	$stats = '';
@@ -152,7 +152,7 @@ function ss_syslog_time() {
 	return empty($stats) ? '0' : trim($stats);
 }
 
-function ss_syslog_stats() {
+function ss_syslog_stats() : mixed {
 	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="syslog_stats"'));
 
 	$stats = '';
@@ -178,7 +178,7 @@ function ss_syslog_stats() {
 	return empty($stats) ? 'deletes:0 incoming:0 removes:0 xfers:0 alerts:0 alarms:0 reports:0' : trim($stats);
 }
 
-function ss_poller() {
+function ss_poller() : mixed {
 	$stats = db_fetch_cell('SELECT value
 		FROM settings
 		WHERE name="stats_poller"');
@@ -186,7 +186,7 @@ function ss_poller() {
 	return empty($stats) ? 'Time:0 Method:0 Processes:0 Threads:0 Hosts:0 HostsPerProcess:0 DataSources:0 RRDsProcessed:0 ErrorHosts:0 TotalErrors:0' : trim($stats);
 }
 
-function ss_webseer_counts() {
+function ss_webseer_counts() : mixed {
 	$stats = [];
 
 	if (db_table_exists('plugin_webseer_urls')) {
@@ -199,7 +199,7 @@ function ss_webseer_counts() {
 	return !cacti_sizeof($stats) ? 'triggered:0 successful:0 disabled:0' : 'triggered:' . $stats['triggered'] . ' successful:' . $stats['successful'] . ' disabled:' . $stats['disabled'];
 }
 
-function ss_webseer_stats() {
+function ss_webseer_stats() : mixed {
 	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_webseer"'));
 
 	$stats = '';
@@ -217,7 +217,7 @@ function ss_webseer_stats() {
 	return empty($stats) ? 'Time:0 Checks:0 Servers:0' : trim($stats);
 }
 
-function ss_poller_items() {
+function ss_poller_items() : mixed {
 	$poller_cache = db_fetch_assoc('SELECT action, COUNT(*) AS count
 		FROM poller_item
 		GROUP BY action');
@@ -231,13 +231,13 @@ function ss_poller_items() {
 	}
 
 	return trim(
-		'snmp:'          . $entries[0] . ' ' .
-		'script:'        . $entries[1] . ' ' .
+		'snmp:' . $entries[0] . ' ' .
+		'script:' . $entries[1] . ' ' .
 		'script_server:' . $entries[2]
 	);
 }
 
-function ss_recache() {
+function ss_recache() : mixed {
 	$stats = db_fetch_cell('SELECT value
 		FROM settings
 		WHERE name LIKE "stats_recache%"
@@ -246,7 +246,7 @@ function ss_recache() {
 	return empty($stats) ? 'RecacheTime:0 DevicesRecached:0' : trim($stats);
 }
 
-function ss_boost() {
+function ss_boost() : mixed {
 	$stats = db_fetch_cell('SELECT value
 		FROM settings
 		WHERE name = "stats_boost"');
@@ -254,7 +254,7 @@ function ss_boost() {
 	return empty($stats) ? 'Time:0 RRDUpdates:0' : trim($stats);
 }
 
-function ss_boost_mem() {
+function ss_boost_mem() : mixed {
 	$stats = db_fetch_cell('SELECT SUM(value)
 		FROM settings
 		WHERE name LIKE "boost_peak_memory%"');
@@ -262,7 +262,7 @@ function ss_boost_mem() {
 	return empty($stats) ? '0' : trim($stats);
 }
 
-function ss_boost_table() {
+function ss_boost_table() : mixed {
 	$stats = db_fetch_cell('SELECT DATA_LENGTH+INDEX_LENGTH AS tbl_len
 		FROM INFORMATION_SCHEMA.TABLES
 		WHERE TABLE_NAME = "poller_output_boost"
@@ -271,7 +271,7 @@ function ss_boost_table() {
 	return empty($stats) ? '0' : trim($stats);
 }
 
-function ss_boost_records() {
+function ss_boost_records() : mixed {
 	$stats = db_fetch_cell('SELECT TABLE_ROWS
 		FROM INFORMATION_SCHEMA.TABLES
 		WHERE TABLE_NAME = "poller_output_boost"
@@ -280,7 +280,7 @@ function ss_boost_records() {
 	return empty($stats) ? '0' : trim($stats);
 }
 
-function ss_boost_avg_size() {
+function ss_boost_avg_size() : mixed {
 	$stats = db_fetch_cell('SELECT AVG_ROW_LENGTH
 		FROM INFORMATION_SCHEMA.TABLES
 		WHERE TABLE_NAME = "poller_output_boost"
@@ -289,7 +289,7 @@ function ss_boost_avg_size() {
 	return empty($stats) ? '0' : trim($stats);
 }
 
-function ss_boost_timing() {
+function ss_boost_timing() : mixed {
 	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_detail_boost"'));
 
 	$stats = '';
@@ -313,7 +313,7 @@ function ss_boost_timing() {
 	return empty($stats) ? 'get_records:0 results_cycle:0 rrd_filename_and_template:0 rrd_lastupdate:0 rrdupdate:0 delete:0' : trim($stats);
 }
 
-function ss_export() {
+function ss_export() : mixed {
 	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_export"'));
 
 	$stats = '';

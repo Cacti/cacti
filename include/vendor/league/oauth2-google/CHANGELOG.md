@@ -1,5 +1,12 @@
 OAuth 2.0 Google Provider Changelog
 
+
+## 4.1.0 - 2025-12-15
+
+### Added
+
+- Added getEmailVerified(), isEmailTrustworthy() to user definition, #132 by @dt-thomas-durand
+
 ## 4.0.1 - 2022-03-17
 
 ### Changed

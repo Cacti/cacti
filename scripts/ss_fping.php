@@ -41,7 +41,7 @@ if (!isset($called_by_script_server)) {
 function ss_fping($hostname = '', $ping_sweeps = 6, $ping_type = 'ICMP', $port = 80) {
 	global $called_by_script_server;
 
-	/* record start time */
+	// record start time
 	$ss_fping_start = microtime(true);
 
 	$ping = new Net_Ping;
@@ -116,10 +116,10 @@ function ss_fping($hostname = '', $ping_sweeps = 6, $ping_type = 'ICMP', $port =
 
 		$i++;
 
-		/* get current time */
+		// get current time
 		$ss_fping_current = microtime(true);
 
-		/* if called from script server, end one second before a timeout occurs */
+		// if called from script server, end one second before a timeout occurs
 		if (isset($called_by_script_server) && ($ss_fping_current - $ss_fping_start + ($ping_timeout / 1000) + 1) > $script_timeout) {
 			$ping_sweeps = $i;
 
@@ -139,7 +139,7 @@ function ss_fping($hostname = '', $ping_sweeps = 6, $ping_type = 'ICMP', $port =
 		$loss = ($failed_results / $ping_sweeps) * 100;
 		$avg  = $total_time / ($ping_sweeps - $failed_results);
 
-		/* calculate standard deviation */
+		// calculate standard deviation
 		$predev = 0;
 
 		foreach ($time as $sample) {

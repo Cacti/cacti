@@ -27,7 +27,7 @@ require(__DIR__ . '/../include/cli_check.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -63,7 +63,7 @@ if (cacti_sizeof($parms)) {
 	}
 }
 
-/* issue warnings and start message if applicable */
+// issue warnings and start message if applicable
 print 'NOTE: Updating csrf_secret file with new information' . PHP_EOL;
 
 if (!file_exists(CACTI_CSRF_SECRET)) {
@@ -80,6 +80,7 @@ if (!file_exists(CACTI_CSRF_SECRET)) {
 $new_secret = csrf_generate_secret();
 
 if (csrf_writable(CACTI_CSRF_SECRET)) {
+	umask(0027);
 	$fh = fopen(CACTI_CSRF_SECRET, 'w');
 	fwrite($fh, '<?php $secret = "' . $new_secret . '";' . PHP_EOL);
 	fclose($fh);
@@ -92,14 +93,22 @@ if (csrf_writable(CACTI_CSRF_SECRET)) {
 	exit(1);
 }
 
-/*  display_version - displays version information */
-function display_version() {
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti CSRF File Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-/*	display_help - displays the usage of the function */
-function display_help() {
+/**
+ * display_help - displays the usage of the function
+ *
+ * @return void
+ */
+function display_help() : void {
 	display_version();
 
 	print PHP_EOL . 'usage: refresh_csrf.php' . PHP_EOL . PHP_EOL;

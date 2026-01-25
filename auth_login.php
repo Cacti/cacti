@@ -22,10 +22,10 @@
  +-------------------------------------------------------------------------+
 */
 
-/* include ldap support */
+// include ldap support
 require_once(__DIR__ . '/lib/ldap.php');
 
-/* set default action */
+// set default action
 set_default_action();
 
 /**
@@ -36,20 +36,20 @@ set_default_action();
  */
 $username = auth_get_username(); // Get the username from either basic auth or the login form
 
-/* initialize some variables */
+// initialize some variables
 $user          = [];                             // An array that will include all user details
 $user_enabled  = true;                                // A variable to let plugins know that the user is enabled
 $guest_user    = false;                               // Indicates the Guest account is being used
 $realm         = 0;                                   // The compensated realm used for template and user validation
-$frv_realm     = get_nfilter_request_var('realm', 0); // The dropdown value for realm
+$frv_realm     = gnrv('realm', 0); // The dropdown value for realm
 $auth_method   = read_config_option('auth_method');   // The authentication method for Cacti
 $error         = false;                               // Global variable, will be true if any errors occur
 $error_msg     = '';                                  // The errors message in case there was a login error
 
-/* global variables for exception handling */
+// global variables for exception handling
 global $error, $error_msg;
 
-if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
+if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 	if ($auth_method > AUTH_METHOD_BASIC && $frv_realm <= 1) {
 		// User picked 'local' from dropdown;
 		$auth_method = AUTH_METHOD_CACTI;
@@ -77,8 +77,6 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 			auth_display_custom_error_message($error_msg);
 
 			exit;
-
-			break;
 		case AUTH_METHOD_CACTI: // Local authentication
 			cacti_log("DEBUG: Local User '" . $username . "' to attempt login.", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
@@ -107,18 +105,16 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 			auth_display_custom_error_message($error_msg);
 
 			exit;
-
-			break;
 	}
 
-	/* Create user from template if available */
+	// Create user from template if available
 	if (!$error && !cacti_sizeof($user) && get_template_account($username) > 0 && $username != '') {
 		$user = auth_login_create_user_from_template($username, $realm);
 	}
 
-	/* Guest account checking - Not for builtin */
+	// Guest account checking - Not for builtin
 	if (!$error && !cacti_sizeof($user) && get_guest_account() > 0) {
-		/* Locate guest user record */
+		// Locate guest user record
 		$user = db_fetch_row_prepared('SELECT *
 			FROM user_auth
 			WHERE id = ?',
@@ -134,7 +130,7 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 
 			$guest_user = true;
 		} else {
-			/* error */
+			// error
 			$error     = true;
 			$error_msg = __('Access Denied!  Guest user id %s does not exist.  Please contact your Administrator.', read_config_option('guest_user'));
 
@@ -148,7 +144,7 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 		}
 	}
 
-	/* We have a valid user, do final checks, log their login attempt, and redirect as required */
+	// We have a valid user, do final checks, log their login attempt, and redirect as required
 	if (!$error && cacti_sizeof($user)) {
 		$client_addr = get_client_addr();
 
@@ -164,14 +160,14 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 			[$username, $user['id'], $client_addr]
 		);
 
-		/* check if the user account is enabled with the exception of guest users */
+		// check if the user account is enabled with the exception of guest users
 		$user_enabled = true;
 
 		if (!$guest_user && isset($user['enabled'])) {
 			$user_enabled = ($user['enabled'] == 'on' ? true : false);
 		}
 
-		/* check if the user is enabled */
+		// check if the user is enabled
 		if (!$user_enabled) {
 			$error     = true;
 			$error_msg = __('Access Denied!  User account disabled.');
@@ -184,7 +180,7 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 		}
 
 		if (!$error && !auth_user_has_access($user)) {
-			/* error */
+			// error
 			$error     = true;
 			$error_msg = __('You do not have access to any area of Cacti.  Contact your administrator.');
 
@@ -197,20 +193,20 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 			}
 		}
 
-		/* remember me support.  Not for guest of basic auth */
+		// remember me support.  Not for guest of basic auth
 		if ($auth_method != AUTH_METHOD_BASIC && $user['id'] !== get_guest_account()) {
-			if (!$error && isset_request_var('remember_me') && read_config_option('auth_cache_enabled') == 'on') {
+			if (!$error && isrv('remember_me') && read_config_option('auth_cache_enabled') == 'on') {
 				set_auth_cookie($user);
 			}
 		}
 
 		if (!$error) {
-			/* set the php session */
+			// set the php session
 			$_SESSION[SESS_USER_ID]     = $user['id'];
 			$_SESSION[SESS_USER_AGENT]  = $_SERVER['HTTP_USER_AGENT'];
 			$_SESSION[SESS_CLIENT_ADDR] = get_client_addr();
 
-			/* handle 'force change password' */
+			// handle 'force change password'
 			if ($user['must_change_password'] == 'on' && $auth_method == AUTH_METHOD_CACTI && $user['password_change'] == 'on') {
 				$_SESSION[SESS_CHANGE_PASSWORD] = true;
 			}
@@ -262,7 +258,7 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 				break;
 		}
 
-		/* BAD username/password builtin and LDAP */
+		// BAD username/password builtin and LDAP
 		db_execute_prepared('INSERT IGNORE INTO user_log
 			(username, user_id, result, ip, time)
 			VALUES (?, ?, 0, ?, NOW())',
@@ -289,7 +285,7 @@ html_auth_header(
 		'error_msg'    => $error_msg,
 		'username'     => $username,
 		'user_enabled' => $user_enabled,
-		'action'       => get_nfilter_request_var('action')
+		'action'       => gnrv('action')
 	]
 );
 ?>
@@ -298,7 +294,7 @@ html_auth_header(
 		<label for='login_username'><?php print __('Username'); ?></label>
 	</td>
 	<td>
-		<input type='text' class='ui-state-default ui-corner-all' id='login_username' name='login_username' size='15' maxlength='25' value='<?php print html_escape($username); ?>' placeholder='<?php print __esc('Username'); ?>'>
+		<input type='text' class='ui-state-default ui-corner-all' id='login_username' name='login_username' size='15' maxlength='25' value='<?php print htmle($username); ?>' placeholder='<?php print __esc('Username'); ?>'>
 	</td>
 </tr>
 <tr>
@@ -329,7 +325,7 @@ if (read_config_option('auth_method') == AUTH_METHOD_LDAP || read_config_option(
 				<?php
 						if (cacti_sizeof($realms)) {
 							foreach ($realms as $index => $realm) {
-								print "\t\t\t\t\t<option value='" . $index . "'" . ($realm['selected'] ? ' selected="selected"' : '') . '>' . html_escape($realm['name']) . "</option>\n";
+								print "\t\t\t\t\t<option value='" . $index . "'" . ($realm['selected'] ? ' selected="selected"' : '') . '>' . htmle($realm['name']) . "</option>\n";
 							}
 						}
 	?>
@@ -348,7 +344,7 @@ if (isset($_SERVER['HTTPS']) && isset($_SERVER['HTTP_HOST']) && isset($_SERVER['
 if (read_config_option('auth_cache_enabled') == 'on' && $is_https) { ?>
 	<tr>
 		<td colspan='2'>
-			<input style='vertical-align:-3px;' type='checkbox' id='remember_me' name='remember_me' <?php print(isset($_COOKIE['cacti_remembers']) || !isempty_request_var('remember_me') ? 'checked' : ''); ?>>
+			<input style='vertical-align:-3px;' type='checkbox' id='remember_me' name='remember_me' <?php print(isset($_COOKIE['cacti_remembers']) || !ierv('remember_me') ? 'checked' : ''); ?>>
 			<label for='remember_me'><?php print __('Keep me signed in'); ?></label>
 		</td>
 	</tr>
@@ -365,7 +361,7 @@ $error_message = '';
 if ($error_msg) {
 	$error_message = $error_msg;
 } else {
-	if (get_nfilter_request_var('action') == 'login') {
+	if (gnrv('action') == 'login') {
 		$error_message = __('Invalid User Name/Password Please Retype');
 	}
 

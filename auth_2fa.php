@@ -24,7 +24,7 @@
 
 require(__DIR__ . '/include/global.php');
 
-/* set default action */
+// set default action
 set_default_action();
 
 if (!isset($_SESSION[SESS_USER_ID])) {
@@ -64,9 +64,9 @@ if (!empty($_SESSION[SESS_USER_2FA]) && $_SESSION[SESS_USER_2FA] < $tfaTime) {
 }
 
 // Are we being asked to login with a 2FA token?
-if (get_nfilter_request_var('action') == 'login_2fa') {
-	/* Auth token from Form */
-	$token = get_nfilter_request_var('token');
+if (gnrv('action') == 'login_2fa') {
+	// Auth token from Form
+	$token = gnrv('token');
 
 	if (cacti_sizeof($user)) {
 		if (empty($user['tfa_enabled'])) {
@@ -94,7 +94,7 @@ if (get_nfilter_request_var('action') == 'login_2fa') {
 		$_SESSION[SESS_USER_2FA] = time();
 	}
 
-	/* Process the user  */
+	// Process the user
 	if ($_SESSION[SESS_USER_2FA]) {
 		if (isset($user['tfa_enabled'])) {
 			cacti_log("LOGIN: User '" . $user['username'] . "' 2FA Authenticated", false, 'AUTH');
@@ -107,7 +107,7 @@ if (get_nfilter_request_var('action') == 'login_2fa') {
 				[$user['username'], $user['id'], $client_addr]);
 		}
 	} else {
-		/* BAD token */
+		// BAD token
 		cacti_log("DEBUG: User '" . $user['username'] . "' failed to verify 2fa token", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
 		db_execute_prepared('INSERT IGNORE INTO user_log
@@ -138,7 +138,7 @@ $selectedTheme = get_selected_theme();
 html_auth_header('login_2fa', __('2nd Factor Authentication'), __('2FA Verification'), __('Enter your token'),
 	[
 		'username' => $user['username'],
-		'action'   => get_nfilter_request_var('action')
+		'action'   => gnrv('action')
 	]
 );
 ?>

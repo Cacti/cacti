@@ -28,7 +28,7 @@ require_once(CACTI_PATH_LIBRARY . '/template.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 include_once(CACTI_PATH_LIBRARY . '/data_query.php');
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -112,11 +112,12 @@ detailed_checks();
 snmp_repairs();
 snmp_index_repairs();
 
-if (cacti_sizeof($repaired_hosts) && $total_repairs > 0) {
+if (cacti_sizeof($repaired_hosts) && $total_repairs > 0) { // @phpstan-ignore booleanAnd.alwaysFalse
 	print_separator(true);
+
 	printf('NOTE: Pushing out %s Devices after repairs!' . PHP_EOL . PHP_EOL, cacti_sizeof($repaired_hosts));
 
-	foreach ($repaired_hosts as $host_id) {
+	foreach ($repaired_hosts as $host_id) { // @phpstan-ignore foreach.emptyArray
 		$h = db_fetch_row_prepared('SELECT description, hostname
 			FROM host
 			WHERE id = ?',
@@ -132,9 +133,9 @@ if (cacti_sizeof($repaired_hosts) && $total_repairs > 0) {
 
 print_separator(true);
 
-if ($total_errors == 0 && $total_repairs == 0) {
+if ($total_errors == 0 && $total_repairs == 0) { // @phpstan-ignore booleanAnd.alwaysTrue
 	printf('NOTE: Found 0 Cacti database issues to repair.' . PHP_EOL . PHP_EOL);
-} elseif (($total_errors > 0 || $total_repairs > 0) && !$force) {
+} elseif (!$force) {
 	printf('WARNING: Found %s problems in your Cacti database and automatically repaired %s of them.' . PHP_EOL, $total_errors, $total_repairs);
 	printf('WARNING: Using the \'--force\' option will either repair, remove or ignore any additional issues' . PHP_EOL);
 	printf('WARNING: if they can not be repaired.' . PHP_EOL . PHP_EOL);
@@ -143,17 +144,21 @@ if ($total_errors == 0 && $total_repairs == 0) {
 	printf('WARNING: Found %s and repaired %s Cacti database issues.' . PHP_EOL . PHP_EOL, $total_errors, $total_repairs);
 }
 
-function table_structural_repair() {
-	global $config, $local, $total_errors, $total_repairs;
+function table_structural_repair() : void {
+	global $local, $total_errors, $total_repairs;
 	global $debug, $force, $rtables, $form, $dynamic, $base_tables, $database_default;
 
 	print_separator();
 
 	if ($rtables) {
-		if (!$local && $config['poller_id'] > 1) {
-			db_switch_remote_to_main();
+		if (!$local) {
+			if (POLLER_ID > 1) {
+				db_switch_remote_to_main();
 
-			printf('NOTE: Repairing tables for main database' . PHP_EOL);
+				printf('NOTE: Repairing tables for main database' . PHP_EOL);
+			} else {
+				printf('NOTE: Repairing tables for local database' . PHP_EOL);
+			}
 		} else {
 			printf('NOTE: Repairing tables for local database' . PHP_EOL);
 		}
@@ -181,7 +186,7 @@ function table_structural_repair() {
 	}
 }
 
-function simple_checks() {
+function simple_checks() : void {
 	global $total_errors, $total_repairs;
 
 	print_separator(true);
@@ -392,7 +397,7 @@ function simple_checks() {
 	}
 }
 
-function detailed_checks() {
+function detailed_checks() : void {
 	global $force, $total_errors, $total_repairs;
 
 	print_separator(true);
@@ -405,7 +410,7 @@ function detailed_checks() {
 
 	printf('NOTE: Searching for invalid Cacti GPRINT Presets.' . PHP_EOL);
 
-	/* remove invalid GPrint Presets from the Database, validated */
+	// remove invalid GPrint Presets from the Database, validated
 	$rows = db_fetch_cell('SELECT COUNT(*)
 		FROM graph_templates_item
 		LEFT JOIN graph_templates_gprint
@@ -433,7 +438,7 @@ function detailed_checks() {
 
 	printf('NOTE: Searching for invalid Cacti CDEFs.' . PHP_EOL);
 
-	/* remove invalid CDEF Items from the Database, validated */
+	// remove invalid CDEF Items from the Database, validated
 	$rows = db_fetch_cell('SELECT COUNT(*)
 		FROM cdef_items
 		LEFT JOIN cdef
@@ -450,6 +455,8 @@ function detailed_checks() {
 			$fixes = db_affected_rows();
 
 			$total_repairs += $fixes;
+		} else {
+			$fixes = 0;
 		}
 
 		printf('NOTE: Found ' . ($force ? 'and repaired ' : '') . "$fixes of $rows invalid CDEFs in Graph Templates." . PHP_EOL);
@@ -459,7 +466,7 @@ function detailed_checks() {
 
 	printf('NOTE: Searching for invalid Cacti Data Inputs.' . PHP_EOL);
 
-	/* remove invalid Data Templates from the Database, validated */
+	// remove invalid Data Templates from the Database, validated
 	$rows = db_fetch_cell('SELECT COUNT(*)
 		FROM data_template_data
 		LEFT JOIN data_input
@@ -476,6 +483,8 @@ function detailed_checks() {
 			$fixes = db_affected_rows();
 
 			$total_repairs += $fixes;
+		} else {
+			$fixes = 0;
 		}
 
 		printf('NOTE: Found ' . ($force ? 'and repaired ' : '') . "$fixes of $rows invalid Data Inputs in Data Templates." . PHP_EOL);
@@ -538,7 +547,7 @@ function detailed_checks() {
 
 	printf('NOTE: Searching for invalid Cacti Data Input fields.' . PHP_EOL);
 
-	/* remove invalid Data Input fields from the Database, validated */
+	// remove invalid Data Input fields from the Database, validated
 	$rows = db_fetch_cell('SELECT COUNT(*)
 		FROM data_input_fields
 		LEFT JOIN data_input
@@ -564,7 +573,7 @@ function detailed_checks() {
 
 	printf('NOTE: Searching for invalid Cacti Data Input Data rows (Pass 1).' . PHP_EOL);
 
-	/* remove invalid Data Input Data Rows from the Database in two passes */
+	// remove invalid Data Input Data Rows from the Database in two passes
 	$rows = db_fetch_cell('SELECT COUNT(*)
 		FROM data_input_data
 		LEFT JOIN data_template_data
@@ -618,7 +627,7 @@ function detailed_checks() {
  * Therefore, let's detect that bogus information for the snmp Data Input types only
  * for now.
  */
-function snmp_repairs() {
+function snmp_repairs() : void {
 	global $force, $total_errors, $total_repairs, $repaired_hosts;
 
 	print_separator(true);
@@ -718,11 +727,11 @@ function snmp_repairs() {
 	}
 }
 
-function print_separator($nl = false) {
+function print_separator(bool $nl = false) : void {
 	print ($nl ? PHP_EOL : '') . str_repeat('-', 90) . PHP_EOL;
 }
 
-function snmp_index_repairs() {
+function snmp_index_repairs() : void {
 	global $config, $force, $total_errors, $total_repairs, $repaired_hosts;
 
 	print_separator(true);
@@ -818,7 +827,7 @@ function snmp_index_repairs() {
 	}
 
 	// Correct issues with non-checked data input columns that must be checked.
-	printf('NOTE: Searching for and repairing all Data Query required checked Data Input columns.' . PHP_EOL, cacti_sizeof($entries));
+	printf('NOTE: Searching for and repairing all Data Query required checked Data Input columns.' . PHP_EOL);
 
 	db_execute("UPDATE data_input_data
 		SET t_value = 'on'
@@ -998,7 +1007,7 @@ function snmp_index_repairs() {
 			printf('NOTE: Skipping attempt to repair %s Data Query indexes in (Pass 1).' . PHP_EOL, cacti_sizeof($broken_data_rows));
 		}
 	} else {
-		printf('NOTE: Found 0 damaged Data Query indexes in (Pass 1).' . PHP_EOL, cacti_sizeof($broken_data_rows));
+		printf('NOTE: Found no damaged Data Query indexes in (Pass 1).' . PHP_EOL);
 	}
 
 	printf('NOTE: Searching for damaged Data Query indexes (Pass 2).' . PHP_EOL);
@@ -1211,28 +1220,34 @@ function snmp_index_repairs() {
 	if ($broken_ds > 0) {
 		print_separator(true);
 		printf('WARNING: There remain %s Data Sources with invalid SNMP index information.' . PHP_EOL, $broken_ds);
-		printf('         Go to Console > Management > Data Sources and filter for the'. PHP_EOL);
+		printf('         Go to Console > Management > Data Sources and filter for the' . PHP_EOL);
 		printf('         Status of Bad Indexes and repair by hand.' . PHP_EOL);
 	}
 }
 
 /**
  * display_version - displays version information
+ *
+ * @return void
  */
-function display_version() {
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Database Repair Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 /**
  * display_help - displays the usage of the function
+ *
+ * @return void
  */
-function display_help() {
+function display_help() : void {
 	display_version();
 
-	print PHP_EOL . 'usage: repair_database.php [--dynamic] [--debug] [--force] [--form]' . PHP_EOL . PHP_EOL;
+	print PHP_EOL;
+	print 'usage: repair_database.php [--dynamic] [--debug] [--force] [--form]' . PHP_EOL . PHP_EOL;
 	print 'A utility designed to repair the Cacti database if damaged, and optionally repair any' . PHP_EOL;
 	print 'corruption found in the Cacti databases various Templates.' . PHP_EOL . PHP_EOL;
+
 	print 'Optional:' . PHP_EOL;
 	print '    --dynamic - Convert a table to Dynamic row format if available' . PHP_EOL;
 	print '    --form    - Force rebuilding the indexes from the database creation syntax.' . PHP_EOL;

@@ -31,7 +31,7 @@ if (!isset($called_by_script_server)) {
 	print call_user_func('ss_sql');
 }
 
-function ss_sql() {
+function ss_sql() : string {
 	global $database_username;
 	global $database_password;
 	global $database_hostname;

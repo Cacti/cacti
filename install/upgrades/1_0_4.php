@@ -22,6 +22,6 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_1_0_4() {
+function upgrade_to_1_0_4() : void {
 	db_install_add_key('poller_output_boost', 'KEY', 'PRIMARY', ['local_data_id', 'time', 'rrd_name'], 'BTREE');
 }

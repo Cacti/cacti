@@ -45,11 +45,13 @@ set_default_action();
 
 prime_default_settings();
 
-/***** SAFETY CHECKS FOR OLDER OR SECURED SYSTEMS ****/
+// SAFETY CHECKS FOR OLDER OR SECURED SYSTEMS
 $hasShellExec  = is_function_enabled('shell_exec');
 $hasExec       = is_function_enabled('exec');
 $hasJson       = interface_exists('JsonSerializable');
 $hasEverything = $hasJson && $hasShellExec && $hasExec;
+
+global $config;
 
 if ($hasEverything) {
 	include_once('../lib/installer.php');
@@ -88,7 +90,7 @@ if (CACTI_SERVER_OS == 'unix') {
 $help_anchor = '';
 
 if ($help != '') {
-	$help_anchor = '<a style="padding:2px" href="#" data-page="' . $help . '" title="' . __esc('Cacti Install Help') . '" class="helpPage menu_parent"><i class="ti ti-help"></i></a>';
+	$help_anchor = '<a style="padding:2px" href="#" data-page="' . $help . '" title="' . __esc('Cacti Install Help') . '" class="helpPage menu_parent"><i class="ti ti-help textHeaderDark"></i></a>';
 }
 
 ?>
@@ -96,18 +98,21 @@ if ($help != '') {
 <html>
 <head>
 <?php
-print html_common_header(__('Cacti Server v%s - Maintenance', format_cacti_version_text(CACTI_VERSION)));
+
+html_common_header(__('Cacti Server v%s - Maintenance', format_cacti_version_text(CACTI_VERSION)));
 
 if ($hasEverything) {
 	print get_md5_include_js('install/install.js');
 }
+
 print get_md5_include_css('install/install.css');
+
 ?>
 </head>
 <body>
 	<div class='cactiInstallTable'>
 		<div class='cactiTableTitleRow cactiBorderWall'>
-			<div class='textHeaderDark'><?php print __esc('Cacti Server v%s - Installation Wizard', CACTI_VERSION_BRIEF_FULL); ?><span style="float:right"><?php print $help_anchor; ?><a class="menu_parent" id="installRefresh" href="#" title="<?php print __esc('Refresh current page'); ?>" style="padding:2px"><i class="ti ti-reload"></i></a></span></div>
+			<div class='textHeaderDark'><?php print __esc('Cacti Server v%s - Installation Wizard', CACTI_VERSION_BRIEF_FULL); ?><span style="float:right"><?php print $help_anchor; ?><a class="menu_parent" id="installRefresh" href="#" title="<?php print __esc('Refresh current page'); ?>" style="padding:2px"><i class="ti ti-reload textHeaderDark"></i></a></span></div>
 		</div>
 		<div class='cactiInstallArea cactiBorderWall'>
 			<div class='cactiInstallAreaContent' id='installContent'>
@@ -127,7 +132,7 @@ if ($hasEverything) {
 	}
 
 	if (!($hasExec && $hasShellExec)) {
-		print '<li>' . __('The shell_exec() and/or exec() functions are currently blocked.') . '<br>' . __('See the PHP Manual: <a href="http://php.net/manual/en/ini.core.php#ini.disable-functions">Disable Functions</a>.') .'</li>';
+		print '<li>' . __('The shell_exec() and/or exec() functions are currently blocked.') . '<br>' . __('See the PHP Manual: <a href="http://php.net/manual/en/ini.core.php#ini.disable-functions">Disable Functions</a>.') . '</li>';
 	}
 	print '</ul></div>';
 }

@@ -24,6 +24,28 @@
 
 $dir = dir(CACTI_PATH_INCLUDE . '/themes/');
 
+// Work aorund issue where phpstan is not detecting globals
+
+include_once(__DIR__ . '/global_arrays.php');
+
+global $attachment_sizes, $attach_types, $auth_methods, $automation_log_levels;
+global $availability_options, $boost_max_memory, $boost_max_rows_per_select;
+global $boost_max_runtime, $boost_refresh_interval, $config, $copyrights;
+global $cron_intervals, $daily_timespans, $datechar, $dateformats;
+global $dsstats_hourly_avg, $dsstats_max_memory, $dsstats_refresh_interval;
+global $graph_color_alpha, $graphs_per_page, $graph_timeshifts, $graph_timespans;
+global $graph_views, $graph_weekdays, $i18n_modes, $i18n_supported_languages;
+global $image_types, $item_rows, $logfile_actions, $logfile_expansion;
+global $logfile_options, $logfile_validation, $logfile_verbosity, $logrotate_frequency;
+global $log_tail_lines, $monthly_timespans, $page_refresh_interval, $ping_methods;
+global $poller_intervals, $poller_options, $poller_sync_intervals, $realtime_refresh;
+global $realtime_window, $reindex_types, $rrdcheck_intervals, $rrdtool_versions;
+global $snmp_auth_protocols, $snmp_priv_protocols, $snmp_security_levels;
+global $snmp_versions, $themes, $timespans, $user_auth_realm_filenames;
+global $weekly_timespans, $yearly_timespans;
+
+// Workaround End
+
 while (false !== ($entry = $dir->read())) {
 	if ($entry != '.' && $entry != '..') {
 		if (is_dir(CACTI_PATH_INCLUDE . '/themes/' . $entry)) {
@@ -34,7 +56,7 @@ while (false !== ($entry = $dir->read())) {
 asort($themes);
 $dir->close();
 
-/* tab information */
+// tab information
 $tabs = [
 	'general'        => __('General'),
 	'path'           => __('Paths'),
@@ -67,14 +89,16 @@ if (db_table_exists('plugin_config')) {
 	$logplugins = [];
 }
 
-/* get the files for selective logging */
-$realm_files  = array_keys($user_auth_realm_filenames);
+// get the files for selective logging
+if (is_array($user_auth_realm_filenames)) {
+	$realm_files  = array_keys($user_auth_realm_filenames);
 
-foreach ($realm_files as $file) {
-	$logfiles[$file] = $file;
+	foreach ($realm_files as $file) {
+		$logfiles[$file] = $file;
+	}
 }
 
-/* we need this list of files for selective debug */
+// we need this list of files for selective debug
 $no_http_header_files = [
 	'add_device.php',
 	'add_graphs.php',
@@ -115,12 +139,6 @@ $no_http_header_files = [
 	'structure_rra_paths.php',
 ];
 
-$nohead_files = array_values($no_http_header_files);
-
-foreach ($nohead_files as $file) {
-	$logfiles[$file] = $file;
-}
-
 $logfiles['poller_realtime.php'] = 'poller_realtime.php';
 $logfiles['cmd_realtime.php']    = 'cmd_realtime.php';
 
@@ -137,7 +155,7 @@ if (CACTI_SERVER_OS == 'win32') {
 	unset($mail_methods[CACTI_MAIL_SENDMAIL]);
 }
 
-/* cache the admin account */
+// cache the admin account
 $admin_account = '0';
 
 if (isset($_SESSION['admin_account']) && isset($_SESSION[SESS_USER_ID])) {
@@ -154,7 +172,7 @@ if (isset($_SESSION['admin_account']) && isset($_SESSION[SESS_USER_ID])) {
 
 $settings = [];
 
-/* setting information */
+// setting information
 $settings['path'] = [
 	'dependent_header' => [
 		'friendly_name' => __('Required Tool Paths'),
@@ -312,14 +330,21 @@ $settings['logging'] = [
 		'description'   => __('How will Cacti handle event logging.'),
 		'method'        => 'drop_array',
 		'default'       => 1,
-		'array'         => $logfile_options,
+		'array'         => $logfile_options
+	],
+	'log_action' => [
+		'friendly_name' => __('Log Actions'),
+		'description'   => __('What Log Actions do you wish to provide to the Cacti Administrator.  You can grant either purge, rotate, or both purge and rotate.  Base files can be both purged and rotated, and already rotated files can only be purged if you grant that permission.'),
+		'method'        => 'drop_array',
+		'default'       => LOG_ACTION_PURGE,
+		'array'         => $logfile_actions
 	],
 	'log_verbosity' => [
 		'friendly_name' => __('Generic Log Level'),
 		'description'   => __('What level of detail do you want sent to the log file.  WARNING: Leaving in any other status than NONE or LOW can exhaust your disk space rapidly.'),
 		'method'        => 'drop_array',
 		'default'       => POLLER_VERBOSITY_LOW,
-		'array'         => $logfile_verbosity,
+		'array'         => $logfile_verbosity
 	],
 	'log_expand' => [
 		'friendly_name' => __('Expand log details'),
@@ -1191,7 +1216,7 @@ $settings['visual'] = [
 	],
 	'num_rows_table' => [
 		'friendly_name' => __('Rows Per Page'),
-		'description'   => __('The default number of rows to display on for a table.') . ' ' . __('.  This is limited by the php setting \'max_input_vars\', currently:') .  ' ' . ini_get('max_input_vars'),
+		'description'   => __('The default number of rows to display on for a table.') . ' ' . __('.  This is limited by the php setting \'max_input_vars\', currently:') . ' ' . ini_get('max_input_vars'),
 		'method'        => 'drop_array',
 		'default'       => '30',
 		'array'         => $item_rows
@@ -1208,7 +1233,7 @@ $settings['visual'] = [
 	],
 	'autocomplete_rows' => [
 		'friendly_name' => __('Autocomplete Rows'),
-		'description'   => __('The default number of rows to return from an autocomplete based select pattern match.') . ' ' . __('.  This is limited by the php setting \'max_input_vars\', currently:') .  ' ' . ini_get('max_input_vars'),
+		'description'   => __('The default number of rows to return from an autocomplete based select pattern match.') . ' ' . __('.  This is limited by the php setting \'max_input_vars\', currently:') . ' ' . ini_get('max_input_vars'),
 		'method'        => 'drop_array',
 		'default'       => '30',
 		'array'         => $item_rows
@@ -1358,7 +1383,7 @@ $settings['visual'] = [
 		'friendly_name' => __('Cache Directory'),
 		'description'   => __('This is the location, on the web server where the RRDfiles and PNG files will be cached.  This cache will be managed by the poller.  Make sure you have the correct read and write permissions on this folder'),
 		'method'        => 'dirpath',
-		'default'       => CACTI_PATH_CACHE. '/realtime/',
+		'default'       => CACTI_PATH_CACHE . '/realtime/',
 		'max_length'    => 255,
 		'size'          => 40,
 	],
@@ -1675,37 +1700,6 @@ $settings['poller'] = [
 			'80' => __('%d Percent', '80'),
 			'90' => __('%d Percent', '90')
 		],
-	],
-	'data_collector_header' => [
-		'friendly_name' => __('Data Collector Defaults'),
-		'description'   => __('These settings are maintained at the Data Collector level.  The values here are only defaults used when first creating a Data Collector.'),
-		'collapsible'   => 'true',
-		'method'        => 'hidden',
-		//'method'        => 'spacer',
-	],
-	'concurrent_processes' => [
-		'friendly_name' => __('Data Collector Processes'),
-		'description'   => __('The default number of concurrent processes to execute per Data Collector.  NOTE: Starting from Cacti 1.2, this setting is maintained in the Data Collector.  Moving forward, this value is only a preset for the Data Collector.  Using a higher number when using cmd.php will improve performance.  Performance improvements in Spine are best resolved with the threads parameter.  When using Spine, we recommend a lower number and leveraging threads instead.  When using cmd.php, use no more than 2x the number of CPU cores.'),
-		'method'        => 'hidden',
-		//'method'        => 'textbox',
-		'default'       => '1',
-		'max_length'    => '10',
-		'size'          => '5'
-	],
-	'spine_header' => [
-		'friendly_name' => __('Spine Specific Execution Parameters'),
-		'collapsible'   => 'true',
-		'method'        => 'hidden',
-		//'method'        => 'spacer',
-	],
-	'max_threads' => [
-		'friendly_name' => __('Threads per Process'),
-		'description'   => __('The Default Threads allowed per process.  NOTE: Starting in Cacti 1.2+, this setting is maintained in the Data Collector, and this is simply the Preset.  Using a higher number when using Spine will improve performance.  However, ensure that you have enough MySQL/MariaDB connections to support the following equation: connections = data collectors * processes * (threads + script servers).  You must also ensure that you have enough spare connections for user login connections as well.'),
-		'method'        => 'hidden',
-		//'method'        => 'textbox',
-		'default'       => '1',
-		'max_length'    => '10',
-		'size'          => '5'
 	],
 ];
 
@@ -2356,7 +2350,7 @@ $settings['mail'] = [
 		'description'   => __('Please check this URI. It could be accessible from internet.'),
 		'method'        => 'textbox',
 		'max_length'    => 255,
-		'default'       => get_url_type() .'://' . gethostname() . CACTI_PATH_URL . 'oauth2.php'
+		'default'       => get_url_type() . '://' . gethostname() . CACTI_PATH_URL . 'oauth2.php'
 	],
 	'settings_oauth2_refresh_token' => [
 		'friendly_name' => __('OAuth2 refresh token'),
@@ -2600,7 +2594,7 @@ $settings['boost'] = [
 		'description'   => __('Specify the location where Boost should place your image files.  These files will be automatically purged by the poller when they expire.'),
 		'method'        => 'dirpath',
 		'max_length'    => '255',
-		'default'       => CACTI_PATH_CACHE. '/boost/'
+		'default'       => CACTI_PATH_CACHE . '/boost/'
 	]
 ];
 
@@ -3028,7 +3022,7 @@ $settings['spikes'] = [
 		'friendly_name' => __('RRDfile Backup Directory'),
 		'description'   => __('If this directory is not empty, then your original RRDfiles will be backed up to this location.'),
 		'method'        => 'dirpath',
-		'default'       => CACTI_PATH_CACHE. '/spikekill/',
+		'default'       => CACTI_PATH_CACHE . '/spikekill/',
 		'max_length'    => '255',
 		'size'          => '60'
 	],
@@ -3062,7 +3056,7 @@ $settings['spikes'] = [
 		'friendly_name' => __('Graph Templates to Spike Kill'),
 		'method'        => 'drop_multi',
 		'description'   => __('When performing batch spike removal, only the templates selected below will be acted on.'),
-		'array'         => [], //$spikekill_templates,
+		'array'         => [],
 	],
 	'spikekill_purge' => [
 		'friendly_name' => __('Backup Retention'),

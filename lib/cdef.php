@@ -39,22 +39,18 @@ function get_cdef_item_name(int $cdef_item_id) : string {
 	$current_cdef_value = $cdef_item['value'];
 
 	switch ($cdef_item['type']) {
-		case '1': return (string) $cdef_functions[$current_cdef_value];
-
-			break;
-		case '2': return (string) $cdef_operators[$current_cdef_value];
-
-			break;
-		case '4': return (string) $current_cdef_value;
-
-			break;
-		case '5': return (string) db_fetch_cell_prepared('SELECT name FROM cdef WHERE id = ?', [$current_cdef_value]);
-
-			break;
-		case '6': return (string) $current_cdef_value;
-
-			break;
+		case '1':
+			return (string) $cdef_functions[$current_cdef_value];
+		case '2':
+			return (string) $cdef_operators[$current_cdef_value];
+		case '4':
+			return (string) $current_cdef_value;
+		case '5':
+			return (string) db_fetch_cell_prepared('SELECT name FROM cdef WHERE id = ?', [$current_cdef_value]);
+		case '6':
+			return (string) $current_cdef_value;
 	}
+
 	return '';
 }
 /**

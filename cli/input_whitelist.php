@@ -28,7 +28,7 @@ require_once(CACTI_PATH_LIBRARY . '/utility.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');
 
-if ($config['poller_id'] > 1) {
+if (POLLER_ID > 1) {
 	print 'FATAL: This utility is designed for the main Data Collector only' . PHP_EOL;
 
 	exit(1);
@@ -187,18 +187,22 @@ if ($audit) {
 
 exit(0);
 
-/*
+/**
  * display_version - displays version information
+ *
+ * @return void
  */
-function display_version() {
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Data Input Whitelist Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-/*
+/**
  * display_help - displays the usage of the function
+ *
+ * @return void
  */
-function display_help() {
+function display_help() : void {
 	display_version();
 
 	print PHP_EOL . 'usage: input_whitelist.php [--audit | --update [--push]]' . PHP_EOL . PHP_EOL;

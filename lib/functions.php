@@ -28,13 +28,13 @@ use PHPMailer\PHPMailer\Exception;
  * Takes a string of text, truncates it to $max_length and appends
  * three periods onto the end
  *
- * @param string  $text        the string to evaluate
- * @param int     $max_length  the maximum number of characters the string can contain
+ * @param string $text       the string to evaluate
+ * @param int    $max_length the maximum number of characters the string can contain
  *
  * @return string the truncated string if len($text) is greater than $max_length, else
- *   the original string
+ *                the original string
  */
-function title_trim(string $text, int $max_length): string {
+function title_trim(string $text, int $max_length) : string {
 	if (strlen($text) > $max_length) {
 		return mb_substr($text, 0, $max_length) . '...';
 	} else {
@@ -45,13 +45,14 @@ function title_trim(string $text, int $max_length): string {
 /**
  * A quick way to highlight text in a table from general filtering
  *
- * @param string|null $text - the string to filter
- * @param string $filter - the search term to filter for
- * @param string $href - the href if you wish to have an anchor returned
+ * @param mixed  $value  The string to filter
+ * @param string $filter The search term to filter for
+ * @param string $href   The href if you wish to have an anchor returned
+ * @param string $title  The title of the resulting anchor
  *
  * @return string the filtered string
  */
-function filter_value(string|null $value, string $filter, string $href = '', string $title = '') : string {
+function filter_value(mixed $value, string $filter, string $href = '', string $title = '') : string {
 	static $charset;
 
 	if ($value == '') {
@@ -66,7 +67,7 @@ function filter_value(string|null $value, string $filter, string $href = '', str
 		$charset = 'UTF-8';
 	}
 
-	$value =  html_escape($value);
+	$value =  htmle($value);
 
 	// Grave Accent character can lead to xss
 	$value = str_replace('`', '&#96;', $value);
@@ -76,7 +77,7 @@ function filter_value(string|null $value, string $filter, string $href = '', str
 	}
 
 	if ($href != '') {
-		$value = '<a class="linkEditMain" href="' . html_escape($href) . '" title="' . html_escape($title) . '">' . $value  . '</a>';
+		$value = '<a class="linkEditMain" href="' . htmle($href) . '" title="' . htmle($title) . '">' . $value . '</a>';
 	}
 
 	return $value;
@@ -87,13 +88,13 @@ function filter_value(string|null $value, string $filter, string $href = '', str
  *
  * @deprecated v1.0
  *
- * @param string   $config_name - the name of the configuration setting as specified $settings array
- * @param mixed    $value       - the values to be saved
- * @param int|null $user        - the user id, otherwise the session user
+ * @param string $config_name The name of the configuration setting as specified $settings array
+ * @param mixed  $value       The values to be saved
+ * @param mixed  $user        The user id, otherwise the session user
  *
  * @return void
  */
-function set_graph_config_option(string $config_name, mixed $value, int|null $user = null) : void {
+function set_graph_config_option(string $config_name, mixed $value, mixed $user = null) : void {
 	set_user_setting($config_name, $value, $user);
 }
 
@@ -102,14 +103,13 @@ function set_graph_config_option(string $config_name, mixed $value, int|null $us
  *
  * @deprecated v1.0
  *
- * @param string $config_name   the name of the configuration setting as
- *                              specified $settings_user array in
- *                              'include/global_settings.php'
+ * @param string $config_name The name of the configuration setting as
+ *                            specified $settings_user array in
+ *                            'include/global_settings.php'
+ * @param int    $user_id     The id of the user to check the configuration
+ *                            value for
  *
- * @param int    $user_id       the id of the user to check the configuration
- *                              value for
- *
- * @return bool  true if a value exists, false if a value does not exist
+ * @return bool true if a value exists, false if a value does not exist
  */
 function graph_config_value_exists(string $config_name, int $user_id) : bool {
 	return user_setting_exists($config_name, $user_id);
@@ -120,11 +120,11 @@ function graph_config_value_exists(string $config_name, int $user_id) : bool {
  *
  * @deprecated v1.0
  *
- * @param string $config_name   the name of the configuration setting as
- *                              specified $settings_user array in
- *                              'include/global_settings.php'
+ * @param string $config_name The name of the configuration setting as
+ *                            specified $settings_user array in
+ *                            'include/global_settings.php'
  *
- * @return string  the default value of the configuration option
+ * @return string the default value of the configuration option
  */
 function read_default_graph_config_option(string $config_name) : string {
 	return read_default_user_setting($config_name);
@@ -135,12 +135,12 @@ function read_default_graph_config_option(string $config_name) : string {
  *
  * @deprecated v1.0
  *
- * @param string $config_name   the name of the configuration setting as
- *                              specified $settings_user array in
- *                              'include/global_settings.php'
- * @param bool $force
+ * @param string $config_name The name of the configuration setting as
+ *                            specified $settings_user array in
+ *                            'include/global_settings.php'
+ * @param bool   $force
  *
- * @return string  the default value of the configuration option
+ * @return string The default value of the configuration option
  */
 function read_graph_config_option(string $config_name, bool $force = false) : string {
 	return read_user_setting($config_name, false, $force);
@@ -149,11 +149,11 @@ function read_graph_config_option(string $config_name, bool $force = false) : st
 /**
  * Sets/updates aLL user settings
  *
- * @param  int|null $user  the user id, otherwise the session user
+ * @param mixed $user The user id, otherwise the session user
  *
  * @return void
  */
-function save_user_settings(int|null $user = null) : void {
+function save_user_settings(mixed $user = null) : void {
 	global $settings_user;
 
 	// Passed user id, or session id, or else 0
@@ -161,36 +161,36 @@ function save_user_settings(int|null $user = null) : void {
 
 	foreach ($settings_user as $tab_fields) {
 		foreach ($tab_fields as $field_name => $field_array) {
-			/* Check every field with a numeric default value and reset it to default if the inputted value is not numeric  */
-			if (isset($field_array['default']) && is_numeric($field_array['default']) && !is_numeric(get_nfilter_request_var($field_name))) {
-				set_request_var($field_name, $field_array['default']);
+			// Check every field with a numeric default value and reset it to default if the inputted value is not numeric
+			if (isset($field_array['default']) && is_numeric($field_array['default']) && !is_numeric(gnrv($field_name))) {
+				srv($field_name, $field_array['default']);
 			}
 
 			if (isset($field_array['method'])) {
 				if ($field_array['method'] == 'checkbox') {
-					set_user_setting($field_name, (isset_request_var($field_name) ? 'on' : ''), $user);
+					set_user_setting($field_name, (isrv($field_name) ? 'on' : ''), $user);
 				} elseif ($field_array['method'] == 'checkbox_group') {
 					foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
-						set_user_setting($sub_field_name, (isset_request_var($sub_field_name) ? 'on' : ''), $user);
+						set_user_setting($sub_field_name, (isrv($sub_field_name) ? 'on' : ''), $user);
 					}
 				} elseif ($field_array['method'] == 'textbox_password') {
-					if (get_nfilter_request_var($field_name) != get_nfilter_request_var($field_name.'_confirm')) {
+					if (gnrv($field_name) != gnrv($field_name . '_confirm')) {
 						$_SESSION[SESS_ERROR_FIELDS][$field_name] = $field_name;
-						$_SESSION[SESS_FIELD_VALUES][$field_name] = get_nfilter_request_var($field_name);
+						$_SESSION[SESS_FIELD_VALUES][$field_name] = gnrv($field_name);
 
 						// Set error 4
 						$errors[4]  = 4;
-					} elseif (isset_request_var($field_name)) {
-						set_user_setting($field_name, get_nfilter_request_var($field_name), $user);
+					} elseif (isrv($field_name)) {
+						set_user_setting($field_name, gnrv($field_name), $user);
 					}
 				} elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 					foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
-						if (isset_request_var($sub_field_name)) {
-							set_user_setting($sub_field_name, get_nfilter_request_var($sub_field_name), $user);
+						if (isrv($sub_field_name)) {
+							set_user_setting($sub_field_name, gnrv($sub_field_name), $user);
 						}
 					}
-				} elseif (isset_request_var($field_name)) {
-					set_user_setting($field_name, get_nfilter_request_var($field_name), $user);
+				} elseif (isrv($field_name)) {
+					set_user_setting($field_name, gnrv($field_name), $user);
 				}
 			}
 		}
@@ -200,13 +200,13 @@ function save_user_settings(int|null $user = null) : void {
 /**
  * set_user_setting - sets/updates a user setting with the given value.
  *
- * @param string   $config_name - the name of the configuration setting as specified $settings array
- * @param mixed    $value       - the values to be saved
- * @param int|null $user        - the user id, otherwise the session user
+ * @param string $config_name The name of the configuration setting as specified $settings array
+ * @param mixed  $value       The values to be saved
+ * @param mixed  $user        The user id, otherwise the session user
  *
  * @return void
  */
-function set_user_setting(string $config_name, mixed $value, int|null $user = null) : void {
+function set_user_setting(string $config_name, mixed $value, mixed $user = null) : void {
 	global $settings_user;
 
 	// Passed user id, or session id, or else 0
@@ -223,7 +223,7 @@ function set_user_setting(string $config_name, mixed $value, int|null $user = nu
 		db_execute_prepared('INSERT INTO settings_user
 			(user_id, name, value) VALUES (?, ?, ?)
 			ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)',
-			array($user, $config_name, $value));
+			[$user, $config_name, $value]);
 
 		$_SESSION[OPTIONS_USER][$config_name] = $value;
 		$settings_user[$config_name]['value'] = $value;
@@ -233,16 +233,15 @@ function set_user_setting(string $config_name, mixed $value, int|null $user = nu
 /**
  * Determines if a value exists for the current user/setting specified
  *
- * @param  string   $config_name  the name of the configuration setting as
- *                                specified $settings_user array in
- *                                'include/global_settings.php'
- *
- * @param  int|null $user_id      the id of the user to check the
- *                                configuration value for
+ * @param string $config_name The name of the configuration setting as
+ *                            specified $settings_user array in
+ *                            'include/global_settings.php'
+ * @param mixed  $user_id     The id of the user to check the
+ *                            configuration value for
  *
  * @return bool
  */
-function user_setting_exists(string $config_name, int|null $user_id) : bool {
+function user_setting_exists(string $config_name, mixed $user_id) : bool {
 	static $exists_user_setting = [];
 
 	// We use isset instead of array_key_exists so that
@@ -269,16 +268,16 @@ function user_setting_exists(string $config_name, int|null $user_id) : bool {
 /**
  * If a value exists for the current user/setting specified, removes it
  *
- * @param  string       $config_name  the name of the configuration setting as
- *                                    specified $settings_user array in
- *                                    'include/global_settings.php'
+ * @param string $config_name The name of the configuration setting as
+ *                            specified $settings_user array in
+ *                            'include/global_settings.php'
+ * @param mixed  $user        The id of the user to check the
+ *                            configuration value for
  *
- * @param  int|null $user_id      the id of the user to check the
- *                                    configuration value for
  * @return void
  */
-function clear_user_setting(string $config_name, int|null $user = null) : void {
-	/* users must have cacti user auth turned on to use this, or the guest account must be active */
+function clear_user_setting(string $config_name, mixed $user = null) : void {
+	// users must have cacti user auth turned on to use this, or the guest account must be active
 	$effective_uid = $user ?? ($_SESSION[SESS_USER_ID] ?? 0);
 
 	if (db_table_exists('settings_user')) {
@@ -294,13 +293,13 @@ function clear_user_setting(string $config_name, int|null $user = null) : void {
 /**
  * Finds the default value of a user configuration setting
  *
- * @param  string       $config_name  the name of the configuration setting as
- *                                    specified $settings_user array in
- *                                    'include/global_settings.php'
+ * @param string $config_name The name of the configuration setting as
+ *                            specified $settings_user array in
+ *                            'include/global_settings.php'
  *
- * @return string the default value of the configuration option
+ * @return string The default value of the configuration option
  */
-function read_default_user_setting(string $config_name): string {
+function read_default_user_setting(string $config_name) : string {
 	global $settings_user;
 
 	$result = '';
@@ -327,20 +326,19 @@ function read_default_user_setting(string $config_name): string {
 /**
  * Finds the current value of a users configuration setting
  *
- * @param  string       $config_name  the name of the configuration setting as
- *                                    specified $settings_user array in
- *                                    'include/global_settings.php'
+ * @param string $config_name The name of the configuration setting as
+ *                            specified $settings_user array in
+ *                            'include/global_settings.php'
+ * @param mixed  $default     The default value is none is set
+ * @param bool   $force       Pull the data from the database if true ignoring session
+ * @param mixed  $user        The id of the user to read the setting for
  *
- * @param  mixed        $default      the default value is none is set
- *
- * @param  bool         $force        pull the data from the database if true ignoring session
- *
- * @param  int|null $user_id      the id of the user to read the setting for
- *
- * @return string|null the current value of the user setting
+ * @return mixed The current value of the user setting
  */
-function read_user_setting(string $config_name, mixed $default = false, bool $force = false, int|null $user = 0) : string|null {
-	/* users must have cacti user auth turned on to use this, or the guest account must be active */
+function read_user_setting(string $config_name, mixed $default = false, bool $force = false, mixed $user = 0) : mixed {
+	global $config;
+
+	// users must have cacti user auth turned on to use this, or the guest account must be active
 	if ($user == 0 && isset($_SESSION[SESS_USER_ID])) {
 		$effective_uid = $_SESSION[SESS_USER_ID];
 	} else {
@@ -389,14 +387,14 @@ function read_user_setting(string $config_name, mixed $default = false, bool $fo
  * Determines of a Cacti setting should be maintained
  * on the Remote Data Collector separate from the Main cacti server
  *
- * @param  string       $config_name  the name of the configuration setting as
- *                                    specified $settings_user array in
- *                                    'include/global_settings.php'
+ * @param string $config_name The name of the configuration setting as
+ *                            specified $settings_user array in
+ *                            'include/global_settings.php'
  *
- * @return bool - true if the setting should be saved locally
+ * @return bool true if the setting should be saved locally
  */
 function is_remote_path_setting(string $config_name) : bool {
-	if (POLLER_ID > 1 && (str_contains($config_name, 'path_') || str_contains($config_name, '_path'))) {
+	if (POLLER_ID > 1 && (str_contains($config_name, 'path_') || str_contains($config_name, '_path'))) { // @phpstan-ignore-line
 		return true;
 	} else {
 		return false;
@@ -406,14 +404,12 @@ function is_remote_path_setting(string $config_name) : bool {
 /**
  * Sets/updates a cacti config option with the given value.
  *
- * @param  string       $config_name  the name of the configuration setting as
- *                                    specified $settings array in
- *                                    'include/global_settings.php'
- *
- * @param  mixed        $value        the values to be saved
- *
- * @param  bool         $remote       push the setting to the remote with
- *                                    the exception of path variables
+ * @param string $config_name The name of the configuration setting as
+ *                            specified $settings array in
+ *                            'include/global_settings.php'
+ * @param mixed  $value       The values to be saved
+ * @param bool   $remote      Push the setting to the remote with
+ *                            the exception of path variables
  *
  * @return void
  */
@@ -429,7 +425,7 @@ function set_config_option(string $config_name, mixed $value, bool $remote = fal
 	db_execute_prepared('INSERT INTO settings
 		(name, value) VALUES (?, ?)
 		ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)',
-		array($config_name, $value));
+		[$config_name, $value]);
 
 	if ($remote && !is_remote_path_setting($config_name)) {
 		$gone_time = read_config_option('poller_interval') * 2;
@@ -485,9 +481,9 @@ function set_config_option(string $config_name, mixed $value, bool $remote = fal
 /**
  * Determines if a value exists for the current user/setting specified
  *
- * @param  string       $config_name  the name of the configuration setting as
- *                                    specified $settings array in
- *                                    'include/global_settings.php'
+ * @param string $config_name The name of the configuration setting as
+ *                            specified $settings array in
+ *                            'include/global_settings.php'
  *
  * @return bool true if a value exists, false if a value does not exist
  */
@@ -510,11 +506,11 @@ function config_value_exists(string $config_name) : bool {
 /**
  * Finds the default value of a Cacti configuration setting
  *
- * @param  string       $config_name  the name of the configuration setting as
- *                                    specified $settings_user array in
- *                                    'include/global_settings.php'
+ * @param string $config_name The name of the configuration setting as
+ *                            specified $settings_user array in
+ *                            'include/global_settings.php'
  *
- * @return mixed the default value of the configuration option
+ * @return mixed The default value of the configuration option
  */
 function read_default_config_option(string $config_name) : mixed {
 	global $settings;
@@ -542,7 +538,9 @@ function read_default_config_option(string $config_name) : mixed {
  * @return array
  */
 function cache_common_config_settings() : array {
-	//$start = microtime(true);
+	global $config;
+
+	// $start = microtime(true);
 
 	$common_settings = [
 		'auth_method',
@@ -674,14 +672,14 @@ function cache_common_config_settings() : array {
 /**
  * Finds the current value of a Cacti configuration setting
  *
- * @param  string       $config_name  The name of the configuration setting as
- *                                    specified $settings array in
- *                                    'include/global_settings.php'
- * @param  bool         $force        Pull the data from the database if true ignoring session
+ * @param string $config_name The name of the configuration setting as
+ *                            specified $settings array in
+ *                            'include/global_settings.php'
+ * @param bool   $force       Pull the data from the database if true ignoring session
  *
- * @return string|false|null          The current value of the configuration option
+ * @return mixed The current value of the configuration option
  */
-function read_config_option(string $config_name, bool $force = false): string|false|null {
+function read_config_option(string $config_name, bool $force = false) : mixed {
 	global $config, $database_hostname, $database_default, $database_port, $database_sessions;
 
 	$loaded = false;
@@ -800,8 +798,7 @@ function get_selected_theme() : string {
 		}
 	}
 
-	if (is_valid_theme($theme, true) && isset($_SESSION[SESS_USER_ID])) {
-		// update session
+	if (isset($_SESSION[SESS_USER_ID]) && is_valid_theme($theme, $_SESSION[SESS_USER_ID])) {
 		$_SESSION['selected_theme'] = (string) $theme;
 	}
 
@@ -811,12 +808,12 @@ function get_selected_theme() : string {
 /**
  * Returns true if a theme is valid
  *
- * @param  string|null $theme
- * @param  int    $set_user
+ * @param mixed $theme
+ * @param int   $set_user
  *
  * @return bool
  */
-function is_valid_theme(string|null &$theme, int $set_user = 0) : bool {
+function is_valid_theme(mixed &$theme, int $set_user = 0) : bool {
 	global $themes;
 
 	$valid = true;
@@ -863,20 +860,18 @@ function is_valid_theme(string|null &$theme, int $set_user = 0) : bool {
  * form_input_validate - validates the value of a form field and Takes the appropriate action if the input
  * is not valid
  *
- * @param string|null $field_value    Value of the form field
- * @param string      $field_name     Name of the $_POST field as specified in the HTML
- * @param string      $regexp_match   Optionally enter a regular expression to match the value against
- * @param bool        $allow_nulls    Whether to allow an empty string as a value or not
- * @param int         $custom_message The ID of the message to raise upon an error which is defined in the
- *                                    $messages array in 'include/global_arrays.php'
- * @param mixed $message_id           The error message to raise in the case of an error
+ * @param mixed  $field_value  Value of the form field
+ * @param string $field_name   Name of the $_POST field as specified in the HTML
+ * @param string $regexp_match Optionally enter a regular expression to match the value against
+ * @param bool   $allow_nulls  Whether to allow an empty string as a value or not
+ * @param mixed  $message_id   The error message to raise in the case of an error
  *
- * @return string|null                The original $field_value
+ * @return mixed - The original $field_value
  */
-function form_input_validate(string|null $field_value, string $field_name, string $regexp_match, bool $allow_nulls, int $message_id = 3) : string|null {
+function form_input_validate(mixed $field_value, string $field_name, string $regexp_match, bool $allow_nulls, mixed $message_id = 3) : mixed {
 	global $messages;
 
-	/* write current values to the "field_values" array so we can retain them */
+	// write current values to the "field_values" array so we can retain them
 	$_SESSION[SESS_FIELD_VALUES][$field_name] = $field_value;
 
 	if ($allow_nulls == true && $field_value == '') {
@@ -913,17 +908,18 @@ function form_input_validate(string|null $field_value, string $field_name, strin
 /**
  * check_changed - determines if a request variable has changed between page loads
  *
- * @param string $request
+ * @param mixed  $request
  * @param string $session
  *
  * @return int true if the value changed between loads
  */
-function check_changed(string|int $request, string $session) : int {
-	if ((isset_request_var($request)) && (isset($_SESSION[$session]))) {
-		if (get_nfilter_request_var($request) != $_SESSION[$session]) {
+function check_changed(mixed $request, string $session) : int {
+	if ((isrv($request)) && (isset($_SESSION[$session]))) {
+		if (gnrv($request) != $_SESSION[$session]) {
 			return 1;
 		}
 	}
+
 	return 0;
 }
 
@@ -946,7 +942,7 @@ function is_error_message() : bool {
 /**
  * Get the level for the current message
  *
- * @param  array $current_message
+ * @param array $current_message
  *
  * @return int
  */
@@ -974,11 +970,11 @@ function get_message_level(array $current_message) : int {
 /**
  * Get the title for the current message
  *
- * @param  array       $current_message
+ * @param array $current_message
  *
- * @return string|null
+ * @return mixed
  */
-function get_message_title(array $current_message) : string|null {
+function get_message_title(array $current_message) : mixed {
 	$current_title = null;
 
 	if (isset($current_message['title'])) {
@@ -1002,11 +998,11 @@ function get_message_title(array $current_message) : string|null {
 /**
  * get_format_message_instance - finds the level of the current message instance
  *
- * @param array|string $current_message the message instance
+ * @param mixed $current_message the message instance
  *
  * @return string a formatted message
  */
-function get_format_message_instance(array|string $current_message): string {
+function get_format_message_instance(mixed $current_message) : string {
 	if (is_array($current_message) && isset($current_message['message'])) {
 		$fmessage = $current_message['message'];
 		$level    = get_message_level($current_message);
@@ -1033,11 +1029,11 @@ function get_format_message_instance(array|string $current_message): string {
 /**
  * get_message_max_type - finds the message and returns its type
  *
- * @param array|null $output_messages the messages to check, if null it will check the session messages
+ * @param mixed $output_messages The messages to check, if null it will check the session messages
  *
- * @return int the message type
+ * @return int The message type
  */
-function get_message_max_type(array|null $output_messages = null) : int {
+function get_message_max_type(mixed $output_messages = null) : int {
 	global $messages;
 
 	$level = MESSAGE_LEVEL_NONE;
@@ -1068,14 +1064,14 @@ function get_message_max_type(array|null $output_messages = null) : int {
 /**
  * Message to be displayed to the user once display_output_messages() is called
  *
- * @param  string|int  $message_id     ID of the message as defined in $messages in 'include/global_arrays.php'
- * @param  string      $message        Text of the message to be displayed
- * @param  int         $message_level  Level of the message to be displayed
- * @param  string|null $message_title  Title of the message to be displayed
+ * @param mixed  $message_id    ID of the message as defined in $messages in 'include/global_arrays.php'
+ * @param string $message       Text of the message to be displayed
+ * @param int    $message_level Level of the message to be displayed
+ * @param mixed  $message_title Title of the message to be displayed
  *
  * @return bool
  */
-function raise_message(string|int $message_id, string $message = '', int $message_level = MESSAGE_LEVEL_NONE, string|null $message_title = null) : bool {
+function raise_message(mixed $message_id, string $message = '', int $message_level = MESSAGE_LEVEL_NONE, mixed $message_title = null) : bool {
 	global $messages, $no_http_headers;
 
 	// This function should always exist, if not its an invalid install
@@ -1110,14 +1106,14 @@ function raise_message(string|int $message_id, string $message = '', int $messag
 				$message_level = MESSAGE_LEVEL_ERROR;
 				$sessMessage   = $_SESSION[$message_id];
 
-				/* Is the message an array ? */
+				// Is the message an array ?
 				if (is_array($sessMessage)) {
-					/* Do we have the message element to set the text ? */
+					// Do we have the message element to set the text ?
 					if (!empty($sessMessage['message'])) {
 						$message = $sessMessage['message'];
 					}
 
-					/* Do we have the level element to set the level ? */
+					// Do we have the level element to set the level ?
 					if (!empty($sessMessage['level'])) {
 						$message_level = $sessMessage['level'];
 					}
@@ -1126,7 +1122,7 @@ function raise_message(string|int $message_id, string $message = '', int $messag
 				}
 			}
 
-			/* The message is still empty? */
+			// The message is still empty?
 			if (empty($message)) {
 				$message       = __('Message Not Found.');
 				$message_level = MESSAGE_LEVEL_ERROR;
@@ -1142,7 +1138,8 @@ function raise_message(string|int $message_id, string $message = '', int $messag
 		$_SESSION[SESS_MESSAGES] = [];
 	}
 
-	$final_message                        = ['message' => $message, 'level' => $message_level, 'title' => $message_title];
+	$final_message = ['message' => $message, 'level' => $message_level, 'title' => $message_title];
+
 	$final_message['title']               = get_message_title($final_message);
 	$_SESSION[SESS_MESSAGES][$message_id] = $final_message;
 
@@ -1161,10 +1158,10 @@ function raise_message(string|int $message_id, string $message = '', int $messag
  * Note, this function assumes strings are already escaped when being
  * called.
  *
- * @param  string The title for the dialog title bar
- * @param  string Header section for the message
- * @param  string The actual error message to display
- * @param  int    The level to be displayed at
+ * @param string $title   The title for the dialog title bar
+ * @param string $header  Header section for the message
+ * @param string $message The actual error message to display
+ * @param int    $level   The level to be displayed at
  *
  * @return void
  */
@@ -1189,9 +1186,9 @@ function raise_message_javascript(string $title, string $header, string $message
  * Displays all of the cached messages from the raise_message() function and clears
  * the message cache
  *
- * @return string|false JSON encoded array of messages to be displayed to the user, false if no messages
+ * @return mixed JSON encoded array of messages to be displayed to the user, false if no messages
  */
-function display_output_messages() : string|false {
+function display_output_messages() : mixed {
 	$debug_message   = debug_log_return('new_graphs');
 	$output_messages = [];
 	$final_messages  = [];
@@ -1267,6 +1264,8 @@ function display_custom_error_message(string $message) : void {
  * @return bool Returns false if the session_status function does not exist.
  */
 function clear_messages() : bool {
+	global $no_http_headers;
+
 	// This function should always exist, if not its an invalid install
 	if (function_exists('session_status')) {
 		$need_session = (session_status() == PHP_SESSION_NONE) && (!isset($no_http_headers));
@@ -1284,17 +1283,19 @@ function clear_messages() : bool {
 	if ($need_session) {
 		cacti_session_close();
 	}
+
 	return true;
 }
 
 /**
  * kill_session_var - kills a session variable using unset()
+ *
  * @param string $var_name
  *
  * @return void
  */
 function kill_session_var(string $var_name) : void {
-	/* register_global = on: reset local settings cache so the user sees the new settings */
+	// register_global = on: reset local settings cache so the user sees the new settings
 	unset($_SESSION[$var_name]);
 	unset($var_name);
 }
@@ -1329,13 +1330,13 @@ function force_session_data() : bool {
  * '$arr[0] = array('id' => 23, 'name' => 'blah')' to the form
  * '$arr = array(23 => 'blah')'
  *
- * @param  mixed  $array		The original array to manipulate
- * @param  string $key		The name of the key
- * @param  string $key_value	The name of the key value
+ * @param mixed  $array     The original array to manipulate
+ * @param string $key       The name of the key
+ * @param mixed  $key_value The name of the key value
  *
  * @return array the modified array
  */
-function array_rekey(mixed $array, string $key, mixed $key_value): array {
+function array_rekey(mixed $array, string $key, mixed $key_value) : array {
 	$ret_array = [];
 
 	if (is_array($array)) {
@@ -1377,9 +1378,9 @@ function cacti_log_file() : string {
  * internally so do not refresh if called again after
  * updating the value.
  *
- * @return int|null
+ * @return mixed
  */
-function get_selective_log_level() : int|null {
+function get_selective_log_level() : mixed {
 	static $force_level = null;
 
 	if ($force_level !== null) {
@@ -1400,10 +1401,10 @@ function get_selective_log_level() : int|null {
 		$dir_name     = __DIR__;
 	}
 
-	/* initialize the force level to unset */
+	// initialize the force level to unset
 	$force_level = -1;
 
-	/* see if any Cacti files are in debug level, and set the level */
+	// see if any Cacti files are in debug level, and set the level
 	$debug_files = read_config_option('selective_debug');
 
 	if ($debug_files != '') {
@@ -1414,7 +1415,7 @@ function get_selective_log_level() : int|null {
 		}
 	}
 
-	/* Check for Plugin files in debug next */
+	// Check for Plugin files in debug next
 	if (str_contains($dir_name, 'plugins')) {
 		$debug_plugins = read_config_option('selective_plugin_debug');
 
@@ -1437,14 +1438,14 @@ function get_selective_log_level() : int|null {
 /**
  * cacti_log - logs a string to Cacti's log file or optionally to the browser
  *
- * @param string $string - the string to append to the log file
- * @param bool $output - whether to output the log line to the browser using print() or not
- * @param string $environ - tells from where the script was called from
- * @param int $level - only log if above the specified log level
+ * @param mixed  $string  The string to append to the log file or a json array which will be encoded
+ * @param bool   $output  Whether to output the log line to the browser using print() or not
+ * @param string $environ Tells from where the script was called from
+ * @param mixed  $level   Only log if above the specified log level
  *
  * @return bool
  */
-function cacti_log(string $string, bool $output = false, string $environ = 'CMDPHP', int|string $level = '') : bool {
+function cacti_log(mixed $string, bool $output = false, string $environ = 'CMDPHP', mixed $level = '') : bool {
 	global $database_log;
 
 	static $start = null;
@@ -1461,8 +1462,8 @@ function cacti_log(string $string, bool $output = false, string $environ = 'CMDP
 	}
 
 	if ($depth > 1) {
-		print "Recursion Loop detected.  Check Database" . PHP_EOL;
-		print "Message: " . trim($string) . PHP_EOL;
+		print 'Recursion Loop detected.  Check Database' . PHP_EOL;
+		print 'Message: ' . trim($string) . PHP_EOL;
 		exit;
 	}
 
@@ -1482,11 +1483,11 @@ function cacti_log(string $string, bool $output = false, string $environ = 'CMDP
 	$oprefix      = '';
 	$omessage     = '';
 
-	if (defined('POLLER_LOG_LEVEL') && POLLER_LOG_LEVEL != -1) {
+	if (defined('POLLER_LOG_LEVEL') && POLLER_LOG_LEVEL != -1) { // @phpstan-ignore-line
 		$level = POLLER_LOG_LEVEL;
 	}
 
-	/* only log if the specific level is reached, developer debug is special low + specific devdbg calls */
+	// only log if the specific level is reached, developer debug is special low + specific devdbg calls
 	if ($force_level == -1) {
 		if ($level != '') {
 			$logVerbosity = read_config_option('log_verbosity');
@@ -1513,7 +1514,7 @@ function cacti_log(string $string, bool $output = false, string $environ = 'CMDP
 
 	cacti_system_zone_set();
 
-	/* fill in the current date for printing in the log */
+	// fill in the current date for printing in the log
 	if (defined('CACTI_DATE_TIME_FORMAT')) {
 		$date = date(CACTI_DATE_TIME_FORMAT);
 	} else {
@@ -1522,11 +1523,11 @@ function cacti_log(string $string, bool $output = false, string $environ = 'CMDP
 
 	cacti_browser_zone_set();
 
-	/* determine how to log data */
+	// determine how to log data
 	$logdestination = read_config_option('log_destination');
 	$logfile        = cacti_log_file();
 
-	/* format the message */
+	// format the message
 	if ($environ == 'POLLER') {
 		$prefix = "$date - " . ($environ != '' ? "$environ: " : '') . 'Poller[' . POLLER_ID . '] PID[' . getmypid() . '] ';
 
@@ -1541,7 +1542,7 @@ function cacti_log(string $string, bool $output = false, string $environ = 'CMDP
 		}
 	}
 
-	/* Log to Logfile */
+	// Log to Logfile
 	$message = clean_up_lines($string) . PHP_EOL;
 
 	if ($output) {
@@ -1549,7 +1550,7 @@ function cacti_log(string $string, bool $output = false, string $environ = 'CMDP
 	}
 
 	if (($logdestination == 1 || $logdestination == 2) && read_config_option('log_verbosity') != POLLER_VERBOSITY_NONE) {
-		/* print the data to the log (append) */
+		// print the data to the log (append)
 		$fp = @fopen($logfile, 'a');
 
 		if ($fp) {
@@ -1559,8 +1560,8 @@ function cacti_log(string $string, bool $output = false, string $environ = 'CMDP
 		}
 	}
 
-	/* Log to Syslog/Eventlog */
-	/* Syslog is currently Unstable in Win32 */
+	// Log to Syslog/Eventlog
+	// Syslog is currently Unstable in Win32
 	if ($logdestination == 2 || $logdestination == 3) {
 		$log_type = '';
 
@@ -1593,17 +1594,17 @@ function cacti_log(string $string, bool $output = false, string $environ = 'CMDP
 		}
 	}
 
-	/* print output to standard out if required */
+	// print output to standard out if required
 	if ($output == true && isset($_SERVER['argv'][0])) {
 		print $omessage;
 	}
 
 	$database_log = $last_log;
 
-	if (1 == 0) {
+	$proceed = false;
+
+	if ($proceed) {
 		$limit = $skip = 0;
-		$skip  = $skip >= 0 ? $skip : 1;
-		$limit = $limit > 0 ? ($limit + $skip) : 0;
 
 		$callers = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, $limit);
 
@@ -1627,7 +1628,7 @@ function cacti_log(string $string, bool $output = false, string $environ = 'CMDP
 				$file = $line;
 			}
 
-			$func = $c['function'].'()';
+			$func = $c['function'] . '()';
 
 			if (isset($c['class'])) {
 				$func = $c['class'] . $c['type'] . $func;
@@ -1653,19 +1654,19 @@ function cacti_log(string $string, bool $output = false, string $environ = 'CMDP
  * It is used in 0.8.6 to speed the viewing of the Cacti log file, which
  * can be problematic in the 0.8.6 branch.
  *
- * @param  string      $file_name    The name of the file to tail
- * @param  int         $line_cnt     The number of lines to count
- * @param  int|null    $message_type The type of message to return
- * @param  string|null $filter       The filtering expression to search for
- * @param  int|null    $page_nr      The page we want to show rows for
- * @param  int|null    $total_rows   The total number of rows in the logfile
- * @param  bool|null   $matches      Match or does not match the filter
- * @param  bool|null   $expand_text  Expand text to perform replacements
- * @param  int         $reverse      1 => Normal tail, 2 => Reverse tail
+ * @param string $file_name    The name of the file to tail
+ * @param int    $line_cnt     The number of lines to count
+ * @param mixed  $message_type The type of message to return
+ * @param mixed  $filter       The filtering expression to search for
+ * @param mixed  $page_nr      The page we want to show rows for
+ * @param mixed  $total_rows   The total number of rows in the logfile
+ * @param mixed  $matches      Match or does not match the filter
+ * @param mixed  $expand_text  Expand text to perform replacements
+ * @param int    $reverse      1 => Normal tail, 2 => Reverse tail
  *
  * @return array
  */
-function tail_file(string $file_name, int $number_of_lines, int|null $message_type = -1, string|null $filter = '', int|null &$page_nr = 1, int|null &$total_rows = 0, bool|null $matches = true, bool|null $expand_text = false, int $reverse = 1) : array {
+function tail_file(string $file_name, int $line_cnt, mixed $message_type = -1, mixed $filter = '', mixed &$page_nr = 1, mixed &$total_rows = 0, mixed $matches = true, mixed $expand_text = false, int $reverse = 1) : array {
 	if (!file_exists($file_name)) {
 		touch($file_name);
 
@@ -1680,7 +1681,7 @@ function tail_file(string $file_name, int $number_of_lines, int|null $message_ty
 
 	$fp = fopen($file_name, 'r');
 
-	/* Count all lines in the logfile */
+	// Count all lines in the logfile
 	$total_rows    = 0;
 	$line_no       = 0;
 	$display_line  = [];
@@ -1717,16 +1718,16 @@ function tail_file(string $file_name, int $number_of_lines, int|null $message_ty
 	}
 
 	// Reset the page count to 1 if the number of lines is exceeded
-	if (($page_nr - 1) * $number_of_lines > $total_rows) {
-		set_request_var('page', 1);
+	if (($page_nr - 1) * $line_cnt > $total_rows) {
+		srv('page', 1);
 		$page_nr = 1;
 	}
 
-	/* rewind file pointer, to start all over */
+	// rewind file pointer, to start all over
 	rewind($fp);
 
-	$start = $total_rows - ($page_nr * $number_of_lines);
-	$end   = $start + $number_of_lines;
+	$start = $total_rows - ($page_nr * $line_cnt);
+	$end   = $start + $line_cnt;
 
 	if ($start < 0) {
 		$start = 0;
@@ -1734,7 +1735,7 @@ function tail_file(string $file_name, int $number_of_lines, int|null $message_ty
 
 	force_session_data();
 
-	/* load up the lines into an array */
+	// load up the lines into an array
 	$file_array = [];
 	$i          = 0;
 	$line_no    = 0;
@@ -1777,12 +1778,12 @@ function tail_file(string $file_name, int $number_of_lines, int|null $message_ty
 /**
  * determine_display_log_entry - function to determine if we display the line
  *
- * @param  int $message_type
- * @param  string $line
- * @param  string $filter
- * @param  bool $matches
+ * @param int    $message_type
+ * @param string $line
+ * @param string $filter
+ * @param bool   $matches
  *
- * @return mixed should the entry be displayed
+ * @return mixed Should the entry be displayed
  */
 function determine_display_log_entry(int $message_type, string $line, string $filter, bool $matches = true) : mixed {
 	static $thold_enabled = null;
@@ -1791,17 +1792,19 @@ function determine_display_log_entry(int $message_type, string $line, string $fi
 		$thold_enabled = api_plugin_is_enabled('thold');
 	}
 
-	/* determine if we are to display the line */
+	$display = '';
+
+	// determine if we are to display the line
 	switch ($message_type) {
-		case 1: /* stats only */
+		case 1: // stats only
 			$display = (str_contains($line, 'STATS'));
 
 			break;
-		case 2: /* warnings only */
+		case 2: // warnings only
 			$display = (str_contains($line, 'WARN'));
 
 			break;
-		case 3: /* warnings + */
+		case 3: // warnings +
 			$display = (str_contains($line, 'WARN'));
 
 			if (!$display) {
@@ -1817,11 +1820,11 @@ function determine_display_log_entry(int $message_type, string $line, string $fi
 			}
 
 			break;
-		case 4: /* errors only */
+		case 4: // errors only
 			$display = (str_contains($line, 'ERROR'));
 
 			break;
-		case 5: /* errors + */
+		case 5: // errors +
 			$display = (str_contains($line, 'ERROR'));
 
 			if (!$display) {
@@ -1833,27 +1836,27 @@ function determine_display_log_entry(int $message_type, string $line, string $fi
 			}
 
 			break;
-		case 6: /* debug only */
+		case 6: // debug only
 			$display = (str_contains($line, 'DEBUG') && !str_contains($line, ' SQL '));
 
 			break;
-		case 7: /* sql calls only */
+		case 7: // sql calls only
 			$display = (str_contains($line, ' SQL '));
 
 			break;
-		case 8: /* AutoM8 Only */
+		case 8: // AutoM8 Only
 			$display = (str_contains($line, 'AUTOM8'));
 
 			break;
-		case 9: /* Non Stats */
+		case 9: // Non Stats
 			$display = (!str_contains($line, 'STATS'));
 
 			break;
-		case 10: /* Boost Only*/
+		case 10: // Boost Only
 			$display = (str_contains($line, 'BOOST'));
 
 			break;
-		case 11: /* device events + */
+		case 11: // device events +
 			$display = (str_contains($line, 'HOST EVENT'));
 
 			if (!$display) {
@@ -1865,7 +1868,7 @@ function determine_display_log_entry(int $message_type, string $line, string $fi
 			}
 
 			break;
-		case 12: /* Assertions */
+		case 12: // Assertions
 			$display = (str_contains($line, 'ASSERT FAILED'));
 
 			if (!$display) {
@@ -1873,15 +1876,15 @@ function determine_display_log_entry(int $message_type, string $line, string $fi
 			}
 
 			break;
-		case 13: /* SECURITY */
+		case 13: // SECURITY
 			$display = (str_contains($line, 'SECURITY'));
 
 			break;
-		case -1: /* all */
+		case -1: // all
 			$display = true;
 
 			break;
-		default: /* all other lines */
+		default: // all other lines
 			if ($thold_enabled) {
 				if ($message_type == 99) {
 					$display = (str_contains($line, 'THOLD: Threshold'));
@@ -1891,7 +1894,7 @@ function determine_display_log_entry(int $message_type, string $line, string $fi
 			}
 	}
 
-	/* match any lines that match the search string */
+	// match any lines that match the search string
 	if ($display === true && $filter != '') {
 		if ($matches) {
 			if (validate_is_regex($filter) && preg_match('/' . $filter . '/i', $line)) {
@@ -1917,11 +1920,11 @@ function determine_display_log_entry(int $message_type, string $line, string $fi
  * update_host_status - updates the host table with information about its status.
  * It will also output to the appropriate log file when an event occurs.
  *
- * @param int $status - the status of the host (Up/Down)
- * @param int $host_id - the host ID for the results
- * @param Net_Ping $ping - results of the ping command.
- * @param int $ping_availability - the availability of the ping
- * @param bool $print_data_to_stdout - whether to print the data to the standard output
+ * @param int      $status               The status of the host (Up/Down)
+ * @param int      $host_id              The host ID for the results
+ * @param Net_Ping $ping                 Results of the ping command.
+ * @param int      $ping_availability    The availability of the ping
+ * @param bool     $print_data_to_stdout Whether to print the data to the standard output
  *
  * @return void
  */
@@ -1932,7 +1935,7 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
 
 	$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', [$host_id]);
 
-	/* initialize fail and recovery dates correctly */
+	// initialize fail and recovery dates correctly
 	if ($host['status_fail_date'] == '') {
 		$host['status_fail_date'] = 0;
 	} else {
@@ -1946,17 +1949,17 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
 	}
 
 	if ($status == HOST_DOWN) {
-		/* Set initial date down. BUGFIX */
+		// Set initial date down. BUGFIX
 		if (empty($host['status_fail_date'])) {
 			$host['status_fail_date'] = time();
 		}
 
-		/* update total polls, failed polls and availability */
+		// update total polls, failed polls and availability
 		$host['failed_polls']++;
 		$host['total_polls']++;
 		$host['availability'] = 100 * ($host['total_polls'] - $host['failed_polls']) / $host['total_polls'];
 
-		/* determine the error message to display */
+		// determine the error message to display
 		if (($ping_availability == AVAIL_SNMP_AND_PING) || ($ping_availability == AVAIL_SNMP_OR_PING)) {
 			if (($host['snmp_community'] == '') && ($host['snmp_version'] != 3)) {
 				/* snmp version 1/2 without community string assume SNMP test to be successful
@@ -1975,14 +1978,14 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
 			$host['status_last_error'] = $ping->ping_response;
 		}
 
-		/* determine if to send an alert and update remainder of statistics */
+		// determine if to send an alert and update remainder of statistics
 		if ($host['status'] == HOST_UP) {
-			/* increment the event failure count */
+			// increment the event failure count
 			$host['status_event_count']++;
 
-			/* if it's time to issue an error message, indicate so */
+			// if it's time to issue an error message, indicate so
 			if ($host['status_event_count'] >= $ping_failure_count) {
-				/* host is now down, flag it that way */
+				// host is now down, flag it that way
 				$host['status'] = HOST_DOWN;
 
 				$issue_log_message = true;
@@ -1992,18 +1995,18 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
 				$host['status_event_count'] = 0;
 			}
 		} elseif ($host['status'] == HOST_RECOVERING) {
-			/* host is recovering, put back in failed state */
+			// host is recovering, put back in failed state
 			$host['status_event_count'] = 1;
 			$host['status']             = HOST_DOWN;
 		} elseif ($host['status'] == HOST_UNKNOWN) {
-			/* host was unknown and now is down */
+			// host was unknown and now is down
 			$host['status']             = HOST_DOWN;
 			$host['status_event_count'] = 0;
 		} else {
 			$host['status_event_count']++;
 		}
 	} else {
-		/* host is up.  Update total polls and availability */
+		// host is up.  Update total polls and availability
 		$host['total_polls']++;
 		$host['availability'] = 100 * ($host['total_polls'] - $host['failed_polls']) / $host['total_polls'];
 
@@ -2021,13 +2024,13 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
 			$ping->ping_status = 0.000;
 		}
 
-		/* determine the ping statistic to set and do so */
+		// determine the ping statistic to set and do so
 		if (($ping_availability == AVAIL_SNMP_AND_PING) ||
 			($ping_availability == AVAIL_SNMP_OR_PING)) {
 			if (($host['snmp_community'] == '') && ($host['snmp_version'] != 3)) {
 				$ping_time = 0.000;
 			} else {
-				/* calculate the average of the two times */
+				// calculate the average of the two times
 				$ping_time = ($ping->snmp_status + $ping->ping_status) / 2;
 			}
 		} elseif ($ping_availability == AVAIL_SNMP) {
@@ -2042,28 +2045,28 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
 			$ping_time = $ping->ping_status;
 		}
 
-		/* update times as required */
+		// update times as required
 		if (is_numeric($ping_time)) {
 			$host['cur_time'] = $ping_time;
 
-			/* maximum time */
+			// maximum time
 			if ($ping_time > $host['max_time']) {
 				$host['max_time'] = $ping_time;
 			}
 
-			/* minimum time */
+			// minimum time
 			if ($ping_time < $host['min_time']) {
 				$host['min_time'] = $ping_time;
 			}
 
-			/* average time */
+			// average time
 			$host['avg_time'] = (($host['total_polls'] - 1 - $host['failed_polls'])
 				* $host['avg_time'] + $ping_time) / ($host['total_polls'] - $host['failed_polls']);
 		}
 
-		/* the host was down, now it's recovering */
+		// the host was down, now it's recovering
 		if ($host['status'] == HOST_DOWN || $host['status'] == HOST_RECOVERING) {
-			/* just up, change to recovering */
+			// just up, change to recovering
 			if ($host['status'] == HOST_DOWN) {
 				$host['status']             = HOST_RECOVERING;
 				$host['status_event_count'] = 1;
@@ -2071,9 +2074,9 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
 				$host['status_event_count']++;
 			}
 
-			/* if it's time to issue a recovery message, indicate so */
+			// if it's time to issue a recovery message, indicate so
 			if ($host['status_event_count'] >= $ping_recovery_count) {
-				/* host is up, flag it that way */
+				// host is up, flag it that way
 				$host['status'] = HOST_UP;
 
 				$issue_log_message = true;
@@ -2082,16 +2085,16 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
 				$host['status_event_count'] = 0;
 			}
 		} else {
-			/* host was unknown and now is up */
+			// host was unknown and now is up
 			$host['status'] = HOST_UP;
 
 			$host['status_event_count'] = 0;
 		}
 	}
 
-	/* if the user wants a flood of information then flood them */
+	// if the user wants a flood of information then flood them
 	if ($host['status'] == HOST_UP || $host['status'] == HOST_RECOVERING) {
-		/* log ping result if we are to use a ping for reachability testing */
+		// log ping result if we are to use a ping for reachability testing
 		if ($ping_availability == AVAIL_SNMP_AND_PING) {
 			cacti_log("Device[$host_id] PING: " . $ping->ping_response, $print_data_to_stdout, 'PING', POLLER_VERBOSITY_HIGH);
 			cacti_log("Device[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout, 'PING', POLLER_VERBOSITY_HIGH);
@@ -2115,7 +2118,7 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
 		}
 	}
 
-	/* if there is supposed to be an event generated, do it */
+	// if there is supposed to be an event generated, do it
 	if ($issue_log_message) {
 		if ($host['status'] == HOST_DOWN) {
 			cacti_log("Device[$host_id] ERROR: HOST EVENT: Device is DOWN Message: " . $host['status_last_error'], $print_data_to_stdout);
@@ -2161,7 +2164,7 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
  * is_hexadecimal - test whether a string represents a hexadecimal number,
  * ignoring space and tab, and case insensitive.
  *
- * @param string $result - the string to test
+ * @param string $result The string to test
  *
  * @return bool
  */
@@ -2186,7 +2189,7 @@ function is_hexadecimal(string $result) : bool {
 /**
  * strip_domain - removes the domain from a hostname
  *
- * @param string $hostname - the hostname for a device
+ * @param string $hostname The hostname for a device
  *
  * @return string the stripped hostname
  */
@@ -2207,11 +2210,11 @@ function strip_domain(string $hostname) : string {
 /**
  * is_mac_address - determines if the result value is a mac address
  *
- * @param string $result - some string to be evaluated
+ * @param string $result Wome string to be evaluated
  *
- * @return string|bool either to result is a mac address of not
+ * @return mixed Either to result is a mac address of not
  */
-function is_mac_address(string $result) : string|bool {
+function is_mac_address(string $result) : mixed {
 	if (!defined('FILTER_VALIDATE_MAC')) {
 		if (preg_match('/^([0-9a-f]{1,2}[\.:-]) {5}([0-9a-f]{1,2})$/i', $result)) {
 			return true;
@@ -2229,7 +2232,7 @@ function is_mac_address(string $result) : string|bool {
  * WARNING: The passed parameter may be altered by
  * this function
  *
- * @param  string  $result
+ * @param string $result
  *
  * @return bool
  */
@@ -2278,15 +2281,15 @@ function is_hex_string(string &$result) : bool {
 /**
  * prepare_validate_result - determines if the result value is valid or not.  If not valid returns a "U"
  *
- * @param string $result - the result from the poll, the result can be modified in the call
+ * @param string $result The result from the poll, the result can be modified in the call
  *
- * @return mixed either to result is valid or not
+ * @return mixed Either to result is valid or not
  */
 function prepare_validate_result(string &$result) : mixed {
-	/* first trim the string */
+	// first trim the string
 	$result = trim($result, "'\"\n\r");
 
-	/* clean off ugly non-numeric data */
+	// clean off ugly non-numeric data
 	if (is_numeric($result)) {
 		dsv_log('prepare_validate_result', 'data is numeric', POLLER_VERBOSITY_MEDIUM);
 
@@ -2306,7 +2309,7 @@ function prepare_validate_result(string &$result) : mixed {
 	}
 
 	if (substr_count($result, ':') || substr_count($result, '!')) {
-		/* looking for name value pairs */
+		// looking for name value pairs
 		if (substr_count($result, ' ') == 0) {
 			dsv_log('prepare_validate_result', 'data has no spaces', POLLER_VERBOSITY_MEDIUM);
 
@@ -2342,17 +2345,17 @@ function prepare_validate_result(string &$result) : mixed {
 /**
  * strip_alpha - remove non-numeric data from a string and return the numeric part
  *
- * @param string $string - the string to be evaluated
+ * @param mixed $string The string to be evaluated
  *
- * @return string|bool either the numeric value or false if not numeric
+ * @return mixed Either the numeric value or false if not numeric
  */
-function strip_alpha(string $string) : string|bool {
-	/* strip all non numeric data */
+function strip_alpha(mixed $string) : mixed {
+	// strip all non numeric data
 	$string = trim(preg_replace('/[^0-9,.+-]/', '', $string));
 
-	/* check the easy cases first */
-	/* it has no delimiters, and no space, therefore, must be numeric */
-	if (is_numeric($string) || is_float($string)) {
+	// check the easy cases first
+	// it has no delimiters, and no space, therefore, must be numeric
+	if (is_numeric($string)) {
 		return $string;
 	} else {
 		return false;
@@ -2362,9 +2365,9 @@ function strip_alpha(string $string) : string|bool {
 /**
  * is_valid_pathname - takes a pathname are verifies it matches file name rules
  *
- * @param string $path - the pathname to be tested
+ * @param string $path The pathname to be tested
  *
- * @return bool either true or false
+ * @return bool Either true or false
  */
 function is_valid_pathname($path) {
 	if (preg_match('/^([a-zA-Z0-9\_\.\-\\\:\/]+)$/', trim($path))) {
@@ -2377,13 +2380,13 @@ function is_valid_pathname($path) {
 /**
  * dsv_log - provides debug logging when tracing Graph/Data Source creation
  *
- * @param string $message - the message to output to the log
- * @param array|string|null $data  - the data to be carried with the message
- * @param int $level - the level of verbosity to use
+ * @param string $message The message to output to the log
+ * @param mixed  $data    The data to be carried with the message
+ * @param int    $level   The level of verbosity to use
  *
  * @return void
  */
-function dsv_log($message, $data = null, $level = POLLER_VERBOSITY_LOW) {
+function dsv_log(string $message, mixed $data = null, int $level = POLLER_VERBOSITY_LOW) : void {
 	if (read_config_option('data_source_trace') == 'on') {
 		cacti_log(($message . ' = ') . (is_array($data) ? json_encode($data) : ($data ?? 'NULL')), false, 'DSTRACE', $level);
 	}
@@ -2396,15 +2399,15 @@ function dsv_log($message, $data = null, $level = POLLER_VERBOSITY_LOW) {
  * function is used by automation to prevent the creation of graphs
  * that will never generate data.
  *
- * @param  int    $graph_template_id - The Graph Template to test
- * @param  int    $host_id - The Host to test
- * @param  int    $snmp_query_id
- * @param  string $snmp_index
- * @param  array  $values
+ * @param int    $graph_template_id The Graph Template to test
+ * @param int    $host_id           The Host to test
+ * @param int    $snmp_query_id
+ * @param string $snmp_index
+ * @param array  $values
  *
  * @return bool true or false
  */
-function test_data_sources($graph_template_id, $host_id, $snmp_query_id = 0, $snmp_index = '', $values = []) {
+function test_data_sources(int $graph_template_id, int $host_id, int $snmp_query_id = 0, string $snmp_index = '', array $values = []) : bool {
 	$data_template_ids = array_rekey(
 		db_fetch_assoc_prepared('SELECT DISTINCT data_template_id
 			FROM graph_templates_item AS gti
@@ -2443,19 +2446,20 @@ function test_data_sources($graph_template_id, $host_id, $snmp_query_id = 0, $sn
  * function is used by automation to prevent the creation of graphs
  * that will never generate data.
  *
- * @param  int    $graph_template_id - The Graph Template to test
- * @param  int    $host_id - The Host to test
- * @param  int    $data_template_id
- * @param  int    $snmp_query_id
- * @param  string $snmp_index
- * @param  array  $suggested_vals
+ * @param int    $data_template_id The Graph Template to test
+ * @param int    $host_id          The Host to test
+ * @param int    $snmp_query_id    The data query id
+ * @param string $snmp_index       The data query index
+ * @param array  $suggested_vals
  *
- * @return bool true or false
+ * @return bool - true or false
  */
-function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp_index = '', $suggested_vals = []) {
+function test_data_source(int $data_template_id, int $host_id, int $snmp_query_id = 0, string $snmp_index = '', array $suggested_vals = []) : bool {
 	global $called_by_script_server;
 
 	$called_by_script_server = true;
+
+	$outputs = [];
 
 	dsv_log('test_data_source', ['data_template_id' => $data_template_id, 'host_id' => $host_id, 'snmp_query_id' => $snmp_query_id, 'snmp_index' => $snmp_index, 'suggested_vals' => $suggested_vals]);
 
@@ -2483,7 +2487,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 	if (cacti_sizeof($data_input) && $data_input['active'] == 'on') {
 		$data_template_data_id = $data_input['data_template_data_id'];
 
-		/* we have to perform some additional sql queries if this is a 'query' */
+		// we have to perform some additional sql queries if this is a 'query'
 		if (($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) ||
 			($data_input['type_id'] == DATA_INPUT_TYPE_SCRIPT_QUERY) ||
 			($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER)) {
@@ -2494,7 +2498,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 			$params   = [];
 			$params[] = $data_input['data_template_id'];
 
-			if ($field['output_type'] != '') {
+			if (isset($field['output_type']) && $field['output_type'] != '') {
 				$output_type_sql = ' AND sqgr.snmp_query_graph_id = ?';
 				$params[]        = $field['output_type'];
 			} else {
@@ -2604,7 +2608,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 		}
 
 		if ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP) {
-			/* get host fields first */
+			// get host fields first
 			$host_fields_sql = 'SELECT ' . SQL_NO_CACHE . ' dif.id, dif.type_code, did.value
 				FROM data_input_fields AS dif
 				LEFT JOIN data_input_data AS did
@@ -2683,7 +2687,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 		if ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) {
 			$snmp_queries = get_data_query_array($snmp_query_id);
 
-			/* get host fields first */
+			// get host fields first
 			$host_fields = array_rekey(
 				db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.id, dif.type_code, did.value
 					FROM data_input_fields AS dif
@@ -2766,7 +2770,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 			($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER)) {
 			$script_queries = get_data_query_array($snmp_query_id);
 
-			/* get host fields first */
+			// get host fields first
 			$host_fields = array_rekey(
 				db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.id, dif.type_code, did.value
 					FROM data_input_fields AS dif
@@ -2873,12 +2877,12 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
  * given data template for testing. this function does not work on
  * SNMP actions, only script-based actions
  *
- * @param  int $data_template_id    The ID of the data template
- * @param  int $host_id             The ID of the host device
+ * @param int $data_template_id The ID of the data template
+ * @param int $host_id          The ID of the host device
  *
- * @return string|bool the full script path or (bool) false for an error
+ * @return mixed The full script path or (bool) false for an error
  */
-function get_full_test_script_path(int $data_template_id, int $host_id):string|false {
+function get_full_test_script_path(int $data_template_id, int $host_id) : mixed {
 	$data_source = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . '
 		dtd.id,
 		dtd.data_input_id,
@@ -2933,11 +2937,11 @@ function get_full_test_script_path(int $data_template_id, int $host_id):string|f
  * get_full_script_path - gets the full path to the script to execute to obtain data for a
  * given data source. this function does not work on SNMP actions, only script-based actions
  *
- * @param  int $local_data_id The ID of the data source
+ * @param int $local_data_id The ID of the data source
  *
- * @return string|false the full script path or (bool) false for an error
+ * @return mixed The full script path or (bool) false for an error
  */
-function get_full_script_path(int $local_data_id):string|false {
+function get_full_script_path(int $local_data_id) : mixed {
 	$data_source = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' dtd.id, dtd.data_input_id,
 		di.type_id, di.input_string
 		FROM data_template_data AS dtd
@@ -2946,7 +2950,7 @@ function get_full_script_path(int $local_data_id):string|false {
 		WHERE dtd.local_data_id = ?',
 		[$local_data_id]);
 
-	/* snmp-actions don't have paths */
+	// snmp-actions don't have paths
 	if (($data_source['type_id'] == DATA_INPUT_TYPE_SNMP) || ($data_source['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY)) {
 		return false;
 	}
@@ -2987,11 +2991,11 @@ function get_full_script_path(int $local_data_id):string|false {
  * get_data_source_item_name - gets the name of a data source item or generates a new one if one does not
  * already exist
  *
- * @param  int $data_template_rrd_id - (int) the ID of the data source item
+ * @param int $data_template_rrd_id The ID of the data source item
  *
- * @return string|false the name of the data source item or an empty string for an error
+ * @return mixed The name of the data source item or an empty string for an error
  */
-function get_data_source_item_name(int $data_template_rrd_id):string|false {
+function get_data_source_item_name(int $data_template_rrd_id) : mixed {
 	if (empty($data_template_rrd_id)) {
 		return '';
 	}
@@ -3005,11 +3009,11 @@ function get_data_source_item_name(int $data_template_rrd_id):string|false {
 		[$data_template_rrd_id]
 	);
 
-	/* use the cacti ds name by default or the user defined one, if entered */
+	// use the cacti ds name by default or the user defined one, if entered
 	if (empty($data_source['data_source_name'])) {
-		/* limit input to 19 characters */
+		// limit input to 19 characters
 		$data_source_name = clean_up_name($data_source['name']);
-		$data_source_name = substr(strtolower($data_source_name), 0, (19 - strlen('' .$data_template_rrd_id))) . $data_template_rrd_id;
+		$data_source_name = substr(strtolower($data_source_name), 0, (19 - strlen('' . $data_template_rrd_id))) . $data_template_rrd_id;
 
 		return $data_source_name;
 	} else {
@@ -3020,12 +3024,12 @@ function get_data_source_item_name(int $data_template_rrd_id):string|false {
 /**
  * Gets the full path to the .rrd file associated with a given data source
  *
- * @param  int  $local_data_id  The ID of the data source
- * @param  bool $expand_paths   Whether to expand the <path_rra> variable into its full path or not
+ * @param int  $local_data_id The ID of the data source
+ * @param bool $expand_paths  Whether to expand the <path_rra> variable into its full path or not
  *
  * @return string the full path to the data source or an empty string for an error
  */
-function get_data_source_path(int $local_data_id, bool $expand_paths): string {
+function get_data_source_path(int $local_data_id, bool $expand_paths) : string {
 	static $data_source_path_cache = [];
 
 	if (empty($local_data_id)) {
@@ -3043,7 +3047,7 @@ function get_data_source_path(int $local_data_id, bool $expand_paths): string {
 
 	if (cacti_sizeof($data_source)) {
 		if (empty($data_source['data_source_path'])) {
-			/* no custom path was specified */
+			// no custom path was specified
 			$data_source_path = generate_data_source_path($local_data_id);
 		} elseif (!strstr($data_source['data_source_path'], '/')) {
 			$data_source_path = '<path_rra>/' . $data_source['data_source_path'];
@@ -3051,7 +3055,7 @@ function get_data_source_path(int $local_data_id, bool $expand_paths): string {
 			$data_source_path = $data_source['data_source_path'];
 		}
 
-		/* whether to show the "actual" path or the <path_rra> variable name (for edit boxes) */
+		// whether to show the "actual" path or the <path_rra> variable name (for edit boxes)
 		if ($expand_paths == true) {
 			$data_source_path = str_replace('<path_rra>/', CACTI_PATH_RRA . '/', $data_source_path);
 		}
@@ -3065,15 +3069,15 @@ function get_data_source_path(int $local_data_id, bool $expand_paths): string {
 }
 
 /**
- * stri_replace - a case insensitive string replace
+ * stri_replace - A case insensitive string replace
  *
- * @param  string $find - needle
- * @param  string $replace - replace needle with this
- * @param  string $string - haystack
+ * @param string $find    Needle
+ * @param string $replace Replace needle with this
+ * @param string $string  Haystack
  *
- * @return string the original string with '$find' replaced by '$replace'
+ * @return string The original string with '$find' replaced by '$replace'
  */
-function stri_replace(string $find, string $replace, string $string):string {
+function stri_replace(string $find, string $replace, string $string) : string {
 	$parts = explode(strtolower($find), strtolower($string));
 
 	$pos = 0;
@@ -3094,11 +3098,11 @@ function stri_replace(string $find, string $replace, string $string):string {
  * Parses a string using a regular expression designed to remove
  * new lines and the spaces around them
  *
- * @param  null|string $string the string to modify/clean
+ * @param mixed $string The string to modify/clean
  *
- * @return null|string the modified string
+ * @return mixed The modified string
  */
-function clean_up_lines(string|null $string) : string|null {
+function clean_up_lines(mixed $string) : mixed {
 	if ($string !== null) {
 		$string = preg_replace('/\s*[\r\n]+\s*/',' ', $string);
 	}
@@ -3110,11 +3114,11 @@ function clean_up_lines(string|null $string) : string|null {
  * Parses a string using a series of regular expressions designed to
  * eliminate "bad" characters
  *
- * @param  null|string $string the string to modify/clean
+ * @param mixed $string The string to modify/clean
  *
- * @return null|string the modified string
+ * @return mixed The modified string
  */
-function clean_up_name(string|null $string) : string|null {
+function clean_up_name(mixed $string) : mixed {
 	if ($string !== null) {
 		$string = preg_replace('/[\s\.]+/', '_', $string);
 		$string = preg_replace('/[^a-zA-Z0-9_]+/', '', $string);
@@ -3128,11 +3132,11 @@ function clean_up_name(string|null $string) : string|null {
  * Parses a string using a series of regular expressions designed to
  * eliminate "bad" characters
  *
- * @param  null|string $string - the string to modify/clean
+ * @param mixed $string The string to modify/clean
  *
- * @return null|string the modified string
+ * @return mixed The modified string
  */
-function clean_up_file_name(string|null $string) : string|null {
+function clean_up_file_name(mixed $string) : mixed {
 	if ($string !== null) {
 		$string = preg_replace('/[\s\.]+/', '_', $string);
 		$string = preg_replace('/[^a-zA-Z0-9_-]+/', '', $string);
@@ -3146,15 +3150,15 @@ function clean_up_file_name(string|null $string) : string|null {
  * Parses a string and makes sure it contains the correct directory
  * separators based on the current operating system
  *
- * @param  null|string $path - the path to modify
+ * @param mixed $path The path to modify
  *
- * @return null|string the modified path
+ * @return mixed The modified path
  */
-function clean_up_path(string|null $path) : string|null {
-	if ($path !== null) {
+function clean_up_path(mixed $path) : mixed {
+	if ($path != '') {
 		if (CACTI_SERVER_OS == 'win32') {
 			$path = str_replace('/', '\\', $path);
-		} elseif (CACTI_SERVER_OS == 'unix' || read_config_option('using_cygwin') == 'on' || read_config_option('storage_location')) {
+		} elseif (CACTI_SERVER_OS == 'unix' || read_config_option('using_cygwin') == 'on' || intval(read_config_option('storage_location')) > 0) { // @phpstan-ignore-line
 			$path = str_replace('\\', '/', $path);
 		}
 	}
@@ -3165,11 +3169,11 @@ function clean_up_path(string|null $path) : string|null {
 /**
  * Returns the title of a data source without using the title cache
  *
- * @param  int $local_data_id - (int) the ID of the data source to get a title for
+ * @param int $local_data_id The ID of the data source to get a title for
  *
- * @return string the data source title
+ * @return string The data source title
  */
-function get_data_source_title(int $local_data_id):string {
+function get_data_source_title(int $local_data_id) : string {
 	$data = db_fetch_row_prepared('SELECT
 		dl.host_id, dl.snmp_query_id, dl.snmp_index, dl.data_template_id,
 		dtd.name, dtd.id as template_id
@@ -3183,7 +3187,7 @@ function get_data_source_title(int $local_data_id):string {
 
 	if (cacti_sizeof($data)) {
 		if (str_contains($data['name'], '|') && $data['host_id'] > 0) {
-			$data['name'] = substitute_data_input_data($data['name'], '', $local_data_id);
+			$data['name'] = substitute_data_input_data($data['name'], [], $local_data_id);
 			$title        = expand_title($data['host_id'], $data['snmp_query_id'], $data['snmp_index'], $data['name']);
 		} else {
 			$title = $data['name'];
@@ -3206,11 +3210,11 @@ function get_data_source_title(int $local_data_id):string {
  * includes all titles found durng previous calls to
  * this function in addition to those passed
  *
- * @param  array $local_data_ids
+ * @param array $local_data_ids
  *
  * @return array
  */
-function get_data_source_titles(array $local_data_ids) {
+function get_data_source_titles(array $local_data_ids) : array {
 	static $title_cache = null;
 
 	$local_data_ids = cacti_unique_ids($local_data_ids);
@@ -3233,36 +3237,34 @@ function get_data_source_titles(array $local_data_ids) {
 /**
  * Gets the description of the device in cacti host table
  *
- * @param  int $host_id the ID of the device to get a description for
+ * @param int $host_id the ID of the device to get a description for
  *
- * @return string|false the device name
+ * @return mixed the device name
  */
-function get_device_name(int $host_id):string|false {
+function get_device_name(int $host_id) : mixed {
 	return db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', [$host_id]);
 }
 
 /**
  * Gets the hex color value from the cacti colors table
  *
- * @param  int $color_id the ID of the cacti color
+ * @param int $color_id the ID of the cacti color
  *
- * @return string|false the hex color value
+ * @return mixed the hex color value
  *
  */
-function get_color(int $color_id):string|false {
+function get_color(int $color_id) : mixed {
 	return db_fetch_cell_prepared('SELECT hex FROM colors WHERE id = ?', [$color_id]);
 }
-
-// TODO: This marker is to identify where to resume typing and PHPDoc syntax updating
 
 /**
  * get_graph_title_cache - returns the title of the graph using the title cache
  *
- * @param int $local_graph_id - The ID of the graph to get the title for
+ * @param int $local_graph_id The ID of the graph to get the title for
  *
- * @return string the graph title
+ * @return mixed the graph title
  */
-function get_graph_title_cache($local_graph_id) {
+function get_graph_title_cache(int $local_graph_id) : mixed {
 	return db_fetch_cell_prepared('SELECT title_cache
 		FROM graph_templates_graph
 		WHERE local_graph_id = ?',
@@ -3272,11 +3274,11 @@ function get_graph_title_cache($local_graph_id) {
 /**
  * Returns the title of a graph without using the title cache
  *
- * @param int $local_graph_id   The ID of the graph to get a title for
+ * @param int $local_graph_id The ID of the graph to get a title for
  *
- * @return string|false     The graph title
+ * @return string The graph title
  */
-function get_graph_title($local_graph_id) {
+function get_graph_title(int $local_graph_id) : string {
 	$graph = db_fetch_row_prepared('SELECT gl.host_id, gl.snmp_query_id,
 		gl.snmp_index, gtg.local_graph_id, gtg.t_title, gtg.title
 		FROM graph_templates_graph AS gtg
@@ -3300,11 +3302,11 @@ function get_graph_title($local_graph_id) {
 
 /**
  * get_guest_account - return the guest account as defined in the system
- *   if there is one, else return 0.
+ * if there is one, else return 0.
  *
- * @return (int) the guest account if greater than 0
+ * @return int The guest account if greater than 0
  */
-function get_guest_account() {
+function get_guest_account() : int {
 	$user = db_fetch_cell_prepared('SELECT id
 		FROM user_auth
 		WHERE username = ? OR id = ?',
@@ -3319,15 +3321,14 @@ function get_guest_account() {
 
 /**
  * get_template_account - return the template account given a user.
- *   if a user is not given, provide the 'default' template account.
- *   This function is hookable by third party plugins.
+ * if a user is not given, provide the 'default' template account.
+ * This function is hookable by third party plugins.
  *
- * @param  (int|string) either the username or user_id of the user
- * @param  mixed $user
+ * @param mixed $user Either the username or user_id of the user
  *
- * @return (int) the template account if one exist for the user
+ * @return int The template account if one exist for the user
  */
-function get_template_account($user = '') {
+function get_template_account(mixed $user = '') : int {
 	if ($user == '') {
 		// no username or user_id passed, use default functionality
 		$user = db_fetch_cell_prepared('SELECT id
@@ -3368,11 +3369,11 @@ function get_template_account($user = '') {
 /**
  * get_username - returns the username for the selected user
  *
- * @param string|int $user_id - The ID of the user
+ * @param mixed $user_id The ID of the user
  *
- * @return mixed the username
+ * @return mixed The username
  */
-function get_username(string|int $user_id = 0) : mixed {
+function get_username(mixed $user_id = 0) : mixed {
 	if ($user_id == 0) {
 		$user_id = $_SESSION[SESS_USER_ID];
 	}
@@ -3383,9 +3384,9 @@ function get_username(string|int $user_id = 0) : mixed {
 /**
  * get_execution_user - returns the username of the running process
  *
- * @return mixed the username
+ * @return string The username
  */
-function get_execution_user() {
+function get_execution_user() : string {
 	if (function_exists('posix_getpwuid')) {
 		$user_info = posix_getpwuid(posix_geteuid());
 
@@ -3399,13 +3400,15 @@ function get_execution_user() {
  * generate_data_source_path - creates a new data source path from scratch using the first data source
  * item name and updates the database with the new value
  *
- * @param int $local_data_id - The ID of the data source to generate a new path for
+ * @param int $local_data_id The ID of the data source to generate a new path for
  *
  * @return mixed the new generated path
  */
 function generate_data_source_path($local_data_id) {
 	static $extended_paths = false;
 	static $pattern        = false;
+
+	$new_path = '';
 
 	if ($extended_paths === false) {
 		$extended_paths = read_config_option('extended_paths');
@@ -3415,7 +3418,7 @@ function generate_data_source_path($local_data_id) {
 		$pattern = read_config_option('extended_paths_type');
 	}
 
-	/* try any prepend the name with the host description */
+	// try any prepend the name with the host description
 	$data = db_fetch_row_prepared('SELECT dl.host_id, h.description, dl.snmp_query_id
 		FROM host AS h
 		INNER JOIN data_local AS dl
@@ -3433,7 +3436,7 @@ function generate_data_source_path($local_data_id) {
 		$data_query_id = 0;
 	}
 
-	/* put it all together using the local_data_id at the end */
+	// put it all together using the local_data_id at the end
 	if ($extended_paths == 'on') {
 		$maxdirs = read_config_option('extended_paths_hashes');
 
@@ -3451,11 +3454,13 @@ function generate_data_source_path($local_data_id) {
 			$new_path = "<path_rra>/$hash_id/$host_id/$local_data_id.rrd";
 		} elseif ($pattern == 'hash_device_dq') {
 			$new_path = "<path_rra>/$hash_id/$host_id/$data_query_id/$local_data_id.rrd";
+		} else {
+			$new_path = "<path_rra>/$local_data_id.rrd";
 		}
 	} else {
 		$host_part = strtolower(clean_up_file_name($host_name)) . '_';
 
-		/* then try and use the internal DS name to identify it */
+		// then try and use the internal DS name to identify it
 		$data_source_rrd_name = db_fetch_cell_prepared('SELECT data_source_name
 			FROM data_template_rrd
 			WHERE local_data_id = ?
@@ -3473,7 +3478,7 @@ function generate_data_source_path($local_data_id) {
 		$new_path = "<path_rra>/$host_part$ds_part" . '_' . "$local_data_id.rrd";
 	}
 
-	/* update our changes to the db */
+	// update our changes to the db
 	db_execute_prepared('UPDATE data_template_data SET data_source_path = ? WHERE local_data_id = ?', [$new_path, $local_data_id]);
 
 	return $new_path;
@@ -3484,40 +3489,42 @@ function generate_data_source_path($local_data_id) {
  * the list of available consolidation functions for the consolidation functions and returns
  * the most appropriate.  Typically, this will be the requested value
  *
- * @param  int    $local_data_id
- * @param  mixed  $requested_cf
- * @param  int    $ds_step
+ * @param mixed $local_data_id This needs to be mixed to accomodate special types that are null
+ * @param mixed $requested_cf  The requested CF in the Graph
  *
- * @return string the best cf to use
+ * @return string The best cf to use
  */
-function generate_graph_best_cf($local_data_id, $requested_cf, int $ds_step = 60): string {
+function generate_graph_best_cf(mixed $local_data_id, mixed $requested_cf) : string {
 	static $best_cf;
+
+	// Accomodate a special graph type that does not have a local_graph_id
+	if ($local_data_id === null) {
+		return $requested_cf;
+	}
+
+	if (isset($best_cf[$local_data_id][$requested_cf])) {
+		return $best_cf[$local_data_id][$requested_cf];
+	}
 
 	if ($local_data_id > 0) {
 		$avail_cf_functions = get_rrd_cfs($local_data_id);
 
-		if (cacti_sizeof($avail_cf_functions)) {
-			/* workaround until we have RRA presets in 0.8.8 */
-			/* check through the cf's and get the best */
-			/* if none was found, take the first */
-			$best_cf = reset($avail_cf_functions);
-
-			foreach ($avail_cf_functions as $cf) {
-				if ($cf == $requested_cf) {
-					$best_cf = $requested_cf;
-				}
-			}
-		} else {
-			$best_cf = '1';
+		foreach ($avail_cf_functions as $cf) {
+			$best_cf[$local_data_id][$cf] = $cf;
 		}
+
+		if (!isset($best_cf[$local_data_id][$requested_cf])) {
+			$best_cf[$local_data_id][$requested_cf] = 1;
+			$chosen_cf                              = 1;
+		} else {
+			$chosen_cf = $requested_cf;
+		}
+	} else {
+		$chosen_cf = 1;
 	}
 
-	if (empty($best_cf)) {
-		$best_cf = '1';
-	}
-
-	/* if you can not figure it out return average */
-	return $best_cf;
+	// if you can not figure it out return average
+	return $chosen_cf;
 }
 
 /**
@@ -3527,7 +3534,7 @@ function generate_graph_best_cf($local_data_id, $requested_cf, int $ds_step = 60
  *
  * @return array array of the CF functions
  */
-function get_rrd_cfs($local_data_id) {
+function get_rrd_cfs(int $local_data_id) : array {
 	global $consolidation_functions;
 	static $rrd_cfs = [];
 
@@ -3600,11 +3607,11 @@ function get_rrd_cfs($local_data_id) {
  * generate_graph_def_name - takes a number and turns each digit into its letter-based
  * counterpart for RRDtool DEF names (ex 1 -> a, 2 -> b, etc)
  *
- * @param int $graph_item_id - (int) the ID to generate a letter-based representation of
+ * @param int $graph_item_id The ID to generate a letter-based representation of
  *
- * @return mixed a letter-based representation of the input argument
+ * @return string A letter-based representation of the input argument
  */
-function generate_graph_def_name($graph_item_id) {
+function generate_graph_def_name(int $graph_item_id) : string {
 	$lookup_table = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
 
 	$result    = '';
@@ -3625,12 +3632,12 @@ function generate_graph_def_name($graph_item_id) {
  * generate_data_input_field_sequences - re-numbers the sequences of each field associated
  * with a particular data input method based on its position within the input string
  *
- * @param string $string - the input string that contains the field variables in a certain order
- * @param int $data_input_id - The ID of the data input method
+ * @param string $string        The input string that contains the field variables in a certain order
+ * @param int    $data_input_id The ID of the data input method
  *
  * @return void
  */
-function generate_data_input_field_sequences($string, $data_input_id) {
+function generate_data_input_field_sequences(string $string, int $data_input_id) : void {
 	global $registered_cacti_names;
 
 	if (preg_match_all('/<([_a-zA-Z0-9]+)>/', $string, $matches)) {
@@ -3657,15 +3664,15 @@ function generate_data_input_field_sequences($string, $data_input_id) {
  * move_graph_group - takes a graph group (parent+children) and swaps it with another graph
  * group
  *
- * @param int    $graph_template_item_id - The ID of the (parent) graph item that was clicked
- * @param array  $graph_group_array - Contains the graph group to be moved
- * @param int    $target_id - The ID of the (parent) graph item of the target group
- * @param string $direction - ('next' or 'previous') whether the graph group is to be swapped with
- *   group above or below the current group
+ * @param int    $graph_template_item_id The ID of the (parent) graph item that was clicked
+ * @param array  $graph_group_array      Contains the graph group to be moved
+ * @param int    $target_id              The ID of the (parent) graph item of the target group
+ * @param string $direction              ('next' or 'previous') whether the graph group is to be swapped with
+ *                                       group above or below the current group
  *
  * @return void
  */
-function move_graph_group($graph_template_item_id, $graph_group_array, $target_id, $direction) {
+function move_graph_group(int $graph_template_item_id, array $graph_group_array, int $target_id, string $direction) : void {
 	$graph_item = db_fetch_row_prepared('SELECT local_graph_id, graph_template_id
 		FROM graph_templates_item
 		WHERE id = ?',
@@ -3677,10 +3684,10 @@ function move_graph_group($graph_template_item_id, $graph_group_array, $target_i
 		$sql_where = 'local_graph_id = ' . $graph_item['local_graph_id'];
 	}
 
-	/* get a list of parent+children of our target group */
+	// get a list of parent+children of our target group
 	$target_graph_group_array = get_graph_group($target_id);
 
-	/* if this "parent" item has no children, then treat it like a regular gprint */
+	// if this "parent" item has no children, then treat it like a regular gprint
 	if (cacti_sizeof($target_graph_group_array) == 0) {
 		if ($direction == 'next') {
 			move_item_down('graph_templates_item', $graph_template_item_id, $sql_where);
@@ -3691,8 +3698,10 @@ function move_graph_group($graph_template_item_id, $graph_group_array, $target_i
 		return;
 	}
 
-	/* start the sequence at '1' */
+	// start the sequence at '1'
 	$sequence_counter = 1;
+	$group_array2     = [];
+	$group_array1     = [];
 
 	$graph_items = db_fetch_assoc_prepared("SELECT id, sequence
 		FROM graph_templates_item
@@ -3701,7 +3710,7 @@ function move_graph_group($graph_template_item_id, $graph_group_array, $target_i
 
 	if (cacti_sizeof($graph_items)) {
 		foreach ($graph_items as $item) {
-			/* check to see if we are at the "target" spot in the loop; if we are, update the sequences and move on */
+			// check to see if we are at the "target" spot in the loop; if we are, update the sequences and move on
 			if ($target_id == $item['id']) {
 				if ($direction == 'next') {
 					$group_array1 = $target_graph_group_array;
@@ -3717,7 +3726,7 @@ function move_graph_group($graph_template_item_id, $graph_group_array, $target_i
 						WHERE id = ?',
 						[$sequence_counter, $graph_template_item_id]);
 
-					/* propagate to ALL graphs using this template */
+					// propagate to ALL graphs using this template
 					if (empty($graph_item['local_graph_id'])) {
 						db_execute_prepared('UPDATE graph_templates_item
 							SET sequence = ?
@@ -3734,7 +3743,7 @@ function move_graph_group($graph_template_item_id, $graph_group_array, $target_i
 						WHERE id = ?',
 						[$sequence_counter, $graph_template_item_id]);
 
-					/* propagate to ALL graphs using this template */
+					// propagate to ALL graphs using this template
 					if (empty($graph_item['local_graph_id'])) {
 						db_execute_prepared('UPDATE graph_templates_item
 							SET sequence = ?
@@ -3746,7 +3755,7 @@ function move_graph_group($graph_template_item_id, $graph_group_array, $target_i
 				}
 			}
 
-			/* make sure to "ignore" the items that we handled above */
+			// make sure to "ignore" the items that we handled above
 			if ((!isset($graph_group_array[$item['id']])) && (!isset($target_graph_group_array[$item['id']]))) {
 				db_execute_prepared('UPDATE graph_templates_item
 					SET sequence = ?
@@ -3763,11 +3772,11 @@ function move_graph_group($graph_template_item_id, $graph_group_array, $target_i
  * get_graph_group - returns an array containing each item in the graph group given a single
  * graph item in that group
  *
- * @param int $graph_template_item_id - The ID of the graph item to return the group of
+ * @param int $graph_template_item_id The ID of the graph item to return the group of
  *
- * @return mixed (array) an array containing each item in the graph group
+ * @return array An array containing each item in the graph group
  */
-function get_graph_group($graph_template_item_id) {
+function get_graph_group(int $graph_template_item_id) : array {
 	global $graph_item_types;
 
 	$graph_item = db_fetch_row_prepared('SELECT graph_type_id, sequence, local_graph_id, graph_template_id
@@ -3785,14 +3794,14 @@ function get_graph_group($graph_template_item_id) {
 		$sql_where = 'local_graph_id = ?';
 	}
 
-	/* parents are LINE%, AREA%, and STACK%. If not return */
+	// parents are LINE%, AREA%, and STACK%. If not return
 	if (!preg_match('/(LINE|AREA|STACK)/', $graph_item_types[$graph_item['graph_type_id']])) {
 		return [];
 	}
 
 	$graph_item_children_array = [];
 
-	/* put the parent item in the array as well */
+	// put the parent item in the array as well
 	$graph_item_children_array[$graph_template_item_id] = $graph_template_item_id;
 
 	$graph_items = db_fetch_assoc_prepared("SELECT id, graph_type_id, text_format, hard_return
@@ -3811,7 +3820,7 @@ function get_graph_group($graph_template_item_id) {
 			}
 
 			if (str_contains($graph_item_types[$item['graph_type_id']], 'GPRINT')) {
-				/* a child must be a GPRINT */
+				// a child must be a GPRINT
 				$graph_item_children_array[$item['id']] = $item['id'];
 
 				if ($item['hard_return'] == 'on') {
@@ -3823,11 +3832,11 @@ function get_graph_group($graph_template_item_id) {
 				} elseif (preg_match_all('/\|sum:(\d|auto):(current|total|atomic):(\d):(\d+|auto)\|/', $item['text_format'], $matches, PREG_SET_ORDER)) {
 					$graph_item_children_array[$item['id']] = $item['id'];
 				} else {
-					/* if not a GPRINT or special COMMENT then get out */
+					// if not a GPRINT or special COMMENT then get out
 					return $graph_item_children_array;
 				}
 			} else {
-				/* if not a GPRINT or special COMMENT then get out */
+				// if not a GPRINT or special COMMENT then get out
 				return $graph_item_children_array;
 			}
 		}
@@ -3839,12 +3848,12 @@ function get_graph_group($graph_template_item_id) {
 /**
  * get_graph_parent - returns the ID of the next or previous parent graph item id
  *
- * @param int $graph_template_item_id - the ID of the current graph item
- * @param string $direction - ('next' or 'previous') whether to find the next or previous parent
+ * @param int    $graph_template_item_id The ID of the current graph item
+ * @param string $direction              ('next' or 'previous') whether to find the next or previous parent
  *
- * @return mixed the ID of the next or previous parent graph item id
+ * @return int The ID of the next or previous parent graph item id
  */
-function get_graph_parent($graph_template_item_id, $direction) {
+function get_graph_parent(int $graph_template_item_id, string $direction) : int {
 	$graph_item = db_fetch_row_prepared('SELECT sequence, local_graph_id, graph_template_id
 		FROM graph_templates_item
 		WHERE id = ?',
@@ -3856,6 +3865,9 @@ function get_graph_parent($graph_template_item_id, $direction) {
 		$sql_where = 'local_graph_id = ' . $graph_item['local_graph_id'];
 	}
 
+	$sql_operator = '';
+	$sql_order    = '';
+
 	if ($direction == 'next') {
 		$sql_operator = '>';
 		$sql_order    = 'ASC';
@@ -3864,13 +3876,17 @@ function get_graph_parent($graph_template_item_id, $direction) {
 		$sql_order    = 'DESC';
 	}
 
-	$next_parent_id = db_fetch_cell("SELECT id
-		FROM graph_templates_item
-		WHERE sequence $sql_operator " . $graph_item['sequence'] . "
-		AND graph_type_id IN (4, 5, 6, 7, 8, 20)
-		AND $sql_where
-		ORDER BY sequence $sql_order
-		LIMIT 1");
+	if ($sql_operator != '') {
+		$next_parent_id = db_fetch_cell("SELECT id
+			FROM graph_templates_item
+			WHERE sequence $sql_operator " . $graph_item['sequence'] . "
+			AND graph_type_id IN (4, 5, 6, 7, 8, 20)
+			AND $sql_where
+			ORDER BY sequence $sql_order
+			LIMIT 1");
+	} else {
+		$next_parent_it = 0;
+	}
 
 	if (empty($next_parent_id)) {
 		return 0;
@@ -3882,15 +3898,19 @@ function get_graph_parent($graph_template_item_id, $direction) {
 /**
  * get_item - returns the ID of the next or previous item id
  *
- * @param  $tblname - the table name that contains the target id
- * @param  $field - the field name that contains the target id
- * @param  $startid - (int) the current id
- * @param  $lmt_query - an SQL "where" clause to limit the query
- * @param  $direction - ('next' or 'previous') whether to find the next or previous item id
+ * @param string $tblname   The table name that contains the target id
+ * @param string $field     The field name that contains the target id
+ * @param int    $startid   The current id
+ * @param string $lmt_query An SQL "where" clause to limit the query
+ * @param string $direction ('next' or 'previous') whether to find the next or previous item id
  *
- * @return mixed (int) the ID of the next or previous item id
+ * @return int The ID of the next or previous item id
  */
-function get_item($tblname, $field, $startid, $lmt_query, $direction) {
+function get_item(string $tblname, string $field, int $startid, string $lmt_query, string $direction) : int {
+	$sql_operator = '';
+	$sql_order    = '';
+	$new_item_id  = 0;
+
 	if ($direction == 'next') {
 		$sql_operator = '>';
 		$sql_order    = 'ASC';
@@ -3904,11 +3924,13 @@ function get_item($tblname, $field, $startid, $lmt_query, $direction) {
 		WHERE id = ?",
 		[$startid]);
 
-	$new_item_id = db_fetch_cell("SELECT id
-		FROM $tblname
-		WHERE $field $sql_operator $current_sequence " . ($lmt_query != '' ? " AND $lmt_query" : '') . "
-		ORDER BY $field $sql_order
-		LIMIT 1");
+	if ($sql_operator != '') {
+		$new_item_id = db_fetch_cell("SELECT id
+			FROM $tblname
+			WHERE $field $sql_operator $current_sequence " . ($lmt_query != '' ? " AND $lmt_query" : '') . "
+			ORDER BY $field $sql_order
+			LIMIT 1");
+	}
 
 	if (empty($new_item_id)) {
 		return $startid;
@@ -3920,14 +3942,14 @@ function get_item($tblname, $field, $startid, $lmt_query, $direction) {
 /**
  * get_sequence - returns the next available sequence id
  *
- * @param  int|null $id - (int) the current id
- * @param  string   $field - the field name that contains the target id
- * @param  string   $table_name - the table name that contains the target id
- * @param  string   $group_query - an SQL "where" clause to limit the query
+ * @param mixed  $id          The current id
+ * @param string $field       The field name that contains the target id
+ * @param string $table_name  The table name that contains the target id
+ * @param string $group_query An SQL "where" clause to limit the query
  *
- * @return int the next available sequence id
+ * @return int The next available sequence id
  */
-function get_sequence(int|null $id, string $field, string $table_name, string $group_query) : int {
+function get_sequence(mixed $id, string $field, string $table_name, string $group_query) : int {
 	if (empty($id)) {
 		$data = db_fetch_row("SELECT max($field)+1 AS seq
 			FROM $table_name
@@ -3951,11 +3973,13 @@ function get_sequence(int|null $id, string $field, string $table_name, string $g
 /**
  * move_item_down - moves an item down by swapping it with the item below it
  *
- * @param  $table_name - the table name that contains the target id
- * @param  $current_id - (int) the current id
- * @param  $group_query - an SQL "where" clause to limit the query
+ * @param string $table_name  The table name that contains the target id
+ * @param int    $current_id  The current id
+ * @param string $group_query An SQL "where" clause to limit the query
+ *
+ * @return void
  */
-function move_item_down($table_name, $current_id, $group_query = '') {
+function move_item_down(string $table_name, int $current_id, string $group_query = '') : void {
 	$next_item = get_item($table_name, 'sequence', $current_id, $group_query, 'next');
 
 	$sequence = db_fetch_cell_prepared("SELECT sequence
@@ -3982,11 +4006,13 @@ function move_item_down($table_name, $current_id, $group_query = '') {
 /**
  * move_item_up - moves an item down by swapping it with the item above it
  *
- * @param  $table_name - the table name that contains the target id
- * @param  $current_id - (int) the current id
- * @param  $group_query - an SQL "where" clause to limit the query
+ * @param string $table_name  The table name that contains the target id
+ * @param int    $current_id  The current id
+ * @param string $group_query An SQL "where" clause to limit the query
+ *
+ * @return void
  */
-function move_item_up($table_name, $current_id, $group_query = '') {
+function move_item_up(string $table_name, int $current_id, string $group_query = '') : void {
 	$last_item = get_item($table_name, 'sequence', $current_id, $group_query, 'previous');
 
 	$sequence = db_fetch_cell_prepared("SELECT sequence
@@ -4014,24 +4040,25 @@ function move_item_up($table_name, $current_id, $group_query = '') {
  * exec_into_array - executes a command and puts each line of its output into
  * an array
  *
- * @param  $command_line - the command to execute
+ * @param string $command_line The command to execute
  *
- * @return mixed (array) an array containing the command output
+ * @return array An array containing the command output
  */
-function exec_into_array($command_line) {
+function exec_into_array(string $command_line) : array {
 	$out = [];
 	$err = 0;
-	exec($command_line,$out,$err);
 
-	return array_values($out);
+	exec($command_line, $out, $err);
+
+	return $out;
 }
 
 /**
  * get_web_browser - determines the current web browser in use by the client
  *
- * @return mixed ('ie' or 'moz' or 'other')
+ * @return string ('ie' or 'moz' or 'other')
  */
-function get_web_browser() {
+function get_web_browser() : string {
 	if (!empty($_SERVER['HTTP_USER_AGENT'])) {
 		if (stristr($_SERVER['HTTP_USER_AGENT'], 'Mozilla') && (!(stristr($_SERVER['HTTP_USER_AGENT'], 'compatible')))) {
 			return 'moz';
@@ -4050,16 +4077,18 @@ function get_web_browser() {
 /**
  * draw_login_status - provides a consistent login status page for all pages that use it
  *
- * @param  mixed $using_guest_account
+ * @param bool $using_guest_account
+ *
+ * @return void
  */
-function draw_login_status($using_guest_account = false) {
+function draw_login_status(bool $using_guest_account = false) : void {
 	$guest_account = get_guest_account();
 	$auth_method   = read_config_option('auth_method');
 
 	if (isset($_SESSION[SESS_USER_ID]) && $_SESSION[SESS_USER_ID] === $guest_account) {
 		api_plugin_hook('nav_login_before');
 
-		print __('Logged in as') . " <span id='user' class='user usermenuup'>". __('guest') . "</span></div><div><ul class='menuoptions' style='display:none;'>" . ($auth_method != AUTH_METHOD_BASIC ? "<li><a href='" . CACTI_PATH_URL . "index.php?login=true'>" . __('Login as Regular User') . '</a></li>' : "<li><a href='#'>" . __('Logged in a Guest') . '</a></li>');
+		print __('Logged in as') . " <span id='user' class='user usermenuup'>" . __('guest') . "</span></div><div><ul class='menuoptions' style='display:none;'>" . ($auth_method != AUTH_METHOD_BASIC ? "<li><a href='" . CACTI_PATH_URL . "index.php?login=true'>" . __('Login as Regular User') . '</a></li>' : "<li><a href='#'>" . __('Logged in a Guest') . '</a></li>');
 
 		print "<li class='menuHr'><hr class='menu'></li>";
 		print "<li id='userCommunity'><a href='https://forums.cacti.net' target='_blank' rel='noopener'>" . __('User Community') . '</a></li>';
@@ -4075,13 +4104,13 @@ function draw_login_status($using_guest_account = false) {
 
 		api_plugin_hook('nav_login_before');
 
-		print __('Logged in as') . " <span id='user' class='user usermenuup'>" . html_escape($user['username']) .
+		print __('Logged in as') . " <span id='user' class='user usermenuup'>" . htmle($user['username']) .
 			"</span></div><div><ul class='menuoptions' style='display:none;'>";
 
 		print "<li><a href='#' class='loggedInAs' style='display:none;'>" . __esc('Logged in as %s', $user['username']) . "</a></li><hr class='menu'>";
 
-		print(is_realm_allowed(20) ? "<li><a href='" . html_escape(CACTI_PATH_URL . 'auth_profile.php?action=edit') . "'>" . __('Edit Profile') . '</a></li>' : '');
-		print($user['password_change'] == 'on' && $user['realm'] == 0 ? "<li><a href='" . html_escape(CACTI_PATH_URL . 'auth_changepassword.php') . "'>" . __('Change Password') . '</a></li>' : '');
+		print(is_realm_allowed(20) ? "<li><a href='" . htmle(CACTI_PATH_URL . 'auth_profile.php?action=edit') . "'>" . __('Edit Profile') . '</a></li>' : '');
+		print($user['password_change'] == 'on' && $user['realm'] == 0 ? "<li><a href='" . htmle(CACTI_PATH_URL . 'auth_changepassword.php') . "'>" . __('Change Password') . '</a></li>' : '');
 		print((is_realm_allowed(20) || ($user['password_change'] == 'on' && $user['realm'] == 0)) ? "<li class='menuHr'><hr class='menu'></li>" : '');
 
 		if (is_realm_allowed(28)) {
@@ -4090,7 +4119,7 @@ function draw_login_status($using_guest_account = false) {
 			print "<li class='menuHr'><hr class='menu'></li>";
 		}
 
-		print($auth_method != AUTH_METHOD_BASIC ? "<li><a href='" . html_escape(CACTI_PATH_URL . 'logout.php') . "'>" . __('Logout') . '</a></li>' : '');
+		print($auth_method != AUTH_METHOD_BASIC ? "<li><a href='" . htmle(CACTI_PATH_URL . 'logout.php') . "'>" . __('Logout') . '</a></li>' : '');
 		print '</ul>';
 
 		api_plugin_hook('nav_login_after');
@@ -4100,21 +4129,21 @@ function draw_login_status($using_guest_account = false) {
 /**
  * draw_navigation_text - determines the top header navigation text for the current page and displays it to
  *
- * @param  $type - Either 'url' or 'title'
+ * @param string $type Either 'url' or 'title'
  *
- * @return mixed Either the navigation text or title
+ * @return string Either the navigation text or title
  */
-function draw_navigation_text($type = 'url') {
+function draw_navigation_text(string $type = 'url') : string {
 	global $navigation;
 
 	$navigation      = api_plugin_hook_function('draw_navigation_text', $navigation);
 	$current_page    = get_current_page();
 
-	if (!isempty_request_var('action')) {
-		get_filter_request_var('action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([-a-zA-Z0-9_\s]+)$/']]);
+	if (!ierv('action')) {
+		gfrv('action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([-a-zA-Z0-9_\s]+)$/']]);
 	}
 
-	$current_action = (isset_request_var('action') ? get_request_var('action') : '');
+	$current_action = (isrv('action') ? grv('action') : '');
 
 	// find the current page in the big array
 	if (isset($navigation[$current_page . ':' . $current_action])) {
@@ -4138,6 +4167,7 @@ function draw_navigation_text($type = 'url') {
 	$current_nav = "<ul id='breadcrumbs'>";
 	$title       = '';
 	$nav_count   = 0;
+	$i           = 0;
 
 	// resolve all mappings to build the navigation string
 	// this process is more simple than you might think
@@ -4168,43 +4198,47 @@ function draw_navigation_text($type = 'url') {
 
 		// Construct the list item and anchor from the 'url' if there was one.  There should always
 		// be one.
-		$current_nav .= "<li><a id='nav_$i' href='" . (empty($url) ? '#' : html_escape($url)) . "'>";
-		$current_nav .= html_escape(resolve_navigation_variables($navigation[basename($breadcrumb)]['title']));
+		$current_nav .= "<li><a id='nav_$i' href='" . (empty($url) ? '#' : htmle($url)) . "'>";
+		$current_nav .= htmle(resolve_navigation_variables($navigation[basename($breadcrumb)]['title']));
 		$current_nav .= '</a></li>';
-		$title .= html_escape(resolve_navigation_variables($navigation[basename($breadcrumb)]['title'])) . ' > ';
+		$title .= htmle(resolve_navigation_variables($navigation[basename($breadcrumb)]['title'])) . ' > ';
 
 		$nav_count++;
 	}
 
 	// Add a title for the current level
 	if ($nav_count) {
+		$i++;
+
 		// We've already appended the full path, not the end bit
 		if (isset($current_array['title'])) {
-			$current_nav .= "<li><a id='nav_$i' href='#'>" . html_escape(resolve_navigation_variables($current_array['title'])) . '</a></li>';
+			$current_nav .= "<li><a id='nav_$i' href='#'>" . htmle(resolve_navigation_variables($current_array['title'])) . '</a></li>';
 		}
 	} else {
+		$i++;
+
 		// No breadcrumb was found for the current path, make one up
 		$current_array = $navigation[$current_page . ':' . $current_action];
 		$url           = ($current_array['url'] ?? '');
 
 		if (isset($current_array['title'])) {
-			$current_nav .= "<li><a id='nav_$i' href='$url'>" . html_escape(resolve_navigation_variables($current_array['title'])) . '</a></li>';
+			$current_nav .= "<li><a id='nav_$i' href='$url'>" . htmle(resolve_navigation_variables($current_array['title'])) . '</a></li>';
 		}
 	}
 
 	// Handle Special Navigation Cases of Tree's and External Links
-	if (isset_request_var('action') || get_nfilter_request_var('action') == 'tree_content') {
+	if (isrv('action') || gnrv('action') == 'tree_content') {
 		$tree_id = 0;
 		$leaf_id = 0;
 
-		if (isset_request_var('node')) {
-			$parts = explode('-', get_request_var('node'));
+		if (isrv('node')) {
+			$parts = explode('-', grv('node'));
 
 			// Check for tree anchor
-			if (str_contains(get_request_var('node'), 'tree_anchor')) {
+			if (str_contains(grv('node'), 'tree_anchor')) {
 				$tree_id = $parts[1];
 				$leaf_id = 0;
-			} elseif (str_contains(get_request_var('node'), 'tbranch')) {
+			} elseif (str_contains(grv('node'), 'tbranch')) {
 				// Check for branch
 				$leaf_id = $parts[1];
 				$tree_id = db_fetch_cell_prepared('SELECT graph_tree_id
@@ -4239,8 +4273,8 @@ function draw_navigation_text($type = 'url') {
 				$tree_name = '';
 			}
 
-			if (isset_request_var('hgd') && get_nfilter_request_var('hgd') != '') {
-				$parts = explode(':', get_nfilter_request_var('hgd'));
+			if (isrv('hgd') && gnrv('hgd') != '') {
+				$parts = explode(':', gnrv('hgd'));
 				input_validate_input_number($parts[1], 'hgd[1]');
 
 				if ($parts[0] == 'gt') {
@@ -4278,7 +4312,7 @@ function draw_navigation_text($type = 'url') {
 		$tree_title = $tree_name . ($leaf_name != '' ? ' (' . trim($leaf_name) : '') . ($leaf_sub != '' ? ':' . trim($leaf_sub) . ')' : ($leaf_name != '' ? ')' : ''));
 
 		if ($tree_title != '') {
-			$current_nav .= "<li><a id='nav_title' href='#'>" . html_escape($tree_title) . '</a></li>';
+			$current_nav .= "<li><a id='nav_title' href='#'>" . htmle($tree_title) . '</a></li>';
 		}
 	} elseif (preg_match('#link.php\?id=(\d+)#', $_SERVER['REQUEST_URI'], $matches)) {
 		$externalLinks = db_fetch_row_prepared('SELECT title, style FROM external_links WHERE id = ?', [$matches[1]]);
@@ -4291,9 +4325,9 @@ function draw_navigation_text($type = 'url') {
 					<a id='nav_0' href='" . CACTI_PATH_URL . "index.php'>" . __('Console') . '</a>' .
 				'</li>';
 
-			$current_nav .= "<li><a id='nav_1' href='#'>" . __('Link %s', html_escape($title)) . '</a></li>';
+			$current_nav .= "<li><a id='nav_1' href='#'>" . __('Link %s', htmle($title)) . '</a></li>';
 		} else {
-			$current_nav = "<ul id='breadcrumbs'><li><a id='nav_0'>" . html_escape($title) . '</a></li>';
+			$current_nav = "<ul id='breadcrumbs'><li><a id='nav_0'>" . htmle($title) . '</a></li>';
 		}
 
 		$tree_title = '';
@@ -4303,7 +4337,7 @@ function draw_navigation_text($type = 'url') {
 
 	// Finally create a navigation title
 	if (isset($current_array['title'])) {
-		$title .= html_escape(resolve_navigation_variables($current_array['title']) . ' ' . $tree_title);
+		$title .= htmle(resolve_navigation_variables($current_array['title']) . ' ' . $tree_title);
 	}
 
 	/*
@@ -4332,7 +4366,7 @@ function draw_navigation_text($type = 'url') {
 	*/
 	$current_nav .= '</ul>';
 
-	//$_SESSION['sess_nav_level_cache'] = $nav_level_cache;
+	// $_SESSION['sess_nav_level_cache'] = $nav_level_cache;
 
 	if ($type == 'url') {
 		return $current_nav;
@@ -4344,13 +4378,13 @@ function draw_navigation_text($type = 'url') {
 /**
  * resolve_navigation_variables - substitute any variables contained in the navigation text
  *
- * @param  $text - the text to substitute in
+ * @param string $text The text to substitute in
  *
- * @return mixed the original navigation text with all substitutions made
+ * @return string The original navigation text with all substitutions made
  */
-function resolve_navigation_variables(string $text): string {
-	if (isset_request_var('local_graph_id') && get_filter_request_var('local_graph_id') > 0) {
-		$graphTitle = get_graph_title(get_request_var('local_graph_id'));
+function resolve_navigation_variables(string $text) : string {
+	if (isrv('local_graph_id') && gfrv('local_graph_id') > 0) {
+		$graphTitle = get_graph_title(grv('local_graph_id'));
 
 		if (preg_match_all("/\|([a-zA-Z0-9_]+)\|/", $text, $matches)) {
 			for ($i = 0; $i < cacti_count($matches[1]); $i++) {
@@ -4370,23 +4404,23 @@ function resolve_navigation_variables(string $text): string {
 /**
  * get_associated_rras - returns a list of all RRAs referenced by a particular graph
  *
- * @param  $local_graph_id - (int) the ID of the graph to retrieve a list of RRAs for
- * @param  mixed $sql_where
+ * @param int    $local_graph_id The ID of the graph to retrieve a list of RRAs for
+ * @param string $sql_where      An additional sql_where clause to add toe the query
  *
- * @return mixed (array) an array containing the name and id of each RRA found
+ * @return mixed An array containing the name and id of each RRA found
  */
-function get_associated_rras($local_graph_id, $sql_where = '') {
+function get_associated_rras(int $local_graph_id, string $sql_where = '') : mixed {
 	return db_fetch_assoc_prepared('SELECT DISTINCT ' . SQL_NO_CACHE . "
 		dspr.id, dsp.step, dspr.steps, dspr.rows, dspr.name, dtd.rrd_step, dspr.timespan
 		FROM graph_templates_item AS gti
 		LEFT JOIN data_template_rrd AS dtr
-		ON gti.task_item_id=dtr.id
+		ON gti.task_item_id = dtr.id
 		LEFT JOIN data_template_data AS dtd
 		ON dtr.local_data_id = dtd.local_data_id
 		LEFT JOIN data_source_profiles AS dsp
-		ON dtd.data_source_profile_id=dsp.id
+		ON dtd.data_source_profile_id = dsp.id
 		LEFT JOIN data_source_profiles_rra AS dspr
-		ON dsp.id=dspr.data_source_profile_id
+		ON dsp.id = dspr.data_source_profile_id
 		AND dtd.local_data_id != 0
 		WHERE gti.local_graph_id = ?
 		$sql_where
@@ -4399,11 +4433,11 @@ function get_associated_rras($local_graph_id, $sql_where = '') {
  * get_nearest_timespan - returns the nearest defined timespan.  Used for adding a default
  * graph timespan for data source profile rras.
  *
- * @param  $timespan - (int) the timespan to fine a default for
+ * @param int $timespan The timespan to fine a default for
  *
- * @return mixed (int) the timespan to apply for the data source profile rra value
+ * @return int The timespan to apply for the data source profile rra value
  */
-function get_nearest_timespan($timespan) {
+function get_nearest_timespan(int $timespan) : int {
 	global $timespans;
 
 	$last = end($timespans);
@@ -4428,9 +4462,9 @@ function get_nearest_timespan($timespan) {
 /**
  * get_browser_query_string - returns the full url, including args requested by the browser
  *
- * @return mixed the url requested by the browser
+ * @return string The url requested by the browser
  */
-function get_browser_query_string() {
+function get_browser_query_string() : string {
 	if (!empty($_SERVER['REQUEST_URI'])) {
 		return sanitize_uri($_SERVER['REQUEST_URI']);
 	} else {
@@ -4441,11 +4475,11 @@ function get_browser_query_string() {
 /**
  * Returns the basename of the current page in a web server friendly way
  *
- * @param  bool $basename   Whether to return only the filename
+ * @param bool $basename Whether to return only the filename
  *
- * @return string|false     The basename of the current script file
+ * @return mixed The basename of the current script file
  */
-function get_current_page(bool $basename = true) {
+function get_current_page(bool $basename = true) : mixed {
 	if (isset($_SERVER['SCRIPT_NAME']) && $_SERVER['SCRIPT_NAME'] != '') {
 		if ($basename) {
 			return basename($_SERVER['SCRIPT_NAME']);
@@ -4468,12 +4502,12 @@ function get_current_page(bool $basename = true) {
 /**
  * get_hash_graph_template - returns the current unique hash for a graph template
  *
- * @param  $graph_template_id - (int) the ID of the graph template to return a hash for
- * @param  $sub_type (optional) return the hash for a particular subtype of this type
+ * @param int    $graph_template_id The ID of the graph template to return a hash for
+ * @param string $sub_type          Return the hash for a particular subtype of this type
  *
- * @return mixed a 128-bit, hexadecimal hash
+ * @return string A 128-bit, hexadecimal hash
  */
-function get_hash_graph_template($graph_template_id, $sub_type = 'graph_template') {
+function get_hash_graph_template(int $graph_template_id, string $sub_type = 'graph_template') : string {
 	switch ($sub_type) {
 		case 'graph_template':
 			$hash = db_fetch_cell_prepared('SELECT hash FROM graph_templates WHERE id = ?', [$graph_template_id]);
@@ -4489,8 +4523,6 @@ function get_hash_graph_template($graph_template_id, $sub_type = 'graph_template
 			break;
 		default:
 			return generate_hash();
-
-			break;
 	}
 
 	if (preg_match('/[a-fA-F0-9]{32}/', $hash)) {
@@ -4503,13 +4535,12 @@ function get_hash_graph_template($graph_template_id, $sub_type = 'graph_template
 /**
  * get_hash_data_template - returns the current unique hash for a data template
  *
- * @param  $graph_template_id - (int) the ID of the data template to return a hash for
- * @param  $sub_type (optional) return the hash for a particular subtype of this type
- * @param  mixed $data_template_id
+ * @param int    $data_template_id The ID of the data template to return a hash for
+ * @param string $sub_type         Return the hash for a particular subtype of this type
  *
- * @return mixed a 128-bit, hexadecimal hash
+ * @return string A 128-bit, hexadecimal hash
  */
-function get_hash_data_template($data_template_id, $sub_type = 'data_template') {
+function get_hash_data_template(int $data_template_id, string $sub_type = 'data_template') : string {
 	switch ($sub_type) {
 		case 'data_template':
 			$hash = db_fetch_cell_prepared('SELECT hash FROM data_template WHERE id = ?', [$data_template_id]);
@@ -4521,8 +4552,6 @@ function get_hash_data_template($data_template_id, $sub_type = 'data_template') 
 			break;
 		default:
 			return generate_hash();
-
-			break;
 	}
 
 	if (preg_match('/[a-fA-F0-9]{32}/', $hash)) {
@@ -4535,13 +4564,12 @@ function get_hash_data_template($data_template_id, $sub_type = 'data_template') 
 /**
  * get_hash_data_input - returns the current unique hash for a data input method
  *
- * @param  $graph_template_id - (int) the ID of the data input method to return a hash for
- * @param  $sub_type (optional) return the hash for a particular subtype of this type
- * @param  mixed $data_input_id
+ * @param int    $data_input_id The ID of the data input method to return a hash for
+ * @param string $sub_type      Return the hash for a particular subtype of this type
  *
- * @return mixed a 128-bit, hexadecimal hash
+ * @return string A 128-bit, hexadecimal hash
  */
-function get_hash_data_input($data_input_id, $sub_type = 'data_input_method') {
+function get_hash_data_input(int $data_input_id, string $sub_type = 'data_input_method') : string {
 	switch ($sub_type) {
 		case 'data_input_method':
 			$hash = db_fetch_cell_prepared('SELECT hash FROM data_input WHERE id = ?', [$data_input_id]);
@@ -4553,8 +4581,6 @@ function get_hash_data_input($data_input_id, $sub_type = 'data_input_method') {
 			break;
 		default:
 			return generate_hash();
-
-			break;
 	}
 
 	if (preg_match('/[a-fA-F0-9]{32}/', $hash)) {
@@ -4567,17 +4593,12 @@ function get_hash_data_input($data_input_id, $sub_type = 'data_input_method') {
 /**
  * get_hash_cdef - returns the current unique hash for a cdef
  *
- * @param  $graph_template_id - (int) the ID of the cdef to return a hash for
- * @param  $sub_type (optional) return the hash for a particular subtype of this type
- * @param  mixed $cdef_id
+ * @param int    $cdef_id  The ID of the cdef to return a hash for
+ * @param string $sub_type Return the hash for a particular subtype of this type
  *
- * @return mixed a 128-bit, hexadecimal hash
+ * @return string A 128-bit, hexadecimal hash
  */
-function get_hash_cdef($cdef_id, $sub_type = 'cdef') {
-	if (!is_numeric($cdef_id)) {
-		return generate_hash();
-	}
-
+function get_hash_cdef(int $cdef_id, string $sub_type = 'cdef') : string {
 	switch ($sub_type) {
 		case 'cdef':
 			$hash = db_fetch_cell_prepared('SELECT hash FROM cdef WHERE id = ?', [$cdef_id]);
@@ -4589,8 +4610,6 @@ function get_hash_cdef($cdef_id, $sub_type = 'cdef') {
 			break;
 		default:
 			return generate_hash();
-
-			break;
 	}
 
 	if (strlen($hash) == 32 && ctype_xdigit($hash)) {
@@ -4603,12 +4622,11 @@ function get_hash_cdef($cdef_id, $sub_type = 'cdef') {
 /**
  * get_hash_gprint - returns the current unique hash for a gprint preset
  *
- * @param  $graph_template_id - (int) the ID of the gprint preset to return a hash for
- * @param  mixed $gprint_id
+ * @param int $gprint_id The ID of the gprint preset to return a hash for
  *
- * @return mixed a 128-bit, hexadecimal hash
+ * @return string A 128-bit, hexadecimal hash
  */
-function get_hash_gprint($gprint_id) {
+function get_hash_gprint(int $gprint_id) : string {
 	$hash = db_fetch_cell_prepared('SELECT hash FROM graph_templates_gprint WHERE id = ?', [$gprint_id]);
 
 	if (strlen($hash) == 32 && ctype_xdigit($hash)) {
@@ -4621,12 +4639,12 @@ function get_hash_gprint($gprint_id) {
 /**
  * get_hash_automation - returns the current unique hash for a automation objects
  *
- * @param  $unique_id - (int) the ID of the gprint preset to return a hash for
- * @param  $table - (string) the table we are capturing for
+ * @param int    $unique_id The ID of the gprint preset to return a hash for
+ * @param string $table     The table we are capturing for
  *
- * @return mixed a 128-bit, hexadecimal hash
+ * @return string A 128-bit, hexadecimal hash
  */
-function get_hash_automation($unique_id, $table) {
+function get_hash_automation(int $unique_id, string $table) : string {
 	$hash = db_fetch_cell_prepared("SELECT hash
 		FROM $table
 		WHERE id = ?",
@@ -4642,13 +4660,12 @@ function get_hash_automation($unique_id, $table) {
 /**
  * returns the current unique hash for a vdef
  *
- * @param  $graph_template_id - the ID of the vdef to return a hash for
- * @param  $sub_type          - return the hash for a particular subtype of this type
- * @param  mixed $vdef_id
+ * @param $vdef_id  The ID of the vdef to return a hash for
+ * @param $sub_type Return the hash for a particular subtype of this type
  *
- * @return mixed a 128-bit, hexadecimal hash
+ * @return string A 128-bit, hexadecimal hash
  */
-function get_hash_vdef($vdef_id, $sub_type = 'vdef') {
+function get_hash_vdef(int $vdef_id, string $sub_type = 'vdef') : string {
 	switch ($sub_type) {
 		case 'vdef':
 			$hash = db_fetch_cell_prepared('SELECT hash FROM vdef WHERE id = ?', [$vdef_id]);
@@ -4660,8 +4677,6 @@ function get_hash_vdef($vdef_id, $sub_type = 'vdef') {
 			break;
 		default:
 			return generate_hash();
-
-			break;
 	}
 
 	if (strlen($hash) == 32 && ctype_xdigit($hash)) {
@@ -4674,11 +4689,11 @@ function get_hash_vdef($vdef_id, $sub_type = 'vdef') {
 /**
  * get_hash_data_source_profile - returns the current unique hash for a vdef
  *
- * @param  $data_source_profile_id - the ID of the data_source_profile to return a hash for
+ * @param int $data_source_profile_id The ID of the data_source_profile to return a hash for
  *
- * @return mixed a 128-bit, hexadecimal hash
+ * @return string A 128-bit, hexadecimal hash
  */
-function get_hash_data_source_profile($data_source_profile_id) {
+function get_hash_data_source_profile(int $data_source_profile_id) : string {
 	$hash = db_fetch_cell_prepared('SELECT hash FROM data_source_profiles WHERE id = ?', [$data_source_profile_id]);
 
 	if (strlen($hash) == 32 && ctype_xdigit($hash)) {
@@ -4691,11 +4706,11 @@ function get_hash_data_source_profile($data_source_profile_id) {
 /**
  * get_hash_host_template - returns the current unique hash for a gprint preset
  *
- * @param  $host_template_id - the ID of the host template to return a hash for
+ * @param $host_template_id The ID of the host template to return a hash for
  *
- * @return mixed a 128-bit, hexadecimal hash
+ * @return string A 128-bit, hexadecimal hash
  */
-function get_hash_host_template($host_template_id) {
+function get_hash_host_template(int $host_template_id) : string {
 	$hash = db_fetch_cell_prepared('SELECT hash FROM host_template WHERE id = ?', [$host_template_id]);
 
 	if (strlen($hash) == 32 && ctype_xdigit($hash)) {
@@ -4708,13 +4723,12 @@ function get_hash_host_template($host_template_id) {
 /**
  * get_hash_data_query - returns the current unique hash for a data query
  *
- * @param  $graph_template_id - the ID of the data query to return a hash for
- * @param  $sub_type return the hash for a particular subtype of this type
- * @param  mixed $data_query_id
+ * @param int    $data_query_id The ID of the data query to return a hash for
+ * @param string $sub_type      Return the hash for a particular subtype of this type
  *
- * @return mixed a 128-bit, hexadecimal hash
+ * @return string A 128-bit, hexadecimal hash
  */
-function get_hash_data_query($data_query_id, $sub_type = 'data_query') {
+function get_hash_data_query(int $data_query_id, string $sub_type = 'data_query') : string {
 	switch ($sub_type) {
 		case 'data_query':
 			$hash = db_fetch_cell_prepared('SELECT hash FROM snmp_query WHERE id = ?', [$data_query_id]);
@@ -4734,8 +4748,6 @@ function get_hash_data_query($data_query_id, $sub_type = 'data_query') {
 			break;
 		default:
 			return generate_hash();
-
-			break;
 	}
 
 	if (strlen($hash) == 32 && ctype_xdigit($hash)) {
@@ -4748,66 +4760,71 @@ function get_hash_data_query($data_query_id, $sub_type = 'data_query') {
 /**
  * get_hash_version - returns the item type and cacti version in a hash format
  *
- * @param  $type - the type of item to represent ('graph_template','data_template',
- *   'data_input_method','cdef','vdef','gprint_preset','data_query','host_template')
+ * @param string $type The type of item to represent ('graph_template','data_template',
+ *                     'data_input_method','cdef','vdef','gprint_preset','data_query','host_template')
  *
- * @return mixed a 24-bit hexadecimal hash (8-bits for type, 16-bits for version)
+ * @return string A 24-bit hexadecimal hash (8-bits for type, 16-bits for version)
  */
-function get_hash_version(string $type): string {
+function get_hash_version(string $type) : string {
 	global $hash_type_codes, $cacti_version_codes;
 
 	return $hash_type_codes[$type] . $cacti_version_codes[CACTI_VERSION];
 }
 
 /**
- * generate_hash - generates a new unique hash
+ * generate_hash - Generates a new unique hash
  *
- * @return mixed a 128-bit, hexadecimal hash
+ * @return string A 128-bit, hexadecimal hash
  */
-function generate_hash() {
+function generate_hash() : string {
 	return md5(session_id() . microtime() . random_int(0,1000));
 }
 
 /**
  * debug_log_insert_section_start - creates a header item for breaking down the debug log
  *
- * @param  $type - the 'category' or type of debug message
- * @param  $text - section header
- * @param  mixed $allowcopy
+ * @param string $type      The 'category' or type of debug message
+ * @param string $text      The section header
+ * @param bool   $allowcopy Allow clipboard copy details
+ *
+ * @return void
  */
-function debug_log_insert_section_start($type, $text, $allowcopy = false) {
-	$copy_prefix = '';
-	$copy_dataid = '';
+function debug_log_insert_section_start($type, $text, $allowcopy = false) : void {
+	$copy_prefix   = '';
+	$copy_dataid   = '';
+	$copy_headerid = '';
 
 	if ($allowcopy) {
 		$uid           = generate_hash();
-		$copy_prefix   = '<div class=\'cactiTableButton debug\'><span><a class=\'linkCopyDark cactiTableCopy ti ti-copy\' id=\'copyToClipboard' . $uid . '\' title=\'' .  __esc('Copy Section Output to Clipboard') . '\'</a></span></div>';
-		$copy_dataid   = ' id=\'clipboardData'.$uid.'\'';
-		$copy_headerid = ' id=\'clipboardHeader'.$uid.'\'';
+		$copy_prefix   = '<div class=\'cactiTableButton debug\'><span><a class=\'linkCopyDark cactiTableCopy ti ti-copy\' id=\'copyToClipboard' . $uid . '\' title=\'' . __esc('Copy Section Output to Clipboard') . '\'</a></span></div>';
+		$copy_dataid   = ' id=\'clipboardData' . $uid . '\'';
+		$copy_headerid = ' id=\'clipboardHeader' . $uid . '\'';
 	}
 
-	debug_log_insert($type, '<table class=\'cactiTable debug\'' . $copy_headerid . '><tr class=\'tableHeader\'><td>' . html_escape($text) . $copy_prefix . '</td></tr><tr><td style=\'padding:0px;\'><table style=\'display:none;\'' . $copy_dataid . '><tr><td><div style=\'font-family: monospace;\'>');
+	debug_log_insert($type, '<table class=\'cactiTable debug\'' . $copy_headerid . '><tr class=\'tableHeader\'><td>' . htmle($text) . $copy_prefix . '</td></tr><tr><td style=\'padding:0px;\'><table style=\'display:none;\'' . $copy_dataid . '><tr><td><div style=\'font-family: monospace;\'>');
 }
 
 /**
  * debug_log_insert_section_end - finalizes the header started with the start function
  *
- * @param  $type - the 'category' or type of debug message
+ * @param string $type The 'category' or type of debug message
+ *
+ * @return void
  */
-function debug_log_insert_section_end($type) {
+function debug_log_insert_section_end(string $type) : void {
 	debug_log_insert($type, '</div></td></tr></table></td></tr></td></table>');
 }
 
 /**
  * debug_log_insert - inserts a line of text into the debug log
  *
- * @param  $type - the 'category' or type of debug message
- * @param  $text - the actual debug message
+ * @param string $type The 'category' or type of debug message
+ * @param string $text The actual debug message
  */
-function debug_log_insert($type, $text) {
+function debug_log_insert(string $type, string $text) : void {
 	global $config;
 
-	if (POLLER_ID == 1 || isset($_SESSION)) {
+	if (POLLER_ID == 1 || isset($_SESSION)) { // @phpstan-ignore-line
 		if (!isset($_SESSION['debug_log'][$type])) {
 			$_SESSION['debug_log'][$type] = [];
 		}
@@ -4825,10 +4842,12 @@ function debug_log_insert($type, $text) {
 /**
  * debug_log_clear - clears the debug log for a particular category
  *
- * @param  $type - the 'category' to clear the debug log for. omitting this argument
- *   implies all categories
+ * @param string $type The 'category' to clear the debug log for. omitting this argument
+ *                     implies all categories
+ *
+ * @return void
  */
-function debug_log_clear($type = '') {
+function debug_log_clear(string $type = '') : void {
 	if ($type == '') {
 		kill_session_var('debug_log');
 	} else {
@@ -4844,11 +4863,11 @@ function debug_log_clear($type = '') {
  * NOTE: The escaping happens on the insert side and not the
  * return side.
  *
- * @param  $type - the 'category' to return the debug log for.
+ * @param string $type The 'category' to return the debug log for.
  *
- * @return mixed the full debug log for a particular category
+ * @return string The full debug log for a particular category
  */
-function debug_log_return($type) {
+function debug_log_return(string $type) : string {
 	$log_text = '';
 
 	if ($type == 'new_graphs') {
@@ -4882,24 +4901,24 @@ function debug_log_return($type) {
  * sanitize_search_string - cleans up a search string submitted by the user to be passed
  * to the database. NOTE: some of the code for this function came from the phpBB project.
  *
- * @param  $string - the original raw search string
+ * @param string $string The original raw search string
  *
- * @return mixed the sanitized search string
+ * @return string The sanitized search string
  */
-function sanitize_search_string($string) {
+function sanitize_search_string(string $string) : string {
 	static $drop_char_match   = ['(', ')', '^', '$', '<', '>', '`', '\'', '"', '|', ',', '?', '+', '[', ']', '{', '}', '#', ';', '!', '=', '*'];
 	static $drop_char_replace = ['', '', ' ', ' ', ' ', ' ', '', '', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '];
 
-	/* Replace line endings by a space */
+	// Replace line endings by a space
 	$string = preg_replace('/[\n\r]/is', ' ', $string);
 
-	/* HTML entities like &nbsp; */
+	// HTML entities like &nbsp;
 	$string = preg_replace('/\b&[a-z]+;\b/', ' ', $string);
 
-	/* Remove URL's */
+	// Remove URL's
 	$string = preg_replace('/\b[a-z0-9]+:\/\/[a-z0-9\.\-]+(\/[a-z0-9\?\.%_\-\+=&\/]+)?/', ' ', $string);
 
-	/* Filter out strange characters like ^, $, &, change "it's" to "its" */
+	// Filter out strange characters like ^, $, &, change "it's" to "its"
 	for ($i = 0; $i < cacti_count($drop_char_match); $i++) {
 		$string =  str_replace($drop_char_match[$i], $drop_char_replace[$i], $string);
 	}
@@ -4913,9 +4932,9 @@ function sanitize_search_string($string) {
  * we do NOT sanitize in a way, that attacks are converted to valid HTML
  * it is ok, when the result is broken but the application stays alive
  *
- * @param  string $uri   - the uri to be sanitized
+ * @param string $uri The uri to be sanitized
  *
- * @return string    - the sanitized uri
+ * @return string The sanitized uri
  */
 function sanitize_uri($uri) {
 	static $drop_char_match   =   ['^', '$', '<', '>', '`', "'", '"', '|', '+', '[', ']', '{', '}', ';', '!', '(', ')'];
@@ -4923,7 +4942,7 @@ function sanitize_uri($uri) {
 
 	if (strpos($uri, 'graph_view.php')) {
 		if (!strpos($uri, 'action=')) {
-			$uri = $uri . (strpos($uri, '?') ? '&' : '?') . 'action=' . get_nfilter_request_var('action');
+			$uri = $uri . (strpos($uri, '?') ? '&' : '?') . 'action=' . gnrv('action');
 		}
 	}
 
@@ -4933,9 +4952,9 @@ function sanitize_uri($uri) {
 /**
  * Checks to see if a string is base64 encoded
  *
- * @param  string $data   - the string to be validated
+ * @param string $data The string to be validated
  *
- * @return bool    - true is the string is base64 otherwise false
+ * @return bool true is the string is base64 otherwise false
  */
 function is_base64_encoded($data) {
 	// Perform a simple check first
@@ -4962,11 +4981,11 @@ function is_base64_encoded($data) {
  * cleans up a CDEF/VDEF string
  * the CDEF/VDEF must have passed all magic string replacements beforehand
  *
- * @param  string $cdef   - the CDEF/VDEF to be sanitized
+ * @param string $cdef The CDEF/VDEF to be sanitized
  *
- * @return string    - the sanitized CDEF/VDEF
+ * @return string The sanitized CDEF/VDEF
  */
-function sanitize_cdef($cdef) {
+function sanitize_cdef(string $cdef) : string {
 	static $drop_char_match   =   ['^', '$', '<', '>', '`', '\'', '"', '|', '[', ']', '{', '}', ';', '!'];
 	static $drop_char_replace = [ '', '',  '',  '',  '',  '',   '',  '',  '',  '',  '',  '',  '',  ''];
 
@@ -4976,11 +4995,11 @@ function sanitize_cdef($cdef) {
 /**
  * verifies all selected items are numeric to guard against injection
  *
- * @param  null|string $items   An array of serialized items from a post
+ * @param mixed $items An array of serialized items from a post
  *
- * @return array|bool           The sanitized selected items array
+ * @return mixed The sanitized selected items array
  */
-function sanitize_unserialize_selected_items(string|null $items): array|bool {
+function sanitize_unserialize_selected_items(mixed $items) : mixed {
 	$return_items = false;
 
 	if (!empty($items) && is_string($items)) {
@@ -5016,11 +5035,11 @@ function sanitize_unserialize_selected_items(string|null $items): array|bool {
 /**
  * verifies all selected graphs only contain numeric and string values
  *
- * @param  string $items   - an array of serialized items from a post
+ * @param mixed $items An array of serialized items from a post
  *
- * @return array      - the sanitized selected graphs array
+ * @return array The sanitized selected graphs array
  */
-function sanitize_unserialize_selected_graphs(string|null $items) : array {
+function sanitize_unserialize_selected_graphs(mixed $items) : array {
 	$return_items = false;
 
 	if (!empty($items) && is_string($items)) {
@@ -5039,7 +5058,7 @@ function sanitize_unserialize_selected_graphs(string|null $items) : array {
 	return $return_items;
 }
 
-function cacti_escapeshellcmd($string) {
+function cacti_escapeshellcmd(string $string) : string {
 	if ($string == '') {
 		return $string;
 	}
@@ -5048,31 +5067,29 @@ function cacti_escapeshellcmd($string) {
 		return escapeshellcmd($string);
 	}
 
-	if (!empty($string)) {
-		$replacements = '#&;`|*?<>^()[]{}$\\';
+	$replacements = '#&;`|*?<>^()[]{}$\\';
 
-		for ($i = 0; $i < strlen($replacements); $i++) {
-			$string = str_replace($replacements[$i], ' ', $string);
-		}
-
-		return $string;
+	for ($i = 0; $i < strlen($replacements); $i++) {
+		$string = str_replace($replacements[$i], ' ', $string);
 	}
+
+	return $string;
 }
 
 /**
  * mimics escapeshellarg, even for windows
  *
- * @param  $string 	- the string to be escaped
- * @param  $quote 	- true: do NOT remove quotes from result; false: do remove quotes
+ * @param $string The string to be escaped
+ * @param $quote  true: do NOT remove quotes from result; false: do remove quotes
  *
- * @return	string	- the escaped [quoted|unquoted] string
+ * @return string The escaped [quoted|unquoted] string
  */
-function cacti_escapeshellarg(string $string, bool $quote = true): string {
+function cacti_escapeshellarg(string $string, bool $quote = true) : string {
 	if ($string == '') {
 		return $string;
 	}
 
-	/* remove any carriage returns or line feeds from the argument */
+	// remove any carriage returns or line feeds from the argument
 	$string = str_replace(["\n", "\r"], ['', ''], $string);
 
 	/*
@@ -5086,7 +5103,7 @@ function cacti_escapeshellarg(string $string, bool $quote = true): string {
 		if ($quote) {
 			return $string;
 		} else {
-			# remove first and last char
+			// remove first and last char
 			return substr($string, 1, (strlen($string) - 2));
 		}
 	} else {
@@ -5102,7 +5119,7 @@ function cacti_escapeshellarg(string $string, bool $quote = true): string {
 			$string = str_replace(CACTI_ESCAPE_CHARACTER, '\\' . CACTI_ESCAPE_CHARACTER, $string);
 		}
 
-		/* ... before we add our own quotation */
+		// ... before we add our own quotation
 		if ($quote) {
 			return CACTI_ESCAPE_CHARACTER . $string . CACTI_ESCAPE_CHARACTER;
 		} else {
@@ -5114,11 +5131,11 @@ function cacti_escapeshellarg(string $string, bool $quote = true): string {
 /**
  * set a page refresh in Cacti through a callback
  *
- * @param  $refresh - an array containing the page, seconds, and logout
+ * @param array $refresh An array containing the page, seconds, and logout
  *
  * @return void
  */
-function set_page_refresh($refresh) {
+function set_page_refresh(array $refresh) : void {
 	if (isset($refresh['seconds'])) {
 		$_SESSION['refresh']['seconds'] = $refresh['seconds'];
 	}
@@ -5140,7 +5157,7 @@ function set_page_refresh($refresh) {
 	}
 }
 
-function bottom_footer() {
+function bottom_footer() : void {
 	global $no_session_write;
 
 	include_once(CACTI_PATH_INCLUDE . '/global_session.php');
@@ -5152,27 +5169,27 @@ function bottom_footer() {
 	*/
 	kill_session_var(SESS_FIELD_VALUES);
 
-	/* make sure the debug log doesn't get too big */
+	// make sure the debug log doesn't get too big
 	debug_log_clear();
 
-	/* close the session */
+	// close the session
 	if (array_search(get_current_page(), $no_session_write, true) === false) {
 		cacti_session_close();
 	}
 
-	/* close the database connection */
+	// close the database connection
 	db_close();
 }
 
-function top_header() {
+function top_header() : void {
 	include_once(CACTI_PATH_INCLUDE . '/top_header.php');
 }
 
-function top_graph_header() {
+function top_graph_header() : void {
 	include_once(CACTI_PATH_INCLUDE . '/top_graph_header.php');
 }
 
-function general_header() {
+function general_header() : void {
 	include_once(CACTI_PATH_INCLUDE . '/top_general_header.php');
 }
 
@@ -5229,9 +5246,9 @@ function admin_email(string $subject, string $message) : bool {
 	return $result;
 }
 
-function send_mail(array|string $to, string|array|null $from = null, string $subject = null,
-	string $body = null, array|null $attachments = [], array|null $headers = [],
-	bool $html = false, $expandIds = false): string {
+function send_mail(mixed $to, mixed $from = null, string $subject = '',
+	string $body = '', mixed $attachments = [], mixed $headers = [],
+	bool $html = false, bool $expandIds = false) : string {
 	if (!is_array($from)) {
 		$name = '';
 
@@ -5324,18 +5341,18 @@ function send_mail(array|string $to, string|array|null $from = null, string $sub
  * inline      : Whether to attach 'inline' (default for graph mode) or as 'attachment' (default for all others)
  * encoding    : Encoding type, normally base64
  *
- * @param  array|string           $from                Email/name to send form
- * @param  array|string           $to                  single or multiple contacts in array or string form
- * @param  null|array|string      $cc                  none, single or multiple contacts
- * @param  null|array|string      $bcc                 none, single or multiple contacts
- * @param  null|array|string      $replyto             none, single or multiple contacts
- * @param  null|string            $subject             Message subject
- * @param  null|string            $body                Message body, in HTML format
- * @param  null|string            $body_text           Message body, in TEXT format
- * @param  null|array|string      $attachments         Attachments to send
- * @param  null|array             $headers             Custom headers
- * @param  boolean                $html                Assume HTML format
- * @param  boolean                $expandIds           Find log style xxx[nn] and expand to full names
+ * @param array|string      $from        Email/name to send form
+ * @param array|string      $to          single or multiple contacts in array or string form
+ * @param null|array|string $cc          none, single or multiple contacts
+ * @param null|array|string $bcc         none, single or multiple contacts
+ * @param null|array|string $replyto     none, single or multiple contacts
+ * @param null|string       $subject     Message subject
+ * @param null|string       $body        Message body, in HTML format
+ * @param null|string       $body_text   Message body, in TEXT format
+ * @param null|array|string $attachments Attachments to send
+ * @param null|array        $headers     Custom headers
+ * @param boolean           $html        Assume HTML format
+ * @param boolean           $expandIds   Find log style xxx[nn] and expand to full names
  *
  * @return string
  *
@@ -5343,7 +5360,7 @@ function send_mail(array|string $to, string|array|null $from = null, string $sub
 function mailer(array|string $from, array|string $to, null|array|string $cc = null,
 	null|array|string $bcc = null, null|array|string $replyto = null, null|string $subject = null,
 	null|string $body = null, null|string $body_text = null, null|array|string $attachments = [],
-	null|array $headers = [], bool $html = true, bool $expandIds = false): string {
+	null|array $headers = [], bool $html = true, bool $expandIds = false) : string {
 	global $cacti_locale, $mail_methods;
 
 	$start_time = microtime(true);
@@ -5355,7 +5372,7 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 	$mail = new PHPMailer\PHPMailer\PHPMailer;
 
 	// Set a reasonable timeout of 5 seconds
-	$timeout = read_config_option('settings_smtp_timeout');
+	$timeout = intval(read_config_option('settings_smtp_timeout'));
 
 	if (empty($timeout) || $timeout < 0 || $timeout > 300) {
 		$mail->Timeout = 5;
@@ -5387,7 +5404,7 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 	} elseif ($how == 2) {
 		$mail->isSMTP();
 		$mail->Host = read_config_option('settings_smtp_host');
-		$mail->Port = read_config_option('settings_smtp_port');
+		$mail->Port = intval(read_config_option('settings_smtp_port'));
 
 		if (read_config_option('settings_smtp_username') != '') {
 			$mail->SMTPAuth = true;
@@ -5414,12 +5431,11 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 			}
 		} else {
 			$mail->SMTPAutoTLS = false;
-			$mail->SMTPSecure  = false;
 		}
 	} elseif ($how == 3) {
 		$mail->isSMTP();
 		$mail->Host = read_config_option('settings_oauth2_host');
-		$mail->Port = read_config_option('settings_oauth2_port');
+		$mail->Port = intval(read_config_option('settings_oauth2_port'));
 
 		$secure = read_config_option('settings_oauth2_secure');
 
@@ -5427,11 +5443,12 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 			$mail->SMTPSecure = strtolower($secure);
 		} else {
 			$mail->SMTPAutoTLS = false;
-			$mail->SMTPSecure  = false;
 		}
 
 		$mail->SMTPAuth = true;
 		$mail->AuthType = 'XOAUTH2';
+
+		$provider = false;
 
 		$email        = read_config_option('settings_oauth2_from_email');
 		$clientId     = read_config_option('settings_oauth2_client_id');
@@ -5440,7 +5457,7 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 		$refreshToken = read_config_option('settings_oauth2_refresh_token');
 
 		if ($refreshToken == '') {
-			return __('No OAuth2 refrest token is specified. Configure OAuth2 correctly.');
+			return __('No OAuth2 refresh token is specified. Configure OAuth2 correctly.');
 		}
 
 		switch (read_config_option('settings_oauth2_provider')) {
@@ -5475,18 +5492,20 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 				break;
 		}
 
-		$mail->setOAuth(
-			new PHPMailer\PHPMailer\OAuth([
-				'provider'     => $provider,
-				'clientId'     => $clientId,
-				'clientSecret' => $clientSecret,
-				'refreshToken' => $refreshToken,
-				'userName'     => $email,
-			])
-		);
+		if ($provider !== false) {
+			$mail->setOAuth(
+				new PHPMailer\PHPMailer\OAuth([
+					'provider'     => $provider,
+					'clientId'     => $clientId,
+					'clientSecret' => $clientSecret,
+					'refreshToken' => $refreshToken,
+					'userName'     => $email,
+				])
+			);
+		}
 	}
 
-	/* perform data substitution */
+	// perform data substitution
 	if (str_contains($subject, '|date_time|')) {
 		$date = read_config_option('date');
 
@@ -5574,11 +5593,11 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 	}
 
 	$conversion_array = [
-		'<SUBJECT>' => $subject ?? '',
-		'<TO>'      => $toText ?? '',
-		'<CC>'      => $ccText ?? '',
-		'<FROM>'    => $fromText ?? '',
-		'<REPLYTO>' => $replyText ?? '',
+		'<SUBJECT>' => $subject,
+		'<TO>'      => $toText,
+		'<CC>'      => $ccText,
+		'<FROM>'    => $fromText,
+		'<REPLYTO>' => $replyText
 	];
 
 	$body      = text_substitute($body, true, $expandIds, $conversion_array);
@@ -5651,14 +5670,14 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 					$attachment['attachment'] = base64_decode($attachment['attachment'], true);
 				}
 
-				/* get content id and create attachment */
+				// get content id and create attachment
 				$cid = getmypid() . '_' . $i . '@' . 'localhost';
 
 				if (empty($attachment['filename']) && file_exists($attachment['attachment'])) {
 					$attachment['filename'] = $attachment['attachment'];
 				}
 
-				/* attempt to attach */
+				// attempt to attach
 				if (!($graph_mode || $graph_ids)) {
 					if (!empty($attachment['attachment']) && @file_exists($attachment['attachment'])) {
 						$result = $mail->addAttachment($attachment['attachment'], $attachment['filename'], $attachment['encoding'], $attachment['mime_type'], $attachment['inline']);
@@ -5684,7 +5703,7 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 				if ($graph_mode) {
 					$body = str_replace('<GRAPH>', "<br><br><img src='cid:$cid'>", $body);
 				} elseif ($graph_ids) {
-					/* handle the body text */
+					// handle the body text
 					switch ($attachment['inline']) {
 						case 'inline':
 							$body = str_replace('<GRAPH:' . $attachment['local_graph_id'] . ':' . $attachment['timespan'] . '>', "<img src='cid:$cid' >", $body);
@@ -5700,7 +5719,7 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 		}
 	}
 
-	/* process custom headers */
+	// process custom headers
 	if (is_array($headers) && cacti_sizeof($headers)) {
 		foreach ($headers as $name => $value) {
 			$mail->addCustomHeader($name, $value);
@@ -5726,7 +5745,7 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 	}
 
 	$result   = $mail->send();
-	$error    = $mail->ErrorInfo; //$result ? '' : $mail->ErrorInfo;
+	$error    = $mail->ErrorInfo; // $result ? '' : $mail->ErrorInfo;
 	$method   = $mail_methods[intval(read_config_option('settings_how'))];
 	$rtype    = $result ? 'INFO' : 'WARNING';
 	$rmsg     = $result ? 'successfully sent' : 'failed';
@@ -5754,7 +5773,7 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 	return $error;
 }
 
-function record_mailer_error($retError, $mailError) {
+function record_mailer_error(string $retError, string $mailError) : mixed {
 	$errorInfo = empty($retError) ? $mailError : $retError;
 	cacti_log('ERROR: ' . $errorInfo, false, 'CMDPHP MAILER');
 	cacti_debug_backtrace('MAILER ERROR');
@@ -5762,18 +5781,15 @@ function record_mailer_error($retError, $mailError) {
 	return $errorInfo;
 }
 
-function add_email_details(array $emails, bool &$result, callable $addFunc): string {
+function add_email_details(array $emails, bool &$result, callable $addFunc) : string {
 	$arrText = [];
 
 	foreach ($emails as $e) {
 		if (!empty($e['email'])) {
-			//if (is_callable($addFunc)) {
-			if (!empty($addFunc)) {
-				$result = $addFunc($e['email'], $e['name']);
+			$result = $addFunc($e['email'], $e['name']);
 
-				if (!$result) {
-					return '';
-				}
+			if (!$result) {
+				return '';
 			}
 
 			$arrText[] = create_emailtext($e);
@@ -5786,11 +5802,10 @@ function add_email_details(array $emails, bool &$result, callable $addFunc): str
 
 	$text = implode(',', $arrText);
 
-	//print "add_email_sw_details(): $text\n";
 	return $text;
 }
 
-function parse_email_details($emails, int $max_records = 0, array $details = []): array {
+function parse_email_details(mixed $emails, int $max_records = 0, array $details = []) : array {
 	if (!is_array($emails)) {
 		$emails = [$emails];
 	}
@@ -5845,7 +5860,7 @@ function parse_email_details($emails, int $max_records = 0, array $details = [])
 	return $results;
 }
 
-function split_emaildetail($email) {
+function split_emaildetail(mixed $email) : array {
 	$rname = '';
 	$rmail = '';
 
@@ -5900,7 +5915,7 @@ function split_emaildetail($email) {
 	return ['name' => $rname, 'email' => mb_strtolower($rmail)];
 }
 
-function create_emailtext($e) {
+function create_emailtext(array $e) : string {
 	if (empty($e['email'])) {
 		$text = '';
 	} else {
@@ -5914,8 +5929,8 @@ function create_emailtext($e) {
 	return $text;
 }
 
-function ping_mail_server($host, $port, $user, $password, $timeout = 10, $secure = 'none') {
-	//Create a new SMTP instance
+function ping_mail_server(string $host, int $port, string $user, string $password, int $timeout = 10, string $secure = 'none') : mixed {
+	// Create a new SMTP instance
 	$smtp = new PHPMailer\PHPMailer\SMTP;
 
 	if (!empty($secure) && $secure != 'none') {
@@ -5924,18 +5939,18 @@ function ping_mail_server($host, $port, $user, $password, $timeout = 10, $secure
 		}
 	}
 
-	//Enable connection-level debug output
+	// Enable connection-level debug output
 	$smtp->do_debug = 0;
-	//$smtp->do_debug = SMTP::DEBUG_LOWLEVEL;
+	// $smtp->do_debug = SMTP::DEBUG_LOWLEVEL;
 
 	$results = true;
 
 	try {
-		//Connect to an SMTP server
+		// Connect to an SMTP server
 		if ($smtp->connect($host, $port, $timeout)) {
-			//Say hello
-			if ($smtp->hello(gethostbyname(gethostname()))) { //Put your host name in here
-				//Authenticate
+			// Say hello
+			if ($smtp->hello(gethostbyname(gethostname()))) { // Put your host name in here
+				// Authenticate
 				if ($user != '') {
 					if ($smtp->authenticate($user, $password)) {
 						$results = true;
@@ -5954,13 +5969,13 @@ function ping_mail_server($host, $port, $user, $password, $timeout = 10, $secure
 		cacti_log($results);
 	}
 
-	//Whatever happened, close the connection.
+	// Whatever happened, close the connection.
 	$smtp->quit(true);
 
 	return $results;
 }
 
-function email_test() {
+function email_test() : void {
 	$message =  __('This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings.') . '<br><br>';
 	$message .= __('Your email settings are currently set as follows') . '<br><br>';
 	$message .= '<b>' . __('Method') . '</b>: ';
@@ -5969,6 +5984,7 @@ function email_test() {
 
 	$ping_results = true;
 	$how          = read_config_option('settings_how');
+	$mail         = '';
 
 	if ($how < 0 || $how > 2) {
 		$how = 0;
@@ -5977,18 +5993,18 @@ function email_test() {
 	if ($how == 0) {
 		$mail = __('PHP\'s Mailer Class');
 	} elseif ($how == 1) {
-		$mail     = __('Sendmail') . '<br><b>' . __('Sendmail Path'). '</b>: ';
+		$mail     = __('Sendmail') . '<br><b>' . __('Sendmail Path') . '</b>: ';
 		$sendmail = read_config_option('settings_sendmail_path');
 		$mail .= $sendmail;
 	} elseif ($how == 2) {
 		print __('Method: SMTP') . '<br>';
 		$mail          = __('SMTP') . '<br>';
 		$smtp_host     = read_config_option('settings_smtp_host');
-		$smtp_port     = read_config_option('settings_smtp_port');
+		$smtp_port     = intval(read_config_option('settings_smtp_port'));
 		$smtp_username = read_config_option('settings_smtp_username');
 		$smtp_password = read_config_option('settings_smtp_password');
 		$smtp_secure   = read_config_option('settings_smtp_secure');
-		$smtp_timeout  = read_config_option('settings_smtp_timeout');
+		$smtp_timeout  = intval(read_config_option('settings_smtp_timeout'));
 
 		$mail .= '<b>' . __('Device') . "</b>: $smtp_host<br>";
 		$mail .= '<b>' . __('Port') . "</b>: $smtp_port<br>";
@@ -6037,7 +6053,7 @@ function email_test() {
 			$errors = __('Success!');
 		}
 	} else {
-		print __('Message Not Sent due to ping failure.'). '<br><br>';
+		print __('Message Not Sent due to ping failure.') . '<br><br>';
 	}
 
 	print '<center><table><tr><td>';
@@ -6048,29 +6064,28 @@ function email_test() {
  * gethostbyaddr_wtimeout - This function provides a good method of performing
  * a rapid lookup of a DNS entry for a host so long as you don't have to look far.
  *
- * @param  mixed $ip
- * @param  mixed $dns
- * @param  mixed $timeout
+ * @param string $ip      The IP Address
+ * @param string $dns     The DNS Server to use
+ * @param int    $timeout The tiemout in milliseconds
+ *
+ * @return string
  */
-function get_dns_from_ip($ip, $dns, $timeout = 1000) {
-	/* random transaction number (for routers etc to get the reply back) */
+function get_dns_from_ip(string $ip, string $dns, int $timeout = 1000) : string {
+	// random transaction number (for routers etc to get the reply back)
 	$data = random_int(10, 99);
 
-	/* trim it to 2 bytes */
-	$data = substr($data, 0, 2);
-
-	/* create request header */
+	// create request header
 	$data .= "\1\0\0\1\0\0\0\0\0\0";
 
-	/* split IP into octets */
+	// split IP into octets
 	$octets = explode('.', $ip);
 
-	/* perform a quick error check */
+	// perform a quick error check
 	if (cacti_count($octets) != 4) {
 		return 'ERROR';
 	}
 
-	/* needs a byte to indicate the length of each segment of the request */
+	// needs a byte to indicate the length of each segment of the request
 	for ($x = 3; $x >= 0; $x--) {
 		switch (strlen($octets[$x])) {
 			case 1: // 1 byte long segment
@@ -6089,45 +6104,45 @@ function get_dns_from_ip($ip, $dns, $timeout = 1000) {
 				return 'ERROR';
 		}
 
-		/* and the segment itself */
+		// and the segment itself
 		$data .= $octets[$x];
 	}
 
-	/* and the final bit of the request */
+	// and the final bit of the request
 	$data .= "\7in-addr\4arpa\0\0\x0C\0\1";
 
-	/* create UDP socket */
+	// create UDP socket
 	$handle = @fsockopen("udp://$dns", 53);
 
-	@stream_set_timeout($handle, floor($timeout / 1000), ($timeout * 1000) % 1000000);
-	@stream_set_blocking($handle, 1);
+	@stream_set_timeout($handle, intval(floor($timeout / 1000)), ($timeout * 1000) % 1000000);
+	@stream_set_blocking($handle, true);
 
-	/* send our request (and store request size so we can cheat later) */
+	// send our request (and store request size so we can cheat later)
 	$requestsize = @fwrite($handle, $data);
 
-	/* get the response */
+	// get the response
 	$response = @fread($handle, 1000);
 
-	/* check to see if it timed out */
+	// check to see if it timed out
 	$info = @stream_get_meta_data($handle);
 
-	/* close the socket */
+	// close the socket
 	@fclose($handle);
 
 	if ($info['timed_out']) {
 		return 'timed_out';
 	}
 
-	/* more error handling */
+	// more error handling
 	if ($response == '') {
 		return $ip;
 	}
 
-	/* parse the response and find the response type */
+	// parse the response and find the response type
 	$type = @unpack('s', substr($response, $requestsize + 2));
 
 	if (isset($type[1]) && $type[1] == 0x0C00) {
-		/* set up our variables */
+		// set up our variables
 		$host = '';
 		$len  = 0;
 
@@ -6136,33 +6151,30 @@ function get_dns_from_ip($ip, $dns, $timeout = 1000) {
 		*/
 		$position = $requestsize + 12;
 
-		/* reconstruct the hostname */
+		// reconstruct the hostname
 		do {
-			/* get segment size */
+			// get segment size
 			$len = unpack('c', substr($response, $position));
 
-			/* null terminated string, so length 0 = finished */
+			// null terminated string, so length 0 = finished
 			if ($len[1] == 0) {
-				/* return the hostname, without the trailing '.' */
+				// return the hostname, without the trailing '.'
 				return strtoupper(substr($host, 0, strlen($host) - 1));
 			}
 
-			/* add the next segment to our host */
+			// add the next segment to our host
 			$host .= substr($response, $position + 1, $len[1]) . '.';
 
-			/* move pointer on to the next segment */
+			// move pointer on to the next segment
 			$position += $len[1] + 1;
-		} while ($len != 0);
-
-		/* error - return the hostname we constructed (without the . on the end) */
-		return strtoupper($ip);
+		} while ($len != false);
 	}
 
-	/* error - return the hostname */
+	// error - return the hostname
 	return strtoupper($ip);
 }
 
-function poller_maintenance() {
+function poller_maintenance() : void {
 	$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
 
 	// If its not set, just assume its in the path
@@ -6175,7 +6187,7 @@ function poller_maintenance() {
 	exec_background($command_string, $extra_args);
 }
 
-function clog_admin() {
+function clog_admin() : bool {
 	if (!isset($_SESSION['sess_clog_level'])) {
 		clog_authorized();
 	}
@@ -6187,7 +6199,7 @@ function clog_admin() {
 	}
 }
 
-function clog_authorized() {
+function clog_authorized() : bool {
 	if (!isset($_SESSION['sess_clog_level'])) {
 		if (isset($_SESSION[SESS_USER_ID])) {
 			if (is_realm_allowed(18)) {
@@ -6215,7 +6227,7 @@ function clog_authorized() {
 	}
 }
 
-function cacti_debug_backtrace($entry = '', $html = false, $record = true, $limit = 0, $skip = 0) {
+function cacti_debug_backtrace(string $entry = '', bool $html = false, bool $record = true, int $limit = 0, int $skip = 0) : mixed {
 	$skip  = $skip >= 0 ? $skip : 1;
 	$limit = $limit > 0 ? ($limit + $skip) : 0;
 
@@ -6241,7 +6253,7 @@ function cacti_debug_backtrace($entry = '', $html = false, $record = true, $limi
 			$file = $line;
 		}
 
-		$func = $c['function'].'()';
+		$func = $c['function'] . '()';
 
 		if (isset($c['class'])) {
 			$func = $c['class'] . $c['type'] . $func;
@@ -6260,6 +6272,8 @@ function cacti_debug_backtrace($entry = '', $html = false, $record = true, $limi
 		}
 
 		cacti_log(trim("$entry Backtrace: " . clean_up_lines($s)), false, '');
+
+		return true;
 	} else {
 		if (!empty($entry)) {
 			return trim("$entry Backtrace: " . clean_up_lines($s));
@@ -6274,15 +6288,15 @@ function cacti_debug_backtrace($entry = '', $html = false, $record = true, $limi
  * optionally, return an array of numbers containing elements required for
  * a whisker chart.
  *
- * @param  $data       - an array of data
- * @param  $percentile - the Nth percentile to calculate.  By default 95th.
- * @param  $whisker    - if whisker is true, an array of values will be returned
- *                      including 25th, median, 75th, and 90th percentiles.
+ * @param array $data       An array of data
+ * @param mixed $percentile The Nth percentile to calculate.  By default 95th.
+ * @param bool  $whisker    If whisker is true, an array of values will be returned
+ *                          including 25th, median, 75th, and 90th percentiles.
  *
- * @return mixed either the Nth percentile, the elements for a whisker chart,
- *            or false if there is insufficient data to determine.
+ * @return mixed Either the Nth percentile, the elements for a whisker chart,
+ *               or false if there is insufficient data to determine.
  */
-function calculate_percentiles($data, $percentile = 95, $whisker = false) {
+function calculate_percentiles(array $data, mixed $percentile = 95, bool $whisker = false) : mixed {
 	if ($percentile > 0 && $percentile < 1) {
 		$p = $percentile;
 	} elseif ($percentile > 1 && $percentile <= 100) {
@@ -6308,23 +6322,19 @@ function calculate_percentiles($data, $percentile = 95, $whisker = false) {
 	$results  = [];
 	$elements = cacti_sizeof($data);
 
-	/* sort the array to return */
+	// sort the array to return
 	sort($data);
 
 	foreach ($tiles as $index => $p) {
-		/* calculate offsets into the array */
+		// calculate offsets into the array
 		$allindex    = ($elements - 1) * $p;
-		$intvalindex = floor($allindex);
+		$intvalindex = intval(floor($allindex));
 		$floatval    = $allindex - $intvalindex;
 
-		if (!is_float($floatval)) {
-			$ptile = $data[$intvalindex];
+		if ($elements > $intvalindex + 1) {
+			$ptile = $floatval * ($data[$intvalindex + 1] - $data[$intvalindex]) + $data[$intvalindex];
 		} else {
-			if ($elements > $intvalindex + 1) {
-				$ptile = $floatval * ($data[$intvalindex + 1] - $data[$intvalindex]) + $data[$intvalindex];
-			} else {
-				$ptile = $data[$intvalindex];
-			}
+			$ptile = $data[$intvalindex];
 		}
 
 		if ($index == 'custom') {
@@ -6337,7 +6347,7 @@ function calculate_percentiles($data, $percentile = 95, $whisker = false) {
 	return $results;
 }
 
-function get_timeinstate(array $host, bool $return_as_date = false): string {
+function get_timeinstate(array $host, bool $return_as_date = false) : string {
 	$interval = read_config_option('poller_interval');
 
 	if ($host['availability_method'] == 0) {
@@ -6375,7 +6385,7 @@ function get_timeinstate(array $host, bool $return_as_date = false): string {
 	}
 }
 
-function get_uptime(array $host, bool $return_as_date = false): string {
+function get_uptime(array $host, bool $return_as_date = false) : string {
 	if (!$return_as_date) {
 		return ($host['snmp_sysUpTimeInstance'] > 0) ? get_daysfromtime(intval($host['snmp_sysUpTimeInstance'] / 100)) : __('N/A');
 	}
@@ -6391,7 +6401,7 @@ function get_uptime(array $host, bool $return_as_date = false): string {
 	}
 }
 
-function get_daysfromtime($time, $secs = false, $pad = '', $format = DAYS_FORMAT_SHORT, $all = false) {
+function get_daysfromtime(mixed $time, bool $secs = false, string $pad = '', int $format = DAYS_FORMAT_SHORT, bool $all = false) : string {
 	global $days_from_time_settings;
 
 	// Work around stricter typing in PHP 8.1.2+
@@ -6416,7 +6426,7 @@ function get_daysfromtime($time, $secs = false, $pad = '', $format = DAYS_FORMAT
 					$mod = 1;
 				}
 
-				$val   = floor($time / $mod);
+				$val   = sprintf('%s', floor($time / $mod));
 				$time %= $mod;
 			} else {
 				$val   = 0;
@@ -6432,8 +6442,8 @@ function get_daysfromtime($time, $secs = false, $pad = '', $format = DAYS_FORMAT
 	return trim($result, $text['suffix']);
 }
 
-function padleft($pad = '', $value = '', $min = 2) {
-	$result = "$value";
+function padleft(string $pad = '', string $value = '', int $min = 2) : string {
+	$result = $value;
 
 	if (strlen($result) < $min && $pad != '') {
 		$padded = $pad . $result;
@@ -6441,13 +6451,14 @@ function padleft($pad = '', $value = '', $min = 2) {
 		while ($padded != $result && strlen($result) < $min) {
 			$padded = $pad . $result;
 		}
+
 		$result = $padded;
 	}
 
 	return $result;
 }
 
-function get_classic_tabimage($text, $down = false) {
+function get_classic_tabimage(string $text, bool $down = false) : mixed {
 	global $dejavu_paths;
 
 	$images = [
@@ -6471,20 +6482,26 @@ function get_classic_tabimage($text, $down = false) {
 		['DejaVuSansCondensed-Bold.ttf', 7, true],
 	];
 
-	$y        = 30;
-	$x        = 44;
-	$wlimit   = 72;
-	$wrapsize = 12;
+	$y         = 30;
+	$x         = 44;
+	$wlimit    = 72;
+	$wrapsize  = 12;
+	$font_path = '';
 
 	if (file_exists(CACTI_PATH_IMAGES . '/' . $images[$down])) {
 		foreach ($dejavu_paths as $dejavupath) {
 			if (file_exists($dejavupath)) {
 				$font_path = $dejavupath;
+
+				break;
 			}
 		}
 
 		$originalpath = getenv('GDFONTPATH');
-		putenv('GDFONTPATH=' . $font_path);
+
+		if ($font_path != '') {
+			putenv('GDFONTPATH=' . $font_path);
+		}
 
 		$template = imagecreatefromgif(CACTI_PATH_IMAGES . '/' . $images[$down]);
 
@@ -6495,6 +6512,8 @@ function get_classic_tabimage($text, $down = false) {
 		imagecopy($tab, $template, 0, 0, 0, 0, $w, $h);
 
 		$txcol = imagecolorat($tab, 0, 0);
+		$lines = [];
+
 		imagecolortransparent($tab,$txcol);
 
 		$white         = imagecolorallocate($tab, 255, 255, 255);
@@ -6504,8 +6523,6 @@ function get_classic_tabimage($text, $down = false) {
 			foreach ($possibles as $variation) {
 				$font     = $variation[0];
 				$fontsize = $variation[1];
-
-				$lines = [];
 
 				// if no wrapping is requested, or no wrapping is possible...
 				if ((!$variation[2]) || ($variation[2] && !str_contains($text,' '))) {
@@ -6549,7 +6566,6 @@ function get_classic_tabimage($text, $down = false) {
 					$realy = ($h - $fonth - 5);
 
 					// Since we can't use FreeType, lets use a fixed location
-					$lines   = [];
 					$lines[] = [$text, $fontid, 0, $realx, $realy];
 
 					if ($realx > 10 && $realy > 0) {
@@ -6594,15 +6610,15 @@ function get_classic_tabimage($text, $down = false) {
 	}
 }
 
-function cacti_oid_numeric_format() {
+function cacti_oid_numeric_format() : void {
 	if (function_exists('snmp_set_oid_output_format')) {
 		snmp_set_oid_output_format(SNMP_OID_OUTPUT_NUMERIC);
 	} elseif (function_exists('snmp_set_oid_numeric_print')) {
-		snmp_set_oid_numeric_print(true);
+		snmp_set_oid_numeric_print(SNMP_OID_OUTPUT_NUMERIC);
 	}
 }
 
-function IgnoreErrorHandler($message, $file = '', $line = null) {
+function IgnoreErrorHandler(string $message, string $file = '', int $line = 0) : bool {
 	global $snmp_error;
 
 	$log_ignored_errors = read_config_option('log_ignored_errors');
@@ -6654,7 +6670,7 @@ function IgnoreErrorHandler($message, $file = '', $line = null) {
 	return false;
 }
 
-function CactiErrorHandler($level, $message, $file, $line, $context = []) {
+function CactiErrorHandler(int $level, string $message, string $file, int $line, array $context = []) : bool {
 	global $phperrors;
 
 	if (defined('IN_CACTI_INSTALL')) {
@@ -6671,10 +6687,10 @@ function CactiErrorHandler($level, $message, $file, $line, $context = []) {
 
 	preg_match("/.*\/plugins\/([\w-]*)\/.*/", $file, $output_array);
 
-	$plugin = (is_array($output_array) && isset($output_array[1]) ? $output_array[1] : '');
+	$plugin = ($output_array != null && isset($output_array[1]) ? $output_array[1] : '');
 	$error  = 'Unknown error occurred';
 
-	if ($level !== null && isset($phperrors[$level])) {
+	if ($level != null && isset($phperrors[$level])) {
 		$error  = 'PHP ' . $phperrors[$level] . ($plugin != '' ? " in  Plugin '$plugin'" : '') . ": $message in file: $file  on line: $line";
 	} else {
 		$error  = 'PHP Unknown Error' . ($plugin != '' ? " in  Plugin '$plugin'" : '') . ": $message in file: $file  on line: $line";
@@ -6728,7 +6744,7 @@ function CactiErrorHandler($level, $message, $file, $line, $context = []) {
 	return false;
 }
 
-function CactiShutdownHandler() {
+function CactiShutdownHandler() : bool {
 	global $phperrors;
 
 	$phperrors ??= [
@@ -6753,54 +6769,56 @@ function CactiShutdownHandler() {
 	$error = error_get_last();
 
 	if (is_array($error)) {
-		if (isset($error['message']) && IgnoreErrorHandler($error['message'])) {
+		if (IgnoreErrorHandler($error['message'])) {
 			return true;
 		}
 
-		if (isset($error['type'])) {
-			switch ($error['type']) {
-				case E_ERROR:
-				case E_CORE_ERROR:
-				case E_COMPILE_ERROR:
-				case E_CORE_WARNING:
-				case E_COMPILE_WARNING:
-				case E_PARSE:
-					preg_match('/.*\/plugins\/([\w-]*)\/.*/', $error['file'], $output_array);
+		switch ($error['type']) {
+			case E_ERROR:
+			case E_CORE_ERROR:
+			case E_COMPILE_ERROR:
+			case E_CORE_WARNING:
+			case E_COMPILE_WARNING:
+			case E_PARSE:
+				preg_match('/.*\/plugins\/([\w-]*)\/.*/', $error['file'], $output_array);
 
-					$plugin = ($output_array[1] ?? '');
+				$plugin = ($output_array[1] ?? '');
 
-					if ($error['type'] !== null && isset($phperrors[$error['type']])) {
-						$message = 'PHP ' . $phperrors[$error['type']] .
-							($plugin != '' ? " in  Plugin '$plugin'" : '') . ': ' . $error['message'] .
-							' in file: ' .  $error['file'] . ' on line: ' . $error['line'];
-					} else {
-						$message = 'PHP Unknown Error' .
-							($plugin != '' ? " in  Plugin '$plugin'" : '') . ': ' . $error['message'] .
-							' in file: ' .  $error['file'] . ' on line: ' . $error['line'];
-					}
+				if ($error['type'] != null && isset($phperrors[$error['type']])) {
+					$message = 'PHP ' . $phperrors[$error['type']] .
+						($plugin != '' ? " in  Plugin '$plugin'" : '') . ': ' . $error['message'] .
+						' in file: ' . $error['file'] . ' on line: ' . $error['line'];
+				} else {
+					$message = 'PHP Unknown Error' .
+						($plugin != '' ? " in  Plugin '$plugin'" : '') . ': ' . $error['message'] .
+						' in file: ' . $error['file'] . ' on line: ' . $error['line'];
+				}
 
-					cacti_log($message, false, 'ERROR');
-					cacti_debug_backtrace('PHP ERROR', false, true, 0, 1);
+				cacti_log($message, false, 'ERROR');
+				cacti_debug_backtrace('PHP ERROR', false, true, 0, 1);
 
-					if ($plugin != '') {
-						api_plugin_disable_all($plugin);
-						cacti_log("ERRORS DETECTED - DISABLING PLUGIN '$plugin'");
-						admin_email(__('Cacti System Warning'), __('Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details.', $plugin, $message));
-					}
-			}
+				if ($plugin != '') {
+					api_plugin_disable_all($plugin);
+					cacti_log("ERRORS DETECTED - DISABLING PLUGIN '$plugin'");
+					admin_email(__('Cacti System Warning'), __('Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details.', $plugin, $message));
+				}
+
+				return false;
 		}
 	}
+
+	return true;
 }
 
 /**
  * enable_device_debug - Enables device debug for a device
  * if it is disabled.
  *
- * @param  int $host_id - the device id to search for
+ * @param int $host_id The device id to search for
  *
  * @return bool
  */
-function enable_device_debug(int $host_id): bool {
+function enable_device_debug(int $host_id) : bool {
 	$device_debug = read_config_option('selective_device_debug', true);
 
 	$devices = [];
@@ -6822,11 +6840,11 @@ function enable_device_debug(int $host_id): bool {
  * disable_device_debug - Disables device debug for a device
  * if it is enabled.
  *
- * @param  int $host_id - the device id to search for
+ * @param int $host_id The device id to search for
  *
  * @return bool
  */
-function disable_device_debug(int $host_id): bool {
+function disable_device_debug(int $host_id) : bool {
 	$device_debug = read_config_option('selective_device_debug', true);
 
 	if ($device_debug != '') {
@@ -6843,11 +6861,11 @@ function disable_device_debug(int $host_id): bool {
  * is_device_debug_enabled - Determines if device debug is enabled
  * for a device.
  *
- * @param  int $host_id - the device id to search for
+ * @param int $host_id The device id to search for
  *
  * @return bool
  */
-function is_device_debug_enabled(int $host_id): bool {
+function is_device_debug_enabled(int $host_id) : bool {
 	$device_debug = read_config_option('selective_device_debug', true);
 	$devices      = array_map('intval', explode(',', $device_debug));
 
@@ -6869,11 +6887,11 @@ function is_device_debug_enabled(int $host_id): bool {
  * @param string $url       The URL path to append to the hostname for the request.
  * @param string $logtype   The log type for logging messages (default: 'WEBUI').
  *
- * @return string|false The response from the remote data collector, or false on failure.
+ * @return mixed The response from the remote data collector, or false on failure.
  *
  * @throws ErrorException If an error occurs during the file_get_contents call.
  */
-function call_remote_data_collector(int $poller_id, string $url, string $logtype = 'WEBUI') : string|false {
+function call_remote_data_collector(int $poller_id, string $url, string $logtype = 'WEBUI') : mixed {
 	$hostname = db_fetch_cell_prepared('SELECT hostname
 		FROM poller
 		WHERE id = ?',
@@ -6904,19 +6922,17 @@ function call_remote_data_collector(int $poller_id, string $url, string $logtype
 
 	$output = [];
 
-	/* register error handlers for the remote agent calls */
+	// register error handlers for the remote agent calls
 	set_error_handler(
 		function ($severity, $message, $file, $line) {
 			throw new ErrorException($message, $severity, $severity, $file, $line);
-
-			return false;
 		}
 	);
 
 	$ra_start = microtime(true);
 
 	try {
-		$output = file_get_contents(get_url_type() .'://' . $hostname . $port . $url, false, $fgc_context);
+		$output = file_get_contents(get_url_type() . '://' . $hostname . $port . $url, false, $fgc_context);
 	} catch (ErrorException $e) {
 		$ra_end = microtime(true);
 
@@ -6928,7 +6944,7 @@ function call_remote_data_collector(int $poller_id, string $url, string $logtype
 		return false;
 	}
 
-	/* restore the two original error handlers */
+	// restore the two original error handlers
 	restore_error_handler();
 
 	return $output;
@@ -6954,12 +6970,11 @@ function get_url_type() {
  * to fulfill system setup related requirements like the usage of Web Single Login
  * cookies for example.
  *
- * @param  (int|bool) A numeric timeout value, or null if not set
- * @param  mixed $timeout
+ * @param mixed $timeout A numeric timeout value, or null if not set
  *
- * @return (array)    An array to a context
+ * @return array An array to a context
  */
-function get_default_contextoption($timeout = false) {
+function get_default_contextoption(mixed $timeout = false) : array {
 	$fgc_contextoption = [];
 
 	if ($timeout === false) {
@@ -7003,11 +7018,11 @@ function get_default_contextoption($timeout = false) {
  * repair_system_data_input_methods - This utility will repair
  * system data input methods when they are detected on the system
  *
- * @param  mixed $step
+ * @param string $step
  *
- * @return mixed null
+ * @return void
  */
-function repair_system_data_input_methods($step = 'import') {
+function repair_system_data_input_methods(string $step = 'import') : void {
 	$system_hashes = [
 		'3eb92bb845b9660a7445cf9740726522', // Get SNMP Data
 		'bf566c869ac6443b0c75d1c32b5a350e', // Get SNMP Data (Indexed)
@@ -7203,7 +7218,7 @@ if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' && !function_exists('posix_kill')
 		define('SIGINT', 2);
 	}
 
-	function posix_kill($pid, $signal = SIGTERM) {
+	function posix_kill(int $pid, int $signal = SIGTERM) : bool {
 		// Check if the process exists
 		$checkProcessCmd = "powershell.exe -Command \"Get-Process -Id $pid -ErrorAction SilentlyContinue\"";
 		$processExists   = trim(shell_exec($checkProcessCmd));
@@ -7217,8 +7232,14 @@ if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' && !function_exists('posix_kill')
 				// Kill the process
 				$killCmd = "powershell.exe -Command \"Stop-Process -Id $pid -Force\"";
 				shell_exec($killCmd);
-			} elseif ($signal == SIGHUP) {
+
+				return true;
+			}
+
+			if ($signal == SIGHUP) {
 				cacti_log("WARNING: SIGHUP Signal for pid: $pid is not supported on Windows", false, 'POLLER');
+
+				return false;
 			} else {
 				cacti_log("WARNING: Unknown Signal Number $signal in posix_kill", false, 'POLLER');
 
@@ -7232,8 +7253,8 @@ if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' && !function_exists('posix_kill')
 	}
 }
 
-function is_ipaddress($ip_address = '') {
-	/* check for ipv4/v6 */
+function is_ipaddress(string $ip_address = '') : bool {
+	// check for ipv4/v6
 	if (function_exists('filter_var')) {
 		if (filter_var($ip_address, FILTER_VALIDATE_IP) !== false) {
 			return true;
@@ -7250,16 +7271,16 @@ function is_ipaddress($ip_address = '') {
 /**
  * date_time_format		create a format string for date/time
  *
- * @return string returns	date time format
+ * @return string returns DateTime format
  */
-function date_time_format() {
+function date_time_format() : string {
 	$datechar = [
 		GDC_HYPHEN => '-',
 		GDC_SLASH  => '/',
 		GDC_DOT    => '.'
 	];
 
-	/* setup date format */
+	// setup date format
 	$date_fmt        = read_config_option('default_date_format');
 	$dateCharSetting = read_config_option('default_datechar');
 
@@ -7287,7 +7308,7 @@ function date_time_format() {
 	}
 }
 
-function get_last_line(string $file) {
+function get_last_line(string $file) : string {
 	$line   = '';
 	$cursor = -1;
 
@@ -7296,15 +7317,15 @@ function get_last_line(string $file) {
 
 	$char = fgetc($f);
 
-	//Trim trailing newline characters in the file
+	// Trim trailing newline characters in the file
 	while ($char === '' || $char === "\r" || $char === "\n") {
 		fseek($f, $cursor--, SEEK_END);
 		$char = fgetc($f);
 	}
 
-	//Read until the next line of the file begins or the first newline char
+	// Read until the next line of the file begins or the first newline char
 	while ($char !== false && $char !== '' && $char !== "\r" && $char !== "\n") {
-		//Prepend the new character
+		// Prepend the new character
 		$line = $char . $line;
 		fseek($f, $cursor--, SEEK_END);
 		$char = fgetc($f);
@@ -7313,10 +7334,10 @@ function get_last_line(string $file) {
 	return $line;
 }
 
-function get_source_timestamp() {
+function get_source_timestamp() : array {
 	static $git_status = null;
 
-	$parts     = $git_status;
+	$parts = $git_status;
 
 	if ($git_status === null) {
 		$git_path = realpath(__DIR__ . '/../.git/logs/HEAD');
@@ -7334,7 +7355,7 @@ function get_source_timestamp() {
 	}
 
 	if ($parts === null) {
-		$parts      = [0, 'UNKNOWN'];
+		$parts = [0, 'UNKNOWN'];
 	}
 
 	if ($git_status === null) {
@@ -7344,9 +7365,9 @@ function get_source_timestamp() {
 	return $parts;
 }
 
-function format_cacti_version($version, $format = CACTI_VERSION_FORMAT_FULL) {
+function format_cacti_version(string $version, int $format = CACTI_VERSION_FORMAT_FULL) : string {
 	if ($version == 'new_install') {
-		$version = CACTI_VERSION . ($format == CACTI_VERSION_FORMAT_FULL ? '.0.0' : ''); //($format == CACTI_VERSION_FORMAT_FULL) ? CACTI_VERSION_FULL : CACTI_VERSION;
+		$version = CACTI_VERSION . ($format == CACTI_VERSION_FORMAT_FULL ? '.0.0' : ''); // ($format == CACTI_VERSION_FORMAT_FULL) ? CACTI_VERSION_FULL : CACTI_VERSION;
 	}
 
 	$parts = explode('.', $version);
@@ -7354,7 +7375,7 @@ function format_cacti_version($version, $format = CACTI_VERSION_FORMAT_FULL) {
 	if (count($parts) > 3) {
 		if ($parts[3] == '-1') {
 			$source = get_source_timestamp();
-			//cacti_log('Source: ' . json_encode($source ?? '<null>'), false, 'DEBUG');
+			// cacti_log('Source: ' . json_encode($source ?? '<null>'), false, 'DEBUG');
 			$parts[3] = 99;
 			$parts[4] = $source[0];
 			$parts[5] = $source[1];
@@ -7368,7 +7389,7 @@ function format_cacti_version($version, $format = CACTI_VERSION_FORMAT_FULL) {
 	return implode('.', $parts);
 }
 
-function format_cacti_version_text($version) {
+function format_cacti_version_text(string $version) : string {
 	$version = format_cacti_version($version);
 
 	$parts = explode('.', $version);
@@ -7384,7 +7405,7 @@ function format_cacti_version_text($version) {
 
 		if ($parts[4] > 0) {
 			$dateTime = new DateTime();
-			$dateTime->setTimestamp($parts[4]);
+			$dateTime->setTimestamp(intval($parts[4]));
 			$dateTime = $dateTime->format('Y-m-d H:i');
 
 			if ($parts[5]) {
@@ -7403,11 +7424,13 @@ function format_cacti_version_text($version) {
 /**
  * get_cacti_version - Generic function to get the cacti version
  *
- * (depreciated)
+ * @deprecated 1.3
  *
- * @param  mixed $force
+ * @param bool $force
+ *
+ * @return string The string version
  */
-function get_cacti_version($force = false) {
+function get_cacti_version(bool $force = false) : string {
 	cacti_log('WARNING: get_cacti_version() called, consider replacing with CACTI_VERSION', false, 'DEPRECIATED');
 	cacti_debug_backtrace('CACTI WARNING', false, true, 0, 1);
 
@@ -7417,9 +7440,11 @@ function get_cacti_version($force = false) {
 /**
  * get_cacti_db_version - Generic function to get the cacti version from the db
  *
- * @param  mixed $force
+ * @param bool $force
+ *
+ * @return string The string version
  */
-function get_cacti_db_version($force = false) {
+function get_cacti_db_version(bool $force = false) : string {
 	static $version = '';
 
 	if ($version == '' || $force) {
@@ -7432,9 +7457,11 @@ function get_cacti_db_version($force = false) {
 /**
  * get_cacti_db_version_raw - Generic function to get the cacti version from the db
  *
- * @param  mixed $force
+ * @param bool $force
+ *
+ * @return string The string version
  */
-function get_cacti_db_version_raw($force = false) {
+function get_cacti_db_version_raw(bool $force = false) : string {
 	static $version = '';
 
 	if ($version == '' || $force) {
@@ -7447,10 +7474,12 @@ function get_cacti_db_version_raw($force = false) {
 /**
  * get_cacti_version_text - Return the cacti version text including beta moniker
  *
- * @param  mixed $include_version
- * @param  mixed $version
+ * @param bool   $include_version
+ * @param string $version
+ *
+ * @return string The string version
  */
-function get_cacti_version_text($include_version = true, $version = CACTI_VERSION_FULL) {
+function get_cacti_version_text(bool $include_version = true, string $version = CACTI_VERSION_FULL) : string {
 	$version_text = format_cacti_version_text($version);
 
 	if ($include_version) {
@@ -7463,10 +7492,12 @@ function get_cacti_version_text($include_version = true, $version = CACTI_VERSIO
 /**
  * get_cacti_cli_version() {
  *
- * @param  mixed $include_db
- * @param  mixed $version
+ * @param bool   $include_db
+ * @param string $version
+ *
+ * @return string The version
  */
-function get_cacti_cli_version($include_db = true, $version = CACTI_VERSION_FULL) {
+function get_cacti_cli_version(bool $include_db = true, string $version = CACTI_VERSION_FULL) : string {
 	$version = get_cacti_version_text(false, $version);
 
 	$dbversion = '';
@@ -7481,11 +7512,13 @@ function get_cacti_cli_version($include_db = true, $version = CACTI_VERSION_FULL
 /**
  * cacti_version_compare - Compare Cacti version numbers
  *
- * @param  mixed $version1
- * @param  mixed $version2
- * @param  mixed $operator
+ * @param string $version1
+ * @param string $version2
+ * @param string $operator
+ *
+ * @return bool The result of the comparison
  */
-function cacti_version_compare($version1, $version2, $operator = '>') {
+function cacti_version_compare(string $version1, string $version2, string $operator = '>') : bool {
 	if ($version1 == 'new_install') {
 		$version1 = CACTI_VERSION;
 	}
@@ -7539,7 +7572,7 @@ function cacti_version_compare($version1, $version2, $operator = '>') {
 	return false;
 }
 
-function is_install_needed($version = null) {
+function is_install_needed(mixed $version = null) : bool {
 	$mode = '==';
 	$db   = get_cacti_db_version();
 
@@ -7573,7 +7606,7 @@ function is_install_needed($version = null) {
 	}
 }
 
-function is_cacti_develop($version = null) {
+function is_cacti_develop(mixed $version = null) : bool {
 	static $isStaticRelease = null;
 
 	if ($isStaticRelease === null || $version !== null) {
@@ -7596,7 +7629,7 @@ function is_cacti_develop($version = null) {
 	return $isRelease;
 }
 
-function is_cacti_release($version = null) {
+function is_cacti_release(mixed $version = null) : bool {
 	static $isStaticRelease = null;
 
 	if ($isStaticRelease === null || $version !== null) {
@@ -7624,13 +7657,13 @@ function is_cacti_release($version = null) {
  *
  * @deprecated 1.3.0 Use version_to_bits instead
  *
- * @param  string  $version  Version to convert
- * @param  int$length   Length of output
- * @param  boolean $hex      Convert to hex
+ * @param string  $version Version to convert
+ * @param int     $length  Length of output
+ * @param boolean $hex     Convert to hex
  *
  * @return integer
  */
-function version_to_decimal(string $version, int $length = 9, bool $hex = true): int {
+function version_to_decimal(string $version, int $length = 9, bool $hex = true) : int {
 	return version_to_bits($version, $hex);
 }
 
@@ -7640,15 +7673,15 @@ function version_to_decimal(string $version, int $length = 9, bool $hex = true):
  *
  * This function calls `format_cacti_version()`
  *
- * @param  string  $version		The version to be converted
- * @param  boolean $hex			Return the final decimal as hex
+ * @param string  $version The version to be converted
+ * @param boolean $hex     Return the final decimal as hex
  *
  * @return integer
  *
  * @depends format_cacti_version
  */
-function version_to_bits(string $version, $hex = false): int {
-	/***************************************************
+function version_to_bits(string $version, $hex = false) : int {
+	/*
 	 * Bits is how many bits to shift that section of a
 	 * version to the left within the integer.
 	 *
@@ -7674,7 +7707,7 @@ function version_to_bits(string $version, $hex = false): int {
 		// If we have no version, lets assume
 		// we are starting with the DEV one
 		if (cacti_sizeof($parts) == 0) {
-			explode(',', CACTI_DEV_VERSION);
+			$parts = explode(',', CACTI_DEV_VERSION);
 		}
 
 		// If we have too many parts, then we
@@ -7742,7 +7775,7 @@ function version_to_bits(string $version, $hex = false): int {
 			// Debug output, for testing purposes.
 			// Leaving this here just now
 			//
-			//printf("  %s:  %20s = %10s + %20s (%10s << %2s Max %s)\n", $section, $newver, $part, $shifted, $oldver, $bitwise, pow(2, $bitwise) - 1);
+			// printf("  %s:  %20s = %10s + %20s (%10s << %2s Max %s)\n", $section, $newver, $part, $shifted, $oldver, $bitwise, pow(2, $bitwise) - 1);
 		}
 	}
 
@@ -7754,7 +7787,7 @@ function version_to_bits(string $version, $hex = false): int {
 	return $hex ? @dechex($newver) : $newver;
 }
 
-function char_to_dec($part) {
+function char_to_dec(string $part) : int {
 	if (strlen($part) > 1) {
 		$part = substr($part, -1);
 	}
@@ -7765,10 +7798,12 @@ function char_to_dec($part) {
 /**
  * cacti_gethostinfo - obtains the dns information for a host
  *
- * @param  mixed $hostname
- * @param  mixed $type
+ * @param string $hostname
+ * @param mixed  $type
+ *
+ * @return mixed
  */
-function cacti_gethostinfo($hostname, $type = DNS_ALL) {
+function cacti_gethostinfo(string $hostname, mixed $type = DNS_ALL) : mixed {
 	if ($hostname != '') {
 		return dns_get_record($hostname, $type);
 	} else {
@@ -7777,12 +7812,14 @@ function cacti_gethostinfo($hostname, $type = DNS_ALL) {
 }
 
 /**
- * cacti_gethostbyname - a ip/ipv6 replacement for php's gethostbyname function
+ * cacti_gethostbyname - A ip/ipv6 replacement for php's gethostbyname function
  *
- * @param  mixed $hostname
- * @param  mixed $type
+ * @param string $hostname
+ * @param mixed  $type
+ *
+ * @return string The hostname
  */
-function cacti_gethostbyname($hostname, $type = '') {
+function cacti_gethostbyname(string $hostname, mixed $type = '') : string {
 	if ($type == '') {
 		$type = DNS_A + DNS_AAAA;
 	}
@@ -7802,12 +7839,8 @@ function cacti_gethostbyname($hostname, $type = '') {
 			switch($record['type']) {
 				case 'A':
 					return $record['ip'];
-
-					break;
 				case 'AAAA':
 					return $record['ipv6'];
-
-					break;
 			}
 		}
 	}
@@ -7815,7 +7848,7 @@ function cacti_gethostbyname($hostname, $type = '') {
 	return $hostname;
 }
 
-function get_nonsystem_data_input($data_input_id) {
+function get_nonsystem_data_input(int $data_input_id) : mixed {
 	global $hash_system_data_inputs;
 
 	$diid = db_fetch_cell_prepared('SELECT id FROM data_input
@@ -7826,7 +7859,7 @@ function get_nonsystem_data_input($data_input_id) {
 	return $diid;
 }
 
-function get_rrdtool_version() {
+function get_rrdtool_version() : string {
 	static $version = '';
 
 	if ($version == '') {
@@ -7836,7 +7869,7 @@ function get_rrdtool_version() {
 	return $version;
 }
 
-function get_installed_rrdtool_version() {
+function get_installed_rrdtool_version() : string {
 	global $rrdtool_versions;
 	static $version = '';
 
@@ -7865,7 +7898,7 @@ function get_installed_rrdtool_version() {
 	return $version;
 }
 
-function get_md5_hash($path) {
+function get_md5_hash(string $path) : string {
 	$md5 = 0;
 
 	if (db_table_exists('poller_resource_cache')) {
@@ -7892,11 +7925,12 @@ function get_md5_hash($path) {
 	return $md5;
 }
 
-function get_include_relpath(string $path, $basePath = null) {
+function get_include_relpath(string $path, mixed $basePath = null) : string {
 	if ($basePath === null) {
 		$basePath = CACTI_PATH_BASE;
 	}
-	$basePath = rtrim($basePath,'/') . '/';
+
+	$basePath = rtrim($basePath, '/') . '/';
 
 	$npath = '';
 
@@ -7915,12 +7949,12 @@ function get_include_relpath(string $path, $basePath = null) {
  * Returns a formatted output based on found paths.  If no paths are found
  * output will be blank
  *
- * @param  string      $format       The format to be used when a path/file exists
- * @param  string      $path         The base path to be used. Must include file if theme and file are not set
- * @param  null|string $theme        The theme to be used. If not set, current theme is assumed
- * @param  null|string $file         The file to be used.  If not set, extracted as last element of path
- * @param  bool        $pathFirst    Whether the `path` + `file` should be included first or last
- * @param  mixed       $args         Extra arguments to be passed when applying format
+ * @param string      $format    The format to be used when a path/file exists
+ * @param string      $path      The base path to be used. Must include file if theme and file are not set
+ * @param null|string $theme     The theme to be used. If not set, current theme is assumed
+ * @param null|string $file      The file to be used.  If not set, extracted as last element of path
+ * @param bool        $pathFirst Whether the `path` + `file` should be included first or last
+ * @param mixed       $args      Extra arguments to be passed when applying format
  *
  * @return string
  *
@@ -7985,7 +8019,7 @@ function get_theme_paths(string $format, string $path, string|null $theme = null
 		$relFile = get_include_relpath($srcFile);
 
 		if (!empty($relFile)) {
-			$output[] = sprintf($format, CACTI_PATH_URL . $relFile  . '?' . get_md5_hash($relFile), ...$args);
+			$output[] = sprintf($format, CACTI_PATH_URL . $relFile . '?' . get_md5_hash($relFile), ...$args);
 		}
 	}
 
@@ -8008,10 +8042,10 @@ function get_theme_paths(string $format, string $path, string|null $theme = null
 /**
  * Formatted output of javascript include with MD5 hash for uniqueness
  *
- * @param  string      $path    Path to include
- * @param  boolean     $async   Load asynchronously
- * @param  string|null $theme   Theme to use
- * @param  string|null $file    File to include
+ * @param string      $path  Path to include
+ * @param boolean     $async Load asynchronously
+ * @param string|null $theme Theme to use
+ * @param string|null $file  File to include
  *
  * @return string
  */
@@ -8024,10 +8058,10 @@ function get_md5_include_js(string $path, bool $async = false, string|null $them
 /**
  * Formatted output of stylesheet include with MD5 hash for uniqueness
  *
- * @param  string      $path    Path to include
- * @param  boolean     $async   Load asynchronously
- * @param  string|null $theme   Theme to use
- * @param  string|null $file    File to include
+ * @param string      $path  Path to include
+ * @param boolean     $async Load asynchronously
+ * @param string|null $theme Theme to use
+ * @param string|null $file  File to include
  *
  * @return string
  */
@@ -8040,12 +8074,12 @@ function get_md5_include_css(string $path, bool $async = false, string|null $the
 /**
  * Formatted output of images include with MD5 hash for uniqueness
  *
- * @param  string      $path    Path to include
- * @param  boolean     $async   Load asynchronously
- * @param  string|null $theme   Theme to use
- * @param  string|null $file    File to include
- * @param  string|null $rel     Rel type output when not null (eg, icon, shortcut icon)
- * @param  string|null $sizes   Sizes output when not null (eg, 96x96)
+ * @param string      $path  Path to include
+ * @param boolean     $async Load asynchronously
+ * @param string|null $theme Theme to use
+ * @param string|null $file  File to include
+ * @param string|null $rel   Rel type output when not null (eg, icon, shortcut icon)
+ * @param string|null $sizes Sizes output when not null (eg, 96x96)
  *
  * @return string
  */
@@ -8066,17 +8100,17 @@ function get_md5_include_icon(string $path, bool $async = false, string|null $th
 /**
  * Is the resource available to be written to?
  *
- * @param  string  $path
+ * @param string $path
  *
  * @return bool
  */
-function is_resource_writable(string $path) {
+function is_resource_writable(string $path) : bool {
 	if (empty($path)) {
 		return false;
 	}
 
 	if ($path[strlen($path) - 1] == '/') {
-		return is_resource_writable($path . uniqid(mt_rand()) . '.tmp');
+		return is_resource_writable($path . uniqid((string) mt_rand()) . '.tmp');
 	}
 
 	if (file_exists($path)) {
@@ -8112,14 +8146,16 @@ function is_resource_writable(string $path) {
  * noted that this function exits on the first failure that it finds
  * and returns false.
  *
- * @param  string         $path   Path to be updated
- * @param  string|integer $uid    String or integer of user to set
- * @param  string|integer $gid    String or integer of group to set
+ * @param string         $path Path to be updated
+ * @param string|integer $uid  String or integer of user to set
+ * @param string|integer $gid  String or integer of group to set
  *
  * @return bool
  */
-function recursive_chown(string $path, string|int $uid, string|int $gid): bool {
+function recursive_chown(string $path, string|int $uid, string|int $gid) : bool {
 	$d = opendir($path);
+
+	$success = false;
 
 	while (($file = readdir($d)) !== false) {
 		if ($file != '.' && $file != '..') {
@@ -8148,8 +8184,8 @@ function recursive_chown(string $path, string|int $uid, string|int $gid): bool {
  * Verifies that a theme exists.  If the theme does exist
  * return its name, otherwise returns the default theme.
  *
- * @param  string|null $theme
- * @param  string      $defaultTheme
+ * @param string|null $theme
+ * @param string      $defaultTheme
  *
  * @return string
  */
@@ -8172,13 +8208,13 @@ function get_validated_theme(string|null $theme, string $defaultTheme) : string 
  * does exist, returns its name, otherwise returns
  * the default language.
  *
- * @param  string $language
- * @param  string $defaultLanguage
+ * @param string $language
+ * @param string $defaultLanguage
  *
  * @return string
  */
 function get_validated_language(string $language, string $defaultLanguage) : string {
-	if (isset($language) && strlen($language)) {
+	if ($language != '') {
 		return $language;
 	}
 
@@ -8235,7 +8271,7 @@ function get_running_user() : string {
 			exec('id -nu', $o, $r);
 
 			if ($r == 0) {
-				$tmp_user = trim($o['0']);
+				$tmp_user = trim($o[0]);
 			}
 		}
 
@@ -8274,7 +8310,7 @@ function get_running_user() : string {
  *
  * @return string
  */
-function get_debug_prefix():string {
+function get_debug_prefix() : string {
 	$dateTime = new DateTime('NOW');
 	$dateTime = $dateTime->format('Y-m-d H:i:s.u');
 
@@ -8290,7 +8326,7 @@ function get_debug_prefix():string {
  *
  * @return string|false
  */
-function get_client_addr():string|false {
+function get_client_addr() : string|false {
 	global $config, $allowed_proxy_headers;
 
 	$proxy_headers = $config['proxy_headers'] ?? null;
@@ -8362,7 +8398,7 @@ function get_client_addr():string|false {
  * get_cacti_base_tables - Extracts all the base Cacti tables from the
  * cacti.sql file in the base Cacti directory.
  */
-function get_cacti_base_tables() {
+function get_cacti_base_tables() : array {
 	$base_tables = [];
 
 	if (file_exists(CACTI_PATH_BASE . '/cacti.sql')) {
@@ -8383,7 +8419,7 @@ function get_cacti_base_tables() {
 	return $base_tables;
 }
 
-function cacti_pton($ipaddr) {
+function cacti_pton(string $ipaddr) : mixed {
 	// Strip out the netmask, if there is one.
 	$subnet_pos = strpos($ipaddr, '/');
 
@@ -8447,7 +8483,7 @@ function cacti_pton($ipaddr) {
 	return $result;
 }
 
-function cacti_ntop($addr) {
+function cacti_ntop(mixed $addr) : mixed {
 	if (empty($addr)) {
 		return false;
 	}
@@ -8463,7 +8499,7 @@ function cacti_ntop($addr) {
 	return @inet_ntop($addr);
 }
 
-function cacti_ntoc($subnet, $ipv6 = false) {
+function cacti_ntoc(string $subnet, bool $ipv6 = false) : int {
 	$result = false;
 	$count  = 0;
 
@@ -8479,28 +8515,28 @@ function cacti_ntoc($subnet, $ipv6 = false) {
 	return $count;
 }
 
-function cacti_ptoa($title, $addr) {
+function cacti_ptoa(string $title, string $addr) : void {
 	// Let's display it as hexadecimal format
 	foreach (str_split($addr) as $char) {
 		print str_pad(dechex(ord($char)),2,'0',STR_PAD_LEFT);
 	}
 }
 
-function cacti_sizeof($array) : int {
+function cacti_sizeof(mixed $array) : int {
 	return ($array === false || !is_array($array)) ? 0 : count($array);
 }
 
-function cacti_count($array) {
+function cacti_count(mixed $array) : int {
 	return ($array === false || !is_array($array)) ? 0 : count($array);
 }
 
-function is_function_enabled($name) {
+function is_function_enabled(string $name) : bool {
 	return function_exists($name) &&
 		!in_array($name, array_map('trim', explode(', ', ini_get('disable_functions'))), true) &&
 		strtolower(ini_get('safe_mode')) != 1;
 }
 
-function is_page_ajax() {
+function is_page_ajax() : bool {
 	if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
 		return true;
 	}
@@ -8508,7 +8544,7 @@ function is_page_ajax() {
 	return false;
 }
 
-function raise_ajax_permission_denied() {
+function raise_ajax_permission_denied() : void {
 	if (is_page_ajax()) {
 		header('HTTP/1.1 401 ' . __('Permission Denied'));
 		print __('You are not permitted to access this section of Cacti.') . '  ' . __('If you feel that this is an error. Please contact your Cacti Administrator.');
@@ -8520,12 +8556,12 @@ function raise_ajax_permission_denied() {
 /**
  * cacti_session_start - Create a Cacti session from the settings set by the administrator
  *
- * @return void
+ * @return bool
  */
-function cacti_session_start() {
+function cacti_session_start() : bool {
 	global $config;
 
-	/* initialize php session */
+	// initialize php session
 	if (!function_exists('session_name')) {
 		die('PHP Session Management is missing, please install PHP Session module');
 	}
@@ -8549,24 +8585,26 @@ function cacti_session_start() {
 	if (!$session_result) {
 		cacti_log('Session "' . session_id() . '" ' . $session_restart . 'start failed! ' . cacti_debug_backtrace('', false, false, 0, 1), false, 'WARNING:');
 	}
+
+	return true;
 }
 
 /**
  * cacti_session_close - Closes the open Cacti session if it is open
  * it can be re-opened afterwards in the case after a long running query
  *
- * @return mixed null
+ * @return void
  */
-function cacti_session_close() {
+function cacti_session_close() : void {
 	session_write_close();
 }
 
 /**
  * cacti_session_destroy - Destroys the login current session
  *
- * @return mixed null
+ * @return void
  */
-function cacti_session_destroy() {
+function cacti_session_destroy() : void {
 	session_unset();
 	session_destroy();
 }
@@ -8575,13 +8613,13 @@ function cacti_session_destroy() {
  * cacti_cookie_set - Allows for settings an arbitrary cookie name and value
  * used for CSRF protection.
  *
- * @param  mixed $session
- * @param  mixed $val
- * @param  null|mixed $timeout
+ * @param mixed      $session
+ * @param mixed      $val
+ * @param null|mixed $timeout
  *
- * @return mixed null
+ * @return void
  */
-function cacti_cookie_set($session, $val, $timeout = null) {
+function cacti_cookie_set($session, $val, $timeout = null) : void {
 	global $config;
 
 	if (isset($config[COOKIE_OPTIONS][COOKIE_OPTIONS_DOMAIN])) {
@@ -8615,9 +8653,9 @@ function cacti_cookie_set($session, $val, $timeout = null) {
 /**
  * cacti_cookie_logout - Clears the Cacti and the 'keep me logged in' cookies
  *
- * @return mixed null
+ * @return void
  */
-function cacti_cookie_logout() {
+function cacti_cookie_logout() : void {
 	global $config;
 
 	if (isset($config[COOKIE_OPTIONS][COOKIE_OPTIONS_DOMAIN])) {
@@ -8659,13 +8697,13 @@ function cacti_cookie_logout() {
 /**
  * cacti_cookie_session_set - Sets the cacti 'keep me logged in' cookie
  *
- * @param  mixed $user
- * @param  mixed $realm
- * @param  mixed $nssecret
+ * @param string $user
+ * @param int    $realm
+ * @param string $nssecret
  *
- * @return mixed null
+ * @return void
  */
-function cacti_cookie_session_set($user, $realm, $nssecret) {
+function cacti_cookie_session_set(string $user, int $realm, string $nssecret) : void {
 	global $config;
 
 	if (isset($config[COOKIE_OPTIONS][COOKIE_OPTIONS_DOMAIN])) {
@@ -8701,9 +8739,9 @@ function cacti_cookie_session_set($user, $realm, $nssecret) {
 /**
  * cacti_cookie_session_logout - Logs out of Cacti and the remember me session
  *
- * @return mixed null
+ * @return void
  */
-function cacti_cookie_session_logout() {
+function cacti_cookie_session_logout() : void {
 	global $config;
 
 	if (isset($config[COOKIE_OPTIONS][COOKIE_OPTIONS_DOMAIN])) {
@@ -8738,9 +8776,9 @@ function cacti_cookie_session_logout() {
  * cacti_browser_zone_set - Set the PHP timezone to the
  * browsers timezone if enabled.
  *
- * @return mixed null
+ * @return void
  */
-function cacti_browser_zone_set() {
+function cacti_browser_zone_set() : void {
 	if (cacti_browser_zone_enabled()) {
 		if (isset($_SESSION[SESS_BROWSER_PHP_TZ])) {
 			ini_set('date.timezone', $_SESSION[SESS_BROWSER_PHP_TZ]);
@@ -8753,9 +8791,9 @@ function cacti_browser_zone_set() {
  * cacti_system_zone_set - Set the PHP timezone to the
  * systems timezone.
  *
- * @return mixed null
+ * @return void
  */
-function cacti_system_zone_set() {
+function cacti_system_zone_set() : void {
 	if (cacti_browser_zone_enabled()) {
 		if (isset($_SESSION[SESS_PHP_TZ])) {
 			ini_set('date.timezone', $_SESSION[SESS_PHP_TZ]);
@@ -8764,7 +8802,7 @@ function cacti_system_zone_set() {
 	}
 }
 
-function cacti_browser_zone_enabled() {
+function cacti_browser_zone_enabled() : bool {
 	$system_setting = read_config_option('client_timezone_support');
 
 	if (empty($system_setting)) {
@@ -8785,11 +8823,11 @@ function cacti_browser_zone_enabled() {
  * to set a PHP date.timezone.  There are some oddballs that
  * we have to accommodate.
  *
- * @param  mixed $gmt_offset
+ * @param mixed $gmt_offset
  *
- * @return mixed null
+ * @return void
  */
-function cacti_time_zone_set($gmt_offset = null) {
+function cacti_time_zone_set(mixed $gmt_offset = null) : void {
 	if (!cacti_browser_zone_enabled()) {
 		return;
 	}
@@ -8907,14 +8945,14 @@ function cacti_time_zone_set($gmt_offset = null) {
 	}
 }
 
-function debounce_run_notification($id, $frequency = 7200) {
+function debounce_run_notification(mixed $id, int $frequency = 7200) : bool {
 	$key = 'debounce_' . md5($id);
 
-	/* debounce admin emails */
+	// debounce admin emails
 	$last = read_config_option($key);
 	$now  = time();
 
-	/* default to unset */
+	// default to unset
 	$last_timestamp = '';
 
 	if ($last != '' && is_numeric($last)) {
@@ -8947,12 +8985,12 @@ function debounce_run_notification($id, $frequency = 7200) {
 /**
  * Return an array of sorted and unique IDs
  *
- * @param  string|array $ids
- * @param  boolean      $shouldExplode
+ * @param mixed $ids
+ * @param bool  $shouldExplode
  *
  * @return array
  */
-function cacti_unique_ids($ids, bool $shouldExplode = true) {
+function cacti_unique_ids(mixed $ids, bool $shouldExplode = true) : array {
 	if ($shouldExplode && is_string($ids)) {
 		$ids = explode(',', str_replace(' ', '', $ids));
 	}
@@ -8974,11 +9012,11 @@ function cacti_unique_ids($ids, bool $shouldExplode = true) {
  *
  * @return void
  */
-function cacti_depreciated(string $text) {
+function cacti_depreciated(string $text) : void {
 	cacti_debug_backtrace('WARN Depreciated use of ' . $text . ' at ');
 }
 
-function substring_index($subject, $delim, $count) {
+function substring_index(string $subject, string $delim, int $count) : string {
 	if ($count < 0) {
 		return implode($delim, array_slice(explode($delim, $subject), $count));
 	} else {
@@ -8986,7 +9024,7 @@ function substring_index($subject, $delim, $count) {
 	}
 }
 
-function cacti_format_ipv6_colon($address) {
+function cacti_format_ipv6_colon(string $address) : string {
 	if (!filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
 		return $address;
 	}
@@ -9002,15 +9040,15 @@ function cacti_format_ipv6_colon($address) {
 	return ($address);
 }
 
-function text_substitute(null|array|string $text, bool $isHtml = true, bool $includeStandard = true,
-	array|null $extraSubstitutions = null, array|null $extraMatches = null) {
+function text_substitute(mixed $text, bool $isHtml = true, bool $includeStandard = true,
+	mixed $extraSubstitutions = null, mixed $extraMatches = null) : string {
 	if (!empty($text)) {
 		$parser = 'text_regex_parser' . ($isHtml ? '_html' : '');
 
 		$extraSubstitutions ??= [];
 		$extraMatches ??= [];
 
-		/* Get parts for text substitution */
+		// Get parts for text substitution
 		$extra_search = array_keys($extraSubstitutions);
 		$extra_values = array_values($extraSubstitutions);
 
@@ -9044,7 +9082,7 @@ function text_substitute(null|array|string $text, bool $isHtml = true, bool $inc
 	return $text;
 }
 
-function text_substitute_line(string $source, string $regex, string $parser, array $search, array $values) {
+function text_substitute_line(string $source, string $regex, string $parser, array $search, array $values) : string {
 	$result = $source;
 
 	if (!empty($source)) {
@@ -9060,7 +9098,7 @@ function text_substitute_line(string $source, string $regex, string $parser, arr
 	return $result;
 }
 
-function text_get_regex_array(array|null $extraSubstitutions = []) {
+function text_get_regex_array(mixed $extraSubstitutions = []) : array {
 	static $regex_array = [];
 	static $regex_extra = [];
 
@@ -9093,19 +9131,19 @@ function text_get_regex_array(array|null $extraSubstitutions = []) {
 	return array_merge($regex_array, $regex_extra);
 }
 
-function text_regex_replace($id, $link, $url, $matches, $cache) {
+function text_regex_replace(int $id, string $link, string $url, array $matches, array $cache) : string {
 	if ($link) {
-		return $matches[1] . '<a href=\'' . html_escape(CACTI_PATH_URL . sprintf($url,  $id)) . '\'>' . (isset($cache[$id]) ? html_escape($cache[$id]) : $id) . '</a>' . $matches[3];
+		return $matches[1] . '<a href=\'' . htmle(CACTI_PATH_URL . sprintf($url,  $id)) . '\'>' . (isset($cache[$id]) ? htmle($cache[$id]) : $id) . '</a>' . $matches[3];
 	} else {
 		return $matches[1] . ($cache[$id] ?? $id) . $matches[3];
 	}
 }
 
-function text_regex_parser_html($matches) {
+function text_regex_parser_html(array $matches) : string {
 	return text_regex_parser($matches, true);
 }
 
-function text_regex_parser($matches, $link = false) {
+function text_regex_parser(array $matches, mixed $link = false) : string {
 	$result = $matches[0];
 	$match  = $matches[0];
 
@@ -9145,7 +9183,7 @@ function text_regex_parser($matches, $link = false) {
 	return $result;
 }
 
-function text_regex_device($matches, $link = false) {
+function text_regex_device(array $matches, mixed $link = false) : string {
 	static $host_cache = null;
 
 	if (!cacti_sizeof($host_cache)) {
@@ -9175,7 +9213,7 @@ function text_regex_device($matches, $link = false) {
 	return $result;
 }
 
-function text_regex_datasource($matches, $link = false) {
+function text_regex_datasource(array $matches, mixed $link = false) : string {
 	static $gr_cache = null;
 
 	$result = $matches[0];
@@ -9218,10 +9256,6 @@ function text_regex_datasource($matches, $link = false) {
 
 		$ds_titles = get_data_source_titles($ds_ids);
 
-		if (!isset($ds_titles)) {
-			$ds_titles = [];
-		}
-
 		$sep           = '';
 		$ds_matches    = $matches;
 		$ds_matches[1] = $ds_matches[3] = '';
@@ -9241,7 +9275,7 @@ function text_regex_datasource($matches, $link = false) {
 	return $result;
 }
 
-function text_regex_poller($matches, $link = false) {
+function text_regex_poller(array $matches, mixed $link = false) : string {
 	static $poller_cache = null;
 
 	if (!cacti_sizeof($poller_cache)) {
@@ -9268,7 +9302,7 @@ function text_regex_poller($matches, $link = false) {
 	return $result;
 }
 
-function text_regex_dataquery($matches, $link = false) {
+function text_regex_dataquery(array $matches, mixed $link = false) : string {
 	static $query_cache = null;
 
 	if (!cacti_sizeof($query_cache)) {
@@ -9295,7 +9329,7 @@ function text_regex_dataquery($matches, $link = false) {
 	return $result;
 }
 
-function text_regex_rra($matches, $link = false) {
+function text_regex_rra(array $matches, mixed $link = false) : string {
 	$result = $matches[0];
 
 	$local_data_ids = $matches[2];
@@ -9312,7 +9346,7 @@ function text_regex_rra($matches, $link = false) {
 	return $result;
 }
 
-function text_regex_graphs($matches, $link = false) {
+function text_regex_graphs(array $matches, mixed $link = false) : string {
 	static $graph_cache = null;
 
 	$result = $matches[0];
@@ -9340,12 +9374,12 @@ function text_regex_graphs($matches, $link = false) {
 
 		foreach ($graph_ids as $id) {
 			$graph_add .= ($i > 0 ? '%2C' : '') . $id;
-			$title .= ($title != '' ? ', ' : '') . html_escape((isset($graph_cache[$id]) ? html_escape($graph_cache[$id]) : $id));
+			$title .= ($title != '' ? ', ' : '') . htmle((isset($graph_cache[$id]) ? htmle($graph_cache[$id]) : $id));
 			$i++;
 		}
 
 		if ($link) {
-			$result .= $matches[1] . "<a href='" . html_escape($graph_add) . '\'>' . $title . '</a>' . $matches[3];
+			$result .= $matches[1] . "<a href='" . htmle($graph_add) . '\'>' . $title . '</a>' . $matches[3];
 		} else {
 			$result .= $title . $matches[3];
 		}
@@ -9354,7 +9388,7 @@ function text_regex_graphs($matches, $link = false) {
 	return $result;
 }
 
-function text_regex_graphtemplates($matches, $link = false) {
+function text_regex_graphtemplates(array $matches, mixed $link = false) : string {
 	static $templates_cache = null;
 
 	if (!cacti_sizeof($templates_cache)) {
@@ -9381,7 +9415,7 @@ function text_regex_graphtemplates($matches, $link = false) {
 	return $result;
 }
 
-function text_regex_users($matches, $link = false) {
+function text_regex_users(array $matches, mixed $link = false) : string {
 	static $users_cache = null;
 
 	$result = $matches[0];
@@ -9409,7 +9443,7 @@ function text_regex_users($matches, $link = false) {
 	return $result;
 }
 
-function text_regex_rule($matches, $link = false) {
+function text_regex_rule(array $matches, mixed $link = false) : string {
 	static $rules_cache = null;
 
 	if (!cacti_sizeof($rules_cache)) {
@@ -9435,7 +9469,7 @@ function text_regex_rule($matches, $link = false) {
 	return $result;
 }
 
-function get_keyup_delay() {
+function get_keyup_delay() : int {
 	$keyup_delay = intval(read_user_setting('autocomplete_delay'));
 
 	if ($keyup_delay < 500) {
@@ -9445,11 +9479,11 @@ function get_keyup_delay() {
 	return $keyup_delay;
 }
 
-function cacti_unserialize($strobj) {
+function cacti_unserialize(string $strobj) : mixed {
 	return unserialize($strobj, ['allowed_classes' => false]);
 }
 
-function detect_cpu_cores() {
+function detect_cpu_cores() : int {
 	$cpu_cores = 0;
 
 	if (str_starts_with(strtoupper(PHP_OS), 'WIN')) {
@@ -9475,5 +9509,50 @@ function detect_cpu_cores() {
 		}
 	}
 
-	return trim($cpu_cores);
+	return intval(trim($cpu_cores));
+}
+
+/**
+ * wrapper function to emulate pecl stats if it's not installed
+ *
+ * @param array $items  A lits of items to calculate the standard deviation for
+ * @param bool  $sample
+ *
+ * @return mixed False on failure, double otherwise
+ */
+if (!function_exists('stats_standard_deviation')) {
+	function stats_standard_deviation(array $items, bool $sample = false) : mixed {
+		$sum         = 0;
+		$total_items = 0;
+
+		// remove NaN entries from the data set
+		if (cacti_sizeof($items)) {
+			foreach ($items as $key => $value) {
+				if (is_int($value) || is_float($value)) {
+					$total_items++;
+					$sum += $value;
+				} else {
+					unset($items[$key]);
+				}
+			}
+		}
+
+		if (($sample && $total_items === 1) || $total_items === 0) {
+			return false;
+		}
+
+		$mean  = $sum / $total_items;
+		$carry = 0.0;
+
+		foreach ($items as $val) {
+			$d = ((double) $val) - $mean;
+			$carry += $d * $d;
+		}
+
+		if ($sample) {
+			--$total_items;
+		}
+
+		return sqrt($carry / $total_items);
+	}
 }

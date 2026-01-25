@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_1_1_8() {
+function upgrade_to_1_1_8() : void {
 	// update graph_watermark if set
 	$watermark = '';
 	$result    = db_install_fetch_cell("SELECT `value` FROM `settings` WHERE name = 'graph_watermark'");

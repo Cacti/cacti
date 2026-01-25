@@ -556,10 +556,10 @@
 				});
 
 				/* capture mouse up/down events for zoom */
-				$(document).off('mousedown').on('mousedown', function() {
+				$('body').off('mousedown.zoom').on('mousedown.zoom', function(e) {
 					mouseDown = true;
 					clearTimeout(myRefresh);
-				}).off('mouseup').on('mouseup', function() {
+				}).off('mouseup.zoom').on('mouseup.zoom', function(e) {
 					if (mouseDown) {
 						if (zoom.attr.start !== 'none') {
 							zoomAction_zoom_in();
@@ -1047,7 +1047,7 @@
 			}
 
 			/* init click on events */
-			$('[class*=zoomContextMenuAction__]').off().on('click', function() {
+			$('[class^=zoomContextMenuAction__]').off().on('click', function() {
 				let zoomContextMenuAction = false;
 				let zoomContextMenuActionValue = false;
 				let classList = $.trim($(this).attr('class')).split(/\s+/);

@@ -24,10 +24,10 @@
 
 require('./include/auth.php');
 
-/* set default action */
+// set default action
 set_default_action();
 
-switch (get_request_var('action')) {
+switch (grv('action')) {
 	case 'purge_execute':
 		clear_user_log();
 		raise_message('purge_user_log', __('User Log Purged.'), MESSAGE_LEVEL_INFO);
@@ -48,43 +48,43 @@ switch (get_request_var('action')) {
 		break;
 }
 
-function view_user_log() {
+function view_user_log() : void {
 	global $auth_realms, $item_rows;
 
 	draw_user_log_filter(true);
 
-	if (get_request_var('rows') == '-1') {
+	if (grv('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
 	} else {
-		$rows = get_request_var('rows');
+		$rows = grv('rows');
 	}
 
 	$sql_where  = '';
 	$sql_params = [];
 
-	/* filter by username */
-	if (get_request_var('user_id') == '-2') {
+	// filter by username
+	if (grv('user_id') == '-2') {
 		$sql_where    = 'WHERE ul.user_id NOT IN (SELECT DISTINCT id FROM user_auth)';
-	} elseif (get_request_var('user_id') != '-1') {
+	} elseif (grv('user_id') != '-1') {
 		$sql_where    = 'WHERE ul.user_id = ?';
-		$sql_params[] = get_request_var('user_id');
+		$sql_params[] = grv('user_id');
 	}
 
-	/* filter by result */
-	if (get_request_var('result') != '-1') {
+	// filter by result
+	if (grv('result') != '-1') {
 		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' ul.result = ?';
-		$sql_params[] = get_request_var('result');
+		$sql_params[] = grv('result');
 	}
 
-	/* filter by search string */
-	if (get_request_var('filter') != '') {
+	// filter by search string
+	if (grv('filter') != '') {
 		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' (
 			ul.username LIKE ? OR ul.time LIKE ? OR ua.full_name LIKE ? OR ul.ip LIKE ?)';
 
-		$sql_params[] = '%' . get_request_var('filter') . '%';
-		$sql_params[] = '%' . get_request_var('filter') . '%';
-		$sql_params[] = '%' . get_request_var('filter') . '%';
-		$sql_params[] = '%' . get_request_var('filter') . '%';
+		$sql_params[] = '%' . grv('filter') . '%';
+		$sql_params[] = '%' . grv('filter') . '%';
+		$sql_params[] = '%' . grv('filter') . '%';
+		$sql_params[] = '%' . grv('filter') . '%';
 	}
 
 	$total_rows = db_fetch_cell_prepared("SELECT COUNT(*)
@@ -101,8 +101,8 @@ function view_user_log() {
 		ON ua.username = ul.username
 		AND ua.id = ul.user_id
 		$sql_where
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
-		LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
+		ORDER BY " . grv('sort_column') . ' ' . grv('sort_direction') . '
+		LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows;
 
 	$user_log = db_fetch_assoc_prepared($user_log_sql, $sql_params);
 
@@ -115,13 +115,13 @@ function view_user_log() {
 		'ip'        => [__('IP Address'), 'DESC']
 	];
 
-	$nav = html_nav_bar('user_log.php?user_id=' . get_request_var('user_id') . '&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 6, __('Login Attempts'), 'page', 'main');
+	$nav = html_nav_bar('user_log.php?user_id=' . grv('user_id') . '&filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 6, __('Login Attempts'), 'page', 'main');
 
 	print $nav;
 
 	html_start_box('', '100%', false, 3, 'center', '');
 
-	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 1, 'user_log.php');
+	html_header_sort($display_text, grv('sort_column'), grv('sort_direction'), 1, 'user_log.php');
 
 	$i = 0;
 
@@ -129,25 +129,25 @@ function view_user_log() {
 		foreach ($user_log as $item) {
 			form_alternate_row('line' . $i, true);
 
-			form_selectable_cell(filter_value($item['username'], get_request_var('filter')), $i, '', 'nowrap');
+			form_selectable_cell(filter_value($item['username'], grv('filter')), $i, '', 'nowrap');
 
 			if (isset($item['full_name'])) {
-				form_selectable_cell(filter_value($item['full_name'], get_request_var('filter')), $i);
+				form_selectable_cell(filter_value($item['full_name'], grv('filter')), $i);
 			} else {
 				form_selectable_cell(__('(User Removed)'), $i);
 			}
 
 			if (isset($auth_realms[$item['realm']]['name'])) {
-				form_selectable_cell(filter_value($auth_realms[$item['realm']]['name'], get_request_var('filter')), $i);
+				form_selectable_cell(filter_value($auth_realms[$item['realm']]['name'], grv('filter')), $i);
 			} else {
 				form_selectable_cell(__('N/A'), $i);
 			}
 
-			form_selectable_cell(filter_value($item['time'], get_request_var('filter')), $i);
+			form_selectable_cell(filter_value($item['time'], grv('filter')), $i);
 
 			form_selectable_cell(($item['result'] == 0 ? __('Failed') : ($item['result'] == 1 ? __('Success - Password') : ($item['result'] == 3 ? __('Success - Password Change') : __('Success - Token')))), $i);
 
-			form_selectable_cell(filter_value($item['ip'], get_request_var('filter')), $i);
+			form_selectable_cell(filter_value($item['ip'], grv('filter')), $i);
 
 			$i++;
 		}
@@ -160,11 +160,11 @@ function view_user_log() {
 	}
 }
 
-function clear_user_log() {
+function clear_user_log() : void {
 	$users = db_fetch_assoc('SELECT DISTINCT id, username FROM user_auth');
 
 	if (cacti_sizeof($users)) {
-		/* remove active users */
+		// remove active users
 		foreach ($users as $user) {
 			// Check how many rows for the current user with a valid token
 			foreach ([1, 2] as $result) {
@@ -194,7 +194,7 @@ function clear_user_log() {
 				[$user['username'], $user['id']]);
 		}
 
-		/* delete inactive users */
+		// delete inactive users
 		db_execute('DELETE
 			FROM user_log
 			WHERE user_id NOT IN (SELECT id FROM user_auth)
@@ -202,7 +202,7 @@ function clear_user_log() {
 	}
 }
 
-function purge_user_log() {
+function purge_user_log() : void {
 	form_start('user_log.php');
 
 	html_start_box(__('Purge User Log'), '60%', false, 3, 'center', '');
@@ -235,7 +235,7 @@ function purge_user_log() {
 	html_end_box();
 }
 
-function create_user_log_filter() {
+function create_user_log_filter() : array {
 	global $item_rows;
 
 	$all     = ['-1' => __('All')];
@@ -335,10 +335,10 @@ function create_user_log_filter() {
 	];
 }
 
-function draw_user_log_filter($render = false) {
+function draw_user_log_filter(bool $render = false) : void {
 	$filters = create_user_log_filter();
 
-	/* create the page filter */
+	// create the page filter
 	$pageFilter = new CactiTableFilter(__('User Login History'), 'user_log.php', 'form_userlog', 'sess_userlog');
 
 	$pageFilter->rows_label = __('Attempts');

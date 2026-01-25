@@ -25,9 +25,11 @@
 require('./include/auth.php');
 top_header();
 
+global $local_db_cnn_id;
+
 api_plugin_hook('console_before');
 
-function render_external_links($style = 'FRONT') {
+function render_external_links(string $style = 'FRONT') : void {
 	$consoles = db_fetch_assoc_prepared('SELECT id, contentfile
 		FROM external_links
 		WHERE enabled = "on"

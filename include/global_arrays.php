@@ -690,6 +690,12 @@ $logfile_options = [
 	3 => __('Syslog/Eventlog Only')
 ];
 
+$logfile_actions = [
+	LOG_ACTION_PURGE        => __('Purge'),
+	LOG_ACTION_ROTATE       => __('Rotate'),
+	LOG_ACTION_PURGE_ROTATE => __('Purge and Rotate')
+];
+
 $availability_options = [
 	AVAIL_NONE             => __('None'),
 	AVAIL_SNMP_AND_PING    => __('Ping and SNMP Uptime'),
@@ -1072,7 +1078,7 @@ $copyrights = [
 	'Eclipse Public License version 2.0' => __('Eclipse Public License version 2.0'),
 ];
 
-if (POLLER_ID || $config['connection'] == 'online') {
+if (POLLER_ID || $config['connection'] == 'online') { // @phpstan-ignore-line
 	$menu = [
 		__('Main Console') => [
 			'index.php' => __('Console Page')
@@ -1248,9 +1254,9 @@ if ((isset($_SESSION[SESS_USER_ID]))) {
 		if (cacti_sizeof($consoles)) {
 			foreach ($consoles as $page) {
 				if (!CACTI_WEB || is_realm_allowed($page['id'] + 10000)) {
-					$menuname = (isset($page['extendedstyle']) && $page['extendedstyle'] != '' ? html_escape($page['extendedstyle']) : __('External Links'));
+					$menuname = (isset($page['extendedstyle']) && $page['extendedstyle'] != '' ? htmle($page['extendedstyle']) : __('External Links'));
 
-					$menu[$menuname]['link.php?id=' . $page['id']] = html_escape($page['title']);
+					$menu[$menuname]['link.php?id=' . $page['id']] = htmle($page['title']);
 				}
 			}
 		}
@@ -1872,7 +1878,7 @@ $agg_order_types = [
 	AGGREGATE_ORDER_BASE_GRAPH => __('Base Graph Order')
 ];
 
-# operators for use with SQL/pattern matching
+// operators for use with SQL/pattern matching
 $automation_op_array = [
 	'display' => [
 		AUTOMATION_OP_NONE         => __('None'),
@@ -2947,12 +2953,6 @@ $navigation = [
 		'url'     => '',
 		'level'   => '2'
 	],
-	'aggregate_graphs.php:' => [
-		'title'   => __('Aggregate Items'),
-		'mapping' => 'index.php:',
-		'url'     => 'aggregate_graphs.php',
-		'level'   => '1'
-	],
 	'aggregate_graphs.php:item_edit' => [
 		'title'   => __('(Edit)'),
 		'mapping' => 'index.php:,aggregate_graphs.php:,aggregate_graphs.php:',
@@ -3097,15 +3097,15 @@ $sched_types = [
 
 if (CACTI_SERVER_OS == 'unix') {
 	$dejavu_paths = [
-		'/usr/share/fonts/dejavu/', //RHEL/CentOS
-		'/usr/share/fonts/truetype/', //SLES
-		'/usr/share/fonts/truetype/dejavu/', //Ubuntu
-		'/usr/local/share/fonts/dejavu/', //FreeBSD
-		__DIR__ . '/fonts'  //Build-in
+		'/usr/share/fonts/dejavu/', // RHEL/CentOS
+		'/usr/share/fonts/truetype/', // SLES
+		'/usr/share/fonts/truetype/dejavu/', // Ubuntu
+		'/usr/local/share/fonts/dejavu/', // FreeBSD
+		__DIR__ . '/fonts'  // Build-in
 	];
 } else {
 	$dejavu_paths = [
-		'C:/Windows/Fonts/' //Windows
+		'C:/Windows/Fonts/' // Windows
 	];
 }
 

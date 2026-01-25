@@ -35,7 +35,7 @@ use phpseclib3\Crypt\RSA;
  *
  * @return void
  */
-function clear_auth_cookie(): void {
+function clear_auth_cookie() : void {
 	if (isset($_COOKIE['cacti_remembers']) && read_config_option('auth_cache_enabled') == 'on') {
 		$parts = explode(',', $_COOKIE['cacti_remembers']);
 
@@ -73,15 +73,15 @@ function clear_auth_cookie(): void {
 /**
  * set_auth_cookie - sets a users security token
  *
- * @param array user is the user_auth row for the user
+ * @param array $user Is the user_auth row for the user
  *
  * @return void
  */
-function set_auth_cookie(array $user): void {
+function set_auth_cookie(array $user) : void {
 	if (db_table_exists('user_auth_cache')) {
 		clear_auth_cookie();
 
-		$nssecret = md5($_SERVER['REQUEST_TIME'] .  mt_rand(10000,10000000)) . md5(get_client_addr());
+		$nssecret = md5($_SERVER['REQUEST_TIME'] . mt_rand(10000,10000000)) . md5(get_client_addr());
 
 		$secret = hash('sha512', $nssecret, false);
 
@@ -100,7 +100,7 @@ function set_auth_cookie(array $user): void {
  *
  * @return int|false The user of the session cookie, otherwise false
  */
-function check_auth_cookie(): int|false {
+function check_auth_cookie() : int|false {
 	if (isset($_COOKIE['cacti_remembers']) &&
 		read_config_option('auth_cache_enabled') == 'on' &&
 		db_table_exists('user_auth_cache')) {
@@ -172,15 +172,15 @@ function check_auth_cookie(): int|false {
 
 /**
  * Given a username or user_id test if this is a template account
- *   Template accounts could be accounts used for the administrative email, for both
- *   the guest and template accounts, or a user that is specified by a plugin as a
- *   template account.
+ * Template accounts could be accounts used for the administrative email, for both
+ * the guest and template accounts, or a user that is specified by a plugin as a
+ * template account.
  *
  * @param null|int|string $user_id The user ID or username to check.
  *
  * @return bool True if the user is a template account, false otherwise.
  */
-function is_template_account(null|int|string $user_id): bool {
+function is_template_account(null|int|string $user_id) : bool {
 	if (is_string($user_id)) {
 		$user_id = db_fetch_cell_prepared('SELECT id FROM user_auth WHERE username = ?', [$user_id]);
 	}
@@ -224,7 +224,7 @@ function is_template_account(null|int|string $user_id): bool {
  *
  * @return string|false The username if found and processed, or false if no username is found.
  */
-function get_basic_auth_username(): string|false {
+function get_basic_auth_username() : string|false {
 	if (isset($_SERVER['PHP_AUTH_USER'])) {
 		$username = str_replace('\\', '\\\\', $_SERVER['PHP_AUTH_USER']);
 	} elseif (isset($_SERVER['REMOTE_USER'])) {
@@ -280,22 +280,22 @@ function get_basic_auth_username(): string|false {
 /**
  * Copies a user from a template user to a new user, optionally overwriting an existing user.
  *
- * @param string $template_user The username of the template user to copy from.
- * @param string $new_user The username of the new user to create.
- * @param int $template_realm The realm of the template user. Default is 0.
- * @param int $new_realm The realm of the new user. Default is 0.
- * @param bool $overwrite Whether to overwrite an existing user with the same username and realm. Default is false.
- * @param array $data_override An associative array of fields to override in the new user's data. Default is an empty array.
+ * @param string $template_user  The username of the template user to copy from.
+ * @param string $new_user       The username of the new user to create.
+ * @param int    $template_realm The realm of the template user. Default is 0.
+ * @param int    $new_realm      The realm of the new user. Default is 0.
+ * @param bool   $overwrite      Whether to overwrite an existing user with the same username and realm. Default is false.
+ * @param array  $data_override  An associative array of fields to override in the new user's data. Default is an empty array.
  *
- * @return int|false The ID of the new user if successful, or false if the operation failed.
+ * @return mixed - The ID of the new user if successful, or false if the operation failed.
  */
-function user_copy(string $template_user, string $new_user, int $template_realm = 0, int $new_realm = 0, bool $overwrite = false, array $data_override = []): int|false {
-	/* ================= input validation ================= */
+function user_copy(string $template_user, string $new_user, int $template_realm = 0, int $new_realm = 0, bool $overwrite = false, array $data_override = []) : mixed {
+	// ================= input validation =================
 	input_validate_input_number($template_realm, 'template_realm');
 	input_validate_input_number($new_realm, 'new_realm');
-	/* ==================================================== */
+	// ====================================================
 
-	/* Check get template users array */
+	// Check get template users array
 	$user_auth = db_fetch_row_prepared('SELECT *
 		FROM user_auth
 		WHERE username = ?
@@ -308,7 +308,7 @@ function user_copy(string $template_user, string $new_user, int $template_realm 
 
 	$template_id = $user_auth['id'];
 
-	/* Create update/insert for new/existing user */
+	// Create update/insert for new/existing user
 	$user_exist = db_fetch_row_prepared('SELECT *
 		FROM user_auth
 		WHERE username = ?
@@ -317,7 +317,7 @@ function user_copy(string $template_user, string $new_user, int $template_realm 
 
 	if (cacti_sizeof($user_exist)) {
 		if ($overwrite) {
-			/* Overwrite existing user */
+			// Overwrite existing user
 			$user_auth['id']                   = $user_exist['id'];
 			$user_auth['username']             = $user_exist['username'];
 			$user_auth['password']             = $user_exist['password'];
@@ -327,13 +327,13 @@ function user_copy(string $template_user, string $new_user, int $template_realm 
 			$user_auth['must_change_password'] = $user_exist['must_change_password'];
 			$user_auth['enabled']              = $user_exist['enabled'];
 		} else {
-			/* User already exists, duplicate users are bad */
+			// User already exists, duplicate users are bad
 			raise_message(19);
 
 			return false;
 		}
 	} else {
-		/* new user */
+		// new user
 		$user_auth['id']            = 0;
 		$user_auth['username']      = $new_user;
 		$user_auth['enabled']       = 'on';
@@ -342,8 +342,8 @@ function user_copy(string $template_user, string $new_user, int $template_realm 
 		$user_auth['realm']         = $new_realm;
 	}
 
-	/* Update data_override fields */
-	if (is_array($data_override)) {
+	// Update data_override fields
+	if (cacti_sizeof($data_override)) {
 		foreach ($data_override as $field => $value) {
 			if (isset($user_auth[$field]) && $field != 'id' && $field != 'username') {
 				$user_auth[$field] = $value;
@@ -351,10 +351,10 @@ function user_copy(string $template_user, string $new_user, int $template_realm 
 		}
 	}
 
-	/* Save the user */
+	// Save the user
 	$new_id = sql_save($user_auth, 'user_auth');
 
-	/* Create/Update permissions and settings */
+	// Create/Update permissions and settings
 	if (cacti_sizeof($user_exist) && $overwrite) {
 		db_execute_prepared('DELETE FROM user_auth_perms WHERE user_id = ?', [$user_exist['id']]);
 		db_execute_prepared('DELETE FROM user_auth_realm WHERE user_id = ?', [$user_exist['id']]);
@@ -410,13 +410,15 @@ function user_copy(string $template_user, string $new_user, int $template_realm 
 		}
 	}
 
-	/* apply group permissions for the user */
+	// apply group permissions for the user
 	$groups = db_fetch_assoc_prepared('SELECT group_id
 		FROM user_auth_group_members
 		WHERE user_id = ?',
 		[$template_id]);
 
 	if (cacti_sizeof($groups)) {
+		$sql = [];
+
 		foreach ($groups as $g) {
 			$sql[] = '(' . $new_id . ', ' . $g['group_id'] . ')';
 		}
@@ -437,18 +439,18 @@ function user_copy(string $template_user, string $new_user, int $template_realm 
  *
  * @return void
  */
-function user_remove(int $user_id): void {
-	/* ================= input validation ================= */
+function user_remove(int $user_id) : void {
+	// ================= input validation =================
 	input_validate_input_number($user_id, 'user_id');
-	/* ==================================================== */
+	// ====================================================
 
-	/* check for guest or template user */
+	// check for guest or template user
 	$username = db_fetch_cell_prepared('SELECT username
 		FROM user_auth
 		WHERE id = ?',
 		[$user_id]);
 
-	if ($username != get_nfilter_request_var('username')) {
+	if ($username != gnrv('username')) {
 		if (is_template_account($user_id)) {
 			raise_message(21);
 
@@ -482,12 +484,15 @@ function user_remove(int $user_id): void {
  *
  * @return void
  */
-function user_disable(int $user_id): void {
-	/* ================= input validation ================= */
+function user_disable(int $user_id) : void {
+	// ================= input validation =================
 	input_validate_input_number($user_id, 'user_id');
-	/* ==================================================== */
+	// ====================================================
 
 	db_execute_prepared("UPDATE user_auth SET enabled = '' WHERE id = ?", [$user_id]);
+	db_execute_prepared('DELETE FROM user_auth_cache WHERE user_id = ?', [$user_id]);
+	db_execute_prepared('DELETE FROM user_auth_row_cache WHERE user_id = ?', [$user_id]);
+	db_execute_prepared('DELETE FROM sessions WHERE user_id = ?', [$user_id]);
 
 	reset_user_perms($user_id);
 }
@@ -499,10 +504,10 @@ function user_disable(int $user_id): void {
  *
  * @return void
  */
-function user_enable(int $user_id): void {
-	/* ================= input validation ================= */
+function user_enable(int $user_id) : void {
+	// ================= input validation =================
 	input_validate_input_number($user_id, 'user_id');
-	/* ==================================================== */
+	// ====================================================
 
 	db_execute_prepared("UPDATE user_auth SET enabled = 'on' WHERE id = ?", [$user_id]);
 
@@ -512,11 +517,11 @@ function user_enable(int $user_id): void {
 /**
  * Retrieves the authentication realms based on the configured authentication method.
  *
- * @param bool $login Optional. Whether the function is being called during a login process. Default is false.
+ * @param bool $login Whether the function is being called during a login process. Default is false.
  *
  * @return array An array of authentication realms
  */
-function get_auth_realms(bool $login = false): array {
+function get_auth_realms(bool $login = false) : array {
 	if (read_config_option('auth_method') == AUTH_METHOD_DOMAIN) {
 		$drealms = db_fetch_assoc('SELECT domain_id, domain_name
 			FROM user_domains
@@ -578,11 +583,11 @@ function get_auth_realms(bool $login = false): array {
  * Determines whether the current user is allowed to view a certain graph
  *
  * @param int $local_graph_id The ID of the local graph to check.
- * @param int $user_id Optional. The ID of the user to check permissions for.
+ * @param int $user_id        The ID of the user to check permissions for.
  *
  * @return bool True if the graph is allowed for the user, false otherwise.
  */
-function is_graph_allowed(int $local_graph_id, int $user_id = 0): bool {
+function is_graph_allowed(int $local_graph_id, int $user_id = 0) : bool {
 	$rows  = 0;
 
 	get_allowed_graphs('', '', '', $rows, $user_id, $local_graph_id);
@@ -594,27 +599,27 @@ function is_graph_allowed(int $local_graph_id, int $user_id = 0): bool {
  * A helper function to checking Tree permissions
  *
  * @param array $objects An array of objects to check permissions against.
- * @param int $policy The policy to apply
+ * @param int   $policy  The policy to apply
  *
  * @return bool Returns true or false based on the policy and the presence of objects
  */
-function auth_check_perms(array $objects, int $policy): bool {
+function auth_check_perms(array $objects, int $policy) : bool {
 	$objectSize = cacti_sizeof($objects);
 
-	/* policy == allow AND matches = DENY */
+	// policy == allow AND matches = DENY
 	if ($objectSize && $policy == 1) {
 		return false;
-		/* policy == deny AND matches = ALLOW */
+		// policy == deny AND matches = ALLOW
 	}
 
 	if ($objectSize && $policy == 2) {
 		return true;
-		/* policy == allow AND no matches = ALLOW */
+		// policy == allow AND no matches = ALLOW
 	}
 
 	if (!$objectSize && $policy == 1) {
 		return true;
-		/* policy == deny AND no matches = DENY */
+		// policy == deny AND no matches = DENY
 	}
 
 	if (!$objectSize && $policy == 2) {
@@ -628,11 +633,11 @@ function auth_check_perms(array $objects, int $policy): bool {
  *  A helper function to extend Cacti roles with additional realms or to add a new role.
  *
  * @param string $role_name The name of the role to augment.
- * @param array $files An array of file paths to check and associate with realm IDs.
+ * @param array  $files     An array of file paths to check and associate with realm IDs.
  *
  * @return void
  */
-function auth_augment_roles(string $role_name, array $files): void {
+function auth_augment_roles(string $role_name, array $files) : void {
 	global $user_auth_roles, $user_auth_realm_filenames;
 
 	foreach ($files as $file) {
@@ -679,9 +684,10 @@ function auth_augment_roles(string $role_name, array $files): void {
  *
  * @param string $role_name The name of the role to augment.
  * @param string $auth_name The authentication name to look up the realm ID.
+ *
  * @return void
  */
-function auth_augment_roles_byname(string $role_name, string $auth_name): void {
+function auth_augment_roles_byname(string $role_name, string $auth_name) : void {
 	global $user_auth_roles, $user_auth_realm_filenames;
 
 	if (isset($_SESSION[SESS_AUTH_NAMES][$auth_name])) {
@@ -714,7 +720,7 @@ function auth_augment_roles_byname(string $role_name, string $auth_name): void {
  *
  * @return bool True if the user is allowed to access the tree, false otherwise.
  */
-function is_tree_allowed(int $tree_id, int $user_id = 0): bool {
+function is_tree_allowed(int $tree_id, int $user_id = 0) : bool {
 	if ($user_id == -1) {
 		return true;
 	}
@@ -751,7 +757,7 @@ function is_tree_allowed(int $tree_id, int $user_id = 0): bool {
 		return true;
 	}
 
-	/* check for group perms */
+	// check for group perms
 	$groups = db_fetch_assoc_prepared("SELECT uag.policy_trees
 		FROM user_auth_group AS uag
 		INNER JOIN user_auth_group_members AS uagm
@@ -774,7 +780,7 @@ function is_tree_allowed(int $tree_id, int $user_id = 0): bool {
 		}
 	}
 
-	/* check for group trees */
+	// check for group trees
 	$gtrees = db_fetch_assoc_prepared("SELECT uagm.user_id
 		FROM user_auth_group AS uag
 		INNER JOIN user_auth_group_members AS uagm
@@ -803,11 +809,11 @@ function is_tree_allowed(int $tree_id, int $user_id = 0): bool {
  * Determines whether the current user is allowed to view a certain device
  *
  * @param int $device_id The ID of the device to check.
- * @param int $user_id The ID of the user to check.
+ * @param int $user_id   The ID of the user to check.
  *
  * @return bool True if the device is allowed for the user, false otherwise.
  */
-function is_device_allowed(int $device_id, int $user_id = 0): bool {
+function is_device_allowed(int $device_id, int $user_id = 0) : bool {
 	$total_rows = -2;
 	get_allowed_devices('', '', '', $total_rows, $user_id, $device_id);
 
@@ -818,11 +824,11 @@ function is_device_allowed(int $device_id, int $user_id = 0): bool {
  * Determines whether the current user is allowed to view a certain graph template
  *
  * @param int $graph_template_id The ID of the graph template to check.
- * @param int $user The ID of the user to check permissions for. Defaults to 0.
+ * @param int $user              The ID of the user to check permissions for. Defaults to 0.
  *
  * @return bool Returns true if the graph template is allowed for the user, false otherwise.
  */
-function is_graph_template_allowed(int $graph_template_id, int $user = 0): bool {
+function is_graph_template_allowed(int $graph_template_id, int $user = 0) : bool {
 	$total_rows = -2;
 	get_allowed_graph_templates('', '', '', $total_rows, $user, $graph_template_id);
 
@@ -837,7 +843,7 @@ function is_graph_template_allowed(int $graph_template_id, int $user = 0): bool 
  *
  * @return bool Returns true if the view is allowed for the user, false otherwise.
  */
-function is_view_allowed(string $view = 'show_tree'): bool {
+function is_view_allowed(string $view = 'show_tree') : bool {
 	if (!isset($_SESSION[SESS_USER_ID])) {
 		return false;
 	}
@@ -880,11 +886,11 @@ function is_view_allowed(string $view = 'show_tree'): bool {
  * Given a tree id and a branch id, check if it's empty
  *
  * @param int $tree_id The ID of the tree to check.
- * @param int $parent The parent ID of the branch to check. Default is 0.
+ * @param int $parent  The parent ID of the branch to check. Default is 0.
  *
  * @return bool Returns true if the branch is empty, false otherwise.
  */
-function is_tree_branch_empty(int $tree_id, int $parent = 0): bool {
+function is_tree_branch_empty(int $tree_id, int $parent = 0) : bool {
 	$graphs = array_rekey(
 		db_fetch_assoc_prepared('SELECT local_graph_id
 			FROM graph_tree_items
@@ -922,7 +928,7 @@ function is_tree_branch_empty(int $tree_id, int $parent = 0): bool {
 	);
 
 	if (!cacti_sizeof($sites)) {
-		$total_rows = -1;	/* Adding to fix pass by reference error in get_allowed_devices */
+		$total_rows = -1;	// Adding to fix pass by reference error in get_allowed_devices
 
 		if (cacti_sizeof($hosts) && cacti_sizeof(get_allowed_devices('h.id IN(' . implode(',', $hosts) . ')', 'description', '', $total_rows)) > 0) {
 			return false;
@@ -939,7 +945,7 @@ function is_tree_branch_empty(int $tree_id, int $parent = 0): bool {
 				), 'id', 'id'
 			);
 		}
-		$total_rows = -1;	/* Adding to fix pass by reference error in get_allowed_devices */
+		$total_rows = -1;	// Adding to fix pass by reference error in get_allowed_devices
 
 		if (cacti_sizeof($site_hosts) && cacti_sizeof(get_allowed_devices('h.id IN(' . implode(',', $site_hosts) . ')', 'description', '', $total_rows)) > 0) {
 			return false;
@@ -971,22 +977,22 @@ function is_tree_branch_empty(int $tree_id, int $parent = 0): bool {
  *   session variables so that when an admin makes a change, the user does not
  *   have to login again to receive them.
  *
- * @param int $realm The realm to check permissions for.
+ * @param int      $realm      The realm to check permissions for.
  * @param int|bool $check_user Optional. The user ID to check permissions for. If false, checks the current session user.
  *
  * @return bool True if the user has permission to access the realm, false otherwise.
  */
-function is_realm_allowed(int $realm, int|bool $check_user = false): bool {
+function is_realm_allowed(int $realm, int|bool $check_user = false) : bool {
 	global $config;
 
-	/* if we are only checking another users permission, don't check cache */
+	// if we are only checking another users permission, don't check cache
 	if ($check_user == false) {
-		/* user is not set, no permissions */
+		// user is not set, no permissions
 		if (!isset($_SESSION[SESS_USER_ID])) {
 			return false;
 		}
 
-		/* check to see if the admin invalidated a permission */
+		// check to see if the admin invalidated a permission
 		if (!is_user_perms_valid($_SESSION[SESS_USER_ID])) {
 			if (db_table_exists('user_auth_cache')) {
 				$enabled = db_fetch_cell_prepared('SELECT enabled
@@ -1035,7 +1041,7 @@ function is_realm_allowed(int $realm, int|bool $check_user = false): bool {
 			}
 		}
 
-		/* if the permission is already valid, the session variable will be set */
+		// if the permission is already valid, the session variable will be set
 		if (isset($_SESSION[SESS_USER_REALMS][$realm])) {
 			return $_SESSION[SESS_USER_REALMS][$realm];
 		}
@@ -1100,7 +1106,7 @@ function is_realm_allowed(int $realm, int|bool $check_user = false): bool {
  *
  * @return array The list of allowed tree items.
  */
-function get_allowed_tree_level(int  $tree_id, int  $parent_id, bool $editing = false, int  $user_id = 0): array {
+function get_allowed_tree_level(int  $tree_id, int  $parent_id, bool $editing = false, int  $user_id = 0) : array {
 	$items = db_fetch_assoc_prepared('SELECT gti.id, gti.title, gti.host_id,
 		gti.site_id, gti.local_graph_id, gti.host_grouping_type,
 		h.description AS hostname, s.name AS sitename
@@ -1142,29 +1148,21 @@ function get_allowed_tree_level(int  $tree_id, int  $parent_id, bool $editing = 
 /**
  * Gathers items and statistics of those items that are permitted on the tree specified
  *
- * @param int $tree_id The ID of the tree to retrieve content for.
- * @param int $parent The parent ID to filter the tree content. Default is 0.
- * @param string $sql_where Additional SQL WHERE conditions. Default is an empty string.
- * @param string $sql_order SQL ORDER BY clause. Default is an empty string.
- * @param string $sql_limit SQL LIMIT clause. Default is an empty string.
- * @param int &$total_rows Reference to a variable to store the total number of rows. Default is 0.
- * @param int $user_id The ID of the user to filter the allowed trees. Default is 0.
+ * @param int    $tree_id    The ID of the tree to retrieve content for.
+ * @param int    $parent     The parent ID to filter the tree content. Default is 0.
+ * @param string $sql_where  Additional SQL WHERE conditions. Default is an empty string.
+ * @param string $sql_order  SQL ORDER BY clause. Default is an empty string.
+ * @param string $sql_limit  SQL LIMIT clause. Default is an empty string.
+ * @param int    $total_rows Reference to a variable to store the total number of rows. Default is 0.
+ * @param int    $user_id    The ID of the user to filter the allowed trees. Default is 0.
  *
- * @return array An array of allowed tree content.
+ * @return array - An array of allowed tree content.
  */
-function get_allowed_tree_content(int $tree_id, int $parent = 0, string $sql_where = '', string $sql_order = '', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0): array {
+function get_allowed_tree_content(int $tree_id, int $parent = 0, string $sql_where = '', string $sql_order = '', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0) : array {
 	if ($sql_limit != '' && $sql_limit != -1) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
 		$sql_limit = '';
-	}
-
-	if (!is_numeric($tree_id)) {
-		return [];
-	}
-
-	if (!is_numeric($parent)) {
-		return [];
 	}
 
 	if ($sql_order != '') {
@@ -1186,6 +1184,8 @@ function get_allowed_tree_content(int $tree_id, int $parent = 0, string $sql_whe
 		get_allowed_trees(false, false, '', '', '', $total_rows, $user_id),
 		'id', 'name'
 	);
+
+	$hierarchy = [];
 
 	if ($tree_id > 0) {
 		if (cacti_sizeof($trees)) {
@@ -1239,14 +1239,14 @@ function get_allowed_tree_content(int $tree_id, int $parent = 0, string $sql_whe
 
 /**
  * Searches both the users and the users groups and returns a policy
- *   array to be used for determining object permissions.
+ * array to be used for determining object permissions.
  *
  * @param int $user_id The ID of the user for whom to retrieve policies.
  *
- * @return array An array of policies
+ * @return array - An array of policies
  */
-function get_policies(int $user_id): array {
-	/* get policies for all user groups */
+function get_policies(int $user_id) : array {
+	// get policies for all user groups
 	$policies = db_fetch_assoc_prepared("SELECT uag.id, 'group' AS type, uag.name,
 		uag.policy_graphs, uag.policy_hosts, uag.policy_graph_templates, uag.policy_trees
 		FROM user_auth_group AS uag
@@ -1256,7 +1256,7 @@ function get_policies(int $user_id): array {
 		AND uagm.user_id = ?",
 		[$user_id]);
 
-	/* get policies for the user */
+	// get policies for the user
 	$policies[] = db_fetch_row_prepared("SELECT id, 'user' AS type, 'user' AS name,
 		policy_graphs, policy_hosts, policy_graph_templates, policy_trees
 		FROM user_auth
@@ -1269,26 +1269,18 @@ function get_policies(int $user_id): array {
 /**
  * Returns the graphs that are permitted at the branch/leaf id specified
  *
- * @param int $tree_id The ID of the tree.
- * @param int $leaf_id The ID of the leaf (default is 0).
- * @param string $sql_where Additional SQL WHERE conditions (default is '').
- * @param string $sql_order SQL ORDER BY clause (default is 'gti.position').
- * @param string $sql_limit SQL LIMIT clause (default is '').
- * @param int &$total_rows Reference to a variable to store the total number of rows (default is 0).
- * @param int $user_id The ID of the user (default is 0).
+ * @param int    $tree_id    The ID of the tree.
+ * @param int    $leaf_id    The ID of the leaf (default is 0).
+ * @param string $sql_where  Additional SQL WHERE conditions (default is '').
+ * @param string $sql_order  SQL ORDER BY clause (default is 'gti.position').
+ * @param string $sql_limit  SQL LIMIT clause (default is '').
+ * @param int    $total_rows Reference to a variable to store the total number of rows (default is 0).
+ * @param int    $user_id    The ID of the user (default is 0).
  *
- * @return array An array of allowed tree header graphs.
+ * @return array - An array of allowed tree header graphs.
  */
-function get_allowed_tree_header_graphs(int $tree_id,int  $leaf_id = 0, string $sql_where = '', string $sql_order = 'gti.position', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0): array {
+function get_allowed_tree_header_graphs(int $tree_id, int $leaf_id = 0, string $sql_where = '', string $sql_order = 'gti.position', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0) : array {
 	if (!auth_valid_user($user_id)) {
-		return [];
-	}
-
-	if (!is_numeric($tree_id)) {
-		return [];
-	}
-
-	if (!is_numeric($leaf_id)) {
 		return [];
 	}
 
@@ -1328,7 +1320,7 @@ function get_allowed_tree_header_graphs(int $tree_id,int  $leaf_id = 0, string $
 
 	$graph_auth_method = read_config_option('graph_auth_method');
 
-	/* get policies for all groups and user */
+	// get policies for all groups and user
 	$policies = get_policies($user_id);
 
 	$sql_where = get_policy_where($graph_auth_method, $policies, $sql_where);
@@ -1371,8 +1363,8 @@ function get_allowed_tree_header_graphs(int $tree_id,int  $leaf_id = 0, string $
  *   where users will view the graphs that they are permitted to access
  *
  * @param string $sql_where The SQL where when searching for specific content
- * @param string|array $sql_order The SQL Order clause to use for the sorting of graphs, if using order by
- *                      Data source, the following must be passed in an array
+ * @param mixed  $sql_order The SQL Order clause to use for the sorting of graphs, if using order by
+ *                          Data source, the following must be passed in an array
  *
  *                      array(
  *                          'data_source' => 'traffic_in',
@@ -1382,14 +1374,15 @@ function get_allowed_tree_header_graphs(int $tree_id,int  $leaf_id = 0, string $
  *                          'cf'          => avg (0) | max (1)
  *                          'measure'     => average | peak | sum | p25 | p50 | p75 | p90 | p95
  *                      )
- * @param string $sql_limit SQL LIMIT clause.
- * @param int &$total_rows Reference to a variable to store the total number of rows.
- * @param int $user_id User ID for which to retrieve the graphs.
- * @param int $graph_id Specific graph ID to retrieve.
+ *
+ * @param string $sql_limit   SQL LIMIT clause.
+ * @param int    &$total_rows Reference to a variable to store the total number of rows.
+ * @param int    $user_id     User ID for which to retrieve the graphs.
+ * @param int    $graph_id    Specific graph ID to retrieve.
  *
  * @return array An array of allowed graphs.
  */
-function get_allowed_graphs(string $sql_where = '', string $sql_order = 'gtg.title_cache', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0, int $graph_id = 0): array {
+function get_allowed_graphs(string $sql_where = '', mixed $sql_order = 'gtg.title_cache', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0, int $graph_id = 0) : array {
 	if (!auth_valid_user($user_id)) {
 		return [];
 	}
@@ -1469,13 +1462,13 @@ function get_allowed_graphs(string $sql_where = '', string $sql_order = 'gtg.tit
 		$sql_where = "WHERE ((h.id > 0 AND h.deleted = '') OR h.id IS NULL)";
 	}
 
-	/* see if permissions are simple */
+	// see if permissions are simple
 	$simple_perms = get_simple_graph_perms($user_id);
 
-	/* in case we need to review get the graph_auth_method */
+	// in case we need to review get the graph_auth_method
 	$graph_auth_method = read_config_option('graph_auth_method');
 
-	/* get policies for all groups and user */
+	// get policies for all groups and user
 	$policies = get_policies($user_id);
 
 	if (!$simple_perms) {
@@ -1526,16 +1519,16 @@ function get_allowed_graphs(string $sql_where = '', string $sql_order = 'gtg.tit
  * Returns the aggregate graphs that are permitted by the user.
  *   Used for table displays where users will view the graphs that they are permitted to access
  *
- * @param string $sql_where Additional SQL WHERE conditions.
- * @param string $sql_order SQL ORDER BY clause.
- * @param string $sql_limit SQL LIMIT clause.
- * @param int &$total_rows Reference to a variable to store the total number of rows.
- * @param int $user_id The ID of the user.
- * @param int $graph_id The ID of the graph.
+ * @param string $sql_where   Additional SQL WHERE conditions.
+ * @param string $sql_order   SQL ORDER BY clause.
+ * @param string $sql_limit   SQL LIMIT clause.
+ * @param int    &$total_rows Reference to a variable to store the total number of rows.
+ * @param int    $user_id     The ID of the user.
+ * @param int    $graph_id    The ID of the graph.
  *
  * @return array The list of allowed aggregate graphs.
  */
-function get_allowed_aggregate_graphs(string $sql_where = '', string $sql_order = 'gtg.title_cache', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0, int $graph_id = 0): array {
+function get_allowed_aggregate_graphs(string $sql_where = '', string $sql_order = 'gtg.title_cache', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0, int $graph_id = 0) : array {
 	if (!auth_valid_user($user_id)) {
 		return [];
 	}
@@ -1578,13 +1571,13 @@ function get_allowed_aggregate_graphs(string $sql_where = '', string $sql_order 
 		$sql_where = "WHERE ((h.id > 0 AND h.deleted = '') OR h.id IS NULL)";
 	}
 
-	/* see if permissions are simple */
+	// see if permissions are simple
 	$simple_perms = get_simple_graph_perms($user_id);
 
-	/* in case we need to review get the graph_auth_method */
+	// in case we need to review get the graph_auth_method
 	$graph_auth_method = read_config_option('graph_auth_method');
 
-	/* get policies for all groups and user */
+	// get policies for all groups and user
 	$policies = get_policies($user_id);
 
 	if (!$simple_perms) {
@@ -1645,7 +1638,7 @@ function get_allowed_aggregate_graphs(string $sql_where = '', string $sql_order 
  *
  * @return bool True if the user has simple device permissions, false otherwise.
  */
-function get_simple_device_perms(int $user): bool {
+function get_simple_device_perms(int $user) : bool {
 	$policy_hosts = db_fetch_cell_prepared('SELECT policy_hosts
 		FROM user_auth
 		WHERE id = ?',
@@ -1692,7 +1685,7 @@ function get_simple_device_perms(int $user): bool {
  *
  * @return bool True if the user has simple graph permissions, false otherwise.
  */
-function get_simple_graph_perms(int $user_id): bool {
+function get_simple_graph_perms(int $user_id) : bool {
 	if (isset($_SESSION[SESS_SIMPLE_PERMS])) {
 		return $_SESSION[SESS_SIMPLE_PERMS];
 	}
@@ -1749,7 +1742,7 @@ function get_simple_graph_perms(int $user_id): bool {
  *
  * @return bool True if the user has simple graph template permissions, false otherwise.
  */
-function get_simple_graph_template_perms(int $user_id): bool {
+function get_simple_graph_template_perms(int $user_id) : bool {
 	if (isset($_SESSION[SESS_SIMPLE_TEMPLATE_PERMS])) {
 		return $_SESSION[SESS_SIMPLE_TEMPLATE_PERMS];
 	}
@@ -1801,16 +1794,16 @@ function get_simple_graph_template_perms(int $user_id): bool {
  * Returns the list of Graph Templates that the user is allowed to access.
  *   This function is generally intended for both listbox and table displays.
  *
- * @param string $sql_where Additional SQL WHERE conditions.
- * @param string $sql_order SQL ORDER BY clause.
- * @param string $sql_limit SQL LIMIT clause.
- * @param int|null &$total_rows Reference to the total number of rows.
- * @param int $user_id User ID to check permissions for.
- * @param int $graph_template_id Specific graph template ID to filter by.
+ * @param string   $sql_where         Additional SQL WHERE conditions.
+ * @param string   $sql_order         SQL ORDER BY clause.
+ * @param string   $sql_limit         SQL LIMIT clause.
+ * @param int|null &$total_rows       Reference to the total number of rows.
+ * @param int      $user_id           User ID to check permissions for.
+ * @param int      $graph_template_id Specific graph template ID to filter by.
  *
  * @return array List of allowed graph templates.
  */
-function get_allowed_graph_templates(string $sql_where = '', string $sql_order = 'gt.name', string $sql_limit = '', int|null &$total_rows = 0, int $user_id = 0, int $graph_template_id = 0): array {
+function get_allowed_graph_templates(string $sql_where = '', string $sql_order = 'gt.name', string $sql_limit = '', int|null &$total_rows = 0, int $user_id = 0, int $graph_template_id = 0) : array {
 	if (!auth_valid_user($user_id)) {
 		return [];
 	}
@@ -1852,16 +1845,16 @@ function get_allowed_graph_templates(string $sql_where = '', string $sql_order =
 
 	$sql_where = 'WHERE ' . ($sql_where != '' ? $sql_where . ' AND ' : ' ') . '(gt.id IS NOT NULL) ';
 
-	/* see if permissions are simple */
+	// see if permissions are simple
 	$simple_perms = get_simple_graph_perms($user_id);
 
-	/* in case we need to review get the graph_auth_method */
+	// in case we need to review get the graph_auth_method
 	$graph_auth_method = read_config_option('graph_auth_method');
 
-	/* get policies for all groups and user */
+	// get policies for all groups and user
 	$policies = get_policies($user_id);
 
-	/* short circuit if we don't have a user */
+	// short circuit if we don't have a user
 	if ($user_id == 0) {
 		return [];
 	}
@@ -1918,7 +1911,7 @@ function get_allowed_graph_templates(string $sql_where = '', string $sql_order =
  *
  * @return array An associative array containing both $sql_select and $sql_join
  */
-function get_policy_join_select(array $policies): array {
+function get_policy_join_select(array $policies) : array {
 	$sql_join   = '';
 	$sql_select = '';
 
@@ -1949,12 +1942,12 @@ function get_policy_join_select(array $policies): array {
  *   without the use of the SQL Having clause which is very inefficient
  *
  * @param string|int $graph_auth_method The graph auth method: permissive, restrictive, device, graph_template
- * @param array $policies The list of user and group policies.
- * @param string $sql_where The SQL where filter provided by the calling function.
+ * @param array      $policies          The list of user and group policies.
+ * @param string     $sql_where         The SQL where filter provided by the calling function.
  *
  * @return string Updated sql_where value
  */
-function get_policy_where(string|int $graph_auth_method, array $policies, string $sql_where): string {
+function get_policy_where(string|int $graph_auth_method, array $policies, string $sql_where) : string {
 	if ($graph_auth_method == 1) {
 		// Policy Rows include
 		// id, type (group|user), policy_graphs, policy_hosts, policy_graph_templates
@@ -2218,46 +2211,46 @@ function get_policy_where(string|int $graph_auth_method, array $policies, string
 
 /**
  * Get the effective permission string for the graph in question.  The
- *   logic for this is somewhat complex, but understandable.  First, the $graph object will include
- *   three columns generally graphX, deviceX, and templateX for each of the user or groups in the collection.
- *   The way we assign a restrictive or permissive value is based upon the graph permission setting
- *   in Cacti, but also whether or not the default access for the object type is either 'Allow' or 'Deny'.
+ * logic for this is somewhat complex, but understandable.  First, the $graph object will include
+ * three columns generally graphX, deviceX, and templateX for each of the user or groups in the collection.
+ * The way we assign a restrictive or permissive value is based upon the graph permission setting
+ * in Cacti, but also whether or not the default access for the object type is either 'Allow' or 'Deny'.
  *
- *   - If the 'default access' for the object type is 'Deny', then a numeric value in userX means
- *     the user has permission to an object.
- *   - If the default access for the object is 'Allow', then a numeric
- *     value in userX means that the object is blocked.
+ * - If the 'default access' for the object type is 'Deny', then a numeric value in userX means
+ *   the user has permission to an object.
+ * - If the default access for the object is 'Allow', then a numeric
+ *   value in userX means that the object is blocked.
  *
- *   Again, each of the graphX, deviceX, and templateX will always come in three's.  They equate to:
+ * Again, each of the graphX, deviceX, and templateX will always come in three's.  They equate to:
  *
- *   - graphX    - The user does or does not have permission to the Graph at the Graph Level
- *   - deviceX   - The user does or does not have permission to the Graph at the Device Level
- *   - templateX - The user does or does not have permission to the Graph at the Graph Template Level
+ * - graphX    - The user does or does not have permission to the Graph at the Graph Level
+ * - deviceX   - The user does or does not have permission to the Graph at the Device Level
+ * - templateX - The user does or does not have permission to the Graph at the Graph Template Level
  *
- *   Then, the effective permission are calculated by the Graph Permission Model in Cacti.  They are
+ * Then, the effective permission are calculated by the Graph Permission Model in Cacti.  They are
  *
- *   - Permissive - If the user has access to the Graph, the Device, or Graph Template, then the
- *     user will have access to the Graph.
+ * - Permissive - If the user has access to the Graph, the Device, or Graph Template, then the
+ *   user will have access to the Graph.
  *
- *   - Restrictive - If the user has access to the Graph, or both the Device and Graph Template,
- *     then the user will have access to the Graph
+ * - Restrictive - If the user has access to the Graph, or both the Device and Graph Template,
+ *   then the user will have access to the Graph
  *
- *   - Device - If the user has access to the Graph, or the Device, then the user will have
- *     access to the Graph
+ * - Device - If the user has access to the Graph, or the Device, then the user will have
+ *   access to the Graph
  *
- *   - Graph Template - If the user has access to the Graph, or the Graph Template, then the user
- *     will have access to the Graph.
+ * - Graph Template - If the user has access to the Graph, or the Graph Template, then the user
+ *   will have access to the Graph.
  *
- *   This function will apply this logic, and then respond to the user a 'Granted' or 'Restricted'
- *   column value, and a Tooltip, that shows how the permissions were evaluated.  In other words
- *   why was the user either permitted to or denied access to the Graph.
+ * This function will apply this logic, and then respond to the user a 'Granted' or 'Restricted'
+ * column value, and a Tooltip, that shows how the permissions were evaluated.  In other words
+ * why was the user either permitted to or denied access to the Graph.
  *
- * @param array $graph The graph data.
+ * @param array $graph    The graph data.
  * @param array $policies The policies to evaluate.
  *
  * @return string The permission string
  */
-function get_permission_string(array &$graph, array &$policies): string {
+function get_permission_string(array &$graph, array &$policies) : string {
 	$grantStr   = '';
 	$rejectStr  = '';
 	$reasonStr  = '';
@@ -2270,7 +2263,7 @@ function get_permission_string(array &$graph, array &$policies): string {
 	// 4 - Graph Template
 	$method = read_config_option('graph_auth_method');
 
-	if ($graph['disabled'] == 'on' && read_user_setting('hide_disabled', false, false, get_request_var('user_id'))) {
+	if ($graph['disabled'] == 'on' && read_user_setting('hide_disabled', false, false, grv('user_id'))) {
 		$drejectStr .= __esc('Device:(Hide Disabled)');
 	}
 
@@ -2451,19 +2444,19 @@ function get_permission_string(array &$graph, array &$policies): string {
 
 /**
  * Returns the list of Trees that the user is allowed to access.
- *   This function is generally intended for both listbox and table displays as well as to build out the tree for a user.
+ * This function is generally intended for both listbox and table displays as well as to build out the tree for a user.
  *
- * @param bool $edit If true, includes trees that are not enabled.
- * @param bool $return_sql If true, returns the SQL query instead of executing it.
- * @param string $sql_where Additional SQL WHERE conditions.
- * @param string $sql_order SQL ORDER BY clause.
- * @param string $sql_limit SQL LIMIT clause.
- * @param int &$total_rows Reference to a variable to store the total number of rows.
- * @param int $user_id The ID of the user. If 0, the current session user ID is used.
+ * @param bool   $edit        If true, includes trees that are not enabled.
+ * @param bool   $return_sql  If true, returns the SQL query instead of executing it.
+ * @param string $sql_where   Additional SQL WHERE conditions.
+ * @param string $sql_order   SQL ORDER BY clause.
+ * @param string $sql_limit   SQL LIMIT clause.
+ * @param int    &$total_rows Reference to a variable to store the total number of rows.
+ * @param int    $user_id     The ID of the user. If 0, the current session user ID is used.
  *
  * @return array|string The allowed graph trees or the SQL query string if $return_sql is true.
  */
-function get_allowed_trees(bool $edit = false, bool $return_sql = false, string $sql_where = '', string $sql_order = 'name', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0): array|string {
+function get_allowed_trees(bool $edit = false, bool $return_sql = false, string $sql_where = '', string $sql_order = 'name', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0) : array|string {
 	if (!auth_valid_user($user_id)) {
 		return [];
 	}
@@ -2488,7 +2481,7 @@ function get_allowed_trees(bool $edit = false, bool $return_sql = false, string 
 		}
 	}
 
-	/* get policies for all groups and user */
+	// get policies for all groups and user
 	$policies = db_fetch_assoc_prepared("SELECT uag.id, 'group' AS type, policy_trees FROM user_auth_group AS uag
 		INNER JOIN user_auth_group_members AS uagm
 		ON uag.id = uagm.group_id
@@ -2546,17 +2539,17 @@ function get_allowed_trees(bool $edit = false, bool $return_sql = false, string 
 
 /**
  * Returns the list of Tree branches that the user is allowed to access.
- *   This function is generally intended for both listbox and table displays as well as to build out the tree for a user.
+ * This function is generally intended for both listbox and table displays as well as to build out the tree for a user.
  *
- * @param string $sql_where Optional SQL WHERE clause to filter the branches.
- * @param string $sql_order Optional SQL ORDER BY clause to sort the branches. Default is 'name'.
- * @param string $sql_limit Optional SQL LIMIT clause to limit the number of branches returned.
- * @param int &$total_rows Reference to a variable to store the total number of rows.
- * @param int $user_id Optional user ID to retrieve branches for. Default is 0.
+ * @param string $sql_where   Optional SQL WHERE clause to filter the branches.
+ * @param string $sql_order   Optional SQL ORDER BY clause to sort the branches. Default is 'name'.
+ * @param string $sql_limit   Optional SQL LIMIT clause to limit the number of branches returned.
+ * @param int    &$total_rows Reference to a variable to store the total number of rows.
+ * @param int    $user_id     Optional user ID to retrieve branches for. Default is 0.
  *
  * @return array An array of allowed branches.
  */
-function get_allowed_branches(string $sql_where = '', string $sql_order = 'name', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0): array {
+function get_allowed_branches(string $sql_where = '', string $sql_order = 'name', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0) : array {
 	if (!auth_valid_user($user_id)) {
 		return [];
 	}
@@ -2588,7 +2581,7 @@ function get_allowed_branches(string $sql_where = '', string $sql_order = 'name'
 
 	$simple_perms = get_simple_device_perms($user_id);
 
-	/* get policies for all groups and user */
+	// get policies for all groups and user
 	$policies = get_policies($user_id);
 
 	$sql_hosts_where = '';
@@ -2643,7 +2636,7 @@ function get_allowed_branches(string $sql_where = '', string $sql_order = 'name'
 		$sql_where = 'WHERE gt.enabled="on" AND (' . $sql_where1 . ')';
 	}
 
-	$sql = "(SELECT gti.id, CONCAT('". __('Branch:') . " ', gti.title) AS name
+	$sql = "(SELECT gti.id, CONCAT('" . __('Branch:') . " ', gti.title) AS name
 		FROM graph_tree AS gt
 		INNER JOIN graph_tree_items AS gti
 		ON gti.graph_tree_id = gt.id
@@ -2676,18 +2669,18 @@ function get_allowed_branches(string $sql_where = '', string $sql_order = 'name'
 
 /**
  * Returns the list of devices that the user is allowed to access.
- *   This function is generally intended for both listbox and table displays as well as other tasks.
+ * This function is generally intended for both listbox and table displays as well as other tasks.
  *
- * @param string $sql_where Additional SQL WHERE conditions to filter devices.
- * @param string $sql_order SQL ORDER BY clause to sort the results. Default is 'description'.
- * @param string $sql_limit SQL LIMIT clause to limit the number of results. Default is no limit.
- * @param int &$total_rows Reference to a variable to store the total number of rows found.
- * @param int $user_id The ID of the user for whom to retrieve allowed devices. Default is 0.
- * @param int $device_id The ID of a specific device to retrieve. Default is 0.
+ * @param string $sql_where   Additional SQL WHERE conditions to filter devices.
+ * @param string $sql_order   SQL ORDER BY clause to sort the results. Default is 'description'.
+ * @param string $sql_limit   SQL LIMIT clause to limit the number of results. Default is no limit.
+ * @param int    &$total_rows Reference to a variable to store the total number of rows found.
+ * @param int    $user_id     The ID of the user for whom to retrieve allowed devices. Default is 0.
+ * @param int    $device_id   The ID of a specific device to retrieve. Default is 0.
  *
  * @return array An array of allowed devices for the user.
  */
-function get_allowed_devices(string $sql_where = '', string $sql_order = 'description', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0, int $device_id = 0): array {
+function get_allowed_devices(string $sql_where = '', string $sql_order = 'description', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0, int $device_id = 0) : array {
 	if (!auth_valid_user($user_id)) {
 		return [];
 	}
@@ -2734,7 +2727,7 @@ function get_allowed_devices(string $sql_where = '', string $sql_order = 'descri
 
 	$graph_auth_method = read_config_option('graph_auth_method');
 
-	/* get policies for all groups and user */
+	// get policies for all groups and user
 	$policies = get_policies($user_id);
 
 	if (!$simple_perms) {
@@ -2789,17 +2782,17 @@ function get_allowed_devices(string $sql_where = '', string $sql_order = 'descri
 
 /**
  * Returns the list of sites that the user is allowed to access.
- *   This function is generally intended for both listbox and table displays as well as other tasks.
+ * This function is generally intended for both listbox and table displays as well as other tasks.
  *
- * @param string $sql_where Optional SQL WHERE clause to filter the sites.
- * @param string $sql_order Optional SQL ORDER BY clause to sort the sites. Default is 'name'.
- * @param string $sql_limit Optional SQL LIMIT clause to limit the number of results.
- * @param int &$total_rows Reference to a variable to store the total number of rows.
- * @param int $user_id Optional user ID to filter the sites by user. Default is 0.
- * @param int $site_id Optional site ID to filter the sites by a specific site. Default is 0.
- * @return array An associative array of allowed sites.
+ * @param  string $sql_where   Optional SQL WHERE clause to filter the sites.
+ * @param  string $sql_order   Optional SQL ORDER BY clause to sort the sites. Default is 'name'.
+ * @param  string $sql_limit   Optional SQL LIMIT clause to limit the number of results.
+ * @param  int    &$total_rows Reference to a variable to store the total number of rows.
+ * @param  int    $user_id     Optional user ID to filter the sites by user. Default is 0.
+ * @param  int    $site_id     Optional site ID to filter the sites by a specific site. Default is 0.
+ * @return array  An associative array of allowed sites.
  */
-function get_allowed_sites(string $sql_where = '', string $sql_order = 'name', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0, int $site_id = 0): array {
+function get_allowed_sites(string $sql_where = '', string $sql_order = 'name', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0, int $site_id = 0) : array {
 	if (!auth_valid_user($user_id)) {
 		return [];
 	}
@@ -2852,18 +2845,18 @@ function get_allowed_sites(string $sql_where = '', string $sql_order = 'name', s
 
 /**
  * Returns the list of devices in a site that the user is allowed to access.
- *   This function is generally intended for both listbox and table displays as well as other tasks.
+ * This function is generally intended for both listbox and table displays as well as other tasks.
  *
- * @param int $site_id The ID of the site to filter devices by.
- * @param string $sql_where Additional SQL WHERE conditions to apply.
- * @param string $sql_order The column to order the results by. Default is 'description'.
- * @param string $sql_limit The limit for the number of results to return.
- * @param int &$total_rows The total number of rows that match the criteria.
- * @param int $user_id The ID of the user to check permissions for. Default is 0.
+ * @param int    $site_id     The ID of the site to filter devices by.
+ * @param string $sql_where   Additional SQL WHERE conditions to apply.
+ * @param string $sql_order   The column to order the results by. Default is 'description'.
+ * @param string $sql_limit   The limit for the number of results to return.
+ * @param int    &$total_rows The total number of rows that match the criteria.
+ * @param int    $user_id     The ID of the user to check permissions for. Default is 0.
  *
  * @return array An associative array of allowed site devices.
  */
-function get_allowed_site_devices(int $site_id, string $sql_where = '', string $sql_order = 'description', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0): array {
+function get_allowed_site_devices(int $site_id, string $sql_where = '', string $sql_order = 'description', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0) : array {
 	if (!auth_valid_user($user_id)) {
 		return [];
 	}
@@ -2958,19 +2951,19 @@ function get_allowed_site_devices(int $site_id, string $sql_where = '', string $
 
 /**
  * Returns the list of graph templates aligned with the to be able to differentiate
- *   between Graph Templates based on a non-data query data input mode
- *   and those related to data queries.
+ * between Graph Templates based on a non-data query data input mode
+ * and those related to data queries.
  *
- * @param string $sql_where Optional SQL WHERE clause to filter the results.
- * @param string $sql_order Optional SQL ORDER BY clause to sort the results. Default is 'name'.
- * @param string $sql_limit Optional SQL LIMIT clause to limit the number of results.
- * @param int|null &$total_rows Reference to a variable to store the total number of rows.
- * @param int $user_id ID of the user to validate permissions.
- * @param int $graph_template_id ID of the graph template to filter the results.
+ * @param string   $sql_where         Optional SQL WHERE clause to filter the results.
+ * @param string   $sql_order         Optional SQL ORDER BY clause to sort the results. Default is 'name'.
+ * @param string   $sql_limit         Optional SQL LIMIT clause to limit the number of results.
+ * @param int|null &$total_rows       Reference to a variable to store the total number of rows.
+ * @param int      $user_id           ID of the user to validate permissions.
+ * @param int      $graph_template_id ID of the graph template to filter the results.
  *
  * @return array An associative array of allowed graph templates, keyed by their IDs and names.
  */
-function get_allowed_graph_templates_normalized(string $sql_where = '', string $sql_order = 'name', string $sql_limit = '', int|null &$total_rows = 0, int $user_id = 0, int $graph_template_id = 0): array {
+function get_allowed_graph_templates_normalized(string $sql_where = '', string $sql_order = 'name', string $sql_limit = '', int|null &$total_rows = 0, int $user_id = 0, int $graph_template_id = 0) : array {
 	if (!auth_valid_user($user_id)) {
 		return [];
 	}
@@ -3016,14 +3009,14 @@ function get_allowed_graph_templates_normalized(string $sql_where = '', string $
 
 /**
  * Returns true or false depending on if the user is valid for the system
- *   users with an id of 0 or -1 are special cases.  All non-zero users should be found in the
- *   user_auth table.
+ * users with an id of 0 or -1 are special cases.  All non-zero users should be found in the
+ * user_auth table.
  *
  * @param int $user_id The ID of the user to validate.
  *
  * @return bool True if the user exists, false otherwise.
  */
-function auth_valid_user(int $user_id): bool {
+function auth_valid_user(int $user_id) : bool {
 	static $users = [];
 
 	// perform a check if the user exists
@@ -3057,12 +3050,12 @@ function auth_valid_user(int $user_id): bool {
 /**
  * Purge one or more row Cache classes
  *
- * @param int $user_id The ID of the user whose cache should be purged. If 0, purges cache for all users.
- * @param string $class The class of cache to purge. Defaults to 'all'.
+ * @param int    $user_id The ID of the user whose cache should be purged. If 0, purges cache for all users.
+ * @param string $class   The class of cache to purge. Defaults to 'all'.
  *
  * @return void
  */
-function auth_row_cache_purge(int $user_id, string $class = 'all'): void {
+function auth_row_cache_purge(int $user_id, string $class = 'all') : void {
 	if ($user_id > 0) {
 		if ($class == 'all') {
 			db_execute_prepared('DELETE
@@ -3091,20 +3084,20 @@ function auth_row_cache_purge(int $user_id, string $class = 'all'): void {
 /**
  * Returns the total rows based upon a set of criteria
  *
- *   This function will hash the $sql, and then search for the total
- *   row counter based upon that criteria and if it finds a unexpired
- *   match for that data, it will return the row count in the table
- *   otherwise, it will execute the SQL and return the data.
+ * This function will hash the $sql, and then search for the total
+ * row counter based upon that criteria and if it finds a unexpired
+ * match for that data, it will return the row count in the table
+ * otherwise, it will execute the SQL and return the data.
  *
- * @param int $user_id The ID of the user.
- * @param string $sql The SQL query to execute.
- * @param array $sql_params Optional. The parameters for the SQL query. Default is an empty array.
- * @param string $class Optional. The class name for caching purposes. Default is an empty string.
- * @param int $timeout Optional. The cache timeout in seconds. Default is 86400 (24 hours).
+ * @param int    $user_id    The ID of the user.
+ * @param string $sql        The SQL query to execute.
+ * @param array  $sql_params Optional. The parameters for the SQL query. Default is an empty array.
+ * @param string $class      Optional. The class name for caching purposes. Default is an empty string.
+ * @param int    $timeout    Optional. The cache timeout in seconds. Default is 86400 (24 hours).
  *
  * @return int The total number of rows retrieved by the SQL query.
  */
-function get_total_row_data(int $user_id, string $sql, array $sql_params = [], string $class = '', int $timeout = 86400): int {
+function get_total_row_data(int $user_id, string $sql, array $sql_params = [], string $class = '', int $timeout = 86400) : int {
 	$execute  = true;
 	$now_time = time();
 
@@ -3159,8 +3152,9 @@ function get_total_row_data(int $user_id, string $sql, array $sql_params = [], s
  *
  * @return array An array of strings, each containing the description and hostname of a device.
  */
-function get_host_array(): array {
-	$total_rows = -1;
+function get_host_array() : array {
+	$total_rows     = -1;
+	$return_devices = [];
 
 	$hosts = get_allowed_devices('', 'description', '', $total_rows);
 
@@ -3173,15 +3167,15 @@ function get_host_array(): array {
 
 /**
  * Returns a list of hosts in a way that can be easily read through
- *   a callback, in JSON.  The 'term' request variable will include an optional search term.
+ * a callback, in JSON.  The 'term' request variable will include an optional search term.
  *
- * @param bool $include_any Whether to include an "Any" option in the results.
- * @param bool $include_none Whether to include a "None" option in the results.
- * @param string $sql_where Additional SQL WHERE clause to filter the hosts.
+ * @param bool   $include_any  Whether to include an "Any" option in the results.
+ * @param bool   $include_none Whether to include a "None" option in the results.
+ * @param string $sql_where    Additional SQL WHERE clause to filter the hosts.
  *
  * @return array List of allowed AJAX hosts.
  */
-function get_allowed_ajax_hosts(bool $include_any = true, bool $include_none = true, string $sql_where = ''): array {
+function get_allowed_ajax_hosts(bool $include_any = true, bool $include_none = true, string $sql_where = '') : array {
 	$user_id = $_SESSION['sess_user_id'];
 
 	if (!auth_valid_user($user_id)) {
@@ -3190,7 +3184,7 @@ function get_allowed_ajax_hosts(bool $include_any = true, bool $include_none = t
 
 	$return = [];
 
-	$term = get_filter_request_var('term', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
+	$term = gfrv('term', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
 
 	if ($term != '') {
 		$sql_where .= ($sql_where != '' ? ' AND ' : '') .
@@ -3199,7 +3193,7 @@ function get_allowed_ajax_hosts(bool $include_any = true, bool $include_none = t
 			' OR notes LIKE ' . db_qstr("%$term%") . ')';
 	}
 
-	if (get_request_var('term') == '') {
+	if (grv('term') == '') {
 		if ($include_any) {
 			$return[] = ['label' => __('Any'), 'value' => 'Any', 'id' => '-1'];
 		}
@@ -3215,7 +3209,7 @@ function get_allowed_ajax_hosts(bool $include_any = true, bool $include_none = t
 
 	if (cacti_sizeof($hosts)) {
 		foreach ($hosts as $host) {
-			$return[] = ['label' => html_escape(strip_domain($host['description'])), 'value' => html_escape($host['description']), 'id' => $host['id']];
+			$return[] = ['label' => htmle(strip_domain($host['description'])), 'value' => htmle($host['description']), 'id' => $host['id']];
 		}
 	}
 
@@ -3226,15 +3220,15 @@ function get_allowed_ajax_hosts(bool $include_any = true, bool $include_none = t
 
 /**
  * Returns a list of graph_template in a way that can be easily
- *   read through a callback, in JSON.  The 'term' request variable will include an optional search term.
+ * read through a callback, in JSON.  The 'term' request variable will include an optional search term.
  *
- * @param bool $include_any Whether to include an "Any" option in the results.
- * @param bool $include_none Whether to include a "None" option in the results.
- * @param string $sql_where Additional SQL WHERE clause conditions.
+ * @param bool   $include_any  Whether to include an "Any" option in the results.
+ * @param bool   $include_none Whether to include a "None" option in the results.
+ * @param string $sql_where    Additional SQL WHERE clause conditions.
  *
  * @return array Outputs a JSON-encoded array of graph templates.
  */
-function get_allowed_ajax_graph_templates(bool $include_any = true, bool $include_none = true, string $sql_where = ''): array {
+function get_allowed_ajax_graph_templates(bool $include_any = true, bool $include_none = true, string $sql_where = '') : array {
 	$user_id = $_SESSION['sess_user_id'];
 
 	if (!auth_valid_user($user_id)) {
@@ -3243,13 +3237,13 @@ function get_allowed_ajax_graph_templates(bool $include_any = true, bool $includ
 
 	$return = [];
 
-	$term = get_filter_request_var('term', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
+	$term = gfrv('term', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
 
 	if ($term != '') {
 		$sql_where .= ($sql_where != '' ? ' AND ' : '') . 'name LIKE ' . db_qstr("%$term%");
 	}
 
-	if (get_request_var('term') == '') {
+	if (grv('term') == '') {
 		if ($include_any) {
 			$return[] = ['label' => __('Any'), 'value' => 'Any', 'id' => '-1'];
 		}
@@ -3265,7 +3259,7 @@ function get_allowed_ajax_graph_templates(bool $include_any = true, bool $includ
 
 	if (cacti_sizeof($templates)) {
 		foreach ($templates as $template) {
-			$return[] = ['label' => html_escape($template['name']), 'value' => html_escape($template['name']), 'id' => $template['id']];
+			$return[] = ['label' => htmle($template['name']), 'value' => htmle($template['name']), 'id' => $template['id']];
 		}
 	}
 
@@ -3276,14 +3270,14 @@ function get_allowed_ajax_graph_templates(bool $include_any = true, bool $includ
 
 /**
  * Returns a list of graph items in a way that can be easily
- *   read through a callback, in JSON.  The 'term' request variable will include an optional search term.
+ * read through a callback, in JSON.  The 'term' request variable will include an optional search term.
  *
- * @param bool $include_none Whether to include a "None" option in the results. Default is true.
- * @param string $sql_where Additional SQL WHERE conditions to filter the graph items. Default is an empty string.
+ * @param bool   $include_none Whether to include a "None" option in the results. Default is true.
+ * @param string $sql_where    Additional SQL WHERE conditions to filter the graph items. Default is an empty string.
  *
  * @return array An array of allowed graph items formatted for AJAX response.
  */
-function get_allowed_ajax_graph_items(bool $include_none = true, string $sql_where = ''): array {
+function get_allowed_ajax_graph_items(bool $include_none = true, string $sql_where = '') : array {
 	$user_id = $_SESSION['sess_user_id'];
 
 	if (!auth_valid_user($user_id)) {
@@ -3292,7 +3286,7 @@ function get_allowed_ajax_graph_items(bool $include_none = true, string $sql_whe
 
 	$return    = [];
 
-	$term = get_filter_request_var('term', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
+	$term = gfrv('term', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
 
 	if ($term != '') {
 		$sql_where .= ($sql_where != '' ? ' AND ' : '') .
@@ -3300,7 +3294,7 @@ function get_allowed_ajax_graph_items(bool $include_none = true, string $sql_whe
 			' OR data_source_name LIKE ' . db_qstr("%$term%");
 	}
 
-	if (get_request_var('term') == '') {
+	if (grv('term') == '') {
 		if ($include_none) {
 			$return[] = ['label' => __('None'), 'value' => 'None', 'id' => '0'];
 		}
@@ -3310,7 +3304,7 @@ function get_allowed_ajax_graph_items(bool $include_none = true, string $sql_whe
 
 	if (cacti_sizeof($graph_items)) {
 		foreach ($graph_items as $gi) {
-			$return[] = ['label' => html_escape($gi['name']), 'value' => html_escape($gi['name']), 'id' => $gi['id']];
+			$return[] = ['label' => htmle($gi['name']), 'value' => htmle($gi['name']), 'id' => $gi['id']];
 		}
 	}
 
@@ -3321,13 +3315,13 @@ function get_allowed_ajax_graph_items(bool $include_none = true, string $sql_whe
 
 /**
  * Returns a list of allowed graphs in a way that can be easily
- *   read through a callback, in JSON.  The 'term' request variable will include an optional search term.
+ * read through a callback, in JSON.  The 'term' request variable will include an optional search term.
  *
  * @param string $sql_where Optional SQL where clause to filter the graphs.
  *
  * @return array Outputs a JSON-encoded array of allowed graphs.
  */
-function get_allowed_ajax_graphs(string $sql_where = ''): array {
+function get_allowed_ajax_graphs(string $sql_where = '') : array {
 	$user_id = $_SESSION['sess_user_id'];
 
 	if (!auth_valid_user($user_id)) {
@@ -3336,7 +3330,7 @@ function get_allowed_ajax_graphs(string $sql_where = ''): array {
 
 	$return = [];
 
-	$term = get_filter_request_var('term', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
+	$term = gfrv('term', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
 
 	if ($term != '') {
 		$sql_where .= ($sql_where != '' ? ' AND ' : '') . 'title_cache LIKE ' . db_qstr("%$term%");
@@ -3348,7 +3342,7 @@ function get_allowed_ajax_graphs(string $sql_where = ''): array {
 
 	if (cacti_sizeof($graphs)) {
 		foreach ($graphs as $graph) {
-			$return[] = ['label' => html_escape($graph['title_cache']), 'value' => html_escape($graph['title_cache']), 'id' => $graph['local_graph_id']];
+			$return[] = ['label' => htmle($graph['title_cache']), 'value' => htmle($graph['title_cache']), 'id' => $graph['local_graph_id']];
 		}
 	}
 
@@ -3360,14 +3354,14 @@ function get_allowed_ajax_graphs(string $sql_where = ''): array {
 /**
  * Returns a array of allowed graph items in a way that can be easily use in a table or list.
  *
- * @param string $sql_where SQL WHERE clause to filter the graph items.
- * @param string $sql_order SQL ORDER BY clause to sort the graph items. Default is 'name'.
+ * @param string     $sql_where SQL WHERE clause to filter the graph items.
+ * @param string     $sql_order SQL ORDER BY clause to sort the graph items. Default is 'name'.
  * @param int|string $sql_limit SQL LIMIT clause to limit the number of graph items. Default is 20.
- * @param int $user_id The ID of the user to check permissions for. Default is 0.
+ * @param int        $user_id   The ID of the user to check permissions for. Default is 0.
  *
  * @return array An array of allowed graph items, each containing 'id' and 'name'.
  */
-function get_allowed_graph_items(string $sql_where, string $sql_order = 'name', int|string $sql_limit = 20, int $user_id = 0): array {
+function get_allowed_graph_items(string $sql_where, string $sql_order = 'name', int|string $sql_limit = 20, int $user_id = 0) : array {
 	if (!auth_valid_user($user_id)) {
 		return [];
 	}
@@ -3421,16 +3415,16 @@ function get_allowed_graph_items(string $sql_where, string $sql_order = 'name', 
  *
  * @return string The sanitized username based on the authentication method or an empty string if not available.
  */
-function auth_get_username(): string {
+function auth_get_username() : string {
 	$auth_method = read_config_option('auth_method');
 
 	if ($auth_method == AUTH_METHOD_BASIC) {
 		$username = get_basic_auth_username();
 
-		/* Get the Web Basic Auth username and set action so we login right away */
-		set_request_var('action', 'login');
-	} elseif (get_nfilter_request_var('action') == 'login') {
-		$username = get_nfilter_request_var('login_username');
+		// Get the Web Basic Auth username and set action so we login right away
+		srv('action', 'login');
+	} elseif (gnrv('action') == 'login') {
+		$username = gnrv('login_username');
 	} else {
 		$username = '';
 	}
@@ -3444,11 +3438,11 @@ function auth_get_username(): string {
  * Checks the lockout status of a user and unlocks if necessary
  *
  * @param string $username The username of the account to check.
- * @param int $realm The realm associated with the user account.
+ * @param int    $realm    The realm associated with the user account.
  *
  * @return void
  */
-function auth_checkclear_lockout(string $username, int $realm): void {
+function auth_checkclear_lockout(string $username, int $realm) : void {
 	// Unlock the user account if timing permits
 	$secPassLockFailed = read_config_option('secpass_lockfailed');
 
@@ -3490,15 +3484,15 @@ function auth_checkclear_lockout(string $username, int $realm): void {
 
 /**
  * Checks to see if the user is locked out of their account
- *   if there is an error, the globals error and error_msg will be set to notify the caller
- *   that a lockout is present and not to proceed with login.
+ * if there is an error, the globals error and error_msg will be set to notify the caller
+ * that a lockout is present and not to proceed with login.
  *
  * @param string $username The username of the account to check.
- * @param int $realm The realm of the account to check.
+ * @param int    $realm    The realm of the account to check.
  *
  * @return bool Returns true if the account is locked, false otherwise.
  */
-function auth_process_lockout_check(string $username, int $realm): bool {
+function auth_process_lockout_check(string $username, int $realm) : bool {
 	global $error, $error_msg;
 
 	// Mark failed login attempts
@@ -3531,15 +3525,15 @@ function auth_process_lockout_check(string $username, int $realm): bool {
 
 /**
  * Called when a user login attempt fails to increment or lockout the user
- *   if there is an error, the globals error and error_msg will be set to notify the caller
- *   that a lockout is present and not to proceed with login.
+ * if there is an error, the globals error and error_msg will be set to notify the caller
+ * that a lockout is present and not to proceed with login.
  *
  * @param string $username The username of the user attempting to log in.
- * @param int $realm The authentication realm.
+ * @param int    $realm    The authentication realm.
  *
  * @return void
  */
-function auth_process_lockout(string $username, int $realm): void {
+function auth_process_lockout(string $username, int $realm) : void {
 	global $error, $error_msg;
 
 	// Mark failed login attempts
@@ -3601,7 +3595,7 @@ function auth_process_lockout(string $username, int $realm): void {
 				} else {
 					cacti_log(sprintf("LOGIN FAILED: Local Login Failed for user '%s' from IP Address '%s'", $username, get_client_addr()), false, 'AUTH');
 
-					/* error */
+					// error
 					$error     = true;
 					$error_msg = __('Access Denied!  Login Failed.');
 				}
@@ -3617,15 +3611,15 @@ function auth_process_lockout(string $username, int $realm): void {
 
 /**
  * Login a basic auth account or generate an error
- *   if there is an error, the globals error and error_msg will be set to notify the caller
- *   that a lockout is present and not to proceed with login.  This function will also
- *   exit and return html to the display to notify the user of critical errors.
+ * if there is an error, the globals error and error_msg will be set to notify the caller
+ * that a lockout is present and not to proceed with login.  This function will also
+ * exit and return html to the display to notify the user of critical errors.
  *
  * @param string $username The username provided by the web server for authentication.
  *
  * @return array The user data from the database if authentication is successful.
  */
-function basic_auth_login_process(string $username): array {
+function basic_auth_login_process(string $username) : array {
 	global $error, $error_msg;
 
 	if (empty($username)) {
@@ -3635,7 +3629,7 @@ function basic_auth_login_process(string $username): array {
 		exit;
 	}
 
-	/* Locate user in database */
+	// Locate user in database
 	$user = db_fetch_row_prepared('SELECT *
 		FROM user_auth
 		WHERE username = ?
@@ -3658,14 +3652,14 @@ function basic_auth_login_process(string $username): array {
 
 /**
  * Login a local account or generate an error
- *   if there is an error, the globals error and error_msg will be set to notify the caller
- *   that error and not to proceed with login.
+ * if there is an error, the globals error and error_msg will be set to notify the caller
+ * that error and not to proceed with login.
  *
  * @param string $username The username of the user attempting to log in.
  *
  * @return array The valid user information, or empty array if user must be created
  */
-function local_auth_login_process(string $username): array {
+function local_auth_login_process(string $username) : array {
 	$user = [];
 
 	if (!api_plugin_hook_function('login_process', false)) {
@@ -3682,7 +3676,7 @@ function local_auth_login_process(string $username): array {
 			[$username]);
 
 		if ($stored_pass != '') {
-			$password = get_nfilter_request_var('login_password');
+			$password = gnrv('login_password');
 
 			$valid = compat_password_verify($password, $stored_pass);
 
@@ -3711,112 +3705,19 @@ function local_auth_login_process(string $username): array {
 }
 
 /**
- * Login to an LDAP account or generate an error
- *   if there is an error, the globals error and error_msg will be set to notify the caller
- *   that error and not to proceed with login.
- *
- * @param string $username The username to authenticate.
- *
- * @return array The authenticated user information or an empty array on failure.
- */
-function ldap_login_process(string $username): array {
-	global $error, $error_msg;
-
-	$password = get_nfilter_request_var('login_password');
-
-	if ($username == '') {
-		$error     = true;
-		$error_msg = __('Access Denied!  Login Failed.');
-
-		cacti_log('LOGIN FAILED: Empty LDAP Username provided. From IP address' . get_client_addr(), false, 'AUTH');
-
-		return [];
-	}
-
-	auth_checkclear_lockout($username, 3);
-
-	if (auth_process_lockout_check($username, 3)) {
-		return [];
-	}
-
-	$user  = [];
-	$realm = 3;
-
-	if ($password != '') {
-		/* get user DN */
-		$ldap_dn_search_response = cacti_ldap_search_dn($username);
-
-		if ($ldap_dn_search_response['error_num'] == '0') {
-			$ldap_dn = $ldap_dn_search_response['dn'];
-		} else {
-			/* error searching */
-			$error     = true;
-			$error_msg =  __('Access Denied!  LDAP Search Error: %s', $ldap_dn_search_response['error_text']);
-
-			cacti_log('LOGIN FAILED: LDAP Error: ' . $ldap_dn_search_response['error_text'] . '. From IP address ' . get_client_addr(), false, 'AUTH');
-		}
-
-		if (!$error) {
-			/* auth user with LDAP */
-			$ldap_auth_response = cacti_ldap_auth($username, $password, $ldap_dn);
-
-			if ($ldap_auth_response['error_num'] == '0') {
-				/* Locate user in database */
-				cacti_log(sprintf("LOGIN: LDAP User '%s' from IP Address %s Authenticated", $username, get_client_addr()), false, 'AUTH');
-
-				$user = db_fetch_row_prepared('SELECT *
-					FROM user_auth
-					WHERE username = ?
-					AND realm = ?',
-					[$username, $realm]);
-			} else {
-				/* error */
-				$error     = true;
-				$error_msg = __('Access Denied!  LDAP Error: %s', $ldap_auth_response['error_text']);
-
-				cacti_log('LOGIN FAILED: LDAP Error: ' . $ldap_auth_response['error_text'] . 'From IP address ' . get_client_addr(), false, 'AUTH');
-
-				if ($ldap_auth_response['error_num'] == 1) {
-					auth_process_lockout($username, $realm);
-				}
-			}
-		}
-	} else {
-		/* error */
-		$error     = true;
-		$error_msg = __('Access Denied!  No password provided by user.');
-
-		cacti_log(sprintf('LOGIN FAILED: LDAP No password provided for user %s from IP address %s', $username, get_client_addr()), false, 'AUTH');
-
-		auth_process_lockout($username, $realm);
-	}
-
-	return $user;
-}
-
-/**
- * domains_login_process - login to an LDAP domain account or generate an error
- *   if there is an error, the globals error and error_msg will be set to notify the caller
- *   that error and not to proceed with login.
- *
- * @param  (string) $username - The user to process
- *
- * @return (array)  $user - The valid user information, or empty array if user must be created
- */
-/**
  * Login to an LDAP domain account or generate an error
- *   if there is an error, the globals error and error_msg will be set to notify the caller
- *   that error and not to proceed with login.
+ * if there is an error, the globals error and error_msg will be set to notify the caller
+ * that error and not to proceed with login.
  *
  * @param string $username The username of the user attempting to log in.
  *
  * @return array The user information if the login was successful, otherwise an empty array.
  */
-function domains_login_process(string $username): array {
+function domains_login_process(string $username) : array {
 	global $realm, $error, $error_msg;
 
-	$realm    = get_nfilter_request_var('realm');
-	$password = get_nfilter_request_var('login_password');
+	$realm    = gnrv('realm');
+	$password = gnrv('login_password');
 
 	if ($username == '') {
 		$error     = true;
@@ -3833,16 +3734,17 @@ function domains_login_process(string $username): array {
 		return [];
 	}
 
-	$user = [];
+	$user    = [];
+	$ldap_dn = '';
 
 	if ($realm > 3 && $password != '') {
-		/* get user DN */
+		// get user DN
 		$ldap_dn_search_response = domains_ldap_search_dn($username, $realm);
 
 		if ($ldap_dn_search_response['error_num'] == '0') {
 			$ldap_dn = $ldap_dn_search_response['dn'];
 		} else {
-			/* error searching */
+			// error searching
 			$error     = true;
 			$error_msg = __('LDAP Search Error: %s', $ldap_dn_search_response['error_text']);
 
@@ -3850,17 +3752,17 @@ function domains_login_process(string $username): array {
 		}
 
 		if (!$error) {
-			/* auth user with LDAP */
+			// auth user with LDAP
 			$ldap_auth_response = domains_ldap_auth($username, $password, $ldap_dn, $realm);
 
 			if ($ldap_auth_response['error_num'] == '0') {
-				/* User ok */
+				// User ok
 				$domain_name = db_fetch_cell_prepared('SELECT domain_name
 					FROM user_domains
 					WHERE domain_id = ?',
 					[$realm - 1000]);
 
-				/* Locate user in database */
+				// Locate user in database
 				cacti_log(sprintf("LOGIN: LDAP User '%s' Authenticated from Domain '%s' from IP address %s", $username, $domain_name, get_client_addr()), false, 'AUTH');
 
 				$user = db_fetch_row_prepared('SELECT *
@@ -3869,7 +3771,7 @@ function domains_login_process(string $username): array {
 					AND realm = ?',
 					[$username, $realm]);
 
-				/* Create user from template if requested */
+				// Create user from template if requested
 				$template_user = db_fetch_cell_prepared('SELECT user_id
 					FROM user_domains
 					WHERE domain_id = ?',
@@ -3883,14 +3785,14 @@ function domains_login_process(string $username): array {
 				if (!cacti_sizeof($user) && $template_user > 0 && $username != '') {
 					cacti_log("NOTE: User '" . $username . "' does not exist, copying template user", false, 'AUTH');
 
-					/* check that template user exists */
+					// check that template user exists
 					$user_template = db_fetch_row_prepared('SELECT *
 						FROM user_auth
 						WHERE id = ?',
 						[$template_user]);
 
 					if (cacti_sizeof($user_template)) {
-						/* template user found */
+						// template user found
 						$cn_full_name = db_fetch_cell_prepared('SELECT cn_full_name
 							FROM user_domains_ldap
 							WHERE domain_id = ?',
@@ -3928,14 +3830,14 @@ function domains_login_process(string $username): array {
 							user_copy($user_template['username'], $username, 0, $realm);
 						}
 
-						/* requery newly created user */
+						// requery newly created user
 						$user = db_fetch_row_prepared('SELECT *
 							FROM user_auth
 							WHERE username = ?
 							AND realm = ?',
 							[$username, $realm]);
 					} else {
-						/* error */
+						// error
 						$error     = true;
 						$error_msg = __('Access Denied!  Template user id %s does not exist.  Please contact your Administrator.', $template_user);
 
@@ -3943,7 +3845,7 @@ function domains_login_process(string $username): array {
 					}
 				}
 			} else {
-				/* error */
+				// error
 				$error     = true;
 				$error_msg = __('Access Denied!  LDAP Error: %s', $ldap_auth_response['error_text']);
 
@@ -3955,7 +3857,7 @@ function domains_login_process(string $username): array {
 			}
 		}
 	} elseif ($password == '') {
-		/* error */
+		// error
 		$error     = true;
 		$error_msg = __('Access Denied!  No password provided by user.');
 
@@ -3972,13 +3874,16 @@ function domains_login_process(string $username): array {
  *
  * @param string $username The username to authenticate.
  * @param string $password The password for the user. Default is an empty string.
- * @param string $dn The distinguished name (DN) for the LDAP search. Default is an empty string.
- * @param int $realm The realm ID for the LDAP domain. Default is 0.
+ * @param string $dn       The distinguished name (DN) for the LDAP search. Default is an empty string.
+ * @param int    $realm    The realm ID for the LDAP domain. Default is 0.
  *
- * @return array|false Returns an array with the authentication response if successful, or false if authentication fails.
+ * @return mixed - Returns an array with the authentication response if successful, or false if authentication fails.
  */
-function domains_ldap_auth(string $username, string $password = '', string $dn = '', int $realm = 0): array|false {
-	$ldap = new Ldap;
+function domains_ldap_auth(string $username, string $password = '', string $dn = '', int $realm = 0) : mixed {
+	$ldap  = new Ldap($realm - 1000);
+	$debug = $ldap->debug;
+
+	cacti_log(sprintf('LDAP: Initiating login for User \'%s\'', $username), false, 'AUTH', $debug);
 
 	if (!empty($username)) {
 		$ldap->username = $username;
@@ -3988,334 +3893,130 @@ function domains_ldap_auth(string $username, string $password = '', string $dn =
 		$ldap->password = $password;
 	}
 
-	$ldap->dn = $dn;
+	/**
+	 * If the server list is a space delimited set of servers
+	 * process each server until you get a bind, or fail
+	 */
+	$ldap_servers = preg_split('/\s+/', $ldap->host);
 
-	$ld = db_fetch_row_prepared('SELECT *
-		FROM user_domains_ldap
-		WHERE domain_id = ?',
-		[$realm - 1000]);
+	$response = [];
 
-	if (cacti_sizeof($ld)) {
-		if (empty($dn) && !empty($ld['dn'])) {
-			$ldap->dn = $ld['dn'];
+	foreach ($ldap_servers as $ldap_server) {
+		$ldap->host = $ldap_server;
+
+		$response = $ldap->Authenticate();
+
+		if ($response['error_num'] == 0) {
+			cacti_log(sprintf('LDAP: Login for User \'%s\' Succeded on Server %s', $username, $ldap_server), false, 'AUTH', $debug);
+
+			return $response;
 		}
-
-		if (!empty($ld['server'])) {
-			$ldap->host              = $ld['server'];
-		}
-
-		if (!empty($ld['port'])) {
-			$ldap->port              = $ld['port'];
-		}
-
-		if (!empty($ld['port_ssl'])) {
-			$ldap->port_ssl          = $ld['port_ssl'];
-		}
-
-		if (!empty($ld['proto_version'])) {
-			$ldap->version           = $ld['proto_version'];
-		}
-
-		if (!empty($ld['encryption'])) {
-			$ldap->encryption        = $ld['encryption'];
-		}
-
-		if (!empty($ld['referrals'])) {
-			$ldap->referrals         = $ld['referrals'];
-		}
-
-		if (!empty($ld['mode'])) {
-			$ldap->mode              = $ld['mode'];
-		}
-
-		if (!empty($ld['search_base'])) {
-			$ldap->search_base       = $ld['search_base'];
-		}
-
-		if (!empty($ld['search_filter'])) {
-			$ldap->search_filter     = $ld['search_filter'];
-		}
-
-		if (!empty($ld['specific_dn'])) {
-			$ldap->specific_dn       = $ld['specific_dn'];
-		}
-
-		if (!empty($ld['specific_password'])) {
-			$ldap->specific_password = $ld['specific_password'];
-		}
-
-		if ($ld['group_require'] == 'on') {
-			$ldap->group_require = true;
-		} else {
-			$ldap->group_require = false;
-		}
-
-		if (!empty($ld['group_dn'])) {
-			$ldap->group_dn          = $ld['group_dn'];
-		}
-
-		if (!empty($ld['group_attrib'])) {
-			$ldap->group_attrib      = $ld['group_attrib'];
-		}
-
-		if (!empty($ld['group_member_type'])) {
-			$ldap->group_member_type = $ld['group_member_type'];
-		}
-
-		/* If the server list is a space delimited set of servers
-		 * process each server until you get a bind, or fail
-		 */
-		$ldap_servers = preg_split('/\s+/', $ldap->host);
-
-		foreach ($ldap_servers as $ldap_server) {
-			$ldap->host = $ldap_server;
-
-			$response = $ldap->Authenticate();
-
-			if ($response['error_num'] == 0) {
-				return $response;
-			}
-		}
-
-		return $response;
-	} else {
-		return false;
 	}
+
+	cacti_log(sprintf('LDAP: Login for User \'%s\' Failed on All Servers', $username), false, 'AUTH', $debug);
+
+	return $response;
 }
 
 /**
  * Searches the user dn for existence
  *
  * @param string $username The username to search for in the LDAP directory.
- * @param int $realm The realm identifier used to fetch LDAP domain configuration from the database.
+ * @param int    $realm    The realm identifier used to fetch LDAP domain configuration from the database.
  *
- * @return array|false Returns an array with the LDAP search response if successful, or false if the search fails.
+ * @return mixed - Returns an array with the LDAP search response if successful, or false if the search fails.
  */
-function domains_ldap_search_dn(string $username, int $realm): array|false {
-	$ldap = new Ldap;
+function domains_ldap_search_dn(string $username, int $realm) : mixed {
+	$ldap  = new Ldap($realm - 1000);
+	$debug = $ldap->debug;
+
+	cacti_log(sprintf('LDAP: Initiating search for User \'%s\'', $username), false, 'AUTH', $debug);
 
 	if (!empty($username)) {
 		$ldap->username = $username;
 	}
 
-	$ld = db_fetch_row_prepared('SELECT *
-		FROM user_domains_ldap
-		WHERE domain_id = ?',
-		[$realm - 1000]);
+	/**
+	 * If the server list is a space delimited set of servers
+	 * process each server until you get a bind, or fail
+	 */
+	$ldap_servers = preg_split('/\s+/', $ldap->host);
 
-	if (cacti_sizeof($ld)) {
-		if (!empty($ld['dn'])) {
-			$ldap->dn                = $ld['dn'];
+	$response = [];
+
+	foreach ($ldap_servers as $ldap_server) {
+		$ldap->host = $ldap_server;
+
+		$response = $ldap->Search();
+
+		if ($response['error_num'] == 0) {
+			cacti_log(sprintf('LDAP: Search for User \'%s\' at Server \'%s\' Suceeded', $username, $ldap_server), false, 'AUTH', $debug);
+
+			return $response;
 		}
-
-		if (!empty($ld['server'])) {
-			$ldap->host              = $ld['server'];
-		}
-
-		if (!empty($ld['port'])) {
-			$ldap->port              = $ld['port'];
-		}
-
-		if (!empty($ld['port_ssl'])) {
-			$ldap->port_ssl          = $ld['port_ssl'];
-		}
-
-		if (!empty($ld['proto_version'])) {
-			$ldap->version           = $ld['proto_version'];
-		}
-
-		if (!empty($ld['encryption'])) {
-			$ldap->encryption        = $ld['encryption'];
-		}
-
-		if (!empty($ld['referrals'])) {
-			$ldap->referrals         = $ld['referrals'];
-		}
-
-		if (!empty($ld['mode'])) {
-			$ldap->mode              = $ld['mode'];
-		}
-
-		if (!empty($ld['search_base'])) {
-			$ldap->search_base       = $ld['search_base'];
-		}
-
-		if (!empty($ld['search_filter'])) {
-			$ldap->search_filter     = $ld['search_filter'];
-		}
-
-		if (!empty($ld['specific_dn'])) {
-			$ldap->specific_dn       = $ld['specific_dn'];
-		}
-
-		if (!empty($ld['specific_password'])) {
-			$ldap->specific_password = $ld['specific_password'];
-		}
-
-		if ($ld['group_require'] == 'on') {
-			$ldap->group_require = true;
-		} else {
-			$ldap->group_require = false;
-		}
-
-		if (!empty($ld['group_dn'])) {
-			$ldap->group_dn          = $ld['group_dn'];
-		}
-
-		if (!empty($ld['group_attrib'])) {
-			$ldap->group_attrib      = $ld['group_attrib'];
-		}
-
-		if (!empty($ld['group_member_type'])) {
-			$ldap->group_member_type = $ld['group_member_type'];
-		}
-
-		/* If the server list is a space delimited set of servers
-		 * process each server until you get a bind, or fail
-		 */
-		$ldap_servers = preg_split('/\s+/', $ldap->host);
-
-		foreach ($ldap_servers as $ldap_server) {
-			$ldap->host = $ldap_server;
-
-			$response = $ldap->Search();
-
-			if ($response['error_num'] == 0) {
-				return $response;
-			}
-		}
-
-		return $response;
-	} else {
-		return false;
 	}
+
+	cacti_log(sprintf('LDAP: Search for User \'%s\' on all Servers Failed', $username), false, 'AUTH', $debug);
+
+	return $response;
 }
 
 /**
  * Searches for a common name (CN) in an LDAP directory based on the provided username and realm.
  *
  * @param string $username The username to search for in the LDAP directory.
- * @param array $cn An array of common names (CN) to search for.
- * @param int $realm The realm ID used to fetch LDAP domain configuration from the database.
+ * @param array  $cn       An array of common names (CN) to search for.
+ * @param int    $realm    The realm ID used to fetch LDAP domain configuration from the database.
  *
- * @return array|false Returns an array with the LDAP response if successful, or false if the search fails.
+ * @return mixed - Returns an array with the LDAP response if successful, or false if the search fails.
  */
-function domains_ldap_search_cn(string $username, array $cn = [], int $realm = 0): array|false {
-	$ldap = new Ldap;
+function domains_ldap_search_cn(string $username, array $cn = [], int $realm = 0) : mixed {
+	$ldap  = new Ldap($realm - 1000);
+	$debug = $ldap->debug;
+
+	cacti_log(sprintf('LDAP: Initiating CN Search for User \'%s\'', $username), false, 'AUTH', $debug);
 
 	if (!empty($username)) {
 		$ldap->username = $username;
 	}
 
-	$ld = db_fetch_row_prepared('SELECT *
-		FROM user_domains_ldap
-		WHERE domain_id = ?',
-		[$realm - 1000]);
+	/* If the server list is a space delimited set of servers
+	 * process each server until you get a bind, or fail
+	 */
+	$ldap_servers = preg_split('/\s+/', $ldap->host);
+	$response     = [];
 
-	if (cacti_sizeof($ld)) {
-		if (!empty($ld['dn'])) {
-			$ldap->dn                = $ld['dn'];
+	foreach ($ldap_servers as $ldap_server) {
+		$ldap->host = $ldap_server;
+
+		$response = $ldap->Getcn();
+
+		if ($response['error_num'] == 0) {
+			cacti_log(sprintf('LDAP: Search for User \'%s\' CN at Server \'%s\' Suceeded', $username, $ldap_server), false, 'AUTH', $debug);
+
+			return $response;
 		}
-
-		if (!empty($ld['server'])) {
-			$ldap->host              = $ld['server'];
-		}
-
-		if (!empty($ld['port'])) {
-			$ldap->port              = $ld['port'];
-		}
-
-		if (!empty($ld['port_ssl'])) {
-			$ldap->port_ssl          = $ld['port_ssl'];
-		}
-
-		if (!empty($ld['proto_version'])) {
-			$ldap->version           = $ld['proto_version'];
-		}
-
-		if (!empty($ld['encryption'])) {
-			$ldap->encryption        = $ld['encryption'];
-		}
-
-		if (!empty($ld['referrals'])) {
-			$ldap->referrals         = $ld['referrals'];
-		}
-
-		if (!empty($ld['mode'])) {
-			$ldap->mode              = $ld['mode'];
-		}
-
-		if (!empty($ld['search_base'])) {
-			$ldap->search_base       = $ld['search_base'];
-		}
-
-		if (!empty($ld['search_filter'])) {
-			$ldap->search_filter     = $ld['search_filter'];
-		}
-
-		if (!empty($ld['specific_dn'])) {
-			$ldap->specific_dn       = $ld['specific_dn'];
-		}
-
-		if (!empty($ld['specific_password'])) {
-			$ldap->specific_password = $ld['specific_password'];
-		}
-
-		$ldap->cn = $cn;
-
-		if ($ld['group_require'] == 'on') {
-			$ldap->group_require = true;
-		} else {
-			$ldap->group_require = false;
-		}
-
-		if (!empty($ld['group_dn'])) {
-			$ldap->group_dn          = $ld['group_dn'];
-		}
-
-		if (!empty($ld['group_attrib'])) {
-			$ldap->group_attrib      = $ld['group_attrib'];
-		}
-
-		if (!empty($ld['group_member_type'])) {
-			$ldap->group_member_type = $ld['group_member_type'];
-		}
-
-		/* If the server list is a space delimited set of servers
-		 * process each server until you get a bind, or fail
-		 */
-		$ldap_servers = preg_split('/\s+/', $ldap->host);
-
-		foreach ($ldap_servers as $ldap_server) {
-			$ldap->host = $ldap_server;
-
-			$response = $ldap->Getcn();
-
-			if ($response['error_num'] == 0) {
-				return $response;
-			}
-		}
-
-		return $response;
-	} else {
-		return false;
 	}
+
+	cacti_log(sprintf('LDAP: Search for User \'%s\' CN on all Servers Failed', $username), false, 'AUTH', $debug);
+
+	return $response;
 }
 
 /**
  * Process a local login checking for triggers
- *   such as those that would force a password check and take the appropriate action.
- *   if there is an error, the globals error and error_msg will be set to notify the caller
- *   that error and not to proceed with login.
+ * such as those that would force a password check and take the appropriate action.
+ * if there is an error, the globals error and error_msg will be set to notify the caller
+ * that error and not to proceed with login.
  *
  * @param string $username The username of the user attempting to log in.
  *
  * @return array The user data if login is successful, otherwise an empty array.
  */
-function secpass_login_process(string $username): array {
+function secpass_login_process(string $username) : array {
 	global $error, $error_msg;
 
-	$password = get_nfilter_request_var('login_password');
+	$password = gnrv('login_password');
 
 	if ($username == '') {
 		$error     = true;
@@ -4357,7 +4058,7 @@ function secpass_login_process(string $username): array {
 		}
 
 		if (trim($password) == '') {
-			/* error */
+			// error
 			$error     = true;
 			$error_msg = __('Access Denied!  No password provided by user.');
 
@@ -4383,7 +4084,7 @@ function secpass_login_process(string $username): array {
 			return [];
 		}
 	} else {
-		/* error */
+		// error
 		$error     = true;
 		$error_msg = __('Access Denied!  Login Failed.');
 
@@ -4435,7 +4136,7 @@ function secpass_login_process(string $username): array {
  *
  * @return string Returns 'ok' if the password meets all criteria, otherwise returns an error message.
  */
-function secpass_check_pass(string $password): string {
+function secpass_check_pass(string $password) : string {
 	$minlen = read_config_option('secpass_minlen');
 
 	if (strlen($password) < $minlen) {
@@ -4473,7 +4174,7 @@ function secpass_check_pass(string $password): string {
 			CURLOPT_TIMEOUT	       => 120,    // time-out on response
 		];
 
-		$ch = curl_init('https://api.pwnedpasswords.com/range/'.substr($sha1,0,5));
+		$ch = curl_init('https://api.pwnedpasswords.com/range/' . substr($sha1,0,5));
 		curl_setopt_array($ch, $options);
 
 		$content  = curl_exec($ch);
@@ -4501,12 +4202,12 @@ function secpass_check_pass(string $password): string {
 /**
  * Checks for password reuse for local accounts
  *
- * @param int $id The user ID.
+ * @param int    $id       The user ID.
  * @param string $password The password to check.
  *
  * @return bool Returns true if the password is not in the history, false otherwise.
  */
-function secpass_check_history(int $id, string $password): bool {
+function secpass_check_history(int $id, string $password) : bool {
 	$history = intval(read_config_option('secpass_history'));
 
 	if ($history > 0) {
@@ -4542,11 +4243,11 @@ function secpass_check_history(int $id, string $password): bool {
 
 /**
  * Checks that Cacti ras_public_key is present.  If not
- *   it will insert the information into the Cacti database.
+ * it will insert the information into the Cacti database.
  *
  * @return void
  */
-function rsa_check_keypair(): void {
+function rsa_check_keypair() : void {
 	$public_key = read_config_option('rsa_public_key');
 
 	if (!$public_key) {
@@ -4562,13 +4263,13 @@ function rsa_check_keypair(): void {
 
 /**
  * Sets a flag for all users of a group logged in that their perms
- *   need to be reloaded from the database
+ * need to be reloaded from the database
  *
  * @param int $group_id The ID of the group whose users' permissions need to be reset.
  *
  * @return void
  */
-function reset_group_perms(int $group_id): void {
+function reset_group_perms(int $group_id) : void {
 	$users = array_rekey(db_fetch_assoc_prepared('SELECT user_id
 		FROM user_auth_group_members
 		WHERE group_id = ?',
@@ -4583,13 +4284,13 @@ function reset_group_perms(int $group_id): void {
 
 /**
  * Sets a flag for all users logged in as this user that their perms
- *   need to be reloaded from the database
+ * need to be reloaded from the database
  *
  * @param int $user_id The ID of the user whose permissions are to be reset.
  *
  * @return void
  */
-function reset_user_perms(int $user_id): void {
+function reset_user_perms(int $user_id) : void {
 	db_execute_prepared('UPDATE user_auth
 		SET reset_perms=FLOOR(RAND() * 4294967295) + 1
 		WHERE id = ?',
@@ -4610,7 +4311,7 @@ function reset_user_perms(int $user_id): void {
  *
  * @return bool Returns true if the user's permissions are valid, false otherwise.
  */
-function is_user_perms_valid(int $user_id): bool {
+function is_user_perms_valid(int $user_id) : bool {
 	global $config;
 
 	static $valid = null;
@@ -4640,36 +4341,45 @@ function is_user_perms_valid(int $user_id): bool {
 
 /**
  * If the secure function exists, verify against that first.
- *   If that checks fails or does not exist, check against older md5 version
+ * If that checks fails or does not exist, check against older md5 version.
+ * If the md5 function is missing, we will go with sha256.
  *
  * @param string $password The password to verify.
- * @param string $hash The hash to verify against.
+ * @param string $hash     The hash to verify against.
  *
  * @return bool Returns true if the password matches the hash, false otherwise.
  */
-function compat_password_verify(string $password, string $hash): bool {
+function compat_password_verify(string $password, string $hash) : bool {
 	if (function_exists('password_verify')) {
 		if (password_verify($password, $hash)) {
 			return true;
 		}
 	}
 
-	$md5 = md5($password);
+	if (function_exists('md5')) {
+		$md5 = md5($password);
 
-	return ($md5 === $hash);
+		if ($md5 == $hash) {
+			return true;
+		}
+	}
+
+	$sha256 = hash('sha256', $password);
+
+	return ($sha256 === $hash);
 }
 
 /**
  * If the secure function exists, hash using that.
- *   If that does not exist, hash older md5 function instead
+ * If that does not exist, hash older md5 function instead
  *
- * @param string $password The password to be hashed.
- * @param string|int $algo The algorithm to use for hashing. Refer to the `password_hash` documentation for supported algorithms.
- * @param array $options Optional. An associative array of options. Refer to the `password_hash` documentation for supported options.
+ * @param string     $password The password to be hashed.
+ * @param string|int $algo     The algorithm to use for hashing. Refer to the `password_hash` documentation for supported algorithms.
+ * @param array      $options  Optional. An associative array of options. Refer to the `password_hash` documentation for supported options.
  *
  * @return string The hashed password.
  */
-function compat_password_hash(string $password, string|int $algo, array $options = []): string {
+function compat_password_hash(string $password, string|int $algo, array $options = []) : string {
 	if (function_exists('password_hash')) {
 		// Check if options array has anything, only pass when required
 		return (cacti_sizeof($options) > 0) ?
@@ -4682,15 +4392,15 @@ function compat_password_hash(string $password, string|int $algo, array $options
 
 /**
  * If the secure function exists, check hash using that.
- *   If that does not exist, return false as md5 doesn't need a rehash
+ * If that does not exist, return false as md5 doesn't need a rehash
  *
- * @param string $password The hashed password to check.
- * @param string|int $algo algorithm to use (PASSWORD_DEFAULT)
- * @param array $options (optional) An associative array of options.
+ * @param string     $password The hashed password to check.
+ * @param string|int $algo     algorithm to use (PASSWORD_DEFAULT)
+ * @param array      $options  (optional) An associative array of options.
  *
  * @return bool Returns true if the password needs to be rehashed, false otherwise.
  */
-function compat_password_needs_rehash(string $password, string|int $algo, array $options = []): bool {
+function compat_password_needs_rehash(string $password, string|int $algo, array $options = []) : bool {
 	if (function_exists('password_needs_rehash')) {
 		// Check if options array has anything, only pass when required
 		return (cacti_sizeof($options) > 0) ?
@@ -4708,7 +4418,7 @@ function compat_password_needs_rehash(string $password, string|int $algo, array 
  *
  * @return bool True if the user has access, false otherwise.
  */
-function auth_user_has_access(array $user): bool {
+function auth_user_has_access(array $user) : bool {
 	// See if they have access to any realms
 	$realms = db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM user_auth_realm
@@ -4762,7 +4472,7 @@ function auth_user_has_access(array $user): bool {
  *
  * @return void
  */
-function auth_display_custom_error_message(string $message): void {
+function auth_display_custom_error_message(string $message) : void {
 	$auth_method = read_config_option('auth_method');
 
 	if ($auth_method == AUTH_METHOD_BASIC) {
@@ -4771,10 +4481,10 @@ function auth_display_custom_error_message(string $message): void {
 		$custom_message = '';
 	}
 
-	/* kill the session */
+	// kill the session
 	cacti_cookie_logout();
 
-	/* print error */
+	// print error
 	print '<!DOCTYPE html>';
 	print '<html>';
 	print '<head>';
@@ -4799,7 +4509,7 @@ function auth_display_custom_error_message(string $message): void {
  *
  * @return void
  */
-function auth_login_redirect(string $login_opts = ''): void {
+function auth_login_redirect(string $login_opts = '') : void {
 	if ($login_opts == '') {
 		$login_opts = db_fetch_cell_prepared('SELECT login_opts
 			FROM user_auth
@@ -4816,7 +4526,7 @@ function auth_login_redirect(string $login_opts = ''): void {
 
 	// Decide what to do with an authenticated user
 	switch ($login_opts) {
-		case '1': /* referer */
+		case '1': // referer
 			/**
 			 * because we use plugins, we can't redirect back to graph_view.php if they don't
 			 * have console access
@@ -4859,7 +4569,7 @@ function auth_login_redirect(string $login_opts = ''): void {
 
 			$referer .= ($newtheme ? (!str_contains($referer, '?') ? '?' : '&') . 'newtheme=1' : '');
 
-			/* Strip out the login from the referer if present */
+			// Strip out the login from the referer if present
 			$referer  = str_replace('?action=login', '', $referer);
 
 			if (api_user_realm_auth(auth_basename($referer))) {
@@ -4875,7 +4585,7 @@ function auth_login_redirect(string $login_opts = ''): void {
 			}
 
 			break;
-		case '2': /* default console page */
+		case '2': // default console page
 			if (!is_realm_allowed(8)) {
 				header('Location: ' . CACTI_PATH_URL . 'graph_view.php' . ($newtheme ? '?newtheme=1' : ''));
 			} else {
@@ -4883,7 +4593,7 @@ function auth_login_redirect(string $login_opts = ''): void {
 			}
 
 			break;
-		case '3': /* default graph page */
+		case '3': // default graph page
 			header('Location: ' . CACTI_PATH_URL . 'graph_view.php' . ($newtheme ? '?newtheme=1' : ''));
 
 			break;
@@ -4901,7 +4611,7 @@ function auth_login_redirect(string $login_opts = ''): void {
  *
  * @return string The base name of the referer URL or file path.
  */
-function auth_basename(string $referer): string {
+function auth_basename(string $referer) : string {
 	$parts = explode('?', $referer);
 
 	return basename($parts[0]);
@@ -4909,17 +4619,17 @@ function auth_basename(string $referer): string {
 
 /**
  * Creates a new user account from a template account
- *   if there is an error that would block login, the function set's the globals
- *   error and error_msg to inform the caller not to proceed with the login.
- *   in special cases, such as basic auth, the function will print out a custom
- *   error message and exit.
+ * if there is an error that would block login, the function set's the globals
+ * error and error_msg to inform the caller not to proceed with the login.
+ * in special cases, such as basic auth, the function will print out a custom
+ * error message and exit.
  *
  * @param string $username The username to use for the copy
- * @param int $realm The login realm to use for the copy
+ * @param int    $realm    The login realm to use for the copy
  *
  * @return array The copied new user account details
  */
-function auth_login_create_user_from_template(string $username, int $realm): array {
+function auth_login_create_user_from_template(string $username, int $realm) : array {
 	global $error, $error_msg;
 
 	cacti_log("NOTE: User '" . $username . "' does not exist, copying template user", false, 'AUTH');
@@ -4931,10 +4641,10 @@ function auth_login_create_user_from_template(string $username, int $realm): arr
 		WHERE id = ?',
 		[get_template_account($username)]);
 
-	/* check that template user exists */
+	// check that template user exists
 	if (!empty($user_template)) {
 		if ($realm == 3) { // This is an ldap login
-			/* get user CN*/
+			// get user CN
 			$cn_full_name = read_config_option('cn_full_name');
 			$cn_email     = read_config_option('cn_email');
 
@@ -4970,14 +4680,14 @@ function auth_login_create_user_from_template(string $username, int $realm): arr
 			user_copy($user_template['username'], $username, $user_template['realm'], $realm);
 		}
 
-		/* requery newly created user */
+		// requery newly created user
 		$user = db_fetch_row_prepared('SELECT *
 			FROM user_auth
 			WHERE username = ?
 			AND realm = ?',
 			[$username, $realm]);
 	} else {
-		/* error */
+		// error
 		$error     = true;
 		$error_msg = __('Access Denied!  Template user id %s does not exist.  Please contact your Administrator.', read_config_option('user_template'));
 
@@ -4995,13 +4705,13 @@ function auth_login_create_user_from_template(string $username, int $realm): arr
 
 /**
  * Attempts to switch Cacti from No Authentication to Local authentication,
- *   or generate an error on failure through the globals error, and error_msg.
+ * or generate an error on failure through the globals error, and error_msg.
  *
  * @param int $auth_method The current authentication method.
  *
  * @return bool Returns false if no administrative account is found, otherwise does not return.
  */
-function check_reset_no_authentication(int $auth_method): bool {
+function check_reset_no_authentication(int $auth_method) : bool {
 	global $error, $error_msg;
 
 	if ($auth_method == AUTH_METHOD_NONE) {
@@ -5090,7 +4800,7 @@ function check_reset_no_authentication(int $auth_method): bool {
  *
  * @return string JSON-encoded result with status and text message.
  */
-function disable_2fa(int $user_id): string {
+function disable_2fa(int $user_id) : string {
 	$current_user = db_fetch_row_prepared('SELECT *
 		FROM user_auth
 		WHERE id = ?',
@@ -5130,7 +4840,7 @@ function disable_2fa(int $user_id): string {
  *
  * @return string JSON-encoded result containing the status and message of the operation.
  */
-function enable_2fa(int $user_id): string {
+function enable_2fa(int $user_id) : string {
 	$current_user = db_fetch_row_prepared(
 		'SELECT *
 		FROM user_auth
@@ -5176,7 +4886,7 @@ function enable_2fa(int $user_id): string {
  *
  * @return string JSON encoded array containing the status and message of the verification process.
  */
-function verify_2fa(int $user_id, string $code): string {
+function verify_2fa(int $user_id, string $code) : string {
 	$current_user = db_fetch_row_prepared('SELECT *
 		FROM user_auth
 		WHERE id = ?',
@@ -5214,7 +4924,7 @@ function verify_2fa(int $user_id, string $code): string {
  *
  * @return bool Returns true if 2FA is enabled for the user, false otherwise.
  */
-function is_2fa_enabled(int $user_id): bool {
+function is_2fa_enabled(int $user_id) : bool {
 	if (read_config_option('secpass_2fa_enabled') == 'on') {
 		$current_user = db_fetch_row_prepared('SELECT *
 			FROM user_auth

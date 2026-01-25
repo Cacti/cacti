@@ -23,29 +23,22 @@
  */
 
 class MibCache {
-	private $active_mib            = '';
+	private mixed  $active_mib            = '';
+	private mixed  $active_object         = '';
+	private string $active_table          = '';
+	private string $active_table_entry    = '';
+	private array  $cache__tables         = [];
+	private array  $cache__tables_columns = [];
 
-	private $active_object         = '';
-
-	private $active_table          = '';
-
-	private $active_table_entry    = '';
-
-	private $cache__tables         = [];
-
-	private $cache__tables_columns = [];
-
-	public function __construct($mib = 'CACTI-MIB') {
+	public function __construct(string $mib = 'CACTI-MIB') {
 		$this->active_mib = $mib;
-
-		return $this;
 	}
 
 	public function __destruct() {
 	}
 
-	public function uninstall() {
-		/* avoid that our default mib will be dropped by some plugin developer */
+	public function uninstall() : mixed {
+		// avoid that our default mib will be dropped by some plugin developer
 		if ($this->active_mib == 'CACTI-MIB') {
 			return false;
 		} else {
@@ -53,10 +46,12 @@ class MibCache {
 			db_execute_prepared('DELETE FROM snmpagent_cache_notifications WHERE `mib` = ?', [$this->active_mib]);
 			db_execute_prepared('DELETE FROM snmpagent_cache_textual_conventions WHERE `mib` = ?', [$this->active_mib]);
 			db_execute_prepared('DELETE FROM snmpagent_mibs WHERE `name` = ?', [$this->active_mib]);
+
+			return true;
 		}
 	}
 
-	public function install($path, $replace = false, $mib_name = 'optional') {
+	public function install(string $path, bool $replace = false, string $mib_name = 'optional') : mixed {
 		include_once(CACTI_PATH_INCLUDE . '/vendor/phpsnmp/mib_parser.php');
 
 		$mp = new MibParser();
@@ -64,7 +59,7 @@ class MibCache {
 		$mp->generate();
 
 		if (isset($mp->mib) && isset($mp->oids) && $mp->mib) {
-			/* check if this mib has already been installed */
+			// check if this mib has already been installed
 			$existing = db_fetch_cell_prepared('SELECT 1 FROM snmpagent_mibs WHERE `name` = ?', [$mp->mib]);
 
 			if ($existing) {
@@ -106,12 +101,14 @@ class MibCache {
 
 			unset($mp->oids);
 			unset($mp->mib);
+
+			return true;
 		} else {
 			return false;
 		}
 	}
 
-	public function mib($mib) {
+	public function mib(string $mib) : object {
 		$this->active_mib         = $mib;
 		$this->active_object      = '';
 		$this->active_table       = '';
@@ -120,13 +117,13 @@ class MibCache {
 		return $this;
 	}
 
-	public function object($object) {
+	public function object(string $object) : object {
 		$this->active_object = $object;
 
 		return $this;
 	}
 
-	public function table($table) {
+	public function table(string $table) : object {
 		if ($this->active_table != $table) {
 			if (!isset($this->cache__tables[$this->active_mib][$table])) {
 				$oid_table = db_fetch_cell_prepared('SELECT oid
@@ -137,7 +134,7 @@ class MibCache {
 					[$this->active_mib, $table]);
 
 				if ($oid_table) {
-					/* cache table oid and columns */
+					// cache table oid and columns
 					$this->cache__tables[$this->active_mib][$table]         = $oid_table;
 					$this->active_table                                     = $table;
 					$this->cache__tables_columns[$this->active_mib][$table] = $this->columns();
@@ -145,36 +142,36 @@ class MibCache {
 
 					return $this;
 				} else {
-					/* MIB table does not exist */
+					// MIB table does not exist
 					$this->active_table       = '';
 					$this->active_table_entry = '';
 
 					throw new Exception('MIB table does not exist');
 				}
 			} else {
-				/* table exists and has already been cached */
+				// table exists and has already been cached
 				$this->active_table       = $table;
 				$this->active_table_entry = '';
 
 				return $this;
 			}
 		} else {
-			/* no changes necessary */
+			// no changes necessary
 			return $this;
 		}
 	}
 
-	public function row($index) {
-		/* limited to one single $index so far */
+	public function row(mixed $index) : object {
+		// limited to one single $index so far
 		$this->active_table_entry = $index;
 
 		return $this;
 	}
 
-	public function gettype() {
+	public function gettype() : void {
 	}
 
-	public function set($value) {
+	public function set(mixed $value) : mixed {
 		return db_execute_prepared('UPDATE `snmpagent_cache`
 			SET `value` = ?
 			WHERE `mib` = ?
@@ -182,7 +179,7 @@ class MibCache {
 			[$value, $this->active_mib, $this->active_object]);
 	}
 
-	public function get() {
+	public function get() : mixed {
 		return db_fetch_row_prepared('SELECT *
 			FROM snmpagent_cache
 			WHERE name = ?
@@ -190,7 +187,7 @@ class MibCache {
 			[$this->active_object, $this->active_mib]);
 	}
 
-	public function count() {
+	public function count() : mixed {
 		return db_execute_prepared('UPDATE snmpagent_cache
 			SET `value` = CASE
 			WHEN `type`="Counter32" AND `value`= 4294967295 THEN 0
@@ -200,7 +197,7 @@ class MibCache {
 			[$this->active_mib, $this->active_object]);
 	}
 
-	public function insert($values) {
+	public function insert(array $values) : bool {
 		$oid_entry = $this->exists();
 
 		if ($oid_entry == false) {
@@ -233,16 +230,16 @@ class MibCache {
 		return false;
 	}
 
-	public function select($column = false) {
+	public function select(mixed $column = false) : mixed {
 		$result = [];
 
 		if ($this->active_table_entry) {
-			/* focus on a dedicated MIB table row only */
+			// focus on a dedicated MIB table row only
 			$oid_entry = $this->exists();
 
 			if ($oid_entry !== false) {
 				if ($column == false) {
-					/* fetch the whole row */
+					// fetch the whole row
 					$filter = $oid_entry . '.%.' . $this->active_table_entry;
 
 					$entries =  db_fetch_assoc_prepared('SELECT name, value
@@ -260,7 +257,7 @@ class MibCache {
 						return $result;
 					}
 				} elseif (is_string($column)) {
-					/* fetch only the value of a given column */
+					// fetch only the value of a given column
 					$filter = $oid_entry . '.%.' . $this->active_table_entry;
 
 					return db_fetch_cell_prepared('SELECT value
@@ -272,7 +269,7 @@ class MibCache {
 				} elseif (is_array($column) && cacti_sizeof($column) > 0) {
 					$filter = $oid_entry . '.%.' . $this->active_table_entry;
 
-					/* fetch all values of specific columns given for that MIB table row */
+					// fetch all values of specific columns given for that MIB table row
 					$entries = db_fetch_assoc_prepared("SELECT name, value
 						FROM snmpagent_cache
 						WHERE name IN ('" . implode("','", $column) . "')
@@ -291,11 +288,11 @@ class MibCache {
 				}
 			}
 		} else {
-			/* query the whole MIB table */
+			// query the whole MIB table
 			$oid_entry = $this->cache__tables[$this->active_mib][$this->active_table] . '.1';
 
 			if ($column == false) {
-				/* fetch all rows */
+				// fetch all rows
 				$columns     = $this->cache__tables_columns[$this->active_mib][$this->active_table];
 				$num_columns = cacti_sizeof($columns);
 				$filter      = $oid_entry . '.%.%';
@@ -323,7 +320,7 @@ class MibCache {
 					return $entries;
 				}
 			} elseif (is_string($column)) {
-				/* fetch only the values of one single column */
+				// fetch only the values of one single column
 				$filter = $oid_entry . '.%.%';
 
 				return db_fetch_assoc_prepared("SELECT value AS '" . $column . "'
@@ -333,7 +330,7 @@ class MibCache {
 					ORDER BY oid",
 					[$column, $filter]);
 			} elseif (is_array($column) && cacti_sizeof($column) > 0) {
-				/* fetch values of specific columns given */
+				// fetch values of specific columns given
 				$filter = $oid_entry . '.%.%';
 
 				$entries = db_fetch_assoc_prepared("SELECT name, value
@@ -366,11 +363,11 @@ class MibCache {
 		return false;
 	}
 
-	public function delete() {
+	public function delete() : bool {
 		$oid_entry = $this->exists();
 
 		if ($oid_entry !== false) {
-			/* get list of columns for this mib table */
+			// get list of columns for this mib table
 			$columns = $this->cache__tables_columns[$this->active_mib][$this->active_table];
 
 			if ($columns && cacti_sizeof($columns) > 0) {
@@ -386,7 +383,7 @@ class MibCache {
 		return false;
 	}
 
-	public function update($values) {
+	public function update(array $values) : bool {
 		$oid_entry = $this->exists();
 
 		if ($oid_entry !== false) {
@@ -407,7 +404,7 @@ class MibCache {
 					db_execute('INSERT INTO `snmpagent_cache`
 						(name, value, oid)
 						VALUES ' . implode(', ', $sql) . '
-						ON DUPLICATE KEY UPDATE value=VALUES(value)', $sql);
+						ON DUPLICATE KEY UPDATE value=VALUES(value)');
 				}
 
 				return true;
@@ -417,13 +414,13 @@ class MibCache {
 		return false;
 	}
 
-	public function replace($values) {
+	public function replace(array $values) : bool {
 		$this->delete();
 
 		return $this->insert($values);
 	}
 
-	public function truncate() {
+	public function truncate() : bool {
 		$oid_entry = $this->cache__tables[$this->active_mib][$this->active_table] . '.1.%';
 		db_execute_prepared('DELETE FROM `snmpagent_cache`
 			WHERE `mib` = ?
@@ -434,7 +431,7 @@ class MibCache {
 		return true;
 	}
 
-	public function columns() {
+	public function columns() : mixed {
 		/* As defined by SMI the OID value assigned to the row must be the same as the OID value assigned to the table containing
 		   the row with addition of a single value of one. */
 		$filter = $this->cache__tables[$this->active_mib][$this->active_table] . '.1.%';
@@ -447,10 +444,10 @@ class MibCache {
 			[$filter]);
 	}
 
-	private function exists() {
+	private function exists() : bool {
 		$oid_entry = $this->cache__tables[$this->active_mib][$this->active_table] . '.1';
 
-		/* check if entry exists */
+		// check if entry exists
 		$exists = db_fetch_cell_prepared('SELECT 1 FROM `snmpagent_cache` WHERE `oid` = ?',
 			[$oid_entry . '.1.' . $this->active_table_entry]);
 

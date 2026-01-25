@@ -33,13 +33,13 @@ ini_set('memory_limit', '-1');
 
 chdir('..');
 
-if ($config['poller_id'] > 1) {
+if (POLLER_ID > 1) {
 	print 'FATAL: This utility is designed for the main Data Collector only' . PHP_EOL;
 
 	exit(1);
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -119,30 +119,34 @@ debug(sprintf('Fetch Process has Completed in %0.2f seconds', $fend - $fstart));
 
 exit(0);
 
+function debug(string $message) : void {
+	global $debug;
+
+	if ($debug) {
+		print('DEBUG: ' . trim($message) . PHP_EOL);
+	}
+}
+
 /**
  * display_version - displays version information
+ *
+ * @return void
  */
-function display_version() {
+function display_version() : void {
 	$version = get_cacti_cli_version();
-	print "Cacti Fetch Latest Plugins Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Fetch Latest Plugins Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 /**
  * display_help - displays the usage of the function
+ *
+ * @return void
  */
-function display_help() {
+function display_help() : void {
 	display_version();
 
 	print PHP_EOL;
 	print 'usage: fetch_plugins.php [ --debug ]' . PHP_EOL . PHP_EOL;
 	print 'A utility gathers the latest official plugins from the Cacti Group GitHub' . PHP_EOL;
 	print 'site and prepares them from loading and install' . PHP_EOL;
-}
-
-function debug($message) {
-	global $debug;
-
-	if ($debug) {
-		print('DEBUG: ' . $message . "\n");
-	}
 }

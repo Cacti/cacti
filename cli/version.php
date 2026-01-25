@@ -25,16 +25,11 @@
 
 require(__DIR__ . '/../include/cli_check.php');
 
-$fail_msg = [];
-define_exit('EXIT_UNKNOWN', -1, "ERROR: Failed due to unknown reason\n");
-define_exit('EXIT_NORMAL',  0, '');
-define_exit('EXIT_ARGERR',  1, "ERROR: Invalid Argument: (%s)\n\n");
-
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-/* setup defaults */
+// setup defaults
 $quiet = false;
 $debug = false;
 $dev   = false;
@@ -68,17 +63,19 @@ if (cacti_sizeof($parms)) {
 			case '-V':
 			case '-v':
 				display_version();
-				fail(EXIT_NORMAL);
 
+				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
-				fail(EXIT_NORMAL);
 
+				exit(0);
 			default:
 				display_help();
-				fail(EXIT_ARGERR, $arg);
+				printf('ERROR: Invalid Argument: (%s)' . PHP_EOL . PHP_EOL, $arg);
+
+				exit(1);
 		}
 	}
 }
@@ -92,7 +89,7 @@ if ($debug) {
 	];
 
 	foreach ($tests as $name => $value) {
-		printf("%35s = (Rel %1s, Dev %1s) %s\n", $name, is_cacti_release($value), is_cacti_develop($value), $value);
+		printf('%35s = (Rel %1s, Dev %1s) %s' . PHP_EOL, $name, is_cacti_release($value), is_cacti_develop($value), $value);
 	}
 
 	print PHP_EOL;
@@ -106,7 +103,7 @@ if ($debug) {
 	];
 
 	foreach ($tests as $name => $value) {
-		printf("%35s = %s\n", $name, $value);
+		printf('%35s = %s' . PHP_EOL, $name, $value);
 	}
 
 	print PHP_EOL;
@@ -150,7 +147,7 @@ if ($debug) {
 		$formatted = format_cacti_version($version);
 
 		printf(
-			"%15s (Rel %1s, Dev %1s) => %s (%s)\n",
+			'%15s (Rel %1s, Dev %1s) => %s (%s)' . PHP_EOL,
 			$test,
 			is_cacti_release($formatted),
 			is_cacti_develop($formatted),
@@ -163,7 +160,7 @@ if ($debug) {
 			$matrix[$key][$dkey] = cacti_version_compare($formatted, $source, '<') ? '+' : '.';
 
 			printf(
-				"  =>  %15s = %-15s (%20s)\n",
+				'  =>  %15s = %-15s (%20s)' . PHP_EOL,
 				$name,
 				cacti_version_compare($formatted, $source, '<') ? 'Upgrade' : 'Not Required',
 				version_to_bits($source, false)
@@ -197,6 +194,7 @@ if ($dev) {
 	print CACTI_VERSION_FULL . PHP_EOL;
 } else {
 	display_version();
+
 	print PHP_EOL;
 	print 'Full: ' . CACTI_VERSION_TEXT_FULL . PHP_EOL;
 	print 'Code: ' . CACTI_VERSION_FULL . PHP_EOL;
@@ -204,55 +202,28 @@ if ($dev) {
 	print 'Dev.: ' . CACTI_VERSION . '.99.' . time() . PHP_EOL;
 }
 
-/*  display_version - displays version information */
-function display_version() {
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
+function display_version() : void {
 	$version = get_cacti_cli_version();
-	print "Cacti Version Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Version Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-function display_help() {
+/**
+ * display_help - displays help information
+ *
+ * @return void
+ */
+function display_help() : void {
 	display_version();
 
-	print "\nusage: version.php [option]\n";
-	print "\nOptions:\n";
-	print "     -d, --dev      show development upgrade version (generated)\n";
-	print "     -q, --quiet    no headers\n";
-	print "         --debug    show debug testing and matrix\n\n";
-}
-
-function fail($exit_value, $args = [], $display_help = 0) {
-	global $quiet, $fail_msg;
-
-	if (!$quiet) {
-		if (!isset($args)) {
-			$args = [];
-		} elseif (!is_array($args)) {
-			$args = [$args];
-		}
-
-		if (!array_key_exists($exit_value, $fail_msg)) {
-			$format = $fail_msg[EXIT_UNKNOWN];
-		} else {
-			$format = $fail_msg[$exit_value];
-		}
-		call_user_func_array('printf', array_merge((array)$format, $args));
-
-		if ($display_help) {
-			display_help();
-		}
-	}
-
-	exit($exit_value);
-}
-
-function define_exit($name, $value, $text) {
-	global $fail_msg;
-
-	if (!isset($fail_msg)) {
-		$fail_msg = [];
-	}
-
-	define($name, $value);
-	$fail_msg[$name]  = $text;
-	$fail_msg[$value] = $text;
+	print PHP_EOL;
+	print 'usage: version.php [option]' . PHP_EOL . PHP_EOL;
+	print 'Options:' . PHP_EOL;
+	print '     -d, --dev      show development upgrade version (generated)' . PHP_EOL;
+	print '     -q, --quiet    no headers' . PHP_EOL;
+	print '         --debug    show debug testing and matrix' . PHP_EOL . PHP_EOL;
 }

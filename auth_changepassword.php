@@ -26,11 +26,11 @@ require('./include/global.php');
 
 set_default_action();
 
-$action = get_request_var('action');
+$action = grv('action');
 
 switch ($action) {
 	case 'checkpass':
-		$error = secpass_check_pass(get_nfilter_request_var('password'));
+		$error = secpass_check_pass(gnrv('password'));
 
 		if ($error != '') {
 			print $error;
@@ -39,8 +39,6 @@ switch ($action) {
 		}
 
 		exit;
-
-		break;
 	default:
 		// If the user is not logged in, redirect them to the login page
 		if (!isset($_SESSION[SESS_USER_ID])) {
@@ -107,7 +105,7 @@ if (!cacti_sizeof($user) || $user['realm'] != 0) {
 if ($user['password_change'] != 'on') {
 	raise_message('nopassword');
 
-	/* destroy session information */
+	// destroy session information
 	kill_session_var(SESS_USER_ID);
 	cacti_cookie_logout();
 
@@ -120,14 +118,14 @@ if ($user['password_change'] != 'on') {
 	exit;
 }
 
-/* find out if we are logged in as a 'guest user' or not, if we are redirect away from password change */
+// find out if we are logged in as a 'guest user' or not, if we are redirect away from password change
 if (cacti_sizeof($user) && $user['id'] === get_guest_account()) {
 	header('Location: graph_view.php');
 
 	exit;
 }
 
-/* default to !bad_password */
+// default to !bad_password
 $bad_password = false;
 $errorMessage = '';
 
@@ -137,11 +135,11 @@ switch ($action) {
 		$user_id = intval($_SESSION[SESS_USER_ID]);
 
 		// Get passwords entered for change
-		$password         = get_nfilter_request_var('password');
-		$password_confirm = get_nfilter_request_var('password_confirm');
+		$password         = gnrv('password');
+		$password_confirm = gnrv('password_confirm');
 
 		// Get current password as entered
-		$current_password = get_nfilter_request_var('current_password');
+		$current_password = gnrv('current_password');
 
 		// Secpass checking
 		$error = secpass_check_pass($password);
@@ -237,77 +235,16 @@ switch ($action) {
 				WHERE id = ?",
 				[compat_password_hash($password,PASSWORD_DEFAULT), $user_id]);
 
-			// Clear the auth cache for the user
-			$token = '';
-
-			if (isset($_SERVER['HTTP_COOKIE']) && strpos($_SERVER['HTTP_COOKIE'], 'cacti_remembers') !== false) {
-				$parts = explode(';', $_SERVER['HTTP_COOKIE']);
-
-				foreach ($parts as $p) {
-					if (strpos($p, 'cacti_remembers') !== false) {
-						$pparts = explode('%2C', $p);
-
-						if (isset($pparts[1])) {
-							$token = $pparts[1];
-
-							break;
-						}
-					}
-				}
-			}
-
-			if ($token != '') {
-				$sql_where = 'AND token != ' . db_qstr(hash('sha512', $token, false));
-			} else {
-				$sql_where = '';
-			}
-
-			db_execute_prepared("DELETE FROM user_auth_cache
-				WHERE user_id = ?
-				$sql_where",
+			db_execute_prepared('DELETE FROM user_auth_cache
+				WHERE user_id = ?',
 				[$_SESSION[SESS_USER_ID]]);
 
 			kill_session_var(SESS_CHANGE_PASSWORD);
+			kill_session_var(SESS_USER_ID);
 
 			raise_message('password_success');
 
-			/* ok, at the point the user has been successfully authenticated; so we must decide what to do next */
-
-			/* if no console permissions show graphs otherwise, pay attention to user setting */
-			$realm_id    = $user_auth_realm_filenames['index.php'];
-			$has_console = db_fetch_cell_prepared('SELECT realm_id
-				FROM user_auth_realm
-				WHERE user_id = ? AND realm_id = ?',
-				[$user_id, $realm_id]);
-
-			if (basename(get_nfilter_request_var('ref')) == 'auth_changepassword.php' || basename(get_nfilter_request_var('ref')) == '') {
-				if ($has_console) {
-					set_request_var('ref', 'index.php');
-				} else {
-					set_request_var('ref', 'graph_view.php');
-				}
-			}
-
-			if (!empty($has_console)) {
-				switch ($user['login_opts']) {
-					case '1': /* referer */
-						header('Location: ' . sanitize_uri(get_nfilter_request_var('ref')));
-
-						break;
-					case '2': /* default console page */
-						header('Location: index.php');
-
-						break;
-					case '3': /* default graph page */
-						header('Location: graph_view.php');
-
-						break;
-					default:
-						api_plugin_hook_function('login_options_navigate', $user['login_opts']);
-				}
-			} else {
-				header('Location: graph_view.php');
-			}
+			header('Location: logout.php');
 
 			exit;
 		} else {
@@ -321,11 +258,11 @@ if (api_plugin_hook_function('custom_password', OPER_MODE_NATIVE) == OPER_MODE_R
 	exit;
 }
 
-if (get_request_var('action') == 'force') {
+if (grv('action') == 'force') {
 	$errorMessage = "<span class='loginErrors'>*** " . __('Forced password change') . ' ***</span>';
 }
 
-/* Create tooltip for password complexity */
+// Create tooltip for password complexity
 $secpass_tooltip = "<span style='font-weight:normal;'>" . __('Password requirements include:') . '</span><br>';
 $secpass_body    = '';
 
@@ -355,15 +292,26 @@ $selectedTheme = get_selected_theme();
 
 $skip_current = (empty($user['password']));
 
-if (isset_request_var('ref')) {
-	$ref_parts   = parse_url(get_nfilter_request_var('ref'));
-	$valid       = true;
+if (isrv('ref')) {
+	$ref_parts   = parse_url(gnrv('ref'));
+	$valid       = false;
 
+	// It's an array, so valid URL
+	if (is_array($ref_parts)) {
+		$valid = true;
+	}
+
+	// Someone trying to login via a get is bad!
 	if (isset($ref_parts['user']) || isset($ref_parts['pass'])) {
 		$valid = false;
-	} elseif (!isset($ref_parts['host'])) {
-		$value = true;
-	} elseif (isset($ref_parts['host'])) {
+	}
+
+	// Someone trying to send an invalid host
+	if (!isset($ref_parts['host'])) {
+		$valid = false;
+	}
+
+	if ($valid) {
 		$server_addr = $_SERVER['SERVER_ADDR'];
 
 		if (!filter_var($_SERVER['SERVER_NAME'], FILTER_VALIDATE_IP)) {
@@ -429,8 +377,8 @@ html_auth_header('change_password', __('Change Password'), __('Change Password')
 	<tr style='display:none'>
 		<td>
 			<input type='hidden' name='action' value='changepassword'>
-			<input type='hidden' name='ref' value='<?php print html_escape(get_request_var('ref')); ?>'>
-			<input type='hidden' name='name' value='<?php print isset($user['username']) ? html_escape($user['username']) : ''; ?>'>
+			<input type='hidden' name='ref' value='<?php print htmle(grv('ref')); ?>'>
+			<input type='hidden' name='name' value='<?php print isset($user['username']) ? htmle($user['username']) : ''; ?>'>
 			<input type='text'><input type='password'></td>
 		</td>
 	</tr>
@@ -453,7 +401,7 @@ html_auth_header('change_password', __('Change Password'), __('Change Password')
 	</tr>
 	<tr>
 		<td colspan='3' class='nowrap'><button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' value='save'><?php print __esc('Save'); ?></button>
-			<?php print $user['must_change_password'] != 'on' ? "<button type='button' class='ui-button ui-corner-all ui-widget' onClick='document.location=\"$return\"'>".  __esc('Return') . "'></button>" : ''; ?>
+			<?php print $user['must_change_password'] != 'on' ? "<button type='button' class='ui-button ui-corner-all ui-widget' onClick='document.location=\"$return\"'>" . __esc('Return') . "'></button>" : ''; ?>
 		</td>
 	</tr>
 <?php

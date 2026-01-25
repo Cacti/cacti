@@ -22,10 +22,10 @@
   +-------------------------------------------------------------------------+
 */
 
-function update_hash($file) {
+function update_hash(string $file) : void {
 }
 
-function file_search($folder, $pattern_array) {
+function file_search(string $folder, array $pattern_array) : array {
 	$return = [];
 	$iti    = new RecursiveDirectoryIterator($folder);
 
@@ -40,7 +40,7 @@ function file_search($folder, $pattern_array) {
 	return $return;
 }
 
-function file_hash($match) {
+function file_hash(array $match) : string {
 	global $cssFile;
 	$md5File = dirname($cssFile) . '/' . $match[2];
 	$md5Real = realpath($md5File);
@@ -50,7 +50,7 @@ function file_hash($match) {
 	return $result;
 }
 
-function file_update($cssFile) {
+function file_update(string $cssFile) : void {
 	$fileContents = file($cssFile);
 	$fileUpdated  = preg_replace_callback_array(
 		[
