@@ -883,8 +883,8 @@ function form_dropdown(string $form_name, array $form_data, string $column_displ
 /**
  * Draws a standard html dropdown box using icon definitions in the form array.
  *
- * @param string $form_name - the name of this form element
- * @param array  $form_data - an array containing data for this dropdown. It must contain
+ * @param string $form_name The name of this form element
+ * @param array  $form_data An array containing data for this dropdown. It must contain
  *                          the following structure.
  *
  *   $dropdown_array = array(
@@ -1437,7 +1437,7 @@ function form_font_box(string $form_name, mixed $prev_val, mixed $default_val,
  * Given as set of form options in the form of an array
  *   generate a continuation form confirm dialog for the user.
  *
- * @param array $form_data - Options to present to the users depending on the drop action
+ * @param array $form_data Options to present to the users depending on the drop action
  *
  * The options array has two sections 'general' and 'options'.  The 'general' option
  * must includes the following 4 variables:
@@ -1503,10 +1503,10 @@ function form_font_box(string $form_name, mixed $prev_val, mixed $default_val,
  *		)
  *	);
  *
- * @param string $plugin_hook - The plugin hook to call for the continuation
- * @param array  $save        - An array of data to save for the continuation
+ * @param string $plugin_hook The plugin hook to call for the continuation
+ * @param array  $save        An array of data to save for the continuation
  *
- * @return void - Data is streamed through stdout
+ * @return void Data is streamed through stdout
  */
 function form_continue_confirmation(array $form_data, string $plugin_hook = '', array $save = []) : void {
 	$page      = $form_data['general']['page'];
@@ -1735,13 +1735,13 @@ function form_continue_confirmation(array $form_data, string $plugin_hook = '', 
  * Draws a table presenting the user with some choice and allowing
  * them to either proceed (delete) or cancel
  *
- * @param string $body_text  - The text to prompt the user with on this form
- * @param string $cancel_url - The url to go to when the user clicks 'cancel'
- * @param mixed  $action_url - The url to go to when the user clicks 'delete'
+ * @param string $body_text  The text to prompt the user with on this form
+ * @param mixed  $cancel_url The url to go to when the user clicks 'cancel'
+ * @param mixed  $action_url The url to go to when the user clicks 'delete'
  *
  * @return void
  */
-function form_confirm(string $title_text, string $body_text, string $cancel_url, $action_url) : void { ?>
+function form_confirm(string $title_text, string $body_text, mixed $cancel_url, $action_url) : void { ?>
 	<br>
 	<table style='width:60%;'>
 		<tr>
@@ -1787,16 +1787,16 @@ function form_confirm_buttons(mixed $action_url, string $cancel_url) : void {
  * Draws a (save|create) and cancel button at the bottom of
  * an html edit form
  *
- * @param string  $cancel_url - The url to go to when the user clicks 'cancel'
- * @param string  $force_type - If specified, will force the 'action' button
+ * @param mixed   $cancel_url The url to go to when the user clicks 'cancel'
+ * @param mixed   $force_type If specified, will force the 'action' button
  *                            to be either 'save' or 'create'. otherwise
  *                            this field should be properly auto-detected
- * @param string  $key_field  - The name of the key field in the form
- * @param boolean $ajax       - Whether or not to use ajax for the return
+ * @param string  $key_field  The name of the key field in the form
+ * @param boolean $ajax       Whether or not to use ajax for the return
  *
  * @return void
  */
-function form_save_button(string $cancel_url, string $force_type = '',
+function form_save_button(mixed $cancel_url, mixed $force_type = '',
 	string $key_field = 'id', bool $ajax = true) : void {
 	global $form_id;
 	$catp = 'cancel';
@@ -1876,15 +1876,15 @@ function form_save_button(string $cancel_url, string $force_type = '',
  * url    - A URL to get, post, or cancel to
  * data   - A JSON encoded structure of post or get data
  *
- * @param array  $buttons    - An array of 'id', 'value', 'method', 'type'
- * @param string $cancel_url - A url to return to when the user hit's cancel
- * @param string $force_type - For the type of the button to this
- * @param string $key_field  - The id of the key field.
- * @param bool   $ajax       - Handle the return with ajax or a page load
+ * @param array  $buttons    An array of 'id', 'value', 'method', 'type'
+ * @param mixed  $cancel_url A url to return to when the user hit's cancel
+ * @param string $force_type For the type of the button to this
+ * @param string $key_field  The id of the key field.
+ * @param bool   $ajax       Handle the return with ajax or a page load
  *
  * @return void
  */
-function form_save_buttons(array $buttons, string $cancel_url = '', string $force_type = '',
+function form_save_buttons(array $buttons, mixed $cancel_url = '', string $force_type = '',
 	string $key_field = 'id', bool $ajax = true) : void {
 	global $form_id;
 	$catp = 'cancel';
@@ -1995,9 +1995,9 @@ function form_save_buttons(array $buttons, string $cancel_url = '', string $forc
 /**
  * Draws post form start. To be combined with form_end()
  *
- * @param mixed  $action    - A mandatory php file URI
- * @param string $id        - An optional id, if empty, one will be generated
- * @param bool   $multipart - Whether or not to use multipart encoding
+ * @param mixed  $action    A mandatory php file URI
+ * @param string $id        An optional id, if empty, one will be generated
+ * @param bool   $multipart Whether or not to use multipart encoding
  *
  * @return void
  */
@@ -2023,7 +2023,7 @@ function form_start(mixed $action, string $id = '', bool $multipart = false) : v
  * This function prints the closing </form> tag and, if the $ajax parameter is true,
  * includes JavaScript to handle unsaved form data warnings and form validation.
  *
- * @param bool $ajax - Whether to include AJAX handling JavaScript. Default true.
+ * @param bool $ajax Whether to include AJAX handling JavaScript. Default true.
  *
  * @return void
  */
