@@ -23,11 +23,15 @@
  +-------------------------------------------------------------------------+
 */
 
-// ------------------------------------------------------------
-// If not running from Cacti, make sure you set the RRDtool
-// path on this line.
-// ------------------------------------------------------------
-$rrdtool    = '/usr/bin/rrdtool';
+# ------------------------------------------------------------
+# If not running from Cacti, make sure you set the RRDtool
+# path on this line.
+# ------------------------------------------------------------
+if (file_exists('/usr/bin/rrdtool')) {
+	$rrdtool = '/usr/bin/rrdtool';
+} elseif (file_exists('/usr/local/bin/rrdtool')) {
+	$rrdtool = '/usr/local/bin/rrdtool';
+}
 
 if (file_exists(__DIR__ . '/../include/cli_check.php')) {
 	require(__DIR__ . '/../include/cli_check.php');
