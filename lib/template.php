@@ -27,7 +27,7 @@
  * template to all of its children. this includes all fields inherited from the host
  * and the data template
  *
- * @param int $data_template_id - The id of the data template to push out values for
+ * @param int $data_template_id The id of the data template to push out values for
  *
  * @return bool
  */
@@ -185,8 +185,8 @@ function push_out_data_source_custom_data(int $data_template_id) : bool {
 /**
  * push out changed data template fields to related data sources
  *
- * @param string $did_vals	- data input data fields
- * @param string $ds_in_str	- all data sources, formatted as SQL 'IN' clause
+ * @param string $did_vals  The data input data fields
+ * @param string $ds_in_str All data sources, formatted as SQL 'IN' clause
  *
  * @return void
  */
@@ -204,7 +204,7 @@ function push_out_data_source_templates(string $did_vals, string $ds_in_str) : v
  * push_out_data_source_item - pushes out templated data template item fields to all matching
  * children.
  *
- * @param int $data_template_rrd_id - the id of the data template item to push out values for
+ * @param int $data_template_rrd_id The id of the data template item to push out values for
  *
  * @return bool
  */
@@ -239,7 +239,7 @@ function push_out_data_source_item(int $data_template_rrd_id) : bool {
 /**
  * push_out_data_source - pushes out templated data template fields to all matching children
  *
- * @param int $data_template_data_id - the id of the data template to push out values for
+ * @param int $data_template_data_id The id of the data template to push out values for
  *
  * @return bool
  */
@@ -280,10 +280,10 @@ function push_out_data_source(int $data_template_data_id) : bool {
  * carry the data source information since it's key to linking
  * data query information into the data source
  *
- * @param int  $data_input_field_id - The data input field
- * @param bool $return_ids - Return an array of special ids
+ * @param int  $data_input_field_id The data input field
+ * @param bool $return_ids          Return an array of special ids
  *
- * @return mixed - true, false or the ids
+ * @return mixed true, false or the ids
  */
 function data_input_field_always_checked(int $data_input_field_id = 0, bool $return_ids = false) : mixed {
 	static $always_checked = [];
@@ -326,9 +326,9 @@ function data_input_field_always_checked(int $data_input_field_id = 0, bool $ret
  * change_data_template - changes the data template for a particular data source to
  * $data_template_id.
  *
- * @param int   $local_data_id - the id of the data source to change the data template for
- * @param int   $data_template_id - id the of the data template to change to. specify '0' for no
- * @param array $profile - a structure of data source profile attributes data template
+ * @param int   $local_data_id    The id of the data source to change the data template for
+ * @param int   $data_template_id Id the of the data template to change to. specify '0' for no
+ * @param array $profile          A structure of data source profile attributes data template
  *
  * @return void
  */
@@ -472,9 +472,9 @@ function change_data_template(int $local_data_id, int $data_template_id, array $
 /**
  * push_out_graph - pushes out templated graph template fields to all matching children
  *
- * @param int  $graph_template_graph_id - the id of the graph template to push out values for
- * @param bool $push_title - if the pattern for the title changes, push out those changes
- *             to the various graphs.
+ * @param int  $graph_template_graph_id The id of the graph template to push out values for
+ * @param bool $push_title              If the pattern for the title changes, push out those changes
+ *                                      to the various graphs.
  *
  * @return bool
  */
@@ -527,11 +527,11 @@ function push_out_graph(int $graph_template_graph_id, bool $push_title = true) :
  * all attached children. instead, it obtains the current value of the graph input based on other
  * graph items and pushes out the 'active' value
  *
- * @param int   $graph_template_input_id - the id of the graph input to push out values for
- * @param int   $graph_template_item_id - the id the graph template item to push out
- * @param array $session_members - when looking for the 'active' value of the graph input, ignore these graph
- *              template items. typically you want to ignore all items that were just selected and have yet to be
- *              saved to the database. this is because these items most likely contain incorrect data
+ * @param int   $graph_template_input_id The id of the graph input to push out values for
+ * @param int   $graph_template_item_id  The id the graph template item to push out
+ * @param array $session_members         When looking for the 'active' value of the graph input, ignore these graph
+ *                                       template items. typically you want to ignore all items that were just selected and have yet to be
+ *                                       saved to the database. this is because these items most likely contain incorrect data
  *
  * @return void
  */
@@ -599,8 +599,8 @@ function push_out_graph_input(int $graph_template_input_id, int $graph_template_
  * children. if the graph template item is part of a graph input, the field will not be
  * pushed out
  *
- * @param $graph_template_item_id - (int) the id of the graph template item to push out values for
- * @param $task_item_changed - (boolean) Add additional steps if the task items changed
+ * @param int  $graph_template_item_id The id of the graph template item to push out values for
+ * @param bool $task_item_changed      Add additional steps if the task items changed
  *
  * @return bool
  */
@@ -947,9 +947,9 @@ function resequence_graphs(int $graph_template_id, int $local_graph_id = 0, bool
  *   graphs using that template.  This is important when you have graphs that
  *   have multiple versions of a template.
  *
- * @param $graph_template_id - the graph template id to retemplate
- * @param $local_graph_id    - optional local graph id
- * @param $sequence_only     - optional only perform a resequence on graphs that have a mismatch on graph items
+ * @param int  $graph_template_id The graph template id to retemplate
+ * @param int  $local_graph_id    Optional local graph id
+ * @param bool $sequence_only     Optional only perform a resequence on graphs that have a mismatch on graph items
  *
  * @return void
  */
@@ -1004,11 +1004,11 @@ function retemplate_graphs(int $graph_template_id, int $local_graph_id = 0, bool
  *   graph to a specific graph_template_id which can be considered a generic
  *   re-templating function.
  *
- * @param int  $local_graph_id    - the id of the graph to change the graph template for.
- * @param int  $graph_template_id - the id the of the graph template to change to. specify
- *             '0' for no graph template.
- * @param bool $force - if true and the target graph template has more or less graph items than
- *             the current graph, perform a deeper re-template activity, or a full repair.
+ * @param int  $local_graph_id    The id of the graph to change the graph template for.
+ * @param int  $graph_template_id The id the of the graph template to change to. specify
+ *                                '0' for no graph template.
+ * @param bool $force             If true and the target graph template has more or less graph items than
+ *                                the current graph, perform a deeper re-template activity, or a full repair.
  *
  * @return bool
  */
@@ -1260,10 +1260,10 @@ function change_graph_template(int $local_graph_id, int $graph_template_id, bool
  * the Graph Item is new, it will update all graphs with a new item.  When
  * the graph item exists, it'll just walk through all columns and update the values.
  *
- * @param int  $graph_template_id      - The graph template id to update
- * @param int  $graph_template_item_id - The graph template item id from the template
- * @param bool $task_item_changed      - Tells us if this is a new graph item or one that
- *                                       needs to be pushed to all graphs
+ * @param int  $graph_template_id      The graph template id to update
+ * @param int  $graph_template_item_id The graph template item id from the template
+ * @param bool $task_item_changed      Tells us if this is a new graph item or one that
+ *                                     needs to be pushed to all graphs
  *
  * @return void
  */
@@ -1470,9 +1470,9 @@ function update_graph_template_items(int $graph_template_id, int $graph_template
 /**
  * graph_to_graph_template - converts a graph to a graph template
  *
- * @param int    $local_graph_id - the id of the graph to be converted
- * @param string $graph_title - the graph title to use for the new graph template. the variable
- *               <graph_title> will be substituted for the current graph title.
+ * @param int    $local_graph_id The id of the graph to be converted
+ * @param string $graph_title    The graph title to use for the new graph template. the variable
+ *                               <graph_title> will be substituted for the current graph title.
  *
  * @return void
  */
@@ -1522,9 +1522,9 @@ function graph_to_graph_template(int $local_graph_id, string $graph_title) : voi
 /**
  * data_source_to_data_template - converts a data source to a data template
  *
- * @param int    $local_data_id - the id of the data source to be converted
- * @param string $data_source_title - the data source title to use for the new data template. the variable
- *               <ds_title> will be substituted for the current data source title.
+ * @param int    $local_data_id     The id of the data source to be converted
+ * @param string $data_source_title The data source title to use for the new data template. the variable
+ *                                  <ds_title> will be substituted for the current data source title.
  *
  * @return void
  */
@@ -1577,20 +1577,18 @@ function data_source_to_data_template(int $local_data_id, string $data_source_ti
  * create_complete_graph_from_template - creates a graph and all necessary data sources based on a
  * graph template.
  *
- * @param int   $graph_template_id - the id of the graph template that will be used to create the new
- *              graph.
- *
- * @param int   $host_id - the id of the host to associate the new graph and data sources with
- * @param array $snmp_query_array - if the new data sources are to be based on a data query, specify the
- *              necessary data query information here. it must contain the following information:
+ * @param int   $graph_template_id The id of the graph template that will be used to create the new graph.
+ * @param int   $host_id           The id of the host to associate the new graph and data sources with
+ * @param array $snmp_query_array  If the new data sources are to be based on a data query, specify the
+ *                                 necessary data query information here. it must contain the following information:
  *
  * $snmp_query_array['snmp_query_id']
  * $snmp_query_array['snmp_index_on']
  * $snmp_query_array['snmp_query_graph_id']
  * $snmp_query_array['snmp_index']
  *
- * @param array $suggested_vals - any additional information to be included in the new graphs or
- *              data sources must be included in the array. data is to be included in the following format:
+ * @param array $suggested_vals Any additional information to be included in the new graphs or
+ *                              data sources must be included in the array. data is to be included in the following format:
  *
  * $values['cg'][graph_template_id]['graph_template'][field_name] = $value  // graph template
  * $values['cg'][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item
@@ -1600,7 +1598,7 @@ function data_source_to_data_template(int $local_data_id, string $data_source_ti
  * $values['sg'][data_query_id][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item (w/ data query)
  * $values['sg'][data_query_id][data_template_id]['data_template'][field_name] = $value  // data template (w/ data query)
  *
- * @return mixed - false if failing, otherwise the local_data_id data in a cache array
+ * @return mixed False if failing, otherwise the local_data_id data in a cache array
  */
 function create_complete_graph_from_template(int $graph_template_id, int $host_id, array $snmp_query_array, array &$suggested_vals) : mixed {
 	include_once(CACTI_PATH_LIBRARY . '/data_query.php');
@@ -2008,12 +2006,13 @@ function create_complete_graph_from_template(int $graph_template_id, int $host_i
 	return $cache_array;
 }
 
-/** create_graph_custom_data_compatible - checks to see if this graphs data sources have custom
+/**
+ * create_graph_custom_data_compatible - checks to see if this graphs data sources have custom
  * data source properties.  If so, then you must duplicate the Data Source and not use
  * the existing one.
  *
- * @param array $suggested_vals - any additional information to be included in the new graphs or
- *              data sources must be included in the array. data is to be included in the following format:
+ * @param array $suggested_vals Any additional information to be included in the new graphs or
+ *                              data sources must be included in the array. data is to be included in the following format:
  *
  * $values['cg'][graph_template_id]['graph_template'][field_name] = $value  // graph template
  * $values['cg'][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item
@@ -2024,7 +2023,7 @@ function create_complete_graph_from_template(int $graph_template_id, int $host_i
  * $values['sg'][data_query_id][data_template_id]['data_template'][field_name] = $value  // data template (w/ data query)
  * $values['sg'][data_query_id][data_template_id]['data_template_item'][data_template_item_id][field_name] = $value  // data template item (w/ data query)
  *
- * @param array $previous_data_source - The data source to compare to
+ * @param array $previous_data_source The data source to compare to
  *
  * @return bool
  */

@@ -222,8 +222,8 @@ set_language_constants([
 /**
  * Generates the path to a JavaScript language file.
  *
- * @param array $names An array of language file names.
- * @param string|null $prefix An optional prefix for the language file.
+ * @param array       $names     An array of language file names.
+ * @param string|null $prefix    An optional prefix for the language file.
  * @param string|null $base_path An optional base path for the language file. Defaults to CACTI_PATH_INCLUDE/js/LC_MESSAGES/.
  * @param string|null $extension An optional file extension for the language file. Defaults to 'js'.
  *
@@ -244,10 +244,10 @@ function get_js_language_file(array $names, string|null $prefix = null, string|n
 /**
  * Retrieves the path to a .mo language file based on the provided parameters.
  *
- * @param array  $names      An array of language names to search for.
- * @param string|null $prefix     (Optional) A prefix to prepend to the language file name. Default is null.
- * @param string|null $base_path  (Optional) The base path where the language files are located. Default is null.
- * @param string|null $extension  (Optional) The file extension of the language file. Default is 'mo'.
+ * @param array       $names     An array of language names to search for.
+ * @param string|null $prefix    A prefix to prepend to the language file name. Default is null.
+ * @param string|null $base_path The base path where the language files are located. Default is null.
+ * @param string|null $extension The file extension of the language file. Default is 'mo'.
  *
  * @return string The path to the .mo language file.
  */
@@ -266,10 +266,11 @@ function get_mo_language_file(array $names, string|null $prefix = null, string|n
 /**
  * Retrieves the appropriate language file based on the provided parameters.
  *
- * @param string $extension The file extension to append to the language file name.
- * @param string $prefix The prefix to prepend to the language file name.
- * @param array $names An array of potential language file names to search for.
+ * @param string      $extension The file extension to append to the language file name.
+ * @param string      $prefix    The prefix to prepend to the language file name.
+ * @param array       $names     An array of potential language file names to search for.
  * @param string|null $base_path The base path where the language files are located. Defaults to CACTI_PATH_BASE if not provided.
+ *
  * @return string The path to the found language file, or an empty string if no file is found.
  */
 function get_language_file(string $extension, string $prefix, array $names, string|null $base_path = null) : string {
@@ -302,6 +303,7 @@ function get_language_file(string $extension, string $prefix, array $names, stri
  * Retrieves the source language files based on the specified internationalization handler.
  *
  * @param string|null $i18n_handler The internationalization handler to use. If null or empty, defaults to checking both PHPGETTEXT and MOTRANSLATOR handlers.
+ *
  * @return array|null An array containing the handler, paths, and files for the selected internationalization provider, or null if no valid provider is found.
  */
 function get_src_language_files(string|null $i18n_handler) : array|null {
@@ -393,7 +395,9 @@ function get_src_language_files(string|null $i18n_handler) : array|null {
  * It also handles deprecation errors for PHP 8 and logs the loading process for debugging purposes.
  *
  * @param string $domain The domain for which the translation should be loaded.
+ *
  * @return \gettext_reader The gettext_reader object for the specified domain.
+ *
  * @throws Exception If the translation file cannot be read or is invalid.
  */
 function load_gettext_original(string $domain) : \gettext_reader {
@@ -664,9 +668,9 @@ function set_language_constants(array $constants) : void {
 /**
  * Translates a given text string using the specified domain.
  *
- * @param string|null $text The text string to be translated. If null, an empty string is used.
- * @param string $domain The domain to use for translation. Defaults to 'cacti'.
- * @return string The translated text, or the original text if translation is not available.
+ * @param  string|null $text   The text string to be translated. If null, an empty string is used.
+ * @param  string      $domain The domain to use for translation. Defaults to 'cacti'.
+ * @return string      The translated text, or the original text if translation is not available.
  */
 function __gettext(string|null $text, string $domain = 'cacti') : string {
 	global $i18n;
@@ -700,10 +704,11 @@ function __gettext(string|null $text, string $domain = 'cacti') : string {
  * Translates and pluralizes a given string based on the provided number.
  *
  * @param string|null $singular The singular form of the string.
- * @param string|null $plural The plural form of the string.
- * @param int $number The number to determine singular or plural form.
- * @param string $domain The translation domain to use (default is 'cacti').
- * @return string The translated and pluralized string.
+ * @param string|null $plural   The plural form of the string.
+ * @param int         $number   The number to determine singular or plural form.
+ * @param string      $domain   The translation domain to use (default is 'cacti').
+ *
+ * @return string - The translated and pluralized string.
  */
 function __n(string|null $singular, string|null $plural, int $number, string $domain = 'cacti') : string {
 	global $i18n;
@@ -723,7 +728,8 @@ function __n(string|null $singular, string|null $plural, int $number, string $do
  *
  * @param string|null $text The input text which may contain double percent signs.
  *                          If null, an empty string will be used.
- * @return string The processed text with double percent signs replaced by single percent signs.
+ *
+ * @return string - The processed text with double percent signs replaced by single percent signs.
  */
 function __uf(string|null $text) : string {
 	return str_replace('%%', '%', $text ?? '');
@@ -807,11 +813,11 @@ function __() : string {
 /**
  * Translates and pluralizes a string based on the given context and number.
  *
- * @param string $context The context for the translation.
+ * @param string $context  The context for the translation.
  * @param string $singular The singular form of the string to be translated.
- * @param string $plural The plural form of the string to be translated.
- * @param int $number The number to determine singular or plural form.
- * @param string $domain The text domain for the translation. Default is 'cacti'.
+ * @param string $plural   The plural form of the string to be translated.
+ * @param int    $number   The number to determine singular or plural form.
+ * @param string $domain   The text domain for the translation. Default is 'cacti'.
  *
  * @return string The translated and correctly pluralized string.
  */
@@ -871,9 +877,10 @@ function __x() : false|string {
 /**
  * Formats a given timestamp according to a specified format and translates date components.
  *
- * @param string $format The format string to use for formatting the date.
+ * @param string    $format    The format string to use for formatting the date.
  * @param int|false $timestamp The timestamp to format. If false, the current time is used. Default is false.
- * @param string $domain The translation domain to use for translating date components. Default is 'cacti'.
+ * @param string    $domain    The translation domain to use for translating date components. Default is 'cacti'.
+ *
  * @return string The formatted and translated date string.
  */
 function __date(string $format, int|false $timestamp = false, string $domain = 'cacti') : string {
@@ -1044,9 +1051,9 @@ function read_user_i18n_setting(string $config_name) : mixed {
  * This function attempts to use the `NumberFormatter` class if available,
  * otherwise it falls back to using PHP's `number_format` function with locale settings.
  *
- * @param mixed $number The number to format.
+ * @param mixed $number   The number to format.
  * @param mixed $decimals The number of decimal points. If null, defaults to 0.
- * @param mixed $baseu The base unit for formatting large numbers (default is 1024).
+ * @param mixed $baseu    The base unit for formatting large numbers (default is 1024).
  *
  * @return string - The formatted number.
  */
@@ -1149,8 +1156,8 @@ function get_new_user_default_language() : string {
  * Logs internationalization (i18n) debug messages to a specified log file.
  *
  * @param string $text The debug message to log.
- * @param int $mode The file append mode. Default is FILE_APPEND.
- * @param string $eol The end-of-line character(s) to use. Default is PHP_EOL.
+ * @param int    $mode The file append mode. Default is FILE_APPEND.
+ * @param string $eol  The end-of-line character(s) to use. Default is PHP_EOL.
  *
  * @return void
  */
@@ -1166,8 +1173,8 @@ function i18n_debug(string $text, int $mode = FILE_APPEND, string $eol = PHP_EOL
  * Logs internationalization text for debugging purposes.
  *
  * @param string $text The text to be logged.
- * @param int $mode The file append mode. Default is FILE_APPEND.
- * @param string $eol The end-of-line character(s) to append to the text. Default is PHP_EOL.
+ * @param int    $mode The file append mode. Default is FILE_APPEND.
+ * @param string $eol  The end-of-line character(s) to append to the text. Default is PHP_EOL.
  *
  * @return void
  */

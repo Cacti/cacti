@@ -26,8 +26,8 @@ $app->get('/', function (Request $request, Response $response) {
  * This function checks each parameter key against a list of allowed parameters
  * and returns an error message if any invalid parameters are found.
  *
- * @param array $params The parameters to validate (key-value pairs)
- * @param array $allowed_params Array of allowed parameter names
+ * @param  array       $params         The parameters to validate (key-value pairs)
+ * @param  array       $allowed_params Array of allowed parameter names
  * @return string|null Returns an error message if invalid parameters are found, otherwise null
  */
 function validate_parameters(array $params, array $allowed_params) : string|null {

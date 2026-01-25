@@ -24,15 +24,15 @@
 
 /**
  * db_fetch_cell_parallel - run a 'select' sql query and return the first column of the
- *   first row found
+ * first row found
  *
- * @param string $sql      - The SQL query to execute
- * @param string $col_name - Use this column name instead of the first one
- * @param int    $threads  - The number of parallel threads to use
- * @param bool   $log      - Whether to log error messages, defaults to true
- * @param mixed  $db_conn  - The connection to use or false to use the default
+ * @param string $sql      The SQL query to execute
+ * @param string $col_name Use this column name instead of the first one
+ * @param int    $threads  The number of parallel threads to use
+ * @param bool   $log      Whether to log error messages, defaults to true
+ * @param mixed  $db_conn  The connection to use or false to use the default
  *
- * @return mixed - The output of the sql query as a single variable
+ * @return mixed The output of the sql query as a single variable
  */
 function db_fetch_cell_parallel(string $sql, string $col_name = '', int $threads = 2, bool $log = true, mixed $db_conn = false) : mixed {
 	global $config;
@@ -48,14 +48,14 @@ function db_fetch_cell_parallel(string $sql, string $col_name = '', int $threads
  * db_fetch_cell_parallel_prepared - run a 'select' sql query and return the first column of the
  * first row found
  *
- * @param string $sql      - The SQL query to execute
- * @param array  $params   - An array of values to be prepared into the SQL
- * @param string $col_name - Use this column name instead of the first one
- * @param int    $threads  - The number of parallel threads to use
- * @param bool   $log      - Whether to log error messages, defaults to true
- * @param mixed  $db_conn  - The connection to use or false to use the default
+ * @param string $sql      The SQL query to execute
+ * @param array  $params   An array of values to be prepared into the SQL
+ * @param string $col_name Use this column name instead of the first one
+ * @param int    $threads  The number of parallel threads to use
+ * @param bool   $log      Whether to log error messages, defaults to true
+ * @param mixed  $db_conn  The connection to use or false to use the default
  *
- * @return mixed - The output of the sql query as a single variable
+ * @return mixed The output of the sql query as a single variable
  */
 function db_fetch_cell_parallel_prepared(string $sql, array $params = [], string $col_name = '', int $threads = 2, bool $log = true, mixed $db_conn = false) : mixed {
 	global $config;
@@ -70,12 +70,12 @@ function db_fetch_cell_parallel_prepared(string $sql, array $params = [], string
 /**
  * db_fetch_row_parallel - run a 'select' sql query and return the first row found
  *
- * @param string $sql     - The SQL query to execute
- * @param int    $threads - The number of parallel threads to use
- * @param bool   $log     - Whether to log error messages, defaults to true
- * @param mixed  $db_conn - The connection to use or false to use the default
+ * @param string $sql     The SQL query to execute
+ * @param int    $threads The number of parallel threads to use
+ * @param bool   $log     Whether to log error messages, defaults to true
+ * @param mixed  $db_conn The connection to use or false to use the default
  *
- * @return mixed - The first row of the result or false if failed
+ * @return mixed The first row of the result or false if failed
  */
 function db_fetch_row_parallel(string $sql, int $threads = 2, bool $log = true, mixed $db_conn = false) : mixed {
 	global $config;
@@ -90,13 +90,13 @@ function db_fetch_row_parallel(string $sql, int $threads = 2, bool $log = true, 
 /**
  * db_fetch_row_parallel_prepared - run a 'select' sql query and return the first row found
  *
- * @param string $sql     - The SQL query to execute
- * @param array  $params  - An array of values to be prepared into the SQL
- * @param int    $threads - The number of parallel threads to use
- * @param bool   $log     - Whether to log error messages, defaults to true
- * @param mixed  $db_conn - The connection to use or false to use the default
+ * @param string $sql     The SQL query to execute
+ * @param array  $params  An array of values to be prepared into the SQL
+ * @param int    $threads The number of parallel threads to use
+ * @param bool   $log     Whether to log error messages, defaults to true
+ * @param mixed  $db_conn The connection to use or false to use the default
  *
- * @return mixed - The first row of the result or false if failed
+ * @return mixed The first row of the result or false if failed
  */
 function db_fetch_row_parallel_prepared(string $sql, array $params = [], int $threads = 2, bool $log = true, mixed $db_conn = false) : mixed {
 	global $config;
@@ -111,12 +111,12 @@ function db_fetch_row_parallel_prepared(string $sql, array $params = [], int $th
 /**
  * db_fetch_assoc_parallel - run a 'select' sql query and return all rows found
  *
- * @param string $sql     - The SQL query to execute
- * @param int    $threads - The number of parallel threads to use
- * @param bool   $log     - Whether to log error messages, defaults to true
- * @param mixed  $db_conn - The connection to use or false to use the default
+ * @param string $sql     The SQL query to execute
+ * @param int    $threads The number of parallel threads to use
+ * @param bool   $log     Whether to log error messages, defaults to true
+ * @param mixed  $db_conn The connection to use or false to use the default
  *
- * @return mixed - The entire result set or false on error
+ * @return mixed The entire result set or false on error
  */
 function db_fetch_assoc_parallel(string $sql, int $threads = 2, bool $log = true, mixed $db_conn = false) : mixed {
 	global $config;
@@ -131,13 +131,13 @@ function db_fetch_assoc_parallel(string $sql, int $threads = 2, bool $log = true
 /**
  * db_fetch_assoc_parallel_prepared - run a 'select' sql query and return all rows found
  *
- * @param string $sql     - The sql query to execute
- * @param array  $params  - An array of values to be prepared into the SQL
- * @param int    $threads - The number of parallel threads to use
- * @param bool   $log     - Whether to log error messages, defaults to true
- * @param mixed  $db_conn - The connection to use or false to use the default
+ * @param string $sql     The sql query to execute
+ * @param array  $params  An array of values to be prepared into the SQL
+ * @param int    $threads The number of parallel threads to use
+ * @param bool   $log     Whether to log error messages, defaults to true
+ * @param mixed  $db_conn The connection to use or false to use the default
  *
- * @return mixed - The entire result or false on error
+ * @return mixed The entire result or false on error
  */
 function db_fetch_assoc_parallel_prepared(string $sql, array $params = [], int $threads = 2, bool $log = true, mixed $db_conn = false) : mixed {
 	global $config;
@@ -179,12 +179,12 @@ function db_fetch_assoc_parallel_prepared(string $sql, array $params = [], int $
  *    'map_queries'        => an array of map queries decomposed from the original query
  * );
  *
- * @param string $sql     - The query to execute
- * @param bool   $log     - Whether to log error messages, defaults to true
- * @param mixed  $db_conn - The connection to use or false to use the default
+ * @param string $sql     The query to execute
+ * @param bool   $log     Whether to log error messages, defaults to true
+ * @param mixed  $db_conn The connection to use or false to use the default
  *
- * @return array - The query pieces, the map and reduce components with
- *                 and error and error_message
+ * @return array The query pieces, the map and reduce components with
+ *               and error and error_message
  */
 function db_query_parallelize(string $sql, bool $log = true, mixed $db_conn = false) : array {
 	global $debug;
@@ -570,9 +570,9 @@ function db_query_parallelize(string $sql, bool $log = true, mixed $db_conn = fa
 /**
  * db_get_aggregate - Return the aggregate function from a SQL select item
  *
- * @param string $colsql - The SQL column string
+ * @param string $colsql The SQL column string
  *
- * @return string - The column aggregate function
+ * @return string The column aggregate function
  */
 function db_get_aggregate(string $colsql) : string {
 	// Decompose and prepare the query for parallelization
@@ -596,12 +596,12 @@ function db_get_aggregate(string $colsql) : string {
 /**
  * db_table_partitioned - checks whether a table is partitioned and returns partition numbers
  *
- * @param string $table      - The name of the table
- * @param bool   $log        - Whether to log error messages, defaults to true
- * @param mixed  $db_conn    - The connection to use or false to use the default
- * @param array  $partitions - The connection to use or false to use the default
+ * @param string $table      The name of the table
+ * @param bool   $log        Whether to log error messages, defaults to true
+ * @param mixed  $db_conn    The connection to use or false to use the default
+ * @param array  $partitions The connection to use or false to use the default
  *
- * @return bool - The output of the sql query as a single variable
+ * @return bool The output of the sql query as a single variable
  */
 function db_table_partitioned(string $table, bool $log = true, mixed $db_conn = false, array &$partitions = []) : bool {
 	static $results;

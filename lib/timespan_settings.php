@@ -120,8 +120,9 @@ function process_html_variables() : void {
 /**
  * when a span time preselection has been defined update the span time fields
  * someone hit a button and not a dropdown
+ *
  * @param array $timespan
- * @param int $timeshift
+ * @param int   $timeshift
  *
  * @return void
  */

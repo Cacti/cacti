@@ -25,9 +25,9 @@
 /**
  * Draws an edit form based on the provided configuration and fields arrays.
  *
- * @param array $array - An array that contains all of the information needed to draw
- *                       the html form. see the arrays contained in include/global_settings.php
- *                       for the extract syntax of this array
+ * @param array $array An array that contains all of the information needed to draw
+ *                     the html form. see the arrays contained in include/global_settings.php
+ *                     for the extract syntax of this array
  *
  * @return void
  */
@@ -177,8 +177,8 @@ function draw_edit_form(array $array) : void {
  *
  * @param string $field_name  - The name of the control.
  * @param array  $field_array - An array containing data for this
- *                              control. see include/global_form.php
- *                              for more specific syntax.
+ *                            control. see include/global_form.php
+ *                            for more specific syntax.
  *
  * @return void
  */
@@ -624,11 +624,11 @@ function form_file(string $form_name, int $form_size = 30, string $form_accept =
  * @param mixed  $form_size     - The size (width) of the textbox
  * @param string $type          - The type of textbox, either 'text' or 'password'
  * @param mixed  $current_id    - Used to determine if a current value for this form element
- *                                exists or not. a $current_id of '0' indicates that no
- *                                current value exists, a non-zero value indicates that
- *                                a current value does exist
+ *                              exists or not. a $current_id of '0' indicates that no
+ *                              current value exists, a non-zero value indicates that
+ *                              a current value does exist
  * @param mixed  $data          - Array containing 'text' element for display and if
- *                                'error' element present, shows failure
+ *                              'error' element present, shows failure
  *
  * @return void
  */
@@ -696,15 +696,15 @@ function form_filepath_box(string $form_name, string $prev_val, string $default_
 /**
  * Draws a standard html textbox and provides status of a directories existence
  *
- * @param string $form_name - the name of this form element
- * @param string $prev_val - the current value of this form element
+ * @param string $form_name     - the name of this form element
+ * @param string $prev_val      - the current value of this form element
  * @param string $default_value - the value of this form element to use if there is no current value available
- * @param mixed  $max_length - the maximum number of characters that can be entered into this textbox
- * @param mixed  $form_size - the size (width) of the textbox
- * @param string $type - the type of textbox, either 'text' or 'password'
- * @param mixed  $current_id - used to determine if a current value for this form element
- *               exists or not. a $current_id of '0' indicates that no current value exists,
- *               a non-zero value indicates that a current value does exist
+ * @param mixed  $max_length    - the maximum number of characters that can be entered into this textbox
+ * @param mixed  $form_size     - the size (width) of the textbox
+ * @param string $type          - the type of textbox, either 'text' or 'password'
+ * @param mixed  $current_id    - used to determine if a current value for this form element
+ *                              exists or not. a $current_id of '0' indicates that no current value exists,
+ *                              a non-zero value indicates that a current value does exist
  *
  * @return void
  */
@@ -747,17 +747,17 @@ function form_dirpath_box(string $form_name, string $prev_val, string $default_v
 /**
  * Draws a standard html textbox
  *
- * @param string $form_name - the name of this form element
- * @param string $prev_val - the current value of this form element
+ * @param string $form_name     - the name of this form element
+ * @param string $prev_val      - the current value of this form element
  * @param string $default_value - the value of this form element to use if there is no current value available
- * @param mixed  $max_length - the maximum number of characters that can be entered into this textbox
- * @param mixed  $form_size - the size (width) of the textbox
- * @param string $type - the type of textbox, either 'text' or 'password'
- * @param mixed  $current_id - used to determine if a current value for this form element
- *               exists or not. a $current_id of '0' indicates that no current value exists,
- *               a non-zero value indicates that a current value does exist
- * @param string $placeholder - place a placeholder over an empty field
- * @param string $title - use a title attribute when hovering over the textbox
+ * @param mixed  $max_length    - the maximum number of characters that can be entered into this textbox
+ * @param mixed  $form_size     - the size (width) of the textbox
+ * @param string $type          - the type of textbox, either 'text' or 'password'
+ * @param mixed  $current_id    - used to determine if a current value for this form element
+ *                              exists or not. a $current_id of '0' indicates that no current value exists,
+ *                              a non-zero value indicates that a current value does exist
+ * @param string $placeholder   - place a placeholder over an empty field
+ * @param string $title         - use a title attribute when hovering over the textbox
  *
  * @return void
  */
@@ -792,10 +792,10 @@ function form_text_box(string $form_name, string $prev_val, string $default_valu
 /**
  * Draws a standard html hidden element
  *
- * @param string $form_name - the name of this form element
- * @param int|string $prev_val - the current value of this form element
+ * @param string     $form_name     - the name of this form element
+ * @param int|string $prev_val      - the current value of this form element
  * @param int|string $default_value - the value of this form element to use if there is no current value available
- * @param mixed $in_form
+ * @param mixed      $in_form
  *
  * @return void
  */
@@ -812,21 +812,21 @@ function form_hidden_box(string $form_name, int|string $prev_val, int|string $de
  *
  * @param string $form_name      - the name of this form element
  * @param array  $form_data      - an array containing data for this dropdown. it can be formatted
- *                                 in one of two ways:
- *                                 $array["id"] = "value";
- *                                 -- or --
- *                                 $array[0]["id"] = 43;
- *                                 $array[0]["name"] = "Red";
+ *                               in one of two ways:
+ *                               $array["id"] = "value";
+ *                               -- or --
+ *                               $array[0]["id"] = 43;
+ *                               $array[0]["name"] = "Red";
  * @param string $column_display - used to identify the key to be used for display data. this
- *                                 is only applicable if the array is formatted using
- *                                 the second method above
+ *                               is only applicable if the array is formatted using
+ *                               the second method above
  * @param mixed  $column_id      - used to identify the key to be used for id data. this
- *                                 is only applicable if the array is formatted using
- *                                 the second method above
- * @param mixed  $prev_val   - the current value of this form element
+ *                               is only applicable if the array is formatted using
+ *                               the second method above
+ * @param mixed  $prev_val       - the current value of this form element
  * @param string $none_entry     - the name to use for a default 'none' element in the dropdown
  * @param mixed  $default_value  - the value of this form element to use if there is
- *                                 no current value available
+ *                               no current value available
  * @param string $class          - any css that needs to be applied to this form element
  * @param string $on_change      - onChange modifier
  * @param string $display_name   - The display name for this form object
@@ -885,7 +885,7 @@ function form_dropdown(string $form_name, array $form_data, string $column_displ
  *
  * @param string $form_name - the name of this form element
  * @param array  $form_data - an array containing data for this dropdown. It must contain
- *                            the following structure.
+ *                          the following structure.
  *
  *   $dropdown_array = array(
  *     'server' => array(
@@ -897,12 +897,12 @@ function form_dropdown(string $form_name, array $form_data, string $column_displ
  *   );
  *
  * @param string $column_display - used to identify the key to be used for display data. this
- *                                 is only applicable if the array is formatted using the
- *                                 second method above
+ *                               is only applicable if the array is formatted using the
+ *                               second method above
  * @param string $column_id      - used to identify the key to be used for id data. this
- *                                 is only applicable if the array is formatted using the
- *                                 second method above.
- * @param string $prev_val   - the current value of this form element
+ *                               is only applicable if the array is formatted using the
+ *                               second method above.
+ * @param string $prev_val       - the current value of this form element
  * @param string $none_entry     - the name to use for a default 'none' element in the dropdown
  * @param string $default_value  - the value of this form element to use if there is no current value available
  * @param string $class          - any css that needs to be applied to this form element
@@ -954,14 +954,14 @@ function form_dropicon(string $form_name, array $form_data, string $column_displ
 /**
  * Generates a dropdown selection form element for languages.
  *
- * @param string $form_name The name attribute for the select element.
+ * @param string $form_name      The name attribute for the select element.
  * @param string $column_display Not used in the function.
- * @param string $column_id Not used in the function.
- * @param string $prev_val The previously selected value.
- * @param string $none_entry Not used in the function.
- * @param string $default_value The default value if no previous value is set.
- * @param string $class Optional. Additional CSS classes for the select element.
- * @param string $on_change Optional. JavaScript code to execute on change event.
+ * @param string $column_id      Not used in the function.
+ * @param string $prev_val       The previously selected value.
+ * @param string $none_entry     Not used in the function.
+ * @param string $default_value  The default value if no previous value is set.
+ * @param string $class          Optional. Additional CSS classes for the select element.
+ * @param string $on_change      Optional. JavaScript code to execute on change event.
  *
  * @return void
  */
@@ -1021,19 +1021,19 @@ function form_droplanguage(string $form_name, string $column_display, string $co
 /**
  * Generates a form element based on the provided parameters and configuration.
  *
- * @param string $form_name The name of the form element.
- * @param string $classic_sql The SQL query to fetch data for the form element.
+ * @param string $form_name      The name of the form element.
+ * @param string $classic_sql    The SQL query to fetch data for the form element.
  * @param string $column_display The column name to be displayed in the form element.
- * @param string $column_id The column name to be used as the value in the form element.
- * @param mixed  $action The action to be performed on form element change.
- * @param string $previous_id The previous ID value of the form element.
- * @param string $prev_val The previous value of the form element.
- * @param string $none_entry The text to display for a "none" entry.
- * @param string $default_value The default value for the form element.
- * @param string $class Optional. Additional CSS classes for the form element.
- * @param string $on_change Optional. JavaScript function to call on form element change.
- * @param string $display_name Optional. The display name for the column.
- * @param string $request_vars Optional. The the request variables to include in the action
+ * @param string $column_id      The column name to be used as the value in the form element.
+ * @param mixed  $action         The action to be performed on form element change.
+ * @param string $previous_id    The previous ID value of the form element.
+ * @param string $prev_val       The previous value of the form element.
+ * @param string $none_entry     The text to display for a "none" entry.
+ * @param string $default_value  The default value for the form element.
+ * @param string $class          Optional. Additional CSS classes for the form element.
+ * @param string $on_change      Optional. JavaScript function to call on form element change.
+ * @param string $display_name   Optional. The display name for the column.
+ * @param string $request_vars   Optional. The the request variables to include in the action
  *
  * @return void
  */
@@ -1081,19 +1081,19 @@ function form_callback(string $form_name, string $classic_sql, string $column_di
 /**
  * Draws a standard html checkbox
  *
- * @param string $form_name           - the name of this form element
- * @param mixed  $prev_val - the current value of this form element
- * @param string $form_caption        - the text to display to the right of the checkbox
- * @param mixed  $default_value  - the value of this form element to use if there is
- *                                      no current value available
- * @param mixed $current_id           - used to determine if a current value for this form element
- *                                      exists or not. a $current_id of '0' indicates
- *                                      that no current value exists, a non-zero value indicates
- *                                      that a current value does exist.
- * @param string $class               - specify a css class
- * @param string $on_change           - specify a javascript onchange action
- * @param string $title               - specify a title for the checkbox on hover
- * @param bool $show_label            - show the form caption in the checkbox
+ * @param string $form_name     - the name of this form element
+ * @param mixed  $prev_val      - the current value of this form element
+ * @param string $form_caption  - the text to display to the right of the checkbox
+ * @param mixed  $default_value - the value of this form element to use if there is
+ *                              no current value available
+ * @param mixed  $current_id    - used to determine if a current value for this form element
+ *                              exists or not. a $current_id of '0' indicates
+ *                              that no current value exists, a non-zero value indicates
+ *                              that a current value does exist.
+ * @param string $class         - specify a css class
+ * @param string $on_change     - specify a javascript onchange action
+ * @param string $title         - specify a title for the checkbox on hover
+ * @param bool   $show_label    - show the form caption in the checkbox
  *
  * @return void
  */
@@ -1139,13 +1139,13 @@ function form_checkbox(string $form_name, mixed $prev_val, string $form_caption,
 /**
  * Draws a standard html radio button
  *
- * @param string $form_name - the name of this form element
- * @param string $prev_val - the current value of this form element (selected or not)
+ * @param string $form_name          - the name of this form element
+ * @param string $prev_val           - the current value of this form element (selected or not)
  * @param string $form_current_value - the current value of this form element (element id)
- * @param string $form_caption - the text to display to the right of the checkbox
- * @param string $default_value - the value of this form element to use if there is
- * @param string $class - The object class for customization
- * @param string $on_change - An onChange event to attach to the form object no current value available
+ * @param string $form_caption       - the text to display to the right of the checkbox
+ * @param string $default_value      - the value of this form element to use if there is
+ * @param string $class              - The object class for customization
+ * @param string $on_change          - An onChange event to attach to the form object no current value available
  *
  * @return void
  */
@@ -1188,14 +1188,14 @@ function form_radio_button(string $form_name, string $prev_val, string $form_cur
 /**
  * Draws a standard html text area box
  *
- * @param string $form_name - the name of this form element
- * @param string $prev_val - the current value of this form element (selected or not)
- * @param int $form_rows - the number of rows in the text area box
- * @param int $form_columns - the number of columns in the text area box
+ * @param string $form_name     - the name of this form element
+ * @param string $prev_val      - the current value of this form element (selected or not)
+ * @param int    $form_rows     - the number of rows in the text area box
+ * @param int    $form_columns  - the number of columns in the text area box
  * @param string $default_value - the value of this form element to use if there is no current value available
- * @param string $class Optional. Additional CSS classes to apply to the textarea element. Default is an empty string.
- * @param string $on_change Optional. JavaScript code to execute when the textarea value changes. Default is an empty string.
- * @param string $placeholder Optional. Placeholder text for the textarea element. Default is an empty string.
+ * @param string $class         Optional. Additional CSS classes to apply to the textarea element. Default is an empty string.
+ * @param string $on_change     Optional. JavaScript code to execute when the textarea value changes. Default is an empty string.
+ * @param string $placeholder   Optional. Placeholder text for the textarea element. Default is an empty string.
  *
  * @return void
  */
@@ -1234,11 +1234,11 @@ function form_text_area(string $form_name, string $prev_val, int $form_rows, int
  *
  * @param string $form_name     - the name of this form element
  * @param array  $array_display - an array containing display values for this dropdown. it must
- *                                be formatted like:
- *                                $array[id] = display;
+ *                              be formatted like:
+ *                              $array[id] = display;
  * @param mixed  $prev_vals     - an array containing keys that should be marked as selected.
- *                                it must be formatted like:
- *                                $array[0][$column_id] = key
+ *                              it must be formatted like:
+ *                              $array[0][$column_id] = key
  * @param string $column_id     - the name of the key used to reference the keys above
  * @param string $class         - Optional. Additional CSS classes to apply to the select element.
  * @param string $on_change     - Optional. JavaScript code to execute when the selection changes.
@@ -1309,7 +1309,7 @@ function form_multi_dropdown(string $form_name, array $array_display, mixed $pre
  *   the list
  *
  * @param string $form_name     - the name of this form element
- * @param string $prev_val  - the current value of this form element
+ * @param string $prev_val      - the current value of this form element
  * @param string $none_entry    - the name to use for a default 'none' element in the dropdown
  * @param string $default_value - the value of this form element to use if there is no current value available
  * @param string $class         - Optional. Additional CSS classes for the dropdown.
@@ -1383,16 +1383,16 @@ function form_color_dropdown(string $form_name, string $prev_val, string $none_e
  * @param string $form_name     - The name of this form element
  * @param string $prev_val      - The current value of this form element
  * @param string $default_value - The value of this form element to use if there is
- *                                no current value available
+ *                              no current value available
  * @param mixed  $max_length    - The maximum number of characters that can be entered
- *                                into this textbox
+ *                              into this textbox
  * @param mixed  $form_size     - The size (width) of the textbox
  * @param string $type          - The type of textbox, either 'text' or 'password'
  * @param mixed  $current_id    - Used to determine if a current value for this
- *                                form element exists or not. a $current_id of '0'
- *                                indicates that no current value exists,
- *                                a non-zero value indicates that a current
- *                                value does exist.
+ *                              form element exists or not. a $current_id of '0'
+ *                              indicates that no current value exists,
+ *                              a non-zero value indicates that a current
+ *                              value does exist.
  * @param string $placeholder   - The placeholder text for the input element. Default is an empty string.
  *
  * @return void
@@ -1504,7 +1504,7 @@ function form_font_box(string $form_name, string $prev_val, string $default_valu
  *	);
  *
  * @param string $plugin_hook - The plugin hook to call for the continuation
- * @param array $save         - An array of data to save for the continuation
+ * @param array  $save        - An array of data to save for the continuation
  *
  * @return void - Data is streamed through stdout
  */
@@ -1751,8 +1751,10 @@ function form_confirm(string $title_text, string $body_text, string $cancel_url,
 						<td class='textHeaderDark'><?php print $title_text; ?></td>
 					</tr>
 					<?php
+
 					form_area($body_text);
 	form_confirm_buttons($action_url, $cancel_url);
+
 	?>
 				</table>
 			</td>
@@ -1785,12 +1787,12 @@ function form_confirm_buttons(mixed $action_url, string $cancel_url) : void {
  * Draws a (save|create) and cancel button at the bottom of
  * an html edit form
  *
- * @param string $cancel_url - The url to go to when the user clicks 'cancel'
- * @param string $force_type - If specified, will force the 'action' button
- *                             to be either 'save' or 'create'. otherwise
- *                             this field should be properly auto-detected
- * @param string $key_field  - The name of the key field in the form
- * @param boolean $ajax      - Whether or not to use ajax for the return
+ * @param string  $cancel_url - The url to go to when the user clicks 'cancel'
+ * @param string  $force_type - If specified, will force the 'action' button
+ *                            to be either 'save' or 'create'. otherwise
+ *                            this field should be properly auto-detected
+ * @param string  $key_field  - The name of the key field in the form
+ * @param boolean $ajax       - Whether or not to use ajax for the return
  *
  * @return void
  */
@@ -2021,7 +2023,7 @@ function form_start(mixed $action, string $id = '', bool $multipart = false) : v
  * This function prints the closing </form> tag and, if the $ajax parameter is true,
  * includes JavaScript to handle unsaved form data warnings and form validation.
  *
- * @param bool   $ajax - Whether to include AJAX handling JavaScript. Default true.
+ * @param bool $ajax - Whether to include AJAX handling JavaScript. Default true.
  *
  * @return void
  */

@@ -39,9 +39,10 @@ function api_user_realm_auth(string $filename = '') : bool {
 
 /**
  * This function executes a hook.
- * @param string $name - Name of hook to fire
  *
- * @return array - The function args to be passed to the next plugin
+ * @param string $name Name of hook to fire
+ *
+ * @return array The function args to be passed to the next plugin
  */
 function api_plugin_hook(string $name) : array {
 	global $plugin_hooks, $plugins_integrated;
@@ -788,9 +789,9 @@ function api_plugin_install(string $plugin) : bool {
  * and if it finds that they are different, it will update the version
  * and return true or false depending on if the version was changed.
  *
- * @param string  $plugin - The name of the plugin
+ * @param string $plugin The name of the plugin
  *
- * @return bool - True if the version changed else false
+ * @return bool True if the version changed else false
  */
 function api_plugin_upgrade_register(string $plugin) : bool {
 	$info = plugin_load_info_file(CACTI_PATH_PLUGINS . '/' . $plugin . '/INFO');

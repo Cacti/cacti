@@ -26,10 +26,10 @@
  * Deletes graphs based on the provided local graph IDs and delete type.
  *
  * @param array $local_graph_ids An array of local graph IDs to be deleted.
- * @param int $delete_type The type of deletion to perform:
- *                         - 1: Remove graphs only.
- *                         - 2: Remove graphs and all associated data sources.
- * @param bool $update_totals Optional. Whether to update object cache totals. Default is true.
+ * @param int   $delete_type     The type of deletion to perform:
+ *                               - 1: Remove graphs only.
+ *                               - 2: Remove graphs and all associated data sources.
+ * @param bool  $update_totals   Optional. Whether to update object cache totals. Default is true.
  *
  * @return void
  */
@@ -203,7 +203,7 @@ function api_graph_remove_bad_graphs(array &$local_graph_ids = []) : void {
 /**
  * Removes aggregate items associated with the given local graph IDs.
  *
- * @param mixed $local_graph_ids - An array of local graph IDs or a comma-separated string of local graph IDs.
+ * @param mixed $local_graph_ids An array of local graph IDs or a comma-separated string of local graph IDs.
  *
  * @return void
  */
@@ -299,8 +299,8 @@ function api_graph_remove_multi(array $local_graph_ids) : void {
  * Resizes the selected graph, overriding the template value
  *
  * @param int $local_graph_id The ID of the local graph to resize.
- * @param int $graph_width The new width of the graph.
- * @param int $graph_height The new height of the graph.
+ * @param int $graph_width    The new width of the graph.
+ * @param int $graph_height   The new height of the graph.
  *
  * @return void
  */
@@ -700,7 +700,7 @@ function api_duplicate_graph(int $_local_graph_id, int $_graph_template_id, stri
  * Changes the device associated with a given graph.
  *
  * @param int $local_graph_id The ID of the local graph to update.
- * @param int $host_id The ID of the new host to associate with the graph.
+ * @param int $host_id        The ID of the new host to associate with the graph.
  *
  * @return bool Returns true if the device was successfully changed, false otherwise.
  */

@@ -25,7 +25,7 @@
 /** update_replication_crc - update hash stored in settings table to inform
  * remote pollers to replicate tables
  *
- * @param int $poller_id
+ * @param int    $poller_id
  * @param string $variable
  *
  * @return void
@@ -608,10 +608,12 @@ function push_out_data_input_method(int $data_input_id) : void {
 	}
 }
 
-/** mass update of poller cache - can run in parallel to poller
- * @param array $local_data_ids - either a scalar (all ids) or an array of data source to act on
- * @param array $poller_items - the new items for poller cache
- * @param int $poller_id - the poller_id of the buffer
+/**
+ * mass update of poller cache - can run in parallel to poller
+ *
+ * @param array $local_data_ids Either a scalar (all ids) or an array of data source to act on
+ * @param array $poller_items   The new items for poller cache
+ * @param int   $poller_id      The poller_id of the buffer
  *
  * @return void
  */
@@ -788,12 +790,13 @@ function poller_update_poller_cache_from_buffer(array $local_data_ids, array &$p
 	set_config_option('time_last_change_poller_item', time());
 }
 
-/** for a given data template, update all input data and the poller cache
+/**
+ * for a given data template, update all input data and the poller cache
  *
- * @param int $host_id - id of host, if any
- * @param int $local_data_id - id of a single data source, if any
- * @param int $data_template_id - id of data template
- *            works on table data_input_data and poller cache
+ * @param int $host_id          The id of host, if any
+ * @param int $local_data_id    The id of a single data source, if any
+ * @param int $data_template_id The id of data template
+ *                              works on table data_input_data and poller cache
  *
  * @return void
  */
@@ -2043,9 +2046,9 @@ function utility_php_set_installed(array &$extensions) : void {
  * This function is used to prime the previous values for processing
  * by object removal functions.
  *
- * @param string $class - The class of object as above
- * @param mixed  $object_ids - The ids for the object class
- * @param bool   $diff - Load the objects into the diff array
+ * @param string $class      The class of object as above
+ * @param mixed  $object_ids The ids for the object class
+ * @param bool   $diff       Load the objects into the diff array
  *
  * @return void
  */

@@ -25,8 +25,8 @@
 /**
  * Update hash stored in settings table to inform remote pollers to update their caches
  *
- * @param int $poller_id The ID of the poller impacted by hash update
- * @param string $variable The hash variable prefix for the replication setting
+ * @param int    $poller_id The ID of the poller impacted by hash update
+ * @param string $variable  The hash variable prefix for the replication setting
  *
  * @return void
  */
@@ -41,7 +41,7 @@ function api_data_source_cache_crc_update(int $poller_id, string $variable = 'po
 /**
  * Determines if a data source can be deleted.
  *
- * @param int $local_data_id The ID of the local data source to check.
+ * @param  int  $local_data_id The ID of the local data source to check.
  * @return bool Returns true if the data source can be deleted, false otherwise.
  */
 function api_data_source_deletable(int $local_data_id) : bool {
@@ -65,8 +65,8 @@ function api_data_source_deletable(int $local_data_id) : bool {
 /**
  * Removes a data source from the system.
  *
- * @param int  $local_data_id  The ID of the local data source to be removed.
- * @param bool $update_totals  Whether to update object cache totals after deletion. Default is true.
+ * @param int  $local_data_id The ID of the local data source to be removed.
+ * @param bool $update_totals Whether to update object cache totals after deletion. Default is true.
  *
  * @return void
  */
@@ -205,7 +205,7 @@ function api_data_source_remove(int $local_data_id, bool $update_totals = true) 
  * Removes multiple data sources from the system.
  *
  * @param array $local_data_ids An array of local data IDs to be removed.
- * @param bool $update_totals   Optional. Whether to update totals after removal. Default is true.
+ * @param bool  $update_totals  Optional. Whether to update totals after removal. Default is true.
  *
  * @return void
  */
@@ -568,7 +568,7 @@ function api_data_source_get_interface_speed(array $data_local) : int {
  * Change the host for a list of data sources.
  *
  * @param array $data_sources An array of data source IDs to be updated.
- * @param int $device_id The ID of the new host device.
+ * @param int   $device_id    The ID of the new host device.
  *
  * @return void
  */
@@ -696,9 +696,9 @@ function api_reapply_suggested_data_source_data(int $local_data_id) : void {
 /**
  * Duplicates a data source or data template.
  *
- * @param  int    $_local_data_id    - The ID of the local data to duplicate. If provided, the function will duplicate the data source.
- * @param  int    $_data_template_id - The ID of the data template to duplicate. If provided, the function will duplicate the data template.
- * @param  string $data_source_title - The title for the new data source or data template.
+ * @param int    $_local_data_id    The ID of the local data to duplicate. If provided, the function will duplicate the data source.
+ * @param int    $_data_template_id The ID of the data template to duplicate. If provided, the function will duplicate the data template.
+ * @param string $data_source_title The title for the new data source or data template.
  *
  * @return mixed - The ID of the newly created local data or data template, or false on failure.
  */
@@ -867,8 +867,8 @@ function api_data_source_duplicate(int $_local_data_id, int $_data_template_id, 
 /**
  * Duplicates a data input entry and its associated fields.
  *
- * @param int    $_data_input_id - The ID of the data input entry to duplicate.
- * @param string $input_title    - The title for the new duplicated data input entry.
+ * @param int    $_data_input_id The ID of the data input entry to duplicate.
+ * @param string $input_title    The title for the new duplicated data input entry.
  *
  * @return mixed - The ID of the newly created data input entry on success, or false on failure.
  */
@@ -957,9 +957,9 @@ function api_data_input_remove(int $id) : void {
 /**
  * Checks if the number of input fields in the input string is greater than the existing input fields in the database.
  *
- * @param int $id The ID of the data input.
- * @param string $input_string The input string containing the input fields.
- * @return bool Returns true if the number of input fields in the input string is greater than the existing input fields, otherwise false.
+ * @param  int    $id           The ID of the data input.
+ * @param  string $input_string The input string containing the input fields.
+ * @return bool   Returns true if the number of input fields in the input string is greater than the existing input fields, otherwise false.
  */
 function api_data_input_more_inputs(int $id, string $input_string) : bool {
 	$input_string = str_replace('<path_cacti>', '', $input_string);

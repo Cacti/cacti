@@ -726,11 +726,11 @@ function boost_output_rrd_data(int $child) : mixed {
  * boost_process_local_data_ids - grabs data from the 'poller_output' table and feeds the *completed*
  * results to RRDTool for processing
  *
- * @param int   $last_id - the last id to process
- * @param int   $child - the current process
- * @param mixed $rrdtool_pipe - the socket that has been opened for the RRDtool operation
+ * @param int   $last_id      The last id to process
+ * @param int   $child        The current process
+ * @param mixed $rrdtool_pipe The socket that has been opened for the RRDtool operation
  *
- * @return int - The number of processed local_data_ids
+ * @return int The number of processed local_data_ids
  */
 function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_pipe) : int {
 	global $archive_table, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used, $current_lock;

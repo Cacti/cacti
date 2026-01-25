@@ -254,6 +254,25 @@ if ($report_id === false) {
 exit(0);
 
 /**
+ * sig_handler - provides a generic means to catch exceptions to the Cacti log.
+ *
+ * @param int $signo the signal that was thrown by the interface.
+ *
+ * @return void
+ */
+function sig_handler(int $signo) : void {
+	switch ($signo) {
+		case SIGTERM:
+		case SIGINT:
+			reports_log('WARNING: Reports Poller terminated by user', false, 'REPORTS TRACE', POLLER_VERBOSITY_LOW);
+
+			exit(1);
+		default:
+			// ignore all other signals
+	}
+}
+
+/**
  * display_version - displays version information
  */
 function display_version() : void {
@@ -273,23 +292,4 @@ function display_help() : void {
 	print "Optional:\n";
 	print "    --force     - Force all Reports to be sent\n";
 	print "    --debug     - Display verbose output during execution\n\n";
-}
-
-/**
- * sig_handler - provides a generic means to catch exceptions to the Cacti log.
- *
- * @param  int   $signo the signal that was thrown by the interface.
- *
- * @return void
- */
-function sig_handler(int $signo) : void {
-	switch ($signo) {
-		case SIGTERM:
-		case SIGINT:
-			reports_log('WARNING: Reports Poller terminated by user', false, 'REPORTS TRACE', POLLER_VERBOSITY_LOW);
-
-			exit(1);
-		default:
-			// ignore all other signals
-	}
 }

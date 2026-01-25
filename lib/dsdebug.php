@@ -42,9 +42,9 @@ function dsdebug_debug(string $message) : void {
  * log_dsstats_statistics - provides generic timing message to both the Cacti log and the settings
  * table so that the statistics can be graphed as well.
  *
- * @param string $type   - The type of statistics to log, either 'HOURLY', 'DAILY' or 'MAJOR'.
- * @param int    $checks - The number of checks performed
- * @param int    $issues - The number of issues found
+ * @param string $type   The type of statistics to log, either 'HOURLY', 'DAILY' or 'MAJOR'.
+ * @param int    $checks The number of checks performed
+ * @param int    $issues The number of issues found
  *
  * @return void
  */
@@ -67,13 +67,13 @@ function log_dsdebug_statistics(string $type, int $checks, int $issues) : void {
  * dsstats_error_handler - This routine logs all PHP error transactions
  * to make sure they are properly logged.
  *
- * @param int    $errno    - The errornum reported by the system
- * @param string $errmsg   - The error message provides by the error
- * @param string $filename - The filename that encountered the error
- * @param int    $linenum  - The line number where the error occurred
- * @param array  $vars     - The current state of PHP variables.
+ * @param int    $errno    The errornum reported by the system
+ * @param string $errmsg   The error message provides by the error
+ * @param string $filename The filename that encountered the error
+ * @param int    $linenum  The line number where the error occurred
+ * @param array  $vars     The current state of PHP variables.
  *
- * @return bool  - always returns true for some reason
+ * @return bool Always returns true for some reason
  */
 function dsdebug_error_handler(int $errno, string $errmsg, string $filename, int $linenum, array $vars = []) : bool {
 	if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {

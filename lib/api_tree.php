@@ -25,9 +25,9 @@
 /**
  * Locks a tree for editing
  *
- * @param int  $tree_id  The ID of the tree to lock.
- * @param int  $user_id  The ID of the user performing the lock operation. Default is 0.
- * @param bool $web      Indicates if the operation is performed via the web interface. Default is true.
+ * @param int  $tree_id The ID of the tree to lock.
+ * @param int  $user_id The ID of the user performing the lock operation. Default is 0.
+ * @param bool $web     Indicates if the operation is performed via the web interface. Default is true.
  *
  * @return void
  */
@@ -67,10 +67,10 @@ function api_tree_unlock(int $tree_id, int $user_id = 0, bool $web = true) : voi
 /**
  * Copies a node within a tree to a new parent node at a specified position.
  *
- * @param int $tree_id The ID of the tree.
- * @param int|string $node_id The ID of the node to copy.
- * @param int|string $new_parent The ID of the new parent node.
- * @param int $new_position The position under the new parent node.
+ * @param int        $tree_id      The ID of the tree.
+ * @param int|string $node_id      The ID of the node to copy.
+ * @param int|string $new_parent   The ID of the new parent node.
+ * @param int        $new_position The position under the new parent node.
  *
  * @return void
  */
@@ -189,7 +189,7 @@ function api_tree_copy_node(int $tree_id, int|string $node_id, int|string $new_p
  *   This function allows simulating transactions in an MyISAM database.
  *
  * @param string $lockname The name of the lock to acquire.
- * @param int $timeout The timeout period in seconds for acquiring the lock. Default is 10 seconds.
+ * @param int    $timeout  The timeout period in seconds for acquiring the lock. Default is 10 seconds.
  *
  * @return bool Returns true if the lock is acquired, false otherwise.
  */
@@ -300,9 +300,9 @@ function api_tree_create_node(int $tree_id, mixed $node_id, int $position, strin
 /**
  * Checks if a tree branch exists in the graph_tree_items table.
  *
- * @param int $tree_id The ID of the tree to check.
- * @param int $parent The parent ID of the branch to check.
- * @param string $title The title of the branch to check.
+ * @param int    $tree_id The ID of the tree to check.
+ * @param int    $parent  The parent ID of the branch to check.
+ * @param string $title   The title of the branch to check.
  *
  * @return mixed - The ID of the branch if it exists, or false if it does not.
  */
@@ -321,7 +321,7 @@ function api_tree_branch_exists(int $tree_id, int $parent, string $title) : mixe
  * Given a tree, parent branch, and a host_id, will check host on that branch
  *
  * @param int $tree_id The ID of the tree.
- * @param int $parent The ID of the parent item.
+ * @param int $parent  The ID of the parent item.
  * @param int $site_id The ID of the site.
  *
  * @return int|false The ID of the site if it exists, or false if it does not exist.
@@ -341,7 +341,7 @@ function api_tree_site_exists(int $tree_id, int $parent, int $site_id) : int|fal
  * Given a tree, parent branch, and a host_id, will check host on that branch
  *
  * @param int $tree_id The ID of the tree to check.
- * @param int $parent The ID of the parent under which to check for the host.
+ * @param int $parent  The ID of the parent under which to check for the host.
  * @param int $host_id The ID of the host to check for.
  *
  * @return int|false The ID of the host if it exists, or false if it does not.
@@ -360,8 +360,8 @@ function api_tree_host_exists(int $tree_id, int $parent, int $host_id) : int|fal
 /**
  * Given a tree, parent branch, and a local_graph_id, will check graph on that branch
  *
- * @param int $tree_id The ID of the tree to check.
- * @param int $parent The parent ID within the tree.
+ * @param int $tree_id        The ID of the tree to check.
+ * @param int $parent         The parent ID within the tree.
  * @param int $local_graph_id The local graph ID to check for.
  *
  * @return int|false The ID of the graph if it exists, or false if it does not.
@@ -380,7 +380,7 @@ function api_tree_graph_exists(int $tree_id, int $parent, int $local_graph_id) :
 /**
  * Given a tree and a branch/leaf, delete the node and it's content
  *
- * @param int $tree_id The ID of the tree from which the node will be deleted.
+ * @param int        $tree_id The ID of the tree from which the node will be deleted.
  * @param int|string $node_id The ID of the node to be deleted.
  *
  * @return void
@@ -457,10 +457,10 @@ function api_tree_delete_node_content(int $tree_id, int $leaf_id) : void {
 /**
  * Moves a node to a new parent and position within a tree.
  *
- * @param int $tree_id The ID of the tree.
- * @param int|string $node_id The ID of the node to move.
- * @param int|string $new_parent The ID of the new parent node or '#' for the root.
- * @param int $new_position The new position of the node within the new parent.
+ * @param int        $tree_id      The ID of the tree.
+ * @param int|string $node_id      The ID of the node to move.
+ * @param int|string $new_parent   The ID of the new parent node or '#' for the root.
+ * @param int        $new_position The new position of the node within the new parent.
  *
  * @return void
  */
@@ -618,9 +618,9 @@ function api_tree_parse_node_data(string $variable) : array {
 /**
  * Renames a node in a tree.
  *
- * @param int $tree_id The ID of the tree.
+ * @param int         $tree_id The ID of the tree.
  * @param string|null $node_id The ID of the node to rename. Defaults to an empty string.
- * @param string $title The new title for the node. Defaults to an empty string.
+ * @param string      $title   The new title for the node. Defaults to an empty string.
  *
  * @return void
  */
@@ -710,8 +710,8 @@ function api_tree_rename_node(int $tree_id, string|null $node_id = '', string $t
 /**
  * Given the tree and the parent node information return tree elements
  *
- * @param mixed  $tree_id  - The ID of the tree to retrieve. Can be null.
- * @param int    $parent   - The parent node ID. Defaults to 0. If -1, it indicates the root node.
+ * @param mixed $tree_id The ID of the tree to retrieve. Can be null.
+ * @param int   $parent  The parent node ID. Defaults to 0. If -1, it indicates the root node.
  *
  * @return void
  */
@@ -764,9 +764,9 @@ function api_tree_get_main(mixed $tree_id, int $parent = 0) : void {
 /**
  * Given the tree and the node information return tree elements
  *
- * @param int    $tree_id  - The ID of the tree.
- * @param string $node_id  - The ID of the node. If the node ID is '#', the top-level hierarchy is fetched.
- * @param bool   $editing  - Optional. Whether the tree is being edited. Default is false.
+ * @param int    $tree_id The ID of the tree.
+ * @param string $node_id The ID of the node. If the node ID is '#', the top-level hierarchy is fetched.
+ * @param bool   $editing Whether the tree is being edited. Default is false.
  *
  * @return void
  */
@@ -791,17 +791,17 @@ function api_tree_get_node(int $tree_id, string $node_id, bool $editing = false)
 /**
  * Saves the tree object and then resorts the tree
  *
- * @param int $id The ID of the tree item.
- * @param int $tree_id The ID of the tree.
- * @param int $type The type of the tree item.
- * @param int $parent_tree_item_id The ID of the parent tree item.
- * @param string $title The title of the tree item.
- * @param int $local_graph_id The ID of the local graph.
- * @param int $host_id The ID of the host.
- * @param int $site_id The ID of the site.
- * @param int $host_grouping_type The type of host grouping.
- * @param int $sort_children_type The type of sorting for children.
- * @param bool $propagate_changes Whether to propagate changes.
+ * @param int    $id                  The ID of the tree item.
+ * @param int    $tree_id             The ID of the tree.
+ * @param int    $type                The type of the tree item.
+ * @param int    $parent_tree_item_id The ID of the parent tree item.
+ * @param string $title               The title of the tree item.
+ * @param int    $local_graph_id      The ID of the local graph.
+ * @param int    $host_id             The ID of the host.
+ * @param int    $site_id             The ID of the site.
+ * @param int    $host_grouping_type  The type of host grouping.
+ * @param int    $sort_children_type  The type of sorting for children.
+ * @param bool   $propagate_changes   Whether to propagate changes.
  *
  * @return int|false The ID of the saved tree item, or false if the item already exists.
  */
@@ -921,7 +921,7 @@ function api_tree_get_item_type(int $tree_item_id) : string {
 
 /**
  * Callback to naturally sort an array
- *   This function is used to sort graphs and trees.
+ * This function is used to sort graphs and trees.
  *
  * @deprecated
  *
@@ -936,7 +936,7 @@ function naturally_sort_graphs(array $a, array $b) : int {
 
 /**
  * Determine the ordering of any elements owning leaf
- *   This function is to assist with ordering tree items
+ * This function is to assist with ordering tree items
  *
  * @param int $leaf_id The ID of the leaf node for which to retrieve the branch ordering type.
  *
@@ -964,7 +964,7 @@ function api_tree_get_branch_ordering(int $leaf_id) : int {
 
 /**
  * Determine the name of a branch leaf
- *   This function is to assist with editing trees
+ * This function is to assist with editing trees
  *
  * @param int $tree_id The ID of the tree.
  * @param int $leaf_id The ID of the leaf within the tree.
@@ -978,9 +978,9 @@ function api_tree_get_branch_name(int $tree_id, int $leaf_id) : string {
 /**
  * Given a tree, parent, and title return the leaf_id
  *
- * @param int $tree_id The ID of the tree.
- * @param int $parent The parent ID within the tree.
- * @param string $title The title of the branch.
+ * @param int    $tree_id The ID of the tree.
+ * @param int    $parent  The parent ID within the tree.
+ * @param string $title   The title of the branch.
  *
  * @return int|null The ID of the branch if found, or null if not found.
  */
@@ -990,11 +990,11 @@ function api_tree_get_branch_id(int $tree_id, int $parent, string $title) : int|
 
 /**
  * Sorts a branch based upon sorting rules.
- *   The sorting order is as follows: Tree Branches, Devices, Graphs.
+ * The sorting order is as follows: Tree Branches, Devices, Graphs.
  *
  * @param int|string $leaf_id The ID of the leaf or a string representing the node data.
- * @param int $tree_id The ID of the tree. Default is 0.
- * @param bool $lock Whether to lock the tree during sorting. Default is true.
+ * @param int        $tree_id The ID of the tree. Default is 0.
+ * @param bool       $lock    Whether to lock the tree during sorting. Default is true.
  *
  * @return void
  */

@@ -51,21 +51,21 @@
  * 12	Group DN not found
  * 99	PHP LDAP not enabled
  *
- * @param string $username - username of the user
- * @param string $password - password of the user
- * @param string $dn - LDAP DN for binding
- * @param string $host - Hostname or IP of LDAP server, Default = Configured settings value
- * @param int    $port - Port of the LDAP server uses, Default = Configured settings value
- * @param int    $port_ssl - Port of the LDAP server uses for SSL, Default = Configured settings value
- * @param int    $version - '2' or '3', LDAP protocol version, Default = Configured settings value
- * @param int    $encryption - '0' None, '1' SSL, '2' TLS, Default = Configured settings value
- * @param int    $referrals - '0' Referrals from server are ignored, '1' Referrals from server are processed, Default = Configured setting value
- * @param mixed  $group_require - false Group membership is not required, '1' Group membership is required
- * @param string $group_dn - LDAP Group DN
- * @param string $group_attrib - Name of the LDAP Attrib that contains members
+ * @param string $username          - username of the user
+ * @param string $password          - password of the user
+ * @param string $dn                - LDAP DN for binding
+ * @param string $host              - Hostname or IP of LDAP server, Default = Configured settings value
+ * @param int    $port              - Port of the LDAP server uses, Default = Configured settings value
+ * @param int    $port_ssl          - Port of the LDAP server uses for SSL, Default = Configured settings value
+ * @param int    $version           - '2' or '3', LDAP protocol version, Default = Configured settings value
+ * @param int    $encryption        - '0' None, '1' SSL, '2' TLS, Default = Configured settings value
+ * @param int    $referrals         - '0' Referrals from server are ignored, '1' Referrals from server are processed, Default = Configured setting value
+ * @param mixed  $group_require     - false Group membership is not required, '1' Group membership is required
+ * @param string $group_dn          - LDAP Group DN
+ * @param string $group_attrib      - Name of the LDAP Attrib that contains members
  * @param int    $group_member_type
  *
- * @return array  - Return values
+ * @return array - Return values
  */
 function cacti_ldap_auth(string $username, string $password = '', string $dn = '', string $host = '', int $port = 0, int $port_ssl = 0, int $version = 0,
 	int $encryption = 0, int $referrals = 0, mixed $group_require = false, string $group_dn = '', string $group_attrib = '', int $group_member_type = 0) : array {

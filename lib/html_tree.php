@@ -51,11 +51,11 @@ function process_tree_settings() : void {
 /**
  * Generates a dropdown tree structure for a given tree ID.
  *
- * @param int    $tree_id The ID of the tree to generate the dropdown for.
- * @param mixed  $parent The parent ID to start building the tree from. Default is 0 (root).
- * @param string $form_name The name attribute for the <select> element.
+ * @param int    $tree_id               The ID of the tree to generate the dropdown for.
+ * @param mixed  $parent                The parent ID to start building the tree from. Default is 0 (root).
+ * @param string $form_name             The name attribute for the <select> element.
  * @param string $selected_tree_item_id The ID of the tree item to be selected by default.
- * @param int    $tier The current tier level in the tree. Default is 0.
+ * @param int    $tier                  The current tier level in the tree. Default is 0.
  *
  * @return void
  */
@@ -507,7 +507,7 @@ function get_tree_path() : array {
 /**
  * Get the CSS class for a device based on its status.
  *
- * @param int $host_id The ID of the host device.
+ * @param  int    $host_id The ID of the host device.
  * @return string The CSS class name corresponding to the device's status.
  *
  * @return string
@@ -585,7 +585,7 @@ function draw_dhtml_tree_level(int $tree_id, int $parent = 0, bool $editing = fa
  * It includes branches for sites, hosts, and other elements, and returns the generated HTML as an array of strings.
  *
  * @param int $tree_id The ID of the tree to draw.
- * @param int $parent The ID of the parent node. Defaults to 0.
+ * @param int $parent  The ID of the parent node. Defaults to 0.
  *
  * @return array The generated HTML structure as an array of strings.
  */
@@ -725,9 +725,9 @@ function create_branch(array $leaf) : array {
 /**
  * Creates a host branch in the DHTML tree structure.
  *
- * @param array $leaf The leaf node containing host information.
- * @param int $site_id The site ID associated with the host (default is -1).
- * @param int $ht The host template ID (default is -1).
+ * @param array $leaf    The leaf node containing host information.
+ * @param int   $site_id The site ID associated with the host (default is -1).
+ * @param int   $ht      The host template ID (default is -1).
  *
  * @return array The DHTML tree structure with the host branch added.
  */
@@ -771,9 +771,9 @@ function create_host_branch(array $leaf, int $site_id = -1, int $ht = -1) : arra
 /**
  * Creates a branch of graph templates for a given host in a DHTML tree structure.
  *
- * @param array $leaf An associative array containing information about the host.
- * @param int $site_id Optional. The ID of the site. Default is -1.
- * @param int $ht Optional. The ID of the host template. Default is -1.
+ * @param array $leaf    An associative array containing information about the host.
+ * @param int   $site_id Optional. The ID of the site. Default is -1.
+ * @param int   $ht      Optional. The ID of the host template. Default is -1.
  *
  * @return array An array of HTML list items representing the graph templates.
  */
@@ -805,9 +805,9 @@ function create_graph_template_branch(array $leaf, int $site_id = -1, int $ht = 
  * associated with a specific host. It supports both query-based and non-query-based
  * data sources and includes options for sorting and filtering based on user settings.
  *
- * @param array $leaf The leaf node containing host information.
- * @param int $site_id The site ID (default is -1).
- * @param int $ht The host template ID (default is -1).
+ * @param array $leaf    The leaf node containing host information.
+ * @param int   $site_id The site ID (default is -1).
+ * @param int   $ht      The host template ID (default is -1).
  *
  * @return array The generated DHTML tree structure.
  */
@@ -1156,8 +1156,8 @@ function draw_tree_filter(bool $render = false) : void {
  * including various filters and options for graph templates, host templates, sites, and more.
  * It also handles the display of graph filters, timespan selectors, and other UI elements.
  *
- * @param int $tree_id The ID of the tree to generate the right pane for.
- * @param int $leaf_id The ID of the leaf to generate the right pane for.
+ * @param int    $tree_id         The ID of the tree to generate the right pane for.
+ * @param int    $leaf_id         The ID of the leaf to generate the right pane for.
  * @param string $host_group_data The host group data string, which can include graph template IDs, data query IDs, and data query indexes.
  *
  * @return void
@@ -1573,11 +1573,11 @@ function grow_right_pane_tree(int $tree_id, int $leaf_id, string $host_group_dat
 /**
  * Retrieves a list of graphs for a given host, graph template, and data query.
  *
- * @param int    $host_id             The ID of the host.
- * @param int    $graph_template_id   The ID of the graph template.
- * @param int    $data_query_id       The ID of the data query.
- * @param string $host_grouping_type  The type of host grouping (optional).
- * @param string $data_query_index    The index of the data query (optional).
+ * @param int    $host_id            The ID of the host.
+ * @param int    $graph_template_id  The ID of the graph template.
+ * @param int    $data_query_id      The ID of the data query.
+ * @param string $host_grouping_type The type of host grouping (optional).
+ * @param string $data_query_index   The index of the data query (optional).
  *
  * @return array An array of graphs for the specified host, graph template, and data query.
  */

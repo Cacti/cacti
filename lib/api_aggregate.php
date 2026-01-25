@@ -26,11 +26,11 @@
  * Create or update aggregate graph.
  * Save all graph definitions, but omit graph items. Wipe out host_id and graph_template_id.
  *
- * @param int $_local_graph_id The local graph ID.
- * @param int $_graph_template_id The graph template ID.
- * @param string $_graph_title The title of the graph.
- * @param int $_aggregate_template_id The aggregate template ID (optional, default is 0).
- * @param array $graph_data Additional graph data (optional).
+ * @param int    $_local_graph_id        The local graph ID.
+ * @param int    $_graph_template_id     The graph template ID.
+ * @param string $_graph_title           The title of the graph.
+ * @param int    $_aggregate_template_id The aggregate template ID (optional, default is 0).
+ * @param array  $graph_data             Additional graph data (optional).
  *
  * @return int The ID of the newly inserted graph.
  */
@@ -59,7 +59,7 @@ function aggregate_graph_save(int $_local_graph_id, int $_graph_template_id, str
 /**
  * Creates or updates basic aggregate graph data in graph_local.
  *
- * @param int $id - ID of existing aggregate graph if updating or 0 if creating a new one.
+ * @param int $id ID of existing aggregate graph if updating or 0 if creating a new one.
  *
  * @return int ID of graph.
  */
@@ -80,11 +80,11 @@ function aggregate_graph_local_save(int $id = 0) : int {
  * Create or update aggregate graphs data in graph_templates_graph.
  * Graph must already exist in graph_local eg. local_graph_id must never be 0
  *
- * @param int $local_graph_id        - ID of graph.
- * @param int $graph_template_id     - Graph template this graph is based on.
- * @param string $graph_title        - Title of graph. Used only for new graphs.
- * @param int $aggregate_template_id - ID of aggregate template this graph is based on (0 if not aggregate template based).
- * @param array $new_data            - Key/value pairs with new graph data.
+ * @param int    $local_graph_id        ID of graph.
+ * @param int    $graph_template_id     Graph template this graph is based on.
+ * @param string $graph_title           Title of graph. Used only for new graphs.
+ * @param int    $aggregate_template_id ID of aggregate template this graph is based on (0 if not aggregate template based).
+ * @param array  $new_data              Key/value pairs with new graph data.
  *
  * @return int ID of record in graph_templates_graph
  */
@@ -175,22 +175,22 @@ function aggregate_graph_templates_graph_save(int $local_graph_id, int $graph_te
 /**
  * Inserts graph items from an old graph into a new graph.
  *
- * @param int    $_new_graph_id The ID of the new graph.
- * @param int    $_old_graph_id The ID of the old graph.
- * @param int    $_graph_template_id The ID of the graph template.
- * @param array  $_skip Array of items to skip.
- * @param array  $_totali Array of total items.
- * @param int    $_graph_item_sequence The sequence number of the graph item.
+ * @param int    $_new_graph_id         The ID of the new graph.
+ * @param int    $_old_graph_id         The ID of the old graph.
+ * @param int    $_graph_template_id    The ID of the graph template.
+ * @param array  $_skip                 Array of items to skip.
+ * @param array  $_totali               Array of total items.
+ * @param int    $_graph_item_sequence  The sequence number of the graph item.
  * @param int    $_selected_graph_index The index of the selected graph.
- * @param array  $_color_templates Array of color templates.
- * @param array  $_graph_item_types Array of graph item types.
- * @param array  $_cdefs Array of CDEFs.
- * @param int    $_graph_type The type of the graph.
- * @param string $_gprint_prefix The prefix for GPRINT.
- * @param string $_gprint_format The format for GPRINT.
- * @param int    $_total The total value.
- * @param string $_total_type The type of the total (default is empty string).
- * @param array  $member_graphs Array of member graphs (default is empty array).
+ * @param array  $_color_templates      Array of color templates.
+ * @param array  $_graph_item_types     Array of graph item types.
+ * @param array  $_cdefs                Array of CDEFs.
+ * @param int    $_graph_type           The type of the graph.
+ * @param string $_gprint_prefix        The prefix for GPRINT.
+ * @param string $_gprint_format        The format for GPRINT.
+ * @param int    $_total                The total value.
+ * @param string $_total_type           The type of the total (default is empty string).
+ * @param array  $member_graphs         Array of member graphs (default is empty array).
  *
  * @return int The next sequence number to be filled.
  */
@@ -475,9 +475,9 @@ function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph
 /**
  * Insert or update aggregate graph items in DB tables
  *
- * @param array $items
- * @param string $table
- * @return bool true if save was successful, false otherwise
+ * @param  array  $items
+ * @param  string $table
+ * @return bool   true if save was successful, false otherwise
  */
 function aggregate_graph_items_save(array $items, string $table) : bool {
 	$defaults = [];
@@ -554,9 +554,10 @@ function aggregate_graph_items_save(array $items, string $table) : bool {
  * Validate extra graph parameters posted from graph edit form.
  * You can check for validation errors with cacti function is_error_message
  *
- * @param array $posted      - values posted from form
- * @param bool $has_override - form had override checkboxes
- * @return array             - cleaned up graph parameters
+ * @param  array $posted       values posted from form
+ * @param  bool  $has_override form had override checkboxes
+ *
+ * @return array - cleaned up graph parameters
  */
 function aggregate_validate_graph_params(array $posted, bool $has_override = false) : array {
 	$check_post_params = [
@@ -625,8 +626,9 @@ function aggregate_validate_graph_params(array $posted, bool $has_override = fal
  * Populate graph items array with posted values.
  * $graph_items array must be keyed on graph item id.
  *
- * @param array $posted      - values posted from form
- * @param array $graph_items - reference to graph items array to update with form values
+ * @param  array $posted      Values posted from form
+ * @param  array $graph_items Reference to graph items array to update with form values
+ *
  * @return void
  */
 function aggregate_validate_graph_items(array $posted, array &$graph_items) : void {
@@ -678,9 +680,9 @@ function aggregate_validate_graph_items(array $posted, array &$graph_items) : vo
 /**
  * Cleans up aggregated graphs.
  *
- * @param int $base The base graph ID.
+ * @param int $base      The base graph ID.
  * @param int $aggregate The aggregate graph ID.
- * @param int $reorder The reorder flag.
+ * @param int $reorder   The reorder flag.
  *
  * @return void
  */
@@ -702,11 +704,11 @@ function aggregate_graphs_cleanup(int $base, int $aggregate, int $reorder) : voi
 /**
  * Reorders the data source graph for a given aggregate.
  *
- * @param int $base The base ID for the operation.
+ * @param int    $base              The base ID for the operation.
  * @param string $graph_template_id The ID of the graph template.
- * @param int $aggregate The aggregate ID.
- * @param int $reorder The new order position.
- * @param int $graph_type The type of the graph.
+ * @param int    $aggregate         The aggregate ID.
+ * @param int    $reorder           The new order position.
+ * @param int    $graph_type        The type of the graph.
  *
  * @return bool
  */
@@ -1096,9 +1098,9 @@ function push_out_aggregates(int $aggregate_template_id, int $local_graph_id = 0
 /**
  * Creates or updates an aggregate based on criteria
  *
- * @param int $local_graph_id The ID of the local graph to create or update.
- * @param array $member_graphs An array of member graphs to include in the aggregate.
- * @param array $attribs An array of attributes for the aggregate graph.
+ * @param int   $local_graph_id The ID of the local graph to create or update.
+ * @param array $member_graphs  An array of member graphs to include in the aggregate.
+ * @param array $attribs        An array of attributes for the aggregate graph.
  *
  * @return void
  */
@@ -1356,11 +1358,11 @@ function aggregate_create_update(int &$local_graph_id, array $member_graphs, arr
 /**
  * Handles the percentile type aggregation for member graphs.
  *
- * @param array $member_graphs An array of member graphs to be aggregated.
- * @param array $skipped_items An array of items that were skipped during the aggregation process.
- * @param int $local_graph_id The ID of the local graph being processed.
- * @param int $_total The total value calculated during the aggregation.
- * @param string $_total_type The type of total calculation (e.g., 'sum', 'average').
+ * @param array  $member_graphs  An array of member graphs to be aggregated.
+ * @param array  $skipped_items  An array of items that were skipped during the aggregation process.
+ * @param int    $local_graph_id The ID of the local graph being processed.
+ * @param int    $_total         The total value calculated during the aggregation.
+ * @param string $_total_type    The type of total calculation (e.g., 'sum', 'average').
  *
  * @return void
  */
@@ -1593,11 +1595,11 @@ function aggregate_handle_ptile_type(array $member_graphs, array $skipped_items,
 /**
  * Handles the aggregation of stacked lines for a given graph.
  *
- * @param int $local_graph_id The ID of the local graph.
+ * @param int    $local_graph_id   The ID of the local graph.
  * @param string $_orig_graph_type The original type of the graph.
- * @param int $_total The total value to be aggregated.
- * @param string $_total_type The type of the total value.
- * @param string $_total_prefix The prefix for the total value.
+ * @param int    $_total           The total value to be aggregated.
+ * @param string $_total_type      The type of the total value.
+ * @param string $_total_prefix    The prefix for the total value.
  *
  * @return void
  */
@@ -1672,10 +1674,10 @@ function aggregate_handle_stacked_lines(int $local_graph_id, string $_orig_graph
 /**
  * Retrieves data sources for aggregation.
  *
- * @param array $graph_array Array of graphs to aggregate.
- * @param mixed $data_sources Array to store the retrieved data sources.
- * @param mixed $graph_template Template for the graphs.
- * @param string $message Optional. Message to store any errors or information.
+ * @param array  $graph_array    Array of graphs to aggregate.
+ * @param mixed  $data_sources   Array to store the retrieved data sources.
+ * @param mixed  $graph_template Template for the graphs.
+ * @param string $message        Optional. Message to store any errors or information.
  *
  * @return bool True on success, false on failure.
  */
@@ -1731,9 +1733,9 @@ function aggregate_get_data_sources(array &$graph_array, mixed &$data_sources, m
 /**
  * Draws the list of aggregate graph items.
  *
- * @param int   $_graph_id - The ID of the graph. Default is 0.
- * @param int   $_graph_template_id - The ID of the graph template. Default is 0.
- * @param array $_object - An array of objects related to the graph. Default is an empty array.
+ * @param int   $_graph_id          The ID of the graph. Default is 0.
+ * @param int   $_graph_template_id The ID of the graph template. Default is 0.
+ * @param array $_object            An array of objects related to the graph. Default is an empty array.
  *
  * @return void
  */
@@ -2009,7 +2011,7 @@ function draw_aggregate_graph_items_list(int $_graph_id = 0, int $_graph_templat
  * Draw graph configuration form so user can override some graph template parameters
  *
  * @param int $aggregate_template_id The ID of the aggregate template.
- * @param int $graph_template_id The ID of the graph template.
+ * @param int $graph_template_id     The ID of the graph template.
  *
  * @return void
  */

@@ -573,21 +573,21 @@ function import_read_package_data(string $xmlfile, string &$public_key, bool $pr
  * This function can also read from the $_REQUEST environment certain overrides for
  * Graph Size, and Image format when importing through the GUI.
  *
- * @param string $xmlfile - The XML file to process
- * @param int    $profile_id - The Data Source Profile to use for the packages
- * @param bool   $remove_orphans - Boolean true to remove Graph Template orphans after import
- * @param bool   $replace_svalues - Boolean that if true, all suggested values for Graph Templates
- *               and Data Templates will be replaced with the values in the
- *               package.
- * @param bool   $preview - If true, only generate a preview of what will be imported
- *               and the corresponding changes.
- * @param bool   $info_only - Return only the information about the package, not details
- * @param bool   $limitex - Limit the execution time to 50 seconds to process for larger
- *               packages.
- * @param array  $import_hashes - The hashes to import from the package
- * @param array  $import_files - The XML resource files and script files to import from the package
+ * @param string $xmlfile         The XML file to process
+ * @param int    $profile_id      The Data Source Profile to use for the packages
+ * @param bool   $remove_orphans  Boolean true to remove Graph Template orphans after import
+ * @param bool   $replace_svalues Boolean that if true, all suggested values for Graph Templates
+ *                                and Data Templates will be replaced with the values in the
+ *                                package.
+ * @param bool   $preview         If true, only generate a preview of what will be imported
+ *                                and the corresponding changes.
+ * @param bool   $info_only       Return only the information about the package, not details
+ * @param bool   $limitex         Limit the execution time to 50 seconds to process for larger
+ *                                packages.
+ * @param array  $import_hashes   The hashes to import from the package
+ * @param array  $import_files    The XML resource files and script files to import from the package
  *
- * @return mixed - The results of the import package
+ * @return mixed The results of the import package
  */
 function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orphans = false,
 	bool $replace_svalues = false, bool $preview = false, bool $info_only = false, bool $limitex = true,

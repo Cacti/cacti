@@ -317,11 +317,11 @@ exit(0);
  *   RRA's and will float around those ranges to ensure that there are
  *   no spikes.
  *
- * @param string $rrd_path      - The RRDfile to update
- * @param int    $local_data_id - The local data id of the data source
- * @param mixed  $step          - Any step size smaller than this will be skipped
- * @param int    $start_time    - The float range start time as a unix timestamp
- * @param int    $end_time      - The float range end time as a unix timestamp
+ * @param string $rrd_path      The RRDfile to update
+ * @param int    $local_data_id The local data id of the data source
+ * @param mixed  $step          Any step size smaller than this will be skipped
+ * @param int    $start_time    The float range start time as a unix timestamp
+ * @param int    $end_time      The float range end time as a unix timestamp
  *
  * @return bool - True if successful otherwise false
  */
@@ -624,10 +624,10 @@ function float_master_handler(bool $forcerun, bool $resume, int $host_id, int $h
  * float_launch_child - this function will launch collector children based upon
  * the maximum number of threads and the process type
  *
- * @param int   $thread_id  - The Thread id to launch
- * @param mixed $step     - The RRDstep for the RRDfile
- * @param int   $start_time - The float window start time as a timestamp
- * @param int   $end_time   - The float window end time as a timestamp
+ * @param int   $thread_id  The Thread id to launch
+ * @param mixed $step       The RRDstep for the RRDfile
+ * @param int   $start_time The float window start time as a timestamp
+ * @param int   $end_time   The float window end time as a timestamp
  *
  * @return void
  */
@@ -662,7 +662,7 @@ function float_processes_running() : int {
  * float_debug - this simple routine prints a standard message to the console
  * when running in debug mode.
  *
- * @param string $message - The message to display
+ * @param string $message The message to display
  *
  * @return void
  */
@@ -677,7 +677,7 @@ function float_debug(string $message) : void {
 /**
  * sig_handler - provides a generic means to catch exceptions to the Cacti log.
  *
- * @param int $signo - The signal that was thrown by the interface.
+ * @param int $signo The signal that was thrown by the interface.
  *
  * @return void
  */

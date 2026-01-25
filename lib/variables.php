@@ -26,7 +26,7 @@
  * update_data_source_title_cache_from_template - updates the title cache for all data sources
  * that match a given data template
  *
- * @param int  $data_template_id  - The ID of the data template to match
+ * @param int $data_template_id The ID of the data template to match
  *
  * @return void
  */
@@ -44,11 +44,12 @@ function update_data_source_title_cache_from_template(int $data_template_id) : v
 	}
 }
 
-/** update_data_source_title_cache_from_query - updates the title cache for all data sources
+/**
+ * update_data_source_title_cache_from_query - updates the title cache for all data sources
  * that match a given data query/index combination
  *
- * @param int $snmp_query_id - The ID of the data query to match
- * @param string $snmp_index - The index within the data query to match
+ * @param int    $snmp_query_id The ID of the data query to match
+ * @param string $snmp_index    The index within the data query to match
  *
  * @return void
  */
@@ -70,9 +71,9 @@ function update_data_source_title_cache_from_query(int $snmp_query_id, string $s
  * update_data_source_title_cache_from_host - updates the title cache for all data sources
  * that match a given host
  *
- * @param  int    $host_id  - The ID of the host to match
- * @param  int    $query_id - The ID of the snmp query
- * @param  array  $ids      - An array of local data ids
+ * @param int   $host_id  The ID of the host to match
+ * @param int   $query_id The ID of the snmp query
+ * @param array $ids      An array of local data ids
  *
  * @return void
  */
@@ -107,7 +108,7 @@ function update_data_source_title_cache_from_host(int $host_id, int $query_id = 
 /**
  * update_data_source_title_cache - updates the title cache for a single data source
  *
- * @param  int $local_data_id - The ID of the data source to update the title cache for
+ * @param int $local_data_id The ID of the data source to update the title cache for
  *
  * @return void
  */
@@ -142,7 +143,7 @@ function update_data_source_title_cache(int $local_data_id) : void {
  * update_graph_title_cache_from_template - updates the title cache for all graphs
  * that match a given graph template
  *
- * @param  int $graph_template_id - The ID of the graph template to match
+ * @param int $graph_template_id The ID of the graph template to match
  *
  * @return void
  */
@@ -164,8 +165,8 @@ function update_graph_title_cache_from_template(int $graph_template_id) : void {
  * update_graph_title_cache_from_query - updates the title cache for all graphs
  * that match a given data query/index combination
  *
- * @param int   $snmp_query_id - The ID of the data query to match
- * @param string $snmp_index   - The index within the data query to match
+ * @param int    $snmp_query_id The ID of the data query to match
+ * @param string $snmp_index    The index within the data query to match
  *
  * @return void
  */
@@ -183,12 +184,13 @@ function update_graph_title_cache_from_query(int $snmp_query_id, string $snmp_in
 	}
 }
 
-/** update_graph_title_cache_from_host - updates the title cache for all graphs
+/**
+ * update_graph_title_cache_from_host - updates the title cache for all graphs
  * that match a given host
  *
- * @param  int   $host_id  - The ID of the host to match
- * @param  int   $query_id - The ID of the data query to match
- * @param  array $ids      - An array of local_data_ids
+ * @param int   $host_id  The ID of the host to match
+ * @param int   $query_id The ID of the data query to match
+ * @param array $ids      An array of local_data_ids
  *
  * @return void
  */
@@ -227,7 +229,7 @@ function update_graph_title_cache_from_host(int $host_id, int $query_id = 0, arr
 /**
  * update_graph_title_cache - updates the title cache for a single graph
  *
- * @param  int $local_graph_id - The ID of the graph to update the title cache for
+ * @param int $local_graph_id The ID of the graph to update the title cache for
  *
  * @return void
  */
@@ -258,9 +260,9 @@ function update_graph_title_cache(int $local_graph_id) : void {
  * null_out_substitutions - takes a string and cleans out any host variables that
  * do not have values.
  *
- * @param string $string - The string to clean out unsubstituted variables for
+ * @param string $string The string to clean out unsubstituted variables for
  *
- * @return string - The cleaned up string
+ * @return string The cleaned up string
  */
 function null_out_substitutions(string $string) : string {
 	if ($string != '') {
@@ -274,12 +276,12 @@ function null_out_substitutions(string $string) : string {
  * expand_title - takes a string and substitutes all data query variables contained
  * in it or cleans them out if no data query is in use.
  *
- * @param  int    $host_id - The host ID to match
- * @param  int    $snmp_query_id - The data query ID to match
- * @param  string $snmp_index - The data query index to match
- * @param  string $title - The original string that contains the data query variables
+ * @param int    $host_id       The host ID to match
+ * @param int    $snmp_query_id The data query ID to match
+ * @param string $snmp_index    The data query index to match
+ * @param string $title         The original string that contains the data query variables
  *
- * @return string - the original string with all of the variable substitutions made
+ * @return string The original string with all of the variable substitutions made
  */
 function expand_title(int $host_id, int $snmp_query_id, string $snmp_index, string $title) : string {
 	if ((strstr($title, '|')) && (!empty($host_id))) {
@@ -313,9 +315,9 @@ function expand_title(int $host_id, int $snmp_query_id, string $snmp_index, stri
  * substitute_script_query_path - takes a string and substitutes all path
  * variables contained in it.
  *
- * @param string $path - The string to make path variable substitutions on
+ * @param string $path The string to make path variable substitutions on
  *
- * @return string  - The original string with all of the variable substitutions made
+ * @return string The original string with all of the variable substitutions made
  */
 function substitute_script_query_path(string $path) : string {
 	$path = clean_up_path(str_replace('|path_cacti|', CACTI_PATH_BASE, $path));
@@ -327,12 +329,12 @@ function substitute_script_query_path(string $path) : string {
 /**
  * substitute_host_data - takes a string and substitutes all host variables contained in it
  *
- * @param string $string - The string to make host variable substitutions on
- * @param string $l_escape_string - The character used to escape each variable on the left side
- * @param string $r_escape_string - The character used to escape each variable on the right side
- * @param int    $host_id - The host ID to match
+ * @param string $string          The string to make host variable substitutions on
+ * @param string $l_escape_string The character used to escape each variable on the left side
+ * @param string $r_escape_string The character used to escape each variable on the right side
+ * @param int    $host_id         The host ID to match
  *
- * @return string   - the original string with all of the variable substitutions made
+ * @return string The original string with all of the variable substitutions made
  */
 function substitute_host_data(string $string, string $l_escape_string, string $r_escape_string, int $host_id) : string {
 	if (!empty($host_id)) {
@@ -442,13 +444,13 @@ function substitute_host_data(string $string, string $l_escape_string, string $r
  * substitute_snmp_query_data - takes a string and substitutes all data query
  * variables contained in it.
  *
- * @param string  $string - The origina string that contains the data query variables
- * @param int     $host_id - The host ID to match
- * @param int     $snmp_query_id - The data query ID to match
- * @param string  $snmp_index - The data query index to match
- * @param int     $max_chars - The maximum number of characters to substitute
+ * @param string $string        The origina string that contains the data query variables
+ * @param int    $host_id       The host ID to match
+ * @param int    $snmp_query_id The data query ID to match
+ * @param string $snmp_index    The data query index to match
+ * @param int    $max_chars     The maximum number of characters to substitute
  *
- * @return string  - the original string with all of the variable substitutions made
+ * @return string The original string with all of the variable substitutions made
  */
 function substitute_snmp_query_data(string $string, int $host_id, int $snmp_query_id, string $snmp_index, int $max_chars = 0) : string {
 	if ($host_id > 0) {
@@ -490,12 +492,12 @@ function substitute_snmp_query_data(string $string, int $host_id, int $snmp_quer
  * substitute_data_input_data - takes a string and substitutes all data input
  * variables contained in it.
  *
- * @param string $string        - The original string that contains the data input variables
- * @param array  $graph         - The local data id to match
- * @param int    $local_data_id - The maximum number of characters to substitute
- * @param int    $max_chars     - The maximum number of characters to process
+ * @param string $string        The original string that contains the data input variables
+ * @param array  $graph         The local data id to match
+ * @param int    $local_data_id The maximum number of characters to substitute
+ * @param int    $max_chars     The maximum number of characters to process
  *
- * @return string  - the original string with all of the variable substitutions made
+ * @return string The original string with all of the variable substitutions made
  */
 function substitute_data_input_data(string $string, array $graph, int $local_data_id, int $max_chars = 0) : string {
 	if (empty($local_data_id)) {
@@ -553,12 +555,12 @@ function substitute_data_input_data(string $string, array $graph, int $local_dat
  * substitute_poller_data - takes a string and substitutes all data input
  * variables contained in it.
  *
- * @param string $string - The original string that contains the data input variables
- * @param array  $graph - The local data id to match
- * @param int    $local_data_id - The maximum number of characters to substitute
- * @param int    $max_chars - The maximum number of characters to process
+ * @param string $string        The original string that contains the data input variables
+ * @param array  $graph         The local data id to match
+ * @param int    $local_data_id The maximum number of characters to substitute
+ * @param int    $max_chars     The maximum number of characters to process
  *
- * @return string  - the original string with all of the variable substitutions made
+ * @return string the original string with all of the variable substitutions made
  */
 function substitute_poller_data(string $string, array $graph, int $local_data_id, int $max_chars = 0) : string {
 	if (empty($local_data_id)) {
@@ -612,12 +614,12 @@ function substitute_poller_data(string $string, array $graph, int $local_data_id
  * substitute_site_data - takes a string and substitutes all data input
  * variables contained in it.
  *
- * @param string $string - The original string that contains the data input variables
- * @param array  $graph - The Cacti graph object
- * @param int    $local_data_id - The local data id to match
- * @param int    $max_chars - The maximum number of characters to substitute
+ * @param string $string        The original string that contains the data input variables
+ * @param array  $graph         The Cacti graph object
+ * @param int    $local_data_id The local data id to match
+ * @param int    $max_chars     The maximum number of characters to substitute
  *
- * @return string  - the original string with all of the variable substitutions made
+ * @return string The original string with all of the variable substitutions made
  */
 function substitute_site_data(string $string, array $graph, int $local_data_id, int $max_chars = 0) : string {
 	if (empty($local_data_id)) {

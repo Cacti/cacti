@@ -25,8 +25,8 @@
 /**
  * duplicate_reports - duplicates a report and all items
  *
- * @param int $_id       - id of the report
- * @param string $_title - title of the new report
+ * @param int    $_id    Id of the report
+ * @param string $_title Title of the new report
  *
  * @return void
  */
@@ -227,7 +227,7 @@ function reports_add_graphs(int $report_id, int $local_graph_id, array $timespan
 /**
  * reports_date_time_format - fetches the date/time formatting information for current user
  *
- * @return string - string defining the datetime format specific to this user
+ * @return string String defining the datetime format specific to this user
  */
 function reports_date_time_format() : string {
 	$datechar = [
@@ -283,12 +283,12 @@ function reports_date_time_format() : string {
 /**
  * reports_interval_start - computes the next start time for the given set of parameters
  *
- * @param int $interval  - given interval
- * @param int $count     - given repeat count
- * @param int $offset    - offset in seconds to be added to the new start time
- * @param int $timestamp - current start time for report
+ * @param int $interval  Given interval
+ * @param int $count     Given repeat count
+ * @param int $offset    Offset in seconds to be added to the new start time
+ * @param int $timestamp Current start time for report
  *
- * @return int - new timestamp
+ * @return int New timestamp
  */
 function reports_interval_start(int $interval, int $count, int $offset, int $timestamp) : int {
 	global $reports_interval;
@@ -360,15 +360,15 @@ function reports_interval_start(int $interval, int $count, int $offset, int $tim
 /**
  * utime_add - add offsets to given timestamp
  *
- * @param int $timestamp - base timestamp
- * @param int $yr        - offset in years
- * @param int $mon       - offset in months
- * @param int $day       - offset in days
- * @param int $hr        - offset in hours
- * @param int $min       - offset in minutes
- * @param int $sec       - offset in seconds
+ * @param int $timestamp The base timestamp
+ * @param int $yr        The offset in years
+ * @param int $mon       The offset in months
+ * @param int $day       The offset in days
+ * @param int $hr        The offset in hours
+ * @param int $min       The offset in minutes
+ * @param int $sec       The offset in seconds
  *
- * @return int - unix time
+ * @return int unix timestamp
  */
 function utime_add(int $timestamp, int $yr = 0, int $mon = 0,
 	int $day = 0, int $hr = 0, int $min = 0, int $sec = 0) : int {
@@ -389,10 +389,10 @@ function utime_add(int $timestamp, int $yr = 0, int $mon = 0,
 /**
  * reports_log - logs a string to Cacti's log file or optionally to the browser
  *
- * @param string $string  - the string to append to the log file
- * @param bool $output    - whether to output the log line to the browser using pring() or not
- * @param string $environ - tell's from where the script was called from
- * @param int $level      - The loging verbosity to use
+ * @param string $string  The string to append to the log file
+ * @param bool   $output  Whether to output the log line to the browser using pring() or not
+ * @param string $environ Tell's from where the script was called from
+ * @param int    $level   The loging verbosity to use
  *
  * @return void
  */
@@ -417,11 +417,11 @@ function reports_log(string $string, bool $output = false, string $environ = 'RE
 /**
  * generate_report - create the complete mail for a single report and send it
  *
- * @param int   $schedule_id - the id of the queued up report that is being processed
- * @param array $report      - complete row of reports table for the report to work upon
- * @param bool  $force       - when forced, lastsent time will not be entered (e.g. Send Now)
+ * @param int   $schedule_id The id of the queued up report that is being processed
+ * @param array $report      Complete row of reports table for the report to work upon
+ * @param bool  $force       When forced, lastsent time will not be entered (e.g. Send Now)
  *
- * @return bool - The success of the report
+ * @return bool The success of the report
  */
 function generate_report(int $schedule_id, array $report, bool $force = false) : bool {
 	global $alignment, $reports_interval, $attach_types;
@@ -650,12 +650,12 @@ function generate_report(int $schedule_id, array $report, bool $force = false) :
 /**
  * reports_load_format_file  read the format file from disk and determines it's formatting
  *
- * @param string $format_file - The file to read from the formats directory
- * @param string $output      - The html and css output from that file
- * @param bool   $report_tag  - A boolean that informs the caller if the report tag is present
- * @param mixed  $theme       - The theme to use for display
+ * @param string $format_file The file to read from the formats directory
+ * @param string $output      The html and css output from that file
+ * @param bool   $report_tag  A boolean that informs the caller if the report tag is present
+ * @param mixed  $theme       The theme to use for display
  *
- * @return bool - whether or not the format file was processed correctly
+ * @return bool Whether or not the format file was processed correctly
  */
 function reports_load_format_file(string $format_file, mixed &$output, bool &$report_tag = false, mixed &$theme = false) : bool {
 	$contents = [];
@@ -697,10 +697,10 @@ function reports_load_format_file(string $format_file, mixed &$output, bool &$re
 /**
  * determine, if the given tree has graphs; taking permissions into account
  *
- * @param int $tree_id			- tree id
- * @param int $branch_id		- branch id
- * @param int $effective_user	- user id
- * @param string $search_key	- search key
+ * @param int    $tree_id        The tree id
+ * @param int    $branch_id      The branch id
+ * @param int    $effective_user The user id
+ * @param string $search_key     The search key
  *
  * @return int
  */
@@ -857,11 +857,11 @@ function reports_remove_history(int $history_id, int $report_id = 0) : void {
 /**
  * reports_generate_html  print report to html for online verification
  *
- * @param int    $reports_id - id of report report
- * @param int    $output     - type of output
- * @param string $theme      - The format of the output
+ * @param int    $reports_id Id of report report
+ * @param int    $output     Type of output
+ * @param string $theme      The format of the output
  *
- * @return string - generated html output
+ * @return string generated html output
  */
 function reports_generate_html(int $reports_id, int $output = REPORTS_OUTPUT_STDOUT, string &$theme = '') : string {
 	global $alignment;
@@ -1092,13 +1092,13 @@ function expand_branch(array &$report, array &$item, int $branch_id, int $output
 /**
  * return html code for an embedded image
  *
- * @param array  $report   - parameters for this report mail report
- * @param array  $item     - current graph item
- * @param array  $timespan - timespan
- * @param int    $output   - type of output
- * @param mixed  $theme    - The theme to render with
+ * @param array $report   Parameters for this report mail report
+ * @param array $item     Current graph item
+ * @param array $timespan Timespan
+ * @param int   $output   Type of output
+ * @param mixed $theme    The theme to render with
  *
- * @return string - generated html
+ * @return string generated html
  */
 function reports_graph_image($report, $item, $timespan, $output = REPORTS_OUTPUT_STDOUT, $theme = 'modern') {
 	$out = '';
@@ -1138,14 +1138,14 @@ function reports_graph_image($report, $item, $timespan, $output = REPORTS_OUTPUT
 /**
  * expand a device for including into report
  *
- * @param array $report   - parameters for this report mail report
- * @param array $item     - current graph item
- * @param int $device_id  - the id of the host to include
- * @param int $output     - type of output
- * @param bool $format_ok - use css styling
- * @param mixed $theme    - The theme to use for output
+ * @param array $report    Parameters for this report mail report
+ * @param array $item      Current graph item
+ * @param int   $device_id The id of the host to include
+ * @param int   $output    Type of output
+ * @param bool  $format_ok Use css styling
+ * @param mixed $theme     The theme to use for output
  *
- * @return string - html
+ * @return string html
  */
 function reports_expand_device(array &$report, array $item, int $device_id, int $output = REPORTS_OUTPUT_STDOUT, bool $format_ok = false, mixed $theme = 'modern') : string {
 	global $alignment;
@@ -1287,14 +1287,14 @@ function reports_expand_device(array &$report, array $item, int $device_id, int 
 /**
  * expand a tree for including into report
  *
- * @param array $report    - parameters for this report mail report
- * @param array $item      - current graph item
- * @param int   $parent    - The tree parent
- * @param int   $output    - The type of output
- * @param bool $format_ok  - Use css styling
- * @param bool $nested     - nested tree?
+ * @param array $report    Parameters for this report mail report
+ * @param array $item      Current graph item
+ * @param int   $parent    The tree parent
+ * @param int   $output    The type of output
+ * @param bool  $format_ok Use css styling
+ * @param bool  $nested    Nested tree?
  *
- * @return string - html
+ * @return string html
  */
 function reports_expand_tree(array &$report, array $item, int $parent, int $output, bool $format_ok, string $theme = 'modern', bool $nested = false) : string {
 	global $alignment;
@@ -1762,10 +1762,10 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
 /**
  * natural sort function
  *
- * @param mixed $a - The first string for sort
- * @param mixed $b - The second string for sort
+ * @param mixed $a The first string for sort
+ * @param mixed $b The second string for sort
  *
- * @return int - The case comparison
+ * @return int The case comparison
  */
 function necturally_sort_graphs(mixed $a, mixed $b) : int {
 	return strnatcasecmp($a['title_cache'], $b['title_cache']);
@@ -1774,13 +1774,13 @@ function necturally_sort_graphs(mixed $a, mixed $b) : int {
 /**
  * draw graph area
  *
- * @param array  $graphs    - array of graphs
- * @param array  $report    - report parameters
- * @param array  $item      - current item
- * @param array  $timespan  - requested timespan
- * @param int    $output    - type of output
- * @param bool   $format_ok - use css styling
- * @param string $theme     - The output format to use
+ * @param array  $graphs    Array of graphs
+ * @param array  $report    Report parameters
+ * @param array  $item      Current item
+ * @param array  $timespan  Requested timespan
+ * @param int    $output    Type of output
+ * @param bool   $format_ok Use css styling
+ * @param string $theme     The output format to use
  *
  * @return string
  */
@@ -1847,9 +1847,9 @@ function reports_graph_area(array $graphs, array &$report, array $item, array $t
 /**
  * convert png images stream to jpeg using php-gd
  *
- * @param string $png_data - the png image as a stream
+ * @param string $png_data The png image as a stream
  *
- * @return string - the jpeg image as a stream
+ * @return string The jpeg image as a stream
  */
 function png2jpeg(string $png_data) : string {
 	$ImageData = '';
@@ -1890,9 +1890,9 @@ function png2jpeg(string $png_data) : string {
 /**
  * convert png images stream to gif using php-gd
  *
- * @param string $png_data - the png image as a stream
+ * @param string $png_data The png image as a stream
  *
- * @return string - the gif image as a stream
+ * @return string The gif image as a stream
  */
 function png2gif(string $png_data) : string {
 	$ImageData = '';
@@ -1933,7 +1933,7 @@ function png2gif(string $png_data) : string {
 /**
  * get available format files for cacti reporting
  *
- * @return array	- available format files
+ * @return array Available format files
  */
 function reports_get_format_files() : array {
 	$formats = [];
@@ -1988,7 +1988,7 @@ function reports_poller_bottom() : void {
 /**
  * Setup the new dropdown action for Graph Management
  *
- * @param array $action - actions to be performed from dropdown
+ * @param array $action Actions to be performed from dropdown
  */
 function reports_graphs_action_array(array $action) : array {
 	$action['reports'] = __('Add to Report');
@@ -2000,9 +2000,9 @@ function reports_graphs_action_array(array $action) : array {
  * reports_graphs_action_prepare - perform reports_graph prepare action
  *
  * @param array $save
- *     drp_action:  selected action from dropdown
- *     graph_array: graphs titles selected from graph management's list
- *     graph_list:  graphs selected from graph management's list
+ *                    drp_action:  selected action from dropdown
+ *                    graph_array: graphs titles selected from graph management's list
+ *                    graph_list:  graphs selected from graph management's list
  *
  * @return mixed $save
  */
@@ -2041,7 +2041,7 @@ function reports_graphs_action_prepare(array $save) : mixed {
 /**
  * reports_graphs_action_execute - perform reports_graph execute action
  *
- * @param string $action - action to be performed
+ * @param string $action Action to be performed
  *
  * @return string $action
  */
@@ -2143,18 +2143,18 @@ function reports_graphs_action_execute(string $action) : string {
  *
  * The parameters include:
  *
- * @param  int       $id           - The report queue unique id number.
- * @param  int       $start_time   - The time that the report process started for logging
- * @param  string    $report_type  - The output type of the report.  To be used by the plugin for re-rendering
- * @param  string    $source       - The plugin defined report source name.  For example: 'reports', 'reportit', 'flowview'
- * @param  int       $source_id    - The id as it is known to the source
- * @param  string    $subject      - The notification subject
- * @param  mixed     $raw_data     - Data required to reproduce the report output at a future date
- * @param  string    $oput_raw     - The Raw HTML output without CSS
- * @param  string    $oput_html    - The Report Output with CSS
- * @param  string    $oput_text    - The text output if any
- * @param  array     $attachments  - The attachments required to reproduce the report
- * @param  mixed     $headers      - Any report specific Email headers
+ * @param int    $id          The report queue unique id number.
+ * @param int    $start_time  The time that the report process started for logging
+ * @param string $report_type The output type of the report.  To be used by the plugin for re-rendering
+ * @param string $source      The plugin defined report source name.  For example: 'reports', 'reportit', 'flowview'
+ * @param int    $source_id   The id as it is known to the source
+ * @param string $subject     The notification subject
+ * @param mixed  $raw_data    Data required to reproduce the report output at a future date
+ * @param string $oput_raw    The Raw HTML output without CSS
+ * @param string $oput_html   The Report Output with CSS
+ * @param string $oput_text   The text output if any
+ * @param array  $attachments The attachments required to reproduce the report
+ * @param mixed  $headers     Any report specific Email headers
  *
  * @return void
  */

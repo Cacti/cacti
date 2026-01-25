@@ -145,7 +145,7 @@ while (true) {
 /**
  * sig_handler - provides a generic means to catch exceptions to the Cacti log.
  *
- * @param int $signo - the signal that was thrown by the interface.
+ * @param int $signo The signal that was thrown by the interface.
  *
  * @return void
  */
@@ -167,7 +167,7 @@ function sig_handler(int $signo) : void {
 /**
  * wait_for_start
  *
- * @param  int $frequency
+ * @param int $frequency
  *
  * @return int
  */
@@ -291,7 +291,7 @@ function get_options() : array {
 /**
  * debug
  *
- * @param  string $string
+ * @param string $string
  *
  * @return void
  */

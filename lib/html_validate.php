@@ -27,7 +27,7 @@
  *
  * @param mixed  $value    The value to be validated.
  * @param mixed  $c_value  The value to compare against.
- * @param string $variable (Optional) The name of the variable being validated.
+ * @param string $variable The name of the variable being validated.
  *
  * @return void
  */
@@ -41,7 +41,7 @@ function input_validate_input_equals(mixed $value, mixed $c_value, string $varia
  * Validates if the given value is a number.
  *
  * @param mixed  $value    The value to be validated.
- * @param string $variable (Optional) The name of the variable being validated. This is used in the error message.
+ * @param string $variable The name of the variable being validated. This is used in the error message.
  *
  * @return void
  */
@@ -54,9 +54,9 @@ function input_validate_input_number(mixed $value, string $variable = '') : void
 /**
  * Validates the input value against a given regular expression.
  *
- * @param string $value The input value to be validated.
- * @param string $regex The regular expression to validate the input value against.
- * @param string $variable (Optional) The name of the variable being validated, used for error reporting.
+ * @param string $value    The input value to be validated.
+ * @param string $regex    The regular expression to validate the input value against.
+ * @param string $variable The name of the variable being validated, used for error reporting.
  *
  * @return void
  */

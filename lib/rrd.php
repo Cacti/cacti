@@ -39,7 +39,7 @@ function escape_command(string $command) : string {
 /**
  * set the language environment variable for rrdtool functions
  *
- * @param mixed $lang - the desired language to set
+ * @param mixed $lang The desired language to set
  *
  * @return void
  */
@@ -1052,20 +1052,20 @@ function rrdtool_function_tune(array $rrd_tune_array) : void {
 /**
  * rrdtool_function_fetch - given a data source, return all of its data in an array
  *
- * @param int         $local_data_id - the data source to fetch data for
- * @param int         $start_time    - the start time to use for the data calculation. this value can
- *                                     either be absolute (unix timestamp) or relative (to now)
- * @param int         $end_time      - the end time to use for the data calculation. this value can
- *                                     either be absolute (unix timestamp) or relative (to now)
- * @param int         $resolution    - the accuracy of the data measured in seconds
- * @param bool        $show_unknown  - Show unknown 'NAN' values in the output as 'U'
- * @param string      $rrdtool_file  - Don't force Cacti to calculate the file
- * @param string      $cf            - Specify the consolidation function to use
- * @param mixed       $rrdtool_pipe  - a pipe to an rrdtool command
+ * @param int    $local_data_id The data source to fetch data for
+ * @param int    $start_time    The start time to use for the data calculation. this value can
+ *                              either be absolute (unix timestamp) or relative (to now)
+ * @param int    $end_time      The end time to use for the data calculation. this value can
+ *                              either be absolute (unix timestamp) or relative (to now)
+ * @param int    $resolution    The accuracy of the data measured in seconds
+ * @param bool   $show_unknown  Show unknown 'NAN' values in the output as 'U'
+ * @param string $rrdtool_file  Don't force Cacti to calculate the file
+ * @param string $cf            Specify the consolidation function to use
+ * @param mixed  $rrdtool_pipe  A pipe to an rrdtool command
  *
- * @return array - an array containing all data in this data source broken down
- *   by each data source item. the maximum of all data source items is included in
- *   an item called 'nth_percentile_maximum'.  The array will look as follows:
+ * @return array An array containing all data in this data source broken down
+ *               by each data source item. the maximum of all data source items is included in
+ *               an item called 'nth_percentile_maximum'.  The array will look as follows:
  *
  *   $fetch_array['data_source_names'][0] = 'ds1'
  *   $fetch_array['data_source_names'][1] = 'ds2'
@@ -3140,10 +3140,10 @@ function rrdtool_function_get_resstep(mixed $local_data_ids, int $graph_start, i
  * the local file system of the rrdtool proxy to see if the
  * data source path exists.
  *
- * @param string $data_source_path - The data source rrdfile path
- * @param mixed  $rrdtool_pipe     - The rrdtool pipe if available
+ * @param string $data_source_path The data source rrdfile path
+ * @param mixed  $rrdtool_pipe     The rrdtool pipe if available
  *
- * @return bool - A boolean to tell if the file exists
+ * @return bool A boolean to tell if the file exists
  */
 function rrdtool_file_exists(string $data_source_path, mixed $rrdtool_pipe = null) : bool {
 	if (read_config_option('storage_location')) {
@@ -3160,10 +3160,10 @@ function rrdtool_file_exists(string $data_source_path, mixed $rrdtool_pipe = nul
 /**
  * rrdtool_function_info - given a data source id, return rrdtool info array
  *
- * @param int   $local_data_id - data source id
- * @param mixed $rrdtool_pipe - the rrdtool pipe if available
+ * @param int   $local_data_id Data source id
+ * @param mixed $rrdtool_pipe  The rrdtool pipe if available
  *
- * @return mixed - An array containing all data from rrdtool info command
+ * @return mixed An array containing all data from rrdtool info command
  */
 function rrdtool_function_info(int $local_data_id, mixed $rrdtool_pipe = null) : mixed {
 	// Get the path to rrdtool file
@@ -3318,11 +3318,11 @@ function rrdtool_function_info_from_ds(int $data_source_id) : array {
 /**
  * rrdtool_function_contains_cf  verifies if the RRDfile contains the 'MAX' consolidation function
  *
- * @param int    $local_data_id - The id of the data source
- * @param string $cf            - The consolidation function to search for
- * @param mixed  $rrdtool_pipe  - The rrdtool pipe if available
+ * @param int    $local_data_id The id of the data source
+ * @param string $cf            The consolidation function to search for
+ * @param mixed  $rrdtool_pipe  The rrdtool pipe if available
  *
- * @return bool - true or false depending on the result
+ * @return bool true or false depending on the result
  */
 function rrdtool_function_contains_cf(int $local_data_id, string $cf, mixed $rrdtool_pipe = null) : bool {
 	$info = rrdtool_function_info($local_data_id, $rrdtool_pipe);
@@ -3343,10 +3343,10 @@ function rrdtool_function_contains_cf(int $local_data_id, string $cf, mixed $rrd
 /**
  * rrdtool_cacti_compare - compares cacti information to rrd file information
  *
- * @param int   $data_source_id - Rhe id of the data source
- * @param array $info           - rrdtool info as an array
+ * @param int   $data_source_id The id of the data source
+ * @param array $info           The rrdtool info as an array
  *
- * @return array - Array build like $info defining html class in case of error
+ * @return array Array build like $info defining html class in case of error
  */
 function rrdtool_cacti_compare(int $data_source_id, array &$info) : array {
 	global $data_source_types, $consolidation_functions;
@@ -3574,8 +3574,8 @@ function rrdtool_cacti_compare(int $data_source_id, array &$info) : array {
 /**
  * rrdtool_info2html - take output from rrdtool info array and build html table
  *
- * @param array $info_array - array of rrdtool info data
- * @param array $diff       - array of differences between definition and current rrd file settings
+ * @param array $info_array An array of rrdtool info data
+ * @param array $diff       An array of differences between definition and current rrd file settings
  *
  * @return void
  */
@@ -3709,7 +3709,7 @@ function rrdtool_info2html(array $info_array, array $diff = []) : void {
 /**
  * print_leaves - A function used by the rrdtool_tune function to output data
  *
- * @param array $array - The array of leaves
+ * @param array $array The array of leaves
  *
  * @return void
  */
@@ -3737,9 +3737,9 @@ function print_leaves(array $array) : void {
 /**
  * rrdtool_tune - create rrdtool tune/resize commands html+cli enabled
  *
- * @param string $rrd_file    - rrd file name
- * @param array  $diff        - array of discrepancies between cacti settings and rrd file info
- * @param bool   $show_source - only show text+commands or execute all commands, execute is for cli mode only!
+ * @param string $rrd_file    The rrd file name
+ * @param array  $diff        The array of discrepancies between cacti settings and rrd file info
+ * @param bool   $show_source The only show text+commands or execute all commands, execute is for cli mode only!
  *
  * @return void
  */
@@ -3809,9 +3809,9 @@ function rrdtool_tune(string $rrd_file, array $diff, bool $show_source = true) :
 /**
  * rrd_check - Given a data source id, check the rrdtool file to the data source definition
  *
- * @param int   $data_source_id - data source id
+ * @param int $data_source_id The data source id
  *
- * @return void - An array containing issues with the rrdtool file definition vs data source
+ * @return void An array containing issues with the rrdtool file definition vs data source
  */
 function rrd_check(int $data_source_id) : void {
 	global $rrd_tune_array, $data_source_types;
@@ -3824,7 +3824,7 @@ function rrd_check(int $data_source_id) : void {
 /**
  * rrd_repair - Given a data source id, update the rrdtool file to match the data source definition
  *
- * @param int $data_source_id - data source id
+ * @param int $data_source_id The data source id
  *
  * @return void
  */
@@ -3839,11 +3839,11 @@ function rrd_repair(int $data_source_id) : void {
 /**
  * rrd_datasource_add - add a (list of) datasource(s) to an (array of) rrd file(s)
  *
- * @param array $file_array - array of rrd files
- * @param array $ds_array   - array of datasource parameters
- * @param bool  $debug      - debug mode
+ * @param array $file_array The array of rrd files
+ * @param array $ds_array   The array of datasource parameters
+ * @param bool  $debug      Debug mode
  *
- * @return mixed - success or error message
+ * @return mixed Success or error message
  */
 function rrd_datasource_add(array $file_array, array $ds_array, bool $debug) : mixed {
 	global $data_source_types, $consolidation_functions;
@@ -3920,11 +3920,11 @@ function rrd_datasource_add(array $file_array, array $ds_array, bool $debug) : m
 /**
  * rrd_rra_delete - delete a (list of) rra(s) from an (array of) rrd file(s)
  *
- * @param array $file_array - array of rrd files
- * @param array $rra_array  - array of rra parameters
- * @param bool  $debug      - debug mode
+ * @param array $file_array An array of rrd files
+ * @param array $rra_array  An array of rra parameters
+ * @param bool  $debug      Debug mode
  *
- * @return mixed true for success (bool) or error message (array)
+ * @return mixed True for success (bool) or error message (array)
  */
 function rrd_rra_delete(array $file_array, array $rra_array, bool $debug) : mixed {
 	$rrdtool_pipe = rrd_init();
@@ -3984,12 +3984,12 @@ function rrd_rra_delete(array $file_array, array $rra_array, bool $debug) : mixe
 /**
  * rrd_rra_clone - clone a (list of) rra(s) from an (array of) rrd file(s)
  *
- * @param array  $file_array - array of rrd files
- * @param string $cf         - new consolidation function
- * @param array  $rra_array  - array of rra parameters
- * @param bool   $debug      - debug mode
+ * @param array  $file_array And array of rrd files
+ * @param string $cf         The new consolidation function
+ * @param array  $rra_array  An array of rra parameters
+ * @param bool   $debug      Debug mode
  *
- * @return mixed - success (bool) or error message (array)
+ * @return mixed Success (bool) or error message (array)
  */
 function rrd_rra_clone(array $file_array, string $cf, array $rra_array, bool $debug) : mixed {
 	$rrdtool_pipe = rrd_init();
@@ -4049,15 +4049,15 @@ function rrd_rra_clone(array $file_array, string $cf, array $rra_array, bool $de
 /**
  * rrd_append_ds - appends a <DS> subtree to an RRD XML structure
  *
- * @param object $dom     - the DOM object, where the RRD XML is stored
- * @param string $version - rrd file version
- * @param string $name    - name of the new ds
- * @param string $type    - type of the new ds
- * @param int    $min_hb  - heartbeat of the new ds
- * @param string $min     - min value of the new ds or [NaN|U]
- * @param string $max     - max value of the new ds or [NaN|U]
+ * @param object $dom     The DOM object, where the RRD XML is stored
+ * @param string $version The rrd file version
+ * @param string $name    Name of the new ds
+ * @param string $type    Type of the new ds
+ * @param int    $min_hb  Heartbeat of the new ds
+ * @param string $min     Min value of the new ds or [NaN|U]
+ * @param string $max     Max value of the new ds or [NaN|U]
  *
- * @return object - modified DOM
+ * @return object Modified DOM
  */
 function rrd_append_ds(object $dom, string $version, string $name, string $type, int $min_hb, string $min, string $max) : object {
 	// rrdtool version dependencies
@@ -4110,13 +4110,13 @@ function rrd_append_ds(object $dom, string $version, string $name, string $type,
 /**
  * rrd_append_compute_ds - COMPUTE DS: appends a <DS> subtree to an RRD XML structure
  *
- * @param object $dom     - the DOM object, where the RRD XML is stored
- * @param string $version - rrd file version
- * @param string $name    - name of the new ds
- * @param string $type    - type of the new ds
- * @param int    $cdef    - the cdef rpn used for COMPUTE
+ * @param object $dom     The DOM object, where the RRD XML is stored
+ * @param string $version The rrd file version
+ * @param string $name    Name of the new ds
+ * @param string $type    Type of the new ds
+ * @param int    $cdef    The cdef rpn used for COMPUTE
  *
- * @return object - modified DOM
+ * @return object Modified DOM
  */
 function rrd_append_compute_ds(object $dom, string $version, string $name, string $type, int $cdef) : object {
 	// rrdtool version dependencies
@@ -4166,10 +4166,10 @@ function rrd_append_compute_ds(object $dom, string $version, string $name, strin
 /**
  * rrd_append_cdp_prep_ds - append a <DS> subtree to the <CDP_PREP> subtrees of a RRD XML structure
  *
- * @param object $dom     - the DOM object, where the RRD XML is stored
- * @param string $version - rrd file version
+ * @param object $dom     The DOM object, where the RRD XML is stored
+ * @param string $version The rrd file version
  *
- * @return object - the modified DOM object
+ * @return object The modified DOM object
  */
 function rrd_append_cdp_prep_ds(object $dom, string $version) : object {
 	// get all <cdp_prep><ds> entries
@@ -4210,9 +4210,9 @@ function rrd_append_cdp_prep_ds(object $dom, string $version) : object {
 /**
  * rrd_append_value - append a <V>alue element to the <DATABASE> subtrees of a RRD XML structure
  *
- * @param object $dom - the DOM object, where the RRD XML is stored
+ * @param object $dom The DOM object, where the RRD XML is stored
  *
- * @return object - the modified DOM object
+ * @return object The modified DOM object
  */
 function rrd_append_value(object $dom) : object {
 	// get XPATH notation required for positioning
@@ -4240,10 +4240,10 @@ function rrd_append_value(object $dom) : object {
 /**
  * rrd_delete_rra - delete an <RRA> subtree from the <RRD> XML structure
  *
- * @param object $dom      - The DOM document, where the RRD XML is stored
- * @param array  $rra_parm - A single rra parameter set, given by the user
+ * @param object $dom      The DOM document, where the RRD XML is stored
+ * @param array  $rra_parm A single rra parameter set, given by the user
  *
- * @return object - The modified DOM object
+ * @return object The modified DOM object
  */
 function rrd_delete_rra(object $dom, array $rra_parm) : object {
 	// find all RRA DOMNodes
@@ -4279,11 +4279,11 @@ function rrd_delete_rra(object $dom, array $rra_parm) : object {
 /**
  * rrd_copy_rra - clone an <RRA> subtree of the <RRD> XML structure, replacing cf
  *
- * @param  object $dom      - the DOM document, where the RRD XML is stored
- * @param  string $cf       - new consolidation function
- * @param  array  $rra_parm - a single rra parameter set, given by the user
+ * @param object $dom      The DOM document, where the RRD XML is stored
+ * @param string $cf       New consolidation function
+ * @param array  $rra_parm A single rra parameter set, given by the user
  *
- * @return object - the modified DOM object
+ * @return object The modified DOM object
  */
 function rrd_copy_rra(object $dom, string $cf, array $rra_parm) : object {
 	// find all RRA DOMNodes
@@ -4596,15 +4596,15 @@ function rrdtool_create_error_image(string $string, mixed $width = '', mixed $he
 /**
  * gradient - Add gradient support for AREA type charts. This function adds several CDEF with different shading
  *
- * @param string $vname       - the data source name
- * @param string $start_color - the start color for the gradient
- * @param string $end_color   - the end color for the gradient
- * @param string $label       - any label attached to it
- * @param mixed  $steps       - defaults to 20
- * @param mixed  $lower       - defaults to false
- * @param string $alpha       - Alpha channel to be used
+ * @param string $vname       The data source name
+ * @param string $start_color The start color for the gradient
+ * @param string $end_color   The end color for the gradient
+ * @param string $label       Any label attached to it
+ * @param mixed  $steps       Defaults to 20
+ * @param mixed  $lower       Defaults to false
+ * @param string $alpha       Alpha channel to be used
  *
- * @return string - the additional CDEF/AREA command lines for rrdtool
+ * @return string The additional CDEF/AREA command lines for rrdtool
  *
  * License: GPLv2
  * Original Code: https://github.com/lingej/pnp4nagios/blob/master/share/pnp/application/helpers/rrd.php
@@ -4674,10 +4674,10 @@ function gradient(string $vname = '', string $start_color = '#0000a0', string $e
 /**
  * colourBrightness - Add colourBrightness support for the gradient charts. This function calculates the darker version of a given color
  *
- * @param  string $hex     - The hex representation of a color
- * @param  float  $percent - the percentage to darken the given color. decimal number ( 0.4 -> 40% )
+ * @param string $hex     The hex representation of a color
+ * @param float  $percent The percentage to darken the given color. decimal number ( 0.4 -> 40% )
  *
- * @return string - the darker version of the given color
+ * @return string The darker version of the given color
  *
  * License: GPLv2
  * Original Code: http://www.barelyfitz.com/projects/csscolor/
@@ -4733,11 +4733,11 @@ function colourBrightness(string $hex, float $percent) : string {
 /**
  * add_unknown_data - Add unknown data area fills to graphs if selected by the admin
  *
- * @param array $graph_array - The graph_array data containing all rrdtool graph options
- * @param array $xport_meta - If the graph unknown data is true, set that in the
- *              xport meta output.
+ * @param array $graph_array The graph_array data containing all rrdtool graph options
+ * @param array $xport_meta  If the graph unknown data is true, set that in the
+ *                           xport meta output.
  *
- * @return array - The graph_array modified to include unknown data ranges
+ * @return array The graph_array modified to include unknown data ranges
  */
 function add_unknown_data(array $graph_array, array &$xport_meta) : array {
 	// add the cdef for unknown data
@@ -4785,10 +4785,10 @@ function add_unknown_data(array $graph_array, array &$xport_meta) : array {
 /**
  * add_business_hours - Add business hours highlight support for all rrdtool based charts
  *
- * @param array  $data - The graph_array data containing all rrdtool graph options
- * @param mixed  $xport_meta
+ * @param array $data       The graph_array data containing all rrdtool graph options
+ * @param mixed $xport_meta
  *
- * @return array - the graph_array containing AREA definitions for the business hours
+ * @return array The graph_array containing AREA definitions for the business hours
  *
  */
 function add_business_hours(array $data, mixed &$xport_meta) : array {

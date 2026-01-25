@@ -2386,8 +2386,8 @@ function reports_html_report_disable(int $report_id) : void {
 /**
  * Sets a variable in the reports item array based on the request variable.
  *
- * @param array $reports_item The reports item array to be modified.
- * @param string $var_id The ID of the request variable to check and set.
+ * @param array  $reports_item The reports item array to be modified.
+ * @param string $var_id       The ID of the request variable to check and set.
  *
  * @return array The modified reports item array.
  */

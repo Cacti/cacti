@@ -100,14 +100,16 @@ switch (grv('action')) {
 		break;
 }
 
-/** draw_color_template_items_list 	- draws a nicely formatted list of color items for display
- *   								  on an edit form
- * @param array $item_list 			- an array representing the list of color items. this array should
- *   								  come directly from the output of db_fetch_assoc()
- * @param string $filename 			- the filename to use when referencing any external url
- * @param string $url_data 			- any extra GET url information to pass on when referencing any
- *   								  external url
- * @param bool $disable_controls 	- whether to hide all edit/delete functionality on this form
+/**
+ * draw_color_template_items_list Draws a nicely formatted list of color items for display
+ * on an edit form
+ *
+ * @param array  $item_list        An array representing the list of color items. this array should
+ *                                 come directly from the output of db_fetch_assoc()
+ * @param string $filename         The filename to use when referencing any external url
+ * @param string $url_data         Any extra GET url information to pass on when referencing any
+ *                                 external url
+ * @param bool   $disable_controls Whether to hide all edit/delete functionality on this form
  */
 function draw_color_template_items_list(array $item_list, string $filename, string $url_data, bool $disable_controls) : void {
 	global $struct_color_template_item;
@@ -178,7 +180,7 @@ function draw_color_template_items_list(array $item_list, string $filename, stri
 }
 
 /**
- * form_save	the save function
+ * form_save - The save function
  */
 function form_save() : void {
 	if (isrv('save_component_color')) {

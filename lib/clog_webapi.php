@@ -31,10 +31,10 @@ include_once('functions.php');
  * to the provided local data ID. The result is returned as an associative array
  * where the keys are the graph IDs and the values are the graph names.
  *
- * @param int $local_data_id - The ID of the local data source to fetch graphs for.
+ * @param int $local_data_id The ID of the local data source to fetch graphs for.
  *
- * @return array - An associative array of graphs, where the keys are graph IDs
- *                 and the values are graph names.
+ * @return array An associative array of graphs, where the keys are graph IDs
+ *               and the values are graph names.
  */
 function clog_get_graphs_from_datasource(int $local_data_id) : array {
 	return array_rekey(db_fetch_assoc_prepared('SELECT DISTINCT
@@ -57,17 +57,17 @@ function clog_get_graphs_from_datasource(int $local_data_id) : array {
  * (e.g., standard log, error log, or boost log) and extracts the corresponding
  * file path and base name. Optionally, it can verify if the file exists.
  *
- * @param string $file      - The input filename to validate. This will be modified
- *                            to contain only the base name of the file.
- * @param string $filepath  - The output variable that will hold the directory path
- *                            of the validated file.
- * @param string $filename  - The output variable that will hold the base name of
- *                            the validated file.
- * @param bool   $filecheck - If true, the function will check if the
- *                            resolved file exists. Defaults to false.
+ * @param string $file      The input filename to validate. This will be modified
+ *                          to contain only the base name of the file.
+ * @param string $filepath  The output variable that will hold the directory path
+ *                          of the validated file.
+ * @param string $filename  The output variable that will hold the base name of
+ *                          the validated file.
+ * @param bool   $filecheck If true, the function will check if the
+ *                          resolved file exists. Defaults to false.
  *
- * @return bool - Returns true if the file is valid (and exists if $filecheck is true),
- *                or false otherwise.
+ * @return bool Returns true if the file is valid (and exists if $filecheck is true),
+ *              or false otherwise.
  */
 function clog_validate_filename(string &$file, string &$filepath = '', string &$filename = '', bool $filecheck = false) : bool {
 	$logfile = read_config_option('path_cactilog');
@@ -109,7 +109,7 @@ function clog_validate_filename(string &$file, string &$filepath = '', string &$
 /**
  * Purges or clears a specified log file within the Cacti application.
  *
- * @param string $action - The action to be taken 'purge' or 'rotate'
+ * @param string $action The action to be taken 'purge' or 'rotate'
  *
  * @return void
  */
@@ -444,9 +444,10 @@ function clog_view_logfile() : void {
 /**
  * Custom sorting function for log file names.
  *
- * @param string $a The first file name to compare.
- * @param string $b The second file name to compare.
- * @return int Returns < 0 if $a is less than $b, 0 if they are equal, and > 0 if $a is greater than $b.
+ * @param  string $a The first file name to compare.
+ * @param  string $b The second file name to compare.
+ *
+ * @return int    Returns < 0 if $a is less than $b, 0 if they are equal, and > 0 if $a is greater than $b.
  */
 function filter_sort(string $a, string $b) : int {
 	$a_parts = explode('-', $a);
@@ -791,9 +792,9 @@ function create_clog_filter(string $logfile, bool $clogAdmin) : array {
 /**
  * Draws the clog filter for log files and renders or sanitizes it based on the provided parameters.
  *
- * @param bool $render    Determines whether to render the filter or sanitize it. Defaults to false.
- * @param bool|string $logfile  Specifies the logfile to filter. Defaults to false.
- * @param bool $clogAdmin Indicates whether the filter is for an admin user. Defaults to false.
+ * @param bool        $render    Determines whether to render the filter or sanitize it. Defaults to false.
+ * @param bool|string $logfile   Specifies the logfile to filter. Defaults to false.
+ * @param bool        $clogAdmin Indicates whether the filter is for an admin user. Defaults to false.
  *
  * @return void
  */
@@ -876,7 +877,7 @@ function clog_regex_parser_html(array $matches) : mixed {
  * @deprecated This function is deprecated. Use `text_regex_parser()` directly instead.
  *
  * @param array $matches The matches to be parsed, typically from a regular expression.
- * @param bool $link Optional. Whether to generate a link. Default is false.
+ * @param bool  $link    Optional. Whether to generate a link. Default is false.
  *
  * @return mixed The result of the `text_regex_parser` function.
  */
@@ -892,7 +893,7 @@ function clog_regex_parser(array $matches, bool $link = false) : mixed {
  * @deprecated Use `text_regex_device()` directly instead.
  *
  * @param array $matches An array of regex matches to process.
- * @param bool $link Optional. Whether to generate a link. Default is false.
+ * @param bool  $link    Whether to generate a link. Default is false.
  *
  * @return mixed The result of the `text_regex_device` function.
  */
@@ -908,7 +909,7 @@ function clog_regex_device(array $matches, bool $link = false) : mixed {
  * @deprecated Use `text_regex_datasource()` directly instead.
  *
  * @param array $matches An array of regex matches to process.
- * @param bool $link Optional. Whether to generate a link. Default is false.
+ * @param bool  $link    Whether to generate a link. Default is false.
  *
  * @return mixed The result of the `text_regex_datasource()` function.
  */
@@ -924,7 +925,7 @@ function clog_regex_datasource(array $matches, bool $link = false) : mixed {
  * @deprecated Use `text_regex_poller()` directly instead.
  *
  * @param array $matches An array of regex matches to be processed.
- * @param bool $link Optional. Whether to include a link in the processing. Default is false.
+ * @param bool  $link    Whether to include a link in the processing. Default is false.
  *
  * @return mixed The result of the `text_regex_poller()` function.
  */
@@ -940,7 +941,7 @@ function clog_regex_poller(array $matches, bool $link = false) : mixed {
  * @deprecated Use `text_regex_dataquery` directly instead.
  *
  * @param array $matches An array of regex matches to process.
- * @param bool $link Optional. Whether to generate a link. Default is false.
+ * @param bool  $link    Whether to generate a link. Default is false.
  *
  * @return mixed The result of the `text_regex_dataquery` function.
  */
@@ -956,7 +957,7 @@ function clog_regex_dataquery(array $matches, bool $link = false) : mixed {
  * @deprecated Use `text_regex_rra()` directly instead.
  *
  * @param array $matches An array of regex matches to process.
- * @param bool $link Optional. Whether to generate a link. Default is false.
+ * @param bool  $link    Whether to generate a link. Default is false.
  *
  * @return mixed The result of the `text_regex_rra` function.
  */
@@ -972,7 +973,7 @@ function clog_regex_rra(array $matches, bool $link = false) : mixed {
  * @deprecated Use `text_regex_graphs()` directly instead.
  *
  * @param array $matches An array of regex matches to process.
- * @param bool $link Optional. Whether to generate a link. Default is false.
+ * @param bool  $link    Whether to generate a link. Default is false.
  *
  * @return mixed The result of the `text_regex_graphs` function.
  */
@@ -988,7 +989,7 @@ function clog_regex_graphs(array $matches, bool $link = false) : mixed {
  * @deprecated Use `text_regex_graphtemplates()` directly instead.
  *
  * @param array $matches An array of regex matches to process.
- * @param bool $link Optional. Whether to generate a link. Default is false.
+ * @param bool  $link    Whether to generate a link. Default is false.
  *
  * @return mixed The result of the `text_regex_graphtemplates` function.
  */
@@ -1004,7 +1005,7 @@ function clog_regex_graphtemplates(array $matches, bool $link = false) : mixed {
  * @deprecated Use `text_regex_users()` directly instead.
  *
  * @param array $matches An array of regex matches to process.
- * @param bool $link Optional. Whether to generate a link. Default is false.
+ * @param bool  $link    Whether to generate a link. Default is false.
  *
  * @return mixed The result of the `text_regex_users` function.
  */
@@ -1020,7 +1021,7 @@ function clog_regex_users(array $matches, bool $link = false) : mixed {
  * @deprecated Use `text_regex_rule()` directly instead.
  *
  * @param array $matches An array of regex matches to process.
- * @param bool $link Optional. Whether to generate a link. Default is false.
+ * @param bool  $link    Whether to generate a link. Default is false.
  *
  * @return mixed The result of the `text_regex_rule` function.
  */

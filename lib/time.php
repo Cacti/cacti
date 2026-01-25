@@ -28,10 +28,10 @@
  *                do all the time calculations to cover:
  *                 leap years, daylight savings and weekdays ...
  *
- * @param array $span            - array &$timespan (begin_now, end_now)
- * @param int   $curr_time       - base date (time since epoch)
- * @param int   $timespan_given  - timespan as given by global_arrays.php($graph_timespans)
- * @param int   $first_weekdayid - first weekday (numeric representation)
+ * @param array $span            And array &$timespan (begin_now, end_now)
+ * @param int   $curr_time       The base date (time since epoch)
+ * @param int   $timespan_given  The timespan as given by global_arrays.php($graph_timespans)
+ * @param int   $first_weekdayid The first weekday (numeric representation)
  *
  * @return void
  */
@@ -187,9 +187,9 @@ function get_timespan(array &$span, int $curr_time, int $timespan_given, int $fi
 /**
  * month_shift - check for shifting one or more months
  *
- * @param  string $shift_size - requested shift amount
+ * @param string $shift_size The requested shift amount
  *
- * @return bool - true, if month shifting required, else false
+ * @return bool True, if month shifting required, else false
  */
 function month_shift(string $shift_size) : bool {
 	// is monthly shifting required?
@@ -199,9 +199,9 @@ function month_shift(string $shift_size) : bool {
 /**
  * check_month_boundaries - check given boundaries for begin/end of month matching
  *
- * @param  array $span - array $timespan with given boundaries
+ * @param array $span A $timespan array with given boundaries
  *
- * @return bool       - true, if begin AND end match month begin/end boundaries
+ * @return bool True, if begin AND end match month begin/end boundaries
  */
 function check_month_boundaries(array &$span) : bool {
 	// check left boundary -----------------------------------------------
@@ -224,11 +224,11 @@ function check_month_boundaries(array &$span) : bool {
 /**
  * shift_right_boundary - shift right boundary with end-of-month adjustment
  *
- * @param array  $span       - timespan array
- * @param string $direction  - shift left/right (-/+)
- * @param mixed  $shift_size - amount of shift
+ * @param array  $span       The timespan array
+ * @param string $direction  A shift left/right (-/+)
+ * @param mixed  $shift_size The amount of shift
  *
- * @return int        - time-since-epoch for shifted right boundary
+ * @return int Time-since-epoch for shifted right boundary
  */
 function shift_right_boundary(array &$span, string $direction, mixed $shift_size) : int {
 	// first, get begin of the month, $span['end_now'] belongs to
@@ -244,9 +244,9 @@ function shift_right_boundary(array &$span, string $direction, mixed $shift_size
 /**
  * shift_time - shift given timespan left/right
  *
- * @param array  &$span      - given timespan (start/end time as time-since-epoch and human readable)
- * @param string $direction  - "-" for shifting left, "+" for shifting right
- * @param mixed  $shift_size - amount of shifting
+ * @param array  &$span      A given timespan (start/end time as time-since-epoch and human readable)
+ * @param string $direction  The direction either "-" for shifting left, "+" for shifting right
+ * @param mixed  $shift_size An amount of shifting
  *
  * @return void
  */

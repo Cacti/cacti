@@ -25,8 +25,9 @@
 /**
  * Creates a filter for tree devices.
  *
- * @param string $rows_label Optional. The label for the rows. Default is an empty string.
- * @return array The filter for tree devices.
+ * @param  string $rows_label Optional. The label for the rows. Default is an empty string.
+ *
+ * @return array  The filter for tree devices.
  */
 function create_tree_devices_filter(string $rows_label = '') : array {
 	global $item_rows;
@@ -123,8 +124,8 @@ function create_tree_devices_filter(string $rows_label = '') : array {
 /**
  * Processes and sanitizes the filter for drawing tree devices.
  *
- * @param bool $render Optional. Whether to render the output. Default is false.
- * @param string $url Optional. The URL to be used in the process. Default is an empty string.
+ * @param bool   $render Whether to render the output. Default is false.
+ * @param string $url    The URL to be used in the process. Default is an empty string.
  *
  * @return void
  */
@@ -148,9 +149,9 @@ function draw_tree_devices_filter(bool $render = false, string $url = '') : void
 /**
  * Displays the hosts that match the given rule.
  *
- * @param array  $rule      - The rule to match hosts against. The type of this parameter depends on the rule_type.
- * @param int    $rule_type - The type of rule being applied. This determines how the rule is interpreted.
- * @param string $url       - The URL to be used for displaying the matching hosts.
+ * @param array  $rule      The rule to match hosts against. The type of this parameter depends on the rule_type.
+ * @param int    $rule_type The type of rule being applied. This determines how the rule is interpreted.
+ * @param string $url       The URL to be used for displaying the matching hosts.
  *
  * @return void
  */
@@ -262,8 +263,8 @@ function display_matching_hosts(array $rule, int $rule_type, string $url) : void
 /**
  * Generates SQL query to find devices matching the given automation rule.
  *
- * @param array $rule      - The automation rule to match devices against.
- * @param int   $rule_type - The type of rule being processed.
+ * @param array $rule      The automation rule to match devices against.
+ * @param int   $rule_type The type of rule being processed.
  *
  * @return array - The SQL query and parameters to find matching devices.
  */
@@ -371,8 +372,8 @@ function automation_get_matching_device_sql(array &$rule, int $rule_type) : arra
 /**
  * Generates SQL query to get matching graphs based on the provided rule and rule type.
  *
- * @param array  $rule      - The rule to match graphs against.
- * @param int    $rule_type - The type of rule to apply.
+ * @param array $rule      The rule to match graphs against.
+ * @param int   $rule_type The type of rule to apply.
  *
  * @return array - The SQL query to fetch matching graphs.
  */
@@ -592,8 +593,8 @@ function create_tree_graphs_filter() : array {
 /**
  * Processes and sanitizes the filter for drawing tree graphs.
  *
- * @param bool $render Indicates whether to render the output.
- * @param string $url The URL to be processed.
+ * @param bool   $render Indicates whether to render the output.
+ * @param string $url    The URL to be processed.
  *
  * @return void
  */
@@ -718,7 +719,7 @@ function display_matching_graphs(array $rule, int $rule_type, string $url) : voi
 /**
  * Generates the SQL query to retrieve new graphs based on the provided rule.
  *
- * @param array   $rule - An associative array containing the rule parameters for the SQL query.
+ * @param array $rule An associative array containing the rule parameters for the SQL query.
  *
  * @return mixed - Returns an array of new graphs if successful, or false on failure.
  */
@@ -907,8 +908,8 @@ function automation_get_new_graphs_sql(array $rule) : mixed {
 /**
  * Displays new graphs based on the provided rule and URL.
  *
- * @param array $rule An array containing the rules for displaying new graphs.
- * @param string $url The URL to be used for displaying the new graphs.
+ * @param array  $rule An array containing the rules for displaying new graphs.
+ * @param string $url  The URL to be used for displaying the new graphs.
  *
  * @return void
  */
@@ -1039,8 +1040,8 @@ function display_new_graphs(array $rule, string $url) : void {
 /**
  * Processes and sanitizes the filter for drawing tree items.
  *
- * @param bool $render Indicates whether to render the tree items.
- * @param string $url The URL to be used for processing.
+ * @param bool   $render Indicates whether to render the tree items.
+ * @param string $url    The URL to be used for processing.
  *
  * @return void
  */
@@ -1291,9 +1292,9 @@ function display_matching_trees(int $rule_id, int $rule_type, array $item, strin
 /**
  * Checks if a specified column exists in the given tables.
  *
- * @param string $column The name of the column to check for.
- * @param array $tables An array of table names to search for the column.
- * @return bool Returns true if the column exists in any of the tables, false otherwise.
+ * @param  string $column The name of the column to check for.
+ * @param  array  $tables An array of table names to search for the column.
+ * @return bool   Returns true if the column exists in any of the tables, false otherwise.
  */
 function api_automation_column_exists(string $column, array $tables) : bool {
 	$column = str_replace(['h.', 'ht.', 'gt.', 'gl.', 'gtg.'], ['', '', '', '', ''], $column);
@@ -1312,10 +1313,10 @@ function api_automation_column_exists(string $column, array $tables) : bool {
 /**
  * Displays match rule items.
  *
- * @param string $title     - The title to display.
- * @param array  $rule      - The rule to be matched.
- * @param int    $rule_type - The type of the rule.
- * @param string $module    - The module associated with the rule.
+ * @param string $title     The title to display.
+ * @param array  $rule      The rule to be matched.
+ * @param int    $rule_type The type of the rule.
+ * @param string $module    The module associated with the rule.
  *
  * @return void
  */
@@ -1440,10 +1441,10 @@ function display_match_rule_items(string $title, array $rule, int $rule_type, st
 /**
  * Displays the graph rule items.
  *
- * @param string $title     - The title of the graph rule.
- * @param array  $rule      - The rule array to be displayed.
- * @param int    $rule_type - The type of the rule.
- * @param string $module    - The module associated with the rule.
+ * @param string $title     The title of the graph rule.
+ * @param array  $rule      The rule array to be displayed.
+ * @param int    $rule_type The type of the rule.
+ * @param string $module    The module associated with the rule.
  *
  * @return void
  */
@@ -1540,11 +1541,11 @@ function display_graph_rule_items(string $title, array &$rule, int $rule_type, s
 /**
  * Displays the tree rule items.
  *
- * @param string $title     - The title of the tree rule items.
- * @param array  $rule      - The rule array containing the tree rule items.
- * @param string $item_type - The type of the item.
- * @param int    $rule_type - The type of the rule.
- * @param string $module    - The module associated with the rule.
+ * @param string $title     The title of the tree rule items.
+ * @param array  $rule      The rule array containing the tree rule items.
+ * @param string $item_type The type of the item.
+ * @param int    $rule_type The type of the rule.
+ * @param string $module    The module associated with the rule.
  *
  * @return void
  */
@@ -1639,7 +1640,7 @@ function display_tree_rule_items(string $title, array $rule, string $item_type, 
 /**
  * Duplicates automation graph rules based on the given ID and title.
  *
- * @param int $_id The ID of the automation graph rule to duplicate.
+ * @param int    $_id    The ID of the automation graph rule to duplicate.
  * @param string $_title The title for the duplicated automation graph rule.
  *
  * @return void
@@ -1706,7 +1707,7 @@ function duplicate_automation_graph_rules(int $_id, string $_title) : void {
 /**
  * Duplicates an automation tree rule and its associated match and action rule items.
  *
- * @param int $_id The ID of the existing automation tree rule to duplicate.
+ * @param int    $_id    The ID of the existing automation tree rule to duplicate.
  * @param string $_title The title for the new duplicated rule, with '<rule_name>' placeholder replaced by the original rule's name.
  *
  * @return void
@@ -1775,7 +1776,7 @@ function duplicate_automation_tree_rules(int $_id, string $_title) : void {
 /**
  * Builds the SQL HAVING clause for a graph object based on the provided rule and filter.
  *
- * @param array $rule An associative array containing the rule details, including 'snmp_query_id'.
+ * @param array  $rule   An associative array containing the rule details, including 'snmp_query_id'.
  * @param string $filter The filter string to be used in the LIKE clause. If null or empty, no HAVING clause is generated.
  *
  * @return string The generated SQL HAVING clause if the filter is not empty, otherwise null.
@@ -1855,7 +1856,7 @@ function build_data_query_sql(array $rule) : string {
 /**
  * Builds a SQL filter string based on the provided rule ID and rule type.
  *
- * @param int $rule_id The ID of the rule to build the filter for.
+ * @param int $rule_id   The ID of the rule to build the filter for.
  * @param int $rule_type The type of the rule to build the filter for.
  *
  * @return string - The constructed SQL filter string.
@@ -1894,8 +1895,9 @@ function build_matching_objects_filter(int $rule_id, int $rule_type) : string {
 /**
  * Builds a filter string for automation rule items.
  *
- * @param array $automation_rule_items An array of automation rule items to be filtered.
- * @param string $prefix An optional prefix to be added to the filter string.
+ * @param  array  $automation_rule_items An array of automation rule items to be filtered.
+ * @param  string $prefix                An optional prefix to be added to the filter string.
+ *
  * @return string The constructed filter string.
  */
 function build_rule_item_filter(array $automation_rule_items, string $prefix = '') : string {
@@ -1963,8 +1965,8 @@ function build_rule_item_filter(array $automation_rule_items, string $prefix = '
 /**
  * Builds and returns a sort order based on the provided index order.
  *
- * @param string $index_order   - The index order to build the sort order from.
- * @param string $default_order - The default order to use if no index order is provided.
+ * @param string $index_order   The index order to build the sort order from.
+ * @param string $default_order The default order to use if no index order is provided.
  *
  * @return string - The built sort order
  */
@@ -1997,9 +1999,9 @@ function build_sort_order(string $index_order, string $default_order = '') : str
 /**
  * Retrieves hosts that match the given rule and rule type.
  *
- * @param array  $rule      - The rule to match hosts against.
- * @param int    $rule_type - The type of rule to apply.
- * @param string $sql_where - Optional SQL WHERE clause to filter the results.
+ * @param array  $rule      The rule to match hosts against.
+ * @param int    $rule_type The type of rule to apply.
+ * @param string $sql_where Optional SQL WHERE clause to filter the results.
  *
  * @return array - The list of matching hosts.
  */
@@ -2052,9 +2054,9 @@ function get_matching_hosts(array $rule, int $rule_type, string $sql_where = '')
 /**
  * Retrieves graphs that match the specified rule and rule type.
  *
- * @param array  $rule      - The rule to match graphs against.
- * @param int    $rule_type - The type of rule to apply.
- * @param string $sql_where - Optional SQL WHERE clause to further filter the results.
+ * @param array  $rule      The rule to match graphs against.
+ * @param int    $rule_type The type of rule to apply.
+ * @param string $sql_where Optional SQL WHERE clause to further filter the results.
  *
  * @return array The list of matching graphs.
  */
@@ -2199,9 +2201,10 @@ function make_host_snnp_cache_sql() : string|false {
 /**
  * Retrieves the fields of a given table, excluding specified fields.
  *
- * @param string $table The name of the table to retrieve fields from.
- * @param array $excluded_fields An array of field names to exclude from the result.
- * @return array An array of field names from the table, excluding the specified fields.
+ * @param  string $table           The name of the table to retrieve fields from.
+ * @param  array  $excluded_fields An array of field names to exclude from the result.
+ *
+ * @return array  An array of field names from the table, excluding the specified fields.
  */
 function get_query_fields(string $table, array $excluded_fields) : array {
 	$function = automation_function_with_pid(__FUNCTION__);
@@ -2321,8 +2324,9 @@ function array_to_list(array $array, string $sql_column) : string {
 /**
  * Subtracts the elements of one array from another.
  *
- * @param array $big_array The array from which elements will be subtracted.
- * @param array $small_array The array containing elements to subtract from the first array.
+ * @param  array $big_array   The array from which elements will be subtracted.
+ * @param  array $small_array The array containing elements to subtract from the first array.
+ *
  * @return array The resulting array after subtraction.
  */
 function array_minus(array $big_array, array $small_array) : array {
@@ -2341,10 +2345,11 @@ function array_minus(array $big_array, array $small_array) : array {
 /**
  * Replaces all occurrences of the search string with the replacement string in the target string.
  *
- * @param string $search The value being searched for.
- * @param array|string $replace The replacement value that replaces found search values.
- * @param string $target The string being searched and replaced on.
- * @return array The resulting string after the replacements have been made.
+ * @param  string       $search  The value being searched for.
+ * @param  array|string $replace The replacement value that replaces found search values.
+ * @param  string       $target  The string being searched and replaced on.
+ *
+ * @return array        The resulting string after the replacements have been made.
  */
 function automation_string_replace(string $search, array|string $replace, string $target) : array {
 	$repl = preg_replace('/' . $search . '/i', $replace, $target);
@@ -2355,9 +2360,9 @@ function automation_string_replace(string $search, array|string $replace, string
 /**
  * Edits a global item based on the provided rule ID, rule item ID, and rule type.
  *
- * @param int    $rule_id      - The ID of the rule to be edited.
- * @param int    $rule_item_id - The ID of the rule item to be edited.
- * @param int    $rule_type    - The type of the rule to be edited.
+ * @param int $rule_id      The ID of the rule to be edited.
+ * @param int $rule_item_id The ID of the rule item to be edited.
+ * @param int $rule_type    The type of the rule to be edited.
  *
  * @return void
  */
@@ -2558,8 +2563,8 @@ function global_item_edit(int $rule_id, int $rule_item_id, int $rule_type) : voi
 /**
  * Automation hook for applying a graph template to a host.
  *
- * @param int $host_id           - The ID of the host to which the graph template will be applied.
- * @param int $graph_template_id - The ID of the graph template to be applied to the host.
+ * @param int $host_id           The ID of the host to which the graph template will be applied.
+ * @param int $graph_template_id The ID of the graph template to be applied to the host.
  *
  * @return void
  */
@@ -2607,8 +2612,8 @@ function automation_hook_graph_create_tree(array $data) : array {
 /**
  * Executes a data query for a given host and SNMP query ID.
  *
- * @param int    $host_id       - The ID of the host for which the data query is to be executed.
- * @param int    $snmp_query_id - The ID of the SNMP query to be executed.
+ * @param int $host_id       The ID of the host for which the data query is to be executed.
+ * @param int $snmp_query_id The ID of the SNMP query to be executed.
  *
  * @return void
  */
@@ -2785,8 +2790,8 @@ function automation_graph_automation_eligible(int $graph_template_id) : bool {
 /**
  * Executes a graph template automation for a given host.
  *
- * @param int $host_id           - The ID of the host for which the graph template is to be executed.
- * @param int $graph_template_id - The ID of the graph template to be executed.
+ * @param int $host_id           The ID of the host for which the graph template is to be executed.
+ * @param int $graph_template_id The ID of the graph template to be executed.
  *
  * @return void
  */
@@ -2874,7 +2879,7 @@ function automation_execute_graph_template(int $host_id, int $graph_template_id)
 /**
  * Executes the automation process to create a tree for a specified device.
  *
- * @param int   $host_id - The ID of the host device for which the tree is to be created.
+ * @param int $host_id The ID of the host device for which the tree is to be created.
  *
  * @return void
  */
@@ -2969,7 +2974,7 @@ function automation_execute_device_create_tree(int $host_id) : void {
 /**
  * Executes the automation process to create a graph tree.
  *
- * @param int   $graph_id - The ID of the graph to be used in the tree creation process.
+ * @param int $graph_id The ID of the graph to be used in the tree creation process.
  *
  * @return void
  */
@@ -3065,9 +3070,9 @@ function automation_execute_graph_create_tree(int $graph_id) : void {
 /**
  * Creates data query graphs for a specified host and SNMP query.
  *
- * @param int $host_id The ID of the host for which the graphs are being created.
- * @param int $snmp_query_id The ID of the SNMP query to be used.
- * @param array $rule An associative array containing the rules for graph creation.
+ * @param int   $host_id       The ID of the host for which the graphs are being created.
+ * @param int   $snmp_query_id The ID of the SNMP query to be used.
+ * @param array $rule          An associative array containing the rules for graph creation.
  *
  * @return bool
  */
@@ -3235,7 +3240,7 @@ function create_dq_graphs(int $host_id, int $snmp_query_id, array $rule) : bool 
  *   - create (multiple) header nodes
  *
  * @param int   $item_id The ID of the item for which header nodes are to be created.
- * @param array $rule The rule array that defines how the header nodes should be created.
+ * @param array $rule    The rule array that defines how the header nodes should be created.
  *
  * @return int the last tree item that was hooked into the tree
  */
@@ -3321,10 +3326,10 @@ function create_all_header_nodes(int $item_id, array $rule) : int {
  *   - this may return an array of new header items
  *   - walk that array to create all header items for this single rule item
  *
- * @param string $object The object where the multi-header node will be created.
- * @param array $rule The rule to be applied for creating the multi-header node.
- * @param array $tree_item The tree item details for the multi-header node.
- * @param int $parent_tree_item_id The ID of the parent tree item.
+ * @param string $object              The object where the multi-header node will be created.
+ * @param array  $rule                The rule to be applied for creating the multi-header node.
+ * @param array  $tree_item           The tree item details for the multi-header node.
+ * @param int    $parent_tree_item_id The ID of the parent tree item.
  *
  * @return int
  */
@@ -3353,10 +3358,10 @@ function create_multi_header_node(string $object, array $rule, array $tree_item,
 /**
  * Create a single tree header node
  *
- * @param string $title The title of the header node.
- * @param array $rule The rule associated with the header node.
- * @param array $item The item associated with the header node.
- * @param int $parent_tree_item_id The ID of the parent tree item.
+ * @param string $title               The title of the header node.
+ * @param array  $rule                The rule associated with the header node.
+ * @param array  $item                The item associated with the header node.
+ * @param int    $parent_tree_item_id The ID of the parent tree item.
  *
  * @return int|bool
  */
@@ -3386,18 +3391,11 @@ function create_header_node(string $title, array $rule, array $item, int $parent
 }
 
 /**
- * add a device to the tree
- * @param int $host_id	- host id
- * @param int $parent	- parent id
- * @param array $rule 	- rule
- * @return int			- id of new item
- */
-/**
  * Add a device to the tree
  *
- * @param int $host_id The ID of the host.
- * @param int $parent The parent node or identifier.
- * @param array $rule The rule set to apply for the device node creation.
+ * @param int   $host_id The ID of the host.
+ * @param int   $parent  The parent node or identifier.
+ * @param array $rule    The rule set to apply for the device node creation.
  *
  * @return int id of new item
  */
@@ -3436,9 +3434,9 @@ function create_device_node(int $host_id, int $parent, array $rule) : int {
 /**
  * Creates a site node.
  *
- * @param int $site_id The ID of the site.
- * @param int $parent The parent node.
- * @param array $rule The rule array to apply.
+ * @param int   $site_id The ID of the site.
+ * @param int   $parent  The parent node.
+ * @param array $rule    The rule array to apply.
  *
  * @return int id of new item
  */
@@ -3477,9 +3475,9 @@ function create_site_node(int $site_id, int $parent, array $rule) : int {
 /**
  * Add a device to the tree
  *
- * @param int $graph_id The ID of the graph.
- * @param int $parent The parent node.
- * @param array $rule The rule to apply to the graph node.
+ * @param int   $graph_id The ID of the graph.
+ * @param int   $parent   The parent node.
+ * @param array $rule     The rule to apply to the graph node.
  *
  * @return int id of new item
  */
@@ -3537,7 +3535,7 @@ function automation_poller_bottom() : void {
  * Adds a device to the automation system.
  *
  * @param array $device An associative array containing device details.
- * @param bool $web Optional. Indicates if the request is coming from a web interface. Default is false.
+ * @param bool  $web    Optional. Indicates if the request is coming from a web interface. Default is false.
  *
  * @return int The ID of the device that was added.
  */
@@ -3604,7 +3602,7 @@ function automation_add_device(array $device, bool $web = false) : int {
  * Adds a host to a specified tree in the automation process.
  *
  * @param int $host_id The ID of the host to be added.
- * @param int $tree The tree structure where the host will be added.
+ * @param int $tree    The tree structure where the host will be added.
  *
  * @return void
  */
@@ -3630,9 +3628,9 @@ function automation_add_tree(int $host_id, int $tree) : void {
 /**
  * Finds the operating system based on system description, system object, and system name.
  *
- * @param string $sysDescr The system description.
+ * @param string $sysDescr  The system description.
  * @param string $sysObject The system object identifier.
- * @param string $sysName The system name.
+ * @param string $sysName   The system name.
  *
  * @return array|false The identified operating system.
  */
@@ -3714,7 +3712,7 @@ function automation_debug(string $text) : void {
 /**
  * Converts a subnet mask to CIDR notation.
  *
- * @param string $mask The subnet mask to convert.
+ * @param  string      $mask The subnet mask to convert.
  * @return float|false The CIDR notation as a float, or false on failure.
  */
 function automation_masktocidr(string $mask) : float|false {
@@ -3732,7 +3730,7 @@ function automation_masktocidr(string $mask) : float|false {
 /**
  * Retrieves a valid IP address from the given range.
  *
- * @param string $range The range of IP addresses to validate.
+ * @param  string       $range The range of IP addresses to validate.
  * @return string|false Returns a valid IP address as a string if found, or false if no valid IP address is found.
  */
 function automation_get_valid_ip(string $range) : string|false {
@@ -3744,7 +3742,7 @@ function automation_get_valid_ip(string $range) : string|false {
 /**
  * Retrieves a valid subnet CIDR from the given range.
  *
- * @param string $range The IP range to validate and extract the subnet CIDR from.
+ * @param  string      $range The IP range to validate and extract the subnet CIDR from.
  * @return array|false Returns an array containing the valid subnet CIDR if found,
  *                     otherwise returns false if the range is invalid.
  */
@@ -3781,7 +3779,7 @@ function automation_get_valid_subnet_cidr(string $range) : array|false {
 /**
  * Retrieves a valid mask for the given range.
  *
- * @param string $range The range for which to get the valid mask.
+ * @param  string      $range The range for which to get the valid mask.
  * @return array|false The valid mask for the specified range.
  */
 function automation_get_valid_mask(string $range) : array|false {
@@ -3815,7 +3813,7 @@ function automation_get_valid_mask(string $range) : array|false {
 /**
  * Retrieves network information for a given range.
  *
- * @param string $range The network range to retrieve information for.
+ * @param  string      $range The network range to retrieve information for.
  * @return array|false An associative array containing network information.
  */
 function automation_get_network_info(string $range) : array|false {
@@ -3931,7 +3929,7 @@ function automation_get_network_info(string $range) : array|false {
 /**
  * Calculates the start time for an automation process based on the given range.
  *
- * @param string $range The range value used to calculate the start time.
+ * @param  string       $range The range value used to calculate the start time.
  * @return string|false The calculated start time.
  */
 function automation_calculate_start(string $range) : string|false {
@@ -3949,7 +3947,7 @@ function automation_calculate_start(string $range) : string|false {
 /**
  * Calculate the total number of IPs in a given range.
  *
- * @param string $range The IP range in CIDR notation (e.g., '192.168.1.0/24').
+ * @param  string    $range The IP range in CIDR notation (e.g., '192.168.1.0/24').
  * @return int|false The total number of IPs in the specified range.
  */
 function automation_calculate_total_ips(string $range) : int|false {
@@ -3967,10 +3965,10 @@ function automation_calculate_total_ips(string $range) : int|false {
 /**
  * Retrieves the next host in the automation sequence.
  *
- * @param string $start The starting point for the host retrieval.
- * @param int $total The total number of hosts available.
- * @param int $count The current count of hosts processed.
- * @param string $range The range within which to retrieve the next host.
+ * @param  string       $start The starting point for the host retrieval.
+ * @param  int          $total The total number of hosts available.
+ * @param  int          $count The current count of hosts processed.
+ * @param  string       $range The range within which to retrieve the next host.
  * @return string|false Returns the next host as a string, or false if no more hosts are available.
  */
 function automation_get_next_host(string $start, int $total, int $count, string $range) : string|false {
@@ -4222,9 +4220,9 @@ function automation_valid_snmp_device(array &$device) : bool {
 /**
  * Retrieves the DNS name associated with a given IP address.
  *
- * @param string $ip The IP address to look up.
- * @param string $dns The DNS server to use for the lookup.
- * @param int $timeout The timeout for the DNS lookup in milliseconds. Default is 1000 ms.
+ * @param  string $ip      The IP address to look up.
+ * @param  string $dns     The DNS server to use for the lookup.
+ * @param  int    $timeout The timeout for the DNS lookup in milliseconds. Default is 1000 ms.
  * @return string The DNS name associated with the IP address, or null if not found.
  */
 function automation_get_dns_from_ip(string $ip, string $dns, int $timeout = 1000) : string {
@@ -4396,7 +4394,7 @@ function ping_netbios_name(string $ip, int $timeout_ms = 1000) : mixed {
 /**
  * Updates the automation settings for a specific device.
  *
- * @param int    $host_id - The ID of the host device to update.
+ * @param int $host_id - The ID of the host device to update.
  *
  * @return void
  */
@@ -4464,7 +4462,7 @@ function automation_update_device(int $host_id) : void {
 /**
  * Executes an automation function with a process ID.
  *
- * @param string $functionName The name of the function to be executed.
+ * @param  string $functionName The name of the function to be executed.
  * @return string The function name with the process ID appended.
  */
 function automation_function_with_pid(string $functionName) : string {
@@ -4490,7 +4488,7 @@ function automation_get_pid() : string {
  * Changes the type of a tree rule leaf.
  *
  * @param string $leaf_type The new type of the leaf.
- * @param string $rule_id The ID of the rule to be updated.
+ * @param string $rule_id   The ID of the rule to be updated.
  *
  * @return void
  */
@@ -4561,7 +4559,7 @@ function automation_change_tree_rule_leaf_type(string $leaf_type, string $rule_i
 /**
  * Converts an automation type to its corresponding database table name.
  *
- * @param string $type The type of automation to convert.
+ * @param  string $type The type of automation to convert.
  * @return string The name of the corresponding database table.
  */
 function automation_type_to_table(string $type) : string {
@@ -4587,7 +4585,7 @@ function automation_type_to_table(string $type) : string {
  * Converts an automation ID to a hash.
  *
  * @param string $table The name of the table.
- * @param int $id The ID to be converted.
+ * @param int    $id    The ID to be converted.
  *
  * @return mixed - The resulting hash.
  */
@@ -4604,8 +4602,8 @@ function automation_id_to_hash(string $table, int $id) : mixed {
 /**
  * Converts a given hash to its corresponding ID based on the specified type.
  *
- * @param string $type The type of the entity for which the hash is being converted.
- * @param string $hash The hash value that needs to be converted to an ID.
+ * @param  string    $type The type of the entity for which the hash is being converted.
+ * @param  string    $hash The hash value that needs to be converted to an ID.
  * @return int|false The ID corresponding to the given hash and type.
  */
 function automation_hash_to_id(string $type, string $hash) : int|false {
@@ -5003,7 +5001,7 @@ function automation_device_rule_export(mixed $template_ids) : array {
 /**
  * Creates a tree structure based on the provided tree and branch data.
  *
- * @param array $tree_data An associative array containing the tree data.
+ * @param array $tree_data   An associative array containing the tree data.
  * @param array $branch_data Data related to the branches of the tree.
  *
  * @return array The resulting tree structure as an associative array.
@@ -5071,8 +5069,8 @@ function automation_tree_rule_create_tree(array $tree_data, array $branch_data) 
 /**
  * Exports the branches of a device rule automation for a given tree and branch.
  *
- * @param int $tree_id The ID of the tree.
- * @param int $branch_id The ID of the branch.
+ * @param  int   $tree_id   The ID of the tree.
+ * @param  int   $branch_id The ID of the branch.
  * @return array The exported branches.
  */
 function automation_device_rule_export_branches(int $tree_id, int $branch_id) : array {
@@ -5423,7 +5421,7 @@ function automation_validate_upload() : array|bool {
 /**
  * Imports SNMP options for automation.
  *
- * @param array $snmp An array containing SNMP options to be imported.
+ * @param  array $snmp An array containing SNMP options to be imported.
  * @return array An array containing the results of the import operation.
  */
 function automation_snmp_option_import(array $snmp) : array {
@@ -5762,8 +5760,8 @@ function automation_graph_rule_import(mixed $json_data) : array {
 /**
  * Imports automation tree rules from JSON data.
  *
- * @param mixed $json_data The JSON data containing the automation tree rules.
- * @param bool $tree_branches Optional. Whether to include tree branches in the import. Default is false.
+ * @param mixed $json_data     The JSON data containing the automation tree rules.
+ * @param bool  $tree_branches Optional. Whether to include tree branches in the import. Default is false.
  *
  * @return array An array containing the results of the import process.
  */
@@ -5895,8 +5893,8 @@ function automation_tree_rule_import(mixed $json_data, bool $tree_branches = fal
 /**
  * Imports an automation template from JSON data.
  *
- * @param mixed $json_data The JSON data to import.
- * @param bool $tree_branches Optional. Whether to include tree branches in the import. Default is false.
+ * @param mixed $json_data     The JSON data to import.
+ * @param bool  $tree_branches Optional. Whether to include tree branches in the import. Default is false.
  *
  * @return array An array containing the result of the import process.
  */
@@ -6348,10 +6346,10 @@ function automation_template_import(mixed $json_data, bool $tree_branches = fals
 /**
  * Validates the import columns for a given table.
  *
- * @param string $table The name of the table to validate.
- * @param array &$data The data to be validated.
- * @param array &$debug_data An array to store debug information.
- * @return bool Returns true if the columns are valid, false otherwise.
+ * @param  string $table       The name of the table to validate.
+ * @param  array  &$data       The data to be validated.
+ * @param  array  &$debug_data An array to store debug information.
+ * @return bool   Returns true if the columns are valid, false otherwise.
  */
 function automation_validate_import_columns(string $table, array &$data, array &$debug_data) : bool {
 	if (cacti_sizeof($data)) {
@@ -6375,7 +6373,7 @@ function automation_validate_import_columns(string $table, array &$data, array &
  * Logs a string to Cacti's log file or optionally to the browser
  *
  * @param string $string The message to log.
- * @param int $level The log level, default is AUTOMATION_LOG_LOW.
+ * @param int    $level  The log level, default is AUTOMATION_LOG_LOW.
  *
  * @return void
  */

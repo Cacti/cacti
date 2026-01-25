@@ -480,11 +480,11 @@ class Installer implements JsonSerializable {
 
 	/**
 	 * addError() - adds a new error to the array or updates an existing one
-	 * @param int    $step    - Which step of the installer reports the error and
-	 *                          should be Installer::STEP_ constant
-	 * @param string $section - Title of section causing a problem
-	 * @param string $item    - Individual item that caused the problem
-	 * @param mixed  $text    - Descriptive text of the error
+	 * @param int    $step    Which step of the installer reports the error and
+	 *                        should be Installer::STEP_ constant
+	 * @param string $section Title of section causing a problem
+	 * @param string $item    Individual item that caused the problem
+	 * @param mixed  $text    Descriptive text of the error
 	 *
 	 * @return void
 	 */
@@ -513,7 +513,7 @@ class Installer implements JsonSerializable {
 	/**
 	 * setProgress() - set the progress point of Installer::STEP_INSTALL
 	 *
-	 * @param int $param_progress - one of Installer::PROGRESS_ constants
+	 * @param int $param_progress One of Installer::PROGRESS_ constants
 	 *
 	 * @return void
 	 */
@@ -526,10 +526,10 @@ class Installer implements JsonSerializable {
 	/**
 	 * sanitizeRRDVersion() - ensure version number is valid
 	 *
-	 * @param string $param_rrdver    - The version to be sanitized
-	 * @param string $default_version - The default version if any
+	 * @param string $param_rrdver    The version to be sanitized
+	 * @param string $default_version The default version if any
 	 *
-	 * @return string - The rrdtool version
+	 * @return string The rrdtool version
 	 */
 	private function sanitizeRRDVersion(string $param_rrdver = '', string $default_version = '') : string {
 		$rrdver = $default_version;
@@ -575,7 +575,7 @@ class Installer implements JsonSerializable {
 	 * to be available for writing during install or
 	 * always (after install)
 	 *
-	 * @return array - An array of permissions
+	 * @return array An array of permissions
 	 */
 	private function getPermissions() : array {
 		global $config;
@@ -664,8 +664,8 @@ class Installer implements JsonSerializable {
 	/**
 	 * setRuntime() - sets the runtime mode of the Installer
 	 *
-	 * @param string $param_runtime - Default is 'unknown', acceptable modes are 'Cli'
-	 *               and 'Json'.
+	 * @param string $param_runtime Default is 'unknown', acceptable modes are 'Cli'
+	 *                              and 'Json'.
 	 *
 	 * @return void
 	 */
@@ -699,8 +699,8 @@ class Installer implements JsonSerializable {
 	/**
 	 * setLanguage() - sets the language of the Installer
 	 *
-	 * @param string $param_language - Must be a valid language which is returned from
-	 *               apply_locale() function located in Core
+	 * @param string $param_language Must be a valid language which is returned from
+	 *                               apply_locale() function located in Core
 	 *
 	 * @return void
 	 *
@@ -733,7 +733,7 @@ class Installer implements JsonSerializable {
 	/**
 	 * setEula() - sets whether the Eula was accepted or not
 	 *
-	 * @param $string param_eula - valid values are 'Accepted', 'True'
+	 * @param $string param_eula Valid values are 'Accepted', 'True'
 	 *
 	 * @return void
 	 *
@@ -809,8 +809,8 @@ class Installer implements JsonSerializable {
 	 * setRRDVersion() - sets the RRDVersion installer option, overrides
 	 * the system default.
 	 *
-	 * @param string $param_rrdver - a valid version number.
-	 * @param string $prefix       - a display prefix, not used in values
+	 * @param string $param_rrdver A valid version number.
+	 * @param string $prefix       A display prefix, not used in values
 	 *
 	 * @return void
 	 *
@@ -834,7 +834,7 @@ class Installer implements JsonSerializable {
 	/**
 	 * getTheme() - gets the current theme
 	 *
-	 * @return string - The current theme
+	 * @return string The current theme
 	 */
 	private function getTheme() : string {
 		$theme = read_config_option('install_theme', true);
@@ -859,7 +859,7 @@ class Installer implements JsonSerializable {
 	/**
 	 * setTheme() - sets the Theme installer option, override the system default.
 	 *
-	 * @param string $param_theme - a valid theme which must exist in /include/themes/
+	 * @param string $param_theme A valid theme which must exist in /include/themes/
 	 *
 	 * @return void
 	 *
@@ -895,7 +895,7 @@ class Installer implements JsonSerializable {
 	 * system configuration option is read and set back into
 	 * $this->paths array.
 	 *
-	 * @return array - An array of paths
+	 * @return array An array of paths
 	 */
 	public function getPaths() : array {
 		$paths = [];
@@ -918,7 +918,7 @@ class Installer implements JsonSerializable {
 	 * issues.  The array should be key->path which is compared
 	 * against $this->paths
 	 *
-	 * @param array $param_paths - A list of paths
+	 * @param array $param_paths A list of paths
 	 *
 	 * @return void
 	 *
@@ -1018,7 +1018,7 @@ class Installer implements JsonSerializable {
 	 * setProfile() - sets the data source profile as the default one to be
 	 * be used by the system.
 	 *
-	 * @param int $param_profile - must be an existing data_source_profile id
+	 * @param int $param_profile Must be an existing data_source_profile id
 	 *
 	 * @return void
 	 *
@@ -1078,7 +1078,7 @@ class Installer implements JsonSerializable {
 	 * setAutomationMode() - sets whether the automation system should
 	 * be enabled or disabled by default.
 	 *
-	 * @param int $param_mode - must be a valid true or false value
+	 * @param int $param_mode Must be a valid true or false value
 	 *
 	 * @return void
 	 *
@@ -1109,7 +1109,7 @@ class Installer implements JsonSerializable {
 	 * setAutomationOverride() - sets whether the extra snmp options are to
 	 * be overwritten by the SnmpOptions provided.
 	 *
-	 * @param string $param_override - must be a valid true or false value
+	 * @param string $param_override Must be a valid true or false value
 	 *
 	 * @return void
 	 *
@@ -1130,8 +1130,8 @@ class Installer implements JsonSerializable {
 	 * setCronInterval() - sets the expected system cron interval but does
 	 * not actually affect the system cron.
 	 *
-	 * @param string $param_interval - a value that must exist in the system global
-	 *               variables $cron_intervals.
+	 * @param string $param_interval A value that must exist in the system global
+	 *                               variables $cron_intervals.
 	 *
 	 * @return void
 	 *
@@ -1158,7 +1158,7 @@ class Installer implements JsonSerializable {
 	 * Automation for scanning the network.  If no previous value is found,
 	 * defaults to 192.168.1.0/24
 	 *
-	 * @return string - The specified network range
+	 * @return string The specified network range
 	 */
 	public function getAutomationRange() : string {
 		$range = read_config_option('install_automation_range', true);
@@ -1188,9 +1188,9 @@ class Installer implements JsonSerializable {
 	 * setAutomationRange() - sets the network range to be used by
 	 * Automation when scanning the network.
 	 *
-	 * @param string $param_range - a valid network range which is converted and returned
-	 *               by cacti_pton().  If the return value is false, it is
-	 *               considered invalid
+	 * @param string $param_range A valid network range which is converted and returned
+	 *                            by cacti_pton().  If the return value is false, it is
+	 *                            considered invalid
 	 *
 	 * @return void
 	 *
@@ -1226,7 +1226,7 @@ class Installer implements JsonSerializable {
 	 * set which Automation will use when scanning the
 	 * network.
 	 *
-	 * @return array - The snmp option strings
+	 * @return array The snmp option strings
 	 */
 	private function getSnmpOptions() : array {
 		global $fields_snmp_item_with_retry;
@@ -1247,7 +1247,7 @@ class Installer implements JsonSerializable {
 	 * setSnmpOptions() - sets the extra SNMP options to be used by
 	 * Automation when scanning the network.
 	 *
-	 * @param array $param_snmp_options - An array of snmp options
+	 * @param array $param_snmp_options An array of snmp options
 	 *
 	 * Errors: will add an error to STEP_PROFILE_AND_AUTOMATION if an
 	 * invalid value is passed
@@ -1306,7 +1306,7 @@ class Installer implements JsonSerializable {
 	 * getModules() - returns a list of required modules and their
 	 * installation status.
 	 *
-	 * @return array - An array of modules
+	 * @return array An array of modules
 	 */
 	private function getModules() : array {
 		if (isset($this->extensions) || empty($this->extensions)) {
@@ -1458,11 +1458,11 @@ class Installer implements JsonSerializable {
 	 * setTemplates() - sets a list of templates that should be installed
 	 * during the installServer() phase.
 	 *
-	 * @param array $param_templates - an array of templates to install in the form of
-	 *                                 'template'=>(true|false)
+	 * @param array $param_templates An array of templates to install in the form of
+	 *                               'template'=>(true|false)
 	 *
 	 * Errors: will add an error to STEP_TEMPLATE_INSTALL if a template is
-	 *         passed that is not expected
+	 * passed that is not expected
 	 */
 	private function setTemplates(array $param_templates = []) : void {
 		db_execute("DELETE FROM settings WHERE name LIKE 'install_tp_%'");
@@ -1582,7 +1582,7 @@ class Installer implements JsonSerializable {
 	 * setTables - sets a list of tables to be converted to the latest
 	 * default coalition
 	 *
-	 * @param array $param_tables - array of table names
+	 * @param array $param_tables Array of table names
 	 *
 	 * Errors: does not add errors as a table may not be present in the
 	 *
@@ -1688,7 +1688,7 @@ class Installer implements JsonSerializable {
 	/**
 	 * setMode() - sets the current mode of operation
 	 *
-	 * @param int $param_mode - the mode to set, must be one of the MODE_ constants
+	 * @param int $param_mode The mode to set, must be one of the MODE_ constants
 	 *
 	 * Errors: will add an error when an invalid value is passed
 	 *
@@ -1722,7 +1722,7 @@ class Installer implements JsonSerializable {
 	/**
 	 * setStep() - sets the current step
 	 *
-	 * @param int $param_step - must be a valid value as defined by STEP_ constants
+	 * @param int $param_step Must be a valid value as defined by STEP_ constants
 	 *
 	 * @return void
 	 */

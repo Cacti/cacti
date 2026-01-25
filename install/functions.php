@@ -332,13 +332,13 @@ function install_rmdir(string $directory) : void {
  * install_rmdir_recursive - Simple function to recursively remove a directory
  *  structure.
  *
- * @param string $directory     - Directory name
- * @param bool   $delete_parent - True, and the directory and contents will be
- *                                removed.  Otherwise the directory will remain.
+ * @param string $directory  Directory name
+ * @param bool   $del_parent True, and the directory and contents will be
+ *                           removed.  Otherwise the directory will remain.
  *
  * @return void
  */
-function install_rmdir_recursive(string $directory, bool $delete_parent = false) : void {
+function install_rmdir_recursive(string $directory, bool $del_parent = false) : void {
 	if (substr($directory, 0, 1) != '/') {
 		$directory = CACTI_PATH_BASE . '/' . $directory;
 	}
@@ -357,7 +357,7 @@ function install_rmdir_recursive(string $directory, bool $delete_parent = false)
 		}
 	}
 
-	if ($delete_parent) {
+	if ($del_parent) {
 		install_rmdir($directory);
 	}
 }
@@ -509,10 +509,10 @@ function db_install_execute(string $sql, array $params = [], bool $log = true) :
 /**
  * Provides database fetch functions during install
  *
- * @param string   $func
- * @param string   $sql
- * @param array    $params
- * @param boolean  $log
+ * @param string  $func
+ * @param string  $sql
+ * @param array   $params
+ * @param boolean $log
  *
  * @return array
  */
@@ -1317,8 +1317,8 @@ function remote_update_config_file() : string {
 /**
  * set_install_config_option - Set a config option into the local database only
  *
- * @param string $name  - the name of the configuration setting as specified $settings array
- * @param mixed  $value - the values to be saved
+ * @param string $name  The name of the configuration setting as specified $settings array
+ * @param mixed  $value The values to be saved
  *
  * @return void
  */

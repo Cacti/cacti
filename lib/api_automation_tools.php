@@ -44,7 +44,7 @@ function getHostTemplates() : array {
 /**
  * Retrieves hosts based on their description.
  *
- * @param mixed $hostTemplateIds - An array of host template IDs to filter the hosts by, or false to retrieve all hosts.
+ * @param mixed $hostTemplateIds An array of host template IDs to filter the hosts by, or false to retrieve all hosts.
  *
  * @return mixed - Returns an array of hosts that match the given description, or false on failure.
  */
@@ -106,8 +106,8 @@ function getSites() : array {
 /**
  * Retrieves a list of hosts.
  *
- * @param mixed $hostTemplateIds - Optional. An array of host template IDs to filter the hosts by.
- *                                 If false, all hosts will be retrieved.
+ * @param mixed $hostTemplateIds An array of host template IDs to filter the hosts by.
+ *                               If false, all hosts will be retrieved.
  *
  * @return mixed - Returns an array of hosts if successful, or false on failure.
  */
@@ -151,7 +151,7 @@ function getHosts(mixed $hostTemplateIds = false) : mixed {
 /**
  * Retrieves the input fields for a given template ID.
  *
- * @param int $templateId The ID of the template to retrieve input fields for.
+ * @param  int   $templateId The ID of the template to retrieve input fields for.
  * @return array An array of input fields associated with the specified template ID.
  */
 function getInputFields(int $templateId) : array {
@@ -217,8 +217,8 @@ function getAddresses() : array {
 /**
  * Retrieves SNMP fields for a given host.
  *
- * @param int $hostId        - The ID of the host for which to retrieve SNMP fields.
- * @param int $snmp_query_id - Optional. The ID of the SNMP query. Default is an empty string.
+ * @param int $hostId        The ID of the host for which to retrieve SNMP fields.
+ * @param int $snmp_query_id The ID of the SNMP query. Default is an empty string.
  *
  * @return array - An array of SNMP fields for the specified host.
  */
@@ -252,9 +252,9 @@ function getSNMPFields(int $hostId, int $snmp_query_id = 0) : array {
 /**
  * Retrieves SNMP values for a given host and field.
  *
- * @param int    $hostId        - The ID of the host to query.
- * @param string $field         - The specific field to retrieve values for.
- * @param int    $snmp_query_id - Optional. The ID of the SNMP query to use. Default is an empty string.
+ * @param int    $hostId        The ID of the host to query.
+ * @param string $field         The specific field to retrieve values for.
+ * @param int    $snmp_query_id The ID of the SNMP query to use. Default is an empty string.
  *
  * @return array An array of SNMP values.
  */
@@ -308,7 +308,8 @@ function getSNMPQueries() : array {
 /**
  * Retrieves the SNMP query types for a given SNMP query ID.
  *
- * @param int $snmpQueryId The ID of the SNMP query.
+ * @param  int   $snmpQueryId The ID of the SNMP query.
+ *
  * @return array An array of SNMP query types.
  */
 function getSNMPQueryTypes(int $snmpQueryId) : array {
@@ -351,8 +352,8 @@ function getGraphTemplates() : array {
 /**
  * Retrieves graph templates associated with the given host template IDs.
  *
- * @param mixed $host_template_ids - An array of host template IDs to filter the graph templates by.
- *                                   If false, all graph templates will be retrieved.
+ * @param mixed $host_template_ids An array of host template IDs to filter the graph templates by.
+ *                                 If false, all graph templates will be retrieved.
  *
  * @return mixed - Returns an array of graph templates if found, or false on failure.
  */
@@ -396,8 +397,8 @@ function getGraphTemplatesByHostTemplate(mixed $host_template_ids = false) : mix
 /**
  * Displays the query types.
  *
- * @param mixed $types     - An array of query types to display.
- * @param bool  $quietMode - Optional. If set to true, suppresses output. Default is false.
+ * @param mixed $types     An array of query types to display.
+ * @param bool  $quietMode Optional. If set to true, suppresses output. Default is false.
  *
  * @return void
  */
@@ -420,8 +421,8 @@ function displayQueryTypes(mixed $types, bool $quietMode = false) : void {
 /**
  * Displays the host templates.
  *
- * @param mixed $host_templates - An array of host templates to display.
- * @param bool  $quietMode      - Optional. If set to true, suppresses output. Default is false.
+ * @param mixed $host_templates An array of host templates to display.
+ * @param bool  $quietMode      Optional. If set to true, suppresses output. Default is false.
  *
  * @return void
  */
@@ -471,9 +472,9 @@ function displayCommunities(bool $quietMode = false) : void {
 /**
  * Displays SNMP fields for a given host.
  *
- * @param mixed $fields    - An array of SNMP fields to display.
- * @param int   $hostId    - The ID of the host for which the SNMP fields are displayed.
- * @param bool  $quietMode - Optional. If true, suppresses output. Default is false.
+ * @param mixed $fields    An array of SNMP fields to display.
+ * @param int   $hostId    The ID of the host for which the SNMP fields are displayed.
+ * @param bool  $quietMode If true, suppresses output. Default is false.
  *
  * @return void
  */
@@ -496,10 +497,10 @@ function displaySNMPFields(mixed $fields, int $hostId, bool $quietMode = false) 
 /**
  * Displays SNMP values for a given host.
  *
- * @param mixed  $values    - The SNMP values to display.
- * @param int    $hostId    - The ID of the host.
- * @param string $field     - The field to display.
- * @param bool   $quietMode - Optional. If true, suppresses output. Default is false.
+ * @param mixed  $values    The SNMP values to display.
+ * @param int    $hostId    The ID of the host.
+ * @param string $field     The field to display.
+ * @param bool   $quietMode If true, suppresses output. Default is false.
  *
  * @return void
  */
@@ -522,8 +523,8 @@ function displaySNMPValues(mixed $values, int $hostId, string $field, bool $quie
 /**
  * Displays SNMP queries.
  *
- * @param mixed $queries   - An array of SNMP queries to display.
- * @param bool  $quietMode - Optional. If set to true, suppresses output. Default is false.
+ * @param mixed $queries   An array of SNMP queries to display.
+ * @param bool  $quietMode If set to true, suppresses output. Default is false.
  *
  * @return void
  */
@@ -546,8 +547,8 @@ function displaySNMPQueries(mixed $queries, bool $quietMode = false) : void {
 /**
  * Displays input fields.
  *
- * @param mixed $input_fields - An array of input fields to be displayed.
- * @param bool  $quietMode    - Optional. If set to true, suppresses output. Default is false.
+ * @param mixed $input_fields An array of input fields to be displayed.
+ * @param bool  $quietMode    If set to true, suppresses output. Default is false.
  *
  * @return void
  */
@@ -570,8 +571,8 @@ function displayInputFields(mixed $input_fields, bool $quietMode = false) : void
 /**
  * Displays the provided graph templates.
  *
- * @param mixed $templates - An array of graph templates to be displayed.
- * @param bool  $quietMode - Optional. If set to true, suppresses output. Default is false.
+ * @param mixed $templates An array of graph templates to be displayed.
+ * @param bool  $quietMode If set to true, suppresses output. Default is false.
  *
  * @return void
  */
@@ -594,8 +595,8 @@ function displayGraphTemplates(mixed $templates, bool $quietMode = false) : void
 /**
  * Displays a list of hosts.
  *
- * @param mixed $hosts     - An array of host information to be displayed.
- * @param bool  $quietMode - Optional. If set to true, suppresses output. Default is false.
+ * @param mixed $hosts     An array of host information to be displayed.
+ * @param bool  $quietMode If set to true, suppresses output. Default is false.
  *
  * @return void
  */
@@ -618,8 +619,8 @@ function displayHosts(mixed $hosts, bool $quietMode = false) : void {
 /**
  * Displays a list of sites.
  *
- * @param mixed $sites     - An array of sites to display.
- * @param bool  $quietMode - Optional. If true, suppresses output. Default is false.
+ * @param mixed $sites     An array of sites to display.
+ * @param bool  $quietMode If true, suppresses output. Default is false.
  *
  * @return void
  */
@@ -673,10 +674,10 @@ function displayTrees(bool $quietMode = false) : void {
 /**
  * Displays the tree nodes for a given tree.
  *
- * @param int $tree_id The ID of the tree to display nodes for.
- * @param string $nodeType The type of nodes to display (optional).
- * @param int $parentNode The ID of the parent node to start displaying from (optional).
- * @param bool $quietMode Whether to suppress output (optional).
+ * @param int    $tree_id    The ID of the tree to display nodes for.
+ * @param string $nodeType   The type of nodes to display (optional).
+ * @param int    $parentNode The ID of the parent node to start displaying from (optional).
+ * @param bool   $quietMode  Whether to suppress output (optional).
  *
  * @return void
  */
@@ -814,7 +815,7 @@ function displayRRAs(bool $quietMode = false) : void {
  * Displays the graphs for a given host.
  *
  * @param int  $host_id   The ID of the host whose graphs are to be displayed.
- * @param bool $quietMode Optional. If set to true, suppresses output. Default is false.
+ * @param bool $quietMode If set to true, suppresses output. Default is false.
  *
  * @return void
  */

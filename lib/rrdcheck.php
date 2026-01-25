@@ -70,7 +70,7 @@ function get_rrdfiles(int $thread_id = 1, int $max_threads = 1) : array {
  * rrdcheck_debug - this simple routine prints a standard message to the console
  * when running in debug mode.
  *
- * @param string $message - The message to display
+ * @param string $message The message to display
  *
  * @return void
  */
@@ -86,7 +86,7 @@ function rrdcheck_debug(string $message) : void {
  * do_rrdcheck - this routine is a generic routine that
  * check all RRDfiles (missing files, ...) and stored information (NaN)
  *
- * @param int $thread_id - the rrdcheck parallel thread id
+ * @param int $thread_id The rrdcheck parallel thread id
  *
  * @return void
  */
@@ -549,7 +549,7 @@ function do_rrdcheck(int $thread_id = 1) : void {
  * rrdcheck_log_statistics - provides generic timing message to both the Cacti log and the settings
  * table so that the statistcs can be graphed as well.
  *
- * @param string $type - the type of statistics to log, either 'HOURLY', 'BOOST'.
+ * @param string $type The type of statistics to log, either 'HOURLY', 'BOOST'.
  *
  * @return void
  */
@@ -618,9 +618,9 @@ function rrdcheck_log_statistics(string $type) : void {
 /**
  * rrdcheck_log_child_stats - logs rrdcheck child process information
  *
- * @param string $type        - The type of child, MAJOR, DAILY, BOOST
- * @param int    $thread_id   - The parallel thread id
- * @param float  $total_time  - The total time to collect date
+ * @param string $type       The type of child, MAJOR, DAILY, BOOST
+ * @param int    $thread_id  The parallel thread id
+ * @param float  $total_time The total time to collect date
  *
  * @return void
  */
@@ -659,13 +659,13 @@ function rrdcheck_log_child_stats(string $type, int $thread_id, float $total_tim
  * rrdcheck_error_handler - this routine logs all PHP error transactions
  * to make sure they are properly logged.
  *
- * @param int    $errno    - The errornum reported by the system
- * @param string $errmsg   - The error message provides by the error
- * @param string $filename - The filename that encountered the error
- * @param int    $linenum  - The line number where the error occurred
- * @param array  $vars     - The current state of PHP variables.
+ * @param int    $errno    The errornum reported by the system
+ * @param string $errmsg   The error message provides by the error
+ * @param string $filename The filename that encountered the error
+ * @param int    $linenum  The line number where the error occurred
+ * @param array  $vars     The current state of PHP variables.
  *
- * @return bool     - always returns true for some reason
+ * @return bool Always returns true for some reason
  */
 function rrdcheck_error_handler(int $errno, string $errmsg, string $filename, int $linenum, array $vars = []) : bool {
 	if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
@@ -772,7 +772,7 @@ function rrdcheck_poller_bottom() : void {
  * it provides a high speed connection to rrdfile in the case where the traditional Cacti call does
  * not when performing fetch type calls.
  *
- * @return array - Includes both the process resource and the pipes to communicate with RRDtool.
+ * @return array Includes both the process resource and the pipes to communicate with RRDtool.
  */
 function rrdcheck_rrdtool_init() : array {
 	if (CACTI_SERVER_OS == 'unix') {
@@ -812,10 +812,10 @@ function rrdcheck_rrdtool_init() : array {
  * This may not be the best method and may be changed after I have a conversation with a few
  * developers.
  *
- * @param string $command - The rrdtool command to execute
- * @param array  $pipes   - An array of stdin and stdout pipes to read and write data from
+ * @param string $command The rrdtool command to execute
+ * @param array  $pipes   An array of stdin and stdout pipes to read and write data from
  *
- * @return mixed  - The output from RRDtool
+ * @return mixed The output from RRDtool
  */
 function rrdcheck_rrdtool_execute(string $command, mixed &$pipes) : mixed {
 	static $broken = false;
@@ -858,9 +858,9 @@ function rrdcheck_rrdtool_execute(string $command, mixed &$pipes) : mixed {
  * rrdcheck_rrdtool_close - this routine closes the RRDtool process thus also
  * closing the pipes.
  *
- * @param resource $process - The process
+ * @param resource $process The process
  *
- * @return int - The status of the close
+ * @return int The status of the close
  */
 function rrdcheck_rrdtool_close($process) : int {
 	return proc_close($process);
@@ -870,7 +870,7 @@ function rrdcheck_rrdtool_close($process) : int {
  * rrdcheck_launch_children - this function will launch collector children based upon
  * the maximum number of threads and the process type.
  *
- * @param string $type - The process type
+ * @param string $type The process type
  *
  * @return void
  */
@@ -904,9 +904,9 @@ function rrdcheck_launch_children(string $type) : void {
  * rrdcheck_get_subtype - this function determine the applicable
  * sub-type (child name) and return if based upon a type.
  *
- * @param string $type - The process type
+ * @param string $type The process type
  *
- * @return string - The sub type
+ * @return string The sub type
  */
 function rrdcheck_get_subtype(string $type) : string {
 	switch($type) {
@@ -960,9 +960,9 @@ function rrdcheck_kill_running_processes() : void {
  * rrdcheck_processes_running - given a type, determine the number
  * of sub-type or children that are currently running
  *
- * @param string $type - The process type
+ * @param string $type The process type
  *
- * @return int - The number of running processes
+ * @return int The number of running processes
  */
 function rrdcheck_processes_running($type) : int {
 	$sub_type = rrdcheck_get_subtype($type);

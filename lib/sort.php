@@ -31,7 +31,7 @@
  * @param string $a
  * @param string $b
  *
- * @return int - '1' if $a is greater than $b, '-1' if $a is less than $b, or '0' if
+ * @return int '1' if $a is greater than $b, '-1' if $a is less than $b, or '0' if
  */
 function usort_data_query_index(string $a, string $b) : int {
 	/* split strings to be compared into chunks
@@ -118,7 +118,7 @@ function usort_natural(string $a, string $b) : int {
  *
  * @param array $array
  * @param mixed $subkey
- * @param int $sort
+ * @param int   $sort
  *
  * @return bool - The result of the sort operation
  */

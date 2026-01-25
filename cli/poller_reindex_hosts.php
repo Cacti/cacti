@@ -374,7 +374,7 @@ function reindex_master_handler(bool $forcerun, int $host_id, int $query_id, str
  * reindex_launch_child - this function will launch collector children based upon
  * the maximum number of threads and the process type
  *
- * @param int   $thread_id - The Thread id to launch
+ * @param int $thread_id The Thread id to launch
  *
  * @return void
  */
@@ -409,7 +409,7 @@ function reindex_processes_running() : int {
  * reindex_debug - this simple routine prints a standard message to the console
  * when running in debug mode.
  *
- * @param string $message - The message to display
+ * @param string $message The message to display
  *
  * @return void
  */
@@ -424,7 +424,7 @@ function reindex_debug(string $message) : void {
 /**
  * sig_handler - provides a generic means to catch exceptions to the Cacti log.
  *
- * @param int   $signo - the signal that was thrown by the interface.
+ * @param int $signo the signal that was thrown by the interface.
  *
  * @return void
  */

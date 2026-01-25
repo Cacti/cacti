@@ -119,7 +119,7 @@ function boost_get_total_rows() : int {
  * @param string $errmsg   The error message.
  * @param string $filename The filename where the error was raised.
  * @param int    $linenum  The line number where the error was raised.
- * @param array  $vars     (Optional) An array of variables that existed in the
+ * @param array  $vars     An array of variables that existed in the
  *                         scope the error was triggered in.
  *
  * @return bool
@@ -364,9 +364,9 @@ function boost_poller_id_check() : bool {
  * processes the poller output for the specified local data ID and updates the RRD files.
  * It also handles error reporting and manages the RRDTool pipe resource.
  *
- * @param int $local_data_id The ID of the local data to process.
- * @param mixed $rrdtool_pipe (Optional) An existing RRDTool pipe resource. If not provided,
- *                                     a new pipe will be initialized and closed within the function.
+ * @param int   $local_data_id The ID of the local data to process.
+ * @param mixed $rrdtool_pipe  An existing RRDTool pipe resource. If not provided,
+ *                             a new pipe will be initialized and closed within the function.
  *
  * @return bool Returns false if Boost is not enabled or not properly configured.
  */
@@ -456,11 +456,11 @@ function boost_return_cached_image(&$graph_data_array) : bool {
  * Checks the graph cache for a given graph and returns the cached image if valid.
  * If the cache is invalid or unavailable, it falls back to Cacti's graphing functions.
  *
- * @param int    $local_graph_id   The ID of the local graph to check.
- * @param mixed  $rra_id           The RRA ID associated with the graph.
- * @param mixed  $rrdtool_pipe     Optional RRDTool pipe for processing (default: null).
- * @param array  $graph_data_array Reference to an array containing graph data (default: empty array).
- * @param bool   $return           Whether to return the result (default: true).
+ * @param int   $local_graph_id   The ID of the local graph to check.
+ * @param mixed $rra_id           The RRA ID associated with the graph.
+ * @param mixed $rrdtool_pipe     Optional RRDTool pipe for processing (default: null).
+ * @param array $graph_data_array Reference to an array containing graph data (default: empty array).
+ * @param bool  $return           Whether to return the result (default: true).
  *
  * @return string|false Returns the cached image data if available and valid, or false otherwise.
  *
@@ -674,9 +674,9 @@ function boost_prep_graph_array(array $graph_data_array) : array {
  * such as graph ID, RRA ID, theme, timespan, and graph dimensions. It then writes
  * the graph image data to the cache file if the cache directory is writable.
  *
- * @param string|null $output          The graph image data to be cached.
- * @param int    $local_graph_id  The ID of the local graph.
- * @param int    $rra_id          The RRA (Round Robin Archive) ID.
+ * @param string|null $output         The graph image data to be cached.
+ * @param int         $local_graph_id The ID of the local graph.
+ * @param int         $rra_id         The RRA (Round Robin Archive) ID.
  *
  * @throws Exception If the cache directory is not writable, does not exist, or is not set.
  *
@@ -774,7 +774,7 @@ function boost_graph_set_file(string|null &$output, int $local_graph_id, int|nul
  * and the number of cycles for the given area.
  *
  * @param string $area The name of the area being timed.
- * @param int $type The type of timer action, either BOOST_TIMER_START or BOOST_TIMER_END.
+ * @param int    $type The type of timer action, either BOOST_TIMER_START or BOOST_TIMER_END.
  */
 function boost_timer(string $area, int $type) : void {
 	global $boost_stats_log;
@@ -826,13 +826,13 @@ function boost_timer_get_overhead() : float {
 /**
  * Retrieves the names of the archive tables related to poller output boost.
  *
- * @param mixed  $latest_table - Optional. The name of the latest table to check
- *                               if no other tables are found.
+ * @param mixed $latest_table - Optional. The name of the latest table to check
+ *                            if no other tables are found.
  *
  * @return mixed - Returns an associative array of table names if found,
- *                 where the keys and values are the table names.
- *                 Returns false if no tables are found and the latest
- *                 table is not provided or does not exist.
+ *               where the keys and values are the table names.
+ *               Returns false if no tables are found and the latest
+ *               table is not provided or does not exist.
  */
 function boost_get_arch_table_names(mixed $latest_table = '') : mixed {
 	$tableData  = db_fetch_assoc("SHOW tables LIKE 'poller_output_boost_arch%'");
@@ -1352,8 +1352,8 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
  * If the file exists, it uses rrdtool to fetch the last update time.
  * If the file path is empty, it returns the current system time.
  *
- * @param string $rrd_path The path to the RRD file.
- * @param mixed $rrdtool_pipe The rrdtool pipe resource for executing commands.
+ * @param string $rrd_path     The path to the RRD file.
+ * @param mixed  $rrdtool_pipe The rrdtool pipe resource for executing commands.
  *
  * @return int|string The last update time of the RRD file as a timestamp, or the current time if the path is empty.
  */
@@ -1508,9 +1508,9 @@ function boost_get_rrd_filename_and_template(int $local_data_id) : array {
  * @param array $rrdtool_pipe  - The RRDTool pipe resource for executing commands.
  *
  * @return mixed - Returns the RRDTool command string if $show_source is true,
- *                 -1 if the file already exists,
- *                 false if no RRA is associated with the data source,
- *                 or the result of the RRDTool execution.
+ *               -1 if the file already exists,
+ *               false if no RRA is associated with the data source,
+ *               or the result of the RRDTool execution.
  */
 function boost_rrdtool_function_create(int $local_data_id, bool $show_source, array $rrdtool_pipe) : mixed {
 	global $consolidation_functions, $data_source_types;
@@ -1713,11 +1713,11 @@ function boost_rrdtool_function_create(int $local_data_id, bool $show_source, ar
 /**
  * A re-write of the Cacti rrdtool update command specifically designed for bulk updates
  *
- * @param int $local_data_id The ID of the local data source.
- * @param string $rrd_path The file path to the RRD file.
+ * @param int    $local_data_id       The ID of the local data source.
+ * @param string $rrd_path            The file path to the RRD file.
  * @param string $rrd_update_template The template string for the RRD update.
- * @param string &$rrd_update_values The values to update the RRD file with (passed by reference).
- * @param mixed $rrdtool_pipe Optional. The RRDTool pipe resource for communication.
+ * @param string &$rrd_update_values  The values to update the RRD file with (passed by reference).
+ * @param mixed  $rrdtool_pipe        Optional. The RRDTool pipe resource for communication.
  *
  * @return string Returns 'OK' on successful update or if the RRD file is invalid or missing.
  */

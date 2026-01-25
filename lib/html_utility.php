@@ -29,11 +29,11 @@
  * with corresponding values from the provided arguments. It supports up to three
  * levels of argument replacement (arg1, arg2, arg3).
  *
- * @param array &$form_array The form array to process. This array is passed by reference.
- * @param mixed $arg1 Optional. Represents the |arg1:| variable (see include/global_form.php for more details)
- * @param mixed $arg2 Optional. Represents the |arg2:| variable (see include/global_form.php for more details)
- * @param mixed $arg3 Optional. Represents the |arg3:| variable (see include/global_form.php for more details)
- * @param mixed $arg4 Optional. Represents the |arg4:| variable (see include/global_form.php for more details)
+ * @param array $form_array The form array to process. This array is passed by reference.
+ * @param mixed $arg1       Represents the |arg1:| variable (see include/global_form.php for more details)
+ * @param mixed $arg2       Represents the |arg2:| variable (see include/global_form.php for more details)
+ * @param mixed $arg3       Represents the |arg3:| variable (see include/global_form.php for more details)
+ * @param mixed $arg4       Represents the |arg4:| variable (see include/global_form.php for more details)
  *
  * @return array The processed form array with injected variables.
  */
@@ -153,8 +153,8 @@ function inject_form_variables(array &$form_array, mixed $arg1 = [], mixed $arg2
  *
  * @param string $row_color1 The color for odd rows.
  * @param string $row_color2 The color for even rows. If empty or 'E5E5E5', the class 'even' is used.
- * @param int $row_value The current row number, used to determine if the row is odd or even.
- * @param string $row_id Optional. The ID to assign to the row. If not provided, no ID is assigned.
+ * @param int    $row_value  The current row number, used to determine if the row is odd or even.
+ * @param string $row_id     Optional. The ID to assign to the row. If not provided, no ID is assigned.
  *
  * @return string The current color used for the row.
  */
@@ -183,9 +183,9 @@ function form_alternate_row_color(string $row_color1, string $row_color2, int $r
 /**
  * Generates an HTML table row with alternating classes for styling.
  *
- * @param string $row_id The ID to assign to the table row. If not provided, no ID will be assigned.
- * @param bool $light If true, the row will use the 'even-alternate' class for even rows.
- * @param bool $disabled If true, the row will not be selectable.
+ * @param string $row_id   The ID to assign to the table row. If not provided, no ID will be assigned.
+ * @param bool   $light    If true, the row will use the 'even-alternate' class for even rows.
+ * @param bool   $disabled If true, the row will not be selectable.
  *
  * @return void
  */
@@ -219,11 +219,11 @@ function form_alternate_row(string $row_id = '', bool $light = false, bool $disa
  * This function creates a selectable table cell with the provided contents,
  * ensuring that the contents are properly escaped to prevent XSS attacks.
  *
- * @param mixed  $contents   - The content to be displayed inside the cell.
- * @param mixed  $id         - The ID attribute for the cell.
- * @param string $width      - Optional. The width of the cell. Default is an empty string.
- * @param string $styleclass - Optional. The style or class attribute for the cell. Default is an empty string.
- * @param string $title      - Optional. The title attribute for the cell. Default is an empty string.
+ * @param mixed  $contents   The content to be displayed inside the cell.
+ * @param mixed  $id         The ID attribute for the cell.
+ * @param string $width      The width of the cell. Default is an empty string.
+ * @param string $styleclass The style or class attribute for the cell. Default is an empty string.
+ * @param string $title      The title attribute for the cell. Default is an empty string.
  *
  * @return bool
  */
@@ -234,15 +234,15 @@ function form_selectable_ecell(mixed $contents, mixed $id, string $width = '', s
 /**
  * Format's a table row such that it can be highlighted using cacti's js actions
  *
- * @param mixed  $contents   - The content to be placed inside the table cell.
- * @param mixed  $id         - The ID attribute for the table cell (not used in the function).
- * @param string $width      - Optional. The width of the table cell. Default is an empty string.
- * @param string $styleclass - Optional. The style or class attribute for the table cell.
- *                             Default is an empty string. If it contains a colon (:),
- *                             it is treated as a style attribute; otherwise, as a class attribute.
- * @param string $title      - Optional. The tooltip text for the table cell. Default is an empty string.
+ * @param mixed  $contents   The content to be placed inside the table cell.
+ * @param mixed  $id         The ID attribute for the table cell (not used in the function).
+ * @param string $width      The width of the table cell. Default is an empty string.
+ * @param string $styleclass The style or class attribute for the table cell.
+ *                           Default is an empty string. If it contains a colon (:),
+ *                           it is treated as a style attribute; otherwise, as a class attribute.
+ * @param string $title      The tooltip text for the table cell. Default is an empty string.
  *
- * @return bool - false if an error is encountered
+ * @return bool False if an error is encountered
  */
 function form_selectable_cell(mixed $contents, mixed $id, string $width = '', string $styleclass = '', string $title = '') : bool {
 	global $tableCount;
@@ -351,13 +351,13 @@ function form_get_table_id(mixed $increment = false) : string {
  *
  * @param mixed  $contents   The content to be placed inside the table cell.
  * @param string $table_id   The ID attribute for the table cell (not used in the function).
- * @param string $columnid   Optional. The width of the table cell. Default is an empty string.
- * @param string $styleclass Optional. The style or class attribute for the table cell.
+ * @param string $columnid   The width of the table cell. Default is an empty string.
+ * @param string $styleclass The style or class attribute for the table cell.
  *                           Default is an empty string. If it contains a colon (:), it is treated as a style
  *                           attribute; otherwise, as a class attribute.
- * @param string $title      Optional. The tooltip text for the table cell. Default is an empty string.
+ * @param string $title      The tooltip text for the table cell. Default is an empty string.
  *
- * @return bool - false if errors are encountered
+ * @return bool False if errors are encountered
  */
 function form_selectable_vcell(mixed $contents, string $table_id = '', string $columnid = '', string $styleclass = '', string $title = '') : bool {
 	global $tableCount;
@@ -570,10 +570,10 @@ function form_process_visible_display_text(string $table_id, array $display_text
 /**
  * Format's a tables checkbox form element so that the cacti js actions work on it
  *
- * @param string $title The title attribute for the checkbox, used for accessibility.
- * @param string $id The unique identifier for the checkbox input element.
- * @param bool $disabled Optional. Whether the checkbox should be disabled. Default is false.
- * @param bool $checked Optional. Whether the checkbox should be checked. Default is false.
+ * @param string $title    The title attribute for the checkbox, used for accessibility.
+ * @param string $id       The unique identifier for the checkbox input element.
+ * @param bool   $disabled Whether the checkbox should be disabled. Default is false.
+ * @param bool   $checked  Whether the checkbox should be checked. Default is false.
  *
  * @return void
  */
@@ -638,7 +638,7 @@ function get_checkbox_style() : string {
 /**
  * Sets the required 'action' request variable
  *
- * @param  string $default The default action is not set
+ * @param string $default The default action is not set
  *
  * @return void
  */
@@ -659,7 +659,7 @@ function set_default_action(string $default = '') : void {
 /**
  * alias of unset_request_var
  *
- * @param  string  $variable
+ * @param string $variable
  *
  * @return void
  */
@@ -670,7 +670,7 @@ function unsrv(string $variable) : void {
 /**
  * Unsets the request variable.
  *
- * @param  string  $variable
+ * @param string $variable
  *
  * @return void
  */
@@ -689,7 +689,7 @@ function unset_request_var(string $variable) : void {
 /**
  * alias of isset_request_var()
  *
- * @param  string  $variable
+ * @param string $variable
  *
  * @return bool
  */
@@ -700,7 +700,7 @@ function isrv(string $variable) : bool {
 /**
  * checks to see if the $_REQUEST variable is set.
  *
- * @param  string  $variable
+ * @param string $variable
  *
  * @return bool
  */
@@ -711,7 +711,7 @@ function isset_request_var(string $variable) : bool {
 /**
  * alias of isempty_request_var()
  *
- * @param  string  $variable
+ * @param string $variable
  *
  * @return bool
  */
@@ -722,7 +722,7 @@ function ierv(string $variable) : bool {
 /**
  * checks to see if the $_REQUEST variableis empty.
  *
- * @param  string  $variable
+ * @param string $variable
  *
  * @return bool
  */
@@ -741,8 +741,8 @@ function isempty_request_var(string $variable) : bool {
 /**
  * alias of set_request_var()
  *
- * @param  string $variable The variable to set
- * @param  mixed  $value    The value to set the variable to
+ * @param string $variable The variable to set
+ * @param mixed  $value    The value to set the variable to
  *
  * @return void
  */
@@ -753,8 +753,8 @@ function srv(string $variable, mixed $value) : void {
 /**
  * Sets a given $_REQUEST variable and Cacti global.
  *
- * @param  string $variable The variable to set
- * @param  mixed  $value    The value to set the variable to
+ * @param string $variable The variable to set
+ * @param mixed  $value    The value to set the variable to
  *
  * @return void
  */
@@ -773,10 +773,10 @@ function set_request_var(string $variable, mixed $value) : void {
  * has 'log_validation' set on, it will log all instances where a request variable
  * has not first been filtered.
  *
- * @param  string $name     the name of the request variable. this should be a
- *                          valid key in the $_REQUEST array
- * @param  mixed  $default  the value to return if the specified name does not
- *                          exist in the $_REQUEST array
+ * @param string $name    the name of the request variable. this should be a
+ *                        valid key in the $_REQUEST array
+ * @param mixed  $default the value to return if the specified name does not
+ *                        exist in the $_REQUEST array
  *
  * @return mixed
  */
@@ -807,10 +807,10 @@ function get_request_var(string $name, mixed $default = '') : mixed {
  *
  * @deprecated v1.0
  *
- * @param  string $name     the name of the request variable. this should be a
- *                          valid key in the $_REQUEST array
- * @param  mixed  $default  the value to return if the specified name does not
- *                          exist in the $_REQUEST array
+ * @param string $name    the name of the request variable. this should be a
+ *                        valid key in the $_REQUEST array
+ * @param mixed  $default the value to return if the specified name does not
+ *                        exist in the $_REQUEST array
  *
  * @return mixed
  */
@@ -821,10 +821,10 @@ function get_request_var_request(string $name, mixed $default = '') : mixed {
 /**
  * alias of get_request_var()
  *
- * @param  string $name     the name of the request variable. this should be a
- *                          valid key in the $_REQUEST array
- * @param  mixed  $default  the value to return if the specified name does not
- *                          exist in the $_REQUEST array
+ * @param string $name    the name of the request variable. this should be a
+ *                        valid key in the $_REQUEST array
+ * @param mixed  $default the value to return if the specified name does not
+ *                        exist in the $_REQUEST array
  *
  * @return mixed
  */
@@ -835,11 +835,11 @@ function grv(string $name, mixed $default = '') : mixed {
 /**
  * alias of get_filter_request_var()
  *
- * @param  string $name     the name of the request variable. this should be a
- *                          valid key in the $_REQUEST array
- * @param  int    $filter   the filter mode to use
- * @param  array  $options  used to pass to filter_var function or to hold the
- *                          default value to be returned
+ * @param string $name    the name of the request variable. this should be a
+ *                        valid key in the $_REQUEST array
+ * @param int    $filter  the filter mode to use
+ * @param array  $options used to pass to filter_var function or to hold the
+ *                        default value to be returned
  *
  * @return mixed
  */
@@ -852,11 +852,11 @@ function gfrv(string $name, int $filter = FILTER_VALIDATE_INT, array $options = 
  * sanitizing the value using the filter. It will also optionally
  * return a default value if the request variable does not exist
  *
- * @param  string $name     the name of the request variable. this should be a
- *                          valid key in the $_REQUEST array
- * @param  int    $filter   the filter mode to use
- * @param  array  $options  used to pass to filter_var function or to hold the
- *                          default value to be returned
+ * @param string $name    the name of the request variable. this should be a
+ *                        valid key in the $_REQUEST array
+ * @param int    $filter  the filter mode to use
+ * @param array  $options used to pass to filter_var function or to hold the
+ *                        default value to be returned
  *
  * @return mixed
  */
@@ -978,10 +978,10 @@ function get_filter_request_var(string $name, int $filter = FILTER_VALIDATE_INT,
 /**
  * alias of get_nfilter_request_var()
  *
- * @param  string $name     the name of the request variable. this should be a
- *                          valid key in the $_REQUEST array
- * @param  mixed  $default  the value to return if the specified name does not
- *                          exist in the $_REQUEST array
+ * @param string $name    the name of the request variable. this should be a
+ *                        valid key in the $_REQUEST array
+ * @param mixed  $default the value to return if the specified name does not
+ *                        exist in the $_REQUEST array
  *
  * @return mixed
  */
@@ -997,10 +997,10 @@ function gnrv(string $name, mixed $default = '') : mixed {
  * This should only be used when the request variable has already been
  * vetted via other filer request var functoins
  *
- * @param  string $name     the name of the request variable. this should be a
- *                          valid key in the $_REQUEST array
- * @param  mixed  $default  the value to return if the specified name does not
- *                          exist in the $_REQUEST array
+ * @param string $name    the name of the request variable. this should be a
+ *                        valid key in the $_REQUEST array
+ * @param mixed  $default the value to return if the specified name does not
+ *                        exist in the $_REQUEST array
  *
  * @return mixed
  */
@@ -1023,10 +1023,10 @@ function get_nfilter_request_var(string $name, mixed $default = '') : mixed {
  *
  * @deprecated v1.0
  *
- * @param  string $name     the name of the request variable. this should be a
- *                          valid key in the $_REQUEST array
- * @param  mixed  $default  the value to return if the specified name does not
- *                          exist in the $_REQUEST array
+ * @param string $name    the name of the request variable. this should be a
+ *                        valid key in the $_REQUEST array
+ * @param mixed  $default the value to return if the specified name does not
+ *                        exist in the $_REQUEST array
  *
  * @return mixed
  */
@@ -1039,9 +1039,9 @@ function get_request_var_post(string $name, mixed $default = '') : mixed {
  * custom $_CACTI_REQUEST and desired session variables for
  * Cacti filtering.
  *
- * @param  array  $filters     - An array keyed with the filter methods.
- * @param  string $sess_prefix - A string to use to prefix the session
- *                variable.
+ * @param array  $filters     - An array keyed with the filter methods.
+ * @param string $sess_prefix - A string to use to prefix the session
+ *                            variable.
  *
  *    Valid filter include those from PHP filter_var() function syntax.
  *    The format of the array is:
@@ -1490,7 +1490,7 @@ function validate_is_regex(string $regex) : mixed {
  *
  * @param string $request_var_name The name of the request variable to check.
  * @param string $session_var_name The name of the session variable to store the value.
- * @param mixed $default_value The default value to set if neither the request nor session variable is set.
+ * @param mixed  $default_value    The default value to set if neither the request nor session variable is set.
  *
  * @return void
  */
@@ -1511,10 +1511,10 @@ function load_current_session_value(string $request_var_name, string $session_va
  * the status of a device. The status can be 'Disabled', 'Down (Thold)', 'Down',
  * 'Recovering', 'Up', 'Error', or 'Unknown'.
  *
- * @param bool $disabled Indicates if the device is disabled.
- * @param int $status The current status of the device.
- * @param int $thold_failure_count Optional. The threshold failure count. Default is -1.
- * @param int $status_event_count Optional. The status event count. Default is -1.
+ * @param bool $disabled            Indicates if the device is disabled.
+ * @param int  $status              The current status of the device.
+ * @param int  $thold_failure_count Optional. The threshold failure count. Default is -1.
+ * @param int  $status_event_count  Optional. The status event count. Default is -1.
  *
  * @return string The HTML span element with the appropriate class and status text.
  */
@@ -1541,11 +1541,11 @@ function get_colored_device_status(bool $disabled, int $status, int $thold_failu
 /**
  * Given a device's status, return the colored text in HTML format suitable for display
  *
- * @param bool   $disabled    When true, the device is disabled, false is it is not
- * @param string $site_name   The name of the site to display
+ * @param bool   $disabled  When true, the device is disabled, false is it is not
+ * @param string $site_name The name of the site to display
  *
- * @return string  Returns a string containing html that represents the site's current
- *                 status and name
+ * @return string Returns a string containing html that represents the site's current
+ *                status and name
  */
 function get_colored_site_status(bool $disabled, string|null $site_name) : string {
 	$class = '';
@@ -1606,13 +1606,13 @@ function display_tooltip(string $text) : string {
 /**
  * Generates a paginated list of links for navigating through pages.
  *
- * @param int $current_page The current page number.
- * @param int $pages_per_screen The number of pages to display in the pagination control.
- * @param int $rows_per_page The number of rows per page.
- * @param int $total_rows The total number of rows.
- * @param string $url The base URL for the pagination links.
- * @param string $page_var The query parameter name for the page number (default is 'page').
- * @param string $return_to The ID of the HTML element to update with the new page content (default is '').
+ * @param int    $current_page     The current page number.
+ * @param int    $pages_per_screen The number of pages to display in the pagination control.
+ * @param int    $rows_per_page    The number of rows per page.
+ * @param int    $total_rows       The total number of rows.
+ * @param string $url              The base URL for the pagination links.
+ * @param string $page_var         The query parameter name for the page number (default is 'page').
+ * @param string $return_to        The ID of the HTML element to update with the new page content (default is '').
  *
  * @return string The HTML for the pagination control.
  */

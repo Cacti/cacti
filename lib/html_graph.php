@@ -434,9 +434,9 @@ function inject_realtime_form() : string {
  *
  * This function creates a form that allows users to filter and preview graphs based on various criteria such as site, location, host, template, and time span.
  *
- * @param string $page The current page URL.
- * @param string $action The action to be performed on form submission.
- * @param string $devices_where SQL condition for filtering devices (optional).
+ * @param string $page            The current page URL.
+ * @param string $action          The action to be performed on form submission.
+ * @param string $devices_where   SQL condition for filtering devices (optional).
  * @param string $templates_where SQL condition for filtering templates (optional).
  *
  * @global array $graphs_per_page Array of graphs per page options.
@@ -528,10 +528,10 @@ function html_graph_preview_filter(string $page, string $action, string $devices
  * for the specified host and host template. If no fields are drawn on the form, it saves
  * the graphs without prompting the user.
  *
- * @param string $page The page URL to redirect to after saving the graphs.
- * @param int $host_id The ID of the host for which the graphs are being generated.
- * @param int $host_template_id The ID of the host template used for generating the graphs.
- * @param array $selected_graphs_array An array of selected graphs to be generated.
+ * @param string $page                  The page URL to redirect to after saving the graphs.
+ * @param int    $host_id               The ID of the host for which the graphs are being generated.
+ * @param int    $host_template_id      The ID of the host template used for generating the graphs.
+ * @param array  $selected_graphs_array An array of selected graphs to be generated.
  *
  * @return void
  */
@@ -593,12 +593,12 @@ function html_graph_new_graphs(string $page, int $host_id, int $host_template_id
 /**
  * Generates custom HTML form data for graph creation based on the provided parameters.
  *
- * @param int    $host_id           The ID of the host.
- * @param int    $host_template_id  The ID of the host template.
- * @param int    $snmp_query_id     The ID of the SNMP query.
- * @param string $form_type         The type of form ('cg' for graph template, 'sg' for SNMP query).
- * @param string $form_id1          The ID of the form element.
- * @param array  $form_array2       An array of form elements.
+ * @param int    $host_id          The ID of the host.
+ * @param int    $host_template_id The ID of the host template.
+ * @param int    $snmp_query_id    The ID of the SNMP query.
+ * @param string $form_type        The type of form ('cg' for graph template, 'sg' for SNMP query).
+ * @param string $form_id1         The ID of the form element.
+ * @param array  $form_array2      An array of form elements.
  *
  * @return array An array of output fields for the form.
  */

@@ -331,8 +331,8 @@ function pushout_master_handler(bool $forcerun, int $host_id, int $host_template
  * pushout_launch_child - this function will launch collector children based upon
  * the maximum number of threads and the process type
  *
- * @param int $thread_id - The Thread id to launch with
- * @param int $threads   - The number of threads to run with
+ * @param int $thread_id The Thread id to launch with
+ * @param int $threads   The number of threads to run with
  *
  * @return void
  */
@@ -367,7 +367,7 @@ function pushout_processes_running() : int {
  * pushout_debug - this simple routine prints a standard message to the console
  * when running in debug mode.
  *
- * @param string $message - The message to display
+ * @param string $message The message to display
  *
  * @return void
  */
@@ -382,7 +382,7 @@ function pushout_debug(string $message) : void {
 /**
  * sig_handler - provides a generic means to catch exceptions to the Cacti log.
  *
- * @param int   $signo - The signal that was thrown by the interface.
+ * @param int $signo The signal that was thrown by the interface.
  *
  * @return void
  */

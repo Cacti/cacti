@@ -322,7 +322,7 @@ function commands_master_handler(bool $forcerun, array &$hosts, int $threads) : 
  * commands_launch_child - this function will launch collector children based upon
  * the maximum number of threads and the process type.
  *
- * @param  int  $host_id - The Cacti host_id
+ * @param int $host_id The Cacti host_id
  *
  * @return void
  */
@@ -342,7 +342,7 @@ function commands_launch_child(int $host_id) : void {
  * commands_processes_running - given a type, determine the number
  * of sub-type or children that are currently running.
  *
- * @return int - The number of running processes
+ * @return int The number of running processes
  */
 function commands_processes_running() : int {
 	$running = db_fetch_cell('SELECT COUNT(*)
@@ -361,7 +361,7 @@ function commands_processes_running() : int {
  * commands_debug - this simple routine prints a standard message to the console
  * when running in debug mode.
  *
- * @param string $message - The message to display
+ * @param string $message The message to display
  *
  * @return void
  */
@@ -376,7 +376,7 @@ function commands_debug(string $message) : void {
 /**
  * sig_handler - provides a generic means to catch exceptions to the Cacti log.
  *
- * @param int    $signo - the signal that was thrown by the interface.
+ * @param int $signo The signal that was thrown by the interface.
  *
  * @return void
  */

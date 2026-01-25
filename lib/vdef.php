@@ -25,9 +25,9 @@
 /**
  * get_vdef_item_name - resolves a single VDEF item into its text-based representation
  *
- * @param  int $vdef_item_id - the id of the individual vdef item
+ * @param int $vdef_item_id The id of the individual vdef item
  *
- * @return string - a text-based representation of the vdef item
+ * @return string A text-based representation of the vdef item
  */
 function get_vdef_item_name(int $vdef_item_id) : string {
 	global $vdef_functions, $vdef_item_types;
@@ -48,10 +48,10 @@ function get_vdef_item_name(int $vdef_item_id) : string {
  * get_vdef - resolves an entire VDEF into its text-based representation for use in the RRDtool 'graph'
  * string. this name will be resolved recursively if necessary
  *
- * @param  int  $vdef_id - the id of the vdef to resolve
- * @param  bool $display
+ * @param int  $vdef_id The id of the vdef to resolve
+ * @param bool $display
  *
- * @return string - a text-based representation of the vdef
+ * @return string A text-based representation of the vdef
  */
 function get_vdef(int $vdef_id, bool $display = false) : string {
 	$vdef_items = db_fetch_assoc_prepared('SELECT * FROM vdef_items WHERE vdef_id = ? ORDER BY sequence', [$vdef_id]);

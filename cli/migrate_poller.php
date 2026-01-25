@@ -227,8 +227,8 @@ function log_migration(string $message) : void {
 /**
  * Write device migration record to log for rollback purposes
  *
- * @param array $device Device information
- * @param int $dest_poller Destination poller ID
+ * @param array $device      Device information
+ * @param int   $dest_poller Destination poller ID
  *
  * @return void
  */
@@ -248,8 +248,8 @@ function write_migration_log(array $device, int $dest_poller) : void {
 /**
  * Migrate a single device to new poller
  *
- * @param array $device      - Device information
- * @param int   $dest_poller - Destination poller ID
+ * @param array $device      Device information
+ * @param int   $dest_poller Destination poller ID
  *
  * @return bool Success status
  */
@@ -308,9 +308,9 @@ function migrate_device(array $device, int $dest_poller) : bool {
 /**
  * Migrate all devices from source poller to destination poller
  *
- * @param int $source_poller Source poller ID
- * @param int $dest_poller Destination poller ID
- * @param bool $quietMode Whether to suppress output
+ * @param int  $source_poller Source poller ID
+ * @param int  $dest_poller   Destination poller ID
+ * @param bool $quietMode     Whether to suppress output
  *
  * @return bool
  */
@@ -393,9 +393,9 @@ function migrate_all_devices(int $source_poller, int $dest_poller, bool $quietMo
  * Migrate devices from comma-separated host IDs
  *
  * @param string $host_ids_string Comma-separated list of host IDs
- * @param int $source_poller Source poller ID (for logging)
- * @param int $dest_poller Destination poller ID
- * @param bool $quietMode Whether to suppress output
+ * @param int    $source_poller   Source poller ID (for logging)
+ * @param int    $dest_poller     Destination poller ID
+ * @param bool   $quietMode       Whether to suppress output
  *
  * @return bool - False if there are problems
  */

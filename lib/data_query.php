@@ -29,14 +29,14 @@
  *
  * @param int  $host_id       The ID of the host for which the data query is being run.
  * @param int  $snmp_query_id The ID of the SNMP query to execute.
- * @param bool $automation    Optional. Whether the query is being run as part of an automation process. Default is false.
- * @param bool $force         Optional. Whether to force the re-indexing and cache updates. Default is false.
+ * @param bool $automation    Whether the query is being run as part of an automation process. Default is false.
+ * @param bool $force         Whether to force the re-indexing and cache updates. Default is false.
  *
- * @global array $config       Global configuration array.
- * @global array $input_types  Global array of input types.
+ * @global array $config      Global configuration array.
+ * @global array $input_types Global array of input types.
  *
- * @return mixed - Returns false if the query fails or the host is down/disabled.
- *                 Returns true or the result of the query execution otherwise.
+ * @return mixed Returns false if the query fails or the host is down/disabled.
+ *               Returns true or the result of the query execution otherwise.
  *
  * @throws Exception If there are issues with database queries or remote calls.
  */
@@ -652,9 +652,9 @@ function data_query_remap_indexes(array $local_data) : void {
  * and their associated data inputs are updated correctly when the input method
  * changes.
  *
- * @param int    $snmp_query_id     - The ID of the SNMP query to update.
- * @param int    $previous_input_id - The previous data input ID associated with the SNMP query.
- * @param int    $new_input_id      - The new data input ID to associate with the SNMP query (optional).
+ * @param int $snmp_query_id     - The ID of the SNMP query to update.
+ * @param int $previous_input_id - The previous data input ID associated with the SNMP query.
+ * @param int $new_input_id      - The new data input ID to associate with the SNMP query (optional).
  *
  * @return void
  */
@@ -748,7 +748,7 @@ function get_data_query_array(int $snmp_query_id) : array {
 /**
  * Executes a data query script for a specified host and SNMP query ID.
  *
- * @param int $host_id The ID of the host for which the data query is executed.
+ * @param int $host_id       The ID of the host for which the data query is executed.
  * @param int $snmp_query_id The ID of the SNMP query associated with the data query.
  *
  * @return bool Returns true on successful execution and data retrieval, or false on failure.
@@ -947,10 +947,10 @@ function query_debug_timer_stop(string $section, string $message) : float {
 /**
  * Queries SNMP data for a specific host and SNMP query ID.
  *
- * @param int $host_id       - The ID of the host to query.
- * @param int $snmp_query_id - The ID of the SNMP query to execute.
+ * @param int $host_id       The ID of the host to query.
+ * @param int $snmp_query_id The ID of the SNMP query to execute.
  *
- * @return bool - Returns true on success, or false on failure.
+ * @return bool Returns true on success, or false on failure.
  *
  * @throws Exception If there are issues with the SNMP session or query execution.
  */
@@ -1767,12 +1767,12 @@ function data_query_update_host_cache_from_buffer(int $host_id, int $snmp_query_
 /**
  * Rewrites SNMP indexes based on a specified rewrite index pattern.
  *
- * @param array  &$errmsg         Reference to an array that will store error messages.
- * @param int    $host_id         The ID of the host for which the SNMP query is being processed.
- * @param int    $snmp_query_id   The ID of the SNMP query being processed.
- * @param string $rewrite_index   The rewrite index pattern, which may include placeholders for dynamic substitution.
- * @param array|string $snmp_indexes The SNMP indexes to be processed. Can be a single index or an array of indexes.
- * @param array|bool $fields_processed Optional. An array of fields that have already been processed. Defaults to false.
+ * @param array        &$errmsg          Reference to an array that will store error messages.
+ * @param int          $host_id          The ID of the host for which the SNMP query is being processed.
+ * @param int          $snmp_query_id    The ID of the SNMP query being processed.
+ * @param string       $rewrite_index    The rewrite index pattern, which may include placeholders for dynamic substitution.
+ * @param array|string $snmp_indexes     The SNMP indexes to be processed. Can be a single index or an array of indexes.
+ * @param array|bool   $fields_processed An array of fields that have already been processed. Defaults to false.
  *
  * @return array|string|null Returns the rewritten indexes as an array if multiple indexes are provided,
  *                           a string if a single index is provided, or null if no valid output is generated.
@@ -1780,7 +1780,8 @@ function data_query_update_host_cache_from_buffer(int $host_id, int $snmp_query_
  * @throws Exception This function does not explicitly throw exceptions, but database or other errors
  *                   may occur during execution.
  */
-function data_query_rewrite_indexes(array &$errmsg, int $host_id, int $snmp_query_id, string $rewrite_index, array|string $snmp_indexes, array|bool $fields_processed = false) : array|string|null {
+function data_query_rewrite_indexes(array &$errmsg, int $host_id, int $snmp_query_id, string $rewrite_index,
+	array|string $snmp_indexes, array|bool $fields_processed = false) : array|string|null {
 	global $data_query_rewrite_indexes_cache;
 
 	$errmsg        = [];
@@ -1879,7 +1880,7 @@ function data_query_rewrite_indexes(array &$errmsg, int $host_id, int $snmp_quer
  * @param string|null $field_name The name of the field to which the translation map applies.
  *                                If null, the internal map cache is cleared.
  * @param string|null $value      The value to be rewritten. Defaults to null.
- * @param mixed $map The translation map, either as an array or a serialized string.
+ * @param mixed       $map        The translation map, either as an array or a serialized string.
  *                                Defaults to null.
  *
  * @return string|null The rewritten value, or the original value if no match is found.
@@ -1955,10 +1956,10 @@ function rewrite_snmp_enum_value(string|null $field_name, string|null $value = n
  * Returns an array containing the data query ID and index value given
  * a data query index type/value combination and a host ID
  *
- * @param string $index_type The type of the SNMP index field (e.g., field name).
- * @param string $index_value The value of the SNMP index field.
- * @param int $host_id The ID of the host to query.
- * @param int $data_query_id The ID of the SNMP query.
+ * @param string $index_type    The type of the SNMP index field (e.g., field name).
+ * @param string $index_value   The value of the SNMP index field.
+ * @param int    $host_id       The ID of the host to query.
+ * @param int    $data_query_id The ID of the SNMP query.
  *
  * @return string|null The SNMP index if found, or null if no matching record exists.
  */
@@ -1975,13 +1976,14 @@ function data_query_index(string $index_type, string $index_value, int $host_id,
 /**
  * Returns an array containing data query information for a given data source
  *
- * @param int $data_template_data_id - the ID of the data source to retrieve information for
+ * @param int $data_template_data_id the ID of the data source to retrieve information for
  *
- * @return array - an array that looks like:
+ * @return array an array that looks like:
+ *
  * [
- *   index_type  => ifIndex,
- *   index_value => 3,
- *   output_type => 13
+ * 	index_type  => ifIndex,
+ * 	index_value => 3,
+ * 	output_type => 13
  * ]
  */
 function data_query_field_list(int $data_template_data_id) : array|int {
@@ -2005,9 +2007,9 @@ function data_query_field_list(int $data_template_data_id) : array|int {
 /**
  * Encodes a data query index value so that it can be included inside of a form
  *
- * @param  string $index - the index name to encode
+ * @param string $index The index name to encode
  *
- * @return string - the encoded data query index
+ * @return string The encoded data query index
  */
 function encode_data_query_index(string $index) : string {
 	return md5($index);
@@ -2016,11 +2018,11 @@ function encode_data_query_index(string $index) : string {
 /**
  * Decodes a data query index value so that it can be read from a form
  *
- * @param string $encoded_index - The encoded SNMP index to decode.
- * @param int    $data_query_id - The ID of the data query associated with the SNMP index.
- * @param int    $host_id       - The ID of the host associated with the SNMP index.
+ * @param string $encoded_index The encoded SNMP index to decode.
+ * @param int    $data_query_id The ID of the data query associated with the SNMP index.
+ * @param int    $host_id       The ID of the host associated with the SNMP index.
  *
- * @return mixed - The decoded SNMP index if a match is found, or null if no match is found.
+ * @return mixed The decoded SNMP index if a match is found, or null if no match is found.
  */
 function decode_data_query_index(string $encoded_index, int $data_query_id, int $host_id) : mixed {
 	/* yes, i know MySQL has a MD5() function that would make this a bit quicker. however i would like to
@@ -2045,8 +2047,8 @@ function decode_data_query_index(string $encoded_index, int $data_query_id, int 
 /**
  * Uupdates the local data query cache for each graph AND data source tied to this host/data query
  *
- * @param int $host_id       - The ID of the host for which the data query cache is being updated.
- * @param int $data_query_id - The ID of the data query to update the cache for.
+ * @param int $host_id       The ID of the host for which the data query cache is being updated.
+ * @param int $data_query_id The ID of the data query to update the cache for.
  *
  * @return void
  */
@@ -2087,14 +2089,14 @@ function update_data_query_cache(int $host_id, int $data_query_id) : void {
 /**
  * Updates the local data query cache for a particular graph
  *
- * @param int    $local_graph_id - The ID of the local graph to update.
- * @param int    $host_id        - The ID of the host associated with the graph.
- *                                 If not provided, it will be fetched from the database.
- * @param int    $data_query_id  - The ID of the data query. If not provided,
- *                                 it will be fetched based on the graph's output type.
- * @param string $previous_index - The previous index value. If the current
- *                                index differs from this value, the graph's index will
- *                                be updated.
+ * @param int    $local_graph_id The ID of the local graph to update.
+ * @param int    $host_id        The ID of the host associated with the graph.
+ *                               If not provided, it will be fetched from the database.
+ * @param int    $data_query_id  The ID of the data query. If not provided,
+ *                               it will be fetched based on the graph's output type.
+ * @param string $previous_index The previous index value. If the current
+ *                               index differs from this value, the graph's index will
+ *                               be updated.
  *
  * @return void
  */
@@ -2159,13 +2161,13 @@ function update_graph_data_query_cache(int $local_graph_id, int $host_id = 0, in
  * SNMP query ID and index for a specific data source. It also updates the
  * data source title cache if changes are made.
  *
- * @param int    $local_data_id  - The ID of the local data source to update.
- * @param int    $host_id        - The ID of the host associated with the data source.
- *                                 If not provided, it will be fetched from the database.
- * @param int    $data_query_id  - The ID of the SNMP query. If not provided, it will
- *                                 be determined based on the data source's output type.
- * @param string $previous_index - The previous index value. If the current index
- *                                 matches the previous index, no update will occur.
+ * @param int    $local_data_id  The ID of the local data source to update.
+ * @param int    $host_id        The ID of the host associated with the data source.
+ *                               If not provided, it will be fetched from the database.
+ * @param int    $data_query_id  The ID of the SNMP query. If not provided, it will
+ *                               be determined based on the data source's output type.
+ * @param string $previous_index The previous index value. If the current index
+ *                               matches the previous index, no update will occur.
  *
  * @return bool - Returns true if the data query cache was updated successfully, false otherwise.
  */
@@ -2228,9 +2230,9 @@ function update_data_source_data_query_cache(int $local_data_id, int $host_id = 
  * Obtains a list of indexes for a host/data query that is sorted by the
  * chosen index field and formatted using the data query index title format
  *
- * @param int $host_id       - The ID of the host. If 0, the function will
- *                             fetch data without considering a specific host.
- * @param int $data_query_id - The ID of the data query. Must not be empty.
+ * @param int $host_id       The ID of the host. If 0, the function will
+ *                           fetch data without considering a specific host.
+ * @param int $data_query_id The ID of the data query. Must not be empty.
  *
  * @return array an array formatted like the following: $arr[snmp_index] = 'formatted data query index string'
  */
@@ -2313,9 +2315,9 @@ function get_formatted_data_query_indexes(int $host_id, int $data_query_id) : ar
  * Obtains a single index for a host/data query/data query
  * index that is formatted using the data query index title format
  *
- * @param int    $host_id          - The ID of the host for which the data query index is being retrieved.
- * @param int    $data_query_id    - The ID of the SNMP query associated with the host.
- * @param string $data_query_index - The index of the data query to be formatted.
+ * @param int    $host_id          The ID of the host for which the data query index is being retrieved.
+ * @param int    $data_query_id    The ID of the SNMP query associated with the host.
+ * @param string $data_query_index The index of the data query to be formatted.
  *
  * @return string The formatted data query index after substituting the SNMP query data.
  */
@@ -2355,7 +2357,7 @@ function calculate_or_set_index_order(array &$raw_xml) : void {
  * Builds an ordered list of data query index types that are valid given a list of data query
  * indexes that will be checked against the data query cache
  *
- * @param int $host_id The ID of the host for which the index types are being retrieved.
+ * @param int $host_id       The ID of the host for which the index types are being retrieved.
  * @param int $data_query_id The ID of the data query associated with the host.
  *
  * @return array An ordered list of index types suitable for the given host and data query.
@@ -2560,7 +2562,7 @@ function get_ordered_index_type_list(int $host_id, int $data_query_id) : array {
  * by fetching a list of valid data query index types and choosing the first one in the
  * list. The user can optionally override how the cache is updated in the data query xml file.
  *
- * @param int $host_id The ID of the host for which the data query sort cache is being updated.
+ * @param int $host_id       The ID of the host for which the data query sort cache is being updated.
  * @param int $data_query_id The ID of the data query to update.
  *
  * @return string|false Returns the sort field if the update is successful, or `false` if no valid index types are found.
@@ -2625,11 +2627,11 @@ function update_data_query_sort_cache_by_host(int $host_id) : void {
 /**
  * Returns the best available data query index type using the sort cache
  *
- * @param int    $host_id       - The ID of the host for which the data query is being evaluated.
- * @param int    $data_query_id - The ID of the data query to evaluate.
+ * @param int $host_id       The ID of the host for which the data query is being evaluated.
+ * @param int $data_query_id The ID of the data query to evaluate.
  *
- * @return mixed - Returns the determined index type as a string, or `false` if the index type
- *                 cannot be determined or if there is an error (e.g., missing XML file).
+ * @return mixed Returns the determined index type as a string, or `false` if the index type
+ *               cannot be determined or if there is an error (e.g., missing XML file).
  *
  * @throws Exception If there is an issue with database operations or XML parsing.
  */
@@ -2687,8 +2689,8 @@ function get_best_data_query_index_type(int $host_id, int $data_query_id) : mixe
  * Builds the complete script query executable path
  *
  * @param string $args        A string of arguments to be passed to the script.
- *                             Arguments can be enclosed in single or double quotes
- *                             and are split into individual components.
+ *                            Arguments can be enclosed in single or double quotes
+ *                            and are split into individual components.
  * @param string $script_path The path to the script that will be executed.
  * @param int    $host_id     The ID of the host for which the script is being executed.
  *
@@ -2717,8 +2719,8 @@ function get_script_query_path(string $args, string $script_path, int $host_id) 
 /**
  * Verify a given index_order against the list of input fields in the XML file
  *
- * @param array $raw_xml The raw XML data array to be verified.
- * @return bool Returns true if all fields in 'index_order' are found in the list
+ * @param  array $raw_xml The raw XML data array to be verified.
+ * @return bool  Returns true if all fields in 'index_order' are found in the list
  */
 function verify_index_order(array $raw_xml) : bool {
 	// invalid xml check
