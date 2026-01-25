@@ -1752,8 +1752,8 @@ function form_confirm(string $title_text, string $body_text, string $cancel_url,
 					</tr>
 					<?php
 					form_area($body_text);
-					form_confirm_buttons($action_url, $cancel_url);
-					?>
+	form_confirm_buttons($action_url, $cancel_url);
+	?>
 				</table>
 			</td>
 		</tr>
