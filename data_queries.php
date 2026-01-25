@@ -91,11 +91,8 @@ switch (grv('action')) {
 
 		break;
 	case 'item_edit':
-		top_header();
 
 		data_query_item_edit();
-
-		bottom_footer();
 
 		break;
 	case 'edit':
@@ -993,7 +990,7 @@ function data_query_item_edit() : void {
 			});
 	});
 
-	$('input[id="svg_x"]').click(function() {
+	$('button[id="svg_x"]').click(function() {
 		var options = {
 			url:'data_queries.php'
 		}
@@ -1014,7 +1011,7 @@ function data_query_item_edit() : void {
 		postUrl(options, data);
 	});
 
-	$('input.svds_x').click(function() {
+	$('button[id^="svds_"]').click(function() {
 		var options = {
 			url:'data_queries.php'
 		}
