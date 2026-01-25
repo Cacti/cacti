@@ -23,10 +23,10 @@
  +-------------------------------------------------------------------------+
 */
 
-# ------------------------------------------------------------
-# If not running from Cacti, make sure you set the RRDtool
-# path on this line.
-# ------------------------------------------------------------
+// ------------------------------------------------------------
+// If not running from Cacti, make sure you set the RRDtool
+// path on this line.
+// ------------------------------------------------------------
 if (file_exists('/usr/bin/rrdtool')) {
 	$rrdtool = '/usr/bin/rrdtool';
 } elseif (file_exists('/usr/local/bin/rrdtool')) {
