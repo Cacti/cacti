@@ -198,7 +198,7 @@ if (cacti_sizeof($parms)) {
 	exit(0);
 }
 
-if ($out_start != '' false && !is_numeric($out_start)) {
+if ($out_start != '' && !is_numeric($out_start)) {
 	$orig_out_start = $out_end;
 	$out_start = strtotime($out_start);
 
