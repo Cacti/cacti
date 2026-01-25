@@ -25,7 +25,7 @@
 
 require(__DIR__ . '/../include/cli_check.php');
 
-if ($config['poller_id'] > 1) {
+if (POLLER_ID > 1) {
 	print 'FATAL: This utility is designed for the main Data Collector only' . PHP_EOL;
 
 	exit(1);
@@ -39,13 +39,11 @@ if ($storage_location > 0) {
 	exit(1);
 }
 
-define('PHP_DEOL', PHP_EOL . PHP_EOL);
-
 $host_id          = false;
 $host_template_id = false;
 $proceed          = false;
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -84,7 +82,7 @@ if (cacti_sizeof($parms)) {
 
 				break;
 			default:
-				print "ERROR: Invalid Argument: ($arg)" . PHP_DEOL;
+				print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
 				display_help();
 
 				exit(1);
@@ -95,45 +93,47 @@ if (cacti_sizeof($parms)) {
 $start = microtime(true);
 
 if (read_config_option('boost_rrd_update_enable') !== 'on') {
-	print PHP_EOL . 'FATAL: Cacti\'s Performance Booster required to run this utility.'. PHP_DEOL;
+	print PHP_EOL . 'FATAL: Cacti\'s Performance Booster required to run this utility.' . PHP_EOL . PHP_EOL;
 	display_help();
 
 	exit -1;
 }
 
 if ($host_id !== false && ($host_id <= 0 || !is_numeric($host_id))) {
-	print PHP_EOL . 'FATAL: When specifying a Device ID, you must pick on greater or equal than zero.' . PHP_DEOL;
+	print PHP_EOL . 'FATAL: When specifying a Device ID, you must pick on greater or equal than zero.' . PHP_EOL . PHP_EOL;
 	display_help();
 
 	exit -1;
 }
 
 if ($host_template_id !== false && ($host_template_id <= 0 || !is_numeric($host_template_id))) {
-	print PHP_EOL . 'FATAL: When specifying a Device Template ID, you must pick on greater or equal than zero.' . PHP_DEOL;
+	print PHP_EOL . 'FATAL: When specifying a Device Template ID, you must pick on greater or equal than zero.' . PHP_EOL . PHP_EOL;
 	display_help();
 
 	exit -1;
 }
 
 if ($proceed == false) {
-	print PHP_EOL . 'FATAL: You Must Explicitly Instruct This Script to Proceed with the \'--proceed\' Option' . PHP_DEOL;
+	print PHP_EOL . 'FATAL: You Must Explicitly Instruct This Script to Proceed with the \'--proceed\' Option' . PHP_EOL . PHP_EOL;
 	display_help();
 
 	exit -1;
 }
 
-/* check ownership of the current base path */
+// check ownership of the current base path
 $base_rra_path = CACTI_PATH_RRA;
 $owner_id      = fileowner($base_rra_path);
 $group_id      = filegroup($base_rra_path);
 
-/* turn on extended paths from in the database */
+// turn on extended paths from in the database
 set_config_option('extended_paths', 'on');
 
-$pattern = read_config_option('extended_paths_type');
-$maxdirs = read_config_option('extended_paths_hashes');
+$pattern  = read_config_option('extended_paths_type');
+$maxdirs  = intval(read_config_option('extended_paths_hashes'));
+$pattern1 = '';
+$pattern2 = '';
 
-if (empty($maxdirs) || $maxdirs < 0 || !is_numeric($maxdirs)) {
+if (empty($maxdirs) || $maxdirs < 0) {
 	$maxdirs = 100;
 }
 
@@ -168,7 +168,7 @@ if ($host_template_id > 0) {
 	$sql_params[] = $host_template_id;
 }
 
-/* fetch all DS having wrong path */
+// fetch all DS having wrong path
 $data_sources = db_fetch_assoc_prepared("SELECT dtd.local_data_id, dl.host_id % $maxdirs AS hash_id,
 	dl.host_id, dtd.data_source_path, dl.snmp_query_id, h.description,
 	$pattern1
@@ -182,7 +182,7 @@ $data_sources = db_fetch_assoc_prepared("SELECT dtd.local_data_id, dl.host_id % 
 	$sql_where",
 	$sql_params);
 
-/* setup some counters */
+// setup some counters
 $total_count = cacti_sizeof($data_sources);
 $done_count  = 0;
 $warn_count  = 0;
@@ -191,10 +191,10 @@ $started     = false;
 
 printf('NOTE: Found:%s Data Sources.  Beginning Process' . PHP_EOL, number_format($total_count));
 
-/* truncate the data source command stats table */
+// truncate the data source command stats table
 db_execute('TRUNCATE TABLE data_source_stats_command_cache');
 
-/* scan all data sources */
+// scan all data sources
 foreach ($data_sources as $info) {
 	if (($done_count + $warn_count + $skip_count) % 100 == 0 && $started) {
 		printf('NOTE: Completed: %d of %d RRDfiles' . PHP_EOL, $done_count + $warn_count + $skip_count, $total_count);
@@ -207,14 +207,14 @@ foreach ($data_sources as $info) {
 	$old_rrd_path  = $info['rrd_path'];
 	$local_data_id = $info['local_data_id'];
 
-	/* acquire lock in order to prevent race conditions */
+	// acquire lock in order to prevent race conditions
 	while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds.$local_data_id', 1)")) {
 		usleep(50000);
 	}
 
-	/* create one subfolder for every host */
+	// create one subfolder for every host
 	if (!is_dir($new_base_path)) {
-		/* see if we can create the directory for the new file */
+		// see if we can create the directory for the new file
 		if (mkdir($new_base_path, 0775, true)) {
 			struct_debug("NOTE: New Directory '$new_base_path' Created for RRD Files");
 
@@ -239,7 +239,7 @@ foreach ($data_sources as $info) {
 	 * else update the database and set an error
 	 */
 	if (!file_exists($old_rrd_path)) {
-		/* check for file in other path */
+		// check for file in other path
 		$data_source_name = db_fetch_cell_prepared('SELECT data_source_name
 			FROM data_template_rrd
 			WHERE local_data_id = ?
@@ -247,6 +247,7 @@ foreach ($data_sources as $info) {
 			[$local_data_id]);
 
 		$data_source_path1 = $base_rra_path . '/' . strtolower(clean_up_file_name($info['description'])) . '_' . $local_data_id . '.rrd';
+		$data_source_path2 = '';
 
 		if ($pattern == '' || $pattern == 'device') {
 			$data_source_path2 = $base_rra_path . '/' . $info['host_id'] . '/' . $info['snmp_query_id'] . '/' . $local_data_id . '.rrd';
@@ -260,7 +261,7 @@ foreach ($data_sources as $info) {
 
 		if (file_exists($data_source_path1)) {
 			$old_rrd_path = $data_source_path1;
-		} elseif (file_exists($data_source_path2)) {
+		} elseif ($data_source_path2 != '' && file_exists($data_source_path2)) {
 			$old_rrd_path = $data_source_path2;
 		} else {
 			$warn_count++;
@@ -268,7 +269,7 @@ foreach ($data_sources as $info) {
 			print "WARNING: Legacy RRA Path '$old_rrd_path' Does not exist, Skipping" . PHP_EOL;
 		}
 
-		/* alter database */
+		// alter database
 		update_database($info);
 	}
 
@@ -293,7 +294,7 @@ foreach ($data_sources as $info) {
 					}
 				}
 
-				/* alter database */
+				// alter database
 				update_database($info);
 			} else {
 				print "FATAL: Could not Move RRD File '$old_rrd_path' to '$new_rrd_path'" . PHP_EOL;
@@ -319,12 +320,11 @@ print "NOTE: RRD Restructure Complete: $stats" . PHP_EOL;
 /**
  * struct_debug - Simple debug function for restructuring
  *
- * @param  (string) - The output string
- * @param mixed $string
+ * @param string $string - The output string
  *
- * @return (void)
+ * @return void
  */
-function struct_debug($string) {
+function struct_debug(string $string) : void {
 	global $debug;
 
 	if ($debug) {
@@ -336,18 +336,18 @@ function struct_debug($string) {
  * update database - update database pointers to point to the new
  * database location
  *
- * @param  (array) - $info - an array of local_data_id, new_rrd_path, and the new_data_source_path
+ * @param array $info - an array of local_data_id, new_rrd_path, and the new_data_source_path
  *
- * @return (void)
+ * @return void
  */
-function update_database($info) {
-	/* update table poller_item */
+function update_database(array $info) : void {
+	// update table poller_item
 	db_execute_prepared('UPDATE poller_item
 		SET rrd_path = ?
 		WHERE local_data_id = ?',
 		[$info['new_rrd_path'], $info['local_data_id']]);
 
-	/* update table data_template_data */
+	// update table data_template_data
 	db_execute_prepared('UPDATE data_template_data
 		SET data_source_path = ?
 		WHERE local_data_id = ?',
@@ -359,12 +359,12 @@ function update_database($info) {
 /**
  * sp_recursive_chown - Recursively chown on a path
  *
- * @param  (string)     $path
- * @param  (string|int) $user
+ * @param string $path
+ * @param mixed  $user
  *
- * @return (void)
+ * @return bool
  */
-function sp_recursive_chown($path, $user) {
+function sp_recursive_chown(string $path, mixed $user) : bool {
 	$directory = rtrim($path, '/');
 
 	if ($items = glob($path . '/*')) {
@@ -383,12 +383,12 @@ function sp_recursive_chown($path, $user) {
 /**
  * sp_recursive_chgrp - Recursively chgrp on a path
  *
- * @param  (string)     $path
- * @param  (string|int) $group
+ * @param string $path
+ * @param mixed  $group
  *
- * @return (void)
+ * @return bool
  */
-function sp_recursive_chgrp($path, $group) {
+function sp_recursive_chgrp(string $path, mixed $group) : bool {
 	$directory = rtrim($path, '/');
 
 	if ($items = glob($path . '/*')) {
@@ -406,52 +406,56 @@ function sp_recursive_chgrp($path, $group) {
 
 /**
  * display_version - displays version information
+ *
+ * @return void
  */
-function display_version() {
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Structured Paths Creation Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 /**
  * display_help - displays help information
+ *
+ * @return void
  */
-function display_help() {
+function display_help() : void {
 	display_version();
 
-	print PHP_EOL . 'usage: structure_rra_paths.php [--host-id=N] [--host-template-id=N] [--proceed]' . PHP_DEOL;
+	print PHP_EOL . 'usage: structure_rra_paths.php [--host-id=N] [--host-template-id=N] [--proceed]' . PHP_EOL . PHP_EOL;
 
 	print 'A simple interactive command line utility that converts a Cacti system from using' . PHP_EOL;
 	print 'legacy RRA paths to using structured RRA paths with the following' . PHP_EOL;
-	print 'four naming patterns:' . PHP_DEOL;
+	print 'four naming patterns:' . PHP_EOL . PHP_EOL;
 
 	print 'device                 - <path_rra>/host_id/local_data_id.rrd' . PHP_EOL;
 	print 'device/data_query      - <path_rra>/host_id/data_query_id/local_data_id.rrd' . PHP_EOL;
 	print 'hash/device            - <path_rra>/hash_id/host_id/data_query_id/local_data_id.rrd' . PHP_EOL;
-	print 'hash/device/data_query - <path_rra>/hash_id/host_id/data_query_id/local_data_id.rrd' . PHP_DEOL;
+	print 'hash/device/data_query - <path_rra>/hash_id/host_id/data_query_id/local_data_id.rrd' . PHP_EOL . PHP_EOL;
 
 	print 'The pattern that you choose will depend on how many Devices and Graphs per Device' . PHP_EOL;
 	print 'you have.  It\'s possible that if your site has over 100k Devices, you may want' . PHP_EOL;
-	print 'to use one of last two options.' . PHP_DEOL;
+	print 'to use one of last two options.' . PHP_EOL . PHP_EOL;
 
 	print 'Optional:' . PHP_EOL;
 	print ' --host-id=N           Specify if you wish to switch on a single Device.' . PHP_EOL;
-	print ' --host-template-id=N  Specify if you wish to change for a class of Devices.' . PHP_DEOL;
+	print ' --host-template-id=N  Specify if you wish to change for a class of Devices.' . PHP_EOL . PHP_EOL;
 
 	print 'This utility is designed for very large Cacti systems or file systems that have' . PHP_EOL;
 	print 'problems with very large directories.  It will run interactively, but it first' . PHP_EOL;
-	print 'requires you to be using Cacti\'s performance boosting feature called Boost.' . PHP_DEOL;
+	print 'requires you to be using Cacti\'s performance boosting feature called Boost.' . PHP_EOL . PHP_EOL;
 
 	print 'On Linux/UNIX, the root user is required to apply file and directory ownership.' . PHP_EOL;
 	print 'The when leveraging boost, the utility will work with or without the Cacti poller' . PHP_EOL;
 	print 'running.  The utility will use the set_lock() and release_lock() MySQL/MariaDB' . PHP_EOL;
 	print 'for interlocking, and therefore the utility is safe to run while the Cacti' . PHP_EOL;
-	print 'poller is running.'. PHP_DEOL;
+	print 'poller is running.' . PHP_EOL . PHP_EOL;
 
 	print 'It is recommended that you not interrupt this script as files may not appear' . PHP_EOL;
-	print 'in the locations that the utility expects them to be which may cause issues.' . PHP_DEOL;
+	print 'in the locations that the utility expects them to be which may cause issues.' . PHP_EOL . PHP_EOL;
 
-	print 'For Each File, it will:' . PHP_DEOL;
+	print 'For Each File, it will:' . PHP_EOL . PHP_EOL;
 	print '  1) Create the Structured Path, if Necessary' . PHP_EOL;
 	print '  2) Move the File to the Structured Path Using the New Name' . PHP_EOL;
-	print '  3) Alter the two Database Tables Required'. PHP_DEOL;
+	print '  3) Alter the two Database Tables Required' . PHP_EOL . PHP_EOL;
 }

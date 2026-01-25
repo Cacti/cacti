@@ -37,7 +37,7 @@ require_once(CACTI_PATH_LIBRARY . '/rrd.php');
 require_once(CACTI_PATH_LIBRARY . '/graph_variables.php');
 require_once(CACTI_PATH_LIBRARY . '/dsstats.php');
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -129,31 +129,37 @@ if (cacti_sizeof($parms)) {
  *
  */
 
-/* install signal handlers for UNIX only */
+// install signal handlers for UNIX only
 if (function_exists('pcntl_signal')) {
 	pcntl_signal(SIGTERM, 'sig_handler');
 	pcntl_signal(SIGINT, 'sig_handler');
 }
 
-/* take time and log performance data */
+// take time and log performance data
 $start = microtime(true);
 
-/* let's give this script lot of time to run for ever */
+// let's give this script lot of time to run for ever
 ini_set('max_execution_time', '0');
 dsstats_memory_limit();
 
-/* send a gentle message to the log and stdout */
+// send a gentle message to the log and stdout
 dsstats_debug('Polling Starting');
 
-/* clear the cache if there has been a change in key settings */
+// clear the cache if there has been a change in key settings
 if (read_config_option('dsstats_mode') != read_config_option('dsstats_temp_mode') ||
 	read_config_option('dsstats_peak')    != read_config_option('dsstats_temp_peak')) {
 	db_execute('TRUNCATE TABLE data_source_stats_command_cache');
 }
 
-/* silently end if the registered process is still running */
+// silently end if the registered process is still running
 if (!$force) {
-	if (!register_process_start('dsstats', $type, $thread_id, read_config_option('dsstats_timeout'))) {
+	$timeout = intval(read_config_option('dsstats_timeout'));
+
+	if (empty($timeout)) {
+		$timeout = 600;
+	}
+
+	if (!register_process_start('dsstats', $type, $thread_id, $timeout)) {
 		exit(0);
 	}
 }
@@ -168,10 +174,10 @@ switch ($type) {
 		break;
 	case 'bmaster': // Launched at the end of boost
 	case 'dmaster': // Launched inside this script for daily processing
-		/* run the daily stats */
+		// run the daily stats
 		dsstats_launch_children($type);
 
-		/* Wait for all processes to continue */
+		// Wait for all processes to continue
 		while ($running = dsstats_processes_running($type)) {
 			dsstats_debug(sprintf('%s Processes Running, Sleeping for 2 seconds.', $running));
 			sleep(2);
@@ -212,17 +218,17 @@ if (!$force) {
 
 exit(0);
 
-function dsstats_purge_hourly_cache() {
+function dsstats_purge_hourly_cache() : void {
 	$hourly_window  = date('Y-m-d H:i:s', time() - (read_config_option('dsstats_hourly_duration') * 60));
 
-	/* remove old records from the cache first */
+	// remove old records from the cache first
 	if (db_fetch_cell_prepared('SELECT COUNT(*) FROM data_source_stats_hourly_cache WHERE time < ?', [$hourly_window])) {
 		db_execute_prepared('DELETE FROM data_source_stats_hourly_cache WHERE time < ?', [$hourly_window]);
 	}
 }
 
-function dsstats_insert_hourly_data_into_cache() {
-	/* store the current averages into the hourly table */
+function dsstats_insert_hourly_data_into_cache() : void {
+	// store the current averages into the hourly table
 	db_execute('INSERT INTO data_source_stats_hourly
 		(local_data_id, rrd_name, average, peak)
 		SELECT local_data_id, rrd_name, AVG(`value`), MAX(`value`)
@@ -232,12 +238,12 @@ function dsstats_insert_hourly_data_into_cache() {
 		ON DUPLICATE KEY UPDATE average=VALUES(average), peak=VALUES(peak)');
 }
 
-function dsstats_master_handler($type, $force, $fpartition) {
-	/* read some important settings relative to timing from the database */
+function dsstats_master_handler(string $type, bool $force, bool $fpartition) : void {
+	// read some important settings relative to timing from the database
 	$major_time     = date('H:i:s', strtotime(read_config_option('dsstats_major_update_time')));
 	$daily_interval = read_config_option('dsstats_daily_interval');
 
-	/* check to see when the daily averages were updated last */
+	// check to see when the daily averages were updated last
 	$last_run_daily  = read_config_option('dsstats_last_daily_run_time');
 	$last_run_major  = read_config_option('dsstats_last_major_run_time');
 
@@ -253,24 +259,24 @@ function dsstats_master_handler($type, $force, $fpartition) {
 	// Insert new rows into cache
 	dsstats_insert_hourly_data_into_cache();
 
-	dsstats_log_statistics('HOURLY', $type);
+	dsstats_log_statistics('HOURLY');
 
-	/* see if boost is active or not */
+	// see if boost is active or not
 	$boost_active = read_config_option('boost_rrd_update_enable');
 
-	/* next let's see if it's time to update the daily interval */
+	// next let's see if it's time to update the daily interval
 	$current_time = time();
 
-	/* handle partition creation and pruning before we start */
+	// handle partition creation and pruning before we start
 	if (read_config_option('dsstats_gdg_enable') == 'on') {
 		if (date('z', $last_major_time) != date('z', $current_time) || $fpartition) {
 			dsstats_create_partitions($last_major_time, $current_time, $fpartition);
-			dsstats_remove_old_partitions($current_time, $fpartition);
+			dsstats_remove_old_partitions();
 		}
 	}
 
 	if ($boost_active == 'on') {
-		/* boost will spawn the collector */
+		// boost will spawn the collector
 		dsstats_debug('Skipping Periodic Rollup - Boost will handle the Periodic Roll-up Cycle');
 	} else {
 		if ($daily_interval == 'boost') {
@@ -281,47 +287,47 @@ function dsstats_master_handler($type, $force, $fpartition) {
 			$daily_interval = 60;
 		}
 
-		/* determine if it's time to determine hourly averages */
+		// determine if it's time to determine hourly averages
 		if (empty($last_run_daily)) {
-			/* since the poller has never run before, let's fake it out */
+			// since the poller has never run before, let's fake it out
 			set_config_option('dsstats_last_daily_run_time', date('Y-m-d G:i:s', $current_time));
 		}
 
-		/* if it's time to update daily statistics, do so now */
+		// if it's time to update daily statistics, do so now
 		if ((!empty($last_run_daily) && ((strtotime($last_run_daily) + ($daily_interval * 60)) < $current_time)) || $force) {
 			set_config_option('dsstats_last_daily_run_time', date('Y-m-d G:i:s', $current_time));
 
-			/* run the daily stats */
+			// run the daily stats
 			dsstats_launch_children($type);
 
-			/* Wait for all processes to continue */
+			// Wait for all processes to continue
 			while ($running = dsstats_processes_running($type)) {
 				dsstats_debug(sprintf('%s Processes Running, Sleeping for 2 seconds.', $running));
 				sleep(2);
 			}
 
-			dsstats_log_statistics('DAILY', $type);
+			dsstats_log_statistics('DAILY');
 		}
 	}
 
-	/* lastly, let's see if it's time to run the major stats */
+	// lastly, let's see if it's time to run the major stats
 	if (empty($last_run_major)) {
-		/* since the poller has never run before, let's fake it out */
+		// since the poller has never run before, let's fake it out
 		set_config_option('dsstats_last_major_run_time', date('Y-m-d G:i:s', $current_time));
 	} else {
 		$last_major_day = date('Y-m-d', strtotime($last_run_major));
 		$next_major_day = strtotime($last_major_day . ' ' . $major_time) + 86400;
 	}
 
-	/* if its time to run major statistics, do so now */
+	// if its time to run major statistics, do so now
 	if ((!empty($last_run_major) && ($next_major_day < $current_time)) || $force) {
-		/* run the major stats, log first to keep other processes from running */
+		// run the major stats, log first to keep other processes from running
 		set_config_option('dsstats_last_major_run_time', date('Y-m-d G:i:s', $current_time));
 
-		/* run the daily stats */
+		// run the daily stats
 		dsstats_launch_children('dmaster');
 
-		/* Wait for all processes to continue */
+		// Wait for all processes to continue
 		while ($running = dsstats_processes_running('dmaster')) {
 			dsstats_debug(sprintf('%s Processes Running, Sleeping for 2 seconds.', $running));
 			sleep(2);
@@ -331,7 +337,7 @@ function dsstats_master_handler($type, $force, $fpartition) {
 	}
 }
 
-function dsstats_create_partitions($last_major_time, $current_time, $fpartition = false) {
+function dsstats_create_partitions(int $last_major_time, int $current_time, bool $fpartition = false) : void {
 	$last_day     = date('z', $last_major_time);
 	$last_week    = date('W', $last_major_time);
 	$last_month   = date('n', $last_major_time);
@@ -361,11 +367,11 @@ function dsstats_create_partitions($last_major_time, $current_time, $fpartition 
 	}
 }
 
-function dsstats_remove_old_partitions($current_time, $fpartition = false) {
-	$daily_retention   = read_config_option('dsstats_daily_retention');
-	$weekly_retention  = read_config_option('dsstats_weekly_retention');
-	$monthly_retention = read_config_option('dsstats_monthly_retention');
-	$yearly_retention  = read_config_option('dsstats_yearly_retention');
+function dsstats_remove_old_partitions() : void {
+	$daily_retention   = intval(read_config_option('dsstats_daily_retention'));
+	$weekly_retention  = intval(read_config_option('dsstats_weekly_retention'));
+	$monthly_retention = intval(read_config_option('dsstats_monthly_retention'));
+	$yearly_retention  = intval(read_config_option('dsstats_yearly_retention'));
 
 	dsstats_prune_partitions('data_source_stats_daily', $daily_retention);
 	dsstats_prune_partitions('data_source_stats_weekly', $weekly_retention);
@@ -373,7 +379,7 @@ function dsstats_remove_old_partitions($current_time, $fpartition = false) {
 	dsstats_prune_partitions('data_source_stats_yearly', $yearly_retention);
 }
 
-function dsstats_prune_partitions($table_name, $partitions_to_keep) {
+function dsstats_prune_partitions(string $table_name, int $partitions_to_keep) : void {
 	global $database_default;
 
 	$tables = db_fetch_assoc_prepared("SELECT TABLE_NAME
@@ -410,7 +416,7 @@ function dsstats_prune_partitions($table_name, $partitions_to_keep) {
 	}
 }
 
-function dsstats_create_partition_from_table($table_name, $suffix) {
+function dsstats_create_partition_from_table(string $table_name, string $suffix) : void {
 	if (db_table_exists($table_name)) {
 		cacti_log("NOTE: Creating new partition $table_name", false, 'DSSTATS');
 
@@ -426,7 +432,7 @@ function dsstats_create_partition_from_table($table_name, $suffix) {
 /**
  * display_version - displays version information
  */
-function display_version() {
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Data Source Statistics Poller, Version $version " . COPYRIGHT_YEARS . PHP_EOL;
 }
@@ -434,7 +440,7 @@ function display_version() {
 /**
  * display_help - generic help screen for utilities
  */
-function display_help() {
+function display_help() : void {
 	display_version();
 
 	print PHP_EOL . 'usage: poller_dsstats.php [--force] [--debug]' . PHP_EOL . PHP_EOL;
@@ -455,11 +461,11 @@ function display_help() {
 /**
  * sig_handler - provides a generic means to catch exceptions to the Cacti log.
  *
- * @param $signo - (int) the signal that was thrown by the interface.
+ * @param int $signo - the signal that was thrown by the interface.
  *
- * @return - null
+ * @return void
  */
-function sig_handler($signo) {
+function sig_handler($signo) : void {
 	global $type, $thread_id;
 
 	switch ($signo) {
@@ -467,7 +473,7 @@ function sig_handler($signo) {
 		case SIGINT:
 			cacti_log('WARNING: DSStats Poller terminated by user', false, 'dsstats');
 
-			/* tell the main poller that we are done */
+			// tell the main poller that we are done
 			if ($type == 'master') {
 				set_config_option('dsstats_poller_status', 'terminated - end time:' . date('Y-m-d G:i:s'));
 			}
@@ -479,9 +485,7 @@ function sig_handler($signo) {
 			unregister_process('dsstats', $type, $thread_id, getmypid());
 
 			exit(1);
-
-			break;
 		default:
-			/* ignore all other signals */
+			// ignore all other signals
 	}
 }

@@ -22,13 +22,29 @@
  +-------------------------------------------------------------------------+
 */
 
+// Work aorund issue where phpstan is not detecting globals
+
+include_once(__DIR__ . '/global_arrays.php');
+
+global $agg_graph_types, $agg_order_types, $aggregation_levels, $agg_totals;
+global $agg_totals_type, $auth_realms, $automation_oper, $automation_tree_item_types;
+global $availability_options, $consolidation_functions, $copyrights, $data_source_types;
+global $device_classes, $device_threads, $graph_color_alpha, $graph_item_types;
+global $graph_template_classes, $heartbeats, $host_group_types, $image_types;
+global $input_types_script, $ping_methods, $rrd_axis_formatters, $rrd_legend_direction;
+global $rrd_legend_position, $rrd_textalign, $sampling_intervals, $snmp_auth_protocols;
+global $snmp_priv_protocols, $snmp_security_levels, $snmp_versions, $timespans;
+global $tree_sort_types;
+
+// Workaround End
+
 if (!defined('VALID_HOST_FIELDS')) {
 	$string = api_plugin_hook_function('valid_host_fields', '(hostname|host_id|location|snmp_community|snmp_username|snmp_password|snmp_auth_protocol|snmp_priv_passphrase|snmp_priv_protocol|snmp_context|snmp_engine_id|snmp_version|snmp_port|snmp_timeout|snmp_retries|external_id)');
 	define('VALID_HOST_FIELDS', $string);
 }
 $valid_host_fields = VALID_HOST_FIELDS;
 
-/* If you update this, check that you have updated the installer */
+// If you update this, check that you have updated the installer
 $fields_snmp_item = [
 	'snmp_version' => [
 		'method'        => 'drop_array',
@@ -217,7 +233,7 @@ $fields_snmp_item_with_retry = $fields_snmp_item_with_oids + [
 	],
 ];
 
-/* file: profiles.php, action: edit */
+// file: profiles.php, action: edit
 $fields_profile_edit = [
 	'name' => [
 		'method'        => 'textbox',
@@ -283,7 +299,7 @@ $fields_profile_edit = [
 	]
 ];
 
-/* file: rra.php, action: edit */
+// file: rra.php, action: edit
 $fields_profile_rra_edit = [
 	'name' => [
 		'method'        => 'textbox',
@@ -340,7 +356,7 @@ $fields_profile_rra_edit = [
 	]
 ];
 
-/* file: cdef.php, action: edit */
+// file: cdef.php, action: edit
 $fields_cdef_edit = [
 	'name' => [
 		'method'        => 'textbox',
@@ -360,7 +376,7 @@ $fields_cdef_edit = [
 	]
 ];
 
-/* file: color.php, action: edit */
+// file: color.php, action: edit
 $fields_color_edit = [
 	'name' => [
 		'method'        => 'textbox',
@@ -401,7 +417,7 @@ $fields_color_edit = [
 	]
 ];
 
-/* file: data_input.php, action: edit */
+// file: data_input.php, action: edit
 $fields_data_input_edit = [
 	'name' => [
 		'method'        => 'textbox',
@@ -444,7 +460,7 @@ $fields_data_input_edit = [
 	]
 ];
 
-/* file: data_input.php, action: field_edit (dropdown) */
+// file: data_input.php, action: field_edit (dropdown)
 $fields_data_input_field_edit_1 = [
 	'data_name' => [
 		'method'        => 'drop_array',
@@ -455,7 +471,7 @@ $fields_data_input_field_edit_1 = [
 	]
 ];
 
-/* file: data_input.php, action: field_edit (textbox) */
+// file: data_input.php, action: field_edit (textbox)
 $fields_data_input_field_edit_2 = [
 	'data_name' => [
 		'method'        => 'textbox',
@@ -467,7 +483,7 @@ $fields_data_input_field_edit_2 = [
 	]
 ];
 
-/* file: data_input.php, action: field_edit */
+// file: data_input.php, action: field_edit
 $fields_data_input_field_edit = [
 	'fname' => [
 		'method'        => 'textbox',
@@ -531,7 +547,7 @@ $fields_data_input_field_edit = [
 	]
 ];
 
-/* file: data_templates.php, action: template_edit */
+// file: data_templates.php, action: template_edit
 $fields_data_template_template_edit = [
 	'template_name' => [
 		'method'        => 'textbox',
@@ -559,7 +575,7 @@ $fields_data_template_template_edit = [
 	]
 ];
 
-/* file: (data_sources.php|data_templates.php), action: (ds|template)_edit */
+// file: (data_sources.php|data_templates.php), action: (ds|template)_edit
 
 if (db_table_exists('data_source_profiles')) {
 	$def_profile = db_fetch_cell('SELECT id
@@ -624,7 +640,7 @@ $struct_data_source = [
 	]
 ];
 
-/* file: (data_sources.php|data_templates.php), action: (ds|template)_edit */
+// file: (data_sources.php|data_templates.php), action: (ds|template)_edit
 $struct_data_source_item = [
 	'data_source_name' => [
 		'friendly_name' => __('Internal Data Source Name'),
@@ -674,7 +690,7 @@ $struct_data_source_item = [
 	]
 ];
 
-/* file: grprint_presets.php, action: edit */
+// file: grprint_presets.php, action: edit
 $fields_grprint_presets_edit = [
 	'name' => [
 		'method'        => 'textbox',
@@ -702,7 +718,7 @@ $fields_grprint_presets_edit = [
 	]
 ];
 
-/* file: (graphs.php|graph_templates.php), action: (graph|template)_edit */
+// file: (graphs.php|graph_templates.php), action: (graph|template)_edit
 $struct_graph = [
 	'general_header' => [
 		'friendly_name' => __('Common Options'),
@@ -974,7 +990,7 @@ $struct_graph = [
 	],
 ];
 
-/* file: (graphs.php|graph_templates.php), action: item_edit */
+// file: (graphs.php|graph_templates.php), action: item_edit
 $struct_graph_item = [
 	'graph_type_id' => [
 		'friendly_name' => __('Graph Item Type'),
@@ -1142,7 +1158,7 @@ $struct_graph_item = [
 	]
 ];
 
-/* file: graph_templates.php, action: template_edit */
+// file: graph_templates.php, action: template_edit
 $fields_graph_template_template_edit = [
 	'name' => [
 		'method'        => 'textbox',
@@ -1198,7 +1214,7 @@ $fields_graph_template_template_edit = [
 	]
 ];
 
-/* file: graph_templates.php, action: input_edit */
+// file: graph_templates.php, action: input_edit
 $fields_graph_template_input_edit = [
 	'name' => [
 		'method'        => 'textbox',
@@ -1237,7 +1253,7 @@ $fields_graph_template_input_edit = [
 	]
 ];
 
-/* file: host.php, action: edit */
+// file: host.php, action: edit
 $fields_host_edit = [
 	'host_gen_head' => [
 		'method'        => 'spacer',
@@ -1415,7 +1431,7 @@ $fields_host_edit = [
 	]
 ];
 
-/* file: host_templates.php, action: edit */
+// file: host_templates.php, action: edit
 $fields_host_template_edit = [
 	'name' => [
 		'method'        => 'textbox',
@@ -1502,7 +1518,7 @@ $fields_host_template_edit = [
 	]
 ];
 
-/* file: data_queries.php, action: edit */
+// file: data_queries.php, action: edit
 $fields_data_query_edit = [
 	'name' => [
 		'method'        => 'textbox',
@@ -1546,7 +1562,7 @@ $fields_data_query_edit = [
 	]
 ];
 
-/* file: data_queries.php, action: item_edit */
+// file: data_queries.php, action: item_edit
 $fields_data_query_item_edit = [
 	'graph_template_id' => [
 		'method'        => 'drop_sql',
@@ -1603,7 +1619,7 @@ $fields_data_query_item_edit = [
 	]
 ];
 
-/* file: tree.php, action: edit */
+// file: tree.php, action: edit
 $fields_tree_edit = [
 	'name' => [
 		'method'        => 'textbox',
@@ -1641,7 +1657,7 @@ $fields_tree_edit = [
 	]
 ];
 
-/* file: user_admin.php, action: user_edit (host) */
+// file: user_admin.php, action: user_edit (host)
 $fields_user_edit = [
 	'username' => [
 		'method'        => 'textbox',
@@ -1954,10 +1970,10 @@ $fields_manager_edit = [
 	]
 ];
 
-# ------------------------------------------------------------
-# Main Aggregate Parameters
-# ------------------------------------------------------------
-/* file: aggregate.php */
+// ------------------------------------------------------------
+// Main Aggregate Parameters
+// ------------------------------------------------------------
+// file: aggregate.php
 $struct_aggregate = [
 	'title_format' => [
 		'friendly_name' => __('Title'),
@@ -2222,10 +2238,10 @@ $struct_aggregate_template = [
 	]
 ];
 
-# ------------------------------------------------------------
-# Color Templates
-# ------------------------------------------------------------
-/* file: color_templates.php, action: template_edit */
+// ------------------------------------------------------------
+// Color Templates
+// ------------------------------------------------------------
+// file: color_templates.php, action: template_edit
 $struct_color_template = [
 	'title' => [
 		'friendly_name' => __('Title'),
@@ -2237,7 +2253,7 @@ $struct_color_template = [
 	]
 ];
 
-/* file: color_templates.php, action: item_edit */
+// file: color_templates.php, action: item_edit
 $struct_color_template_item = [
 	'color_id' => [
 		'friendly_name' => __('Color'),
@@ -2248,7 +2264,7 @@ $struct_color_template_item = [
 	]
 ];
 
-/* file: color_templates.php, action: template_edit */
+// file: color_templates.php, action: template_edit
 $fields_color_template_template_edit = [
 	'name' => [
 		'method'        => 'textbox',
@@ -2260,10 +2276,10 @@ $fields_color_template_template_edit = [
 	]
 ];
 
-# ------------------------------------------------------------
-# Automation Rules
-# ------------------------------------------------------------
-/* file: automation_graph_rules.php, automation_tree_rules.php, action: edit */
+// ------------------------------------------------------------
+// Automation Rules
+// ------------------------------------------------------------
+// file: automation_graph_rules.php, automation_tree_rules.php, action: edit
 $fields_automation_match_rule_item_edit = [
 	'operation' => [
 		'method'        => 'drop_array',
@@ -2277,7 +2293,7 @@ $fields_automation_match_rule_item_edit = [
 		'method'        => 'drop_array',
 		'friendly_name' => __('Field Name'),
 		'description'   => __('The Field Name that shall be used for this Rule Item.'),
-		'array'         => [],			# to be filled dynamically
+		'array'         => [],			// to be filled dynamically
 		'value'         => '|arg1:field|',
 		'none_value'    => __('None'),
 	],
@@ -2285,7 +2301,7 @@ $fields_automation_match_rule_item_edit = [
 		'method'        => 'drop_array',
 		'friendly_name' => __('Operator'),
 		'description'   => __('Operator.'),
-		'array'         => $automation_op_array['display'],
+		'array'         => $automation_op_array['display'] ?? [],
 		'value'         => '|arg1:operator|',
 		'on_change'     => 'toggle_operator()',
 	],
@@ -2305,7 +2321,7 @@ $fields_automation_match_rule_item_edit = [
 	]
 ];
 
-/* file: automation_graph_rules.php, action: edit */
+// file: automation_graph_rules.php, action: edit
 $fields_automation_graph_rule_item_edit = [
 	'operation' => [
 		'method'        => 'drop_array',
@@ -2319,7 +2335,7 @@ $fields_automation_graph_rule_item_edit = [
 		'method'        => 'drop_array',
 		'friendly_name' => __('Field Name'),
 		'description'   => __('The Field Name that shall be used for this Rule Item.'),
-		'array'         => [],			# later to be filled dynamically
+		'array'         => [],			// later to be filled dynamically
 		'value'         => '|arg1:field|',
 		'none_value'    => __('None'),
 	],
@@ -2327,7 +2343,7 @@ $fields_automation_graph_rule_item_edit = [
 		'method'        => 'drop_array',
 		'friendly_name' => __('Operator'),
 		'description'   => __('Operator.'),
-		'array'         => $automation_op_array['display'],
+		'array'         => $automation_op_array['display'] ?? [],
 		'value'         => '|arg1:operator|',
 		'on_change'     => 'toggle_operator()',
 	],
@@ -2391,7 +2407,7 @@ $fields_automation_graph_rules_edit3 = [
 	]
 ];
 
-/* file: automation_tree_rules.php, action: edit */
+// file: automation_tree_rules.php, action: edit
 $fields_automation_tree_rules_edit1 = [
 	'name' => [
 		'method'        => 'textbox',
@@ -2453,9 +2469,9 @@ $fields_automation_tree_rule_item_edit = [
 		'method'        => 'drop_array',
 		'friendly_name' => __('Field Name'),
 		'description'   => __('Choose an Object to build a new Sub-header.'),
-		'array'         => [],			# later to be filled dynamically
+		'array'         => [],			// later to be filled dynamically
 		'value'         => '|arg1:field|',
-		'none_value'    => $automation_tree_header_types[AUTOMATION_TREE_ITEM_TYPE_STRING],
+		'none_value'    => $automation_tree_header_types[AUTOMATION_TREE_ITEM_TYPE_STRING] ?? '',
 		'on_change'     => 'applyHeaderChange()',
 	],
 	'sort_type' => [

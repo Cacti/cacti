@@ -25,10 +25,10 @@
 $guest_account = true;
 require('./include/auth.php');
 
-/* set default action */
+// set default action
 set_default_action();
 
-switch (get_request_var('action')) {
+switch (grv('action')) {
 	case 'save':
 		form_save();
 
@@ -42,16 +42,16 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'reset_default':
-		$name  = get_nfilter_request_var('name');
+		$name  = gnrv('name');
 
 		api_auth_clear_user_setting($name);
 
 		break;
 	case 'update_data':
-		$name  = get_nfilter_request_var('name');
-		$value = get_nfilter_request_var('value');
+		$name  = gnrv('name');
+		$value = gnrv('value');
 
-		$current_tab = get_nfilter_request_var('tab');
+		$current_tab = gnrv('tab');
 
 		if ($current_tab == 'general') {
 			api_auth_update_user_setting($name, $value);
@@ -71,7 +71,7 @@ switch (get_request_var('action')) {
 		exit;
 
 	case 'verify_2fa':
-		print verify_2fa($_SESSION[SESS_USER_ID], substr('000000' . get_nfilter_request_var('code'), -6));
+		print verify_2fa($_SESSION[SESS_USER_ID], substr('000000' . gnrv('code'), -6));
 
 		exit;
 
@@ -82,11 +82,11 @@ switch (get_request_var('action')) {
 
 		unset($_SESSION['custom']);
 
-		/* ================= input validation ================= */
-		get_filter_request_var('tab', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([0-9a-z_A-Z]+)$/']]);
-		/* ==================================================== */
+		// ================= input validation =================
+		gfrv('tab', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([0-9a-z_A-Z]+)$/']]);
+		// ====================================================
 
-		/* present a tabbed interface */
+		// present a tabbed interface
 		$tabs = [
 			'general'  => [
 				'display' => __('General'),
@@ -104,19 +104,19 @@ switch (get_request_var('action')) {
 
 		$tabs = api_plugin_hook_function('auth_profile_tabs', $tabs);
 
-		/* set the default tab */
+		// set the default tab
 		load_current_session_value('tab', 'sess_profile_tabs', 'general');
-		$current_tab = get_nfilter_request_var('tab');
+		$current_tab = gnrv('tab');
 
 		if (cacti_sizeof($tabs) > 1) {
 			$i = 0;
 
-			/* draw the tabs */
+			// draw the tabs
 			print "<div class='tabs'><nav><ul role='tablist'>";
 
 			foreach ($tabs as $tab_short_name => $attribs) {
 				print "<li class='subTab'><a class='tab" . (($tab_short_name == $current_tab) ? " selected'" : "'") .
-					" href='" . html_escape($attribs['url']) .
+					" href='" . htmle($attribs['url']) .
 					"'>" . $attribs['display'] . '</a></li>';
 
 				$i++;
@@ -131,7 +131,7 @@ switch (get_request_var('action')) {
 		} elseif ($current_tab == '2fa') {
 			settings_2fa();
 		} else {
-			api_plugin_hook_function('auth_profile_run_action', get_request_var('tab'));
+			api_plugin_hook_function('auth_profile_run_action', grv('tab'));
 		}
 
 		bottom_footer();
@@ -139,7 +139,7 @@ switch (get_request_var('action')) {
 		break;
 }
 
-function api_auth_logout_everywhere() {
+function api_auth_logout_everywhere() : void {
 	$user = $_SESSION[SESS_USER_ID];
 
 	if (!empty($user)) {
@@ -150,18 +150,18 @@ function api_auth_logout_everywhere() {
 	}
 }
 
-function api_auth_clear_user_settings() {
+function api_auth_clear_user_settings() : void {
 	$user = $_SESSION[SESS_USER_ID];
 
 	if (!empty($user)) {
-		if (isset_request_var('tab') && get_nfilter_request_var('tab') == 'general') {
+		if (isrv('tab') && gnrv('tab') == 'general') {
 			db_execute_prepared('DELETE FROM settings_user
 				WHERE user_id = ?',
 				[$user]
 			);
 
 			kill_session_var(OPTIONS_USER);
-		} elseif (isset_request_var('tab')) {
+		} elseif (isrv('tab')) {
 			api_plugin_hook('auth_profile_reset');
 		}
 
@@ -169,7 +169,7 @@ function api_auth_clear_user_settings() {
 	}
 }
 
-function api_auth_clear_user_setting($name) {
+function api_auth_clear_user_setting(string $name) : void {
 	global $settings_user;
 
 	$user = $_SESSION[SESS_USER_ID];
@@ -179,7 +179,7 @@ function api_auth_clear_user_setting($name) {
 	}
 
 	if (!empty($user)) {
-		if (isset_request_var('tab') && get_nfilter_request_var('tab') == 'general') {
+		if (isrv('tab') && gnrv('tab') == 'general') {
 			db_execute_prepared('DELETE FROM settings_user
 				WHERE user_id = ?
 				AND name = ?',
@@ -210,7 +210,7 @@ function api_auth_clear_user_setting($name) {
 	}
 }
 
-function api_auth_update_user_setting($name, $value) {
+function api_auth_update_user_setting(string $name, string $value) : void {
 	global $settings_user;
 
 	$user = $_SESSION[SESS_USER_ID];
@@ -242,17 +242,17 @@ function api_auth_update_user_setting($name, $value) {
 	}
 }
 
-function form_save() {
-	global $settings_user;
+function form_save() : void {
+	global $errors, $settings_user;
 
 	// Save the users profile information
-	if (isset_request_var('full_name') && isset_request_var('email_address') && isset($_SESSION[SESS_USER_ID])) {
+	if (isrv('full_name') && isrv('email_address') && isset($_SESSION[SESS_USER_ID])) {
 		db_execute_prepared('UPDATE user_auth
 			SET full_name = ?, email_address = ?
 			WHERE id = ?',
 			[
-				get_nfilter_request_var('full_name'),
-				get_nfilter_request_var('email_address'),
+				gnrv('full_name'),
+				gnrv('email_address'),
 				$_SESSION[SESS_USER_ID]
 			]
 		);
@@ -261,9 +261,9 @@ function form_save() {
 	$errors = [];
 
 	// Save the users graph settings if they have permission
-	if (is_view_allowed('graph_settings') == true && isset_request_var('tab') && get_nfilter_request_var('tab') == 'general') {
+	if (is_view_allowed('graph_settings') == true && isrv('tab') && gnrv('tab') == 'general') {
 		save_user_settings($_SESSION[SESS_USER_ID]);
-	} elseif (isset_request_var('tab')) {
+	} elseif (isrv('tab')) {
 		api_plugin_hook('auth_profile_save');
 	}
 
@@ -272,28 +272,28 @@ function form_save() {
 	} else {
 		raise_message(35);
 
-		foreach ($errors as $error) {
+		foreach ($errors as $error) { // @phpstan-ignore-line
 			raise_message($error);
 		}
 	}
 
-	/* reset local settings cache so the user sees the new settings */
+	// reset local settings cache so the user sees the new settings
 	kill_session_var(SESS_USER_LANGUAGE);
 	kill_session_var(OPTIONS_USER);
 	kill_session_var('selected_theme');
 
-	$tab = (isset_request_var('tab') && get_nfilter_request_var('tab')) ? ('?tab=' . get_nfilter_request_var('tab')) : '';
+	$tab = (isrv('tab') && gnrv('tab')) ? ('?tab=' . gnrv('tab')) : '';
 	header('Location: auth_profile.php' . $tab);
 }
 
-function settings() {
+function settings() : bool {
 	global $tabs_graphs, $settings_user, $current_user, $graph_views, $current_user;
 
-	/* you cannot have per-user graph settings if cacti's user management is not turned on */
+	// you cannot have per-user graph settings if cacti's user management is not turned on
 	if (read_config_option('auth_method') == AUTH_METHOD_NONE) {
 		raise_message(6);
 
-		return;
+		return false;
 	}
 
 	if (isset($_SERVER['HTTP_REFERER'])) {
@@ -323,7 +323,7 @@ function settings() {
 	);
 
 	if (!cacti_sizeof($current_user)) {
-		return;
+		return false;
 	}
 
 	// Set the graph views the user has permission to
@@ -341,13 +341,13 @@ function settings() {
 		$graph_views[2] = __('Preview View');
 	}
 
-	if (isset($graph_views) &&cacti_sizeof($graph_views)) {
+	if (isset($graph_views) && cacti_sizeof($graph_views)) {
 		$settings_user['general']['default_view_mode']['array'] = $graph_views;
 	} else {
 		unset($settings_user['general']['default_view_mode']);
 	}
 
-	/* file: user_admin.php, action: user_edit (host) */
+	// file: user_admin.php, action: user_edit (host)
 	$fields_user = [
 		'username' => [
 			'method'        => 'value',
@@ -423,7 +423,7 @@ function settings() {
 		foreach ($settings_user as $tab_short_name => $tab_fields) {
 			$collapsible = true;
 
-			print "<div class='spacer formHeader" . ($collapsible ? ' collapsible' : '') . "' id='row_$tab_short_name'><div class='formHeaderText'>" . $tabs_graphs[$tab_short_name] . ($collapsible ? "<div style='float:right;padding-right:4px;'><i class='ti ti-chevrons-up'></i></div>" : '') . '</div></div>';
+			print "<div class='spacer formHeader collapsible' id='row_$tab_short_name'><div class='formHeaderText'>" . $tabs_graphs[$tab_short_name] . "<div style='float:right;padding-right:4px;'><i class='ti ti-chevrons-up'></i></div>" . '</div></div>';
 
 			$form_array = [];
 
@@ -493,16 +493,18 @@ function settings() {
 	form_save_buttons($buttons, $_SESSION['profile_referer']);
 
 	form_end();
+
+	return true;
 }
 
-function settings_2fa() {
+function settings_2fa() : bool {
 	global $tabs_graphs, $settings_user, $current_user, $graph_views, $current_user;
 
-	/* you cannot have per-user graph settings if cacti's user management is not turned on */
+	// you cannot have per-user graph settings if cacti's user management is not turned on
 	if (read_config_option('auth_method') == AUTH_METHOD_NONE) {
 		raise_message(6);
 
-		return;
+		return false;
 	}
 
 	if (isset($_SERVER['HTTP_REFERER'])) {
@@ -532,7 +534,7 @@ function settings_2fa() {
 	);
 
 	if (!cacti_sizeof($current_user)) {
-		return;
+		return false;
 	}
 
 	$fields_user = [
@@ -667,16 +669,18 @@ function settings_2fa() {
 			});
 		});
 	</script>
-<?php
+	<?php
 
 	form_end();
+
+	return true;
 }
 
-function settings_javascript() {
+function settings_javascript() : void {
 	?>
 	<script type='text/javascript'>
 		var themeFonts = <?php print read_config_option('font_method'); ?>;
-		var currentTab = '<?php print get_nfilter_request_var('tab'); ?>';
+		var currentTab = '<?php print gnrv('tab'); ?>';
 		var currentTheme = '<?php print get_selected_theme(); ?>';
 		var currentLang = '<?php print read_config_option('user_language'); ?>';
 		var authMethod = '<?php print read_config_option('auth_method'); ?>';

@@ -28,7 +28,7 @@ $page = db_fetch_row_prepared('SELECT
 	id, title, style, contentfile, enabled, refresh
 	FROM external_links AS el
 	WHERE id = ?',
-	[get_filter_request_var('id')]);
+	[gfrv('id')]);
 
 // Prevent redirect loops
 if (isset($_SERVER['HTTP_REFERER'])) {
@@ -59,7 +59,7 @@ if (!cacti_sizeof($page)) {
 
 		if (!empty($page['refresh'])) {
 			$refresh['seconds'] = $page['refresh'];
-			$refresh['page']    = CACTI_PATH_URL . 'link.php?id=' . get_request_var('id');
+			$refresh['page']    = CACTI_PATH_URL . 'link.php?id=' . grv('id');
 		}
 
 		if ($page['style'] == 'TAB') {
@@ -74,7 +74,7 @@ if (!cacti_sizeof($page)) {
 
 		if (preg_match('/^((((ht|f)tp(s?))\:\/\/){1}\S+)/i', $page['contentfile'])) {
 			if (filter_var($page['contentfile'], FILTER_VALIDATE_URL)) {
-				print '<iframe id="content" src="' . html_escape($page['contentfile']) . '" sandbox="allow-scripts allow-popups allow-forms" frameborder="0"></iframe>';
+				print '<iframe id="content" src="' . htmle($page['contentfile']) . '" sandbox="allow-scripts allow-popups allow-forms" frameborder="0"></iframe>';
 			} else {
 				$message = __esc("External Link ID '%s' with Title '%s' attempted to inject an invalid URL and was blocked!", $page['id'], $page['title']);
 				cacti_log($message, false, 'SECURITY');
@@ -89,7 +89,7 @@ if (!cacti_sizeof($page)) {
 			if ($file !== false && substr($file, 0, strlen($basepath)) == $basepath) {
 				require_once($file);
 			} else {
-				print '<h1>The file \'' . html_escape($page['contentfile']) . '\' does not exist!!</h1>';
+				print '<h1>The file \'' . htmle($page['contentfile']) . '\' does not exist!!</h1>';
 			}
 
 			print '</div>';

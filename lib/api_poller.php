@@ -22,8 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
-function api_poller_cache_item_add($host_id, $host_field_override, $local_data_id, $rrd_step, $poller_action_id, $data_source_item_name, $num_rrd_items, $arg1 = '', $arg2 = '', $arg3 = '') {
+function api_poller_cache_item_add(int $host_id, mixed $host_field_override, int $local_data_id, int $rrd_step, int $poller_action_id,
+	string $data_source_item_name, int $num_rrd_items, string $arg1 = '', string $arg2 = '', string $arg3 = '') : mixed {
 	static $hosts = [];
+
+	$host = [];
 
 	if (!isset($hosts[$host_id])) {
 		$host = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . '
@@ -42,15 +45,15 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 		$host = $hosts[$host_id];
 	}
 
-	if (cacti_sizeof($host) || (isset($host_id))) {
+	if (cacti_sizeof($host)) {
 		if (isset($host['disabled']) && $host['disabled'] == 'on') {
-			return;
+			return null;
 		}
 
 		if (!isset($host['id'])) {
 			// host id 0 can not have snmp
 			if ($poller_action_id == POLLER_ACTION_SNMP) {
-				return;
+				return null;
 			}
 
 			$host['id']                   = 0;
@@ -72,7 +75,7 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 			$hosts[0] = $host;
 		}
 
-		/* the $host_field_override array can be used to override certain host fields in the poller cache */
+		// the $host_field_override array can be used to override certain host fields in the poller cache
 		if (cacti_sizeof($host_field_override)) {
 			$host = array_merge($host, $host_field_override);
 		}
@@ -81,7 +84,7 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 		if ($poller_action_id == POLLER_ACTION_SNMP) {
 			if (($host['snmp_version'] < 1) || ($host['snmp_version'] > 3) ||
 				($host['snmp_community'] == '' && $host['snmp_version'] != 3)) {
-				return;
+				return null;
 			}
 		}
 
@@ -89,21 +92,23 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 
 		return "($local_data_id, " . $host['poller_id'] . ', ' .
 			$host['id'] . ", $poller_action_id," .
-			db_qstr($host['hostname'])             . ', ' . db_qstr($host['snmp_community'])       . ', ' .
-			db_qstr($host['snmp_version'])         . ', ' . db_qstr($host['snmp_timeout'])         . ', ' .
-			db_qstr($host['snmp_retries'])         . ', ' . db_qstr($host['snmp_username'])        . ', ' .
-			db_qstr($host['snmp_password'])        . ', ' . db_qstr($host['snmp_auth_protocol'])   . ', ' .
-			db_qstr($host['snmp_priv_passphrase']) . ', ' . db_qstr($host['snmp_priv_protocol'])   . ', ' .
-			db_qstr($host['snmp_context'])         . ', ' . db_qstr($host['snmp_engine_id'])       . ', ' .
-			db_qstr($host['snmp_port'])            . ', ' . db_qstr($data_source_item_name)        . ', ' .
+			db_qstr($host['hostname']) . ', ' . db_qstr($host['snmp_community']) . ', ' .
+			db_qstr($host['snmp_version']) . ', ' . db_qstr($host['snmp_timeout']) . ', ' .
+			db_qstr($host['snmp_retries']) . ', ' . db_qstr($host['snmp_username']) . ', ' .
+			db_qstr($host['snmp_password']) . ', ' . db_qstr($host['snmp_auth_protocol']) . ', ' .
+			db_qstr($host['snmp_priv_passphrase']) . ', ' . db_qstr($host['snmp_priv_protocol']) . ', ' .
+			db_qstr($host['snmp_context']) . ', ' . db_qstr($host['snmp_engine_id']) . ', ' .
+			db_qstr($host['snmp_port']) . ', ' . db_qstr($data_source_item_name) . ', ' .
 			db_qstr(clean_up_path(get_data_source_path($local_data_id, true))) . ', ' .
-			db_qstr($num_rrd_items)                . ', ' . db_qstr($rrd_step)                     . ', ' .
-			db_qstr($rrd_next_step)                . ', ' . db_qstr($arg1)                         . ', ' .
-			db_qstr($arg2)                         . ', ' . db_qstr($arg3) . ", '1')";
+			db_qstr($num_rrd_items) . ', ' . db_qstr($rrd_step) . ', ' .
+			db_qstr($rrd_next_step) . ', ' . db_qstr($arg1) . ', ' .
+			db_qstr($arg2) . ', ' . db_qstr($arg3) . ", '1')";
 	}
+
+	return null;
 }
 
-function api_poller_get_rrd_next_step($host_id, $rrd_step, $local_data_id) {
+function api_poller_get_rrd_next_step(int $host_id, int $rrd_step, int $local_data_id) : int {
 	static $rrd_step_counter = 0;
 	static $last_host        = -1;
 	static $last_data_id     = -1;

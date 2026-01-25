@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_1_1_4() {
+function upgrade_to_1_1_4() : void {
 	db_install_add_key('cdef', 'index', 'hash', ['hash']);
 	db_install_drop_key('cdef_items', 'index', 'cdef_id');
 	db_install_add_key('cdef_items', 'index', 'cdef_id_sequence', ['cdef_id', 'sequence']);

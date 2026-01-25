@@ -33,7 +33,7 @@ ini_set('output_buffering', 'Off');
 ini_set('max_runtime', '-1');
 ini_set('memory_limit', '-1');
 
-/* we are not talking to the browser */
+// we are not talking to the browser
 define('MAX_RECACHE_RUNTIME', 1800);
 
 require(__DIR__ . '/include/cli_check.php');
@@ -56,17 +56,18 @@ $debug     = false;
 $host_id   = false;
 $forcerun  = false;
 $type      = 'master';
-$threads   = read_config_option('commands_processes');
+$threads   = intval(read_config_option('commands_processes'));
+$poller_id = POLLER_ID;
 
 global $poller_db_cnn_id, $remote_db_cnn_id, $type, $host_id, $poller_id;
 
-if (POLLER_ID > 1 && CACTI_CONNECTION == 'online') {
+if ($poller_id > 1 && CACTI_CONNECTION === 'online') {
 	$poller_db_cnn_id = $remote_db_cnn_id;
 } else {
 	$poller_db_cnn_id = false;
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -103,7 +104,7 @@ if (cacti_sizeof($parms)) {
 				break;
 			case '-t':
 			case '--threads':
-				$threads = $value;
+				$threads = intval($value);
 
 				break;
 			case '--debug':
@@ -134,16 +135,19 @@ if ($debug) {
  *
  */
 
-/* install signal handlers for UNIX only */
+// install signal handlers for UNIX only
 if (function_exists('pcntl_signal')) {
 	pcntl_signal(SIGTERM, 'sig_handler');
 	pcntl_signal(SIGINT, 'sig_handler');
 }
 
-/* Record Start Time */
+// Record Start Time
 $start = microtime(true);
 
-/* send a gentle message to the log and stdout */
+// Get the process timeout value
+$timeout = poller_commands_timeout();
+
+// send a gentle message to the log and stdout
 commands_debug('Polling Starting');
 
 if ($host_id === false) {
@@ -159,14 +163,14 @@ if ($host_id === false) {
 		/**
 		 * Register the master process
 		 */
-		if (!register_process_start('commands', 'master', $poller_id, read_config_option('commands_timeout'))) {
+		if (!register_process_start('commands', 'master', $poller_id, $timeout)) {
 			exit(0);
 		}
 
 		// Master processing
 		commands_master_handler($forcerun, $hosts, $threads);
 
-		/* take time to log performance data */
+		// take time to log performance data
 		$recache = microtime(true);
 
 		$recache_stats = sprintf('Poller:%s RecacheTime:%01.4f DevicesRecached:%s',	$poller_id, round($recache - $start, 4), cacti_sizeof($hosts));
@@ -175,7 +179,7 @@ if ($host_id === false) {
 			cacti_log('STATS: ' . $recache_stats, true, 'RECACHE');
 		}
 
-		/* insert poller stats into the settings table */
+		// insert poller stats into the settings table
 		db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)',
 			['stats_recache_' . $poller_id, $recache_stats], true, $poller_db_cnn_id);
 
@@ -187,12 +191,12 @@ if ($host_id === false) {
 	/**
 	 * Register the child process
 	 */
-	if (!register_process_start('commands', 'child', $host_id + 1000, read_config_option('commands_timeout'))) {
+	if (!register_process_start('commands', 'child', $host_id + 1000, $timeout)) {
 		exit(0);
 	}
 
-	$last_host_id   = 0;
-	$first_host     = true;
+	$last_host_id = 0;
+	$first_host   = true;
 
 	/**
 	 * We will only remove records earlier than this date
@@ -219,6 +223,9 @@ if ($host_id === false) {
 			switch ($command['action']) {
 				case POLLER_COMMAND_REINDEX:
 					[$device_id, $data_query_id] = explode(':', $command['command']);
+
+					$device_id     = intval($device_id);
+					$data_query_id = intval($data_query_id);
 
 					if ($last_host_id != $device_id) {
 						$last_host_id = $device_id;
@@ -247,10 +254,10 @@ if ($host_id === false) {
 					cacti_log('ERROR: Unknown poller command issued', true, 'PCOMMAND');
 			}
 
-			/* record current_time */
+			// record current_time
 			$current = microtime(true);
 
-			/* end if runtime has been exceeded */
+			// end if runtime has been exceeded
 			if (($current - $start) > MAX_RECACHE_RUNTIME) {
 				cacti_log("ERROR: Poller Command processing timed out after processing '$command'", true, 'PCOMMAND');
 
@@ -268,15 +275,15 @@ if ($host_id === false) {
 	unregister_process('commands', 'child', $host_id + 1000);
 }
 
-function commands_master_handler($forcerun, &$hosts, $threads) {
+function commands_master_handler(bool $forcerun, array &$hosts, int $threads) : void {
 	commands_debug('There are ' . cacti_sizeof($hosts) . ' to reindex');
 
 	foreach ($hosts as $id) {
-		/* run the daily stats */
+		// run the daily stats
 		commands_debug("Launching Host ID $id");
 		commands_launch_child($id);
 
-		/* Wait for if there are 50 processes running */
+		// Wait for if there are 50 processes running
 		while (true) {
 			$running = commands_processes_running();
 
@@ -313,13 +320,13 @@ function commands_master_handler($forcerun, &$hosts, $threads) {
 
 /**
  * commands_launch_child - this function will launch collector children based upon
- *   the maximum number of threads and the process type
+ * the maximum number of threads and the process type.
  *
- * @param  (int)  $host_id - The Cacti host_id
+ * @param int $host_id The Cacti host_id
  *
- * @return (void)
+ * @return void
  */
-function commands_launch_child($host_id) {
+function commands_launch_child(int $host_id) : void {
 	global $seebug;
 
 	$php_binary = read_config_option('path_php_binary');
@@ -333,11 +340,11 @@ function commands_launch_child($host_id) {
 
 /**
  * commands_processes_running - given a type, determine the number
- *   of sub-type or children that are currently running
+ * of sub-type or children that are currently running.
  *
- * @return (int) The number of running processes
+ * @return int The number of running processes
  */
-function commands_processes_running() {
+function commands_processes_running() : int {
 	$running = db_fetch_cell('SELECT COUNT(*)
 		FROM processes
 		WHERE tasktype = "commands"
@@ -352,13 +359,13 @@ function commands_processes_running() {
 
 /**
  * commands_debug - this simple routine prints a standard message to the console
- *   when running in debug mode.
+ * when running in debug mode.
  *
- * @param  (string)  $message - The message to display
+ * @param string $message The message to display
  *
- * @return (void)
+ * @return void
  */
-function commands_debug($message) {
+function commands_debug(string $message) : void {
 	global $seebug;
 
 	if ($seebug) {
@@ -369,11 +376,11 @@ function commands_debug($message) {
 /**
  * sig_handler - provides a generic means to catch exceptions to the Cacti log.
  *
- * @param  (int) $signo - the signal that was thrown by the interface.
+ * @param int $signo The signal that was thrown by the interface.
  *
- * @return (void)
+ * @return void
  */
-function sig_handler($signo) {
+function sig_handler(int $signo) : void {
 	global $type, $host_id, $poller_id;
 
 	switch ($signo) {
@@ -392,20 +399,18 @@ function sig_handler($signo) {
 			}
 
 			exit(1);
-
-			break;
 		default:
-			/* ignore all other signals */
+			// ignore all other signals
 	}
 }
 
 /**
  * commands_kill_running_processes - this function is part of an interrupt
- *   handler to kill children processes when the parent is killed
+ * handler to kill children processes when the parent is killed
  *
- * @return (void)
+ * @return void
  */
-function commands_kill_running_processes() {
+function commands_kill_running_processes() : void {
 	global $type;
 
 	$processes = db_fetch_assoc_prepared('SELECT *
@@ -425,12 +430,22 @@ function commands_kill_running_processes() {
 	}
 }
 
+function poller_commands_timeout() : int {
+	$timeout = intval(read_config_option('commands_timeout'));
+
+	if (empty($timeout)) {
+		$timeout = 300;
+	}
+
+	return $timeout;
+}
+
 /**
  * display_version - displays version information
  *
- * @return (void)
+ * @return void
  */
-function display_version() {
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Poller Commands Poller, Version $version " . COPYRIGHT_YEARS . PHP_EOL;
 }
@@ -438,9 +453,9 @@ function display_version() {
 /**
  * display_help - displays help information
  *
- * @return (void)
+ * @return void
  */
-function display_help() {
+function display_help() : void {
 	display_version();
 
 	print PHP_EOL;

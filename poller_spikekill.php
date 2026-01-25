@@ -27,7 +27,7 @@ require(__DIR__ . '/include/cli_check.php');
 
 ini_set('memory_limit', '-1');
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -84,8 +84,10 @@ if (cacti_sizeof($parms)) {
 	}
 }
 
-/* silently end if the registered process is still running, or process table missing */
-if (!register_process_start('spikekill', 'master', 0, read_config_option('spikekill_timeout'))) {
+$timeout = intval(read_config_option('spikekill_timeout'));
+
+// silently end if the registered process is still running, or process table missing
+if (!register_process_start('spikekill', 'master', 0, $timeout)) {
 	exit(0);
 }
 
@@ -142,10 +144,10 @@ if (timeToRun()) {
 		$purges,
 		$kills);
 
-	/* log to the database */
+	// log to the database
 	db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("stats_spikekill", ?)', [$cacti_stats]);
 
-	/* log to the logfile */
+	// log to the logfile
 	cacti_log('SPIKEKILL STATS: ' . $cacti_stats , true, 'SYSTEM');
 }
 
@@ -155,7 +157,7 @@ unregister_process('spikekill', 'master', 0);
 
 exit(0);
 
-function timeToRun() {
+function timeToRun() : bool {
 	global $forcerun;
 
 	$lastrun   = read_config_option('spikekill_lastrun');
@@ -199,7 +201,7 @@ function timeToRun() {
 	}
 }
 
-function debug($message) {
+function debug(string $message) : void {
 	global $debug;
 
 	if ($debug) {
@@ -207,9 +209,9 @@ function debug($message) {
 	}
 }
 
-function purge_spike_backups() {
+function purge_spike_backups() : mixed {
 	$directory = read_config_option('spikekill_backupdir');
-	$retention = read_config_option('spikekill_purge');
+	$retention = intval(read_config_option('spikekill_purge'));
 
 	$purges = 0;
 
@@ -234,7 +236,7 @@ function purge_spike_backups() {
 							unlink($filepath);
 							$purges++;
 						} else {
-							cacti_log('Unable to remove ' . $filepath . ' due to write permissions', 'SPIKES');
+							cacti_log('Unable to remove ' . $filepath . ' due to write permissions', false, 'SPIKES');
 						}
 					}
 				}
@@ -245,7 +247,7 @@ function purge_spike_backups() {
 	return $purges;
 }
 
-function kill_spikes($templates, &$found) {
+function kill_spikes(array $templates, int &$found) : int {
 	global $debug;
 
 	$rrdfiles = array_rekey(db_fetch_assoc('SELECT DISTINCT rrd_path
@@ -275,13 +277,13 @@ function kill_spikes($templates, &$found) {
 	return cacti_sizeof($rrdfiles);
 }
 
-/*  display_version - displays version information */
-function display_version() {
+// display_version - displays version information
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti SpikeKiller Batch Poller, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-function display_help() {
+function display_help() : void {
 	display_version();
 
 	print PHP_EOL . 'usage: poller_spikekill.php [--templates=N,N,...] [--force] [--debug]' . PHP_EOL . PHP_EOL;

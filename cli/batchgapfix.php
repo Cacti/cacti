@@ -34,7 +34,7 @@ ini_set('output_buffering', 'Off');
 require(__DIR__ . '/../include/cli_check.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 
-if ($config['poller_id'] > 1) {
+if (POLLER_ID > 1) {
 	print 'FATAL: This utility is designed for the main Data Collector only' . PHP_EOL;
 
 	exit(1);
@@ -43,7 +43,7 @@ if ($config['poller_id'] > 1) {
 ini_set('memory_limit', '-1');
 ini_set('max_execution_time', '0');
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -66,13 +66,13 @@ $start_time = false;
 $end_time   = false;
 $php_bin    = read_config_option('path_php_binary');
 
-/* install signal handlers for UNIX types only */
+// install signal handlers for UNIX types only
 if (function_exists('pcntl_signal')) {
 	pcntl_signal(SIGTERM, 'sig_handler');
 	pcntl_signal(SIGINT, 'sig_handler');
 }
 
-/* take the start time to log performance data */
+// take the start time to log performance data
 $start = microtime(true);
 
 foreach ($parms as $parameter) {
@@ -109,7 +109,7 @@ foreach ($parms as $parameter) {
 
 			break;
 		case '--child':
-			$child = $value;
+			$child = intval($value);
 
 			break;
 		case '-f':
@@ -227,7 +227,7 @@ if ($child == 0) {
 			WHERE tasktype = "batchgapfix"');
 
 		if (cacti_sizeof($running)) {
-			printf('NOTE: Found %s running processes found.' . PHP_EOL);
+			printf('NOTE: Found %s running processes found.' . PHP_EOL, cacti_sizeof($running));
 
 			foreach ($running as $r) {
 				$running = posix_kill($r['pid'], 0);
@@ -430,7 +430,7 @@ if ($child == 0) {
 			printf('SUCCESS: Gap Fills for RRDfile:%s' . PHP_EOL, $rrdfile['data_source_path']);
 			$succeeded++;
 		} else {
-			printf('FAILED:  Gap Fills failed for RRDfile:%s' . PHP_EOL, $graph['data_source_path']);
+			printf('FAILED:  Gap Fills failed for RRDfile:%s' . PHP_EOL, $rrdfile['data_source_path']);
 			$failed++;
 		}
 	}
@@ -449,11 +449,11 @@ exit(0);
 /**
  * sig_handler - provides a generic means to catch exceptions to the Cacti log.
  *
- * @param mixed $signo
+ * @param int $signo
  *
- * @return      - null
+ * @return void
  */
-function sig_handler($signo) {
+function sig_handler(int $signo) : void {
 	global $child, $type;
 
 	switch ($signo) {
@@ -466,14 +466,12 @@ function sig_handler($signo) {
 			}
 
 			exit(1);
-
-			break;
 		default:
-			/* ignore all other signals */
+			// ignore all other signals
 	}
 }
 
-function debug($string) {
+function debug(string $string) : void {
 	global $debug;
 
 	if ($debug) {
@@ -481,12 +479,22 @@ function debug($string) {
 	}
 }
 
-function display_version() {
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Batch Graph Gap Fill Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-function display_help() {
+/**
+ * display_help - displays help information
+ *
+ * @return void
+ */
+function display_help() : void {
 	display_version();
 
 	print PHP_EOL . 'This utility will fill gaps in graphs based upon a time range.' . PHP_EOL;
@@ -495,12 +503,15 @@ function display_help() {
 	print 'In case of a detection problem, 2 threads are used.' . PHP_EOL . PHP_EOL;
 
 	print 'selected by the user.' . PHP_EOL . PHP_EOL;
+
 	print 'usage: batchgapfix.php --start=\'YYYY-MM-DD HH:MM:SS\' --end=\'YYYY-MM-DD HH:MM:SS\' [--threads=N]' . PHP_EOL;
 	print '       [--method=fill|float] [--avgnan=last|avg] [--host-ids=N,N,N,...]' . PHP_EOL;
 	print '       [-f|--force] [-d|--debug]' . PHP_EOL . PHP_EOL;
+
 	print 'Required:' . PHP_EOL;
 	print '   --start=\'YYYY-MM-DD HH:MM:SS\' - The start date to check and remove gaps.' . PHP_EOL;
 	print '   --end=\'YYYY-MM-DD HH:MM:SS\'   - The end date to check and remove gaps.' . PHP_EOL . PHP_EOL;
+
 	print 'Optional:' . PHP_EOL;
 	print '   --threads=N                     - The number of parallel threads [1..40]' . PHP_EOL;
 	print '   --method=fill|float             - Default is \'fill\'.  The method to fill gaps.' . PHP_EOL;

@@ -27,8 +27,8 @@ require_once(CACTI_PATH_LIBRARY . '/spikekill.php');
 
 $debug = false;
 
-if (isset_request_var('method')) {
-	switch(get_nfilter_request_var('method')) {
+if (isrv('method')) {
+	switch(gnrv('method')) {
 		case 'stddev':
 		case 'variance':
 		case 'fill':
@@ -36,7 +36,7 @@ if (isset_request_var('method')) {
 		case 'absolute':
 			break;
 		default:
-			print __("FATAL: Spike Kill method '%s' is Invalid", html_escape(get_nfilter_request_var('method'))) . PHP_EOL;
+			print __("FATAL: Spike Kill method '%s' is Invalid", htmle(gnrv('method'))) . PHP_EOL;
 
 			exit(1);
 	}
@@ -48,7 +48,7 @@ if (is_realm_allowed(1043)) {
 		LEFT JOIN data_template_rrd
 		ON graph_templates_item.task_item_id=data_template_rrd.id
 		WHERE graph_templates_item.local_graph_id = ?',
-		[get_filter_request_var('local_graph_id')]);
+		[gfrv('local_graph_id')]);
 
 	$results = '';
 
@@ -65,24 +65,24 @@ if (is_realm_allowed(1043)) {
 				$method    = '';
 				$rrdfile   = $data_source_path;
 
-				if (isset_request_var('dryrun')) {
+				if (isrv('dryrun')) {
 					$dryrun = true;
 				}
 
-				if (isset_request_var('method')) {
-					$method = get_nfilter_request_var('method');
+				if (isrv('method')) {
+					$method = gnrv('method');
 				}
 
-				if (isset_request_var('avgnan')) {
-					$avgnan = get_nfilter_request_var('avgnan');
+				if (isrv('avgnan')) {
+					$avgnan = gnrv('avgnan');
 				}
 
-				if (isset_request_var('outlier-start')) {
-					$out_start = get_nfilter_request_var('outlier-start');
+				if (isrv('outlier-start')) {
+					$out_start = gnrv('outlier-start');
 				}
 
-				if (isset_request_var('outlier-end')) {
-					$out_end = get_nfilter_request_var('outlier-end');
+				if (isrv('outlier-end')) {
+					$out_end = gnrv('outlier-end');
 				}
 
 				$spiker = new spikekill($rrdfile, $method, $avgnan, '', $out_start, $out_end);
@@ -109,7 +109,7 @@ if (is_realm_allowed(1043)) {
 		}
 	}
 
-	print json_encode(['local_graph_id' => get_request_var('local_graph_id'), 'results' => $results]);
+	print json_encode(['local_graph_id' => grv('local_graph_id'), 'results' => $results]);
 } else {
 	print __('FATAL: Spike Kill Not Allowed') . PHP_EOL;
 }

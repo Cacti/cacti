@@ -23,44 +23,45 @@
  +-------------------------------------------------------------------------+
  */
 
-/* do NOT run this script through a web browser */
+// do NOT run this script through a web browser
 require_once(__DIR__ . '/../include/cli_check.php');
 include_once(CACTI_PATH_LIBRARY . '/api_automation_tools.php');
 include_once(CACTI_PATH_LIBRARY . '/api_tree.php');
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (sizeof($parms)) {
-	/* setup defaults */
-	$siteName       = '';  					# Site Name
-	$siteAddr1      = '';  					# Site Address 1
-	$siteAddr2      = '';  					# Site Address 2
-	$siteCity       = '';  					# Site City
-	$siteState      = '';  					# Site State
-	$siteZip        = '';  					# Site Zip/Postal Code
-	$siteCountry    = '';  					# Site Country
-	$siteTimezone   = '';  					# Site Timezone in PHP format http://php.net/manual/en/timezones.php
-	$siteLatitude   = '';	 				# Site Latitude - preferably in dotted decimal, but will convert DMS backwards
-	$siteLongitude  = '';					# Site Longitude - preferably in dotted decimal, but will convert DMS backwards
-	$siteAltname    = '';					# Site Alternative Name
-	$siteNotes      = 'Added by script: %DATE% %TIME%';	# Site Notes
-	$replaceSites   = true;					# Default: Replace sites with the same name to stop duplicates being made
-	$displaySites   = false;				# Default: Only when --display-sites is passed
-	$deviceMapRegex = '';					# Map devices to site by regex
-	$deviceMapWild  = '';					# Map devices to site by mysql wildcard
-	$ipMapRegex     = '';					# Map device IPs to site by regex
-	$ipMapWild      = '';					# Map device IPs to site by mysql wildcard
-	$doMap          = '';					# Must pass the --do-map to make it work
-	$geocodeAddress = false;				# Geocode addresses into GPS coordinates?
-	$geocodeApiKey  = '';					# Get from https://developers.google.com/maps/documentation/geocoding/get-api-key
-	$httpsProxy     = '';					# If this is set then load it as a default
+	// setup defaults
+	$siteName       = '';  					// Site Name
+	$siteAddr1      = '';  					// Site Address 1
+	$siteAddr2      = '';  					// Site Address 2
+	$siteCity       = '';  					// Site City
+	$siteState      = '';  					// Site State
+	$siteZip        = '';  					// Site Zip/Postal Code
+	$siteCountry    = '';  					// Site Country
+	$siteTimezone   = '';  					// Site Timezone in PHP format http://php.net/manual/en/timezones.php
+	$siteLatitude   = '';	 				// Site Latitude - preferably in dotted decimal, but will convert DMS backwards
+	$siteLongitude  = '';					// Site Longitude - preferably in dotted decimal, but will convert DMS backwards
+	$siteAltname    = '';					// Site Alternative Name
+	$siteNotes      = 'Added by script: %DATE% %TIME%';	// Site Notes
+	$replaceSites   = true;					// Default: Replace sites with the same name to stop duplicates being made
+	$displaySites   = false;				// Default: Only when --display-sites is passed
+	$deviceMapRegex = '';					// Map devices to site by regex
+	$deviceMapWild  = '';					// Map devices to site by mysql wildcard
+	$ipMapRegex     = '';					// Map device IPs to site by regex
+	$ipMapWild      = '';					// Map device IPs to site by mysql wildcard
+	$doMap          = '';					// Must pass the --do-map to make it work
+	$geocodeAddress = false;				// Geocode addresses into GPS coordinates?
+	$geocodeApiKey  = '';					// Get from https://developers.google.com/maps/documentation/geocoding/get-api-key
+	$httpsProxy     = '';					// If this is set then load it as a default
 
 	$verbose = false;
 	$debug   = false;
 	$quiet   = false;
 	$log     = false;
+	$hosts   = '';
 
 	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
@@ -189,7 +190,7 @@ if (sizeof($parms)) {
 				exit;
 
 			default:
-				echoQuiet("ERROR: Invalid Argument: ($arg)\n\n");
+				echoQuiet("ERROR: Invalid Argument: ($arg)\n\n" . PHP_EOL . PHP_EOL);
 				displayHelp();
 
 				exit(1);
@@ -197,7 +198,7 @@ if (sizeof($parms)) {
 	}
 
 	if ($displaySites) {
-		displaySites($hosts, $quiet);
+		displaySites(getSites(), $quiet);
 
 		exit(0);
 	} else {
@@ -205,10 +206,11 @@ if (sizeof($parms)) {
 
 		if ($siteId && ($deviceMapRegex || $deviceMapWild || $ipMapRegex || $ipMapWild)) {
 			if ($doMap && !$quiet) {
-				echoQuiet("Attempting to map devices to site ID: $siteId\n");
+				echoQuiet("Attempting to map devices to site ID: $siteId\n" . PHP_EOL);
 			} elseif (!$quiet) {
-				echoQuiet("Dry run - checking filters to map devices to site ID: $siteId\n");
+				echoQuiet("Dry run - checking filters to map devices to site ID: $siteId\n" . PHP_EOL);
 			}
+
 			mapDevices($siteId, $doMap);
 		}
 	}
@@ -218,17 +220,18 @@ if (sizeof($parms)) {
 	exit(0);
 }
 
-##
-# Add a new site, or update and existing one
-# Returns the id of the site added
-##
-
-function addSite() {
-	global $siteName, $siteAddr1, $siteAddr2, $siteCity, $siteState, $siteZip, $siteCountry, $siteTimezone, $siteLatitude, $siteLongitude, $siteAltname, $siteNotes, $geocodeAddress;
+/**
+ * Add a new site, or update and existing one
+ * Returns the id of the site added
+ *
+ * @return int
+ */
+function addSite() : int {
+	global $quiet, $siteName, $siteAddr1, $siteAddr2, $siteCity, $siteState, $siteZip, $siteCountry, $siteTimezone, $siteLatitude, $siteLongitude, $siteAltname, $geocodeAddress, $siteNotes;
 
 	$siteData = db_fetch_assoc_prepared('SELECT * from sites where name = ?', [$siteName]);
 
-	# Fix nasty DMS values
+	// Fix nasty DMS values
 	fixCoordinates($siteLatitude, $siteLongitude);
 
 	if ($geocodeAddress) {
@@ -245,7 +248,8 @@ function addSite() {
 	$siteNotes = str_replace('%BR%', "\n", $siteNotes);
 
 	if ($siteData) {
-		echoQuiet("Updating existing site: $siteName\n");
+		echoQuiet("Updating existing site: $siteName\n" . PHP_EOL);
+
 		$siteId = isset($siteData[0]['id']) ? $siteData[0]['id'] : 0;
 
 		if (!$siteId) {
@@ -268,47 +272,38 @@ function addSite() {
 			$siteLatitude ? $siteLatitude : (isset($siteData[0]) ? $siteData[0]['latitude'] : ''),
 			$siteLongitude ? $siteLongitude : (isset($siteData[0]) ? $siteData[0]['longitude'] : ''),
 			$siteAltname ? $siteAltname : (isset($siteData[0]) ? $siteData[0]['alternate_id'] : ''),
-			$siteNotes ? $siteNotes : (isset($siteData[0]) ? $siteData[0]['notes'] : ''),
+			$siteNotes,
 			isset($siteData[0]) ? $siteData[0]['id'] : 0,
 		];
 
-		db_execute_prepared('UPDATE sites set
-			name 		= ?,
-			address1 	= ?,
-			address2 	= ?,
-			city	 	= ?,
-			state	 	= ?,
-			postal_code	= ?,
-			country		= ?,
-			timezone	= ?,
-			latitude	= ?,
-			longitude	= ?,
-			alternate_id	= ?,
-			notes		= ?
+		db_execute_prepared('UPDATE sites SET name = ?, address1 = ?, address2 = ?,
+			city = ?, state = ?, postal_code = ?, country = ?, timezone = ?, latitude = ?,
+			longitude = ?, alternate_id = ?, notes = ?
 			WHERE sites.id = ?', $params);
 
 		return ($siteData[0]['id']);
 	} else {
-		echoQuiet("Adding new site: $siteName\n");
+		echoQuiet("Adding new site: $siteName\n" . PHP_EOL);
+
 		$params = [
-			$siteName ? $siteName : '',
-			$siteAddr1 ? $siteAddr1 : '',
-			$siteAddr2 ? $siteAddr2 : '',
-			$siteCity ? $siteCity : '',
-			$siteState ? $siteState : '',
-			$siteZip ? $siteZip : '',
-			$siteCountry ? $siteCountry : '',
-			$siteTimezone ? $siteTimezone : '',
-			$siteLatitude ? $siteLatitude : '',
-			$siteLongitude ? $siteLongitude : '',
-			$siteAltname ? $siteAltname : '',
-			$siteNotes ? $siteNotes : '',
+			$siteName ?? '',
+			$siteAddr1 ?? '',
+			$siteAddr2 ?? '',
+			$siteCity ?? '',
+			$siteState ?? '',
+			$siteZip ?? '',
+			$siteCountry ?? '',
+			$siteTimezone ?? '',
+			$siteLatitude ?? '',
+			$siteLongitude ?? '',
+			$siteAltname ?? '',
+			$siteNotes,
 		];
 
 		db_execute_prepared('INSERT into sites
 			(name, address1, address2, city, state, postal_code, country,
 			timezone, latitude, longitude, alternate_id, notes)
-			VALUES (?,?,?,?,?,?,?,?,?,?,?,?)', $params);
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', $params);
 
 		$siteId = db_fetch_insert_id();
 
@@ -316,23 +311,24 @@ function addSite() {
 	}
 }
 
-function mapDevices($siteId, $doMap) {
+function mapDevices(int $siteId, bool $doMap) : void {
 	global $deviceMapRegex, $deviceMapWild, $ipMapRegex, $ipMapWild, $siteName, $verbose, $debug, $quiet;
+
 	$devices = getHosts();
 
 	if ($deviceMapRegex && !preg_match('/^\/.+\//', $deviceMapRegex)) {
-		# Just in case the slashes aren't passed to us
+		// Just in case the slashes aren't passed to us
 		$deviceMapRegex = '/^' . $deviceMapRegex . '$/';
 	}
 
 	if ($ipMapRegex && !preg_match('/^\/.+\//', $ipMapRegex)) {
-		# Make it more restrictive too - add the ^ and $ anchors if the regex isn't specified correctly to stop sillyness
+		// Make it more restrictive too - add the ^ and $ anchors if the regex isn't specified correctly to stop sillyness
 		$ipMapRegex = '/^' . $ipMapRegex . '$/';
 	}
 
-	# Cheating and just expanding % into .+ regex matches to avoid having to do DB queries again
-	$deviceMapWild 	 = $deviceMapWild ? '/' . str_replace('%', '.+', $deviceMapWild) . '/' : '';
-	$ipMapWild 	     = $ipMapWild ? '/' . str_replace('%', '.+', $ipMapWild) . '/' : '';
+	// Cheating and just expanding % into .+ regex matches to avoid having to do DB queries again
+	$deviceMapWild = $deviceMapWild ? '/' . str_replace('%', '.+', $deviceMapWild) . '/' : '';
+	$ipMapWild 	   = $ipMapWild ? '/' . str_replace('%', '.+', $ipMapWild) . '/' : '';
 
 	$matchedDevices = [];
 
@@ -381,35 +377,51 @@ function mapDevices($siteId, $doMap) {
 	$numMatched = sizeof($matchedDevices);
 
 	if ($numMatched) {
-		echoQuiet("\n Success: $numMatched devices matched filters for site $siteName.\n\n");
+		echoQuiet(PHP_EOL);
+		echoQuiet("Success: $numMatched devices matched filters for site $siteName.\n\n" . PHP_EOL . PHP_EOL);
 
 		for ($i = 0; $i < $numMatched; $i++) {
-			echoQuiet("  $i. " . $matchedDevices[$i] . "\n");
+			echoQuiet("  $i. " . $matchedDevices[$i] . PHP_EOL);
 		}
-		echoQuiet("\n");
+
+		echoQuiet(PHP_EOL);
 	}
 }
 
-/* doDeviceMap(): updates the host.site_id entry
- * Returns true if successful
+/**
+ * doDeviceMap(): updates the host.site_id entry
+ *
+ * @param int $deviceId
+ * @param int $siteId
+ *
+ * @return bool - true if successful
  */
-function doDeviceMap($deviceId, $siteId) {
+function doDeviceMap(int $deviceId, int $siteId) : bool {
 	if (!$deviceId && $siteId) {
 		return false;
 	}
 
-	db_execute_prepared('UPDATE host set site_id = ? where id = ?', [$siteId, $deviceId]);
+	db_execute_prepared('UPDATE host SET site_id = ? WHERE id = ?', [$siteId, $deviceId]);
+
 	$numUpdates = db_affected_rows();
 
 	return $numUpdates > 0;
 }
 
-##
-# geocodeAddress(): Use Google Geocode API to turn addresses into GPS coordinates
-# Requires an API key, which must be provided with the --geocode-api-key parameter
-##
-
-function geocodeAddress($siteAddr1, $siteAddr2, $siteCity, $siteZip, $siteCountry) {
+/**
+ * geocodeAddress(): Use Google Geocode API to turn addresses into GPS coordinates
+ *
+ * Requires an API key, which must be provided with the --geocode-api-key parameter
+ *
+ * @param string $siteAddr1
+ * @param string $siteAddr2
+ * @param string $siteCity
+ * @param string $siteZip
+ * @param string $siteCountry
+ *
+ * @return array - The geocodeAddress location
+ */
+function geocodeAddress(string $siteAddr1, string $siteAddr2, string $siteCity, string $siteZip, string $siteCountry) : array {
 	global $verbose, $debug, $quiet, $geocodeApiKey, $httpsProxy;
 
 	$latGeocode = '';
@@ -418,22 +430,23 @@ function geocodeAddress($siteAddr1, $siteAddr2, $siteCity, $siteZip, $siteCountr
 	$googleApiUrl = 'https://maps.googleapis.com/maps/api/geocode/json';
 
 	if (!$geocodeApiKey) {
-		# Dont even try without the key
+		// Dont even try without the key
 		displayHelp('Error: --geocode-api-key must be given with --geocode-address');
 	}
 
 	$requestUrl = sprintf('%s?address=%s,%s,%s,%s&key=%s', $googleApiUrl, urlencode($siteAddr1), urlencode($siteAddr2), urlencode($siteCity), urlencode($siteCountry), $geocodeApiKey);
 
 	if ($verbose || $debug) {
-		echoQuiet("Geocode URL: $requestUrl\n");
+		echoQuiet("Geocode URL: $requestUrl\n" . PHP_EOL);
 	}
+
 	$result = fetchCurl($requestUrl);
 
 	if ($result) {
 		$jsonResult = json_decode($result);
 
 		if ($debug) {
-			echoQuiet('Result was: ' . print_r($jsonResult, 1));
+			echoQuiet('Result was: ' . print_r($jsonResult, true));
 		}
 
 		if ($jsonResult && isset($jsonResult->results[0])) {
@@ -441,11 +454,11 @@ function geocodeAddress($siteAddr1, $siteAddr2, $siteCity, $siteZip, $siteCountr
 			$lngGeocode = $jsonResult->results[0]->geometry->location->lng;
 
 			if (!$quiet) {
-				echoQuiet("Geocoded Coordinates: $latGeocode,$lngGeocode\n");
+				echoQuiet("Geocoded Coordinates: $latGeocode,$lngGeocode\n" . PHP_EOL);
 			}
 		} else {
 			if (!$quiet) {
-				echoQuiet("Error: Query to URL: $requestUrl failed.\n");
+				echoQuiet("Error: Query to URL: $requestUrl failed.\n" . PHP_EOL);
 			}
 		}
 	}
@@ -453,12 +466,20 @@ function geocodeAddress($siteAddr1, $siteAddr2, $siteCity, $siteZip, $siteCountr
 	return ([$latGeocode, $lngGeocode]);
 }
 
-function fixCoordinates($lat, $lng) {
-	$utfCoord = utf8_decode("$lat $lng");    # Normalise the characters to put them through a regex
+function fixCoordinates(float $lat, float $lng) : array {
+	$utfCoord = utf8_decode("$lat $lng"); // Normalise the characters to put them through a regex
 
 	if (preg_match('/(\d+)\xB0(\d+)\'((?:[.]\d+|\d+(?:[.]\d*)?))"?([NS]) +(\d+)\xB0(\d+)\'((?:[.]\d+|\d+(?:[.]\d*)?))"?([EW])/', $utfCoord, $matches)) {
-		array_shift($matches);                                                          # Get rid of $matches[0]
-		[$degN, $minN, $secN, $NS, $degE, $minE, $secE, $EW] = $matches;             # Get the matches from the regex
+		array_shift($matches); // Get rid of $matches[0]
+		[$degN, $minN, $secN, $NS, $degE, $minE, $secE, $EW] = $matches; // Get the matches from the regex
+
+		$degN = (float) $degN;
+		$minN = (float) $minN;
+		$secN = (float) $secN;
+
+		$degE = (float) $degE;
+		$minE = (float) $minE;
+		$secE = (float) $secE;
 
 		$lat = sprintf('%0.6f', ($NS == 'S' ? -1 : 1) * ($degN + ($minN / 60) + ($secN / 3600)));
 		$lng = sprintf('%0.6f', ($EW == 'W' ? -1 : 1) * ($degE + ($minE / 60) + ($secE / 3600)));
@@ -467,68 +488,7 @@ function fixCoordinates($lat, $lng) {
 	return ([$lat, $lng]);
 }
 
-/*  displayVersion - displays version information */
-function displayVersion() {
-	$version = get_cacti_cli_version();
-	echoQuiet("Cacti Add Site Utility, Version $version, " . COPYRIGHT_YEARS . "\n");
-}
-
-function displayHelp($errorMessage = null) {
-	global $log;
-	$log = false;
-	displayVersion();
-
-	if ($errorMessage) {
-		echoQuiet("$errorMessage\n\n");
-	}
-
-	echoQuiet("\nUsage: add_site.php [site-options] [--quiet]\n\n");
-	echoQuiet("Site options:\n");
-	echoQuiet("    --name=[Site Name]            e.g. 'Telehouse East'\n");
-	echoQuiet("    --addr1=[Address Line 1]      e.g. 'Coriander Road'\n");
-	echoQuiet("    --addr2=[Address Line 2]      e.g. 'Poplar'\n");
-	echoQuiet("    --city=[City]                 e.g. 'London''\n");
-	echoQuiet("    --state=[State]               e.g. 'London'\n");
-	echoQuiet("    --postcode=[Zip or Postcode]  e.g. 'E14 2AA'\n");
-	echoQuiet("    --country=[Country]           e.g. 'United Kingdom'\n");
-	echoQuiet("    --timezone=[Timezone]         e.g. 'Europe/London'\n");
-	echoQuiet("    --latitude=[Latitutude]       e.g. '51.5115172'\n");
-	echoQuiet("    --longitude=[Longitude]       e.g. '-0.0017868'\n");
-	echoQuiet("    --alt-name=[Alt. Name]        e.g. 'LINX Telehouse'\n");
-	echoQuiet("    --notes=[Site Notes]          e.g. 'Email: support@telehouse.net'\n\n");
-	echoQuiet("Geocoding Options:\n");
-	echoQuiet("    --geocode                     Try to turn addresses into GPS coordinates\n");
-	echoQuiet("    --geocode-api-key             Your Google API key - https://developers.google.com/maps/documentation/geocoding/get-api-key\n");
-	echoQuiet("    --proxy                       Proxy server to use in http://proxy.server:port format\n\n");
-	echoQuiet("Device Map Options:\n");
-	echoQuiet("    --device-map-regex=[regular expression]  e.g.'rtr-th[e|w]-pe\d'\n");
-	echoQuiet("    --device-map-wildcard=[mysql like]       e.g.'rtr-%the%-pe%'\n\n");
-	echoQuiet("    --ip-map-regex=[regular expression]      e.g. '172.31.224.[1-8]'\n");
-	echoQuiet("    --ip-map-wildcard=[mysql like]           e.g.'172.31.224.%'\n");
-	echoQuiet("    --do-map                      Do the mapping.\n\n");
-	echoQuiet("General Options:\n");
-	echoQuiet("    --quiet                       Keep it quiet\n");
-	echoQuiet("    --no-replace                  Allow duplicate site names to be created\n\n");
-	echoQuiet("Notes:\n");
-	echoQuiet("    By default, sites with the same name will be updated rather than added.\n");
-	echoQuiet("    This can be disabled with --no-replace\n\n");
-	echoQuiet("    GPS coordinates should preferably be in dotted decimal format,\n");
-	echoQuiet("    if supplied in DMS format, a conversion will be attempted, but\n");
-	echoQuiet("    your mileage may vary.\n\n");
-	echoQuiet("    Devices can be mapped to the site by providing either regular expression\n");
-	echoQuiet("    or MySQL wildcard against the host description or IP address.\n\n");
-	echoQuiet("    By default, only matching devices will be shown, to actually make\n");
-	echoQuiet("    the changes, use the --do-map option. This is to mistaken updates,\n");
-	echoQuiet("    please check your filters work first!\n\n");
-	echoQuiet("    There are some macros which will be expanded in the --notes field:\n\n");
-	echoQuiet("      %DATE% - The current date in mysql format\n");
-	echoQuiet("      %TIME% - The current time in mysql format\n");
-	echoQuiet("      %GOOGLE_MAPS_URL% - The link to Google Maps for this sites GPS coordinates\n\n");
-
-	exit;
-}
-
-function echoQuiet($str, $level = 0) {
+function echoQuiet(string $str, int $level = 0) : void {
 	global $quiet, $log;
 
 	if (!$quiet) {
@@ -541,11 +501,11 @@ function echoQuiet($str, $level = 0) {
 	}
 }
 
-function fetchCurl($url) {
+function fetchCurl(string $url) : string {
 	global $verbose, $debug, $httpsProxy;
 
 	if (!function_exists('curl_init')) {
-		displayHelp("Error: cURL must be enabled in PHP if --geocode is specified.\nSee http://php.net/manual/en/curl.setup.php for help.\n");
+		displayHelp('Error: cURL must be enabled in PHP if --geocode is specified.' . PHP_EOL . 'See http://php.net/manual/en/curl.setup.php for help.' . PHP_EOL);
 	}
 
 	$curl      = curl_init();
@@ -561,13 +521,13 @@ function fetchCurl($url) {
 	curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
 	curl_setopt($curl, CURLOPT_TIMEOUT, 10);
 	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-	curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
+	curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($curl, CURLOPT_HEADER, 0);
+	curl_setopt($curl, CURLOPT_HEADER, false);
 
 	if ($httpsProxy) {
 		if ($verbose || $debug) {
-			echoQuiet("Using HTTPS proxy: $httpsProxy\n");
+			echoQuiet("Using HTTPS proxy: $httpsProxy" . PHP_EOL);
 		}
 		curl_setopt($curl, CURLOPT_PROXY, $httpsProxy);
 	}
@@ -576,4 +536,85 @@ function fetchCurl($url) {
 	curl_close($curl);
 
 	return $buffer;
+}
+
+/**
+ * displayVersion - displays version information
+ *
+ * @return void
+ */
+function displayVersion() : void {
+	$version = get_cacti_cli_version();
+	echoQuiet("Cacti Add Site Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL);
+}
+
+/**
+ * display_help - displays help information
+ *
+ * @return void
+ */
+function displayHelp(mixed $errorMessage = null) : void {
+	global $log;
+	$log = false;
+	displayVersion();
+
+	if ($errorMessage) {
+		echoQuiet("$errorMessage" . PHP_EOL . PHP_EOL);
+	}
+
+	echoQuiet(PHP_EOL);
+	echoQuiet('Usage: add_site.php [site-options] [--quiet]' . PHP_EOL . PHP_EOL);
+
+	echoQuiet('Site options:' . PHP_EOL);
+	echoQuiet("    --name=[Site Name]            e.g. 'Telehouse East'" . PHP_EOL);
+	echoQuiet("    --addr1=[Address Line 1]      e.g. 'Coriander Road'" . PHP_EOL);
+	echoQuiet("    --addr2=[Address Line 2]      e.g. 'Poplar'" . PHP_EOL);
+	echoQuiet("    --city=[City]                 e.g. 'London''" . PHP_EOL);
+	echoQuiet("    --state=[State]               e.g. 'London'" . PHP_EOL);
+	echoQuiet("    --postcode=[Zip or Postcode]  e.g. 'E14 2AA'" . PHP_EOL);
+	echoQuiet("    --country=[Country]           e.g. 'United Kingdom'" . PHP_EOL);
+	echoQuiet("    --timezone=[Timezone]         e.g. 'Europe/London'" . PHP_EOL);
+	echoQuiet("    --latitude=[Latitutude]       e.g. '51.5115172'" . PHP_EOL);
+	echoQuiet("    --longitude=[Longitude]       e.g. '-0.0017868'" . PHP_EOL);
+	echoQuiet("    --alt-name=[Alt. Name]        e.g. 'LINX Telehouse'" . PHP_EOL);
+	echoQuiet("    --notes=[Site Notes]          e.g. 'Email: support@telehouse.net'" . PHP_EOL . PHP_EOL);
+
+	echoQuiet('Geocoding Options:' . PHP_EOL);
+	echoQuiet('    --geocode                     Try to turn addresses into GPS coordinates' . PHP_EOL);
+	echoQuiet('    --geocode-api-key             Your Google API key - https://developers.google.com/maps/documentation/geocoding/get-api-key' . PHP_EOL);
+	echoQuiet('    --proxy                       Proxy server to use in http://proxy.server:port format' . PHP_EOL . PHP_EOL);
+
+	echoQuiet('Device Map Options:' . PHP_EOL);
+	echoQuiet("    --device-map-regex=[regular expression]  e.g.'rtr-th[e|w]-pe\d'" . PHP_EOL);
+	echoQuiet("    --device-map-wildcard=[mysql like]       e.g.'rtr-%the%-pe%'" . PHP_EOL);
+	echoQuiet("    --ip-map-regex=[regular expression]      e.g. '172.31.224.[1-8]'" . PHP_EOL);
+	echoQuiet("    --ip-map-wildcard=[mysql like]           e.g.'172.31.224.%'" . PHP_EOL);
+	echoQuiet('    --do-map                      Do the mapping.' . PHP_EOL . PHP_EOL);
+
+	echoQuiet('General Options:' . PHP_EOL);
+	echoQuiet('    --quiet                       Keep it quiet' . PHP_EOL);
+	echoQuiet('    --no-replace                  Allow duplicate site names to be created' . PHP_EOL . PHP_EOL);
+
+	echoQuiet('Notes:' . PHP_EOL);
+	echoQuiet('    By default, sites with the same name will be updated rather than added.' . PHP_EOL);
+	echoQuiet('    This can be disabled with --no-replace' . PHP_EOL . PHP_EOL);
+
+	echoQuiet('    GPS coordinates should preferably be in dotted decimal format,' . PHP_EOL);
+	echoQuiet('    if supplied in DMS format, a conversion will be attempted, but' . PHP_EOL);
+	echoQuiet('    your mileage may vary.' . PHP_EOL . PHP_EOL);
+
+	echoQuiet('    Devices can be mapped to the site by providing either regular expression' . PHP_EOL);
+	echoQuiet('    or MySQL wildcard against the host description or IP address.' . PHP_EOL . PHP_EOL);
+
+	echoQuiet('    By default, only matching devices will be shown, to actually make' . PHP_EOL);
+	echoQuiet('    the changes, use the --do-map option. This is to mistaken updates,' . PHP_EOL);
+	echoQuiet('    please check your filters work first!' . PHP_EOL . PHP_EOL);
+
+	echoQuiet('    There are some macros which will be expanded in the --notes field:' . PHP_EOL . PHP_EOL);
+
+	echoQuiet('      %DATE% - The current date in mysql format' . PHP_EOL);
+	echoQuiet('      %TIME% - The current time in mysql format' . PHP_EOL);
+	echoQuiet('      %GOOGLE_MAPS_URL% - The link to Google Maps for this sites GPS coordinates' . PHP_EOL . PHP_EOL);
+
+	exit;
 }

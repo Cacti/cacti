@@ -94,7 +94,7 @@ function ss_net_snmp_disk_bytes($host_id_or_hostname = '') {
 				[$host_id, $dimension]), true
 		);
 
-		/* remove the old entry or entries */
+		// remove the old entry or entries
 		db_execute_prepared('DELETE FROM host_value_cache
 			WHERE host_id = ?
 			AND dimension = ?

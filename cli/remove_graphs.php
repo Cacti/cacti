@@ -34,12 +34,12 @@ require_once(CACTI_PATH_LIBRARY . '/utility.php');
 ini_set('max_execution_time', '0');
 ini_set('memory_limit', '-1');
 
-/* switch to main database for cli's */
-if ($config['poller_id'] > 1) {
+// switch to main database for cli's
+if (POLLER_ID > 1) {
 	db_switch_remote_to_main();
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -265,17 +265,17 @@ if ($listGraphTemplates) {
 	$all_option = true;
 
 	if (cacti_sizeof($host_ids) && $all === false) {
-		$sql_where .= ' AND gl.host_id IN (' . implode(',', $host_ids). ')';
+		$sql_where .= ' AND gl.host_id IN (' . implode(',', $host_ids) . ')';
 		$all_option = false;
 	}
 
 	if (cacti_sizeof($host_template_ids) && $all === false) {
-		$sql_where .= ' AND h.host_template_id IN (' . implode(',', $host_template_ids). ')';
+		$sql_where .= ' AND h.host_template_id IN (' . implode(',', $host_template_ids) . ')';
 		$all_option = false;
 	}
 
 	if (cacti_sizeof($graph_template_ids) && $all === false) {
-		$sql_where .= ' AND gl.graph_template_id IN (' . implode(',', $graph_template_ids). ')';
+		$sql_where .= ' AND gl.graph_template_id IN (' . implode(',', $graph_template_ids) . ')';
 		$all_option = false;
 	}
 
@@ -340,13 +340,22 @@ if ($listGraphTemplates) {
 
 exit(0);
 
-/*  display_version - displays version information */
-function display_version() {
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Remove Graphs Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-function display_help() {
+/**
+ * display_help - displays help information
+ *
+ * @return void
+ */
+function display_help() : void {
 	display_version();
 
 	print PHP_EOL . 'usage: remove_graphs.php --graph-template-id=ID [--host-template-id=ID' . PHP_EOL;

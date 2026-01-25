@@ -37,7 +37,7 @@ define('CACTI_CLI_ONLY', true);
 /* We are not talking to the browser */
 $no_http_headers = true;
 
-/* Make sure CLI's are have minimum settings */
+// Make sure CLI's are have minimum settings
 $default_limit  = -1;
 $default_time   = -1;
 $memory_limit   = ini_get('memory_limit');

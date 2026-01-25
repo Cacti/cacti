@@ -40,7 +40,7 @@ include_once(CACTI_PATH_LIBRARY . '/utility.php');
 include_once(CACTI_PATH_LIBRARY . '/xml.php');
 
 cacti_log('Checking arguments', false, 'INSTALL:');
-/* process calling arguments */
+// process calling arguments
 $params = $_SERVER['argv'];
 array_shift($params);
 
@@ -56,7 +56,7 @@ if (cacti_sizeof($params) == 0) {
 }
 
 if (function_exists('register_process_start')) {
-	if (!register_process_start('install', 'master', '0', 600)) {
+	if (!register_process_start('install', 'master', 0, 600)) {
 		exit(0);
 	}
 } else {

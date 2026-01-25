@@ -27,7 +27,7 @@
  *
  * @return array The form configuration array.
  */
-function api_scheduler_form(): array {
+function api_scheduler_form() : array {
 	global $sched_types, $heartbeats;
 
 	return [
@@ -171,7 +171,7 @@ function api_scheduler_form(): array {
  *
  * @return void
  */
-function api_scheduler_javascript(): void {
+function api_scheduler_javascript() : void {
 	?>
 	<script type='text/javascript'>
 	$(function() {
@@ -230,7 +230,7 @@ function api_scheduler_javascript(): void {
 			stepMinute: 5,
 			timeFormat: 'HH:mm',
 			dateFormat: 'yy-mm-dd',
-			minDateTime: new Date(<?php print date('Y') . ', ' . (date('m') - 1) . ', ' . date('d, H') . ', ' . date('i', ceil(time() / 300) * 300) . ', 0, 0'; ?>)
+			minDateTime: new Date(<?php print date('Y') . ', ' . (date('m') - 1) . ', ' . date('d, H') . ', ' . date('i', intval(ceil(time() / 300)) * 300) . ', 0, 0'; ?>)
 		});
 
 		$('#sched_type').change(function() {
@@ -318,8 +318,8 @@ function api_scheduler_javascript(): void {
  *
  * @return array The augmented save array with validated scheduler settings.
  */
-function api_scheduler_augment_save(array $save, array $post): array {
-	/* scheduler settings */
+function api_scheduler_augment_save(array $save, array $post) : array {
+	// scheduler settings
 	$save['sched_type']    = form_input_validate($post['sched_type'], 'sched_type', '^[0-9]+$', false, 3);
 	$save['start_at']      = form_input_validate($post['start_at'], 'start_at', '', false, 3);
 
@@ -335,7 +335,7 @@ function api_scheduler_augment_save(array $save, array $post): array {
 	$save['recur_every'] = form_input_validate($post['recur_every'], 'recur_every', '', true, 3);
 	$save['run_limit']   = form_input_validate($post['run_limit'], 'run_limit', '', true, 3);
 
-	/* convert arrays to strings */
+	// convert arrays to strings
 	$variables = ['day_of_week', 'month', 'day_of_month', 'monthly_week', 'monthly_day'];
 	$aposts    = [];
 
@@ -347,7 +347,7 @@ function api_scheduler_augment_save(array $save, array $post): array {
 		}
 	}
 
-	/* check for bad rules */
+	// check for bad rules
 	if ($save['sched_type'] == SCHEDULE_WEEKLY) {
 		if ($save['day_of_week'] == '') {
 			$save['enabled'] = '';
@@ -389,22 +389,22 @@ function api_scheduler_augment_save(array $save, array $post): array {
 	 */
 
 	if ($save['sched_type'] != 1) {
-		if ($next_start == '0000-00-00 00:00:00') {
+		if ($next_start === '0000-00-00 00:00:00') {
 			$save['next_start'] = date('Y-m-d H:i:s', $start_at);
 		}
 
 		if ($start_at + $poller_int < $now_time) {
-			/* adjust to todays date and check if it's in the past */
+			// adjust to todays date and check if it's in the past
 			$timestamp = strtotime('12:00am') + date('H', $start_at) * 3600 + date('i', $start_at) * 60 + date('s', $start_at);
 
 			if ($timestamp < $now_time + $poller_int) {
-				/* if the time is in the past, adjust forward by one day */
+				// if the time is in the past, adjust forward by one day
 				$timestamp += 86400;
 			}
 
 			$save['next_start'] = date('Y-m-d H:i:s', $timestamp);
 		} else {
-			/* the time is in the future, we are safe to store it */
+			// the time is in the future, we are safe to store it
 			$save['next_start'] = date('Y-m-d H:i:s', $start_at);
 		}
 	}
@@ -420,7 +420,7 @@ function api_scheduler_augment_save(array $save, array $post): array {
  *
  * @return bool Returns true if it is time to start the scheduled task, false otherwise.
  */
-function api_scheduler_is_time_to_start(array $schedule, string $table = 'automation_networks'): bool {
+function api_scheduler_is_time_to_start(array $schedule, string $table = 'automation_networks') : bool {
 	$now   = time();
 
 	if (empty($schedule['next_start'])) {
@@ -434,8 +434,6 @@ function api_scheduler_is_time_to_start(array $schedule, string $table = 'automa
 	switch($schedule['sched_type']) {
 		case SCHEDULE_MANUAL:
 			return false;
-
-			break;
 		case SCHEDULE_HOURLY:
 		case SCHEDULE_DAILY:
 			if ($schedule['sched_type'] == SCHEDULE_HOURLY) {
@@ -464,13 +462,9 @@ function api_scheduler_is_time_to_start(array $schedule, string $table = 'automa
 					[date('Y-m-d H:i', $target), $schedule['id']]);
 
 				return true;
-
-				break;
 			}
 
 			return false;
-
-			break;
 		case SCHEDULE_WEEKLY:
 			$recur = $schedule['recur_every'] * 86400 * 7; // weeks
 			$start = strtotime($schedule['start_at']);
@@ -492,7 +486,7 @@ function api_scheduler_is_time_to_start(array $schedule, string $table = 'automa
 
 					$key = array_search($cur_day, $days, false);
 
-					if ($key !== false && $key >= 0) {
+					if ($key !== false) {
 						if ($key == 0) {
 							$target += $recur - $week;
 						}
@@ -510,8 +504,6 @@ function api_scheduler_is_time_to_start(array $schedule, string $table = 'automa
 			}
 
 			return false;
-
-			break;
 		case SCHEDULE_MONTHLY:
 		case SCHEDULE_MONTHLY_ON_DAY:
 			$next = api_scheduler_calculate_next_start($schedule);
@@ -532,8 +524,6 @@ function api_scheduler_is_time_to_start(array $schedule, string $table = 'automa
 			}
 
 			return false;
-
-			break;
 	}
 
 	return false;
@@ -544,11 +534,16 @@ function api_scheduler_is_time_to_start(array $schedule, string $table = 'automa
  *
  * @param array $schedule The schedule configuration array.
  *
- * @return int|false The timestamp of the next start time, or false if no valid next start time is found.
+ * @return mixed - The timestamp of the next start time, or false if no valid next start time is found.
  */
-function api_scheduler_calculate_next_start(array $schedule): int|false {
+function api_scheduler_calculate_next_start(array $schedule) : mixed {
 	$now    = time();
 	$dates  = [];
+
+	// Some defaults
+	$smonth = 'January';
+	$sweek  = 'first';
+	$sday   = 'Sunday';
 
 	switch($schedule['sched_type']) {
 		case SCHEDULE_MANUAL:
@@ -678,6 +673,10 @@ function api_scheduler_calculate_next_start(array $schedule): int|false {
 								$smonth = 'December';
 
 								break;
+							default:
+								$Smonth = 'January';
+
+								break;
 						}
 
 						switch($week) {
@@ -699,6 +698,10 @@ function api_scheduler_calculate_next_start(array $schedule): int|false {
 								break;
 							case '32':
 								$sweek = 'last';
+
+								break;
+							default:
+								$sweek = 'first';
 
 								break;
 						}
@@ -730,6 +733,10 @@ function api_scheduler_calculate_next_start(array $schedule): int|false {
 								break;
 							case '7':
 								$sday = 'Saturday';
+
+								break;
+							default:
+								$sday = 'Sunday';
 
 								break;
 						}

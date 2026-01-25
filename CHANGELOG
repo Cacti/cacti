@@ -185,6 +185,7 @@ Cacti CHANGELOG
 -feature#6191: Adding Natural sorting options for Hostname
 -feature#6228: Add admin's email to installer and enable "Notify primary admin of issues" 
 -feature#6454: Create a logging recursion ticket that helps against recusion loops in cacti_log
+-feature#6539: Allow Standard Cacti Log Files to be Rotated on Demand from the Cacti UI
 -feature: Allow messages to be popup notifications
 -feature: Upgrade billboard.js to version 3.14.1
 -feature: Upgrade jQueryUI to version 1.14.1
@@ -198,6 +199,7 @@ Cacti CHANGELOG
 -feature: Allow Reports to be sent to a Notification List if thold is installed
 -feature: Remove legacy Lotus Notes Attachment Types from Reports
 -feature: Fortigate firewall template extension with SDWAN tests
+-feature: Continue to support MD5() for the password verifications but also support SHA256
 
 1.2.31
 -issue#6168: RRD cleaner does not purge files

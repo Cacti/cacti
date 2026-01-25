@@ -32,13 +32,13 @@ require_once(CACTI_PATH_LIBRARY . '/utility.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');
 require_once(CACTI_PATH_LIBRARY . '/xml.php');
 
-if ($config['poller_id'] > 1) {
+if (POLLER_ID > 1) {
 	print 'FATAL: This utility is designed for the main Data Collector only' . PHP_EOL;
 
 	exit(1);
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -167,7 +167,7 @@ if (cacti_sizeof($parms)) {
 	}
 
 	if ($filename != '') {
-		if (file_exists($filename) && is_readable($filename) && file_exists($filename) && !is_dir($filename)) {
+		if (file_exists($filename) && is_readable($filename) && !is_dir($filename)) {
 			$fp   = fopen($filename, 'r');
 			$data = fread($fp, filesize($filename));
 
@@ -205,19 +205,30 @@ if (cacti_sizeof($parms)) {
 	exit(1);
 }
 
-/*  display_version - displays version information */
-function display_version() {
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Import Template Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-function display_help() {
+/**
+ * display_help - displays the usage of the function
+ *
+ * @return void
+ */
+function display_help() : void {
 	display_version();
 
 	print PHP_EOL . 'usage: import_package.php --filename=[filename] [--info] [--remove-orphans] [--replace-svalues] [--with-profile] [--profile-id=N' . PHP_EOL . PHP_EOL;
 	print 'A utility to allow signed Cacti Packages to be imported from the command line.' . PHP_EOL . PHP_EOL;
+
 	print 'Required:' . PHP_EOL;
 	print '    --filename              The name of the gzipped package file to import' . PHP_EOL . PHP_EOL;
+
 	print 'Optional:' . PHP_EOL;
 	print '    --info            Output the info section of the package, do not import' . PHP_EOL;
 	print '    --preview         Preview the Template Import, do not import' . PHP_EOL;

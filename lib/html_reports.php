@@ -22,7 +22,10 @@
  +-------------------------------------------------------------------------+
 */
 
-/* get the format files */
+//
+global $attach_types, $alignment;
+
+// get the format files
 $formats = reports_get_format_files();
 
 $fields_reports_edit = [
@@ -213,15 +216,15 @@ if (!api_plugin_installed('thold')) {
  *
  * @return void
  */
-function reports_item_dnd() {
-	/* ================= Input validation ================= */
-	get_filter_request_var('id');
-	/* ================= Input validation ================= */
+function reports_item_dnd() : void {
+	// ================= Input validation =================
+	gfrv('id');
+	// ================= Input validation =================
 
 	$continue = true;
 
-	if (isset_request_var('report_item') && is_array(get_nfilter_request_var('report_item'))) {
-		$report_items = get_nfilter_request_var('report_item');
+	if (isrv('report_item') && is_array(gnrv('report_item'))) {
+		$report_items = gnrv('report_item');
 
 		if (cacti_sizeof($report_items)) {
 			$sequence = 1;
@@ -234,7 +237,7 @@ function reports_item_dnd() {
                     SET sequence = ?
                     WHERE id = ?
 					AND report_id = ?',
-					[$sequence, $item_id, get_request_var('id')]
+					[$sequence, $item_id, grv('id')]
 				);
 
 				$sequence++;
@@ -251,21 +254,21 @@ function reports_item_dnd() {
  *
  * @return void
  */
-function reports_form_save() {
+function reports_form_save() : void {
 	global $messages;
 
-	if (isset_request_var('save_component_report')) {
-		/* ================= input validation ================= */
-		get_filter_request_var('id');
-		get_filter_request_var('font_size');
-		get_filter_request_var('graph_width');
-		get_filter_request_var('graph_height');
-		get_filter_request_var('graph_columns');
-		/* ==================================================== */
+	if (isrv('save_component_report')) {
+		// ================= input validation =================
+		gfrv('id');
+		gfrv('font_size');
+		gfrv('graph_width');
+		gfrv('graph_height');
+		gfrv('graph_columns');
+		// ====================================================
 
 		$post = $_POST;
 
-		if (isempty_request_var('id')) {
+		if (ierv('id')) {
 			$save['user_id'] = $_SESSION[SESS_USER_ID];
 		} else {
 			$save['user_id'] = db_fetch_cell_prepared('SELECT user_id FROM reports WHERE id = ?', [$post['id']]);
@@ -328,43 +331,43 @@ function reports_form_save() {
 		exit;
 	}
 
-	if (isset_request_var('save_component_report_item')) {
-		/* ================= input validation ================= */
-		get_filter_request_var('report_id');
-		get_filter_request_var('id');
-		/* ==================================================== */
+	if (isrv('save_component_report_item')) {
+		// ================= input validation =================
+		gfrv('report_id');
+		gfrv('id');
+		// ====================================================
 
 		unset($_SESSION[SESS_ERROR_FIELDS]);
 
 		$save = [];
 
-		$save['id']        = get_nfilter_request_var('id');
-		$save['report_id'] = form_input_validate(get_nfilter_request_var('report_id'), 'report_id', '^[0-9]+$', false, 3);
+		$save['id']        = gnrv('id');
+		$save['report_id'] = form_input_validate(gnrv('report_id'), 'report_id', '^[0-9]+$', false, 3);
 
-		if (isempty_request_var('id')) {
+		if (ierv('id')) {
 			$save['sequence'] = db_fetch_cell_prepared('SELECT MAX(sequence)+1
 				FROM reports_items
 				WHERE report_id = ?',
-				[get_request_var('report_id')]
+				[grv('report_id')]
 			);
 		} else {
-			$save['sequence'] = form_input_validate(get_nfilter_request_var('sequence'), 'sequence', '^[0-9]+$', false, 3);
+			$save['sequence'] = form_input_validate(gnrv('sequence'), 'sequence', '^[0-9]+$', false, 3);
 		}
 
-		$save['item_type']         = form_input_validate(get_nfilter_request_var('item_type'), 'item_type', '^[-0-9]+$', false, 3);
-		$save['tree_id']           = (isset_request_var('tree_id') ? form_input_validate(get_nfilter_request_var('tree_id'), 'tree_id', '^[-0-9]+$', true, 3) : 0);
-		$save['branch_id']         = (isset_request_var('branch_id') ? form_input_validate(get_nfilter_request_var('branch_id'), 'branch_id', '^[-0-9]+$', true, 3) : 0);
-		$save['tree_cascade']      = (isset_request_var('tree_cascade') ? 'on' : '');
-		$save['graph_name_regexp'] = get_nfilter_request_var('graph_name_regexp');
-		$save['site_id']           = (isset_request_var('site_id') ? form_input_validate(get_nfilter_request_var('site_id'), 'site_id', '^[-0-9]+$', true, 3) : 0);
-		$save['host_template_id']  = (isset_request_var('host_template_id') ? form_input_validate(get_nfilter_request_var('host_template_id'), 'host_template_id', '^[-0-9]+$', true, 3) : 0);
-		$save['host_id']           = (isset_request_var('host_id') ? form_input_validate(get_nfilter_request_var('host_id'), 'host_id', '^[-0-9]+$', true, 3) : 0);
-		$save['graph_template_id'] = (isset_request_var('graph_template_id') ? form_input_validate(get_nfilter_request_var('graph_template_id'), 'graph_template_id', '^[-0-9]+$', true, 3) : 0);
-		$save['local_graph_id']    = (isset_request_var('local_graph_id') ? form_input_validate(get_nfilter_request_var('local_graph_id'), 'local_graph_id', '^[0-9]+$', true, 3) : 0);
-		$save['timespan']          = (isset_request_var('timespan') ? form_input_validate(get_nfilter_request_var('timespan'), 'timespan', '^[0-9]+$', true, 3) : 0);
-		$save['item_text']         = (isset_request_var('item_text') ? form_input_validate(get_nfilter_request_var('item_text'), 'item_text', '', true, 3) : '');
-		$save['align']             = (isset_request_var('align') ? form_input_validate(get_nfilter_request_var('align'), 'align', '^[0-9]+$', true, 3) : REPORTS_ALIGN_LEFT);
-		$save['font_size']         = (isset_request_var('font_size') ? form_input_validate(get_nfilter_request_var('font_size'), 'font_size', '^[0-9]+$', true, 3) : REPORTS_FONT_SIZE);
+		$save['item_type']         = form_input_validate(gnrv('item_type'), 'item_type', '^[-0-9]+$', false, 3);
+		$save['tree_id']           = (isrv('tree_id') ? form_input_validate(gnrv('tree_id'), 'tree_id', '^[-0-9]+$', true, 3) : 0);
+		$save['branch_id']         = (isrv('branch_id') ? form_input_validate(gnrv('branch_id'), 'branch_id', '^[-0-9]+$', true, 3) : 0);
+		$save['tree_cascade']      = (isrv('tree_cascade') ? 'on' : '');
+		$save['graph_name_regexp'] = gnrv('graph_name_regexp');
+		$save['site_id']           = (isrv('site_id') ? form_input_validate(gnrv('site_id'), 'site_id', '^[-0-9]+$', true, 3) : 0);
+		$save['host_template_id']  = (isrv('host_template_id') ? form_input_validate(gnrv('host_template_id'), 'host_template_id', '^[-0-9]+$', true, 3) : 0);
+		$save['host_id']           = (isrv('host_id') ? form_input_validate(gnrv('host_id'), 'host_id', '^[-0-9]+$', true, 3) : 0);
+		$save['graph_template_id'] = (isrv('graph_template_id') ? form_input_validate(gnrv('graph_template_id'), 'graph_template_id', '^[-0-9]+$', true, 3) : 0);
+		$save['local_graph_id']    = (isrv('local_graph_id') ? form_input_validate(gnrv('local_graph_id'), 'local_graph_id', '^[0-9]+$', true, 3) : 0);
+		$save['timespan']          = (isrv('timespan') ? form_input_validate(gnrv('timespan'), 'timespan', '^[0-9]+$', true, 3) : 0);
+		$save['item_text']         = (isrv('item_text') ? form_input_validate(gnrv('item_text'), 'item_text', '', true, 3) : '');
+		$save['align']             = (isrv('align') ? form_input_validate(gnrv('align'), 'align', '^[0-9]+$', true, 3) : REPORTS_ALIGN_LEFT);
+		$save['font_size']         = (isrv('font_size') ? form_input_validate(gnrv('font_size'), 'font_size', '^[0-9]+$', true, 3) : REPORTS_FONT_SIZE);
 
 		if (!is_error_message()) {
 			$item_id = sql_save($save, 'reports_items');
@@ -378,7 +381,7 @@ function reports_form_save() {
 			}
 		}
 
-		header('Location: ' . get_reports_page() . '?action=item_edit&id=' . get_nfilter_request_var('report_id') . '&item_id=' . (empty($item_id) ? get_nfilter_request_var('id') : $item_id));
+		header('Location: ' . get_reports_page() . '?action=item_edit&id=' . gnrv('report_id') . '&item_id=' . (empty($item_id) ? gnrv('id') : $item_id));
 	} else {
 		header('Location: ' . get_reports_page());
 	}
@@ -394,30 +397,34 @@ function reports_form_save() {
  *
  * @return void
  */
-function reports_form_actions() {
+function reports_form_actions() : void {
 	global $reports_actions;
 
-	/* ================= input validation ================= */
-	get_filter_request_var('drp_action');
-	/* ==================================================== */
+	// ================= input validation =================
+	gfrv('drp_action');
+	// ====================================================
 
-	/* if we are to save this form, instead of display it */
-	if (isset_request_var('selected_items')) {
-		$reference_items = get_nfilter_request_var('selected_items');
+	// if we are to save this form, instead of display it
+	if (isrv('selected_items')) {
+		$reference_items = gnrv('selected_items');
 		$selected_items  = unserialize(stripslashes($reference_items), ['allowed_classes' => false]);
 
 		if ($selected_items != false) {
 			foreach ($selected_items as $report) {
 				[$type, $report_id] = explode('_', $report);
 
-				if (get_nfilter_request_var('drp_action') == REPORTS_DELETE) { // delete
+				$report_id = intval($report_id);
+
+				if (gnrv('drp_action') == REPORTS_DELETE) { // delete
 					if ($type == 'reports') {
 						db_execute_prepared('DELETE FROM reports WHERE id = ?', [$report_id]);
 						db_execute_prepared('DELETE FROM reports_items WHERE report_id = ?', [$report_id]);
 					} elseif ($type == 'reportit') {
-						api_reportit_delete_report($report_id);
+						if (function_exists('api_reportit_delete_report')) {
+							api_reportit_delete_report($report_id);
+						}
 					}
-				} elseif (get_nfilter_request_var('drp_action') == REPORTS_OWN) { // take ownership
+				} elseif (gnrv('drp_action') == REPORTS_OWN) { // take ownership
 					if ($type == 'reports') {
 						db_execute_prepared('UPDATE reports
 							SET user_id = ?
@@ -425,15 +432,19 @@ function reports_form_actions() {
 							[$_SESSION[SESS_USER_ID], $report_id]
 						);
 					} elseif ($type == 'reportit') {
-						api_reportit_take_ownership($report_id, $_SESSION[SESS_USER_ID]);
+						if (function_exists('api_reportit_take_ownership')) {
+							api_reportit_take_ownership($report_id, $_SESSION[SESS_USER_ID]);
+						}
 					}
-				} elseif (get_nfilter_request_var('drp_action') == REPORTS_DUPLICATE) { // duplicate
+				} elseif (gnrv('drp_action') == REPORTS_DUPLICATE) { // duplicate
 					if ($type == 'reports') {
-						duplicate_reports($report_id, get_nfilter_request_var('name_format'));
+						duplicate_reports($report_id, gnrv('name_format'));
 					} elseif ($type == 'reportit') {
-						api_reportit_duplicate_report($report_id);
+						if (function_exists('api_reportit_duplicate_report')) {
+							api_reportit_duplicate_report($report_id);
+						}
 					}
-				} elseif (get_nfilter_request_var('drp_action') == REPORTS_ENABLE) { // enable
+				} elseif (gnrv('drp_action') == REPORTS_ENABLE) { // enable
 					if ($type == 'reports') {
 						db_execute_prepared('UPDATE reports
 							SET enabled = "on"
@@ -441,9 +452,11 @@ function reports_form_actions() {
 							[$report_id]
 						);
 					} elseif ($type == 'reportit') {
-						api_reportit_enable_report($report_id);
+						if (function_exists('api_reportit_enable_report')) {
+							api_reportit_enable_report($report_id);
+						}
 					}
-				} elseif (get_nfilter_request_var('drp_action') == REPORTS_DISABLE) { // disable
+				} elseif (gnrv('drp_action') == REPORTS_DISABLE) { // disable
 					if ($type == 'reports') {
 						db_execute_prepared('UPDATE reports
 							SET enabled=""
@@ -451,13 +464,17 @@ function reports_form_actions() {
 							[$report_id]
 						);
 					} elseif ($type == 'reportit') {
-						api_reportit_disable_report($report_id);
+						if (function_exists('api_reportit_disable_report')) {
+							api_reportit_disable_report($report_id);
+						}
 					}
-				} elseif (get_nfilter_request_var('drp_action') == REPORTS_SEND_NOW) { // send now
+				} elseif (gnrv('drp_action') == REPORTS_SEND_NOW) { // send now
 					if ($type == 'reports') {
 						reports_send($report_id);
 					} elseif ($type == 'reportit') {
-						api_reportit_run_report($report_id);
+						if (function_exists('api_reportit_run_report')) {
+							api_reportit_run_report($report_id);
+						}
 					}
 				}
 			}
@@ -472,18 +489,18 @@ function reports_form_actions() {
 		$ilist  = '';
 		$iarray = [];
 
-		/* loop through each of the graphs selected on the previous page and get more info about them */
+		// loop through each of the graphs selected on the previous page and get more info about them
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([a-z_0-9]+)$/', $var, $matches)) {
 				[$type, $id] = explode('_', $matches[1]);
-				/* ================= input validation ================= */
+				// ================= input validation =================
 				input_validate_input_number($id);
-				/* ==================================================== */
+				// ====================================================
 
 				if ($type == 'reports') {
-					$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM reports WHERE id = ?', [$id])) . '</li>';
+					$ilist .= '<li>' . htmle(db_fetch_cell_prepared('SELECT name FROM reports WHERE id = ?', [$id])) . '</li>';
 				} elseif ($type == 'reportit') {
-					$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM plugin_reportit_reports WHERE id = ?', [$id])) . '</li>';
+					$ilist .= '<li>' . htmle(db_fetch_cell_prepared('SELECT name FROM plugin_reportit_reports WHERE id = ?', [$id])) . '</li>';
 				}
 
 				$iarray[] = "{$type}_{$id}";
@@ -561,10 +578,10 @@ function reports_form_actions() {
  *
  * @return void
  */
-function reports_send($id) {
-	/* ================= input validation ================= */
+function reports_send(int $id) : void {
+	// ================= input validation =================
 	input_validate_input_number($id, 'id');
-	/* ==================================================== */
+	// ====================================================
 
 	$report = db_fetch_row_prepared('SELECT *
 		FROM reports
@@ -572,11 +589,11 @@ function reports_send($id) {
 		[$id]);
 
 	if (!cacti_sizeof($report)) {
-		/* set error condition */
+		// set error condition
 	} elseif ($report['user_id'] == $_SESSION[SESS_USER_ID]) {
 		reports_log(__FUNCTION__ . ', send now, report_id: ' . $id, false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 
-		/* use report name as default EMail title */
+		// use report name as default EMail title
 		if ($report['subject'] == '') {
 			$report['subject'] = $report['name'];
 		}
@@ -603,13 +620,13 @@ function reports_send($id) {
  *
  * @return void
  */
-function reports_item_movedown() {
-	/* ================= input validation ================= */
-	get_filter_request_var('item_id');
-	get_filter_request_var('id');
-	/* ==================================================== */
+function reports_item_movedown() : void {
+	// ================= input validation =================
+	gfrv('item_id');
+	gfrv('id');
+	// ====================================================
 
-	move_item_down('reports_items', get_request_var('item_id'), 'report_id=' . get_request_var('id'));
+	move_item_down('reports_items', grv('item_id'), 'report_id=' . grv('id'));
 }
 
 /**
@@ -621,12 +638,12 @@ function reports_item_movedown() {
  *
  * @return void
  */
-function reports_item_moveup() {
-	/* ================= input validation ================= */
-	get_filter_request_var('item_id');
-	get_filter_request_var('id');
-	/* ==================================================== */
-	move_item_up('reports_items', get_request_var('item_id'), 'report_id=' . get_request_var('id'));
+function reports_item_moveup() : void {
+	// ================= input validation =================
+	gfrv('item_id');
+	gfrv('id');
+	// ====================================================
+	move_item_up('reports_items', grv('item_id'), 'report_id=' . grv('id'));
 }
 
 /**
@@ -637,11 +654,11 @@ function reports_item_moveup() {
  *
  * @return void
  */
-function reports_item_remove() {
-	/* ================= input validation ================= */
-	get_filter_request_var('item_id');
-	/* ==================================================== */
-	db_execute_prepared('DELETE FROM reports_items WHERE id = ?', [get_request_var('item_id')]);
+function reports_item_remove() : void {
+	// ================= input validation =================
+	gfrv('item_id');
+	// ====================================================
+	db_execute_prepared('DELETE FROM reports_items WHERE id = ?', [grv('item_id')]);
 }
 
 /**
@@ -654,7 +671,7 @@ function reports_item_remove() {
  *
  * @return void
  */
-function reports_item_resequence($report_id) {
+function reports_item_resequence(int $report_id) : void {
 	$items = db_fetch_assoc_prepared('SELECT *
 		FROM reports_items
 		WHERE report_id = ?
@@ -686,8 +703,8 @@ function reports_item_resequence($report_id) {
  *
  * @return string JSON encoded array of reset request variables.
  */
-function reports_item_validate() {
-	/* ================= input validation and session storage ================= */
+function reports_item_validate() : string {
+	// ================= input validation and session storage =================
 	$filters = [
 		'tree_id' => [
 			'filter'  => FILTER_VALIDATE_INT,
@@ -723,8 +740,8 @@ function reports_item_validate() {
 
 	foreach ($filters as $item => $filter) {
 		if (isset($_SESSION['sess_report_item_' . $item])) {
-			if (isset_request_var($item)) {
-				if ($_SESSION['sess_report_item_' . $item] != get_nfilter_request_var($item)) {
+			if (isrv($item)) {
+				if ($_SESSION['sess_report_item_' . $item] != gnrv($item)) {
 					$changed[$item] = true;
 				}
 			}
@@ -732,7 +749,7 @@ function reports_item_validate() {
 	}
 
 	validate_store_request_vars($filters, 'sess_report_item');
-	/* ================= input validation ================= */
+	// ================= input validation =================
 
 	$reset = [];
 
@@ -740,13 +757,13 @@ function reports_item_validate() {
 		foreach ($changed as $id => $value) {
 			switch ($id) {
 				case 'host_id':
-					if (get_request_var('host_id') != '-1') {
-						if (get_request_var('local_graph_id') > 0) {
+					if (grv('host_id') != '-1') {
+						if (grv('local_graph_id') > 0) {
 							$valid = db_fetch_cell_prepared('SELECT id
 								FROM graph_local
 								WHERE host_id = ?
 								AND id = ?',
-								[get_request_var('host_id'), get_request_var('local_graph_id')]
+								[grv('host_id'), grv('local_graph_id')]
 							);
 
 							if (empty($valid)) {
@@ -754,12 +771,12 @@ function reports_item_validate() {
 							}
 						}
 
-						if (get_request_var('host_template_id') > 0) {
+						if (grv('host_template_id') > 0) {
 							$valid = db_fetch_cell_prepared('SELECT id
 								FROM host
 								WHERE host_template_id = ?
 								AND id = ?',
-								[get_request_var('host_template_id'), get_request_var('host_id')]
+								[grv('host_template_id'), grv('host_id')]
 							);
 
 							if (empty($valid)) {
@@ -767,12 +784,12 @@ function reports_item_validate() {
 							}
 						}
 
-						if (get_request_var('graph_template_id') > 0) {
+						if (grv('graph_template_id') > 0) {
 							$valid = db_fetch_cell_prepared('SELECT id
 								FROM graph_local
 								WHERE graph_template_id = ?
 								AND id = ?',
-								[get_request_var('graph_template_id'), get_request_var('host_id')]
+								[grv('graph_template_id'), grv('host_id')]
 							);
 
 							if (empty($valid)) {
@@ -780,12 +797,12 @@ function reports_item_validate() {
 							}
 						}
 
-						if (get_request_var('site_id') > 0) {
+						if (grv('site_id') > 0) {
 							$valid = db_fetch_cell_prepared('SELECT id
 								FROM host
 								WHERE site_id = ?
 								AND id = ?',
-								[get_request_var('site_id'), get_request_var('host_id')]
+								[grv('site_id'), grv('host_id')]
 							);
 
 							if (empty($valid)) {
@@ -796,13 +813,13 @@ function reports_item_validate() {
 
 					break;
 				case 'site_id':
-					if (get_request_var('site_id') != '-1') {
-						if (get_request_var('host_id') > 0) {
+					if (grv('site_id') != '-1') {
+						if (grv('host_id') > 0) {
 							$valid = db_fetch_cell_prepared('SELECT id
 								FROM host
 								WHERE site_id = ?
 								AND id = ?',
-								[get_request_var('site_id'), get_request_var('host_id')]
+								[grv('site_id'), grv('host_id')]
 							);
 
 							if (empty($valid)) {
@@ -810,14 +827,14 @@ function reports_item_validate() {
 							}
 						}
 
-						if (get_request_var('local_graph_id') > 0) {
+						if (grv('local_graph_id') > 0) {
 							$valid = db_fetch_cell_prepared('SELECT gl.id
 								FROM graph_local AS gl
 								INNER JOIN host AS h
 								ON gl.host_id = h.id
 								WHERE site_id = ?
 								AND gl.id = ?',
-								[get_request_var('site_id'), get_request_var('local_graph_id')]
+								[grv('site_id'), grv('local_graph_id')]
 							);
 
 							if (empty($valid)) {
@@ -828,15 +845,15 @@ function reports_item_validate() {
 
 					break;
 				case 'host_template_id':
-					if (get_request_var('host_template_id') != '-1') {
-						if (get_request_var('local_graph_id') > 0) {
+					if (grv('host_template_id') != '-1') {
+						if (grv('local_graph_id') > 0) {
 							$valid = db_fetch_cell_prepared('SELECT gl.id
 								FROM graph_local AS gl
 								INNER JOIN host AS h
 								ON gl.host_id = h.id
 								WHERE host_template_id = ?
 								AND gl.id = ?',
-								[get_request_var('host_template_id'), get_request_var('local_graph_id')]
+								[grv('host_template_id'), grv('local_graph_id')]
 							);
 
 							if (empty($valid)) {
@@ -844,12 +861,12 @@ function reports_item_validate() {
 							}
 						}
 
-						if (get_request_var('host_id') > 0) {
+						if (grv('host_id') > 0) {
 							$valid = db_fetch_cell_prepared('SELECT id
 								FROM host
 								WHERE host_template_id = ?
 								AND id = ?',
-								[get_request_var('host_template_id'), get_request_var('host_id')]
+								[grv('host_template_id'), grv('host_id')]
 							);
 
 							if (empty($valid)) {
@@ -860,13 +877,13 @@ function reports_item_validate() {
 
 					break;
 				case 'graph_template_id':
-					if (get_request_var('graph_template_id') != '-1') {
-						if (get_request_var('local_graph_id') > 0) {
+					if (grv('graph_template_id') != '-1') {
+						if (grv('local_graph_id') > 0) {
 							$valid = db_fetch_cell_prepared('SELECT id
 								FROM graph_local
 								WHERE graph_template_id = ?
 								AND id = ?',
-								[get_request_var('graph_template_id'), get_request_var('local_graph_id')]
+								[grv('graph_template_id'), grv('local_graph_id')]
 							);
 
 							if (empty($valid)) {
@@ -891,11 +908,14 @@ function reports_item_validate() {
  *
  * @return void
  */
-function reports_item_edit() {
+function reports_item_edit() : void {
 	global $item_types, $graph_timespans, $alignment;
 
-	$trees           = [];
-	$branches        = [];
+	$trees    = [];
+	$branches = [];
+
+	$graph_template_description = '';
+	$host_description           = '';
 
 	$report_item                      = [];
 	$report_item['item_type']         = REPORTS_ITEM_GRAPH;
@@ -905,13 +925,13 @@ function reports_item_edit() {
 	$report_item['host_id']           = -1;
 	$report_item['tree_id']           = -1;
 
-	if (isset_request_var('item_id') && get_filter_request_var('item_id') > 0) {
+	if (isrv('item_id') && gfrv('item_id') > 0) {
 		$report_item = db_fetch_row_prepared('SELECT *
 			FROM reports_items WHERE id = ?',
-			[get_request_var('item_id')]
+			[grv('item_id')]
 		);
 	} else {
-		$report_item['report_id']      = get_request_var('id');
+		$report_item['report_id']      = grv('id');
 		$report_item['local_graph_id'] = 0;
 
 		unset($_SESSION['sess_report_item_host_id']);
@@ -1162,33 +1182,33 @@ function reports_item_edit() {
 	$report = db_fetch_row_prepared('SELECT *
 		FROM reports
 		WHERE id = ?',
-		[get_filter_request_var('id')]
+		[gfrv('id')]
 	);
 
-	# if an existing item was requested, fetch data for it
-	if (isset_request_var('item_id') && (get_filter_request_var('item_id') > 0)) {
+	// if an existing item was requested, fetch data for it
+	if (isrv('item_id') && (gfrv('item_id') > 0)) {
 		$header_label = __esc('Report Item [edit Report: %s]', $report['name']);
 	} else {
 		$header_label = __esc('Report Item [new Report: %s]', $report['name']);
 	}
 
-	/* set the default item alignment and size */
+	// set the default item alignment and size
 	$fields_reports_item_edit['align']['default']     = $report['alignment'];
 	$fields_reports_item_edit['font_size']['default'] = $report['font_size'];
 
-	/* draw the tabs */
-	set_request_var('tab', 'items');
-	reports_tabs(get_request_var('id'));
+	// draw the tabs
+	srv('tab', 'items');
+	reports_tabs(grv('id'));
 
 	form_start(get_current_page(), 'chk');
 
-	# ready for displaying the fields
-	html_start_box($header_label, '100%', true, 3, 'center', get_reports_page() . '?action=item_edit&id=' . get_request_var('id'));
+	// ready for displaying the fields
+	html_start_box($header_label, '100%', true, 3, 'center', get_reports_page() . '?action=item_edit&id=' . grv('id'));
 
 	draw_edit_form(
 		[
 			'config' => ['no_form_tag' => true],
-			'fields' => inject_form_variables($fields_reports_item_edit, ($report_item ?? []))
+			'fields' => inject_form_variables($fields_reports_item_edit, $report_item)
 		]
 	);
 
@@ -1198,16 +1218,16 @@ function reports_item_edit() {
 	form_hidden_box('report_id', ($report_item['report_id'] ?? '0'), '');
 	form_hidden_box('save_component_report_item', '1', '');
 
-	form_save_button(get_reports_page() . '?action=edit&tab=items&id=' . get_request_var('id'), 'return');
+	form_save_button(get_reports_page() . '?action=edit&tab=items&id=' . grv('id'), 'return');
 
 	print "<table id='graphdiv' style='text-align:center;width:100%;display:none;'><tr><td class='center' style='padding:5px' id='graph'></td></tr></table>";
 
 	if (isset($report_item['item_type']) && $report_item['item_type'] == REPORTS_ITEM_GRAPH) {
 		$timespan = [];
-		# get config option for first-day-of-the-week
+		// get config option for first-day-of-the-week
 		$first_weekdayid = read_user_setting('first_weekdayid');
 
-		# get start/end time-since-epoch for actual time (now()) and given current-session-timespan
+		// get start/end time-since-epoch for actual time (now()) and given current-session-timespan
 		if (isset($report_item['timespan'])) {
 			$current_ts = $report_item['timespan'];
 		} else {
@@ -1217,7 +1237,7 @@ function reports_item_edit() {
 		get_timespan($timespan, time(), $current_ts, $first_weekdayid);
 	}
 
-	/* don't cache previews */
+	// don't cache previews
 	$_SESSION['custom'] = 'true';
 
 	?>
@@ -1408,33 +1428,33 @@ function reports_item_edit() {
  *
  * @return void
  */
-function reports_tabs($report_id) {
+function reports_tabs(mixed $report_id) : void {
 	if ($report_id > 0) {
 		$tabs = ['details' => __('Details'), 'items' => __('Items'), 'preview' => __('View Reports')];
 	} else {
 		$tabs = ['details' => __('Details')];
 	}
 
-	/* set the default settings category */
-	if (!isset_request_var('tab')) {
-		set_request_var('tab', 'details');
+	// set the default settings category
+	if (!isrv('tab')) {
+		srv('tab', 'details');
 	}
 
-	$current_tab = get_request_var('tab');
+	$current_tab = grv('tab');
 
-	if (cacti_sizeof($tabs) && isset_request_var('id')) {
-		/* draw the tabs */
+	if (cacti_sizeof($tabs) && isrv('id')) {
+		// draw the tabs
 		print "<div class='tabs'><nav><ul role='tablist'>";
 
 		foreach ($tabs as $tab => $name) {
 			print "<li class='subTab'><a class='tab" . ($tab == $current_tab ? " selected'" : "'") .
-				" href='" . html_escape(CACTI_PATH_URL .  get_reports_page() .  '?action=edit' .
-					'&id='  . get_request_var('id') .  '&tab=' . $tab) .
+				" href='" . htmle(CACTI_PATH_URL . get_reports_page() . '?action=edit' .
+					'&id=' . grv('id') . '&tab=' . $tab) .
 				"'>" . $name . '</a></li>';
 		}
 
-		if (!isempty_request_var('id')) {
-			print "<li style='float:right;position:relative;'><a class='tab' href='" . html_escape(get_reports_page() . '?action=send&id=' . get_request_var('id') . '&tab=' . get_request_var('tab')) . "'>" . __('Send Report') . '</a></li>';
+		if (!ierv('id')) {
+			print "<li style='float:right;position:relative;'><a class='tab' href='" . htmle(get_reports_page() . '?action=send&id=' . grv('id') . '&tab=' . grv('tab')) . "'>" . __('Send Report') . '</a></li>';
 		}
 
 		print '</ul></nav></div>';
@@ -1449,10 +1469,10 @@ function reports_tabs($report_id) {
  *
  * @return void
  */
-function reports_edit() {
+function reports_edit() : void {
 	global $attach_types, $alignment, $reports_interval, $fields_reports_edit;
 
-	/* ================= input validation and session storage ================= */
+	// ================= input validation and session storage =================
 	$filters = [
 		'rows' => [
 			'filter'  => FILTER_VALIDATE_INT,
@@ -1480,22 +1500,22 @@ function reports_edit() {
 	];
 
 	validate_store_request_vars($filters, 'sess_repe');
-	/* ================= input validation ================= */
+	// ================= input validation =================
 
-	if (get_request_var('rows') == '-1') {
+	if (grv('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
 	} else {
-		$rows = get_request_var('rows');
+		$rows = grv('rows');
 	}
 
-	/* display the report */
+	// display the report
 	$report = [];
 
-	if (get_filter_request_var('id') > 0) {
-		$report = db_fetch_row_prepared('SELECT * FROM reports WHERE id = ?', [get_request_var('id')]);
+	if (gfrv('id') > 0) {
+		$report = db_fetch_row_prepared('SELECT * FROM reports WHERE id = ?', [grv('id')]);
 	}
 
-	reports_tabs(get_request_var('id'));
+	reports_tabs(grv('id'));
 
 	if (isset($report['id'])) {
 		$header_label = __('[edit: %s]', $report['name']);
@@ -1503,7 +1523,7 @@ function reports_edit() {
 		$header_label = __('[new]');
 	}
 
-	switch (get_request_var('tab')) {
+	switch (grv('tab')) {
 		case 'details':
 			form_start(get_reports_page());
 
@@ -1549,9 +1569,9 @@ function reports_edit() {
 
 			break;
 		case 'items':
-			html_start_box(__esc('Report Items %s', $header_label), '100%', false, 3, 'center', get_reports_page() . '?action=item_edit&id=' . get_request_var('id'));
+			html_start_box(__esc('Report Items %s', $header_label), '100%', false, 3, 'center', get_reports_page() . '?action=item_edit&id=' . grv('id'));
 
-			/* display the items */
+			// display the items
 			if (!empty($report['id'])) {
 				display_reports_items($report['id']);
 			}
@@ -1584,8 +1604,8 @@ function reports_edit() {
 		case 'preview':
 			draw_preview_filter(true, $header_label);
 
-			if (get_request_var('rdate') == '-1') {
-				if (get_request_var('style') == 'false') {
+			if (grv('rdate') == '-1') {
+				if (grv('style') == 'false') {
 					$theme = get_selected_theme();
 				} else {
 					$theme = '';
@@ -1595,7 +1615,7 @@ function reports_edit() {
 				print '</td></tr>';
 			} else {
 				print '<tr><td>';
-				print reports_generate_history_html(get_request_var('rdate'), REPORTS_OUTPUT_STDOUT);
+				print reports_generate_history_html(grv('rdate'), REPORTS_OUTPUT_STDOUT);
 				print '</td></tr>';
 			}
 
@@ -1627,7 +1647,7 @@ function reports_edit() {
  *
  * @return void
  */
-function display_reports_items($report_id) {
+function display_reports_items(int $report_id) : void {
 	global $graph_timespans;
 	global $item_types, $alignment;
 
@@ -1774,23 +1794,23 @@ function display_reports_items($report_id) {
 			}
 
 			form_alternate_row('line' . $item['id'], false);
-			$form_data = '<td><a class="linkEditMain" href="' . html_escape(get_reports_page() . '?action=item_edit&id=' . $report_id . '&item_id=' . $item['id']) . '">' . __('Item # %d', $i) . '</a></td>';
+			$form_data = '<td><a class="linkEditMain" href="' . htmle(get_reports_page() . '?action=item_edit&id=' . $report_id . '&item_id=' . $item['id']) . '">' . __('Item # %d', $i) . '</a></td>';
 			$form_data .= '<td>' . $item['sequence'] . '</td>';
 			$form_data .= '<td>' . $item_types[$item['item_type']] . '</td>';
-			$form_data .= '<td class="nowrap">' . html_escape($item_details) . '</td>';
+			$form_data .= '<td class="nowrap">' . htmle($item_details) . '</td>';
 			$form_data .= '<td class="nowrap">' . $timespan . '</td>';
 			$form_data .= '<td>' . $align . '</td>';
 			$form_data .= '<td>' . $size . '</td>';
 
 			if ($i == 1) {
-				$form_data .= '<td class="right nowrap"><a class="pic remover ti ti-caret-down-filled moveArrow" style="padding:3px" title="' . __esc('Move Down') . '" href="' . html_escape(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<span style="padding:5ps" class="moveArrowNone"></span>';
-			} elseif ($i > 1 && $i < cacti_sizeof($items)) {
-				$form_data .= '<td class="right nowrap"><a class="pic remover ti ti-caret-down-filled moveArrow" style="padding:3px" title="' . __esc('Move Down') . '" href="' . html_escape(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<a class="remover ti ti-caret-up-filled moveArrow" style="padding:3px" title="' . __esc('Move Up') . '" href="' . html_escape(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>';
+				$form_data .= '<td class="right nowrap"><a class="pic remover ti ti-caret-down-filled moveArrow" style="padding:3px" title="' . __esc('Move Down') . '" href="' . htmle(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<span style="padding:5ps" class="moveArrowNone"></span>';
+			} elseif ($i < cacti_sizeof($items)) {
+				$form_data .= '<td class="right nowrap"><a class="pic remover ti ti-caret-down-filled moveArrow" style="padding:3px" title="' . __esc('Move Down') . '" href="' . htmle(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<a class="remover ti ti-caret-up-filled moveArrow" style="padding:3px" title="' . __esc('Move Up') . '" href="' . htmle(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>';
 			} else {
-				$form_data .= '<td class="right nowrap"><span style="padding:3px" class="moveArrowNone"></span>' . '<a class="remover ti ti-caret-up-filled moveArrow" style="padding:3px" title="' . __esc('Move Up') . '" href="' . html_escape(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>';
+				$form_data .= '<td class="right nowrap"><span style="padding:3px" class="moveArrowNone"></span>' . '<a class="remover ti ti-caret-up-filled moveArrow" style="padding:3px" title="' . __esc('Move Up') . '" href="' . htmle(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>';
 			}
 
-			$form_data .= '<a class="pic deleteMarker ti ti-x" style="padding:3px" href="' . html_escape(get_reports_page() . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $report_id) . '" title="' . __esc('Delete') . '"></a>' . '</td></tr>';
+			$form_data .= '<a class="pic deleteMarker ti ti-x" style="padding:3px" href="' . htmle(get_reports_page() . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $report_id) . '" title="' . __esc('Delete') . '"></a>' . '</td></tr>';
 
 			print $form_data;
 
@@ -1806,7 +1826,7 @@ function display_reports_items($report_id) {
  *
  * @return string The path to the appropriate reports page.
  */
-function get_reports_page() {
+function get_reports_page() : string {
 	return 'reports.php';
 }
 
@@ -1815,13 +1835,13 @@ function get_reports_page() {
  *
  * @return bool Returns true if the user has reports administrative privileges, false otherwise.
  */
-function is_reports_admin() {
+function is_reports_admin() : bool {
 	return (is_realm_allowed(21) ? true : false);
 }
 
-function create_preview_filter() {
-	$id    = get_filter_request_var('id');
-	$rdate = get_filter_request_var('rdate');
+function create_preview_filter() : array {
+	$id    = gfrv('id');
+	$rdate = gfrv('rdate');
 
 	$any   = ['-1' => __('Any')];
 	$none  = ['0'  => __('None')];
@@ -1831,10 +1851,10 @@ function create_preview_filter() {
 	$sql_params[] = $id;
 	$sql_params[] = 'reports';
 
-	if (get_nfilter_request_var('filter') != '') {
+	if (gnrv('filter') != '') {
 		$sql_where    = ' AND (name LIKE ? OR send_time LIKE ?)';
-		$sql_params[] = '%' . get_nfilter_request_var('filter') . '%';
-		$sql_params[] = '%' . get_nfilter_request_var('filter') . '%';
+		$sql_params[] = '%' . gnrv('filter') . '%';
+		$sql_params[] = '%' . gnrv('filter') . '%';
 	}
 
 	$reports = db_fetch_assoc_prepared("SELECT id, source_id, CONCAT(name, ' [ ', send_time, ' ]') AS name
@@ -1848,8 +1868,8 @@ function create_preview_filter() {
 	$dreports  = array_rekey($reports, 'id', 'name');
 	$dreports  = $live + $dreports;
 
-	if (isset_request_var('style')) {
-		$value = get_nfilter_request_var('style');
+	if (isrv('style')) {
+		$value = gnrv('style');
 	} else {
 		$value = '';
 	}
@@ -1902,15 +1922,15 @@ function create_preview_filter() {
 	];
 }
 
-function draw_preview_filter($render = false, $header_label = '') {
+function draw_preview_filter(bool $render = false, string $header_label = '') : void {
 	$filters = create_preview_filter();
 
-	$report_id  = get_request_var('id');
-	$history_id = get_request_var('rdate');
+	$report_id  = grv('id');
+	$history_id = grv('rdate');
 
 	$header = __esc('Report Preview %s', $header_label);
 
-	/* create the page filter */
+	// create the page filter
 	$pageFilter = new CactiTableFilter($header, "reports.php?action=edit&id=$report_id&tab=preview", 'forms', 'sess_repprv');
 
 	$pageFilter->set_filter_array($filters);
@@ -1922,7 +1942,7 @@ function draw_preview_filter($render = false, $header_label = '') {
 	}
 }
 
-function create_reports_filter() {
+function create_reports_filter() : array {
 	global $item_rows;
 
 	$any  = ['-1' => __('Any')];
@@ -2006,12 +2026,12 @@ function create_reports_filter() {
 	];
 }
 
-function draw_reports_filter($render = false) {
+function draw_reports_filter(bool $render = false) : void {
 	$filters = create_reports_filter();
 
 	$header = __('Reports [%s]', (is_reports_admin() ? __('Administrator Level') : __('User Level')));
 
-	/* create the page filter */
+	// create the page filter
 	$pageFilter = new CactiTableFilter($header, 'reports.php', 'forms', 'sess_repv', 'reports.php?action=edit&tab=details');
 
 	$pageFilter->set_filter_array($filters);
@@ -2028,34 +2048,34 @@ function draw_reports_filter($render = false) {
  *
  * @return void
  */
-function reports() {
+function reports() : void {
 	global $item_rows, $reports_interval;
 	global $reports_actions, $attach_types, $sched_types;
 
 	draw_reports_filter(true);
 
-	if (get_request_var('rows') == -1) {
+	if (grv('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
 	} else {
-		$rows = get_request_var('rows');
+		$rows = grv('rows');
 	}
 
-	/* form the 'where' clause for our main sql query */
-	if (get_request_var('filter') != '') {
-		$sql_where = 'WHERE (report.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
+	// form the 'where' clause for our main sql query
+	if (grv('filter') != '') {
+		$sql_where = 'WHERE (report.name LIKE ' . db_qstr('%' . grv('filter') . '%') . ')';
 	} else {
 		$sql_where = '';
 	}
 
-	if (get_request_var('status') == '-1') {
-		/* Show all items */
-	} elseif (get_request_var('status') == '-2') {
+	if (grv('status') == '-1') {
+		// Show all items
+	} elseif (grv('status') == '-2') {
 		$sql_where .= ($sql_where != '' ? " AND report.enabled='on'" : " WHERE report.enabled='on'");
-	} elseif (get_request_var('status') == '-3') {
+	} elseif (grv('status') == '-3') {
 		$sql_where .= ($sql_where != '' ? " AND report.enabled=''" : " WHERE report.enabled=''");
 	}
 
-	/* account for permissions */
+	// account for permissions
 	if (is_reports_admin()) {
 		$sql_join = 'LEFT JOIN user_auth AS ua ON ua.id = report.user_id';
 	} else {
@@ -2066,7 +2086,7 @@ function reports() {
 	$reports_list = [];
 
 	if (db_table_exists('plugin_reportit_reports')) {
-		if (get_request_var('report_type') == '-1') {
+		if (grv('report_type') == '-1') {
 			$total_rows = db_fetch_cell("SELECT SUM(row_count)
 				FROM (
 					SELECT COUNT(report.id) AS row_count
@@ -2094,9 +2114,9 @@ function reports() {
 				FROM plugin_reportit_reports AS report
 				$sql_join
 				$sql_where
-				ORDER BY " .  get_request_var('sort_column') . ' ' .  get_request_var('sort_direction') .
-				' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows);
-		} elseif (get_request_var('report_type') == 'reports') {
+				ORDER BY " . grv('sort_column') . ' ' . grv('sort_direction') .
+				' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows);
+		} elseif (grv('report_type') == 'reports') {
 			$total_rows = db_fetch_cell("SELECT COUNT(report.id)
 				FROM reports AS report
 				$sql_join
@@ -2109,8 +2129,8 @@ function reports() {
 				FROM reports AS report
 				$sql_join
 				$sql_where
-				ORDER BY " .  get_request_var('sort_column') . ' ' .  get_request_var('sort_direction') .
-				' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows);
+				ORDER BY " . grv('sort_column') . ' ' . grv('sort_direction') .
+				' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows);
 		} else {
 			$total_rows = db_fetch_cell("SELECT COUNT(report.id)
 				FROM plugin_reportit_reports AS report
@@ -2124,8 +2144,8 @@ function reports() {
 				FROM plugin_reportit_reports AS report
 				$sql_join
 				$sql_where
-				ORDER BY " .  get_request_var('sort_column') . ' ' .  get_request_var('sort_direction') .
-				' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows);
+				ORDER BY " . grv('sort_column') . ' ' . grv('sort_direction') .
+				' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows);
 		}
 	} else {
 		$total_rows = db_fetch_cell("SELECT COUNT(report.id)
@@ -2140,8 +2160,8 @@ function reports() {
 			FROM reports AS report
 			$sql_join
 			$sql_where
-			ORDER BY " .  get_request_var('sort_column') . ' ' .  get_request_var('sort_direction') .
-			' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows);
+			ORDER BY " . grv('sort_column') . ' ' . grv('sort_direction') .
+			' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows);
 	}
 
 	$display_text = [
@@ -2198,7 +2218,7 @@ function reports() {
 		],
 	];
 
-	$nav = html_nav_bar(get_reports_page() . 'filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, (cacti_sizeof($display_text) + 1), __('Reports'), 'page', 'main');
+	$nav = html_nav_bar(get_reports_page() . 'filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, (cacti_sizeof($display_text) + 1), __('Reports'), 'page', 'main');
 
 	form_start(get_reports_page(), 'chk');
 
@@ -2206,7 +2226,7 @@ function reports() {
 
 	html_start_box('', '100%', false, 3, 'center', '');
 
-	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
+	html_header_sort_checkbox($display_text, grv('sort_column'), grv('sort_direction'), false);
 
 	$i = 0;
 
@@ -2233,7 +2253,7 @@ function reports() {
 
 			form_alternate_row('line' . $id, true);
 
-			form_selectable_cell(filter_value($report['name'], get_request_var('filter'), $url), $id);
+			form_selectable_cell(filter_value($report['name'], grv('filter'), $url), $id);
 
 			form_selectable_cell($type, $id);
 
@@ -2247,7 +2267,7 @@ function reports() {
 
 			form_selectable_cell($interval, $id);
 
-			/* iconography */
+			// iconography
 			$notify = '<span>';
 			$found  = false;
 
@@ -2300,7 +2320,7 @@ function reports() {
 		print $nav;
 	}
 
-	/* draw the dropdown containing a list of available actions for this form */
+	// draw the dropdown containing a list of available actions for this form
 	draw_actions_dropdown($reports_actions);
 
 	form_end();
@@ -2348,7 +2368,7 @@ function reports() {
  *
  * @return mixed The ID of the user if the account exists, or false if it does not.
  */
-function reports_html_account_exists($user_id) {
+function reports_html_account_exists(int $user_id) : mixed {
 	return db_fetch_cell_prepared('SELECT id FROM user_auth WHERE id = ?', [$user_id]);
 }
 
@@ -2359,22 +2379,22 @@ function reports_html_account_exists($user_id) {
  *
  * @return void
  */
-function reports_html_report_disable($report_id) {
+function reports_html_report_disable(int $report_id) : void {
 	db_execute_prepared('UPDATE reports SET enabled="" WHERE id = ?', [$report_id]);
 }
 
 /**
  * Sets a variable in the reports item array based on the request variable.
  *
- * @param array $reports_item The reports item array to be modified.
- * @param string $var_id The ID of the request variable to check and set.
+ * @param array  $reports_item The reports item array to be modified.
+ * @param string $var_id       The ID of the request variable to check and set.
  *
  * @return array The modified reports item array.
  */
-function set_reports_item_var($reports_item, $var_id) {
+function set_reports_item_var(array $reports_item, string $var_id) : array {
 	// if a different host_id was selected, use it
-	if (isset_request_var($var_id) && get_filter_request_var($var_id) >= 0) {
-		$reports_item[$var_id] = get_request_var($var_id);
+	if (isrv($var_id) && gfrv($var_id) >= 0) {
+		$reports_item[$var_id] = grv($var_id);
 	}
 
 	// Check that we have set a host_id, if not, default to 0
@@ -2392,7 +2412,7 @@ function set_reports_item_var($reports_item, $var_id) {
  *
  * @return string The HTML select element as a string.
  */
-function reports_get_branch_select($tree_id) {
+function reports_get_branch_select(int $tree_id) : string {
 	$sql_where = '';
 
 	if ($tree_id > 0) {
@@ -2411,7 +2431,7 @@ function reports_get_branch_select($tree_id) {
 
 	if (cacti_sizeof($branches)) {
 		foreach ($branches as $id => $name) {
-			$output .= "<option value='$id'>" . html_escape($name) . '</option>';
+			$output .= "<option value='$id'>" . htmle($name) . '</option>';
 		}
 	}
 

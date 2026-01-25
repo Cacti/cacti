@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-/* define the base path */
+// define the base path
 global $config;
 
 if (empty($config['cacti_server_os'])) {
@@ -39,7 +39,7 @@ if ($config['cacti_server_os'] == 'win32') {
 
 define('CACTI_PATH_BASE', $config['base_path']);
 
-/* Use specified paths or default to folder under base_path */
+// Use specified paths or default to folder under base_path
 $config['cache_path']    = $cache_path ?? CACTI_PATH_BASE . '/cache';
 $config['cli_path']      = $cli_path ?? CACTI_PATH_BASE . '/cli';
 $config['docs_path']     = $docs_path ?? CACTI_PATH_BASE . '/docs';

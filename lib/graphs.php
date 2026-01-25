@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function get_graph_template_details($local_graph_id) {
+function get_graph_template_details(int $local_graph_id) : array {
 	$graph_local = db_fetch_row_prepared('SELECT gl.*, gt.name AS template_name, sqg.name AS query_name
 		FROM graph_local AS gl
 		LEFT JOIN graph_templates AS gt

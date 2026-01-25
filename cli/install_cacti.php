@@ -26,13 +26,10 @@
 require(__DIR__ . '/../include/cli_check.php');
 require_once(CACTI_PATH_INSTALL . '/functions.php');
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-global $debug;
-
-$debug   = false;
 $options = ['Runtime' => 'Cli'];
 
 $should_install = false;
@@ -41,7 +38,9 @@ $force_install  = false;
 display_version();
 
 error_reporting(E_ALL);
+
 db_execute("DELETE FROM settings WHERE name like 'log_install%' or name = 'install_eula'");
+
 define('log_install_echo', 'on');
 
 if (cacti_sizeof($parms)) {
@@ -54,7 +53,7 @@ if (cacti_sizeof($parms)) {
 		}
 
 		switch ($arg) {
-			/* Standard parameters */
+			// Standard parameters
 			case '-d':
 			case '--debug':
 				$logname  = 'log_install';
@@ -93,7 +92,7 @@ if (cacti_sizeof($parms)) {
 
 				exit(0);
 
-				/* Script specific parameters */
+				// Script specific parameters
 			case '--accept-eula':
 				set_install_option($options, 'Eula', 'End User License Agreement', 'Accepted');
 
@@ -180,7 +179,6 @@ if (cacti_sizeof($parms)) {
 				set_install_option($options, 'notify_admin', 'Notify Admin', $value);
 
 				break;
-
 			case '--adminemailaddress':
 			case '-e':
 				if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
@@ -192,8 +190,7 @@ if (cacti_sizeof($parms)) {
 				}
 
 				break;
-
-				/* Bad or unexpected parameter! */
+				// Bad or unexpected parameter!
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 
@@ -285,53 +282,93 @@ switch ($installer->getStep()) {
 
 		break;
 }
+
 print PHP_EOL;
 
-/*  get_install_option - gets the install options from a json file */
-function get_install_option(&$options, $file, $json = true) {
+/**
+ * get_install_option - gets the install options from a json file
+ */
+function get_install_option(array &$options, string $file, bool $json = true) : void {
 	if (empty($file)) {
-		print 'ERROR: Invalid file specified, unable to import options';
+		printf('ERROR: You specified an invalid options file.  Unable to import options' . PHP_EOL);
 
 		exit(1);
 	}
 
 	if ($json) {
-		$contents = @file_get_contents($file);
-
-		if (empty($contents)) {
-			print 'ERROR: Unable to import options from file ' . $file;
+		if (!file_exists($file)) {
+			printf('ERROR: File %s does not exist ' . PHP_EOL, $file);
 
 			exit(1);
 		}
 
-		$options = @json_decode($contents, true);
+		if (is_readable($file)) {
+			$contents = file_get_contents($file);
 
-		if (empty($options)) {
-			print 'ERROR: Failed to decode options in file ' . $file;
+			if (empty($contents)) {
+				printf('ERROR: Unable to import options from file \'%s\'' . PHP_EOL, $file);
+
+				exit(1);
+			}
+
+			if (function_exists('json_validate')) {
+				if (!json_validate($contents)) {
+					printf('ERROR: Failed to decode json options in file \'%s\'' . PHP_EOL, $file);
+
+					exit(1);
+				}
+			}
+
+			$options = json_decode($contents, true);
+
+			if (!cacti_sizeof($options)) {
+				printf('ERROR: Failed to decode options in file \'%s\'' . PHP_EOL, $file);
+
+				exit(1);
+			}
+		} else {
+			printf('ERROR: Unable to read file \'%s\'' . PHP_EOL, $file);
 
 			exit(1);
 		}
 	} else {
-		$options = @parse_ini_file($file);
+		if (!file_exists($file)) {
+			printf('ERROR: File \'%s\' does not exist ' . PHP_EOL, $file);
 
-		if (empty($options)) {
-			print 'ERROR: Unable to import options from file ' . $file;
+			exit(1);
+		}
+
+		if (is_readable($file)) {
+			$temp_options = parse_ini_file($file);
+
+			if (is_array($temp_options) && sizeof($temp_options) > 0) {
+				$options = $temp_options;
+			} else {
+				printf('ERROR: Unable to import options from file \'%s\'' . PHP_EOL, $file);
+
+				exit(1);
+			}
+		} else {
+			printf('ERROR: Unable to read file \'%s\'' . PHP_EOL, $file);
 
 			exit(1);
 		}
 	}
 }
 
-/*  set_install_option - sets and optional displays debug line of action */
-function set_install_option(&$options, $key, $display_name, $value) {
-	global $debug;
-
+/**
+ * set_install_option - sets and optional displays debug line of action
+ */
+function set_install_option(array &$options, string $key, string $display_name, mixed $value) : void {
 	$options[$key] = $value;
+
 	log_install_high('cli',sprintf('Setting %s to \'%s\'', $display_name, $value));
 }
 
-/*  set_install_multioption - sets sub-options that have multiple key/value combinations with optional prefix */
-function set_install_multioption(&$options, $key, $display_name, $value, $prefix, $replace_dots = false) {
+/**
+ * set_install_multioption - sets sub-options that have multiple key/value combinations with optional prefix
+ */
+function set_install_multioption(array &$options, string $key, string $display_name, mixed $value, string $prefix, bool $replace_dots = false) : void {
 	$option_pos = strpos($value, ':');
 
 	if ($option_pos !== false) {
@@ -357,7 +394,7 @@ function set_install_multioption(&$options, $key, $display_name, $value, $prefix
 	}
 }
 
-function debug_install_array($parent, $contents, $indent = 0) {
+function debug_install_array(string $parent, array $contents, int $indent = 0) : void {
 	$hasContents = false;
 
 	foreach ($contents as $key => $value) {
@@ -365,7 +402,7 @@ function debug_install_array($parent, $contents, $indent = 0) {
 			debug_install_array($parent . '.' . $key, $value, $indent + 1);
 		} else {
 			$hasContents = true;
-			log_install_debug('cli',$parent . '.' . $key . ': ' . $value);
+			log_install_debug('cli', $parent . '.' . $key . ': ' . $value);
 		}
 	}
 
@@ -374,7 +411,7 @@ function debug_install_array($parent, $contents, $indent = 0) {
 	}
 }
 
-function process_install_errors($results) {
+function process_install_errors(array $results) : void {
 	if (isset($results['Errors']) && cacti_sizeof($results['Errors']) > 0) {
 		$errors   = $results['Errors'];
 		$count    = 0;
@@ -396,28 +433,40 @@ function process_install_errors($results) {
 	}
 }
 
-/*  display_version - displays version information */
-function display_version() {
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Install Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-/*	display_help - displays the usage of the function */
-function display_help() {
+/**
+ * display_help - displays the usage of the function
+ *
+ * @return void
+ */
+function display_help() : void {
 	print PHP_EOL . 'usage: install_cacti.php [--debug] --accept-eula ' . PHP_EOL;
 	print '                         [--automationmode=] [--automationrange=] [--cron=]' . PHP_EOL;
 	print '                         [--language=] [--mode=] [--profile=] [--path=]' . PHP_EOL;
 	print '                         [--rrdtool=] [--snmp=] [--table=] [--template=]' . PHP_EOL;
 	print '                         [--theme=] [--adminemailaddress=] [--notifyadmin=]' . PHP_EOL;
+
 	print PHP_EOL . 'A utility to install/upgrade Cacti to the currently sourced version' . PHP_EOL;
+
 	print PHP_EOL . 'Flags:' . PHP_EOL;
 	print '  -d  | --debug             - Display verbose output during execution' . PHP_EOL;
 	print '  -h  | --help              - Display this help' . PHP_EOL;
 	print '  -v  | --version           - Display version' . PHP_EOL;
 	print '  -f  | --force             - Override certain safety checks' . PHP_EOL;
+
 	print PHP_EOL . 'Required:' . PHP_EOL;
 	print '  --accept-eula             - Accept the End User License Agreement' . PHP_EOL;
 	print '  --install                 - Perform the installation' . PHP_EOL;
+
 	print PHP_EOL . 'Optional:' . PHP_EOL;
 	print '  -am | --automationmode    - Enable/Disable automatic network discovery' . PHP_EOL;
 	print '  -ar | --automationrange   - Set automatic network discovery subnet' . PHP_EOL;
@@ -431,13 +480,14 @@ function display_help() {
 	print '  -j  | --json              - Load settings from json file' . PHP_EOL;
 	print '  -e  | --adminemailaddress - Set admin email address' . PHP_EOL;
 	print '  -n  | --notifyadmin       - Enable/Disable email notify primary admin of issues (true/false)' . PHP_EOL;
+
 	print PHP_EOL . 'Multi-value optional:' . PHP_EOL;
 	print '  These options may be used more than once to apply multiple values.  All' . PHP_EOL;
 	print '  values should be in "option_key:option_value" format (see below). If an' . PHP_EOL;
 	print '  option has a prefix, this is optional and is automatically added to the' . PHP_EOL;
 	print '  the option_key specified if it does not start with that prefix' . PHP_EOL . PHP_EOL;
 	print '  Note: reusing an option_key will replace its value with the last one' . PHP_EOL;
-	print '        specified.' .PHP_EOL . PHP_EOL;
+	print '        specified.' . PHP_EOL . PHP_EOL;
 	print '       --path             - Sets path locations. Example: ' . PHP_EOL;
 	print '                              --path=cactilog:/usr/share/cacti/log/cacti.log' . PHP_EOL;
 	print '                              --path=cactilog:c:\cacti\log\cacti.log' . PHP_EOL;

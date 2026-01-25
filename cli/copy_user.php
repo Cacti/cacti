@@ -103,8 +103,8 @@ if (cacti_sizeof($parms)) {
 	}
 }
 
-/* switch to main database for cli's */
-if ($config['poller_id'] > 1) {
+// switch to main database for cli's
+if (POLLER_ID > 1) {
 	db_switch_remote_to_main();
 }
 
@@ -123,10 +123,10 @@ if (empty($salt)) {
 
 $data['password'] = compat_password_hash($salt . '_' . $new_user, PASSWORD_DEFAULT);
 
-/* Check that user exists */
-$user_auth = db_fetch_row("SELECT * FROM user_auth WHERE username = '" . $template_user . "' AND realm = 0");
+// Check that user exists
+$user_auth = db_fetch_row_prepared('SELECT * FROM user_auth WHERE username = ? AND realm = 0', [$template_user]);
 
-if (! isset($user_auth)) {
+if (!cacti_sizeof($user_auth)) {
 	die(PHP_EOL . 'Error: Template user does not exist!' . PHP_EOL . PHP_EOL);
 }
 
@@ -137,14 +137,15 @@ if (user_copy($template_user, $new_user, 0, 0, false, $data) === false) {
 	die(PHP_EOL . 'Error: User not copied!' . PHP_EOL . PHP_EOL);
 }
 
-$user_auth = db_fetch_row("SELECT * FROM user_auth WHERE username = '" . $new_user . "' AND realm = 0");
+$user_auth = db_fetch_row_prepared('SELECT * FROM user_auth WHERE username = ? AND realm = 0', [$new_user]);
 
-if (! isset($user_auth)) {
+if (!cacti_sizeof($user_auth)) {
 	die(PHP_EOL . 'Error: User missing!' . PHP_EOL . PHP_EOL);
 }
+
 print PHP_EOL . 'User copied successfully' . PHP_EOL;
 
-function validate_field($field, $value) {
+function validate_field(string $field, string $value) : string {
 	if (empty($value)) {
 		print "ERROR: Value for '$field' cannot be blank" . PHP_EOL . PHP_EOL;
 		display_help();
@@ -155,7 +156,7 @@ function validate_field($field, $value) {
 	return $value;
 }
 
-function validate_boolean($field, $value) {
+function validate_boolean(string $field, string $value) : string {
 	$value = empty($value) ? '' : strtolower($value);
 
 	if ($value == 'on' || $value == 'yes') {
@@ -172,13 +173,22 @@ function validate_boolean($field, $value) {
 	return $value;
 }
 
-/*  display_version - displays version information */
-function display_version() {
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Copy User Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-function display_help() {
+/**
+ * display_help - displays help information
+ *
+ * @return void
+ */
+function display_help() : void {
 	display_version();
 
 	print 'usage: copy_user.php [-h|-v] [-e=<email>] [-f=<full name>] [-l=<yes/no>] [-p=<salt>] ' . PHP_EOL;
@@ -186,15 +196,18 @@ function display_help() {
 	print 'A utility to copy on local Cacti user and their settings to a new one.' . PHP_EOL . PHP_EOL;
 	print 'NOTE: It is highly recommended that you use the web interface to copy users as' . PHP_EOL;
 	print 'this script will only copy Local Cacti users.' . PHP_EOL . PHP_EOL;
+
 	print 'Required options:' . PHP_EOL;
 	print '     <template user>        the user id to copy' . PHP_EOL;
 	print '     <new user>             the user id to create' . PHP_EOL . PHP_EOL;
+
 	print 'Optional:' . PHP_EOL;
 	print '     -e=<email address>     the email address to set' . PHP_EOL;
 	print '     -f=<full name>         the full name to set' . PHP_EOL;
-	print '     -l=<yes/no>            whether new user should be locked'  . PHP_EOL;
+	print '     -l=<yes/no>            whether new user should be locked' . PHP_EOL;
 	print '     -p=<salt>              the salt to prefix to hashed username' . PHP_EOL;
 	print '     -r=<yes/no>            whether new password must be changed' . PHP_EOL;
 	print '     -t=<secret>            the secret to use for TFA' . PHP_EOL . PHP_EOL;
+
 	print 'NOTE: When copying a user using this script, TFA is automatically disabled' . PHP_EOL . PHP_EOL;
 }

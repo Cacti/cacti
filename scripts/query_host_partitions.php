@@ -41,7 +41,7 @@ $host_id    = $_SERVER['argv'][2];
 $snmp_auth  = $_SERVER['argv'][3];
 $cmd        = $_SERVER['argv'][4];
 
-/* support for SNMP V2 and SNMP V3 parameters */
+// support for SNMP V2 and SNMP V3 parameters
 $snmp          = explode(':', $snmp_auth);
 $snmp_version  = $snmp[0];
 $snmp_port     = $snmp[1];
@@ -68,9 +68,7 @@ if ($snmp_version == 3) {
 	$snmp_community = $snmp[5];
 }
 
-/*
- * process INDEX requests
- */
+// process INDEX requests
 if ($cmd == 'index') {
 	$return_arr = reindex(cacti_snmp_walk($hostname, $snmp_community, $oids['index'], $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, $max_oids, SNMP_POLLER));
 
@@ -78,17 +76,13 @@ if ($cmd == 'index') {
 		print $return_arr[$i] . PHP_EOL;
 	}
 
-	/*
-	 * process NUM_INDEXES requests
-	 */
+	// process NUM_INDEXES requests
 } elseif ($cmd == 'num_indexes') {
 	$return_arr = reindex(cacti_snmp_walk($hostname, $snmp_community, $oids['index'], $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, $max_oids, SNMP_POLLER));
 
 	print cacti_sizeof($return_arr) . PHP_EOL;
 
-	/*
-	 * process QUERY requests
-	 */
+	// process QUERY requests
 } elseif ($cmd == 'query') {
 	$arg = $_SERVER['argv'][5];
 
@@ -99,15 +93,13 @@ if ($cmd == 'index') {
 		print $arr_index[$i] . '!' . $arr[$i] . PHP_EOL;
 	}
 
-	/*
-	 * process GET requests
-	 */
+	// process GET requests
 } elseif ($cmd == 'get') {
 	$arg   = $_SERVER['argv'][5];
 	$index = $_SERVER['argv'][6];
 
 	if (($arg == 'total') || ($arg == 'used')) {
-		/* get hrStorageAllocationUnits from the snmp cache since it is faster */
+		// get hrStorageAllocationUnits from the snmp cache since it is faster
 		$sau = db_fetch_cell_prepared('SELECT field_value
 			FROM host_snmp_cache
 			WHERE host_id = ?

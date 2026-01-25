@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_1_2_0() {
+function upgrade_to_1_2_0() : void {
 	db_install_add_column('user_domains_ldap', ['name' => 'cn_full_name', 'type' => 'varchar(50)', 'NULL' => true, 'default' => '']);
 	db_install_add_column('user_domains_ldap', ['name' => 'cn_email', 'type' => 'varchar(50)', 'NULL' => true, 'default' => '']);
 

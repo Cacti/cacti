@@ -40,6 +40,9 @@ env:
 jobs:
   check:
     runs-on: ${{ matrix.os }}
+#    runs-on: self-hosted
+#    container: 
+#      ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
@@ -49,7 +52,7 @@ jobs:
 
     services:
       mysql:
-        image: mysql:latest
+        image: mariadb:10.6
         env:
           MYSQL_DATABASE: cacti
           MYSQL_HOST: 127.0.0.1
@@ -74,6 +77,36 @@ jobs:
 
     - name: Check PHP version
       run: php -v
+
+    - name: Validate composer.json and composer.lock
+      run: sudo composer validate --strict
+
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v3
+      with:
+        path: include/vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+
+    - name: Install dependencies
+      run: sudo composer install --prefer-dist --no-progress
+
+    - name: Run Linter on base code
+      run: composer run-script lint
+      working-directory: .
+
+    - name: Checking coding standards on base code
+      run: composer run-script phpcsfixer
+      working-directory: .
+
+    - name: Run PHPStan at Level 6 on base code
+      run: composer run-script phpstan
+      working-directory: .
+
+    - name: Install github if not already installed
+      run: sudo apt-get -y install git
 
     - name: Checkout Thold Plugin
       uses: GuillaumeFalourd/clone-github-repo-action@v2
@@ -137,11 +170,8 @@ jobs:
         cp -p ${{ github.workspace }}/plugins/syslog/config.php.dist ${{ github.workspace }}/plugins/syslog/config.php
         sed -i 's/\/\/\$/\$/g' ${{ github.workspace }}/plugins/syslog/config.php
 
-    - name: Check PHP syntax
-      run: if find ${{ github.workspace }} -name '*.php' -exec php -l {} 2>&1 \; | grep -iv 'no syntax errors detected'; then exit 1; fi
-
     - name: Run apt-get update
-      run: sudo apt-get update
+      run: sudo apt-get -y update
 
     - name: Install Apache and Tools
       run: sudo apt-get install apache2 snmp snmpd rrdtool fping libapache2-mod-php${{ matrix.php }}
@@ -158,7 +188,6 @@ jobs:
         sudo find /home/runner/work/cacti -type f -exec chmod 777 {} \;
         sudo systemctl stop apparmor
         sudo systemctl disable apparmor
-        sudo chown -R www-data:runner /home/runner/work/cacti
         sudo chmod o+x /home
         sudo chmod o+x /home/runner
         sudo chmod o+x /home/runner/work
@@ -185,21 +214,6 @@ jobs:
         mysql $MYSQL_AUTH_USR -e "FLUSH PRIVILEGES;"
         mysql $MYSQL_AUTH_USR cacti < ${{ github.workspace }}/cacti.sql
         mysql $MYSQL_AUTH_USR -e "INSERT INTO settings (name, value) VALUES ('path_php_binary', '/bin/php')" cacti
-
-    - name: Validate composer.json and composer.lock
-      run: sudo composer validate --strict
-
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v3
-      with:
-        path: include/vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
-
-    - name: Install dependencies
-      run: sudo composer install --prefer-dist --no-progress
 
     - name: Prime Cacti config.php File
       run: |
@@ -271,24 +285,3 @@ jobs:
 
     - name: View Contents of Logs
       run: sudo cat ${{ github.workspace }}/log/cacti.log
-          
-#    - name: Validate composer.json and composer.lock
-#      run: composer validate --strict
-
-#    - name: Cache Composer packages
-#      id: composer-cache
-#      uses: actions/cache@v3
-#      with:
-#        path: vendor
-#        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-#        restore-keys: |
-#          ${{ runner.os }}-php-
-#
-#    - name: Install dependencies
-#      run: composer install --prefer-dist --no-progress
-
-# Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-#   Docs: https://getcomposer.org/doc/articles/scripts.md
-#
-#    - name: Run test suite
-#      run: composer run-script test

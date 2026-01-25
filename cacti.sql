@@ -3215,6 +3215,7 @@ CREATE TABLE `user_domains` (
   `domain_name` varchar(20) NOT NULL,
   `type` int(10) unsigned NOT NULL default '0',
   `enabled` char(2) NOT NULL default 'on',
+  `debug` char(2) NOT NULL default '',
   `defdomain` tinyint(3) unsigned NOT NULL default '0',
   `user_id` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY (`domain_id`)
@@ -3234,6 +3235,8 @@ CREATE TABLE `user_domains_ldap` (
   `port` int(10) unsigned NOT NULL,
   `port_ssl` int(10) unsigned NOT NULL,
   `proto_version` tinyint(3) unsigned NOT NULL,
+  `network_timeout` int unsigned NOT NULL default 2,
+  `bind_timeout` int unsigned NOT NULL default 2,
   `encryption` tinyint(3) unsigned NOT NULL,
   `tls_certificate` tinyint(3) unsigned NOT NULL default '3',
   `referrals` tinyint(3) unsigned NOT NULL,

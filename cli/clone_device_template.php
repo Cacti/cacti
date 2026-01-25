@@ -31,23 +31,23 @@ require_once(CACTI_PATH_LIBRARY . '/data_query.php');
 
 chdir('..');
 
-if ($config['poller_id'] > 1) {
+if (POLLER_ID > 1) {
 	print 'FATAL: This utility is designed for the main Data Collector only' . PHP_EOL;
 
 	exit(1);
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$debug         = false;
-$quiet         = false;
-$list_all      = false;
-$list_device   = false;
-$template_id   = false;
-$template_name = '';
-$suffix        = '';
+$debug              = false;
+$quiet              = false;
+$list_all           = false;
+$list_device        = false;
+$template_id        = 0;
+$template_name      = '';
+$suffix             = '';
 
 $include_gt    = false;
 $include_dq    = false;
@@ -98,11 +98,11 @@ if (cacti_sizeof($parms)) {
 
 				break;
 			case 'list-template':
-				$list_device = $value;
+				$list_device = intval($value);
 
 				break;
 			case 'device-template':
-				$template_id = $value;
+				$template_id = intval($value);
 
 				break;
 			case 'device-template-name':
@@ -115,10 +115,6 @@ if (cacti_sizeof($parms)) {
 				break;
 			case 'debug':
 				$debug = true;
-
-				break;
-			case 'device-template':
-				$device_template_id = $value;
 
 				break;
 			case 'include-graph-templates':
@@ -284,7 +280,7 @@ if (cacti_sizeof($parms)) {
 		}
 	}
 
-	/* proceed with the Clone here */
+	// proceed with the Clone here
 	printf('Proceeding with Device Template Cloning' . PHP_EOL);
 	printf('------------------------------------------------------' . PHP_EOL);
 
@@ -302,7 +298,7 @@ if (cacti_sizeof($parms)) {
 	exit(1);
 }
 
-function list_all_templates() {
+function list_all_templates() : void {
 	global $device_classes;
 
 	$device_templates = db_fetch_assoc('SELECT *
@@ -323,13 +319,13 @@ function list_all_templates() {
 	}
 }
 
-function list_device_template($device_template_id) {
+function list_device_template(int $template_id) : void {
 	global $device_classes;
 
 	$device_template = db_fetch_row_prepared('SELECT *
 		FROM host_template
 		WHERE id = ?',
-		[$device_template_id]);
+		[$template_id]);
 
 	if (cacti_sizeof($device_template)) {
 		printf('-----------------------------------------------' . PHP_EOL);
@@ -346,7 +342,7 @@ function list_device_template($device_template_id) {
 					WHERE host_template_id = ?
 				)
 				ORDER BY name',
-				[$device_template_id]),
+				[$template_id]),
 			'id', 'name'
 		);
 
@@ -374,7 +370,7 @@ function list_device_template($device_template_id) {
 					WHERE host_template_id = ?
 				)
 				ORDER BY name',
-				[$device_template_id]),
+				[$template_id]),
 			'id', 'name');
 
 		if (cacti_sizeof($data_queries)) {
@@ -405,7 +401,7 @@ function list_device_template($device_template_id) {
 					)
 				)
 				ORDER BY name',
-				[$device_template_id]),
+				[$template_id]),
 			'id', 'name'
 		);
 
@@ -426,21 +422,28 @@ function list_device_template($device_template_id) {
 
 		exit(0);
 	} else {
-		print "FATAL: Device Template $device_template_id does not exist!" . PHP_EOL;
+		print "FATAL: Device Template $template_id does not exist!" . PHP_EOL;
 
 		exit(1);
 	}
 }
 
 /**
- *  display_version - displays version information
+ * display_version - displays version information
+ *
+ * @return void
  */
-function display_version() {
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Device Template Cloning Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-function display_help() {
+/**
+ * display_help - displays help information
+ *
+ * @return void
+ */
+function display_help() : void {
 	display_version();
 
 	print PHP_EOL;

@@ -31,13 +31,17 @@ global $debug;
 
 $parms = $_SERVER['argv'];
 
-if (cacti_sizeof($parms)) {
-	// Defaults
-	$generate     = false;
-	$list         = false;
-	$debug        = false;
-	$directory    = false;
+// Defaults
+$generate  = false;
+$list      = false;
+$debug     = false;
+$directory = false;
+$manifest  = [];
+$keys      = [];
+$keycnt    = 0;
+$pkgcnt    = 0;
 
+if (cacti_sizeof($parms)) {
 	$shortopts = 'VvHh';
 
 	$longopts = [
@@ -108,11 +112,6 @@ if (!cacti_sizeof($directory)) {
 	$directory = [$directory];
 }
 
-$manifest = [];
-$keys     = [];
-$keycnt   = 0;
-$pkgcnt   = 0;
-
 if (cacti_sizeof($directory)) {
 	foreach ($directory as $dir) {
 		if (!is_dir($dir)) {
@@ -158,12 +157,12 @@ if (cacti_sizeof($directory)) {
 						$pkgcnt++;
 
 						if (isset($pkgdata['publickey'])) {
-							$keys[$keycnt]['publickey'] = base64_decode($pkgdata['publickey'], true);
+							$keys[$keycnt]              = base64_decode($pkgdata['publickey'], true);
 							$keyfound                   = true;
 						}
 
 						if (isset($pkgdata['publickeyname'])) {
-							$keys[$keycnt]['publickeyname'] = $pkgdata['publickeyname'];
+							$keys[$keycnt]                  = $pkgdata['publickeyname'];
 							$keyfound                       = true;
 						}
 
@@ -186,22 +185,25 @@ if (cacti_sizeof($directory)) {
 			print '-----------------------------------------------------------' . PHP_EOL;
 
 			if (cacti_sizeof($keys)) {
-				print @json_encode(array_unique($keys), JSON_PRETTY_PRINT) . PHP_EOL;
+				print json_encode(array_unique($keys), JSON_PRETTY_PRINT) . PHP_EOL;
 			} else {
 				print 'WARNING: Your packages contained no public keys.  Consider repackaging' . PHP_EOL;
 			}
+
 			print '-----------------------------------------------------------' . PHP_EOL;
 		} else {
 			$package_manifest             = [];
 			$package_manifest['manifest'] = $manifest;
-			$package_manifest['keys']     = @array_unique($keys);
+			$package_manifest['keys']     = array_unique($keys);
+
 			file_put_contents("$dir/package.manifest", json_encode($package_manifest, JSON_PRETTY_PRINT));
+
 			print "Manifest package.manifest written to $dir/package.manifest" . PHP_EOL;
 		}
 	}
 }
 
-function pkg_debug($string) {
+function pkg_debug(string $string) : void {
 	global $debug;
 
 	if ($debug) {
@@ -212,9 +214,9 @@ function pkg_debug($string) {
 /**
  * display_version - displays version information
  *
- * @return (void)
+ * @return void
  */
-function display_version() {
+function display_version() : void {
 	if (defined('CACTI_VERSION')) {
 		$version = CACTI_VERSION;
 	} else {
@@ -227,9 +229,9 @@ function display_version() {
 /**
  * display_help - displays help information
  *
- * @return (void)
+ * @return void
  */
-function display_help() {
+function display_help() : void {
 	display_version();
 
 	print PHP_EOL;

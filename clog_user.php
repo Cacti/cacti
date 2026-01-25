@@ -28,7 +28,7 @@ require_once(CACTI_PATH_LIBRARY . '/clog_webapi.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
-/* check edit/alter permissions */
+// check edit/alter permissions
 if (!clog_authorized()) {
 	if (POLLER_ID > 1) {
 		header('Location: logout.php?action=remote');

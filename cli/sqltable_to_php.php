@@ -25,12 +25,12 @@
 
 require(__DIR__ . '/../include/cli_check.php');
 
-/* switch to main database for cli's */
-if ($config['poller_id'] > 1) {
+// switch to main database for cli's
+if (POLLER_ID > 1) {
 	db_switch_remote_to_main();
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -79,7 +79,7 @@ if (cacti_sizeof($parms)) {
 }
 
 if ($table == '') {
-	print "ERROR: You must provide a table name\n";
+	print 'ERROR: You must provide a table name' . PHP_EOL;
 	display_help();
 
 	exit(1);
@@ -87,8 +87,8 @@ if ($table == '') {
 	print sqltable_to_php($table, $create, $plugin);
 }
 
-function sqltable_to_php($table, $create, $plugin = '') {
-	global $config, $database_default;
+function sqltable_to_php(string $table, bool $create, string $plugin = '') : string {
+	global $database_default;
 
 	include_once(CACTI_PATH_LIBRARY . '/database.php');
 
@@ -104,7 +104,7 @@ function sqltable_to_php($table, $create, $plugin = '') {
 			}
 		}
 	} else {
-		print "ERROR: Obtaining list of tables from $database_default\n";
+		print "ERROR: Obtaining list of tables from $database_default" . PHP_EOL;
 
 		exit;
 	}
@@ -115,7 +115,7 @@ function sqltable_to_php($table, $create, $plugin = '') {
 		$cols   = [];
 		$pri    = [];
 		$keys   = [];
-		$text   = "\n\$data = array();\n";
+		$text   = PHP_EOL . '$data = array();' . PHP_EOL;
 
 		if (cacti_sizeof($result)) {
 			foreach ($result as $r) {
@@ -156,10 +156,10 @@ function sqltable_to_php($table, $create, $plugin = '') {
 					$text .= ", 'comment' => '" . $r['Comment'] . "'";
 				}
 
-				$text .= ");\n";
+				$text .= ');' . PHP_EOL;
 			}
 		} else {
-			print "ERROR: Obtaining list of columns from $table\n";
+			print "ERROR: Obtaining list of columns from $table" . PHP_EOL;
 
 			exit;
 		}
@@ -183,24 +183,24 @@ function sqltable_to_php($table, $create, $plugin = '') {
 
 			if (!empty($pri)) {
 				if ($plugin != '' || $create) {
-					$text .= "\$data['primary'] = '" . implode('`,`', $pri) . "';\n";
+					$text .= "\$data['primary'] = '" . implode('`,`', $pri) . "';" . PHP_EOL;
 				} else {
-					$text .= "\$data['primary'] = array('" . implode("','", $pri) . "');\n";
+					$text .= "\$data['primary'] = array('" . implode("','", $pri) . "');" . PHP_EOL;
 				}
 			}
 
 			if (!empty($keys)) {
 				foreach ($keys as $n => $k) {
 					if ($plugin != '') {
-						$text .= "\$data['keys'][] = array('name' => '$n', " . (isset($unique_keys[$n]) ? "'unique' => true, " : '') . "'columns' => '" . implode('`,`', $k) . "');\n";
+						$text .= "\$data['keys'][] = array('name' => '$n', " . (isset($unique_keys[$n]) ? "'unique' => true, " : '') . "'columns' => '" . implode('`,`', $k) . "');" . PHP_EOL;
 					} else {
-						$text .= "\$data['keys'][] = array('name' => '$n', " . (isset($unique_keys[$n]) ? "'unique' => true, " : '') . "'columns' => array('" . implode("','", $k) . "'));\n";
+						$text .= "\$data['keys'][] = array('name' => '$n', " . (isset($unique_keys[$n]) ? "'unique' => true, " : '') . "'columns' => array('" . implode("','", $k) . "'));" . PHP_EOL;
 					}
 				}
 			}
 		} else {
-			//print "ERROR: Obtaining list of indexes from $table\n";
-			//exit;
+			// print "ERROR: Obtaining list of indexes from $table" . PHP_EOL;
+			// exit;
 		}
 
 		$result = db_fetch_row_prepared('SELECT ENGINE, TABLE_COMMENT, ROW_FORMAT, CHARACTER_SET_NAME
@@ -210,25 +210,25 @@ function sqltable_to_php($table, $create, $plugin = '') {
 			[$table]);
 
 		if (cacti_sizeof($result)) {
-			$text .= "\$data['type'] = '" . $result['ENGINE'] . "';\n";
-			$text .= "\$data['charset'] = '" . $result['CHARACTER_SET_NAME'] . "';\n";
+			$text .= "\$data['type'] = '" . $result['ENGINE'] . "';" . PHP_EOL;
+			$text .= "\$data['charset'] = '" . $result['CHARACTER_SET_NAME'] . "';" . PHP_EOL;
 
 			if (!empty($result['TABLE_COMMENT'])) {
-				$text .= "\$data['comment'] = '" . $result['TABLE_COMMENT'] . "';\n";
+				$text .= "\$data['comment'] = '" . $result['TABLE_COMMENT'] . "';" . PHP_EOL;
 			}
-			$text .= "\$data['row_format'] = '" . $result['ROW_FORMAT'] . "';\n";
+			$text .= "\$data['row_format'] = '" . $result['ROW_FORMAT'] . "';" . PHP_EOL;
 
 			if ($create) {
 				if ($plugin != '') {
-					$text .= "api_plugin_db_table_create ('$plugin', '$table', \$data);\n";
+					$text .= "api_plugin_db_table_create ('$plugin', '$table', \$data);" . PHP_EOL;
 				} else {
-					$text .= "db_table_create ('$table', \$data);\n";
+					$text .= "db_table_create ('$table', \$data);" . PHP_EOL;
 				}
 			} else {
-				$text .= "db_update_table ('$table', \$data, false);\n";
+				$text .= "db_update_table ('$table', \$data, false);" . PHP_EOL;
 			}
 		} else {
-			print "ERROR: Unable to get tables details from Information Schema\n";
+			print 'ERROR: Unable to get tables details from Information Schema' . PHP_EOL;
 
 			exit;
 		}
@@ -237,32 +237,46 @@ function sqltable_to_php($table, $create, $plugin = '') {
 	return $text;
 }
 
-function sql_clean($text) {
+function sql_clean(string $text) : string {
 	$text = str_replace(['\\', '/', "'", '"', '|'], '', $text);
 
 	return $text;
 }
 
-/*  display_version - displays version information */
-function display_version() {
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
+function display_version() : void {
 	$version = get_cacti_cli_version();
-	print "Cacti SQL to PHP Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti SQL to PHP Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-function display_help() {
+/**
+ * display_help - displays help information
+ *
+ * @return void
+ */
+function display_help() : void {
 	display_version();
 
-	print "\nusage: sqltable_to_php.php --table=table_name [--plugin=name] [--update]\n\n";
-	print "A simple developers utility to create a save schema for a newly created or\n";
-	print "modified database table in a format that is consumable by Cacti.\n\n";
-	print "These save schema's can be placed into a plugins setup.php file in order\n";
-	print "to create the tables inside of a plugin as a part of it's install function.\n";
-	print "The plugin parameter is optional, but if you want the table(s) automatically\n";
-	print "removed from Cacti when uninstalling the plugin, specify it's name.\n\n";
-	print "Required:\n";
-	print "--table=table_name - The table that you want exported\n\n";
-	print "Optional:\n";
-	print "--plugin=name      - The name of the plugin that will manage tables\n";
-	print "--update           - The utility provides create syntax.  If the update flag is\n";
-	print "                     specified, the utility will provide update syntax\n\n";
+	print PHP_EOL;
+	print 'usage: sqltable_to_php.php --table=table_name [--plugin=name] [--update]' . PHP_EOL . PHP_EOL;
+
+	print 'A simple developers utility to create a save schema for a newly created or' . PHP_EOL;
+	print 'modified database table in a format that is consumable by Cacti.' . PHP_EOL . PHP_EOL;
+
+	print "These save schema's can be placed into a plugins setup.php file in order" . PHP_EOL;
+	print "to create the tables inside of a plugin as a part of it's install function." . PHP_EOL;
+	print 'The plugin parameter is optional, but if you want the table(s) automatically' . PHP_EOL;
+	print "removed from Cacti when uninstalling the plugin, specify it's name." . PHP_EOL . PHP_EOL;
+
+	print 'Required:' . PHP_EOL;
+	print '--table=table_name - The table that you want exported' . PHP_EOL . PHP_EOL;
+
+	print 'Optional:' . PHP_EOL;
+	print '--plugin=name      - The name of the plugin that will manage tables' . PHP_EOL;
+	print '--update           - The utility provides create syntax.  If the update flag is' . PHP_EOL;
+	print '                     specified, the utility will provide update syntax' . PHP_EOL . PHP_EOL;
 }

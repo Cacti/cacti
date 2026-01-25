@@ -27,11 +27,11 @@
  *
  * @param mixed  $value    The value to be validated.
  * @param mixed  $c_value  The value to compare against.
- * @param string $variable (Optional) The name of the variable being validated.
+ * @param string $variable The name of the variable being validated.
  *
  * @return void
  */
-function input_validate_input_equals($value, $c_value, $variable = '') {
+function input_validate_input_equals(mixed $value, mixed $c_value, string $variable = '') : void {
 	if ($value != $c_value) {
 		die_html_input_error($variable, $value);
 	}
@@ -41,11 +41,11 @@ function input_validate_input_equals($value, $c_value, $variable = '') {
  * Validates if the given value is a number.
  *
  * @param mixed  $value    The value to be validated.
- * @param string $variable (Optional) The name of the variable being validated. This is used in the error message.
+ * @param string $variable The name of the variable being validated. This is used in the error message.
  *
  * @return void
  */
-function input_validate_input_number($value, $variable = '') {
+function input_validate_input_number(mixed $value, string $variable = '') : void {
 	if ((!is_numeric($value)) && ($value != '')) {
 		die_html_input_error($variable, $value);
 	}
@@ -54,13 +54,13 @@ function input_validate_input_number($value, $variable = '') {
 /**
  * Validates the input value against a given regular expression.
  *
- * @param string $value The input value to be validated.
- * @param string $regex The regular expression to validate the input value against.
- * @param string $variable (Optional) The name of the variable being validated, used for error reporting.
+ * @param string $value    The input value to be validated.
+ * @param string $regex    The regular expression to validate the input value against.
+ * @param string $variable The name of the variable being validated, used for error reporting.
  *
  * @return void
  */
-function input_validate_input_regex($value, $regex, $variable = '') {
+function input_validate_input_regex(string $value, string $regex, string $variable = '') : void {
 	if ($value != null && $value != '' && (!preg_match('/' . $regex . '/', $value))) {
 		die_html_input_error($variable, $value);
 	}
@@ -73,33 +73,35 @@ function input_validate_input_regex($value, $regex, $variable = '') {
  * was not performed for the specified variable.
  *
  * @param string $variable The name of the variable for which input validation was not performed.
+ *
+ * @return void
  */
-function html_log_input_error($variable) {
+function html_log_input_error(string $variable) : void {
 	cacti_debug_backtrace("Input Validation Not Performed for '$variable'");
 }
 
 /**
  * Terminates the script execution and outputs an error message for HTML input validation errors.
  *
- * @param string|null $variable The name of the variable that caused the validation error.
- * @param string|null $value The value of the variable that caused the validation error.
- * @param string $message An optional custom error message.
+ * @param mixed  $variable - The name of the variable that caused the validation error.
+ * @param mixed  $value    - The value of the variable that caused the validation error.
+ * @param string $message  - An optional custom error message.
  *
  * @return void
  */
-function die_html_input_error($variable = null, $value = null, $message = '') {
-	$func = CACTI_CLI ? 'trim' : 'html_escape';
+function die_html_input_error(mixed $variable = null, mixed $value = null, string $message = '') : void {
+	$func = CACTI_CLI ? 'trim' : 'htmle';
 
 	$variable = ($variable !== null ? ', Variable:' . $func($variable) : '');
-	$value    = ($value !== null ? ', Value:'    . $func($value) : '');
+	$value    = ($value !== null ? ', Value:' . $func($value) : '');
 
 	if ($message == '') {
 		$message = __esc('Validation error for variable %s with a value of %s.  See backtrace below for more details.', $variable, $value);
 	} elseif (!CACTI_CLI) {
-		$message = html_escape($message);
+		$message = htmle($message);
 	}
 
-	$isWeb = CACTI_WEB || isset_request_var('json');
+	$isWeb = CACTI_WEB || isrv('json');
 	cacti_debug_backtrace('Validation Error' . $variable . $value, $isWeb);
 
 	if (!$isWeb) {
@@ -108,8 +110,8 @@ function die_html_input_error($variable = null, $value = null, $message = '') {
 		exit(1);
 	}
 
-	if (isset_request_var('json')) {
-		cacti_debug_backtrace('Validation Error' . ($variable != '' ? ', Variable:' . html_escape($variable) : '') . ($value != '' ? ', Value:' . html_escape($value) : '') . ', Source: ' . get_client_addr() . ', Request: ' . json_encode($_REQUEST), false);
+	if (isrv('json')) {
+		cacti_debug_backtrace('Validation Error' . ($variable != '' ? ', Variable:' . htmle($variable) : '') . ($value != '' ? ', Value:' . htmle($value) : '') . ', Source: ' . get_client_addr() . ', Request: ' . json_encode($_REQUEST), false);
 
 		print json_encode(
 			[
@@ -119,7 +121,7 @@ function die_html_input_error($variable = null, $value = null, $message = '') {
 			]
 		);
 	} else {
-		cacti_debug_backtrace('Validation Error' . ($variable != '' ? ', Variable:' . html_escape($variable) : '') . ($value != '' ? ', Value:' . html_escape($value) : '') . ', Source: ' . get_client_addr() . ', Request: ' . json_encode($_REQUEST), true);
+		cacti_debug_backtrace('Validation Error' . ($variable != '' ? ', Variable:' . htmle($variable) : '') . ($value != '' ? ', Value:' . htmle($value) : '') . ', Source: ' . get_client_addr() . ', Request: ' . json_encode($_REQUEST), true);
 
 		print "<table style='width:100%;text-align:center;'><tr><td>$message</td></tr></table>";
 
