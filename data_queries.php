@@ -91,7 +91,6 @@ switch (grv('action')) {
 
 		break;
 	case 'item_edit':
-
 		data_query_item_edit();
 
 		break;
