@@ -177,7 +177,7 @@ if (cacti_sizeof($parms)) {
 }
 
 if ($out_start != '' && !is_numeric($out_start)) {
-	$orig_out_start = $out_end;
+	$orig_out_start = $out_start;
 	$out_start = strtotime($out_start);
 
 	if ($out_start == false) {
