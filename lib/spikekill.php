@@ -853,12 +853,10 @@ class spikekill {
 									if ($this->method == SPIKE_METHOD_FLOAT || $this->method == SPIKE_METHOD_FILL) {
 										if ($timestamp >= $this->out_start && $timestamp <= $this->out_end) {
 											if ($this->method == SPIKE_METHOD_FLOAT) {
-												if (strtolower($sample) == 'nan' || $sample == 0) {
-													$this->debug(sprintf("Window Float Found, Date:%s, Value:%s", date('Y-m-d H:i', $timestamp), $sample));
+												$this->debug(sprintf("Window Float Found, Date:%s, Value:%s", date('Y-m-d H:i', $timestamp), $sample));
 
-													$rra[$rra_num][$ds_num]['outwind_killed']++;
-													$this->out_kills = true;
-												}
+												$rra[$rra_num][$ds_num]['outwind_killed']++;
+												$this->out_kills = true;
 											} elseif ($this->method == SPIKE_METHOD_FILL) {
 												if (strtolower($sample) == 'nan' || $sample == 0) {
 													$this->debug(sprintf("Window GapFill Found, Date:%s, Value:%s", date('Y-m-d H:i', $timestamp), $sample));
