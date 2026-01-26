@@ -1067,6 +1067,8 @@ class spikekill {
 								} else {
 									cacti_log("DEBUG: ignoring dsvalue {$dsvalue} as we are outside of the time range!", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
 								}
+
+								break;
 							case SPIKE_METHOD_FILL:
 								if ($timestamp >= $this->out_start && $timestamp <= $this->out_end) {
 									if ($this->avgnan == 'avg') {
