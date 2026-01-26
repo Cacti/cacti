@@ -191,7 +191,7 @@ if ($out_end != '' && !is_numeric($out_end)) {
 	$out_end = strtotime($out_end);
 
 	if ($out_end == false) {
-		print "ERROR: The outlier start value '$orig_out_end' is invalid.  Use either a timestamp of a datetime format" . PHP_EOL;
+		print "ERROR: The outlier end value '$orig_out_end' is invalid.  Use either a timestamp of a datetime format" . PHP_EOL;
 		exit(1);
 	}
 }
