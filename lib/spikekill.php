@@ -1098,7 +1098,7 @@ class spikekill {
 
 								break;
 							case SPIKE_METHOD_VARIANCE:
-								if (empty($this->out_start) || ($timestamp >= $this->out_start && $timestamp <= $out_end)) {
+								if (empty($this->out_start) || ($timestamp >= $this->out_start && $timestamp <= $this->out_end)) {
 									if ($dsvalue > (1 + $this->percent) * (float) $rra[$rra_num][$ds_num]['variance_avg']) {
 										if ($kills < $this->numspike) {
 											if ($this->avgnan == 'avg') {
@@ -1128,7 +1128,7 @@ class spikekill {
 							case SPIKE_METHOD_STDDEV:
 								if (($dsvalue > $rra[$rra_num][$ds_num]['max_cutoff']) ||
 									($dsvalue < $rra[$rra_num][$ds_num]['min_cutoff'])) {
-									if (empty($this->out_start) || ($timestamp >= $this->out_start && $timestamp <= $out_end)) {
+									if (empty($this->out_start) || ($timestamp >= $this->out_start && $timestamp <= $this->out_end)) {
 										if ($kills < $this->numspike) {
 											if ($this->avgnan == 'avg') {
 												cacti_log("DEBUG: replacing dsvalue {$dsvalue} with average {$rra[$rra_num][$ds_num]['average']}", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
