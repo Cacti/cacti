@@ -650,7 +650,7 @@ class spikekill {
 		$continue   = false;
 
 		/* create an output array */
-		if ($this->std_kills || $this->out_kills) {
+		if ($this->std_kills || $this->out_kills || $this->var_kills) {
 			$this->debug('Either std_kills or out_kills found');
 
 			if (!$this->dryrun) {
