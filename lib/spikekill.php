@@ -120,17 +120,17 @@ class spikekill {
 		if ($out_start != '') {
 			if (!is_numeric($out_start)) {
 				$this->out_start = strtotime($out_start);
+			} else {
+				$this->out_start = $out_start;
 			}
-
-			$this->out_start = $out_start;
 		}
 
 		if ($out_end != '') {
 			if (!is_numeric($out_end)) {
 				$this->out_end = strtotime($out_end);
+			} else {
+				$this->out_end = $out_end;
 			}
-
-			$this->out_end = $out_end;
 		}
 
 		if ($outliers != '') {
