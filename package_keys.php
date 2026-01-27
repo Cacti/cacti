@@ -30,10 +30,10 @@ $actions = [
 	1 => __('Delete')
 ];
 
-/* set default action */
+// set default action
 set_default_action();
 
-switch (get_request_var('action')) {
+switch (grv('action')) {
 	case 'actions':
 		form_actions();
 
@@ -48,15 +48,15 @@ switch (get_request_var('action')) {
 		break;
 }
 
-function form_actions() {
+function form_actions() : void {
 	global $actions;
 
-	/* if we are to save this form, instead of display it */
-	if (isset_request_var('selected_items')) {
-		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
+	// if we are to save this form, instead of display it
+	if (isrv('selected_items')) {
+		$selected_items = sanitize_unserialize_selected_items(gnrv('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_nfilter_request_var('drp_action') == '1') { // delete
+			if (gnrv('drp_action') == '1') { // delete
 				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					package_key_remove($selected_items[$i]);
 				}
@@ -68,18 +68,18 @@ function form_actions() {
 		exit;
 	}
 
-	/* setup some variables */
+	// setup some variables
 	$p_list  = '';
 	$p_array = [];
 
-	/* loop through each of the data queries and process them */
+	// loop through each of the data queries and process them
 	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-			/* ================= input validation ================= */
+			// ================= input validation =================
 			input_validate_input_number($matches[1]);
-			/* ==================================================== */
+			// ====================================================
 
-			$p_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT author FROM package_public_keys WHERE id = ?', [$matches[1]])) . '</li>';
+			$p_list .= '<li>' . htmle(db_fetch_cell_prepared('SELECT author FROM package_public_keys WHERE id = ?', [$matches[1]])) . '</li>';
 			$p_array[] = $matches[1];
 		}
 	}
@@ -88,10 +88,12 @@ function form_actions() {
 
 	form_start('package_keys.php', 'action_confirm');
 
-	html_start_box($actions[get_nfilter_request_var('drp_action')], '60%', false, 3, 'center', '');
+	html_start_box($actions[gnrv('drp_action')], '60%', false, 3, 'center', '');
 
-	if (isset($p_array) && cacti_sizeof($p_array)) {
-		if (get_nfilter_request_var('drp_action') == '1') { // delete
+	if (cacti_sizeof($p_array)) {
+		$save_html = '';
+
+		if (gnrv('drp_action') == '1') { // delete
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __n('Click \'Continue\' to delete the following .', 'Click \'Continue\' to delete following Package Repositories.', cacti_sizeof($p_array)) . "</p>
@@ -111,11 +113,11 @@ function form_actions() {
 	print "<tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='selected_items' value='" . (isset($p_array) ? serialize($p_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
+			<input type='hidden' name='selected_items' value='" . serialize($p_array) . "'>
+			<input type='hidden' name='drp_action' value='" . htmle(gnrv('drp_action')) . "'>
 			$save_html
 		</td>
-	</tr>\n";
+	</tr>";
 
 	html_end_box();
 
@@ -124,41 +126,41 @@ function form_actions() {
 	bottom_footer();
 }
 
-function package_key_remove($id) {
+function package_key_remove(int $id) : void {
 	db_execute_prepared('DELETE FROM package_public_keys WHERE id = ?', [$id]);
 }
 
-function public_keys() {
+function public_keys() : void {
 	global $actions, $item_rows, $types;
 
-	/* create the page filter */
+	// create the page filter
 	$pageFilter = new CactiTableFilter(__('Public Keys'), 'package_keys.php', 'fors', 'sess_package_keys');
 
 	$pageFilter->rows_label = __('Keys');
 	$pageFilter->set_sort_array('author', 'ASC');
 	$pageFilter->render();
 
-	if (get_request_var('rows') == '-1') {
+	if (grv('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
 	} else {
-		$rows = get_request_var('rows');
+		$rows = grv('rows');
 	}
 
 	$sql_where  = '';
 	$sql_params = [];
 
-	/* form the 'where' clause for our main sql query */
-	if (get_request_var('filter') != '') {
+	// form the 'where' clause for our main sql query
+	if (grv('filter') != '') {
 		$sql_where = ($sql_where != '' ? ' AND ' : 'WHERE ') .
 			'(author LIKE ? OR homepage LIKE ? OR email_address LIKE ?)';
 
-		$sql_params[] = '%' . get_request_var('filter') . '%';
-		$sql_params[] = '%' . get_request_var('filter') . '%';
-		$sql_params[] = '%' . get_request_var('filter') . '%';
+		$sql_params[] = '%' . grv('filter') . '%';
+		$sql_params[] = '%' . grv('filter') . '%';
+		$sql_params[] = '%' . grv('filter') . '%';
 	}
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows;
 
 	$total_rows = db_fetch_cell_prepared("SELECT COUNT(*)
 		FROM package_public_keys
@@ -195,7 +197,7 @@ function public_keys() {
 		],
 	];
 
-	$nav = html_nav_bar('package_keys.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, sizeof($display_text) + 1, __('Package Public Keys'), 'page', 'main');
+	$nav = html_nav_bar('package_keys.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, sizeof($display_text) + 1, __('Package Public Keys'), 'page', 'main');
 
 	form_start('package_keys.php', 'chk');
 
@@ -203,7 +205,7 @@ function public_keys() {
 
 	html_start_box('', '100%', false, 3, 'center', '');
 
-	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
+	html_header_sort_checkbox($display_text, grv('sort_column'), grv('sort_direction'), false);
 
 	$i = 0;
 
@@ -213,10 +215,10 @@ function public_keys() {
 
 			$pkey = $key['public_key'];
 
-			form_selectable_cell(filter_value($key['author'], get_request_var('filter')), $key['id']);
+			form_selectable_cell(filter_value($key['author'], grv('filter')), $key['id']);
 			form_selectable_cell($key['id'], $key['id']);
-			form_selectable_cell(filter_value($key['homepage'], get_request_var('filter')), $key['id']);
-			form_selectable_cell(filter_value($key['email_address'], get_request_var('filter')), $key['id']);
+			form_selectable_cell(filter_value($key['homepage'], grv('filter')), $key['id']);
+			form_selectable_cell(filter_value($key['email_address'], grv('filter')), $key['id']);
 			form_selectable_cell(strlen($pkey) < 200 ? 'SHA1' : 'SHA256', $key['id']);
 
 			form_checkbox_cell($key['author'], $key['id']);
@@ -233,7 +235,7 @@ function public_keys() {
 		print $nav;
 	}
 
-	/* draw the dropdown containing a list of available actions for this form */
+	// draw the dropdown containing a list of available actions for this form
 	draw_actions_dropdown($actions);
 
 	form_end();

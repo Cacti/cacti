@@ -27,17 +27,18 @@ $config
     ->setIndent("\t")
     ->setLineEnding("\n")
     ->setRules(array(
-    //'@PHP56Migration' => true,
-    //'@PhpCsFixer' => true,
-    //'@PhpCsFixer:risky' => true,
     'header_comment' => false,
     //'header_comment' => ['header' => $header, 'comment_type' => 'comment', 'separate' => 'bottom'],
-    'comment_to_phpdoc'                              => true,
+    'comment_to_phpdoc'                           => true,
+    'phpdoc_align'                                => true,
     'list_syntax'                                 => ['syntax' => 'short'],
     'array_syntax'                                => ['syntax' => 'short'],
     'trim_array_spaces'                           => false,
     'no_whitespace_before_comma_in_array'         => true,
+    'whitespace_after_comma_in_array'             => true,
     'no_multiline_whitespace_around_double_arrow' => true,
+    'no_whitespace_in_blank_line'                 => true,
+    'no_trailing_whitespace'                      => true,
     'normalize_index_brace'                       => true,
     'no_mixed_echo_print'                         => ['use' => 'print'],
     'no_spaces_after_function_name'               => true,
@@ -53,8 +54,6 @@ $config
         'functions_opening_brace'           => 'same_line'
     ],
     'single_blank_line_at_eof'          => true,
-    'no_whitespace_in_blank_line'       => true,
-    'no_trailing_whitespace'            => true,
     'method_chaining_indentation'       => true,
     'indentation_type'                  => true,
     'constant_case'                     => true,
@@ -131,6 +130,7 @@ $config
             'yield_from'
         ]
     ],
+    'concat_space'                      => ['spacing' => 'one'],
     'switch_case_semicolon_to_colon'    => true,
     'switch_case_space'                 => true,
     'switch_continue_to_break'          => true,
@@ -153,7 +153,6 @@ $config
     'ternary_operator_spaces'           => true,
     'full_opening_tag'                  => false,
     'linebreak_after_opening_tag'       => false,
-    'align_multiline_comment'           => ['comment_type' => 'phpdocs_like'],
     'phpdoc_add_missing_param_annotation' => true,
     'no_extra_blank_lines'              => [
         'tokens' => [
@@ -199,7 +198,10 @@ $config
     'single_quote'                      => true,
     'string_line_ending'                => true,
     'strict_param'                      => true,
-    'whitespace_after_comma_in_array'   => true
+    'align_multiline_comment'           => ['comment_type' => 'phpdocs_like'],
+    'single_line_comment_spacing'       => true,
+    'single_line_comment_style'         => true,
+    'multiline_comment_opening_closing' => true
     ))
     ->setFinder($finder);
 

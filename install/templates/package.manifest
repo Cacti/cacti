@@ -11,8 +11,8 @@
                 "description": "ACME Device Package",
                 "class": "linux",
                 "tags": "ACME Packet Net-Net 4000 Series",
-                "installation": "ACME Packet Net-Net 4000 Series contributed by alteleid on 03-04-2007.",
-                "version": "1.2.26",
+                "installation": "ACME Packet Net-Net 4000 Series contributed by alteleid on 03-04-2007.\n\nGeneral information about Cacti templates:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/Device-Templates.md",
+                "version": "1.3.0",
                 "copyright": "GNU General Public License"
             }
         },
@@ -27,8 +27,8 @@
                 "description": "AKCP Device Device Package",
                 "class": "facilities",
                 "tags": "akcp probe environmental",
-                "installation": "This is a script query based template, and dynamically determines various sensor types attached to an AKCP device. This template will work against any AKCP device, and support any number of enumerated sensors attached to a device \u2026 it's not limited to just a SensorProbe2 for example. Currently, this template supports Airflow, Temperature, Humidity, Temperature\/Humidity and 4-20mA sensors. If you have another sensor you'd like to trend, just let me know. I'll give you my address and you can send me your sensor =) j\/k. It should be possible to add any other supported sensor without much work.\n\nThe script query pulls the sensor name directly from the AKCP configuration and sets this as the graph title. Various HRULEs are setup for the various AKCP based thresholds set for each sensor. The HRULE will not show up if your data isn't reaching that level. If you look at the Airflow Percent graph below, you'll see an example of the HRULEs. The other graphs aren't near their thresholds, so these are left out.\n\nMany of the per-graph settings are not templated. This allows you to set different paramters for different sensors. Be aware, that when creating multiple graphs, you will only be prompted to configure *ONE* of the graphs. All others will get the defaults. You can always go back and re-configure them as needed. I think this is due to a bug in Cacti, but I am not sure.  Thanks to Eric Schroeller.  Contributed 11-05-2013.\n",
-                "version": "1.2.26",
+                "installation": "This is a script query based template, and dynamically determines various sensor types attached to an AKCP device. This template will work against any AKCP device, and support any number of enumerated sensors attached to a device \u2026 it's not limited to just a SensorProbe2 for example. Currently, this template supports Airflow, Temperature, Humidity, Temperature\/Humidity and 4-20mA sensors. If you have another sensor you'd like to trend, just let me know. I'll give you my address and you can send me your sensor =) j\/k. It should be possible to add any other supported sensor without much work.\n\nThe script query pulls the sensor name directly from the AKCP configuration and sets this as the graph title. Various HRULEs are setup for the various AKCP based thresholds set for each sensor. The HRULE will not show up if your data isn't reaching that level. If you look at the Airflow Percent graph below, you'll see an example of the HRULEs. The other graphs aren't near their thresholds, so these are left out.\n\nMany",
+                "version": "1.3.0",
                 "copyright": "GNU General Public License"
             }
         },
@@ -43,8 +43,8 @@
                 "description": "APC InfraStruXure InRow CRAC Device Package",
                 "class": "facilities",
                 "tags": "apc infrastruxure inrow crac",
-                "installation": "We have determined that this template may only support ACRC500 units out-of-the-box. Other models of InRow units may not work immediately. It appears that APC uses different OID structures for each model of InRow unit. I cannot explain why they would opt to do this. Follow through the discussion on the forum post: Host Template for APC InfraStruXure InRow CRAC Units\n\nSeveral individuals have successfully modified the template to work with different units. Ideally, I would have developed this template to handle any unit - this would have required the use of script queries instead of snmp queries. Seeing as I don't have access to any other InRow units, I likely won't be able to make any modifications to support the full line of InRow products.  Package Requires SNMP Access.  Thanks to Eric Schroeller.  Contributed 02-25-2012",
-                "version": "1.2.26",
+                "installation": "We have determined that this template may only support ACRC500 units out-of-the-box. Other models of InRow units may not work immediately. It appears that APC uses different OID structures for each model of InRow unit. I cannot explain why they would opt to do this. Follow through the discussion on the forum post: Host Template for APC InfraStruXure InRow CRAC Units\n\nSeveral individuals have successfully modified the template to work with different units. Ideally, I would have developed this template to handle any unit - this would have required the use of script queries instead of snmp queries. Seeing as I don't have access to any other InRow units, I likely won't be able to make any modifications to support the full line of InRow products.  Package Requires SNMP Access.  Thanks to Eric Schroeller.  Contributed 02-25-2012\n\nGeneral information about Cacti templates:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/Device-Templates.md",
+                "version": "1.3.0",
                 "copyright": "GNU General Public License"
             }
         },
@@ -59,8 +59,8 @@
                 "description": "APC InfraStruXure PDU Device Package",
                 "class": "ups",
                 "tags": "apc infrastruxure pdu",
-                "installation": "Package Requires SNMP Access.  Thanks to Eric Schroeller.  Contributed 02-25-2012",
-                "version": "1.2.26",
+                "installation": "Package Requires SNMP Access.  Thanks to Eric Schroeller.  Contributed 02-25-2012\n\nGeneral information about Cacti templates:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/Device-Templates.md",
+                "version": "1.3.0",
                 "copyright": "GNU General Public License"
             }
         },
@@ -73,10 +73,10 @@
                 "homepage": "cacti.net",
                 "email": "developers@cacti.net",
                 "description": "Apache Webserver Device Package",
-                "class": "application",
+                "class": "webserver",
                 "tags": "apache web server statistics",
-                "installation": "For installation instructions, please see the following link:\n\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/apache_template_config.md",
-                "version": "1.2.26",
+                "installation": "For installation instructions, please see the following link:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/template_apache_config.md\n\nGeneral information about Cacti templates:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/Device-Templates.md",
+                "version": "1.3.0",
                 "copyright": "GNU General Public License"
             }
         },
@@ -90,9 +90,9 @@
                 "email": "developers@cacti.net",
                 "description": "ArubaOS switch Device Package",
                 "class": "switch",
-                "tags": "aruba switch",
-                "installation": [],
-                "version": "1.2.26",
+                "tags": "aruba switch 2530 2930",
+                "installation": "General information about Cacti templates:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/Device-Templates.md",
+                "version": "1.3.0",
                 "copyright": "GNU General Public License"
             }
         },
@@ -105,10 +105,10 @@
                 "homepage": "cacti.net",
                 "email": "developers@cacti.net",
                 "description": "Aruba Instant AP Cluster Device Package",
-                "class": "wireless",
+                "class": "switch",
                 "tags": "AP statistics, client statistics",
-                "installation": [],
-                "version": "1.2.26",
+                "installation": "General information about Cacti templates:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/Device-Templates.md",
+                "version": "1.3.0",
                 "copyright": "GNU General Public License"
             }
         },
@@ -123,8 +123,8 @@
                 "description": "Aruba OSCX switch 6x00 Device Package",
                 "class": "switch",
                 "tags": "aruba oscx switch 6x00",
-                "installation": [],
-                "version": "1.2.29",
+                "installation": "Also works for the 8x00 series (except for the VSX stack)\n\nGeneral information about Cacti templates:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/Device-Templates.md",
+                "version": "1.3.0",
                 "copyright": "GNU General Public License"
             }
         },
@@ -139,8 +139,8 @@
                 "description": "Aruba Wireless Controller Device Package",
                 "class": "wireless",
                 "tags": "aruba wireless controller",
-                "installation": [],
-                "version": "1.2.26",
+                "installation": "General information about Cacti templates:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/Device-Templates.md",
+                "version": "1.3.0",
                 "copyright": "GNU General Public License"
             }
         },
@@ -155,8 +155,8 @@
                 "description": "BayTech PDU Device Package",
                 "class": "facilities",
                 "tags": "baytech pdu device package",
-                "installation": "This template set allows you to trend statistics from a BayTech PDU. It is designed to support cascaded PDUs. Upon importing the template the following items will be included.  \n\nContributed by Eric Schoeller on 12-01-2013.",
-                "version": "1.2.26",
+                "installation": "This template set allows you to trend statistics from a BayTech PDU. It is designed to support cascaded PDUs. Upon importing the template the following items will be included.  \n\t\nContributed by Eric Schoeller on 12-01-2013.\n\nGeneral information about Cacti templates:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/Device-Templates.md",
+                "version": "1.3.0",
                 "copyright": "GNU General Public License"
             }
         },
@@ -171,8 +171,8 @@
                 "description": "Cacti Stats Device Package",
                 "class": "cacti",
                 "tags": "cacti statistics poller",
-                "installation": "Install the Package normally.  Enables monitoring of many Cacti related metrics.",
-                "version": "1.2.26",
+                "installation": "Enables monitoring of many Cacti related metrics.\n\nGeneral information about Cacti templates:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/Device-Templates.md",
+                "version": "1.3.0",
                 "copyright": "GNU General Public License"
             }
         },
@@ -187,8 +187,8 @@
                 "description": "Cisco Router Device Package",
                 "class": "router",
                 "tags": "cisco router",
-                "installation": "This is a fairly generic template for Cisco Routers",
-                "version": "1.2.26",
+                "installation": "This is a fairly generic template for Cisco Routers\n\nGeneral information about Cacti templates:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/Device-Templates.md",
+                "version": "1.3.0",
                 "copyright": "GNU General Public License"
             }
         },
@@ -200,11 +200,11 @@
                 "author": "The Cacti Group",
                 "homepage": "cacti.net",
                 "email": "developers@cacti.net",
-                "description": "Citrix NetScaler VPX Package",
+                "description": "Citrix NetScaler VPX Device Package",
                 "class": "loadbalancer",
                 "tags": "load balaner netscaler citrix",
-                "installation": "This is a community provided Device Template.  Use at your own risk.",
-                "version": "1.2.26",
+                "installation": "This is a community provided Device Template.  Use at your own risk.\n\nGeneral information about Cacti templates:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/Device-Templates.md",
+                "version": "1.3.0",
                 "copyright": "GNU General Public License"
             }
         },
@@ -219,8 +219,8 @@
                 "description": "Clearpass policy manager Device Package",
                 "class": "application",
                 "tags": "Aruba CPPM",
-                "installation": [],
-                "version": "1.1.29",
+                "installation": "General information about Cacti templates:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/Device-Templates.md",
+                "version": "1.3.0",
                 "copyright": "GNU General Public License"
             }
         },
@@ -235,7 +235,7 @@
                 "description": "Dell iDrac Device Package",
                 "class": "remotemgmt",
                 "tags": "Physical disk, virtual disk, temperature, fans, controller, battery",
-                "installation": [],
+                "installation": "General information about Cacti templates:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/Device-Templates.md",
                 "version": "1.3.0",
                 "copyright": "GNU General Public License"
             }
@@ -251,8 +251,8 @@
                 "description": "ESXi Device Device Package",
                 "class": "hypervisor",
                 "tags": "vmware esxi hypervisor",
-                "installation": "Login to the Hypervisor as root and then run the following commands to enable snmp support:\n\nesxcli system snmp set -r\nesxcli system snmp set -c YOUR_STRING\nesxcli system snmp set -p 161\nesxcli system snmp set -L \"City, State, Country\"\nesxcli system snmp set -C noc@example.com\nesxcli system snmp set -e yes\n",
-                "version": "1.2.26",
+                "installation": "Infomation about this template:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/template_esxi_config.md\n\nLogin to the Hypervisor as root and then run the following commands to enable snmp support:\n\t\n\tesxcli system snmp set -r\n\tesxcli system snmp set -c YOUR_STRING\n\tesxcli system snmp set -p 161\n\tesxcli system snmp set -L \"City, State, Country\"\n\tesxcli system snmp set -C noc@example.com\n\tesxcli system snmp set -e yes\n\t\nGeneral information about Cacti templates:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/Device-Templates.md",
+                "version": "1.3.0",
                 "copyright": "GNU General Public License"
             }
         },
@@ -267,8 +267,8 @@
                 "description": "Fortigate Device Package",
                 "class": "firewall",
                 "tags": "Firewall Fortinet, ips, ha, ipsec, sslvpn, antivirus",
-                "installation": [],
-                "version": "1.2.29",
+                "installation": "General information about Cacti templates:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/Device-Templates.md",
+                "version": "1.3.0",
                 "copyright": "GNU General Public License"
             }
         },
@@ -281,10 +281,10 @@
                 "homepage": "cacti.net",
                 "email": "developers@cacti.net",
                 "description": "Generic SNMP Device Device Package",
-                "class": "linux",
+                "class": "general",
                 "tags": "generic snmp device",
-                "installation": "This is a very 'generic' Device Template that will monitor interfaces, polling, time and ping time only.",
-                "version": "1.2.27",
+                "installation": "This is a very 'generic' Device Template that will monitor interfaces, polling, time and ping time only.\n\nGeneral information about Cacti templates:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/Device-Templates.md",
+                "version": "1.3.0",
                 "copyright": "GNU General Public License"
             }
         },
@@ -299,8 +299,8 @@
                 "description": "HPE Nimble\/Alletra storage Device Package",
                 "class": "storage",
                 "tags": "Nimble Alletra Storage snapshot latency capacity",
-                "installation": "Just configure and turn on snmp on storage",
-                "version": "1.2.29",
+                "installation": "Just configure and turn on snmp on storage\n\nGeneral information about Cacti templates:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/Device-Templates.md",
+                "version": "1.3.0",
                 "copyright": "GNU General Public License"
             }
         },
@@ -315,8 +315,8 @@
                 "description": "HPE iLO Device Package",
                 "class": "remotemgmt",
                 "tags": "hpe ipmi ilo idrac",
-                "installation": [],
-                "version": "1.2.26",
+                "installation": "General information about Cacti templates:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/Device-Templates.md",
+                "version": "1.3.0",
                 "copyright": "GNU General Public License"
             }
         },
@@ -331,8 +331,8 @@
                 "description": "Local Linux Machine Device Package",
                 "class": "linux",
                 "tags": "localhost linux unix",
-                "installation": "This package is only intended to monitoring the Cacti server.  It will not monitor other servers.",
-                "version": "1.2.26",
+                "installation": "This package is only intended to monitoring the Cacti server.  It will not monitor other servers.\n\nGeneral information about Cacti templates:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/Device-Templates.md",
+                "version": "1.3.0",
                 "copyright": "GNU General Public License"
             }
         },
@@ -347,8 +347,8 @@
                 "description": "MikroTik Device Device Package",
                 "class": "router",
                 "tags": "mikrotik router switch routeros",
-                "installation": "Once this Device Package is installed, you must enable MicroTik data collection.  Once MikroTik data collection is running, and at least completed one pass, you can re-index all devices and create graphs from them.",
-                "version": "1.2.26",
+                "installation": "Once this Device Package is installed, you must enable MicroTik data collection.  Once MikroTik data collection is running, and at least completed one pass, you can re-index all devices and create graphs from them.\n\nGeneral information about Cacti templates:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/Device-Templates.md",
+                "version": "1.3.0",
                 "copyright": "GNU General Public License"
             }
         },
@@ -363,8 +363,8 @@
                 "description": "MikroTik Switch (SWOS) Device Package",
                 "class": "switch",
                 "tags": "mikrotik swos switch",
-                "installation": "This is a simple template for a very simple device type.",
-                "version": "1.2.26",
+                "installation": "This is a simple template for a very simple device type.\n\nGeneral information about Cacti templates:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/Device-Templates.md",
+                "version": "1.3.0",
                 "copyright": "GNU General Public License"
             }
         },
@@ -379,8 +379,8 @@
                 "description": "Motorola SB6141 Device Package",
                 "class": "telephony",
                 "tags": "motorola surfboard cable modem",
-                "installation": "ARRIS\/Motorola SB6141 (Downstream Signal to Noise Ratio and Power Level, Upstream Power Level, Codewords).  Contributed by tpowers on 05-01-2015",
-                "version": "1.2.26",
+                "installation": "ARRIS\/Motorola SB6141 (Downstream Signal to Noise Ratio and Power Level, Upstream Power Level, Codewords).  Contributed by tpowers on 05-01-2015\n\nGeneral information about Cacti templates:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/Device-Templates.md",
+                "version": "1.3.0",
                 "copyright": "GNU General Public License"
             }
         },
@@ -392,11 +392,11 @@
                 "author": "The Cacti Group",
                 "homepage": "cacti.net",
                 "email": "developers@cacti.net",
-                "description": "Net-SNMP Device Package",
+                "description": "Net-SNMP Device Device Package",
                 "class": "linux",
                 "tags": "linux net-snmp",
-                "installation": "Best for Linux Machines using Net-SNMP",
-                "version": "1.2.26",
+                "installation": "Best for Linux Machines using Net-SNMP\n\nGeneral information about Cacti templates:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/Device-Templates.md",
+                "version": "1.3.0",
                 "copyright": "GNU General Public License"
             }
         },
@@ -409,10 +409,10 @@
                 "homepage": "cacti.net",
                 "email": "developers@cacti.net",
                 "description": "PING - Advanced Ping Graph Template Package",
-                "class": "general",
+                "class": "amon",
                 "tags": "ping advanced",
-                "installation": "Once imported, add to the Device Templates you wish.  Make sure you set default for automation.",
-                "version": "1.2.26",
+                "installation": "Once imported, add to the Device Templates you wish.  Make sure you set default for automation.\n\nGeneral information about Cacti templates:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/Device-Templates.md",
+                "version": "1.3.0",
                 "copyright": "GNU General Public License"
             }
         },
@@ -427,8 +427,8 @@
                 "description": "SNMP Printer Device Package",
                 "class": "printer",
                 "tags": "Printed pages, supply",
-                "installation": [],
-                "version": "1.2.26",
+                "installation": "General information about Cacti templates:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/Device-Templates.md",
+                "version": "1.3.0",
                 "copyright": "GNU General Public License"
             }
         },
@@ -443,8 +443,8 @@
                 "description": "SNMP UPS Device Package",
                 "class": "ups",
                 "tags": "ups snmp generic",
-                "installation": "This is a full on SNMP based UPS package that is compatible with many UPS'",
-                "version": "1.2.26",
+                "installation": "This is a full on SNMP based UPS package that is compatible with many UPS\n\nGeneral information about Cacti templates:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/Device-Templates.md",
+                "version": "1.3.0",
                 "copyright": "GNU General Public License"
             }
         },
@@ -459,8 +459,8 @@
                 "description": "Synology NAS Device Package",
                 "class": "storage",
                 "tags": "synology nas storage",
-                "installation": "This Device Template is a comprehensive Synology NAS Device Template that covers many attributes associated with the Synology product line.",
-                "version": "1.2.26",
+                "installation": "This Device Template is a comprehensive Synology NAS Device Template that covers many attributes associated with the Synology product line.\n\nGeneral information about Cacti templates:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/Device-Templates.md",
+                "version": "1.3.0",
                 "copyright": "GNU General Public License"
             }
         },
@@ -472,11 +472,11 @@
                 "author": "The Cacti Group",
                 "homepage": "cacti.net",
                 "email": "developers@cacti.net",
-                "description": "Windows Device Package",
+                "description": "Windows Device Device Package",
                 "class": "windows",
                 "tags": "windows",
-                "installation": "This package is intended for Windows Devices",
-                "version": "1.2.26",
+                "installation": "This package is intended for Windows Devices\n\nGeneral information about Cacti templates:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/Device-Templates.md",
+                "version": "1.3.0",
                 "copyright": "GNU General Public License"
             }
         }

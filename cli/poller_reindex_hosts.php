@@ -46,38 +46,38 @@ require_once(CACTI_PATH_LIBRARY . '/sort.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
-/* switch to main database for cli's */
-if ($config['poller_id'] > 1) {
+// switch to main database for cli's
+if (POLLER_ID > 1) {
 	db_switch_remote_to_main();
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-/* system controlled parameters */
-$type         = 'rmaster';
-$thread_id    = 0;
+// system controlled parameters
+$type        = 'rmaster';
+$thread_id   = 0;
 
-/* mandatory parameters */
-$start_time   = false;
-$end_time     = false;
+// mandatory parameters
+$start_time  = false;
+$end_time    = false;
 
-/* optional parameters for host selection */
-$debug        = false;
-$host_id      = false;
-$query_id     = false;
-$host_descr   = false;
+// optional parameters for host selection
+$debug       = false;
+$host_id     = 0;
+$query_id    = 0;
+$host_descr  = '';
 
-/* optional for threading and verbose display */
-$threads           = detect_cpu_cores();
+// optional for threading and verbose display
+$threads     = detect_cpu_cores();
 
 if ($threads == 0) {
 	$threads = 2;
 }
 
-/* optional for force handing and resume */
-$forcerun          = false;
+// optional for force handing and resume
+$forcerun = false;
 
 foreach ($parms as $parameter) {
 	if (strpos($parameter, '=')) {
@@ -91,9 +91,9 @@ foreach ($parms as $parameter) {
 		case '-id':
 		case '--id':
 			if (strtolower($value) == 'all') {
-				$host_id = false;
+				$host_id = -1;
 			} elseif (is_numeric($value) && $value > 0) {
-				$host_id = $value;
+				$host_id = intval($value);
 			} else {
 				print 'ERROR: You must supply a valid Device ID to run this script!' . PHP_EOL;
 
@@ -103,9 +103,9 @@ foreach ($parms as $parameter) {
 			break;
 		case '--qid':
 			if (strtolower($value) == 'all') {
-				$query_id = false;
+				$query_id = -1;
 			} elseif (is_numeric($value) && $value > 0) {
-				$query_id = $value;
+				$query_id = intval($value);
 			} else {
 				print 'ERROR: You must supply a valid Query ID to run this script!' . PHP_EOL;
 
@@ -166,33 +166,33 @@ foreach ($parms as $parameter) {
 	}
 }
 
-/* install signal handlers for UNIX only */
+// install signal handlers for UNIX only
 if (function_exists('pcntl_signal')) {
 	pcntl_signal(SIGTERM, 'sig_handler');
 	pcntl_signal(SIGINT, 'sig_handler');
 }
 
-/* take time and log performance data */
+// take time and log performance data
 $start = microtime(true);
 
-/* set new timeout and memory settings */
+// set new timeout and memory settings
 ini_set('max_execution_time', '0');
 ini_set('memory_limit', '-1');
 
 $sql_where = 'WHERE IFNULL(TRIM(s.disabled),"") != "on" AND IFNULL(TRIM(h.disabled),"") != "on"';
 $params    = [];
 
-if (is_numeric($host_id) && $host_id > 0) {
+if ($host_id > 0) {
 	$sql_where .= 'AND host_id = ? ';
 	$params[]  = $host_id;
 }
 
-if (is_numeric($query_id) && $query_id > 0) {
+if ($query_id > 0) {
 	$sql_where .= 'AND hsq.snmp_query_id = ?';
 	$params[] = $query_id;
 }
 
-/* allow for additional filtering on host description */
+// allow for additional filtering on host description
 if ($host_descr != '') {
 	$sql_where .= 'AND h.description LIKE ?';
 	$params[] = '%' . $host_descr . '%';
@@ -207,25 +207,26 @@ $rows = db_fetch_cell_prepared("SELECT COUNT(*)
 	$sql_where",
 	$params);
 
-/* issue warnings and start message if applicable */
+// issue warnings and start message if applicable
 print 'WARNING: Do not interrupt this script.  Reindexing can take quite some time' . PHP_EOL;
+
 reindex_debug('There are ' . $rows . ' data queries to run');
 
 if ($type == 'rmaster') {
 	cacti_log('Poller reindex hosts process started', true, 'REINDEX');
 }
 
-/* send a gentle message to the log and stdout */
+// send a gentle message to the log and stdout
 reindex_debug('Reindex hosts starting');
 
-/* silently end if the registered process is still running  */
+// silently end if the registered process is still running
 if (!$forcerun) {
 	if (!register_process_start('reindex', $type, $thread_id, 86400)) {
 		exit(0);
 	}
 }
 
-/* Collect data as determined by the type */
+// Collect data as determined by the type
 switch ($type) {
 	case 'rmaster':
 		reindex_master_handler($forcerun, $host_id, $query_id, $host_descr, $threads);
@@ -233,23 +234,23 @@ switch ($type) {
 		unregister_process('reindex', 'rmaster', 0);
 
 		break;
-	case 'child':  /* Launched by the rmaster process */
+	case 'child':  // Launched by the rmaster process
 		$child_start = microtime(true);
 
 		$sql_where = 'WHERE IFNULL(TRIM(s.disabled),"") != "on" AND IFNULL(TRIM(h.disabled),"") != "on"';
 		$params    = [];
 
-		if (is_numeric($host_id) && $host_id > 0) {
+		if ($host_id > 0) {
 			$sql_where .= 'AND host_id = ? ';
 			$params[]  = $host_id;
 		}
 
-		if (is_numeric($query_id) && $query_id > 0) {
+		if ($query_id > 0) {
 			$sql_where .= 'AND hsq.snmp_query_id = ?';
 			$params[] = $query_id;
 		}
 
-		/* allow for additional filtering on host description */
+		// allow for additional filtering on host description
 		if ($host_descr != '') {
 			$sql_where .= 'AND h.description LIKE ?';
 			$params[] = '%' . $host_descr . '%';
@@ -298,23 +299,23 @@ if ($type == 'rmaster') {
 
 exit(0);
 
-function reindex_master_handler($forcerun, $host_id, $query_id, $host_descr, $threads) {
+function reindex_master_handler(bool $forcerun, int $host_id, int $query_id, string $host_descr, int $threads) : bool {
 	global $type;
 
 	$sql_where = 'WHERE IFNULL(TRIM(s.disabled),"") != "on" AND IFNULL(TRIM(h.disabled),"") != "on"';
 	$params    = [];
 
-	if (is_numeric($host_id) && $host_id > 0) {
+	if ($host_id > 0) {
 		$sql_where .= 'AND host_id = ? ';
 		$params[]  = $host_id;
 	}
 
-	if (is_numeric($query_id) && $query_id > 0) {
+	if ($query_id > 0) {
 		$sql_where .= 'AND hsq.snmp_query_id = ?';
 		$params[] = $query_id;
 	}
 
-	/* allow for additional filtering on host description */
+	// allow for additional filtering on host description
 	if ($host_descr != '') {
 		$sql_where .= 'AND h.description LIKE ?';
 		$params[] = '%' . $host_descr . '%';
@@ -371,15 +372,14 @@ function reindex_master_handler($forcerun, $host_id, $query_id, $host_descr, $th
 
 /**
  * reindex_launch_child - this function will launch collector children based upon
- *   the maximum number of threads and the process type
+ * the maximum number of threads and the process type
  *
- * @param $thread_id  (int)    The Thread id to launch
- * @param mixed $threads
+ * @param int $thread_id The Thread id to launch
  *
- * @return - NULL
+ * @return void
  */
-function reindex_launch_child($thread_id, $threads) {
-	global $config, $debug, $host_id, $query_id, $host_descr, $forcerun;
+function reindex_launch_child(int $thread_id, int $threads) : void {
+	global $debug, $host_id, $query_id, $host_descr, $forcerun;
 
 	$php_binary = read_config_option('path_php_binary');
 
@@ -392,50 +392,103 @@ function reindex_launch_child($thread_id, $threads) {
 
 /**
  * reindex_processes_running - given a type, determine the number
- *   of sub-type or children that are currently running
+ * of sub-type or children that are currently running
  *
- * @return - (int) The number of running processes
+ * @return int - The number of running processes
  */
-function reindex_processes_running() {
+function reindex_processes_running() : int {
 	$running = db_fetch_cell('SELECT COUNT(*)
 		FROM processes
 		WHERE tasktype = "reindex"
 		AND taskname = "child"');
 
-	if ($running == 0) {
-		return 0;
-	}
-
-	return $running;
+	return intval($running);
 }
 
 /**
  * reindex_debug - this simple routine prints a standard message to the console
- *   when running in debug mode.
+ * when running in debug mode.
  *
- * @param $message - (string) The message to display
+ * @param string $message The message to display
  *
- * @return - NULL
+ * @return void
  */
-function reindex_debug($message) {
+function reindex_debug(string $message) : void {
 	global $debug;
 
 	if ($debug) {
-		print 'REINDEX: ' . $message . PHP_EOL;
+		print 'REINDEX: ' . trim($message) . PHP_EOL;
+	}
+}
+
+/**
+ * sig_handler - provides a generic means to catch exceptions to the Cacti log.
+ *
+ * @param int $signo the signal that was thrown by the interface.
+ *
+ * @return void
+ */
+function sig_handler(int $signo) : void {
+	global $type, $thread_id;
+
+	switch ($signo) {
+		case SIGTERM:
+		case SIGINT:
+			cacti_log('WARNING: Poller reindex hosts terminated by user', false, 'REINDEX');
+
+			if (strpos($type, 'rmaster') !== false) {
+				reindex_kill_running_processes();
+			}
+
+			unregister_process('reindex', 'rmaster', $thread_id, getmypid());
+
+			exit(1);
+		default:
+			// ignore all other signals
+	}
+}
+
+/**
+ * reindex_kill_running_processes - this function is part of an interrupt
+ * handler to kill children processes when the parent is killed
+ *
+ * @return void
+ */
+function reindex_kill_running_processes() : void {
+	global $type;
+
+	$processes = db_fetch_assoc_prepared('SELECT *
+		FROM processes
+		WHERE tasktype = "reindex"
+		AND taskname IN ("child")
+		AND pid != ?',
+		[getmypid()]);
+
+	if (cacti_sizeof($processes)) {
+		foreach ($processes as $p) {
+			cacti_log(sprintf('WARNING: Killing Cleanup %s PID %d due to another due to signal or overrun.', ucfirst($p['taskname']), $p['pid']), false, 'REINDEX');
+			posix_kill($p['pid'], SIGTERM);
+
+			unregister_process($p['tasktype'], $p['taskname'], $p['taskid'], $p['pid']);
+		}
 	}
 }
 
 /**
  * display_version - displays version information
+ *
+ * @return void
  */
-function display_version() {
+function display_version() : void {
 	print 'Cacti Reindex hosts Tool, Version ' . CACTI_VERSION . ' ' . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 /**
  * display_help - generic help screen for utilities
+ *
+ * @return void
  */
-function display_help() {
+function display_help() : void {
 	display_version();
 
 	print 'usage: poller_reindex_hosts.php --id=[host_id|all] [--qid=[ID|all]]' . PHP_EOL . PHP_EOL;
@@ -456,59 +509,4 @@ function display_help() {
 	print 'System Controlled:' . PHP_EOL;
 	print '    --type      - The type and subtype of the rebuild poller cache process' . PHP_EOL;
 	print '    --child     - The thread id of the child process' . PHP_EOL . PHP_EOL;
-}
-
-/**
- * sig_handler - provides a generic means to catch exceptions to the Cacti log.
- *
- * @param $signo - (int) the signal that was thrown by the interface.
- *
- * @return - null
- */
-function sig_handler($signo) {
-	global $type, $thread_id;
-
-	switch ($signo) {
-		case SIGTERM:
-		case SIGINT:
-			cacti_log('WARNING: Poller reindex hosts terminated by user', false, 'REINDEX');
-
-			if (strpos($type, 'rmaster') !== false) {
-				reindex_kill_running_processes();
-			}
-
-			unregister_process('reindex', 'rmaster', $thread_id, getmypid());
-
-			exit(1);
-
-			break;
-		default:
-			/* ignore all other signals */
-	}
-}
-
-/**
- * reindex_kill_running_processes - this function is part of an interrupt
- *   handler to kill children processes when the parent is killed
- *
- * @return - NULL
- */
-function reindex_kill_running_processes() {
-	global $type;
-
-	$processes = db_fetch_assoc_prepared('SELECT *
-		FROM processes
-		WHERE tasktype = "reindex"
-		AND taskname IN ("child")
-		AND pid != ?',
-		[getmypid()]);
-
-	if (cacti_sizeof($processes)) {
-		foreach ($processes as $p) {
-			cacti_log(sprintf('WARNING: Killing Cleanup %s PID %d due to another due to signal or overrun.', ucfirst($p['taskname']), $p['pid']), false, 'REINDEX');
-			posix_kill($p['pid'], SIGTERM);
-
-			unregister_process($p['tasktype'], $p['taskname'], $p['taskid'], $p['pid']);
-		}
-	}
 }

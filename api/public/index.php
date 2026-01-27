@@ -26,11 +26,11 @@ $app->get('/', function (Request $request, Response $response) {
  * This function checks each parameter key against a list of allowed parameters
  * and returns an error message if any invalid parameters are found.
  *
- * @param array $params The parameters to validate (key-value pairs)
- * @param array $allowed_params Array of allowed parameter names
+ * @param  array       $params         The parameters to validate (key-value pairs)
+ * @param  array       $allowed_params Array of allowed parameter names
  * @return string|null Returns an error message if invalid parameters are found, otherwise null
  */
-function validate_parameters($params, $allowed_params) {
+function validate_parameters(array $params, array $allowed_params) : string|null {
 	foreach ($params as $key => $value) {
 		if (!in_array($key, $allowed_params, true)) {
 			return 'ERROR: Invalid parameter passed: "' . htmlspecialchars($key) . '"';
@@ -176,7 +176,7 @@ $app->group('/v1', function (RouteCollectorProxy $group) {
 			return $response->withHeader('Content-Type', 'application/json');
 		});
 
-		//automation status endpoint
+		// automation status endpoint
 		$statusGroup->get('/automation', function (Request $request, Response $response) {
 			$json = json_encode(get_automation_status());
 

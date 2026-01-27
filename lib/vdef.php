@@ -25,11 +25,11 @@
 /**
  * get_vdef_item_name - resolves a single VDEF item into its text-based representation
  *
- * @param  int $vdef_item_id - the id of the individual vdef item
+ * @param int $vdef_item_id The id of the individual vdef item
  *
- * @return string - a text-based representation of the vdef item
+ * @return string A text-based representation of the vdef item
  */
-function get_vdef_item_name($vdef_item_id) {
+function get_vdef_item_name(int $vdef_item_id) : string {
 	global $vdef_functions, $vdef_item_types;
 
 	$vdef_item          = db_fetch_row_prepared('SELECT type, value FROM vdef_items WHERE id = ?', [$vdef_item_id]);
@@ -40,18 +40,20 @@ function get_vdef_item_name($vdef_item_id) {
 		case '4': return $current_vdef_value;
 		case '6': return $current_vdef_value;
 	}
+
+	return '';
 }
 
 /**
  * get_vdef - resolves an entire VDEF into its text-based representation for use in the RRDtool 'graph'
  * string. this name will be resolved recursively if necessary
  *
- * @param  int  $vdef_id - the id of the vdef to resolve
- * @param  bool $display
+ * @param int  $vdef_id The id of the vdef to resolve
+ * @param bool $display
  *
- * @return string - a text-based representation of the vdef
+ * @return string A text-based representation of the vdef
  */
-function get_vdef($vdef_id, $display = false) {
+function get_vdef(int $vdef_id, bool $display = false) : string {
 	$vdef_items = db_fetch_assoc_prepared('SELECT * FROM vdef_items WHERE vdef_id = ? ORDER BY sequence', [$vdef_id]);
 
 	$i           = 0;
@@ -77,7 +79,7 @@ function get_vdef($vdef_id, $display = false) {
 	return $vdef_string;
 }
 
-function preset_vdef_form_list() {
+function preset_vdef_form_list() : array {
 	$fields_vdef_edit = [
 		'name' => [
 			'method'        => 'textbox',
@@ -99,7 +101,7 @@ function preset_vdef_form_list() {
 	return $fields_vdef_edit;
 }
 
-function preset_vdef_item_form_list() {
+function preset_vdef_item_form_list() : array {
 	$fields_vdef_item_edit = [
 		'sequence' => 'sequence',
 		'type'     => 'type',

@@ -28,22 +28,22 @@ require_once(CACTI_PATH_LIBRARY . '/import.php');
 require_once(CACTI_PATH_LIBRARY . '/package.php');
 require_once(CACTI_PATH_LIBRARY . '/xml.php');
 
-/* set default action */
+// set default action
 set_default_action();
 
 if (check_get_author_info() === false) {
 	exit;
 }
 
-switch (get_request_var('action')) {
+switch (grv('action')) {
 	case 'save':
 		form_save();
 
 		break;
 	case 'get_contents':
-		$export_type    = get_nfilter_request_var('export_type');
-		$export_item_id = get_nfilter_request_var('export_item_id');
-		$include_deps   = (get_nfilter_request_var('include_deps') == 'true' ? true : false);
+		$export_type    = gnrv('export_type');
+		$export_item_id = gnrv('export_item_id');
+		$include_deps   = (gnrv('include_deps') == 'true' ? true : false);
 
 		print get_package_contents($export_type, $export_item_id);
 
@@ -56,31 +56,40 @@ switch (get_request_var('action')) {
 		break;
 }
 
-function form_save() {
+function form_save() : void {
 	global $export_types, $export_errors, $debug, $package_file;
 
-	/* ================= input validation ================= */
-	get_filter_request_var('export_item_id');
-	/* ==================================================== */
+	// ================= input validation =================
+	gfrv('export_item_id');
+	// ====================================================
 
 	$export_okay = false;
 
-	$xml_data = get_item_xml(get_nfilter_request_var('export_type'), get_nfilter_request_var('export_item_id'), (((isset_request_var('include_deps') ? get_nfilter_request_var('include_deps') : '') == '') ? false : true));
+	$export_type    = gnrv('export_type');
+	$export_item_id = intval(gfrv('export_item_id'));
+
+	if (isrv('include_deps') && gnrv('include_deps') == '') {
+		$include_deps = false;
+	} else {
+		$include_deps = true;
+	}
+
+	$xml_data = get_item_xml($export_type, $export_item_id, $include_deps);
 
 	$info                 = [];
-	$info['name']         = get_nfilter_request_var('name');
-	$info['author']       = get_nfilter_request_var('author');
-	$info['homepage']     = get_nfilter_request_var('homepage');
-	$info['email']        = get_nfilter_request_var('email');
-	$info['description']  = get_nfilter_request_var('description');
-	$info['class']        = get_nfilter_request_var('class');
-	$info['tags']         = get_nfilter_request_var('tags');
-	$info['installation'] = get_nfilter_request_var('installation');
-	$info['version']      = get_nfilter_request_var('version');
-	$info['copyright']    = get_nfilter_request_var('copyright');
+	$info['name']         = gnrv('name');
+	$info['author']       = gnrv('author');
+	$info['homepage']     = gnrv('homepage');
+	$info['email']        = gnrv('email');
+	$info['description']  = gnrv('description');
+	$info['class']        = gnrv('class');
+	$info['tags']         = gnrv('tags');
+	$info['installation'] = gnrv('installation');
+	$info['version']      = gnrv('version');
+	$info['copyright']    = gnrv('copyright');
 
 	// Let's store the Template information for subsequent exports
-	$hash = get_export_hash(get_nfilter_request_var('export_type'), get_nfilter_request_var('export_item_id'));
+	$hash = get_export_hash(gnrv('export_type'), gnrv('export_item_id'));
 
 	$export_okay = save_packager_metadata($hash, $info);
 
@@ -89,7 +98,7 @@ function form_save() {
 	if ($export_okay) {
 		$files = find_dependent_files($xml_data);
 
-		/* search xml files for scripts */
+		// search xml files for scripts
 		if (cacti_sizeof($files)) {
 			foreach ($files as $file) {
 				if (strpos($file['file'], '.xml') !== false) {
@@ -129,28 +138,28 @@ function form_save() {
 	}
 }
 
-function export() {
+function export() : void {
 	global $export_types, $device_classes, $graph_template_classes, $copyrights;
 
-	/* 'graph_template' should be the default */
-	if (!isset_request_var('export_type')) {
-		set_request_var('export_type', 'host_template');
+	// 'graph_template' should be the default
+	if (!isrv('export_type')) {
+		srv('export_type', 'host_template');
 
 		$id = db_fetch_cell('SELECT id FROM host_template ORDER BY name LIMIT 1');
 
-		set_request_var('export_item_id', $id);
+		srv('export_item_id', $id);
 	}
 
 	unset($export_types['data_template']);
 	unset($export_types['data_query']);
 
-	switch (get_nfilter_request_var('export_type')) {
+	switch (gnrv('export_type')) {
 		case 'host_template':
 		case 'graph_template':
 		case 'data_query':
 			break;
 		default:
-			set_request_var('export_type', 'host_template');
+			srv('export_type', 'host_template');
 	}
 
 	html_start_box(__('Package Templates'), '100%', false, 3, 'center', '');
@@ -167,9 +176,9 @@ function export() {
 							foreach ($export_types as $key => $array) {
 								print "<option value='$key'";
 
-								if (get_nfilter_request_var('export_type') == $key) {
+								if (gnrv('export_type') == $key) {
 									print ' selected';
-								} print '>' . html_escape($array['name']) . '</option>';
+								} print '>' . htmle($array['name']) . '</option>';
 							}
 	?>
 						</select>
@@ -190,11 +199,13 @@ function export() {
 
 	// Let's get any saved package details from the last time the template was packaged
 	$data = [];
-	$hash = get_export_hash(get_nfilter_request_var('export_type'), get_nfilter_request_var('export_item_id'));
+	$hash = get_export_hash(gnrv('export_type'), gnrv('export_item_id'));
 
 	// Two methods, one with SQLite and one without
 
-	$data = [];
+	$data    = [];
+	$detail  = [];
+	$classes = [];
 
 	if (class_exists('SQLite3')) {
 		$data = get_packager_metadata($hash);
@@ -210,11 +221,11 @@ function export() {
 	}
 
 	// If this template has not been saved before, initialize values
-	switch(get_nfilter_request_var('export_type')) {
+	switch(gnrv('export_type')) {
 		case 'host_template':
 			$classes = $device_classes;
 
-			if (!isset_request_var('export_item_id')) {
+			if (!isrv('export_item_id')) {
 				$detail = db_fetch_row('SELECT *
 					FROM host_template
 					ORDER BY name
@@ -223,14 +234,14 @@ function export() {
 				$detail = db_fetch_row_prepared('SELECT *
 					FROM host_template
 					WHERE id = ?',
-					[get_filter_request_var('export_item_id')]);
+					[gfrv('export_item_id')]);
 			}
 
 			break;
 		case 'graph_template':
 			$classes = $graph_template_classes;
 
-			if (!isset_request_var('export_item_id')) {
+			if (!isrv('export_item_id')) {
 				$detail = db_fetch_row('SELECT *
 					FROM graph_templates
 					ORDER BY name
@@ -239,14 +250,14 @@ function export() {
 				$detail = db_fetch_row_prepared('SELECT *
 					FROM graph_templates
 					WHERE id = ?',
-					[get_filter_request_var('export_item_id')]);
+					[gfrv('export_item_id')]);
 			}
 
 			break;
 		case 'data_query':
 			$classes = $graph_template_classes;
 
-			if (!isset_request_var('export_item_id')) {
+			if (!isrv('export_item_id')) {
 				$detail = db_fetch_row('SELECT id, name
 					FROM snmp_query
 					ORDER BY name
@@ -255,14 +266,14 @@ function export() {
 				$detail = db_fetch_row_prepared('SELECT id, name
 					FROM snmp_query
 					WHERE id = ?',
-					[get_filter_request_var('export_item_id')]);
+					[gfrv('export_item_id')]);
 			}
 
 			break;
 	}
 
 	if (cacti_sizeof($detail)) {
-		switch(get_nfilter_request_var('export_type')) {
+		switch(gnrv('export_type')) {
 			case 'host_template':
 				$data['description'] = __('%s Device Package', $detail['name']);
 
@@ -300,7 +311,7 @@ function export() {
 
 	form_start('package.php', 'form_id');
 
-	html_start_box(__('Available Templates [%s]', $export_types[get_nfilter_request_var('export_type')]['name']), '100%', false, 3, 'center', '');
+	html_start_box(__('Available Templates [%s]', $export_types[gnrv('export_type')]['name']), '100%', false, 3, 'center', '');
 
 	$package_form = [
 		'spacer0' => [
@@ -309,17 +320,17 @@ function export() {
 		],
 		'export_item_id' => [
 			'method'        => 'drop_sql',
-			'friendly_name' => __('%s to Export', $export_types[get_nfilter_request_var('export_type')]['name']),
+			'friendly_name' => __('%s to Export', $export_types[gnrv('export_type')]['name']),
 			'description'   => __('Choose the exact items to export in the Package.'),
-			'value'         => (isset_request_var('export_item_id') ? get_filter_request_var('export_item_id') : '|arg1:export_item_id|'),
-			'sql'           => $export_types[get_nfilter_request_var('export_type')]['dropdown_sql']
+			'value'         => (isrv('export_item_id') ? gfrv('export_item_id') : '|arg1:export_item_id|'),
+			'sql'           => $export_types[gnrv('export_type')]['dropdown_sql']
 		],
 		'include_deps' => [
 			'method'        => 'checkbox',
 			'friendly_name' => __('Include Dependencies'),
 			'description'   => __('Some templates rely on other items in Cacti to function properly. It is highly recommended that you select this box or the resulting import may fail.'),
 			'value'         => 'on',
-			'sql'           => $export_types[get_nfilter_request_var('export_type')]['dropdown_sql']
+			'sql'           => $export_types[gnrv('export_type')]['dropdown_sql']
 		],
 		'spacer1' => [
 			'method'        => 'spacer',
@@ -409,7 +420,7 @@ function export() {
 		],
 		'export_type' => [
 			'method' => 'hidden',
-			'value'  => get_nfilter_request_var('export_type')
+			'value'  => gnrv('export_type')
 		]
 	];
 
@@ -487,8 +498,8 @@ function export() {
 
 	html_start_box(__('Package Contents Include'), '100%', false, 3, 'center', '');
 
-	if (isset_request_var('export_type') && isset_request_var('export_item_id')) {
-		print get_package_contents(get_request_var('export_type'), get_request_var('export_item_id'));
+	if (isrv('export_type') && isrv('export_item_id')) {
+		print get_package_contents(grv('export_type'), grv('export_item_id'));
 	} else {
 		print '<div id="details" style="vertical-align:top">';
 		print '</div>';

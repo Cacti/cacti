@@ -87,8 +87,6 @@ switch ($providerName) {
 		cacti_log('ERROR: Unknown OAuth2 provider');
 
 		die('Provider missing');
-
-		break;
 }
 
 if (!isset($_GET['code'])) { // If we don't have an authorization code then get one
@@ -98,7 +96,7 @@ if (!isset($_GET['code'])) { // If we don't have an authorization code then get 
 
 	exit;
 
-	//Check given state against previously stored one to mitigate CSRF attack
+	// Check given state against previously stored one to mitigate CSRF attack
 }
 
 if (empty($_GET['state']) || (isset($_SESSION['oauth2state']) && ($_GET['state'] !== $_SESSION['oauth2state']))) {
@@ -113,8 +111,8 @@ if (empty($_GET['state']) || (isset($_SESSION['oauth2state']) && ($_GET['state']
 		]
 	);
 
-	//Use this to interact with an API on the users behalf
-	//Use this to get a new access token if the old one expires
+	// Use this to interact with an API on the users behalf
+	// Use this to get a new access token if the old one expires
 	print __('Refresh Token: ') . $token->getRefreshToken();
 	print '<br/>' . __('Store this token in Settings -> Mail/Reporting/DNS -> Oauth2 refresh token. ');
 	print '<br/>' . __('If the token is empty, it means it stays the same. The Oatuh2 provider will not resend it in that case. ');

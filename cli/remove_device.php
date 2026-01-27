@@ -33,17 +33,17 @@ require_once(CACTI_PATH_LIBRARY . '/snmp.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
-/* switch to main database for cli's */
-if ($config['poller_id'] > 1) {
+// switch to main database for cli's
+if (POLLER_ID > 1) {
 	db_switch_remote_to_main();
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (cacti_sizeof($parms)) {
-	/* setup defaults */
+	// setup defaults
 	$description = '';
 	$ip          = '';
 	$host_id     = '';
@@ -51,7 +51,6 @@ if (cacti_sizeof($parms)) {
 	$ids_id      = [];
 	$quietMode   = false;
 	$confirm     = false;
-	$quiet       = false;
 	$debug       = false;
 
 	foreach ($parms as $parameter) {
@@ -115,15 +114,13 @@ if (cacti_sizeof($parms)) {
 		}
 	}
 
-	/* process the various lists into validation arrays */
+	// process the various lists into validation arrays
 	$ids_host  = [];
 	$ids_ip    = [];
 
-	/* process host description */
+	// process host description
 	if ($description != '') {
-		if ($debug) {
-			print 'Searching hosts by description...' . PHP_EOL;
-		}
+		debug('Searching hosts by description...');
 
 		$ids_host = array_rekey(
 			db_fetch_assoc_prepared('SELECT id
@@ -142,9 +139,7 @@ if (cacti_sizeof($parms)) {
 	}
 
 	if ($ip != '') {
-		if ($debug) {
-			print 'Searching hosts by IP...' . PHP_EOL;
-		}
+		debug('Searching hosts by IP...');
 
 		$ids_ip = array_rekey(
 			db_fetch_assoc_prepared('SELECT id
@@ -178,9 +173,7 @@ if (cacti_sizeof($parms)) {
 
 	$ids_sql = implode(',', $ids);
 
-	if ($debug) {
-		print "Finding devices with ids $ids_sql" . PHP_EOL;
-	}
+	debug("Finding devices with ids $ids_sql");
 
 	$ids_found = [];
 
@@ -189,7 +182,7 @@ if (cacti_sizeof($parms)) {
 		WHERE id IN (?)',
 		[$ids_found]);
 
-	if (!$quiet) {
+	if (!$quietMode) {
 		if (cacti_sizeof($hosts)) {
 			printf('%8.s | %30.s | %30.s' . PHP_EOL, 'id', 'host', 'description');
 
@@ -207,11 +200,11 @@ if (cacti_sizeof($parms)) {
 		if (cacti_sizeof($ids_found)) {
 			$ids_confirm = implode(', ', $ids_found);
 
-			if (!$quiet) {
+			if (!$quietMode) {
 				print "Removing devices with ids: $ids_confirm" . PHP_EOL;
 			}
 
-			$host_id = api_device_remove_multi($ids);
+			api_device_remove_multi($ids);
 
 			if (is_error_message()) {
 				print 'ERROR: Failed to remove devices' . PHP_EOL;
@@ -236,15 +229,52 @@ if (cacti_sizeof($parms)) {
 
 exit(0);
 
+function preg_array_key_match(string $needle, mixed $haystack) : array {
+	$matches = [];
+
+	if (!is_array($haystack)) {
+		$haystack = [$haystack];
+	}
+
+	debug("Attempting to match against '$needle' against " . cacti_sizeof($haystack) . ' entries');
+
+	foreach ($haystack as $str => $value) {
+		debug(" - Key $str => Value $value");
+
+		if (preg_match($needle, $str, $m)) {
+			debug("   + $str: $value");
+
+			$matches[] = $value;
+		}
+	}
+
+	return $matches;
+}
+
+function debug(string $message) : void {
+	global $debug;
+
+	if ($debug) {
+		cacti_log('REMOTE DEBUG: ' . trim($message), false, 'WEBSVCS');
+	}
+}
+
 /**
  * display_version - displays version information
+ *
+ * @return void
  */
-function display_version() {
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Remove Device Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-function display_help() {
+/**
+ * display_help - displays help information
+ *
+ * @return void
+ */
+function display_help() : void {
 	display_version();
 
 	print PHP_EOL;
@@ -262,38 +292,4 @@ function display_help() {
 
 	print 'List Options:' . PHP_EOL;
 	print '    --quiet             batch mode value return' . PHP_EOL . PHP_EOL;
-}
-
-function preg_array_key_match($needle, $haystack) {
-	global $debug;
-
-	$matches = [];
-
-	if (isset($haystack)) {
-		if (!is_array($haystack)) {
-			$haystack = [$haystack];
-		}
-	} else {
-		$haystack = [];
-	}
-
-	if ($debug) {
-		print "Attempting to match against '$needle' against " . cacti_sizeof($haystack) . ' entries' . PHP_EOL;
-	}
-
-	foreach ($haystack as $str => $value) {
-		if ($debug) {
-			print " - Key $str => Value $value" . PHP_EOL;
-		}
-
-		if (preg_match($needle, $str, $m)) {
-			if ($debug) {
-				print "   + $str: $value" . PHP_EOL;
-			}
-
-			$matches[] = $value;
-		}
-	}
-
-	return $matches;
 }

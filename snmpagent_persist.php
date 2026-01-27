@@ -23,16 +23,16 @@
  +-------------------------------------------------------------------------+
 */
 
-/* let's report all errors */
+// let's report all errors
 error_reporting(E_ALL);
 
 require(__DIR__ . '/include/cli_check.php');
 
-/* allow the script to hang around waiting for connections. */
+// allow the script to hang around waiting for connections.
 set_time_limit(0);
 chdir(__DIR__);
 
-/* translate well-known textual conventions and SNMP base types to net-snmp */
+// translate well-known textual conventions and SNMP base types to net-snmp
 $smi_base_datatypes = [
 	'integer'           => 'INTEGER',
 	'integer32'         => 'Integer32',
@@ -71,15 +71,15 @@ $eol                = "\n";
 $cache              = [];
 $cache_last_refresh = false;
 
-/* process command line options */
+// process command line options
 get_options();
 
-/* start background caching process if not running */
+// start background caching process if not running
 $php            = cacti_escapeshellcmd(read_config_option('path_php_binary'));
 $extra_args     = '-q ' . cacti_escapeshellarg('./snmpagent_mibcache.php');
 
 if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-	/* windows part missing */
+	// windows part missing
 	pclose(popen('start "CactiSNMPCache" /I /B ' . $php . ' ' . $extra_args, 'r'));
 } else {
 	exec('ps -ef | grep -v grep | grep -v "sh -c" | grep snmpagent_mibcache.php', $output);
@@ -89,7 +89,7 @@ if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
 	}
 }
 
-/* activate circular reference collector */
+// activate circular reference collector
 gc_enable();
 
 while (true) {
@@ -138,30 +138,30 @@ while (true) {
 	}
 }
 
-function cache_read($oid) {
+function cache_read(string $oid) : mixed {
 	global $cache;
 
 	return (isset($cache[$oid]) && $cache[$oid]) ? $cache[$oid] : false;
 }
 
-function cache_get_next($oid) {
+function cache_get_next(string $oid) : mixed {
 	global $cache;
 
 	return (isset($cache[$oid]['next'])) ? $cache[$oid]['next'] : false;
 }
 
-function cache_refresh() {
+function cache_refresh() : void {
 	global $cache, $cache_last_refresh;
 
-	$path_mibcache      = CACTI_PATH_CACHE. '/mibcache/mibcache.tmp';
-	$path_mibcache_lock = CACTI_PATH_CACHE. '/mibcache/mibcache.lock';
+	$path_mibcache      = CACTI_PATH_CACHE . '/mibcache/mibcache.tmp';
+	$path_mibcache_lock = CACTI_PATH_CACHE . '/mibcache/mibcache.lock';
 
-	/* check temporary cache file */
+	// check temporary cache file
 	clearstatcache();
 	$cache_refresh_time = @filemtime($path_mibcache);
 
 	if ($cache_refresh_time !== false) {
-		/* initial phase */
+		// initial phase
 		if ($cache_last_refresh === false || $cache_refresh_time > $cache_last_refresh) {
 			while (is_file($path_mibcache_lock) !== false) {
 				sleep(1);
@@ -177,11 +177,9 @@ function cache_refresh() {
 			require($path_mibcache);
 		}
 	}
-
-	return;
 }
 
-function get_options() {
+function get_options() : array {
 	$parms = $_SERVER['argv'];
 	array_shift($parms);
 
@@ -229,13 +227,13 @@ function get_options() {
 	return $options;
 }
 
-function display_version() {
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print 'The Cacti SNMP Agent Daemon, Version ' . $version . ', ' . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-/*	display_help - displays the usage of the function */
-function display_help() {
+// display_help - displays the usage of the function
+function display_help() : void {
 	display_version();
 
 	print PHP_EOL . 'usage: snmpagenet_persist.php' . PHP_EOL . PHP_EOL;

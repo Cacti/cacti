@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_1_1_17() {
+function upgrade_to_1_1_17() : void {
 	// Finalize fix to LDAP authentication
 	db_install_execute('UPDATE user_auth SET realm=3 WHERE realm=1');
 

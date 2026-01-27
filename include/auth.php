@@ -66,7 +66,7 @@ if (get_current_page() == 'logout.php') {
 	return true;
 }
 
-/* handle alternate authentication realms */
+// handle alternate authentication realms
 api_plugin_hook_function('auth_alternate_realms');
 
 /**
@@ -79,7 +79,7 @@ if ($auth_method != AUTH_METHOD_BASIC) {
 		exit;
 	}
 
-	/* check for remember me functionality */
+	// check for remember me functionality
 	if (!isset($_SESSION[SESS_USER_ID])) {
 		$cookie_user = check_auth_cookie();
 
@@ -143,7 +143,7 @@ if (CACTI_WEB && isset($_SESSION[SESS_USER_ID])) {
 			if (($enabled == 0 && $admin_user != $_SESSION[SESS_USER_ID]) || $enabled == 1) {
 				general_header();
 				print '<h1>' . __('Cacti is Locked Out for Maintenance') . '</h1>';
-				print '<p>'. __('The primary Cacti administrator has locked out the Cacti user interface for maintenance for activities such as upgrades.  If you feel this is in error, please contact your Cacti adminnistrator.  This lockout will stay in place for approximately 30 minutes.') . '</p>';
+				print '<p>' . __('The primary Cacti administrator has locked out the Cacti user interface for maintenance for activities such as upgrades.  If you feel this is in error, please contact your Cacti adminnistrator.  This lockout will stay in place for approximately 30 minutes.') . '</p>';
 				bottom_footer();
 
 				exit;
@@ -162,7 +162,7 @@ if (CACTI_WEB && isset($_SESSION[SESS_USER_ID])) {
 if (isset($guest_account)) {
 	$guest_user_id = get_guest_account();
 
-	/* find guest user */
+	// find guest user
 	if (!empty($guest_user_id)) {
 		if (empty($_SESSION[SESS_USER_ID])) {
 			$_SESSION[SESS_USER_ID]     = $guest_user_id;
@@ -201,7 +201,7 @@ if (empty($_SESSION[SESS_USER_ID])) {
 			]
 		);
 	} elseif (isset($auth_text) && $auth_text == true) {
-		/* handle graph_image.php to respond with text. */
+		// handle graph_image.php to respond with text.
 		print __('FATAL: You must be logged in to access this area of Cacti.');
 	} else {
 		require_once(CACTI_PATH_BASE . '/auth_login.php');
@@ -226,9 +226,9 @@ if (empty($_SESSION[SESS_USER_ID])) {
 		$realm_id = $user_auth_realm_filenames[get_current_page()];
 	}
 
-	/* Are we upgrading from a version before 1.2 which has the Install/Upgrade realm 26 */
+	// Are we upgrading from a version before 1.2 which has the Install/Upgrade realm 26
 	if ($realm_id == 26) {
-		/* See if we can find any users that are allowed to upgrade */
+		// See if we can find any users that are allowed to upgrade
 		$install_sql_query = '
 			SELECT COUNT(*)
 			FROM (
@@ -238,7 +238,7 @@ if (empty($_SESSION[SESS_USER_ID])) {
 
 		$install_sql_params = [$realm_id];
 
-		/* See if the group realms exist and if so, check if permission exists there too */
+		// See if the group realms exist and if so, check if permission exists there too
 		if (db_table_exists('user_auth_group_realm') &&
 			db_table_exists('user_auth_group') &&
 			db_table_exists('user_auth_group_members')) {
@@ -325,6 +325,8 @@ if (empty($_SESSION[SESS_USER_ID])) {
 			$goBack = "<td colspan='2' class='center'>[<a href='" . $_SERVER['HTTP_REFERER'] . "'>" . __('Return') . "</a> | <a href='" . CACTI_PATH_URL . "logout.php'>" . __('Login Again') . '</a>]</td>';
 		} elseif ($auth_method != AUTH_METHOD_BASIC) {
 			$goBack = "<td colspan='2' class='center'>[<a href='" . CACTI_PATH_URL . "logout.php'>" . __('Login Again') . '</a>]</td>';
+		} else {
+			$goBack = '';
 		}
 
 		raise_ajax_permission_denied();

@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_1_2_23() {
+function upgrade_to_1_2_23() : void {
 	db_install_execute("CREATE TABLE IF NOT EXISTS `rrdcheck` (
 		`local_data_id` mediumint(8) unsigned NOT NULL,
 		`test_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',

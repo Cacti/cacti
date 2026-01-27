@@ -39,12 +39,12 @@ require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
 ini_set('max_execution_time', '0');
 
-/* switch to main database for cli's */
-if ($config['poller_id'] > 1) {
+// switch to main database for cli's
+if (POLLER_ID > 1) {
 	db_switch_remote_to_main();
 }
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -182,24 +182,34 @@ if (cacti_sizeof($devices)) {
 	print 'DEBUG: No devices found for this automation pass.' . PHP_EOL;
 }
 
-/*  display_version - displays version information */
-function display_version() {
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print "Cacti Apply Automation Rules Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-/*	display_help - displays the usage of the function */
-function display_help() {
+/**
+ * display_help - displays the usage of the function
+ *
+ * @return void
+ */
+function display_help() : void {
 	display_version();
 
 	print PHP_EOL;
 	print 'usage: apply_automation_rules.php --ids="id1 id2 ..." || --description=S || --hostname=S [--debug]' . PHP_EOL . PHP_EOL;
 	print 'A utility to execute Cacti automation rules for a devices or devices.  Any of the following' . PHP_EOL;
 	print 'three options can be used, but at least one must be specified.' . PHP_EOL . PHP_EOL;
+
 	print 'Required:' . PHP_EOL;
 	print '    --ids="id1 id2 ..." - A space delimited list of device ids.' . PHP_EOL;
 	print '    --hostname="S"      - Either a SQL where clause or REGEX of the devices hostname.' . PHP_EOL;
 	print '    --description="S"   - Either a SQL where clause or REGEX of the devices description.' . PHP_EOL . PHP_EOL;
+
 	print 'Optional:' . PHP_EOL;
 	print '    --debug             - Provide verbose output during automation' . PHP_EOL . PHP_EOL;
 }

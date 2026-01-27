@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_1_1_31() {
+function upgrade_to_1_1_31() : void {
 	db_install_execute('ALTER TABLE `host` MODIFY COLUMN `snmp_auth_protocol` char(6) DEFAULT ""');
 
 	db_install_execute('ALTER TABLE `automation_devices` MODIFY COLUMN `snmp_auth_protocol` char(6) DEFAULT ""');

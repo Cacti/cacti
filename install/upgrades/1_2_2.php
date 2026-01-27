@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_1_2_2() {
+function upgrade_to_1_2_2() : void {
 	db_install_execute('ALTER TABLE poller_time MODIFY COLUMN id bigint(20) unsigned auto_increment');
 
 	// Find aggregates with orphaned items

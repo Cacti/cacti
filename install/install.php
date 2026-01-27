@@ -45,11 +45,13 @@ set_default_action();
 
 prime_default_settings();
 
-/***** SAFETY CHECKS FOR OLDER OR SECURED SYSTEMS ****/
+// SAFETY CHECKS FOR OLDER OR SECURED SYSTEMS
 $hasShellExec  = is_function_enabled('shell_exec');
 $hasExec       = is_function_enabled('exec');
 $hasJson       = interface_exists('JsonSerializable');
 $hasEverything = $hasJson && $hasShellExec && $hasExec;
+
+global $config;
 
 if ($hasEverything) {
 	include_once('../lib/installer.php');
@@ -96,12 +98,15 @@ if ($help != '') {
 <html>
 <head>
 <?php
-print html_common_header(__('Cacti Server v%s - Maintenance', format_cacti_version_text(CACTI_VERSION)));
+
+html_common_header(__('Cacti Server v%s - Maintenance', format_cacti_version_text(CACTI_VERSION)));
 
 if ($hasEverything) {
 	print get_md5_include_js('install/install.js');
 }
+
 print get_md5_include_css('install/install.css');
+
 ?>
 </head>
 <body>
@@ -127,7 +132,7 @@ if ($hasEverything) {
 	}
 
 	if (!($hasExec && $hasShellExec)) {
-		print '<li>' . __('The shell_exec() and/or exec() functions are currently blocked.') . '<br>' . __('See the PHP Manual: <a href="http://php.net/manual/en/ini.core.php#ini.disable-functions">Disable Functions</a>.') .'</li>';
+		print '<li>' . __('The shell_exec() and/or exec() functions are currently blocked.') . '<br>' . __('See the PHP Manual: <a href="http://php.net/manual/en/ini.core.php#ini.disable-functions">Disable Functions</a>.') . '</li>';
 	}
 	print '</ul></div>';
 }

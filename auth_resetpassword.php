@@ -26,13 +26,13 @@ require('./include/global.php');
 
 set_default_action('formidentity');
 
-$action       = get_request_var('action');
+$action       = grv('action');
 $errorMessage = '';
 $return       = CACTI_PATH_URL . 'index.php';
 
 switch ($action) {
-	case 'checkpass': /* check if inserted password match password complexivity only */
-		$error = secpass_check_pass(get_nfilter_request_var('password'));
+	case 'checkpass': // check if inserted password match password complexivity only
+		$error = secpass_check_pass(gnrv('password'));
 
 		if ($error != '') {
 			print $error;
@@ -41,10 +41,8 @@ switch ($action) {
 		}
 
 		exit;
-
-		break;
-	case 'formreset': /* check correct hash, if incorrect lets start again */
-		$user_hash = get_filter_request_var('hash', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^[a-zA-Z0-9]+$/']]);
+	case 'formreset': // check correct hash, if incorrect lets start again
+		$user_hash = gfrv('hash', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^[a-zA-Z0-9]+$/']]);
 
 		$hash = db_fetch_row_prepared('SELECT *
 			FROM user_auth_reset_hashes
@@ -58,12 +56,12 @@ switch ($action) {
 		}
 
 		break;
-	case 'resetrequest': /* try to find user in db. If yes and has email, send resetlink */
+	case 'resetrequest': // try to find user in db. If yes and has email, send resetlink
 		$user     = [];
-		$identity = get_nfilter_request_var('identity');
+		$identity = gnrv('identity');
 
 		if (filter_var($identity, FILTER_VALIDATE_EMAIL) ||
-			get_filter_request_var('identity', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^[a-zA-Z0-9]+$/']])) {
+			gfrv('identity', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^[a-zA-Z0-9]+$/']])) {
 			$user = db_fetch_row_prepared('SELECT id, username, email_address
 				FROM user_auth WHERE username = ? or email_address = ? LIMIT 1',
 				[$identity, $identity]);
@@ -97,8 +95,8 @@ switch ($action) {
 		$action       = 'formidentity';
 
 		break;
-	case 'resetpassword': /* check and save new password */
-		$user_hash = get_filter_request_var('hash', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^[a-zA-Z0-9]+$/']]);
+	case 'resetpassword': // check and save new password
+		$user_hash = gfrv('hash', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^[a-zA-Z0-9]+$/']]);
 
 		$hash = db_fetch_row_prepared('SELECT *
 			FROM user_auth_reset_hashes
@@ -117,8 +115,8 @@ switch ($action) {
 			[$hash['user_id']]);
 
 		// Get passwords entered for change
-		$password         = get_nfilter_request_var('password');
-		$password_confirm = get_nfilter_request_var('password_confirm');
+		$password         = gnrv('password');
+		$password_confirm = gnrv('password_confirm');
 
 		// Secpass checking
 		$error = secpass_check_pass($password);
@@ -222,12 +220,12 @@ switch ($action) {
 		break;
 }
 
-/* show identity form or reset password form */
+// show identity form or reset password form
 if (api_plugin_hook_function('custom_password', OPER_MODE_NATIVE) == OPER_MODE_RESKIN) {
 	exit;
 }
 
-/* Create tooltip for password complexity */
+// Create tooltip for password complexity
 $secpass_tooltip = "<span style='font-weight:normal;'>" . __('Password requirements include:') . '</span><br>';
 $secpass_body    = '';
 
@@ -280,7 +278,7 @@ html_auth_header('reset_password', __('Reset Password'), __('Reset Password'), $
 	<tr>
 		<td colspan='2'>
 			<input type='hidden' name='action' value='resetrequest'>
-			<input type='hidden' name='hash' value='<?php print get_nfilter_request_var('hash'); ?>'>
+			<input type='hidden' name='hash' value='<?php print gnrv('hash'); ?>'>
 		</td>
 	</tr>
 <?php }
@@ -307,7 +305,7 @@ if ($action == 'formreset') {?>
 	<tr>
 		<td colspan='2'>
 			<input type='hidden' name='action' value='resetpassword'>
-			<input type='hidden' name='hash' value='<?php print get_nfilter_request_var('hash'); ?>'>
+			<input type='hidden' name='hash' value='<?php print gnrv('hash'); ?>'>
 		</td>
 	</tr>
 <?php

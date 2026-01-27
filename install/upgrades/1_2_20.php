@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_1_2_20() {
+function upgrade_to_1_2_20() : void {
 	global $config;
 
 	include_once(CACTI_PATH_LIBRARY . '/data_query.php');

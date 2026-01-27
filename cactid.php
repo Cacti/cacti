@@ -31,13 +31,13 @@ if (function_exists('pcntl_async_signals')) {
 
 ini_set('output_buffering', 'Off');
 
-/* let's report all errors */
+// let's report all errors
 error_reporting(E_ALL);
 
-/* allow the script to hang around waiting for connections. */
+// allow the script to hang around waiting for connections.
 set_time_limit(0);
 
-/* we do not need so much memory */
+// we do not need so much memory
 ini_set('memory_limit', '-1');
 ini_set('max_execution_time', '0');
 
@@ -50,7 +50,7 @@ $logrecon   = false;
 chdir(__DIR__);
 require_once('./include/cli_check.php');
 
-/* install signal handlers for Linux/UNIX only */
+// install signal handlers for Linux/UNIX only
 if (function_exists('pcntl_signal')) {
 	pcntl_signal(SIGTERM, 'sig_handler');
 	pcntl_signal(SIGINT, 'sig_handler');
@@ -145,11 +145,11 @@ while (true) {
 /**
  * sig_handler - provides a generic means to catch exceptions to the Cacti log.
  *
- * @param int $signo - the signal that was thrown by the interface.
+ * @param int $signo The signal that was thrown by the interface.
  *
  * @return void
  */
-function sig_handler(int $signo) {
+function sig_handler(int $signo) : void {
 	global $hostname;
 
 	switch ($signo) {
@@ -160,18 +160,18 @@ function sig_handler(int $signo) {
 
 			exit(1);
 		default:
-			/* ignore all other signals */
+			// ignore all other signals
 	}
 }
 
 /**
  * wait_for_start
  *
- * @param  int $frequency
+ * @param int $frequency
  *
  * @return int
  */
-function wait_for_start(int $frequency = -1) {
+function wait_for_start(int $frequency = -1) : int {
 	$prev_time = -1;
 	$i         = 0;
 
@@ -213,7 +213,7 @@ function wait_for_start(int $frequency = -1) {
  *
  * @return void
  */
-function run_poller() {
+function run_poller() : void {
 	global $debug;
 
 	debug('Cacti Data Collector');
@@ -240,7 +240,7 @@ function run_poller() {
  *
  * @return array
  */
-function get_options() {
+function get_options() : array {
 	$parms = $_SERVER['argv'];
 	array_shift($parms);
 
@@ -291,11 +291,11 @@ function get_options() {
 /**
  * debug
  *
- * @param  string $string
+ * @param string $string
  *
  * @return void
  */
-function debug(string $string) {
+function debug(string $string) : void {
 	global $debug;
 
 	if ($debug) {
@@ -310,7 +310,7 @@ function debug(string $string) {
  *
  * @return void
  */
-function display_version() {
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	print 'The Cacti Daemon (cactid), Version ' . $version . ', ' . COPYRIGHT_YEARS . PHP_EOL;
 }
@@ -320,7 +320,7 @@ function display_version() {
  *
  * @return void
  */
-function display_help() {
+function display_help() : void {
 	display_version();
 
 	print PHP_EOL . 'usage: cactid.php [ --foreground ] [ --debug ]' . PHP_EOL . PHP_EOL;

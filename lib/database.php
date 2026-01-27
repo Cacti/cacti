@@ -25,26 +25,27 @@
 /**
  * db_connect_real - makes a connection to the database server
  *
- * @param  string $device      - The hostname of the database server, 'localhost'
- *                               if the database server is running on this machine
- * @param  string $user        - The username to connect to the database server as
- * @param  string $pass        - The password to connect to the database server with
- * @param  string $db_name     - The name of the database to connect to
- * @param  mixed  $db_type     - The type of database server.  Only 'mysql' is currently supported
- * @param  mixed  $port        - The port to communicate with MySQL/MariaDB on
- * @param  mixed  $retries     - The number a time the server should attempt to connect before failing
- * @param  mixed  $db_ssl      - A boolean true or false
- * @param  mixed  $db_ssl_key  - String that points to the client ssl key file
- * @param  mixed  $db_ssl_cert - String that points to the client ssl cert file
- * @param  mixed  $db_ssl_ca   - String that points to the ssl ca file
- * @param  mixed  $db_ssl_capath
- * @param  mixed  $db_ssl_verify_server_cert
- * @param  mixed  $persist
+ * @param string $device                    The hostname of the database server, 'localhost'
+ *                                          if the database server is running on this machine
+ * @param string $user                      The username to connect to the database server as
+ * @param string $pass                      The password to connect to the database server with
+ * @param string $db_name                   The name of the database to connect to
+ * @param string $db_type                   The type of database server.  Only 'mysql' is currently supported
+ * @param int    $port                      The port to communicate with MySQL/MariaDB on
+ * @param int    $retries                   The number a time the server should attempt to connect before failing
+ * @param bool   $db_ssl                    A boolean true or false
+ * @param string $db_ssl_key                String that points to the client ssl key file
+ * @param string $db_ssl_cert               String that points to the client ssl cert file
+ * @param string $db_ssl_ca                 String that points to the ssl ca file
+ * @param string $db_ssl_capath             The path to the CA if required
+ * @param bool   $db_ssl_verify_server_cert Set to true if you wish to validate the cert
+ * @param bool   $persist                   Set to true if you wish to use a persistent connection
  *
  * @return bool|object connection object on success, false for error
  */
-function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $port = '3306', $retries = 20,
-	$db_ssl = false, $db_ssl_key = '', $db_ssl_cert = '', $db_ssl_ca = '', $db_ssl_capath = '', $db_ssl_verify_server_cert = true, $persist = false) {
+function db_connect_real(string $device, string $user, string $pass, string $db_name, string $db_type = 'mysql', int $port = 3306, int $retries = 20,
+	bool $db_ssl = false, string $db_ssl_key = '', string $db_ssl_cert = '', string $db_ssl_ca = '', string $db_ssl_capath = '',
+	bool $db_ssl_verify_server_cert = true, bool $persist = false) : mixed {
 	global $database_sessions, $database_details, $database_total_queries, $database_persist, $config;
 
 	$database_total_queries = 0;
@@ -113,7 +114,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 		}
 	}
 
-	/* set connection timeout for down servers */
+	// set connection timeout for down servers
 	$flags[PDO::ATTR_TIMEOUT] = 2;
 	$flage[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
 
@@ -219,7 +220,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 				$timezone = db_fetch_cell_prepared('SELECT timezone
 					FROM poller
 					WHERE id = ?',
-					[POLLER_ID], false);
+					[POLLER_ID], '', false);
 			} else {
 				$timezone = '';
 			}
@@ -251,8 +252,8 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 			];
 
 			// Must catch this exception or else PDO will display an error with our username/password
-			//print $e->getMessage();
-			//exit;
+			// print $e->getMessage();
+			// exit;
 		}
 
 		$i++;
@@ -266,31 +267,29 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
  * db_check_reconnect - Check the database connection.  If the connection is gone
  *  attempt to reconnect, otherwise return the connection
  *
- * @param bool|object  The connection to check
- * @param bool         Whether or not to log the connection check
- * @param mixed $log
+ * @param mixed $db_conn The connection to check
+ * @param bool  $log     Whether or not to log the connection check
  *
- * @return bool        The database true is the database is connected else false
+ * @return bool The database true is the database is connected else false
  */
-function db_check_reconnect(object|false $db_conn = false, $log = true) {
+function db_check_reconnect(mixed $db_conn = false, bool $log = true) : bool {
 	global $database_details;
+	global $database_hostname;
+	global $database_username;
+	global $database_password;
+	global $database_default;
+	global $database_type;
+	global $database_port;
+	global $database_retries;
+	global $database_ssl;
+	global $database_ssl_key;
+	global $database_ssl_cert;
+	global $database_ssl_ca;
+	global $database_ssl_capath;
+	global $database_ssl_verify_server_cert;
 
 	if (file_exists(CACTI_PATH_INCLUDE . '/config.php')) {
 		include(CACTI_PATH_INCLUDE . '/config.php');
-	} else {
-		global $database_hostname;
-		global $database_username;
-		global $database_password;
-		global $database_default;
-		global $database_type;
-		global $database_port;
-		global $database_retries;
-		global $database_ssl;
-		global $database_ssl_key;
-		global $database_ssl_cert;
-		global $database_ssl_ca;
-		global $database_ssl_capath;
-		global $database_ssl_verify_server_cert;
 	}
 
 	if (cacti_sizeof($database_details) && $db_conn !== false) {
@@ -387,16 +386,16 @@ function db_check_reconnect(object|false $db_conn = false, $log = true) {
 	}
 }
 
-function db_warning_handler($errno, $errstr, $errfile, $errline, $errcontext = []) {
+function db_warning_handler(int $errno, string $errstr, string $errfile, int $errline, array $errcontext = []) : bool|null {
 	throw new Exception($errstr, $errno);
 }
 
 /**
  * db_binlog_enabled - Checks to see if binary logging is enabled on the server
  *
- * @return (bool) true if enabled, else false
+ * @return bool true if enabled, else false
  */
-function db_binlog_enabled() {
+function db_binlog_enabled() : bool {
 	$enabled = db_fetch_row('SHOW GLOBAL VARIABLES LIKE "log_bin"');
 
 	if (cacti_sizeof($enabled)) {
@@ -411,9 +410,9 @@ function db_binlog_enabled() {
 /**
  * db_get_active_replicas - Returns the hostnames of all active replicas
  *
- * @return (array) The list of active replicas as an array of hostnames
+ * @return array The list of active replicas as an array of hostnames
  */
-function db_get_active_replicas() {
+function db_get_active_replicas() : array {
 	return array_rekey(
 		db_fetch_assoc("SELECT SUBSTRING_INDEX(HOST, ':', 1) AS host
 			FROM information_schema.processlist
@@ -425,15 +424,14 @@ function db_get_active_replicas() {
 /**
  * db_close - closes the open connection
  *
- * @param  (bool|resource) Either the connection to use of false to use the default
- * @param mixed $db_conn
+ * @param mixed $db_conn Either the connection to use of false to use the default
  *
- * @return (bool) the result of the close command
+ * @return bool the result of the close command
  */
-function db_close(&$db_conn = false) {
+function db_close(mixed &$db_conn = false) : bool {
 	global $config, $database_sessions, $error_logged, $database_default, $database_hostname, $database_port, $database_persist, $database_details;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (!empty($config['DEBUG_SQL_CONNECT'])) {
 			error_log(sprintf('NOTE: Disconnecting from %s:%s/%s.', $database_hostname, $database_port, $database_default));
@@ -473,12 +471,12 @@ function db_close(&$db_conn = false) {
 		}
 	}
 
-	/* forcibly close connection if not persistent */
+	// forcibly close connection if not persistent
 	if (!$database_persist) {
 		db_execute('KILL CONNECTION CONNECTIION_ID()', false, $db_conn);
 	}
 
-	/* unset the variables which should do the same */
+	// unset the variables which should do the same
 	$db_conn = null;
 
 	return true;
@@ -487,42 +485,31 @@ function db_close(&$db_conn = false) {
 /**
  * db_execute - run an sql query and do not return any output
  *
- * @param  (string)        The SQL query to execute
- * @param  (bool)          Whether to log error messages, defaults to true
- * @param  (bool|resource) The connection to use or false for the default
- * @param mixed $sql
- * @param mixed $log
- * @param mixed $db_conn
+ * @param string $sql     The SQL query to execute
+ * @param bool   $log     Whether to log error messages, defaults to true
+ * @param mixed  $db_conn The connection to use or false for the default
  *
- * @return (bool) '1' for success, false on error
+ * @return mixed '1' for success, false on error
  */
-function db_execute($sql, $log = true, $db_conn = false) {
+function db_execute(string $sql, bool $log = true, mixed $db_conn = false) : mixed {
 	return db_execute_prepared($sql, [], $log, $db_conn);
 }
 
 /**
  * db_execute_prepared - run an sql query and do not return any output
  *
- * @param  (string)        The SQL query to execute
- * @param  (array)         An array of values to be prepared into the SQL
- * @param  (bool)          Whether to log error messages, defaults to true
- * @param  (bool|resource) The connection to use or false for the default
- * @param  (string)        The database action/function to run
- * @param  (bool)          To Be Completed
- * @param  (string)        To Be Completed
- * @param  (array)         To Be Completed
- * @param mixed $sql
- * @param mixed $params
- * @param mixed $log
- * @param mixed $db_conn
- * @param mixed $execute_name
- * @param mixed $default_value
- * @param mixed $return_func
- * @param mixed $return_params
+ * @param string $sql           The SQL query to execute
+ * @param array  $params        An array of values to be prepared into the SQL
+ * @param bool   $log           Whether to log error messages, defaults to true
+ * @param mixed  $db_conn       The connection to use or false for the default
+ * @param string $execute_name  The database action/function to run
+ * @param mixed  $default_value To Be Completed
+ * @param string $return_func   To Be Completed
+ * @param mixed  $return_params To Be Completed
  *
  * @return mixed '1' for success, false for failed, or the return value of the return function
  */
-function db_execute_prepared($sql, $params = [], $log = true, $db_conn = false, $execute_name = 'Exec', $default_value = true, $return_func = 'no_return_function', $return_params = []) {
+function db_execute_prepared(string $sql, array $params = [], bool $log = true, mixed $db_conn = false, string $execute_name = 'Exec', mixed $default_value = true, string $return_func = 'no_return_function', mixed $return_params = []) : mixed {
 	global $database_sessions, $error_logged, $database_default, $config, $database_hostname, $database_port, $database_total_queries, $database_last_error, $database_log, $affected_rows, $database_details;
 
 	$database_total_queries++;
@@ -531,7 +518,7 @@ function db_execute_prepared($sql, $params = [], $log = true, $db_conn = false, 
 		$database_log = false;
 	}
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -588,7 +575,7 @@ function db_execute_prepared($sql, $params = [], $log = true, $db_conn = false, 
 			db_echo_sql('db_' . $execute_name . ' Memory [Before]: ' . memory_get_usage() . ' / ' . memory_get_peak_usage() . "\n");
 		}
 
-		set_error_handler('db_warning_handler',E_WARNING | E_NOTICE);
+		set_error_handler('db_warning_handler', E_WARNING | E_NOTICE);
 
 		try {
 			if (empty($params) || cacti_count($params) == 0) {
@@ -601,6 +588,7 @@ function db_execute_prepared($sql, $params = [], $log = true, $db_conn = false, 
 			$en        = $code;
 			$errorinfo = [1=>$code, 2=>$ex->getMessage()];
 		}
+
 		restore_error_handler();
 
 		if (!empty($config['DEBUG_SQL_CMD'])) {
@@ -635,17 +623,20 @@ function db_execute_prepared($sql, $params = [], $log = true, $db_conn = false, 
 					if (!is_array($return_params)) {
 						$return_params = [$return_params];
 					}
+
 					$return_array = array_merge($return_array, $return_params);
 				}
 
 				if (!empty($config['DEBUG_SQL_FLOW'])) {
-					db_echo_sql('db_' . $execute_name . '_return_func: \'' . $return_func .'\' (' . function_exists($return_func) . ")\n");
+					db_echo_sql('db_' . $execute_name . '_return_func: \'' . $return_func . '\' (' . $return_func . ")\n");
 					db_echo_sql('db_' . $execute_name . '_return_func: params ' . clean_up_lines(var_export($return_array, true)) . "\n");
 				}
 
 				$return_value = call_user_func_array($return_func, $return_array);
 			}
+
 			$query->closeCursor();
+
 			unset($query);
 
 			if (!empty($config['DEBUG_SQL_FLOW'])) {
@@ -659,6 +650,7 @@ function db_execute_prepared($sql, $params = [], $log = true, $db_conn = false, 
 			if (isset($query)) {
 				$query->closeCursor();
 			}
+
 			unset($query);
 
 			if (!db_column_exists('settings', 'name')) {
@@ -683,10 +675,10 @@ function db_execute_prepared($sql, $params = [], $log = true, $db_conn = false, 
 					}
 
 					cacti_log('ERROR: A DB ' . $execute_name . ' Too Large!, Error: ' . $en . ', SQL: \'' . clean_up_lines($sql) . '\'', false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
-					cacti_log('ERROR: A DB ' . $execute_name . ' Too Large!, Error: ' . $errorinfo[2], false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
+					cacti_log('ERROR: A DB ' . $execute_name . ' Too Large!, Error: ' . ($errorinfo[2] ?? '<no error>'), false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
 					cacti_debug_backtrace('SQL', false, true, 0, 1);
 
-					$database_last_error = 'DB ' . $execute_name . ' Too Large!, Error ' . $en . ': ' . $errorinfo[2];
+					$database_last_error = 'DB ' . $execute_name . ' Too Large!, Error ' . $en . ': ' . ($errorinfo[2] ?? '<no error>');
 				} elseif ($en == 2002 || $en == 2006) {
 					$errors++;
 
@@ -696,13 +688,13 @@ function db_execute_prepared($sql, $params = [], $log = true, $db_conn = false, 
 
 					if (db_check_reconnect($db_conn)) {
 						if ($errors < 5) {
-							/* retry the query now */
+							// retry the query now
 							continue;
 						}
 					}
 				} else {
 					cacti_log('ERROR: A DB ' . $execute_name . ' Failed!, Error: ' . $en . ', SQL: \'' . clean_up_lines($sql) . '\'', false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
-					cacti_log('ERROR: A DB ' . $execute_name . ' Failed!, Error: ' . $errorinfo[2], false);
+					cacti_log('ERROR: A DB ' . $execute_name . ' Failed!, Error: ' . ($errorinfo[2] ?? '<no error>'), false);
 					cacti_debug_backtrace('SQL', false, true, 0, 1);
 
 					$database_last_error = 'DB ' . $execute_name . ' Failed!, Error ' . $en . ': ' . ($errorinfo[2] ?? '<no error>');
@@ -716,32 +708,20 @@ function db_execute_prepared($sql, $params = [], $log = true, $db_conn = false, 
 			return false;
 		}
 	}
-
-	unset($query);
-
-	if (!empty($config['DEBUG_SQL_FLOW'])) {
-		db_echo_sql($database_last_error);
-	}
-
-	return false;
 }
 
 /**
  * db_fetch_cell - run a 'select' sql query and return the first column of the
  *   first row found
  *
- * @param  (string)        The SQL query to execute
- * @param  (string)        Use this column name instead of the first one
- * @param  (bool)          Whether to log error messages, defaults to true
- * @param  (bool|resource) The connection to use or false to use the default
- * @param mixed $sql
- * @param mixed $col_name
- * @param mixed $log
- * @param mixed $db_conn
+ * @param string $sql      The SQL query to execute
+ * @param string $col_name Use this column name instead of the first one
+ * @param bool   $log      Whether to log error messages, defaults to true
+ * @param mixed  $db_conn  The connection to use or false to use the default
  *
  * @return mixed The output of the sql query as a single variable
  */
-function db_fetch_cell($sql, $col_name = '', $log = true, $db_conn = false) : mixed {
+function db_fetch_cell(string $sql, string $col_name = '', bool $log = true, mixed $db_conn = false) : mixed {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
@@ -755,20 +735,15 @@ function db_fetch_cell($sql, $col_name = '', $log = true, $db_conn = false) : mi
  * db_fetch_cell_prepared - run a 'select' sql query and return the first column of the
  *   first row found
  *
- * @param  (string)        The SQL query to execute
- * @param  (array)         An array of values to be prepared into the SQL
- * @param  (string)        Use this column name instead of the first one
- * @param  (bool)          Whether to log error messages, defaults to true
- * @param  (bool|resource) The connection to use or false to use the default
- * @param mixed $sql
- * @param mixed $params
- * @param mixed $col_name
- * @param mixed $log
- * @param mixed $db_conn
+ * @param string $sql      The SQL query to execute
+ * @param array  $params   An array of values to be prepared into the SQL
+ * @param string $col_name Use this column name instead of the first one
+ * @param bool   $log      Whether to log error messages, defaults to true
+ * @param mixed  $db_conn  The connection to use or false to use the default
  *
  * @return mixed output of the sql query as a single variable
  */
-function db_fetch_cell_prepared($sql, $params = [], $col_name = '', $log = true, $db_conn = false) : mixed {
+function db_fetch_cell_prepared(string $sql, array $params = [], string $col_name = '', bool $log = true, mixed $db_conn = false) : mixed {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
@@ -782,13 +757,13 @@ function db_fetch_cell_prepared($sql, $params = [], $col_name = '', $log = true,
  * db_fetch_cell_return - Function to process and return data from the
  * db_fetch_cell function
  *
- * @param  string - The SQL query to run
- * @param  string - The column to return if the query is more row or associative
- *                  in the case of associated, returns the column from the first row.
+ * @param PDOStatement $query    The SQL query to run
+ * @param string       $col_name The column to return if the query is more row or associative
+ *                               in the case of associated, returns the column from the first row.
  *
- * @return bool|string - The value of the column or false if failed
+ * @return mixed The value of the column or false if failed
  */
-function db_fetch_cell_return($query, $col_name = '') {
+function db_fetch_cell_return(PDOStatement $query, string $col_name = '') : mixed {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
@@ -811,17 +786,17 @@ function db_fetch_cell_return($query, $col_name = '') {
 /**
  * db_fetch_row - run a 'select' sql query and return the first row found
  *
- * @param  string        - The SQL query to execute
- * @param  bool          - Whether to log error messages, defaults to true
- * @param  bool|resource - The connection to use or false to use the default
+ * @param string $sql     The SQL query to execute
+ * @param bool   $log     Whether to log error messages, defaults to true
+ * @param mixed  $db_conn The connection to use or false to use the default
  *
- * @return bool|array    - The first row of the result or false if failed
+ * @return bool|array The first row of the result or false if failed
  */
-function db_fetch_row($sql, $log = true, $db_conn = false) {
+function db_fetch_row(string $sql, bool $log = true, mixed $db_conn = false) : bool|array {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
-		db_echo_sql('db_fetch_row(\'' . clean_up_lines($sql) . '\', $log = ' . $log . ', $db_conn = ' . ($db_conn ? 'true' : 'false') .')' . "\n");
+		db_echo_sql('db_fetch_row(\'' . clean_up_lines($sql) . '\', $log = ' . $log . ', $db_conn = ' . ($db_conn ? 'true' : 'false') . ')' . "\n");
 	}
 
 	return db_fetch_row_prepared($sql, [], $log, $db_conn);
@@ -830,18 +805,18 @@ function db_fetch_row($sql, $log = true, $db_conn = false) {
 /**
  * db_fetch_row_prepared - run a 'select' sql query and return the first row found
  *
- * @param  string        - The SQL query to execute
- * @param  array         - An array of values to be prepared into the SQL
- * @param  bool          - Whether to log error messages, defaults to true
- * @param  bool|resource - The connection to use or false to use the default
+ * @param string $sql     The SQL query to execute
+ * @param array  $params  An array of values to be prepared into the SQL
+ * @param bool   $log     Whether to log error messages, defaults to true
+ * @param mixed  $db_conn The connection to use or false to use the default
  *
- * @return bool|array    - The first row of the result or false if failed
+ * @return bool|array The first row of the result or false if failed
  */
-function db_fetch_row_prepared($sql, $params = [], $log = true, $db_conn = false) {
+function db_fetch_row_prepared(string $sql, array $params = [], bool $log = true, mixed $db_conn = false) : bool|array {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
-		db_echo_sql('db_fetch_row_prepared(\'' . clean_up_lines($sql) . '\', $params = (\'' . implode('\', \'', $params) . '\'), $log = ' . $log . ', $db_conn = ' . ($db_conn ? 'true' : 'false') .')' . "\n");
+		db_echo_sql('db_fetch_row_prepared(\'' . clean_up_lines($sql) . '\', $params = (\'' . implode('\', \'', $params) . '\'), $log = ' . $log . ', $db_conn = ' . ($db_conn ? 'true' : 'false') . ')' . "\n");
 	}
 
 	return db_execute_prepared($sql, $params, $log, $db_conn, 'Row', false, 'db_fetch_row_return');
@@ -851,11 +826,11 @@ function db_fetch_row_prepared($sql, $params = [], $log = true, $db_conn = false
  * db_fetch_row_return - Function to execute and process the results for the
  * db_fetch_row_prepared() function.
  *
- * @param  string - The prepared Query
+ * @param PDOStatement $query The prepared Query
  *
- * @return array  - The row, or false on failure
+ * @return array The row, or false on failure
  */
-function db_fetch_row_return($query) {
+function db_fetch_row_return(PDOStatement $query) : array {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
@@ -872,13 +847,13 @@ function db_fetch_row_return($query) {
 /**
  * db_fetch_assoc - run a 'select' sql query and return all rows found
  *
- * @param  string        - The SQL query to execute
- * @param  bool          - Whether to log error messages, defaults to true
- * @param  bool|resource - The connection to use or false to use the default
+ * @param string $sql     The SQL query to execute
+ * @param bool   $log     Whether to log error messages, defaults to true
+ * @param mixed  $db_conn The connection to use or false to use the default
  *
- * @return bool|array    - The entire result set or false on error
+ * @return bool|array The entire result set or false on error
  */
-function db_fetch_assoc($sql, $log = true, $db_conn = false) {
+function db_fetch_assoc(string $sql, bool $log = true, mixed $db_conn = false) : mixed {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
@@ -891,14 +866,14 @@ function db_fetch_assoc($sql, $log = true, $db_conn = false) {
 /**
  * db_fetch_assoc_prepared - run a 'select' sql query and return all rows found
  *
- * @param  string        - The sql query to execute
- * @param  array         - An array of values to be prepared into the SQL
- * @param  bool          - Whether to log error messages, defaults to true
- * @param  bool|resource - The connection to use or false to use the default
+ * @param string $sql     The sql query to execute
+ * @param array  $params  An array of values to be prepared into the SQL
+ * @param bool   $log     Whether to log error messages, defaults to true
+ * @param mixed  $db_conn The connection to use or false to use the default
  *
- * @return bool|array    - The entire result or false on error
+ * @return mixed The entire result or false on error
  */
-function db_fetch_assoc_prepared($sql, $params = [], $log = true, $db_conn = false) {
+function db_fetch_assoc_prepared(string $sql, array $params = [], bool $log = true, mixed $db_conn = false) : mixed {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
@@ -912,11 +887,11 @@ function db_fetch_assoc_prepared($sql, $params = [], $log = true, $db_conn = fal
  * db_fetch_assoc_return - Function to execute and process the results for the
  *   db_fetch_assoc_prepared() function.
  *
- * @param  string     - The prepared Query
+ * @param PDOStatement $query The prepared Query
  *
- * @return bool|array - The associated array of data, or false on failure
+ * @return array The associated array of data, or false on failure
  */
-function db_fetch_assoc_return($query) {
+function db_fetch_assoc_return(PDOStatement $query) : array {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
@@ -925,20 +900,20 @@ function db_fetch_assoc_return($query) {
 
 	$r = $query->fetchAll(PDO::FETCH_ASSOC);
 
-	return (is_array($r)) ? $r : [];
+	return (cacti_sizeof($r)) ? $r : [];
 }
 
 /**
  * db_fetch_insert_id - get the last insert_id or auto increment
  *
- * @param  bool|resource - The connection to use or false to use the default
+ * @param mixed $db_conn The connection to use or false to use the default
  *
- * @return bool|int      - The id of the last auto increment row or false on error
+ * @return mixed The id of the last auto increment row or false on error
  */
-function db_fetch_insert_id($db_conn = false) {
+function db_fetch_insert_id(mixed $db_conn = false) : mixed {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -955,15 +930,14 @@ function db_fetch_insert_id($db_conn = false) {
 /**
  * db_affected_rows - return the number of rows affected by the last transaction
  *
- * @param  bool|resource - The connection to use or false to use the default
+ * @param mixed $db_conn The connection to use or false to use the default
  *
- * @return bool|int      - The number of rows affected by the last transaction,
- *                         or false on error
+ * @return mixed The number of rows affected by the last transaction, or false on error
  */
-function db_affected_rows($db_conn = false) {
+function db_affected_rows(mixed $db_conn = false) : mixed {
 	global $database_sessions, $database_default, $database_hostname, $database_port, $affected_rows;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -980,18 +954,18 @@ function db_affected_rows($db_conn = false) {
 /**
  * db_add_column - add a column to table
  *
- * @param  string        - The name of the table
- * @param  string        - Array of column data ex: array('name' => 'test' .
- *                         rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false)
- * @param  bool          - Whether to log error messages, defaults to true
- * @param  bool|resource - The connection to use or false to use the default
+ * @param string $table   The name of the table
+ * @param array  $column  Array of column data ex: array('name' => 'test' .
+ *                        rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false)
+ * @param bool   $log     Whether to log error messages, defaults to true
+ * @param mixed  $db_conn The connection to use or false to use the default
  *
- * @return bool          - '1' for success, false for error
+ * @return mixed '1' for success, false for error
  */
-function db_add_column($table, $column, $log = true, $db_conn = false) {
+function db_add_column(string $table, array $column, bool $log = true, mixed $db_conn = false) : mixed {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -1072,17 +1046,17 @@ function db_add_column($table, $column, $log = true, $db_conn = false) {
 /**
  * db_change_column - update a column to table
  *
- * @param string        $table - the name of the table
- * @param string        $column - array of column data ex: array('old_name' => 'test', 'name' => 'newtest' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false)
- * @param bool          $log - whether to log error messages, defaults to true
- * @param bool|resource $db_conn
+ * @param string $table   the name of the table
+ * @param array  $column  array of column data ex: array('old_name' => 'test', 'name' => 'newtest' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false)
+ * @param bool   $log     whether to log error messages, defaults to true
+ * @param mixed  $db_conn
  *
- * @return bool - '1' for success, '0' for error
+ * @return bool '1' for success, '0' for error
  */
-function db_change_column($table, $column, $log = true, $db_conn = false) {
+function db_change_column(string $table, array $column, bool $log = true, mixed $db_conn = false) : bool {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -1165,17 +1139,17 @@ function db_change_column($table, $column, $log = true, $db_conn = false) {
 /**
  * db_remove_column - remove a column to table
  *
- * @param  string        - The name of the table
- * @param  string        - The name of the column
- * @param  bool          - Whether to log error messages, defaults to true
- * @param  bool|resource - The connection to use or false to use the default
+ * @param string $table   The name of the table
+ * @param string $column  The name of the column
+ * @param bool   $log     Whether to log error messages, defaults to true
+ * @param mixed  $db_conn The connection to use or false to use the default
  *
- * @return bool|int      - '1' for success, false for error
+ * @return mixed '1' for success, false for error
  */
-function db_remove_column($table, $column, $log = true, $db_conn = false) {
+function db_remove_column(string $table, string $column, bool $log = true, mixed $db_conn = false) : mixed {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -1193,7 +1167,7 @@ function db_remove_column($table, $column, $log = true, $db_conn = false) {
 		$columns[] = $arr['Field'];
 	}
 
-	if (isset($column) && in_array($column, $columns, true)) {
+	if (in_array($column, $columns, true)) {
 		$sql = 'ALTER TABLE `' . $table . '` DROP `' . $column . '`';
 
 		return db_execute($sql, $log, $db_conn);
@@ -1205,20 +1179,16 @@ function db_remove_column($table, $column, $log = true, $db_conn = false) {
 /**
  * db_add_index - adds a new index to a table
  *
- * @param  string        - The name of the table
- * @param  string        - The type of the index
- * @param  string        - The name of the index
- * @param  array         - An array that defines the columns to include in the index
- * @param  bool          - Whether to log error messages, defaults to true
- * @param  bool|resource - The connection to use or false to use the default
+ * @param string $table   The name of the table
+ * @param string $type    The type of the index
+ * @param string $key     The name of the index
+ * @param array  $columns An array that defines the columns to include in the index
+ * @param bool   $log     Whether to log error messages, defaults to true
+ * @param mixed  $db_conn The connection to use or false to use the default
  *
- * @return bool          - The result of the operation true or false
+ * @return bool The result of the operation true or false
  */
-function db_add_index($table, $type, $key, $columns, $log = true, $db_conn = false) {
-	if (!is_array($columns)) {
-		$columns = [$columns];
-	}
-
+function db_add_index(string $table, string $type, string $key, array $columns, bool $log = true, mixed $db_conn = false) : bool {
 	$sql = 'ALTER TABLE `' . $table . '` ADD ' . $type . ' `' . $key . '`(`' . implode('`,`', $columns) . '`)';
 
 	if (db_index_exists($table, $key, false, $db_conn)) {
@@ -1235,14 +1205,14 @@ function db_add_index($table, $type, $key, $columns, $log = true, $db_conn = fal
 /**
  * db_index_exists - checks whether an index exists
  *
- * @param  string        - The name of the table
- * @param  string        - The name of the index
- * @param  bool          - Whether to log error messages, defaults to true
- * @param  bool|resource - The connection to use or false to use the default
+ * @param string $table   The name of the table
+ * @param string $index   The name of the index
+ * @param bool   $log     Whether to log error messages, defaults to true
+ * @param mixed  $db_conn The connection to use or false to use the default
  *
- * @return bool          - The output of the sql query as a single variable
+ * @return bool The output of the sql query as a single variable
  */
-function db_index_exists($table, $index, $log = true, $db_conn = false) {
+function db_index_exists(string $table, string $index, bool $log = true, mixed $db_conn = false) : bool {
 	global $database_log, $config;
 
 	if (!isset($database_log)) {
@@ -1258,7 +1228,7 @@ function db_index_exists($table, $index, $log = true, $db_conn = false) {
 	$database_log = $_log;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
-		db_echo_sql('db_index_exists(\'' . $table . '\', \'' . $index .'\'): '
+		db_echo_sql('db_index_exists(\'' . $table . '\', \'' . $index . '\'): '
 			. in_array($index, $_keys, true) . ' - '
 			. clean_up_lines(var_export($_keys, true)));
 	}
@@ -1269,23 +1239,19 @@ function db_index_exists($table, $index, $log = true, $db_conn = false) {
 /**
  * db_index_exists - checks whether an index exists
  *
- * @param  string        - The name of the table
- * @param  string        - The name of the index
- * @param  array         - The columns of the index that should match
- * @param  bool          - Whether to log error messages, defaults to true
- * @param  bool|resource - The connection to use or false to use the default
+ * @param string $table   The name of the table
+ * @param string $index   The name of the index
+ * @param array  $columns The columns of the index that should match
+ * @param bool   $log     Whether to log error messages, defaults to true
+ * @param mixed  $db_conn The connection to use or false to use the default
  *
- * @return bool          - The output of the sql query as a single variable
+ * @return int The output of the sql query as a single variable
  */
-function db_index_matches($table, $index, $columns, $log = true, $db_conn = false) {
+function db_index_matches(string $table, string $index, array $columns, bool $log = true, mixed $db_conn = false) : int {
 	global $database_log, $config;
 
 	if (!isset($database_log)) {
 		$database_log = false;
-	}
-
-	if (!is_array($columns)) {
-		$columns = [$columns];
 	}
 
 	$_log         = $database_log;
@@ -1325,7 +1291,7 @@ function db_index_matches($table, $index, $columns, $log = true, $db_conn = fals
 	$database_log = $_log;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
-		db_echo_sql('db_index_matches(\'' . $table . '\', \'' . $index .'\'): '
+		db_echo_sql('db_index_matches(\'' . $table . '\', \'' . $index . '\'): '
 			. $status . "\n ::: "
 			. clean_up_lines(var_export($columns, true))
 			. ' ::: '
@@ -1338,13 +1304,13 @@ function db_index_matches($table, $index, $columns, $log = true, $db_conn = fals
 /**
  * db_table_exists - checks whether a table exists
  *
- * @param  string        - The name of the table
- * @param  bool          - Whether to log error messages, defaults to true
- * @param  bool|resource - The connection to use or false to use the default
+ * @param string $table   The name of the table
+ * @param bool   $log     Whether to log error messages, defaults to true
+ * @param mixed  $db_conn The connection to use or false to use the default
  *
- * @return bool          - The output of the sql query as a single variable
+ * @return bool The output of the sql query as a single variable
  */
-function db_table_exists($table, $log = true, $db_conn = false) {
+function db_table_exists(string $table, bool $log = true, mixed $db_conn = false) : bool {
 	static $results;
 
 	if ($db_conn == false) {
@@ -1360,7 +1326,7 @@ function db_table_exists($table, $log = true, $db_conn = false) {
 	// Separate the database from the table and remove backticks
 	preg_match("/([`]{0,1}(?<database>[\w_]+)[`]{0,1}\.){0,1}[`]{0,1}(?<table>[\w_]+)[`]{0,1}/", $table, $matches);
 
-	if ($matches !== false && array_key_exists('table', $matches)) {
+	if (cacti_sizeof($matches) && array_key_exists('table', $matches)) {
 		$sql = 'SHOW TABLES LIKE \'' . $matches['table'] . '\'';
 
 		$results[$index][$table] = (db_fetch_cell($sql, '', $log, $db_conn) ? true : false);
@@ -1374,11 +1340,11 @@ function db_table_exists($table, $log = true, $db_conn = false) {
 /**
  * db_cacti_initialized - checks whether cacti has been initialized properly and if not exits with a message
  *
- * @param  bool  - Is the session a web session.
+ * @param bool $is_web Is the session a web session.
  *
- * @return bool  - true if the database is initialized else false
+ * @return bool true if the database is initialized else false
  */
-function db_cacti_initialized($is_web = true) {
+function db_cacti_initialized(bool $is_web = true) : bool {
 	global $database_sessions, $database_default, $config, $database_hostname, $database_port, $config;
 
 	if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
@@ -1414,19 +1380,21 @@ function db_cacti_initialized($is_web = true) {
 
 		exit;
 	}
+
+	return true;
 }
 
 /**
  * db_column_exists - checks whether a column exists
  *
- * @param  string        - The name of the table
- * @param  string        - The name of the column
- * @param  bool          - Whether to log error messages, defaults to true
- * @param  bool|resource - The connection to use or false to use the default
+ * @param string $table   The name of the table
+ * @param string $column  The name of the column
+ * @param bool   $log     Whether to log error messages, defaults to true
+ * @param mixed  $db_conn The connection to use or false to use the default
  *
- * @return bool          - The output of the sql query as a single variable
+ * @return bool The output of the sql query as a single variable
  */
-function db_column_exists($table, $column, $log = true, $db_conn = false) {
+function db_column_exists(string $table, string $column, bool $log = true, mixed $db_conn = false) : bool {
 	static $results = [];
 
 	if ($db_conn == false) {
@@ -1447,15 +1415,15 @@ function db_column_exists($table, $column, $log = true, $db_conn = false) {
 /**
  * db_get_table_column_types - returns all the types for each column of a table
  *
- * @param  string        - The name of the table
- * @param  bool|resource - The connection to use or false to use the default
+ * @param string $table   The name of the table
+ * @param mixed  $db_conn The connection to use or false to use the default
  *
- * @return array         - An array of column types indexed by the column names
+ * @return mixed An array of column types indexed by the column names or false if failed
  */
-function db_get_table_column_types($table, $db_conn = false) {
+function db_get_table_column_types(string $table, mixed $db_conn = false) : mixed {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -1484,18 +1452,18 @@ function db_get_table_column_types($table, $db_conn = false) {
  * script.  That script will construct an array from the table definition.
  * The script is very handy for both Cacti table construction and for plugins.
  *
- * @param  string        - The name of the table
- * @param  array         - Table definition as a Cacti specific array
- * @param  bool          - Remove any existing columns that are not in the specification
- * @param  bool          - Whether to log error messages, defaults to true
- * @param  bool|resource - The connection to use or false to use the default
+ * @param string $table         The name of the table
+ * @param array  $data          Table definition as a Cacti specific array
+ * @param bool   $removecolumns Remove any existing columns that are not in the specification
+ * @param bool   $log           Whether to log error messages, defaults to true
+ * @param mixed  $db_conn       The connection to use or false to use the default
  *
- * @return array         - An array of column types indexed by the column names
+ * @return mixed An array of column types indexed by the column names or false on error
  */
-function db_update_table($table, $data, $removecolumns = false, $log = true, $db_conn = false) {
+function db_update_table(string $table, array $data, bool $removecolumns = false, bool $log = true, mixed $db_conn = false) : mixed {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -1718,12 +1686,12 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
  * db_format_index_create - Converts and array of indexes to a string
  * that is compatible with the cacti database table creation array.
  *
- * @param  array  - An array of indexes to process
+ * @param mixed $indexes An array of indexes to process
  *
- * @return string - A list of preprocessed indexes into a form
- *                  compatible with the array definition
+ * @return string A list of preprocessed indexes into a form
+ *                compatible with the array definition
  */
-function db_format_index_create($indexes) {
+function db_format_index_create(mixed $indexes) : string {
 	if (is_array($indexes)) {
 		$outindex = '';
 
@@ -1752,17 +1720,17 @@ function db_format_index_create($indexes) {
 /**
  * db_table_create - checks whether a table exists
  *
- * @param  string        - The name of the table
- * @param  array         - The table creation array as defined by sqltable_to_php.php script
- * @param  bool          - Whether to log error messages, defaults to true
- * @param  bool|resource - The connection to use or false to use the default
+ * @param string $table   The name of the table
+ * @param array  $data    The table creation array as defined by sqltable_to_php.php script
+ * @param bool   $log     Whether to log error messages, defaults to true
+ * @param mixed  $db_conn The connection to use or false to use the default
  *
- * @return bool          - The output of the sql query as a single variable
+ * @return bool The output of the sql query as a single variable
  */
-function db_table_create($table, $data, $log = true, $db_conn = false) {
+function db_table_create(string $table, array $data, bool $log = true, mixed $db_conn = false) : bool {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -1868,20 +1836,22 @@ function db_table_create($table, $data, $log = true, $db_conn = false) {
 			return false;
 		}
 	}
+
+	return true;
 }
 
 /**
  * db_get_global_variable - get the value of a global variable
  *
- * @param  string        - The GLOBAL variable to obtain
- * @param  bool|resource - The connection to use or false to use the default
+ * @param string $variable The GLOBAL variable to obtain
+ * @param mixed  $db_conn  The connection to use or false to use the default
  *
- * @return bool|string   - The value of the variable if found
+ * @return mixed The value of the variable if found or false if failed to locate
  */
-function db_get_global_variable($variable, $db_conn = false) {
+function db_get_global_variable(string $variable, mixed $db_conn = false) : mixed {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -1904,15 +1874,15 @@ function db_get_global_variable($variable, $db_conn = false) {
 /**
  * db_get_session_variable - get the value of a session variable
  *
- * @param  string        - The variable to obtain
- * @param  bool|resource - The connection to use or false to use the default
+ * @param string $variable The variable to obtain
+ * @param mixed  $db_conn  The connection to use or false to use the default
  *
- * @return bool|string   - The value of the variable if found
+ * @return mixed The value of the variable if found or false if failed to locate
  */
-function db_get_session_variable($variable, $db_conn = false) {
+function db_get_session_variable(string $variable, mixed $db_conn = false) : mixed {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -1935,14 +1905,14 @@ function db_get_session_variable($variable, $db_conn = false) {
 /**
  * db_begin_transaction - start a transaction
  *
- * @param  bool|resource - The connection to use or false to use the default
+ * @param mixed $db_conn The connection to use or false to use the default
  *
- * @return bool          - If the begin transaction was successful
+ * @return bool If the begin transaction was successful
  */
-function db_begin_transaction($db_conn = false) {
+function db_begin_transaction(mixed $db_conn = false) : bool {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -1959,14 +1929,14 @@ function db_begin_transaction($db_conn = false) {
 /**
  * db_commit_transaction - commit a transaction
  *
- * @param  bool|resource - The connection to use or false to use the default
+ * @param mixed $db_conn The connection to use or false to use the default
  *
- * @return bool          - If the commit transaction was successful
+ * @return bool If the commit transaction was successful
  */
-function db_commit_transaction($db_conn = false) {
+function db_commit_transaction(mixed $db_conn = false) : bool {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -1979,20 +1949,22 @@ function db_commit_transaction($db_conn = false) {
 
 	if (db_fetch_cell('SELECT @@in_transaction') > 0) {
 		return $db_conn->commit();
+	} else {
+		return false;
 	}
 }
 
 /**
  * db_rollback_transaction - rollback a transaction
  *
- * @param  bool|resource - The connection to use or false to use the default
+ * @param mixed $db_conn The connection to use or false to use the default
  *
- * @return bool          - If the rollback transaction was successful
+ * @return bool If the rollback transaction was successful
  */
-function db_rollback_transaction($db_conn = false) {
+function db_rollback_transaction(mixed $db_conn = false) : bool {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -2013,13 +1985,13 @@ function db_rollback_transaction($db_conn = false) {
  *
  * column=item1 OR column=item2 OR column=item2 ...
  *
- * @param  array  - The array to convert
- * @param  string - The column to set each item in the array equal to
+ * @param array  $array      The array to convert
+ * @param string $sql_column The column to set each item in the array equal to
  *
- * @return string - A string that can be placed in a SQL OR statement
+ * @return mixed A string that can be placed in a SQL OR statement or null
  */
-function array_to_sql_or($array, $sql_column) {
-	/* if the last item is null; pop it off */
+function array_to_sql_or(array $array, string $sql_column) : mixed {
+	// if the last item is null; pop it off
 	if (end($array) === null) {
 		array_pop($array);
 	}
@@ -2029,22 +2001,24 @@ function array_to_sql_or($array, $sql_column) {
 
 		return $sql_or;
 	}
+
+	return '';
 }
 
 /**
  * db_replace - replaces the data contained in a particular row
  *
- * @param string $table_name  - the name of the table to make the replacement in
- * @param array  $array_items - an array containing each column -> value mapping in the row
- * @param string $keyCols     - a string or array of primary keys
- * @param mixed  $db_conn     - db connection object of false
+ * @param string $table_name  The name of the table to make the replacement in
+ * @param array  $array_items An array containing each column -> value mapping in the row
+ * @param string $keyCols     A string or array of primary keys
+ * @param mixed  $db_conn     db connection object of false
  *
- * @return int                - the auto increment id column (if applicable)
+ * @return int The auto increment id column (if applicable)
  */
-function db_replace($table_name, $array_items, $keyCols, $db_conn = false) {
+function db_replace(string $table_name, array $array_items, string $keyCols, mixed $db_conn = false) : int {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -2061,17 +2035,17 @@ function db_replace($table_name, $array_items, $keyCols, $db_conn = false) {
 /**
  * _db_replace - Internal function used as a part of the db_replace public function
  *
- * @param  resource     - The database connection to use
- * @param  string       - The table name to use
- * @param  array        - An array of field values
- * @param  string|array - A string of a key column or an array of key columns
+ * @param mixed  $db_conn    The database connection to use
+ * @param string $table      The table name to use
+ * @param array  $fieldArray An array of field values
+ * @param mixed  $keyCols    A string of a key column or an array of key columns
  *
- * @return bool|int     - Either the insert id of the replace of false on error
+ * @return mixed Either the insert id of the replace of false on error
  */
-function _db_replace($db_conn, $table, $fieldArray, $keyCols) {
+function _db_replace(mixed $db_conn, string $table, array $fieldArray, mixed $keyCols) : mixed {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -2129,18 +2103,18 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCols) {
 /**
  * sql_save - saves data to an sql table
  *
- * @param  array          - An array containing each column -> value mapping in the row
- * @param  string         - The name of the table to make the replacement in
- * @param  string|array   - The primary key(s) for the table
- * @param  mixed $autoinc
- * @param  mixed $db_conn
+ * @param array  $array_items An array containing each column -> value mapping in the row
+ * @param string $table_name  The name of the table to make the replacement in
+ * @param mixed  $key_cols    The primary key(s) for the table
+ * @param bool   $autoinc     Use autoinc if available
+ * @param mixed  $db_conn     Database connection to use
  *
- * @return bool|int       - The auto increment id column (if applicable)
+ * @return mixed The auto increment id column (if applicable)
  */
-function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, $db_conn = false) {
+function sql_save(array $array_items, string $table_name, mixed $key_cols = 'id', bool $autoinc = true, mixed $db_conn = false) : mixed {
 	global $database_sessions, $database_default, $database_hostname, $database_port, $database_last_error;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -2203,7 +2177,7 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, 
 
 	$replace_result = _db_replace($db_conn, $table_name, $array_items, $key_cols);
 
-	/* get the last AUTO_ID and return it */
+	// get the last AUTO_ID and return it
 	if (!$replace_result || db_fetch_insert_id($db_conn) == '0') {
 		if (!is_array($key_cols)) {
 			if (isset($array_items[$key_cols])) {
@@ -2221,15 +2195,15 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, 
  * db_qstr - Quote a string using the PDO function and also enclose
  * the remainder of the string in single quotes.
  *
- * @param  string        - The SQL to be escaped
- * @param  bool|resource - The database connection or false if to use the default
+ * @param mixed $s       The SQL to be escaped.  Can include a null
+ * @param mixed $db_conn The database connection or false if to use the default
  *
- * @return string        - The escaped SQL string
+ * @return string The escaped SQL string
  */
-function db_qstr($s, $db_conn = false) {
+function db_qstr(mixed $s, mixed $db_conn = false) : string {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
-	/* check for a connection being passed, if not use legacy behavior */
+	// check for a connection being passed, if not use legacy behavior
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
@@ -2252,23 +2226,23 @@ function db_qstr($s, $db_conn = false) {
 /**
  * db_strip_control_chars - Strip control characters from SQL command
  *
- * @param  string - The SQL command to loose it's control chars
+ * @param string $sql The SQL command to loose it's control chars
  *
- * @return string - The SQL command
+ * @return string The SQL command
  */
-function db_strip_control_chars($sql) {
+function db_strip_control_chars(string $sql) : string {
 	return trim(clean_up_lines($sql), ';');
 }
 
 /**
  * db_get_column_attributes - Get the attributes for a column or columns
  *
- * @param  string     - The name of the table
- * @param  string     - A comma separated list of columns
+ * @param string $table   The name of the table
+ * @param mixed  $columns A comma separated list of columns
  *
- * @return array|bool - An array of column attributes on success or false if failed
+ * @return mixed An array of column attributes on success or false if failed
  */
-function db_get_column_attributes($table, $columns) {
+function db_get_column_attributes(string $table, mixed $columns) : mixed {
 	if (empty($columns) || empty($table)) {
 		return false;
 	}
@@ -2300,12 +2274,12 @@ function db_get_column_attributes($table, $columns) {
 /**
  * db_get_columns_length - Get the length of a array of columns in a table
  *
- * @param  string     - The name of the table
- * @param  array      - An array of column names
+ * @param string $table   The name of the table
+ * @param mixed  $columns An array of column names
  *
- * @return array|bool - An array of column lengths on success or false if failed
+ * @return mixed An array of column lengths on success or false if failed
  */
-function db_get_columns_length($table, $columns) {
+function db_get_columns_length(string $table, mixed $columns) : mixed {
 	$column_data = db_get_column_attributes($table, $columns);
 
 	if (!empty($column_data)) {
@@ -2318,12 +2292,12 @@ function db_get_columns_length($table, $columns) {
 /**
  * db_get_column_length - Get the length of a column in a table
  *
- * @param  string   - The name of the table
- * @param  string   - The name of the table column
+ * @param string $table  The name of the table
+ * @param string $column The name of the table column
  *
- * @return int|bool - The length on success or false if failed
+ * @return mixed The length on success or false if failed
  */
-function db_get_column_length($table, $column) {
+function db_get_column_length(string $table, string $column) : mixed {
 	$column_data = db_get_columns_length($table, $column);
 
 	if (!empty($column_data) && isset($column_data[$column])) {
@@ -2339,7 +2313,7 @@ function db_get_column_length($table, $column) {
  *
  * @return void
  */
-function db_check_password_length() {
+function db_check_password_length() : void {
 	$len = db_get_column_length('user_auth', 'password');
 
 	if ($len === false) {
@@ -2347,7 +2321,7 @@ function db_check_password_length() {
 	}
 
 	if ($len < 80) {
-		/* Ensure that the password length is increased before we start updating it */
+		// Ensure that the password length is increased before we start updating it
 		db_execute("ALTER TABLE user_auth MODIFY COLUMN password varchar(256) NOT NULL default ''");
 
 		$len = db_get_column_length('user_auth','password');
@@ -2361,12 +2335,12 @@ function db_check_password_length() {
 /**
  * db_echo_sql - log the database call SQL to the systems tmpdir
  *
- * @param  string - The SQL data to be executed
- * @param  mixed  - Not used
+ * @param string $line  The SQL data to be executed
+ * @param bool   $force Not used
  *
- * @return string - the last database error if any
+ * @return void
  */
-function db_echo_sql($line, $force = false) {
+function db_echo_sql(string $line, bool $force = false) : void {
 	global $config;
 
 	file_put_contents(sys_get_temp_dir() . '/cacti-sql.log', get_debug_prefix() . $line, FILE_APPEND);
@@ -2375,9 +2349,9 @@ function db_echo_sql($line, $force = false) {
 /**
  * db_error - return the last error from the database
  *
- * @return string - the last database error if any
+ * @return mixed The last database error if any
  */
-function db_error() {
+function db_error() : mixed {
 	global $database_last_error;
 
 	return $database_last_error;
@@ -2387,11 +2361,11 @@ function db_error() {
  * db_get_default_database - Get the database name of the current database or
  * return the default database name
  *
- * @param  bool|resource - The connection name or false if one is not passed
+ * @param mixed $db_conn The connection name or false if one is not passed
  *
- * @return string        - either current db name or default database if no connection/name
+ * @return string Either current db name or default database if no connection/name
  */
-function db_get_default_database($db_conn = false) {
+function db_get_default_database(mixed $db_conn = false) : string {
 	global $database_default;
 
 	$database = db_fetch_cell('SELECT DATABASE()', '', true, $db_conn);
@@ -2399,6 +2373,8 @@ function db_get_default_database($db_conn = false) {
 	if (empty($database)) {
 		$database = $database_default;
 	}
+
+	return $database;
 }
 
 /**
@@ -2409,9 +2385,9 @@ function db_get_default_database($db_conn = false) {
  * database server since by default they are connected to the local
  * database server.
  *
- * @return bool - The status of the switch
+ * @return bool The status of the switch
  */
-function db_force_remote_cnn() {
+function db_force_remote_cnn() : bool {
 	return db_switch_remote_to_main();
 }
 
@@ -2424,9 +2400,9 @@ function db_force_remote_cnn() {
  * by CLI script, that by default connect to the local database, back and forth to the
  * remote or main database server.
  *
- * @return bool - If the switch was successful
+ * @return bool If the switch was successful
  */
-function db_switch_remote_to_main() {
+function db_switch_remote_to_main() : bool {
 	global $config, $database_sessions, $database_hostname, $database_port, $database_default;
 	global $remote_db_cnn_id, $local_db_cnn_id;
 
@@ -2448,9 +2424,9 @@ function db_switch_remote_to_main() {
  * by CLI script, that by default connect to the local database, back and forth to the
  * remote or main database server.
  *
- * @return bool - If the switch was successful
+ * @return bool If the switch was successful
  */
-function db_switch_main_to_local() {
+function db_switch_main_to_local() : bool {
 	global $config, $database_sessions, $database_hostname, $database_port, $database_default;
 	global $remote_db_cnn_id, $local_db_cnn_id;
 
@@ -2466,15 +2442,15 @@ function db_switch_main_to_local() {
 /**
  * db_dump_data - dump data into a file by mysqldump, minimize password be caught.
  *
- * @param  string     $database    - default $database_default
- * @param  string     $tables      - default all tables
- * @param  array      $credentials - array($name => value, ...) for user, password, host, port, ssl ...
- * @param  sting|bool $output_file - dump file name, default /tmp/cacti.dump.sql
- * @param  string     $options     - option strings for mysqldump, if --defaults-extra-file set, dump the data directly
+ * @param string $database    default $database_default
+ * @param string $tables      default all tables
+ * @param array  $credentials array($name => value, ...) for user, password, host, port, ssl ...
+ * @param mixed  $output_file dump file name, default /tmp/cacti.dump.sql
+ * @param string $options     option strings for mysqldump, if --defaults-extra-file set, dump the data directly
  *
- * @return int                     - return status of the executed command
+ * @return int Return status of the executed command
  */
-function db_dump_data($database = '', $tables = '', $credentials = [], $output_file = false, $options = '--extended-insert=FALSE') {
+function db_dump_data(string $database = '', string $tables = '', array $credentials = [], mixed $output_file = false, string $options = '--extended-insert=FALSE') : int {
 	global $database_default, $database_username, $database_password;
 
 	$credentials_string = '';
@@ -2487,7 +2463,7 @@ function db_dump_data($database = '', $tables = '', $credentials = [], $output_f
 		foreach ($credentials as $key => $value) {
 			$name = trim($key);
 
-			if (str_contains($name, '--')) {      //name like --host
+			if (str_contains($name, '--')) {      // name like --host
 				if ($name == '--password') {
 					$password = $value;
 				} elseif ($name == '--user') {
@@ -2495,7 +2471,7 @@ function db_dump_data($database = '', $tables = '', $credentials = [], $output_f
 				} else {
 					$credentials_string .= $name . '=' . $value . ' ';
 				}
-			} elseif (str_contains($name, '-')) { //name like -h
+			} elseif (str_contains($name, '-')) { // name like -h
 				if ($name == '-p') {
 					$password = $value;
 				} elseif ($name == '-u') {
@@ -2503,7 +2479,7 @@ function db_dump_data($database = '', $tables = '', $credentials = [], $output_f
 				} else {
 					$credentials_string .= $name . $value . ' ';
 				}
-			} else {                                  //name like host
+			} else {                                  // name like host
 				if ($name == 'password') {
 					$password = $value;
 				} elseif ($name == 'user') {
@@ -2544,7 +2520,7 @@ function db_dump_data($database = '', $tables = '', $credentials = [], $output_f
 	return $retval;
 }
 
-function db_create_permissions_array($database, $default = false) {
+function db_create_permissions_array(string $database, bool $default = false) : array {
 	$permissions = [
 		'ALTER'                   => $default,
 		'ALTER ROUTINE'           => $default,
@@ -2584,13 +2560,13 @@ function db_create_permissions_array($database, $default = false) {
 	return [$database => $permissions];
 }
 
-function db_get_grants($log = false, $db_conn = false) {
+function db_get_grants(bool $log = false, mixed $db_conn = false) : array {
 	$db_grants = db_fetch_assoc('SHOW GRANTS FOR CURRENT_USER', $log, $db_conn);
 
 	return $db_grants;
 }
 
-function db_get_permissions($include_unknown = false, $log = false, $db_conn = false) {
+function db_get_permissions(bool $include_unknown = false, bool $log = false, mixed $db_conn = false) : array {
 	global $database_default;
 
 	$perms = db_create_permissions_array($database_default, false);
@@ -2651,7 +2627,7 @@ function db_get_permissions($include_unknown = false, $log = false, $db_conn = f
 	return $perms;
 }
 
-function db_has_permissions($permissions, $database = false, $log = false, $db_conn = false) {
+function db_has_permissions(mixed $permissions, mixed $database = false, bool $log = false, mixed $db_conn = false) : bool {
 	global $database_default;
 
 	if ($database == false) {

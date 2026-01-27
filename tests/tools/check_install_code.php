@@ -39,7 +39,7 @@ ini_set('max_execution_time', '0');
 define('CACTI_PATH', str_replace('/tests/tools', '', str_replace('\\','/', __DIR__)));
 
 global $config;
-$config = array('base_path' => CACTI_PATH);
+$config = ['base_path' => CACTI_PATH];
 include_once(CACTI_PATH . '/include/global_path.php');
 
 // pre-flush output buffer to avoid header warning
@@ -50,20 +50,22 @@ flush();
  * This will find function name collisions
  */
 
-print "TEST: Including all Install upgrade files" . PHP_EOL;
+print 'TEST: Including all Install upgrade files' . PHP_EOL;
 $install_upgrades_dir = CACTI_PATH . '/install/upgrades';
-$dh = opendir($install_upgrades_dir);
+$dh                   = opendir($install_upgrades_dir);
+
 if ($dh === false) {
 	throw new Exception('Failed to open directory: ' . $install_upgrades_dir);
 }
-while (($file = readdir($dh)) !== false)
-{
+
+while (($file = readdir($dh)) !== false) {
 	// only include .php files, skip index.php
 	if (substr($file, -4) == '.php' && $file != 'index.php') {
 		print '  Include File: ' . $install_upgrades_dir . '/' . $file . PHP_EOL;
 		require_once($install_upgrades_dir . '/' . $file);
 		// confirm upgrade function exists
 		$function_name = 'upgrade_to_' . substr($file, 0, -4);
+
 		if (! function_exists($function_name)) {
 			throw new Exception('Install upgrade function ' . $function_name . ' not found');
 		}
@@ -73,15 +75,15 @@ closedir($dh);
 
 exit(0);
 
-/*
- * Error handler function to cause exception on error and warnings
- */
-function error_handler($err_number, $err_string, $err_file, $err_line) {
-	$msg = $err_string . " in " . $err_file . " on line " . $err_line;
+// Error handler function to cause exception on error and warnings
+function error_handler(int $err_number, string $err_string, string $err_file, int $err_line) : bool {
+	$msg = $err_string . ' in ' . $err_file . ' on line ' . $err_line;
 
 	if ($err_number == E_NOTICE || $err_number == E_WARNING) {
 		throw new ErrorException($msg, $err_number);
 	} else {
-		echo $msg;
+		print $msg;
 	}
+
+	return true;
 }

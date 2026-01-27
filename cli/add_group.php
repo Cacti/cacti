@@ -24,14 +24,14 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-require_once(CACTI_PATH_LIBRARY. '/api_automation_tools.php');
+require_once(CACTI_PATH_LIBRARY . '/api_automation_tools.php');
 
-/* switch to main database for cli's */
-if ($config['poller_id'] > 1) {
+// switch to main database for cli's
+if (POLLER_ID > 1) {
 	db_switch_remote_to_main();
 }
 
-/* process calling arguments */
+// process calling arguments
 $params = $_SERVER['argv'];
 array_shift($params);
 
@@ -41,6 +41,8 @@ if (cacti_sizeof($params) == 0) {
 	exit(1);
 } else {
 	$userId        = 0;
+	$groupId       = 0;
+	$type          = '';
 	$quietMode     = false;
 	$displayGroups = false;
 	$displayUsers  = false;
@@ -60,7 +62,7 @@ if (cacti_sizeof($params) == 0) {
 
 				break;
 			case '--group-id':
-				$groupId = $value;
+				$groupId = intval($value);
 
 				break;
 			case '--name':
@@ -101,7 +103,7 @@ if (cacti_sizeof($params) == 0) {
 				exit(0);
 
 			default:
-				print "ERROR: Invalid Argument: ($arg)\n\n";
+				print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
 				display_help();
 
 				exit(1);
@@ -127,15 +129,15 @@ if (cacti_sizeof($params) == 0) {
 		exit(1);
 	}
 
-	/* verify, that a valid userid is provided */
+	// verify, that a valid userid is provided
 	$groupIds = [];
 
-	if (isset($groupId) && $groupId > 0) {
-		/* verify existing user id */
+	if ($groupId > 0) {
+		// verify existing user id
 		if (db_fetch_cell_prepared('SELECT id FROM user_auth_group WHERE id = ?', [$groupId])) {
 			array_push($groupIds, $groupId);
 		} else {
-			print "ERROR: Invalid Groupid: ($value)\n\n";
+			print "ERROR: Invalid Groupid: ($groupId)" . PHP_EOL . PHP_EOL;
 			display_help();
 
 			exit(1);
@@ -144,65 +146,79 @@ if (cacti_sizeof($params) == 0) {
 }
 
 if ($type == 'add_group') {
-	# Add a new group
+	// Add a new group
 	if (empty($name)) {
-		print "ERROR: You must supply a name with --name\n";
+		print 'ERROR: You must supply a name with --name' . PHP_EOL;
 		display_help();
 
 		exit(1);
 	}
 
 	if (empty($description)) {
-		print "ERROR: You must supply a description with --description\n";
+		print 'ERROR: You must supply a description with --description' . PHP_EOL;
 		display_help();
 
 		exit(1);
 	}
 
 	$groupOpts                           = [];
-	$groupOpts['id']                     = 0; # Zero means create a new one rather than save over an existing one
+	$groupOpts['id']                     = 0; // Zero means create a new one rather than save over an existing one
 	$groupOpts['name']                   = $name;
 	$groupOpts['description']            = $description;
-	$groupOpts['graph_settings']         = 'on'; # Default
-	$groupOpts['login_opts']             = 1; # Default - needs option
-	$groupOpts['show_tree']              = 2; # Default - needs option
-	$groupOpts['show_list']              = 3; # Default - needs option
-	$groupOpts['show_preview']           = 2; # Default - needs option
-	$groupOpts['policy_graphs']          = 2; # Default - needs option
-	$groupOpts['policy_trees']           = 2; # Default - needs option
-	$groupOpts['policy_hosts']           = 2; # Default - needs option
-	$groupOpts['policy_graph_templates'] = 1; # Default - needs option
-	$groupOpts['enabled']                = 'on'; # Default - needs option
+	$groupOpts['graph_settings']         = 'on'; // Default
+	$groupOpts['login_opts']             = 1; // Default - needs option
+	$groupOpts['show_tree']              = 2; // Default - needs option
+	$groupOpts['show_list']              = 3; // Default - needs option
+	$groupOpts['show_preview']           = 2; // Default - needs option
+	$groupOpts['policy_graphs']          = 2; // Default - needs option
+	$groupOpts['policy_trees']           = 2; // Default - needs option
+	$groupOpts['policy_hosts']           = 2; // Default - needs option
+	$groupOpts['policy_graph_templates'] = 1; // Default - needs option
+	$groupOpts['enabled']                = 'on'; // Default - needs option
 
-	# Default - needs option
+	// Default - needs option
 	$existsAlready = db_fetch_cell_prepared('SELECT id FROM user_auth_group WHERE name = ?', [$name]);
 
 	if ($existsAlready) {
-		print "ERROR: Not adding group - it already exists - group-id: ($existsAlready)\n";
+		print "ERROR: Not adding group - it already exists - group-id: ($existsAlready)" . PHP_EOL;
 
 		exit(1);
 	}
 
 	$groupId = sql_save($groupOpts, 'user_auth_group');
 
-	print "Group Created - Group-id: ($groupId)\n";
+	print "Group Created - Group-id: ($groupId)" . PHP_EOL;
 
 	exit(0);
+} else {
+	print 'ERROR: You must specify --type=\'add_group\'' . PHP_EOL;
+
+	exit(1);
 }
 
-/*  display_version - displays version information */
-function display_version() {
+/**
+ * display_version - displays version information
+ *
+ * @return void
+ */
+function display_version() : void {
 	$version = get_cacti_cli_version();
-	print "Cacti Add Permissions Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Add Permissions Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-function display_help() {
+/**
+ * display_help - displays help information
+ *
+ * @return void
+ */
+function display_help() : void {
 	display_version();
 
-	print "\nusage: add_groups.php --type=[add_group|group_perm] --name=[name] --description=[description]\n";
-	print "[--quiet]\n\n";
-	print "List Options:\n";
-	print "    --list-users\n";
-	print "    --list-groups\n";
-	print "    --list-hosts\n";
+	print PHP_EOL;
+	print 'usage: add_groups.php --type=[add_group|group_perm] --name=[name] --description=[description]' . PHP_EOL . PHP_EOL;
+	print '[--quiet]' . PHP_EOL . PHP_EOL;
+	print 'List Options:' . PHP_EOL;
+	print '    --list-users' . PHP_EOL;
+	print '    --list-groups' . PHP_EOL;
+	print '    --list-hosts' . PHP_EOL;
 }

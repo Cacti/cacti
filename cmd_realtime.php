@@ -32,7 +32,7 @@ ini_set('max_execution_time', '0');
 
 $start = date('Y-m-d H:i:s'); // for runtime measurement
 
-/* correct for a windows PHP bug. fixed in 5.2.0 */
+// correct for a windows PHP bug. fixed in 5.2.0
 if (cacti_count($_SERVER['argv']) < 4) {
 	print "No graph_id, interval, pollerid specified.\n\n";
 	print "Usage: cmd_realtime.php POLLER_ID GRAPH_ID INTERVAL\n\n";
@@ -56,13 +56,13 @@ if ($interval <= 0) {
 	exit(-1);
 }
 
-/* record the start time */
+// record the start time
 $start = microtime(true);
 
-/* initialize the polling items */
+// initialize the polling items
 $polling_items = [];
 
-/* get poller_item for graph_id */
+// get poller_item for graph_id
 $local_data_ids = db_fetch_assoc_prepared('SELECT DISTINCT dtr.local_data_id, dl.host_id
 	FROM graph_templates_item AS gti
 	INNER JOIN data_template_rrd AS dtr
@@ -107,7 +107,9 @@ if (cacti_sizeof($idbyhost)) {
 		AND host_id IN (' . implode(',', $hosts) . ')
 		AND local_data_id IN (' . implode(',', $ids) . ')');
 
-	/* startup Cacti php polling server and include the include file for script processing */
+	$cactiphp = false;
+
+	// startup Cacti php polling server and include the include file for script processing
 	if ($script_server_calls > 0) {
 		$cactides = [
 			0 => ['pipe', 'r'], // stdin is a pipe that the child will read from
@@ -121,12 +123,14 @@ if (cacti_sizeof($idbyhost)) {
 			$using_proc_function = true;
 		} else {
 			$using_proc_function = false;
+			$pipes               = false;
 		}
 	} else {
 		$using_proc_function = false;
+		$pipes               = false;
 	}
 
-	/* all polled items need the same insert time */
+	// all polled items need the same insert time
 	$host_update_time = date('Y-m-d H:i:s');
 
 	foreach ($idbyhost as $host_id => $local_data_ids) {
@@ -156,12 +160,12 @@ if (cacti_sizeof($idbyhost)) {
 				$sql = '';
 
 				foreach ($output as $item) {
-					$sql .= ($sql != '' ? ', ' : '')      . '(' .
+					$sql .= ($sql != '' ? ', ' : '') . '(' .
 						db_qstr($item['local_data_id']) . ', ' .
-						db_qstr($item['rrd_name'])      . ', ' .
-						db_qstr($host_update_time)      . ', ' .
-						db_qstr($poller_id)             . ', ' .
-						db_qstr($item['value'])         . ')';
+						db_qstr($item['rrd_name']) . ', ' .
+						db_qstr($host_update_time) . ', ' .
+						db_qstr($poller_id) . ', ' .
+						db_qstr($item['value']) . ')';
 				}
 
 				db_execute("INSERT INTO poller_output_realtime
@@ -178,7 +182,7 @@ if (cacti_sizeof($idbyhost)) {
 			if (cacti_sizeof($poller_items)) {
 				foreach ($poller_items as $item) {
 					switch ($item['action']) {
-						case POLLER_ACTION_SNMP: /* snmp */
+						case POLLER_ACTION_SNMP: // snmp
 							if (($item['snmp_version'] == 0) || (($item['snmp_community'] == '') && ($item['snmp_version'] != 3))) {
 								$output = 'U';
 							} else {
@@ -216,8 +220,8 @@ if (cacti_sizeof($idbyhost)) {
 							}
 
 							break;
-						case POLLER_ACTION_SCRIPT: /* script (popen) */
-							$output = trim(exec_poll($item['arg1']), 2);
+						case POLLER_ACTION_SCRIPT: // script (popen)
+							$output = trim(exec_poll($item['arg1'], 2));
 
 							if (prepare_validate_result($output) === false) {
 								if (strlen($output) > 20) {
@@ -230,7 +234,7 @@ if (cacti_sizeof($idbyhost)) {
 							}
 
 							break;
-						case POLLER_ACTION_SCRIPT_PHP: /* script (php script server) */
+						case POLLER_ACTION_SCRIPT_PHP: // script (php script server)
 							if ($using_proc_function == true) {
 								$output = trim(str_replace("\n", '', exec_poll_php($item['arg1'], $using_proc_function, $pipes, $cactiphp)));
 
@@ -263,12 +267,16 @@ if (cacti_sizeof($idbyhost)) {
 	}
 
 	if (($using_proc_function == true) && ($script_server_calls > 0)) {
-		/* close php server process */
-		fwrite($pipes[0], "quit\r\n");
-		fclose($pipes[0]);
-		fclose($pipes[1]);
-		fclose($pipes[2]);
+		if ($cactiphp) {
+			// close php server process
+			if ($pipes !== false) {
+				fwrite($pipes[0], "quit\r\n");
+				fclose($pipes[0]);
+				fclose($pipes[1]);
+				fclose($pipes[2]);
+			}
 
-		$return_value = proc_close($cactiphp);
+			$return_value = proc_close($cactiphp);
+		}
 	}
 }

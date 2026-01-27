@@ -34,15 +34,15 @@ $actions = [
 	AUTOMATION_ACTION_GRAPH_DELETE    => __('Delete'),
 ];
 
-/* sanitize the tab */
-get_filter_request_var('tab', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-z_A-Z]+)$/']]);
+// sanitize the tab
+gfrv('tab', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-z_A-Z]+)$/']]);
 
-/* set default action */
+// set default action
 set_default_action();
 
-switch (get_request_var('action')) {
+switch (grv('action')) {
 	case 'save':
-		if (isset_request_var('save_component_import')) {
+		if (isrv('save_component_import')) {
 			automation_import_process();
 		} else {
 			form_save();
@@ -66,19 +66,19 @@ switch (get_request_var('action')) {
 	case 'item_movedown':
 		automation_graph_rules_item_movedown();
 
-		header('Location: automation_graph_rules.php?action=edit&id=' . get_filter_request_var('id'));
+		header('Location: automation_graph_rules.php?action=edit&id=' . gfrv('id'));
 
 		break;
 	case 'item_moveup':
 		automation_graph_rules_item_moveup();
 
-		header('Location: automation_graph_rules.php?action=edit&id=' . get_filter_request_var('id'));
+		header('Location: automation_graph_rules.php?action=edit&id=' . gfrv('id'));
 
 		break;
 	case 'item_remove':
 		automation_graph_rules_item_remove();
 
-		header('Location: automation_graph_rules.php?action=edit&id=' . get_filter_request_var('id'));
+		header('Location: automation_graph_rules.php?action=edit&id=' . gfrv('id'));
 
 		break;
 	case 'item_edit':
@@ -90,7 +90,7 @@ switch (get_request_var('action')) {
 	case 'qedit':
 		automation_change_query_type();
 
-		header('Location: automation_graph_rules.php?action=edit&name=' . get_request_var('name') . '&id=' . get_filter_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+		header('Location: automation_graph_rules.php?action=edit&name=' . grv('name') . '&id=' . gfrv('id') . '&snmp_query_id=' . grv('snmp_query_id'));
 
 		break;
 	case 'remove':
@@ -113,14 +113,14 @@ switch (get_request_var('action')) {
 		break;
 }
 
-function automation_export() {
+function automation_export() : void {
 	draw_graph_rules_filter(false);
 
 	$snmp_option_ids = [];
 
-	/* if we are to save this form, instead of display it */
-	if (isset_request_var('selected_items')) {
-		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
+	// if we are to save this form, instead of display it
+	if (isrv('selected_items')) {
+		$selected_items = sanitize_unserialize_selected_items(gnrv('selected_items'));
 
 		if ($selected_items != false) {
 			if (cacti_sizeof($selected_items) == 1) {
@@ -152,7 +152,7 @@ function automation_export() {
 	}
 }
 
-function automation_import() {
+function automation_import() : void {
 	$form_data = [
 		'import_file' => [
 			'friendly_name' => __('Import Graph Rules from Local File'),
@@ -177,7 +177,7 @@ function automation_import() {
 	if ((isset($_SESSION['import_debug_info'])) && (is_array($_SESSION['import_debug_info']))) {
 		html_start_box(__('Import Results'), '60%', false, 3, 'center', '');
 
-		print '<tr class="tableHeader"><th>' . __('Cacti has Imported the following Graph Rules'). '</th></tr>';
+		print '<tr class="tableHeader"><th>' . __('Cacti has Imported the following Graph Rules') . '</th></tr>';
 
 		foreach ($_SESSION['import_debug_info'] as $line) {
 			print '<tr><td>' . $line . '</td></tr>';
@@ -215,8 +215,8 @@ function automation_import() {
 	html_end_box();
 }
 
-function automation_import_process() {
-	$json_data = json_decode(get_nfilter_request_var('import_text'), true);
+function automation_import_process() : void {
+	$json_data = json_decode(gnrv('import_text'), true);
 
 	$debug_data = [];
 
@@ -230,21 +230,21 @@ function automation_import_process() {
 	if (sizeof($return_data) && isset($return_data['success'])) {
 		foreach ($return_data['success'] as $message) {
 			$debug_data[] = '<span class="deviceUp">' . __('NOTE:') . '</span> ' . $message;
-			automation_log('NOTE: Automation Graph Rules Import Succeeded!.  Message: '. $message, AUTOMATION_LOG_LOW);
+			automation_log('NOTE: Automation Graph Rules Import Succeeded!.  Message: ' . $message, AUTOMATION_LOG_LOW);
 		}
 	}
 
 	if (isset($return_data['errors'])) {
 		foreach ($return_data['errors'] as $error) {
 			$debug_data[] = '<span class="deviceDown">' . __('ERROR:') . '</span> ' . $error;
-			automation_log('NOTE: Automation Graph Rules Import Error!.  Message: '. $error, AUTOMATION_LOG_LOW);
+			automation_log('NOTE: Automation Graph Rules Import Error!.  Message: ' . $error, AUTOMATION_LOG_LOW);
 		}
 	}
 
 	if (isset($return_data['failure'])) {
 		foreach ($return_data['failure'] as $message) {
 			$debug_data[] = '<span class="deviceDown">' . __('ERROR:') . '</span> ' . $message;
-			automation_log('NOTE: Automation Graph Rules Import Failed!.  Message: '. $message, AUTOMATION_LOG_LOW);
+			automation_log('NOTE: Automation Graph Rules Import Failed!.  Message: ' . $message, AUTOMATION_LOG_LOW);
 		}
 	}
 
@@ -257,18 +257,18 @@ function automation_import_process() {
 	exit();
 }
 
-function form_save() {
-	if (isset_request_var('save_component_automation_graph_rule')) {
-		/* ================= input validation ================= */
-		get_filter_request_var('id');
-		/* ==================================================== */
+function form_save() : void {
+	if (isrv('save_component_automation_graph_rule')) {
+		// ================= input validation =================
+		gfrv('id');
+		// ====================================================
 
-		$save['id']            = get_nfilter_request_var('id');
-		$save['hash']          = get_hash_automation(get_request_var('id'), 'automation_graph_rules');
-		$save['name']          = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
-		$save['snmp_query_id'] = form_input_validate(get_nfilter_request_var('snmp_query_id'), 'snmp_query_id', '^[0-9]+$', false, 3);
-		$save['graph_type_id'] = (isset_request_var('graph_type_id')) ? form_input_validate(get_nfilter_request_var('graph_type_id'), 'graph_type_id', '^[0-9]+$', false, 3) : 0;
-		$save['enabled']       = (isset_request_var('enabled') ? 'on' : '');
+		$save['id']            = gnrv('id');
+		$save['hash']          = get_hash_automation(grv('id'), 'automation_graph_rules');
+		$save['name']          = form_input_validate(gnrv('name'), 'name', '', false, 3);
+		$save['snmp_query_id'] = form_input_validate(gnrv('snmp_query_id'), 'snmp_query_id', '^[0-9]+$', false, 3);
+		$save['graph_type_id'] = (isrv('graph_type_id')) ? form_input_validate(gnrv('graph_type_id'), 'graph_type_id', '^[0-9]+$', false, 3) : 0;
+		$save['enabled']       = (isrv('enabled') ? 'on' : '');
 
 		if (!is_error_message()) {
 			$rule_id = sql_save($save, 'automation_graph_rules');
@@ -280,24 +280,24 @@ function form_save() {
 			}
 		}
 
-		header('Location: automation_graph_rules.php?action=edit&id=' . (empty($rule_id) ? get_nfilter_request_var('id') : $rule_id));
-	} elseif (isset_request_var('save_component_automation_graph_rule_item')) {
-		/* ================= input validation ================= */
-		get_filter_request_var('id');
-		get_filter_request_var('item_id');
-		/* ==================================================== */
+		header('Location: automation_graph_rules.php?action=edit&id=' . (empty($rule_id) ? gnrv('id') : $rule_id));
+	} elseif (isrv('save_component_automation_graph_rule_item')) {
+		// ================= input validation =================
+		gfrv('id');
+		gfrv('item_id');
+		// ====================================================
 
 		$save              = [];
-		$save['id']        = form_input_validate(get_request_var('item_id'), 'item_id', '^[0-9]+$', false, 3);
-		$save['hash']      = get_hash_automation(get_request_var('id_item'), 'automation_graph_rule_items');
-		$save['rule_id']   = form_input_validate(get_request_var('id'), 'id', '^[0-9]+$', false, 3);
-		$save['sequence']  = form_input_validate(get_nfilter_request_var('sequence'), 'sequence', '^[0-9]+$', false, 3);
-		$save['operation'] = form_input_validate(get_nfilter_request_var('operation'), 'operation', '^[-0-9]+$', true, 3);
-		$save['field']     = form_input_validate(((isset_request_var('field') && get_nfilter_request_var('field') != '0') ? get_nfilter_request_var('field') : ''), 'field', '', true, 3);
-		$save['operator']  = form_input_validate((isset_request_var('operator') ? get_nfilter_request_var('operator') : ''), 'operator', '^[0-9]+$', true, 3);
-		$save['pattern']   = form_input_validate((isset_request_var('pattern') ? get_nfilter_request_var('pattern') : ''), 'pattern', '', true, 3);
+		$save['id']        = form_input_validate(grv('item_id'), 'item_id', '^[0-9]+$', false, 3);
+		$save['hash']      = get_hash_automation(grv('id_item'), 'automation_graph_rule_items');
+		$save['rule_id']   = form_input_validate(grv('id'), 'id', '^[0-9]+$', false, 3);
+		$save['sequence']  = form_input_validate(gnrv('sequence'), 'sequence', '^[0-9]+$', false, 3);
+		$save['operation'] = form_input_validate(gnrv('operation'), 'operation', '^[-0-9]+$', true, 3);
+		$save['field']     = form_input_validate(((isrv('field') && gnrv('field') != '0') ? gnrv('field') : ''), 'field', '', true, 3);
+		$save['operator']  = form_input_validate((isrv('operator') ? gnrv('operator') : ''), 'operator', '^[0-9]+$', true, 3);
+		$save['pattern']   = form_input_validate((isrv('pattern') ? gnrv('pattern') : ''), 'pattern', '', true, 3);
 
-		/* Test for SQL injections */
+		// Test for SQL injections
 		$field_name = str_replace(['ht.', 'h.', 'gt.', 'gtg.'], '', $save['field']);
 
 		$exists = db_fetch_cell_prepared('SELECT field_name
@@ -307,14 +307,14 @@ function form_save() {
 			[$field_name]);
 
 		if (!$exists) {
-			/* check the case where there is no entry in the host_snmp_cache table yet */
+			// check the case where there is no entry in the host_snmp_cache table yet
 			if ("'$field_name'" != db_qstr($field_name)) {
 				if (!db_column_exists('host', $field_name) && !db_column_exists('host_template', $field_name) && !db_column_exists('graph_templates', $field_name) && !db_column_exists('graph_templates_graph', $field_name)) {
 					raise_message('sql_injection', __('An attempt was made to perform a SQL injection in Graph automation'), MESSAGE_LEVEL_ERROR);
 
 					cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Graph Automation from client address \'%s\'', get_client_addr()), false, 'SECURITY');
 
-					header('Location: automation_graph_rules.php?header=false&action=edit&id=' . get_request_var('id'));
+					header('Location: automation_graph_rules.php?header=false&action=edit&id=' . grv('id'));
 
 					exit;
 				}
@@ -334,29 +334,29 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_graph_rules.php?action=item_edit&id=' . get_request_var('id') . '&item_id=' . ($item_id === null ? get_request_var('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
+			header('Location: automation_graph_rules.php?action=item_edit&id=' . grv('id') . '&item_id=' . ($item_id === null ? grv('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
 		} else {
-			header('Location: automation_graph_rules.php?action=edit&id=' . get_request_var('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
+			header('Location: automation_graph_rules.php?action=edit&id=' . grv('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
 		}
-	} elseif (isset_request_var('save_component_automation_match_item')) {
-		/* ================= input validation ================= */
-		get_filter_request_var('id');
-		get_filter_request_var('item_id');
-		/* ==================================================== */
+	} elseif (isrv('save_component_automation_match_item')) {
+		// ================= input validation =================
+		gfrv('id');
+		gfrv('item_id');
+		// ====================================================
 
 		$save = [];
 
-		$save['id']        = form_input_validate(get_request_var('item_id'), 'item_id', '^[0-9]+$', false, 3);
-		$save['hash']      = get_hash_automation(get_request_var('item_idid'), 'automation_match_rule_items');
-		$save['rule_id']   = form_input_validate(get_request_var('id'), 'id', '^[0-9]+$', false, 3);
+		$save['id']        = form_input_validate(grv('item_id'), 'item_id', '^[0-9]+$', false, 3);
+		$save['hash']      = get_hash_automation(grv('item_idid'), 'automation_match_rule_items');
+		$save['rule_id']   = form_input_validate(grv('id'), 'id', '^[0-9]+$', false, 3);
 		$save['rule_type'] = AUTOMATION_RULE_TYPE_GRAPH_MATCH;
-		$save['sequence']  = form_input_validate(get_nfilter_request_var('sequence'), 'sequence', '^[0-9]+$', false, 3);
-		$save['operation'] = form_input_validate(get_nfilter_request_var('operation'), 'operation', '^[-0-9]+$', true, 3);
-		$save['field']     = form_input_validate(((isset_request_var('field') && get_nfilter_request_var('field') != '0') ? get_nfilter_request_var('field') : ''), 'field', '', true, 3);
-		$save['operator']  = form_input_validate((isset_request_var('operator') ? get_nfilter_request_var('operator') : ''), 'operator', '^[0-9]+$', true, 3);
-		$save['pattern']   = form_input_validate((isset_request_var('pattern') ? get_nfilter_request_var('pattern') : ''), 'pattern', '', true, 3);
+		$save['sequence']  = form_input_validate(gnrv('sequence'), 'sequence', '^[0-9]+$', false, 3);
+		$save['operation'] = form_input_validate(gnrv('operation'), 'operation', '^[-0-9]+$', true, 3);
+		$save['field']     = form_input_validate(((isrv('field') && gnrv('field') != '0') ? gnrv('field') : ''), 'field', '', true, 3);
+		$save['operator']  = form_input_validate((isrv('operator') ? gnrv('operator') : ''), 'operator', '^[0-9]+$', true, 3);
+		$save['pattern']   = form_input_validate((isrv('pattern') ? gnrv('pattern') : ''), 'pattern', '', true, 3);
 
-		/* Test for SQL injections */
+		// Test for SQL injections
 		$field_name = str_replace(['ht.', 'h.', 'gt.'], '', $save['field']);
 
 		if (!db_column_exists('host', $field_name) && !db_column_exists('host_template', $field_name) && !db_column_exists('graph_templates', $field_name)) {
@@ -364,7 +364,7 @@ function form_save() {
 
 			cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Graph Automation from client address \'%s\'', get_client_addr()), false, 'SECURITY');
 
-			header('Location: automation_graph_rules.php?header=false&action=edit&id=' . get_request_var('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
+			header('Location: automation_graph_rules.php?header=false&action=edit&id=' . grv('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
 
 			exit;
 		}
@@ -382,9 +382,9 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_graph_rules.php?action=item_edit&id=' . get_request_var('id') . '&item_id=' . ($item_id === null ? get_request_var('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_MATCH);
+			header('Location: automation_graph_rules.php?action=item_edit&id=' . grv('id') . '&item_id=' . ($item_id === null ? grv('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_MATCH);
 		} else {
-			header('Location: automation_graph_rules.php?action=edit&id=' . get_request_var('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_MATCH);
+			header('Location: automation_graph_rules.php?action=edit&id=' . grv('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_MATCH);
 		}
 	} else {
 		raise_message(2);
@@ -392,28 +392,28 @@ function form_save() {
 	}
 }
 
-function automation_graph_rules_form_actions() {
+function automation_graph_rules_form_actions() : void {
 	global $actions;
 
-	/* ================= input validation ================= */
-	get_filter_request_var('drp_action');
-	/* ==================================================== */
+	// ================= input validation =================
+	gfrv('drp_action');
+	// ====================================================
 
-	/* if we are to save this form, instead of display it */
-	if (isset_request_var('selected_items')) {
-		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
+	// if we are to save this form, instead of display it
+	if (isrv('selected_items')) {
+		$selected_items = sanitize_unserialize_selected_items(gnrv('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_GRAPH_DELETE) { /* delete */
+			if (gnrv('drp_action') == AUTOMATION_ACTION_GRAPH_DELETE) { // delete
 				db_execute('DELETE FROM automation_graph_rules WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('DELETE FROM automation_graph_rule_items WHERE ' . array_to_sql_or($selected_items, 'rule_id'));
 				db_execute('DELETE FROM automation_match_rule_items WHERE ' . array_to_sql_or($selected_items, 'rule_id'));
-			} elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_GRAPH_DUPLICATE) { /* duplicate */
+			} elseif (gnrv('drp_action') == AUTOMATION_ACTION_GRAPH_DUPLICATE) { // duplicate
 				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
-					automation_log('form_actions duplicate: ' . $selected_items[$i] . ' name: ' . get_nfilter_request_var('name_format'), AUTOMATION_LOG_HIGH);
-					duplicate_automation_graph_rules($selected_items[$i], get_nfilter_request_var('name_format'));
+					automation_log('form_actions duplicate: ' . $selected_items[$i] . ' name: ' . gnrv('name_format'), AUTOMATION_LOG_HIGH);
+					duplicate_automation_graph_rules($selected_items[$i], gnrv('name_format'));
 				}
-			} elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_GRAPH_ENABLE) { /* enable */
+			} elseif (gnrv('drp_action') == AUTOMATION_ACTION_GRAPH_ENABLE) { // enable
 				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					automation_log('form_actions enable: ' . $selected_items[$i], AUTOMATION_LOG_HIGH);
 
@@ -422,7 +422,7 @@ function automation_graph_rules_form_actions() {
 						WHERE id = ?",
 						[$selected_items[$i]]);
 				}
-			} elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_GRAPH_DISABLE) { /* disable */
+			} elseif (gnrv('drp_action') == AUTOMATION_ACTION_GRAPH_DISABLE) { // disable
 				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					automation_log('form_actions disable: ' . $selected_items[$i], AUTOMATION_LOG_HIGH);
 
@@ -431,7 +431,7 @@ function automation_graph_rules_form_actions() {
 						WHERE id = ?",
 						[$selected_items[$i]]);
 				}
-			} elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_GRAPH_EXPORT) { /* export */
+			} elseif (gnrv('drp_action') == AUTOMATION_ACTION_GRAPH_EXPORT) { // export
 				top_header();
 
 				print '<script text="text/javascript">
@@ -445,7 +445,7 @@ function automation_graph_rules_form_actions() {
 
 					$(function() {
 						//debugger;
-						DownloadStart(\'automation_graph_rules.php?action=export&selected_items=' . get_nfilter_request_var('selected_items') . '\');
+						DownloadStart(\'automation_graph_rules.php?action=export&selected_items=' . gnrv('selected_items') . '\');
 					});
 				</script>
 				<iframe id="download_iframe" style="display:none;"></iframe>';
@@ -463,14 +463,14 @@ function automation_graph_rules_form_actions() {
 		$ilist  = '';
 		$iarray = [];
 
-		/* loop through each of the graphs selected on the previous page and get more info about them */
+		// loop through each of the graphs selected on the previous page and get more info about them
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-				/* ================= input validation ================= */
+				// ================= input validation =================
 				input_validate_input_number($matches[1], 'chk[1]');
-				/* ==================================================== */
+				// ====================================================
 
-				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM automation_graph_rules WHERE id = ?', [$matches[1]])) . '</li>';
+				$ilist .= '<li>' . htmle(db_fetch_cell_prepared('SELECT name FROM automation_graph_rules WHERE id = ?', [$matches[1]])) . '</li>';
 				$iarray[] = $matches[1];
 			}
 		}
@@ -529,67 +529,67 @@ function automation_graph_rules_form_actions() {
 	}
 }
 
-function automation_graph_rules_item_movedown() {
-	/* ================= input validation ================= */
-	get_filter_request_var('id');
-	get_filter_request_var('item_id');
-	get_filter_request_var('rule_type');
-	/* ==================================================== */
+function automation_graph_rules_item_movedown() : void {
+	// ================= input validation =================
+	gfrv('id');
+	gfrv('item_id');
+	gfrv('rule_type');
+	// ====================================================
 
-	if (get_request_var('rule_type') == AUTOMATION_RULE_TYPE_GRAPH_MATCH) {
-		move_item_down('automation_match_rule_items', get_request_var('item_id'), 'rule_id=' . get_request_var('id') . ' AND rule_type=' . get_request_var('rule_type'));
-	} elseif (get_request_var('rule_type') == AUTOMATION_RULE_TYPE_GRAPH_ACTION) {
-		move_item_down('automation_graph_rule_items', get_request_var('item_id'), 'rule_id=' . get_request_var('id'));
+	if (grv('rule_type') == AUTOMATION_RULE_TYPE_GRAPH_MATCH) {
+		move_item_down('automation_match_rule_items', grv('item_id'), 'rule_id=' . grv('id') . ' AND rule_type=' . grv('rule_type'));
+	} elseif (grv('rule_type') == AUTOMATION_RULE_TYPE_GRAPH_ACTION) {
+		move_item_down('automation_graph_rule_items', grv('item_id'), 'rule_id=' . grv('id'));
 	}
 }
 
-function automation_graph_rules_item_moveup() {
-	/* ================= input validation ================= */
-	get_filter_request_var('id');
-	get_filter_request_var('item_id');
-	get_filter_request_var('rule_type');
-	/* ==================================================== */
+function automation_graph_rules_item_moveup() : void {
+	// ================= input validation =================
+	gfrv('id');
+	gfrv('item_id');
+	gfrv('rule_type');
+	// ====================================================
 
-	if (get_request_var('rule_type') == AUTOMATION_RULE_TYPE_GRAPH_MATCH) {
-		move_item_up('automation_match_rule_items', get_request_var('item_id'), 'rule_id=' . get_request_var('id') . ' AND rule_type=' . get_request_var('rule_type'));
-	} elseif (get_request_var('rule_type') == AUTOMATION_RULE_TYPE_GRAPH_ACTION) {
-		move_item_up('automation_graph_rule_items', get_request_var('item_id'), 'rule_id=' . get_request_var('id'));
+	if (grv('rule_type') == AUTOMATION_RULE_TYPE_GRAPH_MATCH) {
+		move_item_up('automation_match_rule_items', grv('item_id'), 'rule_id=' . grv('id') . ' AND rule_type=' . grv('rule_type'));
+	} elseif (grv('rule_type') == AUTOMATION_RULE_TYPE_GRAPH_ACTION) {
+		move_item_up('automation_graph_rule_items', grv('item_id'), 'rule_id=' . grv('id'));
 	}
 }
 
-function automation_graph_rules_item_remove() {
-	/* ================= input validation ================= */
-	get_filter_request_var('item_id');
-	get_filter_request_var('rule_type');
-	/* ==================================================== */
+function automation_graph_rules_item_remove() : void {
+	// ================= input validation =================
+	gfrv('item_id');
+	gfrv('rule_type');
+	// ====================================================
 
-	if (get_request_var('rule_type') == AUTOMATION_RULE_TYPE_GRAPH_MATCH) {
-		db_execute_prepared('DELETE FROM automation_match_rule_items WHERE id = ?', [get_request_var('item_id')]);
-	} elseif (get_request_var('rule_type') == AUTOMATION_RULE_TYPE_GRAPH_ACTION) {
-		db_execute_prepared('DELETE FROM automation_graph_rule_items WHERE id = ?', [get_request_var('item_id')]);
+	if (grv('rule_type') == AUTOMATION_RULE_TYPE_GRAPH_MATCH) {
+		db_execute_prepared('DELETE FROM automation_match_rule_items WHERE id = ?', [grv('item_id')]);
+	} elseif (grv('rule_type') == AUTOMATION_RULE_TYPE_GRAPH_ACTION) {
+		db_execute_prepared('DELETE FROM automation_graph_rule_items WHERE id = ?', [grv('item_id')]);
 	}
 }
 
-function automation_graph_rules_item_edit() {
-	/* ================= input validation ================= */
-	get_filter_request_var('id');
-	get_filter_request_var('item_id');
-	get_filter_request_var('rule_type');
-	/* ==================================================== */
+function automation_graph_rules_item_edit() : void {
+	// ================= input validation =================
+	gfrv('id');
+	gfrv('item_id');
+	gfrv('rule_type');
+	// ====================================================
 
-	global_item_edit(get_request_var('id'), get_request_var('item_id'), get_request_var('rule_type'));
+	global_item_edit(grv('id'), grv('item_id'), grv('rule_type'));
 
-	form_hidden_box('rule_type', get_request_var('rule_type'), get_request_var('rule_type'));
-	form_hidden_box('id', (isset_request_var('id') ? get_request_var('id') : '0'), '');
-	form_hidden_box('item_id', (isset_request_var('item_id') ? get_request_var('item_id') : '0'), '');
+	form_hidden_box('rule_type', grv('rule_type'), grv('rule_type'));
+	form_hidden_box('id', (isrv('id') ? grv('id') : '0'), '');
+	form_hidden_box('item_id', (isrv('item_id') ? grv('item_id') : '0'), '');
 
-	if (get_request_var('rule_type') == AUTOMATION_RULE_TYPE_GRAPH_MATCH) {
+	if (grv('rule_type') == AUTOMATION_RULE_TYPE_GRAPH_MATCH) {
 		form_hidden_box('save_component_automation_match_item', '1', '');
 	} else {
 		form_hidden_box('save_component_automation_graph_rule_item', '1', '');
 	}
 
-	form_save_button('automation_graph_rules.php?action=edit&id=' . get_request_var('id') . '&rule_type='. get_request_var('rule_type'));
+	form_save_button('automation_graph_rules.php?action=edit&id=' . grv('id') . '&rule_type=' . grv('rule_type'));
 
 	?>
 	<script type='text/javascript'>
@@ -623,31 +623,31 @@ function automation_graph_rules_item_edit() {
 	<?php
 }
 
-function automation_graph_rules_remove() {
-	/* ================= input validation ================= */
-	get_filter_request_var('id');
-	/* ==================================================== */
+function automation_graph_rules_remove() : void {
+	// ================= input validation =================
+	gfrv('id');
+	// ====================================================
 
 	db_execute_prepared('DELETE FROM automation_match_rule_items
 		WHERE rule_id = ?
 		AND rule_type = ?',
-		[get_request_var('id'), AUTOMATION_RULE_TYPE_GRAPH_MATCH]);
+		[grv('id'), AUTOMATION_RULE_TYPE_GRAPH_MATCH]);
 
 	db_execute_prepared('DELETE FROM automation_graph_rule_items
 		WHERE rule_id = ?',
-		[get_request_var('id')]);
+		[grv('id')]);
 
 	db_execute_prepared('DELETE FROM automation_graph_rules
 		WHERE id = ?',
-		[get_request_var('id')]);
+		[grv('id')]);
 }
 
-function automation_change_query_type() {
-	$id = get_filter_request_var('id');
+function automation_change_query_type() : void {
+	$id = gfrv('id');
 
-	if (isset_request_var('snmp_query_id') && $id > 0) {
-		$snmp_query_id = get_filter_request_var('snmp_query_id');
-		$name          = get_nfilter_request_var('name');
+	if (isrv('snmp_query_id') && $id > 0) {
+		$snmp_query_id = gfrv('snmp_query_id');
+		$name          = gnrv('name');
 
 		db_execute_prepared('UPDATE automation_graph_rules
 			SET snmp_query_id = ?, name = ?
@@ -664,9 +664,9 @@ function automation_change_query_type() {
 			SET graph_type_id = ?
 			WHERE id = ?',
 			[$graph_type, $id]);
-	} elseif (isset_request_var('graph_type_id') && $id > 0) {
-		$snmp_query_id = get_filter_request_var('graph_type_id');
-		$name          = get_nfilter_request_var('name');
+	} elseif (isrv('graph_type_id') && $id > 0) {
+		$snmp_query_id = gfrv('graph_type_id');
+		$name          = gnrv('name');
 
 		db_execute_prepared('UPDATE automation_graph_rules
 			SET graph_type_id = ?, name = ?
@@ -675,25 +675,25 @@ function automation_change_query_type() {
 	}
 }
 
-function automation_graph_rules_edit() {
+function automation_graph_rules_edit() : void {
 	global $fields_automation_graph_rules_edit1;
 	global $fields_automation_graph_rules_edit2;
 	global $fields_automation_graph_rules_edit3;
 
-	/* ================= input validation ================= */
-	get_filter_request_var('id');
-	get_filter_request_var('snmp_query_id');
-	get_filter_request_var('graph_type_id');
-	/* ==================================================== */
+	// ================= input validation =================
+	gfrv('id');
+	gfrv('snmp_query_id');
+	gfrv('graph_type_id');
+	// ====================================================
 
-	if (!isempty_request_var('id')) {
+	if (!ierv('id')) {
 		$rule = db_fetch_row_prepared('SELECT *
 			FROM automation_graph_rules
 			WHERE id = ?',
-			[get_request_var('id')]);
+			[grv('id')]);
 
-		if (!isempty_request_var('graph_type_id')) {
-			$rule['graph_type_id'] = get_request_var('graph_type_id');
+		if (!ierv('graph_type_id')) {
+			$rule['graph_type_id'] = grv('graph_type_id');
 		}
 
 		$header_label = __esc('Rule Selection [edit: %s]', $rule['name']);
@@ -704,11 +704,11 @@ function automation_graph_rules_edit() {
 			'objects' => __('Matching Indexes')
 		];
 
-		html_sub_tabs($tabs, 'action=edit&id=' . get_request_var('id'));
+		html_sub_tabs($tabs, 'action=edit&id=' . grv('id'));
 	} else {
 		$rule = [
-			'name'          => get_request_var('name'),
-			'snmp_query_id' => get_request_var('snmp_query_id'),
+			'name'          => grv('name'),
+			'snmp_query_id' => grv('snmp_query_id'),
 		];
 
 		$header_label = __('Rule Selection [new]');
@@ -717,25 +717,25 @@ function automation_graph_rules_edit() {
 			'rule'    => __('Rule Name')
 		];
 
-		html_sub_tabs($tabs, 'action=edit&id=' . get_request_var('id'));
+		html_sub_tabs($tabs, 'action=edit&id=' . grv('id'));
 	}
 
-	if (get_nfilter_request_var('tab') == 'rule') {
+	if (gnrv('tab') == 'rule') {
 		form_start('automation_graph_rules.php', 'chk');
 
 		html_start_box($header_label, '100%', true, 3, 'center', '');
 
-		if (!isempty_request_var('id')) {
-			/* display whole rule */
+		if (!ierv('id')) {
+			// display whole rule
 			$form_array = $fields_automation_graph_rules_edit1 +
 				$fields_automation_graph_rules_edit2 + $fields_automation_graph_rules_edit3;
 		} else {
-			/* display first part of rule only and request user to proceed */
+			// display first part of rule only and request user to proceed
 			$form_array = $fields_automation_graph_rules_edit1;
 		}
 
-		if (isset_request_var('name')) {
-			$rule['name'] = get_request_var('name');
+		if (isrv('name')) {
+			$rule['name'] = grv('name');
 		}
 
 		draw_edit_form(
@@ -751,25 +751,23 @@ function automation_graph_rules_edit() {
 		form_hidden_box('item_id', (isset($rule['item_id']) ? $rule['item_id'] : '0'), '');
 		form_hidden_box('save_component_automation_graph_rule', '1', '');
 
-		/*
-		 * display the rule items -------------------------------------------------------------------------------
-		 */
+		// display the rule items -------------------------------------------------------------------------------
 
 		if (isset($rule['id'])) {
-			# display graph rules for host match
+			// display graph rules for host match
 			display_match_rule_items(__('Device Selection Criteria'), $rule, AUTOMATION_RULE_TYPE_GRAPH_MATCH, 'automation_graph_rules.php');
 
-			# fetch graph action rules
+			// fetch graph action rules
 			display_graph_rule_items(__('Graph Creation Criteria'), $rule, AUTOMATION_RULE_TYPE_GRAPH_ACTION, 'automation_graph_rules.php');
 		}
 
 		form_save_button('automation_graph_rules.php', 'return');
 
 		print '<br>';
-	} elseif (get_nfilter_request_var('tab') == 'hosts') {
-		display_matching_hosts($rule, AUTOMATION_RULE_TYPE_GRAPH_MATCH, 'automation_graph_rules.php?action=edit&id=' . get_request_var('id'));
-	} elseif (get_nfilter_request_var('tab') == 'objects') {
-		display_new_graphs($rule, 'automation_graph_rules.php?action=edit&id=' . get_request_var('id'));
+	} elseif (gnrv('tab') == 'hosts') {
+		display_matching_hosts($rule, AUTOMATION_RULE_TYPE_GRAPH_MATCH, 'automation_graph_rules.php?action=edit&id=' . grv('id'));
+	} elseif (gnrv('tab') == 'objects') {
+		display_new_graphs($rule, 'automation_graph_rules.php?action=edit&id=' . grv('id'));
 	}
 
 	?>
@@ -813,7 +811,7 @@ function automation_graph_rules_edit() {
 	<?php
 }
 
-function create_graph_rules_filter() {
+function create_graph_rules_filter() : array {
 	global $item_rows;
 
 	$any = [-1 => __('Any')];
@@ -903,10 +901,10 @@ function create_graph_rules_filter() {
 	];
 }
 
-function draw_graph_rules_filter($render = false) {
+function draw_graph_rules_filter(bool $render = false) : void {
 	$filters = create_graph_rules_filter();
 
-	/* create the page filter */
+	// create the page filter
 	$pageFilter = new CactiTableFilter(__('Graph Rules'), 'automation_graph_rules.php', 'form_automation', 'sess_autom_gr', 'automation_graph_rules.php?action=edit');
 
 	$pageFilter->rows_label = __('Graph Rules');
@@ -919,38 +917,38 @@ function draw_graph_rules_filter($render = false) {
 	}
 }
 
-function automation_graph_rules() {
+function automation_graph_rules() : void {
 	global $actions, $item_rows;
 
 	draw_graph_rules_filter(true);
 
-	if (get_request_var('rows') == -1) {
+	if (grv('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
 	} else {
-		$rows = get_request_var('rows');
+		$rows = grv('rows');
 	}
 
 	$sql_where  = '';
 	$sql_params = [];
 
-	/* form the 'where' clause for our main sql query */
-	if (get_request_var('filter') != '') {
+	// form the 'where' clause for our main sql query
+	if (grv('filter') != '') {
 		$sql_where    = 'WHERE (agr.name LIKE ? OR sqg.name LIKE ? OR sq.name LIKE ?)';
 
-		$sql_params[] = '%' . get_request_var('filter') . '%';
-		$sql_params[] = '%' . get_request_var('filter') . '%';
-		$sql_params[] = '%' . get_request_var('filter') . '%';
+		$sql_params[] = '%' . grv('filter') . '%';
+		$sql_params[] = '%' . grv('filter') . '%';
+		$sql_params[] = '%' . grv('filter') . '%';
 	}
 
-	if (get_request_var('status') == '-2') {
+	if (grv('status') == '-2') {
 		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . "agr.enabled = 'on'";
-	} elseif (get_request_var('status') == '-3') {
+	} elseif (grv('status') == '-3') {
 		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . "agr.enabled = ''";
 	}
 
-	if (get_request_var('snmp_query_id') > 0) {
+	if (grv('snmp_query_id') > 0) {
 		$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . 'agr.snmp_query_id = ?';
-		$sql_params[] = get_request_var('snmp_query_id');
+		$sql_params[] = grv('snmp_query_id');
 	}
 
 	$total_rows = db_fetch_cell_prepared("SELECT COUNT(agr.id)
@@ -962,7 +960,7 @@ function automation_graph_rules() {
 		$sql_where");
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows;
 
 	$automation_graph_rules_list = db_fetch_assoc_prepared("SELECT agr.id, agr.name,
 		agr.snmp_query_id, agr.graph_type_id,
@@ -977,7 +975,7 @@ function automation_graph_rules() {
 		$sql_limit",
 		$sql_params);
 
-	$nav = html_nav_bar('automation_graph_rules.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Graph Rules'), 'page', 'main');
+	$nav = html_nav_bar('automation_graph_rules.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 7, __('Graph Rules'), 'page', 'main');
 
 	form_start('automation_graph_rules.php', 'chk');
 
@@ -1015,19 +1013,19 @@ function automation_graph_rules() {
 		]
 	];
 
-	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
+	html_header_sort_checkbox($display_text, grv('sort_column'), grv('sort_direction'), false);
 
 	if (cacti_sizeof($automation_graph_rules_list)) {
 		foreach ($automation_graph_rules_list as $automation_graph_rules) {
-			$snmp_query_name 		 = ((empty($automation_graph_rules['snmp_query_name'])) ? __('None') : html_escape($automation_graph_rules['snmp_query_name']));
-			$graph_type_name 		 = ((empty($automation_graph_rules['graph_type_name'])) ? __('None') : html_escape($automation_graph_rules['graph_type_name']));
+			$snmp_query_name 		 = ((empty($automation_graph_rules['snmp_query_name'])) ? __('None') : htmle($automation_graph_rules['snmp_query_name']));
+			$graph_type_name 		 = ((empty($automation_graph_rules['graph_type_name'])) ? __('None') : htmle($automation_graph_rules['graph_type_name']));
 
 			form_alternate_row('line' . $automation_graph_rules['id'], true);
 
-			form_selectable_cell(filter_value($automation_graph_rules['name'], get_request_var('filter'), 'automation_graph_rules.php?action=edit&id=' . $automation_graph_rules['id'] . '&page=1'), $automation_graph_rules['id']);
+			form_selectable_cell(filter_value($automation_graph_rules['name'], grv('filter'), 'automation_graph_rules.php?action=edit&id=' . $automation_graph_rules['id'] . '&page=1'), $automation_graph_rules['id']);
 			form_selectable_cell($automation_graph_rules['id'], $automation_graph_rules['id'], '', 'text-align:right');
-			form_selectable_cell(filter_value($snmp_query_name, get_request_var('filter')), $automation_graph_rules['id']);
-			form_selectable_cell(filter_value($graph_type_name, get_request_var('filter')), $automation_graph_rules['id']);
+			form_selectable_cell(filter_value($snmp_query_name, grv('filter')), $automation_graph_rules['id']);
+			form_selectable_cell(filter_value($graph_type_name, grv('filter')), $automation_graph_rules['id']);
 			form_selectable_cell($automation_graph_rules['enabled'] ? __('Enabled') : __('Disabled'), $automation_graph_rules['id'], '', 'text-align:right');
 			form_checkbox_cell($automation_graph_rules['name'], $automation_graph_rules['id']);
 
@@ -1043,7 +1041,7 @@ function automation_graph_rules() {
 		print $nav;
 	}
 
-	/* draw the dropdown containing a list of available actions for this form */
+	// draw the dropdown containing a list of available actions for this form
 	draw_actions_dropdown($actions);
 
 	form_end();

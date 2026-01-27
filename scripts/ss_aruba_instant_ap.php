@@ -1,7 +1,8 @@
+#!/usr/bin/env php
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2025 The Cacti Group                                 |
+ | Copyright (C) 2004-2022 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -22,4 +23,47 @@
  +-------------------------------------------------------------------------+
 */
 
-header("Location:../index.php");
+global $config;
+
+if (!isset($called_by_script_server)) {
+	include_once(__DIR__ . '/../include/cli_check.php');
+	include_once(__DIR__ . '/../lib/snmp.php');
+
+	array_shift($_SERVER['argv']);
+	print call_user_func_array('ss_aruba_instant_ap', $_SERVER['argv']);
+} else {
+	include_once(__DIR__ . '/../lib/snmp.php');
+}
+
+function ss_aruba_instant_ap($host_id = 0) {
+	global $environ, $poller_id, $config;
+
+	if (empty($host_id) || $host_id === null || !is_numeric($host_id)) {
+		return 'count:0' . PHP_EOL;
+	}
+
+	$host = db_fetch_row_prepared('SELECT *
+		FROM host
+		WHERE id = ?',
+		[$host_id]);
+
+	$aps  = cacti_snmp_walk($host['hostname'],
+		$host['snmp_community'],
+		'.1.3.6.1.4.1.14823.2.3.3.1.2.1.1.3',
+		$host['snmp_version'],
+		$host['snmp_username'],
+		$host['snmp_password'],
+		$host['snmp_auth_protocol'],
+		$host['snmp_priv_passphrase'],
+		$host['snmp_priv_protocol'],
+		$host['snmp_context'],
+		$host['snmp_port'],
+		$host['snmp_timeout'],
+		$host['ping_retries'],
+		SNMP_POLLER,
+		$host['snmp_engine_id']);
+
+	return ('count:' . count($aps) . PHP_EOL);
+}
+
+?>

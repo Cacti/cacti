@@ -59,17 +59,17 @@ function clog_get_graphs_from_datasource(int $local_data_id) : array {
  *
  * @param string $file      The input filename to validate. This will be modified
  *                          to contain only the base name of the file.
- * @param string|null $filepath  The output variable that will hold the directory path
+ * @param string $filepath  The output variable that will hold the directory path
  *                          of the validated file.
- * @param string|null $filename  The output variable that will hold the base name of
+ * @param string $filename  The output variable that will hold the base name of
  *                          the validated file.
- * @param bool   $filecheck Optional. If true, the function will check if the
+ * @param bool   $filecheck If true, the function will check if the
  *                          resolved file exists. Defaults to false.
  *
  * @return bool Returns true if the file is valid (and exists if $filecheck is true),
  *              or false otherwise.
  */
-function clog_validate_filename(string &$file, string|null &$filepath, string|null &$filename, bool $filecheck = false) : bool {
+function clog_validate_filename(string &$file, string &$filepath = '', string &$filename = '', bool $filecheck = false) : bool {
 	$logfile = read_config_option('path_cactilog');
 
 	if ($logfile == '') {
@@ -109,10 +109,15 @@ function clog_validate_filename(string &$file, string|null &$filepath, string|nu
 /**
  * Purges or clears a specified log file within the Cacti application.
  *
+ * @param string $action The action to be taken 'purge' or 'rotate'
+ *
  * @return void
  */
-function clog_purge_logfile() : void {
-	$filename = get_nfilter_request_var('filename');
+function clog_purge_logfile(string $action = 'purge') : void {
+	$filename = gnrv('filename');
+
+	$logpath = '';
+	$logname = '';
 
 	if (!clog_validate_filename($filename, $logpath, $logname)) {
 		raise_message('clog_invalid');
@@ -121,29 +126,67 @@ function clog_purge_logfile() : void {
 		exit(0);
 	}
 
-	$purgefile = $logpath . '/' . $filename;
-	$logfile   = $logpath . '/'. $logname;
+	$purgefile  = $logpath . '/' . $filename;
+	$logfile    = $logpath . '/' . $logname;
+	$log_action = read_config_option('log_action');
+
+	// get base filenames for rotate assessment
+	$cactiLog  = basename(read_config_option('path_cactilog'));
+	$errorLog  = basename(read_config_option('path_stderrlog'));
+
+	// basic checking
+	if ($action == 'rotate' && $log_action == LOG_ACTION_PURGE) {
+		raise_message('rotate_failed', __('Cacti Log file rotation failed for Log File \'%s\'.  User \'%s\' wished to rotate, but rotating is disabled', basename($purgefile), get_username()), MESSAGE_LEVEL_ERROR);
+
+		return;
+	}
+
+	if ($action == 'purge' && $log_action == LOG_ACTION_ROTATE) {
+		raise_message('purge_failed', __('Cacti Log file purging failed for Log File \'%s\'.  User \'%s\' wished to purge, but purging is disabled', basename($purgefile), get_username()), MESSAGE_LEVEL_ERROR);
+
+		return;
+	}
+
+	if ($filename != $cactiLog && $filename != $errorLog && $action == 'rotate') {
+		raise_message('rotate_failed', __('Cacti Log file rotation failed for Log File \'%s\'.  User \'%s\' wished to rotate, but rotating is not allowed on already rotated files', basename($purgefile), get_username()), MESSAGE_LEVEL_ERROR);
+
+		return;
+	}
+
+	if ($action == 'purge') {
+		$imessage = __('The Cacti Log File \'%s\' was Removed by user \'%s\'', basename($purgefile), get_username());
+		$message  = sprintf('The Cacti Log File \'%s\', Removed by user \'%s\'', basename($purgefile), get_username());
+	} else {
+		$imessage = __('The Cacti Log File \'%s\' was Rotated by user \'%s\'', basename($purgefile), get_username());
+		$message  = sprintf('The Cacti Log File \'%s\', Rotated by user \'%s\'', basename($purgefile), get_username());
+	}
 
 	if (file_exists($purgefile)) {
 		if (is_writable($purgefile)) {
 			if ($logfile != $purgefile) {
-				unlink($purgefile);
-				raise_message('clog_removed', __('The Cacti Log File \'%s\' was Removed by user \'%s\'', basename($purgefile), get_username()), MESSAGE_LEVEL_INFO);
-			} else {
-				/* fill in the current date for printing in the log */
-				if (defined('CACTI_DATE_TIME_FORMAT')) {
-					$date = date(CACTI_DATE_TIME_FORMAT);
+				if ($action == 'purge') {
+					unlink($purgefile);
+
+					raise_message('clog_removed', $imessage, MESSAGE_LEVEL_INFO);
+
+					cacti_log($message, false, 'WEBUI');
 				} else {
-					$date = date('Y-m-d H:i:s');
+					raise_message('clog_removed', __('Removal Failed due to the Administrator blocking removal of archived files.  The file \'%s\' can not be removed.', basename($purgefile)), MESSAGE_LEVEL_WARN);
+				}
+			} else {
+				if ($action == 'rotate') {
+					$ext = date('Ymd-His');
+					rename($logfile, $logfile . '-' . $ext);
 				}
 
 				$log_fh = fopen($logfile, 'w');
-				fwrite($log_fh, __('%s - WEBUI NOTE: Cacti Log Cleared from Web Management Interface.', $date) . PHP_EOL);
-				fclose($log_fh);
-				raise_message('clog_removed', __('The Cacti Log File \'%s\' was Removed by user \'%s\'', basename($logfile), get_username()), MESSAGE_LEVEL_INFO);
-			}
 
-			cacti_log(sprintf('NOTE: Cacti Log file \'%s\', Removed by user \'%s\'', basename($purgefile), get_username()), false, 'WEBUI');
+				fclose($log_fh);
+
+				raise_message('clog_removed', $imessage, MESSAGE_LEVEL_INFO);
+
+				cacti_log($message, false, 'WEBUI');
+			}
 		} else {
 			raise_message('clog_permissions');
 		}
@@ -158,15 +201,17 @@ function clog_purge_logfile() : void {
  * @return void
  */
 function clog_view_logfile() : void {
+	global $logfile_actions;
+
 	$exclude_reported = false;
 
 	$clogAdmin = clog_admin();
 
-	/* enable page refreshes */
+	// enable page refreshes
 	kill_session_var('custom');
 
-	if (isset_request_var('filename')) {
-		$logfile = basename(get_nfilter_request_var('filename'));
+	if (isrv('filename')) {
+		$logfile = basename(gnrv('filename'));
 	} elseif (isset($_SESSION['sess_clog']['filename'])) {
 		$logfile = basename($_SESSION['sess_clog']['filename']);
 	} else {
@@ -174,6 +219,7 @@ function clog_view_logfile() : void {
 	}
 
 	$logname = '';
+	$logpath = '';
 
 	if (!clog_validate_filename($logfile, $logpath, $logname, true)) {
 		$logfile = read_config_option('path_cactilog');
@@ -181,85 +227,117 @@ function clog_view_logfile() : void {
 		$logfile = $logpath . '/' . $logfile;
 	}
 
-	if ($clogAdmin && isset_request_var('purge_continue')) {
-		clog_purge_logfile();
+	if ($clogAdmin) {
+		$redirect = false;
 
-		$logfile = read_config_option('path_cactilog');
+		if (isrv('purge_continue')) {
+			$redirect = true;
+			clog_purge_logfile('purge');
+		} elseif (isrv('rotate_continue')) {
+			$redirect = true;
+			clog_purge_logfile('rotate');
+		}
 
-		header('Location: clog.php?filename=' . basename($logfile));
+		if ($redirect) {
+			$logfile = read_config_option('path_cactilog');
 
-		exit;
+			header('Location: clog.php?filename=' . basename($logfile));
+
+			exit;
+		}
 	}
 
-	$page_nr = get_nfilter_request_var('page');
+	$page_nr = gnrv('page');
 
 	if ($page_nr == '') {
 		$page_nr = 1;
-		set_request_var('page', 1);
+		srv('page', 1);
 	}
 
 	if (get_current_page() == 'clog.php' || get_current_page() == 'clog_user.php') {
-		general_header(true);
+		general_header();
 	} else {
-		top_header(true);
+		top_header();
 	}
 
-	if ($clogAdmin && get_nfilter_request_var('action') == 'purge') {
-		form_start(get_current_page());
+	if ($clogAdmin) {
+		if (gnrv('action') == 'purge' || gnrv('action') == 'rotate') {
+			// Keep phpstan happy
+			$action  = '';
+			$title   = '';
+			$message = '';
+			$header  = '';
 
-		html_start_box(__('Purge'), '60%', false, 3, 'center', '');
+			if (gnrv('action') == 'purge') {
+				$message = __('Click \'Continue\' to Purge the Log File \'' . htmle(basename($logfile)) . '\'.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog.');
+				$action  = 'purge_continue';
+				$button  = __esc('Purge');
+				$title   = __esc('Purge Log');
+				$header  = $logfile_actions[LOG_ACTION_PURGE];
+			} elseif (gnrv('action') == 'rotate') {
+				$message = __('Click \'Continue\' to Rotate the existing Log File \'' . htmle(basename($logfile)) . '\'.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog.');
+				$action  = 'rotate_continue';
+				$button  = __esc('Rotate');
+				$title   = __esc('Rotate Log');
+				$header  = $logfile_actions[LOG_ACTION_ROTATE];
+			}
 
-		print "<tr>
-			<td class='textArea'>
-				<p>" . __('Click \'Continue\' to purge the Log File \'' . html_escape(basename($logfile)) . '\'.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog.') . "</p>
-			</td>
-		</tr>
-		<tr class='saveRow'>
-			<td colspan='2' class='right'>
-				<button type='button' class='ui-button ui-corner-all ui-widget' id='cancel'>" . __esc('Cancel') . "</button>
-				<button type='button' class='ui-button ui-corner-all ui-widget' id='pc' name='purge_continue' title='" . __esc('Purge Log') . "'>" . __esc('Continue') . "</button>
-				<script type='text/javascript'>
-				$('#pc').click(function() {
-					strURL = location.pathname+'?purge_continue=1&filename=" . basename($logfile) . "';
-					loadUrl({url:strURL})
-				});
+			form_start(get_current_page());
 
-				$('#cancel').click(function() {
-					strURL = location.pathname;
-					loadUrl({url:strURL})
-				});
+			html_start_box($header, '60%', false, 3, 'center', '');
 
-				$(function() {
-					applySkin();
-				});
-				</script>
-			</td>
-		</tr>";
+			print "<tr>
+				<td class='textArea'>
+					<p>" . $message . "</p>
+				</td>
+			</tr>
+			<tr class='saveRow'>
+				<td colspan='2' class='right'>
+					<button type='button' class='ui-button ui-corner-all ui-widget' id='cancel'>" . __esc('Cancel') . "</button>
+					<button type='button' class='ui-button ui-corner-all ui-widget' id='pc' name='purge_continue' title='$title'>" . __esc('Continue') . "</button>
+					<script type='text/javascript'>
+					$('#pc').click(function() {
+						strURL = location.pathname+'?$action=1&filename=" . basename($logfile) . "';
+						loadUrl({url:strURL})
+					});
 
-		html_end_box();
+					$('#cancel').click(function() {
+						strURL = location.pathname;
+						loadUrl({url:strURL})
+					});
 
-		return;
+					$(function() {
+						applySkin();
+					});
+					</script>
+				</td>
+			</tr>";
+
+			html_end_box();
+
+			return;
+		}
 	}
 
 	draw_clog_filter(true, $logfile, $clogAdmin);
 
-	/* read logfile into an array and display */
+	// read logfile into an array and display
 	$total_rows      = 0;
-	$number_of_lines = get_request_var('tail_lines') < 0 ? read_config_option('max_display_rows') : get_request_var('tail_lines');
+	$number_of_lines = grv('tail_lines') < 0 ? read_config_option('max_display_rows') : grv('tail_lines');
 
-	if (get_request_var('expand') == 2) {
+	if (grv('expand') == 2) {
 		$should_expand = false;
-	} elseif (get_request_var('expand') == 1) {
+	} elseif (grv('expand') == 1) {
 		$should_expand = true;
 	} else {
 		$should_expand = read_config_option('log_expand') != LOG_EXPAND_NONE;
 	}
 
-	$reverse = get_request_var('reverse');
+	$reverse = grv('reverse');
 
-	$logcontents = tail_file($logfile, $number_of_lines, get_request_var('message_type'), get_request_var('rfilter'), $page_nr, $total_rows, get_request_var('matches'), $should_expand, $reverse);
+	$logcontents = tail_file($logfile, $number_of_lines, grv('message_type'), grv('rfilter'), $page_nr, $total_rows, grv('matches'), $should_expand, $reverse);
 
-	if (get_request_var('reverse') == 1) {
+	if (grv('reverse') == 1) {
 		$logcontents = array_reverse($logcontents);
 	}
 
@@ -276,7 +354,7 @@ function clog_view_logfile() : void {
 		$exclude_regex = '';
 	}
 
-	if (get_request_var('message_type') > 0 || get_request_var('rfilter') != '') {
+	if (grv('message_type') > 0 || grv('rfilter') != '') {
 		$start_string = __('Log [Total Lines: %d %s - Filter active]', $total_rows, $ad_filter);
 	} else {
 		$start_string = __('Log [Total Lines: %d %s - Unfiltered]', $total_rows, $ad_filter);
@@ -309,17 +387,17 @@ function clog_view_logfile() : void {
 	$hostDescriptions = [];
 
 	foreach ($hosts as $host) {
-		$hostDescriptions[$host['id']] = html_escape($host['description']);
+		$hostDescriptions[$host['id']] = htmle($host['description']);
 	}
 
 	foreach ($logcontents as $item) {
-		$new_item = html_escape($item);
+		$new_item = htmle($item);
 
 		if ($should_expand) {
 			$new_item = text_substitute($new_item, isHtml: true);
 		}
 
-		/* respect the exclusion filter */
+		// respect the exclusion filter
 		if ($exclude_regex != '' && !$clogAdmin) {
 			if (validate_is_regex($exclude_regex)) {
 				if (preg_match($exclude_regex, $new_item)) {
@@ -331,7 +409,7 @@ function clog_view_logfile() : void {
 			}
 		}
 
-		/* get the background color */
+		// get the background color
 		if (str_contains($new_item, 'ERROR') || str_contains($new_item, 'FATAL')) {
 			$class = 'clogError';
 		} elseif (str_contains($new_item, 'WARN')) {
@@ -368,9 +446,10 @@ function clog_view_logfile() : void {
  *
  * @param string $a The first file name to compare.
  * @param string $b The second file name to compare.
+ *
  * @return int Returns < 0 if $a is less than $b, 0 if they are equal, and > 0 if $a is greater than $b.
  */
-function filter_sort(string $a, string $b): int {
+function filter_sort(string $a, string $b) : int {
 	$a_parts = explode('-', $a);
 	$b_parts = explode('-', $b);
 
@@ -421,6 +500,8 @@ function clog_get_logfiles() : array {
 	} else {
 		$files = ['cacti.log'];
 	}
+
+	$logName = '';
 
 	// Defaults go first and second
 	$stdFileArray[] = basename($configLogPath);
@@ -511,16 +592,17 @@ function clog_get_logfiles() : array {
  *               and action buttons.
  */
 function create_clog_filter(string $logfile, bool $clogAdmin) : array {
-	global $log_tail_lines, $page_refresh_interval;
+	global $log_tail_lines, $page_refresh_interval, $logfile_actions;
 
 	$all     = ['-1' => __('All')];
 	$any     = ['-1' => __('Any')];
 	$none    = ['0'  => __('None')];
 	$deleted = ['-2' => __('Deleted/Invalid')];
 
-	/* transform the log directory as required */
+	// transform the log directory as required
 	$logFileArray = clog_get_logfiles();
 	$newLogArray  = [];
+	$log_action   = read_config_option('log_action');
 
 	if (cacti_sizeof($logFileArray)) {
 		foreach ($logFileArray as $logFile) {
@@ -568,7 +650,7 @@ function create_clog_filter(string $logfile, bool $clogAdmin) : array {
 		'0' => __('Does Not Match')
 	];
 
-	return [
+	$filter = [
 		'rows' => [
 			[
 				'filename' => [
@@ -665,30 +747,61 @@ function create_clog_filter(string $logfile, bool $clogAdmin) : array {
 				'method'  => 'button',
 				'display' => __('Purge'),
 				'action'  => 'default',
-				'title'   => __('Purge User log of all but the last login attempt'),
+				'title'   => __('Purge all data from the existing Cacti Log'),
 				'url'     => 'clog.php?action=purge&filename=' . $logfile
+			],
+			'rotate' => [
+				'method'  => 'button',
+				'display' => __('Rotate'),
+				'action'  => 'default',
+				'title'   => __('Rotate the Cacti Log'),
+				'url'     => 'clog.php?action=rotate&filename=' . $logfile
 			],
 		]
 	];
 
 	if (!$clogAdmin) {
 		unset($filter['buttons']['purge']);
+		unset($filter['buttons']['rotate']);
+	} else {
+		$cactiLog  = read_config_option('path_cactilog');
+		$errorLog  = read_config_option('path_stderrlog');
+		$logAction = read_config_option('log_action');
+
+		if ($logfile == $cactiLog || $logfile == $errorLog) {
+			if ($logAction == LOG_ACTION_PURGE) {
+				unset($filter['buttons']['rotate']);
+			} elseif ($logAction == LOG_ACTION_ROTATE) {
+				unset($filter['buttons']['purge']);
+			}
+		} else {
+			if ($logAction == LOG_ACTION_PURGE) {
+				unset($filter['buttons']['rotate']);
+			} elseif ($logAction == LOG_ACTION_ROTATE) {
+				unset($filter['buttons']['rotate']);
+				unset($filter['buttons']['purge']);
+			} else {
+				unset($filter['buttons']['rotate']);
+			}
+		}
 	}
+
+	return $filter;
 }
 
 /**
  * Draws the clog filter for log files and renders or sanitizes it based on the provided parameters.
  *
- * @param bool $render    Determines whether to render the filter or sanitize it. Defaults to false.
- * @param bool|string $logfile  Specifies the logfile to filter. Defaults to false.
- * @param bool $clogAdmin Indicates whether the filter is for an admin user. Defaults to false.
- * 
+ * @param bool        $render    Determines whether to render the filter or sanitize it. Defaults to false.
+ * @param bool|string $logfile   Specifies the logfile to filter. Defaults to false.
+ * @param bool        $clogAdmin Indicates whether the filter is for an admin user. Defaults to false.
+ *
  * @return void
  */
 function draw_clog_filter(bool $render = false, bool|string $logfile = false, bool $clogAdmin = false) : void {
 	$filters = create_clog_filter($logfile, $clogAdmin);
 
-	$page_nr = get_nfilter_request_var('page');
+	$page_nr = gnrv('page');
 
 	$current_page = get_current_page();
 
@@ -700,7 +813,7 @@ function draw_clog_filter(bool $render = false, bool|string $logfile = false, bo
 		$page       = $base_page . '?page=' . $page_nr;
 	}
 
-	/* create the page filter */
+	// create the page filter
 	$pageFilter = new CactiTableFilter(__('Log Filters'), $page, 'logfile', 'sess_clog', '', false, false);
 	$pageFilter->set_filter_array($filters);
 
@@ -747,7 +860,7 @@ function clog_regex_replace(int $id, string $link, string $url, array $matches, 
  * Parses HTML content using a regular expression parser.
  *
  * @deprecated This function is deprecated and should not be used in new code.
-*
+ *
  * @param array $matches An array of matches from a regular expression.
  *
  * @return mixed The result of the `text_regex_parser()` function.
@@ -764,8 +877,8 @@ function clog_regex_parser_html(array $matches) : mixed {
  * @deprecated This function is deprecated. Use `text_regex_parser()` directly instead.
  *
  * @param array $matches The matches to be parsed, typically from a regular expression.
- * @param bool $link Optional. Whether to generate a link. Default is false.
- * 
+ * @param bool  $link    Optional. Whether to generate a link. Default is false.
+ *
  * @return mixed The result of the `text_regex_parser` function.
  */
 function clog_regex_parser(array $matches, bool $link = false) : mixed {
@@ -780,8 +893,8 @@ function clog_regex_parser(array $matches, bool $link = false) : mixed {
  * @deprecated Use `text_regex_device()` directly instead.
  *
  * @param array $matches An array of regex matches to process.
- * @param bool $link Optional. Whether to generate a link. Default is false.
- * 
+ * @param bool  $link    Whether to generate a link. Default is false.
+ *
  * @return mixed The result of the `text_regex_device` function.
  */
 function clog_regex_device(array $matches, bool $link = false) : mixed {
@@ -796,8 +909,8 @@ function clog_regex_device(array $matches, bool $link = false) : mixed {
  * @deprecated Use `text_regex_datasource()` directly instead.
  *
  * @param array $matches An array of regex matches to process.
- * @param bool $link Optional. Whether to generate a link. Default is false.
- * 
+ * @param bool  $link    Whether to generate a link. Default is false.
+ *
  * @return mixed The result of the `text_regex_datasource()` function.
  */
 function clog_regex_datasource(array $matches, bool $link = false) : mixed {
@@ -812,7 +925,7 @@ function clog_regex_datasource(array $matches, bool $link = false) : mixed {
  * @deprecated Use `text_regex_poller()` directly instead.
  *
  * @param array $matches An array of regex matches to be processed.
- * @param bool $link Optional. Whether to include a link in the processing. Default is false.
+ * @param bool  $link    Whether to include a link in the processing. Default is false.
  *
  * @return mixed The result of the `text_regex_poller()` function.
  */
@@ -828,8 +941,8 @@ function clog_regex_poller(array $matches, bool $link = false) : mixed {
  * @deprecated Use `text_regex_dataquery` directly instead.
  *
  * @param array $matches An array of regex matches to process.
- * @param bool $link Optional. Whether to generate a link. Default is false.
- * 
+ * @param bool  $link    Whether to generate a link. Default is false.
+ *
  * @return mixed The result of the `text_regex_dataquery` function.
  */
 function clog_regex_dataquery(array $matches, bool $link = false) : mixed {
@@ -844,8 +957,8 @@ function clog_regex_dataquery(array $matches, bool $link = false) : mixed {
  * @deprecated Use `text_regex_rra()` directly instead.
  *
  * @param array $matches An array of regex matches to process.
- * @param bool $link Optional. Whether to generate a link. Default is false.
- * 
+ * @param bool  $link    Whether to generate a link. Default is false.
+ *
  * @return mixed The result of the `text_regex_rra` function.
  */
 function clog_regex_rra(array $matches, bool $link = false) : mixed {
@@ -860,8 +973,8 @@ function clog_regex_rra(array $matches, bool $link = false) : mixed {
  * @deprecated Use `text_regex_graphs()` directly instead.
  *
  * @param array $matches An array of regex matches to process.
- * @param bool $link Optional. Whether to generate a link. Default is false.
- * 
+ * @param bool  $link    Whether to generate a link. Default is false.
+ *
  * @return mixed The result of the `text_regex_graphs` function.
  */
 function clog_regex_graphs(array $matches, bool $link = false) : mixed {
@@ -876,8 +989,8 @@ function clog_regex_graphs(array $matches, bool $link = false) : mixed {
  * @deprecated Use `text_regex_graphtemplates()` directly instead.
  *
  * @param array $matches An array of regex matches to process.
- * @param bool $link Optional. Whether to generate a link. Default is false.
- * 
+ * @param bool  $link    Whether to generate a link. Default is false.
+ *
  * @return mixed The result of the `text_regex_graphtemplates` function.
  */
 function clog_regex_graphtemplates(array $matches, bool $link = false) : mixed {
@@ -892,8 +1005,8 @@ function clog_regex_graphtemplates(array $matches, bool $link = false) : mixed {
  * @deprecated Use `text_regex_users()` directly instead.
  *
  * @param array $matches An array of regex matches to process.
- * @param bool $link Optional. Whether to generate a link. Default is false.
- * 
+ * @param bool  $link    Whether to generate a link. Default is false.
+ *
  * @return mixed The result of the `text_regex_users` function.
  */
 function clog_regex_users(array $matches, bool $link = false) : mixed {
@@ -908,8 +1021,8 @@ function clog_regex_users(array $matches, bool $link = false) : mixed {
  * @deprecated Use `text_regex_rule()` directly instead.
  *
  * @param array $matches An array of regex matches to process.
- * @param bool $link Optional. Whether to generate a link. Default is false.
- * 
+ * @param bool  $link    Whether to generate a link. Default is false.
+ *
  * @return mixed The result of the `text_regex_rule` function.
  */
 function clog_regex_rule(array $matches, bool $link = false) : mixed {

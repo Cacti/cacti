@@ -25,12 +25,12 @@
 /** update_replication_crc - update hash stored in settings table to inform
  * remote pollers to replicate tables
  *
- * @param mixed $poller_id
- * @param mixed $variable
+ * @param int    $poller_id
+ * @param string $variable
  *
  * @return void
  */
-function update_replication_crc($poller_id, $variable) {
+function update_replication_crc(int $poller_id, string $variable) : void {
 	$hash = hash('ripemd160', date('Y-m-d H:i:s') . random_int(0, mt_getrandmax()) . $poller_id);
 
 	db_execute_prepared("REPLACE INTO settings
@@ -38,7 +38,7 @@ function update_replication_crc($poller_id, $variable) {
 		[$hash]);
 }
 
-function repopulate_poller_cache() {
+function repopulate_poller_cache() : void {
 	include_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
 
 	$poller_data = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . ' dl.*, h.poller_id
@@ -51,6 +51,7 @@ function repopulate_poller_cache() {
 	$poller_items   = [];
 	$local_data_ids = [];
 	$poller_prev    = 1;
+	$poller_id      = 1;
 
 	$i = 0;
 	$j = 0;
@@ -97,7 +98,7 @@ function repopulate_poller_cache() {
 		}
 	}
 
-	/* update the field mappings for the poller */
+	// update the field mappings for the poller
 	db_execute('TRUNCATE TABLE poller_data_template_field_mappings');
 	db_execute('INSERT IGNORE INTO poller_data_template_field_mappings
 		SELECT dtr.data_template_id, dif.data_name,
@@ -118,7 +119,7 @@ function repopulate_poller_cache() {
 	}
 }
 
-function update_poller_cache_from_query($host_id, $data_query_id, $local_data_ids) {
+function update_poller_cache_from_query(int $host_id, int $data_query_id, array $local_data_ids) : void {
 	include_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
 
 	$poller_data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' *
@@ -161,7 +162,7 @@ function update_poller_cache_from_query($host_id, $data_query_id, $local_data_id
 	}
 }
 
-function update_poller_cache($data_source, $commit = false) {
+function update_poller_cache(mixed $data_source, bool $commit = false) : array {
 	include_once(CACTI_PATH_LIBRARY . '/data_query.php');
 	include_once(CACTI_PATH_LIBRARY . '/api_poller.php');
 
@@ -179,6 +180,7 @@ function update_poller_cache($data_source, $commit = false) {
 	}
 
 	$poller_items = [];
+	$outputs      = [];
 
 	if (!cacti_sizeof($data_source)) {
 		return $poller_items;
@@ -206,7 +208,7 @@ function update_poller_cache($data_source, $commit = false) {
 			return $poller_items;
 		}
 
-		/* we have to perform some additional sql queries if this is a 'query' */
+		// we have to perform some additional sql queries if this is a 'query'
 		if (($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) ||
 			($data_input['type_id'] == DATA_INPUT_TYPE_SCRIPT_QUERY) ||
 			($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER)) {
@@ -271,7 +273,7 @@ function update_poller_cache($data_source, $commit = false) {
 
 				$poller_items[] = api_poller_cache_item_add($data_source['host_id'], [], $data_source['id'], $data_input['rrd_step'], $action, $data_source_item_name, 1, $script_path);
 			} elseif ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP) {
-				/* get the host override fields */
+				// get the host override fields
 				if (!isset($data_source['data_template_id'])) {
 					$data_template_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' data_template_id
 						FROM data_template_data
@@ -293,7 +295,7 @@ function update_poller_cache($data_source, $commit = false) {
 					$template_data_template_data_id = $template_data_id_data[$data_template_id];
 				}
 
-				/* get host fields first */
+				// get host fields first
 				if (!isset($host_field_data[$data_input['data_template_data_id']])) {
 					$host_fields = array_rekey(
 						db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
@@ -349,7 +351,7 @@ function update_poller_cache($data_source, $commit = false) {
 			} elseif ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) {
 				$snmp_queries = get_data_query_array($data_source['snmp_query_id']);
 
-				/* get the host override fields */
+				// get the host override fields
 				if (!isset($data_source['data_template_id'])) {
 					$data_template_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' data_template_id
 						FROM data_template_data
@@ -371,7 +373,7 @@ function update_poller_cache($data_source, $commit = false) {
 					$template_data_template_data_id = $template_data_id_data[$data_template_id];
 				}
 
-				/* get host fields first */
+				// get host fields first
 				if (!isset($host_field_data[$data_input['data_template_data_id']])) {
 					$host_fields = array_rekey(
 						db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
@@ -437,7 +439,7 @@ function update_poller_cache($data_source, $commit = false) {
 				($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER)) {
 				$script_queries = get_data_query_array($data_source['snmp_query_id']);
 
-				/* get the host override fields */
+				// get the host override fields
 				if (!isset($data_source['data_template_id'])) {
 					$data_template_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' data_template_id
 						FROM data_template_data
@@ -453,7 +455,7 @@ function update_poller_cache($data_source, $commit = false) {
 					AND local_data_id = 0',
 					[$data_template_id]);
 
-				/* get host fields first */
+				// get host fields first
 				if (!isset($host_field_data[$data_input['data_template_data_id']])) {
 					$host_fields = array_rekey(
 						db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
@@ -502,6 +504,8 @@ function update_poller_cache($data_source, $commit = false) {
 
 				if (cacti_sizeof($outputs) && cacti_sizeof($script_queries)) {
 					foreach ($outputs as $output) {
+						$action = POLLER_ACTION_NONE;
+
 						if (isset($script_queries['fields'][$output['snmp_field_name']]['query_name'])) {
 							$identifier = $script_queries['fields'][$output['snmp_field_name']]['query_name'];
 
@@ -559,9 +563,11 @@ function update_poller_cache($data_source, $commit = false) {
 	} elseif (!$commit) {
 		return $poller_items;
 	}
+
+	return [];
 }
 
-function push_out_data_input_method($data_input_id) {
+function push_out_data_input_method(int $data_input_id) : void {
 	$data_sources = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dl.*, h.poller_id
 		FROM data_local AS dl
 		INNER JOIN (
@@ -602,16 +608,20 @@ function push_out_data_input_method($data_input_id) {
 	}
 }
 
-/** mass update of poller cache - can run in parallel to poller
- * @param array $local_data_ids - either a scalar (all ids) or an array of data source to act on
- * @param array $poller_items - the new items for poller cache
- * @param int $poller_id - the poller_id of the buffer
+/**
+ * mass update of poller cache - can run in parallel to poller
+ *
+ * @param array $local_data_ids Either a scalar (all ids) or an array of data source to act on
+ * @param array $poller_items   The new items for poller cache
+ * @param int   $poller_id      The poller_id of the buffer
+ *
+ * @return void
  */
-function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items, $poller_id = 1) {
+function poller_update_poller_cache_from_buffer(array $local_data_ids, array &$poller_items, int $poller_id = 1) : void {
 	$ids    = '';
 	$raised = false;
 
-	/* set all fields present value to 0, to mark the outliers when we are all done */
+	// set all fields present value to 0, to mark the outliers when we are all done
 	if (cacti_sizeof($local_data_ids)) {
 		$ids = implode(', ', $local_data_ids);
 
@@ -645,7 +655,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 		 *this would flush the whole table at bottom of this function */
 	}
 
-	/* setup the database call */
+	// setup the database call
 	$sql_prefix = 'INSERT INTO poller_item (local_data_id, poller_id, host_id, action, hostname, ' .
 		'snmp_community, snmp_version, snmp_timeout, snmp_retries, snmp_username, snmp_password, ' .
 		'snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context, snmp_engine_id, ' .
@@ -678,10 +688,10 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 		arg3 = VALUES(arg3),
 		present = 1';
 
-	/* use a reasonable insert buffer, the default is 1MByte */
+	// use a reasonable insert buffer, the default is 1MByte
 	$max_packet   = 256000;
 
-	/* setup some defaults */
+	// setup some defaults
 	$overhead     = strlen($sql_prefix) + strlen($sql_suffix);
 	$buf_len      = 0;
 	$buf_count    = 0;
@@ -689,7 +699,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 
 	if (cacti_sizeof($poller_items)) {
 		foreach ($poller_items as $record) {
-			/* take care of invalid entries */
+			// take care of invalid entries
 			if ($record == '') {
 				continue;
 			}
@@ -748,7 +758,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 		}
 	}
 
-	/* remove stale records FROM the poller cache */
+	// remove stale records FROM the poller cache
 	if ($ids != '') {
 		db_execute_prepared("DELETE FROM poller_item
 			WHERE present = 0
@@ -780,19 +790,23 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 	set_config_option('time_last_change_poller_item', time());
 }
 
-/** for a given data template, update all input data and the poller cache
- * @param int $host_id - id of host, if any
- * @param int $local_data_id - id of a single data source, if any
- * @param int $data_template_id - id of data template
- * works on table data_input_data and poller cache
+/**
+ * for a given data template, update all input data and the poller cache
+ *
+ * @param int $host_id          The id of host, if any
+ * @param int $local_data_id    The id of a single data source, if any
+ * @param int $data_template_id The id of data template
+ *                              works on table data_input_data and poller cache
+ *
+ * @return void
  */
-function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
+function push_out_host(int $host_id, int $local_data_id = 0, int $data_template_id = 0) : void {
 	include_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
 
 	/* ok here's the deal: first we need to find every data source that uses this host.
 	then we go through each of those data sources, finding each one using a data input method
 	with "special fields". if we find one, fill it will the data here FROM this host */
-	/* setup the poller items array */
+	// setup the poller items array
 	$poller_items    = [];
 	$local_data_ids  = [];
 	$hosts           = [];
@@ -800,9 +814,9 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 	$sql_where       = '';
 	$sql_where_p     = '';
 
-	/* setup the sql where, and if using a host, get it's host information */
+	// setup the sql where, and if using a host, get it's host information
 	if ($host_id > 0) {
-		/* get all information about this host so we can write it to the data source */
+		// get all information about this host so we can write it to the data source
 		$hosts[$host_id] = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' id AS host_id, host.*
 			FROM host WHERE id = ?',
 			[$host_id]);
@@ -811,13 +825,13 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 		$sql_where_p .= ' dl.host_id=' . $host_id;
 	}
 
-	/* sql WHERE for local_data_id */
+	// sql WHERE for local_data_id
 	if ($local_data_id > 0) {
 		$sql_where .= ' AND dl.id = ' . $local_data_id;
 		$sql_where_p .= ($sql_where_p != '' ? ' AND' : '') . ' dl.id = ' . $local_data_id;
 	}
 
-	/* sql WHERE for data_template_id */
+	// sql WHERE for data_template_id
 	if ($data_template_id > 0) {
 		$sql_where .= ' AND dtd.data_template_id = ' . $data_template_id;
 		$sql_where_p .= ($sql_where_p != '' ? ' AND' : '') . ' dtd.data_template_id = ' . $data_template_id;
@@ -846,10 +860,10 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 		SET pi.present = 0
 		WHERE $sql_where_p");
 
-	/* loop through each matching data source */
+	// loop through each matching data source
 	if (cacti_sizeof($data_sources)) {
 		foreach ($data_sources as $data_source) {
-			/* set the host information */
+			// set the host information
 			if (!isset($hosts[$data_source['host_id']])) {
 				$hosts[$data_source['host_id']] = db_fetch_row_prepared('SELECT *
 					FROM host
@@ -937,7 +951,7 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 			 */
 			$local_data_ids[] = $data_source['local_data_id'];
 
-			/* create a new compatible structure */
+			// create a new compatible structure
 			$data       = $data_source;
 			$data['id'] = $data['local_data_id'];
 
@@ -984,7 +998,7 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 	api_data_source_cache_crc_update($poller_id);
 }
 
-function data_input_whitelist_check($data_input_id) {
+function data_input_whitelist_check(int $data_input_id) : bool {
 	static $data_input_whitelist = null;
 	static $validated_input_ids  = null;
 	static $notified             = [];
@@ -1049,7 +1063,7 @@ function data_input_whitelist_check($data_input_id) {
 	}
 }
 
-function utilities_get_mysql_recommendations() {
+function utilities_get_mysql_recommendations() : int {
 	global $local_db_cnn_id;
 
 	// MySQL/MariaDB Important Variables
@@ -1096,19 +1110,19 @@ function utilities_get_mysql_recommendations() {
 				'class'   => 'warning',
 				'measure' => 'equal',
 				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4_unicode_ci collation type as some characters take more than a single byte.')
-				],
+			],
 			'character_set_server' => [
 				'value'   => 'utf8mb4',
 				'class'   => 'warning',
 				'measure' => 'equal',
 				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte.')
-				],
+			],
 			'character_set_client' => [
 				'value'   => 'utf8mb4',
 				'class'   => 'warning',
 				'measure' => 'equal',
 				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte.')
-				]
+			]
 		];
 	} else {
 		if (version_compare($link_ver, '5.2', '>=')) {
@@ -1132,19 +1146,19 @@ function utilities_get_mysql_recommendations() {
 				'value'   => 'utf8mb4_unicode_ci',
 				'measure' => 'equal',
 				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4_unicode_ci collation type as some characters take more than a single byte.')
-				],
+			],
 			'character_set_server' => [
 				'value'   => 'utf8mb4',
 				'class'   => 'warning',
 				'measure' => 'equal',
 				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte.')
-				],
+			],
 			'character_set_client' => [
 				'value'   => 'utf8mb4',
 				'class'   => 'warning',
 				'measure' => 'equal',
 				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte.')
-				]
+			]
 		];
 	}
 
@@ -1153,86 +1167,86 @@ function utilities_get_mysql_recommendations() {
 			'value'   => '100',
 			'measure' => 'ge',
 			'comment' => __('Depending on the number of logins and use of spine data collector, %s will need many connections.  The calculation for spine is: total_connections = total_processes * (total_threads + script_servers + 1), then you must leave headroom for user connections, which will change depending on the number of concurrent login accounts.', $database)
-			],
+		],
 		'table_cache' => [
 			'value'   => '200',
 			'measure' => 'ge',
 			'comment' => __('Keeping the table cache larger means less file open/close operations when using innodb_file_per_table.')
-			],
+		],
 		'max_allowed_packet' => [
 			'value'   => 16777216,
 			'measure' => 'ge',
 			'comment' => __('With Remote polling capabilities, large amounts of data will be synced from the main server to the remote pollers.  Therefore, keep this value at or above 16M.')
-			],
+		],
 		'max_heap_table_size' => [
 			'value'   => '1.6',
 			'measure' => 'pmem',
 			'class'   => 'warning',
 			'comment' => __('If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10%% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status.')
-			],
+		],
 		'tmp_table_size' => [
 			'value'   => '1.6',
 			'measure' => 'pmem',
 			'class'   => 'warning',
 			'comment' => __('When executing subqueries, having a larger temporary table size, keep those temporary tables in memory.')
-			],
+		],
 		'join_buffer_size' => [
 			'value'   => '262144',
 			'measure' => 'ge',
 			'class'   => 'warning',
 			'comment' => __('If this number is negative, reduce the innodb_buffer_pool_size until the join_buffer_size turns positive, but allocate approximately from between 25%-50% of memory to the innodb_buffer_pool_size if the database is hosted on the Cacti server, or upto 80% of the systems memory if the database is separate from the Cacti web server.  However, try to not go below the default of 262,144.  When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.  As this is a per connection memory allocation, care must be taken not to increase it too high.  The sum of the join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB memory should be below 80% if the database is hosted on the Cacti web server and less if you intend to have very large RRDfiles or hundreds of thousands to millions long term.')
-			],
+		],
 		'sort_buffer_size' => [
 			'value'   => '2097152',
 			'measure' => 'ge',
 			'class'   => 'warning',
 			'comment' => __('If this number is negative, reduce the innodb_buffer_pool_size until the sort_buffer_size turns positive, but allocate approximately from between 25%-50% of memory to the innodb_buffer_pool_size if the database is hosted on the Cacti server, or upto 80% of the system memory if the database is separate from the Cacti web server.  However, try to not go below the default setting of 2,097,152.  A sort buffer performs sorts for some queries using ORDER BY or GROUP BY. Configuring sort_buffer_size decides how much memory will be allocated for sort queries.  The sort_buffer_size may need to be adjusted from the default if the workload requires a significant number of sort queries. The sort_buffer_size is defined on a per-session variable.  Use the same equation as that of the join_buffer_size to determine the per connection possible memory.')
-			],
+		],
 		'innodb_file_per_table' => [
 			'value'   => 'ON',
 			'measure' => 'equalint',
 			'class'   => 'error',
 			'comment' => __('When using InnoDB storage it is important to keep your table spaces separate.  This makes managing the tables simpler for long time users of %s.  If you are running with this currently off, you can migrate to the per file storage by enabling the feature, and then running an alter statement on all InnoDB tables.', $database)
-			],
+		],
 		'innodb_file_format' => [
 			'value'   => 'Barracuda',
 			'measure' => 'equal',
 			'class'   => 'error',
 			'comment' => __('When using innodb_file_per_table, it is important to set the innodb_file_format to Barracuda.  This setting will allow longer indexes important for certain Cacti tables.')
-			],
+		],
 		'innodb_large_prefix' => [
 			'value'   => '1',
 			'measure' => 'equalint',
 			'class'   => 'error',
 			'comment' => __('If your tables have very large indexes, you must operate with the Barracuda innodb_file_format and the innodb_large_prefix equal to 1.  Failure to do this may result in plugins that can not properly create tables.')
-			],
+		],
 		'innodb_buffer_pool_size' => [
 			'value'   => '25',
 			'measure' => 'pmem',
 			'class'   => 'warning',
 			'comment' => __('InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size.  If you database is very large or remote, you can consider increasing this size.  If remote, it can by as high as 80% of the systems memory.  However, cautions must be taken to reduce the swappiness of the system, or to remove swap to keep the system from swapping.')
-			],
+		],
 		'innodb_doublewrite' => [
 			'value'   => 'ON',
 			'measure' => 'equalint',
 			'class'   => 'error',
 			'comment' => __('This settings should remain ON unless your Cacti instances is running on either ZFS or FusionI/O which both have internal journaling to accommodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance.')
-			],
+		],
 		'innodb_additional_mem_pool_size' => [
 			'value'   => '80M',
 			'measure' => 'gem',
 			'comment' => __('This is where metadata is stored. If you had a lot of tables, it would be useful to increase this.')
-			],
+		],
 		'innodb_lock_wait_timeout' => [
 			'value'   => '50',
 			'measure' => 'ge',
 			'comment' => __('Rogue queries should not for the database to go offline to others.  Kill these queries before they kill your system.')
-			],
+		],
 		'innodb_flush_method' => [
 			'value'   => 'O_DIRECT',
 			'measure' => 'eq',
 			'comment' => __('Maximum I/O performance happens when you use the O_DIRECT method to flush pages.')
-			]
+		]
 	];
 
 	if (isset($variables['innodb_version'])) {
@@ -1247,7 +1261,7 @@ function utilities_get_mysql_recommendations() {
 					'value'   => '16',
 					'measure' => 'ge',
 					'comment' => __('With modern SSD type storage, having multiple io threads is advantageous for applications with high io characteristics.')
-					]
+				]
 			];
 		} elseif ($database == 'MariaDB' && version_compare($variables['innodb_version'], '10.5', '<') || $database == 'MySQL') {
 			$recommendations += [
@@ -1255,41 +1269,41 @@ function utilities_get_mysql_recommendations() {
 					'value'    => '3',
 					'measure'  => 'ge',
 					'comment'  => __('As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential', $database, $version, $database),
-					],
+				],
 				'innodb_read_io_threads' => [
 					'value'   => '32',
 					'measure' => 'ge',
 					'comment' => __('With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics.  Depending on your MariaDB/MySQL versions, this value can go as high as 64.  But try to keep the number less than your total SMT threads on the database server.')
-					],
+				],
 				'innodb_write_io_threads' => [
 					'value'   => '16',
 					'measure' => 'ge',
 					'comment' => __('With modern SSD type storage, having multiple write io threads is advantageous for applications with high io characteristics.  Depending on your MariaDB/MySQL versions, this value can go as high as 64.  But try to keep the number less than your total SMT threads on the database server.')
-					],
+				],
 				'innodb_buffer_pool_instances' => [
 					'value'   => '16',
 					'measure' => 'pinst',
 					'class'   => 'warning',
 					'comment' => ($database == 'MySQL' ? __('%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MySQL upto and including MySQL 8.0.  The max value is 64, but should not exceed more than the number of CPU cores/threads.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation up to the max of the number of CPU cores or 64.', $database) : __('%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MariaDB less than 10.5.  The max value is 64, but should not exceed more than the number of CPU cores/threads.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation up to the max the number of CPU cores or 64.', $database))
-					],
+				],
 				'innodb_io_capacity' => [
 					'value'   => '5000',
 					'measure' => 'ge',
 					'class'   => 'warning',
 					'comment' => __('If you have SSD disks, use this suggestion.  If you have physical hard drives, use 200 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 100000 can be used.')
-					],
+				],
 				'innodb_io_capacity_max' => [
 					'value'   => '10000',
 					'measure' => 'ge',
 					'class'   => 'warning',
 					'comment' => __('If you have SSD disks, use this suggestion.  If you have physical hard drives, use 2000 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 200000 can be used.')
-					],
+				],
 				'innodb_flush_neighbor_pages' => [
 					'value'   => 'none',
 					'measure' => 'eq',
 					'class'   => 'warning',
 					'comment' => __('If you have SSD disks, use this suggestion. Otherwise, do not set this setting.')
-					]
+				]
 			];
 		} else {
 			$recommendations += [
@@ -1297,35 +1311,35 @@ function utilities_get_mysql_recommendations() {
 					'value'    => '3',
 					'measure'  => 'ge',
 					'comment'  => __('As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential', $database, $version, $database),
-					],
+				],
 				'innodb_read_io_threads' => [
 					'value'   => '32',
 					'measure' => 'ge',
 					'comment' => __('With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics.')
-					],
+				],
 				'innodb_write_io_threads' => [
 					'value'   => '16',
 					'measure' => 'ge',
 					'comment' => __('With modern SSD type storage, having multiple write io threads is advantageous for applications with high io characteristics.')
-					],
+				],
 				'innodb_io_capacity' => [
 					'value'   => '5000',
 					'measure' => 'ge',
 					'class'   => 'warning',
 					'comment' => __('If you have SSD disks, use this suggestion.  If you have physical hard drives, use 200 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 100000 can be used.')
-					],
+				],
 				'innodb_io_capacity_max' => [
 					'value'   => '10000',
 					'measure' => 'ge',
 					'class'   => 'warning',
 					'comment' => __('If you have SSD disks, use this suggestion.  If you have physical hard drives, use 2000 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 200000 can be used.')
-					],
+				],
 				'innodb_flush_neighbor_pages' => [
 					'value'   => 'none',
 					'measure' => 'eq',
 					'class'   => 'warning',
 					'comment' => __('If you have SSD disks, use this suggestion. Otherwise, do not set this setting.')
-					]
+				]
 			];
 
 			unset($recommendations['innodb_additional_mem_pool_size']);
@@ -1357,11 +1371,11 @@ function utilities_get_mysql_recommendations() {
 	if ($database == 'MariaDB') {
 		$variables_url = 'https://mariadb.com/kb/en/server-system-variables/';
 	} else {
-		$variables_url = html_escape('https://dev.mysql.com/doc/refman/' . $link_ver . '/en/server-system-variables.html');
+		$variables_url = htmle('https://dev.mysql.com/doc/refman/' . $link_ver . '/en/server-system-variables.html');
 	}
 
 	print '<tr class="tableHeader tableFixed">';
-	print '<th colspan="2">' . __('%s Tuning', $database) . ' (' . $location . ') - [ <a class="linkOverDark" target="_blank" href="' . $variables_url . '">' .  __('Documentation') . '</a> ] ' . __('Note: Many changes below require a database restart') . '</th>';
+	print '<th colspan="2">' . __('%s Tuning', $database) . ' (' . $location . ') - [ <a class="linkOverDark" target="_blank" href="' . $variables_url . '">' . __('Documentation') . '</a> ] ' . __('Note: Many changes below require a database restart') . '</th>';
 	print '</tr>';
 
 	form_alternate_row();
@@ -1369,11 +1383,11 @@ function utilities_get_mysql_recommendations() {
 	print "<table id='mysql' class='cactiTable' style='width:100%'>";
 	print '<thead>';
 	print "<tr class='tableHeader'>";
-	print "  <th class='tableSubHeaderColumn'>" . __('Variable')          . '</th>';
-	print "  <th class='tableSubHeaderColumn right'>" . __('Current Value'). '</th>';
+	print "  <th class='tableSubHeaderColumn'>" . __('Variable') . '</th>';
+	print "  <th class='tableSubHeaderColumn right'>" . __('Current Value') . '</th>';
 	print "  <th class='tableSubHeaderColumn center'>&nbsp;</th>";
 	print "  <th class='tableSubHeaderColumn'>" . __('Recommended Value') . '</th>';
-	print "  <th class='tableSubHeaderColumn'>" . __('Comments')          . '</th>';
+	print "  <th class='tableSubHeaderColumn'>" . __('Comments') . '</th>';
 	print '</tr>';
 	print '</thead>';
 
@@ -1387,7 +1401,7 @@ function utilities_get_mysql_recommendations() {
 			unset($passed);
 
 			$compare         = '';
-			$value_recommend = $r['value'] ?? '<unset>';
+			$value_recommend = $r['value'];
 			$value_current   = $variables[$name] ?? '<unset>';
 			$value_display   = $value_current;
 
@@ -1395,7 +1409,7 @@ function utilities_get_mysql_recommendations() {
 				case 'gem':
 					$compare       = '>=';
 					$value_display = ($variables[$name] / 1024 / 1024) . ' M';
-					$value         = trim($r['value'], 'M') * 1024 * 1024;
+					$value         = intval(trim($r['value'], 'M')) * 1024 * 1024;
 
 					if ($variables[$name] < $value) {
 						$passed = false;
@@ -1643,7 +1657,7 @@ function utilities_get_mysql_recommendations() {
 	return $result;
 }
 
-function utilities_php_modules() {
+function utilities_php_modules() : string {
 	/*
 	   Gather phpinfo into a string variable - This has to be done before
 	   any headers are sent to the browser, as we are going to do some
@@ -1655,7 +1669,7 @@ function utilities_php_modules() {
 	$php_info = ob_get_contents();
 	ob_end_clean();
 
-	/* Remove nasty style sheets, links and other junk */
+	// Remove nasty style sheets, links and other junk
 	$php_info = str_replace("\n", '', $php_info);
 	$php_info = preg_replace('/^.*\<body\>/', '', $php_info);
 	$php_info = preg_replace('/\<\/body\>.*$/', '', $php_info);
@@ -1667,10 +1681,10 @@ function utilities_php_modules() {
 	return $php_info;
 }
 
-function memory_bytes($val) {
+function memory_bytes(mixed $val) : mixed {
 	$val  = trim($val);
 	$last = strtolower($val[strlen($val) - 1]);
-	$val  = trim($val, 'GMKgmk');
+	$val  = (double) trim($val, 'GMKgmk');
 
 	switch($last) {
 		case 'g':
@@ -1684,7 +1698,7 @@ function memory_bytes($val) {
 	return $val;
 }
 
-function memory_readable($val) {
+function memory_readable(mixed $val) : string {
 	if ($val < 1024) {
 		$val_label = 'bytes';
 	} elseif ($val < 1048576) {
@@ -1701,7 +1715,7 @@ function memory_readable($val) {
 	return $val . $val_label;
 }
 
-function utilities_get_system_memory() {
+function utilities_get_system_memory() : array {
 	$memInfo = [];
 
 	if (CACTI_SERVER_OS == 'win32') {
@@ -1714,7 +1728,7 @@ function utilities_get_system_memory() {
 
 		if (cacti_sizeof($memInfo)) {
 			foreach ($memInfo as $key => $values) {
-				$memInfo[$key] = $values[1] * 1000;
+				$memInfo[$key] = intval($values[1]) * 1000;
 			}
 		}
 	} else {
@@ -1736,7 +1750,7 @@ function utilities_get_system_memory() {
 			foreach ($data as $l) {
 				if (trim($l) != '') {
 					[$key, $val]     = explode(':', $l);
-					$val             = trim($val, " kBb\r\n");
+					$val             = intval(trim($val, " kBb\r\n"));
 					$memInfo[$key]   = round($val * 1000,0);
 				}
 			}
@@ -1753,22 +1767,22 @@ function utilities_get_system_memory() {
 
 					switch ($parts[0]) {
 						case 'Mem:':
-							$memInfo['MemTotal']  = (isset($parts[1]) ? $parts[1] * 1000 : 0);
-							$memInfo['MemUsed']   = (isset($parts[2]) ? $parts[2] * 1000 : 0);
-							$memInfo['MemFree']   = (isset($parts[3]) ? $parts[3] * 1000 : 0);
-							$memInfo['MemShared'] = (isset($parts[4]) ? $parts[4] * 1000 : 0);
-							$memInfo['Buffers']   = (isset($parts[5]) ? $parts[5] * 1000 : 0);
-							$memInfo['Cached']    = (isset($parts[6]) ? $parts[6] * 1000 : 0);
+							$memInfo['MemTotal']  = (isset($parts[1]) ? intval($parts[1]) * 1000 : 0);
+							$memInfo['MemUsed']   = (isset($parts[2]) ? intval($parts[2]) * 1000 : 0);
+							$memInfo['MemFree']   = (isset($parts[3]) ? intval($parts[3]) * 1000 : 0);
+							$memInfo['MemShared'] = (isset($parts[4]) ? intval($parts[4]) * 1000 : 0);
+							$memInfo['Buffers']   = (isset($parts[5]) ? intval($parts[5]) * 1000 : 0);
+							$memInfo['Cached']    = (isset($parts[6]) ? intval($parts[6]) * 1000 : 0);
 
 							break;
 						case '-/+':
-							$memInfo['Active']    = (isset($parts[2]) ? $parts[3] * 1000 : 0);
-							$memInfo['Inactive']  = (isset($parts[3]) ? $parts[3] * 1000 : 0);
+							$memInfo['Active']    = (isset($parts[2]) ? intval($parts[3]) * 1000 : 0);
+							$memInfo['Inactive']  = (isset($parts[3]) ? intval($parts[3]) * 1000 : 0);
 
 							break;
 						case 'Swap:':
-							$memInfo['SwapTotal'] = (isset($parts[1]) ? $parts[1] * 1000 : 0);
-							$memInfo['SwapUsed']  = (isset($parts[2]) ? $parts[2] * 1000 : 0);
+							$memInfo['SwapTotal'] = (isset($parts[1]) ? intval($parts[1]) * 1000 : 0);
+							$memInfo['SwapUsed']  = (isset($parts[2]) ? intval($parts[2]) * 1000 : 0);
 
 							break;
 					}
@@ -1780,18 +1794,23 @@ function utilities_get_system_memory() {
 	return $memInfo;
 }
 
-function utility_php_sort_extensions($a, $b) {
+function utility_php_sort_extensions(mixed $a, mixed $b) : int {
 	$name_a = $a['name'] ?? '';
 	$name_b = $b['name'] ?? '';
 
 	return strcasecmp($name_a, $name_b);
 }
 
-function utility_php_extensions() {
+function utility_php_extensions() : array {
 	$php      = cacti_escapeshellcmd(read_config_option('path_php_binary', true));
 	$php_file = cacti_escapeshellarg(CACTI_PATH_INSTALL . '/cli_check.php') . ' extensions';
 	$json     = shell_exec($php . ' -q ' . $php_file);
-	$ext      = @json_decode($json, true);
+
+	$ext      = [];
+
+	if ($json != '') {
+		$ext = @json_decode($json, true);
+	}
 
 	utility_php_verify_extensions($ext, 'web');
 	utility_php_set_installed($ext);
@@ -1799,7 +1818,7 @@ function utility_php_extensions() {
 	return $ext;
 }
 
-function utility_php_verify_extensions(&$extensions, $source) {
+function utility_php_verify_extensions(mixed &$extensions, string $source) : void {
 	if (empty($extensions)) {
 		$extensions = [
 			'ctype'     => ['cli' => false, 'web' => false],
@@ -1843,7 +1862,7 @@ function utility_php_verify_extensions(&$extensions, $source) {
 	}
 }
 
-function utility_php_recommends() {
+function utility_php_recommends() : array {
 	$php        = cacti_escapeshellcmd(read_config_option('path_php_binary', true));
 	$php_file   = cacti_escapeshellarg(CACTI_PATH_INSTALL . '/cli_check.php') . ' recommends';
 	$json       = shell_exec($php . ' -q ' . $php_file);
@@ -1856,17 +1875,17 @@ function utility_php_recommends() {
 	return $ext;
 }
 
-function utility_get_formatted_bytes($input_value, $wanted_type, &$output_value, $default_type = 'B') {
+function utility_get_formatted_bytes(mixed $input_value, string $wanted_type, mixed &$output_value, string $default_type = 'B') : mixed {
 	$default_type = strtoupper($default_type);
 	$multiplier   = [
 		'B' => 1,
 		'K' => 1024,
-		'M' => 1024 * 1024,
-		'G' => 1024 * 1024 * 1024,
+		'M' => 1048576,
+		'G' => 1073741824,
 	];
 
 	if ($input_value > 0 && preg_match('/([0-9.]+)([BKMG]){0,1}/i',$input_value,$matches)) {
-		$input_value = $matches[1];
+		$input_value = floatval($matches[1]);
 
 		if (isset($matches[2])) {
 			$default_type = $matches[2];
@@ -1887,10 +1906,12 @@ function utility_get_formatted_bytes($input_value, $wanted_type, &$output_value,
 		$output_value = $input_value . 'B';
 	}
 
+	cacti_log("Input values $input_value, Wanted Type $wanted_type, Output Value $output_value");
+
 	return $input_value;
 }
 
-function utility_php_verify_recommends(&$recommends, $source) {
+function utility_php_verify_recommends(mixed &$recommends, string $source) : void {
 	global $original_memory_limit;
 
 	$rec_version    = '7.4.0';
@@ -1911,6 +1932,9 @@ function utility_php_verify_recommends(&$recommends, $source) {
 	$cfg_timezone   = empty($cfg_values['date.timezone']) ? '' : $cfg_values['date.timezone'];
 	$cfg_max_exec   = empty($cfg_values['max_execution_time']) ? '' : $cfg_values['max_execution_time'];
 
+	// moving into local variable for phpstan
+	$php_version    = PHP_VERSION;
+
 	$recommends = [
 		[
 			'name'        => 'location',
@@ -1922,7 +1946,7 @@ function utility_php_verify_recommends(&$recommends, $source) {
 			'name'        => 'version',
 			'value'       => $rec_version,
 			'current'     => PHP_VERSION,
-			'status'      => version_compare(PHP_VERSION, $rec_version, '>=') ? DB_STATUS_SUCCESS : DB_STATUS_ERROR,
+			'status'      => version_compare($php_version, $rec_version, '>=') ? DB_STATUS_SUCCESS : DB_STATUS_ERROR,
 		],
 		[
 			'name'        => 'memory_limit',
@@ -1945,7 +1969,7 @@ function utility_php_verify_recommends(&$recommends, $source) {
 	];
 }
 
-function utility_php_set_recommends_text(&$recs) {
+function utility_php_set_recommends_text(mixed &$recs) : void {
 	if (is_array($recs) && cacti_sizeof($recs)) {
 		foreach ($recs as $name => $recommends) {
 			if (cacti_sizeof($recommends)) {
@@ -1965,11 +1989,15 @@ function utility_php_set_recommends_text(&$recs) {
 	}
 }
 
-function utility_php_optionals() {
+function utility_php_optionals() : array {
 	$php      = cacti_escapeshellcmd(read_config_option('path_php_binary', true));
 	$php_file = cacti_escapeshellarg(CACTI_PATH_INSTALL . '/cli_check.php') . ' optionals';
 	$json     = shell_exec($php . ' -q ' . $php_file);
-	$opt      = @json_decode($json, true);
+	$opt      = [];
+
+	if ($json != '') {
+		$opt = json_decode($json, true);
+	}
 
 	utility_php_verify_optionals($opt, 'web');
 	utility_php_set_installed($opt);
@@ -1977,7 +2005,7 @@ function utility_php_optionals() {
 	return $opt;
 }
 
-function utility_php_verify_optionals(&$optionals, $source) {
+function utility_php_verify_optionals(mixed &$optionals, string $source) : void {
 	if (empty($optionals)) {
 		$optionals = [
 			'snmp'          => ['web' => false, 'cli' => false],
@@ -1997,7 +2025,7 @@ function utility_php_verify_optionals(&$optionals, $source) {
 	$optionals['TrueType Text'][$source] = function_exists('imagettftext');
 }
 
-function utility_php_set_installed(&$extensions) {
+function utility_php_set_installed(array &$extensions) : void {
 	foreach ($extensions as $name=>$extension) {
 		$extensions[$name]['installed'] = $extension['web'] && $extension['cli'];
 	}
@@ -2018,31 +2046,28 @@ function utility_php_set_installed(&$extensions) {
  * This function is used to prime the previous values for processing
  * by object removal functions.
  *
- * @param int       The class of object as above
- * @param int|array The ids for the object class
- * @param bool      Load the objects into the diff array
- * @param mixed $class
- * @param mixed $object_ids
- * @param mixed $diff
+ * @param string $class      The class of object as above
+ * @param mixed  $object_ids The ids for the object class
+ * @param bool   $diff       Load the objects into the diff array
  *
  * @return void
  */
-function object_cache_get_totals($class, $object_ids, $diff = false) {
+function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = false) : void {
 	global $object_totals, $object_totals_diff;
 
 	if (!is_array($object_ids)) {
 		$object_ids = explode(',', $object_ids);
 	}
 
-	/* temp variable for object array */
+	// temp variable for object array
 	$variable = [];
 
-	/* object totals loaded already */
+	// object totals loaded already
 	if (cacti_sizeof($object_totals) && $diff === false) {
 		return;
 	}
 
-	/* avoid an error if there are no objects */
+	// avoid an error if there are no objects
 	if (!cacti_sizeof($object_ids)) {
 		return;
 	}
@@ -2483,7 +2508,7 @@ function object_cache_get_totals($class, $object_ids, $diff = false) {
 	}
 }
 
-function object_cache_update_totals($direction) {
+function object_cache_update_totals(string $direction) : bool {
 	global $object_totals, $object_totals_diff;
 
 	if ($direction == 'add') {
@@ -2499,7 +2524,7 @@ function object_cache_update_totals($direction) {
 
 		return false;
 	} else {
-		/* scan the changes and then construct a new array with the deltas */
+		// scan the changes and then construct a new array with the deltas
 		$prev_object_totals = $object_totals;
 		$object_totals      = [];
 		$operator           = '+';
@@ -2630,9 +2655,11 @@ function object_cache_update_totals($direction) {
 
 	unset($object_totals);
 	unset($object_totals_diff);
+
+	return true;
 }
 
-function object_cache_update_device_totals() {
+function object_cache_update_device_totals() : void {
 	$tables = [
 		'host',
 		'host_template',
@@ -2785,7 +2812,7 @@ function object_cache_update_device_totals() {
 	}
 }
 
-function object_cache_update_data_source_totals() {
+function object_cache_update_data_source_totals() : void {
 	$tables = [
 		'data_input',
 		'data_source_profiles',
@@ -2900,7 +2927,7 @@ function object_cache_update_data_source_totals() {
 	}
 }
 
-function object_cache_update_graph_totals() {
+function object_cache_update_graph_totals() : void {
 	$tables = [
 		'cdef',
 		'colors',
@@ -3143,7 +3170,7 @@ function object_cache_update_graph_totals() {
 	}
 }
 
-function object_cache_update_aggregate_totals() {
+function object_cache_update_aggregate_totals() : void {
 	$tables = [
 		'aggregate_graph_templates',
 		'color_templates',

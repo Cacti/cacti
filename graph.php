@@ -28,16 +28,16 @@ require_once(CACTI_PATH_LIBRARY . '/rrd.php');
 require_once(CACTI_PATH_LIBRARY . '/html_graph.php');
 require_once(CACTI_PATH_LIBRARY . '/html_tree.php');
 
-/* set default action */
+// set default action
 set_default_action('view');
 
-if (!isset_request_var('view_type')) {
-	set_request_var('view_type', '');
+if (!isrv('view_type')) {
+	srv('view_type', '');
 }
 
 api_plugin_hook_function('graph');
 
-switch (get_request_var('action')) {
+switch (grv('action')) {
 	case 'view':
 		html_graph_single_view();
 

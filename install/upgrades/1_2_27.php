@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_1_2_27() {
+function upgrade_to_1_2_27() : void {
 	db_install_execute("ALTER TABLE `poller_item` MODIFY `snmp_priv_protocol` char(7) NOT NULL DEFAULT ''");
 	db_install_execute("ALTER TABLE `host` MODIFY `snmp_priv_protocol` char(7) DEFAULT ''");
 	db_install_execute("ALTER TABLE `automation_devices` MODIFY `snmp_priv_protocol` char(7) DEFAULT ''");

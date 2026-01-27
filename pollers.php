@@ -25,9 +25,14 @@
 require('./include/auth.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 
-/* performing a full sync can take a lot of memory and time */
+// performing a full sync can take a lot of memory and time
 ini_set('memory_limit', '-1');
 ini_set('max_execution_time', '900');
+
+global $logfile_verbosity, $poller_sync_intervals;
+global $database_default, $database_username, $database_password, $database_port;
+global $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert;
+global $database_ssl_ca, $database_ssl_capath, $database_ssl_verify_server_cert;
 
 $actions = [
 	POLLER_DELETE      => __('Delete'),
@@ -42,18 +47,18 @@ if (POLLER_ID == 1) {
 }
 
 $poller_status = [
-	POLLER_STATUS_NEW        => '<div class="deviceUnknown">'    . __('New/Idle')     . '</div>',
-	POLLER_STATUS_RUNNING    => '<div class="deviceUp">'         . __('Running')      . '</div>',
-	POLLER_STATUS_IDLE       => '<div class="deviceRecovering">' . __('Idle')         . '</div>',
-	POLLER_STATUS_DOWN       => '<div class="deviceDown">'       . __('Down')         . '</div>',
-	POLLER_STATUS_DISABLED   => '<div class="deviceDisabled">'   . __('Disabled')     . '</div>',
-	POLLER_STATUS_RECOVERING => '<div class="deviceDown">'       . __('Recovering')   . '</div>',
-	POLLER_STATUS_HEARTBEAT  => '<div class="deviceDown">'       . __('Heartbeat')    . '</div>',
+	POLLER_STATUS_NEW        => '<div class="deviceUnknown">' . __('New/Idle') . '</div>',
+	POLLER_STATUS_RUNNING    => '<div class="deviceUp">' . __('Running') . '</div>',
+	POLLER_STATUS_IDLE       => '<div class="deviceRecovering">' . __('Idle') . '</div>',
+	POLLER_STATUS_DOWN       => '<div class="deviceDown">' . __('Down') . '</div>',
+	POLLER_STATUS_DISABLED   => '<div class="deviceDisabled">' . __('Disabled') . '</div>',
+	POLLER_STATUS_RECOVERING => '<div class="deviceDown">' . __('Recovering') . '</div>',
+	POLLER_STATUS_HEARTBEAT  => '<div class="deviceDown">' . __('Heartbeat') . '</div>',
 ];
 
 $logfile_verbosity = array_merge([-1 => __('Use Cacti Log Level')], $logfile_verbosity);
 
-/* file: pollers.php, action: edit */
+// file: pollers.php, action: edit
 $fields_poller_edit = [
 	'spacer0' => [
 		'method'        => 'spacer',
@@ -259,10 +264,10 @@ $fields_poller_edit = [
 	]
 ];
 
-/* set default action */
+// set default action
 set_default_action();
 
-switch (get_request_var('action')) {
+switch (grv('action')) {
 	case 'save':
 		form_save();
 
@@ -277,7 +282,7 @@ switch (get_request_var('action')) {
 			WHERE Name LIKE ?
 			ORDER BY Name
 			LIMIT ' . read_config_option('autocomplete_rows'),
-			['%' . get_nfilter_request_var('term') . '%']
+			['%' . gnrv('term') . '%']
 		));
 
 		break;
@@ -303,36 +308,36 @@ switch (get_request_var('action')) {
 		break;
 }
 
-function form_save() {
-	if (isset_request_var('save_component_poller')) {
+function form_save() : void {
+	if (isrv('save_component_poller')) {
 		// Common data
-		$save['id']        = get_filter_request_var('id');
-		$save['name']      = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
-		$save['hostname']  = form_input_validate(get_nfilter_request_var('hostname'), 'hostname', '', false, 3);
-		$save['log_level'] = form_input_validate(get_nfilter_request_var('log_level'), 'log_level', '', false, 3);
-		$save['timezone']  = form_input_validate(get_nfilter_request_var('timezone'), 'timezone', '', false, 3);
-		$save['notes']     = form_input_validate(get_nfilter_request_var('notes'), 'notes', '', true, 3);
+		$save['id']        = gfrv('id');
+		$save['name']      = form_input_validate(gnrv('name'), 'name', '', false, 3);
+		$save['hostname']  = form_input_validate(gnrv('hostname'), 'hostname', '', false, 3);
+		$save['log_level'] = form_input_validate(gnrv('log_level'), 'log_level', '', false, 3);
+		$save['timezone']  = form_input_validate(gnrv('timezone'), 'timezone', '', false, 3);
+		$save['notes']     = form_input_validate(gnrv('notes'), 'notes', '', true, 3);
 
 		// Process settings
-		$save['processes'] = form_input_validate(get_nfilter_request_var('processes'), 'processes', '^[0-9]+$', false, 3);
-		$save['threads']   = form_input_validate(get_nfilter_request_var('threads'), 'threads', '^[0-9]+$', false, 3);
+		$save['processes'] = form_input_validate(gnrv('processes'), 'processes', '^[0-9]+$', false, 3);
+		$save['threads']   = form_input_validate(gnrv('threads'), 'threads', '^[0-9]+$', false, 3);
 
 		if ($save['id'] != 1) {
-			$save['sync_interval'] = form_input_validate(get_nfilter_request_var('sync_interval'), 'sync_interval', '^[0-9]+$', false, 3);
+			$save['sync_interval'] = form_input_validate(gnrv('sync_interval'), 'sync_interval', '^[0-9]+$', false, 3);
 
 			// Database settings
-			$save['dbdefault']             = form_input_validate(get_nfilter_request_var('dbdefault'), 'dbdefault', '', true, 3);
-			$save['dbhost']                = form_input_validate(get_nfilter_request_var('dbhost'),    'dbhost',    '', true, 3);
-			$save['dbuser']                = form_input_validate(get_nfilter_request_var('dbuser'),    'dbuser',    '', true, 3);
-			$save['dbpass']                = form_input_validate(get_nfilter_request_var('dbpass'),    'dbpass',    '', true, 3);
-			$save['dbport']                = form_input_validate(get_nfilter_request_var('dbport'),    'dbport',    '^[0-9]+$', true, 3);
-			$save['dbretries']             = form_input_validate(get_nfilter_request_var('dbretries'), 'dbretries', '^[0-9]+$', true, 3);
-			$save['dbssl']                 = isset_request_var('dbssl') ? 'on' : '';
-			$save['dbsslkey']              = form_input_validate(get_nfilter_request_var('dbsslkey'),  'dbsslkey',  '', true, 3);
-			$save['dbsslcert']             = form_input_validate(get_nfilter_request_var('dbsslcert'), 'dbsslcert', '', true, 3);
-			$save['dbsslca']               = form_input_validate(get_nfilter_request_var('dbsslca'),   'dbsslca',   '', true, 3);
-			$save['dbsslcapath']           = form_input_validate(get_nfilter_request_var('dbsslcapath'), 'dbsslcapath',   '', true, 3);
-			$save['dbsslverifyservercert'] = isset_request_var('dbsslverifyservercert') ? 'on' : '';
+			$save['dbdefault']             = form_input_validate(gnrv('dbdefault'), 'dbdefault', '', true, 3);
+			$save['dbhost']                = form_input_validate(gnrv('dbhost'),    'dbhost',    '', true, 3);
+			$save['dbuser']                = form_input_validate(gnrv('dbuser'),    'dbuser',    '', true, 3);
+			$save['dbpass']                = form_input_validate(gnrv('dbpass'),    'dbpass',    '', true, 3);
+			$save['dbport']                = form_input_validate(gnrv('dbport'),    'dbport',    '^[0-9]+$', true, 3);
+			$save['dbretries']             = form_input_validate(gnrv('dbretries'), 'dbretries', '^[0-9]+$', true, 3);
+			$save['dbssl']                 = isrv('dbssl') ? 'on' : '';
+			$save['dbsslkey']              = form_input_validate(gnrv('dbsslkey'),  'dbsslkey',  '', true, 3);
+			$save['dbsslcert']             = form_input_validate(gnrv('dbsslcert'), 'dbsslcert', '', true, 3);
+			$save['dbsslca']               = form_input_validate(gnrv('dbsslca'),   'dbsslca',   '', true, 3);
+			$save['dbsslcapath']           = form_input_validate(gnrv('dbsslcapath'), 'dbsslcapath',   '', true, 3);
+			$save['dbsslverifyservercert'] = isrv('dbsslverifyservercert') ? 'on' : '';
 		}
 
 		// Check for duplicate hostname
@@ -364,11 +369,11 @@ function form_save() {
 			}
 		}
 
-		header('Location: pollers.php?action=edit&id=' . (empty($poller_id) ? get_nfilter_request_var('id') : $poller_id));
+		header('Location: pollers.php?action=edit&id=' . (empty($poller_id) ? gnrv('id') : $poller_id));
 	}
 }
 
-function poller_check_duplicate_poller_id($poller_id, $hostname, $column) {
+function poller_check_duplicate_poller_id(int $poller_id, string $hostname, string $column) : bool {
 	$ip_addresses  = [];
 	$ip_hostnames  = [];
 
@@ -455,7 +460,7 @@ function poller_check_duplicate_poller_id($poller_id, $hostname, $column) {
 	}
 }
 
-function poller_host_duplicate($poller_id, $host) {
+function poller_host_duplicate(int $poller_id, string $host) : mixed {
 	if ($host == 'localhost') {
 		return true;
 	} else {
@@ -467,19 +472,19 @@ function poller_host_duplicate($poller_id, $host) {
 	}
 }
 
-function form_actions() {
+function form_actions() : void {
 	global $actions;
 
-	/* ================= input validation ================= */
-	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-zA-Z0-9_]+)$/']]);
-	/* ==================================================== */
+	// ================= input validation =================
+	gfrv('drp_action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-zA-Z0-9_]+)$/']]);
+	// ====================================================
 
-	/* if we are to save this form, instead of display it */
-	if (isset_request_var('selected_items')) {
-		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
+	// if we are to save this form, instead of display it
+	if (isrv('selected_items')) {
+		$selected_items = sanitize_unserialize_selected_items(gnrv('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_nfilter_request_var('drp_action') == POLLER_DELETE) { // delete
+			if (gnrv('drp_action') == POLLER_DELETE) { // delete
 				db_execute('DELETE FROM poller WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('UPDATE host SET poller_id=1 WHERE deleted="" AND ' . array_to_sql_or($selected_items, 'poller_id'));
 				db_execute('UPDATE automation_networks SET poller_id=1 WHERE ' . array_to_sql_or($selected_items, 'poller_id'));
@@ -490,18 +495,18 @@ function form_actions() {
 				db_execute('UPDATE poller_time SET poller_id=1 WHERE ' . array_to_sql_or($selected_items, 'poller_id'));
 
 				cacti_log('NOTE: The poller(s) with the id(s): ' . implode(',', $selected_items) . ' deleted by user ' . $_SESSION[SESS_USER_ID], false, 'WEBUI');
-			} elseif (get_request_var('drp_action') == POLLER_DISABLE) { // disable
+			} elseif (grv('drp_action') == POLLER_DISABLE) { // disable
 				db_execute('UPDATE poller SET disabled="on" WHERE ' . array_to_sql_or($selected_items, 'id'));
 
 				cacti_log('NOTE: The poller(s) with the id(s): ' . implode(',', $selected_items) . ' disabled by user ' . $_SESSION[SESS_USER_ID], false, 'WEBUI');
-			} elseif (get_request_var('drp_action') == POLLER_ENABLE) { // enable
+			} elseif (grv('drp_action') == POLLER_ENABLE) { // enable
 				db_execute('UPDATE poller SET disabled="" WHERE ' . array_to_sql_or($selected_items, 'id'));
 
 				cacti_log('NOTE: The poller(s) with the id(s): ' . implode(',', $selected_items) . ' enabled by user ' . $_SESSION[SESS_USER_ID], false, 'WEBUI');
-			} elseif (get_request_var('drp_action') == POLLER_RESYNC || get_request_var('drp_action') == POLLER_AUTHSYNC) { // full or auth sync
+			} elseif (grv('drp_action') == POLLER_RESYNC || grv('drp_action') == POLLER_AUTHSYNC) { // full or auth sync
 				cacti_session_close();
 
-				if (get_request_var('drp_action') == POLLER_RESYNC) {
+				if (grv('drp_action') == POLLER_RESYNC) {
 					$class = 'all';
 				} else {
 					$class = 'auth';
@@ -559,7 +564,7 @@ function form_actions() {
 				} else {
 					cacti_log('NOTE: All Selected Remote Data Collectors in [' . implode(', ', $ids) . '] synchronized correctly by user ' . get_username($_SESSION[SESS_USER_ID]), false, 'WEBUI');
 				}
-			} elseif (get_request_var('drp_action') == '5') { // clear statistics
+			} elseif (grv('drp_action') == '5') { // clear statistics
 				foreach ($selected_items as $item) {
 					db_execute_prepared('UPDATE poller
 						SET total_time = 0, max_time = 0, min_time = 9999999, avg_time = 0, total_polls = 0
@@ -579,14 +584,14 @@ function form_actions() {
 		$ilist  = '';
 		$iarray = [];
 
-		/* loop through each of the graphs selected on the previous page and get more info about them */
+		// loop through each of the graphs selected on the previous page and get more info about them
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-				/* ================= input validation ================= */
+				// ================= input validation =================
 				input_validate_input_number($matches[1], 'chk[1]');
-				/* ==================================================== */
+				// ====================================================
 
-				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM poller WHERE id = ?', [$matches[1]])) . '</li>';
+				$ilist .= '<li>' . htmle(db_fetch_cell_prepared('SELECT name FROM poller WHERE id = ?', [$matches[1]])) . '</li>';
 
 				$iarray[] = $matches[1];
 			}
@@ -644,18 +649,18 @@ function form_actions() {
 	}
 }
 
-function poller_edit() {
+function poller_edit() : void {
 	global $fields_poller_edit;
 
-	/* ================= input validation ================= */
-	get_filter_request_var('id');
-	/* ==================================================== */
+	// ================= input validation =================
+	gfrv('id');
+	// ====================================================
 
-	if (!isempty_request_var('id')) {
+	if (!ierv('id')) {
 		$poller = db_fetch_row_prepared('SELECT *
 			FROM poller
 			WHERE id = ?',
-			[get_request_var('id')]
+			[grv('id')]
 		);
 
 		$header_label = __esc('Site [edit: %s]', $poller['name']);
@@ -698,7 +703,7 @@ function poller_edit() {
 	draw_edit_form(
 		[
 			'config' => ['no_form_tag' => true],
-			'fields' => inject_form_variables($fields_poller_edit, (isset($poller) ? $poller : []))
+			'fields' => inject_form_variables($fields_poller_edit, $poller)
 		]
 	);
 
@@ -714,7 +719,7 @@ function poller_edit() {
 
 	$pt = read_config_option('poller_type');
 
-	if (isset($poller) && cacti_sizeof($poller)) {
+	if (cacti_sizeof($poller)) {
 		if ($poller['id'] > 1) {
 			?>
 			<script type='text/javascript'>
@@ -837,7 +842,7 @@ function poller_edit() {
 	form_save_buttons($form_buttons);
 }
 
-function test_database_connection($poller = []) {
+function test_database_connection(array $poller = []) : bool {
 	if (!cacti_sizeof($poller)) {
 		$poller['dbtype'] = 'mysql';
 
@@ -858,19 +863,19 @@ function test_database_connection($poller = []) {
 
 		foreach ($fields as $field) {
 			if ($field == 'dbssl') {
-				if (isset_request_var('dbssl') && get_nfilter_request_var('dbssl') == 'on') {
+				if (isrv('dbssl') && gnrv('dbssl') == 'on') {
 					$poller['dbssl'] = 'on';
 				} else {
 					$poller['dbssl'] = '';
 				}
 			} elseif ($field == 'dbsslverifyservercert') {
-				if (isset_request_var('dbsslverifyservercert') && get_nfilter_request_var('dbsslverifyservercert') == 'on') {
+				if (isrv('dbsslverifyservercert') && gnrv('dbsslverifyservercert') == 'on') {
 					$poller['dbsslverifyservercert'] = 'on';
 				} else {
 					$poller['dbsslverifyservercert'] = '';
 				}
-			} elseif (isset_request_var($field)) {
-				$poller[$field] = get_nfilter_request_var($field);
+			} elseif (isrv($field)) {
+				$poller[$field] = gnrv($field);
 			} else {
 				print 'ERROR: DB Connection Column ' . $field . ' Missing';
 
@@ -901,12 +906,14 @@ function test_database_connection($poller = []) {
 	} else {
 		print '&nbsp;<i class="ti ti-x"></i>&nbsp;' . __('Connection Failed');
 	}
+
+	return true;
 }
 
-function pollers() {
+function pollers() : void {
 	global $actions, $poller_status, $item_rows;
 
-	/* create the page filter */
+	// create the page filter
 	$pageFilter = new CactiTableFilter(__('Data Collectors'), 'pollers.php', 'form_poller', 'sess_pollers');
 
 	$pageFilter->rows_label  = __('Collectors');
@@ -914,15 +921,15 @@ function pollers() {
 	$pageFilter->def_refresh = 20;
 	$pageFilter->render();
 
-	if (get_request_var('rows') == '-1') {
+	if (grv('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
 	} else {
-		$rows = get_request_var('rows');
+		$rows = grv('rows');
 	}
 
-	/* form the 'where' clause for our main sql query */
-	if (get_request_var('filter') != '') {
-		$sql_where = 'WHERE name LIKE ' . db_qstr('%' . get_request_var('filter') . '%');
+	// form the 'where' clause for our main sql query
+	if (grv('filter') != '') {
+		$sql_where = 'WHERE name LIKE ' . db_qstr('%' . grv('filter') . '%');
 	} else {
 		$sql_where = '';
 	}
@@ -930,7 +937,7 @@ function pollers() {
 	$total_rows = db_fetch_cell("SELECT COUNT(*) FROM poller $sql_where");
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows;
 
 	$pollers = db_fetch_assoc("SELECT poller.*, UNIX_TIMESTAMP() - UNIX_TIMESTAMP(poller.last_status) as heartbeat, devices AS hosts
 		FROM poller
@@ -938,7 +945,7 @@ function pollers() {
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar('pollers.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('Pollers'), 'page', 'main');
+	$nav = html_nav_bar('pollers.php?filter=' . grv('filter'), MAX_DISPLAY_PAGES, grv('page'), $rows, $total_rows, 5, __('Pollers'), 'page', 'main');
 
 	form_start('pollers.php', 'chk');
 
@@ -1033,7 +1040,7 @@ function pollers() {
 		]
 	];
 
-	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
+	html_header_sort_checkbox($display_text, grv('sort_column'), grv('sort_direction'), false);
 
 	$i = 0;
 
@@ -1051,7 +1058,7 @@ function pollers() {
 				$poller['status'] = 6;
 			}
 
-			$mma = round($poller['avg_time'] ?: 0, 2) . '/' .  round(max($poller['max_time'] ?: 1, 1), 2);
+			$mma = round($poller['avg_time'] ?: 0, 2) . '/' . round(max($poller['max_time'] ?: 1, 1), 2);
 
 			if (empty($poller['name'])) {
 				$poller['name'] = '&lt;no name&gt;';
@@ -1061,7 +1068,7 @@ function pollers() {
 
 			form_alternate_row('line' . $poller['id'], true, $disabled);
 
-			form_selectable_cell(filter_value($poller['name'], get_request_var('filter'), 'pollers.php?action=edit&id=' . $poller['id']), $poller['id']);
+			form_selectable_cell(filter_value($poller['name'], grv('filter'), 'pollers.php?action=edit&id=' . $poller['id']), $poller['id']);
 			form_selectable_cell($poller['id'], $poller['id'], '', 'right');
 			form_selectable_ecell($poller['hostname'], $poller['id'], '', 'right');
 			form_selectable_cell($poller_status[$poller['status']], $poller['id'], '', 'center');
@@ -1095,7 +1102,7 @@ function pollers() {
 		print $nav;
 	}
 
-	/* draw the dropdown containing a list of available actions for this form */
+	// draw the dropdown containing a list of available actions for this form
 	draw_actions_dropdown($actions);
 
 	form_end();

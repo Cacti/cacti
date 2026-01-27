@@ -1,5 +1,5 @@
 <?php
-function get_hosts($params = []) {
+function get_hosts(array $params = []) : mixed {
 	$sql = 'SELECT id as host_id, description as host_description, hostname, host_template_id,
         poller_id, site_id, disabled, status, status_fail_date AS last_fail_date,
         status_rec_date AS last_recovery_date, status_last_error AS last_error,
@@ -101,7 +101,7 @@ function get_hosts($params = []) {
  *               - "graph_id" (int): The ID of the graph.
  *               - "rrd_name" (string): The name of the RRD file.
  */
-function get_graph_list($host_id = 0) {
+function get_graph_list(int $host_id = 0) : array {
 	if (filter_var($host_id, FILTER_VALIDATE_INT) === false || $host_id < 0) {
 		return ['graphs' => ['Host must be a valid INT']];
 	}
@@ -133,7 +133,7 @@ function get_graph_list($host_id = 0) {
 	return ['graphs' => $graphs];
 }
 
-function get_poller_status($poller_id = 0) {
+function get_poller_status(int $poller_id = 0) : mixed {
 	if (filter_var($poller_id, FILTER_VALIDATE_INT) === false || $poller_id < 0) {
 		return ['error' => 'Poller ID must be a valid INT'];
 	}
@@ -152,7 +152,7 @@ function get_poller_status($poller_id = 0) {
 	return $values ? db_fetch_assoc_prepared($sql, $values) : db_fetch_assoc($sql);
 }
 
-function get_host_templates($template_id = 0) {
+function get_host_templates(int $template_id = 0) : mixed {
 	if (filter_var($template_id, FILTER_VALIDATE_INT) === false || $template_id < 0) {
 		return ['templates' => ['Template ID must be a valid INT']];
 	}
@@ -168,7 +168,7 @@ function get_host_templates($template_id = 0) {
 	return $values ? db_fetch_assoc_prepared($sql, $values) : db_fetch_assoc($sql);
 }
 
-function get_cacti_status() {
+function get_cacti_status() : array {
 	// Get Cacti version
 	$cacti_version  = db_fetch_cell('SELECT cacti AS version FROM version LIMIT 1');
 	$poller_type    = read_config_option('poller_type');
@@ -220,7 +220,7 @@ function get_cacti_status() {
 	return ['cacti_status' => $cacti_status];
 }
 
-function get_boost_status() {
+function get_boost_status() : array {
 	$boost_rrd_update_enable = read_config_option('boost_rrd_update_enable');
 
 	if ($boost_rrd_update_enable !== 'on') {
@@ -245,7 +245,7 @@ function get_boost_status() {
 	return ['boost_status' => $boost_status];
 }
 
-function get_dsstats_status() {
+function get_dsstats_status() : array {
 	$check_dsstats_enabled = read_config_option('dsstats_enable');
 
 	if ($check_dsstats_enabled !== 'on') {
@@ -269,7 +269,7 @@ function get_dsstats_status() {
 	return ['dsstats_status' => $dsstats_status];
 }
 
-function get_cacti_db_status() {
+function get_cacti_db_status() : array {
 	$status_rows  = db_fetch_assoc('SHOW STATUS');
 	$status_assoc = [];
 
@@ -296,7 +296,7 @@ function get_cacti_db_status() {
 	return ['db_status' => $db_status];
 }
 
-function get_thresholds($params = []) {
+function get_thresholds(array $params = []) : array {
 	$check_thold_installed = db_fetch_assoc("SHOW TABLES LIKE 'thold_data'");
 
 	if (empty($check_thold_installed)) {
@@ -383,7 +383,7 @@ function get_thresholds($params = []) {
 	return ['thresholds' => $thresholds];
 }
 
-function get_threshold_status() {
+function get_threshold_status() : array {
 	$check_thold_installed = db_fetch_assoc("SHOW TABLES LIKE 'thold_data'");
 
 	if (empty($check_thold_installed)) {
@@ -422,7 +422,7 @@ function get_threshold_status() {
 }
 
 // automation functions
-function get_automation_networks($params = []) {
+function get_automation_networks(array $params = []) : mixed {
 	$sql = 'SELECT id, poller_id, name, subnet_range, ignore_ips, dns_servers, enabled,
         notification_email, up_hosts, snmp_hosts, ping_method, ping_timeout, ping_retries,
         start_at, next_start, last_runtime, last_started, last_status
@@ -468,7 +468,7 @@ function get_automation_networks($params = []) {
 	return db_fetch_assoc($sql);
 }
 
-function get_automation_status() {
+function get_automation_status() : array {
 	$sql = 'SELECT DISTINCT ap.network_id, an.name, an.subnet_range, an.last_started
         FROM automation_processes ap
         INNER JOIN automation_networks an ON ap.network_id = an.id';

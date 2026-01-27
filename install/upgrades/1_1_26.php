@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_1_1_26() {
+function upgrade_to_1_1_26() : void {
 	db_install_add_key('host', 'key', 'status', ['status']);
 	db_install_add_key('user_auth_cache', 'key', 'last_update', ['last_update']);
 	db_install_add_key('poller_output_realtime', 'key', 'time', ['time']);

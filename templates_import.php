@@ -28,11 +28,11 @@ require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
-/* set default action */
+// set default action
 set_default_action();
 
-$action  = get_request_var('action');
-$is_save = isset_request_var('save_component_import');
+$action  = grv('action');
+$is_save = isrv('save_component_import');
 
 $tmp_dir  = sys_get_temp_dir();
 $tmp_len  = strlen($tmp_dir);
@@ -53,13 +53,13 @@ if ($is_tmp && $is_save && $action == 'save') {
 	bottom_footer();
 }
 
-function form_save() {
+function form_save() : void {
 	global $preview_only, $messages, $import_messages;
 
-	if (isset_request_var('save_component_import')) {
-		//print '<pre>';print_r($_FILES);print '</pre>';exit;
+	if (isrv('save_component_import')) {
+		// print '<pre>';print_r($_FILES);print '</pre>';exit;
 		if (($_FILES['import_file']['tmp_name'] != 'none') && ($_FILES['import_file']['tmp_name'] != '')) {
-			/* file upload */
+			// file upload
 			$fp       = fopen($_FILES['import_file']['tmp_name'],'r');
 			$xml_data = fread($fp,filesize($_FILES['import_file']['tmp_name']));
 			fclose($fp);
@@ -69,27 +69,27 @@ function form_save() {
 			exit;
 		}
 
-		if (get_filter_request_var('import_data_source_profile') == '0') {
+		if (gfrv('import_data_source_profile') == '0') {
 			$import_as_new = true;
 			$profile_id    = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
 		} else {
 			$import_as_new = false;
-			$profile_id    = get_request_var('import_data_source_profile');
+			$profile_id    = grv('import_data_source_profile');
 		}
 
-		if (get_nfilter_request_var('preview_only') == 'true') {
+		if (gnrv('preview_only') == 'true') {
 			$preview_only = true;
 		} else {
 			$preview_only = false;
 		}
 
-		if (isset_request_var('remove_orphans') && get_nfilter_request_var('remove_orphans') == 'on') {
+		if (isrv('remove_orphans') && gnrv('remove_orphans') == 'on') {
 			$remove_orphans = true;
 		} else {
 			$remove_orphans = false;
 		}
 
-		if (isset_request_var('replace_svalues') && get_nfilter_request_var('replace_svalues') == 'on') {
+		if (isrv('replace_svalues') && gnrv('replace_svalues') == 'on') {
 			$replace_svalues = true;
 		} else {
 			$replace_svalues = false;
@@ -97,7 +97,7 @@ function form_save() {
 
 		$import_hashes = [];
 
-		/* loop through each of the graphs selected on the previous page and get more info about them */
+		// loop through each of the graphs selected on the previous page and get more info about them
 		foreach ($_POST as $var => $val) {
 			if (strpos($var, 'chk_') !== false) {
 				$id = base64_decode(str_replace('chk_', '', $var), true);
@@ -109,9 +109,7 @@ function form_save() {
 			}
 		}
 
-		$import_messages = [];
-
-		/* obtain debug information if it's set */
+		// obtain debug information if it's set
 		$debug_data = import_xml_data($xml_data, $import_as_new, $profile_id, $remove_orphans, $replace_svalues, $import_hashes);
 
 		if (!$preview_only) {
@@ -119,10 +117,10 @@ function form_save() {
 
 			header('Location: templates_import.php');
 		} elseif ($debug_data !== false && cacti_sizeof($debug_data)) {
-			//print '<pre>';print_r($debug_data);print '</pre>';exit;
+			// print '<pre>';print_r($debug_data);print '</pre>';exit;
 
 			$templates = prepare_template_display($debug_data);
-			//print '<pre>';print_r($templates);print '</pre>';
+			// print '<pre>';print_r($templates);print '</pre>';
 
 			display_template_data($templates);
 
@@ -132,6 +130,11 @@ function form_save() {
 
 			$message_text = '';
 
+			/**
+			 * The variables $import_messages is populated as a global variable
+			 * set in the function import_xml_data().  It includes all the
+			 * errors encountered during the import pre-processing.
+			 */
 			if (cacti_sizeof($import_messages)) {
 				foreach ($import_messages as $message) {
 					if (isset($messages[$message])) {
@@ -145,7 +148,7 @@ function form_save() {
 	}
 }
 
-function prepare_template_display(&$import_info) {
+function prepare_template_display(array &$import_info) : array {
 	global $hash_type_names;
 
 	$templates = [];
@@ -205,7 +208,7 @@ function prepare_template_display(&$import_info) {
 	return $templates;
 }
 
-function display_template_data(&$templates) {
+function display_template_data(array &$templates) : void {
 	if (isset($templates['files'])) {
 		$files = $templates['files'];
 
@@ -368,14 +371,14 @@ function display_template_data(&$templates) {
 	}
 }
 
-function bad_tmp() {
+function bad_tmp() : void {
 	html_start_box(__('Import Template'), '60%', false, 3, 'center', '');
 	form_alternate_row();
-	print "<td class='textarea'><p><strong>" . __('ERROR') . ':</strong> ' .__('Failed to access temporary folder, import functionality is disabled') . "</p></td></tr>\n";
+	print "<td class='textarea'><p><strong>" . __('ERROR') . ':</strong> ' . __('Failed to access temporary folder, import functionality is disabled') . "</p></td></tr>\n";
 	html_end_box();
 }
 
-function import() {
+function import() : void {
 	global $hash_type_names, $fields_template_import;
 
 	$default_profile = db_fetch_cell('SELECT id FROM data_source_profiles WHERE `default`="on"');
@@ -386,7 +389,7 @@ function import() {
 
 	form_start('templates_import.php', 'import', true);
 
-	/* ================= input validation and session storage ================= */
+	// ================= input validation and session storage =================
 	$filters = [
 		'preview_only' => [
 			'filter'  => FILTER_VALIDATE_REGEXP,
@@ -422,36 +425,36 @@ function import() {
 	];
 
 	validate_store_request_vars($filters, 'sess_pimport');
-	/* ================= input validation ================= */
+	// ================= input validation =================
 
 	$fields_template_import['import_data_source_profile']['default'] = $default_profile;
 
-	if (isset_request_var('replace_svalues') && get_nfilter_request_var('replace_svalues') == 'true') {
+	if (isrv('replace_svalues') && gnrv('replace_svalues') == 'true') {
 		$fields_template_import['replace_svalues']['value'] = 'on';
 	} else {
 		$fields_template_import['replace_svalues']['value'] = '';
 	}
 
-	if (isset_request_var('remove_orphans') && get_nfilter_request_var('remove_orphans') == 'true') {
+	if (isrv('remove_orphans') && gnrv('remove_orphans') == 'true') {
 		$fields_template_import['remove_orphans']['value'] = 'on';
 	} else {
 		$fields_template_import['remove_orphans']['value'] = '';
 	}
 
-	if (isset_request_var('image_format')) {
-		$fields_template_import['image_format']['value'] = get_filter_request_var('image_format');
+	if (isrv('image_format')) {
+		$fields_template_import['image_format']['value'] = gfrv('image_format');
 	} else {
 		$fields_template_import['image_format']['value'] = read_config_option('default_image_format');
 	}
 
-	if (isset_request_var('graph_width')) {
-		$fields_template_import['graph_width']['value'] = get_filter_request_var('graph_width');
+	if (isrv('graph_width')) {
+		$fields_template_import['graph_width']['value'] = gfrv('graph_width');
 	} else {
 		$fields_template_import['graph_width']['value'] = read_config_option('default_graph_width');
 	}
 
-	if (isset_request_var('graph_height')) {
-		$fields_template_import['graph_height']['value'] = get_filter_request_var('graph_height');
+	if (isrv('graph_height')) {
+		$fields_template_import['graph_height']['value'] = gfrv('graph_height');
 	} else {
 		$fields_template_import['graph_height']['value'] = read_config_option('default_graph_height');
 	}
@@ -528,8 +531,8 @@ function import() {
 	<?php
 }
 
-function is_tmp_writable(string $tmp_dir = null) : bool {
-	if ($tmp_dir === null) {
+function is_tmp_writable(string $tmp_dir = '') : bool {
+	if ($tmp_dir === '') {
 		$tmp_dir = sys_get_temp_dir();
 	}
 
