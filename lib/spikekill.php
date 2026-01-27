@@ -1155,7 +1155,7 @@ class spikekill {
 
 								break;
 							case SPIKE_METHOD_VARIANCE:
-								if (empty($this->out_start) || ($timestamp >= $this->out_start && $timestamp <= $this->out_end)) {
+								if ($this->out_start == 0 || ($timestamp >= $this->out_start && $timestamp <= $this->out_end)) {
 									if ($dsvalue > (1 + $this->percent) * (float) $rra[$rra_num][$ds_num]['variance_avg']) {
 										if ($kills < $this->numspike) {
 											if ($this->avgnan == 'avg') {
@@ -1183,7 +1183,7 @@ class spikekill {
 
 								break;
 							case SPIKE_METHOD_STDDEV:
-								if (empty($this->out_start) || ($timestamp >= $this->out_start && $timestamp <= $this->out_end)) {
+								if ($this->out_start == 0 || ($timestamp >= $this->out_start && $timestamp <= $this->out_end)) {
 									if (($dsvalue > $rra[$rra_num][$ds_num]['max_cutoff']) ||
 										($dsvalue < $rra[$rra_num][$ds_num]['min_cutoff'])) {
 										if ($kills < $this->numspike) {
@@ -1321,9 +1321,11 @@ class spikekill {
 	private function processStandardDeviationCalculation($samples) {
 		$my_samples = $samples;
 
-		if (!empty($this->out_start)) {
+		if ($this->out_start > 0) {
+			$my_samples = [];
+
 			foreach($samples as $timestamp => $value) {
-				if ($timestamp < $this->out_start || $timestamp > $this->out_end) {
+				if (($timestamp < $this->out_start || $timestamp > $this->out_end) && is_numeric($valu)) {
 					$my_samples[] = $value;
 				}
 			}
