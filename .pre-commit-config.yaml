@@ -1,0 +1,26 @@
+repos:
+  - repo: local
+    hooks:
+      - id: lintcheck
+        name: PHPStan Validate
+        entry: composer run-script lint
+        language: system
+        files: ^app/
+        always_run: true
+
+      - id: phpcsfixer
+        name: PHP CS Fixer Validate
+        entry: composer run-script phpcsfixer
+        language: system
+        files: ^app/
+        always_run: true
+
+      - id: phpstan
+        name: PHPStan Validate
+        entry: composer run-script phpstan
+        language: system
+        files: ^app/
+        always_run: true
+
+
+
