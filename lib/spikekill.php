@@ -200,7 +200,7 @@ class spikekill {
 
 		/* set the correct value */
 		if ($this->avgnan == '') {
-			if (!isset($uavgnan)) {
+			if (!empty($uavgnan)) {
 				$this->avgnan = $this->davgnan;
 			} else {
 				$this->avgnan = $uavgnan;
@@ -208,7 +208,7 @@ class spikekill {
 		}
 
 		if ($this->method == '') {
-			if (!isset($umethod)) {
+			if (!empty($umethod)) {
 				$this->method = $this->dmethod;
 			} else {
 				$this->method = $umethod;
@@ -216,7 +216,7 @@ class spikekill {
 		}
 
 		if ($this->numspike == '') {
-			if (!isset($unumspike)) {
+			if (!empty($unumspike)) {
 				$this->numspike = $this->dnumspike;
 			} else {
 				$this->numspike = $unumspike;
@@ -224,7 +224,7 @@ class spikekill {
 		}
 
 		if ($this->stddev == '') {
-			if (!isset($ustddev)) {
+			if (!empty($ustddev)) {
 				$this->stddev = $this->dstddev;
 			} else {
 				$this->stddev = $ustddev;
@@ -232,7 +232,7 @@ class spikekill {
 		}
 
 		if ($this->percent == '') {
-			if (!isset($upercent)) {
+			if (!empty($upercent)) {
 				$this->percent = $this->dpercent;
 			} else {
 				$this->percent = $upercent;
@@ -240,7 +240,7 @@ class spikekill {
 		}
 
 		if ($this->outliers == '') {
-			if (!isset($uoutliers)) {
+			if (!empty($uoutliers)) {
 				$this->outliers = $this->doutliers;
 			} else {
 				$this->outliers = $uoutliers;
