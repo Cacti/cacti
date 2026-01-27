@@ -45,8 +45,8 @@ class spikekill {
 	var $avgnan    = '';
 	var $stddev    = '';
 
-	var $out_start = '';
-	var $out_end   = '';
+	var $out_start = 0;
+	var $out_end   = 0;
 	var $outliers  = '';
 	var $percent   = '';
 	var $numspike  = '';
@@ -543,12 +543,14 @@ class spikekill {
 						if ($timestamp > 0) {
 							if ($this->method == SPIKE_METHOD_FILL || $this->method == SPIKE_METHOD_FLOAT) {
 								if ($timestamp < $this->out_start) {
-									$rra[$rra_num][$ds_num]['last'] = $dsvalue;
+									if (is_numeric($dsvalue)) {
+										$rra[$rra_num][$ds_num]['last'] = $dsvalue;
+									}
 
 									$process = true;
 								} elseif ($timestamp >= $this->out_start && $timestamp <= $this->out_end) {
 									if ($this->method == SPIKE_METHOD_FILL) {
-										if (strtolower($dsvalue) == 'nan' || $dsvalue == 0) {
+										if (!is_numeric($dsvalue)) {
 											$this->debug(sprintf('Fill Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%0.4e NewVal:%0.4e', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue, $rra[$rra_num][$ds_num]['last']));
 										}
 									} else {
@@ -568,7 +570,7 @@ class spikekill {
 							$process = true;
 						}
 
-						if (strtolower($dsvalue) != 'nan' && $process) {
+						if (is_numeric($dsvalue) && $process) {
 							if (!isset($rra[$rra_num][$ds_num]['numsamples'])) {
 								$rra[$rra_num][$ds_num]['numsamples'] = 1;
 							} else {
@@ -885,7 +887,7 @@ class spikekill {
 
 												$this->out_kills = true;
 											} elseif ($this->method == SPIKE_METHOD_FILL) {
-												if (strtolower($sample) == 'nan' || $sample == 0) {
+												if (!is_numeric($sample) || $sample == 0) {
 													$this->debug(sprintf("Window GapFill Found, Date:%s, Value:%s", date('Y-m-d H:i', $timestamp), $sample));
 
 													$rra[$rra_num][$ds_num]['outwind_killed']++;
@@ -910,11 +912,11 @@ class spikekill {
 												}
 
 												$this->std_kills = true;
-											} elseif (strtolower($sample) !== 'nan') {
+											} elseif (is_numeric($sample)) {
 												$rra[$rra_num][$ds_num]['numnksamples']++;
 												$rra[$rra_num][$ds_num]['sumnksamples'] += $sample;
 											}
-										} elseif (strtolower($sample) !== 'nan') {
+										} elseif (is_numeric($sample)) {
 											$rra[$rra_num][$ds_num]['numnksamples']++;
 											$rra[$rra_num][$ds_num]['sumnksamples'] += $sample;
 										}
@@ -934,11 +936,11 @@ class spikekill {
 												}
 
 												$this->var_kills = true;
-											} elseif (strtolower($sample) !== 'nan') {
+											} elseif (is_numeric($sample)) {
 												$rra[$rra_num][$ds_num]['numnksamples']++;
 												$rra[$rra_num][$ds_num]['sumnksamples'] += $sample;
 											}
-										} elseif (strtolower($sample) !== 'nan') {
+										} elseif (is_numeric($sample)) {
 											$rra[$rra_num][$ds_num]['numnksamples']++;
 											$rra[$rra_num][$ds_num]['sumnksamples'] += $sample;
 										}
@@ -1122,7 +1124,7 @@ class spikekill {
 							case SPIKE_METHOD_FILL:
 								if ($timestamp >= $this->out_start && $timestamp <= $this->out_end) {
 									if ($this->avgnan == 'avg') {
-										if (strtolower($dsvalue) == 'nan' || $dsvalue == 0) {
+										if (!is_numeric($dsvalue) || $dsvalue == 0) {
 											$message = sprintf('Replacing dsvalue %s with average %s', $dsvalue, $rra[$rra_num][$ds_num]['variance_avg']);
 
 											cacti_log("DEBUG: $message", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
@@ -1133,7 +1135,7 @@ class spikekill {
 											$this->total_kills++;
 										}
 									} elseif ($this->avgnan == 'last' && isset($rra[$rra_num][$ds_num]['last'])) {
-										if (strtolower($dsvalue) == 'nan' || $dsvalue == 0) {
+										if (!is_numeric($dsvalue) || $dsvalue == 0) {
 											$message = sprintf('Replacing dsvalue %s with last value %s', $dsvalue, $rra[$rra_num][$ds_num]['last']);
 
 											cacti_log("DEBUG: $message", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
@@ -1172,7 +1174,7 @@ class spikekill {
 											}
 										}
 									}
-								} elseif (strtolower($dsvalue) !== 'nan' && $dsvalue != 0) {
+								} elseif (is_numeric($dsvalue) && $dsvalue != 0) {
 									$last_num[$ds_num] = $dsvalue;
 								}
 
@@ -1204,7 +1206,7 @@ class spikekill {
 											}
 										}
 									}
-								} elseif (strtolower($dsvalue) !== 'nan' && $dsvalue != 0) {
+								} elseif (is_numeric($dsvalue) && $dsvalue != 0) {
 									$last_num[$ds_num] = $dsvalue;
 								}
 
