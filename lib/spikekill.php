@@ -1492,9 +1492,13 @@ class spikekill {
 	private function processStandardDeviationCalculation(array $samples) : mixed {
 		$my_samples = $samples;
 
-		foreach ($samples as $timestamp => $value) {
-			if ((empty($this->out_start) || $timestamp < $this->out_start || $timestamp > $this->out_end) && is_numeric($value)) {
-				$my_samples[] = $value;
+		if ($this->out_start > 0) {
+			$my_samples = [];
+
+			foreach ($samples as $timestamp => $value) {
+				if (($timestamp < $this->out_start || $timestamp > $this->out_end) && is_numeric($value)) {
+					$my_samples[] = $value;
+				}
 			}
 		}
 
