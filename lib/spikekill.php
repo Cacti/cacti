@@ -280,27 +280,27 @@ class spikekill {
 		switch($this->method) {
 			case 'stddev':
 				$this->method = SPIKE_METHOD_STDDEV;
-				$dispmethod = __('StdDev');
+				$dispmethod   = __('StdDev');
 
 				break;
 			case 'variance':
 				$this->method = SPIKE_METHOD_VARIANCE;
-				$dispmethod = __('Variance');
+				$dispmethod   = __('Variance');
 
 				break;
 			case 'fill':
 				$this->method = SPIKE_METHOD_FILL;
-				$dispmethod = __('Gap Fill');
+				$dispmethod   = __('Gap Fill');
 
 				break;
 			case 'float':
 				$this->method = SPIKE_METHOD_FLOAT;
-				$dispmethod = __('Float Range');
+				$dispmethod   = __('Float Range');
 
 				break;
 			case 'absolute':
 				$this->method = SPIKE_METHOD_ABSOLUTE;
-				$dispmethod = __('Absolute Max');
+				$dispmethod   = __('Absolute Max');
 
 				break;
 			default:
@@ -323,7 +323,7 @@ class spikekill {
 		 * The fill, float, and absolute require a time range.  It's optional for stddev and variance.
 		 * Convert these to timestamps if they are not already so.
 		 */
-		if ($this->method ==  SPIKE_METHOD_FLOAT || $this->method == SPIKE_METHOD_FILL || $this->method == SPIKE_METHOD_ABSOLUTE) {
+		if ($this->method == SPIKE_METHOD_FLOAT || $this->method == SPIKE_METHOD_FILL || $this->method == SPIKE_METHOD_ABSOLUTE) {
 			if (!is_numeric($this->out_start)) {
 				$this->out_start = strtotime($this->out_start);
 			}
@@ -1506,9 +1506,9 @@ class spikekill {
 		$sum         = 0;
 		$total_items = 0;
 
-		/* remove NaN entries from the data set */
+		// remove NaN entries from the data set
 		if (cacti_sizeof($items)) {
-			foreach($items as $key => $value) {
+			foreach ($items as $key => $value) {
 				if ($value != 'NaN') {
 					$total_items++;
 
