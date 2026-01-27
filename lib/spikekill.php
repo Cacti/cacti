@@ -612,7 +612,9 @@ class spikekill {
 						if ($timestamp > 0) {
 							if ($this->method == SPIKE_METHOD_FILL || $this->method == SPIKE_METHOD_FLOAT || $this->method == SPIKE_METHOD_ABSOLUTE) {
 								if ($timestamp < $this->out_start) {
-									$rra[$rra_num][$ds_num]['last'] = $dsvalue;
+									if (is_numeric($dsvalue)) {
+										$rra[$rra_num][$ds_num]['last'] = $dsvalue;
+									}
 
 									$process = true;
 								} elseif ($timestamp >= $this->out_start && $timestamp <= $this->out_end) {
@@ -625,7 +627,7 @@ class spikekill {
 									}
 
 									if ($this->method == SPIKE_METHOD_FILL) {
-										if (strtolower($dsvalue) == 'nan') {
+										if (!is_numeric($dsvalue)) {
 											$this->debug(sprintf('Fill Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%0.4e NewVal:%0.4e', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue, $newval));
 										}
 									} elseif ($this->method == SPIKE_METHOD_FLOAT) {
@@ -649,7 +651,7 @@ class spikekill {
 							$process = true;
 						}
 
-						if (strtolower($dsvalue) != 'nan' && $process) {
+						if (is_numeric($dsvalue) && $process) {
 							if (!isset($rra[$rra_num][$ds_num]['numsamples'])) {
 								$rra[$rra_num][$ds_num]['numsamples'] = 1;
 							} else {
@@ -967,17 +969,17 @@ class spikekill {
 												$rra[$rra_num][$ds_num]['outwind_killed']++;
 												$this->out_kills = true;
 											} elseif ($this->method == SPIKE_METHOD_FILL) {
-												if (strtolower($sample) == 'nan') { // Gap Fill Means 'NaN's only
+												if (!is_numeric($sample)) { // Gap Fill Means 'NaN's only
 													$this->debug(sprintf('Window GapFill Found, Date:%s, Value:%s', date('Y-m-d H:i', $timestamp), $sample));
 
 													$rra[$rra_num][$ds_num]['outwind_killed']++;
 													$this->out_kills = true;
 												}
-											} elseif (strtolower($sample) !== 'nan') {
+											} elseif (is_numeric($sample)) {
 												$rra[$rra_num][$ds_num]['numnksamples']++;
 												$rra[$rra_num][$ds_num]['sumnksamples'] += $sample;
 											}
-										} elseif (strtolower($sample) !== 'nan') {
+										} elseif (is_numeric($sample)) {
 											$rra[$rra_num][$ds_num]['numnksamples']++;
 											$rra[$rra_num][$ds_num]['sumnksamples'] += $sample;
 										}
@@ -995,11 +997,11 @@ class spikekill {
 												}
 
 												$this->out_kills = true;
-											} elseif (strtolower($sample) !== 'nan') {
+											} elseif (is_numeric($sample)) {
 												$rra[$rra_num][$ds_num]['numnksamples']++;
 												$rra[$rra_num][$ds_num]['sumnksamples'] += $sample;
 											}
-										} elseif (strtolower($sample) !== 'nan') {
+										} elseif (is_numeric($sample)) {
 											$rra[$rra_num][$ds_num]['numnksamples']++;
 											$rra[$rra_num][$ds_num]['sumnksamples'] += $sample;
 										}
@@ -1019,11 +1021,11 @@ class spikekill {
 												}
 
 												$this->std_kills = true;
-											} elseif (strtolower($sample) !== 'nan') {
+											} elseif (is_numeric($sample)) {
 												$rra[$rra_num][$ds_num]['numnksamples']++;
 												$rra[$rra_num][$ds_num]['sumnksamples'] += $sample;
 											}
-										} elseif (strtolower($sample) !== 'nan') {
+										} elseif (is_numeric($sample)) {
 											$rra[$rra_num][$ds_num]['numnksamples']++;
 											$rra[$rra_num][$ds_num]['sumnksamples'] += $sample;
 										}
@@ -1040,15 +1042,15 @@ class spikekill {
 												$rra[$rra_num][$ds_num]['outwind_killed']++;
 
 												$this->var_kills = true;
-											} elseif (strtolower($sample) !== 'nan') {
+											} elseif (is_numeric($sample)) {
 												$rra[$rra_num][$ds_num]['numnksamples']++;
 												$rra[$rra_num][$ds_num]['sumnksamples'] += $sample;
 											}
-										} elseif (strtolower($sample) !== 'nan') {
+										} elseif (is_numeric($sample)) {
 											$rra[$rra_num][$ds_num]['numnksamples']++;
 											$rra[$rra_num][$ds_num]['sumnksamples'] += $sample;
 										}
-									} elseif (strtolower($sample) !== 'nan') {
+									} elseif (is_numeric($sample)) {
 										$rra[$rra_num][$ds_num]['numnksamples']++;
 										$rra[$rra_num][$ds_num]['sumnksamples'] += $sample;
 									}
@@ -1243,7 +1245,7 @@ class spikekill {
 							case SPIKE_METHOD_FILL:
 								if ($timestamp >= $this->out_start && $timestamp <= $this->out_end) {
 									if ($this->avgnan == 'avg') {
-										if (strtolower($dsvalue) == 'nan' || $dsvalue == 0) {
+										if (!is_numeric($dsvalue) || $dsvalue == 0) {
 											$message = sprintf('Replacing dsvalue %s with average %s', $dsvalue, $rra[$rra_num][$ds_num]['variance_avg']);
 
 											cacti_log("DEBUG: $message", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
@@ -1256,7 +1258,7 @@ class spikekill {
 									} elseif ($this->avgnan == 'nan') {
 										// Not supported for fill and float modes
 									} elseif ($this->avgnan == 'last' && isset($rra[$rra_num][$ds_num]['last'])) {
-										if (strtolower($dsvalue) == 'nan' || $dsvalue == 0) {
+										if (!is_numeric($dsvalue) || $dsvalue == 0) {
 											$message = sprintf('Replacing dsvalue %s with last value %s', $dsvalue, $rra[$rra_num][$ds_num]['last']);
 
 											cacti_log("DEBUG: $message", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
@@ -1304,7 +1306,7 @@ class spikekill {
 											}
 										}
 									}
-								} elseif (strtolower($dsvalue) !== 'nan' && $dsvalue != 0) {
+								} elseif (is_numeric($dsvalue) && $dsvalue != 0) {
 									$last_num[$ds_num] = $dsvalue;
 								}
 
@@ -1342,7 +1344,7 @@ class spikekill {
 											}
 										}
 									}
-								} elseif (strtolower($dsvalue) !== 'nan' && $dsvalue != 0) {
+								} elseif (is_numeric($dsvalue) && $dsvalue != 0) {
 									$last_num[$ds_num] = $dsvalue;
 								}
 
@@ -1494,7 +1496,7 @@ class spikekill {
 		$my_samples = $samples;
 
 		foreach ($samples as $timestamp => $value) {
-			if ((empty($this->out_start) || $timestamp < $this->out_start || $timestamp > $this->out_end) && strtolower($value) != 'nan') {
+			if ((empty($this->out_start) || $timestamp < $this->out_start || $timestamp > $this->out_end) && is_numeric($value)) {
 				$my_samples[] = $value;
 			}
 		}
