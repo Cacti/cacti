@@ -561,7 +561,7 @@ class spikekill {
 		 * Also track the min and max value for each ds and store it into the two
 		 * arrays: ds_min[ds#], ds_max[ds#].
 		 *
-		 * The we don't need to know the type of rra, only it's number for this analysis
+		 * Then we don't need to know the type of rra, only its number for this analysis
 		 * the same applies for the ds' as well.
 		 */
 		$rra           = [];
