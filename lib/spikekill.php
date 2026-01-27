@@ -260,7 +260,7 @@ class spikekill {
 			}
 		}
 
-		if ($this->dabsmax == '') {
+		if ($this->absmax == '') {
 			if (!empty($uabsmax)) {
 				$this->absmax = $this->dabsmax;
 			} else {
