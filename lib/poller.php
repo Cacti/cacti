@@ -102,7 +102,7 @@ function exec_poll_php(string $command, bool $using_proc_function, array $pipes,
 
 			pclose($fp);
 		} else {
-			$output = `$command`;
+			$output = shell_exec($command);
 		}
 	}
 
