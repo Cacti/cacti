@@ -42,7 +42,10 @@ function xml2array(string $data) : mixed {
 	xml_parser_set_option($p, XML_OPTION_SKIP_WHITE, 1);
 	xml_parser_set_option($p, XML_OPTION_CASE_FOLDING, 0);
 	xml_parse_into_struct($p, $data, $vals, $index);
-	xml_parser_free($p);
+
+	if (version_compare(PHP_VERSION, '8.0', '<')) {
+		xml_parser_free($p);
+	}
 
 	$tree = [];
 	$i    = 0;
@@ -134,7 +137,10 @@ function rrdxport2array(string $data) : array {
 	xml_parser_set_option($p, XML_OPTION_CASE_FOLDING, 0);
 	xml_parser_set_option($p, XML_OPTION_TARGET_ENCODING, 'UTF-8');
 	xml_parse_into_struct($p, $data, $vals, $index);
-	xml_parser_free($p);
+
+	if (version_compare(PHP_VERSION, '8.0', '<')) {
+		xml_parser_free($p);
+	}
 
 	$tree   = [];
 	$i      = 0;
