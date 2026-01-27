@@ -1508,7 +1508,7 @@ class spikekill {
 		// remove NaN entries from the data set
 		if (cacti_sizeof($items)) {
 			foreach ($items as $key => $value) {
-				if ($value != 'NaN') {
+				if (is_numeric($value)) {
 					$total_items++;
 
 					$sum += $value;
