@@ -51,14 +51,14 @@ $html      = false;
 $backup    = false;
 $user      = get_current_user();
 
-$method   = read_config_option('spikekill_method',true);
-$numspike = read_config_option('spikekill_number',true);
-$stddev   = read_config_option('spikekill_deviations',true);
-$percent  = read_config_option('spikekill_percent',true);
-$outliers = read_config_option('spikekill_outliers',true);
-$avgnan   = read_config_option('spikekill_avgnan',true);
-$absmax   = read_config_option('spikekill_absmax',true);
-$dsfilter = read_config_option('spikekill_dsfilter',true);
+$method   = read_config_option('spikekill_method', true);
+$numspike = read_config_option('spikekill_number', true);
+$stddev   = read_config_option('spikekill_deviations', true);
+$percent  = read_config_option('spikekill_percent', true);
+$outliers = read_config_option('spikekill_outliers', true);
+$avgnan   = read_config_option('spikekill_avgnan', true);
+$absmax   = read_config_option('spikekill_absmax', true);
+$dsfilter = read_config_option('spikekill_dsfilter', true);
 
 switch($method) {
 	case '1':
@@ -199,21 +199,21 @@ if (cacti_sizeof($parms)) {
 }
 
 if ($out_start != '' && !is_numeric($out_start)) {
-	$orig_out_start = $out_end;
-	$out_start = strtotime($out_start);
+	$orig_out_start = $out_start;
+	$out_start      = strtotime($out_start);
 
 	if ($out_start == false) {
-		print "ERROR: The outlier start value '$orig_out_start' is invalid.  Use either a timestamp of a datetime format" . PHP_EOL;
+		print "ERROR: The outlier start value '$orig_out_start' is invalid.  Use either a timestamp of a datetime format." . PHP_EOL;
 		exit(1);
 	}
 }
 
 if ($out_end != '' && !is_numeric($out_end)) {
 	$orig_out_end = $out_end;
-	$out_end = strtotime($out_end);
+	$out_end      = strtotime($out_end);
 
 	if ($out_end == false) {
-		print "ERROR: The outlier start value '$orig_out_end' is invalid.  Use either a timestamp of a datetime format" . PHP_EOL;
+		print "ERROR: The outlier end value '$orig_out_end' is invalid.  Use either a timestamp of a datetime format." . PHP_EOL;
 		exit(1);
 	}
 }
