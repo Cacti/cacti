@@ -620,7 +620,7 @@ class spikekill {
 								} elseif ($timestamp >= $this->out_start && $timestamp <= $this->out_end) {
 									if ($this->avgnan == 'last') {
 										$newval = $rra[$rra_num][$ds_num]['variance_avg'];
-									} elseif ($this->avgnan = 'avg') {
+									} elseif ($this->avgnan == 'avg') {
 										$newval = $rra[$rra_num][$ds_num]['last'];
 									} else {
 										$newval = 'NaN';
