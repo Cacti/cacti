@@ -338,31 +338,33 @@ class spikekill {
 				$this->set_error("FATAL: You must specify either 'last', 'avg' or 'nan' as a replacement method.");
 		}
 
-        printf('Spike Kill Settings Used for Analysis/Correction' . PHP_EOL);
-        printf('------------------------------------------------' . PHP_EOL);
-        printf('Method:        %s' . PHP_EOL, $dispmethod);
-        printf('RRDfile:       %s' . PHP_EOL, $this->rrdfile);
-        printf('Repair Type:   %s' . PHP_EOL, $this->avgnan);
+		if (!$this->html) {
+			printf('Spike Kill Settings Used for Analysis/Correction' . PHP_EOL);
+			printf('------------------------------------------------' . PHP_EOL);
+			printf('Method:        %s' . PHP_EOL, $dispmethod);
+			printf('RRDfile:       %s' . PHP_EOL, $this->rrdfile);
+			printf('Repair Type:   %s' . PHP_EOL, $this->avgnan);
 
-        if ($this->method == SPIKE_METHOD_STDDEV || $this->method == SPIKE_METHOD_VARIANCE) {
-            printf('Num Outliers:  %s' . PHP_EOL, $this->outliers);
-            printf('Max Kills:     %s' . PHP_EOL, $this->numspike);
-        } else {
-            printf('Max Kills:     Unlimited' . PHP_EOL, $this->numspike);
-        }
+			if ($this->method == SPIKE_METHOD_STDDEV || $this->method == SPIKE_METHOD_VARIANCE) {
+				printf('Num Outliers:  %s' . PHP_EOL, $this->outliers);
+				printf('Max Kills:     %s' . PHP_EOL, $this->numspike);
+			} else {
+				printf('Max Kills:     Unlimited' . PHP_EOL, $this->numspike);
+			}
 
-        if ($this->method == SPIKE_METHOD_STDDEV) {
-            printf('Standard Devs: %s' . PHP_EOL, $this->stddev);
-        } elseif ($this->method == SPIKE_METHOD_VARIANCE) {
-            printf('Variance %%:    %s %%' . PHP_EOL, number_format_i18n($this->percent * 100, 2));
-        }
+			if ($this->method == SPIKE_METHOD_STDDEV) {
+				printf('Standard Devs: %s' . PHP_EOL, $this->stddev);
+			} elseif ($this->method == SPIKE_METHOD_VARIANCE) {
+				printf('Variance %%:    %s %%' . PHP_EOL, number_format_i18n($this->percent * 100, 2));
+			}
 
-        if ($this->out_start > 0) {
-            printf('Window Start:  %s (%s)' . PHP_EOL, $this->out_start, date('Y-m-d H:i', $this->out_start));
-            printf('Window End:    %s (%s)' . PHP_EOL . PHP_EOL, $this->out_end, date('Y-m-d H:i', $this->out_end));
-        } else {
-            printf('Window Range:  All' . PHP_EOL . PHP_EOL, $this->out_end, date('Y-m-d H:i', $this->out_end));
-        }
+			if ($this->out_start > 0) {
+				printf('Window Start:  %s (%s)' . PHP_EOL, $this->out_start, date('Y-m-d H:i', $this->out_start));
+				printf('Window End:    %s (%s)' . PHP_EOL . PHP_EOL, $this->out_end, date('Y-m-d H:i', $this->out_end));
+			} else {
+				printf('Window Range:  All' . PHP_EOL . PHP_EOL);
+			}
+		}
 
 		return false;
 	}
