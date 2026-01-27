@@ -40,6 +40,7 @@ Cacti CHANGELOG
 -issue#6551: Fix paths in audit_database script (FreeBSD)
 -issue: Correct some PHPStan issues found in audit of Aggregate that can lead to warnings
 -issue: Using the rrd_splice.php cli can result in the loss of data
+-issue: Defect in SpikeKill algorithm was causing a loss of data for Gap Fill and Float methods
 -feature#6523: When disabling a users, ensure that their stored authentication cookies are remove and any sessions cleared
 -feature#6524: When changing your password, logout from all sessions
 -feature#6534: Recycle the PHP Session ID on user login to improve Cacti site security
