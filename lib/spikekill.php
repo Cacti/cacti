@@ -275,7 +275,7 @@ class spikekill {
 		}
 
 		// the order of the following case statements reflects the order in the spikekill menu in the GUI.
-		$dismethod = '';
+		$dispmethod = '';
 
 		switch($this->method) {
 			case 'stddev':
