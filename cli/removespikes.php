@@ -51,14 +51,14 @@ $html      = false;
 $backup    = false;
 $user      = get_current_user();
 
-$method   = read_config_option('spikekill_method',true);
-$numspike = read_config_option('spikekill_number',true);
-$stddev   = read_config_option('spikekill_deviations',true);
-$percent  = read_config_option('spikekill_percent',true);
-$outliers = read_config_option('spikekill_outliers',true);
-$avgnan   = read_config_option('spikekill_avgnan',true);
-$absmax   = read_config_option('spikekill_absmax',true);
-$dsfilter = read_config_option('spikekill_dsfilter',true);
+$method   = read_config_option('spikekill_method', true);
+$numspike = read_config_option('spikekill_number', true);
+$stddev   = read_config_option('spikekill_deviations', true);
+$percent  = read_config_option('spikekill_percent', true);
+$outliers = read_config_option('spikekill_outliers', true);
+$avgnan   = read_config_option('spikekill_avgnan', true);
+$absmax   = read_config_option('spikekill_absmax', true);
+$dsfilter = read_config_option('spikekill_dsfilter', true);
 
 switch($method) {
 	case '1':
@@ -198,6 +198,26 @@ if (cacti_sizeof($parms)) {
 	exit(0);
 }
 
+if ($out_start != '' && !is_numeric($out_start)) {
+	$orig_out_start = $out_start;
+	$out_start      = strtotime($out_start);
+
+	if ($out_start == false) {
+		print "ERROR: The outlier start value '$orig_out_start' is invalid.  Use either a timestamp or a datetime format." . PHP_EOL;
+		exit(1);
+	}
+}
+
+if ($out_end != '' && !is_numeric($out_end)) {
+	$orig_out_end = $out_end;
+	$out_end      = strtotime($out_end);
+
+	if ($out_end == false) {
+		print "ERROR: The outlier end value '$orig_out_end' is invalid.  Use either a timestamp or a datetime format." . PHP_EOL;
+		exit(1);
+	}
+}
+
 $spiker = new spikekill($rrdfile, $method, $avgnan, $stddev, $out_start, $out_end, $outliers, $percent, $numspike, $dsfilter, $absmax);
 
 if ($debug) {
@@ -267,9 +287,9 @@ function display_help() : void {
 	print '    --number        - The maximum number of spikes to remove from the RRDfile' . PHP_EOL;
 	print '    --absmax        - The absolute maximum value of a data point to remove from the RRDfile' . PHP_EOL;
 	print '    --dsfilter      - Specifies the DSes inside an RRD upon which Spikekill will operate' . PHP_EOL;
-	print '    --outlier-start - A start date of an incident where all data should be considered' . PHP_EOL;
+	print '    --outlier-start - A start date or timestamp of an incident where all data should be considered' . PHP_EOL;
 	print '                      invalid data and should be excluded from average calculations.' . PHP_EOL;
-	print '    --outlier-end   - An end date of an incident where all data should be considered' . PHP_EOL;
+	print '    --outlier-end   - An end date or timestamp of an incident where all data should be considered' . PHP_EOL;
 	print '                      invalid data and should be excluded from average calculations.' . PHP_EOL;
 	print '    --outliers      - The number of outliers to ignore when calculating average.' . PHP_EOL;
 	print '    --dryrun        - If specified, the RRDfile will not be changed.  Instead a summary of' . PHP_EOL;
