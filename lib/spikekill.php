@@ -33,7 +33,6 @@ class spikekill {
 	private $std_kills = false;
 	private $var_kills = false;
 	private $out_kills = false;
-	private $out_set   = false;
 	private $username  = '';
 	private $user      = '';
 	private $user_info = array();
@@ -45,8 +44,8 @@ class spikekill {
 	var $avgnan    = '';
 	var $stddev    = '';
 
-	var $out_start = '';
-	var $out_end   = '';
+	var $out_start = 0;
+	var $out_end   = 0;
 	var $outliers  = '';
 	var $percent   = '';
 	var $numspike  = '';
@@ -151,12 +150,9 @@ class spikekill {
 		$this->dpercent  = read_config_option('spikekill_percent', true);
 		$this->doutliers = read_config_option('spikekill_outliers', true);
 		$this->davgnan   = read_config_option('spikekill_avgnan', true);
-
-		return true;
 	}
 
 	public function __destruct() {
-		return true;
 	}
 
 	private function set_error($string) {
@@ -204,48 +200,48 @@ class spikekill {
 
 		/* set the correct value */
 		if ($this->avgnan == '') {
-			if (!isset($uavgnan)) {
-				$this->avgnan = $davgnan;
+			if (!empty($uavgnan)) {
+				$this->avgnan = $this->davgnan;
 			} else {
 				$this->avgnan = $uavgnan;
 			}
 		}
 
 		if ($this->method == '') {
-			if (!isset($umethod)) {
-				$this->method = $dmethod;
+			if (!empty($umethod)) {
+				$this->method = $this->dmethod;
 			} else {
 				$this->method = $umethod;
 			}
 		}
 
 		if ($this->numspike == '') {
-			if (!isset($unumspike)) {
-				$this->numspike = $dnumspike;
+			if (!empty($unumspike)) {
+				$this->numspike = $this->dnumspike;
 			} else {
 				$this->numspike = $unumspike;
 			}
 		}
 
 		if ($this->stddev == '') {
-			if (!isset($ustddev)) {
-				$this->stddev = $dstddev;
+			if (!empty($ustddev)) {
+				$this->stddev = $this->dstddev;
 			} else {
 				$this->stddev = $ustddev;
 			}
 		}
 
 		if ($this->percent == '') {
-			if (!isset($upercent)) {
-				$this->percent = $dpercent;
+			if (!empty($upercent)) {
+				$this->percent = $this->dpercent;
 			} else {
 				$this->percent = $upercent;
 			}
 		}
 
 		if ($this->outliers == '') {
-			if (!isset($uoutliers)) {
-				$this->outliers = $doutliers;
+			if (!empty($uoutliers)) {
+				$this->outliers = $this->doutliers;
 			} else {
 				$this->outliers = $uoutliers;
 			}
@@ -253,6 +249,40 @@ class spikekill {
 
 		if (!is_numeric($this->stddev) || ($this->stddev < 1)) {
 			$this->set_error("FATAL: Standard Deviation must be a positive integer.");
+		}
+
+		switch($this->method) {
+			/* the order of the following case statements reflects the order in the spikekill menu in the GUI. */
+			case 'stddev':
+				$this->method = SPIKE_METHOD_STDDEV;
+
+				$dispmethod = __('StdDev');
+
+				break;
+			case 'variance':
+				$this->method = SPIKE_METHOD_VARIANCE;
+
+				$dispmethod = __('Variance');
+
+				break;
+			case 'fill':
+				$this->method = SPIKE_METHOD_FILL;
+
+				$dispmethod = __('Gap Fill');
+
+				break;
+			case 'float':
+				$this->method = SPIKE_METHOD_FLOAT;
+
+				$dispmethod = __('Float Range');
+
+				break;
+			default:
+				$dispmethod = __('Unknown');
+
+				$this->set_error("FATAL: You must specify either 'stddev', 'variance', 'float', or 'fill' as methods.");
+
+				break;
 		}
 
 		if ($this->method == 'float' || $this->method == 'fill') {
@@ -265,14 +295,12 @@ class spikekill {
 			}
 
 			if ($this->out_start === false || $this->out_end === false) {
-				$this->set_error("FATAL: The outlier-start and outlier-end arguments must be in the format of YYYY-MM-DD HH:MM.");
+				$this->set_error("FATAL: The outlier-start and outlier-end arguments must be in the format of YYYY-MM-DD HH:MM or a unix timestamp.");
 			}
 
 			if (!is_numeric($this->outliers) || ($this->outliers < 1)) {
 				$this->set_error("FATAL: The number of outliers to exclude must be a positive integer.");
 			}
-
-			$this->out_set = true;
 		}
 
 		if ($this->percent != '') {
@@ -299,24 +327,6 @@ class spikekill {
 			}
 		}
 
-		switch($this->method) {
-			/* the order of the following case statements reflects the order in the spikekill menu in the GUI. */
-			case 'stddev':
-				$this->method = SPIKE_METHOD_STDDEV;
-				break;
-			case 'variance':
-				$this->method = SPIKE_METHOD_VARIANCE;
-				break;
-			case 'fill':
-				$this->method = SPIKE_METHOD_FILL;
-				break;
-			case 'float':
-				$this->method = SPIKE_METHOD_FLOAT;
-				break;
-			default:
-				$this->set_error("FATAL: You must specify either 'stddev', 'variance', 'float', or 'fill' as methods.");
-		}
-
 		if ($this->method == SPIKE_METHOD_FLOAT && empty($this->out_start)) {
 			$this->set_error("FATAL: The 'float' removal method requires the specification of a start and end date.");
 		}
@@ -334,12 +344,33 @@ class spikekill {
 				$this->set_error("FATAL: You must specify either 'last', 'avg' or 'nan' as a replacement method.");
 		}
 
-		$this->debug('Type:          ' . ucfirst($this->method));
-		$this->debug('RRDfile:       ' . $this->rrdfile);
-		$this->debug('Num Outliers:  ' . $this->outliers);
-		$this->debug('Percent:       ' . $this->outliers);
-		$this->debug(sprintf('Outlier Start: %s (%s)', $this->out_start, date('Y-m-d H:i', $this->out_start)));
-		$this->debug(sprintf('Outlier End:   %s (%s)', $this->out_end, date('Y-m-d H:i', $this->out_end)));
+		if (!$this->html) {
+			printf('Spike Kill Settings Used for Analysis/Correction' . PHP_EOL);
+			printf('------------------------------------------------' . PHP_EOL);
+			printf('Method:        %s' . PHP_EOL, $dispmethod);
+			printf('RRDfile:       %s' . PHP_EOL, $this->rrdfile);
+			printf('Repair Type:   %s' . PHP_EOL, $this->avgnan);
+
+			if ($this->method == SPIKE_METHOD_STDDEV || $this->method == SPIKE_METHOD_VARIANCE) {
+				printf('Num Outliers:  %s' . PHP_EOL, $this->outliers);
+				printf('Max Kills:     %s' . PHP_EOL, $this->numspike);
+			} else {
+				printf('Max Kills:     Unlimited' . PHP_EOL);
+			}
+
+			if ($this->method == SPIKE_METHOD_STDDEV) {
+				printf('Standard Devs: %s' . PHP_EOL, $this->stddev);
+			} elseif ($this->method == SPIKE_METHOD_VARIANCE) {
+				printf('Variance %%:    %s %%' . PHP_EOL, number_format_i18n($this->percent * 100, 2));
+			}
+
+			if ($this->out_start > 0) {
+				printf('Window Start:  %s (%s)' . PHP_EOL, $this->out_start, date('Y-m-d H:i', $this->out_start));
+				printf('Window End:    %s (%s)' . PHP_EOL . PHP_EOL, $this->out_end, date('Y-m-d H:i', $this->out_end));
+			} else {
+				printf('Window Range:  All' . PHP_EOL . PHP_EOL);
+			}
+		}
 
 		return false;
 	}
@@ -370,6 +401,10 @@ class spikekill {
 
 		if (!empty($this->out_start) && !$this->dryrun) {
 			$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') . "NOTE: Removing Outliers in Range and Replacing with Last" . ($this->html ? "</p>\n":"\n");
+		}
+
+		if ($this->method == SPIKE_METHOD_VARIANCE) {
+			$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . sprintf("NOTE: Variance Calculation removes top and bottom %s samples due to Outliers setting", $this->outliers) . ($this->html ? "</p>\n" : "\n");
 		}
 
 		/* execute the dump command */
@@ -503,7 +538,7 @@ class spikekill {
 					if (strpos($timestamp_part, '<timestamp>') !== false) {
 						$timestamp_part = str_replace('<row><timestamp>', '', $timestamp_part);
 						$timestamp_part = str_replace('</timestamp>', '', $timestamp_part);
-						$timestamp      = trim($timestamp_part);
+						$timestamp      = intval(trim($timestamp_part));
 					} else {
 						$timestamp = 0;
 					}
@@ -520,16 +555,18 @@ class spikekill {
 						if ($timestamp > 0) {
 							if ($this->method == SPIKE_METHOD_FILL || $this->method == SPIKE_METHOD_FLOAT) {
 								if ($timestamp < $this->out_start) {
-									$rra[$rra_num][$ds_num]['last'] = $dsvalue;
+									if (is_numeric($dsvalue)) {
+										$rra[$rra_num][$ds_num]['last'] = $dsvalue;
+									}
 
 									$process = true;
 								} elseif ($timestamp >= $this->out_start && $timestamp <= $this->out_end) {
 									if ($this->method == SPIKE_METHOD_FILL) {
-										if (strtolower($dsvalue) == 'nan' || $dsvalue == 0) {
-											$this->debug(sprintf('Fill Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%0.4e NewVal:%0.4e', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue, $rra[$rra_num][$ds_num]['last']));
+										if (!is_numeric($dsvalue)) {
+											$this->debug(sprintf('Fill Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%s NewVal:%s', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue, $rra[$rra_num][$ds_num]['last']));
 										}
 									} else {
-										$this->debug(sprintf('Float Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%0.4e NewVal:%0.4e', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue, $rra[$rra_num][$ds_num]['last']));
+										$this->debug(sprintf('Float Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%s NewVal:%s', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue, $rra[$rra_num][$ds_num]['last']));
 									}
 
 									$process = false;
@@ -545,7 +582,7 @@ class spikekill {
 							$process = true;
 						}
 
-						if (strtolower($dsvalue) != 'nan' && $process) {
+						if (is_numeric($dsvalue) && $process) {
 							if (!isset($rra[$rra_num][$ds_num]['numsamples'])) {
 								$rra[$rra_num][$ds_num]['numsamples'] = 1;
 							} else {
@@ -606,6 +643,7 @@ class spikekill {
 				}
 			}
 		}
+
 		cacti_log("DEBUG: number of RRAs: {$rra_num}", false, 'SPIKE', POLLER_VERBOSITY_DEBUG);
 		cacti_log("DEBUG: number of DSes: {$ds_num}", false, 'SPIKE', POLLER_VERBOSITY_DEBUG);
 
@@ -757,44 +795,32 @@ class spikekill {
 			foreach($samples as $rra_num => $dses) {
 				if (cacti_sizeof($dses)) {
 					foreach($dses as $ds_num => $ds) {
-						if (empty($this->out_start)) {
-							if (cacti_sizeof($ds) < $this->outliers * 3) {
-								$rra[$rra_num][$ds_num]['variance_avg'] = 'NAN';
-							} else {
-								$myds = $ds;
+						if (cacti_sizeof($ds) < $this->outliers * 3) {
+							$rra[$rra_num][$ds_num]['variance_avg'] = 'NAN';
+						} else {
+							$myds = $ds;
 
-								/* remove NaN entries from the data set */
-								if (cacti_sizeof($myds)) {
-									foreach($myds as $timestamp => $value) {
-										if (stripos($value, 'nan') !== false) {
-											unset($myds[$timestamp]);
-										}
+							/* remove NaN entries from the data set */
+							if (cacti_sizeof($myds)) {
+								foreach($myds as $timestamp => $value) {
+									if (!is_numeric($value)) {
+										unset($myds[$timestamp]);
 									}
 								}
-
-								/* remove high outliers */
-								rsort($myds, SORT_NUMERIC);
-								$myds = array_slice($myds, $this->outliers);
-
-								/* remove low outliers */
-								sort($myds, SORT_NUMERIC);
-								$myds = array_slice($myds, $this->outliers);
-
-								if (cacti_sizeof($myds)) {
-									$rra[$rra_num][$ds_num]['variance_avg'] = array_sum($myds) / cacti_sizeof($myds);
-								} else {
-									$rra[$rra_num][$ds_num]['variance_avg'] = 'NAN';
-								}
 							}
-						} else {
-							if (isset($rra[$rra_num][$ds_num]['sumofsamples']) && isset($rra[$rra_num][$ds_num]['numsamples'])) {
-								if ($rra[$rra_num][$ds_num]['numsamples'] > 0) {
-									$rra[$rra_num][$ds_num]['variance_avg'] = $rra[$rra_num][$ds_num]['sumofsamples'] / $rra[$rra_num][$ds_num]['numsamples'];
-								} else {
-									$rra[$rra_num][$ds_num]['variance_avg'] = 0;
-								}
+
+							/* remove high outliers */
+							rsort($myds, SORT_NUMERIC);
+							$myds = array_slice($myds, $this->outliers);
+
+							/* remove low outliers */
+							sort($myds, SORT_NUMERIC);
+							$myds = array_slice($myds, $this->outliers);
+
+							if (cacti_sizeof($myds)) {
+								$rra[$rra_num][$ds_num]['variance_avg'] = array_sum($myds) / cacti_sizeof($myds);
 							} else {
-								$rra[$rra_num][$ds_num]['variance_avg'] = 0;
+								$rra[$rra_num][$ds_num]['variance_avg'] = 'NAN';
 							}
 						}
 					}
@@ -845,6 +871,7 @@ class spikekill {
 							/* go through values and find cutoffs */
 							$rra[$rra_num][$ds_num]['stddev_killed']   = 0;
 							$rra[$rra_num][$ds_num]['variance_killed'] = 0;
+							$rra[$rra_num][$ds_num]['outwind_samples'] = 0;
 							$rra[$rra_num][$ds_num]['outwind_killed']  = 0;
 
 							/* count the number of kills required */
@@ -852,44 +879,75 @@ class spikekill {
 								foreach($samples[$rra_num][$ds_num] as $timestamp => $sample) {
 									if ($this->method == SPIKE_METHOD_FLOAT || $this->method == SPIKE_METHOD_FILL) {
 										if ($timestamp >= $this->out_start && $timestamp <= $this->out_end) {
+											$rra[$rra_num][$ds_num]['outwind_samples']++;
+
 											if ($this->method == SPIKE_METHOD_FLOAT) {
 												$this->debug(sprintf("Window Float Found, Date:%s, Value:%s", date('Y-m-d H:i', $timestamp), $sample));
 
 												$rra[$rra_num][$ds_num]['outwind_killed']++;
+
 												$this->out_kills = true;
 											} elseif ($this->method == SPIKE_METHOD_FILL) {
-												if (strtolower($sample) == 'nan' || $sample == 0) {
+												if (!is_numeric($sample) || $sample == 0) {
 													$this->debug(sprintf("Window GapFill Found, Date:%s, Value:%s", date('Y-m-d H:i', $timestamp), $sample));
 
 													$rra[$rra_num][$ds_num]['outwind_killed']++;
+
 													$this->out_kills = true;
 												}
 											}
 										}
-									} elseif (($sample > $rra[$rra_num][$ds_num]['max_cutoff']) || ($sample < $rra[$rra_num][$ds_num]['min_cutoff'])) {
-										if ($this->method == SPIKE_METHOD_STDDEV) {
-											$this->debug(sprintf("StdDev Found, Date:%s, Value:%0.4e, StandardDev:%0.4e, StdDevLimit:%0.4e, Date:%s", date('Y-m-d H:i', $timestamp), $sample, $rra[$rra_num][$ds_num]['stddev'], ($rra[$rra_num][$ds_num]['max_cutoff'] * (1+$this->percent))));
+									} elseif ($this->method == SPIKE_METHOD_STDDEV) {
+										if ($this->out_start == 0 || ($timestamp >= $this->out_start && $timestamp <= $this->out_end)) {
+											if ($this->out_start > 0) {
+												$rra[$rra_num][$ds_num]['outwind_samples']++;
+											}
 
-											$rra[$rra_num][$ds_num]['stddev_killed']++;
-											$this->std_kills = true;
+											if (($sample > $rra[$rra_num][$ds_num]['max_cutoff']) || ($sample < $rra[$rra_num][$ds_num]['min_cutoff'])) {
+												$this->debug(sprintf("StdDev Found, Date:%s, Value:%0.4e, StandardDev:%0.4e, StdDevLimit:%0.4e", date('Y-m-d H:i', $timestamp), $sample, $rra[$rra_num][$ds_num]['stddev'], ($rra[$rra_num][$ds_num]['max_cutoff'] * (1+$this->percent))));
+
+												$rra[$rra_num][$ds_num]['stddev_killed']++;
+
+												if ($this->out_start > 0) {
+													$rra[$rra_num][$ds_num]['outwind_killed']++;
+												}
+
+												$this->std_kills = true;
+											} elseif (is_numeric($sample)) {
+												$rra[$rra_num][$ds_num]['numnksamples']++;
+												$rra[$rra_num][$ds_num]['sumnksamples'] += $sample;
+											}
+										} elseif (is_numeric($sample)) {
+											$rra[$rra_num][$ds_num]['numnksamples']++;
+											$rra[$rra_num][$ds_num]['sumnksamples'] += $sample;
+										}
+									} elseif ($this->method == SPIKE_METHOD_VARIANCE) {
+										if ($this->out_start == 0 || ($timestamp >= $this->out_start && $timestamp <= $this->out_end)) {
+											if ($this->out_start > 0) {
+												$rra[$rra_num][$ds_num]['outwind_samples']++;
+											}
+
+											if ($sample > ($rra[$rra_num][$ds_num]['variance_avg'] * (1+$this->percent))) {
+												$this->debug(sprintf("Variance Found, Date:%s, Value:%.4e, VarianceDev:%.4e, VarianceLimit:%.4e", date('Y-m-d H:i', $timestamp), $sample, $rra[$rra_num][$ds_num]['variance_avg'], ($rra[$rra_num][$ds_num]['variance_avg'] * (1 + $this->percent))));
+
+												$rra[$rra_num][$ds_num]['variance_killed']++;
+
+												if ($this->out_start > 0) {
+													$rra[$rra_num][$ds_num]['outwind_killed']++;
+												}
+
+												$this->var_kills = true;
+											} elseif (is_numeric($sample)) {
+												$rra[$rra_num][$ds_num]['numnksamples']++;
+												$rra[$rra_num][$ds_num]['sumnksamples'] += $sample;
+											}
+										} elseif (is_numeric($sample)) {
+											$rra[$rra_num][$ds_num]['numnksamples']++;
+											$rra[$rra_num][$ds_num]['sumnksamples'] += $sample;
 										}
 									} elseif (is_numeric($sample)) {
 										$rra[$rra_num][$ds_num]['numnksamples']++;
 										$rra[$rra_num][$ds_num]['sumnksamples'] += $sample;
-									}
-
-									if (!empty($this->out_start) && $timestamp >= $this->out_start && $timestamp <= $this->out_end) {
-										/* Already calculated */
-									} elseif ($rra[$rra_num][$ds_num]['variance_avg'] == 'NAN') {
-										/* not enough samples to calculate */
-									} elseif ($sample > ($rra[$rra_num][$ds_num]['variance_avg'] * (1+$this->percent))) {
-										if ($this->method == SPIKE_METHOD_VARIANCE) {
-											/* kill based upon variance */
-											$this->debug(sprintf("Variance Found, Date:%s, Value:%0.4e, VarianceDev:%0.4e, VarianceLimit:%0.4e", date('Y-m-d H:i', $timestamp), $sample, $rra[$rra_num][$ds_num]['variance_avg'], ($rra[$rra_num][$ds_num]['variance_avg'] * (1+$this->percent))));
-
-											$rra[$rra_num][$ds_num]['variance_killed']++;
-											$this->var_kills = true;
-										}
 									}
 								}
 							}
@@ -898,7 +956,7 @@ class spikekill {
 								$rra[$rra_num][$ds_num]['avgnksamples'] = $rra[$rra_num][$ds_num]['sumnksamples'] / $rra[$rra_num][$ds_num]['numnksamples'];
 							}
 						} else {
-							$rra[$rra_num][$ds_num]['stddev'] = 'N/A';
+							$rra[$rra_num][$ds_num]['stddev']             = 'N/A';
 							$rra[$rra_num][$ds_num]['average']            = 'N/A';
 							$rra[$rra_num][$ds_num]['min_cutoff']         = 'N/A';
 							$rra[$rra_num][$ds_num]['max_cutoff']         = 'N/A';
@@ -907,6 +965,7 @@ class spikekill {
 							$rra[$rra_num][$ds_num]['avgnksamples']       = 'N/A';
 							$rra[$rra_num][$ds_num]['stddev_killed']      = 'N/A';
 							$rra[$rra_num][$ds_num]['variance_killed']    = 'N/A';
+							$rra[$rra_num][$ds_num]['outwind_samples']    = 'N/A';
 							$rra[$rra_num][$ds_num]['outwind_killed']     = 'N/A';
 						}
 
@@ -923,13 +982,13 @@ class spikekill {
 		if (cacti_sizeof($rra)) {
 			if (!$this->html) {
 				$this->strout .= "\n";
-				$this->strout .= sprintf("%10s %16s %10s %7s %7s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s\n",
-					'Size', 'DataSource', 'CF', 'Samples', 'NonNan', 'Avg', 'StdDev',
-					'MaxValue', 'MinValue', 'MaxStdDev', 'MinStdDev', 'StdKilled', 'VarKilled', 'WindFilled', 'StdDevAvg', 'VarAvg');
-				$this->strout .= sprintf("%10s %16s %10s %7s %7s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s\n",
-					'----------', '---------------', '----------', '-------', '-------', '----------', '----------',
-					'----------', '----------', '----------', '----------', '----------', '----------', '----------',
-					'----------', '----------', '----------');
+				$this->strout .= sprintf("%10s %16s %10s %7s %7s %10s %10s %10s %10s %10s %10s %10s %10s %10s %12s %10s\n",
+					'Size', 'DataSource', 'CF', 'Samples', 'NonNan', 'Avg', 'StdDev', 'Variance',
+					'MaxValue', 'MinValue', 'MaxStdDev', 'MinStdDev', 'StdKilled', 'VarKilled', 'WindSamples', 'WindKilled');
+				$this->strout .= sprintf("%10s %16s %10s %7s %7s %10s %10s %10s %10s %10s %10s %10s %10s %10s %12s %10s\n",
+					'----------', '---------------', '----------', '-------', '-------', '----------', '----------', '----------',
+					'----------', '----------', '----------', '----------', '----------', '----------', '------------',
+					'----------');
 
 				foreach($rra as $rra_key => $dses) {
 					if (cacti_sizeof($dses)) {
@@ -941,9 +1000,7 @@ class spikekill {
 								(isset($ds['min_value'])  ? ($ds['min_value']  < 1E6 ? '%10s ':'%10.4e ') : '%10s ') .
 								(isset($ds['max_cutoff']) ? ($ds['max_cutoff'] < 1E6 ? '%10s ':'%10.4e ') : '%10s ') .
 								(isset($ds['min_cutoff']) ? ($ds['min_cutoff'] < 1E6 ? '%10s ':'%10.4e ') : '%10s ') .
-								'%10s %10s %10s ' .
-								(isset($ds['avgnksamples']) ? ($ds['avgnksamples'] < 1E6 ? '%10s ':'%10.4e ') : '%10.4E ') .
-								(isset($ds['variance_avg']) ? ($ds['variance_avg'] < 1E6 ? '%10s ':'%10.4e ') : '%10.4E ') . "\n",
+								'%10s %10s %10s %12s %10s' . PHP_EOL,
 								$this->displayTime($this->rra_pdp[$rra_key]),
 								$this->ds_name[$dskey],
 								$this->rra_cf[$rra_key],
@@ -951,24 +1008,25 @@ class spikekill {
 								(isset($ds['numsamples']) ? $ds['numsamples'] : '0'),
 								($ds['average'] != 'N/A' ? round($ds['average'],2) : $ds['average']),
 								($ds['stddev'] != 'N/A' ? round($ds['stddev'],2) : $ds['stddev']),
+								($ds['variance_avg'] != 'N/A' ? round($ds['variance_avg'],2) : $ds['variance_avg']),
 								(isset($ds['max_value']) ? round($ds['max_value'],2) : 'N/A'),
 								(isset($ds['min_value']) ? round($ds['min_value'],2) : 'N/A'),
 								($ds['max_cutoff'] != 'N/A' ? round($ds['max_cutoff'],2) : $ds['max_cutoff']),
 								($ds['min_cutoff'] != 'N/A' ? round($ds['min_cutoff'],2) : $ds['min_cutoff']),
 								$ds['stddev_killed'],
 								$ds['variance_killed'],
-								$ds['outwind_killed'],
-								($ds['avgnksamples'] != 'N/A' ? round($ds['avgnksamples'],2) : $ds['avgnksamples']),
-								(isset($ds['variance_avg']) ? round($ds['variance_avg'],2) : 'N/A'));
+								$ds['outwind_samples'],
+								$ds['outwind_killed']);
 						}
 					}
 				}
 
 				$this->strout .= "\n";
 			} else {
-				$this->strout .= sprintf("<tr class='tableHeader'><th style='width:10%%;'>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr>\n",
-					'Size', 'DataSource', 'CF', 'Samples', 'NonNan', 'Avg', 'StdDev',
-					'MaxValue', 'MinValue', 'MaxStdDev', 'MinStdDev', 'StdKilled', 'VarKilled', 'WindFilled', 'StdDevAvg', 'VarAvg');
+				$this->strout .= sprintf("<tr class='tableHeader'><th style='width:10%%;'>%s</th><th>%s</th><td>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr>\n",
+					'Size', 'DataSource', 'CF', 'Samples', 'NonNan', 'Avg', 'StdDev', 'Variance',
+					'MaxValue', 'MinValue', 'MaxStdDev', 'MinStdDev', 'StdKilled', 'VarKilled', 'WindSamples', 'WindKilled');
+
 				foreach($rra as $rra_key => $dses) {
 					if (cacti_sizeof($dses)) {
 						foreach($dses as $dskey => $ds) {
@@ -979,9 +1037,8 @@ class spikekill {
 								(isset($ds['min_value']) ? ($ds['min_value'] < 1E6 ? '<td>%s</td>':'<td>%.4e</td>') : '<td>%s</td>') .
 								(isset($ds['max_cutoff']) ? ($ds['max_cutoff'] < 1E6 ? '<td>%s</td>':'<td>%.4e</td>') : '<td>%s</td>') .
 								(isset($ds['min_cutoff']) ? ($ds['min_cutoff'] < 1E6 ? '<td>%s</td>':'<td>%.4e</td>') : '<td>%s</td>') .
-								'<td>%s</td><td>%s</td><td>%s</td>' .
-								(isset($ds['avgnksampled']) ? ($ds['avgnksamples'] < 1E6 ? '<td>%s</td>':'<td>%.4e</td>') : '<td>%s</td>') .
-								(isset($ds['variance_avg']) ? ($ds['variance_avg'] < 1E6 ? "<td>%s</td>":"<td>%.4e</td>") : "<td>%s</td>") .
+								'<td>%s</td><td>%s</td><td>%s</td><td>%s</td>' .
+								'<td>%s</td>' .
 								"</tr>\n\n",
 								$this->displayTime($this->rra_pdp[$rra_key]),
 								$this->ds_name[$dskey],
@@ -989,16 +1046,16 @@ class spikekill {
 								$ds['totalsamples'],
 								(isset($ds['numsamples']) ? $ds['numsamples'] : '0'),
 								($ds['average'] != 'N/A' ? round($ds['average'],2) : $ds['average']),
-									($ds['stddev'] != 'N/A' ? round($ds['stddev'],2) : $ds['stddev']),
+								($ds['stddev'] != 'N/A' ? round($ds['stddev'],2) : $ds['stddev']),
+								($ds['variance_avg'] != 'N/A' ? round($ds['variance_avg'],2) : $ds['variance_avg']),
 								(isset($ds['max_value']) ? round($ds['max_value'],2) : 'N/A'),
 								(isset($ds['min_value']) ? round($ds['min_value'],2) : 'N/A'),
 								($ds['max_cutoff'] != 'N/A' ? round($ds['max_cutoff'],2) : $ds['max_cutoff']),
 								($ds['min_cutoff'] != 'N/A' ? round($ds['min_cutoff'],2) : $ds['min_cutoff']),
 								$ds['stddev_killed'],
 								$ds['variance_killed'],
-								$ds['outwind_killed'],
-								($ds['avgnksamples'] != 'N/A' ? round($ds['avgnksamples'],2) : $ds['avgnksamples']),
-								(isset($ds['variance_avg']) ? round($ds['variance_avg'],2) : 'N/A'));
+								$ds['outwind_samples'],
+								$ds['outwind_killed']);
 						}
 					}
 				}
@@ -1044,7 +1101,7 @@ class spikekill {
 							case SPIKE_METHOD_FLOAT:
 								if ($timestamp >= $this->out_start && $timestamp <= $this->out_end) {
 									if ($this->avgnan == 'avg') {
-										$message = sprintf('Replacing dsvalue %s with variance_avg %s', $dsvalue, $rra[$rra_num][$ds_num]['variance_avg']);
+										$message = sprintf('Replacing dsvalue %s with average %s', $dsvalue, $rra[$rra_num][$ds_num]['variance_avg']);
 
 										cacti_log("DEBUG: $message", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
 										$this->debug($message);
@@ -1070,8 +1127,8 @@ class spikekill {
 							case SPIKE_METHOD_FILL:
 								if ($timestamp >= $this->out_start && $timestamp <= $this->out_end) {
 									if ($this->avgnan == 'avg') {
-										if (strtolower($dsvalue) == 'nan' || $dsvalue == 0) {
-											$message = sprintf('Replacing dsvalue %s with variance_avg %s', $dsvalue, $rra[$rra_num][$ds_num]['variance_avg']);
+										if (!is_numeric($dsvalue) || $dsvalue == 0) {
+											$message = sprintf('Replacing dsvalue %s with average %s', $dsvalue, $rra[$rra_num][$ds_num]['variance_avg']);
 
 											cacti_log("DEBUG: $message", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
 											$this->debug($message);
@@ -1081,7 +1138,7 @@ class spikekill {
 											$this->total_kills++;
 										}
 									} elseif ($this->avgnan == 'last' && isset($rra[$rra_num][$ds_num]['last'])) {
-										if (strtolower($dsvalue) == 'nan' || $dsvalue == 0) {
+										if (!is_numeric($dsvalue) || $dsvalue == 0) {
 											$message = sprintf('Replacing dsvalue %s with last value %s', $dsvalue, $rra[$rra_num][$ds_num]['last']);
 
 											cacti_log("DEBUG: $message", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
@@ -1098,11 +1155,11 @@ class spikekill {
 
 								break;
 							case SPIKE_METHOD_VARIANCE:
-								if (empty($this->out_start) || ($timestamp >= $this->out_start && $timestamp <= $this->out_end)) {
+								if ($this->out_start == 0 || ($timestamp >= $this->out_start && $timestamp <= $this->out_end)) {
 									if ($dsvalue > (1 + $this->percent) * (float) $rra[$rra_num][$ds_num]['variance_avg']) {
 										if ($kills < $this->numspike) {
 											if ($this->avgnan == 'avg') {
-												cacti_log("DEBUG: replacing dsvalue {$dsvalue} with variance_avg {$rra[$rra_num][$ds_num]['variance_avg']}", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
+												cacti_log("DEBUG: replacing dsvalue {$dsvalue} with average {$rra[$rra_num][$ds_num]['variance_avg']}", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
 
 												$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
 												$this->total_kills++;
@@ -1120,20 +1177,23 @@ class spikekill {
 											}
 										}
 									}
-								} elseif (strtolower($dsvalue) !== 'nan' && $dsvalue != 0) {
+								} elseif (is_numeric($dsvalue) && $dsvalue != 0) {
 									$last_num[$ds_num] = $dsvalue;
 								}
 
 								break;
 							case SPIKE_METHOD_STDDEV:
-								if (($dsvalue > $rra[$rra_num][$ds_num]['max_cutoff']) ||
-									($dsvalue < $rra[$rra_num][$ds_num]['min_cutoff'])) {
-									if (empty($this->out_start) || ($timestamp >= $this->out_start && $timestamp <= $this->out_end)) {
+								if ($this->out_start == 0 || ($timestamp >= $this->out_start && $timestamp <= $this->out_end)) {
+									if (($dsvalue > $rra[$rra_num][$ds_num]['max_cutoff']) ||
+										($dsvalue < $rra[$rra_num][$ds_num]['min_cutoff'])) {
 										if ($kills < $this->numspike) {
+											$rra[$rra_num][$ds_num]['outwind_killed']++;
+
 											if ($this->avgnan == 'avg') {
 												cacti_log("DEBUG: replacing dsvalue {$dsvalue} with average {$rra[$rra_num][$ds_num]['average']}", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
 
 												$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['average']);
+
 												$this->total_kills++;
 												$kills++;
 											} elseif ($this->avgnan == 'last' && isset($last_num[$ds_num])) {
@@ -1149,7 +1209,7 @@ class spikekill {
 											}
 										}
 									}
-								} elseif (strtolower($dsvalue) !== 'nan' && $dsvalue != 0) {
+								} elseif (is_numeric($dsvalue) && $dsvalue != 0) {
 									$last_num[$ds_num] = $dsvalue;
 								}
 
@@ -1186,6 +1246,8 @@ class spikekill {
 	}
 
 	private function removeComments(&$output) {
+		$new_array = [];
+
 		if (cacti_sizeof($output)) {
 			foreach($output as $line) {
 				$line = trim($line);
@@ -1259,9 +1321,11 @@ class spikekill {
 	private function processStandardDeviationCalculation($samples) {
 		$my_samples = $samples;
 
-		if (!empty($this->out_start)) {
+		if ($this->out_start > 0) {
+			$my_samples = [];
+
 			foreach($samples as $timestamp => $value) {
-				if ($timestamp < $this->out_start || $timestamp > $this->out_end) {
+				if (($timestamp < $this->out_start || $timestamp > $this->out_end) && is_numeric($valu)) {
 					$my_samples[] = $value;
 				}
 			}
@@ -1271,45 +1335,34 @@ class spikekill {
 	}
 
 	private function calculateStandardDeviation($items) {
-		if (!function_exists('stats_stddev')) {
-			function stats_stddev($items, $sample = false) {
+		$sum         = 0;
+		$total_items = 0;
 
-				$sum = 0;
-				$total_items = 0;
+		/* remove NaN entries from the data set */
+		if (cacti_sizeof($items)) {
+			foreach($items as $key => $value) {
+				if (is_numeric($value)) {
+					$total_items++;
 
-				/* remove NaN entries from the data set */
-				if (cacti_sizeof($items)) {
-					foreach($items as $key => $value) {
-						if (is_int($value) || is_float($value)) {
-							$total_items++;
-							cacti_log(print_r($sum,true) . ":::" . print_r($value,true));
-							$sum += $value;
-						} else {
-							unset($items[$key]);
-						}
-					}
+					$sum += $value;
+				} else {
+					unset($items[$key]);
 				}
-
-				if (($sample && $total_items === 1) || $total_items === 0) {
-					return false;
-				}
-
-				$mean  = $sum / $total_items;
-				$carry = 0.0;
-
-				foreach ($items as $val) {
-					$d = ((double) $val) - $mean;
-					$carry += $d * $d;
-				}
-
-				if ($sample) {
-					--$total_items;
-				}
-
-				return sqrt($carry / $total_items);
 			}
 		}
 
-		return stats_stddev($items, false);
+		if ($total_items < 2) {
+			return false;
+		}
+
+		$mean  = $sum / $total_items;
+		$carry = 0.0;
+
+		foreach ($items as $val) {
+			$d = ((double) $val) - $mean;
+			$carry += $d * $d;
+		}
+
+		return sqrt($carry / $total_items);
 	}
 }
