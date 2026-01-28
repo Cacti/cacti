@@ -17,4 +17,4 @@ Please use either GitHub's private vulnerability reporting or send an email to d
 We wlil remove an PoC from published advisory's were possible and will advise to this effect when doing so.
 
 ---
-Copyright (c) 2004-2023 - The Cacti Group, Inc.
+Copyright (c) 2004-2026 - The Cacti Group, Inc.
