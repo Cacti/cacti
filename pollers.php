@@ -303,7 +303,7 @@ function form_save() {
 		}
 
 		if (!is_ipaddress($save['hostname']) && !str_contains($save['hostname'], '.')) {
-			raise_message('bad_host', __('WARNING: Use of Data Collector Hostname \'%s\' is insecure!  Use either a fully qualified domain name or IP address to avoid equivalent hosts from other domains accessing this service', $save['hostname']), MESSAGE_LEVEL_WARN);
+			raise_message('bad_host', __esc('WARNING: Use of Data Collector Hostname \'%s\' is insecure!  Use either a fully qualified domain name or IP address to avoid equivalent hosts from other domains accessing this service', $save['hostname']), MESSAGE_LEVEL_WARN);
 		}
 
 		// Check for duplicate hostname
