@@ -38,6 +38,7 @@ Cacti CHANGELOG
 -issue#6519: Realtime generates errors in the Cacti Log after a Graph has been removed
 -issue#6546: Add missing xml and script files for NetSNMP LMSensor
 -issue#6551: Fix paths in audit_database script (FreeBSD)
+-issue#6573: Add hook device_change_javascript, necessarily for thold
 -issue: Correct some PHPStan issues found in audit of Aggregate that can lead to warnings
 -issue: Using the rrd_splice.php cli can result in the loss of data
 -issue: Defect in SpikeKill algorithm was causing a loss of data for Gap Fill and Float methods
