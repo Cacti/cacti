@@ -1080,6 +1080,8 @@ function device_change_javascript() {
 	});
 	</script>
 	<?php
+
+	api_plugin_hook('device_change_javascript');
 }
 
 function device_javascript() {
