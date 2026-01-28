@@ -195,7 +195,7 @@ switch($action) {
 
 		api_plugin_archive_restore($plugin, $tag, 'available');
 
-		header('Location: plugins.php?state=-99');
+		header('Location: plugins.php');
 
 		exit;
 	case 'readme':
