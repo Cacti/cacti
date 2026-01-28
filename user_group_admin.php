@@ -2036,7 +2036,7 @@ function graph_filter(string $header_label) : void {
 	$filters = create_uggraphs_filter();
 
 	// create the page filter
-	$pageFilter = new CactiTableFilter(__('Graph Permissions %s', $header_label), 'user_group_admin.php?action=edit&tab=permsd&id=' . grv('id'), 'form_template', 'sess_ua_d');
+	$pageFilter = new CactiTableFilter(__('Graph Permissions %s', $header_label), 'user_group_admin.php?action=edit&tab=permsg&id=' . grv('id'), 'form_template', 'sess_ua_d');
 
 	$pageFilter->rows_label       = __('Graphs');
 	$pageFilter->has_associated   = true;
