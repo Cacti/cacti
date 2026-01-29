@@ -221,13 +221,13 @@ function form_alternate_row(string $row_id = '', bool $light = false, bool $disa
  *
  * @param mixed  $contents   The content to be displayed inside the cell.
  * @param mixed  $id         The ID attribute for the cell.
- * @param string $width      The width of the cell. Default is an empty string.
+ * @param mixed  $width      The width of the cell. Default is an empty string.
  * @param string $styleclass The style or class attribute for the cell. Default is an empty string.
  * @param string $title      The title attribute for the cell. Default is an empty string.
  *
  * @return bool
  */
-function form_selectable_ecell(mixed $contents, mixed $id, string $width = '', string $styleclass = '', string $title = '') : bool {
+function form_selectable_ecell(mixed $contents, mixed $id, mixed $width = '', string $styleclass = '', string $title = '') : bool {
 	return form_selectable_cell(htmle($contents), $id, $width, $styleclass, $title);
 }
 
@@ -236,7 +236,7 @@ function form_selectable_ecell(mixed $contents, mixed $id, string $width = '', s
  *
  * @param mixed  $contents   The content to be placed inside the table cell.
  * @param mixed  $id         The ID attribute for the table cell (not used in the function).
- * @param string $width      The width of the table cell. Default is an empty string.
+ * @param mixed  $width      The width of the table cell. Default is an empty string.
  * @param string $styleclass The style or class attribute for the table cell.
  *                           Default is an empty string. If it contains a colon (:),
  *                           it is treated as a style attribute; otherwise, as a class attribute.
@@ -244,7 +244,7 @@ function form_selectable_ecell(mixed $contents, mixed $id, string $width = '', s
  *
  * @return bool False if an error is encountered
  */
-function form_selectable_cell(mixed $contents, mixed $id, string $width = '', string $styleclass = '', string $title = '') : bool {
+function form_selectable_cell(mixed $contents, mixed $id, mixed $width = '', string $styleclass = '', string $title = '') : bool {
 	global $tableCount;
 
 	static $tableColumns = null;
