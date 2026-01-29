@@ -1,9 +1,6 @@
 <?php
 
-error_reporting(0);
-
-// include some cacti files for ease of use
-include(__DIR__ . '/../include/global.php');
+include(__DIR__ . '/../include/cli_check.php');
 include(__DIR__ . '/../lib/snmp.php');
 
 // define all OIDs we need for further processing
@@ -21,7 +18,7 @@ if (count($_SERVER['argv']) < 2) {
 	die();
 }
 
-$host_id     = $_SERVER['argv'][1];
+$host_id     = intval($_SERVER['argv'][1]);
 $cmd         = $_SERVER['argv'][2];
 $query_index = 0;
 
@@ -30,11 +27,11 @@ if ($_SERVER['argv'][3]) {
 }
 
 if ($_SERVER['argv'][4]) {
-	$query_index = $_SERVER['argv'][4];
+	$query_index = intval($_SERVER['argv'][4]);
 	$query_index--;
 }
 
-if (empty($host_id) || $host_id === null || !is_numeric($host_id)) {
+if ($host_id <= 0) {
 	return '0';
 }
 
@@ -156,7 +153,7 @@ if ($cmd == 'index') {
 
 		//	output  "1!1\n2!2\n3!3\n";
 	}
-} elseif ($cmd == 'get' && isset($query_field) && is_numeric($query_index)) {
+} elseif ($cmd == 'get' && isset($query_field)) {
 	if ($query_field == 'name') {
 		$pom = cacti_snmp_get($host['hostname'],
 			$host['snmp_community'],
@@ -196,7 +193,7 @@ if ($cmd == 'index') {
 	}
 }
 
-function reindex($arr) {
+function reindex(array $arr) : array {
 	$return_arr = [];
 
 	for ($i = 0; ($i < sizeof($arr)); $i++) {

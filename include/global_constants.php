@@ -274,9 +274,9 @@ define('CVDEF_ITEM_TYPE_SPEC_DS', 4);
 define('CVDEF_ITEM_TYPE_CDEF', 5);
 define('CVDEF_ITEM_TYPE_STRING', 6);
 
-define('SNMP_POLLER', 0);
-define('SNMP_CMDPHP', 1);
-define('SNMP_WEBUI', 2);
+define('SNMP_POLLER', 'POLLER');
+define('SNMP_CMDPHP', 'CMDPHP');
+define('SNMP_WEBUI', 'WEBUI');
 
 define('OPER_MODE_NATIVE', 0);
 define('OPER_MODE_RESKIN', 1);

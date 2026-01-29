@@ -36,7 +36,7 @@ if (!isset($called_by_script_server)) {
 	include_once(__DIR__ . '/../lib/snmp.php');
 }
 
-function ss_host_disk($hostname = '', $host_id = 0, $snmp_auth = '', $cmd = 'index', $arg1 = '', $arg2 = '') {
+function ss_host_disk(string $hostname = '', int $host_id = 0, mixed $snmp_auth = '', string $cmd = 'index', string $arg1 = '', string $arg2 = '') : mixed {
 	$snmp           = explode(':', $snmp_auth);
 	$snmp_version   = $snmp[0];
 	$snmp_port      = $snmp[1];
@@ -143,7 +143,7 @@ function ss_host_disk($hostname = '', $host_id = 0, $snmp_auth = '', $cmd = 'ind
 					$snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, SNMP_POLLER);
 
 				if ($snmp_data !='' && $snmp_data < 0) {
-					return (abs($snmp_data) + 2147483647) * $sau;
+					return (abs(floatval($snmp_data)) + 2147483647) * $sau;
 				}
 
 				if (is_numeric($snmp_data) && is_numeric($sau)) {
@@ -160,9 +160,11 @@ function ss_host_disk($hostname = '', $host_id = 0, $snmp_auth = '', $cmd = 'ind
 			return $value;
 		}
 	}
+
+	return null;
 }
 
-function ss_host_disk_reindex($arr) {
+function ss_host_disk_reindex(array $arr) : array {
 	$return_arr = [];
 
 	if (cacti_sizeof($arr)) {

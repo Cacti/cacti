@@ -31,7 +31,7 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_mikrotik_users', $_SERVER['argv']);
 }
 
-function ss_mikrotik_users($host_id = '') {
+function ss_mikrotik_users(int $host_id = 0) : mixed {
 	$users = db_fetch_cell_prepared('SELECT users
 		FROM plugin_mikrotik_system
 		WHERE host_id = ?',

@@ -1,47 +1,41 @@
 <?php
 
-// do NOT run this script through a web browser
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD']) || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
-
-// deactivate http headers
-$no_http_headers = true;
-// include some cacti files for ease of use
-include(__DIR__ . '/../include/global.php');
+include(__DIR__ . '/../include/cli_check.php');
 include(__DIR__ . '/../lib/snmp.php');
 
 // define all OIDs we need for further processing
 $oids = [
-		'index' 	        		              => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.23',
-	'sensorProbeHumidityDescription'	 => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.1',
-	'sensorProbeSensorType'			        => '.1.3.6.1.4.1.3854.1.2.2.1.18.1.9',
-	'sensorProbeHumidityStatus'		     => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.4',
-	'sensorProbeHumidityOnline'		     => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.5',
-	'sensorProbeHumidityHighWarning'	 => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.7',
-	'sensorProbeHumidityHighCritical'	=> '.1.3.6.1.4.1.3854.1.2.2.1.17.1.8',
-	'sensorProbeHumidityLowWarning'		 => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.9',
-	'sensorProbeHumidityLowCritical'	 => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.10',
-	'sensorProbeHumidityPercent'		    => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.3'
+		'index'                         => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.23',
+	'sensorProbeHumidityDescription'  => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.1',
+	'sensorProbeSensorType'           => '.1.3.6.1.4.1.3854.1.2.2.1.18.1.9',
+	'sensorProbeHumidityStatus'       => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.4',
+	'sensorProbeHumidityOnline'       => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.5',
+	'sensorProbeHumidityHighWarning'  => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.7',
+	'sensorProbeHumidityHighCritical' => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.8',
+	'sensorProbeHumidityLowWarning'   => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.9',
+	'sensorProbeHumidityLowCritical'  => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.10',
+	'sensorProbeHumidityPercent'      => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.3'
 		];
 $xml_delimiter          =  '!';
 
 // all required input parms
-$hostname       	 = $_SERVER['argv'][1];		// hostname/IP@
-// $cmd            	= $_SERVER["argv"][2];
-$snmp_community 	 = $_SERVER['argv'][2];
-$snmp_version   	 = $_SERVER['argv'][3];
-$snmp_port      	 = $_SERVER['argv'][4];
-$snmp_timeout   	 = $_SERVER['argv'][5];
-$max_oids		       = $_SERVER['argv'][6];
+$hostname = $_SERVER['argv'][1];		// hostname/IP@
+
+// $cmd            = $_SERVER["argv"][2];
+$snmp_community = $_SERVER['argv'][2];
+$snmp_version   = intval($_SERVER['argv'][3]);
+$snmp_port      = intval($_SERVER['argv'][4]);
+$snmp_timeout   = intval($_SERVER['argv'][5]);
+$max_oids       = intval($_SERVER['argv'][6]);
+
 // required for SNMP V3
-$snmp_auth_username   	 = $_SERVER['argv'][7];
-$snmp_auth_password   	 = $_SERVER['argv'][8];
-$snmp_auth_protocol  	  = $_SERVER['argv'][9];
-$snmp_priv_passphrase 	 = $_SERVER['argv'][10];
-$snmp_priv_protocol   	 = $_SERVER['argv'][11];
-$snmp_context         	 = $_SERVER['argv'][12];
-$cmd            	       = $_SERVER['argv'][13];
+$snmp_auth_username    = $_SERVER['argv'][7];
+$snmp_auth_password    = $_SERVER['argv'][8];
+$snmp_auth_protocol    = $_SERVER['argv'][9];
+$snmp_priv_passphrase  = $_SERVER['argv'][10];
+$snmp_priv_protocol    = $_SERVER['argv'][11];
+$snmp_context          = $_SERVER['argv'][12];
+$cmd                   = $_SERVER['argv'][13];
 
 if (isset($_SERVER['argv'][14])) {
 	$query_field = $_SERVER['argv'][14];
@@ -52,7 +46,7 @@ if (isset($_SERVER['argv'][15])) {
 }
 
 // get number of snmp retries from global settings
-$snmp_retries   = read_config_option('snmp_retries');
+$snmp_retries = intval(read_config_option('snmp_retries'));
 
 // -------------------------------------------------------------------------
 // main code starts here
@@ -86,7 +80,7 @@ if ($cmd == 'index') {
 			$index_type = cacti_snmp_get($hostname, $snmp_community,
 				$oids['sensorProbeSensorType'] . ".$index_get", $snmp_version, $snmp_auth_username,
 				$snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol,
-				$snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, $max_oids, SNMP_POLLER);
+				$snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, SNMP_POLLER);
 
 			// The >= 0 should have weeded out all the non-temperature sensors already, but just
 			// just for additional clarity's sake, we check the sensorProbeSensorType table too.
@@ -131,7 +125,7 @@ elseif ($cmd == 'query' && isset($query_field)) {
 			$index_type = cacti_snmp_get($hostname, $snmp_community,
 				$oids['sensorProbeSensorType'] . ".$index_get", $snmp_version, $snmp_auth_username,
 				$snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol,
-				$snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, $max_oids, SNMP_POLLER);
+				$snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, SNMP_POLLER);
 
 			if ($index_type == 3 || $index_type == 'humidity(3)') {
 				print $arr_index[$i] . $xml_delimiter . $arr[$i] . "\n";
@@ -160,7 +154,7 @@ elseif ($cmd == 'get' && isset($query_field) && isset($query_index)) {
 	print(cacti_snmp_get($hostname, $snmp_community,
 		$oids[$query_field] . ".$query_index", $snmp_version, $snmp_auth_username,
 		$snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol,
-		$snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, $max_oids, SNMP_POLLER));
+		$snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, SNMP_POLLER));
 }
 
 // -------------------------------------------------------------------------
@@ -170,7 +164,7 @@ else {
 	print "    <hostname> <cmd>\n";
 }
 
-function reindex($arr) {
+function reindex(array $arr) : array {
 	$return_arr = [];
 
 	for ($i = 0; ($i < sizeof($arr)); $i++) {
@@ -179,5 +173,3 @@ function reindex($arr) {
 
 	return $return_arr;
 }
-
-?>

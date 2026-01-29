@@ -31,7 +31,7 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_mikrotik_wrcount', $_SERVER['argv']);
 }
 
-function ss_mikrotik_wrcount($host_id = '') {
+function ss_mikrotik_wrcount(int $host_id = 0) : string {
 	$wrs = db_fetch_cell_prepared('SELECT count(*)
 		FROM plugin_mikrotik_wireless_registrations
 		WHERE host_id = ?

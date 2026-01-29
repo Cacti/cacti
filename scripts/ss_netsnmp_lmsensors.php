@@ -34,7 +34,7 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_netsnmp_lmsensors', $_SERVER['argv']);
 }
 
-function ss_netsnmp_lmsensors_is_vhost() {
+function ss_netsnmp_lmsensors_is_vhost() : bool {
 	if (file_exists('/usr/bin/hostnamectl')) {
 		$virtual = intval(shell_exec('/usr/bin/hostnamectl 2> /dev/null | grep -i virtual | wc -l'));
 
@@ -49,7 +49,7 @@ function ss_netsnmp_lmsensors_is_vhost() {
 // ------------------------------------------------------------------------------------
 // main function
 // ------------------------------------------------------------------------------------
-function ss_netsnmp_lmsensors($host_id = '', $sensor_type = '', $cacti_request = '', $data_request = '', $data_request_key = '') {
+function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string $cacti_request = '', string $data_request = '', string $data_request_key = '') : mixed {
 	$host = db_fetch_row_prepared('SELECT *
 		FROM host
 		WHERE id = ?',
@@ -166,7 +166,7 @@ function ss_netsnmp_lmsensors($host_id = '', $sensor_type = '', $cacti_request =
 		$host['snmp_port'],
 		$host['snmp_timeout'],
 		$host['ping_retries'],
-		'SNMP',
+		SNMP_POLLER,
 		$host['snmp_engine_id']
 	];
 
@@ -185,7 +185,7 @@ function ss_netsnmp_lmsensors($host_id = '', $sensor_type = '', $cacti_request =
 		$host['snmp_timeout'],
 		$host['ping_retries'],
 		$host['max_oids'],
-		'SNMP',
+		SNMP_POLLER,
 		$host['snmp_engine_id']
 	];
 
@@ -204,7 +204,7 @@ function ss_netsnmp_lmsensors($host_id = '', $sensor_type = '', $cacti_request =
 		// ------------------------------------------------------------------------------------
 		if ((substr($snmp_test, 0, 16) == 'No Such Instance') ||
 			(is_numeric($snmp_test) == false) ||
-			($snmp_test == '')) {
+			($snmp_test === '')) {
 			cacti_log(sprintf('WARNING: Device with ID %s Does not appear to have lmsensors installed!', $host_id), false, 'LMSENSORS');
 
 			return 'U';
@@ -218,7 +218,7 @@ function ss_netsnmp_lmsensors($host_id = '', $sensor_type = '', $cacti_request =
 		// Virtual hosts will not respond to lmsensors data.
 		// ------------------------------------------------------------------------------------
 		if (ss_netsnmp_lmsensors_is_vhost()) {
-			return;
+			return null;
 		}
 
 		// ------------------------------------------------------------------------------------
@@ -242,7 +242,7 @@ function ss_netsnmp_lmsensors($host_id = '', $sensor_type = '', $cacti_request =
 			(trim($snmp_array[0]['value']) == '')) {
 			cacti_log(sprintf('WARNING: Device with ID %s Does not appear to have lmsensors installed!', $host_id), false, 'LMSENSORS');
 
-			return;
+			return null;
 		}
 
 		// ------------------------------------------------------------------------------------
@@ -265,7 +265,7 @@ function ss_netsnmp_lmsensors($host_id = '', $sensor_type = '', $cacti_request =
 			if (preg_match('/(\d+)$/', $snmp_response['oid'], $scratch) == 0) {
 				cacti_log(sprintf('WARNING: Device with ID %s appears to have invalid snmpwalk data returned!', $host_id), false, 'LMSENSORS');
 
-				return;
+				return false;
 			} else {
 				$sensor_array[$sensor_count]['index'] = $scratch[1];
 			}
@@ -342,7 +342,7 @@ function ss_netsnmp_lmsensors($host_id = '', $sensor_type = '', $cacti_request =
 						//
 						// if no useful data was returned, null the results
 						//
-						if ((substr($scratch, 0, 16) == 'No Such Instance') || (is_numeric($scratch) == false) || ($scratch == '')) {
+						if ((substr($scratch, 0, 16) == 'No Such Instance') || (is_numeric($scratch) === false) || ($scratch === '')) {
 							$scratch = '';
 						}
 
@@ -413,4 +413,6 @@ function ss_netsnmp_lmsensors($host_id = '', $sensor_type = '', $cacti_request =
 			}
 		}
 	}
+
+	return null;
 }

@@ -36,7 +36,7 @@ if (!isset($called_by_script_server)) {
 	include_once(__DIR__ . '/../lib/snmp.php');
 }
 
-function ss_net_snmp_disk_bytes($host_id_or_hostname = '') {
+function ss_net_snmp_disk_bytes(mixed $host_id_or_hostname = '') : string {
 	global $environ, $poller_id, $config;
 
 	if (empty($host_id_or_hostname) || $host_id_or_hostname === null) {

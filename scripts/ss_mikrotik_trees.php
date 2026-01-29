@@ -31,7 +31,7 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_mikrotik_trees', $_SERVER['argv']);
 }
 
-function ss_mikrotik_trees($host_id = '') {
+function ss_mikrotik_trees(int $host_id = 0) : string {
 	$trees = db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM plugin_mikrotik_trees
 		WHERE host_id = ?',

@@ -158,15 +158,15 @@ if ($cacti_db_session == true) {
 	}
 }
 
-print 'valid:' . $user_logins_valid .
-	' invalid:' . $user_logins_invalid .
-	' active:' . $session_counter_active .
-	' sleeping:' . $session_counter_sleeping .
-	' garbage:' . $session_counter_garbage .
-	' uactive:' . $user_counter_active .
+print 'valid:'    . $user_logins_valid .
+	' invalid:'   . $user_logins_invalid .
+	' active:'    . $session_counter_active .
+	' sleeping:'  . $session_counter_sleeping .
+	' garbage:'   . $session_counter_garbage .
+	' uactive:'   . $user_counter_active .
 	' usleeping:' . $user_counter_sleeping;
 
-function get_session_save_path() {
+function get_session_save_path() : mixed {
 	if (session_save_path() !== '') {
 		// if default temp path is not in use
 		return realpath(session_save_path());

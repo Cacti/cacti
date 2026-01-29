@@ -31,7 +31,7 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_mikrotik_mem', $_SERVER['argv']);
 }
 
-function ss_mikrotik_mem($host_id = '') {
+function ss_mikrotik_mem(int $host_id = 0) : string {
 	$disk = db_fetch_row_prepared('SELECT memSize, memUsed*memSize/100 AS memUsed
 		FROM plugin_mikrotik_system
 		WHERE host_id = ?',

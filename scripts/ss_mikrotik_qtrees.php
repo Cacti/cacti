@@ -31,7 +31,7 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_mikrotik_qtrees', $_SERVER['argv']);
 }
 
-function ss_mikrotik_qtrees($host_id, $cmd = 'index', $arg1 = '', $arg2 = '') {
+function ss_mikrotik_qtrees(int $host_id, string $cmd = 'index', string $arg1 = '', string $arg2 = '') : mixed {
 	if ($cmd == 'index') {
 		$return_arr = ss_mikrotik_qtrees_getnames($host_id);
 
@@ -53,11 +53,11 @@ function ss_mikrotik_qtrees($host_id, $cmd = 'index', $arg1 = '', $arg2 = '') {
 
 		return ss_mikrotik_qtrees_getvalue($host_id, $index, $arg);
 	}
+
+	return null;
 }
 
-function ss_mikrotik_qtrees_getvalue($host_id, $index, $column) {
-	$return_arr = [];
-
+function ss_mikrotik_qtrees_getvalue(int $host_id, string $index, string $column) : string {
 	switch ($column) {
 		case 'qtBytes':
 			$column = 'curHCBytes';
@@ -85,7 +85,7 @@ function ss_mikrotik_qtrees_getvalue($host_id, $index, $column) {
 	return $value;
 }
 
-function ss_mikrotik_qtrees_getnames($host_id) {
+function ss_mikrotik_qtrees_getnames(int $host_id) : array {
 	$return_arr = [];
 
 	$arr = db_fetch_assoc_prepared("SELECT REPLACE(name, ' ', '_') AS name
@@ -101,7 +101,7 @@ function ss_mikrotik_qtrees_getnames($host_id) {
 	return $return_arr;
 }
 
-function ss_mikrotik_qtrees_getinfo($host_id, $info_requested) {
+function ss_mikrotik_qtrees_getinfo(int $host_id, string $info_requested) : array {
 	$return_arr = [];
 
 	switch($info_requested) {

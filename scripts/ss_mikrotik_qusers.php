@@ -31,7 +31,7 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_mikrotik_qusers', $_SERVER['argv']);
 }
 
-function ss_mikrotik_qusers($host_id, $cmd = 'index', $arg1 = '', $arg2 = '') {
+function ss_mikrotik_qusers(int $host_id, string $cmd = 'index', string $arg1 = '', string $arg2 = '') : mixed {
 	if ($cmd == 'index') {
 		$return_arr = ss_mikrotik_qusers_getnames($host_id);
 
@@ -53,9 +53,11 @@ function ss_mikrotik_qusers($host_id, $cmd = 'index', $arg1 = '', $arg2 = '') {
 
 		return ss_mikrotik_qusers_getvalue($host_id, $index, $arg);
 	}
+
+	return null;
 }
 
-function ss_mikrotik_qusers_getvalue($host_id, $index, $column) {
+function ss_mikrotik_qusers_getvalue(int $host_id, string $index, string $column) : string {
 	switch ($column) {
 		case 'curBytesIn':
 		case 'curBytesOut':
@@ -105,7 +107,7 @@ function ss_mikrotik_qusers_getvalue($host_id, $index, $column) {
 	}
 }
 
-function ss_mikrotik_qusers_getnames($host_id) {
+function ss_mikrotik_qusers_getnames(int $host_id) : array {
 	$return_arr = [];
 
 	$arr = db_fetch_assoc_prepared("SELECT DISTINCT name
@@ -122,7 +124,7 @@ function ss_mikrotik_qusers_getnames($host_id) {
 	return $return_arr;
 }
 
-function ss_mikrotik_qusers_getinfo($host_id, $info_requested) {
+function ss_mikrotik_qusers_getinfo(int $host_id, string $info_requested) : array {
 	$return_arr = [];
 	$arr        = [];
 

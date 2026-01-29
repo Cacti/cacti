@@ -33,7 +33,7 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_hstats', $_SERVER['argv']);
 }
 
-function ss_hstats($host_id = 0, $stat = '') {
+function ss_hstats(int $host_id = 0, string $stat = '') : string {
 	switch ($stat) {
 		case 'polling_time':
 			$column = $stat;
