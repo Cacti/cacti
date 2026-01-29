@@ -221,7 +221,7 @@ function cacti_snmp_get(string $hostname, mixed $community, string $oid, mixed $
 
 function cacti_snmp_get_raw(string $hostname, string $community, string $oid, mixed $version, string $auth_user = '', string $auth_pass = '',
 	string $auth_proto = '', string $priv_pass = '', string $priv_proto = '', string $context = '',
-	mixed $port = 161, mixed $timeout_ms = 500, mixed $retries = 0, int $environ = SNMP_POLLER,
+	mixed $port = 161, mixed $timeout_ms = 500, mixed $retries = 0, string $environ = SNMP_POLLER,
 	string $engineid = '', int $value_output_format = SNMP_STRING_OUTPUT_GUESS) : string {
 	global $snmp_error;
 

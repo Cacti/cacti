@@ -5,7 +5,7 @@ include(__DIR__ . '/../lib/snmp.php');
 
 // define all OIDs we need for further processing
 $oids = [
-		'index'                         => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.23',
+	'index'                           => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.23',
 	'sensorProbeHumidityDescription'  => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.1',
 	'sensorProbeSensorType'           => '.1.3.6.1.4.1.3854.1.2.2.1.18.1.9',
 	'sensorProbeHumidityStatus'       => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.4',
@@ -15,13 +15,13 @@ $oids = [
 	'sensorProbeHumidityLowWarning'   => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.9',
 	'sensorProbeHumidityLowCritical'  => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.10',
 	'sensorProbeHumidityPercent'      => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.3'
-		];
-$xml_delimiter          =  '!';
+];
+
+$xml_delimiter =  '!';
 
 // all required input parms
 $hostname = $_SERVER['argv'][1];		// hostname/IP@
 
-// $cmd            = $_SERVER["argv"][2];
 $snmp_community = $_SERVER['argv'][2];
 $snmp_version   = intval($_SERVER['argv'][3]);
 $snmp_port      = intval($_SERVER['argv'][4]);

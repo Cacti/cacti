@@ -5,17 +5,17 @@ include(__DIR__ . '/../lib/snmp.php');
 
 // define all OIDs we need for further processing
 $oids = [
-	'index' 	        		              => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.23',
-	'sensorProbeHumidityDescription'	 => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.1',
-	'sensorProbeSensorType'			        => '.1.3.6.1.4.1.3854.1.2.2.1.18.1.9',
-	'sensorProbeHumidityStatus'		     => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.4',
-	'sensorProbeHumidityOnline'		     => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.5',
-	'sensorProbeHumidityHighWarning'	 => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.7',
-	'sensorProbeHumidityHighCritical'	=> '.1.3.6.1.4.1.3854.1.2.2.1.17.1.8',
-	'sensorProbeHumidityLowWarning'		 => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.9',
-	'sensorProbeHumidityLowCritical'	 => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.10',
-	'sensorProbeHumidityPercent'		    => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.3',
-	'sensorProbeHumidityRaw'		        => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.13'
+	'index'                           => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.23',
+	'sensorProbeHumidityDescription'  => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.1',
+	'sensorProbeSensorType'           => '.1.3.6.1.4.1.3854.1.2.2.1.18.1.9',
+	'sensorProbeHumidityStatus'       => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.4',
+	'sensorProbeHumidityOnline'       => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.5',
+	'sensorProbeHumidityHighWarning'  => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.7',
+	'sensorProbeHumidityHighCritical' => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.8',
+	'sensorProbeHumidityLowWarning'   => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.9',
+	'sensorProbeHumidityLowCritical'  => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.10',
+	'sensorProbeHumidityPercent'      => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.3',
+	'sensorProbeHumidityRaw'          => '.1.3.6.1.4.1.3854.1.2.2.1.17.1.13'
 ];
 
 $xml_delimiter =  '!';
