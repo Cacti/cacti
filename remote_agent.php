@@ -147,15 +147,13 @@ function remote_client_authorized() {
 
 	if ($client_name == $client_addr) {
 		cacti_log('NOTE: Unable to resolve hostname from address ' . $client_addr, false, 'WEBUI', POLLER_VERBOSITY_MEDIUM);
-	} else {
-		$client_name = remote_agent_strip_domain($client_name);
 	}
 
 	$pollers = db_fetch_assoc('SELECT * FROM poller WHERE disabled = ""', true, $poller_db_cnn_id);
 
 	if (cacti_sizeof($pollers) > 1) {
 		foreach($pollers as $poller) {
-			if (remote_agent_strip_domain($poller['hostname']) == $client_name) {
+			if ($poller['hostname'] == $client_name) {
 				return true;
 			} elseif ($poller['hostname'] == $client_addr) {
 				return true;

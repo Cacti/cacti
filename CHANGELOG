@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.31
+-security#GHSA-6RVG-2VM8-5WRF: CVE-2026-22802 Authentication Bypass leads to information disclosure
 -issue#6168: RRD cleaner does not purge files
 -issue#6202: Adding devices via automation fails
 -issue#6204: Automation breaks if the field does not previously exist in the host_snmp_cache table

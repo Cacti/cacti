@@ -302,6 +302,10 @@ function form_save() {
 			$save['dbsslca']       = form_input_validate(get_nfilter_request_var('dbsslca'),   'dbsslca',   '', true, 3);
 		}
 
+		if (!is_ipaddress($save['hostname']) && !str_contains($save['hostname'], '.')) {
+			raise_message('bad_host', __esc('WARNING: Use of Data Collector Hostname \'%s\' is insecure!  Use either a fully qualified domain name or IP address to avoid equivalent hosts from other domains accessing this service', $save['hostname']), MESSAGE_LEVEL_WARN);
+		}
+
 		// Check for duplicate hostname
 		$error = false;
 		if (poller_check_duplicate_poller_id($save['id'], $save['hostname'], 'hostname')) {
