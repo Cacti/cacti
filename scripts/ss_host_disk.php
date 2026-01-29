@@ -138,17 +138,19 @@ function ss_host_disk(string $hostname = '', int $host_id = 0, mixed $snmp_auth 
 					AND snmp_index = ?",
 					[$host_id, $index]));
 
+				$sau = intval($sau);
+
 				$snmp_data = cacti_snmp_get($hostname, $snmp_community, $oids[$arg] . ".$index", $snmp_version,
 					$snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase,
 					$snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, SNMP_POLLER);
 
-				if ($snmp_data !='' && $snmp_data < 0) {
+				if ($snmp_data != '' && $snmp_data < 0) {
 					$snmp_data = intval($snmp_data);
 
 					return (abs($snmp_data) + 2147483647) * $sau;
 				}
 
-				if (is_numeric($snmp_data) && is_numeric($sau)) {
+				if (is_numeric($snmp_data)) {
 					return $snmp_data * $sau;
 				} else {
 					return 'U';
