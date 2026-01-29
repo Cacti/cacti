@@ -621,7 +621,7 @@ function cacti_snmp_validate_oid(string $oid) : bool {
 	}
 }
 
-function cacti_snmp_walk(string $hostname, string $community, string $oid, mixed $version, string $auth_user = '', string $auth_pass = '',
+function cacti_snmp_walk(string $hostname, string $community, string $oid, mixed $version, mixed $auth_user = '', string $auth_pass = '',
 	string $auth_proto = '', string $priv_pass = '', string $priv_proto = '', string $context = '',
 	mixed $port = 161, mixed $timeout_ms = 500, mixed $retries = 0, mixed $bulk_walk_size = 10, string $environ = 'SNMP',
 	string $engineid = '', int $value_output_format = SNMP_STRING_OUTPUT_GUESS) : array {
