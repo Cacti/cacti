@@ -2367,7 +2367,7 @@ function create_ugraphs_filter() : array {
 					'method'        => 'drop_array',
 					'friendly_name' => __('Template'),
 					'filter'        => FILTER_VALIDATE_INT,
-					'default'       => '0',
+					'default'       => '-1',
 					'pageset'       => true,
 					'array'         => $graph_templates,
 					'value'         => '0'
