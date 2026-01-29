@@ -1,0 +1,14 @@
+composer.lock
+/vendor/
+.phpunit.cache/
+.phplint.cache/
+.idea
+.php-cs-fixer.cache
+/vendor-bin/**/vendor
+.phpbench/
+site/
+.box.manifests.bin
+console-table.txt
+plain.txt
+sbom.json
+stub.php

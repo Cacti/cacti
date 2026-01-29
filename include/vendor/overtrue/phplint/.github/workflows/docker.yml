@@ -1,0 +1,50 @@
+name: Docker
+
+on:
+  workflow_dispatch:
+    # https://github.blog/changelog/2020-07-06-github-actions-manual-triggers-with-workflow_dispatch/
+    inputs:
+      tag:
+        description: "The Docker Image Tag"
+        required: false
+        default: "latest"
+        type: string
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  build:
+    env:
+      DOCKER_BUILD_TAG: ${{ github.event.inputs.tag || 'latest' }}
+
+    runs-on: ubuntu-22.04
+
+    steps:
+      -   # https://github.com/actions/checkout
+        name: Checkout code
+        uses: actions/checkout@v6
+      -   # https://github.com/shivammathur/setup-php
+        name: Setup PHP runtime
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          coverage: "none"
+      -   # https://github.com/docker/setup-qemu-action
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      -   # https://github.com/docker/setup-buildx-action
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      -   # https://github.com/docker/login-action
+        name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      -   # https://github.com/docker/build-push-action
+        name: Build and push Docker images
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: overtrue/phplint:${{ env.DOCKER_BUILD_TAG }}

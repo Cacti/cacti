@@ -1,0 +1,72 @@
+---
+name: Release
+
+on:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-22.04
+        php:
+          - 8.2
+        tools:
+          - box:4.6  # available since https://github.com/shivammathur/setup-php/releases/tag/2.27.0
+
+    steps:
+      -   # https://github.com/actions/checkout
+        name: Checkout
+        uses: actions/checkout@v6
+
+      -   # https://github.com/shivammathur/setup-php
+        name: Setup PHP runtime
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: "none"
+          tools: ${{ matrix.tools }}
+
+      -   # https://github.com/ramsey/composer-install
+        name: Install Composer dependencies
+        uses: ramsey/composer-install@v3
+        with:
+          composer-options: "--prefer-dist"
+
+      -   # https://github.com/llaville/box-manifest
+        name: Download BOX Manifest Artifact
+        env:
+          BOX_MANIFEST_VERSION: ${{ vars.BOX_MANIFEST_VERSION || '4.2.0' }}
+        run: |
+          curl -Ls "https://github.com/llaville/box-manifest/releases/download/$BOX_MANIFEST_VERSION/box-manifest.phar" -o /usr/local/bin/box-manifest
+          chmod +x /usr/local/bin/box-manifest
+
+      -   # https://github.com/llaville/box-manifest
+        name: Build Release Artifact
+        run: |
+          box-manifest make build stub configure -r console-table.txt -r plain.txt -r sbom.json --output-stub stub.php --output-conf box.json.dist -vvv --ansi
+          box compile -c box.json.dist -vvv --ansi
+
+      -   # https://github.com/softprops/action-gh-release
+        name: Create Release from current tag
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@v2
+        with:  # https://github.com/softprops/action-gh-release#-customizing
+          prerelease: false
+          draft: false
+          body_path: ${{ github.workspace }}/.changes/${{ github.ref_name }}.md
+          # https://github.com/softprops/action-gh-release#%EF%B8%8F-uploading-release-assets
+          files:
+            ${{ github.workspace }}/bin/phplint.phar
+          fail_on_unmatched_files: true
+          tag_name: ${{ github.ref_name }}
