@@ -624,7 +624,7 @@ function cacti_snmp_validate_oid(string $oid) : bool {
 function cacti_snmp_walk(string $hostname, string $community, string $oid, mixed $version, mixed $auth_user = '', mixed $auth_pass = '',
 	mixed $auth_proto = '', mixed $priv_pass = '', mixed $priv_proto = '', mixed $context = '',
 	mixed $port = 161, mixed $timeout_ms = 500, mixed $retries = 0, mixed $bulk_walk_size = 10, mixed $environ = 'SNMP',
-	string $engineid = '', int $value_output_format = SNMP_STRING_OUTPUT_GUESS) : array {
+	mixed $engineid = '', int $value_output_format = SNMP_STRING_OUTPUT_GUESS) : array {
 	global $banned_snmp_strings, $snmp_error;
 
 	$snmp_error        = '';
