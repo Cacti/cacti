@@ -240,7 +240,7 @@ jobs:
     - name: Check All Resource XML File Syntax
       run: |
         cd ${{ github.workspace }}
-        sudo tests/tools/check_xml_syntax.sh
+        sudo php tests/tools/check_xml_syntax.php
 
     - name: Check that all CLI scripts have a valid --version flag
       run: |
