@@ -37,37 +37,37 @@ for table in tree.xpath('//table/tbody'):
 	channels = None
 	dataRow = False
 	for row in table:
-		haveLable = False
+		haveLabel = False
 		label = None
 		channelCount = 0
 		for cell in row:
 			if dataRow:
 				# handle the actual data
-				if haveLable:
+				if haveLabel:
 					data[catagory][label][channels[channelCount]] = cell.text.strip()
 					channelCount += 1
 				else:
 					label = cell.text.strip()
 					data[catagory][label] = {}
 			else:
-				if haveLable == False and cell.tag == 'th' and cell.find('font').text.strip() in ['Downstream', 'Upstream', 'Signal Stats (Codewords)']:
+				if haveLabel == False and cell.tag == 'th' and cell.find('font').text.strip() in ['Downstream', 'Upstream', 'Signal Stats (Codewords)']:
 					catagory = cell.find('font').text.strip()
 					if catagory == 'Signal Stats (Codewords)':
 						catagory = 'Stats'
 					data[catagory] = {}
-				elif haveLable == False and catagory is not None and channels is None and cell.text.strip() == 'Channel ID':
+				elif haveLabel == False and catagory is not None and channels is None and cell.text.strip() == 'Channel ID':
 					channels = []
-				elif haveLable and channels is not None:
+				elif haveLabel and channels is not None:
 					channels.append(cell.text.strip())
 			del cell
 			# The first column contains the lable, the remaining column are the data
-			haveLable = True
+			haveLabel = True
 		# Once we are done setting up the channels, the remaining rows are the data
 		if channels is not None:
 			dataRow = True
 			data[catagory]['channels'] = channels
 
-		del row, label, haveLable, channelCount
+		del row, label, haveLabel, channelCount
 	del table, catagory, dataRow, channels
 
 # Process data to generate results
