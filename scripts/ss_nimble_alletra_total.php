@@ -38,7 +38,7 @@ if (!isset($called_by_script_server)) {
 function ss_nimble_alletra_total(int $host_id = 0) : mixed {
 	global $environ, $poller_id, $config;
 
-	if ($host_id >= 0) {
+	if ($host_id <= 0) {
 		return 'iowrites:0 iowritebytes:0 ioreads:0 ioreadbytes:0 ioreadhits:0' . PHP_EOL;
 	}
 
