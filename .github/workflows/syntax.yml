@@ -237,6 +237,11 @@ jobs:
         cd ${{ github.workspace }}
         sudo php -q tests/tools/check_install_code.php
 
+    - name: Check All Resource XML File Syntax
+      run: |
+        cd ${{ github.workspace }}
+        sudo tests/tools/check_xml_pages.sh
+
     - name: Check that all CLI scripts have a valid --version flag
       run: |
         cd ${{ github.workspace }}
