@@ -265,7 +265,7 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 			if (preg_match('/(\d+)$/', $snmp_response['oid'], $scratch) == 0) {
 				cacti_log(sprintf('WARNING: Device with ID %s appears to have invalid snmpwalk data returned!', $host_id), false, 'LMSENSORS');
 
-				return false;
+				return null;
 			} else {
 				$sensor_array[$sensor_count]['index'] = $scratch[1];
 			}

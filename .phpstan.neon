@@ -7,7 +7,6 @@ parameters:
         analyse:
            - include/vendor/*
            - plugins/*
-#           - scripts/*
            - rector.php
     paths:
         - include
