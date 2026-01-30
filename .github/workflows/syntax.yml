@@ -242,6 +242,9 @@ jobs:
         cd ${{ github.workspace }}
         sudo php tests/tools/check_xml_syntax.php
 
+    - name: Check Poller Script Syntax after Package Import
+      run: if find ${{ github.workspace }}/scripts -name '*.php' -exec php -l {} 2>&1 \; | grep -iv 'no syntax errors detected'; then exit 1; fi
+
     - name: Check that all CLI scripts have a valid --version flag
       run: |
         cd ${{ github.workspace }}

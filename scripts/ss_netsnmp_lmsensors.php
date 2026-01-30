@@ -200,12 +200,10 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 		$snmp_test             = trim(call_user_func_array('cacti_snmp_get', $snmp_get_arguments));
 
 		// ------------------------------------------------------------------------------------
-		// the snmp response should contain a numeric counter (NOT the device index)
+		// The snmp response should contain a numeric counter (NOT the device index)
 		// ------------------------------------------------------------------------------------
-		if ((substr($snmp_test, 0, 16) == 'No Such Instance') ||
-			(is_numeric($snmp_test) == false) ||
-			($snmp_test === '')) {
-			cacti_log(sprintf('WARNING: Device with ID %s Does not appear to have lmsensors installed!', $host_id), false, 'LMSENSORS');
+		if (str_contains($snmp_test, 'No Such Instance') || is_numeric($snmp_test) == false || $snmp_test === '') {
+			cacti_log(sprintf('WARNING: Device with ID %s Does not appear to have lmsensors installed!', $host_id), false, 'LMSENSORS', POLLER_VERBOSITY_MEDIUM);
 
 			return 'U';
 		} else {
