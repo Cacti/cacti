@@ -257,6 +257,11 @@ jobs:
         cd ${{ github.workspace }}
         sudo tests/tools/install_packages.sh
 
+    - name: Check All Resource XML File Syntax Post Package Install
+      run: |
+        cd ${{ github.workspace }}
+        sudo php tests/tools/check_xml_syntax.php
+
     - name: Audit the Installation Schema
       run: |
         cd ${{ github.workspace }}
