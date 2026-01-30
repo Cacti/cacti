@@ -166,7 +166,7 @@ elseif ($cmd == 'query' && isset($query_field)) {
 						// Temperature is always reported in tenths degrees. Divide by 10 first. Then multiply by 9/5.
 						// Then add 32. Then multiply by 10 to re-convert to tenths degrees. Use substr() to strip off
 						// any trailing digits from the final value, we should always return a 3 digit value.
-						print $arr_index[$i] . $xml_delimiter . substr((((($arr[$i] / 10) * (9 / 5)) + 32) * 10),0,3) . "\n";
+						print $arr_index[$i] . $xml_delimiter . substr((string) (((($arr[$i] / 10) * (9 / 5)) + 32) * 10), 0, 3) . "\n";
 					}
 
 					// Otherwise if the sensor is not set for "F", just report the value.
@@ -221,7 +221,7 @@ elseif ($cmd == 'get' && isset($query_field) && isset($query_index)) {
 			// Temperature is always reported in tenths degrees. Divide by 10 first. Then multiply by 9/5.
 			// Then add 32. Then multiply by 10 to re-convert to tenths degrees. Use substr() to strip off
 			// any trailing digits from the final value, we should always return a 3 digit value.
-			print substr((((($value / 10) * (9 / 5)) + 32) * 10),0,3);
+			print substr((string) ((((floatval($value) / 10) * (9 / 5)) + 32) * 10), 0, 3);
 		}
 		// Otherwise if the sensor is not set for "F", just report the value.
 		else {
@@ -241,7 +241,7 @@ else {
 	print "    <hostname> <cmd>\n";
 }
 
-function reindex($arr) {
+function reindex(array $arr) : array {
 	$return_arr = [];
 
 	for ($i = 0; ($i < sizeof($arr)); $i++) {

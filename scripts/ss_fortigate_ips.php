@@ -35,10 +35,10 @@ if (!isset($called_by_script_server)) {
 	include_once(__DIR__ . '/../lib/snmp.php');
 }
 
-function ss_fortigate_ips($host_id = '') {
+function ss_fortigate_ips(int $host_id = 0) : mixed {
 	global $environ, $poller_id, $config;
 
-	if (empty($host_id) || $host_id === null || !is_numeric($host_id)) {
+	if ($host_id <= 0) {
 		return 'ips_detected:0 ips_blocked:0 ips_crit:0 ips_high:0 ips_ano:0' . PHP_EOL;
 	}
 
@@ -83,5 +83,3 @@ function ss_fortigate_ips($host_id = '') {
 
 	return $result;
 }
-
-?>

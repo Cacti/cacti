@@ -31,8 +31,8 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_mikrotik_qcount', $_SERVER['argv']);
 }
 
-function ss_mikrotik_qcount($host_id = '') {
-	$queues = db_fetch_cell_prepared('SELECT count(*)
+function ss_mikrotik_qcount(int $host_id = 0) : mixed {
+	$queues = db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM plugin_mikrotik_queues
 		WHERE host_id = ?
 		AND unix_timestamp(last_seen)>unix_timestamp()-1200',

@@ -31,7 +31,7 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_mikrotik_snmpget', $_SERVER['argv']);
 }
 
-function ss_mikrotik_snmpget($host_id = '', $oid = '') {
+function ss_mikrotik_snmpget(int $host_id = 0, string $oid = '') : mixed {
 	global $config;
 
 	include_once($config['base_path'] . '/lib/snmp.php');
@@ -49,7 +49,7 @@ function ss_mikrotik_snmpget($host_id = '', $oid = '') {
 				$host['snmp_username'], $host['snmp_password'],
 				$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'], $host['snmp_priv_protocol'],
 				$host['snmp_context'], $host['snmp_port'], $host['snmp_timeout'],
-				read_config_option('snmp_retries'), SNMP_WEBUI, $host['snmp_engine_id']);
+				read_config_option('snmp_retries'), SNMP_POLLER, $host['snmp_engine_id']);
 
 			if (!empty($get)) {
 				return $get;

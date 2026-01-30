@@ -31,7 +31,7 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_mikrotik_uptime', $_SERVER['argv']);
 }
 
-function ss_mikrotik_uptime($host_id = '') {
+function ss_mikrotik_uptime(int $host_id = 0) : string {
 	$cpu = db_fetch_cell_prepared('SELECT uptime/86400/100
 		FROM plugin_mikrotik_system
 		WHERE host_id = ?',

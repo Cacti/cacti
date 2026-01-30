@@ -8,7 +8,7 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_esxi_vhosts', $_SERVER['argv']);
 }
 
-function ss_esxi_vhosts($device_id) {
+function ss_esxi_vhosts(int $device_id) : string {
 	$host = db_fetch_row_prepared('SELECT *
 		FROM host
 		WHERE id = ?',

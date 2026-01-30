@@ -188,7 +188,7 @@ class SNMP {
 			$output[$oid] = $function_name($this->hostname, $this->community, $oid,
 				$this->version, $this->username, $this->auth_pass, $this->auth_proto,
 				$this->priv_pass, $this->priv_proto, $this->contextName, $this->port,
-				$this->timeout, $this->retries, SNMP_POLLER, $this->contextEngineID,
+				$this->timeout, $this->retries, 'SNMP', $this->contextEngineID,
 				$this->value_output_format);
 		}
 
@@ -228,7 +228,7 @@ class SNMP {
 		$result = cacti_snmp_walk($this->hostname, $this->community, $oid, $this->version,
 			$this->username, $this->auth_pass, $this->auth_proto, $this->priv_pass,
 			$this->priv_proto, $this->contextName, $this->port, $this->timeout,
-			$this->retries, $max_repetitions, SNMP_POLLER, $this->contextEngineID,
+			$this->retries, $max_repetitions, 'SNMP', $this->contextEngineID,
 			$this->value_output_format);
 
 		if ($result === false) {

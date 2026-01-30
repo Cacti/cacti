@@ -1,14 +1,6 @@
 <?php
 
-// do NOT run this script through a web browser
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD']) || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
-
-// deactivate http headers
-$no_http_headers = true;
-// include some cacti files for ease of use
-include(__DIR__ . '/../include/global.php');
+include(__DIR__ . '/../include/cli_check.php');
 include(__DIR__ . '/../lib/snmp.php');
 
 // define all OIDs we need for further processing
@@ -48,12 +40,14 @@ $xml_delimiter =  '!';
 
 // all required input parms
 $hostname        = $_SERVER['argv'][1]; // hostname/IP@
+
 // $cmd            = $_SERVER["argv"][2];
 $snmp_community  = $_SERVER['argv'][2];
-$snmp_version    = $_SERVER['argv'][3];
-$snmp_port       = $_SERVER['argv'][4];
-$snmp_timeout    = $_SERVER['argv'][5];
-$max_oids        = $_SERVER['argv'][6];
+$snmp_version    = intval($_SERVER['argv'][3]);
+$snmp_port       = intval($_SERVER['argv'][4]);
+$snmp_timeout    = intval($_SERVER['argv'][5]);
+$max_oids        = intval($_SERVER['argv'][6]);
+
 // required for SNMP V3
 $snmp_auth_username    = $_SERVER['argv'][7];
 $snmp_auth_password    = $_SERVER['argv'][8];
@@ -72,7 +66,7 @@ if (isset($_SERVER['argv'][15])) {
 }
 
 // get number of snmp retries from global settings
-$snmp_retries   = read_config_option('snmp_retries');
+$snmp_retries   = intval(read_config_option('snmp_retries'));
 
 // -------------------------------------------------------------------------
 // main code starts here
@@ -139,12 +133,12 @@ elseif ($cmd == 'query' && isset($query_field)) {
 			$result = cacti_snmp_get($hostname, $snmp_community,
 				str_replace('X', "$arr_index[$i]", $oids[$query_field]), $snmp_version, $snmp_auth_username,
 				$snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol,
-				$snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, $max_oids, SNMP_POLLER);
+				$snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, SNMP_POLLER);
 
 			// Cannot perform CDEF operations on input type data query items, so we perform the necessary
 			// calculation as we collect the data.
 			if (preg_match('/^cktMaxCurrent/',$query_field) || preg_match('/^cktCurrentAlmThresh/',$query_field)) {
-				$arr[$i] = ($result / 10);
+				$arr[$i] = (intval($result) / 10);
 			} else {
 				$arr[$i] = $result;
 			}
@@ -177,22 +171,22 @@ elseif ($cmd == 'get' && isset($query_field) && isset($query_index)) {
 		print(cacti_snmp_get($hostname, $snmp_community,
 			$oids[$query_field] . ".$query_index", $snmp_version, $snmp_auth_username,
 			$snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol,
-			$snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, $max_oids, SNMP_POLLER));
+			$snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, SNMP_POLLER));
 	} elseif ($query_field == 'index') {
 		print(cacti_snmp_get($hostname, $snmp_community,
 			$oids[$query_field] . ".$query_index", $snmp_version, $snmp_auth_username,
 			$snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol,
-			$snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, $max_oids, SNMP_POLLER));
+			$snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, SNMP_POLLER));
 	} else {
 		$result =  (cacti_snmp_get($hostname, $snmp_community,
 			str_replace('X', "$query_index", $oids[$query_field]), $snmp_version, $snmp_auth_username,
 			$snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol,
-			$snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, $max_oids, SNMP_POLLER));
+			$snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, SNMP_POLLER));
 
 		// Cannot perform CDEF operations on input type data query items, so we perform the necessary
 		// calculation as we collect the data.
 		if (preg_match('/^cktMaxCurrent/',$query_field) || preg_match('/^cktCurrentAlmThresh/',$query_field)) {
-			print($result / 10);
+			print(intval($result) / 10);
 		} else {
 			print $result;
 		}
@@ -206,7 +200,7 @@ else {
 	print "    <hostname> <cmd>\n";
 }
 
-function reindex($arr) {
+function reindex(array $arr) : array {
 	$return_arr = [];
 
 	for ($i = 0; ($i < sizeof($arr)); $i++) {

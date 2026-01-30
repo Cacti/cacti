@@ -8,7 +8,7 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_multicpu_avg', $_SERVER['argv']);
 }
 
-function ss_multicpu_avg($device_id) {
+function ss_multicpu_avg(int $device_id) : string {
 	$host = db_fetch_row_prepared('SELECT *
 		FROM host
 		WHERE id = ?',

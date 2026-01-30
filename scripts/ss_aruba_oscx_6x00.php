@@ -12,7 +12,7 @@ if (!isset($called_by_script_server)) {
 	include_once(__DIR__ . '/../lib/snmp.php');
 }
 
-function ss_aruba_oscx_6x00($host_id = 0, $object = 'fan', $cmd = 'index', $what = '', $index = '') {
+function ss_aruba_oscx_6x00(int $host_id = 0, string $object = 'fan', string $cmd = 'index', string $what = '', string $index = '') : mixed {
 	$state_table = [
 		'notPresent'           => 1,
 		'booting'              => 2,
@@ -64,9 +64,10 @@ function ss_aruba_oscx_6x00($host_id = 0, $object = 'fan', $cmd = 'index', $what
 
 	$vsf_standalone = true;
 
-	if (empty($host_id) || $host_id === null || !is_numeric($host_id)) {
+	if ($host_id <= 0) {
 		return 'U';
 	}
+
 	$host = db_fetch_row_prepared('SELECT *
 		FROM host
 		WHERE id = ?',
@@ -265,7 +266,7 @@ function ss_aruba_oscx_6x00($host_id = 0, $object = 'fan', $cmd = 'index', $what
 			}
 		} elseif ($what == 'actual') {
 			if ($object == 'temp') {
-				return ($return_val / 1000);
+				return (intval($return_val) / 1000);
 			} else {
 				return $return_val;
 			}
@@ -273,6 +274,6 @@ function ss_aruba_oscx_6x00($host_id = 0, $object = 'fan', $cmd = 'index', $what
 			return $return_val;
 		}
 	}
-}
 
-?>
+	return null;
+}

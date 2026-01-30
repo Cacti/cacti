@@ -31,7 +31,7 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_mikrotik_cpu', $_SERVER['argv']);
 }
 
-function ss_mikrotik_cpu($host_id = '') {
+function ss_mikrotik_cpu(int $host_id = 0) : string {
 	$cpu = db_fetch_row_prepared('SELECT AVG(`load`) AS avgCPU,
 		MAX(`load`) AS maxCPU
 		FROM plugin_mikrotik_processor

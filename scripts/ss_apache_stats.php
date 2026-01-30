@@ -1,19 +1,12 @@
 <?php
-/*
 
-Original Template by 	ApacheStats 0.8.2 by RCK - http://forums.cacti.net/about25227.html
-Tested and packged for Cacti 1.2.x  by Sean Mancini - bmfmancini - www.seanmancini.com
-
-
-*/
-
-$no_http_headers = true;
-
-// display No errors
-error_reporting(0);
+/**
+ * Original Template by ApacheStats 0.8.2 by RCK - http://forums.cacti.net/about25227.html
+ * Tested and packged for Cacti 1.2.x  by Sean Mancini - bmfmancini - www.seanmancini.com
+ */
 
 if (!isset($called_by_script_server)) {
-	include_once(__DIR__ . '/../include/global.php');
+	include_once(__DIR__ . '/../include/cli_check.php');
 	include_once(__DIR__ . '/../lib/snmp.php');
 
 	array_shift($_SERVER['argv']);
@@ -21,7 +14,7 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_apache_stats', $_SERVER['argv']);
 }
 
-function ss_apache_stats($host = '', $section = 'all') {
+function ss_apache_stats(string $host = '', string $section = 'all') : mixed {
 	// perform initial error checking
 	if (empty($host)) {
 		cacti_log('ERROR: ApacheStats08 - Host parameter missing, can not continue');
@@ -103,8 +96,8 @@ function ss_apache_stats($host = '', $section = 'all') {
 				}
 
 				break;
-		}// end switch
-	}// end foreach
+		}
+	}
 
 	if (($section == 'threads') || ($section == 'all')) {
 		foreach ($threads as $type => $num_threads) {
@@ -114,5 +107,3 @@ function ss_apache_stats($host = '', $section = 'all') {
 
 	return trim(str_replace(["\r", "\n"],'', $output));
 }
-
-?>

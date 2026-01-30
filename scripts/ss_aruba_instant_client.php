@@ -36,10 +36,10 @@ if (!isset($called_by_script_server)) {
 	include_once(__DIR__ . '/../lib/snmp.php');
 }
 
-function ss_aruba_instant_client($host_id = 0) {
+function ss_aruba_instant_client(int $host_id = 0) : mixed {
 	global $environ, $poller_id, $config;
 
-	if (empty($host_id) || $host_id === null || !is_numeric($host_id)) {
+	if ($host_id <= 0) {
 		return 'count:0' . PHP_EOL;
 	}
 
@@ -66,5 +66,3 @@ function ss_aruba_instant_client($host_id = 0) {
 
 	return ('count:' . count($clients) . PHP_EOL);
 }
-
-?>

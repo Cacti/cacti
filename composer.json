@@ -26,7 +26,7 @@
     "type": "composer-plugin",
     "license": "GPL-2.0-only",
     "require": {
-        "php": ">=8.1",
+        "php": "^8.1",
         "ext-PDO": "*",
         "ext-Phar": "*",
         "ext-dom": "*",
@@ -48,9 +48,9 @@
         "hayageek/oauth2-yahoo": "^2.0",
         "league/oauth2-client": "^2.7",
         "league/oauth2-google": "^4.0",
-        "lipis/flag-icons": "^6.11.0",
+        "lipis/flag-icons": "^7.5.0",
         "php-mqtt/client": "^2.2",
-        "phpmailer/phpmailer": "^6.7.3",
+        "phpmailer/phpmailer": "^7.0.2",
         "phpseclib/phpseclib": "^3.0",
         "slim/slim": "^4.14",
         "stevenmaguire/oauth2-keycloak": "^5.1",
@@ -83,7 +83,7 @@
     "scripts": {
         "lint": "phplint --no-cache --exclude=include/vendor",
         "phpstan": "phpstan analyse --level 6 ",
-        "phpcsfixer": "php-cs-fixer fix --dry-run --diff --config=./.php-cs-fixer.php --ansi",
+        "phpcsfixer": "php-cs-fixer fix --allow-unsupported-php-version=yes --dry-run --diff --config=./.php-cs-fixer.php --ansi",
         "phpcsfixit": "php-cs-fixer fix --ansi"
     },
     "require-dev": {

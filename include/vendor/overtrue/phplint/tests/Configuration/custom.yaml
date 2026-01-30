@@ -1,0 +1,10 @@
+path: ./src
+jobs: 10
+extensions:
+  - php
+exclude:
+  - vendor
+  - tests
+warning: true
+memory-limit: -1
+no-cache: true

@@ -237,6 +237,11 @@ jobs:
         cd ${{ github.workspace }}
         sudo php -q tests/tools/check_install_code.php
 
+    - name: Check All Resource XML File Syntax
+      run: |
+        cd ${{ github.workspace }}
+        sudo php tests/tools/check_xml_syntax.php
+
     - name: Check that all CLI scripts have a valid --version flag
       run: |
         cd ${{ github.workspace }}
@@ -251,6 +256,11 @@ jobs:
       run: |
         cd ${{ github.workspace }}
         sudo tests/tools/install_packages.sh
+
+    - name: Check All Resource XML File Syntax Post Package Install
+      run: |
+        cd ${{ github.workspace }}
+        sudo php tests/tools/check_xml_syntax.php
 
     - name: Audit the Installation Schema
       run: |

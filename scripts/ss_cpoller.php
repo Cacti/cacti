@@ -33,7 +33,7 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_cpoller', $_SERVER['argv']);
 }
 
-function ss_cpoller($cmd = 'index', $arg1 = '', $arg2 = '') {
+function ss_cpoller(string $cmd = 'index', string $arg1 = '', string $arg2 = '') : mixed {
 	if ($cmd == 'index') {
 		$collectors = db_fetch_assoc('SELECT id FROM poller ORDER BY id');
 
@@ -169,4 +169,6 @@ function ss_cpoller($cmd = 'index', $arg1 = '', $arg2 = '') {
 
 		return ($value == '' ? '0' : $value);
 	}
+
+	return 'U';
 }
