@@ -130,7 +130,7 @@ class Process extends EventEmitter
         if (null !== $env) {
             $this->env = array();
             foreach ($env as $key => $value) {
-                $this->env[(binary) $key] = (binary) $value;
+                $this->env[(string) $key] = (string) $value;
             }
         }
 
