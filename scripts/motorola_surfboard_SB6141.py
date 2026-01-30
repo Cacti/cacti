@@ -27,7 +27,7 @@ try:
 	page = requests.get('http://%s/cmSignalData.htm' % (sys.argv[2]))
 	tree = html.fromstring(page.text)
 except Exception, e:
-	print "Unable to retrive data from modem!"
+	print "Unable to retrieve data from modem!"
 	print e
 	sys.exit(1)
 
