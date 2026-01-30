@@ -5,8 +5,6 @@
  * Tested and packged for Cacti 1.2.x  by Sean Mancini - bmfmancini - www.seanmancini.com
  */
 
-error_reporting(0);
-
 if (!isset($called_by_script_server)) {
 	include_once(__DIR__ . '/../include/cli_check.php');
 	include_once(__DIR__ . '/../lib/snmp.php');
