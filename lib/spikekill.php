@@ -563,10 +563,10 @@ class spikekill {
 								} elseif ($timestamp >= $this->out_start && $timestamp <= $this->out_end) {
 									if ($this->method == SPIKE_METHOD_FILL) {
 										if (!is_numeric($dsvalue)) {
-											$this->debug(sprintf('Fill Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%s NewVal:%s', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue, $rra[$rra_num][$ds_num]['last']));
+											$this->debug(sprintf('Fill Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%s NewVal:%s', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue, $rra[$rra_num][$ds_num]['last'] ?? 'Unset'));
 										}
 									} else {
-										$this->debug(sprintf('Float Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%s NewVal:%s', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue, $rra[$rra_num][$ds_num]['last']));
+										$this->debug(sprintf('Float Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%s NewVal:%s', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue, $rra[$rra_num][$ds_num]['last'] ?? 'Unset'));
 									}
 
 									$process = false;
@@ -1119,8 +1119,8 @@ class spikekill {
 										$kills++;
 										$this->total_kills++;
 									}
-								} else {
-									cacti_log("DEBUG: ignoring dsvalue {$dsvalue} as we are outside of the time range!", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
+								} elseif ($this->debug) {
+									cacti_log("DEBUG: ignoring dsvalue {$dsvalue} as we are outside of the time range!", false, 'SPIKEKILL');
 								}
 
 								break;
@@ -1149,7 +1149,7 @@ class spikekill {
 											$this->total_kills++;
 										}
 									}
-								} else {
+								} elseif ($this->debug) {
 									cacti_log("DEBUG: ignoring dsvalue {$dsvalue} as we are outside of the time range!", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
 								}
 
@@ -1325,7 +1325,7 @@ class spikekill {
 			$my_samples = [];
 
 			foreach($samples as $timestamp => $value) {
-				if (($timestamp < $this->out_start || $timestamp > $this->out_end) && is_numeric($valu)) {
+				if (($timestamp < $this->out_start || $timestamp > $this->out_end) && is_numeric($value)) {
 					$my_samples[] = $value;
 				}
 			}
