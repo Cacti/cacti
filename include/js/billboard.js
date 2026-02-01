@@ -5,7 +5,7 @@
  * billboard.js, JavaScript chart library
  * https://naver.github.io/billboard.js/
  *
- * @version 3.13.0
+ * @version 3.18.0
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -157,12 +157,12 @@ module.exports = __WEBPACK_EXTERNAL_MODULE__14__;
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be isolated against other entry modules.
+// This entry needs to be wrapped in an IIFE because it needs to be isolated against other entry modules.
 !function() {
 // extracted by mini-css-extract-plugin
 
 }();
-// This entry need to be wrapped in an IIFE because it need to be isolated against other entry modules.
+// This entry needs to be wrapped in an IIFE because it needs to be isolated against other entry modules.
 !function() {
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
@@ -212,7 +212,7 @@ __webpack_require__.d(resolver_shape_namespaceObject, {
 var external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_ = __webpack_require__(2);
 // EXTERNAL MODULE: external {"commonjs":"d3-time-format","commonjs2":"d3-time-format","amd":"d3-time-format","root":"d3"}
 var external_commonjs_d3_time_format_commonjs2_d3_time_format_amd_d3_time_format_root_d3_ = __webpack_require__(3);
-;// CONCATENATED MODULE: ./src/config/classes.ts
+;// ./src/config/classes.ts
 var __defProp = Object.defineProperty;
 var __getOwnPropSymbols = Object.getOwnPropertySymbols;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
@@ -235,11 +235,13 @@ const $COMMON = {
   empty: "bb-empty",
   main: "bb-main",
   target: "bb-target",
-  EXPANDED: "_expanded_"
+  EXPANDED: "_expanded_",
+  dummy: "_dummy_"
 };
 const $ARC = {
   arc: "bb-arc",
   arcLabelLine: "bb-arc-label-line",
+  arcLabelLineText: "bb-arc-label-line-text",
   arcRange: "bb-arc-range",
   arcs: "bb-arcs",
   chartArc: "bb-chart-arc",
@@ -262,13 +264,16 @@ const $AXIS = {
   axisYLabel: "bb-axis-y-label",
   axisXTooltip: "bb-axis-x-tooltip",
   axisYTooltip: "bb-axis-y-tooltip",
-  axisY2Tooltip: "bb-axis-y2-tooltip"
+  axisY2Tooltip: "bb-axis-y2-tooltip",
+  axisTooltipX: "bb-axis-tooltip-x",
+  axisTooltipY: "bb-axis-tooltip-y"
 };
 const $BAR = {
   bar: "bb-bar",
   bars: "bb-bars",
   chartBar: "bb-chart-bar",
-  chartBars: "bb-chart-bars"
+  chartBars: "bb-chart-bars",
+  barConnectLine: "bb-bar-connectLine"
 };
 const $CANDLESTICK = {
   candlestick: "bb-candlestick",
@@ -375,6 +380,8 @@ const $TEXT = {
   text: "bb-text",
   texts: "bb-texts",
   title: "bb-title",
+  textBorderRect: "bb-text-border",
+  textLabelImage: "bb-text-label-image",
   TextOverlapping: "text-overlapping"
 };
 const $TOOLTIP = {
@@ -393,7 +400,7 @@ const $ZOOM = {
 };
 /* harmony default export */ var classes = (__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues({}, $COMMON), $ARC), $AREA), $AXIS), $BAR), $CANDLESTICK), $CIRCLE), $COLOR), $DRAG), $GAUGE), $LEGEND), $LINE), $EVENT), $FOCUS), $FUNNEL), $GRID), $RADAR), $REGION), $SELECT), $SHAPE), $SUBCHART), $TEXT), $TOOLTIP), $TREEMAP), $ZOOM));
 
-;// CONCATENATED MODULE: ./src/config/Options/common/boost.ts
+;// ./src/config/Options/common/boost.ts
 /* harmony default export */ var boost = ({
   /**
    * Set boost options
@@ -409,6 +416,7 @@ const $ZOOM = {
    * - **NOTE:**
    *   - For now, only applies for data conversion at the initial time.
    *   - As of Web Worker's async nature, handling chart instance synchrously is not recommended.
+   *   - When given data is empty, useWorker will be ignored.
    * @example
    *  boost: {
    *      useCssRule: true,
@@ -419,7 +427,7 @@ const $ZOOM = {
   boost_useWorker: false
 });
 
-;// CONCATENATED MODULE: ./src/config/Options/common/color.ts
+;// ./src/config/Options/common/color.ts
 /* harmony default export */ var color = ({
   /**
    * Set color of the data values
@@ -427,9 +435,9 @@ const $ZOOM = {
    * @memberof Options
    * @type {object}
    * @property {object} color color object
-   * @property {string|object|Function} [color.onover] Set the color value for each data point when mouse/touch onover event occurs.
+   * @property {string|object|((this: Chart, d: DataItem) => string)} [color.onover] Set the color value for each data point when mouse/touch onover event occurs.
    * @property {Array|null} [color.pattern=[]] Set custom color pattern. Passing `null` will not set a color for these elements, which requires the usage of custom CSS-based theming to work.
-   * @property {Function} [color.tiles] if defined, allows use svg's patterns to fill data area. It should return an array of [SVGPatternElement](https://developer.mozilla.org/en-US/docs/Web/API/SVGPatternElement).
+   * @property {(this: Chart) => SVGPathElement[]} [color.tiles] if defined, allows use svg's patterns to fill data area. It should return an array of [SVGPatternElement](https://developer.mozilla.org/en-US/docs/Web/API/SVGPatternElement).
    *  - **NOTE:** The pattern element's id will be defined as `bb-colorize-pattern-$COLOR-VALUE`.<br>
    *    ex. When color pattern value is `['red', '#fff']` and defined 2 patterns,then ids for pattern elements are:<br>
    *    - `bb-colorize-pattern-red`
@@ -501,7 +509,7 @@ const $ZOOM = {
   color_onover: void 0
 });
 
-;// CONCATENATED MODULE: ./src/config/Options/common/legend.ts
+;// ./src/config/Options/common/legend.ts
 /* harmony default export */ var legend = ({
   /**
    * Legend options
@@ -514,7 +522,8 @@ const $ZOOM = {
    *  If true given, all legend will be hidden. If string or array given, only the legend that has the id will be hidden.
    * @property {string|HTMLElement} [legend.contents.bindto=undefined] Set CSS selector or element reference to bind legend items.
    * - **NOTE:** Should be used along with `legend.contents.template`.
-   * @property {string|Function} [legend.contents.template="<span style='color:#fff;padding:5px;background-color:{=COLOR}'>{=TITLE}</span>"] Set item's template.<br>
+   * @property {string|function} [legend.contents.template="<span style='color:#fff;padding:5px;background-color:{=COLOR}'>{=TITLE}</span>"] Set item's template.<br>
+   *  - **NOTE:** Only common HTML tags are allowed to prevent XSS attacks. If creating charts from user input, it is recommended to sanitize input values to avoid potential vulnerabilities.
    *  - If set `string` value, within template the 'color' and 'title' can be replaced using template-like syntax string:
    *    - {=COLOR}: data color value
    *    - {=TITLE}: data title value
@@ -522,6 +531,7 @@ const $ZOOM = {
    *   - title {string}: data's id value
    *   - color {string}: color string
    *   - data {Array}: data array
+   *  - **NOTE:** While basic XSS sanitization is applied, if you're allowing user-provided chart options in a service exposed to other users, you should implement additional security measures to prevent sophisticated XSS attacks.
    * @property {string} [legend.position=bottom] Change the position of legend.<br>
    *  Available values are: `bottom`, `right` and `inset` are supported.
    * @property {object} [legend.inset={anchor: 'top-left',x: 10,y: 0,step: undefined}] Change inset legend attributes.<br>
@@ -548,13 +558,13 @@ const $ZOOM = {
    *    - To return initial state(which all dataseries are showing), double click current focused legend item again.
    *      - for single click case, `click + altKey(Win)/optionKey(Mac OS)` to have same effect.
    *    - In this case, default `click` interaction will be disabled.
-   * @property {Function} [legend.item.onclick=undefined] Set click event handler to the legend item.
+   * @property {function} [legend.item.onclick=undefined] Set click event handler to the legend item.
    *  - **NOTE:**
    *    - When set, default `click` interaction will be disabled.
    *    - When `interaction.dblclick=true` is set, will be called on double click.
-   * @property {Function} [legend.item.onover=undefined] Set mouse/touch over event handler to the legend item.
+   * @property {function} [legend.item.onover=undefined] Set mouse/touch over event handler to the legend item.
    *  - **NOTE:** When set, default `mouseover` interaction will be disabled.
-   * @property {Function} [legend.item.onout=undefined] Set mouse/touch out event handler to the legend item.
+   * @property {function} [legend.item.onout=undefined] Set mouse/touch out event handler to the legend item.
    *  - **NOTE:** When set, default `mouseout` interaction will be disabled.
    * @property {number} [legend.item.tile.width=10] Set width for 'rectangle' legend item tile element.
    * @property {number} [legend.item.tile.height=10] Set height for 'rectangle' legend item tile element.
@@ -615,9 +625,12 @@ const $ZOOM = {
    *          }
    *
    *          // when set below callback, will disable corresponding default interactions
-   *          onclick: function(id) { ... },
-   *          onover: function(id) { ... },
-   *          onout: function(id) { ... },
+   *          onclick: function(id, visible) {
+   *           	// toggle based on the data visibility
+   *           	this[visible ? "hide" : "show"](id);
+   *          },
+   *          onover: function(id, visible) { ... },
+   *          onout: function(id, visible) { ... },
    *
    *          // set tile's size
    *          tile: {
@@ -628,7 +641,7 @@ const $ZOOM = {
    *              width: 15,
    *              height: 15
    *
-   *              // radis is only applicable for 'circle' legend type
+   *              // radius is only applicable for 'circle' legend type
    *              r: 10
    *          }
    *      },
@@ -670,18 +683,18 @@ const $ZOOM = {
   legend_usePoint: false
 });
 
-;// CONCATENATED MODULE: ./src/config/Options/common/main.ts
+;// ./src/config/Options/common/main.ts
 /* harmony default export */ var main = ({
   /**
    * Specify the CSS selector or the element which the chart will be set to. D3 selection object can be specified also.<br>
-   * If other chart is set already, it will be replaced with the new one (only one chart can be set in one element).
-   * - **NOTE:** In case of element doesn't exist or not specified, will add a `<div>` element to the body.
+   * If another chart is already set, it will be replaced with the new one (only one chart can be set in one element).
+   * - **NOTE:** In case the element doesn't exist or not specified, will add a `<div>` element to the body.
    * @name bindto
    * @memberof Options
    * @property {string|HTMLElement|d3.selection|object} [bindto="#chart"] Specify the element where chart will be drawn.
    * @property {string|HTMLElement|d3.selection} bindto.element="#chart" Specify the element where chart will be drawn.
    * @property {string} [bindto.classname=bb] Specify the class name of bind element.<br>
-   *     **NOTE:** When class name isn't `bb`, then you also need to update the default CSS to be rendered correctly.
+   *     **NOTE:** When the class name isn't `bb`, then you also need to update the default CSS to be rendered correctly.
    * @default #chart
    * @example
    * bindto: "#myContainer"
@@ -722,8 +735,8 @@ const $ZOOM = {
   /**
    * Set 'clip-path' attribute for chart element
    * - **NOTE:**
-   *  > When is false, chart node element is positioned after the axis node in DOM tree hierarchy.
-   *  > Is to make chart element positioned over axis element.
+   *  > When false, chart node element is positioned after the axis node in DOM tree hierarchy.
+   *  > This is to make the chart element positioned over axis element.
    * @name clipPath
    * @memberof Options
    * @type {boolean}
@@ -749,7 +762,7 @@ const $ZOOM = {
   svg_classname: void 0,
   /**
    * The desired size of the chart element.
-   * If value is not specified, the width of the chart will be calculated by the size of the parent element it's appended to.
+   * If the value is not specified, the width of the chart will be calculated by the size of the parent element it's appended to.
    * @name size
    * @memberof Options
    * @type {object}
@@ -767,13 +780,13 @@ const $ZOOM = {
   size_height: void 0,
   /**
    * The padding of the chart element.
-   * - **NOTE:** for more information, see the "[`Understanding padding`](https://github.com/naver/billboard.js/wiki/Understanding-padding)"" wiki documentaion.
+   * - **NOTE:** for more information, see the "[`Understanding padding`](https://github.com/naver/billboard.js/wiki/Understanding-padding)" wiki documentation.
    * @name padding
    * @memberof Options
    * @type {object}
    * @property {object|boolean} [padding=true] Set padding of chart, and accepts object or boolean type.
    * - `Object`: Specify each side's padding.
-   * - `false`: Remove padding completely and make shape to fully occupy the container element.
+   * - `false`: Remove padding completely and make the shape fully occupy the container element.
    *   - In this case, axes and subchart will be hidden.
    *   - To adjust some padding from this state, use `axis.[x|y].padding` option.
    * @property {string} [padding.mode] padding mode
@@ -820,24 +833,37 @@ const $ZOOM = {
    * @memberof Options
    * @type {object}
    * @property {object} [resize] resize object
-   * @property {boolean} [resize.auto=true] Set chart resize automatically on viewport changes.
+   * @property {boolean|string} [resize.auto=true] Set chart resize automatically on viewport changes.
+   * - **NOTE:** Available options
+   *   - true: Enables automatic resize.
+   *   - false: Disables automatic resize.
+   *   - "parent": Enables automatic resize when the parent node is resized.
+   *   - "viewBox": Enables automatic resize, and size will be fixed based on the viewbox.
    * @property {boolean|number} [resize.timer=true] Set resize timer option.
-   * - **NOTE:**
+   * - **NOTE:** Available options
    *   - The resize function will be called using:
    *     - true: `setTimeout()`
    *     - false: `requestIdleCallback()`
-   *   - Given number(delay in ms) value, resize function will be triggered using `setTimer()` with given delay.
+   *   - Given number(delay in ms) value, resize function will be triggered using `setTimeout()` with given delay.
+   * @see [Demo: resize "parent"](https://naver.github.io/billboard.js/demo/#ChartOptions.resizeParent)
+   * @see [Demo: resize "viewBox"](https://naver.github.io/billboard.js/demo/#ChartOptions.resizeViewBox)
    * @example
    *  resize: {
    *      auto: false,
    *
-   *      // set resize function will be triggered using `setTimer()`
+   *      // set resize based on parent node width value
+   *      auto: "parent",
+   *
+   *      // set resize based on viewBox value
+   *      auto: "viewBox",
+   *
+   *      // set resize function will be triggered using `setTimeout()`
    *      timer: true,
    *
    *      // set resize function will be triggered using `requestIdleCallback()`
    *      timer: false,
    *
-   *      // set resize function will be triggered using `setTimer()` with a delay of `100ms`.
+   *      // set resize function will be triggered using `setTimeout()` with a delay of `100ms`.
    *      timer: 100
    *  }
    */
@@ -847,7 +873,7 @@ const $ZOOM = {
    * Set a callback to execute when the chart is clicked.
    * @name onclick
    * @memberof Options
-   * @type {Function}
+   * @type {function}
    * @default undefined
    * @example
    * onclick: function(event) {
@@ -861,7 +887,7 @@ const $ZOOM = {
    * Set a callback to execute when mouse/touch enters the chart.
    * @name onover
    * @memberof Options
-   * @type {Function}
+   * @type {function}
    * @default undefined
    * @example
    * onover: function(event) {
@@ -875,7 +901,7 @@ const $ZOOM = {
    * Set a callback to execute when mouse/touch leaves the chart.
    * @name onout
    * @memberof Options
-   * @type {Function}
+   * @type {function}
    * @default undefined
    * @example
    * onout: function(event) {
@@ -889,7 +915,7 @@ const $ZOOM = {
    * Set a callback to execute when user resizes the screen.
    * @name onresize
    * @memberof Options
-   * @type {Function}
+   * @type {function}
    * @default undefined
    * @example
    * onresize: function() {
@@ -902,7 +928,7 @@ const $ZOOM = {
    * Set a callback to execute when screen resize finished.
    * @name onresized
    * @memberof Options
-   * @type {Function}
+   * @type {function}
    * @default undefined
    * @example
    * onresized: function() {
@@ -915,7 +941,7 @@ const $ZOOM = {
    * Set a callback to execute before the chart is initialized
    * @name onbeforeinit
    * @memberof Options
-   * @type {Function}
+   * @type {function}
    * @default undefined
    * @example
    * onbeforeinit: function() {
@@ -928,7 +954,7 @@ const $ZOOM = {
    * Set a callback to execute when the chart is initialized.
    * @name oninit
    * @memberof Options
-   * @type {Function}
+   * @type {function}
    * @default undefined
    * @example
    * oninit: function() {
@@ -941,7 +967,7 @@ const $ZOOM = {
    * Set a callback to execute after the chart is initialized
    * @name onafterinit
    * @memberof Options
-   * @type {Function}
+   * @type {function}
    * @default undefined
    * @example
    * onafterinit: function() {
@@ -951,10 +977,10 @@ const $ZOOM = {
    */
   onafterinit: void 0,
   /**
-   * Set a callback which is executed when the chart is rendered. Basically, this callback will be called in each time when the chart is redrawed.
+   * Set a callback which is executed when the chart is rendered. Basically, this callback will be called in each time when the chart is redrawn.
    * @name onrendered
    * @memberof Options
-   * @type {Function}
+   * @type {function}
    * @default undefined
    * @example
    * onrendered: function() {
@@ -965,7 +991,7 @@ const $ZOOM = {
   onrendered: void 0,
   /**
    * Set duration of transition (in milliseconds) for chart animation.<br><br>
-   * - **NOTE:** If `0 `or `null` set, transition will be skipped. So, this makes initial rendering faster especially in case you have a lot of data.
+   * - **NOTE:** If `0` or `null` is set, transition will be skipped. So, this makes initial rendering faster especially in case you have a lot of data.
    * @name transition
    * @memberof Options
    * @type {object}
@@ -996,8 +1022,11 @@ const $ZOOM = {
    * @memberof Options
    * @type {object}
    * @property {object} [render] render object
-   * @property {boolean} [render.lazy=true] Make to not render at initialization (enabled by default when bind element's visibility is hidden).
-   * @property {boolean} [render.observe=true] Observe bind element's visibility(`display` or `visiblity` inline css property or class value) & render when is visible automatically (for IEs, only works IE11+). When set to **false**, call [`.flush()`](./Chart.html#flush) to render.
+   * @property {boolean} [render.lazy=true] Make it not render at initialization.
+   * - **NOTE**:
+   *   - Enabled by default when bind element's visibility is hidden.
+   *   - When set to `false`, will initialize the chart regardless the bind element's visibility state, but in this case chart can't be guaranteed to be rendered properly.
+   * @property {boolean} [render.observe=true] Observe bind element's visibility(`display` or `visibility` inline css property or class value) & render when it is visible automatically (for IEs, only works IE11+). When set to **false**, call [`.flush()`](./Chart.html#flush) to render.
    * @see [Demo](https://naver.github.io/billboard.js/demo/#ChartOptions.LazyRender)
    * @example
    *  render: {
@@ -1019,7 +1048,7 @@ const $ZOOM = {
    *  document.getElementById('chart').style.display = 'block';  // (b)
    *
    * @example
-   * 	// chart won't be rendered and not observing bind element's visiblity changes
+   * 	// chart won't be rendered and not observing bind element's visibility changes
    *  var chart = bb.generate({
    *     render: {
    *          lazy: true,
@@ -1033,17 +1062,32 @@ const $ZOOM = {
   render: {},
   /**
    * Show rectangles inside the chart.<br><br>
-   * This option accepts array including object that has axis, start, end and class.
-   * The keys start, end and class are optional.
-   * axis must be x, y or y2. start and end should be the value where regions start and end.
-   * If not specified, the edge values will be used.
-   * If timeseries x axis, date string, Date object and unixtime integer can be used.
-   * If class is set, the region element will have it as class.
+   * - **NOTE:**<br>
+   *   - axis must be x, y or y2. start and end should be the value where regions start and end.
+   *   - If not specified, the edge values will be used.
+   *   - If timeseries x axis, date string, Date object and unixtime integer can be used.
+   *   - If category x axis, category name can be used for start and end.
+   *   - If class is set, the region element will have it as class.
+   *
+   * This option accept array of object with below values:
+   * - `axis {string}`: 'x', 'y', or 'y2'
+   * - `[start] {number|Date|string}`: Start position of the region. If not set, the start will be the edge of the chart.
+   * - `[end] {number|Date|string}`: End position of the region. If not set, the end will be the edge of the chart.
+   * - `[class] {string}`: Class value to apply to the region.
+   * - `[label] {object}` Label text option.
+   *   - `text {string}`: Text value.
+   *   - `x {number}`: x Position.
+   *   - `y {number}`: y Position.
+   *   - `center {string}`: Align label at the center. Allowed values are 'x', 'y', 'xy'.
+   *   - `color {string}`: Color string.
+   *   - `rotated (boolean)`: Whether rotate label or not.
    * @name regions
    * @memberof Options
    * @type {Array}
    * @default []
-   * @see [Demo](https://naver.github.io/billboard.js/demo/#Region.RegionLabel)
+   * @see [Demo: Regions](https://naver.github.io/billboard.js/demo/#Region.Region)
+   * @see [Demo: Regions Timeseries](https://naver.github.io/billboard.js/demo/#Region.RegionWithTimeseries)
+   * @see [Demo: Regions Label](https://naver.github.io/billboard.js/demo/#Region.RegionLabel)
    * @example
    *  regions: [
    *    {
@@ -1055,6 +1099,7 @@ const $ZOOM = {
    *      	text: "Region Text",
    *      	x: 5,  // position relative of the initial x coordinate
    *      	y: 5,  // position relative of the initial y coordinate
+   *      	center: "xy",  // center text label in both direction.
    *      	color: "red",  // color string
    *      	rotated: true  // make text to show in vertical or horizontal
    *      }
@@ -1064,7 +1109,7 @@ const $ZOOM = {
   regions: []
 });
 
-;// CONCATENATED MODULE: ./src/config/Options/common/title.ts
+;// ./src/config/Options/common/title.ts
 /* harmony default export */ var title = ({
   /**
    * Set title options
@@ -1105,7 +1150,7 @@ const $ZOOM = {
   title_position: "center"
 });
 
-;// CONCATENATED MODULE: ./src/config/Options/common/tooltip.ts
+;// ./src/config/Options/common/tooltip.ts
 /* harmony default export */ var tooltip = ({
   /**
    * Tooltip options
@@ -1119,17 +1164,17 @@ const $ZOOM = {
    *   - **NOTE:** The overlapped data points will be displayed as grouped even if set false.
    * @property {boolean} [tooltip.linked=false] Set if tooltips on all visible charts with like x points are shown together when one is shown.
    * @property {string} [tooltip.linked.name=""] Groping name for linked tooltip.<br>If specified, linked tooltip will be groped interacting to be worked only with the same name.
-   * @property {Function} [tooltip.format.title] Set format for the title of tooltip.<br>
+   * @property {function} [tooltip.format.title] Set format for the title of tooltip.<br>
    *  Specified function receives x of the data point to show.
-   * @property {Function} [tooltip.format.name] Set format for the name of each data in tooltip.<br>
+   * @property {function} [tooltip.format.name] Set format for the name of each data in tooltip.<br>
    *  Specified function receives name, ratio, id and index of the data point to show. ratio will be undefined if the chart is not donut/pie/gauge.
-   * @property {Function} [tooltip.format.value] Set format for the value of each data value in tooltip. If undefined returned, the row of that value will be skipped to be called.
+   * @property {function} [tooltip.format.value] Set format for the value of each data value in tooltip. If undefined returned, the row of that value will be skipped to be called.
    *  - Will pass following arguments to the given function:
    *    - `value {string}`: Value of the data point. If data row contains multiple or ranged(ex. candlestick, area range, etc.) value, formatter will be called as value length.
    *    - `ratio {number}`: Ratio of the data point in the `pie/donut/gauge` and `area/bar` when contains grouped data. Otherwise is `undefined`.
    *    - `id {string}`: id of the data point
    *    - `index {number}`: Index of the data point
-   * @property {Function} [tooltip.position] Set custom position function for the tooltip.<br>
+   * @property {function} [tooltip.position] Set custom position function for the tooltip.<br>
    *  This option can be used to modify the tooltip position by returning object that has top and left.
    *  - Will pass following arguments to the given function:
    *    - `data {Array}`: Current selected data array object.
@@ -1137,10 +1182,11 @@ const $ZOOM = {
    *    - `height {number}`: Height of tooltip.
    *    - `element {SVGElement}`: Tooltip event bound element
    *    - `pos {object}`: Current position of the tooltip.
-   * @property {Function|object} [tooltip.contents] Set custom HTML for the tooltip.<br>
+   * @property {function|object} [tooltip.contents] Set custom HTML for the tooltip.<br>
    *  If tooltip.grouped is true, data includes multiple data points.<br><br>
    *  Specified function receives `data` array and `defaultTitleFormat`, `defaultValueFormat` and `color` functions of the data point to show.
    *  - **Note:**
+   *    - Only common HTML tags are allowed to prevent XSS attacks. If creating charts from user input, it is recommended to sanitize input values to avoid potential vulnerabilities.<br><br>
    *    - defaultTitleFormat:
    *      - if `axis.x.tick.format` option will be used if set.
    *      - otherwise, will return function based on tick format type(category, timeseries).
@@ -1150,7 +1196,8 @@ const $ZOOM = {
    * 	    - otherwise, will parse value and return as number.
    * @property {string|HTMLElement} [tooltip.contents.bindto=undefined] Set CSS selector or element reference to bind tooltip.
    *  - **NOTE:** When is specified, will not be updating tooltip's position.
-   * @property {string} [tooltip.contents.template=undefined] Set tooltip's template.<br><br>
+   * @property {string} [tooltip.contents.template=undefined] Set tooltip's template.
+   *  - **NOTE:** Only common HTML tags are allowed to prevent XSS attacks. If creating charts from user input, it is recommended to sanitize input values to avoid potential vulnerabilities.<br><br>
    *  Within template, below syntax will be replaced using template-like syntax string:
    *    - **{{ ... }}**: the doubly curly brackets indicate loop block for data rows.
    *    - **{=CLASS_TOOLTIP}**: default tooltip class name `bb-tooltip`.
@@ -1159,6 +1206,7 @@ const $ZOOM = {
    *    - **{=COLOR}**: data color.
    *    - **{=NAME}**: data id value.
    *    - **{=VALUE}**: data value.
+   *  - **NOTE:** While basic XSS sanitization is applied, if you're allowing user-provided chart options in a service exposed to other users, you should implement additional security measures to prevent sophisticated XSS attacks.
    * @property {object} [tooltip.contents.text=undefined] Set additional text content within data loop, using template syntax.
    *  - **NOTE:** It should contain `{ key: Array, ... }` value
    *    - 'key' name is used as substitution within template as '{=KEY}'
@@ -1166,11 +1214,11 @@ const $ZOOM = {
    * @property {boolean} [tooltip.init.show=false] Show tooltip at the initialization.
    * @property {number} [tooltip.init.x=0] Set x Axis index(or index for Arc(donut, gauge, pie) types) to be shown at the initialization.
    * @property {object} [tooltip.init.position] Set the position of tooltip at the initialization.
-   * @property {Function} [tooltip.onshow] Set a callback that will be invoked before the tooltip is shown.
-   * @property {Function} [tooltip.onhide] Set a callback that will be invoked before the tooltip is hidden.
-   * @property {Function} [tooltip.onshown] Set a callback that will be invoked after the tooltip is shown
-   * @property {Function} [tooltip.onhidden] Set a callback that will be invoked after the tooltip is hidden.
-   * @property {string|Function|null} [tooltip.order=null] Set tooltip data display order.<br><br>
+   * @property {function} [tooltip.onshow] Set a callback that will be invoked before the tooltip is shown.
+   * @property {function} [tooltip.onhide] Set a callback that will be invoked before the tooltip is hidden.
+   * @property {function} [tooltip.onshown] Set a callback that will be invoked after the tooltip is shown
+   * @property {function} [tooltip.onhidden] Set a callback that will be invoked after the tooltip is hidden.
+   * @property {string|function|null} [tooltip.order=null] Set tooltip data display order.<br><br>
    *  **Available Values:**
    *  - `desc`: In descending data value order
    *  - `asc`: In ascending data value order
@@ -1209,7 +1257,7 @@ const $ZOOM = {
    *          //   yAxis: Current y Axis position value or function(the value is given for axis based chart type only)
    *          // }
    *
-   *          // yAxis will work differently per data lenghts
+   *          // yAxis will work differently per data lengths
    *          // - a) Single data: `yAxis` will return `number` value
    *          // - b) Multiple data: `yAxis` will return a function with property value
    *
@@ -1220,8 +1268,8 @@ const $ZOOM = {
    *          // b) Multiple data:
    *          // Get y coordinate of value 500, where 'data1' scales(y or y2).
    *          // When 'data.axes' option is used, data can bound to different axes.
-   *          // - when "data.axes={data1: 'y'}", wil return y value from y axis scale.
-   *          // - when "data.axes={data1: 'y2'}", wil return y value from y2 axis scale.
+   *          // - when "data.axes={data1: 'y'}", will return y value from y axis scale.
+   *          // - when "data.axes={data1: 'y2'}", will return y value from y2 axis scale.
    *          pos.yAxis(500, "data1"); // will return y coordinate value of data1
    *
    *          pos.yAxis(500); // get y coordinate with value of 500, using y axis scale
@@ -1353,11 +1401,11 @@ const $ZOOM = {
   tooltip_order: null
 });
 
-;// CONCATENATED MODULE: ./src/config/Options/data/data.ts
+;// ./src/config/Options/data/data.ts
 /* harmony default export */ var data = ({
   /**
    * Specify the key of x values in the data.<br><br>
-   * We can show the data with non-index x values by this option. This option is required when the type of x axis is timeseries. If this option is set on category axis, the values of the data on the key will be used for category names.
+   * We can show the data with non-index x values by this option. This option is required when the type of x axis is timeseries. If this option is set on a category axis, the values of the data on the key will be used for category names.
    * @name data․x
    * @memberof Options
    * @type {string}
@@ -1372,7 +1420,7 @@ const $ZOOM = {
    * Converts data id value
    * @name data․idConverter
    * @memberof Options
-   * @type {Function}
+   * @type {function}
    * @default function(id) { return id; }
    * @example
    * data: {
@@ -1541,8 +1589,8 @@ const $ZOOM = {
   data_types: {},
   /**
    *  This option changes the order of stacking data and pieces of pie/donut.
-   *  - If `null` specified, it will be the order the data loaded.
-   *  - If function specified, it will be used as [Array.sort compareFunction](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort#Parameters)<br><br>
+   *  - If `null` specified, it will be the order in which the data is loaded.
+   *  - If a function is specified, it will be used as [Array.sort compareFunction](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort#Parameters)<br><br>
    *
    *  **Available Values:**
    *  - `desc`: In descending order
@@ -1550,10 +1598,10 @@ const $ZOOM = {
    *  - `null`: It keeps the data load order
    *  - `function(data1, data2) { ... }`: Array.sort compareFunction
    *
-   *  **NOTE**: order function, only works for Axis based types & Arc types, except `Radar` type.
+   *  **NOTE**: order function only works for Axis based types & Arc types, except `Radar` type.
    * @name data․order
    * @memberof Options
-   * @type {string|Function|null}
+   * @type {string|function|null}
    * @default desc
    * @see [Demo](https://naver.github.io/billboard.js/demo/#Data.DataOrder)
    * @example
@@ -1608,7 +1656,7 @@ const $ZOOM = {
   /**
    * Set how zero value will be treated on groups.<br>
    * Possible values:
-   * - `zero`: 0 will be positioned at absolute axis zero point.
+   * - `zero`: 0 will be positioned at the absolute axis zero point.
    * - `positive`: 0 will be positioned at the top of a stack.
    * - `negative`: 0 will be positioned at the bottom of a stack.
    * @name data․groupsZeroAs
@@ -1624,10 +1672,10 @@ const $ZOOM = {
   data_groupsZeroAs: "positive",
   /**
    * Set color converter function.<br><br>
-   * This option should a function and the specified function receives color (e.g. '#ff0000') and d that has data parameters like id, value, index, etc. And it must return a string that represents color (e.g. '#00ff00').
+   * This option should be a function and the specified function receives color (e.g. '#ff0000') and d that has data parameters like id, value, index, etc. And it must return a string that represents color (e.g. '#00ff00').
    * @name data․color
    * @memberof Options
-   * @type {Function}
+   * @type {function}
    * @default undefined
    * @see [Demo](https://naver.github.io/billboard.js/demo/#Data.DataColor)
    * @example
@@ -1660,36 +1708,59 @@ const $ZOOM = {
    * @memberof Options
    * @type {object}
    * @property {object} data Data object
-   * @property {boolean} [data.labels=false] Show or hide labels on each data points
+   * @property {boolean} [data.labels=false] Show or hide labels on each data point
    * @property {boolean} [data.labels.centered=false] Centerize labels on `bar` shape. (**NOTE:** works only for 'bar' type)
-   * @property {Function} [data.labels.format] Set formatter function for data labels.<br>
+   * @property {function} [data.labels.format] Set formatter function for data labels.<br>
    * The formatter function receives 4 arguments such as `v, id, i, texts` and it **must return a string** (`\n` character will be used as line break) that will be shown as the label.<br><br>
    * The arguments are:<br>
    *  - `v` is the value of the data point where the label is shown.
    *  - `id` is the id of the data where the label is shown.
    *  - `i` is the index of the data series point where the label is shown.
-   *  - `texts` is the array of whole corresponding data series' text labels.<br><br>
+   *  - `texts` is an array of whole corresponding data series' text labels.<br><br>
    * Formatter function can be defined for each data by specifying as an object and D3 formatter function can be set (ex. d3.format('$'))
-   * @property {string|object} [data.labels.backgroundColors] Set label text background colors.
-   * @property {string|object|Function} [data.labels.colors] Set label text colors.
-   * @property {object|Function} [data.labels.position] Set each dataset position, relative the original.<br><br>
-   * When function is specified, will receives 5 arguments such as `type, v, id, i, texts` and it must return a position number.<br><br>
+   * @property {string|object|function} [data.labels.backgroundColors] Set label text background colors.<br><br>
+   * - **NOTE**: When a function is set, background colors can be specified one color per dataset.
+   *   - Within the function, the last returned color for dataset will be used.
+   *   - Only can control set or unset background color for each values.
+   * @property {string|object|function} [data.labels.colors] Set label text colors.
+   * @property {object|function} [data.labels.position] Set each dataset position, relative to the original.<br><br>
+   * When a function is specified, it will receive 5 arguments such as `type, v, id, i, texts` and it must return a position number.<br><br>
    * The arguments are:<br>
    *  - `type` coordinate type string, which will be 'x' or 'y'.
    *  - `v` is the value of the data point where the label is shown.
    *  - `id` is the id of the data where the label is shown.
    *  - `i` is the index of the data series point where the label is shown.
-   *  - `texts` is the array of whole corresponding data series' text labels.<br><br>
-   * @property {number} [data.labels.position.x=0] x coordinate position, relative the original.
-   * @property {number} [data.labels.position.y=0] y coordinate position, relative the original.
+   *  - `texts` is an array of whole corresponding data series' text labels.<br><br>
+   * @property {number} [data.labels.position.x=0] x coordinate position, relative to the original.
+   * @property {number} [data.labels.position.y=0] y coordinate position, relative to the original.
    * @property {object} [data.labels.rotate] Rotate label text. Specify degree value in a range of `0 ~ 360`.
-   * - **NOTE:** Depend on rotate value, text position need to be adjusted manually(using `data.labels.position` option) to be shown nicely.
+   * - **NOTE:** Depending on the rotate value, the text position needs to be adjusted manually(using `data.labels.position` option) to be shown nicely.
+   * @property {boolean|object} [data.labels.border=false] Add border to data label text. NOTE: When set as `true`, styling isn't applied. Hence, you need to set it using `.bb-text-border` class.
+   * @property {number|string|object} [data.labels.border.padding="3 5"] Border padding. Can be a single number, string or object with top, bottom, left, right properties.
+   * @property {number} [data.labels.border.radius=10] Border radius value.
+   * @property {number} [data.labels.border.strokeWidth=1] Border stroke width.
+   * @property {string} [data.labels.border.stroke="#000"] Border stroke color.
+   * @property {string} [data.labels.border.fill="none"] Border fill color.
+   * @property {object|function} [data.labels.image] Set image to be displayed next to the label text.<br><br>
+   * When a function is specified, it will receive 3 arguments such as `v, id, i` and it must return an image object with `url`, `width`, `height`, and optional `pos` properties.<br><br>
+   * The arguments are:<br>
+   *  - `v` is the value of the data point where the label is shown.
+   *  - `id` is the id of the data where the label is shown.
+   *  - `i` is the index of the data series point where the label is shown.
+   * @property {string} data.labels.image.url Image URL path. Can use placeholder `{=ID}` which will be replaced with the data ID.
+   * @property {number} data.labels.image.width Image width in pixels.
+   * @property {number} data.labels.image.height Image height in pixels.
+   * @property {object} [data.labels.image.pos] Image position relative to the label text.
+   * @property {number} [data.labels.image.pos.x=0] x coordinate position, relative to the original.
+   * @property {number} [data.labels.image.pos.y=0] y coordinate position, relative to the original.
    * @memberof Options
    * @type {object}
    * @default {}
    * @see [Demo](https://naver.github.io/billboard.js/demo/#Data.DataLabel)
+   * @see [Demo: label border](https://naver.github.io/billboard.js/demo/#Data.DataLabelBorder)
    * @see [Demo: label colors](https://naver.github.io/billboard.js/demo/#Data.DataLabelColors)
    * @see [Demo: label format](https://naver.github.io/billboard.js/demo/#Data.DataLabelFormat)
+   * @see [Demo: label image](https://naver.github.io/billboard.js/demo/#Data.DataLabelImage)
    * @see [Demo: label multiline](https://naver.github.io/billboard.js/demo/#Data.DataLabelMultiline)
    * @see [Demo: label overlap](https://naver.github.io/billboard.js/demo/#Data.DataLabelOverlap)
    * @see [Demo: label position](https://naver.github.io/billboard.js/demo/#Data.DataLabelPosition)
@@ -1715,14 +1786,22 @@ const $ZOOM = {
    *     // align text to center of the 'bar' shape (works only for 'bar' type)
    *     centered: true,
    *
-   *     // apply backgound color for label texts
+   *     // apply background color for label texts
    *     backgroundColors: "red",
    *
-   *     // set differenct backround colors per dataset
+   *     // set different background colors per dataset
    *     backgroundColors: {
    *          data1: "green",
    *          data2: "yellow"
-   *     }
+   *     },
+   *
+   *     // call back for label text background color
+   *     backgroundColors: function(color, d) {
+   *         // color: the default data label color string
+   *         // data: ex) {x: 0, value: 200, id: "data3", index: 0}
+   *         ....
+   *         return d.value > 200 ? "cyan" : "red";
+   *     },
    *
    *     // apply for all label texts
    *     colors: "red",
@@ -1762,7 +1841,76 @@ const $ZOOM = {
    *     },
    *
    * 	   // rotate degree for label text
-   *     rotate: 90
+   *     rotate: 90,
+   *
+   *     // add border to data label text
+   *     // NOTE: When set as `true`, styling aren't applied. Hence, need to set using '.bb-text-border' class.
+   *     // ex. ".bb-text-border { fill: red; stroke: #000; stroke-width: 2px; rx: 10px; ry: 10px; }"
+   *     border: true,
+   *
+   *     // or set detailed border options
+   *     border: {
+   *        padding: 10,  // set all padding to 10
+   *        padding: "5 10",  // set top and bottom padding to 5, left and right padding to 10
+   *        padding: {  // specify each padding
+   *           top: 3,
+   *           bottom: 5,
+   *           left: 10,
+   *           right: 13
+   *        },
+   *        radius: 10,
+   *        strokeWidth: 2,
+   *        stroke: "#000",
+   *        fill: "red"
+   *     },
+   *
+   *     // set image to be displayed next to the label text
+   *     image: {
+   *        url: "./sample.svg",
+   *
+   *        // use placeholder to dynamically set image URL based on data ID
+   *        url: "./images/{=ID}.svg",  // will be replaced to "./images/data1.svg", "./images/data2.svg", etc.
+   *        width: 35,
+   *        height: 35,
+   *        pos: {
+   *           x: 0,
+   *           y: 0
+   *        }
+   *     },
+   *
+   *     // or use function to return image configuration dynamically
+   *     image: function(v, id, i) {
+   *        // v is the value of the data point where the label is shown.
+   *        // id is the id of the data where the label is shown.
+   *        // i is the index of the data series point where the label is shown.
+   *
+   *        // Return different images based on value
+   *        if (v > 500) {
+   *           return {
+   *              url: "./high-value.svg",
+   *              width: 40,
+   *              height: 40,
+   *              pos: { x: 0, y: 0 }
+   *           };
+   *        } else if (v > 100) {
+   *           return {
+   *              url: "./medium-value.svg",
+   *              width: 30,
+   *              height: 30,
+   *              pos: { x: 0, y: 0 }
+   *           };
+   *        } else if(v < 5) {
+   *        	// Return falsy value in case you don't want to show image
+   *           return null;
+   *        } else {
+   *           return {
+   *              url: "./low-value.svg",
+   *              width: 20,
+   *              height: 20,
+   *              pos: { x: 0, y: 0 }
+   *           };
+   *        }
+   *     }
    *   }
    * }
    */
@@ -1770,9 +1918,10 @@ const $ZOOM = {
   data_labels_backgroundColors: void 0,
   data_labels_colors: void 0,
   data_labels_position: {},
+  data_labels_imgUrl: void 0,
   /**
    * Hide each data when the chart appears.<br><br>
-   * If true specified, all of data will be hidden. If multiple ids specified as an array, those will be hidden.
+   * If true is specified, all of data will be hidden. If multiple ids are specified as an array, those will be hidden.
    * @name data․hide
    * @memberof Options
    * @type {boolean|Array}
@@ -1793,7 +1942,7 @@ const $ZOOM = {
    * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
    * @name data․filter
    * @memberof Options
-   * @type {Function}
+   * @type {function}
    * @default undefined
    * @example
    * data: {
@@ -1808,13 +1957,13 @@ const $ZOOM = {
   data_filter: void 0,
   /**
    * Set a callback for click event on each data point.<br><br>
-   * This callback will be called when each data point clicked and will receive `d` and element as the arguments.
+   * This callback will be called when each data point is clicked and will receive `d` and element as the arguments.
    * - `d` is the data clicked and element is the element clicked.
    * - `element` is the current interacting svg element.
    * - In this callback, `this` will be the Chart object.
    * @name data․onclick
    * @memberof Options
-   * @type {Function}
+   * @type {function}
    * @default function() {}
    * @example
    * data: {
@@ -1829,13 +1978,13 @@ const $ZOOM = {
   },
   /**
    * Set a callback for mouse/touch over event on each data point.<br><br>
-   * This callback will be called when mouse cursor or via touch moves onto each data point and will receive `d` and `element` as the argument.
+   * This callback will be called when the mouse cursor or touch moves onto each data point and will receive `d` and `element` as the argument.
    * - `d` is the data where mouse cursor moves onto.
    * - `element` is the current interacting svg element.
    * - In this callback, `this` will be the Chart object.
    * @name data․onover
    * @memberof Options
-   * @type {Function}
+   * @type {function}
    * @default function() {}
    * @example
    * data: {
@@ -1850,13 +1999,13 @@ const $ZOOM = {
   },
   /**
    * Set a callback for mouse/touch out event on each data point.<br><br>
-   * This callback will be called when mouse cursor or via touch moves out each data point and will receive `d` as the argument.
+   * This callback will be called when the mouse cursor or touch moves out each data point and will receive `d` as the argument.
    * - `d` is the data where mouse cursor moves out.
    * - `element` is the current interacting svg element.
    * - In this callback, `this` will be the Chart object.
    * @name data․onout
    * @memberof Options
-   * @type {Function}
+   * @type {function}
    * @default function() {}
    * @example
    * data: {
@@ -1874,7 +2023,7 @@ const $ZOOM = {
    * The callback will receive shown data ids in array.
    * @name data․onshown
    * @memberof Options
-   * @type {Function}
+   * @type {function}
    * @default undefined
    * @example
    *  data: {
@@ -1890,7 +2039,7 @@ const $ZOOM = {
    * The callback will receive hidden data ids in array.
    * @name data․onhidden
    * @memberof Options
-   * @type {Function}
+   * @type {function}
    * @default undefined
    * @example
    *  data: {
@@ -1906,7 +2055,7 @@ const $ZOOM = {
    * - **NOTE:** For 'area-line-range', 'area-step-range' and 'area-spline-range', `mid` data will be taken for the comparison
    * @name data․onmin
    * @memberof Options
-   * @type {Function}
+   * @type {function}
    * @default undefined
    * @see [Demo](https://naver.github.io/billboard.js/demo/#Data.OnMinMaxCallback)
    * @example
@@ -1921,7 +2070,7 @@ const $ZOOM = {
    * - **NOTE:** For 'area-line-range', 'area-step-range' and 'area-spline-range', `mid` data will be taken for the comparison
    * @name data․onmax
    * @memberof Options
-   * @type {Function}
+   * @type {function}
    * @default undefined
    * @see [Demo](https://naver.github.io/billboard.js/demo/#Data.OnMinMaxCallback)
    * @example
@@ -1932,7 +2081,7 @@ const $ZOOM = {
    */
   data_onmax: void 0,
   /**
-   * Load a CSV or JSON file from a URL. NOTE that this will not work if loading via the "file://" protocol as the most browsers will block XMLHTTPRequests.
+   * Load a CSV or JSON file from a URL. NOTE that this will not work if loading via the "file://" protocol as most browsers will block XMLHTTPRequests.
    * @name data․url
    * @memberof Options
    * @type {string}
@@ -2060,7 +2209,7 @@ const $ZOOM = {
    *   }
    * }
    *
-   * // for 'canlestick' type, data should contain:
+   * // for 'candlestick' type, data should contain:
    * // - an array of [open, high, low, close, volume(optional)] data following the order
    * // - or an object with 'open', 'high', 'low', 'close' and 'value'(optional) key value
    * data: {
@@ -2135,7 +2284,7 @@ const $ZOOM = {
    *   type: "bubble"
    * }
    *
-   * // for 'canlestick' type, data should contain:
+   * // for 'candlestick' type, data should contain:
    * // - an array of [open, high, low, close, volume(optional)] data following the order
    * // - or an object with 'open', 'high', 'low', 'close' and 'value'(optional) key value
    * data: {
@@ -2210,7 +2359,7 @@ const $ZOOM = {
   data_empty_label_text: ""
 });
 
-;// CONCATENATED MODULE: ./src/config/Options/interaction/interaction.ts
+;// ./src/config/Options/interaction/interaction.ts
 /* harmony default export */ var interaction = ({
   /**
    * Interaction options
@@ -2223,7 +2372,10 @@ const $ZOOM = {
    * @property {boolean} [interaction.brighten=true] Make brighter for the selected area (ex. 'pie' type data selected area)
    * @property {boolean} [interaction.inputType.mouse=true] enable or disable mouse interaction
    * @property {boolean} [interaction.inputType.touch=true] enable or disable  touch interaction
-   * @property {boolean|number} [interaction.inputType.touch.preventDefault=false] enable or disable to call event.preventDefault on touchstart & touchmove event. It's usually used to prevent document scrolling.
+   * @property {boolean|number} [interaction.inputType.touch.preventDefault=false] enable or disable to call event.preventDefault on touchstart & touchmove event. It's usually used to prevent document scrolling.<br>
+   * - **NOTE**: When `true` is set, touch events are bound with [`{passive: false}`](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#using_passive_listeners) option.
+   * @property {boolean} [interaction.onout=true] Enable or disable "onout" event.<br>
+   * 		When is disabled, defocus(hiding tooltip, focused gridline, etc.) event won't work.
    * @see [Demo: touch.preventDefault](https://naver.github.io/billboard.js/demo/#Interaction.PreventScrollOnTouch)
    * @example
    * interaction: {
@@ -2241,18 +2393,22 @@ const $ZOOM = {
    *            // or threshold pixel value (pixel moved from touchstart to touchmove)
    *            preventDefault: 5
    *        }
-   *    }
+   *    },
+   *
+   *    // disable "onout" event
+   *    onout: false
    * }
    */
   interaction_enabled: true,
   interaction_brighten: true,
   interaction_inputType_mouse: true,
-  interaction_inputType_touch: {}
+  interaction_inputType_touch: {},
+  interaction_onout: true
 });
 
 // EXTERNAL MODULE: external {"commonjs":"d3-brush","commonjs2":"d3-brush","amd":"d3-brush","root":"d3"}
 var external_commonjs_d3_brush_commonjs2_d3_brush_amd_d3_brush_root_d3_ = __webpack_require__(4);
-;// CONCATENATED MODULE: ./src/module/browser.ts
+;// ./src/module/browser.ts
 function getGlobal() {
   return typeof globalThis === "object" && globalThis !== null && globalThis.Object === Object && globalThis || typeof global === "object" && global !== null && global.Object === Object && global || typeof self === "object" && self !== null && self.Object === Object && self || Function("return this")();
 }
@@ -2278,7 +2434,309 @@ const [
 ] = getFallback(win);
 
 
-;// CONCATENATED MODULE: ./src/module/util.ts
+;// ./src/module/sanitize.ts
+const ALLOWED_TAGS = /* @__PURE__ */ new Set([
+  // HTML tags for tooltip/legend templates
+  "span",
+  "div",
+  "p",
+  "br",
+  "b",
+  "i",
+  "em",
+  "strong",
+  "u",
+  "s",
+  "sub",
+  "sup",
+  "ul",
+  "ol",
+  "li",
+  "dl",
+  "dt",
+  "dd",
+  "table",
+  "thead",
+  "tbody",
+  "tfoot",
+  "tr",
+  "th",
+  "td",
+  "caption",
+  "colgroup",
+  "col",
+  "hr",
+  "pre",
+  "code",
+  "blockquote",
+  "a",
+  "img",
+  // SVG tags for point patterns
+  "svg",
+  "g",
+  "path",
+  "circle",
+  "ellipse",
+  "rect",
+  "line",
+  "polyline",
+  "polygon",
+  "text",
+  "tspan",
+  "textPath",
+  "use",
+  "defs",
+  "symbol",
+  "clipPath",
+  "mask",
+  "linearGradient",
+  "radialGradient",
+  "stop",
+  "pattern",
+  "marker",
+  "title",
+  "desc"
+]);
+const ALLOWED_ATTRS = /* @__PURE__ */ new Set([
+  // Common attributes
+  "class",
+  "id",
+  "style",
+  "title",
+  "lang",
+  "dir",
+  // HTML specific
+  "href",
+  "src",
+  "alt",
+  "width",
+  "height",
+  "colspan",
+  "rowspan",
+  "scope",
+  "headers",
+  // SVG presentation attributes
+  "d",
+  "points",
+  "x",
+  "y",
+  "x1",
+  "x2",
+  "y1",
+  "y2",
+  "cx",
+  "cy",
+  "r",
+  "rx",
+  "ry",
+  "dx",
+  "dy",
+  "viewBox",
+  "preserveAspectRatio",
+  "transform",
+  "fill",
+  "fill-opacity",
+  "fill-rule",
+  "stroke",
+  "stroke-width",
+  "stroke-opacity",
+  "stroke-linecap",
+  "stroke-linejoin",
+  "stroke-dasharray",
+  "stroke-dashoffset",
+  "opacity",
+  "clip-path",
+  "clip-rule",
+  "mask",
+  "font-family",
+  "font-size",
+  "font-weight",
+  "font-style",
+  "text-anchor",
+  "dominant-baseline",
+  "offset",
+  "stop-color",
+  "stop-opacity",
+  "gradientUnits",
+  "gradientTransform",
+  "spreadMethod",
+  "patternUnits",
+  "patternTransform",
+  "marker-start",
+  "marker-mid",
+  "marker-end",
+  "markerWidth",
+  "markerHeight",
+  "refX",
+  "refY",
+  "xlink:href"
+]);
+const ALLOWED_URI_PROTOCOLS = /* @__PURE__ */ new Set([
+  "http:",
+  "https:",
+  "mailto:"
+]);
+const URI_ATTRS = /* @__PURE__ */ new Set(["href", "src", "xlink:href"]);
+const TAG_NAME_REGEX = /^<\/?([a-zA-Z][a-zA-Z0-9]*)/;
+const CLOSING_TAG_REGEX = /^<\/([a-zA-Z][a-zA-Z0-9]*)\s*>$/;
+const OPENING_TAG_REGEX = /^<([a-zA-Z][a-zA-Z0-9]*)([\s\S]*?)(\/?)>$/;
+const ATTR_REGEX = /([a-zA-Z][\w:-]*)\s*(?:=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+)))?/g;
+const URL_IN_STYLE_REGEX = /url\s*\(\s*["']?([^"')]+)["']?\s*\)/gi;
+const DANGEROUS_CSS_PATTERNS = [
+  "expression(",
+  "behavior:",
+  "binding:",
+  "@import",
+  "@charset",
+  "-moz-binding:"
+];
+function decodeHTMLEntities(str) {
+  return str.replace(/&colon;/gi, ":").replace(/&newline;/gi, "\n").replace(/&tab;/gi, "	").replace(/&nbsp;/gi, " ").replace(/&lt;/gi, "<").replace(/&gt;/gi, ">").replace(/&amp;/gi, "&").replace(/&quot;/gi, '"').replace(/&apos;/gi, "'").replace(/&#(\d+);/gi, (_, code) => String.fromCharCode(parseInt(code, 10))).replace(/&#x([0-9a-f]+);/gi, (_, code) => String.fromCharCode(parseInt(code, 16)));
+}
+function isSafeURI(uri) {
+  const decoded = decodeHTMLEntities(uri).trim();
+  const normalized = decoded.replace(/[\s\u0000-\u001f]/g, "").toLowerCase();
+  if (!normalized || normalized.startsWith("#")) {
+    return true;
+  }
+  if (normalized.startsWith("/") || normalized.startsWith("./") || normalized.startsWith("../") || !normalized.includes(":")) {
+    return true;
+  }
+  const colonIndex = normalized.indexOf(":");
+  if (colonIndex > 0) {
+    const protocol = normalized.substring(0, colonIndex + 1);
+    return ALLOWED_URI_PROTOCOLS.has(protocol);
+  }
+  return false;
+}
+function sanitizeStyleValue(style) {
+  const decoded = decodeHTMLEntities(style);
+  const cleaned = decoded.replace(/[\u0000-\u001f]/g, "");
+  URL_IN_STYLE_REGEX.lastIndex = 0;
+  let match;
+  while ((match = URL_IN_STYLE_REGEX.exec(cleaned)) !== null) {
+    if (!isSafeURI(match[1])) {
+      return null;
+    }
+  }
+  const normalizedLower = cleaned.toLowerCase().replace(/\s/g, "");
+  for (const pattern of DANGEROUS_CSS_PATTERNS) {
+    if (normalizedLower.includes(pattern)) {
+      return null;
+    }
+  }
+  return style;
+}
+const ATTR_ENCODE_MAP = {
+  '"': "&quot;",
+  "'": "&#39;",
+  "`": "&#96;"
+};
+const ATTR_ENCODE_REGEX = /["'`]/g;
+function encodeAttrValue(value) {
+  return value.replace(ATTR_ENCODE_REGEX, (char) => ATTR_ENCODE_MAP[char]);
+}
+function sanitizeAttrValue(name, value, wasUnquoted = false) {
+  if (URI_ATTRS.has(name)) {
+    if (!isSafeURI(value)) {
+      return null;
+    }
+    return wasUnquoted ? encodeAttrValue(value) : value;
+  }
+  if (name === "style") {
+    const sanitizedStyle = sanitizeStyleValue(value);
+    if (sanitizedStyle === null) {
+      return null;
+    }
+    return wasUnquoted ? encodeAttrValue(sanitizedStyle) : sanitizedStyle;
+  }
+  const decoded = decodeHTMLEntities(value).toLowerCase().replace(/\s/g, "");
+  if (/\bon\w+=/.test(decoded)) {
+    return null;
+  }
+  return wasUnquoted ? encodeAttrValue(value) : value;
+}
+function extractTagName(tag) {
+  const match = tag.match(TAG_NAME_REGEX);
+  return match ? match[1].toLowerCase() : null;
+}
+function isAllowedTag(tag) {
+  const tagName = extractTagName(tag);
+  return tagName !== null && ALLOWED_TAGS.has(tagName);
+}
+function sanitizeTag(fullTag) {
+  const closingMatch = fullTag.match(CLOSING_TAG_REGEX);
+  if (closingMatch) {
+    return `</${closingMatch[1].toLowerCase()}>`;
+  }
+  const openingMatch = fullTag.match(OPENING_TAG_REGEX);
+  if (!openingMatch) {
+    return "";
+  }
+  const [, tagName, attrString, selfClose] = openingMatch;
+  const lowerTagName = tagName.toLowerCase();
+  const allowedAttrs = [];
+  ATTR_REGEX.lastIndex = 0;
+  let attrMatch;
+  while ((attrMatch = ATTR_REGEX.exec(attrString)) !== null) {
+    const attrName = attrMatch[1].toLowerCase();
+    const doubleQuotedValue = attrMatch[2];
+    const singleQuotedValue = attrMatch[3];
+    const unquotedValue = attrMatch[4];
+    if (attrName.startsWith("on")) {
+      continue;
+    }
+    let attrValue;
+    let quoteChar;
+    if (doubleQuotedValue !== void 0) {
+      attrValue = doubleQuotedValue;
+      quoteChar = '"';
+    } else if (singleQuotedValue !== void 0) {
+      attrValue = singleQuotedValue;
+      quoteChar = "'";
+    } else if (unquotedValue !== void 0) {
+      attrValue = unquotedValue;
+      quoteChar = '"';
+    } else {
+      if (ALLOWED_ATTRS.has(attrName)) {
+        allowedAttrs.push(attrName);
+      }
+      continue;
+    }
+    if (ALLOWED_ATTRS.has(attrName)) {
+      const wasUnquoted = unquotedValue !== void 0;
+      const sanitizedValue = sanitizeAttrValue(attrName, attrValue, wasUnquoted);
+      if (sanitizedValue !== null) {
+        allowedAttrs.push(`${attrName}=${quoteChar}${sanitizedValue}${quoteChar}`);
+      }
+    }
+  }
+  const attrsStr = allowedAttrs.length > 0 ? ` ${allowedAttrs.join(" ")}` : "";
+  const selfCloseStr = selfClose ? "/>" : ">";
+  return `<${lowerTagName}${attrsStr}${selfCloseStr}`;
+}
+function sanitize(str) {
+  if (typeof str !== "string" || !str || str.indexOf("<") === -1) {
+    return str;
+  }
+  return str.replace(
+    /<\/?[^>]*>|[^<>\s]+>/g,
+    (match) => {
+      if (match.startsWith("<!--")) {
+        return "";
+      }
+      if (!match.startsWith("<")) {
+        return match.slice(0, -1) + "&gt;";
+      }
+      if (isAllowedTag(match)) {
+        return sanitizeTag(match);
+      }
+      return match.replace(/</g, "&lt;");
+    }
+  );
+}
+
+;// ./src/module/util.ts
 var util_defProp = Object.defineProperty;
 var util_getOwnPropSymbols = Object.getOwnPropertySymbols;
 var util_hasOwnProp = Object.prototype.hasOwnProperty;
@@ -2299,6 +2757,23 @@ var util_spreadValues = (a, b) => {
 
 
 
+function _getRect(relativeViewport, node, forceEval = false) {
+  const _ = (n) => n[relativeViewport ? "getBoundingClientRect" : "getBBox"]();
+  if (forceEval) {
+    return _(node);
+  } else {
+    const needEvaluate = !("rect" in node) || "rect" in node && node.hasAttribute("width") && node.rect.width !== +(node.getAttribute("width") || 0);
+    return needEvaluate ? node.rect = _(node) : node.rect;
+  }
+}
+function _forEachValidItem(items, callback) {
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i];
+    if (item) {
+      callback(item, i);
+    }
+  }
+}
 const isValue = (v) => v || v === 0;
 const isFunction = (v) => typeof v === "function";
 const isString = (v) => typeof v === "string";
@@ -2310,7 +2785,13 @@ const ceil10 = (v) => Math.ceil(v / 10) * 10;
 const asHalfPixel = (n) => Math.ceil(n) + 0.5;
 const diffDomain = (d) => d[1] - d[0];
 const isObjectType = (v) => typeof v === "object";
-const isEmpty = (o) => isUndefined(o) || o === null || isString(o) && o.length === 0 || isObjectType(o) && !(o instanceof Date) && Object.keys(o).length === 0 || isNumber(o) && isNaN(o);
+const isEmptyObject = (obj) => {
+  for (const x in obj) {
+    return false;
+  }
+  return true;
+};
+const isEmpty = (o) => isUndefined(o) || o === null || isString(o) && o.length === 0 || isObjectType(o) && !(o instanceof Date) && isEmptyObject(o) || isNumber(o) && isNaN(o);
 const notEmpty = (o) => !isEmpty(o);
 const isArray = (arr) => Array.isArray(arr);
 const isObject = (obj) => obj && !(obj == null ? void 0 : obj.nodeType) && isObjectType(obj) && !isArray(obj);
@@ -2338,9 +2819,6 @@ function endall(transition, cb) {
     ++n;
     transition.call(end);
   }
-}
-function sanitize(str) {
-  return isString(str) ? str.replace(/<(script|img)?/ig, "&lt;").replace(/(script)?>/ig, "&gt;") : str;
 }
 function setTextValue(node, text, dy = [-1, 1], toMiddle = false) {
   if (!node || !isString(text)) {
@@ -2374,7 +2852,7 @@ function getRectSegList(path) {
   ];
 }
 function getPathBox(path) {
-  const { width, height } = path.getBoundingClientRect();
+  const { width, height } = getBoundingRect(path);
   const items = getRectSegList(path);
   const x = items[0].x;
   const y = Math.min(items[0].y, items[1].y);
@@ -2406,9 +2884,11 @@ function getBrushSelection(ctx) {
   }
   return selection;
 }
-function getBoundingRect(node) {
-  const needEvaluate = !("rect" in node) || "rect" in node && node.hasAttribute("width") && node.rect.width !== +node.getAttribute("width");
-  return needEvaluate ? node.rect = node.getBoundingClientRect() : node.rect;
+function getBoundingRect(node, forceEval = false) {
+  return _getRect(true, node, forceEval);
+}
+function getBBox(node, forceEval = false) {
+  return _getRect(false, node, forceEval);
 }
 function getRandom(asStr = true, min = 0, max = 1e4) {
   const crpt = win.crypto || win.msCrypto;
@@ -2497,6 +2977,19 @@ function getScrollPosition(node) {
     y: ((_e = (_d = win.pageYOffset) != null ? _d : win.scrollY) != null ? _e : 0) + ((_f = node.scrollTop) != null ? _f : 0)
   };
 }
+function getTransformCTM(node, x = 0, y = 0, inverse = true) {
+  const point = new DOMPoint(x, y);
+  const screen = node.getScreenCTM();
+  const res = point.matrixTransform(
+    inverse ? screen == null ? void 0 : screen.inverse() : screen
+  );
+  if (inverse === false) {
+    const rect = getBoundingRect(node);
+    res.x -= rect.x;
+    res.y -= rect.y;
+  }
+  return res;
+}
 function getTranslation(node) {
   const transform = node ? node.transform : null;
   const baseVal = transform && transform.baseVal;
@@ -2517,12 +3010,14 @@ function mergeObj(target, ...objectN) {
   const source = objectN.shift();
   if (isObject(target) && isObject(source)) {
     Object.keys(source).forEach((key) => {
-      const value = source[key];
-      if (isObject(value)) {
-        !target[key] && (target[key] = {});
-        target[key] = mergeObj(target[key], value);
-      } else {
-        target[key] = isArray(value) ? value.concat() : value;
+      if (!/^(__proto__|constructor|prototype)$/i.test(key)) {
+        const value = source[key];
+        if (isObject(value)) {
+          !target[key] && (target[key] = {});
+          target[key] = mergeObj(target[key], value);
+        } else {
+          target[key] = isArray(value) ? value.concat() : value;
+        }
       }
     });
   }
@@ -2626,7 +3121,7 @@ function tplProcess(tpl, data) {
   for (const x in data) {
     res = res.replace(new RegExp(`{=${x}}`, "g"), data[x]);
   }
-  return res;
+  return sanitize(res);
 }
 function parseDate(date) {
   var _a;
@@ -2644,12 +3139,28 @@ function parseDate(date) {
   }
   return parsedDate;
 }
+function hasViewBox(svg) {
+  const attr = svg.attr("viewBox");
+  return attr ? /(\d+(\.\d+)?){3}/.test(attr) : false;
+}
+function hasStyle(node, condition, all = false) {
+  const isD3Node = !!node.node;
+  let has = false;
+  for (const [key, value] of Object.entries(condition)) {
+    has = isD3Node ? node.style(key) === value : node.style[key] === value;
+    if (all === false && has) {
+      break;
+    }
+  }
+  return has;
+}
 function isTabVisible() {
   var _a, _b;
   return ((_a = browser_doc) == null ? void 0 : _a.hidden) === false || ((_b = browser_doc) == null ? void 0 : _b.visibilityState) === "visible";
 }
 function convertInputType(mouse, touch) {
   const { DocumentTouch, matchMedia, navigator } = win;
+  const hasPointerCoarse = matchMedia == null ? void 0 : matchMedia("(pointer:coarse)").matches;
   let hasTouch = false;
   if (touch) {
     if (navigator && "maxTouchPoints" in navigator) {
@@ -2657,7 +3168,7 @@ function convertInputType(mouse, touch) {
     } else if ("ontouchmove" in win || DocumentTouch && browser_doc instanceof DocumentTouch) {
       hasTouch = true;
     } else {
-      if (matchMedia == null ? void 0 : matchMedia("(pointer:coarse)").matches) {
+      if (hasPointerCoarse) {
         hasTouch = true;
       } else {
         const UA = navigator.userAgent;
@@ -2665,7 +3176,7 @@ function convertInputType(mouse, touch) {
       }
     }
   }
-  const hasMouse = mouse && ((matchMedia == null ? void 0 : matchMedia("any-hover:hover").matches) || (matchMedia == null ? void 0 : matchMedia("any-pointer:fine").matches));
+  const hasMouse = mouse && !hasPointerCoarse && (matchMedia == null ? void 0 : matchMedia("(pointer:fine)").matches);
   return hasMouse && "mouse" || hasTouch && "touch" || "mouse";
 }
 function runUntil(fn, conditionFn) {
@@ -2675,8 +3186,51 @@ function runUntil(fn, conditionFn) {
     fn();
   }
 }
+function parseShorthand(value) {
+  if (isObject(value) && !isString(value)) {
+    const obj = value;
+    return {
+      top: obj.top || 0,
+      right: obj.right || 0,
+      bottom: obj.bottom || 0,
+      left: obj.left || 0
+    };
+  }
+  const values = (isString(value) ? value.trim().split(/\s+/) : [value]).map((v) => +v || 0);
+  const [a, b = a, c = a, d = b] = values;
+  return { top: a, right: b, bottom: c, left: d };
+}
+function scheduleRAFUpdate(rafState, callback) {
+  if (rafState.pendingRaf !== null) {
+    win.cancelAnimationFrame(rafState.pendingRaf);
+    rafState.pendingRaf = win.requestAnimationFrame(() => {
+      rafState.pendingRaf = null;
+      callback();
+    });
+  } else {
+    rafState.pendingRaf = win.requestAnimationFrame(() => {
+      rafState.pendingRaf = null;
+    });
+    callback();
+  }
+}
+function toSet(items, keyFn = ((item) => item)) {
+  const set = /* @__PURE__ */ new Set();
+  _forEachValidItem(items, (item, i) => {
+    set.add(keyFn(item, i));
+  });
+  return set;
+}
+function toMap(items, keyFn, valueFn = ((item) => item)) {
+  const map = /* @__PURE__ */ new Map();
+  _forEachValidItem(items, (item, i) => {
+    map.set(keyFn(item, i), valueFn(item, i));
+  });
+  return map;
+}
 
-;// CONCATENATED MODULE: ./src/config/Options/Options.ts
+
+;// ./src/config/Options/Options.ts
 var Options_defProp = Object.defineProperty;
 var Options_getOwnPropSymbols = Object.getOwnPropertySymbols;
 var Options_hasOwnProp = Object.prototype.hasOwnProperty;
@@ -2725,7 +3279,7 @@ __publicField(_Options, "data", {});
 let Options = _Options;
 
 
-;// CONCATENATED MODULE: ./src/config/Store/Element.ts
+;// ./src/config/Store/Element.ts
 class Element {
   constructor() {
     const element = {
@@ -2801,7 +3355,7 @@ class Element {
   }
 }
 
-;// CONCATENATED MODULE: ./src/config/Store/State.ts
+;// ./src/config/Store/State.ts
 class State {
   constructor() {
     return {
@@ -2837,6 +3391,10 @@ class State {
       hasTreemap: false,
       // for data CSS rule index (used when boost.useCssRule is true)
       cssRule: {},
+      // Data loading state (used in scale calculation)
+      loading: void 0,
+      // Zoom/subchart domain (different from current.domain which is for rendering)
+      domain: void 0,
       current: {
         // current domain value. Assigned when is zoom is called
         domain: void 0,
@@ -2857,8 +3415,10 @@ class State {
         },
         // current used chart type list
         types: [],
-        needle: void 0
+        needle: void 0,
         // arc needle current value
+        zoomDomain: null
+        // zoomed domain value
       },
       // legend
       isLegendRight: false,
@@ -2948,12 +3508,15 @@ class State {
         x2: null,
         y1: null,
         y2: null
-      }
+      },
+      // RAF batching for zoom/drag interactions
+      pendingRaf: null,
+      rafBatchQueue: []
     };
   }
 }
 
-;// CONCATENATED MODULE: ./src/config/Store/Store.ts
+;// ./src/config/Store/Store.ts
 
 
 const Store_classes = {
@@ -2971,7 +3534,7 @@ class Store {
   }
 }
 
-;// CONCATENATED MODULE: ./src/module/Cache.ts
+;// ./src/module/Cache.ts
 var Cache_defProp = Object.defineProperty;
 var Cache_defNormalProp = (obj, key, value) => key in obj ? Cache_defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var Cache_publicField = (obj, key, value) => Cache_defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
@@ -2982,12 +3545,18 @@ const KEY = {
   dataMinMax: "$dataMinMax",
   dataTotalSum: "$dataTotalSum",
   dataTotalPerIndex: "$totalPerIndex",
+  domainMinMax: "$domainMinMax",
+  filteredTargets: "$filteredTargets",
+  filteredNullish: "$filteredNullish",
+  visibilityChecksum: "visibilityChecksum",
   legendItemTextBox: "legendItemTextBox",
+  legendItemMap: "$legendItemMap",
   radarPoints: "$radarPoints",
   radarTextWidth: "$radarTextWidth",
   setOverOut: "setOverOut",
   callOverOutForTouch: "callOverOutForTouch",
-  textRect: "textRect"
+  textRect: "textRect",
+  shapeOffset: "$shapeOffset"
 };
 class Cache {
   constructor() {
@@ -2996,9 +3565,9 @@ class Cache {
   /**
    * Add cache
    * @param {string} key Cache key
-   * @param {*} value Value to be stored
+   * @param {string|number|boolean|object|Array|function|null|undefined} value Value to be stored
    * @param {boolean} isDataType Weather the cache is data typed '{id:'data', id_org: 'data', values: [{x:0, index:0,...}, ...]}'
-   * @returns {*} Added data value
+   * @returns {string|number|boolean|object|Array|function|null|undefined} Added data value
    * @private
    */
   add(key, value, isDataType = false) {
@@ -3017,7 +3586,7 @@ class Cache {
    * Get cahce
    * @param {string|Array} key Cache key
    * @param {boolean} isDataType Weather the cache is data typed '{id:'data', id_org: 'data', values: [{x:0, index:0,...}, ...]}'
-   * @returns {*}
+   * @returns {string|number|boolean|object|Array|function|null} Cached value
    * @private
    */
   get(key, isDataType = false) {
@@ -3033,6 +3602,23 @@ class Cache {
       const value = this.cache[key];
       return isValue(value) ? value : null;
     }
+  }
+  /**
+   * Check if cache key exists
+   * @param {string} key Cache key
+   * @returns {boolean} True if key exists in cache
+   * @private
+   */
+  has(key) {
+    return key in this.cache && this.cache[key] !== null;
+  }
+  /**
+   * Get all cache keys
+   * @returns {string[]} Array of cache keys
+   * @private
+   */
+  getKeys() {
+    return Object.keys(this.cache);
   }
   /**
    * Reset cached data
@@ -3062,7 +3648,7 @@ class Cache {
   }
 }
 
-;// CONCATENATED MODULE: ./src/config/const.ts
+;// ./src/config/const.ts
 const TYPE = {
   AREA: "area",
   AREA_LINE_RANGE: "area-line-range",
@@ -3151,7 +3737,7 @@ const TYPE_BY_CATEGORY = {
   ]
 };
 
-;// CONCATENATED MODULE: ./src/module/error.ts
+;// ./src/module/error.ts
 
 
 
@@ -3173,26 +3759,27 @@ function checkModuleImport(ctx) {
   }
   type && logError(
     `Please, make sure if %c${camelize(type)}`,
-    "module has been imported and specified correctly."
+    "module has been imported and specified correctly.",
+    "https://github.com/naver/billboard.js/wiki/CHANGELOG-v2#modularization-by-its-functionality"
   );
 }
-function logError(head, tail) {
+function logError(head, tail, info) {
   var _a;
   const prefix = "[billboard.js]";
-  const info = "https://github.com/naver/billboard.js/wiki/CHANGELOG-v2#modularization-by-its-functionality";
   const hasConsole = (_a = win.console) == null ? void 0 : _a.error;
   if (hasConsole) {
+    const tailMsg = tail ? ["background:red;color:white;display:block;font-size:15px", tail] : [];
     console.error(
       `\u274C ${prefix} ${head}`,
       "background:red;color:white;display:block;font-size:15px",
-      tail
+      ...tailMsg
     );
-    console.info("%c\u2139\uFE0F", "font-size:15px", info);
+    info && console.info("%c\u2139\uFE0F", "font-size:15px", info);
   }
-  throw Error(`${prefix} ${head.replace(/\%c([a-z-]+)/i, "'$1' ")} ${tail}`);
+  throw Error(`${prefix} ${head.replace(/\%c([a-z-]+)/i, "'$1' ")} ${tail != null ? tail : ""}`);
 }
 
-;// CONCATENATED MODULE: ./src/module/generator.ts
+;// ./src/module/generator.ts
 
 
 const { setTimeout: generator_setTimeout, clearTimeout: generator_clearTimeout } = win;
@@ -3254,7 +3841,7 @@ function generateWait() {
   return f;
 }
 
-;// CONCATENATED MODULE: ./src/module/worker.ts
+;// ./src/module/worker.ts
 
 const blob = {};
 function getObjectURL(fn, depsFn) {
@@ -3303,7 +3890,7 @@ function runWorker(useWorker = true, fn, callback, depsFn) {
 
 // EXTERNAL MODULE: external {"commonjs":"d3-dsv","commonjs2":"d3-dsv","amd":"d3-dsv","root":"d3"}
 var external_commonjs_d3_dsv_commonjs2_d3_dsv_amd_d3_dsv_root_d3_ = __webpack_require__(5);
-;// CONCATENATED MODULE: ./src/ChartInternal/data/convert.helper.ts
+;// ./src/ChartInternal/data/convert.helper.ts
 
 
 function columns(columns2) {
@@ -3436,27 +4023,56 @@ function tsv(tsv2) {
   }, tsv2);
 }
 
-;// CONCATENATED MODULE: ./src/ChartInternal/data/convert.ts
+;// ./src/ChartInternal/data/convert.ts
 
 
 
-function getDataKeyForJson(keysParam, config) {
+function _getDataKeyForJson(keysParam, config) {
   const keys = keysParam || (config == null ? void 0 : config.data_keys);
   if (keys == null ? void 0 : keys.x) {
     config.data_x = keys.x;
   }
   return keys;
 }
+function _setXS(ids, data, params) {
+  const $$ = this;
+  const { config } = $$;
+  let xsData;
+  ids.forEach((id) => {
+    const xKey = $$.getXKey(id);
+    if (params.customX || params.timeSeries) {
+      if (params.xs.indexOf(xKey) >= 0) {
+        xsData = (params.appendXs && $$.data.xs[id] || []).concat(
+          data.map((d, i) => {
+            const rawX = isValue(d[xKey]);
+            return rawX ? $$.generateTargetX(rawX, id, i) : false;
+          }).filter((v) => v !== false)
+        );
+      } else if (config.data_x) {
+        xsData = this.getOtherTargetXs();
+      } else if (notEmpty(config.data_xs)) {
+        xsData = $$.getXValuesOfXKey(xKey, $$.data.targets);
+      }
+    } else {
+      xsData = data.map((d, i) => i);
+    }
+    if (xsData) {
+      $$.data.xs[id] = xsData;
+    } else {
+      throw new Error(`x is not defined for id = "${id}".`);
+    }
+  });
+}
 /* harmony default export */ var convert = ({
   /**
    * Convert data according its type
    * @param {object} args data object
-   * @param {Function} [callback] callback for url(XHR) type loading
+   * @param {function} [callback] callback for url(XHR) type loading
    * @private
    */
   convertData(args, callback) {
     const { config } = this;
-    const useWorker = config.boost_useWorker;
+    const useWorker = (d) => (d == null ? void 0 : d.length) && !isEmpty(d[0]) ? config.boost_useWorker : false;
     let data = args;
     if (args.bindto) {
       data = {};
@@ -3472,65 +4088,59 @@ function getDataKeyForJson(keysParam, config) {
         data.url,
         data.mimeType,
         data.headers,
-        getDataKeyForJson(data.keys, config),
+        _getDataKeyForJson(data.keys, config),
         callback
       );
     } else if (data.json) {
-      runWorker(useWorker, json, callback, [columns, rows])(
+      runWorker(useWorker(data.json), json, callback, [columns, rows])(
         data.json,
-        getDataKeyForJson(data.keys, config)
+        _getDataKeyForJson(data.keys, config)
       );
     } else if (data.rows) {
-      runWorker(useWorker, rows, callback)(data.rows);
+      runWorker(useWorker(data.rows), rows, callback)(data.rows);
     } else if (data.columns) {
-      runWorker(useWorker, columns, callback)(data.columns);
+      runWorker(useWorker(data.columns), columns, callback)(data.columns);
     } else if (args.bindto) {
       throw Error("url or json or rows or columns is required.");
     }
   },
+  /**
+   * Convert data to targets
+   * @param {object[]} data Data to convert
+   * @param {boolean} appendXs Whether to append xs
+   * @returns {IData[]} Converted targets
+   * @private
+   */
   convertDataToTargets(data, appendXs) {
     const $$ = this;
     const { axis, config, state } = $$;
     const chartType = config.data_type;
-    let isCategorized = false;
-    let isTimeSeries = false;
-    let isCustomX = false;
-    if (axis) {
-      isCategorized = axis.isCategorized();
-      isTimeSeries = axis.isTimeSeries();
-      isCustomX = axis.isCustomX();
-    }
     const dataKeys = Object.keys(data[0] || {});
-    const ids = dataKeys.length ? dataKeys.filter($$.isNotX, $$) : [];
-    const xs = dataKeys.length ? dataKeys.filter($$.isX, $$) : [];
-    let xsData;
-    ids.forEach((id) => {
-      const xKey = this.getXKey(id);
-      if (isCustomX || isTimeSeries) {
-        if (xs.indexOf(xKey) >= 0) {
-          xsData = (appendXs && $$.data.xs[id] || []).concat(
-            data.map((d) => d[xKey]).filter(isValue).map((rawX, i) => $$.generateTargetX(rawX, id, i))
-          );
-        } else if (config.data_x) {
-          xsData = this.getOtherTargetXs();
-        } else if (notEmpty(config.data_xs)) {
-          xsData = $$.getXValuesOfXKey(xKey, $$.data.targets);
-        }
-      } else {
-        xsData = data.map((d, i) => i);
+    const { ids, xs } = dataKeys.length ? dataKeys.reduce((acc, key) => {
+      if ($$.isX.call($$, key)) {
+        acc.xs.push(key);
+      } else if ($$.isNotX.call($$, key)) {
+        acc.ids.push(key);
       }
-      xsData && (this.data.xs[id] = xsData);
-    });
-    ids.forEach((id) => {
-      if (!this.data.xs[id]) {
-        throw new Error(`x is not defined for id = "${id}".`);
-      }
-    });
+      return acc;
+    }, { ids: [], xs: [] }) : { ids: [], xs: [] };
+    const params = {
+      appendXs,
+      xs,
+      idConverter: config.data_idConverter.bind($$.api),
+      categorized: axis == null ? void 0 : axis.isCategorized(),
+      timeSeries: axis == null ? void 0 : axis.isTimeSeries(),
+      customX: axis == null ? void 0 : axis.isCustomX()
+    };
+    _setXS.bind($$)(ids, data, params);
     const targets = ids.map((id, index) => {
       const convertedId = config.data_idConverter.bind($$.api)(id);
       const xKey = $$.getXKey(id);
-      const isCategory = isCustomX && isCategorized;
-      const hasCategory = isCategory && data.map((v) => v.x).every((v) => config.axis_x_categories.indexOf(v) > -1);
+      const isCategory = params.customX && params.categorized;
+      const hasCategory = isCategory && (() => {
+        const categorySet = toSet(config.axis_x_categories);
+        return data.every((v) => categorySet.has(v.x));
+      })();
       const isDataAppend = data.__append__;
       const xIndex = xKey === null && isDataAppend ? $$.api.data.values(id).length : 0;
       return {
@@ -3590,7 +4200,7 @@ function getDataKeyForJson(keysParam, config) {
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/data/data.ts
+;// ./src/ChartInternal/data/data.ts
 
 
 
@@ -3608,7 +4218,17 @@ function getDataKeyForJson(keysParam, config) {
   },
   isStackNormalized() {
     const { config } = this;
-    return !!(config.data_stack_normalize && config.data_groups.length);
+    return !!((config.data_stack_normalize === true || isObjectType(config.data_stack_normalize)) && config.data_groups.length);
+  },
+  /**
+   * Check if stack normalization should be applied per group
+   * @returns {boolean}
+   * @private
+   */
+  isStackNormalizedPerGroup() {
+    var _a;
+    const { config } = this;
+    return !!(isObjectType(config.data_stack_normalize) && ((_a = config.data_stack_normalize) == null ? void 0 : _a.perGroup) && config.data_groups.length);
   },
   /**
    * Check if given id is grouped data or has grouped data
@@ -3619,6 +4239,19 @@ function getDataKeyForJson(keysParam, config) {
   isGrouped(id) {
     const groups = this.config.data_groups;
     return id ? groups.some((v) => v.indexOf(id) >= 0 && v.length > 1) : groups.length > 0;
+  },
+  /**
+   * Check if the given axis has any grouped data
+   * @param {string} axisId Axis ID (e.g., "y", "y2")
+   * @returns {boolean} true if axis has grouped data
+   * @private
+   */
+  hasAxisGroupedData(axisId) {
+    const $$ = this;
+    const { axis } = $$;
+    const targets = $$.data.targets;
+    const axisDataIds = targets.filter((t) => axis.getId(t.id) === axisId).map((t) => t.id);
+    return axisDataIds.some((id) => $$.isGrouped(id));
   },
   getXKey(id) {
     const $$ = this;
@@ -3794,9 +4427,10 @@ function getDataKeyForJson(keysParam, config) {
       const minMax = $$.getMinMaxValue(data);
       let min = [];
       let max = [];
+      const { min: minVal, max: maxVal } = minMax;
       data.forEach((v) => {
-        const minData = $$.getFilteredDataByValue(v, minMax.min);
-        const maxData = $$.getFilteredDataByValue(v, minMax.max);
+        const minData = $$.getFilteredDataByValue(v, minVal);
+        const maxData = $$.getFilteredDataByValue(v, maxVal);
         if (minData.length) {
           min = min.concat(minData);
         }
@@ -3810,23 +4444,35 @@ function getDataKeyForJson(keysParam, config) {
   },
   /**
    * Get sum of data per index
+   * @param {string} targetId Target ID to get total for (only for normalized stack per group)
    * @private
    * @returns {Array}
    */
-  getTotalPerIndex() {
+  getTotalPerIndex(targetId) {
     const $$ = this;
-    const cacheKey = KEY.dataTotalPerIndex;
+    const { config } = $$;
+    const cacheKey = targetId ? `${KEY.dataTotalPerIndex}-${targetId}` : KEY.dataTotalPerIndex;
     let sum = $$.cache.get(cacheKey);
     if (($$.config.data_groups.length || $$.isStackNormalized()) && !sum) {
       sum = [];
-      $$.data.targets.forEach((row) => {
+      let { targets } = $$.data;
+      if ($$.isStackNormalizedPerGroup() && targetId) {
+        const group = config.data_groups.find((g) => g.indexOf(targetId) >= 0);
+        if (group) {
+          targets = targets.filter((t) => group.indexOf(t.id) >= 0);
+        } else {
+          return null;
+        }
+      }
+      targets.forEach((row) => {
         row.values.forEach((v, i) => {
           if (!sum[i]) {
             sum[i] = 0;
           }
-          sum[i] += isNumber(v.value) ? v.value : 0;
+          sum[i] += ~~v.value;
         });
       });
+      $$.cache.add(cacheKey, sum);
     }
     return sum;
   },
@@ -3841,8 +4487,12 @@ function getDataKeyForJson(keysParam, config) {
     const cacheKey = KEY.dataTotalSum;
     let total = $$.cache.get(cacheKey);
     if (!isNumber(total)) {
-      const sum = mergeArray($$.data.targets.map((t) => t.values)).map((v) => v.value);
-      total = sum.length ? sum.reduce((p, c) => p + c) : 0;
+      total = $$.data.targets.reduce((acc, t) => {
+        return acc + t.values.reduce((sum, v) => {
+          var _a;
+          return sum + ((_a = v.value) != null ? _a : 0);
+        }, 0);
+      }, 0);
       $$.cache.add(cacheKey, total);
     }
     if (subtractHidden) {
@@ -3921,7 +4571,23 @@ function getDataKeyForJson(keysParam, config) {
   },
   filterTargetsToShow(targets) {
     const $$ = this;
-    return (targets || $$.data.targets).filter((t) => $$.isTargetToShow(t.id));
+    if (!targets) {
+      const { cache, data, state } = $$;
+      const cacheKey = KEY.filteredTargets;
+      const visibilityChecksum = state.hiddenTargetIds.join(",");
+      const storedChecksum = cache.get(KEY.visibilityChecksum);
+      if (visibilityChecksum !== storedChecksum) {
+        cache.remove(cacheKey);
+        cache.add(KEY.visibilityChecksum, visibilityChecksum);
+      }
+      if (cache.has(cacheKey)) {
+        return cache.get(cacheKey);
+      }
+      const filtered = data.targets.filter((t) => $$.isTargetToShow(t.id));
+      cache.add(cacheKey, filtered);
+      return filtered;
+    }
+    return targets.filter((t) => $$.isTargetToShow(t.id));
   },
   mapTargetsToUniqueXs(targets) {
     const $$ = this;
@@ -3936,7 +4602,7 @@ function getDataKeyForJson(keysParam, config) {
     return sortValue(xs);
   },
   /**
-   * Add to the state target Ids
+   * Add to thetarget Ids
    * @param {string} type State's prop name
    * @param {Array|string} targetIds Target ids array
    * @private
@@ -3980,6 +4646,7 @@ function getDataKeyForJson(keysParam, config) {
     const ys = {};
     const isMultipleX = $$.isMultipleX();
     const xs = isMultipleX ? $$.mapTargetsToUniqueXs(targets).map((v) => isString(v) ? v : +v) : null;
+    const xIndexMap = xs ? new Map(xs.map((x, i) => [x, i])) : null;
     targets.forEach((t) => {
       const data = [];
       t.values.filter(({ value }) => isValue(value) || value === null).forEach((v) => {
@@ -3994,8 +4661,12 @@ function getDataKeyForJson(keysParam, config) {
         } else if ($$.isBubbleZType(v)) {
           data.push(hasAxis && $$.getBubbleZData(value, "y"));
         } else {
-          if (isMultipleX) {
-            data[$$.getIndexByX(v.x, xs)] = value;
+          if (isMultipleX && xIndexMap) {
+            const xKey = isString(v.x) ? v.x : +v.x;
+            const index = xIndexMap.get(xKey);
+            if (index !== void 0) {
+              data[index] = value;
+            }
           } else {
             data.push(value);
           }
@@ -4006,17 +4677,7 @@ function getDataKeyForJson(keysParam, config) {
     return ys;
   },
   checkValueInTargets(targets, checker) {
-    const ids = Object.keys(targets);
-    let values;
-    for (let i = 0; i < ids.length; i++) {
-      values = targets[ids[i]].values;
-      for (let j = 0; j < values.length; j++) {
-        if (checker(values[j].value)) {
-          return true;
-        }
-      }
-    }
-    return false;
+    return Object.keys(targets).some((id) => targets[id].values.some((v) => checker(v.value)));
   },
   hasMultiTargets() {
     return this.filterTargetsToShow().length > 1;
@@ -4044,7 +4705,7 @@ function getDataKeyForJson(keysParam, config) {
   /**
    * Get data.order compare function
    * @param {boolean} isReversed for Arc & Treemap type sort order needs to be reversed
-   * @returns {Function} compare function
+   * @returns {function} compare function
    * @private
    */
   getSortCompareFn(isReversed = false) {
@@ -4069,6 +4730,12 @@ function getDataKeyForJson(keysParam, config) {
   },
   filterByX(targets, x) {
     return mergeArray(targets.map((t) => t.values)).filter((v) => v.x - x === 0);
+  },
+  filterNullish(data) {
+    const filter = (v) => isValue(v.value);
+    return data ? data.filter(
+      (v) => "value" in v ? filter(v) : v.values.some(filter)
+    ) : data;
   },
   filterRemoveNull(data) {
     return data.filter((d) => isValue(this.getBaseValue(d)));
@@ -4101,7 +4768,11 @@ function getDataKeyForJson(keysParam, config) {
    */
   getDataIndexFromEvent(event) {
     const $$ = this;
-    const { $el, config, state: { hasRadar, inputType, eventReceiver: { coords, rect } } } = $$;
+    const {
+      $el,
+      config,
+      state: { hasRadar, inputType, eventReceiver: { coords, rect } }
+    } = $$;
     let index;
     if (hasRadar) {
       let target = event.target;
@@ -4114,9 +4785,17 @@ function getDataKeyForJson(keysParam, config) {
       const isRotated = config.axis_rotated;
       const scrollPos = getScrollPosition($el.chart.node());
       const e = inputType === "touch" && event.changedTouches ? event.changedTouches[0] : event;
+      let point = isRotated ? e.clientY + scrollPos.y : e.clientX + scrollPos.x;
+      if (hasViewBox($el.svg)) {
+        const pos = [point, 0];
+        isRotated && pos.reverse();
+        point = getTransformCTM($el.eventRect.node(), ...pos)[isRotated ? "y" : "x"];
+      } else {
+        point -= isRotated ? rect.top : rect.left;
+      }
       index = findIndex(
         coords,
-        isRotated ? e.clientY + scrollPos.y - rect.top : e.clientX + scrollPos.x - rect.left,
+        point,
         0,
         coords.length - 1,
         isRotated
@@ -4125,13 +4804,12 @@ function getDataKeyForJson(keysParam, config) {
     return index;
   },
   getDataLabelLength(min, max, key) {
+    var _a;
     const $$ = this;
-    const lengths = [0, 0];
     const paddingCoef = 1.3;
-    $$.$el.chart.select("svg").selectAll(".dummy").data([min, max]).enter().append("text").text((d) => $$.dataLabelFormat(d.id)(d)).each(function(d, i) {
-      lengths[i] = this.getBoundingClientRect()[key] * paddingCoef;
-    }).remove();
-    return lengths;
+    return ((_a = $$.getTextRect(
+      [min, max].map((v) => $$.dataLabelFormat()(v))
+    )) == null ? void 0 : _a.map((rect) => rect[key] * paddingCoef)) || [0, 0];
   },
   isNoneArc(d) {
     return this.hasTarget(this.data.targets, d.id);
@@ -4309,14 +4987,27 @@ function getDataKeyForJson(keysParam, config) {
         }
       } else if (type === "index") {
         const dataValues = api.data.values.bind(api);
-        let total = this.getTotalPerIndex();
-        if (state.hiddenTargetIds.length) {
-          let hiddenSum = dataValues(state.hiddenTargetIds, false);
-          if (hiddenSum.length) {
-            hiddenSum = hiddenSum.reduce(
-              (acc, curr) => acc.map((v, i) => (isNumber(v) ? v : 0) + curr[i])
-            );
-            total = total.map((v, i) => v - hiddenSum[i]);
+        const { hiddenTargetIds } = state;
+        let total = this.getTotalPerIndex(
+          $$.isStackNormalizedPerGroup() ? d.id : void 0
+        );
+        if (total === null) {
+          return ratio;
+        }
+        if (hiddenTargetIds.length) {
+          let hiddenIds = hiddenTargetIds;
+          if ($$.isStackNormalizedPerGroup() && d.id) {
+            const group = config.data_groups.find((g) => g.indexOf(d.id) >= 0);
+            if (group) {
+              hiddenIds = hiddenIds.filter((id) => group.indexOf(id) >= 0);
+            }
+          }
+          if (hiddenIds.length) {
+            let hiddenSum = dataValues(hiddenIds, false);
+            if (hiddenSum.length) {
+              hiddenSum = hiddenSum.reduce((acc, curr) => acc.map((v, i) => ~~v + curr[i]));
+              total = total.map((v, i) => v - hiddenSum[i]);
+            }
           }
         }
         const divisor = total[d.index];
@@ -4376,7 +5067,7 @@ function getDataKeyForJson(keysParam, config) {
   isBarRangeType(d) {
     const $$ = this;
     const { value } = d;
-    return $$.isBarType(d) && isArray(value) && value.length >= 2 && value.every((v) => isNumber(v));
+    return $$.isBarType(d) && isArray(value) && value.length >= 2 && value.every(isNumber);
   },
   /**
    * Get data object by id
@@ -4391,7 +5082,7 @@ function getDataKeyForJson(keysParam, config) {
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/data/load.ts
+;// ./src/ChartInternal/data/load.ts
 
 
 function callDone(fn, resizeAfter = false) {
@@ -4459,6 +5150,8 @@ function callDone(fn, resizeAfter = false) {
         org.xScale = zoomState.x.domain(org.xDomain);
       }
       $$.updateCurrentZoomTransform(zoomState.x, zoomState.currentDomain);
+    } else if (org.xScale) {
+      org.xScale.domain(org.xDomain);
     }
     $$.updateTypesElements();
     callDone.call($$, args.done, args.resizeAfter);
@@ -4472,7 +5165,7 @@ function callDone(fn, resizeAfter = false) {
     $$.convertData(args, (d) => {
       const data = args.data || d;
       args.append && (data.__append__ = true);
-      data && $$.load($$.convertDataToTargets(data), args);
+      data && $$.load($$.convertDataToTargets.call($$, data), args);
     });
   },
   unload(rawTargetIds, customDoneCb) {
@@ -4492,8 +5185,6 @@ function callDone(fn, resizeAfter = false) {
       done();
       return;
     }
-    const targets = $el.svg.selectAll(targetIds.map((id) => $$.selectorTarget(id)));
-    $T(targets).style("opacity", "0").remove().call(endall, done);
     targetIds.forEach((id) => {
       var _a2;
       const suffixId = $$.getTargetSelectorSuffix(id);
@@ -4507,12 +5198,14 @@ function callDone(fn, resizeAfter = false) {
     state.hasFunnel && $$.updateFunnel($$.data.targets);
     state.hasTreemap && $$.updateTargetsForTreemap($$.data.targets);
     $$.updateTypesElements();
+    const targets = $el.svg.selectAll(targetIds.map((id) => $$.selectorTarget(id)));
+    $T(targets).style("opacity", "0").remove().call(endall, done);
   }
 });
 
 // EXTERNAL MODULE: external {"commonjs":"d3-drag","commonjs2":"d3-drag","amd":"d3-drag","root":"d3"}
 var external_commonjs_d3_drag_commonjs2_d3_drag_amd_d3_drag_root_d3_ = __webpack_require__(6);
-;// CONCATENATED MODULE: ./src/ChartInternal/interactions/interaction.ts
+;// ./src/ChartInternal/interactions/interaction.ts
 
 
 
@@ -4560,7 +5253,7 @@ var external_commonjs_d3_drag_commonjs2_d3_drag_amd_d3_drag_root_d3_ = __webpack
     if (isArcishData || d !== -1) {
       const callback = config[isOver ? "data_onover" : "data_onout"].bind($$.api);
       config.color_onover && $$.setOverColor(isOver, d, isArcishData);
-      if (isArcishData && "id") {
+      if (isArcishData) {
         const suffix = $$.getTargetSelectorSuffix(d.id);
         const selector = hasFunnel || hasTreemap ? `${$COMMON.target + suffix} .${$SHAPE.shape}` : $ARC.arc + suffix;
         callback(d, main.select(`.${selector}`).node());
@@ -4611,7 +5304,7 @@ var external_commonjs_d3_drag_commonjs2_d3_drag_amd_d3_drag_root_d3_ = __webpack
   },
   /**
    * Return draggable selection function
-   * @returns {Function}
+   * @returns {function}
    * @private
    */
   getDraggableSelection() {
@@ -4637,7 +5330,7 @@ var external_commonjs_d3_drag_commonjs2_d3_drag_amd_d3_drag_root_d3_ = __webpack
    * @param {Array} mouse x and y coordinate value
    */
   dispatchEvent(type, index, mouse) {
-    var _a, _b;
+    var _a, _b, _c;
     const $$ = this;
     const {
       config,
@@ -4648,13 +5341,13 @@ var external_commonjs_d3_drag_commonjs2_d3_drag_amd_d3_drag_root_d3_ = __webpack
         hasRadar,
         hasTreemap
       },
-      $el: { eventRect, funnel, radar, treemap }
+      $el: { eventRect, funnel, radar, svg, treemap }
     } = $$;
-    let element = (_b = (hasFunnel || hasTreemap) && eventReceiver.rect || hasRadar && radar.axes.select(`.${$AXIS.axis}-${index} text`) || (eventRect || ((_a = $$.getArcElementByIdOrIndex) == null ? void 0 : _a.call($$, index)))) == null ? void 0 : _b.node();
+    let element = (_c = (_b = (hasFunnel || hasTreemap) && eventReceiver.rect || hasRadar && radar.axes.select(`.${$AXIS.axis}-${index} text`) || (eventRect || ((_a = $$.getArcElementByIdOrIndex) == null ? void 0 : _a.call($$, index)))) == null ? void 0 : _b.node) == null ? void 0 : _c.call(_b);
     if (element) {
       const isMultipleX = $$.isMultipleX();
       const isRotated = config.axis_rotated;
-      let { width, left, top } = element.getBoundingClientRect();
+      let { width, left, top } = getBoundingRect(element);
       if (hasAxis && !hasRadar && !isMultipleX) {
         const coords = eventReceiver.coords[index];
         if (coords) {
@@ -4667,8 +5360,13 @@ var external_commonjs_d3_drag_commonjs2_d3_drag_amd_d3_drag_root_d3_ = __webpack
           top = 0;
         }
       }
-      const x = left + (mouse ? mouse[0] : 0) + (isMultipleX || isRotated ? 0 : width / 2);
-      const y = top + (mouse ? mouse[1] : 0) + (isRotated ? 4 : 0);
+      let x = left + (mouse ? mouse[0] : 0) + (isMultipleX || isRotated ? 0 : width / 2);
+      let y = top + (mouse ? mouse[1] : 0) + (isRotated ? 4 : 0);
+      if (hasViewBox(svg)) {
+        const ctm = getTransformCTM($$.$el.eventRect.node(), x, y, false);
+        x = ctm.x;
+        y = ctm.y;
+      }
       const params = {
         screenX: x,
         screenY: y,
@@ -4739,7 +5437,7 @@ var external_commonjs_d3_drag_commonjs2_d3_drag_amd_d3_drag_root_d3_ = __webpack
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/internals/category.ts
+;// ./src/ChartInternal/internals/category.ts
 /* harmony default export */ var category = ({
   /**
    * Category Name
@@ -4754,7 +5452,7 @@ var external_commonjs_d3_drag_commonjs2_d3_drag_amd_d3_drag_root_d3_ = __webpack
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/internals/class.ts
+;// ./src/ChartInternal/internals/class.ts
 
 /* harmony default export */ var internals_class = ({
   generateClass(prefix, targetId) {
@@ -4841,14 +5539,14 @@ var external_commonjs_d3_drag_commonjs2_d3_drag_amd_d3_drag_root_d3_ = __webpack
 
 // EXTERNAL MODULE: external {"commonjs":"d3-scale","commonjs2":"d3-scale","amd":"d3-scale","root":"d3"}
 var external_commonjs_d3_scale_commonjs2_d3_scale_amd_d3_scale_root_d3_ = __webpack_require__(7);
-;// CONCATENATED MODULE: ./src/ChartInternal/internals/color.ts
+;// ./src/ChartInternal/internals/color.ts
 
 
 
 
 
 
-const colorizePattern = (pattern, color, id) => {
+const _colorizePattern = (pattern, color, id) => {
   const node = (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(pattern.cloneNode(true));
   node.attr("id", id).insert("rect", ":first-child").attr("width", node.attr("width")).attr("height", node.attr("height")).style("fill", color);
   return {
@@ -4856,7 +5554,7 @@ const colorizePattern = (pattern, color, id) => {
     node: node.node()
   };
 };
-function getColorFromCss(element) {
+function _getColorFromCss(element) {
   const cacheKey = KEY.colorPattern;
   const { body } = browser_doc;
   let pattern = body[cacheKey];
@@ -4887,23 +5585,24 @@ const schemeCategory10 = [
   generateColor() {
     const $$ = this;
     const { $el, config } = $$;
-    const colors = config.data_colors;
-    const callback = config.data_color;
     const ids = [];
-    let pattern = notEmpty(config.color_pattern) ? config.color_pattern : (0,external_commonjs_d3_scale_commonjs2_d3_scale_amd_d3_scale_root_d3_.scaleOrdinal)(getColorFromCss($el.chart) || schemeCategory10).range();
+    const hasGradient = config.area_linearGradient || config.bar_linearGradient || config.point_radialGradient;
+    let pattern = notEmpty(config.color_pattern) ? config.color_pattern : (0,external_commonjs_d3_scale_commonjs2_d3_scale_amd_d3_scale_root_d3_.scaleOrdinal)(_getColorFromCss($el.chart) || schemeCategory10).range();
     const originalColorPattern = pattern;
     if (isFunction(config.color_tiles)) {
       const tiles = config.color_tiles.bind($$.api)();
       const colorizedPatterns = pattern.map((p, index) => {
         const color = p.replace(/[#\(\)\s,]/g, "");
         const id = `${$$.state.datetimeId}-pattern-${color}-${index}`;
-        return colorizePattern(tiles[index % tiles.length], p, id);
+        return _colorizePattern(tiles[index % tiles.length], p, id);
       });
       pattern = colorizedPatterns.map((p) => `url(#${p.id})`);
       $$.patterns = colorizedPatterns;
     }
     return function(d) {
       var _a;
+      const colors = config.data_colors;
+      const callback = config.data_color;
       const id = d.id || ((_a = d.data) == null ? void 0 : _a.id) || d;
       const isLine = $$.isTypeOf(id, ["line", "spline", "step"]) || !config.data_types[id];
       let color;
@@ -4918,7 +5617,18 @@ const schemeCategory10 = [
         color = isLine ? originalColorPattern[ids.indexOf(id) % originalColorPattern.length] : pattern[ids.indexOf(id) % pattern.length];
         colors[id] = color;
       }
-      return isFunction(callback) ? callback.bind($$.api)(color, d) : color;
+      color = isFunction(callback) ? callback.call($$.api, color, d) : color;
+      if (hasGradient) {
+        const stop = $$.$el.defs.selectAll(
+          `[id$='-gradient${$$.getTargetSelectorSuffix(id)}'] stop`
+        );
+        let hasSameColor;
+        stop.each(function(d2, i) {
+          hasSameColor = i === 0 ? this.style.stopColor : this.style.stopColor === hasSameColor;
+        });
+        hasSameColor === true && stop.attr("stop-color", color);
+      }
+      return color;
     };
   },
   generateLevelColor() {
@@ -4943,7 +5653,7 @@ const schemeCategory10 = [
   },
   /**
    * Append data backgound color filter definition
-   * @param {string|object} color Color string
+   * @param {string|object|function} color Color string, object, or function
    * @param {object} attr filter attribute
    * @private
    */
@@ -4954,20 +5664,23 @@ const schemeCategory10 = [
     height: 1
   }) {
     const $$ = this;
-    const { $el, state } = $$;
+    const { $el: { defs }, state } = $$;
     if (color) {
       let ids = [];
       if (isString(color)) {
         ids.push("");
       } else if (isObject(color)) {
         ids = Object.keys(color);
+      } else if (isFunction(color)) {
+        ids = $$.mapToTargetIds();
       }
       ids.forEach((v) => {
         const id = `${state.datetimeId}-labels-bg${$$.getTargetSelectorSuffix(v)}${isString(color) ? $$.getTargetSelectorSuffix(color) : ""}`;
-        $el.defs.append("filter").attr("x", attr.x).attr("y", attr.y).attr("width", attr.width).attr("height", attr.height).attr("id", id).html(
-          `<feFlood flood-color="${v === "" ? color : color[v]}" />
-						<feComposite in="SourceGraphic" />`
-        );
+        const colorValue = sanitize(v === "" ? color : (color == null ? void 0 : color[v]) || "");
+        if (defs.select(`#${id}`).empty()) {
+          defs.append("filter").attr("x", attr.x).attr("y", attr.y).attr("width", attr.width).attr("height", attr.height).attr("id", id).html(`<feFlood flood-color="${colorValue}" />
+							<feComposite in="SourceGraphic" />`);
+        }
       });
     }
   },
@@ -5054,7 +5767,7 @@ const schemeCategory10 = [
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/internals/domain.ts
+;// ./src/ChartInternal/internals/domain.ts
 
 
 /* harmony default export */ var domain = ({
@@ -5064,20 +5777,22 @@ const schemeCategory10 = [
     const isMin = type === "min";
     const dataGroups = config.data_groups;
     const ids = $$.mapToIds(targets);
+    const idsSet = toSet(ids);
     const ys = $$.getValuesAsIdKeyed(targets);
     if (dataGroups.length > 0) {
       const hasValue = $$[`has${isMin ? "Negative" : "Positive"}ValueInTargets`](targets);
+      const axisIdMap = new Map(ids.map((id) => [id, axis.getId(id)]));
       dataGroups.forEach((groupIds) => {
-        const idsInGroup = groupIds.filter((v) => ids.indexOf(v) >= 0);
+        const idsInGroup = groupIds.filter((v) => idsSet.has(v));
         if (idsInGroup.length) {
           const baseId = idsInGroup[0];
-          const baseAxisId = axis.getId(baseId);
+          const baseAxisId = axisIdMap.get(baseId);
           if (hasValue && ys[baseId]) {
             ys[baseId] = ys[baseId].map((v) => (isMin ? v < 0 : v > 0) ? v : 0);
           }
           idsInGroup.filter((v, i) => i > 0).forEach((id) => {
             if (ys[id]) {
-              const axisId = axis.getId(id);
+              const axisId = axisIdMap.get(id);
               ys[id].forEach((v, i) => {
                 const val = +v;
                 const meetCondition = isMin ? val > 0 : val < 0;
@@ -5107,7 +5822,11 @@ const schemeCategory10 = [
     const { axis, config, scale } = $$;
     const pfx = `axis_${axisId}`;
     if ($$.isStackNormalized()) {
-      return [0, 100];
+      const axisDataIds = targets.filter((t) => axis.getId(t.id) === axisId).map((t) => t.id);
+      const hasGroupedData = axisDataIds.some((id) => $$.isGrouped(id));
+      if (hasGroupedData) {
+        return [0, 100];
+      }
     }
     const isLog = (scale == null ? void 0 : scale[axisId]) && scale[axisId].type === "log";
     const targetsByAxisId = targets.filter((t) => axis.getId(t.id) === axisId);
@@ -5164,7 +5883,10 @@ const schemeCategory10 = [
     }
     if (showHorizontalDataLabel) {
       const diff = diffDomain(scale.y.range());
-      const ratio = $$.getDataLabelLength(yDomainMin, yDomainMax, "width").map((v) => v / diff);
+      const ratio = $$.getDataLabelLength(yDomainMin, yDomainMax, "width").map((v) => {
+        const result = v / diff;
+        return isFinite(result) ? result : 0;
+      });
       ["bottom", "top"].forEach((v, i) => {
         padding[v] += domainLength * (ratio[i] / (1 - ratio[0] - ratio[1]));
       });
@@ -5405,9 +6127,9 @@ const schemeCategory10 = [
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/internals/format.ts
+;// ./src/ChartInternal/internals/format.ts
 
-function getFormat($$, typeValue, v) {
+function _getFormat($$, typeValue, v) {
   const { config } = $$;
   const type = `axis_${typeValue}_tick_format`;
   const format = config[type] ? config[type] : $$.defaultValueFormat;
@@ -5415,14 +6137,14 @@ function getFormat($$, typeValue, v) {
 }
 /* harmony default export */ var format = ({
   yFormat(v) {
-    return getFormat(this, "y", v);
+    return _getFormat(this, "y", v);
   },
   y2Format(v) {
-    return getFormat(this, "y2", v);
+    return _getFormat(this, "y2", v);
   },
   /**
    * Get default value format function
-   * @returns {Function} formatter function
+   * @returns {function} formatter function
    * @private
    */
   getDefaultValueFormat() {
@@ -5470,19 +6192,19 @@ function getFormat($$, typeValue, v) {
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/internals/legend.ts
+;// ./src/ChartInternal/internals/legend.ts
 
 
 
 
 
-function getLegendColor(id) {
+function _getLegendColor(id) {
   const $$ = this;
   const data = $$.getDataById(id);
   const color = $$.levelColor ? $$.levelColor(data.values[0].value) : $$.color(data);
   return color;
 }
-function getFormattedText(id, formatted = true) {
+function _getFormattedText(id, formatted = true) {
   var _a;
   const { config } = this;
   let text = (_a = config.data_names[id]) != null ? _a : id;
@@ -5490,6 +6212,21 @@ function getFormattedText(id, formatted = true) {
     text = config.legend_format(text, id !== text ? id : void 0);
   }
   return text;
+}
+function _buildLegendItemMap($$, legendItems) {
+  if (!legendItems || legendItems.empty()) {
+    return;
+  }
+  const items = [];
+  legendItems.each(function(id) {
+    items.push({ id, node: this });
+  });
+  const itemMap = toMap(
+    items,
+    (item) => item.id,
+    (item) => item.node
+  );
+  $$.cache.add(KEY.legendItemMap, itemMap);
 }
 /* harmony default export */ var internals_legend = ({
   /**
@@ -5563,7 +6300,7 @@ function getFormattedText(id, formatted = true) {
       const ids = [];
       let html = "";
       targets.forEach((v) => {
-        const content = isFunction(template) ? template.bind($$.api)(v, $$.color(v), $$.api.data(v)[0].values) : tplProcess(template, {
+        const content = isFunction(template) ? sanitize(template.call($$.api, v, $$.color(v), $$.api.data(v)[0].values)) : tplProcess(template, {
           COLOR: $$.color(v),
           TITLE: v
         });
@@ -5649,9 +6386,13 @@ function getFormattedText(id, formatted = true) {
    * @private
    */
   updateLegendItemColor(id, color) {
-    const { legend } = this.$el;
+    const $$ = this;
+    const { legend } = $$.$el;
     if (legend) {
-      legend.select(`.${$LEGEND.legendItem}-${id} line`).style("stroke", color);
+      const legendItem = $$.getLegendItemById(id);
+      if (legendItem) {
+        (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(legendItem).select("line").style("stroke", color);
+      }
     }
   },
   /**
@@ -5674,7 +6415,8 @@ function getFormattedText(id, formatted = true) {
     const $$ = this;
     const { current, isLegendRight, legendItemHeight, legendStep } = $$.state;
     const isFitPadding = ((_a = $$.config.padding) == null ? void 0 : _a.mode) === "fit";
-    return $$.config.legend_show ? isLegendRight ? current.height : (isFitPadding ? 10 : Math.max(20, legendItemHeight)) * (legendStep + 1) : 0;
+    const height = $$.config.legend_show ? isLegendRight ? current.height : Math.max(isFitPadding ? 10 : 20, legendItemHeight) * (legendStep + 1) : 0;
+    return height;
   },
   /**
    * Get the opacity of the legend that is unfocused
@@ -5796,7 +6538,12 @@ function getFormattedText(id, formatted = true) {
       item.on(
         interaction.dblclick ? "dblclick" : "click",
         interaction || isFunction(config.legend_item_onclick) ? function(event, id) {
-          if (!callFn(config.legend_item_onclick, api, id)) {
+          if (!callFn(
+            config.legend_item_onclick,
+            api,
+            id,
+            !state.hiddenTargetIds.includes(id)
+          )) {
             const { altKey, target, type } = event;
             if (type === "dblclick" || altKey) {
               if (state.hiddenTargetIds.length && target.parentNode.getAttribute("class").indexOf(
@@ -5816,7 +6563,12 @@ function getFormattedText(id, formatted = true) {
         } : null
       );
       !isTouch && item.on("mouseout", interaction || isFunction(config.legend_item_onout) ? function(event, id) {
-        if (!callFn(config.legend_item_onout, api, id)) {
+        if (!callFn(
+          config.legend_item_onout,
+          api,
+          id,
+          !state.hiddenTargetIds.includes(id)
+        )) {
           (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(this).classed($FOCUS.legendItemFocused, false);
           if (hasGauge) {
             $$.undoMarkOverlapped($$, `.${$GAUGE.gaugeValue}`);
@@ -5824,7 +6576,12 @@ function getFormattedText(id, formatted = true) {
           $$.api.revert();
         }
       } : null).on("mouseover", interaction || isFunction(config.legend_item_onover) ? function(event, id) {
-        if (!callFn(config.legend_item_onover, api, id)) {
+        if (!callFn(
+          config.legend_item_onover,
+          api,
+          id,
+          !state.hiddenTargetIds.includes(id)
+        )) {
           (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(this).classed($FOCUS.legendItemFocused, true);
           if (hasGauge) {
             $$.markOverlapped(id, $$, `.${$GAUGE.gaugeValue}`);
@@ -5836,6 +6593,24 @@ function getFormattedText(id, formatted = true) {
       } : null);
       !item.empty() && item.on("click mouseout mouseover") && item.style("cursor", $$.getStylePropValue("pointer"));
     }
+    _buildLegendItemMap($$, item);
+  },
+  /**
+   * Get legend item node by ID using cached Map for O(1) lookup
+   * Falls back to D3 selection if map is not available
+   * @param {string} id Data ID
+   * @returns {HTMLElement | null} Legend item node
+   * @private
+   */
+  getLegendItemById(id) {
+    var _a;
+    const $$ = this;
+    const itemMap = $$.cache.get(KEY.legendItemMap);
+    if (itemMap && itemMap instanceof Map) {
+      return itemMap.get(id) || null;
+    }
+    const item = (_a = $$.$el.legend) == null ? void 0 : _a.selectAll(`.${$LEGEND.legendItem}`).filter((d) => d === id);
+    return (item == null ? void 0 : item.node()) || null;
   },
   /**
    * Update the legend
@@ -5909,9 +6684,9 @@ function getFormattedText(id, formatted = true) {
       background = legend.insert("g", `.${$LEGEND.legendItem}`).attr("class", $LEGEND.legendBackground).append("rect");
     }
     if (config.legend_tooltip) {
-      legend.selectAll("title").data(targetIdz).text((id) => getFormattedText.bind($$)(id, false));
+      legend.selectAll("title").data(targetIdz).text((id) => _getFormattedText.bind($$)(id, false));
     }
-    const texts = legend.selectAll("text").data(targetIdz).text((id) => getFormattedText.bind($$)(id)).each(function(id, i) {
+    const texts = legend.selectAll("text").data(targetIdz).text((id) => _getFormattedText.bind($$)(id)).each(function(id, i) {
       updatePositions(this, id, i);
     });
     $T(texts, withTransition).attr("x", posFn.xText).attr("y", posFn.yText);
@@ -5930,7 +6705,7 @@ function getFormattedText(id, formatted = true) {
    * @param {Array} targetIdz Data ids
    * @param {object} dimension Dimension object
    * @param {object} sizes Size object
-   * @returns {Function} Update position function
+   * @returns {function} Update position function
    * @private
    */
   getUpdateLegendPositions(targetIdz, dimension, sizes) {
@@ -6004,7 +6779,7 @@ function getFormattedText(id, formatted = true) {
    * Generate legend item elements
    * @param {Array} targetIdz Data ids
    * @param {object} itemTileSize Item tile size {width, height}
-   * @param {Function} updatePositions Update position function
+   * @param {function} updatePositions Update position function
    * @param {object} posFn Position functions
    * @private
    */
@@ -6022,14 +6797,14 @@ function getFormattedText(id, formatted = true) {
     if (config.legend_tooltip) {
       l.append("title").text((id) => id);
     }
-    l.append("text").text((id) => getFormattedText.bind($$)(id)).each(function(id, i) {
+    l.append("text").text((id) => _getFormattedText.bind($$)(id)).each(function(id, i) {
       updatePositions(this, id, i);
     }).style("pointer-events", $$.getStylePropValue("none")).attr("x", isLegendRightOrInset ? posFn.xText : pos).attr("y", isLegendRightOrInset ? pos : posFn.yText);
     l.append("rect").attr("class", $LEGEND.legendItemEvent).style("fill-opacity", $$.getStylePropValue("0")).attr("x", isLegendRightOrInset ? posFn.xRect : pos).attr("y", isLegendRightOrInset ? pos : posFn.yRect);
     if (usePoint) {
       const ids = [];
+      const pattern = $$.getValidPointPattern();
       l.append((d) => {
-        const pattern = notEmpty(config.point_pattern) ? config.point_pattern : [config.point_type];
         ids.indexOf(d) === -1 && ids.push(d);
         let point = pattern[ids.indexOf(d) % pattern.length];
         if (point === "rectangle") {
@@ -6039,16 +6814,16 @@ function getFormattedText(id, formatted = true) {
           external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.namespaces.svg,
           "hasValidPointType" in $$ && $$.hasValidPointType(point) ? point : "use"
         );
-      }).attr("class", $LEGEND.legendItemPoint).style("fill", getLegendColor.bind($$)).style("pointer-events", $$.getStylePropValue("none")).attr("href", (data, idx, selection) => {
+      }).attr("class", $LEGEND.legendItemPoint).style("fill", _getLegendColor.bind($$)).style("pointer-events", $$.getStylePropValue("none")).attr("href", (data, idx, selection) => {
         const node = selection[idx];
         const nodeName = node.nodeName.toLowerCase();
         const id = $$.getTargetSelectorSuffix(data);
         return nodeName === "use" ? `#${state.datetimeId}-point${id}` : void 0;
       });
     } else {
-      l.append(isRectangle ? "line" : legendType).attr("class", $LEGEND.legendItemTile).style("stroke", getLegendColor.bind($$)).style("pointer-events", $$.getStylePropValue("none")).call((selection) => {
+      l.append(isRectangle ? "line" : legendType).attr("class", $LEGEND.legendItemTile).style("stroke", _getLegendColor.bind($$)).style("pointer-events", $$.getStylePropValue("none")).call((selection) => {
         if (legendType === "circle") {
-          selection.attr("r", legendItemR).style("fill", getLegendColor.bind($$)).attr("cx", isLegendRightOrInset ? posFn.x2Tile : pos).attr("cy", isLegendRightOrInset ? pos : posFn.yTile);
+          selection.attr("r", legendItemR).style("fill", _getLegendColor.bind($$)).attr("cx", isLegendRightOrInset ? posFn.x2Tile : pos).attr("cy", isLegendRightOrInset ? pos : posFn.yTile);
         } else if (isRectangle) {
           selection.attr("stroke-width", itemTileSize.height).attr("x1", isLegendRightOrInset ? posFn.x1Tile : pos).attr("y1", isLegendRightOrInset ? pos : posFn.yTile).attr("x2", isLegendRightOrInset ? posFn.x2Tile : pos).attr("y2", isLegendRightOrInset ? pos : posFn.yTile);
         }
@@ -6097,7 +6872,7 @@ function getFormattedText(id, formatted = true) {
       });
     } else {
       const tiles = legend.selectAll(`.${$LEGEND.legendItemTile}`).data(targetIdz);
-      $T(tiles, withTransition).style("stroke", getLegendColor.bind($$)).call((selection) => {
+      $T(tiles, withTransition).style("stroke", _getLegendColor.bind($$)).call((selection) => {
         if (legendType === "circle") {
           selection.attr("cx", (d) => {
             const x2 = posFn.x2Tile(d);
@@ -6113,7 +6888,7 @@ function getFormattedText(id, formatted = true) {
 
 // EXTERNAL MODULE: external {"commonjs":"d3-transition","commonjs2":"d3-transition","amd":"d3-transition","root":"d3"}
 var external_commonjs_d3_transition_commonjs2_d3_transition_amd_d3_transition_root_d3_ = __webpack_require__(8);
-;// CONCATENATED MODULE: ./src/ChartInternal/internals/redraw.ts
+;// ./src/ChartInternal/internals/redraw.ts
 
 
 
@@ -6278,7 +7053,7 @@ var external_commonjs_d3_transition_commonjs2_d3_transition_amd_d3_transition_ro
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/internals/scale.ts
+;// ./src/ChartInternal/internals/scale.ts
 
 
 function getScale(type = "linear", min, max) {
@@ -6299,8 +7074,8 @@ function getScale(type = "linear", min, max) {
    * @param {number} min Min range value
    * @param {number} max Max range value
    * @param {Array} domain Domain value
-   * @param {Function} offset The offset getter to be sum
-   * @returns {Function} scale
+   * @param {function} offset The offset getter to be sum
+   * @returns {function} scale
    * @private
    */
   getXScale(min, max, domain, offset) {
@@ -6317,7 +7092,7 @@ function getScale(type = "linear", min, max) {
    * @param {number} min Min value
    * @param {number} max Max value
    * @param {Array} domain Domain value
-   * @returns {Function} Scale function
+   * @returns {function} Scale function
    * @private
    */
   getYScale(id, min, max, domain) {
@@ -6330,7 +7105,7 @@ function getScale(type = "linear", min, max) {
    * Get y Axis scale
    * @param {string} id Axis id
    * @param {boolean} isSub Weather is sub Axis
-   * @returns {Function} Scale function
+   * @returns {function} Scale function
    * @private
    */
   getYScaleById(id, isSub = false) {
@@ -6342,17 +7117,16 @@ function getScale(type = "linear", min, max) {
   /**
    * Get customized x axis scale
    * @param {d3.scaleLinear|d3.scaleTime} scaleValue Scale function
-   * @param {Function} offsetValue Offset getter to be sum
-   * @returns {Function} Scale function
+   * @param {function} offsetValue Offset getter to be sum
+   * @returns {function} Scale function
    * @private
    */
   getCustomizedXScale(scaleValue, offsetValue) {
     const $$ = this;
     const offset = offsetValue || (() => $$.axis.x.tickOffset());
     const isInverted = $$.config.axis_x_inverted;
-    const scale = function(d, raw) {
-      const v = scaleValue(d) + offset();
-      return raw ? v : Math.ceil(v);
+    const scale = function(d) {
+      return scaleValue(d) + offset();
     };
     for (const key in scaleValue) {
       scale[key] = scaleValue[key];
@@ -6475,20 +7249,20 @@ function getScale(type = "linear", min, max) {
     } else if (axis.isCategorized() && isString(value)) {
       value = config.axis_x_categories.indexOf(value);
     }
-    return Math.ceil(fn(value));
+    return fn(value);
   },
   yv(d) {
     const $$ = this;
     const { scale: { y, y2 } } = $$;
     const yScale = d.axis && d.axis === "y2" ? y2 : y;
-    return Math.ceil(yScale($$.getBaseValue(d)));
+    return yScale($$.getBaseValue(d));
   },
   subxx(d) {
     return d ? this.scale.subX(d.x) : null;
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/internals/size.ts
+;// ./src/ChartInternal/internals/size.ts
 
 
 
@@ -6526,7 +7300,7 @@ function getScale(type = "linear", min, max) {
     let v = 0;
     while (v < 30 && parent && parent.tagName !== "BODY") {
       try {
-        v = parent.getBoundingClientRect()[key];
+        v = getBoundingRect(parent, true)[key];
       } catch (e) {
         if (offsetName in parent) {
           v = parent[offsetName];
@@ -6561,11 +7335,11 @@ function getScale(type = "linear", min, max) {
     if (hasAxis && (isString(leftLabel) || isString(leftLabel.text) || /^inner-/.test(leftLabel == null ? void 0 : leftLabel.position))) {
       const label = $el.main.select(`.${leftAxisClass}-label`);
       if (!label.empty()) {
-        labelWidth = label.node().getBoundingClientRect().left;
+        labelWidth = getBoundingRect(label.node()).left;
       }
     }
-    const svgRect = leftAxis && hasLeftAxisRect ? leftAxis.getBoundingClientRect() : { right: 0 };
-    const chartRectLeft = $el.chart.node().getBoundingClientRect().left + labelWidth;
+    const svgRect = leftAxis && hasLeftAxisRect ? getBoundingRect(leftAxis, !withoutRecompute) : { right: 0 };
+    const chartRectLeft = getBoundingRect($el.chart.node(), !withoutRecompute).left + labelWidth;
     const hasArc = $$.hasArcType();
     const svgLeft = svgRect.right - chartRectLeft - (hasArc ? 0 : $$.getCurrentPaddingByDirection("left", withoutRecompute));
     return svgLeft > 0 ? svgLeft : 0;
@@ -6583,8 +7357,12 @@ function getScale(type = "linear", min, max) {
   },
   updateSvgSize() {
     const $$ = this;
-    const { state: { clip, current, hasAxis, width, height }, $el: { svg } } = $$;
-    svg.attr("width", current.width).attr("height", current.height);
+    const { config, state: { clip, current, hasAxis, width, height }, $el: { svg } } = $$;
+    if (config.resize_auto === "viewBox") {
+      svg.attr("viewBox", `0 0 ${current.width} ${current.height}`);
+    } else {
+      svg.attr("width", current.width).attr("height", current.height);
+    }
     if (hasAxis) {
       const brush = svg.select(`.${$SUBCHART.brush} .overlay`);
       const brushSize = { width: 0, height: 0 };
@@ -6781,7 +7559,7 @@ function getScale(type = "linear", min, max) {
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/internals/style.ts
+;// ./src/ChartInternal/internals/style.ts
 
 
 /* harmony default export */ var style = ({
@@ -6790,8 +7568,8 @@ function getScale(type = "linear", min, max) {
    * @param {boolean} withShape Set shpes' prefix class
    * @param {string} selector CSS selector
    * @param {Array} props CSS props list
-   * @param {Function} propsFn Function to retrieve value or determine for props
-   * @returns {Function}
+   * @param {function} propsFn Function to retrieve value or determine for props
+   * @returns {function}
    * @private
    */
   setCssRule(withShape, selector, props, propsFn) {
@@ -6813,7 +7591,7 @@ function getScale(type = "linear", min, max) {
   },
   /**
    * Get style prop value
-   * @param {Function|string} v Value
+   * @param {function|string} v Value
    * @returns {string|null}
    * @private
    */
@@ -6823,8 +7601,7 @@ function getScale(type = "linear", min, max) {
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/internals/text.ts
-
+;// ./src/ChartInternal/internals/text.util.ts
 
 
 
@@ -6879,13 +7656,146 @@ function getTextPos(d, type) {
   const { id, index, value } = d;
   return (_a = isFunction(position) ? position.bind(this.api)(type, value, id, index, this.$el.text) : (id in position ? position[id] : position)[type]) != null ? _a : 0;
 }
+function updateTextBorder(text, pos, rectClass) {
+  var _a, _b;
+  const $$ = this;
+  const { config, $T } = $$;
+  const isRotated = config.axis_rotated;
+  const {
+    border: {
+      padding = "3 5",
+      radius = 10,
+      stroke = "#000",
+      strokeWidth = 1,
+      fill = "none"
+    }
+  } = config.data_labels;
+  const borderPadding = parseShorthand(padding);
+  const applyStyle = config.data_labels.border !== true;
+  const textRect = getBBox(text);
+  let borderRect = (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(text.previousElementSibling);
+  if (borderRect.empty() || ((_a = borderRect.node()) == null ? void 0 : _a.tagName) !== "rect" || !((_b = borderRect.attr("class")) == null ? void 0 : _b.includes(rectClass))) {
+    borderRect = (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(text.parentNode).insert("rect", () => text).attr("class", `${$TEXT.textBorderRect} ${rectClass}`).attr(
+      "width",
+      textRect.width + (applyStyle ? borderPadding.left + borderPadding.right : 0)
+    ).attr(
+      "height",
+      textRect.height + (applyStyle ? borderPadding.top + borderPadding.bottom : 0)
+    );
+    if (applyStyle) {
+      borderRect.style("fill", fill).style("stroke", stroke).style("stroke-width", `${strokeWidth}px`).attr("rx", radius).attr("ry", radius);
+    }
+  }
+  $T(borderRect).attr(
+    "x",
+    pos.x - (applyStyle ? borderPadding.left : 0) - (isRotated ? 0 : textRect.width / 2)
+  ).attr("y", pos.y - (applyStyle ? borderPadding.top : 0) - textRect.height / 4 * 3.2);
+}
+function meetsLabelThreshold(ratio = 0, type) {
+  const $$ = this;
+  const { config } = $$;
+  const threshold = config[`${type}_label_threshold`] || 0;
+  return ratio >= threshold;
+}
+function updateTextImage() {
+  const $$ = this;
+  const { $el: { text }, config } = $$;
+  const isArc = $$.state.arcWidth;
+  if (isArc ? $$.getArcLabelConfig("image") : config.data_labels.image) {
+    text.filter(function() {
+      const prev = this.previousElementSibling;
+      if (prev) {
+        return prev.tagName !== "image" || !prev.classList.contains($TEXT.textLabelImage);
+      }
+      return true;
+    }).each(function(d) {
+      var _a, _b, _c, _d;
+      const { url, width, height, pos } = getDataLabelImgUrl.call($$, d);
+      if (url) {
+        const parentNode = (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(this.parentNode);
+        parentNode == null ? void 0 : parentNode.insert(
+          "image",
+          `${(_b = (_a = this.getAttribute("class")) == null ? void 0 : _a.replace(/(?:^(.)|\s)/g, ".$1")) != null ? _b : "text"}`
+        ).style("opacity", "0").attr("href", (d2) => tplProcess(url, {
+          ID: "id" in d2 ? d2.id : d2.data.id
+        })).attr("class", $TEXT.textLabelImage).style("pointer-events", "none").attr("width", width).attr("height", height).attr("transform", pos ? `translate(${(_c = pos.x) != null ? _c : 0} ${(_d = pos.y) != null ? _d : 0})` : null);
+      }
+    });
+  }
+}
+function getDataLabelImgUrl(d) {
+  var _a;
+  const $$ = this;
+  const { config, state } = $$;
+  const image = state.arcWidth ? $$.getArcLabelConfig("image") : config.data_labels.image;
+  if (isFunction(image)) {
+    return (_a = image.call($$.api, d.value, d.id, d.index)) != null ? _a : {
+      url: "",
+      width: 0,
+      height: 0,
+      pos: { x: 0, y: 0 }
+    };
+  } else if (image) {
+    const { url = "", width = 0, height = 0, pos } = image;
+    return {
+      url,
+      width,
+      height,
+      pos
+    };
+  }
+  return null;
+}
+function updateTextImagePos(textNode, pos) {
+  var _a;
+  const $$ = this;
+  const { config, state: { arcWidth, hasTreemap } } = $$;
+  const isRotated = config.axis_rotated;
+  const image = (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(textNode.previousElementSibling);
+  const isShown = (textNode2) => {
+    var _a2;
+    const isShown2 = textNode2.style.opacity !== "0" && textNode2.style.fillOpacity !== "0";
+    return (arcWidth ? textNode2.textContent : isShown2) && ((_a2 = this.previousElementSibling) == null ? void 0 : _a2.tagName) !== "image";
+  };
+  if (!image.empty() && ((_a = image.node()) == null ? void 0 : _a.tagName) === "image") {
+    const textRect = getBoundingRect(textNode);
+    const w = +image.attr("width") / 2;
+    const h = +image.attr("height") / 2;
+    let x = pos.x - w;
+    let y = pos.y - h - textRect.height / 2;
+    if (isRotated) {
+      pos.x += w;
+    } else {
+      if (hasTreemap) {
+        x = -w;
+        y = -(h * 2 + textRect.height);
+      }
+      if (!($$.hasType("pie") || $$.hasType("polar"))) {
+        pos.y += h;
+      }
+    }
+    $$.$T(image).style("opacity", isShown(textNode) ? null : "0").attr("x", x).attr("y", y);
+  }
+}
+function batchGetBBox(elements) {
+  return toMap(
+    elements,
+    (element) => element,
+    (element) => getBBox(element)
+  );
+}
+
+
+;// ./src/ChartInternal/internals/text.ts
+
+
+
+
+
 /* harmony default export */ var internals_text = ({
   opacityForText(d) {
     const $$ = this;
-    return $$.isBarType(d) && !$$.meetsLabelThreshold(
-      Math.abs($$.getRatio("bar", d)),
-      "bar"
-    ) ? "0" : $$.hasDataLabel ? null : "0";
+    return $$.isBarType(d) && !meetsLabelThreshold.call($$, Math.abs($$.getRatio("bar", d)), "bar") ? "0" : $$.hasDataLabel ? null : "0";
   },
   /**
    * Initializes the text
@@ -6905,7 +7815,7 @@ function getTextPos(d, type) {
     const classChartText = $$.getChartClass("Text");
     const classTexts = $$.getClass("texts", "id");
     const classFocus = $$.classFocus.bind($$);
-    const mainTextUpdate = $$.$el.main.select(`.${$TEXT.chartTexts}`).selectAll(`.${$TEXT.chartText}`).data(targets).attr("class", (d) => `${classChartText(d)}${classFocus(d)}`.trim());
+    const mainTextUpdate = $$.$el.main.select(`.${$TEXT.chartTexts}`).selectAll(`.${$TEXT.chartText}`).data($$.filterNullish(targets)).attr("class", (d) => `${classChartText(d)}${classFocus(d)}`.trim());
     const mainTextEnter = mainTextUpdate.enter().append("g").style("opacity", "0").attr("class", classChartText).call(
       $$.setCssRule(
         true,
@@ -6952,9 +7862,10 @@ function getTextPos(d, type) {
       if (isNumber(value)) {
         this.textContent = value;
       } else {
-        setTextValue(node, value);
+        setTextValue(node, value, void 0, true);
       }
     });
+    updateTextImage.call($$);
   },
   updateTextColor(d) {
     const $$ = this;
@@ -6982,27 +7893,37 @@ function getTextPos(d, type) {
   /**
    * Update data label text background color
    * @param {object} d Data object
-   * @param {object|string} option option object
+   * @param {object|string|function} option option object
    * @returns {string|null}
    * @private
    */
   updateTextBGColor(d, option) {
     const $$ = this;
-    const { $el } = $$;
+    const { $el: { defs } } = $$;
     let color = "";
-    if (isString(option) || isObject(option)) {
+    if (option) {
       const id = isString(option) ? "" : $$.getTargetSelectorSuffix("id" in d ? d.id : d.data.id);
-      const filter = $el.defs.select(["filter[id*='labels-bg", "']"].join(id));
+      const filter = defs.select(["filter[id*='labels-bg", "']"].join(id));
       if (filter.size()) {
         color = `url(#${filter.attr("id")})`;
+      }
+      if (isFunction(option)) {
+        $$.generateTextBGColorFilter(option);
+        const defaultColor = $$.color(d);
+        const bgColor = option.bind($$.api)(defaultColor, d);
+        if (bgColor) {
+          filter.select("feFlood").attr("flood-color", bgColor);
+        } else {
+          color = "";
+        }
       }
     }
     return color || null;
   },
   /**
    * Redraw chartText
-   * @param {Function} getX Positioning function for x
-   * @param {Function} getY Positioning function for y
+   * @param {function} getX Positioning function for x
+   * @param {function} getY Positioning function for y
    * @param {boolean} forFlow Weather is flow
    * @param {boolean} withTransition transition is enabled
    * @returns {Array}
@@ -7016,55 +7937,78 @@ function getTextPos(d, type) {
     const angle = config.data_labels.rotate;
     const anchorString = getRotateAnchor(angle);
     const rotateString = angle ? `rotate(${angle})` : "";
+    let bboxCache = /* @__PURE__ */ new Map();
+    if (config.data_labels.centered) {
+      const elementsToMeasure = [];
+      $$.$el.text.each(function(d) {
+        if ($$.isBarType(d) || $$.isTreemapType(d)) {
+          elementsToMeasure.push(this);
+        }
+      });
+      if (elementsToMeasure.length > 0) {
+        bboxCache = batchGetBBox(elementsToMeasure);
+      }
+    }
     $$.$el.text.style("fill", $$.getStylePropValue($$.updateTextColor)).attr(
       "filter",
       (d) => $$.updateTextBGColor.bind($$)(d, config.data_labels_backgroundColors)
     ).style("fill-opacity", forFlow ? 0 : $$.opacityForText.bind($$)).each(function(d, i) {
+      const cachedBbox = bboxCache.get(this);
       const node = $T(
         hasTreemap && this.childElementCount ? this.parentNode : this,
-        !!(withTransition && this.getAttribute("x")),
+        !!(withTransition && (this.getAttribute("x") || this.getAttribute("transform"))),
         t
       );
       const isInverted = config[`axis_${axis == null ? void 0 : axis.getId(d.id)}_inverted`];
       let pos = {
-        x: getX.bind(this)(d, i),
-        y: getY.bind(this)(d, i)
+        x: getX.bind(this)(d, i, cachedBbox),
+        y: getY.bind(this)(d, i, cachedBbox)
       };
       if (angle) {
         pos = setRotatePos.bind($$)(d, pos, anchorString, isRotated, isInverted);
         node.attr("text-anchor", anchorString);
       }
+      updateTextImagePos.call($$, this, pos);
       if (this.childElementCount || angle) {
         node.attr("transform", `translate(${pos.x} ${pos.y}) ${rotateString}`);
       } else {
         node.attr("x", pos.x).attr("y", pos.y);
       }
+      config.data_labels.border && updateTextBorder.call($$, node.node(), pos, `${$TEXT.textBorderRect}-${i}`);
     });
     return true;
   },
   /**
    * Gets the getBoundingClientRect value of the element
-   * @param {HTMLElement|d3.selection} element Target element
+   * @param {HTMLElement|d3.selection|Array} source Target element
    * @param {string} className Class name
    * @returns {object} value of element.getBoundingClientRect()
    * @private
    */
-  getTextRect(element, className) {
+  getTextRect(source, className) {
+    var _a, _b;
     const $$ = this;
-    let base = element.node ? element.node() : element;
-    if (!/text/i.test(base.tagName)) {
-      base = base.querySelector("text");
+    let cacheKey;
+    let base;
+    let text;
+    if (Array.isArray(source)) {
+      cacheKey = `${KEY.textRect}-${source.join("_")}`;
+    } else {
+      base = (_b = (_a = source.node) == null ? void 0 : _a.call(source)) != null ? _b : source;
+      if (!/text/i.test(base.tagName)) {
+        base = base.querySelector("text");
+      }
+      text = base.textContent;
+      cacheKey = `${KEY.textRect}-${text.replace(/\W/g, "_")}`;
     }
-    const text = base.textContent;
-    const cacheKey = `${KEY.textRect}-${text.replace(/\W/g, "_")}`;
-    let rect = $$.cache.get(cacheKey);
-    if (!rect) {
-      $$.$el.svg.append("text").style("visibility", "hidden").style("font", (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(base).style("font")).classed(className, true).text(text).call((v) => {
-        rect = getBoundingRect(v.node());
+    const rect = $$.cache.get(cacheKey) || [];
+    if (rect.length === 0) {
+      ($$.$el.svg || $$.$el.chart.select("svg")).selectAll(`.${$COMMON.dummy}`).data(text ? [text] : source).enter().append("text").style("visibility", "hidden").style("font", base ? (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(base).style("font") : null).classed(className || $COMMON.dummy, true).text((d) => d).each(function(v, i) {
+        rect[i] = getBoundingRect(this);
       }).remove();
       $$.cache.add(cacheKey, rect);
     }
-    return rect;
+    return rect.length > 1 ? rect : rect[0];
   },
   /**
    * Gets the x or y coordinate of the text
@@ -7096,17 +8040,18 @@ function getTextPos(d, type) {
    * @param {Array} points Data points position
    * @param {HTMLElement} textElement Data label text element
    * @param {string} type 'x' or 'y'
+   * @param {DOMRect} cachedBbox Optional cached bounding box (from getBBox batching)
    * @returns {number} Position value
    * @private
    */
-  getCenteredTextPos(d, points, textElement, type) {
+  getCenteredTextPos(d, points, textElement, type, cachedBbox) {
     const $$ = this;
     const { config } = $$;
     const isRotated = config.axis_rotated;
     const isBarType = $$.isBarType(d);
     const isTreemapType = $$.isTreemapType(d);
     if (config.data_labels.centered && (isBarType || isTreemapType)) {
-      const rect = getBoundingRect(textElement);
+      const rect = cachedBbox || getBBox(textElement);
       if (isBarType) {
         const isPositive = $$.getRangedData(d, null, "bar") >= 0;
         if (isRotated) {
@@ -7117,7 +8062,10 @@ function getTextPos(d, type) {
           return isPositive ? h : -h - 2;
         }
       } else if (isTreemapType) {
-        return type === "x" ? (points[1][0] - points[0][0]) / 2 : (points[1][1] - points[0][1]) / 2 + rect.height / 2;
+        return type === "x" ? (points[1][0] - points[0][0]) / 2 : (
+          // X: Move to horizontal center of rect
+          (points[1][1] - points[0][1]) / 2 - rect.y - rect.height / 2
+        );
       }
     }
     return 0;
@@ -7127,10 +8075,11 @@ function getTextPos(d, type) {
    * @param {object} points Data points position
    * @param {object} d Data object
    * @param {HTMLElement} textElement Data label text element
+   * @param {DOMRect} cachedBbox Optional cached bounding box (from getBBox batching)
    * @returns {number} x coordinate
    * @private
    */
-  getXForText(points, d, textElement) {
+  getXForText(points, d, textElement, cachedBbox) {
     var _a;
     const $$ = this;
     const { config } = $$;
@@ -7164,7 +8113,7 @@ function getTextPos(d, type) {
       }
     }
     if (isRotated || isTreemapType) {
-      xPos += $$.getCenteredTextPos(d, points, textElement, "x");
+      xPos += $$.getCenteredTextPos(d, points, textElement, "x", cachedBbox);
     }
     return xPos + getTextPos.call(this, d, "x");
   },
@@ -7173,10 +8122,11 @@ function getTextPos(d, type) {
    * @param {object} points Data points position
    * @param {object} d Data object
    * @param {HTMLElement} textElement Data label text element
+   * @param {DOMRect} cachedBbox Optional cached bounding box (from getBBox batching)
    * @returns {number} y coordinate
    * @private
    */
-  getYForText(points, d, textElement) {
+  getYForText(points, d, textElement, cachedBbox) {
     const $$ = this;
     const { axis, config, state } = $$;
     const isRotated = config.axis_rotated;
@@ -7229,7 +8179,7 @@ function getTextPos(d, type) {
       }
     }
     if (!isRotated || isTreemapType) {
-      yPos += $$.getCenteredTextPos(d, points, textElement, "y");
+      yPos += $$.getCenteredTextPos(d, points, textElement, "y", cachedBbox);
     }
     return yPos + getTextPos.call(this, d, "y");
   },
@@ -7267,26 +8217,13 @@ function getTextPos(d, type) {
     $$.$el.arcs.selectAll(selector).each(function() {
       (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.selectAll)([this, this.previousSibling]).classed($TEXT.TextOverlapping, false);
     });
-  },
-  /**
-   * Check if meets the ratio to show data label text
-   * @param {number} ratio ratio to meet
-   * @param {string} type chart type
-   * @returns {boolean}
-   * @private
-   */
-  meetsLabelThreshold(ratio = 0, type) {
-    const $$ = this;
-    const { config } = $$;
-    const threshold = config[`${type}_label_threshold`] || 0;
-    return ratio >= threshold;
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/internals/title.ts
+;// ./src/ChartInternal/internals/title.ts
 
 
-function getTextXPos(pos = "left", width) {
+function _getTextXPos(pos = "left", width) {
   const isNum = isNumber(width);
   let position;
   if (pos.indexOf("center") > -1) {
@@ -7308,7 +8245,7 @@ function getTextXPos(pos = "left", width) {
     const { config, $el } = $$;
     if (config.title_text) {
       $el.title = $el.svg.append("g");
-      const text = $el.title.append("text").style("text-anchor", getTextXPos(config.title_position)).attr("class", $TEXT.title);
+      const text = $el.title.append("text").style("text-anchor", _getTextXPos(config.title_position)).attr("class", $TEXT.title);
       setTextValue(text, config.title_text, [0.3, 1.5]);
     }
   },
@@ -7320,7 +8257,7 @@ function getTextXPos(pos = "left", width) {
     const $$ = this;
     const { config, state: { current }, $el: { title } } = $$;
     if (title) {
-      const x = getTextXPos(config.title_position, current.width);
+      const x = _getTextXPos(config.title_position, current.width);
       const y = (config.title_padding.top || 0) + $$.getTextRect($$.$el.title, $TEXT.title).height;
       title.attr("transform", `translate(${x}, ${y})`);
     }
@@ -7337,7 +8274,7 @@ function getTextXPos(pos = "left", width) {
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/internals/tooltip.ts
+;// ./src/ChartInternal/internals/tooltip.ts
 
 
 
@@ -7391,14 +8328,16 @@ function getTextXPos(pos = "left", width) {
   getTooltipHTML(...args) {
     const $$ = this;
     const { api, config } = $$;
-    return isFunction(config.tooltip_contents) ? config.tooltip_contents.bind(api)(...args) : $$.getTooltipContent(...args);
+    return sanitize(
+      isFunction(config.tooltip_contents) ? config.tooltip_contents.bind(api)(...args) : $$.getTooltipContent(...args)
+    );
   },
   /**
    * Returns the tooltip content(HTML string)
    * @param {object} d data
-   * @param {Function} defaultTitleFormat Default title format
-   * @param {Function} defaultValueFormat Default format for each data value in the tooltip.
-   * @param {Function} color Color function
+   * @param {function} defaultTitleFormat Default title format
+   * @param {function} defaultValueFormat Default format for each data value in the tooltip.
+   * @param {function} color Color function
    * @returns {string} html
    * @private
    */
@@ -7410,11 +8349,18 @@ function getTextXPos(pos = "left", width) {
       const fn = config[`tooltip_format_${v}`];
       return isFunction(fn) ? fn.bind(api) : fn;
     });
-    const titleFormat = (...arg) => sanitize((titleFn || defaultTitleFormat)(...arg));
-    const nameFormat = (...arg) => sanitize((nameFn || ((name) => name))(...arg));
-    const valueFormat = (...arg) => {
-      const fn = valueFn || (state.hasTreemap || $$.isStackNormalized() ? (v, ratio) => `${(ratio * 100).toFixed(2)}%` : defaultValueFormat);
-      return sanitize(fn(...arg));
+    const titleFormat = (...arg) => (titleFn || defaultTitleFormat)(...arg);
+    const nameFormat = (...arg) => (nameFn || ((name) => name))(...arg);
+    const valueFormat = (v, ratio, id, index) => {
+      let fn = valueFn;
+      if (!fn) {
+        if (state.hasTreemap || $$.isStackNormalized() && (!$$.isStackNormalizedPerGroup() || $$.isGrouped(id))) {
+          fn = (v2, ratio2) => `${(ratio2 * 100).toFixed(2)}%`;
+        } else {
+          fn = defaultValueFormat;
+        }
+      }
+      return fn(v, ratio, id, index);
     };
     const order = config.tooltip_order;
     const getRowValue = (row2) => $$.axis && $$.isBubbleZType(row2) ? $$.getBubbleZData(row2.value, "z") : $$.getBaseValue(row2);
@@ -7535,7 +8481,7 @@ function getTextXPos(pos = "left", width) {
   setTooltipPosition(dataToShow, eventTarget) {
     var _a, _b;
     const $$ = this;
-    const { config, scale, state, $el: { eventRect, tooltip } } = $$;
+    const { config, scale, state, $el: { eventRect, tooltip, svg } } = $$;
     const { bindto } = config.tooltip_contents;
     const isRotated = config.axis_rotated;
     const datum = tooltip == null ? void 0 : tooltip.datum();
@@ -7564,7 +8510,7 @@ function getTextXPos(pos = "left", width) {
         height,
         eventRect == null ? void 0 : eventRect.node(),
         currPos
-      )) != null ? _b : $$.getTooltipPosition.bind($$)(width, height, currPos);
+      )) != null ? _b : hasViewBox(svg) ? $$.getTooltipPositionViewBox.bind($$)(width, height, currPos) : $$.getTooltipPosition.bind($$)(width, height, currPos);
       ["top", "left"].forEach((v) => {
         const value = pos[v];
         tooltip.style(v, `${value}px`);
@@ -7573,6 +8519,50 @@ function getTextXPos(pos = "left", width) {
         }
       });
     }
+  },
+  /**
+   * Get tooltip position when svg has vieBox attribute
+   * @param {number} tWidth Tooltip width value
+   * @param {number} tHeight Tooltip height value
+   * @param {object} currPos Current event position value from SVG coordinate
+   * @returns {object} top, left value
+   */
+  getTooltipPositionViewBox(tWidth, tHeight, currPos) {
+    var _a, _b;
+    const $$ = this;
+    const { $el: { eventRect, svg }, config, state } = $$;
+    const isRotated = config.axis_rotated;
+    const hasArcType = $$.hasArcType() || state.hasFunnel || state.hasTreemap;
+    const target = (_b = (_a = hasArcType ? svg : eventRect) == null ? void 0 : _a.node()) != null ? _b : state.event.target;
+    let { x, y } = currPos;
+    if (state.hasAxis) {
+      x = isRotated ? x : currPos.xAxis;
+      y = isRotated ? currPos.xAxis : y;
+    }
+    const ctm = getTransformCTM(target, x, y, false);
+    const rect = getBoundingRect(target);
+    const size = getTransformCTM(target, 20, 0, false).x;
+    let top = ctm.y;
+    let left = ctm.x + tWidth / 2 + size;
+    if (hasArcType) {
+      if (state.hasFunnel || state.hasTreemap || state.hasRadar) {
+        left -= tWidth / 2 + size;
+        top += tHeight;
+      } else {
+        top += rect.height / 2;
+        left += rect.width / 2 - (tWidth - size);
+      }
+    }
+    if (left + tWidth > rect.width) {
+      left = rect.width - tWidth - size;
+    }
+    if (top + tHeight > rect.height) {
+      top -= tHeight * 2;
+    }
+    return {
+      top,
+      left
+    };
   },
   /**
    * Returns the position of the tooltip
@@ -7709,7 +8699,7 @@ function getTextXPos(pos = "left", width) {
     if (tooltip && tooltip.style("display") !== "none" && (!config.tooltip_doNotHide || force)) {
       const selectedData = JSON.parse((_a = tooltip.datum().current) != null ? _a : {});
       callFn(config.tooltip_onhide, api, selectedData);
-      tooltip.style("display", "none").style("visibility", "hidden").datum(null);
+      tooltip.style("display", "none").datum(null);
       callFn(config.tooltip_onhidden, api, selectedData);
     }
   },
@@ -7772,8 +8762,8 @@ function getTextXPos(pos = "left", width) {
       } else {
         const { clientX, clientY } = event;
         setTimeout(() => {
-          let target = browser_doc.elementFromPoint(clientX, clientY);
-          const data = (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(target).datum();
+          let target = [clientX, clientY].every(Number.isFinite) && browser_doc.elementFromPoint(clientX, clientY);
+          const data = target && (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(target).datum();
           if (data) {
             const d = $$.hasArcType() ? $$.convertToArcData($$.updateAngle(data)) : data == null ? void 0 : data.data;
             hasTreemap && (target = svg.node());
@@ -7787,7 +8777,7 @@ function getTextXPos(pos = "left", width) {
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/internals/transform.ts
+;// ./src/ChartInternal/internals/transform.ts
 
 
 /* harmony default export */ var transform = ({
@@ -7860,7 +8850,7 @@ function getTextXPos(pos = "left", width) {
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/internals/type.ts
+;// ./src/ChartInternal/internals/type.ts
 
 
 /* harmony default export */ var type = ({
@@ -8088,12 +9078,13 @@ function getTextXPos(pos = "left", width) {
 
 // EXTERNAL MODULE: external {"commonjs":"d3-shape","commonjs2":"d3-shape","amd":"d3-shape","root":"d3"}
 var external_commonjs_d3_shape_commonjs2_d3_shape_amd_d3_shape_root_d3_ = __webpack_require__(9);
-;// CONCATENATED MODULE: ./src/ChartInternal/shape/shape.ts
+;// ./src/ChartInternal/shape/shape.ts
 
 
 
 
-function getGroupedDataPointsFn(d) {
+
+function _getGroupedDataPointsFn(d) {
   const $$ = this;
   let fn;
   if ($$.isLineType(d)) {
@@ -8151,7 +9142,7 @@ function getGroupedDataPointsFn(d) {
    * 	data2 data4   data2 data4
    * 	-------------------------
    * 		 0             1
-   * @param {Function} typeFilter Chart type filter function
+   * @param {function} typeFilter Chart type filter function
    * @returns {object} Indices object with its position
    */
   getShapeIndices(typeFilter) {
@@ -8296,7 +9287,7 @@ function getGroupedDataPointsFn(d) {
   },
   /**
    * Get Shape's offset data
-   * @param {Function} typeFilter Type filter function
+   * @param {function} typeFilter Type filter function
    * @returns {object}
    * @private
    */
@@ -8305,6 +9296,12 @@ function getGroupedDataPointsFn(d) {
     const targets = $$.orderTargets(
       $$.filterTargetsToShow($$.data.targets.filter(typeFilter, $$))
     );
+    const targetIds = targets.map((t) => t.id).join("_");
+    const cacheKey = `${KEY.shapeOffset}_${targetIds}`;
+    const cachedData = $$.cache.get(cacheKey);
+    if (cachedData) {
+      return cachedData;
+    }
     const isStackNormalized = $$.isStackNormalized();
     const shapeOffsetTargets = targets.map((target) => {
       let rowValues = target.values;
@@ -8329,7 +9326,9 @@ function getGroupedDataPointsFn(d) {
       out[id] = index;
       return out;
     }, {});
-    return { indexMapByTargetId, shapeOffsetTargets };
+    const result = { indexMapByTargetId, shapeOffsetTargets };
+    $$.cache.add(cacheKey, result);
+    return result;
   },
   getShapeOffset(typeFilter, indices, isSub) {
     const $$ = this;
@@ -8383,7 +9382,7 @@ function getGroupedDataPointsFn(d) {
     const id = d.id;
     let points;
     if ($$.isGrouped(id)) {
-      points = getGroupedDataPointsFn.bind($$)(d);
+      points = _getGroupedDataPointsFn.bind($$)(d);
     }
     return points ? points(d, i)[0][1] : $$.getYScaleById(id)($$.getBaseValue(d));
   },
@@ -8503,7 +9502,7 @@ function getGroupedDataPointsFn(d) {
     const x = Math.min(seg0.x, seg1.x);
     const y = Math.min(seg0.y, seg1.y);
     const offset = this.config.bar_sensitivity;
-    const { width, height } = that.getBBox();
+    const { width, height } = getBBox(that, true);
     const sx = x - offset;
     const ex = x + width + offset;
     const sy = y + height + offset;
@@ -8513,7 +9512,7 @@ function getGroupedDataPointsFn(d) {
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/ChartInternal.ts
+;// ./src/ChartInternal/ChartInternal.ts
 var ChartInternal_defProp = Object.defineProperty;
 var ChartInternal_defNormalProp = (obj, key, value) => key in obj ? ChartInternal_defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var ChartInternal_publicField = (obj, key, value) => ChartInternal_defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
@@ -8645,14 +9644,15 @@ class ChartInternal {
   init() {
     const $$ = this;
     const { config, state, $el } = $$;
-    const useCssRule = config.boost_useCssRule;
+    const { boost_useCssRule, bindto } = config;
     checkModuleImport($$);
+    const hasArcType = $$.hasArcType();
     state.hasRadar = !state.hasAxis && $$.hasType("radar");
     state.hasFunnel = !state.hasAxis && $$.hasType("funnel");
     state.hasTreemap = !state.hasAxis && $$.hasType("treemap");
-    state.hasAxis = !$$.hasArcType() && !state.hasFunnel && !state.hasTreemap;
+    state.hasAxis = !hasArcType && !state.hasFunnel && !state.hasTreemap;
     state.datetimeId = `bb-${+/* @__PURE__ */ new Date() * getRandom()}`;
-    if (useCssRule) {
+    if (boost_useCssRule) {
       const styleEl = browser_doc.createElement("style");
       styleEl.type = "text/css";
       browser_doc.head.appendChild(styleEl);
@@ -8662,19 +9662,19 @@ class ChartInternal {
       };
       $el.style = styleEl;
     }
-    const bindto = {
-      element: config.bindto,
+    const bindConfig = {
+      element: bindto,
       classname: "bb"
     };
-    if (isObject(config.bindto)) {
-      bindto.element = config.bindto.element || "#chart";
-      bindto.classname = config.bindto.classname || bindto.classname;
+    if (isObject(bindto)) {
+      bindConfig.element = bindto.element || "#chart";
+      bindConfig.classname = bindto.classname || bindConfig.classname;
     }
-    $el.chart = isFunction(bindto.element.node) ? config.bindto.element : (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(bindto.element || []);
+    $el.chart = isFunction(bindConfig.element.node) ? bindto.element : (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(bindConfig.element || []);
     if ($el.chart.empty()) {
       $el.chart = (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(browser_doc.body.appendChild(browser_doc.createElement("div")));
     }
-    $el.chart.html("").classed(bindto.classname, true).classed(state.datetimeId, useCssRule).style("position", "relative");
+    $el.chart.html("").classed(bindConfig.classname, true).classed(state.datetimeId, boost_useCssRule).style("position", "relative");
     $$.initParams();
     $$.initToRender();
   }
@@ -8686,8 +9686,8 @@ class ChartInternal {
   initToRender(forced) {
     const $$ = this;
     const { config, state, $el: { chart } } = $$;
-    const isHidden = () => chart.style("display") === "none" || chart.style("visibility") === "hidden";
-    const isLazy = config.render.lazy || isHidden();
+    const isHidden = () => hasStyle(chart, { display: "none", visibility: "hidden" });
+    const isLazy = config.render.lazy === false ? false : config.render.lazy || isHidden();
     const MutationObserver = win.MutationObserver;
     if (isLazy && MutationObserver && config.render.observe !== false && !forced) {
       new MutationObserver((mutation, observer) => {
@@ -8711,7 +9711,6 @@ class ChartInternal {
     var _a;
     const $$ = this;
     const { config, format: format2, state } = $$;
-    const isRotated = config.axis_rotated;
     $$.color = $$.generateColor();
     $$.levelColor = $$.generateLevelColor();
     if (config.padding === false) {
@@ -8728,7 +9727,7 @@ class ChartInternal {
       format2.extraLineClasses = $$.generateExtraLineClass();
       format2.dataTime = config.data_xLocaltime ? external_commonjs_d3_time_format_commonjs2_d3_time_format_amd_d3_time_format_root_d3_.timeParse : external_commonjs_d3_time_format_commonjs2_d3_time_format_amd_d3_time_format_root_d3_.utcParse;
       format2.axisTime = config.axis_x_localtime ? external_commonjs_d3_time_format_commonjs2_d3_time_format_amd_d3_time_format_root_d3_.timeFormat : external_commonjs_d3_time_format_commonjs2_d3_time_format_amd_d3_time_format_root_d3_.utcFormat;
-      const isDragZoom = $$.config.zoom_enabled && $$.config.zoom_type === "drag";
+      const isDragZoom = config.zoom_enabled && config.zoom_type === "drag";
       format2.defaultAxisTime = (d) => {
         const { x, zoom } = $$.scale;
         const isZoomed = isDragZoom ? zoom : zoom && x.orgDomain().toString() !== zoom.domain().toString();
@@ -8736,12 +9735,13 @@ class ChartInternal {
         return format2.axisTime(specifier)(d);
       };
     }
-    state.isLegendRight = config.legend_position === "right";
-    state.isLegendInset = config.legend_position === "inset";
-    state.isLegendTop = config.legend_inset_anchor === "top-left" || config.legend_inset_anchor === "top-right";
-    state.isLegendLeft = config.legend_inset_anchor === "top-left" || config.legend_inset_anchor === "bottom-left";
+    const { legend_position, legend_inset_anchor, axis_rotated } = config;
+    state.isLegendRight = legend_position === "right";
+    state.isLegendInset = legend_position === "inset";
+    state.isLegendTop = legend_inset_anchor === "top-left" || legend_inset_anchor === "top-right";
+    state.isLegendLeft = legend_inset_anchor === "top-left" || legend_inset_anchor === "bottom-left";
     state.rotatedPadding.top = $$.getResettedPadding(state.rotatedPadding.top);
-    state.rotatedPadding.right = isRotated && !config.axis_x_show ? 0 : 30;
+    state.rotatedPadding.right = axis_rotated && !config.axis_x_show ? 0 : 30;
     state.inputType = convertInputType(
       config.interaction_inputType_mouse,
       config.interaction_inputType_touch
@@ -8796,7 +9796,11 @@ class ChartInternal {
     if (hasInteraction && state.inputType) {
       const isTouch = state.inputType === "touch";
       const { onclick, onover, onout } = config;
-      $el.svg.on("click", (onclick == null ? void 0 : onclick.bind($$.api)) || null).on(isTouch ? "touchstart" : "mouseenter", (onover == null ? void 0 : onover.bind($$.api)) || null).on(isTouch ? "touchend" : "mouseleave", (onout == null ? void 0 : onout.bind($$.api)) || null);
+      $el.svg.on("click", (onclick == null ? void 0 : onclick.bind($$.api)) || null).on(
+        isTouch ? "touchstart" : "mouseenter",
+        (onover == null ? void 0 : onover.bind($$.api)) || null,
+        isTouch ? { passive: true } : void 0
+      ).on(isTouch ? "touchend" : "mouseleave", (onout == null ? void 0 : onout.bind($$.api)) || null);
     }
     config.svg_classname && $el.svg.attr("class", config.svg_classname);
     const hasColorPatterns = isFunction(config.color_tiles) && $$.patterns;
@@ -8868,22 +9872,23 @@ class ChartInternal {
       if ($$.config.bar_front) {
         shapes.push(shapes.shift());
       }
-      shapes.forEach((v) => {
-        const name = capitalize(v);
-        if (v === "line" && $$.hasTypeOf(name) || $$.hasType(v)) {
+      for (const shape2 of shapes) {
+        const name = capitalize(shape2);
+        if (shape2 === "line" && $$.hasTypeOf(name) || $$.hasType(shape2)) {
           types.push(name);
         }
-      });
+      }
     } else if (hasTreemap) {
       types.push("Treemap");
     } else if ($$.hasType("funnel")) {
       types.push("Funnel");
     } else {
       const hasPolar = $$.hasType("polar");
+      const hasGauge = $$.hasType("gauge");
       if (!hasRadar) {
         types.push("Arc", "Pie");
       }
-      if ($$.hasType("gauge")) {
+      if (hasGauge) {
         types.push("Gauge");
       } else if (hasRadar) {
         types.push("Radar");
@@ -8891,10 +9896,12 @@ class ChartInternal {
         types.push("Polar");
       }
     }
-    types.forEach((v) => {
-      $$[`init${v}`]();
-    });
-    notEmpty($$.config.data_labels) && !$$.hasArcType(null, ["radar"]) && $$.initText();
+    for (const type of types) {
+      $$[`init${type}`]();
+    }
+    if (notEmpty($$.config.data_labels) && !$$.hasArcType(null, ["radar"])) {
+      $$.initText();
+    }
   }
   /**
    * Set chart elements
@@ -8963,7 +9970,7 @@ class ChartInternal {
    * @private
    */
   updateTargets(targets) {
-    var _a;
+    var _a, _b;
     const $$ = this;
     const { hasAxis, hasFunnel, hasRadar, hasTreemap } = $$.state;
     const helper = (type) => $$[`updateTargetsFor${type}`](
@@ -8971,13 +9978,14 @@ class ChartInternal {
     );
     $$.updateTargetsForText(targets);
     if (hasAxis) {
-      ["bar", "candlestick", "line"].forEach((v) => {
-        const name = capitalize(v);
-        if (v === "line" && $$.hasTypeOf(name) || $$.hasType(v)) {
+      const shapes = ["bar", "candlestick", "line"];
+      for (const shape2 of shapes) {
+        const name = capitalize(shape2);
+        if (shape2 === "line" && $$.hasTypeOf(name) || $$.hasType(shape2)) {
           helper(name);
         }
-      });
-      $$.updateTargetsForSubchart && $$.updateTargetsForSubchart(targets);
+      }
+      (_a = $$.updateTargetsForSubchart) == null ? void 0 : _a.call($$, targets);
     } else if ($$.hasArcType(targets)) {
       let type = "Arc";
       if (hasRadar) {
@@ -8993,7 +10001,7 @@ class ChartInternal {
     }
     const hasPointType = $$.hasType("bubble") || $$.hasType("scatter");
     if (hasPointType) {
-      (_a = $$.updateTargetForCircle) == null ? void 0 : _a.call($$);
+      (_b = $$.updateTargetForCircle) == null ? void 0 : _b.call($$);
     }
     $$.filterTargetsToShowAtInit(hasPointType);
   }
@@ -9027,28 +10035,25 @@ class ChartInternal {
       TransitionForAxis: "Transition",
       Y: true
     };
-    Object.keys(withOptions).forEach((key) => {
-      let defVal = withOptions[key];
-      if (isString(defVal)) {
-        defVal = withOptions[defVal];
-      }
-      withOptions[key] = getOption(options, `with${key}`, defVal);
-    });
+    for (const [key, defVal] of Object.entries(withOptions)) {
+      const value = isString(defVal) ? withOptions[defVal] : defVal;
+      withOptions[key] = getOption(options, `with${key}`, value);
+    }
     return withOptions;
   }
   initialOpacity(d) {
     const $$ = this;
     const { withoutFadeIn } = $$.state;
-    const r = $$.getBaseValue(d) !== null && withoutFadeIn[d.id] ? null : "0";
-    return r;
+    return $$.getBaseValue(d) !== null && withoutFadeIn[d.id] ? null : "0";
   }
   bindResize() {
     const $$ = this;
-    const { config, state } = $$;
+    const { $el, config, state } = $$;
     const resizeFunction = generateResize(config.resize_timer);
+    const { resize_auto } = config;
     const list = [];
     list.push(() => callFn(config.onresize, $$.api));
-    if (config.resize_auto) {
+    if (/^(true|parent)$/.test(resize_auto)) {
       list.push(() => {
         state.resizing = true;
         if (config.legend_show) {
@@ -9064,7 +10069,11 @@ class ChartInternal {
     });
     list.forEach((v) => resizeFunction.add(v));
     $$.resizeFunction = resizeFunction;
-    win.addEventListener("resize", $$.resizeFunction = resizeFunction);
+    if (resize_auto === "parent") {
+      ($$.resizeFunction.resizeObserver = new ResizeObserver($$.resizeFunction.bind($$))).observe($el.chart.node().parentNode);
+    } else {
+      win.addEventListener("resize", $$.resizeFunction);
+    }
   }
   /**
    * Call plugin hook
@@ -9106,7 +10115,7 @@ extend(ChartInternal.prototype, [
   type
 ]);
 
-;// CONCATENATED MODULE: ./src/config/config.ts
+;// ./src/config/config.ts
 
 function loadConfig(config) {
   const thisConfig = this.config;
@@ -9136,7 +10145,7 @@ function loadConfig(config) {
   }
 }
 
-;// CONCATENATED MODULE: ./src/Chart/api/chart.ts
+;// ./src/Chart/api/chart.ts
 
 
 /* harmony default export */ var chart = ({
@@ -9168,7 +10177,7 @@ function loadConfig(config) {
   },
   /**
    * Force to redraw.
-   * - **NOTE:** When zoom/subchart is used, the zoomed state will be resetted.
+   * - **NOTE:** When zoom/subchart is used, the zoomed state will be reset.
    * @function flush
    * @instance
    * @memberof Chart
@@ -9190,6 +10199,9 @@ function loadConfig(config) {
         (_b = $$.axis) == null ? void 0 : _b.setOrient();
       }
       zoomResetBtn == null ? void 0 : zoomResetBtn.style("display", "none");
+      if ($$.scale.zoom) {
+        state.current.zoomDomain = $$.scale.zoom.domain();
+      }
       $$.scale.zoom = null;
       soft ? $$.redraw({
         withTransform: true,
@@ -9205,6 +10217,10 @@ function loadConfig(config) {
         $$.brush.getSelection().call($$.brush.move);
         $$.unselectRect();
       }
+      if (state.current.zoomDomain) {
+        $$.api.zoom(state.current.zoomDomain);
+        state.current.zoomDomain = null;
+      }
     } else {
       $$.initToRender(true);
     }
@@ -9219,6 +10235,7 @@ function loadConfig(config) {
    * chart.destroy();
    */
   destroy() {
+    var _a;
     const $$ = this.internal;
     const { $el: { chart, style, svg } } = $$;
     if (notEmpty($$)) {
@@ -9227,6 +10244,7 @@ function loadConfig(config) {
       $$.unbindAllEvents();
       svg.select("*").interrupt();
       $$.resizeFunction.clear();
+      (_a = $$.resizeFunction.resizeObserver) == null ? void 0 : _a.disconnect();
       win.removeEventListener("resize", $$.resizeFunction);
       chart.classed("bb", false).style("position", null).selectChildren().remove();
       style && style.parentNode.removeChild(style);
@@ -9248,15 +10266,15 @@ function loadConfig(config) {
    * Get or set config option value.
    * - **NOTE**
    *  - The option key name must be specified as the last level.
-   *  - when no argument is given, will return all specified generation options object only. (will exclude any other options not specified at the initialization)
+   *  - When no argument is given, it will return all specified generation options object only. (will exclude any other options not specified at the initialization)
    * @function config
    * @instance
    * @memberof Chart
    * @param {string} name The option key name.
-   * @param {*} [value] The value accepted for indicated option.
+   * @param {string|number|boolean|object|Array} [value] The value accepted for indicated option.
    * @param {boolean} [redraw] Set to redraw with the new option changes.
-   * - **NOTE:** Doesn't guarantee work in all circumstances. It can be applied for limited options only.
-   * @returns {*}
+   * - **NOTE:** Doesn't guarantee to work in all circumstances. It can be applied for limited options only.
+   * @returns {string|number|boolean|object|Array} The option value or all options object
    * @example
    *
    * // Getter
@@ -9299,7 +10317,7 @@ function loadConfig(config) {
   }
 });
 
-;// CONCATENATED MODULE: ./src/Chart/api/color.ts
+;// ./src/Chart/api/color.ts
 /* harmony default export */ var api_color = ({
   /**
    * Get the color
@@ -9316,7 +10334,7 @@ function loadConfig(config) {
   }
 });
 
-;// CONCATENATED MODULE: ./src/Chart/api/data.ts
+;// ./src/Chart/api/data.ts
 
 const api_data_data = function(targetIds) {
   const { targets } = this.internal.data;
@@ -9353,7 +10371,7 @@ extend(api_data_data, {
    * @function data․values
    * @instance
    * @memberof Chart
-   * @param {string|Array|null} targetIds This API returns the values of specified target. If this argument is not given, null will be retruned
+   * @param {string|Array|null} targetIds This API returns the values of specified target. If this argument is not given, null will be returned
    * @param {boolean} [flat=true] Get flatten values
    * @returns {Array} Data values
    * @example
@@ -9399,6 +10417,7 @@ extend(api_data_data, {
   },
   /**
    * Get and set colors of the data loaded in the chart.
+   * - **NOTE:** If gradient option is set, the color update will affect only gradient stops have the same color.
    * @function data․colors
    * @instance
    * @memberof Chart
@@ -9471,7 +10490,7 @@ extend(api_data_data, {
 });
 /* harmony default export */ var api_data = ({ data: api_data_data });
 
-;// CONCATENATED MODULE: ./src/Chart/api/export.ts
+;// ./src/Chart/api/export.ts
 
 
 
@@ -9513,9 +10532,9 @@ function nodeToSvgDataUrl(node, option, orgSize) {
 }
 function getCoords(elem, svgOffset) {
   const { top, left } = svgOffset;
-  const { x, y } = elem.getBBox();
+  const { x, y } = getBBox(elem, true);
   const { a, b, c, d, e, f } = elem.getScreenCTM();
-  const { width, height } = elem.getBoundingClientRect();
+  const { width, height } = getBoundingRect(elem, true);
   return {
     x: a * x + c * y + e - left,
     y: b * x + d * y + f - top + (height - Math.round(height / 4)),
@@ -9524,7 +10543,7 @@ function getCoords(elem, svgOffset) {
   };
 }
 function getGlyph(svg) {
-  const { left, top } = svg.getBoundingClientRect();
+  const { left, top } = getBoundingRect(svg);
   const filterFn = (t) => t.textContent || t.childElementCount;
   const glyph = [];
   toArray(svg.querySelectorAll("text")).filter(filterFn).forEach((t) => {
@@ -9604,7 +10623,7 @@ function renderText(ctx, glyph) {
    *   - Text element's position(especially "transformed") can't be preserved correctly according the page's layout condition.
    *   - If need to preserve accurate text position, embed the web font data within to the page and set `preserveFontStyle=false`.
    *     - Checkout the embed example: <a href="https://stackblitz.com/edit/zfbya9-8nf9nn?file=index.html">https://stackblitz.com/edit/zfbya9-8nf9nn?file=index.html</a>
-   * @param {Function} [callback] The callback to be invoked when export is ready.
+   * @param {function(string): void} [callback] The callback to be invoked when export is ready.
    * @returns {string} dataURI
    * @example
    *  chart.export();
@@ -9637,7 +10656,7 @@ function renderText(ctx, glyph) {
     const $$ = this.internal;
     const { state, $el: { chart, svg } } = $$;
     const { width, height } = state.current;
-    const opt = mergeObj({
+    const opt = mergeObj(/* @__PURE__ */ Object.create(null), {
       width,
       height,
       preserveAspectRatio: true,
@@ -9667,7 +10686,7 @@ function renderText(ctx, glyph) {
   }
 });
 
-;// CONCATENATED MODULE: ./src/Chart/api/focus.ts
+;// ./src/Chart/api/focus.ts
 
 
 /* harmony default export */ var api_focus = ({
@@ -9774,7 +10793,7 @@ function renderText(ctx, glyph) {
   }
 });
 
-;// CONCATENATED MODULE: ./src/Chart/api/legend.ts
+;// ./src/Chart/api/legend.ts
 const legend_legend = {
   /**
    * Show legend for each target.
@@ -9828,7 +10847,7 @@ const legend_legend = {
 };
 /* harmony default export */ var api_legend = ({ legend: legend_legend });
 
-;// CONCATENATED MODULE: ./src/Chart/api/load.ts
+;// ./src/Chart/api/load.ts
 
 
 
@@ -9858,7 +10877,7 @@ const legend_legend = {
    *    | categories | Array | The categories specified by axis.x.categories or data.x will be updated. categories must be Array. |
    *    | classes | Object | The classes specified by data.classes will be updated. classes must be Object that has target id as keys. |
    *    | colors | Object | The colors specified by data.colors will be updated. colors must be Object that has target id as keys. |
-   *    | data | Obejct | Data objects to be loaded. Checkout the example. |
+   *    | data | Object | Data objects to be loaded. Checkout the example. |
    *    | done | Function | The specified function will be called after data loaded.|
    *    | headers | string |  Set request header if loading via `data.url`.<br>@see [data․headers](Options.html#.data%25E2%2580%25A4headers) |
    *    | keys | Object |  Choose which JSON objects keys correspond to desired data.<br>**NOTE:** Only for JSON object given as array.<br>@see [data․keys](Options.html#.data%25E2%2580%25A4keys) |
@@ -9917,7 +10936,7 @@ const legend_legend = {
    *
    * chart.load({
    *   columns: [
-   *     // when existing chart has `x` value, should provide correponding 'x' value.
+   *     // when existing chart has `x` value, should provide corresponding 'x' value.
    *     // with 'append' option, the 'data1' will have `[36,30,24,37]`.
    *     ["x", "2021-02-01T08:00:00"],
    *     ["data1", 37]
@@ -10007,7 +11026,7 @@ const legend_legend = {
    *  | key | Type | Description |
    *  | --- | --- | --- |
    *  | ids | String &vert; Array | Target id data to be unloaded. If not given, all data will be unloaded. |
-   *  | done | Fuction | Callback after data is unloaded. |
+   *  | done | Function | Callback after data is unloaded. |
    *  | resizeAfter | boolean | Resize after the unload. Default value is `false`.<br>- This option won't call `onresize` neither `onresized`.<br>- When set to 'true', will call `.flush(true)` at the end of unload. |
    * @example
    *  // Unload data2 and data3
@@ -10041,7 +11060,7 @@ const legend_legend = {
   }
 });
 
-;// CONCATENATED MODULE: ./src/Chart/api/show.ts
+;// ./src/Chart/api/show.ts
 
 function showHide(show, targetIdsValue, options) {
   const $$ = this.internal;
@@ -10144,7 +11163,7 @@ function showHide(show, targetIdsValue, options) {
   }
 });
 
-;// CONCATENATED MODULE: ./src/Chart/api/tooltip.ts
+;// ./src/Chart/api/tooltip.ts
 
 
 const tooltip_tooltip = {
@@ -10164,7 +11183,7 @@ const tooltip_tooltip = {
    *
    * @example
    *  // show the 2nd x Axis coordinate tooltip
-   *  // for Arc(gauge, donut & pie) and radar type, approch showing tooltip by using "index" number.
+   *  // for Arc(gauge, donut & pie) and radar type, approach showing tooltip by using "index" number.
    *  chart.tooltip.show({
    *    index: 1
    *  });
@@ -10267,7 +11286,7 @@ const tooltip_tooltip = {
 };
 /* harmony default export */ var api_tooltip = ({ tooltip: tooltip_tooltip });
 
-;// CONCATENATED MODULE: ./src/Chart/Chart.ts
+;// ./src/Chart/Chart.ts
 var Chart_defProp = Object.defineProperty;
 var Chart_defNormalProp = (obj, key, value) => key in obj ? Chart_defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var Chart_publicField = (obj, key, value) => Chart_defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
@@ -10322,7 +11341,7 @@ extend(Chart.prototype, [
   api_tooltip
 ]);
 
-;// CONCATENATED MODULE: ./src/Chart/api/selection.ts
+;// ./src/Chart/api/selection.ts
 
 
 
@@ -10433,7 +11452,7 @@ function setSelection(isSelection = false, ids, indices, resetOther) {
   }
 });
 
-;// CONCATENATED MODULE: ./src/Chart/api/subchart.ts
+;// ./src/Chart/api/subchart.ts
 
 
 const subchart = function(domainValue) {
@@ -10528,7 +11547,7 @@ extend(subchart, {
     }
   },
   /**
-   * Toggle the visiblity of subchart
+   * Toggle the visibility of subchart
    * - **NOTE:** for ESM imports, needs to import 'subchart' exports and instantiate it by calling `subchart()`.
    * @function subchart․toggle
    * @instance
@@ -10564,7 +11583,7 @@ extend(subchart, {
 
 // EXTERNAL MODULE: external {"commonjs":"d3-zoom","commonjs2":"d3-zoom","amd":"d3-zoom","root":"d3"}
 var external_commonjs_d3_zoom_commonjs2_d3_zoom_amd_d3_zoom_root_d3_ = __webpack_require__(10);
-;// CONCATENATED MODULE: ./src/Chart/api/zoom.ts
+;// ./src/Chart/api/zoom.ts
 
 
 const zoom = function(domainValue) {
@@ -10731,7 +11750,7 @@ extend(zoom, {
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/interactions/subchart.ts
+;// ./src/ChartInternal/interactions/subchart.ts
 
 
 
@@ -10795,7 +11814,7 @@ extend(zoom, {
     };
     $$.brush.scale = function(scale2) {
       const h = config.subchart_size_height;
-      let extent = $$.getExtent();
+      let extent = $$.axis.getExtent();
       if (!extent && scale2.range) {
         extent = [[0, 0], [scale2.range()[1], h]];
       } else if (isArray(extent)) {
@@ -10976,29 +11995,10 @@ extend(zoom, {
     const subXAxis = (transitions == null ? void 0 : transitions.axisSubX) ? transitions.axisSubX : $T(subchart.main.select(`.${classes.axisX}`), withTransition);
     subchart.main.attr("transform", $$.getTranslate("context"));
     subXAxis.attr("transform", $$.getTranslate("subX"));
-  },
-  /**
-   * Get extent value
-   * @returns {Array} default extent
-   * @private
-   */
-  getExtent() {
-    const $$ = this;
-    const { config, scale } = $$;
-    let extent = config.axis_x_extent;
-    if (extent) {
-      if (isFunction(extent)) {
-        extent = extent.bind($$.api)($$.getXDomain($$.data.targets), scale.subX);
-      } else if ($$.axis.isTimeSeries() && extent.every(isNaN)) {
-        const fn = parseDate.bind($$);
-        extent = extent.map((v) => scale.subX(fn(v)));
-      }
-    }
-    return extent;
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/interactions/zoom.ts
+;// ./src/ChartInternal/interactions/zoom.ts
 
 
 
@@ -11013,7 +12013,7 @@ extend(zoom, {
     const $$ = this;
     $$.scale.zoom = null;
     $$.generateZoom();
-    $$.initZoomBehaviour();
+    $$.config.zoom_type === "drag" && $$.initZoomBehaviour();
   },
   /**
    * Bind zoom event
@@ -11054,6 +12054,9 @@ extend(zoom, {
       const isRotated = config.axis_rotated;
       (_a = org.xScale) == null ? void 0 : _a.range(scale.x.range());
       const newScale = transform[isRotated ? "rescaleY" : "rescaleX"](org.xScale || scale.x);
+      if (newScale.domain().some((v) => /(Invalid Date|NaN)/.test(v.toString()))) {
+        return;
+      }
       const domain = $$.trimXDomain(newScale.domain());
       const rescale = config.zoom_rescale;
       newScale.domain(domain, org.xDomain);
@@ -11065,9 +12068,6 @@ extend(zoom, {
           "__zoom",
           external_commonjs_d3_zoom_commonjs2_d3_zoom_amd_d3_zoom_root_d3_.zoomIdentity.translate(tX, tY).scale(transform.k)
         );
-      }
-      if (!$$.state.xTickOffset) {
-        $$.state.xTickOffset = $$.axis.x.tickOffset();
       }
       scale.zoom = $$.getCustomizedXScale(newScale);
       $$.axis.x.scale(scale.zoom);
@@ -11109,7 +12109,6 @@ extend(zoom, {
    * @private
    */
   onZoom(event) {
-    var _a;
     const $$ = this;
     const { config, scale, state, org } = $$;
     const { sourceEvent } = event;
@@ -11129,19 +12128,24 @@ extend(zoom, {
     }
     $$.zoom.updateTransformScale(transform, config.zoom_type === "wheel" && sourceEvent);
     const doTransition = config.transition_duration > 0 && !config.subchart_show && (state.dragging || isUnZoom || !event.sourceEvent);
-    $$.redraw({
-      withTransition: doTransition,
-      withY: config.zoom_rescale,
-      withSubchart: false,
-      withEventRect: false,
-      withDimension: false
-    });
-    $$.state.cancelClick = isMousemove;
-    !isUnZoom && callFn(
-      config.zoom_onzoom,
-      $$.api,
-      (_a = $$.state.domain) != null ? _a : $$.zoom.getDomain()
-    );
+    const useRAF = sourceEvent && isMousemove && config.zoom_type !== "wheel";
+    const executeRedraw = () => {
+      var _a;
+      $$.redraw({
+        withTransition: doTransition,
+        withY: config.zoom_rescale,
+        withSubchart: false,
+        withEventRect: false,
+        withDimension: false
+      });
+      $$.state.cancelClick = isMousemove;
+      !isUnZoom && callFn(
+        config.zoom_onzoom,
+        $$.api,
+        (_a = $$.state.domain) != null ? _a : $$.zoom.getDomain()
+      );
+    };
+    useRAF ? scheduleRAFUpdate($$.state, executeRedraw) : executeRedraw();
   },
   /**
    * 'end' event listener
@@ -11193,7 +12197,7 @@ extend(zoom, {
   },
   /**
    * Set zoom transform to event rect
-   * @param {Function} x x Axis scale function
+   * @param {function} x x Axis scale function
    * @param {Array} domain Domain value to be set
    * @private
    */
@@ -11233,12 +12237,14 @@ extend(zoom, {
     let start = 0;
     let end = 0;
     let zoomRect;
+    let extent;
     const prop = {
       axis: isRotated ? "y" : "x",
       attr: isRotated ? "height" : "width",
       index: isRotated ? 1 : 0
     };
     $$.zoomBehaviour = (0,external_commonjs_d3_drag_commonjs2_d3_drag_amd_d3_drag_root_d3_.drag)().clickDistance(4).on("start", function(event) {
+      extent = $$.scale.zoom ? null : $$.axis.getExtent();
       state.event = event;
       $$.setDragStatus(true);
       $$.unselectRect();
@@ -11246,11 +12252,25 @@ extend(zoom, {
         zoomRect = $$.$el.main.append("rect").attr("clip-path", state.clip.path).attr("class", $ZOOM.zoomBrush).attr("width", isRotated ? state.width : 0).attr("height", isRotated ? 0 : state.height);
       }
       start = getPointer(event, this)[prop.index];
+      if (extent) {
+        if (start < extent[0]) {
+          start = extent[0];
+        } else if (start > extent[1]) {
+          start = extent[1];
+        }
+      }
       end = start;
       zoomRect.attr(prop.axis, start).attr(prop.attr, 0);
       $$.onZoomStart(event);
     }).on("drag", function(event) {
       end = getPointer(event, this)[prop.index];
+      if (extent) {
+        if (end > extent[1]) {
+          end = extent[1];
+        } else if (end < extent[0]) {
+          end = extent[0];
+        }
+      }
       zoomRect.attr(prop.axis, Math.min(start, end)).attr(prop.attr, Math.abs(end - start));
     }).on("end", (event) => {
       const scale = $$.scale.zoom || $$.scale.x;
@@ -11291,7 +12311,7 @@ extend(zoom, {
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/interactions/drag.ts
+;// ./src/ChartInternal/interactions/drag.ts
 
 
 
@@ -11318,31 +12338,37 @@ extend(zoom, {
     const maxX = Math.max(sx, mx);
     const minY = isSelectionGrouped ? state.margin.top : Math.min(sy, my);
     const maxY = isSelectionGrouped ? state.height : Math.max(sy, my);
-    main.select(`.${$DRAG.dragarea}`).attr("x", minX).attr("y", minY).attr("width", maxX - minX).attr("height", maxY - minY);
-    main.selectAll(`.${$SHAPE.shapes}`).selectAll(`.${$SHAPE.shape}`).filter((d) => isSelectable == null ? void 0 : isSelectable.bind($$.api)(d)).each(function(d, i) {
-      const shape = (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(this);
-      const isSelected = shape.classed($SELECT.SELECTED);
-      const isIncluded = shape.classed($DRAG.INCLUDED);
-      let isWithin = false;
-      let toggle;
-      if (shape.classed($CIRCLE.circle)) {
-        const x = +shape.attr("cx") * 1;
-        const y = +shape.attr("cy") * 1;
-        toggle = $$.togglePoint;
-        isWithin = minX < x && x < maxX && minY < y && y < maxY;
-      } else if (shape.classed($BAR.bar)) {
-        const { x, y, width, height } = getPathBox(this);
-        toggle = $$.togglePath;
-        isWithin = !(maxX < x || x + width < minX) && !(maxY < y || y + height < minY);
-      } else {
+    const executeDrag = () => {
+      if (!$$ || !$$.$el || !$$.$el.main) {
         return;
       }
-      if (isWithin ^ isIncluded) {
-        shape.classed($DRAG.INCLUDED, !isIncluded);
-        shape.classed($SELECT.SELECTED, !isSelected);
-        toggle.call($$, !isSelected, shape, d, i);
-      }
-    });
+      main.select(`.${$DRAG.dragarea}`).attr("x", minX).attr("y", minY).attr("width", maxX - minX).attr("height", maxY - minY);
+      main.selectAll(`.${$SHAPE.shapes}`).selectAll(`.${$SHAPE.shape}`).filter((d) => isSelectable == null ? void 0 : isSelectable.bind($$.api)(d)).each(function(d, i) {
+        const shape = (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(this);
+        const isSelected = shape.classed($SELECT.SELECTED);
+        const isIncluded = shape.classed($DRAG.INCLUDED);
+        let isWithin = false;
+        let toggle;
+        if (shape.classed($CIRCLE.circle)) {
+          const x = +shape.attr("cx") * 1;
+          const y = +shape.attr("cy") * 1;
+          toggle = $$.togglePoint;
+          isWithin = minX < x && x < maxX && minY < y && y < maxY;
+        } else if (shape.classed($BAR.bar)) {
+          const { x, y, width, height } = getPathBox(this);
+          toggle = $$.togglePath;
+          isWithin = !(maxX < x || x + width < minX) && !(maxY < y || y + height < minY);
+        } else {
+          return;
+        }
+        if (isWithin ^ isIncluded) {
+          shape.classed($DRAG.INCLUDED, !isIncluded);
+          shape.classed($SELECT.SELECTED, !isSelected);
+          toggle.call($$, !isSelected, shape, d, i);
+        }
+      });
+    };
+    scheduleRAFUpdate($$.state, executeDrag);
   },
   /**
    * Called when the drag starts.
@@ -11377,7 +12403,7 @@ extend(zoom, {
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/internals/selection.ts
+;// ./src/ChartInternal/internals/selection.ts
 var selection_defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;
 var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
@@ -11487,7 +12513,7 @@ var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
    * Returns the toggle method of the target
    * @param {object} that shape
    * @param {object} d Data object
-   * @returns {Function} toggle method
+   * @returns {function} toggle method
    * @private
    */
   getToggle(that, d) {
@@ -11536,7 +12562,7 @@ var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
   }
 }));
 
-;// CONCATENATED MODULE: ./src/config/Options/data/selection.ts
+;// ./src/config/Options/data/selection.ts
 /* harmony default export */ var data_selection = ({
   /**
    * Set data selection enabled<br><br>
@@ -11586,7 +12612,7 @@ var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
    * The callback will receive d as an argument and it has some parameters like id, value, index. This callback should return boolean.
    * @name data․selection․isselectable
    * @memberof Options
-   * @type {Function}
+   * @type {function}
    * @default function() { return true; }
    * @example
    * data: {
@@ -11598,7 +12624,7 @@ var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
   data_selection_isselectable: () => true,
   /**
    * Set multiple data points selection enabled.<br><br>
-   * If this option set true, multile data points can have the selected state at the same time. If false set, only one data point can have the selected state and the others will be unselected when the new data point is selected.
+   * If this option set true, multiple data points can have the selected state at the same time. If false set, only one data point can have the selected state and the others will be unselected when the new data point is selected.
    * @name data․selection․multiple
    * @memberof Options
    * @type {boolean}
@@ -11631,7 +12657,7 @@ var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
    * Set a callback for on data selection.
    * @name data․onselected
    * @memberof Options
-   * @type {Function}
+   * @type {function}
    * @default function() {}
    * @example
    * data: {
@@ -11648,7 +12674,7 @@ var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
    * Set a callback for on data un-selection.
    * @name data․onunselected
    * @memberof Options
-   * @type {Function}
+   * @type {function}
    * @default function() {}
    * @example
    * data: {
@@ -11663,7 +12689,7 @@ var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
   }
 });
 
-;// CONCATENATED MODULE: ./src/config/Options/interaction/subchart.ts
+;// ./src/config/Options/interaction/subchart.ts
 /* harmony default export */ var interaction_subchart = ({
   /**
    * Set subchart options.
@@ -11678,11 +12704,11 @@ var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
    * @property {boolean} [subchart.showHandle=false] Show sub chart's handle.
    * @property {boolean} [subchart.axis.x.show=true] Show or hide x axis.
    * @property {boolean} [subchart.axis.x.tick.show=true] Show or hide x axis tick line.
-   * @property {Function|string} [subchart.axis.x.tick.format] Use custom format for x axis ticks - see [axis.x.tick.format](#.axis․x․tick․format) for details.
+   * @property {function|string} [subchart.axis.x.tick.format] Use custom format for x axis ticks - see [axis.x.tick.format](#.axis․x․tick․format) for details.
    * @property {boolean} [subchart.axis.x.tick.text.show=true] Show or hide x axis tick text.
    * @property {Array} [subchart.init.range] Set initial selection domain range.
    * @property {number} [subchart.size.height] Change the height of the subchart.
-   * @property {Function} [subchart.onbrush] Set callback for brush event.<br>
+   * @property {function} [subchart.onbrush] Set callback for brush event.<br>
    *  Specified function receives the current zoomed x domain.
    * @see [Demo](https://naver.github.io/billboard.js/demo/#Interaction.SubChart)
    * @example
@@ -11731,7 +12757,7 @@ var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
   }
 });
 
-;// CONCATENATED MODULE: ./src/config/Options/interaction/zoom.ts
+;// ./src/config/Options/interaction/zoom.ts
 /* harmony default export */ var interaction_zoom = ({
   /**
    * Set zoom options
@@ -11751,14 +12777,14 @@ var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
    * @property {Array} [zoom.extent=[1, 10]] Change zoom extent.
    * @property {number|Date} [zoom.x.min] Set x Axis minimum zoom range
    * @property {number|Date} [zoom.x.max] Set x Axis maximum zoom range
-   * @property {Function} [zoom.onzoomstart=undefined] Set callback that is called when zooming starts.<br>
+   * @property {function} [zoom.onzoomstart=undefined] Set callback that is called when zooming starts.<br>
    *  Specified function receives the zoom event.
-   * @property {Function} [zoom.onzoom=undefined] Set callback that is called when the chart is zooming.<br>
+   * @property {function} [zoom.onzoom=undefined] Set callback that is called when the chart is zooming.<br>
    *  Specified function receives the zoomed domain.
-   * @property {Function} [zoom.onzoomend=undefined] Set callback that is called when zooming ends.<br>
+   * @property {function} [zoom.onzoomend=undefined] Set callback that is called when zooming ends.<br>
    *  Specified function receives the zoomed domain.
    * @property {boolean|object} [zoom.resetButton=true] Set to display zoom reset button for 'drag' type zoom
-   * @property {Function} [zoom.resetButton.onclick] Set callback when clicks the reset button. The callback will receive reset button element reference as argument.
+   * @property {function} [zoom.resetButton.onclick] Set callback when clicks the reset button. The callback will receive reset button element reference as argument.
    * @property {string} [zoom.resetButton.text='Reset Zoom'] Text value for zoom reset button.
    * @see [Demo:zoom](https://naver.github.io/billboard.js/demo/#Interaction.Zoom)
    * @see [Demo:drag zoom](https://naver.github.io/billboard.js/demo/#Interaction.DragZoom)
@@ -11812,7 +12838,7 @@ var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
   zoom_x_max: void 0
 });
 
-;// CONCATENATED MODULE: ./src/config/resolver/interaction.ts
+;// ./src/config/resolver/interaction.ts
 
 
 
@@ -11846,7 +12872,7 @@ let zoomModule = () => {
   return (zoomModule = () => true)();
 };
 
-;// CONCATENATED MODULE: ./src/Chart/api/axis.ts
+;// ./src/Chart/api/axis.ts
 
 function setMinMax($$, type, value) {
   const { config } = $$;
@@ -12053,7 +13079,7 @@ const axis = {
 };
 /* harmony default export */ var api_axis = ({ axis });
 
-;// CONCATENATED MODULE: ./src/Chart/api/category.ts
+;// ./src/Chart/api/category.ts
 
 /* harmony default export */ var api_category = ({
   /**
@@ -12101,7 +13127,7 @@ const axis = {
   }
 });
 
-;// CONCATENATED MODULE: ./src/Chart/api/flow.ts
+;// ./src/Chart/api/flow.ts
 
 /* harmony default export */ var flow = ({
   /**
@@ -12129,7 +13155,7 @@ const axis = {
    *   - If json specified, keys is required as well as data.json.
    * 	 - If tab isn't visible(by evaluating `document.hidden`), will not be executed to prevent unnecessary work.
    * @example
-   * // 2 data points will be apprended to the tail and popped from the head.
+   * // 2 data points will be appended to the tail and popped from the head.
    * // After that, 4 data points will be appended and no data points will be poppoed.
    * chart.flow({
    *  columns: [
@@ -12274,7 +13300,7 @@ const axis = {
   }
 });
 
-;// CONCATENATED MODULE: ./src/Chart/api/grid.ts
+;// ./src/Chart/api/grid.ts
 
 function grid(grids, axisId) {
   const $$ = this.internal;
@@ -12407,7 +13433,7 @@ extend(ygrids, {
 });
 /* harmony default export */ var api_grid = ({ xgrids, ygrids });
 
-;// CONCATENATED MODULE: ./src/Chart/api/group.ts
+;// ./src/Chart/api/group.ts
 
 /* harmony default export */ var group = ({
   /**
@@ -12435,7 +13461,7 @@ extend(ygrids, {
   }
 });
 
-;// CONCATENATED MODULE: ./src/Chart/api/regions.ts
+;// ./src/Chart/api/regions.ts
 
 
 function regionsFn(regions2, isAdd = false) {
@@ -12460,7 +13486,7 @@ extend(regions, {
    * @function regions․add
    * @instance
    * @memberof Chart
-   * @param {Array|object} regions New region will be added. The format of this argument is the same as regions and it's possible to give an Object if only one region will be added.
+   * @param {Array|object} regions New region will be added. The format of this argument is the same as [regions](./Options.html#.regions) and it's possible to give an Object if only one region will be added.
    * @returns {Array} regions
    * @example
    * // Add a new region
@@ -12541,7 +13567,7 @@ extend(regions, {
 });
 /* harmony default export */ var api_regions = ({ regions });
 
-;// CONCATENATED MODULE: ./src/Chart/api/x.ts
+;// ./src/Chart/api/x.ts
 
 /* harmony default export */ var x = ({
   /**
@@ -12607,7 +13633,7 @@ extend(regions, {
 
 // EXTERNAL MODULE: external {"commonjs":"d3-axis","commonjs2":"d3-axis","amd":"d3-axis","root":"d3"}
 var external_commonjs_d3_axis_commonjs2_d3_axis_amd_d3_axis_root_d3_ = __webpack_require__(11);
-;// CONCATENATED MODULE: ./src/ChartInternal/Axis/AxisRendererHelper.ts
+;// ./src/ChartInternal/Axis/AxisRendererHelper.ts
 var AxisRendererHelper_defProp = Object.defineProperty;
 var AxisRendererHelper_defNormalProp = (obj, key, value) => key in obj ? AxisRendererHelper_defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var AxisRendererHelper_publicField = (obj, key, value) => AxisRendererHelper_defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
@@ -12618,6 +13644,7 @@ class AxisRendererHelper {
     AxisRendererHelper_publicField(this, "owner");
     AxisRendererHelper_publicField(this, "config");
     AxisRendererHelper_publicField(this, "scale");
+    AxisRendererHelper_publicField(this, "charSize", {});
     const scale = getScale();
     const { config, params } = owner;
     this.owner = owner;
@@ -12630,18 +13657,23 @@ class AxisRendererHelper {
   }
   /**
    * Compute a character dimension
-   * @param {d3.selection} node <g class=tick> node
+   * @param {string} orient Axis orientation
+   * @param {d3.selection} text SVG text selection
+   * @param {boolean} memoize memoize the calculated size
    * @returns {{w: number, h: number}}
    * @private
    */
-  static getSizeFor1Char(node) {
+  getSizeFor1Char(orient, text, memoize = true) {
     const size = {
       w: 5.5,
       h: 11.5
     };
-    !node.empty() && node.select("text").text("0").call((el) => {
+    if (this.charSize[orient] && memoize) {
+      return this.charSize[orient];
+    }
+    !text.empty() && text.text("0").call((el) => {
       try {
-        const { width, height } = el.node().getBBox();
+        const { width, height } = getBBox(el.node(), true);
         if (width && height) {
           size.w = width;
           size.h = height;
@@ -12650,20 +13682,23 @@ class AxisRendererHelper {
         el.text("");
       }
     });
-    this.getSizeFor1Char = () => size;
+    this.charSize[orient] = size;
     return size;
   }
   /**
    * Get tick transform setter function
    * @param {string} id Axis id
-   * @returns {Function} transfrom setter function
+   * @returns {(selection: d3Selection, scale) => void} transfrom setter function
    * @private
    */
   getTickTransformSetter(id) {
     const { config } = this;
     const fn = id === "x" ? (value) => `translate(${value + config.tickOffset},0)` : (value) => `translate(0,${value})`;
     return (selection, scale) => {
-      selection.attr("transform", (d) => isValue(d) ? fn(Math.ceil(scale(d))) : null);
+      selection.attr("transform", (d) => {
+        const x = scale(d);
+        return isValue(d) ? fn(x) : null;
+      });
     };
   }
   scaleExtent(domain) {
@@ -12730,10 +13765,11 @@ class AxisRendererHelper {
   }
 }
 
-;// CONCATENATED MODULE: ./src/ChartInternal/Axis/AxisRenderer.ts
+;// ./src/ChartInternal/Axis/AxisRenderer.ts
 var AxisRenderer_defProp = Object.defineProperty;
 var AxisRenderer_defNormalProp = (obj, key, value) => key in obj ? AxisRenderer_defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var AxisRenderer_publicField = (obj, key, value) => AxisRenderer_defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+
 
 
 
@@ -12792,6 +13828,7 @@ class AxisRenderer {
       tick: axisShow ? params.config[`${prefix}_tick_show`] : false,
       text: axisShow ? params.config[`${prefix}_tick_text_show`] : false
     };
+    const evalTextSize = params.config.axis_evalTextSize;
     let $g;
     g.each(function() {
       const g2 = (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(this);
@@ -12799,14 +13836,14 @@ class AxisRenderer {
       let scale1 = helper.copyScale();
       $g = g2;
       this.__chart__ = scale1;
-      config.tickOffset = params.isCategory ? Math.ceil((scale1(1) - scale1(0)) / 2) : 0;
+      config.tickOffset = params.isCategory ? (scale1(1) - scale1(0)) / 2 : 0;
       const path = g2.selectAll(".domain").data([0]);
       path.enter().append("path").attr("class", "domain").merge(path).attr("d", () => {
         const outerTickSized = config.outerTickSize * sign;
         return isTopBottom ? `M${range[0]},${outerTickSized}V0H${range[1]}V${outerTickSized}` : `M${outerTickSized},${range[0]}H0V${range[1]}H${outerTickSized}`;
       });
       if (tickShow.tick || tickShow.text) {
-        const ticks = config.tickValues || helper.generateTicks(scale1, isLeftRight);
+        const ticks = config.tickValues || helper.generateTicks(scale1, isLeftRight || params.config.axis_rotated);
         ctx.generatedTicks = ticks;
         let tick = g2.selectAll(".tick").data(ticks, scale1);
         const tickEnter = tick.enter().insert("g", ".domain").attr("class", "tick");
@@ -12814,9 +13851,19 @@ class AxisRenderer {
         tick = tickEnter.merge(tick);
         tickShow.tick && tickEnter.append("line");
         tickShow.text && tickEnter.append("text");
-        const sizeFor1Char = AxisRendererHelper.getSizeFor1Char(tick);
+        const tickText = tick.select("text");
         const counts = [];
-        let tspan = tick.select("text").selectAll("tspan").data((d, index) => {
+        let sizeFor1Char = { w: 0, h: 0 };
+        if (isFunction(evalTextSize)) {
+          sizeFor1Char = evalTextSize.bind(ctx.params.owner.api)(tickText.node(), id);
+          if (this.classList.contains($COMMON.dummy)) {
+            this.sizeFor1Char = sizeFor1Char;
+          }
+        }
+        if (!sizeFor1Char || sizeFor1Char.w === 0 || sizeFor1Char.h === 0) {
+          sizeFor1Char = ctx.helper.getSizeFor1Char(orient, tickText, !!evalTextSize);
+        }
+        let tspan = tickText.selectAll("tspan").data((d, index) => {
           const split = params.tickMultiline ? splitTickText(d, scale1, ticks, isLeftRight, sizeFor1Char.w) : isArray(helper.textFormatted(d)) ? helper.textFormatted(d).concat() : [helper.textFormatted(d)];
           counts[index] = split.length;
           return split.map((splitted) => ({ index, splitted }));
@@ -12844,7 +13891,7 @@ class AxisRenderer {
         const textUpdate = tick.select("text");
         tickEnter.select("line").attr(`${axisPx}2`, innerTickSize * sign);
         tickEnter.select("text").attr(axisPx, tickLength * sign);
-        ctx.setTickLineTextPosition(lineUpdate, textUpdate);
+        ctx.setTickLineTextPosition(lineUpdate, textUpdate, sizeFor1Char);
         if (params.tickTitle) {
           const title = textUpdate.select("title");
           (title.empty() ? textUpdate.append("title") : title).text((index) => params.tickTitle[index]);
@@ -12913,12 +13960,16 @@ class AxisRenderer {
    * Set tick's line & text position
    * @param {d3.selection} lineUpdate Line selection
    * @param {d3.selection} textUpdate Text selection
+   * @param {object} sizeFor1Char Size for 1 char
    * @private
    */
-  setTickLineTextPosition(lineUpdate, textUpdate) {
+  setTickLineTextPosition(lineUpdate, textUpdate, sizeFor1Char) {
     const tickPos = this.getTickXY();
     const { innerTickSize, orient, tickLength, tickOffset } = this.config;
+    const axisId = this.params.id;
     const rotate = this.params.tickTextRotate;
+    const baseHeight = 6;
+    const charHeight = sizeFor1Char.h / 2 - baseHeight;
     const textAnchorForText = (r) => {
       const value = ["start", "end"];
       orient === "top" && value.reverse();
@@ -12927,7 +13978,8 @@ class AxisRenderer {
     const textTransform = (r) => r ? `rotate(${r})` : null;
     const yForText = (r) => {
       const r2 = r / (orient === "bottom" ? 15 : 23);
-      return r ? 11.5 - 2.5 * r2 * (r > 0 ? 1 : -1) : tickLength;
+      const y = r ? 11.5 - 2.5 * r2 * (r > 0 ? 1 : -1) : tickLength;
+      return y;
     };
     const {
       config: {
@@ -12935,9 +13987,10 @@ class AxisRenderer {
         axis_x_tick_text_inner: inner
       }
     } = this.params.owner;
+    const tickLineInner = this.params.config[`axis_${axisId}_tick_inner`];
     switch (orient) {
       case "bottom":
-        lineUpdate.attr("x1", tickPos.x).attr("x2", tickPos.x).attr("y2", this.getTickSize.bind(this));
+        lineUpdate.attr("x1", tickPos.x).attr("x2", tickPos.x).attr("y2", (d) => this.getTickSize.bind(this)(d) * (tickLineInner ? -1 : 1));
         textUpdate.attr("x", 0).attr("y", yForText(rotate)).style("text-anchor", textAnchorForText(rotate)).style("text-anchor", (d, i, { length }) => {
           if (!isRotated && i === 0 && (inner === true || inner.first)) {
             return "start";
@@ -12948,16 +14001,16 @@ class AxisRenderer {
         }).attr("transform", textTransform(rotate));
         break;
       case "top":
-        lineUpdate.attr("x2", 0).attr("y2", -innerTickSize);
-        textUpdate.attr("x", 0).attr("y", -yForText(rotate) * 2).style("text-anchor", textAnchorForText(rotate)).attr("transform", textTransform(rotate));
+        lineUpdate.attr("x2", 0).attr("y2", tickLineInner ? innerTickSize : -innerTickSize);
+        textUpdate.attr("x", 0).attr("y", -(yForText(rotate) + charHeight + baseHeight)).style("text-anchor", textAnchorForText(rotate)).attr("transform", textTransform(rotate));
         break;
       case "left":
-        lineUpdate.attr("x2", -innerTickSize).attr("y1", tickPos.y).attr("y2", tickPos.y);
-        textUpdate.attr("x", -tickLength).attr("y", tickOffset).style("text-anchor", "end");
+        lineUpdate.attr("x2", tickLineInner ? innerTickSize : -innerTickSize).attr("y1", tickPos.y).attr("y2", tickPos.y);
+        textUpdate.attr("x", -tickLength).attr("y", tickOffset + (isRotated ? charHeight / 4 : charHeight)).style("text-anchor", "end");
         break;
       case "right":
-        lineUpdate.attr("x2", innerTickSize).attr("y2", 0);
-        textUpdate.attr("x", tickLength).attr("y", 0).style("text-anchor", "start");
+        lineUpdate.attr("x2", tickLineInner ? -innerTickSize : innerTickSize).attr("y2", 0);
+        textUpdate.attr("x", tickLength).attr("y", charHeight).style("text-anchor", "start");
     }
   }
   // this should be called only when category axis
@@ -12973,9 +14026,7 @@ class AxisRenderer {
     }
     let tickWidth = params.tickWidth;
     if (!tickWidth || tickWidth <= 0) {
-      tickWidth = isLeftRight ? 95 : params.isCategory ? Math.ceil(
-        params.isInverted ? scale(ticks[0]) - scale(ticks[1]) : scale(ticks[1]) - scale(ticks[0])
-      ) - 12 : 110;
+      tickWidth = isLeftRight ? 95 : params.isCategory ? (params.isInverted ? scale(ticks[0]) - scale(ticks[1]) : scale(ticks[1]) - scale(ticks[0])) - 12 : 110;
     }
     function split(splitted2, text) {
       let subtext;
@@ -13100,7 +14151,7 @@ class AxisRenderer {
   }
 }
 
-;// CONCATENATED MODULE: ./src/ChartInternal/Axis/Axis.ts
+;// ./src/ChartInternal/Axis/Axis.ts
 var Axis_defProp = Object.defineProperty;
 var Axis_defNormalProp = (obj, key, value) => key in obj ? Axis_defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var Axis_publicField = (obj, key, value) => Axis_defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
@@ -13170,15 +14221,32 @@ class Axis_Axis {
     }
     return type;
   }
+  /**
+   * Get extent value
+   * @returns {Array} default extent
+   * @private
+   */
+  getExtent() {
+    const $$ = this.owner;
+    const { config, scale } = $$;
+    let extent = config.axis_x_extent;
+    if (extent) {
+      if (isFunction(extent)) {
+        extent = extent.bind($$.api)($$.getXDomain($$.data.targets), scale.subX);
+      } else if (this.isTimeSeries() && extent.every(isNaN)) {
+        const fn = parseDate.bind($$);
+        extent = extent.map((v) => scale.subX(fn(v)));
+      }
+    }
+    return extent;
+  }
   init() {
     const $$ = this.owner;
     const { config, $el: { main, axis }, state: { clip } } = $$;
-    const isRotated = config.axis_rotated;
     const target = ["x", "y"];
     config.axis_y2_show && target.push("y2");
     target.forEach((v) => {
       const classAxis = this.getAxisClassName(v);
-      const classLabel = $AXIS[`axis${v.toUpperCase()}Label`];
       axis[v] = main.append("g").attr("class", classAxis).attr("clip-path", () => {
         let res = null;
         if (v === "x") {
@@ -13188,10 +14256,8 @@ class Axis_Axis {
         }
         return res;
       }).attr("transform", $$.getTranslate(v)).style("visibility", config[`axis_${v}_show`] ? null : "hidden");
-      axis[v].append("text").attr("class", classLabel).attr("transform", ["rotate(-90)", null][v === "x" ? +!isRotated : +isRotated]).style("text-anchor", () => this.textAnchorForAxisLabel(v));
       this.generateAxes(v);
     });
-    config.axis_tooltip && this.setAxisTooltip();
   }
   /**
    * Set axis orient according option value
@@ -13238,7 +14304,7 @@ class Axis_Axis {
         v.domain && scale.domain(v.domain);
         axes.push(
           d3Axis(scale).ticks(tick.count).tickFormat(
-            isFunction(tick.format) ? tick.format.bind($$.api) : (x) => x
+            isFunction(tick.format) ? tick.format.bind($$.api) : ((x) => x)
           ).tickValues(tick.values).tickSizeOuter(tick.outer === false ? 0 : 6)
         );
       });
@@ -13343,7 +14409,7 @@ class Axis_Axis {
     }
     tickValues && axis.tickValues(tickValues);
     axis.tickFormat(
-      tickFormat || !isX && ($$.isStackNormalized() && ((x) => `${x}%`))
+      tickFormat || !isX && ($$.isStackNormalized() && $$.hasAxisGroupedData(id) && ((x) => `${x}%`))
     );
     if (isCategory) {
       axis.tickCentered(config.axis_x_tick_centered);
@@ -13467,17 +14533,6 @@ class Axis_Axis {
     }
     return x;
   }
-  dxForAxisLabel(id) {
-    const $$ = this.owner;
-    const position = this.getAxisLabelPosition(id);
-    let dx = position.isBottom ? "0.5em" : "0";
-    if (this.isHorizontal($$, id !== "x")) {
-      dx = position.isLeft ? "0.5em" : position.isRight ? "-0.5em" : "0";
-    } else if (position.isTop) {
-      dx = "-0.5em";
-    }
-    return dx;
-  }
   textAnchorForAxisLabel(id) {
     const $$ = this.owner;
     const position = this.getAxisLabelPosition(id);
@@ -13488,6 +14543,17 @@ class Axis_Axis {
       anchor = "start";
     }
     return anchor;
+  }
+  dxForAxisLabel(id) {
+    const $$ = this.owner;
+    const position = this.getAxisLabelPosition(id);
+    let dx = position.isBottom ? "0.5em" : "0";
+    if (this.isHorizontal($$, id !== "x")) {
+      dx = position.isLeft ? "0.5em" : position.isRight ? "-0.5em" : "0";
+    } else if (position.isTop) {
+      dx = "-0.5em";
+    }
+    return dx;
   }
   dyForAxisLabel(id) {
     const $$ = this.owner;
@@ -13538,14 +14604,14 @@ class Axis_Axis {
    */
   getMaxTickSize(id, withoutRecompute) {
     const $$ = this.owner;
-    const { config, state: { current }, $el: { svg, chart } } = $$;
+    const { config, state: { current, resizing }, $el: { svg, chart } } = $$;
     const currentTickMax = current.maxTickSize[id];
     const configPrefix = `axis_${id}`;
     const max = {
       width: 0,
       height: 0
     };
-    if (withoutRecompute || !config[`${configPrefix}_show`] || currentTickMax.width > 0 && $$.filterTargetsToShow().length === 0) {
+    if (resizing || withoutRecompute || !config[`${configPrefix}_show`] || currentTickMax.width > 0 && $$.filterTargetsToShow().length === 0) {
       return currentTickMax;
     }
     if (svg) {
@@ -13580,9 +14646,14 @@ class Axis_Axis {
       }
       !isYAxis && this.updateXAxisTickValues(targetsToShow, axis);
       const dummy = chart.append("svg").style("visibility", "hidden").style("position", "fixed").style("top", "0").style("left", "0");
-      axis.create(dummy);
+      const g = dummy.append("g").attr("class", `${$AXIS[`axis${capitalize(id)}`]} ${$COMMON.dummy}`);
+      axis.create(g);
+      const { sizeFor1Char } = g.node();
       dummy.selectAll("text").attr("transform", isNumber(tickRotate) ? `rotate(${tickRotate})` : null).each(function(d, i) {
-        const { width, height } = this.getBoundingClientRect();
+        const { width, height } = sizeFor1Char ? {
+          width: this.textContent.length * sizeFor1Char.w,
+          height: sizeFor1Char.h
+        } : getBoundingRect(this, true);
         max.width = Math.max(max.width, width);
         max.height = Math.max(max.height, height);
         if (!isYAxis) {
@@ -13651,21 +14722,30 @@ class Axis_Axis {
         left * -1,
         $$.getXDomainMax($$.data.targets) + 1 + right
       ]);
-      tickOffset = Math.ceil((scale(1) - scale(0)) / 2);
+      tickOffset = (scale(1) - scale(0)) / 2;
     }
     return maxOverflow + tickOffset;
   }
+  /**
+   * Update axis label text
+   * @param {boolean} withTransition Weather update with transition
+   * @private
+   */
   updateLabels(withTransition) {
     const $$ = this.owner;
-    const { $el: { main }, $T } = $$;
-    const labels = {
-      x: main.select(`.${$AXIS.axisX} .${$AXIS.axisXLabel}`),
-      y: main.select(`.${$AXIS.axisY} .${$AXIS.axisYLabel}`),
-      y2: main.select(`.${$AXIS.axisY2} .${$AXIS.axisY2Label}`)
-    };
-    Object.keys(labels).filter((id) => !labels[id].empty()).forEach((v) => {
-      const node = labels[v];
-      $T(node, withTransition).attr("x", () => this.xForAxisLabel(v)).attr("dx", () => this.dxForAxisLabel(v)).attr("dy", () => this.dyForAxisLabel(v)).text(() => this.getLabelText(v));
+    const { config, $el: { main }, $T } = $$;
+    const isRotated = config.axis_rotated;
+    ["x", "y", "y2"].forEach((id) => {
+      const text = this.getLabelText(id);
+      const selector = `axis${capitalize(id)}`;
+      const classLabel = $AXIS[`${selector}Label`];
+      if (text) {
+        let axisLabel = main.select(`text.${classLabel}`);
+        if (axisLabel.empty()) {
+          axisLabel = main.select(`g.${$AXIS[selector]}`).insert("text", ":first-child").attr("class", classLabel).attr("transform", ["rotate(-90)", null][id === "x" ? +!isRotated : +isRotated]).style("text-anchor", () => this.textAnchorForAxisLabel(id));
+        }
+        $T(axisLabel, withTransition).attr("x", () => this.xForAxisLabel(id)).attr("dx", () => this.dxForAxisLabel(id)).attr("dy", () => this.dyForAxisLabel(id)).text(text);
+      }
     });
   }
   /**
@@ -13726,7 +14806,7 @@ class Axis_Axis {
   }
   redraw(transitions, isHidden, isInit) {
     const $$ = this.owner;
-    const { config, $el } = $$;
+    const { config, state, $el } = $$;
     const opacity = isHidden ? "0" : null;
     ["x", "y", "y2", "subX"].forEach((id) => {
       const axis = this[id];
@@ -13740,6 +14820,7 @@ class Axis_Axis {
       }
     });
     this.updateAxes();
+    !state.rendered && config.axis_tooltip && this.setAxisTooltip();
   }
   /**
    * Redraw axis
@@ -13820,7 +14901,10 @@ class Axis_Axis {
       const toCull = config[cullingOptionPrefix];
       if (axis && toCull) {
         const tickNodes = axis.selectAll(".tick");
-        const tickValues = sortValue(tickNodes.data());
+        const tickValues = sortValue(
+          tickNodes.data(),
+          !config[`${cullingOptionPrefix}_reverse`]
+        );
         const tickSize = tickValues.length;
         const cullingMax = config[`${cullingOptionPrefix}_max`];
         const lines = config[`${cullingOptionPrefix}_lines`];
@@ -13868,21 +14952,23 @@ class Axis_Axis {
     );
     ["x", "y", "y2"].forEach((v) => {
       var _a2, _b, _c;
-      axisTooltip[v] = (_a2 = axis[v]) == null ? void 0 : _a2.append("text").classed($AXIS[`axis${v.toUpperCase()}Tooltip`], true).attr("filter", $$.updateTextBGColor({ id: v }, bgColor));
-      if (isRotated) {
-        const pos = v === "x" ? "x" : "y";
-        const val = v === "y" ? "1.15em" : v === "x" ? "-0.3em" : "-0.4em";
-        (_b = axisTooltip[v]) == null ? void 0 : _b.attr(pos, val).attr(`d${v === "x" ? "y" : "x"}`, v === "x" ? "0.4em" : "-1.3em").style("text-anchor", v === "x" ? "end" : null);
-      } else {
-        const pos = v === "x" ? "y" : "x";
-        const val = v === "x" ? "1.15em" : `${v === "y" ? "-" : ""}0.4em`;
-        (_c = axisTooltip[v]) == null ? void 0 : _c.attr(pos, val).attr(`d${v === "x" ? "x" : "y"}`, v === "x" ? "-1em" : "0.3em").style("text-anchor", v === "y" ? "end" : null);
+      if (isString(bgColor) || bgColor[v]) {
+        axisTooltip[v] = (_a2 = axis[v]) == null ? void 0 : _a2.append("text").classed($AXIS[`axis${v.toUpperCase()}Tooltip`], true).attr("filter", $$.updateTextBGColor({ id: v }, bgColor));
+        if (isRotated) {
+          const pos = v === "x" ? "x" : "y";
+          const val = v === "y" ? "1.15em" : v === "x" ? "-0.3em" : "-0.4em";
+          (_b = axisTooltip[v]) == null ? void 0 : _b.attr(pos, val).attr(`d${v === "x" ? "y" : "x"}`, v === "x" ? "0.4em" : "-1.3em").style("text-anchor", v === "x" ? "end" : null);
+        } else {
+          const pos = v === "x" ? "y" : "x";
+          const val = v === "x" ? "1.15em" : `${v === "y" ? "-" : ""}0.4em`;
+          (_c = axisTooltip[v]) == null ? void 0 : _c.attr(pos, val).attr(`d${v === "x" ? "x" : "y"}`, v === "x" ? "-1em" : "0.3em").style("text-anchor", v === "y" ? "end" : null);
+        }
       }
     });
   }
 }
 
-;// CONCATENATED MODULE: ./src/ChartInternal/interactions/eventrect.ts
+;// ./src/ChartInternal/interactions/eventrect.ts
 
 
 /* harmony default export */ var eventrect = ({
@@ -13951,6 +15037,7 @@ class Axis_Axis {
     const isPrevented = isBoolean(preventDefault) && preventDefault || false;
     const preventThreshold = !isNaN(preventDefault) && preventDefault || null;
     let startPx;
+    const passiveOption = !isPrevented && preventThreshold === null;
     const preventEvent = (event) => {
       const eventType = event.type;
       const touch = event.changedTouches[0];
@@ -13971,7 +15058,7 @@ class Axis_Axis {
     eventRect.on("touchstart", (event) => {
       state.event = event;
       $$.updateEventRect();
-    }).on("touchstart.eventRect touchmove.eventRect", (event) => {
+    }, { passive: passiveOption }).on("touchstart.eventRect touchmove.eventRect", (event) => {
       state.event = event;
       if (!eventRect.empty() && eventRect.classed($EVENT.eventRect)) {
         if (state.dragging || state.flowing || $$.hasArcType() || event.touches.length > 1) {
@@ -13982,21 +15069,21 @@ class Axis_Axis {
       } else {
         unselectRect();
       }
-    }, true).on("touchend.eventRect", (event) => {
+    }, { passive: passiveOption }).on("touchend.eventRect", (event) => {
       state.event = event;
       if (!eventRect.empty() && eventRect.classed($EVENT.eventRect)) {
         if ($$.hasArcType() || !$$.toggleShape || state.cancelClick) {
           state.cancelClick && (state.cancelClick = false);
         }
       }
-    }, true);
+    }, { passive: passiveOption });
     svg.on("touchstart", (event) => {
       state.event = event;
       const { target } = event;
       if (target && target !== eventRect.node()) {
         unselectRect();
       }
-    });
+    }, { passive: passiveOption });
   },
   /**
    * Update event rect size
@@ -14012,7 +15099,7 @@ class Axis_Axis {
     const updateClientRect = () => {
       if (eventReceiver) {
         const scrollPos = getScrollPosition($el.chart.node());
-        eventReceiver.rect = rectElement.node().getBoundingClientRect().toJSON();
+        eventReceiver.rect = getBoundingRect(rectElement.node(), true).toJSON();
         eventReceiver.rect.top += scrollPos.y;
         eventReceiver.rect.left += scrollPos.x;
       }
@@ -14148,7 +15235,7 @@ class Axis_Axis {
     const shapeAtIndex = main.selectAll(`.${$SHAPE.shape}-${index}`).classed($COMMON.EXPANDED, true).style("cursor", isSelectable ? "pointer" : null).filter(function(d) {
       return $$.isWithinShape(this, d);
     });
-    if (shapeAtIndex.empty() && !isTooltipGrouped) {
+    if (shapeAtIndex.empty() && !isTooltipGrouped && config.interaction_onout) {
       (_b = $$.hideGridFocus) == null ? void 0 : _b.call($$);
       $$.hideTooltip();
       !isSelectionGrouped && $$.setExpand(index);
@@ -14198,7 +15285,7 @@ class Axis_Axis {
     const dist = $$.dist(closest, mouse);
     if ($$.isBarType(closest.id) || dist < $$.getPointSensitivity(closest)) {
       $$.$el.svg.select(`.${$EVENT.eventRect}`).style("cursor", "pointer");
-      if (triggerEvent && !state.mouseover) {
+      if (triggerEvent && (!state.mouseover || state.mouseover.x !== closest.x || state.mouseover.id !== closest.id)) {
         config.data_onover.call($$.api, closest);
         state.mouseover = closest;
       }
@@ -14281,7 +15368,7 @@ class Axis_Axis {
         $$.setOverOut(index !== -1, index);
       }).on("mouseout", (event) => {
         state.event = event;
-        if (!config || $$.hasArcType() || eventReceiver.currentIdx === -1) {
+        if (!config || $$.hasArcType() || eventReceiver.currentIdx === -1 || !config.interaction_onout) {
           return;
         }
         $$.hideAxisGridFocus();
@@ -14316,7 +15403,7 @@ class Axis_Axis {
    */
   generateEventRectsForMultipleXs(eventRectEnter) {
     const $$ = this;
-    const { state } = $$;
+    const { config, state } = $$;
     eventRectEnter.on("click", function(event) {
       state.event = event;
       $$.clickHandlerForMultipleXS.bind(this)($$);
@@ -14327,7 +15414,7 @@ class Axis_Axis {
         $$.selectRectForMultipleXs(this);
       }).on("mouseout", (event) => {
         state.event = event;
-        if (!$$.config || $$.hasArcType()) {
+        if (!$$.config || $$.hasArcType() || !config.interaction_onout) {
           return;
         }
         $$.unselectRect();
@@ -14343,7 +15430,7 @@ class Axis_Axis {
     }
     const mouse = getPointer(state.event, this);
     const closest = $$.findClosestFromTargets(targetsToShow, mouse);
-    const sensitivity = config.point_sensitivity === "radius" ? closest.r : config.point_sensitivity;
+    const sensitivity = $$.getPointSensitivity(closest);
     if (!closest) {
       return;
     }
@@ -14361,7 +15448,7 @@ class Axis_Axis {
 
 // EXTERNAL MODULE: external {"commonjs":"d3-ease","commonjs2":"d3-ease","amd":"d3-ease","root":"d3"}
 var external_commonjs_d3_ease_commonjs2_d3_ease_amd_d3_ease_root_d3_ = __webpack_require__(12);
-;// CONCATENATED MODULE: ./src/ChartInternal/interactions/flow.ts
+;// ./src/ChartInternal/interactions/flow.ts
 
 
 
@@ -14370,7 +15457,7 @@ var external_commonjs_d3_ease_commonjs2_d3_ease_amd_d3_ease_root_d3_ = __webpack
   /**
    * Generate flow
    * @param {object} args option object
-   * @returns {Function}
+   * @returns {function}
    * @private
    */
   generateFlow(args) {
@@ -14542,7 +15629,7 @@ var external_commonjs_d3_ease_commonjs2_d3_ease_amd_d3_ease_root_d3_ = __webpack
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/internals/clip.ts
+;// ./src/ChartInternal/internals/clip.ts
 /* harmony default export */ var clip = ({
   initClip() {
     const $$ = this;
@@ -14636,13 +15723,13 @@ var external_commonjs_d3_ease_commonjs2_d3_ease_amd_d3_ease_root_d3_ = __webpack
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/internals/grid.ts
+;// ./src/ChartInternal/internals/grid.ts
 
 
 
-const getGridTextAnchor = (d) => isValue(d.position) || "end";
-const getGridTextDx = (d) => d.position === "start" ? 4 : d.position === "middle" ? 0 : -4;
-function getGridTextX(isX, width, height) {
+const _getGridTextAnchor = (d) => isValue(d.position) || "end";
+const _getGridTextDx = (d) => d.position === "start" ? 4 : d.position === "middle" ? 0 : -4;
+function _getGridTextX(isX, width, height) {
   return (d) => {
     let x = isX ? 0 : width;
     if (d.position === "start") {
@@ -14653,11 +15740,11 @@ function getGridTextX(isX, width, height) {
     return x;
   };
 }
-function smoothLines(el, type) {
+function _smoothLines(el, type) {
   if (type === "grid") {
     el.each(function() {
       const g = (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(this);
-      ["x1", "x2", "y1", "y2"].forEach((v) => g.attr(v, Math.ceil(+g.attr(v))));
+      ["x1", "x2", "y1", "y2"].forEach((v) => g.attr(v, +g.attr(v)));
     });
   }
 }
@@ -14718,13 +15805,13 @@ function smoothLines(el, type) {
     const $$ = this;
     const { axis, config, scale, state, $el: { grid, main } } = $$;
     const isRotated = config.axis_rotated;
-    const pos = (d) => Math.ceil(scale.y(d));
+    const pos = (d) => scale.y(d);
     const gridValues = axis.y.getGeneratedTicks(config.grid_y_ticks) || $$.scale.y.ticks(config.grid_y_ticks);
     grid.y = main.select(`.${$GRID.ygrids}`).selectAll(`.${$GRID.ygrid}`).data(gridValues);
     grid.y.exit().remove();
     grid.y = grid.y.enter().append("line").attr("class", $GRID.ygrid).merge(grid.y);
     grid.y.attr("x1", isRotated ? pos : 0).attr("x2", isRotated ? pos : state.width).attr("y1", isRotated ? 0 : pos).attr("y2", isRotated ? state.height : pos);
-    smoothLines(grid.y, "grid");
+    _smoothLines(grid.y, "grid");
   },
   updateGrid() {
     const $$ = this;
@@ -14757,10 +15844,10 @@ function smoothLines(el, type) {
         g.append("text").style("opacity", "0");
       }
     });
-    $T(lines.attr("class", (d) => `${$GRID[`${type}gridLine`]} ${d.class || ""}`.trim()).select("text").attr("text-anchor", getGridTextAnchor).attr(
+    $T(lines.attr("class", (d) => `${$GRID[`${type}gridLine`]} ${d.class || ""}`.trim()).select("text").attr("text-anchor", _getGridTextAnchor).attr(
       "transform",
       () => isX ? isRotated ? null : "rotate(-90)" : isRotated ? "rotate(-90)" : null
-    ).attr("dx", getGridTextDx).attr("dy", -5)).text(function(d) {
+    ).attr("dx", _getGridTextDx).attr("dy", -5)).text(function(d) {
       var _a;
       return (_a = d.text) != null ? _a : this.remove();
     });
@@ -14781,9 +15868,9 @@ function smoothLines(el, type) {
     let yLines = gridLines.y.select("line");
     let yTexts = gridLines.y.select("text");
     xLines = $T(xLines, withTransition).attr("x1", isRotated ? 0 : xv).attr("x2", isRotated ? width : xv).attr("y1", isRotated ? xv : 0).attr("y2", isRotated ? xv : height);
-    xTexts = $T(xTexts, withTransition).attr("x", getGridTextX(!isRotated, width, height)).attr("y", xv);
+    xTexts = $T(xTexts, withTransition).attr("x", _getGridTextX(!isRotated, width, height)).attr("y", xv);
     yLines = $T(yLines, withTransition).attr("x1", isRotated ? yv : 0).attr("x2", isRotated ? yv : width).attr("y1", isRotated ? 0 : yv).attr("y2", isRotated ? height : yv);
-    yTexts = $T(yTexts, withTransition).attr("x", getGridTextX(isRotated, width, height)).attr("y", yv);
+    yTexts = $T(yTexts, withTransition).attr("x", _getGridTextX(isRotated, width, height)).attr("y", yv);
     return [
       xLines.style("opacity", null),
       xTexts.style("opacity", null),
@@ -14842,7 +15929,7 @@ function smoothLines(el, type) {
   hideAxisGridFocus() {
     const $$ = this;
     $$.$el.main.selectAll(
-      `line.bb-axis-tooltip-x, line.bb-axis-tooltip-y`
+      `line.${$AXIS.axisTooltipX}, line.${$AXIS.axisTooltipY}`
     ).style("visibility", "hidden");
     Object.values($$.$el.axisTooltip).forEach((v) => v == null ? void 0 : v.style("display", "none"));
   },
@@ -14910,7 +15997,7 @@ function smoothLines(el, type) {
       }
       ["x1", "y1", "x2", "y2"].forEach((v, i) => el.attr(v, xy[i]));
     });
-    smoothLines(focusEl, "grid");
+    _smoothLines(focusEl, "grid");
     (_a = $$.showCircleFocus) == null ? void 0 : _a.call($$, data);
   },
   hideGridFocus() {
@@ -14981,7 +16068,7 @@ function smoothLines(el, type) {
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/internals/region.ts
+;// ./src/ChartInternal/internals/region.ts
 
 
 
@@ -15014,22 +16101,31 @@ function smoothLines(el, type) {
   redrawRegion(withTransition) {
     const $$ = this;
     const { $el: { region }, $T } = $$;
+    const regionX = $$.regionX.bind($$);
+    const regionY = $$.regionY.bind($$);
+    const attr = ["width", "height"];
     let regions = region.list.select("rect");
     let label = region.list.selectAll("text");
-    regions = $T(regions, withTransition).attr("x", $$.regionX.bind($$)).attr("y", $$.regionY.bind($$)).attr("width", $$.regionWidth.bind($$)).attr("height", $$.regionHeight.bind($$));
-    label = $T(label, withTransition).attr("transform", (d) => {
-      var _a;
-      const { x = 0, y = 0, rotated = false } = (_a = d.label) != null ? _a : {};
-      return `translate(${$$.regionX.bind($$)(d) + x}, ${$$.regionY.bind($$)(d) + y})${rotated ? ` rotate(-90)` : ``}`;
-    }).attr("text-anchor", (d) => {
-      var _a;
-      return ((_a = d.label) == null ? void 0 : _a.rotated) ? "end" : null;
-    }).attr("dy", "1em").style("fill", (d) => {
-      var _a, _b;
-      return (_b = (_a = d.label) == null ? void 0 : _a.color) != null ? _b : null;
-    }).text((d) => {
+    regions = $T(regions, withTransition).attr("x", regionX).attr("y", regionY).attr("width", $$.regionWidth.bind($$)).attr("height", $$.regionHeight.bind($$));
+    label = $T(label, withTransition).text((d) => {
       var _a;
       return (_a = d.label) == null ? void 0 : _a.text;
+    }).attr("transform", ({ label: label2 }) => label2.rotated ? ` rotate(-90)` : null).attr("transform", function(d) {
+      var _a;
+      const { x = 0, y = 0, center = false, rotated = false } = (_a = d.label) != null ? _a : {};
+      const rect = this.previousElementSibling;
+      const pos = { x: 0, y: 0 };
+      if (isString(center)) {
+        ["x", "y"].forEach((v, i) => {
+          if (center.indexOf(v) > -1) {
+            pos[v] = (+rect.getAttribute(attr[i]) - getBoundingRect(this)[attr[i]]) / 2;
+          }
+        });
+      }
+      return `translate(${regionX(d) + pos.x + x}, ${regionY(d) + pos.y + y})${rotated ? ` rotate(-90)` : ``}`;
+    }).attr("text-anchor", ({ label: label2 }) => (label2 == null ? void 0 : label2.rotated) ? "end" : null).attr("dy", "1em").style("fill", ({ label: label2 }) => {
+      var _a;
+      return (_a = label2 == null ? void 0 : label2.color) != null ? _a : null;
     });
     return [
       regions.style("fill-opacity", (d) => isValue(d.opacity) ? d.opacity : null).on("end", function() {
@@ -15038,56 +16134,11 @@ function smoothLines(el, type) {
       label.style("opacity", null)
     ];
   },
-  getRegionXY(type, d) {
-    const $$ = this;
-    const { config, scale } = $$;
-    const isRotated = config.axis_rotated;
-    const isX = type === "x";
-    let key = "start";
-    let currScale;
-    let pos = 0;
-    if (d.axis === "y" || d.axis === "y2") {
-      if (!isX) {
-        key = "end";
-      }
-      if ((isX ? isRotated : !isRotated) && key in d) {
-        currScale = scale[d.axis];
-        pos = currScale(d[key]);
-      }
-    } else if ((isX ? !isRotated : isRotated) && key in d) {
-      currScale = scale.zoom || scale.x;
-      pos = currScale($$.axis.isTimeSeries() ? parseDate.call($$, d[key]) : d[key]);
-    }
-    return pos;
-  },
   regionX(d) {
-    return this.getRegionXY("x", d);
+    return this.getRegionSize("x", d);
   },
   regionY(d) {
-    return this.getRegionXY("y", d);
-  },
-  getRegionSize(type, d) {
-    const $$ = this;
-    const { config, scale, state } = $$;
-    const isRotated = config.axis_rotated;
-    const isWidth = type === "width";
-    const start = $$[isWidth ? "regionX" : "regionY"](d);
-    let currScale;
-    let key = "end";
-    let end = state[type];
-    if (d.axis === "y" || d.axis === "y2") {
-      if (!isWidth) {
-        key = "start";
-      }
-      if ((isWidth ? isRotated : !isRotated) && key in d) {
-        currScale = scale[d.axis];
-        end = currScale(d[key]);
-      }
-    } else if ((isWidth ? !isRotated : isRotated) && key in d) {
-      currScale = scale.zoom || scale.x;
-      end = currScale($$.axis.isTimeSeries() ? parseDate.call($$, d[key]) : d[key]);
-    }
-    return end < start ? 0 : end - start;
+    return this.getRegionSize("y", d);
   },
   regionWidth(d) {
     return this.getRegionSize("width", d);
@@ -15095,12 +16146,54 @@ function smoothLines(el, type) {
   regionHeight(d) {
     return this.getRegionSize("height", d);
   },
+  /**
+   * Get Region size according start/end position
+   * @param {string} type Type string
+   * @param {ojbect} d Data object
+   * @returns {number}
+   * @private
+   */
+  getRegionSize(type, d) {
+    const $$ = this;
+    const { config, scale, state } = $$;
+    const isRotated = config.axis_rotated;
+    const isAxisType = /(x|y|y2)/.test(type);
+    const isType = isAxisType ? type === "x" : type === "width";
+    const start = !isAxisType && $$[isType ? "regionX" : "regionY"](d);
+    let key = isAxisType ? "start" : "end";
+    let pos = isAxisType ? 0 : state[type];
+    let currScale;
+    if (d.axis === "y" || d.axis === "y2") {
+      if (!isAxisType && !isType) {
+        key = "start";
+      } else if (isAxisType && !isType) {
+        key = "end";
+      }
+      if ((isType ? isRotated : !isRotated) && key in d) {
+        currScale = scale[d.axis];
+      }
+    } else if ((isType ? !isRotated : isRotated) && key in d) {
+      currScale = scale.zoom || scale.x;
+    }
+    if (currScale) {
+      let offset = 0;
+      pos = d[key];
+      if ($$.axis.isTimeSeries(d.axis)) {
+        pos = parseDate.call($$, pos);
+      } else if (/(x|width)/.test(type) && $$.axis.isCategorized() && isNaN(pos)) {
+        pos = config.axis_x_categories.indexOf(pos);
+        offset = $$.axis.x.tickOffset() * (key === "start" ? -1 : 1);
+      }
+      pos = currScale(pos) + offset;
+    }
+    return isAxisType ? pos : pos < start ? 0 : pos - start;
+  },
   isRegionOnX(d) {
     return !d.axis || d.axis === "x";
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/internals/size.axis.ts
+;// ./src/ChartInternal/internals/size.axis.ts
 
 /* harmony default export */ var size_axis = ({
   /**
@@ -15216,7 +16309,7 @@ function smoothLines(el, type) {
   }
 });
 
-;// CONCATENATED MODULE: ./src/config/Options/axis/x.ts
+;// ./src/config/Options/axis/x.ts
 /* harmony default export */ var axis_x = ({
   /**
    * Set clip-path attribute for x axis element
@@ -15344,7 +16437,7 @@ function smoothLines(el, type) {
    * A function to format tick value. Format string is also available for timeseries data.
    * @name axis․x․tick․format
    * @memberof Options
-   * @type {Function|string}
+   * @type {function|string}
    * @default undefined
    * @see [D3's time specifier](https://d3js.org/d3-time-format#locale_format)
    * @example
@@ -15373,7 +16466,7 @@ function smoothLines(el, type) {
    * - `true`: the ticks will be culled, then only limited tick text will be shown.<br>
    *   This option does not hide the tick lines by default, if want to hide tick lines, set `axis.x.tick.culling.lines=false`.
    * - `false`: all of ticks will be shown.<br><br>
-   * The number of ticks to be shown can be chaned by `axis.x.tick.culling.max`.
+   * The number of ticks to be shown can be changed by `axis.x.tick.culling.max`.
    * @name axis․x․tick․culling
    * @memberof Options
    * @type {boolean}
@@ -15383,7 +16476,7 @@ function smoothLines(el, type) {
    * axis: {
    *   x: {
    *     tick: {
-   *       culling: false
+   *       culling: false,
    *     }
    *   }
    * }
@@ -15426,6 +16519,26 @@ function smoothLines(el, type) {
    */
   axis_x_tick_culling_lines: true,
   /**
+   * Control culling start point to be reversed. If set to true, the culling will be started from the end to start.
+   * - **NOTE:** This option is only available when `axis.x.tick.culling` is set to truthy value.
+   * @name axis․x․tick․culling․reverse
+   * @memberof Options
+   * @type {boolean}
+   * @default false
+   * @see [Demo](https://naver.github.io/billboard.js/demo/#Axis.XAxisTickCulling)
+   * @example
+   * axis: {
+   *   x: {
+   *     tick: {
+   *       culling: {
+   *           reverse: true,
+   *       }
+   *     }
+   *   }
+   * }
+   */
+  axis_x_tick_culling_reverse: false,
+  /**
    * The number of x axis ticks to show.<br><br>
    * This option hides tick lines together with tick text. If this option is used on timeseries axis, the ticks position will be determined precisely and not nicely positioned (e.g. it will have rough second value).
    * @name axis․x․tick․count
@@ -15442,6 +16555,23 @@ function smoothLines(el, type) {
    * }
    */
   axis_x_tick_count: void 0,
+  /**
+   * Set the axis tick line to be positioned inside of the chart.
+   * @name axis․x․tick․inner
+   * @memberof Options
+   * @type {boolean}
+   * @default false
+   * @see [Demo](https://naver.github.io/billboard.js/demo/#Axis.TickInner)
+   * @example
+   * axis: {
+   *   x: {
+   *     tick: {
+   *       inner: true
+   *     }
+   *   }
+   * }
+   */
+  axis_x_tick_inner: false,
   /**
    * Show or hide x axis tick line.
    * @name axis․x․tick․show
@@ -15547,10 +16677,10 @@ function smoothLines(el, type) {
   /**
    * Set the x values of ticks manually.<br><br>
    * If this option is provided, the position of the ticks will be determined based on those values.<br>
-   * This option works with `timeseries` data and the x values will be parsed accoding to the type of the value and data.xFormat option.
+   * This option works with `timeseries` data and the x values will be parsed according to the type of the value and data.xFormat option.
    * @name axis․x․tick․values
    * @memberof Options
-   * @type {Array|Function}
+   * @type {Array|function}
    * @default null
    * @example
    * axis: {
@@ -15771,7 +16901,7 @@ function smoothLines(el, type) {
    *     - **timeseries:** Numeric time value
    *       ex. the given value `1000*60*60*24`, which is numeric time equivalent of a day, is same as the width of 1 tick width
    *   - If want values to be treated as pixels, specify `unit:"px"`.
-   *     - The pixel value will be convered based on the scale values. Hence can not reflect accurate padding result.
+   *     - The pixel value will be converted based on the scale values. Hence can not reflect accurate padding result.
    * @name axis․x․padding
    * @memberof Options
    * @type {object|number}
@@ -15818,10 +16948,11 @@ function smoothLines(el, type) {
    */
   axis_x_height: void 0,
   /**
-   * Set default extent for subchart and zoom. This can be an array or function that returns an array.
+   * Set extent for subchart and zoom(drag only). This can be an array or function that returns an array.
+   * - **NOTE:** Specifying value, will limit the zoom scope selection within.
    * @name axis․x․extent
    * @memberof Options
-   * @type {Array|Function}
+   * @type {Array|function}
    * @default undefined
    * @example
    * axis: {
@@ -15928,7 +17059,7 @@ function smoothLines(el, type) {
   axis_x_axes: []
 });
 
-;// CONCATENATED MODULE: ./src/config/Options/axis/y.ts
+;// ./src/config/Options/axis/y.ts
 /* harmony default export */ var y = ({
   /**
    * Set clip-path attribute for y axis element
@@ -16087,7 +17218,7 @@ function smoothLines(el, type) {
    * This option accepts d3.format object as well as a function you define.
    * @name axis․y․tick․format
    * @memberof Options
-   * @type {Function}
+   * @type {function}
    * @default undefined
    * @example
    * axis: {
@@ -16106,7 +17237,7 @@ function smoothLines(el, type) {
    * - `true`: the ticks will be culled, then only limited tick text will be shown.<br>
    *   This option does not hide the tick lines by default, if want to hide tick lines, set `axis.y.tick.culling.lines=false`.
    * - `false`: all of ticks will be shown.<br><br>
-   * The number of ticks to be shown can be chaned by `axis.y.tick.culling.max`.
+   * The number of ticks to be shown can be changed by `axis.y.tick.culling.max`.
    * @name axis․y․tick․culling
    * @memberof Options
    * @type {boolean}
@@ -16158,6 +17289,41 @@ function smoothLines(el, type) {
    */
   axis_y_tick_culling_lines: true,
   /**
+   * Control culling start point to be reversed. If set to true, the culling will be started from the end to start.
+   * - **NOTE:** This option is only available when `axis.y.tick.culling` is set to truthy value.
+   * @name axis․y․tick․culling․reverse
+   * @memberof Options
+   * @type {boolean}
+   * @default false
+   * @example
+   * axis: {
+   *   y: {
+   *     tick: {
+   *       culling: {
+   *           reverse: true,
+   *       }
+   *     }
+   *   }
+   * }
+   */
+  axis_y_tick_culling_reverse: false,
+  /**
+   * Set the axis tick line to be positioned inside of the chart.
+   * @name axis․y․tick․inner
+   * @memberof Options
+   * @type {boolean}
+   * @default false
+   * @see [Demo](https://naver.github.io/billboard.js/demo/#Axis.TickInner)
+   * axis: {
+   *   y: {
+   *     tick: {
+   *       inner: true
+   *     }
+   *   }
+   * }
+   */
+  axis_y_tick_inner: false,
+  /**
    * Show y axis outer tick.
    * @name axis․y․tick․outer
    * @memberof Options
@@ -16177,7 +17343,7 @@ function smoothLines(el, type) {
    * Set y axis tick values manually.
    * @name axis․y․tick․values
    * @memberof Options
-   * @type {Array|Function}
+   * @type {Array|function}
    * @default null
    * @example
    * axis: {
@@ -16313,7 +17479,7 @@ function smoothLines(el, type) {
    * @private
    * @type {object}
    * @property {object} time time object
-   * @property {Function} [time.value] D3's time interval function (https://github.com/d3/d3-time#intervals)
+   * @property {function} [time.value] D3's time interval function (https://github.com/d3/d3-time#intervals)
    * @example
    * axis: {
    *   y: {
@@ -16410,7 +17576,7 @@ function smoothLines(el, type) {
   axis_y_axes: []
 });
 
-;// CONCATENATED MODULE: ./src/config/Options/axis/y2.ts
+;// ./src/config/Options/axis/y2.ts
 /* harmony default export */ var y2 = ({
   /**
    * Show or hide y2 axis.
@@ -16557,7 +17723,7 @@ function smoothLines(el, type) {
    * This option works in the same way as axis.y.format.
    * @name axis․y2․tick․format
    * @memberof Options
-   * @type {Function}
+   * @type {function}
    * @default undefined
    * @example
    * axis: {
@@ -16575,7 +17741,7 @@ function smoothLines(el, type) {
    * - `true`: the ticks will be culled, then only limited tick text will be shown.<br>
    *   This option does not hide the tick lines by default, if want to hide tick lines, set `axis.y2.tick.culling.lines=false`.
    * - `false`: all of ticks will be shown.<br><br>
-   * The number of ticks to be shown can be chaned by `axis.y2.tick.culling.max`.
+   * The number of ticks to be shown can be changed by `axis.y2.tick.culling.max`.
    * @name axis․y2․tick․culling
    * @memberof Options
    * @type {boolean}
@@ -16627,6 +17793,42 @@ function smoothLines(el, type) {
    */
   axis_y2_tick_culling_lines: true,
   /**
+   * Control culling start point to be reversed. If set to true, the culling will be started from the end to start.
+   * - **NOTE:** This option is only available when `axis.y2.tick.culling` is set to truthy value.
+   * @name axis․y2․tick․culling․reverse
+   * @memberof Options
+   * @type {boolean}
+   * @default false
+   * @example
+   * axis: {
+   *   y2: {
+   *     tick: {
+   *       culling: {
+   *           reverse: true,
+   *       }
+   *     }
+   *   }
+   * }
+   */
+  axis_y2_tick_culling_reverse: false,
+  /**
+   * Set the axis tick line to be positioned inside of the chart.
+   * @name axis․y2․tick․inner
+   * @memberof Options
+   * @type {boolean}
+   * @default false
+   * @see [Demo](https://naver.github.io/billboard.js/demo/#Axis.TickInner)
+   * @example
+   * axis: {
+   *   y2: {
+   *     tick: {
+   *       inner: true
+   *     }
+   *   }
+   * }
+   */
+  axis_y2_tick_inner: false,
+  /**
    * Show or hide y2 axis outer tick.
    * @name axis․y2․tick․outer
    * @memberof Options
@@ -16646,7 +17848,7 @@ function smoothLines(el, type) {
    * Set y2 axis tick values manually.
    * @name axis․y2․tick․values
    * @memberof Options
-   * @type {Array|Function}
+   * @type {Array|function}
    * @default null
    * @example
    * axis: {
@@ -16854,7 +18056,7 @@ function smoothLines(el, type) {
   axis_y2_axes: []
 });
 
-;// CONCATENATED MODULE: ./src/config/Options/axis/axis.ts
+;// ./src/config/Options/axis/axis.ts
 var axis_defProp = Object.defineProperty;
 var axis_getOwnPropSymbols = Object.getOwnPropertySymbols;
 var axis_hasOwnProp = Object.prototype.hasOwnProperty;
@@ -16876,6 +18078,46 @@ var axis_spreadValues = (a, b) => {
 
 /* harmony default export */ var axis_axis = (axis_spreadValues(axis_spreadValues(axis_spreadValues({
   /**
+   * Setup the way to evaluate tick text size.
+   * - **NOTE:**
+   *   - When setting `false` or a custom evaluator, it is highly recommended to memoize evaluated text dimension value to not degrade performance.
+   * @name axis․evalTextSize
+   * @memberof Options
+   * @type {boolean|function}
+   * @default true
+   * @see [Demo](https://naver.github.io/billboard.js/demo/#Axis.AxisEvalTextSize)
+   * @example
+   * axis: {
+   *   // will evaluate getting text size every time.
+   *   evalTextSize: false,
+   *
+   *   // set a custom evaluator
+   *   evalTextSize: function(textElement, axisId) {
+   *     // set some character to be evaluated
+   *     // NOTE: The dummy textElement is a descendant of given axisId('x', 'y' or 'y2').
+   *     textElement.textContent = "0";
+   *
+   *     // get the size
+   *     const box = textElement.getBBox();
+   *
+   *     // clear text
+   *     textElement.textContent = "";
+   *
+   *     return { w: 7, h: 12};
+   *   },
+   *
+   *   // set a custom evaluator by returning fixed value
+   *   evalTextSize: function(textElement, axisId) {
+   *     return {
+   *        x: {w: 7, h: 12},
+   *        y: {w: 15.75, h: 30},
+   *        y2: {w: 9.5, h: 18}
+   *     }[axisId];
+   *   }
+   * }
+   */
+  axis_evalTextSize: true,
+  /**
    * Switch x and y axis position.
    * @name axis․rotated
    * @memberof Options
@@ -16891,8 +18133,8 @@ var axis_spreadValues = (a, b) => {
    * Set axis tooltip.
    * - **NOTE:**
    *   - When enabled, will disable default focus grid line.
-   *   - For `timeseries` x Axis, tootlip will be formatted using x Axis' tick format.
-   *   - For `category` x Axis, tootlip will be displaying scales' value text.
+   *   - For `timeseries` x Axis, tooltip will be formatted using x Axis' tick format.
+   *   - For `category` x Axis, tooltip will be displaying scales' value text.
    * @name axis․tooltip
    * @memberof Options
    * @type {boolean}
@@ -16905,11 +18147,11 @@ var axis_spreadValues = (a, b) => {
    * axis: {
    *     tooltip: true, // default background color is
    *
-   *     // set backgound color for axis tooltip texts
+   *     // set background color for axis tooltip texts
    *     tooltip: {
    *          backgroundColor: "red",
    *
-   *          // set differenct backround colors per axes
+   *          // set different background colors per axes
    *          // NOTE: In this case, only specified axes tooltip will appear.
    *          backgroundColor: {
    *               x: "green",
@@ -16922,7 +18164,7 @@ var axis_spreadValues = (a, b) => {
   axis_tooltip: false
 }, axis_x), y), y2));
 
-;// CONCATENATED MODULE: ./src/config/Options/common/grid.ts
+;// ./src/config/Options/common/grid.ts
 /* harmony default export */ var common_grid = ({
   /**
    * Set related options
@@ -16995,7 +18237,7 @@ var axis_spreadValues = (a, b) => {
   grid_lines_front: true
 });
 
-;// CONCATENATED MODULE: ./src/config/Options/data/axis.ts
+;// ./src/config/Options/data/axis.ts
 /* harmony default export */ var data_axis = ({
   /**
    * Specify the keys of the x values for each data.<br><br>
@@ -17014,7 +18256,7 @@ var axis_spreadValues = (a, b) => {
    */
   data_xs: {},
   /**
-   * Set a format specifier to parse string specifed as x.
+   * Set a format specifier to parse string specified as x.
    * @name data․xFormat
    * @memberof Options
    * @type {string}
@@ -17063,7 +18305,7 @@ var axis_spreadValues = (a, b) => {
    *   x: "x",
    *   columns: [
    *     // The line graph will start to be drawn following the x axis sequence
-   *     // Below data, wil start drawing x=1: 200, x=2: 300, x=3: 100
+   *     // Below data, will start drawing x=1: 200, x=2: 300, x=3: 100
    *     ["x", 3, 1, 2],
    *     ["data1", 100, 200, 300]
    *   ]
@@ -17124,23 +18366,48 @@ var axis_spreadValues = (a, b) => {
    * - **NOTE:**
    *   - For stacking, '[data.groups](#.data%25E2%2580%25A4groups)' option should be set
    *   - y Axis will be set in percentage value (0 ~ 100%)
-   *   - Must have postive values
+   *   - Must have positive values
+   *   - Data not in any group will not be normalized when using perGroup option
    * @name data․stack․normalize
    * @memberof Options
-   * @type {boolean}
+   * @type {boolean|object}
    * @default false
-   * @see [Demo](https://naver.github.io/billboard.js/demo/#Data.DataStackNormalized)
+   * @see [Demo: Data Stack Normalized](https://naver.github.io/billboard.js/demo/#Data.DataStackNormalized)
+   * @see [Demo: Data Stack Normalized per Group](https://naver.github.io/billboard.js/demo/#Data.DataStackNormalizedGroup)
    * @example
    * data: {
    *   stack: {
+   *      // Normalize all grouped data together (all groups combined to 0-100%)
    *      normalize: true
+   *
+   *      // Normalize per group (each group independently becomes 0-100%)
+   *      // Data not in any group will display with their original values.
+   *      // If non-grouped data shares the same axis (e.g., y), it will be
+   *      // displayed on the 0-100 absolute scale. To display original values,
+   *      // assign them to a separate axis (e.g., y2).
+   *      normalize: {
+   *        perGroup: true
+   *      }
+   *   },
+   *   groups: [
+   *     ["data1", "data2"]  // This group will be normalized to 0-100%
+   *   ],
+   *   // data3 is not in any group, so it displays original values
+   *   // Assign it to y2 axis to use a separate scale
+   *   axes: {
+   *     data3: "y2"
+   *   }
+   * },
+   * axis: {
+   *   y2: {
+   *     show: true
    *   }
    * }
    */
   data_stack_normalize: false
 });
 
-;// CONCATENATED MODULE: ./src/config/resolver/axis.ts
+;// ./src/config/resolver/axis.ts
 
 
 
@@ -17184,7 +18451,156 @@ const options = {
 
 // EXTERNAL MODULE: external {"commonjs":"d3-interpolate","commonjs2":"d3-interpolate","amd":"d3-interpolate","root":"d3"}
 var external_commonjs_d3_interpolate_commonjs2_d3_interpolate_amd_d3_interpolate_root_d3_ = __webpack_require__(13);
-;// CONCATENATED MODULE: ./src/ChartInternal/shape/arc.ts
+;// ./src/ChartInternal/internals/text.arc.ts
+
+
+
+
+const BREAK_POINT_OFFSET = 15;
+const DEFAULT_LINE_DISTANCE = 20;
+const TEXT_VERTICAL_OFFSET = 0.35;
+function getArcType(excludeMultiGauge = false) {
+  const $$ = this;
+  return ["donut", "pie", "polar", "gauge"].find(
+    (type) => $$.hasType(type) && !(type === "gauge" && excludeMultiGauge && $$.hasMultiArcGauge())
+  );
+}
+function getConfig() {
+  const $$ = this;
+  const { config } = $$;
+  const chartType = getArcType.call($$, true);
+  const lineConfig = chartType && config[`${chartType}_label_line`];
+  const isValidConfig = isObjectType(lineConfig);
+  const defaultFormatter = (value, ratio, id) => id;
+  const line = {
+    show: lineConfig === true || isValidConfig && (lineConfig == null ? void 0 : lineConfig.show) !== false,
+    distance: isValidConfig && (lineConfig == null ? void 0 : lineConfig.distance) || DEFAULT_LINE_DISTANCE
+  };
+  if (lineConfig === true) {
+    return {
+      chartType,
+      line,
+      text: { formatter: defaultFormatter }
+    };
+  }
+  if (!isValidConfig) {
+    return {
+      chartType,
+      line: { show: false, distance: DEFAULT_LINE_DISTANCE },
+      text: { formatter: null }
+    };
+  }
+  let formatter = defaultFormatter;
+  if (isFunction(lineConfig.text)) {
+    formatter = lineConfig.text;
+  } else if (lineConfig.text === false) {
+    formatter = null;
+  }
+  return {
+    chartType,
+    line,
+    text: { formatter }
+  };
+}
+function getLinePosition(d, lineDistance) {
+  const $$ = this;
+  const { state } = $$;
+  const updated = $$.updateAngle(d);
+  if (!updated) {
+    return null;
+  }
+  let { outerRadius } = $$.getRadius(d);
+  let arcOuterRadius = outerRadius;
+  if ($$.hasType("polar")) {
+    arcOuterRadius = $$.getPolarOuterRadius(d, outerRadius);
+    outerRadius = state.radius;
+  }
+  let midAngle = (updated.startAngle + updated.endAngle) / 2;
+  const isFullCircleArc = Math.abs(updated.endAngle - updated.startAngle - 2 * Math.PI) < 0.01;
+  if (isFullCircleArc) {
+    midAngle = Math.PI / 2;
+  }
+  const sinAngle = Math.sin(midAngle);
+  const cosAngle = -Math.cos(midAngle);
+  const startPoint = {
+    x: sinAngle * arcOuterRadius,
+    y: cosAngle * arcOuterRadius
+  };
+  const breakRadius = outerRadius + BREAK_POINT_OFFSET;
+  const breakPoint = {
+    x: sinAngle * breakRadius,
+    y: cosAngle * breakRadius
+  };
+  const isRight = sinAngle >= 0;
+  const endPoint = {
+    x: breakPoint.x + lineDistance * (isRight ? 1 : -1),
+    y: breakPoint.y
+  };
+  return { startPoint, breakPoint, endPoint, isRight, midAngle };
+}
+function isLabelWithLine() {
+  return getConfig.call(this).line.show;
+}
+function redrawArcLabelLines(duration) {
+  const $$ = this;
+  const { $el: { arcs }, $T } = $$;
+  const { line: lineConfig, text: textConfig } = getConfig.call($$);
+  const lineDistance = lineConfig.distance;
+  let cachedFontSize = null;
+  arcs.selectAll(`.${$ARC.chartArc}`).each(function(d) {
+    var _a, _b, _c;
+    const g = (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(this);
+    const linePos = getLinePosition.call($$, d, lineDistance);
+    const { ratio, meetsThreshold, updated } = (_a = d._cache) != null ? _a : {};
+    if (!updated || !linePos) {
+      return;
+    }
+    const isVisible = $$.isTargetToShow(d.data.id) && meetsThreshold;
+    const { startPoint, breakPoint, endPoint, isRight } = linePos;
+    const points = `${startPoint.x},${startPoint.y} ${breakPoint.x},${breakPoint.y} ${endPoint.x},${endPoint.y}`;
+    if (lineConfig.show) {
+      let line = g.select(`.${$ARC.arcLabelLine}`);
+      if (line.empty()) {
+        line = g.append("polyline").attr("class", $ARC.arcLabelLine);
+      }
+      $T(line, duration).attr("points", points).style("stroke", $$.color(d.data)).style("opacity", isVisible ? null : "0");
+    }
+    let labelLineText = g.select(`.${$ARC.arcLabelLineText}`);
+    if (labelLineText.empty()) {
+      labelLineText = g.append("text").attr("class", $ARC.arcLabelLineText).style("pointer-events", "none");
+    }
+    if (isVisible) {
+      const { value } = updated;
+      const { id } = d.data;
+      const text = ((_c = (_b = textConfig.formatter) != null ? _b : $$.getArcLabelConfig("format")) != null ? _c : $$.defaultArcValueFormat)(value, ratio, id).toString();
+      setTextValue(labelLineText, text, [-1, 1], false);
+      const pos = {
+        x: endPoint.x + 5 * (isRight ? 1 : -1),
+        // 5: label offset from endpoint
+        y: endPoint.y
+      };
+      labelLineText.style("text-anchor", isRight ? "start" : "end");
+      const textNode = labelLineText.node();
+      const tspanNodes = textNode == null ? void 0 : textNode.querySelectorAll("tspan");
+      if (cachedFontSize === null) {
+        cachedFontSize = parseFloat(win.getComputedStyle(textNode).fontSize) || 12;
+      }
+      if (tspanNodes && tspanNodes.length > 1) {
+        const lineCount = tspanNodes.length;
+        const centerOffset = (lineCount - 3) / 2;
+        pos.y += (-centerOffset + TEXT_VERTICAL_OFFSET) * cachedFontSize;
+      } else {
+        pos.y += TEXT_VERTICAL_OFFSET * cachedFontSize;
+      }
+      $T(labelLineText, duration).attr("transform", `translate(${pos.x},${pos.y})`).style("opacity", null).style("fill", $$.updateTextColor.bind($$)(d));
+    } else {
+      $T(labelLineText, duration).style("opacity", "0");
+    }
+  });
+}
+
+
+;// ./src/ChartInternal/shape/arc.ts
 var arc_defProp = Object.defineProperty;
 var arc_defProps = Object.defineProperties;
 var arc_getOwnPropDescs = Object.getOwnPropertyDescriptors;
@@ -17210,7 +18626,64 @@ var arc_spreadProps = (a, b) => arc_defProps(a, arc_getOwnPropDescs(b));
 
 
 
-function getRadiusFn(expandRate = 0) {
+
+
+function _getArcType($$) {
+  return ["donut", "pie", "polar", "gauge"].find((type) => $$.hasType(type));
+}
+function _calculateRangeOrGaugePosition($$, d, updated, forRange) {
+  var _a, _b;
+  const { config, state: { radiusExpanded } } = $$;
+  const angle = updated.endAngle - Math.PI / 2;
+  const sinAngle = Math.sin(angle);
+  const pos = {
+    x: Math.cos(angle) * (radiusExpanded + (forRange ? 5 : 25)),
+    // 5: range offset, 25: gauge offset
+    y: sinAngle * (radiusExpanded + 15 - Math.abs(sinAngle * 10)) + 3
+    // 10: y factor, 3: y offset
+  };
+  if (forRange) {
+    const rangeTextPosition = config.arc_rangeText_position;
+    if (rangeTextPosition) {
+      const rangeValues = config.arc_rangeText_values;
+      const position = isFunction(rangeTextPosition) ? rangeTextPosition(rangeValues[d.index]) : rangeTextPosition;
+      pos.x += (_a = position == null ? void 0 : position.x) != null ? _a : 0;
+      pos.y += (_b = position == null ? void 0 : position.y) != null ? _b : 0;
+    }
+  }
+  return pos;
+}
+function _calculateLabelRatio($$, d, outerRadius, distance) {
+  const { config } = $$;
+  const chartType = _getArcType($$);
+  let ratio = chartType ? config[`${chartType}_label_ratio`] : void 0;
+  if (ratio) {
+    ratio = isFunction(ratio) ? ratio.bind($$.api)(d, outerRadius, distance) : ratio;
+  } else {
+    const LABEL_MIN_SIZE = 36;
+    const LABEL_RATIO_THRESHOLD = 0.375;
+    const LABEL_RATIO_BASE = 1.175;
+    const LABEL_RATIO_LARGE = 0.8;
+    const labelSpaceRatio = LABEL_MIN_SIZE / outerRadius;
+    const isSmallChart = labelSpaceRatio > LABEL_RATIO_THRESHOLD;
+    ratio = outerRadius && distance ? (isSmallChart ? LABEL_RATIO_BASE - labelSpaceRatio : LABEL_RATIO_LARGE) * outerRadius / distance : 0;
+  }
+  return ratio;
+}
+function _calculateStandardArcPosition($$, d, updated) {
+  let { outerRadius } = $$.getRadius(d);
+  if ($$.hasType("polar")) {
+    outerRadius = $$.getPolarOuterRadius(d, outerRadius);
+  }
+  const [x, y] = $$.svgArc.centroid(updated).map((v) => isNaN(v) ? 0 : v);
+  const distance = Math.sqrt(x * x + y * y);
+  const ratio = _calculateLabelRatio($$, d, outerRadius, distance);
+  return {
+    pos: { x, y },
+    ratio
+  };
+}
+function _getRadiusFn(expandRate = 0) {
   const $$ = this;
   const { config, state } = $$;
   const hasMultiArcGauge = $$.hasMultiArcGauge();
@@ -17278,7 +18751,7 @@ function getRadiusFn(expandRate = 0) {
     }
   };
 }
-function getAttrTweenFn(fn) {
+function _getAttrTweenFn(fn) {
   return function(d) {
     const getAngleKeyValue = ({ startAngle = 0, endAngle = 0, padAngle = 0 }) => ({
       startAngle,
@@ -17317,7 +18790,9 @@ function getAttrTweenFn(fn) {
     const padding = config[`${dataType}_padding`];
     const w = config.gauge_width || config.donut_width;
     const gaugeArcWidth = $$.filterTargetsToShow($$.data.targets).length * config.gauge_arcs_minWidth;
-    state.radiusExpanded = Math.min(state.arcWidth, state.arcHeight) / 2 * ($$.hasMultiArcGauge() && config.gauge_label_show ? 0.85 : 1);
+    const LABEL_RADIUS_RATIO = 0.85;
+    const labelWithLineRatio = isLabelWithLine.call($$) ? LABEL_RADIUS_RATIO : 1;
+    state.radiusExpanded = Math.min(state.arcWidth, state.arcHeight) / 2 * ($$.hasMultiArcGauge() && config.gauge_label_show ? LABEL_RADIUS_RATIO : labelWithLineRatio);
     state.radius = state.radiusExpanded * 0.95;
     state.innerRadiusRatio = w ? (state.radius - w) / state.radius : 0.6;
     state.gaugeArcWidth = w || (gaugeArcWidth <= state.radius - state.innerRadius ? state.radius - state.innerRadius : gaugeArcWidth <= state.radius ? gaugeArcWidth : state.radius);
@@ -17435,7 +18910,7 @@ function getAttrTweenFn(fn) {
   },
   getSvgArc() {
     const $$ = this;
-    const { inner, outer, corner } = getRadiusFn.call($$);
+    const { inner, outer, corner } = _getRadiusFn.call($$);
     const arc = (0,external_commonjs_d3_shape_commonjs2_d3_shape_amd_d3_shape_root_d3_.arc)().innerRadius(inner).outerRadius(outer);
     const newArc = function(d, withoutUpdate) {
       var _a;
@@ -17456,12 +18931,12 @@ function getAttrTweenFn(fn) {
   /**
    * Get expanded arc path function
    * @param {number} rate Expand rate
-   * @returns {Function} Expanded arc path getter function
+   * @returns {function} Expanded arc path getter function
    * @private
    */
   getSvgArcExpanded(rate = 1) {
     const $$ = this;
-    const { inner, outer, corner } = getRadiusFn.call($$, rate);
+    const { inner, outer, corner } = _getRadiusFn.call($$, rate);
     const arc = (0,external_commonjs_d3_shape_commonjs2_d3_shape_amd_d3_shape_root_d3_.arc)().innerRadius(inner).outerRadius(outer);
     return (d) => {
       const updated = $$.updateAngle(d);
@@ -17500,7 +18975,9 @@ function getAttrTweenFn(fn) {
         return isFunction(format) ? format(range) : `${range}${isPercent ? "%" : ""}`;
       }).merge(rangeText));
       if ((!state.rendered || state.rendered && !fixed) && totalSum > 0) {
-        rangeText.attr("transform", (d, i) => $$.transformForArcLabel(pieData[i], true));
+        rangeText.attr("transform", function(d, i) {
+          return $$.transformForArcLabel(this, pieData[i], true);
+        });
       }
       rangeText.style(
         "opacity",
@@ -17510,48 +18987,31 @@ function getAttrTweenFn(fn) {
   },
   /**
    * Set transform attributes to arc label text
+   * @param {SVGTextElement} textNode Text node element
    * @param {object} d Data object
    * @param {boolean} forRange Weather is for ranged text option(arc.rangeText.values)
    * @returns {string} Translate attribute string
    * @private
    */
-  transformForArcLabel(d, forRange = false) {
-    var _a, _b, _c;
+  transformForArcLabel(textNode, d, forRange = false) {
     const $$ = this;
-    const { config, state: { radiusExpanded } } = $$;
     const updated = $$.updateAngle(d, forRange);
-    let translate = "";
-    if (updated) {
-      if (forRange || $$.hasMultiArcGauge()) {
-        const y1 = Math.sin(updated.endAngle - Math.PI / 2);
-        const rangeTextPosition = config.arc_rangeText_position;
-        let x = Math.cos(updated.endAngle - Math.PI / 2) * (radiusExpanded + (forRange ? 5 : 25));
-        let y = y1 * (radiusExpanded + 15 - Math.abs(y1 * 10)) + 3;
-        if (forRange && rangeTextPosition) {
-          const rangeValues = config.arc_rangeText_values;
-          const pos = isFunction(rangeTextPosition) ? rangeTextPosition(rangeValues[d.index]) : rangeTextPosition;
-          x += (_a = pos == null ? void 0 : pos.x) != null ? _a : 0;
-          y += (_b = pos == null ? void 0 : pos.y) != null ? _b : 0;
-        }
-        translate = `translate(${x},${y})`;
-      } else if (!$$.hasType("gauge") || $$.data.targets.length > 1) {
-        let { outerRadius } = $$.getRadius(d);
-        if ($$.hasType("polar")) {
-          outerRadius = $$.getPolarOuterRadius(d, outerRadius);
-        }
-        const c = this.svgArc.centroid(updated);
-        const [x, y] = c.map((v) => isNaN(v) ? 0 : v);
-        const h = Math.sqrt(x * x + y * y);
-        let ratio = (_c = ["donut", "gauge", "pie", "polar"].filter($$.hasType.bind($$)).map((v) => config[`${v}_label_ratio`])) == null ? void 0 : _c[0];
-        if (ratio) {
-          ratio = isFunction(ratio) ? ratio.bind($$.api)(d, outerRadius, h) : ratio;
-        } else {
-          ratio = outerRadius && (h ? (36 / outerRadius > 0.375 ? 1.175 - 36 / outerRadius : 0.8) * outerRadius / h : 0);
-        }
-        translate = `translate(${x * ratio},${y * ratio})`;
-      }
+    if (!updated) {
+      return "";
     }
-    return translate;
+    let pos;
+    let ratio = 1;
+    if (forRange || $$.hasMultiArcGauge()) {
+      pos = _calculateRangeOrGaugePosition($$, d, updated, forRange);
+    } else if (!$$.hasType("gauge") || $$.data.targets.length > 1) {
+      const result = _calculateStandardArcPosition($$, d, updated);
+      pos = result.pos;
+      ratio = result.ratio;
+    } else {
+      return "";
+    }
+    updateTextImagePos.call($$, textNode, pos);
+    return `translate(${pos.x * ratio},${pos.y * ratio})`;
   },
   convertToArcData(d) {
     return this.addName({
@@ -17562,21 +19022,20 @@ function getAttrTweenFn(fn) {
     });
   },
   textForArcLabel(selection) {
+    var _a;
     const $$ = this;
     const hasGauge = $$.hasType("gauge");
+    const chartType = (_a = ["donut", "gauge", "pie", "polar"].filter($$.hasType.bind($$))) == null ? void 0 : _a[0];
     if ($$.shouldShowArcLabel()) {
       selection.style("fill", $$.updateTextColor.bind($$)).attr("filter", (d) => $$.updateTextBGColor.bind($$)(d, $$.config.data_labels_backgroundColors)).each(function(d) {
-        var _a;
         const node = (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(this);
         const updated = $$.updateAngle(d);
         const ratio = $$.getRatio("arc", updated);
-        const isUnderThreshold = $$.meetsLabelThreshold(
-          ratio,
-          (_a = ["donut", "gauge", "pie", "polar"].filter($$.hasType.bind($$))) == null ? void 0 : _a[0]
-        );
-        if (isUnderThreshold) {
+        const meetsThreshold = meetsLabelThreshold.call($$, ratio, chartType);
+        d._cache = { updated, ratio, meetsThreshold };
+        if (meetsThreshold) {
           const { value } = updated || d;
-          const text = ($$.getArcLabelFormat() || $$.defaultArcValueFormat)(value, ratio, d.data.id).toString();
+          const text = ($$.getArcLabelConfig("format") || $$.defaultArcValueFormat)(value, ratio, d.data.id).toString();
           setTextValue(node, text, [-1, 1], hasGauge);
         } else {
           node.text("");
@@ -17605,7 +19064,7 @@ function getAttrTweenFn(fn) {
       const svgArcExpandedSub = $$.getSvgArcExpanded(
         $$.getExpandConfig(d.data.id, "rate")
       );
-      (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(this).selectAll("path").transition().duration(expandDuration).attrTween("d", getAttrTweenFn($$.svgArcExpanded.bind($$))).transition().duration(expandDuration * 2).attrTween("d", getAttrTweenFn(svgArcExpandedSub.bind($$)));
+      (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(this).selectAll("path").transition().duration(expandDuration).attrTween("d", _getAttrTweenFn($$.svgArcExpanded.bind($$))).transition().duration(expandDuration * 2).attrTween("d", _getAttrTweenFn(svgArcExpandedSub.bind($$)));
     });
   },
   unexpandArc(targetIds) {
@@ -17615,7 +19074,7 @@ function getAttrTweenFn(fn) {
       return;
     }
     const newTargetIds = $$.mapToTargetIds(targetIds);
-    svg.selectAll($$.selectorTargets(newTargetIds, `.${$ARC.chartArc}`)).selectAll("path").transition().duration((d) => $$.getExpandConfig(d.data.id, "duration")).attrTween("d", getAttrTweenFn($$.svgArc.bind($$)));
+    svg.selectAll($$.selectorTargets(newTargetIds, `.${$ARC.chartArc}`)).selectAll("path").transition().duration((d) => $$.getExpandConfig(d.data.id, "duration")).attrTween("d", _getAttrTweenFn($$.svgArc.bind($$)));
     svg.selectAll(`${$ARC.arc}`).style("opacity", null);
   },
   /**
@@ -17652,14 +19111,18 @@ function getAttrTweenFn(fn) {
     const { config } = $$;
     return ["donut", "gauge", "pie", "polar"].some((v) => $$.hasType(v) && config[`${v}_label_show`]);
   },
-  getArcLabelFormat() {
+  getArcLabelConfig(name = "format") {
     const $$ = this;
     const { config } = $$;
-    let format = (v) => v;
+    let fn = (v) => v;
     ["donut", "gauge", "pie", "polar"].filter($$.hasType.bind($$)).forEach((v) => {
-      format = config[`${v}_label_format`];
+      fn = config[`${v}_label_${name}`];
     });
-    return isFunction(format) ? format.bind($$.api) : format;
+    if (name === "format") {
+      return isFunction(fn) ? fn.bind($$.api) : fn;
+    } else {
+      return fn;
+    }
   },
   updateTargetsForArc(targets) {
     const $$ = this;
@@ -17677,7 +19140,7 @@ function getAttrTweenFn(fn) {
       ])
     );
     mainPieEnter.append("g").attr("class", classArcs).merge(mainPieUpdate);
-    mainPieEnter.append("text").attr("dy", hasGauge && !$$.hasMultiTargets() ? "-.1em" : ".35em").style("opacity", "0").style("text-anchor", $$.getStylePropValue("middle")).style("pointer-events", $$.getStylePropValue("none"));
+    mainPieEnter.append("text").attr("dy", hasGauge && !$$.hasMultiTargets() ? "-.1em" : null).style("opacity", "0").style("text-anchor", $$.getStylePropValue("middle")).style("pointer-events", $$.getStylePropValue("none"));
     $el.text = chartArcs.selectAll(`.${$COMMON.target} text`);
   },
   initArc() {
@@ -17730,7 +19193,7 @@ function getAttrTweenFn(fn) {
         value = config.arc_needle_value;
       }
       return tplProcess(title, {
-        NEEDLE_VALUE: isNumber(value) ? value : 0
+        NEEDLE_VALUE: ~~value
       });
     }
     return false;
@@ -17953,7 +19416,7 @@ function getAttrTweenFn(fn) {
         selectArc(this, arcData, id);
         $$.setOverOut(true, arcData);
       }).on("mouseout", (event, d) => {
-        if (state.transiting) {
+        if (state.transiting || !config.interaction_onout) {
           return;
         }
         state.event = event;
@@ -17987,7 +19450,7 @@ function getAttrTweenFn(fn) {
         const id = (arcData == null ? void 0 : arcData.id) || void 0;
         $$.callOverOutForTouch(arcData);
         isUndefined(id) ? unselectArc() : selectArc(this, arcData, id);
-      });
+      }, { passive: true });
     }
   },
   redrawArcText(duration) {
@@ -17997,7 +19460,11 @@ function getAttrTweenFn(fn) {
     const hasMultiArcGauge = $$.hasMultiArcGauge();
     let text;
     if (!(hasGauge && $$.data.targets.length === 1 && config.gauge_title)) {
-      text = main.selectAll(`.${$ARC.chartArc}`).select("text").style("opacity", "0").attr("class", (d) => $$.isGaugeType(d.data) ? $GAUGE.gaugeValue : null).call($$.textForArcLabel.bind($$)).attr("transform", (d) => $$.transformForArcLabel.bind($$)(d)).style("font-size", (d) => $$.isGaugeType(d.data) && $$.data.targets.length === 1 && !hasMultiArcGauge ? `${Math.round(state.radius / 5)}px` : null).transition().duration(duration).style(
+      text = main.selectAll(`.${$ARC.chartArc}`).select("text").style("opacity", "0").attr("class", (d) => $$.isGaugeType(d.data) ? $GAUGE.gaugeValue : null).call($$.textForArcLabel.bind($$)).style("font-size", (d) => $$.isGaugeType(d.data) && $$.data.targets.length === 1 && !hasMultiArcGauge ? `${Math.round(state.radius / 5)}px` : null);
+      updateTextImage.call($$);
+      text.attr("transform", function(d) {
+        return $$.transformForArcLabel.bind($$)(this, d);
+      }).transition().duration(duration).style(
         "opacity",
         (d) => $$.isTargetToShow(d.data.id) && $$.isArcType(d.data) ? null : "0"
       );
@@ -18013,6 +19480,7 @@ function getAttrTweenFn(fn) {
         !isFullCircle && arcs.select(`.${$GAUGE.chartArcsGaugeMax}`).attr("dx", `${state.innerRadius + (state.radius - state.innerRadius) / 2}px`).attr("dy", "1.2em").text($$.textForGaugeMinMax(config.gauge_max, true));
       }
     }
+    isLabelWithLine.call($$) && redrawArcLabelLines.call($$, duration);
   },
   /**
    * Get Arc element by id or index
@@ -18028,7 +19496,7 @@ function getAttrTweenFn(fn) {
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/shape/area.ts
+;// ./src/ChartInternal/shape/area.ts
 
 
 
@@ -18071,7 +19539,7 @@ function getAttrTweenFn(fn) {
   },
   /**
    * Redraw function
-   * @param {Function} drawFn Retuned functino from .generateDrawCandlestick()
+   * @param {function} drawFn Retuned functino from .generateDrawCandlestick()
    * @param {boolean} withTransition With or without transition
    * @param {boolean} isSub Subchart draw
    * @returns {Array}
@@ -18091,7 +19559,7 @@ function getAttrTweenFn(fn) {
    * Generate area path data
    * @param {object} areaIndices Indices
    * @param {boolean} isSub Weather is sub axis
-   * @returns {Function}
+   * @returns {function}
    * @private
    */
   generateDrawArea(areaIndices, isSub) {
@@ -18161,9 +19629,15 @@ function getAttrTweenFn(fn) {
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/shape/bar.ts
+;// ./src/ChartInternal/shape/bar.ts
 
 
+
+function _getConnectLineType(id) {
+  const connectLine = this.config.bar_connectLine;
+  const type = (connectLine == null ? void 0 : connectLine[id]) || connectLine;
+  return /^(start|end)\-(start|end)$/.test(type) ? type : null;
+}
 /* harmony default export */ var bar = ({
   initBar() {
     const { $el, config, state: { clip } } = this;
@@ -18184,17 +19658,19 @@ function getAttrTweenFn(fn) {
     if (!$el.bar) {
       $$.initBar();
     }
-    const mainBarUpdate = $el.main.select(`.${$BAR.chartBars}`).selectAll(`.${$BAR.chartBar}`).data(
-      // remove
-      targets.filter(
-        (v) => v.values.some((d) => isNumber(d.value) || $$.isBarRangeType(d))
-      )
-    ).attr("class", (d) => classChartBar(d) + classFocus(d));
+    const mainBarUpdate = $el.main.select(`.${$BAR.chartBars}`).selectAll(`.${$BAR.chartBar}`).data($$.filterNullish(targets)).attr("class", (d) => classChartBar(d) + classFocus(d));
     const mainBarEnter = mainBarUpdate.enter().append("g").attr("class", classChartBar).style("opacity", "0").style("pointer-events", $$.getStylePropValue("none"));
     mainBarEnter.append("g").attr("class", classBars).style("cursor", (d) => {
       var _a;
       return ((_a = isSelectable == null ? void 0 : isSelectable.bind) == null ? void 0 : _a.call(isSelectable, $$.api)(d)) ? "pointer" : null;
-    }).call($$.setCssRule(true, ` .${$BAR.bar}`, ["fill"], $$.color));
+    }).call((selection) => {
+      $$.setCssRule(true, ` .${$BAR.bar}`, ["fill"], $$.color)(selection);
+      selection.each(function(d) {
+        if (_getConnectLineType.call($$, d.id)) {
+          (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(this).append("path").attr("class", $BAR.barConnectLine);
+        }
+      });
+    });
   },
   /**
    * Generate/Update elements
@@ -18227,7 +19703,7 @@ function getAttrTweenFn(fn) {
   },
   /**
    * Redraw function
-   * @param {Function} drawFn Retuned function from .getDrawShape() => .generateDrawBar()
+   * @param {function} drawFn Retuned function from .getDrawShape() => .generateDrawBar()
    * @param {boolean} withTransition With or without transition
    * @param {boolean} isSub Subchart draw
    * @returns {Array}
@@ -18236,8 +19712,25 @@ function getAttrTweenFn(fn) {
   redrawBar(drawFn, withTransition, isSub = false) {
     const $$ = this;
     const { bar } = isSub ? $$.$el.subchart : $$.$el;
+    const barPath = [];
     return [
-      $$.$T(bar, withTransition, getRandom()).attr("d", (d) => (isNumber(d.value) || $$.isBarRangeType(d)) && drawFn(d)).style("fill", $$.updateBarColor.bind($$)).style("opacity", null)
+      $$.$T(bar, withTransition, getRandom()).attr("d", function(d, i, arr) {
+        const path = (isNumber(d.value) || $$.isBarRangeType(d)) && drawFn(d, i);
+        const connectLineType = _getConnectLineType.call($$, d.id);
+        if (path.length > 1) {
+          barPath.push(path[1]);
+          if (i === arr.length - 1) {
+            const barConnectLineNode = $$.$T(
+              (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(this.parentNode.querySelector(`.${$BAR.barConnectLine}`)),
+              withTransition,
+              getRandom()
+            );
+            $$.updateConnectLine(barConnectLineNode, connectLineType, barPath);
+            barPath.splice(0);
+          }
+        }
+        return path[0];
+      }).style("fill", $$.updateBarColor.bind($$)).style("clip-path", (d) => d.clipPath).style("opacity", null)
     ];
   },
   /**
@@ -18257,7 +19750,7 @@ function getAttrTweenFn(fn) {
    * 		-------------------------
    * 			 0             1
    * @param {boolean} isSub If is for subchart
-   * @returns {Function}
+   * @returns {function}
    * @private
    */
   generateDrawBar(barIndices, isSub) {
@@ -18276,20 +19769,59 @@ function getAttrTweenFn(fn) {
       const isInverted = config[`axis_${$$.axis.getId(d.id)}_inverted`];
       const isNegative = !isInverted && isUnderZero || isInverted && !isUnderZero;
       const pathRadius = ["", ""];
-      let radius = 0;
       const isGrouped = $$.isGrouped(d.id);
       const isRadiusData = getRadius && isGrouped ? $$.isStackingRadiusData(d) : false;
+      const init = [
+        points[0][indexX],
+        points[0][indexY]
+      ];
+      let radius = 0;
+      d.clipPath = null;
       if (getRadius) {
         const index = isRotated ? indexY : indexX;
         const barW = points[2][index] - points[0][index];
         radius = !isGrouped || isRadiusData ? getRadius(barW) : 0;
-        const arc = `a${radius},${radius} ${isNegative ? `1 0 0` : `0 0 1`} `;
+        const arc = `a${radius} ${radius} ${isNegative ? `1 0 0` : `0 0 1`} `;
         pathRadius[+!isRotated] = `${arc}${radius},${radius}`;
         pathRadius[+isRotated] = `${arc}${[-radius, radius][isRotated ? "sort" : "reverse"]()}`;
         isNegative && pathRadius.reverse();
       }
-      const path = isRotated ? `H${points[1][indexX] + (isNegative ? radius : -radius)} ${pathRadius[0]}V${points[2][indexY] - radius} ${pathRadius[1]}H${points[3][indexX]}` : `V${points[1][indexY] + (isNegative ? -radius : radius)} ${pathRadius[0]}H${points[2][indexX] - radius} ${pathRadius[1]}V${points[3][indexY]}`;
-      return `M${points[0][indexX]},${points[0][indexY]}${path}z`;
+      const pos = isRotated ? points[1][indexX] + (isNegative ? radius : -radius) : points[1][indexY] + (isNegative ? -radius : radius);
+      if (radius) {
+        let clipPath = "";
+        if (isRotated) {
+          if (isNegative && init[0] < pos) {
+            clipPath = `0 ${pos - init[0]}px 0 0`;
+          } else if (!isNegative && init[0] > pos) {
+            clipPath = `0 0 0 ${init[0] - pos}px`;
+          }
+        } else {
+          if (isNegative && init[1] > pos) {
+            clipPath = `${init[1] - pos}px 0 0 0`;
+          } else if (!isNegative && init[1] < pos) {
+            clipPath = `0 0 ${pos - init[1]}px 0`;
+          }
+        }
+        if (clipPath) {
+          d.clipPath = `inset(${clipPath})`;
+        }
+      }
+      const path = isRotated ? `H${pos} ${pathRadius[0]}V${points[2][indexY] - radius} ${pathRadius[1]}H${points[3][indexX]}` : `V${pos} ${pathRadius[0]}H${points[2][indexX] - radius} ${pathRadius[1]}V${points[3][indexY]}`;
+      const coords = [`M${points[0][indexX]},${points[0][indexY]}${path}z`];
+      if (_getConnectLineType.call($$, d.id)) {
+        coords.push(isRotated ? {
+          x: points[0][indexX],
+          y: points[0][indexY],
+          width: points[0][indexX] - pos,
+          height: points[2][indexY] - points[0][indexY]
+        } : {
+          x: points[0][indexX],
+          y: pos,
+          width: points[2][indexX] - points[0][indexX],
+          height: points[3][indexY] - pos
+        });
+      }
+      return coords;
     };
   },
   /**
@@ -18356,10 +19888,38 @@ function getAttrTweenFn(fn) {
         [startPosX, offset]
       ];
     };
+  },
+  /**
+   * Update the bar connect line path
+   * @param {d3Selection} node d3 selection of bar connect line
+   * @param {string} type Type of connect line, one of "start-start", "start-end", "end-start", "end-end"
+   * @param {Array} barPath d3 path data for the bar
+   */
+  updateConnectLine(node, type, barPath) {
+    const path = barPath.map((v, i, arr) => {
+      const isRotated = this.config.axis_rotated;
+      const isStart = /^start-(start|end)$/.test(type);
+      const isEnd = /^end-(start|end)$/.test(type);
+      const path2 = [];
+      const x = isRotated ? isEnd ? v.x - v.width : v.x : v.x + v.width;
+      const y = isRotated ? v.y + v.height : isStart ? v.y + v.height : v.y;
+      if (i === 0) {
+        path2.push(`${x},${y}`);
+      } else {
+        path2.push(
+          isRotated ? `L${v.x - (/\w+-end$/.test(type) ? v.width : 0)},${v.y}` : `L${v.x},${v.y + (/\w+-start$/.test(type) ? v.height : 0)}`
+        );
+        if (i < arr.length - 1) {
+          path2.push(`M${x},${y}`);
+        }
+      }
+      return path2.join(" ");
+    });
+    node.attr("d", `M${path.join("")}z`);
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/shape/bubble.ts
+;// ./src/ChartInternal/shape/bubble.ts
 
 
 /* harmony default export */ var bubble = ({
@@ -18421,7 +19981,7 @@ function getAttrTweenFn(fn) {
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/shape/candlestick.ts
+;// ./src/ChartInternal/shape/candlestick.ts
 var candlestick_defProp = Object.defineProperty;
 var candlestick_getOwnPropSymbols = Object.getOwnPropertySymbols;
 var candlestick_hasOwnProp = Object.prototype.hasOwnProperty;
@@ -18459,7 +20019,7 @@ var candlestick_spreadValues = (a, b) => {
     if (!$el.candlestick) {
       $$.initCandlestick();
     }
-    const mainUpdate = $$.$el.main.select(`.${$CANDLESTICK.chartCandlesticks}`).selectAll(`.${$CANDLESTICK.chartCandlestick}`).data(targets);
+    const mainUpdate = $$.$el.main.select(`.${$CANDLESTICK.chartCandlesticks}`).selectAll(`.${$CANDLESTICK.chartCandlestick}`).data($$.filterNullish(targets));
     mainUpdate.enter().append("g").attr("class", classChart).style("pointer-events", "none");
   },
   /**
@@ -18485,7 +20045,7 @@ var candlestick_spreadValues = (a, b) => {
    * Get draw function
    * @param {object} indices Indice data
    * @param {boolean} isSub Subchart draw
-   * @returns {Function}
+   * @returns {function}
    * @private
    */
   generateDrawCandlestick(indices, isSub) {
@@ -18529,7 +20089,7 @@ var candlestick_spreadValues = (a, b) => {
    * Generate shape drawing points
    * @param {object} indices Indice data
    * @param {boolean} isSub Subchart draw
-   * @returns {Function}
+   * @returns {function}
    */
   generateGetCandlestickPoints(indices, isSub = false) {
     const $$ = this;
@@ -18575,7 +20135,7 @@ var candlestick_spreadValues = (a, b) => {
   },
   /**
    * Redraw function
-   * @param {Function} drawFn Retuned functino from .generateDrawCandlestick()
+   * @param {function} drawFn Retuned functino from .generateDrawCandlestick()
    * @param {boolean} withTransition With or without transition
    * @param {boolean} isSub Subchart draw
    * @returns {Array}
@@ -18617,7 +20177,7 @@ var candlestick_spreadValues = (a, b) => {
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/shape/funnel.ts
+;// ./src/ChartInternal/shape/funnel.ts
 var funnel_defProp = Object.defineProperty;
 var funnel_getOwnPropSymbols = Object.getOwnPropertySymbols;
 var funnel_hasOwnProp = Object.prototype.hasOwnProperty;
@@ -18637,7 +20197,7 @@ var funnel_spreadValues = (a, b) => {
 
 
 
-function getSize(checkNeck = false) {
+function _getSize(checkNeck = false) {
   const $$ = this;
   const { config, state: { current: { width, height } } } = $$;
   const padding = $$.getCurrentPadding();
@@ -18646,7 +20206,7 @@ function getSize(checkNeck = false) {
     height: height - (config.legend_show ? $$.getLegendHeight() + 10 : 0) - (padding.top + padding.bottom)
   }, padding);
   if (checkNeck) {
-    const { width: neckWidth, height: neckHeight } = getNecklSize.call($$, {
+    const { width: neckWidth, height: neckHeight } = _getNeckSize.call($$, {
       width: size.width,
       height: size.height
     });
@@ -18659,7 +20219,7 @@ function getSize(checkNeck = false) {
   }
   return size;
 }
-function getNecklSize(current) {
+function _getNeckSize(current) {
   const $$ = this;
   const { config } = $$;
   let width = config.funnel_neck_width;
@@ -18676,9 +20236,9 @@ function getNecklSize(current) {
     height
   };
 }
-function getCoord(d) {
+function _getCoord(d) {
   const $$ = this;
-  const { top, left, width } = getSize.call($$, true);
+  const { top, left, width } = _getSize.call($$, true);
   const coords = [];
   d.forEach((d2, i) => {
     const { ratio } = d2;
@@ -18698,10 +20258,10 @@ function getCoord(d) {
   });
   return coords;
 }
-function getClipPath(forBackground = false) {
+function _getClipPath(forBackground = false) {
   const $$ = this;
-  const { width, height, top, left } = getSize.call($$, true);
-  const neck = getNecklSize.call($$, { width, height });
+  const { width, height, top, left } = _getSize.call($$, true);
+  const neck = _getNeckSize.call($$, { width, height });
   const leftX = (width - neck.width) / 2;
   const rightX = (width + neck.width) / 2;
   const bodyHeigth = height - neck.height;
@@ -18729,7 +20289,7 @@ function getClipPath(forBackground = false) {
   }
   return `M${coords.join("L")}z`;
 }
-function getFunnelData(d) {
+function _getFunnelData(d) {
   const $$ = this;
   const { config } = $$;
   const data = d.map((d2) => ({
@@ -18739,11 +20299,11 @@ function getFunnelData(d) {
   if (config.data_order) {
     data.sort($$.getSortCompareFn.bind($$)(true));
   }
-  return updateRatio.call($$, data);
+  return _updateRatio.call($$, data);
 }
-function updateRatio(data) {
+function _updateRatio(data) {
   const $$ = this;
-  const { height } = getSize.call($$);
+  const { height } = _getSize.call($$);
   const total = $$.getTotalDataSum(true);
   data.forEach((d) => {
     d.ratio = d.value / total * height;
@@ -18787,10 +20347,12 @@ function updateRatio(data) {
           $$.showTooltip([data], event.target);
           /^(touchstart|mouseover)$/.test(event.type) && $$.setOverOut(true, data);
         }
-      }).on(isTouch ? "touchend" : "mouseout", (event) => {
+      }, isTouch ? { passive: true } : void 0).on(isTouch ? "touchend" : "mouseout", (event) => {
         const data = getTarget(event);
-        $$.hideTooltip();
-        $$.setOverOut(false, data);
+        if (config.interaction_onout) {
+          $$.hideTooltip();
+          $$.setOverOut(false, data);
+        }
       });
     }
   },
@@ -18807,8 +20369,8 @@ function updateRatio(data) {
     if (!funnel) {
       $$.initFunnel();
     }
-    const targets = getFunnelData.call($$, t.filter($$.isFunnelType.bind($$)));
-    const mainFunnelUpdate = funnel.selectAll(`.${$FUNNEL.chartFunnel}`).data(targets);
+    const targets = _getFunnelData.call($$, t.filter($$.isFunnelType.bind($$)));
+    const mainFunnelUpdate = funnel.selectAll(`.${$FUNNEL.chartFunnel}`).data($$.filterNullish(targets));
     mainFunnelUpdate.exit().remove();
     const mainFunnelEnter = mainFunnelUpdate.enter().insert("g", `.${$FUNNEL.funnelBackground}`);
     mainFunnelEnter.append("path");
@@ -18834,7 +20396,7 @@ function updateRatio(data) {
     const $$ = this;
     const { $el: { funnel } } = $$;
     const targets = $$.filterTargetsToShow(funnel.path);
-    const { top, left, right } = getSize.call($$);
+    const { top, left, right } = _getSize.call($$);
     const center = (left - right) / 2;
     const points = {};
     let accumulatedHeight = top != null ? top : 0;
@@ -18855,15 +20417,15 @@ function updateRatio(data) {
     const $$ = this;
     const { $T, $el: { funnel } } = $$;
     const targets = $$.filterTargetsToShow(funnel.path);
-    const coords = getCoord.call($$, updateRatio.call($$, targets.data()));
-    funnel.attr("clip-path", `path('${getClipPath.bind($$)()}')`);
-    funnel.background.attr("d", getClipPath.call($$, true));
+    const coords = _getCoord.call($$, _updateRatio.call($$, targets.data()));
+    funnel.attr("clip-path", `path('${_getClipPath.bind($$)()}')`);
+    funnel.background.attr("d", _getClipPath.call($$, true));
     $T(targets).attr("d", (d, i) => `M${coords[i].join("L")}z`).style("opacity", "1");
     funnel.selectAll("g").style("opacity", null);
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/shape/gauge.ts
+;// ./src/ChartInternal/shape/gauge.ts
 
 
 
@@ -18941,12 +20503,31 @@ function updateRatio(data) {
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/shape/line.ts
+;// ./src/ChartInternal/shape/line.ts
+var line_defProp = Object.defineProperty;
+var line_defProps = Object.defineProperties;
+var line_getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var line_getOwnPropSymbols = Object.getOwnPropertySymbols;
+var line_hasOwnProp = Object.prototype.hasOwnProperty;
+var line_propIsEnum = Object.prototype.propertyIsEnumerable;
+var line_defNormalProp = (obj, key, value) => key in obj ? line_defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var line_spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (line_hasOwnProp.call(b, prop))
+      line_defNormalProp(a, prop, b[prop]);
+  if (line_getOwnPropSymbols)
+    for (var prop of line_getOwnPropSymbols(b)) {
+      if (line_propIsEnum.call(b, prop))
+        line_defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var line_spreadProps = (a, b) => line_defProps(a, line_getOwnPropDescs(b));
 
 
 
 
-function getStrokeDashArray(start, end, pattern, isLastX = false) {
+function _getStrokeDashArray(start, end, pattern, isLastX = false) {
   const dash = start ? [start, 0] : pattern;
   for (let i = start ? start : pattern.reduce((a, c) => a + c); i <= end; ) {
     pattern.forEach((v) => {
@@ -18962,7 +20543,7 @@ function getStrokeDashArray(start, end, pattern, isLastX = false) {
     length: dash.reduce((a, b) => a + b, 0)
   };
 }
-function getRegions(d, _regions, isTimeSeries) {
+function _getRegions(d, _regions, isTimeSeries) {
   const $$ = this;
   const regions = [];
   const dasharray = "2 2";
@@ -18992,7 +20573,7 @@ function getRegions(d, _regions, isTimeSeries) {
       $$.initLine();
     }
     const targets = t.filter((d) => !($$.isScatterType(d) || $$.isBubbleType(d)));
-    const mainLineUpdate = main.select(`.${$LINE.chartLines}`).selectAll(`.${$LINE.chartLine}`).data(targets).attr("class", (d) => classChartLine(d) + classFocus(d));
+    const mainLineUpdate = main.select(`.${$LINE.chartLines}`).selectAll(`.${$LINE.chartLine}`).data($$.filterNullish(targets)).attr("class", (d) => classChartLine(d) + classFocus(d));
     const mainLineEnter = mainLineUpdate.enter().append("g").attr("class", classChartLine).style("opacity", "0").style("pointer-events", $$.getStylePropValue("none"));
     mainLineEnter.append("g").attr("class", classLines);
     if ($$.hasTypeOf("Area")) {
@@ -19017,7 +20598,7 @@ function getRegions(d, _regions, isTimeSeries) {
   },
   /**
    * Redraw function
-   * @param {Function} drawFn Retuned functino from .generateDrawCandlestick()
+   * @param {function} drawFn Retuned functino from .generateDrawCandlestick()
    * @param {boolean} withTransition With or without transition
    * @param {boolean} isSub Subchart draw
    * @returns {Array}
@@ -19034,7 +20615,7 @@ function getRegions(d, _regions, isTimeSeries) {
   /**
    * Get the curve interpolate
    * @param {Array} d Data object
-   * @returns {Function}
+   * @returns {function}
    * @private
    */
   getCurve(d) {
@@ -19081,6 +20662,9 @@ function getRegions(d, _regions, isTimeSeries) {
       if ($$.isLineType(d)) {
         const regions = config.data_regions[d.id];
         if (regions) {
+          if ($$.isAreaRangeType(d)) {
+            values = values.map((dv) => line_spreadProps(line_spreadValues({}, dv), { value: $$.getRangedData(dv, "mid") }));
+          }
           path = $$.lineWithRegions(values, scale.zoom || x, y, regions);
         } else {
           if ($$.isStepType(d)) {
@@ -19101,8 +20685,8 @@ function getRegions(d, _regions, isTimeSeries) {
   /**
    * Set regions dasharray and get path
    * @param {Array} d Data object
-   * @param {Function} x x scale function
-   * @param {Function} y y scale function
+   * @param {function} x x scale function
+   * @param {function} y y scale function
    * @param {object} _regions regions to be set
    * @returns {stirng} Path string
    * @private
@@ -19113,7 +20697,7 @@ function getRegions(d, _regions, isTimeSeries) {
     const isRotated = config.axis_rotated;
     const isTimeSeries = $$.axis.isTimeSeries();
     const dasharray = "2 2";
-    const regions = getRegions.bind($$)(d, _regions, isTimeSeries);
+    const regions = _getRegions.bind($$)(d, _regions, isTimeSeries);
     const hasNullDataValue = $$.hasNullDataValue(d);
     let xp;
     let yp;
@@ -19209,7 +20793,7 @@ function getRegions(d, _regions, isTimeSeries) {
           isRotated && points.forEach((v) => v.reverse());
           const startLength = getLength(tempNode, path);
           const endLength = getLength(tempNode, path += `L${points[1].join(",")}`);
-          const strokeDashArray = getStrokeDashArray(
+          const strokeDashArray = _getStrokeDashArray(
             startLength - dashArray.lastLength,
             endLength - dashArray.lastLength,
             style,
@@ -19244,7 +20828,7 @@ function getRegions(d, _regions, isTimeSeries) {
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/shape/point.ts
+;// ./src/ChartInternal/shape/point.ts
 
 
 
@@ -19289,7 +20873,7 @@ const getTransitionName = () => getRandom();
     let targets = targetsValue;
     let enterNode = enterNodeValue;
     if (!targets) {
-      targets = data.targets.filter((d) => this.isScatterType(d) || this.isBubbleType(d));
+      targets = $$.filterNullish(data.targets).filter((d) => this.isScatterType(d) || this.isBubbleType(d));
       const mainCircle = $el.main.select(`.${$CIRCLE.chartCircles}`).style("pointer-events", "none").selectAll(`.${$CIRCLE.circles}`).data(targets);
       mainCircle.exit().remove();
       enterNode = mainCircle.enter();
@@ -19317,7 +20901,10 @@ const getTransitionName = () => getRandom();
     const $root = isSub ? $el.subchart : $el;
     if (config.point_show && !state.toggling) {
       config.point_radialGradient && $$.updateLinearGradient();
-      const circles = $root.main.selectAll(`.${$CIRCLE.circles}`).selectAll(`.${$CIRCLE.circle}`).data((d) => $$.isLineType(d) && $$.shouldDrawPointsForLine(d) || $$.isBubbleType(d) || $$.isRadarType(d) || $$.isScatterType(d) ? focusOnly ? [d.values[0]] : d.values : []);
+      const circles = $root.main.selectAll(`.${$CIRCLE.circles}`).selectAll(`.${$CIRCLE.circle}`).data((d) => {
+        const data = $$.isLineType(d) && $$.shouldDrawPointsForLine(d) || $$.isBubbleType(d) || $$.isRadarType(d) || $$.isScatterType(d) ? focusOnly ? [d.values[0]] : d.values : [];
+        return $$.filterNullish(data);
+      });
       circles.exit().remove();
       circles.enter().filter(Boolean).append(
         $$.point("create", this, $$.pointR.bind($$), $$.updateCircleColor.bind($$))
@@ -19446,7 +21033,7 @@ const getTransitionName = () => getRandom();
         if (this.tagName === "circle") {
           point.attr("r", r);
         } else {
-          const { width, height } = this.getBBox();
+          const { width, height } = getBBox(this);
           const x = ratio * (+point.attr("x") + width / 2);
           const y = ratio * (+point.attr("y") + height / 2);
           point.attr("transform", `translate(${x} ${y}) scale(${scale})`);
@@ -19500,11 +21087,11 @@ const getTransitionName = () => getRandom();
     return $$.config.point_focus_only && !$$.hasType("bubble") && !$$.hasType("scatter") && !$$.hasArcType(null, ["radar"]);
   },
   isWithinCircle(node, r) {
-    const { config, state } = this;
+    const { state } = this;
     const mouse = getPointer(state.event, node);
     const element = (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(node);
     const prefix = this.isCirclePoint(node) ? "c" : "";
-    const sensitivity = config.point_sensitivity === "radius" ? node.getAttribute("r") : config.point_sensitivity;
+    const pointSensitivity = this.getPointSensitivity(element == null ? void 0 : element.datum());
     let cx = +element.attr(`${prefix}x`);
     let cy = +element.attr(`${prefix}y`);
     if (!(cx || cy) && node.nodeType === 1) {
@@ -19514,7 +21101,7 @@ const getTransitionName = () => getRandom();
     }
     return Math.sqrt(
       Math.pow(cx - mouse[0], 2) + Math.pow(cy - mouse[1], 2)
-    ) < (r || sensitivity);
+    ) < (r || pointSensitivity);
   },
   /**
    * Get data point sensitivity radius
@@ -19524,7 +21111,9 @@ const getTransitionName = () => getRandom();
   getPointSensitivity(d) {
     const $$ = this;
     let sensitivity = $$.config.point_sensitivity;
-    if (isFunction(sensitivity)) {
+    if (!d) {
+      return sensitivity;
+    } else if (isFunction(sensitivity)) {
       sensitivity = sensitivity.call($$.api, d);
     } else if (sensitivity === "radius") {
       sensitivity = d.r;
@@ -19577,7 +21166,7 @@ const getTransitionName = () => getRandom();
     },
     update(element, xPosFn, yPosFn, fillStyleFn, withTransition, flow, selectedCircles) {
       const $$ = this;
-      const { width, height } = element.node().getBBox();
+      const { width, height } = getBBox(element.node());
       const xPosFn2 = (d) => isValue(d.value) ? xPosFn(d) - width / 2 : 0;
       const yPosFn2 = (d) => isValue(d.value) ? yPosFn(d) - height / 2 : 0;
       let mainCircles = element;
@@ -19632,14 +21221,14 @@ const getTransitionName = () => getRandom();
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/shape/point.common.ts
+;// ./src/ChartInternal/shape/point.common.ts
 
 
 
-function hasValidPointDrawMethods(point) {
+function _hasValidPointDrawMethods(point) {
   return isObjectType(point) && isFunction(point.create) && isFunction(point.update);
 }
-function insertPointInfoDefs(point, id) {
+function _insertPointInfoDefs(point, id) {
   var _a;
   const $$ = this;
   const copyAttr = (from, target) => {
@@ -19649,7 +21238,7 @@ function insertPointInfoDefs(point, id) {
       target.setAttribute(name, from.getAttribute(name));
     }
   };
-  const doc = new DOMParser().parseFromString(point, "image/svg+xml");
+  const doc = new DOMParser().parseFromString(sanitize(point), "image/svg+xml");
   const node = doc.documentElement;
   const clone = browser_doc.createElementNS(external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.namespaces.svg, node.nodeName.toLowerCase());
   clone.id = id;
@@ -19659,7 +21248,7 @@ function insertPointInfoDefs(point, id) {
   if ((_a = node.childNodes) == null ? void 0 : _a.length) {
     const parent = (0,external_commonjs_d3_selection_commonjs2_d3_selection_amd_d3_selection_root_d3_.select)(clone);
     if ("innerHTML" in clone) {
-      parent.html(node.innerHTML);
+      parent.html(sanitize(node.innerHTML));
     } else {
       toArray(node.childNodes).forEach((v) => {
         copyAttr(v, parent.append(v.tagName).node());
@@ -19693,15 +21282,25 @@ function insertPointInfoDefs(point, id) {
     return `${datetimeId}-point${id}`;
   },
   /**
+   * Get validated point pattern array
+   * @returns {Array} Array of point types
+   * @private
+   */
+  getValidPointPattern() {
+    const { config } = this;
+    const validPointType = /^(circle|rect(angle)?)$/i.test(config.point_type) ? config.point_type : "circle";
+    return notEmpty(config.point_pattern) ? config.point_pattern : [validPointType];
+  },
+  /**
    * Get generate point function
-   * @returns {Function}
+   * @returns {function}
    * @private
    */
   generatePoint() {
     const $$ = this;
     const { $el, config } = $$;
     const ids = [];
-    const pattern = notEmpty(config.point_pattern) ? config.point_pattern : [config.point_type];
+    const pattern = $$.getValidPointPattern();
     return function(method, context, ...args) {
       return function(d) {
         var _a, _b, _c, _d;
@@ -19711,11 +21310,11 @@ function insertPointInfoDefs(point, id) {
         let point = pattern[ids.indexOf(id) % pattern.length];
         if ($$.hasValidPointType(point)) {
           point = $$[point];
-        } else if (!hasValidPointDrawMethods(point || config.point_type)) {
+        } else if (!_hasValidPointDrawMethods(point || config.point_type)) {
           const pointId = $$.getDefsPointId(id);
           const defsPoint = $el.defs.select(`#${pointId}`);
           if (defsPoint.size() < 1) {
-            insertPointInfoDefs.bind($$)(point, pointId);
+            _insertPointInfoDefs.call($$, point, pointId);
           }
           if (method === "create") {
             return (_b = $$.custom) == null ? void 0 : _b.create.bind(context)(element, pointId, ...args);
@@ -19729,7 +21328,7 @@ function insertPointInfoDefs(point, id) {
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/shape/polar.ts
+;// ./src/ChartInternal/shape/polar.ts
 
 
 function getDataMax($$) {
@@ -19812,12 +21411,12 @@ function getDataMax($$) {
   }
 });
 
-;// CONCATENATED MODULE: ./src/ChartInternal/shape/radar.ts
+;// ./src/ChartInternal/shape/radar.ts
 
 
 
 
-function getPosition(isClockwise, type, edge, pos, range, ratio) {
+function _getPosition(isClockwise, type, edge, pos, range, ratio) {
   const index = isClockwise && pos > 0 ? edge - pos : pos;
   const r = 2 * Math.PI;
   const func = type === "x" ? Math.sin : Math.cos;
@@ -19866,7 +21465,7 @@ const cacheKeyTextWidth = KEY.radarTextWidth;
     const edge = config.axis_x_categories.length;
     const isClockwise = config.radar_direction_clockwise;
     const pos = toArray(type).map(
-      (v) => getPosition(
+      (v) => _getPosition(
         isClockwise,
         v,
         edge,
@@ -19985,7 +21584,7 @@ const cacheKeyTextWidth = KEY.radarTextWidth;
         });
       }).datum((d, i) => ({ index: i })).attr("transform", function(d) {
         if (isUndefined(this.width)) {
-          this.width = this.getBoundingClientRect().width / 2;
+          this.width = getBoundingRect(this, true).width / 2;
         }
         let posX = $$.getRadarPosition("x", d.index, void 0, 1);
         let posY = Math.round($$.getRadarPosition("y", d.index, void 0, 1));
@@ -20014,12 +21613,15 @@ const cacheKeyTextWidth = KEY.radarTextWidth;
   },
   bindRadarEvent() {
     const $$ = this;
-    const { state, $el: { radar, svg } } = $$;
+    const { config, state, $el: { radar, svg } } = $$;
     const focusOnly = $$.isPointFocusOnly();
     const { inputType, transiting } = state;
     const isMouse = inputType === "mouse";
     const hide = (event) => {
       state.event = event;
+      if (!config.interaction_onout) {
+        return;
+      }
       const index = $$.getDataIndexFromEvent(event);
       const noIndex = isUndefined(index);
       if (isMouse || noIndex) {
@@ -20040,16 +21642,16 @@ const cacheKeyTextWidth = KEY.radarTextWidth;
       const index = $$.getDataIndexFromEvent(event);
       $$.selectRectForSingle(svg.node(), index);
       isMouse ? $$.setOverOut(true, index) : $$.callOverOutForTouch(index);
-    }).on("mouseout", isMouse ? hide : null);
+    }, isMouse ? void 0 : { passive: true }).on("mouseout", isMouse ? hide : null);
     if (!isMouse) {
-      svg.on("touchstart", hide);
+      svg.on("touchstart", hide, { passive: true });
     }
   },
   updateRadarShape() {
     const $$ = this;
     const targets = $$.data.targets.filter((d) => $$.isRadarType(d));
     const points = $$.cache.get(cacheKeyPoints);
-    const areas = $$.$el.radar.shapes.selectAll("polygon").data(targets);
+    const areas = $$.$el.radar.shapes.selectAll("polygon").data($$.filterNullish(targets));
     const areasEnter = areas.enter().append("g").attr("class", $$.getChartClass("Radar"));
     $$.$T(areas.exit()).remove();
     areasEnter.append("polygon").merge(areas).style("fill", $$.color).style("stroke", $$.color).attr("points", (d) => points[d.id].join(" "));
@@ -20077,7 +21679,8 @@ const cacheKeyTextWidth = KEY.radarTextWidth;
 
 // EXTERNAL MODULE: external {"commonjs":"d3-hierarchy","commonjs2":"d3-hierarchy","amd":"d3-hierarchy","root":"d3"}
 var external_commonjs_d3_hierarchy_commonjs2_d3_hierarchy_amd_d3_hierarchy_root_d3_ = __webpack_require__(14);
-;// CONCATENATED MODULE: ./src/ChartInternal/shape/treemap.ts
+;// ./src/ChartInternal/shape/treemap.ts
+
 
 
 
@@ -20153,16 +21756,18 @@ function getHierachyData(data) {
           $$.showTooltip([data], event.currentTarget);
           /^(touchstart|mouseover)$/.test(event.type) && $$.setOverOut(true, data);
         }
-      }).on(isTouch ? "touchend" : "mouseout", (event) => {
+      }, isTouch ? { passive: true } : void 0).on(isTouch ? "touchend" : "mouseout", (event) => {
         const data = getTarget(event);
-        $$.hideTooltip();
-        $$.setOverOut(false, data);
+        if (config.interaction_onout) {
+          $$.hideTooltip();
+          $$.setOverOut(false, data);
+        }
       });
     }
   },
   /**
    * Get tiling function
-   * @returns {Function}
+   * @returns {function}
    * @private
    */
   getTreemapTile() {
@@ -20211,7 +21816,7 @@ function getHierachyData(data) {
     const $$ = this;
     const { $el: { treemap } } = $$;
     const treemapData = getHierachyData.call($$, $$.getTreemapData(targets != null ? targets : $$.data.targets));
-    treemap.data(treemapData);
+    treemap.data($$.filterNullish(treemapData));
   },
   /**
    * Render treemap
@@ -20263,29 +21868,34 @@ function getHierachyData(data) {
   /**
    * Get treemap data label format function
    * @param {object} d Data object
-   * @returns {Function}
+   * @returns {function} Label formatter function
    * @private
    */
   treemapDataLabelFormat(d) {
     const $$ = this;
-    const { config } = $$;
+    const { $el: { treemap }, config, scale: { x, y } } = $$;
     const { id, value } = d;
     const format = config.treemap_label_format;
     const ratio = $$.getRatio("treemap", d);
     const percentValue = (ratio * 100).toFixed(2);
-    const meetLabelThreshold = config.treemap_label_show && $$.meetsLabelThreshold(
-      ratio,
-      "treemap"
-    ) ? null : "0";
+    const meetLabelThreshold = config.treemap_label_show && meetsLabelThreshold.call($$, ratio, "treemap") ? null : "0";
+    const treemapNode = treemap.selectAll("g").filter((node) => node.data.id === id).datum();
+    let width = 0;
+    let height = 0;
+    if (treemapNode) {
+      const { x0, x1, y0, y1 } = treemapNode;
+      width = x(x1) - x(x0);
+      height = y(y1) - y(y0);
+    }
     return function(node) {
       node.style("opacity", meetLabelThreshold);
-      return isFunction(format) ? format.bind($$.api)(value, ratio, id) : `${id}
+      return isFunction(format) ? format.bind($$.api)(value, ratio, id, { width, height }) : `${id}
 ${percentValue}%`;
     };
   }
 });
 
-;// CONCATENATED MODULE: ./src/config/Options/common/point.ts
+;// ./src/config/Options/common/point.ts
 /* harmony default export */ var common_point = ({
   /**
    * Set point options
@@ -20294,7 +21904,7 @@ ${percentValue}%`;
    * @type {object}
    * @property {object} point Point object
    * @property {boolean} [point.show=true] Whether to show each point in line.
-   * @property {number|Function} [point.r=2.5] The radius size of each point.
+   * @property {number|function} [point.r=2.5] The radius size of each point.
    *  - **NOTE:** Disabled for 'bubble' type
    * @property {boolean|object} [point.radialGradient=false] Set the radial gradient on point.<br><br>
    * Or customize by giving below object value:
@@ -20311,7 +21921,7 @@ ${percentValue}%`;
    * - **NOTE:**
    * 	- `null` will make to not set inline 'opacity' css prop.
    * 	- when no value(or undefined) is set, it defaults to set opacity value according its chart types.
-   * @property {number|string|Function} [point.sensitivity=10] The senstivity value for interaction boundary.
+   * @property {number|string|function} [point.sensitivity=10] The sensitivity value for interaction boundary.
    * - **Available Values:**
    *   - {number}: Absolute sensitivity value which is the distance from the data point in pixel.
    *   - "radius": sensitivity based on point's radius
@@ -20338,6 +21948,7 @@ ${percentValue}%`;
    *   - This is an `experimental` feature and can have some unexpected behaviors.
    *   - If chart has 'bubble' type, only circle can be used.
    *   - For IE, non circle point expansions are not supported due to lack of transform support.
+   *   - Only common SVG tags are allowed to prevent XSS attacks. If creating charts from user input, it is recommended to sanitize input values to avoid potential vulnerabilities.
    * - **Available Values:**
    *   - circle
    *   - rectangle
@@ -20358,7 +21969,7 @@ ${percentValue}%`;
    *          return r;
    *      },
    *
-   *      // will generate follwing radialGradient:
+   *      // will generate following radialGradient:
    *      // for more info: https://developer.mozilla.org/en-US/docs/Web/SVG/Element/radialGradient
    *      // <radualGradient cx="0.3" cy="0.3" r="0.7">
    *      //    <stop offset="0.1" stop-color="$DATA_COLOR" stop-opacity="1"></stop>
@@ -20441,7 +22052,7 @@ ${percentValue}%`;
   point_type: "circle"
 });
 
-;// CONCATENATED MODULE: ./src/config/Options/shape/area.ts
+;// ./src/config/Options/shape/area.ts
 /* harmony default export */ var Options_shape_area = ({
   /**
    * Set area options
@@ -20474,7 +22085,7 @@ ${percentValue}%`;
    *      // <g class='bb-areas'> will be positioned behind the line <g class='bb-lines'> in stacking order
    *      front: false,
    *
-   *      // will generate follwing linearGradient:
+   *      // will generate following linearGradient:
    *      // for more info: https://developer.mozilla.org/en-US/docs/Web/SVG/Element/linearGradient
    *      // <linearGradient x1="0" x2="0" y1="0" y2="1">
    *      //    <stop offset="0" stop-color="$DATA_COLOR" stop-opacity="1"></stop>
@@ -20507,7 +22118,7 @@ ${percentValue}%`;
   area_zerobased: true
 });
 
-;// CONCATENATED MODULE: ./src/config/Options/shape/bar.ts
+;// ./src/config/Options/shape/bar.ts
 /* harmony default export */ var shape_bar = ({
   /**
    * Set bar options
@@ -20528,8 +22139,8 @@ ${percentValue}%`;
    * @property {number} [bar.padding=0] The padding pixel value between each bar.
    * @property {number} [bar.radius] Set the radius of bar edge in pixel.
    * @property {number} [bar.radius.ratio] Set the radius ratio of bar edge in relative the bar's width.
-   * @property {number} [bar.sensitivity=2] The senstivity offset value for interaction boundary.
-   * @property {number|Function|object} [bar.width] Change the width of bar chart.
+   * @property {number} [bar.sensitivity=2] The sensitivity offset value for interaction boundary.
+   * @property {number|function|object} [bar.width] Change the width of bar chart.
    * @property {number} [bar.width.ratio=0.6] Change the width of bar chart by ratio.
    * - **NOTE:** Criteria for ratio.
    *   - When x ticks count is same with the data count, the baseline for ratio is the minimum interval value of x ticks.
@@ -20556,12 +22167,12 @@ ${percentValue}%`;
    *      // make bar shape to be positioned over the other shape elements
    *      front: true,
    *
-   *      // remove nullish data on bar indices postions
+   *      // remove nullish data on bar indices positions
    *      indices: {
    *          removeNull: true
    *      },
    *
-   *      // will generate follwing linearGradient:
+   *      // will generate following linearGradient:
    *      // for more info: https://developer.mozilla.org/en-US/docs/Web/SVG/Element/linearGradient
    *      // <linearGradient x1="0" x2="0" y1="0" y2="1">
    *      //    <stop offset="0" stop-color="$DATA_COLOR" stop-opacity="1"></stop>
@@ -20635,6 +22246,7 @@ ${percentValue}%`;
    *      zerobased: false
    *  }
    */
+  bar_connectLine: false,
   bar_front: false,
   bar_indices_removeNull: false,
   bar_label_threshold: 0,
@@ -20650,7 +22262,7 @@ ${percentValue}%`;
   bar_zerobased: true
 });
 
-;// CONCATENATED MODULE: ./src/config/Options/shape/bubble.ts
+;// ./src/config/Options/shape/bubble.ts
 /* harmony default export */ var shape_bubble = ({
   /**
    * Set bubble options
@@ -20658,12 +22270,12 @@ ${percentValue}%`;
    * @memberof Options
    * @type {object}
    * @property {object} bubble bubble object
-   * @property {number|Function} [bubble.maxR=35] Set the max bubble radius value
+   * @property {number|function} [bubble.maxR=35] Set the max bubble radius value
    * @property {boolean} [bubble.zerobased=false] Set if min or max value will be 0 on bubble chart.
    * @example
    *  bubble: {
    *      // ex) If 100 is the highest value among data bound, the representation bubble of 100 will have radius of 50.
-   *      // And the lesser will have radius relatively from tha max value.
+   *      // And the lesser will have radius relatively from the max value.
    *      maxR: 50,
    *
    *      // or set radius callback
@@ -20679,7 +22291,7 @@ ${percentValue}%`;
   bubble_zerobased: false
 });
 
-;// CONCATENATED MODULE: ./src/config/Options/shape/candlestick.ts
+;// ./src/config/Options/shape/candlestick.ts
 /* harmony default export */ var shape_candlestick = ({
   /**
    * Set candlestick options
@@ -20717,7 +22329,7 @@ ${percentValue}%`;
    *         	}
    *      },
    *      color: {
-   *  	  	// spcify bearish color
+   *  	  	// specify bearish color
    *  	  	down: "red",
    *
    *  	  	// or specify color per dataset
@@ -20734,7 +22346,7 @@ ${percentValue}%`;
   candlestick_color_down: "red"
 });
 
-;// CONCATENATED MODULE: ./src/config/Options/shape/line.ts
+;// ./src/config/Options/shape/line.ts
 /* harmony default export */ var shape_line = ({
   /**
    * Set line options
@@ -20770,7 +22382,7 @@ ${percentValue}%`;
    *      // hide all data points ('point.show=false' also has similar effect)
    *      point: false,
    *
-   *      // show data points for only indicated datas
+   *      // show data points for only indicated data
    *      point: [
    *          "data1", "data3"
    *      ],
@@ -20786,7 +22398,7 @@ ${percentValue}%`;
   line_point: true
 });
 
-;// CONCATENATED MODULE: ./src/config/Options/shape/scatter.ts
+;// ./src/config/Options/shape/scatter.ts
 /* harmony default export */ var scatter = ({
   /**
    * Set scatter options
@@ -20805,7 +22417,7 @@ ${percentValue}%`;
    *      // hide all data points ('point.show=false' also has similar effect)
    *      point: false,
    *
-   *      // show data points for only indicated datas
+   *      // show data points for only indicated data
    *      point: [
    *          "data1", "data3"
    *      ],
@@ -20816,7 +22428,7 @@ ${percentValue}%`;
   scatter_zerobased: false
 });
 
-;// CONCATENATED MODULE: ./src/config/Options/shape/spline.ts
+;// ./src/config/Options/shape/spline.ts
 /* harmony default export */ var spline = ({
   /**
    * Set spline options
@@ -20856,7 +22468,7 @@ ${percentValue}%`;
   spline_interpolation_type: "cardinal"
 });
 
-;// CONCATENATED MODULE: ./src/config/Options/shape/arc.ts
+;// ./src/config/Options/shape/arc.ts
 /* harmony default export */ var shape_arc = ({
   /**
    * Set arc options
@@ -20864,14 +22476,14 @@ ${percentValue}%`;
    * @memberof Options
    * @type {object}
    * @property {object} arc Arc object
-   * @property {number|Function} [arc.cornerRadius=0] Set corner radius of Arc(donut/gauge/pie/polar) shape.
+   * @property {number|function} [arc.cornerRadius=0] Set corner radius of Arc(donut/gauge/pie/polar) shape.
    *  - **NOTE:**
    * 	  - Corner radius can't surpass the `(outerRadius - innerRadius) /2` of indicated shape.
    * @property {number} [arc.cornerRadius.ratio=0] Set ratio relative of outer radius.
    * @property {object} [arc.needle] Set needle options.
    * @property {boolean} [arc.needle.show=false] Show or hide needle.
    * @property {string} [arc.needle.color] Set needle filled color.
-   * @property {Function} [arc.needle.path] Set custom needle path function.
+   * @property {function} [arc.needle.path] Set custom needle path function.
    *  - **NOTE:**
    *   - The path should be starting from 0,0 (which is center) to top center coordinate.
    *   - The function will receive, `length`{number} parameter which indicating the needle length in pixel relative to radius.
@@ -20895,8 +22507,8 @@ ${percentValue}%`;
    * @property {string} [arc.rangeText.unit="absolute"] Specify the range text unit.
    * - "absolute": Show absolute value
    * - "%": Show percentage value
-   * @property {boolean} [arc.rangeText.fiexed=false] Set if range text shown will be fixed w/o data toggle update. Only available for gauge chart.
-   * @property {Function} [arc.rangeText.format] Set format function for the range text.
+   * @property {boolean} [arc.rangeText.fixed=false] Set if range text shown will be fixed w/o data toggle update. Only available for gauge chart.
+   * @property {function} [arc.rangeText.format] Set format function for the range text.
    * @property {number} [arc.rangeText.position] Set position function or object for the range text.
    * @see [Demo: Donut corner radius](https://naver.github.io/billboard.js/demo/#DonutChartOptions.DonutCornerRadius)
    * @see [Demo: Donut corner radius](https://naver.github.io/billboard.js/demo/#PieChartOptions.CornerRadius)
@@ -21000,7 +22612,7 @@ ${percentValue}%`;
   arc_rangeText_position: void 0
 });
 
-;// CONCATENATED MODULE: ./src/config/Options/shape/donut.ts
+;// ./src/config/Options/shape/donut.ts
 /* harmony default export */ var donut = ({
   /**
    * Set donut options
@@ -21009,9 +22621,32 @@ ${percentValue}%`;
    * @type {object}
    * @property {object} donut Donut object
    * @property {boolean} [donut.label.show=true] Show or hide label on each donut piece.
-   * @property {Function} [donut.label.format] Set formatter for the label on each donut piece.
+   * @property {function} [donut.label.format] Set formatter for the label on each donut piece.
    * @property {number} [donut.label.threshold=0.05] Set threshold ratio to show/hide labels.
-   * @property {number|Function} [donut.label.ratio=undefined] Set ratio of labels position.
+   * @property {number|function} [donut.label.ratio=undefined] Set ratio of labels position.
+   * @property {boolean|object} [donut.label.line=false] Enable label with lines (displayed outside with connector lines).
+   *  - `true`: Enable label with lines with default settings
+   *  - `false`: Labels are displayed inside the donut slices (default behavior).
+   *  - `{show: boolean, distance: number, text: boolean}`: Enable label with lines with custom settings. When object member is not provided, it will be set to default values.
+   * @property {boolean} [donut.label.line.show=true] Show or hide connector lines.
+   * @property {number} [donut.label.line.distance=20] Set the distance of the horizontal part of the connector line in pixels.
+   * @property {boolean|function} [donut.label.line.text=true] Show text at the end of the connector line (outside the shape).
+   *  - `true`: show data "id" text
+   *  - `false`: use default formatter(label.format) to show text
+   *  - `function(value, ratio, id)`: Custom formatter function for the text.
+   *  - **NOTE:** When the viewport size decreases, the size is adjusted based on the shape, so text may appear clipped. In this case, consider setting `overflow: visible` on the SVG node.
+   * @property {object|function} [donut.label.image] Set image to be displayed next to the label text.<br><br>
+   * When function is specified, will receives 3 arguments such as `v, id, i` and it must return an image object with `url`, `width`, `height`, and optional `pos` properties.<br><br>
+   * The arguments are:<br>
+   *  - `v` is the value of the data point where the label is shown.
+   *  - `id` is the id of the data where the label is shown.
+   *  - `i` is the index of the data series point where the label is shown.
+   * @property {string} donut.label.image.url Image URL path. Can use placeholder `{=ID}` which will be replaced with the data ID.
+   * @property {number} donut.label.image.width Image width in pixels.
+   * @property {number} donut.label.image.height Image height in pixels.
+   * @property {object} [donut.label.image.pos] Image position relative to the label text.
+   * @property {number} [donut.label.image.pos.x=0] x coordinate position, relative the original.
+   * @property {number} [donut.label.image.pos.y=0] y coordinate position, relative the original.
    * @property {boolean} [donut.expand=true] Enable or disable expanding donut pieces.
    * @property {number} [donut.expand.rate=0.98] Set expand rate.
    * @property {number} [donut.expand.duration=50] Set expand transition time in ms.
@@ -21021,6 +22656,17 @@ ${percentValue}%`;
    *    - When `arc.needle.show=true` is set, special template `{=NEEDLE_VALUE}` can be used inside the title text to show current needle value.
    * @property {number} [donut.padAngle=0] Set padding between data.
    * @property {number} [donut.startingAngle=0] Set starting angle where data draws.
+   * @see [Demo: Corner Radius](https://naver.github.io/billboard.js/demo/#DonutChartOptions.DonutCornerRadius)
+   * @see [Demo: Needle](https://naver.github.io/billboard.js/demo/#DonutChartOptions.DonutNeedle)
+   * @see [Demo: Range Text](https://naver.github.io/billboard.js/demo/#DonutChartOptions.DonutRangeText)
+   * @see [Demo: Label Image](https://naver.github.io/billboard.js/demo/#DonutChartOptions.LabelImage)
+   * @see [Demo: Label Line](https://naver.github.io/billboard.js/demo/#DonutChartOptions.LabelLine)
+   * @see [Demo: Label Ratio](https://naver.github.io/billboard.js/demo/#DonutChartOptions.LabelRatio)
+   * @see [Demo: Multiline Label](https://naver.github.io/billboard.js/demo/#DonutChartOptions.MultilineLabel)
+   * @see [Demo: Multiline Title](https://naver.github.io/billboard.js/demo/#DonutChartOptions.MultilineTitle)
+   * @see [Demo: Pad Angle](https://naver.github.io/billboard.js/demo/#DonutChartOptions.padAngle)
+   * @see [Demo: Starting Angle](https://naver.github.io/billboard.js/demo/#DonutChartOptions.StartingAngle)
+   *
    * @example
    *  donut: {
    *      label: {
@@ -21042,7 +22688,65 @@ ${percentValue}%`;
    *          	return ratio;
    *          },
    *          // or set ratio number
-   *          ratio: 0.5
+   *          ratio: 0.5,
+   *
+   *          // Enable label with lines (displayed outside with connector lines)
+   *          line: false,  // default - labels inside
+   *          line: true,   // enable label with lines with default settings
+   *          line: {       // enable label with lines with custom settings
+   *             show: true,
+   *             distance: 20,  // horizontal line distance in pixels
+   *
+   *             // show text at the end of connector line (outside the shape)
+   *             text: true,  // use default formatter
+   *             text: function(value, ratio, id) {  // custom formatter
+   *                 return d3.format(".1%")(ratio);
+   *             }
+   *          },
+   *
+   *          // set image to be displayed next to the label text
+   *          image: {
+   *             url: "./sample.svg",
+   *
+   *             // use placeholder to dynamically set image URL based on data ID
+   *             url: "./images/{=ID}.svg",  // will be replaced to "./images/data1.svg", "./images/data2.svg", etc.
+   *             width: 35,
+   *             height: 35,
+   *             pos: {
+   *                x: 0,
+   *                y: 0
+   *             }
+   *          },
+   *
+   *          // or use function to return image configuration dynamically
+   *          image: function(v, id, i) {
+   *             // Return different images based on value
+   *             if (v > 500) {
+   *                return {
+   *                   url: "./high-value.svg",
+   *                   width: 40,
+   *                   height: 40,
+   *                   pos: { x: 0, y: 0 }
+   *                };
+   *             } else if (v > 100) {
+   *                return {
+   *                   url: "./medium-value.svg",
+   *                   width: 30,
+   *                   height: 30,
+   *                   pos: { x: 0, y: 0 }
+   *                };
+   *             } else if(v < 5) {
+   *                // Return falsy value in case of don't want to show image
+   *                return null;
+   *             } else {
+   *                return {
+   *                   url: "./low-value.svg",
+   *                   width: 20,
+   *                   height: 20,
+   *                   pos: { x: 0, y: 0 }
+   *                };
+   *             }
+   *          }
    *      },
    *
    *      // disable expand transition for interaction
@@ -21071,6 +22775,8 @@ ${percentValue}%`;
   donut_label_show: true,
   donut_label_format: void 0,
   donut_label_threshold: 0.05,
+  donut_label_line: false,
+  donut_label_image: void 0,
   donut_label_ratio: void 0,
   donut_width: void 0,
   donut_title: "",
@@ -21081,7 +22787,7 @@ ${percentValue}%`;
   donut_startingAngle: 0
 });
 
-;// CONCATENATED MODULE: ./src/config/Options/shape/funnel.ts
+;// ./src/config/Options/shape/funnel.ts
 /* harmony default export */ var shape_funnel = ({
   /**
    * Set funnel options
@@ -21114,7 +22820,7 @@ ${percentValue}%`;
   funnel_neck_height: 0
 });
 
-;// CONCATENATED MODULE: ./src/config/Options/shape/gauge.ts
+;// ./src/config/Options/shape/gauge.ts
 /* harmony default export */ var shape_gauge = ({
   /**
    * Set gauge options
@@ -21125,20 +22831,45 @@ ${percentValue}%`;
    * @property {boolean} [gauge.background=""] Set background color. (The `.bb-chart-arcs-background` element)
    * @property {boolean} [gauge.fullCircle=false] Show full circle as donut. When set to 'true', the max label will not be showed due to start and end points are same location.
    * @property {boolean} [gauge.label.show=true] Show or hide label on gauge.
-   * @property {Function} [gauge.label.extents] Set customized min/max label text.
-   * @property {Function} [gauge.label.format] Set formatter for the label on gauge. Label text can be multilined with `\n` character.<br>
+   * @property {function} [gauge.label.extents] Set customized min/max label text.
+   * @property {function} [gauge.label.format] Set formatter for the label on gauge. Label text can be multilined with `\n` character.<br>
    * Will pass following arguments to the given function:
    * - value {number}: absolute value
    * - ratio {number}: value's ratio
    * - id {string}: data's id value
-   * @property {number|Function} [gauge.label.ratio=undefined] Set ratio of labels position.
+   * @property {number|function} [gauge.label.ratio=undefined] Set ratio of labels position.
    * @property {number} [gauge.label.threshold=0] Set threshold ratio to show/hide labels.
+   * @property {boolean|object} [gauge.label.line=false] Enable label with lines (displayed outside with connector lines).
+   *  - **NOTE:** Only applicable for single gauge (not for `gauge.type="multi"`).
+   *  - `true`: Enable label with lines with default settings
+   *  - `false`: Labels are displayed inside the gauge (default behavior).
+   *  - `{show: boolean, distance: number, text: boolean}`: Enable label with lines with custom settings. When object member is not provided, it will be set to default values.
+   * @property {boolean} [gauge.label.line.show=true] Show or hide connector lines.
+   * @property {number} [gauge.label.line.distance=20] Set the distance of the horizontal part of the connector line in pixels.
+   * @property {boolean|function} [gauge.label.line.text=true] Show text at the end of the connector line (outside the shape).
+   *  - `true`: show data "id" text
+   *  - `false`: use default formatter(label.format) to show text
+   *  - `function(value, ratio, id)`: Custom formatter function for the text.
+   *  - **NOTE:** When the viewport size decreases, the size is adjusted based on the shape, so text may appear clipped. In this case, consider setting `overflow: visible` on the SVG node.
+   * @property {object|function} [gauge.label.image] Set image to be displayed next to the label text.<br><br>
+   * When function is specified, will receives 3 arguments such as `v, id, i` and it must return an image object with `url`, `width`, `height`, and optional `pos` properties.<br><br>
+   * The arguments are:<br>
+   *  - `v` is the value of the data point where the label is shown.
+   *  - `id` is the id of the data where the label is shown.
+   *  - `i` is the index of the data series point where the label is shown.
+   * @property {string} gauge.label.image.url Image URL path. Can use placeholder `{=ID}` which will be replaced with the data ID.
+   * @property {number} gauge.label.image.width Image width in pixels.
+   * @property {number} gauge.label.image.height Image height in pixels.
+   * @property {object} [gauge.label.image.pos] Image position relative to the label text.
+   * @property {number} [gauge.label.image.pos.x=0] x coordinate position, relative the original.
+   * @property {number} [gauge.label.image.pos.y=0] y coordinate position, relative the original.
    * @property {boolean} [gauge.expand=true] Enable or disable expanding gauge.
    * @property {number} [gauge.expand.rate=0.98] Set expand rate.
    * @property {number} [gauge.expand.duration=50] Set the expand transition time in milliseconds.
    * @property {boolean} [gauge.enforceMinMax=false] Enforce to given min/max value.
-   * - When `gauge.min=50` and given value is `30`, gauge will render as empty value.
-   * - When `gauge.max=100` and given value is `120`, gauge will render till 100, not surpassing max value.
+   * - **Note:** Only works for single data series.
+   * 	- When `gauge.min=50` and given value is `30`, gauge will render as empty value.
+   * 	- When `gauge.max=100` and given value is `120`, gauge will render till 100, not surpassing max value.
    * @property {number} [gauge.min=0] Set min value of the gauge.
    * @property {number} [gauge.max=100] Set max value of the gauge.
    * @property {number} [gauge.startingAngle=-1 * Math.PI / 2] Set starting angle where data draws.
@@ -21172,7 +22903,9 @@ ${percentValue}%`;
    * @see [Demo: enforceMinMax, min/max](https://naver.github.io/billboard.js/demo/#GaugeChartOptions.GaugeMinMax)
    * @see [Demo: archLength](https://naver.github.io/billboard.js/demo/#GaugeChartOptions.GaugeArcLength)
    * @see [Demo: startingAngle](https://naver.github.io/billboard.js/demo/#GaugeChartOptions.GaugeStartingAngle)
-   * @see [Demo: labelRatio](https://naver.github.io/billboard.js/demo/#GaugeChartOptions.GaugeLabelRatio)
+   * @see [Demo: label image](https://naver.github.io/billboard.js/demo/#GaugeChartOptions.GaugeLabelImage)
+   * @see [Demo: label line](https://naver.github.io/billboard.js/demo/#GaugeChartOptions.GaugeLabelLine)
+   * @see [Demo: label ratio](https://naver.github.io/billboard.js/demo/#GaugeChartOptions.GaugeLabelRatio)
    * @example
    *  gauge: {
    *      background: "#eee", // will set 'fill' css prop for '.bb-chart-arcs-background' classed element.
@@ -21194,13 +22927,71 @@ ${percentValue}%`;
    *          // if data value is below than 0.1, text label will be hidden.
    *          threshold: 0.1,
    *
+   *          // Enable label with lines (displayed outside with connector lines)
+   *          // NOTE: Only works with single gauge (not gauge.type="multi")
+   *          line: true,   // enable label with lines with default settings
+   *          line: {       // enable label with lines with custom settings
+   *              show: true,      // enable lines (default: true when line is enabled)
+   *              distance: 30,    // distance of horizontal line in pixels (default: 20)
+   *
+   *              // show text at the end of connector line (outside the shape)
+   *              text: true,  // use default formatter
+   *              text: function(value, ratio, id) {  // custom formatter
+   *                  return d3.format(".1%")(ratio);
+   *              }
+   *          },
+   *
    *          // set ratio callback. Should return ratio value
    *          ratio: function(d, radius, h) {
    *              ...
    *              return ratio;
    *          },
    *          // or set ratio number
-   *          ratio: 0.5
+   *          ratio: 0.5,
+   *
+   *          // set image to be displayed next to the label text
+   *          image: {
+   *             url: "./sample.svg",
+   *
+   *             // use placeholder to dynamically set image URL based on data ID
+   *             url: "./images/{=ID}.svg",  // will be replaced to "./images/data1.svg", "./images/data2.svg", etc.
+   *             width: 35,
+   *             height: 35,
+   *             pos: {
+   *                x: 0,
+   *                y: 0
+   *             }
+   *          },
+   *
+   *          // or use function to return image configuration dynamically
+   *          image: function(v, id, i) {
+   *             // Return different images based on value
+   *             if (v > 500) {
+   *                return {
+   *                   url: "./high-value.svg",
+   *                   width: 40,
+   *                   height: 40,
+   *                   pos: { x: 0, y: 0 }
+   *                };
+   *             } else if (v > 100) {
+   *                return {
+   *                   url: "./medium-value.svg",
+   *                   width: 30,
+   *                   height: 30,
+   *                   pos: { x: 0, y: 0 }
+   *                };
+   *             } else if(v < 5) {
+   *                // Return falsy value in case of don't want to show image
+   *                return null;
+   *             } else {
+   *                return {
+   *                   url: "./low-value.svg",
+   *                   width: 20,
+   *                   height: 20,
+   *                   pos: { x: 0, y: 0 }
+   *                };
+   *             }
+   *          }
    *      },
    *
    *      // disable expand transition for interaction
@@ -21243,6 +23034,8 @@ ${percentValue}%`;
   gauge_label_format: void 0,
   gauge_label_ratio: void 0,
   gauge_label_threshold: 0,
+  gauge_label_line: false,
+  gauge_label_image: void 0,
   gauge_enforceMinMax: false,
   gauge_min: 0,
   gauge_max: 100,
@@ -21258,7 +23051,7 @@ ${percentValue}%`;
   gauge_expand_duration: 50
 });
 
-;// CONCATENATED MODULE: ./src/config/Options/shape/pie.ts
+;// ./src/config/Options/shape/pie.ts
 /* harmony default export */ var pie = ({
   /**
    * Set pie options
@@ -21267,9 +23060,32 @@ ${percentValue}%`;
    * @type {object}
    * @property {object} pie Pie object
    * @property {boolean} [pie.label.show=true] Show or hide label on each pie piece.
-   * @property {Function} [pie.label.format] Set formatter for the label on each pie piece.
-   * @property {number|Function} [pie.label.ratio=undefined] Set ratio of labels position.
+   * @property {function} [pie.label.format] Set formatter for the label on each pie piece.
+   * @property {number|function} [pie.label.ratio=undefined] Set ratio of labels position.
    * @property {number} [pie.label.threshold=0.05] Set threshold ratio to show/hide labels.
+   * @property {boolean|object} [pie.label.line=false] Enable label with lines (displayed outside with connector lines).
+   *  - `true`: Enable label with lines with default settings
+   *  - `false`: Labels are displayed inside the pie slices (default behavior).
+   *  - `{show: boolean, distance: number, text: boolean}`: Enable label with lines with custom settings. When object member is not provided, it will be set to default values.
+   * @property {boolean} [pie.label.line.show=true] Show or hide connector lines.
+   * @property {number} [pie.label.line.distance=20] Set the distance of the horizontal part of the connector line in pixels.
+   * @property {boolean|function} [pie.label.line.text=true] Show text at the end of the connector line (outside the shape).
+   *  - `true`: show data "id" text
+   *  - `false`: use default formatter(label.format) to show text
+   *  - `function(value, ratio, id)`: Custom formatter function for the text.
+   *  - **NOTE:** When the viewport size decreases, the size is adjusted based on the shape, so text may appear clipped. In this case, consider setting `overflow: visible` on the SVG node.
+   * @property {object|function} [pie.label.image] Set image to be displayed next to the label text.<br><br>
+   * When function is specified, will receives 3 arguments such as `v, id, i` and it must return an image object with `url`, `width`, `height`, and optional `pos` properties.<br><br>
+   * The arguments are:<br>
+   *  - `v` is the value of the data point where the label is shown.
+   *  - `id` is the id of the data where the label is shown.
+   *  - `i` is the index of the data series point where the label is shown.
+   * @property {string} pie.label.image.url Image URL path. Can use placeholder `{=ID}` which will be replaced with the data ID.
+   * @property {number} pie.label.image.width Image width in pixels.
+   * @property {number} pie.label.image.height Image height in pixels.
+   * @property {object} [pie.label.image.pos] Image position relative to the label text.
+   * @property {number} [pie.label.image.pos.x=0] x coordinate position, relative the original.
+   * @property {number} [pie.label.image.pos.y=0] y coordinate position, relative the original.
    * @property {boolean|object} [pie.expand=true] Enable or disable expanding pie pieces.
    * @property {number} [pie.expand.rate=0.98] Set expand rate.
    * @property {number} [pie.expand.duration=50] Set expand transition time in ms.
@@ -21282,6 +23098,8 @@ ${percentValue}%`;
    * @see [Demo: innerRadius](https://naver.github.io/billboard.js/demo/#PieChartOptions.InnerRadius)
    * @see [Demo: outerRadius](https://naver.github.io/billboard.js/demo/#PieChartOptions.OuterRadius)
    * @see [Demo: startingAngle](https://naver.github.io/billboard.js/demo/#PieChartOptions.StartingAngle)
+   * @see [Demo: label image](https://naver.github.io/billboard.js/demo/#PieChartOptions.LabelImage)
+   * @see [Demo: label line](https://naver.github.io/billboard.js/demo/#PieChartOptions.LabelLine)
    * @example
    *  pie: {
    *      label: {
@@ -21303,7 +23121,65 @@ ${percentValue}%`;
    *              return ratio;
    *          },
    *          // or set ratio number
-   *          ratio: 0.5
+   *          ratio: 0.5,
+   *
+   *          // Enable label with lines (displayed outside with connector lines)
+   *          line: false,  // default - labels inside
+   *          line: true,   // enable label with lines with default settings
+   *          line: {       // enable label with lines with custom settings
+   *             show: true,
+   *             distance: 20,  // horizontal line distance in pixels
+   *
+   *             // show text at the end of connector line (outside the shape)
+   *             text: true,  // use default formatter
+   *             text: function(value, ratio, id) {  // custom formatter
+   *                 return d3.format(".1%")(ratio);
+   *             }
+   *          },
+   *
+   *          // set image to be displayed next to the label text
+   *          image: {
+   *             url: "./sample.svg",
+   *
+   *             // use placeholder to dynamically set image URL based on data ID
+   *             url: "./images/{=ID}.svg",  // will be replaced to "./images/data1.svg", "./images/data2.svg", etc.
+   *             width: 35,
+   *             height: 35,
+   *             pos: {
+   *                x: 0,
+   *                y: 0
+   *             }
+   *          },
+   *
+   *          // or use function to return image configuration dynamically
+   *          image: function(v, id, i) {
+   *             // Return different images based on value
+   *             if (v > 500) {
+   *                return {
+   *                   url: "./high-value.svg",
+   *                   width: 40,
+   *                   height: 40,
+   *                   pos: { x: 0, y: 0 }
+   *                };
+   *             } else if (v > 100) {
+   *                return {
+   *                   url: "./medium-value.svg",
+   *                   width: 30,
+   *                   height: 30,
+   *                   pos: { x: 0, y: 0 }
+   *                };
+   *             } else if(v < 5) {
+   *                // Return falsy value in case of don't want to show image
+   *                return null;
+   *             } else {
+   *                return {
+   *                   url: "./low-value.svg",
+   *                   width: 20,
+   *                   height: 20,
+   *                   pos: { x: 0, y: 0 }
+   *                };
+   *             }
+   *          }
    *      },
    *
    *      // disable expand transition for interaction
@@ -21342,6 +23218,8 @@ ${percentValue}%`;
   pie_label_format: void 0,
   pie_label_ratio: void 0,
   pie_label_threshold: 0.05,
+  pie_label_line: false,
+  pie_label_image: void 0,
   pie_expand: {},
   pie_expand_rate: 0.98,
   pie_expand_duration: 50,
@@ -21352,7 +23230,7 @@ ${percentValue}%`;
   pie_startingAngle: 0
 });
 
-;// CONCATENATED MODULE: ./src/config/Options/shape/polar.ts
+;// ./src/config/Options/shape/polar.ts
 /* harmony default export */ var shape_polar = ({
   /**
    * Set polar options
@@ -21361,18 +23239,43 @@ ${percentValue}%`;
    * @type {object}
    * @property {object} polar Polar object
    * @property {boolean} [polar.label.show=true] Show or hide label on each polar piece.
-   * @property {Function} [polar.label.format] Set formatter for the label on each polar piece.
+   * @property {function} [polar.label.format] Set formatter for the label on each polar piece.
    * @property {number} [polar.label.threshold=0.05] Set threshold ratio to show/hide labels.
-   * @property {number|Function} [polar.label.ratio=undefined] Set ratio of labels position.
+   * @property {number|function} [polar.label.ratio=undefined] Set ratio of labels position.
+   * @property {boolean|object} [polar.label.line=false] Enable label with lines (displayed outside with connector lines).
+   *  - `true`: Enable label with lines with default settings
+   *  - `false`: Labels are displayed inside the polar slices (default behavior).
+   *  - `{show: boolean, distance: number, text: boolean}`: Enable label with lines with custom settings. When object member is not provided, it will be set to default values.
+   * @property {boolean} [polar.label.line.show=true] Show or hide connector lines.
+   * @property {number} [polar.label.line.distance=20] Set the distance of the horizontal part of the connector line in pixels.
+   * @property {boolean|function} [polar.label.line.text=true] Show text at the end of the connector line (outside the shape).
+   *  - `true`: show data "id" text
+   *  - `false`: use default formatter(label.format) to show text
+   *  - `function(value, ratio, id)`: Custom formatter function for the text.
+   *  - **NOTE:** When the viewport size decreases, the size is adjusted based on the shape, so text may appear clipped. In this case, consider setting `overflow: visible` on the SVG node.
+   * @property {object|function} [polar.label.image] Set image to be displayed next to the label text.<br><br>
+   * When function is specified, will receives 3 arguments such as `v, id, i` and it must return an image object with `url`, `width`, `height`, and optional `pos` properties.<br><br>
+   * The arguments are:<br>
+   *  - `v` is the value of the data point where the label is shown.
+   *  - `id` is the id of the data where the label is shown.
+   *  - `i` is the index of the data series point where the label is shown.
+   * @property {string} polar.label.image.url Image URL path. Can use placeholder `{=ID}` which will be replaced with the data ID.
+   * @property {number} polar.label.image.width Image width in pixels.
+   * @property {number} polar.label.image.height Image height in pixels.
+   * @property {object} [polar.label.image.pos] Image position relative to the label text.
+   * @property {number} [polar.label.image.pos.x=0] x coordinate position, relative the original.
+   * @property {number} [polar.label.image.pos.y=0] y coordinate position, relative the original.
    * @property {number} [polar.level.depth=3] Set the level depth.
    * @property {boolean} [polar.level.show=true] Show or hide level.
    * @property {string} [polar.level.text.backgroundColor="#fff"] Set label text's background color.
-   * @property {Function} [polar.level.text.format] Set format function for the level value.<br>- Default value: `(x) => x % 1 === 0 ? x : x.toFixed(2)`
+   * @property {function} [polar.level.text.format] Set format function for the level value.<br>- Default value: `(x) => x % 1 === 0 ? x : x.toFixed(2)`
    * @property {boolean} [polar.level.text.show=true] Show or hide level text.
    * @property {number} [polar.padAngle=0] Set padding between data.
    * @property {number} [polar.padding=0] Sets the gap between pie arcs.
    * @property {number} [polar.startingAngle=0] Set starting angle where data draws.
    * @see [Demo](https://naver.github.io/billboard.js/demo/#Chart.PolarChart)
+   * @see [Demo: label image](https://naver.github.io/billboard.js/demo/#PolarChartOptions.LabelImage)
+   * @see [Demo: label line](https://naver.github.io/billboard.js/demo/#PolarChartOptions.LabelLine)
    * @example
    *  polar: {
    *      label: {
@@ -21394,7 +23297,65 @@ ${percentValue}%`;
    *              return ratio;
    *          },
    *          // or set ratio number
-   *          ratio: 0.5
+   *          ratio: 0.5,
+   *
+   *          // Enable label with lines (displayed outside with connector lines)
+   *          line: false,  // default - labels inside
+   *          line: true,   // enable label with lines with default settings
+   *          line: {       // enable label with lines with custom settings
+   *             show: true,
+   *             distance: 20,  // horizontal line distance in pixels
+   *
+   *             // show text at the end of connector line (outside the shape)
+   *             text: true,  // use default formatter
+   *             text: function(value, ratio, id) {  // custom formatter
+   *                 return d3.format(".1%")(ratio);
+   *             }
+   *          },
+   *
+   *          // set image to be displayed next to the label text
+   *          image: {
+   *             url: "./sample.svg",
+   *
+   *             // use placeholder to dynamically set image URL based on data ID
+   *             url: "./images/{=ID}.svg",  // will be replaced to "./images/data1.svg", "./images/data2.svg", etc.
+   *             width: 35,
+   *             height: 35,
+   *             pos: {
+   *                x: 0,
+   *                y: 0
+   *             }
+   *          },
+   *
+   *          // or use function to return image configuration dynamically
+   *          image: function(v, id, i) {
+   *             // Return different images based on value
+   *             if (v > 500) {
+   *                return {
+   *                   url: "./high-value.svg",
+   *                   width: 40,
+   *                   height: 40,
+   *                   pos: { x: 0, y: 0 }
+   *                };
+   *             } else if (v > 100) {
+   *                return {
+   *                   url: "./medium-value.svg",
+   *                   width: 30,
+   *                   height: 30,
+   *                   pos: { x: 0, y: 0 }
+   *                };
+   *             } else if(v < 5) {
+   *                // Return falsy value in case of don't want to show image
+   *                return null;
+   *             } else {
+   *                return {
+   *                   url: "./low-value.svg",
+   *                   width: 20,
+   *                   height: 20,
+   *                   pos: { x: 0, y: 0 }
+   *                };
+   *             }
+   *          }
    *      },
    *      level: {
    *          depth: 3,
@@ -21416,6 +23377,8 @@ ${percentValue}%`;
   polar_label_show: true,
   polar_label_format: void 0,
   polar_label_threshold: 0.05,
+  polar_label_line: false,
+  polar_label_image: void 0,
   polar_label_ratio: void 0,
   polar_level_depth: 3,
   polar_level_max: void 0,
@@ -21428,7 +23391,7 @@ ${percentValue}%`;
   polar_startingAngle: 0
 });
 
-;// CONCATENATED MODULE: ./src/config/Options/shape/radar.ts
+;// ./src/config/Options/shape/radar.ts
 /* harmony default export */ var shape_radar = ({
   /**
    * Set radar options
@@ -21446,7 +23409,7 @@ ${percentValue}%`;
    * @property {boolean} [radar.direction.clockwise=false] Set the direction to be drawn.
    * @property {number} [radar.level.depth=3] Set the level depth.
    * @property {boolean} [radar.level.show=true] Show or hide level.
-   * @property {Function} [radar.level.text.format] Set format function for the level value.<br>- Default value: `(x) => x % 1 === 0 ? x : x.toFixed(2)`
+   * @property {function} [radar.level.text.format] Set format function for the level value.<br>- Default value: `(x) => x % 1 === 0 ? x : x.toFixed(2)`
    * @property {boolean} [radar.level.text.show=true] Show or hide level text.
    * @property {number} [radar.size.ratio=0.87] Set size ratio.
    * @see [Demo](https://naver.github.io/billboard.js/demo/#Chart.RadarChart)
@@ -21498,7 +23461,7 @@ ${percentValue}%`;
   radar_direction_clockwise: false
 });
 
-;// CONCATENATED MODULE: ./src/config/Options/shape/treemap.ts
+;// ./src/config/Options/shape/treemap.ts
 /* harmony default export */ var shape_treemap = ({
   /**
    * Set treemap options
@@ -21514,7 +23477,12 @@ ${percentValue}%`;
    * 	- sliceDice ([d3.treemapSliceDice](https://github.com/d3/d3-hierarchy/blob/main/README.md#treemapSliceDice))
    * 	- squrify ([d3.treemapSquarify](https://github.com/d3/d3-hierarchy/blob/main/README.md#treemapSquarify))
    * 	- resquarify ([d3.treemapResquarify](https://github.com/d3/d3-hierarchy/blob/main/README.md#treemapResquarify))
-   * @property {Function} [treemap.label.format] Set formatter for the label text.
+   * @property {function} [treemap.label.format] Set formatter for the label text.<br>
+   * - **Arguments:**
+   *   - `value {number}`: Data value
+   *   - `ratio {number}`: The `ratio` of how much space this tile occupies relative to the total area (0~1)
+   *   - `id {string}`: Data id
+   *   - `size {object}`: Tile size `{width, height}` in pixels
    * @property {number} [treemap.label.threshold=0.05] Set threshold ratio to show/hide labels text.
    * @property {number} [treemap.label.show=true] Show or hide label text.
    * @see [Demo: treemap](https://naver.github.io/billboard.js/demo/#Chart.TreemapChart)
@@ -21527,12 +23495,33 @@ ${percentValue}%`;
    *          // show or hide label text
    *          show: false,
    *
-   *          // set label text formatter
-   *          format: function(value, ratio, id) {
+   *          // Example 1: Format with currency
+   *          format: function(value, ratio, id, size) {
+   *              // size: {width, height} - tile size in pixels
    *              return d3.format("$")(value);
+   *          },
    *
-   *              // to multiline, return with '\n' character
-   *              // return value +"%\nLine1\n2Line2";
+   *          // Example 2: Show different content based on tile size
+   *          format: function(value, ratio, id, size) {
+   *              if (size.width > 100 && size.height > 50) {
+   *                  return `${id}\n${d3.format("$")(value)}\n(${(ratio * 100).toFixed(1)}%)`;
+   *              } else if (size.width > 50) {
+   *                  return `${id}\n${d3.format("$")(value)}`;
+   *              } else {
+   *                  return d3.format("$")(value);
+   *              }
+   *          },
+   *
+   *          // Example 3: Include tile dimensions in label
+   *          format: function(value, ratio, id, size) {
+   *              return `${id}\n${value}\n${size.width.toFixed(0)}x${size.height.toFixed(0)}px`;
+   *          },
+   *
+   *          // Example 4: Conditional formatting based on ratio
+   *          format: function(value, ratio, id, size) {
+   *              return ratio > 0.1 ?
+   *                  `${id}\n${value} (${(ratio * 100).toFixed(1)}%)` :
+   *                  value;
    *          },
    *
    *          // set ratio number
@@ -21546,7 +23535,7 @@ ${percentValue}%`;
   treemap_label_show: true
 });
 
-;// CONCATENATED MODULE: ./src/config/resolver/shape.ts
+;// ./src/config/resolver/shape.ts
 
 
 
@@ -21629,10 +23618,10 @@ let shape_scatter = () => (extendAxis(
 let resolver_shape_funnel = () => (extendArc([funnel], [shape_funnel]), (resolver_shape_funnel = () => TYPE.FUNNEL)());
 let resolver_shape_treemap = () => (extendAxis([treemap], [shape_treemap]), (resolver_shape_treemap = () => TYPE.TREEMAP)());
 
-;// CONCATENATED MODULE: ./src/core.ts
+;// ./src/core.ts
 
 
-let defaults = {};
+let defaults = /* @__PURE__ */ Object.create(null);
 const bb = {
   /**
    * Version information
@@ -21641,10 +23630,10 @@ const bb = {
    *    bb.version;  // "1.0.0"
    * @memberof bb
    */
-  version: "3.13.0",
+  version: "3.18.0",
   /**
    * Generate chart
-   * - **NOTE:** Bear in mind for the possiblity of ***throwing an error***, during the generation when:
+   * - **NOTE:** Bear in mind for the possibility of ***throwing an error***, during the generation when:
    *   - Unused option value is given.
    *     - ex) For `data.type="pie"` option, setting 'axis' option can cause unexpected generation error.
    *   - Insufficient value is given for certain option used.
@@ -21713,7 +23702,7 @@ const bb = {
    * });
    */
   generate(config) {
-    const options = mergeObj({}, defaults, config);
+    const options = mergeObj(/* @__PURE__ */ Object.create(null), defaults, config);
     const inst = new Chart(options);
     inst.internal.charts = this.instance;
     this.instance.push(inst);
@@ -21771,7 +23760,7 @@ const bb = {
 };
 
 
-;// CONCATENATED MODULE: ./src/index.ts
+;// ./src/index.ts
 
 
 Object.keys(resolver_shape_namespaceObject).forEach((v) => resolver_shape_namespaceObject[v]());
