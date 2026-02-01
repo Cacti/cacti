@@ -268,7 +268,7 @@ jobs:
     - name: Check all perl scripts for syntax errors
       run: |
         cd ${{ github.workspace }}
-        find scripts -name '*.pl' -exec perl -c {} \;
+        if find scripts -name '*.pl' -exec perl -c {} 2>&1 \; | grep -iv 'syntax OK'; then exit 1; fi
 
     - name: Audit the Installation Schema
       run: |
