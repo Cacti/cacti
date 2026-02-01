@@ -563,10 +563,10 @@ class spikekill {
 								} elseif ($timestamp >= $this->out_start && $timestamp <= $this->out_end) {
 									if ($this->method == SPIKE_METHOD_FILL) {
 										if (!is_numeric($dsvalue)) {
-											$this->debug(sprintf('Fill Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%s NewVal:%s', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue, $rra[$rra_num][$ds_num]['last'] ?? 'Unset'));
+											$this->debug(sprintf('Fill Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%s', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue));
 										}
 									} else {
-										$this->debug(sprintf('Float Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%s NewVal:%s', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue, $rra[$rra_num][$ds_num]['last'] ?? 'Unset'));
+										$this->debug(sprintf('Float Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%s', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue));
 									}
 
 									$process = false;
