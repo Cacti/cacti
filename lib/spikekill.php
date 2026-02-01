@@ -205,11 +205,11 @@ class spikekill {
 		$umethod   = read_user_setting('spikekill_method', $this->dmethod, true);
 		$uavgnan   = read_user_setting('spikekill_avgnan', $this->davgnan, true);
 		$udsfilter = read_user_setting('spikekill_dsfilter', $this->dsfilter, true);
-		$unumspike = intval(read_user_setting('spikekill_number', $this->dnumspike, true));
-		$ustddev   = intval(read_user_setting('spikekill_deviations', $this->dstddev, true));
-		$upercent  = intval(read_user_setting('spikekill_percent', $this->dpercent, true));
-		$uoutliers = intval(read_user_setting('spikekill_outliers', $this->doutliers, true));
-		$uabsmax   = intval(read_user_setting('spikekill_absmax', $this->absmax, true));
+		$unumspike = read_user_setting('spikekill_number', $this->dnumspike, true);
+		$ustddev   = read_user_setting('spikekill_deviations', $this->dstddev, true);
+		$upercent  = read_user_setting('spikekill_percent', $this->dpercent, true);
+		$uoutliers = read_user_setting('spikekill_outliers', $this->doutliers, true);
+		$uabsmax   = read_user_setting('spikekill_absmax', $this->absmax, true);
 
 		// set the correct value
 		if ($this->avgnan == '') {
@@ -432,6 +432,8 @@ class spikekill {
 	public function remove_spikes() : bool {
 		$this->initializeSpikekill();
 
+		$start = microtime(true);
+
 		if ($this->is_error_set()) {
 			return false;
 		}
@@ -626,23 +628,15 @@ class spikekill {
 
 									$process = true;
 								} elseif ($timestamp >= $this->out_start && $timestamp <= $this->out_end) {
-									if ($this->avgnan == 'last') {
-										$newval = $rra[$rra_num][$ds_num]['average']; // @phpstan-ignore-line
-									} elseif ($this->avgnan == 'avg') {
-										$newval = $rra[$rra_num][$ds_num]['last'];
-									} else {
-										$newval = 'NaN';
-									}
-
 									if ($this->method == SPIKE_METHOD_FILL) {
 										if (!is_numeric($dsvalue)) {
-											$this->debug(sprintf('Fill Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%0.4e NewVal:%0.4e', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue, $newval));
+											$this->debug(sprintf('Fill Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%.4e', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue));
 										}
 									} elseif ($this->method == SPIKE_METHOD_FLOAT) {
-										$this->debug(sprintf('Float Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%0.4e NewVal:%0.4e', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue, $newval));
+										$this->debug(sprintf('Float Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%.4e', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue));
 									} else {
 										if ($dsvalue >= $this->absmax) {
-											$this->debug(sprintf('AbsMax Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%0.4e NewVal:%0.4e', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue, $newval));
+											$this->debug(sprintf('AbsMax Found, RRA:%s, DSNum:%s, Date:%s, CurVal:%.4e', $rra_num, $ds_num, date('Y-m-d H:i:s', $timestamp), $dsvalue));
 										}
 									}
 
@@ -720,11 +714,18 @@ class spikekill {
 				}
 			}
 		}
+
+		$parse_end  = microtime(true);
+		$parse_time = $parse_end - $start;
+
 		cacti_log("DEBUG: number of RRAs: {$rra_num}", false, 'SPIKE', POLLER_VERBOSITY_DEBUG);
 		cacti_log("DEBUG: number of DSes: {$ds_num}", false, 'SPIKE', POLLER_VERBOSITY_DEBUG);
 
 		// For all the samples determine the average with the outliers removed
 		$this->calculateVarianceAverages($rra, $samples);
+
+		$variance_end  = microtime(true);
+		$variance_time = $variance_end - $parse_end;
 
 		/**
 		 * Now scan the rra array and the samples array and calculate the following
@@ -745,6 +746,9 @@ class spikekill {
 		}
 
 		$this->calculateOverallStatistics($rra, $samples);
+
+		$stats_end  =  microtime(true);
+		$stats_time = $stats_end - $variance_end;
 
 		// debugging and/or status report
 		if ($this->debug || $this->dryrun) {
@@ -783,39 +787,51 @@ class spikekill {
 				"NOTE: No Spikes found in '$this->rrdfile'" . ($this->html ? "</p>\n" : "\n");
 		}
 
+		$update_end  = microtime(true);
+		$update_time = $update_end - $stats_end;
+
 		// finally update the file XML file and Reprocess the RRDfile
+		$end   = microtime(true);
+		$total = $end - $start;
+
+		// Need to find where this thing is slow
+		$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
+			sprintf('NOTE: Parse:%.2f, Variance:%.2f, Stats:%.2f, Update:%.2f, Kills:%d',
+				$parse_time, $variance_time, $stats_time, $update_time, $this->total_kills) . ($this->html ? "</p>\n" : "\n");
+
 		if (!$this->dryrun) {
 			if ($continue) {
 				if ($output == true && $new_output != '') {
 					if ($this->writeXMLFile($new_output, $xmlfile)) {
 						if ($this->backupRRDFile($this->rrdfile)) {
 							$this->createRRDFileFromXML($xmlfile, $this->rrdfile);
+
 							$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
-								"NOTE: Spikes Found and Remediated.  Total Spikes ($this->total_kills)" . ($this->html ? "</p>\n" : "\n");
+								sprintf('NOTE: Time:%.2f, Spikes Found and Remediated.  Total Spikes %s', $total, $this->total_kills) . ($this->html ? "</p>\n" : "\n");
 						} else {
 							$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
-								"FATAL: Unable to backup '$this->rrdfile'" . ($this->html ? "</p>\n" : "\n");
+								sprintf("FATAL: Time:%.2f, Unable to backup '%s'", $total, $this->rrdfile) . ($this->html ? "</p>\n" : "\n");
 						}
 					} else {
 						$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
-							"FATAL: Unable to write XML file '$xmlfile'" . ($this->html ? "</p>\n" : "\n");
+							sprintf("FATAL: Time:%.2f, Unable to write XML file '%s'", $total, $xmlfile) . ($this->html ? "</p>\n" : "\n");
 					}
 				} else {
 					$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
-						'NOTE: No Spikes Found.' . ($this->html ? "</p>\n" : "\n");
+						sprintf('NOTE: Time:%.2f, No Spikes Found.', $total) . ($this->html ? "</p>\n" : "\n");
 				}
 			}
 		} else {
 			$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
-				'NOTE: Dryrun requested.  No updates performed' . ($this->html ? "</p>\n" : "\n");
+				sprintf('NOTE: Time:%.2f, Dryrun requested.  No updates performed', $total) . ($this->html ? "</p>\n" : "\n");
 		}
 
 		$this->strout .= ($this->html ? '</table>' : '');
 
 		if ($this->total_kills > 0) {
-			cacti_log("WARNING: Removed '$this->total_kills' Spikes from '$this->rrdfile', Method:'$this->method'", false, 'WEBUI');
+			cacti_log(sprintf("WARNING: Time:%.2f, Removed '%s' Spikes from '%s', Method:'%s'", $total, $this->total_kills, $this->rrdfile, $this->method), false, 'WEBUI');
 		} elseif ($this->debug) {
-			cacti_log("NOTE: Removed '$this->total_kills' Spikes from '$this->rrdfile', Method:'$this->method'", false, 'WEBUI');
+			cacti_log(sprintf("NOTE: Time:%.2f, Removed '%s' Spikes from '%s', Method:'%s'", $total, $this->total_kills, $this->rrdfile, $this->method), false, 'WEBUI');
 		}
 
 		if (file_exists($xmlfile)) {
@@ -1202,9 +1218,9 @@ class spikekill {
 					array_shift($linearray);
 
 					// initialize variables
-					$ds_num         = 0;
-					$out_row        = '<row>';
-					$kills          = 0;
+					$ds_num  = 0;
+					$out_row = '<row>';
+					$kills   = 0;
 
 					foreach ($linearray as $dsvalue) {
 						// peel off garbage
@@ -1234,8 +1250,8 @@ class spikekill {
 										$kills++;
 										$this->total_kills++;
 									}
-								} else {
-									cacti_log("DEBUG: ignoring dsvalue {$dsvalue} as we are outside of the time range!", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
+								} elseif ($this->debug) {
+									cacti_log("DEBUG: ignoring dsvalue {$dsvalue} as we are outside of the time range!", false, 'SPIKEKILL');
 								}
 
 								break;
@@ -1266,8 +1282,8 @@ class spikekill {
 											$this->total_kills++;
 										}
 									}
-								} else {
-									cacti_log("DEBUG: ignoring dsvalue {$dsvalue} as we are outside of the time range!", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
+								} elseif ($this->debug) {
+									cacti_log("DEBUG: ignoring dsvalue {$dsvalue} as we are outside of the time range!", false, 'SPIKEKILL');
 								}
 
 								break;
@@ -1378,8 +1394,8 @@ class spikekill {
 											$kills++;
 										}
 									}
-								} else {
-									cacti_log("DEBUG: ignoring dsvalue {$dsvalue} as we are outside of the time range!", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
+								} elseif ($this->debug) {
+									cacti_log("DEBUG: ignoring dsvalue {$dsvalue} as we are outside of the time range!", false, 'SPIKEKILL');
 								}
 
 								break;
