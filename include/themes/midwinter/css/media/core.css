@@ -1326,7 +1326,8 @@ legend::before {
 }
 
 .spikekillNote {
-    #padding: 1px;
+    padding: 1px;
+	margin: 0px;
 }
 
 .spikekillMenu {
