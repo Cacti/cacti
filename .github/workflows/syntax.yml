@@ -264,6 +264,11 @@ jobs:
       run: |
         cd ${{ github.workspace }}
         sudo php tests/tools/check_xml_syntax.php
+    
+    - name: Check all perl scripts for syntax errors
+      run: |
+        cd ${{ github.workspace }}
+        sudo find scripts -name '*.pl' -exec perl -c {} \;
 
     - name: Audit the Installation Schema
       run: |
