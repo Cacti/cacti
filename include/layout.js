@@ -3643,189 +3643,30 @@ function clearGraphTimespanFilter() {
 	});
 }
 
-function removeSpikesStdDev(local_graph_id) {
-	var href = urlPath + 'spikekill.php' +
-		'?method=stddev'   +
-		'&local_graph_id=' + local_graph_id;
+function removeSpikes(method, dryrun, local_graph_id) {
+	var graph_start = $('#graph_' + local_graph_id).attr('graph_start');
+	var graph_end   = $('#graph_' + local_graph_id).attr('graph_end');
+
+	if (!(graph_start > 0 && graph_end > 0)) {
+		console.log('FATAL: Can not find Graph ID: ' + local_graph_id);
+		return false;
+	}
 
 	closeDateFilters();
 
-	$.getJSON(href)
-		.done(function(data) {
-			checkForRedirects(data, href);
-
-			redrawGraph(local_graph_id);
-			$('#spikeresults').remove();
-			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="' + spikeKillResults + '"></div>');
-			$('#spikeresults').html(data.results);
-			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
-		})
-		.fail(function(data) {
-			getPresentHTTPError(data);
-		}
-	);
-}
-
-function removeSpikesVariance(local_graph_id) {
 	var href = urlPath + 'spikekill.php' +
-		'?method=variance' +
-		'&local_graph_id=' + local_graph_id;
-
-	closeDateFilters();
-
-	$.getJSON(href)
-		.done(function(data) {
-			checkForRedirects(data, href);
-
-			redrawGraph(local_graph_id);
-			$('#spikeresults').remove();
-			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="' + spikeKillResults + '"></div>');
-			$('#spikeresults').html(data.results);
-			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
-		})
-		.fail(function(data) {
-			getPresentHTTPError(data);
-		}
-	);
-}
-
-function removeSpikesInRange(local_graph_id) {
-	var href = urlPath + 'spikekill.php' +
-		'?method=fill' +
-		'&local_graph_id=' + local_graph_id +
-		'&outlier-start='  + graph_start    +
-		'&outlier-end='    + graph_end;
-
-	closeDateFilters();
-
-	$.getJSON(href)
-		.done(function(data) {
-			checkForRedirects(data, href);
-
-			redrawGraph(local_graph_id);
-			$('#spikeresults').remove();
-			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="' + spikeKillResults + '"></div>');
-			$('#spikeresults').html(data.results);
-			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
-		})
-		.fail(function(data) {
-			getPresentHTTPError(data);
-		}
-	);
-}
-
-function removeRangeFill(local_graph_id) {
-	var href = urlPath + 'spikekill.php' +
-		'?method=float'    +
+		'?method='         + method +
+		(dryrun ? '&dryrun=true':'') +
 		'&local_graph_id=' + local_graph_id +
 		'&outlier-start='  + graph_start +
 		'&outlier-end='    + graph_end;
 
-	closeDateFilters();
-
 	$.getJSON(href)
 		.done(function(data) {
 			checkForRedirects(data, href);
 
 			redrawGraph(local_graph_id);
-			$('#spikeresults').remove();
-			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="' + spikeKillResults + '"></div>');
-			$('#spikeresults').html(data.results);
-			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
-		})
-		.fail(function(data) {
-			getPresentHTTPError(data);
-		}
-	);
-}
 
-function dryRunStdDev(local_graph_id) {
-	var href = urlPath + 'spikekill.php' +
-		'?method=stddev'   +
-		'&dryrun=true'     +
-		'&local_graph_id=' + local_graph_id;
-
-	closeDateFilters();
-
-	$.getJSON(href)
-		.done(function(data) {
-			checkForRedirects(data, href);
-
-			$('#spikeresults').remove();
-			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="' + spikeKillResults + '"></div>');
-			$('#spikeresults').html(data.results);
-			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
-		})
-		.fail(function(data) {
-			getPresentHTTPError(data);
-		}
-	);
-}
-
-function dryRunVariance(local_graph_id) {
-	var href = urlPath + 'spikekill.php' +
-		'?method=variance' +
-		'&dryrun=true'     +
-		'&local_graph_id=' + local_graph_id;
-
-	closeDateFilters();
-
-	$.getJSON(href)
-		.done(function(data) {
-			checkForRedirects(data, href);
-
-			$('#spikeresults').remove();
-			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="' + spikeKillResults + '"></div>');
-			$('#spikeresults').html(data.results);
-			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
-		})
-		.fail(function(data) {
-			getPresentHTTPError(data);
-		}
-	);
-}
-
-function dryRunSpikesInRange(local_graph_id) {
-	var href = urlPath + 'spikekill.php' +
-		'?method=fill' +
-		'&dryrun=true' +
-		'&local_graph_id=' + local_graph_id +
-		'&outlier-start='  + graph_start +
-		'&outlier-end='    + graph_end;
-
-	closeDateFilters();
-
-	$.getJSON(href)
-		.done(function(data) {
-			checkForRedirects(data, href);
-
-			redrawGraph(local_graph_id);
-			$('#spikeresults').remove();
-			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="' + spikeKillResults + '"></div>');
-			$('#spikeresults').html(data.results);
-			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
-		})
-		.fail(function(data) {
-			getPresentHTTPError(data);
-		}
-	);
-}
-
-function dryRunRangeFill(local_graph_id) {
-	var href = urlPath + 'spikekill.php' +
-		'?method=float' +
-		'&dryrun=true'  +
-		'&local_graph_id=' + local_graph_id +
-		'&outlier-start='  + graph_start +
-		'&outlier-end='    + graph_end;
-
-	closeDateFilters();
-
-	$.getJSON(href)
-		.done(function(data) {
-			checkForRedirects(data, href);
-
-			redrawGraph(local_graph_id);
 			$('#spikeresults').remove();
 			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="' + spikeKillResults + '"></div>');
 			$('#spikeresults').html(data.results);

@@ -344,32 +344,38 @@ class spikekill {
 				$this->set_error("FATAL: You must specify either 'last', 'avg' or 'nan' as a replacement method.");
 		}
 
+		$this->strout .= ($this->html ? "<h3 class='spikekillNote'>":'') . __('Spike Kill Settings Used for Analysis/Correction') . ($this->html ? '</h3><hr>': PHP_EOL);
+
 		if (!$this->html) {
-			printf('Spike Kill Settings Used for Analysis/Correction' . PHP_EOL);
-			printf('------------------------------------------------' . PHP_EOL);
-			printf('Method:        %s' . PHP_EOL, $dispmethod);
-			printf('RRDfile:       %s' . PHP_EOL, $this->rrdfile);
-			printf('Repair Type:   %s' . PHP_EOL, $this->avgnan);
+			$this->strout .= '------------------------------------------------' . PHP_EOL;
+		}
 
-			if ($this->method == SPIKE_METHOD_STDDEV || $this->method == SPIKE_METHOD_VARIANCE) {
-				printf('Num Outliers:  %s' . PHP_EOL, $this->outliers);
-				printf('Max Kills:     %s' . PHP_EOL, $this->numspike);
-			} else {
-				printf('Max Kills:     Unlimited' . PHP_EOL);
-			}
+		$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') . __esc('Method:        %s', $dispmethod) . ($this->html ? '</p>': PHP_EOL);
+		$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') . __esc('RRDfile:       %s', $this->rrdfile) . ($this->html ? '</p>': PHP_EOL);
+		$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') . __esc('Repair Type:   %s', $this->avgnan) . ($this->html ? '</p>': PHP_EOL);
 
-			if ($this->method == SPIKE_METHOD_STDDEV) {
-				printf('Standard Devs: %s' . PHP_EOL, $this->stddev);
-			} elseif ($this->method == SPIKE_METHOD_VARIANCE) {
-				printf('Variance %%:    %s %%' . PHP_EOL, number_format_i18n($this->percent * 100, 2));
-			}
+		if ($this->method == SPIKE_METHOD_STDDEV || $this->method == SPIKE_METHOD_VARIANCE) {
+			$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') . __esc('Num Outliers:  %s', $this->outliers) . ($this->html ? '</p>': PHP_EOL);
+			$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') . __esc('Max Kills:     %s', $this->numspike) . ($this->html ? '</p>': PHP_EOL);
+		} else {
+			$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') . __('Max Kills:     Unlimited') . ($this->html ? '</p>': PHP_EOL);
+		}
 
-			if ($this->out_start > 0) {
-				printf('Window Start:  %s (%s)' . PHP_EOL, $this->out_start, date('Y-m-d H:i', $this->out_start));
-				printf('Window End:    %s (%s)' . PHP_EOL . PHP_EOL, $this->out_end, date('Y-m-d H:i', $this->out_end));
-			} else {
-				printf('Window Range:  All' . PHP_EOL . PHP_EOL);
-			}
+		if ($this->method == SPIKE_METHOD_STDDEV) {
+			$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') . __esc('Standard Devs: %s', $this->stddev) . ($this->html ? '</p>': PHP_EOL);
+		} elseif ($this->method == SPIKE_METHOD_VARIANCE) {
+			$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') . __esc('Variance %%%:    %s %%%', number_format_i18n($this->percent * 100, 2)) . ($this->html ? '</p>': PHP_EOL);
+		}
+
+		if ($this->out_start > 0) {
+			$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') . __esc('Window Start:  %s (%s)' . PHP_EOL, $this->out_start, date('Y-m-d H:i', $this->out_start)) . ($this->html ? '</p>': PHP_EOL);
+			$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') . __esc('Window End:    %s (%s)', $this->out_end, date('Y-m-d H:i', $this->out_end)) . ($this->html ? '</p>': PHP_EOL . PHP_EOL);
+		} else {
+			$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') . __('Window Range:  All') .  ($this->html ? '</p>': PHP_EOL . PHP_EOL);
+		}
+
+		if ($this->html) {
+			$this->strout .= '<hr>';
 		}
 
 		return false;
@@ -377,6 +383,8 @@ class spikekill {
 
 	public function remove_spikes() {
 		global $config;
+
+		$this->strout = '';
 
 		$this->initialize_spikekill();
 
@@ -396,8 +404,6 @@ class spikekill {
 			$xmlfile = $this->tempdir . '/' . str_replace('.rrd', '', basename($this->rrdfile)) . '.dump.' . $this->seed;
 			$bakfile = $this->tempdir . '/' . str_replace('.rrd', '', basename($this->rrdfile)) . '.backup.' . $this->seed . '.rrd';
 		}
-
-		$this->strout = '';
 
 		if (!empty($this->out_start) && !$this->dryrun) {
 			$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') . "NOTE: Removing Outliers in Range and Replacing with Last" . ($this->html ? "</p>\n":"\n");
@@ -661,12 +667,17 @@ class spikekill {
 		 */
 		if (empty($this->out_start)) {
 			$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-				"NOTE: Searching for Spikes in XML file '$xmlfile'" . ($this->html ? "</p>\n":"\n");
+				__esc("NOTE: Searching for Spikes in XML file '%s'", $xmlfile) . ($this->html ? "</p>\n":"\n");
 		} else {
 			$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-				"NOTE: Limited to window: " . date('M j, Y H:i:s',$this->out_start) . " thru " . date('M j, Y H:i:s',$this->out_end) . ($this->html ? "</p>\n":"\n");
+				__esc("NOTE: Limited to Time Window: %s through %s", date('M j, Y H:i:s',$this->out_start), date('M j, Y H:i:s',$this->out_end)) . ($this->html ? "</p>\n":"\n");
 
-			cacti_log("DEBUG: Limited to window: " . date('M j, Y H:i:s',$this->out_start) . " thru " . date('M j, Y H:i:s',$this->out_end), false, 'SPIKE', POLLER_VERBOSITY_DEBUG);
+			cacti_log("DEBUG: Limited to Time Window: " . date('M j, Y H:i:s',$this->out_start) . " thru " . date('M j, Y H:i:s',$this->out_end), false, 'SPIKE', POLLER_VERBOSITY_DEBUG);
+		}
+
+		if ($this->dryrun) {
+			$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
+				__("NOTE: Dryrun requested.  No updates performed") . ($this->html ? "</p><br>\n":"\n");
 		}
 
 		$this->calculateOverallStatistics($rra, $samples);
@@ -674,13 +685,13 @@ class spikekill {
 		/* debugging and/or status report */
 		if ($this->debug || $this->dryrun) {
 			if ($this->html) {
-				$this->strout .= "<table style='width:100%' class='spikekillData' id='spikekillData'>";
+				$this->strout .= "<div style='overflow-x:auto;'><table style='width:100%' class='spikekillData' id='spikekillData'>";
 			}
 
 			$this->outputStatistics($rra);
 
 			if ($this->html) {
-				$this->strout .= '</table>';
+				$this->strout .= '</table></div><br>';
 			}
 		}
 
@@ -702,10 +713,10 @@ class spikekill {
 			}
 		} elseif ($this->out_start > 0) {
 			$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-				"NOTE: No Window Spikes found in '$this->rrdfile'" . ($this->html ? "</p>\n":"\n");
+				__esc("NOTE: No Window Spikes found in '%s'", $this->rrdfile) . ($this->html ? "</p>\n":"\n");
 		} else {
 			$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-				"NOTE: No Spikes found in '$this->rrdfile'" . ($this->html ? "</p>\n":"\n");
+				__esc("NOTE: No Spikes found in '%s'", $this->rrdfile) . ($this->html ? "</p>\n":"\n");
 		}
 
 		/* finally update the file XML file and Reprocess the RRDfile */
@@ -716,23 +727,20 @@ class spikekill {
 						if ($this->backupRRDFile($this->rrdfile)) {
 							$this->createRRDFileFromXML($xmlfile, $this->rrdfile);
 							$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-								"NOTE: Spikes Found and Remediated.  Total Spikes ($this->total_kills)" . ($this->html ? "</p>\n":"\n");
+								__('NOTE: Spikes Found and Remediated.  Total Spikes %s', $this->total_kills) . ($this->html ? "</p>\n":"\n");
 						} else {
 							$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-								"FATAL: Unable to backup '$this->rrdfile'" . ($this->html ? "</p>\n":"\n");
+								__esc("FATAL: Unable to backup '%s'", $this->rrdfile) . ($this->html ? "</p>\n":"\n");
 						}
 					} else {
 						$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-							"FATAL: Unable to write XML file '$xmlfile'" . ($this->html ? "</p>\n":"\n");
+							__esc("FATAL: Unable to write XML file '%s'", $xmlfile) . ($this->html ? "</p>\n":"\n");
 					}
 				} else {
 					$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-						"NOTE: No Spikes Found." . ($this->html ? "</p>\n":"\n");
+						__("NOTE: No Spikes Found.") . ($this->html ? "</p>\n":"\n");
 				}
 			}
-		} else {
-			$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-				"NOTE: Dryrun requested.  No updates performed" . ($this->html ? "</p>\n":"\n");
 		}
 
 		$this->strout .= ($this->html ? "</table>":'');
@@ -758,7 +766,7 @@ class spikekill {
 	private function createRRDFileFromXML($xmlfile, $rrdfile) {
 		/* execute the dump command */
 		$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-			"NOTE: Re-Importing '$xmlfile' to '$rrdfile'" . ($this->html ? "</p>\n":"\n");
+			__esc("NOTE: Re-Importing '%s' to '%s'", $xmlfile, $rrdfile) . ($this->html ? "</p>\n":"\n");
 
 		$response = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' restore -f -r ' . cacti_escapeshellarg($xmlfile) . ' ' . cacti_escapeshellarg($rrdfile));
 
@@ -785,7 +793,7 @@ class spikekill {
 		}
 
 		$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-			"NOTE: Backing Up '$rrdfile' to '" . $backupdir . '/' .  $newfile . "'" . ($this->html ? "</p>\n":"\n");
+			__esc("NOTE: Backing Up '%s' to '%s/%s'", $rrdfile, $backupdir, $newfile) . ($this->html ? "</p>\n":"\n");
 
 		return copy($rrdfile, $backupdir . "/" . $newfile);
 	}
@@ -1004,58 +1012,58 @@ class spikekill {
 								$this->displayTime($this->rra_pdp[$rra_key]),
 								$this->ds_name[$dskey],
 								$this->rra_cf[$rra_key],
-								$ds['totalsamples'],
-								(isset($ds['numsamples']) ? $ds['numsamples'] : '0'),
-								($ds['average'] != 'N/A' ? round($ds['average'],2) : $ds['average']),
-								($ds['stddev'] != 'N/A' ? round($ds['stddev'],2) : $ds['stddev']),
-								($ds['variance_avg'] != 'N/A' ? round($ds['variance_avg'],2) : $ds['variance_avg']),
-								(isset($ds['max_value']) ? round($ds['max_value'],2) : 'N/A'),
-								(isset($ds['min_value']) ? round($ds['min_value'],2) : 'N/A'),
-								($ds['max_cutoff'] != 'N/A' ? round($ds['max_cutoff'],2) : $ds['max_cutoff']),
-								($ds['min_cutoff'] != 'N/A' ? round($ds['min_cutoff'],2) : $ds['min_cutoff']),
-								$ds['stddev_killed'],
-								$ds['variance_killed'],
-								$ds['outwind_samples'],
-								$ds['outwind_killed']);
+								number_format_i18n($ds['totalsamples']),
+								(isset($ds['numsamples']) ? number_format_i18n($ds['numsamples']) : '0'),
+								($ds['average']         != 'N/A' ? number_format_i18n($ds['average'], 2) : $ds['average']),
+								($ds['stddev']          != 'N/A' ? number_format_i18n($ds['stddev'], 2) : $ds['stddev']),
+								($ds['variance_avg']    != 'N/A' ? number_format_i18n($ds['variance_avg'], 2) : $ds['variance_avg']),
+								(isset($ds['max_value']) ? number_format_i18n($ds['max_value'], 2) : 'N/A'),
+								(isset($ds['min_value']) ? number_format_i18n($ds['min_value'], 2) : 'N/A'),
+								($ds['max_cutoff']      != 'N/A' ? number_format_i18n($ds['max_cutoff'], 2) : 'N/A'),
+								($ds['min_cutoff']      != 'N/A' ? number_format_i18n($ds['min_cutoff'], 2) : 'N/A'),
+								($ds['stddev_killed']   != 'N/A' ? number_format_i18n($ds['stddev_killed'], 2) : 'N/A'),
+								($ds['variance_killed'] != 'N/A' ? number_format_i18n($ds['variance_killed'], 2) : 'N/A'),
+								number_format_i18n($ds['outwind_samples']),
+								number_format_i18n($ds['outwind_killed']));
 						}
 					}
 				}
 
 				$this->strout .= "\n";
 			} else {
-				$this->strout .= sprintf("<tr class='tableHeader'><th style='width:10%%;'>%s</th><th>%s</th><td>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr>\n",
-					'Size', 'DataSource', 'CF', 'Samples', 'NonNan', 'Avg', 'StdDev', 'Variance',
+				$this->strout .= sprintf("<tr class='tableHeader'><th class='nowrap' style='width:10%%;'>%s</th><th>%s</th><th>%s</th><th class='right'>%s</th><th class='right'>%s</th><th class='right'>%s</th><th class='right'>%s</th><th class='right'>%s</th><th class='right'>%s</th><th class='right'>%s</th><th class='right'>%s</th><th class='right'>%s</th><th class='right'>%s</th><th class='right'>%s</th><th class='right'>%s</th><th class='right'>%s</th></tr>\n",
+					'Size', 'DS', 'CF', 'Samples', 'NonNan', 'Avg', 'StdDev', 'Variance',
 					'MaxValue', 'MinValue', 'MaxStdDev', 'MinStdDev', 'StdKilled', 'VarKilled', 'WindSamples', 'WindKilled');
 
 				foreach($rra as $rra_key => $dses) {
 					if (cacti_sizeof($dses)) {
 						foreach($dses as $dskey => $ds) {
-							$this->strout .= sprintf('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td>' .
-								($ds['average'] < 1E6 ? '<td>%s</td>':'<td>%.4e</td>') .
-								($ds['stddev'] < 1E6 ? '<td>%s</td>':'<td>%.4e</td>') .
-								(isset($ds['max_value']) ? ($ds['max_value'] < 1E6 ? '<td>%s</td>':'<td>%.4e</td>') : '<td>%s</td>') .
-								(isset($ds['min_value']) ? ($ds['min_value'] < 1E6 ? '<td>%s</td>':'<td>%.4e</td>') : '<td>%s</td>') .
-								(isset($ds['max_cutoff']) ? ($ds['max_cutoff'] < 1E6 ? '<td>%s</td>':'<td>%.4e</td>') : '<td>%s</td>') .
-								(isset($ds['min_cutoff']) ? ($ds['min_cutoff'] < 1E6 ? '<td>%s</td>':'<td>%.4e</td>') : '<td>%s</td>') .
-								'<td>%s</td><td>%s</td><td>%s</td><td>%s</td>' .
-								'<td>%s</td>' .
+							$this->strout .= sprintf('<tr><td class="nowrap">%s</td><td>%s</td><td class="right">%s</td><td class="right">%s</td><td class="right">%s</td>' .
+								($ds['average'] < 1E6 ? '<td class="right">%s</td>' : '<td class="right">%.4e</td>') .
+								($ds['stddev'] < 1E6 ? '<td class="right">%s</td>' : '<td class="right">%.4e</td>') .
+								(isset($ds['max_value']) ? ($ds['max_value'] < 1E6 ? '<td class="right">%s</td>' : '<td class="right">%.4e</td>') : '<td class="right">%s</td>') .
+								(isset($ds['min_value']) ? ($ds['min_value'] < 1E6 ? '<td class="right">%s</td>' : '<td class="right">%.4e</td>') : '<td class="right">%s</td>') .
+								(isset($ds['max_cutoff']) ? ($ds['max_cutoff'] < 1E6 ? '<td class="right">%s</td>' : '<td class="right">%.4e</td>') : '<td class="right">%s</td>') .
+								(isset($ds['min_cutoff']) ? ($ds['min_cutoff'] < 1E6 ? '<td class="right">%s</td>' : '<td class="right">%.4e</td>') : '<td class="right">%s</td>') .
+								'<td class="right">%s</td><td class="right">%s</td><td class="right">%s</td><td class="right">%s</td>' .
+								'<td class="right">%s</td>' .
 								"</tr>\n\n",
 								$this->displayTime($this->rra_pdp[$rra_key]),
 								$this->ds_name[$dskey],
 								$this->rra_cf[$rra_key],
-								$ds['totalsamples'],
-								(isset($ds['numsamples']) ? $ds['numsamples'] : '0'),
-								($ds['average'] != 'N/A' ? round($ds['average'],2) : $ds['average']),
-								($ds['stddev'] != 'N/A' ? round($ds['stddev'],2) : $ds['stddev']),
-								($ds['variance_avg'] != 'N/A' ? round($ds['variance_avg'],2) : $ds['variance_avg']),
-								(isset($ds['max_value']) ? round($ds['max_value'],2) : 'N/A'),
-								(isset($ds['min_value']) ? round($ds['min_value'],2) : 'N/A'),
-								($ds['max_cutoff'] != 'N/A' ? round($ds['max_cutoff'],2) : $ds['max_cutoff']),
-								($ds['min_cutoff'] != 'N/A' ? round($ds['min_cutoff'],2) : $ds['min_cutoff']),
-								$ds['stddev_killed'],
-								$ds['variance_killed'],
-								$ds['outwind_samples'],
-								$ds['outwind_killed']);
+								number_format_i18n($ds['totalsamples']),
+								(isset($ds['numsamples']) ? number_format_i18n($ds['numsamples']) : '0'),
+								($ds['average']         != 'N/A' ? number_format_i18n($ds['average'],2) : $ds['average']),
+								($ds['stddev']          != 'N/A' ? number_format_i18n($ds['stddev'],2) : $ds['stddev']),
+								($ds['variance_avg']    != 'N/A' ? number_format_i18n($ds['variance_avg'],2) : $ds['variance_avg']),
+								(isset($ds['max_value']) ? number_format_i18n($ds['max_value'],2) : 'N/A'),
+								(isset($ds['min_value']) ? number_format_i18n($ds['min_value'],2) : 'N/A'),
+								($ds['max_cutoff']      != 'N/A' ? number_format_i18n($ds['max_cutoff'],2) : 'N/A'),
+								($ds['min_cutoff']      != 'N/A' ? number_format_i18n($ds['min_cutoff'],2) : 'N/A'),
+								($ds['stddev_killed']   != 'N/A' ? number_format_i18n($ds['stddev_killed'], 2) : 'N/A'),
+								($ds['variance_killed'] != 'N/A' ? number_format_i18n($ds['variance_killed'], 2) : 'N/A'),
+								number_format_i18n($ds['outwind_samples']),
+								number_format_i18n($ds['outwind_killed']));
 						}
 					}
 				}
