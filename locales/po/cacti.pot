@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti 1.2.31\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-02-01 11:18-0500\n"
+"POT-Creation-Date: 2026-02-01 13:15-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -618,7 +618,7 @@ msgid "Included in Aggregate"
 msgstr ""
 
 #: aggregate_graphs.php:1295 aggregate_graphs.php:1625 graph_templates.php:854
-#: graph_view.php:814 graph_view.php:827 graphs.php:2263
+#: graph_view.php:814 graph_view.php:827 graphs.php:2263 lib/spikekill.php:1039
 msgid "Size"
 msgstr ""
 
@@ -1277,10 +1277,14 @@ msgstr ""
 #: lib/functions.php:5758 lib/functions.php:5762 lib/html.php:1221
 #: lib/html.php:1287 lib/html_reports.php:1633 lib/html_reports.php:1659
 #: lib/html_reports.php:1730 lib/html_reports.php:1731
-#: lib/html_reports.php:1732 plugins.php:732 pollers.php:1125
-#: user_admin.php:2328 utilities.php:738 utilities.php:1180 utilities.php:2617
-#: utilities.php:2745 utilities.php:2753 utilities.php:2764 utilities.php:2775
-#: utilities.php:2798 utilities.php:2844 utilities.php:3078
+#: lib/html_reports.php:1732 lib/spikekill.php:1068 lib/spikekill.php:1069
+#: lib/spikekill.php:1070 lib/spikekill.php:1071 lib/spikekill.php:1072
+#: lib/spikekill.php:1073 lib/spikekill.php:1074 lib/spikekill.php:1075
+#: lib/spikekill.php:1076 lib/spikekill.php:1077 lib/spikekill.php:1078
+#: plugins.php:732 pollers.php:1125 user_admin.php:2328 utilities.php:738
+#: utilities.php:1180 utilities.php:2617 utilities.php:2745 utilities.php:2753
+#: utilities.php:2764 utilities.php:2775 utilities.php:2798 utilities.php:2844
+#: utilities.php:3078
 msgid "N/A"
 msgstr ""
 
@@ -16289,16 +16293,74 @@ msgstr ""
 msgid "SNMP Command is: %s"
 msgstr ""
 
-#: lib/spikekill.php:259
+#: lib/spikekill.php:185
+msgid "FATAL: You must specify an RRDfile!"
+msgstr ""
+
+#: lib/spikekill.php:189
+#, php-format
+msgid "FATAL: File '%s' does not exist."
+msgstr ""
+
+#: lib/spikekill.php:191
+#, php-format
+msgid "FATAL: File '%s' is not writable by '%s'."
+msgstr ""
+
+#: lib/spikekill.php:251
+msgid "FATAL: Standard Deviation must be a positive integer."
+msgstr ""
+
+#: lib/spikekill.php:259 lib/spikekill.php:1039
 msgid "StdDev"
 msgstr ""
 
-#: lib/spikekill.php:265
+#: lib/spikekill.php:265 lib/spikekill.php:1039
 msgid "Variance"
 msgstr ""
 
 #: lib/spikekill.php:271
 msgid "Gap Fill"
+msgstr ""
+
+#: lib/spikekill.php:283
+msgid "FATAL: You must specify either 'stddev', 'variance', 'float', or 'fill' as methods."
+msgstr ""
+
+#: lib/spikekill.php:298
+msgid "FATAL: The outlier-start and outlier-end arguments must be in the format of YYYY-MM-DD HH:MM or a unix timestamp."
+msgstr ""
+
+#: lib/spikekill.php:302
+msgid "FATAL: The number of outliers to exclude must be a positive integer."
+msgstr ""
+
+#: lib/spikekill.php:310
+msgid "FATAL: Percent deviation must be a positive floating point number."
+msgstr ""
+
+#: lib/spikekill.php:316
+msgid "FATAL: Number of spikes to remove must be a positive integer"
+msgstr ""
+
+#: lib/spikekill.php:321
+msgid "FATAL: Outlier time range requires outlier-start and outlier-end to be specified."
+msgstr ""
+
+#: lib/spikekill.php:326
+msgid "FATAL: Outlier time range requires outlier-start to be less than outlier-end."
+msgstr ""
+
+#: lib/spikekill.php:331
+msgid "FATAL: The 'float' removal method requires the specification of a start and end date."
+msgstr ""
+
+#: lib/spikekill.php:335
+msgid "FATAL: The 'gapfill' removal method requires the specification of a start and end date."
+msgstr ""
+
+#: lib/spikekill.php:344
+msgid "FATAL: You must specify either 'last', 'avg' or 'nan' as a replacement method."
 msgstr ""
 
 #: lib/spikekill.php:347
@@ -16357,6 +16419,15 @@ msgstr ""
 msgid "Window Range:  All"
 msgstr ""
 
+#: lib/spikekill.php:454
+msgid "FATAL: RRDtool Command Failed.  Please verify that the RRDtool path is valid in Settings->Paths!"
+msgstr ""
+
+#: lib/spikekill.php:463
+#, php-format
+msgid "FATAL: RRDfile Backup of '%s' to '%s' FAILED!"
+msgstr ""
+
 #: lib/spikekill.php:670
 #, php-format
 msgid "NOTE: Searching for Spikes in XML file '%s'"
@@ -16408,6 +16479,58 @@ msgstr ""
 #: lib/spikekill.php:796
 #, php-format
 msgid "NOTE: Backing Up '%s' to '%s/%s'"
+msgstr ""
+
+#: lib/spikekill.php:1039
+msgid "Avg"
+msgstr ""
+
+#: lib/spikekill.php:1039
+msgid "CF"
+msgstr ""
+
+#: lib/spikekill.php:1039
+msgid "DS"
+msgstr ""
+
+#: lib/spikekill.php:1039
+msgid "NonNan"
+msgstr ""
+
+#: lib/spikekill.php:1039
+msgid "Samples"
+msgstr ""
+
+#: lib/spikekill.php:1040
+msgid "MaxStdDev"
+msgstr ""
+
+#: lib/spikekill.php:1040
+msgid "MaxValue"
+msgstr ""
+
+#: lib/spikekill.php:1040
+msgid "MinStdDev"
+msgstr ""
+
+#: lib/spikekill.php:1040
+msgid "MinValue"
+msgstr ""
+
+#: lib/spikekill.php:1040
+msgid "StdKilled"
+msgstr ""
+
+#: lib/spikekill.php:1040
+msgid "VarKilled"
+msgstr ""
+
+#: lib/spikekill.php:1040
+msgid "WindKilled"
+msgstr ""
+
+#: lib/spikekill.php:1040
+msgid "WindSamples"
 msgstr ""
 
 #: lib/template.php:1492
@@ -18101,7 +18224,7 @@ msgstr ""
 msgid "FATAL: Spike Kill method '%s' is Invalid"
 msgstr ""
 
-#: spikekill.php:112
+#: spikekill.php:116
 msgid "FATAL: Spike Kill Not Allowed"
 msgstr ""
 
