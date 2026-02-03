@@ -2465,30 +2465,6 @@ function html_spikekill_js() {
 					getPresentHTTPError(data);
 				});
 		});
-
-		$('.skvarpct').unbind().click(function() {
-			$('.skvarpct').find('i').removeClass('fa fa-check');
-			$(this).find('i:first').addClass('fa fa-check');
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
-
-			strURL = '?action=spikesave&setting=rvarpct&id='+$(this).attr('id').replace('varpct_','');
-			$.get(strURL)
-				.fail(function(data) {
-					getPresentHTTPError(data);
-				});
-		});
-
-		$('.skvarout').unbind().click(function() {
-			$('.skvarout').find('i').removeClass('fa fa-check');
-			$(this).find('i:first').addClass('fa fa-check');
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
-
-			strURL = '?action=spikesave&setting=rvarout&id='+$(this).attr('id').replace('varout_','');
-			$.get(strURL)
-				.fail(function(data) {
-					getPresentHTTPError(data);
-				});
-		});
 	}
 	</script>
 	<?php
