@@ -2936,20 +2936,6 @@ function html_spikekill_menu(int $local_graph_id) : void {
 	}
 	$rstddev  = html_spikekill_menu_item(__('Standard Deviations'), '', '', '', '', $rstddev);
 
-	$rvarpct = '';
-
-	foreach ($settings['spikes']['spikekill_percent']['array'] as $key => $value) {
-		$rvarpct .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_percent') == $key ? 'ti ti-check' : 'fa', 'skvarpct', 'varpct_' . $key);
-	}
-	$rvarpct = html_spikekill_menu_item(__('Variance Percentage'), '', '', '', '', $rvarpct);
-
-	$rvarout  = '';
-
-	foreach ($settings['spikes']['spikekill_outliers']['array'] as $key => $value) {
-		$rvarout .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_outliers') == $key ? 'ti ti-check' : 'fa', 'skvarout', 'varout_' . $key);
-	}
-	$rvarout  = html_spikekill_menu_item(__('Variance Outliers'), '', '', '', '', $rvarout);
-
 	$rkills  = '';
 
 	foreach ($settings['spikes']['spikekill_number']['array'] as $key => $value) {
@@ -2969,18 +2955,16 @@ function html_spikekill_menu(int $local_graph_id) : void {
 	<ul class='spikekillMenu' style='font-size:1em;'>
 	<?php
 	print html_spikekill_menu_item(__('Remove StdDev'), 'deviceUp ti ti-lifebuoy-filled', 'rstddev', '',  $local_graph_id);
-	print html_spikekill_menu_item(__('Remove Variance'), 'deviceRecovering ti ti-lifebuoy-filled', 'rvariance', '',  $local_graph_id);
 	print html_spikekill_menu_item(__('Gap Fill Range'), 'deviceUnknown ti ti-lifebuoy-filled', 'rfill', '',  $local_graph_id);
 	print html_spikekill_menu_item(__('Float Range'), 'deviceDown ti ti-lifebuoy-filled', 'rfloat', '',  $local_graph_id);
 	print html_spikekill_menu_item(__('Absolute Maximum'), 'deviceError ti ti-lifebuoy-filled', 'rabsolute', '',  $local_graph_id);
 
 	print html_spikekill_menu_item(__('Dry Run StdDev'), 'deviceUp ti ti-check', 'dstddev', '',  $local_graph_id);
-	print html_spikekill_menu_item(__('Dry Run Variance'), 'deviceRecovering ti ti-check', 'dvariance', '',  $local_graph_id);
 	print html_spikekill_menu_item(__('Dry Run Gap Fill Range'), 'deviceUnknown ti ti-check', 'dfill', '',  $local_graph_id);
 	print html_spikekill_menu_item(__('Dry Run Float Range'), 'deviceDown ti ti-check', 'dfloat', '',  $local_graph_id);
 	print html_spikekill_menu_item(__('Dry Run Absolute Maximum'), 'deviceError ti ti-check', 'dabsolute', '',  $local_graph_id);
 
-	print html_spikekill_menu_item(__('Settings'), 'ti ti-settings-filled', '', '', '', $ravgnan . $rstddev . $rvarpct . $rvarout . $rkills . $rabsmax);
+	print html_spikekill_menu_item(__('Settings'), 'ti ti-settings-filled', '', '', '', $ravgnan . $rstddev . $rkills . $rabsmax);
 }
 
 function html_spikekill_js() : void {
@@ -3055,16 +3039,6 @@ function html_spikekill_js() : void {
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 		});
 
-		$('.rvariance').unbind().click(function() {
-			removeSpikes('variance', false, $(this).attr('data-graph'));
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
-		});
-
-		$('.dvariance').unbind().click(function() {
-			removeSpikes('variance', true, $(this).attr('data-graph'));
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
-		});
-
 		$('.rfill').unbind().click(function() {
 			removeSpikes('fill', false, $(this).attr('data-graph'));
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
@@ -3125,30 +3099,6 @@ function html_spikekill_js() : void {
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 
 			strURL = '?action=spikesave&setting=rstddev&id='+$(this).attr('id').replace('stddev_','');
-			$.get(strURL)
-			.fail(function(data) {
-				getPresentHTTPError(data);
-			});
-		});
-
-		$('.skvarpct').unbind().click(function() {
-			$('.skvarpct').find('i').removeClass('ti ti-check');
-			$(this).find('i:first').addClass('ti ti-check');
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
-
-			strURL = '?action=spikesave&setting=rvarpct&id='+$(this).attr('id').replace('varpct_','');
-			$.get(strURL)
-			.fail(function(data) {
-				getPresentHTTPError(data);
-			});
-		});
-
-		$('.skvarout').unbind().click(function() {
-			$('.skvarout').find('i').removeClass('ti ti-check');
-			$(this).find('i:first').addClass('ti ti-check');
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
-
-			strURL = '?action=spikesave&setting=rvarout&id='+$(this).attr('id').replace('varout_','');
 			$.get(strURL)
 			.fail(function(data) {
 				getPresentHTTPError(data);
