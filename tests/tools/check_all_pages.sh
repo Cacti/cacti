@@ -505,8 +505,8 @@ FILTERED_LOG="$(grep -v \
 	-e "WEBUI NOTE: Poller Resource Cache scheduled for rebuild by user admin" \
 	-e "WEBUI NOTE: Poller Cache repopulated by user admin" \
 	-e "WEBUI NOTE: Cacti DS Stats purged by user admin" \
-	-e "import_oui_database" \ # MacTrack Rate Limited at ieee.org
-	-e "ieee.org/out.txt" \    # MacTrack Rate Limited at ieee.org
+	-e "import_oui_database" \
+	-e "ieee.org/out.txt" \
 	-e "IMPORT NOTE: File is Signed Correctly" \
 	-e "MAILER INFO:" \
 	-e "STATS:" \

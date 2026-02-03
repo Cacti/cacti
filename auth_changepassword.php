@@ -231,7 +231,7 @@ case 'changepassword':
 			array($_SESSION['sess_user_id']));
 
 		// Delete any user login sessions if using database sessions
-		db_execute("DELETE FROM sessions
+		db_execute_prepared("DELETE FROM sessions
 			WHERE user_id = ?",
 			array($_SESSION['sess_user_id']));
 
