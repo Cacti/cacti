@@ -2323,18 +2323,6 @@ function html_spikekill_menu($local_graph_id) {
 	}
 	$rstddev  = html_spikekill_menu_item(__('Standard Deviations'), '', '', '', '', $rstddev);
 
-	$rvarpct = '';
-	foreach ($settings['spikes']['spikekill_percent']['array'] as $key => $value) {
-		$rvarpct .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_percent') == $key ? 'fa fa-check':'fa', 'skvarpct', 'varpct_' . $key);
-	}
-	$rvarpct = html_spikekill_menu_item(__('Variance Percentage'), '', '', '', '', $rvarpct);
-
-	$rvarout  = '';
-	foreach ($settings['spikes']['spikekill_outliers']['array'] as $key => $value) {
-		$rvarout .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_outliers') == $key ? 'fa fa-check':'fa', 'skvarout', 'varout_' . $key);
-	}
-	$rvarout  = html_spikekill_menu_item(__('Variance Outliers'), '', '', '', '', $rvarout);
-
 	$rkills  = '';
 	foreach ($settings['spikes']['spikekill_number']['array'] as $key => $value) {
 		$rkills .= html_spikekill_menu_item($value,html_spikekill_setting('spikekill_number') == $key ? 'fa fa-check':'fa', 'skills', 'kills_' . $key);
@@ -2346,16 +2334,14 @@ function html_spikekill_menu($local_graph_id) {
 	<ul class='spikekillMenu' style='font-size:1em;'>
 	<?php
 	print html_spikekill_menu_item(__('Remove StdDev'), 'deviceUp fa fa-life-ring', 'rstddev', '',  $local_graph_id);
-	print html_spikekill_menu_item(__('Remove Variance'), 'deviceRecovering fa fa-life-ring', 'rvariance', '',  $local_graph_id);
 	print html_spikekill_menu_item(__('Gap Fill Range'), 'deviceUnknown fa fa-life-ring', 'rfill', '',  $local_graph_id);
 	print html_spikekill_menu_item(__('Float Range'), 'deviceDown fa fa-life-ring', 'rfloat', '',  $local_graph_id);
 
 	print html_spikekill_menu_item(__('Dry Run StdDev'), 'deviceUp fa fa-check', 'dstddev', '',  $local_graph_id);
-	print html_spikekill_menu_item(__('Dry Run Variance'), 'deviceRecovering fa fa-check', 'dvariance', '',  $local_graph_id);
 	print html_spikekill_menu_item(__('Dry Run Gap Fill Range'), 'deviceUnknown fa fa-check', 'dfill', '',  $local_graph_id);
 	print html_spikekill_menu_item(__('Dry Run Float Range'), 'deviceDown fa fa-check', 'dfloat', '',  $local_graph_id);
 
-	print html_spikekill_menu_item(__('Settings'), 'fa fa-cog', '', '', '', $ravgnan . $rstddev . $rvarpct . $rvarout . $rkills);
+	print html_spikekill_menu_item(__('Settings'), 'fa fa-cog', '', '', '', $ravgnan . $rstddev . $rkills);
 }
 
 function html_spikekill_js() {
@@ -2421,16 +2407,6 @@ function html_spikekill_js() {
 
 		$('.dstddev').unbind().click(function() {
 			removeSpikes('stddev', true, $(this).attr('data-graph'));
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
-		});
-
-		$('.rvariance').unbind().click(function() {
-			removeSpikes('variance', false, $(this).attr('data-graph'));
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
-		});
-
-		$('.dvariance').unbind().click(function() {
-			removeSpikes('variance', true, $(this).attr('data-graph'));
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 		});
 
