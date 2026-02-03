@@ -46,7 +46,6 @@ $out_start = '';
 $out_end   = '';
 $rrdfile   = '';
 $std_kills = false;
-$var_kills = false;
 $html      = false;
 $backup    = false;
 $user      = get_current_user();
@@ -54,8 +53,6 @@ $user      = get_current_user();
 $method   = read_config_option('spikekill_method', true);
 $numspike = read_config_option('spikekill_number', true);
 $stddev   = read_config_option('spikekill_deviations', true);
-$percent  = read_config_option('spikekill_percent', true);
-$outliers = read_config_option('spikekill_outliers', true);
 $avgnan   = read_config_option('spikekill_avgnan', true);
 $absmax   = read_config_option('spikekill_absmax', true);
 $dsfilter = read_config_option('spikekill_dsfilter', true);
@@ -66,23 +63,19 @@ switch($method) {
 
 		break;
 	case '2':
-		$method = 'variance';
-
-		break;
-	case '3':
 		$method = 'float';
 
 		break;
-	case '4':
+	case '3':
 		$method = 'fill';
 
 		break;
-	case '5':
+	case '4':
 		$method = 'absolute';
 
 		break;
 	default:
-		$method = 'variance';
+		$method = 'stddev';
 }
 
 // process calling arguments
@@ -130,16 +123,6 @@ if (cacti_sizeof($parms)) {
 				break;
 			case '--outlier-end':
 				$out_end   = $value;
-
-				break;
-			case '--outliers':
-			case '-O':
-				$outliers = $value;
-
-				break;
-			case '--percent':
-			case '-P':
-				$percent = $value;
 
 				break;
 			case '--html':
@@ -218,7 +201,7 @@ if ($out_end != '' && !is_numeric($out_end)) {
 	}
 }
 
-$spiker = new spikekill($rrdfile, $method, $avgnan, $stddev, $out_start, $out_end, $outliers, $percent, $numspike, $dsfilter, $absmax);
+$spiker = new spikekill($rrdfile, $method, $avgnan, $stddev, $out_start, $out_end, $numspike, $dsfilter, $absmax);
 
 if ($debug) {
 	$spiker->debug = true;

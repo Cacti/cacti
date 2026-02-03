@@ -2833,14 +2833,6 @@ function html_spikekill_actions() : void {
 					set_user_setting('spikekill_deviations', gfrv('id'));
 
 					break;
-				case 'rvarout':
-					set_user_setting('spikekill_outliers', gfrv('id'));
-
-					break;
-				case 'rvarpct':
-					set_user_setting('spikekill_percent', gfrv('id'));
-
-					break;
 				case 'rkills':
 					set_user_setting('spikekill_number', gfrv('id'));
 
@@ -2936,20 +2928,6 @@ function html_spikekill_menu(int $local_graph_id) : void {
 	}
 	$rstddev  = html_spikekill_menu_item(__('Standard Deviations'), '', '', '', '', $rstddev);
 
-	$rvarpct = '';
-
-	foreach ($settings['spikes']['spikekill_percent']['array'] as $key => $value) {
-		$rvarpct .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_percent') == $key ? 'ti ti-check' : 'fa', 'skvarpct', 'varpct_' . $key);
-	}
-	$rvarpct = html_spikekill_menu_item(__('Variance Percentage'), '', '', '', '', $rvarpct);
-
-	$rvarout  = '';
-
-	foreach ($settings['spikes']['spikekill_outliers']['array'] as $key => $value) {
-		$rvarout .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_outliers') == $key ? 'ti ti-check' : 'fa', 'skvarout', 'varout_' . $key);
-	}
-	$rvarout  = html_spikekill_menu_item(__('Variance Outliers'), '', '', '', '', $rvarout);
-
 	$rkills  = '';
 
 	foreach ($settings['spikes']['spikekill_number']['array'] as $key => $value) {
@@ -2969,18 +2947,16 @@ function html_spikekill_menu(int $local_graph_id) : void {
 	<ul class='spikekillMenu' style='font-size:1em;'>
 	<?php
 	print html_spikekill_menu_item(__('Remove StdDev'), 'deviceUp ti ti-lifebuoy-filled', 'rstddev', '',  $local_graph_id);
-	print html_spikekill_menu_item(__('Remove Variance'), 'deviceRecovering ti ti-lifebuoy-filled', 'rvariance', '',  $local_graph_id);
-	print html_spikekill_menu_item(__('Gap Fill Range'), 'deviceUnknown ti ti-lifebuoy-filled', 'routlier', '',  $local_graph_id);
-	print html_spikekill_menu_item(__('Float Range'), 'deviceDown ti ti-lifebuoy-filled', 'rrangefill', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Gap Fill Range'), 'deviceUnknown ti ti-lifebuoy-filled', 'rfill', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Float Range'), 'deviceDown ti ti-lifebuoy-filled', 'rfloat', '',  $local_graph_id);
 	print html_spikekill_menu_item(__('Absolute Maximum'), 'deviceError ti ti-lifebuoy-filled', 'rabsolute', '',  $local_graph_id);
 
 	print html_spikekill_menu_item(__('Dry Run StdDev'), 'deviceUp ti ti-check', 'dstddev', '',  $local_graph_id);
-	print html_spikekill_menu_item(__('Dry Run Variance'), 'deviceRecovering ti ti-check', 'dvariance', '',  $local_graph_id);
-	print html_spikekill_menu_item(__('Dry Run Gap Fill Range'), 'deviceUnknown ti ti-check', 'doutlier', '',  $local_graph_id);
-	print html_spikekill_menu_item(__('Dry Run Float Range'), 'deviceDown ti ti-check', 'drangefill', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Dry Run Gap Fill Range'), 'deviceUnknown ti ti-check', 'dfill', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Dry Run Float Range'), 'deviceDown ti ti-check', 'dfloat', '',  $local_graph_id);
 	print html_spikekill_menu_item(__('Dry Run Absolute Maximum'), 'deviceError ti ti-check', 'dabsolute', '',  $local_graph_id);
 
-	print html_spikekill_menu_item(__('Settings'), 'ti ti-settings-filled', '', '', '', $ravgnan . $rstddev . $rvarpct . $rvarout . $rkills . $rabsmax);
+	print html_spikekill_menu_item(__('Settings'), 'ti ti-settings-filled', '', '', '', $ravgnan . $rstddev . $rkills . $rabsmax);
 }
 
 function html_spikekill_js() : void {
@@ -2997,7 +2973,9 @@ function html_spikekill_js() : void {
 			return false;
 		});
 
-		$('a.spikekill').unbind().click(function() {
+		$('a.spikekill').unbind().click(function(event) {
+			event.preventDefault();
+
 			if (spikeKillOpen == false) {
 				local_graph_id = $(this).attr('data-graph');
 
@@ -3028,7 +3006,6 @@ function html_spikekill_js() : void {
 					.fail(function(data) {
 						getPresentHTTPError(data);
 					});
-
 			} else {
 				spikeKillClose();
 			}
@@ -3044,52 +3021,42 @@ function html_spikekill_js() : void {
 
 	function spikeKillActions() {
 		$('.rstddev').unbind().click(function() {
-			removeSpikesStdDev($(this).attr('data-graph'));
+			removeSpikes('stddev', false, $(this).attr('data-graph'));
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 		});
 
 		$('.dstddev').unbind().click(function() {
-			dryRunStdDev($(this).attr('data-graph'));
+			removeSpikes('stddev', true, $(this).attr('data-graph'));
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 		});
 
-		$('.rvariance').unbind().click(function() {
-			removeSpikesVariance($(this).attr('data-graph'));
+		$('.rfill').unbind().click(function() {
+			removeSpikes('fill', false, $(this).attr('data-graph'));
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 		});
 
-		$('.dvariance').unbind().click(function() {
-			dryRunVariance($(this).attr('data-graph'));
+		$('.dfill').unbind().click(function() {
+			removeSpikes('fill', true, $(this).attr('data-graph'));
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 		});
 
-		$('.routlier').unbind().click(function() {
-			removeSpikesInRange($(this).attr('data-graph'));
+		$('.rfloat').unbind().click(function() {
+			removeSpikes('float', false, $(this).attr('data-graph'));
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 		});
 
-		$('.doutlier').unbind().click(function() {
-			dryRunSpikesInRange($(this).attr('data-graph'));
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
-		});
-
-		$('.rrangefill').unbind().click(function() {
-			removeRangeFill($(this).attr('data-graph'));
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
-		});
-
-		$('.drangefill').unbind().click(function() {
-			dryRunRangeFill($(this).attr('data-graph'));
+		$('.dfloat').unbind().click(function() {
+			removeSpikes('float', true, $(this).attr('data-graph'));
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 		});
 
 		$('.rabsolute').unbind().click(function() {
-			removeSpikesAbsolute($(this).attr('data-graph'));
+			removeSpikes('absolute', false, $(this).attr('data-graph'));
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 		});
 
 		$('.dabsolute').unbind().click(function() {
-			dryRunAbsolute($(this).attr('data-graph'));
+			removeSpikes('absolute', true, $(this).attr('data-graph'));
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 		});
 
@@ -3123,30 +3090,6 @@ function html_spikekill_js() : void {
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 
 			strURL = '?action=spikesave&setting=rstddev&id='+$(this).attr('id').replace('stddev_','');
-			$.get(strURL)
-			.fail(function(data) {
-				getPresentHTTPError(data);
-			});
-		});
-
-		$('.skvarpct').unbind().click(function() {
-			$('.skvarpct').find('i').removeClass('ti ti-check');
-			$(this).find('i:first').addClass('ti ti-check');
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
-
-			strURL = '?action=spikesave&setting=rvarpct&id='+$(this).attr('id').replace('varpct_','');
-			$.get(strURL)
-			.fail(function(data) {
-				getPresentHTTPError(data);
-			});
-		});
-
-		$('.skvarout').unbind().click(function() {
-			$('.skvarout').find('i').removeClass('ti ti-check');
-			$(this).find('i:first').addClass('ti ti-check');
-			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
-
-			strURL = '?action=spikesave&setting=rvarout&id='+$(this).attr('id').replace('varout_','');
 			$.get(strURL)
 			.fail(function(data) {
 				getPresentHTTPError(data);

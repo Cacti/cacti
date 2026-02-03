@@ -4221,149 +4221,39 @@ function clearGraphTimespanFilter() {
 	});
 }
 
-function finalizeSpikeKillResults(options, data) {
-	redrawGraph(local_graph_id);
+function removeSpikes(method, dryrun, local_graph_id) {
+	var graph_start = $('#graph_' + local_graph_id).attr('graph_start');
+	var graph_end   = $('#graph_' + local_graph_id).attr('graph_end');
 
-	$('#spikeresults').remove();
-
-	if ($('#spikeresults').length == 0) {
-		$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="' + spikeKillResults + '"></div>');
-	} else {
-		$('#spikeresults').empty();
+	if (!(graph_start > 0 && graph_end > 0)) {
+		console.log('FATAL: Can not find Graph ID: ' + local_graph_id);
+		return false;
 	}
-
-	$('#spikeresults').html(data.results);
-	$('#spikeresults').dialog({ width: 1100, maxHeight: 600 });
-}
-
-function removeSpikesStdDev(local_graph_id) {
-	var href = urlPath + 'spikekill.php' +
-		'?method=stddev' +
-		'&local_graph_id=' + local_graph_id;
-
-	loadUrl({
-		url: href,
-		json: true,
-		funcEnd: 'finalizeSpikeKillResults',
-	});
-}
-
-function removeSpikesVariance(local_graph_id) {
-	var href = urlPath + 'spikekill.php' +
-		'?method=variance' +
-		'&local_graph_id=' + local_graph_id;
-
-	loadUrl({
-		url: href,
-		json: true,
-		funcEnd: 'finalizeSpikeKillResults',
-	});
-}
-
-function removeSpikesInRange(local_graph_id) {
-	var href = urlPath + 'spikekill.php' +
-		'?method=fill' +
-		'&local_graph_id=' + local_graph_id +
-		'&outlier-start=' + graph_start +
-		'&outlier-end=' + graph_end;
-
-	loadUrl({
-		url: href,
-		json: true,
-		funcEnd: 'finalizeSpikeKillResults',
-	});
-}
-
-function removeRangeFill(local_graph_id) {
-	var href = urlPath + 'spikekill.php' +
-		'?method=float' +
-		'&local_graph_id=' + local_graph_id +
-		'&outlier-start=' + graph_start +
-		'&outlier-end=' + graph_end;
-
-	loadUrl({
-		url: href,
-		json: true,
-		funcEnd: 'finalizeSpikeKillResults',
-	});
-}
-
-function removeSpikesAbsolute(local_graph_id) {
-	var strURL = urlPath + 'spikekill.php?method=absolute&local_graph_id=' + local_graph_id;
-
-	loadUrl({
-		url: href,
-		json: true,
-		funcEnd: 'finalizeSpikeKillResults',
-	});
-}
-
-function dryRunStdDev(local_graph_id) {
-	var href = urlPath + 'spikekill.php' +
-		'?method=stddev' +
-		'&dryrun=true' +
-		'&local_graph_id=' + local_graph_id;
-
-	loadUrl({
-		url: href,
-		json: true,
-		funcEnd: 'finalizeSpikeKillResults',
-	});
-}
-
-function dryRunVariance(local_graph_id) {
-	var href = urlPath + 'spikekill.php' +
-		'?method=variance' +
-		'&dryrun=true' +
-		'&local_graph_id=' + local_graph_id;
-
-	loadUrl({
-		url: href,
-		json: true,
-		funcEnd: 'finalizeSpikeKillResults',
-	});
-}
-
-function dryRunSpikesInRange(local_graph_id) {
-	var href = urlPath + 'spikekill.php' +
-		'?method=fill' +
-		'&dryrun=true' +
-		'&local_graph_id=' + local_graph_id +
-		'&outlier-start=' + graph_start +
-		'&outlier-end=' + graph_end;
 
 	closeDateFilters();
 
-	loadUrl({
-		url: href,
-		json: true,
-		funcEnd: 'finalizeSpikeKillResults',
-	});
-}
-
-function dryRunRangeFill(local_graph_id) {
 	var href = urlPath + 'spikekill.php' +
-		'?method=float' +
-		'&dryrun=true' +
+		'?method=' + method +
+		(dryrun ? '&dryrun=true':'') +
 		'&local_graph_id=' + local_graph_id +
-		'&outlier-start=' + graph_start +
-		'&outlier-end=' + graph_end;
+		'&outlier-start='  + graph_start +
+		'&outlier-end='    + graph_end;
 
-	loadUrl({
-		url: href,
-		json: true,
-		funcEnd: 'finalizeSpikeKillResults',
-	});
-}
+	$.getJSON(href)
+		.done(function(data) {
+			checkForRedirects(data, href);
 
-function dryRunAbsolute(local_graph_id) {
-	var href = urlPath + 'spikekill.php?method=absolute&dryrun=true&local_graph_id=' + local_graph_id;
+			redrawGraph(local_graph_id);
 
-	loadUrl({
-		url: href,
-		json: true,
-		funcEnd: 'finalizeSpikeKillResults',
-	});
+			$('#spikeresults').remove();
+			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="' + spikeKillResults + '"></div>');
+			$('#spikeresults').html(data.results);
+			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
+		})
+		.fail(function(data) {
+			getPresentHTTPError(data);
+		}
+	);
 }
 
 function redrawGraph(graph_id) {
@@ -4404,58 +4294,51 @@ function redrawGraph(graph_id) {
 		(isMeasure ? '&measure='+$('#measure').val() : '') +
 		'&business_hours=' + (isBusiness ? 'true' : 'false') +
 
-	loadUrl({
-		url: href,
-		funcEnd: 'finalizeGraphRedraw',
-	});
-}
+	$.getJSON(href, function(data) {
+		if (typeof data.status == 'undefined') {
+			if (myWidth < data.image_width) {
+				ratio = myWidth / data.image_width;
+				data.image_width = parseInt(data.image_width * ratio);
+				data.image_height = parseInt(data.image_height * ratio);
+				data.graph_width = parseInt(data.graph_width * ratio);
+				data.graph_height = parseInt(data.graph_height * ratio);
+				data.graph_top = parseInt(data.graph_top * ratio);
+				data.graph_left = parseInt(data.graph_left * ratio);
+			}
 
-function finalizeGraphRedraw(options, data) {
-	if (typeof data.status == 'undefined') {
-		if (myWidth < data.image_width) {
-			ratio = myWidth / data.image_width;
-			data.image_width = parseInt(data.image_width * ratio);
-			data.image_height = parseInt(data.image_height * ratio);
-			data.graph_width = parseInt(data.graph_width * ratio);
-			data.graph_height = parseInt(data.graph_height * ratio);
-			data.graph_top = parseInt(data.graph_top * ratio);
-			data.graph_left = parseInt(data.graph_left * ratio);
+			$('#wrapper_' + data.local_graph_id).empty().html(
+				"<img class='graphimage' id='graph_" + data.local_graph_id + "'" +
+				" src='data:image/" + data.type + ";base64," + data.image + "'" +
+				" rra_id='" + data.rra_id + "'" +
+				" graph_type='" + data.type + "'" +
+				" graph_id='" + data.local_graph_id + "'" +
+				" graph_start='" + data.graph_start + "'" +
+				" graph_end='" + data.graph_end + "'" +
+				" graph_left='" + data.graph_left + "'" +
+				" graph_top='" + data.graph_top + "'" +
+				" graph_width='" + data.graph_width + "'" +
+				" graph_height='" + data.graph_height + "'" +
+				" width='" + data.image_width + "'" +
+				" height='" + data.image_height + "'" +
+				" image_width='" + data.image_width + "'" +
+				" image_height='" + data.image_height + "'" +
+				" canvas_top='" + data.graph_top + "'" +
+				" canvas_left='" + data.graph_left + "'" +
+				" canvas_width='" + data.graph_width + "'" +
+				" canvas_height='" + data.graph_height + "'" +
+				" value_min='" + data.value_min + "'" +
+				" value_max='" + data.value_max + "'>"
+			);
+
+			$('#graph_' + data.local_graph_id).zoom({
+				inputfieldStartTime: 'date1',
+				inputfieldEndTime: 'date2',
+				serverTimeOffset: timeOffset
+			});
+
+			data = undefined;
 		}
-
-		$('#wrapper_' + data.local_graph_id).empty().html(
-			"<img class='graphimage' id='graph_" + data.local_graph_id + "'" +
-			" src='data:image/" + data.type + ";base64," + data.image + "'" +
-			" rra_id='" + data.rra_id + "'" +
-			" graph_type='" + data.type + "'" +
-			" graph_id='" + data.local_graph_id + "'" +
-			" graph_start='" + data.graph_start + "'" +
-			" graph_end='" + data.graph_end + "'" +
-			" graph_left='" + data.graph_left + "'" +
-			" graph_top='" + data.graph_top + "'" +
-			" graph_width='" + data.graph_width + "'" +
-			" graph_height='" + data.graph_height + "'" +
-			" width='" + data.image_width + "'" +
-			" height='" + data.image_height + "'" +
-			" image_width='" + data.image_width + "'" +
-			" image_height='" + data.image_height + "'" +
-			" canvas_top='" + data.graph_top + "'" +
-			" canvas_left='" + data.graph_left + "'" +
-			" canvas_width='" + data.graph_width + "'" +
-			" canvas_height='" + data.graph_height + "'" +
-			" value_min='" + data.value_min + "'" +
-			" value_max='" + data.value_max + "'>"
-		);
-
-		$('#graph_' + data.local_graph_id).zoom({
-			inputfieldStartTime: 'date1',
-			inputfieldEndTime: 'date2',
-			serverTimeOffset: timeOffset
-		});
-
-		data = undefined;
-	} else {
-		getPresentHTTPError(data);
-	}
+	});
 }
 
 function refreshGraphs() {
