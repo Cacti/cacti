@@ -58,19 +58,19 @@ class Diff_SequenceMatcher
 	private $b = null;
 
 	/**
-	 * @var var|null
+	 * @var array The fullBCount array.
 	 */
-	private $opCodes        = null;
+	private $fullBCount = null;
 
 	/**
-	 * @var var|null
+	 * @var array The opCode array.
+	 */
+	private $opCode = null;
+
+	/**
+	 * @var array The matchingBlocks array.
 	 */
 	private $matchingBlocks = null;
-
-	/**
-	 * @var var|null
-	 */
-	private $fullBCount     = null;
 
 	/**
 	 * @var array Array of characters that are considered junk from the second sequence. Characters are the array key.
