@@ -1,24 +1,37 @@
 #!/usr/bin/env perl
 
+use strict;
+use warnings;
+
 delete @ENV{qw(PATH)};
 $ENV{PATH} = '/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/sbin';
 
-#
-# Get the OS name
-#
-my $osname = "$^O";
 
-if ($osname =~ 'freebsd') {
-  # FreeBSD have other parameters
-  $dfcmd="df -k -P $ARGV[0] | grep -v Filesystem |";
+my $osname = "$^O";
+my $path = $ARGV[0] // '';
+($path) = $path =~ /^([\w\/-]+)$/ if $path ne '';
+
+my @dfcmd;
+if ($osname =~ /freebsd/i) {
+	# FreeBSD have other parameters
+	@dfcmd = ('df', '-k', '-P');
 } else {
-  $dfcmd="df --block-size=1024 -P $ARGV[0] | grep -v Filesystem |";
+	@dfcmd = ('df', '--block-size=1024', '-P');
 }
 
-open(PROCESS, $dfcmd);
-foreach (<PROCESS>) {
-	if ($_ =~ /($ARGV[0])(.* )(.*[0-9])(.* )(.*[0-9])(.* )(.*[0-9])(.* )(.*[0-9])%(.* )/) {
-		print "megabytes:$7 percent:$9";
+if ($path ne '') {
+	push @dfcmd, $path;
+}
+
+open(my $process, '-|', @dfcmd) or exit 1;
+while (my $line = <$process>) {
+	chomp($line);
+	next if $line =~ /^Filesystem\s+/;
+	if ($line =~ /^(\S+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)%\s+(\S+)/) {
+		print "megabytes:$4 percent:$5";
+		if ($path ne '') {
+			last;
+		}
 	}
 }
-close(PROCESS);
+close($process);

@@ -1,13 +1,15 @@
 #!/usr/bin/env perl
 
+use strict;
+use warnings;
 delete @ENV{qw(PATH)};
 $ENV{PATH} = '/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/sbin';
 
-$output = `bash -c 'wget --quiet -O - \"http:\/\/wisapidata.weatherbug.com\/WxDataISAPI\/WxDataISAPI.dll?Magic=10991&RegNum=3647055&ZipCode=17241&StationID=NWVLL&Units=0&Version=2.7&Fore=1&t=1015084854\/"'`;
-
+my $url = 'http://wisapidata.weatherbug.com/WxDataISAPI/WxDataISAPI.dll?Magic=10991&RegNum=3647055&ZipCode=17241&StationID=NWVLL&Units=0&Version=2.7&Fore=1&t=1015084854/';
+my $output = `bash -c 'wget --quiet -O - "$url"'`;
 $output =~ s/[^-0-9|\|.]*//gi;
 
-@weather = split(/\|/, $output);
+my @weather = split(/\|/, $output);
 
 # docs
 # [0] - ID?
