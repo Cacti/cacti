@@ -1084,7 +1084,6 @@ class spikekill {
 	}
 
 	private function updateXML(&$output, &$rra) {
-		/* variance subroutine */
 		$rra_num   = 0;
 		$ds_num    = 0;
 		$last_num  = array();
