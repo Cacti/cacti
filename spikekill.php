@@ -30,7 +30,6 @@ $debug = false;
 if (isrv('method')) {
 	switch(gnrv('method')) {
 		case 'stddev':
-		case 'variance':
 		case 'fill':
 		case 'float':
 		case 'absolute':

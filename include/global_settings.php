@@ -2882,12 +2882,11 @@ $settings['spikes'] = [
 	],
 	'spikekill_method' => [
 		'friendly_name' => __('Removal Method'),
-		'description'   => __('There are two removal methods.  The first, Standard Deviation, will remove any sample that is X number of standard deviations away from the average of samples.  The second method, Variance, will remove any sample that is X% more than the Variance average.  The Variance method takes into account a certain number of \'outliers\'.  Those are exceptional samples, like the spike, that need to be excluded from the Variance Average calculation.'),
+		'description'   => __('There are two removal methods.  The first, Standard Deviation, will remove any sample that is X number of standard deviations away from the average of samples.'),
 		'method'        => 'drop_array',
 		'default'       => '2',
 		'array'         => [
 			1 => __('Standard Deviation'),
-			2 => __('Variance Based w/Outliers Removed')
 		]
 	],
 	'spikekill_avgnan' => [
@@ -2920,51 +2919,6 @@ $settings['spikes'] = [
 			50  => __('%d Standard Deviations', 50),
 			100 => __('%d Standard Deviations', 100),
 			200 => __('%d Standard Deviations', 200),
-		]
-	],
-	'spikekill_percent' => [
-		'friendly_name' => __('Variance Percentage'),
-		'description'   => __('This value represents the percentage above the adjusted sample average once outliers have been removed from the sample.  For example, a Variance Percentage of 100%% on an adjusted average of 50 would remove any sample above the quantity of 100 from the graph.'),
-		'method'        => 'drop_array',
-		'default'       => '1000',
-		'array'         => [
-			100    => '100 %',
-			200    => '200 %',
-			300    => '300 %',
-			400    => '400 %',
-			500    => '500 %',
-			600    => '600 %',
-			700    => '700 %',
-			800    => '800 %',
-			900    => '900 %',
-			1000   => '1000 %',
-			2000   => '2000 %',
-			3000   => '3000 %',
-			10000  => '10000 %',
-			50000  => '50000 %',
-			100000 => '100000 %',
-			500000 => '500000 %',
-		]
-	],
-	'spikekill_outliers' => [
-		'friendly_name' => __('Variance Number of Outliers'),
-		'description'   => __('This value represents the number of high and low average samples will be removed from the sample set prior to calculating the Variance Average.  If you choose an outlier value of 5, then both the top and bottom 5 averages are removed.'),
-		'method'        => 'drop_array',
-		'default'       => '5',
-		'array'         => [
-			3    => __('%d High/Low Samples', 3),
-			4    => __('%d High/Low Samples', 4),
-			5    => __('%d High/Low Samples', 5),
-			6    => __('%d High/Low Samples', 6),
-			7    => __('%d High/Low Samples', 7),
-			8    => __('%d High/Low Samples', 8),
-			9    => __('%d High/Low Samples', 9),
-			10   => __('%d High/Low Samples', 10),
-			20   => __('%d High/Low Samples', 20),
-			50   => __('%d High/Low Samples', 50),
-			100  => __('%d High/Low Samples', 100),
-			500  => __('%d High/Low Samples', 500),
-			1000 => __('%d High/Low Samples', 1000),
 		]
 	],
 	'spikekill_number' => [

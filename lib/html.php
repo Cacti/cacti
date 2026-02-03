@@ -2833,14 +2833,6 @@ function html_spikekill_actions() : void {
 					set_user_setting('spikekill_deviations', gfrv('id'));
 
 					break;
-				case 'rvarout':
-					set_user_setting('spikekill_outliers', gfrv('id'));
-
-					break;
-				case 'rvarpct':
-					set_user_setting('spikekill_percent', gfrv('id'));
-
-					break;
 				case 'rkills':
 					set_user_setting('spikekill_number', gfrv('id'));
 
