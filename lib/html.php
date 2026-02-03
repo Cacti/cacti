@@ -3006,7 +3006,6 @@ function html_spikekill_js() : void {
 					.fail(function(data) {
 						getPresentHTTPError(data);
 					});
-
 			} else {
 				spikeKillClose();
 			}

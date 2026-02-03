@@ -4294,7 +4294,7 @@ function redrawGraph(graph_id) {
 		(isMeasure ? '&measure='+$('#measure').val() : '') +
 		'&business_hours=' + (isBusiness ? 'true' : 'false') +
 
-	$.get(href, function(data) {
+	$.getJSON(href, function(data) {
 		if (typeof data.status == 'undefined') {
 			if (myWidth < data.image_width) {
 				ratio = myWidth / data.image_width;
