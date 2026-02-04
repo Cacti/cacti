@@ -1812,6 +1812,21 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
  * @return (void)
  */
 function replicate_out_table($conn, &$data, $table, $remote_poller_id, $truncate = true, $exclude = false, $level = POLLER_VERBOSITY_NONE) {
+	// Get the create table syntax just in case
+	$create_table = db_fetch_row("SHOW CREATE TABLE `$table`");
+
+	if (cacti_sizeof($create_table)) {
+		$create = $create_table['Create Table'];
+	} else {
+		cacti_log("WARNING: Replicate Out Unable to get Table Schema for $table.  Table does not exist!", false, 'POLLER');
+		$create = '';
+		return;
+	}
+
+	if (!db_table_exists($table, false, $conn) && $create != '') {
+		db_execute($create, false, $conn);
+	}
+
 	if (cacti_sizeof($data)) {
 		/* check if the table structure changed, and if so, recreate */
 		$local_columns  = db_fetch_assoc('SHOW COLUMNS FROM ' . $table);
