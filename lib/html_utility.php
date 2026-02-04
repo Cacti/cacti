@@ -843,7 +843,9 @@ function remove_column_from_order_string($column) {
 }
 
 function get_order_string_page() {
-	$page = str_replace('.php', '', get_current_page());
+	static $page_count = 0;
+
+	$page = $page_count . '_' . str_replace('.php', '', get_current_page());
 
 	if (isset_request_var('action')) {
 		$page .= '_' . get_nfilter_request_var('action');
@@ -852,6 +854,8 @@ function get_order_string_page() {
 	if (isset_request_var('tab')) {
 		$page .= '_' . get_nfilter_request_var('tab');
 	}
+
+	$page_count++;
 
 	return $page;
 }
