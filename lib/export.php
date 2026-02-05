@@ -1196,6 +1196,6 @@ function get_item_xml(string $type, int $id, bool $follow_deps) : string {
 	return $xml_text;
 }
 
-function xml_character_encode(string $text) : string {
+function xml_character_encode(mixed $text) : string {
 	return htmle($text);
 }
