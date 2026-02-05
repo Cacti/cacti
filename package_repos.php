@@ -96,7 +96,26 @@ function form_save() : void {
 
 					$file = $repoloc . '/' . $save['repo_branch'] . '/package.manifest';
 
-					$data = file_get_contents($file);
+					if ($save['repo_api_key'] != '') {
+						$options = [
+							'https' => [
+								'method' => 'GET',
+								'header' => 'Authorization: Bearer ' . $save['repo_api_key']
+							]
+						];
+
+						$context  = stream_context_create($options);
+					} else {
+						$options = [
+							'https' => [
+								'method'  => 'GET',
+							]
+						];
+
+						$context  = stream_context_create($options);
+					}
+
+					$data = file_get_contents($file, false, $context);
 
 					if ($data != '') {
 						raise_message('repo_exists', __('The Repo \'%s\' is Reachable on GitHub.', $save['name']), MESSAGE_LEVEL_INFO);
