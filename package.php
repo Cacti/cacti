@@ -450,8 +450,7 @@ function export() : void {
 	$(function() {
 		$('#export_type').change(function() {
 			strURL  = urlPath+'package.php';
-			strURL += '?header=false';
-			strURL += '&export_type='+$('#export_type').val();
+			strURL += '?export_type='+$('#export_type').val();
 			strURL += '&author='+$('#author').val();
 			strURL += '&homepage='+escape($('#homepage').val());
 			strURL += '&email='+$('#email').val();
@@ -462,8 +461,7 @@ function export() : void {
 
 		$('#export_item_id').change(function() {
 			strURL  = urlPath+'package.php';
-			strURL += '?header=false';
-			strURL += '&export_type='+$('#export_type').val();
+			strURL += '?export_type='+$('#export_type').val();
 			strURL += '&export_item_id='+$('#export_item_id').val();
 			strURL += '&author='+$('#author').val();
 			strURL += '&homepage='+escape($('#homepage').val());
