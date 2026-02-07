@@ -1,17 +1,5 @@
 msgid ""
-msgstr ""
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-02-01 13:15-0500\n"
-"PO-Revision-Date: 2025-12-14 17:18+0000\n"
-"Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
-"Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\n"
-"Language: sv-SE\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-02-01 13:15-0500\nPO-Revision-Date: 2026-02-07 08:18+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php:29 include/global_arrays.php:2638 lib/html.php:2607
 msgid "About Cacti"
@@ -39,10 +27,8 @@ msgid "Honorable Mentions"
 msgstr "Hedersomnämnanden"
 
 #: about.php:62
-#, fuzzy
-#| msgid "Contributors to Docuemntation, QA, Packaging, the Forums and our YouTube page."
 msgid "Contributors to Documentation, QA, Packaging, the Forums and our YouTube page."
-msgstr "Bidrar till dokumentation, kvalitetssäkring, paketering, forum och vår YouTube-sida."
+msgstr "Bidragsgivare till dokumentation, kvalitetssäkring, paketering, forum och vår YouTube-sida."
 
 #: about.php:72
 msgid "Emeritus Members"
@@ -1313,7 +1299,7 @@ msgstr "Inaktivera"
 
 #: automation_graph_rules.php:143 automation_graph_rules.php:189
 msgid "An attempt was made to perform a SQL injection in Graph automation"
-msgstr ""
+msgstr "Ett försök gjordes att utföra en SQL-injektion i Graph-automatisering"
 
 #: automation_graph_rules.php:293
 msgid "Press 'Continue' to delete the following Graph Rules."
@@ -2459,7 +2445,7 @@ msgstr "Inga mallar för automatiseringsenheter hittades"
 
 #: automation_tree_rules.php:140
 msgid "An attempt was made to perform a SQL injection in Tree automation"
-msgstr ""
+msgstr "Ett försök gjordes att utföra en SQL-injektion i Tree Automation"
 
 #: automation_tree_rules.php:271
 msgid "Click 'Continue' to delete the following Rule(s)."
@@ -6331,10 +6317,8 @@ msgid "SHA-256"
 msgstr "SHA-256"
 
 #: include/global_arrays.php:659
-#, fuzzy
-#| msgid "SHA-392"
 msgid "SHA-384"
-msgstr "SHA-392"
+msgstr "SHA-384"
 
 #: include/global_arrays.php:660
 msgid "SHA-512"
@@ -6393,10 +6377,8 @@ msgid "TCP Ping"
 msgstr "TCP Ping"
 
 #: include/global_arrays.php:698
-#, fuzzy
-#| msgid "TCP Ping"
 msgid "TCP Ping Closed"
-msgstr "TCP Ping"
+msgstr "TCP Ping stängd"
 
 #: include/global_arrays.php:699
 msgid "UDP Ping"
@@ -8900,10 +8882,8 @@ msgid "The method Cacti will use to determine if a host is available for polling
 msgstr "Den metod som Cacti kommer att använda för att avgöra om en värd är tillgänglig för pollning. <br><i>OBS: Vi rekommenderar att SNMP alltid väljs som ett minimum.</i>"
 
 #: include/global_form.php:1272
-#, fuzzy
-#| msgid "The type of ping packet to sent.  <br><i>NOTE: ICMP on Linux/UNIX requires root privileges.</i>"
 msgid "The type of ping packet to sent.  <br><i>NOTE: ICMP on Linux/UNIX requires root privileges.</i>  <br><i>NOTE: TCP Ping Closed - Even if the tcp ping is not successful, the device can be considered UP.</i>"
-msgstr "Den typ av pingpaket som ska skickas. <br> <i>OBS! ICMP på Linux / UNIX kräver root privilegier.</i>"
+msgstr "Typ av pingpaket som ska skickas.  <br><i>OBS: ICMP på Linux/UNIX kräver root-behörighet.</i>  <br><i>OBS: TCP Ping stängd – Även om tcp-ping inte lyckas kan enheten betraktas som UP.</i>"
 
 #: include/global_form.php:1309 include/global_form.php:1800
 msgid "Additional Options"
@@ -14037,10 +14017,8 @@ msgid "Unsaved Changes Detected"
 msgstr "Osparade ändringar upptäckta"
 
 #: lib/html_form.php:1421
-#, fuzzy
-#| msgid "You have unsaved changes on this form.  If you press &#39;Continue&#39; these changes will be discarded.  Press &#39;Cancel&#39; to continue editing the form."
 msgid "You have unsaved changes on this form.  If you press 'Continue' these changes will be discarded.  Press 'Cancel' to continue editing the form."
-msgstr "Du har osparade ändringar på det här formuläret.  Om du trycker på \"Fortsätt\" kommer dessa ändringar att kasseras.  Tryck på \"Avbryt\" för att fortsätta redigera formuläret."
+msgstr "Du har osparade ändringar i detta formulär.  Om du trycker på \"Fortsätt\" kommer dessa ändringar att raderas.  Tryck på \"Avbryt\" för att fortsätta redigera formuläret."
 
 #: lib/html_form_template.php:161
 msgid "Attempted SQL Injection"
@@ -15978,22 +15956,19 @@ msgid "UDP Ping Success (%s ms)"
 msgstr "UDP Ping lyckad (%s ms)"
 
 #: lib/ping.php:554
-#, fuzzy, php-format
-#| msgid "TCP Ping Success (%s ms)"
+#, php-format
 msgid "TCP Ping Success Connection Refused (%s ms)"
-msgstr "TCP Ping lyckad (%s ms)"
+msgstr "TCP Ping lyckades Anslutning nekad (%s ms)"
 
 #: lib/ping.php:557
-#, fuzzy, php-format
-#| msgid "TCP ping: socket_connect(), reason: %s"
+#, php-format
 msgid "TCP Ping Failed: socket_connect(), reason: %s"
-msgstr "TCP ping: socket_connect (), orsak: %s"
+msgstr "TCP Ping misslyckades: socket_connect(), orsak: %s"
 
 #: lib/ping.php:580
-#, fuzzy, php-format
-#| msgid "TCP ping: socket_select() failed, reason: %s"
+#, php-format
 msgid "TCP Ping Failed: socket_select() failed, reason: %s"
-msgstr "TCP ping: socket_select () misslyckades, orsak: %s"
+msgstr "TCP Ping misslyckades: socket_select() misslyckades, orsak: %s"
 
 #: lib/ping.php:595
 #, php-format
@@ -16297,279 +16272,249 @@ msgstr "Okänt RRDtool-fel"
 
 #: lib/snmp.php:204 lib/snmp.php:304 lib/snmp.php:399 lib/snmp.php:731
 #: lib/snmp.php:746
-#, fuzzy, php-format
-#| msgid "SNMP Options [edit: %s]"
+#, php-format
 msgid "SNMP Command is: %s"
-msgstr "SNMP-alternativ [redigera: %s]"
+msgstr "SNMP-kommandot är: %s"
 
 #: lib/spikekill.php:185
 msgid "FATAL: You must specify an RRDfile!"
-msgstr ""
+msgstr "ALLVARLIGT: Du måste ange en RRD-fil!"
 
 #: lib/spikekill.php:189
-#, fuzzy, php-format
-#| msgid "XML: Cacti version does not exist."
+#, php-format
 msgid "FATAL: File '%s' does not exist."
-msgstr "XML: Cacti-versionen finns inte."
+msgstr "ALLVARLIGT: Filen '%s' finns inte."
 
 #: lib/spikekill.php:191
 #, php-format
 msgid "FATAL: File '%s' is not writable by '%s'."
-msgstr ""
+msgstr "ALLVARLIGT: Filen '%s' kan inte skrivas av '%s'."
 
 #: lib/spikekill.php:251
 msgid "FATAL: Standard Deviation must be a positive integer."
-msgstr ""
+msgstr "ALLVARLIGT: Standardavvikelsen måste vara ett positivt heltal."
 
 #: lib/spikekill.php:259 lib/spikekill.php:1039
-#, fuzzy
-#| msgid "Remove StdDev"
 msgid "StdDev"
-msgstr "Ta bort StdDev"
+msgstr "StdDev"
 
 #: lib/spikekill.php:265 lib/spikekill.php:1039
-#, fuzzy
-#| msgid "Variable"
 msgid "Variance"
-msgstr "Variabel"
+msgstr "Variance"
 
 #: lib/spikekill.php:271
-#, fuzzy
-#| msgid "Gap Fill Range"
 msgid "Gap Fill"
-msgstr "Gap Fyllningsområde"
+msgstr "Gap Fill"
 
 #: lib/spikekill.php:283
 msgid "FATAL: You must specify either 'stddev', 'variance', 'float', or 'fill' as methods."
-msgstr ""
+msgstr "ALLVARLIGT: Du måste ange antingen 'stddev', 'variance', 'float' eller 'fill' som metoder."
 
 #: lib/spikekill.php:298
 msgid "FATAL: The outlier-start and outlier-end arguments must be in the format of YYYY-MM-DD HH:MM or a unix timestamp."
-msgstr ""
+msgstr "ALLVARLIGT: Argumenten för avvikelse-start och avvikelse-slut måste ha formatet ÅÅÅÅ-MM-DD HH:MM eller en Unix-tidsstämpel."
 
 #: lib/spikekill.php:302
 msgid "FATAL: The number of outliers to exclude must be a positive integer."
-msgstr ""
+msgstr "ALLVARLIGT: Antalet avvikande värden som ska uteslutas måste vara ett positivt heltal."
 
 #: lib/spikekill.php:310
 msgid "FATAL: Percent deviation must be a positive floating point number."
-msgstr ""
+msgstr "ALLVARLIGT: Procentuell avvikelse måste vara ett positivt flyttal."
 
 #: lib/spikekill.php:316
 msgid "FATAL: Number of spikes to remove must be a positive integer"
-msgstr ""
+msgstr "ALLVARLIGT: Antalet spikar som ska tas bort måste vara ett positivt heltal"
 
 #: lib/spikekill.php:321
 msgid "FATAL: Outlier time range requires outlier-start and outlier-end to be specified."
-msgstr ""
+msgstr "ALLVARLIGT: För avvikande tidsintervall måste avvikelsens start- och slutpunkt anges."
 
 #: lib/spikekill.php:326
 msgid "FATAL: Outlier time range requires outlier-start to be less than outlier-end."
-msgstr ""
+msgstr "ALLVARLIGT: För avvikande tidsintervall måste avvikelsens start vara mindre än avvikelsens slut."
 
 #: lib/spikekill.php:331
 msgid "FATAL: The 'float' removal method requires the specification of a start and end date."
-msgstr ""
+msgstr "ALLVARLIGT: Metoden för borttagning \"float\" kräver att start- och slutdatum anges."
 
 #: lib/spikekill.php:335
 msgid "FATAL: The 'gapfill' removal method requires the specification of a start and end date."
-msgstr ""
+msgstr "ALLVARLIGT: Metoden för borttagning \"gapfill\" kräver att start- och slutdatum anges."
 
 #: lib/spikekill.php:344
 msgid "FATAL: You must specify either 'last', 'avg' or 'nan' as a replacement method."
-msgstr ""
+msgstr "ALLVARLIGT: Du måste ange antingen 'last', 'avg' eller 'nan' som ersättningsmetod."
 
 #: lib/spikekill.php:347
 msgid "Spike Kill Settings Used for Analysis/Correction"
-msgstr ""
+msgstr "Spike Kill-inställningar som används för analys/korrigering"
 
 #: lib/spikekill.php:353
 #, php-format
 msgid "Method:        %s"
-msgstr ""
+msgstr "Metod:         %s"
 
 #: lib/spikekill.php:354
-#, fuzzy, php-format
-#| msgid "RRDfiles"
+#, php-format
 msgid "RRDfile:       %s"
-msgstr "RRDfiles"
+msgstr "RRD-fil:       %s"
 
 #: lib/spikekill.php:355
-#, fuzzy, php-format
-#| msgid "Repair Steps [ %s ]"
+#, php-format
 msgid "Repair Type:   %s"
-msgstr "Reparationssteg [ %s ]"
+msgstr "Reparationstyp:  %s"
 
 #: lib/spikekill.php:358
 #, php-format
 msgid "Num Outliers:  %s"
-msgstr ""
+msgstr "Antal avvikande:  %s"
 
 #: lib/spikekill.php:359
-#, fuzzy, php-format
-#| msgid "Max Kills Per RRA"
+#, php-format
 msgid "Max Kills:     %s"
-msgstr "Max antal dödade per RRA"
+msgstr "Max antal dödade:    %s"
 
 #: lib/spikekill.php:361
 msgid "Max Kills:     Unlimited"
-msgstr ""
+msgstr "Max antal dödade:   Obegränsat"
 
 #: lib/spikekill.php:365
-#, fuzzy, php-format
-#| msgid "Standard Deviations"
+#, php-format
 msgid "Standard Devs: %s"
-msgstr "Standardavvikelser"
+msgstr "Standardavvikelser: %s"
 
 #: lib/spikekill.php:367
 msgid "Variance %%%:    %s %%%"
-msgstr ""
+msgstr "Varians %%%:    %s %%%"
 
 #: lib/spikekill.php:371
 #, php-format
 msgid "Window Start:  %s (%s)"
-msgstr ""
+msgstr "Fönsterstart:  %s (%s)"
 
 #: lib/spikekill.php:372
 #, php-format
 msgid "Window End:    %s (%s)"
-msgstr ""
+msgstr "Fönsterslut:    %s (%s)"
 
 #: lib/spikekill.php:374
-#, fuzzy
-#| msgid "Windows Related"
 msgid "Window Range:  All"
-msgstr "Windows relaterade"
+msgstr "Fönsterintervall:  Alla"
 
 #: lib/spikekill.php:454
 msgid "FATAL: RRDtool Command Failed.  Please verify that the RRDtool path is valid in Settings->Paths!"
-msgstr ""
+msgstr "ALLVARLIGT: RRDtool-kommandot misslyckades. Kontrollera att RRDtool-sökvägen är giltig i Inställningar->Sökvägar!"
 
 #: lib/spikekill.php:463
 #, php-format
 msgid "FATAL: RRDfile Backup of '%s' to '%s' FAILED!"
-msgstr ""
+msgstr "ALLVARLIGT: RRD-filbackup av '%s' till '%s' MISSLYCKADES!"
 
 #: lib/spikekill.php:670
 #, php-format
 msgid "NOTE: Searching for Spikes in XML file '%s'"
-msgstr ""
+msgstr "OBS: Söker efter spikar i XML-filen '%s'"
 
 #: lib/spikekill.php:673
 #, php-format
 msgid "NOTE: Limited to Time Window: %s through %s"
-msgstr ""
+msgstr "OBS: Begränsade till tidsfönstret: %s till %s"
 
 #: lib/spikekill.php:680
 msgid "NOTE: Dryrun requested.  No updates performed"
-msgstr ""
+msgstr "OBS: Torrkörning begärd.  Inga uppdateringar utförda"
 
 #: lib/spikekill.php:716
 #, php-format
 msgid "NOTE: No Window Spikes found in '%s'"
-msgstr ""
+msgstr "OBS: Inga fönsterspikar hittades i '%s'"
 
 #: lib/spikekill.php:719
 #, php-format
 msgid "NOTE: No Spikes found in '%s'"
-msgstr ""
+msgstr "OBS: Inga spikar hittades i '%s'"
 
 #: lib/spikekill.php:730
 #, php-format
 msgid "NOTE: Spikes Found and Remediated.  Total Spikes %s"
-msgstr ""
+msgstr "OBS: Spikar hittade och åtgärdade.  Totalt antal spikar %s"
 
 #: lib/spikekill.php:733
 #, php-format
 msgid "FATAL: Unable to backup '%s'"
-msgstr ""
+msgstr "ALLVARLIGT: Kan inte säkerhetskopiera '%s'"
 
 #: lib/spikekill.php:737
 #, php-format
 msgid "FATAL: Unable to write XML file '%s'"
-msgstr ""
+msgstr "ALLVARLIGT: Det går inte att skriva XML-filen '%s'"
 
 #: lib/spikekill.php:741
-#, fuzzy
-#| msgid "No Sites Found"
 msgid "NOTE: No Spikes Found."
-msgstr "Inga platser hittades"
+msgstr "OBS: Inga spikar hittades."
 
 #: lib/spikekill.php:769
 #, php-format
 msgid "NOTE: Re-Importing '%s' to '%s'"
-msgstr ""
+msgstr "OBS: Återimporterar '%s' till '%s'"
 
 #: lib/spikekill.php:796
 #, php-format
 msgid "NOTE: Backing Up '%s' to '%s/%s'"
-msgstr ""
+msgstr "OBS: Säkerhetskopierar '%s' till '%s/%s'"
 
 #: lib/spikekill.php:1039
-#, fuzzy
-#| msgid "Avg:"
 msgid "Avg"
-msgstr "Medel:"
+msgstr "Gen.sn."
 
 #: lib/spikekill.php:1039
-#, fuzzy
-#| msgid "CDEF"
 msgid "CF"
-msgstr "CDEF"
+msgstr "CF"
 
 #: lib/spikekill.php:1039
-#, fuzzy
-#| msgid "DES"
 msgid "DS"
-msgstr "DES"
+msgstr "DS"
 
 #: lib/spikekill.php:1039
 msgid "NonNan"
-msgstr ""
+msgstr "NonNan"
 
 #: lib/spikekill.php:1039
-#, fuzzy
-#| msgid "Simple"
 msgid "Samples"
-msgstr "Enkel"
+msgstr "Prover"
 
 #: lib/spikekill.php:1040
 msgid "MaxStdDev"
-msgstr ""
+msgstr "MaxStdDev"
 
 #: lib/spikekill.php:1040
-#, fuzzy
-#| msgid "Value"
 msgid "MaxValue"
-msgstr "Värde"
+msgstr "MaxValue"
 
 #: lib/spikekill.php:1040
-#, fuzzy
-#| msgid "Dry Run StdDev"
 msgid "MinStdDev"
-msgstr "Torrkörning StdDev"
+msgstr "MinStdDev"
 
 #: lib/spikekill.php:1040
-#, fuzzy
-#| msgid "Value"
 msgid "MinValue"
-msgstr "Värde"
+msgstr "MinValue"
 
 #: lib/spikekill.php:1040
 msgid "StdKilled"
-msgstr ""
+msgstr "StdKilled"
 
 #: lib/spikekill.php:1040
 msgid "VarKilled"
-msgstr ""
+msgstr "VarKilled"
 
 #: lib/spikekill.php:1040
 msgid "WindKilled"
-msgstr ""
+msgstr "WindKilled"
 
 #: lib/spikekill.php:1040
 msgid "WindSamples"
-msgstr ""
+msgstr "WindSamples"
 
 #: lib/template.php:1492
 msgid "Attempting to Create Graph from Non-Template"
@@ -16792,11 +16737,11 @@ msgstr "Ett användbart namn för denna VDEF."
 #: link.php:78
 #, php-format
 msgid "External Link ID '%s' with Title '%s' attempted to inject an invalid URL and was blocked!"
-msgstr ""
+msgstr "Externt länk-ID '%s' med titeln '%s' försökte injicera en ogiltig URL och blockerades!"
 
 #: links.php:76
 msgid "Your contentfile is not a valid URL.  Please enter a value URL"
-msgstr ""
+msgstr "Din innehållsfil är inte en giltig URL.  Ange en giltig URL"
 
 #: links.php:197
 msgid "Click 'Continue' to Enable the following Page(s)."
@@ -17469,10 +17414,9 @@ msgid "NOTE: A second Cacti data collector has been added.  Therefore, enabling 
 msgstr "OBS: En andra Cacti-datainsamlare har lagts till.  Därför aktiveras boost automatiskt!"
 
 #: poller_automation.php:53
-#, fuzzy, php-format
-#| msgid "WARNING: Main Cacti database offline or in recovery"
+#, php-format
 msgid "WARNING: Main Cacti database %s offline or in recovery"
-msgstr "VARNING: Cactis huvuddatabas är offline eller i återställning"
+msgstr "VARNING: Huvuddatabasen för Cacti %s offline eller under återställning"
 
 #: poller_automation.php:954 poller_automation.php:1005
 msgid "Cacti Primary Admin"
@@ -17633,7 +17577,7 @@ msgstr "Filen som innehåller den SSL-certifikatutfärdare som ska användas fö
 #: pollers.php:306
 #, php-format
 msgid "WARNING: Use of Data Collector Hostname '%s' is insecure!  Use either a fully qualified domain name or IP address to avoid equivalent hosts from other domains accessing this service"
-msgstr ""
+msgstr "VARNING: Användning av datainsamlarens värdnamn '%s' är osäkert!  Använd antingen ett fullständigt domännamn eller en IP-adress för att undvika att motsvarande värdar från andra domäner får åtkomst till denna tjänst"
 
 #: pollers.php:312
 #, php-format
@@ -18933,40 +18877,32 @@ msgid "User Management"
 msgstr "Användarhantering"
 
 #: user_admin.php:2156
-#, fuzzy
-#| msgid "Groups"
 msgid "Group"
-msgstr "Grupper"
+msgstr "Gruppera"
 
 #: user_admin.php:2178 user_admin.php:2320
 msgid "Last Login"
 msgstr "Senaste inloggning"
 
 #: user_admin.php:2183
-#, fuzzy
-#| msgid "1 Week"
 msgid "< 1 Week Ago"
-msgstr "1 vecka"
+msgstr "< en vecka sedan"
 
 #: user_admin.php:2184
 msgid "< 1 Month Ago"
-msgstr ""
+msgstr "< en månad sedan"
 
 #: user_admin.php:2185
 msgid "> 1 Month Ago"
-msgstr ""
+msgstr "> en månad sedan"
 
 #: user_admin.php:2186
-#, fuzzy
-#| msgid "%d Months"
 msgid "> 2 Months Ago"
-msgstr "%d Månader"
+msgstr "> två månader sedan"
 
 #: user_admin.php:2187
-#, fuzzy
-#| msgid "%d Months"
 msgid "> 4 Months Ago"
-msgstr "%d Månader"
+msgstr "> fyra månader sedan"
 
 #: user_admin.php:2198
 msgid "Basic"
