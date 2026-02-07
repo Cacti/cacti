@@ -141,17 +141,14 @@ jobs:
       run: sudo apt-get update
 
     - name: Install Apache and Tools
-      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: sudo apt-get install apache2 snmp snmpd rrdtool libapache2-mod-php${{ matrix.php }}
 
     - name: Start SNMPD Agent and Test Agent
-      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
         sudo systemctl start snmpd
         sudo snmpwalk -c public -v2c -On localhost .1.3.6.1.2.1.1
 
     - name: Link Web Root and Fix Permissions and Disable Apparmor
-      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
         sudo ln -s /home/runner/work/cacti/cacti /var/www/html
         sudo find /home/runner/work/cacti -type d -exec chmod 777 {} \;
@@ -166,17 +163,14 @@ jobs:
         sudo chmod o+x /home/runner/work/cacti/cacti
       
     - name: Configure Apache Site
-      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
         cat ${{ github.workspace }}/tests/tools/cacti.conf | sed -r 's#GITHUB_WORKSPACE#${{ github.workspace }}#g' > /tmp/cacti.conf
         sudo cp /tmp/cacti.conf /etc/apache2/sites-available/000-default.conf
 
     - name: Restart Apache2
-      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: sudo systemctl restart apache2
       
     - name: Create and Initialize Database
-      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       env:
         MYSQL_AUTH_USR: '--defaults-file=~/.my.cnf'
       run: |
@@ -190,14 +184,12 @@ jobs:
         mysql $MYSQL_AUTH_USR -e "INSERT INTO settings (name, value) VALUES ('path_php_binary', '/bin/php')" cacti
 
     - name: Prime Cacti config.php File
-      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
         cat ${{ github.workspace }}/include/config.php.dist | sed -r "s/localhost/127.0.0.1/g" > ${{ github.workspace }}/include/config.php
         sudo chmod 777 ${{ github.workspace }}/include/config.php
         cat ${{ github.workspace}}/include/config.php
 
     - name: Setup Cacti Daemon
-      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
         sudo cp ${{ github.workspace }}/tests/tools/cactid.service /etc/systemd/system/cactid.service
         sudo systemctl enable cactid
@@ -209,37 +201,31 @@ jobs:
         fi
 
     - name: Check install code for validity
-      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
         cd ${{ github.workspace }}
         sudo php -q tests/tools/check_install_code.php
 
     - name: Check that all CLI scripts have a valid --version flag
-      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
         cd ${{ github.workspace }}
         sudo bash tests/tools/check_cli_version.sh
 
     - name: Install Cacti through the CLI
-      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
         cd ${{ github.workspace }}
         sudo php cli/install_cacti.php --accept-eula --install --force
 
     - name: Audit the Installation Schema
-      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
         cd ${{ github.workspace }}
         sudo php cli/audit_database.php --report
 
     - name: Install and Enable Plugins
-      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
         cd ${{ github.workspace }}
         sudo php cli/plugin_manage.php --plugin=thold --plugin=intropage --plugin=monitor --plugin=mactrack --plugin=audit --plugin=flowview --plugin=syslog --install --enable --allperms
 
     - name: Add Device for Moc Test, Check CLI scripts for Errors
-      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
         cd ${{ github.workspace }}
         sudo php cli/add_device.php --description=test_device --ip=127.0.0.1 --template=24
@@ -247,7 +233,6 @@ jobs:
         sudo php cli/poller_reindex_hosts.php --id=all --debug
 
     - name: Run Cacti poller
-      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
         sudo php ${{ github.workspace }}/poller.php --poller=1 --force --debug
         if ! grep -q "SYSTEM STATS" ${{ github.workspace }}/log/cacti.log; then
@@ -256,14 +241,12 @@ jobs:
         fi
 
     - name: Check All Pages Using Recursive wget
-      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
         cd ${{ github.workspace }}
         echo -e "[client]\nuser = root\npassword = cactiroot\nhost = 127.0.0.1\n" > ${{ github.workspace }}/.my.cnf
         sudo tests/tools/check_all_pages.sh
 
     - name: View Contents of Logs
-      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: sudo cat ${{ github.workspace }}/log/cacti.log
           
 #    - name: Validate composer.json and composer.lock
