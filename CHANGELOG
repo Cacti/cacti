@@ -41,16 +41,14 @@ Cacti CHANGELOG
 -issue#6546: Add missing xml and script files for NetSNMP LMSensor
 -issue#6551: Fix paths in audit_database script (FreeBSD)
 -issue#6573: Add hook device_change_javascript, necessarily for thold
+-issue#6598: Make local modifications to the phpdiff vendor package for backwards compatibility
 -issue#6600: Plugins wishing to replicate out a table that does not exist generates warnings
--issue: Correct some PHPStan issues found in audit of Aggregate that can lead to warnings
--issue: Using the rrd_splice.php cli can result in the loss of data
--issue: Defect in SpikeKill algorithm was causing a loss of data for Gap Fill and Float methods
--issue: Make local modifications to the phpdiff vendor package for backwards compatibility
--issue: Secondary sort operations broken on tables
+-issue#6605: The use of splice_rrd.php can lead to a loss of data
+-issue#6606: Multiple Issues with Spikekill
 -feature#6523: When disabling a users, ensure that their stored authentication cookies are remove and any sessions cleared
 -feature#6524: When changing your password, logout from all sessions
 -feature#6534: Recycle the PHP Session ID on user login to improve Cacti site security
--feature: Close user sessions after a password change is forced
+-feature#6607: After changing your password, all your sessions should be ended
 -feature: Update PHPMailer to 6.10 to support SMTPUTF8
 -feature: Update phpseclib for the Service Check plugin
 -feature: Update DOMPurify to 3.3.0

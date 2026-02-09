@@ -65,7 +65,7 @@ class Diff_SequenceMatcher
 	/**
 	 * @var array The opCode array.
 	 */
-	private $opCode = null;
+	private $opCodes = null;
 
 	/**
 	 * @var array The matchingBlocks array.
