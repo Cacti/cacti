@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2025 The Cacti Group                                 |
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -240,6 +240,8 @@ function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph
 
 	// create new entry(s): graph_templates_item
 	$num_items = cacti_sizeof($graph_items);
+
+	$_hr = [];
 
 	if ($num_items > 0) {
 		// take care of items having a HR that shall be skipped

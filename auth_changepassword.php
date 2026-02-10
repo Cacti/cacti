@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2025 The Cacti Group                                 |
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -235,7 +235,13 @@ switch ($action) {
 				WHERE id = ?",
 				[compat_password_hash($password,PASSWORD_DEFAULT), $user_id]);
 
+			// Clear the auth cache for the user
 			db_execute_prepared('DELETE FROM user_auth_cache
+				WHERE user_id = ?',
+				[$_SESSION[SESS_USER_ID]]);
+
+			// Delete any user login sessions if using database sessions
+			db_execute_prepared('DELETE FROM sessions
 				WHERE user_id = ?',
 				[$_SESSION[SESS_USER_ID]]);
 

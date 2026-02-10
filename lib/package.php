@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2025 The Cacti Group                                 |
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function get_export_hash(string $export_type, int $export_item_id) : mixed {
+function get_export_hash(string $export_type, mixed $export_item_id) : mixed {
 	switch($export_type) {
 		case 'host_template':
 			if (!empty($export_item_id)) {
@@ -167,7 +167,7 @@ function open_packager_metadata_table() : mixed {
 	return false;
 }
 
-function get_packager_metadata(string $hash) : bool {
+function get_packager_metadata(string $hash) : mixed {
 	$cnn = open_packager_metadata_table();
 
 	if (is_object($cnn)) {
@@ -265,14 +265,14 @@ function get_package_contents(string $export_type, int $export_item_id, bool $in
 	$xml_data      = get_item_xml($export_type, $export_item_id, $include_deps);
 	$files         = [];
 
-	if ($export_errors > 0) { // @phpstan-ignore-line - This values is set as a global in get_item_xml
+	if ($export_errors == 0) { // @phpstan-ignore-line - This values is set as a global in get_item_xml
 		$files = find_dependent_files($xml_data, true);
 
 		// search xml files for scripts
 		if (cacti_sizeof($files)) {
 			foreach ($files as $file) {
 				if (str_contains($file['file'], '.xml')) {
-					$files = array_merge($files, find_dependent_files(file_get_contents($file['file']), $file));
+					$files = array_merge($files, find_dependent_files(file_get_contents($file['file']), true));
 				}
 			}
 		}
@@ -294,7 +294,7 @@ function get_package_contents(string $export_type, int $export_item_id, bool $in
 			if (cacti_sizeof($nfiles)) {
 				foreach ($nfiles as $file) {
 					if (str_contains($file['file'], '.xml')) {
-						$files = array_merge($files, find_dependent_files(file_get_contents($file['file']), $file));
+						$files = array_merge($files, find_dependent_files(file_get_contents($file['file']), true));
 					}
 				}
 			}

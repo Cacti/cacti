@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2022 The Cacti Group                                 |
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -31,7 +31,7 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_mikrotik_procs', $_SERVER['argv']);
 }
 
-function ss_mikrotik_procs($host_id = '') {
+function ss_mikrotik_procs(int $host_id = 0) : mixed {
 	$procs = db_fetch_cell_prepared('SELECT processes
 		FROM plugin_mikrotik_system
 		WHERE host_id = ?',

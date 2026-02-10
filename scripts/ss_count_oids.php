@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2025 The Cacti Group                                 |
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -36,7 +36,7 @@ if (!isset($called_by_script_server)) {
 	include_once(__DIR__ . '/../lib/snmp.php');
 }
 
-function ss_count_oids($hostid = '', $oid = '') {
+function ss_count_oids(int $hostid = 0, string $oid = '') : mixed {
 	if ($hostid > 0) {
 		$host = db_fetch_row_prepared('SELECT hostname, snmp_community, snmp_version, snmp_username, snmp_password,
 			snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context,

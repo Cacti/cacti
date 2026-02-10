@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2025 The Cacti Group                                 |
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
  | Portions Copyright (C) 2010 Boris Lytochkin, Sponsored by Yandex LLC    |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
@@ -53,8 +53,8 @@ if (CACTI_PHP_SNMP) {
 
 use phpsnmp\SNMP;
 
-function cacti_snmp_session(string $hostname, string $community, mixed $version, string $auth_user = '', string $auth_pass = '',
-	string $auth_proto = '', string $priv_pass = '', string $priv_proto = '', string $context = '', string $engineid = '',
+function cacti_snmp_session(string $hostname, string $community, mixed $version, mixed $auth_user = '', mixed $auth_pass = '',
+	mixed $auth_proto = '', mixed $priv_pass = '', mixed $priv_proto = '', mixed $context = '', mixed $engineid = '',
 	mixed $port = 161, mixed $timeout_ms = 500, mixed $retries = 0, mixed $max_oids = 10, mixed $bulk_walk_size = 10) : mixed {
 	switch ($version) {
 		case '1':
@@ -119,7 +119,7 @@ function cacti_snmp_session(string $hostname, string $community, mixed $version,
 
 function cacti_snmp_get(string $hostname, mixed $community, string $oid, mixed $version, mixed $auth_user = '', mixed $auth_pass = '',
 	mixed $auth_proto = '', mixed $priv_pass = '', mixed $priv_proto = '', mixed $context = '',
-	mixed $port = 161, mixed $timeout_ms = 500, mixed $retries = 0, string $environ = 'SNMP',
+	mixed $port = 161, mixed $timeout_ms = 500, mixed $retries = 0, mixed $environ = 'SNMP',
 	mixed $engineid = '', int $value_output_format = SNMP_STRING_OUTPUT_GUESS) : string {
 	global $snmp_error;
 
@@ -219,9 +219,9 @@ function cacti_snmp_get(string $hostname, mixed $community, string $oid, mixed $
 	return $snmp_value;
 }
 
-function cacti_snmp_get_raw(string $hostname, string $community, string $oid, mixed $version, string $auth_user = '', string $auth_pass = '',
-	string $auth_proto = '', string $priv_pass = '', string $priv_proto = '', string $context = '',
-	mixed $port = 161, mixed $timeout_ms = 500, mixed $retries = 0, int $environ = SNMP_POLLER,
+function cacti_snmp_get_raw(string $hostname, string $community, string $oid, mixed $version, mixed $auth_user = '', string $auth_pass = '',
+	mixed $auth_proto = '', mixed $priv_pass = '', mixed $priv_proto = '', mixed $context = '',
+	mixed $port = 161, mixed $timeout_ms = 500, mixed $retries = 0, mixed $environ = SNMP_POLLER,
 	string $engineid = '', int $value_output_format = SNMP_STRING_OUTPUT_GUESS) : string {
 	global $snmp_error;
 
@@ -314,9 +314,9 @@ function cacti_snmp_get_raw(string $hostname, string $community, string $oid, mi
 	return $snmp_value;
 }
 
-function cacti_snmp_getnext(string $hostname, string $community, mixed $oid, mixed $version, string $auth_user = '', string $auth_pass = '',
-	string $auth_proto = '', string $priv_pass = '', string $priv_proto = '', string $context = '',
-	mixed $port = 161, mixed $timeout_ms = 500, mixed $retries = 0, string $environ = 'SNMP',
+function cacti_snmp_getnext(string $hostname, string $community, mixed $oid, mixed $version, mixed $auth_user = '', mixed $auth_pass = '',
+	mixed $auth_proto = '', mixed $priv_pass = '', mixed $priv_proto = '', mixed $context = '',
+	mixed $port = 161, mixed $timeout_ms = 500, mixed $retries = 0, mixed $environ = 'SNMP',
 	string $engineid = '', int $value_output_format = SNMP_STRING_OUTPUT_GUESS) : string {
 	global $snmp_error;
 
@@ -406,7 +406,7 @@ function cacti_snmp_getnext(string $hostname, string $community, mixed $oid, mix
 	return $snmp_value;
 }
 
-function cacti_get_snmpv3_auth(string $auth_proto, string $auth_user, string $auth_pass, string $priv_proto, string $priv_pass, string $context, string $engineid) : string {
+function cacti_get_snmpv3_auth(mixed $auth_proto, mixed $auth_user, mixed $auth_pass, mixed $priv_proto, mixed $priv_pass, mixed $context, mixed $engineid) : string {
 	global $snmp_priv_protocols, $snmp_auth_protocols;
 
 	$sec_details = ' -a ' . snmp_escape_string($snmp_auth_protocols[$auth_proto]) . ' -A ' . snmp_escape_string($auth_pass);
@@ -621,10 +621,10 @@ function cacti_snmp_validate_oid(string $oid) : bool {
 	}
 }
 
-function cacti_snmp_walk(string $hostname, string $community, string $oid, mixed $version, string $auth_user = '', string $auth_pass = '',
-	string $auth_proto = '', string $priv_pass = '', string $priv_proto = '', string $context = '',
-	mixed $port = 161, mixed $timeout_ms = 500, mixed $retries = 0, mixed $bulk_walk_size = 10, string $environ = 'SNMP',
-	string $engineid = '', int $value_output_format = SNMP_STRING_OUTPUT_GUESS) : array {
+function cacti_snmp_walk(string $hostname, string $community, string $oid, mixed $version, mixed $auth_user = '', mixed $auth_pass = '',
+	mixed $auth_proto = '', mixed $priv_pass = '', mixed $priv_proto = '', mixed $context = '',
+	mixed $port = 161, mixed $timeout_ms = 500, mixed $retries = 0, mixed $bulk_walk_size = 10, mixed $environ = 'SNMP',
+	mixed $engineid = '', int $value_output_format = SNMP_STRING_OUTPUT_GUESS) : array {
 	global $banned_snmp_strings, $snmp_error;
 
 	$snmp_error        = '';

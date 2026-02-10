@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2025 The Cacti Group                                 |
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -30,7 +30,6 @@ $debug = false;
 if (isrv('method')) {
 	switch(gnrv('method')) {
 		case 'stddev':
-		case 'variance':
 		case 'fill':
 		case 'float':
 		case 'absolute':
@@ -54,7 +53,11 @@ if (is_realm_allowed(1043)) {
 
 	if (cacti_sizeof($local_data_ids)) {
 		foreach ($local_data_ids as $local_data_id) {
-			$data_source_path = get_data_source_path($local_data_id['local_data_id'], true);
+			if ($local_data_id['local_data_id'] > 0) {
+				$data_source_path = get_data_source_path($local_data_id['local_data_id'], true);
+			} else {
+				$data_source_path = '';
+			}
 
 			if ($data_source_path != '') {
 				$html      = true;

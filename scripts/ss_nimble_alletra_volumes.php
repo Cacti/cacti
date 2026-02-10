@@ -12,7 +12,7 @@ if (!isset($called_by_script_server)) {
 	include_once(__DIR__ . '/../lib/snmp.php');
 }
 
-function ss_nimble_alletra_volumes($host_id = 0, $cmd = 'index', $what = '', $index = '') {
+function ss_nimble_alletra_volumes(int $host_id = 0, string $cmd = 'index', string $what = '', string $index = '') : mixed {
 	$oids = [
 		'index' => '.1.3.6.1.4.1.37447.1.2.1.2',
 		'name'  => '.1.3.6.1.4.1.37447.1.2.1.3',
@@ -34,9 +34,10 @@ function ss_nimble_alletra_volumes($host_id = 0, $cmd = 'index', $what = '', $in
 		]
 	];
 
-	if (empty($host_id) || $host_id === null || !is_numeric($host_id)) {
+	if ($host_id <= 0) {
 		return 'U';
 	}
+
 	$host = db_fetch_row_prepared('SELECT *
 		FROM host
 		WHERE id = ?',
@@ -220,8 +221,8 @@ function ss_nimble_alletra_volumes($host_id = 0, $cmd = 'index', $what = '', $in
 				SNMP_POLLER,
 				$host['snmp_engine_id']);
 
-			$low  = str_pad(decbin($return_val_low), 32, '0', STR_PAD_LEFT);
-			$high = str_pad(decbin($return_val_high), 32, '0', STR_PAD_LEFT);
+			$low  = str_pad(decbin(intval($return_val_low)), 32, '0', STR_PAD_LEFT);
+			$high = str_pad(decbin(intval($return_val_high)), 32, '0', STR_PAD_LEFT);
 
 			if ($what == 'data' || $what == 'snapshot') {
 				return bindec($high . $low);
@@ -230,4 +231,6 @@ function ss_nimble_alletra_volumes($host_id = 0, $cmd = 'index', $what = '', $in
 			}
 		}
 	}
+
+	return null;
 }

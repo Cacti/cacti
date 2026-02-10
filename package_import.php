@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2025 The Cacti Group                                 |
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -1893,7 +1893,26 @@ function get_repo_file(string $repo_id, string $filename = 'package.manifest', b
 			$repoloc = str_replace('github.com', 'raw.githubusercontent.com', $repo['repo_location']);
 			$file    = $repoloc . '/' . $repo['repo_branch'] . '/' . $filename;
 
-			$data = file_get_contents($file);
+			if ($repo['repo_api_key'] != '') {
+				$options = [
+					'https' => [
+						'method'  => 'GET',
+						'header'  => 'Authorization: Bearer ' . $repo['repo_api_key']
+					]
+				];
+
+				$context  = stream_context_create($options);
+			} else {
+				$options = [
+					'https' => [
+						'method'  => 'GET',
+					]
+				];
+
+				$context  = stream_context_create($options);
+			}
+
+			$data = file_get_contents($file, false, $context);
 
 			if ($data != '') {
 				return $data;

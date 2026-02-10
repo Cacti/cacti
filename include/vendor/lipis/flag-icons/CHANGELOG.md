@@ -1,3 +1,92 @@
+# 7.5.0
+
+- Update all flags with the latest SVGO 3.3.2 (#1367)
+
+# 7.4.0
+
+- Migrate SASS imports to @use-based code (#1356)
+- Modern and minimalist UI redesign with new features (#1358)
+- Fix flag of Palestine (#1366)
+
+# 7.3.2
+
+- Add new flag for Association of Southeast Asian Nations (#1325)
+
+# 7.3.1
+
+- Fix Kyrgyzstan Flag (#1323)
+
+# 7.3.0
+
+- Run the latest svgo on all files (#1322)
+
+# 7.2.4
+
+- Fix Syrian Flag (#1310)
+
+# 7.2.3
+
+- Fix overlapping paths in at, bg, ee, lu, nl, ru flags (#1251)
+
+# 7.2.2
+
+- Fix Malta Flag (#1248)
+
+# 7.2.1
+
+- Fix Belarus Flag (#1230)
+
+# 7.2.0
+
+- Update all flags with SVGO 3.2.0 (#1224)
+- Update German colors (#1208, #1209)
+
+# 7.1.0
+
+- SVGO all files and update `fill="#000"` to `fill="#000001"` (#1193)
+- Fix German Flag (#1189, #1190)
+
+# 7.0.3
+
+- Fix black SVG elements (#1187)
+
+# 7.0.2
+
+- Fix Jersey flag (#1180)
+
+# 7.0.1
+
+- Remove `<use>` tags without href (#1179)
+
+# 7.0.0
+
+- Remove Less support (#1174)
+
+# 6.15.0
+
+- Run the latest SVGO to all files (#1176)
+
+# 6.14.0
+
+- Build with SASS instead of Less the generated CSS (#1172)
+
+# 6.13.2
+
+- Fix paths for sh-ta
+- Action for pubishing to npm
+
+# 6.13.0
+
+- Saint Helena, Ascension and Tristan da Cunha updates (#1169)
+
+# 6.12.0
+
+- Add flag for Pacific Community (#1165)
+
+# 6.11.2
+
+- Fix French flags color to use the official ones (#1163)
+
 # 6.11.1
 
 - Fix Portuguese flag (#1154)

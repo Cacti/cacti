@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2025 The Cacti Group                                 |
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -2001,7 +2001,7 @@ function create_uggraphs_filter() : array {
 					'method'        => 'drop_array',
 					'friendly_name' => __('Template'),
 					'filter'        => FILTER_VALIDATE_INT,
-					'default'       => '0',
+					'default'       => '-1',
 					'pageset'       => true,
 					'array'         => $graph_templates,
 					'value'         => '0'
@@ -2036,7 +2036,7 @@ function graph_filter(string $header_label) : void {
 	$filters = create_uggraphs_filter();
 
 	// create the page filter
-	$pageFilter = new CactiTableFilter(__('Graph Permissions %s', $header_label), 'user_group_admin.php?action=edit&tab=permsd&id=' . grv('id'), 'form_template', 'sess_ua_d');
+	$pageFilter = new CactiTableFilter(__('Graph Permissions %s', $header_label), 'user_group_admin.php?action=edit&tab=permsg&id=' . grv('id'), 'form_template', 'sess_ua_d');
 
 	$pageFilter->rows_label       = __('Graphs');
 	$pageFilter->has_associated   = true;

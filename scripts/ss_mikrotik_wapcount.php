@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2022 The Cacti Group                                 |
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -31,8 +31,8 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_mikrotik_wapcount', $_SERVER['argv']);
 }
 
-function ss_mikrotik_wapcount($host_id = '') {
-	$waps = db_fetch_cell_prepared('SELECT count(*)
+function ss_mikrotik_wapcount(int $host_id = 0) : string {
+	$waps = db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM plugin_mikrotik_wireless_aps
 		WHERE host_id = ?
 		AND unix_timestamp(last_seen)>unix_timestamp()-1200',

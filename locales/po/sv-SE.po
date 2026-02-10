@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2025-12-14 17:18+0000\n"
+"PO-Revision-Date: 2026-02-07 08:18+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core/sv/>"
 "\n"
@@ -11017,9 +11017,9 @@ msgstr ""
 #: include/global_form.php:1344
 msgid "The type of ping packet to sent.  <br><i>NOTE: ICMP on Linux/UNIX requires root privileges.</i>  <br><i>NOTE: TCP Ping Closed - Even if the tcp ping is not successful, the device can be considered UP.</i>"
 msgstr ""
-"Den typ av ping-paket som ska skickas. <br><i>OBS: ICMP på Linux/UNIX kräver "
-"root-behörighet.</i> <br><i>OBS: TCP Ping Closed - Även om tcp-ping inte "
-"lyckas kan enheten anses vara UP.</i>"
+"Typ av pingpaket som ska skickas.  <br><i>OBS: ICMP på Linux/UNIX kräver "
+"root-behörighet.</i>  <br><i>OBS: TCP Ping stängd – Även om tcp-ping inte "
+"lyckas kan enheten betraktas som UP.</i>"
 
 #: include/global_form.php:1381 include/global_form.php:1931
 msgid "Additional Options"
@@ -19994,7 +19994,7 @@ msgstr "IPv6-stöd verkar saknas!"
 #: lib/ping.php:553
 #, php-format
 msgid "TCP Ping Success Connection Refused (%s ms)"
-msgstr "TCP-ping lyckades anslutning nekad (%s ms)"
+msgstr "TCP Ping lyckades Anslutning nekad (%s ms)"
 
 #: lib/ping.php:556
 #, php-format
@@ -20004,7 +20004,7 @@ msgstr "TCP Ping misslyckades: socket_connect(), orsak: %s"
 #: lib/ping.php:579
 #, php-format
 msgid "TCP Ping Failed: socket_select() failed, reason: %s"
-msgstr "TCP Ping misslyckades: socket_select() misslyckades, anledning: %s"
+msgstr "TCP Ping misslyckades: socket_select() misslyckades, orsak: %s"
 
 #: lib/ping.php:594
 #, php-format
@@ -20876,12 +20876,12 @@ msgstr "Ett användbart namn för denna VDEF."
 #, php-format
 msgid "External Link ID '%s' with Title '%s' attempted to inject an invalid URL and was blocked!"
 msgstr ""
-"Extern länk ID '%s' med titel '%s' försökte injicera en ogiltig URL och "
+"Externt länk-ID '%s' med titeln '%s' försökte injicera en ogiltig URL och "
 "blockerades!"
 
 #: links.php:76
 msgid "Your contentfile is not a valid URL.  Please enter a value URL"
-msgstr "Din innehållsfil är inte en giltig URL.  Ange en URL med värde"
+msgstr "Din innehållsfil är inte en giltig URL.  Ange en giltig URL"
 
 #: links.php:199
 msgid "Click 'Continue' to Delete the following External Link."
@@ -24844,7 +24844,7 @@ msgstr "Användarhantering"
 
 #: user_admin.php:2096 user_admin.php:2099
 msgid "Group"
-msgstr "Grupp"
+msgstr "Gruppera"
 
 #: user_admin.php:2118 user_admin.php:2121 user_admin.php:2264
 msgid "Last Login"
@@ -24852,23 +24852,23 @@ msgstr "Senaste inloggning"
 
 #: user_admin.php:2123
 msgid "< 1 Week Ago"
-msgstr "< 1 vecka sedan"
+msgstr "< en vecka sedan"
 
 #: user_admin.php:2124
 msgid "< 1 Month Ago"
-msgstr "< 1 månad sedan"
+msgstr "< en månad sedan"
 
 #: user_admin.php:2125
 msgid "> 1 Month Ago"
-msgstr "> 1 månad sedan"
+msgstr "> en månad sedan"
 
 #: user_admin.php:2126
 msgid "> 2 Months Ago"
-msgstr "> 2 månader sedan"
+msgstr "> två månader sedan"
 
 #: user_admin.php:2127
 msgid "> 4 Months Ago"
-msgstr "> 4 månader sedan"
+msgstr "> fyra månader sedan"
 
 #: user_admin.php:2138
 msgid "Basic"

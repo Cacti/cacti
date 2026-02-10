@@ -1,7 +1,7 @@
 <?php
 /*
   +-------------------------------------------------------------------------+
-  | Copyright (C) 2004-2025 The Cacti Group                                 |
+  | Copyright (C) 2004-2026 The Cacti Group                                 |
   |                                                                         |
   | This program is free software; you can redistribute it and/or           |
   | modify it under the terms of the GNU General Public License             |
@@ -37,17 +37,17 @@ $oids = [
 ];
 
 $hostname   = $_SERVER['argv'][1];
-$host_id    = $_SERVER['argv'][2];
+$host_id    = intval($_SERVER['argv'][2]);
 $snmp_auth  = $_SERVER['argv'][3];
 $cmd        = $_SERVER['argv'][4];
 
 // support for SNMP V2 and SNMP V3 parameters
 $snmp          = explode(':', $snmp_auth);
-$snmp_version  = $snmp[0];
-$snmp_port     = $snmp[1];
-$snmp_timeout  = $snmp[2];
-$snmp_retries  = $snmp[3];
-$max_oids      = $snmp[4];
+$snmp_version  = intval($snmp[0]);
+$snmp_port     = intval($snmp[1]);
+$snmp_timeout  = intval($snmp[2]);
+$snmp_retries  = intval($snmp[3]);
+$max_oids      = intval($snmp[4]);
 
 $snmp_auth_username   = '';
 $snmp_auth_password   = '';
@@ -115,7 +115,7 @@ if ($cmd == 'index') {
 	print 'ERROR: Invalid command given' . PHP_EOL;
 }
 
-function reindex($arr) {
+function reindex(array $arr) : array {
 	$return_arr = [];
 
 	for ($i = 0; ($i < cacti_sizeof($arr)); $i++) {

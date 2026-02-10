@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -35,13 +35,13 @@ if (!isset($called_by_script_server)) {
 	include_once(__DIR__ . '/../lib/snmp.php');
 }
 
-function ss_fortigate_ipsec($host_id = 0) {
+function ss_fortigate_ipsec(int $host_id = 0) : mixed {
 	global $environ, $poller_id, $config;
 
 	$total = 0;
 	$down  = 0;
 
-	if (empty($host_id) || $host_id === null || !is_numeric($host_id)) {
+	if ($host_id <= 0) {
 		return 'total:0 down:0' . PHP_EOL;
 	}
 
@@ -75,5 +75,3 @@ function ss_fortigate_ipsec($host_id = 0) {
 
 	return ('total:' . $total . ' down:' . $down . PHP_EOL);
 }
-
-?>

@@ -1,0 +1,5 @@
+{
+  "require-dev": {
+    "bartlett/sarif-php-converters": "^1.0"
+  }
+}

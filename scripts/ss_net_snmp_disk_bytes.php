@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2025 The Cacti Group                                 |
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -36,7 +36,7 @@ if (!isset($called_by_script_server)) {
 	include_once(__DIR__ . '/../lib/snmp.php');
 }
 
-function ss_net_snmp_disk_bytes($host_id_or_hostname = '') {
+function ss_net_snmp_disk_bytes(mixed $host_id_or_hostname = '') : string {
 	global $environ, $poller_id, $config;
 
 	if (empty($host_id_or_hostname) || $host_id_or_hostname === null) {

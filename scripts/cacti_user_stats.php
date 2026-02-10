@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2025 The Cacti Group                                 |
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -166,7 +166,7 @@ print 'valid:' . $user_logins_valid .
 	' uactive:' . $user_counter_active .
 	' usleeping:' . $user_counter_sleeping;
 
-function get_session_save_path() {
+function get_session_save_path() : mixed {
 	if (session_save_path() !== '') {
 		// if default temp path is not in use
 		return realpath(session_save_path());

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2025 The Cacti Group                                 |
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -1230,6 +1230,8 @@ function device_change_javascript() : void {
 		});
 	</script>
 	<?php
+
+	api_plugin_hook('device_change_javascript');
 }
 
 function device_javascript(bool $hasHost = true) : void {

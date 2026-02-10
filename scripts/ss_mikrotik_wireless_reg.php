@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2022 The Cacti Group                                 |
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -31,7 +31,7 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_mikrotik_wireless_reg', $_SERVER['argv']);
 }
 
-function ss_mikrotik_wireless_reg($host_id, $cmd, $object = '', $index = '') {
+function ss_mikrotik_wireless_reg(int $host_id, string $cmd, string $object = '', string $index = '') : mixed {
 	if ($cmd == 'index') {
 		$return_arr = db_fetch_assoc_prepared('SELECT `index` AS macAddress
 			FROM plugin_mikrotik_wireless_registrations
@@ -70,4 +70,6 @@ function ss_mikrotik_wireless_reg($host_id, $cmd, $object = '', $index = '') {
 			AND `index` = ?",
 			[$host_id, $index]);
 	}
+
+	return null;
 }

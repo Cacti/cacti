@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2025 The Cacti Group                                 |
+ | Copyright (C) 2004-2026 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -38,7 +38,7 @@ if (!isset($called_by_script_server)) {
 	include_once(__DIR__ . '/../lib/ping.php');
 }
 
-function ss_fping($hostname = '', $ping_sweeps = 6, $ping_type = 'ICMP', $port = 80) {
+function ss_fping(string $hostname = '', int $ping_sweeps = 6, string $ping_type = 'ICMP', int $port = 80) : string {
 	global $called_by_script_server;
 
 	// record start time
