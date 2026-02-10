@@ -18,7 +18,7 @@ foreach ($files as $file) {
 		print "The Resource XML File: $file has Errors" . PHP_EOL;
 
 		foreach (libxml_get_errors() as $error) {
-			print "Error: " . $error->message;
+			print 'Error: ' . $error->message;
 		}
 
 		libxml_clear_errors(); // Clear the error buffer

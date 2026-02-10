@@ -455,45 +455,47 @@ function form_actions() : void {
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '6') { // change data source profile
 				get_filter_request_var('data_source_profile_id');
-				
-				$new_profile = db_fetch_row_prepared('SELECT * FROM data_source_profiles WHERE id = ?', 
-					array(get_request_var('data_source_profile_id')));
-				
+
+				$new_profile = db_fetch_row_prepared('SELECT * FROM data_source_profiles WHERE id = ?',
+					[get_request_var('data_source_profile_id')]);
+
 				if (!empty($new_profile)) {
 					$rrd_changes = 0;
-					
-					for ($i=0;($i<cacti_count($selected_items));$i++) {
+
+					for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 						// Get current step value
-						$current_step = db_fetch_cell_prepared('SELECT rrd_step FROM data_template_data WHERE local_data_id = ?', 
-							array($selected_items[$i]));
-						
+						$current_step = db_fetch_cell_prepared('SELECT rrd_step FROM data_template_data WHERE local_data_id = ?',
+							[$selected_items[$i]]);
+
 						// Update all database tables
 						db_execute_prepared('UPDATE data_template_data 
 							SET data_source_profile_id = ?, rrd_step = ?
 							WHERE local_data_id = ?',
-							array(get_request_var('data_source_profile_id'), $new_profile['step'], $selected_items[$i])
+							[get_request_var('data_source_profile_id'), $new_profile['step'], $selected_items[$i]]
 						);
-						
+
 						db_execute_prepared('UPDATE data_template_rrd 
 							SET rrd_heartbeat = ?
 							WHERE local_data_id = ?',
-							array($new_profile['heartbeat'], $selected_items[$i])
+							[$new_profile['heartbeat'], $selected_items[$i]]
 						);
-						
+
 						db_execute_prepared('UPDATE poller_item 
 							SET rrd_step = ?
 							WHERE local_data_id = ?',
-							array($new_profile['step'], $selected_items[$i])
+							[$new_profile['step'], $selected_items[$i]]
 						);
-						
+
 						update_poller_cache($selected_items[$i], true);
-						
+
 						// Handle RRD file if step changed
 						if ($current_step != $new_profile['step']) {
 							$rrd_path = get_data_source_path($selected_items[$i], true);
+
 							if (file_exists($rrd_path)) {
 								// Backup with timestamp and delete
 								$backup = $rrd_path . '.bak_' . date('Ymd-His');
+
 								if (copy($rrd_path, $backup)) {
 									unlink($rrd_path);
 									$rrd_changes++;
@@ -502,14 +504,14 @@ function form_actions() : void {
 							}
 						}
 					}
-					
+
 					raise_message(1);
-					
+
 					if ($rrd_changes > 0) {
-						$_SESSION['sess_messages']['custom_info'] = array(
+						$_SESSION['sess_messages']['custom_info'] = [
 							'message' => sprintf(__('%d RRD files were backed up and will be recreated with new step value at next polling.'), $rrd_changes),
-							'type' => 'info'
-						);
+							'type'    => 'info'
+						];
 					}
 				} else {
 					raise_message(2);
