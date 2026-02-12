@@ -171,8 +171,8 @@
                 "description": "Cacti Stats Device Package",
                 "class": "cacti",
                 "tags": "cacti statistics poller",
-                "installation": "Enables monitoring of many Cacti related metrics.\n\nGeneral information about Cacti templates:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/Device-Templates.md",
-                "version": "1.3.0",
+                "installation": "Install the Package normally.  Enables monitoring of many Cacti related metrics.\n\nGeneral information about Cacti templates:\nhttps:\/\/github.com\/Cacti\/documentation\/blob\/develop\/Device-Templates.md",
+                "version": "1.2.30",
                 "copyright": "GNU General Public License"
             }
         },
@@ -482,9 +482,6 @@
         }
     ],
     "keys": [
-        {
-            "publickey": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApH0rQ6cEYMCeHh5b7zCw\n5Mxzrj5N6PNW4NJE6YvjpzR40SE\/B+vGnwpQZB+bmAVPJcn7TgUf5+ZnPoLL7BNn\nfFhDOREzQYhcTGTxTFQ\/AD\/DdgzyALdWsV14mwkaxKchnY3XZY1Jg\/tm+AFOBrEX\n3Oa4pkOf7+V2HXVhbMhWrsoW5\/tI8AQBQtzadqxXDGMpwlwKb6QNlUPk1slQFn3e\nk9rpWgq\/84OxsJs2MVFyo\/Nh6ehu8cE7OYHOJ\/1qQ+8w99ro+zllwLqStY3\/Z3Bl\nQmGcllo3\/LfnWc10aqdtpFOxWcJwzkQ1vvjzAuWYPmW\/fNbft3+pRuS7sa2jj\/oN\nvQIDAQAB\n-----END PUBLIC KEY-----\n",
-            "publickeyname": "The Cacti Group"
-        }
+        "The Cacti Group"
     ]
 }
