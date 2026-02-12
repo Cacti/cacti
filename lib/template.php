@@ -1587,7 +1587,7 @@ function data_source_to_data_template(int $local_data_id, string $data_source_ti
  * $snmp_query_array['snmp_query_graph_id']
  * $snmp_query_array['snmp_index']
  *
- * @param array $suggested_vals Any additional information to be included in the new graphs or
+ * @param mixed $suggested_vals Any additional information to be included in the new graphs or
  *                              data sources must be included in the array. data is to be included in the following format:
  *
  * $values['cg'][graph_template_id]['graph_template'][field_name] = $value  // graph template
@@ -1600,7 +1600,7 @@ function data_source_to_data_template(int $local_data_id, string $data_source_ti
  *
  * @return mixed False if failing, otherwise the local_data_id data in a cache array
  */
-function create_complete_graph_from_template(int $graph_template_id, int $host_id, array $snmp_query_array, array &$suggested_vals) : mixed {
+function create_complete_graph_from_template(int $graph_template_id, int $host_id, array $snmp_query_array, mixed &$suggested_vals) : mixed {
 	include_once(CACTI_PATH_LIBRARY . '/data_query.php');
 
 	if (!graph_template_whitelist_check($graph_template_id)) {
@@ -2256,7 +2256,7 @@ function create_graph_custom_data_compatible(array $suggested_vals, array $previ
 	return $compatible;
 }
 
-function create_save_graph(int $host_id, string $form_type, int $form_id1, array $form_array2, array $values) : void {
+function create_save_graph(int $host_id, string $form_type, int $form_id1, array $form_array2, mixed $values) : void {
 	// ================= input validation =================
 	input_validate_input_number($form_id1, 'form_id1');
 	// ====================================================
