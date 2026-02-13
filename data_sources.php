@@ -39,6 +39,7 @@ $actions = [
 	3 => __('Enable'),
 	4 => __('Change Device'),
 	5 => __('Reapply Suggested Names'),
+	6 => __('Change Data Source Profile')
 ];
 
 $actions = api_plugin_hook_function('data_source_action_array', $actions);
@@ -452,6 +453,108 @@ function form_actions() : void {
 					api_reapply_suggested_data_source_data($selected_items[$i]);
 					update_data_source_title_cache($selected_items[$i]);
 				}
+			} elseif (get_nfilter_request_var('drp_action') == '6') { // change data source profile
+				get_filter_request_var('data_source_profile_id');
+
+				$new_profile = db_fetch_row_prepared('SELECT * FROM data_source_profiles WHERE id = ?',
+					[get_request_var('data_source_profile_id')]);
+
+				if (cacti_sizeof($new_profile)) {
+					$rrd_changes  = 0;
+					$remote_conns = [];
+
+					foreach ($selected_items as $local_data_id) {
+						$data = db_fetch_row_prepared('SELECT dl.host_id, h.poller_id
+							FROM host AS h
+							INNER JOIN data_local AS dl
+							ON dl.host_id = h.id
+							AND dl.id = ?',
+							[$local_data_id]);
+
+						if ($data['poller_id'] > 1) {
+							$remote_conns[$data['poller_id']] = poller_push_to_remote_db_connect($data['host_id']);
+						}
+
+						// Get current step value
+						$current_step = db_fetch_cell_prepared('SELECT rrd_step 
+							FROM data_template_data 
+							WHERE local_data_id = ?',
+							[$local_data_id]);
+
+						// Update all database tables
+						db_execute_prepared('UPDATE data_template_data 
+							SET data_source_profile_id = ?, rrd_step = ?
+							WHERE local_data_id = ?',
+							[get_request_var('data_source_profile_id'), $new_profile['step'], $local_data_id]
+						);
+
+						db_execute_prepared('UPDATE data_template_rrd 
+							SET rrd_heartbeat = ?
+							WHERE local_data_id = ?',
+							[$new_profile['heartbeat'], $local_data_id]
+						);
+
+						db_execute_prepared('UPDATE poller_item 
+							SET rrd_step = ?
+							WHERE local_data_id = ?',
+							[$new_profile['step'], $local_data_id]
+						);
+
+						if ($data['poller_id'] > 1 && $remote_conns[$data['poller_id']] !== false) {
+							$conn = $remote_conns[$data['poller_id']];
+
+							db_execute_prepared('UPDATE data_template_data 
+								SET data_source_profile_id = ?, rrd_step = ?
+								WHERE local_data_id = ?',
+								[get_request_var('data_source_profile_id'), $new_profile['step'], $local_data_id], true, $conn
+							);
+
+							db_execute_prepared('UPDATE data_template_rrd 
+								SET rrd_heartbeat = ?
+								WHERE local_data_id = ?',
+								[$new_profile['heartbeat'], $local_data_id], true, $conn
+							);
+
+							db_execute_prepared('UPDATE poller_item 
+								SET rrd_step = ?
+								WHERE local_data_id = ?',
+								[$new_profile['step'], $local_data_id], true, $conn
+							);
+						}
+
+						update_poller_cache($local_data_id, true);
+
+						// Handle RRD file if step changed
+						if ($current_step != $new_profile['step']) {
+							$rrd_path = get_data_source_path($local_data_id, true);
+
+							if (file_exists($rrd_path)) {
+								// Backup with timestamp and delete
+								$backup = $rrd_path . '.bak_' . date('Ymd-His');
+
+								if (copy($rrd_path, $backup)) {
+									unlink($rrd_path);
+									$rrd_changes++;
+									cacti_log("RRD backed up and removed: $rrd_path -> $backup", false, 'DATASOURCE');
+								} else {
+									// Log a warning so administrators are aware the backup did not succeed
+									cacti_log("WARNING: Failed to backup RRD file '$rrd_path' to '$backup'", false, 'DATASOURCE');
+								}
+							}
+						}
+					}
+
+					raise_message(1);
+
+					if ($rrd_changes > 0) {
+						$_SESSION['sess_messages']['custom_info'] = [
+							'message' => sprintf(__('%d RRD files were backed up and will be recreated with new step value at next polling.'), $rrd_changes),
+							'type'    => 'info'
+						];
+					}
+				} else {
+					raise_message(2);
+				}
 			} else {
 				api_plugin_hook_function('data_source_action_execute', gnrv('drp_action'));
 			}
@@ -586,6 +689,20 @@ function form_actions() : void {
 					'pmessage' => __('Click \'Continue\' to Reapply Suggested Names for the following Data Sources.'),
 					'scont'    => __('Reapply Suggested Names for Data Source'),
 					'pcont'    => __('Reapply Suggested Names for Data Sources')
+				],
+				6 => [
+					'smessage' => __('Click \'Continue\' to Change the Data Source Profile for the following Data Source.'),
+					'pmessage' => __('Click \'Continue\' to Change the Data Source Profile for the following Data Sources.'),
+					'scont'    => __('Change Data Source Profile'),
+					'pcont'    => __('Change Data Source Profiles'),
+					'extra'    => [
+						'data_source_profile_id' => [
+							'method'  => 'drop_sql',
+							'title'   => __('New Data Source Profile'),
+							'default' => '',
+							'sql'     => 'SELECT id, name FROM data_source_profiles ORDER BY name'
+						]
+					]
 				]
 			]
 		];
