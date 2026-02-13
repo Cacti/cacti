@@ -508,13 +508,13 @@ function form_actions() : void {
 								WHERE local_data_id = ?',
 								[get_request_var('data_source_profile_id'), $new_profile['step'], $local_data_id], true, $conn
 							);
-	
+
 							db_execute_prepared('UPDATE data_template_rrd 
 								SET rrd_heartbeat = ?
 								WHERE local_data_id = ?',
 								[$new_profile['heartbeat'], $local_data_id], true, $conn
 							);
-	
+
 							db_execute_prepared('UPDATE poller_item 
 								SET rrd_step = ?
 								WHERE local_data_id = ?',
