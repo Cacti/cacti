@@ -462,35 +462,35 @@ function form_actions() : void {
 				if (!empty($new_profile)) {
 					$rrd_changes = 0;
 
-					for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
+					foreach ($selected_items as $local_data_id) {
 						// Get current step value
 						$current_step = db_fetch_cell_prepared('SELECT rrd_step FROM data_template_data WHERE local_data_id = ?',
-							[$selected_items[$i]]);
+							[$local_data_id]);
 
 						// Update all database tables
 						db_execute_prepared('UPDATE data_template_data 
 							SET data_source_profile_id = ?, rrd_step = ?
 							WHERE local_data_id = ?',
-							[get_request_var('data_source_profile_id'), $new_profile['step'], $selected_items[$i]]
+							[get_request_var('data_source_profile_id'), $new_profile['step'], $local_data_id]
 						);
 
 						db_execute_prepared('UPDATE data_template_rrd 
 							SET rrd_heartbeat = ?
 							WHERE local_data_id = ?',
-							[$new_profile['heartbeat'], $selected_items[$i]]
+							[$new_profile['heartbeat'], $local_data_id]
 						);
 
 						db_execute_prepared('UPDATE poller_item 
 							SET rrd_step = ?
 							WHERE local_data_id = ?',
-							[$new_profile['step'], $selected_items[$i]]
+							[$new_profile['step'], $local_data_id]
 						);
 
-						update_poller_cache($selected_items[$i], true);
+						update_poller_cache($local_data_id, true);
 
 						// Handle RRD file if step changed
 						if ($current_step != $new_profile['step']) {
-							$rrd_path = get_data_source_path($selected_items[$i], true);
+							$rrd_path = get_data_source_path($local_data_id, true);
 
 							if (file_exists($rrd_path)) {
 								// Backup with timestamp and delete
