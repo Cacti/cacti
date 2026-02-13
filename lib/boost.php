@@ -1505,7 +1505,7 @@ function boost_get_rrd_filename_and_template(int $local_data_id) : array {
  *
  * @param int   $local_data_id - The ID of the local data source to create.
  * @param bool  $show_source   - If true, returns the RRDTool command instead of executing it.
- * @param array $rrdtool_pipe  - The RRDTool pipe resource for executing commands.
+ * @param mixed $rrdtool_pipe  - The RRDTool pipe resource for executing commands.
  *
  * @return mixed - Returns the RRDTool command string if $show_source is true,
  *               -1 if the file already exists,
