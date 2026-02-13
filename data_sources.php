@@ -459,10 +459,22 @@ function form_actions() : void {
 				$new_profile = db_fetch_row_prepared('SELECT * FROM data_source_profiles WHERE id = ?',
 					[get_request_var('data_source_profile_id')]);
 
-				if (!empty($new_profile)) {
-					$rrd_changes = 0;
+				if (cacti_sizeof($new_profile)) {
+					$rrd_changes  = 0;
+					$remote_conns = [];
 
 					foreach ($selected_items as $local_data_id) {
+						$data = db_fetch_row_prepared('SELECT dl.host_id, h.poller_id
+							FROM host AS h
+							INNER JOIN data_local AS dl
+							ON dl.host_id = h.id
+							AND dl.id = ?',
+							[$local_data_id]);
+
+						if ($data['poller_id'] > 1) {
+							$remote_conns[$data['poller_id']] = poller_push_to_remote_db_connect($data['host_id']);
+						}
+
 						// Get current step value
 						$current_step = db_fetch_cell_prepared('SELECT rrd_step FROM data_template_data WHERE local_data_id = ?',
 							[$local_data_id]);
@@ -485,6 +497,28 @@ function form_actions() : void {
 							WHERE local_data_id = ?',
 							[$new_profile['step'], $local_data_id]
 						);
+
+						if ($data['poller_id'] > 1 && $remote_conns[$data['poller_id']] !== false) {
+							$conn = $remote_conns[$data['poller_id']]
+
+							db_execute_prepared('UPDATE data_template_data 
+								SET data_source_profile_id = ?, rrd_step = ?
+								WHERE local_data_id = ?',
+								[get_request_var('data_source_profile_id'), $new_profile['step'], $local_data_id], true, $conn
+							);
+	
+							db_execute_prepared('UPDATE data_template_rrd 
+								SET rrd_heartbeat = ?
+								WHERE local_data_id = ?',
+								[$new_profile['heartbeat'], $local_data_id], true, $conn
+							);
+	
+							db_execute_prepared('UPDATE poller_item 
+								SET rrd_step = ?
+								WHERE local_data_id = ?',
+								[$new_profile['step'], $local_data_id], true, $conn
+							);
+						}
 
 						update_poller_cache($local_data_id, true);
 
