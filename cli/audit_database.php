@@ -137,7 +137,11 @@ if (cacti_sizeof($parms)) {
 	} elseif ($create) {
 		create_tables();
 	} elseif ($report) {
-		report_audit_results();
+		$alters = report_audit_results();
+
+		if (cacti_sizeof($alters)) {
+			exit(1);
+		}
 	} elseif ($altersopt) {
 		repair_database(false);
 	} elseif ($loadopt) {
