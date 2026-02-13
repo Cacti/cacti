@@ -476,7 +476,9 @@ function form_actions() : void {
 						}
 
 						// Get current step value
-						$current_step = db_fetch_cell_prepared('SELECT rrd_step FROM data_template_data WHERE local_data_id = ?',
+						$current_step = db_fetch_cell_prepared('SELECT rrd_step 
+							FROM data_template_data 
+							WHERE local_data_id = ?',
 							[$local_data_id]);
 
 						// Update all database tables
@@ -499,7 +501,7 @@ function form_actions() : void {
 						);
 
 						if ($data['poller_id'] > 1 && $remote_conns[$data['poller_id']] !== false) {
-							$conn = $remote_conns[$data['poller_id']]
+							$conn = $remote_conns[$data['poller_id']];
 
 							db_execute_prepared('UPDATE data_template_data 
 								SET data_source_profile_id = ?, rrd_step = ?
