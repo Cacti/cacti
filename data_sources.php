@@ -500,6 +500,9 @@ function form_actions() : void {
 									unlink($rrd_path);
 									$rrd_changes++;
 									cacti_log("RRD backed up and removed: $rrd_path -> $backup", false, 'DATASOURCE');
+								} else {
+									/* Log a warning so administrators are aware the backup did not succeed */
+									cacti_log("WARNING: Failed to backup RRD file '$rrd_path' to '$backup'", false, 'DATASOURCE');
 								}
 							}
 						}
