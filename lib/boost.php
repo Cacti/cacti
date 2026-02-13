@@ -1512,7 +1512,7 @@ function boost_get_rrd_filename_and_template(int $local_data_id) : array {
  *               false if no RRA is associated with the data source,
  *               or the result of the RRDTool execution.
  */
-function boost_rrdtool_function_create(int $local_data_id, bool $show_source, array $rrdtool_pipe) : mixed {
+function boost_rrdtool_function_create(int $local_data_id, bool $show_source, mixed $rrdtool_pipe) : mixed {
 	global $consolidation_functions, $data_source_types;
 
 	include(CACTI_PATH_INCLUDE . '/global_arrays.php');
