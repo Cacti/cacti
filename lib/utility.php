@@ -559,7 +559,7 @@ function update_poller_cache(mixed $data_source, bool $commit = false) : array {
 	}
 
 	if ($commit && cacti_sizeof($poller_items)) {
-		poller_update_poller_cache_from_buffer((array)$data_source['id'], $poller_items, $poller_id);
+		poller_update_poller_cache_from_buffer([$data_source['id']], $poller_items, $poller_id);
 	} elseif (!$commit) {
 		return $poller_items;
 	}
