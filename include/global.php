@@ -41,6 +41,7 @@ $rdatabase_port, $rdatabase_type, $rdatabase_username;
 define('CACTI_CLI', (php_sapi_name() == 'cli'));
 define('CACTI_WEB', (php_sapi_name() != 'cli'));
 define('CACTI_SERVER_OS', (str_starts_with(PHP_OS, 'WIN')) ? 'win32' : 'unix');
+define('CACTI_ERR_2NULL', (str_starts_with(PHP_OS, 'WIN')) ? ' 2> NULL' : ' 2> /dev/null');
 
 if (defined('CACTI_CLI_ONLY') && CACTI_WEB) {
 	die('<br><strong>This script is only meant to run at the command line.</strong>');
