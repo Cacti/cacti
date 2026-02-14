@@ -1,0 +1,15 @@
+.git
+.github
+*.md
+LICENSE
+.phpstan*
+.php-cs-fixer.php
+.pre-commit-config.yaml
+.env
+.env.local
+docker-compose.override.yml
+data/
+cache/
+log/
+rra/*.rrd
+*.log
