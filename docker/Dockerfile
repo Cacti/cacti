@@ -1,4 +1,6 @@
-FROM php:8.4-fpm
+FROM php:8.4-fpm-bookworm
+
+# rrdtool 1.7.x from Debian; 1.9+ needs source build (hover tooltips only)
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         apache2 \
@@ -43,6 +45,7 @@ RUN { \
         echo 'opcache.fast_shutdown = 1'; \
         echo 'apc.enabled = 1'; \
         echo 'apc.shm_size = 128M'; \
+        echo 'expose_php = Off'; \
     } > /usr/local/etc/php/conf.d/cacti-opcache.ini
 
 RUN { \
@@ -53,10 +56,10 @@ RUN { \
         echo 'group = www-data'; \
         echo 'listen = 127.0.0.1:9000'; \
         echo 'pm = dynamic'; \
-        echo 'pm.max_children = 50'; \
-        echo 'pm.start_servers = 5'; \
-        echo 'pm.min_spare_servers = 5'; \
-        echo 'pm.max_spare_servers = 35'; \
+        echo 'pm.max_children = 10'; \
+        echo 'pm.start_servers = 2'; \
+        echo 'pm.min_spare_servers = 1'; \
+        echo 'pm.max_spare_servers = 5'; \
         echo 'access.log = /proc/self/fd/2'; \
         echo 'catch_workers_output = yes'; \
         echo 'decorate_workers_output = no'; \
@@ -70,10 +73,11 @@ RUN mkdir -p /var/www/html/cacti/cache \
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
+# App code comes from the docker-compose bind mount, not from this image.
 WORKDIR /var/www/html/cacti
 
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD php -r 'exit(file_get_contents("http://localhost/cacti/") === false ? 1 : 0);'
+HEALTHCHECK --interval=30s --timeout=10s --start-period=90s --retries=3 \
+    CMD pgrep -x apache2 > /dev/null && pgrep -x php-fpm > /dev/null
 
 EXPOSE 80
 
