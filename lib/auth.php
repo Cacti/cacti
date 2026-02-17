@@ -81,7 +81,7 @@ function set_auth_cookie(array $user) : void {
 	if (db_table_exists('user_auth_cache')) {
 		clear_auth_cookie();
 
-		$nssecret = md5($_SERVER['REQUEST_TIME'] . mt_rand(10000,10000000)) . md5(get_client_addr());
+		$nssecret = bin2hex(random_bytes(32));
 
 		$secret = hash('sha512', $nssecret, false);
 
@@ -4350,23 +4350,7 @@ function is_user_perms_valid(int $user_id) : bool {
  * @return bool Returns true if the password matches the hash, false otherwise.
  */
 function compat_password_verify(string $password, string $hash) : bool {
-	if (function_exists('password_verify')) {
-		if (password_verify($password, $hash)) {
-			return true;
-		}
-	}
-
-	if (function_exists('md5')) {
-		$md5 = md5($password);
-
-		if ($md5 == $hash) {
-			return true;
-		}
-	}
-
-	$sha256 = hash('sha256', $password);
-
-	return ($sha256 === $hash);
+	return password_verify($password, $hash);
 }
 
 /**
@@ -4380,14 +4364,10 @@ function compat_password_verify(string $password, string $hash) : bool {
  * @return string The hashed password.
  */
 function compat_password_hash(string $password, string|int $algo, array $options = []) : string {
-	if (function_exists('password_hash')) {
-		// Check if options array has anything, only pass when required
-		return (cacti_sizeof($options) > 0) ?
-			password_hash($password, $algo, $options) :
-			password_hash($password, $algo);
-	}
-
-	return md5($password);
+	// Check if options array has anything, only pass when required
+	return (cacti_sizeof($options) > 0) ?
+		password_hash($password, $algo, $options) :
+		password_hash($password, $algo);
 }
 
 /**
