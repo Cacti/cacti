@@ -4350,18 +4350,16 @@ function is_user_perms_valid(int $user_id) : bool {
  * @return bool Returns true if the password matches the hash, false otherwise.
  */
 function compat_password_verify(string $password, string $hash) : bool {
-	if (function_exists('password_verify')) {
-		if (password_verify($password, $hash)) {
-			return true;
-		}
+	if (password_verify($password, $hash)) {
+		return true;
 	}
 
-	if (function_exists('md5')) {
-		$md5 = md5($password);
+	// Legacy fallback for pre-bcrypt hashes. Uses strict === to prevent
+	// type juggling. Successful match triggers rehash via caller.
+	$md5 = md5($password);
 
-		if ($md5 == $hash) {
-			return true;
-		}
+	if ($md5 === $hash) {
+		return true;
 	}
 
 	$sha256 = hash('sha256', $password);
@@ -4380,14 +4378,10 @@ function compat_password_verify(string $password, string $hash) : bool {
  * @return string The hashed password.
  */
 function compat_password_hash(string $password, string|int $algo, array $options = []) : string {
-	if (function_exists('password_hash')) {
-		// Check if options array has anything, only pass when required
-		return (cacti_sizeof($options) > 0) ?
-			password_hash($password, $algo, $options) :
-			password_hash($password, $algo);
-	}
-
-	return md5($password);
+	// Check if options array has anything, only pass when required
+	return (cacti_sizeof($options) > 0) ?
+		password_hash($password, $algo, $options) :
+		password_hash($password, $algo);
 }
 
 /**
@@ -4401,14 +4395,10 @@ function compat_password_hash(string $password, string|int $algo, array $options
  * @return bool Returns true if the password needs to be rehashed, false otherwise.
  */
 function compat_password_needs_rehash(string $password, string|int $algo, array $options = []) : bool {
-	if (function_exists('password_needs_rehash')) {
-		// Check if options array has anything, only pass when required
-		return (cacti_sizeof($options) > 0) ?
-			password_needs_rehash($password, $algo, $options) :
-			password_needs_rehash($password, $algo);
-	}
-
-	return true;
+	// Check if options array has anything, only pass when required
+	return (cacti_sizeof($options) > 0) ?
+		password_needs_rehash($password, $algo, $options) :
+		password_needs_rehash($password, $algo);
 }
 
 /**
