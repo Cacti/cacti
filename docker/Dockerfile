@@ -1,6 +1,8 @@
 FROM php:8.4-fpm-bookworm
 
-# rrdtool 1.7.x from Debian; 1.9+ needs source build (hover tooltips only)
+# rrdtool 1.7.x from Debian meets Cacti's minimum requirement. 1.9+ (source
+# build) enables graph tooltip output via graphv — not worth the image size
+# trade-off for a dev environment.
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         apache2 \

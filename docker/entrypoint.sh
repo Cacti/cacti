@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -euo pipefail
 
 cat > /usr/local/etc/php/conf.d/cacti-runtime.ini <<INI
