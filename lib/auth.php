@@ -4354,12 +4354,12 @@ function compat_password_verify(string $password, string $hash) : bool {
 		return true;
 	}
 
-	// Legacy fallback for pre-bcrypt hashes. Uses strict === to prevent
-	// type juggling. Successful match triggers rehash via caller.
-	$md5 = md5($password);
+	if (function_exists('md5')) {
+		$md5 = md5($password);
 
-	if ($md5 === $hash) {
-		return true;
+		if ($md5 === $hash) {
+			return true;
+		}
 	}
 
 	$sha256 = hash('sha256', $password);
