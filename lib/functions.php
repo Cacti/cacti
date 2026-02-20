@@ -9545,7 +9545,7 @@ if (!function_exists('stats_standard_deviation')) {
 		$carry = 0.0;
 
 		foreach ($items as $val) {
-			$d = ((double) $val) - $mean;
+			$d = ((float) $val) - $mean;
 			$carry += $d * $d;
 		}
 

@@ -105,15 +105,15 @@ function rrdtool_function_stats(mixed $local_data_ids, int $start_seconds, int $
 		}
 
 		if (empty($total_user)) {
-			(double) $total_user = 0;
+			(float) $total_user = 0;
 		}
 
 		if (empty($total_system)) {
-			(double) $total_system = 0;
+			(float) $total_system = 0;
 		}
 
 		if (empty($total_real)) {
-			(double) $total_real = 0;
+			(float) $total_real = 0;
 		}
 
 		// See if the RRDfile contains the MAX consolidation function, if so prime the array with the fetch data
