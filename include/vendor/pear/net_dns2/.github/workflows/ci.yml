@@ -1,0 +1,34 @@
+name: Tests
+
+on: [push]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Git Checkout
+      uses: actions/checkout@v3
+
+    - name: PHP Composer
+      uses: php-actions/composer@v6
+
+    - name: PHPStan Static Analysis
+      uses: php-actions/phpstan@v3
+      with:
+        version: latest
+        level: 8
+        memory_limit: 2G
+        php_version: 8.1
+        php_extensions: hash openssl shmop intl
+        configuration: tests/phpstan.neon
+
+    - name: PHPUnit Tests
+      uses: php-actions/phpunit@v3
+      with:
+        version: 10.5
+        configuration: tests/phpunit.xml
+        php_version: 8.1
+        php_extensions: hash openssl shmop intl
+        test_suffix: .php
+        args: --testsuite parser
