@@ -1836,6 +1836,12 @@ function replicate_out(int $remote_poller_id = 1, string $class = 'all') : bool 
 function replicate_out_table(mixed $db_conn, array &$data, string $table, int $remote_poller_id, bool $truncate = true,
 	mixed $exclude = false, int $level = POLLER_VERBOSITY_NONE) : void {
 	if (cacti_sizeof($data)) {
+		if (!db_table_exists($table)) {
+			cacti_log('WARNING: Unable to replicate table ' . $table . ' because it does not exist locally', false, 'REPLICATE');
+
+			return;
+		}
+
 		// check if the table structure changed, and if so, recreate
 		$local_columns  = db_fetch_assoc('SHOW COLUMNS FROM ' . $table);
 		$remote_columns = db_fetch_assoc('SHOW COLUMNS FROM ' . $table, false, $db_conn);

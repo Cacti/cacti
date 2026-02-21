@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    bootstrap="bootstrap.php" 
+    colors="true" 
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd" 
+    executionOrder="depends,defects"
+    requireCoverageMetadata="false"
+    beStrictAboutCoverageMetadata="true"
+    beStrictAboutOutputDuringTests="true"
+    displayDetailsOnPhpunitDeprecations="true"
+    failOnPhpunitDeprecation="true"
+    failOnRisky="true"
+    failOnWarning="true"
+    cacheDirectory=".phpunit.cache">
+    <testsuites>
+        <testsuite name="parser">
+            <directory>NetDNS2/parser</directory>
+        </testsuite>
+        <testsuite name="resolver">
+            <directory>NetDNS2/resolver</directory>
+        </testsuite>
+        <testsuite name="dnssec">
+            <directory>NetDNS2/dnssec</directory>
+        </testsuite>
+        <testsuite name="cache">
+            <directory>NetDNS2/cache</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

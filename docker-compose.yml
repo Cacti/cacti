@@ -1,0 +1,74 @@
+# Cacti Development Environment
+#
+# Usage:
+#   cp .env.example .env
+#   docker compose up -d
+#
+# Access Cacti at http://localhost:8080/cacti
+# Schema auto-imported on first DB start; complete the web installer to finish setup.
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: cacti_web
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    volumes:
+      # Source code (ro); named volumes overlay cache/rra/log to keep them out of the tree.
+      - .:/var/www/html/cacti
+      - cacti_cache:/var/www/html/cacti/cache
+      - cacti_rra:/var/www/html/cacti/rra
+      - cacti_logs:/var/www/html/cacti/log
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: ${DB_USER:-cacti}
+      DB_PASS: ${DB_PASSWORD:-cacti}
+      DB_NAME: ${DB_NAME:-cacti}
+      PHP_MEMORY_LIMIT: ${PHP_MEMORY_LIMIT:-512M}
+      TIMEZONE: ${TIMEZONE:-UTC}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: mariadb:11.8
+    container_name: cacti_db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${DB_NAME:-cacti}
+      MYSQL_USER: ${DB_USER:-cacti}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-cacti}
+      TZ: ${TIMEZONE:-UTC}
+    ports:
+      - "127.0.0.1:${DB_PORT:-3306}:3306"
+    volumes:
+      - cacti_db:/var/lib/mysql
+      - ./cacti.sql:/docker-entrypoint-initdb.d/cacti.sql:ro
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --max-connections=${DB_MAX_CONNECTIONS:-200}
+      - --max-heap-table-size=128M
+      - --tmp-table-size=128M
+      - --join-buffer-size=128M
+      - --innodb-buffer-pool-size=${DB_BUFFER_POOL_SIZE:-1G}
+      - --innodb-flush-log-at-timeout=3
+      - --innodb-read-io-threads=32
+      - --innodb-write-io-threads=16
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
+
+volumes:
+  cacti_db:
+  cacti_cache:
+  cacti_rra:
+  cacti_logs:

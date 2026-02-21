@@ -1505,14 +1505,14 @@ function boost_get_rrd_filename_and_template(int $local_data_id) : array {
  *
  * @param int   $local_data_id - The ID of the local data source to create.
  * @param bool  $show_source   - If true, returns the RRDTool command instead of executing it.
- * @param array $rrdtool_pipe  - The RRDTool pipe resource for executing commands.
+ * @param mixed $rrdtool_pipe  - The RRDTool pipe resource for executing commands.
  *
  * @return mixed - Returns the RRDTool command string if $show_source is true,
  *               -1 if the file already exists,
  *               false if no RRA is associated with the data source,
  *               or the result of the RRDTool execution.
  */
-function boost_rrdtool_function_create(int $local_data_id, bool $show_source, array $rrdtool_pipe) : mixed {
+function boost_rrdtool_function_create(int $local_data_id, bool $show_source, mixed $rrdtool_pipe) : mixed {
 	global $consolidation_functions, $data_source_types;
 
 	include(CACTI_PATH_INCLUDE . '/global_arrays.php');
