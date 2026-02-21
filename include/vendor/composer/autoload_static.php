@@ -83,6 +83,10 @@ class ComposerStaticInit4457df976b6743d4cf060b8bfc645118
         array (
             'Overtrue\\PHPLint\\' => 17,
         ),
+        'N' => 
+        array (
+            'NetDNS2\\' => 8,
+        ),
         'M' => 
         array (
             'MyCLabs\\Enum\\' => 13,
@@ -296,6 +300,10 @@ class ComposerStaticInit4457df976b6743d4cf060b8bfc645118
         'Overtrue\\PHPLint\\' => 
         array (
             0 => __DIR__ . '/..' . '/overtrue/phplint/src',
+        ),
+        'NetDNS2\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/pear/net_dns2/src/NetDNS2',
         ),
         'MyCLabs\\Enum\\' => 
         array (

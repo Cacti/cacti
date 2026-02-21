@@ -2027,7 +2027,7 @@ function create_complete_graph_from_template(int $graph_template_id, int $host_i
  *
  * @return bool
  */
-function create_graph_custom_data_compatible(array $suggested_vals, array $previous_data_source) : bool {
+function create_graph_custom_data_compatible(mixed $suggested_vals, array $previous_data_source) : bool {
 	$compatible = true;
 
 	if (!cacti_sizeof($suggested_vals)) {

@@ -1,0 +1,7 @@
+parameters:
+    universalObjectCratesClasses:
+        - NetDNS2\RR\SIG
+        - NetDNS2\RR\OPT
+    paths:
+        - ../src
+    treatPhpDocTypesAsCertain: false
