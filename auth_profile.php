@@ -680,7 +680,7 @@ function settings_javascript() : void {
 	?>
 	<script type='text/javascript'>
 		var themeFonts = <?php print read_config_option('font_method'); ?>;
-		var currentTab = '<?php print gnrv('tab'); ?>';
+		var currentTab = <?php print json_encode(gnrv('tab')); ?>;
 		var currentTheme = '<?php print get_selected_theme(); ?>';
 		var currentLang = '<?php print read_config_option('user_language'); ?>';
 		var authMethod = '<?php print read_config_option('auth_method'); ?>';
