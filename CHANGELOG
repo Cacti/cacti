@@ -1,57 +1,58 @@
 Cacti CHANGELOG
 
 1.2.31
+
 -security#GHSA-6RVG-2VM8-5WRF: CVE-2026-22802 Authentication Bypass leads to information disclosure
 -security: CVE-2026-1513 billboard.js before 3.18.0 Improper Input Sanitization Allows Remote JavaScript Execution
--issue#6168: RRD cleaner does not purge files
--issue#6202: Adding devices via automation fails
--issue#6204: Automation breaks if the field does not previously exist in the host_snmp_cache table
--issue#6210: Fix Error: You have an error in your SQL syntax due to using table field without backtick.
--issue#6240: Fix sorting exception in rrdtool_function_create function 
+-issue#6168: When purging RRD files, paths are not correctly handled
+-issue#6202: When using automation, devices may not be added as expected
+-issue#6204: Attempting to match a field in automation may cause unexpected errors
+-issue#6210: Ensure column names are escaped to prevent reserved word issues
+-issue#6240: Improve sort order for incorrect RRA's
 -issue#6249: Unable to send Email to users without a domain name
--issue#6251: Cacti can issue a warning in a case where a user attempts to view a graph that no longer exists
--issue#6253: Unification of i18n behaviour when the input is null
--issue#6257: Fix archive rrd with structural path, remove only rrd file check
--issue#6262: If the database service restarts during polling or other activities errors occur
--issue#6270: Select list using special characters for the current value can not be displayed in thold
--issue#6271: Improve validation logging to give administrators a clue where the error came from
--issue#6283: Divide by Zero if the $rows variable is not set
--issue#6292: Fatal validation errors occur if a request variable default value is null
--issue#6294: Undefined variable $params in lib/api_automation.php
--issue#6296: Issue with posix_kill function using Windows as your Cacti server
--issue#6297: Enhance SMTP Security Settings to Higher Order TLS
--issue#6299: Support SMTPUTF8 for modern Email Servers
--issue#6313: Errors when editing multiple devices with unset value
--issue#6314: Newly Added Items in Aggregation Chart Don’t Reflect in Item Count
--issue#6315: Undefined function error duplicating a data input method
--issue#6326: Issues with Cisco Devices and Higher Levels of Privacy
--issue#6327: Update Browser Login and Change Password Autocomplete to new Browser Standard
--issue#6329: PHP Error on LDAP access
--issue#6331: Upgrading from old versions of Cacti prior to 1_0_5 generates errors
--issue#6334: Unable to hide HRULE and COMMENT items for Aggregate of Interface Traffic graph (which includes 95th percentile)
--issue#6335: Fix incorrect parsing of email address containing whitespace
--issue#6441: Spikekill Purge Using the wrong variable
--issue#6444: Applying Title Cache Changes for Data Input Methods using |data_xxxx| not working
--issue#6490: Selective Debug Setting in Cacti 'Clear All' button results in selecting the first item
--issue#6507: Fix incorrect cli parameter when loading template information
--issue#6508: PHP Error when exporting data 
--issue#6516: SQL Errors in Automation Graph Rules processing
--issue#6518: Ensure that the csrf-secret file is written in a less permissive way
--issue#6519: Realtime generates errors in the Cacti Log after a Graph has been removed
--issue#6546: Add missing xml and script files for NetSNMP LMSensor
--issue#6551: Fix paths in audit_database script (FreeBSD)
--issue#6573: Add hook device_change_javascript, necessarily for thold
--issue#6598: Make local modifications to the phpdiff vendor package for backwards compatibility
--issue#6600: Plugins wishing to replicate out a table that does not exist generates warnings
--issue#6605: The use of splice_rrd.php can lead to a loss of data
--issue#6606: Multiple Issues with Spikekill
--feature#6523: When disabling a users, ensure that their stored authentication cookies are remove and any sessions cleared
--feature#6524: When changing your password, logout from all sessions
--feature#6534: Recycle the PHP Session ID on user login to improve Cacti site security
--feature#6607: After changing your password, all your sessions should be ended
+-issue#6251: When viewing a graph, do not produce unnecessary errors if graph has been removed
+-issue#6253: When i18n formatting numbers, assume null means 0 by xmacan
+-issue#6257: When data sources are removed, ensure only RRD files are removed by xmacan
+-issue#6262: When the database connection drops during query, retry to ensure success
+-issue#6270: Incorrect escaping may prevent drop downs working as intended
+-issue#6271: When validation errors occur, provide more information to help diagnosis
+-issue#6283: When calculating total pages, ensure math errors do not occur
+-issue#6292: When validating null request variables, fatal errors may occur
+-issue#6294: Automation may produce unexpected warnings when detecting the OS
+-issue#6296: Process timeouts may not end processes as expected
+-issue#6297: Improve support for Secure SMTP
+-issue#6299: Improve email address handling to support UTF8
+-issue#6313: When editing multiple devices, unexpected errors may be recorded
+-issue#6314: When editing an Aggregation Graph, total count may not reflect number of items correctly
+-issue#6315: When duplicating a Data Input Method, unexpected errors may occur
+-issue#6326: Improve SNMP v3 support for Cisco devices
+-issue#6327: Implement Autocomplete standards for Login and Change Password
+-issue#6329: When using LDAP, checking a user's groups may cause unexpected errors
+-issue#6331: When upgrading from pre-1.0.5, unexpected errors may occur by YATV
+-issue#6334: When creating Aggregate graphs, unable to hide HRULE and COMMENT based items
+-issue#6335: Email addresses with leading or trailing spaces can cause issues
+-issue#6441: Spikekill uses the wrong option for retention periods by 3432
+-issue#6444: When a Data Input's Title is applied, unexpected errors and values may be seen
+-issue#6490: When using Clear All on Selective Debug, first item is reselected
+-issue#6507: Importing packages may not work as expected by xmacan
+-issue#6508: When exporting graphs, data issues may lead to unexpected errors by xmacan
+-issue#6516: When modifying Graph Automation Rules, unexpected errors may be logged
+-issue#6518: Improve security of CSRF Secret by SMark-Black
+-issue#6519: When using Real Time graphing, unexpected errors may appear if graph is removed
+-issue#6546: Restore some missing SNMP Script Server configurations
+-issue#6551: Improve support for FreeBSD when Auditing Databases by xmacan
+-issue#6573: Create new device_change_javascript hook for THOLD plugin by xmacan
+-issue#6598: Improve PHP 8 support by TheWitness
+-issue#6600: When replicating plugins, unexpected errors may appear due to missing tables
+-issue#6605: Prevent Row Data Loss When Rebuilding RRD Files
+-issue#6606: When using SpikeKill, actions would not always lead to expected results
+-feature#6523: When disabling users, ensure that their authentication cookies and sessions cleared
+-feature#6524: When changing your password, log off from all sessions
+-feature#6534: Improve Cacti Session ID security
+-feature#6607: Implement session security on Password change
+-feature: Update DOMPurify to 3.3.0
 -feature: Update PHPMailer to 6.10 to support SMTPUTF8
 -feature: Update phpseclib for the Service Check plugin
--feature: Update DOMPurify to 3.3.0
 
 1.2.30
 -issue#6089: Unable to add new users
