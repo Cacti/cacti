@@ -502,7 +502,8 @@ db_cacti_initialized($config['is_web']);
 if ($config['is_web']) {
 	if (read_config_option('force_https') == 'on') {
 		if (!isset($_SERVER['HTTPS']) && isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
-			header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . PHP_EOL . PHP_EOL);
+			$host = preg_replace('/[^a-zA-Z0-9.\-:]/', '', $_SERVER['HTTP_HOST']);
+			header('Location: https://' . $host . $_SERVER['REQUEST_URI']);
 
 			exit;
 		}
