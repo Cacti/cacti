@@ -4777,7 +4777,7 @@ function get_hash_version(string $type) : string {
  * @return string A 128-bit, hexadecimal hash
  */
 function generate_hash() : string {
-	return md5(session_id() . microtime() . random_int(0,1000));
+	return bin2hex(random_bytes(16));
 }
 
 /**
