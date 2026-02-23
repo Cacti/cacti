@@ -2000,7 +2000,7 @@ function array_to_sql_or(array $array, string $sql_column) : mixed {
 	}
 
 	if (cacti_sizeof($array)) {
-		$sql_or = "($sql_column IN('" . implode("','", $array) . "'))";
+		$sql_or = '(' . $sql_column . ' IN(' . implode(',', array_map('db_qstr', $array)) . '))';
 
 		return $sql_or;
 	}
