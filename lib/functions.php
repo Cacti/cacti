@@ -5007,7 +5007,7 @@ function sanitize_unserialize_selected_items(mixed $items) : mixed {
 
 		// validate that sanitized string is correctly formatted
 		if (preg_match('/^a:[0-9]+:{/', $unstripped) && !preg_match('/(^|;|{|})O:\+?[0-9]+:"/', $unstripped)) {
-			$items = unserialize($unstripped);
+			$items = unserialize($unstripped, ['allowed_classes' => false]);
 
 			if (is_array($items)) {
 				$return_items = $items;
@@ -5047,7 +5047,7 @@ function sanitize_unserialize_selected_graphs(mixed $items) : array {
 
 		// validate that sanitized string is correctly formatted
 		if (preg_match('/^a:[0-9]+:{/', $unstripped) && !preg_match('/(^|;|{|})O:\+?[0-9]+:"/', $unstripped)) {
-			$items = unserialize($unstripped);
+			$items = unserialize($unstripped, ['allowed_classes' => false]);
 
 			if (is_array($items)) {
 				$return_items = $items;
