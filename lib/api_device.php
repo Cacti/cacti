@@ -224,9 +224,9 @@ function api_device_remove_multi(array $device_ids, int $delete_type = 2) : void
 		// build the list
 		foreach ($device_ids as $device_id) {
 			if ($i == 0) {
-				$devices_to_delete .= $device_id;
+				$devices_to_delete .= intval($device_id);
 			} else {
-				$devices_to_delete .= ', ' . $device_id;
+				$devices_to_delete .= ', ' . intval($device_id);
 			}
 
 			// poller commands go one at a time due to trashy logic

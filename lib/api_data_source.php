@@ -441,9 +441,9 @@ function api_data_source_disable_multi(array $local_data_ids) : void {
 	if (cacti_sizeof($local_data_ids)) {
 		foreach ($local_data_ids as $local_data_id) {
 			if ($i == 0) {
-				$ids_to_disable .= $local_data_id;
+				$ids_to_disable .= intval($local_data_id);
 			} else {
-				$ids_to_disable .= ', ' . $local_data_id;
+				$ids_to_disable .= ', ' . intval($local_data_id);
 			}
 
 			$i++;

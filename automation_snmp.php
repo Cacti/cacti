@@ -617,7 +617,7 @@ function automation_snmp_item_edit() : void {
 		$header_label                     = __('SNMP Options [new]');
 		$automation_snmp_item             = [];
 		$automation_snmp_item['snmp_id']  = grv('id');
-		$automation_snmp_item['sequence'] = get_sequence(0, 'sequence', 'automation_snmp_items', 'snmp_id=' . grv('id'));
+		$automation_snmp_item['sequence'] = get_sequence(0, 'sequence', 'automation_snmp_items', 'snmp_id=' . (int) grv('id'));
 	}
 
 	form_start('automation_snmp.php', 'automation_item_edit');

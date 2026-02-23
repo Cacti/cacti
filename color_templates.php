@@ -220,7 +220,7 @@ function form_save() : void {
 		foreach ($items as $item) {
 			// generate a new sequence if needed
 			if (empty($sequence)) {
-				$sequence = get_next_sequence($sequence, 'sequence', 'color_template_items', 'color_template_id=' . gnrv('color_template_id'), 'color_template_id');
+				$sequence = get_next_sequence((int) $sequence, 'sequence', 'color_template_items', 'color_template_id=' . (int) gnrv('color_template_id'), 'color_template_id');
 			}
 
 			$save['color_template_item_id'] = gfrv('color_template_item_id');

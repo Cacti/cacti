@@ -246,7 +246,7 @@ function form_save() : void {
 		}
 
 		// suggested values -- graph templates
-		$sequence = get_sequence(0, 'sequence', 'snmp_query_graph_sv', 'snmp_query_graph_id = ' . gfrv('id') . ' AND field_name = ' . db_qstr(gnrv('svg_field')));
+		$sequence = get_sequence(0, 'sequence', 'snmp_query_graph_sv', 'snmp_query_graph_id = ' . (int) gfrv('id') . ' AND field_name = ' . db_qstr(gnrv('svg_field')));
 
 		$hash = get_hash_data_query(0, 'data_query_sv_graph');
 
@@ -295,7 +295,7 @@ function form_save() : void {
 				return;
 			}
 
-			$sequence = get_sequence(0, 'sequence', 'snmp_query_graph_rrd_sv', 'snmp_query_graph_id = ' . grv('id') . ' AND data_template_id = ' . $svds_id . ' AND field_name = ' . db_qstr(gnrv('svds_field')));
+			$sequence = get_sequence(0, 'sequence', 'snmp_query_graph_rrd_sv', 'snmp_query_graph_id = ' . (int) grv('id') . ' AND data_template_id = ' . intval($svds_id) . ' AND field_name = ' . db_qstr(gnrv('svds_field')));
 
 			$hash = get_hash_data_query(0, 'data_query_sv_data_source');
 

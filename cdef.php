@@ -142,7 +142,7 @@ function form_save() : void {
 		gfrv('type');
 		// ====================================================
 
-		$sequence = get_sequence(gnrv('id'), 'sequence', 'cdef_items', 'cdef_id=' . gnrv('cdef_id'));
+		$sequence = get_sequence((int) gnrv('id'), 'sequence', 'cdef_items', 'cdef_id=' . (int) gnrv('cdef_id'));
 
 		$save['id']       = form_input_validate(gnrv('id'), 'id', '^[0-9]+$', false, 3);
 		$save['hash']     = get_hash_cdef(gnrv('id'), 'cdef_item');

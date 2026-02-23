@@ -256,9 +256,9 @@ function api_graph_remove_multi(array $local_graph_ids) : void {
 
 		foreach ($local_graph_ids as $local_graph_id) {
 			if ($i == 0) {
-				$ids_to_delete .= $local_graph_id;
+				$ids_to_delete .= intval($local_graph_id);
 			} else {
-				$ids_to_delete .= ', ' . $local_graph_id;
+				$ids_to_delete .= ', ' . intval($local_graph_id);
 			}
 
 			$i++;

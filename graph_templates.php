@@ -438,7 +438,7 @@ function form_save() : void {
 		foreach ($items as $item) {
 			// generate a new sequence if needed
 			if (empty($sequence)) {
-				$sequence = get_sequence(0, 'sequence', 'graph_templates_item', 'graph_template_id=' . grv('graph_template_id') . ' AND local_graph_id=0');
+				$sequence = get_sequence(0, 'sequence', 'graph_templates_item', 'graph_template_id=' . (int) grv('graph_template_id') . ' AND local_graph_id=0');
 			}
 
 			$task_item_changed = true;
