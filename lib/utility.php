@@ -1684,7 +1684,7 @@ function utilities_php_modules() : string {
 function memory_bytes(mixed $val) : mixed {
 	$val  = trim($val);
 	$last = strtolower($val[strlen($val) - 1]);
-	$val  = (double) trim($val, 'GMKgmk');
+	$val  = (float) trim($val, 'GMKgmk');
 
 	switch($last) {
 		case 'g':
