@@ -108,3 +108,6 @@ vendor/**
 .env.local
 .env.*.local
 docker-compose.override.yml
+
+# PHPUnit cache
+.phpunit.cache/
