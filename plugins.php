@@ -1777,8 +1777,8 @@ function plugin_display_compat(string $compat) : string {
 	foreach ($compat as $index => $c) {
 		if (str_contains($c, '>=')) {
 			$compat[$index] = str_replace('>=', '>= ', $c);
-		} elseif (str_contains($c, '>=')) {
-			$compat[$index] = str_replace('>=', '>= ', $c);
+		} elseif (str_contains($c, '<=')) {
+			$compat[$index] = str_replace('<=', '<= ', $c);
 		} elseif (str_contains($c, '>')) {
 			$compat[$index] = str_replace('>', '> ', $c);
 		} elseif (str_contains($c, '<')) {
