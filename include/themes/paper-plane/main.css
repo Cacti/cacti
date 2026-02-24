@@ -606,18 +606,18 @@ label {
 }
 
 .tableRow {
-	background: none repeat scroll 0 0 #EBEDEF;
+	color: white;
 	line-height: 20px;
 }
 
 .odd {
 	border: none;
-	background: none repeat scroll 0 0 #EBEDEF;
+	background: none repeat scroll 0 0 #222;
 }
 
 .odd.tableRow {
-	color: #000000;
-	background: none repeat scroll 0 0 #EBEDEF;
+	color: #ccc;
+	background: none repeat scroll 0 0 #252525;
 }
 
 .tableRowGraph td {
@@ -628,21 +628,21 @@ label {
 
 .even {
 	border: none;
-	background: none repeat scroll 0 0 #FFFFFF;
+	background: none repeat scroll 0 0 #222;
 }
 
 .even.tableRow {
-	color: #000000;
-	background: none repeat scroll 0 0 #FFFFFF;
+	color: #ccc;
+	background: none repeat scroll 0 0 #222;
 }
 
 .even-alternate {
-	background: none repeat scroll 0 0 #FFFFFF;
+	background: none repeat scroll 0 0 #252525;
 }
 
 .even-alternate.tableRow {
-	color: #000000;
-	background: none repeat scroll 0 0 #FFFFFF;
+	color: #ccc;
+	background: none repeat scroll 0 0 #222;
 }
 
 .tableRow {
@@ -1100,6 +1100,7 @@ legend {
 
 .cactiGraphContentAreaPreview .cactitable {
 	background: none !important;
+	color: #ccc;
 }
 
 .cactiConsoleContentArea {
@@ -1143,7 +1144,7 @@ legend {
 }
 
 .linkEditMain, .linkEditMain:visited, .linkEditMain:active {
-	color: #2d4ca8;
+	color: #ddd;
 	text-decoration: none;
 	font-size: 12px;
 	white-space: nowrap;
@@ -1283,6 +1284,7 @@ tr>td.textInfo.right {
 	margin-left: auto;
 	margin-right: auto;
 	border-color: #222;
+	color: #ccc;
 }
 
 .cactiInstallLoaderSpinnerTheme {
@@ -1576,7 +1578,7 @@ tr>td.textInfo.right {
 	color: white !important;
 	background: none;
 	box-shadow: inset 0 0 20px 0 rgba(0,0,0,.5);
-	border-bottom: 3px solid #5CB85C !important;
+	border-bottom: 3px solid #ccc !important;
 }
 
 .tableHeaderColumnHover {
@@ -1775,6 +1777,8 @@ tr>td.textInfo.right {
 }
 
 .textAreaNotes {
+	zbackground-color: #1D1F21;
+	xbackground-image: linear-gradient(#1D1F21,#000000);
 	font-size: 12px;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 }
@@ -2165,8 +2169,8 @@ tr.selectable a.linkEditMain:hover {
 }
 
 tr.selectable:hover:not(.selected) {
-	background: #AAAAAA;
-	color: #000000;
+	background: #444;
+	color: #fff;
 }
 
 tr.selected a {
@@ -2831,4 +2835,11 @@ circle {
 
 .tableRowGraph {
      border: 2px solid rgba(0,0,0,0);
+}
+
+.ui-state-default, .ui-selectmenu-button, .ui-button {
+	border: 1px solid #d3d3d3;
+	background: #111 !important;
+	font-weight: normal;
+	color: #555555;
 }
