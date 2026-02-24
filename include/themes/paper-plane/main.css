@@ -2836,3 +2836,10 @@ circle {
 .tableRowGraph {
      border: 2px solid rgba(0,0,0,0);
 }
+
+.ui-state-default, .ui-selectmenu-button, .ui-button {
+	border: 1px solid #d3d3d3;
+	background: #111 !important;
+	font-weight: normal;
+	color: #555555;
+}
