@@ -1403,7 +1403,7 @@ class spikekill {
 		$carry = 0.0;
 
 		foreach ($items as $val) {
-			$d = ((double) $val) - $mean;
+			$d = ((float) $val) - $mean;
 			$carry += $d * $d;
 		}
 

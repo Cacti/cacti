@@ -4777,7 +4777,7 @@ function get_hash_version(string $type) : string {
  * @return string A 128-bit, hexadecimal hash
  */
 function generate_hash() : string {
-	return md5(session_id() . microtime() . random_int(0,1000));
+	return bin2hex(random_bytes(16));
 }
 
 /**
@@ -5007,7 +5007,7 @@ function sanitize_unserialize_selected_items(mixed $items) : mixed {
 
 		// validate that sanitized string is correctly formatted
 		if (preg_match('/^a:[0-9]+:{/', $unstripped) && !preg_match('/(^|;|{|})O:\+?[0-9]+:"/', $unstripped)) {
-			$items = unserialize($unstripped);
+			$items = unserialize($unstripped, ['allowed_classes' => false]);
 
 			if (is_array($items)) {
 				$return_items = $items;
@@ -5047,7 +5047,7 @@ function sanitize_unserialize_selected_graphs(mixed $items) : array {
 
 		// validate that sanitized string is correctly formatted
 		if (preg_match('/^a:[0-9]+:{/', $unstripped) && !preg_match('/(^|;|{|})O:\+?[0-9]+:"/', $unstripped)) {
-			$items = unserialize($unstripped);
+			$items = unserialize($unstripped, ['allowed_classes' => false]);
 
 			if (is_array($items)) {
 				$return_items = $items;
@@ -9545,7 +9545,7 @@ if (!function_exists('stats_standard_deviation')) {
 		$carry = 0.0;
 
 		foreach ($items as $val) {
-			$d = ((double) $val) - $mean;
+			$d = ((float) $val) - $mean;
 			$carry += $d * $d;
 		}
 
