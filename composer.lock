@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b1a8672a9df74dfdad6e186a76c03965",
+    "content-hash": "e06d08e3439207bb323f44237ff3c47d",
     "packages": [
         {
             "name": "firebase/php-jwt",
@@ -886,6 +886,69 @@
                 "source": "https://github.com/paragonie/random_compat"
             },
             "time": "2020-10-15T08:29:30+00:00"
+        },
+        {
+            "name": "pear/net_dns2",
+            "version": "v2.0.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mikepultz/netdns2.git",
+                "reference": "5353baa6d960623b64863fd7eeae663a1eb12e3d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mikepultz/netdns2/zipball/5353baa6d960623b64863fd7eeae663a1eb12e3d",
+                "reference": "5353baa6d960623b64863fd7eeae663a1eb12e3d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^10"
+            },
+            "suggest": {
+                "ext-curl": "Used for DNS over HTTPS (DoH)",
+                "ext-hash": "Used for TSIG authentication.",
+                "ext-intl": "Used for decoding Unicode domain names.",
+                "ext-openssl": "Used for DNS over TLS (DoT), and some DNSSEC verification."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "NetDNS2\\": "src/NetDNS2/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mike Pultz",
+                    "email": "mike@mikepultz.com",
+                    "homepage": "https://mikepultz.com/",
+                    "role": "lead"
+                }
+            ],
+            "description": "PHP DNS Resolver and Updater Library",
+            "homepage": "https://netdns2.com/",
+            "keywords": [
+                "DNSSEC",
+                "dns",
+                "network"
+            ],
+            "support": {
+                "issues": "https://github.com/mikepultz/netdns2/issues",
+                "source": "https://github.com/mikepultz/netdns2"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/mikepultz",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-11-17T21:16:04+00:00"
         },
         {
             "name": "php-mqtt/client",

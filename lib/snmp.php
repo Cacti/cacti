@@ -957,7 +957,7 @@ function format_snmp_string(string $string, bool $snmp_oid_included, int $value_
 			}
 
 			if (is_numeric($output)) {
-				$string = number_format((double) $output, 0, '', '');
+				$string = number_format((float) $output, 0, '', '');
 			} else {
 				$string = $output;
 			}
@@ -986,7 +986,7 @@ function format_snmp_string(string $string, bool $snmp_oid_included, int $value_
 			}
 
 			if (is_numeric($output)) {
-				$string = number_format((double) $output, 0, '', '');
+				$string = number_format((float) $output, 0, '', '');
 			} else {
 				$string = $output;
 			}
