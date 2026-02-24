@@ -58,7 +58,7 @@ global $boost_debug, $boost_log, $cacti_log;
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
-		if (strpos($parameter, '=')) {
+		if (str_contains($parameter, '=')) {
 			[$arg, $value] = explode('=', $parameter);
 		} else {
 			$arg   = $parameter;
@@ -998,7 +998,7 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 			}
 
 			// single one value output
-			if (strpos($value, 'DNP') !== false) {
+			if (str_contains($value, 'DNP')) {
 				// continue, bad time
 			} elseif ((is_numeric($value)) || ($value == 'U' && $item['rrd_name'] !== '')) {
 				$tv_tmpl[$item['rrd_name']] = $value;
@@ -1009,7 +1009,7 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 				$tv_tmpl[$item['rrd_name']] = $tval;
 				$buflen += strlen(':' . $tval);
 				$vals_in_buffer++;
-			} elseif (strpos($value, ':') !== false) {
+			} elseif (str_contains($value, ':')) {
 				// break out multiple value output to an array
 				$values = preg_split('/\s+/', $value);
 

@@ -4940,7 +4940,7 @@ function sanitize_uri($uri) {
 	static $drop_char_match   =   ['^', '$', '<', '>', '`', "'", '"', '|', '+', '[', ']', '{', '}', ';', '!', '(', ')'];
 	static $drop_char_replace = [ '', '',  '',  '',  '',  '',   '',  '',  '',  '',  '',  '',  '',  '',  ''];
 
-	if (strpos($uri, 'graph_view.php')) {
+	if (str_contains($uri, 'graph_view.php')) {
 		if (!strpos($uri, 'action=')) {
 			$uri = $uri . (strpos($uri, '?') ? '&' : '?') . 'action=' . gnrv('action');
 		}
@@ -5263,7 +5263,7 @@ function send_mail(mixed $to, mixed $from = null, string $subject = '',
 			}
 		}
 
-		if ($from != '' && strpos($from, '<') === false) {
+		if ($from != '' && !str_contains($from, '<')) {
 			if ($name == '') {
 				$full_name = db_fetch_cell_prepared('SELECT full_name
 					FROM user_auth
@@ -5872,7 +5872,7 @@ function split_emaildetail(mixed $email) : array {
 	 * Handle the special case where sendmail is being used
 	 * without an email domain
 	 */
-	if (!is_array($email) && strpos($email, '@') === false) {
+	if (!is_array($email) && !str_contains($email, '@')) {
 		return ['name' => '', 'email' => $email];
 	}
 
@@ -5880,8 +5880,8 @@ function split_emaildetail(mixed $email) : array {
 	 * Handle the case where the Email is a string, but may
 	 * include the name at the beginning of the Email.
 	 */
-	if (!is_array($email) && strpos($email, '@') !== false) {
-		if (strpos($email, '<') !== false) {
+	if (!is_array($email) && str_contains($email, '@')) {
+		if (str_contains($email, '<')) {
 			$parts = explode('<', $email);
 			$name  = str_replace(['"', "'"], ['', ''], $parts[0]);
 			$email = str_replace('>', '', $parts[1]);

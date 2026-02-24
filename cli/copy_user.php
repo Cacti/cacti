@@ -35,7 +35,7 @@ $template_user = '';
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
-		if (strpos($parameter, '=')) {
+		if (str_contains($parameter, '=')) {
 			[$arg, $value] = explode('=', $parameter);
 		} else {
 			$arg   = $parameter;

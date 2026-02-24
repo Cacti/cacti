@@ -133,7 +133,7 @@ function form_save() : void {
 				$selected_graphs['sg'][$matches[1]][gnrv('sgg_' . $matches[1])][$matches[2]] = true;
 			}
 
-			if (strpos($var, 'sgg_') !== false) {
+			if (str_contains($var, 'sgg_')) {
 				$snmp_query_id = intval(str_replace('sgg_', '', $var));
 
 				input_validate_input_number($snmp_query_id, 'sgg');
@@ -1015,7 +1015,7 @@ function graphs() : void {
 		if ($_SERVER['SERVER_NAME'] != $referer_url['host']) {
 			// Potential security exploit 1
 			srv('returnto', 'host.php');
-		} elseif (strpos($_SERVER['HTTP_REFERER'], 'graphs_new') === false) {
+		} elseif (!str_contains($_SERVER['HTTP_REFERER'], 'graphs_new')) {
 			srv('returnto', basename($_SERVER['HTTP_REFERER']));
 		} else {
 			srv('returnto', 'host.php');
@@ -1031,7 +1031,7 @@ function graphs() : void {
 
 	load_current_session_value('returnto', 'sess_grn_returnto', '');
 
-	if (strpos(gnrv('returnto'), 'host.php') === false) {
+	if (!str_contains(gnrv('returnto'), 'host.php')) {
 		srv('returnto', '');
 	}
 

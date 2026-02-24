@@ -40,7 +40,7 @@ $create = true;
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
-		if (strpos($parameter, '=')) {
+		if (str_contains($parameter, '=')) {
 			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
@@ -122,7 +122,7 @@ function sqltable_to_php(string $table, bool $create, string $plugin = '') : str
 				$text .= "\$data['columns'][] = array(";
 				$text .= "'name' => '" . $r['Field'] . "'";
 
-				if (strpos(strtolower($r['Type']), ' unsigned') !== false) {
+				if (str_contains(strtolower($r['Type']), ' unsigned')) {
 					$r['Type'] = str_ireplace(' unsigned', '', $r['Type']);
 					$text .= ", 'unsigned' => true";
 				}
@@ -133,7 +133,7 @@ function sqltable_to_php(string $table, bool $create, string $plugin = '') : str
 				if ($r['Default'] != '' && trim($r['Default']) != '') {
 					if ($r['Default'] == "''") {
 						$r['Default'] = '';
-					} elseif (strpos($r['Default'], 'current_timestamp()') !== false) {
+					} elseif (str_contains($r['Default'], 'current_timestamp()')) {
 						$r['Default'] = str_replace('current_timestamp()', 'CURRENT_TIMESTAMP', $r['Default']);
 					}
 

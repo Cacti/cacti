@@ -1425,7 +1425,7 @@ function format_plugin_row(array $plugin, bool $last_plugin, bool $include_order
 	}
 
 	if (POLLER_ID > 1) {
-		if (isset($plugin['capabilities']) && (strpos($plugin['capabilities'], 'remote_collect:1') !== false || strpos($plugin['capabilities'], 'remote_poller:1') !== false)) {
+		if (isset($plugin['capabilities']) && (str_contains($plugin['capabilities'], 'remote_collect:1') || str_contains($plugin['capabilities'], 'remote_poller:1'))) {
 			if ($plugin['remote_status'] == '-1') {
 				$status = plugin_is_compatible($plugin['plugin']);
 				$row .= ' / ' . __('Not Compatible, \'%s\'', $status['requires']);
@@ -1775,13 +1775,13 @@ function plugin_display_compat(string $compat) : string {
 	$compat = explode(' ', $compat);
 
 	foreach ($compat as $index => $c) {
-		if (strpos($c, '>=') != false) {
+		if (str_contains($c, '>=')) {
 			$compat[$index] = str_replace('>=', '>= ', $c);
-		} elseif (strpos($c, '>=') != false) {
+		} elseif (str_contains($c, '>=')) {
 			$compat[$index] = str_replace('>=', '>= ', $c);
-		} elseif (strpos($c, '>') != false) {
+		} elseif (str_contains($c, '>')) {
 			$compat[$index] = str_replace('>', '> ', $c);
-		} elseif (strpos($c, '<') != false) {
+		} elseif (str_contains($c, '<')) {
 			$compat[$index] = str_replace('<', '< ', $c);
 		} else {
 			$compat[$index] = '>= ' . $c;
@@ -1943,7 +1943,7 @@ function plugin_actions(array $plugin, string $table) : string {
 	}
 
 	if (POLLER_ID > 1) {
-		if (isset($plugin['capabilities']) && (strpos($plugin['capabilities'], 'remote_collect:1') !== false || strpos($plugin['capabilities'], 'remote_poller:1') !== false)) {
+		if (isset($plugin['capabilities']) && (str_contains($plugin['capabilities'], 'remote_collect:1') || str_contains($plugin['capabilities'], 'remote_poller:1'))) {
 			if ($plugin['remote_status'] == 1) { // Installed and Active
 				// ToDo: Disabling here does not make much sense as the main will be replicated
 				// with any change of any other plugin thus undoing.  Fix that moving forward

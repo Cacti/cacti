@@ -32,7 +32,7 @@ $page = db_fetch_row_prepared('SELECT
 
 // Prevent redirect loops
 if (isset($_SERVER['HTTP_REFERER'])) {
-	if (strpos($_SERVER['HTTP_REFERER'], 'link.php') === false) {
+	if (!str_contains($_SERVER['HTTP_REFERER'], 'link.php')) {
 		$referer                  = $_SERVER['HTTP_REFERER'];
 		$_SESSION['link_referer'] = $referer;
 	} elseif (isset($_SESSION['link_referer'])) {
@@ -86,7 +86,7 @@ if (!cacti_sizeof($page)) {
 			$basepath = CACTI_PATH_INCLUDE . '/content';
 			$file     = realpath($basepath . '/' . $page['contentfile']);
 
-			if ($file !== false && substr($file, 0, strlen($basepath)) == $basepath) {
+			if ($file !== false && str_starts_with($file, $basepath)) {
 				require_once($file);
 			} else {
 				print '<h1>The file \'' . htmle($page['contentfile']) . '\' does not exist!!</h1>';

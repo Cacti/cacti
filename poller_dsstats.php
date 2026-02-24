@@ -50,9 +50,9 @@ $thread_id      = 0;
 global $rrd_files, $total_system, $total_user, $total_real, $total_dsses;
 global $user_time, $system_time, $real_time;
 
-$total_system = 0.0;
-$total_user   = 0.0;
-$total_real   = 0.0;
+$total_system          = 0.0;
+$total_user            = 0.0;
+$total_real            = 0.0;
 $total_dsses           = 0;
 
 $system_time  = 0;
@@ -63,7 +63,7 @@ $rrd_files    = 0;
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
-		if (strpos($parameter, '=')) {
+		if (str_contains($parameter, '=')) {
 			[$arg, $value] = explode('=', $parameter);
 		} else {
 			$arg   = $parameter;
@@ -478,7 +478,7 @@ function sig_handler($signo) : void {
 				set_config_option('dsstats_poller_status', 'terminated - end time:' . date('Y-m-d G:i:s'));
 			}
 
-			if (strpos($type, 'master') !== false) {
+			if (str_contains($type, 'master')) {
 				dsstats_kill_running_processes();
 			}
 

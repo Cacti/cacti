@@ -339,7 +339,7 @@ function parseArgs(string $string, array &$str_list, bool $debug = false) : bool
 	}
 
 	foreach ($delimiters as $delimiter) {
-		if (strpos($string, $delimiter) !== false) {
+		if (str_contains($string, $delimiter)) {
 			$delimited = true;
 
 			break;

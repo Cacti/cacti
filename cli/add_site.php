@@ -64,7 +64,7 @@ if (sizeof($parms)) {
 	$hosts   = '';
 
 	foreach ($parms as $parameter) {
-		if (strpos($parameter, '=')) {
+		if (str_contains($parameter, '=')) {
 			[$arg, $value] = explode('=', $parameter);
 		} else {
 			$arg   = $parameter;

@@ -73,7 +73,7 @@ array_shift($parms);
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
-		if (strpos($parameter, '=')) {
+		if (str_contains($parameter, '=')) {
 			[$arg, $value] = explode('=', $parameter);
 		} else {
 			$arg   = $parameter;
@@ -388,7 +388,7 @@ function sig_handler(int $signo) : void {
 		case SIGINT:
 			cacti_log('WARNING: RRDfile Cleanup Poller terminated by user', false, 'CLEANUP');
 
-			if (strpos($type, 'master') !== false) {
+			if (str_contains($type, 'master')) {
 				commands_kill_running_processes();
 			}
 

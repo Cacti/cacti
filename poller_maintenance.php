@@ -57,7 +57,7 @@ $start    = microtime(true);
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
-		if (strpos($parameter, '=')) {
+		if (str_contains($parameter, '=')) {
 			[$arg, $value] = explode('=', $parameter);
 		} else {
 			$arg   = $parameter;
@@ -673,7 +673,7 @@ function logrotate_file_clean(string $name, string $log, object $date, int $rota
 			$fileparts = explode('-', $d);
 			$matches   = false;
 
-			if (strpos($d, $baselogname) !== false) {
+			if (str_contains($d, $baselogname)) {
 				if (cacti_sizeof($fileparts) > 1) {
 					foreach ($fileparts as $p) {
 						// Is it in the form YYYYMMDD?

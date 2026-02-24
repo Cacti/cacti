@@ -185,7 +185,7 @@ $output = trim($output);
 $oarray = ['type' => $gtype, 'local_graph_id' => grv('local_graph_id'), 'rra_id' => $rra_id];
 
 // Check if we received back something populated from rrdtool
-if ($output != false && $output != '' && strpos($output, 'image = ') !== false) {
+if ($output != false && $output != '' && str_contains($output, 'image = ')) {
 	// Find the beginning of the image definition row
 	$image_begin_pos = strpos($output, 'image = ');
 
