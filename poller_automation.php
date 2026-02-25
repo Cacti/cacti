@@ -784,7 +784,7 @@ function discoverDevices(int $network_id, int $thread) : bool {
 											$pattern = str_replace('|sysLocation|', $sysLocation, $pattern);
 										}
 
-										$description = db_fetch_cell_prepared("SELECT ?", array($pattern));
+										$description = db_fetch_cell_prepared('SELECT ?', [$pattern]);
 
 										if ($description != '') {
 											$device['description'] = $description;
