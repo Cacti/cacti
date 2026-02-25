@@ -47,7 +47,7 @@
 		// define global variables / objects here
 		let zoom = {
 			initiator: 	$(this),																						// 'initiator' is the element that initiates Zoom
-			image: 		{ top:0, left:0, width:0, height:0 },															// 'image' means the image tag and its properties
+			image: 		{ top:0, left:0, width:0, height:0, clientWidth: 0, clientHeight: 0, cfw: 1, cfh: 1},      	    // 'image' means the image tag and its properties
 			graph: 		{ timespan:0, secondsPerPixel:0 },																// 'graph' stands for the rrdgraph itself, excluding legend, graph title, etc.
 			box: 		{ top:0, left:0, right:0, width:0, height:0 },													// 'box' describes the area in front of the graph within jQueryZoom will allow interaction
 			marker: 	{ 1 : { placed:false }, 2 : { placed:false} },													// 'markers' are selectors usable within the advanced mode
@@ -240,18 +240,27 @@
 			zoom.image.legend			= (!($('#thumbnails').length !== 0 && $('#thumbnails').is(':checked')));
 			zoom.image.top				= parseInt(zoom.initiator.offset().top);
 			zoom.image.left				= parseInt(zoom.initiator.offset().left);
+
 			zoom.image.width			= parseInt(zoom.initiator.attr('image_width'));
-			zoom.image.right			= zoom.image.left + zoom.image.width;
 			zoom.image.height			= parseInt(zoom.initiator.attr('image_height'));
-			zoom.graph.top				= parseInt(zoom.initiator.attr('graph_top'));
-			zoom.graph.left				= parseInt(zoom.initiator.attr('graph_left'));
-			zoom.graph.width			= parseInt(zoom.initiator.attr('graph_width'));
-			zoom.graph.height			= parseInt(zoom.initiator.attr('graph_height'));
+			zoom.image.clientWidth		= image.parent()[0].clientWidth;
+			zoom.image.clientHeight		= image.parent()[0].clientHeight;
+
+			zoom.image.cfw = parseFloat(zoom.image.clientWidth / zoom.image.width);
+			zoom.image.width = zoom.image.clientWidth;
+			zoom.image.cfh = parseFloat(zoom.image.clientHeight / zoom.image.height);
+			zoom.image.height = zoom.image.clientHeight;
+
+			zoom.image.right			= zoom.image.left + zoom.image.width;
+			zoom.graph.top				= parseInt(zoom.initiator.attr('graph_top')) * zoom.image.cfh;
+			zoom.graph.left				= parseInt(zoom.initiator.attr('graph_left')) * zoom.image.cfw;
+			zoom.graph.width			= parseInt(zoom.initiator.attr('graph_width')) * zoom.image.cfw;
+			zoom.graph.height			= parseInt(zoom.initiator.attr('graph_height')) * zoom.image.cfh;
 			zoom.graph.start			= parseInt(zoom.initiator.attr('graph_start'));
 			zoom.graph.end				= parseInt(zoom.initiator.attr('graph_end'));
 			zoom.graph.timespan			= zoom.graph.end - zoom.graph.start;
 			zoom.graph.secondsPerPixel	= zoom.graph.timespan/zoom.graph.width;
-			zoom.box.width				= zoom.graph.width + ((zoom.custom.zoomMode === 'quick') ? 0 : 1);
+			zoom.box.width				= zoom.graph.width;
 			zoom.box.height				= zoom.graph.height;
 			zoom.box.top 				= zoom.graph.top-1;
 			zoom.box.bottom 			= zoom.graph.top + zoom.box.height;

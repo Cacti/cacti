@@ -50,9 +50,9 @@ $thread_id      = 0;
 global $rrd_files, $total_system, $total_user, $total_real, $total_dsses;
 global $user_time, $system_time, $real_time;
 
-(double) $total_system = 0;
-(double) $total_user   = 0;
-(double) $total_real   = 0;
+$total_system = 0.0;
+$total_user   = 0.0;
+$total_real   = 0.0;
 $total_dsses           = 0;
 
 $system_time  = 0;

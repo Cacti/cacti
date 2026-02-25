@@ -102,3 +102,9 @@ include/vendor/csrf/csrf-secret.php
 # Ignore vendor folders
 include/vendor/**
 vendor/**
+
+# Docker local config
+.env
+.env.local
+.env.*.local
+docker-compose.override.yml
