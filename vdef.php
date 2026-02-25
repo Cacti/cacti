@@ -121,7 +121,7 @@ function vdef_form_save() : void {
 
 		header('Location: vdef.php?action=edit&id=' . (empty($vdef_id) ? grv('id') : $vdef_id));
 	} elseif (isrv('save_component_item')) {
-		$sequence = get_sequence((int) gfrv('id'), 'sequence', 'vdef_items', 'vdef_id=' . (int) gfrv('vdef_id'));
+		$sequence = get_sequence(gfrv('id'), 'sequence', 'vdef_items', 'vdef_id=' . gfrv('vdef_id'));
 
 		$save['id']       = gfrv('id');
 		$save['hash']     = get_hash_vdef(grv('id'), 'vdef_item');

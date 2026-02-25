@@ -634,7 +634,7 @@ function form_save() : void {
 		foreach ($items as $item) {
 			// generate a new sequence if needed
 			if (empty($sequence)) {
-				$sequence = get_sequence((int) $sequence, 'sequence', 'graph_templates_item', 'local_graph_id=' . (int) gnrv('local_graph_id'));
+				$sequence = get_sequence($sequence, 'sequence', 'graph_templates_item', 'local_graph_id=' . gnrv('local_graph_id'));
 			}
 
 			$save['id']                           = gnrv('graph_template_item_id');
