@@ -67,18 +67,16 @@ th {
 	-webkit-user-select: none;
 }
 
-.tableRowGraph td span {
-	color: #FFF;
-}
-
 img {
 	border: none;
 	vertical-align: middle;
 }
 
 i.fa, i.fas, i.fab, i.far, i.fal {
+	font-size: 15px;
 	padding: 0px 3px;
-	font-size: 13px;
+	text-align: left;
+	vertical-align: middle;
 }
 
 .menu_parent i.fa, .menu_parent i.fas, .menu_parent i.fab, .menu_parent i.far, .menu_parent i.fal {
@@ -89,6 +87,42 @@ fieldset {
 	border: none;
 	padding: 0px;
 	margin: 0px;
+}
+
+.cols1 {
+	width: 100%;
+	display:table-cell;
+}
+
+.cols2 {
+	width: 50%;
+	display:table-cell;
+}
+
+.cols3 {
+	width: 33%;
+	display:table-cell;
+}
+
+.cols4 {
+	width: 25%;
+	display:table-cell;
+}
+
+.cols5 {
+	width: 20%;
+	display:table-cell;
+}
+
+.cols6 {
+	width: 16.6%;
+	display:table-cell;
+}
+
+.graphPage {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
 }
 
 hr.menu {
@@ -131,6 +165,7 @@ th .fa {
 }
 
 pre {
+	color: snow;
 }
 
 form#tree_edit>div {
@@ -171,6 +206,10 @@ label {
 
 .nowrap {
 	white-space: nowrap;
+}
+
+.prewrap {
+	white-space: pre-wrap;
 }
 
 .wrap {
@@ -348,7 +387,7 @@ label {
 
 .spikeKillMenuItem {
 	display: block;
-	width: 100%;
+	width: 100%:;
 }
 
 .deviceUp {
@@ -616,23 +655,18 @@ label {
 }
 
 .odd.tableRow {
-	color: #ccc;
+	color: #CCC;
 	background: none repeat scroll 0 0 #252525;
-}
-
-.tableRowGraph td {
-	padding: 3px;
-	vertical-align: top;
-	background: none repeat scroll 0 0 #FFFFFF;
 }
 
 .even {
 	border: none;
 	background: none repeat scroll 0 0 #222;
+	color: #CCC;
 }
 
 .even.tableRow {
-	color: #ccc;
+	color: #CCC;
 	background: none repeat scroll 0 0 #222;
 }
 
@@ -641,7 +675,7 @@ label {
 }
 
 .even-alternate.tableRow {
-	color: #ccc;
+	color: #CCC;
 	background: none repeat scroll 0 0 #222;
 }
 
@@ -653,6 +687,7 @@ label {
 	border-color: #222;
 	text-align: right;
 	padding: 4px;
+	padding-right: 14px;
 }
 
 .saveRow > input.ui-button {
@@ -874,19 +909,20 @@ label {
 	padding-bottom: 140px;
 	margin-bottom: 60px;
 	width: 156px;
-	margin-top: -6px;
+	margin-top: 10px;
 	margin-left: 2px;
 	margin-right: 2px;
+	height: 100px;
 }
 
-.loginLeft, .logoutLeft {
+.cactiAuthLeft {
 	display: none;
 }
 
-.loginCenter, .logoutCenter {
+.cactiAuthCenter {
 	position: absolute;
 	background-color: transparent;
-	width: 300px;
+	width: 350px;
 	height: 200px;
 	top: 45%;
 	left: 50%;
@@ -894,33 +930,38 @@ label {
 	margin: -100px 0 0 -150px;
 }
 
-.cactiLoginLogo, .cactiLogoutLogo {
+.cactiAuthCenter legend {
+
+}
+
+.cactiAuthLogo {
 	display: none;
 }
 
-.loginArea, .logoutArea {
+.cactiAuthArea {
 	color: #9d9d9d;
 }
 
-.cactiLoginTable td {
+.cactiAuthTable td {
 	padding-bottom: 6px;
 	padding-right: 6px;
+	white-space: nowrap;
 }
 
-.cactiLoginTable input.ui-button {
+.cactiAuthTable input.ui-button {
 	border: 1px solid #93CEFF;
 	color: #93CEFF;
 	background: transparent;
 	outline-style: none;
 }
 
-.cactiLoginTable input.ui-button:hover {
+.cactiAuthTable input.ui-button:hover {
 	color: #FFFFFF;
 	border: 1px solid #FFFFFF;
 	background: #5CB85C;
 }
 
-.loginErrors, .logoutErrors {
+.cactiAuthErrors {
 	color: red;
 	min-height: 15px;
 }
@@ -931,13 +972,13 @@ legend {
 	font-weight: bold;
 }
 
-.loginRight, .logoutRight {
+.cactiAuthRight {
 	display: none;
 	width: 33%;
 	float: right;
 }
 
-.loginBody, .logoutBody {
+.cactiAuthBody {
 	height: 100% !important;
 	width: 100% !important;
 	background: #1D1F21;
@@ -984,7 +1025,7 @@ legend {
 	vertical-align: top;
 	float: right;
 	margin-left: 3px;
-	margin-right: 6px;
+	padding-right: 14px;
 	display: table-cell;
 }
 
@@ -1048,7 +1089,7 @@ legend {
 	display: inline-block;
 }
 
-.loginPanel {
+.cactiAuthPanel {
 	padding: 4px 0px;
 }
 
@@ -1060,8 +1101,25 @@ legend {
 	vertical-align: top;
 }
 
+.graphDrillDown {
+	padding: 10px 3px;
+	display: inline-block;
+	vertical-align: top;
+	align-self: left;
+	z-index: 4;
+	height: 100%;
+	height: 200px;
+	width: 22px;
+	min-width: 22px;
+}
+
 .graphWrapper {
-	position: relative;
+	padding: 10px 3px;
+	display: inline-block;
+}
+
+.graphWrapperOuter div {
+	color: rgb(157, 157, 157);
 }
 
 .cactiGraphContentArea {
@@ -1100,7 +1158,7 @@ legend {
 
 .cactiGraphContentAreaPreview .cactitable {
 	background: none !important;
-	color: #ccc;
+	color: #CCC;
 }
 
 .cactiConsoleContentArea {
@@ -1139,12 +1197,12 @@ legend {
 	display: inline-block;
 }
 
-.piinstall, .pienable, .pidisable, .piuninstall, .pierror {
+.piinstall, .pienable, .pidisable, .piuninstall, .pierror, .pirmdata, .piload, .pireadme, .pichangelog, .pirestore, .pirmarchive {
 	padding: 0px 3px !important;
 }
 
 .linkEditMain, .linkEditMain:visited, .linkEditMain:active {
-	color: #ddd;
+	color: #DDD;
 	text-decoration: none;
 	font-size: 12px;
 	white-space: nowrap;
@@ -1211,7 +1269,7 @@ tr>td.textInfo.left {
 
 tr>td.textInfo.right {
 	background: #F7F7F7;
-	color: #000000;
+	color: #CCC;
 }
 
 .textHeader {
@@ -1284,11 +1342,10 @@ tr>td.textInfo.right {
 	margin-left: auto;
 	margin-right: auto;
 	border-color: #222;
-	color: #ccc;
 }
 
 .cactiInstallLoaderSpinnerTheme {
-	border-top-color: #3a3b3c !important;
+	border-top-color: #CCC !important;
 }
 
 .cactiTableTitleRow {
@@ -1298,8 +1355,8 @@ tr>td.textInfo.right {
 	padding-left: 3px;
 	display: block;
 	width: 100%;
-	height: 28px;
-	line-height: 28px;
+	height: 25px;
+	line-height: 25px;
 	font-size: 13px;
 	font-weight: 600;
 	border-color: #222;
@@ -1314,9 +1371,8 @@ tr>td.textInfo.right {
 	padding-left: 3px;
 	vertical-align: middle;
 	display: block;
-	width: 70%;
-	height: 28px;
-	line-height: 28px;
+	height: 25px;
+	line-height: 25px;
 	font-size: 13px;
 	font-weight: 600;
 	border-color: #222;
@@ -1332,9 +1388,8 @@ tr>td.textInfo.right {
 	vertical-align: middle;
 	font-size: 13px;
 	color: #FFF;
-	width: calc(30% - 3px);
-	height: 28px;
-	line-height: 28px;
+	height: 25px;
+	line-height: 25px;
 	border-color: #222;
 	background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
 	background-repeat: repeat-x;
@@ -1381,8 +1436,51 @@ tr>td.textInfo.right {
 	white-space: nowrap;
 }
 
-.filterTable label {
+.filterTable td label {
 	vertical-align: 10%;
+}
+
+.filterTable .filterRow {
+	display: table-row;
+}
+
+.filterTable .filterColumn {
+	display: table-cell;
+	padding: 5px 0px 5px 5px;
+	text-align: left;
+}
+
+.filterTable .filterColumn label {
+	vertical-align: -10%;
+}
+
+.filterTable .filterColumnButton {
+	display: table-cell;
+	padding: 5px 0px 5px 5px;
+	text-align: left;
+}
+
+.filterTable .filterColumn:first-child {
+	width: 55px;
+}
+
+.settingsFilter {
+	display: table;
+	white-space: nowrap;
+}
+
+.settingsFilter div {
+	display: table-cell;
+	padding: 5px 0px 5px 5px;
+	vertical-align: middle;
+}
+
+.pingRow {
+	padding-left: 5px;
+	min-height: 50px;
+	vertical-align: text-top;
+	display: table-cell;
+	margin: 0px;
 }
 
 .formRow {
@@ -1419,6 +1517,24 @@ tr>td.textInfo.right {
 .formData {
 	display: inline-block;
 	float: left;
+}
+
+.confirm_actions .formColumnLeft {
+	min-width: 10%;
+	max-width: 45%;
+	width: initial;
+	display: table-cell;
+	float: initial;
+	vertical-align: middle;
+}
+
+.confirm_actions .formColumnRight {
+	display: table-cell;
+	float: initial;
+}
+
+.confirm_actions label {
+	white-space: wrap;
 }
 
 .formFieldName {
@@ -1462,6 +1578,22 @@ tr>td.textInfo.right {
 .formHeaderText {
 	padding-left: 3px;
 	color: #FFF;
+}
+
+.formConfirmRadio {
+	width: 10px;
+}
+
+.formConfirmRow {
+	margin: 3px;
+}
+
+.formConfirmRow td {
+	padding: 3px 8px;
+}
+
+.formConfirmRow td:first-child {
+	width: 1%;
 }
 
 .hostInfoHeader {
@@ -1578,7 +1710,7 @@ tr>td.textInfo.right {
 	color: white !important;
 	background: none;
 	box-shadow: inset 0 0 20px 0 rgba(0,0,0,.5);
-	border-bottom: 3px solid #ccc !important;
+	border-bottom: 3px solid #5CB85C !important;
 }
 
 .tableHeaderColumnHover {
@@ -1777,8 +1909,6 @@ tr>td.textInfo.right {
 }
 
 .textAreaNotes {
-	zbackground-color: #1D1F21;
-	xbackground-image: linear-gradient(#1D1F21,#000000);
 	font-size: 12px;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 }
@@ -1851,6 +1981,8 @@ tr>td.textInfo.right {
 	vertical-align: middle;
 	text-decoration: none !important;
 	padding-right: 7px !important;
+	display: inline-block !important;
+	width: 14.75px !important;
 }
 
 .deleteMarker:hover {
@@ -1858,14 +1990,16 @@ tr>td.textInfo.right {
 }
 
 .deleteMarkerDisabled {
+	display: inline-block !important;
+	width: 14.75px !important;
 	padding-right: 7px !important;
 }
 
 .moveArrow {
 	color: #00438C !important;
 	height: 14px !important;
-	display: inline-block;
-	width: 11.75px;
+	display: inline-block !important;
+	width: 14.75px !important;
 	font-size: 14px !important;
 	vertical-align: middle;
 	text-decoration: none !important;
@@ -1876,8 +2010,8 @@ tr>td.textInfo.right {
 }
 
 .moveArrowNone {
-	display: inline-block;
-	width: 14.75px;
+	display: inline-block !important;
+	width: 14.75px !important;
 }
 
 .action, .shiftArrow, .calendar {
@@ -2096,19 +2230,6 @@ tr th:last-child .checkbox {
 	margin-right: 10px !important;
 }
 
-.fa-angle-double-up, .fa-angle-double-down {
-	margin-right: 10px;
-}
-
-.fa-plus, .fa-question-circle {
-	margin-right: 10px;
-}
-
-.fa-compress, .fa-expand {
-	margin-right: 10px;
-}
-
-
 /* Navigation Area */
 #nav {
 	float: left;
@@ -2170,14 +2291,14 @@ tr.selectable a.linkEditMain:hover {
 
 tr.selectable:hover:not(.selected) {
 	background: #444;
-	color: #fff;
+	color: #FFF;
 }
 
 tr.selected a {
 	color: #0000CD;
 }
 
-#nav li a.pic:hover:not(.selected) {
+#nav li a.pic:hover:not(.selected), #nav li a.menu_parent:hover:not(.selected) {
 
 }
 
@@ -2212,8 +2333,7 @@ ul#nav {
 }
 
 .clogError {
-	color: #ccc;
-	background-color: #6f0a07;
+	background-color: #FF3932;
 }
 
 .clogWarning {
@@ -2264,6 +2384,10 @@ ul#nav {
 	overflow: auto !important;
 	opacity: 0.95;
 	border: transparent;
+}
+
+.ui-selectmenu-search input {
+	width: 100%;
 }
 
 div.preformatted {
@@ -2385,10 +2509,12 @@ tr#realtime td:first-child {
 }
 
 .menu_glyph {
-	font-size: 12px;
-	vertical-align: 30%;
+	font-size: 18px !important;
+	vertical-align: middle;
 	text-align: left;
-	width: 20px;
+	width: 22px;
+	padding-right: 0px !important;
+	display: inline-block;
 }
 
 .submenu_glyph {
@@ -2397,7 +2523,6 @@ tr#realtime td:first-child {
 }
 
 .menuitem span {
-	vertical-align: 20%;
 }
 
 .resetHover {
@@ -2819,8 +2944,18 @@ td.center > table {
 }
 
 .bb-chart-arc .bb-gauge-value {
-  fill: #000;
-  /*  font-size: 28px !important;*/
+	fill: #000;
+	/*  font-size: 28px !important;*/
+}
+
+.bb-button .bb-zoom-reset {
+	font-size: 11px;
+	border: solid 1px #161616;
+	background-color: #161616;
+	padding: 5px;
+	color: snow;
+	border-radius: 5px;
+	cursor: pointer;
 }
 
 circle {
@@ -2829,13 +2964,98 @@ circle {
 	fill: transparent !important;
 }
 
-[id*='_edit'] .tableRowGraph:hover, .tableRowGraph:hover td {
-     background: none repeat scroll 0 0 rgba(200,200,200,0.8) !important;
+[id*='_edit'] .tableHeader:hover, .tableHeader:hover td {
+	background: none repeat scroll 0 0 rgba(200,200,200,0.8) !important;
 }
 
-.tableRowGraph {
-     border: 2px solid rgba(0,0,0,0);
+.tableHeaderGraph {
+	color: rgb(157, 157, 157);
+	background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
+	background-repeat: repeat-x;
 }
+
+.tableHeaderGraph span {
+	color: rgb(157, 157, 157);
+	padding: 3px;
+	line-height: 22px;
+}
+
+.actionHelp {
+	color:#00758F !important;
+}
+
+.plusAdd {
+	color:#CE3500 !important;
+}
+
+.actionCog {
+	color:#FDAC53 !important;
+}
+
+.fileCSV {
+	color:#9BB7D4 !important;
+}
+
+.threeBars {
+	color:#B55A30 !important;
+}
+
+.editDevice {
+	color:#F5DF4D !important;
+}
+
+.editTemplate {
+	color:#0072B5 !important;
+}
+
+.realTime {
+	color:#A0DAA9 !important;
+}
+
+.spikeKill {
+	color:#E9897E !important;
+}
+
+.newDevice {
+	color:#00A170 !important;
+}
+
+.newGraph {
+	color:#926AA6 !important;
+}
+
+.reindexDevice {
+	color:#D2386C !important;
+}
+
+.enableDebug {
+	color:#363945 !important;
+}
+
+.disableDebug {
+	color:#939597 !important;
+}
+
+.repopulateCache {
+	color:#EFE1CE !important;
+}
+
+.viewCache {
+	color:#E0B589 !important;
+}
+
+.viewGraphs {
+	color:#9A8B4F !important;
+}
+
+.viewSources {
+	color:#56C6A9 !important;
+}
+
+.expandAggregate {
+	color:#9BB7D4 !important;
+}
+
 
 .ui-state-default, .ui-selectmenu-button, .ui-button {
 	border: 1px solid #d3d3d3;
@@ -2843,4 +3063,3 @@ circle {
 	font-weight: normal;
 	color: #555555;
 }
-
