@@ -126,7 +126,7 @@ function debug(string $message) : void {
 }
 
 function remote_agent_strip_domain(string $host) : string {
-	if (strpos($host, '.') !== false) {
+	if (str_contains($host, '.')) {
 		$parts = explode('.', $host);
 
 		return $parts[0];

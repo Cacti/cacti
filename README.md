@@ -18,7 +18,7 @@
 We currently have two functioning versions of Cacti on this site, and several
 Cacti plugins supported by The Cacti Group.  Our current long lived version
 of Cacti in the `1.2.x` branch.  The current release version of this branch
-is Cacti 1.2.30.
+is Cacti 1.2.31.
 
 This pending maintenance release has several bugs fixes, and significantly more
 welcomed feature enhancements.  You can review the CHANGELOG for the `1.2.x`
@@ -26,10 +26,11 @@ branch for more information on that.
 
 Additionally, we have the `develop` branch.  This is now an active Development
 Branch.  In this branch, we as a team have re-grouped and are introducing several
-new features.  We hope to be able to deliver a Christmas present for Cacti
-enthusiasts, which will be a Cacti 1.3.0-beta release.  If you want to get
+new features.  We hope to be able to release this in early 2026.  We have had
+numerous delays due to various work related changes in the team, but we continue
+to press on torwards an eventual release of Cacti 1.3.0-beta.  If you want to get
 involved earlier, you can simply download the development release and knock
-yourselves out.  The 1.3.0 release will include everything in th 1.2.27
+yourselves out.  The 1.3.0 release will include everything in the 1.2.31
 release, as well as several additional features from our roadmap.
 
 System requirements vary from Cacti point release to point release.  The matrix
@@ -93,7 +94,10 @@ packages.  With Cacti 1.2.31, you should not need to run it as all the required
 files will be included in the package, but starting with Cacti 1.3, you may
 be required to run the `composer update` periodically.
 For Windows, you may be required to run:
-`composer update --ignore-platform-req=ext-pcntl --ignore-platform-req=ext-posix`
+
+```bash
+composer update --ignore-platform-req=ext-pcntl --ignore-platform-req=ext-posix
+```
 
 ### Steps to Fully Upgrade Database Schema
 

@@ -586,6 +586,7 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 			$code      = $ex->getCode();
 			$en        = $code;
 			$errorinfo = [1=>$code, 2=>$ex->getMessage()];
+			$query     = null;
 		}
 
 		restore_error_handler();
@@ -594,7 +595,7 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 			db_echo_sql('db_' . $execute_name . ' Memory [ After]: ' . memory_get_usage() . ' / ' . memory_get_peak_usage() . "\n");
 		}
 
-		if ($code == 0) {
+		if ($code == 0 && is_object($query)) {
 			$code = $query->errorCode();
 
 			if ($code != '00000' && $code != '01000') {
@@ -2000,7 +2001,7 @@ function array_to_sql_or(array $array, string $sql_column) : mixed {
 	}
 
 	if (cacti_sizeof($array)) {
-		$sql_or = "($sql_column IN('" . implode("','", $array) . "'))";
+		$sql_or = '(' . $sql_column . ' IN(' . implode(',', array_map('db_qstr', $array)) . '))';
 
 		return $sql_or;
 	}

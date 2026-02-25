@@ -239,7 +239,7 @@ function form_actions() : void {
 
 	// loop through each of the graphs selected on the previous page and get more info about them
 	foreach ($_POST as $var => $val) {
-		if (strpos($var, 'chk_file_') !== false) {
+		if (str_contains($var, 'chk_file_')) {
 			$id = base64_decode(str_replace('chk_file_', '', $var), true);
 			$id = json_decode($id, true);
 
@@ -256,7 +256,7 @@ function form_actions() : void {
 			$found_pkg_file_array[$id['package']] = $id['package'];
 		}
 
-		if (strpos($var, 'chk_import_') !== false) {
+		if (str_contains($var, 'chk_import_')) {
 			$id = base64_decode(str_replace('chk_import_', '', $var), true);
 			$id = json_decode($id, true);
 
@@ -464,13 +464,13 @@ function form_save() : void {
 
 		// loop through each of the graphs selected on the previous page and get more info about them
 		foreach ($_POST as $var => $val) {
-			if (strpos($var, 'chk_file_') !== false) {
+			if (str_contains($var, 'chk_file_')) {
 				$id = base64_decode(str_replace('chk_file_', '', $var), true);
 				$id = json_decode($id, true);
 
-				if (strpos($id['pfile'], '/') !== false) {
+				if (str_contains($id['pfile'], '/')) {
 					$parts = explode('/', $id['pfile']);
-				} elseif (strpos($id['pfile'], '\\') !== false) {
+				} elseif (str_contains($id['pfile'], '\\')) {
 					$parts = explode('\\', $id['pfile']);
 				} else {
 					$parts = [$id['pfile']];
@@ -493,7 +493,7 @@ function form_save() : void {
 				$files[] = $id['pfile'];
 			}
 
-			if (strpos($var, 'chk_import_') !== false) {
+			if (str_contains($var, 'chk_import_')) {
 				$id = base64_decode(str_replace('chk_import_', '', $var), true);
 				$id = json_decode($id, true);
 

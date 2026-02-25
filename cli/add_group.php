@@ -49,7 +49,7 @@ if (cacti_sizeof($params) == 0) {
 	$displayHosts  = false;
 
 	foreach ($params as $parameter) {
-		if (strpos($parameter, '=')) {
+		if (str_contains($parameter, '=')) {
 			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;

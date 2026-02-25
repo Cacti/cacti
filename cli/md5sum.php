@@ -40,7 +40,7 @@ $base_dir  = __DIR__ . '/../';
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
-		if (strpos($parameter, '=')) {
+		if (str_contains($parameter, '=')) {
 			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
@@ -246,7 +246,7 @@ function dirToArray(mixed $dir, string $base, string $ignore) : array {
 
 	$fulldir = realpath($fulldir);
 
-	if (strpos($fulldir, $base) !== false) {
+	if (str_contains($fulldir, $base)) {
 		if (is_dir($fulldir)) {
 			$cdir = scandir($fulldir);
 		} else {

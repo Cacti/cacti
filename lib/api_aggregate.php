@@ -408,7 +408,7 @@ function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph
 					// no more prepending until next line break is encountered
 					$prepend = false;
 					$prepend_cnt++;
-				} elseif (strpos($save['text_format'], ':current:')) {
+				} elseif (str_contains($save['text_format'], ':current:')) {
 					if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL || $_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
 						// All so use sum functions
 						$save['text_format'] = str_replace(':current:', ':aggregate_sum:', $save['text_format']);
@@ -416,7 +416,7 @@ function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph
 						// Similar to separate
 						$save['text_format'] = str_replace(':current:', ':current:', $save['text_format']);
 					}
-				} elseif (strpos($save['text_format'], ':max:')) {
+				} elseif (str_contains($save['text_format'], ':max:')) {
 					if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL || $_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
 						// All so use sum functions
 						$save['text_format'] = str_replace(':max:', ':aggregate_sum:', $save['text_format']);
