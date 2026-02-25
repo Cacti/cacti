@@ -800,7 +800,7 @@ function show_cacti_processes() : void {
 				$timeout_time = $p['timeout'];
 				$timeout_date = get_daysfromtime($timeout_time, true);
 
-				if (strpos($timeout_date, 'y:') !== false) {
+				if (str_contains($timeout_date, 'y:')) {
 					$timeout_date = __('> 1 Year');
 				}
 			} else {
@@ -1006,7 +1006,7 @@ function show_cacti_changelog() : void {
 		}
 
 		if (strlen(trim($s)) && stripos($s, 'CHANGELOG') === false) {
-			if (strpos($s, '-') === false || strpos($s, '-dev') !== false) {
+			if (!str_contains($s, '-') || str_contains($s, '-dev')) {
 				html_section_header(__('Version %s', $s), 2);
 			} else {
 				form_alternate_row();

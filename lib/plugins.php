@@ -1235,7 +1235,7 @@ function api_plugin_register_realm(string $plugin, string $file, string $display
 				db_execute_prepared('DELETE FROM plugin_realms
 					WHERE id = ?',
 					[$realm_info['id']]);
-			} elseif (strpos($realm_info['file'], (string) $file)) {
+			} elseif (str_contains($realm_info['file'], (string) $file)) {
 				if (str_starts_with($realm_info['file'], $file)) {
 					$file = substr($file, strlen($file) - 1);
 				} else {

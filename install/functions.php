@@ -298,7 +298,7 @@ function install_unlink(string $file) : void {
 		$full_file = $file;
 	}
 
-	if (strpos($full_file, CACTI_PATH_BASE) === false) {
+	if (!str_contains($full_file, CACTI_PATH_BASE)) {
 		log_install_high('file', "Not Unlinking file: $full_file due to it not being in the Cacti base path.");
 	}
 
@@ -316,7 +316,7 @@ function install_rmdir(string $directory) : void {
 		$directory = CACTI_PATH_BASE . '/' . $directory;
 	}
 
-	if (strpos($directory, CACTI_PATH_BASE) === false) {
+	if (!str_contains($directory, CACTI_PATH_BASE)) {
 		log_install_high('file', "Not Unlinking directory: $directory due to it not being in the Cacti base path.");
 	}
 
@@ -343,7 +343,7 @@ function install_rmdir_recursive(string $directory, bool $del_parent = false) : 
 		$directory = CACTI_PATH_BASE . '/' . $directory;
 	}
 
-	if (strpos($directory, CACTI_PATH_BASE) === false) {
+	if (!str_contains($directory, CACTI_PATH_BASE)) {
 		log_install_high('file', "Not Unlinking directory: $directory due to it not being in the Cacti base path.");
 	}
 
@@ -1283,7 +1283,7 @@ function remote_update_config_file() : string {
 
 				if (cacti_sizeof($file_array)) {
 					foreach ($file_array as $line) {
-						if (strpos(trim($line), '$poller_id') !== false) {
+						if (str_contains(trim($line), '$poller_id')) {
 							$newfile[] = "\$poller_id = $poller_id;" . PHP_EOL;
 						} else {
 							$newfile[] = $line;

@@ -58,7 +58,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 	$return = $_SERVER['HTTP_REFERER'];
 
 	if (basename($return) != 'auth_changepassword.php') {
-		if (strpos($return, '/plugins/') !== false) {
+		if (str_contains($return, '/plugins/')) {
 			$parts  = explode('/plugins/', $return);
 			$return = CACTI_PATH_URL . 'plugins/' . $parts[1];
 		} else {
