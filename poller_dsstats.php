@@ -41,19 +41,19 @@ require_once(CACTI_PATH_LIBRARY . '/dsstats.php');
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$debug          = false;
-$force          = false;
-$fpartition     = false; // Only to be used for QA
-$type           = 'pmaster';
-$thread_id      = 0;
+$debug      = false;
+$force      = false;
+$fpartition = false; // Only to be used for QA
+$type       = 'pmaster';
+$thread_id  = 0;
 
 global $rrd_files, $total_system, $total_user, $total_real, $total_dsses;
 global $user_time, $system_time, $real_time;
 
-$total_system          = 0.0;
-$total_user            = 0.0;
-$total_real            = 0.0;
-$total_dsses           = 0;
+$total_system = 0.0;
+$total_user   = 0.0;
+$total_real   = 0.0;
+$total_dsses  = 0;
 
 $system_time  = 0;
 $user_time    = 0;
