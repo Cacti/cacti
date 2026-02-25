@@ -1777,8 +1777,6 @@ tr>td.textInfo.right {
 }
 
 .textAreaNotes {
-	zbackground-color: #1D1F21;
-	xbackground-image: linear-gradient(#1D1F21,#000000);
 	font-size: 12px;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 }
