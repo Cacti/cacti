@@ -595,7 +595,7 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 			db_echo_sql('db_' . $execute_name . ' Memory [ After]: ' . memory_get_usage() . ' / ' . memory_get_peak_usage() . "\n");
 		}
 
-		if ($code == 0 && is_object($query)) {
+		if ($code == 0 && $query !== null) {
 			$code = $query->errorCode();
 
 			if ($code != '00000' && $code != '01000') {
