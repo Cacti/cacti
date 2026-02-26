@@ -501,7 +501,9 @@ db_cacti_initialized($config['is_web']);
 
 if ($config['is_web']) {
 	if (read_config_option('force_https') == 'on') {
-		if (!isset($_SERVER['HTTPS']) && isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
+		$is_https = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== '' && strtolower($_SERVER['HTTPS']) !== 'off');
+
+		if (!$is_https && isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
 			header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 
 			exit;
