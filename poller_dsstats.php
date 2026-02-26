@@ -41,19 +41,19 @@ require_once(CACTI_PATH_LIBRARY . '/dsstats.php');
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$debug          = false;
-$force          = false;
-$fpartition     = false; // Only to be used for QA
-$type           = 'pmaster';
-$thread_id      = 0;
+$debug      = false;
+$force      = false;
+$fpartition = false; // Only to be used for QA
+$type       = 'pmaster';
+$thread_id  = 0;
 
 global $rrd_files, $total_system, $total_user, $total_real, $total_dsses;
 global $user_time, $system_time, $real_time;
 
-(double) $total_system = 0;
-(double) $total_user   = 0;
-(double) $total_real   = 0;
-$total_dsses           = 0;
+$total_system = 0.0;
+$total_user   = 0.0;
+$total_real   = 0.0;
+$total_dsses  = 0;
 
 $system_time  = 0;
 $user_time    = 0;
@@ -63,8 +63,8 @@ $rrd_files    = 0;
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
-		if (strpos($parameter, '=')) {
-			[$arg, $value] = explode('=', $parameter);
+		if (str_contains($parameter, '=')) {
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
 			$value = '';
@@ -478,7 +478,7 @@ function sig_handler($signo) : void {
 				set_config_option('dsstats_poller_status', 'terminated - end time:' . date('Y-m-d G:i:s'));
 			}
 
-			if (strpos($type, 'master') !== false) {
+			if (str_contains($type, 'master')) {
 				dsstats_kill_running_processes();
 			}
 

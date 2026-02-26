@@ -5,7 +5,7 @@
 #   docker compose up -d
 #
 # Access Cacti at http://localhost:8080/cacti
-# The cacti.sql schema is auto-imported on first DB startup.
+# Schema auto-imported on first DB start; complete the web installer to finish setup.
 
 services:
   web:
@@ -16,6 +16,7 @@ services:
     ports:
       - "${WEB_PORT:-8080}:80"
     volumes:
+      # Source code (ro); named volumes overlay cache/rra/log to keep them out of the tree.
       - .:/var/www/html/cacti
       - cacti_cache:/var/www/html/cacti/cache
       - cacti_rra:/var/www/html/cacti/rra
@@ -43,21 +44,21 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD:-cacti}
       TZ: ${TIMEZONE:-UTC}
     ports:
-      - "${DB_PORT:-3306}:3306"
+      - "127.0.0.1:${DB_PORT:-3306}:3306"
     volumes:
       - cacti_db:/var/lib/mysql
       - ./cacti.sql:/docker-entrypoint-initdb.d/cacti.sql:ro
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
-      - --max_connections=${DB_MAX_CONNECTIONS:-200}
-      - --max_heap_table_size=128M
-      - --tmp_table_size=128M
-      - --join_buffer_size=128M
-      - --innodb_buffer_pool_size=${DB_BUFFER_POOL_SIZE:-1G}
-      - --innodb_flush_log_at_timeout=3
-      - --innodb_read_io_threads=32
-      - --innodb_write_io_threads=16
+      - --max-connections=${DB_MAX_CONNECTIONS:-200}
+      - --max-heap-table-size=128M
+      - --tmp-table-size=128M
+      - --join-buffer-size=128M
+      - --innodb-buffer-pool-size=${DB_BUFFER_POOL_SIZE:-1G}
+      - --innodb-flush-log-at-timeout=3
+      - --innodb-read-io-threads=32
+      - --innodb-write-io-threads=16
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 10s

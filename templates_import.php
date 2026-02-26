@@ -99,7 +99,7 @@ function form_save() : void {
 
 		// loop through each of the graphs selected on the previous page and get more info about them
 		foreach ($_POST as $var => $val) {
-			if (strpos($var, 'chk_') !== false) {
+			if (str_contains($var, 'chk_')) {
 				$id = base64_decode(str_replace('chk_', '', $var), true);
 				$id = json_decode($id, true);
 

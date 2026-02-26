@@ -1,6 +1,6 @@
 #!/bin/sh
 #+-------------------------------------------------------------------------+
-#| Copyright (C) 2004-2025 The Cacti Group                                 |
+#| Copyright (C) 2004-2026 The Cacti Group                                 |
 #|                                                                         |
 #| This program is free software; you can redistribute it and/or           |
 #| modify it under the terms of the GNU General Public License             |

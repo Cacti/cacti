@@ -1,6 +1,7 @@
 .git
 .github
 *.md
+!README.md
 LICENSE
 .phpstan*
 .php-cs-fixer.php

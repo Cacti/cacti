@@ -4777,7 +4777,7 @@ function get_hash_version(string $type) : string {
  * @return string A 128-bit, hexadecimal hash
  */
 function generate_hash() : string {
-	return md5(session_id() . microtime() . random_int(0,1000));
+	return bin2hex(random_bytes(16));
 }
 
 /**
@@ -4940,7 +4940,7 @@ function sanitize_uri($uri) {
 	static $drop_char_match   =   ['^', '$', '<', '>', '`', "'", '"', '|', '+', '[', ']', '{', '}', ';', '!', '(', ')'];
 	static $drop_char_replace = [ '', '',  '',  '',  '',  '',   '',  '',  '',  '',  '',  '',  '',  '',  ''];
 
-	if (strpos($uri, 'graph_view.php')) {
+	if (str_contains($uri, 'graph_view.php')) {
 		if (!strpos($uri, 'action=')) {
 			$uri = $uri . (strpos($uri, '?') ? '&' : '?') . 'action=' . gnrv('action');
 		}
@@ -5007,7 +5007,7 @@ function sanitize_unserialize_selected_items(mixed $items) : mixed {
 
 		// validate that sanitized string is correctly formatted
 		if (preg_match('/^a:[0-9]+:{/', $unstripped) && !preg_match('/(^|;|{|})O:\+?[0-9]+:"/', $unstripped)) {
-			$items = unserialize($unstripped);
+			$items = unserialize($unstripped, ['allowed_classes' => false]);
 
 			if (is_array($items)) {
 				$return_items = $items;
@@ -5047,7 +5047,7 @@ function sanitize_unserialize_selected_graphs(mixed $items) : array {
 
 		// validate that sanitized string is correctly formatted
 		if (preg_match('/^a:[0-9]+:{/', $unstripped) && !preg_match('/(^|;|{|})O:\+?[0-9]+:"/', $unstripped)) {
-			$items = unserialize($unstripped);
+			$items = unserialize($unstripped, ['allowed_classes' => false]);
 
 			if (is_array($items)) {
 				$return_items = $items;
@@ -5263,7 +5263,7 @@ function send_mail(mixed $to, mixed $from = null, string $subject = '',
 			}
 		}
 
-		if ($from != '' && strpos($from, '<') === false) {
+		if ($from != '' && !str_contains($from, '<')) {
 			if ($name == '') {
 				$full_name = db_fetch_cell_prepared('SELECT full_name
 					FROM user_auth
@@ -5872,7 +5872,7 @@ function split_emaildetail(mixed $email) : array {
 	 * Handle the special case where sendmail is being used
 	 * without an email domain
 	 */
-	if (!is_array($email) && strpos($email, '@') === false) {
+	if (!is_array($email) && !str_contains($email, '@')) {
 		return ['name' => '', 'email' => $email];
 	}
 
@@ -5880,8 +5880,8 @@ function split_emaildetail(mixed $email) : array {
 	 * Handle the case where the Email is a string, but may
 	 * include the name at the beginning of the Email.
 	 */
-	if (!is_array($email) && strpos($email, '@') !== false) {
-		if (strpos($email, '<') !== false) {
+	if (!is_array($email) && str_contains($email, '@')) {
+		if (str_contains($email, '<')) {
 			$parts = explode('<', $email);
 			$name  = str_replace(['"', "'"], ['', ''], $parts[0]);
 			$email = str_replace('>', '', $parts[1]);
@@ -9545,7 +9545,7 @@ if (!function_exists('stats_standard_deviation')) {
 		$carry = 0.0;
 
 		foreach ($items as $val) {
-			$d = ((double) $val) - $mean;
+			$d = ((float) $val) - $mean;
 			$carry += $d * $d;
 		}
 
