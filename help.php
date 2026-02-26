@@ -46,15 +46,19 @@ if (isrv('error')) {
 } elseif (isrv('page')) {
 	gfrv('page', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
 
-	$page = str_replace('.html', '.md', grv('page'));
+	$page = basename(str_replace('.html', '.md', grv('page')));
 
 	$fgc_contextoption = [
 		'ssl' => [
-			'verify_peer'       => false,
-			'verify_peer_name'  => false,
-			'allow_self_signed' => true,
+			'verify_peer'       => true,
+			'verify_peer_name'  => true,
+			'allow_self_signed' => false,
 			'timeout'           => 2,
 			'ignore_errors'     => true
+		],
+		'http' => [
+			'follow_location'   => 0,
+			'max_redirects'     => 1
 		]
 	];
 
