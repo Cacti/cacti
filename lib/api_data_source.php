@@ -431,65 +431,32 @@ function api_data_source_disable(int $local_data_id) : void {
  * @return void
  */
 function api_data_source_disable_multi(array $local_data_ids) : void {
-	// initialize variables
-	$ids_to_disable = '';
-	$poller_ids     = [];
+	if (!cacti_sizeof($local_data_ids)) {
+		return;
+	}
 
-	$i = 0;
+	$poller_ids = [];
 
-	// build the array
-	if (cacti_sizeof($local_data_ids)) {
-		foreach ($local_data_ids as $local_data_id) {
-			if ($i == 0) {
-				$ids_to_disable .= intval($local_data_id);
-			} else {
-				$ids_to_disable .= ', ' . intval($local_data_id);
-			}
+	$local_data_ids_chunks = array_chunk(array_map('intval', $local_data_ids), 1000);
 
-			$i++;
+	foreach ($local_data_ids_chunks as $ids_to_disable) {
+		$ids_to_disable = implode(', ', $ids_to_disable);
 
-			if (!($i % 1000)) {
-				$poller_ids += array_rekey(
-					db_fetch_assoc('SELECT poller_id
-						FROM poller_item
-						WHERE local_data_id IN(' . $ids_to_disable . ')'),
-					'poller_id', 'poller_id'
-				);
+		$poller_ids += array_rekey(
+			db_fetch_assoc('SELECT poller_id
+				FROM poller_item
+				WHERE local_data_id IN(' . $ids_to_disable . ')'),
+			'poller_id', 'poller_id'
+		);
 
-				db_execute("DELETE FROM poller_item WHERE local_data_id IN ($ids_to_disable)");
-				db_execute("UPDATE data_template_data SET active='' WHERE local_data_id IN ($ids_to_disable)");
+		db_execute("DELETE FROM poller_item WHERE local_data_id IN ($ids_to_disable)");
+		db_execute("UPDATE data_template_data SET active='' WHERE local_data_id IN ($ids_to_disable)");
 
-				if (cacti_sizeof($poller_ids)) {
-					foreach ($poller_ids as $poller_id) {
-						if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
-							db_execute("DELETE FROM poller_item WHERE local_data_id IN ($ids_to_disable)", true, $rcnn_id);
-							db_execute("UPDATE data_template_data SET active='' WHERE local_data_id IN ($ids_to_disable)", true, $rcnn_id);
-						}
-					}
-				}
-
-				$i              = 0;
-				$ids_to_disable = '';
-			}
-		}
-
-		if ($i > 0) {
-			$poller_ids += array_rekey(
-				db_fetch_assoc('SELECT poller_id
-					FROM poller_item
-					WHERE local_data_id IN(' . $ids_to_disable . ')'),
-				'poller_id', 'poller_id'
-			);
-
-			db_execute("DELETE FROM poller_item WHERE local_data_id IN ($ids_to_disable)");
-			db_execute("UPDATE data_template_data SET active='' WHERE local_data_id IN ($ids_to_disable)");
-
-			if (cacti_sizeof($poller_ids)) {
-				foreach ($poller_ids as $poller_id) {
-					if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
-						db_execute("DELETE FROM poller_item WHERE local_data_id IN ($ids_to_disable)", true, $rcnn_id);
-						db_execute("UPDATE data_template_data SET active='' WHERE local_data_id IN ($ids_to_disable)", true, $rcnn_id);
-					}
+		if (cacti_sizeof($poller_ids)) {
+			foreach ($poller_ids as $poller_id) {
+				if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
+					db_execute("DELETE FROM poller_item WHERE local_data_id IN ($ids_to_disable)", true, $rcnn_id);
+					db_execute("UPDATE data_template_data SET active='' WHERE local_data_id IN ($ids_to_disable)", true, $rcnn_id);
 				}
 			}
 		}
