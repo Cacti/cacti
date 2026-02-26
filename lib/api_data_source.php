@@ -229,7 +229,7 @@ function api_data_source_remove_multi(array $local_data_ids, bool $update_totals
 	foreach ($local_data_ids_chunks as $ids_to_delete) {
 		$poller_ids = get_remote_poller_ids_from_data_sources($ids_to_delete);
 
-		$ids_to_delete = implode(', ', $ids_to_delete);
+		$ids_to_delete = implode(', ', array_map('intval', $ids_to_delete));
 
 		$data_template_data_ids = db_fetch_assoc('SELECT id
 			FROM data_template_data
@@ -441,9 +441,9 @@ function api_data_source_disable_multi(array $local_data_ids) : void {
 	if (cacti_sizeof($local_data_ids)) {
 		foreach ($local_data_ids as $local_data_id) {
 			if ($i == 0) {
-				$ids_to_disable .= $local_data_id;
+				$ids_to_disable .= intval($local_data_id);
 			} else {
-				$ids_to_disable .= ', ' . $local_data_id;
+				$ids_to_disable .= ', ' . intval($local_data_id);
 			}
 
 			$i++;
