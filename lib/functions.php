@@ -8335,21 +8335,23 @@ function get_client_addr() : string|false {
 		$last_time = read_config_option('proxy_alert');
 
 		if (empty($last_time)) {
-			$last_time = date('Y-m-d');
-		}
-
-		$last_date = new DateTime($last_time);
-		$this_date = new Datetime();
-
-		$this_diff = $this_date->diff($last_date);
-		$this_days = $this_diff->format('%a');
-
-		if ($this_days) {
-			cacti_log('WARNING: Configuration option "proxy_headers" will be automatically false in future releases.  Please set if you require proxy IPs to be used', false, 'AUTH');
+			// First run — no record yet; log immediately and record today
+			cacti_log('NOTICE: proxy_headers is not set in config.php; defaulting to false (only REMOTE_ADDR trusted). Set proxy_headers if Cacti is behind a reverse proxy.', false, 'AUTH');
 			set_config_option('proxy_alert', date('Y-m-d'));
+		} else {
+			$last_date = new DateTime($last_time);
+			$this_date = new DateTime();
+
+			$this_diff = $this_date->diff($last_date);
+			$this_days = $this_diff->format('%a');
+
+			if ((int) $this_days >= 1) {
+				cacti_log('NOTICE: proxy_headers is not set in config.php; defaulting to false (only REMOTE_ADDR trusted). Set proxy_headers if Cacti is behind a reverse proxy.', false, 'AUTH');
+				set_config_option('proxy_alert', date('Y-m-d'));
+			}
 		}
 
-		$proxy_headers = true;
+		$proxy_headers = false;
 	}
 
 	/* If proxy_headers is true, allow all known headers -- NOT advised
