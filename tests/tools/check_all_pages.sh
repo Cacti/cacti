@@ -40,13 +40,13 @@ echo "---------------------------------------------------------------------"
 
 # --- Check for MariaDB or MySQL
 if [ $(which mariadb | wc -l) -gt 0 ]; then
-	dbshell="mariadb"
-	dbdump="mariadb-dump"
-	dbadmin="mariadb-admin"
+  dbshell="mariadb"
+  dbdump="mariadb-dump"
+  dbadmin="mariadb-admin"
 else
-	dbshell="mysql"
-	dbdump="mysqldump"
-	dbadmin="mysqladmin"
+  dbshell="mysql"
+  dbdump="mysqldump"
+  dbadmin="mysqladmin"
 fi
 
 # --- Website defaults
@@ -69,92 +69,98 @@ WSERROR="/var/log/httpd/error_log"
 WSACCESS="/var/log/httpd/access_log"
 
 if id www-data > /dev/null 2>&1; then
-	WSOWNER="www-data"
-	WSERROR="/var/log/apache2/error.log"
-	WSACCESS="/var/log/apache2/access.log"
+  WSOWNER="www-data"
+  WSERROR="/var/log/apache2/error.log"
+  WSACCESS="/var/log/apache2/access.log"
 fi
 
 WGET_OUTPUT=$(wget 2>&1);
 WGET_RESULT=$?
 if [ $WGET_RESULT -eq 127 ]; then
-	echo "wget was not found, please install";
-	#echo
-	#echo "${WGET_OUTPUT}"
-	exit 1
+  echo "wget was not found, please install";
+  #echo
+  #echo "${WGET_OUTPUT}"
+  exit 1
 fi
+
+DEBUG=0
 
 # ------------------------------------------------------------------------------
 # Get inputs from user (Interactive mode)
 # ------------------------------------------------------------------------------
 while [ -n "$1" ]; do
-	case $1 in
-		"--interactive")
-			echo "Enter Database username"
-			read -r DBUSER
-			echo "Enter Database Password"
-			read -r DBPASS
-			echo "Enter Cacti Admin password"
-			read -r WAPASS
-			;;
-		"--help")
-			echo "NOTE: Checks all Cacti pages using wget options"
-			echo "NOTE: Original script by team Debian."
-			echo ""
-			echo "usage: check_all_pages.sh [--interactive]"
-			echo ""
-			;;
-		"-wh")
-			WEBHOST="$2"
-			shift
-			;;
-		"-wU")
-			WAUSER="$2"
-			shift
-			;;
-		"-wp")
-			WAPASS="$2"
-			shift
-			;;
-		"-wo")
-			WSOWNER="$2"
-			shift
-			;;
-		"-we")
-			WSERROR="$2"
-			shift
-			;;
-		"-wa")
-			WSACCESS="$2"
-			shift
-			;;
-		"-df")
-			DBFILE="$2"
-			DBSLEEP=0
-			shift
-			;;
-		"-dh")
-			DBHOST="$2"
-			DBSLEEP=0
-			shift
-			;;
-		"-dn")
-			DBNAME="$2"
-			shift
-			;;
-		"-du")
-			DBUSER="$2"
-			DBSLEEP=0
-			shift
-			;;
-		"-dp")
-			DBPASS="$2"
-			DBSLEEP=0
-			shift
-			;;
-		*)
-			;;
-	esac
-	shift;
+  case $1 in
+    "--interactive")
+      echo "Enter Database username"
+      read -r DBUSER
+      echo "Enter Database Password"
+      read -r DBPASS
+      echo "Enter Cacti Admin password"
+      read -r WAPASS
+      ;;
+    "--help")
+      echo "NOTE: Checks all Cacti pages using wget options"
+      echo "NOTE: Original script by team Debian."
+      echo ""
+      echo "usage: check_all_pages.sh [--interactive] [options]"
+      echo ""
+      ;;
+    "-wh")
+      WEBHOST="$2"
+      shift
+      ;;
+    "-wU")
+      WAUSER="$2"
+      shift
+      ;;
+    "-wp")
+      WAPASS="$2"
+      shift
+      ;;
+    "-wo")
+      WSOWNER="$2"
+      shift
+      ;;
+    "-we")
+      WSERROR="$2"
+      shift
+      ;;
+    "-wa")
+      WSACCESS="$2"
+      shift
+      ;;
+    "-debug")
+      DEBUG=1
+      shift
+      ;;
+    "-df")
+      DBFILE="$2"
+      DBSLEEP=0
+      shift
+      ;;
+    "-dh")
+      DBHOST="$2"
+      DBSLEEP=0
+      shift
+      ;;
+    "-dn")
+      DBNAME="$2"
+      shift
+      ;;
+    "-du")
+      DBUSER="$2"
+      DBSLEEP=0
+      shift
+      ;;
+    "-dp")
+      DBPASS="$2"
+      DBSLEEP=0
+      shift
+      ;;
+    *)
+      ;;
+  esac
+  shift;
 done
 
 # --- Website defaults
@@ -204,7 +210,6 @@ BASE_PATH=$( cd -- "${SCRIPT_PATH}/../../" &> /dev/null && pwd )
 
 echo "NOTE: Base Path is ${BASE_PATH}"
 
-DEBUG=0
 CACTI_LOG="${BASE_PATH}/log/cacti.log"
 CACTI_ERRLOG="${BASE_PATH}/log/cacti.stderr.log"
 POLLER="${BASE_PATH}/poller.php"
@@ -368,10 +373,10 @@ if [ $DEBUG -eq 1 ]; then
   apache2ctl -t
 fi
 
-echo "---------------------------------------------------------------------"
-echo "Enabling the Apache Site"
-echo "---------------------------------------------------------------------"
-if [ -f /usr/sbin/a2ensite ]; then
+if [ -f "/usr/sbin/a2ensite" -a -f "/etc/apache2/sites-available/000-default.conf" ]; then
+  echo "---------------------------------------------------------------------"
+  echo "Enabling the Apache Site fot Debian/Ubuntu"
+  echo "---------------------------------------------------------------------"
   /usr/sbin/a2ensite 000-default.conf 
 fi
 
@@ -380,23 +385,25 @@ if [ $DEBUG -eq 1 ]; then
   # Check to see if apache2 is up and listening
   # ------------------------------------------------------------------------------
   echo "---------------------------------------------------------------------"
-  echo " Network Status showing open Apache ports"
+  echo "Network Status showing open Apache ports"
   echo "---------------------------------------------------------------------"
   netstat -anp | grep apache
 
   # ------------------------------------------------------------------------------
   # Dump the Apache Configuration
   # ------------------------------------------------------------------------------
-  echo "---------------------------------------------------------------------"
-  echo " Apache Configuration for Cacti"
-  echo "---------------------------------------------------------------------"
-  cat /etc/apache2/sites-available/000-default.conf
+  if [ -f "/etc/apache2/sites-available/000-default.conf" ]; then
+    echo "---------------------------------------------------------------------"
+    echo "Apache Configuration for Cacti"
+    echo "---------------------------------------------------------------------"
+    cat /etc/apache2/sites-available/000-default.conf
+  fi
 
   # ------------------------------------------------------------------------------
   # List to contents of the web root
   # ------------------------------------------------------------------------------
   echo "---------------------------------------------------------------------"
-  echo " Top Level Cacti Web Root Files"
+  echo "Top Level Cacti Web Root Files"
   echo "---------------------------------------------------------------------"
   ls -altr /var/www/html/cacti/*.php
 
@@ -404,7 +411,7 @@ if [ $DEBUG -eq 1 ]; then
   # Print out the processlist
   # ------------------------------------------------------------------------------
   echo "---------------------------------------------------------------------"
-  echo " Apache Process List"
+  echo "Apache Process List"
   echo "---------------------------------------------------------------------"
   ps -ef | grep apache2 | grep -v grep
 fi
@@ -457,50 +464,67 @@ if [ $DEBUG -eq 1 ]; then
   echo "Output from index.php"
   echo "---------------------------------------------------------------------"
   cat ${tmpFile2}
+
+  progress=" --show-progress"
+else
+  progress=""
 fi
 
 # ------------------------------------------------------------------------------
 # Now loop over all the available links (but don't log out and don't delete or
 # remove, don't uninstall, enable or disable plugins stuff.
 # ------------------------------------------------------------------------------
+start_time=$(date +%s)
+
 echo "NOTE: Recursively Checking all Base Pages - Note this will take several minutes!!!"
 wget $loadSaveCookie --output-file="${logFile1}" --reject-regex="(logout\.php|remove|delete|uninstall|install|disable|enable)" --recursive --level=0 --execute=robots=off "${WEBHOST}"/index.php >/dev/null 2>&1
 error=$?
 
+end_time=$(date +%s)
+total=$(($end_time-$start_time))
+
 if [ $error -eq 8 ]; then
-	errors=$(grep -c "awaiting response... 404" "${logFile1}")
-	echo "WARNING: $errors pages not found.  This is not necessarily a bug"
+  errors=$(grep -c "awaiting response... 404" "${logFile1}")
+  echo "WARNING: $errors pages not found.  This is not necessarily a bug"
 fi
 
 # ------------------------------------------------------------------------------
 # Debug Errors if required
 # ------------------------------------------------------------------------------
 if [ $DEBUG -eq 1 ]; then
-	echo "---------------------------------------------------------------------"
-	echo "Output of Wget Log file"
-	echo "---------------------------------------------------------------------"
-	cat "${logFile1}"
-	echo "---------------------------------------------------------------------"
-	echo "Output of Cacti Log file"
-	echo "---------------------------------------------------------------------"
-	cat "${CACTI_LOG}"
-	echo "---------------------------------------------------------------------"
-	echo "Output of Apache Error Log"
-	echo "---------------------------------------------------------------------"
-	cat "${WSERROR}"
-	echo "---------------------------------------------------------------------"
-	echo "Output of Apache Access Log"
-	echo "---------------------------------------------------------------------"
-	cat "${WSACCESS}"
+  echo "---------------------------------------------------------------------"
+  echo "Output of Wget Log file"
+  echo "---------------------------------------------------------------------"
+  cat "${logFile1}"
+  echo "---------------------------------------------------------------------"
+  echo "Output of Cacti Log file"
+  echo "---------------------------------------------------------------------"
+  cat "${CACTI_LOG}"
+  echo "---------------------------------------------------------------------"
+  echo "Output of Apache Error Log"
+  echo "---------------------------------------------------------------------"
+  cat "${WSERROR}"
+  echo "---------------------------------------------------------------------"
+  echo "Output of Apache Access Log"
+  echo "---------------------------------------------------------------------"
+  cat "${WSACCESS}"
 fi
 
 checks=$(grep -c "HTTP" "$logFile1")
+
+if [ $total -gt 0 ]; then
+  check_rate=$(($checks/$total))
+else
+  check_rate="N/A"
+fi
+
 echo "NOTE: There were ${checks} pages checked through recursion"
+echo "NOTE: Total time was ${total} seconds or ${check_rate} checks per second"
 
 if [[ "${DEBUG}" -eq 1 ]];then
-	echo "---------------------------------------------------------------------"
-	cat "${logFile1}"
-	echo "---------------------------------------------------------------------"
+  echo "---------------------------------------------------------------------"
+  cat "${logFile1}"
+  echo "---------------------------------------------------------------------"
 fi
 
 echo "---------------------------------------------------------------------"
@@ -516,25 +540,25 @@ echo "---------------------------------------------------------------------"
 # ------------------------------------------------------------------------------
 echo "NOTE: Checking Cacti Log for Errors"
 FILTERED_LOG="$(grep -v \
-	-e "AUTH LOGIN: User 'admin' authenticated" \
-	-e "WEBUI NOTE: Poller Resource Cache scheduled for rebuild by user admin" \
-	-e "WEBUI NOTE: Poller Cache repopulated by user admin" \
-	-e "WEBUI NOTE: Cacti DS Stats purged by user admin" \
-	-e "IMPORT NOTE: File is Signed Correctly" \
-	-e "MAILER INFO:" \
-	-e "STATS:" \
-	-e "IMPORT Importing XML Data for " \
-	-e "CMDPHP Not Already Set" \
-	-e "ieee.org/oui.txt" \
-	-e "import_oui_database" \
-	-e "PCACHE NOTE" \
-	-e "LMSENSORS WARNING" \
-	-e "AUTOM8 \[PID\:" \
-	-e "REINDEX Child" \
-	-e "REINDEX Poller" \
-	-e "DSDEBUG Bad Data" \
-	-e "PUSHOUT Child Started" \
-	"$CACTI_LOG")" || true
+  -e "AUTH LOGIN: User 'admin' authenticated" \
+  -e "WEBUI NOTE: Poller Resource Cache scheduled for rebuild by user admin" \
+  -e "WEBUI NOTE: Poller Cache repopulated by user admin" \
+  -e "WEBUI NOTE: Cacti DS Stats purged by user admin" \
+  -e "IMPORT NOTE: File is Signed Correctly" \
+  -e "MAILER INFO:" \
+  -e "STATS:" \
+  -e "IMPORT Importing XML Data for " \
+  -e "CMDPHP Not Already Set" \
+  -e "ieee.org/oui.txt" \
+  -e "import_oui_database" \
+  -e "PCACHE NOTE" \
+  -e "LMSENSORS WARNING" \
+  -e "AUTOM8 \[PID\:" \
+  -e "REINDEX Child" \
+  -e "REINDEX Poller" \
+  -e "DSDEBUG Bad Data" \
+  -e "PUSHOUT Child Started" \
+  "$CACTI_LOG")" || true
 
 save_log_files
 
@@ -543,10 +567,10 @@ save_log_files
 # ------------------------------------------------------------------------------
 error=0
 if [ -n "${FILTERED_LOG}" ] ; then
-    echo "ERROR: Fail Unexpected output in ${CACTI_LOG}:"
-    echo "${FILTERED_LOG}"
-	exit 179
+  echo "ERROR: Fail Unexpected output in ${CACTI_LOG}:"
+  echo "${FILTERED_LOG}"
+  exit 179
 else
-    echo "NOTE: Success No unexpected output in ${CACTI_LOG}"
-	exit 0
+  echo "NOTE: Success No unexpected output in ${CACTI_LOG}"
+  exit 0
 fi
