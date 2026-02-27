@@ -26,8 +26,10 @@
 # can trigger with wget) as well.
 # ------------------------------------------------------------------------------
 
-# Uncomment for debugging
-# set -x
+# ------------------------------------------------------------------------------
+# Debugging
+# ------------------------------------------------------------------------------
+#set -xv
 
 # ------------------------------------------------------------------------------
 # Restart service and stop the firewall if it's running
@@ -200,7 +202,7 @@ if [ -f "$DBFILE" ]; then
 
   export MYSQL_AUTH_USR="--defaults-file=${DBFILE}"
 else
-  echo "NOTE: Script is running in non-interactive mode ensure you fill out the DB credentials!!!"
+  echo "NOTE: Script is running in batch mode using default credentials!!!"
   if [[ -n "${DBSLEEP}" ]]; then
     sleep "${DBSLEEP}" #Give user a chance to see the prompt
   fi
@@ -211,6 +213,7 @@ fi
 # --- Get the server version and dump the key variables
 DBSERVER=$($dbshell $MYSQL_AUTH_USR -e "SHOW GLOBAL VARIABLES LIKE 'version'" | grep -v Value | awk '{print $2}')
 
+echo "---------------------------------------------------------------------"
 echo "Using the following values:";
 for v in WEBHOST WAUSER WAPASS DBCLIENT DBSERVER DBFILE DBHOST DBNAME DBPASS DBUSER DBSLEEP WSOWNER WSERROR WSACCESS; do
   name="$v"
@@ -222,11 +225,7 @@ for v in WEBHOST WAUSER WAPASS DBCLIENT DBSERVER DBFILE DBHOST DBNAME DBPASS DBU
 
   printf "\t%10s | %s\n" "$name" "$value"
 done
-
-# ------------------------------------------------------------------------------
-# Debugging
-# ------------------------------------------------------------------------------
-#set -xv
+echo "---------------------------------------------------------------------"
 
 exec 2>&1
 
@@ -346,7 +345,7 @@ allow_index_following() {
 
 shutdown_handler() {
   echo ""
-  echo "NOTE: Process Interrupted.  Exiting"
+  echo "WARNING: Process Interrupted.  Cleaning up and Exiting"
 
   # Get rid of any jobs
   kill -SIGINT $(jobs -p) 2> /dev/null
@@ -372,10 +371,24 @@ shutdown_handler() {
   exit 0
 }
 
+normal_exit() {
+  echo "NOTE: Process exiting normally.  Killing any background jobs"
+
+  # Get rid of any jobs
+  kill -SIGINT $(jobs -p) 2> /dev/null
+
+  if [ -f "/tmp/vmstat.out" ]; then
+    rm -f /tmp/vmstat.out
+  fi
+
+  exit 0
+}
+
 # ------------------------------------------------------------------------------
 # To make sure that the autopkgtest/CI sites store the information
 # ------------------------------------------------------------------------------
-trap 'shutdown_handler' 0 1 2 3 6 9 14 15
+trap 'shutdown_handler' 1 2 3 6 9 14 15
+trap 'normal_exit' 0
 
 echo "NOTE: Current Directory is $(pwd)"
 
@@ -609,7 +622,7 @@ FILTERED_LOG="$(grep -v \
   -e "import_oui_database" \
   -e "PCACHE NOTE" \
   -e "LMSENSORS WARNING" \
-  -e "AUTOM8 \[PID\:" \
+  -e "AUTOM8 \[PID:" \
   -e "REINDEX Child" \
   -e "REINDEX Poller" \
   -e "DSDEBUG Bad Data" \
