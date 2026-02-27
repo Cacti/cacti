@@ -162,6 +162,10 @@ while [ -n "$1" ]; do
       DEBUG=1
       ;;
     "-vmstat")
+      if ! [[ "$2" =~ ^[0-9]+$ ]] || [ "$2" -le 0 ]; then
+        echo "ERROR: -vmstat value must be a positive integer."
+        exit 1
+      fi
       VMSTAT="$2"
       shift
       ;;
