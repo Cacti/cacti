@@ -271,7 +271,7 @@ save_log_files() {
     cp "$CACTI_ERRLOG" "${logBase}/cacti_error.log"
 
     if [ -f "$WSACCESS" ] ; then
-      echo "NOTE: Copying {$WSACCESS} to artifacts"
+      echo "NOTE: Copying ${WSACCESS} to artifacts"
       cp "$WSACCESS" "${logBase}/apache_access.log"
     fi
 
@@ -338,7 +338,7 @@ set_log_level_debug() {
 set_stderr_logging() {
   echo "NOTE: Setting Cacti standard error log location"
 
-  $dbshell $MYSQL_AUTH_USR -e "REPLACE INTO cacti.settings (name, value) VALUES ('path_stderrlog', '${CACTI_ERRLOG}');" "$DBNAME"
+  $dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('path_stderrlog', '${CACTI_ERRLOG}');" "$DBNAME"
 }
 
 allow_index_following() {
