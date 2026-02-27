@@ -519,7 +519,7 @@ fi
 
 
 # ------------------------------------------------------------------------------
-# Run vmstat at a frequency of 5 seconds in background
+# Run vmstat in background at a user-configurable interval (VMSTAT)
 # ------------------------------------------------------------------------------
 if [ $VMSTAT -gt 0 ]; then
   vmstat $VMSTAT > /tmp/vmstat.out &
