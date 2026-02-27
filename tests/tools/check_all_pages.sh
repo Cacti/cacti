@@ -533,8 +533,12 @@ else
   check_rate="N/A"
 fi
 
+cpus=$(lscpu | grep "CPU(s)" | head -1 | awk '{print $2}')
+memory=$(free -g | grep "Mem:" | awk '{print $2}')
+
 echo "NOTE: There were ${checks} pages checked through recursion"
 echo "NOTE: Total time was ${total} seconds or ${check_rate} checks per second"
+echo "NOTE: Host/Container has ${cpus} CPUs and ${memory} GB of memory"
 
 if [[ "${DEBUG}" -eq 1 ]];then
   echo "---------------------------------------------------------------------"
