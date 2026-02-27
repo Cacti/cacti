@@ -271,7 +271,7 @@ save_log_files() {
     cp "$CACTI_ERRLOG" "${logBase}/cacti_error.log"
 
     if [ -f "$WSACCESS" ] ; then
-      echo "NOTE: Copying {$WSACCESS} to artifacts"
+      echo "NOTE: Copying ${WSACCESS} to artifacts"
       cp "$WSACCESS" "${logBase}/apache_access.log"
     fi
 
