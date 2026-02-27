@@ -338,7 +338,7 @@ set_log_level_debug() {
 set_stderr_logging() {
   echo "NOTE: Setting Cacti standard error log location"
 
-  $dbshell $MYSQL_AUTH_USR -e "REPLACE INTO cacti.settings (name, value) VALUES ('path_stderrlog', '${CACTI_ERRLOG}');" "$DBNAME"
+  $dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('path_stderrlog', '${CACTI_ERRLOG}');" "$DBNAME"
 }
 
 allow_index_following() {
