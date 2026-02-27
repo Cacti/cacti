@@ -318,7 +318,7 @@ class spikekill {
 		}
 
 		// Check a bad range of the window start and end
-		if (empty($this->out_start)) {
+		if (!empty($this->out_start)) {
 			if ($this->out_start >= $this->out_end) {
 				$this->set_error(__('FATAL: Outlier time range requires outlier-start to be less than outlier-end.'));
 			}
@@ -770,7 +770,7 @@ class spikekill {
 			unlink($xmlfile);
 		}
 
-		if (file_exists($xmlfile)) {
+		if (file_exists($bakfile)) {
 			unlink($bakfile);
 		}
 
