@@ -40,13 +40,13 @@ echo "---------------------------------------------------------------------"
 
 # --- Check for MariaDB or MySQL
 if [ $(which mariadb | wc -l) -gt 0 ]; then
-	dbshell="mariadb"
-	dbdump="mariadb-dump"
-	dbadmin="mariadb-admin"
+  dbshell="mariadb"
+  dbdump="mariadb-dump"
+  dbadmin="mariadb-admin"
 else
-	dbshell="mysql"
-	dbdump="mysqldump"
-	dbadmin="mysqladmin"
+  dbshell="mysql"
+  dbdump="mysqldump"
+  dbadmin="mysqladmin"
 fi
 
 # --- Website defaults
@@ -69,92 +69,113 @@ WSERROR="/var/log/httpd/error_log"
 WSACCESS="/var/log/httpd/access_log"
 
 if id www-data > /dev/null 2>&1; then
-	WSOWNER="www-data"
-	WSERROR="/var/log/apache2/error.log"
-	WSACCESS="/var/log/apache2/access.log"
+  WSOWNER="www-data"
+  WSERROR="/var/log/apache2/error.log"
+  WSACCESS="/var/log/apache2/access.log"
 fi
 
 WGET_OUTPUT=$(wget 2>&1);
 WGET_RESULT=$?
 if [ $WGET_RESULT -eq 127 ]; then
-	echo "wget was not found, please install";
-	#echo
-	#echo "${WGET_OUTPUT}"
-	exit 1
+  echo "wget was not found, please install";
+  #echo
+  #echo "${WGET_OUTPUT}"
+  exit 1
 fi
+
+DEBUG=0
 
 # ------------------------------------------------------------------------------
 # Get inputs from user (Interactive mode)
 # ------------------------------------------------------------------------------
 while [ -n "$1" ]; do
-	case $1 in
-		"--interactive")
-			echo "Enter Database username"
-			read -r DBUSER
-			echo "Enter Database Password"
-			read -r DBPASS
-			echo "Enter Cacti Admin password"
-			read -r WAPASS
-			;;
-		"--help")
-			echo "NOTE: Checks all Cacti pages using wget options"
-			echo "NOTE: Original script by team Debian."
-			echo ""
-			echo "usage: check_all_pages.sh [--interactive]"
-			echo ""
-			;;
-		"-wh")
-			WEBHOST="$2"
-			shift
-			;;
-		"-wU")
-			WAUSER="$2"
-			shift
-			;;
-		"-wp")
-			WAPASS="$2"
-			shift
-			;;
-		"-wo")
-			WSOWNER="$2"
-			shift
-			;;
-		"-we")
-			WSERROR="$2"
-			shift
-			;;
-		"-wa")
-			WSACCESS="$2"
-			shift
-			;;
-		"-df")
-			DBFILE="$2"
-			DBSLEEP=0
-			shift
-			;;
-		"-dh")
-			DBHOST="$2"
-			DBSLEEP=0
-			shift
-			;;
-		"-dn")
-			DBNAME="$2"
-			shift
-			;;
-		"-du")
-			DBUSER="$2"
-			DBSLEEP=0
-			shift
-			;;
-		"-dp")
-			DBPASS="$2"
-			DBSLEEP=0
-			shift
-			;;
-		*)
-			;;
-	esac
-	shift;
+  case $1 in
+    "--interactive")
+      echo "Enter Database username"
+      read -r DBUSER
+      echo "Enter Database Password"
+      read -r DBPASS
+      echo "Enter Cacti Admin password"
+      read -r WAPASS
+      ;;
+    "--help")
+      echo "NOTE: Checks all Cacti pages using wget options"
+      echo "NOTE: Original script by team Debian."
+      echo ""
+      echo "usage: check_all_pages.sh [--interactive] [options]"
+      echo ""
+      echo "Options:"
+      echo "  --interactive        Prompt for database user/password and Cacti admin password"
+      echo "  -wh <url>           Set Cacti web host URL (default: ${WEBHOST})"
+      echo "  -wU <user>          Set Cacti web UI username (default: ${WAUSER})"
+      echo "  -wp <pass>          Set Cacti web UI password (default: ${WAPASS})"
+      echo "  -wo <user>          Set web server user/owner (default: ${WSOWNER})"
+      echo "  -we <path>          Set web server error log path (default: ${WSERROR})"
+      echo "  -wa <path>          Set web server access log path (default: ${WSACCESS})"
+      echo "  -debug              Enable debug output"
+      echo "  -df <file>          Use database options file and disable DB sleep (default: ${DBFILE})"
+      echo "  -dh <host>          Set database host and disable DB sleep (default: ${DBHOST})"
+      echo "  -dn <name>          Set database name (default: ${DBNAME})"
+      echo "  -du <user>          Set database username and disable DB sleep (default: ${DBUSER})"
+      echo "  -dp <pass>          Set database password and disable DB sleep"
+      echo ""
+      ;;
+    "-wh")
+      WEBHOST="$2"
+      shift
+      ;;
+    "-wU")
+      WAUSER="$2"
+      shift
+      ;;
+    "-wp")
+      WAPASS="$2"
+      shift
+      ;;
+    "-wo")
+      WSOWNER="$2"
+      shift
+      ;;
+    "-we")
+      WSERROR="$2"
+      shift
+      ;;
+    "-wa")
+      WSACCESS="$2"
+      shift
+      ;;
+    "-debug")
+      DEBUG=1
+      shift
+      ;;
+    "-df")
+      DBFILE="$2"
+      DBSLEEP=0
+      shift
+      ;;
+    "-dh")
+      DBHOST="$2"
+      DBSLEEP=0
+      shift
+      ;;
+    "-dn")
+      DBNAME="$2"
+      shift
+      ;;
+    "-du")
+      DBUSER="$2"
+      DBSLEEP=0
+      shift
+      ;;
+    "-dp")
+      DBPASS="$2"
+      DBSLEEP=0
+      shift
+      ;;
+    *)
+      ;;
+  esac
+  shift;
 done
 
 # --- Website defaults
@@ -162,14 +183,14 @@ export MYSQL_AUTH_USR="-u${DBUSER} -p${DBPASS}"
 if [ -f "$DBFILE" ]; then
     echo "NOTE: GitHub integration using ${DBFILE}"
 
-	export MYSQL_AUTH_USR="--defaults-file=${DBFILE}"
+  export MYSQL_AUTH_USR="--defaults-file=${DBFILE}"
 else
-	echo "NOTE: Script is running in non-interactive mode ensure you fill out the DB credentials!!!"
-	if [[ -n "${DBSLEEP}" ]]; then
-		sleep "${DBSLEEP}" #Give user a chance to see the prompt
-	fi
+  echo "NOTE: Script is running in non-interactive mode ensure you fill out the DB credentials!!!"
+  if [[ -n "${DBSLEEP}" ]]; then
+    sleep "${DBSLEEP}" #Give user a chance to see the prompt
+  fi
 
-	export MYSQL_AUTH_USR="-u${DBUSER} -p${DBPASS} -h${DBHOST}"
+  export MYSQL_AUTH_USR="-u${DBUSER} -p${DBPASS} -h${DBHOST}"
 fi
 
 # --- Get the server version and dump the key variables
@@ -177,14 +198,14 @@ DBSERVER=$($dbshell $MYSQL_AUTH_USR -e "SHOW GLOBAL VARIABLES LIKE 'version'" | 
 
 echo "Using the following values:";
 for v in WEBHOST WAUSER WAPASS DBCLIENT DBSERVER DBFILE DBHOST DBNAME DBPASS DBUSER DBSLEEP WSOWNER WSERROR WSACCESS; do
-	name="$v"
-	if [[ $name == "WAPASS" || $name == "DBPASS" ]]; then
-		value="*******"
-	else
-		value="${!v}"
-	fi
+  name="$v"
+  if [[ $name == "WAPASS" || $name == "DBPASS" ]]; then
+    value="*******"
+  else
+    value="${!v}"
+  fi
 
-	printf "\t%10s | %s\n" "$name" "$value"
+  printf "\t%10s | %s\n" "$name" "$value"
 done
 
 # ------------------------------------------------------------------------------
@@ -204,7 +225,6 @@ BASE_PATH=$( cd -- "${SCRIPT_PATH}/../../" &> /dev/null && pwd )
 
 echo "NOTE: Base Path is ${BASE_PATH}"
 
-DEBUG=0
 CACTI_LOG="${BASE_PATH}/log/cacti.log"
 CACTI_ERRLOG="${BASE_PATH}/log/cacti.stderr.log"
 POLLER="${BASE_PATH}/poller.php"
@@ -213,124 +233,124 @@ POLLER="${BASE_PATH}/poller.php"
 # Ensure that the artifact directory is created.  No need for a mess
 # ------------------------------------------------------------------------------
 if [ ! -d /tmp/check-all-pages ]; then
-	mkdir /tmp/check-all-pages
+  mkdir /tmp/check-all-pages
 fi
 
 # ------------------------------------------------------------------------------
 # Backup the error logs to capture what went wrong
 # ------------------------------------------------------------------------------
 save_log_files() {
-	echo "---------------------------------------------------------------------"
-	echo "Saving All Log Files"
-	echo "---------------------------------------------------------------------"
+  echo "---------------------------------------------------------------------"
+  echo "Saving All Log Files"
+  echo "---------------------------------------------------------------------"
 
-	if [ $started == 1 ];then
-		logBase="/tmp/check-all-pages/test.$(date +%s)"
-		mkdir -p "$logBase"
+  if [ $started == 1 ];then
+    logBase="/tmp/check-all-pages/test.$(date +%s)"
+    mkdir -p "$logBase"
 
-		echo "NOTE: Copying ${CACTI_LOG} to artifacts"
-		cp "$CACTI_LOG" "${logBase}/cacti.log"
-		cp "$CACTI_ERRLOG" "${logBase}/cacti_error.log"
+    echo "NOTE: Copying ${CACTI_LOG} to artifacts"
+    cp "$CACTI_LOG" "${logBase}/cacti.log"
+    cp "$CACTI_ERRLOG" "${logBase}/cacti_error.log"
 
-		if [ -f "$WSACCESS" ] ; then
-			echo "NOTE: Copying {$WSACCESS} to artifacts"
-			cp "$WSACCESS" "${logBase}/apache_access.log"
-		fi
+    if [ -f "$WSACCESS" ] ; then
+      echo "NOTE: Copying {$WSACCESS} to artifacts"
+      cp "$WSACCESS" "${logBase}/apache_access.log"
+    fi
 
-		if [ -f "$WSERROR" ] ; then
-			echo "NOTE: Copying ${WSERROR} to artifacts"
-			cp -f "$WSERROR" "${logBase}/apache_error.log"
-		fi
+    if [ -f "$WSERROR" ] ; then
+      echo "NOTE: Copying ${WSERROR} to artifacts"
+      cp -f "$WSERROR" "${logBase}/apache_error.log"
+    fi
 
-		if [ -f "$logFile1" ]; then
-			echo "NOTE: Copying ${logFile1} to artifacts"
-			cp -f "$logFile1" "${logBase}/wget_error.log"
-		fi
+    if [ -f "$logFile1" ]; then
+      echo "NOTE: Copying ${logFile1} to artifacts"
+      cp -f "$logFile1" "${logBase}/wget_error.log"
+    fi
 
-		chmod a+r -R "${logBase}/"
+    chmod a+r -R "${logBase}/"
 
-		if [ $DEBUG -eq 1 ];then
-			echo "DEBUG: Dumping ${CACTI_LOG}"
-			cat "$CACTI_LOG" "${logBase}/cacti.log"
-			echo "DEBUG: Dumping ${CACTI_ERRLOG}"
-			cat "${CACTI_ERRLOG}"
-			echo "DEBUG: Dumping ${WSACCESS}"
-			cat "${WSACCESS}"
-			echo "DEBUG: Dumping ${WSERROR}"
-			cat "${WSERROR}"
-		fi
-	fi
+    if [ $DEBUG -eq 1 ];then
+      echo "DEBUG: Dumping ${CACTI_LOG}"
+      cat "$CACTI_LOG" "${logBase}/cacti.log"
+      echo "DEBUG: Dumping ${CACTI_ERRLOG}"
+      cat "${CACTI_ERRLOG}"
+      echo "DEBUG: Dumping ${WSACCESS}"
+      cat "${WSACCESS}"
+      echo "DEBUG: Dumping ${WSERROR}"
+      cat "${WSERROR}"
+    fi
+  fi
 }
 
 # ------------------------------------------------------------------------------
 # Some functions to handle settings consistently
 # ------------------------------------------------------------------------------
 set_cacti_admin_password() {
-	echo "NOTE: Setting Cacti admin password and unsetting forced password change"
+  echo "NOTE: Setting Cacti admin password and unsetting forced password change"
 
-	$dbshell $MYSQL_AUTH_USR -e "UPDATE user_auth SET password=SHA2('$WAPASS', 256) WHERE id = 1 ;" "$DBNAME"
-	$dbshell $MYSQL_AUTH_USR -e "UPDATE user_auth SET password_change='', must_change_password='' WHERE id = 1 ;" "$DBNAME"
-	$dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('secpass_forceold', '') ;" "$DBNAME"
+  $dbshell $MYSQL_AUTH_USR -e "UPDATE user_auth SET password=SHA2('$WAPASS', 256) WHERE id = 1 ;" "$DBNAME"
+  $dbshell $MYSQL_AUTH_USR -e "UPDATE user_auth SET password_change='', must_change_password='' WHERE id = 1 ;" "$DBNAME"
+  $dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('secpass_forceold', '') ;" "$DBNAME"
 }
 
 enable_log_validation() {
-	echo "NOTE: Setting Cacti log validation to on to validate improperly validated variables"
+  echo "NOTE: Setting Cacti log validation to on to validate improperly validated variables"
 
-	$dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_validation','on') ;" "$DBNAME"
+  $dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_validation','on') ;" "$DBNAME"
 }
 
 set_log_level_none() {
-	echo "NOTE: Setting Cacti log verbosity to none"
+  echo "NOTE: Setting Cacti log verbosity to none"
 
-	$dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_verbosity', '1') ;" "$DBNAME"
+  $dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_verbosity', '1') ;" "$DBNAME"
 }
 
 set_log_level_normal() {
-	echo "NOTE: Setting Cacti log verbosity to low"
+  echo "NOTE: Setting Cacti log verbosity to low"
 
-	$dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_verbosity', '2') ;" "$DBNAME"
+  $dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_verbosity', '2') ;" "$DBNAME"
 }
 
 set_log_level_debug() {
-	echo "NOTE: Setting Cacti log verbosity to DEBUG"
+  echo "NOTE: Setting Cacti log verbosity to DEBUG"
 
-	$dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_verbosity', '6') ;" "$DBNAME"
+  $dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_verbosity', '6') ;" "$DBNAME"
 }
 
 set_stderr_logging() {
-	echo "NOTE: Setting Cacti standard error log location"
+  echo "NOTE: Setting Cacti standard error log location"
 
-	$dbshell $MYSQL_AUTH_USR -e "REPLACE INTO cacti.settings (name, value) VALUES ('path_stderrlog', '${CACTI_ERRLOG}');" "$DBNAME"
+  $dbshell $MYSQL_AUTH_USR -e "REPLACE INTO cacti.settings (name, value) VALUES ('path_stderrlog', '${CACTI_ERRLOG}');" "$DBNAME"
 }
 
 allow_index_following() {
-	echo "NOTE: Altering Cacti to allow following pages"
+  echo "NOTE: Altering Cacti to allow following pages"
 
-	sed -i "s/<meta name='robots' content='noindex,nofollow'>//g" "$BASE_PATH/lib/html.php"
+  sed -i "s/<meta name='robots' content='noindex,nofollow'>//g" "$BASE_PATH/lib/html.php"
 }
 
 catch_error() {
-	echo ""
-	echo "WARNING: Process Interrupted.  Exiting"
+  echo ""
+  echo "WARNING: Process Interrupted.  Exiting"
 
-	# Get rid of any jobs
-	kill -SIGINT $(jobs -p) 2> /dev/null
+  # Get rid of any jobs
+  kill -SIGINT $(jobs -p) 2> /dev/null
 
-	if [ -f "$tmpFile1" ]; then
-		rm -f "$tmpFile1"
-	fi
+  if [ -f "$tmpFile1" ]; then
+    rm -f "$tmpFile1"
+  fi
 
-	if [ -f "$tmpFile2" ]; then
-		rm -f "$tmpFile2"
-	fi
+  if [ -f "$tmpFile2" ]; then
+    rm -f "$tmpFile2"
+  fi
 
-	if [ -f "$cookieFile" ]; then
-		rm -f "$cookieFile"
-	fi
+  if [ -f "$cookieFile" ]; then
+    rm -f "$cookieFile"
+  fi
 
-	save_log_files
+  save_log_files
 
-	exit 0
+  exit 0
 }
 
 # ------------------------------------------------------------------------------
@@ -368,10 +388,10 @@ if [ $DEBUG -eq 1 ]; then
   apache2ctl -t
 fi
 
-echo "---------------------------------------------------------------------"
-echo "Enabling the Apache Site"
-echo "---------------------------------------------------------------------"
-if [ -f /usr/sbin/a2ensite ]; then
+if [ -f "/usr/sbin/a2ensite" -a -f "/etc/apache2/sites-available/000-default.conf" ]; then
+  echo "---------------------------------------------------------------------"
+  echo "Enabling the Apache Site for Debian/Ubuntu"
+  echo "---------------------------------------------------------------------"
   /usr/sbin/a2ensite 000-default.conf 
 fi
 
@@ -380,23 +400,25 @@ if [ $DEBUG -eq 1 ]; then
   # Check to see if apache2 is up and listening
   # ------------------------------------------------------------------------------
   echo "---------------------------------------------------------------------"
-  echo " Network Status showing open Apache ports"
+  echo "Network Status showing open Apache ports"
   echo "---------------------------------------------------------------------"
   netstat -anp | grep apache
 
   # ------------------------------------------------------------------------------
   # Dump the Apache Configuration
   # ------------------------------------------------------------------------------
-  echo "---------------------------------------------------------------------"
-  echo " Apache Configuration for Cacti"
-  echo "---------------------------------------------------------------------"
-  cat /etc/apache2/sites-available/000-default.conf
+  if [ -f "/etc/apache2/sites-available/000-default.conf" ]; then
+    echo "---------------------------------------------------------------------"
+    echo "Apache Configuration for Cacti"
+    echo "---------------------------------------------------------------------"
+    cat /etc/apache2/sites-available/000-default.conf
+  fi
 
   # ------------------------------------------------------------------------------
   # List to contents of the web root
   # ------------------------------------------------------------------------------
   echo "---------------------------------------------------------------------"
-  echo " Top Level Cacti Web Root Files"
+  echo "Top Level Cacti Web Root Files"
   echo "---------------------------------------------------------------------"
   ls -altr /var/www/html/cacti/*.php
 
@@ -404,7 +426,7 @@ if [ $DEBUG -eq 1 ]; then
   # Print out the processlist
   # ------------------------------------------------------------------------------
   echo "---------------------------------------------------------------------"
-  echo " Apache Process List"
+  echo "Apache Process List"
   echo "---------------------------------------------------------------------"
   ps -ef | grep apache2 | grep -v grep
 fi
@@ -420,9 +442,9 @@ started=1
 # Make sure we get the magic, this is stored in the cookies for future use.
 # ------------------------------------------------------------------------------
 if [ $DEBUG -eq 1 ]; then
-	set_log_level_debug
+  set_log_level_debug
 else
-	set_log_level_normal
+  set_log_level_normal
 fi
 
 echo "---------------------------------------------------------------------"
@@ -457,50 +479,67 @@ if [ $DEBUG -eq 1 ]; then
   echo "Output from index.php"
   echo "---------------------------------------------------------------------"
   cat ${tmpFile2}
+
+  progress=" --show-progress"
+else
+  progress=""
 fi
 
 # ------------------------------------------------------------------------------
 # Now loop over all the available links (but don't log out and don't delete or
 # remove, don't uninstall, enable or disable plugins stuff.
 # ------------------------------------------------------------------------------
+start_time=$(date +%s)
+
 echo "NOTE: Recursively Checking all Base Pages - Note this will take several minutes!!!"
-wget $loadSaveCookie --output-file="${logFile1}" --reject-regex="(logout\.php|remove|delete|uninstall|install|disable|enable)" --recursive --level=0 --execute=robots=off "${WEBHOST}"/index.php >/dev/null 2>&1
+wget $loadSaveCookie --output-file="${logFile1}" --reject-regex="(logout\.php|remove|delete|uninstall|install|disable|enable)" $progress --recursive --level=0 --execute=robots=off "${WEBHOST}"/index.php >/dev/null 2>&1
 error=$?
 
+end_time=$(date +%s)
+total=$(($end_time-$start_time))
+
 if [ $error -eq 8 ]; then
-	errors=$(grep -c "awaiting response... 404" "${logFile1}")
-	echo "WARNING: $errors pages not found.  This is not necessarily a bug"
+  errors=$(grep -c "awaiting response... 404" "${logFile1}")
+  echo "WARNING: $errors pages not found.  This is not necessarily a bug"
 fi
 
 # ------------------------------------------------------------------------------
 # Debug Errors if required
 # ------------------------------------------------------------------------------
 if [ $DEBUG -eq 1 ]; then
-	echo "---------------------------------------------------------------------"
-	echo "Output of Wget Log file"
-	echo "---------------------------------------------------------------------"
-	cat "${logFile1}"
-	echo "---------------------------------------------------------------------"
-	echo "Output of Cacti Log file"
-	echo "---------------------------------------------------------------------"
-	cat "${CACTI_LOG}"
-	echo "---------------------------------------------------------------------"
-	echo "Output of Apache Error Log"
-	echo "---------------------------------------------------------------------"
-	cat "${WSERROR}"
-	echo "---------------------------------------------------------------------"
-	echo "Output of Apache Access Log"
-	echo "---------------------------------------------------------------------"
-	cat "${WSACCESS}"
+  echo "---------------------------------------------------------------------"
+  echo "Output of Wget Log file"
+  echo "---------------------------------------------------------------------"
+  cat "${logFile1}"
+  echo "---------------------------------------------------------------------"
+  echo "Output of Cacti Log file"
+  echo "---------------------------------------------------------------------"
+  cat "${CACTI_LOG}"
+  echo "---------------------------------------------------------------------"
+  echo "Output of Apache Error Log"
+  echo "---------------------------------------------------------------------"
+  cat "${WSERROR}"
+  echo "---------------------------------------------------------------------"
+  echo "Output of Apache Access Log"
+  echo "---------------------------------------------------------------------"
+  cat "${WSACCESS}"
 fi
 
 checks=$(grep -c "HTTP" "$logFile1")
+
+if [ $total -gt 0 ]; then
+  check_rate=$(($checks/$total))
+else
+  check_rate="N/A"
+fi
+
 echo "NOTE: There were ${checks} pages checked through recursion"
+echo "NOTE: Total time was ${total} seconds or ${check_rate} checks per second"
 
 if [[ "${DEBUG}" -eq 1 ]];then
-	echo "---------------------------------------------------------------------"
-	cat "${logFile1}"
-	echo "---------------------------------------------------------------------"
+  echo "---------------------------------------------------------------------"
+  cat "${logFile1}"
+  echo "---------------------------------------------------------------------"
 fi
 
 echo "---------------------------------------------------------------------"
@@ -516,25 +555,25 @@ echo "---------------------------------------------------------------------"
 # ------------------------------------------------------------------------------
 echo "NOTE: Checking Cacti Log for Errors"
 FILTERED_LOG="$(grep -v \
-	-e "AUTH LOGIN: User 'admin' authenticated" \
-	-e "WEBUI NOTE: Poller Resource Cache scheduled for rebuild by user admin" \
-	-e "WEBUI NOTE: Poller Cache repopulated by user admin" \
-	-e "WEBUI NOTE: Cacti DS Stats purged by user admin" \
-	-e "IMPORT NOTE: File is Signed Correctly" \
-	-e "MAILER INFO:" \
-	-e "STATS:" \
-	-e "IMPORT Importing XML Data for " \
-	-e "CMDPHP Not Already Set" \
-	-e "ieee.org/oui.txt" \
-	-e "import_oui_database" \
-	-e "PCACHE NOTE" \
-	-e "LMSENSORS WARNING" \
-	-e "AUTOM8 \[PID\:" \
-	-e "REINDEX Child" \
-	-e "REINDEX Poller" \
-	-e "DSDEBUG Bad Data" \
-	-e "PUSHOUT Child Started" \
-	"$CACTI_LOG")" || true
+  -e "AUTH LOGIN: User 'admin' authenticated" \
+  -e "WEBUI NOTE: Poller Resource Cache scheduled for rebuild by user admin" \
+  -e "WEBUI NOTE: Poller Cache repopulated by user admin" \
+  -e "WEBUI NOTE: Cacti DS Stats purged by user admin" \
+  -e "IMPORT NOTE: File is Signed Correctly" \
+  -e "MAILER INFO:" \
+  -e "STATS:" \
+  -e "IMPORT Importing XML Data for " \
+  -e "CMDPHP Not Already Set" \
+  -e "ieee.org/oui.txt" \
+  -e "import_oui_database" \
+  -e "PCACHE NOTE" \
+  -e "LMSENSORS WARNING" \
+  -e "AUTOM8 \[PID\:" \
+  -e "REINDEX Child" \
+  -e "REINDEX Poller" \
+  -e "DSDEBUG Bad Data" \
+  -e "PUSHOUT Child Started" \
+  "$CACTI_LOG")" || true
 
 save_log_files
 
@@ -543,10 +582,10 @@ save_log_files
 # ------------------------------------------------------------------------------
 error=0
 if [ -n "${FILTERED_LOG}" ] ; then
-    echo "ERROR: Fail Unexpected output in ${CACTI_LOG}:"
-    echo "${FILTERED_LOG}"
-	exit 179
+  echo "ERROR: Fail Unexpected output in ${CACTI_LOG}:"
+  echo "${FILTERED_LOG}"
+  exit 179
 else
-    echo "NOTE: Success No unexpected output in ${CACTI_LOG}"
-	exit 0
+  echo "NOTE: Success No unexpected output in ${CACTI_LOG}"
+  exit 0
 fi
