@@ -116,7 +116,6 @@ function db_connect_real(string $device, string $user, string $pass, string $db_
 
 	// set connection timeout for down servers
 	$flags[PDO::ATTR_TIMEOUT] = 2;
-//	$flags[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
 
 	while ($i <= $retries) {
 		try {
@@ -125,6 +124,8 @@ function db_connect_real(string $device, string $user, string $pass, string $db_
 			} else {
 				$cnn_id = new PDO("$db_type:host=$device;port=$port;dbname=$db_name;charset=utf8", $user, $pass, $flags);
 			}
+
+			$cnn_id->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
 
 			if (!empty($config['DEBUG_SQL_CONNECT'])) {
 				error_log(sprintf('NOTE: New connection to %s:%s/%s.', $device, $port, $db_name));
