@@ -319,11 +319,17 @@ function mapDevices(int $siteId, bool $doMap) : void {
 	if ($deviceMapRegex && !preg_match('/^\/.+\//', $deviceMapRegex)) {
 		// Just in case the slashes aren't passed to us
 		$deviceMapRegex = '/^' . preg_quote($deviceMapRegex, '/') . '$/';
+	} elseif ($deviceMapRegex && @preg_match($deviceMapRegex, '') === false) {
+		print 'ERROR: Invalid device-map-regex pattern' . PHP_EOL;
+		exit(1);
 	}
 
 	if ($ipMapRegex && !preg_match('/^\/.+\//', $ipMapRegex)) {
 		// Make it more restrictive too - add the ^ and $ anchors if the regex isn't specified correctly to stop sillyness
 		$ipMapRegex = '/^' . preg_quote($ipMapRegex, '/') . '$/';
+	} elseif ($ipMapRegex && @preg_match($ipMapRegex, '') === false) {
+		print 'ERROR: Invalid ip-map-regex pattern' . PHP_EOL;
+		exit(1);
 	}
 
 	// Cheating and just expanding % into .+ regex matches to avoid having to do DB queries again
