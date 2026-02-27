@@ -526,7 +526,7 @@ fi
 # Run vmstat at a frequency of 5 seconds in background
 # ------------------------------------------------------------------------------
 if [ $VMSTAT -gt 0 ]; then
-  vmstat $VMSTAT > /tmp/vmstat.out &
+  vmstat --wide $VMSTAT > /tmp/vmstat.out &
 fi
 
 # ------------------------------------------------------------------------------
