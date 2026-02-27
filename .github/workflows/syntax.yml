@@ -52,7 +52,7 @@ jobs:
 
     services:
       mysql:
-        image: mariadb:10.6
+        image: mysql:latest
         env:
           MYSQL_DATABASE: cacti
           MYSQL_HOST: 127.0.0.1
