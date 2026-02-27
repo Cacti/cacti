@@ -68,8 +68,8 @@ WAPASS="admin";
 DBFILE="./.my.cnf";
 DBHOST="localhost";
 DBNAME="cacti";
-DBPASS="cactiuser";
-DBUSER="cactiuser";
+DBPASS="cacti_user";
+DBUSER="cacti_user";
 DBSLEEP=2
 DBCLIENT=$($dbshell --version | awk '{print $3}')
 
