@@ -2868,7 +2868,7 @@ function rrdtool_escape_string(string $text, bool $ignore_percent = true) : stri
 	}
 }
 
-function rrdtool_function_xport(int $local_graph_id, int $rra_id, array $xport_data_array, array &$xport_meta, int $user = 0) : array {
+function rrdtool_function_xport(int $local_graph_id, int $rra_id, array $xport_data_array, array &$xport_meta, int $user = 0) : mixed {
 	return rrdtool_function_graph($local_graph_id, $rra_id, $xport_data_array, null, $xport_meta, $user);
 }
 
