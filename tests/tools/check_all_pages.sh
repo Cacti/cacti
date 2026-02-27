@@ -162,6 +162,10 @@ while [ -n "$1" ]; do
       DEBUG=1
       ;;
     "-vmstat")
+      if [ -z "$2" ] || ! [[ "$2" =~ ^[0-9]+$ ]]; then
+        echo "Error: -vmstat requires a non-negative integer argument." >&2
+        exit 1
+      fi
       VMSTAT="$2"
       shift
       ;;
