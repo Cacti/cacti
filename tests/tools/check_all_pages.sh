@@ -29,7 +29,9 @@
 # Uncomment for debugging
 # set -x
 
-# On a hunch
+# ------------------------------------------------------------------------------
+# Restart service and stop the firewall if it's running
+# ------------------------------------------------------------------------------
 sudo systemctl restart apache2 2>/dev/null
 sudo systemctl status apache2 2>/dev/null
 sudo systemctl stop firewalld 2>/dev/null
@@ -38,7 +40,9 @@ echo "---------------------------------------------------------------------"
 echo "NOTE: Check all Pages Script Starting"
 echo "---------------------------------------------------------------------"
 
-# --- Check for MariaDB or MySQL
+# ------------------------------------------------------------------------------
+# Check for MariaDB or MySQL
+# ------------------------------------------------------------------------------
 if [ $(which mariadb | wc -l) -gt 0 ]; then
   dbshell="mariadb"
   dbdump="mariadb-dump"
@@ -49,12 +53,16 @@ else
   dbadmin="mysqladmin"
 fi
 
-# --- Website defaults
+# ------------------------------------------------------------------------------
+# Website defaults
+# ------------------------------------------------------------------------------
 WEBHOST="http://127.0.0.1/cacti";
 WAUSER="admin";
 WAPASS="admin";
 
-# --- Database defaults
+# ------------------------------------------------------------------------------
+# Database defaults
+# ------------------------------------------------------------------------------
 DBFILE="./.my.cnf";
 DBHOST="localhost";
 DBNAME="cacti";
@@ -63,7 +71,9 @@ DBUSER="cactiuser";
 DBSLEEP=2
 DBCLIENT=$($dbshell --version | awk '{print $3}')
 
-# --- Shell defaults
+# ------------------------------------------------------------------------------
+# Shell defaults
+# ------------------------------------------------------------------------------
 WSOWNER="apache"
 WSERROR="/var/log/httpd/error_log"
 WSACCESS="/var/log/httpd/access_log"
@@ -84,6 +94,7 @@ if [ $WGET_RESULT -eq 127 ]; then
 fi
 
 DEBUG=0
+VMSTAT=0
 
 # ------------------------------------------------------------------------------
 # Get inputs from user (Interactive mode)
@@ -112,6 +123,7 @@ while [ -n "$1" ]; do
       echo "  -wo <user>          Set web server user/owner (default: ${WSOWNER})"
       echo "  -we <path>          Set web server error log path (default: ${WSERROR})"
       echo "  -wa <path>          Set web server access log path (default: ${WSACCESS})"
+      echo "  -vmstat <seconds>   Provide vmstat output at end of the page run"
       echo "  -debug              Enable debug output"
       echo "  -df <file>          Use database options file and disable DB sleep (default: ${DBFILE})"
       echo "  -dh <host>          Set database host and disable DB sleep (default: ${DBHOST})"
@@ -146,6 +158,9 @@ while [ -n "$1" ]; do
       ;;
     "-debug")
       DEBUG=1
+      ;;
+    "-vmstat")
+      VMSTAT="$2"
       shift
       ;;
     "-df")
@@ -181,7 +196,7 @@ done
 # --- Website defaults
 export MYSQL_AUTH_USR="-u${DBUSER} -p${DBPASS}"
 if [ -f "$DBFILE" ]; then
-    echo "NOTE: GitHub integration using ${DBFILE}"
+  echo "NOTE: GitHub integration using ${DBFILE}"
 
   export MYSQL_AUTH_USR="--defaults-file=${DBFILE}"
 else
@@ -329,9 +344,9 @@ allow_index_following() {
   sed -i "s/<meta name='robots' content='noindex,nofollow'>//g" "$BASE_PATH/lib/html.php"
 }
 
-catch_error() {
+shutdown_handler() {
   echo ""
-  echo "WARNING: Process Interrupted.  Exiting"
+  echo "NOTE: Process Interrupted.  Exiting"
 
   # Get rid of any jobs
   kill -SIGINT $(jobs -p) 2> /dev/null
@@ -348,6 +363,10 @@ catch_error() {
     rm -f "$cookieFile"
   fi
 
+  if [ -f "/tmp/vmstat.out" ]; then
+    rm -f /tmp/vmstat.out
+  fi
+
   save_log_files
 
   exit 0
@@ -356,7 +375,7 @@ catch_error() {
 # ------------------------------------------------------------------------------
 # To make sure that the autopkgtest/CI sites store the information
 # ------------------------------------------------------------------------------
-trap 'catch_error' 1 2 3 6 9 14 15
+trap 'shutdown_handler' 0 1 2 3 6 9 14 15
 
 echo "NOTE: Current Directory is $(pwd)"
 
@@ -485,6 +504,14 @@ else
   progress=""
 fi
 
+
+# ------------------------------------------------------------------------------
+# Run vmstat at a frequency of 5 seconds in background
+# ------------------------------------------------------------------------------
+if [ $VMSTAT -gt 0 ]; then
+  vmstat $VMSTAT > /tmp/vmstat.out &
+fi
+
 # ------------------------------------------------------------------------------
 # Now loop over all the available links (but don't log out and don't delete or
 # remove, don't uninstall, enable or disable plugins stuff.
@@ -553,6 +580,16 @@ echo "NOTE: Page                                                     Clicks"
 echo "---------------------------------------------------------------------"
 awk '{print $7}' < "${WSACCESS}" | awk -F'?' '{print $1}' | grep -v 'index.php' | sort | uniq -c | grep php | awk '{printf("NOTE: %-57s %5d\n", $2, $1)}'
 echo "---------------------------------------------------------------------"
+
+# ------------------------------------------------------------------------------
+# Output vmstat statistics if requested
+# ------------------------------------------------------------------------------
+if [ $VMSTAT -gt 0 ]; then
+  echo "NOTE: Output of vmstat"
+  echo "---------------------------------------------------------------------"
+  cat /tmp/vmstat.out
+  echo "---------------------------------------------------------------------"
+fi
 
 # ------------------------------------------------------------------------------
 # Finally check the cacti log for unexpected items
