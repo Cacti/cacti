@@ -528,7 +528,7 @@ fi
 checks=$(grep -c "HTTP" "$logFile1")
 
 if [ $total -gt 0 ]; then
-  check_rate=$(($checks/$total))
+  check_rate=$(echo "scale=2; $checks / $total" | bc)
 else
   check_rate="N/A"
 fi
