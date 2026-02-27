@@ -484,6 +484,11 @@ else
 fi
 
 echo "---------------------------------------------------------------------"
+echo "Outputting Disk Topology"
+echo "---------------------------------------------------------------------"
+df -h
+
+echo "---------------------------------------------------------------------"
 echo "Starting Web Based Page Validation"
 echo "---------------------------------------------------------------------"
 echo "NOTE: Saving Cookie Data"
@@ -526,7 +531,7 @@ fi
 # Run vmstat in background at a user-configurable interval (VMSTAT)
 # ------------------------------------------------------------------------------
 if [ $VMSTAT -gt 0 ]; then
-  vmstat $VMSTAT > /tmp/vmstat.out &
+  vmstat --wide $VMSTAT > /tmp/vmstat.out &
 fi
 
 # ------------------------------------------------------------------------------
