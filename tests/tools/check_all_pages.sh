@@ -375,7 +375,7 @@ fi
 
 if [ -f "/usr/sbin/a2ensite" -a -f "/etc/apache2/sites-available/000-default.conf" ]; then
   echo "---------------------------------------------------------------------"
-  echo "Enabling the Apache Site fot Debian/Ubuntu"
+  echo "Enabling the Apache Site for Debian/Ubuntu"
   echo "---------------------------------------------------------------------"
   /usr/sbin/a2ensite 000-default.conf 
 fi
