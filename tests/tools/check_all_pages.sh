@@ -168,14 +168,14 @@ export MYSQL_AUTH_USR="-u${DBUSER} -p${DBPASS}"
 if [ -f "$DBFILE" ]; then
     echo "NOTE: GitHub integration using ${DBFILE}"
 
-	export MYSQL_AUTH_USR="--defaults-file=${DBFILE}"
+  export MYSQL_AUTH_USR="--defaults-file=${DBFILE}"
 else
-	echo "NOTE: Script is running in non-interactive mode ensure you fill out the DB credentials!!!"
-	if [[ -n "${DBSLEEP}" ]]; then
-		sleep "${DBSLEEP}" #Give user a chance to see the prompt
-	fi
+  echo "NOTE: Script is running in non-interactive mode ensure you fill out the DB credentials!!!"
+  if [[ -n "${DBSLEEP}" ]]; then
+    sleep "${DBSLEEP}" #Give user a chance to see the prompt
+  fi
 
-	export MYSQL_AUTH_USR="-u${DBUSER} -p${DBPASS} -h${DBHOST}"
+  export MYSQL_AUTH_USR="-u${DBUSER} -p${DBPASS} -h${DBHOST}"
 fi
 
 # --- Get the server version and dump the key variables
@@ -183,14 +183,14 @@ DBSERVER=$($dbshell $MYSQL_AUTH_USR -e "SHOW GLOBAL VARIABLES LIKE 'version'" | 
 
 echo "Using the following values:";
 for v in WEBHOST WAUSER WAPASS DBCLIENT DBSERVER DBFILE DBHOST DBNAME DBPASS DBUSER DBSLEEP WSOWNER WSERROR WSACCESS; do
-	name="$v"
-	if [[ $name == "WAPASS" || $name == "DBPASS" ]]; then
-		value="*******"
-	else
-		value="${!v}"
-	fi
+  name="$v"
+  if [[ $name == "WAPASS" || $name == "DBPASS" ]]; then
+    value="*******"
+  else
+    value="${!v}"
+  fi
 
-	printf "\t%10s | %s\n" "$name" "$value"
+  printf "\t%10s | %s\n" "$name" "$value"
 done
 
 # ------------------------------------------------------------------------------
@@ -218,124 +218,124 @@ POLLER="${BASE_PATH}/poller.php"
 # Ensure that the artifact directory is created.  No need for a mess
 # ------------------------------------------------------------------------------
 if [ ! -d /tmp/check-all-pages ]; then
-	mkdir /tmp/check-all-pages
+  mkdir /tmp/check-all-pages
 fi
 
 # ------------------------------------------------------------------------------
 # Backup the error logs to capture what went wrong
 # ------------------------------------------------------------------------------
 save_log_files() {
-	echo "---------------------------------------------------------------------"
-	echo "Saving All Log Files"
-	echo "---------------------------------------------------------------------"
+  echo "---------------------------------------------------------------------"
+  echo "Saving All Log Files"
+  echo "---------------------------------------------------------------------"
 
-	if [ $started == 1 ];then
-		logBase="/tmp/check-all-pages/test.$(date +%s)"
-		mkdir -p "$logBase"
+  if [ $started == 1 ];then
+    logBase="/tmp/check-all-pages/test.$(date +%s)"
+    mkdir -p "$logBase"
 
-		echo "NOTE: Copying ${CACTI_LOG} to artifacts"
-		cp "$CACTI_LOG" "${logBase}/cacti.log"
-		cp "$CACTI_ERRLOG" "${logBase}/cacti_error.log"
+    echo "NOTE: Copying ${CACTI_LOG} to artifacts"
+    cp "$CACTI_LOG" "${logBase}/cacti.log"
+    cp "$CACTI_ERRLOG" "${logBase}/cacti_error.log"
 
-		if [ -f "$WSACCESS" ] ; then
-			echo "NOTE: Copying {$WSACCESS} to artifacts"
-			cp "$WSACCESS" "${logBase}/apache_access.log"
-		fi
+    if [ -f "$WSACCESS" ] ; then
+      echo "NOTE: Copying {$WSACCESS} to artifacts"
+      cp "$WSACCESS" "${logBase}/apache_access.log"
+    fi
 
-		if [ -f "$WSERROR" ] ; then
-			echo "NOTE: Copying ${WSERROR} to artifacts"
-			cp -f "$WSERROR" "${logBase}/apache_error.log"
-		fi
+    if [ -f "$WSERROR" ] ; then
+      echo "NOTE: Copying ${WSERROR} to artifacts"
+      cp -f "$WSERROR" "${logBase}/apache_error.log"
+    fi
 
-		if [ -f "$logFile1" ]; then
-			echo "NOTE: Copying ${logFile1} to artifacts"
-			cp -f "$logFile1" "${logBase}/wget_error.log"
-		fi
+    if [ -f "$logFile1" ]; then
+      echo "NOTE: Copying ${logFile1} to artifacts"
+      cp -f "$logFile1" "${logBase}/wget_error.log"
+    fi
 
-		chmod a+r -R "${logBase}/"
+    chmod a+r -R "${logBase}/"
 
-		if [ $DEBUG -eq 1 ];then
-			echo "DEBUG: Dumping ${CACTI_LOG}"
-			cat "$CACTI_LOG" "${logBase}/cacti.log"
-			echo "DEBUG: Dumping ${CACTI_ERRLOG}"
-			cat "${CACTI_ERRLOG}"
-			echo "DEBUG: Dumping ${WSACCESS}"
-			cat "${WSACCESS}"
-			echo "DEBUG: Dumping ${WSERROR}"
-			cat "${WSERROR}"
-		fi
-	fi
+    if [ $DEBUG -eq 1 ];then
+      echo "DEBUG: Dumping ${CACTI_LOG}"
+      cat "$CACTI_LOG" "${logBase}/cacti.log"
+      echo "DEBUG: Dumping ${CACTI_ERRLOG}"
+      cat "${CACTI_ERRLOG}"
+      echo "DEBUG: Dumping ${WSACCESS}"
+      cat "${WSACCESS}"
+      echo "DEBUG: Dumping ${WSERROR}"
+      cat "${WSERROR}"
+    fi
+  fi
 }
 
 # ------------------------------------------------------------------------------
 # Some functions to handle settings consistently
 # ------------------------------------------------------------------------------
 set_cacti_admin_password() {
-	echo "NOTE: Setting Cacti admin password and unsetting forced password change"
+  echo "NOTE: Setting Cacti admin password and unsetting forced password change"
 
-	$dbshell $MYSQL_AUTH_USR -e "UPDATE user_auth SET password=SHA2('$WAPASS', 256) WHERE id = 1 ;" "$DBNAME"
-	$dbshell $MYSQL_AUTH_USR -e "UPDATE user_auth SET password_change='', must_change_password='' WHERE id = 1 ;" "$DBNAME"
-	$dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('secpass_forceold', '') ;" "$DBNAME"
+  $dbshell $MYSQL_AUTH_USR -e "UPDATE user_auth SET password=SHA2('$WAPASS', 256) WHERE id = 1 ;" "$DBNAME"
+  $dbshell $MYSQL_AUTH_USR -e "UPDATE user_auth SET password_change='', must_change_password='' WHERE id = 1 ;" "$DBNAME"
+  $dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('secpass_forceold', '') ;" "$DBNAME"
 }
 
 enable_log_validation() {
-	echo "NOTE: Setting Cacti log validation to on to validate improperly validated variables"
+  echo "NOTE: Setting Cacti log validation to on to validate improperly validated variables"
 
-	$dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_validation','on') ;" "$DBNAME"
+  $dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_validation','on') ;" "$DBNAME"
 }
 
 set_log_level_none() {
-	echo "NOTE: Setting Cacti log verbosity to none"
+  echo "NOTE: Setting Cacti log verbosity to none"
 
-	$dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_verbosity', '1') ;" "$DBNAME"
+  $dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_verbosity', '1') ;" "$DBNAME"
 }
 
 set_log_level_normal() {
-	echo "NOTE: Setting Cacti log verbosity to low"
+  echo "NOTE: Setting Cacti log verbosity to low"
 
-	$dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_verbosity', '2') ;" "$DBNAME"
+  $dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_verbosity', '2') ;" "$DBNAME"
 }
 
 set_log_level_debug() {
-	echo "NOTE: Setting Cacti log verbosity to DEBUG"
+  echo "NOTE: Setting Cacti log verbosity to DEBUG"
 
-	$dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_verbosity', '6') ;" "$DBNAME"
+  $dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_verbosity', '6') ;" "$DBNAME"
 }
 
 set_stderr_logging() {
-	echo "NOTE: Setting Cacti standard error log location"
+  echo "NOTE: Setting Cacti standard error log location"
 
-	$dbshell $MYSQL_AUTH_USR -e "REPLACE INTO cacti.settings (name, value) VALUES ('path_stderrlog', '${CACTI_ERRLOG}');" "$DBNAME"
+  $dbshell $MYSQL_AUTH_USR -e "REPLACE INTO cacti.settings (name, value) VALUES ('path_stderrlog', '${CACTI_ERRLOG}');" "$DBNAME"
 }
 
 allow_index_following() {
-	echo "NOTE: Altering Cacti to allow following pages"
+  echo "NOTE: Altering Cacti to allow following pages"
 
-	sed -i "s/<meta name='robots' content='noindex,nofollow'>//g" "$BASE_PATH/lib/html.php"
+  sed -i "s/<meta name='robots' content='noindex,nofollow'>//g" "$BASE_PATH/lib/html.php"
 }
 
 catch_error() {
-	echo ""
-	echo "WARNING: Process Interrupted.  Exiting"
+  echo ""
+  echo "WARNING: Process Interrupted.  Exiting"
 
-	# Get rid of any jobs
-	kill -SIGINT $(jobs -p) 2> /dev/null
+  # Get rid of any jobs
+  kill -SIGINT $(jobs -p) 2> /dev/null
 
-	if [ -f "$tmpFile1" ]; then
-		rm -f "$tmpFile1"
-	fi
+  if [ -f "$tmpFile1" ]; then
+    rm -f "$tmpFile1"
+  fi
 
-	if [ -f "$tmpFile2" ]; then
-		rm -f "$tmpFile2"
-	fi
+  if [ -f "$tmpFile2" ]; then
+    rm -f "$tmpFile2"
+  fi
 
-	if [ -f "$cookieFile" ]; then
-		rm -f "$cookieFile"
-	fi
+  if [ -f "$cookieFile" ]; then
+    rm -f "$cookieFile"
+  fi
 
-	save_log_files
+  save_log_files
 
-	exit 0
+  exit 0
 }
 
 # ------------------------------------------------------------------------------
@@ -427,9 +427,9 @@ started=1
 # Make sure we get the magic, this is stored in the cookies for future use.
 # ------------------------------------------------------------------------------
 if [ $DEBUG -eq 1 ]; then
-	set_log_level_debug
+  set_log_level_debug
 else
-	set_log_level_normal
+  set_log_level_normal
 fi
 
 echo "---------------------------------------------------------------------"
