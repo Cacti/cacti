@@ -1565,7 +1565,7 @@ $settings['poller'] = [
 			20 => __('%d Seconds', 20),
 			30 => __('%d Seconds', 30),
 			60 => __('%d Seconds', 60)
-			]
+		]
 	],
 	'poller_refresh_output_table' => [
 		'friendly_name' => __('Refresh Poller Table Per Cycle'),
