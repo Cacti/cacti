@@ -50,6 +50,7 @@ Cacti CHANGELOG
 -feature#6524: When changing your password, log off from all sessions
 -feature#6534: Improve Cacti Session ID security
 -feature#6607: Implement session security on Password change
+-feature#6681: Add Dell iDrac template
 -feature: Update DOMPurify to 3.3.0
 -feature: Update PHPMailer to 6.10 to support SMTPUTF8
 -feature: Update phpseclib for the Service Check plugin
