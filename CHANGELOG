@@ -1,8 +1,8 @@
 Cacti CHANGELOG
 
 1.3.0-dev
--issue: Fix column exclusion silently skipping first element due to loose array_search comparison
 -issue#6545: Add 30 and 60 second timeout options for Remote Agent and Poller settings
+-issue#6682: Fix column exclusion silently skipping first element due to loose array_search comparison
 -issue#6210: Fix Error: You have an error in your SQL syntax due to using table field without backtick.
 -issue#6165: Update billboard.js and billboard.css to resolve servcheck graph legend overlapping issue.
 -issue#2205: Allow admins to disable RRDtool watermark
