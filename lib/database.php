@@ -116,7 +116,6 @@ function db_connect_real(string $device, string $user, string $pass, string $db_
 
 	// set connection timeout for down servers
 	$flags[PDO::ATTR_TIMEOUT] = 2;
-	$flags[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
 
 	while ($i <= $retries) {
 		try {
@@ -125,6 +124,8 @@ function db_connect_real(string $device, string $user, string $pass, string $db_
 			} else {
 				$cnn_id = new PDO("$db_type:host=$device;port=$port;dbname=$db_name;charset=utf8", $user, $pass, $flags);
 			}
+
+			$cnn_id->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
 
 			if (!empty($config['DEBUG_SQL_CONNECT'])) {
 				error_log(sprintf('NOTE: New connection to %s:%s/%s.', $device, $port, $db_name));
@@ -565,8 +566,9 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 	$affected_rows[spl_object_hash($db_conn)] = 0;
 
 	while (true) {
-		$code = 0;
-		$en   = '';
+		$code  = 0;
+		$en    = '';
+		$query = $db_conn->prepare($sql);
 
 		if (!empty($config['DEBUG_SQL_CMD'])) {
 			db_echo_sql('db_' . $execute_name . ' Memory [Before]: ' . memory_get_usage() . ' / ' . memory_get_peak_usage() . "\n");
@@ -575,8 +577,6 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 		set_error_handler('db_warning_handler', E_WARNING | E_NOTICE);
 
 		try {
-			$query = $db_conn->prepare($sql);
-
 			if (empty($params) || cacti_count($params) == 0) {
 				$query->execute();
 			} else {
@@ -586,7 +586,6 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 			$code      = $ex->getCode();
 			$en        = $code;
 			$errorinfo = [1=>$code, 2=>$ex->getMessage()];
-			$query     = null;
 		}
 
 		restore_error_handler();
@@ -595,7 +594,7 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 			db_echo_sql('db_' . $execute_name . ' Memory [ After]: ' . memory_get_usage() . ' / ' . memory_get_peak_usage() . "\n");
 		}
 
-		if ($code == 0 && is_object($query)) {
+		if ($code == 0) {
 			$code = $query->errorCode();
 
 			if ($code != '00000' && $code != '01000') {
