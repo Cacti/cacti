@@ -26,10 +26,14 @@
 # can trigger with wget) as well.
 # ------------------------------------------------------------------------------
 
-# Uncomment for debugging
-# set -x
+# ------------------------------------------------------------------------------
+# Debugging
+# ------------------------------------------------------------------------------
+#set -xv
 
-# On a hunch
+# ------------------------------------------------------------------------------
+# Restart service and stop the firewall if it's running
+# ------------------------------------------------------------------------------
 sudo systemctl restart apache2 2>/dev/null
 sudo systemctl status apache2 2>/dev/null
 sudo systemctl stop firewalld 2>/dev/null
@@ -38,7 +42,9 @@ echo "---------------------------------------------------------------------"
 echo "NOTE: Check all Pages Script Starting"
 echo "---------------------------------------------------------------------"
 
-# --- Check for MariaDB or MySQL
+# ------------------------------------------------------------------------------
+# Check for MariaDB or MySQL
+# ------------------------------------------------------------------------------
 if [ $(which mariadb | wc -l) -gt 0 ]; then
   dbshell="mariadb"
   dbdump="mariadb-dump"
@@ -49,12 +55,16 @@ else
   dbadmin="mysqladmin"
 fi
 
-# --- Website defaults
+# ------------------------------------------------------------------------------
+# Website defaults
+# ------------------------------------------------------------------------------
 WEBHOST="http://127.0.0.1/cacti";
 WAUSER="admin";
 WAPASS="admin";
 
-# --- Database defaults
+# ------------------------------------------------------------------------------
+# Database defaults
+# ------------------------------------------------------------------------------
 DBFILE="./.my.cnf";
 DBHOST="localhost";
 DBNAME="cacti";
@@ -63,7 +73,9 @@ DBUSER="cactiuser";
 DBSLEEP=2
 DBCLIENT=$($dbshell --version | awk '{print $3}')
 
-# --- Shell defaults
+# ------------------------------------------------------------------------------
+# Shell defaults
+# ------------------------------------------------------------------------------
 WSOWNER="apache"
 WSERROR="/var/log/httpd/error_log"
 WSACCESS="/var/log/httpd/access_log"
@@ -84,6 +96,7 @@ if [ $WGET_RESULT -eq 127 ]; then
 fi
 
 DEBUG=0
+VMSTAT=0
 
 # ------------------------------------------------------------------------------
 # Get inputs from user (Interactive mode)
@@ -112,6 +125,7 @@ while [ -n "$1" ]; do
       echo "  -wo <user>          Set web server user/owner (default: ${WSOWNER})"
       echo "  -we <path>          Set web server error log path (default: ${WSERROR})"
       echo "  -wa <path>          Set web server access log path (default: ${WSACCESS})"
+      echo "  -vmstat <seconds>   Provide vmstat output at end of the page run"
       echo "  -debug              Enable debug output"
       echo "  -df <file>          Use database options file and disable DB sleep (default: ${DBFILE})"
       echo "  -dh <host>          Set database host and disable DB sleep (default: ${DBHOST})"
@@ -146,6 +160,13 @@ while [ -n "$1" ]; do
       ;;
     "-debug")
       DEBUG=1
+      ;;
+    "-vmstat")
+      if ! [[ "$2" =~ ^[0-9]+$ ]] || [ "$2" -le 0 ]; then
+        echo "ERROR: -vmstat value must be a positive integer."
+        exit 1
+      fi
+      VMSTAT="$2"
       shift
       ;;
     "-df")
@@ -181,11 +202,11 @@ done
 # --- Website defaults
 export MYSQL_AUTH_USR="-u${DBUSER} -p${DBPASS}"
 if [ -f "$DBFILE" ]; then
-    echo "NOTE: GitHub integration using ${DBFILE}"
+  echo "NOTE: GitHub integration using ${DBFILE}"
 
   export MYSQL_AUTH_USR="--defaults-file=${DBFILE}"
 else
-  echo "NOTE: Script is running in non-interactive mode ensure you fill out the DB credentials!!!"
+  echo "NOTE: Script is running in batch mode using default credentials!!!"
   if [[ -n "${DBSLEEP}" ]]; then
     sleep "${DBSLEEP}" #Give user a chance to see the prompt
   fi
@@ -196,6 +217,7 @@ fi
 # --- Get the server version and dump the key variables
 DBSERVER=$($dbshell $MYSQL_AUTH_USR -e "SHOW GLOBAL VARIABLES LIKE 'version'" | grep -v Value | awk '{print $2}')
 
+echo "---------------------------------------------------------------------"
 echo "Using the following values:";
 for v in WEBHOST WAUSER WAPASS DBCLIENT DBSERVER DBFILE DBHOST DBNAME DBPASS DBUSER DBSLEEP WSOWNER WSERROR WSACCESS; do
   name="$v"
@@ -207,11 +229,7 @@ for v in WEBHOST WAUSER WAPASS DBCLIENT DBSERVER DBFILE DBHOST DBNAME DBPASS DBU
 
   printf "\t%10s | %s\n" "$name" "$value"
 done
-
-# ------------------------------------------------------------------------------
-# Debugging
-# ------------------------------------------------------------------------------
-#set -xv
+echo "---------------------------------------------------------------------"
 
 exec 2>&1
 
@@ -253,7 +271,7 @@ save_log_files() {
     cp "$CACTI_ERRLOG" "${logBase}/cacti_error.log"
 
     if [ -f "$WSACCESS" ] ; then
-      echo "NOTE: Copying {$WSACCESS} to artifacts"
+      echo "NOTE: Copying ${WSACCESS} to artifacts"
       cp "$WSACCESS" "${logBase}/apache_access.log"
     fi
 
@@ -320,7 +338,7 @@ set_log_level_debug() {
 set_stderr_logging() {
   echo "NOTE: Setting Cacti standard error log location"
 
-  $dbshell $MYSQL_AUTH_USR -e "REPLACE INTO cacti.settings (name, value) VALUES ('path_stderrlog', '${CACTI_ERRLOG}');" "$DBNAME"
+  $dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('path_stderrlog', '${CACTI_ERRLOG}');" "$DBNAME"
 }
 
 allow_index_following() {
@@ -329,9 +347,9 @@ allow_index_following() {
   sed -i "s/<meta name='robots' content='noindex,nofollow'>//g" "$BASE_PATH/lib/html.php"
 }
 
-catch_error() {
+shutdown_handler() {
   echo ""
-  echo "WARNING: Process Interrupted.  Exiting"
+  echo "WARNING: Process Interrupted.  Cleaning up and Exiting"
 
   # Get rid of any jobs
   kill -SIGINT $(jobs -p) 2> /dev/null
@@ -348,7 +366,24 @@ catch_error() {
     rm -f "$cookieFile"
   fi
 
+  if [ -f "/tmp/vmstat.out" ]; then
+    rm -f /tmp/vmstat.out
+  fi
+
   save_log_files
+
+  exit 0
+}
+
+normal_exit() {
+  echo "NOTE: Process exiting normally.  Killing any background jobs"
+
+  # Get rid of any jobs
+  kill -SIGINT $(jobs -p) 2> /dev/null
+
+  if [ -f "/tmp/vmstat.out" ]; then
+    rm -f /tmp/vmstat.out
+  fi
 
   exit 0
 }
@@ -356,7 +391,8 @@ catch_error() {
 # ------------------------------------------------------------------------------
 # To make sure that the autopkgtest/CI sites store the information
 # ------------------------------------------------------------------------------
-trap 'catch_error' 1 2 3 6 9 14 15
+trap 'shutdown_handler' 1 2 3 6 9 14 15
+trap 'normal_exit' 0
 
 echo "NOTE: Current Directory is $(pwd)"
 
@@ -448,6 +484,11 @@ else
 fi
 
 echo "---------------------------------------------------------------------"
+echo "Outputting Disk Topology"
+echo "---------------------------------------------------------------------"
+df -h
+
+echo "---------------------------------------------------------------------"
 echo "Starting Web Based Page Validation"
 echo "---------------------------------------------------------------------"
 echo "NOTE: Saving Cookie Data"
@@ -483,6 +524,14 @@ if [ $DEBUG -eq 1 ]; then
   progress=" --show-progress"
 else
   progress=""
+fi
+
+
+# ------------------------------------------------------------------------------
+# Run vmstat in background at a user-configurable interval (VMSTAT)
+# ------------------------------------------------------------------------------
+if [ $VMSTAT -gt 0 ]; then
+  vmstat --wide $VMSTAT > /tmp/vmstat.out &
 fi
 
 # ------------------------------------------------------------------------------
@@ -555,6 +604,24 @@ awk '{print $7}' < "${WSACCESS}" | awk -F'?' '{print $1}' | grep -v 'index.php' 
 echo "---------------------------------------------------------------------"
 
 # ------------------------------------------------------------------------------
+# Output vmstat statistics if requested
+# ------------------------------------------------------------------------------
+if [ $VMSTAT -gt 0 ]; then
+  echo "NOTE: Output of vmstat"
+  echo "---------------------------------------------------------------------"
+  cat /tmp/vmstat.out
+  echo "---------------------------------------------------------------------"
+fi
+
+# ------------------------------------------------------------------------------
+# Show memory stats top memory consumers
+# ------------------------------------------------------------------------------
+echo "NOTE: Top processes by memory"
+echo "---------------------------------------------------------------------"
+ps aux --sort -rss | head -20
+echo "---------------------------------------------------------------------"
+
+# ------------------------------------------------------------------------------
 # Finally check the cacti log for unexpected items
 # ------------------------------------------------------------------------------
 echo "NOTE: Checking Cacti Log for Errors"
@@ -572,7 +639,7 @@ FILTERED_LOG="$(grep -v \
   -e "import_oui_database" \
   -e "PCACHE NOTE" \
   -e "LMSENSORS WARNING" \
-  -e "AUTOM8 \[PID\:" \
+  -e "AUTOM8 \[PID:" \
   -e "REINDEX Child" \
   -e "REINDEX Poller" \
   -e "DSDEBUG Bad Data" \
