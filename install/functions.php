@@ -483,6 +483,7 @@ function install_setup_get_templates() {
 		'Cisco_Router.xml.gz',
 		'Citrix_NetScaler_VPX.xml.gz',
 		'Clearpass_policy_manager.xml.gz',
+		'Dell_iDrac.xml.gz',
 		'ESXi_Device.xml.gz',
 		'Fortigate.xml.gz',
 		'Generic_SNMP_Device.xml.gz',
