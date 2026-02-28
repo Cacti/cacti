@@ -126,6 +126,7 @@ function db_connect_real(string $device, string $user, string $pass, string $db_
 			}
 
 			// $cnn_id->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
+			$cnn_id->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 			if (!empty($config['DEBUG_SQL_CONNECT'])) {
 				error_log(sprintf('NOTE: New connection to %s:%s/%s.', $device, $port, $db_name));
