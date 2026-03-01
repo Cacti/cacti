@@ -652,7 +652,7 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 
 			unset($query);
 
-			if (!db_column_exists('settings', 'name')) {
+			if ($en == 2002 || $en == 2006) {
 				$log = false;
 			}
 
