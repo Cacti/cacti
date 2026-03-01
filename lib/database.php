@@ -680,7 +680,6 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 			} elseif ($en == 2002 || $en == 2006) {
 				$errors++;
 
-
 				syslog('WARNING: The Cacti Database has gone away during a query.  Attempting to re-connect and query in 5 seconds.');
 
 				sleep(5);
