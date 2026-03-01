@@ -299,7 +299,7 @@ jobs:
       run: |
         cd ${{ github.workspace }}
         echo -e "[client]\nuser = root\npassword = cactiroot\nhost = 127.0.0.1\n" > ${{ github.workspace }}/.my.cnf
-        sudo tests/tools/check_all_pages.sh -vmstat 10 -ps 2 -debug
+        sudo tests/tools/check_all_pages.sh -vmstat 10 -ps 10
 
     - name: View Contents of Logs
       run: sudo cat ${{ github.workspace }}/log/cacti.log

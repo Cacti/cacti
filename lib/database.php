@@ -656,48 +656,46 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 				$log = false;
 			}
 
-			if ($log) {
-				if ($en == 1213 || $en == 1205 || $en == 1020) {
-					$errors++;
+			if ($en == 1213 || $en == 1205 || $en == 1020) {
+				$errors++;
 
-					if ($errors > 30) {
-						cacti_log("ERROR: Too many Lock/Deadlock errors occurred! SQL:'" . clean_up_lines($sql) . "'", true, 'DBCALL', POLLER_VERBOSITY_DEBUG);
-						$database_last_error = 'Too many Lock/Deadlock errors occurred!';
-					} else {
-						usleep(200000);
+				if ($errors > 30) {
+					cacti_log("ERROR: Too many Lock/Deadlock errors occurred! SQL:'" . clean_up_lines($sql) . "'", true, 'DBCALL', POLLER_VERBOSITY_DEBUG);
+					$database_last_error = 'Too many Lock/Deadlock errors occurred!';
+				} else {
+					usleep(200000);
 
+					continue;
+				}
+			} elseif ($en == 1153) {
+				if (strlen($sql) > 1024) {
+					$sql = substr($sql, 0, 1024) . '...';
+				}
+
+				cacti_log('ERROR: A DB ' . $execute_name . ' Too Large!, Error: ' . $en . ', SQL: \'' . clean_up_lines($sql) . '\'', false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
+				cacti_log('ERROR: A DB ' . $execute_name . ' Too Large!, Error: ' . ($errorinfo[2] ?? '<no error>'), false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
+				cacti_debug_backtrace('SQL', false, true, 0, 1);
+
+				$database_last_error = 'DB ' . $execute_name . ' Too Large!, Error ' . $en . ': ' . ($errorinfo[2] ?? '<no error>');
+			} elseif ($en == 2002 || $en == 2006) {
+				$errors++;
+
+
+				syslog('WARNING: The Cacti Database has gone away during a query.  Attempting to re-connect and query in 5 seconds.');
+
+				sleep(5);
+
+				if (db_check_reconnect($db_conn)) {
+					if ($errors < 5) {
 						continue;
 					}
-				} elseif ($en == 1153) {
-					if (strlen($sql) > 1024) {
-						$sql = substr($sql, 0, 1024) . '...';
-					}
-
-					cacti_log('ERROR: A DB ' . $execute_name . ' Too Large!, Error: ' . $en . ', SQL: \'' . clean_up_lines($sql) . '\'', false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
-					cacti_log('ERROR: A DB ' . $execute_name . ' Too Large!, Error: ' . ($errorinfo[2] ?? '<no error>'), false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
-					cacti_debug_backtrace('SQL', false, true, 0, 1);
-
-					$database_last_error = 'DB ' . $execute_name . ' Too Large!, Error ' . $en . ': ' . ($errorinfo[2] ?? '<no error>');
-				} elseif ($en == 2002 || $en == 2006) {
-					$errors++;
-
-					cacti_log('WARNING: The DB has gone away during a query.  Retry to connect and query in 5 seconds.', false, 'DBCALL', POLLER_VERBOSITY_LOW);
-
-					sleep(5);
-
-					if (db_check_reconnect($db_conn)) {
-						if ($errors < 5) {
-							// retry the query now
-							continue;
-						}
-					}
-				} else {
-					cacti_log('ERROR: A DB ' . $execute_name . ' Failed!, Error: ' . $en . ', SQL: \'' . clean_up_lines($sql) . '\'', false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
-					cacti_log('ERROR: A DB ' . $execute_name . ' Failed!, Error: ' . ($errorinfo[2] ?? '<no error>'), false);
-					cacti_debug_backtrace('SQL', false, true, 0, 1);
-
-					$database_last_error = 'DB ' . $execute_name . ' Failed!, Error ' . $en . ': ' . ($errorinfo[2] ?? '<no error>');
 				}
+			} else {
+				cacti_log('ERROR: A DB ' . $execute_name . ' Failed!, Error: ' . $en . ', SQL: \'' . clean_up_lines($sql) . '\'', false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
+				cacti_log('ERROR: A DB ' . $execute_name . ' Failed!, Error: ' . ($errorinfo[2] ?? '<no error>'), false);
+				cacti_debug_backtrace('SQL', false, true, 0, 1);
+
+				$database_last_error = 'DB ' . $execute_name . ' Failed!, Error ' . $en . ': ' . ($errorinfo[2] ?? '<no error>');
 			}
 
 			if (!empty($config['DEBUG_SQL_FLOW'])) {
