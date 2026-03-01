@@ -3907,7 +3907,7 @@ function domains_ldap_auth(string $username, string $password = '', string $dn =
 		$response = $ldap->Authenticate();
 
 		if ($response['error_num'] == 0) {
-			cacti_log(sprintf('LDAP: Login for User \'%s\' Succeded on Server %s', $username, $ldap_server), false, 'AUTH', $debug);
+			cacti_log(sprintf('LDAP: Login for User \'%s\' Succeeded on Server %s', $username, $ldap_server), false, 'AUTH', $debug);
 
 			return $response;
 		}
@@ -3950,7 +3950,7 @@ function domains_ldap_search_dn(string $username, int $realm) : mixed {
 		$response = $ldap->Search();
 
 		if ($response['error_num'] == 0) {
-			cacti_log(sprintf('LDAP: Search for User \'%s\' at Server \'%s\' Suceeded', $username, $ldap_server), false, 'AUTH', $debug);
+			cacti_log(sprintf('LDAP: Search for User \'%s\' at Server \'%s\' Succeeded', $username, $ldap_server), false, 'AUTH', $debug);
 
 			return $response;
 		}
@@ -3992,7 +3992,7 @@ function domains_ldap_search_cn(string $username, array $cn = [], int $realm = 0
 		$response = $ldap->Getcn();
 
 		if ($response['error_num'] == 0) {
-			cacti_log(sprintf('LDAP: Search for User \'%s\' CN at Server \'%s\' Suceeded', $username, $ldap_server), false, 'AUTH', $debug);
+			cacti_log(sprintf('LDAP: Search for User \'%s\' CN at Server \'%s\' Succeeded', $username, $ldap_server), false, 'AUTH', $debug);
 
 			return $response;
 		}
