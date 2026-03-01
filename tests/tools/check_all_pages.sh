@@ -407,7 +407,7 @@ capture_processes() {
     echo "-------------------------------------------------" >> /tmp/check-all-output/topproc.out
     date >> /tmp/check-all-output/topproc.out
     echo "-------------------------------------------------" >> /tmp/check-all-output/topproc.out
-    ps aux --sort -rss | grep -E -v '(^gdm|^USER)' | head -5 >> /tmp/check-all-output/topproc.out
+    ps aux --sort -rss | grep -v gdm | head -5 >> /tmp/check-all-output/topproc.out
     sleep $sleep_time
   done
 }
