@@ -1312,7 +1312,7 @@ function db_index_matches(string $table, string $index, array $columns, bool $lo
 function db_table_exists(string $table, bool $log = true, mixed $db_conn = false) : bool {
 	static $results;
 
-	if ($db_conn == false) {
+	if ($db_conn === false) {
 		$index = '-1';
 	} else {
 		$index = md5(json_encode($db_conn));
@@ -1400,7 +1400,7 @@ function db_cacti_initialized(bool $is_web = true) : bool {
 function db_column_exists(string $table, string $column, bool $log = true, mixed $db_conn = false) : bool {
 	static $results = [];
 
-	if ($db_conn == false) {
+	if ($db_conn === false) {
 		$index = '-1';
 	} else {
 		$index = md5(json_encode($db_conn));
