@@ -81,9 +81,6 @@ jobs:
     - name: Prime fontconfig's cache
       run: sudo fc-cache
 
-    - name: Increase the Max Allowed Packet in MariaDB
-      run: sudo mysql -uroot -pcactiroot -e "SET GLOBAL max_allowed_packet=500000000"
-
     - name: Validate composer.json and composer.lock
       run: sudo composer validate --strict
 
@@ -218,6 +215,7 @@ jobs:
         mysql $MYSQL_AUTH_USR -e "CREATE USER 'cactiuser'@'localhost' IDENTIFIED BY 'cactiuser';"
         mysql $MYSQL_AUTH_USR -e "GRANT ALL PRIVILEGES ON cacti.* TO 'cactiuser'@'localhost';"
         mysql $MYSQL_AUTH_USR -e "FLUSH PRIVILEGES;"
+        mysql $MYSQL_AUTH_USR -e "SET GLOBAL max_allowed_packet=500000000;"
         mysql $MYSQL_AUTH_USR cacti < ${{ github.workspace }}/cacti.sql
         mysql $MYSQL_AUTH_USR -e "INSERT INTO settings (name, value) VALUES ('path_php_binary', '/bin/php')" cacti
 
