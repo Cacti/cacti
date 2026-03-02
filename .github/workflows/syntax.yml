@@ -53,6 +53,7 @@ jobs:
     services:
       mysql:
         image: mariadb:10.6
+        command: --max_allowed_packet=500M
         env:
           MYSQL_DATABASE: cacti
           MYSQL_HOST: 127.0.0.1
@@ -209,7 +210,7 @@ jobs:
       env:
         MYSQL_AUTH_USR: '--defaults-file=~/.my.cnf'
       run: |
-        echo -e "[client]\nuser = root\npassword = cactiroot\nhost = 127.0.0.1\n" >> ~/.my.cnf
+        echo -e "[client]\nuser = root\npassword = cactiroot\nhost = 127.0.0.1\nmax_allowed_packet = 500000000\n" >> ~/.my.cnf
         cat ~/.my.cnf
         mysql $MYSQL_AUTH_USR -e 'CREATE DATABASE IF NOT EXISTS cacti;'
         mysql $MYSQL_AUTH_USR -e "CREATE USER 'cactiuser'@'localhost' IDENTIFIED BY 'cactiuser';"
