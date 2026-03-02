@@ -29,7 +29,7 @@
 # ------------------------------------------------------------------------------
 # Debugging
 # ------------------------------------------------------------------------------
-#set -xv
+# set -xv
 
 # ------------------------------------------------------------------------------
 # Restart service and stop the firewall if it's running
@@ -39,7 +39,7 @@ sudo systemctl status apache2 2>/dev/null
 sudo systemctl stop firewalld 2>/dev/null
 
 echo "---------------------------------------------------------------------"
-echo "NOTE: Check all Pages Script Starting"
+echo "Check all Pages Script Starting"
 echo "---------------------------------------------------------------------"
 
 # ------------------------------------------------------------------------------
@@ -97,6 +97,8 @@ fi
 
 DEBUG=0
 VMSTAT=0
+PS=0
+SHUTDOWN=0
 
 # ------------------------------------------------------------------------------
 # Get inputs from user (Interactive mode)
@@ -112,8 +114,8 @@ while [ -n "$1" ]; do
       read -r WAPASS
       ;;
     "--help")
-      echo "NOTE: Checks all Cacti pages using wget options"
-      echo "NOTE: Original script by team Debian."
+      echo "Checks all Cacti pages using wget options"
+      echo "Original script by team Debian."
       echo ""
       echo "usage: check_all_pages.sh [--interactive] [options]"
       echo ""
@@ -125,7 +127,8 @@ while [ -n "$1" ]; do
       echo "  -wo <user>          Set web server user/owner (default: ${WSOWNER})"
       echo "  -we <path>          Set web server error log path (default: ${WSERROR})"
       echo "  -wa <path>          Set web server access log path (default: ${WSACCESS})"
-      echo "  -vmstat <seconds>   Provide vmstat output at end of the page run"
+      echo "  -vmstat <seconds>   Provide periodic vmstat output at end of the page run"
+      echo "  -ps <seconds>       Provide top memory process output periodically at end of the page run"
       echo "  -debug              Enable debug output"
       echo "  -df <file>          Use database options file and disable DB sleep (default: ${DBFILE})"
       echo "  -dh <host>          Set database host and disable DB sleep (default: ${DBHOST})"
@@ -169,6 +172,14 @@ while [ -n "$1" ]; do
       VMSTAT="$2"
       shift
       ;;
+    "-ps")
+      if ! [[ "$2" =~ ^[0-9]+$ ]] || [ "$2" -le 0 ]; then
+        echo "ERROR: -ps value must be a positive integer."
+        exit 1
+      fi
+      PS="$2"
+      shift
+      ;;
     "-df")
       DBFILE="$2"
       DBSLEEP=0
@@ -207,6 +218,7 @@ if [ -f "$DBFILE" ]; then
   export MYSQL_AUTH_USR="--defaults-file=${DBFILE}"
 else
   echo "NOTE: Script is running in batch mode using default credentials!!!"
+
   if [[ -n "${DBSLEEP}" ]]; then
     sleep "${DBSLEEP}" #Give user a chance to see the prompt
   fi
@@ -218,7 +230,8 @@ fi
 DBSERVER=$($dbshell $MYSQL_AUTH_USR -e "SHOW GLOBAL VARIABLES LIKE 'version'" | grep -v Value | awk '{print $2}')
 
 echo "---------------------------------------------------------------------"
-echo "Using the following values:";
+echo "NOTE: Using the following values:";
+
 for v in WEBHOST WAUSER WAPASS DBCLIENT DBSERVER DBFILE DBHOST DBNAME DBPASS DBUSER DBSLEEP WSOWNER WSERROR WSACCESS; do
   name="$v"
   if [[ $name == "WAPASS" || $name == "DBPASS" ]]; then
@@ -254,12 +267,16 @@ if [ ! -d /tmp/check-all-pages ]; then
   mkdir /tmp/check-all-pages
 fi
 
+if [ ! -d /tmp/check-all-output ]; then
+  mkdir /tmp/check-all-output
+fi
+
 # ------------------------------------------------------------------------------
 # Backup the error logs to capture what went wrong
 # ------------------------------------------------------------------------------
 save_log_files() {
   echo "---------------------------------------------------------------------"
-  echo "Saving All Log Files"
+  echo "NOTE: Saving All Log Files"
   echo "---------------------------------------------------------------------"
 
   if [ $started == 1 ];then
@@ -347,52 +364,76 @@ allow_index_following() {
   sed -i "s/<meta name='robots' content='noindex,nofollow'>//g" "$BASE_PATH/lib/html.php"
 }
 
-shutdown_handler() {
-  echo ""
-  echo "WARNING: Process Interrupted.  Cleaning up and Exiting"
+shutdown() {
+  if [ $SHUTDOWN -eq 0 ]; then
+    echo ""
+    echo "NOTE: Process Ending.  Cleaning up and Exiting."
 
-  # Get rid of any jobs
-  kill -SIGINT $(jobs -p) 2> /dev/null
+    save_log_files
 
-  if [ -f "$tmpFile1" ]; then
-    rm -f "$tmpFile1"
+    # Get rid of any jobs
+    kill $(jobs -p) 2> /dev/null
+
+    if [ -f "$tmpFile1" ]; then
+      /bin/rm -f "$tmpFile1"
+    fi
+
+    if [ -f "$tmpFile2" ]; then
+      /bin/rm -f "$tmpFile2"
+    fi
+
+    if [ -f "$cookieFile" ]; then
+      /bin/rm -f "$cookieFile"
+    fi
+
+    if [ -f "/tmp/check-all-output/vmstat.out" ]; then
+      /bin/rm -f /tmp/check-all-output/vmstat.out
+    fi
+
+    if [ -f "/tmp/check-all-output/topproc.out" ]; then
+      /bin/rm -f /tmp/check-all-output/topproc.out
+    fi
+
+    if [ -d "/tmp/check-all-output" ]; then
+      /bin/rm -rf /tmp/check-all-output
+    fi
+
+    SHUTDOWN=1
   fi
-
-  if [ -f "$tmpFile2" ]; then
-    rm -f "$tmpFile2"
-  fi
-
-  if [ -f "$cookieFile" ]; then
-    rm -f "$cookieFile"
-  fi
-
-  if [ -f "/tmp/vmstat.out" ]; then
-    rm -f /tmp/vmstat.out
-  fi
-
-  save_log_files
-
-  exit 0
 }
 
-normal_exit() {
-  echo "NOTE: Process exiting normally.  Killing any background jobs"
+shutdown_handler() {
+  shutdown
 
-  # Get rid of any jobs
-  kill -SIGINT $(jobs -p) 2> /dev/null
+  exit 0;
+}
 
-  if [ -f "/tmp/vmstat.out" ]; then
-    rm -f /tmp/vmstat.out
-  fi
+normal_shutdown() {
+  shutdown
 
-  exit 0
+  exit 0;
+}
+
+# ------------------------------------------------------------------------------
+# As part of instrumentation, track the top processes on the system
+# ------------------------------------------------------------------------------
+capture_processes() {
+  sleep_time=$1
+
+  while true; do
+    echo "-------------------------------------------------" >> /tmp/check-all-output/topproc.out
+    date >> /tmp/check-all-output/topproc.out
+    echo "-------------------------------------------------" >> /tmp/check-all-output/topproc.out
+    ps aux --sort -rss | grep -v gdm 2>/dev/null | head -5 >> /tmp/check-all-output/topproc.out
+    sleep $sleep_time
+  done
 }
 
 # ------------------------------------------------------------------------------
 # To make sure that the autopkgtest/CI sites store the information
 # ------------------------------------------------------------------------------
 trap 'shutdown_handler' 1 2 3 6 9 14 15
-trap 'normal_exit' 0
+trap 'normal_shutdown' 0
 
 echo "NOTE: Current Directory is $(pwd)"
 
@@ -419,14 +460,14 @@ allow_index_following
 # ------------------------------------------------------------------------------
 if [ $DEBUG -eq 1 ]; then
   echo "---------------------------------------------------------------------"
-  echo "Checking the Apache Config"
+  echo "NOTE: Checking the Apache Config"
   echo "---------------------------------------------------------------------"
   apache2ctl -t
 fi
 
 if [ -f "/usr/sbin/a2ensite" -a -f "/etc/apache2/sites-available/000-default.conf" ]; then
   echo "---------------------------------------------------------------------"
-  echo "Enabling the Apache Site for Debian/Ubuntu"
+  echo "NOTE: Enabling the Apache Site for Debian/Ubuntu"
   echo "---------------------------------------------------------------------"
   /usr/sbin/a2ensite 000-default.conf 
 fi
@@ -436,7 +477,7 @@ if [ $DEBUG -eq 1 ]; then
   # Check to see if apache2 is up and listening
   # ------------------------------------------------------------------------------
   echo "---------------------------------------------------------------------"
-  echo "Network Status showing open Apache ports"
+  echo "NOTE: Network Status showing open Apache ports"
   echo "---------------------------------------------------------------------"
   netstat -anp | grep apache
 
@@ -445,7 +486,7 @@ if [ $DEBUG -eq 1 ]; then
   # ------------------------------------------------------------------------------
   if [ -f "/etc/apache2/sites-available/000-default.conf" ]; then
     echo "---------------------------------------------------------------------"
-    echo "Apache Configuration for Cacti"
+    echo "NOTE: Apache Configuration for Cacti"
     echo "---------------------------------------------------------------------"
     cat /etc/apache2/sites-available/000-default.conf
   fi
@@ -462,7 +503,7 @@ if [ $DEBUG -eq 1 ]; then
   # Print out the processlist
   # ------------------------------------------------------------------------------
   echo "---------------------------------------------------------------------"
-  echo "Apache Process List"
+  echo "NOTE: Apache Process List"
   echo "---------------------------------------------------------------------"
   ps -ef | grep apache2 | grep -v grep
 fi
@@ -484,12 +525,12 @@ else
 fi
 
 echo "---------------------------------------------------------------------"
-echo "Outputting Disk Topology"
+echo "NOTE: Output of Disk Topology"
 echo "---------------------------------------------------------------------"
 df -h
 
 echo "---------------------------------------------------------------------"
-echo "Starting Web Based Page Validation"
+echo "NOTE: Starting Web Based Page Validation"
 echo "---------------------------------------------------------------------"
 echo "NOTE: Saving Cookie Data"
 wget -q --keep-session-cookies --save-cookies "$cookieFile" --output-document="$tmpFile1" "$WEBHOST"/index.php >/dev/null 2>&1
@@ -499,7 +540,7 @@ if [ -f $tmpFile1 ]; then
 
   if [ $DEBUG -eq 1 ]; then
     echo "---------------------------------------------------------------------"
-    echo "The CSRF Magic Token is"
+    echo "NOTE: The CSRF Magic Token is"
     echo "---------------------------------------------------------------------"
     echo ${magic}
   fi
@@ -517,7 +558,7 @@ wget $loadSaveCookie --post-data="${postData}" --output-document="${tmpFile2}" "
 
 if [ $DEBUG -eq 1 ]; then
   echo "---------------------------------------------------------------------"
-  echo "Output from index.php"
+  echo "DEBUG: Output of index.php"
   echo "---------------------------------------------------------------------"
   cat ${tmpFile2}
 
@@ -526,12 +567,19 @@ else
   progress=""
 fi
 
-
 # ------------------------------------------------------------------------------
 # Run vmstat in background at a user-configurable interval (VMSTAT)
 # ------------------------------------------------------------------------------
 if [ $VMSTAT -gt 0 ]; then
-  vmstat --wide $VMSTAT > /tmp/vmstat.out &
+  vmstat --wide $VMSTAT > /tmp/check-all-output/vmstat.out &
+  PIDS="PIDS $!"
+fi
+
+# ------------------------------------------------------------------------------
+# Show memory stats top memory consumers
+# ------------------------------------------------------------------------------
+if [ $PS -gt 0 ]; then 
+  capture_processes $PS &
 fi
 
 # ------------------------------------------------------------------------------
@@ -541,7 +589,7 @@ fi
 start_time=$(date +%s)
 
 echo "NOTE: Recursively Checking all Base Pages - Note this will take several minutes!!!"
-wget $loadSaveCookie --output-file="${logFile1}" --reject-regex="(logout\.php|remove|delete|uninstall|install|disable|enable)" $progress --recursive --level=0 --execute=robots=off "${WEBHOST}"/index.php >/dev/null 2>&1
+wget $loadSaveCookie --directory-prefix=/tmp/check-all-output --output-file="${logFile1}" --reject-regex="(logout\.php|remove|delete|uninstall|install|disable|enable)" $progress --recursive --level=0 --execute=robots=off "${WEBHOST}"/index.php >/dev/null 2>&1
 error=$?
 
 end_time=$(date +%s)
@@ -557,19 +605,19 @@ fi
 # ------------------------------------------------------------------------------
 if [ $DEBUG -eq 1 ]; then
   echo "---------------------------------------------------------------------"
-  echo "Output of Wget Log file"
+  echo "DEBUG: Output of Wget Log file"
   echo "---------------------------------------------------------------------"
   cat "${logFile1}"
   echo "---------------------------------------------------------------------"
-  echo "Output of Cacti Log file"
+  echo "DEBUG: Output of Cacti Log file"
   echo "---------------------------------------------------------------------"
   cat "${CACTI_LOG}"
   echo "---------------------------------------------------------------------"
-  echo "Output of Apache Error Log"
+  echo "DEBUG: Output of Apache Error Log"
   echo "---------------------------------------------------------------------"
   cat "${WSERROR}"
   echo "---------------------------------------------------------------------"
-  echo "Output of Apache Access Log"
+  echo "DEBUG: Output of Apache Access Log"
   echo "---------------------------------------------------------------------"
   cat "${WSACCESS}"
 fi
@@ -577,7 +625,7 @@ fi
 checks=$(grep -c "HTTP" "$logFile1")
 
 if [ $total -gt 0 ]; then
-  check_rate=$(($checks/$total))
+  check_rate=$(echo "scale=2; $checks / $total" | bc)
 else
   check_rate="N/A"
 fi
@@ -609,22 +657,25 @@ echo "---------------------------------------------------------------------"
 if [ $VMSTAT -gt 0 ]; then
   echo "NOTE: Output of vmstat"
   echo "---------------------------------------------------------------------"
-  cat /tmp/vmstat.out
+  cat /tmp/check-all-output/vmstat.out
   echo "---------------------------------------------------------------------"
 fi
 
 # ------------------------------------------------------------------------------
-# Show memory stats top memory consumers
+# Output top processes data if it exists
 # ------------------------------------------------------------------------------
-echo "NOTE: Top processes by memory"
-echo "---------------------------------------------------------------------"
-ps aux --sort -rss | head -20
-echo "---------------------------------------------------------------------"
+if [ -f "/tmp/check-all-output/topproc.out" ]; then
+  echo "NOTE: Output of top memory processes"
+  echo "---------------------------------------------------------------------"
+  echo "USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND"
+  cat /tmp/check-all-output/topproc.out
+  echo "---------------------------------------------------------------------"
+fi
 
 # ------------------------------------------------------------------------------
 # Finally check the cacti log for unexpected items
 # ------------------------------------------------------------------------------
-echo "NOTE: Checking Cacti Log for Errors"
+echo "Checking Cacti Log for Errors"
 FILTERED_LOG="$(grep -v \
   -e "AUTH LOGIN: User 'admin' authenticated" \
   -e "WEBUI NOTE: Poller Resource Cache scheduled for rebuild by user admin" \
@@ -645,8 +696,6 @@ FILTERED_LOG="$(grep -v \
   -e "DSDEBUG Bad Data" \
   -e "PUSHOUT Child Started" \
   "$CACTI_LOG")" || true
-
-save_log_files
 
 # ------------------------------------------------------------------------------
 # Look for errors in the Log
