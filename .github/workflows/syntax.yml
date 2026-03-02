@@ -82,7 +82,7 @@ jobs:
       run: sudo fc-cache
 
     - name: Increase the Max Allowed Packet in MariaDB
-      run: sudo mysql -e "SET GLOBAL max_allowed_packet=500000000"
+      run: sudo mysql -uroot -pcactiroot -e "SET GLOBAL max_allowed_packet=500000000"
 
     - name: Validate composer.json and composer.lock
       run: sudo composer validate --strict
