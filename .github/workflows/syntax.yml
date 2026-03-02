@@ -53,7 +53,6 @@ jobs:
     services:
       mysql:
         image: mariadb:10.6
-        command: --max-allowed-packet=500000000
         env:
           MYSQL_DATABASE: cacti
           MYSQL_HOST: 127.0.0.1
@@ -62,7 +61,7 @@ jobs:
           MYSQL_ROOT_PASSWORD: cactiroot
         ports:
           - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        options: --max-allowed-packet=500000000 --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     name: PHP ${{ matrix.php }} Test on ${{ matrix.os }}
     steps:
