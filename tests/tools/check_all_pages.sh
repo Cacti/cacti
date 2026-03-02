@@ -405,13 +405,15 @@ shutdown() {
 shutdown_handler() {
   shutdown
 
-  exit 0;
+  exit 1;
 }
 
 normal_shutdown() {
+  return=$?
+
   shutdown
 
-  exit 0;
+  exit $return;
 }
 
 # ------------------------------------------------------------------------------
