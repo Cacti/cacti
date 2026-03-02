@@ -1,3 +1,0 @@
-output: /tmp/phplint-results.xml
-format:
-  - junit
