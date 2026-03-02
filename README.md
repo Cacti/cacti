@@ -60,10 +60,8 @@ be able to do so if you use the REMI distributions of PHP.  You will also in thi
 have to build RRDtool 1.9.1+ from source, which is straightforward on any modern
 Linux OS such as Rocky Linux 9.x.
 
-If you wish to take advantage of dynamic hover over Graphs, you will need RRDtool 1.9.1+.
-However, as of January 10, 2025, it has not been released.  So, you will likely need
-to run the develop version until it's released.  Upon release, depending on Tobi's
-discretion, the release may be 2.0 or some other version.  So, keep your eye on Github.
+If you wish to take advantage of dynamic hover over Graphs, you will need RRDtool 1.9.0+,
+which was released in July 2024 and is available in most Linux distribution repositories.
 
 Due to the recent oauth2 Email feature enhancement in the develop branch, we were
 forced to increase the minimum PHP version for Cacti 1.3+ from PHP 8.0 to 8.1. So, keep
