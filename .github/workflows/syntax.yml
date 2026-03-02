@@ -61,7 +61,7 @@ jobs:
           MYSQL_ROOT_PASSWORD: cactiroot
         ports:
           - 3306:3306
-        options: --max-allowed-packet=500000000 --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     name: PHP ${{ matrix.php }} Test on ${{ matrix.os }}
     steps:
@@ -80,6 +80,9 @@ jobs:
 
     - name: Prime fontconfig's cache
       run: sudo fc-cache
+
+    - name: Increase the Max Allowed Packet in MariaDB
+      run: sudo mysql -e "SET GLOBAL max_allowed_packet=500000000"
 
     - name: Validate composer.json and composer.lock
       run: sudo composer validate --strict
