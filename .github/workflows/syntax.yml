@@ -78,6 +78,9 @@ jobs:
     - name: Check PHP version
       run: php -v
 
+    - name: Prime fontconfig's cache
+      run: sudo fc-cache
+
     - name: Validate composer.json and composer.lock
       run: sudo composer validate --strict
 

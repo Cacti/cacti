@@ -99,7 +99,7 @@ $database_ssl_cert               = '';
 $database_ssl_ca                 = '';
 $database_ssl_capath             = '';
 $database_ssl_verify_server_cert = true;
-$database_persist                = false;
+$database_persist                = true;
 
 // Default session name - Session name must contain alpha characters
 $cacti_session_name = 'Cacti';

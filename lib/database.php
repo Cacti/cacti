@@ -585,7 +585,7 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 		} catch (Exception $ex) {
 			$code      = $ex->getCode();
 			$en        = $code;
-			$errorinfo = [1=>$code, 2=>$ex->getMessage()];
+			$errorinfo = [1 => $code, 2 => $ex->getMessage()];
 		}
 
 		restore_error_handler();
