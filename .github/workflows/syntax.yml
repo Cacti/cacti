@@ -108,6 +108,10 @@ jobs:
       run: composer run-script phpstan
       working-directory: .
 
+#    - name: Run Pest Unit Tests
+#      run: composer run-script test
+#      working-directory: .
+
     - name: Install github if not already installed
       run: sudo apt-get -y install git
 
