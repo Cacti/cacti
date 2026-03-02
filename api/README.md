@@ -11,7 +11,7 @@ The API exposes endpoints to retrieve information about hosts, host templates, p
 To run the API for development:
 
 ```bash
-php -S 127.0.0.1:8080 -t public
+php -S 127.0.0.1:8080 -t public public/index.php
 ```
 
 For production, this should be served by a proper web server (Apache, Nginx, etc.).
