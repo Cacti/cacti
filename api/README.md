@@ -6,9 +6,15 @@ This project provides a RESTful API for accessing Cacti monitoring data using th
 
 The API exposes endpoints to retrieve information about hosts, host templates, poller status, graph lists, Cacti status, boost status, database connectivity, and plugin thresholds. All responses are in JSON format.
 
-THIS IS NOT PROD READY!
+**This API is not production ready.**
 
-To run the API php -S 127.0.0.1:8080 -t public ( Which for Prod will be replaced with a WSGI server)
+To run the API for development:
+
+```bash
+php -S 127.0.0.1:8080 -t public
+```
+
+For production, this should be served by a proper web server (Apache, Nginx, etc.).
 
 ## API Versioning
 
@@ -52,7 +58,7 @@ The API uses URL path versioning. All endpoints are prefixed with a version numb
   Checks database connectivity.
 
 - `GET /v1/status/cacti_db_status`
-   Returns some metrics of the Main cacti DB
+  Returns metrics for the main Cacti database.
 
 #### Plugin Endpoints
 - `GET /v1/plugin/thold/thresholds`  
@@ -69,7 +75,7 @@ The API uses URL path versioning. All endpoints are prefixed with a version numb
 
 ## Requirements
 
-- PHP 7.4 or higher
+- PHP 8.1 or higher
 - Composer
 - Cacti database and configuration
 
