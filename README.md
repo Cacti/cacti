@@ -2,12 +2,9 @@
 
 [![Cacti Commit Audit](https://github.com/Cacti/cacti/actions/workflows/syntax.yml/badge.svg)](https://github.com/Cacti/cacti/actions/workflows/syntax.yml)
 [![Project Status](http://opensource.box.com/badges/active.svg)](http://opensource.box.com/badges)
-[![Translation Status](https://translate.cacti.net/widgets/cacti/-/core/svg-badge.svg)](https://translate.cacti.net
-"Translation Status")
-[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/cacti/cacti.svg)](http://isitmaintained.com/project/cacti/cacti
-"Average time to resolve an issue")
-[![Percentage of open issues](http://isitmaintained.com/badge/open/cacti/cacti.svg)](http://isitmaintained.com/project/cacti/cacti
-"Percentage of issues still open")
+[![Translation Status](https://translate.cacti.net/widgets/cacti/-/core/svg-badge.svg)](https://translate.cacti.net "Translation Status")
+[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/cacti/cacti.svg)](http://isitmaintained.com/project/cacti/cacti "Average time to resolve an issue")
+[![Percentage of open issues](http://isitmaintained.com/badge/open/cacti/cacti.svg)](http://isitmaintained.com/project/cacti/cacti "Percentage of issues still open")
 
 -----------------------------------------------------------------------------
 
@@ -17,31 +14,31 @@
 
 We currently have two functioning versions of Cacti on this site, and several
 Cacti plugins supported by The Cacti Group.  Our current long lived version
-of Cacti in the `1.2.x` branch.  The current release version of this branch
+of Cacti is the `1.2.x` branch.  The current release version of this branch
 is Cacti 1.2.31.
 
-This pending maintenance release has several bugs fixes, and significantly more
-welcomed feature enhancements.  You can review the CHANGELOG for the `1.2.x`
+This pending maintenance release has several bug fixes, and significantly more
+welcome feature enhancements.  You can review the CHANGELOG for the `1.2.x`
 branch for more information on that.
 
 Additionally, we have the `develop` branch.  This is now an active Development
 Branch.  In this branch, we as a team have re-grouped and are introducing several
 new features.  We hope to be able to release this in early 2026.  We have had
 numerous delays due to various work related changes in the team, but we continue
-to press on torwards an eventual release of Cacti 1.3.0-beta.  If you want to get
+to press on towards an eventual release of Cacti 1.3.0-beta.  If you want to get
 involved earlier, you can simply download the development release and knock
 yourselves out.  The 1.3.0 release will include everything in the 1.2.31
 release, as well as several additional features from our roadmap.
 
 System requirements vary from Cacti point release to point release.  The matrix
 below documents the minimum tool levels for each version.  With our source
-distribution, all the vendor included packages are pre-packeged and tested
-by the Cacti group, so there is no reason to use package management tools
+distribution, all the vendor included packages are pre-packaged and tested
+by The Cacti Group, so there is no reason to use package management tools
 to install those dependencies.
 
 We have recently changed the minimum required PHP to 8.1+ for the Cacti 1.2.x
 series of releases due to the expected longevity of that branch of the Cacti
-core code.  We have been, over the last few years, updated the core Cacti API's
+core code.  We have been, over the last few years, updating the core Cacti APIs
 to be compatible with PHP 8.1+.  As a part of that process, we simply need
 to move away from these older and no longer supported PHP versions.
 
@@ -55,7 +52,7 @@ to move away from these older and no longer supported PHP versions.
 
 For Cacti 1.2.x, it is reasonable to run with RHEL/Rocky/Alma 8 or equivalent.  However,
 for Cacti 1.3.x, it would be better to run on RHEL/Rocky/Alma 9+ or CentOS Stream 9+
-or equivalent as these OS versions makes PHP 8.1+ available via a DNF Stream.  Of course
+or equivalent as these OS versions make PHP 8.1+ available via a DNF Stream.  Of course
 Ubuntu/Debian is also well supported.
 
 However, if you wish to run Cacti 1.3.x on the RHEL/CentOS 7 distribution you may
@@ -63,7 +60,7 @@ be able to do so if you use the REMI distributions of PHP.  You will also in thi
 have to build RRDtool 1.9.1+ from source, which is straightforward on any modern
 Linux OS such as Rocky Linux 9.x.
 
-If you wish to take advantag of dynamic hover over Graphs, you will need RRDtool 1.9.1+.
+If you wish to take advantage of dynamic hover over Graphs, you will need RRDtool 1.9.1+.
 However, as of January 10, 2025, it has not been released.  So, you will likely need
 to run the develop version until it's released.  Upon release, depending on Tobi's
 discretion, the release may be 2.0 or some other version.  So, keep your eye on Github.
@@ -71,10 +68,10 @@ discretion, the release may be 2.0 or some other version.  So, keep your eye on 
 Due to the recent oauth2 Email feature enhancement in the develop branch, we were
 forced to increase the minimum PHP version for Cacti 1.3+ from PHP 8.0 to 8.1. So, keep
 this in mind if you are planning to upgrade and don't already have PHP 8.2+ installed
-and operations.
+and operational.
 
 In the sections below, you can find some important first steps before installing
-either the Cacti 1.2.x version of the pending Cacti 1.3.x version.  Good luck
+either the Cacti 1.2.x version or the pending Cacti 1.3.x version.  Good luck
 and enjoy Cacti.
 
 Most modern browsers are supported with the exception of ALL Internet Explorer
@@ -89,7 +86,7 @@ of any version with Cacti 1.2.x and above.
 
 Starting with Cacti 1.2.31, we will be requiring PHP composer for package
 management.  Make sure you have PHP Composer installed, and be prepared to have
-to periodically freshen your dependencies if CVE's occur in the various dependent
+to periodically freshen your dependencies if CVEs occur in the various dependent
 packages.  With Cacti 1.2.31, you should not need to run it as all the required
 files will be included in the package, but starting with Cacti 1.3, you may
 be required to run the `composer update` periodically.
@@ -117,11 +114,11 @@ the --forcever option.
 
 ## Upgrading from Pre-Cacti 1.x Releases
 
-When Cacti was first developed over 20 years ago.  At that time, MySQL was not as 
-mature as it is now.  When The Cacti Group went about engineering Cacti 1.x, 
-a decision was made to force users to use the InnoDB storage engine for many of 
-the Tables.  This was done as the InnoDB storage engine provides a better user 
-experience when your web site has several concurrent logins.  Though a little 
+When Cacti was first developed over 20 years ago, MySQL was not as
+mature as it is now.  When The Cacti Group went about engineering Cacti 1.x,
+a decision was made to force users to use the InnoDB storage engine for many of
+the tables.  This was done as the InnoDB storage engine provides a better user
+experience when your web site has several concurrent logins.  Though a little
 slower, it also provides greater resiliency for the developers.
 
 With that said, there are several changes that you MUST perform to MySQL/MariaDB
@@ -165,7 +162,7 @@ innodb_file_per_table = ON
 innodb_file_format = Barracuda
 innodb_large_prefix = 1
 
-# Not all version support
+# Not all versions support this
 innodb_flush_log_at_timeout = 3
 
 # for SSD's/NVMe Read (cores * 2), Write (cores)
@@ -237,7 +234,7 @@ when preparing for any deployment.
 | AES256     | Yes (2)     |
 | 3DES       | No  (2)     |
 
-### NOTES: ### 
+### Notes
 1. Certain Linux distributions such as RHEL8/9 do not include lower level
    protocol support including MD5 and DES.
 2. Certain Linux variants do not compile their Net-SNMP binaries with advanced SNMPv3
@@ -360,11 +357,11 @@ data sources definition.
 
 ### Templating
 
-Bringing it all together, Cacti uses and extensive template system that allows
+Bringing it all together, Cacti uses an extensive template system that allows
 for the creation and consumption of portable templates. Graph, data source, and
 RRA templates allow for the easy creation of graphs and data sources out of the
 box.  Along with the Cacti community support, templates have become the standard
-way to support graphing any number of devices in use in today computing and
+way to support graphing any number of devices in use in today's computing and
 networking environments.
 
 ### Data Collection (The Poller)
