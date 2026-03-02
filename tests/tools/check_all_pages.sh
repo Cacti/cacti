@@ -98,6 +98,7 @@ fi
 DEBUG=0
 VMSTAT=0
 PS=0
+SHUTDOWN=0
 
 # ------------------------------------------------------------------------------
 # Get inputs from user (Interactive mode)
@@ -363,38 +364,54 @@ allow_index_following() {
   sed -i "s/<meta name='robots' content='noindex,nofollow'>//g" "$BASE_PATH/lib/html.php"
 }
 
+shutdown() {
+  if [ $SHUTDOWN -eq 0 ]; then
+    echo ""
+    echo "NOTE: Process Ending.  Cleaning up and Exiting."
+
+    save_log_files
+
+    # Get rid of any jobs
+    kill $(jobs -p) 2> /dev/null
+
+    if [ -f "$tmpFile1" ]; then
+      /bin/rm -f "$tmpFile1"
+    fi
+
+    if [ -f "$tmpFile2" ]; then
+      /bin/rm -f "$tmpFile2"
+    fi
+
+    if [ -f "$cookieFile" ]; then
+      /bin/rm -f "$cookieFile"
+    fi
+
+    if [ -f "/tmp/check-all-output/vmstat.out" ]; then
+      /bin/rm -f /tmp/check-all-output/vmstat.out
+    fi
+
+    if [ -f "/tmp/check-all-output/topproc.out" ]; then
+      /bin/rm -f /tmp/check-all-output/topproc.out
+    fi
+
+    if [ -d "/tmp/check-all-output" ]; then
+      /bin/rm -rf /tmp/check-all-output
+    fi
+
+    SHUTDOWN=1
+  fi
+}
+
 shutdown_handler() {
-  echo ""
-  echo "NOTE: Process Ending.  Cleaning up and Exiting."
+  shutdown
 
-  save_log_files
+  exit 0;
+}
 
-  # Get rid of any jobs
-  kill $(jobs -p) 2> /dev/null
+normal_shutdown() {
+  shutdown
 
-  if [ -f "$tmpFile1" ]; then
-    /bin/rm -f "$tmpFile1"
-  fi
-
-  if [ -f "$tmpFile2" ]; then
-    /bin/rm -f "$tmpFile2"
-  fi
-
-  if [ -f "$cookieFile" ]; then
-    /bin/rm -f "$cookieFile"
-  fi
-
-  if [ -f "/tmp/check-all-output/vmstat.out" ]; then
-    /bin/rm -f /tmp/check-all-output/vmstat.out
-  fi
-
-  if [ -f "/tmp/check-all-output/topproc.out" ]; then
-    /bin/rm -f /tmp/check-all-output/topproc.out
-  fi
-
-  if [ -d "/tmp/check-all-output" ]; then
-    /bin/rm -rf /tmp/check-all-output
-  fi
+  exit 0;
 }
 
 # ------------------------------------------------------------------------------
@@ -415,7 +432,8 @@ capture_processes() {
 # ------------------------------------------------------------------------------
 # To make sure that the autopkgtest/CI sites store the information
 # ------------------------------------------------------------------------------
-trap 'shutdown_handler' 0 1 2 3 6 9 14 15
+trap 'shutdown_handler' 1 2 3 6 9 14 15
+trap 'normal_shutdown' 0
 
 echo "NOTE: Current Directory is $(pwd)"
 
