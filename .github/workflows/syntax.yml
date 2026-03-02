@@ -108,6 +108,10 @@ jobs:
       run: composer run-script phpstan
       working-directory: .
 
+#    - name: Run Pest Unit Tests
+#      run: composer run-script test
+#      working-directory: .
+
     - name: Install github if not already installed
       run: sudo apt-get -y install git
 
@@ -209,12 +213,13 @@ jobs:
       env:
         MYSQL_AUTH_USR: '--defaults-file=~/.my.cnf'
       run: |
-        echo -e "[client]\nuser = root\npassword = cactiroot\nhost = 127.0.0.1\n" >> ~/.my.cnf
+        echo -e "[client]\nuser = root\npassword = cactiroot\nhost = 127.0.0.1\nmax_allowed_packet = 500000000\n" >> ~/.my.cnf
         cat ~/.my.cnf
         mysql $MYSQL_AUTH_USR -e 'CREATE DATABASE IF NOT EXISTS cacti;'
         mysql $MYSQL_AUTH_USR -e "CREATE USER 'cactiuser'@'localhost' IDENTIFIED BY 'cactiuser';"
         mysql $MYSQL_AUTH_USR -e "GRANT ALL PRIVILEGES ON cacti.* TO 'cactiuser'@'localhost';"
         mysql $MYSQL_AUTH_USR -e "FLUSH PRIVILEGES;"
+        mysql $MYSQL_AUTH_USR -e "SET GLOBAL max_allowed_packet=500000000;"
         mysql $MYSQL_AUTH_USR cacti < ${{ github.workspace }}/cacti.sql
         mysql $MYSQL_AUTH_USR -e "INSERT INTO settings (name, value) VALUES ('path_php_binary', '/bin/php')" cacti
 
