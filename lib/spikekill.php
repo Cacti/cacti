@@ -674,7 +674,7 @@ class spikekill {
 			$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
 				__esc('NOTE: Limited to Time Window: %s through %s', date('M j, Y H:i:s', $this->out_start), date('M j, Y H:i:s',$this->out_end)) . ($this->html ? "</p><br>\n" : "\n");
 
-			cacti_log('DEBUG: Limited to Tiem Window: ' . date('M j, Y H:i:s',$this->out_start) . ' thru ' . date('M j, Y H:i:s',$this->out_end), false, 'SPIKE', POLLER_VERBOSITY_DEBUG);
+			cacti_log('DEBUG: Limited to Time Window: ' . date('M j, Y H:i:s',$this->out_start) . ' thru ' . date('M j, Y H:i:s',$this->out_end), false, 'SPIKE', POLLER_VERBOSITY_DEBUG);
 		}
 
 		$this->calculateOverallStatistics($rra, $samples);

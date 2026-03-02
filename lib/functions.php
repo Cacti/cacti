@@ -3489,7 +3489,7 @@ function generate_data_source_path($local_data_id) {
  * the list of available consolidation functions for the consolidation functions and returns
  * the most appropriate.  Typically, this will be the requested value
  *
- * @param mixed $local_data_id This needs to be mixed to accomodate special types that are null
+ * @param mixed $local_data_id This needs to be mixed to accommodate special types that are null
  * @param mixed $requested_cf  The requested CF in the Graph
  *
  * @return string The best cf to use
@@ -3497,7 +3497,7 @@ function generate_data_source_path($local_data_id) {
 function generate_graph_best_cf(mixed $local_data_id, mixed $requested_cf) : string {
 	static $best_cf;
 
-	// Accomodate a special graph type that does not have a local_graph_id
+	// Accommodate a special graph type that does not have a local_graph_id
 	if ($local_data_id === null) {
 		return $requested_cf;
 	}
@@ -6066,7 +6066,7 @@ function email_test() : void {
  *
  * @param string $ip      The IP Address
  * @param string $dns     The DNS Server to use
- * @param int    $timeout The tiemout in milliseconds
+ * @param int    $timeout The timeout in milliseconds
  *
  * @return string
  */
@@ -9517,7 +9517,7 @@ function detect_cpu_cores() : int {
 /**
  * wrapper function to emulate pecl stats if it's not installed
  *
- * @param array $items  A lits of items to calculate the standard deviation for
+ * @param array $items  A list of items to calculate the standard deviation for
  * @param bool  $sample
  *
  * @return mixed False on failure, double otherwise
