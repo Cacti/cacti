@@ -367,6 +367,8 @@ shutdown_handler() {
   echo ""
   echo "NOTE: Process Ending.  Cleaning up and Exiting."
 
+  save_log_files
+
   # Get rid of any jobs
   kill $(jobs -p) 2> /dev/null
 
@@ -393,8 +395,6 @@ shutdown_handler() {
   if [ -d "/tmp/check-all-output" ]; then
     /bin/rm -rf /tmp/check-all-output
   fi
-
-  save_log_files
 }
 
 # ------------------------------------------------------------------------------
