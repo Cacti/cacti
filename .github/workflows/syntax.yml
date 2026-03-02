@@ -53,7 +53,6 @@ jobs:
     services:
       mysql:
         image: mariadb:10.6
-        command: --max_allowed_packet=500M
         env:
           MYSQL_DATABASE: cacti
           MYSQL_HOST: 127.0.0.1
