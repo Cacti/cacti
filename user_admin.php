@@ -1827,6 +1827,8 @@ function settings_edit(string $header_label) : void {
 			unit_size: themeFonts != 1 && custom_fonts,
 			unit_font: themeFonts != 1 && custom_fonts,
 		}
+
+		toggleFields(fields);
 	}
 
 	$(function() {
