@@ -5066,7 +5066,7 @@ function check_reset_no_authentication($auth_method)
 	global $config, $error, $error_msg;
 
 	if ($auth_method == 0) {
-		$admin_id = db_execute_prepared(
+		$admin_id = db_fetch_cell_prepared(
 			'SELECT id
 			FROM user_auth
 			WHERE id = ?',
