@@ -61,8 +61,8 @@ $rrd_files    = 0;
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
-		if (strpos($parameter, '=')) {
-			[$arg, $value] = explode('=', $parameter);
+		if (str_contains($parameter, '=')) {
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
 			$value = '';
@@ -283,7 +283,7 @@ function sig_handler(int $signo) : void {
 				set_config_option('rrdcheck_poller_status', 'terminated - end time:' . date('Y-m-d G:i:s'));
 			}
 
-			if (strpos($type, 'master') !== false) {
+			if (str_contains($type, 'master')) {
 				rrdcheck_kill_running_processes();
 			}
 

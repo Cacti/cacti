@@ -57,7 +57,7 @@ $migration_log_file = CACTI_PATH_LOG . '/migration_log_' . date('Y-m-d_H-i-s') .
 $migration_csv_file = CACTI_PATH_LOG . '/migration_list_' . date('Y-m-d_H-i-s') . '.csv';
 
 foreach ($parms as $parameter) {
-	if (strpos($parameter, '=')) {
+	if (str_contains($parameter, '=')) {
 		[$arg, $value] = explode('=', $parameter, 2);
 	} else {
 		$arg   = $parameter;

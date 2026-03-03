@@ -34,7 +34,7 @@ function upgrade_to_1_1_36() : void {
 
 	if (cacti_sizeof($users_to_update)) {
 		foreach ($users_to_update as $user) {
-			if (strpos($user['value'], '-') === false) {
+			if (!str_contains($user['value'], '-')) {
 				$locale = repair_locale($user['value']);
 
 				db_install_execute('UPDATE settings_user
@@ -53,7 +53,7 @@ function upgrade_to_1_1_36() : void {
 
 	if (cacti_sizeof($groups_to_update)) {
 		foreach ($groups_to_update as $group) {
-			if (strpos($group['value'], '-') === false) {
+			if (!str_contains($group['value'], '-')) {
 				$locale = repair_locale($group['value']);
 
 				db_install_execute('UPDATE settings_user_group

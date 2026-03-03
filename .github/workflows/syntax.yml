@@ -1,5 +1,5 @@
 # +-------------------------------------------------------------------------+
-# | Copyright (C) 2004-2024 The Cacti Group                                 |
+# | Copyright (C) 2004-2026 The Cacti Group                                 |
 # |                                                                         |
 # | This program is free software; you can redistribute it and/or           |
 # | modify it under the terms of the GNU General Public License             |
@@ -78,6 +78,9 @@ jobs:
     - name: Check PHP version
       run: php -v
 
+    - name: Prime fontconfig's cache
+      run: sudo fc-cache
+
     - name: Validate composer.json and composer.lock
       run: sudo composer validate --strict
 
@@ -104,6 +107,10 @@ jobs:
     - name: Run PHPStan at Level 6 on base code
       run: composer run-script phpstan
       working-directory: .
+
+#    - name: Run Pest Unit Tests
+#      run: composer run-script test
+#      working-directory: .
 
     - name: Install github if not already installed
       run: sudo apt-get -y install git
@@ -206,12 +213,13 @@ jobs:
       env:
         MYSQL_AUTH_USR: '--defaults-file=~/.my.cnf'
       run: |
-        echo -e "[client]\nuser = root\npassword = cactiroot\nhost = 127.0.0.1\n" >> ~/.my.cnf
+        echo -e "[client]\nuser = root\npassword = cactiroot\nhost = 127.0.0.1\nmax_allowed_packet = 500000000\n" >> ~/.my.cnf
         cat ~/.my.cnf
         mysql $MYSQL_AUTH_USR -e 'CREATE DATABASE IF NOT EXISTS cacti;'
         mysql $MYSQL_AUTH_USR -e "CREATE USER 'cactiuser'@'localhost' IDENTIFIED BY 'cactiuser';"
         mysql $MYSQL_AUTH_USR -e "GRANT ALL PRIVILEGES ON cacti.* TO 'cactiuser'@'localhost';"
         mysql $MYSQL_AUTH_USR -e "FLUSH PRIVILEGES;"
+        mysql $MYSQL_AUTH_USR -e "SET GLOBAL max_allowed_packet=500000000;"
         mysql $MYSQL_AUTH_USR cacti < ${{ github.workspace }}/cacti.sql
         mysql $MYSQL_AUTH_USR -e "INSERT INTO settings (name, value) VALUES ('path_php_binary', '/bin/php')" cacti
 
@@ -299,7 +307,7 @@ jobs:
       run: |
         cd ${{ github.workspace }}
         echo -e "[client]\nuser = root\npassword = cactiroot\nhost = 127.0.0.1\n" > ${{ github.workspace }}/.my.cnf
-        sudo tests/tools/check_all_pages.sh
+        sudo tests/tools/check_all_pages.sh -vmstat 10 -ps 10
 
     - name: View Contents of Logs
       run: sudo cat ${{ github.workspace }}/log/cacti.log

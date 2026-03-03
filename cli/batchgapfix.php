@@ -76,7 +76,7 @@ if (function_exists('pcntl_signal')) {
 $start = microtime(true);
 
 foreach ($parms as $parameter) {
-	if (strpos($parameter, '=')) {
+	if (str_contains($parameter, '=')) {
 		[$arg, $value] = explode('=', $parameter, 2);
 	} else {
 		$arg   = $parameter;

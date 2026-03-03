@@ -68,7 +68,7 @@ $forcerun          = false;
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
-		if (strpos($parameter, '=')) {
+		if (str_contains($parameter, '=')) {
 			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
@@ -373,7 +373,7 @@ function float_rrdfile(string $rrd_path, int $local_data_id, mixed $step, int $s
 				$gdelta      = 0;
 
 				foreach ($output as $line) {
-					if (strpos($line, '<pdp_per_row>') !== false) {
+					if (str_contains($line, '<pdp_per_row>')) {
 						/**
 						 * <pdp_per_row>24</pdp_per_row> <!-- 7200 seconds -->
 						 * split the database record into pieces
@@ -389,10 +389,10 @@ function float_rrdfile(string $rrd_path, int $local_data_id, mixed $step, int $s
 						$curstep     = $granularity;
 
 						$line .= PHP_EOL;
-					} elseif (strpos($line, '<database>') !== false) {
+					} elseif (str_contains($line, '<database>')) {
 						$in_database = true;
 						$line .= PHP_EOL;
-					} elseif (strpos($line, '</database>') !== false) {
+					} elseif (str_contains($line, '</database>')) {
 						$in_database = false;
 						$line .= PHP_EOL;
 					} elseif ($in_database) {
@@ -689,7 +689,7 @@ function sig_handler(int $signo) : void {
 		case SIGINT:
 			cacti_log('WARNING: RRDfile Data Float Tool terminated by user', false, 'RFLOAT');
 
-			if (strpos($type, 'rmaster') !== false) {
+			if (str_contains($type, 'rmaster')) {
 				float_kill_running_processes();
 			}
 

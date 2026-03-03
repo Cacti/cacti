@@ -81,7 +81,7 @@ function set_auth_cookie(array $user) : void {
 	if (db_table_exists('user_auth_cache')) {
 		clear_auth_cookie();
 
-		$nssecret = md5($_SERVER['REQUEST_TIME'] . mt_rand(10000,10000000)) . md5(get_client_addr());
+		$nssecret = bin2hex(random_bytes(32));
 
 		$secret = hash('sha512', $nssecret, false);
 
@@ -853,7 +853,7 @@ function is_view_allowed(string $view = 'show_tree') : bool {
 			db_fetch_assoc_prepared("SELECT DISTINCT $view
 				FROM user_auth_group AS uag
 				INNER JOIN user_auth_group_members AS uagm
-				ON uag.id = uagm.user_id
+				ON uag.id = uagm.group_id
 				WHERE uag.enabled = 'on'
 				AND uagm.user_id = ?",
 				[$_SESSION[SESS_USER_ID]]
@@ -3907,7 +3907,7 @@ function domains_ldap_auth(string $username, string $password = '', string $dn =
 		$response = $ldap->Authenticate();
 
 		if ($response['error_num'] == 0) {
-			cacti_log(sprintf('LDAP: Login for User \'%s\' Succeded on Server %s', $username, $ldap_server), false, 'AUTH', $debug);
+			cacti_log(sprintf('LDAP: Login for User \'%s\' Succeeded on Server %s', $username, $ldap_server), false, 'AUTH', $debug);
 
 			return $response;
 		}
@@ -3950,7 +3950,7 @@ function domains_ldap_search_dn(string $username, int $realm) : mixed {
 		$response = $ldap->Search();
 
 		if ($response['error_num'] == 0) {
-			cacti_log(sprintf('LDAP: Search for User \'%s\' at Server \'%s\' Suceeded', $username, $ldap_server), false, 'AUTH', $debug);
+			cacti_log(sprintf('LDAP: Search for User \'%s\' at Server \'%s\' Succeeded', $username, $ldap_server), false, 'AUTH', $debug);
 
 			return $response;
 		}
@@ -3992,7 +3992,7 @@ function domains_ldap_search_cn(string $username, array $cn = [], int $realm = 0
 		$response = $ldap->Getcn();
 
 		if ($response['error_num'] == 0) {
-			cacti_log(sprintf('LDAP: Search for User \'%s\' CN at Server \'%s\' Suceeded', $username, $ldap_server), false, 'AUTH', $debug);
+			cacti_log(sprintf('LDAP: Search for User \'%s\' CN at Server \'%s\' Succeeded', $username, $ldap_server), false, 'AUTH', $debug);
 
 			return $response;
 		}
@@ -4350,16 +4350,14 @@ function is_user_perms_valid(int $user_id) : bool {
  * @return bool Returns true if the password matches the hash, false otherwise.
  */
 function compat_password_verify(string $password, string $hash) : bool {
-	if (function_exists('password_verify')) {
-		if (password_verify($password, $hash)) {
-			return true;
-		}
+	if (password_verify($password, $hash)) {
+		return true;
 	}
 
 	if (function_exists('md5')) {
 		$md5 = md5($password);
 
-		if ($md5 == $hash) {
+		if ($md5 === $hash) {
 			return true;
 		}
 	}
@@ -4380,14 +4378,10 @@ function compat_password_verify(string $password, string $hash) : bool {
  * @return string The hashed password.
  */
 function compat_password_hash(string $password, string|int $algo, array $options = []) : string {
-	if (function_exists('password_hash')) {
-		// Check if options array has anything, only pass when required
-		return (cacti_sizeof($options) > 0) ?
-			password_hash($password, $algo, $options) :
-			password_hash($password, $algo);
-	}
-
-	return md5($password);
+	// Check if options array has anything, only pass when required
+	return (cacti_sizeof($options) > 0) ?
+		password_hash($password, $algo, $options) :
+		password_hash($password, $algo);
 }
 
 /**
@@ -4401,14 +4395,10 @@ function compat_password_hash(string $password, string|int $algo, array $options
  * @return bool Returns true if the password needs to be rehashed, false otherwise.
  */
 function compat_password_needs_rehash(string $password, string|int $algo, array $options = []) : bool {
-	if (function_exists('password_needs_rehash')) {
-		// Check if options array has anything, only pass when required
-		return (cacti_sizeof($options) > 0) ?
-			password_needs_rehash($password, $algo, $options) :
-			password_needs_rehash($password, $algo);
-	}
-
-	return true;
+	// Check if options array has anything, only pass when required
+	return (cacti_sizeof($options) > 0) ?
+		password_needs_rehash($password, $algo, $options) :
+		password_needs_rehash($password, $algo);
 }
 
 /**

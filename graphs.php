@@ -291,7 +291,7 @@ function add_tree_names_to_actions_array() : void {
 function parse_validate_graph_template_id(string $variable) : string {
 	$output_type_id = 0;
 
-	if (strpos(gnrv($variable), '_') !== false) {
+	if (str_contains(gnrv($variable), '_')) {
 		$template_parts = explode('_', gnrv($variable));
 
 		if (is_numeric($template_parts[0]) && is_numeric($template_parts[1])) {

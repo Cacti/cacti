@@ -299,10 +299,10 @@ function settings() : bool {
 	if (isset($_SERVER['HTTP_REFERER'])) {
 		$referer = $_SERVER['HTTP_REFERER'];
 
-		if (strpos($referer, 'auth_profile.php') === false) {
+		if (!str_contains($referer, 'auth_profile.php')) {
 			$timespan_sel_pos = strpos($referer, '&predefined_timespan');
 
-			if ($timespan_sel_pos) {
+			if ($timespan_sel_pos !== false) {
 				$referer = substr($referer, 0, $timespan_sel_pos);
 			}
 
@@ -510,10 +510,10 @@ function settings_2fa() : bool {
 	if (isset($_SERVER['HTTP_REFERER'])) {
 		$referer = $_SERVER['HTTP_REFERER'];
 
-		if (strpos($referer, 'auth_profile.php') === false) {
+		if (!str_contains($referer, 'auth_profile.php')) {
 			$timespan_sel_pos = strpos($referer, '&predefined_timespan');
 
-			if ($timespan_sel_pos) {
+			if ($timespan_sel_pos !== false) {
 				$referer = substr($referer, 0, $timespan_sel_pos);
 			}
 

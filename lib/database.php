@@ -116,7 +116,6 @@ function db_connect_real(string $device, string $user, string $pass, string $db_
 
 	// set connection timeout for down servers
 	$flags[PDO::ATTR_TIMEOUT] = 2;
-	$flage[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
 
 	while ($i <= $retries) {
 		try {
@@ -125,7 +124,6 @@ function db_connect_real(string $device, string $user, string $pass, string $db_
 			} else {
 				$cnn_id = new PDO("$db_type:host=$device;port=$port;dbname=$db_name;charset=utf8", $user, $pass, $flags);
 			}
-			$cnn_id->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
 
 			if (!empty($config['DEBUG_SQL_CONNECT'])) {
 				error_log(sprintf('NOTE: New connection to %s:%s/%s.', $device, $port, $db_name));
@@ -566,10 +564,9 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 	$affected_rows[spl_object_hash($db_conn)] = 0;
 
 	while (true) {
+		$code  = 0;
+		$en    = '';
 		$query = $db_conn->prepare($sql);
-
-		$code = 0;
-		$en   = '';
 
 		if (!empty($config['DEBUG_SQL_CMD'])) {
 			db_echo_sql('db_' . $execute_name . ' Memory [Before]: ' . memory_get_usage() . ' / ' . memory_get_peak_usage() . "\n");
@@ -586,7 +583,7 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 		} catch (Exception $ex) {
 			$code      = $ex->getCode();
 			$en        = $code;
-			$errorinfo = [1=>$code, 2=>$ex->getMessage()];
+			$errorinfo = [1 => $code, 2 => $ex->getMessage()];
 		}
 
 		restore_error_handler();
@@ -653,52 +650,51 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 
 			unset($query);
 
-			if (!db_column_exists('settings', 'name')) {
+			if ($en == 2002 || $en == 2006) {
 				$log = false;
 			}
 
-			if ($log) {
-				if ($en == 1213 || $en == 1205 || $en == 1020) {
-					$errors++;
+			if ($en == 1213 || $en == 1205 || $en == 1020) {
+				$errors++;
 
-					if ($errors > 30) {
-						cacti_log("ERROR: Too many Lock/Deadlock errors occurred! SQL:'" . clean_up_lines($sql) . "'", true, 'DBCALL', POLLER_VERBOSITY_DEBUG);
-						$database_last_error = 'Too many Lock/Deadlock errors occurred!';
-					} else {
-						usleep(200000);
+				if ($errors > 30) {
+					cacti_log("ERROR: Too many Lock/Deadlock errors occurred! SQL:'" . clean_up_lines($sql) . "'", true, 'DBCALL', POLLER_VERBOSITY_DEBUG);
+					$database_last_error = 'Too many Lock/Deadlock errors occurred!';
+				} else {
+					usleep(200000);
 
-						continue;
-					}
-				} elseif ($en == 1153) {
-					if (strlen($sql) > 1024) {
-						$sql = substr($sql, 0, 1024) . '...';
-					}
+					continue;
+				}
+			} elseif ($en == 1153) {
+				if (strlen($sql) > 1024) {
+					$sql = substr($sql, 0, 1024) . '...';
+				}
 
+				if ($log) {
 					cacti_log('ERROR: A DB ' . $execute_name . ' Too Large!, Error: ' . $en . ', SQL: \'' . clean_up_lines($sql) . '\'', false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
 					cacti_log('ERROR: A DB ' . $execute_name . ' Too Large!, Error: ' . ($errorinfo[2] ?? '<no error>'), false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
 					cacti_debug_backtrace('SQL', false, true, 0, 1);
 
 					$database_last_error = 'DB ' . $execute_name . ' Too Large!, Error ' . $en . ': ' . ($errorinfo[2] ?? '<no error>');
-				} elseif ($en == 2002 || $en == 2006) {
-					$errors++;
-
-					cacti_log('WARNING: The DB has gone away during a query.  Retry to connect and query in 5 seconds.', false, 'DBCALL', POLLER_VERBOSITY_LOW);
-
-					sleep(5);
-
-					if (db_check_reconnect($db_conn)) {
-						if ($errors < 5) {
-							// retry the query now
-							continue;
-						}
-					}
-				} else {
-					cacti_log('ERROR: A DB ' . $execute_name . ' Failed!, Error: ' . $en . ', SQL: \'' . clean_up_lines($sql) . '\'', false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
-					cacti_log('ERROR: A DB ' . $execute_name . ' Failed!, Error: ' . ($errorinfo[2] ?? '<no error>'), false);
-					cacti_debug_backtrace('SQL', false, true, 0, 1);
-
-					$database_last_error = 'DB ' . $execute_name . ' Failed!, Error ' . $en . ': ' . ($errorinfo[2] ?? '<no error>');
 				}
+			} elseif ($en == 2002 || $en == 2006) {
+				$errors++;
+
+				syslog(LOG_WARNING, 'WARNING: The Cacti Database has gone away during a query.  Attempting to re-connect and query in 5 seconds.');
+
+				sleep(5);
+
+				if (db_check_reconnect($db_conn)) {
+					if ($errors < 5) {
+						continue;
+					}
+				}
+			} elseif ($log) {
+				cacti_log('ERROR: A DB ' . $execute_name . ' Failed!, Error: ' . $en . ', SQL: \'' . clean_up_lines($sql) . '\'', false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
+				cacti_log('ERROR: A DB ' . $execute_name . ' Failed!, Error: ' . ($errorinfo[2] ?? '<no error>'), false);
+				cacti_debug_backtrace('SQL', false, true, 0, 1);
+
+				$database_last_error = 'DB ' . $execute_name . ' Failed!, Error ' . $en . ': ' . ($errorinfo[2] ?? '<no error>');
 			}
 
 			if (!empty($config['DEBUG_SQL_FLOW'])) {
@@ -1313,7 +1309,7 @@ function db_index_matches(string $table, string $index, array $columns, bool $lo
 function db_table_exists(string $table, bool $log = true, mixed $db_conn = false) : bool {
 	static $results;
 
-	if ($db_conn == false) {
+	if ($db_conn === false) {
 		$index = '-1';
 	} else {
 		$index = md5(json_encode($db_conn));
@@ -1357,10 +1353,14 @@ function db_cacti_initialized(bool $is_web = true) : bool {
 		return false;
 	}
 
-	$query = $db_conn->prepare('SELECT cacti FROM version');
-	$query->execute();
-	$errorinfo = $query->errorInfo();
-	$query->closeCursor();
+	try {
+		$query = $db_conn->prepare('SELECT cacti FROM version');
+		$query->execute();
+		$errorinfo = $query->errorInfo();
+		$query->closeCursor();
+	} catch (PDOException $e) {
+		$errorinfo = [0 => $e->getCode(), 1 => $e->getCode(), 2 => $e->getMessage()];
+	}
 
 	if ($errorinfo[1] != 0) {
 		print($is_web ? '<head><link href="' . CACTI_PATH_URL . 'include/themes/modern/main.css" type="text/css" rel="stylesheet"></head>' : '');
@@ -1397,7 +1397,7 @@ function db_cacti_initialized(bool $is_web = true) : bool {
 function db_column_exists(string $table, string $column, bool $log = true, mixed $db_conn = false) : bool {
 	static $results = [];
 
-	if ($db_conn == false) {
+	if ($db_conn === false) {
 		$index = '-1';
 	} else {
 		$index = md5(json_encode($db_conn));
@@ -1997,7 +1997,7 @@ function array_to_sql_or(array $array, string $sql_column) : mixed {
 	}
 
 	if (cacti_sizeof($array)) {
-		$sql_or = "($sql_column IN('" . implode("','", $array) . "'))";
+		$sql_or = '(' . $sql_column . ' IN(' . implode(',', array_map('db_qstr', $array)) . '))';
 
 		return $sql_or;
 	}

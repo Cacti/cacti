@@ -6,11 +6,11 @@
 
 ### Background
 
-PHP has matured over the years, and in the year 2020, it is now possible to
-create reliable services leveraging it.  Cacti for years used crontab as a
-launcher primarily due to the issues we had experienced in the early days of
-PHP 4.2 with constant memory leaks with the core PHP and the various PHP
-modules that were in use.  However, times are changing.
+PHP has matured over the years, and it is now possible to create reliable
+services leveraging it.  Cacti for years used crontab as a launcher primarily
+due to the issues we had experienced in the early days of PHP 4.2 with constant
+memory leaks with the core PHP and the various PHP modules that were in use.
+However, times are changing.
 
 With the advent of technologies such as MariaDB Galera, keepalived, haproxy,
 and database session management for fault tolerant web server and
@@ -19,8 +19,8 @@ RRDfile and web site content fault tolerance, the idea of a fully
 distributed highly available Cacti is now possible.
 
 Add to that, the concept of Remote Data Collectors for network resiliency,
-and Cacti has fully entering into what I refer to as 'enterprise' class in
-it's stability and reliability.
+and Cacti has fully entered into what I refer to as 'enterprise' class in
+its stability and reliability.
 
 However, to more easily support keepalived, we need to move away from the
 crontab based setup Cacti has used for nearly 20 years.  Long live Crontab!
@@ -35,10 +35,10 @@ There are only a few steps.  For this service here they are.
 2. Modify the file to point to the real path of the cactid.php file located
    in the cacti base directory by default
 3. Modify the file to use the user and group that your Cacti is installed
-   with, on RedHat variants, it usually: apache:apache, for Debian variants,
-   its generally www-run:www
+   with, on RedHat variants, it is usually: apache:apache, for Debian variants,
+   it is generally www-data:www-data
 4. Create the file /etc/sysconfig/cactid, even though it's not used today,
-   we'll keep it there for as a future path to over write certain settings
+   we'll keep it there as a future path to overwrite certain settings
 5. Install the service using 'systemctl enable cactid'
 6. Reload systemd using 'systemctl daemon-reload'
 7. Comment out the cacti crontab file or simply remove the /etc/cron.d/cacti

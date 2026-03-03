@@ -3489,7 +3489,7 @@ function generate_data_source_path($local_data_id) {
  * the list of available consolidation functions for the consolidation functions and returns
  * the most appropriate.  Typically, this will be the requested value
  *
- * @param mixed $local_data_id This needs to be mixed to accomodate special types that are null
+ * @param mixed $local_data_id This needs to be mixed to accommodate special types that are null
  * @param mixed $requested_cf  The requested CF in the Graph
  *
  * @return string The best cf to use
@@ -3497,7 +3497,7 @@ function generate_data_source_path($local_data_id) {
 function generate_graph_best_cf(mixed $local_data_id, mixed $requested_cf) : string {
 	static $best_cf;
 
-	// Accomodate a special graph type that does not have a local_graph_id
+	// Accommodate a special graph type that does not have a local_graph_id
 	if ($local_data_id === null) {
 		return $requested_cf;
 	}
@@ -4777,7 +4777,7 @@ function get_hash_version(string $type) : string {
  * @return string A 128-bit, hexadecimal hash
  */
 function generate_hash() : string {
-	return md5(session_id() . microtime() . random_int(0,1000));
+	return bin2hex(random_bytes(16));
 }
 
 /**
@@ -4940,7 +4940,7 @@ function sanitize_uri($uri) {
 	static $drop_char_match   =   ['^', '$', '<', '>', '`', "'", '"', '|', '+', '[', ']', '{', '}', ';', '!', '(', ')'];
 	static $drop_char_replace = [ '', '',  '',  '',  '',  '',   '',  '',  '',  '',  '',  '',  '',  '',  ''];
 
-	if (strpos($uri, 'graph_view.php')) {
+	if (str_contains($uri, 'graph_view.php')) {
 		if (!strpos($uri, 'action=')) {
 			$uri = $uri . (strpos($uri, '?') ? '&' : '?') . 'action=' . gnrv('action');
 		}
@@ -5007,7 +5007,7 @@ function sanitize_unserialize_selected_items(mixed $items) : mixed {
 
 		// validate that sanitized string is correctly formatted
 		if (preg_match('/^a:[0-9]+:{/', $unstripped) && !preg_match('/(^|;|{|})O:\+?[0-9]+:"/', $unstripped)) {
-			$items = unserialize($unstripped);
+			$items = unserialize($unstripped, ['allowed_classes' => false]);
 
 			if (is_array($items)) {
 				$return_items = $items;
@@ -5047,7 +5047,7 @@ function sanitize_unserialize_selected_graphs(mixed $items) : array {
 
 		// validate that sanitized string is correctly formatted
 		if (preg_match('/^a:[0-9]+:{/', $unstripped) && !preg_match('/(^|;|{|})O:\+?[0-9]+:"/', $unstripped)) {
-			$items = unserialize($unstripped);
+			$items = unserialize($unstripped, ['allowed_classes' => false]);
 
 			if (is_array($items)) {
 				$return_items = $items;
@@ -5263,7 +5263,7 @@ function send_mail(mixed $to, mixed $from = null, string $subject = '',
 			}
 		}
 
-		if ($from != '' && strpos($from, '<') === false) {
+		if ($from != '' && !str_contains($from, '<')) {
 			if ($name == '') {
 				$full_name = db_fetch_cell_prepared('SELECT full_name
 					FROM user_auth
@@ -5872,7 +5872,7 @@ function split_emaildetail(mixed $email) : array {
 	 * Handle the special case where sendmail is being used
 	 * without an email domain
 	 */
-	if (!is_array($email) && strpos($email, '@') === false) {
+	if (!is_array($email) && !str_contains($email, '@')) {
 		return ['name' => '', 'email' => $email];
 	}
 
@@ -5880,8 +5880,8 @@ function split_emaildetail(mixed $email) : array {
 	 * Handle the case where the Email is a string, but may
 	 * include the name at the beginning of the Email.
 	 */
-	if (!is_array($email) && strpos($email, '@') !== false) {
-		if (strpos($email, '<') !== false) {
+	if (!is_array($email) && str_contains($email, '@')) {
+		if (str_contains($email, '<')) {
 			$parts = explode('<', $email);
 			$name  = str_replace(['"', "'"], ['', ''], $parts[0]);
 			$email = str_replace('>', '', $parts[1]);
@@ -6066,7 +6066,7 @@ function email_test() : void {
  *
  * @param string $ip      The IP Address
  * @param string $dns     The DNS Server to use
- * @param int    $timeout The tiemout in milliseconds
+ * @param int    $timeout The timeout in milliseconds
  *
  * @return string
  */
@@ -8335,21 +8335,23 @@ function get_client_addr() : string|false {
 		$last_time = read_config_option('proxy_alert');
 
 		if (empty($last_time)) {
-			$last_time = date('Y-m-d');
-		}
-
-		$last_date = new DateTime($last_time);
-		$this_date = new Datetime();
-
-		$this_diff = $this_date->diff($last_date);
-		$this_days = $this_diff->format('%a');
-
-		if ($this_days) {
-			cacti_log('WARNING: Configuration option "proxy_headers" will be automatically false in future releases.  Please set if you require proxy IPs to be used', false, 'AUTH');
+			// First run — no record yet; log immediately and record today
+			cacti_log('NOTICE: proxy_headers is not set in config.php; defaulting to false (only REMOTE_ADDR trusted). Set proxy_headers if Cacti is behind a reverse proxy.', false, 'AUTH');
 			set_config_option('proxy_alert', date('Y-m-d'));
+		} else {
+			$last_date = new DateTime($last_time);
+			$this_date = new DateTime();
+
+			$this_diff = $this_date->diff($last_date);
+			$this_days = $this_diff->format('%a');
+
+			if ((int) $this_days >= 1) {
+				cacti_log('NOTICE: proxy_headers is not set in config.php; defaulting to false (only REMOTE_ADDR trusted). Set proxy_headers if Cacti is behind a reverse proxy.', false, 'AUTH');
+				set_config_option('proxy_alert', date('Y-m-d'));
+			}
 		}
 
-		$proxy_headers = true;
+		$proxy_headers = false;
 	}
 
 	/* If proxy_headers is true, allow all known headers -- NOT advised
@@ -9515,7 +9517,7 @@ function detect_cpu_cores() : int {
 /**
  * wrapper function to emulate pecl stats if it's not installed
  *
- * @param array $items  A lits of items to calculate the standard deviation for
+ * @param array $items  A list of items to calculate the standard deviation for
  * @param bool  $sample
  *
  * @return mixed False on failure, double otherwise
@@ -9545,7 +9547,7 @@ if (!function_exists('stats_standard_deviation')) {
 		$carry = 0.0;
 
 		foreach ($items as $val) {
-			$d = ((double) $val) - $mean;
+			$d = ((float) $val) - $mean;
 			$carry += $d * $d;
 		}
 

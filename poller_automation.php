@@ -151,8 +151,8 @@ global $debug, $poller_id, $network_id, $thread, $master, $dryrun;
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
-		if (strpos($parameter, '=')) {
-			[$arg, $value] = explode('=', $parameter);
+		if (str_contains($parameter, '=')) {
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
 			$value = '';
@@ -696,7 +696,7 @@ function discoverDevices(int $network_id, int $thread) : bool {
 								$hostname = gethostbyaddr($device['ip_address']);
 
 								if ($hostname != $device['ip_address']) {
-									if (strpos($hostname, '.')) {
+									if (str_contains($hostname, '.')) {
 										$hostname = substr($hostname, 0, strpos($hostname, '.') - 1);
 									}
 								}
@@ -784,7 +784,7 @@ function discoverDevices(int $network_id, int $thread) : bool {
 											$pattern = str_replace('|sysLocation|', $sysLocation, $pattern);
 										}
 
-										$description = db_fetch_cell("SELECT '$pattern'");
+										$description = db_fetch_cell_prepared('SELECT ?', [$pattern]);
 
 										if ($description != '') {
 											$device['description'] = $description;

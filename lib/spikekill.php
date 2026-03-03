@@ -318,7 +318,7 @@ class spikekill {
 		}
 
 		// Check a bad range of the window start and end
-		if (empty($this->out_start)) {
+		if (!empty($this->out_start)) {
 			if ($this->out_start >= $this->out_end) {
 				$this->set_error(__('FATAL: Outlier time range requires outlier-start to be less than outlier-end.'));
 			}
@@ -674,7 +674,7 @@ class spikekill {
 			$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
 				__esc('NOTE: Limited to Time Window: %s through %s', date('M j, Y H:i:s', $this->out_start), date('M j, Y H:i:s',$this->out_end)) . ($this->html ? "</p><br>\n" : "\n");
 
-			cacti_log('DEBUG: Limited to Tiem Window: ' . date('M j, Y H:i:s',$this->out_start) . ' thru ' . date('M j, Y H:i:s',$this->out_end), false, 'SPIKE', POLLER_VERBOSITY_DEBUG);
+			cacti_log('DEBUG: Limited to Time Window: ' . date('M j, Y H:i:s',$this->out_start) . ' thru ' . date('M j, Y H:i:s',$this->out_end), false, 'SPIKE', POLLER_VERBOSITY_DEBUG);
 		}
 
 		$this->calculateOverallStatistics($rra, $samples);
@@ -770,7 +770,7 @@ class spikekill {
 			unlink($xmlfile);
 		}
 
-		if (file_exists($xmlfile)) {
+		if (file_exists($bakfile)) {
 			unlink($bakfile);
 		}
 
@@ -1403,7 +1403,7 @@ class spikekill {
 		$carry = 0.0;
 
 		foreach ($items as $val) {
-			$d = ((double) $val) - $mean;
+			$d = ((float) $val) - $mean;
 			$carry += $d * $d;
 		}
 
