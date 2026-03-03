@@ -46,6 +46,7 @@ Cacti CHANGELOG
 -issue#6600: When replicating plugins, unexpected errors may appear due to missing tables
 -issue#6605: Prevent Row Data Loss When Rebuilding RRD Files
 -issue#6606: When using SpikeKill, actions would not always lead to expected results
+-issue#6706: Fix false device down status in GUI for device that use empty SNMP OID System
 -feature#6523: When disabling users, ensure that their authentication cookies and sessions cleared
 -feature#6524: When changing your password, log off from all sessions
 -feature#6534: Improve Cacti Session ID security
