@@ -82,15 +82,11 @@ if (isset_request_var('update_policy')) {
    -------------------------- */
 
 function update_policies() {
-	$policies = array('policy_graphs', 'policy_trees', 'policy_hosts', 'policy_graph_templates');
+	$allowed_policies = array('policy_graphs', 'policy_trees', 'policy_hosts', 'policy_graph_templates');
 
-	foreach ($policies as $p) {
+	foreach ($allowed_policies as $p) {
 		if (isset_request_var($p)) {
 			db_execute_prepared("UPDATE `user_auth` SET `$p` = ? WHERE `id` = ?", array(get_filter_request_var($p), get_filter_request_var('id')));
-		}
-	}
-
-	header('Location: user_admin.php?action=user_edit&header=false&tab=' .  get_nfilter_request_var('tab') . '&id=' . get_filter_request_var('id'));
 	exit;
 }
 
@@ -3166,4 +3162,3 @@ function member_filter($header_label) {
 
 	html_end_box();
 }
-
