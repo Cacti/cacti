@@ -59,7 +59,7 @@ function ss_aruba_instant_ap(int $host_id = 0) : mixed {
 		$host['snmp_context'],
 		$host['snmp_port'],
 		$host['snmp_timeout'],
-		$host['ping_retries'],
+		$host['snmp_retries'],
 		SNMP_POLLER,
 		$host['snmp_engine_id']);
 

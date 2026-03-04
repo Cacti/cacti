@@ -93,13 +93,19 @@ function ss_mikrotik_queues_getvalue(int $host_id, string $index, string $column
 			break;
 	}
 
+	$allowed_columns = ['curBytesIn', 'curBytesOut', 'curPacketsIn', 'curPacketsOut', 'curQueuesIn', 'curQueuesOut', 'curDroppedIn', 'curDroppedOut'];
+
+	if (!in_array($column, $allowed_columns, true)) {
+		return '0';
+	}
+
 	$index2 = str_replace('_', ' ', $index);
 
-	$value = db_fetch_cell_prepared("SELECT
-		$column AS value
+	$value = db_fetch_cell_prepared('SELECT
+		' . $column . ' AS value
 		FROM plugin_mikrotik_queues
-		WHERE name IN ('$index', '$index2')
-		AND host_id = ?",
+		WHERE name IN (' . db_qstr($index) . ', ' . db_qstr($index2) . ')
+		AND host_id = ?',
 		[$host_id]);
 
 	if ($value === false) {

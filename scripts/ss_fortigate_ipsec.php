@@ -62,7 +62,7 @@ function ss_fortigate_ipsec(int $host_id = 0) : mixed {
 		$host['snmp_context'],
 		$host['snmp_port'],
 		$host['snmp_timeout'],
-		$host['ping_retries'],
+		$host['snmp_retries'],
 		SNMP_POLLER,
 		$host['snmp_engine_id']);
 
