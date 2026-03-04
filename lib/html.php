@@ -219,7 +219,7 @@ function html_filter_start_box(string $title, mixed $url_or_buttons = '', bool $
  *
  * @param array  $tabs        An associative array of tab variables and names
  *                            Alternatively an array of names that can be converted
- *                            using the strtoupper() function to titles.
+ *                            using the cacti_strtoupper() function to titles.
  * @param string $uri         A string of URL parameters like 'action=edit&id=x'
  * @param string $session_var An option session variable to use to store
  *                            the current tab status.  Defaults to the page
@@ -267,7 +267,7 @@ function html_sub_tabs(array $tabs, string $uri = '', string $session_var = '') 
 			if (is_numeric($id)) {
 				print "<li class='subTab'>
 					<a class='pic" . ($name == $current_tab ? ' selected' : '') . "'
-					href='" . htmle($page_name . 'tab=' . $name) . "'>" . strtoupper($name) . '</a>
+					href='" . htmle($page_name . 'tab=' . $name) . "'>" . cacti_strtoupper($name) . '</a>
 				</li>';
 			} else {
 				print "<li class='subTab'>
@@ -857,9 +857,9 @@ function html_header_sort(array $header_items, string $sort_column, string $sort
 			$tip   = '';
 		}
 
-		if (strtolower($icon) == 'asc') {
+		if (cacti_strtolower($icon) == 'asc') {
 			$icon = 'ti ti-caret-up-filled';
-		} elseif (strtolower($icon) == 'desc') {
+		} elseif (cacti_strtolower($icon) == 'desc') {
 			$icon = 'ti ti-caret-down-filled';
 		} else {
 			$icon = 'ti ti-caret-up-down-filled';
@@ -1055,9 +1055,9 @@ function html_header_sort_checkbox(array $header_items, string $sort_column, str
 			$tip   = '';
 		}
 
-		if (strtolower($icon) == 'asc') {
+		if (cacti_strtolower($icon) == 'asc') {
 			$icon = 'ti ti-caret-up-filled';
-		} elseif (strtolower($icon) == 'desc') {
+		} elseif (cacti_strtolower($icon) == 'desc') {
 			$icon = 'ti ti-caret-down-filled';
 		} else {
 			$icon = 'ti ti-caret-down-filled';
@@ -1843,7 +1843,7 @@ function draw_menu(mixed $user_menu = '') : void {
 
 		if ($show_header_items == true) {
 			// Let's give our menu li's a unique id
-			$id = 'menu_' . strtolower(clean_up_name($header_name));
+			$id = 'menu_' . cacti_strtolower(clean_up_name($header_name));
 
 			if (isset($headers[$id])) {
 				$id .= '_' . $i++;

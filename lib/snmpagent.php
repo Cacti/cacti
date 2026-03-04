@@ -914,7 +914,7 @@ function snmpagent_notification(string $notification, string $mib, array $varbin
 			foreach ($notification_managers as $notification_manager) {
 				if (!$snmp_notification_varbinds) {
 					foreach ($registered_var_binds as $name => $attributes) {
-						$snmp_notification_varbinds .= ' ' . $attributes['oid'] . ' ' . $smi2netsnmp_datatypes[strtolower($attributes['type'])] . ' "' . str_replace('"', "'", $varbinds[$name]) . '"';
+						$snmp_notification_varbinds .= ' ' . $attributes['oid'] . ' ' . $smi2netsnmp_datatypes[cacti_strtolower($attributes['type'])] . ' "' . str_replace('"', "'", $varbinds[$name]) . '"';
 						$log_notification_varbinds .= $name . ':"' . str_replace('"', "'", $varbinds[$name]) . '" ';
 					}
 				}

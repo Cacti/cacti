@@ -808,7 +808,7 @@ function show_cacti_processes() : void {
 			}
 
 			form_selectable_cell($p['tasktype'], $p['pid']);
-			form_selectable_cell(filter_value(strtoupper($p['taskname']), ''), $p['pid']);
+			form_selectable_cell(filter_value(cacti_strtoupper($p['taskname']), ''), $p['pid']);
 			form_selectable_cell($p['taskid'], $p['pid'], '', 'right');
 			form_selectable_cell($p['runtime'], $p['pid'], '', 'right');
 			form_selectable_cell($p['pid'], $p['pid'], '', 'right');

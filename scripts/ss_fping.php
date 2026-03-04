@@ -69,7 +69,7 @@ function ss_fping(string $hostname = '', int $ping_sweeps = 6, string $ping_type
 		$ping_timeout = read_config_option('ping_timeout');
 	}
 
-	switch (strtoupper($ping_type)) {
+	switch (cacti_strtoupper($ping_type)) {
 		case 'ICMP':
 			$method = PING_ICMP;
 

@@ -4149,7 +4149,7 @@ function secpass_check_pass(string $password) : string {
 		return __('Your password must contain at least 1 numerical character!');
 	}
 
-	if (read_config_option('secpass_reqmixcase') == 'on' && strtolower($password) == $password) {
+	if (read_config_option('secpass_reqmixcase') == 'on' && cacti_strtolower($password) == $password) {
 		return __('Your password must contain a mix of lower case and upper case characters!');
 	}
 
@@ -4160,7 +4160,7 @@ function secpass_check_pass(string $password) : string {
 	}
 
 	if (read_config_option('secpass_pwnedcheck') == 'on') {
-		$sha1    = strtoupper(sha1($password));
+		$sha1    = cacti_strtoupper(sha1($password));
 		$suffix  = substr($sha1,5);
 		$options = [
 			CURLOPT_RETURNTRANSFER => true,   // return web page

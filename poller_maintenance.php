@@ -799,7 +799,7 @@ function remove_files(array $file_array) : void {
 		if (read_config_option('storage_location') == 0) {
 			switch ($file['action']) {
 				case '1':
-					if (file_exists($real_file) && strtolower(pathinfo($real_file, PATHINFO_EXTENSION)) === 'rrd') {
+					if (file_exists($real_file) && cacti_strtolower(pathinfo($real_file, PATHINFO_EXTENSION)) === 'rrd') {
 						if (unlink($real_file)) {
 							maint_debug('Deleted: ' . $real_file);
 							$purged++;

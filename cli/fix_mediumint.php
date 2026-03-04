@@ -153,7 +153,7 @@ function database_fix_mediumint_columns() : int {
 					}
 				}
 
-				if (strtolower($attribs['Extra']) == 'auto_increment') {
+				if (cacti_strtolower($attribs['Extra']) == 'auto_increment') {
 					$sql .= ($i == 0 ? '' : ', ') . ' MODIFY COLUMN ' . $c . ' int(10) unsigned NOT NULL AUTO_INCREMENT';
 				} else {
 					if ($c != 'id') {
@@ -206,7 +206,7 @@ function database_fix_mediumint_columns() : int {
 						}
 					}
 
-					if (strtolower($attribs['Extra']) == 'auto_increment') {
+					if (cacti_strtolower($attribs['Extra']) == 'auto_increment') {
 						$sql .= ($i == 0 ? '' : ', ') . ' MODIFY COLUMN ' . $field . ' int(10) unsigned NOT NULL AUTO_INCREMENT';
 					} else {
 						if ($attribs['Default'] != '') {
