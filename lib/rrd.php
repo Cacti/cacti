@@ -2847,6 +2847,12 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 
 		$xport_array = rrdxport2array(rrdtool_execute("xport $graph_opts$graph_defs$txt_graph_items", false, $output_flag, $rrdtool_pipe));
 
+		if (!isset($xport_array['meta'])) {
+			cacti_log('WARNING: RRDtool xport returned no valid data for Local Graph ID ' . $local_graph_id, false, 'EXPORT');
+
+			return [];
+		}
+
 		// add host and graph information
 		$xport_array['meta']['stacked_columns'] = $stacked_columns;
 		$xport_array['meta']['title_cache']     = $graph['title_cache'];
