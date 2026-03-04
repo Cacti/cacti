@@ -8535,7 +8535,7 @@ function cacti_count(mixed $array) : int {
 /**
  * cacti_strtolower - Locale-independent lowercase conversion
  *
- * PHP 8.5 deprecates locale-sensitive cacti_strtolower(). This wrapper
+ * PHP 8.5 deprecates locale-sensitive strtolower(). This wrapper
  * uses mb_strtolower with explicit UTF-8 encoding to avoid
  * locale-dependent behavior. All Cacti string comparisons are
  * ASCII or UTF-8, never locale-sensitive.
@@ -8551,7 +8551,7 @@ function cacti_strtolower(string $string) : string {
 /**
  * cacti_strtoupper - Locale-independent uppercase conversion
  *
- * PHP 8.5 deprecates locale-sensitive cacti_strtoupper(). This wrapper
+ * PHP 8.5 deprecates locale-sensitive strtoupper(). This wrapper
  * uses mb_strtoupper with explicit UTF-8 encoding to avoid
  * locale-dependent behavior.
  *
