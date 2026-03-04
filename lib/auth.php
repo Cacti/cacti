@@ -844,13 +844,21 @@ function is_graph_template_allowed(int $graph_template_id, int $user = 0) : bool
  * @return bool Returns true if the view is allowed for the user, false otherwise.
  */
 function is_view_allowed(string $view = 'show_tree') : bool {
+	$allowed_views = ['show_tree', 'show_list', 'show_preview', 'graph_settings'];
+
+	if (!in_array($view, $allowed_views, true)) {
+		cacti_log("WARNING: Invalid view parameter '$view' in is_view_allowed()", false, 'AUTH');
+
+		return false;
+	}
+
 	if (!isset($_SESSION[SESS_USER_ID])) {
 		return false;
 	}
 
 	if (db_table_exists('user_auth_group')) {
 		$values = array_rekey(
-			db_fetch_assoc_prepared("SELECT DISTINCT $view
+			db_fetch_assoc_prepared("SELECT DISTINCT `$view`
 				FROM user_auth_group AS uag
 				INNER JOIN user_auth_group_members AS uagm
 				ON uag.id = uagm.user_id
@@ -873,7 +881,7 @@ function is_view_allowed(string $view = 'show_tree') : bool {
 		}
 	}
 
-	$value = db_fetch_cell_prepared("SELECT $view
+	$value = db_fetch_cell_prepared("SELECT `$view`
 		FROM user_auth
 		WHERE id = ?",
 		[$_SESSION[SESS_USER_ID]]

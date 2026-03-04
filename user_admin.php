@@ -82,9 +82,9 @@ if (isrv('update_policy')) {
 }
 
 function update_policies() : void {
-	$policies = ['policy_graphs', 'policy_trees', 'policy_hosts', 'policy_graph_templates'];
+	$allowed_policies = ['policy_graphs', 'policy_trees', 'policy_hosts', 'policy_graph_templates'];
 
-	foreach ($policies as $p) {
+	foreach ($allowed_policies as $p) {
 		if (isrv($p)) {
 			db_execute_prepared("UPDATE `user_auth` SET `$p` = ? WHERE `id` = ?", [gfrv($p), gfrv('id')]);
 		}
