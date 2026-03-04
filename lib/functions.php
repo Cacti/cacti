@@ -8412,6 +8412,22 @@ function get_client_addr() : string|false {
 }
 
 /**
+ * cacti_is_https - Determine whether the current request was made over HTTPS.
+ *
+ * Checks $_SERVER['HTTPS'] which is set by the web server. Values of 'off',
+ * '0', '' or unset mean HTTP; anything else (typically 'on' or '1') means HTTPS.
+ *
+ * @return bool True when the connection is HTTPS, false otherwise.
+ */
+function cacti_is_https() : bool {
+	if (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === '' || $_SERVER['HTTPS'] === '0') {
+		return false;
+	}
+
+	return strtolower($_SERVER['HTTPS']) !== 'off';
+}
+
+/**
  * get_cacti_base_tables - Extracts all the base Cacti tables from the
  * cacti.sql file in the base Cacti directory.
  */
@@ -8676,11 +8692,7 @@ function cacti_cookie_set($session, $val, $timeout = null) : void {
 		$domain = '';
 	}
 
-	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
-		$secure = true;
-	} else {
-		$secure = false;
-	}
+	$secure = cacti_is_https();
 
 	if (version_compare(PHP_VERSION, '7.3', '>=')) {
 		$options = [
@@ -8712,11 +8724,7 @@ function cacti_cookie_logout() : void {
 		$domain = '';
 	}
 
-	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
-		$secure = true;
-	} else {
-		$secure = false;
-	}
+	$secure = cacti_is_https();
 
 	$cookies = [session_name(), session_name() . '_opt', 'cacti_rembers'];
 
@@ -8760,11 +8768,7 @@ function cacti_cookie_session_set(string $user, int $realm, string $nssecret) : 
 		$domain = '';
 	}
 
-	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
-		$secure = true;
-	} else {
-		$secure = false;
-	}
+	$secure = cacti_is_https();
 
 	$_SESSION['cacti_remembers'] = true;
 
@@ -8798,11 +8802,7 @@ function cacti_cookie_session_logout() : void {
 		$domain = '';
 	}
 
-	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
-		$secure = true;
-	} else {
-		$secure = false;
-	}
+	$secure = cacti_is_https();
 
 	if (version_compare(PHP_VERSION, '7.3', '>=')) {
 		$options = [

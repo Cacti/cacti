@@ -110,7 +110,7 @@ $filename = $xport_array['meta']['title_cache'] . '.csv';
 header('Content-type: application/vnd.ms-excel; charset=UTF-8');
 header('Content-Transfer-Encoding: binary');
 
-if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
+if (cacti_is_https()) {
 	header('Pragma: cache');
 }
 
