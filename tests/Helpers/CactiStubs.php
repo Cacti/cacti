@@ -12,26 +12,36 @@
  +-------------------------------------------------------------------------+
 */
 
-// Shared stubs for Cacti helpers used across test files.
-// cacti_sizeof/cacti_count are provided by lib/functions.php (no guards there),
-// so they must NOT be defined here. Load lib/functions.php after this file.
+/*
+ * Shared stubs for Cacti helper functions used by production code.
+ * These replicate the production signatures so that test stubs
+ * can call them without loading the full Cacti environment.
+ */
 
-if (!function_exists('__')) {
-	function __(string $text, ...$args): string {
-		return $text;
+function cacti_sizeof($value): int {
+	if (is_array($value)) {
+		return sizeof($value);
+	} elseif ($value instanceof Countable) {
+		return count($value);
 	}
+
+	return 0;
 }
 
-if (!function_exists('__esc')) {
-	function __esc(string $text, ...$args): string {
-		return htmlspecialchars($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+function cacti_count($value): int {
+	if (is_array($value)) {
+		return count($value);
+	} elseif ($value instanceof Countable) {
+		return count($value);
 	}
+
+	return 0;
 }
 
-if (!defined('CACTI_SERVER_OS')) {
-	define('CACTI_SERVER_OS', 'unix');
+function __($text) {
+	return $text;
 }
 
-if (!defined('FILTER_VALIDATE_MAC')) {
-	define('FILTER_VALIDATE_MAC', 'validate_mac');
+function __esc($text) {
+	return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
 }
