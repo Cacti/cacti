@@ -45,8 +45,8 @@ test('rrdtool xport produces valid parseable output', function () use ($rrdtool)
 	$start = $now - 1200;
 	$end   = $now;
 	$cmd   = "$safe_rrdtool xport --start $start --end $end " .
-		"DEF:a=$rrd:traffic_in:AVERAGE " .
-		"DEF:b=$rrd:traffic_out:AVERAGE " .
+		"DEF:a=$safe_rrd:traffic_in:AVERAGE " .
+		"DEF:b=$safe_rrd:traffic_out:AVERAGE " .
 		"XPORT:a:\"traffic_in\" " .
 		"XPORT:b:\"traffic_out\" 2>&1";
 
@@ -69,8 +69,9 @@ test('rrdtool xport produces valid parseable output', function () use ($rrdtool)
 test('rrdtool xport on missing RRD produces error parseable by rrdxport2array', function () use ($rrdtool) {
 	$fake         = '/tmp/cacti_test_nonexistent_' . uniqid() . '.rrd';
 	$safe_rrdtool = escapeshellarg($rrdtool);
+	$safe_fake    = escapeshellarg($fake);
 	$cmd          = "$safe_rrdtool xport --start 1700000000 --end 1700003600 " .
-		"DEF:a=$fake:ds0:AVERAGE XPORT:a:\"ds0\" 2>&1";
+		"DEF:a=$safe_fake:ds0:AVERAGE XPORT:a:\"ds0\" 2>&1";
 
 	$output = shell_exec($cmd);
 	$result = rrdxport2array($output ?? '');
@@ -98,7 +99,7 @@ test('rrdtool xport with invalid DS name produces no valid meta', function () us
 
 	// reference a DS that doesn't exist
 	$cmd = "$safe_rrdtool xport --start " . ($now - 300) . " --end $now " .
-		"DEF:a=$rrd:bogus_ds:AVERAGE XPORT:a:\"bogus\" 2>&1";
+		"DEF:a=$safe_rrd:bogus_ds:AVERAGE XPORT:a:\"bogus\" 2>&1";
 
 	$output = shell_exec($cmd);
 	$result = rrdxport2array($output ?? '');
@@ -126,7 +127,7 @@ test('full pipeline: valid xport passes export guard', function () use ($rrdtool
 	shell_exec("$safe_rrdtool update $safe_rrd $now:42 2>&1");
 
 	$cmd = "$safe_rrdtool xport --start " . ($now - 300) . " --end $now " .
-		"DEF:a=$rrd:traffic_in:AVERAGE XPORT:a:\"traffic_in\" 2>&1";
+		"DEF:a=$safe_rrd:traffic_in:AVERAGE XPORT:a:\"traffic_in\" 2>&1";
 
 	$output      = shell_exec($cmd);
 	$xport_array = rrdxport2array($output);
@@ -141,8 +142,9 @@ test('full pipeline: valid xport passes export guard', function () use ($rrdtool
 
 test('full pipeline: error xport triggers export guard', function () use ($rrdtool) {
 	$safe_rrdtool = escapeshellarg($rrdtool);
+	$safe_fake    = escapeshellarg('/tmp/nonexistent.rrd');
 	$cmd          = "$safe_rrdtool xport --start 1700000000 --end 1700003600 " .
-		"DEF:a=/tmp/nonexistent.rrd:ds0:AVERAGE XPORT:a:\"ds0\" 2>&1";
+		"DEF:a=$safe_fake:ds0:AVERAGE XPORT:a:\"ds0\" 2>&1";
 
 	$output      = shell_exec($cmd);
 	$xport_array = rrdxport2array($output ?? '');
