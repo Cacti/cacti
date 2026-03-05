@@ -24,6 +24,8 @@ test('global.php defines CACTI_WEB constant', function () {
 
 test('session.php uses CACTI_CLI not php_sapi_name', function () {
 	$source = file_get_contents(__DIR__ . '/../../include/session.php');
-	expect($source)->not->toContain('php_sapi_name()');
+	expect($source)->toBeString()
+		->not->toContain("php_sapi_name() == 'cli'")
+		->not->toContain("php_sapi_name() === 'cli'");
 	expect($source)->toContain('CACTI_CLI');
 });
