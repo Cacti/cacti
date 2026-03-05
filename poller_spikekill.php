@@ -173,7 +173,7 @@ function timeToRun() {
 		}
 	} elseif ($forcerun) {
 		debug('Force to Run');
-		db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("spikekill_lastrun", ?', array(time()));
+		db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("spikekill_lastrun", ?)', array(time()));
 		return true;
 	} else {
 		debug('Not time to Run');
