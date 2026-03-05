@@ -335,7 +335,7 @@ if (cacti_sizeof($parms)) {
 
 	/* process host description */
 	if (isset($hosts[$description])) {
-		db_execute("UPDATE host SET hostname='$ip' WHERE deleted = '' AND id=" . $hosts[$description]);
+		db_execute_prepared("UPDATE host SET hostname = ? WHERE deleted = '' AND id = ?", array($ip, $hosts[$description]));
 		print "This host already exists in the database ($description) device-id: (" . $hosts[$description] . ")\n";
 		exit(1);
 	}
@@ -399,7 +399,7 @@ if (cacti_sizeof($parms)) {
 		}
 
 		if ($fail) {
-			db_execute("UPDATE host SET description = '$description' WHERE deleted = '' AND id = " . $addresses[$ip]);
+			db_execute_prepared("UPDATE host SET description = ? WHERE deleted = '' AND id = ?", array($description, $addresses[$ip]));
 			print "ERROR: This IP already exists in the database ($ip) device-id: (" . $addresses[$ip] . ")\n";
 			exit(1);
 		}

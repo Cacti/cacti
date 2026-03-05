@@ -2119,8 +2119,8 @@ function replicate_table_to_poller($conn, &$data, $table, $exclude = false) {
 		foreach($columns as $index => $c) {
 			if (!db_column_exists($table, $c, false, $conn)) {
 				$skipcols[$index] = $c;
-			} elseif ($exclude !== false && array_search($c, $exclude) === true) {
-				// Do not update this column
+			} elseif ($exclude !== false && array_search($c, $exclude, true) !== false) {
+				$skipcols[$index] = $c;
 			} else {
 				$prefix .= ($colcnt > 0 ? ', ':'') . $c;
 				$suffix .= ($colcnt > 0 ? ', ':'') . "$c=VALUES($c)";
