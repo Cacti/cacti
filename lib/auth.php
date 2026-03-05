@@ -839,7 +839,7 @@ function is_view_allowed($view = 'show_tree') {
 				db_fetch_assoc_prepared("SELECT DISTINCT $view
 					FROM user_auth_group AS uag
 					INNER JOIN user_auth_group_members AS uagm
-					ON uag.id = uagm.user_id
+					ON uag.id = uagm.group_id
 					WHERE uag.enabled = 'on'
 					AND uagm.user_id = ?",
 					array($_SESSION['sess_user_id'])
