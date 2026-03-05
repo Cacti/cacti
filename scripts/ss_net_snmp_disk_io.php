@@ -155,7 +155,7 @@ function ss_net_snmp_disk_io(mixed $host_id_or_hostname = '') : string {
 		$host['snmp_engine_id']);
 
 	foreach ($names as $measure) {
-		if (str_starts_with($measure['value'], 'sd') || str_starts_with($measure['value'], 'nvme') || str_starts_with($measure['value'], 'vm') || str_starts_with($measure['value'], 'xvd') || str_starts_with($measure['value'], 'vd') || str_starts_with($measure['value'], 'hd') || str_starts_with($measure['value'], 'md') || str_starts_with($measure['value'], 'dm-')) {
+		if (preg_match('/^(?:sd|nvme|xvd|vd|vm|hd|md|dm-)/', $measure['value'])) {
 			if (preg_match('/(?:p\d+|\d+)$/', $measure['value']) && !preg_match('/^nvme\d+n\d+$/', $measure['value'])) {
 				continue;
 			}
