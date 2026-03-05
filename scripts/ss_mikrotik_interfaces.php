@@ -58,6 +58,10 @@ function ss_mikrotik_interfaces(int $host_id, string $cmd = 'index', string $arg
 }
 
 function ss_mikrotik_interfaces_getvalue(int $host_id, string $index, string $column) : string {
+	if (!preg_match('/^[a-zA-Z0-9_]+$/', $column)) {
+		return '0';
+	}
+
 	$column = 'cur' . $column;
 
 	$allowed_columns = [

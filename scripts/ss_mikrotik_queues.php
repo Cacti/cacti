@@ -91,6 +91,8 @@ function ss_mikrotik_queues_getvalue(int $host_id, string $index, string $column
 			$column = 'curDroppedOut';
 
 			break;
+		default:
+			return '0';
 	}
 
 	$allowed_columns = ['curBytesIn', 'curBytesOut', 'curPacketsIn', 'curPacketsOut', 'curQueuesIn', 'curQueuesOut', 'curDroppedIn', 'curDroppedOut'];
