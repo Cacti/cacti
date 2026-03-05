@@ -1750,7 +1750,7 @@ function array_to_sql_or($array, $sql_column) {
 	}
 
 	if (cacti_sizeof($array)) {
-		$sql_or = "($sql_column IN('" . implode("','", $array) . "'))";
+		$sql_or = '(' . $sql_column . ' IN(' . implode(',', array_map('db_qstr', $array)) . '))';
 
 		return $sql_or;
 	}
