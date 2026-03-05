@@ -4500,6 +4500,21 @@ function get_current_page(bool $basename = true) : mixed {
 }
 
 /**
+ * get_current_script_name - returns the basename of the currently executing script
+ *
+ * Wraps get_current_page() and guarantees a string return. Falls back to an
+ * empty string when the server environment provides no script name (e.g. CLI
+ * unit tests that do not set $_SERVER['SCRIPT_NAME']).
+ *
+ * @return string The basename of the current script (e.g. "index.php")
+ */
+function get_current_script_name(): string {
+	$page = get_current_page();
+
+	return is_string($page) ? $page : '';
+}
+
+/**
  * get_hash_graph_template - returns the current unique hash for a graph template
  *
  * @param int    $graph_template_id The ID of the graph template to return a hash for
