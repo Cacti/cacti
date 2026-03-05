@@ -211,7 +211,7 @@ function exec_with_timeout(string $cmd, array &$output, int &$return_code, int $
 		}
 
 		// Subtract the number of microseconds that we waited.
-		$timeout -= (int) (microtime(true) - $start) * 1000000;
+		$timeout -= (int) ((microtime(true) - $start) * 1000000);
 	}
 
 	// Check if there were any errors.
@@ -224,11 +224,16 @@ function exec_with_timeout(string $cmd, array &$output, int &$return_code, int $
 	}
 
 	if (!empty($errors)) {
-		return false;
+		cacti_log('WARNING: exec_with_timeout stderr: ' . trim($errors), false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 	}
 
 	// Kill the process in case the timeout expired and it's still running.
 	// If the process already exited this won't do anything.
+	// Use negative PID to kill the entire process group.
+	if (isset($status['pid']) && $status['running'] && function_exists('posix_kill')) {
+		posix_kill(-$status['pid'], 9);
+	}
+
 	proc_terminate($process, 9);
 
 	// Close all streams.
