@@ -172,7 +172,7 @@ function exec_with_timeout(string $cmd, array &$output, int &$return_code, int $
 	// Falls back to plain exec on systems without setsid (macOS, BSD).
 	$setsid = '';
 
-	if (DIRECTORY_SEPARATOR !== '\\') {
+	if (CACTI_SERVER_OS != 'win32') {
 		$setsid_path = trim(shell_exec('which setsid 2>/dev/null') ?? '');
 
 		if ($setsid_path !== '') {
