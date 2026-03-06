@@ -409,20 +409,16 @@ function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph
 					$prepend = false;
 					$prepend_cnt++;
 				} elseif (str_contains($save['text_format'], ':current:')) {
-					if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL || $_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
-						// All so use sum functions
+					if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL) {
 						$save['text_format'] = str_replace(':current:', ':aggregate_sum:', $save['text_format']);
-					} else {
-						// Similar to separate
-						$save['text_format'] = str_replace(':current:', ':current:', $save['text_format']);
+					} elseif ($_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
+						$save['text_format'] = str_replace(':current:', ':aggregate_current:', $save['text_format']);
 					}
 				} elseif (str_contains($save['text_format'], ':max:')) {
-					if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL || $_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
-						// All so use sum functions
-						$save['text_format'] = str_replace(':max:', ':aggregate_sum:', $save['text_format']);
-					} else {
-						// Similar to separate
-						$save['text_format'] = str_replace(':max:', ':max:', $save['text_format']);
+					if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL) {
+						$save['text_format'] = str_replace(':max:', ':aggregate_sum_peak:', $save['text_format']);
+					} elseif ($_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
+						$save['text_format'] = str_replace(':max:', ':aggregate_current_peak:', $save['text_format']);
 					}
 				}
 			}
@@ -1422,12 +1418,10 @@ function aggregate_handle_ptile_type(array $member_graphs, array $skipped_items,
 								$pparts = explode(':', $parts[1]);
 
 								if (isset($pparts[3])) {
-									if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL || $_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
-										// All so use sum functions
+									if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL) {
 										$pparts[3] = str_replace('current', 'aggregate_sum', $pparts[3]);
 										$pparts[3] = str_replace('max',     'aggregate_sum_peak', $pparts[3]);
-									} else {
-										// Similar to separate
+									} elseif ($_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
 										$pparts[3] = str_replace('current', 'aggregate_current', $pparts[3]);
 										$pparts[3] = str_replace('max',     'aggregate_current_peak', $pparts[3]);
 									}
@@ -1504,12 +1498,10 @@ function aggregate_handle_ptile_type(array $member_graphs, array $skipped_items,
 								$pparts = explode(':', $parts[1]);
 
 								if (isset($pparts[3])) {
-									if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL || $_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
-										// All so use sum functions
+									if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL) {
 										$pparts[3] = str_replace('current', 'aggregate_sum', $pparts[3]);
 										$pparts[3] = str_replace('max',     'aggregate_sum_peak', $pparts[3]);
-									} else {
-										// Similar to separate
+									} elseif ($_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
 										$pparts[3] = str_replace('current', 'aggregate_current', $pparts[3]);
 										$pparts[3] = str_replace('max',     'aggregate_current_peak', $pparts[3]);
 									}
@@ -1587,7 +1579,6 @@ function aggregate_handle_ptile_type(array $member_graphs, array $skipped_items,
 		}
 	}
 }
-
 
 /**
  * Draws the list of aggregate graph items.
