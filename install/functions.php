@@ -283,6 +283,8 @@ function install_create_csrf_secret(string $file) : bool {
 			if ($fh !== false) {
 				fwrite($fh, csrf_get_secret());
 				fclose($fh);
+			} else {
+				return false;
 			}
 
 			return true;
@@ -1308,6 +1310,8 @@ function remote_update_config_file() : string {
 							fwrite($fp, $line);
 						}
 						fclose($fp);
+					} else {
+						$failure = 'Failed to open configuration file for writing';
 					}
 				} else {
 					$failure = 'Failed to read configuration file';
