@@ -1146,7 +1146,7 @@ function rrdtool_function_fetch(int $local_data_id, int $start_time, int $end_ti
 
 				// process out bad data
 				foreach ($data as $index => $number) {
-					if (strtolower($number) == 'nan' || strtolower($number) == '-nan') {
+					if (cacti_strtolower($number) == 'nan' || cacti_strtolower($number) == '-nan') {
 						if ($show_unknown) {
 							$fetch_array['values'][$index][$timestamp] = 'U';
 						}
@@ -1783,20 +1783,8 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 
 					break;
 				case GRAPH_ITEM_TYPE_GPRINT_AVERAGE:
-					$graph_cf                          = $graph_item['consolidation_function_id'];
-					$graph_items[$key]['cf_reference'] = $graph_cf;
-
-					break;
 				case GRAPH_ITEM_TYPE_GPRINT_LAST:
-					$graph_cf                          = $graph_item['consolidation_function_id'];
-					$graph_items[$key]['cf_reference'] = $graph_cf;
-
-					break;
 				case GRAPH_ITEM_TYPE_GPRINT_MAX:
-					$graph_cf                          = $graph_item['consolidation_function_id'];
-					$graph_items[$key]['cf_reference'] = $graph_cf;
-
-					break;
 				case GRAPH_ITEM_TYPE_GPRINT_MIN:
 					$graph_cf                          = $graph_item['consolidation_function_id'];
 					$graph_items[$key]['cf_reference'] = $graph_cf;
@@ -2969,7 +2957,7 @@ function rrdtool_function_theme_font_options(array &$graph_data_array) : string 
 
 		if (isset(${$themecolors}) && is_array(${$themecolors})) { // @phpstan-ignore-line
 			foreach (${$themecolors} as $colortag => $color) { // @phpstan-ignore-line
-				$graph_opts .= '--color ' . strtoupper($colortag) . '#' . strtoupper($color) . RRD_NL;
+				$graph_opts .= '--color ' . cacti_strtoupper($colortag) . '#' . cacti_strtoupper($color) . RRD_NL;
 			}
 		}
 
@@ -3039,7 +3027,7 @@ function rrdtool_function_set_font(string $type, string $no_legend, array $theme
 		$size = 8;
 	}
 
-	return '--font ' . strtoupper($type) . ':' . floatval($size) . ':' . $font . RRD_NL;
+	return '--font ' . cacti_strtoupper($type) . ':' . floatval($size) . ':' . $font . RRD_NL;
 }
 
 function rrd_substitute_host_query_data(string $txt_graph_item, array $graph, array $graph_item) : string {
@@ -3702,7 +3690,7 @@ function rrdtool_info2html(array $info_array, array $diff = []) : void {
 			form_selectable_cell(($value['cur_row'] ?? ''), 'cur_row', '', 'text-align:right');
 			form_selectable_cell(($value['pdp_per_row'] ?? ''), 'pdp_per_row', '', 'text-align:right');
 			form_selectable_cell((isset($value['xff']) ? floatval($value['xff']) : ''), 'xff', '', (isset($diff['rra'][$key]['xff']) ? 'color:red;text-align:right' : 'text-align:right'));
-			form_selectable_cell((isset($value['cdp_prep'][0]['value']) ? ((strtolower($value['cdp_prep'][0]['value']) == 'nan') ? $value['cdp_prep'][0]['value'] : floatval($value['cdp_prep'][0]['value'])) : ''), 'value', '', 'text-align:right');
+			form_selectable_cell((isset($value['cdp_prep'][0]['value']) ? ((cacti_strtolower($value['cdp_prep'][0]['value']) == 'nan') ? $value['cdp_prep'][0]['value'] : floatval($value['cdp_prep'][0]['value'])) : ''), 'value', '', 'text-align:right');
 			form_selectable_cell(($value['cdp_prep'][0]['unknown_datapoints'] ?? ''), 	'unknown_datapoints', '', 'text-align:right');
 
 			form_end_row();

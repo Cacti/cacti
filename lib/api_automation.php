@@ -2260,7 +2260,7 @@ function get_query_fields(string $table, array $excluded_fields) : array {
 			// we want to know later which table was selected
 			$new_key = $table . '.' . $key;
 			// give the user a hint about the data type of the column
-			$new_fields[$new_key] = strtoupper($table) . ': ' . $key . ' - ' . $value;
+			$new_fields[$new_key] = cacti_strtoupper($table) . ': ' . $key . ' - ' . $value;
 		}
 	}
 
@@ -2521,11 +2521,11 @@ function global_item_edit(int $rule_id, int $rule_item_id, int $rule_type) : voi
 				$missing_array = explode('.',$missing_key);
 
 				if (cacti_sizeof($missing_array) > 1) {
-					$missing_table = strtoupper($missing_array[0]);
-					$missing_value = strtolower($missing_array[1]);
+					$missing_table = cacti_strtoupper($missing_array[0]);
+					$missing_value = cacti_strtolower($missing_array[1]);
 				} else {
 					$missing_table = '';
-					$missing_value = strtolower($missing_array[0]);
+					$missing_value = cacti_strtolower($missing_array[0]);
 				}
 
 				$_fields_rule_item_edit['field']['array'] = array_merge(
@@ -4317,7 +4317,7 @@ function automation_get_dns_from_ip(string $ip, string $dns, int $timeout = 1000
 			// null terminated string, so length 0 = finished
 			if ($len[1] == 0) {
 				// return the hostname, without the trailing '.'
-				return strtoupper(substr($host, 0, strlen($host) - 1));
+				return cacti_strtoupper(substr($host, 0, strlen($host) - 1));
 			}
 
 			// add the next segment to our host
@@ -4329,7 +4329,7 @@ function automation_get_dns_from_ip(string $ip, string $dns, int $timeout = 1000
 	}
 
 	// error - return the hostname
-	return strtoupper($ip);
+	return cacti_strtoupper($ip);
 }
 
 /**
@@ -4382,7 +4382,7 @@ function ping_netbios_name(string $ip, int $timeout_ms = 1000) : mixed {
 				$host .= $response[$i];
 			}
 
-			return trim(strtolower($host));
+			return trim(cacti_strtolower($host));
 		} else {
 			return false;
 		}
@@ -4677,7 +4677,7 @@ function automation_network_export(mixed $network_ids) : array {
 
 	$json_array = [];
 
-	$json_array['name']        = clean_up_name(strtolower($export_name));
+	$json_array['name']        = clean_up_name(cacti_strtolower($export_name));
 	$json_array['export_name'] = $json_array['name'] . '.json';
 
 	if (cacti_sizeof($network_ids)) {
@@ -4779,7 +4779,7 @@ function automation_device_rule_export(mixed $template_ids) : array {
 
 	$json_array = [];
 
-	$json_array['name']        = clean_up_name(strtolower($export_name));
+	$json_array['name']        = clean_up_name(cacti_strtolower($export_name));
 	$json_array['export_name'] = $json_array['name'] . '.json';
 
 	if (cacti_sizeof($template_ids)) {
@@ -5133,7 +5133,7 @@ function automation_graph_rule_export(mixed $graph_rule_ids) : array {
 
 	$json_array = [];
 
-	$json_array['name']        = clean_up_name(strtolower($export_name));
+	$json_array['name']        = clean_up_name(cacti_strtolower($export_name));
 	$json_array['export_name'] = $json_array['name'] . '.json';
 
 	if (cacti_sizeof($graph_rule_ids)) {
@@ -5219,7 +5219,7 @@ function automation_tree_rule_export(mixed $tree_rule_ids) : array {
 
 	$json_array = [];
 
-	$json_array['name']        = clean_up_name(strtolower($export_name));
+	$json_array['name']        = clean_up_name(cacti_strtolower($export_name));
 	$json_array['export_name'] = $json_array['name'] . '.json';
 
 	if (cacti_sizeof($tree_rule_ids)) {
@@ -5305,7 +5305,7 @@ function automation_snmp_option_export(mixed $snmp_option_ids) : array {
 
 	$json_array = [];
 
-	$json_array['name']        = clean_up_name(strtolower($export_name));
+	$json_array['name']        = clean_up_name(cacti_strtolower($export_name));
 	$json_array['export_name'] = $json_array['name'] . '.json';
 
 	if (cacti_sizeof($snmp_option_ids)) {

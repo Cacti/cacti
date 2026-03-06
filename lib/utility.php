@@ -1683,7 +1683,7 @@ function utilities_php_modules() : string {
 
 function memory_bytes(mixed $val) : mixed {
 	$val  = trim($val);
-	$last = strtolower($val[strlen($val) - 1]);
+	$last = cacti_strtolower($val[strlen($val) - 1]);
 	$val  = (float) trim($val, 'GMKgmk');
 
 	switch($last) {
@@ -1876,7 +1876,7 @@ function utility_php_recommends() : array {
 }
 
 function utility_get_formatted_bytes(mixed $input_value, string $wanted_type, mixed &$output_value, string $default_type = 'B') : mixed {
-	$default_type = strtoupper($default_type);
+	$default_type = cacti_strtoupper($default_type);
 	$multiplier   = [
 		'B' => 1,
 		'K' => 1024,

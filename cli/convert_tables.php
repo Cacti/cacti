@@ -184,7 +184,7 @@ if ($innodb) {
 
 	if (cacti_sizeof($engines)) {
 		foreach ($engines as $engine) {
-			if (strtolower($engine['Engine']) == 'innodb' && strtolower($engine['Support']) == 'off') {
+			if (cacti_strtolower($engine['Engine']) == 'innodb' && cacti_strtolower($engine['Support']) == 'off') {
 				print_or_log($installer,  'InnoDB Engine is not enabled' . PHP_EOL);
 
 				exit;
@@ -194,7 +194,7 @@ if ($innodb) {
 
 	$file_per_table = db_fetch_row("SHOW GLOBAL VARIABLES LIKE 'innodb_file_per_table'");
 
-	if (strtolower($file_per_table['Value']) != 'on') {
+	if (cacti_strtolower($file_per_table['Value']) != 'on') {
 		print_or_log($installer,  'innodb_file_per_table not enabled');
 
 		exit;

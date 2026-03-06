@@ -182,25 +182,25 @@ class Net_Ping {
 				 * but this field has already been verified. The other fields are
 				 * numerical fields only and thus not vulnerable for command injection.
 				 */
-				if (substr_count(strtolower(PHP_OS), 'sun')) {
+				if (substr_count(cacti_strtolower(PHP_OS), 'sun')) {
 					$result = shell_exec('ping ' . $this->host['hostname']);
-				} elseif (substr_count(strtolower(PHP_OS), 'hpux')) {
+				} elseif (substr_count(cacti_strtolower(PHP_OS), 'hpux')) {
 					$result = shell_exec('ping -m ' . ceil($this->timeout / 1000) . ' -n ' . $this->retries . ' ' . $this->host['hostname']);
-				} elseif (substr_count(strtolower(PHP_OS), 'mac')) {
+				} elseif (substr_count(cacti_strtolower(PHP_OS), 'mac')) {
 					$result = shell_exec('ping -t ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
-				} elseif (substr_count(strtolower(PHP_OS), 'freebsd')) {
+				} elseif (substr_count(cacti_strtolower(PHP_OS), 'freebsd')) {
 					if (str_contains($this->host['hostname'], ':')) {
 						$result = shell_exec('ping6 -t ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
 					} else {
 						$result = shell_exec('ping -t ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
 					}
-				} elseif (substr_count(strtolower(PHP_OS), 'darwin')) {
+				} elseif (substr_count(cacti_strtolower(PHP_OS), 'darwin')) {
 					$result = shell_exec('ping -t ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
-				} elseif (substr_count(strtolower(PHP_OS), 'bsd')) {
+				} elseif (substr_count(cacti_strtolower(PHP_OS), 'bsd')) {
 					$result = shell_exec('ping -w ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
-				} elseif (substr_count(strtolower(PHP_OS), 'aix')) {
+				} elseif (substr_count(cacti_strtolower(PHP_OS), 'aix')) {
 					$result = shell_exec('ping -i ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
-				} elseif (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+				} elseif (cacti_strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
 					$result = shell_exec('chcp 437 && ping -w ' . $this->timeout . ' -n ' . $this->retries . ' ' . $this->host['hostname']);
 				} else {
 					/**
@@ -764,23 +764,23 @@ class Net_Ping {
 	function strip_ip_address(string $ip_address) : string {
 		// clean up hostname if specifying snmp_transport
 		if (str_contains($ip_address, 'tcp6:')) {
-			$ip_address = str_replace('tcp6:', '', strtolower($ip_address));
+			$ip_address = str_replace('tcp6:', '', cacti_strtolower($ip_address));
 
 			if (str_contains($ip_address, '[')) {
 				$parts      = explode(']', $ip_address);
 				$ip_address = trim($parts[0], '[');
 			}
 		} elseif (str_contains($ip_address, 'udp6:')) {
-			$ip_address = str_replace('udp6:', '', strtolower($ip_address));
+			$ip_address = str_replace('udp6:', '', cacti_strtolower($ip_address));
 
 			if (str_contains($ip_address, '[')) {
 				$parts      = explode(']', $ip_address);
 				$ip_address = trim($parts[0], '[');
 			}
 		} elseif (str_contains($ip_address, 'tcp:')) {
-			$ip_address = str_replace('tcp:', '', strtolower($ip_address));
+			$ip_address = str_replace('tcp:', '', cacti_strtolower($ip_address));
 		} elseif (str_contains($ip_address, 'udp:')) {
-			$ip_address = str_replace('udp:', '', strtolower($ip_address));
+			$ip_address = str_replace('udp:', '', cacti_strtolower($ip_address));
 		}
 
 		return $ip_address;

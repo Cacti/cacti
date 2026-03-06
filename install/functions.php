@@ -611,7 +611,7 @@ function db_install_add_key(string $table, string $type, string $key, mixed $col
 		$columns = [$columns];
 	}
 
-	$type = strtoupper($type);
+	$type = cacti_strtoupper($type);
 
 	if ($type == 'KEY' && $key == 'PRIMARY') {
 		$sql = 'ALTER TABLE `' . $table . '` ADD ' . $key . ' ' . $type . '(' . implode(',', $columns) . ')';
@@ -641,7 +641,7 @@ function db_install_add_key(string $table, string $type, string $key, mixed $col
 }
 
 function db_install_drop_key(string $table, string $type, string $key) : int {
-	$type = strtoupper(str_ireplace('UNIQUE ', '', $type));
+	$type = cacti_strtoupper(str_ireplace('UNIQUE ', '', $type));
 
 	if ($type == 'KEY' && $key == 'PRIMARY') {
 		$sql = "ALTER TABLE $table DROP $key $type;";
@@ -1405,7 +1405,7 @@ function log_install_and_file(int $level, string $text, string $section = '', bo
 	$name  = 'INSTALL:';
 
 	if (!empty($section)) {
-		$name = 'INSTALL-' . strtoupper($section) . ':';
+		$name = 'INSTALL-' . cacti_strtoupper($section) . ':';
 	}
 
 	cacti_log(log_install_level_name($level) . ': ' . $text, false, $name, $level);

@@ -68,7 +68,7 @@ if (!isrv('image_format')) {
 			break;
 	}
 } else {
-	switch(strtolower(gnrv('image_format'))) {
+	switch(cacti_strtolower(gnrv('image_format'))) {
 		case 'png':
 			$gtype = 'png';
 

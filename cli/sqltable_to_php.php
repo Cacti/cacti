@@ -122,13 +122,13 @@ function sqltable_to_php(string $table, bool $create, string $plugin = '') : str
 				$text .= "\$data['columns'][] = array(";
 				$text .= "'name' => '" . $r['Field'] . "'";
 
-				if (str_contains(strtolower($r['Type']), ' unsigned')) {
+				if (str_contains(cacti_strtolower($r['Type']), ' unsigned')) {
 					$r['Type'] = str_ireplace(' unsigned', '', $r['Type']);
 					$text .= ", 'unsigned' => true";
 				}
 
 				$text .= ", 'type' => " . db_qstr($r['Type']);
-				$text .= ", 'NULL' => " . (strtolower($r['Null']) == 'no' ? 'false' : 'true');
+				$text .= ", 'NULL' => " . (cacti_strtolower($r['Null']) == 'no' ? 'false' : 'true');
 
 				if ($r['Default'] != '' && trim($r['Default']) != '') {
 					if ($r['Default'] == "''") {
@@ -143,11 +143,11 @@ function sqltable_to_php(string $table, bool $create, string $plugin = '') : str
 				}
 
 				if (trim($r['Extra']) != '') {
-					if (strtolower($r['Extra']) == 'on update current_timestamp') {
+					if (cacti_strtolower($r['Extra']) == 'on update current_timestamp') {
 						$text .= ", 'on_update' => 'CURRENT_TIMESTAMP'";
 					}
 
-					if (strtolower($r['Extra']) == 'auto_increment') {
+					if (cacti_strtolower($r['Extra']) == 'auto_increment') {
 						$text .= ", 'auto_increment' => true";
 					}
 				}

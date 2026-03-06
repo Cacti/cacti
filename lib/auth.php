@@ -844,16 +844,24 @@ function is_graph_template_allowed(int $graph_template_id, int $user = 0) : bool
  * @return bool Returns true if the view is allowed for the user, false otherwise.
  */
 function is_view_allowed(string $view = 'show_tree') : bool {
+	$allowed_views = ['show_tree', 'show_list', 'show_preview', 'graph_settings'];
+
+	if (!in_array($view, $allowed_views, true)) {
+		cacti_log("WARNING: Invalid view parameter '$view' in is_view_allowed()", false, 'AUTH');
+
+		return false;
+	}
+
 	if (!isset($_SESSION[SESS_USER_ID])) {
 		return false;
 	}
 
 	if (db_table_exists('user_auth_group')) {
 		$values = array_rekey(
-			db_fetch_assoc_prepared("SELECT DISTINCT $view
+			db_fetch_assoc_prepared("SELECT DISTINCT `$view`
 				FROM user_auth_group AS uag
 				INNER JOIN user_auth_group_members AS uagm
-				ON uag.id = uagm.user_id
+				ON uag.id = uagm.group_id
 				WHERE uag.enabled = 'on'
 				AND uagm.user_id = ?",
 				[$_SESSION[SESS_USER_ID]]
@@ -873,7 +881,7 @@ function is_view_allowed(string $view = 'show_tree') : bool {
 		}
 	}
 
-	$value = db_fetch_cell_prepared("SELECT $view
+	$value = db_fetch_cell_prepared("SELECT `$view`
 		FROM user_auth
 		WHERE id = ?",
 		[$_SESSION[SESS_USER_ID]]
@@ -4149,7 +4157,7 @@ function secpass_check_pass(string $password) : string {
 		return __('Your password must contain at least 1 numerical character!');
 	}
 
-	if (read_config_option('secpass_reqmixcase') == 'on' && strtolower($password) == $password) {
+	if (read_config_option('secpass_reqmixcase') == 'on' && cacti_strtolower($password) == $password) {
 		return __('Your password must contain a mix of lower case and upper case characters!');
 	}
 
@@ -4160,7 +4168,7 @@ function secpass_check_pass(string $password) : string {
 	}
 
 	if (read_config_option('secpass_pwnedcheck') == 'on') {
-		$sha1    = strtoupper(sha1($password));
+		$sha1    = cacti_strtoupper(sha1($password));
 		$suffix  = substr($sha1,5);
 		$options = [
 			CURLOPT_RETURNTRANSFER => true,   // return web page

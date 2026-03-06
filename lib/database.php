@@ -397,7 +397,7 @@ function db_binlog_enabled() : bool {
 	$enabled = db_fetch_row('SHOW GLOBAL VARIABLES LIKE "log_bin"');
 
 	if (cacti_sizeof($enabled)) {
-		if (strtolower($enabled['Value']) == 'on' || $enabled['Value'] == 1) {
+		if (cacti_strtolower($enabled['Value']) == 'on' || $enabled['Value'] == 1) {
 			return true;
 		}
 	}
@@ -1005,7 +1005,7 @@ function db_add_column(string $table, array $column, bool $log = true, mixed $db
 			}
 
 			if (isset($column['default'])) {
-				if (in_array(strtolower($column['type']), ['timestamp', 'datetime', 'date'], true) && str_contains($column['default'], 'CURRENT_TIMESTAMP')) {
+				if (in_array(cacti_strtolower($column['type']), ['timestamp', 'datetime', 'date'], true) && str_contains($column['default'], 'CURRENT_TIMESTAMP')) {
 					$sql .= ' default ' . $column['default'];
 				} else {
 					$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
@@ -1101,7 +1101,7 @@ function db_change_column(string $table, array $column, bool $log = true, mixed 
 				}
 
 				if (isset($column['default'])) {
-					if (strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
+					if (cacti_strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
 						$sql .= ' default CURRENT_TIMESTAMP';
 					} else {
 						$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
@@ -1493,13 +1493,13 @@ function db_update_table(string $table, array $data, bool $removecolumns = false
 		WHERE TABLE_SCHEMA = SCHEMA()
 		AND TABLE_NAME = '$table'", $log, $db_conn);
 
-	if (isset($info['ENGINE']) && isset($data['type']) && strtolower($info['ENGINE']) != strtolower($data['type'])) {
+	if (isset($info['ENGINE']) && isset($data['type']) && cacti_strtolower($info['ENGINE']) != cacti_strtolower($data['type'])) {
 		if (!db_execute("ALTER TABLE `$table` ENGINE = " . $data['type'], $log, $db_conn)) {
 			return false;
 		}
 	}
 
-	if (isset($data['row_format']) && strtolower(db_get_global_variable('innodb_file_format', $db_conn)) == 'barracuda') {
+	if (isset($data['row_format']) && cacti_strtolower(db_get_global_variable('innodb_file_format', $db_conn)) == 'barracuda') {
 		db_execute("ALTER TABLE `$table` ROW_FORMAT = " . $data['row_format'], $log, $db_conn);
 	}
 
@@ -1524,7 +1524,7 @@ function db_update_table(string $table, array $data, bool $removecolumns = false
 			// FIXME: Need to still check default value
 			$arr = db_fetch_row("SHOW columns FROM `$table` LIKE '" . $column['name'] . "'", $log, $db_conn);
 
-			if (str_contains(strtolower($arr['Type']), ' unsigned')) {
+			if (str_contains(cacti_strtolower($arr['Type']), ' unsigned')) {
 				$arr['Type']     = str_ireplace(' unsigned', '', $arr['Type']);
 				$arr['unsigned'] = true;
 			}
@@ -1552,7 +1552,7 @@ function db_update_table(string $table, array $data, bool $removecolumns = false
 				}
 
 				if (isset($column['default'])) {
-					if (strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
+					if (cacti_strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
 						$sql .= ' default CURRENT_TIMESTAMP';
 					} else {
 						$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
@@ -1770,7 +1770,7 @@ function db_table_create(string $table, array $data, bool $log = true, mixed $db
 				}
 
 				if (isset($column['default'])) {
-					if (strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
+					if (cacti_strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
 						$sql .= ' default CURRENT_TIMESTAMP';
 					} else {
 						$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
@@ -1818,7 +1818,7 @@ function db_table_create(string $table, array $data, bool $log = true, mixed $db
 			$sql .= " COMMENT = '" . $data['comment'] . "'";
 		}
 
-		if (isset($data['row_format']) && strtolower(db_get_global_variable('innodb_file_format', $db_conn)) == 'barracuda') {
+		if (isset($data['row_format']) && cacti_strtolower(db_get_global_variable('innodb_file_format', $db_conn)) == 'barracuda') {
 			$sql .= ' ROW_FORMAT = ' . $data['row_format'];
 		}
 
@@ -2594,7 +2594,7 @@ function db_get_permissions(bool $include_unknown = false, bool $log = false, mi
 
 							if (cacti_sizeof($db_grant_perms)) {
 								foreach ($db_grant_perms as $db_grant_perm) {
-									$db_grant_perm = strtoupper($db_grant_perm);
+									$db_grant_perm = cacti_strtoupper($db_grant_perm);
 
 									if ($db_grant_perm == 'ALL' ||
 										$db_grant_perm == 'ALL PRIVILEGES') {

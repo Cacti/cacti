@@ -1380,7 +1380,7 @@ function format_plugin_row(array $plugin, bool $last_plugin, bool $include_order
 
 	$row = plugin_actions($plugin, $table);
 
-	$uname = strtoupper($plugin['plugin']);
+	$uname = cacti_strtoupper($plugin['plugin']);
 
 	if ($uname == $plugin['plugin']) {
 		$plugin_name = $uname;
@@ -1555,7 +1555,7 @@ function format_available_plugin_row(array $plugin, string $table) : string {
 
 	$row .= '</td>';
 
-	$uname = strtoupper($plugin['plugin']);
+	$uname = cacti_strtoupper($plugin['plugin']);
 
 	if ($uname == $plugin['plugin']) {
 		$plugin_name = $uname;
@@ -1664,7 +1664,7 @@ function format_archive_plugin_row(array $plugin, string $table) : string {
 	$row .= "<a class='pirmarchive' href='" . htmle(CACTI_PATH_URL . 'plugins.php?action=delete&plugin=' . $plugin['plugin'] . '&id=' . $plugin['id']) . "' title='" . __esc('Delete this Plugin archive') . "' class='linkEditMain'><i class='ti ti-trash deviceRecovering'></i></a>";
 	$row .= '</td>';
 
-	$uname = strtoupper($plugin['plugin']);
+	$uname = cacti_strtoupper($plugin['plugin']);
 
 	if ($uname == $plugin['plugin']) {
 		$plugin_name = $uname;
@@ -1923,7 +1923,7 @@ function plugin_actions(array $plugin, string $table) : string {
 
 			break;
 		case '-2': // Naming issues
-			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin directory is not correct.  Should be \'%s\' but is \'%s\'', strtolower($plugin['plugin']), $plugin['plugin']) . "' class='linkEditMain'><i class='ti ti-settings-filled deviceUnknown'></i></a>";
+			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin directory is not correct.  Should be \'%s\' but is \'%s\'', cacti_strtolower($plugin['plugin']), $plugin['plugin']) . "' class='linkEditMain'><i class='ti ti-settings-filled deviceUnknown'></i></a>";
 
 			break;
 		default: // Old PIA
