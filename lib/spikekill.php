@@ -188,10 +188,10 @@ class spikekill {
 
 		$umethod   = read_user_setting('spikekill_method', $this->dmethod, true);
 		$uavgnan   = read_user_setting('spikekill_avgnan', $this->davgnan, true);
-		$udsfilter = read_user_setting('spikekill_dsfilter', $this->dsfilter, true);
+		$udsfilter = read_user_setting('spikekill_dsfilter', $this->ddsfilter, true);
 		$unumspike = read_user_setting('spikekill_number', $this->dnumspike, true);
 		$ustddev   = read_user_setting('spikekill_deviations', $this->dstddev, true);
-		$uabsmax   = read_user_setting('spikekill_absmax', $this->absmax, true);
+		$uabsmax   = read_user_setting('spikekill_absmax', $this->dabsmax, true);
 
 		// set the correct value: prefer user setting, fall back to default
 		if ($this->avgnan == '') {
