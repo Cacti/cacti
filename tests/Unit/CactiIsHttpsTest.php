@@ -22,6 +22,14 @@
  +-------------------------------------------------------------------------+
 */
 
+/*
+ * Tests for cacti_is_https() in lib/functions.php.
+ *
+ * cacti_is_https() centralises the $_SERVER['HTTPS'] / HTTP_X_FORWARDED_PROTO
+ * check that was previously duplicated across global.php, auth_login.php, and
+ * graph_xport.php.  All callers now use this single helper.
+ */
+
 require_once __DIR__ . '/../../lib/functions.php';
 
 test('returns true when HTTPS is "on"', function () {
