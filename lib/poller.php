@@ -240,8 +240,8 @@ function exec_with_timeout($cmd, &$output, &$return_code, $timeout = 5) {
 
 	// Kill the process in case the timeout expired and it's still running.
 	// If the process already exited this won't do anything.
-	// setsid in the proc_open command makes the child a new session/process group
-	// leader (PID == PGID), so posix_kill(-pid, 9) correctly targets that group.
+	// Do not use a negative PID here because the child PID is not guaranteed
+	// to be the process-group ID on every platform/runtime combination.
 	if (isset($status['pid']) && $status['running'] && function_exists('posix_kill')) {
 		posix_kill($status['pid'], 9);
 	}
