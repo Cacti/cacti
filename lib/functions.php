@@ -73,7 +73,7 @@ function filter_value(mixed $value, string $filter, string $href = '', string $t
 	$value = str_replace('`', '&#96;', $value);
 
 	if ($filter != '') {
-		$value = preg_replace('#(' . preg_quote($filter) . ')#i', "<span class='filteredValue'>\\1</span>", $value);
+		$value = preg_replace('#(' . preg_quote($filter) . ')#i', "<span class='filteredValue'>\\1</span>", $value) ?? $value;
 	}
 
 	if ($href != '') {
@@ -366,7 +366,7 @@ function read_user_setting(string $config_name, mixed $default = false, bool $fo
 				[$config_name, $effective_uid]);
 		}
 
-		if (cacti_sizeof($db_setting)) {
+		if (is_array($db_setting) && cacti_sizeof($db_setting)) {
 			$user_config_array[$config_name] = $db_setting['value'];
 		} elseif ($default !== false) {
 			$user_config_array[$config_name] = $default;
@@ -729,7 +729,7 @@ function read_config_option(string $config_name, bool $force = false) : mixed {
 			// Get the database setting
 			$db_result = db_fetch_row_prepared('SELECT value FROM settings WHERE name = ?', [$config_name], false);
 
-			if (cacti_sizeof($db_result)) {
+			if (is_array($db_result) && cacti_sizeof($db_result)) {
 				$value = $db_result['value'];
 			}
 		}
@@ -1631,7 +1631,7 @@ function cacti_log(mixed $string, bool $output = false, string $environ = 'CMDPH
 			$func = $c['function'] . '()';
 
 			if (isset($c['class'])) {
-				$func = $c['class'] . $c['type'] . $func;
+				$func = $c['class'] . ($c['type'] ?? '') . $func;
 			}
 
 			$s = ($file != '' ? $file . ':' : '') . "$func" . (empty($s) ? '' : ', ') . $s;
@@ -1680,6 +1680,10 @@ function tail_file(string $file_name, int $line_cnt, mixed $message_type = -1, m
 	$filter = cacti_strtolower($filter);
 
 	$fp = fopen($file_name, 'r');
+
+	if ($fp === false) {
+		return [];
+	}
 
 	// Count all lines in the logfile
 	$total_rows    = 0;
@@ -1934,6 +1938,10 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
 	$ping_recovery_count = read_config_option('ping_recovery_count');
 
 	$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', [$host_id]);
+
+	if (!is_array($host)) {
+		return;
+	}
 
 	// initialize fail and recovery dates correctly
 	if ($host['status_fail_date'] == '') {
@@ -2484,7 +2492,7 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
 
 	$data_template_data_id = 0;
 
-	if (cacti_sizeof($data_input) && $data_input['active'] == 'on') {
+	if (is_array($data_input) && cacti_sizeof($data_input) && $data_input['active'] == 'on') {
 		$data_template_data_id = $data_input['data_template_data_id'];
 
 		// we have to perform some additional sql queries if this is a 'query'
@@ -2595,11 +2603,11 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
 			dsv_log('output', $output);
 
 			if (!is_numeric($output)) {
-				if ($output == 'U') {
+				if ($output === false || $output === null || $output == 'U') {
 					return false;
 				}
 
-				if (prepare_validate_result($output) === false) {
+				if (prepare_validate_result((string) $output) === false) {
 					return false;
 				}
 			}
@@ -2625,6 +2633,10 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
 					[$data_template_data_id]),
 				'type_code', 'value'
 			);
+
+			if (!is_array($host_fields)) {
+				$host_fields = [];
+			}
 
 			dsv_log('SNMP host_fields', $host_fields);
 
@@ -2662,26 +2674,30 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
 
 			dsv_log('SNMP [updated] host_fields', $host_fields);
 
-			$host = array_merge($host, $host_fields);
+			if (is_array($host)) {
+				$host = array_merge($host, $host_fields);
+			}
 
 			dsv_log('SNMP [updated] host', $host);
 
-			$session = cacti_snmp_session($host['hostname'], $host['snmp_community'], $host['snmp_version'],
-				$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'], $host['snmp_priv_passphrase'],
-				$host['snmp_priv_protocol'], $host['snmp_context'], $host['snmp_engine_id'], $host['snmp_port'],
-				$host['snmp_timeout'], $host['ping_retries'], $host['max_oids']);
+			if (is_array($host)) {
+				$session = cacti_snmp_session($host['hostname'], $host['snmp_community'], $host['snmp_version'],
+					$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'], $host['snmp_priv_passphrase'],
+					$host['snmp_priv_protocol'], $host['snmp_context'], $host['snmp_engine_id'], $host['snmp_port'],
+					$host['snmp_timeout'], $host['ping_retries'], $host['max_oids']);
 
-			$output = cacti_snmp_session_get($session, $host['snmp_oid']);
+				$output = cacti_snmp_session_get($session, $host['snmp_oid']);
 
-			dsv_log('SNMP output', $output);
+				dsv_log('SNMP output', $output);
 
-			if (!is_numeric($output)) {
-				if (prepare_validate_result($output) === false) {
-					return false;
+				if (!is_numeric($output)) {
+					if (prepare_validate_result($output) === false) {
+						return false;
+					}
 				}
-			}
 
-			return true;
+				return true;
+			}
 		}
 
 		if ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) {
@@ -2734,7 +2750,9 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
 
 			dsv_log('SNMP_QUERY [updated] host_fields', $host_fields);
 
-			$host = array_merge($host, $host_fields);
+			if (is_array($host)) {
+				$host = array_merge($host, $host_fields);
+			}
 
 			dsv_log('SNMP_QUERY [updated] host', $host);
 
@@ -2748,7 +2766,7 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
 						}
 					}
 
-					if (!empty($oid)) {
+					if (!empty($oid) && is_array($host)) {
 						$session = cacti_snmp_session($host['hostname'], $host['snmp_community'], $host['snmp_version'],
 							$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'], $host['snmp_priv_passphrase'],
 							$host['snmp_priv_protocol'], $host['snmp_context'], $host['snmp_engine_id'], $host['snmp_port'],
@@ -2828,7 +2846,9 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
 
 			dsv_log('SCRIPT [updated] host_fields', $host_fields);
 
-			$host = array_merge($host, $host_fields);
+			if (is_array($host)) {
+				$host = array_merge($host, $host_fields);
+			}
 
 			dsv_log('SCRIPT [updated] host', $host);
 
@@ -2857,7 +2877,7 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
 						$output = shell_exec($script_path);
 
 						if (!is_numeric($output)) {
-							if (prepare_validate_result($output) === false) {
+							if ($output === false || $output === null || prepare_validate_result((string) $output) === false) {
 								return false;
 							}
 						}
@@ -2895,6 +2915,10 @@ function get_full_test_script_path(int $data_template_id, int $host_id) : mixed 
 		AND dtd.data_template_id = ?',
 		[$data_template_id]);
 
+	if (!is_array($data_source)) {
+		return false;
+	}
+
 	$data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . " dif.data_name, did.value
 		FROM data_input_fields AS dif
 		LEFT JOIN data_input_data AS did
@@ -2908,7 +2932,7 @@ function get_full_test_script_path(int $data_template_id, int $host_id) : mixed 
 
 	$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', [$host_id]);
 
-	if (cacti_sizeof($data)) {
+	if (cacti_sizeof($data) && is_array($host)) {
 		foreach ($data as $item) {
 			if (isset($host[$item['data_name']])) {
 				$value = cacti_escapeshellarg($host[$item['data_name']]);
@@ -2930,7 +2954,7 @@ function get_full_test_script_path(int $data_template_id, int $host_id) : mixed 
 	 * sometimes a certain input value will not have anything entered... null out these fields
 	 * in the input string so we don't mess up the script
 	 */
-	return preg_replace('/(<[A-Za-z0-9_]+>)+/', '', $full_path);
+	return preg_replace('/(<[A-Za-z0-9_]+>)+/', '', $full_path) ?? '';
 }
 
 /**
@@ -2949,6 +2973,10 @@ function get_full_script_path(int $local_data_id) : mixed {
 		ON dtd.data_input_id = di.id
 		WHERE dtd.local_data_id = ?',
 		[$local_data_id]);
+
+	if (!is_array($data_source)) {
+		return false;
+	}
 
 	// snmp-actions don't have paths
 	if (($data_source['type_id'] == DATA_INPUT_TYPE_SNMP) || ($data_source['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY)) {
@@ -2984,7 +3012,7 @@ function get_full_script_path(int $local_data_id) : mixed {
 
 	/* sometimes a certain input value will not have anything entered... null out these fields
 	in the input string so we don't mess up the script */
-	return preg_replace('/(<[A-Za-z0-9_]+>)+/', '', $full_path);
+	return preg_replace('/(<[A-Za-z0-9_]+>)+/', '', $full_path) ?? '';
 }
 
 /**
@@ -3008,6 +3036,10 @@ function get_data_source_item_name(int $data_template_rrd_id) : mixed {
 		WHERE dtr.id = ?',
 		[$data_template_rrd_id]
 	);
+
+	if (!is_array($data_source)) {
+		return '';
+	}
 
 	// use the cacti ds name by default or the user defined one, if entered
 	if (empty($data_source['data_source_name'])) {
@@ -3078,7 +3110,11 @@ function get_data_source_path(int $local_data_id, bool $expand_paths) : string {
  * @return string The original string with '$find' replaced by '$replace'
  */
 function stri_replace(string $find, string $replace, string $string) : string {
-	$parts = explode(cacti_strtolower($find), cacti_strtolower($string));
+	if ($find === '') {
+		return $string;
+	}
+
+	$parts = explode(cacti_strtolower($find), cacti_strtolower($string)); // @phpstan-ignore argument.type (guard above ensures $find is non-empty)
 
 	$pos = 0;
 
@@ -3103,7 +3139,7 @@ function stri_replace(string $find, string $replace, string $string) : string {
  * @return mixed The modified string
  */
 function clean_up_lines(mixed $string) : mixed {
-	if ($string !== null) {
+	if ($string !== null && is_string($string)) {
 		$string = preg_replace('/\s*[\r\n]+\s*/',' ', $string);
 	}
 
@@ -3119,10 +3155,10 @@ function clean_up_lines(mixed $string) : mixed {
  * @return mixed The modified string
  */
 function clean_up_name(mixed $string) : mixed {
-	if ($string !== null) {
-		$string = preg_replace('/[\s\.]+/', '_', $string);
-		$string = preg_replace('/[^a-zA-Z0-9_]+/', '', $string);
-		$string = preg_replace('/_{2,}/', '_', $string);
+	if ($string !== null && is_string($string)) {
+		$string = preg_replace('/[\s\.]+/', '_', $string) ?? $string;
+		$string = preg_replace('/[^a-zA-Z0-9_]+/', '', $string) ?? $string;
+		$string = preg_replace('/_{2,}/', '_', $string) ?? $string;
 	}
 
 	return $string;
@@ -3138,9 +3174,9 @@ function clean_up_name(mixed $string) : mixed {
  */
 function clean_up_file_name(mixed $string) : mixed {
 	if ($string !== null) {
-		$string = preg_replace('/[\s\.]+/', '_', $string);
-		$string = preg_replace('/[^a-zA-Z0-9_-]+/', '', $string);
-		$string = preg_replace('/_{2,}/', '_', $string);
+		$string = preg_replace('/[\s\.]+/', '_', $string) ?? $string;
+		$string = preg_replace('/[^a-zA-Z0-9_-]+/', '', $string) ?? $string;
+		$string = preg_replace('/_{2,}/', '_', $string) ?? $string;
 	}
 
 	return $string;
@@ -3185,7 +3221,7 @@ function get_data_source_title(int $local_data_id) : string {
 
 	$title = 'Missing Datasource ' . $local_data_id;
 
-	if (cacti_sizeof($data)) {
+	if (is_array($data) && cacti_sizeof($data)) {
 		if (str_contains($data['name'], '|') && $data['host_id'] > 0) {
 			$data['name'] = substitute_data_input_data($data['name'], [], $local_data_id);
 			$title        = expand_title($data['host_id'], $data['snmp_query_id'], $data['snmp_index'], $data['name']);
@@ -3287,7 +3323,7 @@ function get_graph_title(int $local_graph_id) : string {
 		WHERE gl.id = ?',
 		[$local_graph_id]);
 
-	if (cacti_sizeof($graph)) {
+	if (is_array($graph) && cacti_sizeof($graph)) {
 		if (str_contains($graph['title'], '|') && $graph['host_id'] > 0 && empty($graph['t_title'])) {
 			$graph['title'] = substitute_data_input_data($graph['title'], $graph, 0);
 
@@ -3390,10 +3426,12 @@ function get_execution_user() : string {
 	if (function_exists('posix_getpwuid')) {
 		$user_info = posix_getpwuid(posix_geteuid());
 
-		return $user_info['name'];
-	} else {
-		return exec('whoami');
+		if ($user_info !== false) {
+			return $user_info['name'];
+		}
 	}
+
+	return exec('whoami') ?: '';
 }
 
 /**
@@ -3426,7 +3464,7 @@ function generate_data_source_path($local_data_id) {
 		AND dl.id = ?',
 		[$local_data_id]);
 
-	if (cacti_sizeof($data)) {
+	if (is_array($data) && cacti_sizeof($data)) {
 		$host_name     = $data['description'];
 		$host_id       = $data['host_id'];
 		$data_query_id = $data['snmp_query_id'];
@@ -3678,6 +3716,10 @@ function move_graph_group(int $graph_template_item_id, array $graph_group_array,
 		WHERE id = ?',
 		[$graph_template_item_id]);
 
+	if (!is_array($graph_item)) {
+		return;
+	}
+
 	if (empty($graph_item['local_graph_id'])) {
 		$sql_where = 'graph_template_id = ' . $graph_item['graph_template_id'] . ' AND local_graph_id = 0';
 	} else {
@@ -3784,6 +3826,10 @@ function get_graph_group(int $graph_template_item_id) : array {
 		WHERE id = ?',
 		[$graph_template_item_id]);
 
+	if (!is_array($graph_item)) {
+		return [];
+	}
+
 	$params[] = $graph_item['sequence'];
 
 	if (empty($graph_item['local_graph_id'])) {
@@ -3858,6 +3904,10 @@ function get_graph_parent(int $graph_template_item_id, string $direction) : int 
 		FROM graph_templates_item
 		WHERE id = ?',
 		[$graph_template_item_id]);
+
+	if (!is_array($graph_item)) {
+		return 0;
+	}
 
 	if (empty($graph_item['local_graph_id'])) {
 		$sql_where = 'graph_template_id = ' . $graph_item['graph_template_id'] . ' AND local_graph_id = 0';
@@ -3955,7 +4005,7 @@ function get_sequence(mixed $id, string $field, string $table_name, string $grou
 			FROM $table_name
 			WHERE $group_query");
 
-		if ($data['seq'] == '') {
+		if (!is_array($data) || $data['seq'] == '') {
 			return 1;
 		} else {
 			return $data['seq'];
@@ -3966,7 +4016,7 @@ function get_sequence(mixed $id, string $field, string $table_name, string $grou
 			WHERE id = ?",
 			[$id]);
 
-		return $data[$field];
+		return is_array($data) ? $data[$field] : 0;
 	}
 }
 
@@ -4101,6 +4151,10 @@ function draw_login_status(bool $using_guest_account = false) : void {
 			FROM user_auth
 			WHERE id = ?',
 			[$_SESSION[SESS_USER_ID]]);
+
+		if (!is_array($user)) {
+			return;
+		}
 
 		api_plugin_hook('nav_login_before');
 
@@ -4254,7 +4308,7 @@ function draw_navigation_text(string $type = 'url') : string {
 				WHERE id = ?',
 				[$leaf_id]);
 
-			if (cacti_sizeof($leaf)) {
+			if (is_array($leaf) && cacti_sizeof($leaf)) {
 				if ($leaf['host_id'] > 0) {
 					$leaf_name = db_fetch_cell_prepared('SELECT description
 						FROM host
@@ -4316,8 +4370,8 @@ function draw_navigation_text(string $type = 'url') : string {
 		}
 	} elseif (preg_match('#link.php\?id=(\d+)#', $_SERVER['REQUEST_URI'], $matches)) {
 		$externalLinks = db_fetch_row_prepared('SELECT title, style FROM external_links WHERE id = ?', [$matches[1]]);
-		$title         = $externalLinks['title'];
-		$style         = $externalLinks['style'];
+		$title         = is_array($externalLinks) ? $externalLinks['title'] : '';
+		$style         = is_array($externalLinks) ? $externalLinks['style'] : '';
 
 		if ($style == 'CONSOLE') {
 			$current_nav = "<ul id='breadcrumbs'>
@@ -4525,15 +4579,15 @@ function get_current_script_name(): string {
 function get_hash_graph_template(int $graph_template_id, string $sub_type = 'graph_template') : string {
 	switch ($sub_type) {
 		case 'graph_template':
-			$hash = db_fetch_cell_prepared('SELECT hash FROM graph_templates WHERE id = ?', [$graph_template_id]);
+			$hash = (string) db_fetch_cell_prepared('SELECT hash FROM graph_templates WHERE id = ?', [$graph_template_id]);
 
 			break;
 		case 'graph_template_item':
-			$hash = db_fetch_cell_prepared('SELECT hash FROM graph_templates_item WHERE id = ?', [$graph_template_id]);
+			$hash = (string) db_fetch_cell_prepared('SELECT hash FROM graph_templates_item WHERE id = ?', [$graph_template_id]);
 
 			break;
 		case 'graph_template_input':
-			$hash = db_fetch_cell_prepared('SELECT hash FROM graph_template_input WHERE id = ?', [$graph_template_id]);
+			$hash = (string) db_fetch_cell_prepared('SELECT hash FROM graph_template_input WHERE id = ?', [$graph_template_id]);
 
 			break;
 		default:
@@ -4558,11 +4612,11 @@ function get_hash_graph_template(int $graph_template_id, string $sub_type = 'gra
 function get_hash_data_template(int $data_template_id, string $sub_type = 'data_template') : string {
 	switch ($sub_type) {
 		case 'data_template':
-			$hash = db_fetch_cell_prepared('SELECT hash FROM data_template WHERE id = ?', [$data_template_id]);
+			$hash = (string) db_fetch_cell_prepared('SELECT hash FROM data_template WHERE id = ?', [$data_template_id]);
 
 			break;
 		case 'data_template_item':
-			$hash = db_fetch_cell_prepared('SELECT hash FROM data_template_rrd WHERE id = ?', [$data_template_id]);
+			$hash = (string) db_fetch_cell_prepared('SELECT hash FROM data_template_rrd WHERE id = ?', [$data_template_id]);
 
 			break;
 		default:
@@ -4587,11 +4641,11 @@ function get_hash_data_template(int $data_template_id, string $sub_type = 'data_
 function get_hash_data_input(int $data_input_id, string $sub_type = 'data_input_method') : string {
 	switch ($sub_type) {
 		case 'data_input_method':
-			$hash = db_fetch_cell_prepared('SELECT hash FROM data_input WHERE id = ?', [$data_input_id]);
+			$hash = (string) db_fetch_cell_prepared('SELECT hash FROM data_input WHERE id = ?', [$data_input_id]);
 
 			break;
 		case 'data_input_field':
-			$hash = db_fetch_cell_prepared('SELECT hash FROM data_input_fields WHERE id = ?', [$data_input_id]);
+			$hash = (string) db_fetch_cell_prepared('SELECT hash FROM data_input_fields WHERE id = ?', [$data_input_id]);
 
 			break;
 		default:
@@ -4616,11 +4670,11 @@ function get_hash_data_input(int $data_input_id, string $sub_type = 'data_input_
 function get_hash_cdef(int $cdef_id, string $sub_type = 'cdef') : string {
 	switch ($sub_type) {
 		case 'cdef':
-			$hash = db_fetch_cell_prepared('SELECT hash FROM cdef WHERE id = ?', [$cdef_id]);
+			$hash = (string) db_fetch_cell_prepared('SELECT hash FROM cdef WHERE id = ?', [$cdef_id]);
 
 			break;
 		case 'cdef_item':
-			$hash = db_fetch_cell_prepared('SELECT hash FROM cdef_items WHERE id = ?', [$cdef_id]);
+			$hash = (string) db_fetch_cell_prepared('SELECT hash FROM cdef_items WHERE id = ?', [$cdef_id]);
 
 			break;
 		default:
@@ -4642,7 +4696,7 @@ function get_hash_cdef(int $cdef_id, string $sub_type = 'cdef') : string {
  * @return string A 128-bit, hexadecimal hash
  */
 function get_hash_gprint(int $gprint_id) : string {
-	$hash = db_fetch_cell_prepared('SELECT hash FROM graph_templates_gprint WHERE id = ?', [$gprint_id]);
+	$hash = (string) db_fetch_cell_prepared('SELECT hash FROM graph_templates_gprint WHERE id = ?', [$gprint_id]);
 
 	if (strlen($hash) == 32 && ctype_xdigit($hash)) {
 		return $hash;
@@ -4660,7 +4714,7 @@ function get_hash_gprint(int $gprint_id) : string {
  * @return string A 128-bit, hexadecimal hash
  */
 function get_hash_automation(int $unique_id, string $table) : string {
-	$hash = db_fetch_cell_prepared("SELECT hash
+	$hash = (string) db_fetch_cell_prepared("SELECT hash
 		FROM $table
 		WHERE id = ?",
 		[$unique_id]);
@@ -4683,11 +4737,11 @@ function get_hash_automation(int $unique_id, string $table) : string {
 function get_hash_vdef(int $vdef_id, string $sub_type = 'vdef') : string {
 	switch ($sub_type) {
 		case 'vdef':
-			$hash = db_fetch_cell_prepared('SELECT hash FROM vdef WHERE id = ?', [$vdef_id]);
+			$hash = (string) db_fetch_cell_prepared('SELECT hash FROM vdef WHERE id = ?', [$vdef_id]);
 
 			break;
 		case 'vdef_item':
-			$hash = db_fetch_cell_prepared('SELECT hash FROM vdef_items WHERE id = ?', [$vdef_id]);
+			$hash = (string) db_fetch_cell_prepared('SELECT hash FROM vdef_items WHERE id = ?', [$vdef_id]);
 
 			break;
 		default:
@@ -4709,7 +4763,7 @@ function get_hash_vdef(int $vdef_id, string $sub_type = 'vdef') : string {
  * @return string A 128-bit, hexadecimal hash
  */
 function get_hash_data_source_profile(int $data_source_profile_id) : string {
-	$hash = db_fetch_cell_prepared('SELECT hash FROM data_source_profiles WHERE id = ?', [$data_source_profile_id]);
+	$hash = (string) db_fetch_cell_prepared('SELECT hash FROM data_source_profiles WHERE id = ?', [$data_source_profile_id]);
 
 	if (strlen($hash) == 32 && ctype_xdigit($hash)) {
 		return $hash;
@@ -4726,7 +4780,7 @@ function get_hash_data_source_profile(int $data_source_profile_id) : string {
  * @return string A 128-bit, hexadecimal hash
  */
 function get_hash_host_template(int $host_template_id) : string {
-	$hash = db_fetch_cell_prepared('SELECT hash FROM host_template WHERE id = ?', [$host_template_id]);
+	$hash = (string) db_fetch_cell_prepared('SELECT hash FROM host_template WHERE id = ?', [$host_template_id]);
 
 	if (strlen($hash) == 32 && ctype_xdigit($hash)) {
 		return $hash;
@@ -4746,19 +4800,19 @@ function get_hash_host_template(int $host_template_id) : string {
 function get_hash_data_query(int $data_query_id, string $sub_type = 'data_query') : string {
 	switch ($sub_type) {
 		case 'data_query':
-			$hash = db_fetch_cell_prepared('SELECT hash FROM snmp_query WHERE id = ?', [$data_query_id]);
+			$hash = (string) db_fetch_cell_prepared('SELECT hash FROM snmp_query WHERE id = ?', [$data_query_id]);
 
 			break;
 		case 'data_query_graph':
-			$hash = db_fetch_cell_prepared('SELECT hash FROM snmp_query_graph WHERE id = ?', [$data_query_id]);
+			$hash = (string) db_fetch_cell_prepared('SELECT hash FROM snmp_query_graph WHERE id = ?', [$data_query_id]);
 
 			break;
 		case 'data_query_sv_data_source':
-			$hash = db_fetch_cell_prepared('SELECT hash FROM snmp_query_graph_rrd_sv WHERE id = ?', [$data_query_id]);
+			$hash = (string) db_fetch_cell_prepared('SELECT hash FROM snmp_query_graph_rrd_sv WHERE id = ?', [$data_query_id]);
 
 			break;
 		case 'data_query_sv_graph':
-			$hash = db_fetch_cell_prepared('SELECT hash FROM snmp_query_graph_sv WHERE id = ?', [$data_query_id]);
+			$hash = (string) db_fetch_cell_prepared('SELECT hash FROM snmp_query_graph_sv WHERE id = ?', [$data_query_id]);
 
 			break;
 		default:
@@ -4925,13 +4979,13 @@ function sanitize_search_string(string $string) : string {
 	static $drop_char_replace = ['', '', ' ', ' ', ' ', ' ', '', '', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '];
 
 	// Replace line endings by a space
-	$string = preg_replace('/[\n\r]/is', ' ', $string);
+	$string = preg_replace('/[\n\r]/is', ' ', $string) ?? $string;
 
 	// HTML entities like &nbsp;
-	$string = preg_replace('/\b&[a-z]+;\b/', ' ', $string);
+	$string = preg_replace('/\b&[a-z]+;\b/', ' ', $string) ?? $string;
 
 	// Remove URL's
-	$string = preg_replace('/\b[a-z0-9]+:\/\/[a-z0-9\.\-]+(\/[a-z0-9\?\.%_\-\+=&\/]+)?/', ' ', $string);
+	$string = preg_replace('/\b[a-z0-9]+:\/\/[a-z0-9\.\-]+(\/[a-z0-9\?\.%_\-\+=&\/]+)?/', ' ', $string) ?? $string;
 
 	// Filter out strange characters like ^, $, &, change "it's" to "its"
 	for ($i = 0; $i < cacti_count($drop_char_match); $i++) {
@@ -5055,7 +5109,7 @@ function sanitize_unserialize_selected_items(mixed $items) : mixed {
  * @return array The sanitized selected graphs array
  */
 function sanitize_unserialize_selected_graphs(mixed $items) : array {
-	$return_items = false;
+	$return_items = [];
 
 	if (!empty($items) && is_string($items)) {
 		$unstripped = stripslashes($items);
@@ -5211,8 +5265,8 @@ function general_header() : void {
 function admin_email(string $subject, string $message) : bool {
 	$result = false;
 
-	$server_name = gethostname();
-	$server_addr = gethostbyname($server_name);
+	$server_name = gethostname() ?: 'localhost';
+	$server_addr = gethostbyname((string) $server_name);
 
 	$fin_message  = '<h1>Cacti Admin Notification</h1>';
 	$fin_message .= "<h2>$subject</h2>";
@@ -5230,7 +5284,7 @@ function admin_email(string $subject, string $message) : bool {
 				WHERE id = ?',
 				[read_config_option('admin_user')]);
 
-			if (cacti_sizeof($admin_details)) {
+			if (is_array($admin_details) && cacti_sizeof($admin_details)) {
 				$email = read_config_option('settings_from_email');
 				$name  = read_config_option('settings_from_name');
 
@@ -5964,7 +6018,7 @@ function ping_mail_server(string $host, int $port, string $user, string $passwor
 		// Connect to an SMTP server
 		if ($smtp->connect($host, $port, $timeout)) {
 			// Say hello
-			if ($smtp->hello(gethostbyname(gethostname()))) { // Put your host name in here
+			if ($smtp->hello(gethostbyname((string) (gethostname() ?: 'localhost')))) { // Put your host name in here
 				// Authenticate
 				if ($user != '') {
 					if ($smtp->authenticate($user, $password)) {
@@ -6129,6 +6183,10 @@ function get_dns_from_ip(string $ip, string $dns, int $timeout = 1000) : string 
 	// create UDP socket
 	$handle = @fsockopen("udp://$dns", 53);
 
+	if ($handle === false) {
+		return $ip;
+	}
+
 	@stream_set_timeout($handle, intval(floor($timeout / 1000)), ($timeout * 1000) % 1000000);
 	@stream_set_blocking($handle, true);
 
@@ -6170,6 +6228,10 @@ function get_dns_from_ip(string $ip, string $dns, int $timeout = 1000) : string 
 		do {
 			// get segment size
 			$len = unpack('c', substr($response, $position));
+
+			if ($len === false) {
+				break;
+			}
 
 			// null terminated string, so length 0 = finished
 			if ($len[1] == 0) {
@@ -6271,7 +6333,7 @@ function cacti_debug_backtrace(string $entry = '', bool $html = false, bool $rec
 		$func = $c['function'] . '()';
 
 		if (isset($c['class'])) {
-			$func = $c['class'] . $c['type'] . $func;
+			$func = $c['class'] . ($c['type'] ?? '') . $func;
 		}
 
 		$s = ($file != '' ? $file . ':' : '') . "$func" . (empty($s) ? '' : ', ') . $s;
@@ -6448,7 +6510,7 @@ function get_daysfromtime(mixed $time, bool $secs = false, string $pad = '', int
 			}
 
 			if ($all || $val > 0) {
-				$result .= padleft($pad, $val, 2) . $text['prefix'] . $text[$index] . $text['suffix'];
+				$result .= padleft($pad, (string) $val, 2) . $text['prefix'] . $text[$index] . $text['suffix'];
 				$all = true;
 			}
 		}
@@ -6520,18 +6582,34 @@ function get_classic_tabimage(string $text, bool $down = false) : mixed {
 
 		$template = imagecreatefromgif(CACTI_PATH_IMAGES . '/' . $images[$down]);
 
+		if ($template === false) {
+			return false;
+		}
+
 		$w = imagesx($template);
 		$h = imagesy($template);
 
 		$tab = imagecreatetruecolor($w, $h);
+
+		if ($tab === false) {
+			return false;
+		}
+
 		imagecopy($tab, $template, 0, 0, 0, 0, $w, $h);
 
 		$txcol = imagecolorat($tab, 0, 0);
 		$lines = [];
 
-		imagecolortransparent($tab,$txcol);
+		if ($txcol !== false) {
+			imagecolortransparent($tab, $txcol);
+		}
 
 		$white         = imagecolorallocate($tab, 255, 255, 255);
+
+		if ($white === false) {
+			return false;
+		}
+
 		$ttf_functions = function_exists('imagettftext') && function_exists('imagettfbbox');
 
 		if ($ttf_functions) {
@@ -6542,6 +6620,11 @@ function get_classic_tabimage(string $text, bool $down = false) : mixed {
 				// if no wrapping is requested, or no wrapping is possible...
 				if ((!$variation[2]) || ($variation[2] && !str_contains($text,' '))) {
 					$bounds  = imagettfbbox($fontsize, 0, $font, $text);
+
+					if ($bounds === false) {
+						continue;
+					}
+
 					$w       = $bounds[4] - $bounds[0];
 					$h       = $bounds[1] - $bounds[5];
 					$realx   = $x - $w / 2 - 1;
@@ -6554,6 +6637,11 @@ function get_classic_tabimage(string $text, bool $down = false) : mixed {
 
 					foreach ($texts as $txt) {
 						$bounds  = imagettfbbox($fontsize, 0, $font, $txt);
+
+						if ($bounds === false) {
+							continue;
+						}
+
 						$w       = $bounds[4] - $bounds[0];
 						$h       = $bounds[1] - $bounds[5];
 						$realx   = $x - $w / 2 - 1;
@@ -6603,9 +6691,9 @@ function get_classic_tabimage(string $text, bool $down = false) : mixed {
 
 		foreach ($lines as $line) {
 			if ($ttf_functions) {
-				imagettftext($tab, $line[2], 0, intval($line[3]), intval($line[4]), $white, $line[1], $line[0]);
+				imagettftext($tab, $line[2], 0, intval($line[3]), intval($line[4]), $white, (string) $line[1], $line[0]);
 			} else {
-				imagestring($tab, $line[1], intval($line[3]), intval($line[4]), $line[0], $white);
+				imagestring($tab, (int) $line[1], intval($line[3]), intval($line[4]), $line[0], $white);
 			}
 		}
 
@@ -6619,7 +6707,7 @@ function get_classic_tabimage(string $text, bool $down = false) : mixed {
 		$image = ob_get_contents();
 		ob_end_clean();
 
-		return ('data:image/gif;base64,' . base64_encode($image));
+		return ('data:image/gif;base64,' . base64_encode((string) ($image ?: '')));
 	} else {
 		return false;
 	}
@@ -7236,7 +7324,7 @@ if (cacti_strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' && !function_exists('posix_
 	function posix_kill(int $pid, int $signal = SIGTERM) : bool {
 		// Check if the process exists
 		$checkProcessCmd = "powershell.exe -Command \"Get-Process -Id $pid -ErrorAction SilentlyContinue\"";
-		$processExists   = trim(shell_exec($checkProcessCmd));
+		$processExists   = trim((string) shell_exec($checkProcessCmd));
 
 		if (!empty($processExists)) {
 			if ($signal == 0) {
@@ -7297,7 +7385,7 @@ function date_time_format() : string {
 
 	// setup date format
 	$date_fmt        = read_config_option('default_date_format');
-	$dateCharSetting = read_config_option('default_datechar');
+	$dateCharSetting = (int) read_config_option('default_datechar');
 
 	if (!isset($datechar[$dateCharSetting])) {
 		$dateCharSetting = GDC_SLASH;
@@ -7328,6 +7416,11 @@ function get_last_line(string $file) : string {
 	$cursor = -1;
 
 	$f = fopen($file, 'r');
+
+	if ($f === false) {
+		return '';
+	}
+
 	fseek($f, $cursor, SEEK_END);
 
 	$char = fgetc($f);
@@ -7357,7 +7450,7 @@ function get_source_timestamp() : array {
 	if ($git_status === null) {
 		$git_path = realpath(__DIR__ . '/../.git/logs/HEAD');
 
-		if (file_exists($git_path)) {
+		if ($git_path !== false && file_exists($git_path)) {
 			$line = get_last_line($git_path);
 
 			if (preg_match('/([0-9a-z]{40}) ([0-9a-z]{40}) .* ([0-9]{10})/', $line, $matches)) {
@@ -7678,7 +7771,7 @@ function is_cacti_release(mixed $version = null) : bool {
  *
  * @return int
  */
-function version_to_decimal(string $version, int $length = 9, bool $hex = true) : int {
+function version_to_decimal(string $version, int $length = 9, bool $hex = true) : int|string {
 	return version_to_bits($version, $hex);
 }
 
@@ -7691,11 +7784,11 @@ function version_to_decimal(string $version, int $length = 9, bool $hex = true) 
  * @param string  $version The version to be converted
  * @param boolean $hex     Return the final decimal as hex
  *
- * @return integer
+ * @return int|string
  *
  * @depends format_cacti_version
  */
-function version_to_bits(string $version, $hex = false) : int {
+function version_to_bits(string $version, $hex = false) : int|string {
 	/*
 	 * Bits is how many bits to shift that section of a
 	 * version to the left within the integer.
@@ -7799,7 +7892,9 @@ function version_to_bits(string $version, $hex = false) : int {
 		cacti_log('Invalid hex passed - ' . $newver . ' - ' . cacti_debug_backtrace('', false, false, 0, 1), false, 'WARNING');
 	}
 
-	return $hex ? @dechex($newver) : $newver;
+	$newver = (int) $newver;
+
+	return $hex ? dechex($newver) : $newver;
 }
 
 function char_to_dec(string $part) : int {
@@ -7849,13 +7944,17 @@ function cacti_gethostbyname(string $hostname, mixed $type = '') : string {
 
 	$return = cacti_gethostinfo($hostname, $type);
 
-	if (cacti_sizeof($return)) {
+	if (is_array($return) && cacti_sizeof($return)) {
 		foreach ($return as $record) {
+			if (!is_array($record) || !isset($record['type'])) {
+				continue;
+			}
+
 			switch($record['type']) {
 				case 'A':
-					return $record['ip'];
+					return $record['ip'] ?? $hostname;
 				case 'AAAA':
-					return $record['ipv6'];
+					return $record['ipv6'] ?? $hostname;
 			}
 		}
 	}
@@ -7900,7 +7999,7 @@ function get_installed_rrdtool_version() : string {
 
 			$version = false;
 
-			if (preg_match('/^RRDtool ([0-9.]+) /', $shell ?? '', $matches)) {
+			if (preg_match('/^RRDtool ([0-9.]+) /', (string) ($shell ?? ''), $matches)) {
 				foreach ($rrdtool_versions as $rrdtool_version => $rrdtool_version_text) {
 					if (cacti_version_compare($rrdtool_version, $matches[1], '<=')) {
 						$version = $rrdtool_version;
@@ -8170,6 +8269,10 @@ function is_resource_writable(string $path) : bool {
 function recursive_chown(string $path, string|int $uid, string|int $gid) : bool {
 	$d = opendir($path);
 
+	if ($d === false) {
+		return false;
+	}
+
 	$success = false;
 
 	while (($file = readdir($d)) !== false) {
@@ -8247,7 +8350,11 @@ function get_running_user() : string {
 
 	if (empty($tmp_user)) {
 		if (function_exists('posix_geteuid')) {
-			$tmp_user = posix_getpwuid(posix_geteuid())['name'];
+			$user_info = posix_getpwuid(posix_geteuid());
+
+			if ($user_info !== false) {
+				$tmp_user = $user_info['name'];
+			}
 		}
 	}
 
@@ -8440,7 +8547,7 @@ function get_cacti_base_tables() : array {
 		return $base_tables;
 	}
 
-	if (cacti_sizeof($schema)) {
+	if (is_array($schema) && cacti_sizeof($schema)) {
 		foreach ($schema as $line) {
 			if (str_contains($line, 'CREATE TABLE')) {
 				$table         = str_replace(['CREATE TABLE', '`', '(', ' '], '', $line);
@@ -8596,8 +8703,8 @@ function cacti_strtoupper(string $string) : string {
 
 function is_function_enabled(string $name) : bool {
 	return function_exists($name) &&
-		!in_array($name, array_map('trim', explode(', ', ini_get('disable_functions'))), true) &&
-		cacti_strtolower(ini_get('safe_mode')) != 1;
+		!in_array($name, array_map('trim', explode(', ', (string) (ini_get('disable_functions') ?: ''))), true) &&
+		cacti_strtolower((string) (ini_get('safe_mode') ?: '')) != 1;
 }
 
 function is_page_ajax() : bool {
@@ -8704,9 +8811,9 @@ function cacti_cookie_set($session, $val, $timeout = null) : void {
 			'samesite' => 'Strict'
 		];
 
-		setcookie($session, $val, $options);
+		setcookie((string) $session, $val, $options);
 	} else {
-		setcookie($session, $val, ['expires' => time() + 3600, 'path' => CACTI_PATH_URL, 'domain' => $domain, 'secure' => $secure, 'httponly' => true]);
+		setcookie((string) $session, $val, ['expires' => time() + 3600, 'path' => CACTI_PATH_URL, 'domain' => $domain, 'secure' => $secure, 'httponly' => true]);
 	}
 }
 
@@ -8726,7 +8833,7 @@ function cacti_cookie_logout() : void {
 
 	$secure = cacti_is_https();
 
-	$cookies = [session_name(), session_name() . '_opt', 'cacti_rembers'];
+	$cookies = [(string) session_name(), (string) session_name() . '_opt', 'cacti_rembers'];
 
 	if (version_compare(PHP_VERSION, '7.3', '>=')) {
 		$options = [
@@ -9036,7 +9143,7 @@ function debounce_run_notification(mixed $id, int $frequency = 7200) : bool {
  * @param mixed $ids
  * @param bool  $shouldExplode
  *
- * @return array
+ * @return array<int>
  */
 function cacti_unique_ids(mixed $ids, bool $shouldExplode = true) : array {
 	if ($shouldExplode && is_string($ids)) {
@@ -9047,7 +9154,7 @@ function cacti_unique_ids(mixed $ids, bool $shouldExplode = true) : array {
 		$ids = [$ids];
 	}
 
-	$ids = array_filter(array_unique($ids));
+	$ids = array_map('intval', array_filter(array_unique($ids)));
 	sort($ids);
 
 	return $ids;
@@ -9065,10 +9172,14 @@ function cacti_depreciated(string $text) : void {
 }
 
 function substring_index(string $subject, string $delim, int $count) : string {
+	if ($delim === '') {
+		return $subject;
+	}
+
 	if ($count < 0) {
-		return implode($delim, array_slice(explode($delim, $subject), $count));
+		return implode($delim, array_slice(explode($delim, $subject), $count)); // @phpstan-ignore argument.type (guard above ensures $delim is non-empty)
 	} else {
-		return implode($delim, array_slice(explode($delim, $subject), 0, $count));
+		return implode($delim, array_slice(explode($delim, $subject), 0, $count)); // @phpstan-ignore argument.type (guard above ensures $delim is non-empty)
 	}
 }
 
@@ -9091,6 +9202,7 @@ function cacti_format_ipv6_colon(string $address) : string {
 function text_substitute(mixed $text, bool $isHtml = true, bool $includeStandard = true,
 	mixed $extraSubstitutions = null, mixed $extraMatches = null) : string {
 	if (!empty($text)) {
+		/** @var callable $parser */
 		$parser = 'text_regex_parser' . ($isHtml ? '_html' : '');
 
 		$extraSubstitutions ??= [];
@@ -9127,15 +9239,15 @@ function text_substitute(mixed $text, bool $isHtml = true, bool $includeStandard
 		}
 	}
 
-	return $text;
+	return (string) $text;
 }
 
-function text_substitute_line(string $source, string $regex, string $parser, array $search, array $values) : string {
+function text_substitute_line(string $source, string $regex, callable $parser, array $search, array $values) : string {
 	$result = $source;
 
 	if (!empty($source)) {
 		if (!empty($regex)) {
-			$result = preg_replace_callback($regex, $parser, $result);
+			$result = preg_replace_callback($regex, $parser, $result) ?? $result;
 		}
 
 		if (!empty($values) && cacti_sizeof($values) == cacti_sizeof($search)) {
@@ -9206,7 +9318,7 @@ function text_regex_parser(array $matches, mixed $link = false) : string {
 	}
 
 	if ($key_match != -1) {
-		$key_setting = ($key_match - 1) / 4;
+		$key_setting = (int) (($key_match - 1) / 4);
 		$regex_array = text_get_regex_array();
 
 		if (cacti_sizeof($regex_array)) {
@@ -9422,7 +9534,7 @@ function text_regex_graphs(array $matches, mixed $link = false) : string {
 
 		foreach ($graph_ids as $id) {
 			$graph_add .= ($i > 0 ? '%2C' : '') . $id;
-			$title .= ($title != '' ? ', ' : '') . htmle((isset($graph_cache[$id]) ? htmle($graph_cache[$id]) : $id));
+			$title .= ($title != '' ? ', ' : '') . htmle((isset($graph_cache[$id]) ? htmle($graph_cache[$id]) : (string) $id));
 			$i++;
 		}
 
@@ -9557,7 +9669,7 @@ function detect_cpu_cores() : int {
 		}
 	}
 
-	return intval(trim($cpu_cores));
+	return intval(trim((string) $cpu_cores));
 }
 
 /**
