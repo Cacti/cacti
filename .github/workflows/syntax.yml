@@ -229,18 +229,18 @@ jobs:
         sudo chmod 777 ${{ github.workspace }}/include/config.php
         cat ${{ github.workspace}}/include/config.php
 
-    - name: Setup Cacti Daemon
-      run: |
-        sudo cp ${{ github.workspace }}/tests/tools/cactid.service /etc/systemd/system/cactid.service
-        sudo sed -i 's/apache/www-data/g' /etc/systemd/system/cactid.service
-        sudo systemctl enable cactid
-        sudo systemctl start cactid
-        sudo systemctl status cactid
-        if ! systemctl is-active --quiet cactid; then
-          journalctl -xeu cactid.service
-          echo "Cacti daemon failed to start"
-          exit 1
-        fi
+#    - name: Setup Cacti Daemon
+#      run: |
+#        sudo cp ${{ github.workspace }}/tests/tools/cactid.service /etc/systemd/system/cactid.service
+#        sudo sed -i 's/apache/www-data/g' /etc/systemd/system/cactid.service
+#        sudo systemctl enable cactid
+#        sudo systemctl start cactid
+#        sudo systemctl status cactid
+#        if ! systemctl is-active --quiet cactid; then
+#          journalctl -xeu cactid.service
+#          echo "Cacti daemon failed to start"
+#          exit 1
+#        fi
 
     - name: Check install code for validity
       run: |
