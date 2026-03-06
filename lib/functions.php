@@ -9534,7 +9534,7 @@ function cacti_unserialize(string $strobj) : mixed {
 function detect_cpu_cores() : int {
 	$cpu_cores = 0;
 
-	if (str_starts_with(cacti_strtoupper(PHP_OS), 'WIN')) {
+	if (CACTI_SERVER_OS === 'win32') {
 		$output = shell_exec('powershell -Command "Get-WmiObject Win32_Processor | Select-Object NumberOfLogicalProcessors"');
 
 		if (!is_null($output) && $output !== false) {
