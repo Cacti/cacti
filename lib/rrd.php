@@ -184,6 +184,12 @@ function __rrd_proxy_init(string $logopt = 'WEBLOG') : mixed {
 		}
 	}
 
+	if ($rrdp_public_key === false || trim($rrdp_public_key) === '') {
+		cacti_log('CACTI2RRDP ERROR: Public RSA Key Exchange failed - no key received.', false, $logopt, POLLER_VERBOSITY_LOW);
+
+		return false;
+	}
+
 	$public      = phpseclib3\Crypt\RSA::loadPublicKey($rrdp_public_key);
 	$fingerprint = $public->getFingerprint('md5');
 
@@ -259,7 +265,7 @@ function encrypt(string $output, string $rsa_key) : string {
 	}
 }
 
-function decrypt(string $input) : string {
+function decrypt(string $input) : string|false {
 	global $encryption;
 
 	if ($encryption) {
@@ -272,6 +278,10 @@ function decrypt(string $input) : string {
 		$aes_key_length = hexdec(substr($input, 0, 3));
 		$aes_key        = base64_decode(substr($input, 3, $aes_key_length), true);
 		$ciphertext     = base64_decode(substr($input, 3 + $aes_key_length), true);
+
+		if ($aes_key === false || $ciphertext === false) {
+			return false;
+		}
 
 		$aes_key = $public->decrypt($aes_key);
 		$aes->setKey($aes_key);
@@ -882,7 +892,7 @@ function rrdtool_function_create(int $local_data_id, bool $show_source, mixed $r
 							$spath .= '/' . $path;
 
 							$powner_id = fileowner(CACTI_PATH_RRA . $spath);
-							$pgroup_id = fileowner(CACTI_PATH_RRA . $spath);
+							$pgroup_id = filegroup(CACTI_PATH_RRA . $spath);
 
 							if ($powner_id != $owner_id) {
 								$success = chown(CACTI_PATH_RRA . $spath, $owner_id);
@@ -2705,7 +2715,8 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 							if ($value_array[0] < 0) {
 								$value = date('U') - (-3600 * (int) $value_array[0]) - 60 * (int) $value_array[1];
 							} else {
-								$value = date('U', mktime((int) $value_array[0], (int) $value_array[1], 0));
+								$mktime = mktime((int) $value_array[0], (int) $value_array[1], 0);
+								$value  = date('U', $mktime !== false ? $mktime : 0);
 							}
 
 							$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $value . $graph_item_color_code . ':' . cacti_escapeshellarg(rrdtool_escape_string(htmle($graph_variables['text_format'][$graph_item_id])) . $hardreturn[$graph_item_id]) . $dash;
@@ -4195,7 +4206,7 @@ function rrd_append_cdp_prep_ds(object $dom, string $version) : object {
 		foreach ($cdp_prep_list as $cdp_prep) {
 			/* $cdp_prep now points to the next <cdp_prep> XML Element
 			 * and append new ds entry at end of <cdp_prep> child list */
-			$cdp_prep->appendChild($new_ds);
+			$cdp_prep->appendChild($new_ds->cloneNode(true));
 		}
 	}
 
@@ -4223,9 +4234,9 @@ function rrd_append_value(object $dom) : object {
 	// iterate all entries found, equals 'number of <rra>' times 'number of <ds>'
 	if ($itemList->length) {
 		foreach ($itemList as $item) {
-			/* $item now points to the next <cdp_prep> XML Element
-			 * and append new ds entry at end of <cdp_prep> child list */
-			$item->appendChild($new_v);
+			/* $item now points to the next <row> XML Element
+			 * and append new v entry at end of <row> child list */
+			$item->appendChild($new_v->cloneNode(true));
 		}
 	}
 
