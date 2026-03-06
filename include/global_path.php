@@ -68,6 +68,7 @@ define('CACTI_PATH_INSTALL',  $config['install_path']);
 define('CACTI_PATH_LIBRARY',  $config['library_path']);
 define('CACTI_PATH_LOCALES',  $config['locales_path']);
 define('CACTI_PATH_LOG',      $config['log_path']);
+define('CACTI_PATH_MIBS',     $config['mibs_path']);
 define('CACTI_PATH_PLUGINS',  $config['plugins_path']);
 define('CACTI_PATH_RESOURCE', $config['resource_path']);
 define('CACTI_PATH_RRA',      $config['rra_path']);

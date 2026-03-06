@@ -126,7 +126,7 @@ function changelog_view() : void {
 			$type = 'unknown';
 
 			if (isset($parts[1])) {
-				$type = strtolower($parts[1]);
+				$type = cacti_strtolower($parts[1]);
 
 				if ($type == 'security') {
 					$type = ' security';

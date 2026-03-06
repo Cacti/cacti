@@ -227,7 +227,7 @@ if (cacti_sizeof($parms)) {
 					($value <= DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION)) {
 					$dsGraph['reindex_method'] = intval($value);
 				} else {
-					switch (strtolower($value)) {
+					switch (cacti_strtolower($value)) {
 						case 'none':
 							$dsGraph['reindex_method'] = DATA_QUERY_AUTOINDEX_NONE;
 

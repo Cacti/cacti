@@ -50,7 +50,7 @@ $php        = cacti_escapeshellcmd(read_config_option('path_php_binary'));
 $extra_args = ' ' . cacti_escapeshellarg('./snmpagent_mibcachechild.php');
 
 while (true) {
-	if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+	if (cacti_strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
 		popen('start "CactiSNMPCacheChild" /I ' . $php . ' ' . $extra_args, 'r');
 	} else {
 		exec($php . ' ' . $extra_args . ' > /dev/null &');

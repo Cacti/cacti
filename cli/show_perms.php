@@ -84,7 +84,7 @@ $perms = db_get_permissions(true);
 $count = 0;
 
 if ($output_json) {
-	print strtolower(json_encode($perms, JSON_PRETTY_PRINT));
+	print cacti_strtolower(json_encode($perms, JSON_PRETTY_PRINT));
 } else {
 	if ($output_grants) {
 		$pad = str_repeat('-', 20);

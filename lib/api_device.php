@@ -1889,12 +1889,12 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 
 	$errors     = 0;
 	$warnings   = 0;
-	$include_gt = strtolower($include_gt);
-	$include_dq = strtolower($include_dq);
-	$include_dt = strtolower($include_dt);
-	$clone_gt   = strtolower($clone_gt);
-	$clone_dq   = strtolower($clone_dq);
-	$clone_dt   = strtolower($clone_dt);
+	$include_gt = cacti_strtolower($include_gt);
+	$include_dq = cacti_strtolower($include_dq);
+	$include_dt = cacti_strtolower($include_dt);
+	$clone_gt   = cacti_strtolower($clone_gt);
+	$clone_dq   = cacti_strtolower($clone_dq);
+	$clone_dt   = cacti_strtolower($clone_dt);
 
 	printf('Cloning Criteria for Device Template are:' . PHP_EOL);
 	printf('---------------------------------------------------------------------------' . PHP_EOL);
@@ -2958,7 +2958,7 @@ function api_device_template_download(string $type, array $ids) : void {
 			$name = clean_up_name(db_fetch_cell_prepared('SELECT name FROM host_template_archive WHERE id = ?', $ids));
 		}
 
-		$filename = 'device_package_' . strtolower($name) . '_download.tar';
+		$filename = 'device_package_' . cacti_strtolower($name) . '_download.tar';
 	} else {
 		$filename = 'device_package_multiple_download.tar';
 	}

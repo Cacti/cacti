@@ -1817,7 +1817,7 @@ function settings_edit(string $header_label) : void {
 		var custom_fonts = $('#custom_fonts').is(':checked');
 		var fields = {
 			fonts: (themeFonts == 1),
-			custom_fonts: themeFonts != 1 && custom_fonts,
+			custom_fonts: themeFonts != 1,
 			title_size: themeFonts != 1 && custom_fonts,
 			title_font: themeFonts != 1 && custom_fonts,
 			legend_size: themeFonts != 1 && custom_fonts,
@@ -1827,6 +1827,8 @@ function settings_edit(string $header_label) : void {
 			unit_size: themeFonts != 1 && custom_fonts,
 			unit_font: themeFonts != 1 && custom_fonts,
 		}
+
+		toggleFields(fields);
 	}
 
 	$(function() {
