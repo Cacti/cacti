@@ -57,8 +57,7 @@ if (isrv('error')) {
 			'ignore_errors'     => true
 		],
 		'http' => [
-			'follow_location'   => 0,
-			'max_redirects'     => 1
+			'follow_location' => 0
 		]
 	];
 
