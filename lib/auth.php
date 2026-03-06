@@ -4846,7 +4846,7 @@ function disable_2fa(int $user_id) : string {
 			[$_SESSION[SESS_USER_ID]]
 		);
 
-		if (is_array($current_user) && $current_user['tfa_enabled'] != '') {
+		if (is_array($current_user) && cacti_sizeof($current_user) && $current_user['tfa_enabled'] != '') {
 			$result['status'] = '501';
 			$result['text']   = __('2FA failed to be disabled');
 		} else {
@@ -4890,7 +4890,7 @@ function enable_2fa(int $user_id) : string {
 			[$_SESSION[SESS_USER_ID]]
 		);
 
-		if (!is_array($current_user) || $current_user['tfa_secret'] != $secret) {
+		if (!is_array($current_user) || !cacti_sizeof($current_user) || $current_user['tfa_secret'] != $secret) {
 			$result['status'] = '501';
 			$result['text']   = __('2FA secret failed to be generated/updated');
 		} else {
