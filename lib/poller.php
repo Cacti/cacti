@@ -179,7 +179,7 @@ function exec_with_timeout($cmd, &$output, &$return_code, $timeout = 5) {
 	);
 
 	// Start the process.
-	$process = proc_open('exec ' . $cmd, $descriptors, $pipes);
+	$process = proc_open('exec setsid ' . $cmd, $descriptors, $pipes);
 
 	if (!is_resource($process)) {
 		return false;
@@ -240,7 +240,8 @@ function exec_with_timeout($cmd, &$output, &$return_code, $timeout = 5) {
 
 	// Kill the process in case the timeout expired and it's still running.
 	// If the process already exited this won't do anything.
-	// Use negative PID to kill the entire process group.
+	// setsid in the proc_open command makes the child a new session/process group
+	// leader (PID == PGID), so posix_kill(-pid, 9) correctly targets that group.
 	if (isset($status['pid']) && $status['running'] && function_exists('posix_kill')) {
 		posix_kill(-$status['pid'], 9);
 	}
