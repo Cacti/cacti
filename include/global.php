@@ -241,13 +241,11 @@ if (isset($input_whitelist)) {
 	define('CACTI_WHITELIST', $input_whitelist);
 }
 
-// define required path as constants
-
 // define any additional paths as constants
 foreach ($config as $key => $value) {
 	if (str_ends_with($key, '_path')) {
 		$path_name     = substr($key, 0, -5);
-		$constant_name = 'CACTI_PATH_' . cacti_strtoupper($path_name);
+		$constant_name = 'CACTI_PATH_' . mb_strtoupper($path_name);
 
 		if (!defined($constant_name)) {
 			define($constant_name, $value);
