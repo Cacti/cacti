@@ -197,7 +197,7 @@ switch (grv('action')) {
 					break;
 			}
 		} else {
-			switch(strtolower(gnrv('image_format'))) {
+			switch(cacti_strtolower(gnrv('image_format'))) {
 				case 'png':
 					$graph_data_array['image_format'] = 'png';
 

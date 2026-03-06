@@ -1253,9 +1253,9 @@ function query_snmp_host(int $host_id, int $snmp_query_id) : bool {
 
 						foreach ($parts as $idx => $part) {
 							if (is_numeric($part)) {
-								$parts[$idx] = substr(strtoupper('00' . dechex(intval($part))), -2);
+								$parts[$idx] = substr(cacti_strtoupper('00' . dechex(intval($part))), -2);
 							} else {
-								$parts[$idx] = substr(strtoupper('00' . $part), -2);
+								$parts[$idx] = substr(cacti_strtoupper('00' . $part), -2);
 							}
 
 							if ($idx % 2 == 0 && $idx > 0) {
@@ -1565,9 +1565,9 @@ function query_snmp_host(int $host_id, int $snmp_query_id) : bool {
 
 						foreach ($parts as $idx => $part) {
 							if (is_numeric($part)) {
-								$parts[$idx] = substr(strtoupper('00' . dechex(intval($part))), -2);
+								$parts[$idx] = substr(cacti_strtoupper('00' . dechex(intval($part))), -2);
 							} else {
-								$parts[$idx] = substr(strtoupper('00' . $part), -2);
+								$parts[$idx] = substr(cacti_strtoupper('00' . $part), -2);
 							}
 
 							if ($idx % 2 == 0 && $idx > 0) {

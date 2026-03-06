@@ -36,11 +36,15 @@ function ss_sql() : string {
 	global $database_password;
 	global $database_hostname;
 
+	$cmd = 'mysqladmin --host=' . escapeshellarg($database_hostname) . ' --user=' . escapeshellarg($database_username);
+
 	if ($database_password != '') {
-		$result = `mysqladmin --host=$database_hostname --user=$database_username --password=$database_password status`;
-	} else {
-		$result = `mysqladmin --host=$database_hostname --user=$database_username status`;
+		$cmd .= ' --password=' . escapeshellarg($database_password);
 	}
+
+	$cmd .= ' status';
+
+	$result = shell_exec($cmd) ?? '';
 
 	$result = preg_replace('/: /', ':', $result);
 	$result = preg_replace('/  /', ' ', $result);

@@ -2391,7 +2391,7 @@ function reports_run(int $id) : bool {
 	$output      = [];
 	$command     = $report['run_command'] . ' --report-id=' . $report['source_id'] . ' --queue-id=' . $id;
 	$timeout     = $report['run_timeout'];
-	$source      = strtoupper($report['source']);
+	$source      = cacti_strtoupper($report['source']);
 
 	if ($timeout == 0) {
 		$timeout = read_config_option('scheduler_timeout');

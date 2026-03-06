@@ -1204,8 +1204,8 @@ function boost_display_run_status() : void {
 				// check and fry as applicable
 				foreach ($directory_contents as $file) {
 					// only remove jpeg's and png's
-					if ((substr_count(strtolower($file), '.png')) ||
-						(substr_count(strtolower($file), '.jpg'))) {
+					if ((substr_count(cacti_strtolower($file), '.png')) ||
+						(substr_count(cacti_strtolower($file), '.jpg'))) {
 						$cache_files++;
 						$directory_size += filesize($file);
 					}

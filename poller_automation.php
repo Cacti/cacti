@@ -493,7 +493,7 @@ function discoverDevices(int $network_id, int $thread) : bool {
 
 					$device['hostname']      = $dnsname;
 					$device['dnsname']       = $dnsname;
-					$device['dnsname_short'] = explode('.', strtolower($dnsname))[0];
+					$device['dnsname_short'] = explode('.', cacti_strtolower($dnsname))[0];
 				} elseif ($network['enable_netbios'] == 'on') {
 					automation_debug('Device: ' . $device['ip_address'] . ', Checking DNS: Not found, Checking NetBIOS:');
 
@@ -535,7 +535,7 @@ function discoverDevices(int $network_id, int $thread) : bool {
 						[$dnsname, $device['ip_address']]);
 
 					$device['dnsname']       = $dnsname;
-					$device['dnsname_short'] = explode('.', strtolower($dnsname))[0];
+					$device['dnsname_short'] = explode('.', cacti_strtolower($dnsname))[0];
 				} elseif ($network['enable_netbios'] == 'on') {
 					automation_debug('Device: ' . $device['ip_address'] . ', Checking DNS: Not found, Checking NetBIOS:');
 

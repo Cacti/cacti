@@ -2097,9 +2097,9 @@ class Installer implements JsonSerializable {
 			$flags = explode('-', $key);
 
 			if (cacti_count($flags) > 1) {
-				$flagName = strtolower($flags[1]);
+				$flagName = cacti_strtolower($flags[1]);
 			} else {
-				$flagName = strtolower($flags[0]);
+				$flagName = cacti_strtolower($flags[0]);
 			}
 			$langOutput .= '<option value=\'' . $key . '\'' . $selected . ' data-class=\'fi-' . $flagName . '\'><span class="fi fis fi-' . $flagName . '"></span>' . $value . '</option>';
 		}
@@ -2162,7 +2162,7 @@ class Installer implements JsonSerializable {
 		$test_request_len   = strlen($test_request_parts['path']);
 
 		// Get current script name (filename only)
-		$test_script_name = basename($_SERVER['SCRIPT_NAME']);
+		$test_script_name = get_current_script_name();
 		$test_script_len  = strlen($test_script_name);
 
 		// Get end of the path of URI and see if it's our script
