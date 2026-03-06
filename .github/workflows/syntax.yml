@@ -94,7 +94,7 @@ jobs:
           ${{ runner.os }}-php-
 
     - name: Install dependencies
-      run: sudo composer install --prefer-dist --no-progress
+      run: sudo composer install 
 
     - name: Run Linter on base code
       run: composer run-script lint
@@ -232,10 +232,12 @@ jobs:
     - name: Setup Cacti Daemon
       run: |
         sudo cp ${{ github.workspace }}/tests/tools/cactid.service /etc/systemd/system/cactid.service
+        sudo sed -i 's/apache/www-data/g' /etc/systemd/system/cactid.service
         sudo systemctl enable cactid
         sudo systemctl start cactid
         sudo systemctl status cactid
         if ! systemctl is-active --quiet cactid; then
+          journalctl -xeu cactid.service
           echo "Cacti daemon failed to start"
           exit 1
         fi

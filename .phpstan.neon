@@ -3,24 +3,25 @@ parameters:
         maximumNumberOfProcesses: 8
     scanDirectories:
         - include
-    excludePaths:
-        analyse:
-           - include/vendor/*
-           - plugins/*
-           - tests/*
-           - rector.php
     paths:
         - include
         - lib
         - install
         - .
+    excludePaths:
+        analyse:
+           - include/vendor/*
+           - plugins/*
+           - rector.php
+        analyseAndScan:
+           - tests/*
     bootstrapFiles:
         - .phpstan-bootstrap.php
         - include/vendor/autoload.php
         - include/config.php.dist
         - include/global_constants.php
-        - include/global.php
         - lib/functions.php
+        - include/global.php
         - include/global_languages.php
         - include/global_arrays.php
         - include/global_form.php
