@@ -28,7 +28,7 @@
  */
 
 // Don't run from the database if using the command line
-if (php_sapi_name() == 'cli') {
+if (CACTI_CLI) {
 	return;
 }
 

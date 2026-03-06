@@ -6,10 +6,14 @@ include(__DIR__ . '/../include/cli_check.php');
 
 global $database_hostname, $database_username, $database_password;
 
-if ($database_password == '') {
-	$sql = `mysqladmin -h $database_hostname -u $database_username status | awk '{print $6 }'`;
-} else {
-	$sql = `mysqladmin -h $database_hostname -u $database_username -p$database_password status | awk '{print $6 }'`;
+$cmd = 'mysqladmin -h ' . escapeshellarg($database_hostname) . ' -u ' . escapeshellarg($database_username);
+
+if ($database_password != '') {
+	$cmd .= ' -p' . escapeshellarg($database_password);
 }
 
-print trim($sql);
+$cmd .= " status | awk '{print \$6 }'";
+
+$sql = shell_exec($cmd);
+
+print trim($sql ?? '');

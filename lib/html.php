@@ -722,7 +722,7 @@ function html_header_sort(array $header_items, string $sort_column, string $sort
 		$new_sort_direction = 'ASC';
 	}
 
-	$page = $page_count . '_' . str_replace('.php', '', basename($_SERVER['SCRIPT_NAME']));
+	$page = $page_count . '_' . str_replace('.php', '', get_current_script_name());
 
 	if (isrv('action')) {
 		$page .= '_' . grv('action');
@@ -915,7 +915,7 @@ function html_header_sort_checkbox(array $header_items, string $sort_column, str
 		$new_sort_direction = 'ASC';
 	}
 
-	$page = $page_count . '_' . str_replace('.php', '', basename($_SERVER['SCRIPT_NAME']));
+	$page = $page_count . '_' . str_replace('.php', '', get_current_script_name());
 
 	if (isrv('action')) {
 		$page .= '_' . grv('action');
