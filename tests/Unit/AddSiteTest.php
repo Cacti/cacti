@@ -108,8 +108,7 @@ test('regex escaping prevents plus from being treated as quantifier', function (
 
 test('wildcard conversion escapes special chars then expands percent', function () {
 	$input = 'rtr-%-pe.1';
-	$quoted = preg_quote($input, '/');
-	$pattern = '/' . str_replace('%', '.+', $quoted) . '/';
+	$pattern = '/' . str_replace('\%', '.+', preg_quote($input, '/')) . '/';
 
 	expect(preg_match($pattern, 'rtr-east-pe.1'))->toBe(1)
 		->and(preg_match($pattern, 'rtr-east-peX1'))->toBe(0);
