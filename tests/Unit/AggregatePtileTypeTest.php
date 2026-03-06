@@ -24,7 +24,7 @@
  * See: https://github.com/Cacti/cacti/issues/6470
  *
  * The fix separates SIMILAR into its own elseif branch in all three locations:
- *   1. text_format :current: / :max: replacement (aggregate_graph_items_save)
+ *   1. text_format :current: / :max: replacement (aggregate_graphs_insert_graph_items)
  *   2. COMMENT item pparts[3] replacement (aggregate_graphs_insert_graph_items)
  *   3. HRULE item pparts[3] replacement (aggregate_graphs_insert_graph_items)
  */
@@ -34,7 +34,7 @@ define('AGGREGATE_TOTAL_TYPE_ALL', 2);
 
 /**
  * Mimics the text_format :current: / :max: replacement logic from
- * aggregate_graph_items_save() around line 411-422 of lib/api_aggregate.php.
+ * aggregate_graphs_insert_graph_items() in lib/api_aggregate.php.
  */
 function apply_text_format_replacement(string $text_format, int $total_type): string {
 	if (str_contains($text_format, ':current:')) {
