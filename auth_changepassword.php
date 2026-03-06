@@ -94,7 +94,8 @@ if (!cacti_sizeof($user) || $user['realm'] != 0) {
 	}
 
 	if (isset($_SERVER['HTTP_REFERER'])) {
-		header('Location: ' . sanitize_uri($_SERVER['HTTP_REFERER']));
+		$_ref = sanitize_uri($_SERVER['HTTP_REFERER']);
+		header('Location: ' . ((parse_url($_ref, PHP_URL_HOST) === null || parse_url($_ref, PHP_URL_HOST) === $_SERVER['HTTP_HOST']) ? $_ref : 'index.php'));
 	} else {
 		header('Location: index.php');
 	}
@@ -110,7 +111,8 @@ if ($user['password_change'] != 'on') {
 	cacti_cookie_logout();
 
 	if (isset($_SERVER['HTTP_REFERER'])) {
-		header('Location: ' . sanitize_uri($_SERVER['HTTP_REFERER']));
+		$_ref = sanitize_uri($_SERVER['HTTP_REFERER']);
+		header('Location: ' . ((parse_url($_ref, PHP_URL_HOST) === null || parse_url($_ref, PHP_URL_HOST) === $_SERVER['HTTP_HOST']) ? $_ref : 'index.php'));
 	} else {
 		header('Location: index.php');
 	}
