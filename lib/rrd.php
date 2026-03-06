@@ -1783,20 +1783,8 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 
 					break;
 				case GRAPH_ITEM_TYPE_GPRINT_AVERAGE:
-					$graph_cf                          = $graph_item['consolidation_function_id'];
-					$graph_items[$key]['cf_reference'] = $graph_cf;
-
-					break;
 				case GRAPH_ITEM_TYPE_GPRINT_LAST:
-					$graph_cf                          = $graph_item['consolidation_function_id'];
-					$graph_items[$key]['cf_reference'] = $graph_cf;
-
-					break;
 				case GRAPH_ITEM_TYPE_GPRINT_MAX:
-					$graph_cf                          = $graph_item['consolidation_function_id'];
-					$graph_items[$key]['cf_reference'] = $graph_cf;
-
-					break;
 				case GRAPH_ITEM_TYPE_GPRINT_MIN:
 					$graph_cf                          = $graph_item['consolidation_function_id'];
 					$graph_items[$key]['cf_reference'] = $graph_cf;
