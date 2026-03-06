@@ -226,22 +226,22 @@ function is_template_account(null|int|string $user_id) : bool {
  */
 function get_basic_auth_username() : string|false {
 	if (isset($_SERVER['PHP_AUTH_USER'])) {
-		$raw      = is_array($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'][0] : $_SERVER['PHP_AUTH_USER'];
+		$raw      = is_array($_SERVER['PHP_AUTH_USER']) ? ($_SERVER['PHP_AUTH_USER'][0] ?? '') : $_SERVER['PHP_AUTH_USER'];
 		$username = str_replace('\\', '\\\\', $raw);
 	} elseif (isset($_SERVER['REMOTE_USER'])) {
-		$raw      = is_array($_SERVER['REMOTE_USER']) ? $_SERVER['REMOTE_USER'][0] : $_SERVER['REMOTE_USER'];
+		$raw      = is_array($_SERVER['REMOTE_USER']) ? ($_SERVER['REMOTE_USER'][0] ?? '') : $_SERVER['REMOTE_USER'];
 		$username = str_replace('\\', '\\\\', $raw);
 	} elseif (isset($_SERVER['REDIRECT_REMOTE_USER'])) {
-		$raw      = is_array($_SERVER['REDIRECT_REMOTE_USER']) ? $_SERVER['REDIRECT_REMOTE_USER'][0] : $_SERVER['REDIRECT_REMOTE_USER'];
+		$raw      = is_array($_SERVER['REDIRECT_REMOTE_USER']) ? ($_SERVER['REDIRECT_REMOTE_USER'][0] ?? '') : $_SERVER['REDIRECT_REMOTE_USER'];
 		$username = str_replace('\\', '\\\\', $raw);
 	} elseif (isset($_SERVER['HTTP_PHP_AUTH_USER'])) {
-		$raw      = is_array($_SERVER['HTTP_PHP_AUTH_USER']) ? $_SERVER['HTTP_PHP_AUTH_USER'][0] : $_SERVER['HTTP_PHP_AUTH_USER'];
+		$raw      = is_array($_SERVER['HTTP_PHP_AUTH_USER']) ? ($_SERVER['HTTP_PHP_AUTH_USER'][0] ?? '') : $_SERVER['HTTP_PHP_AUTH_USER'];
 		$username = str_replace('\\', '\\\\', $raw);
 	} elseif (isset($_SERVER['HTTP_REMOTE_USER'])) {
-		$raw      = is_array($_SERVER['HTTP_REMOTE_USER']) ? $_SERVER['HTTP_REMOTE_USER'][0] : $_SERVER['HTTP_REMOTE_USER'];
+		$raw      = is_array($_SERVER['HTTP_REMOTE_USER']) ? ($_SERVER['HTTP_REMOTE_USER'][0] ?? '') : $_SERVER['HTTP_REMOTE_USER'];
 		$username = str_replace('\\', '\\\\', $raw);
 	} elseif (isset($_SERVER['HTTP_REDIRECT_REMOTE_USER'])) {
-		$raw      = is_array($_SERVER['HTTP_REDIRECT_REMOTE_USER']) ? $_SERVER['HTTP_REDIRECT_REMOTE_USER'][0] : $_SERVER['HTTP_REDIRECT_REMOTE_USER'];
+		$raw      = is_array($_SERVER['HTTP_REDIRECT_REMOTE_USER']) ? ($_SERVER['HTTP_REDIRECT_REMOTE_USER'][0] ?? '') : $_SERVER['HTTP_REDIRECT_REMOTE_USER'];
 		$username = str_replace('\\', '\\\\', $raw);
 	} else {
 		$username = false;
