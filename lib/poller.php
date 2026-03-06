@@ -898,7 +898,7 @@ function update_resource_cache($poller_id = 1) : bool {
 				$pathinfo = pathinfo($path['path']);
 
 				if (isset($pathinfo['extension'])) {
-					$extension = strtolower($pathinfo['extension']);
+					$extension = cacti_strtolower($pathinfo['extension']);
 				} else {
 					$extension = '';
 				}
@@ -959,7 +959,7 @@ function update_resource_cache($poller_id = 1) : bool {
 									$pathinfo = pathinfo($fpath);
 
 									if (isset($pathinfo['extension'])) {
-										$extension = strtolower($pathinfo['extension']);
+										$extension = cacti_strtolower($pathinfo['extension']);
 									} else {
 										$extension = '';
 									}
@@ -1063,7 +1063,7 @@ function cache_in_path(string $path, string $type, bool $recursive = true) : voi
 		$pathinfo            = pathinfo($path);
 
 		if (isset($pathinfo['extension'])) {
-			$extension = strtolower($pathinfo['extension']);
+			$extension = cacti_strtolower($pathinfo['extension']);
 		} else {
 			$extension = '';
 		}
@@ -1140,7 +1140,7 @@ function update_db_from_path(string $path, string $type, bool $recursive = true)
 					$pathinfo = pathinfo($entry);
 
 					if (isset($pathinfo['extension'])) {
-						$extension = strtolower($pathinfo['extension']);
+						$extension = cacti_strtolower($pathinfo['extension']);
 					} else {
 						$extension = '';
 					}
@@ -1178,7 +1178,7 @@ function update_db_from_path(string $path, string $type, bool $recursive = true)
 			$pathinfo = pathinfo($path);
 
 			if (isset($pathinfo['extension'])) {
-				$extension = strtolower($pathinfo['extension']);
+				$extension = cacti_strtolower($pathinfo['extension']);
 			} else {
 				$extension = '';
 			}
@@ -1362,7 +1362,7 @@ function md5sum_path(string $path, bool $recursive = true) : mixed {
 			$pathinfo = pathinfo($entry);
 
 			if (isset($pathinfo['extension'])) {
-				$extension = strtolower($pathinfo['extension']);
+				$extension = cacti_strtolower($pathinfo['extension']);
 			} else {
 				$extension = '';
 			}

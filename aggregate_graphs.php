@@ -1846,9 +1846,9 @@ function aggregate_make_sql_where(string $sql_where, array $items, string $field
 			}
 
 			if ($i != '') {
-				if (strtolower($i) == 'and') {
+				if (cacti_strtolower($i) == 'and') {
 					$sql_where .= ' AND ';
-				} elseif (strtolower($i) == 'or') {
+				} elseif (cacti_strtolower($i) == 'or') {
 					$sql_where .= ' OR ';
 				} else {
 					$sql_where .= ($termcount > 0 ? ' OR ' : '') . $field . " LIKE '%" . trim($i) . "%'";
@@ -1881,7 +1881,7 @@ function aggregate_format_text(string $text, string $filter) : string {
 		$i = str_replace('(', '', $i);
 		$i = str_replace(')', '', $i);
 
-		if (strtolower($i) == 'and' || strtolower($i) == 'or') {
+		if (cacti_strtolower($i) == 'and' || cacti_strtolower($i) == 'or') {
 			continue;
 		}
 

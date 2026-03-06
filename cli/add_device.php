@@ -153,7 +153,7 @@ if (cacti_sizeof($parms)) {
 
 				break;
 			case '--security-level':
-				$snmp_security_level = strtolower(trim($value));
+				$snmp_security_level = cacti_strtolower(trim($value));
 
 				break;
 			case '--username':
@@ -243,7 +243,7 @@ if (cacti_sizeof($parms)) {
 
 				break;
 			case '--ping_method':
-				switch(strtolower($value)) {
+				switch(cacti_strtolower($value)) {
 					case 'icmp':
 						$ping_method = PING_ICMP;
 

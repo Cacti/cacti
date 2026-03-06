@@ -638,7 +638,7 @@ function load_fallback_procedure() : void {
  */
 function set_language_constants(array $constants) : void {
 	foreach ($constants as $key => $value) {
-		$upperKey = strtoupper($key);
+		$upperKey = cacti_strtoupper($key);
 
 		switch ($upperKey) {
 			case 'LOCALE':
@@ -1068,7 +1068,7 @@ function number_format_i18n(mixed $number, mixed $decimals = null, mixed $baseu 
 		return '0';
 	}
 
-	$country = strtoupper($cacti_country);
+	$country = cacti_strtoupper($cacti_country);
 
 	if (function_exists('numfmt_create')) {
 		$fmt_key = $cacti_locale . '_' . $country;

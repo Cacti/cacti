@@ -109,7 +109,7 @@ if ($filter != '') {
 	$sql_where = '';
 }
 
-if (strtolower($host_id) == 'all') {
+if (cacti_strtolower($host_id) == 'all') {
 	// Act on all graphs
 } elseif (substr_count($host_id, ',')) {
 	$hosts    = explode(',', $host_id);

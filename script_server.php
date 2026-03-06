@@ -147,8 +147,8 @@ $start = microtime(true);
 $include_file = '';
 
 if (CACTI_SERVER_OS == 'win32') {
-	cacti_log('DEBUG: GETCWD: ' . strtolower(strtr(getcwd(),'\\','/')), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
-	cacti_log('DEBUG: DIRNAM: ' . strtolower(strtr(__DIR__,'\\','/')), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+	cacti_log('DEBUG: GETCWD: ' . cacti_strtolower(strtr(getcwd(),'\\','/')), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+	cacti_log('DEBUG: DIRNAM: ' . cacti_strtolower(strtr(__DIR__,'\\','/')), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 } else {
 	cacti_log('DEBUG: GETCWD: ' . strtr(getcwd(),'\\','/'), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 	cacti_log('DEBUG: DIRNAM: ' . strtr(__DIR__,'\\','/'), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
@@ -188,7 +188,7 @@ while (1) {
 
 	if (empty($input_string)) {
 		if (!empty($parent_pid)) {
-			if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+			if (cacti_strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
 				$out = [];
 				exec("TASKLIST /FO LIST /FI \"PID eq $parent_pid\"", $out);
 
@@ -278,7 +278,7 @@ while (1) {
 					 * path must be lower case
 					 */
 					if (CACTI_SERVER_OS == 'win32') {
-						$include_file = strtolower($include_file);
+						$include_file = cacti_strtolower($include_file);
 					}
 
 					/**

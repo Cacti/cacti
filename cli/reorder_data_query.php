@@ -100,7 +100,7 @@ if (cacti_sizeof($parms)) {
 $sql_where = "WHERE data_input_fields.type_code='output_type'";
 
 // determine the hosts to reindex
-if (strtolower($host_id) == 'all') {
+if (cacti_strtolower($host_id) == 'all') {
 	// NOP
 } elseif (is_numeric($host_id)) {
 	$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . 'data_local.host_id = ' . $host_id;
@@ -112,7 +112,7 @@ if (strtolower($host_id) == 'all') {
 }
 
 // determine data queries to rerun
-if (strtolower($query_id) == 'all') {
+if (cacti_strtolower($query_id) == 'all') {
 	// do nothing
 } elseif (is_numeric($query_id)) {
 	$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . 'data_local.snmp_query_id= ' . $query_id;

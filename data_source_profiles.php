@@ -508,7 +508,7 @@ function profile_export_execute(mixed $profile_ids) : array {
 
 	$json_array = [];
 
-	$json_array['name']        = clean_up_name(strtolower($export_name));
+	$json_array['name']        = clean_up_name(cacti_strtolower($export_name));
 	$json_array['export_name'] = $json_array['name'] . '.json';
 
 	if (cacti_sizeof($profile_ids)) {

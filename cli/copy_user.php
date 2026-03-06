@@ -157,7 +157,7 @@ function validate_field(string $field, string $value) : string {
 }
 
 function validate_boolean(string $field, string $value) : string {
-	$value = empty($value) ? '' : strtolower($value);
+	$value = empty($value) ? '' : cacti_strtolower($value);
 
 	if ($value == 'on' || $value == 'yes') {
 		$result = true;

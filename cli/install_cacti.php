@@ -175,7 +175,7 @@ if (cacti_sizeof($parms)) {
 				break;
 			case '--notifyadmin':
 			case '-n':
-				$value = strtolower($value) == 'true' ? 'on' : '';
+				$value = cacti_strtolower($value) == 'true' ? 'on' : '';
 				set_install_option($options, 'notify_admin', 'Notify Admin', $value);
 
 				break;
