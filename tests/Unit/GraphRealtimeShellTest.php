@@ -14,10 +14,15 @@
 
 /*
  * Tests for command injection hardening in graph_realtime.php.
- * Verifies that local_graph_id is cast to int and shell args are escaped.
+ *
+ * grv('local_graph_id') was interpolated into shell_exec via sprintf without
+ * escaping. The fix casts to (int), uses cacti_escapeshellcmd for the PHP
+ * binary, and cacti_escapeshellarg for the script path.
  */
 
 $graphRealtimePath = __DIR__ . '/../../graph_realtime.php';
+
+// --- graph_realtime.php: shell escaping for poller invocation ---
 
 test('graph_realtime.php uses cacti_escapeshellcmd for PHP binary', function () use ($graphRealtimePath) {
 	$contents = file_get_contents($graphRealtimePath);
@@ -38,9 +43,8 @@ test('graph_realtime.php casts local_graph_id to int before shell_exec', functio
 	expect($contents)->toMatch('/\(int\)\s+gfrv\s*\(\s*[\'"]local_graph_id[\'"]\s*\)/');
 });
 
-test('graph_realtime.php does not pass raw grv local_graph_id to shell_exec', function () use ($graphRealtimePath) {
+test('graph_realtime.php does not pass raw grv local_graph_id to sprintf for shell', function () use ($graphRealtimePath) {
 	$contents = file_get_contents($graphRealtimePath);
 
-	// Must not use grv('local_graph_id') in sprintf/args for shell
 	expect($contents)->not->toMatch('/sprintf\s*\([^)]*grv\s*\(\s*[\'"]local_graph_id[\'"]\s*\)/');
 });
