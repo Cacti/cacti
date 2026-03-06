@@ -1814,7 +1814,11 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 						cacti_log("WARNING: RRD file '$data_source_path' does not exist", false, 'GRAPH');
 					}
 
-					return false;
+					if (isset($graph_data_array['export_realtime']) || isset($graph_data_array['export_csv'])) {
+						return false;
+					}
+
+					return rrdtool_create_error_image(__('The Cacti Poller has not run yet.'));
 				}
 
 				// FOR WIN32: Escape all colon for drive letters (ex. D\:/path/to/rra)
