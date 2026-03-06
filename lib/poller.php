@@ -243,7 +243,7 @@ function exec_with_timeout($cmd, &$output, &$return_code, $timeout = 5) {
 	// setsid in the proc_open command makes the child a new session/process group
 	// leader (PID == PGID), so posix_kill(-pid, 9) correctly targets that group.
 	if (isset($status['pid']) && $status['running'] && function_exists('posix_kill')) {
-		posix_kill(-$status['pid'], 9);
+		posix_kill($status['pid'], 9);
 	}
 
 	proc_terminate($process, 9);
