@@ -241,16 +241,11 @@ if (isset($input_whitelist)) {
 	define('CACTI_WHITELIST', $input_whitelist);
 }
 
-// include base modules
-include_once(CACTI_PATH_LIBRARY . '/database.php');
-include_once(CACTI_PATH_LIBRARY . '/functions.php');
-include_once(CACTI_PATH_INCLUDE . '/global_constants.php');
-
 // define any additional paths as constants
 foreach ($config as $key => $value) {
 	if (str_ends_with($key, '_path')) {
 		$path_name     = substr($key, 0, -5);
-		$constant_name = 'CACTI_PATH_' . cacti_strtoupper($path_name);
+		$constant_name = 'CACTI_PATH_' . mb_strtoupper($path_name);
 
 		if (!defined($constant_name)) {
 			define($constant_name, $value);
@@ -273,6 +268,11 @@ if (isset($i18n_log)) {
 if (isset($i18n_text_log)) {
 	$config['i18n_text_log'] = $i18n_text_log;
 }
+
+// include base modules
+include_once(CACTI_PATH_LIBRARY . '/database.php');
+include_once(CACTI_PATH_LIBRARY . '/functions.php');
+include_once(CACTI_PATH_INCLUDE . '/global_constants.php');
 
 define('CACTI_VERSION', format_cacti_version($cacti_version, CACTI_VERSION_FORMAT_SHORT));
 define('CACTI_VERSION_FULL', format_cacti_version($cacti_version, CACTI_VERSION_FORMAT_FULL));
