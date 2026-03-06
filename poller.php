@@ -562,7 +562,7 @@ while ($poller_runs_completed < $poller_runs) {
 	$first_host        = 0;
 	$last_host         = 0;
 	$rrds_processed    = 0;
-	$webroot           = addslashes((CACTI_SERVER_OS == 'win32') ? strtr(strtolower(substr(__DIR__, 0, 1)) . substr(__DIR__, 1),'\\', '/') : __DIR__);
+	$webroot           = addslashes((CACTI_SERVER_OS == 'win32') ? strtr(cacti_strtolower(substr(__DIR__, 0, 1)) . substr(__DIR__, 1),'\\', '/') : __DIR__);
 
 	// update web paths for the poller
 	set_config_option('path_webroot', $webroot);
@@ -715,7 +715,7 @@ while ($poller_runs_completed < $poller_runs) {
 			$total_procs    = $concurrent_processes;
 		} else {
 			$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
-			$extra_args     = '-q ' . cacti_escapeshellarg(strtolower(CACTI_PATH_BASE . '/cmd.php'));
+			$extra_args     = '-q ' . cacti_escapeshellarg(cacti_strtolower(CACTI_PATH_BASE . '/cmd.php'));
 			$method         = 'cmd.php';
 			$total_procs    = $concurrent_processes;
 		}

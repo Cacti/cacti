@@ -33,53 +33,45 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_hstats', $_SERVER['argv']);
 }
 
-function ss_hstats(int $host_id = 0, string $stat = '') : string {
+/**
+ * Map stat type to database column name.
+ *
+ * @param string $stat Stat type to map
+ *
+ * @return string|null Column name or null if invalid stat
+ */
+function ss_hstats_map_stat_to_column(string $stat) : ?string {
 	switch ($stat) {
 		case 'polling_time':
-			$column = $stat;
-
-			break;
 		case 'min_time':
-			$column = $stat;
-
-			break;
 		case 'max_time':
-			$column = $stat;
-
-			break;
 		case 'cur_time':
-			$column = $stat;
-
-			break;
 		case 'avg_time':
-			$column = $stat;
-
-			break;
-		case 'uptime':
-			$column = 'snmp_sysUpTimeInstance';
-
-			break;
 		case 'failed_polls':
-			$column = $stat;
-
-			break;
 		case 'availability':
-			$column = $stat;
-
-			break;
 		case 'current_errors':
-			$column = $stat;
-
-			break;
+			return $stat;
+		case 'uptime':
+			return 'snmp_sysUpTimeInstance';
 		default:
-			return '0';
+			return null;
+	}
+}
+
+function ss_hstats(int $host_id = 0, string $stat = '') : string {
+	$column = ss_hstats_map_stat_to_column($stat);
+
+	if ($column === null) {
+		return '0';
 	}
 
 	if ($host_id > 0) {
-		$value = db_fetch_cell_prepared("SELECT $column
+		$value = db_fetch_cell_prepared(
+			"SELECT $column
 			FROM host
 			WHERE id = ?",
-			[$host_id]);
+			[$host_id]
+		);
 
 		return ($value == '' ? 'U' : $value);
 	}

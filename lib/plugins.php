@@ -494,7 +494,7 @@ function api_plugin_db_table_create(string $plugin, string $table, array $data) 
 				}
 
 				if (isset($column['default'])) {
-					if (strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
+					if (cacti_strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
 						$sql .= ' default CURRENT_TIMESTAMP';
 					} else {
 						$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
@@ -535,7 +535,7 @@ function api_plugin_db_table_create(string $plugin, string $table, array $data) 
 			$sql .= ' DEFAULT CHARSET = ' . $data['charset'];
 		}
 
-		if (isset($data['row_format']) && strtolower(db_get_global_variable('innodb_file_format')) == 'barracuda') {
+		if (isset($data['row_format']) && cacti_strtolower(db_get_global_variable('innodb_file_format')) == 'barracuda') {
 			$sql .= ' ROW_FORMAT = ' . $data['row_format'];
 		}
 
@@ -637,7 +637,7 @@ function api_plugin_db_add_column(string $plugin, string $table, array $column) 
 		}
 
 		if (isset($column['default'])) {
-			if (strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
+			if (cacti_strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
 				$sql .= ' default CURRENT_TIMESTAMP';
 			} else {
 				$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
@@ -1872,7 +1872,7 @@ function plugin_load_info_defaults(string $file, mixed $info, array $defaults = 
 	if ($info_fields['status'] == 0) {
 		if (str_contains($dir, ' ')) {
 			$result['status'] = -3;
-		} elseif (strtolower($dir) != strtolower($result['name'])) {
+		} elseif (cacti_strtolower($dir) != cacti_strtolower($result['name'])) {
 			$result['status'] = -2;
 		} elseif (!isset($result['compat']) || cacti_version_compare(CACTI_VERSION, $result['compat'], '<')) {
 			$result['status'] = -1;

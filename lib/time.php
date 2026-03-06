@@ -193,7 +193,7 @@ function get_timespan(array &$span, int $curr_time, int $timespan_given, int $fi
  */
 function month_shift(string $shift_size) : bool {
 	// is monthly shifting required?
-	return (strpos(strtolower($shift_size), 'month') > 0);
+	return (strpos(cacti_strtolower($shift_size), 'month') !== false);
 }
 
 /**

@@ -32,7 +32,7 @@ function file_search(string $folder, array $pattern_array) : array {
 	foreach (new RecursiveIteratorIterator($iti) as $file) {
 		$fileParts = explode('.', $file);
 
-		if (in_array(strtolower(array_pop($fileParts)), $pattern_array, true)) {
+		if (in_array(cacti_strtolower(array_pop($fileParts)), $pattern_array, true)) {
 			$return[] = $file;
 		}
 	}

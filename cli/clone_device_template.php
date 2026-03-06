@@ -263,7 +263,7 @@ if (cacti_sizeof($parms)) {
 		while (true) {
 			printf(PHP_EOL . 'Precheck completed with no Errors.  Do you want to continue [Y|N]? ');
 
-			$line = strtolower(trim(fgets($fin)));
+			$line = cacti_strtolower(trim(fgets($fin)));
 
 			if ($line == 'y') {
 				fclose($fin);
