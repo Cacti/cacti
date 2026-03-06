@@ -1703,7 +1703,7 @@ function boost_rrdtool_function_create(int $local_data_id, bool $show_source, mi
 		$success = rrdtool_execute("create $data_source_path $create_ds$create_rra", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
 
 		if (CACTI_SERVER_OS != 'win32' && posix_getuid() == 0) {
-			shell_exec("chown $owner_id:$group_id $data_source_path");
+			shell_exec('chown ' . (int) $owner_id . ':' . (int) $group_id . ' ' . cacti_escapeshellarg($data_source_path));
 		}
 
 		return $success;
