@@ -1810,6 +1810,10 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 				}
 
 				if (!rrdtool_file_exists($data_source_path, $rrdtool_pipe)) {
+					if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG || $get_error) {
+						cacti_log("WARNING: RRD file '$data_source_path' does not exist", false, 'GRAPH');
+					}
+
 					return false;
 				}
 

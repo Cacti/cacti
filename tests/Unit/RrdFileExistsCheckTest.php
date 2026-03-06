@@ -37,6 +37,7 @@
 
 function getRrdFileExistsBlock(): string {
 	$rrdPhp = file_get_contents(__DIR__ . '/../../lib/rrd.php');
+	expect($rrdPhp)->not->toBeFalse('Failed to read lib/rrd.php');
 
 	/* extract the rrdtool_function_graph function body */
 	$start = strpos($rrdPhp, 'function rrdtool_function_graph(');
@@ -86,17 +87,18 @@ test('file existence check uses simplified unconditional form', function () {
 
 // --- the early return pattern applies to all rendering modes ---
 
-test('early return follows immediately after the simplified file existence check', function () {
+test('file existence check block contains an unconditional return false', function () {
 	$source = getRrdFileExistsBlock();
 
 	/*
-	 * Verify the pattern: unconditional check followed by return false.
-	 * The \s* allows for whitespace/newlines between the check and return.
+	 * Verify the pattern: the unconditional file-existence check block
+	 * contains a return false. The block may also contain a log call before
+	 * the return, so match anything inside the braces up to return false.
 	 */
-	$pattern = '/if\s*\(\s*!rrdtool_file_exists\(\$data_source_path,\s*\$rrdtool_pipe\)\s*\)\s*\{\s*return\s+false;/s';
+	$pattern = '/if\s*\(\s*!rrdtool_file_exists\(\$data_source_path,\s*\$rrdtool_pipe\)\s*\)\s*\{[\s\S]*?return\s+false;/s';
 
 	expect(preg_match($pattern, $source))->toBe(1,
-		'return false must immediately follow the file-existence check'
+		'return false must be present in the file-existence check block'
 	);
 });
 
