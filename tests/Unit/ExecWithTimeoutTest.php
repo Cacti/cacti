@@ -137,7 +137,7 @@ test('timed-out process is terminated and returns non-zero exit code', function 
 	$return_code = -1;
 
 	// Command sleeps longer than the 1-second timeout.
-	$result = exec_with_timeout('sleep 5', $output, $return_code, 1);
+	$result = exec_with_timeout('sleep 3', $output, $return_code, 1);
 
 	// Process was killed; no stdout produced.
 	expect($result)->toBeNull()
@@ -152,7 +152,8 @@ test('exec_with_timeout returns non-zero exit code for invalid command', functio
 
 	$result = exec_with_timeout('/nonexistent/binary/xyz', $output, $return_code, 2);
 
-	expect($return_code)->not->toBe(0);
+	expect($result)->toBeNull()
+		->and($return_code)->not->toBe(0);
 });
 
 test('multi-line stdout populates output array and returns last line', function () {
