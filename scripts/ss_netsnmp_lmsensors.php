@@ -165,7 +165,7 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 		$host['snmp_context'],
 		$host['snmp_port'],
 		$host['snmp_timeout'],
-		$host['ping_retries'],
+		$host['snmp_retries'],
 		SNMP_POLLER,
 		$host['snmp_engine_id']
 	];
@@ -183,7 +183,7 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 		$host['snmp_context'],
 		$host['snmp_port'],
 		$host['snmp_timeout'],
-		$host['ping_retries'],
+		$host['snmp_retries'],
 		$host['max_oids'],
 		SNMP_POLLER,
 		$host['snmp_engine_id']

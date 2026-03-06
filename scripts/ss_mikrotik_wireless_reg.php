@@ -64,10 +64,21 @@ function ss_mikrotik_wireless_reg(int $host_id, string $cmd, string $object = ''
 			}
 		}
 	} elseif ($cmd == 'get') {
-		return db_fetch_cell_prepared("SELECT `$object`
+		$allowed_objects = [
+			'macAddress', 'interface', 'apTxRate', 'apRxRate', 'apStrength',
+			'apSsid', 'apBand', 'apFreq', 'apNoiseFloor', 'apOverallTxCcq',
+			'apTxBytes', 'apRxBytes', 'apTxPackets', 'apRxPackets',
+			'apTxFrames', 'apRxFrames', 'apTxHwFrames', 'apRxHwFrames',
+		];
+
+		if (!in_array($object, $allowed_objects, true)) {
+			return null;
+		}
+
+		return db_fetch_cell_prepared('SELECT `' . $object . '`
 			FROM plugin_mikrotik_wireless_registrations
 			WHERE host_id = ?
-			AND `index` = ?",
+			AND `index` = ?',
 			[$host_id, $index]);
 	}
 
