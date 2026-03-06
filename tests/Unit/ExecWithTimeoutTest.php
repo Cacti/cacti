@@ -40,25 +40,32 @@ require_once dirname(__DIR__, 2) . '/lib/poller.php';
 
 test('timeout converts seconds to microseconds without truncation', function () {
 	/*
-	 * The old code: (int) (microtime(true) - $start) * 1000000
-	 * Cast a sub-second float (e.g. 0.003) to int (0), then * 1000000 = 0.
-	 * The loop would exit immediately regardless of the timeout value.
+	 * The original bug cast elapsed time to int before multiplying by 1000000,
+	 * truncating sub-second values to zero. This prevented the timeout from
+	 * decrementing during sub-second iterations.
 	 *
 	 * The fix: (int) ((microtime(true) - $start) * 1000000)
-	 * Multiplies first, then casts, preserving the elapsed microseconds.
+	 * Multiply first to get microseconds as a float, then cast to int,
+	 * so each sub-second wakeup correctly subtracts its actual elapsed time.
 	 *
-	 * Verify by running a command that takes ~100ms with a 5-second timeout.
-	 * With the bug, the loop exits in one iteration and the command has no
-	 * time to produce output. With the fix, the loop waits properly.
+	 * Verify using a command that emits output in sub-second bursts with a
+	 * short timeout. With the bug the timeout never decrements and the process
+	 * runs to completion; with the fix it is killed after ~1 second.
 	 */
 	$output      = [];
 	$return_code = -1;
 
-	$result = exec_with_timeout('/bin/sh -c "sleep 0.1 && echo DONE"', $output, $return_code, 5);
+	// Emits 20 lines over ~2 seconds; 1s timeout should kill it before completion.
+	$result = exec_with_timeout(
+		'/bin/sh -c "for i in $(seq 1 20); do echo $i; sleep 0.1; done"',
+		$output,
+		$return_code,
+		1
+	);
 
-	expect($result)->toBe('DONE')
-		->and($output)->toContain('DONE')
-		->and($return_code)->toBe(0);
+	// Some output captured before kill, but the sequence never completed.
+	expect($output)->not->toContain('10')
+		->and($return_code)->not->toBe(0);
 });
 
 test('fast command completes well within timeout', function () {
@@ -124,7 +131,7 @@ test('timed-out process is terminated and returns non-zero exit code', function 
 	$return_code = -1;
 
 	// Command sleeps longer than the 1-second timeout.
-	$result = exec_with_timeout('sleep 30', $output, $return_code, 1);
+	$result = exec_with_timeout('sleep 5', $output, $return_code, 1);
 
 	// Process was killed; no stdout produced.
 	expect($result)->toBeNull()
@@ -133,7 +140,7 @@ test('timed-out process is terminated and returns non-zero exit code', function 
 
 // --- General contract tests ---
 
-test('exec_with_timeout returns false for invalid command', function () {
+test('exec_with_timeout returns non-zero exit code for invalid command', function () {
 	$output      = [];
 	$return_code = -1;
 

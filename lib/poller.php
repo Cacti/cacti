@@ -167,8 +167,23 @@ function exec_with_timeout(string $cmd, array &$output, int &$return_code, int $
 		2 => ['pipe', 'w']   // stderr
 	];
 
+	// Use setsid when available (Linux) so the child becomes a process-group leader,
+	// allowing posix_kill(-pid, 9) to reliably kill the entire subtree on timeout.
+	// Falls back to plain exec on systems without setsid (macOS, BSD).
+	$setsid = '';
+
+	if (DIRECTORY_SEPARATOR !== '\\') {
+		$setsid_path = trim(shell_exec('which setsid 2>/dev/null') ?? '');
+
+		if ($setsid_path !== '') {
+			$setsid = 'setsid -- ';
+		}
+	}
+
+	$cmd_full = $setsid . $cmd;
+
 	// Start the process.
-	$process = proc_open('exec setsid ' . $cmd, $descriptors, $pipes);
+	$process = proc_open('exec ' . $cmd_full, $descriptors, $pipes);
 
 	if (!is_resource($process)) {
 		return false;
@@ -223,8 +238,10 @@ function exec_with_timeout(string $cmd, array &$output, int &$return_code, int $
 		$return_code = 1;
 	}
 
-	if (!empty($errors)) {
-		cacti_log('WARNING: exec_with_timeout stderr: ' . trim($errors), false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
+	// Only surface stderr noise when the command actually failed; successful
+	// commands may write informational output to stderr that isn't actionable.
+	if ($return_code != 0 && !empty($errors)) {
+		cacti_log("WARNING: Command '$cmd' exited with code $return_code, stderr: " . trim($errors), false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 	}
 
 	// Kill the process in case the timeout expired and it's still running.
