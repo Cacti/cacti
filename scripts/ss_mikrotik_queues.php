@@ -106,9 +106,9 @@ function ss_mikrotik_queues_getvalue(int $host_id, string $index, string $column
 	$value = db_fetch_cell_prepared('SELECT
 		' . $column . ' AS value
 		FROM plugin_mikrotik_queues
-		WHERE name IN (' . db_qstr($index) . ', ' . db_qstr($index2) . ')
+		WHERE name IN (?, ?)
 		AND host_id = ?',
-		[$host_id]);
+		[$index, $index2, $host_id]);
 
 	if ($value === false) {
 		return '0';
