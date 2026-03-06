@@ -1814,7 +1814,7 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 						cacti_log("WARNING: RRD file '$data_source_path' does not exist", false, 'GRAPH');
 					}
 
-					if (isset($graph_data_array['export_realtime']) || isset($graph_data_array['export_csv'])) {
+					if (isset($graph_data_array['export_csv'])) {
 						return false;
 					}
 
