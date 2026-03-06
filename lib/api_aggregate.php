@@ -409,16 +409,20 @@ function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph
 					$prepend = false;
 					$prepend_cnt++;
 				} elseif (str_contains($save['text_format'], ':current:')) {
-					if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL) {
+					if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL || $_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
+						// All so use sum functions
 						$save['text_format'] = str_replace(':current:', ':aggregate_sum:', $save['text_format']);
-					} elseif ($_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
-						$save['text_format'] = str_replace(':current:', ':aggregate_current:', $save['text_format']);
+					} else {
+						// Similar to separate
+						$save['text_format'] = str_replace(':current:', ':current:', $save['text_format']);
 					}
 				} elseif (str_contains($save['text_format'], ':max:')) {
-					if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL) {
-						$save['text_format'] = str_replace(':max:', ':aggregate_sum_peak:', $save['text_format']);
-					} elseif ($_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
-						$save['text_format'] = str_replace(':max:', ':aggregate_current_peak:', $save['text_format']);
+					if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL || $_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
+						// All so use sum functions
+						$save['text_format'] = str_replace(':max:', ':aggregate_sum:', $save['text_format']);
+					} else {
+						// Similar to separate
+						$save['text_format'] = str_replace(':max:', ':max:', $save['text_format']);
 					}
 				}
 			}
@@ -640,6 +644,8 @@ function aggregate_validate_graph_items(array $posted, array &$graph_items) : vo
 
 			if (isset($graph_items[$graph_templates_item_id])) {
 				$graph_items[$graph_templates_item_id]['color_template'] = $val;
+			} else {
+				cacti_log('Something fubar in agg_color');
 			}
 		}
 
@@ -652,6 +658,8 @@ function aggregate_validate_graph_items(array $posted, array &$graph_items) : vo
 
 			if (isset($graph_items[$graph_templates_item_id])) {
 				$graph_items[$graph_templates_item_id]['item_skip'] = $val;
+			} else {
+				cacti_log('Something fubar in agg_skip');
 			}
 		}
 
@@ -664,6 +672,8 @@ function aggregate_validate_graph_items(array $posted, array &$graph_items) : vo
 
 			if (isset($graph_items[$graph_templates_item_id])) {
 				$graph_items[$graph_templates_item_id]['item_total'] = $val;
+			} else {
+				cacti_log('Something fubar in agg_total');
 			}
 		}
 	}
@@ -781,7 +791,7 @@ function aggregate_reorder_ds_graph(int $base, string $graph_template_id, int $a
 			db_fetch_assoc_prepared("SELECT DISTINCT dtr.local_data_id
 				FROM data_template_rrd AS dtr
 				INNER JOIN graph_templates_item AS gti
-				ON dtr.id = gti.task_item_id
+				ON gti.task_item_id = dtr.id
 				INNER JOIN aggregate_graphs_items AS agi
 				ON gti.local_graph_id = agi.local_graph_id
 				INNER JOIN graph_templates_graph AS gtg
@@ -1418,10 +1428,12 @@ function aggregate_handle_ptile_type(array $member_graphs, array $skipped_items,
 								$pparts = explode(':', $parts[1]);
 
 								if (isset($pparts[3])) {
-									if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL) {
+									if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL || $_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
+										// All so use sum functions
 										$pparts[3] = str_replace('current', 'aggregate_sum', $pparts[3]);
 										$pparts[3] = str_replace('max',     'aggregate_sum_peak', $pparts[3]);
-									} elseif ($_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
+									} else {
+										// Similar to separate
 										$pparts[3] = str_replace('current', 'aggregate_current', $pparts[3]);
 										$pparts[3] = str_replace('max',     'aggregate_current_peak', $pparts[3]);
 									}
@@ -1498,10 +1510,12 @@ function aggregate_handle_ptile_type(array $member_graphs, array $skipped_items,
 								$pparts = explode(':', $parts[1]);
 
 								if (isset($pparts[3])) {
-									if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL) {
+									if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL || $_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
+										// All so use sum functions
 										$pparts[3] = str_replace('current', 'aggregate_sum', $pparts[3]);
 										$pparts[3] = str_replace('max',     'aggregate_sum_peak', $pparts[3]);
-									} elseif ($_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
+									} else {
+										// Similar to separate
 										$pparts[3] = str_replace('current', 'aggregate_current', $pparts[3]);
 										$pparts[3] = str_replace('max',     'aggregate_current_peak', $pparts[3]);
 									}
@@ -1577,6 +1591,144 @@ function aggregate_handle_ptile_type(array $member_graphs, array $skipped_items,
 					break;
 			}
 		}
+	}
+}
+
+/**
+ * Handles the aggregation of stacked lines for a given graph.
+ *
+ * @param int    $local_graph_id   The ID of the local graph.
+ * @param string $_orig_graph_type The original type of the graph.
+ * @param int    $_total           The total value to be aggregated.
+ * @param string $_total_type      The type of the total value.
+ * @param string $_total_prefix    The prefix for the total value.
+ *
+ * @return void
+ */
+function aggregate_handle_stacked_lines(int $local_graph_id, string $_orig_graph_type, int $_total, string $_total_type, string $_total_prefix) : void {
+	// Handle the stacked line cases switch line widths
+	$width        = '0.01';
+	$special_type = '';
+	$special_line = false;
+
+	switch ($_orig_graph_type) {
+		case AGGREGATE_GRAPH_TYPE_LINE1_STACK:
+			$width        = '1.00';
+			$special_type = GRAPH_ITEM_TYPE_LINE1;
+			$special_line = true;
+
+			break;
+		case AGGREGATE_GRAPH_TYPE_LINE2_STACK:
+			$width        = '2.00';
+			$special_type = GRAPH_ITEM_TYPE_LINE2;
+			$special_line = true;
+
+			break;
+		case AGGREGATE_GRAPH_TYPE_LINE3_STACK:
+			$width        = '3.00';
+			$special_type = GRAPH_ITEM_TYPE_LINE3;
+			$special_line = true;
+
+			break;
+	}
+
+	if ($special_line) {
+		if ($_total == AGGREGATE_TOTAL_NONE) {
+			db_execute_prepared('UPDATE graph_templates_item
+				SET line_width = ?
+				WHERE local_graph_id = ?
+				AND graph_type_id IN (?)',
+				[$width, $local_graph_id, GRAPH_ITEM_TYPE_LINESTACK]);
+		}
+
+		// Handle special case total prefix
+		db_execute_prepared('UPDATE graph_templates_item
+			SET graph_type_id = ?
+			WHERE local_graph_id = ?
+			AND text_format = ?',
+			[$special_type, $local_graph_id, $_total_prefix]);
+
+		if ($_total == AGGREGATE_TOTAL_ALL) {
+			db_execute_prepared('UPDATE graph_templates_item
+				SET graph_type_id = ?, line_width = "0.01"
+				WHERE local_graph_id = ?
+				AND graph_type_id = ?
+				AND text_format != ?',
+				[
+					GRAPH_ITEM_TYPE_LINESTACK,
+					$local_graph_id,
+					$special_type,
+					$_total_prefix
+				]
+			);
+		}
+	}
+
+	// handle any missing lines
+	db_execute_prepared('UPDATE graph_templates_item
+		SET line_width="0.01"
+		WHERE graph_type_id = ?
+		AND line_width="0.00"
+		AND local_graph_id = ?',
+		[GRAPH_ITEM_TYPE_LINESTACK, $local_graph_id]);
+}
+
+/**
+ * Retrieves data sources for aggregation.
+ *
+ * @param array  $graph_array    Array of graphs to aggregate.
+ * @param mixed  $data_sources   Array to store the retrieved data sources.
+ * @param mixed  $graph_template Template for the graphs.
+ * @param string $message        Optional. Message to store any errors or information.
+ *
+ * @return bool True on success, false on failure.
+ */
+function aggregate_get_data_sources(array &$graph_array, mixed &$data_sources, mixed &$graph_template, string &$message = '') : bool {
+	if (cacti_sizeof($graph_array)) {
+		// fetch all data sources for all selected graphs
+		$data_sources = db_fetch_assoc('SELECT dtd.local_data_id, dtd.name_cache
+			FROM data_template_rrd AS dtr
+			INNER JOIN graph_templates_item AS gti
+			ON dtr.id = gti.task_item_id
+			INNER JOIN data_template_data AS dtd
+			ON dtr.local_data_id = dtd.local_data_id
+			WHERE ' . array_to_sql_or($graph_array, 'gti.local_graph_id') . '
+			AND dtd.local_data_id > 0
+			GROUP BY dtd.local_data_id
+			ORDER BY dtd.name_cache');
+
+		// verify, that only a single graph template is used, else
+		// aggregate will look funny
+		$templates = db_fetch_assoc('SELECT DISTINCT gl.graph_template_id AS id
+			FROM graph_local AS gl
+			WHERE ' . array_to_sql_or($graph_array, 'gl.id'));
+
+		if (cacti_sizeof($templates) > 1) {
+			$message = __('The Graphs chosen for the Aggregate Graph below represent Graphs from multiple Graph Templates.  Aggregate does not support creating Aggregate Graphs from multiple Graph Templates.');
+
+			return false;
+		}
+
+		if (cacti_sizeof($templates) == 1) {
+			if ($templates[0]['id'] == 0) {
+				// selected graphs do not use templates
+				$message = __('The Graphs chosen for the Aggregate Graph do not use Graph Templates.  Aggregate does not support creating Aggregate Graphs from non-templated graphs.');
+
+				return false;
+			} else {
+				$graph_template = $templates[0]['id'];
+
+				return true;
+			}
+		} else {
+			$message = __('There was some error in MySQL/MariaDB.  Can not continue.');
+
+			return false;
+		}
+	} else {
+		$message = __('You must pass at least a single Graph to this function');
+
+		return false;
 	}
 }
 
