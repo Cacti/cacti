@@ -1,7 +1,7 @@
 Cacti CHANGELOG
 
 1.3.0-dev
--issue#6762: Harden lib/ping.php: apply cacti_escapeshellarg() to hostname in native ping shell commands
+-issue#6762: Harden lib/ping.php: apply cacti_escapeshellarg() to hostname in native ping and fping shell commands
 -issue: Fix loose $db_conn comparison in db_table_exists and db_column_exists
 -issue#6545: Add 30 and 60 second timeout options for Remote Agent and Poller settings
 -issue#6682: Fix column exclusion silently skipping first element due to loose array_search comparison

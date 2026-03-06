@@ -172,7 +172,7 @@ class Net_Ping {
 					}
 				}
 
-				$result = shell_exec(cacti_escapeshellarg($fping) . ' -q -t ' . $this->timeout . ' -c 1 -r ' . $this->retries . ' ' . cacti_escapeshellarg(cacti_escapeshellarg($this->host['hostname'])) . ' 2>&1');
+				$result = shell_exec(cacti_escapeshellarg($fping) . ' -q -t ' . $this->timeout . ' -c 1 -r ' . $this->retries . ' ' . cacti_escapeshellarg($this->host['hostname']) . ' 2>&1');
 			} else {
 				$using_fping = false;
 
