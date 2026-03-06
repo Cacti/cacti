@@ -4187,7 +4187,6 @@ function secpass_check_pass(string $password) : string {
 
 		$content  = curl_exec($ch);
 
-		curl_close($ch);
 		$lines = explode("\r\n", $content);
 		$count = 0;
 

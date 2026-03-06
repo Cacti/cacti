@@ -542,13 +542,10 @@ function fetchCurl(string $url) : string|false {
 
 	if ($buffer === false) {
 		$error = curl_error($curl);
-		curl_close($curl);
 		echoQuiet('Error: cURL request failed: ' . $error . PHP_EOL);
 
 		return false;
 	}
-
-	curl_close($curl);
 
 	return $buffer;
 }
