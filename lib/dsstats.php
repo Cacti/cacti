@@ -1010,9 +1010,7 @@ function dsstats_poller_output(mixed &$rrd_update_array) : void {
 
 									break;
 								case 4:	// ABSOLUTE
-									if ($result['output']          != 'NULL' &&
-										$result['output']             != 'U' &&
-										cacti_strtolower($result['output']) != 'nan') {
+									if (!dsstats_is_unknown_data($result['output'])) {
 										$currentval = abs($result['output']);
 										$lastval    = $currentval;
 									} else {
@@ -1022,9 +1020,7 @@ function dsstats_poller_output(mixed &$rrd_update_array) : void {
 
 									break;
 								case 1:	// GAUGE
-									if ($result['output']          != 'NULL' &&
-										$result['output']             != 'U' &&
-										cacti_strtolower($result['output']) != 'nan') {
+									if (!dsstats_is_unknown_data($result['output'])) {
 										$currentval = $result['output'];
 										$lastval    = $result['output'];
 									} else {
@@ -1120,6 +1116,21 @@ function dsstats_poller_output(mixed &$rrd_update_array) : void {
 
 	// restore original error handler
 	restore_error_handler();
+}
+
+/**
+ * checks the output from the rrdfile column and returns false if it's unknown data
+ *
+ * @param string $value - The rrdtool value data
+ *
+ * @return bool
+ */
+function dsstats_is_unknown_data(string $value) : bool {
+	if ($value != 'NULL' && $value != 'U' && cacti_strtolower($value) != 'nan') {
+		return false;
+	} else {
+		return true;
+	}
 }
 
 /**
