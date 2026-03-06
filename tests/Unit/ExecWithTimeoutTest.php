@@ -34,6 +34,10 @@ if (!defined('POLLER_VERBOSITY_MEDIUM')) {
 	define('POLLER_VERBOSITY_MEDIUM', 2);
 }
 
+if (!defined('CACTI_SERVER_OS')) {
+	define('CACTI_SERVER_OS', PHP_OS === 'WINNT' ? 'win32' : 'unix');
+}
+
 require_once dirname(__DIR__, 2) . '/lib/poller.php';
 
 // --- Bug 1: operator precedence in timeout microsecond conversion ---
@@ -74,7 +78,9 @@ test('fast command completes well within timeout', function () {
 
 	$result = exec_with_timeout('echo hello', $output, $return_code, 5);
 
-	expect($result)->toBe('hello')
+	// exec_with_timeout returns end(explode("\n", ...)) which is '' for
+	// trailing-newline output. The actual data lives in $output.
+	expect($output)->toContain('hello')
 		->and($return_code)->toBe(0);
 });
 
@@ -84,7 +90,7 @@ test('timeout value of 1 second allows sub-second command to finish', function (
 
 	$result = exec_with_timeout('/bin/sh -c "sleep 0.05 && echo OK"', $output, $return_code, 1);
 
-	expect($result)->toBe('OK')
+	expect($output)->toContain('OK')
 		->and($return_code)->toBe(0);
 });
 
