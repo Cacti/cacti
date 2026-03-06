@@ -94,7 +94,7 @@ jobs:
           ${{ runner.os }}-php-
 
     - name: Install dependencies
-      run: sudo composer install --prefer-dist --no-progress
+      run: sudo composer install 
 
     - name: Run Linter on base code
       run: composer run-script lint
