@@ -417,7 +417,7 @@ function do_rrdcheck(int $thread_id = 1) : void {
 									}
 								}
 
-								if (strtolower($number) == 'nan' || strtolower($number) == '-nan') {
+								if (cacti_strtolower($number) == 'nan' || cacti_strtolower($number) == '-nan') {
 									$nan_24[$index]++;
 
 									if ($lines_24 > $one_hour_limit) {
@@ -650,7 +650,7 @@ function rrdcheck_log_child_stats(string $type, int $thread_id, float $total_tim
 		WHERE name LIKE ?',
 		['rrdcheck_total_dsses_%' . $type . '_' . $thread_id . '%']);
 
-	$cacti_stats = sprintf('Time:%01.2f Type:%s ProcessNumber:%s RRDfiles:%s DSSes:%s RRDUser:%01.2f RRDSystem:%01.2f RRDReal:%01.2f', $total_time, strtoupper($type), $thread_id, $rrd_files, $dsses, $rrd_user, $rrd_system, $rrd_real);
+	$cacti_stats = sprintf('Time:%01.2f Type:%s ProcessNumber:%s RRDfiles:%s DSSes:%s RRDUser:%01.2f RRDSystem:%01.2f RRDReal:%01.2f', $total_time, cacti_strtoupper($type), $thread_id, $rrd_files, $dsses, $rrd_user, $rrd_system, $rrd_real);
 
 	cacti_log('RRDCHECK CHILD STATS: ' . $cacti_stats, true, 'SYSTEM');
 }

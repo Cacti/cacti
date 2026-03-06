@@ -247,7 +247,7 @@ if (isset($input_whitelist)) {
 foreach ($config as $key => $value) {
 	if (str_ends_with($key, '_path')) {
 		$path_name     = substr($key, 0, -5);
-		$constant_name = 'CACTI_PATH_' . strtoupper($path_name);
+		$constant_name = 'CACTI_PATH_' . cacti_strtoupper($path_name);
 
 		if (!defined($constant_name)) {
 			define($constant_name, $value);
@@ -501,7 +501,7 @@ db_cacti_initialized($config['is_web']);
 
 if ($config['is_web']) {
 	if (read_config_option('force_https') == 'on') {
-		$is_https = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== '' && strtolower($_SERVER['HTTPS']) !== 'off');
+		$is_https = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== '' && cacti_strtolower($_SERVER['HTTPS']) !== 'off');
 
 		if (!$is_https && isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
 			header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);

@@ -964,7 +964,7 @@ function format_snmp_string(string $string, bool $snmp_oid_included, int $value_
 		} else {
 			$possible_ip = false;
 		}
-	} elseif (str_starts_with(strtolower($string), 'hex:')) {
+	} elseif (str_starts_with(cacti_strtolower($string), 'hex:')) {
 		// strip off the 'Hex:'
 		$string = trim(str_ireplace('hex:', '', $string));
 
