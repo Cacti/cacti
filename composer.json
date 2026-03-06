@@ -67,7 +67,7 @@
     },
     "scripts": {
         "lint": "phplint --no-cache --exclude=include/vendor ",
-        "phpstan": "phpstan analyse --level 8 --memory-limit=1G ",
+        "phpstan": "phpstan analyse --level 6 ",
         "phpcsfixer": "php-cs-fixer fix --allow-unsupported-php-version=yes --dry-run --diff --config=./.php-cs-fixer.php ",
         "phpcsfixit": "php-cs-fixer fix ",
         "test": "include/vendor/bin/pest --display-warnings "

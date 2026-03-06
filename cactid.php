@@ -257,9 +257,6 @@ function get_options() : array {
 		];
 
 		$options = getopt($shortopts, $longopts);
-		if ($options === false) {
-			$options = [];
-		}
 
 		foreach ($options as $arg => $value) {
 			switch($arg) {
