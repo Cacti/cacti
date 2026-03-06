@@ -218,7 +218,7 @@ foreach ($parms as $parameter) {
 
 			break;
 		case '--ping_method':
-			switch(strtolower($value)) {
+			switch(cacti_strtolower($value)) {
 				case 'icmp':
 					$overrides['ping_method'] = PING_ICMP;
 

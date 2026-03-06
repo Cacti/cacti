@@ -104,7 +104,7 @@ if (cacti_sizeof($parms)) {
 				break;
 			case '--avgnan':
 			case '-A':
-				$avgnan = strtolower($value);
+				$avgnan = cacti_strtolower($value);
 
 				break;
 			case '--rrdfile':

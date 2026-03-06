@@ -1430,8 +1430,8 @@ function boost_purge_cached_png_files(bool $forcerun) : void {
 
 						if ($modify_time < $remove_time) {
 							// only remove jpeg's and png's
-							if ((substr_count(strtolower($file), '.png')) ||
-								(substr_count(strtolower($file), '.jpg'))) {
+							if ((substr_count(cacti_strtolower($file), '.png')) ||
+								(substr_count(cacti_strtolower($file), '.jpg'))) {
 								unlink($file);
 							}
 						}

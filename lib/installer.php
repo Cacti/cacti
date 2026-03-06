@@ -2097,9 +2097,9 @@ class Installer implements JsonSerializable {
 			$flags = explode('-', $key);
 
 			if (cacti_count($flags) > 1) {
-				$flagName = strtolower($flags[1]);
+				$flagName = cacti_strtolower($flags[1]);
 			} else {
-				$flagName = strtolower($flags[0]);
+				$flagName = cacti_strtolower($flags[0]);
 			}
 			$langOutput .= '<option value=\'' . $key . '\'' . $selected . ' data-class=\'fi-' . $flagName . '\'><span class="fi fis fi-' . $flagName . '"></span>' . $value . '</option>';
 		}

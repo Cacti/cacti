@@ -1677,7 +1677,7 @@ function tail_file(string $file_name, int $line_cnt, mixed $message_type = -1, m
 		return [__('Error %s is not readable', $file_name)];
 	}
 
-	$filter = strtolower($filter);
+	$filter = cacti_strtolower($filter);
 
 	$fp = fopen($file_name, 'r');
 
@@ -2241,7 +2241,7 @@ function is_hex_string(string &$result) : bool {
 		return false;
 	}
 
-	$compare = strtolower($result);
+	$compare = cacti_strtolower($result);
 
 	/* strip off the 'Hex:, Hex-, and Hex-STRING:'
 	 * Hex- is considered due to the stripping of 'String:' in
@@ -3013,7 +3013,7 @@ function get_data_source_item_name(int $data_template_rrd_id) : mixed {
 	if (empty($data_source['data_source_name'])) {
 		// limit input to 19 characters
 		$data_source_name = clean_up_name($data_source['name']);
-		$data_source_name = substr(strtolower($data_source_name), 0, (19 - strlen('' . $data_template_rrd_id))) . $data_template_rrd_id;
+		$data_source_name = substr(cacti_strtolower($data_source_name), 0, (19 - strlen('' . $data_template_rrd_id))) . $data_template_rrd_id;
 
 		return $data_source_name;
 	} else {
@@ -3078,7 +3078,7 @@ function get_data_source_path(int $local_data_id, bool $expand_paths) : string {
  * @return string The original string with '$find' replaced by '$replace'
  */
 function stri_replace(string $find, string $replace, string $string) : string {
-	$parts = explode(strtolower($find), strtolower($string));
+	$parts = explode(cacti_strtolower($find), cacti_strtolower($string));
 
 	$pos = 0;
 
@@ -3458,7 +3458,7 @@ function generate_data_source_path($local_data_id) {
 			$new_path = "<path_rra>/$local_data_id.rrd";
 		}
 	} else {
-		$host_part = strtolower(clean_up_file_name($host_name)) . '_';
+		$host_part = cacti_strtolower(clean_up_file_name($host_name)) . '_';
 
 		// then try and use the internal DS name to identify it
 		$data_source_rrd_name = db_fetch_cell_prepared('SELECT data_source_name
@@ -3470,7 +3470,7 @@ function generate_data_source_path($local_data_id) {
 		);
 
 		if (!empty($data_source_rrd_name)) {
-			$ds_part = strtolower(clean_up_file_name($data_source_rrd_name));
+			$ds_part = cacti_strtolower(clean_up_file_name($data_source_rrd_name));
 		} else {
 			$ds_part = 'ds';
 		}
@@ -5455,7 +5455,7 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 		$secure = read_config_option('settings_oauth2_secure');
 
 		if (!empty($secure) && $secure != 'none') {
-			$mail->SMTPSecure = strtolower($secure);
+			$mail->SMTPSecure = cacti_strtolower($secure);
 		} else {
 			$mail->SMTPAutoTLS = false;
 		}
@@ -6174,7 +6174,7 @@ function get_dns_from_ip(string $ip, string $dns, int $timeout = 1000) : string 
 			// null terminated string, so length 0 = finished
 			if ($len[1] == 0) {
 				// return the hostname, without the trailing '.'
-				return strtoupper(substr($host, 0, strlen($host) - 1));
+				return cacti_strtoupper(substr($host, 0, strlen($host) - 1));
 			}
 
 			// add the next segment to our host
@@ -6186,7 +6186,7 @@ function get_dns_from_ip(string $ip, string $dns, int $timeout = 1000) : string 
 	}
 
 	// error - return the hostname
-	return strtoupper($ip);
+	return cacti_strtoupper($ip);
 }
 
 function poller_maintenance() : void {
@@ -6484,7 +6484,7 @@ function get_classic_tabimage(string $text, bool $down = false) : mixed {
 	if ($text == '') {
 		return false;
 	}
-	$text = strtolower($text);
+	$text = cacti_strtolower($text);
 
 	$possibles = [
 		['DejaVuSans-Bold.ttf', 9, true],
@@ -7098,7 +7098,7 @@ function repair_system_data_input_methods(string $step = 'import') : void {
 				[$data_input_id]);
 
 			if (cacti_sizeof($bad_hashes)) {
-				cacti_log(strtoupper($step) . ' NOTE: Repairing ' . cacti_sizeof($bad_hashes) . ' Damaged data_input_fields', false);
+				cacti_log(cacti_strtoupper($step) . ' NOTE: Repairing ' . cacti_sizeof($bad_hashes) . ' Damaged data_input_fields', false);
 
 				foreach ($bad_hashes as $bhash) {
 					$good_field_id = db_fetch_cell_prepared('SELECT id
@@ -7120,7 +7120,7 @@ function repair_system_data_input_methods(string $step = 'import') : void {
 							[$bhash['id']]);
 
 						if (cacti_sizeof($bad_mappings)) {
-							cacti_log(strtoupper($step) . ' NOTE: Found ' . cacti_sizeof($bad_mappings) . ' Damaged data_input_fields', false);
+							cacti_log(cacti_strtoupper($step) . ' NOTE: Found ' . cacti_sizeof($bad_mappings) . ' Damaged data_input_fields', false);
 
 							foreach ($bad_mappings as $mfid) {
 								$good_found = db_fetch_cell_prepared('SELECT COUNT(*)
@@ -7159,7 +7159,7 @@ function repair_system_data_input_methods(string $step = 'import') : void {
 							[$bhash['id']]);
 
 						if (cacti_sizeof($bad_mappings)) {
-							cacti_log(strtoupper($step) . ' NOTE: Found ' . cacti_sizeof($bad_mappings) . ' Damaged data_template_rrd', false);
+							cacti_log(cacti_strtoupper($step) . ' NOTE: Found ' . cacti_sizeof($bad_mappings) . ' Damaged data_template_rrd', false);
 
 							foreach ($bad_mappings as $mfid) {
 								$good_found = db_fetch_cell_prepared('SELECT COUNT(*)
@@ -7216,7 +7216,7 @@ function repair_system_data_input_methods(string $step = 'import') : void {
 	}
 }
 
-if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' && !function_exists('posix_kill')) {
+if (cacti_strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' && !function_exists('posix_kill')) {
 	if (!defined('SIGTERM')) {
 		define('SIGTERM', 15);
 	}
@@ -7807,7 +7807,7 @@ function char_to_dec(string $part) : int {
 		$part = substr($part, -1);
 	}
 
-	return ord(strtoupper($part)) - ord('0');
+	return ord(cacti_strtoupper($part)) - ord('0');
 }
 
 /**
@@ -8547,14 +8547,45 @@ function cacti_count(mixed $array) : int {
 	return ($array === false || !is_array($array)) ? 0 : count($array);
 }
 
+/**
+ * cacti_strtolower - Locale-independent lowercase conversion
+ *
+ * PHP 8.5 deprecates locale-sensitive strtolower(). This wrapper
+ * uses mb_strtolower with explicit UTF-8 encoding to avoid
+ * locale-dependent behavior. All Cacti string comparisons are
+ * ASCII or UTF-8, never locale-sensitive.
+ *
+ * @param string $string The string to convert
+ *
+ * @return string The lowercased string
+ */
+function cacti_strtolower(string $string) : string {
+	return mb_strtolower($string, 'UTF-8');
+}
+
+/**
+ * cacti_strtoupper - Locale-independent uppercase conversion
+ *
+ * PHP 8.5 deprecates locale-sensitive strtoupper(). This wrapper
+ * uses mb_strtoupper with explicit UTF-8 encoding to avoid
+ * locale-dependent behavior.
+ *
+ * @param string $string The string to convert
+ *
+ * @return string The uppercased string
+ */
+function cacti_strtoupper(string $string) : string {
+	return mb_strtoupper($string, 'UTF-8');
+}
+
 function is_function_enabled(string $name) : bool {
 	return function_exists($name) &&
 		!in_array($name, array_map('trim', explode(', ', ini_get('disable_functions'))), true) &&
-		strtolower(ini_get('safe_mode')) != 1;
+		cacti_strtolower(ini_get('safe_mode')) != 1;
 }
 
 function is_page_ajax() : bool {
-	if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+	if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && cacti_strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
 		return true;
 	}
 
@@ -9503,14 +9534,14 @@ function cacti_unserialize(string $strobj) : mixed {
 function detect_cpu_cores() : int {
 	$cpu_cores = 0;
 
-	if (str_starts_with(strtoupper(PHP_OS), 'WIN')) {
+	if (str_starts_with(cacti_strtoupper(PHP_OS), 'WIN')) {
 		$output = shell_exec('powershell -Command "Get-WmiObject Win32_Processor | Select-Object NumberOfLogicalProcessors"');
 
 		if (!is_null($output) && $output !== false) {
 			preg_match_all('/\d+/', $output, $matches);
 			$cpu_cores = array_sum($matches[0]);
 		}
-	} elseif (substr_count(strtolower(PHP_OS), 'darwin')) {
+	} elseif (substr_count(cacti_strtolower(PHP_OS), 'darwin')) {
 		$cpu_cores = shell_exec('sysctl -n hw.ncpu');
 	} else {
 		if (file_exists('/usr/bin/nproc')) {

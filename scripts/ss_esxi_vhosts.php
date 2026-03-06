@@ -42,7 +42,7 @@ function ss_esxi_vhosts(int $device_id) : string {
 
 	if (cacti_sizeof($array)) {
 		foreach ($array as $key => $value) {
-			if (strtolower(trim($value['value'])) == 'powered on' || strtolower(trim($value['value'])) == 'poweredon') {
+			if (cacti_strtolower(trim($value['value'])) == 'powered on' || cacti_strtolower(trim($value['value'])) == 'poweredon') {
 				$vh_state++;
 			}
 		}
