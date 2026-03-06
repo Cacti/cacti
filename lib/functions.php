@@ -7769,7 +7769,7 @@ function is_cacti_release(mixed $version = null) : bool {
  * @param int     $length  Length of output
  * @param boolean $hex     Convert to hex
  *
- * @return int
+ * @return int|string
  */
 function version_to_decimal(string $version, int $length = 9, bool $hex = true) : int|string {
 	return version_to_bits($version, $hex);
