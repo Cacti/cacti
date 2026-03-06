@@ -1,0 +1,31 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Variable \$argc might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: install/cli_check.php
+
+		-
+			message: '#^Variable \$argv might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: install/cli_check.php
+
+		-
+			message: '#^Variable \$argv might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: install/cli_test.php
+
+		-
+			message: '#^Parameter \#2 \$filter of function filter_var expects int, string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: lib/functions.php
+
+		-
+			message: '#^Cannot use \+\+ on string\.$#'
+			identifier: postInc.type
+			count: 1
+			path: rrdcleaner.php
