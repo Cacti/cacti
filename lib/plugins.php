@@ -2317,8 +2317,6 @@ function plugin_make_github_request(string $url, string $type = 'json') : mixed 
 		$errno = curl_errno($ch);
 		$error = curl_error($ch);
 
-		curl_close($ch);
-
 		if ($info['http_code'] == 403 || $info['http_code'] == 429) {
 			$json_data = json_decode($data, true);
 
