@@ -145,7 +145,7 @@ if (cacti_sizeof($parms)) {
 }
 
 // check for an invalid run location
-if ($poller_id == 1 && !defined('PHP_STAN')) {
+if ($poller_id == 1 && !defined('PHP_TESTING')) {
 	print "ERROR: This command is only to be run on remote Cacti Data Collectors\n";
 
 	exit(1);

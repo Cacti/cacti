@@ -16,15 +16,15 @@
  * Tests for XSS fix in auth_resetpassword.php.
  *
  * The hash value in hidden form inputs was output without escaping. The fix
- * wraps gnrv('hash') with htmle() to prevent XSS when the hash is reflected.
+ * wraps $_REQUEST['hash'] with htmlerv() to prevent XSS when the hash is reflected.
  */
 
 $authPath = __DIR__ . '/../../auth_resetpassword.php';
 
 // --- auth_resetpassword.php: hash escaped in output ---
 
-test('auth_resetpassword.php escapes hash with htmle', function () use ($authPath) {
+test('auth_resetpassword.php escapes hash with htmlerv', function () use ($authPath) {
 	$contents = file_get_contents($authPath);
 
-	expect($contents)->toContain("htmle(gnrv('hash'))");
+	expect($contents)->toContain("htmlerv('hash')");
 });

@@ -44,6 +44,7 @@
         "ext-sockets": "*",
         "ext-sqlite3": "*",
         "ext-xml": "*",
+        "composer/xdebug-handler": "^3.0",
         "greew/oauth2-azure-provider": "^2.0",
         "hayageek/oauth2-yahoo": "^2.0",
         "league/oauth2-client": "^2.7",
@@ -70,7 +71,7 @@
         "phpstan": "phpstan analyse --level 6 ",
         "phpcsfixer": "php-cs-fixer fix --allow-unsupported-php-version=yes --dry-run --diff --config=./.php-cs-fixer.php ",
         "phpcsfixit": "php-cs-fixer fix ",
-        "test": "include/vendor/bin/pest --display-warnings "
+        "test": "include/vendor/bin/pest --display-warnings"
     },
     "authors": [
         {

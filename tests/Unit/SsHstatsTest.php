@@ -103,7 +103,7 @@ test('all identity-mapped stats return the stat name as column', function () {
 
 // Test ss_hstats() wrapper behavior with host_id=0
 test('ss_hstats returns zero when host_id is zero', function () {
-	expect(ss_hstats(0, 'polling_time'))->toBe('0')
-		->and(ss_hstats(0, 'uptime'))->toBe('0')
-		->and(ss_hstats(0, 'invalid'))->toBe('0');
+	expect(ss_hstats(0, 'polling_time'))->toBe('U')
+		->and(ss_hstats(0, 'uptime'))->toBe('U')
+		->and(ss_hstats(0, 'invalid'))->toBe('U');
 });

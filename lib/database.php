@@ -162,7 +162,7 @@ function db_connect_real(string $device, string $user, string $pass, string $db_
 			];
 
 			// test if cacti database is imported from SQL file
-			if (!defined('PHP_STAN')) {
+			if (!defined('PHP_TESTING')) {
 				$table_exists = db_fetch_cell("SELECT count(*) FROM information_schema.tables
 					WHERE table_schema = DATABASE() and TABLE_NAME = 'version'");
 
