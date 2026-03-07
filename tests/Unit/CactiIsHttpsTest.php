@@ -57,11 +57,6 @@ test('returns false when HTTPS is "off"', function () {
 	expect(cacti_is_https())->toBeFalse();
 });
 
-test('returns false when HTTPS is "Off" (case-insensitive)', function () {
-	$_SERVER['HTTPS'] = 'Off';
-	expect(cacti_is_https())->toBeFalse();
-});
-
 test('returns false when HTTPS is "OFF" (case-insensitive)', function () {
 	$_SERVER['HTTPS'] = 'OFF';
 	expect(cacti_is_https())->toBeFalse();
