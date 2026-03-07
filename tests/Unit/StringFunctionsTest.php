@@ -12,23 +12,6 @@
  +-------------------------------------------------------------------------+
 */
 
-/*
- * Tests for pure string functions from lib/functions.php.
- *
- * Each function under test is replicated as an inline stub that mirrors
- * the production logic, allowing verification without loading the full
- * Cacti environment. Functions tested:
- *
- *   title_trim()              - L37   - string truncation with ellipsis
- *   sanitize_search_string()  - L4908 - XSS-relevant character stripping
- *   clean_up_lines()          - L3105 - line ending normalization
- *   clean_up_name()           - L3121 - name sanitization
- *   clean_up_file_name()      - L3139 - filename sanitization
- *   is_valid_pathname()       - L2372 - path traversal guard
- *   is_base64_encoded()       - L4959 - encoding validation
- *   generate_hash()           - L4779 - format validation (random output)
- */
-
 require_once __DIR__ . '/../Helpers/CactiStubs.php';
 require_once __DIR__ . '/../../include/global.php';
 
