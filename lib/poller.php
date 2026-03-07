@@ -167,8 +167,23 @@ function exec_with_timeout(string $cmd, array &$output, int &$return_code, int $
 		2 => ['pipe', 'w']   // stderr
 	];
 
+	// Use setsid when available (Linux) so the child becomes a process-group leader,
+	// allowing posix_kill(-pid, 9) to reliably kill the entire subtree on timeout.
+	// Falls back to plain exec on systems without setsid (macOS, BSD).
+	$setsid = '';
+
+	if (CACTI_SERVER_OS != 'win32') {
+		$setsid_path = trim(shell_exec('which setsid 2>/dev/null') ?? '');
+
+		if ($setsid_path !== '') {
+			$setsid = 'setsid -- ';
+		}
+	}
+
+	$cmd_full = $setsid . $cmd;
+
 	// Start the process.
-	$process = proc_open('exec ' . $cmd, $descriptors, $pipes);
+	$process = proc_open('exec ' . $cmd_full, $descriptors, $pipes);
 
 	if (!is_resource($process)) {
 		return false;
@@ -211,7 +226,7 @@ function exec_with_timeout(string $cmd, array &$output, int &$return_code, int $
 		}
 
 		// Subtract the number of microseconds that we waited.
-		$timeout -= (int) (microtime(true) - $start) * 1000000;
+		$timeout -= (int) ((microtime(true) - $start) * 1000000);
 	}
 
 	// Check if there were any errors.
@@ -223,12 +238,19 @@ function exec_with_timeout(string $cmd, array &$output, int &$return_code, int $
 		$return_code = 1;
 	}
 
-	if (!empty($errors)) {
-		return false;
+	// Only surface stderr noise when the command actually failed; successful
+	// commands may write informational output to stderr that isn't actionable.
+	if ($return_code != 0 && !empty($errors)) {
+		cacti_log("WARNING: Command '$cmd' exited with code $return_code, stderr: " . trim($errors), false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 	}
 
 	// Kill the process in case the timeout expired and it's still running.
 	// If the process already exited this won't do anything.
+	// Use negative PID to kill the entire process group (setsid makes child the group leader).
+	if (isset($status['pid']) && $status['running'] && function_exists('posix_kill')) {
+		posix_kill(-$status['pid'], 9);
+	}
+
 	proc_terminate($process, 9);
 
 	// Close all streams.
