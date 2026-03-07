@@ -16,7 +16,7 @@
  * We set a testing variable such that Cacti will not attempt
  * to connect to a database when the tests are called, or to call
  * any function that will result in the failure due to the lack
- * of a real database conneciton.
+ * of a real database connection.
  */
 
 define('PHP_TESTING', true);
