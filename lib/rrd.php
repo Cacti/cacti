@@ -265,7 +265,7 @@ function encrypt(string $output, string $rsa_key) : string {
 	}
 }
 
-function decrypt(string $input) : string|false {
+function decrypt(string $input) : string {
 	global $encryption;
 
 	if ($encryption) {
@@ -948,7 +948,7 @@ function rrdtool_function_update(array $update_cache_array, mixed $rrdtool_pipe 
 	foreach ($update_cache_array as $rrd_path => $rrd_fields) {
 		$create_rrd_file = false;
 
-		if (is_array($rrd_fields['times']) && cacti_sizeof($rrd_fields['times'])) {
+		if (cacti_sizeof($rrd_fields['times'])) {
 			$file_exists = rrdtool_file_exists($rrd_path, $rrdtool_pipe);
 
 			ksort($rrd_fields['times']);
@@ -1644,7 +1644,7 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 		if (is_array($rra) && isset($rra['steps'])) {
 			$rra['timespan'] = $rra['rows'] * $rra['step'] * $rra['steps'];
 		} else {
-			$rra = [];
+			$rra             = [];
 			$rra['timespan'] = 86400;
 			$rra['steps']    = 1;
 			$rra['rows']     = 600;
@@ -1675,7 +1675,7 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 	);
 
 	// handle the case where the graph has been deleted
-	if (!is_array($graph) || !cacti_sizeof($graph)) {
+	if (!cacti_sizeof($graph)) {
 		return false;
 	}
 
@@ -3286,7 +3286,7 @@ function rrdtool_function_info_from_ds(int $data_source_id) : array {
 			[$data_source_id]);
 	}
 
-	if (is_array($cacti_header_array) && cacti_sizeof($cacti_header_array) && cacti_sizeof($cacti_ds_array)) {
+	if (cacti_sizeof($cacti_header_array) && cacti_sizeof($cacti_ds_array)) {
 		$info_array['step'] = $cacti_header_array['rrd_step'];
 
 		// get cacti RRA information
@@ -4378,11 +4378,14 @@ function rrd_copy_rra(object $dom, string $cf, array $rra_parm) : object {
 
 			// get a clone of the matching RRA
 			$new_rra = $rra->cloneNode(true);
+
 			// and find the 'old' cf
 			// $old_cf = $new_rra->getElementsByTagName('cf')->item(0);
 			// now replace old cf with new one
 			// $old_cf->childNodes->item(0)->replaceData(0,20,$cf);
-			$new_rra->getElementsByTagName('cf')->item(0)->nodeValue = $cf;
+			if ($new_rra instanceof DOMElement) {
+				$new_rra->getElementsByTagName('cf')->item(0)->nodeValue = $cf;
+			}
 
 			// append new rra entry at end of the list
 			$parent->appendChild($new_rra);
@@ -4566,9 +4569,9 @@ function rrdtool_create_error_image(string $string, mixed $width = '', mixed $he
 
 	// background the entire image with the frame
 	$shadeb_parsed = sscanf($shadeb, '%02x%02x%02x');
-	$red   = min(255, max(0, (int) ($shadeb_parsed[0] ?? 0)));
-	$green = min(255, max(0, (int) ($shadeb_parsed[1] ?? 0)));
-	$blue  = min(255, max(0, (int) ($shadeb_parsed[2] ?? 0)));
+	$red           = min(255, max(0, (int) ($shadeb_parsed[0] ?? 0)));
+	$green         = min(255, max(0, (int) ($shadeb_parsed[1] ?? 0)));
+	$blue          = min(255, max(0, (int) ($shadeb_parsed[2] ?? 0)));
 
 	$shadeb_color = imagecolorallocate($image, $red, $green, $blue);
 
@@ -4578,9 +4581,9 @@ function rrdtool_create_error_image(string $string, mixed $width = '', mixed $he
 
 	// set the background color
 	$shadea_parsed = sscanf($shadea, '%02x%02x%02x');
-	$red   = min(255, max(0, (int) ($shadea_parsed[0] ?? 0)));
-	$green = min(255, max(0, (int) ($shadea_parsed[1] ?? 0)));
-	$blue  = min(255, max(0, (int) ($shadea_parsed[2] ?? 0)));
+	$red           = min(255, max(0, (int) ($shadea_parsed[0] ?? 0)));
+	$green         = min(255, max(0, (int) ($shadea_parsed[1] ?? 0)));
+	$blue          = min(255, max(0, (int) ($shadea_parsed[2] ?? 0)));
 
 	$shadea_color = imagecolorallocate($image, $red, $green, $blue);
 
@@ -4590,9 +4593,9 @@ function rrdtool_create_error_image(string $string, mixed $width = '', mixed $he
 
 	// set the background color
 	$back_parsed = sscanf($back_color, '%02x%02x%02x');
-	$red   = min(255, max(0, (int) ($back_parsed[0] ?? 0)));
-	$green = min(255, max(0, (int) ($back_parsed[1] ?? 0)));
-	$blue  = min(255, max(0, (int) ($back_parsed[2] ?? 0)));
+	$red         = min(255, max(0, (int) ($back_parsed[0] ?? 0)));
+	$green       = min(255, max(0, (int) ($back_parsed[1] ?? 0)));
+	$blue        = min(255, max(0, (int) ($back_parsed[2] ?? 0)));
 
 	$back_color_alloc = imagecolorallocate($image, $red, $green, $blue);
 
@@ -4610,9 +4613,9 @@ function rrdtool_create_error_image(string $string, mixed $width = '', mixed $he
 
 	// set the background color
 	$font_parsed = sscanf($font_color, '%02x%02x%02x');
-	$red   = min(255, max(0, (int) ($font_parsed[0] ?? 0)));
-	$green = min(255, max(0, (int) ($font_parsed[1] ?? 0)));
-	$blue  = min(255, max(0, (int) ($font_parsed[2] ?? 0)));
+	$red         = min(255, max(0, (int) ($font_parsed[0] ?? 0)));
+	$green       = min(255, max(0, (int) ($font_parsed[1] ?? 0)));
+	$blue        = min(255, max(0, (int) ($font_parsed[2] ?? 0)));
 
 	$text_color = imagecolorallocate($image, $red, $green, $blue);
 
@@ -4678,7 +4681,6 @@ function rrdtool_create_error_image(string $string, mixed $width = '', mixed $he
 
 	// get the image from the buffer
 	$image_data = ob_get_contents();
-
 
 	// flush the buffer
 	ob_end_clean();
