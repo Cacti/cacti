@@ -3109,7 +3109,7 @@ if (CACTI_SERVER_OS == 'unix') {
 	];
 }
 
-$allowed_proxy_headers =	[
+$allowed_proxy_headers = [
 	'X-Forwarded-For',
 	'X-Client-IP',
 	'X-Real-IP',

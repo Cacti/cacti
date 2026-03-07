@@ -92,13 +92,13 @@ function ss_mikrotik_queues_getvalue(int $host_id, string $index, string $column
 
 			break;
 		default:
-			return '0';
+			return 'U';
 	}
 
 	$allowed_columns = ['curBytesIn', 'curBytesOut', 'curPacketsIn', 'curPacketsOut', 'curQueuesIn', 'curQueuesOut', 'curDroppedIn', 'curDroppedOut'];
 
 	if (!in_array($column, $allowed_columns, true)) {
-		return '0';
+		return 'U';
 	}
 
 	$index2 = str_replace('_', ' ', $index);
@@ -111,7 +111,7 @@ function ss_mikrotik_queues_getvalue(int $host_id, string $index, string $column
 		[$index, $index2, $host_id]);
 
 	if ($value === false) {
-		return '0';
+		return 'U';
 	} else {
 		return $value;
 	}

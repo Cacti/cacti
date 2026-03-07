@@ -123,7 +123,7 @@ if (file_exists(__DIR__ . '/config.php')) {
 	include(__DIR__ . '/config.php');
 }
 
-if (defined('PHP_STAN') && file_exists(__DIR__ . '/config.php.dist')) {
+if (defined('PHP_TESTING') && file_exists(__DIR__ . '/config.php.dist')) {
 	if (!is_readable(__DIR__ . '/config.php.dist')) {
 		die('Configuration file include/config.php is present, but unreadable.' . PHP_EOL);
 	}
@@ -313,7 +313,7 @@ $lu = $config['is_web'] ? '</ul>' : '';
 $il = $config['is_web'] ? '</li>' : '';
 
 if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
-	if (!defined('PHP_STAN')) {
+	if (!defined('PHP_TESTING')) {
 		$local_db_cnn_id = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca, $database_ssl_capath, $database_ssl_verify_server_cert);
 	}
 
@@ -363,7 +363,7 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	 * a remote poller, let's attempt to get back online.
 	 */
 	if ($conn_mode != 'offline') {
-		if (!defined('PHP_STAN')) {
+		if (!defined('PHP_TESTING')) {
 			$remote_db_cnn_id = db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $database_retries, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca, $rdatabase_ssl_capath, $rdatabase_ssl_verify_server_cert);
 		}
 	}
@@ -389,7 +389,7 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 		$config['connection'] = 'offline';
 	}
 } else {
-	if (!defined('PHP_STAN')) {
+	if (!defined('PHP_TESTING')) {
 		if (!db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca, $database_ssl_capath, $database_ssl_verify_server_cert)) {
 			print $ps . 'FATAL: Connection to Cacti database failed. Please ensure: ' . $ul;
 			print $li . 'the PHP MySQL module is installed and enabled.' . $il;
@@ -410,7 +410,7 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 		}
 	}
 
-	if (!defined('PHP_STAN')) {
+	if (!defined('PHP_TESTING')) {
 		if (!db_table_exists('settings') || !db_table_exists('version')) {
 			print $ps . 'FATAL: Connection to Cacti database succeeded but `settings` table not found. Please ensure: ' . $ul;
 			print $li . 'the PHP MySQL module is installed and enabled.' . $il;

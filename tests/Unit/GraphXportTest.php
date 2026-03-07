@@ -13,7 +13,7 @@
 */
 
 require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
-require_once dirname(__DIR__, 2) . '/lib/functions.php';
+require_once dirname(__DIR__, 2) . '/include/global.php';
 require_once dirname(__DIR__, 2) . '/lib/xml.php';
 
 // --- rrdxport2array: valid xport XML produces correct structure ---

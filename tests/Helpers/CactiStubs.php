@@ -13,35 +13,10 @@
 */
 
 /*
- * Shared stubs for Cacti helper functions used by production code.
- * These replicate the production signatures so that test stubs
- * can call them without loading the full Cacti environment.
+ * We set a testing variable such that Cacti will not attempt
+ * to connect to a database when the tests are called, or to call
+ * any function that will result in the failure due to the lack
+ * of a real database connection.
  */
 
-function cacti_sizeof($value): int {
-	if (is_array($value)) {
-		return sizeof($value);
-	} elseif ($value instanceof Countable) {
-		return count($value);
-	}
-
-	return 0;
-}
-
-function cacti_count($value): int {
-	if (is_array($value)) {
-		return count($value);
-	} elseif ($value instanceof Countable) {
-		return count($value);
-	}
-
-	return 0;
-}
-
-function __($text) {
-	return $text;
-}
-
-function __esc($text) {
-	return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
-}
+define('PHP_TESTING', true);

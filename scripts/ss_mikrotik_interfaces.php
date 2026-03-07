@@ -59,7 +59,7 @@ function ss_mikrotik_interfaces(int $host_id, string $cmd = 'index', string $arg
 
 function ss_mikrotik_interfaces_getvalue(int $host_id, string $index, string $column) : string {
 	if (!preg_match('/^[a-zA-Z0-9_]+$/', $column)) {
-		return '0';
+		return 'U';
 	}
 
 	$column = 'cur' . $column;
@@ -72,7 +72,7 @@ function ss_mikrotik_interfaces_getvalue(int $host_id, string $index, string $co
 	];
 
 	if (!in_array($column, $allowed_columns, true)) {
-		return '0';
+		return 'U';
 	}
 
 	$index2 = str_replace('_', ' ', $index);
@@ -85,7 +85,7 @@ function ss_mikrotik_interfaces_getvalue(int $host_id, string $index, string $co
 		[$index, $index2, $host_id]);
 
 	if ($value === false) {
-		return '0';
+		return 'U';
 	} else {
 		return $value;
 	}

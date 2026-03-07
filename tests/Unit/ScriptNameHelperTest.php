@@ -12,6 +12,8 @@
  +-------------------------------------------------------------------------+
 */
 
+require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
+require_once __DIR__ . '/../../include/global.php';
 require_once __DIR__ . '/../../lib/functions.php';
 
 // --- get_current_script_name ---

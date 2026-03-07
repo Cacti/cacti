@@ -29,8 +29,8 @@
  *   3. HRULE item pparts[3] replacement (aggregate_graphs_insert_graph_items)
  */
 
-define('AGGREGATE_TOTAL_TYPE_SIMILAR', 1);
-define('AGGREGATE_TOTAL_TYPE_ALL', 2);
+require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
+require_once dirname(__DIR__, 2) . '/include/global.php';
 
 /**
  * Mimics the text_format :current: / :max: replacement logic from

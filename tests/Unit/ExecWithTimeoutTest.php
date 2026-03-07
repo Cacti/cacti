@@ -12,32 +12,8 @@
  +-------------------------------------------------------------------------+
 */
 
-/*
- * Tests for exec_with_timeout() in lib/poller.php.
- *
- * Covers three bugs fixed in commit c58f8d940:
- *   1. Operator precedence: (int) cast bound tighter than multiplication,
- *      truncating the elapsed-time float to 0 before scaling to microseconds.
- *   2. stderr discard: any stderr output caused an early `return false`,
- *      throwing away valid stdout data.
- *   3. Orphaned children: no process-group kill before proc_terminate.
- */
-
-// Stub cacti_log so lib/poller.php can call it without the full framework.
-if (!function_exists('cacti_log')) {
-	function cacti_log(string $msg, bool $output = false, string $facility = '', int $level = 0): void {
-		// no-op for tests
-	}
-}
-
-if (!defined('POLLER_VERBOSITY_MEDIUM')) {
-	define('POLLER_VERBOSITY_MEDIUM', 2);
-}
-
-if (!defined('CACTI_SERVER_OS')) {
-	define('CACTI_SERVER_OS', PHP_OS === 'WINNT' ? 'win32' : 'unix');
-}
-
+require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
+require_once dirname(__DIR__, 2) . '/include/global.php';
 require_once dirname(__DIR__, 2) . '/lib/poller.php';
 
 // --- Bug 1: operator precedence in timeout microsecond conversion ---

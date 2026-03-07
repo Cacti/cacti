@@ -62,13 +62,13 @@ function ss_hstats(int $host_id = 0, string $stat = '') : string {
 	$column = ss_hstats_map_stat_to_column($stat);
 
 	if ($column === null) {
-		return '0';
+		return 'U';
 	}
 
 	$allowed = ['polling_time', 'min_time', 'max_time', 'cur_time', 'avg_time', 'snmp_sysUpTimeInstance', 'failed_polls', 'availability', 'current_errors'];
 
 	if (!in_array($column, $allowed, true)) {
-		return '0';
+		return 'U';
 	}
 
 	if ($host_id > 0) {
@@ -82,5 +82,5 @@ function ss_hstats(int $host_id = 0, string $stat = '') : string {
 		return ($value == '' ? 'U' : $value);
 	}
 
-	return '0';
+	return 'U';
 }

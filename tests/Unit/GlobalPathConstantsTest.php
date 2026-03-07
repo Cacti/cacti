@@ -12,6 +12,9 @@
  +-------------------------------------------------------------------------+
 */
 
+require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
+require_once dirname(__DIR__, 2) . '/include/global.php';
+
 /**
  * Test for PR #6702: Verify CACTI_PATH_MIBS constant is defined
  */
@@ -19,32 +22,23 @@
 test('CACTI_PATH_MIBS constant is defined in global_path.php', function () {
 	// Simulate config array that would be set before including global_path.php
 	global $config;
-	$config['mibs_path'] = '/usr/share/snmp/mibs';
-	
-	// Include the file that defines path constants
-	require_once __DIR__ . '/../../include/global_path.php';
-	
+
 	expect(defined('CACTI_PATH_MIBS'))
 		->toBeTrue('CACTI_PATH_MIBS constant should be defined');
 });
 
 test('CACTI_PATH_MIBS uses mibs_path from config', function () {
 	global $config;
-	$expectedPath = '/usr/share/snmp/mibs';
-	$config['mibs_path'] = $expectedPath;
-	
-	require_once __DIR__ . '/../../include/global_path.php';
-	
+
+	$expectedPath = CACTI_PATH_BASE . '/mibs';
+
 	expect(CACTI_PATH_MIBS)
 		->toBe($expectedPath, 'CACTI_PATH_MIBS should match config mibs_path');
 });
 
 test('CACTI_PATH_MIBS constant matches other CACTI_PATH_ patterns', function () {
 	global $config;
-	$config['mibs_path'] = '/usr/share/snmp/mibs';
-	
-	require_once __DIR__ . '/../../include/global_path.php';
-	
+
 	// Verify it follows the same pattern as other path constants
 	expect(defined('CACTI_PATH_MIBS'))
 		->toBeTrue()

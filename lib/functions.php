@@ -2247,10 +2247,10 @@ function is_hex_string(string &$result) : bool {
 	 * Hex- is considered due to the stripping of 'String:' in
 	 * lib/snmp.php
 	 */
-	if (str_starts_with($compare, 'hex-')) {
-		$check = trim(str_ireplace('hex-', '', $result));
-	} elseif (str_starts_with($compare, 'hex-string:')) {
+	if (str_starts_with($compare, 'hex-string:')) {
 		$check = trim(str_ireplace('hex-string:', '', $result));
+	} elseif (str_starts_with($compare, 'hex-')) {
+		$check = trim(str_ireplace('hex-', '', $result));
 	} else {
 		return false;
 	}

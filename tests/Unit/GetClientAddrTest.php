@@ -12,7 +12,8 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once __DIR__ . '/../../lib/functions.php';
+require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
+require_once dirname(__DIR__, 2) . '/include/global.php';
 
 beforeEach(function () {
 	unset(
@@ -27,6 +28,7 @@ beforeEach(function () {
 
 test('returns REMOTE_ADDR when proxy_headers is false', function () {
 	global $config;
+
 	$config['proxy_headers'] = false;
 
 	$_SERVER['REMOTE_ADDR'] = '192.168.1.100';
@@ -36,6 +38,7 @@ test('returns REMOTE_ADDR when proxy_headers is false', function () {
 
 test('returns false when no server variables are set', function () {
 	global $config;
+
 	$config['proxy_headers'] = false;
 
 	expect(get_client_addr())->toBeFalse();
@@ -43,6 +46,9 @@ test('returns false when no server variables are set', function () {
 
 test('returns first valid IP from X-Forwarded-For when proxy_headers enabled', function () {
 	global $config, $allowed_proxy_headers;
+
+	require __DIR__ . '/../../include/global_arrays.php';
+
 	$config['proxy_headers'] = true;
 
 	$_SERVER['HTTP_X_FORWARDED_FOR'] = '10.0.0.1,10.0.0.2';
@@ -53,6 +59,9 @@ test('returns first valid IP from X-Forwarded-For when proxy_headers enabled', f
 
 test('skips invalid IPs in forwarded header', function () {
 	global $config, $allowed_proxy_headers;
+
+	require __DIR__ . '/../../include/global_arrays.php';
+
 	$config['proxy_headers'] = true;
 
 	$_SERVER['HTTP_X_FORWARDED_FOR'] = 'not-an-ip,203.0.113.50';
@@ -63,6 +72,9 @@ test('skips invalid IPs in forwarded header', function () {
 
 test('falls back to REMOTE_ADDR when forwarded header has only invalid IPs', function () {
 	global $config, $allowed_proxy_headers;
+
+	require __DIR__ . '/../../include/global_arrays.php';
+
 	$config['proxy_headers'] = true;
 
 	$_SERVER['HTTP_X_FORWARDED_FOR'] = 'garbage';
@@ -73,6 +85,7 @@ test('falls back to REMOTE_ADDR when forwarded header has only invalid IPs', fun
 
 test('ignores proxy headers when proxy_headers is false', function () {
 	global $config;
+
 	$config['proxy_headers'] = false;
 
 	$_SERVER['HTTP_X_FORWARDED_FOR'] = '10.0.0.1';
@@ -83,6 +96,7 @@ test('ignores proxy headers when proxy_headers is false', function () {
 
 test('supports IPv6 addresses', function () {
 	global $config;
+
 	$config['proxy_headers'] = false;
 
 	$_SERVER['REMOTE_ADDR'] = '::1';
@@ -92,6 +106,7 @@ test('supports IPv6 addresses', function () {
 
 test('handles array proxy_headers config with specific headers allowed', function () {
 	global $config, $allowed_proxy_headers;
+
 	$config['proxy_headers'] = ['HTTP_CLIENT_IP'];
 
 	$_SERVER['HTTP_CLIENT_IP'] = '10.10.10.10';

@@ -63,6 +63,7 @@
         "phpstan/phpstan": "^2.1.21",
         "pestphp/pest": "^2",
         "pestphp/pest-plugin-drift": "^2.0",
+        "composer/xdebug-handler": "^3.0",
         "rector/rector": "^2.1.2"
     },
     "scripts": {
@@ -70,7 +71,7 @@
         "phpstan": "phpstan analyse --level 6 ",
         "phpcsfixer": "php-cs-fixer fix --allow-unsupported-php-version=yes --dry-run --diff --config=./.php-cs-fixer.php ",
         "phpcsfixit": "php-cs-fixer fix ",
-        "test": "include/vendor/bin/pest --display-warnings "
+        "test": "include/vendor/bin/pest --display-warnings"
     },
     "authors": [
         {

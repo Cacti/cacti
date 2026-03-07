@@ -12,71 +12,8 @@
  +-------------------------------------------------------------------------+
 */
 
-/*
- * Tests for XSS defense functions from lib/html.php.
- *
- * Each function under test is replicated as an inline stub that mirrors
- * the production logic, allowing verification without loading the full
- * Cacti environment. Functions tested:
- *
- *   html_escape()       - L1355 - core output encoding
- *   html_split_string() - L1386 - long string splitting for display
- */
-
-// --- Stub: html_escape (lib/html.php L1355) ---
-
-function html_escape(mixed $string = ''): string {
-	static $charset;
-
-	if ($charset == '') {
-		$charset = ini_get('default_charset');
-	}
-
-	if ($charset == '') {
-		$charset = 'UTF-8';
-	}
-
-	if ($string != '') {
-		$string = str_replace('`', '&#96;', $string);
-
-		return htmlspecialchars($string, ENT_QUOTES | ENT_HTML5, $charset, false);
-	} else {
-		return '';
-	}
-}
-
-// --- Stub: html_split_string (lib/html.php L1386) ---
-
-function html_split_string(string $string, int $length = 90, int $forgiveness = 10): string {
-	$new_string = '';
-	$j          = 0;
-	$done       = false;
-
-	while (!$done) {
-		if (mb_strlen($string, 'UTF-8') > $length) {
-			for ($i = 0; $i < $forgiveness; $i++) {
-				if (substr($string, $length - $i, 1) == ' ') {
-					$new_string .= mb_substr($string, 0, $length - $i, 'UTF-8') . '<br>';
-
-					break;
-				}
-			}
-
-			$string = mb_substr($string, $length - $i, null, 'UTF-8');
-		} else {
-			$new_string .= $string;
-			$done        = true;
-		}
-
-		$j++;
-
-		if ($j > 4) {
-			break;
-		}
-	}
-
-	return $new_string;
-}
+require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
+require_once dirname(__DIR__, 2) . '/include/global.php';
 
 // =====================================================================
 // html_escape tests
