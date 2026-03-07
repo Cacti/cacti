@@ -261,7 +261,7 @@ function get_basic_auth_username() : string|false {
 			$records = file($mapfile);
 			$found   = false;
 
-			if (is_array($records) && cacti_sizeof($records)) {
+			if (cacti_sizeof($records)) {
 				foreach ($records as $r) {
 					[$basic, $shortform] = str_getcsv($r);
 
@@ -361,7 +361,7 @@ function user_copy(string $template_user, string $new_user, int $template_realm 
 	$new_id = sql_save($user_auth, 'user_auth');
 
 	// Create/Update permissions and settings
-	if (is_array($user_exist) && cacti_sizeof($user_exist) && $overwrite) {
+	if (cacti_sizeof($user_exist) && $overwrite) {
 		db_execute_prepared('DELETE FROM user_auth_perms WHERE user_id = ?', [$user_exist['id']]);
 		db_execute_prepared('DELETE FROM user_auth_realm WHERE user_id = ?', [$user_exist['id']]);
 		db_execute_prepared('DELETE FROM settings_user WHERE user_id = ?', [$user_exist['id']]);
@@ -534,7 +534,7 @@ function get_auth_realms(bool $login = false) : array {
 			WHERE enabled="on"
 			ORDER BY domain_name');
 
-		if (is_array($drealms) && cacti_sizeof($drealms)) {
+		if (cacti_sizeof($drealms)) {
 			if ($login) {
 				$new_realms['0'] = [
 					'name'     => __('Local'),
@@ -1228,7 +1228,7 @@ function get_allowed_tree_content(int $tree_id, int $parent = 0, string $sql_whe
 
 	$new_hierarchy = [];
 
-	if (is_array($hierarchy) && cacti_sizeof($hierarchy)) {
+	if (cacti_sizeof($hierarchy)) {
 		foreach ($hierarchy as $h) {
 			if ($h['host_id'] > 0) {
 				if (is_device_allowed($h['host_id'])) {
@@ -2618,7 +2618,7 @@ function get_allowed_branches(string $sql_where = '', string $sql_order = 'name'
 			WHERE gti.host_id > 0
 			AND $sql_where", false);
 
-		if (is_array($tree_hosts) && cacti_sizeof($tree_hosts)) {
+		if (cacti_sizeof($tree_hosts)) {
 			$tree_hosts = array_rekey($tree_hosts, 'id', 'description');
 		}
 
@@ -3138,7 +3138,7 @@ function get_total_row_data(int $user_id, string $sql, array $sql_params = [], s
 
 	$cached = false;
 
-	if (is_array($row_data) && cacti_sizeof($row_data)) {
+	if (cacti_sizeof($row_data)) {
 		$cached    = true;
 		$last_time = read_config_option('time_last_change_' . $class);
 
@@ -3419,7 +3419,7 @@ function get_allowed_graph_items(string $sql_where, string $sql_order = 'name', 
 		$sql_order
 		$sql_limit");
 
-	if (is_array($items) && cacti_sizeof($items)) {
+	if (cacti_sizeof($items)) {
 		foreach ($items as $i) {
 			if (is_device_allowed($i['host_id'], $user_id)) {
 				$return[] = ['id' => $i['id'], 'name' => $i['name']];
@@ -3477,7 +3477,7 @@ function auth_checkclear_lockout(string $username, int $realm) : void {
 				AND enabled = 'on'",
 				[$username, $realm]);
 
-			if (is_array($user) && cacti_sizeof($user)) {
+			if (cacti_sizeof($user)) {
 				$unlock = intval(read_config_option('secpass_unlocktime'));
 
 				if ($unlock > 1440) {
@@ -3529,7 +3529,7 @@ function auth_process_lockout_check(string $username, int $realm) : bool {
 				AND enabled = 'on'",
 				[$username, $realm]);
 
-			if (is_array($user) && cacti_sizeof($user)) {
+			if (cacti_sizeof($user)) {
 				if ($user['locked'] == 'on') {
 					$error     = true;
 					$error_msg = __('Your account has been locked.  Please contact your Administrator.');
@@ -3569,7 +3569,7 @@ function auth_process_lockout(string $username, int $realm) : void {
 				AND realm = ?',
 				[$username, $realm]);
 
-			if (is_array($user) && cacti_sizeof($user)) {
+			if (cacti_sizeof($user)) {
 				if ($user['enabled'] == '') {
 					cacti_log(sprintf('LOGIN FAILED: Local Login Failed for user %s from IP address %s. User account disabled.', $username, get_client_addr()), false, 'AUTH');
 
@@ -3811,7 +3811,7 @@ function domains_login_process(string $username) : array {
 						WHERE id = ?',
 						[$template_user]);
 
-					if (is_array($user_template) && cacti_sizeof($user_template)) {
+					if (cacti_sizeof($user_template)) {
 						// template user found
 						$cn_full_name = db_fetch_cell_prepared('SELECT cn_full_name
 							FROM user_domains_ldap
@@ -4079,7 +4079,7 @@ function secpass_login_process(string $username) : array {
 			[$username]);
 	}
 
-	if (is_array($user) && cacti_sizeof($user)) {
+	if (cacti_sizeof($user)) {
 		if ($user['enabled'] != 'on') {
 			$error     = true;
 			$error_msg = __('Access Denied!  Login failed, account disabled.');
@@ -4249,7 +4249,7 @@ function secpass_check_history(int $id, string $password) : bool {
 			AND enabled = 'on'",
 			[$id]);
 
-		if (!is_array($user) || !cacti_sizeof($user)) {
+		if (!cacti_sizeof($user)) {
 			return true;
 		}
 
@@ -4846,7 +4846,7 @@ function disable_2fa(int $user_id) : string {
 			[$_SESSION[SESS_USER_ID]]
 		);
 
-		if (is_array($current_user) && cacti_sizeof($current_user) && $current_user['tfa_enabled'] != '') {
+		if (cacti_sizeof($current_user) && $current_user['tfa_enabled'] != '') {
 			$result['status'] = '501';
 			$result['text']   = __('2FA failed to be disabled');
 		} else {
@@ -4923,7 +4923,7 @@ function verify_2fa(int $user_id, string $code) : string {
 
 	$result = ['status' => 500, 'text' => __('Unknown error')];
 
-	if (!is_array($current_user) || !cacti_sizeof($current_user)) {
+	if (!cacti_sizeof($current_user)) {
 		$result['status'] = 404;
 		$result['text']   = __('ERROR: Unable to find user');
 	} else {
