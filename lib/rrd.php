@@ -1820,8 +1820,16 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 					$data_source_path = get_data_source_path($graph_item['local_data_id'], true);
 				}
 
-				if (!rrdtool_file_exists($data_source_path, $rrdtool_pipe) && (isset($graph_data_array['export_realtime']) || isset($graph_data_array['export_csv']))) {
-					return false;
+				if (!rrdtool_file_exists($data_source_path, $rrdtool_pipe)) {
+					if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG || isset($graph_data_array['get_error'])) {
+						cacti_log("WARNING: RRD file '$data_source_path' does not exist", false, 'GRAPH');
+					}
+
+					if (isset($graph_data_array['export_csv'])) {
+						return false;
+					}
+
+					return rrdtool_create_error_image(__('The Cacti Poller has not run yet.'));
 				}
 
 				// FOR WIN32: Escape all colon for drive letters (ex. D\:/path/to/rra)
