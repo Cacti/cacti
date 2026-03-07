@@ -4890,7 +4890,10 @@ function enable_2fa(int $user_id) : string {
 			[$_SESSION[SESS_USER_ID]]
 		);
 
-		if (!is_array($current_user) || !cacti_sizeof($current_user) || $current_user['tfa_secret'] != $secret) {
+		if (!cacti_sizeof($current_user)
+			|| !isset($current_user['tfa_secret'])
+			|| !isset($current_user['username'])
+			|| $current_user['tfa_secret'] != $secret) {
 			$result['status'] = '501';
 			$result['text']   = __('2FA secret failed to be generated/updated');
 		} else {
