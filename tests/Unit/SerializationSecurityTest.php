@@ -12,22 +12,8 @@
  +-------------------------------------------------------------------------+
 */
 
-/*
- * Tests for deserialization guards and input validation from lib/functions.php.
- *
- * These functions defend against PHP object injection, rrdtool command
- * injection, and malformed network addresses. Each is replicated as an
- * inline stub mirroring production logic.
- *
- *   sanitize_unserialize_selected_items() - L5002 - PHP object injection defense
- *   sanitize_cdef()                       - L4988 - rrdtool CDEF/VDEF injection
- *   is_ipaddress()                        - L7256 - IP address validation
- *   is_mac_address()                      - L2217 - MAC address validation
- *   is_hex_string()                       - L2239 - hex string validation
- */
-
-require_once __DIR__ . '/../Helpers/CactiStubs.php';
-require_once __DIR__ . '/../../include/global.php';
+require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
+require_once dirname(__DIR__, 2) . '/include/global.php';
 
 // =====================================================================
 // sanitize_unserialize_selected_items tests
