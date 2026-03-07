@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-include('./include/vendor/autoload.php');
+include(__DIR__ . '/include/vendor/autoload.php');
 
 use Rector\Config\RectorConfig;
 use Rector\Php54\Rector\Array_\LongArrayToShortArrayRector;
