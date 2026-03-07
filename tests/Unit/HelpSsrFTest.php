@@ -13,35 +13,26 @@
 */
 
 /*
- * Shared stubs for Cacti helper functions used by production code.
- * These replicate the production signatures so that test stubs
- * can call them without loading the full Cacti environment.
+ * Tests for SSRF hardening in help.php.
+ *
+ * The fix adds basename() to prevent path traversal in the page parameter,
+ * enables SSL verification (verify_peer, verify_peer_name), and limits
+ * redirects to prevent SSRF via fetch.
  */
 
-function cacti_sizeof($value): int {
-	if (is_array($value)) {
-		return sizeof($value);
-	} elseif ($value instanceof Countable) {
-		return count($value);
-	}
+$helpPath = __DIR__ . '/../../help.php';
 
-	return 0;
-}
+// --- help.php: path traversal and SSL verification ---
 
-function cacti_count($value): int {
-	if (is_array($value)) {
-		return count($value);
-	} elseif ($value instanceof Countable) {
-		return count($value);
-	}
+test('help.php uses basename for page parameter', function () use ($helpPath) {
+	$contents = file_get_contents($helpPath);
 
-	return 0;
-}
+	expect($contents)->toContain('basename(');
+});
 
-function __($text) {
-	return $text;
-}
+test('help.php enables SSL peer verification', function () use ($helpPath) {
+	$contents = file_get_contents($helpPath);
 
-function __esc($text) {
-	return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
-}
+	expect($contents)->toContain("'verify_peer'       => true");
+	expect($contents)->toContain("'verify_peer_name'  => true");
+});
