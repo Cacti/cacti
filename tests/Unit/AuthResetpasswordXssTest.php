@@ -13,35 +13,18 @@
 */
 
 /*
- * Shared stubs for Cacti helper functions used by production code.
- * These replicate the production signatures so that test stubs
- * can call them without loading the full Cacti environment.
+ * Tests for XSS fix in auth_resetpassword.php.
+ *
+ * The hash value in hidden form inputs was output without escaping. The fix
+ * wraps gnrv('hash') with htmle() to prevent XSS when the hash is reflected.
  */
 
-function cacti_sizeof($value): int {
-	if (is_array($value)) {
-		return sizeof($value);
-	} elseif ($value instanceof Countable) {
-		return count($value);
-	}
+$authPath = __DIR__ . '/../../auth_resetpassword.php';
 
-	return 0;
-}
+// --- auth_resetpassword.php: hash escaped in output ---
 
-function cacti_count($value): int {
-	if (is_array($value)) {
-		return count($value);
-	} elseif ($value instanceof Countable) {
-		return count($value);
-	}
+test('auth_resetpassword.php escapes hash with htmle', function () use ($authPath) {
+	$contents = file_get_contents($authPath);
 
-	return 0;
-}
-
-function __($text) {
-	return $text;
-}
-
-function __esc($text) {
-	return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
-}
+	expect($contents)->toContain("htmle(gnrv('hash'))");
+});
