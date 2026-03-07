@@ -42,12 +42,8 @@ switch ($action) {
 	default:
 		// If the user is not logged in, redirect them to the login page
 		if (!isset($_SESSION[SESS_USER_ID])) {
-			if (isset($_SERVER['HTTP_REFERER'])) {
-				header('Location: ' . $_SERVER['HTTP_REFERER']);
-			} else {
-				header('Location: index.php');
-			}
-
+			/* HTTP_REFERER redirect here is overridden by the unconditional
+			 * index.php header below; use the safe fallback directly. */
 			header('Location: index.php');
 
 			exit;
@@ -94,7 +90,9 @@ if (!cacti_sizeof($user) || $user['realm'] != 0) {
 	}
 
 	if (isset($_SERVER['HTTP_REFERER'])) {
-		header('Location: ' . $_SERVER['HTTP_REFERER']);
+		// global.php already sanitized HTTP_REFERER; validate host before redirect.
+		$_ref = $_SERVER['HTTP_REFERER'];
+		header('Location: ' . ((parse_url($_ref, PHP_URL_HOST) === null || parse_url($_ref, PHP_URL_HOST) === $_SERVER['HTTP_HOST']) ? $_ref : 'index.php'));
 	} else {
 		header('Location: index.php');
 	}
@@ -110,7 +108,9 @@ if ($user['password_change'] != 'on') {
 	cacti_cookie_logout();
 
 	if (isset($_SERVER['HTTP_REFERER'])) {
-		header('Location: ' . $_SERVER['HTTP_REFERER']);
+		// global.php already sanitized HTTP_REFERER; validate host before redirect.
+		$_ref = $_SERVER['HTTP_REFERER'];
+		header('Location: ' . ((parse_url($_ref, PHP_URL_HOST) === null || parse_url($_ref, PHP_URL_HOST) === $_SERVER['HTTP_HOST']) ? $_ref : 'index.php'));
 	} else {
 		header('Location: index.php');
 	}

@@ -1477,7 +1477,7 @@ function html_graph_list_view() : void {
 
 			loadUrl({url:strURL})
 
-			$('#breadcrumbs').empty().html('<li><a href="graph_view.php?action=preview"><?php print __('Preview Mode'); ?></a></li>');
+			$('#breadcrumbs').empty().html('<li><a href="' + urlPath + 'graph_view.php?action=preview"><?php print __('Preview Mode'); ?></a></li>');
 			$('#listview').removeClass('selected');
 			$('#preview').addClass('selected');
 		}
