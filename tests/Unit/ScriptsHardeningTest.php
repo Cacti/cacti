@@ -54,7 +54,7 @@ test('ss_hstats rejects invalid stat with host_id 0', function () {
 	expect(ss_hstats(0, 'invalid_stat'))->toBe('U');
 });
 
-test('ss_hstats returns 0 for valid stat with host_id 0', function () {
+test('ss_hstats returns U for valid stat with host_id 0', function () {
 	expect(ss_hstats(0, 'polling_time'))->toBe('U');
 });
 
