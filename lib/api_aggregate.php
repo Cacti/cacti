@@ -634,7 +634,7 @@ function aggregate_validate_graph_params(array $posted, bool $has_override = fal
  * @return void
  */
 function aggregate_validate_graph_items(array $posted, array &$graph_items) : void {
-	foreach ($_POST as $var => $val) {
+	foreach ($posted as $var => $val) {
 		// work on color_templates
 		if (preg_match('/^agg_color_([0-9]+)$/', $var, $matches)) {
 			// ================= input validation =================

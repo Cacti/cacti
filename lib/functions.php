@@ -3885,7 +3885,7 @@ function get_graph_parent(int $graph_template_item_id, string $direction) : int 
 			ORDER BY sequence $sql_order
 			LIMIT 1");
 	} else {
-		$next_parent_it = 0;
+		$next_parent_id = 0;
 	}
 
 	if (empty($next_parent_id)) {
@@ -7676,7 +7676,7 @@ function is_cacti_release(mixed $version = null) : bool {
  * @param int     $length  Length of output
  * @param boolean $hex     Convert to hex
  *
- * @return integer
+ * @return int
  */
 function version_to_decimal(string $version, int $length = 9, bool $hex = true) : int {
 	return version_to_bits($version, $hex);
@@ -9534,7 +9534,7 @@ function cacti_unserialize(string $strobj) : mixed {
 function detect_cpu_cores() : int {
 	$cpu_cores = 0;
 
-	if (str_starts_with(cacti_strtoupper(PHP_OS), 'WIN')) {
+	if (CACTI_SERVER_OS === 'win32') {
 		$output = shell_exec('powershell -Command "Get-WmiObject Win32_Processor | Select-Object NumberOfLogicalProcessors"');
 
 		if (!is_null($output) && $output !== false) {
