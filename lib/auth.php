@@ -137,7 +137,7 @@ function check_auth_cookie() : int|false {
 					[$user_id, $realm_id]);
 			}
 
-			if (is_array($user_info) && cacti_sizeof($user_info)) {
+			if (cacti_sizeof($user_info)) {
 				$secret = hash('sha512', $token, false);
 
 				$found  = db_fetch_cell_prepared('SELECT user_id
@@ -308,7 +308,7 @@ function user_copy(string $template_user, string $new_user, int $template_realm 
 		AND realm = ?',
 		[$template_user, $template_realm]);
 
-	if (!cacti_sizeof($user_auth) || !is_array($user_auth)) {
+	if (!cacti_sizeof($user_auth)) {
 		return false;
 	}
 
@@ -321,7 +321,7 @@ function user_copy(string $template_user, string $new_user, int $template_realm 
 		AND realm = ?',
 		[$new_user, $new_realm]);
 
-	if (is_array($user_exist) && cacti_sizeof($user_exist)) {
+	if (cacti_sizeof($user_exist)) {
 		if ($overwrite) {
 			// Overwrite existing user
 			$user_auth['id']                   = $user_exist['id'];
