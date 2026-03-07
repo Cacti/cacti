@@ -36,10 +36,10 @@ function ss_sql() : string {
 	global $database_password;
 	global $database_hostname;
 
-	$cmd = 'mysqladmin --host=' . escapeshellarg($database_hostname) . ' --user=' . escapeshellarg($database_username);
+	$cmd = 'mysqladmin --host=' . cacti_escapeshellarg($database_hostname) . ' --user=' . cacti_escapeshellarg($database_username);
 
 	if ($database_password != '') {
-		$cmd .= ' --password=' . escapeshellarg($database_password);
+		$cmd .= ' --password=' . cacti_escapeshellarg($database_password);
 	}
 
 	$cmd .= ' status';
