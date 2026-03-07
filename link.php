@@ -33,16 +33,18 @@ $page = db_fetch_row_prepared('SELECT
 // Prevent redirect loops
 if (isset($_SERVER['HTTP_REFERER'])) {
 	if (!str_contains($_SERVER['HTTP_REFERER'], 'link.php')) {
-		$raw                      = sanitize_uri($_SERVER['HTTP_REFERER']);
+		/* include/global.php already applied sanitize_uri() to HTTP_REFERER;
+		 * reject external hosts to prevent open-redirect via Referer. */
+		$raw                      = $_SERVER['HTTP_REFERER'];
 		$referer                  = (parse_url($raw, PHP_URL_HOST) === null || parse_url($raw, PHP_URL_HOST) === $_SERVER['HTTP_HOST']) ? $raw : 'index.php';
 		$_SESSION['link_referer'] = $referer;
 	} elseif (isset($_SESSION['link_referer'])) {
-		$referer = sanitize_uri($_SESSION['link_referer']);
+		$referer = $_SESSION['link_referer'];
 	} else {
 		$referer = 'index.php';
 	}
 } elseif (isset($_SESSION['link_referer'])) {
-	$referer = sanitize_uri($_SESSION['link_referer']);
+	$referer = $_SESSION['link_referer'];
 } else {
 	$referer = 'index.php';
 }
