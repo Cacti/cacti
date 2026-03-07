@@ -328,7 +328,7 @@ function sig_handler(int $signo) : void {
 			// not use these locks, so skip on modern installs
 			if (cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
 				if ($current_lock !== false && $child) {
-					db_execute("SELECT RELEASE_LOCK('boost.single_ds.$current_lock')");
+					db_execute_prepared('SELECT RELEASE_LOCK(?)', ["boost.single_ds.$current_lock"]);
 				} elseif (!$child) {
 					db_execute('SELECT RELEASE_ALL_LOCKS()');
 				}
@@ -864,7 +864,7 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 			if (!$locked) {
 				// acquire lock in order to prevent race conditions, only a problem pre-rrdtool 1.5
 				if (cacti_version_compare($rrdtool_version, '1.5', '<')) {
-					while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds." . $item['local_data_id'] . "', 1)")) {
+					while (!db_fetch_cell_prepared('SELECT GET_LOCK(?, 1)', ['boost.single_ds.' . $item['local_data_id']])) {
 						usleep(50000);
 					}
 				}
@@ -900,14 +900,14 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 
 				// release the previous lock
 				if (cacti_version_compare($rrdtool_version, '1.5', '<')) {
-					db_execute("SELECT RELEASE_LOCK('boost.single_ds.$local_data_id')");
+					db_execute_prepared('SELECT RELEASE_LOCK(?)', ["boost.single_ds.$local_data_id"]);
 				}
 
 				$current_lock = false;
 
 				// acquire lock in order to prevent race conditions, only a problem pre-rrdtool 1.5
 				if (cacti_version_compare($rrdtool_version, '1.5', '<')) {
-					while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds." . $item['local_data_id'] . "', 1)")) {
+					while (!db_fetch_cell_prepared('SELECT GET_LOCK(?, 1)', ['boost.single_ds.' . $item['local_data_id']])) {
 						usleep(50000);
 					}
 				}
@@ -1205,7 +1205,7 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 
 		// release the last lock
 		if (cacti_version_compare(get_rrdtool_version(), '1.5', '<') && isset($item['local_data_id'])) {
-			db_execute("SELECT RELEASE_LOCK('boost.single_ds." . $item['local_data_id'] . "')");
+			db_execute_prepared('SELECT RELEASE_LOCK(?)', ['boost.single_ds.' . $item['local_data_id']]);
 		}
 
 		$current_lock = false;
