@@ -1679,10 +1679,10 @@ function duplicate_automation_graph_rules(int $_id, string $_title) : void {
 				$save[$field] = $rule[$field];
 			}
 		}
-
-		// substitute the title variable
-		$save['name'] = str_replace('<rule_name>', $rule['name'], $_title);
 	}
+
+	// substitute the title variable
+	$save['name'] = str_replace('<rule_name>', $rule['name'], $_title);
 
 	// create new rule
 	$save['enabled'] = '';	// no new rule accidentally taking action immediately
@@ -1748,10 +1748,10 @@ function duplicate_automation_tree_rules(int $_id, string $_title) : void {
 				$save[$field] = $rule[$field];
 			}
 		}
-
-		// substitute the title variable
-		$save['name'] = str_replace('<rule_name>', $rule['name'], $_title);
 	}
+
+	// substitute the title variable
+	$save['name'] = str_replace('<rule_name>', $rule['name'], $_title);
 
 	// create new rule
 	$save['enabled'] = '';	// no new rule accidentally taking action immediately
