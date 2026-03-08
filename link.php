@@ -39,12 +39,12 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 		$referer                  = (parse_url($raw, PHP_URL_HOST) === null || parse_url($raw, PHP_URL_HOST) === $_SERVER['HTTP_HOST']) ? $raw : 'index.php';
 		$_SESSION['link_referer'] = $referer;
 	} elseif (isset($_SESSION['link_referer'])) {
-		$referer = $_SESSION['link_referer'];
+		$referer = sanitize_uri($_SESSION['link_referer']);
 	} else {
 		$referer = 'index.php';
 	}
 } elseif (isset($_SESSION['link_referer'])) {
-	$referer = $_SESSION['link_referer'];
+	$referer = sanitize_uri($_SESSION['link_referer']);
 } else {
 	$referer = 'index.php';
 }
