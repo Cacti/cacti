@@ -210,9 +210,6 @@ if ($child == false) {
 
 		// Launch the boost children
 		if ($continue) {
-			// Allow mysql to flush the rename transaction
-			sleep(7);
-
 			cacti_log('INFO: Boost spawning child processes ...', true, 'BOOST');
 			boost_launch_children();
 
