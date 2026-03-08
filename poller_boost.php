@@ -330,7 +330,7 @@ function sig_handler(int $signo) : void {
 				if ($current_lock !== false && $child) {
 					db_execute_prepared('SELECT RELEASE_LOCK(?)', ["boost.single_ds.$current_lock"]);
 				} elseif (!$child) {
-					db_execute('SELECT RELEASE_ALL_LOCKS()');
+					db_execute_prepared('SELECT RELEASE_ALL_LOCKS()', []);
 				}
 			}
 

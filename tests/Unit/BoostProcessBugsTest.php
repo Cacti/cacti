@@ -39,7 +39,8 @@ test('sig_handler releases lock before exit, not after', function () use ($boost
 	// within the same case block.
 	$sigterm_pos     = strpos($contents, 'case SIGTERM:');
 	$release_pos     = strpos($contents, 'RELEASE_LOCK(', $sigterm_pos);
-	$exit_pos        = strpos($contents, "\n\t\t\texit;", $sigterm_pos);
+	preg_match('/\bexit;/', $contents, $exit_match, PREG_OFFSET_CAPTURE, $sigterm_pos);
+	$exit_pos = isset($exit_match[0]) ? $exit_match[0][1] : false;
 
 	expect($sigterm_pos)->not->toBeFalse();
 	expect($release_pos)->not->toBeFalse();
@@ -80,4 +81,52 @@ test('seconds_offset fallback multiplies minutes by 60', function () use ($boost
 
 	// The fix stores 120 minutes * 60 = 7200 seconds
 	expect($contents)->toContain('$seconds_offset = 120 * 60;');
+});
+
+test('sig_handler parent-process path uses RELEASE_ALL_LOCKS via db_execute_prepared', function () use ($boostPollerPath) {
+	$contents = file_get_contents($boostPollerPath);
+
+	$sigterm_pos = strpos($contents, 'case SIGTERM:');
+	expect($sigterm_pos)->not->toBeFalse();
+
+	// The !$child branch must call RELEASE_ALL_LOCKS (not RELEASE_LOCK only)
+	$all_locks_pos = strpos($contents, 'RELEASE_ALL_LOCKS()', $sigterm_pos);
+	expect($all_locks_pos)->not->toBeFalse();
+
+	// Must be wrapped in db_execute_prepared, not the raw db_execute
+	$prepared_pos = strrpos(substr($contents, $sigterm_pos, $all_locks_pos - $sigterm_pos), 'db_execute_prepared');
+	expect($prepared_pos)->not->toBeFalse();
+
+	// RELEASE_ALL_LOCKS must appear before exit; in the case block
+	preg_match('/\bexit;/', $contents, $exit_match, PREG_OFFSET_CAPTURE, $sigterm_pos);
+	$exit_pos = isset($exit_match[0]) ? $exit_match[0][1] : false;
+	expect($all_locks_pos)->toBeLessThan($exit_pos);
+});
+
+test('sig_handler skips lock release when current_lock is false', function () use ($boostPollerPath) {
+	$contents = file_get_contents($boostPollerPath);
+
+	$sigterm_pos = strpos($contents, 'case SIGTERM:');
+	expect($sigterm_pos)->not->toBeFalse();
+
+	// The child branch must guard on $current_lock !== false so that a process
+	// that never acquired a lock does not attempt to release one.
+	$guard_pos = strpos($contents, '$current_lock !== false', $sigterm_pos);
+	expect($guard_pos)->not->toBeFalse();
+
+	// The guard must appear before exit; in the case block
+	preg_match('/\bexit;/', $contents, $exit_match, PREG_OFFSET_CAPTURE, $sigterm_pos);
+	$exit_pos = isset($exit_match[0]) ? $exit_match[0][1] : false;
+	expect($guard_pos)->toBeLessThan($exit_pos);
+});
+
+test('seconds_offset normal path multiplies read interval by 60', function () use ($boostPollerPath) {
+	$contents = file_get_contents($boostPollerPath);
+
+	// When boost_rrd_update_interval is already configured the assignment must
+	// multiply the stored minutes value by 60 to produce seconds, not assign a
+	// bare integer literal.
+	expect($contents)->toMatch(
+		'/\$seconds_offset\s*=\s*read_config_option\s*\(\s*[\'"]boost_rrd_update_interval[\'"]\s*\)\s*\*\s*60\s*;/'
+	);
 });
