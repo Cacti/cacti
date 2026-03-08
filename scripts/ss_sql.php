@@ -53,5 +53,5 @@ function ss_sql() : string {
 	$result = preg_replace('/Queries per second avg/', 'QPS', $result);
 	$result = preg_replace('/Flush tables/', 'FlushTables', $result);
 
-	return trim($result);
+	return trim($result) ?: 'U';
 }
