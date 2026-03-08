@@ -366,7 +366,7 @@ function read_user_setting(string $config_name, mixed $default = false, bool $fo
 				[$config_name, $effective_uid]);
 		}
 
-		if (is_array($db_setting) && cacti_sizeof($db_setting)) {
+		if (cacti_sizeof($db_setting)) {
 			$user_config_array[$config_name] = $db_setting['value'];
 		} elseif ($default !== false) {
 			$user_config_array[$config_name] = $default;
@@ -729,7 +729,7 @@ function read_config_option(string $config_name, bool $force = false) : mixed {
 			// Get the database setting
 			$db_result = db_fetch_row_prepared('SELECT value FROM settings WHERE name = ?', [$config_name], false);
 
-			if (is_array($db_result) && cacti_sizeof($db_result)) {
+			if (cacti_sizeof($db_result)) {
 				$value = $db_result['value'];
 			}
 		}
@@ -2492,7 +2492,7 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
 
 	$data_template_data_id = 0;
 
-	if (is_array($data_input) && cacti_sizeof($data_input) && $data_input['active'] == 'on') {
+	if (cacti_sizeof($data_input) && $data_input['active'] == 'on') {
 		$data_template_data_id = $data_input['data_template_data_id'];
 
 		// we have to perform some additional sql queries if this is a 'query'
@@ -2607,7 +2607,9 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
 					return false;
 				}
 
-				if (prepare_validate_result((string) $output) === false) {
+				$output_str = (string) $output;
+
+				if (prepare_validate_result($output_str) === false) {
 					return false;
 				}
 			}
@@ -2633,10 +2635,6 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
 					[$data_template_data_id]),
 				'type_code', 'value'
 			);
-
-			if (!is_array($host_fields)) {
-				$host_fields = [];
-			}
 
 			dsv_log('SNMP host_fields', $host_fields);
 
@@ -2877,7 +2875,9 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
 						$output = shell_exec($script_path);
 
 						if (!is_numeric($output)) {
-							if ($output === false || $output === null || prepare_validate_result((string) $output) === false) {
+							$output_str = (string) $output;
+
+							if ($output === false || $output === null || prepare_validate_result($output_str) === false) {
 								return false;
 							}
 						}
@@ -3221,7 +3221,7 @@ function get_data_source_title(int $local_data_id) : string {
 
 	$title = 'Missing Datasource ' . $local_data_id;
 
-	if (is_array($data) && cacti_sizeof($data)) {
+	if (cacti_sizeof($data)) {
 		if (str_contains($data['name'], '|') && $data['host_id'] > 0) {
 			$data['name'] = substitute_data_input_data($data['name'], [], $local_data_id);
 			$title        = expand_title($data['host_id'], $data['snmp_query_id'], $data['snmp_index'], $data['name']);
@@ -3323,7 +3323,7 @@ function get_graph_title(int $local_graph_id) : string {
 		WHERE gl.id = ?',
 		[$local_graph_id]);
 
-	if (is_array($graph) && cacti_sizeof($graph)) {
+	if (cacti_sizeof($graph)) {
 		if (str_contains($graph['title'], '|') && $graph['host_id'] > 0 && empty($graph['t_title'])) {
 			$graph['title'] = substitute_data_input_data($graph['title'], $graph, 0);
 
@@ -3464,7 +3464,7 @@ function generate_data_source_path($local_data_id) {
 		AND dl.id = ?',
 		[$local_data_id]);
 
-	if (is_array($data) && cacti_sizeof($data)) {
+	if (cacti_sizeof($data)) {
 		$host_name     = $data['description'];
 		$host_id       = $data['host_id'];
 		$data_query_id = $data['snmp_query_id'];
@@ -4308,7 +4308,7 @@ function draw_navigation_text(string $type = 'url') : string {
 				WHERE id = ?',
 				[$leaf_id]);
 
-			if (is_array($leaf) && cacti_sizeof($leaf)) {
+			if (cacti_sizeof($leaf)) {
 				if ($leaf['host_id'] > 0) {
 					$leaf_name = db_fetch_cell_prepared('SELECT description
 						FROM host
@@ -5284,7 +5284,7 @@ function admin_email(string $subject, string $message) : bool {
 				WHERE id = ?',
 				[read_config_option('admin_user')]);
 
-			if (is_array($admin_details) && cacti_sizeof($admin_details)) {
+			if (cacti_sizeof($admin_details)) {
 				$email = read_config_option('settings_from_email');
 				$name  = read_config_option('settings_from_name');
 
@@ -5706,7 +5706,7 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 		$attachments = ['attachment' => $attachments];
 	}
 
-	if (is_array($attachments) && cacti_sizeof($attachments)) {
+	if (cacti_sizeof($attachments)) {
 		$graph_mode = (substr_count($body, '<GRAPH>') > 0);
 		$graph_ids  = (substr_count($body, '<GRAPH:') > 0);
 
@@ -5789,7 +5789,7 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 	}
 
 	// process custom headers
-	if (is_array($headers) && cacti_sizeof($headers)) {
+	if (cacti_sizeof($headers)) {
 		foreach ($headers as $name => $value) {
 			$mail->addCustomHeader($name, $value);
 		}
@@ -7944,7 +7944,7 @@ function cacti_gethostbyname(string $hostname, mixed $type = '') : string {
 
 	$return = cacti_gethostinfo($hostname, $type);
 
-	if (is_array($return) && cacti_sizeof($return)) {
+	if (cacti_sizeof($return)) {
 		foreach ($return as $record) {
 			if (!is_array($record) || !isset($record['type'])) {
 				continue;
@@ -8547,7 +8547,7 @@ function get_cacti_base_tables() : array {
 		return $base_tables;
 	}
 
-	if (is_array($schema) && cacti_sizeof($schema)) {
+	if (cacti_sizeof($schema)) {
 		foreach ($schema as $line) {
 			if (str_contains($line, 'CREATE TABLE')) {
 				$table         = str_replace(['CREATE TABLE', '`', '(', ' '], '', $line);
