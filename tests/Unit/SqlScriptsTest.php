@@ -70,6 +70,13 @@ test('sql.php handles null return from shell_exec', function () use ($sqlPhpPath
 	expect($contents)->toContain("?? ''");
 });
 
+test('sql.php returns U on empty/null shell_exec output', function () use ($sqlPhpPath) {
+	$contents = file_get_contents($sqlPhpPath);
+
+	/* Cacti data source scripts must return 'U' on error, never empty string. */
+	expect($contents)->toContain(": 'U'");
+});
+
 // --- scripts/ss_sql.php: no backtick operators remain ---
 
 test('ss_sql.php contains no backtick operators', function () use ($ssSqlPhpPath) {
