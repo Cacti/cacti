@@ -226,22 +226,28 @@ function is_template_account(null|int|string $user_id) : bool {
  */
 function get_basic_auth_username() : string|false {
 	if (isset($_SERVER['PHP_AUTH_USER'])) {
-		$username = str_replace('\\', '\\\\', $_SERVER['PHP_AUTH_USER']);
+		$raw      = is_array($_SERVER['PHP_AUTH_USER']) ? ($_SERVER['PHP_AUTH_USER'][0] ?? '') : $_SERVER['PHP_AUTH_USER'];
+		$username = str_replace('\\', '\\\\', $raw);
 	} elseif (isset($_SERVER['REMOTE_USER'])) {
-		$username = str_replace('\\', '\\\\', $_SERVER['REMOTE_USER']);
+		$raw      = is_array($_SERVER['REMOTE_USER']) ? ($_SERVER['REMOTE_USER'][0] ?? '') : $_SERVER['REMOTE_USER'];
+		$username = str_replace('\\', '\\\\', $raw);
 	} elseif (isset($_SERVER['REDIRECT_REMOTE_USER'])) {
-		$username = str_replace('\\', '\\\\', $_SERVER['REDIRECT_REMOTE_USER']);
+		$raw      = is_array($_SERVER['REDIRECT_REMOTE_USER']) ? ($_SERVER['REDIRECT_REMOTE_USER'][0] ?? '') : $_SERVER['REDIRECT_REMOTE_USER'];
+		$username = str_replace('\\', '\\\\', $raw);
 	} elseif (isset($_SERVER['HTTP_PHP_AUTH_USER'])) {
-		$username = str_replace('\\', '\\\\', $_SERVER['HTTP_PHP_AUTH_USER']);
+		$raw      = is_array($_SERVER['HTTP_PHP_AUTH_USER']) ? ($_SERVER['HTTP_PHP_AUTH_USER'][0] ?? '') : $_SERVER['HTTP_PHP_AUTH_USER'];
+		$username = str_replace('\\', '\\\\', $raw);
 	} elseif (isset($_SERVER['HTTP_REMOTE_USER'])) {
-		$username = str_replace('\\', '\\\\', $_SERVER['HTTP_REMOTE_USER']);
+		$raw      = is_array($_SERVER['HTTP_REMOTE_USER']) ? ($_SERVER['HTTP_REMOTE_USER'][0] ?? '') : $_SERVER['HTTP_REMOTE_USER'];
+		$username = str_replace('\\', '\\\\', $raw);
 	} elseif (isset($_SERVER['HTTP_REDIRECT_REMOTE_USER'])) {
-		$username = str_replace('\\', '\\\\', $_SERVER['HTTP_REDIRECT_REMOTE_USER']);
+		$raw      = is_array($_SERVER['HTTP_REDIRECT_REMOTE_USER']) ? ($_SERVER['HTTP_REDIRECT_REMOTE_USER'][0] ?? '') : $_SERVER['HTTP_REDIRECT_REMOTE_USER'];
+		$username = str_replace('\\', '\\\\', $raw);
 	} else {
 		$username = false;
 	}
 
-	if ($username !== false) {
+	if ($username !== false && is_string($username)) {
 		if (str_contains($username, '@')) {
 			$upart    = explode('@', $username);
 			$username = $upart[0];
@@ -259,8 +265,8 @@ function get_basic_auth_username() : string|false {
 				foreach ($records as $r) {
 					[$basic, $shortform] = str_getcsv($r);
 
-					if (trim($basic) == $username) {
-						$username = trim($shortform);
+					if (trim($basic ?? '') == $username) {
+						$username = trim($shortform ?? '');
 						$found    = true;
 
 						break;
@@ -274,7 +280,7 @@ function get_basic_auth_username() : string|false {
 		}
 	}
 
-	return $username;
+	return is_string($username) ? $username : false;
 }
 
 /**
@@ -1363,7 +1369,7 @@ function get_allowed_tree_header_graphs(int $tree_id, int $leaf_id = 0, string $
 
 	$total_rows = get_total_row_data($user_id, $sql, [], 'graph');
 
-	return $graphs;
+	return is_array($graphs) ? $graphs : [];
 }
 
 /**
@@ -1456,6 +1462,8 @@ function get_allowed_graphs(string $sql_where = '', mixed $sql_order = 'gtg.titl
 		$sql_order = "ORDER BY $sql_order";
 	}
 
+	$sql_order = is_string($sql_order) ? $sql_order : '';
+
 	if ($graph_id > 0) {
 		$sql_where .= ($sql_where != '' ? ' AND ' : ' ') . ' gl.id = ' . $graph_id;
 	}
@@ -1520,7 +1528,7 @@ function get_allowed_graphs(string $sql_where = '', mixed $sql_order = 'gtg.titl
 		$total_rows = db_fetch_cell($sql);
 	}
 
-	return $graphs;
+	return is_array($graphs) ? $graphs : [];
 }
 
 /**
@@ -1634,7 +1642,7 @@ function get_allowed_aggregate_graphs(string $sql_where = '', string $sql_order 
 
 	$total_rows = get_total_row_data($user_id, $sql, [], 'aggregate_graph');
 
-	return $graphs;
+	return is_array($graphs) ? $graphs : [];
 }
 
 /**
@@ -1905,7 +1913,7 @@ function get_allowed_graph_templates(string $sql_where = '', string $sql_order =
 
 	cacti_log(sprintf('The Get Templates total time was %4.2f', $end - $start), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
-	if ($templates === false) {
+	if (!is_array($templates)) {
 		$templates = [];
 	}
 
@@ -2542,7 +2550,7 @@ function get_allowed_trees(bool $edit = false, bool $return_sql = false, string 
 		$total_rows = get_total_row_data($user_id, $sql, [], 'tree');
 	}
 
-	return $trees;
+	return is_array($trees) ? $trees : [];
 }
 
 /**
@@ -2614,6 +2622,10 @@ function get_allowed_branches(string $sql_where = '', string $sql_order = 'name'
 			$tree_hosts = array_rekey($tree_hosts, 'id', 'description');
 		}
 
+		if (!is_array($tree_hosts)) {
+			$tree_hosts = [];
+		}
+
 		$hosts = array_intersect_key($hosts, $tree_hosts);
 
 		if (cacti_sizeof($hosts) > 0) {
@@ -2672,7 +2684,7 @@ function get_allowed_branches(string $sql_where = '', string $sql_order = 'name'
 
 	$total_rows = get_total_row_data($user_id, $sql, [], 'branch');
 
-	return $branches;
+	return is_array($branches) ? $branches : [];
 }
 
 /**
@@ -2785,7 +2797,7 @@ function get_allowed_devices(string $sql_where = '', string $sql_order = 'descri
 		}
 	}
 
-	return $host_list;
+	return is_array($host_list) ? $host_list : [];
 }
 
 /**
@@ -2848,7 +2860,7 @@ function get_allowed_sites(string $sql_where = '', string $sql_order = 'name', s
 
 	$total_rows = get_total_row_data($user_id, $sql, [], 'site_device');
 
-	return $sites;
+	return is_array($sites) ? $sites : [];
 }
 
 /**
@@ -2954,7 +2966,7 @@ function get_allowed_site_devices(int $site_id, string $sql_where = '', string $
 
 	$total_rows = get_total_row_data($user_id, $sql, [], 'site_device');
 
-	return $host_list;
+	return is_array($host_list) ? $host_list : [];
 }
 
 /**
@@ -3012,7 +3024,7 @@ function get_allowed_graph_templates_normalized(string $sql_where = '', string $
 		$sql_order
 		$sql_limit");
 
-	return $templates;
+	return is_array($templates) ? $templates : [];
 }
 
 /**
@@ -3112,7 +3124,7 @@ function get_total_row_data(int $user_id, string $sql, array $sql_params = [], s
 	if (cacti_sizeof($sql_params)) {
 		$nsql = json_encode([$sql, $sql_params]);
 
-		$hash = md5($nsql);
+		$hash = md5((string) $nsql);
 	} else {
 		$hash = md5($sql);
 	}
@@ -3644,7 +3656,7 @@ function basic_auth_login_process(string $username) : array {
 		AND realm = 2',
 		[$username]);
 
-	if (!$user && get_template_account($username) == 0 && get_guest_account() === 0) {
+	if (!is_array($user) && get_template_account($username) == 0 && get_guest_account() === 0) {
 		$error     = true;
 		$error_msg = __esc('%s authenticated by Web Server, but both Template and Guest Users are not defined in Cacti.', $username);
 
@@ -3655,7 +3667,7 @@ function basic_auth_login_process(string $username) : array {
 		exit;
 	}
 
-	return $user;
+	return is_array($user) ? $user : [];
 }
 
 /**
@@ -3709,7 +3721,7 @@ function local_auth_login_process(string $username) : array {
 		}
 	}
 
-	return $user;
+	return is_array($user) ? $user : [];
 }
 
 /**
@@ -3874,7 +3886,7 @@ function domains_login_process(string $username) : array {
 		auth_process_lockout($username, $realm);
 	}
 
-	return $user;
+	return is_array($user) ? $user : [];
 }
 
 /**
@@ -3908,6 +3920,10 @@ function domains_ldap_auth(string $username, string $password = '', string $dn =
 	$ldap_servers = preg_split('/\s+/', $ldap->host);
 
 	$response = [];
+
+	if (!is_array($ldap_servers)) {
+		return $response;
+	}
 
 	foreach ($ldap_servers as $ldap_server) {
 		$ldap->host = $ldap_server;
@@ -3952,6 +3968,10 @@ function domains_ldap_search_dn(string $username, int $realm) : mixed {
 
 	$response = [];
 
+	if (!is_array($ldap_servers)) {
+		return $response;
+	}
+
 	foreach ($ldap_servers as $ldap_server) {
 		$ldap->host = $ldap_server;
 
@@ -3993,6 +4013,10 @@ function domains_ldap_search_cn(string $username, array $cn = [], int $realm = 0
 	 */
 	$ldap_servers = preg_split('/\s+/', $ldap->host);
 	$response     = [];
+
+	if (!is_array($ldap_servers)) {
+		return $response;
+	}
 
 	foreach ($ldap_servers as $ldap_server) {
 		$ldap->host = $ldap_server;
@@ -4134,7 +4158,7 @@ function secpass_login_process(string $username) : array {
 			[time(), $username]);
 	}
 
-	return $user;
+	return is_array($user) ? $user : [];
 }
 
 /**
@@ -4187,7 +4211,7 @@ function secpass_check_pass(string $password) : string {
 
 		$content  = curl_exec($ch);
 
-		$lines = explode("\r\n", $content);
+		$lines = is_string($content) ? explode("\r\n", $content) : [];
 		$count = 0;
 
 		foreach ($lines as $line) {
@@ -4225,11 +4249,15 @@ function secpass_check_history(int $id, string $password) : bool {
 			AND enabled = 'on'",
 			[$id]);
 
+		if (!cacti_sizeof($user)) {
+			return true;
+		}
+
 		if (compat_password_verify($password, $user['password'])) {
 			return false;
 		}
 
-		$passes = explode('|', $user['password_history']);
+		$passes = explode('|', is_string($user['password_history']) ? $user['password_history'] : '');
 
 		// Double check this incase the password history setting was changed
 		while (cacti_count($passes) > $history) {
@@ -4639,7 +4667,7 @@ function auth_login_create_user_from_template(string $username, int $realm) : ar
 		[get_template_account($username)]);
 
 	// check that template user exists
-	if (!empty($user_template)) {
+	if (is_array($user_template) && !empty($user_template)) {
 		if ($realm == 3) { // This is an ldap login
 			// get user CN
 			$cn_full_name = read_config_option('cn_full_name');
@@ -4697,7 +4725,7 @@ function auth_login_create_user_from_template(string $username, int $realm) : ar
 		}
 	}
 
-	return $user;
+	return is_array($user) ? $user : [];
 }
 
 /**
@@ -4818,7 +4846,7 @@ function disable_2fa(int $user_id) : string {
 			[$_SESSION[SESS_USER_ID]]
 		);
 
-		if ($current_user['tfa_enabled'] != '') {
+		if (cacti_sizeof($current_user) && $current_user['tfa_enabled'] != '') {
 			$result['status'] = '501';
 			$result['text']   = __('2FA failed to be disabled');
 		} else {
@@ -4827,7 +4855,7 @@ function disable_2fa(int $user_id) : string {
 		}
 	}
 
-	return json_encode($result);
+	return json_encode($result) ?: '';
 }
 
 /**
@@ -4862,7 +4890,10 @@ function enable_2fa(int $user_id) : string {
 			[$_SESSION[SESS_USER_ID]]
 		);
 
-		if ($current_user['tfa_secret'] != $secret) {
+		if (!cacti_sizeof($current_user)
+			|| !isset($current_user['tfa_secret'])
+			|| !isset($current_user['username'])
+			|| $current_user['tfa_secret'] != $secret) {
 			$result['status'] = '501';
 			$result['text']   = __('2FA secret failed to be generated/updated');
 		} else {
@@ -4872,7 +4903,7 @@ function enable_2fa(int $user_id) : string {
 		}
 	}
 
-	return json_encode($result);
+	return json_encode($result) ?: '';
 }
 
 /**
@@ -4911,7 +4942,7 @@ function verify_2fa(int $user_id, string $code) : string {
 		}
 	}
 
-	return json_encode($result);
+	return json_encode($result) ?: '';
 }
 
 /**
