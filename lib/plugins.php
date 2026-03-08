@@ -154,7 +154,7 @@ function api_plugin_hook_function(string $name, mixed $parm = null) : mixed {
 					$p[] = $hdata['name'];
 
 					if (file_exists(CACTI_PATH_PLUGINS . '/' . $hdata['name'] . '/' . $hdata['file'])) {
-						include_once(CACTI_PATH_PLUGINS . '/' . $hdata['name'] . '/' . $hdata['file']);
+						require_once(CACTI_PATH_PLUGINS . '/' . $hdata['name'] . '/' . $hdata['file']);
 					}
 
 					$function = $hdata['function'];
