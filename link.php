@@ -42,9 +42,9 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 		 * all === comparisons below, so a malformed referer falls back to
 		 * 'index.php'. null means the component is absent (e.g. relative path),
 		 * which is allowed through as a same-host local referer. */
-		$raw    = $_SERVER['HTTP_REFERER'];
-		$scheme = parse_url($raw, PHP_URL_SCHEME);
-		$host   = parse_url($raw, PHP_URL_HOST);
+		$raw     = $_SERVER['HTTP_REFERER'];
+		$scheme  = parse_url($raw, PHP_URL_SCHEME);
+		$host    = parse_url($raw, PHP_URL_HOST);
 		$referer = (
 			($scheme === null || $scheme === 'http' || $scheme === 'https') &&
 			($host === null || $host === ($_SERVER['SERVER_NAME'] ?? ''))
