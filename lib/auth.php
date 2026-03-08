@@ -1235,14 +1235,14 @@ function get_allowed_tree_content(int $tree_id, int $parent = 0, string $sql_whe
 					$new_hierarchy[] = $h;
 				}
 			} elseif ($h['id'] == 0) {
-				if (!is_tree_branch_empty((int) $h['tree_id'], (int) $h['id'])) {
-					if (is_tree_allowed((int) $h['tree_id'])) {
+				if (!is_tree_branch_empty($h['tree_id'], $h['id'])) {
+					if (is_tree_allowed($h['tree_id'])) {
 						$new_hierarchy[] = $h;
 					}
 				}
 			} elseif ($h['site_id'] > 0) {
 				$new_hierarchy[] = $h;
-			} elseif (!is_tree_branch_empty((int) $h['tree_id'], (int) $h['id'])) {
+			} elseif (!is_tree_branch_empty($h['tree_id'], $h['id'])) {
 				$new_hierarchy[] = $h;
 			}
 		}
