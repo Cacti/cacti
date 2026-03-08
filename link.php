@@ -33,10 +33,22 @@ $page = db_fetch_row_prepared('SELECT
 // Prevent redirect loops
 if (isset($_SERVER['HTTP_REFERER'])) {
 	if (!str_contains($_SERVER['HTTP_REFERER'], 'link.php')) {
-		/* include/global.php already applied sanitize_uri() to HTTP_REFERER;
-		 * reject external hosts to prevent open-redirect via Referer. */
-		$raw                      = $_SERVER['HTTP_REFERER'];
-		$referer                  = (parse_url($raw, PHP_URL_HOST) === null || parse_url($raw, PHP_URL_HOST) === $_SERVER['HTTP_HOST']) ? $raw : 'index.php';
+		/* Reject non-http(s) schemes (javascript:, data:, etc.) before any
+		 * host comparison; parse_url returns null for host on those schemes,
+		 * which would otherwise pass the === null branch unchanged. Compare
+		 * against SERVER_NAME (web-server config) rather than HTTP_HOST
+		 * (attacker-supplied request header) to prevent host-spoofing.
+		 * parse_url() returns false on a completely malformed URL; false fails
+		 * all === comparisons below, so a malformed referer falls back to
+		 * 'index.php'. null means the component is absent (e.g. relative path),
+		 * which is allowed through as a same-host local referer. */
+		$raw    = $_SERVER['HTTP_REFERER'];
+		$scheme = parse_url($raw, PHP_URL_SCHEME);
+		$host   = parse_url($raw, PHP_URL_HOST);
+		$referer = (
+			($scheme === null || $scheme === 'http' || $scheme === 'https') &&
+			($host === null || $host === ($_SERVER['SERVER_NAME'] ?? ''))
+		) ? sanitize_uri($raw) : 'index.php';
 		$_SESSION['link_referer'] = $referer;
 	} elseif (isset($_SESSION['link_referer'])) {
 		$referer = sanitize_uri($_SESSION['link_referer']);
