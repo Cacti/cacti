@@ -2877,7 +2877,7 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
 						if (!is_numeric($output)) {
 							$output_str = (string) $output;
 
-							if ($output === false || $output === null || prepare_validate_result($output_str) === false) {
+							if ($output === null || prepare_validate_result($output_str) === false) {
 								return false;
 							}
 						}
@@ -3173,7 +3173,7 @@ function clean_up_name(mixed $string) : mixed {
  * @return mixed The modified string
  */
 function clean_up_file_name(mixed $string) : mixed {
-	if ($string !== null) {
+	if ($string !== null && is_string($string)) {
 		$string = preg_replace('/[\s\.]+/', '_', $string) ?? $string;
 		$string = preg_replace('/[^a-zA-Z0-9_-]+/', '', $string) ?? $string;
 		$string = preg_replace('/_{2,}/', '_', $string) ?? $string;
@@ -5106,10 +5106,10 @@ function sanitize_unserialize_selected_items(mixed $items) : mixed {
  *
  * @param mixed $items An array of serialized items from a post
  *
- * @return array The sanitized selected graphs array
+ * @return array|false The sanitized selected graphs array, or false when input is absent/invalid
  */
-function sanitize_unserialize_selected_graphs(mixed $items) : array {
-	$return_items = [];
+function sanitize_unserialize_selected_graphs(mixed $items) : array|false {
+	$return_items = false;
 
 	if (!empty($items) && is_string($items)) {
 		$unstripped = stripslashes($items);
@@ -7770,6 +7770,8 @@ function is_cacti_release(mixed $version = null) : bool {
  * @param boolean $hex     Convert to hex
  *
  * @return int|string
+ *
+ * @phpstan-return ($hex is true ? string : int)
  */
 function version_to_decimal(string $version, int $length = 9, bool $hex = true) : int|string {
 	return version_to_bits($version, $hex);
@@ -7785,6 +7787,8 @@ function version_to_decimal(string $version, int $length = 9, bool $hex = true) 
  * @param boolean $hex     Return the final decimal as hex
  *
  * @return int|string
+ *
+ * @phpstan-return ($hex is true ? string : int)
  *
  * @depends format_cacti_version
  */
