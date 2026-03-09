@@ -2032,7 +2032,7 @@ function utility_php_set_installed(array &$extensions) : void {
 }
 
 /**
- * object_cache_get_totals - This function get's the count of objects
+ * object_cache_get_totals - This function gets the count of objects
  *   for a set of object types.  The object types include:
  *
  *   - device_state  - Load the object database with the current state
