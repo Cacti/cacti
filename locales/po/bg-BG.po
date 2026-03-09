@@ -203,8 +203,6 @@ msgid ""
 "In order to migrate the Aggregate Graphs below to a Template based "
 "Aggregate, they must only be using one Graph Template."
 msgstr ""
-"За да мигрирате по-долу агрегираните графики към агрегати на базата на "
-"шаблони, първо създайте агрегиран шаблон за шаблона на графиката „ %s“."
 
 #: aggregate_graphs.php:818
 msgid ""
@@ -480,7 +478,7 @@ msgstr "Показване на детайлите на елемента"
 
 #: aggregate_graphs.php:1150
 msgid "Aggregate Preview Does Not Exist"
-msgstr "Общ преглед [ %s]"
+msgstr ""
 
 #: aggregate_graphs.php:1158
 #, fuzzy, php-format
@@ -4796,7 +4794,7 @@ msgstr "Асоциирани графики / шаблони за данни [р
 
 #: data_queries.php:638
 msgid "Associated Graph/Data Templates [new]"
-msgstr "Асоциирани графики / шаблони за данни [редактиране: %s]"
+msgstr ""
 
 #: data_queries.php:673
 msgid "Associated Data Templates"
@@ -5784,7 +5782,7 @@ msgstr ""
 
 #: data_templates.php:1007
 msgid "Custom Data Warning Message"
-msgstr "Персонализирани данни [въвеждане на данни: %s]"
+msgstr ""
 
 #: data_templates.php:1008
 msgid "WARNING: Data Loss can Occur"
@@ -6904,7 +6902,7 @@ msgstr "Нови графики за [Всички устройства]"
 
 #: graphs.php:2685
 msgid "Graph Management [ Non Device Based ]"
-msgstr "Управление на потребителските групи [редактиране: %s]"
+msgstr ""
 
 #: graphs.php:2688
 #, fuzzy, php-format
@@ -8708,7 +8706,7 @@ msgstr "Всеки ден"
 
 #: include/global_arrays.php:899
 msgid "1 Thread"
-msgstr "% d Тема"
+msgstr ""
 
 #: include/global_arrays.php:943
 msgid "Cacti Builtin Authentication"
@@ -10375,9 +10373,8 @@ msgid "Tree Rule Items"
 msgstr "Елементи от дърво правило"
 
 #: include/global_arrays.php:3048 include/global_arrays.php:3066
-#, fuzzy
 msgid "years"
-msgstr "% d години"
+msgstr ""
 
 #: include/global_arrays.php:3049 include/global_arrays.php:3067
 #: lib/api_device.php:1717
@@ -14152,7 +14149,7 @@ msgstr "Часът, в който работното ви време прикл�
 
 #: include/global_settings.php:1354
 msgid "Hide Weekends"
-msgstr "% d седмици"
+msgstr ""
 
 #: include/global_settings.php:1355
 msgid "Only show business hours during weekdays."
@@ -16151,7 +16148,7 @@ msgstr ""
 
 #: include/global_settings.php:2803
 msgid "1 Thousand"
-msgstr "% d Тема"
+msgstr ""
 
 #: include/global_settings.php:2804
 msgid "10 Thousand"
@@ -16327,7 +16324,7 @@ msgstr ""
 
 #: include/global_settings.php:2899
 msgid "Cacti Server Timezone"
-msgstr "Cacti Server v %s - Поддръжка"
+msgstr ""
 
 #: include/global_settings.php:2900
 msgid "My Browsers Timezone"
@@ -17527,7 +17524,7 @@ msgstr "Файл"
 
 #: lib/clog_webapi.php:541 lib/clog_webapi.php:544
 msgid "Head Lines"
-msgstr "% d линии"
+msgstr ""
 
 #: lib/clog_webapi.php:541 lib/clog_webapi.php:544 utilities.php:323
 #: utilities.php:326
@@ -22212,7 +22209,7 @@ msgstr "Точки на неизвестни данни за CDP (0)"
 
 #: lib/rrd.php:3663
 msgid "Errors Found"
-msgstr "Няма намерени %s"
+msgstr ""
 
 #: lib/rrd.php:3675
 msgid "Optional Tuning Recommendations"
@@ -23104,11 +23101,11 @@ msgstr "Кликнете върху „Напред“, за да изтриет
 
 #: managers.php:1029
 msgid "Delete Notification Receiver"
-msgstr "%s получатели на уведомления"
+msgstr ""
 
 #: managers.php:1030
 msgid "Delete Notification Receivers"
-msgstr "%s получатели на уведомления"
+msgstr ""
 
 #: managers.php:1033
 msgid "Click 'Continue' to Disable the following Notification Receiver."
@@ -23144,7 +23141,7 @@ msgstr "Изключете SNMP известяване"
 
 #: managers.php:1042
 msgid "Enable Notification Receivers"
-msgstr "%s получатели на уведомления"
+msgstr ""
 
 #: managers.php:1080
 msgid ""
@@ -23243,9 +23240,8 @@ msgid "Available Templates [%s]"
 msgstr "Налични шаблони [ %s]"
 
 #: package.php:705
-#, fuzzy
 msgid "Available Templates"
-msgstr "Налични шаблони [ %s]"
+msgstr ""
 
 #: package.php:709
 #, fuzzy, php-format
@@ -23438,9 +23434,8 @@ msgid "The Files in the list below will be imported."
 msgstr "Изберете как ще се сортират елементите в това дърво."
 
 #: package_import.php:339
-#, fuzzy
 msgid "Template Items to be Imported"
-msgstr "Елементи на цветни шаблони [редактиране на елемента от отчета: %s]"
+msgstr ""
 
 #: package_import.php:343
 #, fuzzy
@@ -23508,9 +23503,8 @@ msgid "Press 'Ok' to start Trusting the Signer, or escape to cancel."
 msgstr ""
 
 #: package_import.php:773
-#, fuzzy
 msgid "Some Packages Not Trusted"
-msgstr "Пакетът %s импортиране е неуспешен"
+msgstr ""
 
 #: package_import.php:781
 msgid "All Packages Trusted"
@@ -24204,9 +24198,8 @@ msgid "Installed and Active"
 msgstr "Инсталирано"
 
 #: plugins.php:614
-#, fuzzy
 msgid "Installed and Inactive"
-msgstr "Инсталиране на Cacti Server v %s"
+msgstr ""
 
 #: plugins.php:617
 #, fuzzy
@@ -24469,18 +24462,16 @@ msgid "Load this Plugin from the available Cacti Plugins"
 msgstr ""
 
 #: plugins.php:1480 plugins.php:1597
-#, fuzzy
 msgid "Compatible, Loadable"
-msgstr "Не е съвместимо, %s"
+msgstr ""
 
 #: plugins.php:1482
 msgid "Upgrade this Plugin from the available Cacti Plugins"
 msgstr ""
 
 #: plugins.php:1483 plugins.php:1492
-#, fuzzy
 msgid "Compatible, Upgrade"
-msgstr "Не е съвместимо, %s"
+msgstr ""
 
 #: plugins.php:1485
 msgid "Downgrade this Plugin from the available Cacti Plugins"
@@ -24510,18 +24501,16 @@ msgid ""
 msgstr ""
 
 #: plugins.php:1496 plugins.php:1610
-#, fuzzy
 msgid "Not Compatible, Dependencies"
-msgstr "Не е съвместимо, %s"
+msgstr ""
 
 #: plugins.php:1499
 msgid "Unable to Load due to a bad Cacti version."
 msgstr ""
 
 #: plugins.php:1500 plugins.php:1614
-#, fuzzy
 msgid "Not Compatible, Cacti Version"
-msgstr "Не е съвместимо, %s"
+msgstr ""
 
 #: plugins.php:1507
 msgid "View the Plugins ChangeLog"
@@ -24549,9 +24538,8 @@ msgid "Upgrade Plugin from the archive"
 msgstr ""
 
 #: plugins.php:1606
-#, fuzzy
 msgid "Compatible, Upgradable"
-msgstr "Не е съвместимо, %s"
+msgstr ""
 
 #: plugins.php:1609
 msgid ""
@@ -25777,9 +25765,8 @@ msgid "Database Queries"
 msgstr "Автоматизирани данни"
 
 #: support.php:53
-#, fuzzy
 msgid "Background Processes"
-msgstr "% d Процеси"
+msgstr ""
 
 #: support.php:54
 #, fuzzy
@@ -26049,7 +26036,7 @@ msgstr "Време на гласуване"
 
 #: support.php:903 support.php:944
 msgid "No host found"
-msgstr "Няма намерени %s"
+msgstr ""
 
 #: support.php:919
 msgid "Worst 20 failed/total polls ratio"
@@ -27118,14 +27105,12 @@ msgid "> 1 Month Ago"
 msgstr ""
 
 #: user_admin.php:2126
-#, fuzzy
 msgid "> 2 Months Ago"
-msgstr "% d Месеци"
+msgstr ""
 
 #: user_admin.php:2127
-#, fuzzy
 msgid "> 4 Months Ago"
-msgstr "% d Месеци"
+msgstr ""
 
 #: user_admin.php:2138
 msgid "Basic"

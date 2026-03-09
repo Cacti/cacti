@@ -22333,9 +22333,8 @@ msgid "CDP Unknown Data points (0)"
 msgstr "CDP نقاط بيانات غير معروفة (0)"
 
 #: lib/rrd.php:3663
-#, fuzzy
 msgid "Errors Found"
-msgstr "لم يتمّ العثور على %s"
+msgstr ""
 
 #: lib/rrd.php:3675
 #, fuzzy
@@ -26201,9 +26200,8 @@ msgid "Actual Polling Time"
 msgstr "وقت الاقتراع"
 
 #: support.php:903 support.php:944
-#, fuzzy
 msgid "No host found"
-msgstr "لم يتمّ العثور على %s"
+msgstr ""
 
 #: support.php:919
 msgid "Worst 20 failed/total polls ratio"

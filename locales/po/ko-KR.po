@@ -192,7 +192,6 @@ msgid ""
 "In order to migrate the Aggregate Graphs below to a Template based "
 "Aggregate, they must only be using one Graph Template."
 msgstr ""
-"아래의 집계 그래프를 템플릿 기반 집계로 마이그레이션하려면 먼저 그래프 템플릿 &#39; %s&#39;의 집계 템플릿을 만드십시오."
 
 #: aggregate_graphs.php:818
 msgid ""
@@ -435,7 +434,7 @@ msgstr "항목 세부 정보 표시"
 
 #: aggregate_graphs.php:1150
 msgid "Aggregate Preview Does Not Exist"
-msgstr "집계 미리보기 [ %s]"
+msgstr ""
 
 #: aggregate_graphs.php:1158
 #, php-format
@@ -4575,7 +4574,7 @@ msgstr "연관된 그래프 / 데이터 템플릿 [편집 :  %s]"
 
 #: data_queries.php:638
 msgid "Associated Graph/Data Templates [new]"
-msgstr "연관된 그래프 / 데이터 템플릿 [편집 :  %s]"
+msgstr ""
 
 #: data_queries.php:673
 msgid "Associated Data Templates"
@@ -5503,7 +5502,7 @@ msgstr "이 필드를 비워두면 값이 장치에서 파생됩니다."
 
 #: data_templates.php:1007
 msgid "Custom Data Warning Message"
-msgstr "맞춤 데이터 [데이터 입력 :  %s]"
+msgstr ""
 
 #: data_templates.php:1008
 msgid "WARNING: Data Loss can Occur"
@@ -6528,7 +6527,7 @@ msgstr "[모든 장치]의 새로운 그래프"
 
 #: graphs.php:2685
 msgid "Graph Management [ Non Device Based ]"
-msgstr "사용자 그룹 관리 [편집 :  %s]"
+msgstr ""
 
 #: graphs.php:2688
 #, php-format
@@ -8188,7 +8187,7 @@ msgstr "매일"
 
 #: include/global_arrays.php:899
 msgid "1 Thread"
-msgstr "스레드 % d 개"
+msgstr ""
 
 #: include/global_arrays.php:943
 msgid "Cacti Builtin Authentication"
@@ -13264,7 +13263,7 @@ msgstr "영업 시간이 종료되는 시간입니다. 형식: hh: mm"
 
 #: include/global_settings.php:1354
 msgid "Hide Weekends"
-msgstr "% d 주"
+msgstr ""
 
 #: include/global_settings.php:1355
 msgid "Only show business hours during weekdays."
@@ -15056,7 +15055,7 @@ msgstr "이 값은 그래프 RRA에서 제거 할 최대 스파이크 수를 나
 
 #: include/global_settings.php:2803
 msgid "1 Thousand"
-msgstr "스레드 % d 개"
+msgstr ""
 
 #: include/global_settings.php:2804
 msgid "10 Thousand"
@@ -15217,7 +15216,7 @@ msgstr "Cacti가 날짜를 어떻게 제시하길 원하시나요? 이 설정은
 
 #: include/global_settings.php:2899
 msgid "Cacti Server Timezone"
-msgstr "Cacti Server v  %s - 유지 관리"
+msgstr ""
 
 #: include/global_settings.php:2900
 msgid "My Browsers Timezone"
@@ -16346,7 +16345,7 @@ msgstr "파일"
 
 #: lib/clog_webapi.php:541 lib/clog_webapi.php:544
 msgid "Head Lines"
-msgstr "% d 개 라인"
+msgstr ""
 
 #: lib/clog_webapi.php:541 lib/clog_webapi.php:544 utilities.php:323
 #: utilities.php:326
@@ -20765,7 +20764,7 @@ msgstr "CDP 알 수없는 데이터 요소 (0)"
 
 #: lib/rrd.php:3663
 msgid "Errors Found"
-msgstr " %s을 찾을 수 없습니다."
+msgstr ""
 
 #: lib/rrd.php:3675
 msgid "Optional Tuning Recommendations"
@@ -21573,11 +21572,11 @@ msgstr "다음 알림 수신기를 삭제하려면 &#39;계속&#39;을 클릭하
 
 #: managers.php:1029
 msgid "Delete Notification Receiver"
-msgstr "알림 수신기  %s 개"
+msgstr ""
 
 #: managers.php:1030
 msgid "Delete Notification Receivers"
-msgstr "알림 수신기  %s 개"
+msgstr ""
 
 #: managers.php:1033
 msgid "Click 'Continue' to Disable the following Notification Receiver."
@@ -21609,7 +21608,7 @@ msgstr "SNMP 알림 수신자 사용 안 함"
 
 #: managers.php:1042
 msgid "Enable Notification Receivers"
-msgstr "알림 수신기  %s 개"
+msgstr ""
 
 #: managers.php:1080
 msgid ""
@@ -21872,7 +21871,7 @@ msgstr "이 트리의 항목을 정렬하는 방법을 선택하십시오."
 
 #: package_import.php:339
 msgid "Template Items to be Imported"
-msgstr "색상 템플릿 항목 [보고서 항목 편집 :  %s]"
+msgstr ""
 
 #: package_import.php:343
 msgid "The Template Items in the list below will be imported."
@@ -22511,7 +22510,7 @@ msgstr ""
 
 #: plugins.php:587
 msgid "Are you sure you want to Restore this Archive?"
-msgstr "규칙 &#39; %s&#39;을 (를) 삭제 하시겠습니까?"
+msgstr ""
 
 #: plugins.php:589
 msgid ""
@@ -22524,7 +22523,7 @@ msgstr ""
 
 #: plugins.php:590
 msgid "Are you sure you want to Delete this Archive?"
-msgstr "규칙 &#39; %s&#39;을 (를) 삭제 하시겠습니까?"
+msgstr ""
 
 #: plugins.php:592
 msgid "Plugin Management"
@@ -22544,7 +22543,7 @@ msgstr "설치됨"
 
 #: plugins.php:614
 msgid "Installed and Inactive"
-msgstr "Cacti Server v  %s 설치하기"
+msgstr ""
 
 #: plugins.php:617
 msgid "Plugin Errors"
@@ -22776,7 +22775,7 @@ msgstr "사용 가능한 Cacti 플러그인에서 이 플러그인 로드"
 
 #: plugins.php:1480 plugins.php:1597
 msgid "Compatible, Loadable"
-msgstr "호환되지 않음,  %s"
+msgstr ""
 
 #: plugins.php:1482
 msgid "Upgrade this Plugin from the available Cacti Plugins"
@@ -22784,7 +22783,7 @@ msgstr "사용 가능한 Cacti 플러그인에서 이 플러그인 업그레이�
 
 #: plugins.php:1483 plugins.php:1492
 msgid "Compatible, Upgrade"
-msgstr "호환되지 않음,  %s"
+msgstr ""
 
 #: plugins.php:1485
 msgid "Downgrade this Plugin from the available Cacti Plugins"
@@ -22813,7 +22812,7 @@ msgstr "플러그인 종속성이 충족되지 않아 아카이브를 복원할 
 
 #: plugins.php:1496 plugins.php:1610
 msgid "Not Compatible, Dependencies"
-msgstr "호환되지 않음,  %s"
+msgstr ""
 
 #: plugins.php:1499
 msgid "Unable to Load due to a bad Cacti version."
@@ -22821,7 +22820,7 @@ msgstr "잘못된 Cacti 버전으로 인해 로드할 수 없습니다."
 
 #: plugins.php:1500 plugins.php:1614
 msgid "Not Compatible, Cacti Version"
-msgstr "호환되지 않음,  %s"
+msgstr ""
 
 #: plugins.php:1507
 msgid "View the Plugins ChangeLog"
@@ -22849,7 +22848,7 @@ msgstr "아카이브에서 플러그인 업그레이드"
 
 #: plugins.php:1606
 msgid "Compatible, Upgradable"
-msgstr "호환되지 않음,  %s"
+msgstr ""
 
 #: plugins.php:1609
 msgid ""
@@ -24005,7 +24004,7 @@ msgstr "데이터 쿼리"
 
 #: support.php:53
 msgid "Background Processes"
-msgstr "프로세스 % d 개"
+msgstr ""
 
 #: support.php:54
 msgid "Poller Stats"
@@ -24242,7 +24241,7 @@ msgstr "폴링 시간"
 
 #: support.php:903 support.php:944
 msgid "No host found"
-msgstr " %s을 찾을 수 없습니다."
+msgstr ""
 
 #: support.php:919
 msgid "Worst 20 failed/total polls ratio"
@@ -25265,11 +25264,11 @@ msgstr "1 개월 전"
 
 #: user_admin.php:2126
 msgid "> 2 Months Ago"
-msgstr "개월 % d 개월"
+msgstr ""
 
 #: user_admin.php:2127
 msgid "> 4 Months Ago"
-msgstr "개월 % d 개월"
+msgstr ""
 
 #: user_admin.php:2138
 msgid "Basic"

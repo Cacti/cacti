@@ -206,9 +206,6 @@ msgid ""
 "In order to migrate the Aggregate Graphs below to a Template based "
 "Aggregate, they must only be using one Graph Template."
 msgstr ""
-"W celu migracji poniższych wykresów zagregowanych do wykresu "
-"zagregowanegoopartego na szablonie, najpierw utwórz zagregowany szablon dla "
-"szablonu wykresu \"%s\"."
 
 #: aggregate_graphs.php:818
 msgid ""
@@ -477,7 +474,7 @@ msgstr "Pokaż szczegóły pozycji"
 
 #: aggregate_graphs.php:1150
 msgid "Aggregate Preview Does Not Exist"
-msgstr "Zagregowany Podgląd [%s]"
+msgstr ""
 
 #: aggregate_graphs.php:1158
 #, php-format
@@ -4769,7 +4766,7 @@ msgstr "Powiązane szablony wykresów/danych [edytuj: %s]."
 
 #: data_queries.php:638
 msgid "Associated Graph/Data Templates [new]"
-msgstr "Powiązane szablony wykresów/danych [edytuj: %s]."
+msgstr ""
 
 #: data_queries.php:673
 msgid "Associated Data Templates"
@@ -5767,7 +5764,7 @@ msgstr ""
 
 #: data_templates.php:1007
 msgid "Custom Data Warning Message"
-msgstr "Dane niestandardowe [wprowadzanie danych: %s]"
+msgstr ""
 
 #: data_templates.php:1008
 msgid "WARNING: Data Loss can Occur"
@@ -6872,7 +6869,7 @@ msgstr "Nowe wykresy dla [ Wszystkie urządzenia]"
 
 #: graphs.php:2685
 msgid "Graph Management [ Non Device Based ]"
-msgstr "Zarządzanie grupą użytkowników [edytuj: %s]"
+msgstr ""
 
 #: graphs.php:2688
 #, php-format
@@ -8676,7 +8673,7 @@ msgstr "Codziennie"
 
 #: include/global_arrays.php:899
 msgid "1 Thread"
-msgstr "%d Gwint"
+msgstr ""
 
 #: include/global_arrays.php:943
 msgid "Cacti Builtin Authentication"
@@ -14085,7 +14082,7 @@ msgstr "Godzina zakończenia godzin pracy. Format: gg:mm"
 
 #: include/global_settings.php:1354
 msgid "Hide Weekends"
-msgstr "%d tygodni"
+msgstr ""
 
 #: include/global_settings.php:1355
 msgid "Only show business hours during weekdays."
@@ -16076,7 +16073,7 @@ msgstr ""
 
 #: include/global_settings.php:2803
 msgid "1 Thousand"
-msgstr "%d Gwint"
+msgstr ""
 
 #: include/global_settings.php:2804
 msgid "10 Thousand"
@@ -16252,7 +16249,7 @@ msgstr ""
 
 #: include/global_settings.php:2899
 msgid "Cacti Server Timezone"
-msgstr "Serwer Cacti v%s - Konserwacja"
+msgstr ""
 
 #: include/global_settings.php:2900
 msgid "My Browsers Timezone"
@@ -17441,7 +17438,7 @@ msgstr "Plik"
 
 #: lib/clog_webapi.php:541 lib/clog_webapi.php:544
 msgid "Head Lines"
-msgstr "%d Linie"
+msgstr ""
 
 #: lib/clog_webapi.php:541 lib/clog_webapi.php:544 utilities.php:323
 #: utilities.php:326
@@ -22105,7 +22102,7 @@ msgstr "CDP Nieznane punkty danych (0)"
 
 #: lib/rrd.php:3663
 msgid "Errors Found"
-msgstr "Nie znaleziono %s"
+msgstr ""
 
 #: lib/rrd.php:3675
 msgid "Optional Tuning Recommendations"
@@ -22983,11 +22980,11 @@ msgstr ""
 
 #: managers.php:1029
 msgid "Delete Notification Receiver"
-msgstr "%s Odbiorniki powiadomień"
+msgstr ""
 
 #: managers.php:1030
 msgid "Delete Notification Receivers"
-msgstr "%s Odbiorniki powiadomień"
+msgstr ""
 
 #: managers.php:1033
 msgid "Click 'Continue' to Disable the following Notification Receiver."
@@ -23019,7 +23016,7 @@ msgstr "Wyłącz odbiornik powiadomienia SNMP"
 
 #: managers.php:1042
 msgid "Enable Notification Receivers"
-msgstr "%s Odbiorniki powiadomień"
+msgstr ""
 
 #: managers.php:1080
 msgid ""
@@ -23308,7 +23305,7 @@ msgstr "Wybierz sposób sortowania elementów w tym drzewie."
 
 #: package_import.php:339
 msgid "Template Items to be Imported"
-msgstr "Elementy szablonu kolorów [edytuj element raportu: %s]."
+msgstr ""
 
 #: package_import.php:343
 msgid "The Template Items in the list below will be imported."
@@ -24006,7 +24003,7 @@ msgstr ""
 
 #: plugins.php:587
 msgid "Are you sure you want to Restore this Archive?"
-msgstr "Czy na pewno chcesz usunąć regułę \"%s\"?"
+msgstr ""
 
 #: plugins.php:589
 msgid ""
@@ -24020,7 +24017,7 @@ msgstr ""
 
 #: plugins.php:590
 msgid "Are you sure you want to Delete this Archive?"
-msgstr "Czy na pewno chcesz usunąć regułę \"%s\"?"
+msgstr ""
 
 #: plugins.php:592
 msgid "Plugin Management"
@@ -24040,7 +24037,7 @@ msgstr "Zainstalowane"
 
 #: plugins.php:614
 msgid "Installed and Inactive"
-msgstr "Instalacja serwera Cacti v%s"
+msgstr ""
 
 #: plugins.php:617
 msgid "Plugin Errors"
@@ -24280,7 +24277,7 @@ msgstr "Załaduj tę wtyczkę z dostępnych wtyczek Cacti"
 
 #: plugins.php:1480 plugins.php:1597
 msgid "Compatible, Loadable"
-msgstr "Nieodpowiedni, %s"
+msgstr ""
 
 #: plugins.php:1482
 msgid "Upgrade this Plugin from the available Cacti Plugins"
@@ -24288,7 +24285,7 @@ msgstr "Uaktualnij tę wtyczkę z dostępnych wtyczek Cacti"
 
 #: plugins.php:1483 plugins.php:1492
 msgid "Compatible, Upgrade"
-msgstr "Nieodpowiedni, %s"
+msgstr ""
 
 #: plugins.php:1485
 msgid "Downgrade this Plugin from the available Cacti Plugins"
@@ -24318,7 +24315,7 @@ msgstr ""
 
 #: plugins.php:1496 plugins.php:1610
 msgid "Not Compatible, Dependencies"
-msgstr "Nieodpowiedni, %s"
+msgstr ""
 
 #: plugins.php:1499
 msgid "Unable to Load due to a bad Cacti version."
@@ -24326,7 +24323,7 @@ msgstr "Nie można załadować z powodu złej wersji Cacti."
 
 #: plugins.php:1500 plugins.php:1614
 msgid "Not Compatible, Cacti Version"
-msgstr "Nieodpowiedni, %s"
+msgstr ""
 
 #: plugins.php:1507
 msgid "View the Plugins ChangeLog"
@@ -24354,7 +24351,7 @@ msgstr "Uaktualnij wtyczkę z archiwum"
 
 #: plugins.php:1606
 msgid "Compatible, Upgradable"
-msgstr "Nieodpowiedni, %s"
+msgstr ""
 
 #: plugins.php:1609
 msgid ""
@@ -25577,7 +25574,7 @@ msgstr "Zapytania o dane"
 
 #: support.php:53
 msgid "Background Processes"
-msgstr "%d Procesy"
+msgstr ""
 
 #: support.php:54
 msgid "Poller Stats"
@@ -25823,7 +25820,7 @@ msgstr "Czas trwania sondaży"
 
 #: support.php:903 support.php:944
 msgid "No host found"
-msgstr "Nie znaleziono %s"
+msgstr ""
 
 #: support.php:919
 msgid "Worst 20 failed/total polls ratio"
@@ -26897,11 +26894,11 @@ msgstr "1 miesiąc temu"
 
 #: user_admin.php:2126
 msgid "> 2 Months Ago"
-msgstr "%d miesiące"
+msgstr ""
 
 #: user_admin.php:2127
 msgid "> 4 Months Ago"
-msgstr "%d miesiące"
+msgstr ""
 
 #: user_admin.php:2138
 msgid "Basic"

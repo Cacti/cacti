@@ -216,13 +216,10 @@ msgstr ""
 "biểu đồ."
 
 #: aggregate_graphs.php:810
-#, fuzzy
 msgid ""
 "In order to migrate the Aggregate Graphs below to a Template based "
 "Aggregate, they must only be using one Graph Template."
 msgstr ""
-"Để di chuyển Biểu đồ tổng hợp bên dưới sang Tập hợp dựa trên mẫu, trước tiên"
-" hãy tạo Mẫu tổng hợp cho Mẫu biểu đồ &#39; %s&#39;."
 
 #: aggregate_graphs.php:818
 #, fuzzy
@@ -531,9 +528,8 @@ msgid "Show Item Details"
 msgstr "Hiển thị chi tiết mặt hàng"
 
 #: aggregate_graphs.php:1150
-#, fuzzy
 msgid "Aggregate Preview Does Not Exist"
-msgstr "Xem trước tổng hợp [ %s]"
+msgstr ""
 
 #: aggregate_graphs.php:1158
 #, fuzzy, php-format
@@ -5358,9 +5354,8 @@ msgid "Associated Graph/Data Templates [edit: %s]"
 msgstr "Biểu đồ liên kết / Mẫu dữ liệu [chỉnh sửa: %s]"
 
 #: data_queries.php:638
-#, fuzzy
 msgid "Associated Graph/Data Templates [new]"
-msgstr "Biểu đồ liên kết / Mẫu dữ liệu [chỉnh sửa: %s]"
+msgstr ""
 
 #: data_queries.php:673
 #, fuzzy
@@ -6459,9 +6454,8 @@ msgid "Value will be derived from the Device if this field is left empty."
 msgstr "Giá trị sẽ được lấy từ thiết bị nếu trường này bị bỏ trống."
 
 #: data_templates.php:1007
-#, fuzzy
 msgid "Custom Data Warning Message"
-msgstr "Dữ liệu tùy chỉnh [nhập dữ liệu: %s]"
+msgstr ""
 
 #: data_templates.php:1008
 #, fuzzy
@@ -7721,9 +7715,8 @@ msgid "Graph Management [ All Devices ]"
 msgstr "Đồ thị mới cho [Tất cả thiết bị]"
 
 #: graphs.php:2685
-#, fuzzy
 msgid "Graph Management [ Non Device Based ]"
-msgstr "Quản lý nhóm người dùng [chỉnh sửa: %s]"
+msgstr ""
 
 #: graphs.php:2688
 #, fuzzy, php-format
@@ -9768,9 +9761,8 @@ msgid "Every day"
 msgstr "Hàng ngày"
 
 #: include/global_arrays.php:899
-#, fuzzy
 msgid "1 Thread"
-msgstr "% d Chủ đề"
+msgstr ""
 
 #: include/global_arrays.php:943
 #, fuzzy
@@ -11635,9 +11627,8 @@ msgid "Tree Rule Items"
 msgstr "Mục quy tắc cây"
 
 #: include/global_arrays.php:3048 include/global_arrays.php:3066
-#, fuzzy
 msgid "years"
-msgstr "% d Năm"
+msgstr ""
 
 #: include/global_arrays.php:3049 include/global_arrays.php:3067
 #: lib/api_device.php:1717
@@ -15854,9 +15845,8 @@ msgid "The time your business hours end. Format: hh:mm"
 msgstr ""
 
 #: include/global_settings.php:1354
-#, fuzzy
 msgid "Hide Weekends"
-msgstr "% d Tuần"
+msgstr ""
 
 #: include/global_settings.php:1355
 msgid "Only show business hours during weekdays."
@@ -17983,9 +17973,8 @@ msgid ""
 msgstr "Giá trị này biểu thị số lượng gai tối đa cần xóa khỏi Biểu đồ RRA."
 
 #: include/global_settings.php:2803
-#, fuzzy
 msgid "1 Thousand"
-msgstr "% d Chủ đề"
+msgstr ""
 
 #: include/global_settings.php:2804
 msgid "10 Thousand"
@@ -18170,9 +18159,8 @@ msgid ""
 msgstr ""
 
 #: include/global_settings.php:2899
-#, fuzzy
 msgid "Cacti Server Timezone"
-msgstr "Máy chủ Cacti v %s - Bảo trì"
+msgstr ""
 
 #: include/global_settings.php:2900
 msgid "My Browsers Timezone"
@@ -19493,9 +19481,8 @@ msgid "File"
 msgstr "Tập tin"
 
 #: lib/clog_webapi.php:541 lib/clog_webapi.php:544
-#, fuzzy
 msgid "Head Lines"
-msgstr "% d Dòng"
+msgstr ""
 
 #: lib/clog_webapi.php:541 lib/clog_webapi.php:544 utilities.php:323
 #: utilities.php:326
@@ -24623,9 +24610,8 @@ msgid "CDP Unknown Data points (0)"
 msgstr "CDP Điểm dữ liệu không xác định (0)"
 
 #: lib/rrd.php:3663
-#, fuzzy
 msgid "Errors Found"
-msgstr "Không %s Tìm thấy"
+msgstr ""
 
 #: lib/rrd.php:3675
 #, fuzzy
@@ -25580,14 +25566,12 @@ msgid "Click 'Continue' to Delete following Notification Receivers."
 msgstr "Nhấp vào &#39;Tiếp tục&#39; để xóa Trình nhận thông báo sau"
 
 #: managers.php:1029
-#, fuzzy
 msgid "Delete Notification Receiver"
-msgstr "%s Người nhận thông báo"
+msgstr ""
 
 #: managers.php:1030
-#, fuzzy
 msgid "Delete Notification Receivers"
-msgstr "%s Người nhận thông báo"
+msgstr ""
 
 #: managers.php:1033
 #, fuzzy
@@ -25625,9 +25609,8 @@ msgid "Enable Notification Receiver"
 msgstr "Vô hiệu hóa nhận thông báo SNMP"
 
 #: managers.php:1042
-#, fuzzy
 msgid "Enable Notification Receivers"
-msgstr "%s Người nhận thông báo"
+msgstr ""
 
 #: managers.php:1080
 #, fuzzy
@@ -25734,9 +25717,8 @@ msgid "Available Templates [%s]"
 msgstr "Mẫu có sẵn [ %s]"
 
 #: package.php:705
-#, fuzzy
 msgid "Available Templates"
-msgstr "Mẫu có sẵn [ %s]"
+msgstr ""
 
 #: package.php:709
 #, fuzzy, php-format
@@ -25922,9 +25904,8 @@ msgid "The Files in the list below will be imported."
 msgstr "Chọn cách sắp xếp các mục trong cây này."
 
 #: package_import.php:339
-#, fuzzy
 msgid "Template Items to be Imported"
-msgstr "Mục mẫu màu [chỉnh sửa mục báo cáo: %s]"
+msgstr ""
 
 #: package_import.php:343
 #, fuzzy
@@ -26633,9 +26614,8 @@ msgstr ""
 "không, nhấp vào &#39;Hủy&#39;"
 
 #: plugins.php:587
-#, fuzzy
 msgid "Are you sure you want to Restore this Archive?"
-msgstr "Bạn có chắc chắn muốn xóa Quy tắc &#39; %s&#39; không?"
+msgstr ""
 
 #: plugins.php:589
 #, fuzzy
@@ -26649,9 +26629,8 @@ msgstr ""
 "không, nhấp vào &#39;Hủy&#39;"
 
 #: plugins.php:590
-#, fuzzy
 msgid "Are you sure you want to Delete this Archive?"
-msgstr "Bạn có chắc chắn muốn xóa Quy tắc &#39; %s&#39; không?"
+msgstr ""
 
 #: plugins.php:592
 msgid "Plugin Management"
@@ -26672,9 +26651,8 @@ msgid "Installed and Active"
 msgstr "Đã lắp đặt"
 
 #: plugins.php:614
-#, fuzzy
 msgid "Installed and Inactive"
-msgstr "Cài đặt máy chủ Cacti v %s"
+msgstr ""
 
 #: plugins.php:617
 #, fuzzy
@@ -26949,18 +26927,16 @@ msgid "Load this Plugin from the available Cacti Plugins"
 msgstr ""
 
 #: plugins.php:1480 plugins.php:1597
-#, fuzzy
 msgid "Compatible, Loadable"
-msgstr "Không tương thích, %s"
+msgstr ""
 
 #: plugins.php:1482
 msgid "Upgrade this Plugin from the available Cacti Plugins"
 msgstr ""
 
 #: plugins.php:1483 plugins.php:1492
-#, fuzzy
 msgid "Compatible, Upgrade"
-msgstr "Không tương thích, %s"
+msgstr ""
 
 #: plugins.php:1485
 msgid "Downgrade this Plugin from the available Cacti Plugins"
@@ -26990,18 +26966,16 @@ msgid ""
 msgstr ""
 
 #: plugins.php:1496 plugins.php:1610
-#, fuzzy
 msgid "Not Compatible, Dependencies"
-msgstr "Không tương thích, %s"
+msgstr ""
 
 #: plugins.php:1499
 msgid "Unable to Load due to a bad Cacti version."
 msgstr ""
 
 #: plugins.php:1500 plugins.php:1614
-#, fuzzy
 msgid "Not Compatible, Cacti Version"
-msgstr "Không tương thích, %s"
+msgstr ""
 
 #: plugins.php:1507
 msgid "View the Plugins ChangeLog"
@@ -27029,9 +27003,8 @@ msgid "Upgrade Plugin from the archive"
 msgstr ""
 
 #: plugins.php:1606
-#, fuzzy
 msgid "Compatible, Upgradable"
-msgstr "Không tương thích, %s"
+msgstr ""
 
 #: plugins.php:1609
 msgid ""
@@ -28408,9 +28381,8 @@ msgid "Database Queries"
 msgstr "Truy vấn dữ liệu"
 
 #: support.php:53
-#, fuzzy
 msgid "Background Processes"
-msgstr "% d Quá trình"
+msgstr ""
 
 #: support.php:54
 #, fuzzy
@@ -28683,9 +28655,8 @@ msgid "Actual Polling Time"
 msgstr "Thời gian bỏ phiếu"
 
 #: support.php:903 support.php:944
-#, fuzzy
 msgid "No host found"
-msgstr "Không %s Tìm thấy"
+msgstr ""
 
 #: support.php:919
 msgid "Worst 20 failed/total polls ratio"
@@ -29890,14 +29861,12 @@ msgid "> 1 Month Ago"
 msgstr ""
 
 #: user_admin.php:2126
-#, fuzzy
 msgid "> 2 Months Ago"
-msgstr "% d Tháng"
+msgstr ""
 
 #: user_admin.php:2127
-#, fuzzy
 msgid "> 4 Months Ago"
-msgstr "% d Tháng"
+msgstr ""
 
 #: user_admin.php:2138
 msgid "Basic"

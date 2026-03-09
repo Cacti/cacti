@@ -206,8 +206,6 @@ msgid ""
 "In order to migrate the Aggregate Graphs below to a Template based "
 "Aggregate, they must only be using one Graph Template."
 msgstr ""
-"Lai migrētu tālāk norādītos apkopotos grafikus uz veidnēm balstītu "
-"apkopojumu, vispirms izveidojiet apkopojuma veidni diagrammas veidnei “%s”."
 
 #: aggregate_graphs.php:818
 msgid ""
@@ -16109,7 +16107,7 @@ msgstr ""
 
 #: include/global_settings.php:2899
 msgid "Cacti Server Timezone"
-msgstr "Cacti Server v%s — apkope"
+msgstr ""
 
 #: include/global_settings.php:2900
 msgid "My Browsers Timezone"
@@ -17297,7 +17295,7 @@ msgstr "Fails"
 
 #: lib/clog_webapi.php:541 lib/clog_webapi.php:544
 msgid "Head Lines"
-msgstr "%d rindas"
+msgstr ""
 
 #: lib/clog_webapi.php:541 lib/clog_webapi.php:544 utilities.php:323
 #: utilities.php:326
@@ -21218,7 +21216,7 @@ msgstr ""
 
 #: lib/installer.php:3675
 msgid "Default Device Added to Cacti."
-msgstr "Ierīce %s pievienota Cacti"
+msgstr ""
 
 #: lib/installer.php:3680
 #, php-format
@@ -21930,7 +21928,7 @@ msgstr "CDP nezināmie datu punkti (0)"
 
 #: lib/rrd.php:3663
 msgid "Errors Found"
-msgstr "%s nav atrasts"
+msgstr ""
 
 #: lib/rrd.php:3675
 msgid "Optional Tuning Recommendations"
@@ -22804,11 +22802,11 @@ msgstr "Noklikšķiniet uz \"Turpināt\", lai dzēstu šo paziņojumu uztvērēj
 
 #: managers.php:1029
 msgid "Delete Notification Receiver"
-msgstr "%s paziņojumu saņēmēji"
+msgstr ""
 
 #: managers.php:1030
 msgid "Delete Notification Receivers"
-msgstr "%s paziņojumu saņēmēji"
+msgstr ""
 
 #: managers.php:1033
 msgid "Click 'Continue' to Disable the following Notification Receiver."
@@ -22840,7 +22838,7 @@ msgstr "Atspējot SNMP paziņojumu uztvērēju"
 
 #: managers.php:1042
 msgid "Enable Notification Receivers"
-msgstr "%s paziņojumu saņēmēji"
+msgstr ""
 
 #: managers.php:1080
 msgid ""
@@ -22940,7 +22938,7 @@ msgstr "Pieejamās veidnes [%s]"
 
 #: package.php:705
 msgid "Available Templates"
-msgstr "Pieejamās veidnes [%s]"
+msgstr ""
 
 #: package.php:709
 #, php-format
@@ -23128,7 +23126,7 @@ msgstr "Izvēlieties, kā tiks kārtoti šī koka vienumi."
 
 #: package_import.php:339
 msgid "Template Items to be Imported"
-msgstr "Krāsu veidnes elementi [labot atskaites vienumu: %s]"
+msgstr ""
 
 #: package_import.php:343
 msgid "The Template Items in the list below will be imported."
@@ -23199,7 +23197,7 @@ msgstr ""
 
 #: package_import.php:773
 msgid "Some Packages Not Trusted"
-msgstr "%s pakotni neizdevās importēt"
+msgstr ""
 
 #: package_import.php:781
 msgid "All Packages Trusted"
@@ -23823,7 +23821,7 @@ msgstr ""
 
 #: plugins.php:587
 msgid "Are you sure you want to Restore this Archive?"
-msgstr "Vai tiešām vēlaties dzēst '%s' kārtulu?"
+msgstr ""
 
 #: plugins.php:589
 msgid ""
@@ -23837,7 +23835,7 @@ msgstr ""
 
 #: plugins.php:590
 msgid "Are you sure you want to Delete this Archive?"
-msgstr "Vai tiešām vēlaties dzēst '%s' kārtulu?"
+msgstr ""
 
 #: plugins.php:592
 msgid "Plugin Management"
@@ -23857,7 +23855,7 @@ msgstr "Uzstādīts"
 
 #: plugins.php:614
 msgid "Installed and Inactive"
-msgstr "Cacti Server v%s instalēšana"
+msgstr ""
 
 #: plugins.php:617
 msgid "Plugin Errors"
@@ -24095,7 +24093,7 @@ msgstr "Ielādēt šo spraudni no pieejamajiem Cacti spraudņiem"
 
 #: plugins.php:1480 plugins.php:1597
 msgid "Compatible, Loadable"
-msgstr "Nav saderīgs, %s"
+msgstr ""
 
 #: plugins.php:1482
 msgid "Upgrade this Plugin from the available Cacti Plugins"
@@ -24103,7 +24101,7 @@ msgstr "Jauniniet šo spraudni no pieejamajiem Cacti spraudņiem"
 
 #: plugins.php:1483 plugins.php:1492
 msgid "Compatible, Upgrade"
-msgstr "Nav saderīgs, %s"
+msgstr ""
 
 #: plugins.php:1485
 msgid "Downgrade this Plugin from the available Cacti Plugins"
@@ -24132,7 +24130,7 @@ msgstr "Nevar atjaunot arhīvu, jo nav izpildītas spraudņu atkarības."
 
 #: plugins.php:1496 plugins.php:1610
 msgid "Not Compatible, Dependencies"
-msgstr "Nav saderīgs, %s"
+msgstr ""
 
 #: plugins.php:1499
 msgid "Unable to Load due to a bad Cacti version."
@@ -24140,7 +24138,7 @@ msgstr "Nevar ielādēt sliktas kaktusu versijas dēļ."
 
 #: plugins.php:1500 plugins.php:1614
 msgid "Not Compatible, Cacti Version"
-msgstr "Nav saderīgs, %s"
+msgstr ""
 
 #: plugins.php:1507
 msgid "View the Plugins ChangeLog"
@@ -24168,7 +24166,7 @@ msgstr "Atjaunināt spraudni no arhīva"
 
 #: plugins.php:1606
 msgid "Compatible, Upgradable"
-msgstr "Nav saderīgs, %s"
+msgstr ""
 
 #: plugins.php:1609
 msgid ""
@@ -25386,7 +25384,7 @@ msgstr "Datu vaicājumi"
 
 #: support.php:53
 msgid "Background Processes"
-msgstr "%d procesi"
+msgstr ""
 
 #: support.php:54
 msgid "Poller Stats"
@@ -25433,7 +25431,7 @@ msgstr "Lapas atsvaidzināšana"
 
 #: support.php:385 support.php:783
 msgid "Process ID"
-msgstr "Procesi: %d"
+msgstr ""
 
 #: support.php:388
 msgid "The Connection ID of the running process."
@@ -25630,7 +25628,7 @@ msgstr "Balsošanas laiks"
 
 #: support.php:903 support.php:944
 msgid "No host found"
-msgstr "%s nav atrasts"
+msgstr ""
 
 #: support.php:919
 msgid "Worst 20 failed/total polls ratio"
@@ -26683,11 +26681,11 @@ msgstr "Pirms > 1 mēneša"
 
 #: user_admin.php:2126
 msgid "> 2 Months Ago"
-msgstr "%d mēneši"
+msgstr ""
 
 #: user_admin.php:2127
 msgid "> 4 Months Ago"
-msgstr "%d mēneši"
+msgstr ""
 
 #: user_admin.php:2138
 msgid "Basic"

@@ -199,8 +199,6 @@ msgid ""
 "In order to migrate the Aggregate Graphs below to a Template based "
 "Aggregate, they must only be using one Graph Template."
 msgstr ""
-"כדי להעביר את הגרפים המצטברים למטה לצבירה מבוססת תבנית, צור תחילה תבנית "
-"מצטברת עבור &#39;תבנית גרף&#39; %s."
 
 #: aggregate_graphs.php:818
 msgid ""
@@ -450,7 +448,7 @@ msgstr "הצג פרטי פריט"
 
 #: aggregate_graphs.php:1150
 msgid "Aggregate Preview Does Not Exist"
-msgstr "תצוגה מקדימה מצטברת [ %s]"
+msgstr ""
 
 #: aggregate_graphs.php:1158
 #, php-format
@@ -4643,7 +4641,7 @@ msgstr "תבניות גרף / נתונים משויכות [עריכה: %s]"
 
 #: data_queries.php:638
 msgid "Associated Graph/Data Templates [new]"
-msgstr "תבניות גרף / נתונים משויכות [עריכה: %s]"
+msgstr ""
 
 #: data_queries.php:673
 msgid "Associated Data Templates"
@@ -5602,7 +5600,7 @@ msgstr "הערך ייגזר מהמכשיר אם שדה זה יישאר ריק."
 
 #: data_templates.php:1007
 msgid "Custom Data Warning Message"
-msgstr "נתונים מותאמים אישית [קלט נתונים: %s]"
+msgstr ""
 
 #: data_templates.php:1008
 msgid "WARNING: Data Loss can Occur"
@@ -6671,7 +6669,7 @@ msgstr "גרפים חדשים עבור [כל המכשירים]"
 
 #: graphs.php:2685
 msgid "Graph Management [ Non Device Based ]"
-msgstr "ניהול קבוצת משתמשים [עריכה: %s]"
+msgstr ""
 
 #: graphs.php:2688
 #, php-format
@@ -8373,7 +8371,7 @@ msgstr "כל יום"
 
 #: include/global_arrays.php:899
 msgid "1 Thread"
-msgstr "% d Thread"
+msgstr ""
 
 #: include/global_arrays.php:943
 msgid "Cacti Builtin Authentication"
@@ -13585,7 +13583,7 @@ msgstr "השעה שבה שעות הפעילות שלך מסתיימות. פור�
 
 #: include/global_settings.php:1354
 msgid "Hide Weekends"
-msgstr "% d שבועות"
+msgstr ""
 
 #: include/global_settings.php:1355
 msgid "Only show business hours during weekdays."
@@ -15482,7 +15480,7 @@ msgstr "ערך זה מייצג את המספר המרבי של קוצים להס
 
 #: include/global_settings.php:2803
 msgid "1 Thousand"
-msgstr "% d Thread"
+msgstr ""
 
 #: include/global_settings.php:2804
 msgid "10 Thousand"
@@ -15651,7 +15649,7 @@ msgstr ""
 
 #: include/global_settings.php:2899
 msgid "Cacti Server Timezone"
-msgstr "שרת Cacti - %s - תחזוקה"
+msgstr ""
 
 #: include/global_settings.php:2900
 msgid "My Browsers Timezone"
@@ -16812,7 +16810,7 @@ msgstr "קובץ"
 
 #: lib/clog_webapi.php:541 lib/clog_webapi.php:544
 msgid "Head Lines"
-msgstr "% d שורות"
+msgstr ""
 
 #: lib/clog_webapi.php:541 lib/clog_webapi.php:544 utilities.php:323
 #: utilities.php:326
@@ -21311,7 +21309,7 @@ msgstr "CDP לא ידוע נקודות נתונים (0)"
 
 #: lib/rrd.php:3663
 msgid "Errors Found"
-msgstr "אין %s"
+msgstr ""
 
 #: lib/rrd.php:3675
 msgid "Optional Tuning Recommendations"
@@ -22288,7 +22286,7 @@ msgstr "תבניות זמינות [ %s]"
 
 #: package.php:705
 msgid "Available Templates"
-msgstr "תבניות זמינות [ %s]"
+msgstr ""
 
 #: package.php:709
 #, php-format
@@ -22471,7 +22469,7 @@ msgstr "בחר כיצד ימוינו הפריטים בעץ זה."
 
 #: package_import.php:339
 msgid "Template Items to be Imported"
-msgstr "פריטי תבנית צבע [עריכה דוח פריט: %s]"
+msgstr ""
 
 #: package_import.php:343
 msgid "The Template Items in the list below will be imported."
@@ -23140,7 +23138,7 @@ msgstr ""
 
 #: plugins.php:587
 msgid "Are you sure you want to Restore this Archive?"
-msgstr "האם אתה בטוח שברצונך למחוק את הכלל &#39; %s&#39;?"
+msgstr ""
 
 #: plugins.php:589
 msgid ""
@@ -23153,7 +23151,7 @@ msgstr ""
 
 #: plugins.php:590
 msgid "Are you sure you want to Delete this Archive?"
-msgstr "האם אתה בטוח שברצונך למחוק את הכלל &#39; %s&#39;?"
+msgstr ""
 
 #: plugins.php:592
 msgid "Plugin Management"
@@ -23173,7 +23171,7 @@ msgstr "מותקן"
 
 #: plugins.php:614
 msgid "Installed and Inactive"
-msgstr "התקנת Cacti Server v %s"
+msgstr ""
 
 #: plugins.php:617
 msgid "Plugin Errors"
@@ -23414,7 +23412,7 @@ msgstr "טען תוסף זה מהתוספים הזמינים של Cacti"
 
 #: plugins.php:1480 plugins.php:1597
 msgid "Compatible, Loadable"
-msgstr "לא תואם, %s"
+msgstr ""
 
 #: plugins.php:1482
 msgid "Upgrade this Plugin from the available Cacti Plugins"
@@ -23422,7 +23420,7 @@ msgstr "שדרג תוסף זה מהתוספים הזמינים של Cacti"
 
 #: plugins.php:1483 plugins.php:1492
 msgid "Compatible, Upgrade"
-msgstr "לא תואם, %s"
+msgstr ""
 
 #: plugins.php:1485
 msgid "Downgrade this Plugin from the available Cacti Plugins"
@@ -23451,7 +23449,7 @@ msgstr "לא ניתן לשחזר את הארכיון מכיוון שתלות ב�
 
 #: plugins.php:1496 plugins.php:1610
 msgid "Not Compatible, Dependencies"
-msgstr "לא תואם, %s"
+msgstr ""
 
 #: plugins.php:1499
 msgid "Unable to Load due to a bad Cacti version."
@@ -23459,7 +23457,7 @@ msgstr "לא ניתן לטעון בגלל גרסת קקטוסים גרועה."
 
 #: plugins.php:1500 plugins.php:1614
 msgid "Not Compatible, Cacti Version"
-msgstr "לא תואם, %s"
+msgstr ""
 
 #: plugins.php:1507
 msgid "View the Plugins ChangeLog"
@@ -23487,7 +23485,7 @@ msgstr "שדרג את התוסף מהארכיון"
 
 #: plugins.php:1606
 msgid "Compatible, Upgradable"
-msgstr "לא תואם, %s"
+msgstr ""
 
 #: plugins.php:1609
 msgid ""
@@ -24659,7 +24657,7 @@ msgstr "שאילתות נתונים"
 
 #: support.php:53
 msgid "Background Processes"
-msgstr "% d תהליכים"
+msgstr ""
 
 #: support.php:54
 msgid "Poller Stats"
@@ -24900,7 +24898,7 @@ msgstr "זמן הסקרים"
 
 #: support.php:903 support.php:944
 msgid "No host found"
-msgstr "אין %s"
+msgstr ""
 
 #: support.php:919
 msgid "Worst 20 failed/total polls ratio"

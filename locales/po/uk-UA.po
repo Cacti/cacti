@@ -205,13 +205,10 @@ msgstr ""
 "графіків."
 
 #: aggregate_graphs.php:810
-#, fuzzy
 msgid ""
 "In order to migrate the Aggregate Graphs below to a Template based "
 "Aggregate, they must only be using one Graph Template."
 msgstr ""
-"Щоб перенести наведені нижче агрегатні графіки до агрегату на основі "
-"шаблону, спочатку створіть агрегатний шаблон для шаблону графіка \"%s\"."
 
 #: aggregate_graphs.php:818
 msgid ""
@@ -21924,9 +21921,8 @@ msgid "WARNING: Default Device Failed to be Added error to follow."
 msgstr "ПОПЕРЕДЖЕННЯ: Не вдалося додати пристрій за замовчуванням."
 
 #: lib/installer.php:3675
-#, fuzzy
 msgid "Default Device Added to Cacti."
-msgstr "Пристрій %s додано до Cacti"
+msgstr ""
 
 #: lib/installer.php:3680
 #, fuzzy, php-format
@@ -22641,9 +22637,8 @@ msgid "CDP Unknown Data points (0)"
 msgstr "CDP Невідомо Точки даних (0)"
 
 #: lib/rrd.php:3663
-#, fuzzy
 msgid "Errors Found"
-msgstr "%s не знайдено"
+msgstr ""
 
 #: lib/rrd.php:3675
 #, fuzzy
@@ -23561,14 +23556,12 @@ msgid "Click 'Continue' to Delete following Notification Receivers."
 msgstr "Натисніть «Продовжити», щоб видалити наступного отримувача сповіщень"
 
 #: managers.php:1029
-#, fuzzy
 msgid "Delete Notification Receiver"
-msgstr "%s Одержувачі сповіщень"
+msgstr ""
 
 #: managers.php:1030
-#, fuzzy
 msgid "Delete Notification Receivers"
-msgstr "%s Одержувачі сповіщень"
+msgstr ""
 
 #: managers.php:1033
 #, fuzzy
@@ -23606,9 +23599,8 @@ msgid "Enable Notification Receiver"
 msgstr "Вимкнути приймач сповіщень SNMP"
 
 #: managers.php:1042
-#, fuzzy
 msgid "Enable Notification Receivers"
-msgstr "%s Одержувачі сповіщень"
+msgstr ""
 
 #: managers.php:1080
 #, fuzzy
@@ -23921,9 +23913,8 @@ msgid "The Files in the list below will be imported."
 msgstr "Виберіть спосіб сортування елементів у цьому дереві."
 
 #: package_import.php:339
-#, fuzzy
 msgid "Template Items to be Imported"
-msgstr "Елементи кольорового шаблону [редагувати елемент звіту: %s]"
+msgstr ""
 
 #: package_import.php:343
 #, fuzzy
@@ -23999,9 +23990,8 @@ msgstr ""
 "щоб скасувати."
 
 #: package_import.php:773
-#, fuzzy
 msgid "Some Packages Not Trusted"
-msgstr "Помилка імпорту пакета %s"
+msgstr ""
 
 #: package_import.php:781
 msgid "All Packages Trusted"
@@ -24673,9 +24663,8 @@ msgstr ""
 " В іншому випадку натисніть «Скасувати»"
 
 #: plugins.php:587
-#, fuzzy
 msgid "Are you sure you want to Restore this Archive?"
-msgstr "Ви впевнені, що бажаєте видалити правило \"%s\"?"
+msgstr ""
 
 #: plugins.php:589
 #, fuzzy
@@ -24689,9 +24678,8 @@ msgstr ""
 " В іншому випадку натисніть «Скасувати»"
 
 #: plugins.php:590
-#, fuzzy
 msgid "Are you sure you want to Delete this Archive?"
-msgstr "Ви впевнені, що бажаєте видалити правило \"%s\"?"
+msgstr ""
 
 #: plugins.php:592
 msgid "Plugin Management"
@@ -24712,9 +24700,8 @@ msgid "Installed and Active"
 msgstr "Встановлена"
 
 #: plugins.php:614
-#, fuzzy
 msgid "Installed and Inactive"
-msgstr "Встановлення Cacti Server v%s"
+msgstr ""
 
 #: plugins.php:617
 #, fuzzy
@@ -24977,18 +24964,16 @@ msgid "Load this Plugin from the available Cacti Plugins"
 msgstr "Завантажте цей плагін з доступних плагінів Cacti"
 
 #: plugins.php:1480 plugins.php:1597
-#, fuzzy
 msgid "Compatible, Loadable"
-msgstr "Несумісний, %s"
+msgstr ""
 
 #: plugins.php:1482
 msgid "Upgrade this Plugin from the available Cacti Plugins"
 msgstr "Оновіть цей плагін з доступних плагінів Cacti"
 
 #: plugins.php:1483 plugins.php:1492
-#, fuzzy
 msgid "Compatible, Upgrade"
-msgstr "Несумісний, %s"
+msgstr ""
 
 #: plugins.php:1485
 msgid "Downgrade this Plugin from the available Cacti Plugins"
@@ -25018,18 +25003,16 @@ msgid ""
 msgstr "Не вдається відновити архів через невиконання залежностей плагіна."
 
 #: plugins.php:1496 plugins.php:1610
-#, fuzzy
 msgid "Not Compatible, Dependencies"
-msgstr "Несумісний, %s"
+msgstr ""
 
 #: plugins.php:1499
 msgid "Unable to Load due to a bad Cacti version."
 msgstr "Не вдається завантажити через погану версію Cacti."
 
 #: plugins.php:1500 plugins.php:1614
-#, fuzzy
 msgid "Not Compatible, Cacti Version"
-msgstr "Несумісний, %s"
+msgstr ""
 
 #: plugins.php:1507
 msgid "View the Plugins ChangeLog"
@@ -25057,9 +25040,8 @@ msgid "Upgrade Plugin from the archive"
 msgstr "Оновити плагін з архіву"
 
 #: plugins.php:1606
-#, fuzzy
 msgid "Compatible, Upgradable"
-msgstr "Несумісний, %s"
+msgstr ""
 
 #: plugins.php:1609
 msgid ""
@@ -26302,9 +26284,8 @@ msgid "Database Queries"
 msgstr "Запити даних"
 
 #: support.php:53
-#, fuzzy
 msgid "Background Processes"
-msgstr "%d Процеси"
+msgstr ""
 
 #: support.php:54
 #, fuzzy
@@ -26356,9 +26337,8 @@ msgid "Reset Refresh"
 msgstr "Оновлення сторінки"
 
 #: support.php:385 support.php:783
-#, fuzzy
 msgid "Process ID"
-msgstr "Процес: %d"
+msgstr ""
 
 #: support.php:388
 msgid "The Connection ID of the running process."
@@ -26579,9 +26559,8 @@ msgid "Actual Polling Time"
 msgstr "Час голосування"
 
 #: support.php:903 support.php:944
-#, fuzzy
 msgid "No host found"
-msgstr "%s не знайдено"
+msgstr ""
 
 #: support.php:919
 msgid "Worst 20 failed/total polls ratio"
@@ -27674,14 +27653,12 @@ msgid "> 1 Month Ago"
 msgstr "> 1 місяць тому"
 
 #: user_admin.php:2126
-#, fuzzy
 msgid "> 2 Months Ago"
-msgstr "%d Місяців"
+msgstr ""
 
 #: user_admin.php:2127
-#, fuzzy
 msgid "> 4 Months Ago"
-msgstr "%d Місяців"
+msgstr ""
 
 #: user_admin.php:2138
 msgid "Basic"

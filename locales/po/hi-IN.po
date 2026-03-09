@@ -205,8 +205,6 @@ msgid ""
 "In order to migrate the Aggregate Graphs below to a Template based "
 "Aggregate, they must only be using one Graph Template."
 msgstr ""
-"टेम्पलेट आधारित एग्रीगेट के नीचे दिए गए एग्रीगेट ग्राफ को माइग्रेट करने के "
-"लिए, पहले ग्राफ टेम्पलेट &#39; %s&#39; के लिए एग्रीगेट टेम्पलेट बनाएं।"
 
 #: aggregate_graphs.php:818
 msgid ""
@@ -480,7 +478,7 @@ msgstr "आइटम विवरण दिखाएं"
 
 #: aggregate_graphs.php:1150
 msgid "Aggregate Preview Does Not Exist"
-msgstr "सकल पूर्वावलोकन [ %s]"
+msgstr ""
 
 #: aggregate_graphs.php:1158
 #, php-format
@@ -4782,7 +4780,7 @@ msgstr "संबद्ध ग्राफ़ / डेटा टेम्प्�
 
 #: data_queries.php:638
 msgid "Associated Graph/Data Templates [new]"
-msgstr "संबद्ध ग्राफ़ / डेटा टेम्प्लेट [संपादित करें: %s]"
+msgstr ""
 
 #: data_queries.php:673
 msgid "Associated Data Templates"
@@ -5771,7 +5769,7 @@ msgstr ""
 
 #: data_templates.php:1007
 msgid "Custom Data Warning Message"
-msgstr "कस्टम डेटा [डेटा इनपुट: %s]"
+msgstr ""
 
 #: data_templates.php:1008
 msgid "WARNING: Data Loss can Occur"
@@ -6871,7 +6869,7 @@ msgstr "[सभी उपकरणों] के लिए नए रेखा�
 
 #: graphs.php:2685
 msgid "Graph Management [ Non Device Based ]"
-msgstr "उपयोगकर्ता समूह प्रबंधन [संपादित करें: %s]"
+msgstr ""
 
 #: graphs.php:2688
 #, php-format
@@ -7776,7 +7774,7 @@ msgstr "कोई उपकरण टेम्पलेट नहीं मि�
 
 #: include/auth.php:173
 msgid "Not Logged In"
-msgstr "के रूप में दाखिल%s"
+msgstr ""
 
 #: include/auth.php:174
 msgid "You must be logged in to access this area of Cacti."
@@ -8647,7 +8645,7 @@ msgstr "हर रोज"
 
 #: include/global_arrays.php:899
 msgid "1 Thread"
-msgstr "% d थ्रेड"
+msgstr ""
 
 #: include/global_arrays.php:943
 msgid "Cacti Builtin Authentication"
@@ -10284,7 +10282,7 @@ msgstr "ट्री नियम आइटम"
 
 #: include/global_arrays.php:3048 include/global_arrays.php:3066
 msgid "years"
-msgstr "% d वष"
+msgstr ""
 
 #: include/global_arrays.php:3049 include/global_arrays.php:3067
 #: lib/api_device.php:1717
@@ -15972,7 +15970,7 @@ msgstr ""
 
 #: include/global_settings.php:2803
 msgid "1 Thousand"
-msgstr "% d थ्रेड"
+msgstr ""
 
 #: include/global_settings.php:2804
 msgid "10 Thousand"
@@ -16148,7 +16146,7 @@ msgstr ""
 
 #: include/global_settings.php:2899
 msgid "Cacti Server Timezone"
-msgstr "Cacti सर्वर v %s - रखरखाव"
+msgstr ""
 
 #: include/global_settings.php:2900
 msgid "My Browsers Timezone"
@@ -16460,7 +16458,7 @@ msgstr "उपयोक्ता विन्यास"
 
 #: include/global_settings.php:3225
 msgid "1 Week"
-msgstr "% d वीक"
+msgstr ""
 
 #: include/global_settings.php:3238
 msgid "Auto Log Out Time"
@@ -17338,7 +17336,7 @@ msgstr "फ़ाइल"
 
 #: lib/clog_webapi.php:541 lib/clog_webapi.php:544
 msgid "Head Lines"
-msgstr "% d लाइन्स"
+msgstr ""
 
 #: lib/clog_webapi.php:541 lib/clog_webapi.php:544 utilities.php:323
 #: utilities.php:326
@@ -18018,11 +18016,11 @@ msgstr "त्रुटि %s पठनीय नहीं है"
 
 #: lib/functions.php:4058
 msgid "Logged in a Guest"
-msgstr "के रूप में दाखिल%s"
+msgstr ""
 
 #: lib/functions.php:4058 lib/functions.php:4074
 msgid "Logged in as"
-msgstr "के रूप में दाखिल%s"
+msgstr ""
 
 #: lib/functions.php:4058
 msgid "Login as Regular User"
@@ -21977,7 +21975,7 @@ msgstr "सीडीपी अज्ञात डेटा अंक (0)"
 
 #: lib/rrd.php:3663
 msgid "Errors Found"
-msgstr "कोई %s मिला"
+msgstr ""
 
 #: lib/rrd.php:3675
 msgid "Optional Tuning Recommendations"
@@ -22861,11 +22859,11 @@ msgstr ""
 
 #: managers.php:1029
 msgid "Delete Notification Receiver"
-msgstr "%s अधिसूचना प्राप्त करता है"
+msgstr ""
 
 #: managers.php:1030
 msgid "Delete Notification Receivers"
-msgstr "%s अधिसूचना प्राप्त करता है"
+msgstr ""
 
 #: managers.php:1033
 msgid "Click 'Continue' to Disable the following Notification Receiver."
@@ -22905,7 +22903,7 @@ msgstr "SNMP अधिसूचना प्राप्तकर्ता अ�
 
 #: managers.php:1042
 msgid "Enable Notification Receivers"
-msgstr "%s अधिसूचना प्राप्त करता है"
+msgstr ""
 
 #: managers.php:1080
 msgid ""
@@ -23004,7 +23002,7 @@ msgstr "उपलब्ध टेम्पलेट [ %s]"
 
 #: package.php:705
 msgid "Available Templates"
-msgstr "उपलब्ध टेम्पलेट [ %s]"
+msgstr ""
 
 #: package.php:709
 #, php-format
@@ -23193,7 +23191,7 @@ msgstr "चुनें कि इस पेड़ की वस्तुओं 
 
 #: package_import.php:339
 msgid "Template Items to be Imported"
-msgstr "रंग टेम्पलेट आइटम [रिपोर्ट आइटम संपादित करें: %s]"
+msgstr ""
 
 #: package_import.php:343
 msgid "The Template Items in the list below will be imported."
@@ -23874,7 +23872,7 @@ msgstr ""
 
 #: plugins.php:587
 msgid "Are you sure you want to Restore this Archive?"
-msgstr "क्या आप वाकई &#39; %s&#39; नियम को हटाना चाहते हैं?"
+msgstr ""
 
 #: plugins.php:589
 msgid ""
@@ -23889,7 +23887,7 @@ msgstr ""
 
 #: plugins.php:590
 msgid "Are you sure you want to Delete this Archive?"
-msgstr "क्या आप वाकई &#39; %s&#39; नियम को हटाना चाहते हैं?"
+msgstr ""
 
 #: plugins.php:592
 msgid "Plugin Management"
@@ -23909,7 +23907,7 @@ msgstr "इंस्‍टॉल हो गया"
 
 #: plugins.php:614
 msgid "Installed and Inactive"
-msgstr "Cacti Server v %s को संस्थापित करना"
+msgstr ""
 
 #: plugins.php:617
 msgid "Plugin Errors"
@@ -24148,7 +24146,7 @@ msgstr "उपलब्ध Cacti प्लगइन्स से इस प्�
 
 #: plugins.php:1480 plugins.php:1597
 msgid "Compatible, Loadable"
-msgstr "संगत नहीं, %s"
+msgstr ""
 
 #: plugins.php:1482
 msgid "Upgrade this Plugin from the available Cacti Plugins"
@@ -24156,7 +24154,7 @@ msgstr "उपलब्ध Cacti प्लगइन्स से इस प्�
 
 #: plugins.php:1483 plugins.php:1492
 msgid "Compatible, Upgrade"
-msgstr "संगत नहीं, %s"
+msgstr ""
 
 #: plugins.php:1485
 msgid "Downgrade this Plugin from the available Cacti Plugins"
@@ -24187,7 +24185,7 @@ msgstr ""
 
 #: plugins.php:1496 plugins.php:1610
 msgid "Not Compatible, Dependencies"
-msgstr "संगत नहीं, %s"
+msgstr ""
 
 #: plugins.php:1499
 msgid "Unable to Load due to a bad Cacti version."
@@ -24195,7 +24193,7 @@ msgstr "खराब कैक्टि (Cacti) वर्ज़न की वज
 
 #: plugins.php:1500 plugins.php:1614
 msgid "Not Compatible, Cacti Version"
-msgstr "संगत नहीं, %s"
+msgstr ""
 
 #: plugins.php:1507
 msgid "View the Plugins ChangeLog"
@@ -24223,7 +24221,7 @@ msgstr "आर्काइव से प्लगइन अपग्रेड �
 
 #: plugins.php:1606
 msgid "Compatible, Upgradable"
-msgstr "संगत नहीं, %s"
+msgstr ""
 
 #: plugins.php:1609
 msgid ""
@@ -25440,7 +25438,7 @@ msgstr "डेटा क्वेरी"
 
 #: support.php:53
 msgid "Background Processes"
-msgstr "% d प्रक्रियाएं"
+msgstr ""
 
 #: support.php:54
 msgid "Poller Stats"
@@ -25684,7 +25682,7 @@ msgstr "मतदान का समय"
 
 #: support.php:903 support.php:944
 msgid "No host found"
-msgstr "कोई %s मिला"
+msgstr ""
 
 #: support.php:919
 msgid "Worst 20 failed/total polls ratio"
@@ -26744,7 +26742,7 @@ msgstr "अंतिम लॉगइन"
 
 #: user_admin.php:2123
 msgid "< 1 Week Ago"
-msgstr "% d वीक"
+msgstr ""
 
 #: user_admin.php:2124
 msgid "< 1 Month Ago"
@@ -26756,11 +26754,11 @@ msgstr "1 महीने पहले"
 
 #: user_admin.php:2126
 msgid "> 2 Months Ago"
-msgstr "% d माह"
+msgstr ""
 
 #: user_admin.php:2127
 msgid "> 4 Months Ago"
-msgstr "% d माह"
+msgstr ""
 
 #: user_admin.php:2138
 msgid "Basic"

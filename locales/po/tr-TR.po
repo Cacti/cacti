@@ -210,13 +210,10 @@ msgstr ""
 "temsil eder."
 
 #: aggregate_graphs.php:810
-#, fuzzy
 msgid ""
 "In order to migrate the Aggregate Graphs below to a Template based "
 "Aggregate, they must only be using one Graph Template."
 msgstr ""
-"Aşağıdaki Toplam Grafikleri Şablon tabanlı bir Toplam&#39;a geçirmek için, "
-"önce &#39; %s&#39; Grafik Şablonu için bir Genel Şablon oluşturun."
 
 #: aggregate_graphs.php:818
 #, fuzzy
@@ -535,9 +532,8 @@ msgid "Show Item Details"
 msgstr "Öğe Ayrıntılarını Göster"
 
 #: aggregate_graphs.php:1150
-#, fuzzy
 msgid "Aggregate Preview Does Not Exist"
-msgstr "Toplam Önizleme [ %s]"
+msgstr ""
 
 #: aggregate_graphs.php:1158
 #, fuzzy, php-format
@@ -5379,9 +5375,8 @@ msgid "Associated Graph/Data Templates [edit: %s]"
 msgstr "İlişkili Grafik / Veri Şablonları [değiştir: %s]"
 
 #: data_queries.php:638
-#, fuzzy
 msgid "Associated Graph/Data Templates [new]"
-msgstr "İlişkili Grafik / Veri Şablonları [değiştir: %s]"
+msgstr ""
 
 #: data_queries.php:673
 #, fuzzy
@@ -6503,9 +6498,8 @@ msgid "Value will be derived from the Device if this field is left empty."
 msgstr "Bu alan boş bırakılırsa değer cihazdan elde edilir."
 
 #: data_templates.php:1007
-#, fuzzy
 msgid "Custom Data Warning Message"
-msgstr "Özel Veri [veri girişi: %s]"
+msgstr ""
 
 #: data_templates.php:1008
 #, fuzzy
@@ -7794,9 +7788,8 @@ msgid "Graph Management [ All Devices ]"
 msgstr "[Tüm Cihazlar] için Yeni Grafikler"
 
 #: graphs.php:2685
-#, fuzzy
 msgid "Graph Management [ Non Device Based ]"
-msgstr "Kullanıcı Grubu Yönetimi [değiştir: %s]"
+msgstr ""
 
 #: graphs.php:2688
 #, fuzzy, php-format
@@ -9842,9 +9835,8 @@ msgid "Every day"
 msgstr "Her gün"
 
 #: include/global_arrays.php:899
-#, fuzzy
 msgid "1 Thread"
-msgstr "% d Konu"
+msgstr ""
 
 #: include/global_arrays.php:943
 #, fuzzy
@@ -11693,9 +11685,8 @@ msgid "Tree Rule Items"
 msgstr "Ağaç Kuralı Öğeleri"
 
 #: include/global_arrays.php:3048 include/global_arrays.php:3066
-#, fuzzy
 msgid "years"
-msgstr "%d Yıl"
+msgstr ""
 
 #: include/global_arrays.php:3049 include/global_arrays.php:3067
 #: lib/api_device.php:1717
@@ -15932,9 +15923,8 @@ msgid "The time your business hours end. Format: hh:mm"
 msgstr ""
 
 #: include/global_settings.php:1354
-#, fuzzy
 msgid "Hide Weekends"
-msgstr "%d Hafta"
+msgstr ""
 
 #: include/global_settings.php:1355
 msgid "Only show business hours during weekdays."
@@ -18074,9 +18064,8 @@ msgstr ""
 " temsil eder."
 
 #: include/global_settings.php:2803
-#, fuzzy
 msgid "1 Thousand"
-msgstr "% d Konu"
+msgstr ""
 
 #: include/global_settings.php:2804
 msgid "10 Thousand"
@@ -18258,9 +18247,8 @@ msgid ""
 msgstr ""
 
 #: include/global_settings.php:2899
-#, fuzzy
 msgid "Cacti Server Timezone"
-msgstr "Cacti Sunucu v %s - Bakım"
+msgstr ""
 
 #: include/global_settings.php:2900
 msgid "My Browsers Timezone"
@@ -19582,9 +19570,8 @@ msgid "File"
 msgstr "Dosya"
 
 #: lib/clog_webapi.php:541 lib/clog_webapi.php:544
-#, fuzzy
 msgid "Head Lines"
-msgstr "% d Satır"
+msgstr ""
 
 #: lib/clog_webapi.php:541 lib/clog_webapi.php:544 utilities.php:323
 #: utilities.php:326
@@ -24695,9 +24682,8 @@ msgid "CDP Unknown Data points (0)"
 msgstr "CDP Bilinmeyen Veri noktaları (0)"
 
 #: lib/rrd.php:3663
-#, fuzzy
 msgid "Errors Found"
-msgstr "%s Bulunamadı"
+msgstr ""
 
 #: lib/rrd.php:3675
 #, fuzzy
@@ -25674,14 +25660,12 @@ msgstr ""
 "Aşağıdaki Bildirim Alıcısını silmek için &#39;Devam Et&#39;i tıklayın."
 
 #: managers.php:1029
-#, fuzzy
 msgid "Delete Notification Receiver"
-msgstr "%s Bildirim Alıcıları"
+msgstr ""
 
 #: managers.php:1030
-#, fuzzy
 msgid "Delete Notification Receivers"
-msgstr "%s Bildirim Alıcıları"
+msgstr ""
 
 #: managers.php:1033
 #, fuzzy
@@ -25725,9 +25709,8 @@ msgid "Enable Notification Receiver"
 msgstr "SNMP Bildirim Alıcısını Devre Dışı Bırak"
 
 #: managers.php:1042
-#, fuzzy
 msgid "Enable Notification Receivers"
-msgstr "%s Bildirim Alıcıları"
+msgstr ""
 
 #: managers.php:1080
 #, fuzzy
@@ -25835,9 +25818,8 @@ msgid "Available Templates [%s]"
 msgstr "Mevcut Şablonlar [ %s]"
 
 #: package.php:705
-#, fuzzy
 msgid "Available Templates"
-msgstr "Mevcut Şablonlar [ %s]"
+msgstr ""
 
 #: package.php:709
 #, fuzzy, php-format
@@ -26026,9 +26008,8 @@ msgid "The Files in the list below will be imported."
 msgstr "Bu ağaçtaki öğelerin nasıl sıralanacağını seçin."
 
 #: package_import.php:339
-#, fuzzy
 msgid "Template Items to be Imported"
-msgstr "Renk Şablonu Öğeleri [Rapor Öğesini Düzenle: %s]"
+msgstr ""
 
 #: package_import.php:343
 #, fuzzy
@@ -26747,9 +26728,8 @@ msgstr ""
 "tıklayın. Aksi takdirde &#39;İptal&#39;i tıklayın"
 
 #: plugins.php:587
-#, fuzzy
 msgid "Are you sure you want to Restore this Archive?"
-msgstr "&#39; %s&#39; Kuralını silmek istediğinize emin misiniz?"
+msgstr ""
 
 #: plugins.php:589
 #, fuzzy
@@ -26763,9 +26743,8 @@ msgstr ""
 "tıklayın. Aksi takdirde &#39;İptal&#39;i tıklayın"
 
 #: plugins.php:590
-#, fuzzy
 msgid "Are you sure you want to Delete this Archive?"
-msgstr "&#39; %s&#39; Kuralını silmek istediğinize emin misiniz?"
+msgstr ""
 
 #: plugins.php:592
 #, fuzzy
@@ -26787,9 +26766,8 @@ msgid "Installed and Active"
 msgstr "Yüklü"
 
 #: plugins.php:614
-#, fuzzy
 msgid "Installed and Inactive"
-msgstr "Cacti Sunucu Kurulumu v %s"
+msgstr ""
 
 #: plugins.php:617
 #, fuzzy
@@ -27063,18 +27041,16 @@ msgid "Load this Plugin from the available Cacti Plugins"
 msgstr ""
 
 #: plugins.php:1480 plugins.php:1597
-#, fuzzy
 msgid "Compatible, Loadable"
-msgstr "Uyumlu değil, %s"
+msgstr ""
 
 #: plugins.php:1482
 msgid "Upgrade this Plugin from the available Cacti Plugins"
 msgstr ""
 
 #: plugins.php:1483 plugins.php:1492
-#, fuzzy
 msgid "Compatible, Upgrade"
-msgstr "Uyumlu değil, %s"
+msgstr ""
 
 #: plugins.php:1485
 msgid "Downgrade this Plugin from the available Cacti Plugins"
@@ -27104,18 +27080,16 @@ msgid ""
 msgstr ""
 
 #: plugins.php:1496 plugins.php:1610
-#, fuzzy
 msgid "Not Compatible, Dependencies"
-msgstr "Uyumlu değil, %s"
+msgstr ""
 
 #: plugins.php:1499
 msgid "Unable to Load due to a bad Cacti version."
 msgstr ""
 
 #: plugins.php:1500 plugins.php:1614
-#, fuzzy
 msgid "Not Compatible, Cacti Version"
-msgstr "Uyumlu değil, %s"
+msgstr ""
 
 #: plugins.php:1507
 msgid "View the Plugins ChangeLog"
@@ -27143,9 +27117,8 @@ msgid "Upgrade Plugin from the archive"
 msgstr ""
 
 #: plugins.php:1606
-#, fuzzy
 msgid "Compatible, Upgradable"
-msgstr "Uyumlu değil, %s"
+msgstr ""
 
 #: plugins.php:1609
 msgid ""
@@ -28522,9 +28495,8 @@ msgid "Database Queries"
 msgstr "Veri Sorguları"
 
 #: support.php:53
-#, fuzzy
 msgid "Background Processes"
-msgstr "% d İşlemler"
+msgstr ""
 
 #: support.php:54
 #, fuzzy
@@ -28796,9 +28768,8 @@ msgid "Actual Polling Time"
 msgstr "Yoklama Zamanı"
 
 #: support.php:903 support.php:944
-#, fuzzy
 msgid "No host found"
-msgstr "%s Bulunamadı"
+msgstr ""
 
 #: support.php:919
 msgid "Worst 20 failed/total polls ratio"
@@ -29999,14 +29970,12 @@ msgid "> 1 Month Ago"
 msgstr ""
 
 #: user_admin.php:2126
-#, fuzzy
 msgid "> 2 Months Ago"
-msgstr "%d Ay"
+msgstr ""
 
 #: user_admin.php:2127
-#, fuzzy
 msgid "> 4 Months Ago"
-msgstr "%d Ay"
+msgstr ""
 
 #: user_admin.php:2138
 msgid "Basic"

@@ -203,11 +203,10 @@ msgid ""
 msgstr "選定的聚合圖表表示來自多個圖表模板的元素。"
 
 #: aggregate_graphs.php:810
-#, fuzzy
 msgid ""
 "In order to migrate the Aggregate Graphs below to a Template based "
 "Aggregate, they must only be using one Graph Template."
-msgstr "為了將下面的聚合圖遷移到基於模板的聚合，首先為圖形模板&#39;%s&#39;創建聚合模板。"
+msgstr ""
 
 #: aggregate_graphs.php:818
 #, fuzzy
@@ -493,9 +492,8 @@ msgid "Show Item Details"
 msgstr "顯示項目明細"
 
 #: aggregate_graphs.php:1150
-#, fuzzy
 msgid "Aggregate Preview Does Not Exist"
-msgstr "匯總預覽[%s]"
+msgstr ""
 
 #: aggregate_graphs.php:1158
 #, fuzzy, php-format
@@ -4784,11 +4782,8 @@ msgid "Determines if the RRDfile has been written to properly."
 msgstr "確定RRDfile是否已正確寫入。"
 
 #: data_debug.php:516 data_debug.php:634 data_debug.php:822
-#, fuzzy
 msgid "Issues"
 msgstr ""
-"您正在運行的以下 add-ons 版本尚未使用 Gravity 表單 %s 進行測試。請在更新 Gravity "
-"表單之前更新或確認相容性，否則可能會遇到問題："
 
 #: data_debug.php:519
 #, fuzzy
@@ -5364,9 +5359,8 @@ msgid "Associated Graph/Data Templates [edit: %s]"
 msgstr "相關圖形/數據模板[編輯：%s]"
 
 #: data_queries.php:638
-#, fuzzy
 msgid "Associated Graph/Data Templates [new]"
-msgstr "相關圖形/數據模板[編輯：%s]"
+msgstr ""
 
 #: data_queries.php:673
 #, fuzzy
@@ -6445,9 +6439,8 @@ msgid "Value will be derived from the Device if this field is left empty."
 msgstr "如果此字段為空，則將從設備派生值。"
 
 #: data_templates.php:1007
-#, fuzzy
 msgid "Custom Data Warning Message"
-msgstr "自定義數據[數據輸入：%s]"
+msgstr ""
 
 #: data_templates.php:1008
 #, fuzzy
@@ -7656,9 +7649,8 @@ msgid "Graph Management [ All Devices ]"
 msgstr "[所有設備]的新圖表"
 
 #: graphs.php:2685
-#, fuzzy
 msgid "Graph Management [ Non Device Based ]"
-msgstr "用戶組管理[編輯：%s]"
+msgstr ""
 
 #: graphs.php:2688
 #, fuzzy, php-format
@@ -9632,9 +9624,8 @@ msgid "Every day"
 msgstr "每天"
 
 #: include/global_arrays.php:899
-#, fuzzy
 msgid "1 Thread"
-msgstr "%d線程"
+msgstr ""
 
 #: include/global_arrays.php:943
 #, fuzzy
@@ -10853,9 +10844,8 @@ msgid "Month(s), Day of Week"
 msgstr "月（星期），星期幾"
 
 #: include/global_arrays.php:1848
-#, fuzzy
 msgid "Year(s)"
-msgstr "年份：%s"
+msgstr ""
 
 #: include/global_arrays.php:1852
 #, fuzzy
@@ -11613,9 +11603,8 @@ msgid "Tree Rule Items"
 msgstr "樹規則項"
 
 #: include/global_arrays.php:3048 include/global_arrays.php:3066
-#, fuzzy
 msgid "years"
-msgstr "%d年"
+msgstr ""
 
 #: include/global_arrays.php:3049 include/global_arrays.php:3067
 #: lib/api_device.php:1717
@@ -15578,9 +15567,8 @@ msgid "The time your business hours end. Format: hh:mm"
 msgstr ""
 
 #: include/global_settings.php:1354
-#, fuzzy
 msgid "Hide Weekends"
-msgstr "%d週"
+msgstr ""
 
 #: include/global_settings.php:1355
 msgid "Only show business hours during weekdays."
@@ -17556,9 +17544,8 @@ msgid ""
 msgstr "此值表示要從圖形RRA中刪除的最大尖峰數。"
 
 #: include/global_settings.php:2803
-#, fuzzy
 msgid "1 Thousand"
-msgstr "%d線程"
+msgstr ""
 
 #: include/global_settings.php:2804
 msgid "10 Thousand"
@@ -17730,9 +17717,8 @@ msgid ""
 msgstr ""
 
 #: include/global_settings.php:2899
-#, fuzzy
 msgid "Cacti Server Timezone"
-msgstr "Cacti Server v%s  - 維護"
+msgstr ""
 
 #: include/global_settings.php:2900
 msgid "My Browsers Timezone"
@@ -19023,9 +19009,8 @@ msgid "File"
 msgstr "檔案"
 
 #: lib/clog_webapi.php:541 lib/clog_webapi.php:544
-#, fuzzy
 msgid "Head Lines"
-msgstr "%d行"
+msgstr ""
 
 #: lib/clog_webapi.php:541 lib/clog_webapi.php:544 utilities.php:323
 #: utilities.php:326
@@ -24015,9 +24000,8 @@ msgid "CDP Unknown Data points (0)"
 msgstr "CDP未知數據點（0）"
 
 #: lib/rrd.php:3663
-#, fuzzy
 msgid "Errors Found"
-msgstr "沒有 %s 找到"
+msgstr ""
 
 #: lib/rrd.php:3675
 #, fuzzy
@@ -24912,14 +24896,12 @@ msgid "Click 'Continue' to Delete following Notification Receivers."
 msgstr "單擊“繼續”以刪除以下通知接收器"
 
 #: managers.php:1029
-#, fuzzy
 msgid "Delete Notification Receiver"
-msgstr "%s通知接收者"
+msgstr ""
 
 #: managers.php:1030
-#, fuzzy
 msgid "Delete Notification Receivers"
-msgstr "%s通知接收者"
+msgstr ""
 
 #: managers.php:1033
 #, fuzzy
@@ -24957,9 +24939,8 @@ msgid "Enable Notification Receiver"
 msgstr "禁用SNMP通知接收器"
 
 #: managers.php:1042
-#, fuzzy
 msgid "Enable Notification Receivers"
-msgstr "%s通知接收者"
+msgstr ""
 
 #: managers.php:1080
 #, fuzzy
@@ -25057,9 +25038,8 @@ msgid "Available Templates [%s]"
 msgstr "可用模板[%s]"
 
 #: package.php:705
-#, fuzzy
 msgid "Available Templates"
-msgstr "可用模板[%s]"
+msgstr ""
 
 #: package.php:709
 #, fuzzy, php-format
@@ -25243,9 +25223,8 @@ msgid "The Files in the list below will be imported."
 msgstr "選擇如何對此樹中的項目進行排序。"
 
 #: package_import.php:339
-#, fuzzy
 msgid "Template Items to be Imported"
-msgstr "顏色模板項[編輯報告項目：%s]"
+msgstr ""
 
 #: package_import.php:343
 #, fuzzy
@@ -25943,9 +25922,8 @@ msgid ""
 msgstr "卸載此插件將刪除所有插件數據和設置。如果您確實要卸載插件，請單擊下面的“卸載”。否則點擊“取消”"
 
 #: plugins.php:587
-#, fuzzy
 msgid "Are you sure you want to Restore this Archive?"
-msgstr "您確定要刪除規則&#39;%s&#39;嗎？"
+msgstr ""
 
 #: plugins.php:589
 #, fuzzy
@@ -25956,9 +25934,8 @@ msgid ""
 msgstr "卸載此插件將刪除所有插件數據和設置。如果您確實要卸載插件，請單擊下面的“卸載”。否則點擊“取消”"
 
 #: plugins.php:590
-#, fuzzy
 msgid "Are you sure you want to Delete this Archive?"
-msgstr "您確定要刪除規則&#39;%s&#39;嗎？"
+msgstr ""
 
 #: plugins.php:592
 #, fuzzy
@@ -25980,9 +25957,8 @@ msgid "Installed and Active"
 msgstr "已安裝"
 
 #: plugins.php:614
-#, fuzzy
 msgid "Installed and Inactive"
-msgstr "安裝Cacti Server v%s"
+msgstr ""
 
 #: plugins.php:617
 #, fuzzy
@@ -26252,18 +26228,16 @@ msgid "Load this Plugin from the available Cacti Plugins"
 msgstr ""
 
 #: plugins.php:1480 plugins.php:1597
-#, fuzzy
 msgid "Compatible, Loadable"
-msgstr "不兼容，%s"
+msgstr ""
 
 #: plugins.php:1482
 msgid "Upgrade this Plugin from the available Cacti Plugins"
 msgstr ""
 
 #: plugins.php:1483 plugins.php:1492
-#, fuzzy
 msgid "Compatible, Upgrade"
-msgstr "不兼容，%s"
+msgstr ""
 
 #: plugins.php:1485
 msgid "Downgrade this Plugin from the available Cacti Plugins"
@@ -26293,18 +26267,16 @@ msgid ""
 msgstr ""
 
 #: plugins.php:1496 plugins.php:1610
-#, fuzzy
 msgid "Not Compatible, Dependencies"
-msgstr "不兼容，%s"
+msgstr ""
 
 #: plugins.php:1499
 msgid "Unable to Load due to a bad Cacti version."
 msgstr ""
 
 #: plugins.php:1500 plugins.php:1614
-#, fuzzy
 msgid "Not Compatible, Cacti Version"
-msgstr "不兼容，%s"
+msgstr ""
 
 #: plugins.php:1507
 msgid "View the Plugins ChangeLog"
@@ -26332,9 +26304,8 @@ msgid "Upgrade Plugin from the archive"
 msgstr ""
 
 #: plugins.php:1606
-#, fuzzy
 msgid "Compatible, Upgradable"
-msgstr "不兼容，%s"
+msgstr ""
 
 #: plugins.php:1609
 msgid ""
@@ -27696,9 +27667,8 @@ msgid "Database Queries"
 msgstr "數據查詢"
 
 #: support.php:53
-#, fuzzy
 msgid "Background Processes"
-msgstr "%d進程"
+msgstr ""
 
 #: support.php:54
 #, fuzzy
@@ -27972,9 +27942,8 @@ msgid "Actual Polling Time"
 msgstr "輪詢時間"
 
 #: support.php:903 support.php:944
-#, fuzzy
 msgid "No host found"
-msgstr "沒有 %s 找到"
+msgstr ""
 
 #: support.php:919
 msgid "Worst 20 failed/total polls ratio"
@@ -29165,14 +29134,12 @@ msgid "> 1 Month Ago"
 msgstr ""
 
 #: user_admin.php:2126
-#, fuzzy
 msgid "> 2 Months Ago"
-msgstr "%d個月"
+msgstr ""
 
 #: user_admin.php:2127
-#, fuzzy
 msgid "> 4 Months Ago"
-msgstr "%d個月"
+msgstr ""
 
 #: user_admin.php:2138
 #, fuzzy

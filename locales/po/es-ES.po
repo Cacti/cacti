@@ -4606,9 +4606,8 @@ msgid "Were we able to convert the title?"
 msgstr "¿Pudimos convertir el título?"
 
 #: data_debug.php:817
-#, fuzzy
 msgid "Data Source matches the RRDfile?"
-msgstr "Data Source(s) agregados a archivo RRD: %s"
+msgstr ""
 
 #: data_debug.php:831
 #, fuzzy, php-format
@@ -5057,9 +5056,8 @@ msgid "Associated Graph/Data Templates [edit: %s]"
 msgstr "Plantillas de gráficos/datos asociados [editar: %s]"
 
 #: data_queries.php:638
-#, fuzzy
 msgid "Associated Graph/Data Templates [new]"
-msgstr "Plantillas de gráficos/datos asociados [editar: %s]"
+msgstr ""
 
 #: data_queries.php:673
 msgid "Associated Data Templates"
@@ -5759,15 +5757,11 @@ msgid "Selected Data Template"
 msgstr "Plantilla de datos seleccionados"
 
 #: data_sources.php:944
-#, fuzzy
 msgid ""
 "The name given to this data template.  Please note that you may only change "
 "Graph Templates to a 100%$ compatible Graph Template, which means that it "
 "includes identical Data Sources."
 msgstr ""
-"El nombre dado a esta plantilla de datos. Tenga en cuenta que solo puede "
-"cambiar plantillas de gráficos a plantillas de gráficos 100%% compatibles, "
-"lo que significa que incluye idénticos Data Sources."
 
 #: data_sources.php:951 graph_view.php:881 graphs.php:2327
 #: include/global_arrays.php:1034 include/global_arrays.php:1095
@@ -6100,9 +6094,8 @@ msgid "Value will be derived from the Device if this field is left empty."
 msgstr "Este valor derivará del dispositivo si es dejado vacío."
 
 #: data_templates.php:1007
-#, fuzzy
 msgid "Custom Data Warning Message"
-msgstr "Datos personalizados [entrada de datos: %s]"
+msgstr ""
 
 #: data_templates.php:1008
 #, fuzzy
@@ -6343,9 +6336,8 @@ msgid "%d seconds left."
 msgstr "%d segundos restantes."
 
 #: graph_realtime.php:456
-#, fuzzy
 msgid " seconds left."
-msgstr "%d segundos restantes."
+msgstr ""
 
 #: graph_templates.php:39
 msgid "Change Settings"
@@ -6834,7 +6826,7 @@ msgstr "ID de equipo"
 
 #: graph_xport.php:134 graph_xport.php:211
 msgid "Nth Percentile"
-msgstr "Porcentaje %d"
+msgstr ""
 
 #: graph_xport.php:140 graph_xport.php:226
 msgid "Summation"
@@ -7303,9 +7295,8 @@ msgid "Graph Management [ All Devices ]"
 msgstr "Gráficos nuevos para [Todos los dispositivos]"
 
 #: graphs.php:2685
-#, fuzzy
 msgid "Graph Management [ Non Device Based ]"
-msgstr "Administración de Grupo de Usuarios [modificar: %s]"
+msgstr ""
 
 #: graphs.php:2688
 #, fuzzy, php-format
@@ -9198,9 +9189,8 @@ msgid "Every day"
 msgstr "Todos los días"
 
 #: include/global_arrays.php:899
-#, fuzzy
 msgid "1 Thread"
-msgstr "%d proceso"
+msgstr ""
 
 #: include/global_arrays.php:943
 #, fuzzy
@@ -10908,9 +10898,8 @@ msgid "Tree Rule Items"
 msgstr "Items de regla de árbol"
 
 #: include/global_arrays.php:3048 include/global_arrays.php:3066
-#, fuzzy
 msgid "years"
-msgstr "%d años"
+msgstr ""
 
 #: include/global_arrays.php:3049 include/global_arrays.php:3067
 #: lib/api_device.php:1717
@@ -14734,9 +14723,8 @@ msgid "The time your business hours end. Format: hh:mm"
 msgstr ""
 
 #: include/global_settings.php:1354
-#, fuzzy
 msgid "Hide Weekends"
-msgstr "%d semanas"
+msgstr ""
 
 #: include/global_settings.php:1355
 msgid "Only show business hours during weekdays."
@@ -16739,9 +16727,8 @@ msgstr ""
 "RRA."
 
 #: include/global_settings.php:2803
-#, fuzzy
 msgid "1 Thousand"
-msgstr "%d proceso"
+msgstr ""
 
 #: include/global_settings.php:2804
 msgid "10 Thousand"
@@ -16913,9 +16900,8 @@ msgid ""
 msgstr ""
 
 #: include/global_settings.php:2899
-#, fuzzy
 msgid "Cacti Server Timezone"
-msgstr "Servidor Cacti v%s - Mantenimiento"
+msgstr ""
 
 #: include/global_settings.php:2900
 msgid "My Browsers Timezone"
@@ -18143,9 +18129,8 @@ msgid "File"
 msgstr "Archivo"
 
 #: lib/clog_webapi.php:541 lib/clog_webapi.php:544
-#, fuzzy
 msgid "Head Lines"
-msgstr "%d Líneas"
+msgstr ""
 
 #: lib/clog_webapi.php:541 lib/clog_webapi.php:544 utilities.php:323
 #: utilities.php:326
@@ -19060,9 +19045,8 @@ msgid "Not Applicable"
 msgstr "No aplica"
 
 #: lib/graphs.php:86
-#, fuzzy
 msgid "Damaged Graph"
-msgstr "%d Grafico"
+msgstr ""
 
 #: lib/html.php:81
 #, fuzzy
@@ -19213,29 +19197,24 @@ msgid "Measure"
 msgstr ""
 
 #: lib/html.php:2451
-#, fuzzy
 msgid "25th Percentile"
-msgstr "Porcentaje %d"
+msgstr ""
 
 #: lib/html.php:2452
-#, fuzzy
 msgid "50th Percentile (Median)"
-msgstr "Porcentaje %d"
+msgstr ""
 
 #: lib/html.php:2453
-#, fuzzy
 msgid "75th Percentile"
-msgstr "Porcentaje %d"
+msgstr ""
 
 #: lib/html.php:2454
-#, fuzzy
 msgid "90th Percentile"
-msgstr "Porcentaje %d"
+msgstr ""
 
 #: lib/html.php:2455
-#, fuzzy
 msgid "95th Percentile"
-msgstr "Porcentaje %d"
+msgstr ""
 
 #: lib/html.php:2456
 msgid "Total/Sum/Bandwidth"
@@ -21813,11 +21792,6 @@ msgid ""
 "tables if the collation is not matched.   Please ensure your database is "
 "changed to 'utf8mb4_unicode_ci' by running the following: "
 msgstr ""
-"Cualquier tabla creada por Plugins podría tener relacionados con las tablas "
-"core de Cacti si la colación no es la misma. Por favor, asegúrese de cambiar"
-" su base de datos de '%s' a 'utf8mb4_unicode_ci' modificando el archivo de "
-"configuración de MySQL/MariaDB. Típicamente se encuentra en "
-"/etc/MySQL/my.cnf o similar. "
 
 #: lib/installer.php:2831
 msgid "Table Setup"
@@ -22238,9 +22212,8 @@ msgid "WARNING: Default Device Failed to be Added error to follow."
 msgstr ""
 
 #: lib/installer.php:3675
-#, fuzzy
 msgid "Default Device Added to Cacti."
-msgstr "Dispositivo %s añadido a Cacti"
+msgstr ""
 
 #: lib/installer.php:3680
 #, fuzzy, php-format
@@ -22950,9 +22923,8 @@ msgid "CDP Unknown Data points (0)"
 msgstr "CDP Puntos de datos desconocidos (0)"
 
 #: lib/rrd.php:3663
-#, fuzzy
 msgid "Errors Found"
-msgstr "No se encontraron %s"
+msgstr ""
 
 #: lib/rrd.php:3675
 #, fuzzy
@@ -23879,14 +23851,12 @@ msgstr ""
 "notificaciones"
 
 #: managers.php:1029
-#, fuzzy
 msgid "Delete Notification Receiver"
-msgstr "%s Receptores de notificaciones"
+msgstr ""
 
 #: managers.php:1030
-#, fuzzy
 msgid "Delete Notification Receivers"
-msgstr "%s Receptores de notificaciones"
+msgstr ""
 
 #: managers.php:1033
 #, fuzzy
@@ -23932,9 +23902,8 @@ msgid "Enable Notification Receiver"
 msgstr "Deshabilitar Receptor de notificaciones SNMP"
 
 #: managers.php:1042
-#, fuzzy
 msgid "Enable Notification Receivers"
-msgstr "%s Receptores de notificaciones"
+msgstr ""
 
 #: managers.php:1080
 #, fuzzy
@@ -24041,9 +24010,8 @@ msgid "Available Templates [%s]"
 msgstr "Plantillas disponibles [%s]"
 
 #: package.php:705
-#, fuzzy
 msgid "Available Templates"
-msgstr "Plantillas disponibles [%s]"
+msgstr ""
 
 #: package.php:709
 #, fuzzy, php-format
@@ -24232,9 +24200,8 @@ msgid "The Files in the list below will be imported."
 msgstr "Elija como se ordenarán los elementos de este árbol."
 
 #: package_import.php:339
-#, fuzzy
 msgid "Template Items to be Imported"
-msgstr "Item de Plantilla de Colores [editar item de Reporte: %s]"
+msgstr ""
 
 #: package_import.php:343
 #, fuzzy
@@ -24950,9 +24917,8 @@ msgstr ""
 "'desinstalar'. De lo contrario, haga clic en 'Cancelar'"
 
 #: plugins.php:587
-#, fuzzy
 msgid "Are you sure you want to Restore this Archive?"
-msgstr "Esta seguro de que queres borrar la regla '%s'?"
+msgstr ""
 
 #: plugins.php:589
 #, fuzzy
@@ -24966,9 +24932,8 @@ msgstr ""
 "'desinstalar'. De lo contrario, haga clic en 'Cancelar'"
 
 #: plugins.php:590
-#, fuzzy
 msgid "Are you sure you want to Delete this Archive?"
-msgstr "Esta seguro de que queres borrar la regla '%s'?"
+msgstr ""
 
 #: plugins.php:592
 msgid "Plugin Management"
@@ -24989,9 +24954,8 @@ msgid "Installed and Active"
 msgstr "Instalado"
 
 #: plugins.php:614
-#, fuzzy
 msgid "Installed and Inactive"
-msgstr "Instalando servidor de Cacti v%s"
+msgstr ""
 
 #: plugins.php:617
 #, fuzzy
@@ -25253,18 +25217,16 @@ msgid "Load this Plugin from the available Cacti Plugins"
 msgstr ""
 
 #: plugins.php:1480 plugins.php:1597
-#, fuzzy
 msgid "Compatible, Loadable"
-msgstr "No compatible, %s"
+msgstr ""
 
 #: plugins.php:1482
 msgid "Upgrade this Plugin from the available Cacti Plugins"
 msgstr ""
 
 #: plugins.php:1483 plugins.php:1492
-#, fuzzy
 msgid "Compatible, Upgrade"
-msgstr "No compatible, %s"
+msgstr ""
 
 #: plugins.php:1485
 msgid "Downgrade this Plugin from the available Cacti Plugins"
@@ -25294,18 +25256,16 @@ msgid ""
 msgstr ""
 
 #: plugins.php:1496 plugins.php:1610
-#, fuzzy
 msgid "Not Compatible, Dependencies"
-msgstr "No compatible, %s"
+msgstr ""
 
 #: plugins.php:1499
 msgid "Unable to Load due to a bad Cacti version."
 msgstr ""
 
 #: plugins.php:1500 plugins.php:1614
-#, fuzzy
 msgid "Not Compatible, Cacti Version"
-msgstr "No compatible, %s"
+msgstr ""
 
 #: plugins.php:1507
 msgid "View the Plugins ChangeLog"
@@ -25333,9 +25293,8 @@ msgid "Upgrade Plugin from the archive"
 msgstr ""
 
 #: plugins.php:1606
-#, fuzzy
 msgid "Compatible, Upgradable"
-msgstr "No compatible, %s"
+msgstr ""
 
 #: plugins.php:1609
 msgid ""
@@ -26598,9 +26557,8 @@ msgid "Database Queries"
 msgstr "Consultas de datos"
 
 #: support.php:53
-#, fuzzy
 msgid "Background Processes"
-msgstr "Procesos %d"
+msgstr ""
 
 #: support.php:54
 #, fuzzy
@@ -26871,9 +26829,8 @@ msgid "Actual Polling Time"
 msgstr "Tiempo de Sondeo"
 
 #: support.php:903 support.php:944
-#, fuzzy
 msgid "No host found"
-msgstr "No se encontraron %s"
+msgstr ""
 
 #: support.php:919
 msgid "Worst 20 failed/total polls ratio"
@@ -27259,9 +27216,8 @@ msgid "Dependencies"
 msgstr "Incluir dependencias"
 
 #: templates_import.php:293
-#, fuzzy
 msgid "Damaged"
-msgstr "%d Grafico"
+msgstr ""
 
 #: templates_import.php:320
 #, php-format
@@ -27988,14 +27944,12 @@ msgid "> 1 Month Ago"
 msgstr ""
 
 #: user_admin.php:2126
-#, fuzzy
 msgid "> 2 Months Ago"
-msgstr "%d Meses"
+msgstr ""
 
 #: user_admin.php:2127
-#, fuzzy
 msgid "> 4 Months Ago"
-msgstr "%d Meses"
+msgstr ""
 
 #: user_admin.php:2138
 msgid "Basic"

@@ -207,9 +207,6 @@ msgid ""
 "In order to migrate the Aggregate Graphs below to a Template based "
 "Aggregate, they must only be using one Graph Template."
 msgstr ""
-"Per migrare i Grafici Aggregati sottostanti in un Aggregato basato su "
-"Template, creare innanzitutto un Template Aggregato per il Template Graph "
-"Template '%s'."
 
 #: aggregate_graphs.php:818
 msgid ""
@@ -478,7 +475,7 @@ msgstr "Mostra Dettagli"
 
 #: aggregate_graphs.php:1150
 msgid "Aggregate Preview Does Not Exist"
-msgstr "Anteprima Aggregato [%s]"
+msgstr ""
 
 #: aggregate_graphs.php:1158
 #, php-format
@@ -4808,7 +4805,7 @@ msgstr "Modelli grafici/dati associati [modifica: %s]."
 
 #: data_queries.php:638
 msgid "Associated Graph/Data Templates [new]"
-msgstr "Modelli grafici/dati associati [modifica: %s]."
+msgstr ""
 
 #: data_queries.php:673
 msgid "Associated Data Templates"
@@ -5800,7 +5797,7 @@ msgstr ""
 
 #: data_templates.php:1007
 msgid "Custom Data Warning Message"
-msgstr "Dati personalizzati [immissione dati: %s]."
+msgstr ""
 
 #: data_templates.php:1008
 msgid "WARNING: Data Loss can Occur"
@@ -6900,7 +6897,7 @@ msgstr "Nuovi grafici per [ Tutti i dispositivi ]"
 
 #: graphs.php:2685
 msgid "Graph Management [ Non Device Based ]"
-msgstr "Gestione gruppi utenti [modifica: %s]."
+msgstr ""
 
 #: graphs.php:2688
 #, php-format
@@ -8712,7 +8709,7 @@ msgstr "Ogni Giorno"
 
 #: include/global_arrays.php:899
 msgid "1 Thread"
-msgstr "%d Filettatura"
+msgstr ""
 
 #: include/global_arrays.php:943
 msgid "Cacti Builtin Authentication"
@@ -14170,7 +14167,7 @@ msgstr "L'orario di fine del tuo orario di lavoro. Formato: hh:mm"
 
 #: include/global_settings.php:1354
 msgid "Hide Weekends"
-msgstr "%d Settimane"
+msgstr ""
 
 #: include/global_settings.php:1355
 msgid "Only show business hours during weekdays."
@@ -16188,7 +16185,7 @@ msgstr ""
 
 #: include/global_settings.php:2803
 msgid "1 Thousand"
-msgstr "%d Filettatura"
+msgstr ""
 
 #: include/global_settings.php:2804
 msgid "10 Thousand"
@@ -16364,7 +16361,7 @@ msgstr ""
 
 #: include/global_settings.php:2899
 msgid "Cacti Server Timezone"
-msgstr "Cacti Server v%s - Manutenzione"
+msgstr ""
 
 #: include/global_settings.php:2900
 msgid "My Browsers Timezone"
@@ -17567,7 +17564,7 @@ msgstr "File"
 
 #: lib/clog_webapi.php:541 lib/clog_webapi.php:544
 msgid "Head Lines"
-msgstr "Linee %d"
+msgstr ""
 
 #: lib/clog_webapi.php:541 lib/clog_webapi.php:544 utilities.php:323
 #: utilities.php:326
@@ -22267,7 +22264,7 @@ msgstr "CDP Sconosciuto Punti dati sconosciuti (0)"
 
 #: lib/rrd.php:3663
 msgid "Errors Found"
-msgstr "Nessun %s Trovato"
+msgstr ""
 
 #: lib/rrd.php:3675
 msgid "Optional Tuning Recommendations"
@@ -23145,11 +23142,11 @@ msgstr ""
 
 #: managers.php:1029
 msgid "Delete Notification Receiver"
-msgstr "%s Ricevitori di notifica"
+msgstr ""
 
 #: managers.php:1030
 msgid "Delete Notification Receivers"
-msgstr "%s Ricevitori di notifica"
+msgstr ""
 
 #: managers.php:1033
 msgid "Click 'Continue' to Disable the following Notification Receiver."
@@ -23185,7 +23182,7 @@ msgstr "Disattivare il ricevitore di notifica SNMP"
 
 #: managers.php:1042
 msgid "Enable Notification Receivers"
-msgstr "%s Ricevitori di notifica"
+msgstr ""
 
 #: managers.php:1080
 msgid ""
@@ -23475,7 +23472,7 @@ msgstr "Scegli come saranno ordinati gli elementi di questo albero."
 
 #: package_import.php:339
 msgid "Template Items to be Imported"
-msgstr "Elementi del modello a colori [modifica elemento del rapporto: %s]."
+msgstr ""
 
 #: package_import.php:343
 msgid "The Template Items in the list below will be imported."
@@ -24167,7 +24164,7 @@ msgstr ""
 
 #: plugins.php:587
 msgid "Are you sure you want to Restore this Archive?"
-msgstr "Sei sicuro di voler cancellare la regola '%s'?"
+msgstr ""
 
 #: plugins.php:589
 msgid ""
@@ -24181,7 +24178,7 @@ msgstr ""
 
 #: plugins.php:590
 msgid "Are you sure you want to Delete this Archive?"
-msgstr "Sei sicuro di voler cancellare la regola '%s'?"
+msgstr ""
 
 #: plugins.php:592
 msgid "Plugin Management"
@@ -24201,7 +24198,7 @@ msgstr "Installato"
 
 #: plugins.php:614
 msgid "Installed and Inactive"
-msgstr "Installazione di Cacti Server v%s"
+msgstr ""
 
 #: plugins.php:617
 msgid "Plugin Errors"
@@ -24440,7 +24437,7 @@ msgstr "Carica questo plugin dai plugin Cactus disponibili"
 
 #: plugins.php:1480 plugins.php:1597
 msgid "Compatible, Loadable"
-msgstr "Non compatibile, %s"
+msgstr ""
 
 #: plugins.php:1482
 msgid "Upgrade this Plugin from the available Cacti Plugins"
@@ -24448,7 +24445,7 @@ msgstr "Aggiorna questo plugin dai plugin Cactus disponibili"
 
 #: plugins.php:1483 plugins.php:1492
 msgid "Compatible, Upgrade"
-msgstr "Non compatibile, %s"
+msgstr ""
 
 #: plugins.php:1485
 msgid "Downgrade this Plugin from the available Cacti Plugins"
@@ -24479,7 +24476,7 @@ msgstr ""
 
 #: plugins.php:1496 plugins.php:1610
 msgid "Not Compatible, Dependencies"
-msgstr "Non compatibile, %s"
+msgstr ""
 
 #: plugins.php:1499
 msgid "Unable to Load due to a bad Cacti version."
@@ -24487,7 +24484,7 @@ msgstr "Impossibile caricare a causa di una versione Cactus errata."
 
 #: plugins.php:1500 plugins.php:1614
 msgid "Not Compatible, Cacti Version"
-msgstr "Non compatibile, %s"
+msgstr ""
 
 #: plugins.php:1507
 msgid "View the Plugins ChangeLog"
@@ -24515,7 +24512,7 @@ msgstr "Aggiorna plugin dall'archivio"
 
 #: plugins.php:1606
 msgid "Compatible, Upgradable"
-msgstr "Non compatibile, %s"
+msgstr ""
 
 #: plugins.php:1609
 msgid ""
@@ -25743,7 +25740,7 @@ msgstr "Richieste di dati"
 
 #: support.php:53
 msgid "Background Processes"
-msgstr "%d Processi"
+msgstr ""
 
 #: support.php:54
 msgid "Poller Stats"
@@ -25990,7 +25987,7 @@ msgstr "Tempo di scrutinio"
 
 #: support.php:903 support.php:944
 msgid "No host found"
-msgstr "Nessun %s Trovato"
+msgstr ""
 
 #: support.php:919
 msgid "Worst 20 failed/total polls ratio"
@@ -27060,11 +27057,11 @@ msgstr "1 mese fa"
 
 #: user_admin.php:2126
 msgid "> 2 Months Ago"
-msgstr "%d Mesi"
+msgstr ""
 
 #: user_admin.php:2127
 msgid "> 4 Months Ago"
-msgstr "%d Mesi"
+msgstr ""
 
 #: user_admin.php:2138
 msgid "Basic"

@@ -13185,7 +13185,7 @@ msgstr "営業時間が終了する時間。フォーマット: hh: mm"
 
 #: include/global_settings.php:1354
 msgid "Hide Weekends"
-msgstr "%d 週間の"
+msgstr ""
 
 #: include/global_settings.php:1355
 msgid "Only show business hours during weekdays."
@@ -20628,7 +20628,7 @@ msgstr "CDP不明データポイント（0）"
 
 #: lib/rrd.php:3663
 msgid "Errors Found"
-msgstr "%sが見つかりませんでした。"
+msgstr ""
 
 #: lib/rrd.php:3675
 msgid "Optional Tuning Recommendations"
@@ -21716,7 +21716,7 @@ msgstr "このツリーの項目をどのようにソートするかを選択し
 
 #: package_import.php:339
 msgid "Template Items to be Imported"
-msgstr "カラーテンプレート項目[レポート項目を編集：%s]"
+msgstr ""
 
 #: package_import.php:343
 msgid "The Template Items in the list below will be imported."
@@ -22606,7 +22606,7 @@ msgstr "利用可能なCactiプラグインからこのプラグインを読み�
 
 #: plugins.php:1480 plugins.php:1597
 msgid "Compatible, Loadable"
-msgstr "互換性がありません %s"
+msgstr ""
 
 #: plugins.php:1482
 msgid "Upgrade this Plugin from the available Cacti Plugins"
@@ -22614,7 +22614,7 @@ msgstr "利用可能なCactiプラグインからこのプラグインをアッ�
 
 #: plugins.php:1483 plugins.php:1492
 msgid "Compatible, Upgrade"
-msgstr "互換性がありません %s"
+msgstr ""
 
 #: plugins.php:1485
 msgid "Downgrade this Plugin from the available Cacti Plugins"
@@ -22643,7 +22643,7 @@ msgstr "プラグインの依存関係が満たされていないため、アー
 
 #: plugins.php:1496 plugins.php:1610
 msgid "Not Compatible, Dependencies"
-msgstr "互換性がありません %s"
+msgstr ""
 
 #: plugins.php:1499
 msgid "Unable to Load due to a bad Cacti version."
@@ -22651,7 +22651,7 @@ msgstr "Cactiのバージョンが悪いため、読み込めません。"
 
 #: plugins.php:1500 plugins.php:1614
 msgid "Not Compatible, Cacti Version"
-msgstr "互換性がありません %s"
+msgstr ""
 
 #: plugins.php:1507
 msgid "View the Plugins ChangeLog"
@@ -22679,7 +22679,7 @@ msgstr "アーカイブからプラグインをアップグレード"
 
 #: plugins.php:1606
 msgid "Compatible, Upgradable"
-msgstr "互換性がありません %s"
+msgstr ""
 
 #: plugins.php:1609
 msgid ""
@@ -23831,7 +23831,7 @@ msgstr "データ問合せ"
 
 #: support.php:53
 msgid "Background Processes"
-msgstr "%d プロセス"
+msgstr ""
 
 #: support.php:54
 msgid "Poller Stats"
@@ -24067,7 +24067,7 @@ msgstr "ポーリング時間"
 
 #: support.php:903 support.php:944
 msgid "No host found"
-msgstr "%sが見つかりませんでした。"
+msgstr ""
 
 #: support.php:919
 msgid "Worst 20 failed/total polls ratio"
@@ -25078,11 +25078,11 @@ msgstr "1ヶ月前"
 
 #: user_admin.php:2126
 msgid "> 2 Months Ago"
-msgstr "%d ヶ月間の"
+msgstr ""
 
 #: user_admin.php:2127
 msgid "> 4 Months Ago"
-msgstr "%d ヶ月間の"
+msgstr ""
 
 #: user_admin.php:2138
 msgid "Basic"

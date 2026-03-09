@@ -209,14 +209,10 @@ msgstr ""
 "grafiektemplate."
 
 #: aggregate_graphs.php:810
-#, fuzzy
 msgid ""
 "In order to migrate the Aggregate Graphs below to a Template based "
 "Aggregate, they must only be using one Graph Template."
 msgstr ""
-"Voordat u de geaggregeerde grafieken hieronder kunt migreren naar een "
-"template gebaseerde aggregaat, moet u eerst een aggregaat template voor de "
-"grafiektemplate '%s' maken."
 
 #: aggregate_graphs.php:818
 #, fuzzy
@@ -525,9 +521,8 @@ msgid "Show Item Details"
 msgstr "Toon item details"
 
 #: aggregate_graphs.php:1150
-#, fuzzy
 msgid "Aggregate Preview Does Not Exist"
-msgstr "Geaggregeerd voorbeeld [%s]"
+msgstr ""
 
 #: aggregate_graphs.php:1158
 #, fuzzy, php-format
@@ -1931,7 +1926,7 @@ msgstr "Overeenkomende objecten"
 
 #: automation_graph_rules.php:664
 msgid "Rule Selection [new]"
-msgstr "Regel selectie [nieuw: %s]"
+msgstr ""
 
 #: automation_graph_rules.php:710
 msgid "Device Selection Criteria"
@@ -4657,9 +4652,8 @@ msgid "Were we able to convert the title?"
 msgstr "Waren we in staat om de titel om te zetten?"
 
 #: data_debug.php:817
-#, fuzzy
 msgid "Data Source matches the RRDfile?"
-msgstr "Aantal data bron(nen) toegevoegd aan RRD bestand: %s"
+msgstr ""
 
 #: data_debug.php:831
 #, fuzzy, php-format
@@ -5099,9 +5093,8 @@ msgid "Associated Graph/Data Templates [edit: %s]"
 msgstr "Gekoppelde grafiek/data templates [wijzig: %s]"
 
 #: data_queries.php:638
-#, fuzzy
 msgid "Associated Graph/Data Templates [new]"
-msgstr "Gekoppelde grafiek/data templates [wijzig: %s]"
+msgstr ""
 
 #: data_queries.php:673
 msgid "Associated Data Templates"
@@ -5794,15 +5787,11 @@ msgid "Selected Data Template"
 msgstr "Geselecteerde data template"
 
 #: data_sources.php:944
-#, fuzzy
 msgid ""
 "The name given to this data template.  Please note that you may only change "
 "Graph Templates to a 100%$ compatible Graph Template, which means that it "
 "includes identical Data Sources."
 msgstr ""
-"De naam van dit data template. Let op dat u alleen grafiek templates kunt "
-"wijzigen naar een 100% compatible grafiek template, dit betekent dat deze "
-"dezelfde data bronnen moeten hebben."
 
 #: data_sources.php:951 graph_view.php:881 graphs.php:2327
 #: include/global_arrays.php:1034 include/global_arrays.php:1095
@@ -6139,9 +6128,8 @@ msgstr ""
 "De waarde wordt over genomen van het apparaat als u dit veld leeg houdt."
 
 #: data_templates.php:1007
-#, fuzzy
 msgid "Custom Data Warning Message"
-msgstr "Aangepaste data [data invoer: %s]"
+msgstr ""
 
 #: data_templates.php:1008
 #, fuzzy
@@ -6386,9 +6374,8 @@ msgid "%d seconds left."
 msgstr "%d seconden over."
 
 #: graph_realtime.php:456
-#, fuzzy
 msgid " seconds left."
-msgstr "%d seconden over."
+msgstr ""
 
 #: graph_templates.php:39
 msgid "Change Settings"
@@ -7352,9 +7339,8 @@ msgid "Graph Management [ All Devices ]"
 msgstr "Nieuwe grafieken voor [ Alle apparaten ]"
 
 #: graphs.php:2685
-#, fuzzy
 msgid "Graph Management [ Non Device Based ]"
-msgstr "Gebruikersgroepbeheer [bewerken: %s]"
+msgstr ""
 
 #: graphs.php:2688
 #, fuzzy, php-format
@@ -9261,9 +9247,8 @@ msgid "Every day"
 msgstr "Elke dag"
 
 #: include/global_arrays.php:899
-#, fuzzy
 msgid "1 Thread"
-msgstr "%d Thread"
+msgstr ""
 
 #: include/global_arrays.php:943
 #, fuzzy
@@ -10987,9 +10972,8 @@ msgid "Tree Rule Items"
 msgstr "Boomregelpunten"
 
 #: include/global_arrays.php:3048 include/global_arrays.php:3066
-#, fuzzy
 msgid "years"
-msgstr "%d Jaren"
+msgstr ""
 
 #: include/global_arrays.php:3049 include/global_arrays.php:3067
 #: lib/api_device.php:1717
@@ -15003,9 +14987,8 @@ msgid "The time your business hours end. Format: hh:mm"
 msgstr ""
 
 #: include/global_settings.php:1354
-#, fuzzy
 msgid "Hide Weekends"
-msgstr "%d Weken"
+msgstr ""
 
 #: include/global_settings.php:1355
 msgid "Only show business hours during weekdays."
@@ -17091,9 +17074,8 @@ msgstr ""
 "RRA kan worden verwijderd."
 
 #: include/global_settings.php:2803
-#, fuzzy
 msgid "1 Thousand"
-msgstr "%d Thread"
+msgstr ""
 
 #: include/global_settings.php:2804
 msgid "10 Thousand"
@@ -17275,9 +17257,8 @@ msgid ""
 msgstr ""
 
 #: include/global_settings.php:2899
-#, fuzzy
 msgid "Cacti Server Timezone"
-msgstr "Cactus Server v%s - Onderhoud"
+msgstr ""
 
 #: include/global_settings.php:2900
 msgid "My Browsers Timezone"
@@ -18564,9 +18545,8 @@ msgid "File"
 msgstr "Bestand"
 
 #: lib/clog_webapi.php:541 lib/clog_webapi.php:544
-#, fuzzy
 msgid "Head Lines"
-msgstr "%d Regels"
+msgstr ""
 
 #: lib/clog_webapi.php:541 lib/clog_webapi.php:544 utilities.php:323
 #: utilities.php:326
@@ -19507,9 +19487,8 @@ msgid "Not Applicable"
 msgstr "Niet van toepassing"
 
 #: lib/graphs.php:86
-#, fuzzy
 msgid "Damaged Graph"
-msgstr "%d Grafiek"
+msgstr ""
 
 #: lib/html.php:81
 #, fuzzy
@@ -23537,9 +23516,8 @@ msgid "CDP Unknown Data points (0)"
 msgstr "CDP Onbekende gegevenspunten (0)"
 
 #: lib/rrd.php:3663
-#, fuzzy
 msgid "Errors Found"
-msgstr "Geen %s gevonden"
+msgstr ""
 
 #: lib/rrd.php:3675
 #, fuzzy
@@ -24480,14 +24458,12 @@ msgstr ""
 "Klik op 'Doorgaan' om de volgende kennisgevingsontvanger te verwijderen"
 
 #: managers.php:1029
-#, fuzzy
 msgid "Delete Notification Receiver"
-msgstr "%s Notificatie ontvangers"
+msgstr ""
 
 #: managers.php:1030
-#, fuzzy
 msgid "Delete Notification Receivers"
-msgstr "%s Notificatie ontvangers"
+msgstr ""
 
 #: managers.php:1033
 #, fuzzy
@@ -24529,9 +24505,8 @@ msgid "Enable Notification Receiver"
 msgstr "SNMP-kennisgevingsontvanger uitschakelen"
 
 #: managers.php:1042
-#, fuzzy
 msgid "Enable Notification Receivers"
-msgstr "%s Notificatie ontvangers"
+msgstr ""
 
 #: managers.php:1080
 #, fuzzy
@@ -24638,9 +24613,8 @@ msgid "Available Templates [%s]"
 msgstr "Beschikbare templates [%s]"
 
 #: package.php:705
-#, fuzzy
 msgid "Available Templates"
-msgstr "Beschikbare templates [%s]"
+msgstr ""
 
 #: package.php:709
 #, fuzzy, php-format
@@ -24829,9 +24803,8 @@ msgid "The Files in the list below will be imported."
 msgstr "Kies hoe de items in de boomstructuur zullen worden gesorteerd."
 
 #: package_import.php:339
-#, fuzzy
 msgid "Template Items to be Imported"
-msgstr "Kleurtemplate items [wijzig Rapportageitem: %s]"
+msgstr ""
 
 #: package_import.php:343
 #, fuzzy
@@ -25544,9 +25517,8 @@ msgstr ""
 "hieronder.  Anders klikt u op 'Annuleren'."
 
 #: plugins.php:587
-#, fuzzy
 msgid "Are you sure you want to Restore this Archive?"
-msgstr "Weet u zeker dat u de regel '%s' wilt verwijderen?"
+msgstr ""
 
 #: plugins.php:589
 #, fuzzy
@@ -25560,9 +25532,8 @@ msgstr ""
 "hieronder.  Anders klikt u op 'Annuleren'."
 
 #: plugins.php:590
-#, fuzzy
 msgid "Are you sure you want to Delete this Archive?"
-msgstr "Weet u zeker dat u de regel '%s' wilt verwijderen?"
+msgstr ""
 
 #: plugins.php:592
 msgid "Plugin Management"
@@ -25583,9 +25554,8 @@ msgid "Installed and Active"
 msgstr "Geïnstalleerd"
 
 #: plugins.php:614
-#, fuzzy
 msgid "Installed and Inactive"
-msgstr "Cactusserver installeren v%s"
+msgstr ""
 
 #: plugins.php:617
 #, fuzzy
@@ -25857,18 +25827,16 @@ msgid "Load this Plugin from the available Cacti Plugins"
 msgstr ""
 
 #: plugins.php:1480 plugins.php:1597
-#, fuzzy
 msgid "Compatible, Loadable"
-msgstr "Niet compatible, %s"
+msgstr ""
 
 #: plugins.php:1482
 msgid "Upgrade this Plugin from the available Cacti Plugins"
 msgstr ""
 
 #: plugins.php:1483 plugins.php:1492
-#, fuzzy
 msgid "Compatible, Upgrade"
-msgstr "Niet compatible, %s"
+msgstr ""
 
 #: plugins.php:1485
 msgid "Downgrade this Plugin from the available Cacti Plugins"
@@ -25898,18 +25866,16 @@ msgid ""
 msgstr ""
 
 #: plugins.php:1496 plugins.php:1610
-#, fuzzy
 msgid "Not Compatible, Dependencies"
-msgstr "Niet compatible, %s"
+msgstr ""
 
 #: plugins.php:1499
 msgid "Unable to Load due to a bad Cacti version."
 msgstr ""
 
 #: plugins.php:1500 plugins.php:1614
-#, fuzzy
 msgid "Not Compatible, Cacti Version"
-msgstr "Niet compatible, %s"
+msgstr ""
 
 #: plugins.php:1507
 msgid "View the Plugins ChangeLog"
@@ -25937,9 +25903,8 @@ msgid "Upgrade Plugin from the archive"
 msgstr ""
 
 #: plugins.php:1606
-#, fuzzy
 msgid "Compatible, Upgradable"
-msgstr "Niet compatible, %s"
+msgstr ""
 
 #: plugins.php:1609
 msgid ""
@@ -27271,9 +27236,8 @@ msgid "Database Queries"
 msgstr "Data queries"
 
 #: support.php:53
-#, fuzzy
 msgid "Background Processes"
-msgstr "%d Processen"
+msgstr ""
 
 #: support.php:54
 #, fuzzy
@@ -27544,9 +27508,8 @@ msgid "Actual Polling Time"
 msgstr "Polling tijd"
 
 #: support.php:903 support.php:944
-#, fuzzy
 msgid "No host found"
-msgstr "Geen %s gevonden"
+msgstr ""
 
 #: support.php:919
 msgid "Worst 20 failed/total polls ratio"
@@ -27946,9 +27909,8 @@ msgid "Dependencies"
 msgstr "Inclusief afhankelijkheden"
 
 #: templates_import.php:293
-#, fuzzy
 msgid "Damaged"
-msgstr "%d Grafiek"
+msgstr ""
 
 #: templates_import.php:320
 #, php-format
@@ -28703,14 +28665,12 @@ msgid "> 1 Month Ago"
 msgstr ""
 
 #: user_admin.php:2126
-#, fuzzy
 msgid "> 2 Months Ago"
-msgstr "%d Maanden"
+msgstr ""
 
 #: user_admin.php:2127
-#, fuzzy
 msgid "> 4 Months Ago"
-msgstr "%d Maanden"
+msgstr ""
 
 #: user_admin.php:2138
 msgid "Basic"

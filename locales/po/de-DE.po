@@ -5538,9 +5538,6 @@ msgid ""
 "Graph Templates to a 100%$ compatible Graph Template, which means that it "
 "includes identical Data Sources."
 msgstr ""
-"Der Name dieser Datenvorlage. Bitte beachten Sie, dass Sie Diagrammvorlagen "
-"nur in 100 % kompatible Diagrammvorlagen ändern können, d. h., sie enthalten"
-" identische Datenquellen."
 
 #: data_sources.php:951 graph_view.php:881 graphs.php:2327
 #: include/global_arrays.php:1034 include/global_arrays.php:1095
@@ -20123,7 +20120,7 @@ msgstr "konnte nicht geöffnet werden"
 
 #: lib/import.php:572
 msgid "not exists"
-msgstr "%s \"%s\" existiert bereits."
+msgstr ""
 
 #: lib/import.php:575
 msgid "not writable"

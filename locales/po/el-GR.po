@@ -10013,7 +10013,7 @@ msgstr "Ημέρα(ες)"
 
 #: include/global_arrays.php:1845
 msgid "Week(s)"
-msgstr "Εβδομάδα(ες) %s"
+msgstr ""
 
 #: include/global_arrays.php:1846
 msgid "Month(s), Day of Month"
@@ -17390,7 +17390,7 @@ msgstr "Η μεταφόρτωση αρχείου σταμάτησε κατά ε�
 
 #: lib/api_automation.php:5242
 msgid "Invalid file extension."
-msgstr "Μη έγκυρη επέκταση αρχείου: %s"
+msgstr ""
 
 #: lib/api_automation.php:5273 lib/api_automation.php:5275
 #, php-format

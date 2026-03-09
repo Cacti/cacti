@@ -23701,7 +23701,7 @@ msgstr ""
 #: package_import.php:880 package_import.php:886 package_import.php:981
 #: package_import.php:984
 msgid "Error in Package"
-msgstr "Erreur dans le paquet %s"
+msgstr ""
 
 #: package_import.php:880
 msgid ""
@@ -27430,7 +27430,7 @@ msgstr ""
 
 #: user_domains.php:333
 msgid "Server(s)"
-msgstr "Serveur %s"
+msgstr ""
 
 #: user_domains.php:334
 msgid ""
@@ -28307,7 +28307,7 @@ msgstr "Autre"
 
 #: utilities.php:1555
 msgid "Cannot open directory"
-msgstr "impossible d’ouvrir le répertoire %s"
+msgstr ""
 
 #: utilities.php:1559
 msgid "Directory Does NOT Exist!!"
