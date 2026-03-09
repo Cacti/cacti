@@ -505,8 +505,6 @@ function upgrade_to_1_0_0() {
 
 						$pos_array[$parent_id] = $position;
 
-						$position = $position_result['data'] + 1;
-
 						db_install_execute('UPDATE graph_tree_items
 							SET parent = ?, position = ?
 							WHERE id = ?',

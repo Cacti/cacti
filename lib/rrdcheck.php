@@ -344,7 +344,7 @@ function do_rrdcheck($thread_id = 1) {
 						);
 					}
 
-					// Should never happened
+					// Should never happen
 					if (empty($dsname)) {
 						db_execute_prepared ('INSERT INTO rrdcheck
 							(local_data_id, test_date, message)

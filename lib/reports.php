@@ -622,7 +622,7 @@ function generate_report($report, $force = false) {
 	}
 }
 
-/** reports_load_format_file  read the format file from disk and determines it's formatting
+/** reports_load_format_file  read the format file from disk and determines its formatting
  * @param string $format_file		- the file to read from the formats directory
  * @param string $output			- the html and css output from that file
  * @param bool $report_tag_included - a boolean that informs the caller if the report tag is present
