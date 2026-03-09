@@ -136,7 +136,7 @@ if (isset($config['cacti_version'])) { // @phpstan-ignore-line
 }
 
 // Define global paths
-include_once(__DIR__ . '/global_path.php');
+require_once(__DIR__ . '/global_path.php');
 
 // Should we allow proxy ip headers?
 $config['proxy_headers'] = $proxy_headers ?? [];
@@ -270,17 +270,17 @@ if (isset($i18n_text_log)) {
 }
 
 // include base modules
-include_once(CACTI_PATH_LIBRARY . '/database.php');
-include_once(CACTI_PATH_LIBRARY . '/functions.php');
-include_once(CACTI_PATH_INCLUDE . '/global_constants.php');
+require_once(CACTI_PATH_LIBRARY . '/database.php');
+require_once(CACTI_PATH_LIBRARY . '/functions.php');
+require_once(CACTI_PATH_INCLUDE . '/global_constants.php');
 
 define('CACTI_VERSION', format_cacti_version($cacti_version, CACTI_VERSION_FORMAT_SHORT));
 define('CACTI_VERSION_FULL', format_cacti_version($cacti_version, CACTI_VERSION_FORMAT_FULL));
 
-include_once(CACTI_PATH_LIBRARY . '/html.php');
-include_once(CACTI_PATH_LIBRARY . '/html_utility.php');
-include_once(CACTI_PATH_LIBRARY . '/html_validate.php');
-include_once(CACTI_PATH_LIBRARY . '/html_filter.php');
+require_once(CACTI_PATH_LIBRARY . '/html.php');
+require_once(CACTI_PATH_LIBRARY . '/html_utility.php');
+require_once(CACTI_PATH_LIBRARY . '/html_validate.php');
+require_once(CACTI_PATH_LIBRARY . '/html_filter.php');
 
 $filename = get_current_page();
 
@@ -610,7 +610,7 @@ if ((bool)ini_get('register_globals')) {
 
 define('CACTI_DATE_TIME_FORMAT', date_time_format());
 
-include_once(CACTI_PATH_INCLUDE . '/global_languages.php');
+require_once(CACTI_PATH_INCLUDE . '/global_languages.php');
 
 define('CACTI_VERSION_BRIEF', get_cacti_version_text(false, CACTI_VERSION));
 define('CACTI_VERSION_BRIEF_FULL', get_cacti_version_text(false, CACTI_VERSION_FULL));
@@ -618,24 +618,24 @@ define('CACTI_VERSION_TEXT', get_cacti_version_text(true, CACTI_VERSION));
 define('CACTI_VERSION_TEXT_FULL', get_cacti_version_text(true, CACTI_VERSION_FULL));
 define('CACTI_VERSION_TEXT_CLI', get_cacti_cli_version(true, CACTI_VERSION_FULL)); // @phpstan-ignore-line
 
-include_once(CACTI_PATH_LIBRARY . '/auth.php');
-include_once(CACTI_PATH_LIBRARY . '/plugins.php');
-include_once(CACTI_PATH_INCLUDE . '/plugins.php');
-include_once(CACTI_PATH_INCLUDE . '/global_arrays.php');
-include_once(CACTI_PATH_INCLUDE . '/global_settings.php');
-include_once(CACTI_PATH_INCLUDE . '/global_form.php');
-include_once(CACTI_PATH_LIBRARY . '/html_form.php');
-include_once(CACTI_PATH_LIBRARY . '/html_filter.php');
-include_once(CACTI_PATH_LIBRARY . '/variables.php');
-include_once(CACTI_PATH_LIBRARY . '/mib_cache.php');
-include_once(CACTI_PATH_LIBRARY . '/poller.php');
-include_once(CACTI_PATH_LIBRARY . '/snmpagent.php');
-include_once(CACTI_PATH_LIBRARY . '/aggregate.php');
-include_once(CACTI_PATH_LIBRARY . '/api_automation.php');
-include_once(CACTI_PATH_INCLUDE . '/vendor/autoload.php');
+require_once(CACTI_PATH_LIBRARY . '/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/plugins.php');
+require_once(CACTI_PATH_INCLUDE . '/plugins.php');
+require_once(CACTI_PATH_INCLUDE . '/global_arrays.php');
+require_once(CACTI_PATH_INCLUDE . '/global_settings.php');
+require_once(CACTI_PATH_INCLUDE . '/global_form.php');
+require_once(CACTI_PATH_LIBRARY . '/html_form.php');
+require_once(CACTI_PATH_LIBRARY . '/html_filter.php');
+require_once(CACTI_PATH_LIBRARY . '/variables.php');
+require_once(CACTI_PATH_LIBRARY . '/mib_cache.php');
+require_once(CACTI_PATH_LIBRARY . '/poller.php');
+require_once(CACTI_PATH_LIBRARY . '/snmpagent.php');
+require_once(CACTI_PATH_LIBRARY . '/aggregate.php');
+require_once(CACTI_PATH_LIBRARY . '/api_automation.php');
+require_once(CACTI_PATH_INCLUDE . '/vendor/autoload.php');
 
 if ($config['is_web']) {
-	include_once(CACTI_PATH_INCLUDE . '/csrf.php');
+	require_once(CACTI_PATH_INCLUDE . '/csrf.php');
 
 	// raise a message and perform a page refresh if we've changed modes
 	if ($config['poller_id'] > 1) {
