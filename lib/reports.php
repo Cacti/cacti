@@ -648,7 +648,7 @@ function generate_report(int $schedule_id, array $report, bool $force = false) :
 }
 
 /**
- * reports_load_format_file  read the format file from disk and determines it's formatting
+ * reports_load_format_file  read the format file from disk and determines its formatting
  *
  * @param string $format_file The file to read from the formats directory
  * @param string $output      The html and css output from that file
