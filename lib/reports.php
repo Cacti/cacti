@@ -622,7 +622,7 @@ function generate_report($report, $force = false) {
 	}
 }
 
-/** reports_load_format_file  read the format file from disk and determines it's formating
+/** reports_load_format_file  read the format file from disk and determines it's formatting
  * @param string $format_file		- the file to read from the formats directory
  * @param string $output			- the html and css output from that file
  * @param bool $report_tag_included - a boolean that informs the caller if the report tag is present
@@ -1538,7 +1538,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 									/* render each graph for the current data query index */
 									if (isset($snmp_index_to_graph[$snmp_index])) {
 										foreach ($snmp_index_to_graph[$snmp_index] as $local_graph_id => $graph_title) {
-											/* reformat the array so it's compatable with the html_graph* area functions */
+											/* reformat the array so it's compatible with the html_graph* area functions */
 											array_push($graph_list, array('local_graph_id' => $local_graph_id, 'title_cache' => $graph_title));
 										}
 									}

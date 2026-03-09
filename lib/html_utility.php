@@ -531,7 +531,7 @@ function get_nfilter_request_var($name, $default = '') {
 	}
 }
 
-/* get_request_var_post - depricated - returns the current value of a
+/* get_request_var_post - deprecated - returns the current value of a
      PHP $_POST variable, optionally returning a default value if the
      request variable does not exist.
    @arg $name - the name of the request variable. this should be a valid key in the
@@ -1009,7 +1009,7 @@ function display_tooltip($text) {
      in length and number of rows per page
    @arg $current_page - the current page number
    @arg $pages_per_screen - the maximum number of pages allowed on a single screen. odd numbered
-     values for this argument are prefered for equality reasons
+     values for this argument are preferred for equality reasons
    @arg $current_page - the current page number
    @arg $total_rows - the total number of available rows
    @arg $url - the url string to prepend to each page click

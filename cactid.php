@@ -88,7 +88,7 @@ if (isset($options['foreground'])) {
 }
 
 // Set the frequency of data collection dynamically
-// before loosing our database connection after fork.
+// before losing our database connection after fork.
 // We would not have to do this is PDO supported
 // connection cloning as does Perl.
 $frequency = read_config_option('cron_interval', true);

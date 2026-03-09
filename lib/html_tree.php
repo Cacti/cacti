@@ -1558,7 +1558,7 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 					/* render each graph for the current data query index */
 					if (isset($snmp_index_to_graph[$snmp_index])) {
 						foreach ($snmp_index_to_graph[$snmp_index] as $local_graph_id => $graph_title) {
-							/* reformat the array so it's compatable with the html_graph* area functions */
+							/* reformat the array so it's compatible with the html_graph* area functions */
 							array_push($graph_list, array(
 								'data_query_name'  => $data_query['name'],
 								'sort_field_value' => $sort_field_value,

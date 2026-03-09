@@ -4324,7 +4324,7 @@ function secpass_check_history($id, $password) {
 		}
 
 		$passes = explode('|', $user['password_history']);
-		// Double check this incase the password history setting was changed
+		// Double check this in case the password history setting was changed
 		while (cacti_count($passes) > $history) {
 			array_shift($passes);
 		}
@@ -4704,7 +4704,7 @@ function auth_login_redirect($login_opts = '') {
 }
 
 /**
- * auth_basename - provides a URL knowledgable basename function
+ * auth_basename - provides a URL-knowledgeable basename function
  *
  * @param  (string) $referer - a URL that will included a basename
  *
