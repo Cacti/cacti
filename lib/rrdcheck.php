@@ -547,7 +547,7 @@ function do_rrdcheck(int $thread_id = 1) : void {
 
 /**
  * rrdcheck_log_statistics - provides generic timing message to both the Cacti log and the settings
- * table so that the statistcs can be graphed as well.
+ * table so that the statistics can be graphed as well.
  *
  * @param string $type The type of statistics to log, either 'HOURLY', 'BOOST'.
  *
