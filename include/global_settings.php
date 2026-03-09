@@ -24,7 +24,7 @@
 
 $dir = dir(CACTI_PATH_INCLUDE . '/themes/');
 
-// Work aorund issue where phpstan is not detecting globals
+// Work around issue where phpstan is not detecting globals
 
 include_once(__DIR__ . '/global_arrays.php');
 
@@ -1308,7 +1308,7 @@ $settings['visual'] = [
 	],
 	'default_graphs_new_dropdown' => [
 		'friendly_name' => __('Default Graph Type'),
-		'description'   => __('When creating graphs, what Graph Type would you like pre-selected?'),
+		'description'   => __('When creating graphs, what Graph Type would you like preselected?'),
 		'method'        => 'drop_array',
 		'default'       => '-2',
 		'array'         => [
@@ -2092,7 +2092,7 @@ $settings['authentication'] = [
 	],
 	'secpass_history' => [
 		'friendly_name' => __('Password History'),
-		'description'   => __('Remember this number of old passwords and disallow re-using them.'),
+		'description'   => __('Remember this number of old passwords and disallow reusing them.'),
 		'method'        => 'drop_array',
 		'default'       => '0',
 		'array'         => [

@@ -8978,7 +8978,7 @@ function cacti_browser_zone_enabled() : bool {
 }
 
 /**
- * cacti_time_zone_set - Givin an offset in minutes, attempt
+ * cacti_time_zone_set - Given an offset in minutes, attempt
  * to set a PHP date.timezone.  There are some oddballs that
  * we have to accommodate.
  *

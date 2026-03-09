@@ -498,7 +498,7 @@ function data_query_sv_check_sequences(string $type, int $snmp_query_graph_id, s
 
 	if ($bad_seq > 0 || $dup_seq > 0) {
 		// resequence the list so it has no gaps, and 0 values will appear at the top
-		// since thats where they would have been displayed
+		// since that's where they would have been displayed
 		db_execute_prepared("SET @seq = 0;
 			UPDATE $table
 			SET sequence = (@seq:=@seq+1)

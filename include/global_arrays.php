@@ -311,7 +311,7 @@ $messages = [
 		'message' => __('Unable to determine size of password field, please check permissions of db user'),
 		'level'   => MESSAGE_LEVEL_ERROR],
 	'nopasswordinc' => [
-		'message' => __('Unable to increase size of password field, pleas check permission of db user'),
+		'message' => __('Unable to increase size of password field, please check permission of db user'),
 		'level'   => MESSAGE_LEVEL_ERROR],
 	'nodomainpassword' => [
 		'message' => __('LDAP/AD based password change not supported.'),
@@ -3101,7 +3101,7 @@ if (CACTI_SERVER_OS == 'unix') {
 		'/usr/share/fonts/truetype/', // SLES
 		'/usr/share/fonts/truetype/dejavu/', // Ubuntu
 		'/usr/local/share/fonts/dejavu/', // FreeBSD
-		__DIR__ . '/fonts'  // Build-in
+		__DIR__ . '/fonts'  // Built-in
 	];
 } else {
 	$dejavu_paths = [

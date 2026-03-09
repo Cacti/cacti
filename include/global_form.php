@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-// Work aorund issue where phpstan is not detecting globals
+// Work around issue where phpstan is not detecting globals
 
 include_once(__DIR__ . '/global_arrays.php');
 
