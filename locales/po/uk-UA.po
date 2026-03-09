@@ -436,17 +436,14 @@ msgid "Disassociate Graphs with  Aggregate"
 msgstr "Розірвати асоціацію з Aggregate"
 
 #: aggregate_graphs.php:970
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Place the following Aggregate Graph on Tree %s."
 msgstr ""
-"Натисніть «Продовжити», щоб видалити наступні шаблони сукупного графіка."
 
 #: aggregate_graphs.php:971
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Duplicate following Aggregate Graphs on Tree %s."
 msgstr ""
-"Клацніть «Продовжити», щоб розмістити наступні агрегатні графіки під гілкою "
-"дерева."
 
 #: aggregate_graphs.php:972
 #, fuzzy
@@ -3399,9 +3396,9 @@ msgstr ""
 "від’єднані від шаблону пристрою."
 
 #: automation_templates.php:791
-#, fuzzy, php-format
+#, php-format
 msgid "Tree Rule Name: '%s'"
-msgstr "Елементи правила дерева"
+msgstr ""
 
 #: automation_templates.php:798
 #, fuzzy
@@ -4027,9 +4024,9 @@ msgid "Full"
 msgstr "Повний"
 
 #: changelog.php:99
-#, fuzzy, php-format
+#, php-format
 msgid "Change Log [%s]"
-msgstr "Журнал змін"
+msgstr ""
 
 #: changelog.php:160 support.php:1018
 #, php-format
@@ -6186,9 +6183,9 @@ msgid "GRAPH DOES NOT EXIST"
 msgstr "ГРАФІК НЕ ІСНУЄ"
 
 #: graph.php:115 graph.php:409
-#, fuzzy, php-format
+#, php-format
 msgid "Graph Utility View for Graph: %s"
-msgstr "Утилітарний Перегляд Графіку"
+msgstr ""
 
 #: graph.php:160 lib/html.php:585
 msgid "Graph Details, Zooming and Debugging Utilities"
@@ -7081,14 +7078,14 @@ msgid "Place Graph on Report"
 msgstr "Розмістити графіки у звіті"
 
 #: graphs.php:1912
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Place the following Graph on Tree %s."
-msgstr "Натисніть «Продовжити», щоб видалити наступне дерево."
+msgstr ""
 
 #: graphs.php:1913
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Duplicate following Graphs on Tree %s."
-msgstr "Натисніть «Продовжити», щоб створити копію наступного сайту."
+msgstr ""
 
 #: graphs.php:1914
 #, fuzzy
@@ -7163,9 +7160,6 @@ msgid ""
 "only change Graph Templates to a 100%% compatible Graph Template, which "
 "means that it includes identical Data Sources."
 msgstr ""
-"Виберіть шаблон графіка для застосування до цього графіка. Зауважте, що ви "
-"можете змінювати лише шаблони графіків на 100%% сумісні шаблони графіків, що"
-" означає, що вони містять ідентичні джерела даних."
 
 #: graphs.php:2328
 msgid "Choose the Device that this Graph belongs to."
@@ -7582,14 +7576,14 @@ msgid "Place Devices on Report"
 msgstr "Помістити пристрій у звіт"
 
 #: host.php:564
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Place the following Device on Tree %s."
-msgstr "Клацніть 'Продовжити', щоб видалити наступні Шаблони Пристроїв."
+msgstr ""
 
 #: host.php:565
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Duplicate following Devices on Tree %s."
-msgstr "Натисніть «Продовжити», щоб створити копію наступного сайту."
+msgstr ""
 
 #: host.php:566
 #, fuzzy
@@ -16388,12 +16382,6 @@ msgid ""
 "certain number of 'outliers'.  Those are exceptional samples, like the "
 "spike, that need to be excluded from the Variance Average calculation."
 msgstr ""
-"Є два способи видалення. Перше, стандартне відхилення, видаляє будь-який "
-"зразок, який на X кількість стандартних відхилень від середнього значення "
-"зразків. Другий метод, Variance, видаляє будь-яку вибірку, яка на X% "
-"перевищує середнє значення Variance. Метод дисперсії враховує певну "
-"кількість «викидів». Це виняткові зразки, такі як сплеск, які потрібно "
-"виключити з розрахунку середнього відхилення."
 
 #: include/global_settings.php:2696
 msgid "Standard Deviation"
@@ -16468,10 +16456,6 @@ msgid ""
 "Percentage of 100%% on an adjusted average of 50 would remove any sample "
 "above the quantity of 100 from the graph."
 msgstr ""
-"Це значення являє собою відсоток вище скоригованого середнього вибіркового "
-"значення після видалення викидів із вибірки. Наприклад, відсоток дисперсії "
-"100%% на скоригованому середньому 50 видалить з графіка будь-яку вибірку, "
-"яка перевищує 100."
 
 #: include/global_settings.php:2757
 msgid "Variance Number of Outliers"
@@ -17485,14 +17469,14 @@ msgid "Update"
 msgstr "Оновити"
 
 #: lib/api_automation.php:5309 lib/api_automation.php:5311
-#, fuzzy, php-format
+#, php-format
 msgid "Automation Network SNMP Option %s!"
-msgstr "Автоматизація параметрів SNMP"
+msgstr ""
 
 #: lib/api_automation.php:5315 lib/api_automation.php:5317
-#, fuzzy, php-format
+#, php-format
 msgid "Automation Network SNMP Option %s Failed!"
-msgstr "Автоматизація параметрів SNMP"
+msgstr ""
 
 #: lib/api_automation.php:5351
 msgid "The Automation Network Rule does not include any SNMP Options!"
@@ -17521,9 +17505,9 @@ msgid "Unknown Device Template"
 msgstr "Невідомий шаблон"
 
 #: lib/api_automation.php:5404 lib/api_automation.php:5406
-#, fuzzy, php-format
+#, php-format
 msgid "Automation Network Rule '%s' %s!"
-msgstr "Мережа автоматизації за замовчуванням"
+msgstr ""
 
 #: lib/api_automation.php:5410 lib/api_automation.php:5412
 #, php-format
@@ -18104,11 +18088,11 @@ msgid "Index Association with Local Data complete"
 msgstr "Зв’язок індексу з локальними даними завершено"
 
 #: lib/data_query.php:392
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "Update Re-Index Cache complete. There were %s index changes, and %s orphaned"
 " indexes."
-msgstr "Оновлення кешу повторного індексування завершено. Там були"
+msgstr ""
 
 #: lib/data_query.php:396
 msgid "Update Poller Cache for Query complete"
@@ -21683,9 +21667,9 @@ msgid "No Device Packages to be Installed"
 msgstr "Немає пакетів пристроїв для встановлення"
 
 #: lib/installer.php:3012
-#, fuzzy, php-format
+#, php-format
 msgid "%d Tables to be Upgraded"
-msgstr "Тип елемента, який потрібно додати."
+msgstr ""
 
 #: lib/installer.php:3012 lib/installer.php:3014 lib/installer.php:3056
 #, fuzzy
@@ -21925,9 +21909,9 @@ msgid "Default Device Added to Cacti."
 msgstr ""
 
 #: lib/installer.php:3680
-#, fuzzy, php-format
+#, php-format
 msgid "Output: %s."
-msgstr "Поля виводу"
+msgstr ""
 
 #: lib/installer.php:3700
 msgid "Creating Graphs for Default Device"
@@ -22354,13 +22338,11 @@ msgid "The Plugin '%s' has been archived successfully."
 msgstr "Пакет %s успішно імпортовано"
 
 #: lib/plugins.php:1719
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "The Plugin '%s' archiving process has failed.  Check the Cacti log for "
 "errors."
 msgstr ""
-"Помилка відновлення одного або кількох файлів RRD. Перегляньте журнал Cacti "
-"щодо помилок."
 
 #: lib/plugins.php:1722
 #, php-format
@@ -22404,9 +22386,9 @@ msgid "No plugins found at GitHub/GitLab location."
 msgstr "На GitHub/GitLab не знайдено жодних плагінів."
 
 #: lib/plugins.php:1956
-#, fuzzy, php-format
+#, php-format
 msgid "The Cacti plugin %s has not releases"
-msgstr "Cacti Poller ще не запускався."
+msgstr ""
 
 #: lib/plugins.php:2011 lib/plugins.php:2149
 msgid "Unable to get archive from GitHub/GitLab location."
@@ -22726,9 +22708,9 @@ msgstr ""
 "ПОМИЛКА: Помилка перевірки білого списку. Перевірте метод введення даних"
 
 #: lib/template.php:2267
-#, fuzzy, php-format
+#, php-format
 msgid "Graph Not created for %s due to bad data"
-msgstr "Графік Не створено для"
+msgstr ""
 
 #: lib/template.php:2296
 #, php-format
@@ -22848,17 +22830,6 @@ msgid ""
 "expected consumption of the Performance Booster tables under Console -> "
 "System Utilities -> View Boost Status."
 msgstr ""
-"Якщо ви використовуєте Cacti Performance Booster і обираєте механізм "
-"зберігання пам’яті, ви повинні бути обережними, щоб очистити буфер "
-"Performance Booster до того, як система вичерпає простір таблиці пам’яті. Це"
-" можна зробити двома способами, спочатку зменшивши розмір вихідного стовпця "
-"до потрібного розміру. Цей стовпець є в таблицях poller_output і "
-"poller_output_boost. Друге, що ви можете зробити, це виділити більше пам'яті"
-" для таблиць пам'яті. Ми довільно вибрали рекомендоване значення 10%% "
-"системної пам’яті, але якщо ви використовуєте диски SSD або маєте меншу "
-"систему, ви можете проігнорувати цю рекомендацію або вибрати інший механізм "
-"зберігання. Ви можете побачити очікуване споживання таблиць Performance "
-"Booster у Console -> System Utilities -> View Boost Status."
 
 #: lib/utility.php:1218
 msgid ""
@@ -22869,7 +22840,6 @@ msgstr ""
 "тимчасові таблиці в пам’яті."
 
 #: lib/utility.php:1224
-#, fuzzy
 msgid ""
 "If this number is negative, reduce the innodb_buffer_pool_size until the "
 "join_buffer_size turns positive, but allocate approximately from between "
@@ -22885,14 +22855,6 @@ msgid ""
 "the Cacti web server and less if you intend to have very large RRDfiles or "
 "hundreds of thousands to millions long term."
 msgstr ""
-"Під час виконання об’єднань, якщо вони менші за цей розмір, вони "
-"зберігатимуться в пам’яті та ніколи не будуть записані у тимчасовий файл. "
-"Оскільки це виділення пам’яті для кожного з’єднання, слід бути обережним, "
-"щоб не збільшити його занадто великим. Сума join_buffer_size + "
-"sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + "
-"binlog_cache_size + пам'ять Core MySQL/MariaDB має бути нижче 80%. Якщо "
-"рекомендація є негативною, ви повинні зменшити це та/або sort_buffer_size, "
-"доки рекомендація не впишеться в допустиму пам’ять."
 
 #: lib/utility.php:1230
 msgid ""
@@ -22946,7 +22908,7 @@ msgstr ""
 "створювати таблиці."
 
 #: lib/utility.php:1254
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "InnoDB will hold as much tables and indexes in system memory as is possible."
 "  Therefore, you should make the innodb_buffer_pool large enough to hold as "
@@ -22959,12 +22921,6 @@ msgid ""
 "the swappiness of the system, or to remove swap to keep the system from "
 "swapping."
 msgstr ""
-"InnoDB буде зберігати якомога більше таблиць та індексів у системній "
-"пам’яті. Таким чином, ви повинні зробити innodb_buffer_pool достатньо "
-"великим, щоб утримувати якомога більше таблиць та індексів у пам’яті. "
-"Перевірка розміру каталогу /var/lib/mysql/cacti допоможе визначити це "
-"значення. Ми рекомендуємо 25%% загальної пам’яті вашої системи, але ваші "
-"вимоги залежатимуть від розміру вашої системи."
 
 #: lib/utility.php:1260
 #, fuzzy
@@ -23448,9 +23404,9 @@ msgid "Logout of Cacti"
 msgstr "Вийти з Cacti"
 
 #: logout.php:60
-#, fuzzy, php-format
+#, php-format
 msgid "You have been logged out of Cacti due to %s."
-msgstr "Ви вийшли з Cacti через тайм-аут сеансу."
+msgstr ""
 
 #: logout.php:61
 #, php-format
@@ -23690,19 +23646,19 @@ msgid "What would you like to Package?"
 msgstr "Що б ви хотіли експортувати?"
 
 #: package.php:667
-#, fuzzy, php-format
+#, php-format
 msgid "%s Device Package"
-msgstr "Ім'я пристрою"
+msgstr ""
 
 #: package.php:670
-#, fuzzy, php-format
+#, php-format
 msgid "%s Graph Template Package"
-msgstr "Назва шаблону графіка"
+msgstr ""
 
 #: package.php:673
-#, fuzzy, php-format
+#, php-format
 msgid "%s Data Query Package"
-msgstr "Назва запиту даних"
+msgstr ""
 
 #: package.php:700 templates_export.php:168
 #, php-format
@@ -23714,9 +23670,9 @@ msgid "Available Templates"
 msgstr "Доступні шаблони"
 
 #: package.php:709
-#, fuzzy, php-format
+#, php-format
 msgid "%s to Export"
-msgstr "Експорт"
+msgstr ""
 
 #: package.php:710
 #, fuzzy
@@ -23878,9 +23834,9 @@ msgid "The Package %s Import Failed"
 msgstr "Помилка імпорту пакета %s"
 
 #: package_import.php:298
-#, fuzzy, php-format
+#, php-format
 msgid "Package %s"
-msgstr "Пакет"
+msgstr ""
 
 #: package_import.php:305
 #, fuzzy
@@ -23944,14 +23900,12 @@ msgstr ""
 "пакета, щоб отримати новий пакет."
 
 #: package_import.php:427
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "You have not Trusted this Package Author '%s'.  If you wish to import, check"
 " the Automatically Trust Author checkbox.  Otherwise, feel free to reach the"
 " author at the following Email address '%s'."
 msgstr ""
-"Ви не довіряєте цьому автору пакету. Якщо ви бажаєте імпортувати, установіть"
-" прапорець Автоматично довіряти автору"
 
 #: package_import.php:738
 msgid "Repo File Missing or Damaged"
@@ -25079,9 +25033,9 @@ msgid "Install Plugin"
 msgstr "Встановити плагін"
 
 #: plugins.php:1760
-#, fuzzy, php-format
+#, php-format
 msgid "Plugin '%s' can not be archived before it's been Installed."
-msgstr "Неможливо встановити плагін."
+msgstr ""
 
 #: plugins.php:1771
 msgid "Remove Plugin Data Tables and Settings"
@@ -25240,9 +25194,9 @@ msgstr ""
 "посилення!"
 
 #: poller_automation.php:54
-#, fuzzy, php-format
+#, php-format
 msgid "WARNING: Main Cacti database %s offline or in recovery"
-msgstr "ПОПЕРЕДЖЕННЯ: Основна база даних Cacti вимкнена або відновлюється"
+msgstr ""
 
 #: poller_automation.php:1037 poller_automation.php:1091
 msgid "Cacti Primary Admin"

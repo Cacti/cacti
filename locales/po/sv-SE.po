@@ -22323,11 +22323,6 @@ msgid ""
 "systems rarely go down and you have backups, turning this setting to OFF can"
 " net you almost a 50% increase in database performance."
 msgstr ""
-"Den här inställningen bör förbli PÅ om inte dina Cacti-instanser körs på "
-"antingen ZFS eller FusionI/O, som båda har intern journalföring för att "
-"hantera plötsliga systemkrascher.  Men om du har mycket bra strömförsörjning"
-" och dina system sällan går ner och du har säkerhetskopior kan du genom att "
-"stänga av den här inställningen nästan öka databasens prestanda med 50 %."
 
 #: lib/utility.php:1265
 msgid ""

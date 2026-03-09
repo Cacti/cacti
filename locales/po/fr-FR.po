@@ -2275,9 +2275,9 @@ msgstr ""
 "réseau."
 
 #: automation_networks.php:807
-#, fuzzy, php-format
+#, php-format
 msgid "%d Thread"
-msgstr "sécurité"
+msgstr ""
 
 #: automation_networks.php:808 automation_networks.php:809
 #: automation_networks.php:810 automation_networks.php:811
@@ -3894,9 +3894,9 @@ msgid "Full"
 msgstr "Complet"
 
 #: changelog.php:99
-#, fuzzy, php-format
+#, php-format
 msgid "Change Log [%s]"
-msgstr "Journal des changements"
+msgstr ""
 
 #: changelog.php:160 support.php:1018
 #, php-format
@@ -4501,9 +4501,9 @@ msgid "Apply Suggested Fixes"
 msgstr "Appliquer les correctifs suggérés"
 
 #: data_debug.php:925
-#, fuzzy, php-format
+#, php-format
 msgid "Repair Steps [ %s ]"
-msgstr "Étapes de réparation :"
+msgstr ""
 
 #: data_debug.php:927
 msgid "Repair Steps [ Run Fix from Command Line ]"
@@ -4629,9 +4629,9 @@ msgid "Field Name: %s"
 msgstr "Nom du champ : %s"
 
 #: data_input.php:294
-#, fuzzy, php-format
+#, php-format
 msgid "Friendly Name: %s"
-msgstr "Nom convivial:"
+msgstr ""
 
 #: data_input.php:300
 msgid "Remove Data Input Field"
@@ -5098,9 +5098,9 @@ msgstr ""
 "suivant."
 
 #: data_source_profiles.php:403
-#, fuzzy, php-format
+#, php-format
 msgid "Profile Name: %s"
-msgstr "Nom du profil :"
+msgstr ""
 
 #: data_source_profiles.php:409
 msgid "Remove Data Source Profile RRA"
@@ -5492,9 +5492,9 @@ msgid "Custom Data [data input: %s]"
 msgstr "Données personnalisées [data input : %s]"
 
 #: data_sources.php:684
-#, fuzzy, php-format
+#, php-format
 msgid "(From Device: %s)"
-msgstr "De l'appareil:"
+msgstr ""
 
 #: data_sources.php:687
 msgid "(From Data Template)"
@@ -6130,9 +6130,9 @@ msgid "Thumbnails"
 msgstr "Miniatures"
 
 #: graph_realtime.php:440
-#, fuzzy, php-format
+#, php-format
 msgid "%d seconds left."
-msgstr "secondes restantes"
+msgstr ""
 
 #: graph_realtime.php:456
 msgid " seconds left."
@@ -6959,9 +6959,9 @@ msgid "Edit Graph Template."
 msgstr "Modifier le modèle de graphique."
 
 #: graphs.php:2275
-#, fuzzy, php-format
+#, php-format
 msgid "Edit Data Source: '%s'."
-msgstr "Modifier la source de données"
+msgstr ""
 
 #: graphs.php:2284
 msgid "Unlock Graph."
@@ -6986,10 +6986,6 @@ msgid ""
 "only change Graph Templates to a 100%% compatible Graph Template, which "
 "means that it includes identical Data Sources."
 msgstr ""
-"Choisissez un modèle de graphique à appliquer à ce graphique. Veuillez noter"
-" que vous ne pouvez modifier les modèles de graphique que pour un modèle de "
-"graphique compatible avec 100 %%, ce qui signifie qu'il inclut des sources "
-"de données identiques."
 
 #: graphs.php:2328
 msgid "Choose the Device that this Graph belongs to."
@@ -9681,9 +9677,9 @@ msgstr "Après Boost"
 #: include/global_arrays.php:1677 include/global_arrays.php:1678
 #: include/global_arrays.php:1679 include/global_arrays.php:1741
 #: include/global_arrays.php:1742
-#, fuzzy, php-format
+#, php-format
 msgid "%d MBytes"
-msgstr "moctets"
+msgstr ""
 
 #: include/global_arrays.php:1680
 msgid "1 GByte"
@@ -9759,9 +9755,9 @@ msgid "%s Hours"
 msgstr "%s heures"
 
 #: include/global_arrays.php:1743
-#, fuzzy, php-format
+#, php-format
 msgid "%d GByte"
-msgstr "Giga-octet"
+msgstr ""
 
 #: include/global_arrays.php:1751 utilities.php:1656 utilities.php:1657
 #: utilities.php:1706
@@ -9791,9 +9787,9 @@ msgstr "1 mégaoctet"
 #: include/global_arrays.php:1781 include/global_arrays.php:1782
 #: include/global_arrays.php:1783 include/global_arrays.php:1784
 #: include/global_arrays.php:1785 include/global_arrays.php:1786
-#, fuzzy, php-format
+#, php-format
 msgid "%d Megabytes"
-msgstr "megabytes"
+msgstr ""
 
 #: include/global_arrays.php:1794
 msgid "Send Now"
@@ -10670,9 +10666,9 @@ msgstr ""
 "Get."
 
 #: include/global_form.php:161
-#, fuzzy, php-format
+#, php-format
 msgid "%d OID"
-msgstr "OID"
+msgstr ""
 
 #: include/global_form.php:162 include/global_form.php:163
 #: include/global_form.php:164 include/global_form.php:165
@@ -10713,9 +10709,9 @@ msgid "Auto Detect/Set on first Re-Index"
 msgstr "Détection/réglage automatique lors de la première réindexation"
 
 #: include/global_form.php:188
-#, fuzzy, php-format
+#, php-format
 msgid "%d Repetition"
-msgstr "Répétition"
+msgstr ""
 
 #: include/global_form.php:189 include/global_form.php:190
 #: include/global_form.php:191 include/global_form.php:192
@@ -14768,9 +14764,9 @@ msgstr "1. Processus"
 #: include/global_settings.php:2563 include/global_settings.php:2564
 #: include/global_settings.php:2565 include/global_settings.php:2566
 #: include/global_settings.php:2567 include/global_settings.php:2568
-#, fuzzy, php-format
+#, php-format
 msgid "%d Processes"
-msgstr "Processus"
+msgstr ""
 
 #: include/global_settings.php:1655
 msgid "Maintenance Background Generation Timeout"
@@ -16299,9 +16295,9 @@ msgstr ""
 #: include/global_settings.php:2789 include/global_settings.php:2790
 #: include/global_settings.php:2791 include/global_settings.php:2792
 #: include/global_settings.php:2793 include/global_settings.php:2794
-#, fuzzy, php-format
+#, php-format
 msgid "%d Spikes"
-msgstr "Pointes"
+msgstr ""
 
 #: include/global_settings.php:2798
 msgid "Absolute Maximum Value"
@@ -16902,9 +16898,9 @@ msgid ""
 msgstr ""
 
 #: install/functions.php:961
-#, fuzzy, php-format
+#, php-format
 msgid "Path for %s"
-msgstr "Décision de déchéance de droits"
+msgstr ""
 
 #: install/functions.php:1199
 msgid "New Poller"
@@ -17068,9 +17064,9 @@ msgstr ""
 "en question.  Les autres objets ne seront pas soumis à la règle."
 
 #: lib/api_automation.php:979
-#, fuzzy, php-format
+#, php-format
 msgid "Matching Objects [ %s ]&nbsp;"
-msgstr "Objets correspondants"
+msgstr ""
 
 #: lib/api_automation.php:988
 msgid "Device Status"
@@ -17617,14 +17613,14 @@ msgid "2FA has been enabled and verified"
 msgstr "2FA a été activé et vérifié"
 
 #: lib/boost.php:64 utilities.php:1708
-#, fuzzy, php-format
+#, php-format
 msgid "%s MBytes"
-msgstr "moctets"
+msgstr ""
 
 #: lib/boost.php:67
-#, fuzzy, php-format
+#, php-format
 msgid "%s KBytes"
-msgstr "kothe unit minutes"
+msgstr ""
 
 #: lib/boost.php:70
 #, php-format
@@ -18529,9 +18525,9 @@ msgid ""
 msgstr ""
 
 #: lib/functions.php:7247
-#, fuzzy, php-format
+#, php-format
 msgid "- Dev %s"
-msgstr "Dev"
+msgstr ""
 
 #: lib/functions.php:7249
 #, php-format
@@ -18621,9 +18617,9 @@ msgid "All %d %s"
 msgstr ""
 
 #: lib/html.php:700
-#, fuzzy, php-format
+#, php-format
 msgid "Current Page: %s"
-msgstr "Points"
+msgstr ""
 
 #: lib/html.php:731
 #, php-format
@@ -19845,9 +19841,9 @@ msgid "Item Details"
 msgstr "Détails de l’article"
 
 #: lib/html_reports.php:1727
-#, fuzzy, php-format
+#, php-format
 msgid "Graph: %s"
-msgstr "Graphique:"
+msgstr ""
 
 #: lib/html_reports.php:1730 lib/html_reports.php:1758
 #: lib/html_reports.php:1771 lib/html_reports.php:1772
@@ -19875,9 +19871,9 @@ msgid ", Using RegEx: \"%s\""
 msgstr ", en utilisant RegEx : \"%s\""
 
 #: lib/html_reports.php:1800
-#, fuzzy, php-format
+#, php-format
 msgid "Tree: %s"
-msgstr "L'arbre"
+msgstr ""
 
 #: lib/html_reports.php:1811
 #, php-format
@@ -20219,9 +20215,9 @@ msgid "Please report this to the Cacti Group."
 msgstr "Veuillez le signaler au groupe Cacti."
 
 #: lib/installer.php:1724
-#, fuzzy, php-format
+#, php-format
 msgid "Unknown Reason: %s"
-msgstr "Raison inconnue"
+msgstr ""
 
 #: lib/installer.php:1732
 #, php-format
@@ -21762,9 +21758,9 @@ msgid "No - %s"
 msgstr "Pas de %s"
 
 #: lib/installer.php:4005
-#, fuzzy, php-format
+#, php-format
 msgid "%s - N/A"
-msgstr "N/ A"
+msgstr ""
 
 #: lib/installer.php:4005 lib/installer.php:4007
 msgid "Web"
@@ -21837,9 +21833,9 @@ msgid "Protocol Error, Unable to bind, LDAP result: (%s) on Server (%s)"
 msgstr ""
 
 #: lib/ldap.php:432
-#, fuzzy, php-format
+#, php-format
 msgid "Unable to Connect to Server (%s)"
-msgstr "Connexion au serveur impossible"
+msgstr ""
 
 #: lib/ldap.php:436
 #, php-format
@@ -22206,9 +22202,9 @@ msgid ""
 msgstr ""
 
 #: lib/reports.php:634
-#, fuzzy, php-format
+#, php-format
 msgid "Report '%s' Sent Successfully"
-msgstr "Le rapport a été expédié avec succès"
+msgstr ""
 
 #: lib/reports.php:1109 lib/reports.php:1448
 msgid "(No Graph Template)"
@@ -22877,9 +22873,9 @@ msgstr ""
 "augmenter les performances."
 
 #: lib/utility.php:1405
-#, fuzzy, php-format
+#, php-format
 msgid "%s Tuning"
-msgstr "réglage"
+msgstr ""
 
 #: lib/utility.php:1405
 msgid "Note: Many changes below require a database restart"
@@ -23393,9 +23389,9 @@ msgid "What would you like to Package?"
 msgstr "Que souhaitez-vous emballer ?"
 
 #: package.php:667
-#, fuzzy, php-format
+#, php-format
 msgid "%s Device Package"
-msgstr "Appareil/Package"
+msgstr ""
 
 #: package.php:670
 #, php-format
@@ -23408,18 +23404,18 @@ msgid "%s Data Query Package"
 msgstr "%s Pack de requête de données"
 
 #: package.php:700 templates_export.php:168
-#, fuzzy, php-format
+#, php-format
 msgid "Available Templates [%s]"
-msgstr "Modèles disponibles"
+msgstr ""
 
 #: package.php:705
 msgid "Available Templates"
 msgstr "Modèles disponibles"
 
 #: package.php:709
-#, fuzzy, php-format
+#, php-format
 msgid "%s to Export"
-msgstr "exporter"
+msgstr ""
 
 #: package.php:710
 msgid "Choose the exact items to export in the Package."
@@ -24554,9 +24550,9 @@ msgid "No Plugins Found"
 msgstr "Aucune extension trouvée"
 
 #: plugins.php:1351 plugins.php:1385
-#, fuzzy, php-format
+#, php-format
 msgid "Not Compatible, '%s'"
-msgstr "Pas compatible"
+msgstr ""
 
 #: plugins.php:1353 plugins.php:1387
 msgid "Plugin Error"
@@ -25947,9 +25943,9 @@ msgstr "Longueur des informations"
 
 #: support.php:305 support.php:306 support.php:307 support.php:308
 #: support.php:309
-#, fuzzy, php-format
+#, php-format
 msgid "%d Chars"
-msgstr "Caractères"
+msgstr ""
 
 #: support.php:319 support.php:377
 msgid "Queries"
@@ -26277,9 +26273,9 @@ msgid "Different version of Cacti and Spine!"
 msgstr "Version différente de Cacti et de la colonne vertébrale !"
 
 #: support.php:1297
-#, fuzzy, php-format
+#, php-format
 msgid "Action[%s]"
-msgstr "Action : %0%"
+msgstr ""
 
 #: support.php:1302
 msgid "No items to poll"
@@ -26559,14 +26555,14 @@ msgid "Damaged"
 msgstr "Endommagé"
 
 #: templates_import.php:320
-#, fuzzy, php-format
+#, php-format
 msgid "Met: %d"
-msgstr "Satisfaction"
+msgstr ""
 
 #: templates_import.php:324
-#, fuzzy, php-format
+#, php-format
 msgid "Unmet: %d"
-msgstr "Non satisfait"
+msgstr ""
 
 #: templates_import.php:333
 msgid ""
@@ -27186,9 +27182,9 @@ msgid "Legacy Permissions"
 msgstr "Autorisations  antérieures"
 
 #: user_admin.php:1725 user_group_admin.php:1581
-#, fuzzy, php-format
+#, php-format
 msgid "User Settings %s"
-msgstr "Paramètres"
+msgstr ""
 
 #: user_admin.php:1810 user_group_admin.php:1666
 msgid "Permissions"
@@ -27215,9 +27211,9 @@ msgid "Tree Perms"
 msgstr "Perms d'arbre"
 
 #: user_admin.php:1865
-#, fuzzy, php-format
+#, php-format
 msgid "User Management %s"
-msgstr "Gestion des utilisateurs"
+msgstr ""
 
 #: user_admin.php:2075
 msgid "User Management"
@@ -27297,9 +27293,9 @@ msgid "Show All"
 msgstr "Afficher tout"
 
 #: user_admin.php:2658
-#, fuzzy, php-format
+#, php-format
 msgid "Group Membership %s"
-msgstr "Adhésion à la classe"
+msgstr ""
 
 #: user_admin.php:2758 user_group_admin.php:2343
 #, php-format
@@ -28546,9 +28542,9 @@ msgid "Log Entries"
 msgstr "Entrées du journal"
 
 #: utilities.php:2310
-#, fuzzy, php-format
+#, php-format
 msgid "Severity Level: %s"
-msgstr "Niveau de sévérité"
+msgstr ""
 
 #: vdef.php:256
 msgid "Click 'Continue' to Delete the following VDEF."

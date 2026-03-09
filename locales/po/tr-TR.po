@@ -457,18 +457,14 @@ msgid "Disassociate Graphs with  Aggregate"
 msgstr "Agrega ile Bağlantıyı Kes"
 
 #: aggregate_graphs.php:970
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Place the following Aggregate Graph on Tree %s."
 msgstr ""
-"Aşağıdaki Toplam Grafik Şablonlarını silmek için &#39;Devam Et&#39;i "
-"tıklayın."
 
 #: aggregate_graphs.php:971
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Duplicate following Aggregate Graphs on Tree %s."
 msgstr ""
-"Aşağıdaki Toplam Grafiği / Grafikleri Ağaç Dalının altına yerleştirmek için "
-"&#39;Devam Et&#39;i tıklayın."
 
 #: aggregate_graphs.php:972
 #, fuzzy
@@ -1190,11 +1186,11 @@ msgstr ""
 "Misafir Hesabını Kullanma"
 
 #: auth_login.php:141
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "Access Denied!  Guest user id %s does not exist.  Please contact your "
 "Administrator."
-msgstr "Erişim Engellendi, lütfen Cacti Yönetici ile iletişime geçin."
+msgstr ""
 
 #: auth_login.php:180
 #, fuzzy
@@ -1514,14 +1510,14 @@ msgid "Added manually through device automation interface."
 msgstr "Cihaz otomasyon arayüzü ile manuel olarak eklenir."
 
 #: automation_devices.php:125
-#, fuzzy, php-format
+#, php-format
 msgid "Device %s Added to Cacti"
-msgstr "Cacti&#39;ye eklendi"
+msgstr ""
 
 #: automation_devices.php:127
-#, fuzzy, php-format
+#, php-format
 msgid "Device %s Not Added to Cacti"
-msgstr "Kaktüslere Eklenmedi"
+msgstr ""
 
 #: automation_devices.php:137
 #, fuzzy
@@ -3622,9 +3618,9 @@ msgstr ""
 "Şablonundan ayrılacaksınız."
 
 #: automation_templates.php:791
-#, fuzzy, php-format
+#, php-format
 msgid "Tree Rule Name: '%s'"
-msgstr "Ağaç Kuralı Öğeleri"
+msgstr ""
 
 #: automation_templates.php:798
 #, fuzzy
@@ -4297,9 +4293,9 @@ msgid "Full"
 msgstr "Ad Soyad"
 
 #: changelog.php:99
-#, fuzzy, php-format
+#, php-format
 msgid "Change Log [%s]"
-msgstr "DeğişimGünlüğüLanguage"
+msgstr ""
 
 #: changelog.php:160 support.php:1018
 #, php-format
@@ -6111,9 +6107,9 @@ msgid "Turn On Data Source Info Mode."
 msgstr "Veri Kaynağı Bilgi Modunu Aç."
 
 #: data_sources.php:864
-#, fuzzy, php-format
+#, php-format
 msgid "Edit Graph: '%s'."
-msgstr "Grafik Şablonu Düzenle."
+msgstr ""
 
 #: data_sources.php:869 graphs.php:2280
 #, fuzzy
@@ -6692,9 +6688,9 @@ msgid "GRAPH DOES NOT EXIST"
 msgstr "GRAFİK YOK"
 
 #: graph.php:115 graph.php:409
-#, fuzzy, php-format
+#, php-format
 msgid "Graph Utility View for Graph: %s"
-msgstr "Grafik Yardımcı Programı Görünümü"
+msgstr ""
 
 #: graph.php:160 lib/html.php:585
 #, fuzzy
@@ -7661,14 +7657,14 @@ msgid "Place Graph on Report"
 msgstr "Grafikleri Rapora Yerleştir"
 
 #: graphs.php:1912
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Place the following Graph on Tree %s."
-msgstr "Aşağıdaki Ağacı silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr ""
 
 #: graphs.php:1913
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Duplicate following Graphs on Tree %s."
-msgstr "Aşağıdaki Ağacı silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr ""
 
 #: graphs.php:1914
 #, fuzzy
@@ -7746,16 +7742,12 @@ msgid "Selected Graph Template"
 msgstr "Seçilmiş Grafik Şablonu"
 
 #: graphs.php:2320
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "Choose a Graph Template to apply to this Graph. Please note that you may "
 "only change Graph Templates to a 100%% compatible Graph Template, which "
 "means that it includes identical Data Sources."
 msgstr ""
-"Bu Grafiğe uygulamak için bir Grafik Şablonu seçin. Lütfen Grafik "
-"Şablonlarını yalnızca% 100 uyumlu bir Grafik Şablonu olarak "
-"değiştirebileceğinizi unutmayın; bu, aynı Veri Kaynaklarını içerdiği "
-"anlamına gelir."
 
 #: graphs.php:2328
 #, fuzzy
@@ -7792,9 +7784,9 @@ msgid "Graph Management [ Non Device Based ]"
 msgstr ""
 
 #: graphs.php:2688
-#, fuzzy, php-format
+#, php-format
 msgid "Graph Management [ %s ]"
-msgstr "Grafik Yönetimi"
+msgstr ""
 
 #: graphs.php:2756 graphs.php:2759
 #, fuzzy
@@ -8062,9 +8054,9 @@ msgid ""
 msgstr ""
 
 #: host.php:360
-#, fuzzy, php-format
+#, php-format
 msgid "Unable to add some Devices to Report '%s'"
-msgstr "Sunucuya bağlanılamıyor"
+msgstr ""
 
 #: host.php:479
 #, fuzzy
@@ -8213,15 +8205,14 @@ msgid "Place Devices on Report"
 msgstr "Aygıtları Ağaç Üzerine Yerleştir"
 
 #: host.php:564
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Place the following Device on Tree %s."
 msgstr ""
-"Aşağıdaki Cihaz Şablonlarını silmek için &#39;Devam Et&#39;i tıklayın."
 
 #: host.php:565
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Duplicate following Devices on Tree %s."
-msgstr "Aşağıdaki Ağacı silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr ""
 
 #: host.php:566
 #, fuzzy
@@ -9805,9 +9796,9 @@ msgid "Every %d Hours"
 msgstr "Her% d saatte bir"
 
 #: include/global_arrays.php:771
-#, fuzzy, php-format
+#, php-format
 msgid "Every %d Day"
-msgstr "Her% 1 günde"
+msgstr ""
 
 #: include/global_arrays.php:783
 #, fuzzy, php-format
@@ -11872,9 +11863,9 @@ msgid ""
 msgstr "Tek bir SNMP Alma isteğinde elde edilebilecek OID sayısını belirtti."
 
 #: include/global_form.php:161
-#, fuzzy, php-format
+#, php-format
 msgid "%d OID"
-msgstr "Maksimum OID"
+msgstr ""
 
 #: include/global_form.php:162 include/global_form.php:163
 #: include/global_form.php:164 include/global_form.php:165
@@ -11930,9 +11921,9 @@ msgid "Auto Detect/Set on first Re-Index"
 msgstr "İlk Yeniden İndekslemede Otomatik Algılama/Ayarlama"
 
 #: include/global_form.php:188
-#, fuzzy, php-format
+#, php-format
 msgid "%d Repetition"
-msgstr " Kılavuz seçenekleri"
+msgstr ""
 
 #: include/global_form.php:189 include/global_form.php:190
 #: include/global_form.php:191 include/global_form.php:192
@@ -11942,9 +11933,9 @@ msgstr " Kılavuz seçenekleri"
 #: include/global_form.php:199 include/global_form.php:200
 #: include/global_form.php:201 include/global_form.php:202
 #: include/global_form.php:203
-#, fuzzy, php-format
+#, php-format
 msgid "%d Repetitions"
-msgstr " Kılavuz seçenekleri"
+msgstr ""
 
 #: include/global_form.php:212
 #, fuzzy
@@ -17464,13 +17455,10 @@ msgid "Enable Direct Population of Boost Table"
 msgstr "Poller_output_boost tablosunun doğrudan popülasyonunu etkinleştir"
 
 #: include/global_settings.php:2378
-#, fuzzy
 msgid ""
 "Enables direct insert of records into poller output boost table with results"
 " in a 25% time reduction in each poll cycle."
 msgstr ""
-"Her yoklama döngüsünde% 25 zaman azalmasıyla sonuçlanan yoklama çıkış "
-"artışına doğrudan kayıt eklenmesini sağlar."
 
 #: include/global_settings.php:2383
 #, fuzzy
@@ -17986,17 +17974,13 @@ msgid "Variance Percentage"
 msgstr "Varyans Yüzdesi"
 
 #: include/global_settings.php:2734
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "This value represents the percentage above the adjusted sample average once "
 "outliers have been removed from the sample.  For example, a Variance "
 "Percentage of 100%% on an adjusted average of 50 would remove any sample "
 "above the quantity of 100 from the graph."
 msgstr ""
-"Bu değer, aykırı değerler örnekten çıkarıldıktan sonra, ayarlanan örnek "
-"ortalamasının üzerindeki yüzdesi temsil eder. Örneğin, ayarlanmış ortalama "
-"50&#39;de% 100&#39;lük bir Varyans Yüzdesi, grafik üzerindeki 100&#39;ün "
-"üzerindeki herhangi bir örneği kaldıracaktır."
 
 #: include/global_settings.php:2757
 #, fuzzy
@@ -18760,13 +18744,11 @@ msgid "Initializing"
 msgstr "初始化"
 
 #: install/install.php:117
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "Please wait while the installation system for Cacti Version %s initializes. "
 "You must have JavaScript enabled for this to work."
 msgstr ""
-"Cacti% 100 kurulum sistemi başlatılırken lütfen bekleyin. Bunun çalışması "
-"için JavaScript’i etkinleştirmiş olmanız gerekir."
 
 #: install/install.php:121
 #, fuzzy
@@ -19108,14 +19090,14 @@ msgid "Update"
 msgstr "Güncelle"
 
 #: lib/api_automation.php:5309 lib/api_automation.php:5311
-#, fuzzy, php-format
+#, php-format
 msgid "Automation Network SNMP Option %s!"
-msgstr "Otomasyon SNMP Seçenekleri"
+msgstr ""
 
 #: lib/api_automation.php:5315 lib/api_automation.php:5317
-#, fuzzy, php-format
+#, php-format
 msgid "Automation Network SNMP Option %s Failed!"
-msgstr "Otomasyon SNMP Seçenekleri"
+msgstr ""
 
 #: lib/api_automation.php:5351
 msgid "The Automation Network Rule does not include any SNMP Options!"
@@ -19139,9 +19121,9 @@ msgid "Unknown Device Template"
 msgstr "Bilinmeyen Şablon"
 
 #: lib/api_automation.php:5404 lib/api_automation.php:5406
-#, fuzzy, php-format
+#, php-format
 msgid "Automation Network Rule '%s' %s!"
-msgstr "Varsayılan Otomasyon Ağı"
+msgstr ""
 
 #: lib/api_automation.php:5410 lib/api_automation.php:5412
 #, php-format
@@ -19279,31 +19261,31 @@ msgid "Device:(Hide Disabled)"
 msgstr "Cihaz Devre Dışı"
 
 #: lib/auth.php:2355 lib/auth.php:2357 lib/auth.php:2363 lib/auth.php:2365
-#, fuzzy, php-format
+#, php-format
 msgid "Graph:(%s%s)"
-msgstr "Grafik"
+msgstr ""
 
 #: lib/auth.php:2378 lib/auth.php:2384 lib/auth.php:2451 lib/auth.php:2453
 #: lib/auth.php:2457 lib/auth.php:2459
-#, fuzzy, php-format
+#, php-format
 msgid "Device:(%s%s)"
-msgstr "Cihaz"
+msgstr ""
 
 #: lib/auth.php:2392 lib/auth.php:2398 lib/auth.php:2467 lib/auth.php:2469
 #: lib/auth.php:2473 lib/auth.php:2475
-#, fuzzy, php-format
+#, php-format
 msgid "Template:(%s%s)"
-msgstr "Şablonlar"
+msgstr ""
 
 #: lib/auth.php:2405
-#, fuzzy, php-format
+#, php-format
 msgid "Graph+Device+Template:(%s%s)"
-msgstr "Cihaz Şablonu:"
+msgstr ""
 
 #: lib/auth.php:2442 lib/auth.php:2444
-#, fuzzy, php-format
+#, php-format
 msgid "Device+Template:(%s%s)"
-msgstr "Cihaz Şablonu:"
+msgstr ""
 
 #: lib/auth.php:2488 lib/auth.php:2495 lib/auth.php:2504
 #, fuzzy
@@ -19388,11 +19370,11 @@ msgid "LDAP Search Error: %s"
 msgstr "LDAP Arama Hatası: %s"
 
 #: lib/auth.php:4094 lib/auth.php:5105
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "Access Denied!  Template user id %s does not exist.  Please contact your "
 "Administrator."
-msgstr "Erişim Engellendi, lütfen Cacti Yönetici ile iletişime geçin."
+msgstr ""
 
 #: lib/auth.php:4479
 #, fuzzy
@@ -19736,9 +19718,9 @@ msgid "Index Removal Detected! PreviousIndex: %s"
 msgstr "Dizin Kaldırma Algılandı! ÖncekiIndex: %s"
 
 #: lib/data_query.php:360
-#, fuzzy, php-format
+#, php-format
 msgid "Verification of %s Local Data ID's Complete"
-msgstr "Yerel Verilerle Dizin Birliği tamamlandı"
+msgstr ""
 
 #: lib/data_query.php:363
 #, fuzzy, php-format
@@ -19766,11 +19748,11 @@ msgid "Index Association with Local Data complete"
 msgstr "Yerel Verilerle Dizin Birliği tamamlandı"
 
 #: lib/data_query.php:392
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "Update Re-Index Cache complete. There were %s index changes, and %s orphaned"
 " indexes."
-msgstr "Güncelleme Yeniden Dizin Önbelleği tamamlandı. Vardı"
+msgstr ""
 
 #: lib/data_query.php:396
 #, fuzzy
@@ -19919,9 +19901,9 @@ msgstr ""
 "&#39; %s&#39; alanı için Veri Sorgusu çıktısını göstermek için tıklayın."
 
 #: lib/data_query.php:741
-#, fuzzy, php-format
+#, php-format
 msgid "Sort field returned no data for field name %s, skipping"
-msgstr "Sıralama alanı veri döndürmedi. Yeniden Dizin devam edemiyor."
+msgstr ""
 
 #: lib/data_query.php:743
 #, fuzzy, php-format
@@ -20199,9 +20181,9 @@ msgstr ""
 "edemiyor"
 
 #: lib/dsdebug.php:175
-#, fuzzy, php-format
+#, php-format
 msgid "Data Source ID %s does not exist"
-msgstr "Veri Kaynağı mevcut değil"
+msgstr ""
 
 #: lib/dsdebug.php:259
 #, fuzzy
@@ -20219,17 +20201,17 @@ msgid "Data Source is not set as Active"
 msgstr "Veri Kaynağı Aktif olarak ayarlanmadı"
 
 #: lib/dsdebug.php:277
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "RRDfile Folder (rra) is not writable by Poller.  Folder owner: %s.  Poller "
 "runs as: %s"
-msgstr "RRD klasörü Poller tarafından yazılabilir değil. RRD Sahibi:"
+msgstr ""
 
 #: lib/dsdebug.php:282
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "RRDfile is not writable by Poller.  RRDfile owner: %s.  Poller runs as %s"
-msgstr "RDR Dosyası Poller tarafından yazılabilir değil. RRD Sahibi:"
+msgstr ""
 
 #: lib/dsdebug.php:291
 #, fuzzy
@@ -20593,9 +20575,9 @@ msgid "All %d %s"
 msgstr ""
 
 #: lib/html.php:700
-#, fuzzy, php-format
+#, php-format
 msgid "Current Page: %s"
-msgstr "Mevcut değer"
+msgstr ""
 
 #: lib/html.php:731
 #, php-format
@@ -21951,33 +21933,33 @@ msgid "[new]"
 msgstr "[yeni]"
 
 #: lib/html_reports.php:1572
-#, fuzzy, php-format
+#, php-format
 msgid "Details %s"
-msgstr "Detaylar"
+msgstr ""
 
 #: lib/html_reports.php:1618
-#, fuzzy, php-format
+#, php-format
 msgid "Report Items %s"
-msgstr "Rapor Öğesi Yok"
+msgstr ""
 
 #: lib/html_reports.php:1664
-#, fuzzy, php-format
+#, php-format
 msgid "Scheduled Events %s"
-msgstr "Planlanmış etkinlikler"
+msgstr ""
 
 #: lib/html_reports.php:1676
-#, fuzzy, php-format
+#, php-format
 msgid "Report Preview %s"
-msgstr "Rapor Önizlemesi"
+msgstr ""
 
 #: lib/html_reports.php:1712
 msgid "Item Details"
 msgstr "Kalem Detayı"
 
 #: lib/html_reports.php:1727
-#, fuzzy, php-format
+#, php-format
 msgid "Graph: %s"
-msgstr "Grafik"
+msgstr ""
 
 #: lib/html_reports.php:1730 lib/html_reports.php:1758
 #: lib/html_reports.php:1771 lib/html_reports.php:1772
@@ -22007,9 +21989,9 @@ msgid ", Using RegEx: \"%s\""
 msgstr ", RegEx'i Kullanma: \"%s\""
 
 #: lib/html_reports.php:1800
-#, fuzzy, php-format
+#, php-format
 msgid "Tree: %s"
-msgstr "Ağaç:"
+msgstr ""
 
 #: lib/html_reports.php:1811
 #, fuzzy, php-format
@@ -22017,9 +21999,9 @@ msgid ", Device: %s"
 msgstr "(Aygıttan: %s)"
 
 #: lib/html_reports.php:1813
-#, fuzzy, php-format
+#, php-format
 msgid ", Branch: %s"
-msgstr "Şube:"
+msgstr ""
 
 #: lib/html_reports.php:1816
 #, fuzzy
@@ -22366,9 +22348,9 @@ msgid "Failed to apply specified cron interval"
 msgstr "Belirtilen cron aralığı uygulanamadı"
 
 #: lib/installer.php:1107
-#, fuzzy, php-format
+#, php-format
 msgid "Failed to apply '%s' as Automation Range"
-msgstr "Belirtilen Otomasyon Aralığı uygulanamadı"
+msgstr ""
 
 #: lib/installer.php:1190
 #, fuzzy
@@ -22637,9 +22619,9 @@ msgstr ""
 "sahip."
 
 #: lib/installer.php:2037
-#, fuzzy, php-format
+#, php-format
 msgid "PHP - Recommendations (%s)"
-msgstr "PHP - Öneriler"
+msgstr ""
 
 #: lib/installer.php:2041
 #, fuzzy
@@ -23702,9 +23684,9 @@ msgid "No Device Packages to be Installed"
 msgstr ""
 
 #: lib/installer.php:3012
-#, fuzzy, php-format
+#, php-format
 msgid "%d Tables to be Upgraded"
-msgstr "Eklenecek Öğe Türü."
+msgstr ""
 
 #: lib/installer.php:3012 lib/installer.php:3014 lib/installer.php:3056
 #, fuzzy
@@ -23858,9 +23840,9 @@ msgid "Import of Package #%s '%s' under Profile '%s' failed"
 msgstr ""
 
 #: lib/installer.php:3469
-#, fuzzy, php-format
+#, php-format
 msgid "Mapping Automation Template for Device Template '%s'"
-msgstr "[Silinen Şablon] için Otomasyon Şablonları"
+msgstr ""
 
 #: lib/installer.php:3490
 #, fuzzy
@@ -23873,9 +23855,9 @@ msgid "Updating remote configuration file"
 msgstr "Yapılandırma bekleniyor"
 
 #: lib/installer.php:3532
-#, fuzzy, php-format
+#, php-format
 msgid "Setting default data source profile to %s (%s)"
-msgstr "Bu Veri Şablonu için varsayılan Veri Kaynağı Profili."
+msgstr ""
 
 #: lib/installer.php:3557
 #, fuzzy, php-format
@@ -23898,14 +23880,14 @@ msgid "Adding extra snmp settings for automation"
 msgstr "Otomasyon için ekstra snmp ayarları ekleme"
 
 #: lib/installer.php:3593
-#, fuzzy, php-format
+#, php-format
 msgid "Selecting Automation Option Set %s"
-msgstr "Otomasyon Şablonlarını Sil"
+msgstr ""
 
 #: lib/installer.php:3607
-#, fuzzy, php-format
+#, php-format
 msgid "Updating Automation Option Set %s"
-msgstr "Otomasyon SNMP Seçenekleri"
+msgstr ""
 
 #: lib/installer.php:3611
 #, fuzzy, php-format
@@ -23913,14 +23895,14 @@ msgid "Successfully updated Automation Option Set %s"
 msgstr "%s Otomasyon Seçenek Kümesi başarıyla güncellendi"
 
 #: lib/installer.php:3613
-#, fuzzy, php-format
+#, php-format
 msgid "Resequencing Automation Option Set %s"
-msgstr "Cihazlarda Otomasyonu Çalıştır"
+msgstr ""
 
 #: lib/installer.php:3620
-#, fuzzy, php-format
+#, php-format
 msgid "Failed to updated Automation Option Set %s"
-msgstr "Belirtilen Otomasyon Aralığı uygulanamadı"
+msgstr ""
 
 #: lib/installer.php:3623
 #, fuzzy
@@ -23947,9 +23929,9 @@ msgid "Default Device Added to Cacti."
 msgstr "Cacti&#39;ye eklendi"
 
 #: lib/installer.php:3680
-#, fuzzy, php-format
+#, php-format
 msgid "Output: %s."
-msgstr "Çıkış alanları"
+msgstr ""
 
 #: lib/installer.php:3700
 #, fuzzy
@@ -24042,9 +24024,9 @@ msgid "Background was already started at %s, this attempt at %s was skipped"
 msgstr ""
 
 #: lib/installer.php:3946
-#, fuzzy, php-format
+#, php-format
 msgid "Exception occurred during installation: #%s - %s"
-msgstr "Yükleme sırasında istisna oluştu: #"
+msgstr ""
 
 #: lib/installer.php:3956
 #, fuzzy, php-format
@@ -24114,19 +24096,19 @@ msgid "No username defined"
 msgstr "Tanımlanmış kullanıcı adı yok"
 
 #: lib/ldap.php:412
-#, fuzzy, php-format
+#, php-format
 msgid "Protocol Error, Unable to set version (%s) on Server (%s)"
-msgstr "Protokol Hatası, sürüm ayarlanamadı"
+msgstr ""
 
 #: lib/ldap.php:416
-#, fuzzy, php-format
+#, php-format
 msgid "Protocol Error, Unable to set referrals option (%s) on Server (%s)"
-msgstr "Protokol Hatası, Tavsiyeler ayarlanamadı seçeneği"
+msgstr ""
 
 #: lib/ldap.php:420
-#, fuzzy, php-format
+#, php-format
 msgid "Protocol Error, unable to start TLS communications (%s) on Server (%s)"
-msgstr "Protokol Hatası, TLS iletişimi başlatılamıyor"
+msgstr ""
 
 #: lib/ldap.php:424
 #, fuzzy, php-format
@@ -24139,24 +24121,24 @@ msgid "Protocol Error, Unable to bind, LDAP result: (%s) on Server (%s)"
 msgstr ""
 
 #: lib/ldap.php:432
-#, fuzzy, php-format
+#, php-format
 msgid "Unable to Connect to Server (%s)"
-msgstr "Sunucuya bağlanılamıyor"
+msgstr ""
 
 #: lib/ldap.php:436
-#, fuzzy, php-format
+#, php-format
 msgid "Connection Timeout to Server (%s)"
-msgstr "Bağlantı zamanaşımı"
+msgstr ""
 
 #: lib/ldap.php:440
-#, fuzzy, php-format
+#, php-format
 msgid "Insufficient Access to Server (%s)"
-msgstr "Yetersiz erişim"
+msgstr ""
 
 #: lib/ldap.php:444
-#, fuzzy, php-format
+#, php-format
 msgid "Group DN could not be found to compare on Server (%s)"
-msgstr "Grup DN karşılaştırması bulunamadı"
+msgstr ""
 
 #: lib/ldap.php:448
 #, fuzzy
@@ -24174,9 +24156,9 @@ msgid "Unable to find users DN"
 msgstr "DN kullanıcıları bulunamıyor"
 
 #: lib/ldap.php:460
-#, fuzzy, php-format
+#, php-format
 msgid "Unable to create LDAP connection object to Server (%s)"
-msgstr "LDAP bağlantı nesnesi oluşturulamıyor"
+msgstr ""
 
 #: lib/ldap.php:464
 #, fuzzy
@@ -24385,18 +24367,16 @@ msgid ""
 msgstr ""
 
 #: lib/plugins.php:1717
-#, fuzzy, php-format
+#, php-format
 msgid "The Plugin '%s' has been archived successfully."
-msgstr "Kaktüsler günlüğü başarıyla temizlendi"
+msgstr ""
 
 #: lib/plugins.php:1719
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "The Plugin '%s' archiving process has failed.  Check the Cacti log for "
 "errors."
 msgstr ""
-"Bir veya daha fazla RRD dosyası onarımı başarısız oldu. Hatalar için Cacti "
-"günlüğüne bakın."
 
 #: lib/plugins.php:1722
 #, php-format
@@ -24437,9 +24417,9 @@ msgid "No plugins found at GitHub/GitLab location."
 msgstr ""
 
 #: lib/plugins.php:1956
-#, fuzzy, php-format
+#, php-format
 msgid "The Cacti plugin %s has not releases"
-msgstr "Cacti Poller henüz çalışmadı."
+msgstr ""
 
 #: lib/plugins.php:2011 lib/plugins.php:2149
 msgid "Unable to get archive from GitHub/GitLab location."
@@ -24471,9 +24451,9 @@ msgid ""
 msgstr ""
 
 #: lib/reports.php:144
-#, fuzzy, php-format
+#, php-format
 msgid "Device '%s' successfully added to Report."
-msgstr "Cacti&#39;ye eklendi"
+msgstr ""
 
 #: lib/reports.php:147
 #, fuzzy
@@ -24781,9 +24761,9 @@ msgstr ""
 "Edin"
 
 #: lib/template.php:2267
-#, fuzzy, php-format
+#, php-format
 msgid "Graph Not created for %s due to bad data"
-msgstr "Grafik Oluşturma"
+msgstr ""
 
 #: lib/template.php:2296
 #, php-format
@@ -24894,7 +24874,7 @@ msgstr ""
 "üstünde tutun."
 
 #: lib/utility.php:1212
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "If using the Cacti Performance Booster and choosing a memory storage engine,"
 " you have to be careful to flush your Performance Booster buffer before the "
@@ -24908,17 +24888,6 @@ msgid ""
 "expected consumption of the Performance Booster tables under Console -> "
 "System Utilities -> View Boost Status."
 msgstr ""
-"Cacti Performance Booster kullanıyorsanız ve bir bellek depolama motoru "
-"seçiyorsanız, sistem bellek masası boşluğu dolmadan önce Performance Booster"
-" tamponunuzu yıkamak için dikkatli olmalısınız. Bu iki yolla yapılır, ilk "
-"önce çıktı sütununuzun boyutunu tam olarak doğru boyuta indirirsiniz. Bu "
-"sütun poller_output ve poller_output_boost tablolarındadır. Yapabileceğiniz "
-"ikinci şey, bellek tablolarına daha fazla bellek ayırmak. Keyfi olarak% "
-"10&#39;luk sistem belleğinin önerilen bir değerini seçtik, ancak SSD disk "
-"sürücüleri kullanıyorsanız veya daha küçük bir sistem kullanıyorsanız, bu "
-"öneriyi göz ardı edebilir veya farklı bir depolama motoru seçebilirsiniz. "
-"Performans Yükseltici tablolarının beklenen tüketimini Konsol -&gt; Sistem "
-"Araçları -&gt; Yükseltme Durumunu Görüntüle altında görebilirsiniz."
 
 #: lib/utility.php:1218
 #, fuzzy
@@ -25000,7 +24969,7 @@ msgstr ""
 "düzgün tablo oluşturamayan eklentilerle sonuçlanabilir."
 
 #: lib/utility.php:1254
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "InnoDB will hold as much tables and indexes in system memory as is possible."
 "  Therefore, you should make the innodb_buffer_pool large enough to hold as "
@@ -25013,15 +24982,8 @@ msgid ""
 "the swappiness of the system, or to remove swap to keep the system from "
 "swapping."
 msgstr ""
-"InnoDB, sistem belleğinde olabildiğince fazla tablo ve dizin tutacaktır. Bu "
-"nedenle, innodb_buffer_pool&#39;u bellekteki tablo ve dizinlerin çoğunu "
-"tutacak kadar büyük yapmalısınız. / Var / lib / mysql / cacti dizininin "
-"boyutunun kontrol edilmesi bu değerin belirlenmesinde yardımcı olacaktır. "
-"Sistemlerinizin toplam belleğinin% 25&#39;ini öneriyoruz, ancak "
-"gereksinimleriniz sisteminizin boyutuna bağlı olarak değişebilir."
 
 #: lib/utility.php:1260
-#, fuzzy
 msgid ""
 "This settings should remain ON unless your Cacti instances is running on "
 "either ZFS or FusionI/O which both have internal journaling to accommodate "
@@ -25029,11 +24991,6 @@ msgid ""
 "systems rarely go down and you have backups, turning this setting to OFF can"
 " net you almost a 50% increase in database performance."
 msgstr ""
-"Cacti örnekleriniz, ani sistem çökmelerini karşılamak için dahili günlük "
-"kaydı olan ZFS veya FusionI / O üzerinde çalışmadığı sürece bu ayar AÇIK "
-"kalmalıdır. Ancak, çok iyi bir gücünüz varsa ve sistemleriniz nadiren "
-"düşerse ve yedekleriniz varsa, bu ayarı KAPALI konuma getirmek, veritabanı "
-"performansında neredeyse% 50'lik bir artış sağlayabilir."
 
 #: lib/utility.php:1265
 #, fuzzy
@@ -25539,9 +25496,9 @@ msgid "Logout of Cacti"
 msgstr "Kaktüsler Oturumu Kapat"
 
 #: logout.php:60
-#, fuzzy, php-format
+#, php-format
 msgid "You have been logged out of Cacti due to %s."
-msgstr "Bir oturum zaman aşımı nedeniyle Kaktüsler&#39;den çıkış yaptınız."
+msgstr ""
 
 #: logout.php:61
 #, fuzzy, php-format
@@ -25798,19 +25755,19 @@ msgid "What would you like to Package?"
 msgstr "Ne ihraç etmek istiyorsunuz?"
 
 #: package.php:667
-#, fuzzy, php-format
+#, php-format
 msgid "%s Device Package"
-msgstr "Aygıt Adı"
+msgstr ""
 
 #: package.php:670
-#, fuzzy, php-format
+#, php-format
 msgid "%s Graph Template Package"
-msgstr "Grafik Şablonu Adı"
+msgstr ""
 
 #: package.php:673
-#, fuzzy, php-format
+#, php-format
 msgid "%s Data Query Package"
-msgstr "Veri Sorgu Adı"
+msgstr ""
 
 #: package.php:700 templates_export.php:168
 #, fuzzy, php-format
@@ -25822,9 +25779,9 @@ msgid "Available Templates"
 msgstr ""
 
 #: package.php:709
-#, fuzzy, php-format
+#, php-format
 msgid "%s to Export"
-msgstr "Dışa Aktar"
+msgstr ""
 
 #: package.php:710
 #, fuzzy
@@ -25967,9 +25924,9 @@ msgid "Unable to create package temporary directory %s."
 msgstr ""
 
 #: package_import.php:203 package_import.php:527
-#, fuzzy, php-format
+#, php-format
 msgid "The Package %s Imported Successfully"
-msgstr "Kaktüsler günlüğü başarıyla temizlendi"
+msgstr ""
 
 #: package_import.php:205 package_import.php:529
 #, php-format
@@ -25977,9 +25934,9 @@ msgid "The Package %s Import Failed"
 msgstr ""
 
 #: package_import.php:298
-#, fuzzy, php-format
+#, php-format
 msgid "Package %s"
-msgstr "Paket Dosyaları"
+msgstr ""
 
 #: package_import.php:305
 #, fuzzy
@@ -27157,9 +27114,9 @@ msgid "Install Plugin"
 msgstr "Eklenti Yükle"
 
 #: plugins.php:1760
-#, fuzzy, php-format
+#, php-format
 msgid "Plugin '%s' can not be archived before it's been Installed."
-msgstr "Eklenti yüklenemiyor."
+msgstr ""
 
 #: plugins.php:1771
 msgid "Remove Plugin Data Tables and Settings"
@@ -27324,9 +27281,9 @@ msgstr ""
 "olarak takviye sağlar!"
 
 #: poller_automation.php:54
-#, fuzzy, php-format
+#, php-format
 msgid "WARNING: Main Cacti database %s offline or in recovery"
-msgstr "UYARI: Ana Cacti veritabanı çevrimdışı veya kurtarma aşamasında"
+msgstr ""
 
 #: poller_automation.php:1037 poller_automation.php:1091
 #, fuzzy
@@ -27951,9 +27908,9 @@ msgid "%d day"
 msgstr ""
 
 #: rrdcheck.php:240 rrdcheck.php:241
-#, fuzzy, php-format
+#, php-format
 msgid "%d days"
-msgstr "gün"
+msgstr ""
 
 #: rrdcheck.php:245 rrdcheck.php:248
 msgid "Messages"
@@ -31352,9 +31309,9 @@ msgid "Previous Runtime Timers:"
 msgstr "Detaylı Çalışma Zamanı Zamanlayıcıları:"
 
 #: utilities.php:1779 utilities.php:1781
-#, fuzzy, php-format
+#, php-format
 msgid "Process: %d"
-msgstr "1 İşlem"
+msgstr ""
 
 #: utilities.php:1779
 #, php-format

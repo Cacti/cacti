@@ -410,18 +410,14 @@ msgid "Disassociate Graphs with  Aggregate"
 msgstr "Отделяне с агрегат"
 
 #: aggregate_graphs.php:970
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Place the following Aggregate Graph on Tree %s."
 msgstr ""
-"Кликнете върху „Напред“, за да изтриете следния шаблон (и) на обобщената "
-"графика."
 
 #: aggregate_graphs.php:971
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Duplicate following Aggregate Graphs on Tree %s."
 msgstr ""
-"Кликнете върху „Напред“, за да поставите следната графика (и) под клона на "
-"дървото."
 
 #: aggregate_graphs.php:972
 msgid "Place Aggregate Graph on Tree"
@@ -1093,11 +1089,11 @@ msgstr ""
 "на акаунт за гости"
 
 #: auth_login.php:141
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "Access Denied!  Guest user id %s does not exist.  Please contact your "
 "Administrator."
-msgstr "Достъпът е отказан, моля, свържете се с администратора на Cacti."
+msgstr ""
 
 #: auth_login.php:180
 msgid "Access Denied!  User account disabled."
@@ -1396,14 +1392,14 @@ msgid "Added manually through device automation interface."
 msgstr "Добавен ръчно през интерфейса за автоматизация на устройството."
 
 #: automation_devices.php:125
-#, fuzzy, php-format
+#, php-format
 msgid "Device %s Added to Cacti"
-msgstr "Добавено към Cacti"
+msgstr ""
 
 #: automation_devices.php:127
-#, fuzzy, php-format
+#, php-format
 msgid "Device %s Not Added to Cacti"
-msgstr "Не се добавя към Cacti"
+msgstr ""
 
 #: automation_devices.php:137
 msgid "Devices Removed from Cacti Automation database"
@@ -3267,9 +3263,9 @@ msgstr ""
 " да бъдат свързани с шаблона на устройството."
 
 #: automation_templates.php:791
-#, fuzzy, php-format
+#, php-format
 msgid "Tree Rule Name: '%s'"
-msgstr "Елементи от дърво правило"
+msgstr ""
 
 #: automation_templates.php:798
 msgid "Remove Tree Rule"
@@ -3844,9 +3840,9 @@ msgid "Full"
 msgstr "Пълно име"
 
 #: changelog.php:99
-#, fuzzy, php-format
+#, php-format
 msgid "Change Log [%s]"
-msgstr "Промени"
+msgstr ""
 
 #: changelog.php:160 support.php:1018
 #, php-format
@@ -5437,9 +5433,9 @@ msgid "Turn On Data Source Info Mode."
 msgstr "Включете информационния режим на източника на данни."
 
 #: data_sources.php:864
-#, fuzzy, php-format
+#, php-format
 msgid "Edit Graph: '%s'."
-msgstr "Редактиране на шаблона на графиката."
+msgstr ""
 
 #: data_sources.php:869 graphs.php:2280
 msgid "Edit Device."
@@ -5952,9 +5948,9 @@ msgid "GRAPH DOES NOT EXIST"
 msgstr "ГРАФ не съществува"
 
 #: graph.php:115 graph.php:409
-#, fuzzy, php-format
+#, php-format
 msgid "Graph Utility View for Graph: %s"
-msgstr "Графичен помощен изглед"
+msgstr ""
 
 #: graph.php:160 lib/html.php:585
 msgid "Graph Details, Zooming and Debugging Utilities"
@@ -6791,14 +6787,14 @@ msgid "Place Graph on Report"
 msgstr "Поставете графики в отчета"
 
 #: graphs.php:1912
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Place the following Graph on Tree %s."
-msgstr "Кликнете върху „Напред“, за да изтриете следното Дърво."
+msgstr ""
 
 #: graphs.php:1913
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Duplicate following Graphs on Tree %s."
-msgstr "Кликнете върху „Напред“, за да изтриете следното Дърво."
+msgstr ""
 
 #: graphs.php:1914
 msgid "Place Graph on Tree"
@@ -6865,16 +6861,12 @@ msgid "Selected Graph Template"
 msgstr "Шаблон за избрана графика"
 
 #: graphs.php:2320
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "Choose a Graph Template to apply to this Graph. Please note that you may "
 "only change Graph Templates to a 100%% compatible Graph Template, which "
 "means that it includes identical Data Sources."
 msgstr ""
-"Изберете шаблон на графиката, който да се приложи към тази графика. Моля, "
-"обърнете внимание, че можете да променяте само шаблоните за графики на 100 "
-"%% съвместим шаблон за графики, което означава, че включва идентични "
-"източници на данни."
 
 #: graphs.php:2328
 msgid "Choose the Device that this Graph belongs to."
@@ -6905,9 +6897,9 @@ msgid "Graph Management [ Non Device Based ]"
 msgstr ""
 
 #: graphs.php:2688
-#, fuzzy, php-format
+#, php-format
 msgid "Graph Management [ %s ]"
-msgstr "Управление на графики"
+msgstr ""
 
 #: graphs.php:2756 graphs.php:2759
 msgid "Source"
@@ -7150,9 +7142,9 @@ msgid ""
 msgstr ""
 
 #: host.php:360
-#, fuzzy, php-format
+#, php-format
 msgid "Unable to add some Devices to Report '%s'"
-msgstr "Не може да се свърже със сървъра"
+msgstr ""
 
 #: host.php:479
 msgid "Click 'Continue' to Delete the following Device."
@@ -7271,15 +7263,14 @@ msgid "Place Devices on Report"
 msgstr "Поставете устройствата на дървото"
 
 #: host.php:564
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Place the following Device on Tree %s."
 msgstr ""
-"Кликнете върху „Напред“, за да изтриете следния Шаблон (и) на устройството."
 
 #: host.php:565
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Duplicate following Devices on Tree %s."
-msgstr "Кликнете върху „Напред“, за да изтриете следното Дърво."
+msgstr ""
 
 #: host.php:566
 msgid "Place Device on Tree"
@@ -8676,9 +8667,9 @@ msgid "Every %d Hours"
 msgstr "Всеки% d часа"
 
 #: include/global_arrays.php:771
-#, fuzzy, php-format
+#, php-format
 msgid "Every %d Day"
-msgstr "Всеки% 1 ден"
+msgstr ""
 
 #: include/global_arrays.php:783
 #, fuzzy, php-format
@@ -10535,9 +10526,9 @@ msgstr ""
 "Посочва се броят OID, които могат да бъдат получени в една заявка за SNMP."
 
 #: include/global_form.php:161
-#, fuzzy, php-format
+#, php-format
 msgid "%d OID"
-msgstr "Макс. OID"
+msgstr ""
 
 #: include/global_form.php:162 include/global_form.php:163
 #: include/global_form.php:164 include/global_form.php:165
@@ -10591,9 +10582,9 @@ msgid "Auto Detect/Set on first Re-Index"
 msgstr "Автоматично откриване/задаване при първо повторно индексиране"
 
 #: include/global_form.php:188
-#, fuzzy, php-format
+#, php-format
 msgid "%d Repetition"
-msgstr "Опции на мрежата"
+msgstr ""
 
 #: include/global_form.php:189 include/global_form.php:190
 #: include/global_form.php:191 include/global_form.php:192
@@ -10603,9 +10594,9 @@ msgstr "Опции на мрежата"
 #: include/global_form.php:199 include/global_form.php:200
 #: include/global_form.php:201 include/global_form.php:202
 #: include/global_form.php:203
-#, fuzzy, php-format
+#, php-format
 msgid "%d Repetitions"
-msgstr "Опции на мрежата"
+msgstr ""
 
 #: include/global_form.php:212
 msgid ""
@@ -15566,13 +15557,10 @@ msgid "Enable Direct Population of Boost Table"
 msgstr "Активиране на директна популация от таблица poller_output_boost"
 
 #: include/global_settings.php:2378
-#, fuzzy
 msgid ""
 "Enables direct insert of records into poller output boost table with results"
 " in a 25% time reduction in each poll cycle."
 msgstr ""
-"Позволява директно вмъкване на записи в усилване на изхода на полер с "
-"резултати в 25% намаление във всеки цикъл на анкетиране."
 
 #: include/global_settings.php:2383
 #, fuzzy
@@ -15998,12 +15986,6 @@ msgid ""
 "certain number of 'outliers'.  Those are exceptional samples, like the "
 "spike, that need to be excluded from the Variance Average calculation."
 msgstr ""
-"Има два метода за премахване. Първото, стандартно отклонение, ще премахне "
-"всяка проба, която е X броя на стандартните отклонения от средната стойност "
-"на пробите. Вторият метод, Variance, ще премахне всяка проба, която е X% по-"
-"голяма от средната за Variance. Методът на отклонение отчита определен брой "
-"„извънредни стойности“. Това са изключителни проби, като скока, които трябва"
-" да бъдат изключени от изчислението на средната стойност на дисперсията."
 
 #: include/global_settings.php:2696
 msgid "Standard Deviation"
@@ -16073,17 +16055,13 @@ msgid "Variance Percentage"
 msgstr "Процент на отклонение"
 
 #: include/global_settings.php:2734
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "This value represents the percentage above the adjusted sample average once "
 "outliers have been removed from the sample.  For example, a Variance "
 "Percentage of 100%% on an adjusted average of 50 would remove any sample "
 "above the quantity of 100 from the graph."
 msgstr ""
-"Тази стойност представлява процентът над коригираната средна извадка, след "
-"като от извадката са отстранени външните стойности. Например, процентът на "
-"променливата от 100 %% на коригирана средна стойност от 50 ще премахне всяка"
-" проба над количеството от 100 от графиката."
 
 #: include/global_settings.php:2757
 msgid "Variance Number of Outliers"
@@ -17090,14 +17068,14 @@ msgid "Update"
 msgstr "Обновяване"
 
 #: lib/api_automation.php:5309 lib/api_automation.php:5311
-#, fuzzy, php-format
+#, php-format
 msgid "Automation Network SNMP Option %s!"
-msgstr "Автоматизация SNMP Опции"
+msgstr ""
 
 #: lib/api_automation.php:5315 lib/api_automation.php:5317
-#, fuzzy, php-format
+#, php-format
 msgid "Automation Network SNMP Option %s Failed!"
-msgstr "Автоматизация SNMP Опции"
+msgstr ""
 
 #: lib/api_automation.php:5351
 msgid "The Automation Network Rule does not include any SNMP Options!"
@@ -17126,9 +17104,9 @@ msgid "Unknown Device Template"
 msgstr "Неизвестен шаблон"
 
 #: lib/api_automation.php:5404 lib/api_automation.php:5406
-#, fuzzy, php-format
+#, php-format
 msgid "Automation Network Rule '%s' %s!"
-msgstr "Мрежа за автоматизация по подразбиране"
+msgstr ""
 
 #: lib/api_automation.php:5410 lib/api_automation.php:5412
 #, php-format
@@ -17255,31 +17233,31 @@ msgid "Device:(Hide Disabled)"
 msgstr "Устройството е забранено"
 
 #: lib/auth.php:2355 lib/auth.php:2357 lib/auth.php:2363 lib/auth.php:2365
-#, fuzzy, php-format
+#, php-format
 msgid "Graph:(%s%s)"
-msgstr "Графика"
+msgstr ""
 
 #: lib/auth.php:2378 lib/auth.php:2384 lib/auth.php:2451 lib/auth.php:2453
 #: lib/auth.php:2457 lib/auth.php:2459
-#, fuzzy, php-format
+#, php-format
 msgid "Device:(%s%s)"
-msgstr "Устройство:"
+msgstr ""
 
 #: lib/auth.php:2392 lib/auth.php:2398 lib/auth.php:2467 lib/auth.php:2469
 #: lib/auth.php:2473 lib/auth.php:2475
-#, fuzzy, php-format
+#, php-format
 msgid "Template:(%s%s)"
-msgstr "Шаблони"
+msgstr ""
 
 #: lib/auth.php:2405
-#, fuzzy, php-format
+#, php-format
 msgid "Graph+Device+Template:(%s%s)"
-msgstr "Шаблон на устройството:"
+msgstr ""
 
 #: lib/auth.php:2442 lib/auth.php:2444
-#, fuzzy, php-format
+#, php-format
 msgid "Device+Template:(%s%s)"
-msgstr "Шаблон на устройството:"
+msgstr ""
 
 #: lib/auth.php:2488 lib/auth.php:2495 lib/auth.php:2504
 msgid "Restricted By: "
@@ -17357,11 +17335,11 @@ msgid "LDAP Search Error: %s"
 msgstr "Грешка при LDAP търсене: %s"
 
 #: lib/auth.php:4094 lib/auth.php:5105
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "Access Denied!  Template user id %s does not exist.  Please contact your "
 "Administrator."
-msgstr "Достъпът е отказан, моля, свържете се с администратора на Cacti."
+msgstr ""
 
 #: lib/auth.php:4479
 msgid "Access Denied! Login failed."
@@ -17675,9 +17653,9 @@ msgid "Index Removal Detected! PreviousIndex: %s"
 msgstr "Откриване на индекса! PreviousIndex: %s"
 
 #: lib/data_query.php:360
-#, fuzzy, php-format
+#, php-format
 msgid "Verification of %s Local Data ID's Complete"
-msgstr "Индексиране на асоциацията с местните данни е завършено"
+msgstr ""
 
 #: lib/data_query.php:363
 #, fuzzy, php-format
@@ -17701,11 +17679,11 @@ msgid "Index Association with Local Data complete"
 msgstr "Индексиране на асоциацията с местните данни е завършено"
 
 #: lib/data_query.php:392
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "Update Re-Index Cache complete. There were %s index changes, and %s orphaned"
 " indexes."
-msgstr "Актуализирайте кеша за повторно индексиране. Имаше"
+msgstr ""
 
 #: lib/data_query.php:396
 msgid "Update Poller Cache for Query complete"
@@ -17839,9 +17817,9 @@ msgid "Click to show Data Query output for field '%s'"
 msgstr "Кликнете, за да покажете изхода за данни за полето „ %s“"
 
 #: lib/data_query.php:741
-#, fuzzy, php-format
+#, php-format
 msgid "Sort field returned no data for field name %s, skipping"
-msgstr "Полето за сортиране не връща данни. Не може да продължи Re-Index."
+msgstr ""
 
 #: lib/data_query.php:743
 #, fuzzy, php-format
@@ -18110,9 +18088,9 @@ msgstr ""
 "тъй като може да повреди паролата"
 
 #: lib/dsdebug.php:175
-#, fuzzy, php-format
+#, php-format
 msgid "Data Source ID %s does not exist"
-msgstr "Източникът на данни не съществува"
+msgstr ""
 
 #: lib/dsdebug.php:259
 msgid "Debug not completed after 5 pollings"
@@ -18127,17 +18105,17 @@ msgid "Data Source is not set as Active"
 msgstr "Източникът на данни не е зададен като активен"
 
 #: lib/dsdebug.php:277
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "RRDfile Folder (rra) is not writable by Poller.  Folder owner: %s.  Poller "
 "runs as: %s"
-msgstr "Папката RRD не може да се записва от Poller. Собственик на RRD:"
+msgstr ""
 
 #: lib/dsdebug.php:282
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "RRDfile is not writable by Poller.  RRDfile owner: %s.  Poller runs as %s"
-msgstr "RRD файлът не може да се записва от Poller. Собственик на RRD:"
+msgstr ""
 
 #: lib/dsdebug.php:291
 msgid "RRDfile does not match Data Source"
@@ -18467,9 +18445,9 @@ msgid "All %d %s"
 msgstr ""
 
 #: lib/html.php:700
-#, fuzzy, php-format
+#, php-format
 msgid "Current Page: %s"
-msgstr "Текуща стойност"
+msgstr ""
 
 #: lib/html.php:731
 #, php-format
@@ -19669,33 +19647,33 @@ msgid "[new]"
 msgstr "[Ново]"
 
 #: lib/html_reports.php:1572
-#, fuzzy, php-format
+#, php-format
 msgid "Details %s"
-msgstr "Детайли"
+msgstr ""
 
 #: lib/html_reports.php:1618
-#, fuzzy, php-format
+#, php-format
 msgid "Report Items %s"
-msgstr "Няма елементи за отчет"
+msgstr ""
 
 #: lib/html_reports.php:1664
-#, fuzzy, php-format
+#, php-format
 msgid "Scheduled Events %s"
-msgstr "Планирани събития"
+msgstr ""
 
 #: lib/html_reports.php:1676
-#, fuzzy, php-format
+#, php-format
 msgid "Report Preview %s"
-msgstr "Визуализация на отчета"
+msgstr ""
 
 #: lib/html_reports.php:1712
 msgid "Item Details"
 msgstr "Подробности за елемента"
 
 #: lib/html_reports.php:1727
-#, fuzzy, php-format
+#, php-format
 msgid "Graph: %s"
-msgstr "Графика"
+msgstr ""
 
 #: lib/html_reports.php:1730 lib/html_reports.php:1758
 #: lib/html_reports.php:1771 lib/html_reports.php:1772
@@ -19723,9 +19701,9 @@ msgid ", Using RegEx: \"%s\""
 msgstr ", Използване на RegEx: \"%s\""
 
 #: lib/html_reports.php:1800
-#, fuzzy, php-format
+#, php-format
 msgid "Tree: %s"
-msgstr "‎درخت"
+msgstr ""
 
 #: lib/html_reports.php:1811
 #, fuzzy, php-format
@@ -19733,9 +19711,9 @@ msgid ", Device: %s"
 msgstr "(От устройство: %s)"
 
 #: lib/html_reports.php:1813
-#, fuzzy, php-format
+#, php-format
 msgid ", Branch: %s"
-msgstr "Отрасъл:"
+msgstr ""
 
 #: lib/html_reports.php:1816
 msgid "(All Branches)"
@@ -20043,9 +20021,9 @@ msgid "Failed to apply specified cron interval"
 msgstr "Неуспешно прилагане на определен интервал на cron"
 
 #: lib/installer.php:1107
-#, fuzzy, php-format
+#, php-format
 msgid "Failed to apply '%s' as Automation Range"
-msgstr "Неуспешно прилагане на зададения диапазон за автоматизация"
+msgstr ""
 
 #: lib/installer.php:1190
 msgid "No matching snmp option exists"
@@ -20288,9 +20266,9 @@ msgstr ""
 "config.php."
 
 #: lib/installer.php:2037
-#, fuzzy, php-format
+#, php-format
 msgid "PHP - Recommendations (%s)"
-msgstr "PHP - Препоръки"
+msgstr ""
 
 #: lib/installer.php:2041
 msgid "PHP Recommendations ("
@@ -21273,9 +21251,9 @@ msgid "No Device Packages to be Installed"
 msgstr ""
 
 #: lib/installer.php:3012
-#, fuzzy, php-format
+#, php-format
 msgid "%d Tables to be Upgraded"
-msgstr "Тип на елемента, който трябва да се добави."
+msgstr ""
 
 #: lib/installer.php:3012 lib/installer.php:3014 lib/installer.php:3056
 #, fuzzy
@@ -21428,9 +21406,9 @@ msgid "Import of Package #%s '%s' under Profile '%s' failed"
 msgstr ""
 
 #: lib/installer.php:3469
-#, fuzzy, php-format
+#, php-format
 msgid "Mapping Automation Template for Device Template '%s'"
-msgstr "Шаблони за автоматизация за [изтрит шаблон]"
+msgstr ""
 
 #: lib/installer.php:3490
 msgid "No templates were selected for import"
@@ -21441,10 +21419,9 @@ msgid "Updating remote configuration file"
 msgstr "Очаква се конфигурация"
 
 #: lib/installer.php:3532
-#, fuzzy, php-format
+#, php-format
 msgid "Setting default data source profile to %s (%s)"
 msgstr ""
-"Профилът на източника на данни по подразбиране за този шаблон за данни."
 
 #: lib/installer.php:3557
 #, fuzzy, php-format
@@ -21466,14 +21443,14 @@ msgid "Adding extra snmp settings for automation"
 msgstr "Добавяне на допълнителни snmp настройки за автоматизация"
 
 #: lib/installer.php:3593
-#, fuzzy, php-format
+#, php-format
 msgid "Selecting Automation Option Set %s"
-msgstr "Изтриване на шаблон (и) за автоматизация"
+msgstr ""
 
 #: lib/installer.php:3607
-#, fuzzy, php-format
+#, php-format
 msgid "Updating Automation Option Set %s"
-msgstr "Автоматизация SNMP Опции"
+msgstr ""
 
 #: lib/installer.php:3611
 #, fuzzy, php-format
@@ -21481,14 +21458,14 @@ msgid "Successfully updated Automation Option Set %s"
 msgstr "Успешно актуализиран набор от опции за автоматизация%s"
 
 #: lib/installer.php:3613
-#, fuzzy, php-format
+#, php-format
 msgid "Resequencing Automation Option Set %s"
-msgstr "Изпълнение на автоматизацията на устройствата"
+msgstr ""
 
 #: lib/installer.php:3620
-#, fuzzy, php-format
+#, php-format
 msgid "Failed to updated Automation Option Set %s"
-msgstr "Неуспешно прилагане на зададения диапазон за автоматизация"
+msgstr ""
 
 #: lib/installer.php:3623
 msgid "Failed to find any automation option set"
@@ -21514,9 +21491,9 @@ msgid "Default Device Added to Cacti."
 msgstr "Добавено към Cacti"
 
 #: lib/installer.php:3680
-#, fuzzy, php-format
+#, php-format
 msgid "Output: %s."
-msgstr "Изходни полета"
+msgstr ""
 
 #: lib/installer.php:3700
 msgid "Creating Graphs for Default Device"
@@ -21599,9 +21576,9 @@ msgid "Background was already started at %s, this attempt at %s was skipped"
 msgstr ""
 
 #: lib/installer.php:3946
-#, fuzzy, php-format
+#, php-format
 msgid "Exception occurred during installation: #%s - %s"
-msgstr "Възникна изключение по време на инсталацията: #"
+msgstr ""
 
 #: lib/installer.php:3956
 #, fuzzy, php-format
@@ -21613,23 +21590,23 @@ msgid "Both"
 msgstr "И двете"
 
 #: lib/installer.php:3997
-#, fuzzy, php-format
+#, php-format
 msgid "No - %s"
-msgstr "минута(и)"
+msgstr ""
 
 #: lib/installer.php:4005
-#, fuzzy, php-format
+#, php-format
 msgid "%s - N/A"
-msgstr "минута(и)"
+msgstr ""
 
 #: lib/installer.php:4005 lib/installer.php:4007
 msgid "Web"
 msgstr "Уеб"
 
 #: lib/installer.php:4007 lib/installer.php:4010
-#, fuzzy, php-format
+#, php-format
 msgid "%s - No"
-msgstr "минута(и)"
+msgstr ""
 
 #: lib/installer.php:4010
 msgid "Cli"
@@ -21666,19 +21643,19 @@ msgid "No username defined"
 msgstr "Не е зададено потребителско име"
 
 #: lib/ldap.php:412
-#, fuzzy, php-format
+#, php-format
 msgid "Protocol Error, Unable to set version (%s) on Server (%s)"
-msgstr "Грешка в протокола, Не може да се зададе версия"
+msgstr ""
 
 #: lib/ldap.php:416
-#, fuzzy, php-format
+#, php-format
 msgid "Protocol Error, Unable to set referrals option (%s) on Server (%s)"
-msgstr "Грешка в протокола, не може да се зададе опция за препратки"
+msgstr ""
 
 #: lib/ldap.php:420
-#, fuzzy, php-format
+#, php-format
 msgid "Protocol Error, unable to start TLS communications (%s) on Server (%s)"
-msgstr "Грешка в протокола - не може да се стартират TLS комуникации"
+msgstr ""
 
 #: lib/ldap.php:424
 #, fuzzy, php-format
@@ -21691,24 +21668,24 @@ msgid "Protocol Error, Unable to bind, LDAP result: (%s) on Server (%s)"
 msgstr ""
 
 #: lib/ldap.php:432
-#, fuzzy, php-format
+#, php-format
 msgid "Unable to Connect to Server (%s)"
-msgstr "Не може да се свърже със сървъра"
+msgstr ""
 
 #: lib/ldap.php:436
-#, fuzzy, php-format
+#, php-format
 msgid "Connection Timeout to Server (%s)"
-msgstr "Изчакване на връзката"
+msgstr ""
 
 #: lib/ldap.php:440
-#, fuzzy, php-format
+#, php-format
 msgid "Insufficient Access to Server (%s)"
-msgstr "Недостатъчен достъп"
+msgstr ""
 
 #: lib/ldap.php:444
-#, fuzzy, php-format
+#, php-format
 msgid "Group DN could not be found to compare on Server (%s)"
-msgstr "Не може да се намери DN за сравнение"
+msgstr ""
 
 #: lib/ldap.php:448
 msgid "More than one matching user found"
@@ -21723,9 +21700,9 @@ msgid "Unable to find users DN"
 msgstr "DN на потребителите не може да се намери"
 
 #: lib/ldap.php:460
-#, fuzzy, php-format
+#, php-format
 msgid "Unable to create LDAP connection object to Server (%s)"
-msgstr "Не може да се създаде обект на LDAP връзка"
+msgstr ""
 
 #: lib/ldap.php:464
 msgid "Specific DN and Password required"
@@ -21928,16 +21905,16 @@ msgid ""
 msgstr ""
 
 #: lib/plugins.php:1717
-#, fuzzy, php-format
+#, php-format
 msgid "The Plugin '%s' has been archived successfully."
-msgstr "Кактусният дневник успешно се прочисти"
+msgstr ""
 
 #: lib/plugins.php:1719
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "The Plugin '%s' archiving process has failed.  Check the Cacti log for "
 "errors."
-msgstr "Един или повече RRDfile ремонти не успяха. Вижте Cacti log за грешки."
+msgstr ""
 
 #: lib/plugins.php:1722
 #, php-format
@@ -21976,9 +21953,9 @@ msgid "No plugins found at GitHub/GitLab location."
 msgstr ""
 
 #: lib/plugins.php:1956
-#, fuzzy, php-format
+#, php-format
 msgid "The Cacti plugin %s has not releases"
-msgstr "Cacti Poller все още не работи."
+msgstr ""
 
 #: lib/plugins.php:2011 lib/plugins.php:2149
 msgid "Unable to get archive from GitHub/GitLab location."
@@ -22010,9 +21987,9 @@ msgid ""
 msgstr ""
 
 #: lib/reports.php:144
-#, fuzzy, php-format
+#, php-format
 msgid "Device '%s' successfully added to Report."
-msgstr "Добавено към Cacti"
+msgstr ""
 
 #: lib/reports.php:147
 msgid "Device not found! Unable to add to Report"
@@ -22298,9 +22275,9 @@ msgstr ""
 "въвеждане на данни"
 
 #: lib/template.php:2267
-#, fuzzy, php-format
+#, php-format
 msgid "Graph Not created for %s due to bad data"
-msgstr "Създаване на графики"
+msgstr ""
 
 #: lib/template.php:2296
 #, php-format
@@ -22405,7 +22382,7 @@ msgstr ""
 " тази стойност на или над 16M."
 
 #: lib/utility.php:1212
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "If using the Cacti Performance Booster and choosing a memory storage engine,"
 " you have to be careful to flush your Performance Booster buffer before the "
@@ -22419,18 +22396,6 @@ msgid ""
 "expected consumption of the Performance Booster tables under Console -> "
 "System Utilities -> View Boost Status."
 msgstr ""
-"Ако използвате Cacti Performance Booster и изберете механизъм за съхранение "
-"на памет, трябва да внимавате да изчистите буфера за производителност, преди"
-" системата да изчерпи пространството за памет. Това се прави по два начина, "
-"като първо се намалява размерът на изходната колона до точния размер. Тази "
-"колона е в таблиците poller_output и poller_output_boost. Второто нещо, "
-"което можете да направите, е да отделите повече памет за таблиците с памет. "
-"Ние произволно избрахме препоръчителна стойност от 10%% от системната памет,"
-" но ако използвате SSD дискове или имате по-малка система, можете да "
-"игнорирате тази препоръка или да изберете различен механизъм за съхранение. "
-"Може да видите очакваното потребление на таблиците за подсилване на "
-"производителността под Console -&gt; System Utilities -&gt; View Boost "
-"Status."
 
 #: lib/utility.php:1218
 msgid ""
@@ -22510,7 +22475,7 @@ msgstr ""
 "правилно таблици."
 
 #: lib/utility.php:1254
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "InnoDB will hold as much tables and indexes in system memory as is possible."
 "  Therefore, you should make the innodb_buffer_pool large enough to hold as "
@@ -22523,15 +22488,8 @@ msgid ""
 "the swappiness of the system, or to remove swap to keep the system from "
 "swapping."
 msgstr ""
-"InnoDB ще държи колкото се може повече таблици и индекси в системната памет."
-" Затова трябва да направите innodb_buffer_pool достатъчно голям, за да "
-"побере толкова маси и индекси в паметта. Проверката на размера на "
-"директорията / var / lib / mysql / cacti ще помогне при определянето на тази"
-" стойност. Ние препоръчваме 25%% от общата памет на вашите системи, но "
-"вашите изисквания ще варират в зависимост от размера на вашите системи."
 
 #: lib/utility.php:1260
-#, fuzzy
 msgid ""
 "This settings should remain ON unless your Cacti instances is running on "
 "either ZFS or FusionI/O which both have internal journaling to accommodate "
@@ -22539,12 +22497,6 @@ msgid ""
 "systems rarely go down and you have backups, turning this setting to OFF can"
 " net you almost a 50% increase in database performance."
 msgstr ""
-"Тези настройки трябва да останат ВКЛЮЧЕНИ, освен ако вашите екземпляри на "
-"Cacti не се изпълняват нито на ZFS, нито на FusionI / O, които и двата имат "
-"вътрешно журналиране, за да се съберат внезапни сривове на системата. Ако "
-"обаче имате много добра мощност и системите ви рядко се сриват и имате "
-"резервни копия, превключването на тази настройка в положение OFF може да ви "
-"осигури почти 50% увеличение на производителността на базата данни."
 
 #: lib/utility.php:1265
 msgid ""
@@ -22750,9 +22702,9 @@ msgid "A minimum of %s memory limit"
 msgstr "Ограничение от минимум %s MB памет"
 
 #: lib/utility.php:2007
-#, fuzzy, php-format
+#, php-format
 msgid "A minimum of %s m execution time"
-msgstr "Най-малко% време за изпълнение"
+msgstr ""
 
 #: lib/utility.php:2009
 msgid "A valid timezone that matches MySQL and the system"
@@ -22995,9 +22947,9 @@ msgid "Logout of Cacti"
 msgstr "Изход от Cacti"
 
 #: logout.php:60
-#, fuzzy, php-format
+#, php-format
 msgid "You have been logged out of Cacti due to %s."
-msgstr "Вие сте излезли от Cacti поради прекъсване на сесията."
+msgstr ""
 
 #: logout.php:61
 #, fuzzy, php-format
@@ -23220,19 +23172,19 @@ msgid "What would you like to Package?"
 msgstr "Какво искате да експортирате?"
 
 #: package.php:667
-#, fuzzy, php-format
+#, php-format
 msgid "%s Device Package"
-msgstr "Име на устройство"
+msgstr ""
 
 #: package.php:670
-#, fuzzy, php-format
+#, php-format
 msgid "%s Graph Template Package"
-msgstr "Име на шаблона на графиката"
+msgstr ""
 
 #: package.php:673
-#, fuzzy, php-format
+#, php-format
 msgid "%s Data Query Package"
-msgstr "Име на заявката за данни"
+msgstr ""
 
 #: package.php:700 templates_export.php:168
 #, fuzzy, php-format
@@ -23244,9 +23196,9 @@ msgid "Available Templates"
 msgstr ""
 
 #: package.php:709
-#, fuzzy, php-format
+#, php-format
 msgid "%s to Export"
-msgstr "Експортиране"
+msgstr ""
 
 #: package.php:710
 #, fuzzy
@@ -23393,9 +23345,9 @@ msgid "Unable to create package temporary directory %s."
 msgstr ""
 
 #: package_import.php:203 package_import.php:527
-#, fuzzy, php-format
+#, php-format
 msgid "The Package %s Imported Successfully"
-msgstr "Кактусният дневник успешно се прочисти"
+msgstr ""
 
 #: package_import.php:205 package_import.php:529
 #, php-format
@@ -23403,9 +23355,9 @@ msgid "The Package %s Import Failed"
 msgstr "Пакетът %s импортиране е неуспешен"
 
 #: package_import.php:298
-#, fuzzy, php-format
+#, php-format
 msgid "Package %s"
-msgstr "Файлове на пакети"
+msgstr ""
 
 #: package_import.php:305
 #, fuzzy
@@ -23461,14 +23413,12 @@ msgid ""
 msgstr ""
 
 #: package_import.php:427
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "You have not Trusted this Package Author '%s'.  If you wish to import, check"
 " the Automatically Trust Author checkbox.  Otherwise, feel free to reach the"
 " author at the following Email address '%s'."
 msgstr ""
-"Не сте се доверили на този автор на пакета.  Ако искате да импортирате, "
-"поставете отметка в квадратчето Автоматично доверявай се на автора"
 
 #: package_import.php:738
 msgid "Repo File Missing or Damaged"
@@ -24577,9 +24527,9 @@ msgid "Install Plugin"
 msgstr "Инсталирайте приставката"
 
 #: plugins.php:1760
-#, fuzzy, php-format
+#, php-format
 msgid "Plugin '%s' can not be archived before it's been Installed."
-msgstr "Приставката не може да бъде инсталирана."
+msgstr ""
 
 #: plugins.php:1771
 msgid "Remove Plugin Data Tables and Settings"
@@ -24737,10 +24687,9 @@ msgstr ""
 "позволявайки автоматично усилване!"
 
 #: poller_automation.php:54
-#, fuzzy, php-format
+#, php-format
 msgid "WARNING: Main Cacti database %s offline or in recovery"
 msgstr ""
-"ВНИМАНИЕ: Основната база данни за кактуси е офлайн или се възстановява"
 
 #: poller_automation.php:1037 poller_automation.php:1091
 msgid "Cacti Primary Admin"
@@ -28322,9 +28271,9 @@ msgid "Previous Runtime Timers:"
 msgstr "Подробни таймери за изпълнение:"
 
 #: utilities.php:1779 utilities.php:1781
-#, fuzzy, php-format
+#, php-format
 msgid "Process: %d"
-msgstr "1 Процес"
+msgstr ""
 
 #: utilities.php:1779
 #, php-format

@@ -434,18 +434,14 @@ msgid "Disassociate Graphs with  Aggregate"
 msgstr "Отделить от агрегации"
 
 #: aggregate_graphs.php:970
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Place the following Aggregate Graph on Tree %s."
 msgstr ""
-"Нажмите кнопку \"Продолжить\", чтобы удалить следующий(ие) шаблон(ы) "
-"агрегированного графика."
 
 #: aggregate_graphs.php:971
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Duplicate following Aggregate Graphs on Tree %s."
 msgstr ""
-"Нажмите кнопку \"Продолжить\", чтобы поместить следующий график(и) "
-"агрегирования под ветвь дерева."
 
 #: aggregate_graphs.php:972
 #, fuzzy
@@ -3423,9 +3419,9 @@ msgstr ""
 "которые будут удалены из шаблона устройства."
 
 #: automation_templates.php:791
-#, fuzzy, php-format
+#, php-format
 msgid "Tree Rule Name: '%s'"
-msgstr "Пункты правила деревьев"
+msgstr ""
 
 #: automation_templates.php:798
 #, fuzzy
@@ -4053,9 +4049,9 @@ msgid "Full"
 msgstr "Полное Имя"
 
 #: changelog.php:99
-#, fuzzy, php-format
+#, php-format
 msgid "Change Log [%s]"
-msgstr "Список изменений"
+msgstr ""
 
 #: changelog.php:160 support.php:1018
 #, php-format
@@ -6341,9 +6337,9 @@ msgid "GRAPH DOES NOT EXIST"
 msgstr "ГРАФИК НЕ СУЩЕСТВУЕТ"
 
 #: graph.php:115 graph.php:409
-#, fuzzy, php-format
+#, php-format
 msgid "Graph Utility View for Graph: %s"
-msgstr "Графическая утилита Вид графической утилиты"
+msgstr ""
 
 #: graph.php:160 lib/html.php:585
 #, fuzzy
@@ -7313,14 +7309,14 @@ msgid "Place Graph on Report"
 msgstr "Разместить графики на отчёте"
 
 #: graphs.php:1912
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Place the following Graph on Tree %s."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы удалить следующее дерево."
+msgstr ""
 
 #: graphs.php:1913
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Duplicate following Graphs on Tree %s."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы удалить следующее дерево."
+msgstr ""
 
 #: graphs.php:1914
 #, fuzzy
@@ -7397,15 +7393,12 @@ msgid "Selected Graph Template"
 msgstr "Изменить размер выбранных шаблонов"
 
 #: graphs.php:2320
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "Choose a Graph Template to apply to this Graph. Please note that you may "
 "only change Graph Templates to a 100%% compatible Graph Template, which "
 "means that it includes identical Data Sources."
 msgstr ""
-"Выберите шаблон графика, который будет применяться к данному графику. "
-"Обратите внимание, что вы можете изменить шаблоны только на 100% совместимые"
-" шаблоны, что означает, что они включают в себя идентичные источники данных."
 
 #: graphs.php:2328
 #, fuzzy
@@ -7866,16 +7859,14 @@ msgid "Place Devices on Report"
 msgstr "Поместите устройство(ы) на дерево"
 
 #: host.php:564
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Place the following Device on Tree %s."
 msgstr ""
-"Нажмите кнопку \"Продолжить\", чтобы удалить следующий(ые) шаблон(ы) "
-"устройства."
 
 #: host.php:565
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Duplicate following Devices on Tree %s."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы удалить следующее дерево."
+msgstr ""
 
 #: host.php:566
 #, fuzzy
@@ -10364,9 +10355,9 @@ msgid "Previous Year"
 msgstr "Предыдущий Год"
 
 #: include/global_arrays.php:1595
-#, fuzzy, php-format
+#, php-format
 msgid "%d Min"
-msgstr "d Разум"
+msgstr ""
 
 #: include/global_arrays.php:1650
 #, fuzzy
@@ -11580,9 +11571,9 @@ msgstr ""
 "Автоматическое определение / установка при первом повторном индексировании"
 
 #: include/global_form.php:188
-#, fuzzy, php-format
+#, php-format
 msgid "%d Repetition"
-msgstr "Параметры сетки"
+msgstr ""
 
 #: include/global_form.php:189 include/global_form.php:190
 #: include/global_form.php:191 include/global_form.php:192
@@ -16545,9 +16536,9 @@ msgstr "1 Изменение"
 #: include/global_settings.php:1992 include/global_settings.php:1993
 #: include/global_settings.php:1994 include/global_settings.php:1995
 #: include/global_settings.php:1996
-#, fuzzy, php-format
+#, php-format
 msgid "%d Changes"
-msgstr "d Изменения"
+msgstr ""
 
 #: include/global_settings.php:2000
 #, fuzzy
@@ -17110,13 +17101,10 @@ msgid "Enable Direct Population of Boost Table"
 msgstr "Включить прямое заполнение таблицы poller_output_boost"
 
 #: include/global_settings.php:2378
-#, fuzzy
 msgid ""
 "Enables direct insert of records into poller output boost table with results"
 " in a 25% time reduction in each poll cycle."
 msgstr ""
-"Обеспечивает прямую вставку записей в ускорение выходных данных опросчика, "
-"что приводит к сокращению времени на 25 % в каждом цикле опроса."
 
 #: include/global_settings.php:2383
 #, fuzzy
@@ -17529,12 +17517,6 @@ msgid ""
 "certain number of 'outliers'.  Those are exceptional samples, like the "
 "spike, that need to be excluded from the Variance Average calculation."
 msgstr ""
-"Существует два способа удаления.  Первое, Стандартное отклонение, удалит "
-"любой образец, число стандартных отклонений которого равно X, от среднего "
-"значения по образцам.  Второй метод, Разница, удалит любую выборку, которая "
-"на X% больше, чем средняя Разница.  Метод разницы учитывает определенное "
-"число \"отклонений\".  Это исключительные выборки, такие как пик, которые "
-"необходимо исключить из расчета отклонения среднего значения."
 
 #: include/global_settings.php:2696
 msgid "Standard Deviation"
@@ -17610,11 +17592,6 @@ msgid ""
 "Percentage of 100%% on an adjusted average of 50 would remove any sample "
 "above the quantity of 100 from the graph."
 msgstr ""
-"Это значение представляет собой процентное соотношение, превышающее "
-"скорректированное среднее по выборке после того, как выбросы были удалены из"
-" выборки.  Например, изменение процентной доли в размере 100%% при "
-"скорректированном среднем значении 50 удалит из графика любую выборку, "
-"превышающую значение 100."
 
 #: include/global_settings.php:2757
 msgid "Variance Number of Outliers"
@@ -18624,14 +18601,14 @@ msgid "Update"
 msgstr "Обновить"
 
 #: lib/api_automation.php:5309 lib/api_automation.php:5311
-#, fuzzy, php-format
+#, php-format
 msgid "Automation Network SNMP Option %s!"
-msgstr "Опции SNMP автоматизации"
+msgstr ""
 
 #: lib/api_automation.php:5315 lib/api_automation.php:5317
-#, fuzzy, php-format
+#, php-format
 msgid "Automation Network SNMP Option %s Failed!"
-msgstr "Опции SNMP автоматизации"
+msgstr ""
 
 #: lib/api_automation.php:5351
 msgid "The Automation Network Rule does not include any SNMP Options!"
@@ -18655,9 +18632,9 @@ msgid "Unknown Device Template"
 msgstr "Неизвестный шаблон"
 
 #: lib/api_automation.php:5404 lib/api_automation.php:5406
-#, fuzzy, php-format
+#, php-format
 msgid "Automation Network Rule '%s' %s!"
-msgstr "Сеть автоматизации по умолчанию"
+msgstr ""
 
 #: lib/api_automation.php:5410 lib/api_automation.php:5412
 #, php-format
@@ -18789,31 +18766,31 @@ msgid "Device:(Hide Disabled)"
 msgstr "Устройство отключено"
 
 #: lib/auth.php:2355 lib/auth.php:2357 lib/auth.php:2363 lib/auth.php:2365
-#, fuzzy, php-format
+#, php-format
 msgid "Graph:(%s%s)"
-msgstr "График"
+msgstr ""
 
 #: lib/auth.php:2378 lib/auth.php:2384 lib/auth.php:2451 lib/auth.php:2453
 #: lib/auth.php:2457 lib/auth.php:2459
-#, fuzzy, php-format
+#, php-format
 msgid "Device:(%s%s)"
-msgstr "Устройство:"
+msgstr ""
 
 #: lib/auth.php:2392 lib/auth.php:2398 lib/auth.php:2467 lib/auth.php:2469
 #: lib/auth.php:2473 lib/auth.php:2475
-#, fuzzy, php-format
+#, php-format
 msgid "Template:(%s%s)"
-msgstr "Шаблон:"
+msgstr ""
 
 #: lib/auth.php:2405
-#, fuzzy, php-format
+#, php-format
 msgid "Graph+Device+Template:(%s%s)"
-msgstr "Шаблон Устройства:"
+msgstr ""
 
 #: lib/auth.php:2442 lib/auth.php:2444
-#, fuzzy, php-format
+#, php-format
 msgid "Device+Template:(%s%s)"
-msgstr "Шаблон Устройства:"
+msgstr ""
 
 #: lib/auth.php:2488 lib/auth.php:2495 lib/auth.php:2504
 msgid "Restricted By: "
@@ -18896,11 +18873,11 @@ msgid "LDAP Search Error: %s"
 msgstr "Ошибка поиска LDAP: %s"
 
 #: lib/auth.php:4094 lib/auth.php:5105
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "Access Denied!  Template user id %s does not exist.  Please contact your "
 "Administrator."
-msgstr "Доступ запрещен, пожалуйста, свяжитесь с администратором кактусов."
+msgstr ""
 
 #: lib/auth.php:4479
 #, fuzzy
@@ -19241,9 +19218,9 @@ msgid "Index Removal Detected! PreviousIndex: %s"
 msgstr "Удаление индекса Обнаружено! Предыдущий Индекс: %s"
 
 #: lib/data_query.php:360
-#, fuzzy, php-format
+#, php-format
 msgid "Verification of %s Local Data ID's Complete"
-msgstr "Индекс Ассоциации с локальными данными завершен"
+msgstr ""
 
 #: lib/data_query.php:363
 #, fuzzy, php-format
@@ -19271,11 +19248,11 @@ msgid "Index Association with Local Data complete"
 msgstr "Индекс Ассоциации с локальными данными завершен"
 
 #: lib/data_query.php:392
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "Update Re-Index Cache complete. There were %s index changes, and %s orphaned"
 " indexes."
-msgstr "Обновление Re-Index Cache завершено. Было "
+msgstr ""
 
 #: lib/data_query.php:396
 #, fuzzy
@@ -19726,17 +19703,17 @@ msgid "Data Source is not set as Active"
 msgstr "Источник данных не установлен как активный"
 
 #: lib/dsdebug.php:277
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "RRDfile Folder (rra) is not writable by Poller.  Folder owner: %s.  Poller "
 "runs as: %s"
-msgstr "Поллер не разрешает запись в папку RRD Folder.  Владелец RRD:"
+msgstr ""
 
 #: lib/dsdebug.php:282
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "RRDfile is not writable by Poller.  RRDfile owner: %s.  Poller runs as %s"
-msgstr "Поллер не разрешает запись файла RRD.  Владелец RRD:"
+msgstr ""
 
 #: lib/dsdebug.php:291
 #, fuzzy
@@ -20881,9 +20858,9 @@ msgid "Create %s Graphs from %s"
 msgstr ""
 
 #: lib/html_graph.php:718
-#, fuzzy, php-format
+#, php-format
 msgid "Graph [Template: %s]"
-msgstr "Удалить шаблоны графиков"
+msgstr ""
 
 #: lib/html_graph.php:720
 #, fuzzy, php-format
@@ -21464,9 +21441,9 @@ msgid "Details %s"
 msgstr "Подробности %s"
 
 #: lib/html_reports.php:1618
-#, fuzzy, php-format
+#, php-format
 msgid "Report Items %s"
-msgstr "Отчетные позиции отсутствуют"
+msgstr ""
 
 #: lib/html_reports.php:1664
 #, php-format
@@ -21525,9 +21502,9 @@ msgid ", Device: %s"
 msgstr "(Из устройства: %s)"
 
 #: lib/html_reports.php:1813
-#, fuzzy, php-format
+#, php-format
 msgid ", Branch: %s"
-msgstr "Отделение:"
+msgstr ""
 
 #: lib/html_reports.php:1816
 #, fuzzy
@@ -21732,9 +21709,9 @@ msgid "not writable"
 msgstr "Записи"
 
 #: lib/import.php:1712 lib/import.php:1729
-#, fuzzy, php-format
+#, php-format
 msgid "New Graph Template: %s"
-msgstr "Удалить шаблоны графиков"
+msgstr ""
 
 #: lib/import.php:1741 lib/import.php:1751
 #, fuzzy, php-format
@@ -21865,9 +21842,9 @@ msgid "Failed to apply specified cron interval"
 msgstr "Не удалось применить заданный интервал между кронами"
 
 #: lib/installer.php:1107
-#, fuzzy, php-format
+#, php-format
 msgid "Failed to apply '%s' as Automation Range"
-msgstr "Неприменение указанного диапазона автоматизации"
+msgstr ""
 
 #: lib/installer.php:1190
 #, fuzzy
@@ -22134,9 +22111,9 @@ msgstr ""
 "config.php."
 
 #: lib/installer.php:2037
-#, fuzzy, php-format
+#, php-format
 msgid "PHP - Recommendations (%s)"
-msgstr "PHP - Рекомендации"
+msgstr ""
 
 #: lib/installer.php:2041
 #, fuzzy
@@ -23210,9 +23187,9 @@ msgid "No Device Packages to be Installed"
 msgstr ""
 
 #: lib/installer.php:3012
-#, fuzzy, php-format
+#, php-format
 msgid "%d Tables to be Upgraded"
-msgstr "Тип добавляемого элемента."
+msgstr ""
 
 #: lib/installer.php:3012 lib/installer.php:3014 lib/installer.php:3056
 #, fuzzy
@@ -23291,9 +23268,9 @@ msgid "Table:"
 msgstr "Таблицы"
 
 #: lib/installer.php:3075
-#, fuzzy, php-format
+#, php-format
 msgid "Installing Cacti Server v%s"
-msgstr "Установка Cacti Server vs vs"
+msgstr ""
 
 #: lib/installer.php:3076
 #, fuzzy
@@ -23310,18 +23287,16 @@ msgid "Complete"
 msgstr "Готово"
 
 #: lib/installer.php:3193
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "Your Cacti Server v%s has been installed/updated.  You may now start using "
 "the software."
 msgstr ""
-"Ваш Cacti Server vs был установлен/обновлен.  Теперь вы можете начать "
-"использовать программное обеспечение."
 
 #: lib/installer.php:3198
-#, fuzzy, php-format
+#, php-format
 msgid "Your Cacti Server v%s has been installed/updated with errors"
-msgstr "Ваш Cacti Server vs был установлен/обновлен с ошибками."
+msgstr ""
 
 #: lib/installer.php:3318
 msgid "Get Help"
@@ -23366,9 +23341,9 @@ msgid "Import of Package #%s '%s' under Profile '%s' failed"
 msgstr ""
 
 #: lib/installer.php:3469
-#, fuzzy, php-format
+#, php-format
 msgid "Mapping Automation Template for Device Template '%s'"
-msgstr "Шаблоны автоматизации для [Удаленный шаблон]"
+msgstr ""
 
 #: lib/installer.php:3490
 #, fuzzy
@@ -23381,9 +23356,9 @@ msgid "Updating remote configuration file"
 msgstr "Ожидание конфигурации"
 
 #: lib/installer.php:3532
-#, fuzzy, php-format
+#, php-format
 msgid "Setting default data source profile to %s (%s)"
-msgstr "Профиль источника данных по умолчанию для данного Шаблона данных."
+msgstr ""
 
 #: lib/installer.php:3557
 #, fuzzy, php-format
@@ -23406,14 +23381,14 @@ msgid "Adding extra snmp settings for automation"
 msgstr "Добавление дополнительных настроек snmp для автоматизации"
 
 #: lib/installer.php:3593
-#, fuzzy, php-format
+#, php-format
 msgid "Selecting Automation Option Set %s"
-msgstr "Удалить шаблон(ы) автоматизации"
+msgstr ""
 
 #: lib/installer.php:3607
-#, fuzzy, php-format
+#, php-format
 msgid "Updating Automation Option Set %s"
-msgstr "Опции SNMP автоматизации"
+msgstr ""
 
 #: lib/installer.php:3611
 #, fuzzy, php-format
@@ -23421,14 +23396,14 @@ msgid "Successfully updated Automation Option Set %s"
 msgstr "Успешно обновленный набор параметров автоматизации%s"
 
 #: lib/installer.php:3613
-#, fuzzy, php-format
+#, php-format
 msgid "Resequencing Automation Option Set %s"
-msgstr "Запуск автоматизации на устройстве(ах)"
+msgstr ""
 
 #: lib/installer.php:3620
-#, fuzzy, php-format
+#, php-format
 msgid "Failed to updated Automation Option Set %s"
-msgstr "Неприменение указанного диапазона автоматизации"
+msgstr ""
 
 #: lib/installer.php:3623
 msgid "Failed to find any automation option set"
@@ -23453,9 +23428,9 @@ msgid "Default Device Added to Cacti."
 msgstr ""
 
 #: lib/installer.php:3680
-#, fuzzy, php-format
+#, php-format
 msgid "Output: %s."
-msgstr "Поля вывода"
+msgstr ""
 
 #: lib/installer.php:3700
 #, fuzzy
@@ -23622,19 +23597,19 @@ msgid "No username defined"
 msgstr "Имя пользователя не определено"
 
 #: lib/ldap.php:412
-#, fuzzy, php-format
+#, php-format
 msgid "Protocol Error, Unable to set version (%s) on Server (%s)"
-msgstr "Ошибка протокола, Невозможно установить версию."
+msgstr ""
 
 #: lib/ldap.php:416
-#, fuzzy, php-format
+#, php-format
 msgid "Protocol Error, Unable to set referrals option (%s) on Server (%s)"
-msgstr "Ошибка протокола, Невозможно установить опцию перенаправления"
+msgstr ""
 
 #: lib/ldap.php:420
-#, fuzzy, php-format
+#, php-format
 msgid "Protocol Error, unable to start TLS communications (%s) on Server (%s)"
-msgstr "Ошибка протокола, неспособность запустить TLS-коммуникации"
+msgstr ""
 
 #: lib/ldap.php:424
 #, fuzzy, php-format
@@ -23652,19 +23627,19 @@ msgid "Unable to Connect to Server (%s)"
 msgstr "Невозможно подключиться к серверу (%s)"
 
 #: lib/ldap.php:436
-#, fuzzy, php-format
+#, php-format
 msgid "Connection Timeout to Server (%s)"
-msgstr "Таймаут соединения"
+msgstr ""
 
 #: lib/ldap.php:440
-#, fuzzy, php-format
+#, php-format
 msgid "Insufficient Access to Server (%s)"
-msgstr "Недостаточный доступ"
+msgstr ""
 
 #: lib/ldap.php:444
-#, fuzzy, php-format
+#, php-format
 msgid "Group DN could not be found to compare on Server (%s)"
-msgstr "Не удалось найти группу DN для сравнения"
+msgstr ""
 
 #: lib/ldap.php:448
 #, fuzzy
@@ -23682,9 +23657,9 @@ msgid "Unable to find users DN"
 msgstr "Невозможно найти пользователей DN"
 
 #: lib/ldap.php:460
-#, fuzzy, php-format
+#, php-format
 msgid "Unable to create LDAP connection object to Server (%s)"
-msgstr "Невозможно создать объект LDAP-соединения"
+msgstr ""
 
 #: lib/ldap.php:464
 #, fuzzy
@@ -23893,18 +23868,16 @@ msgid ""
 msgstr ""
 
 #: lib/plugins.php:1717
-#, fuzzy, php-format
+#, php-format
 msgid "The Plugin '%s' has been archived successfully."
-msgstr "Какти журнал успешно очищен"
+msgstr ""
 
 #: lib/plugins.php:1719
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "The Plugin '%s' archiving process has failed.  Check the Cacti log for "
 "errors."
 msgstr ""
-"Неудачно отремонтирован один или несколько RRD-файлов.  Ошибки см. в журнале"
-" Cacti."
 
 #: lib/plugins.php:1722
 #, php-format
@@ -23944,9 +23917,9 @@ msgid "No plugins found at GitHub/GitLab location."
 msgstr ""
 
 #: lib/plugins.php:1956
-#, fuzzy, php-format
+#, php-format
 msgid "The Cacti plugin %s has not releases"
-msgstr "Какти Поллер еще не сбежал."
+msgstr ""
 
 #: lib/plugins.php:2011 lib/plugins.php:2149
 msgid "Unable to get archive from GitHub/GitLab location."
@@ -23978,9 +23951,9 @@ msgid ""
 msgstr ""
 
 #: lib/reports.php:144
-#, fuzzy, php-format
+#, php-format
 msgid "Device '%s' successfully added to Report."
-msgstr "Добавлено в Кактусы"
+msgstr ""
 
 #: lib/reports.php:147
 #, fuzzy
@@ -24287,9 +24260,9 @@ msgid "ERROR: Whitelist Validation Failed. Check Data Input Method"
 msgstr "Ошибка с проверкой белого списка. Проверить метод ввода данных"
 
 #: lib/template.php:2267
-#, fuzzy, php-format
+#, php-format
 msgid "Graph Not created for %s due to bad data"
-msgstr "График Не создан для "
+msgstr ""
 
 #: lib/template.php:2296
 #, php-format
@@ -24397,7 +24370,7 @@ msgstr ""
 "это значение на уровне 16M или выше."
 
 #: lib/utility.php:1212
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "If using the Cacti Performance Booster and choosing a memory storage engine,"
 " you have to be careful to flush your Performance Booster buffer before the "
@@ -24411,17 +24384,6 @@ msgid ""
 "expected consumption of the Performance Booster tables under Console -> "
 "System Utilities -> View Boost Status."
 msgstr ""
-"При использовании Cacti Performance Booster и выборе движка памяти "
-"необходимо тщательно промывать буфер Performance Booster до того, как в "
-"системе закончится место в таблице памяти.  Это делается двумя способами, "
-"сначала уменьшая размер выходного столбца до нужного размера.  Эта колонка "
-"находится в таблицах poler_output и poler_output_boost.  Второе, что вы "
-"можете сделать, это выделить больше памяти для таблиц памяти.  Мы "
-"произвольно выбрали рекомендованное значение в 10% системной памяти, но если"
-" вы используете SSD-накопители или систему меньшего размера, вы можете "
-"проигнорировать эту рекомендацию или выбрать другой механизм хранения.  Вы "
-"можете увидеть ожидаемое потребление таблиц Performance Booster в разделе "
-"Console -> System Utilities -> View Boost Status."
 
 #: lib/utility.php:1218
 #, fuzzy
@@ -24504,7 +24466,7 @@ msgstr ""
 "таблицы."
 
 #: lib/utility.php:1254
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "InnoDB will hold as much tables and indexes in system memory as is possible."
 "  Therefore, you should make the innodb_buffer_pool large enough to hold as "
@@ -24517,15 +24479,8 @@ msgid ""
 "the swappiness of the system, or to remove swap to keep the system from "
 "swapping."
 msgstr ""
-"InnoDB будет хранить в памяти системы как можно больше таблиц и индексов.  "
-"Поэтому пул innodb_buffer_pool должен быть достаточно большим, чтобы в "
-"памяти оставалось столько же таблиц и индексов.  Проверка размера каталога "
-"/var/lib/mysql/cacti поможет определить это значение.  Мы рекомендуем 25% от"
-" общего объема памяти системы, но ваши требования могут варьироваться в "
-"зависимости от размера вашей системы."
 
 #: lib/utility.php:1260
-#, fuzzy
 msgid ""
 "This settings should remain ON unless your Cacti instances is running on "
 "either ZFS or FusionI/O which both have internal journaling to accommodate "
@@ -24533,12 +24488,6 @@ msgid ""
 "systems rarely go down and you have backups, turning this setting to OFF can"
 " net you almost a 50% increase in database performance."
 msgstr ""
-"Эти параметры должны оставаться включенными, если только ваши экземпляры "
-"Cacti не работают на ZFS или FusionI / O, которые оба имеют внутреннее "
-"ведение журнала для предотвращения внезапных сбоев системы. Однако, если у "
-"вас очень хорошая мощность, и ваши системы редко выходят из строя и у вас "
-"есть резервные копии, отключение этого параметра может привести к увеличению"
-" производительности базы данных почти на 50%."
 
 #: lib/utility.php:1265
 #, fuzzy
@@ -25045,9 +24994,9 @@ msgid "Logout of Cacti"
 msgstr "Выход из системы Cacti"
 
 #: logout.php:60
-#, fuzzy, php-format
+#, php-format
 msgid "You have been logged out of Cacti due to %s."
-msgstr "Вы вышли из Какти из-за таймаута сеанса."
+msgstr ""
 
 #: logout.php:61
 #, fuzzy, php-format
@@ -25303,19 +25252,19 @@ msgid "What would you like to Package?"
 msgstr "Что бы вы хотели экспортировать?"
 
 #: package.php:667
-#, fuzzy, php-format
+#, php-format
 msgid "%s Device Package"
-msgstr "Имя устройства"
+msgstr ""
 
 #: package.php:670
-#, fuzzy, php-format
+#, php-format
 msgid "%s Graph Template Package"
-msgstr "Имя шаблона графика"
+msgstr ""
 
 #: package.php:673
-#, fuzzy, php-format
+#, php-format
 msgid "%s Data Query Package"
-msgstr "Название запроса данных"
+msgstr ""
 
 #: package.php:700 templates_export.php:168
 #, fuzzy, php-format
@@ -25327,9 +25276,9 @@ msgid "Available Templates"
 msgstr ""
 
 #: package.php:709
-#, fuzzy, php-format
+#, php-format
 msgid "%s to Export"
-msgstr "Экспорт"
+msgstr ""
 
 #: package.php:710
 #, fuzzy
@@ -25472,9 +25421,9 @@ msgid "Unable to create package temporary directory %s."
 msgstr ""
 
 #: package_import.php:203 package_import.php:527
-#, fuzzy, php-format
+#, php-format
 msgid "The Package %s Imported Successfully"
-msgstr "Какти журнал успешно очищен"
+msgstr ""
 
 #: package_import.php:205 package_import.php:529
 #, php-format
@@ -25482,9 +25431,9 @@ msgid "The Package %s Import Failed"
 msgstr ""
 
 #: package_import.php:298
-#, fuzzy, php-format
+#, php-format
 msgid "Package %s"
-msgstr "Файлы пакетов"
+msgstr ""
 
 #: package_import.php:305
 #, fuzzy
@@ -26675,9 +26624,9 @@ msgid "Install Plugin"
 msgstr "Установить плагин"
 
 #: plugins.php:1760
-#, fuzzy, php-format
+#, php-format
 msgid "Plugin '%s' can not be archived before it's been Installed."
-msgstr "Плагин не может быть установлен."
+msgstr ""
 
 #: plugins.php:1771
 msgid "Remove Plugin Data Tables and Settings"
@@ -26841,11 +26790,9 @@ msgstr ""
 "повышение автоматически!"
 
 #: poller_automation.php:54
-#, fuzzy, php-format
+#, php-format
 msgid "WARNING: Main Cacti database %s offline or in recovery"
 msgstr ""
-"ВНИМАНИЕ: основная база данных Cacti в автономном режиме или в процессе "
-"восстановления"
 
 #: poller_automation.php:1037 poller_automation.php:1091
 #, fuzzy
@@ -28036,9 +27983,9 @@ msgstr "Индекс Длина"
 
 #: support.php:305 support.php:306 support.php:307 support.php:308
 #: support.php:309
-#, fuzzy, php-format
+#, php-format
 msgid "%d Chars"
-msgstr "d Изменения"
+msgstr ""
 
 #: support.php:319 support.php:377
 #, fuzzy
@@ -30826,9 +30773,9 @@ msgid "%d seconds"
 msgstr "%d секунд"
 
 #: utilities.php:1688
-#, fuzzy, php-format
+#, php-format
 msgid "%0.2f percent of update frequency)"
-msgstr "%0,2 процента от частоты обновления)"
+msgstr ""
 
 #: utilities.php:1696
 #, fuzzy

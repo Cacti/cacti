@@ -394,14 +394,14 @@ msgid "Disassociate Graphs with  Aggregate"
 msgstr "解除与聚合的关联"
 
 #: aggregate_graphs.php:970
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Place the following Aggregate Graph on Tree %s."
-msgstr "点击 '继续' 删除下面的聚合图形模板"
+msgstr ""
 
 #: aggregate_graphs.php:971
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Duplicate following Aggregate Graphs on Tree %s."
-msgstr "点击 '继续',在树形分支下放置下面的聚合图形."
+msgstr ""
 
 #: aggregate_graphs.php:972
 #, fuzzy
@@ -3298,9 +3298,9 @@ msgid ""
 msgstr "点击 '继续' 删除以下数据查询将从设备模板中解除关联."
 
 #: automation_templates.php:791
-#, fuzzy, php-format
+#, php-format
 msgid "Tree Rule Name: '%s'"
-msgstr "树规则项目"
+msgstr ""
 
 #: automation_templates.php:798
 #, fuzzy
@@ -3912,9 +3912,9 @@ msgid "Full"
 msgstr "全名"
 
 #: changelog.php:99
-#, fuzzy, php-format
+#, php-format
 msgid "Change Log [%s]"
-msgstr "更新日志"
+msgstr ""
 
 #: changelog.php:160 support.php:1018
 #, php-format
@@ -6011,9 +6011,9 @@ msgid "GRAPH DOES NOT EXIST"
 msgstr "图表不存在"
 
 #: graph.php:115 graph.php:409
-#, fuzzy, php-format
+#, php-format
 msgid "Graph Utility View for Graph: %s"
-msgstr "图形工具视图"
+msgstr ""
 
 #: graph.php:160 lib/html.php:585
 msgid "Graph Details, Zooming and Debugging Utilities"
@@ -6836,14 +6836,14 @@ msgid "Place Graph on Report"
 msgstr "在报告上放置图表"
 
 #: graphs.php:1912
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Place the following Graph on Tree %s."
-msgstr "点击 '继续' 删除下面的树."
+msgstr ""
 
 #: graphs.php:1913
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Duplicate following Graphs on Tree %s."
-msgstr "点击 '继续' 删除下面的树."
+msgstr ""
 
 #: graphs.php:1914
 #, fuzzy
@@ -6912,12 +6912,12 @@ msgid "Selected Graph Template"
 msgstr "选择图形模板"
 
 #: graphs.php:2320
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "Choose a Graph Template to apply to this Graph. Please note that you may "
 "only change Graph Templates to a 100%% compatible Graph Template, which "
 "means that it includes identical Data Sources."
-msgstr "选择一个图表模板应用到这个图表。 请注意，您只能将图形模板更改为百会之百兼容的图形模板，这意味着它包含相同的数据源。"
+msgstr ""
 
 #: graphs.php:2328
 msgid "Choose the Device that this Graph belongs to."
@@ -7330,14 +7330,14 @@ msgid "Place Devices on Report"
 msgstr "将设备放置在树上"
 
 #: host.php:564
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Place the following Device on Tree %s."
-msgstr "点击 '继续' 删除以下设备模板."
+msgstr ""
 
 #: host.php:565
-#, fuzzy, php-format
+#, php-format
 msgid "Click 'Continue' to Duplicate following Devices on Tree %s."
-msgstr "点击 '继续' 删除下面的树."
+msgstr ""
 
 #: host.php:566
 #, fuzzy
@@ -10599,9 +10599,9 @@ msgid "Auto Detect/Set on first Re-Index"
 msgstr "第一次重新索引时自动检测/设置"
 
 #: include/global_form.php:188
-#, fuzzy, php-format
+#, php-format
 msgid "%d Repetition"
-msgstr "网格选项"
+msgstr ""
 
 #: include/global_form.php:189 include/global_form.php:190
 #: include/global_form.php:191 include/global_form.php:192
@@ -15142,11 +15142,10 @@ msgid "Enable Direct Population of Boost Table"
 msgstr "开启poller_output_boost 表的直接填充"
 
 #: include/global_settings.php:2378
-#, fuzzy
 msgid ""
 "Enables direct insert of records into poller output boost table with results"
 " in a 25% time reduction in each poll cycle."
-msgstr "允许将记录直接插入到poller 输出Boost 中,从而使每个采集周期的时间缩短25%."
+msgstr ""
 
 #: include/global_settings.php:2383
 #, fuzzy
@@ -15526,8 +15525,6 @@ msgid ""
 "certain number of 'outliers'.  Those are exceptional samples, like the "
 "spike, that need to be excluded from the Variance Average calculation."
 msgstr ""
-"有两种删除方法. 第一种基于标准偏差,这将删除距离样品平均值X 个标准偏差的任何样品.第二种基于差异, 这将删除任何比差异平均值多 X% 的样本. "
-"差异方法考虑了一定数量的 '异常值'这些都是特殊样本,如峰值,需要从差异平均值计算中排除."
 
 #: include/global_settings.php:2696
 msgid "Standard Deviation"
@@ -15597,7 +15594,6 @@ msgid ""
 "Percentage of 100%% on an adjusted average of 50 would remove any sample "
 "above the quantity of 100 from the graph."
 msgstr ""
-"该值表示一旦从样本中去除异常值后,高于调整样本平均值的百分比. 例如,调整后平均值为50的方差百分比为100%%将从图形中移除数量超过100的样本."
 
 #: include/global_settings.php:2757
 msgid "Variance Number of Outliers"
@@ -16544,14 +16540,14 @@ msgid "Update"
 msgstr "更新"
 
 #: lib/api_automation.php:5309 lib/api_automation.php:5311
-#, fuzzy, php-format
+#, php-format
 msgid "Automation Network SNMP Option %s!"
-msgstr "自动化SNMP 选项"
+msgstr ""
 
 #: lib/api_automation.php:5315 lib/api_automation.php:5317
-#, fuzzy, php-format
+#, php-format
 msgid "Automation Network SNMP Option %s Failed!"
-msgstr "自动化SNMP 选项"
+msgstr ""
 
 #: lib/api_automation.php:5351
 msgid "The Automation Network Rule does not include any SNMP Options!"
@@ -16575,9 +16571,9 @@ msgid "Unknown Device Template"
 msgstr "未知的模板"
 
 #: lib/api_automation.php:5404 lib/api_automation.php:5406
-#, fuzzy, php-format
+#, php-format
 msgid "Automation Network Rule '%s' %s!"
-msgstr "默认自动化网络"
+msgstr ""
 
 #: lib/api_automation.php:5410 lib/api_automation.php:5412
 #, php-format
@@ -20586,9 +20582,9 @@ msgid "No Device Packages to be Installed"
 msgstr ""
 
 #: lib/installer.php:3012
-#, fuzzy, php-format
+#, php-format
 msgid "%d Tables to be Upgraded"
-msgstr "要添加的项目类型."
+msgstr ""
 
 #: lib/installer.php:3012 lib/installer.php:3014 lib/installer.php:3056
 #, fuzzy
@@ -20826,9 +20822,9 @@ msgid "Default Device Added to Cacti."
 msgstr ""
 
 #: lib/installer.php:3680
-#, fuzzy, php-format
+#, php-format
 msgid "Output: %s."
-msgstr "数据字段"
+msgstr ""
 
 #: lib/installer.php:3700
 #, fuzzy
@@ -21253,11 +21249,11 @@ msgid "The Plugin '%s' has been archived successfully."
 msgstr "成功导入包%s"
 
 #: lib/plugins.php:1719
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "The Plugin '%s' archiving process has failed.  Check the Cacti log for "
 "errors."
-msgstr "一个或多个RRDfile修复失败。有关错误，请参阅仙人掌日志。"
+msgstr ""
 
 #: lib/plugins.php:1722
 #, php-format
@@ -21296,9 +21292,9 @@ msgid "No plugins found at GitHub/GitLab location."
 msgstr ""
 
 #: lib/plugins.php:1956
-#, fuzzy, php-format
+#, php-format
 msgid "The Cacti plugin %s has not releases"
-msgstr "Cacti Poller 尚未运行."
+msgstr ""
 
 #: lib/plugins.php:2011 lib/plugins.php:2149
 msgid "Unable to get archive from GitHub/GitLab location."
@@ -21704,7 +21700,7 @@ msgid ""
 msgstr "通过远程poller 功能,大量数据将从主服务器同步到远程poller. 因此,请将此值保持在16M 或以上."
 
 #: lib/utility.php:1212
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "If using the Cacti Performance Booster and choosing a memory storage engine,"
 " you have to be careful to flush your Performance Booster buffer before the "
@@ -21718,11 +21714,6 @@ msgid ""
 "expected consumption of the Performance Booster tables under Console -> "
 "System Utilities -> View Boost Status."
 msgstr ""
-"如果使用Cacti Performance Booster并选择内存存储引擎，则在系统内存表空间用完之前，必须小心刷新Performance "
-"Booster缓冲区。 这通过两种方式完成，首先将输出列的大小减小到合适的大小。 "
-"此列位于表poller_output和poller_output_boost中。 你可以做的第二件事是分配更多的内存到内存表中。 "
-"我们已经任意选择了系统内存10％的建议值，但是如果您使用的是SSD磁盘驱动器，或者系统较小，则可以忽略此建议或选择其他存储引擎。 您可以在Console"
-" - > System Utilities - > View Boost Status下看到Performance Booster表的预期消耗量。"
 
 #: lib/utility.php:1218
 msgid ""
@@ -21794,7 +21785,7 @@ msgstr ""
 "如果表的索引很大，则必须使用梭子鱼的innodb_file_format和innodb_large_prefix等于1的操作。否则可能会导致插件无法正确创建表。"
 
 #: lib/utility.php:1254
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "InnoDB will hold as much tables and indexes in system memory as is possible."
 "  Therefore, you should make the innodb_buffer_pool large enough to hold as "
@@ -21807,11 +21798,8 @@ msgid ""
 "the swappiness of the system, or to remove swap to keep the system from "
 "swapping."
 msgstr ""
-"InnoDB将在系统内存中保存尽可能多的表和索引。 因此，你应该让innodb_buffer_pool大到足以容纳内存中的表和索引。 检查/ var /"
-" lib / mysql / cacti目录的大小将有助于确定此值。 我们建议您的系统总内存的25％，但是您的要求会因系统大小而异。"
 
 #: lib/utility.php:1260
-#, fuzzy
 msgid ""
 "This settings should remain ON unless your Cacti instances is running on "
 "either ZFS or FusionI/O which both have internal journaling to accommodate "
@@ -21819,8 +21807,6 @@ msgid ""
 "systems rarely go down and you have backups, turning this setting to OFF can"
 " net you almost a 50% increase in database performance."
 msgstr ""
-"除非您的Cacti实例在ZFS或FusionI / "
-"O上运行，并且两者都具有内部日记功能以适应突然的系统崩溃，否则此设置应保持为ON。但是，如果您的电源非常好，并且系统很少宕机并且有备份，那么将此设置设置为OFF可以使数据库性能提高近50％。"
 
 #: lib/utility.php:1265
 msgid ""
@@ -22244,9 +22230,9 @@ msgid "Logout of Cacti"
 msgstr "注销Cacti"
 
 #: logout.php:60
-#, fuzzy, php-format
+#, php-format
 msgid "You have been logged out of Cacti due to %s."
-msgstr "由于会话超时,您已被自动注销了cacti."
+msgstr ""
 
 #: logout.php:61
 #, php-format
@@ -22473,19 +22459,19 @@ msgid "What would you like to Package?"
 msgstr "你想导出什么?"
 
 #: package.php:667
-#, fuzzy, php-format
+#, php-format
 msgid "%s Device Package"
-msgstr "设备名称"
+msgstr ""
 
 #: package.php:670
-#, fuzzy, php-format
+#, php-format
 msgid "%s Graph Template Package"
-msgstr "图形模板名称"
+msgstr ""
 
 #: package.php:673
-#, fuzzy, php-format
+#, php-format
 msgid "%s Data Query Package"
-msgstr "数据查询名称"
+msgstr ""
 
 #: package.php:700 templates_export.php:168
 #, php-format
@@ -22497,9 +22483,9 @@ msgid "Available Templates"
 msgstr ""
 
 #: package.php:709
-#, fuzzy, php-format
+#, php-format
 msgid "%s to Export"
-msgstr "导出"
+msgstr ""
 
 #: package.php:710
 #, fuzzy
@@ -22647,9 +22633,9 @@ msgid "The Package %s Import Failed"
 msgstr ""
 
 #: package_import.php:298
-#, fuzzy, php-format
+#, php-format
 msgid "Package %s"
-msgstr "包文件"
+msgstr ""
 
 #: package_import.php:305
 #, fuzzy
@@ -23769,9 +23755,9 @@ msgid "Install Plugin"
 msgstr "安装插件"
 
 #: plugins.php:1760
-#, fuzzy, php-format
+#, php-format
 msgid "Plugin '%s' can not be archived before it's been Installed."
-msgstr "插件无法安装."
+msgstr ""
 
 #: plugins.php:1771
 msgid "Remove Plugin Data Tables and Settings"
@@ -23928,9 +23914,9 @@ msgid ""
 msgstr "注意：已添加第二个仙人掌数据收集器。因此，自动启用增强功能！"
 
 #: poller_automation.php:54
-#, fuzzy, php-format
+#, php-format
 msgid "WARNING: Main Cacti database %s offline or in recovery"
-msgstr "警告：主 Cacti 数据库离线或正在恢复"
+msgstr ""
 
 #: poller_automation.php:1037 poller_automation.php:1091
 msgid "Cacti Primary Admin"
@@ -24466,9 +24452,9 @@ msgid "%d day"
 msgstr ""
 
 #: rrdcheck.php:240 rrdcheck.php:241
-#, fuzzy, php-format
+#, php-format
 msgid "%d days"
-msgstr "天"
+msgstr ""
 
 #: rrdcheck.php:245 rrdcheck.php:248
 msgid "Messages"

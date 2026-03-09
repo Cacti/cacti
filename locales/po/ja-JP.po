@@ -6473,7 +6473,6 @@ msgid ""
 "only change Graph Templates to a 100%% compatible Graph Template, which "
 "means that it includes identical Data Sources."
 msgstr ""
-"このグラフに適用するグラフテンプレートを選択します。グラフテンプレートは、互換性のある100％のグラフテンプレートにしか変更できないため、同一のデータソースが含まれることになります。"
 
 #: graphs.php:2328
 msgid "Choose the Device that this Graph belongs to."
@@ -10617,10 +10616,6 @@ msgid ""
 "milliseconds.  Formatting follows the rules of valstrfduration qualified "
 "PRINT/GPRINT."
 msgstr ""
-"右軸のラベルを設定するときは、データフォーマットにルールを適用してください。サポートされている形式には、データが数値として扱われる「数値」、値がUNIXタイムスタンプ（1970年1月からの秒数）として解釈されるstrftime形式（デフォルトは「％Y-％m-％d％H」）が含まれます。"
-" ：％ミズ&quot;）。 --units-lengthおよび--right-axis-"
-"formatも参照してください。最後に、値がミリ秒単位の期間として解釈される「期間」。フォーマットはvalstrfduration修飾PRINT / "
-"GPRINTの規則に従います。"
 
 #: include/global_form.php:915
 msgid "Left Axis Format (--left-axis-format &lt;format&gt;)"
@@ -10640,10 +10635,6 @@ msgid ""
 "where values are interpreted as duration in milliseconds.  Formatting "
 "follows the rules of valstrfduration qualified PRINT/GPRINT."
 msgstr ""
-"左軸のラベルを設定するときは、データフォーマットに規則を適用します。サポートされている形式には、データが数値として扱われる「数値」、値がUNIXタイムスタンプ（1970年1月からの秒数）として解釈されるstrftime形式（デフォルトは「％Y-％m-％d％H」）が含まれます。"
-" ：％ミズ&quot;）。 --units-"
-"lengthも参照してください。最後に、値がミリ秒単位の期間として解釈される「期間」。フォーマットはvalstrfduration修飾PRINT / "
-"GPRINTの規則に従います。"
 
 #: include/global_form.php:931
 msgid "Legend Options"
@@ -14462,7 +14453,7 @@ msgstr "poller_output_boostテーブルの直接作成を有効にする"
 msgid ""
 "Enables direct insert of records into poller output boost table with results"
 " in a 25% time reduction in each poll cycle."
-msgstr "ポーラー出力ブーストへのレコードの直接挿入を可能にし、各ポーリングサイクルで25％の時間短縮をもたらします。"
+msgstr ""
 
 #: include/global_settings.php:2383
 msgid "Enable Boost Debugging"
@@ -14824,8 +14815,6 @@ msgid ""
 "certain number of 'outliers'.  Those are exceptional samples, like the "
 "spike, that need to be excluded from the Variance Average calculation."
 msgstr ""
-"除去方法は2つあります。最初の標準偏差は、サンプルの平均から標準偏差のX倍離れたサンプルをすべて削除します。 "
-"2番目の方法、Varianceは、Varianceの平均よりX％大きいサンプルをすべて削除します。分散法は、一定数の「異常値」を考慮します。これらは、スパイクのように、分散平均の計算から除外する必要がある例外的なサンプルです。"
 
 #: include/global_settings.php:2696
 msgid "Standard Deviation"
@@ -14897,8 +14886,6 @@ msgid ""
 "Percentage of 100%% on an adjusted average of 50 would remove any sample "
 "above the quantity of 100 from the graph."
 msgstr ""
-"この値は、異常値がサンプルから削除された後の調整済みサンプルの平均を上回るパーセンテージを表します。たとえば、50の調整済み平均に対して100％のVariance"
-" Percentageを指定すると、グラフから100の数量を超えるサンプルが削除されます。"
 
 #: include/global_settings.php:2757
 msgid "Variance Number of Outliers"
@@ -20814,12 +20801,6 @@ msgid ""
 "expected consumption of the Performance Booster tables under Console -> "
 "System Utilities -> View Boost Status."
 msgstr ""
-"Cacti Performance "
-"Boosterを使用していてメモリストレージエンジンを選択している場合は、システムがメモリテーブルスペースを使い果たす前にPerformance "
-"Boosterバッファをフラッシュするように注意する必要があります。これは2つの方法で行われます。最初に、出力列のサイズを正しいサイズに縮小します。この列は、テーブルpoller_output、およびpoller_output_boostにあります。"
-" 2番目にできることは、メモリテーブルにより多くのメモリを割り当てることです。システムメモリの10 "
-"%%という推奨値を任意に選択しましたが、SSDディスクドライブを使用している場合、またはより小さなシステムを使用している場合は、この推奨を無視するか別のストレージエンジンを選択してください。パフォーマンスブースターテーブルの予想消費量は、[コンソール]"
-"  - &gt; [システムユーティリティ]  - &gt; [ブーストステータスの表示]で確認できます。"
 
 #: lib/utility.php:1218
 msgid ""
@@ -20910,8 +20891,6 @@ msgid ""
 "systems rarely go down and you have backups, turning this setting to OFF can"
 " net you almost a 50% increase in database performance."
 msgstr ""
-"Cactiインスタンスが、システムの突然のクラッシュに対応する内部ジャーナリングを備えたZFSまたはFusionI / "
-"Oで実行されていない限り、この設定はONのままにしてください。ただし、電力が非常に良好で、システムがほとんどダウンせず、バックアップがある場合、この設定をオフにすると、データベースのパフォーマンスがほぼ50％向上します。"
 
 #: lib/utility.php:1265
 msgid ""

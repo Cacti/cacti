@@ -16192,13 +16192,6 @@ msgid ""
 "certain number of 'outliers'.  Those are exceptional samples, like the "
 "spike, that need to be excluded from the Variance Average calculation."
 msgstr ""
-"Es gibt zwei Entfernungsmethoden. Die erste, die Standardabweichung, "
-"entfernt alle Stichproben, die um X Standardabweichungen vom Durchschnitt "
-"der Stichproben abweichen. Die zweite, die Varianz, entfernt alle "
-"Stichproben, die um X % über dem Varianzdurchschnitt liegen. Die "
-"Varianzmethode berücksichtigt eine bestimmte Anzahl von „Ausreißern“. Dabei "
-"handelt es sich um Ausnahmestichproben, wie z. B. den Spike, die von der "
-"Berechnung des Varianzdurchschnitts ausgeschlossen werden müssen."
 
 #: include/global_settings.php:2696
 msgid "Standard Deviation"

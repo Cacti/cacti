@@ -7094,10 +7094,6 @@ msgid ""
 "only change Graph Templates to a 100%% compatible Graph Template, which "
 "means that it includes identical Data Sources."
 msgstr ""
-"Επιλέξτε ένα πρότυπο γραφήματος για εφαρμογή σε αυτό το γράφημα. Λάβετε "
-"υπόψη ότι μπορείτε να αλλάξετε μόνο τα πρότυπα γραφήματος σε ένα 100 %% "
-"συμβατό πρότυπο γραφήματος, πράγμα που σημαίνει ότι περιλαμβάνει "
-"πανομοιότυπες πηγές δεδομένων."
 
 #: graphs.php:2328
 msgid "Choose the Device that this Graph belongs to."
@@ -16418,10 +16414,6 @@ msgid ""
 "Percentage of 100%% on an adjusted average of 50 would remove any sample "
 "above the quantity of 100 from the graph."
 msgstr ""
-"Αυτή η τιμή αντιπροσωπεύει το ποσοστό πάνω από τον προσαρμοσμένο μέσο όρο "
-"του δείγματος μόλις αφαιρεθούν οι ακραίες τιμές από το δείγμα.  Για "
-"παράδειγμα, ένα ποσοστό διακύμανσης 100 %% σε προσαρμοσμένο μέσο όρο 50 θα "
-"αφαιρούσε οποιοδήποτε δείγμα πάνω από την ποσότητα του 100 από το γράφημα."
 
 #: include/global_settings.php:2757
 msgid "Variance Number of Outliers"
