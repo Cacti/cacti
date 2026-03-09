@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-03-09 14:08+0000\n"
+"PO-Revision-Date: 2026-03-10 13:25+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core/sv/>"
 "\n"
@@ -323,8 +323,8 @@ msgstr "Konvertera aggregerade grafer"
 #: aggregate_graphs.php:951
 msgid "Click 'Continue' to Associate the following Graph with the Aggregate Graph."
 msgstr ""
-"Klicka på \"Continue\" för att associera följande graf med den aggregerade "
-"grafen."
+"Klicka på \"Fortsätt\" för att associera följande diagram med aggregerat "
+"diagram."
 
 #: aggregate_graphs.php:952
 msgid "Click 'Continue' to Associate the following Graphs with the Aggregate Graph."
@@ -334,7 +334,7 @@ msgstr ""
 
 #: aggregate_graphs.php:953
 msgid "Associate Graph with Aggregate"
-msgstr "Associera graf med aggregat"
+msgstr "Associera diagram med aggregerat"
 
 #: aggregate_graphs.php:954
 msgid "Associate Graphs with  Aggregate"
@@ -343,8 +343,8 @@ msgstr "Associera grafer med Aggregate"
 #: aggregate_graphs.php:957
 msgid "Click 'Continue' to Disassociate the following Graph from the Aggregate Graph."
 msgstr ""
-"Klicka på \"Continue\" för att skilja följande graf från den aggregerade "
-"grafen."
+"Klicka på \"Fortsätt\" för att skilja följande diagram från aggregerat "
+"diagram."
 
 #: aggregate_graphs.php:958
 msgid "Click 'Continue' to Disassociate the following Graphs from the Aggregate Graph."
