@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-02-01 13:15-0500\nPO-Revision-Date: 2026-02-07 08:18+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-02-01 13:15-0500\nPO-Revision-Date: 2026-03-10 07:18+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php:29 include/global_arrays.php:2638 lib/html.php:2607
 msgid "About Cacti"
@@ -123,7 +123,7 @@ msgstr "Plats på ett träd (%s)"
 
 #: aggregate_graphs.php:352
 msgid "Click 'Continue' to delete the following Aggregate Graph(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att radera följande Aggregate Graph (s)."
+msgstr "Klicka på \"Fortsätt\" för att radera följande Aggregate Graph (s)."
 
 #: aggregate_graphs.php:357 aggregate_graphs.php:430 aggregate_graphs.php:455
 #: aggregate_graphs.php:484 aggregate_graphs.php:497 aggregate_graphs.php:506
@@ -202,7 +202,7 @@ msgstr "Fortsätt"
 #: aggregate_graphs.php:357 aggregate_graphs.php:430 aggregate_graphs.php:455
 #: graphs.php:916
 msgid "Delete Graph(s)"
-msgstr "Radera graf (er)"
+msgstr "Ta bort diagram"
 
 #: aggregate_graphs.php:387
 msgid "The selected Aggregate Graphs represent elements from more than one Graph Template."
@@ -231,7 +231,7 @@ msgstr "För att migrera Aggregatgraferna nedan till ett Mallbaserat aggregat m�
 
 #: aggregate_graphs.php:414
 msgid "Click 'Continue' and the following Aggregate Graph(s) will be migrated to use the Aggregate Template that you choose below."
-msgstr "Klicka på &quot;Fortsätt&quot; och följande aggregatgrafer kommer att migreras för att använda den aggregerade mallen som du väljer nedan."
+msgstr "Klicka på \"Fortsätt\" och följande aggregatgrafer kommer att migreras för att använda den aggregerade mallen som du väljer nedan."
 
 #: aggregate_graphs.php:420
 msgid "Aggregate Template:"
@@ -248,11 +248,11 @@ msgstr "För att migrera de aggregerade graferna nedan till en mallbaserad aggre
 
 #: aggregate_graphs.php:436
 msgid "Please press 'Return' to continue."
-msgstr "Vänligen tryck på &quot;Retur&quot; för att fortsätta."
+msgstr "Vänligen tryck på \"Retur\" för att fortsätta."
 
 #: aggregate_graphs.php:447
 msgid "Click 'Continue' to combine the following Aggregate Graph(s) into a single Aggregate Graph."
-msgstr "Klicka på &quot;Fortsätt&quot; för att kombinera följande Aggregate Graph (er) till en enda Aggregate Graph."
+msgstr "Klicka på \"Fortsätt\" för att kombinera följande Aggregate Graph (er) till en enda Aggregate Graph."
 
 #: aggregate_graphs.php:452
 msgid "Aggregate Name:"
@@ -264,7 +264,7 @@ msgstr "Nytt aggregat"
 
 #: aggregate_graphs.php:468 graphs.php:1270 host.php:528
 msgid "Click 'Continue' to add the selected Graphs to the Report below."
-msgstr "Klicka på &quot;Fortsätt&quot; för att lägga till de valda graferna till rapporten nedan."
+msgstr "Klicka på \"Fortsätt\" för att lägga till de valda graferna till rapporten nedan."
 
 #: aggregate_graphs.php:472 graph_view.php:883 graphs.php:1274 host.php:532
 #: lib/html_reports.php:35 lib/html_reports.php:1932
@@ -290,7 +290,7 @@ msgstr "Du har för närvarande inga rapporter definierade."
 
 #: aggregate_graphs.php:492
 msgid "Click 'Continue' to convert the following Aggregate Graph(s) into a normal Graph."
-msgstr "Klicka på &quot;Fortsätt&quot; för att kombinera följande Aggregate Graph (er) till en enda Aggregate Graph."
+msgstr "Klicka på \"Fortsätt\" för att kombinera följande Aggregate Graph (er) till en enda Aggregate Graph."
 
 #: aggregate_graphs.php:497
 msgid "Convert to normal Graph(s)"
@@ -298,7 +298,7 @@ msgstr "Konvertera till LINE1-graf"
 
 #: aggregate_graphs.php:501
 msgid "Click 'Continue' to associate the following Graph(s) with the Aggregate Graph."
-msgstr "Klicka på &quot;Fortsätt&quot; för att associera följande graf (er) med aggregatgrafen."
+msgstr "Klicka på \"Fortsätt\" för att associera följande graf (er) med aggregatgrafen."
 
 #: aggregate_graphs.php:506
 msgid "Associate Graph(s)"
@@ -306,7 +306,7 @@ msgstr "Associerad graf (er)"
 
 #: aggregate_graphs.php:510
 msgid "Click 'Continue' to disassociate the following Graph(s) from the Aggregate."
-msgstr "Klicka på &quot;Fortsätt&quot; för att avbryta följande graf (er) från aggregatet."
+msgstr "Klicka på \"Fortsätt\" för att avbryta följande graf (er) från aggregatet."
 
 #: aggregate_graphs.php:515
 msgid "Dis-Associate Graph(s)"
@@ -314,7 +314,7 @@ msgstr "Dis-Associate Graph (s)"
 
 #: aggregate_graphs.php:519
 msgid "Click 'Continue' to place the following Aggregate Graph(s) under the Tree Branch."
-msgstr "Klicka på &quot;Fortsätt&quot; för att placera följande Aggregate Graph (s) under Tree Branch."
+msgstr "Klicka på \"Fortsätt\" för att placera följande Aggregate Graph (s) under Tree Branch."
 
 #: aggregate_graphs.php:521 host.php:498
 msgid "Destination Branch:"
@@ -733,11 +733,11 @@ msgstr "Inga aggregerade grafer hittades"
 
 #: aggregate_templates.php:310
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att ta bort följande Aggregate Graph Template (s)."
+msgstr "Klicka på \"Fortsätt\" för att ta bort följande Aggregate Graph Template (s)."
 
 #: aggregate_templates.php:315
 msgid "Delete Color Template(s)"
-msgstr "Radera färgmallar"
+msgstr "Ta bort färgmall(ar)"
 
 #: aggregate_templates.php:355
 #, php-format
@@ -1115,7 +1115,7 @@ msgstr "Enheter borttagna från Cacti Automations databas"
 
 #: automation_devices.php:196
 msgid "Click 'Continue' to add the following Discovered device(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att lägga till följande Upptäckta enheter."
+msgstr "Klicka på \"Fortsätt\" för att lägga till följande Upptäckta enheter."
 
 #: automation_devices.php:202 pollers.php:989
 msgid "Pollers"
@@ -1136,7 +1136,7 @@ msgstr "Lägg till enhet (er)"
 
 #: automation_devices.php:222
 msgid "Click 'Continue' to Delete the following Discovered device(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att lägga till följande Upptäckta enheter."
+msgstr "Klicka på \"Fortsätt\" för att lägga till följande Upptäckta enheter."
 
 #: automation_devices.php:227 host.php:492
 msgid "Delete Device(s)"
@@ -1303,11 +1303,11 @@ msgstr "Ett försök gjordes att utföra en SQL-injektion i Graph-automatisering
 
 #: automation_graph_rules.php:293
 msgid "Press 'Continue' to delete the following Graph Rules."
-msgstr "Tryck på &quot;Fortsätt&quot; för att radera följande grafregler."
+msgstr "Tryck på \"Fortsätt\" för att radera följande grafregler."
 
 #: automation_graph_rules.php:300
 msgid "Click 'Continue' to duplicate the following Rule(s). You can optionally change the title format for the new Graph Rules."
-msgstr "Klicka på &quot;Fortsätt&quot; för att duplicera följande regel (er). Du kan valfritt ändra titelformat för de nya grafreglerna."
+msgstr "Klicka på \"Fortsätt\" för att duplicera följande regel (er). Du kan valfritt ändra titelformat för de nya grafreglerna."
 
 #: automation_graph_rules.php:302 automation_tree_rules.php:280 graphs.php:938
 #: graphs.php:949
@@ -1320,7 +1320,7 @@ msgstr "regel_namn"
 
 #: automation_graph_rules.php:308 automation_tree_rules.php:286
 msgid "Click 'Continue' to enable the following Rule(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att aktivera följande regel (er)."
+msgstr "Klicka på \"Fortsätt\" för att aktivera följande regel (er)."
 
 #: automation_graph_rules.php:310 automation_tree_rules.php:288
 msgid "Make sure, that those rules have successfully been tested!"
@@ -1328,7 +1328,7 @@ msgstr "Se till att de reglerna har testats!"
 
 #: automation_graph_rules.php:316 automation_tree_rules.php:294
 msgid "Click 'Continue' to disable the following Rule(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att inaktivera följande regel (er)."
+msgstr "Klicka på \"Fortsätt\" för att inaktivera följande regel (er)."
 
 #: automation_graph_rules.php:327 automation_tree_rules.php:305
 msgid "Apply requested action"
@@ -1488,19 +1488,19 @@ msgstr "FEL: Nätverket '%s' är ogiltigt."
 
 #: automation_networks.php:344
 msgid "Click 'Continue' to delete the following Network(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att radera följande nätverk."
+msgstr "Klicka på \"Fortsätt\" för att radera följande nätverk."
 
 #: automation_networks.php:351
 msgid "Click 'Continue' to enable the following Network(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att aktivera följande nätverk."
+msgstr "Klicka på \"Fortsätt\" för att aktivera följande nätverk."
 
 #: automation_networks.php:358
 msgid "Click 'Continue' to disable the following Network(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att inaktivera följande nätverk."
+msgstr "Klicka på \"Fortsätt\" för att inaktivera följande nätverk."
 
 #: automation_networks.php:365
 msgid "Click 'Continue' to discover the following Network(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att upptäcka följande nätverk."
+msgstr "Klicka på \"Fortsätt\" för att upptäcka följande nätverk."
 
 #: automation_networks.php:368
 msgid "Run discover in debug mode"
@@ -2147,11 +2147,11 @@ msgstr "Klar Filtrerad"
 
 #: automation_snmp.php:235
 msgid "Click 'Continue' to delete the following SNMP Option(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att radera följande SNMP-alternativ (er)."
+msgstr "Klicka på \"Fortsätt\" för att ta bort följande SNMP-alternativ."
 
 #: automation_snmp.php:242
 msgid "Click 'Continue' to duplicate the following SNMP Options. You can optionally change the title format for the new SNMP Options."
-msgstr "Klicka på &quot;Fortsätt&quot; för att duplicera följande SNMP-alternativ. Du kan valfritt ändra titelformat för de nya SNMP-alternativen."
+msgstr "Klicka på \"Fortsätt\" för att duplicera följande SNMP-alternativ. Du kan valfritt ändra titelformat för de nya SNMP-alternativen."
 
 #: automation_snmp.php:244
 msgid "Name Format"
@@ -2360,7 +2360,7 @@ msgstr "Inga SNMP-alternativuppsättningar hittades"
 
 #: automation_templates.php:162
 msgid "Click 'Continue' to delete the following Automation Template(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att ta bort folling Automation Template (s)."
+msgstr "Klicka på \"Fortsätt\" för att ta bort folling Automation Template (s)."
 
 #: automation_templates.php:167
 msgid "Delete Automation Template(s)"
@@ -2449,11 +2449,11 @@ msgstr "Ett försök gjordes att utföra en SQL-injektion i Tree Automation"
 
 #: automation_tree_rules.php:271
 msgid "Click 'Continue' to delete the following Rule(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att radera följande regel (er)."
+msgstr "Klicka på \"Fortsätt\" för att radera följande regel (er)."
 
 #: automation_tree_rules.php:278
 msgid "Click 'Continue' to duplicate the following Rule(s). You can optionally change the title format for the new Rules."
-msgstr "Klicka på &quot;Fortsätt&quot; för att duplicera följande regel (er). Du kan valfritt ändra titelformat för de nya reglerna."
+msgstr "Klicka på \"Fortsätt\" för att duplicera följande regel (er). Du kan valfritt ändra titelformat för de nya reglerna."
 
 #: automation_tree_rules.php:407
 msgid "Created Trees"
@@ -2558,8 +2558,8 @@ msgstr "Meddelande: Cacti Daemon PID["
 #: cdef.php:271
 msgid "Click 'Continue' to delete the following CDEF."
 msgid_plural "Click 'Continue' to delete all following CDEFs."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att radera följande CDEF."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att radera alla följande CDEF-filer."
+msgstr[0] "Klicka på \"Fortsätt\" för att radera följande CDEF.Klicka på \"Fortsätt\" för att radera alla följande CDEF-filer."
+msgstr[1] ""
 
 #: cdef.php:276
 msgid "Delete CDEF"
@@ -2570,8 +2570,8 @@ msgstr[1] "Radera CDEFs"
 #: cdef.php:280
 msgid "Click 'Continue' to duplicate the following CDEF. You can optionally change the title format for the new CDEF."
 msgid_plural "Click 'Continue' to duplicate the following CDEFs. You can optionally change the title format for the new CDEFs."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att duplicera följande CDEF. Du kan valfritt ändra titelformat för den nya CDEF."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att duplicera följande CDEF-filer. Du kan valfritt ändra titelformat för de nya CDEF-filerna."
+msgstr[0] "Klicka på \"Fortsätt\" för att duplicera följande CDEF. Du kan valfritt ändra titelformat för den nya CDEF.Klicka på \"Fortsätt\" för att duplicera följande CDEF-filer. Du kan valfritt ändra titelformat för de nya CDEF-filerna."
+msgstr[1] ""
 
 #: cdef.php:282 color_templates.php:249 data_source_profiles.php:311
 #: data_templates.php:473 graph_templates.php:382 host_templates.php:234
@@ -2587,7 +2587,7 @@ msgstr[1] "Kopiera CDEFs"
 
 #: cdef.php:336
 msgid "Click 'Continue' to delete the following CDEF Item."
-msgstr "Klicka på \"Fortsätt\" för att radera följande CDEF-objekt."
+msgstr "Klicka på \"Fortsätt\" för att ta bort följande CDEF-objekt."
 
 #: cdef.php:337
 #, php-format
@@ -2690,8 +2690,8 @@ msgstr "Icke namngiven färg"
 #: color.php:187
 msgid "Click 'Continue' to delete the following Color"
 msgid_plural "Click 'Continue' to delete the following Colors"
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att radera följande färg"
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att radera följande färger"
+msgstr[0] "Klicka på \"Fortsätt\" för att radera följande färgKlicka på \"Fortsätt\" för att radera följande färger"
+msgstr[1] ""
 
 #: color.php:192
 msgid "Delete Color"
@@ -2725,7 +2725,7 @@ msgstr "Skriva över befintlig data?"
 
 #: color.php:382
 msgid "Should the import process be allowed to overwrite existing data?  Please note, this does not mean delete old rows, only update duplicate rows."
-msgstr "Bör importprocessen tillåtas skriva över befintliga data?  Observera att detta inte innebär att radera gamla rader, utan endast att uppdatera duplicerade rader."
+msgstr "Bör importprocessen tillåtas skriva över befintliga data?  Observera att detta inte innebär att ta bort gamla rader, utan endast att uppdatera duplicerade rader."
 
 #: color.php:385
 msgid "Allow Existing Rows to be Updated?"
@@ -2844,8 +2844,8 @@ msgstr "Inga objekt"
 #: color_templates.php:238
 msgid "Click 'Continue' to delete the following Color Template"
 msgid_plural "Click 'Continue' to delete following Color Templates"
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att radera följande färgmall"
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att radera följande färgmallar"
+msgstr[0] "Klicka på \"Fortsätt\" för att radera följande färgmallKlicka på \"Fortsätt\" för att radera följande färgmallar"
+msgstr[1] ""
 
 #: color_templates.php:243
 msgid "Delete Color Template"
@@ -2856,8 +2856,8 @@ msgstr[1] "Radera färgmallar"
 #: color_templates.php:247
 msgid "Click 'Continue' to duplicate the following Color Template. You can optionally change the title format for the new color template."
 msgid_plural "Click 'Continue' to duplicate following Color Templates. You can optionally change the title format for the new color templates."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att duplicera följande färgmall. Du kan valfritt ändra titelformat för den nya färgmallen."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att duplicera följande Färgmallar. Du kan valfritt ändra titelformat för de nya färgmallarna."
+msgstr[0] "Klicka på \"Fortsätt\" för att duplicera följande färgmall. Du kan valfritt ändra titelformat för den nya färgmallen.Klicka på \"Fortsätt\" för att duplicera följande Färgmallar. Du kan valfritt ändra titelformat för de nya färgmallarna."
+msgstr[1] ""
 
 #: color_templates.php:255
 msgid "Duplicate Color Template"
@@ -2954,7 +2954,7 @@ msgstr "Körkontroll"
 
 #: data_debug.php:31
 msgid "Delete Check"
-msgstr "Radera check"
+msgstr "Ta bort kontroll"
 
 #: data_debug.php:52
 msgid "Data Source debug started."
@@ -3293,7 +3293,7 @@ msgstr[1] "Klicka på 'Fortsätt' för att radera följande datainmatningsmetode
 
 #: data_input.php:253
 msgid "Click 'Continue' to duplicate the following Data Input Method(s). You can optionally change the title format for the new Data Input Method(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att duplicera följande datainmatningsmetod. Du kan valfritt ändra titelformat för den nya datainmatningsmetoden."
+msgstr "Klicka på \"Fortsätt\" för att duplicera följande datainmatningsmetod. Du kan valfritt ändra titelformat för den nya datainmatningsmetoden."
 
 #: data_input.php:255
 msgid "Input Name:"
@@ -3471,8 +3471,8 @@ msgstr "Inga metoder för datainmatning hittades"
 #: data_queries.php:407
 msgid "Click 'Continue' to Delete the following Data Query."
 msgid_plural "Click 'Continue' to Delete following Data Queries."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att radera följande datafråga."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att radera följande datafrågor."
+msgstr[0] "Klicka på \"Fortsätt\" för att radera följande datafråga.Klicka på \"Fortsätt\" för att radera följande datafrågor."
+msgstr[1] ""
 
 #: data_queries.php:412
 msgid "Delete Data Query"
@@ -3483,8 +3483,8 @@ msgstr[1] "Ta bort datafrågor"
 #: data_queries.php:416
 msgid "Click 'Continue' to duplicate the following Data Query."
 msgid_plural "Click 'Continue' to duplicate following Data Queries."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att radera följande datafråga."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att radera följande datafrågor."
+msgstr[0] "Klicka på \"Fortsätt\" för att radera följande datafråga.Klicka på \"Fortsätt\" för att radera följande datafrågor."
+msgstr[1] ""
 
 #: data_queries.php:418 lib/html_reports.php:520
 msgid "Name Format:"
@@ -3667,8 +3667,8 @@ msgstr "Om du ändrar Heartbeat från den här sidan ändras inte Heartbeat för
 #: data_source_profiles.php:300
 msgid "Click 'Continue' to delete the following Data Source Profile"
 msgid_plural "Click 'Continue' to delete following Data Source Profiles"
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att radera följande datakällaprofil"
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att radera följande datakällaprofiler"
+msgstr[0] "Klicka på \"Fortsätt\" för att radera följande datakällaprofilKlicka på \"Fortsätt\" för att radera följande datakällaprofiler"
+msgstr[1] ""
 
 #: data_source_profiles.php:305
 msgid "Delete Data Source Profile"
@@ -3679,8 +3679,8 @@ msgstr[1] "Ta bort datakällaprofiler"
 #: data_source_profiles.php:309
 msgid "Click 'Continue' to duplicate the following Data Source Profile. You can optionally change the title format for the new Data Source Profile"
 msgid_plural "Click 'Continue' to duplicate following Data Source Profiles. You can optionally change the title format for the new Data Source Profiles."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att duplicera följande datakällaprofil. Du kan valfritt ändra titelformat för den nya datakällaprofilen"
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att duplicera följande datakällaprofiler. Du kan valfritt ändra titelformat för de nya datakällaprofilerna."
+msgstr[0] "Klicka på \"Fortsätt\" för att duplicera följande datakällaprofil. Du kan valfritt ändra titelformat för den nya datakällaprofilenKlicka på \"Fortsätt\" för att duplicera följande datakällaprofiler. Du kan valfritt ändra titelformat för de nya datakällaprofilerna."
+msgstr[1] ""
 
 #: data_source_profiles.php:315
 msgid "Duplicate Data Source Profile"
@@ -3922,8 +3922,8 @@ msgstr "Återanvänd föreslagna namn"
 #: data_sources.php:513
 msgid "Click 'Continue' to delete the following Data Source"
 msgid_plural "Click 'Continue' to delete following Data Sources"
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att radera följande datakälla"
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att radera följande datakällor"
+msgstr[0] "Klicka på \"Fortsätt\" för att radera följande datakällaKlicka på \"Fortsätt\" för att radera följande datakällor"
+msgstr[1] ""
 
 #: data_sources.php:517
 msgid "The following graph is using these data sources:"
@@ -3958,8 +3958,8 @@ msgstr[1] "Ta bort datakällor"
 #: data_sources.php:539
 msgid "Choose a new Device for this Data Source and click 'Continue'."
 msgid_plural "Choose a new Device for these Data Sources and click 'Continue'"
-msgstr[0] "Välj en ny enhet för den här datakällan och klicka på &quot;Fortsätt&quot;."
-msgstr[1] "Välj en ny enhet för dessa datakällor och klicka på &quot;Fortsätt&quot;"
+msgstr[0] "Välj en ny enhet för den här datakällan och klicka på \"Fortsätt\".Välj en ny enhet för dessa datakällor och klicka på \"Fortsätt\""
+msgstr[1] ""
 
 #: data_sources.php:541
 msgid "New Device:"
@@ -3968,8 +3968,8 @@ msgstr "Ny enhet:"
 #: data_sources.php:549
 msgid "Click 'Continue' to enable the following Data Source."
 msgid_plural "Click 'Continue' to enable all following Data Sources."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att aktivera följande datakälla."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att aktivera alla följande datakällor."
+msgstr[0] "Klicka på \"Fortsätt\" för att aktivera följande datakälla.Klicka på \"Fortsätt\" för att aktivera alla följande datakällor."
+msgstr[1] ""
 
 #: data_sources.php:554
 msgid "Enable Data Source"
@@ -3980,8 +3980,8 @@ msgstr[1] "Aktivera datakällor"
 #: data_sources.php:558
 msgid "Click 'Continue' to disable the following Data Source."
 msgid_plural "Click 'Continue' to disable all following Data Sources."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att inaktivera följande datakälla."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att inaktivera alla följande datakällor."
+msgstr[0] "Klicka på \"Fortsätt\" för att inaktivera följande datakälla.Klicka på \"Fortsätt\" för att inaktivera alla följande datakällor."
+msgstr[1] ""
 
 #: data_sources.php:563
 msgid "Disable Data Source"
@@ -3992,8 +3992,8 @@ msgstr[1] "Inaktivera datakällor"
 #: data_sources.php:567
 msgid "Click 'Continue' to re-apply the suggested name to the following Data Source."
 msgid_plural "Click 'Continue' to re-apply the suggested names to all following Data Sources."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att tillämpa det föreslagna namnet på följande datakälla."
-msgstr[1] "Klicka på Fortsätt för att tillämpa de föreslagna namnen på alla följande datakällor."
+msgstr[0] "Klicka på \"Fortsätt\" för att tillämpa det föreslagna namnet på följande datakälla.Klicka på Fortsätt för att tillämpa de föreslagna namnen på alla följande datakällor."
+msgstr[1] ""
 
 #: data_sources.php:572
 msgid "Reapply Suggested Naming to Data Source"
@@ -4201,7 +4201,7 @@ msgstr "Inga datakällor hittades"
 
 #: data_sources.php:1774
 msgid "No Graphs"
-msgstr "Inga grafer"
+msgstr "Inga diagram"
 
 #: data_sources.php:1778 include/global_arrays.php:1008
 msgid "Aggregates"
@@ -4222,15 +4222,15 @@ msgstr "Fältet %s saknar ett utmatningsfält"
 
 #: data_templates.php:462
 msgid "Click 'Continue' to delete the following Data Template(s).  Any data sources attached to these templates will become individual Data Source(s) and all Templating benefits will be removed."
-msgstr "Klicka på &quot;Fortsätt&quot; för att radera följande datamall (er). Eventuella datakällor kopplade till dessa mallar blir enskilda datakälla (er) och alla Templating-fördelar kommer att tas bort."
+msgstr "Klicka på \"Fortsätt\" för att radera följande datamall (er). Eventuella datakällor kopplade till dessa mallar blir enskilda datakälla (er) och alla Templating-fördelar kommer att tas bort."
 
 #: data_templates.php:467
 msgid "Delete Data Template(s)"
-msgstr "Radera datormall (er)"
+msgstr "Ta bort datamall(ar)"
 
 #: data_templates.php:471
 msgid "Click 'Continue' to duplicate the following Data Template(s). You can optionally change the title format for the new Data Template(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att duplicera följande datamall (er). Du kan valfritt ändra titelformat för den nya dataskalan."
+msgstr "Klicka på \"Fortsätt\" för att duplicera följande datamall (er). Du kan valfritt ändra titelformat för den nya dataskalan."
 
 #: data_templates.php:473
 msgid "template_title"
@@ -4242,7 +4242,7 @@ msgstr "Duplicate Data Template (s)"
 
 #: data_templates.php:481
 msgid "Click 'Continue' to change the default Data Source Profile for the following Data Template(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att ändra standarddatakällaprofilen för följande datamall (er)."
+msgstr "Klicka på \"Fortsätt\" för att ändra standarddatakällaprofilen för följande datamall (er)."
 
 #: data_templates.php:483
 msgid "New Data Source Profile"
@@ -4361,7 +4361,7 @@ msgstr "Inga datamallar hittades"
 
 #: gprint_presets.php:148
 msgid "Click 'Continue' to delete the following GPRINT Preset(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att radera de förinställda GPRINT-förinställningarna."
+msgstr "Klicka på \"Fortsätt\" för att radera de förinställda GPRINT-förinställningarna."
 
 #: gprint_presets.php:153
 msgid "Delete GPRINT Preset(s)"
@@ -4518,7 +4518,7 @@ msgstr "Synkronisering av grafmall '%s' resulterade inte i några reparationer."
 
 #: graph_templates.php:371
 msgid "Click 'Continue' to delete the following Graph Template(s).  Any Graph(s) associated with the Template(s) will become individual Graph(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att radera följande grafmallar. Eventuell graf (er) som är associerad med mallarna kommer att bli individuella graf (er)."
+msgstr "Klicka på \"Fortsätt\" för att radera följande grafmallar. Eventuell graf (er) som är associerad med mallarna kommer att bli individuella graf (er)."
 
 #: graph_templates.php:376
 msgid "Delete Graph Template(s)"
@@ -4526,7 +4526,7 @@ msgstr "Ta bort grafmall (er)"
 
 #: graph_templates.php:380
 msgid "Click 'Continue' to duplicate the following Graph Template(s). You can optionally change the title format for the new Graph Template(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att duplicera följande grafmallar. Du kan valfritt ändra titelformat för den nya grafmallen (erna)."
+msgstr "Klicka på \"Fortsätt\" för att duplicera följande grafmallar. Du kan valfritt ändra titelformat för den nya grafmallen (erna)."
 
 #: graph_templates.php:386
 msgid "Duplicate Graph Template(s)"
@@ -4534,7 +4534,7 @@ msgstr "Duplikat grafmall (er)"
 
 #: graph_templates.php:390
 msgid "Click 'Continue' to resize the following Graph Template(s) and Graph(s) to the Height and Width below.  The defaults below are maintained in Settings."
-msgstr "Klicka på &quot;Fortsätt&quot; för att ändra storlek på följande grafmallar och diagram (er) till höjd och bredd nedan. Standardvärdena nedan hålls under Inställningar."
+msgstr "Klicka på \"Fortsätt\" för att ändra storlek på följande grafmallar och diagram (er) till höjd och bredd nedan. Standardvärdena nedan hålls under Inställningar."
 
 #: graph_templates.php:399 lib/html_reports.php:116
 msgid "Graph Height"
@@ -4554,7 +4554,7 @@ msgstr "Ändra storlek på vald grafmall (er)"
 
 #: graph_templates.php:412
 msgid "Click 'Continue' to perform a Full Synchronization between your Graphs and the chosen Graph Templates(s). If you simply have a situation where the Graph Items don't match the Graph Template, try the Quick Sync Graphs option first as it will take much less time.  This function is important if you have Graphs that exist with multiple versions of a Graph Template and wish to make them all common in appearance."
-msgstr "Klicka på &quot;Fortsätt&quot; för att synkronisera dina grafer med följande grafmallar. Den här funktionen är viktig om du har Grafer som finns med flera versioner av en grafmall och vill göra dem alla vanliga i utseende."
+msgstr "Klicka på \"Fortsätt\" för att synkronisera dina grafer med följande grafmallar. Den här funktionen är viktig om du har Grafer som finns med flera versioner av en grafmall och vill göra dem alla vanliga i utseende."
 
 #: graph_templates.php:417 graph_templates.php:426
 msgid "Synchronize Graphs to Graph Template(s)"
@@ -4562,7 +4562,7 @@ msgstr "Synkronisera grafer till grafmallar"
 
 #: graph_templates.php:421
 msgid "Click 'Continue' to perform a Quick Synchronization of your Graphs for the following Graph Template(s). Use this option if your Graphs have Graph Items that do not match your Graph Template.  If this option does not work, use the Full Sync Graphs option, which will take more time to complete."
-msgstr "Klicka på &quot;Fortsätt&quot; för att synkronisera dina grafer med följande grafmallar. Den här funktionen är viktig om du har Grafer som finns med flera versioner av en grafmall och vill göra dem alla vanliga i utseende."
+msgstr "Klicka på \"Fortsätt\" för att synkronisera dina grafer med följande grafmallar. Den här funktionen är viktig om du har Grafer som finns med flera versioner av en grafmall och vill göra dem alla vanliga i utseende."
 
 #: graph_templates.php:488
 #, php-format
@@ -4869,7 +4869,7 @@ msgstr "ERROR: Ingen datakälla associerad. Kontrollera mall"
 
 #: graphs.php:883
 msgid "Click 'Continue' to delete the following Graph(s).  Note that if you choose to Delete Data Sources, only those Data Sources not in use elsewhere will also be Deleted."
-msgstr "Klicka på &quot;Fortsätt&quot; för att radera följande graf (er). Observera att om du väljer att ta bort datakällor kommer endast de datakällor som inte används någon annanstans att raderas."
+msgstr "Klicka på \"Fortsätt\" för att radera följande graf (er). Observera att om du väljer att ta bort datakällor kommer endast de datakällor som inte används någon annanstans att raderas."
 
 #: graphs.php:887
 msgid "The following Data Source(s) are in use by these Graph(s)."
@@ -4885,7 +4885,7 @@ msgstr "Lämna datakällan orörda."
 
 #: graphs.php:920
 msgid "Choose a Graph Template and click 'Continue' to change the Graph Template for the following Graph(s). Please note, that only compatible Graph Templates will be displayed.  Compatible is identified by those having identical Data Sources."
-msgstr "Välj en grafmall och klicka på &quot;Fortsätt&quot; för att ändra grafmallen för följande graf (er). Observera att endast kompatibla grafmallar kommer att visas. Kompatibel identifieras av de som har identiska datakällor."
+msgstr "Välj en grafmall och klicka på \"Fortsätt\" för att ändra grafmallen för följande graf (er). Observera att endast kompatibla grafmallar kommer att visas. Kompatibel identifieras av de som har identiska datakällor."
 
 #: graphs.php:922 graphs_new.php:532
 msgid "New Graph Template"
@@ -4893,7 +4893,7 @@ msgstr "Ny grafmall"
 
 #: graphs.php:936
 msgid "Click 'Continue' to duplicate the following Graph(s). You can optionally change the title format for the new Graph(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att duplicera följande graf (er). Du kan valfritt ändra titelformat för den nya grafen (erna)."
+msgstr "Klicka på \"Fortsätt\" för att duplicera följande graf (er). Du kan valfritt ändra titelformat för den nya grafen (erna)."
 
 #: graphs.php:939
 msgid "<graph_title> (1)"
@@ -4905,7 +4905,7 @@ msgstr "Dubbla graf (er)"
 
 #: graphs.php:947
 msgid "Click 'Continue' to convert the following Graph(s) into Graph Template(s).  You can optionally change the title format for the new Graph Template(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att konvertera följande graf (er) till grafmallar. Du kan valfritt ändra titelformat för den nya grafmallen (erna)."
+msgstr "Klicka på \"Fortsätt\" för att konvertera följande graf (er) till grafmallar. Du kan valfritt ändra titelformat för den nya grafmallen (erna)."
 
 #: graphs.php:950
 msgid "<graph_title> Template"
@@ -4913,7 +4913,7 @@ msgstr "<graph_title> Mall"
 
 #: graphs.php:958
 msgid "Click 'Continue' to place the following Graph(s) under the Tree Branch selected below."
-msgstr "Klicka på &quot;Fortsätt&quot; för att placera följande graf (er) under trädgrenen vald nedan."
+msgstr "Klicka på \"Fortsätt\" för att placera följande graf (er) under trädgrenen vald nedan."
 
 #: graphs.php:960
 msgid "Destination Branch"
@@ -4921,7 +4921,7 @@ msgstr "Destination Filial"
 
 #: graphs.php:973
 msgid "Choose a new Device for these Graph(s) and click 'Continue'."
-msgstr "Välj en ny enhet för dessa graf (er) och klicka på &quot;Fortsätt&quot;."
+msgstr "Välj en ny enhet för dessa graf (er) och klicka på \"Fortsätt\"."
 
 #: graphs.php:975 include/global_arrays.php:1000
 msgid "New Device"
@@ -4933,7 +4933,7 @@ msgstr "Ändra graf (er) associerad enhet"
 
 #: graphs.php:987
 msgid "Click 'Continue' to re-apply suggested naming to the following Graph(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att tillämpa rekommenderad namngivning på följande graf (er)."
+msgstr "Klicka på \"Fortsätt\" för att tillämpa rekommenderad namngivning på följande graf (er)."
 
 #: graphs.php:992
 msgid "Reapply Suggested Naming to Graph(s)"
@@ -4941,7 +4941,7 @@ msgstr "Anmäl förslag till namngivning till graf (er)"
 
 #: graphs.php:1008
 msgid "Click 'Continue' to create an Aggregate Graph from the selected Graph(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att skapa en aggregerad graf från vald graf (er)."
+msgstr "Klicka på \"Fortsätt\" för att skapa en aggregerad graf från vald graf (er)."
 
 #: graphs.php:1017
 msgid "The following Data Sources are in use by these Graphs:"
@@ -4953,7 +4953,7 @@ msgstr "Vänligen bekräfta"
 
 #: graphs.php:1214
 msgid "Select the Aggregate Template to use and press 'Continue' to create your Aggregate Graph.  Otherwise press 'Cancel' to return."
-msgstr "Välj Aggregate Template som ska användas och tryck på &quot;Fortsätt&quot; för att skapa din Aggregate Graph. Annars trycker du på &quot;Avbryt&quot; för att returnera."
+msgstr "Välj Aggregate Template som ska användas och tryck på \"Fortsätt\" för att skapa din Aggregate Graph. Annars trycker du på \"Avbryt\" för att returnera."
 
 #: graphs.php:1239
 msgid "There are presently no Aggregate Templates defined for this Graph Template.  Please either first create an Aggregate Template for the selected Graphs Graph Template and try again, or simply crease an un-templated Aggregate Graph."
@@ -5287,7 +5287,7 @@ msgstr "Det går inte att lägga till några enheter i rapporten '%s'"
 
 #: host.php:399
 msgid "Click 'Continue' to enable the following Device(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att aktivera följande enhet (er)."
+msgstr "Klicka på \"Fortsätt\" för att aktivera följande enhet (er)."
 
 #: host.php:404
 msgid "Enable Device(s)"
@@ -5295,7 +5295,7 @@ msgstr "Aktivera enhet (er)"
 
 #: host.php:408
 msgid "Click 'Continue' to disable the following Device(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att inaktivera följande enhet (er)."
+msgstr "Klicka på \"Fortsätt\" för att inaktivera följande enhet (er)."
 
 #: host.php:413
 msgid "Disable Device(s)"
@@ -5303,7 +5303,7 @@ msgstr "Inaktivera enhet (er)"
 
 #: host.php:417
 msgid "Click 'Continue' to change the Device options below for multiple Device(s).  Please check the box next to the fields you want to update, and then fill in the new value."
-msgstr "Klicka på &quot;Fortsätt&quot; för att ändra Enhetsalternativen nedan för flera enheter. Markera rutan bredvid de fält du vill uppdatera och fyll i det nya värdet."
+msgstr "Klicka på \"Fortsätt\" för att ändra Enhetsalternativen nedan för flera enheter. Markera rutan bredvid de fält du vill uppdatera och fyll i det nya värdet."
 
 #: host.php:437
 msgid "Update this Field"
@@ -5315,7 +5315,7 @@ msgstr "Ändra enhet (er) SNMP-alternativ"
 
 #: host.php:464
 msgid "Click 'Continue' to clear the counters for the following Device(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att rensa räknarna för följande enhet (er)."
+msgstr "Klicka på \"Fortsätt\" för att rensa räknarna för följande enhet (er)."
 
 #: host.php:469
 msgid "Clear Statistics on Device(s)"
@@ -5323,7 +5323,7 @@ msgstr "Rensa statistik på enhet (er)"
 
 #: host.php:473
 msgid "Click 'Continue' to Synchronize the following Device(s) to their Device Template."
-msgstr "Klicka på &quot;Fortsätt&quot; för att synkronisera följande enhet (er) till deras enhetsmall."
+msgstr "Klicka på \"Fortsätt\" för att synkronisera följande enhet (er) till deras enhetsmall."
 
 #: host.php:478
 msgid "Synchronize Device(s)"
@@ -5331,7 +5331,7 @@ msgstr "Synkronisera enhet (er)"
 
 #: host.php:482
 msgid "Click 'Continue' to delete the following Device(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att radera följande enhet (er)."
+msgstr "Klicka på \"Fortsätt\" för att radera följande enhet (er)."
 
 #: host.php:485
 msgid "Leave all Graph(s) and Data Source(s) untouched.  Data Source(s) will be disabled however."
@@ -5343,7 +5343,7 @@ msgstr "Ta bort alla associerade grafer och datakällor."
 
 #: host.php:496
 msgid "Click 'Continue' to place the following Device(s) under the branch selected below."
-msgstr "Klicka på &quot;Fortsätt&quot; för att placera följande enhet (er) under filialen vald nedan."
+msgstr "Klicka på \"Fortsätt\" för att placera följande enhet (er) under filialen vald nedan."
 
 #: host.php:506
 msgid "Place Device(s) on Tree"
@@ -5351,7 +5351,7 @@ msgstr "Placera enhet (er) på träd"
 
 #: host.php:510
 msgid "Click 'Continue' to apply Automation Rules to the following Devices(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att tillämpa automationsregler på följande enheter."
+msgstr "Klicka på \"Fortsätt\" för att tillämpa automationsregler på följande enheter."
 
 #: host.php:515
 msgid "Run Automation on Device(s)"
@@ -5607,7 +5607,7 @@ msgstr "Övervakningsstatus för enheten baserat på ping-resultat.  Om den här
 
 #: host.php:1803
 msgid "In State"
-msgstr "I staten"
+msgstr "I tillstånd"
 
 #: host.php:1806
 msgid "The amount of time that this Device has been in its current state."
@@ -5655,7 +5655,7 @@ msgstr "Synkronisera enheter"
 
 #: host_templates.php:223
 msgid "Click 'Continue' to delete the following Device Template(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att radera följande enhetsmall (er)."
+msgstr "Klicka på \"Fortsätt\" för att radera följande enhetsmall (er)."
 
 #: host_templates.php:228
 msgid "Delete Device Template(s)"
@@ -5663,7 +5663,7 @@ msgstr "Ta bort enhetsmall (er)"
 
 #: host_templates.php:232
 msgid "Click 'Continue' to duplicate the following Device Template(s).  Optionally change the title for the new Device Template(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att duplicera följande Device Template (s). Ändra eventuellt titeln för den nya Device Template (s)."
+msgstr "Klicka på \"Fortsätt\" för att duplicera följande Device Template (s). Ändra eventuellt titeln för den nya Device Template (s)."
 
 #: host_templates.php:242
 msgid "Duplicate Device Template(s)"
@@ -9073,7 +9073,7 @@ msgstr "Ta bort föräldralösa grafobjekt"
 
 #: include/global_form.php:1710 package_import.php:854
 msgid "If checked, Cacti will delete any Graph Items from both the Graph Template and associated Graphs that are not included in the imported Graph Template."
-msgstr "Om den är markerad kommer Cacti att radera alla grafobjekt från både grafmallen och tillhörande grafer som inte ingår i den importerade grafmallen."
+msgstr "Om den är markerad kommer Cacti att ta bort alla diagramobjekt från både diagrammallen och tillhörande diagram som inte ingår i den importerade diagrammallen."
 
 #: include/global_form.php:1715 package_import.php:859
 msgid "Replace Data Query Suggested Value Patterns"
@@ -9579,7 +9579,7 @@ msgstr "RRDfile Auto Clean"
 
 #: include/global_settings.php:239
 msgid "Automatically archive or delete RRDfiles when their corresponding Data Sources are removed from Cacti"
-msgstr "Arkivera eller radera RRD-filer automatiskt när deras motsvarande datakällor tas bort från Cacti"
+msgstr "Arkivera eller ta bort RRD-filer automatiskt när deras motsvarande datakällor tas bort från Cacti"
 
 #: include/global_settings.php:244
 msgid "RRDfile Auto Clean Method"
@@ -10853,7 +10853,7 @@ msgstr "Stöd för autentiseringscookies"
 
 #: include/global_settings.php:1493
 msgid "If a user authenticates and selects 'Keep me signed in', an authentication cookie will be created on the user's computer allowing that user to stay logged in.  The authentication cookie expires after 90 days of non-use."
-msgstr "Om en användare autentiserar och väljer &quot;Håll mig inloggad&quot; kommer en autentiseringskaka att skapas på användarens dator, så att användaren kan vara inloggad. Autentiseringskakan löper ut efter 90 dagar efter användning."
+msgstr "Om en användare autentiserar och väljer \"Håll mig inloggad\" kommer en autentiseringskaka att skapas på användarens dator, så att användaren kan vara inloggad. Autentiseringskakan löper ut efter 90 dagar efter användning."
 
 #: include/global_settings.php:1498
 msgid "Special Users"
@@ -11175,7 +11175,7 @@ msgstr "Sök bas"
 
 #: include/global_settings.php:1805
 msgid "Search base for searching the LDAP directory, such as <i>'dc=win2kdomain,dc=local'</i> or <i>'ou=people,dc=domain,dc=local'</i>."
-msgstr "Sök bas för att söka i LDAP-katalogen, till exempel <i>&quot;dc = win2kdomain, dc = local&quot;</i> eller <i>&quot;ou = people, dc = domain, dc = local&quot;</i> ."
+msgstr "Sök bas för att söka i LDAP-katalogen, till exempel <i>\"dc = win2kdomain, dc = local\"</i> eller <i>\"ou = people, dc = domain, dc = local\"</i> ."
 
 #: include/global_settings.php:1810 user_domains.php:472
 msgid "Search Filter"
@@ -14309,19 +14309,19 @@ msgstr "Datum/Tid flyttad till samma tid i morgon"
 
 #: lib/html_reports.php:504
 msgid "Click 'Continue' to delete the following Report(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att radera följande rapport (er)."
+msgstr "Klicka på \"Fortsätt\" för att radera följande rapport (er)."
 
 #: lib/html_reports.php:511
 msgid "Click 'Continue' to take ownership of the following Report(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att ta del av följande rapport (er)."
+msgstr "Klicka på \"Fortsätt\" för att ta del av följande rapport (er)."
 
 #: lib/html_reports.php:518
 msgid "Click 'Continue' to duplicate the following Report(s).  You may optionally change the title for the new Reports"
-msgstr "Klicka på &quot;Fortsätt&quot; för att duplicera följande rapport (er). Du kan eventuellt ändra titeln för de nya rapporterna"
+msgstr "Klicka på \"Fortsätt\" för att duplicera följande rapport (er). Du kan eventuellt ändra titeln för de nya rapporterna"
 
 #: lib/html_reports.php:530
 msgid "Click 'Continue' to enable the following Report(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att aktivera följande rapport (er)."
+msgstr "Klicka på \"Fortsätt\" för att aktivera följande rapport (er)."
 
 #: lib/html_reports.php:532
 msgid "Please be certain that those Report(s) have successfully been tested first!"
@@ -14329,11 +14329,11 @@ msgstr "Var noga med att de här rapporterna har testats först!"
 
 #: lib/html_reports.php:538
 msgid "Click 'Continue' to disable the following Reports."
-msgstr "Klicka på &quot;Fortsätt&quot; för att inaktivera följande rapporter."
+msgstr "Klicka på \"Fortsätt\" för att inaktivera följande rapporter."
 
 #: lib/html_reports.php:545
 msgid "Click 'Continue' to send the following Report(s) now."
-msgstr "Klicka på &quot;Fortsätt&quot; för att skicka följande rapport (er) nu."
+msgstr "Klicka på \"Fortsätt\" för att skicka följande rapport (er) nu."
 
 #: lib/html_reports.php:595
 #, php-format
@@ -16134,7 +16134,7 @@ msgstr "Fil RRA '%s' har samma CF/steg (%s, %s) som '%s'"
 #: lib/rrd.php:3088
 #, php-format
 msgid "The pdp_per_row of '%s' is invalid for RRA '%s' should be '%s'.  Consider deleting and allowing Cacti to re-create RRDfile."
-msgstr "Pdp_per_row för '%s' är ogiltig för RRA '%s' ska vara '%s'.  Överväg att radera och låta Cacti återskapa RRD-filen."
+msgstr "Pdp_per_row för '%s' är ogiltig för RRA '%s' ska vara '%s'.  Överväg att ta bort och låta Cacti återskapa RRD-filen."
 
 #: lib/rrd.php:3092
 #, php-format
@@ -16745,7 +16745,7 @@ msgstr "Din innehållsfil är inte en giltig URL.  Ange en giltig URL"
 
 #: links.php:197
 msgid "Click 'Continue' to Enable the following Page(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att Aktivera följande sida (s)."
+msgstr "Klicka på \"Fortsätt\" för att Aktivera följande sida (s)."
 
 #: links.php:202
 msgid "Enable Page(s)"
@@ -16753,7 +16753,7 @@ msgstr "Aktivera sida (s)"
 
 #: links.php:206
 msgid "Click 'Continue' to Disable the following Page(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att inaktivera följande sida (s)."
+msgstr "Klicka på \"Fortsätt\" för att inaktivera följande sida (s)."
 
 #: links.php:211
 msgid "Disable Page(s)"
@@ -16761,7 +16761,7 @@ msgstr "Inaktivera sida (s)"
 
 #: links.php:215
 msgid "Click 'Continue' to Delete the following Page(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att ta bort följande sida (s)."
+msgstr "Klicka på \"Fortsätt\" för att ta bort följande sida (s)."
 
 #: links.php:220
 msgid "Delete Page(s)"
@@ -17010,20 +17010,20 @@ msgstr "Inga loggposter för SNMP-meddelanden"
 #: managers.php:997
 msgid "Click 'Continue' to delete the following Notification Receiver"
 msgid_plural "Click 'Continue' to delete following Notification Receiver"
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att radera följande meddelandemottagare"
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att radera följande Meddelande Mottagare"
+msgstr[0] "Klicka på \"Fortsätt\" för att radera följande meddelandemottagareKlicka på \"Fortsätt\" för att radera följande Meddelande Mottagare"
+msgstr[1] ""
 
 #: managers.php:999
 msgid "Click 'Continue' to enable the following Notification Receiver"
 msgid_plural "Click 'Continue' to enable following Notification Receiver"
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att aktivera följande Meddelande Mottagare"
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att aktivera följande Notifieringsmottagare"
+msgstr[0] "Klicka på \"Fortsätt\" för att aktivera följande Meddelande MottagareKlicka på \"Fortsätt\" för att aktivera följande Notifieringsmottagare"
+msgstr[1] ""
 
 #: managers.php:1001
 msgid "Click 'Continue' to disable the following Notification Receiver"
 msgid_plural "Click 'Continue' to disable following Notification Receiver"
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att inaktivera följande meddelandemottagare"
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att inaktivera följande Notifieringsmottagare"
+msgstr[0] "Klicka på \"Fortsätt\" för att inaktivera följande meddelandemottagareKlicka på \"Fortsätt\" för att inaktivera följande Notifieringsmottagare"
+msgstr[1] ""
 
 #: managers.php:1011
 #, php-format
@@ -17032,7 +17032,7 @@ msgstr "%s Meddelande mottagare"
 
 #: managers.php:1062
 msgid "Click 'Continue' to forward the following Notification Objects to this Notification Receiver."
-msgstr "Klicka på &quot;Fortsätt&quot; för att vidarebefordra följande anmälningsobjekt till den här meddelandemottagaren."
+msgstr "Klicka på \"Fortsätt\" för att vidarebefordra följande anmälningsobjekt till den här meddelandemottagaren."
 
 #: managers.php:1063
 msgid "Click 'Continue' to disable forwarding the following Notification Objects to this Notification Receiver."
@@ -17284,7 +17284,7 @@ msgstr "Inga plugins hittades"
 
 #: plugins.php:656
 msgid "Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'"
-msgstr "Avinstallation av det här pluginet tar bort alla plugindata och inställningar. Om du verkligen vill avinstallera pluggen klickar du på &quot;Avinstallera&quot; nedan. Annars klickar du på &quot;Avbryt&quot;"
+msgstr "Avinstallation av det här pluginet tar bort alla plugindata och inställningar. Om du verkligen vill avinstallera pluggen klickar du på \"Avinstallera\" nedan. Annars klickar du på \"Avbryt\""
 
 #: plugins.php:657
 msgid "Are you sure you want to Uninstall?"
@@ -17596,20 +17596,20 @@ msgstr "Datainsamlarens statistik rensad."
 #: pollers.php:558
 msgid "Click 'Continue' to delete the following Data Collector.  Note, all devices will be disassociated from this Data Collector and mapped back to the Main Cacti Data Collector."
 msgid_plural "Click 'Continue' to delete all following Data Collectors.  Note, all devices will be disassociated from these Data Collectors and mapped back to the Main Cacti Data Collector."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att radera följande datasamlare. Obs! Alla enheter kommer att kopplas bort från denna datasamlare och mappas tillbaka till Main Cacti Data Collector."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att radera alla följande datainsamlare. Obs! Alla enheter kommer att kopplas bort från dessa datainsamlare och mappas tillbaka till Main Cacti Data Collector."
+msgstr[0] "Klicka på \"Fortsätt\" för att radera följande datasamlare. Obs! Alla enheter kommer att kopplas bort från denna datasamlare och mappas tillbaka till Main Cacti Data Collector.Klicka på \"Fortsätt\" för att radera alla följande datainsamlare. Obs! Alla enheter kommer att kopplas bort från dessa datainsamlare och mappas tillbaka till Main Cacti Data Collector."
+msgstr[1] ""
 
 #: pollers.php:563
 msgid "Delete Data Collector"
 msgid_plural "Delete Data Collectors"
-msgstr[0] "Radera datasamlare"
-msgstr[1] "Radera datainsamlare"
+msgstr[0] "Ta bort datasamlare"
+msgstr[1] "Ta bort datainsamlare"
 
 #: pollers.php:567
 msgid "Click 'Continue' to disable the following Data Collector."
 msgid_plural "Click 'Continue' to disable the following Data Collectors."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att inaktivera följande datasamlare."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att inaktivera följande datainsamlare."
+msgstr[0] "Klicka på \"Fortsätt\" för att inaktivera följande datasamlare.Klicka på \"Fortsätt\" för att inaktivera följande datainsamlare."
+msgstr[1] ""
 
 #: pollers.php:572
 msgid "Disable Data Collector"
@@ -17620,8 +17620,8 @@ msgstr[1] "Inaktivera datainsamlare"
 #: pollers.php:576
 msgid "Click 'Continue' to enable the following Data Collector."
 msgid_plural "Click 'Continue' to enable the following Data Collectors."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att aktivera följande datasamlare."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att aktivera följande datainsamlare."
+msgstr[0] "Klicka på \"Fortsätt\" för att aktivera följande datasamlare.Klicka på \"Fortsätt\" för att aktivera följande datainsamlare."
+msgstr[1] ""
 
 #: pollers.php:581 pollers.php:590
 msgid "Enable Data Collector"
@@ -17632,14 +17632,14 @@ msgstr[1] "Aktivera datainsamlare"
 #: pollers.php:585
 msgid "Click 'Continue' to Synchronize the Remote Data Collector for Offline Operation."
 msgid_plural "Click 'Continue' to Synchronize the Remote Data Collectors for Offline Operation."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att synkronisera fjärrdatasamlaren för offline-användning."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att synkronisera fjärrdatasamlare för offline-användning."
+msgstr[0] "Klicka på \"Fortsätt\" för att synkronisera fjärrdatasamlaren för offline-användning.Klicka på \"Fortsätt\" för att synkronisera fjärrdatasamlare för offline-användning."
+msgstr[1] ""
 
 #: pollers.php:594
 msgid "Click 'Continue' to Clear Data Collector Statistics for the Data Collector."
 msgid_plural "Click 'Continue' to Clear DAta Collector Statistics for the Data Collectors."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att aktivera följande datasamlare."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att aktivera följande datainsamlare."
+msgstr[0] "Klicka på \"Fortsätt\" för att aktivera följande datasamlare.Klicka på \"Fortsätt\" för att aktivera följande datainsamlare."
+msgstr[1] ""
 
 #: pollers.php:599
 msgid "Clear Statistics for Data Collector"
@@ -17911,7 +17911,7 @@ msgstr "Sök igen"
 
 #: rrdcleaner.php:552
 msgid "Delete All"
-msgstr "Radera alla"
+msgstr "Ta bort alla"
 
 #: rrdcleaner.php:552
 msgid "Delete All Unknown RRDfiles"
@@ -18145,14 +18145,14 @@ msgstr "Mallens plats hittades inte! Det går inte att duplicera."
 #: sites.php:377
 msgid "Click 'Continue' to Delete the following Site.  Note, all Devices will be disassociated from this site."
 msgid_plural "Click 'Continue' to delete all following Sites.  Note, all devices will be disassociated from this site."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att radera följande webbplats. Obs! Alla enheter kommer att kopplas bort från den här webbplatsen."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att radera alla följande webbplatser. Obs! Alla enheter kommer att kopplas bort från den här webbplatsen."
+msgstr[0] "Klicka på \"Fortsätt\" för att ta bort följande plats. Obs! Alla enheter kommer att kopplas bort från den här webbplatsen."
+msgstr[1] "Klicka på \"Fortsätt\" för att ta bort alla följande platser. Obs! Alla enheter kommer att kopplas bort från den här webbplatsen."
 
 #: sites.php:382
 msgid "Delete Site"
 msgid_plural "Delete Sites"
-msgstr[0] "Ta bort webbplats"
-msgstr[1] "Radera webbplatser"
+msgstr[0] "Ta bort plats"
+msgstr[1] "Ta bort platser"
 
 #: sites.php:386
 msgid "Click 'Continue' to Duplicate the following Site."
@@ -18600,7 +18600,7 @@ msgstr "Du får inte inaktivera det aktuella inloggningskontot"
 
 #: user_admin.php:338
 msgid "Click 'Continue' to delete the selected User(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att radera den valda Användaren (erna)."
+msgstr "Klicka på \"Fortsätt\" för att radera den valda Användaren (erna)."
 
 #: user_admin.php:343
 msgid "Delete User(s)"
@@ -18608,7 +18608,7 @@ msgstr "Ta bort användare (er)"
 
 #: user_admin.php:353
 msgid "Click 'Continue' to copy the selected User to a new User below."
-msgstr "Klicka på &quot;Fortsätt&quot; för att kopiera den valda användaren till en ny användare nedan."
+msgstr "Klicka på \"Fortsätt\" för att kopiera den valda användaren till en ny användare nedan."
 
 #: user_admin.php:358
 msgid "Template Username:"
@@ -18632,7 +18632,7 @@ msgstr "Kopiera användare"
 
 #: user_admin.php:389
 msgid "Click 'Continue' to enable the selected User(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att aktivera den valda Användaren (erna)."
+msgstr "Klicka på \"Fortsätt\" för att aktivera den valda Användaren (erna)."
 
 #: user_admin.php:394
 msgid "Enable User(s)"
@@ -18640,7 +18640,7 @@ msgstr "Aktivera användare (er)"
 
 #: user_admin.php:400
 msgid "Click 'Continue' to disable the selected User(s)."
-msgstr "Klicka på &quot;Fortsätt&quot; för att inaktivera den valda Användaren (erna)."
+msgstr "Klicka på \"Fortsätt\" för att inaktivera den valda Användaren (erna)."
 
 #: user_admin.php:405
 msgid "Disable User(s)"
@@ -18648,7 +18648,7 @@ msgstr "Inaktivera användare (er)"
 
 #: user_admin.php:413
 msgid "Click 'Continue' to overwrite the User(s) settings with the selected template User settings and permissions.  The original users Full Name, Password, Realm and Enable status will be retained, all other fields will be overwritten from Template User."
-msgstr "Klicka på &quot;Fortsätt&quot; för att skriva över användarinställningarna med den valda mallen Användarinställningar och behörigheter. Den ursprungliga användaren Fullständigt namn, Lösenord, Rikta och Aktivera status sparas, alla andra fält skrivs över från Mallanvändare."
+msgstr "Klicka på \"Fortsätt\" för att skriva över användarinställningarna med den valda mallen Användarinställningar och behörigheter. Den ursprungliga användaren Fullständigt namn, Lösenord, Rikta och Aktivera status sparas, alla andra fält skrivs över från Mallanvändare."
 
 #: user_admin.php:417
 msgid "Template User:"
@@ -18978,8 +18978,8 @@ msgstr "Tillstånd för träd %s"
 #: user_domains.php:230
 msgid "Click 'Continue' to delete the following User Domain."
 msgid_plural "Click 'Continue' to delete following User Domains."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att radera följande användardomän."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att radera följande användardomäner."
+msgstr[0] "Klicka på \"Fortsätt\" för att radera följande användardomän.Klicka på \"Fortsätt\" för att radera följande användardomäner."
+msgstr[1] ""
 
 #: user_domains.php:235
 msgid "Delete User Domain"
@@ -18990,8 +18990,8 @@ msgstr[1] "Ta bort användardomäner"
 #: user_domains.php:239
 msgid "Click 'Continue' to disable the following User Domain."
 msgid_plural "Click 'Continue' to disable following User Domains."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att inaktivera följande användardomän."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att inaktivera följande användardomäner."
+msgstr[0] "Klicka på \"Fortsätt\" för att inaktivera följande användardomän.Klicka på \"Fortsätt\" för att inaktivera följande användardomäner."
+msgstr[1] ""
 
 #: user_domains.php:244
 msgid "Disable User Domain"
@@ -19001,7 +19001,7 @@ msgstr[1] "Inaktivera användardomäner"
 
 #: user_domains.php:248
 msgid "Click 'Continue' to enable the following User Domain."
-msgstr "Klicka på &quot;Fortsätt&quot; för att aktivera följande användardomän."
+msgstr "Klicka på \"Fortsätt\" för att aktivera följande användardomän."
 
 #: user_domains.php:253
 msgid "Enabled User Domain"
@@ -19197,8 +19197,8 @@ msgstr "Vad som ska göras när en användare från den här användargruppen lo
 #: user_group_admin.php:444
 msgid "Click 'Continue' to delete the following User Group"
 msgid_plural "Click 'Continue' to delete following User Groups"
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att radera följande användargrupp"
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att radera följande användargrupper"
+msgstr[0] "Klicka på \"Fortsätt\" för att radera följande användargruppKlicka på \"Fortsätt\" för att radera följande användargrupper"
+msgstr[1] ""
 
 #: user_group_admin.php:449
 msgid "Delete User Group"
@@ -19209,8 +19209,8 @@ msgstr[1] "Ta bort användargrupper"
 #: user_group_admin.php:457
 msgid "Click 'Continue' to Copy the following User Group to a new User Group."
 msgid_plural "Click 'Continue' to Copy following User Groups to new User Groups."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att kopiera följande användargrupp till en ny användargrupp."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att kopiera följande användargrupper till nya användargrupper."
+msgstr[0] "Klicka på \"Fortsätt\" för att kopiera följande användargrupp till en ny användargrupp.Klicka på \"Fortsätt\" för att kopiera följande användargrupper till nya användargrupper."
+msgstr[1] ""
 
 #: user_group_admin.php:463
 msgid "Group Prefix:"
@@ -19229,8 +19229,8 @@ msgstr[1] "Kopiera användargrupper"
 #: user_group_admin.php:474
 msgid "Click 'Continue' to enable the following User Group."
 msgid_plural "Click 'Continue' to enable following User Groups."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att aktivera följande användargrupp."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att aktivera följande användargrupper."
+msgstr[0] "Klicka på \"Fortsätt\" för att aktivera följande användargrupp.Klicka på \"Fortsätt\" för att aktivera följande användargrupper."
+msgstr[1] ""
 
 #: user_group_admin.php:479
 msgid "Enable User Group"
@@ -19241,8 +19241,8 @@ msgstr[1] "Aktivera användargrupper"
 #: user_group_admin.php:485
 msgid "Click 'Continue' to disable the following User Group."
 msgid_plural "Click 'Continue' to disable following User Groups."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att inaktivera följande användargrupp."
-msgstr[1] "Klicka på Fortsätt för att inaktivera följande användargrupper."
+msgstr[0] "Klicka på \"Fortsätt\" för att inaktivera följande användargrupp.Klicka på Fortsätt för att inaktivera följande användargrupper."
+msgstr[1] ""
 
 #: user_group_admin.php:490
 msgid "Disable User Group"
@@ -20103,8 +20103,8 @@ msgstr "Allvarlighetsgrad: %s"
 #: vdef.php:265
 msgid "Click 'Continue' to delete the following VDEF."
 msgid_plural "Click 'Continue' to delete following VDEFs."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att radera följande VDEF."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att radera följande VDEFs."
+msgstr[0] "Klicka på \"Fortsätt\" för att radera följande VDEF.Klicka på \"Fortsätt\" för att radera följande VDEFs."
+msgstr[1] ""
 
 #: vdef.php:270
 msgid "Delete VDEF"
@@ -20115,8 +20115,8 @@ msgstr[1] "Ta bort VDEFs"
 #: vdef.php:274
 msgid "Click 'Continue' to duplicate the following VDEF. You can optionally change the title format for the new VDEF."
 msgid_plural "Click 'Continue' to duplicate following VDEFs. You can optionally change the title format for the new VDEFs."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att duplicera följande VDEF. Du kan valfritt ändra titelformat för den nya VDEF."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att duplicera följande VDEFs. Du kan valfritt ändra titelformat för de nya VDEF: erna."
+msgstr[0] "Klicka på \"Fortsätt\" för att duplicera följande VDEF. Du kan valfritt ändra titelformat för den nya VDEF.Klicka på \"Fortsätt\" för att duplicera följande VDEFs. Du kan valfritt ändra titelformat för de nya VDEF: erna."
+msgstr[1] ""
 
 #: vdef.php:280
 msgid "Duplicate VDEF"
@@ -20126,7 +20126,7 @@ msgstr[1] "Duplicera VDEFs"
 
 #: vdef.php:329
 msgid "Click 'Continue' to delete the following VDEF's."
-msgstr "Klicka på \"Fortsätt\" för att radera följande VDEF:er."
+msgstr "Klicka på \"Fortsätt\" för att ta bort följande VDEF:er."
 
 #: vdef.php:330
 #, php-format
