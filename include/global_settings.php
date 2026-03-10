@@ -24,7 +24,7 @@
 
 $dir = dir(CACTI_PATH_INCLUDE . '/themes/');
 
-// Work aorund issue where phpstan is not detecting globals
+// Work around issue where phpstan is not detecting globals
 
 include_once(__DIR__ . '/global_arrays.php');
 
@@ -713,7 +713,7 @@ $settings['general'] = [
 	],
 	'content_security_alternate_sources' => [
 		'friendly_name' => __('Content-Security Alternate Sources'),
-		'description'   => __('Space delimited domain names that will be permitted to be accessed outside of the Web Server itself.  This is important for users choosing to use a CDN, or hosting site.  Sources can includes wildcards for example: *.mydomain.com, or a protocol, for example: https://*.example.com.  These Alternate Sources include Image, CSS and JavaScript types only.'),
+		'description'   => __('Space-delimited domain names that will be permitted to be accessed outside of the Web Server itself.  This is important for users choosing to use a CDN, or hosting site.  Sources can include wildcards for example: *.mydomain.com, or a protocol, for example: https://*.example.com.  These Alternate Sources include Image, CSS and JavaScript types only.'),
 		'method'        => 'textbox',
 		'default'       => '',
 		'size'          => '100',
@@ -1308,7 +1308,7 @@ $settings['visual'] = [
 	],
 	'default_graphs_new_dropdown' => [
 		'friendly_name' => __('Default Graph Type'),
-		'description'   => __('When creating graphs, what Graph Type would you like pre-selected?'),
+		'description'   => __('When creating graphs, what Graph Type would you like preselected?'),
 		'method'        => 'drop_array',
 		'default'       => '-2',
 		'array'         => [
@@ -2092,7 +2092,7 @@ $settings['authentication'] = [
 	],
 	'secpass_history' => [
 		'friendly_name' => __('Password History'),
-		'description'   => __('Remember this number of old passwords and disallow re-using them.'),
+		'description'   => __('Remember this number of old passwords and disallow reusing them.'),
 		'method'        => 'drop_array',
 		'default'       => '0',
 		'array'         => [

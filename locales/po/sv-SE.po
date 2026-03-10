@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-02-07 08:18+0000\n"
+"PO-Revision-Date: 2026-03-10 13:25+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core/sv/>"
 "\n"
@@ -323,8 +323,8 @@ msgstr "Konvertera aggregerade grafer"
 #: aggregate_graphs.php:951
 msgid "Click 'Continue' to Associate the following Graph with the Aggregate Graph."
 msgstr ""
-"Klicka på \"Continue\" för att associera följande graf med den aggregerade "
-"grafen."
+"Klicka på \"Fortsätt\" för att associera följande diagram med aggregerat "
+"diagram."
 
 #: aggregate_graphs.php:952
 msgid "Click 'Continue' to Associate the following Graphs with the Aggregate Graph."
@@ -334,7 +334,7 @@ msgstr ""
 
 #: aggregate_graphs.php:953
 msgid "Associate Graph with Aggregate"
-msgstr "Associera graf med aggregat"
+msgstr "Associera diagram med aggregerat"
 
 #: aggregate_graphs.php:954
 msgid "Associate Graphs with  Aggregate"
@@ -343,8 +343,8 @@ msgstr "Associera grafer med Aggregate"
 #: aggregate_graphs.php:957
 msgid "Click 'Continue' to Disassociate the following Graph from the Aggregate Graph."
 msgstr ""
-"Klicka på \"Continue\" för att skilja följande graf från den aggregerade "
-"grafen."
+"Klicka på \"Fortsätt\" för att skilja följande diagram från aggregerat "
+"diagram."
 
 #: aggregate_graphs.php:958
 msgid "Click 'Continue' to Disassociate the following Graphs from the Aggregate Graph."
@@ -1896,11 +1896,11 @@ msgstr "Klicka på \"Fortsätt\" för att ta bort följande nätverk."
 
 #: automation_networks.php:661
 msgid "Delete Network"
-msgstr "Radera nätverk"
+msgstr "Ta bort nätverk"
 
 #: automation_networks.php:662
 msgid "Delete Networks"
-msgstr "Radera nätverk"
+msgstr "Ta bort nätverk"
 
 #: automation_networks.php:665
 msgid "Click 'Continue' to Disable the following Network."
@@ -3560,7 +3560,7 @@ msgstr "Duplicera CDEF:er"
 
 #: cdef.php:309
 msgid "Click 'Continue' to delete the following CDEF Item."
-msgstr "Klicka på \"Fortsätt\" för att radera följande CDEF-objekt."
+msgstr "Klicka på \"Fortsätt\" för att ta bort följande CDEF-objekt."
 
 #: cdef.php:310
 #, php-format
@@ -3716,7 +3716,7 @@ msgstr "Skriva över befintlig data?"
 msgid "Should the import process be allowed to overwrite existing data?  Please note, this does not mean delete old rows, only update duplicate rows."
 msgstr ""
 "Bör importprocessen tillåtas skriva över befintliga data?  Observera att "
-"detta inte innebär att radera gamla rader, utan endast att uppdatera "
+"detta inte innebär att ta bort gamla rader, utan endast att uppdatera "
 "duplicerade rader."
 
 #: color.php:366
@@ -3960,7 +3960,7 @@ msgstr "Körkontroll"
 
 #: data_debug.php:31
 msgid "Delete Check"
-msgstr "Radera check"
+msgstr "Ta bort kontroll"
 
 #: data_debug.php:52
 msgid "Data Source debug started."
@@ -5337,7 +5337,7 @@ msgstr "Inga datakällor hittades"
 
 #: data_sources.php:1792
 msgid "No Graphs"
-msgstr "Inga grafer"
+msgstr "Inga diagram"
 
 #: data_sources.php:1796 include/global_arrays.php:1087
 msgid "Aggregates"
@@ -5373,7 +5373,7 @@ msgstr "Klicka på \"Fortsätt\" för att ta bort följande datamallar."
 
 #: data_templates.php:492
 msgid "Delete Data Template"
-msgstr "Radera datamall"
+msgstr "Ta bort datamall"
 
 #: data_templates.php:493
 msgid "Delete Data Templates"
@@ -5573,7 +5573,7 @@ msgstr ""
 
 #: gprint_presets.php:144
 msgid "Delete GPRINT Preset"
-msgstr "Radera GPRINT-förinställning"
+msgstr "Ta bort GPRINT-förinställning"
 
 #: gprint_presets.php:145
 msgid "Delete GPRINT Presets"
@@ -6216,7 +6216,7 @@ msgstr "Klicka på \"Fortsätt\" för att ta bort följande grafer."
 
 #: graphs.php:1760
 msgid "Delete Graph"
-msgstr "Radera graf"
+msgstr "Ta bort diagram"
 
 #: graphs.php:1761
 msgid "Delete Graphs"
@@ -6236,7 +6236,7 @@ msgstr[1] "Följande datakällor används av dessa diagram."
 
 #: graphs.php:1768
 msgid "Delete Method"
-msgstr "Radera metod"
+msgstr "Ta bort metod"
 
 #: graphs.php:1773
 msgid "Delete the Data Sources referenced by this Graph"
@@ -7120,7 +7120,7 @@ msgstr ""
 
 #: host.php:1808
 msgid "In State"
-msgstr "I staten"
+msgstr "I tillstånd"
 
 #: host.php:1811
 msgid "The amount of time that this Device has been in its current state."
@@ -11270,9 +11270,9 @@ msgstr "Ta bort föräldralösa grafobjekt"
 #: include/global_form.php:1841 package_import.php:1463
 msgid "If checked, Cacti will delete any Graph Items from both the Graph Template and associated Graphs that are not included in the imported Graph Template."
 msgstr ""
-"Om den är markerad kommer Cacti att radera alla grafobjekt från både "
-"grafmallen och tillhörande grafer som inte ingår i den importerade "
-"grafmallen."
+"Om den är markerad kommer Cacti att ta bort alla diagramobjekt från både "
+"diagrammallen och tillhörande diagram som inte ingår i den importerade "
+"diagrammallen."
 
 #: include/global_form.php:1846
 msgid "Replace Data Query Suggested Value Patterns"
@@ -11817,8 +11817,8 @@ msgstr "RRDfile Auto Clean"
 #: include/global_settings.php:279
 msgid "Automatically archive or delete RRDfiles when their corresponding Data Sources are removed from Cacti"
 msgstr ""
-"Arkivera eller radera RRD-filer automatiskt när deras motsvarande datakällor "
-"tas bort från Cacti"
+"Arkivera eller ta bort RRD-filer automatiskt när deras motsvarande "
+"datakällor tas bort från Cacti"
 
 #: include/global_settings.php:284
 msgid "RRDfile Auto Clean Method"
@@ -17909,11 +17909,11 @@ msgstr "Klicka på \"Fortsätt\" för att ta bort följande rapporter."
 
 #: lib/html_reports.php:535
 msgid "Delete Report"
-msgstr "Radera Rapport"
+msgstr "Ta bort rapport"
 
 #: lib/html_reports.php:536
 msgid "Delete Reports"
-msgstr "Radera rapporter"
+msgstr "Ta bort rapporter"
 
 #: lib/html_reports.php:539
 msgid "Click 'Continue' to take ownership of the following Report."
@@ -20348,8 +20348,8 @@ msgstr "Fil RRA '%s' har samma CF/steg (%s, %s) som '%s'"
 #, php-format
 msgid "The pdp_per_row of '%s' is invalid for RRA '%s' should be '%s'.  Consider deleting and allowing Cacti to re-create RRDfile."
 msgstr ""
-"Pdp_per_row för '%s' är ogiltig för RRA '%s' ska vara '%s'.  Överväg att "
-"radera och låta Cacti återskapa RRD-filen."
+"Pdp_per_row för '%s' är ogiltig för RRA '%s' ska vara '%s'.  Överväg att ta "
+"bort och låta Cacti återskapa RRD-filen."
 
 #: lib/rrd.php:3454
 #, php-format
@@ -21775,8 +21775,8 @@ msgstr ""
 #: package_keys.php:95 package_repos.php:206
 msgid "Click 'Continue' to delete the following ."
 msgid_plural "Click 'Continue' to delete following Package Repositories."
-msgstr[0] "Klicka på \"Fortsätt\" för att radera följande ."
-msgstr[1] "Klicka på \"Fortsätt\" för att ta bort följande Package Repositories."
+msgstr[0] "Klicka på \"Fortsätt\" för att ta bort följande ."
+msgstr[1] "Klicka på \"Fortsätt\" för att ta bort följande paketförråd."
 
 #: package_keys.php:100
 msgid "Delete Public Key"
@@ -22138,13 +22138,13 @@ msgstr "Är du säker på att du vill återställa det här arkivet?"
 #: plugins.php:589
 msgid "Deleting this Plugin Archive is not reversible without a table restore.  If you really want to Delete the Plugin Archive, click 'Delete' below.  Otherwise click 'Cancel'."
 msgstr ""
-"Radering av detta plugin-arkiv är inte reversibelt utan en "
-"tabellåterställning.  Om du verkligen vill radera plugin-arkivet klickar du "
-"på \"Radera\" nedan.  Annars klickar du på \"Avbryt\"."
+"Borttagning av detta insticksarkiv är inte reversibelt utan en "
+"tabellåterställning.  Om du verkligen vill ta bort insticksarkivet klickar "
+"du på \"Ta bort\" nedan.  Annars klickar du på \"Avbryt\"."
 
 #: plugins.php:590
 msgid "Are you sure you want to Delete this Archive?"
-msgstr "Är du säker på att du vill radera det här arkivet?"
+msgstr "Är du säker på att du vill ta bort det här arkivet?"
 
 #: plugins.php:592
 msgid "Plugin Management"
@@ -22204,7 +22204,7 @@ msgstr "Återställ arkiv"
 
 #: plugins.php:809
 msgid "Delete Archive"
-msgstr "Radera arkiv"
+msgstr "Ta bort arkiv"
 
 #: plugins.php:821
 msgid "Remove Data"
@@ -22220,7 +22220,7 @@ msgstr "Plugin ChangeLog-fil"
 
 #: plugins.php:1058
 msgid "Actions available include 'Restore', 'Delete'."
-msgstr "Tillgängliga åtgärder är \"Återställ\", \"Radera\"."
+msgstr "Tillgängliga åtgärder är \"Återställ\", \"Ta bort\"."
 
 #: plugins.php:1061 plugins.php:1138 plugins.php:1215
 msgid "Plugin Name"
@@ -23242,7 +23242,7 @@ msgstr "Sök igen"
 
 #: rrdcleaner.php:561
 msgid "Delete All"
-msgstr "Radera alla"
+msgstr "Ta bort alla"
 
 #: rrdcleaner.php:561
 msgid "Delete All Unknown RRDfiles"
@@ -26103,7 +26103,7 @@ msgstr "Duplicera VDEF:er"
 
 #: vdef.php:303
 msgid "Click 'Continue' to delete the following VDEF's."
-msgstr "Klicka på \"Fortsätt\" för att radera följande VDEF:er."
+msgstr "Klicka på \"Fortsätt\" för att ta bort följande VDEF:er."
 
 #: vdef.php:304
 #, php-format
