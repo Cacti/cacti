@@ -840,7 +840,7 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 		// we are going to blow away all record if ok
 		$vals_in_buffer = 0;
 
-		// innitialize some variables
+		// initialize some variables
 		$rrd_tmpl           = '';
 		$rrd_tmplp          = [];
 		$rrd_tmplpts        = 0;

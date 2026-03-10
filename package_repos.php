@@ -433,7 +433,7 @@ function repos() : void {
 	global $actions, $item_rows, $types;
 
 	// create the page filter
-	$pageFilter = new CactiTableFilter(__('Package Repositorites'), 'package_repos.php', 'fors', 'sess_package_repos', 'package_repos.php?action=edit');
+	$pageFilter = new CactiTableFilter(__('Package Repositories'), 'package_repos.php', 'fors', 'sess_package_repos', 'package_repos.php?action=edit');
 
 	$pageFilter->rows_label = __('Repos');
 	$pageFilter->render();
