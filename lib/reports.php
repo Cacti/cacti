@@ -323,7 +323,7 @@ function reports_interval_start(int $interval, int $count, int $offset, int $tim
 		case REPORTS_SCHED_INTVL_MONTH_WEEKDAY:
 			// add $count months to current mailtime, but if this is the nth weekday, it must be the same nth weekday in the new month
 			// e.g. if this is currently the 3rd Monday of current month
-			// ist must be the 3rd Monday of the new month as well
+			// it must be the 3rd Monday of the new month as well
 			$weekday      = date('l', $timestamp);
 			$day_of_month = date('j', $timestamp);
 			$nth_weekday  = ceil($day_of_month / 7);
@@ -392,7 +392,7 @@ function utime_add(int $timestamp, int $yr = 0, int $mon = 0,
  * @param string $string  The string to append to the log file
  * @param bool   $output  Whether to output the log line to the browser using pring() or not
  * @param string $environ Tell's from where the script was called from
- * @param int    $level   The loging verbosity to use
+ * @param int    $level   The logging verbosity to use
  *
  * @return void
  */
@@ -648,7 +648,7 @@ function generate_report(int $schedule_id, array $report, bool $force = false) :
 }
 
 /**
- * reports_load_format_file  read the format file from disk and determines it's formatting
+ * reports_load_format_file  read the format file from disk and determines its formatting
  *
  * @param string $format_file The file to read from the formats directory
  * @param string $output      The html and css output from that file

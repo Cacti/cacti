@@ -248,7 +248,7 @@ class Installer implements JsonSerializable {
 
 	/**
 	 * jsonSerialize() - provides JSON object of return data with optional
-	 * values output dependant on Runtime mode.
+	 * values output dependent on Runtime mode.
 	 *
 	 * @return array - An array of options data
 	 */
