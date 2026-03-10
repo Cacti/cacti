@@ -605,7 +605,7 @@ function form_actions() {
 					update_graph_title_cache($selected_items[$i]);
 				}
 			} elseif (get_request_var('drp_action') == '9' || get_request_var('drp_action') == '10') {
-				/* get common info - not dependant on template/no template*/
+				/* get common info - not dependent on template/no template*/
 				$local_graph_id = 0; // this will be a new graph
 				$member_graphs  = $selected_items;
 				$graph_title    = form_input_validate(get_nfilter_request_var('title_format'), 'title_format', '', true, 3);

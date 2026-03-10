@@ -5269,7 +5269,7 @@ function split_emaildetail($email) {
 	}
 
 	/**
-	 * Handle the case where the Email is a tring, but may
+	 * Handle the case where the Email is a string, but may
 	 * include the name at the beginning of the Email.
 	 */
 	if (!is_array($email) && strpos($email, '@') !== false) {
@@ -7256,7 +7256,7 @@ function cacti_session_destroy() {
 }
 
 /**
- * cacti_cookie_set - Allows for settings an arbitry cookie name and value
+ * cacti_cookie_set - Allows for settings an arbitrary cookie name and value
  * used for CSRF protection.
  *
  * @return - null
@@ -7453,9 +7453,9 @@ function cacti_browser_zone_enabled() {
 }
 
 /**
- * cacti_time_zone_set - Givin an offset in minutes, attempt
+ * cacti_time_zone_set - Given an offset in minutes, attempt
  * to set a PHP date.timezone.  There are some oddballs that
- * we have to accomodate.
+ * we have to accommodate.
  *
  * @return - null
  */

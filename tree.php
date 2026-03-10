@@ -201,7 +201,7 @@ function tree_check_sequences() {
 
 	if ($bad_seq > 0 || $dup_seq > 0) {
 		// resequence the list so it has no gaps, and 0 values will appear at the top
-		// since thats where they would have been displayed
+		// since that's where they would have been displayed
 		db_execute('SET @seq = 0; UPDATE graph_tree SET sequence = (@seq:=@seq+1) ORDER BY sequence, id;');
 	}
 }
@@ -1006,7 +1006,7 @@ function tree_edit($partial = false) {
 				.done(function(data) {
 					$('#graphs').jstree('destroy');
 					$('#graphs').html(data);
-					dragable('graphs');
+					draggable('graphs');
 				})
 				.fail(function(data) {
 					getPresentHTTPError(data);
@@ -1019,8 +1019,8 @@ function tree_edit($partial = false) {
 				.done(function(data) {
 					$('#hosts').jstree('destroy');
 					$('#hosts').html(data);
-					dragable('hosts');
-					dragable('graphs');
+					draggable('hosts');
+					draggable('graphs');
 				})
 				.fail(function(data) {
 					getPresentHTTPError(data);
@@ -1031,9 +1031,9 @@ function tree_edit($partial = false) {
 			$.get('tree.php?action=sites&filter='+$('#sfilter').val(), function(data) {
 				$('#sites').jstree('destroy');
 				$('#sites').html(data);
-				dragable('sites');
-				dragable('hosts');
-				dragable('graphs');
+				draggable('sites');
+				draggable('hosts');
+				draggable('graphs');
 				enableKeyups();
 			});
 		}
@@ -1121,9 +1121,9 @@ function tree_edit($partial = false) {
 
 				drawTree();
 
-				dragable('graphs');
-				dragable('hosts');
-				dragable('sites');
+				draggable('graphs');
+				draggable('hosts');
+				draggable('sites');
 
 				enableKeyups();
 			});
@@ -1146,9 +1146,9 @@ function tree_edit($partial = false) {
 
 				drawTree();
 
-				dragable('graphs');
-				dragable('hosts');
-				dragable('sites');
+				draggable('graphs');
+				draggable('hosts');
+				draggable('sites');
 
 				enableKeyups();
 			});
@@ -1456,12 +1456,12 @@ function tree_edit($partial = false) {
 
 			$('#ctree').css('height', height).css('overflow','auto');;
 
-			dragable('graphs');
-			dragable('hosts');
-			dragable('sites');
+			draggable('graphs');
+			draggable('hosts');
+			draggable('sites');
 		});
 
-		function dragable(element) {
+		function draggable(element) {
 			var id = '#'+element;
 			var divdata = '';
 

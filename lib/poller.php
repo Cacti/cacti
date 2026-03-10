@@ -590,7 +590,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 			} elseif (is_hexadecimal($value)) {
 				/**
 				 * special case of one value output: hexadecimal to decimal conversion
-				 * attempt to accomodate 32bit and 64bit systems
+				 * attempt to accommodate 32bit and 64bit systems
 				 */
 				$value = str_replace(' ', '', $value);
 

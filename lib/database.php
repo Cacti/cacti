@@ -99,9 +99,9 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 		}
 	}
 
-	/* set connection timout for down servers */
+	/* set connection timeout for down servers */
 	$flags[PDO::ATTR_TIMEOUT] = 2;
-	$flage[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
+	$flags[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
 
 	while ($i <= $retries) {
 		try {
@@ -240,7 +240,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
  *  attempt to reconnect, otherwise return the connection
  *
  * @param bool|object  The connection to check
- * @param bool         Wether or not to log the connection check
+ * @param bool         Whether or not to log the connection check
  *
  * @return bool        The database true is the database is connected else false
  */
@@ -2173,7 +2173,7 @@ function db_switch_main_to_local() {
  * @param  (string)     $database - default $database_default
  * @param  (string)     $tables - default all tables
  * @param  (array)      $credentials - array($name => value, ...) for user, password, host, port, ssl ...
- * @param  (sting|bool) $output_file - dump file name, default /tmp/cacti.dump.sql
+ * @param  (string|bool) $output_file - dump file name, default /tmp/cacti.dump.sql
  * @param  (string)     $options - option strings for mysqldump, if --defaults-extra-file set, dump the data directly
  *
  * @return (int) return status of the executed command

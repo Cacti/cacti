@@ -1791,7 +1791,7 @@ function api_clone_get_unique_filename($file_name) {
 
 /**
  * api_clone_device_template_check_for_errors - This function will validate the
- *   intput and return warnings and errors before allowing users to proceed.  This
+ *   input and return warnings and errors before allowing users to proceed.  This
  *   option is skipped when using the quiet option.
  *
  * @param int    - The device template id to be cloned

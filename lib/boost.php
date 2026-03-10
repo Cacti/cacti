@@ -669,7 +669,7 @@ function boost_get_arch_table_names($latest_table = '') {
  * 5) Process the entire result set
  *
  * @param  (int)      local_data_id - the local data id to update
- * @param  (resourse) rrdtool_pipe - a pointer to the rrdtool process
+ * @param  (resource) rrdtool_pipe - a pointer to the rrdtool process
  *
  * @return (void)
  */
