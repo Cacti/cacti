@@ -5402,7 +5402,8 @@ msgstr ""
 
 #: data_templates.php:520
 msgid ""
-"NOTE: This change only will affect future Data Sources and does not alter "
+
+"NOTE: This change will only affect future Data Sources and does not alter "
 "existing Data Sources."
 msgstr ""
 
@@ -7676,7 +7677,8 @@ msgstr ""
 
 #: include/global_arrays.php:314
 msgid ""
-"Unable to increase size of password field, please check permission of db user"
+
+"Unable to increase size of password field, pleas check permission of db user"
 msgstr ""
 
 #: include/global_arrays.php:317
@@ -10277,7 +10279,8 @@ msgstr ""
 #: include/global_form.php:451
 msgid ""
 "The result of the Whitespace verification check for the specific Input "
-"Method.  If the Input String changes, and the Whitelist file is not update, "
+
+"Method.  If the Input String changes, and the Whitelist file is not updated, "
 "Graphs will not be allowed to be created."
 msgstr ""
 
@@ -10295,7 +10298,8 @@ msgstr ""
 #, php-format
 msgid ""
 "Enter a name for this %s field.  Note: If using name value pairs in your "
-"script, for example: NAME:VALUE, it is important that the name match your "
+
+"script, for example: NAME:VALUE, it is important that the name matches your "
 "output field name identically to the script output name or names."
 msgstr ""
 
@@ -11035,7 +11039,8 @@ msgstr ""
 
 #: include/global_form.php:1281
 msgid ""
-"The physical location of the Device.  This free form text can be a room, "
+
+"The physical location of the Device.  This free-form text can be a room, "
 "rack location, etc."
 msgstr ""
 
@@ -11099,7 +11104,8 @@ msgstr ""
 
 #: include/global_form.php:1355
 msgid ""
-"The type of ping packet to sent.  <br><i>NOTE: ICMP on Linux/UNIX requires "
+
+"The type of ping packet to send.  <br><i>NOTE: ICMP on Linux/UNIX requires "
 "root privileges.</i>  <br><i>NOTE: TCP Ping Closed - Even if the tcp ping is "
 "not successful, the device can be considered UP.</i>"
 msgstr ""
@@ -12446,9 +12452,10 @@ msgstr ""
 
 #: include/global_settings.php:716
 msgid ""
-"Space delimited domain names that will be permitted to be accessed outside "
+
+"Space-delimited domain names that will be permitted to be accessed outside "
 "of the Web Server itself.  This is important for users choosing to use a "
-"CDN, or hosting site.  Sources can includes wildcards for example: "
+"CDN, or hosting site.  Sources can include wildcards for example: "
 "*.mydomain.com, or a protocol, for example: https://*.example.com.  These "
 "Alternate Sources include Image, CSS and JavaScript types only."
 msgstr ""
@@ -13087,7 +13094,8 @@ msgid "Default Graph Type"
 msgstr ""
 
 #: include/global_settings.php:1311
-msgid "When creating graphs, what Graph Type would you like preselected?"
+
+msgid "When creating graphs, what Graph Type would you like pre-selected?"
 msgstr ""
 
 #: include/global_settings.php:1315
@@ -14025,7 +14033,8 @@ msgid "Password History"
 msgstr ""
 
 #: include/global_settings.php:2095
-msgid "Remember this number of old passwords and disallow reusing them."
+
+msgid "Remember this number of old passwords and disallow re-using them."
 msgstr ""
 
 #: include/global_settings.php:2100
@@ -21583,7 +21592,8 @@ msgstr ""
 
 #: lib/utility.php:1233
 msgid ""
-"This settings should remain ON unless your Cacti instances is running on "
+
+"This setting should remain ON unless your Cacti instances are running on "
 "either ZFS or FusionI/O which both have internal journaling to accommodate "
 "abrupt system crashes.  However, if you have very good power, and your "
 "systems rarely go down and you have backups, turning this setting to OFF can "
