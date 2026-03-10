@@ -517,7 +517,7 @@ function form_actions() : void {
 					'pmessage' => __('Click \'Continue\' to Change Profile following Data Templates.'),
 					'scont'    => __('Change Profile for Data Template'),
 					'pcont'    => __('Change Profile for Data Templates'),
-					'footer'   => __('NOTE: This change only will affect future Data Sources and does not alter existing Data Sources.'),
+					'footer'   => __('NOTE: This change will only affect future Data Sources and does not alter existing Data Sources.'),
 					'extra'    => [
 						'data_source_profile_id' => [
 							'method'  => 'drop_array',

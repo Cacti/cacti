@@ -232,7 +232,7 @@ if (!$master && $thread == 0) {
 		[$network_id, $poller_id]);
 
 	if ($status != 'on' && !$force) {
-		cacti_log(automation_get_pid() . " WARNING: The Network ID: $network_id is disabled.  You must use the 'force' option to force it's execution.", true, 'AUTOM8');
+		cacti_log(automation_get_pid() . " WARNING: The Network ID: $network_id is disabled.  You must use the 'force' option to force its execution.", true, 'AUTOM8');
 
 		exit(1);
 	}
