@@ -1,0 +1,75 @@
+# +-------------------------------------------------------------------------+
+# | Copyright (C) 2004-2026 The Cacti Group                                 |
+# |                                                                         |
+# | This program is free software; you can redistribute it and/or           |
+# | modify it under the terms of the GNU General Public License             |
+# | as published by the Free Software Foundation; either version 2          |
+# | of the License, or (at your option) any later version.                  |
+# +-------------------------------------------------------------------------+
+
+name: i18n Validation
+
+on:
+  pull_request:
+    paths:
+      - 'locales/po/*.po'
+  push:
+    branches:
+      - develop
+    paths:
+      - 'locales/po/*.po'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-po:
+    name: Validate Translation Files
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y gettext
+          python3 -m pip install msgcheck polib
+
+      - name: Identify changed .po files
+        id: changed
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE="${{ github.event.pull_request.base.sha }}"
+          else
+            BASE="${{ github.event.before }}"
+          fi
+          # Guard against empty-tree SHA on first push to a branch
+          if [ "$BASE" = "0000000000000000000000000000000000000000" ] || [ -z "$BASE" ]; then
+            git show --name-only --format="" HEAD -- 'locales/po/*.po' > /tmp/changed_po.txt || true
+          else
+            git diff --name-only "$BASE" HEAD -- 'locales/po/*.po' > /tmp/changed_po.txt || true
+          fi
+          COUNT=$(grep -c '.' /tmp/changed_po.txt 2>/dev/null || echo 0)
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+          echo "Changed .po files ($COUNT):"
+          cat /tmp/changed_po.txt
+
+      - name: Run msgfmt syntax and format-string check
+        if: steps.changed.outputs.count != '0'
+        run: xargs -a /tmp/changed_po.txt -I{} msgfmt -c -v -o /dev/null {}
+
+      - name: Run msgcheck linter
+        if: steps.changed.outputs.count != '0'
+        run: xargs -a /tmp/changed_po.txt msgcheck --error-on-fuzzy --no-lines
+
+      - name: Run custom HTML and placeholder audit
+        if: steps.changed.outputs.count != '0'
+        run: xargs -a /tmp/changed_po.txt python3 tests/tools/audit_po.py
