@@ -1,0 +1,159 @@
+name: Extended PHP Quality
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+    branches: [develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-extended-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  COMPOSER_ALLOW_SUPERUSER: 1
+  COVERAGE_MIN_LINE_PCT: '10.0'
+
+jobs:
+  actionlint:
+    name: actionlint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install actionlint dependencies
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y golang-go shellcheck
+
+      - name: Install actionlint
+        run: |
+          set -euo pipefail
+          GOBIN="${PWD}/.local/bin" go install github.com/rhysd/actionlint/cmd/actionlint@v1.7.7
+          echo "${PWD}/.local/bin" >> "${GITHUB_PATH}"
+
+      - name: Run actionlint
+        run: |
+          set -euo pipefail
+          "${PWD}/.local/bin/actionlint" -color
+
+  shell-lint:
+    name: shellcheck + shfmt
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install shell lint dependencies
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y shellcheck shfmt
+
+      - name: Run shfmt and shellcheck
+        run: |
+          set -euo pipefail
+          mapfile -t shell_files < <(
+            git ls-files | while read -r file; do
+              [[ -f "${file}" ]] || continue
+              case "${file}" in
+                *.sh) echo "${file}"; continue ;;
+              esac
+              if head -n 1 "${file}" | grep -Eq '^#!.*\b(bash|sh)\b'; then
+                echo "${file}"
+              fi
+            done | sort -u
+          )
+
+          if [[ "${#shell_files[@]}" -eq 0 ]]; then
+            echo 'No shell files found for linting.'
+            exit 0
+          fi
+
+          shfmt -d -i 2 -ci "${shell_files[@]}"
+          shellcheck -x "${shell_files[@]}"
+
+  unit-coverage:
+    name: pest coverage gate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP 8.4 with Xdebug
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: xdebug
+          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
+          ini-values: post_max_size=256M, max_execution_time=60
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
+
+      - name: Cache Composer packages
+        uses: actions/cache@v4
+        with:
+          path: include/vendor
+          key: ${{ runner.os }}-php-coverage-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-coverage-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Run Pest with coverage
+        run: |
+          set -euo pipefail
+          include/vendor/bin/pest --display-warnings --coverage-clover=coverage.xml --coverage-text | tee coverage-summary.txt
+
+      - name: Enforce minimum line coverage
+        run: |
+          set -euo pipefail
+          php -r '
+          $min = (float) getenv("COVERAGE_MIN_LINE_PCT");
+          if (!file_exists("coverage.xml")) {
+              fwrite(STDERR, "coverage.xml was not generated.\n");
+              exit(1);
+          }
+          $xml = @simplexml_load_file("coverage.xml");
+          if ($xml === false) {
+              fwrite(STDERR, "Failed to parse coverage.xml.\n");
+              exit(1);
+          }
+          $lineRate = null;
+          if (isset($xml["line-rate"])) {
+              $lineRate = (float) $xml["line-rate"];
+          } elseif (isset($xml->project["line-rate"])) {
+              $lineRate = (float) $xml->project["line-rate"];
+          }
+          if ($lineRate === null) {
+              fwrite(STDERR, "Could not determine line-rate from coverage.xml.\n");
+              exit(1);
+          }
+          $pct = $lineRate * 100.0;
+          printf("Line coverage: %.2f%% (minimum %.2f%%)\n", $pct, $min);
+          if ($pct + 1e-9 < $min) {
+              fwrite(STDERR, "Coverage gate failed.\n");
+              exit(1);
+          }
+          '
+
+      - name: Upload coverage artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: php-coverage-report
+          path: |
+            coverage.xml
+            coverage-summary.txt
+          if-no-files-found: ignore
