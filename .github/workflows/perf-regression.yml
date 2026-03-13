@@ -1,0 +1,150 @@
+# +-------------------------------------------------------------------------+
+# | Copyright (C) 2004-2026 The Cacti Group                                 |
+# +-------------------------------------------------------------------------+
+
+name: Performance Regression
+
+on:
+  pull_request:
+    branches: [develop]
+  workflow_dispatch:
+  schedule:
+    - cron: '0 7 * * 1'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  DEBIAN_FRONTEND: noninteractive
+
+jobs:
+  php-cli-benchmark:
+    name: PHP CLI CPU/RSS benchmark
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Install benchmark dependencies
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y php-cli php-xml hyperfine time python3
+
+      - name: Run hyperfine benchmarks
+        run: |
+          set -euo pipefail
+          samples="$(python3 - <<'PY'
+          import json
+          from pathlib import Path
+          print(json.loads(Path('.github/perf-baseline.json').read_text())['sample_size'])
+          PY
+          )"
+          mapfile -t commands < <(python3 - <<'PY'
+          import json
+          from pathlib import Path
+          for command in json.loads(Path('.github/perf-baseline.json').read_text())['commands'].keys():
+              print(command)
+          PY
+          )
+          if [[ "${#commands[@]}" -eq 0 ]]; then
+            echo 'No benchmark commands configured in .github/perf-baseline.json' >&2
+            exit 1
+          fi
+          hyperfine \
+            --warmup 3 \
+            --runs "${samples}" \
+            --export-json hyperfine-results.json \
+            "${commands[@]}"
+
+      - name: Capture RSS samples
+        run: |
+          set -euo pipefail
+          mkdir -p time-logs
+          mapfile -t commands < <(python3 - <<'PY'
+          import json
+          from pathlib import Path
+          for command in json.loads(Path('.github/perf-baseline.json').read_text())['commands'].keys():
+              print(command)
+          PY
+          )
+          idx=0
+          for command in "${commands[@]}"; do
+            /usr/bin/time -v bash -lc "${command}" >/dev/null 2> "time-logs/${idx}.txt"
+            printf '%s\n' "${command}" > "time-logs/${idx}.command"
+            idx=$((idx + 1))
+          done
+
+      - name: Enforce performance baseline thresholds
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          import re
+          from pathlib import Path
+          
+          baseline = json.loads(Path(".github/perf-baseline.json").read_text())["commands"]
+          hyperfine = json.loads(Path("hyperfine-results.json").read_text())
+          medians = {entry["command"]: float(entry["median"]) for entry in hyperfine["results"]}
+          
+          rss = {}
+          for cmd_file in Path("time-logs").glob("*.command"):
+              idx = cmd_file.stem
+              command = cmd_file.read_text().strip()
+              time_file = Path(f"time-logs/{idx}.txt")
+              text = time_file.read_text() if time_file.exists() else ""
+              m = re.search(r"Maximum resident set size \(kbytes\):\s*(\d+)", text)
+              rss[command] = int(m.group(1)) if m else 0
+          
+          summary = {}
+          failures = []
+          for command, cfg in baseline.items():
+              median = float(medians.get(command, 0.0))
+              median_limit = float(cfg["median_seconds"]) * float(cfg["allowed_regression_factor"])
+              max_rss = int(cfg["max_rss_kb"])
+              rss_kb = int(rss.get(command, 0))
+          
+              summary[command] = {
+                  "median_seconds": median,
+                  "median_limit_seconds": median_limit,
+                  "rss_kb": rss_kb,
+                  "rss_limit_kb": max_rss,
+              }
+          
+              if command not in medians:
+                  failures.append(f"{command}: missing hyperfine result")
+              if median > median_limit:
+                  failures.append(f"{command}: median {median:.6f}s > {median_limit:.6f}s")
+              if rss_kb > max_rss:
+                  failures.append(f"{command}: rss {rss_kb}KB > {max_rss}KB")
+          
+          Path("perf-summary.json").write_text(json.dumps(summary, indent=2) + "\n")
+          
+          if failures:
+              print("Performance threshold failures:")
+              for failure in failures:
+                  print("-", failure)
+              raise SystemExit(1)
+          
+          print(json.dumps(summary, indent=2))
+          PY
+
+      - name: Upload performance artifacts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.1
+        with:
+          name: perf-regression-results
+          path: |
+            hyperfine-results.json
+            perf-summary.json
+            time-logs
+          if-no-files-found: ignore
