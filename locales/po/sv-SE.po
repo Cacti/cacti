@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-03-11 22:28+0000\n"
+"PO-Revision-Date: 2026-03-14 09:18+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core/sv/>"
 "\n"
@@ -7927,7 +7927,7 @@ msgstr "Justerade"
 
 #: include/global_arrays.php:596 lib/html.php:3139
 msgid "Center"
-msgstr "Centrera"
+msgstr "center"
 
 #: include/global_arrays.php:600
 msgid "Top -> Down"
@@ -9020,19 +9020,19 @@ msgstr "2 000 Datakällans objekt"
 
 #: include/global_arrays.php:1704
 msgid "5,000 Data Source Items"
-msgstr "5.000 Datakällans objekt"
+msgstr "5 000 objekt i datakällan"
 
 #: include/global_arrays.php:1705
 msgid "10,000 Data Source Items"
-msgstr "10.000 Datakällans objekt"
+msgstr "10 000 objekt i datakällan"
 
 #: include/global_arrays.php:1706
 msgid "15,000 Data Source Items"
-msgstr "15.000 Datakällans objekt"
+msgstr "15 000 objekt i datakällan"
 
 #: include/global_arrays.php:1707
 msgid "25,000 Data Source Items"
-msgstr "25.000 Datakällans poster"
+msgstr "25 000 objekt i datakällan"
 
 #: include/global_arrays.php:1708
 msgid "50,000 Data Source Items (Default)"
@@ -20619,35 +20619,35 @@ msgstr ""
 #: lib/utility.php:1224
 msgid "If this number is negative, reduce the innodb_buffer_pool_size until the join_buffer_size turns positive, but allocate approximately from between 25%-50% of memory to the innodb_buffer_pool_size if the database is hosted on the Cacti server, or upto 80% of the systems memory if the database is separate from the Cacti web server.  However, try to not go below the default of 262,144.  When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.  As this is a per connection memory allocation, care must be taken not to increase it too high.  The sum of the join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB memory should be below 80% if the database is hosted on the Cacti web server and less if you intend to have very large RRDfiles or hundreds of thousands to millions long term."
 msgstr ""
-"Om detta tal är negativt, minska innodb_buffer_pool_size tills "
-"join_buffer_size blir positivt, men allokera ungefär mellan 25%-50% minne "
-"till innodb_buffer_pool_size om databasen är hostad på Cacti-servern, eller "
-"upp till 80% o f systemminnet om databasen är separat från Cacti-"
-"webbservern.  Försök dock att inte gå under standardvärdet på 262 144.  När "
-"du utför sammankopplingar, om de är mindre än denna storlek, kommer de att "
-"hållas i minnet och aldrig skrivas till en tillfällig fil.  Eftersom detta "
-"är en minnesallokering per anslutning måste man se till att inte öka den för "
-"mycket.  Summan av join_buffer_size + sort_buffer_size + read_buffer_size + "
-"read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB-"
-"minne bör vara under 80% i om databasen är värd på Cacti-webbservern och "
-"mindre om du tänker ha mycket stora RRD-filer eller hundratusentals till "
-"miljoner på lång sikt."
+"Om detta tal är negativt, minska innodb_buffer_pool_size tills % i blir "
+"positivt, join_buffer_size blir positivt, men allokera ungefär mellan 25%-"
+"50% minne till innodb_buffer_pool_size om databasen är hostad på Cacti-"
+"servern, eller upp till 80% o f systemminnet om databasen är separat från "
+"Cacti-webbservern.  Försök dock att inte gå under standardvärdet på 262 "
+"144.  När du utför sammankopplingar, om de är mindre än denna storlek, "
+"kommer de att hållas i minnet och aldrig skrivas till en tillfällig fil.  "
+"Eftersom detta är en minnesallokering per anslutning måste man se till att "
+"inte öka den för mycket.  Summan av join_buffer_size + sort_buffer_size + "
+"read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + "
+"Core MySQL/MariaDB-minne bör vara under 80% i om databasen är värd på Cacti-"
+"webbservern och mindre om du tänker ha mycket stora RRD-filer eller "
+"hundratusentals till miljoner på lång sikt."
 
 #: lib/utility.php:1230
 msgid "If this number is negative, reduce the innodb_buffer_pool_size until the sort_buffer_size turns positive, but allocate approximately from between 25%-50% of memory to the innodb_buffer_pool_size if the database is hosted on the Cacti server, or upto 80% of the system memory if the database is separate from the Cacti web server.  However, try to not go below the default setting of 2,097,152.  A sort buffer performs sorts for some queries using ORDER BY or GROUP BY. Configuring sort_buffer_size decides how much memory will be allocated for sort queries.  The sort_buffer_size may need to be adjusted from the default if the workload requires a significant number of sort queries. The sort_buffer_size is defined on a per-session variable.  Use the same equation as that of the join_buffer_size to determine the per connection possible memory."
 msgstr ""
-"Om detta tal är negativt, minska innodb_buffer_pool_size tills "
-"sort_buffer_size blir positivt, men allokera ungefär mellan 25%-50% minne "
-"till innodb_buffer_pool_size om databasen är hostad på Cacti-servern, eller "
-"upp till 80% o f systemminnet om databasen är separat från Cacti-"
-"webbservern.  Försök dock att inte gå under standardinställningen på 2 097 "
-"152.  En sorteringsbuffert utför sorteringar för vissa frågor som använder "
-"ORDER BY eller GROUP BY. Genom att konfigurera sort_buffer_size avgörs hur "
-"mycket minne som ska allokeras för sorteringsfrågor.  Sort_buffer_size kan "
-"behöva justeras från standardvärdet om arbetsbelastningen kräver ett stort "
-"antal sorteringsfrågor. Sort_buffer_size definieras som en variabel per "
-"session.  Använd samma ekvation som för join_buffer_size för att bestämma "
-"det möjliga minnet per anslutning."
+"Om detta tal är negativt, minska innodb_buffer_pool_size tills % i blir "
+"positivt, sort_buffer_size blir positivt, men allokera ungefär mellan 25%-"
+"50% minne till innodb_buffer_pool_size om databasen är hostad på Cacti-"
+"servern, eller upp till 80% o f systemminnet om databasen är separat från "
+"Cacti-webbservern.  Försök dock att inte gå under standardinställningen på 2 "
+"097 152.  En sorteringsbuffert utför sorteringar för vissa frågor som "
+"använder ORDER BY eller GROUP BY. Genom att konfigurera sort_buffer_size "
+"avgörs hur mycket minne som ska allokeras för sorteringsfrågor.  "
+"Sort_buffer_size kan behöva justeras från standardvärdet om "
+"arbetsbelastningen kräver ett stort antal sorteringsfrågor. Sort_buffer_size "
+"definieras som en variabel per session.  Använd samma ekvation som för "
+"join_buffer_size för att bestämma det möjliga minnet per anslutning."
 
 #: lib/utility.php:1236
 #, php-format
