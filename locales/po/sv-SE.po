@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-02-01 13:15-0500\nPO-Revision-Date: 2026-03-11 22:33+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-02-01 13:15-0500\nPO-Revision-Date: 2026-03-14 09:18+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php:29 include/global_arrays.php:2638 lib/html.php:2607
 msgid "About Cacti"
@@ -2571,7 +2571,7 @@ msgstr[1] "Radera CDEF:er"
 msgid "Click 'Continue' to duplicate the following CDEF. You can optionally change the title format for the new CDEF."
 msgid_plural "Click 'Continue' to duplicate the following CDEFs. You can optionally change the title format for the new CDEFs."
 msgstr[0] "Klicka på \"Fortsätt\" för att duplicera följande CDEF. Du kan valfritt ändra titelformat för den nya CDEF.Klicka på \"Fortsätt\" för att duplicera följande CDEF-filer. Du kan valfritt ändra titelformat för de nya CDEF-filerna."
-msgstr[1] ""
+msgstr[1] "PLACEHOLDER"
 
 #: cdef.php:282 color_templates.php:249 data_source_profiles.php:311
 #: data_templates.php:473 graph_templates.php:382 host_templates.php:234
@@ -2857,7 +2857,7 @@ msgstr[1] "Radera färgmallar"
 msgid "Click 'Continue' to duplicate the following Color Template. You can optionally change the title format for the new color template."
 msgid_plural "Click 'Continue' to duplicate following Color Templates. You can optionally change the title format for the new color templates."
 msgstr[0] "Klicka på \"Fortsätt\" för att duplicera följande färgmall. Du kan valfritt ändra titelformat för den nya färgmallen.Klicka på \"Fortsätt\" för att duplicera följande Färgmallar. Du kan valfritt ändra titelformat för de nya färgmallarna."
-msgstr[1] ""
+msgstr[1] "PLACEHOLDER"
 
 #: color_templates.php:255
 msgid "Duplicate Color Template"
@@ -3680,7 +3680,7 @@ msgstr[1] "Ta bort datakällaprofiler"
 msgid "Click 'Continue' to duplicate the following Data Source Profile. You can optionally change the title format for the new Data Source Profile"
 msgid_plural "Click 'Continue' to duplicate following Data Source Profiles. You can optionally change the title format for the new Data Source Profiles."
 msgstr[0] "Klicka på \"Fortsätt\" för att duplicera följande datakällaprofil. Du kan valfritt ändra titelformat för den nya datakällaprofilenKlicka på \"Fortsätt\" för att duplicera följande datakällaprofiler. Du kan valfritt ändra titelformat för de nya datakällaprofilerna."
-msgstr[1] ""
+msgstr[1] "PLACEHOLDER"
 
 #: data_source_profiles.php:315
 msgid "Duplicate Data Source Profile"
@@ -3959,7 +3959,7 @@ msgstr[1] "Ta bort datakällor"
 msgid "Choose a new Device for this Data Source and click 'Continue'."
 msgid_plural "Choose a new Device for these Data Sources and click 'Continue'"
 msgstr[0] "Välj en ny enhet för den här datakällan och klicka på \"Fortsätt\".Välj en ny enhet för dessa datakällor och klicka på \"Fortsätt\""
-msgstr[1] ""
+msgstr[1] "PLACEHOLDER"
 
 #: data_sources.php:541
 msgid "New Device:"
@@ -3969,7 +3969,7 @@ msgstr "Ny enhet:"
 msgid "Click 'Continue' to enable the following Data Source."
 msgid_plural "Click 'Continue' to enable all following Data Sources."
 msgstr[0] "Klicka på \"Fortsätt\" för att aktivera följande datakälla.Klicka på \"Fortsätt\" för att aktivera alla följande datakällor."
-msgstr[1] ""
+msgstr[1] "PLACEHOLDER"
 
 #: data_sources.php:554
 msgid "Enable Data Source"
@@ -3981,7 +3981,7 @@ msgstr[1] "Aktivera datakällor"
 msgid "Click 'Continue' to disable the following Data Source."
 msgid_plural "Click 'Continue' to disable all following Data Sources."
 msgstr[0] "Klicka på \"Fortsätt\" för att inaktivera följande datakälla.Klicka på \"Fortsätt\" för att inaktivera alla följande datakällor."
-msgstr[1] ""
+msgstr[1] "PLACEHOLDER"
 
 #: data_sources.php:563
 msgid "Disable Data Source"
@@ -3993,7 +3993,7 @@ msgstr[1] "Inaktivera datakällor"
 msgid "Click 'Continue' to re-apply the suggested name to the following Data Source."
 msgid_plural "Click 'Continue' to re-apply the suggested names to all following Data Sources."
 msgstr[0] "Klicka på \"Fortsätt\" för att tillämpa det föreslagna namnet på följande datakälla.Klicka på Fortsätt för att tillämpa de föreslagna namnen på alla följande datakällor."
-msgstr[1] ""
+msgstr[1] "PLACEHOLDER"
 
 #: data_sources.php:572
 msgid "Reapply Suggested Naming to Data Source"
@@ -4957,7 +4957,7 @@ msgstr "Välj Aggregate Template som ska användas och tryck på \"Fortsätt\" f
 
 #: graphs.php:1239
 msgid "There are presently no Aggregate Templates defined for this Graph Template.  Please either first create an Aggregate Template for the selected Graphs Graph Template and try again, or simply crease an un-templated Aggregate Graph."
-msgstr "Det finns för närvarande inga aggregerade mallar definierade för denna grafmall. Var god och skapar först en sammansatt mall för den valda grafgrafmallen och försök igen, eller helt enkelt skapa en un-templated Aggregate Graph."
+msgstr "Det finns för närvarande inga aggregerade mallar definierade för denna grafmall. Var god och skapar först en sammansatt mall för den valda grafmallen och försök igen, eller helt enkelt skapa en un-templated Aggregate Graph."
 
 #: graphs.php:1240
 msgid "Press 'Return' to return and select different Graphs."
@@ -6263,7 +6263,7 @@ msgstr "Justerade"
 
 #: include/global_arrays.php:598 lib/html.php:2664
 msgid "Center"
-msgstr "Centrera"
+msgstr "center"
 
 #: include/global_arrays.php:602
 msgid "Top -> Down"
@@ -7151,19 +7151,19 @@ msgstr "2 000 Datakällans objekt"
 
 #: include/global_arrays.php:1574
 msgid "5,000 Data Source Items"
-msgstr "5.000 Datakällans objekt"
+msgstr "5 000 objekt i datakällan"
 
 #: include/global_arrays.php:1575
 msgid "10,000 Data Source Items"
-msgstr "10.000 Datakällans objekt"
+msgstr "10 000 objekt i datakällan"
 
 #: include/global_arrays.php:1576
 msgid "15,000 Data Source Items"
-msgstr "15.000 Datakällans objekt"
+msgstr "15 000 objekt i datakällan"
 
 #: include/global_arrays.php:1577
 msgid "25,000 Data Source Items"
-msgstr "25.000 Datakällans poster"
+msgstr "25 000 objekt i datakällan"
 
 #: include/global_arrays.php:1578
 msgid "50,000 Data Source Items (Default)"
@@ -17017,13 +17017,13 @@ msgstr[1] "Klicka på \"Fortsätt\" för att radera följande aviseringsmottagar
 msgid "Click 'Continue' to enable the following Notification Receiver"
 msgid_plural "Click 'Continue' to enable following Notification Receiver"
 msgstr[0] "Klicka på \"Fortsätt\" för att aktivera följande Meddelande MottagareKlicka på \"Fortsätt\" för att aktivera följande Notifieringsmottagare"
-msgstr[1] ""
+msgstr[1] "PLACEHOLDER"
 
 #: managers.php:1001
 msgid "Click 'Continue' to disable the following Notification Receiver"
 msgid_plural "Click 'Continue' to disable following Notification Receiver"
 msgstr[0] "Klicka på \"Fortsätt\" för att inaktivera följande meddelandemottagareKlicka på \"Fortsätt\" för att inaktivera följande Notifieringsmottagare"
-msgstr[1] ""
+msgstr[1] "PLACEHOLDER"
 
 #: managers.php:1011
 #, php-format
@@ -17609,7 +17609,7 @@ msgstr[1] "Ta bort datainsamlare"
 msgid "Click 'Continue' to disable the following Data Collector."
 msgid_plural "Click 'Continue' to disable the following Data Collectors."
 msgstr[0] "Klicka på \"Fortsätt\" för att inaktivera följande datasamlare.Klicka på \"Fortsätt\" för att inaktivera följande datainsamlare."
-msgstr[1] ""
+msgstr[1] "PLACEHOLDER"
 
 #: pollers.php:572
 msgid "Disable Data Collector"
@@ -17621,7 +17621,7 @@ msgstr[1] "Inaktivera datainsamlare"
 msgid "Click 'Continue' to enable the following Data Collector."
 msgid_plural "Click 'Continue' to enable the following Data Collectors."
 msgstr[0] "Klicka på \"Fortsätt\" för att aktivera följande datasamlare.Klicka på \"Fortsätt\" för att aktivera följande datainsamlare."
-msgstr[1] ""
+msgstr[1] "PLACEHOLDER"
 
 #: pollers.php:581 pollers.php:590
 msgid "Enable Data Collector"
@@ -17633,13 +17633,13 @@ msgstr[1] "Aktivera datainsamlare"
 msgid "Click 'Continue' to Synchronize the Remote Data Collector for Offline Operation."
 msgid_plural "Click 'Continue' to Synchronize the Remote Data Collectors for Offline Operation."
 msgstr[0] "Klicka på \"Fortsätt\" för att synkronisera fjärrdatasamlaren för offline-användning.Klicka på \"Fortsätt\" för att synkronisera fjärrdatasamlare för offline-användning."
-msgstr[1] ""
+msgstr[1] "PLACEHOLDER"
 
 #: pollers.php:594
 msgid "Click 'Continue' to Clear Data Collector Statistics for the Data Collector."
 msgid_plural "Click 'Continue' to Clear DAta Collector Statistics for the Data Collectors."
 msgstr[0] "Klicka på \"Fortsätt\" för att aktivera följande datasamlare.Klicka på \"Fortsätt\" för att aktivera följande datainsamlare."
-msgstr[1] ""
+msgstr[1] "PLACEHOLDER"
 
 #: pollers.php:599
 msgid "Clear Statistics for Data Collector"
@@ -18991,7 +18991,7 @@ msgstr[1] "Ta bort användardomäner"
 msgid "Click 'Continue' to disable the following User Domain."
 msgid_plural "Click 'Continue' to disable following User Domains."
 msgstr[0] "Klicka på \"Fortsätt\" för att inaktivera följande användardomän.Klicka på \"Fortsätt\" för att inaktivera följande användardomäner."
-msgstr[1] ""
+msgstr[1] "PLACEHOLDER"
 
 #: user_domains.php:244
 msgid "Disable User Domain"
@@ -19210,7 +19210,7 @@ msgstr[1] "Ta bort användargrupper"
 msgid "Click 'Continue' to Copy the following User Group to a new User Group."
 msgid_plural "Click 'Continue' to Copy following User Groups to new User Groups."
 msgstr[0] "Klicka på \"Fortsätt\" för att kopiera följande användargrupp till en ny användargrupp.Klicka på \"Fortsätt\" för att kopiera följande användargrupper till nya användargrupper."
-msgstr[1] ""
+msgstr[1] "PLACEHOLDER"
 
 #: user_group_admin.php:463
 msgid "Group Prefix:"
@@ -19230,7 +19230,7 @@ msgstr[1] "Kopiera användargrupper"
 msgid "Click 'Continue' to enable the following User Group."
 msgid_plural "Click 'Continue' to enable following User Groups."
 msgstr[0] "Klicka på \"Fortsätt\" för att aktivera följande användargrupp.Klicka på \"Fortsätt\" för att aktivera följande användargrupper."
-msgstr[1] ""
+msgstr[1] "PLACEHOLDER"
 
 #: user_group_admin.php:479
 msgid "Enable User Group"
@@ -19242,7 +19242,7 @@ msgstr[1] "Aktivera användargrupper"
 msgid "Click 'Continue' to disable the following User Group."
 msgid_plural "Click 'Continue' to disable following User Groups."
 msgstr[0] "Klicka på \"Fortsätt\" för att inaktivera följande användargrupp.Klicka på Fortsätt för att inaktivera följande användargrupper."
-msgstr[1] ""
+msgstr[1] "PLACEHOLDER"
 
 #: user_group_admin.php:490
 msgid "Disable User Group"
@@ -20116,7 +20116,7 @@ msgstr[1] "Ta bort VDEFs"
 msgid "Click 'Continue' to duplicate the following VDEF. You can optionally change the title format for the new VDEF."
 msgid_plural "Click 'Continue' to duplicate following VDEFs. You can optionally change the title format for the new VDEFs."
 msgstr[0] "Klicka på \"Fortsätt\" för att duplicera följande VDEF. Du kan valfritt ändra titelformat för den nya VDEF.Klicka på \"Fortsätt\" för att duplicera följande VDEFs. Du kan valfritt ändra titelformat för de nya VDEF: erna."
-msgstr[1] ""
+msgstr[1] "PLACEHOLDER"
 
 #: vdef.php:280
 msgid "Duplicate VDEF"
