@@ -34,9 +34,6 @@ jobs:
       - name: Validate composer files
         run: composer validate --strict
 
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction
-
       - name: Run Composer audit
         run: composer audit --locked --no-interaction
 
