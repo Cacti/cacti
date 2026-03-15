@@ -5,6 +5,8 @@
 name: Performance Regression
 
 on:
+  push:
+    branches: [develop]
   pull_request:
     branches: [develop]
   workflow_dispatch:
@@ -33,6 +35,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0 # Needed to reach origin/develop
 
       - name: Install benchmark dependencies
         run: |
@@ -40,19 +44,31 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y php-cli php-xml hyperfine time python3
 
+      - name: Prepare trusted benchmark configuration
+        run: |
+          set -euo pipefail
+          # Always use the baseline/commands from the target branch (e.g. develop)
+          # to prevent PR contributors from running arbitrary commands.
+          if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
+            echo "Sourcing trusted baseline from origin/${{ github.base_ref }}..."
+            git show "origin/${{ github.base_ref }}:.github/perf-baseline.json" > .github/trusted-perf-baseline.json
+          else
+            cp .github/perf-baseline.json .github/trusted-perf-baseline.json
+          fi
+
       - name: Run hyperfine benchmarks
         run: |
           set -euo pipefail
           samples="$(python3 - <<'PY'
           import json
           from pathlib import Path
-          print(json.loads(Path('.github/perf-baseline.json').read_text())['sample_size'])
+          print(json.loads(Path('.github/trusted-perf-baseline.json').read_text())['sample_size'])
           PY
           )"
           mapfile -t commands < <(python3 - <<'PY'
           import json
           from pathlib import Path
-          for command in json.loads(Path('.github/perf-baseline.json').read_text())['commands'].keys():
+          for command in json.loads(Path('.github/trusted-perf-baseline.json').read_text())['commands'].keys():
               print(command)
           PY
           )
@@ -73,7 +89,7 @@ jobs:
           mapfile -t commands < <(python3 - <<'PY'
           import json
           from pathlib import Path
-          for command in json.loads(Path('.github/perf-baseline.json').read_text())['commands'].keys():
+          for command in json.loads(Path('.github/trusted-perf-baseline.json').read_text())['commands'].keys():
               print(command)
           PY
           )
@@ -91,11 +107,11 @@ jobs:
           import json
           import re
           from pathlib import Path
-          
-          baseline = json.loads(Path(".github/perf-baseline.json").read_text())["commands"]
+
+          baseline = json.loads(Path(".github/trusted-perf-baseline.json").read_text())["commands"]
           hyperfine = json.loads(Path("hyperfine-results.json").read_text())
           medians = {entry["command"]: float(entry["median"]) for entry in hyperfine["results"]}
-          
+
           rss = {}
           for cmd_file in Path("time-logs").glob("*.command"):
               idx = cmd_file.stem
@@ -104,7 +120,7 @@ jobs:
               text = time_file.read_text() if time_file.exists() else ""
               m = re.search(r"Maximum resident set size \(kbytes\):\s*(\d+)", text)
               rss[command] = int(m.group(1)) if m else 0
-          
+
           summary = {}
           failures = []
           for command, cfg in baseline.items():
@@ -112,29 +128,29 @@ jobs:
               median_limit = float(cfg["median_seconds"]) * float(cfg["allowed_regression_factor"])
               max_rss = int(cfg["max_rss_kb"])
               rss_kb = int(rss.get(command, 0))
-          
+
               summary[command] = {
                   "median_seconds": median,
                   "median_limit_seconds": median_limit,
                   "rss_kb": rss_kb,
                   "rss_limit_kb": max_rss,
               }
-          
+
               if command not in medians:
                   failures.append(f"{command}: missing hyperfine result")
               if median > median_limit:
                   failures.append(f"{command}: median {median:.6f}s > {median_limit:.6f}s")
               if rss_kb > max_rss:
                   failures.append(f"{command}: rss {rss_kb}KB > {max_rss}KB")
-          
+
           Path("perf-summary.json").write_text(json.dumps(summary, indent=2) + "\n")
-          
+
           if failures:
               print("Performance threshold failures:")
               for failure in failures:
                   print("-", failure)
               raise SystemExit(1)
-          
+
           print(json.dumps(summary, indent=2))
           PY
 
