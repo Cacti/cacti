@@ -1,10 +1,10 @@
 # Cacti ™
 
 [![Cacti Commit Audit](https://github.com/Cacti/cacti/actions/workflows/syntax.yml/badge.svg)](https://github.com/Cacti/cacti/actions/workflows/syntax.yml)
-[![Project Status](http://opensource.box.com/badges/active.svg)](http://opensource.box.com/badges)
+[![Project Status](https://opensource.box.com/badges/active.svg)](https://opensource.box.com/badges)
 [![Translation Status](https://translate.cacti.net/widgets/cacti/-/core/svg-badge.svg)](https://translate.cacti.net "Translation Status")
-[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/cacti/cacti.svg)](http://isitmaintained.com/project/cacti/cacti "Average time to resolve an issue")
-[![Percentage of open issues](http://isitmaintained.com/badge/open/cacti/cacti.svg)](http://isitmaintained.com/project/cacti/cacti "Percentage of issues still open")
+[![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/cacti/cacti.svg)](https://isitmaintained.com/project/cacti/cacti "Average time to resolve an issue")
+[![Percentage of open issues](https://isitmaintained.com/badge/open/cacti/cacti.svg)](https://isitmaintained.com/project/cacti/cacti "Percentage of issues still open")
 
 -----------------------------------------------------------------------------
 
@@ -314,7 +314,7 @@ Repository](https://github.com/Cacti/documentation/blob/develop/README.md).
 
 ## Contribute
 
-Check out the main [Cacti](http://www.cacti.net) web site for downloads, change
+Check out the main [Cacti](https://www.cacti.net) web site for downloads, change
 logs, release notes and more!
 
 ### Community forums
@@ -322,7 +322,7 @@ logs, release notes and more!
 Given the large scope of Cacti, the forums tend to generate a respectable amount
 of traffic. Doing your part in answering basic questions goes a long way since
 we cannot be everywhere at once. Contribute to the Cacti community by
-participating on the [Cacti Community Forums](http://forums.cacti.net).
+participating on the [Cacti Community Forums](https://forums.cacti.net).
 
 ### GitHub Documentation
 
