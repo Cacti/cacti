@@ -78,19 +78,19 @@ cd cacti
 
 Dependency management:
 
-- `1.2.x`: Composer is generally not required for packaged dependencies.
-- `develop` / `1.3.x`: Composer is required.
+- For a source checkout on both `1.2.x` and `develop`, install dependencies with Composer.
+- Use `composer update` only when intentionally refreshing dependency versions.
 
-For `develop`:
+Install dependencies:
 
 ```bash
-composer update
+composer install
 ```
 
 Windows users may need:
 
 ```bash
-composer update --ignore-platform-req=ext-pcntl --ignore-platform-req=ext-posix
+composer install --ignore-platform-req=ext-pcntl --ignore-platform-req=ext-posix
 ```
 
 Then configure your database and web server, and complete setup using the official docs:
