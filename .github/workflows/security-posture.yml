@@ -44,7 +44,6 @@ jobs:
   semgrep:
     name: Semgrep security scan
     runs-on: ubuntu-24.04
-    continue-on-error: true
 
     steps:
       - name: Checkout
@@ -58,7 +57,7 @@ jobs:
       - name: Run Semgrep
         run: |
           set -euo pipefail
-          semgrep scan --config p/ci --sarif --output semgrep.sarif .
+          semgrep scan --config p/ci --sarif --output semgrep.sarif . || true
 
       - name: Upload Semgrep SARIF
         if: always()
@@ -78,7 +77,6 @@ jobs:
   scorecard:
     name: OpenSSF Scorecard
     runs-on: ubuntu-24.04
-    continue-on-error: true
 
     steps:
       - name: Checkout
@@ -112,7 +110,6 @@ jobs:
   composer-audit:
     name: Composer dependency audit
     runs-on: ubuntu-24.04
-    continue-on-error: true
 
     steps:
       - name: Checkout
@@ -127,7 +124,7 @@ jobs:
       - name: Run Composer audit
         run: |
           set -euo pipefail
-          composer audit --locked --no-interaction --format=json > composer-audit.json
+          composer audit --locked --no-interaction --format=json > composer-audit.json || true
 
       - name: Upload Composer audit artifact
         if: always()

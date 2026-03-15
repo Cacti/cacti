@@ -11,7 +11,7 @@ import yaml
 
 
 PINNED_REF_RE = re.compile(r"^[0-9a-f]{40}$")
-CURL_PIPE_RE = re.compile(r"curl\b[^\n|]*\|\s*(?:sh|bash)\b")
+CURL_PIPE_RE = re.compile(r"curl\b[^\n|]*\|\s*(?:sudo\s+)?(?:/(?:usr/)?bin/)?(?:sh|bash)\b")
 STRICT_LINE = "set -euo pipefail"
 DEFAULT_GLOB = ".github/workflows/*"
 
@@ -59,8 +59,14 @@ def check_run(path: str, step_name: str, run_value: str, violations: list[str]) 
 
 def resolve_workflow_files(root: Path, explicit_paths: list[str]) -> list[Path]:
     if explicit_paths:
-        files = [(root / rel).resolve() for rel in explicit_paths]
-        return sorted(path for path in files if path.is_file())
+        files: list[Path] = []
+        for rel in explicit_paths:
+            path = (root / rel).resolve()
+            if not path.is_file():
+                print(f"Error: Workflow file not found: {rel}")
+                raise SystemExit(1)
+            files.append(path)
+        return sorted(files)
     return sorted(
         path for path in root.glob(DEFAULT_GLOB) if path.suffix in (".yml", ".yaml")
     )

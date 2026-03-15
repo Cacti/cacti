@@ -5,6 +5,8 @@
 name: Performance Regression
 
 on:
+  push:
+    branches: [develop]
   pull_request:
     branches: [develop]
   workflow_dispatch:
@@ -33,6 +35,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0 # Needed to reach origin/develop
 
       - name: Install benchmark dependencies
         run: |
@@ -40,19 +44,31 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y php-cli php-xml hyperfine time python3
 
+      - name: Prepare trusted benchmark configuration
+        run: |
+          set -euo pipefail
+          # Always use the baseline/commands from the target branch (e.g. develop) 
+          # to prevent PR contributors from running arbitrary commands.
+          if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
+            echo "Sourcing trusted baseline from origin/${{ github.base_ref }}..."
+            git show "origin/${{ github.base_ref }}:.github/perf-baseline.json" > .github/trusted-perf-baseline.json
+          else
+            cp .github/perf-baseline.json .github/trusted-perf-baseline.json
+          fi
+
       - name: Run hyperfine benchmarks
         run: |
           set -euo pipefail
           samples="$(python3 - <<'PY'
           import json
           from pathlib import Path
-          print(json.loads(Path('.github/perf-baseline.json').read_text())['sample_size'])
+          print(json.loads(Path('.github/trusted-perf-baseline.json').read_text())['sample_size'])
           PY
           )"
           mapfile -t commands < <(python3 - <<'PY'
           import json
           from pathlib import Path
-          for command in json.loads(Path('.github/perf-baseline.json').read_text())['commands'].keys():
+          for command in json.loads(Path('.github/trusted-perf-baseline.json').read_text())['commands'].keys():
               print(command)
           PY
           )
@@ -73,7 +89,7 @@ jobs:
           mapfile -t commands < <(python3 - <<'PY'
           import json
           from pathlib import Path
-          for command in json.loads(Path('.github/perf-baseline.json').read_text())['commands'].keys():
+          for command in json.loads(Path('.github/trusted-perf-baseline.json').read_text())['commands'].keys():
               print(command)
           PY
           )
@@ -92,7 +108,7 @@ jobs:
           import re
           from pathlib import Path
           
-          baseline = json.loads(Path(".github/perf-baseline.json").read_text())["commands"]
+          baseline = json.loads(Path(".github/trusted-perf-baseline.json").read_text())["commands"]
           hyperfine = json.loads(Path("hyperfine-results.json").read_text())
           medians = {entry["command"]: float(entry["median"]) for entry in hyperfine["results"]}
           
