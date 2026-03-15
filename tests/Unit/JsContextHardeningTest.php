@@ -20,6 +20,8 @@
  */
 
 $authProfilePath = __DIR__ . '/../../auth_profile.php';
+$authResetpasswordPath = __DIR__ . '/../../auth_resetpassword.php';
+$authChangepasswordPath = __DIR__ . '/../../auth_changepassword.php';
 $pluginsPath = __DIR__ . '/../../plugins.php';
 $htmlGraphPath = __DIR__ . '/../../lib/html_graph.php';
 $dataDebugPath = __DIR__ . '/../../data_debug.php';
@@ -60,4 +62,18 @@ test('data debug escapes tooltip title values before rendering', function () use
 	$contents = file_get_contents($dataDebugPath);
 
 	expect($contents)->toContain('$value_title = htmle((string) $value);');
+});
+
+test('auth reset password encodes return location in onclick handlers', function () use ($authResetpasswordPath) {
+	$contents = file_get_contents($authResetpasswordPath);
+
+	expect($contents)->toContain("document.location=<?php print json_encode((string) \$return); ?>");
+	expect($contents)->not->toContain("document.location=\"<?php print \$return; ?>\"");
+});
+
+test('auth change password encodes return location in onclick handler', function () use ($authChangepasswordPath) {
+	$contents = file_get_contents($authChangepasswordPath);
+
+	expect($contents)->toContain("document.location=<?php print json_encode((string) \$return); ?>");
+	expect($contents)->not->toContain("onClick='document.location=\\\"\$return\\\"'");
 });
