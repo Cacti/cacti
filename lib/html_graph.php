@@ -1433,8 +1433,14 @@ function html_graph_list_view() : void {
 	$graph_list_js = [];
 
 	foreach (explode(',', (string) grv('graph_list')) as $item) {
-		if (is_numeric($item)) {
-			$graph_list_js[] = (int) $item;
+		$item = trim($item);
+
+		if ($item !== '' && ctype_digit($item)) {
+			$graph_id = (int) $item;
+
+			if ($graph_id > 0) {
+				$graph_list_js[] = $graph_id;
+			}
 		}
 	}
 

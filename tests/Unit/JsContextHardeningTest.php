@@ -30,14 +30,15 @@ test('auth_profile encodes tab for JavaScript and redirect URL', function () use
 	$contents = file_get_contents($authProfilePath);
 
 	expect($contents)->toContain("json_encode((string) grv('tab'))");
-	expect($contents)->toContain("rawurlencode((string) grv('tab'))");
+	expect($contents)->toContain("gfrv('tab', FILTER_VALIDATE_REGEXP");
+	expect($contents)->toContain('rawurlencode($currentTab)');
 });
 
 test('plugins page normalizes state and encodes sort column in JavaScript', function () use ($pluginsPath) {
 	$contents = file_get_contents($pluginsPath);
 
 	expect($contents)->toContain("json_encode((string) grv('sort_column'))");
-	expect($contents)->toContain("var tableState = <?php print (int) grv('state'); ?>");
+	expect($contents)->toContain("var tableState = <?php print (int) grv('state'); ?>;");
 	expect($contents)->not->toContain("var tableState = <?php print grv('state'); ?>");
 });
 
@@ -45,6 +46,7 @@ test('graph list view uses JSON and sanitized CSV for graph list', function () u
 	$contents = file_get_contents($htmlGraphPath);
 
 	expect($contents)->toContain('$graph_list_js = []');
+	expect($contents)->toContain('ctype_digit($item)');
 	expect($contents)->toContain('json_encode($graph_list_js)');
 	expect($contents)->toContain("graph_list=<?php print \$graph_list_csv; ?>");
 	expect($contents)->not->toContain("new Array(<?php print grv('graph_list'); ?>)");
