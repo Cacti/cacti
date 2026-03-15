@@ -462,8 +462,8 @@ function html_graph_preview_filter(string $page, string $action, string $devices
 	var graph_start     = <?php print get_current_graph_start(); ?>;
 	var graph_end       = <?php print get_current_graph_end(); ?>;
 	var timeOffset      = <?php print date('Z'); ?>;
-	var pageAction      = '<?php print $action; ?>';
-	var graphPage       = '<?php print $page; ?>';
+	var pageAction      = <?php print json_encode($action); ?>;
+	var graphPage       = <?php print json_encode($page); ?>;
 	var date1Open       = false;
 	var date2Open       = false;
 
@@ -1429,11 +1429,23 @@ function html_graph_list_view() : void {
 		<div style='float:right'><button type='button' class='ui-button ui-corner-all ui-widget' title='<?php print __esc('View Graphs'); ?>' onClick='viewGraphs()'><?php print __esc('View'); ?></button></div>
 	</div>
 	<?php print $report_text; ?>
+	<?php
+	$graph_list_js = [];
+
+	foreach (explode(',', (string) grv('graph_list')) as $item) {
+		if (is_numeric($item)) {
+			$graph_list_js[] = (int) $item;
+		}
+	}
+
+	$graph_list_js  = array_values(array_unique($graph_list_js));
+	$graph_list_csv = implode(',', $graph_list_js);
+	?>
 	<script type='text/javascript'>
 		refreshMSeconds=999999999;
 		refreshFunction = 'refreshGraphs()';
 
-		var graph_list_array = new Array(<?php print grv('graph_list'); ?>);
+		var graph_list_array = <?php print json_encode($graph_list_js); ?>;
 
 		function initializeChecks() {
 			for (var i = 0; i < graph_list_array.length; i++) {
@@ -1496,7 +1508,7 @@ function html_graph_list_view() : void {
 					}
 				});
 
-				strURL = '&demon=1&graph_list=<?php print grv('graph_list'); ?>&graph_add=' + strAdd + '&graph_remove=' + strDel;
+				strURL = '&demon=1&graph_list=<?php print $graph_list_csv; ?>&graph_add=' + strAdd + '&graph_remove=' + strDel;
 
 				return strNavURL + strURL;
 			} else {
@@ -1815,7 +1827,7 @@ function html_graph_single_view() : void {
 
 	?>
 	<script type='text/javascript'>
-		var suffix = '<?php print $suffix; ?>';
+		var suffix = <?php print json_encode((string) $suffix); ?>;
 		var originalWidth = null;
 		var refreshTime = <?php print read_user_setting('page_refresh') * 1000; ?>;
 		var graphTimeout = null;
@@ -2106,9 +2118,9 @@ function html_graph_zoom() : void {
 	?>
 	<div class='cactiTable'><div id='data'></div></div>
 	<script type='text/javascript'>
-		var suffix = '<?php print $suffix; ?>';
-		var graph_id = <?php print grv('local_graph_id') . ";\n"; ?>
-		var rra_id = <?php print grv('rra_id') . ";\n"; ?>
+		var suffix = <?php print json_encode((string) $suffix); ?>;
+		var graph_id = <?php print (int) grv('local_graph_id') . ";\n"; ?>
+		var rra_id = <?php print (int) grv('rra_id') . ";\n"; ?>
 		var graph_start = 0;
 		var graph_end = 0;
 		var graph_height = 0;
@@ -2120,8 +2132,8 @@ function html_graph_zoom() : void {
 			loadUrl({
 				url: urlPath + '<?php print $current_page; ?>' + '?action=properties-' + suffix +
 					'&local_graph_id=' + graph_id +
-					'&rra_id=<?php print grv('rra_id'); ?>' +
-					'&view_type=<?php print grv('view_type'); ?>' +
+					'&rra_id=<?php print (int) grv('rra_id'); ?>' +
+					'&view_type=<?php print rawurlencode((string) grv('view_type')); ?>' +
 					'&business_hours=' + $('#business_hours').val() +
 					'&thumbnails=' + $('#thumbnails').val(),
 				noState: true,

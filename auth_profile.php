@@ -282,7 +282,7 @@ function form_save() : void {
 	kill_session_var(OPTIONS_USER);
 	kill_session_var('selected_theme');
 
-	$tab = (isrv('tab') && gnrv('tab')) ? ('?tab=' . gnrv('tab')) : '';
+	$tab = (isrv('tab') && gnrv('tab') !== '') ? ('?tab=' . rawurlencode((string) grv('tab'))) : '';
 	header('Location: auth_profile.php' . $tab);
 }
 
@@ -680,7 +680,7 @@ function settings_javascript() : void {
 	?>
 	<script type='text/javascript'>
 		var themeFonts = <?php print read_config_option('font_method'); ?>;
-		var currentTab = '<?php print gnrv('tab'); ?>';
+		var currentTab = <?php print json_encode((string) grv('tab')); ?>;
 		var currentTheme = '<?php print get_selected_theme(); ?>';
 		var currentLang = '<?php print read_config_option('user_language'); ?>';
 		var authMethod = '<?php print read_config_option('auth_method'); ?>';
