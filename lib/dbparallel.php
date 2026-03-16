@@ -370,7 +370,7 @@ function db_query_parallelize(string $sql, bool $log = true, mixed $db_conn = fa
 	 * ORDER BY
 	 * LIMIT
 	 *
-	 * Knowing this information, we can tokenize the SQL
+	 * Knowning this information, we can tokenize the SQL
 	 * statement and prepare for parallelization.  The MySQL/MariaDB language
 	 * syntax has a very many modifiers that we hope not to have to cover
 	 * in this exercise.  They include, but are not limited to the items included

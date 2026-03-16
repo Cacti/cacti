@@ -89,7 +89,7 @@ switch ($providerName) {
 		die('Provider missing');
 }
 
-if (!isrv('code')) { // If we don't have an authorization code then get one
+if (!isset($_GET['code'])) { // If we don't have an authorization code then get one
 	$authUrl                 = $provider->getAuthorizationUrl($options);
 	$_SESSION['oauth2state'] = $provider->getState();
 	header('Location: ' . $authUrl);
@@ -99,7 +99,7 @@ if (!isrv('code')) { // If we don't have an authorization code then get one
 	// Check given state against previously stored one to mitigate CSRF attack
 }
 
-if (isempty_request_var('state') || (isset($_SESSION['oauth2state']) && (grv('state') !== $_SESSION['oauth2state']))) {
+if (empty($_GET['state']) || (isset($_SESSION['oauth2state']) && ($_GET['state'] !== $_SESSION['oauth2state']))) {
 	unset($_SESSION['oauth2state']);
 
 	exit('Invalid state');
@@ -107,7 +107,7 @@ if (isempty_request_var('state') || (isset($_SESSION['oauth2state']) && (grv('st
 	$token = $provider->getAccessToken(
 		'authorization_code',
 		[
-			'code' => grv('code')
+			'code' => $_GET['code']
 		]
 	);
 

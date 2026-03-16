@@ -1009,10 +1009,24 @@ function graphs() : void {
 		form_hidden_box('host_template_id', $host['host_template_id'], '0');
 	}
 
-	if (isset($_SERVER['HTTP_REFERER'])) {
-		set_request_var('returnto', validate_redirect_url($_SERVER['HTTP_REFERER'], 'host.php'));
-	} elseif (isset_request_var('returnto')) {
-		set_request_var('returnto', validate_redirect_url(get_nfilter_request_var('returnto'), 'host.php'));
+	if (isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] != '') {
+		$referer_url = parse_url($_SERVER['HTTP_REFERER']);
+
+		if ($_SERVER['SERVER_NAME'] != $referer_url['host']) {
+			// Potential security exploit 1
+			srv('returnto', 'host.php');
+		} elseif (!str_contains($_SERVER['HTTP_REFERER'], 'graphs_new')) {
+			srv('returnto', basename($_SERVER['HTTP_REFERER']));
+		} else {
+			srv('returnto', 'host.php');
+		}
+	} elseif (isrv('returnto') && gnrv('returnto') != '') {
+		$returnto_url = parse_url(gnrv('returnto'));
+
+		if ($_SERVER['SERVER_NAME'] != $returnto_url['host']) {
+			// Potential security exploit 2
+			srv('returnto', 'host.php');
+		}
 	}
 
 	load_current_session_value('returnto', 'sess_grn_returnto', '');

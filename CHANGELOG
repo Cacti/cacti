@@ -2,7 +2,6 @@ Cacti CHANGELOG
 
 1.3.0-dev
 -issue#6762: Harden lib/ping.php: apply cacti_escapeshellarg() to hostname in native ping and fping shell commands
--issue#6760: Harden link.php: apply sanitize_uri() to HTTP_REFERER before redirect
 -issue#6761: Harden auth_changepassword.php: apply sanitize_uri() to HTTP_REFERER in all redirect paths
 -issue: Fix loose $db_conn comparison in db_table_exists and db_column_exists
 -issue#6545: Add 30 and 60 second timeout options for Remote Agent and Poller settings

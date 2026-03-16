@@ -1,4 +1,3 @@
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: Cacti\n"
@@ -20821,12 +20820,12 @@ msgstr ""
 #: poller.php:1253
 #, php-format
 msgid "WARNING: 24 hours Poller[%d] avg. run time is %f seconds (more than %d &#37; of time limit)"
-msgstr ""
+msgstr "ВНИМАНИЕ: 24 часа Poller[%d] средно време на работа е %f секунди (повече от %d % от ограничението във времето)"
 
 #: poller.php:1269
 #, php-format
 msgid "WARNING: In last hour Poller[%d] run time %d times reached more than %d &#37; of time limit"
-msgstr ""
+msgstr "ПРЕДУПРЕЖДЕНИЕ: В последния час Poller[%d] време на работа %d пъти достигна повече от %d % от срока"
 
 #: poller.php:1291
 msgid "Cacti System Notification"

@@ -754,30 +754,23 @@ function aggregate_cdef_totalling(int $_new_graph_id, int $_graph_item_sequence,
 
 	// take graph item data for the totalling items
 	if (!empty($_new_graph_id)) {
-		// drift guard: AggregateCdefTotallingFilterTest 'excluded set'
-		$excluded_types = implode(',', [
-			GRAPH_ITEM_TYPE_GPRINT,
-			GRAPH_ITEM_TYPE_LEGEND,
-			GRAPH_ITEM_TYPE_GPRINT_LAST,
-			GRAPH_ITEM_TYPE_GPRINT_MAX,
-			GRAPH_ITEM_TYPE_GPRINT_MIN,
-			GRAPH_ITEM_TYPE_GPRINT_AVERAGE,
-			GRAPH_ITEM_TYPE_LEGEND_CAMM,
-		]);
-
-		$graph_template_items = db_fetch_assoc_prepared("SELECT id, cdef_id
+		$sql = "SELECT id, cdef_id
 			FROM graph_templates_item
-			WHERE local_graph_id = ?
-			AND sequence >= ?
-			AND graph_type_id NOT IN ($excluded_types)
-			ORDER BY sequence",
-			[$_new_graph_id, $_graph_item_sequence]);
+			WHERE local_graph_id=$_new_graph_id
+			AND sequence>=$_graph_item_sequence
+			ORDER BY sequence";
 
-		cacti_log(__FUNCTION__ . " totalling query: graph=$_new_graph_id seq=$_graph_item_sequence", true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+		cacti_log('sql: ' . $sql, true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+
+		$graph_template_items = db_fetch_assoc($sql);
 	}
 
 	// now get the list of cdefs
-	$_cdefs = db_fetch_assoc_prepared('SELECT id, name FROM cdef ORDER BY id', []);
+	$sql = 'SELECT id, name FROM cdef ORDER BY id';
+
+	cacti_log(__FUNCTION__ . ' sql: ' . $sql, true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+
+	$_cdefs = db_fetch_assoc($sql); // index the cdefs by their id's
 	$cdefs  = [];
 
 	// build cdefs array to allow for indexing on cdef_id
@@ -884,10 +877,13 @@ function aggregate_cdef_totalling(int $_new_graph_id, int $_graph_item_sequence,
 			}
 
 			// now that we have a new cdef id, update record accordingly
-			db_execute_prepared('UPDATE graph_templates_item
-				SET cdef_id = ?
-				WHERE id = ?',
-				[$new_cdef_id, $graph_template_item['id']]);
+			$sql = "UPDATE graph_templates_item
+				SET cdef_id=$new_cdef_id
+				WHERE id=" . $graph_template_item['id'];
+
+			cacti_log(__FUNCTION__ . ' sql: ' . $sql, true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+
+			$ok = db_execute($sql);
 
 			cacti_log(__FUNCTION__ . ' updated new cdef id: ' . $new_cdef_id . ' for item: ' . $graph_template_item['id'], true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 		}

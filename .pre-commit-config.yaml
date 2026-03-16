@@ -3,21 +3,21 @@ repos:
     hooks:
       - id: lintcheck
         name: PHP Lint Checking
-        entry: sh tests/tools/pre-commit-check.sh lint
+        entry: composer run-script lint
         language: system
-        types: [php]
+        files: ^app/
         always_run: true
 
       - id: phpcsfixer
         name: PHP CS Fixer Validation
-        entry: sh tests/tools/pre-commit-check.sh phpcsfixer
+        entry: composer run-script phpcsfixer
         language: system
-        types: [php]
+        files: ^app/
         always_run: true
 
       - id: phpstan
         name: PHPStan Validation
-        entry: sh tests/tools/pre-commit-check.sh phpstan
+        entry: composer run-script phpstan
         language: system
-        types: [php]
+        files: ^app/
         always_run: true

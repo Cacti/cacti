@@ -1003,6 +1003,30 @@ while ($poller_runs_completed < $poller_runs) {
 	}
 }
 
+function poller_heartbeat_check() : void {
+	$poller_interval = read_config_option('poller_interval');
+
+	$heartbeat_pollers = db_fetch_assoc_prepared('SELECT *, UNIX_TIMESTAMP() - UNIX_TIMESTAMP(last_status) AS heartbeat
+		FROM poller
+		WHERE disabled = ""
+		HAVING heartbeat > ? * 2
+		OR status = 6',
+		[$poller_interval]);
+
+	if (cacti_sizeof($heartbeat_pollers)) {
+		foreach ($heartbeat_pollers as $p) {
+			db_execute_prepared('UPDATE poller SET status = 6 WHERE id = ?', [$p['id']]);
+
+			if (debounce_run_notification('poller_heartbeat_' . $p['id'], 1800)) {
+				$log_message   = sprintf('WARNING: Poller[%s] with Name:%s is in Heartbeat Status', $p['id'], $p['name']);
+				$email_message = __('WARNING: PollerID:%s with Name:%s is in Heartbeat Status', $p['id'], $p['name']);
+				cacti_log($log_message, false, 'POLLER');
+				admin_email(__('Poller in Heartbeat Mode'), $email_message);
+			}
+		}
+	}
+}
+
 // start post data processing
 if ($poller_id == 1) {
 	multiple_poller_boost_check();
@@ -1030,32 +1054,6 @@ if ($poller_id == 1) {
 	automation_poller_bottom();
 	poller_maintenance();
 	api_plugin_hook('poller_bottom');
-}
-
-exit(0);
-
-function poller_heartbeat_check() : void {
-	$poller_interval = read_config_option('poller_interval');
-
-	$heartbeat_pollers = db_fetch_assoc_prepared('SELECT *, UNIX_TIMESTAMP() - UNIX_TIMESTAMP(last_status) AS heartbeat
-		FROM poller
-		WHERE disabled = ""
-		HAVING heartbeat > ? * 2
-		OR status = 6',
-		[$poller_interval]);
-
-	if (cacti_sizeof($heartbeat_pollers)) {
-		foreach ($heartbeat_pollers as $p) {
-			db_execute_prepared('UPDATE poller SET status = 6 WHERE id = ?', [$p['id']]);
-
-			if (debounce_run_notification('poller_heartbeat_' . $p['id'], 1800)) {
-				$log_message   = sprintf('WARNING: Poller[%s] with Name:%s is in Heartbeat Status', $p['id'], $p['name']);
-				$email_message = __('WARNING: PollerID:%s with Name:%s is in Heartbeat Status', $p['id'], $p['name']);
-				cacti_log($log_message, false, 'POLLER');
-				admin_email(__('Poller in Heartbeat Mode'), $email_message);
-			}
-		}
-	}
 }
 
 function host_status_cache_check() : void {

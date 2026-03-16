@@ -451,7 +451,7 @@ class CactiTableFilter {
 		}
 
 		if (isset($this->filter_array['rows'])) {
-			print "<form id='" . $this->form_id . "' action='" . $this->form_action . "' method='" . $this->form_method . "' class='cactiFilter'>";
+			print "<form id='" . $this->form_id . "' action='" . $this->form_action . "' method='" . $this->form_method . "'>";
 
 			foreach ($this->filter_array['rows'] as $index => $row) {
 				if ($index > 0 && !$text_appended) {

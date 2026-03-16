@@ -1403,7 +1403,7 @@ function form_actions() : void {
 					update_graph_title_cache($selected_items[$i]);
 				}
 			} elseif (grv('drp_action') == '9' || grv('drp_action') == '10') {
-				// get common info - not dependent on template/no template
+				// get common info - not dependant on template/no template
 				$local_graph_id = 0; // this will be a new graph
 				$member_graphs  = $selected_items;
 				$graph_title    = form_input_validate(gnrv('title_format'), 'title_format', '', true, 3);

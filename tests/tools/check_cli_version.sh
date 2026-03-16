@@ -23,10 +23,9 @@
 SCRIPTPATH="$( cd "$(dirname "$0")" || exit ; pwd -P )"
 cd "${SCRIPTPATH}/../../" || exit
 FILES1=$(find cli -name \*.php | grep -v "index.php" | sort)
-FILES2=$(find . -maxdepth 1 -name 'poller*.php' | grep -E -v "(index.php|pollers.php)" | sort)
+FILES2=$(ls -1 poller*.php | egrep -v "(index.php|pollers.php)" | sort)
 FILES3="cactid.php cmd.php"
-# shellcheck disable=SC2009 # pgrep lacks awk/user-filtering in one step; ps pipeline required
-WEBUSER=$(ps -ef | grep -E '(httpd|apache2|apache)' | grep -v "$(whoami)" | grep -v root | head -n1 | awk '{print $1}')
+WEBUSER=$(ps -ef | egrep '(httpd|apache2|apache)' | grep -v $(whoami) | grep -v root | head -n1 | awk '{print $1}')
 PWD=$(pwd)
 
 FAILED=0

@@ -7,9 +7,9 @@ html {
     }
 
     &:not([data-controls-subtitle="on"]) {
-        /*.compact_nav_icon::after {
+        .compact_nav_icon::after {
             display: none !important;
-        }*/
+        }
     }
 
     &[data-kiosk-mode="on"] {
@@ -185,13 +185,11 @@ html {
         color: var(--text-color-normal);
         background-color: rgba(0,0,0,0.2);
         &::after {
-            /*
             height: 25px;
             width: 25px;
             background-color: #bbb;
             border-radius: 50%;
             display: inline-block;
-            */
         }
         &:hover {
             color: var(--text-color-white);
@@ -259,7 +257,7 @@ html {
             }
         }
 
-     /*   &[data-subtitle]:not([data-subtitle=""])::after {
+        &[data-subtitle]:not([data-subtitle=""])::after {
             display: block;
             content: attr(data-subtitle);
             font-size: var(--fs-small);
@@ -269,11 +267,22 @@ html {
             text-overflow: ellipsis;
             max-width: 100%;
         }
-*/
+
         & > span {
             display: none;
         }
     }
+}
+
+.mdw-active::before {
+    background-color: var(--background-active);
+    border-radius: 4px;
+    content: " ";
+    display: block;
+    height: 100%;
+    position: absolute;
+    width: 0.25rem;
+    left: -1px;
 }
 
 .mdw-ActionBar {
@@ -352,7 +361,7 @@ html {
 * {
     /* CSS driven tooltip */
     &[data-tooltip]:not([data-tooltip=""]) {
-        &::after {
+        &::before {
             font-family: var(--font-sans), serif;
             font-weight: var(--fw-normal);
             z-index: 1500;
@@ -378,7 +387,7 @@ html {
     }
 
     &[data-tooltip]:not([data-tooltip=""]):not(.selected):hover {
-        &::after {
+        &:before {
             opacity: 1;
             animation: scaleDelay ease 0.1s;
             animation-delay: 0.75s;
@@ -400,7 +409,7 @@ html {
     flex-direction: column;
     width: 55rem;
     min-width: 19rem;
-    max-width: calc(100dvw - 7rem);     /* reduced by width of navigation as well as action menu */
+    max-width: calc(100dvw - 5rem);
     height: calc(100dvh - 3.5rem);
     transition: visibility 0.5s linear, transform 0.5s ease-in-out;
     transform: translateX(-125%);
@@ -547,12 +556,11 @@ html {
 }
 
 
-.navBox-header,
-.navBox-control{
+.navBox-header {
     display: flex;
     align-items: center;
     flex-shrink: 0;
-    height: 3rem;
+    height: calc(3rem + 2px);
     text-align: center;
     padding: 2px 0.5rem 3px 0.75rem;
 }
@@ -646,6 +654,7 @@ html {
     flex-direction: column;
     justify-content: center;
     text-align: center;
+    background: var(--background-navigation);
     transition: flex 0.3s ease-in-out, visibility 0.25s ease-in-out;
     padding: 0 1rem;
     flex-shrink: 0;
@@ -665,50 +674,22 @@ html {
     }
 }
 
-.navBox-control {
-    height: 0;
-    &:has(.navBox-control-group) {
-        border-top: 1px solid var(--background-navigation-top);
-        height: 2.5rem;
-    }
-}
-
 .navBox-content {
     overflow: auto;
     padding: 1rem 0 0 1rem;
     height: calc( 100% - 3rem );
-    min-width: fit-content;
-    flex-grow: 1;
-    flex-shrink: 1;
-    flex-basis: fit-content;
     border-top: 1px solid var(--background-navigation-top);
 
-    &:has(.mdw-jstree-wrapper) {
+    &:has(.mdw_tree) {
         padding: 1rem 1rem 0 1rem;
     }
 
-    & .mdw-jstree-wrapper {
+    & .mdw_tree {
         height: 100%;
-        & .ti-star      { color:    gold; }
-        & .ti-photo,
-        & .ti-device-analytics
-        { color:    dodgerblue; font-size: var(--fs-big)}
-
-        .jstree-node.jstree-open > .jstree-ocl,
-        .jstree-node.jstree-closed > .jstree-ocl {
-            background: none;
-            &:before {
-                font-family: 'tabler-icons';
-            }
-        }
-
-        .jstree-node.jstree-open > .jstree-ocl:before { content: "\ea5f"; }
-        .jstree-node.jstree-closed > .jstree-ocl:before { content: "\ea61"; }
-
     }
 }
 
-.mdw-ConsoleNavigationBox {
+.mdw-SideBarContainer {
     .menu_glyph {
         font-size: var(--fs-big);
         font-weight: var(--fw-semibold);

@@ -70,10 +70,6 @@ body {
 }
 
 /* elements */
-.ti {
-    font-size: var(--fs-semilarge) !important;
-}
-
 img {
     border: none;
 }
@@ -252,23 +248,28 @@ input[type="checkbox"]:focus-within + label:before {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
-    gap: 1rem;
+}
+
+/*
+.graphPage {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
 
     & .graphWrapperOuter {
-        /*min-width: fit-content;*/
-        &.cols1 { width:  100%; }
-        &.cols2 { width:   calc(50% - 2rem); }
-        &.cols3 { width:   calc(33% - 2rem); }
-        &.cols4 { width:   calc(25% - 2rem); }
-        &.cols5 { width:   calc(20% - 2rem); }
-        &.cols6 { width:   calc(16.6% - 2rem); }
-        & .graphimage {
-            width: 100% !important;
-            height: 100% !important;
-        }
+        flex-shrink: 0;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        .cols1 & { width:  100%; }
+        .cols2 & { width:   50%; }
+        .cols3 & { width:   33%; }
+        .cols4 & { width:   25%; }
+        .cols5 & { width:   20%; }
+        .cols6 & { width: 16.6%; }
     }
-
 }
+ */
 
 /* New Checkbox Stuff */
 .checkboxSwitch {
@@ -289,7 +290,7 @@ input[type="checkbox"]:focus-within + label:before {
 .cactiConsoleContentArea {
     container-type: inline-size;
     container-name: contentArea;
-    display: flex !important;
+    display: flex;
     overflow-y: hidden !important;              /* ensure to reset inline styles driven by layout.js ;( */
     overflow-x: auto !important;                /* ensure to reset inline styles driven by layout.js ;( */
     height: auto !important;                    /* ensure to reset inline styles driven by layout.js ;( */
@@ -297,7 +298,6 @@ input[type="checkbox"]:focus-within + label:before {
     flex-direction: column;
     flex-wrap: nowrap;
     justify-content: flex-start;
-    margin-left: 0 !important;
 
     & #main, #main {
         display: unset !important;              /* ensure to reset inline styles driven by layout.js ;( */
@@ -693,7 +693,7 @@ span[class^="device"] {
     max-width: 10rem;
     display: inline-block;
     color: whitesmoke;
-    border-radius: 4px;
+    border-radius: 2px;
 
     &.deviceUp {
         background: #009d00;
@@ -1243,7 +1243,6 @@ ul#breadcrumbs {
 legend {
     font-size: var(--fs-huge);
     font-weight: bold;
-    font-family: Courier;
     display: flex;
     align-items: flex-end;
     flex-direction: row;

@@ -101,7 +101,7 @@ check "DB container healthy" [ "$DB_HEALTH" = "healthy" ]
 check "Web container healthy" [ "$WEB_HEALTH" = "healthy" ]
 
 # 4. PHP extensions
-REQUIRED_EXTS="gd gmp intl ldap mbstring mysqli pdo_mysql snmp pcntl posix sockets xml dom sqlite3 pdo_sqlite"
+REQUIRED_EXTS="gd gmp intl ldap mbstring mysqli opcache pdo_mysql snmp pcntl posix sockets xml dom sqlite3 pdo_sqlite"
 LOADED=$(docker exec "$WEB_CONTAINER" php -m 2>/dev/null)
 for ext in $REQUIRED_EXTS; do
     if echo "$LOADED" | grep -qi "^${ext}$"; then

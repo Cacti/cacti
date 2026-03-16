@@ -22,19 +22,22 @@
  +-------------------------------------------------------------------------+
 */
 
-/* reject non-CLI invocations early */
-if (php_sapi_name() !== 'cli') {
-	http_response_code(404);
-	exit;
-}
-
-/* do NOT run this script through a web browser */
+/* The following define forces the system to  NOT run
+ * through a web browser at all, because that would be
+ * bad.
+ *
+ * CLI scripts use this file as a way to predefine that
+ * they are not to be run from a browser
+ *
+ * Any source wishing to check whether the system is in
+ * CLI or WEB mode should use the CACTI_WEB and
+ * CACTI_CLI constants
 define('CACTI_CLI_ONLY', true);
 
 /* We are not talking to the browser */
 $no_http_headers = true;
 
-/* Make sure CLI's are have minimum settings */
+// Make sure CLI's are have minimum settings
 $default_limit  = -1;
 $default_time   = -1;
 $memory_limit   = ini_get('memory_limit');
@@ -49,4 +52,3 @@ if ($execution_time < $default_time && $execution_time >= 0) {
 }
 
 include(__DIR__ . '/global.php');
-

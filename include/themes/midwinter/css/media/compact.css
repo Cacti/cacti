@@ -14,6 +14,7 @@
 [class~=fullscreen] > div {
     /*height: 100dvh !important;*/
     height: 100% !important;
+
 }
 
 .hide,
@@ -40,8 +41,7 @@
 }
 
 .compact_nav_icon,
-.navBox-header-button,
-.navBox-control-btn {
+.navBox-header-button {
     color: var(--text-color-normal);
     display: flex;
     align-items: center;
@@ -51,9 +51,8 @@
     flex-direction: column;
 
     &.mdw-active {
-        border: 0 !important;
-        background-image:linear-gradient(90deg, var(--background-active) 3px, var(--background-active-section) 3px) !important;
-        color: snow !important;
+        background: var(--background-active-section);
+        color: snow;
     }
 
     &.selected {
@@ -201,15 +200,13 @@
         display: grid;
         grid-template-areas:    "left top    right"
                                 "left middle right";
-        grid-template-columns: min-content minmax(20rem, 1fr) min-content;
+        grid-template-columns: auto 1fr auto;
         grid-template-rows: auto 1fr;
         border-top: 1px solid var(--border-color-light);
 
         grid-area: main;
 
         & #main {
-            width: auto;
-            padding-bottom: 2px;
             .navBarNavigation {
                 display: none;
             }
@@ -252,93 +249,6 @@
 
         }
 
-        & > div[class^="mdw-Dock"] {
-
-            /* hide dock itself if no visible content given */
-            &:not(:has(.visible)) {
-                display: none !important;
-            }
-
-            /* hide every inner dock container as default */
-            & > div[class^="mdw-DockInner"] {
-                display: none;
-            }
-
-            /* afterwards only inner containers of appropriate class become visible */
-            .mdw-DockInnerTop:has(.visible),
-            .mdw-DockInnerBottom:has(.visible) {
-                display: block;
-            }
-
-            .navBox-header,
-            .navBox-control {
-                font-size: var(--fs-regular);
-                border-top: none;
-                border-bottom: 1px solid var(--border-color-semilight);
-                background: var(--background-navigation-top);
-            }
-            .navBox-control {
-                display: inline-flex;
-                justify-content: right;
-                & .navBox-control-group {
-                    display: flex;
-                    justify-content: flex-end;
-                }
-                & .navBox-control-btn {
-                    margin-left: 3px;
-                }
-            }
-            .navBox-content {
-                background: var(--background-content);
-            }
-
-            & .mdw-ConsoleNavigationBox {
-                visibility: visible !important;
-                transform: unset !important;
-                border-top: 1px solid var(--box-shadow-color);
-
-                &:not(.visible) {
-                    display: none;
-                }
-            }
-        }
-
-
-        &:has(.mdw-DockLeft .visible) {
-            .cactiConsoleContentArea,
-            .cactiGraphContentArea {
-                margin-left: -4px;
-                & main {
-                    margin-left: 5px;
-                    &:has(.navBarNavigation) {
-                        & .cactiTable {
-                            padding-left: 3px !important;
-                        }
-                    }
-                    & .formHeader,
-                    & .formColumnLeft {
-                        padding-left: 13px !important;
-                    }
-                }
-            }
-        }
-
-        &:has(.mdw-DockRight .visible) {
-            .cactiConsoleContentArea,
-            .cactiGraphContentArea {
-                margin-right: -4px;
-                & .tableActionOnTop {
-                    & button:last-of-type {
-                        margin-right: 4px;
-                    }
-                }
-
-                & main {
-                    margin-right: 5px;
-                }
-            }
-        }
-
         & .mdw-DockTop {
             grid-area: top / 1 / top / 3;
             padding-left: 1rem;
@@ -349,119 +259,79 @@
         & .mdw-DockLeft {
             grid-area: left;
             right: 0 !important;
-            padding-left: 4px;
         }
 
         & .mdw-DockRight {
             grid-area: right;
             left: 0 !important;
-            padding-left: 4px;
             & > div[class^="mdw-DockInner"] {
                 &:has(.visible) {
                     padding-left: 10px;
                 }
             }
+
         }
 
         & .mdw-DockRight,
         & .mdw-DockLeft {
             height: 100%;
             width: min-content;
-            min-width: calc( 19rem + 14px );
             overflow: hidden;
+            background: var(--background-content);
+
+            &:has(.mdw-ConsoleNavigationBox.visible) {
+                min-width: 19rem;
+            }
 
             & > .ui-resizable-handle {
-                height: 100% !important;
-                z-index: 100;
-                width: 4px;
-                .mdw-DockRight & {
-                    width: 0;
-                    left: 3px;
-                    border-right: 1px solid var(--border-color);
-                }
-                .mdw-DockLeft & {
-                    width: 0;
-                    right: 3px;
-                    border-right: 1px solid var(--border-color);
-                }
-
-                background: var(--background-content);
-
+                width: 0;
+                left: 4px;
+                background: var(--border-color-semilight);
+                border-left: 1px solid var(--border-color);
                 &::before {
                     display: inline-block;
                     position: relative;
                     border: 1px solid var(--border-color);
                     border-radius: 4px;
-                    top: calc(50% - 11px);
-                    left: -2px;
+                    background: var(--background-content);
+                    top: calc(50% - 16px);
+                    left: -3px;
                     width: 5px;
                     height: 16px;
-                    content: "";
-                    background: var(--background-content);
+                    content: '';
                 }
-
                 &:hover {
-                    border-color: hsla(208, 69%, 40%, 0.5);
-                    box-shadow: hsla(208, 69%, 40%, 0.5) 0 0 8px;
+                    border-color: var(--border-color-highlight);
                     &::before {
-                        border-color: hsla(208, 69%, 40%, 0.5);
+                        border-color: var(--border-color-highlight);
                     }
                 }
+
+/*                &::before {
+                    top: 50%;
+                    font-size: var(--fs-regular);
+                    font-family: "Font Awesome 6 Free", serif;
+                    font-weight: 900;
+                    content: "\f0c8";
+                }
+  */
             }
 
             & > div[class^="mdw-DockInner"] {
                 min-height: 0;
-                height: 50%;
-
-                &.noSibling {
-                    height: 100% !important;
-                    padding: 0 !important;
-                    & > .ui-resizable-handle {
-                        display: none !important;
-                    }
-                }
-
+                height: calc(50% - 7px);
                 & .mdw-ConsoleNavigationBox {
-                    position: static;
+                    display: contents;
                     border: none;
-                    background: unset;
-                    width: auto !important;
-                    height: calc(100% - 3px);
-                    box-shadow: unset;
-                    padding-bottom: 2px;
-                }
-
-                & .navBox-content {
-                    min-width: unset !important;
-                    width: calc(100% - 3px);
-                    border-top: none;
-                    padding: 1rem 0.5rem 0 1rem;
-                    scrollbar-gutter: stable;
-                }
-
-                & .navBox-item-row {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
                 }
             }
 
             & .mdw-DockInnerTop {
-                .mdw-DockLeft & {
-                    margin-right: 4px;
-                    margin-left: -4px;
-                };
                 & > .ui-resizable-handle {
                     height: 0;
                     bottom: 0;
+                    margin: 0 0 0 5px;
                     border-top: 1px solid var(--border-color);
-                    .mdw-DockRight & {
-                        /*width: calc(100% - 4px);
-                        left: 4px;*/
-                    }
-                    .mdw-DockLeft & {
-                        /*width: calc(100% + 4px);*/
-                    }
                     &::before {
                         display: inline-block;
                         position: relative;
@@ -472,29 +342,53 @@
                         top: -3px;
                         width: 16px;
                         height: 5px;
-                        content: "";
+                        content: '';
                     }
                     &:hover {
-                        border-color: hsla(208, 69%, 40%, 0.5);
-                        box-shadow: hsla(208, 69%, 40%, 0.5) -3px 0 8px 1px;
+                        border-color: var(--border-color-highlight);
                         &::before {
-                            border-color: hsla(208, 69%, 40%, 0.5);
+                            border-color: var(--border-color-highlight);
                         }
+                    }
+                }
+                &:has(~ .mdw-DockInnerBottom:empty)
+                /*,
+                &:has(~ .mdw-DockInnerBottom:not(.visible))*/ {
+                    height: 100%;
+                    & > .ui-resizable-handle {
+                        display: none;
                     }
                 }
             }
 
             & .mdw-DockInnerBottom {
-                .mdw-DockLeft & {
-                    margin-right: 4px;
-                    margin-left: -4px;
-                };
+                &:has(~ .mdw-DockInnerTop:empty),
+                &:has(~ .mdw-DockInnerTop:not(.visible)) {
+                    height: 100%;
+                }
             }
 
 
         }
 
+        & > div[class^="mdw-Dock"] {
+            .navBox-header {
+                font-size: var(--fs-regular);
+                border-top: none;
+                background: var(--background-navigation-top);
+                margin-left: -5px;
+                padding-left: 15px;
+            }
+            .navBox-content {
+                background: var(--background-content);
+            }
 
+            & .mdw-ConsoleNavigationBox {
+                visibility: visible !important;
+                transform: unset !important;
+                border-top: 1px solid var(--box-shadow-color);
+            }
+        }
     }
 
     /* navigationBox Tabs */
@@ -617,7 +511,7 @@
         justify-content: center;
         flex-direction: column;
         align-items: center;
-        background-image: linear-gradient(157deg, var(--background-navigation-top-darkblue) 35%, var(--background-navigation-top-lightblue));
+        background: transparent;
         overflow-y: auto;
         overflow-x: hidden;
         color: var(--text-color-normal);
@@ -655,7 +549,7 @@
         padding-bottom: 1rem;
         color: var(--text-color-normal);
         border: 1px solid var(--border-color-semilight);
-        border-radius: 20px;
+        border-radius: 4px;
         background: var(--background-navigation-top);
         flex-shrink: 1;
         width: max-content;
@@ -694,10 +588,11 @@
     .cactiAuth {
         font-size: var(--fs-semilarge);
         display: flex;
+        align-items: stretch;
         flex-direction: column;
 
         > span {
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
         }
 
         & i {
@@ -744,7 +639,7 @@
             &:-webkit-autofill,
             &:-webkit-autofill:hover,
             &:-webkit-autofill:focus {
-                -webkit-box-shadow: 0 0 0 1000px var(--background-autofill) inset !important;
+                -webkit-box-shadow: 0 0 0px 1000px var(--background-autofill) inset !important;
                 transition: background-color 5000s ease-in-out 0s !important;
             }
         }
@@ -756,12 +651,6 @@
             :focus {
                 background-color: rgba(0,0,0,0.3);
             }
-
-        }
-
-        & input[type="checkbox"] + label:before {
-            display: inline-block;
-            margin-top: 3rem;
         }
 
         &::placeholder {
@@ -861,7 +750,6 @@
 
         &:has(.elementOnTop:not(:empty)) {      /* only show elements on top with content */
             display: grid;
-            height: 3rem;
         }
 
         & .tableTitleOnTop {
@@ -883,14 +771,11 @@
                 & > a {
                     font-size: 0;
                     width: 16px;
-                    & > i {
-                        display: none;
-                    }
                     &::before {
-                        font-size: var(--fs-semilarge);
-                        font-family: "tabler-icons";
+                        font-size: var(--fs-regular);
+                        font-family: "Font Awesome 6 Free", serif;
                         font-weight: 900;
-                        content: "\ea64";
+                        content: "\f100";
                     }
                 }
             }
@@ -905,14 +790,11 @@
                 & > a {
                     font-size: 0;
                     width: 16px;
-                    & > i {
-                        display: none;
-                    }
                     &::before {
-                        font-size: var(--fs-semilarge);
-                        font-family: "tabler-icons";
+                        font-size: var(--fs-regular);
+                        font-family: "Font Awesome 6 Free", serif;
                         font-weight: 900;
-                        content: "\ea65";
+                        content: "\f101";
                     }
                 }
             }
@@ -938,7 +820,10 @@
                 margin-right: .2rem;
             }
             button {
-                margin-right: 3px;
+                margin-right: 5px;
+                &:last-of-type {
+                    margin-right: 10px;
+                }
             }
         }
 
@@ -946,88 +831,3 @@
             grid-area: bottom;
         }
     }
-
-html[data-theme-pwa="on"] {
-    /* let progressive web application look more like a local app */
-    .mdw-ConsoleNavigation,
-    .compact_nav_icon_menu {
-        border-right: 1px solid transparent !important;
-    }
-    .mdw-Main {
-        background: var(--background-navigation);
-        & > div[class^="mdw-Dock"] {
-            padding: 15px 5px;
-            & .navBox-header,
-            & .navBox-content,
-            & .navBox-control {
-                background: transparent;
-            }
-
-            & .mdw-ConsoleNavigationBox {
-                background: var(--background-content) !important;
-                border: 5px solid var(--background-content);
-                border-radius: 15px;
-                padding: 0;
-
-            }
-
-        }
-
-        & .mdw-DockRight, & .mdw-DockLeft {
-            & .mdw-DockInnerTop,
-            & .mdw-DockInnerBottom {
-                padding-left: 0;
-                padding-right: 0;
-            }
-            & .mdw-DockInnerTop {
-                padding-bottom: 5px;
-                & > .ui-resizable-handle {
-                    bottom: 5px;
-                    border: none;
-                    &::before {
-                        left: unset;
-                        width: 100%;
-                        background: transparent;
-                        border: none;
-                    }
-                }
-            }
-            & .mdw-DockInnerBottom {
-                margin-top: 2px;
-                height: 100%;
-            }
-            & > .ui-resizable-handle {
-                border: none;
-                padding: 1px;
-                background: var(--background-navigation);
-                &::before {
-                    height: 100%;
-                    top: unset;
-                    background: var(--background-navigation);
-                    border: none;
-                    left: 0;
-                }
-            }
-        }
-    }
-
-    .mdw-ActionBar {
-        background: var(--background-navigation);
-        border-left: none;
-    }
-
-    .cactiGraphContentArea,
-    .cactiConsoleContentArea {
-        margin: 15px 7px;
-        border: 1px solid transparent;
-        border-radius: 15px;
-        background: var(--background-content);
-        & .elementsOnTop {
-            height: 3.5rem;
-            min-height: min-content;
-            padding: 2px 0.5rem 3px 0.75rem;
-        }
-    }
-
-
-}

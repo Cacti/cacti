@@ -140,13 +140,7 @@ function csrf_get_tokens() {
 		$token = 'sid:' . csrf_hash(session_id()) . $ip;
 	} elseif ($GLOBALS['csrf']['cookie']) {
 		$val = csrf_generate_secret();
-		setcookie($GLOBALS['csrf']['cookie'], $val, array(
-            'expires'  => time() + 3600,
-            'path'     => $GLOBALS['csrf']['url_path'],
-            'secure'   => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
-            'httponly'  => true,
-            'samesite' => 'Strict',
-        ));
+		setcookie($GLOBALS['csrf']['cookie'], $val, time() + 3600, $GLOBALS['csrf']['url_path']);
 		$token = 'cookie:' . csrf_hash($val) . $ip;
 	} elseif ($GLOBALS['csrf']['key']) {
 		$token = 'key:' . csrf_hash($GLOBALS['csrf']['key']) . $ip;
@@ -266,17 +260,17 @@ function csrf_check_token($token) {
 			if ($check_token) {
 				switch ($type) {
 					case 'sid':
-						$valid_token = hash_equals(csrf_hash(session_id(), $time), $value);
+						$valid_token = ($value === csrf_hash(session_id(), $time));
 						break;
 					case 'cookie':
 						$n = $GLOBALS['csrf']['cookie'];
 						if ($n && isset($_COOKIE[$n])) {
-							$valid_token = hash_equals(csrf_hash($_COOKIE[$n], $time), $value);
+							$valid_token = ($value === csrf_hash($_COOKIE[$n], $time));
 						}
 						break;
 					case 'key':
 						if ($GLOBALS['csrf']['key']) {
-							$valid_token = hash_equals(csrf_hash($GLOBALS['csrf']['key'], $time), $value);
+							$valid_token = ($value === csrf_hash($GLOBALS['csrf']['key'], $time));
 						}
 						break;
 
@@ -285,7 +279,7 @@ function csrf_check_token($token) {
 						// implementation.
 					case 'user':
 						if (csrf_get_secret() && $GLOBALS['csrf']['user'] !== false) {
-							$valid_token = hash_equals(csrf_hash($GLOBALS['csrf']['user'], $time), $value);
+							$valid_token = ($value === csrf_hash($GLOBALS['csrf']['user'], $time));
 						}
 						break;
 					case 'ip':
@@ -298,7 +292,7 @@ function csrf_check_token($token) {
 
 							$client_ip = csrf_get_client_addr();
 							if (!empty($client_ip)) {
-								$valid_token = hash_equals(csrf_hash($client_ip, $time), $value);
+								$valid_token = ($value === csrf_hash($client_ip, $time));
 							}
 						}
 						break;

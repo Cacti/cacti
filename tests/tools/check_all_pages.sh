@@ -45,16 +45,13 @@ echo "---------------------------------------------------------------------"
 # ------------------------------------------------------------------------------
 # Check for MariaDB or MySQL
 # ------------------------------------------------------------------------------
-if [ "$(which mariadb | wc -l)" -gt 0 ]; then
+if [ $(which mariadb | wc -l) -gt 0 ]; then
   dbshell="mariadb"
-  # shellcheck disable=SC2034 # dbdump/dbadmin reserved for callers sourcing this script
   dbdump="mariadb-dump"
   dbadmin="mariadb-admin"
 else
   dbshell="mysql"
-  # shellcheck disable=SC2034
   dbdump="mysqldump"
-  # shellcheck disable=SC2034
   dbadmin="mysqladmin"
 fi
 
@@ -74,7 +71,6 @@ DBNAME="cacti";
 DBPASS="cactiuser";
 DBUSER="cactiuser";
 DBSLEEP=2
-# shellcheck disable=SC2034 # DBCLIENT printed in the values summary block via indirect expansion
 DBCLIENT=$($dbshell --version | awk '{print $3}')
 
 # ------------------------------------------------------------------------------
@@ -90,7 +86,6 @@ if id www-data > /dev/null 2>&1; then
   WSACCESS="/var/log/apache2/access.log"
 fi
 
-# shellcheck disable=SC2034 # WGET_OUTPUT captured to suppress output; result checked via $?
 WGET_OUTPUT=$(wget 2>&1);
 WGET_RESULT=$?
 if [ $WGET_RESULT -eq 127 ]; then
@@ -232,7 +227,6 @@ else
 fi
 
 # --- Get the server version and dump the key variables
-# shellcheck disable=SC2086,SC2034 # $MYSQL_AUTH_USR word-split intentional; DBSERVER printed via indirect expansion
 DBSERVER=$($dbshell $MYSQL_AUTH_USR -e "SHOW GLOBAL VARIABLES LIKE 'version'" | grep -v Value | awk '{print $2}')
 
 echo "---------------------------------------------------------------------"
@@ -264,7 +258,6 @@ echo "NOTE: Base Path is ${BASE_PATH}"
 
 CACTI_LOG="${BASE_PATH}/log/cacti.log"
 CACTI_ERRLOG="${BASE_PATH}/log/cacti.stderr.log"
-# shellcheck disable=SC2034 # POLLER reserved for callers sourcing this script
 POLLER="${BASE_PATH}/poller.php"
 
 # ------------------------------------------------------------------------------
@@ -281,13 +274,12 @@ fi
 # ------------------------------------------------------------------------------
 # Backup the error logs to capture what went wrong
 # ------------------------------------------------------------------------------
-# shellcheck disable=SC2329 # invoked indirectly via shutdown()
 save_log_files() {
   echo "---------------------------------------------------------------------"
   echo "NOTE: Saving All Log Files"
   echo "---------------------------------------------------------------------"
 
-  if [ "$started" == 1 ];then
+  if [ $started == 1 ];then
     logBase="/tmp/check-all-pages/test.$(date +%s)"
     mkdir -p "$logBase"
 
@@ -312,7 +304,7 @@ save_log_files() {
 
     chmod a+r -R "${logBase}/"
 
-    if [ "$DEBUG" -eq 1 ];then
+    if [ $DEBUG -eq 1 ];then
       echo "DEBUG: Dumping ${CACTI_LOG}"
       cat "$CACTI_LOG" "${logBase}/cacti.log"
       echo "DEBUG: Dumping ${CACTI_ERRLOG}"
@@ -331,47 +323,38 @@ save_log_files() {
 set_cacti_admin_password() {
   echo "NOTE: Setting Cacti admin password and unsetting forced password change"
 
-  # shellcheck disable=SC2086 # $MYSQL_AUTH_USR is intentionally word-split (multi-word option string)
   $dbshell $MYSQL_AUTH_USR -e "UPDATE user_auth SET password=SHA2('$WAPASS', 256) WHERE id = 1 ;" "$DBNAME"
-  # shellcheck disable=SC2086
   $dbshell $MYSQL_AUTH_USR -e "UPDATE user_auth SET password_change='', must_change_password='' WHERE id = 1 ;" "$DBNAME"
-  # shellcheck disable=SC2086
   $dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('secpass_forceold', '') ;" "$DBNAME"
 }
 
 enable_log_validation() {
   echo "NOTE: Setting Cacti log validation to on to validate improperly validated variables"
 
-  # shellcheck disable=SC2086 # $MYSQL_AUTH_USR is intentionally word-split (multi-word option string)
   $dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_validation','on') ;" "$DBNAME"
 }
 
-# shellcheck disable=SC2329 # available for callers; not invoked in this script path
 set_log_level_none() {
   echo "NOTE: Setting Cacti log verbosity to none"
 
-  # shellcheck disable=SC2086
   $dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_verbosity', '1') ;" "$DBNAME"
 }
 
 set_log_level_normal() {
   echo "NOTE: Setting Cacti log verbosity to low"
 
-  # shellcheck disable=SC2086
   $dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_verbosity', '2') ;" "$DBNAME"
 }
 
 set_log_level_debug() {
   echo "NOTE: Setting Cacti log verbosity to DEBUG"
 
-  # shellcheck disable=SC2086
   $dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_verbosity', '6') ;" "$DBNAME"
 }
 
 set_stderr_logging() {
   echo "NOTE: Setting Cacti standard error log location"
 
-  # shellcheck disable=SC2086
   $dbshell $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('path_stderrlog', '${CACTI_ERRLOG}');" "$DBNAME"
 }
 
@@ -381,16 +364,14 @@ allow_index_following() {
   sed -i "s/<meta name='robots' content='noindex,nofollow'>//g" "$BASE_PATH/lib/html.php"
 }
 
-# shellcheck disable=SC2329 # invoked via shutdown_handler/normal_shutdown trap handlers
 shutdown() {
-  if [ "$SHUTDOWN" -eq 0 ]; then
+  if [ $SHUTDOWN -eq 0 ]; then
     echo ""
     echo "NOTE: Process Ending.  Cleaning up and Exiting."
 
     save_log_files
 
     # Get rid of any jobs
-    # shellcheck disable=SC2046 # jobs -p produces one PID per word intentionally
     kill $(jobs -p) 2> /dev/null
 
     if [ -f "$tmpFile1" ]; then
@@ -421,20 +402,18 @@ shutdown() {
   fi
 }
 
-# shellcheck disable=SC2329 # invoked via trap on signals 1 2 3 6 14 15
 shutdown_handler() {
   shutdown
 
   exit 1;
 }
 
-# shellcheck disable=SC2329 # invoked via trap on EXIT (signal 0)
 normal_shutdown() {
   return=$?
 
   shutdown
 
-  exit "$return";
+  exit $return;
 }
 
 # ------------------------------------------------------------------------------
@@ -444,20 +423,18 @@ capture_processes() {
   sleep_time=$1
 
   while true; do
-    # shellcheck disable=SC2129 # individual redirects preserve readability here
     echo "-------------------------------------------------" >> /tmp/check-all-output/topproc.out
     date >> /tmp/check-all-output/topproc.out
     echo "-------------------------------------------------" >> /tmp/check-all-output/topproc.out
-    # shellcheck disable=SC2009 # pgrep lacks --sort/-rss; full ps pipeline required
     ps aux --sort -rss | grep -v gdm 2>/dev/null | head -5 >> /tmp/check-all-output/topproc.out
-    sleep "$sleep_time"
+    sleep $sleep_time
   done
 }
 
 # ------------------------------------------------------------------------------
 # To make sure that the autopkgtest/CI sites store the information
 # ------------------------------------------------------------------------------
-trap 'shutdown_handler' 1 2 3 6 14 15
+trap 'shutdown_handler' 1 2 3 6 9 14 15
 trap 'normal_shutdown' 0
 
 echo "NOTE: Current Directory is $(pwd)"
@@ -465,10 +442,10 @@ echo "NOTE: Current Directory is $(pwd)"
 # ------------------------------------------------------------------------------
 # Zero out the log files
 # ------------------------------------------------------------------------------
-true > "$CACTI_LOG"
-true > "$CACTI_ERRLOG"
-true > "$WSERROR"
-true > "$WSACCESS"
+> "$CACTI_LOG"
+> "$CACTI_ERRLOG"
+> "$WSERROR"
+> "$WSACCESS"
 /bin/chown "$WSOWNER":"$WSOWNER" "$CACTI_LOG"
 /bin/chown "$WSOWNER":"$WSOWNER" "$CACTI_ERRLOG"
 
@@ -483,21 +460,21 @@ allow_index_following
 # ------------------------------------------------------------------------------
 # Check the Apache Syntax and add the default site
 # ------------------------------------------------------------------------------
-if [ "$DEBUG" -eq 1 ]; then
+if [ $DEBUG -eq 1 ]; then
   echo "---------------------------------------------------------------------"
   echo "NOTE: Checking the Apache Config"
   echo "---------------------------------------------------------------------"
   apache2ctl -t
 fi
 
-if [ -f "/usr/sbin/a2ensite" ] && [ -f "/etc/apache2/sites-available/000-default.conf" ]; then
+if [ -f "/usr/sbin/a2ensite" -a -f "/etc/apache2/sites-available/000-default.conf" ]; then
   echo "---------------------------------------------------------------------"
   echo "NOTE: Enabling the Apache Site for Debian/Ubuntu"
   echo "---------------------------------------------------------------------"
   /usr/sbin/a2ensite 000-default.conf 
 fi
 
-if [ "$DEBUG" -eq 1 ]; then
+if [ $DEBUG -eq 1 ]; then
   # ------------------------------------------------------------------------------
   # Check to see if apache2 is up and listening
   # ------------------------------------------------------------------------------
@@ -530,7 +507,6 @@ if [ "$DEBUG" -eq 1 ]; then
   echo "---------------------------------------------------------------------"
   echo "NOTE: Apache Process List"
   echo "---------------------------------------------------------------------"
-  # shellcheck disable=SC2009 # grep -v grep pattern intentional; pgrep lacks -f equivalent here
   ps -ef | grep apache2 | grep -v grep
 fi
 
@@ -544,7 +520,7 @@ started=1
 # ------------------------------------------------------------------------------
 # Make sure we get the magic, this is stored in the cookies for future use.
 # ------------------------------------------------------------------------------
-if [ "$DEBUG" -eq 1 ]; then
+if [ $DEBUG -eq 1 ]; then
   set_log_level_debug
 else
   set_log_level_normal
@@ -561,14 +537,14 @@ echo "---------------------------------------------------------------------"
 echo "NOTE: Saving Cookie Data"
 wget -q --keep-session-cookies --save-cookies "$cookieFile" --output-document="$tmpFile1" "$WEBHOST"/index.php >/dev/null 2>&1
 
-if [ -f "$tmpFile1" ]; then
-  magic=$(grep "name='__csrf_magic' value=" "$tmpFile1" | sed "s/.*__csrf_magic' value=\"//" | sed "s/\" \/>//")
+if [ -f $tmpFile1 ]; then
+  magic=$(grep "name='__csrf_magic' value=" $tmpFile1 | sed "s/.*__csrf_magic' value=\"//" | sed "s/\" \/>//")
 
-  if [ "$DEBUG" -eq 1 ]; then
+  if [ $DEBUG -eq 1 ]; then
     echo "---------------------------------------------------------------------"
     echo "NOTE: The CSRF Magic Token is"
     echo "---------------------------------------------------------------------"
-    echo "${magic}"
+    echo ${magic}
   fi
 else
   echo "---------------------------------------------------------------------"
@@ -580,14 +556,13 @@ fi
 postData="action=login&login_username=${WAUSER}&login_password=${WAPASS}&__csrf_magic=${magic}"
 
 echo "NOTE: Logging into the Cacti User Interface"
-# shellcheck disable=SC2086 # $loadSaveCookie is intentionally word-split (multi-word option string)
 wget $loadSaveCookie --post-data="${postData}" --output-document="${tmpFile2}" "${WEBHOST}"/index.php >/dev/null 2>&1
 
-if [ "$DEBUG" -eq 1 ]; then
+if [ $DEBUG -eq 1 ]; then
   echo "---------------------------------------------------------------------"
   echo "DEBUG: Output of index.php"
   echo "---------------------------------------------------------------------"
-  cat "${tmpFile2}"
+  cat ${tmpFile2}
 
   progress=" --show-progress"
 else
@@ -597,17 +572,16 @@ fi
 # ------------------------------------------------------------------------------
 # Run vmstat in background at a user-configurable interval (VMSTAT)
 # ------------------------------------------------------------------------------
-if [ "$VMSTAT" -gt 0 ]; then
-  vmstat --wide "$VMSTAT" > /tmp/check-all-output/vmstat.out &
-  # shellcheck disable=SC2034 # PIDS reserved for future job tracking
+if [ $VMSTAT -gt 0 ]; then
+  vmstat --wide $VMSTAT > /tmp/check-all-output/vmstat.out &
   PIDS="PIDS $!"
 fi
 
 # ------------------------------------------------------------------------------
 # Show memory stats top memory consumers
 # ------------------------------------------------------------------------------
-if [ "$PS" -gt 0 ]; then
-  capture_processes "$PS" &
+if [ $PS -gt 0 ]; then 
+  capture_processes $PS &
 fi
 
 # ------------------------------------------------------------------------------
@@ -617,14 +591,13 @@ fi
 start_time=$(date +%s)
 
 echo "NOTE: Recursively Checking all Base Pages - Note this will take several minutes!!!"
-# shellcheck disable=SC2086 # $loadSaveCookie and $progress are intentionally word-split (multi-word option strings)
 wget $loadSaveCookie --directory-prefix=/tmp/check-all-output --output-file="${logFile1}" --reject-regex="(logout\.php|remove|delete|uninstall|install|disable|enable)" $progress --recursive --level=0 --execute=robots=off "${WEBHOST}"/index.php >/dev/null 2>&1
 error=$?
 
 end_time=$(date +%s)
-total=$((end_time-start_time))
+total=$(($end_time-$start_time))
 
-if [ "$error" -eq 8 ]; then
+if [ $error -eq 8 ]; then
   errors=$(grep -c "awaiting response... 404" "${logFile1}")
   echo "WARNING: $errors pages not found.  This is not necessarily a bug"
 fi
@@ -632,7 +605,7 @@ fi
 # ------------------------------------------------------------------------------
 # Debug Errors if required
 # ------------------------------------------------------------------------------
-if [ "$DEBUG" -eq 1 ]; then
+if [ $DEBUG -eq 1 ]; then
   echo "---------------------------------------------------------------------"
   echo "DEBUG: Output of Wget Log file"
   echo "---------------------------------------------------------------------"
@@ -653,7 +626,7 @@ fi
 
 checks=$(grep -c "HTTP" "$logFile1")
 
-if [ "$total" -gt 0 ]; then
+if [ $total -gt 0 ]; then
   check_rate=$(echo "scale=2; $checks / $total" | bc)
 else
   check_rate="N/A"
@@ -683,7 +656,7 @@ echo "---------------------------------------------------------------------"
 # ------------------------------------------------------------------------------
 # Output vmstat statistics if requested
 # ------------------------------------------------------------------------------
-if [ "$VMSTAT" -gt 0 ]; then
+if [ $VMSTAT -gt 0 ]; then
   echo "NOTE: Output of vmstat"
   echo "---------------------------------------------------------------------"
   cat /tmp/check-all-output/vmstat.out

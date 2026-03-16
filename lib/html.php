@@ -3511,7 +3511,7 @@ function html_auth_footer(string $section, string $error = '', string $html = ''
 			</form>
 			<hr />
 			<div class='cactiAuthErrors'>
-				<?php print htmle($error); ?>
+				<?php print $error; ?>
 			</div>
 			<div class='versionInfo'>
 				<?php print __('Version %s | %s', CACTI_VERSION_BRIEF, COPYRIGHT_YEARS_SHORT); ?>

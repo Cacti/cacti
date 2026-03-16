@@ -892,8 +892,6 @@ function api_device_replicate_out(int $device_id, int $poller_id = 1) : bool {
 		replicate_table_to_poller($rcnn_id, $data, 'data_input_data', $poller_id);
 	}
 
-	api_plugin_hook_function('replicate_out', ['remote_poller_id' => $poller_id, 'rcnn_id' => $rcnn_id, 'class' => 'all']);
-
 	$stats = db_fetch_row_prepared('SELECT
 		SUM(CASE WHEN action=0 THEN 1 ELSE 0 END) AS snmp,
 		SUM(CASE WHEN action=1 THEN 1 ELSE 0 END) AS script,
@@ -1635,10 +1633,7 @@ function api_device_ping_device(string|null $device_id, bool $from_remote = fals
 						$snmp_system = str_replace(':', ' ', $snmp_system);
 					}
 
-					// Some devices (Dell iDRAC, Fortigate, etc.) may have an empty system value. This causes a false down status
-					$snmp_uptime = cacti_snmp_session_get($session, '.1.3.6.1.6.3.10.2.1.3.0');
-
-					if ($snmp_system == '' && empty($snmp_uptime)) {
+					if ($snmp_system == '') {
 						print "<span class='hostDown'>" . __('Host') . ' ' . __('SNMP error');
 
 						if ($snmp_error != '') {

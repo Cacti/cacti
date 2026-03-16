@@ -229,10 +229,10 @@ function upgrade_database() : void {
 
 				if ($version != $old) {
 					if (file_exists($plugin . '/setup.php')) {
-						require_once($plugin . '/setup.php');
+						include_once($plugin . '/setup.php');
 
 						if (file_exists($plugin . '/includes/database.php')) {
-							require_once($plugin . '/includes/database.php');
+							include_once($plugin . '/includes/database.php');
 						}
 
 						// Always run the new function if it's there

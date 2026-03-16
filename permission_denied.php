@@ -27,10 +27,9 @@ require('./include/auth.php');
 $version = CACTI_VERSION_TEXT;
 
 if (isset($_SERVER['HTTP_REFERER'])) {
-	$redirect = validate_redirect_url($_SERVER['HTTP_REFERER'], 'index.php');
-	$goBack   = "[<a href='" . $redirect . "'>" . __('Return') . "</a> | <a href='" . CACTI_PATH_URL . "logout.php'>" . __('Login Again') . '</a>]';
+	$goBack = "[<a href='" . sanitize_uri($_SERVER['HTTP_REFERER']) . "'>" . __('Return') . "</a> | <a href='" . CACTI_PATH_URL . "logout.php'>" . __('Login Again') . '</a>]';
 } else {
-	$goBack   = "[<a href='#' onClick='window.history.back()'>" . __('Return') . "</a> | <a href='" . CACTI_PATH_URL . "logout.php'>" . __('Login Again') . '</a>]';
+	$goBack = "[<a href='#' onClick='window.history.back()'>" . __('Return') . "</a> | <a href='" . CACTI_PATH_URL . "logout.php'>" . __('Login Again') . '</a>]';
 }
 
 // allow for plugin based permission denied page

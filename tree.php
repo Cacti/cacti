@@ -215,7 +215,7 @@ function tree_check_sequences() : void {
 
 	if ($bad_seq > 0 || $dup_seq > 0) {
 		// resequence the list so it has no gaps, and 0 values will appear at the top
-		// since that's where they would have been displayed
+		// since thats where they would have been displayed
 		db_execute('SET @seq = 0; UPDATE graph_tree SET sequence = (@seq:=@seq+1) ORDER BY sequence, id;');
 	}
 }
@@ -1007,7 +1007,7 @@ function tree_edit(bool $partial = false) : void {
 				.done(function(data) {
 					$('#graphs').jstree('destroy');
 					$('#graphs').html(data);
-					draggable('graphs');
+					dragable('graphs');
 				})
 				.fail(function(data) {
 					getPresentHTTPError(data);
@@ -1020,8 +1020,8 @@ function tree_edit(bool $partial = false) : void {
 				.done(function(data) {
 					$('#hosts').jstree('destroy');
 					$('#hosts').html(data);
-					draggable('hosts');
-					draggable('graphs');
+					dragable('hosts');
+					dragable('graphs');
 				})
 				.fail(function(data) {
 					getPresentHTTPError(data);
@@ -1032,9 +1032,9 @@ function tree_edit(bool $partial = false) : void {
 			$.get('tree.php?action=sites&filter='+$('#sfilter').val(), function(data) {
 				$('#sites').jstree('destroy');
 				$('#sites').html(data);
-				draggable('sites');
-				draggable('hosts');
-				draggable('graphs');
+				dragable('sites');
+				dragable('hosts');
+				dragable('graphs');
 				enableKeyups();
 			});
 		}
@@ -1122,9 +1122,9 @@ function tree_edit(bool $partial = false) : void {
 
 				drawTree();
 
-				draggable('graphs');
-				draggable('hosts');
-				draggable('sites');
+				dragable('graphs');
+				dragable('hosts');
+				dragable('sites');
 
 				enableKeyups();
 			});
@@ -1147,9 +1147,9 @@ function tree_edit(bool $partial = false) : void {
 
 				drawTree();
 
-				draggable('graphs');
-				draggable('hosts');
-				draggable('sites');
+				dragable('graphs');
+				dragable('hosts');
+				dragable('sites');
 
 				enableKeyups();
 			});
@@ -1448,12 +1448,12 @@ function tree_edit(bool $partial = false) : void {
 
 			$('#ctree').css('height', height).css('overflow','auto');;
 
-			draggable('graphs');
-			draggable('hosts');
-			draggable('sites');
+			dragable('graphs');
+			dragable('hosts');
+			dragable('sites');
 		});
 
-		function draggable(element) {
+		function dragable(element) {
 			var id = '#'+element;
 			var divdata = '';
 
