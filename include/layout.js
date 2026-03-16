@@ -249,7 +249,7 @@ $.fn.delayKeyup = function (callback, ms) {
 		ms = keyup_delay;
 	}
 
-	$(this).on('keyup', function () {
+	$(this).keyup(function () {
 		clearTimeout(timer);
 		timer = setTimeout(callback, ms);
 	});
@@ -932,7 +932,7 @@ function applySkin() {
 		theme = 'midwinter';
 
 		// debounce submits
-		$('form').on('submit', function () {
+		$('form').submit(function () {
 			$('input[type="submit"], button[type="submit"]').not('.import, .export').prop('disabled', true);
 		});
 	} else {
@@ -942,7 +942,7 @@ function applySkin() {
 		$('fieldset.reindex_methods').buttonset();
 
 		// debounce submits
-		$('form').on('submit', function () {
+		$('form').submit(function () {
 			$('input[type="submit"], button[type="submit"]').not('.import, .export').button('disable');
 		});
 	}
@@ -1546,7 +1546,7 @@ function makeFiltersResponsive() {
 	}
 
 	if ($('#form_graph_view').length) {
-		$('#form_graph_view').filter('input, select').not('#date1, #date2').on('click', function () {
+		$('#form_graph_view').filter('input, select').not('#date1, #date2').click(function () {
 			closeDateFilters();
 		});
 	}
@@ -2447,7 +2447,7 @@ function userMenuNavigationExists(url) {
 
 function loadPageUsingPost(href, postData, returnLocation) {
 	var stack = ''; //getStackTrace(); // new Error().stack;
-	console.error("Function loadPageUsingPost is now deprecated, use postUrl instead\n" + stack);
+	console.error("Function loadPageUsingPost is now depreciated, use postUrl instead\n" + stack);
 	return postUrl({
 		url: href,
 		tabId: returnLocation,
@@ -2458,7 +2458,7 @@ function loadPageUsingPost(href, postData, returnLocation) {
 function setNavigationScroll() {
 	var object = '';
 
-	$('.cactiConsoleNavigationArea, .cactiTreeNavigationArea').off('mousemove').on('mousemove', function (pos) {
+	$('.cactiConsoleNavigationArea, .cactiTreeNavigationArea').unbind('mousemove').on('mousemove', function (pos) {
 		object = '';
 
 		if ($('.cactiConsoleNavigationArea').length) {
@@ -2497,7 +2497,7 @@ function setNavigationScroll() {
 		}
 	});
 
-	$('.cactiConsoleNavigationArea, .cactiTreeNavigationArea').off('mouseleave').on('mouseleave', function (pos) {
+	$('.cactiConsoleNavigationArea, .cactiTreeNavigationArea').unbind('mouseleave').on('mouseleave', function (pos) {
 		if ($('.cactiConsoleNavigationArea').length) {
 			object = '.cactiConsoleNavigationArea';
 		} else if ($('.cactiTreeNavigationArea').length) {
@@ -2515,7 +2515,7 @@ function setNavigationScroll() {
 
 function loadPageNoHeader(href, scroll, force) {
 	var stack = ''; //getStackTrace(); // new Error().stack;
-	console.error("Function loadPageNoHeader is now deprecated, use loadUrl instead\n" + stack);
+	console.error("Function loadPageNoHeader is now depreciated, use loadUrl instead\n" + stack);
 	return loadUrl({
 		url: href,
 		scroll: scroll,
@@ -2526,7 +2526,7 @@ function loadPageNoHeader(href, scroll, force) {
 
 function loadPage(href, force) {
 	var stack = ''; //getStackTrace(); // new Error().stack;
-	console.error("Function loadPage is now deprecated, use loadUrl instead\n" + stack);
+	console.error("Function loadPage is now depreciated, use loadUrl instead\n" + stack);
 	return loadUrl({
 		url: href,
 		force: force,
@@ -3037,7 +3037,7 @@ function setupCollapsible() {
 			$(this).removeClass('collapsed');
 			$(this).nextUntil('div.spacer').slideDown('slow');
 			$(this).nextUntil('div.spacer').each(function (data) {
-				$(this).find('input, select').trigger('change');
+				$(this).find('input, select').change();
 			});
 			$(this).find('i').removeClass('ti-chevrons-down').addClass('ti-chevrons-up');
 			storage.set(id, 'show');
@@ -3071,19 +3071,19 @@ function handleConsole(pageName) {
 function setupUserMenu() {
 	handleConsole();
 
-	$('.menuoptions').on('mouseenter', function () {
+	$('.menuoptions').mouseenter(function () {
 		clearTimeout(userMenuTimer);
-	}).on('mouseleave', function () {
+	}).mouseleave(function () {
 		if ($('.menuoptions').is(':visible')) {
 			userMenuTimer = setTimeout(function () { closeUserMenu(); }, 1000);
 		}
 	});
 
-	$('.user').on('mouseenter', function (data) {
+	$('.user').mouseenter(function (data) {
 		clearTimeout(userMenuTimer);
 		userMenuOpenTimer = setTimeout(function () { openUserMenu(); }, 400);
 		openUserMenu();
-	}).on('mouseleave', function (data) {
+	}).mouseleave(function (data) {
 		if ($('.menuoptions').is(':visible')) {
 			userMenuTimer = setTimeout(function () { closeUserMenu(); }, 1000);
 		} else {
@@ -3094,7 +3094,7 @@ function setupUserMenu() {
 
 function setupSpecialKeys() {
 	if (!isMobile.any()) {
-		$('#filter, #rfilter').trigger('focus');
+		$('#filter, #rfilter').focus();
 	} else {
 		$('#filter, #rfilter').prop('size', '15');
 	}
@@ -3143,7 +3143,7 @@ function shouldCaptureClick(event) {
 }
 
 function setupBreadcrumbs() {
-	$('#breadcrumbs > li > a').on('click', function (event) {
+	$('#breadcrumbs > li > a').click(function (event) {
 		if (!shouldCaptureClick(event))
 			return
 
@@ -3382,7 +3382,7 @@ function cactiReady() {
 	/**
 	 * Unbind key elements to debounce actions
 	 */
-	$('input, select, textarea, a').off();
+	$('input, select, textarea, a').unbind();
 
 	// Use traditional popstate handler
 	window.onpopstate = function (event) {
@@ -3390,13 +3390,13 @@ function cactiReady() {
 	}
 
 	// Don't allow selection when shift is pressed
-	$(document).on('mousedown', function (event) {
+	$(document).mousedown(function (event) {
 		if (event.shiftKey) {
 			event.preventDefault();
 		}
 	});
 
-	$('#filter, #rfilter').on('keydown', function (event) {
+	$('#filter, #rfilter').keydown(function (event) {
 		if (event.keyCode == 8 && $(this).val() == '') {
 			handlePopState();
 		}
@@ -3614,11 +3614,11 @@ function setSelectMenus() {
 						let search = instance.menuWrap.find('input');
 
 						if (search.length > 0) {
-							search.trigger('focus');
+							search.focus();
 						}
 					},
 					change: function(event, ui) {
-						$(this).val(ui.item.value).trigger('change');
+						$(this).val(ui.item.value).change();
 					},
 					position: {
 						my: 'left top',
@@ -3676,7 +3676,7 @@ function setSelectMenus() {
 			applyGraphFilter();
 		},
 		open: function(event, ui) {
-			$("input[type='search']:first").trigger('focus');
+			$("input[type='search']:first").focus();
 		},
 		click: function(event, ui) {
 			var checked = $(this).multiselect('widget').find('input:checked').length;
@@ -3734,7 +3734,7 @@ function setupObjectChange() {
 		}
 	}
 
-	$('.confirm_actions').find('input[id^="t_"]').on('click', function() {
+	$('.confirm_actions').find('input[id^="t_"]').click(function() {
 		var id = $(this).attr('id').substring(2);
 		if ($(this).is(':checked')) {
 			enableField(id);
@@ -3781,9 +3781,9 @@ function setupEllipsis() {
 		return false;
 	});
 
-	$('.submenuoptions').on('mouseenter', function (event) {
+	$('.submenuoptions').mouseenter(function (event) {
 		clearTimeout(userMenuTimer);
-	}).on('mouseleave', function (event) {
+	}).mouseleave(function (event) {
 		if ($('.submenuoptions').is(':visible')) {
 			userMenuTimer = setTimeout(function () { $('.submenuoptions').stop().slideUp(120); }, 1000);
 		} else {
@@ -3802,7 +3802,7 @@ function setupEllipsis() {
 }
 
 function keepWindowSize() {
-	$(window).on('resize', function (event) {
+	$(window).resize(function (event) {
 		waitForFinalEvent(function () {
 			$('.cactiGraphContentArea').show();
 
@@ -3950,20 +3950,12 @@ function tabsWrapping() {
 	var mainTabPos = $('.maintabs:first').position();
 	var tabHeight = $('#tabs').height();
 
-	if (mainTabPos == null) {
-		return false;
-	}
-
 	if ($('.usertabs').length) {
 		var mainTabHeight = tabHeight;
 		var userTabPos = $('.usertabs').position();
 	} else {
 		var mainTabHeight = $('.maintabs:first nav').height();
 		var userTabPos = mainTabPos;
-	}
-
-	if (userTabPos == null) {
-		return false;
 	}
 
 	var bodyWidth = $('body').width();
@@ -3999,7 +3991,7 @@ function tabsWrapping() {
 }
 
 /* Graph related javascript functions */
-if (!urlPath) {
+if (typeof urlPath == 'undefined') {
 	var urlPath = '';
 }
 
@@ -4618,7 +4610,7 @@ function initializeGraphs(disable_cache) {
 			event.stopPropagation();
 
 			if (realtimeArray[graph_id]) {
-				$('#wrapper_' + graph_id).html(keepRealtime[graph_id]).trigger('change');
+				$('#wrapper_' + graph_id).html(keepRealtime[graph_id]).change();
 				$(this).html("<i class='drillDown ti ti-chart-area-line-filled realTime' title='" + realtimeClickOn + "'></i>");
 
 				$('graph_id' + graph_id).tooltip().zoom({
@@ -5615,7 +5607,7 @@ function formValidate(formId, href) {
 		});
 
 
-		$(formObj).on('submit', function (event) {
+		$(formObj).submit(function (event) {
 			event.preventDefault();
 
 			// Disable the submit button so it can't be done twice

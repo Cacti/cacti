@@ -102,6 +102,14 @@ function __rrd_proxy_init(string $logopt = 'WEBLOG') : mixed {
 	$terminator = "_EOT_\r\n";
 	$encryption = true;
 
+	$rrdp_socket = @socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+
+	if ($rrdp_socket === false) {
+		cacti_log('CACTI2RRDP ERROR: Unable to create socket to connect to RRDtool Proxy Server', false, $logopt, POLLER_VERBOSITY_LOW);
+
+		return false;
+	}
+
 	$load_balancing = read_config_option('rrdp_load_balancing') == 'on' ? true : false;
 
 	$portp   = intval(read_config_option('rrdp_port'));
@@ -113,53 +121,26 @@ function __rrd_proxy_init(string $logopt = 'WEBLOG') : mixed {
 		$rrdp_id = random_int(1,2);
 		$server  = ($rrdp_id == 1) ? $servera : $serverb;
 		$port    = ($rrdp_id == 1) ? $portp : $portb;
+
+		$rrdp    = socket_connect($rrdp_socket, $server, $port);
 	} else {
 		$server  = read_config_option('rrdp_server');
 		$port    = intval(read_config_option('rrdp_port'));
 		$rrdp_id = 1;
+
+		$rrdp    = socket_connect($rrdp_socket, $server, $port);
 	}
-
-	// Detect address family based on server address for IPv6 support
-	$socket_family = filter_var(trim($server, '[]'), FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? AF_INET6 : AF_INET;
-
-	$rrdp_socket = @socket_create($socket_family, SOCK_STREAM, SOL_TCP);
-
-	if ($rrdp_socket === false) {
-		cacti_log('CACTI2RRDP ERROR: Unable to create socket to connect to RRDtool Proxy Server', false, $logopt, POLLER_VERBOSITY_LOW);
-
-		return false;
-	}
-
-	// Strip brackets from IPv6 addresses for socket_connect
-	$connect_server = trim($server, '[]');
-
-	$rrdp = socket_connect($rrdp_socket, $connect_server, $port);
 
 	if ($rrdp === false) {
 		// log entry ...
 		cacti_log('CACTI2RRDP ERROR: Unable to connect to RRDtool Proxy Server #' . $rrdp_id, false, $logopt, POLLER_VERBOSITY_LOW);
 
 		if ($load_balancing) {
-			// Close the failed socket before creating a new one for the backup server
-			@socket_close($rrdp_socket);
-
 			$rrdp_id = ($rrdp_id + 1) % 2;
 			$server  = ($rrdp_id == 1) ? $servera : $serverb;
 			$port    = ($rrdp_id == 1) ? $portp : $portb;
 
-			// Re-detect address family for backup server (may differ from primary)
-			$socket_family  = filter_var(trim($server, '[]'), FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? AF_INET6 : AF_INET;
-			$connect_server = trim($server, '[]');
-
-			$rrdp_socket = @socket_create($socket_family, SOCK_STREAM, SOL_TCP);
-
-			if ($rrdp_socket === false) {
-				cacti_log('CACTI2RRDP ERROR: Unable to create socket to connect to RRDtool Proxy Server #' . $rrdp_id, false, $logopt, POLLER_VERBOSITY_LOW);
-
-				return false;
-			}
-
-			$rrdp = socket_connect($rrdp_socket, $connect_server, $port);
+			$rrdp    = socket_connect($rrdp_socket, $server, $port);
 
 			if ($rrdp === false) {
 				cacti_log('CACTI2RRDP ERROR: Unable to connect to RRDtool Proxy Server #' . $rrdp_id, false, $logopt, POLLER_VERBOSITY_LOW);

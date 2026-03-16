@@ -53,7 +53,7 @@ function themeReady() {
 
 	// Turn file buttons into jQueryUI buttons
 	$('.import_label').button();
-	$('.import_button').on('change', function() {
+	$('.import_button').change(function() {
 		text=this.value;
 		setImportFile(text);
 	});
@@ -65,7 +65,7 @@ function themeReady() {
 
 	maxWidth = 480;
 
-	$('#drp_action').on('change', function() {
+	$('#drp_action').change(function() {
 		if ($(this).val() != '0') {
 			$('#submit').button('enable');
 		} else {
@@ -73,7 +73,7 @@ function themeReady() {
 		}
 	});
 
-	$('#graph_type_id').on('change', function() {
+	$('#graph_type_id').change(function() {
 		switch($(this).val()) {
 		case '4':
 		case '5':
@@ -122,7 +122,7 @@ function setMenuVisibility() {
 	});
 
 	// Function to give life to the Navigation pane
-	$('#nav li:has(ul) a.active').off('click').on('click', function(event) {
+	$('#nav li:has(ul) a.active').unbind().click(function(event) {
 		event.preventDefault();
 
 		id = $(this).closest('.menuitem').attr('id');

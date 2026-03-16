@@ -105,7 +105,7 @@ function themeReady() {
 	/* User Menu */
 	$('.menuoptions').parent().appendTo('body');
 
-	$('.action-icon-user').off('click').on('click', function(event) {
+	$('.action-icon-user').unbind().click(function(event) {
 		event.preventDefault();
 
 		if ($('.menuoptions').is(':visible') === false) {
@@ -118,7 +118,7 @@ function themeReady() {
 		return false;
 	});
 
-	$('.bottom_scroll_up').off('click').on('click', function(event) {
+	$('.bottom_scroll_up').unbind().click(function(event) {
 		event.preventDefault();
 		$('#navigation_right').animate({ scrollLeft:0, scrollTop: 0 }, 1000, 'easeInOutQuart');
 	});
@@ -127,11 +127,13 @@ function themeReady() {
 	$('.tableHeader th').has('i.fa-sort').removeClass('tableHeaderColumnHover tableHeaderColumnSelected');
 	$('.tableHeader th').has('i.fa-sort-up').addClass('tableHeaderColumnSelected');
 	$('.tableHeader th').has('i.fa-sort-down').addClass('tableHeaderColumnSelected');
-	$('.tableHeader th').has('i.fa-sort').on('mouseenter', function() {
+	$('.tableHeader th').has('i.fa-sort').hover(
+		function() {
 			$(this).addClass("tableHeaderColumnHover");
-		}).on('mouseleave', function() {
+		}, function() {
 			$(this).removeClass( "tableHeaderColumnHover");
-		});
+		}
+	);
 
 	$('input#filter, input#rfilter').addClass('ui-state-default ui-corner-all');
 
@@ -139,7 +141,7 @@ function themeReady() {
 
 	// Turn file buttons into jQueryUI buttons
 	$('.import_label').button();
-	$('.import_button').on('change', function() {
+	$('.import_button').change(function() {
 		text=this.value;
 		setImportFile(text);
 	});
@@ -187,7 +189,7 @@ function setMenuVisibility() {
 	});
 
 	// Function to give life to the Navigation pane
-	$('#nav li:has(ul) a.active').off('click').on('click', function(event) {
+	$('#nav li:has(ul) a.active').unbind().click(function(event) {
 		event.preventDefault();
 
 		id = $(this).closest('.menuitem').attr('id');
