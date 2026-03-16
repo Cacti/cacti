@@ -2,12 +2,12 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [main, master, develop]
+    branches: [main, master, develop, regression-audit]
     paths-ignore:
       - "**/*.php"
       - "**/*.md"
   pull_request:
-    branches: [main, master, develop]
+    branches: [main, master, develop, regression-audit]
     paths-ignore:
       - "**/*.php"
       - "**/*.md"
@@ -16,14 +16,14 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: codeql-${{ github.ref }}
+  group: codeql-${{ github.ref }}-${{ matrix.language }}
   cancel-in-progress: true
 
 jobs:
   analyze:
-    name: Analyze
+    name: Analyze (${{ matrix.language }})
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     permissions:
       actions: read
       contents: read
@@ -31,7 +31,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: ["javascript-typescript"]
+        language: ["javascript-typescript", "python"]
     steps:
       - name: Checkout repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
