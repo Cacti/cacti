@@ -1,0 +1,74 @@
+name: Nightly PHP Heavy Checks
+
+on:
+  schedule:
+    - cron: '15 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nightly-php-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  COMPOSER_ALLOW_SUPERUSER: 1
+
+jobs:
+  composer-audit:
+    name: composer dependency audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
+
+      - name: Validate composer files
+        run: composer validate --strict
+
+      - name: Run Composer audit
+        run: composer audit --locked --no-interaction
+
+  rector-dry-run:
+    name: rector dry-run
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Run Rector dry-run
+        run: include/vendor/bin/rector process --dry-run --ansi
+
+  docker-smoke:
+    name: docker environment smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Make docker smoke script executable
+        run: chmod +x tests/tools/check_docker.sh
+
+      - name: Run Docker smoke test
+        run: tests/tools/check_docker.sh
