@@ -5892,7 +5892,7 @@ msgstr "選定的數據模板"
 #: data_sources.php:944
 #, fuzzy
 msgid "The name given to this data template.  Please note that you may only change Graph Templates to a 100%$ compatible Graph Template, which means that it includes identical Data Sources."
-msgstr "為此數據模板指定的名稱。請注意，您只能將圖形模板更改為100％兼容的圖形模板，這"
+msgstr "為此數據模板指定的名稱。請注意，您只能將圖形模板更改為100%兼容的圖形模板，這"
 "意味著它包含相同的數據源。"
 
 #: data_sources.php:951 graph_view.php:881 graphs.php:2327
@@ -12083,7 +12083,7 @@ msgid "When you setup the right axis labeling, apply a rule to the data format. 
 msgstr ""
 "設置右軸標籤時，請將規則應用於數據格式。支持的格式包括“numeric”，其中數據被視"
 "為數字，“timestamp”，其中值被解釋為UNIX時間戳（自1970年1月以來的秒數）並使用s"
-"trftime格式表示（默認為“％Y-％m-%d％H ：％女士”）。另請參見--units-length和"
+"trftime格式表示（默認為“%Y-%m-%d%H ：%女士”）。另請參見--units-length和"
 "--right-axis-"
 "format。最後是“持續時間”，其中值被解釋為持續時間（以毫秒為單位）。"
 "格式化遵循valstrfduration限定PRINT / GPRINT的規則。"
@@ -12104,7 +12104,7 @@ msgid "When you setup the left axis labeling, apply a rule to the data format.  
 msgstr ""
 "設置左軸標籤時，請將規則應用於數據格式。支持的格式包括“numeric”，其中數據被視"
 "為數字，“timestamp”，其中值被解釋為UNIX時間戳（自1970年1月以來的秒數）並使用s"
-"trftime格式表示（默認為“％Y-％m-%d％H ：％女士”）。另見--units-"
+"trftime格式表示（默認為“%Y-%m-%d%H ：%女士”）。另見--units-"
 "length。最後是“持續時間”，其中值被解釋為持續時間（以毫秒為單位）。"
 "格式化遵循valstrfduration限定PRINT / GPRINT的規則。"
 
@@ -16007,7 +16007,7 @@ msgstr "啟用poller_output_boost表的直接填充"
 #: include/global_settings.php:2378
 #, fuzzy
 msgid "Enables direct insert of records into poller output boost table with results in a 25% time reduction in each poll cycle."
-msgstr "允許將記錄直接插入到輪詢器輸出增強中，結果是每個輪詢週期減少25％的時間。"
+msgstr "允許將記錄直接插入到輪詢器輸出增強中，結果是每個輪詢週期減少25%的時間。"
 
 #: include/global_settings.php:2383
 #, fuzzy
@@ -16364,7 +16364,7 @@ msgstr "去除方法"
 msgid "There are two removal methods.  The first, Standard Deviation, will remove any sample that is X number of standard deviations away from the average of samples.  The second method, Variance, will remove any sample that is X% more than the Variance average.  The Variance method takes into account a certain number of 'outliers'.  Those are exceptional samples, like the spike, that need to be excluded from the Variance Average calculation."
 msgstr ""
 "有兩種刪除方法。第一個標準偏差將從樣本的平均值中移除任何X個標準偏差的樣本。第"
-"二種方法Variance將刪除比方差平均值高X％的任何樣本。方差方法考慮了一定數量的“"
+"二種方法Variance將刪除比方差平均值高X%的任何樣本。方差方法考慮了一定數量的“"
 "異常值”。這些是需要從方差平均值計算中排除的特殊樣本，如尖峰。"
 
 #: include/global_settings.php:2696
@@ -22760,7 +22760,7 @@ msgstr "InnoDB將盡可能多地保存系統內存中的表和索引。因此，
 #: lib/utility.php:1260
 #, fuzzy
 msgid "This settings should remain ON unless your Cacti instances is running on either ZFS or FusionI/O which both have internal journaling to accommodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance."
-msgstr "除非您的Cacti實例在ZFS或FusionI / O上運行，並且兩者都具有內部日記功能以適應突然的系統崩潰，否則此設置應保持為ON。但是，如果您的電源非常好，並且系統很少宕機並且有備份，那麼將此設置設置為OFF可以使數據庫性能提高近50％。"
+msgstr "除非您的Cacti實例在ZFS或FusionI / O上運行，並且兩者都具有內部日記功能以適應突然的系統崩潰，否則此設置應保持為ON。但是，如果您的電源非常好，並且系統很少宕機並且有備份，那麼將此設置設置為OFF可以使數據庫性能提高近50%。"
 
 #: lib/utility.php:1265
 #, fuzzy
@@ -28834,7 +28834,7 @@ msgstr "沒有VDEF"
 
 #, fuzzy
 #~ msgid "%d Outliers"
-#~ msgstr "％d異常值"
+#~ msgstr "%d異常值"
 
 #, php-format
 #~ msgid "%d Repitition"
@@ -28842,7 +28842,7 @@ msgstr "沒有VDEF"
 
 #, fuzzy
 #~ msgid "%d Samples"
-#~ msgstr "％d樣品"
+#~ msgstr "%d樣品"
 
 #, php-format
 #~ msgid "%s %s"
@@ -28850,11 +28850,11 @@ msgstr "沒有VDEF"
 
 #, fuzzy
 #~ msgid "%s Standard Deviations"
-#~ msgstr "％s標準偏差"
+#~ msgstr "%s標準偏差"
 
 #, fuzzy
 #~ msgid "'%s' must be set to positive integer value!<br>RECORD NOT UPDATED!"
-#~ msgstr "'％s'必須設置為正整數值！ <br>記錄沒有更新！"
+#~ msgstr "'%s'必須設置為正整數值！ <br>記錄沒有更新！"
 
 #, fuzzy
 #~ msgid "1 Thread (default)"
@@ -28905,7 +28905,7 @@ msgstr "沒有VDEF"
 #~ msgstr "允許管理員維護SNMP通知接收器。"
 
 #~ msgid "Alpha %"
-#~ msgstr "Α ％"
+#~ msgstr "Α %"
 
 #~ msgid "Apply requested action"
 #~ msgstr "應用請求的操作"
@@ -28919,14 +28919,14 @@ msgstr "沒有VDEF"
 
 #, php-format
 #~ msgid "Are you sure you want to DELETE the Rule '%s'?"
-#~ msgstr "您確定要刪除規則&#39;％s&#39;嗎？"
+#~ msgstr "您確定要刪除規則&#39;%s&#39;嗎？"
 
 #~ msgid "Associate Graph(s)"
 #~ msgstr "Associate Graph（s）"
 
 #, php-format
 #~ msgid "Automation Templates [edit: %s]"
-#~ msgstr "自動化模板[編輯：％s]"
+#~ msgstr "自動化模板[編輯：%s]"
 
 #~ msgid "Automation Templates [new]"
 #~ msgstr "自動化模板[新]"
@@ -29072,7 +29072,7 @@ msgstr "沒有VDEF"
 
 #, fuzzy
 #~ msgid "Click to show Data Query output for sfield '%s'"
-#~ msgstr "單擊以顯示sfield&#39;％s&#39;的數據查詢輸出"
+#~ msgstr "單擊以顯示sfield&#39;%s&#39;的數據查詢輸出"
 
 #, fuzzy
 #~ msgid "Connect Timeout"
@@ -29083,11 +29083,11 @@ msgstr "沒有VDEF"
 
 #, fuzzy
 #~ msgid "Created Threshold: %s<br>"
-#~ msgstr "創建圖：％s"
+#~ msgstr "創建圖：%s"
 
 #, fuzzy
 #~ msgid "Created threshold: %s"
-#~ msgstr "創建圖：％s"
+#~ msgstr "創建圖：%s"
 
 #, fuzzy
 #~| msgid "DES"
@@ -29096,7 +29096,7 @@ msgstr "沒有VDEF"
 
 #, php-format
 #~ msgid "DS '%s' missing in RRDfile"
-#~ msgstr "RRDfile中缺少DS&#39;％s&#39;"
+#~ msgstr "RRDfile中缺少DS&#39;%s&#39;"
 
 #~ msgid "Dashboards"
 #~ msgstr "儀表板"
@@ -29178,7 +29178,7 @@ msgstr "沒有VDEF"
 
 #, fuzzy
 #~ msgid "Failed to find linked Graph Template Item '%d' on Threshold '%d'"
-#~ msgstr "無法在閾值'％d'上找到鏈接的圖表模板項'％d'"
+#~ msgstr "無法在閾值'%d'上找到鏈接的圖表模板項'%d'"
 
 #, fuzzy, php-format
 #~ msgid "Field \"%s\" is missing an Output Field"
@@ -29212,7 +29212,7 @@ msgstr "沒有VDEF"
 
 #, fuzzy
 #~ msgid "Guest user id %s does not exist."
-#~ msgstr "來賓用戶ID％s不存在。"
+#~ msgstr "來賓用戶ID%s不存在。"
 
 #, fuzzy
 #~ msgid "Hide Graph Drilldowns"
@@ -29252,14 +29252,14 @@ msgstr "沒有VDEF"
 
 #, php-format
 #~ msgid "Item #%d"
-#~ msgstr "項目＃％d"
+#~ msgstr "項目＃%d"
 
 #, php-format
 #~ msgid "Item#%d"
-#~ msgstr "項目＃％d"
+#~ msgstr "項目＃%d"
 
 #~ msgid "Items %s"
-#~ msgstr "項目＃％s"
+#~ msgstr "項目＃%s"
 
 #~ msgid "LDAP Authentication"
 #~ msgstr "LDAP身份驗證"
@@ -29399,7 +29399,7 @@ msgstr "沒有VDEF"
 
 #, php-format
 #~ msgid "RRD maximum for Data Source '%s' should be '%s'"
-#~ msgstr "數據源&#39;％s&#39;的RRD最大值應為&#39;％s&#39;"
+#~ msgstr "數據源&#39;%s&#39;的RRD最大值應為&#39;%s&#39;"
 
 #, fuzzy
 #~ msgid "RRDtool Graph Font Control"
@@ -29434,7 +29434,7 @@ msgstr "沒有VDEF"
 #~ msgstr "調整所選圖表的大小"
 
 #~ msgid "Resource File: '%s' is missing or not readable.  Make sure you install it before using Data Query: '%s'"
-#~ msgstr "資源文件：'％s'丟失或不可讀。使用數據查詢之前，請確保已安裝它：'％s'"
+#~ msgstr "資源文件：'%s'丟失或不可讀。使用數據查詢之前，請確保已安裝它：'%s'"
 
 #~ msgid "Rule Details."
 #~ msgstr "規則細節。"
@@ -29509,7 +29509,7 @@ msgstr "沒有VDEF"
 
 #, fuzzy
 #~ msgid "Template [edit: %s]"
-#~ msgstr "模板[編輯：％s]"
+#~ msgstr "模板[編輯：%s]"
 
 #, fuzzy
 #~ msgid "Template [new]"
@@ -29517,7 +29517,7 @@ msgstr "沒有VDEF"
 
 #, fuzzy
 #~ msgid "Template user id %s does not exist."
-#~ msgstr "模板用戶ID％s不存在。"
+#~ msgstr "模板用戶ID%s不存在。"
 
 #, fuzzy
 #~ msgid "The DNS hostname or IP address of the server."
@@ -29605,7 +29605,7 @@ msgstr "沒有VDEF"
 
 #, php-format
 #~ msgid "Unable to Install Plugin.  The following Plugins must be installed first: %s"
-#~ msgstr "無法安裝插件。必須首先安裝以下插件：％s"
+#~ msgstr "無法安裝插件。必須首先安裝以下插件：%s"
 
 #~ msgid "Use a separate subfolder for each hosts RRD files.  The naming of the RRDfiles will be &lt;path_cacti&gt;/rra/host_id/local_data_id.rrd."
 #~ msgstr "為每個主機RRD文件使用單獨的子文件夾。 RRDfiles的命名將是&lt;path_cacti&gt; /rra/host_id/local_data_id.rrd。"
@@ -29615,7 +29615,7 @@ msgstr "沒有VDEF"
 #~ msgstr "使用內置翻譯器"
 
 #~ msgid "User Membership %s"
-#~ msgstr "用戶會員％s"
+#~ msgstr "用戶會員%s"
 
 #~ msgid "User(s) to update:"
 #~ msgstr "要更新的用戶："

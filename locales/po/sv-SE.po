@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-03-11 22:28+0000\n"
+"PO-Revision-Date: 2026-03-16 13:18+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core/sv/>"
 "\n"
@@ -624,7 +624,7 @@ msgstr "Ställ in/uppdatera filter"
 #: user_admin.php:2700 user_admin.php:2822 user_admin.php:2921
 #: user_admin.php:3020 user_admin.php:3119 user_domains.php:626
 msgid "Clear"
-msgstr "Töm"
+msgstr "Rensa"
 
 #: aggregate_graphs.php:1721 aggregate_graphs.php:2043 automation_snmp.php:909
 #: automation_templates.php:1362 cdef.php:782 color.php:549 data_debug.php:1079
@@ -6899,7 +6899,7 @@ msgstr "Enhet [redigera: %s]"
 
 #: host.php:724
 msgid "Disable Device Debug"
-msgstr "Avaktivera enhetsfelsökning"
+msgstr "Inaktivera enhetsfelsökning"
 
 #: host.php:726
 msgid "Enable Device Debug"
@@ -7927,7 +7927,7 @@ msgstr "Justerade"
 
 #: include/global_arrays.php:596 lib/html.php:3139
 msgid "Center"
-msgstr "Centrera"
+msgstr "center"
 
 #: include/global_arrays.php:600
 msgid "Top -> Down"
@@ -8808,7 +8808,7 @@ msgstr "Visa länkar till användarhjälp"
 
 #: include/global_arrays.php:1386
 msgid "Plugin Administration"
-msgstr "Plugin-administration"
+msgstr "Insticksmodul-administration"
 
 #: include/global_arrays.php:1390
 msgid "Normal User"
@@ -9020,19 +9020,19 @@ msgstr "2 000 Datakällans objekt"
 
 #: include/global_arrays.php:1704
 msgid "5,000 Data Source Items"
-msgstr "5.000 Datakällans objekt"
+msgstr "5 000 objekt i datakällan"
 
 #: include/global_arrays.php:1705
 msgid "10,000 Data Source Items"
-msgstr "10.000 Datakällans objekt"
+msgstr "10 000 objekt i datakällan"
 
 #: include/global_arrays.php:1706
 msgid "15,000 Data Source Items"
-msgstr "15.000 Datakällans objekt"
+msgstr "15 000 objekt i datakällan"
 
 #: include/global_arrays.php:1707
 msgid "25,000 Data Source Items"
-msgstr "25.000 Datakällans poster"
+msgstr "25 000 objekt i datakällan"
 
 #: include/global_arrays.php:1708
 msgid "50,000 Data Source Items (Default)"
@@ -11903,8 +11903,8 @@ msgstr "Log Ignorerade allmänna fel"
 msgid "Cacti will mask certain errors that are often times considered fatal and that would otherwise disable plugins and additionally confuse some users.  If you wish to see these errors instead, check the checkbox."
 msgstr ""
 "Cacti kommer att maskera vissa fel som ofta anses vara fatala och som annars "
-"skulle inaktivera plugins och dessutom förvirra vissa användare.  Om du vill "
-"se dessa fel i stället markerar du kryssrutan."
+"skulle inaktivera insticksmoduler och dessutom förvirra vissa användare.  Om "
+"du vill se dessa fel i stället markerar du kryssrutan."
 
 #: include/global_settings.php:349
 msgid "Selective File Debug"
@@ -11919,14 +11919,14 @@ msgstr ""
 
 #: include/global_settings.php:356
 msgid "Selective Plugin Debug"
-msgstr "Felsökning av selektivt plugin"
+msgstr "Felsökning av selektivt insticksmodul"
 
 #: include/global_settings.php:357
 msgid "Select which Plugins you wish to place in Debug mode regardless of the Generic Log Level setting.  Any files used by this plugin will be treated as they are in Debug mode."
 msgstr ""
 "Välj vilka insticksprogram du vill placera i felsökningsläge oavsett "
 "inställningen för den generiska loggnivån.  Alla filer som används av detta "
-"plugin kommer att behandlas som om de vore i felsökningsläge."
+"insticksmodul kommer att behandlas som om de vore i felsökningsläge."
 
 #: include/global_settings.php:363
 msgid "Selective Device Debug"
@@ -12003,8 +12003,9 @@ msgstr "Språkstöd"
 msgid "Choose 'enabled' to allow the localization of Cacti. The strict mode requires that the requested language will also be supported by all plugins being installed at your system. If that's not the fact everything will be displayed in English."
 msgstr ""
 "Välj \"enabled\" för att tillåta lokalisering av Cacti. Det strikta läget "
-"kräver att det begärda språket också stöds av alla plugins som installeras "
-"på ditt system. Om så inte är fallet kommer allt att visas på engelska."
+"kräver att det begärda språket också stöds av alla insticksmoduler som "
+"installeras på ditt system. Om så inte är fallet kommer allt att visas på "
+"engelska."
 
 #: include/global_settings.php:432
 msgid "Language"
@@ -12236,7 +12237,7 @@ msgstr ""
 "Om du vill hämta de senaste plguins-versionerna direkt från GitHub eller "
 "GitLab anger du GitHub- eller GitLab API-webbadressen här.  Standardvärdet "
 "är https://api.github.com/.  Ändra detta endast om du har ditt eget arkiv "
-"som du underhåller för Cacti Plugins."
+"som du underhåller för Cacti Insticksmoduler."
 
 #: include/global_settings.php:587
 msgid "GitHub User Account"
@@ -12246,7 +12247,7 @@ msgstr "Användarkonto för GitHub"
 msgid "The User account that holds your GitHub/GitLab repositories.  Change this only if you have your own repository that you maintain for Cacti Plugins."
 msgstr ""
 "Det användarkonto som håller dina GitHub/GitLab-arkiv.  Ändra detta endast "
-"om du har ett eget arkiv som du underhåller för Cacti Plugins."
+"om du har ett eget arkiv som du underhåller för Cacti Insticksmoduler."
 
 #: include/global_settings.php:595
 msgid "Personal Access Token"
@@ -12265,8 +12266,8 @@ msgstr "Aktivera osäkra tilläggsinstallationer"
 #: include/global_settings.php:605
 msgid "If you would like to allow the installation of Cacti Plugins from their 'develop' branch, check this checkbox."
 msgstr ""
-"Om du vill tillåta installation av Cacti Plugins från deras \"develop\"-"
-"gren, markera den här kryssrutan."
+"Om du vill tillåta installation av Cacti Insticksmoduler från deras "
+"\"develop\"-gren, markera den här kryssrutan."
 
 #: include/global_settings.php:610
 msgid "Packaging Defaults"
@@ -12323,8 +12324,8 @@ msgstr "Innehåll-säkerhet Tillåt osäkra JavaScript eval()-anrop"
 #: include/global_settings.php:651
 msgid "Certain Cacti plugins require the use of unsafe JavaScript eval() calls.  If you select this option, they will be allowed in Cacti."
 msgstr ""
-"Vissa Cacti-plugins kräver användning av osäkra JavaScript eval()-anrop.  Om "
-"du väljer det här alternativet kommer de att tillåtas i Cacti."
+"Vissa Cacti-insticksmoduler kräver användning av osäkra JavaScript eval()-"
+"anrop.  Om du väljer det här alternativet kommer de att tillåtas i Cacti."
 
 #: include/global_settings.php:659
 msgid "Content-Security Alternate Sources"
@@ -13366,7 +13367,7 @@ msgid "If you are having issues with some data sources, your Email could be floo
 msgstr ""
 "Om du har problem med vissa datakällor kan din e-post översvämmas av "
 "varningar om att \"Poller Output Not Empty\".  Om detta inträffar kan du "
-"avaktivera inställningen baserat på detta intervall."
+"inaktivera inställningen baserat på detta intervall."
 
 #: include/global_settings.php:1551
 msgid "Periodic All Device Re-Index"
@@ -14245,7 +14246,7 @@ msgstr "Aktivera uppdatering av RRD på begäran"
 #: include/global_settings.php:2294
 msgid "Should Boost enable on demand RRD updating in Cacti?  If you disable, this change will not take affect until after the next polling cycle.  When you have Remote Data Collectors, this settings is required to be on."
 msgstr ""
-"Bör Boost aktivera RRD-uppdatering på begäran i Cacti?  Om du avaktiverar "
+"Bör Boost aktivera RRD-uppdatering på begäran i Cacti?  Om du inaktiverar "
 "kommer denna ändring inte att börja gälla förrän efter nästa "
 "pollningscykel.  Om du har fjärrdatainsamlare måste den här inställningen "
 "vara aktiverad."
@@ -16185,7 +16186,7 @@ msgstr "Automation Execution för Data Query komplett"
 
 #: lib/data_query.php:85 lib/data_query.php:456
 msgid "Plugin Hooks complete"
-msgstr "Plugin Hooks komplett"
+msgstr "Insticksmodul Hooks komplett"
 
 #: lib/data_query.php:103
 #, php-format
@@ -16284,7 +16285,7 @@ msgstr "Automation Executing för Data Query komplett"
 
 #: lib/data_query.php:448
 msgid "Plugin hooks complete"
-msgstr "Plugin-hooks kompletta"
+msgstr "Insticksmodul Hooks komplett"
 
 #: lib/data_query.php:504
 msgid "Checking for Sort Field change.  No changes detected."
@@ -16890,7 +16891,7 @@ msgstr "Sedan Install"
 #, php-format
 msgid "Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details."
 msgstr ""
-"Cacti inaktiverade plugin %s på grund av följande fel: %s!  Se Cactis "
+"Cacti inaktiverade insticksmodul %s på grund av följande fel: %s!  Se Cactis "
 "loggfil för mer information."
 
 #: lib/functions.php:6752
@@ -19069,9 +19070,9 @@ msgstr ""
 msgid "For remote pollers, it is critical that the paths that you will be updating frequently, including the plugins, scripts, and resources paths have read/write access as the data collector will have to update these paths from the main web server content."
 msgstr ""
 "För fjärravläsare är det viktigt att de sökvägar som du kommer att uppdatera "
-"ofta, inklusive sökvägarna för plugins, skript och resurser, har läs- och "
-"skrivåtkomst eftersom datainsamlaren måste uppdatera dessa sökvägar från "
-"huvudwebbserverns innehåll."
+"ofta, inklusive sökvägarna för insticksmoduler, skript och resurser, har läs-"
+" och skrivåtkomst eftersom datainsamlaren måste uppdatera dessa sökvägar "
+"från huvudwebbserverns innehåll."
 
 #: lib/installer.php:2501
 msgid "Required Writable at Install Time Only"
@@ -20033,134 +20034,137 @@ msgstr "'%s' måste först installeras innan '%s' installeras. "
 
 #: lib/plugins.php:708
 msgid "Plugin cannot be installed."
-msgstr "Plugin kan inte installeras."
+msgstr "Insticksmodul kan inte installeras."
 
 #: lib/plugins.php:748
 #, php-format
 msgid "The Plugin directory '%s' needs to be renamed to remove 'plugin_' from the name before it can be installed."
 msgstr ""
-"Plugin-katalogen '%s' måste döpas om så att \"plugin_\" tas bort från namnet "
-"innan den kan installeras."
+"Insticksmodul-katalogen '%s' måste döpas om så att \"plugin_\" tas bort från "
+"namnet innan den kan installeras."
 
 #: lib/plugins.php:751
 #, php-format
 msgid "The Plugin in the directory '%s' does not include an version function '%s()'.  This function must exist for the plugin to be installed."
 msgstr ""
-"Pluginet i katalogen '%s' innehåller inte en versionsfunktion '%s()'.  Denna "
-"funktion måste finnas för att insticksprogrammet ska kunna installeras."
+"Insticksmodulen i katalogen '%s' innehåller inte en versionsfunktion '%s()"
+"'.  Denna funktion måste finnas för att insticksprogrammet ska kunna "
+"installeras."
 
 #: lib/plugins.php:784
 #, php-format
 msgid "The Plugin in the directory '%s' does not include an install function '%s()'.  This function must exist for the plugin to be installed."
 msgstr ""
-"Plugin-programmet i katalogen '%s' innehåller inte installationsfunktionen "
-"'%s()'.  Denna funktion måste finnas för att insticksprogrammet ska kunna "
-"installeras."
+"Insticksmodul-programmet i katalogen '%s' innehåller inte "
+"installationsfunktionen '%s()'.  Denna funktion måste finnas för att "
+"insticksprogrammet ska kunna installeras."
 
 #: lib/plugins.php:982
 #, php-format
 msgid "Data for Plugin %s including Tables and Settings has been removed."
 msgstr ""
-"Data för Plugin %s inklusive Tabeller och inställningar har tagits bort."
+"Data för Insticksmodul %s inklusive Tabeller och inställningar har tagits "
+"bort."
 
 #: lib/plugins.php:984
 #, php-format
 msgid "Data for Plugin %s including Tables and Settings has not been removed due to missing removal function."
 msgstr ""
-"Data för Plugin %s inklusive Tabeller och inställningar har inte tagits bort "
-"på grund av att borttagningsfunktionen saknas."
+"Data för Insticksmodul %s inklusive Tabeller och inställningar har inte "
+"tagits bort på grund av att borttagningsfunktionen saknas."
 
 #: lib/plugins.php:1441
 #, php-format
 msgid "The Archive for Plugin '%s' has been removed."
-msgstr "Arkivet för Plugin '%s' har tagits bort."
+msgstr "Arkivet för Insticksmodul '%s' har tagits bort."
 
 #: lib/plugins.php:1491
 #, php-format
 msgid "Restore failed!  The Plugin '%s' archive Restore failed.  Unable to create directory '%s'."
 msgstr ""
-"Återställningen misslyckades!  Plugin '%s' arkiv Återställning "
+"Återställningen misslyckades!  Insticksmodul '%s' arkiv Återställning "
 "misslyckades.  Det gick inte att skapa katalogen '%s'."
 
 #: lib/plugins.php:1493
 #, php-format
 msgid "Restore failed!  The available Plugin '%s' Load failed.  Unable to create directory '%s'."
 msgstr ""
-"Återställningen misslyckades!  Den tillgängliga Plugin '%s'-laddningen "
-"misslyckades.  Det gick inte att skapa katalogen '%s'."
+"Återställningen misslyckades!  Den tillgängliga Insticksmodul '%s'-"
+"laddningen misslyckades.  Det gick inte att skapa katalogen '%s'."
 
 #: lib/plugins.php:1592
 #, php-format
 msgid "Restore failed!  The archived Plugin '%s' Restore failed. Unable to create directory %s"
 msgstr ""
-"Återställningen misslyckades!  Det arkiverade pluginet '%s' Återställningen "
-"misslyckades. Det gick inte att skapa en katalog %s"
+"Återställningen misslyckades!  Det arkiverade insticksmodulen '%s' "
+"Återställningen misslyckades. Det gick inte att skapa en katalog %s"
 
 #: lib/plugins.php:1594
 #, php-format
 msgid "Load failed!  The available Plugin '%s' Load failed. Unable to create directory %s"
 msgstr ""
-"Laddningen misslyckades!  Det tillgängliga pluginet '%s' Laddning "
+"Laddningen misslyckades!  Det tillgängliga insticksmodulen '%s' Laddning "
 "misslyckades. Det gick inte att skapa en katalog %s"
 
 #: lib/plugins.php:1614
 #, php-format
 msgid "Restore succeeded!  The archived Plugin '%s' Restore succeeded."
 msgstr ""
-"Återställningen lyckades!  Det arkiverade pluginet '%s' Återställningen "
-"lyckades."
+"Återställningen lyckades!  Det arkiverade insticksmodulen '%s' "
+"Återställningen lyckades."
 
 #: lib/plugins.php:1621
 #, php-format
 msgid "Load succeeded!  The available Plugin '%s' Load succeeded."
-msgstr "Laddning lyckades!  Det tillgängliga pluginet '%s' Load lyckades."
+msgstr ""
+"Laddning lyckades!  Det tillgängliga insticksmodulen '%s' Load lyckades."
 
 #: lib/plugins.php:1639
 #, php-format
 msgid "Restore failed!  The archived Plugin '%s' Restore failed.  Check the cacti.log for warnings."
 msgstr ""
-"Återställningen misslyckades!  Återställningen av det arkiverade pluginet "
-"'%s' misslyckades.  Kontrollera cacti.log för varningar."
+"Återställningen misslyckades!  Återställningen av det arkiverade "
+"insticksmodulen '%s' misslyckades.  Kontrollera cacti.log för varningar."
 
 #: lib/plugins.php:1641
 #, php-format
 msgid "Load failed!  The available Plugin '%s' Load failed.  Check the cacti.log for warnings."
 msgstr ""
-"Laddningen misslyckades!  Laddningen av det tillgängliga pluginet '%s' "
-"misslyckades.  Kontrollera cacti.log för varningar."
+"Laddningen misslyckades!  Laddningen av det tillgängliga insticksmodulen "
+"'%s' misslyckades.  Kontrollera cacti.log för varningar."
 
 #: lib/plugins.php:1648
 #, php-format
 msgid "Restore failed!  Unable to locate the archive record for Plugin '%s' in the database."
 msgstr ""
 "Återställningen misslyckades!  Det gick inte att hitta arkivposten för "
-"Plugin '%s' i databasen."
+"Insticksmodul '%s' i databasen."
 
 #: lib/plugins.php:1650
 #, php-format
 msgid "Load failed!  Unable to locate the available record for Plugin '%s' in the database."
 msgstr ""
 "Laddningen misslyckades!  Det gick inte att hitta den tillgängliga posten "
-"för Plugin '%s' i databasen."
+"för Insticksmodul '%s' i databasen."
 
 #: lib/plugins.php:1717
 #, php-format
 msgid "The Plugin '%s' has been archived successfully."
-msgstr "Plugin '%s' har arkiverats framgångsrikt."
+msgstr "Insticksmodul '%s' har arkiverats framgångsrikt."
 
 #: lib/plugins.php:1719
 #, php-format
 msgid "The Plugin '%s' archiving process has failed.  Check the Cacti log for errors."
 msgstr ""
-"Arkiveringsprocessen för pluginet '%s' har misslyckats.  Kontrollera Cacti-"
-"loggen för fel."
+"Arkiveringsprocessen för insticksmodulen '%s' har misslyckats.  Kontrollera "
+"Cacti-loggen för fel."
 
 #: lib/plugins.php:1722
 #, php-format
 msgid "The Plugin '%s' archiving process has failed due to the plugin directory being missing."
 msgstr ""
-"Arkiveringsprocessen för plugin '%s' har misslyckats på grund av att plugin-"
-"katalogen saknas."
+"Arkiveringsprocessen för insticksmodul '%s' har misslyckats på grund av att "
+"insticksmodul-katalogen saknas."
 
 #: lib/plugins.php:1730 lib/plugins.php:1737 plugins.php:638 plugins.php:641
 #: plugins.php:1043
@@ -20183,13 +20187,13 @@ msgstr "Ej angiven"
 #: lib/plugins.php:1913
 msgid "Unable to retrieve Cacti Plugins due to the Base API Repository URL or User not being set in Configuration > Settings > General > GitHub/GitLab API Settings."
 msgstr ""
-"Det går inte att hämta Cacti Plugins på grund av att URL:en för Base API "
-"Repository eller användaren inte har angetts i Konfiguration > Inställningar "
-"> Allmänt > GitHub/GitLab API-inställningar."
+"Det går inte att hämta Cacti Insticksmoduler på grund av att URL:en för Base "
+"API Repository eller användaren inte har angetts i Konfiguration > "
+"Inställningar > Allmänt > GitHub/GitLab API-inställningar."
 
 #: lib/plugins.php:1927
 msgid "No plugins found at GitHub/GitLab location."
-msgstr "Inga plugins hittades på GitHub/GitLab-platsen."
+msgstr "Inga insticksmoduler hittades på GitHub/GitLab-platsen."
 
 #: lib/plugins.php:1956
 #, php-format
@@ -20209,22 +20213,22 @@ msgstr "Det går inte att hämta %s från GitHub/GitLab-platsen."
 #, php-format
 msgid "Unable to get develop repo data for plugin %s from GitHub/GitLab location."
 msgstr ""
-"Det går inte att hämta data om utvecklingsrepo för plugin %s från GitHub/"
-"GitLab-platsen."
+"Det går inte att hämta data om utvecklingsrepo för insticksmodul %s från "
+"GitHub/GitLab-platsen."
 
 #: lib/plugins.php:2238
 #, php-format
 msgid "There were '%s' Plugins found at The Cacti Groups GitHub site and '%s' Plugins Tags/Releases were retrieved and updated in %0.2f seconds."
 msgstr ""
-"Det fanns '%s' Plugins på The Cacti Groups GitHub-plats och '%s' Plugins "
-"Taggar/Releaser hämtades och uppdaterades på %0.2f sekunder."
+"Det fanns '%s' Insticksmoduler på The Cacti Groups GitHub-plats och '%s' "
+"Insticksmoduler Taggar/Releaser hämtades och uppdaterades på %0.2f sekunder."
 
 #: lib/plugins.php:2240
 #, php-format
 msgid "Unable to reach The Cacti Groups GitHub site.  No plugin data retrieved in %0.2f seconds."
 msgstr ""
-"Det går inte att nå The Cacti Groups GitHub-plats.  Ingen plugin-data hämtad "
-"på %0.2f sekunder."
+"Det går inte att nå The Cacti Groups GitHub-plats.  Ingen insticksmodul-data "
+"hämtad på %0.2f sekunder."
 
 #: lib/reports.php:144
 #, php-format
@@ -20619,35 +20623,35 @@ msgstr ""
 #: lib/utility.php:1224
 msgid "If this number is negative, reduce the innodb_buffer_pool_size until the join_buffer_size turns positive, but allocate approximately from between 25%-50% of memory to the innodb_buffer_pool_size if the database is hosted on the Cacti server, or upto 80% of the systems memory if the database is separate from the Cacti web server.  However, try to not go below the default of 262,144.  When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.  As this is a per connection memory allocation, care must be taken not to increase it too high.  The sum of the join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB memory should be below 80% if the database is hosted on the Cacti web server and less if you intend to have very large RRDfiles or hundreds of thousands to millions long term."
 msgstr ""
-"Om detta tal är negativt, minska innodb_buffer_pool_size tills "
-"join_buffer_size blir positivt, men allokera ungefär mellan 25%-50% minne "
-"till innodb_buffer_pool_size om databasen är hostad på Cacti-servern, eller "
-"upp till 80% o f systemminnet om databasen är separat från Cacti-"
-"webbservern.  Försök dock att inte gå under standardvärdet på 262 144.  När "
-"du utför sammankopplingar, om de är mindre än denna storlek, kommer de att "
-"hållas i minnet och aldrig skrivas till en tillfällig fil.  Eftersom detta "
-"är en minnesallokering per anslutning måste man se till att inte öka den för "
-"mycket.  Summan av join_buffer_size + sort_buffer_size + read_buffer_size + "
-"read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB-"
-"minne bör vara under 80% i om databasen är värd på Cacti-webbservern och "
-"mindre om du tänker ha mycket stora RRD-filer eller hundratusentals till "
-"miljoner på lång sikt."
+"Om detta tal är negativt, minska innodb_buffer_pool_size tills % i blir "
+"positivt, join_buffer_size blir positivt, men allokera ungefär mellan 25%-"
+"50% minne till innodb_buffer_pool_size om databasen är hostad på Cacti-"
+"servern, eller upp till 80% o f systemminnet om databasen är separat från "
+"Cacti-webbservern.  Försök dock att inte gå under standardvärdet på 262 "
+"144.  När du utför sammankopplingar, om de är mindre än denna storlek, "
+"kommer de att hållas i minnet och aldrig skrivas till en tillfällig fil.  "
+"Eftersom detta är en minnesallokering per anslutning måste man se till att "
+"inte öka den för mycket.  Summan av join_buffer_size + sort_buffer_size + "
+"read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + "
+"Core MySQL/MariaDB-minne bör vara under 80% i om databasen är värd på Cacti-"
+"webbservern och mindre om du tänker ha mycket stora RRD-filer eller "
+"hundratusentals till miljoner på lång sikt."
 
 #: lib/utility.php:1230
 msgid "If this number is negative, reduce the innodb_buffer_pool_size until the sort_buffer_size turns positive, but allocate approximately from between 25%-50% of memory to the innodb_buffer_pool_size if the database is hosted on the Cacti server, or upto 80% of the system memory if the database is separate from the Cacti web server.  However, try to not go below the default setting of 2,097,152.  A sort buffer performs sorts for some queries using ORDER BY or GROUP BY. Configuring sort_buffer_size decides how much memory will be allocated for sort queries.  The sort_buffer_size may need to be adjusted from the default if the workload requires a significant number of sort queries. The sort_buffer_size is defined on a per-session variable.  Use the same equation as that of the join_buffer_size to determine the per connection possible memory."
 msgstr ""
-"Om detta tal är negativt, minska innodb_buffer_pool_size tills "
-"sort_buffer_size blir positivt, men allokera ungefär mellan 25%-50% minne "
-"till innodb_buffer_pool_size om databasen är hostad på Cacti-servern, eller "
-"upp till 80% o f systemminnet om databasen är separat från Cacti-"
-"webbservern.  Försök dock att inte gå under standardinställningen på 2 097 "
-"152.  En sorteringsbuffert utför sorteringar för vissa frågor som använder "
-"ORDER BY eller GROUP BY. Genom att konfigurera sort_buffer_size avgörs hur "
-"mycket minne som ska allokeras för sorteringsfrågor.  Sort_buffer_size kan "
-"behöva justeras från standardvärdet om arbetsbelastningen kräver ett stort "
-"antal sorteringsfrågor. Sort_buffer_size definieras som en variabel per "
-"session.  Använd samma ekvation som för join_buffer_size för att bestämma "
-"det möjliga minnet per anslutning."
+"Om detta tal är negativt, minska innodb_buffer_pool_size tills % i blir "
+"positivt, sort_buffer_size blir positivt, men allokera ungefär mellan 25%-"
+"50% minne till innodb_buffer_pool_size om databasen är hostad på Cacti-"
+"servern, eller upp till 80% o f systemminnet om databasen är separat från "
+"Cacti-webbservern.  Försök dock att inte gå under standardinställningen på 2 "
+"097 152.  En sorteringsbuffert utför sorteringar för vissa frågor som "
+"använder ORDER BY eller GROUP BY. Genom att konfigurera sort_buffer_size "
+"avgörs hur mycket minne som ska allokeras för sorteringsfrågor.  "
+"Sort_buffer_size kan behöva justeras från standardvärdet om "
+"arbetsbelastningen kräver ett stort antal sorteringsfrågor. Sort_buffer_size "
+"definieras som en variabel per session.  Använd samma ekvation som för "
+"join_buffer_size för att bestämma det möjliga minnet per anslutning."
 
 #: lib/utility.php:1236
 #, php-format
@@ -21175,7 +21179,7 @@ msgstr "Tid"
 
 #: managers.php:820 utilities.php:2303
 msgid "Notification"
-msgstr "Notifikation"
+msgstr "Avisering"
 
 #: managers.php:821 utilities.php:2303
 msgid "Varbinds"
@@ -21240,13 +21244,13 @@ msgstr "Aktivera meddelandemottagare"
 #: managers.php:1080
 msgid "Click 'Continue' to Disable Forwarding the following Notification Object the following Notification Receiver."
 msgstr ""
-"Klicka på \"Fortsätt\" för att avaktivera vidarebefordran av följande "
+"Klicka på \"Fortsätt\" för att inaktivera vidarebefordran av följande "
 "meddelandeobjekt till följande meddelandemottagare."
 
 #: managers.php:1081
 msgid "Click 'Continue' to Disable Forwarding the following Notification Objects to the following Notification Receiver."
 msgstr ""
-"Klicka på \"Fortsätt\" för att avaktivera vidarebefordran av följande "
+"Klicka på \"Fortsätt\" för att inaktivera vidarebefordran av följande "
 "meddelandeobjekt till följande meddelandemottagare."
 
 #: managers.php:1082
@@ -21948,11 +21952,11 @@ msgstr "Inga paketförvarare hittades"
 
 #: plugins.php:33
 msgid "Loaded Plugins"
-msgstr "Laddade plugins"
+msgstr "Laddade insticksmoduler"
 
 #: plugins.php:34
 msgid "Available Plugins"
-msgstr "Tillgängliga plugins"
+msgstr "Tillgängliga insticksmoduler"
 
 #: plugins.php:40 plugins.php:833
 msgid "Uninstall"
@@ -21968,7 +21972,7 @@ msgstr "Bekräftelse av installationsprompt"
 
 #: plugins.php:45
 msgid "Remove Plugin Data"
-msgstr "Ta bort Plugin-data"
+msgstr "Ta bort Insticksmodul-data"
 
 #: plugins.php:53
 msgid "Archive Restore"
@@ -21980,19 +21984,19 @@ msgstr "Arkivborttagning"
 
 #: plugins.php:57
 msgid "Install from Downloaded Plugins"
-msgstr "Installera från nedladdade plugins"
+msgstr "Installera från nedladdade insticksmoduler"
 
 #: plugins.php:58 plugins.php:1503
 msgid "View the Plugins Readme File"
-msgstr "Visa Plugins Readme-filen"
+msgstr "Visa Insticksmoduler Readme-filen"
 
 #: plugins.php:59
 msgid "View the Plugins ChangeLog File"
-msgstr "Visa Plugins ChangeLog-filen"
+msgstr "Visa Insticksmoduler ChangeLog-filen"
 
 #: plugins.php:60
 msgid "Fetch Latest Plugin Archives"
-msgstr "Hämta senaste plugin-arkiv"
+msgstr "Hämta senaste insticksmodul-arkiv"
 
 #: plugins.php:63
 msgid "Remote Enable"
@@ -22000,7 +22004,7 @@ msgstr "Fjärrstyrd aktivering"
 
 #: plugins.php:64
 msgid "Remote Disable"
-msgstr "Avaktivera fjärrkontroll"
+msgstr "Inaktivera fjärrkontroll"
 
 #: plugins.php:67
 msgid "Drag and Drop"
@@ -22073,8 +22077,8 @@ msgstr ""
 #, php-format
 msgid "The action '%s' '%s' on Plugin '%s' can not be taken as the Plugin is integrated."
 msgstr ""
-"Åtgärden '%s' '%s' på Plugin '%s' kan inte vidtas eftersom Plugin är "
-"integrerat."
+"Åtgärden '%s' '%s' på Insticksmodul '%s' kan inte vidtas eftersom "
+"Insticksmodul är integrerat."
 
 #: plugins.php:218
 msgid "The fetch latest plugins process has been launched into background."
@@ -22091,22 +22095,23 @@ msgstr ""
 #, php-format
 msgid "Plugin '%s' has passed it's Configuration Check test and can not be Installed"
 msgstr ""
-"Plugin '%s' har klarat testet för konfigurationskontroll och kan inte "
+"Insticksmodul '%s' har klarat testet för konfigurationskontroll och kan inte "
 "installeras"
 
 #: plugins.php:278
 #, php-format
 msgid "Plugin '%s' Check Configuration function returned a null response which is invalid.  Please check with Plugin Developer for an update."
 msgstr ""
-"Plugin '%s' Check Configuration-funktionen returnerade ett null-svar som är "
-"ogiltigt.  Kontrollera med plugin-utvecklaren för en uppdatering."
+"Insticksmodul '%s' Check Configuration-funktionen returnerade ett null-svar "
+"som är ogiltigt.  Kontrollera med insticksmodul-utvecklaren för en "
+"uppdatering."
 
 #: plugins.php:580
 msgid "Uninstalling this Plugin and may remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'."
 msgstr ""
-"Avinstallation av detta Plugin kan ta bort alla Plugin-data och "
-"inställningar.  Om du verkligen vill avinstallera pluginet klickar du på "
-"\"Avinstallera\" nedan.  Annars klickar du på \"Avbryt\"."
+"Avinstallation av detta Insticksmodul kan ta bort alla Insticksmodul-data "
+"och inställningar.  Om du verkligen vill avinstallera insticksmodulen "
+"klickar du på \"Avinstallera\" nedan.  Annars klickar du på \"Avbryt\"."
 
 #: plugins.php:581
 msgid "Are you sure you want to Uninstall?"
@@ -22115,14 +22120,15 @@ msgstr "Är du säker på att du vill avinstallera?"
 #: plugins.php:583
 msgid "Removing Plugin Data and Settings for will remove all Plugin Data and Settings.  If you really want to Remove Data and Settings for this Plugin, click 'Remove Data' below.  Otherwise click 'Cancel'."
 msgstr ""
-"Om du tar bort Plugin-data och inställningar för kommer alla Plugin-data och "
-"inställningar att tas bort.  Om du verkligen vill ta bort data och "
-"inställningar för det här pluginet klickar du på \"Ta bort data\" nedan.  "
-"Annars klickar du på \"Avbryt\"."
+"Om du tar bort Insticksmodul-data och inställningar för kommer alla "
+"Insticksmodul-data och inställningar att tas bort.  Om du verkligen vill ta "
+"bort data och inställningar för det här insticksmodulen klickar du på "
+"\"Ta bort data\" nedan.  Annars klickar du på \"Avbryt\"."
 
 #: plugins.php:584
 msgid "Are you sure you want to Remove all Plugin Data and Settings?"
-msgstr "Är du säker på att du vill ta bort alla Plugin-data och inställningar?"
+msgstr ""
+"Är du säker på att du vill ta bort alla Insticksmodul-data och inställningar?"
 
 #: plugins.php:586
 msgid "Restoring this Plugin Archive will overwrite the current Plugin directory.  If you really want to Restore this Plugin Archive, click 'Restore' below.  Otherwise click 'Cancel'."
@@ -22148,7 +22154,7 @@ msgstr "Är du säker på att du vill ta bort det här arkivet?"
 
 #: plugins.php:592
 msgid "Plugin Management"
-msgstr "Plugin-hantering"
+msgstr "Insticksmodul-hantering"
 
 #: plugins.php:611
 msgid "Loaded on Disk"
@@ -22196,7 +22202,7 @@ msgstr "Kontrollera senaste"
 
 #: plugins.php:656
 msgid "Fetch the list of the latest Cacti Plugins"
-msgstr "Hämta listan över de senaste Cacti-plugin-programmen"
+msgstr "Hämta listan över de senaste Cacti-insticksmodul-programmen"
 
 #: plugins.php:797
 msgid "Restore Archive"
@@ -22212,11 +22218,11 @@ msgstr "Ta bort data"
 
 #: plugins.php:843
 msgid "Plugin Reame File"
-msgstr "Plugin Reame-fil"
+msgstr "Insticksmodul Reame-fil"
 
 #: plugins.php:852
 msgid "Plugin ChangeLog File"
-msgstr "Plugin ChangeLog-fil"
+msgstr "Insticksmodul ChangeLog-fil"
 
 #: plugins.php:1058
 msgid "Actions available include 'Restore', 'Delete'."
@@ -22228,7 +22234,8 @@ msgstr "Tilläggets namn"
 
 #: plugins.php:1064 plugins.php:1141 plugins.php:1218
 msgid "The name for this Plugin.  The name is controlled by the directory it resides in."
-msgstr "Namnet på detta Plugin.  Namnet styrs av den katalog som det finns i."
+msgstr ""
+"Namnet på detta Insticksmodul.  Namnet styrs av den katalog som det finns i."
 
 #: plugins.php:1067 plugins.php:1144 plugins.php:1221
 msgid "Plugin Description"
@@ -22236,7 +22243,8 @@ msgstr "Tilläggets beskrivning"
 
 #: plugins.php:1070 plugins.php:1147 plugins.php:1224
 msgid "A description that the Plugins author has given to the Plugin."
-msgstr "En beskrivning som Plugins författare har gett till Plugin."
+msgstr ""
+"En beskrivning som Insticksmoduler författare har gett till Insticksmodul."
 
 #: plugins.php:1073 plugins.php:1150 plugins.php:1227
 msgid "Main / Remote Status"
@@ -22245,16 +22253,16 @@ msgstr "Huvud- / fjärrstatus"
 #: plugins.php:1076 plugins.php:1230
 msgid "The Status of this available Plugin.  Loadable means it is currently not installed and can be loaded."
 msgstr ""
-"Status för detta tillgängliga plugin.  Laddbar innebär att det för "
+"Status för detta tillgängliga insticksmodul.  Laddbar innebär att det för "
 "närvarande inte är installerat och kan laddas."
 
 #: plugins.php:1082 plugins.php:1159 plugins.php:1236
 msgid "The author of this Plugin."
-msgstr "Författaren till detta Plugin."
+msgstr "Författaren till detta Insticksmodul."
 
 #: plugins.php:1088 plugins.php:1242
 msgid "The Cacti version ranges required to use this Plugin."
-msgstr "Cacti-versionerna krävs för att använda detta plugin."
+msgstr "Cacti-versionerna krävs för att använda detta insticksmodul."
 
 #: plugins.php:1091 plugins.php:1168
 msgid "Installed Version"
@@ -22262,11 +22270,11 @@ msgstr "Installerad version"
 
 #: plugins.php:1094 plugins.php:1100 plugins.php:1254
 msgid "The version of this Plugin."
-msgstr "Versionen av detta Plugin."
+msgstr "Versionen av detta Insticksmodul."
 
 #: plugins.php:1106 plugins.php:1183
 msgid "The compressed size of this Plugin in bytes."
-msgstr "Den komprimerade storleken för detta plugin i bytes."
+msgstr "Den komprimerade storleken för detta insticksmodul i bytes."
 
 #: plugins.php:1109 plugins.php:1186
 msgid "Requires"
@@ -22274,7 +22282,8 @@ msgstr "Kräver"
 
 #: plugins.php:1112 plugins.php:1189 plugins.php:1248
 msgid "This Plugin requires the following Plugins be installed first."
-msgstr "Detta Plugin kräver att följande Plugins installeras först."
+msgstr ""
+"Detta Insticksmodul kräver att följande Insticksmoduler installeras först."
 
 #: plugins.php:1115
 msgid "Archive Date"
@@ -22282,7 +22291,7 @@ msgstr "Arkivdatum"
 
 #: plugins.php:1118
 msgid "The date that this Plugin was Archived."
-msgstr "Det datum då detta plugin arkiverades."
+msgstr "Det datum då detta insticksmodul arkiverades."
 
 #: plugins.php:1121 plugins.php:1198 plugins.php:1257
 msgid "Installed/Upgraded"
@@ -22290,7 +22299,8 @@ msgstr "Installerad/Uppgraderad"
 
 #: plugins.php:1124
 msgid "The date that this Plugin was last Installed or Upgraded."
-msgstr "Det datum då detta plugin senast installerades eller uppgraderades."
+msgstr ""
+"Det datum då detta insticksmodul senast installerades eller uppgraderades."
 
 #: plugins.php:1135 plugins.php:1212
 msgid "Actions available include 'Install', 'Activate', 'Disable', 'Enable', 'Uninstall'."
@@ -22300,7 +22310,7 @@ msgstr ""
 
 #: plugins.php:1153
 msgid "The status of this Plugin."
-msgstr "Status för detta plugin."
+msgstr "Status för detta insticksmodul."
 
 #: plugins.php:1162
 msgid "Cacti Releases"
@@ -22314,11 +22324,11 @@ msgstr ""
 
 #: plugins.php:1171
 msgid "The currently installed version of this Plugin."
-msgstr "Den aktuella installerade versionen av detta Plugin."
+msgstr "Den aktuella installerade versionen av detta Insticksmodul."
 
 #: plugins.php:1177
 msgid "The Available version for install for this Plugin."
-msgstr "Den tillgängliga versionen för installation för detta plugin."
+msgstr "Den tillgängliga versionen för installation för detta insticksmodul."
 
 #: plugins.php:1192
 msgid "Last Published"
@@ -22331,11 +22341,12 @@ msgstr ""
 
 #: plugins.php:1201 plugins.php:1260
 msgid "The date that this Plugin was last installed or upgraded."
-msgstr "Det datum då detta plugin senast installerades eller uppgraderades."
+msgstr ""
+"Det datum då detta insticksmodul senast installerades eller uppgraderades."
 
 #: plugins.php:1245
 msgid "Plugin Requires"
-msgstr "Plugin kräver"
+msgstr "Insticksmodul kräver"
 
 #: plugins.php:1263
 msgid "Load Order"
@@ -22345,11 +22356,12 @@ msgstr "Ladda order"
 msgid "The load order of the Plugin.  You can change the load order by first sorting by it, then moving a Plugin either up or down."
 msgstr ""
 "Pluginets laddningsordning.  Du kan ändra laddningsordningen genom att först "
-"sortera efter den och sedan flytta ett Plugin antingen uppåt eller nedåt."
+"sortera efter den och sedan flytta ett Insticksmodul antingen uppåt eller "
+"nedåt."
 
 #: plugins.php:1317
 msgid "No Plugins Found"
-msgstr "Inga plugins hittades"
+msgstr "Inga insticksmoduler hittades"
 
 #: plugins.php:1351 plugins.php:1385
 #, php-format
@@ -22358,7 +22370,7 @@ msgstr "Inte kompatibel, '%s'"
 
 #: plugins.php:1353 plugins.php:1387
 msgid "Plugin Error"
-msgstr "Fel i plugin"
+msgstr "Fel i insticksmodul"
 
 #: plugins.php:1378
 msgid "New Version"
@@ -22366,11 +22378,11 @@ msgstr "Ny version"
 
 #: plugins.php:1430
 msgid "Order Before Previous Plugin"
-msgstr "Plugin för beställning före tidigare"
+msgstr "Insticksmodul för beställning före tidigare"
 
 #: plugins.php:1436
 msgid "Order After Next Plugin"
-msgstr "Plugin för beställning efter nästa"
+msgstr "Insticksmodul för beställning efter nästa"
 
 #: plugins.php:1456
 msgid "Cacti Upgrade Required"
@@ -22382,11 +22394,11 @@ msgstr "Kompatibel"
 
 #: plugins.php:1475
 msgid "Load this Plugin from available Cacti Plugins"
-msgstr "Ladda detta plugin från tillgängliga Cacti-plugins"
+msgstr "Ladda detta insticksmodul från tillgängliga Cacti-insticksmoduler"
 
 #: plugins.php:1477
 msgid "Load this Plugin from the available Cacti Plugins"
-msgstr "Ladda detta plugin från de tillgängliga Cacti-pluginsen"
+msgstr "Ladda detta insticksmodul från de tillgängliga Cacti-pluginsen"
 
 #: plugins.php:1480 plugins.php:1597
 msgid "Compatible, Loadable"
@@ -22394,7 +22406,7 @@ msgstr "Kompatibel, laddningsbar"
 
 #: plugins.php:1482
 msgid "Upgrade this Plugin from the available Cacti Plugins"
-msgstr "Uppgradera detta plugin från de tillgängliga Cacti-pluginsen"
+msgstr "Uppgradera detta insticksmodul från de tillgängliga Cacti-pluginsen"
 
 #: plugins.php:1483 plugins.php:1492
 msgid "Compatible, Upgrade"
@@ -22402,7 +22414,7 @@ msgstr "Kompatibel, Uppgradering"
 
 #: plugins.php:1485
 msgid "Downgrade this Plugin from the available Cacti Plugins"
-msgstr "Nedgradera detta plugin från de tillgängliga Cacti-pluginsen"
+msgstr "Nedgradera detta insticksmodul från de tillgängliga Cacti-pluginsen"
 
 #: plugins.php:1486 plugins.php:1600
 msgid "Compatible, Downgrade"
@@ -22410,7 +22422,7 @@ msgstr "Kompatibel, nedgradering"
 
 #: plugins.php:1488
 msgid "Replace Plugin from the available Cacti Plugins"
-msgstr "Ersätt plugin från de tillgängliga Cacti-pluginsen"
+msgstr "Ersätt insticksmodul från de tillgängliga Cacti-pluginsen"
 
 #: plugins.php:1489 plugins.php:1603
 msgid "Compatible, Same Version"
@@ -22418,13 +22430,13 @@ msgstr "Kompatibel, samma version"
 
 #: plugins.php:1491
 msgid "Upgrade Plugin from the available Cacti Plugins"
-msgstr "Uppgradera plugin från de tillgängliga Cacti-pluginsen"
+msgstr "Uppgradera insticksmodul från de tillgängliga Cacti-pluginsen"
 
 #: plugins.php:1495
 msgid "Unable to Restore the Archive due to Plugin Dependencies not being met."
 msgstr ""
-"Det går inte att återställa arkivet på grund av att plugin-beroenden inte "
-"uppfylls."
+"Det går inte att återställa arkivet på grund av att insticksmodul-beroenden "
+"inte uppfylls."
 
 #: plugins.php:1496 plugins.php:1610
 msgid "Not Compatible, Dependencies"
@@ -22440,7 +22452,7 @@ msgstr "Ej kompatibel, version Cacti"
 
 #: plugins.php:1507
 msgid "View the Plugins ChangeLog"
-msgstr "Visa Plugins ChangeLog"
+msgstr "Visa Insticksmoduler ChangeLog"
 
 #: plugins.php:1543
 msgid "Not Loaded"
@@ -22448,19 +22460,19 @@ msgstr "Ej laddad"
 
 #: plugins.php:1596
 msgid "Load this Plugin from the archive"
-msgstr "Ladda denna Plugin från arkivet"
+msgstr "Ladda denna Insticksmodul från arkivet"
 
 #: plugins.php:1599
 msgid "Downgrade this Plugin from the archive"
-msgstr "Nedgradera detta Plugin från arkivet"
+msgstr "Nedgradera detta Insticksmodul från arkivet"
 
 #: plugins.php:1602
 msgid "Restore Plugin from the archive"
-msgstr "Återställ Plugin från arkivet"
+msgstr "Återställ Insticksmodul från arkivet"
 
 #: plugins.php:1605
 msgid "Upgrade Plugin from the archive"
-msgstr "Uppgradera plugin från arkivet"
+msgstr "Uppgradera insticksmodul från arkivet"
 
 #: plugins.php:1606
 msgid "Compatible, Upgradable"
@@ -22469,8 +22481,8 @@ msgstr "Kompatibel, uppgraderingsbar"
 #: plugins.php:1609
 msgid "Unable to Restore the archive due to Plugin Dependencies not being met."
 msgstr ""
-"Det går inte att återställa arkivet på grund av att plugin-beroenden inte "
-"uppfylls."
+"Det går inte att återställa arkivet på grund av att insticksmodul-beroenden "
+"inte uppfylls."
 
 #: plugins.php:1613
 msgid "Unable to Restore the archive due to a bad Cacti version."
@@ -22478,7 +22490,7 @@ msgstr "Det går inte att återställa arkivet på grund av en dålig Cacti-vers
 
 #: plugins.php:1617
 msgid "Delete this Plugin archive"
-msgstr "Ta bort detta Plugin-arkiv"
+msgstr "Ta bort detta Insticksmodul-arkiv"
 
 #: plugins.php:1651 support.php:1701
 msgid "Not Installed"
@@ -22487,16 +22499,16 @@ msgstr "Inte installerad"
 #: plugins.php:1744 plugins.php:1877
 #, php-format
 msgid "Plugin directory '%s' is missing setup.php"
-msgstr "Plugin-katalogen '%s' saknar setup.php"
+msgstr "Insticksmodul-katalogen '%s' saknar setup.php"
 
 #: plugins.php:1746 plugins.php:1879
 msgid "Plugin is lacking an INFO file"
-msgstr "Plugin saknar en INFO-fil"
+msgstr "Insticksmodul saknar en INFO-fil"
 
 #: plugins.php:1751
 #, php-format
 msgid "Unable to Install Plugin!  %s"
-msgstr "Det går inte att installera plugin!  %s"
+msgstr "Det går inte att installera insticksmodul!  %s"
 
 #: plugins.php:1753
 msgid "Install Plugin"
@@ -22505,24 +22517,24 @@ msgstr "Installera tillägg"
 #: plugins.php:1760
 #, php-format
 msgid "Plugin '%s' can not be archived before it's been Installed."
-msgstr "Plugin '%s' kan inte arkiveras innan det har installerats."
+msgstr "Insticksmodul '%s' kan inte arkiveras innan det har installerats."
 
 #: plugins.php:1771
 msgid "Remove Plugin Data Tables and Settings"
-msgstr "Ta bort Plugin-datatabeller och inställningar"
+msgstr "Ta bort Insticksmodul-datatabeller och inställningar"
 
 #: plugins.php:1799 plugins.php:1825 plugins.php:1843
 #, php-format
 msgid "Unable to Uninstall.  This Plugin is required by: '%s'"
-msgstr "Går inte att avinstallera.  Detta Plugin krävs av: '%s'"
+msgstr "Går inte att avinstallera.  Detta Insticksmodul krävs av: '%s'"
 
 #: plugins.php:1801 plugins.php:1827 plugins.php:1845
 msgid "Uninstall Plugin"
-msgstr "Avinstallera plugin"
+msgstr "Avinstallera insticksmodul"
 
 #: plugins.php:1804
 msgid "Disable Plugin"
-msgstr "Inaktivera plugin"
+msgstr "Inaktivera insticksmodul"
 
 #: plugins.php:1807
 msgid "Plugin already archived and is Unchanged in the archive."
@@ -22534,7 +22546,7 @@ msgstr "arkivera tillägget i dess nuvarande tillstånd."
 
 #: plugins.php:1814
 msgid "Check Plugins Configuration"
-msgstr "Kontrollera Plugins-konfigurationen"
+msgstr "Kontrollera Insticksmoduler-konfigurationen"
 
 #: plugins.php:1818
 msgid "A Plugin can not be archived when it has Configuration Issues."
@@ -22556,34 +22568,34 @@ msgstr "Arkivera tillägget i dess nuvarande tillstånd."
 #: plugins.php:1848
 msgid "Plugin was Disabled due to a Plugin Error.  Click to Re-enable the Plugin.  Search for 'DISABLING' in the Cacti log to find the reason."
 msgstr ""
-"Pluginet inaktiverades på grund av ett fel i pluginet.  Klicka för att "
-"återaktivera insticksprogrammet.  Sök efter \"DISABLING\" i Cacti-loggen för "
-"att hitta orsaken."
+"Insticksmodulen inaktiverades på grund av ett fel i insticksmodulen.  Klicka "
+"för att återaktivera insticksprogrammet.  Sök efter \"DISABLING\" i Cacti-"
+"loggen för att hitta orsaken."
 
 #: plugins.php:1858
 msgid "Plugin directory is missing!"
-msgstr "Plugin-katalogen saknas!"
+msgstr "Insticksmodul-katalogen saknas!"
 
 #: plugins.php:1862
 msgid "Plugin is not compatible (Pre-1.x)"
-msgstr "Plugin är inte kompatibelt (Pre-1.x)"
+msgstr "Insticksmodul är inte kompatibelt (Pre-1.x)"
 
 #: plugins.php:1866
 msgid "Plugin directories can not include spaces"
-msgstr "Plugin-kataloger får inte innehålla mellanslag"
+msgstr "Insticksmodul-kataloger får inte innehålla mellanslag"
 
 #: plugins.php:1870
 #, php-format
 msgid "Plugin directory is not correct.  Should be '%s' but is '%s'"
-msgstr "Plugin-katalogen är inte korrekt.  Borde vara '%s' men är '%s'"
+msgstr "Insticksmodul-katalogen är inte korrekt.  Borde vara '%s' men är '%s'"
 
 #: plugins.php:1881
 msgid "Plugin is integrated into Cacti core"
-msgstr "Plugin är integrerat i Cacti-kärnan"
+msgstr "Insticksmodul är integrerat i Cacti-kärnan"
 
 #: plugins.php:1883
 msgid "Plugin is not compatible"
-msgstr "Plugin är inte kompatibelt"
+msgstr "Insticksmodul är inte kompatibelt"
 
 #: plugins.php:1897
 msgid "Enable Plugin Locally"
@@ -23290,11 +23302,11 @@ msgstr "Poller Interval måste vara mindre än Cron Interval"
 
 #: settings.php:314
 msgid "Select Plugin(s)"
-msgstr "Välj Plugin(s)"
+msgstr "Välj Insticksmodul(s)"
 
 #: settings.php:316
 msgid "Plugins Selected"
-msgstr "Plugins valda"
+msgstr "Insticksmoduler valda"
 
 #: settings.php:336
 msgid "Select File(s)"
@@ -23775,8 +23787,8 @@ msgstr "Samlare"
 #: support.php:763
 msgid "The Type of Task.  Generally represents the plugin and task within the plugin."
 msgstr ""
-"Typ av uppgift.  Representerar generellt pluginet och uppgiften inom "
-"pluginet."
+"Typ av uppgift.  Representerar generellt insticksmodulen och uppgiften inom "
+"insticksmodulen."
 
 #: support.php:766
 msgid "Task Name"
@@ -23839,7 +23851,7 @@ msgstr "> 1 år"
 
 #: support.php:837
 msgid "No Cacti or Plugin Background Processes Found"
-msgstr "Inga bakgrundsprocesser för Cacti eller Plugin hittades"
+msgstr "Inga bakgrundsprocesser för Cacti eller Insticksmodul hittades"
 
 #: support.php:850
 msgid "PHP Module Information"
@@ -24798,7 +24810,7 @@ msgstr "Behörigheter för externa länkar"
 
 #: user_admin.php:1646 user_group_admin.php:1501
 msgid "Plugin Permissions"
-msgstr "Plugin-behörigheter"
+msgstr "Insticksmodul-behörigheter"
 
 #: user_admin.php:1663 user_group_admin.php:1518
 msgid "Legacy Permissions"
@@ -25744,11 +25756,12 @@ msgid "When operating multiple Data Collectors in Cacti, Cacti will attempt to m
 msgstr ""
 "När du använder flera datainsamlare i Cacti kommer Cacti att försöka "
 "upprätthålla tillståndet för nyckelfiler på alla datainsamlare.  Detta "
-"inkluderar alla kärnfiler, icke-installationsrelaterade plats- och plugin-"
-"filer.  När du tvingar fram en återuppbyggnad av resurscachen kommer Cacti "
-"att rensa den lokala resurscachen och sedan återuppbygga den vid nästa "
-"schemalagda pollerstart.  Detta kommer att få alla fjärrdatainsamlare att "
-"kontrollera att deras plats- och plugin-filer är konsekventa."
+"inkluderar alla kärnfiler, icke-installationsrelaterade plats- och "
+"insticksmodul-filer.  När du tvingar fram en återuppbyggnad av resurscachen "
+"kommer Cacti att rensa den lokala resurscachen och sedan återuppbygga den "
+"vid nästa schemalagda pollerstart.  Detta kommer att få alla "
+"fjärrdatainsamlare att kontrollera att deras plats- och insticksmodul-filer "
+"är konsekventa."
 
 #: utilities.php:1260
 msgid "Boost Utilities"

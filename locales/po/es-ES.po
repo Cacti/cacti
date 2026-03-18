@@ -19162,17 +19162,17 @@ msgstr "Nombre de usuario no definido"
 #: lib/ldap.php:412
 #, fuzzy, php-format
 msgid "Protocol Error, Unable to set version (%s) on Server (%s)"
-msgstr "Error de protocolo, imposible especificar la versión"
+msgstr "Error de protocolo, imposible especificar la versión (%s) en el servidor (%s)"
 
 #: lib/ldap.php:416
 #, fuzzy, php-format
 msgid "Protocol Error, Unable to set referrals option (%s) on Server (%s)"
-msgstr "Error de protocolo, no se puede establecer la opción de referencias"
+msgstr "Error de protocolo, no se puede establecer la opción de referencias (%s) en el servidor (%s)"
 
 #: lib/ldap.php:420
 #, fuzzy, php-format
 msgid "Protocol Error, unable to start TLS communications (%s) on Server (%s)"
-msgstr "Error de protocolo, no es posible iniciar la comunicación TLS"
+msgstr "Error de protocolo, no es posible iniciar la comunicación TLS (%s) en el servidor (%s)"
 
 #: lib/ldap.php:424
 #, php-format
@@ -19547,7 +19547,7 @@ msgstr "Comando RRDtool:"
 #: lib/rrd.php:3299
 #, fuzzy, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
-msgstr "El tamaño de step RRD requerido es '%s'"
+msgstr "El tamaño de paso RRD requerido es '%s' pero el paso observado es '%s'"
 
 #: lib/rrd.php:3359
 #, php-format
@@ -19592,7 +19592,7 @@ msgstr "XFF para cacti RRA id '%s' deberia ser '%s'"
 #: lib/rrd.php:3458
 #, fuzzy, php-format
 msgid "The number of rows for Cacti RRA id '%s' is incorrect.  The number of rows are '%s' but should be '%s'"
-msgstr "Número de filas para Cacti RRA id '%s' deberia ser '%s'"
+msgstr "Número de filas para Cacti RRA id '%s' es '%s' pero debería ser '%s'"
 
 # traducir rrdfile como archivo RRD?
 #: lib/rrd.php:3476
@@ -21717,7 +21717,7 @@ msgstr "Habilitar Plugin"
 #: poller.php:405
 #, fuzzy, php-format
 msgid "WARNING: %s is out of sync with the Poller Interval for Poller[%d]!  The Poller Interval is %d seconds, with a maximum of a %d seconds, but %d seconds have passed since the last poll!"
-msgstr "ADVERTENCIA: ¡%s no está sincronizado con el intervalo de sondeo! El intervalo de sondeo es '%d' segundos, con un máximo de un '%d' segundos, pero %d segundos han pasado desde el último sondeo!"
+msgstr "ADVERTENCIA: ¡%s no está sincronizado con el intervalo de sondeo de Poller[%d]! El intervalo de sondeo es %d segundos, con un máximo de %d segundos, ¡pero han pasado %d segundos desde el último sondeo!"
 
 #: poller.php:579
 #, fuzzy, php-format
