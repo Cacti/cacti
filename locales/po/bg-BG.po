@@ -149,7 +149,7 @@ msgstr "Избраните обобщени графики представля�
 
 #: aggregate_graphs.php:810
 msgid "In order to migrate the Aggregate Graphs below to a Template based Aggregate, they must only be using one Graph Template."
-msgstr "За да мигрирате по-долу агрегираните графики към агрегати на базата на шаблони, първо създайте агрегиран шаблон за шаблона на графиката „ %s“."
+msgstr "In order to migrate the Aggregate Graphs below to a Template based Aggregate, they must only be using one Graph Template."
 
 #: aggregate_graphs.php:818
 msgid "The selected Aggregate Graphs does not appear to have any matching Aggregate Templates."
@@ -368,7 +368,7 @@ msgstr "Показване на детайлите на елемента"
 
 #: aggregate_graphs.php:1150
 msgid "Aggregate Preview Does Not Exist"
-msgstr "Общ преглед [ %s]"
+msgstr "Aggregate Preview Does Not Exist"
 
 #: aggregate_graphs.php:1158
 #, fuzzy, php-format
@@ -4351,7 +4351,7 @@ msgstr "Асоциирани графики / шаблони за данни [р
 
 #: data_queries.php:638
 msgid "Associated Graph/Data Templates [new]"
-msgstr "Асоциирани графики / шаблони за данни [редактиране: %s]"
+msgstr "Associated Graph/Data Templates [new]"
 
 #: data_queries.php:673
 msgid "Associated Data Templates"
@@ -5223,7 +5223,7 @@ msgstr "Стойността ще бъде получена от устройс�
 
 #: data_templates.php:1007
 msgid "Custom Data Warning Message"
-msgstr "Персонализирани данни [въвеждане на данни: %s]"
+msgstr "Custom Data Warning Message"
 
 #: data_templates.php:1008
 msgid "WARNING: Data Loss can Occur"
@@ -6183,7 +6183,7 @@ msgstr "Нови графики за [Всички устройства]"
 
 #: graphs.php:2685
 msgid "Graph Management [ Non Device Based ]"
-msgstr "Управление на потребителските групи [редактиране: %s]"
+msgstr "Graph Management [ Non Device Based ]"
 
 #: graphs.php:2688
 #, fuzzy, php-format
@@ -10079,7 +10079,7 @@ msgstr "Форматиране на дясна ос (- дясно-осево-ф�
 
 #: include/global_form.php:912
 msgid "When you setup the right axis labeling, apply a rule to the data format.  Supported formats include \"numeric\" where data is treated as numeric, \"timestamp\" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S\").  See also --units-length and --right-axis-format.  Finally \"duration\" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT."
-msgstr "Когато настроите правилното етикетиране на ос, приложите правило към формата на данните. Поддържаните формати включват „числови“, където данните се третират като числови, „времеви отпечатък“, където стойностите се интерпретират като времеви отпечатъци на UNIX (брой секунди от януари 1970 г.) и се изразяват с формат strftime (по подразбиране е „% Y-% m-% d% H :%ГОСПОЖИЦА&quot;). Виж също - дължини на единици и - формат с права ос. Накрая &quot;продължителност&quot;, когато стойностите се интерпретират като продължителност в милисекунди. Форматирането следва правилата на valstrfduration квалифициран PRINT / GPRINT."
+msgstr "When you setup the right axis labeling, apply a rule to the data format.  Supported formats include \"numeric\" where data is treated as numeric, \"timestamp\" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S\").  See also --units-length and --right-axis-format.  Finally \"duration\" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT."
 
 #: include/global_form.php:915
 msgid "Left Axis Format (--left-axis-format &lt;format&gt;)"
@@ -10091,7 +10091,7 @@ msgstr "Форматиране на лявата ос (-left-axis-formatter &lt;
 
 #: include/global_form.php:928
 msgid "When you setup the left axis labeling, apply a rule to the data format.  Supported formats include \"numeric\" where data is treated as numeric, \"timestamp\" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S\").  See also --units-length.  Finally \"duration\" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT."
-msgstr "Когато настроите етикета с лява ос, приложете правило към формата на данните. Поддържаните формати включват „числови“, където данните се третират като числови, „времеви отпечатък“, където стойностите се интерпретират като времеви отпечатъци на UNIX (брой секунди от януари 1970 г.) и се изразяват с формат strftime (по подразбиране е „% Y-% m-% d% H :%ГОСПОЖИЦА&quot;). Виж също - дължини на единици. Накрая &quot;продължителност&quot;, когато стойностите се интерпретират като продължителност в милисекунди. Форматирането следва правилата на valstrfduration квалифициран PRINT / GPRINT."
+msgstr "When you setup the left axis labeling, apply a rule to the data format.  Supported formats include \"numeric\" where data is treated as numeric, \"timestamp\" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S\").  See also --units-length.  Finally \"duration\" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT."
 
 #: include/global_form.php:931
 msgid "Legend Options"
@@ -13789,7 +13789,7 @@ msgstr "Как бихте искали Cacti да представи дати?  
 
 #: include/global_settings.php:2899
 msgid "Cacti Server Timezone"
-msgstr "Cacti Server v %s - Поддръжка"
+msgstr "Cacti Server Timezone"
 
 #: include/global_settings.php:2900
 msgid "My Browsers Timezone"
@@ -18780,7 +18780,7 @@ msgstr "Точки на неизвестни данни за CDP (0)"
 
 #: lib/rrd.php:3663
 msgid "Errors Found"
-msgstr "Няма намерени %s"
+msgstr "Errors Found"
 
 #: lib/rrd.php:3675
 msgid "Optional Tuning Recommendations"
@@ -19390,11 +19390,11 @@ msgstr "Кликнете върху „Напред“, за да изтриет
 
 #: managers.php:1029
 msgid "Delete Notification Receiver"
-msgstr "%s получатели на уведомления"
+msgstr "Delete Notification Receiver"
 
 #: managers.php:1030
 msgid "Delete Notification Receivers"
-msgstr "%s получатели на уведомления"
+msgstr "Delete Notification Receivers"
 
 #: managers.php:1033
 msgid "Click 'Continue' to Disable the following Notification Receiver."
@@ -19426,7 +19426,7 @@ msgstr "Изключете SNMP известяване"
 
 #: managers.php:1042
 msgid "Enable Notification Receivers"
-msgstr "%s получатели на уведомления"
+msgstr "Enable Notification Receivers"
 
 #: managers.php:1080
 msgid "Click 'Continue' to Disable Forwarding the following Notification Object the following Notification Receiver."
@@ -22004,7 +22004,7 @@ msgstr "Време на гласуване"
 
 #: support.php:903 support.php:944
 msgid "No host found"
-msgstr "Няма намерени %s"
+msgstr "No host found"
 
 #: support.php:919
 msgid "Worst 20 failed/total polls ratio"

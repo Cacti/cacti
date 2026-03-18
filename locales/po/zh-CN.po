@@ -19876,7 +19876,7 @@ msgstr "通过远程poller 功能,大量数据将从主服务器同步到远程p
 #: lib/utility.php:1212
 #, fuzzy, php-format
 msgid "If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10%% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status."
-msgstr "如果使用Cacti Performance Booster并选择内存存储引擎，则在系统内存表空间用完之前，必须小心刷新Performance Booster缓冲区。 这通过两种方式完成，首先将输出列的大小减小到合适的大小。 此列位于表poller_output和poller_output_boost中。 你可以做的第二件事是分配更多的内存到内存表中。 我们已经任意选择了系统内存10%的建议值，但是如果您使用的是SSD磁盘驱动器，或者系统较小，则可以忽略此建议或选择其他存储引擎。 您可以在Console - > System Utilities - > View Boost Status下看到Performance Booster表的预期消耗量。"
+msgstr "如果使用Cacti Performance Booster并选择内存存储引擎，则在系统内存表空间用完之前，必须小心刷新Performance Booster缓冲区。 这通过两种方式完成，首先将输出列的大小减小到合适的大小。 此列位于表poller_output和poller_output_boost中。 你可以做的第二件事是分配更多的内存到内存表中。 我们已经任意选择了系统内存10％的建议值，但是如果您使用的是SSD磁盘驱动器，或者系统较小，则可以忽略此建议或选择其他存储引擎。 您可以在Console - > System Utilities - > View Boost Status下看到Performance Booster表的预期消耗量。"
 
 #: lib/utility.php:1218
 msgid "When executing subqueries, having a larger temporary table size, keep those temporary tables in memory."
@@ -19908,12 +19908,12 @@ msgstr "如果表的索引很大，则必须使用梭子鱼的innodb_file_format
 #: lib/utility.php:1254
 #, fuzzy, php-format
 msgid "InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size.  If you database is very large or remote, you can consider increasing this size.  If remote, it can by as high as 80% of the systems memory.  However, cautions must be taken to reduce the swappiness of the system, or to remove swap to keep the system from swapping."
-msgstr "InnoDB将在系统内存中保存尽可能多的表和索引。 因此，你应该让innodb_buffer_pool大到足以容纳内存中的表和索引。 检查/ var / lib / mysql / cacti目录的大小将有助于确定此值。 我们建议您的系统总内存的25%，但是您的要求会因系统大小而异。"
+msgstr "InnoDB将在系统内存中保存尽可能多的表和索引。 因此，你应该让innodb_buffer_pool大到足以容纳内存中的表和索引。 检查/ var / lib / mysql / cacti目录的大小将有助于确定此值。 我们建议您的系统总内存的25％，但是您的要求会因系统大小而异。"
 
 #: lib/utility.php:1260
 #, fuzzy
 msgid "This settings should remain ON unless your Cacti instances is running on either ZFS or FusionI/O which both have internal journaling to accommodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance."
-msgstr "除非您的Cacti实例在ZFS或FusionI / O上运行，并且两者都具有内部日记功能以适应突然的系统崩溃，否则此设置应保持为ON。但是，如果您的电源非常好，并且系统很少宕机并且有备份，那么将此设置设置为OFF可以使数据库性能提高近50%。"
+msgstr "除非您的Cacti实例在ZFS或FusionI / O上运行，并且两者都具有内部日记功能以适应突然的系统崩溃，否则此设置应保持为ON。但是，如果您的电源非常好，并且系统很少宕机并且有备份，那么将此设置设置为OFF可以使数据库性能提高近50％。"
 
 #: lib/utility.php:1265
 msgid "This is where metadata is stored. If you had a lot of tables, it would be useful to increase this."

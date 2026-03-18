@@ -10492,7 +10492,7 @@ msgstr "Форматувач правої осі (--right-axis-formatter &lt;for
 
 #: include/global_form.php:912
 msgid "When you setup the right axis labeling, apply a rule to the data format.  Supported formats include \"numeric\" where data is treated as numeric, \"timestamp\" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S\").  See also --units-length and --right-axis-format.  Finally \"duration\" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT."
-msgstr "Коли ви встановлюєте позначення правої осі, застосуйте правило до формату даних. Підтримувані формати включають «числовий», де дані розглядаються як числові, «часову позначку», де значення інтерпретуються як часові позначки UNIX (кількість секунд із січня 1970 р.) і виражаються за допомогою формату strftime (за замовчуванням — «%Y-%m-%d %H» :%РС\"). Дивіться також --units-length і --right-axis-format. Нарешті, «тривалість», де значення інтерпретуються як тривалість у мілісекундах. Форматування відповідає правилам valstrfduration qualified PRINT/GPRINT."
+msgstr "When you setup the right axis labeling, apply a rule to the data format.  Supported formats include \"numeric\" where data is treated as numeric, \"timestamp\" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S\").  See also --units-length and --right-axis-format.  Finally \"duration\" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT."
 
 #: include/global_form.php:915
 #, fuzzy
@@ -10505,7 +10505,7 @@ msgstr "Форматувач лівої осі (--left-axis-formatter &lt;format
 
 #: include/global_form.php:928
 msgid "When you setup the left axis labeling, apply a rule to the data format.  Supported formats include \"numeric\" where data is treated as numeric, \"timestamp\" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S\").  See also --units-length.  Finally \"duration\" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT."
-msgstr "Коли ви налаштовуєте маркування лівої осі, застосуйте правило до формату даних. Підтримувані формати включають «числовий», де дані розглядаються як числові, «часову позначку», де значення інтерпретуються як часові позначки UNIX (кількість секунд із січня 1970 р.) і виражаються за допомогою формату strftime (за замовчуванням — «%Y-%m-%d %H» :%РС\"). Дивіться також --units-length. Нарешті, «тривалість», де значення інтерпретуються як тривалість у мілісекундах. Форматування відповідає правилам valstrfduration qualified PRINT/GPRINT."
+msgstr "When you setup the left axis labeling, apply a rule to the data format.  Supported formats include \"numeric\" where data is treated as numeric, \"timestamp\" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S\").  See also --units-length.  Finally \"duration\" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT."
 
 #: include/global_form.php:931
 msgid "Legend Options"
@@ -15024,7 +15024,7 @@ msgstr "Графік:(%s%s)"
 #: lib/auth.php:2457 lib/auth.php:2459
 #, php-format
 msgid "Device:(%s%s)"
-msgstr ""
+msgstr "Device:(%s%s)"
 
 #: lib/auth.php:2392 lib/auth.php:2398 lib/auth.php:2467 lib/auth.php:2469
 #: lib/auth.php:2473 lib/auth.php:2475

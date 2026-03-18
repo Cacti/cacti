@@ -10223,7 +10223,7 @@ msgstr "não contêm"
 
 #: include/global_arrays.php:1887
 msgid "begins with"
-msgstr "A hora de verão começa em: %s."
+msgstr "begins with"
 
 #: include/global_arrays.php:1888
 msgid "does not begin with"
@@ -27386,7 +27386,7 @@ msgstr "%d minutos"
 #: utilities.php:1685
 #, php-format
 msgid "%d seconds"
-msgstr "% d segundos"
+msgstr "%d seconds"
 
 #: utilities.php:1688
 #, fuzzy, php-format

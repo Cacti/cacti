@@ -10588,7 +10588,7 @@ msgstr "محاور المحور الأيمن (- منضام المحور المن
 
 #: include/global_form.php:912
 msgid "When you setup the right axis labeling, apply a rule to the data format.  Supported formats include \"numeric\" where data is treated as numeric, \"timestamp\" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S\").  See also --units-length and --right-axis-format.  Finally \"duration\" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT."
-msgstr "عند إعداد وضع العلامات على المحور الأيمن ، قم بتطبيق قاعدة على تنسيق البيانات. تتضمن التنسيقات المدعومة &quot;رقمية&quot; حيث يتم التعامل مع البيانات على أنها رقمية ، &quot;طابع زمني&quot; حيث يتم تفسير القيم على أنها طوابع زمنية UNIX (عدد الثواني منذ يناير 1970) ويتم التعبير عنها باستخدام تنسيق strftime (الافتراضي هو &quot;٪ Y-٪ m-٪ d٪ H :٪الآنسة&quot;). انظر أيضا - طول طول و - بصري - شكل المحور. وأخيرًا &quot;المدة&quot; حيث يتم تفسير القيم على أنها المدة بالمللي ثانية. يتبع التنسيق قواعد valstrfduration المؤهلين PRINT / GPRINT."
+msgstr "When you setup the right axis labeling, apply a rule to the data format.  Supported formats include \"numeric\" where data is treated as numeric, \"timestamp\" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S\").  See also --units-length and --right-axis-format.  Finally \"duration\" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT."
 
 #: include/global_form.php:915
 #, fuzzy
@@ -10601,7 +10601,7 @@ msgstr "يسار محاور المنسق (- منسوب محور - تنسيق &lt
 
 #: include/global_form.php:928
 msgid "When you setup the left axis labeling, apply a rule to the data format.  Supported formats include \"numeric\" where data is treated as numeric, \"timestamp\" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S\").  See also --units-length.  Finally \"duration\" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT."
-msgstr "عندما تقوم بإعداد وضع العلامات على المحور الأيسر ، قم بتطبيق قاعدة على تنسيق البيانات. تتضمن التنسيقات المدعومة &quot;رقمية&quot; حيث يتم التعامل مع البيانات على أنها رقمية ، &quot;طابع زمني&quot; حيث يتم تفسير القيم على أنها طوابع زمنية UNIX (عدد الثواني منذ يناير 1970) ويتم التعبير عنها باستخدام تنسيق strftime (الافتراضي هو &quot;٪ Y-٪ m-٪ d٪ H :٪الآنسة&quot;). انظر أيضا - طول طول. وأخيرًا &quot;المدة&quot; حيث يتم تفسير القيم على أنها المدة بالمللي ثانية. يتبع التنسيق قواعد valstrfduration المؤهلين PRINT / GPRINT."
+msgstr "When you setup the left axis labeling, apply a rule to the data format.  Supported formats include \"numeric\" where data is treated as numeric, \"timestamp\" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S\").  See also --units-length.  Finally \"duration\" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT."
 
 #: include/global_form.php:931
 msgid "Legend Options"
@@ -25179,8 +25179,6 @@ msgstr "لا VDEFs"
 #~ msgstr "انقر فوق &quot;متابعة&quot; لمزامنة الأجهزة المقترنة مع قالب (نماذج) الأجهزة المحدد. لاحظ أن هذا الإجراء قد يستغرق بعض الوقت بناءً على عدد الأجهزة المعينة إلى قالب الجهاز."
 
 #, fuzzy
-#~| msgid "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Template."
-#~| msgid_plural "Click 'Continue' to Syncrhonize all Aggregate Graphs with the selected Color Templates."
 #~ msgid "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Template."
 #~ msgid_plural "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Templates."
 #~ msgstr[0] "انقر فوق &quot;متابعة&quot; لإنشاء Aggregate Graph من القائمة (الرسوم) المحددة."
@@ -25209,7 +25207,6 @@ msgstr "لا VDEFs"
 #~ msgstr "انقر فوق &quot;متابعة&quot; لنسخ المستخدم المحدد إلى مستخدم جديد أدناه."
 
 #, fuzzy
-#~| msgid "Click 'Continue' to delete the folling Automation Template(s)."
 #~ msgid "Click 'Continue' to delete the following Automation Template(s)."
 #~ msgstr "انقر فوق &quot;متابعة&quot; لحذف قالب (قوالب) أتمتة fatinging."
 
@@ -25328,7 +25325,6 @@ msgstr "لا VDEFs"
 #~ msgstr "تحويل إلى LINE1 Graph"
 
 #, fuzzy
-#~| msgid "DES"
 #~ msgid "DS"
 #~ msgstr "DES"
 
@@ -25401,7 +25397,6 @@ msgstr "لا VDEFs"
 #~ msgstr "ارتفاع الرسم البياني"
 
 #, fuzzy
-#~| msgid "Graph, Data Source"
 #~ msgid "Graph Source"
 #~ msgstr "الرسم البياني ، مصدر البيانات"
 

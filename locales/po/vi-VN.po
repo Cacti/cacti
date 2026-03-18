@@ -5323,7 +5323,7 @@ msgstr ""
 #: include/global_settings.php:1962
 #, php-format
 msgid "%d Years"
-msgstr "% d Năm"
+msgstr "%d Years"
 
 #: data_source_profiles.php:824
 msgid "1 Year"
@@ -5335,7 +5335,7 @@ msgstr "1 Năm"
 #: rrdcleaner.php:524
 #, php-format
 msgid "%d Month"
-msgstr "% d Tháng"
+msgstr "%d Month"
 
 #: data_source_profiles.php:833 include/global_arrays.php:812
 #: include/global_arrays.php:813 include/global_arrays.php:814
@@ -5350,7 +5350,7 @@ msgstr "% d Tháng"
 #: rrdcleaner.php:527
 #, php-format
 msgid "%d Months"
-msgstr "% d Tháng"
+msgstr "%d Months"
 
 #: data_source_profiles.php:842 include/global_arrays.php:752
 #: include/global_arrays.php:808 include/global_arrays.php:829
@@ -5358,7 +5358,7 @@ msgstr "% d Tháng"
 #: include/global_settings.php:1869 rrdcleaner.php:520 rrdcleaner.php:521
 #, php-format
 msgid "%d Week"
-msgstr "% d Tuần"
+msgstr "%d Week"
 
 #: data_source_profiles.php:842 include/global_arrays.php:809
 #: include/global_arrays.php:810 include/global_arrays.php:830
@@ -5368,7 +5368,7 @@ msgstr "% d Tuần"
 #: include/global_settings.php:3228 rrdcleaner.php:522 rrdcleaner.php:523
 #, php-format
 msgid "%d Weeks"
-msgstr "% d Tuần"
+msgstr "%d Weeks"
 
 #: data_source_profiles.php:851 include/global_arrays.php:751
 #: include/global_arrays.php:795 include/global_arrays.php:805
@@ -8918,7 +8918,7 @@ msgstr "Mỗi phút"
 #: include/global_arrays.php:889 include/global_arrays.php:929
 #, php-format
 msgid "Every %d Minutes"
-msgstr "Mỗi% d Phút"
+msgstr "Every %d Minutes"
 
 #: include/global_arrays.php:766 include/global_arrays.php:890
 #, fuzzy
@@ -8956,7 +8956,7 @@ msgstr "%d phút"
 #: include/global_settings.php:1961 rrdcleaner.php:528
 #, php-format
 msgid "%d Year"
-msgstr "% d Năm"
+msgstr "%d Year"
 
 #: include/global_arrays.php:888
 #, fuzzy
@@ -16212,7 +16212,7 @@ msgstr "1 cột"
 #: lib/html_tree.php:1344
 #, php-format
 msgid "%d Columns"
-msgstr "% d Cột"
+msgstr "%d Columns"
 
 #: include/global_settings.php:3053
 #, fuzzy
@@ -18847,7 +18847,7 @@ msgstr "Cột"
 #: lib/html_graph.php:346 lib/html_tree.php:1339
 #, php-format
 msgid "%d Column"
-msgstr "% d Cột"
+msgstr "%d Column"
 
 #: lib/html_graph.php:376 lib/html_tree.php:1369
 msgid "Custom"

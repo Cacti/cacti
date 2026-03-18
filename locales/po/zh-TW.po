@@ -5875,7 +5875,7 @@ msgstr "選定的數據模板"
 #: data_sources.php:944
 #, fuzzy
 msgid "The name given to this data template.  Please note that you may only change Graph Templates to a 100%$ compatible Graph Template, which means that it includes identical Data Sources."
-msgstr "為此數據模板指定的名稱。請注意，您只能將圖形模板更改為100%兼容的圖形模板，這意味著它包含相同的數據源。"
+msgstr "為此數據模板指定的名稱。請注意，您只能將圖形模板更改為100％兼容的圖形模板，這意味著它包含相同的數據源。"
 
 #: data_sources.php:951 graph_view.php:881 graphs.php:2327
 #: include/global_arrays.php:1034 include/global_arrays.php:1095
@@ -12026,7 +12026,7 @@ msgstr "右軸格式化程序（--right-axis-formatter &lt;formatname&gt;）"
 #: include/global_form.php:912
 #, fuzzy
 msgid "When you setup the right axis labeling, apply a rule to the data format.  Supported formats include \"numeric\" where data is treated as numeric, \"timestamp\" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S\").  See also --units-length and --right-axis-format.  Finally \"duration\" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT."
-msgstr "設置右軸標籤時，請將規則應用於數據格式。支持的格式包括“numeric”，其中數據被視為數字，“timestamp”，其中值被解釋為UNIX時間戳（自1970年1月以來的秒數）並使用strftime格式表示（默認為“%Y-%m-%d%H ：%女士”）。另請參見--units-length和--right-axis-format。最後是“持續時間”，其中值被解釋為持續時間（以毫秒為單位）。格式化遵循valstrfduration限定PRINT / GPRINT的規則。"
+msgstr "設置右軸標籤時，請將規則應用於數據格式。支持的格式包括“numeric”，其中數據被視為數字，“timestamp”，其中值被解釋為UNIX時間戳（自1970年1月以來的秒數）並使用strftime格式表示（默認為“％Y-％m-%d％H ：％女士”）。另請參見--units-length和--right-axis-format。最後是“持續時間”，其中值被解釋為持續時間（以毫秒為單位）。格式化遵循valstrfduration限定PRINT / GPRINT的規則。"
 
 #: include/global_form.php:915
 #, fuzzy
@@ -12041,7 +12041,7 @@ msgstr "左軸格式化程序（ -  left-axis-formatter &lt;formatname&gt;）"
 #: include/global_form.php:928
 #, fuzzy
 msgid "When you setup the left axis labeling, apply a rule to the data format.  Supported formats include \"numeric\" where data is treated as numeric, \"timestamp\" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S\").  See also --units-length.  Finally \"duration\" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT."
-msgstr "設置左軸標籤時，請將規則應用於數據格式。支持的格式包括“numeric”，其中數據被視為數字，“timestamp”，其中值被解釋為UNIX時間戳（自1970年1月以來的秒數）並使用strftime格式表示（默認為“%Y-%m-%d%H ：%女士”）。另見--units-length。最後是“持續時間”，其中值被解釋為持續時間（以毫秒為單位）。格式化遵循valstrfduration限定PRINT / GPRINT的規則。"
+msgstr "設置左軸標籤時，請將規則應用於數據格式。支持的格式包括“numeric”，其中數據被視為數字，“timestamp”，其中值被解釋為UNIX時間戳（自1970年1月以來的秒數）並使用strftime格式表示（默認為“％Y-％m-%d％H ：％女士”）。另見--units-length。最後是“持續時間”，其中值被解釋為持續時間（以毫秒為單位）。格式化遵循valstrfduration限定PRINT / GPRINT的規則。"
 
 #: include/global_form.php:931
 #, fuzzy
@@ -15825,7 +15825,7 @@ msgstr "啟用poller_output_boost表的直接填充"
 #: include/global_settings.php:2378
 #, fuzzy
 msgid "Enables direct insert of records into poller output boost table with results in a 25% time reduction in each poll cycle."
-msgstr "允許將記錄直接插入到輪詢器輸出增強中，結果是每個輪詢週期減少25%的時間。"
+msgstr "允許將記錄直接插入到輪詢器輸出增強中，結果是每個輪詢週期減少25％的時間。"
 
 #: include/global_settings.php:2383
 #, fuzzy
@@ -16180,7 +16180,7 @@ msgstr "去除方法"
 #: include/global_settings.php:2692
 #, fuzzy
 msgid "There are two removal methods.  The first, Standard Deviation, will remove any sample that is X number of standard deviations away from the average of samples.  The second method, Variance, will remove any sample that is X% more than the Variance average.  The Variance method takes into account a certain number of 'outliers'.  Those are exceptional samples, like the spike, that need to be excluded from the Variance Average calculation."
-msgstr "有兩種刪除方法。第一個標準偏差將從樣本的平均值中移除任何X個標準偏差的樣本。第二種方法Variance將刪除比方差平均值高X%的任何樣本。方差方法考慮了一定數量的“異常值”。這些是需要從方差平均值計算中排除的特殊樣本，如尖峰。"
+msgstr "有兩種刪除方法。第一個標準偏差將從樣本的平均值中移除任何X個標準偏差的樣本。第二種方法Variance將刪除比方差平均值高X％的任何樣本。方差方法考慮了一定數量的“異常值”。這些是需要從方差平均值計算中排除的特殊樣本，如尖峰。"
 
 #: include/global_settings.php:2696
 #, fuzzy
@@ -22421,7 +22421,7 @@ msgstr "InnoDB將盡可能多地保存系統內存中的表和索引。因此，
 #: lib/utility.php:1260
 #, fuzzy
 msgid "This settings should remain ON unless your Cacti instances is running on either ZFS or FusionI/O which both have internal journaling to accommodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance."
-msgstr "除非您的Cacti實例在ZFS或FusionI / O上運行，並且兩者都具有內部日記功能以適應突然的系統崩潰，否則此設置應保持為ON。但是，如果您的電源非常好，並且系統很少宕機並且有備份，那麼將此設置設置為OFF可以使數據庫性能提高近50%。"
+msgstr "除非您的Cacti實例在ZFS或FusionI / O上運行，並且兩者都具有內部日記功能以適應突然的系統崩潰，否則此設置應保持為ON。但是，如果您的電源非常好，並且系統很少宕機並且有備份，那麼將此設置設置為OFF可以使數據庫性能提高近50％。"
 
 #: lib/utility.php:1265
 #, fuzzy
@@ -28442,6 +28442,10 @@ msgstr "沒有VDEF"
 #~ msgid "%d Outliers"
 #~ msgstr "%d異常值"
 
+#, php-format
+#~ msgid "%d Repitition"
+#~ msgstr "日誌保留"
+
 #, fuzzy
 #~ msgid "%d Samples"
 #~ msgstr "%d樣品"
@@ -28507,7 +28511,7 @@ msgstr "沒有VDEF"
 #~ msgstr "允許管理員維護SNMP通知接收器。"
 
 #~ msgid "Alpha %"
-#~ msgstr "Α %"
+#~ msgstr "Α ％"
 
 #~ msgid "Apply requested action"
 #~ msgstr "應用請求的操作"
@@ -28566,6 +28570,8 @@ msgstr "沒有VDEF"
 #~ msgstr "單擊“繼續”以同步與所選設備模板關聯的設備。請注意，此操作可能需要一些時間，具體取決於映射到設備模板的設備數量。"
 
 #, fuzzy
+#~| msgid "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Template."
+#~| msgid_plural "Click 'Continue' to Syncrhonize all Aggregate Graphs with the selected Color Templates."
 #~ msgid "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Template."
 #~ msgid_plural "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Templates."
 #~ msgstr[0] "單擊“繼續”以從選定的圖形創建聚合圖。"
@@ -28589,6 +28595,7 @@ msgstr "沒有VDEF"
 #~ msgstr "單擊“繼續”將所選用戶複製到下面的新用戶。"
 
 #, fuzzy
+#~| msgid "Click 'Continue' to delete the folling Automation Template(s)."
 #~ msgid "Click 'Continue' to delete the following Automation Template(s)."
 #~ msgstr "單擊“繼續”以刪除快照自動化模板。"
 
@@ -28689,6 +28696,7 @@ msgstr "沒有VDEF"
 #~ msgstr "創建圖：%s"
 
 #, fuzzy
+#~| msgid "DES"
 #~ msgid "DS"
 #~ msgstr "DES"
 
@@ -28797,6 +28805,7 @@ msgstr "沒有VDEF"
 #~ msgstr "圖表大小"
 
 #, fuzzy
+#~| msgid "Graph, Data Source"
 #~ msgid "Graph Source"
 #~ msgstr "圖，數據源"
 

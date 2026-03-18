@@ -1762,7 +1762,7 @@ msgstr "Overeenkomende objecten"
 
 #: automation_graph_rules.php:664
 msgid "Rule Selection [new]"
-msgstr "Regel selectie [nieuw: %s]"
+msgstr "Rule Selection [new]"
 
 #: automation_graph_rules.php:710
 msgid "Device Selection Criteria"
@@ -26295,7 +26295,6 @@ msgstr "Geen VDEF's"
 #~ msgstr "Klik op 'Volgende' om de geselecteerde gebruiker naar een nieuwe gebruiker te kopiëren."
 
 #, fuzzy
-#~| msgid "Click 'Continue' to delete the folling Automation Template(s)."
 #~ msgid "Click 'Continue' to delete the following Automation Template(s)."
 #~ msgstr "Klik op 'Volgende' om de volgende automatiseringstemplate(s) te verwijderen."
 
@@ -26394,7 +26393,6 @@ msgstr "Geen VDEF's"
 #~ msgstr "Converteer naar LINE1 grafiek"
 
 #, fuzzy
-#~| msgid "DES"
 #~ msgid "DS"
 #~ msgstr "DES"
 
@@ -26470,7 +26468,6 @@ msgstr "Geen VDEF's"
 #~ msgstr "Grafiekhoogte"
 
 #, fuzzy
-#~| msgid "Graph, Data Source"
 #~ msgid "Graph Source"
 #~ msgstr "Grafiek, data bron"
 
