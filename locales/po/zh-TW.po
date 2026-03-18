@@ -28834,7 +28834,7 @@ msgstr "沒有VDEF"
 
 #, fuzzy
 #~ msgid "%d Outliers"
-#~ msgstr "％d異常值"
+#~ msgstr "%d異常值"
 
 #, php-format
 #~ msgid "%d Repitition"
@@ -28842,7 +28842,7 @@ msgstr "沒有VDEF"
 
 #, fuzzy
 #~ msgid "%d Samples"
-#~ msgstr "％d樣品"
+#~ msgstr "%d樣品"
 
 #, php-format
 #~ msgid "%s %s"
@@ -28850,11 +28850,11 @@ msgstr "沒有VDEF"
 
 #, fuzzy
 #~ msgid "%s Standard Deviations"
-#~ msgstr "％s標準偏差"
+#~ msgstr "%s標準偏差"
 
 #, fuzzy
 #~ msgid "'%s' must be set to positive integer value!<br>RECORD NOT UPDATED!"
-#~ msgstr "'％s'必須設置為正整數值！ <br>記錄沒有更新！"
+#~ msgstr "'%s'必須設置為正整數值！ <br>記錄沒有更新！"
 
 #, fuzzy
 #~ msgid "1 Thread (default)"
@@ -28919,14 +28919,14 @@ msgstr "沒有VDEF"
 
 #, php-format
 #~ msgid "Are you sure you want to DELETE the Rule '%s'?"
-#~ msgstr "您確定要刪除規則&#39;％s&#39;嗎？"
+#~ msgstr "您確定要刪除規則&#39;%s&#39;嗎？"
 
 #~ msgid "Associate Graph(s)"
 #~ msgstr "Associate Graph（s）"
 
 #, php-format
 #~ msgid "Automation Templates [edit: %s]"
-#~ msgstr "自動化模板[編輯：％s]"
+#~ msgstr "自動化模板[編輯：%s]"
 
 #~ msgid "Automation Templates [new]"
 #~ msgstr "自動化模板[新]"
@@ -29072,7 +29072,7 @@ msgstr "沒有VDEF"
 
 #, fuzzy
 #~ msgid "Click to show Data Query output for sfield '%s'"
-#~ msgstr "單擊以顯示sfield&#39;％s&#39;的數據查詢輸出"
+#~ msgstr "單擊以顯示sfield&#39;%s&#39;的數據查詢輸出"
 
 #, fuzzy
 #~ msgid "Connect Timeout"
@@ -29083,11 +29083,11 @@ msgstr "沒有VDEF"
 
 #, fuzzy
 #~ msgid "Created Threshold: %s<br>"
-#~ msgstr "創建圖：％s"
+#~ msgstr "創建圖：%s"
 
 #, fuzzy
 #~ msgid "Created threshold: %s"
-#~ msgstr "創建圖：％s"
+#~ msgstr "創建圖：%s"
 
 #, fuzzy
 #~| msgid "DES"
@@ -29096,7 +29096,7 @@ msgstr "沒有VDEF"
 
 #, php-format
 #~ msgid "DS '%s' missing in RRDfile"
-#~ msgstr "RRDfile中缺少DS&#39;％s&#39;"
+#~ msgstr "RRDfile中缺少DS&#39;%s&#39;"
 
 #~ msgid "Dashboards"
 #~ msgstr "儀表板"
@@ -29178,7 +29178,7 @@ msgstr "沒有VDEF"
 
 #, fuzzy
 #~ msgid "Failed to find linked Graph Template Item '%d' on Threshold '%d'"
-#~ msgstr "無法在閾值'％d'上找到鏈接的圖表模板項'％d'"
+#~ msgstr "無法在閾值'%d'上找到鏈接的圖表模板項'%d'"
 
 #, fuzzy, php-format
 #~ msgid "Field \"%s\" is missing an Output Field"
@@ -29212,7 +29212,7 @@ msgstr "沒有VDEF"
 
 #, fuzzy
 #~ msgid "Guest user id %s does not exist."
-#~ msgstr "來賓用戶ID％s不存在。"
+#~ msgstr "來賓用戶ID%s不存在。"
 
 #, fuzzy
 #~ msgid "Hide Graph Drilldowns"
@@ -29252,14 +29252,14 @@ msgstr "沒有VDEF"
 
 #, php-format
 #~ msgid "Item #%d"
-#~ msgstr "項目＃％d"
+#~ msgstr "項目＃%d"
 
 #, php-format
 #~ msgid "Item#%d"
-#~ msgstr "項目＃％d"
+#~ msgstr "項目＃%d"
 
 #~ msgid "Items %s"
-#~ msgstr "項目＃％s"
+#~ msgstr "項目＃%s"
 
 #~ msgid "LDAP Authentication"
 #~ msgstr "LDAP身份驗證"
@@ -29399,7 +29399,7 @@ msgstr "沒有VDEF"
 
 #, php-format
 #~ msgid "RRD maximum for Data Source '%s' should be '%s'"
-#~ msgstr "數據源&#39;％s&#39;的RRD最大值應為&#39;％s&#39;"
+#~ msgstr "數據源&#39;%s&#39;的RRD最大值應為&#39;%s&#39;"
 
 #, fuzzy
 #~ msgid "RRDtool Graph Font Control"
@@ -29434,7 +29434,7 @@ msgstr "沒有VDEF"
 #~ msgstr "調整所選圖表的大小"
 
 #~ msgid "Resource File: '%s' is missing or not readable.  Make sure you install it before using Data Query: '%s'"
-#~ msgstr "資源文件：'％s'丟失或不可讀。使用數據查詢之前，請確保已安裝它：'％s'"
+#~ msgstr "資源文件：'%s'丟失或不可讀。使用數據查詢之前，請確保已安裝它：'%s'"
 
 #~ msgid "Rule Details."
 #~ msgstr "規則細節。"
@@ -29509,7 +29509,7 @@ msgstr "沒有VDEF"
 
 #, fuzzy
 #~ msgid "Template [edit: %s]"
-#~ msgstr "模板[編輯：％s]"
+#~ msgstr "模板[編輯：%s]"
 
 #, fuzzy
 #~ msgid "Template [new]"
@@ -29517,7 +29517,7 @@ msgstr "沒有VDEF"
 
 #, fuzzy
 #~ msgid "Template user id %s does not exist."
-#~ msgstr "模板用戶ID％s不存在。"
+#~ msgstr "模板用戶ID%s不存在。"
 
 #, fuzzy
 #~ msgid "The DNS hostname or IP address of the server."
@@ -29605,7 +29605,7 @@ msgstr "沒有VDEF"
 
 #, php-format
 #~ msgid "Unable to Install Plugin.  The following Plugins must be installed first: %s"
-#~ msgstr "無法安裝插件。必須首先安裝以下插件：％s"
+#~ msgstr "無法安裝插件。必須首先安裝以下插件：%s"
 
 #~ msgid "Use a separate subfolder for each hosts RRD files.  The naming of the RRDfiles will be &lt;path_cacti&gt;/rra/host_id/local_data_id.rrd."
 #~ msgstr "為每個主機RRD文件使用單獨的子文件夾。 RRDfiles的命名將是&lt;path_cacti&gt; /rra/host_id/local_data_id.rrd。"
@@ -29615,7 +29615,7 @@ msgstr "沒有VDEF"
 #~ msgstr "使用內置翻譯器"
 
 #~ msgid "User Membership %s"
-#~ msgstr "用戶會員％s"
+#~ msgstr "用戶會員%s"
 
 #~ msgid "User(s) to update:"
 #~ msgstr "要更新的用戶："

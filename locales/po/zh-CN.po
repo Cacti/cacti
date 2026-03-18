@@ -25790,7 +25790,7 @@ msgstr "没有VDEF"
 
 #, fuzzy
 #~ msgid "Resource File: '%s' is missing or not readable.  Make sure you install it before using Data Query: '%s'"
-#~ msgstr "资源文件：'％s'丢失或不可读。确保在使用数据查询之前安装它：'％s'"
+#~ msgstr "资源文件：'%s'丢失或不可读。确保在使用数据查询之前安装它：'%s'"
 
 #~ msgid "Rule Details."
 #~ msgstr "规则细节."
