@@ -1432,19 +1432,7 @@ function html_graph_list_view() : void {
 	<?php
 	$graph_list_js = [];
 
-	foreach (explode(',', (string) grv('graph_list')) as $item) {
-		$item = trim($item);
-
-		if ($item !== '' && ctype_digit($item)) {
-			$graph_id = (int) $item;
-
-			if ($graph_id > 0) {
-				$graph_list_js[] = $graph_id;
-			}
-		}
-	}
-
-	$graph_list_js  = array_values(array_unique($graph_list_js));
+	$graph_list_js  = sanitize_graph_id_list((string) grv('graph_list'));
 	$graph_list_csv = implode(',', $graph_list_js);
 	?>
 	<script type='text/javascript'>
@@ -2044,6 +2032,31 @@ function html_graph_zoom() : void {
 	if ($graph_start == $graph_end) {
 		$graph_start--;
 	}
+
+/**
+ * Parse and sanitize a comma-separated graph list into validated integer IDs.
+ *
+ * @param string $csv_list  Comma-separated list of graph IDs (from request var)
+ * @return array  Array of unique positive integer graph IDs
+ */
+function sanitize_graph_id_list(string $csv_list): array {
+	$result = [];
+
+	foreach (explode(',', $csv_list) as $item) {
+		$item = trim($item);
+
+		if ($item !== '' && ctype_digit($item)) {
+			$graph_id = (int) $item;
+
+			if ($graph_id > 0) {
+				$result[] = $graph_id;
+			}
+		}
+	}
+
+	return array_values(array_unique($result));
+}
+
 
 	$graph = db_fetch_row_prepared('SELECT gtg.local_graph_id, width, height, title_cache, gtg.graph_template_id, h.id AS host_id, h.disabled
 		FROM graph_templates_graph AS gtg
