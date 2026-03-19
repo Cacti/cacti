@@ -5093,7 +5093,7 @@ msgstr "プロファイルを変更(G)"
 #: data_templates.php:261
 #, php-format
 msgid "Field \"%s\" is missing an Output Field.  Select the Output Field associated with this Data Source, and press Save again."
-msgstr "フィールド\"{ 0 }\"には出力フィールドがありません。このデータソースに関連付けられている出力フィールドを選択し、もう一度[保存]を押します。"
+msgstr "フィールド\"%s\"には出力フィールドがありません。このデータソースに関連付けられている出力フィールドを選択し、もう一度[保存]を押します。"
 
 #: data_templates.php:447
 #, php-format
@@ -6298,7 +6298,7 @@ msgstr "デフォルト設定"
 #: help.php:44
 #, php-format
 msgid "WARNING: Cacti Page:%s for User:%s Generated a Fatal Error %d!"
-msgstr "警告：ユーザー：{ 1}のCactiページ：{ 0}が致命的なエラー %d を生成しました！"
+msgstr "警告：ユーザー：%sのCactiページ：%sが致命的なエラー %d を生成しました！"
 
 #: help.php:74
 #, php-format
@@ -6528,7 +6528,7 @@ msgstr "ポーラーキャッシュの表示"
 #: host.php:733
 #, php-format
 msgid " [ In state since '%s', Uptime since '%s' ]"
-msgstr "['{ 0 }'以降の状態、'{ 1 }'以降の稼働時間]"
+msgstr "['%s'以降の状態、'%s'以降の稼働時間]"
 
 #: host.php:748
 msgid "Create Graphs for this Device"
@@ -14285,7 +14285,7 @@ msgstr "ファイル拡張子が無効です。"
 #: lib/api_automation.php:5273 lib/api_automation.php:5275
 #, php-format
 msgid "Automation Network SNMP Rule '%s' %s!"
-msgstr "オートメーションネットワークSNMPルール'{ 0 }' {1 }！"
+msgstr "オートメーションネットワークSNMPルール'%s' %s！"
 
 #: lib/api_automation.php:5273 lib/api_automation.php:5275
 #: lib/api_automation.php:5309 lib/api_automation.php:5311
@@ -14303,7 +14303,7 @@ msgstr "更新しました"
 #: lib/api_automation.php:5279 lib/api_automation.php:5281
 #, php-format
 msgid "Automation Network SNMP Rule '%s' %s Failed!"
-msgstr "オートメーションネットワークSNMPルール'{ 0 }' %s が失敗しました！"
+msgstr "オートメーションネットワークSNMPルール'%s' %s が失敗しました！"
 
 #: lib/api_automation.php:5279 lib/api_automation.php:5281
 #: lib/api_automation.php:5315 lib/api_automation.php:5317
@@ -14348,7 +14348,7 @@ msgstr "デフォルトの自動化ネットワーク"
 #: lib/api_automation.php:5410 lib/api_automation.php:5412
 #, php-format
 msgid "Automation Network Rule '%s' %s Failed!"
-msgstr "オートメーションネットワークルール'{ 0 }' %s に失敗しました！"
+msgstr "オートメーションネットワークルール'%s' %s に失敗しました！"
 
 #: lib/api_automation.php:5418
 msgid "Automation Network Rule Import data is either for another object type or not JSON formatted."
@@ -15289,12 +15289,12 @@ msgstr "設定をデータコレクタに保存します%d失敗しました。"
 #: lib/functions.php:896
 #, php-format
 msgid "Form Validation Failed: Variable '%s' does not allow nulls and variable is null"
-msgstr "フォームの検証に失敗しました:変数'{ 0 }'はNULLを許可しておらず、変数はNULLです"
+msgstr "フォームの検証に失敗しました:変数'%s'はNULLを許可しておらず、変数はNULLです"
 
 #: lib/functions.php:898
 #, php-format
 msgid "Form Validation Failed: Variable '%s' with Value '%s' Failed REGEX '%s'"
-msgstr "フォームの検証に失敗しました:値'{ 1 }'の変数'{ 0 }'は正規表現'{ 2 }'に失敗しました"
+msgstr "フォームの検証に失敗しました:値'%s'の変数'%s'は正規表現'%s'に失敗しました"
 
 #: lib/functions.php:914
 msgid "One or more fields failed validation"
@@ -15461,7 +15461,7 @@ msgstr "次のエラーのため、Cactiはプラグイン%sを無効にしま�
 #: lib/functions.php:6752
 #, php-format
 msgid "WARNING: PollerID:%s has an invalid hostname:%s.  Is it not reachable via DNS!"
-msgstr "警告： PollerID ：{ 0}に無効なホスト名：{ 1}があります。DNS経由では到達できませんか？"
+msgstr "警告： PollerID ：%sに無効なホスト名：%sがあります。DNS経由では到達できませんか？"
 
 #: lib/functions.php:6781
 #, php-format
@@ -15471,7 +15471,7 @@ msgid ""
 "See Cacti Log for details."
 msgstr ""
 "リモートエージェント %s への連絡に失敗しました\n"
-"理由：{ 1 }。\n"
+"理由：%s。\n"
 "詳細については、Cactiログを参照してください。"
 
 #: lib/functions.php:7247
@@ -15492,7 +15492,7 @@ msgstr "バージョン%s%s"
 #: lib/functions.php:7852
 #, php-format
 msgid "WARNING: Key Cacti Include File \"%s\" missing.  Please locate and replace this file as we checked in \"%s\""
-msgstr "警告：キーCactiインクルードファイル\"{ 0 }\"がありません。\"{ 1 }\"をチェックインしたので、このファイルを見つけて交換してください"
+msgstr "警告：キーCactiインクルードファイル\"%s\"がありません。\"%s\"をチェックインしたので、このファイルを見つけて交換してください"
 
 #: lib/functions.php:8996
 msgid "System Device"
@@ -17981,7 +17981,7 @@ msgstr "デバイステンプレート[編集：%s]"
 #: lib/installer.php:3665
 #, php-format
 msgid "The Add Default Device Command is: '%s'"
-msgstr "デフォルトのデバイスの追加コマンドは次のとおりです: '{ 0 }'"
+msgstr "デフォルトのデバイスの追加コマンドは次のとおりです: '%s'"
 
 #: lib/installer.php:3673
 msgid "WARNING: Default Device Failed to be Added error to follow."
@@ -18322,57 +18322,57 @@ msgstr "削除機能がないため、テーブルと設定を含むプラグイ
 #: lib/plugins.php:1441
 #, php-format
 msgid "The Archive for Plugin '%s' has been removed."
-msgstr "プラグイン'{ 0 }'のアーカイブが削除されました。"
+msgstr "プラグイン'%s'のアーカイブが削除されました。"
 
 #: lib/plugins.php:1491
 #, php-format
 msgid "Restore failed!  The Plugin '%s' archive Restore failed.  Unable to create directory '%s'."
-msgstr "復元に失敗しました！プラグイン'{ 0 }'アーカイブの復元に失敗しました。ディレクトリ'{ 1 }'を作成できません。"
+msgstr "復元に失敗しました！プラグイン'%s'アーカイブの復元に失敗しました。ディレクトリ'%s'を作成できません。"
 
 #: lib/plugins.php:1493
 #, php-format
 msgid "Restore failed!  The available Plugin '%s' Load failed.  Unable to create directory '%s'."
-msgstr "復元に失敗しました！利用可能なプラグイン'{ 0 }'の読み込みに失敗しました。ディレクトリ'{ 1 }'を作成できません。"
+msgstr "復元に失敗しました！利用可能なプラグイン'%s'の読み込みに失敗しました。ディレクトリ'%s'を作成できません。"
 
 #: lib/plugins.php:1592
 #, php-format
 msgid "Restore failed!  The archived Plugin '%s' Restore failed. Unable to create directory %s"
-msgstr "復元に失敗しました！アーカイブされたプラグイン'{ 0 }'の復元に失敗しました。ディレクトリ %s を作成できません"
+msgstr "復元に失敗しました！アーカイブされたプラグイン'%s'の復元に失敗しました。ディレクトリ %s を作成できません"
 
 #: lib/plugins.php:1594
 #, php-format
 msgid "Load failed!  The available Plugin '%s' Load failed. Unable to create directory %s"
-msgstr "読み込みに失敗しました！利用可能なプラグイン'{ 0 }'の読み込みに失敗しました。ディレクトリ %s を作成できません"
+msgstr "読み込みに失敗しました！利用可能なプラグイン'%s'の読み込みに失敗しました。ディレクトリ %s を作成できません"
 
 #: lib/plugins.php:1614
 #, php-format
 msgid "Restore succeeded!  The archived Plugin '%s' Restore succeeded."
-msgstr "復元に成功しました！アーカイブされたプラグイン'{ 0 }'の復元に成功しました。"
+msgstr "復元に成功しました！アーカイブされたプラグイン'%s'の復元に成功しました。"
 
 #: lib/plugins.php:1621
 #, php-format
 msgid "Load succeeded!  The available Plugin '%s' Load succeeded."
-msgstr "読み込みに成功しました！利用可能なプラグイン'{ 0 }'の読み込みに成功しました。"
+msgstr "読み込みに成功しました！利用可能なプラグイン'%s'の読み込みに成功しました。"
 
 #: lib/plugins.php:1639
 #, php-format
 msgid "Restore failed!  The archived Plugin '%s' Restore failed.  Check the cacti.log for warnings."
-msgstr "復元に失敗しました！アーカイブされたプラグイン'{ 0 }'の復元に失敗しました。cacti.logで警告を確認します。"
+msgstr "復元に失敗しました！アーカイブされたプラグイン'%s'の復元に失敗しました。cacti.logで警告を確認します。"
 
 #: lib/plugins.php:1641
 #, php-format
 msgid "Load failed!  The available Plugin '%s' Load failed.  Check the cacti.log for warnings."
-msgstr "読み込みに失敗しました！利用可能なプラグイン'{ 0 }'の読み込みに失敗しました。cacti.logで警告を確認します。"
+msgstr "読み込みに失敗しました！利用可能なプラグイン'%s'の読み込みに失敗しました。cacti.logで警告を確認します。"
 
 #: lib/plugins.php:1648
 #, php-format
 msgid "Restore failed!  Unable to locate the archive record for Plugin '%s' in the database."
-msgstr "復元に失敗しました！データベースでプラグイン'{ 0 }'のアーカイブレコードを見つけることができません。"
+msgstr "復元に失敗しました！データベースでプラグイン'%s'のアーカイブレコードを見つけることができません。"
 
 #: lib/plugins.php:1650
 #, php-format
 msgid "Load failed!  Unable to locate the available record for Plugin '%s' in the database."
-msgstr "読み込みに失敗しました！データベースでプラグイン'{ 0 }'の利用可能なレコードを見つけることができません。"
+msgstr "読み込みに失敗しました！データベースでプラグイン'%s'の利用可能なレコードを見つけることができません。"
 
 #: lib/plugins.php:1717
 #, php-format
@@ -18387,7 +18387,7 @@ msgstr "1つ以上のRRDファイルの修復に失敗しました。エラー�
 #: lib/plugins.php:1722
 #, php-format
 msgid "The Plugin '%s' archiving process has failed due to the plugin directory being missing."
-msgstr "プラグインディレクトリが見つからないため、プラグイン'{ 0 }'のアーカイブプロセスが失敗しました。"
+msgstr "プラグインディレクトリが見つからないため、プラグイン'%s'のアーカイブプロセスが失敗しました。"
 
 #: lib/plugins.php:1730 lib/plugins.php:1737 plugins.php:638 plugins.php:641
 #: plugins.php:1043
@@ -18437,7 +18437,7 @@ msgstr "GitHub/GitLabの場所からプラグイン %s の開発リポジトリ�
 #: lib/plugins.php:2238
 #, php-format
 msgid "There were '%s' Plugins found at The Cacti Groups GitHub site and '%s' Plugins Tags/Releases were retrieved and updated in %0.2f seconds."
-msgstr "The Cacti Groups GitHubサイトに'{ 0 }'個のプラグインがあり、'{ 1 }'個のプラグインタグ/リリースが %0.2f 秒で取得および更新されました。"
+msgstr "The Cacti Groups GitHubサイトに'%s'個のプラグインがあり、'%s'個のプラグインタグ/リリースが %0.2f 秒で取得および更新されました。"
 
 #: lib/plugins.php:2240
 #, php-format
@@ -18724,12 +18724,12 @@ msgstr "注：データソースの検証に失敗したため、データクエ
 #: lib/timespan_settings.php:136
 #, php-format
 msgid "Your Start Date '%s' is before January 1993.  Please pick a more recent Start Date."
-msgstr "開始日'{ 0 }'は1993年1月以前です。より最近の開始日を選択してください。"
+msgstr "開始日'%s'は1993年1月以前です。より最近の開始日を選択してください。"
 
 #: lib/timespan_settings.php:141
 #, php-format
 msgid "Your End Date '%s' is before January 1993.  Please pick a more recent End Date."
-msgstr "終了日'{ 0 }'は1993年1月以前です。より最近の終了日を選択してください。"
+msgstr "終了日'%s'は1993年1月以前です。より最近の終了日を選択してください。"
 
 #: lib/utility.php:1113
 msgid "MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions to choose. Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability."
@@ -18929,7 +18929,7 @@ msgstr "このVDEFの便利な名前。"
 #: link.php:79
 #, php-format
 msgid "External Link ID '%s' with Title '%s' attempted to inject an invalid URL and was blocked!"
-msgstr "タイトル'{ 1 }'の外部リンクID '{ 0 }'が無効なURLを挿入しようとしましたが、ブロックされました！"
+msgstr "タイトル'%s'の外部リンクID '%s'が無効なURLを挿入しようとしましたが、ブロックされました！"
 
 #: links.php:76
 msgid "Your contentfile is not a valid URL.  Please enter a value URL"
@@ -19320,7 +19320,7 @@ msgstr "テンプレートのパッケージ化中にエラーが発生しまし
 #: package.php:221
 #, php-format
 msgid "A Critical Template file '%s' is missing.  Please locate this file before packaging"
-msgstr "重要なテンプレートファイル'{ 0 }'がありません。パッケージングする前にこのファイルを見つけてください"
+msgstr "重要なテンプレートファイル'%s'がありません。パッケージングする前にこのファイルを見つけてください"
 
 #: package.php:562
 msgid "Package Templates"
@@ -19427,7 +19427,7 @@ msgstr "パッケージ内容に含まれるもの"
 #: package.php:898
 #, php-format
 msgid "Script or Resource File '%s' does not exist.  Please repackage after locating and installing this file"
-msgstr "スクリプトまたはリソースファイル'{ 0 }'は存在しません。このファイルを見つけてインストールした後、再パッケージしてください"
+msgstr "スクリプトまたはリソースファイル'%s'は存在しません。このファイルを見つけてインストールした後、再パッケージしてください"
 
 #: package.php:912 package_import.php:82
 msgid "Key Generation Required to Use Tool"
@@ -19444,7 +19444,7 @@ msgstr "このパッケージングツールを使用するには、まずcliデ
 #: package.php:964
 #, php-format
 msgid "The Web Server must have write access to the '%s' directory"
-msgstr "Webサーバーは'{ 0 }'ディレクトリへの書き込みアクセス権を持っている必要があります"
+msgstr "Webサーバーは'%s'ディレクトリへの書き込みアクセス権を持っている必要があります"
 
 #: package.php:986
 msgid "Unable to initialize SQLite3"
@@ -19528,7 +19528,7 @@ msgstr "このパッケージの公開鍵を取得できません。新しいパ
 #: package_import.php:427
 #, php-format
 msgid "You have not Trusted this Package Author '%s'.  If you wish to import, check the Automatically Trust Author checkbox.  Otherwise, feel free to reach the author at the following Email address '%s'."
-msgstr "このパッケージ作成者'{ 0 }'を信頼していません。インポートする場合は、[作成者を自動的に信頼する]チェックボックスをオンにします。それ以外の場合は、次のメールアドレス'{ 1 }'までお気軽にご連絡ください。"
+msgstr "このパッケージ作成者'%s'を信頼していません。インポートする場合は、[作成者を自動的に信頼する]チェックボックスをオンにします。それ以外の場合は、次のメールアドレス'%s'までお気軽にご連絡ください。"
 
 #: package_import.php:738
 msgid "Repo File Missing or Damaged"
@@ -19537,7 +19537,7 @@ msgstr "レポファイルが見つからないか破損しています"
 #: package_import.php:739
 #, php-format
 msgid "The Repo '%s' is NOT Reachable at the URL Location in the package.manifest."
-msgstr "リポジトリ'{ 0 }'は、package.manifestのURLロケーションに到達できません。"
+msgstr "リポジトリ'%s'は、package.manifestのURLロケーションに到達できません。"
 
 #: package_import.php:740
 msgid "Something is wrong with your Package Repository"
@@ -19550,7 +19550,7 @@ msgstr "1つ以上のパッケージの署名が信頼されていません。<b
 #: package_import.php:762
 #, php-format
 msgid "<b>Author:</b> &lt;%s&gt; %s.<br>"
-msgstr "<b>投稿者</b>：<{ 0 }>{ 1 }。<br>"
+msgstr "<b>投稿者</b>：<%s>%s。<br>"
 
 #: package_import.php:766
 #, php-format
@@ -19576,7 +19576,7 @@ msgstr "すべてのパッケージ署名が検証されました"
 #: package_import.php:823 package_import.php:1963 package_repos.php:123
 #, php-format
 msgid "The Repo '%s' is NOT Reachable at the URL Location or the package.manifest file is missing."
-msgstr "リポジトリ'{ 0 }'はURLロケーションで到達できないか、package.manifestファイルがありません。"
+msgstr "リポジトリ'%s'はURLロケーションで到達できないか、package.manifestファイルがありません。"
 
 #: package_import.php:880 package_import.php:886 package_import.php:981
 #: package_import.php:984
@@ -19731,17 +19731,17 @@ msgstr "パッケージが見つかりません"
 #: package_import.php:1946
 #, php-format
 msgid "The Repo '%s' is NOT Reachable on GitHub or the '%s' file is missing or it could be an invalid branch.  Valid Package Locations are normally: https://github.com/Author/RepoName/."
-msgstr "レポジトリ'{ 0 }'はGitHubでアクセスできないか、'{ 1 }'ファイルが見つからないか、無効なブランチの可能性があります。有効なパッケージの場所は通常、https://github.com/Author/RepoName/です。"
+msgstr "レポジトリ'%s'はGitHubでアクセスできないか、'%s'ファイルが見つからないか、無効なブランチの可能性があります。有効なパッケージの場所は通常、https://github.com/Author/RepoName/です。"
 
 #: package_import.php:1974
 #, php-format
 msgid "The Repo '%s' is Reachable on the Local Cacti Server.  But not data returned from the manifest file."
-msgstr "レポジトリ'{ 0 }'はローカルCactiサーバーで到達可能です。しかし、マニフェストファイルから返されるデータはありません。"
+msgstr "レポジトリ'%s'はローカルCactiサーバーで到達可能です。しかし、マニフェストファイルから返されるデータはありません。"
 
 #: package_import.php:1977 package_repos.php:131
 #, php-format
 msgid "The Repo '%s' is NOT Reachable on the Local Cacti Server or the package.manifest file is missing."
-msgstr "レポジトリ'{ 0 }'はローカルCactiサーバーで到達できないか、package.manifestファイルがありません。"
+msgstr "レポジトリ'%s'はローカルCactiサーバーで到達できないか、package.manifestファイルがありません。"
 
 #: package_keys.php:95 package_repos.php:206
 msgid "Click 'Continue' to delete the following ."
@@ -19793,22 +19793,22 @@ msgstr "ダイレクトURL"
 #: package_repos.php:104
 #, php-format
 msgid "The Repo '%s' is Reachable on GitHub."
-msgstr "リポジトリ'{ 0 }'はGitHubで到達可能です。"
+msgstr "リポジトリ'%s'はGitHubで到達可能です。"
 
 #: package_repos.php:106
 #, php-format
 msgid "The Repo '%s' is NOT Reachable on GitHub or the package.manifest file is missing or it could be an invalid branch.  Valid Package Locations are normally: https://github.com/Author/RepoName/."
-msgstr "リポジトリ'{ 0 }'はGitHubでアクセスできないか、package.manifestファイルが見つからないか、無効なブランチである可能性があります。有効なパッケージの場所は通常、https://github.com/Author/RepoName/です。"
+msgstr "リポジトリ'%s'はGitHubでアクセスできないか、package.manifestファイルが見つからないか、無効なブランチである可能性があります。有効なパッケージの場所は通常、https://github.com/Author/RepoName/です。"
 
 #: package_repos.php:121
 #, php-format
 msgid "The Repo '%s' is Reachable at the URL Location."
-msgstr "リポジトリ'{ 0 }'はURLロケーションで到達可能です。"
+msgstr "リポジトリ'%s'はURLロケーションで到達可能です。"
 
 #: package_repos.php:129
 #, php-format
 msgid "The Repo '%s' is Reachable on the Local Cacti Server."
-msgstr "レポジトリ'{ 0 }'はローカルCactiサーバーで到達可能です。"
+msgstr "レポジトリ'%s'はローカルCactiサーバーで到達可能です。"
 
 #: package_repos.php:211
 msgid "Delete Package Repository"
@@ -20014,12 +20014,12 @@ msgstr "アーカイブ"
 #: plugins.php:165
 #, php-format
 msgid "The action '%s' on Plugin '%s' can not be performed due to the Plugin in it's current state."
-msgstr "プラグイン'{ 1 }'のアクション'{ 0 }'は、プラグインが現在の状態であるため実行できません。"
+msgstr "プラグイン'%s'のアクション'%s'は、プラグインが現在の状態であるため実行できません。"
 
 #: plugins.php:169
 #, php-format
 msgid "The action '%s' '%s' on Plugin '%s' can not be taken as the Plugin is integrated."
-msgstr "プラグイン'{ 2 }'のアクション'{ 0 }''{ 1 }'は、プラグインが統合されているため実行できません。"
+msgstr "プラグイン'%s'のアクション'%s''%s'は、プラグインが統合されているため実行できません。"
 
 #: plugins.php:218
 msgid "The fetch latest plugins process has been launched into background."
@@ -20032,12 +20032,12 @@ msgstr "最新のプラグインの取得プロセスはすでに開始されて
 #: plugins.php:276
 #, php-format
 msgid "Plugin '%s' has passed it's Configuration Check test and can not be Installed"
-msgstr "プラグイン'{ 0 }'は構成チェックテストに合格しており、インストールできません"
+msgstr "プラグイン'%s'は構成チェックテストに合格しており、インストールできません"
 
 #: plugins.php:278
 #, php-format
 msgid "Plugin '%s' Check Configuration function returned a null response which is invalid.  Please check with Plugin Developer for an update."
-msgstr "プラグイン'{ 0 }'構成チェック関数は無効なNULL応答を返しました。アップデートについては、プラグイン開発者に確認してください。"
+msgstr "プラグイン'%s'構成チェック関数は無効なNULL応答を返しました。アップデートについては、プラグイン開発者に確認してください。"
 
 #: plugins.php:580
 msgid "Uninstalling this Plugin and may remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'."
@@ -20529,7 +20529,7 @@ msgstr "警告：サボテンのポーリングサイクルがポーラー間隔
 #: poller.php:970
 #, php-format
 msgid "WARNING: PollerID:%s with Name:%s is in Heartbeat Status"
-msgstr "警告：名前：{ 1}のPollerID ：{ 0}はハートビート状態です"
+msgstr "警告：名前：%sのPollerID ：%sはハートビート状態です"
 
 #: poller.php:972
 msgid "Poller in Heartbeat Mode"
@@ -20538,12 +20538,12 @@ msgstr "ハートビートモードのポーラー"
 #: poller.php:1253
 #, php-format
 msgid "WARNING: 24 hours Poller[%d] avg. run time is %f seconds (more than %d &#37; of time limit)"
-msgstr "警告： 24時間ポーラー[%d]の平均実行時間は %f 秒です（制限時間の{2 }%を超えています）"
+msgstr "警告： 24時間ポーラー[%d]の平均実行時間は %f 秒です（制限時間の%d%を超えています）"
 
 #: poller.php:1269
 #, php-format
 msgid "WARNING: In last hour Poller[%d] run time %d times reached more than %d &#37; of time limit"
-msgstr "警告：直前の1時間に、ポーラー[%d]の実行時間 %d 回が制限時間の{2 }%を超えました"
+msgstr "警告：直前の1時間に、ポーラー[%d]の実行時間 %d 回が制限時間の%d%を超えました"
 
 #: poller.php:1291
 msgid "Cacti System Notification"
