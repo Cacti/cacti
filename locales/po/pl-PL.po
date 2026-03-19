@@ -318,7 +318,7 @@ msgstr "Kliknij \"Continue\" (Kontynuuj), aby usunąć następujący(-e) szablon
 #: aggregate_graphs.php:986
 #, php-format
 msgid "Click 'Continue' to Duplicate following Aggregate Graphs on Tree %s."
-msgstr "Kliknij 'Kontynuuj', aby umieścić poniższą wykres(y) zagregowany(e) pod Oddziałem na drzewie."
+msgstr "Kliknij 'Kontynuuj', aby zduplikować poniższy wykres(y) zagregowany(e) na drzewie %s."
 
 #: aggregate_graphs.php:987
 msgid "Place Aggregate Graph on Tree"
@@ -913,11 +913,11 @@ msgstr "Powróć"
 
 #: auth_login.php:74
 msgid "Cacti no longer supports No Authentication mode. Please contact your System Administrator."
-msgstr "Odmowa dostępu, prosimy o kontakt z administratorem Cacti."
+msgstr "Odmowa dostępu! Identyfikator gościa %s nie istnieje. Prosimy o kontakt z administratorem Cacti."
 
 #: auth_login.php:101
 msgid "Unable to determine user Login Realm or Domain. Please contact your System Administrator."
-msgstr "Odmowa dostępu, prosimy o kontakt z administratorem Cacti."
+msgstr "Odmowa dostępu! Identyfikator gościa %s nie istnieje. Prosimy o kontakt z administratorem Cacti."
 
 #: auth_login.php:128
 msgid "User was Authenticated, but the Template Account is disabled. Using Guest Account"
@@ -926,7 +926,7 @@ msgstr "Użytkownik został uwierzytelniony, ale konto szablonu jest wyłączone
 #: auth_login.php:135
 #, php-format
 msgid "Access Denied!  Guest user id %s does not exist.  Please contact your Administrator."
-msgstr "Odmowa dostępu, prosimy o kontakt z administratorem Cacti."
+msgstr "Odmowa dostępu! Identyfikator gościa %s nie istnieje. Prosimy o kontakt z administratorem Cacti."
 
 #: auth_login.php:173
 msgid "Access Denied!  User account disabled."
@@ -1210,12 +1210,12 @@ msgstr "Dodane ręcznie poprzez interfejs automatyki urządzenia."
 #: automation_devices.php:122
 #, php-format
 msgid "Device %s Added to Cacti"
-msgstr "Dodano do Cacti"
+msgstr "Urządzenie %s dodane do Cacti"
 
 #: automation_devices.php:124
 #, php-format
 msgid "Device %s Not Added to Cacti"
-msgstr "Nie dodano do Cacti"
+msgstr "Urządzenie %s nie zostało dodane do Cacti"
 
 #: automation_devices.php:134
 msgid "Devices Removed from Cacti Automation database"
@@ -15287,7 +15287,7 @@ msgstr "Urządzenie:"
 
 #: lib/auth.php:3535 lib/auth.php:3614
 msgid "Your account has been locked.  Please contact your Administrator."
-msgstr "Odmowa dostępu, prosimy o kontakt z administratorem Cacti."
+msgstr "Odmowa dostępu! Identyfikator gościa %s nie istnieje. Prosimy o kontakt z administratorem Cacti."
 
 #: lib/auth.php:3577
 msgid "Access Denied!  Login Disabled."
@@ -15315,7 +15315,7 @@ msgstr "Błąd wyszukiwania LDAP: %s"
 #: lib/auth.php:3862 lib/auth.php:4717
 #, php-format
 msgid "Access Denied!  Template user id %s does not exist.  Please contact your Administrator."
-msgstr "Odmowa dostępu, prosimy o kontakt z administratorem Cacti."
+msgstr "Odmowa dostępu! Identyfikator gościa %s nie istnieje. Prosimy o kontakt z administratorem Cacti."
 
 #: lib/auth.php:3870
 #, php-format
@@ -18925,7 +18925,7 @@ msgstr "OSTRZEŻENIE: Nie udało się dodać domyślnego urządzenia."
 
 #: lib/installer.php:3857
 msgid "Default Device Added to Cacti."
-msgstr "Dodano do Cacti"
+msgstr "Urządzenie %s dodane do Cacti"
 
 #: lib/installer.php:3862
 #, php-format
@@ -19454,7 +19454,7 @@ msgstr ""
 #: lib/reports.php:146
 #, php-format
 msgid "Device '%s' successfully added to Report."
-msgstr "Dodano do Cacti"
+msgstr "Urządzenie %s dodane do Cacti"
 
 #: lib/reports.php:149
 msgid "Device not found! Unable to add to Report"
