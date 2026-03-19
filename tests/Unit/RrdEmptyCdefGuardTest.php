@@ -25,6 +25,14 @@
  *
  * These tests verify the guard logic using a stub that mirrors the
  * CDEF emission path without requiring rrdtool or database access.
+ *
+ * SYNC WARNING: emit_cdef_line() and expand_similar_nodups() below
+ * replicate logic from the CDEF emission block in
+ * rrdtool_function_graph_variables() and the SIMILAR_DATA_SOURCES_NODUPS
+ * expansion in rrdtool_function_graph() in lib/rrd.php. Production
+ * functions require rrdtool and DB state. If the production CDEF emission
+ * or magic-variable expansion logic changes, these helpers must be
+ * updated to match.
  */
 
 require_once __DIR__ . '/../../include/global_constants.php';

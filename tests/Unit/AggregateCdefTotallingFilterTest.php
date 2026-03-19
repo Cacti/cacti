@@ -25,6 +25,11 @@
  * The fix adds "AND graph_type_id NOT IN (9,10,11,12,13,14,15)" to
  * exclude GPRINT (9), LEGEND (10), GPRINT_LAST (11), GPRINT_MAX (12),
  * GPRINT_MIN (13), GPRINT_AVERAGE (14), and LEGEND_CAMM (15).
+ *
+ * SYNC WARNING: filter_totalling_items() below replicates the NOT IN
+ * filter from lib/aggregate.php aggregate_cdef_totalling(). Production
+ * functions require DB state that prevents direct invocation in unit
+ * tests. If the production filter changes, this helper must be updated.
  */
 
 require_once __DIR__ . '/../../include/global_constants.php';
