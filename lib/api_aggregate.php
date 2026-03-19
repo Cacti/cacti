@@ -414,7 +414,7 @@ function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph
 					} elseif ($_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
 						$save['text_format'] = str_replace(':current:', ':aggregate_current:', $save['text_format']);
 					} else {
-						$save['text_format'] = str_replace(':current:', ':current:', $save['text_format']);
+						cacti_log(__FUNCTION__ . ' unhandled total_type ' . $_total_type . ' for :current: in text_format', true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 					}
 				} elseif (str_contains($save['text_format'], ':max:')) {
 					if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL) {
@@ -422,7 +422,7 @@ function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph
 					} elseif ($_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
 						$save['text_format'] = str_replace(':max:', ':aggregate_current_peak:', $save['text_format']);
 					} else {
-						$save['text_format'] = str_replace(':max:', ':max:', $save['text_format']);
+						cacti_log(__FUNCTION__ . ' unhandled total_type ' . $_total_type . ' for :max: in text_format', true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 					}
 				}
 			}
@@ -1434,6 +1434,8 @@ function aggregate_handle_ptile_type(array $member_graphs, array $skipped_items,
 									} elseif ($_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
 										$pparts[3] = str_replace('current', 'aggregate_current', $pparts[3]);
 										$pparts[3] = str_replace('max',     'aggregate_current_peak', $pparts[3]);
+									} else {
+										cacti_log(__FUNCTION__ . ' unhandled total_type ' . $_total_type . ' for pparts[3] in text_format', true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 									}
 
 									switch($pparts[3]) {
@@ -1514,6 +1516,8 @@ function aggregate_handle_ptile_type(array $member_graphs, array $skipped_items,
 									} elseif ($_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
 										$pparts[3] = str_replace('current', 'aggregate_current', $pparts[3]);
 										$pparts[3] = str_replace('max',     'aggregate_current_peak', $pparts[3]);
+									} else {
+										cacti_log(__FUNCTION__ . ' unhandled total_type ' . $_total_type . ' for pparts[3] in value', true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 									}
 
 									switch($pparts[3]) {
