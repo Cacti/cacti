@@ -63,7 +63,7 @@ msgstr "Ευχαριστούμε"
 #: about.php:88
 #, php-format
 msgid "A very special thanks to %sTobi Oetiker%s, the creator of %sRRDtool%s and the very popular %sMRTG%s."
-msgstr "Ένα πολύ ιδιαίτερο ευχαριστώ στον %s Tobi Oetiker %s, τον δημιουργό των %sRRDtool% και των πολύ δημοφιλών %sMRTG%."
+msgstr ""
 
 #: about.php:91
 msgid "The users of Cacti"
@@ -336,7 +336,7 @@ msgstr "Κλάδος Προορισμού:"
 #: user_admin.php:1876
 #, php-format
 msgid "[edit: %s]"
-msgstr "Επεξεργασία"
+msgstr ""
 
 #: aggregate_graphs.php:1054 aggregate_graphs.php:1164
 #: aggregate_graphs.php:1166
@@ -1999,7 +1999,7 @@ msgstr "Καθορίστε τον αριθμό των νημάτων που θα
 #: automation_networks.php:747
 #, php-format
 msgid "%d Thread"
-msgstr "κλώσμα διχτυού χωρίς κόμπους"
+msgstr ""
 
 #: automation_networks.php:748 automation_networks.php:749
 #: automation_networks.php:750 automation_networks.php:751
@@ -2013,7 +2013,7 @@ msgstr "κλώσμα διχτυού χωρίς κόμπους"
 #: include/global_arrays.php:917 include/global_arrays.php:918
 #, php-format
 msgid "%d Threads"
-msgstr "Συζητήσεις"
+msgstr ""
 
 #: automation_networks.php:764 lib/api_scheduler.php:148
 #: lib/html_reports.php:2210
@@ -2027,7 +2027,7 @@ msgstr "Μετά το επιλεγμένο Όριο Εκτέλεσης, η δι�
 #: automation_networks.php:768 lib/html_filter.php:94
 #, php-format
 msgid "%d Minute"
-msgstr "${ 0 } λεπτό"
+msgstr ""
 
 #: automation_networks.php:769 automation_networks.php:770
 #: automation_networks.php:771 automation_networks.php:772
@@ -2053,13 +2053,13 @@ msgstr "${ 0 } λεπτό"
 #: lib/html_filter.php:95 lib/html_filter.php:96
 #, php-format
 msgid "%d Minutes"
-msgstr "${ 0 } λεπτά"
+msgstr ""
 
 #: automation_networks.php:773 include/global_arrays.php:800
 #: include/global_arrays.php:810 include/global_arrays.php:1606
 #, php-format
 msgid "%d Hour"
-msgstr "${ 0 } ώρα"
+msgstr ""
 
 #: automation_networks.php:774 automation_networks.php:775
 #: automation_networks.php:776 data_source_profiles.php:1335
@@ -2083,7 +2083,7 @@ msgstr "${ 0 } ώρα"
 #: include/global_settings.php:3380
 #, php-format
 msgid "%d Hours"
-msgstr " 0 Hours"
+msgstr ""
 
 #: automation_networks.php:783
 msgid "Enable this Network Range."
@@ -3277,7 +3277,7 @@ msgstr "Πλήρης"
 #: changelog.php:99
 #, php-format
 msgid "Change Log [%s]"
-msgstr "Αρχείο καταγραφής Αλλαγών"
+msgstr ""
 
 #: changelog.php:160 support.php:1010
 #, php-format
@@ -3963,12 +3963,12 @@ msgstr "Κάντε κλικ στην επιλογή «Συνέχεια» για 
 #: data_input.php:294
 #, php-format
 msgid "Field Name: %s"
-msgstr "Όνομα Πεδίου"
+msgstr ""
 
 #: data_input.php:295
 #, php-format
 msgid "Friendly Name: %s"
-msgstr "Φιλική Ονομασία:"
+msgstr ""
 
 #: data_input.php:301
 msgid "Remove Data Input Field"
@@ -4548,7 +4548,7 @@ msgstr "Κάντε κλικ στην επιλογή «Συνέχεια» για 
 #: data_source_profiles.php:878
 #, php-format
 msgid "Profile Name: %s"
-msgstr "Όνομα προφίλ:"
+msgstr ""
 
 #: data_source_profiles.php:884
 msgid "Remove Data Source Profile RRA"
@@ -4673,7 +4673,7 @@ msgstr "% d Μήνας"
 #: include/global_settings.php:2003 rrdcleaner.php:462 rrdcleaner.php:463
 #, php-format
 msgid "%d Week"
-msgstr "Εβδομάδα 0"
+msgstr ""
 
 #: data_source_profiles.php:1318 include/global_arrays.php:819
 #: include/global_arrays.php:820 include/global_arrays.php:840
@@ -4683,14 +4683,14 @@ msgstr "Εβδομάδα 0"
 #: include/global_settings.php:3385 rrdcleaner.php:464 rrdcleaner.php:465
 #, php-format
 msgid "%d Weeks"
-msgstr "0 εβδομάδες"
+msgstr ""
 
 #: data_source_profiles.php:1327 include/global_arrays.php:761
 #: include/global_arrays.php:805 include/global_arrays.php:815
 #: include/global_arrays.php:1611 include/global_settings.php:1997
 #, php-format
 msgid "%d Day"
-msgstr "Ημέρα 0"
+msgstr ""
 
 #: data_source_profiles.php:1327 include/global_arrays.php:806
 #: include/global_arrays.php:816 include/global_arrays.php:817
@@ -5069,7 +5069,7 @@ msgstr "Εξωτερικός"
 #: support.php:493
 #, php-format
 msgid "%d Seconds"
-msgstr "${ 0 } δευτερόλεπτα"
+msgstr ""
 
 #: data_sources.php:1388 include/global_arrays.php:750
 #: include/global_arrays.php:1352 include/global_arrays.php:1731
@@ -5154,7 +5154,7 @@ msgstr "Πηγές δεδομένων [ Μη βασισμένες στη συσ�
 #: data_sources.php:1949
 #, php-format
 msgid "Data Sources [ %s ]"
-msgstr "Data Sources"
+msgstr ""
 
 #: data_templates.php:36
 msgid "Change Profile"
@@ -5795,7 +5795,7 @@ msgstr "Πηγές δεδομένων [Χωρίς συσκευή]"
 #: graphs.php:902 graphs.php:938
 #, php-format
 msgid "Data Sources [%s]"
-msgstr "Data Sources"
+msgstr ""
 
 #: graphs.php:976
 #, php-format
@@ -6229,7 +6229,7 @@ msgstr "Σφάλμα κατά την ανάλυση του αρχείου πόρ
 #: graphs_new.php:743
 #, php-format
 msgid "Data Query [%s]"
-msgstr "Ερώτηση Δεδομένων"
+msgstr ""
 
 #: graphs_new.php:746 host.php:1111
 msgid "Reload Query"
@@ -7828,7 +7828,7 @@ msgstr "Κάθε %d ημέρα"
 #: include/global_arrays.php:793
 #, php-format
 msgid "%0.1f Minutes"
-msgstr "${ 0 } λεπτά"
+msgstr ""
 
 #: include/global_arrays.php:826 include/global_arrays.php:846
 #: include/global_arrays.php:858 include/global_arrays.php:859
@@ -8626,7 +8626,7 @@ msgstr "Προηγούμενος Χρόνος"
 #: include/global_arrays.php:1605
 #, php-format
 msgid "%d Min"
-msgstr "Λεπτό"
+msgstr ""
 
 #: include/global_arrays.php:1660
 msgid "Month Number, Day, Year"
@@ -8662,7 +8662,7 @@ msgstr "Μετά την Ενίσχυση"
 #: include/global_arrays.php:1752
 #, php-format
 msgid "%d MBytes"
-msgstr "MBytes"
+msgstr ""
 
 #: include/global_arrays.php:1690
 msgid "1 GByte"
@@ -8735,12 +8735,12 @@ msgstr "6 Ώρες"
 #: include/global_settings.php:1850 include/global_settings.php:1851
 #, php-format
 msgid "%s Hours"
-msgstr " 0 Hours"
+msgstr ""
 
 #: include/global_arrays.php:1753
 #, php-format
 msgid "%d GByte"
-msgstr "GByte"
+msgstr ""
 
 #: include/global_arrays.php:1761 utilities.php:1321 utilities.php:1322
 #: utilities.php:1376
@@ -8773,7 +8773,7 @@ msgstr "Mbyte"
 #: include/global_arrays.php:1795 include/global_arrays.php:1796
 #, php-format
 msgid "%d Megabytes"
-msgstr " megabytes"
+msgstr ""
 
 #: include/global_arrays.php:1804
 msgid "Send Now"
@@ -9786,7 +9786,7 @@ msgstr "Αυτόματη ανίχνευση/ρύθμιση στο πρώτο Re-
 #: include/global_form.php:204
 #, php-format
 msgid "%d Repetition"
-msgstr "υποτροπή"
+msgstr ""
 
 #: include/global_form.php:205 include/global_form.php:206
 #: include/global_form.php:207 include/global_form.php:208
@@ -9798,7 +9798,7 @@ msgstr "υποτροπή"
 #: include/global_form.php:219
 #, php-format
 msgid "%d Repetitions"
-msgstr "Repeticiones"
+msgstr ""
 
 #: include/global_form.php:228
 msgid "The maximum number of attempts to reach a device via an SNMP readstring prior to giving up."
@@ -11953,7 +11953,7 @@ msgstr "Ο προεπιλεγμένος αριθμός νημάτων συσκε
 #: include/global_settings.php:874
 #, php-format
 msgid "%s Thread"
-msgstr "κλώσμα διχτυού χωρίς κόμπους"
+msgstr ""
 
 #: include/global_settings.php:875 include/global_settings.php:876
 #: include/global_settings.php:877 include/global_settings.php:878
@@ -11962,7 +11962,7 @@ msgstr "κλώσμα διχτυού χωρίς κόμπους"
 #: include/global_settings.php:883
 #, php-format
 msgid "%s Threads"
-msgstr "Συζητήσεις"
+msgstr ""
 
 #: include/global_settings.php:887
 msgid "Re-index Method for Data Queries"
@@ -12826,7 +12826,7 @@ msgstr "Το μέγιστο χρονικό διάστημα που μπορεί 
 #: include/global_settings.php:1843
 #, php-format
 msgid "%s Minute"
-msgstr "${ 0 } λεπτό"
+msgstr ""
 
 #: include/global_settings.php:1749
 msgid "Miscelanious Task Parallelism and Timeouts"
@@ -12856,7 +12856,7 @@ msgstr "Το μέγιστο χρονικό διάστημα που μπορεί 
 #: include/global_settings.php:1848
 #, php-format
 msgid "%s Hour"
-msgstr "${ 0 } ώρα"
+msgstr ""
 
 #: include/global_settings.php:1783
 msgid "Poller Commands Timeout"
@@ -12919,7 +12919,7 @@ msgstr "1 Διαδικασία"
 #: include/global_settings.php:2764 include/global_settings.php:2765
 #, php-format
 msgid "%d Processes"
-msgstr "Διαδικασίες"
+msgstr ""
 
 #: include/global_settings.php:1824
 msgid "Maintenance Background Generation Timeout"
@@ -13035,7 +13035,7 @@ msgstr "1 προσπάθεια"
 #: include/global_settings.php:1937
 #, php-format
 msgid "%d Attempts"
-msgstr "Προσπαθειών"
+msgstr ""
 
 #: include/global_settings.php:1941
 msgid "Auto Unlock"
@@ -13987,7 +13987,7 @@ msgstr "Οποιαδήποτε τιμή που είναι τόσο πολλές 
 #: include/global_settings.php:2925
 #, php-format
 msgid "%d Standard Deviations"
-msgstr "τυπικές αποκλίσεις"
+msgstr ""
 
 #: include/global_settings.php:2929
 msgid "Max Kills Per RRA"
@@ -14005,7 +14005,7 @@ msgstr "Αυτή η τιμή αντιπροσωπεύει τον μέγιστο 
 #: include/global_settings.php:2944 include/global_settings.php:2945
 #, php-format
 msgid "%d Spikes"
-msgstr "Κορυφές"
+msgstr ""
 
 #: include/global_settings.php:2949
 msgid "Absolute Maximum Value"
@@ -15336,7 +15336,7 @@ msgstr "Ο διαχειριστής του Cacti έχει εξαναγκάσει
 #: lib/auth.php:4175
 #, php-format
 msgid "Password must be at least %d characters!"
-msgstr "La contraseña debe tener por lo menos  caracteres"
+msgstr ""
 
 #: lib/auth.php:4181
 msgid "Your password must contain at least 1 numerical character!"
@@ -15397,17 +15397,17 @@ msgstr "Το 2FA έχει ενεργοποιηθεί και επαληθευτε
 #: lib/boost.php:82 utilities.php:1378
 #, php-format
 msgid "%s MBytes"
-msgstr "MBytes"
+msgstr ""
 
 #: lib/boost.php:85
 #, php-format
 msgid "%s KBytes"
-msgstr "KBytes"
+msgstr ""
 
 #: lib/boost.php:88
 #, php-format
 msgid "%s Bytes"
-msgstr "bytes"
+msgstr ""
 
 #: lib/clog_webapi.php:139
 #, php-format
@@ -15601,7 +15601,7 @@ msgstr "Βρέθηκε τύπος = '%s' [%s]."
 #: lib/data_query.php:154
 #, php-format
 msgid "Unknown Type = '%s'."
-msgstr "Άγνωστος τύπος"
+msgstr ""
 
 #: lib/data_query.php:211
 msgid "WARNING: Sort Field Association has Changed.  Re-mapping issues may occur!"
@@ -16180,7 +16180,7 @@ msgstr "Σφάλμα Mailer: Δεν έχει οριστεί διεύθυνση �
 #: lib/functions.php:6027
 #, php-format
 msgid "Authentication failed: %s"
-msgstr "Η ταυτοποίηση απέτυχε"
+msgstr ""
 
 #: lib/functions.php:6031
 #, php-format
@@ -16190,7 +16190,7 @@ msgstr "Αποτυχία HELO: %s"
 #: lib/functions.php:6034
 #, php-format
 msgid "Connect failed: %s"
-msgstr "Αποτυχία σύνδεσης"
+msgstr ""
 
 #: lib/functions.php:6037
 msgid "SMTP error: "
@@ -16280,12 +16280,12 @@ msgstr ""
 #: lib/functions.php:7524
 #, php-format
 msgid "- Dev %s"
-msgstr "ΔΕΕ"
+msgstr ""
 
 #: lib/functions.php:7526
 #, php-format
 msgid "- Beta %s"
-msgstr "Beta"
+msgstr ""
 
 #: lib/functions.php:7594
 #, php-format
@@ -16362,7 +16362,7 @@ msgstr "Όλα %d %s"
 #: lib/html.php:654
 #, php-format
 msgid "Current Page: %s"
-msgstr "Τρέχουσα σελίδα"
+msgstr ""
 
 #: lib/html.php:685
 #, php-format
@@ -17533,7 +17533,7 @@ msgstr "Λεπτομέρειες αντικειμένου"
 #: lib/html_reports.php:1681
 #, php-format
 msgid "Graph: %s"
-msgstr "Γράφημα:"
+msgstr ""
 
 #: lib/html_reports.php:1684 lib/html_reports.php:1711
 #: lib/html_reports.php:1724 lib/html_reports.php:1725
@@ -17563,7 +17563,7 @@ msgstr ", Χρήση του RegEx: \"%s\""
 #: lib/html_reports.php:1751
 #, php-format
 msgid "Tree: %s"
-msgstr "Δέντρο:"
+msgstr ""
 
 #: lib/html_reports.php:1761
 #, php-format
@@ -17573,7 +17573,7 @@ msgstr ", Συσκευή: %s"
 #: lib/html_reports.php:1763
 #, php-format
 msgid ", Branch: %s"
-msgstr "Υποκατάστημα "
+msgstr ""
 
 #: lib/html_reports.php:1766
 msgid "(All Branches)"
@@ -17940,7 +17940,7 @@ msgstr "Παρακαλείσθε να το αναφέρετε στον Όμιλ�
 #: lib/installer.php:1885
 #, php-format
 msgid "Unknown Reason: %s"
-msgstr "Άγνωστη αιτία"
+msgstr ""
 
 #: lib/installer.php:1893
 #, php-format
@@ -18252,12 +18252,12 @@ msgstr "Βάση δεδομένων: <b>%s</b>"
 #: lib/installer.php:2488 lib/installer.php:2500
 #, php-format
 msgid "Database User: <b>%s</b>"
-msgstr "Χρήστης βάσης δεδομένων"
+msgstr ""
 
 #: lib/installer.php:2489 lib/installer.php:2501
 #, php-format
 msgid "Database Hostname: <b>%s</b>"
-msgstr "Όνομα κεντρικού υπολογιστή βάσης δεδομένων"
+msgstr ""
 
 #: lib/installer.php:2490 lib/installer.php:2502
 #, php-format
@@ -18919,7 +18919,7 @@ msgstr "Η προεπιλεγμένη συσκευή προστέθηκε στο
 #: lib/installer.php:3862
 #, php-format
 msgid "Output: %s."
-msgstr "Έξοδος:"
+msgstr ""
 
 #: lib/installer.php:3882
 msgid "Creating Graphs for Default Device"
@@ -19013,12 +19013,12 @@ msgstr "Και τα δυο"
 #: lib/installer.php:4179
 #, php-format
 msgid "No - %s"
-msgstr "Όχι (0)"
+msgstr ""
 
 #: lib/installer.php:4187
 #, php-format
 msgid "%s - N/A"
-msgstr "Α/Α"
+msgstr ""
 
 #: lib/installer.php:4187 lib/installer.php:4189
 msgid "Web"
@@ -19027,7 +19027,7 @@ msgstr "Ιστότοπος"
 #: lib/installer.php:4189 lib/installer.php:4192
 #, php-format
 msgid "%s - No"
-msgstr "0 Όχι"
+msgstr ""
 
 #: lib/installer.php:4192
 msgid "Cli"
@@ -19091,7 +19091,7 @@ msgstr "Σφάλμα πρωτοκόλλου, Αδυναμία σύνδεσης, 
 #: lib/ldap.php:428
 #, php-format
 msgid "Unable to Connect to Server (%s)"
-msgstr "Δεν ήταν δυνατή η σύνδεση με τον διακομιστή"
+msgstr ""
 
 #: lib/ldap.php:429
 #, php-format
@@ -19462,7 +19462,7 @@ msgstr "Προβλήματα κατά την αποστολή της αναφο�
 #: lib/reports.php:644
 #, php-format
 msgid "Report '%s' Sent Successfully"
-msgstr "Η αναφορά στάλθηκε με επιτυχία"
+msgstr ""
 
 #: lib/reports.php:851
 #, php-format
@@ -19980,7 +19980,7 @@ msgstr "Προσπάθεια δημιουργίας γραφήματος από 
 #: lib/template.php:2308 lib/template.php:2342
 #, php-format
 msgid "Created: %s"
-msgstr "Δημιουργήθηκε:"
+msgstr ""
 
 #: lib/template.php:2324 lib/template.php:2353
 msgid "ERROR: Whitelist Validation Failed. Check Data Input Method"
@@ -20157,7 +20157,7 @@ msgstr "Όταν χρησιμοποιείτε MariaDB 10.2.4 και άνω, μπ
 #: lib/utility.php:1378
 #, php-format
 msgid "%s Tuning"
-msgstr "πρόγραμμα \"Tuning educational structures in Europe\""
+msgstr ""
 
 #: lib/utility.php:1378
 msgid "Note: Many changes below require a database restart"
@@ -20627,7 +20627,7 @@ msgstr "Πακέτο ερωτήματος δεδομένων %s"
 #: package.php:314 templates_export.php:168
 #, php-format
 msgid "Available Templates [%s]"
-msgstr "Διαθέσιμα Πρότυπα"
+msgstr ""
 
 #: package.php:319
 msgid "Available Templates"
@@ -21516,7 +21516,7 @@ msgstr "Δεν βρέθηκαν πρόσθετα"
 #: plugins.php:1397 plugins.php:1431
 #, php-format
 msgid "Not Compatible, '%s'"
-msgstr "Μη συμβατό."
+msgstr ""
 
 #: plugins.php:1399 plugins.php:1433
 msgid "Plugin Error"
@@ -22798,7 +22798,7 @@ msgstr "Τεχνική υποστήριξη "
 #: support.php:258
 #, php-format
 msgid "%d Chars"
-msgstr "σαλβελίνος"
+msgstr ""
 
 #: support.php:286
 msgid "Include Poller"
@@ -23200,7 +23200,7 @@ msgstr "Μνήμη συστήματος"
 #: support.php:1650 support.php:1660
 #, php-format
 msgid "%s GB"
-msgstr "EL"
+msgstr ""
 
 #: support.php:1588
 msgid "MySQL/MariaDB Memory Statistics (Source: MySQL Tuner)"
@@ -23353,7 +23353,7 @@ msgstr "Με ζημιά"
 #: templates_import.php:321
 #, php-format
 msgid "Met: %d"
-msgstr "Διάβρωση"
+msgstr ""
 
 #: templates_import.php:325
 #, php-format
@@ -23936,7 +23936,7 @@ msgstr "Άδειες παλαιού τύπου"
 #: user_admin.php:1768 user_group_admin.php:1632
 #, php-format
 msgid "User Settings %s"
-msgstr "Ρυθμίσεις Χρήστη"
+msgstr ""
 
 #: user_admin.php:1853 user_group_admin.php:1715
 msgid "Permissions"
@@ -23965,7 +23965,7 @@ msgstr "Πέρμες δέντρων"
 #: user_admin.php:1908
 #, php-format
 msgid "User Management %s"
-msgstr "Διαχείριση Χρηστών"
+msgstr ""
 
 #: user_admin.php:2046
 msgid "< 1 Week Ago"
@@ -24049,7 +24049,7 @@ msgstr "Εμφάνιση μόνο εξαιρέσεων"
 #: user_admin.php:2423
 #, php-format
 msgid "Group Membership %s"
-msgstr "Συμμετοχή σε μια Ομάδα"
+msgstr ""
 
 #: user_admin.php:2427
 msgid "Show All"
@@ -24929,7 +24929,7 @@ msgstr "Μέσος όρος bytes/εγγραφής:"
 #: utilities.php:1314
 #, php-format
 msgid "%d Bytes"
-msgstr "bytes"
+msgstr ""
 
 #: utilities.php:1314
 msgid "Max Record Length:"
@@ -25106,7 +25106,7 @@ msgstr "Καταχωρίσεις στο ημερολόγιο του πλοίου
 #: utilities.php:1867
 #, php-format
 msgid "Severity Level: %s"
-msgstr "Βαθμός αυστηρότητας"
+msgstr ""
 
 #: vdef.php:257
 msgid "Click 'Continue' to Delete the following VDEF."
