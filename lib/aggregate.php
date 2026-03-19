@@ -754,16 +754,23 @@ function aggregate_cdef_totalling(int $_new_graph_id, int $_graph_item_sequence,
 
 	// take graph item data for the totalling items
 	if (!empty($_new_graph_id)) {
-		/* drift guard: AggregateCdefTotallingFilterTest 'excluded set' */
-		$graph_template_items = db_fetch_assoc_prepared('SELECT id, cdef_id
+		// drift guard: AggregateCdefTotallingFilterTest 'excluded set'
+		$excluded_types = implode(',', [
+			GRAPH_ITEM_TYPE_GPRINT,
+			GRAPH_ITEM_TYPE_LEGEND,
+			GRAPH_ITEM_TYPE_GPRINT_LAST,
+			GRAPH_ITEM_TYPE_GPRINT_MAX,
+			GRAPH_ITEM_TYPE_GPRINT_MIN,
+			GRAPH_ITEM_TYPE_GPRINT_AVERAGE,
+			GRAPH_ITEM_TYPE_LEGEND_CAMM,
+		]);
+
+		$graph_template_items = db_fetch_assoc_prepared("SELECT id, cdef_id
 			FROM graph_templates_item
 			WHERE local_graph_id = ?
 			AND sequence >= ?
-			/* GPRINT(9), LEGEND(10), GPRINT_LAST(11), GPRINT_MAX(12), GPRINT_MIN(13), GPRINT_AVERAGE(14), LEGEND_CAMM(15) */
-			AND graph_type_id NOT IN (
-				9, 10, 11, 12, 13, 14, 15
-			)
-			ORDER BY sequence',
+			AND graph_type_id NOT IN ($excluded_types)
+			ORDER BY sequence",
 			[$_new_graph_id, $_graph_item_sequence]);
 
 		cacti_log(__FUNCTION__ . " totalling query: graph=$_new_graph_id seq=$_graph_item_sequence", true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);

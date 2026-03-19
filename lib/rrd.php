@@ -2373,6 +2373,7 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 				// rather than emitting a bare "CDEF:cdefX=" which rrdtool rejects.
 				if ($cdef_string === '') {
 					cacti_log('Empty CDEF string for graph ' . $graph['local_graph_id'] . '; skipping.', true, 'RRD', POLLER_VERBOSITY_DEBUG);
+
 					continue;
 				}
 

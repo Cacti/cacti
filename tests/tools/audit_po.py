@@ -14,9 +14,14 @@ Exit codes:
   1 - one or more errors found
 """
 
-import polib
 import re
 import sys
+
+try:
+	import polib
+except ImportError:
+	sys.exit('Error: polib is required.  Install it with:  pip install polib')
+
 
 
 _HTML_TAG = re.compile(r'<[^>]+>')
