@@ -5,8 +5,7 @@ msgstr ""
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
 "PO-Revision-Date: 2025-12-23 22:54+0000\n"
 "Last-Translator: Tadeo Briceño <tadeobriceno@vencable.com>\n"
-"Language-Team: Spanish <https://translate.cacti.net/projects/cacti/core/es/>"
-"\n"
+"Language-Team: Spanish <https://translate.cacti.net/projects/cacti/core/es/>\n"
 "Language: es-ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,18 +19,12 @@ msgstr "Acerca de Cacti"
 
 #: about.php:44
 msgid "Cacti is designed to be a complete graphing solution based on the RRDtool Time Series Database (TSDB) and Graphing solution. Its goal is to make the Network Administrator's job easier by taking care of all the important details necessary to create meaningful Graphs."
-msgstr ""
-"Cacti está diseñado para ser una solución de gráficos completa basada en la "
-"base de datos de series de tiempo y solución gráfica RRDtool. Su objetivo es "
-"hacer el trabajo de los administradores de red más fácil, ocupándose de "
-"todos los detalles necesarios para crear gráficos significativos."
+msgstr "Cacti está diseñado para ser una solución de gráficos completa basada en la base de datos de series de tiempo y solución gráfica RRDtool. Su objetivo es hacer el trabajo de los administradores de red más fácil, ocupándose de todos los detalles necesarios para crear gráficos significativos."
 
 #: about.php:46
 #, php-format
 msgid "Please see the official %sCacti website%s for information on how to use Cacti, get support, and updates."
-msgstr ""
-"Por favor ve al %ssitio web oficial de Cacti%s para información sobre como "
-"usar cacti, obtener soporte y actualizaciones."
+msgstr "Por favor ve al %ssitio web oficial de Cacti%s para información sobre como usar cacti, obtener soporte y actualizaciones."
 
 #: about.php:50
 msgid "Active Developers"
@@ -39,9 +32,7 @@ msgstr "Desarrolladores activos"
 
 #: about.php:51
 msgid "Developers working on Cacti, its Architecture, Documentation and Future Releases."
-msgstr ""
-"Desarroladores trabajando en Cacti, su arquitectura, documentación y futuros "
-"lanzamientos."
+msgstr "Desarroladores trabajando en Cacti, su arquitectura, documentación y futuros lanzamientos."
 
 #: about.php:63
 msgid "Honorable Mentions"
@@ -49,9 +40,7 @@ msgstr "Menciones Honoríficas"
 
 #: about.php:64
 msgid "Contributors to Docuemntation, QA, Packaging, the Forums and our YouTube page."
-msgstr ""
-"Contribuyentes a la documentación, Q&A, empaquetado, el foro y a nuestra "
-"página de Youtube."
+msgstr "Contribuyentes a la documentación, Q&A, empaquetado, el foro y a nuestra página de Youtube."
 
 #: about.php:74
 msgid "Emeritus Members"
@@ -59,9 +48,7 @@ msgstr "Miembros eméritos"
 
 #: about.php:75
 msgid "Members of the original Cacti Group that have since moved on in their careers.  We continue to wish them the best."
-msgstr ""
-"Miembros del grupo Cacti original que siguieron adelante con sus carreras. "
-"Les seguimos deseando lo mejor."
+msgstr "Miembros del grupo Cacti original que siguieron adelante con sus carreras. Les seguimos deseando lo mejor."
 
 #: about.php:85
 msgid "Thanks"
@@ -161,9 +148,7 @@ msgstr "Los gráficos Agregados seleccionados representan elementos de mas de un
 
 #: aggregate_graphs.php:810
 msgid "In order to migrate the Aggregate Graphs below to a Template based Aggregate, they must only be using one Graph Template."
-msgstr ""
-"Para migrar los gráficos Agregados a continuación a un Agregado basado en "
-"Plantillas, los gráficos deben estar usando solo una plantilla de gráficos."
+msgstr "Para migrar los gráficos Agregados a continuación a un Agregado basado en Plantillas, los gráficos deben estar usando solo una plantilla de gráficos."
 
 #: aggregate_graphs.php:818
 msgid "The selected Aggregate Graphs does not appear to have any matching Aggregate Templates."
@@ -171,9 +156,7 @@ msgstr "Los gráficos Agregados seleccionados no parecen coincidir con ninguna p
 
 #: aggregate_graphs.php:819
 msgid "In order to migrate the Aggregate Graphs below use an Aggregate Template, one must already exist."
-msgstr ""
-"Para migrar los gráficos Agregados use un plantilla de Agregados, debe "
-"existir por lo menos una."
+msgstr "Para migrar los gráficos Agregados use un plantilla de Agregados, debe existir por lo menos una."
 
 #: aggregate_graphs.php:844
 msgid "There are currently no Aggregate Templates defined for the selected Legacy Aggregates."
@@ -194,8 +177,7 @@ msgstr "Haga click en 'Continuar' para eliminar el siguiente Gráfico Agregado."
 
 #: aggregate_graphs.php:887
 msgid "Click 'Continue' to Delete following Aggregate Graphs."
-msgstr ""
-"Haga click en 'Continuar' para eliminar los siguientes Gráficos Agregados."
+msgstr "Haga click en 'Continuar' para eliminar los siguientes Gráficos Agregados."
 
 #: aggregate_graphs.php:888
 msgid "Delete Aggregate Graph"
@@ -207,15 +189,11 @@ msgstr "Borrar Gráficos de Agregación"
 
 #: aggregate_graphs.php:892
 msgid "Click 'Continue' to Migrate the following Legacy Aggregate to a Templated Aggregate Graph."
-msgstr ""
-"Haga click en 'Continuar' para migrar el siguiente Agregado heredado a una "
-"plantilla de gráfico Agregado."
+msgstr "Haga click en 'Continuar' para migrar el siguiente Agregado heredado a una plantilla de gráfico Agregado."
 
 #: aggregate_graphs.php:893
 msgid "Click 'Continue' to Migrate the following Legacy Aggregates to Templated Aggregate Graphs."
-msgstr ""
-"Haga click en 'Continuar' para migrar los siguientes Agregados heredados en "
-"una plantilla de gráfico Agregado."
+msgstr "Haga click en 'Continuar' para migrar los siguientes Agregados heredados en una plantilla de gráfico Agregado."
 
 #: aggregate_graphs.php:894
 msgid "Migrate to Aggregate Graph"
@@ -231,9 +209,7 @@ msgstr "Plantilla de Agregados"
 
 #: aggregate_graphs.php:906
 msgid "Click 'Continue' to Combine the following Aggregates into an Aggregate Graph."
-msgstr ""
-"Haga click en 'Continuar' para combinar los siguientes Agregados en un "
-"gráfico Agregado."
+msgstr "Haga click en 'Continuar' para combinar los siguientes Agregados en un gráfico Agregado."
 
 #: aggregate_graphs.php:907
 msgid "Combine Aggregate Graphs"
@@ -249,15 +225,11 @@ msgstr "Nuevo Agregado"
 
 #: aggregate_graphs.php:919
 msgid "Click 'Continue' to Place the following Aggregate Graph on a Report."
-msgstr ""
-"Haga click en 'Continuar' para colocar el siguiente Gráficos Agregado en el "
-"Reporte."
+msgstr "Haga click en 'Continuar' para colocar el siguiente Gráficos Agregado en el Reporte."
 
 #: aggregate_graphs.php:920
 msgid "Click 'Continue' to Place the following Aggregate Graphs on a Report."
-msgstr ""
-"Haga click en 'Continuar' para colocar los siguientes Gráficos Agregados en "
-"el Reporte."
+msgstr "Haga click en 'Continuar' para colocar los siguientes Gráficos Agregados en el Reporte."
 
 #: aggregate_graphs.php:921
 msgid "Place Aggregate Graph on Report"
@@ -283,15 +255,11 @@ msgstr "Alinear"
 
 #: aggregate_graphs.php:945
 msgid "Click 'Continue' to Convert the following Aggregate Graph to a Normal Graph."
-msgstr ""
-"Haga clic en 'Continuar' para convertir el siguiente gráfico Agregado en un "
-"gráfico normal."
+msgstr "Haga clic en 'Continuar' para convertir el siguiente gráfico Agregado en un gráfico normal."
 
 #: aggregate_graphs.php:946
 msgid "Click 'Continue' to Convert the following Aggregate Graphs to Normal Graphs."
-msgstr ""
-"Haga clic en 'Continuar' para convertir los siguientes gráficos Agregados en "
-"un gráfico normal."
+msgstr "Haga clic en 'Continuar' para convertir los siguientes gráficos Agregados en un gráfico normal."
 
 #: aggregate_graphs.php:947
 msgid "Convert Aggregate Graph"
@@ -303,15 +271,11 @@ msgstr "Convertir Gráficos de Agregación"
 
 #: aggregate_graphs.php:951
 msgid "Click 'Continue' to Associate the following Graph with the Aggregate Graph."
-msgstr ""
-"Haga click en 'Continuar' para asociar el siguiente gráfico con el gráfico "
-"Agregado."
+msgstr "Haga click en 'Continuar' para asociar el siguiente gráfico con el gráfico Agregado."
 
 #: aggregate_graphs.php:952
 msgid "Click 'Continue' to Associate the following Graphs with the Aggregate Graph."
-msgstr ""
-"Haga click en 'Continuar' para asociar los siguientes gráficos con el "
-"gráfico Agregado."
+msgstr "Haga click en 'Continuar' para asociar los siguientes gráficos con el gráfico Agregado."
 
 #: aggregate_graphs.php:953
 msgid "Associate Graph with Aggregate"
@@ -323,15 +287,11 @@ msgstr "Asociar gráficos con Agregaciones"
 
 #: aggregate_graphs.php:957
 msgid "Click 'Continue' to Disassociate the following Graph from the Aggregate Graph."
-msgstr ""
-"Haga click en 'Continuar' para desasociar el siguiente gráfico del Gráfico "
-"Agregado."
+msgstr "Haga click en 'Continuar' para desasociar el siguiente gráfico del Gráfico Agregado."
 
 #: aggregate_graphs.php:958
 msgid "Click 'Continue' to Disassociate the following Graphs from the Aggregate Graph."
-msgstr ""
-"Haga click en 'Continuar' para desasociar los siguiente gráficos del Gráfico "
-"Agregado."
+msgstr "Haga click en 'Continuar' para desasociar los siguiente gráficos del Gráfico Agregado."
 
 #: aggregate_graphs.php:959
 msgid "Disassociate Graph with Aggregate"
@@ -344,16 +304,12 @@ msgstr "Desasociar gráficos con Agregados"
 #: aggregate_graphs.php:970
 #, php-format
 msgid "Click 'Continue' to Place the following Aggregate Graph on Tree %s."
-msgstr ""
-"Haga click en 'Continuar' para colocar el siguiente gráfico Agregado en el "
-"Arbol %s."
+msgstr "Haga click en 'Continuar' para colocar el siguiente gráfico Agregado en el Arbol %s."
 
 #: aggregate_graphs.php:971
 #, php-format
 msgid "Click 'Continue' to Duplicate following Aggregate Graphs on Tree %s."
-msgstr ""
-"Haga click en 'Continuar' para colocar los siguientes gráficos Agregados en "
-"el Arbol %s."
+msgstr "Haga click en 'Continuar' para colocar los siguientes gráficos Agregados en el Arbol %s."
 
 #: aggregate_graphs.php:972
 msgid "Place Aggregate Graph on Tree"
@@ -789,15 +745,11 @@ msgstr "Gráficos Agregados no encontrados"
 
 #: aggregate_templates.php:333
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template."
-msgstr ""
-"Haga click en 'Continuar' para borrar la siguiente Plantilla de gráfico "
-"Agregado."
+msgstr "Haga click en 'Continuar' para borrar la siguiente Plantilla de gráfico Agregado."
 
 #: aggregate_templates.php:334
 msgid "Click 'Continue' to Delete following Aggregate Graph Templates."
-msgstr ""
-"Haga click en 'Continuar' para borrar las siguientes Plantillas de gráfico "
-"Agregado."
+msgstr "Haga click en 'Continuar' para borrar las siguientes Plantillas de gráfico Agregado."
 
 #: aggregate_templates.php:335
 msgid "Delete Aggregate Graph Template"
@@ -941,9 +893,7 @@ msgstr "No puede ser re utilizada por %d cambios de contraseña"
 
 #: auth_changepassword.php:403
 msgid "There are problems with the Change Password page.  Contact your Cacti administrator right away."
-msgstr ""
-"Hay problemas con la pagína de cambio de contraseña. Contacta al "
-"administrador de Cacti inmediatamente."
+msgstr "Hay problemas con la pagína de cambio de contraseña. Contacta al administrador de Cacti inmediatamente."
 
 #: auth_changepassword.php:410
 msgid "Please enter your current password and your new<br>Cacti password."
@@ -991,28 +941,20 @@ msgstr "Regresar"
 
 #: auth_login.php:74
 msgid "Cacti no longer supports No Authentication mode. Please contact your System Administrator."
-msgstr ""
-"Cacti ya no soporta el metodo sin autenticación, póngase en contacto con su "
-"administrador de Cacti."
+msgstr "Cacti ya no soporta el metodo sin autenticación, póngase en contacto con su administrador de Cacti."
 
 #: auth_login.php:104
 msgid "Unable to determine user Login Realm or Domain. Please contact your System Administrator."
-msgstr ""
-"No fue posible determinar el Reino o el Dominio del usuario, por favor "
-"póngase en contacto con el administrador del sistema."
+msgstr "No fue posible determinar el Reino o el Dominio del usuario, por favor póngase en contacto con el administrador del sistema."
 
 #: auth_login.php:134
 msgid "User was Authenticated, but the Template Account is disabled. Using Guest Account"
-msgstr ""
-"El usuario fue autenticado, pero la cuenta de plantilla está deshabilitada. "
-"Usando la cuenta de invitado"
+msgstr "El usuario fue autenticado, pero la cuenta de plantilla está deshabilitada. Usando la cuenta de invitado"
 
 #: auth_login.php:141
 #, php-format
 msgid "Access Denied!  Guest user id %s does not exist.  Please contact your Administrator."
-msgstr ""
-"Acceso denegado, usuario invitado de id %s no existe. Por favor contacte a "
-"su administrador."
+msgstr "Acceso denegado, usuario invitado de id %s no existe. Por favor contacte a su administrador."
 
 #: auth_login.php:180
 msgid "Access Denied!  User account disabled."
@@ -1161,9 +1103,7 @@ msgstr "Código QA 2FA"
 
 #: auth_profile.php:557
 msgid "The 2FA QA Code to be scanned with Google Authenticator, Authy or any compatible 2FA app"
-msgstr ""
-"El Código QA 2FA a ser escaneado con Google Authenticator, Authy o cualquier "
-"app 2FA compatible"
+msgstr "El Código QA 2FA a ser escaneado con Google Authenticator, Authy o cualquier app 2FA compatible"
 
 #: auth_profile.php:564
 msgid "2FA App Token"
@@ -1171,9 +1111,7 @@ msgstr "Token de la app 2FA"
 
 #: auth_profile.php:565
 msgid "The token generated by Google Authenticator, Auth or any compatible 2FA app"
-msgstr ""
-"El token generado por Google Authenticator Auth o cualquier app 2FA "
-"compatible"
+msgstr "El token generado por Google Authenticator Auth o cualquier app 2FA compatible"
 
 #: auth_profile.php:572 auth_profile.php:574
 msgid "Verify App Token"
