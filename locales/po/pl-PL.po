@@ -313,7 +313,7 @@ msgstr "Odwiąż z Aggregate"
 #: aggregate_graphs.php:985
 #, php-format
 msgid "Click 'Continue' to Place the following Aggregate Graph on Tree %s."
-msgstr "Kliknij \"Continue\" (Kontynuuj), aby usunąć następujący(-e) szablon(-y) wykresu zagregowanego (Szablon wykresów zagregowanych)."
+msgstr ""
 
 #: aggregate_graphs.php:986
 #, php-format
@@ -336,7 +336,7 @@ msgstr "Oddział docelowy:"
 #: user_admin.php:1876
 #, php-format
 msgid "[edit: %s]"
-msgstr "[edytuj: %s] [edytuj: %s]."
+msgstr ""
 
 #: aggregate_graphs.php:1054 aggregate_graphs.php:1164
 #: aggregate_graphs.php:1166
@@ -1759,7 +1759,7 @@ msgstr "Nie można przeprowadzić wyszukiwania dla sieci wyłączonej \"%s"
 #: automation_networks.php:413
 #, php-format
 msgid "ERROR: Network '%s' is Invalid."
-msgstr "ERROR: \"%\" sieci jest nieważny."
+msgstr ""
 
 #: automation_networks.php:574 host.php:435 lib/html_form.php:1667
 msgid "Update this Field"
@@ -2446,7 +2446,7 @@ msgstr "Kolejność pozycji."
 #: automation_snmp.php:680
 #, php-format
 msgid "SNMP Option Set [edit: %s]"
-msgstr "SNMP Option Set [edit: %s] [edit: %s"
+msgstr ""
 
 #: automation_snmp.php:682
 msgid "SNMP Option Set [new]"
@@ -2725,7 +2725,7 @@ msgstr "Kliknięcie przycisku \"Continue\" (Kontynuuj) powoduje usunięcie nast�
 #: automation_templates.php:915
 #, php-format
 msgid "Tree Rule Name: '%s'"
-msgstr "Punkty Regulaminu Drzewa"
+msgstr ""
 
 #: automation_templates.php:922
 msgid "Remove Tree Rule"
@@ -3277,7 +3277,7 @@ msgstr "Pełny"
 #: changelog.php:99
 #, php-format
 msgid "Change Log [%s]"
-msgstr "ChangeLogLanguage"
+msgstr ""
 
 #: changelog.php:160 support.php:1010
 #, php-format
@@ -4565,7 +4565,7 @@ msgstr "(tylko niektóre elementy do odczytu)"
 #: data_source_profiles.php:999
 #, php-format
 msgid "RRA [edit: %s %s]"
-msgstr "RRA [edit: %s %s] [edit: %s %s]."
+msgstr ""
 
 #: data_source_profiles.php:1089
 #, php-format
@@ -4614,12 +4614,12 @@ msgstr "Usuń pozycję profilu źródła danych"
 #: data_source_profiles.php:1275
 #, php-format
 msgid "%s KBytes per Data Sources and %s Bytes for the Header"
-msgstr "%s KBajty na źródło danych i % Bajtów na nagłówek"
+msgstr ""
 
 #: data_source_profiles.php:1284
 #, php-format
 msgid "%s KBytes per Data Source"
-msgstr "% KBajtów na źródło danych"
+msgstr ""
 
 #: data_source_profiles.php:1286
 msgid "Enter a valid number of Rows to obtain the RRA size."
@@ -6002,12 +6002,12 @@ msgstr "Umieść wykresy na raporcie"
 #: graphs.php:2005
 #, php-format
 msgid "Click 'Continue' to Place the following Graph on Tree %s."
-msgstr "Kliknij 'Kontynuuj', aby usunąć następujące drzewo."
+msgstr ""
 
 #: graphs.php:2006
 #, php-format
 msgid "Click 'Continue' to Duplicate following Graphs on Tree %s."
-msgstr "Kliknij 'Kontynuuj', aby usunąć następujące drzewo."
+msgstr ""
 
 #: graphs.php:2007
 msgid "Place Graph on Tree"
@@ -6059,7 +6059,7 @@ msgstr "Wybrany szablon wykresu"
 #: graphs.php:2402
 #, php-format
 msgid "Choose a Graph Template to apply to this Graph. Please note that you may only change Graph Templates to a 100%% compatible Graph Template, which means that it includes identical Data Sources."
-msgstr "Wybierz szablon wykresu, aby zastosować go do tego wykresu. Należy pamiętać, że szablony wykresów można zmienić tylko na w 100% kompatybilny szablon wykresu, co oznacza, że zawiera on identyczne źródła danych."
+msgstr ""
 
 #: graphs.php:2411
 msgid "Choose the Device that this Graph belongs to."
@@ -6161,7 +6161,7 @@ msgstr "Zarządzanie grupą użytkowników [edytuj: %s]"
 #: graphs.php:3231
 #, php-format
 msgid "Graph Management [ %s ]"
-msgstr "Zarządzanie wykresami"
+msgstr ""
 
 #: graphs_new.php:82
 msgid "Default Settings Saved"
@@ -6230,7 +6230,7 @@ msgstr "Błąd podczas analizowania pliku XML zasobu zapytania o dane dla zapyta
 #: graphs_new.php:698
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'.  Field Name '%s' missing a 'direction' attribute"
-msgstr "Błąd podczas analizowania pliku XML zasobu zapytania o dane dla zapytania danych '%s' o identyfikatorze '%s'"
+msgstr ""
 
 #: graphs_new.php:702
 #, php-format
@@ -6353,12 +6353,12 @@ msgstr "ERROR: Urządzenie ["
 #: host.php:215
 #, php-format
 msgid "Device Reindex Completed in %0.2f seconds.  There were %d items updated."
-msgstr "Reindex urządzenia zakończony w% 0,2f sekund. Zaktualizowano% d elementów."
+msgstr ""
 
 #: host.php:359
 #, php-format
 msgid "Unable to add some Devices to Report '%s'"
-msgstr "Nie można połączyć się z serwerem"
+msgstr ""
 
 #: host.php:478
 msgid "Click 'Continue' to Delete the following Device."
@@ -6472,7 +6472,7 @@ msgstr "Umieścić urządzenie(-a) na drzewie"
 #: host.php:580
 #, php-format
 msgid "Click 'Continue' to Place the following Device on Tree %s."
-msgstr "Kliknąć \"Continue\" (Kontynuuj), aby usunąć następujący(-e) szablon(-y) urządzenia."
+msgstr ""
 
 #: host.php:581
 #, fuzzy, php-format
@@ -7834,12 +7834,12 @@ msgstr "Co %d godzin"
 #: include/global_arrays.php:781
 #, php-format
 msgid "Every %d Day"
-msgstr "Każdy %1 Dzień"
+msgstr ""
 
 #: include/global_arrays.php:793
 #, php-format
 msgid "%0.1f Minutes"
-msgstr "%d minut"
+msgstr ""
 
 #: include/global_arrays.php:826 include/global_arrays.php:846
 #: include/global_arrays.php:858 include/global_arrays.php:859
@@ -8558,7 +8558,7 @@ msgstr "w ostatniej godzinie"
 #: include/global_arrays.php:1577 include/global_arrays.php:1578
 #, php-format
 msgid "Last %d Hours"
-msgstr "Ostatnie godziny"
+msgstr ""
 
 #: include/global_arrays.php:1579
 msgid "Last Day"
@@ -8577,7 +8577,7 @@ msgstr "W zeszłym tygodniu"
 #: include/global_arrays.php:1584
 #, php-format
 msgid "Last %d Weeks"
-msgstr "Ostatnie tygodnie"
+msgstr ""
 
 #: include/global_arrays.php:1585
 msgid "Last Month"
@@ -8587,7 +8587,7 @@ msgstr "Ostatni miesiąc"
 #: include/global_arrays.php:1588 include/global_arrays.php:1589
 #, php-format
 msgid "Last %d Months"
-msgstr "Ostatnie miesiące"
+msgstr ""
 
 #: include/global_arrays.php:1590
 msgid "Last Year"
@@ -8596,7 +8596,7 @@ msgstr "W poprzednim roku"
 #: include/global_arrays.php:1591
 #, php-format
 msgid "Last %d Years"
-msgstr "Ostatnie lata"
+msgstr ""
 
 #: include/global_arrays.php:1592
 msgid "Day Shift"
@@ -9042,7 +9042,7 @@ msgstr "Raz na tygodzień"
 #: include/global_arrays.php:2017 include/global_arrays.php:2018
 #, php-format
 msgid "Every %d Weeks"
-msgstr "Co tydzień"
+msgstr ""
 
 #: include/global_arrays.php:2022 include/global_arrays.php:3092
 #: include/global_settings.php:1651
@@ -9764,7 +9764,7 @@ msgstr "Określono liczbę identyfikatorów OID, które można uzyskać w jednym
 #: include/global_form.php:177
 #, php-format
 msgid "%d OID"
-msgstr "Max OID"
+msgstr ""
 
 #: include/global_form.php:178 include/global_form.php:179
 #: include/global_form.php:180 include/global_form.php:181
@@ -9797,7 +9797,7 @@ msgstr "Automatyczne wykrywanie/ustawianie przy pierwszym ponownym indeksowaniu"
 #: include/global_form.php:204
 #, php-format
 msgid "%d Repetition"
-msgstr "Opcje siatki"
+msgstr ""
 
 #: include/global_form.php:205 include/global_form.php:206
 #: include/global_form.php:207 include/global_form.php:208
@@ -9809,7 +9809,7 @@ msgstr "Opcje siatki"
 #: include/global_form.php:219
 #, php-format
 msgid "%d Repetitions"
-msgstr "Opcje siatki"
+msgstr ""
 
 #: include/global_form.php:228
 msgid "The maximum number of attempts to reach a device via an SNMP readstring prior to giving up."
@@ -11964,7 +11964,7 @@ msgstr "Domyślna liczba gwintów urządzenia.  Ma to zastosowanie wyłącznie w
 #: include/global_settings.php:874
 #, php-format
 msgid "%s Thread"
-msgstr "%d Gwint"
+msgstr ""
 
 #: include/global_settings.php:875 include/global_settings.php:876
 #: include/global_settings.php:877 include/global_settings.php:878
@@ -11973,7 +11973,7 @@ msgstr "%d Gwint"
 #: include/global_settings.php:883
 #, php-format
 msgid "%s Threads"
-msgstr "%d Gwinty"
+msgstr ""
 
 #: include/global_settings.php:887
 msgid "Re-index Method for Data Queries"
@@ -14770,12 +14770,12 @@ msgstr "Reguła SNMP sieci automatyzacji '%s' %s nie powiodła się!"
 #: lib/api_automation.php:5525 lib/api_automation.php:5527
 #, php-format
 msgid "Automation Network SNMP Option %s!"
-msgstr "Automatyzacja Opcje SNMP"
+msgstr ""
 
 #: lib/api_automation.php:5531 lib/api_automation.php:5533
 #, php-format
 msgid "Automation Network SNMP Option %s Failed!"
-msgstr "Automatyzacja Opcje SNMP"
+msgstr ""
 
 #: lib/api_automation.php:5573
 msgid "The Automation Network Rule does not include any SNMP Options!"
@@ -14796,7 +14796,7 @@ msgstr "Nieznany szablon"
 #: lib/api_automation.php:5629 lib/api_automation.php:5631
 #, php-format
 msgid "Automation Network Rule '%s' %s!"
-msgstr "Domyślna sieć automatyki"
+msgstr ""
 
 #: lib/api_automation.php:5635 lib/api_automation.php:5637
 #, php-format
@@ -15236,29 +15236,29 @@ msgstr "Urządzenie jest wyłączone"
 #: lib/auth.php:2302 lib/auth.php:2304 lib/auth.php:2310 lib/auth.php:2312
 #, php-format
 msgid "Graph:(%s%s)"
-msgstr "Wykres:"
+msgstr ""
 
 #: lib/auth.php:2325 lib/auth.php:2331 lib/auth.php:2398 lib/auth.php:2400
 #: lib/auth.php:2404 lib/auth.php:2406
 #, php-format
 msgid "Device:(%s%s)"
-msgstr "Urządzenie:"
+msgstr ""
 
 #: lib/auth.php:2339 lib/auth.php:2345 lib/auth.php:2414 lib/auth.php:2416
 #: lib/auth.php:2420 lib/auth.php:2422
 #, php-format
 msgid "Template:(%s%s)"
-msgstr "Szablony"
+msgstr ""
 
 #: lib/auth.php:2352
 #, php-format
 msgid "Graph+Device+Template:(%s%s)"
-msgstr "Szablon urządzenia:"
+msgstr ""
 
 #: lib/auth.php:2389 lib/auth.php:2391
 #, php-format
 msgid "Device+Template:(%s%s)"
-msgstr "Szablon urządzenia:"
+msgstr ""
 
 #: lib/auth.php:2435 lib/auth.php:2442 lib/auth.php:2451
 msgid "Restricted By: "
@@ -15408,7 +15408,7 @@ msgstr "2FA zostało włączone i zweryfikowane"
 #: lib/boost.php:82 utilities.php:1378
 #, php-format
 msgid "%s MBytes"
-msgstr "%d MBajty"
+msgstr ""
 
 #: lib/boost.php:85
 #, php-format
@@ -15645,7 +15645,7 @@ msgstr "Wykryto usunięcie indeksu! Poprzednindex: %s"
 #: lib/data_query.php:403
 #, php-format
 msgid "Verification of %s Local Data ID's Complete"
-msgstr "Indeks Stowarzyszenie z danymi lokalnymi kompletne"
+msgstr ""
 
 #: lib/data_query.php:406
 #, php-format
@@ -15671,7 +15671,7 @@ msgstr "Indeks Stowarzyszenie z danymi lokalnymi kompletne"
 #: lib/data_query.php:435
 #, php-format
 msgid "Update Re-Index Cache complete. There were %s index changes, and %s orphaned indexes."
-msgstr "Aktualizacja Re-Index Cache kompletny. Były to"
+msgstr ""
 
 #: lib/data_query.php:439
 msgid "Update Poller Cache for Query complete"
@@ -15785,7 +15785,7 @@ msgstr "Kliknąć, aby wyświetlić dane wyjściowe dla pola '%s'."
 #: lib/data_query.php:848
 #, php-format
 msgid "Sort field returned no data for field name %s, skipping"
-msgstr "Pole sortowania nie zwróciło żadnych danych.  Nie można kontynuować Re-Index."
+msgstr ""
 
 #: lib/data_query.php:850
 #, php-format
@@ -15915,7 +15915,7 @@ msgstr "Pole \"%s\" %s"
 #: lib/data_query.php:1285
 #, php-format
 msgid "Executing SNMP get for %s oids (%s)"
-msgstr "Wykonanie SNMP uzyskać dla % ofert (%s)"
+msgstr ""
 
 #: lib/data_query.php:1310
 #, fuzzy, php-format
@@ -15955,7 +15955,7 @@ msgstr "Położone pole wejściowe \"%s\" [spacer]."
 #: lib/data_query.php:1403 lib/data_query.php:1412
 #, php-format
 msgid "Sort field returned no data for OID[%s], skipping."
-msgstr "Pole sortowania zwrócone nie dane.  Nie można kontynuować Re-Index dla OID[%]."
+msgstr ""
 
 #: lib/data_query.php:1418
 #, php-format
@@ -16034,7 +16034,7 @@ msgstr "Nie udało się zmienić długości pola hasła, nie może być kontynuo
 #: lib/dsdebug.php:190
 #, php-format
 msgid "Data Source ID %s does not exist"
-msgstr "Źródło danych nie istnieje"
+msgstr ""
 
 #: lib/dsdebug.php:275
 msgid "Debug not completed after 5 pollings"
@@ -16051,12 +16051,12 @@ msgstr "Źródło danych nie jest ustawione jako aktywne"
 #: lib/dsdebug.php:293
 #, php-format
 msgid "RRDfile Folder (rra) is not writable by Poller.  Folder owner: %s.  Poller runs as: %s"
-msgstr "Folder RRD nie może być zapisywany przez Pollera.  Właściciel RRD:"
+msgstr ""
 
 #: lib/dsdebug.php:298
 #, php-format
 msgid "RRDfile is not writable by Poller.  RRDfile owner: %s.  Poller runs as %s"
-msgstr "Plik RRD nie jest zapisywalny przez Pollera.  Właściciel RRD:"
+msgstr ""
 
 #: lib/dsdebug.php:307
 msgid "RRDfile does not match Data Source"
@@ -16301,7 +16301,7 @@ msgstr "- Beta %s"
 #: lib/functions.php:7594
 #, php-format
 msgid "Version %s %s"
-msgstr "Wersja %s"
+msgstr ""
 
 #: lib/functions.php:8151
 #, php-format
@@ -16363,7 +16363,7 @@ msgstr "Zabijaj kolce na wykresach"
 #: lib/html.php:625
 #, php-format
 msgid "%d to %d of %s [ %s ]"
-msgstr "%d do %d %d %s [ %s ]"
+msgstr ""
 
 #: lib/html.php:635
 #, php-format
@@ -16373,7 +16373,7 @@ msgstr "Wszystkie %d %s"
 #: lib/html.php:654
 #, php-format
 msgid "Current Page: %s"
-msgstr "Wartość bieżąca"
+msgstr ""
 
 #: lib/html.php:685
 #, php-format
@@ -16866,7 +16866,7 @@ msgstr "Terminy Zoom sprzed 1 stycznia 1993 r. nie są obsługiwane w Cacti!  Wy
 #: lib/html.php:3517
 #, php-format
 msgid "Version %s | %s"
-msgstr "Wersja %s"
+msgstr ""
 
 #: lib/html_filter.php:347
 msgid "Named Colors"
@@ -16980,7 +16980,7 @@ msgstr "Wprowadź prawidłową ścieżkę katalogową"
 #: lib/html_form.php:1362
 #, php-format
 msgid "Cacti Color (%s)"
-msgstr "Kolor Cacti (%)"
+msgstr ""
 
 #: lib/html_form.php:1430
 msgid "NO FONT VERIFICATION POSSIBLE"
@@ -17147,7 +17147,7 @@ msgstr "WYKRES NIE ISTNIEJE"
 #: lib/html_graph.php:1733 lib/html_graph.php:2065
 #, php-format
 msgid "Graph Utility View for Graph: %s"
-msgstr "Widok narzędzia graficznego"
+msgstr ""
 
 #: lib/html_graph.php:1784
 msgid "CSV Export"
@@ -17530,12 +17530,12 @@ msgstr "nowy] [nowy]."
 #: lib/html_reports.php:1530
 #, php-format
 msgid "Details %s"
-msgstr "Szczegóły"
+msgstr ""
 
 #: lib/html_reports.php:1572
 #, php-format
 msgid "Report Items %s"
-msgstr "Brak pozycji sprawozdania"
+msgstr ""
 
 #: lib/html_reports.php:1666
 msgid "Item Details"
@@ -17544,7 +17544,7 @@ msgstr "Szczegóły produktu"
 #: lib/html_reports.php:1681
 #, php-format
 msgid "Graph: %s"
-msgstr "Kliknij \"Kontynuuj\", aby usunąć następujący(e) zagregowany wykres(y)."
+msgstr ""
 
 #: lib/html_reports.php:1684 lib/html_reports.php:1711
 #: lib/html_reports.php:1724 lib/html_reports.php:1725
@@ -17574,7 +17574,7 @@ msgstr ", Używając RegEx: \"%s\""
 #: lib/html_reports.php:1751
 #, php-format
 msgid "Tree: %s"
-msgstr "Drzewo:"
+msgstr ""
 
 #: lib/html_reports.php:1761
 #, php-format
@@ -17584,7 +17584,7 @@ msgstr "(Z urządzenia: %s)"
 #: lib/html_reports.php:1763
 #, php-format
 msgid ", Branch: %s"
-msgstr "Oddział:"
+msgstr ""
 
 #: lib/html_reports.php:1766
 msgid "(All Branches)"
@@ -17621,7 +17621,7 @@ msgstr "Ograniczający"
 #: lib/html_reports.php:1931
 #, php-format
 msgid "Report Preview %s"
-msgstr "Podgląd raportu"
+msgstr ""
 
 #: lib/html_reports.php:1954 lib/html_reports.php:2248
 #, fuzzy
@@ -17925,7 +17925,7 @@ msgstr "Nie zastosowano określonego odstępu czasu cron"
 #: lib/installer.php:1208
 #, php-format
 msgid "Failed to apply '%s' as Automation Range"
-msgstr "Nie zastosowano określonego zakresu automatyki"
+msgstr ""
 
 #: lib/installer.php:1300
 msgid "No matching snmp option exists"
@@ -18082,7 +18082,7 @@ msgstr "Twoja konfiguracja Cacti ma poprawną ścieżkę (url_path) w config.php
 #: lib/installer.php:2199
 #, php-format
 msgid "PHP - Recommendations (%s)"
-msgstr "PZP - zalecenia"
+msgstr ""
 
 #: lib/installer.php:2203
 msgid "PHP Recommendations ("
@@ -18760,7 +18760,7 @@ msgstr "Aktualizuj"
 #: lib/installer.php:3248
 #, php-format
 msgid "%d Tables to be Upgraded"
-msgstr "Typ elementu do dodania."
+msgstr ""
 
 #: lib/installer.php:3249
 msgid "The following Tables will be Upgraded to InnoDB and Converted to utf8mb4 for performance and internationalization."
@@ -18847,7 +18847,7 @@ msgstr "Import pakietu nr%s '%s' w profilu '%s' nie powiódł się"
 #: lib/installer.php:3653
 #, php-format
 msgid "Mapping Automation Template for Device Template '%s'"
-msgstr "Szablony automatyzacji dla [Usunięty szablon]."
+msgstr ""
 
 #: lib/installer.php:3674
 msgid "No templates were selected for import"
@@ -18860,12 +18860,12 @@ msgstr "Oczekiwanie na konfigurację"
 #: lib/installer.php:3714
 #, php-format
 msgid "Setting default data source profile to %s (%s)"
-msgstr "Domyślny profil źródła danych dla tego szablonu danych."
+msgstr ""
 
 #: lib/installer.php:3739
 #, php-format
 msgid "Failed to find selected profile (%s), no changes were made"
-msgstr "Nie zastosowano określonego profilu %s != %s"
+msgstr ""
 
 #: lib/installer.php:3750
 #, php-format
@@ -18883,12 +18883,12 @@ msgstr "Dodanie dodatkowych ustawień snmp do automatyzacji"
 #: lib/installer.php:3775
 #, php-format
 msgid "Selecting Automation Option Set %s"
-msgstr "Usuń szablon(y) automatyki"
+msgstr ""
 
 #: lib/installer.php:3789
 #, php-format
 msgid "Updating Automation Option Set %s"
-msgstr "Automatyzacja Opcje SNMP"
+msgstr ""
 
 #: lib/installer.php:3793
 #, php-format
@@ -18898,12 +18898,12 @@ msgstr "Pomyślnie zaktualizowano zestaw opcji automatyzacji%s"
 #: lib/installer.php:3795
 #, php-format
 msgid "Resequencing Automation Option Set %s"
-msgstr "Uruchomić automatykę na urządzeniu(-ach)"
+msgstr ""
 
 #: lib/installer.php:3802
 #, php-format
 msgid "Failed to updated Automation Option Set %s"
-msgstr "Nie zastosowano określonego zakresu automatyki"
+msgstr ""
 
 #: lib/installer.php:3805
 msgid "Failed to find any automation option set"
@@ -18930,7 +18930,7 @@ msgstr "Urządzenie %s dodane do Cacti"
 #: lib/installer.php:3862
 #, php-format
 msgid "Output: %s."
-msgstr "Pola wyjściowe"
+msgstr ""
 
 #: lib/installer.php:3882
 msgid "Creating Graphs for Default Device"
@@ -19010,7 +19010,7 @@ msgstr "Tło rozpoczęło się już w%s, ta próba w%s została pominięta"
 #: lib/installer.php:4130
 #, php-format
 msgid "Exception occurred during installation: #%s - %s"
-msgstr "Podczas instalacji miały miejsce wyjątki:  #"
+msgstr ""
 
 #: lib/installer.php:4140
 #, php-format
@@ -19077,17 +19077,17 @@ msgstr "Nie zdefiniowano nazwy użytkownika"
 #: lib/ldap.php:423
 #, php-format
 msgid "Protocol Error, Unable to set version (%s) on Server (%s)"
-msgstr "Błąd protokołu, brak możliwości ustawienia wersji"
+msgstr ""
 
 #: lib/ldap.php:424
 #, php-format
 msgid "Protocol Error, Unable to set referrals option (%s) on Server (%s)"
-msgstr "Protokół Błąd, Nie można ustawić opcji Odsyłanie"
+msgstr ""
 
 #: lib/ldap.php:425
 #, php-format
 msgid "Protocol Error, unable to start TLS communications (%s) on Server (%s)"
-msgstr "Błąd protokołu, brak możliwości uruchomienia komunikacji TLS"
+msgstr ""
 
 #: lib/ldap.php:426
 #, php-format
@@ -19097,27 +19097,27 @@ msgstr "Protokół Błąd, błąd ogólny (%s)"
 #: lib/ldap.php:427
 #, php-format
 msgid "Protocol Error, Unable to bind, LDAP result: (%s) on Server (%s)"
-msgstr "Błąd protokołu, brak możliwości powiązania, wynik LDAP: %s"
+msgstr ""
 
 #: lib/ldap.php:428
 #, php-format
 msgid "Unable to Connect to Server (%s)"
-msgstr "Nie można połączyć się z serwerem"
+msgstr ""
 
 #: lib/ldap.php:429
 #, php-format
 msgid "Connection Timeout to Server (%s)"
-msgstr "Limit czasu połączenia"
+msgstr ""
 
 #: lib/ldap.php:430
 #, php-format
 msgid "Insufficient Access to Server (%s)"
-msgstr "Niewystarczający dostęp"
+msgstr ""
 
 #: lib/ldap.php:431
 #, php-format
 msgid "Group DN could not be found to compare on Server (%s)"
-msgstr "Grupa DN nie mogła być znaleziona do porównania"
+msgstr ""
 
 #: lib/ldap.php:432
 msgid "More than one matching user found"
@@ -19134,7 +19134,7 @@ msgstr "Nie można znaleźć użytkowników DN"
 #: lib/ldap.php:435
 #, php-format
 msgid "Unable to create LDAP connection object to Server (%s)"
-msgstr "Nie można utworzyć obiektu połączenia LDAP"
+msgstr ""
 
 #: lib/ldap.php:436
 msgid "Specific DN and Password required"
@@ -19147,7 +19147,7 @@ msgstr "Podano nieprawidłowe hasło. Logowanie nie powiodło się."
 #: lib/ldap.php:438
 #, php-format
 msgid "Unexpected error %s (Ldap Error: %s) on Server (%s)"
-msgstr "Nieoczekiwany błąd %s (błąd Ldap: %s)"
+msgstr ""
 
 #: lib/package.php:115 package_import.php:82
 msgid "Key Generation Required to Use Tool"
@@ -19380,12 +19380,12 @@ msgstr "Załadowanie nie powiodło się!  Nie można znaleźć dostępnego rekor
 #: lib/plugins.php:1728
 #, php-format
 msgid "The Plugin '%s' has been archived successfully."
-msgstr "Kaktusy pomyślnie oczyszczone z Cacti"
+msgstr ""
 
 #: lib/plugins.php:1730
 #, php-format
 msgid "The Plugin '%s' archiving process has failed.  Check the Cacti log for errors."
-msgstr "Jedna lub więcej napraw plików RRD nie powiodło się.  Informacje o błędach można znaleźć w dzienniku kaktusów."
+msgstr ""
 
 #: lib/plugins.php:1733
 #, php-format
@@ -19555,32 +19555,32 @@ msgstr "Komendy RRDtool:"
 #: lib/rrd.php:3415
 #, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
-msgstr "Wymagana wielkość kroku RRD wynosi \"%s"
+msgstr ""
 
 #: lib/rrd.php:3475
 #, php-format
 msgid "Type for Data Source '%s' should be '%s'"
-msgstr "Typ źródła danych \"%\" powinien być \"%\"."
+msgstr ""
 
 #: lib/rrd.php:3481
 #, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
-msgstr "Heartbeat for Data Source \"%\" powinien być \"%\"."
+msgstr ""
 
 #: lib/rrd.php:3493
 #, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
-msgstr "Minimalna wartość RRD dla źródeł danych \"%\" powinna wynosić \"%\"."
+msgstr ""
 
 #: lib/rrd.php:3502
 #, php-format
 msgid "DS '%s' missing in Cacti definition"
-msgstr "DS \"%\" brakujące w definicji Cacti"
+msgstr ""
 
 #: lib/rrd.php:3516 lib/rrd.php:3517
 #, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
-msgstr "RRA Cacti \"%\" ma taki sam CF/etapy (%s, %s) jak \"%s"
+msgstr ""
 
 #: lib/rrd.php:3531 lib/rrd.php:3532
 #, php-format
@@ -19595,22 +19595,22 @@ msgstr "Wartość pdp_per_row dla '%s' jest nieprawidłowa dla RRA '%s' powinna 
 #: lib/rrd.php:3570
 #, php-format
 msgid "The XFF for Cacti RRA id is '%s' but should be '%s'"
-msgstr "XFF dla Cacti RRA id \"%\" powinno być \"%\"."
+msgstr ""
 
 #: lib/rrd.php:3574
 #, php-format
 msgid "The number of rows for Cacti RRA id '%s' is incorrect.  The number of rows are '%s' but should be '%s'"
-msgstr "Liczba wierszy dla Cacti RRA id \"%\" powinna być \"%\"."
+msgstr ""
 
 #: lib/rrd.php:3593
 #, php-format
 msgid "The RRA '%s' missing in the existing Cacti RRDfile"
-msgstr "Brak \"%\" RRA w pliku RRD"
+msgstr ""
 
 #: lib/rrd.php:3600
 #, php-format
 msgid "RRA '%s' missing in Cacti definition"
-msgstr "Brak \"%\" RRA w definicji Cacti"
+msgstr ""
 
 #: lib/rrd.php:3619
 msgid "RRD File Information"
@@ -20000,7 +20000,7 @@ msgstr "ERROR: Walidacja białej listy nie powiodła się. Sprawdź metodę wpro
 #: lib/template.php:2332
 #, php-format
 msgid "Graph Not created for %s due to bad data"
-msgstr "Tworzenie wykresu"
+msgstr ""
 
 #: lib/template.php:2361
 #, php-format
@@ -20056,7 +20056,7 @@ msgstr "Dzięki możliwości zdalnej ankiety duże ilości danych zostaną zsync
 #: lib/utility.php:1185
 #, php-format
 msgid "If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10%% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status."
-msgstr "Jeśli używasz Cacti Performance Booster i wybierasz silnik pamięci masowej, musisz być ostrożny, aby spłukać bufor Performance Booster zanim system zabraknie miejsca na stole pamięci.  Odbywa się to na dwa sposoby, najpierw zmniejszając rozmiar kolumny wyjściowej do właściwego rozmiaru.  Kolumna ta znajduje się w tabelach poller_output i poller_output_boost.  Drugą rzeczą, którą można zrobić, jest przydzielenie większej ilości pamięci do tabel pamięci.  Wybraliśmy arbitralnie zalecaną wartość 10% pamięci systemowej, ale jeśli używasz dysków SSD lub masz mniejszy system, możesz zignorować to zalecenie lub wybrać inny silnik pamięci masowej.  Możesz zobaczyć oczekiwane zużycie tabel Performance Booster w sekcji Konsola -> Narzędzia systemowe -> Zobacz status Boost."
+msgstr ""
 
 #: lib/utility.php:1191
 msgid "When executing subqueries, having a larger temporary table size, keep those temporary tables in memory."
@@ -20086,7 +20086,7 @@ msgstr "Jeśli Twoje tabele mają bardzo duże indeksy, musisz ustawić wartoś�
 #: lib/utility.php:1227
 #, php-format
 msgid "InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size.  If you database is very large or remote, you can consider increasing this size.  If remote, it can by as high as 80% of the systems memory.  However, cautions must be taken to reduce the swappiness of the system, or to remove swap to keep the system from swapping."
-msgstr "InnoDB będzie trzymać w pamięci systemowej jak najwięcej tabel i indeksów, jak to tylko możliwe.  Dlatego powinieneś sprawić, że innodb_buffer_pool będzie wystarczająco duży, aby pomieścić jak najwięcej tabel i indeksów w pamięci.  Sprawdzenie rozmiaru katalogu /var/lib/mysql/cacti pomoże w określeniu tej wartości.  Zalecamy 25% całkowitej pojemności pamięci systemów, ale Twoje wymagania będą się różnić w zależności od wielkości systemów."
+msgstr ""
 
 #: lib/utility.php:1233
 #, fuzzy
@@ -20198,12 +20198,12 @@ msgstr "PHP %s jest wersją minimalną"
 #: lib/utility.php:1980
 #, php-format
 msgid "A minimum of %s memory limit"
-msgstr "Minimalny limit pamięci MB"
+msgstr ""
 
 #: lib/utility.php:1982
 #, php-format
 msgid "A minimum of %s m execution time"
-msgstr "Minimalny czas realizacji % m"
+msgstr ""
 
 #: lib/utility.php:1984
 msgid "A valid timezone that matches MySQL and the system"
@@ -20414,7 +20414,7 @@ msgstr "Wylogowanie Cacti"
 #: logout.php:70
 #, php-format
 msgid "You have been logged out of Cacti due to %s."
-msgstr "Zostałeś wylogowany z Cacti z powodu limitu czasu sesji."
+msgstr ""
 
 #: logout.php:71
 #, php-format
@@ -20623,17 +20623,17 @@ msgstr "Co chciałbyś eksportować?"
 #: package.php:278
 #, php-format
 msgid "%s Device Package"
-msgstr "Nazwa urządzenia"
+msgstr ""
 
 #: package.php:282
 #, php-format
 msgid "%s Graph Template Package"
-msgstr "Nazwa szablonu wykresu"
+msgstr ""
 
 #: package.php:286
 #, php-format
 msgid "%s Data Query Package"
-msgstr "Nazwa zapytania o dane"
+msgstr ""
 
 #: package.php:314 templates_export.php:168
 #, php-format
@@ -20647,7 +20647,7 @@ msgstr "Dostępne szablony"
 #: package.php:323
 #, php-format
 msgid "%s to Export"
-msgstr "Eksport"
+msgstr ""
 
 #: package.php:324
 msgid "Choose the exact items to export in the Package."
@@ -20722,7 +20722,7 @@ msgstr "Nie można utworzyć katalogu tymczasowego pakietu %s."
 #: package_import.php:208 package_import.php:529
 #, php-format
 msgid "The Package %s Imported Successfully"
-msgstr "Kaktusy pomyślnie oczyszczone z Cacti"
+msgstr ""
 
 #: package_import.php:210 package_import.php:531
 #, php-format
@@ -21683,7 +21683,7 @@ msgstr "Zainstaluj wtyczkę"
 #: plugins.php:1816
 #, php-format
 msgid "Plugin '%s' can not be archived before it's been Installed."
-msgstr "Nie można zainstalować wtyczki."
+msgstr ""
 
 #: plugins.php:1827
 msgid "Remove Plugin Data Tables and Settings"
@@ -21771,27 +21771,27 @@ msgstr "Włącz wtyczkę"
 #: poller.php:405
 #, php-format
 msgid "WARNING: %s is out of sync with the Poller Interval for Poller[%d]!  The Poller Interval is %d seconds, with a maximum of a %d seconds, but %d seconds have passed since the last poll!"
-msgstr "OSTRZEŻENIE: %s nie jest zsynchronizowane z interwałem Pollera!  Interwał Pollera wynosi \"%d\" sekund, z maksimum \"%d\" sekund, ale %d sekund minęło od ostatniej ankiety!"
+msgstr ""
 
 #: poller.php:594
 #, php-format
 msgid "WARNING: There are %d processes detected as overrunning a polling cycle for Poller[%d], please investigate."
-msgstr "OSTRZEŻENIE: Wykryto \"%d\" jako przekroczenie cyklu wyborczego, proszę zbadać."
+msgstr ""
 
 #: poller.php:652
 #, php-format
 msgid "WARNING: Poller Output Table not empty for Poller[%d].  Issues: %d, %s."
-msgstr "OSTRZEŻENIE: Poller Output Table not Empty.  Zagadnienia: %d, %s."
+msgstr ""
 
 #: poller.php:693
 #, php-format
 msgid "ERROR: The spine path: %s is invalid for Poller[%d].  Poller can not continue!"
-msgstr "ERROR: Ścieżka kręgosłupa: %s jest nieważna.  Poller nie może być kontynuowany!"
+msgstr ""
 
 #: poller.php:842
 #, php-format
 msgid "Maximum runtime of %d seconds exceeded for Poller[%d]. Exiting."
-msgstr "Przekroczony maksymalny czas pracy %d sekund. Wyjście."
+msgstr ""
 
 #: poller.php:1022
 #, php-format
@@ -21823,7 +21823,7 @@ msgstr "UWAGA: Dodano drugi moduł gromadzący dane Cacti. Dlatego też automaty
 #: poller_automation.php:57
 #, php-format
 msgid "WARNING: Main Cacti database %s offline or in recovery"
-msgstr "OSTRZEŻENIE: Główna baza danych kaktusów w trybie offline lub w trakcie odzyskiwania"
+msgstr ""
 
 #: poller_automation.php:1071 poller_automation.php:1125
 msgid "Cacti Primary Admin"
@@ -22422,7 +22422,7 @@ msgstr "UWAGA: Ustawienia ścieżki na tej karcie są zapisywane tylko lokalnie!
 #: settings.php:140
 #, php-format
 msgid "Cacti Settings (%s)%s"
-msgstr "Ustawienia Cacti (%s)"
+msgstr ""
 
 #: settings.php:264
 msgid "Changing Permission Model Warning"
@@ -23143,7 +23143,7 @@ msgstr "Różne wersje Cacti i kręgosłupa!"
 #: support.php:1313
 #, php-format
 msgid "Action[%s]"
-msgstr "Działanie[%]"
+msgstr ""
 
 #: support.php:1318
 msgid "No items to poll"
@@ -23373,12 +23373,12 @@ msgstr "Uszkodzona"
 #: templates_import.php:321
 #, php-format
 msgid "Met: %d"
-msgstr "warunków:"
+msgstr ""
 
 #: templates_import.php:325
 #, php-format
 msgid "Unmet: %d"
-msgstr "Niezaspokojone"
+msgstr ""
 
 #: templates_import.php:334
 msgid "Some CDEF Items will not import due to an export error! Contact Template provider for an updated export."
@@ -24069,7 +24069,7 @@ msgstr "Pokaż wyjątki"
 #: user_admin.php:2423
 #, php-format
 msgid "Group Membership %s"
-msgstr "Członkostwo w grupie %"
+msgstr ""
 
 #: user_admin.php:2427
 msgid "Show All"
@@ -24686,7 +24686,7 @@ msgstr "Przejrzysty rejestr Cacti"
 #: utilities.php:192
 #, php-format
 msgid "%s - WEBUI NOTE: Cacti Log Cleared from Web Management Interface."
-msgstr "UWAGA: Cacti Log Cleared from Web Management Interface."
+msgstr ""
 
 #: utilities.php:194
 msgid "Cacti Log Cleared"
@@ -24996,7 +24996,7 @@ msgstr "%d sek."
 #: utilities.php:1358
 #, php-format
 msgid "%0.2f percent of update frequency)"
-msgstr "%0,2f procent częstotliwości aktualizacji)"
+msgstr ""
 
 #: utilities.php:1366
 msgid "RRD Updates:"
@@ -25030,7 +25030,7 @@ msgstr "Szczegółowe Timery Runtime:"
 #: utilities.php:1449 utilities.php:1451
 #, php-format
 msgid "Process: %d"
-msgstr "1 Proces"
+msgstr ""
 
 #: utilities.php:1449
 #, php-format
@@ -25427,10 +25427,6 @@ msgstr "Nr VDEF"
 #~ msgstr[1] ""
 #~ msgstr[2] ""
 
-#, php-format
-#~ msgid "Click 'Continue' to Duplicate following Devices on Tree %s."
-#~ msgstr "Kliknij 'Kontynuuj', aby usunąć następujące drzewo."
-
 #, fuzzy
 #~ msgid "Click 'Continue' to Synchronize Devices associated with the selected Device Template(s).  Note that this action may take some time depending on the number of Devices mapped to the Device Template."
 #~ msgstr "Kliknąć \"Continue\" (Kontynuuj), aby zsynchronizować urządzenia powiązane z wybranym(-i) szablonem(-ami) urządzenia.  Należy pamiętać, że czynność ta może zająć trochę czasu w zależności od liczby urządzeń mapowanych do szablonu urządzenia."
@@ -25602,7 +25598,6 @@ msgstr "Nr VDEF"
 #~ msgstr "Utworzone drzewa"
 
 #, fuzzy
-#~| msgid "DES"
 #~ msgid "DS"
 #~ msgstr "DES"
 
@@ -26240,10 +26235,6 @@ msgstr "Nr VDEF"
 
 #~ msgid "This value represents the number of high and low average samples will be removed from the sample set prior to calculating the Variance Average.  If you choose an outlier value of 5, then both the top and bottom 5 averages are removed."
 #~ msgstr "Wartość ta odpowiada liczbie próbek o wysokiej i niskiej średniej liczbie próbek, które zostaną usunięte z zestawu próbek przed obliczeniem średniej zmienności.  Jeśli wybierzesz wartość odbiegającą od wartości 5, to zarówno górna jak i dolna 5 średnich zostaną usunięte."
-
-#, php-format
-#~ msgid "This value represents the percentage above the adjusted sample average once outliers have been removed from the sample.  For example, a Variance Percentage of 100%% on an adjusted average of 50 would remove any sample above the quantity of 100 from the graph."
-#~ msgstr "Wartość ta stanowi odsetek powyżej skorygowanej średniej próbki po usunięciu wartości odstających z próbki.  Na przykład, Variance Procent 100% przy skorygowanej średniej 50 usunąłby z wykresu każdą próbkę powyżej ilości 100."
 
 #~ msgid "Threads per Process"
 #~ msgstr "Domyślne gwinty na proces"
