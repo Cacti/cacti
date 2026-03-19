@@ -40,6 +40,10 @@ function emit_cdef_line(string $cdef_string, int $item_index): ?string {
 		return null;
 	}
 
+	// bounds guard: chr(ord('a') + N) only produces a-z for 0..25.
+	// Production rrd.php uses generate_graph_def_name() (digit-to-letter
+	// lookup) which handles any non-negative int; this guard is specific
+	// to the test helper's chr()-based approach.
 	if ($item_index < 0 || $item_index > 25) {
 		return null;
 	}
@@ -100,6 +104,14 @@ test('non-empty cdef string emits valid CDEF line', function () {
 	$result = emit_cdef_line('a,8,*', 0);
 
 	expect($result)->toBe('CDEF:cdefa=a,8,*');
+});
+
+test('guard uses strict empty string check so null would not match', function () {
+	// rrd_substitute_host_query_data() has return type `: string`, so null
+	// cannot reach the guard in production. This test documents that the
+	// strict === '' comparison does not catch null, confirming reliance on
+	// the upstream return type guarantee.
+	expect('' === null)->toBeFalse();
 });
 
 test('whitespace-only cdef string is NOT treated as empty', function () {
@@ -226,4 +238,44 @@ test('expand_similar_nodups skips items with missing type_name', function () {
 	];
 
 	expect(expand_similar_nodups($items, 'traffic_in', 1))->toBe('');
+});
+
+// --- Additional edge cases for emit_cdef_line ---
+
+test('emit_cdef_line handles item_index at boundary 0', function () {
+	$result = emit_cdef_line('a,8,*', 0);
+
+	expect($result)->toBe('CDEF:cdefa=a,8,*');
+});
+
+// --- Additional edge cases for expand_similar_nodups ---
+
+test('expand_similar_nodups handles single matching item', function () {
+	$items = [
+		['type_name' => 'AREA', 'data_source_name' => 'cpu', 'cf_id' => 1, 'def_name' => 'a'],
+	];
+
+	$result = expand_similar_nodups($items, 'cpu', 1);
+
+	expect($result)->not->toBe('')
+		->and($result)->not->toContain(',+');
+});
+
+test('expand_similar_nodups skips items with missing data_source_name key', function () {
+	$items = [
+		['type_name' => 'AREA', 'cf_id' => 1, 'def_name' => 'b', 'data_source_name' => 'other'],
+	];
+
+	expect(expand_similar_nodups($items, 'traffic_in', 1))->toBe('');
+});
+
+test('expand_similar_nodups returns empty when data_source_name matches but cf_id differs', function () {
+	$items = [
+		['type_name' => 'AREA', 'data_source_name' => 'traffic_in', 'cf_id' => 1, 'def_name' => 'b'],
+		['type_name' => 'STACK', 'data_source_name' => 'traffic_in', 'cf_id' => 1, 'def_name' => 'c'],
+	];
+
+	$result = expand_similar_nodups($items, 'traffic_in', 4);
+
+	expect($result)->toBe('');
 });

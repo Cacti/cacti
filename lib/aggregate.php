@@ -754,6 +754,7 @@ function aggregate_cdef_totalling(int $_new_graph_id, int $_graph_item_sequence,
 
 	// take graph item data for the totalling items
 	if (!empty($_new_graph_id)) {
+		/* drift guard: AggregateCdefTotallingFilterTest 'excluded set' */
 		$graph_template_items = db_fetch_assoc_prepared('SELECT id, cdef_id
 			FROM graph_templates_item
 			WHERE local_graph_id = ?
@@ -764,14 +765,12 @@ function aggregate_cdef_totalling(int $_new_graph_id, int $_graph_item_sequence,
 			)
 			ORDER BY sequence',
 			[$_new_graph_id, $_graph_item_sequence]);
+
+		cacti_log(__FUNCTION__ . " totalling query: graph=$_new_graph_id seq=$_graph_item_sequence", true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 	}
 
 	// now get the list of cdefs
-	$sql = 'SELECT id, name FROM cdef ORDER BY id';
-
-	cacti_log(__FUNCTION__ . ' sql: ' . $sql, true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
-
-	$_cdefs = db_fetch_assoc($sql); // index the cdefs by their id's
+	$_cdefs = db_fetch_assoc_prepared('SELECT id, name FROM cdef ORDER BY id', []);
 	$cdefs  = [];
 
 	// build cdefs array to allow for indexing on cdef_id
@@ -878,13 +877,10 @@ function aggregate_cdef_totalling(int $_new_graph_id, int $_graph_item_sequence,
 			}
 
 			// now that we have a new cdef id, update record accordingly
-			$sql = "UPDATE graph_templates_item
-				SET cdef_id=$new_cdef_id
-				WHERE id=" . $graph_template_item['id'];
-
-			cacti_log(__FUNCTION__ . ' sql: ' . $sql, true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
-
-			$ok = db_execute($sql);
+			db_execute_prepared('UPDATE graph_templates_item
+				SET cdef_id = ?
+				WHERE id = ?',
+				[$new_cdef_id, $graph_template_item['id']]);
 
 			cacti_log(__FUNCTION__ . ' updated new cdef id: ' . $new_cdef_id . ' for item: ' . $graph_template_item['id'], true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 		}

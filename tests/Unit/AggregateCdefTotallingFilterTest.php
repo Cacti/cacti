@@ -253,3 +253,40 @@ test('mixed valid and excluded items filter correctly', function () {
 		->and($filtered[0]['id'])->toBe(1)
 		->and($filtered[1]['id'])->toBe(3);
 });
+
+// --- Duplicate ineligible items ---
+
+test('duplicate excluded items are all removed', function () {
+	$items = [
+		['id' => 1, 'cdef_id' => 5, 'graph_type_id' => GRAPH_ITEM_TYPE_GPRINT],
+		['id' => 2, 'cdef_id' => 5, 'graph_type_id' => GRAPH_ITEM_TYPE_GPRINT],
+	];
+
+	expect(filter_totalling_items($items))->toHaveCount(0);
+});
+
+// --- Unknown graph_type_id values pass through (not in exclusion list) ---
+
+test('unknown graph_type_id values are not excluded', function () {
+	$items = [
+		['id' => 1, 'cdef_id' => 0, 'graph_type_id' => 999],
+	];
+
+	expect(filter_totalling_items($items))->toHaveCount(1);
+});
+
+test('graph_type_id zero passes the filter', function () {
+	$items = [
+		['id' => 1, 'cdef_id' => 0, 'graph_type_id' => 0],
+	];
+
+	expect(filter_totalling_items($items))->toHaveCount(1);
+});
+
+test('negative graph_type_id passes the filter', function () {
+	$items = [
+		['id' => 1, 'cdef_id' => 0, 'graph_type_id' => -1],
+	];
+
+	expect(filter_totalling_items($items))->toHaveCount(1);
+});
