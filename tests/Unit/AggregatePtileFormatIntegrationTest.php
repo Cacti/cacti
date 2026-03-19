@@ -25,6 +25,12 @@
  * for 95th percentile, roughly doubling the displayed value.
  *
  * See: https://github.com/Cacti/cacti/issues/6835
+ *
+ * SYNC WARNING: process_ptile_pparts() and process_text_format() below
+ * replicate logic from lib/api_aggregate.php (lines ~412-427, ~1430-1439,
+ * ~1512-1521). Production functions require DB/session state that prevents
+ * direct invocation in unit tests. If the production replacement logic
+ * changes, these helpers must be updated to match.
  */
 
 require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
