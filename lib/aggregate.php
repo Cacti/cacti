@@ -754,24 +754,16 @@ function aggregate_cdef_totalling(int $_new_graph_id, int $_graph_item_sequence,
 
 	// take graph item data for the totalling items
 	if (!empty($_new_graph_id)) {
-		$sql = "SELECT id, cdef_id
+		$graph_template_items = db_fetch_assoc_prepared('SELECT id, cdef_id
 			FROM graph_templates_item
-			WHERE local_graph_id=$_new_graph_id
-			AND sequence>=$_graph_item_sequence
+			WHERE local_graph_id = ?
+			AND sequence >= ?
+			/* GPRINT(9), LEGEND(10), GPRINT_LAST(11), GPRINT_MAX(12), GPRINT_MIN(13), GPRINT_AVERAGE(14), LEGEND_CAMM(15) */
 			AND graph_type_id NOT IN (
-				9,
-				10,
-				11,
-				12,
-				13,
-				14,
-				15
+				9, 10, 11, 12, 13, 14, 15
 			)
-			ORDER BY sequence";
-
-		cacti_log('sql: ' . $sql, true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
-
-		$graph_template_items = db_fetch_assoc($sql);
+			ORDER BY sequence',
+			[$_new_graph_id, $_graph_item_sequence]);
 	}
 
 	// now get the list of cdefs

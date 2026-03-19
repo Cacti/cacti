@@ -40,6 +40,10 @@ function emit_cdef_line(string $cdef_string, int $item_index): ?string {
 		return null;
 	}
 
+	if ($item_index < 0 || $item_index > 25) {
+		return null;
+	}
+
 	$def_name = chr(ord('a') + $item_index);
 
 	return 'CDEF:cdef' . $def_name . '=' . $cdef_string;
@@ -57,7 +61,7 @@ function expand_similar_nodups(array $graph_items, string $data_source_name, int
 	foreach ($graph_items as $item) {
 		/* only AREA/STACK/LINE items are eligible, matching the preg_match
 		   filter at rrd.php:2120 */
-		if (!preg_match('/(AREA|STACK|LINE[123])/', $item['type_name'])) {
+		if (!isset($item['type_name']) || !preg_match('/(AREA|STACK|LINE[123])/', $item['type_name'])) {
 			continue;
 		}
 
@@ -194,4 +198,32 @@ test('single matching item produces RPN without trailing plus', function () {
 
 	expect($result)->not->toBe('')
 		->and($result)->not->toContain(',+');
+});
+
+// --- Edge cases ---
+
+test('emit_cdef_line returns null for negative item_index', function () {
+	expect(emit_cdef_line('a,8,*', -1))->toBeNull();
+});
+
+test('emit_cdef_line returns null for item_index above 25', function () {
+	expect(emit_cdef_line('a,8,*', 26))->toBeNull();
+});
+
+test('emit_cdef_line handles item_index at boundary 25', function () {
+	$result = emit_cdef_line('a,8,*', 25);
+
+	expect($result)->toBe('CDEF:cdefz=a,8,*');
+});
+
+test('expand_similar_nodups handles empty graph_items array', function () {
+	expect(expand_similar_nodups([], 'traffic_in', 1))->toBe('');
+});
+
+test('expand_similar_nodups skips items with missing type_name', function () {
+	$items = [
+		['data_source_name' => 'traffic_in', 'cf_id' => 1, 'def_name' => 'b'],
+	];
+
+	expect(expand_similar_nodups($items, 'traffic_in', 1))->toBe('');
 });

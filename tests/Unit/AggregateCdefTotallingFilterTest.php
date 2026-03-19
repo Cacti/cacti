@@ -49,6 +49,23 @@ function filter_totalling_items(array $items): array {
 	}));
 }
 
+// --- Drift detection: excluded set must match global_constants.php ---
+
+test('excluded set contains exactly the 7 GPRINT/LEGEND constants', function () {
+	$excluded = [
+		GRAPH_ITEM_TYPE_GPRINT,
+		GRAPH_ITEM_TYPE_LEGEND,
+		GRAPH_ITEM_TYPE_GPRINT_LAST,
+		GRAPH_ITEM_TYPE_GPRINT_MAX,
+		GRAPH_ITEM_TYPE_GPRINT_MIN,
+		GRAPH_ITEM_TYPE_GPRINT_AVERAGE,
+		GRAPH_ITEM_TYPE_LEGEND_CAMM,
+	];
+
+	expect($excluded)->toHaveCount(7)
+		->and($excluded)->toBe([9, 10, 11, 12, 13, 14, 15]);
+});
+
 // --- Renderable types pass through ---
 
 test('LINE1 items pass the totalling filter', function () {
@@ -77,6 +94,24 @@ test('AREA items pass the totalling filter', function () {
 
 test('STACK items pass the totalling filter', function () {
 	$items = [['id' => 1, 'cdef_id' => 5, 'graph_type_id' => GRAPH_ITEM_TYPE_STACK]];
+
+	expect(filter_totalling_items($items))->toHaveCount(1);
+});
+
+test('LINESTACK items pass the totalling filter', function () {
+	$items = [['id' => 1, 'cdef_id' => 5, 'graph_type_id' => GRAPH_ITEM_TYPE_LINESTACK]];
+
+	expect(filter_totalling_items($items))->toHaveCount(1);
+});
+
+test('TIC items pass the totalling filter', function () {
+	$items = [['id' => 1, 'cdef_id' => 0, 'graph_type_id' => GRAPH_ITEM_TYPE_TIC]];
+
+	expect(filter_totalling_items($items))->toHaveCount(1);
+});
+
+test('TEXTALIGN items pass the totalling filter', function () {
+	$items = [['id' => 1, 'cdef_id' => 0, 'graph_type_id' => GRAPH_ITEM_TYPE_TEXTALIGN]];
 
 	expect(filter_totalling_items($items))->toHaveCount(1);
 });
@@ -187,4 +222,34 @@ test('HRULE items pass the totalling filter', function () {
 	$items = [['id' => 1, 'cdef_id' => 0, 'graph_type_id' => GRAPH_ITEM_TYPE_HRULE]];
 
 	expect(filter_totalling_items($items))->toHaveCount(1);
+});
+
+// --- Edge cases ---
+
+test('empty input array returns empty result', function () {
+	expect(filter_totalling_items([]))->toHaveCount(0);
+});
+
+test('items with duplicate entries are all preserved when eligible', function () {
+	$items = [
+		['id' => 1, 'cdef_id' => 5, 'graph_type_id' => GRAPH_ITEM_TYPE_AREA],
+		['id' => 1, 'cdef_id' => 5, 'graph_type_id' => GRAPH_ITEM_TYPE_AREA],
+	];
+
+	expect(filter_totalling_items($items))->toHaveCount(2);
+});
+
+test('mixed valid and excluded items filter correctly', function () {
+	$items = [
+		['id' => 1, 'cdef_id' => 5, 'graph_type_id' => GRAPH_ITEM_TYPE_LINE1],
+		['id' => 2, 'cdef_id' => 5, 'graph_type_id' => GRAPH_ITEM_TYPE_GPRINT],
+		['id' => 3, 'cdef_id' => 5, 'graph_type_id' => GRAPH_ITEM_TYPE_STACK],
+		['id' => 4, 'cdef_id' => 5, 'graph_type_id' => GRAPH_ITEM_TYPE_LEGEND_CAMM],
+	];
+
+	$filtered = filter_totalling_items($items);
+
+	expect($filtered)->toHaveCount(2)
+		->and($filtered[0]['id'])->toBe(1)
+		->and($filtered[1]['id'])->toBe(3);
 });
