@@ -2368,6 +2368,13 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 				// replace query variables in cdefs
 				$cdef_string = rrd_substitute_host_query_data($cdef_string, $graph, $graph_item);
 
+				// aggregate graphs can produce an empty RPN expression for GPRINT items
+				// whose consolidation function does not match the data source; skip them
+				// rather than emitting a bare "CDEF:cdefX=" which rrdtool rejects.
+				if ($cdef_string === '') {
+					continue;
+				}
+
 				// make the initial 'virtual' cdef name: 'cdef' + [a,b,c,d...]
 				$cdef_graph_defs .= 'CDEF:cdef' . generate_graph_def_name(intval($i)) . '=';
 				// prohibit command injection and provide platform specific quoting

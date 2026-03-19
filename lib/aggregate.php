@@ -758,6 +758,15 @@ function aggregate_cdef_totalling(int $_new_graph_id, int $_graph_item_sequence,
 			FROM graph_templates_item
 			WHERE local_graph_id=$_new_graph_id
 			AND sequence>=$_graph_item_sequence
+			AND graph_type_id NOT IN (
+				9,
+				10,
+				11,
+				12,
+				13,
+				14,
+				15
+			)
 			ORDER BY sequence";
 
 		cacti_log('sql: ' . $sql, true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
