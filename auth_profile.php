@@ -259,11 +259,19 @@ function form_save() : void {
 	}
 
 	$errors = [];
+	$currentTab = '';
+
+	if (isrv('tab')) {
+		// ================= input validation =================
+		gfrv('tab', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([0-9a-z_A-Z]+)$/']]);
+		// ====================================================
+		$currentTab = (string) gnrv('tab');
+	}
 
 	// Save the users graph settings if they have permission
-	if (is_view_allowed('graph_settings') == true && isrv('tab') && gnrv('tab') == 'general') {
+	if (is_view_allowed('graph_settings') == true && $currentTab == 'general') {
 		save_user_settings($_SESSION[SESS_USER_ID]);
-	} elseif (isrv('tab')) {
+	} elseif ($currentTab !== '') {
 		api_plugin_hook('auth_profile_save');
 	}
 
@@ -282,7 +290,7 @@ function form_save() : void {
 	kill_session_var(OPTIONS_USER);
 	kill_session_var('selected_theme');
 
-	$tab = (isrv('tab') && gnrv('tab')) ? ('?tab=' . gnrv('tab')) : '';
+	$tab = ($currentTab !== '') ? ('?tab=' . rawurlencode($currentTab)) : '';
 	header('Location: auth_profile.php' . $tab);
 }
 
@@ -680,7 +688,7 @@ function settings_javascript() : void {
 	?>
 	<script type='text/javascript'>
 		var themeFonts = <?php print read_config_option('font_method'); ?>;
-		var currentTab = '<?php print gnrv('tab'); ?>';
+		var currentTab = <?php print json_encode((string) grv('tab')); ?>;
 		var currentTheme = '<?php print get_selected_theme(); ?>';
 		var currentLang = '<?php print read_config_option('user_language'); ?>';
 		var authMethod = '<?php print read_config_option('auth_method'); ?>';
