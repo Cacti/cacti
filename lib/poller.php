@@ -130,7 +130,15 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
  * @return (void)
  */
 function exec_background($filename, $args = '', $redirect_args = '') {
-	global $config, $debug;
+	global $debug;
+
+	if (is_array($args)) {
+		$args = implode(' ', array_map('cacti_escapeshellarg', $args));
+	}
+
+	if (is_array($redirect_args)) {
+		$redirect_args = implode(' ', $redirect_args);
+	}
 
 	cacti_log("DEBUG: About to Spawn a Remote Process [CMD: $filename, ARGS: $args]", true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_DEBUG));
 
