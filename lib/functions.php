@@ -8707,6 +8707,13 @@ function cacti_ptoa(string $title, string $addr) : void {
 	}
 }
 
+/**
+ * cacti_sizeof - Returns count of an array, treating false as empty.
+ *
+ * @param mixed $array The value to count. Returns 0 for false or non-array values.
+ *
+ * @return int The number of elements, or 0 if not a valid array.
+ */
 function cacti_sizeof(mixed $array) : int {
 	return ($array === false || !is_array($array)) ? 0 : count($array);
 }
