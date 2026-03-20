@@ -114,8 +114,8 @@ function exec_poll_php(string $command, bool $using_proc_function, array $pipes,
  * to execute code in the foreground.
  *
  * @param string $filename      The full pathname to the script to execute
- * @param string $args          Any additional arguments that must be passed onto the executable
- * @param string $redirect_args Any additional arguments for file re-direction.  Otherwise output goes to /dev/null
+ * @param string|array $args          Any additional arguments. Arrays are escaped per-element via cacti_escapeshellarg.
+ * @param string|array $redirect_args Any additional arguments for file re-direction.  Otherwise output goes to /dev/null
  *
  * @return void
  */
