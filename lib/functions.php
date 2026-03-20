@@ -3966,10 +3966,18 @@ function get_graph_parent(int $graph_template_item_id, string $direction) : int 
  */
 function build_where_from_array(array $filters, array &$params) : string {
 	$where = [];
+
 	foreach ($filters as $field => $value) {
+		if (!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $field)) {
+			cacti_log('ERROR: Invalid field name in build_where_from_array: ' . $field, false, 'SECURITY');
+
+			continue;
+		}
+
 		$where[] = "`$field` = ?";
 		$params[] = $value;
 	}
+
 	return implode(' AND ', $where);
 }
 
