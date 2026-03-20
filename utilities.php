@@ -50,14 +50,10 @@ switch (grv('action')) {
 			raise_message('repopulate_background', __('The Poller Cache Rebuild Operation has already been started.'), MESSAGE_LEVEL_INFO);
 		}
 
-		header('Location: utilities.php?action=view_poller_cache');
-
-		exit;
+		cacti_redirect('utilities.php?action=view_poller_cache');
 	case 'rebuild_resource_cache':
 		rebuild_resource_cache();
-		header('Location: utilities.php');
-
-		exit;
+		cacti_redirect('utilities.php');
 	case 'view_snmp_cache':
 		top_header();
 		utilities_view_snmp_cache();
@@ -97,7 +93,7 @@ switch (grv('action')) {
 
 		break;
 	case 'view_tech':
-		header('Location: support.php?tab=summary');
+		cacti_redirect('support.php?tab=summary');
 
 		exit();
 	case 'view_boost_status':
@@ -115,14 +111,12 @@ switch (grv('action')) {
 	case 'purge_data_source_statistics':
 		purge_data_source_statistics();
 		raise_message('purge_dss', __('Data Source Statistics Purged.'), MESSAGE_LEVEL_INFO);
-		header('Location: utilities.php');
+		cacti_redirect('utilities.php');
 
 		break;
 	case 'rebuild_snmpagent_cache':
 		snmpagent_cache_rebuilt();
-		header('Location: utilities.php?action=view_snmpagent_cache');
-
-		exit;
+		cacti_redirect('utilities.php?action=view_snmpagent_cache');
 	case 'view_snmpagent_events':
 		top_header();
 		snmpagent_utilities_run_eventlog();

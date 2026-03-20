@@ -99,9 +99,9 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: color.php?action=edit&id=' . (empty($color_id) ? gnrv('id') : $color_id));
+			cacti_redirect('color.php?action=edit&id=' . (empty($color_id) ? gnrv('id') : $color_id));
 		} else {
-			header('Location: color.php');
+			cacti_redirect('color.php');
 		}
 	} elseif (isrv('save_component_import')) {
 		if (isset($_FILES['import_file']['tmp_name'])) {
@@ -113,12 +113,12 @@ function form_save() : void {
 					$_SESSION['import_debug_info'] = $debug_data;
 				}
 
-				header('Location: color.php?action=import');
+				cacti_redirect('color.php?action=import');
 			}
 		} else {
 			raise_message(35);
 
-			header('Location: color.php?action=import');
+			cacti_redirect('color.php?action=import');
 		}
 	}
 
@@ -142,9 +142,7 @@ function form_actions() : void {
 			}
 		}
 
-		header('Location: color.php');
-
-		exit;
+		cacti_redirect('color.php');
 	} else {
 		$ilist  = '';
 		$iarray = [];

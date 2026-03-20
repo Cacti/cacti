@@ -63,9 +63,7 @@ function form_actions() : void {
 			}
 		}
 
-		header('Location: package_keys.php?header=false');
-
-		exit;
+		cacti_redirect('package_keys.php?header=false');
 	}
 
 	// setup some variables
@@ -105,9 +103,7 @@ function form_actions() : void {
 		}
 	} else {
 		raise_message(40);
-		header('Location: package_keys.php?header=false');
-
-		exit;
+		cacti_redirect('package_keys.php?header=false');
 	}
 
 	print "<tr>

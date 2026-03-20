@@ -308,9 +308,7 @@ function form_save() : void {
 
 								$_SESSION[SESS_ERROR_FIELDS]['rrd_maximum'] = 'rrd_maximum';
 
-								header('Location: data_sources.php?action=ds_edit&id=' . (empty($local_data_id) ? gfrv('local_data_id') : $local_data_id) . '&host_id=' . grv('host_id') . '&view_rrd=' . (isrv('current_rrd') ? gnrv('current_rrd') : '0'));
-
-								exit;
+								cacti_redirect('data_sources.php?action=ds_edit&id=' . (empty($local_data_id) ? gfrv('local_data_id') : $local_data_id) . '&host_id=' . grv('host_id') . '&view_rrd=' . (isrv('current_rrd') ? gnrv('current_rrd') : '0'));
 							}
 						}
 
@@ -358,11 +356,11 @@ function form_save() : void {
 	}
 
 	if (isrv('save_component_data_source_new') && ierv('data_template_id')) {
-		header('Location: data_sources.php?action=ds_edit&host_id=' . grv('host_id') . '&new=1');
+		cacti_redirect('data_sources.php?action=ds_edit&host_id=' . grv('host_id') . '&new=1');
 	} elseif ((is_error_message()) || (gfrv('data_template_id') != gfrv('_data_template_id')) || (gfrv('data_input_id') != gfrv('_data_input_id')) || (gfrv('host_id') != gfrv('_host_id'))) {
-		header('Location: data_sources.php?action=ds_edit&id=' . (empty($local_data_id) ? gfrv('local_data_id') : $local_data_id) . '&host_id=' . grv('host_id') . '&view_rrd=' . (isrv('current_rrd') ? gnrv('current_rrd') : '0'));
+		cacti_redirect('data_sources.php?action=ds_edit&id=' . (empty($local_data_id) ? gfrv('local_data_id') : $local_data_id) . '&host_id=' . grv('host_id') . '&view_rrd=' . (isrv('current_rrd') ? gnrv('current_rrd') : '0'));
 	} else {
-		header('Location: data_sources.php');
+		cacti_redirect('data_sources.php');
 	}
 }
 
@@ -565,9 +563,7 @@ function form_actions() : void {
 
 		api_plugin_hook_function('data_source_action_bottom', [gnrv('drp_action'), $selected_items]);
 
-		header('Location: data_sources.php');
-
-		exit;
+		cacti_redirect('data_sources.php');
 	} else {
 		$ilist  = '';
 		$iarray = [];
@@ -842,7 +838,7 @@ function ds_rrd_remove() : void {
 		WHERE task_item_id = ?',
 		[grv('id')]);
 
-	header('Location: data_sources.php?action=ds_edit&id=' . grv('local_data_id'));
+	cacti_redirect('data_sources.php?action=ds_edit&id=' . grv('local_data_id'));
 }
 
 function ds_rrd_add() : void {
@@ -857,7 +853,7 @@ function ds_rrd_add() : void {
 
 	$data_template_rrd_id = db_fetch_insert_id();
 
-	header('Location: data_sources.php?action=ds_edit&id=' . grv('id') . "&view_rrd=$data_template_rrd_id");
+	cacti_redirect('data_sources.php?action=ds_edit&id=' . grv('id') . "&view_rrd=$data_template_rrd_id");
 }
 
 function ds_disable() : void {
@@ -866,7 +862,7 @@ function ds_disable() : void {
 	// ====================================================
 
 	api_data_source_disable(grv('id'));
-	header('Location: data_sources.php?action=ds_edit&id=' . grv('id'));
+	cacti_redirect('data_sources.php?action=ds_edit&id=' . grv('id'));
 }
 
 function ds_enable() : void {
@@ -875,7 +871,7 @@ function ds_enable() : void {
 	// ====================================================
 
 	api_data_source_enable(grv('id'));
-	header('Location: data_sources.php?action=ds_edit&id=' . grv('id'));
+	cacti_redirect('data_sources.php?action=ds_edit&id=' . grv('id'));
 }
 
 function ds_edit() : void {
@@ -915,9 +911,7 @@ function ds_edit() : void {
 				[$data_local['data_template_id']]);
 		} else {
 			raise_message(11);
-			header('Location: data_sources.php');
-
-			exit;
+			cacti_redirect('data_sources.php');
 		}
 
 		$header_label = __esc('Data Template Selection [edit: %s]', get_data_source_title(grv('id')));

@@ -72,7 +72,7 @@ switch (grv('action')) {
 	case 'item_remove':
 		item_remove();
 
-		header('Location: aggregate_graphs.php?action=edit&id=' . gfrv('local_graph_id'));
+		cacti_redirect('aggregate_graphs.php?action=edit&id=' . gfrv('local_graph_id'));
 
 		break;
 	case 'item_edit':
@@ -86,13 +86,13 @@ switch (grv('action')) {
 	case 'item_movedown':
 		item_movedown();
 
-		header('Location: aggregate_graphs.php?action=edit&id=' . gfrv('local_graph_id'));
+		cacti_redirect('aggregate_graphs.php?action=edit&id=' . gfrv('local_graph_id'));
 
 		break;
 	case 'item_moveup':
 		item_moveup();
 
-		header('Location: aggregate_graphs.php?action=edit&id=' . gfrv('local_graph_id'));
+		cacti_redirect('aggregate_graphs.php?action=edit&id=' . gfrv('local_graph_id'));
 
 		break;
 	default:
@@ -118,7 +118,7 @@ function add_tree_names_to_actions_array() : void {
 
 function form_save() : void {
 	if (!isrv('save_component_graph') && !isrv('save_component_input')) {
-		header('Location: aggregate_graphs.php?action=edit&id=' . gnrv('id'));
+		cacti_redirect('aggregate_graphs.php?action=edit&id=' . gnrv('id'));
 
 		exit();
 	}
@@ -132,7 +132,7 @@ function form_save() : void {
 
 		if (is_error_message()) {
 			raise_message(2);
-			header('Location: aggregate_graphs.php?action=edit&id=' . $local_graph_id);
+			cacti_redirect('aggregate_graphs.php?action=edit&id=' . $local_graph_id);
 
 			exit();
 		}
@@ -152,7 +152,7 @@ function form_save() : void {
 
 		if (is_error_message()) {
 			raise_message(2);
-			header('Location: aggregate_graphs.php?action=edit&id=' . $local_graph_id);
+			cacti_redirect('aggregate_graphs.php?action=edit&id=' . $local_graph_id);
 
 			exit();
 		}
@@ -287,7 +287,7 @@ function form_save() : void {
 
 		raise_message(1);
 
-		header('Location: aggregate_graphs.php?action=edit&id=' . $local_graph_id);
+		cacti_redirect('aggregate_graphs.php?action=edit&id=' . $local_graph_id);
 	} elseif (isrv('save_component_item')) {
 		global $graph_item_types;
 
@@ -375,13 +375,9 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: ' . CACTI_PATH_URL . 'aggregate_graphs.php?action=item_edit&graph_template_item_id=' . (empty($graph_template_item_id) ? gfrv('graph_template_item_id') : $graph_template_item_id) . '&id=' . gfrv('local_graph_id'));
-
-			exit;
+			cacti_redirect(CACTI_PATH_URL . 'aggregate_graphs.php?action=item_edit&graph_template_item_id=' . (empty($graph_template_item_id) ? gfrv('graph_template_item_id') : $graph_template_item_id) . '&id=' . gfrv('local_graph_id'));
 		} else {
-			header('Location: ' . CACTI_PATH_URL . 'aggregate_graphs.php?action=edit&id=' . gfrv('local_graph_id'));
-
-			exit;
+			cacti_redirect(CACTI_PATH_URL . 'aggregate_graphs.php?action=edit&id=' . gfrv('local_graph_id'));
 		}
 	}
 }
@@ -452,13 +448,9 @@ function form_save_aggregate() : mixed {
 	}
 
 	if (is_error_message()) {
-		header('Location: ' . CACTI_PATH_URL . $location_failure);
-
-		exit;
+		cacti_redirect(CACTI_PATH_URL . $location_failure);
 	} else {
-		header('Location: ' . CACTI_PATH_URL . $location_success);
-
-		exit;
+		cacti_redirect(CACTI_PATH_URL . $location_success);
 	}
 }
 
@@ -736,23 +728,17 @@ function form_actions() : void {
 			} elseif (grv('drp_action') == '5') { // Convert to a normal graph
 				api_aggregate_convert_to_graph($selected_items);
 
-				header('Location: aggregate_graphs.php');
-
-				exit;
+				cacti_redirect('aggregate_graphs.php');
 			} elseif (grv('drp_action') == '10') { // associate with aggregate
 				$local_graph_id = gfrv('local_graph_id');
 				api_aggregate_associate($local_graph_id, $selected_items);
 
-				header('Location: aggregate_graphs.php?action=edit&tab=items&id=' . $local_graph_id);
-
-				exit;
+				cacti_redirect('aggregate_graphs.php?action=edit&tab=items&id=' . $local_graph_id);
 			} elseif (grv('drp_action') == '11') { // dis-associate with aggregate
 				$local_graph_id = gfrv('local_graph_id');
 				api_aggregate_disassociate($local_graph_id, $selected_items);
 
-				header('Location: aggregate_graphs.php?action=edit&tab=items&id=' . $local_graph_id);
-
-				exit;
+				cacti_redirect('aggregate_graphs.php?action=edit&tab=items&id=' . $local_graph_id);
 			} elseif (preg_match('/^tr_([0-9]+)$/', grv('drp_action'), $matches)) { // place on tree
 				gfrv('tree_id');
 				gfrv('tree_item_id');
@@ -763,9 +749,7 @@ function form_actions() : void {
 			}
 		}
 
-		header('Location: aggregate_graphs.php');
-
-		exit;
+		cacti_redirect('aggregate_graphs.php');
 	} else {
 		$ilist  = '';
 		$iarray = [];
@@ -824,9 +808,7 @@ function form_actions() : void {
 						<div class='itemlist'><ul>$ilist</ul></div>";
 
 					raise_message('nonmatch_templates', $message, MESSAGE_LEVEL_ERROR);
-					header('Location: aggregate_graphs.php');
-
-					exit;
+					cacti_redirect('aggregate_graphs.php');
 				}
 
 				if (cacti_sizeof($graph_templates) == 0) {
@@ -835,9 +817,7 @@ function form_actions() : void {
 						<div class='itemlist'><ul>$ilist</ul></div>";
 
 					raise_message('nonmatch_templates', $message, MESSAGE_LEVEL_ERROR);
-					header('Location: aggregate_graphs.php');
-
-					exit;
+					cacti_redirect('aggregate_graphs.php');
 				} else {
 					$graph_template = $graph_templates[0]['graph_template_id'];
 
@@ -861,9 +841,7 @@ function form_actions() : void {
 							<div class='itemlist'><ul>$ilist</ul></div>";
 
 						raise_message('nonmatch_templates', $message, MESSAGE_LEVEL_ERROR);
-						header('Location: aggregate_graphs.php');
-
-						exit;
+						cacti_redirect('aggregate_graphs.php');
 					}
 				}
 			} elseif (grv('drp_action') == '4') {
@@ -879,9 +857,7 @@ function form_actions() : void {
 					$message = '<p>' . __('You currently have no reports defined.') . '</p>';
 
 					raise_message('nonmatch_templates', $message, MESSAGE_LEVEL_ERROR);
-					header('Location: aggregate_graphs.php');
-
-					exit;
+					cacti_redirect('aggregate_graphs.php');
 				}
 			}
 		}
@@ -1078,9 +1054,9 @@ function graph_edit() : bool {
 
 		if (isset($_SERVER['HTTP_REFERER'])) {
 			$referer = $_SERVER['HTTP_REFERER'];
-			header('Location: ' . $referer);
+			cacti_redirect($referer);
 		} else {
-			header('Location: aggregate_graphs.php');
+			cacti_redirect('aggregate_graphs.php');
 		}
 
 		exit;

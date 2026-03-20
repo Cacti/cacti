@@ -420,7 +420,7 @@ function profile_import_process() : void {
 		$_SESSION['import_debug_info'] = $debug_data;
 	}
 
-	header('Location: data_source_profiles.php?action=import');
+	cacti_redirect('data_source_profiles.php?action=import');
 
 	exit();
 }
@@ -644,7 +644,7 @@ function form_save() : void {
 			}
 		}
 
-		header('Location: data_source_profiles.php?action=edit&id=' . (empty($profile_id) ? grv('id') : $profile_id));
+		cacti_redirect('data_source_profiles.php?action=edit&id=' . (empty($profile_id) ? grv('id') : $profile_id));
 	} elseif (isrv('save_component_rra')) {
 		// ================= input validation =================
 		gfrv('id');
@@ -686,9 +686,9 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: data_source_profiles.php?action=item_edit&profile_id=' . grv('profile_id') . '&id=' . (empty($profile_rra_id) ? grv('id') : $profile_rra_id));
+			cacti_redirect('data_source_profiles.php?action=item_edit&profile_id=' . grv('profile_id') . '&id=' . (empty($profile_rra_id) ? grv('id') : $profile_rra_id));
 		} else {
-			header('Location: data_source_profiles.php?action=edit&id=' . grv('profile_id'));
+			cacti_redirect('data_source_profiles.php?action=edit&id=' . grv('profile_id'));
 		}
 	}
 }
@@ -736,9 +736,7 @@ function form_actions() : void {
 			}
 		}
 
-		header('Location: data_source_profiles.php');
-
-		exit;
+		cacti_redirect('data_source_profiles.php');
 	} else {
 		$ilist  = '';
 		$iarray = [];

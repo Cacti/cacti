@@ -74,13 +74,13 @@ switch (grv('action')) {
 	case 'item_movedown':
 		automation_templates_item_movedown();
 
-		header('Location: automation_templates.php?action=edit&id=' . gfrv('template_id'));
+		cacti_redirect('automation_templates.php?action=edit&id=' . gfrv('template_id'));
 
 		break;
 	case 'item_moveup':
 		automation_templates_item_moveup();
 
-		header('Location: automation_templates.php?action=edit&id=' . gfrv('template_id'));
+		cacti_redirect('automation_templates.php?action=edit&id=' . gfrv('template_id'));
 
 		break;
 	case 'actions':
@@ -90,7 +90,7 @@ switch (grv('action')) {
 	case 'item_add_agr':
 		automation_add_graph_rule();
 
-		header('Location: automation_templates.php?action=edit&id=' . gfrv('template_id'));
+		cacti_redirect('automation_templates.php?action=edit&id=' . gfrv('template_id'));
 
 		break;
 	case 'item_remove_agr_confirm':
@@ -104,19 +104,19 @@ switch (grv('action')) {
 	case 'item_remove_agr':
 		automation_remove_agr();
 
-		header('Location: automation_templates.php?action=edit&id=' . gfrv('template_id'));
+		cacti_redirect('automation_templates.php?action=edit&id=' . gfrv('template_id'));
 
 		break;
 	case 'item_add_atr':
 		automation_add_tree_rule();
 
-		header('Location: automation_templates.php?action=edit&id=' . gfrv('template_id'));
+		cacti_redirect('automation_templates.php?action=edit&id=' . gfrv('template_id'));
 
 		break;
 	case 'item_add_ttr':
 		automation_add_threshold_template();
 
-		header('Location: automation_templates.php?action=edit&id=' . gfrv('template_id'));
+		cacti_redirect('automation_templates.php?action=edit&id=' . gfrv('template_id'));
 
 		break;
 	case 'item_remove_atr_confirm':
@@ -126,31 +126,31 @@ switch (grv('action')) {
 	case 'item_remove_atr':
 		automation_remove_atr();
 
-		header('Location: automation_templates.php?action=edit&id=' . gfrv('template_id'));
+		cacti_redirect('automation_templates.php?action=edit&id=' . gfrv('template_id'));
 
 		break;
 	case 'item_remove_ttr':
 		automation_remove_ttr();
 
-		header('Location: automation_templates.php?action=edit&id=' . gfrv('id'));
+		cacti_redirect('automation_templates.php?action=edit&id=' . gfrv('id'));
 
 		break;
 	case 'movedown':
 		automation_movedown();
 
-		header('Location: automation_templates.php');
+		cacti_redirect('automation_templates.php');
 
 		break;
 	case 'moveup':
 		automation_moveup();
 
-		header('Location: automation_templates.php');
+		cacti_redirect('automation_templates.php');
 
 		break;
 	case 'remove':
 		automation_remove();
 
-		header('Location: automation_templates.php');
+		cacti_redirect('automation_templates.php');
 
 		break;
 	case 'edit':
@@ -312,7 +312,7 @@ function automation_import_process() : void {
 		$_SESSION['import_debug_info'] = $debug_data;
 	}
 
-	header('Location: automation_templates.php?action=import');
+	cacti_redirect('automation_templates.php?action=import');
 
 	exit();
 }
@@ -339,9 +339,7 @@ function automation_template_dnd() : void {
 		}
 	}
 
-	header('Location: automation_templates.php');
-
-	exit;
+	cacti_redirect('automation_templates.php');
 }
 
 function automation_templates_item_movedown() : void {
@@ -438,9 +436,7 @@ function automation_template_graph_item_dnd() : void {
 		}
 	}
 
-	header('Location: automation_templates.php?action=edit&id=' . grv('id'));
-
-	exit;
+	cacti_redirect('automation_templates.php?action=edit&id=' . grv('id'));
 }
 
 function automation_template_tree_item_dnd() : void {
@@ -469,9 +465,7 @@ function automation_template_tree_item_dnd() : void {
 		}
 	}
 
-	header('Location: automation_templates.php?action=edit&id=' . grv('id'));
-
-	exit;
+	cacti_redirect('automation_templates.php?action=edit&id=' . grv('id'));
 }
 
 function automation_template_tree_exit_on_change() : void {
@@ -484,7 +478,7 @@ function automation_template_tree_exit_on_change() : void {
 		WHERE id = ?',
 		[$newvalue, $id]);
 
-	header('Location: automation_templates.php?action=edit&id=' . $template_id);
+	cacti_redirect('automation_templates.php?action=edit&id=' . $template_id);
 }
 
 function automation_movedown() : void {
@@ -606,9 +600,7 @@ function form_actions() : void {
 			}
 		}
 
-		header('Location: automation_templates.php');
-
-		exit;
+		cacti_redirect('automation_templates.php');
 	} else {
 		$ilist  = '';
 		$iarray = [];
@@ -684,9 +676,9 @@ function form_save() : void {
 		}
 
 		if (is_error_message() || ierv('id')) {
-			header('Location: automation_templates.php?id=' . (empty($template_id) ? gnrv('id') : $template_id));
+			cacti_redirect('automation_templates.php?id=' . (empty($template_id) ? gnrv('id') : $template_id));
 		} else {
-			header('Location: automation_templates.php');
+			cacti_redirect('automation_templates.php');
 		}
 	}
 }

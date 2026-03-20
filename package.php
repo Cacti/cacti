@@ -119,9 +119,7 @@ function form_save() : void {
 
 	if ($export_errors || !$success) {
 		raise_message('package_error', __('There were errors packaging your Templates.  Errors Follow. ') . str_replace("\n", '<br>', $debug), MESSAGE_LEVEL_ERROR);
-		header('Location: package.php');
-
-		exit;
+		cacti_redirect('package.php');
 	}
 
 	if ($package_file != '') {

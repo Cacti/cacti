@@ -42,7 +42,7 @@ switch (grv('action')) {
 			page_delete(grv('id'));
 		}
 
-		header('Location: links.php');
+		cacti_redirect('links.php');
 
 		break;
 	case 'move_page_up':
@@ -50,7 +50,7 @@ switch (grv('action')) {
 			page_move(grv('id'), -1);
 		}
 
-		header('Location: links.php');
+		cacti_redirect('links.php');
 
 		break;
 	case 'move_page_down':
@@ -58,7 +58,7 @@ switch (grv('action')) {
 			page_move(grv('id'), 1);
 		}
 
-		header('Location: links.php');
+		cacti_redirect('links.php');
 
 		break;
 	case 'ajax_dnd':
@@ -66,7 +66,7 @@ switch (grv('action')) {
 
 		links_reorder($new_order);
 
-		header('Location: links.php');
+		cacti_redirect('links.php');
 
 		break;
 	case 'save':
@@ -114,15 +114,11 @@ switch (grv('action')) {
 
 			raise_message(1);
 
-			header('Location: links.php');
-
-			exit;
+			cacti_redirect('links.php');
 		} else {
 			raise_message(2);
 
-			header('Location: links.php?action=edit&id=' . (isrv('id') ? gfrv('id') : ''));
-
-			exit;
+			cacti_redirect('links.php?action=edit&id=' . (isrv('id') ? gfrv('id') : ''));
 		}
 	case 'edit':
 		top_header();
@@ -188,9 +184,7 @@ function form_actions() : void {
 			}
 		}
 
-		header('Location: links.php');
-
-		exit;
+		cacti_redirect('links.php');
 	} else {
 		$ilist  = '';
 		$iarray = [];

@@ -1618,8 +1618,8 @@ function save_settings() : void {
 	kill_session_var('sess_config_array');
 
 	if (isrv('header') && gnrv('header') == 'false') {
-		header('Location: settings.php?header=false&tab=' . grv('tab'));
+		cacti_redirect('settings.php?header=false&tab=' . grv('tab'));
 	} else {
-		header('Location: settings.php?tab=' . grv('tab'));
+		cacti_redirect('settings.php?tab=' . grv('tab'));
 	}
 }

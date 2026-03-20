@@ -31,5 +31,5 @@ if (file_exists(CACTI_PATH_BASE . '/' . CACTI_DOCUMENTATION_TOC)) {
 	print file_get_contents(CACTI_PATH_BASE . '/' . CACTI_DOCUMENTATION_TOC);
 } else {
 	// Redirect to GitHub documentation
-	header('Location: https://github.com/Cacti/documentation/blob/develop/README.md');
+	cacti_redirect('https://github.com/Cacti/documentation/blob/develop/README.md');
 }

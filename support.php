@@ -61,9 +61,7 @@ function support_lockout() : void {
 		}
 	}
 
-	header('Location: support.php?tab=summary');
-
-	exit;
+	cacti_redirect('support.php?tab=summary');
 }
 
 function support_view_tech() : void {

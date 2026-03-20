@@ -68,7 +68,7 @@ switch (grv('action')) {
 function aggregate_form_save() : void {
 	// make sure we are saving aggregate template
 	if (!isrv('save_component_template')) {
-		header('Location: aggregate_templates.php?action=edit&id=' . gnrv('id'));
+		cacti_redirect('aggregate_templates.php?action=edit&id=' . gnrv('id'));
 
 		exit();
 	}
@@ -115,9 +115,7 @@ function aggregate_form_save() : void {
 
 	// form validation failed
 	if (is_error_message()) {
-		header('Location: aggregate_templates.php?action=edit&id=' . gnrv('id'));
-
-		exit;
+		cacti_redirect('aggregate_templates.php?action=edit&id=' . gnrv('id'));
 	}
 
 	cacti_log('AGGREGATE GRAPH TEMPLATE Saved ID: ' . $save1['id'] . ' Name: ' . $save1['name'], false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
@@ -166,9 +164,7 @@ function aggregate_form_save() : void {
 	if (!$id) {
 		raise_message(2);
 
-		header('Location: aggregate_templates.php?action=edit&id=' . gnrv('id'));
-
-		exit;
+		cacti_redirect('aggregate_templates.php?action=edit&id=' . gnrv('id'));
 	}
 
 	// save extra graph parameters
@@ -269,7 +265,7 @@ function aggregate_form_save() : void {
 
 	raise_message(1);
 
-	header('Location: aggregate_templates.php?action=edit&id=' . $id);
+	cacti_redirect('aggregate_templates.php?action=edit&id=' . $id);
 }
 
 /**
@@ -295,9 +291,7 @@ function aggregate_form_actions() : void {
 			}
 		}
 
-		header('Location: aggregate_templates.php');
-
-		exit;
+		cacti_redirect('aggregate_templates.php');
 	} else {
 		$ilist  = '';
 		$iarray = [];

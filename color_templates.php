@@ -61,7 +61,7 @@ switch (grv('action')) {
 
 		color_item_remove();
 
-		header('Location: color_templates.php?action=template_edit&color_template_id=' . grv('id'));
+		cacti_redirect('color_templates.php?action=template_edit&color_template_id=' . grv('id'));
 
 		break;
 	case 'item_movedown':
@@ -69,7 +69,7 @@ switch (grv('action')) {
 
 		color_item_movedown();
 
-		header('Location: color_templates.php?action=template_edit&color_template_id=' . grv('color_template_id'));
+		cacti_redirect('color_templates.php?action=template_edit&color_template_id=' . grv('color_template_id'));
 
 		break;
 	case 'item_moveup':
@@ -77,7 +77,7 @@ switch (grv('action')) {
 
 		color_item_moveup();
 
-		header('Location: color_templates.php?action=template_edit&color_template_id=' . grv('color_template_id'));
+		cacti_redirect('color_templates.php?action=template_edit&color_template_id=' . grv('color_template_id'));
 
 		break;
 	case 'item_edit':
@@ -206,7 +206,7 @@ function form_save() : void {
 			}
 		}
 
-		header('Location: color_templates.php?action=template_edit&color_template_id=' . (empty($color_template_id) ? gnrv('color_template_id') : $color_template_id));
+		cacti_redirect('color_templates.php?action=template_edit&color_template_id=' . (empty($color_template_id) ? gnrv('color_template_id') : $color_template_id));
 	} elseif (isrv('save_component_item')) {
 		// ================= input validation =================
 		gfrv('color_template_id');
@@ -242,13 +242,9 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: color_templates.php?action=item_edit&color_template_item_id=' . (empty($color_template_item_id) ? gnrv('color_template_item_id') : $color_template_item_id) . '&color_template_id=' . gnrv('color_template_id'));
-
-			exit;
+			cacti_redirect('color_templates.php?action=item_edit&color_template_item_id=' . (empty($color_template_item_id) ? gnrv('color_template_item_id') : $color_template_item_id) . '&color_template_id=' . gnrv('color_template_id'));
 		} else {
-			header('Location: color_templates.php?action=template_edit&color_template_id=' . gnrv('color_template_id'));
-
-			exit;
+			cacti_redirect('color_templates.php?action=template_edit&color_template_id=' . gnrv('color_template_id'));
 		}
 	}
 }
@@ -283,9 +279,7 @@ function form_actions() : void {
 			}
 		}
 
-		header('Location: color_templates.php');
-
-		exit;
+		cacti_redirect('color_templates.php');
 	} else {
 		$ilist  = '';
 		$iarray = [];
@@ -373,9 +367,7 @@ function color_templates_item_dnd() : void {
 		}
 	}
 
-	header('Location: color_templates.php?action=template_edit&color_template_id=' . grv('id'));
-
-	exit;
+	cacti_redirect('color_templates.php?action=template_edit&color_template_id=' . grv('id'));
 }
 
 /**

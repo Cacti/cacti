@@ -44,9 +44,7 @@ switch ($action) {
 		if (!isset($_SESSION[SESS_USER_ID])) {
 			/* HTTP_REFERER redirect here is overridden by the unconditional
 			 * index.php header below; use the safe fallback directly. */
-			header('Location: index.php');
-
-			exit;
+			cacti_redirect('index.php');
 		}
 }
 
@@ -92,9 +90,9 @@ if (!cacti_sizeof($user) || $user['realm'] != 0) {
 	if (isset($_SERVER['HTTP_REFERER'])) {
 		// global.php already sanitized HTTP_REFERER; validate host before redirect.
 		$_ref = $_SERVER['HTTP_REFERER'];
-		header('Location: ' . ((parse_url($_ref, PHP_URL_HOST) === null || parse_url($_ref, PHP_URL_HOST) === $_SERVER['HTTP_HOST']) ? $_ref : 'index.php'));
+		cacti_redirect(((parse_url($_ref, PHP_URL_HOST) === null || parse_url($_ref, PHP_URL_HOST) === $_SERVER['HTTP_HOST']) ? $_ref : 'index.php'));
 	} else {
-		header('Location: index.php');
+		cacti_redirect('index.php');
 	}
 
 	exit;
@@ -110,9 +108,9 @@ if ($user['password_change'] != 'on') {
 	if (isset($_SERVER['HTTP_REFERER'])) {
 		// global.php already sanitized HTTP_REFERER; validate host before redirect.
 		$_ref = $_SERVER['HTTP_REFERER'];
-		header('Location: ' . ((parse_url($_ref, PHP_URL_HOST) === null || parse_url($_ref, PHP_URL_HOST) === $_SERVER['HTTP_HOST']) ? $_ref : 'index.php'));
+		cacti_redirect(((parse_url($_ref, PHP_URL_HOST) === null || parse_url($_ref, PHP_URL_HOST) === $_SERVER['HTTP_HOST']) ? $_ref : 'index.php'));
 	} else {
-		header('Location: index.php');
+		cacti_redirect('index.php');
 	}
 
 	exit;
@@ -120,9 +118,7 @@ if ($user['password_change'] != 'on') {
 
 // find out if we are logged in as a 'guest user' or not, if we are redirect away from password change
 if (cacti_sizeof($user) && $user['id'] === get_guest_account()) {
-	header('Location: graph_view.php');
-
-	exit;
+	cacti_redirect('graph_view.php');
 }
 
 // default to !bad_password
@@ -250,9 +246,7 @@ switch ($action) {
 
 			raise_message('password_success');
 
-			header('Location: logout.php');
-
-			exit;
+			cacti_redirect('logout.php');
 		} else {
 			$bad_password = true;
 		}
@@ -366,9 +360,7 @@ if (isrv('ref')) {
 
 		raise_message('problems_with_page', __('There are problems with the Change Password page.  Contact your Cacti administrator right away.'), MESSAGE_LEVEL_ERROR);
 
-		header('Location:index.php');
-
-		exit;
+		cacti_redirect('index.php');
 	}
 }
 

@@ -252,9 +252,7 @@ function update_policies() : void {
 		}
 	}
 
-	header('Location: user_group_admin.php?action=edit&tab=' . gnrv('tab') . '&id=' . gnrv('id'));
-
-	exit;
+	cacti_redirect('user_group_admin.php?action=edit&tab=' . gnrv('tab') . '&id=' . gnrv('id'));
 }
 
 function form_actions() : void {
@@ -283,9 +281,7 @@ function form_actions() : void {
 			}
 		}
 
-		header('Location: user_group_admin.php?action=edit&tab=permsd&id=' . gnrv('id'));
-
-		exit;
+		cacti_redirect('user_group_admin.php?action=edit&tab=permsd&id=' . gnrv('id'));
 	}
 
 	if (isrv('associate_graph')) {
@@ -310,9 +306,7 @@ function form_actions() : void {
 			}
 		}
 
-		header('Location: user_group_admin.php?action=edit&tab=permsg&id=' . gnrv('id'));
-
-		exit;
+		cacti_redirect('user_group_admin.php?action=edit&tab=permsg&id=' . gnrv('id'));
 	}
 
 	if (isrv('associate_template')) {
@@ -337,9 +331,7 @@ function form_actions() : void {
 			}
 		}
 
-		header('Location: user_group_admin.php?action=edit&tab=permste&id=' . gnrv('id'));
-
-		exit;
+		cacti_redirect('user_group_admin.php?action=edit&tab=permste&id=' . gnrv('id'));
 	}
 
 	if (isrv('associate_tree')) {
@@ -364,9 +356,7 @@ function form_actions() : void {
 			}
 		}
 
-		header('Location: user_group_admin.php?action=edit&tab=permstr&id=' . gnrv('id'));
-
-		exit;
+		cacti_redirect('user_group_admin.php?action=edit&tab=permstr&id=' . gnrv('id'));
 	}
 
 	if (isrv('associate_member')) {
@@ -390,9 +380,7 @@ function form_actions() : void {
 			}
 		}
 
-		header('Location: user_group_admin.php?action=edit&tab=members&id=' . gnrv('id'));
-
-		exit;
+		cacti_redirect('user_group_admin.php?action=edit&tab=members&id=' . gnrv('id'));
 	}
 
 	if (isrv('selected_items')) {
@@ -420,9 +408,7 @@ function form_actions() : void {
 			}
 		}
 
-		header('Location: user_group_admin.php');
-
-		exit;
+		cacti_redirect('user_group_admin.php');
 	} else {
 		$ilist  = '';
 		$iarray = [];
@@ -526,9 +512,7 @@ function form_save() : void {
 			}
 		}
 
-		header('Location: user_group_admin.php?action=edit&tab=general&id=' . (isset($group_id) && $group_id > 0 ? $group_id : gnrv('id')));
-
-		exit;
+		cacti_redirect('user_group_admin.php?action=edit&tab=general&id=' . (isset($group_id) && $group_id > 0 ? $group_id : gnrv('id')));
 	}
 
 	if (isrv('save_component_realm_perms')) {
@@ -546,9 +530,7 @@ function form_save() : void {
 
 		raise_message(1);
 
-		header('Location: user_group_admin.php?action=edit&tab=realms&id=' . grv('id'));
-
-		exit;
+		cacti_redirect('user_group_admin.php?action=edit&tab=realms&id=' . grv('id'));
 	}
 
 	if (isrv('save_component_graph_settings')) {
@@ -570,15 +552,13 @@ function form_save() : void {
 
 		raise_message(1);
 
-		header('Location: user_group_admin.php?action=edit&tab=settings&id=' . gnrv('id'));
-
-		exit;
+		cacti_redirect('user_group_admin.php?action=edit&tab=settings&id=' . gnrv('id'));
 	} else {
 		api_plugin_hook('user_group_admin_save');
 	}
 
 	// redirect to the appropriate page
-	header('Location: user_group_admin.php?action=edit&tab=general&id=' . gnrv('id'));
+	cacti_redirect('user_group_admin.php?action=edit&tab=general&id=' . gnrv('id'));
 }
 
 function perm_remove() : void {
@@ -597,7 +577,7 @@ function perm_remove() : void {
 		db_execute_prepared('DELETE FROM user_auth_group_perms WHERE type=4 AND group_id = ? AND item_id = ?', [grv('group_id'), grv('id')]);
 	}
 
-	header('Location: user_group_admin.php?action=edit&tab=gperms&id=' . grv('group_id'));
+	cacti_redirect('user_group_admin.php?action=edit&tab=gperms&id=' . grv('group_id'));
 }
 
 function user_group_members_edit(string $header_label) : void {
@@ -1793,7 +1773,7 @@ function group_edit() : void {
 			break;
 		case 'settings':
 			if (ierv('id')) {
-				header('Location: user_group_admin.php');
+				cacti_redirect('user_group_admin.php');
 			}
 
 			user_group_settings_edit($header_label);
@@ -1801,7 +1781,7 @@ function group_edit() : void {
 			break;
 		case 'realms':
 			if (ierv('id')) {
-				header('Location: user_group_admin.php');
+				cacti_redirect('user_group_admin.php');
 			}
 
 			user_group_realms_edit($header_label);
@@ -1812,7 +1792,7 @@ function group_edit() : void {
 		case 'permste':
 		case 'permstr':
 			if (ierv('id')) {
-				header('Location: user_group_admin.php');
+				cacti_redirect('user_group_admin.php');
 			}
 
 			user_group_graph_perms_edit(grv('tab'), $header_label);
@@ -1820,7 +1800,7 @@ function group_edit() : void {
 			break;
 		case 'members':
 			if (ierv('id')) {
-				header('Location: user_group_admin.php');
+				cacti_redirect('user_group_admin.php');
 			}
 
 			user_group_members_edit($header_label);

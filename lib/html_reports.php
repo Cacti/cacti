@@ -326,9 +326,7 @@ function reports_form_save() : void {
 			}
 		}
 
-		header('Location: ' . get_reports_page() . '?action=edit&id=' . (empty($id) ? $post['id'] : $id));
-
-		exit;
+		cacti_redirect(get_reports_page() . '?action=edit&id=' . (empty($id) ? $post['id'] : $id));
 	}
 
 	if (isrv('save_component_report_item')) {
@@ -381,9 +379,9 @@ function reports_form_save() : void {
 			}
 		}
 
-		header('Location: ' . get_reports_page() . '?action=item_edit&id=' . gnrv('report_id') . '&item_id=' . (empty($item_id) ? gnrv('id') : $item_id));
+		cacti_redirect(get_reports_page() . '?action=item_edit&id=' . gnrv('report_id') . '&item_id=' . (empty($item_id) ? gnrv('id') : $item_id));
 	} else {
-		header('Location: ' . get_reports_page());
+		cacti_redirect(get_reports_page());
 	}
 
 	exit;
@@ -482,9 +480,7 @@ function reports_form_actions() : void {
 
 		force_session_data();
 
-		header('Location: ' . get_reports_page());
-
-		exit;
+		cacti_redirect(get_reports_page());
 	} else {
 		$ilist  = '';
 		$iarray = [];

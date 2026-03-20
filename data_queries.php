@@ -47,37 +47,37 @@ switch (grv('action')) {
 	case 'item_moveup_dssv':
 		data_query_item_moveup_dssv();
 
-		header('Location: data_queries.php?action=item_edit&id=' . gfrv('snmp_query_graph_id') . '&snmp_query_id=' . gfrv('snmp_query_id'));
+		cacti_redirect('data_queries.php?action=item_edit&id=' . gfrv('snmp_query_graph_id') . '&snmp_query_id=' . gfrv('snmp_query_id'));
 
 		break;
 	case 'item_movedown_dssv':
 		data_query_item_movedown_dssv();
 
-		header('Location: data_queries.php?action=item_edit&id=' . gfrv('snmp_query_graph_id') . '&snmp_query_id=' . gfrv('snmp_query_id'));
+		cacti_redirect('data_queries.php?action=item_edit&id=' . gfrv('snmp_query_graph_id') . '&snmp_query_id=' . gfrv('snmp_query_id'));
 
 		break;
 	case 'item_remove_dssv':
 		data_query_item_remove_dssv();
 
-		header('Location: data_queries.php?action=item_edit&id=' . gfrv('snmp_query_graph_id') . '&snmp_query_id=' . gfrv('snmp_query_id'));
+		cacti_redirect('data_queries.php?action=item_edit&id=' . gfrv('snmp_query_graph_id') . '&snmp_query_id=' . gfrv('snmp_query_id'));
 
 		break;
 	case 'item_moveup_gsv':
 		data_query_item_moveup_gsv();
 
-		header('Location: data_queries.php?action=item_edit&id=' . gfrv('snmp_query_graph_id') . '&snmp_query_id=' . gfrv('snmp_query_id'));
+		cacti_redirect('data_queries.php?action=item_edit&id=' . gfrv('snmp_query_graph_id') . '&snmp_query_id=' . gfrv('snmp_query_id'));
 
 		break;
 	case 'item_movedown_gsv':
 		data_query_item_movedown_gsv();
 
-		header('Location: data_queries.php?action=item_edit&id=' . gfrv('snmp_query_graph_id') . '&snmp_query_id=' . gfrv('snmp_query_id'));
+		cacti_redirect('data_queries.php?action=item_edit&id=' . gfrv('snmp_query_graph_id') . '&snmp_query_id=' . gfrv('snmp_query_id'));
 
 		break;
 	case 'item_remove_gsv':
 		data_query_item_remove_gsv();
 
-		header('Location: data_queries.php?action=item_edit&id=' . gfrv('snmp_query_graph_id') . '&snmp_query_id=' . gfrv('snmp_query_id'));
+		cacti_redirect('data_queries.php?action=item_edit&id=' . gfrv('snmp_query_graph_id') . '&snmp_query_id=' . gfrv('snmp_query_id'));
 
 		break;
 	case 'item_remove_confirm':
@@ -87,7 +87,7 @@ switch (grv('action')) {
 	case 'item_remove':
 		data_query_item_remove();
 
-		header('Location: data_queries.php?action=edit&id=' . gfrv('snmp_query_id'));
+		cacti_redirect('data_queries.php?action=edit&id=' . gfrv('snmp_query_id'));
 
 		break;
 	case 'item_edit':
@@ -148,7 +148,7 @@ function form_save() : void {
 			}
 		}
 
-		header('Location: data_queries.php?action=edit&id=' . (empty($snmp_query_id) ? grv('id') : $snmp_query_id));
+		cacti_redirect('data_queries.php?action=edit&id=' . (empty($snmp_query_id) ? grv('id') : $snmp_query_id));
 	} elseif (isrv('save_component_snmp_query_item') && !isrv('svg_x') && !isrv('svds_x')) {
 		// ================= input validation =================
 		gfrv('id');
@@ -223,7 +223,7 @@ function form_save() : void {
 			}
 		}
 
-		header('Location: data_queries.php?action=item_edit&id=' . (empty($snmp_query_graph_id) ? grv('id') : $snmp_query_graph_id) . '&snmp_query_id=' . grv('snmp_query_id'));
+		cacti_redirect('data_queries.php?action=item_edit&id=' . (empty($snmp_query_graph_id) ? grv('id') : $snmp_query_graph_id) . '&snmp_query_id=' . grv('snmp_query_id'));
 	} elseif (isrv('save_component_svg')) {
 		// ================= input validation =================
 		gfrv('id');
@@ -233,14 +233,14 @@ function form_save() : void {
 
 		if (ierv('svg_text')) {
 			raise_message(39);
-			header('Location: data_queries.php?action=item_edit&id=' . grv('id') . '&snmp_query_id=' . grv('snmp_query_id'));
+			cacti_redirect('data_queries.php?action=item_edit&id=' . grv('id') . '&snmp_query_id=' . grv('snmp_query_id'));
 
 			return;
 		}
 
 		if (ierv('svg_field')) {
 			raise_message(38);
-			header('Location: data_queries.php?action=item_edit&id=' . grv('id') . '&snmp_query_id=' . grv('snmp_query_id'));
+			cacti_redirect('data_queries.php?action=item_edit&id=' . grv('id') . '&snmp_query_id=' . grv('snmp_query_id'));
 
 			return;
 		}
@@ -269,7 +269,7 @@ function form_save() : void {
 
 		clear_messages();
 
-		header('Location: data_queries.php?action=item_edit&id=' . grv('id') . '&snmp_query_id=' . grv('snmp_query_id'));
+		cacti_redirect('data_queries.php?action=item_edit&id=' . grv('id') . '&snmp_query_id=' . grv('snmp_query_id'));
 	} elseif (isrv('save_component_svds')) {
 		// ================= input validation =================
 		gfrv('id');
@@ -283,14 +283,14 @@ function form_save() : void {
 
 			if (ierv('svds_text')) {
 				raise_message(39);
-				header('Location: data_queries.php?action=item_edit&id=' . grv('id') . '&snmp_query_id=' . grv('snmp_query_id'));
+				cacti_redirect('data_queries.php?action=item_edit&id=' . grv('id') . '&snmp_query_id=' . grv('snmp_query_id'));
 
 				return;
 			}
 
 			if (ierv('svds_field')) {
 				raise_message(38);
-				header('Location: data_queries.php?action=item_edit&id=' . grv('id') . '&snmp_query_id=' . grv('snmp_query_id'));
+				cacti_redirect('data_queries.php?action=item_edit&id=' . grv('id') . '&snmp_query_id=' . grv('snmp_query_id'));
 
 				return;
 			}
@@ -319,7 +319,7 @@ function form_save() : void {
 
 			clear_messages();
 
-			header('Location: data_queries.php?action=item_edit&id=' . grv('id') . '&snmp_query_id=' . grv('snmp_query_id'));
+			cacti_redirect('data_queries.php?action=item_edit&id=' . grv('id') . '&snmp_query_id=' . grv('snmp_query_id'));
 		}
 	}
 }
@@ -349,9 +349,7 @@ function form_actions() : void {
 			raise_message(40);
 		}
 
-		header('Location: data_queries.php');
-
-		exit;
+		cacti_redirect('data_queries.php');
 	} else {
 		$ilist  = '';
 		$iarray = [];
@@ -1100,9 +1098,7 @@ function data_query_edit() : void {
 
 		if (!cacti_sizeof($snmp_query)) {
 			raise_message('data_query_missing', __('The Data Query ID [%s] that you are trying to Edit does not exist.  Please run the repair_database.php CLI script to resolve this database issue.', grv('id')), MESSAGE_LEVEL_ERROR);
-			header('Location: data_queries.php');
-
-			exit;
+			cacti_redirect('data_queries.php');
 		}
 
 		$header_label = __esc('Data Queries [edit: %s]', $snmp_query['name']);

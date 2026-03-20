@@ -211,7 +211,7 @@ function automation_import_process() : void {
 		$_SESSION['import_debug_info'] = $debug_data;
 	}
 
-	header('Location: automation_networks.php?action=import');
+	cacti_redirect('automation_networks.php?action=import');
 
 	exit();
 }
@@ -220,7 +220,7 @@ function form_save() : void {
 	if (isrv('save_component_network')) {
 		$network_id = api_networks_save($_POST);
 
-		header('Location: automation_networks.php?action=edit&id=' . (empty($network_id) ? gnrv('id') : $network_id));
+		cacti_redirect('automation_networks.php?action=edit&id=' . (empty($network_id) ? gnrv('id') : $network_id));
 	}
 }
 
@@ -509,9 +509,7 @@ function form_actions() : void {
 			}
 		}
 
-		header('Location: automation_networks.php');
-
-		exit;
+		cacti_redirect('automation_networks.php');
 	} else {
 		$ilist  = '';
 		$iarray = [];

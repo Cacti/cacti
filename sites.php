@@ -277,7 +277,7 @@ function form_save() : void {
 			}
 		}
 
-		header('Location: sites.php?action=edit&id=' . (empty($site_id) ? gnrv('id') : $site_id));
+		cacti_redirect('sites.php?action=edit&id=' . (empty($site_id) ? gnrv('id') : $site_id));
 	}
 }
 
@@ -390,9 +390,7 @@ function form_actions() : void {
 			}
 		}
 
-		header('Location: sites.php');
-
-		exit;
+		cacti_redirect('sites.php');
 	} else {
 		$ilist  = '';
 		$iarray = [];

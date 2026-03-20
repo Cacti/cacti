@@ -9718,5 +9718,25 @@ if (!function_exists('stats_standard_deviation')) {
 		}
 
 		return sqrt($carry / $total_items);
-	}
-}
+		}
+		}
+
+		/**
+		* Validates and performs an HTTP redirect
+		*
+		* @param string $url The URL to redirect to
+		* @param bool $internal_only If true, prevents redirecting to external hosts
+		*
+		* @return void
+		*/
+		function cacti_redirect(string $url, bool $internal_only = true) : void {
+		if ($internal_only) {
+		$host = parse_url($url, PHP_URL_HOST);
+		if ($host !== null && $host !== $_SERVER['HTTP_HOST']) {
+		$url = 'index.php'; // fallback to safe default
+		}
+		}
+
+		header('Location: ' . $url);
+		exit;
+		}

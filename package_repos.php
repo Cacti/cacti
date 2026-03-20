@@ -156,7 +156,7 @@ function form_save() : void {
 		}
 	}
 
-	header('Location: package_repos.php?header=false&action=edit&id=' . (empty($id) ? gnrv('id') : $id));
+	cacti_redirect('package_repos.php?header=false&action=edit&id=' . (empty($id) ? gnrv('id') : $id));
 }
 
 function form_actions() : void {
@@ -190,9 +190,7 @@ function form_actions() : void {
 			}
 		}
 
-		header('Location: package_repos.php?header=false');
-
-		exit;
+		cacti_redirect('package_repos.php?header=false');
 	}
 
 	// setup some variables
@@ -263,9 +261,7 @@ function form_actions() : void {
 		}
 	} else {
 		raise_message(40);
-		header('Location: package_repos.php?header=false');
-
-		exit;
+		cacti_redirect('package_repos.php?header=false');
 	}
 
 	print "<tr>

@@ -32,9 +32,9 @@ require_once(CACTI_PATH_LIBRARY . '/utility.php');
 // check edit/alter permissions
 if (!clog_admin()) {
 	if (POLLER_ID > 1) {
-		header('Location: logout.php?action=remote');
+		cacti_redirect('logout.php?action=remote');
 	} else {
-		header('Location: permission_denied.php');
+		cacti_redirect('permission_denied.php');
 	}
 
 	exit;

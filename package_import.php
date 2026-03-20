@@ -191,9 +191,7 @@ function form_actions() : void {
 							if (!mkdir($tmp_dir, 0777, true)) {
 								raise_message('tmpdir_fail', __('Unable to create package temporary directory %s.', $tmp_dir), MESSAGE_LEVEL_ERROR);
 
-								header('Location: package_import.php?package_location=' . $package_location);
-
-								exit;
+								cacti_redirect('package_import.php?package_location=' . $package_location);
 							}
 						}
 
@@ -216,9 +214,7 @@ function form_actions() : void {
 			}
 		}
 
-		header('Location: package_import.php?package_location=' . $package_location);
-
-		exit;
+		cacti_redirect('package_import.php?package_location=' . $package_location);
 	}
 
 	// Import Confirm
@@ -367,16 +363,12 @@ function form_actions() : void {
 				$save_html = "<button type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()'>" . __esc('Cancel') . "</button><button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' title='" . __n('Import Package', 'Import Packages', cacti_sizeof($pkg_array)) . "'>" . __esc('Continue') . '</button>';
 			} else {
 				raise_message('no_selection', __('You must select either a File or a Template Item to import before proceeding'), MESSAGE_LEVEL_ERROR);
-				header('Location: package_import.php');
-
-				exit;
+				cacti_redirect('package_import.php');
 			}
 		}
 	} else {
 		raise_message(40);
-		header('Location: package_import.php');
-
-		exit;
+		cacti_redirect('package_import.php');
 	}
 
 	print "<tr>
@@ -421,9 +413,7 @@ function form_save() : void {
 
 			unset($_SESSION['sess_import_package']);
 		} else {
-			header('Location: package_import.php');
-
-			exit;
+			cacti_redirect('package_import.php');
 		}
 
 		if (isrv('trust_signer') && gnrv('trust_signer') == 'on') {
@@ -535,9 +525,7 @@ function form_save() : void {
 
 			unset($_SESSION['sess_import_package']);
 
-			header('Location: package_import.php?package_location=0');
-
-			exit;
+			cacti_redirect('package_import.php?package_location=0');
 		}
 	}
 }
@@ -835,9 +823,7 @@ function package_accept_key() : void {
 					unlink($xmlfile);
 				} else {
 					raise_message('repo_missing', __('The Repo \'%s\' is NOT Reachable at the URL Location or the package.manifest file is missing.', $repo['name']), MESSAGE_LEVEL_WARN);
-					header('Location: package_import.php');
-
-					exit;
+					cacti_redirect('package_import.php');
 				}
 			}
 		}

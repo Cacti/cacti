@@ -369,7 +369,7 @@ function form_save() : void {
 			}
 		}
 
-		header('Location: pollers.php?action=edit&id=' . (empty($poller_id) ? gnrv('id') : $poller_id));
+		cacti_redirect('pollers.php?action=edit&id=' . (empty($poller_id) ? gnrv('id') : $poller_id));
 	}
 }
 
@@ -577,9 +577,7 @@ function form_actions() : void {
 			}
 		}
 
-		header('Location: pollers.php');
-
-		exit;
+		cacti_redirect('pollers.php');
 	} else {
 		$ilist  = '';
 		$iarray = [];

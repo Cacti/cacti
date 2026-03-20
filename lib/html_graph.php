@@ -569,9 +569,7 @@ function html_graph_new_graphs(string $page, int $host_id, int $host_template_id
 
 		host_new_graphs_save($host_id);
 
-		header('Location: ' . $page . '?host_id=' . $host_id);
-
-		exit;
+		cacti_redirect($page . '?host_id=' . $host_id);
 	}
 
 	form_hidden_box('host_template_id', $host_template_id, '0');
@@ -777,9 +775,7 @@ function html_graph_preview_view() : void {
 	global $is_request_ajax;
 
 	if (!is_view_allowed('show_preview')) {
-		header('Location: permission_denied.php');
-
-		exit;
+		cacti_redirect('permission_denied.php');
 	}
 
 	if (isrv('external_id')) {
@@ -1146,9 +1142,7 @@ function html_graph_list_view() : void {
 	global $graph_timespans, $alignment, $graph_sources, $item_rows;
 
 	if (!is_view_allowed('show_list')) {
-		header('Location: permission_denied.php');
-
-		exit;
+		cacti_redirect('permission_denied.php');
 	}
 
 	// reset the graph list on a new viewing
@@ -1644,7 +1638,7 @@ function html_graph_get_reports() : void {
 		raise_message('reports_no_graph');
 	}
 
-	header('Location: graph_view.php?action=list');
+	cacti_redirect('graph_view.php?action=list');
 }
 
 function html_graph_single_validate() : void {
@@ -1685,9 +1679,7 @@ function html_graph_check_access() : void {
 
 	// take graph permissions into account here
 	if (!is_graph_allowed(grv('local_graph_id'))) {
-		header('Location: permission_denied.php');
-
-		exit;
+		cacti_redirect('permission_denied.php');
 	}
 }
 

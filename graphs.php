@@ -162,7 +162,7 @@ switch (grv('action')) {
 			}
 		}
 
-		header('Location: graphs.php?action=graph_edit&id=' . gfrv('id'));
+		cacti_redirect('graphs.php?action=graph_edit&id=' . gfrv('id'));
 
 		break;
 	case 'item_remove':
@@ -170,7 +170,7 @@ switch (grv('action')) {
 
 		item_remove();
 
-		header('Location: graphs.php?action=graph_edit&id=' . grv('local_graph_id'));
+		cacti_redirect('graphs.php?action=graph_edit&id=' . grv('local_graph_id'));
 
 		break;
 	case 'item_edit':
@@ -186,7 +186,7 @@ switch (grv('action')) {
 
 		item_movedown();
 
-		header('Location: graphs.php?action=graph_edit&id=' . grv('local_graph_id'));
+		cacti_redirect('graphs.php?action=graph_edit&id=' . grv('local_graph_id'));
 
 		break;
 	case 'item_moveup':
@@ -194,7 +194,7 @@ switch (grv('action')) {
 
 		item_moveup();
 
-		header('Location: graphs.php?action=graph_edit&id=' . grv('local_graph_id'));
+		cacti_redirect('graphs.php?action=graph_edit&id=' . grv('local_graph_id'));
 
 		break;
 	case 'lock':
@@ -361,9 +361,9 @@ function form_save() : void {
 
 			if (isset($return_array['local_graph_id'])) {
 				$local_graph_id = $return_array['local_graph_id'];
-				header('Location: graphs.php?action=graph_edit&id=' . $local_graph_id);
+				cacti_redirect('graphs.php?action=graph_edit&id=' . $local_graph_id);
 			} else {
-				header('Location: graphs.php');
+				cacti_redirect('graphs.php');
 			}
 
 			exit;
@@ -710,24 +710,20 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: graphs.php?action=item_edit&graph_template_item_id=' . (empty($graph_template_item_id) ? gnrv('graph_template_item_id') : $graph_template_item_id) . '&id=' . gnrv('local_graph_id'));
-
-			exit;
+			cacti_redirect('graphs.php?action=item_edit&graph_template_item_id=' . (empty($graph_template_item_id) ? gnrv('graph_template_item_id') : $graph_template_item_id) . '&id=' . gnrv('local_graph_id'));
 		} else {
-			header('Location: graphs.php?action=graph_edit&id=' . gnrv('local_graph_id'));
-
-			exit;
+			cacti_redirect('graphs.php?action=graph_edit&id=' . gnrv('local_graph_id'));
 		}
 	}
 
 	if ((isrv('save_component_graph_new')) && (ierv('graph_template_id'))) {
-		header('Location: graphs.php?action=graph_edit&host_id=' . gnrv('host_id') . '&new=1');
+		cacti_redirect('graphs.php?action=graph_edit&host_id=' . gnrv('host_id') . '&new=1');
 	} elseif ((is_error_message()) || (ierv('local_graph_id')) || (gnrv('graph_template_id') != gnrv('graph_template_id_prev')) || (gnrv('host_id') != gnrv('host_id_prev'))) {
-		header('Location: graphs.php?action=graph_edit&id=' . (empty($local_graph_id) ? gnrv('local_graph_id') : $local_graph_id) . (isrv('host_id') ? '&host_id=' . gnrv('host_id') : ''));
+		cacti_redirect('graphs.php?action=graph_edit&id=' . (empty($local_graph_id) ? gnrv('local_graph_id') : $local_graph_id) . (isrv('host_id') ? '&host_id=' . gnrv('host_id') : ''));
 	} elseif (!empty($local_graph_id)) {
-		header('Location: graphs.php?action=graph_edit&id=' . $local_graph_id);
+		cacti_redirect('graphs.php?action=graph_edit&id=' . $local_graph_id);
 	} else {
-		header('Location: graphs.php');
+		cacti_redirect('graphs.php');
 	}
 
 	exit;
@@ -1562,9 +1558,7 @@ function form_actions() : void {
 				// create actual graph items
 				aggregate_create_update($local_graph_id, $member_graphs, $attribs);
 
-				header("Location: aggregate_graphs.php?action=edit&tab=details&id=$local_graph_id");
-
-				exit;
+				cacti_redirect("aggregate_graphs.php?action=edit&tab=details&id=$local_graph_id");
 			} elseif (grv('drp_action') == '8') { // automation
 				cacti_log('automation_graph_action_execute called: ' . grv('drp_action'), true, 'AUTM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
@@ -1598,9 +1592,9 @@ function form_actions() : void {
 		}
 
 		if (grv('drp_action') == '2') { // change graph template
-			header('Location: graphs.php?template_id=-1');
+			cacti_redirect('graphs.php?template_id=-1');
 		} else {
-			header('Location: graphs.php');
+			cacti_redirect('graphs.php');
 		}
 
 		exit;
@@ -2299,9 +2293,7 @@ function graph_edit() : void {
 		// case of a deleted graph
 		if (!cacti_sizeof($graph)) {
 			raise_message(31);
-			header('Location: graphs.php');
-
-			exit;
+			cacti_redirect('graphs.php');
 		}
 
 		$header_label = __esc('Graph [edit: %s]', get_graph_title(grv('id')));

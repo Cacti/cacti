@@ -67,25 +67,25 @@ switch (grv('action')) {
 	case 'change_leaf':
 		automation_tree_rules_change_leaf();
 
-		header('Location: automation_tree_rules.php?action=edit&id=' . grv('id'));
+		cacti_redirect('automation_tree_rules.php?action=edit&id=' . grv('id'));
 
 		break;
 	case 'item_movedown':
 		automation_tree_rules_item_movedown();
 
-		header('Location: automation_tree_rules.php?action=edit&id=' . grv('id'));
+		cacti_redirect('automation_tree_rules.php?action=edit&id=' . grv('id'));
 
 		break;
 	case 'item_moveup':
 		automation_tree_rules_item_moveup();
 
-		header('Location: automation_tree_rules.php?action=edit&id=' . grv('id'));
+		cacti_redirect('automation_tree_rules.php?action=edit&id=' . grv('id'));
 
 		break;
 	case 'item_remove':
 		automation_tree_rules_item_remove();
 
-		header('Location: automation_tree_rules.php?action=edit&id=' . grv('id'));
+		cacti_redirect('automation_tree_rules.php?action=edit&id=' . grv('id'));
 
 		break;
 	case 'item_edit':
@@ -97,7 +97,7 @@ switch (grv('action')) {
 	case 'remove':
 		automation_tree_rules_remove();
 
-		header('Location: automation_tree_rules.php');
+		cacti_redirect('automation_tree_rules.php');
 
 		break;
 	case 'edit':
@@ -147,9 +147,7 @@ function automation_export() : void {
 		}
 	} else {
 		raise_message(40);
-		header('Location: automation_tree_rules.php');
-
-		exit;
+		cacti_redirect('automation_tree_rules.php');
 	}
 }
 
@@ -266,7 +264,7 @@ function automation_import_process() : void {
 		$_SESSION['import_debug_info'] = $debug_data;
 	}
 
-	header('Location: automation_tree_rules.php?action=import');
+	cacti_redirect('automation_tree_rules.php?action=import');
 
 	exit();
 }
@@ -296,7 +294,7 @@ function form_save() : void {
 			}
 		}
 
-		header('Location: automation_tree_rules.php?action=edit&id=' . (empty($rule_id) ? grv('id') : $rule_id));
+		cacti_redirect('automation_tree_rules.php?action=edit&id=' . (empty($rule_id) ? grv('id') : $rule_id));
 	} elseif (isrv('save_component_automation_match_item')) {
 		// ================= input validation =================
 		gfrv('id');
@@ -322,9 +320,7 @@ function form_save() : void {
 
 			cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Tree automation from client address \'%s\'', get_client_addr()), false, 'SECURITY');
 
-			header('Location: automation_tree_rules.php?header=false&action=item_edit&id=' . grv('id') . '&item_id=' . grv('item_id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
-
-			exit;
+			cacti_redirect('automation_tree_rules.php?header=false&action=item_edit&id=' . grv('id') . '&item_id=' . grv('item_id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
 		}
 
 		if (!is_error_message()) {
@@ -338,9 +334,9 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_tree_rules.php?action=item_edit&id=' . grv('id') . '&item_id=' . grv('item_id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
+			cacti_redirect('automation_tree_rules.php?action=item_edit&id=' . grv('id') . '&item_id=' . grv('item_id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
 		} else {
-			header('Location: automation_tree_rules.php?action=edit&id=' . grv('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
+			cacti_redirect('automation_tree_rules.php?action=edit&id=' . grv('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
 		}
 	} elseif (isrv('save_component_automation_tree_rule_item')) {
 		// ================= input validation =================
@@ -373,13 +369,13 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_tree_rules.php?action=item_edit&id=' . grv('id') . '&item_id=' . ($automation_graph_rule_item_id === null ? grv('item_id') : $automation_graph_rule_item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_ACTION);
+			cacti_redirect('automation_tree_rules.php?action=item_edit&id=' . grv('id') . '&item_id=' . ($automation_graph_rule_item_id === null ? grv('item_id') : $automation_graph_rule_item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_ACTION);
 		} else {
-			header('Location: automation_tree_rules.php?action=edit&id=' . grv('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_ACTION);
+			cacti_redirect('automation_tree_rules.php?action=edit&id=' . grv('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_ACTION);
 		}
 	} else {
 		raise_message(2);
-		header('Location: automation_tree_rules.php');
+		cacti_redirect('automation_tree_rules.php');
 	}
 }
 
@@ -440,9 +436,7 @@ function automation_tree_rules_form_actions() : void {
 			}
 		}
 
-		header('Location: automation_tree_rules.php');
-
-		exit;
+		cacti_redirect('automation_tree_rules.php');
 	} else {
 		$ilist  = '';
 		$iarray = [];

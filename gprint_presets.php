@@ -82,13 +82,9 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: gprint_presets.php?action=edit&id=' . (empty($gprint_preset_id) ? gnrv('id') : $gprint_preset_id));
-
-			exit;
+			cacti_redirect('gprint_presets.php?action=edit&id=' . (empty($gprint_preset_id) ? gnrv('id') : $gprint_preset_id));
 		} else {
-			header('Location: gprint_presets.php');
-
-			exit;
+			cacti_redirect('gprint_presets.php');
 		}
 	}
 }
@@ -110,9 +106,7 @@ function form_actions() : void {
 			}
 		}
 
-		header('Location: gprint_presets.php');
-
-		exit;
+		cacti_redirect('gprint_presets.php');
 	} else {
 		$ilist  = '';
 		$iarray = [];

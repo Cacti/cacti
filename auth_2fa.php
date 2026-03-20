@@ -28,9 +28,7 @@ require(__DIR__ . '/include/global.php');
 set_default_action();
 
 if (!isset($_SESSION[SESS_USER_ID])) {
-	header('Location: logout.php');
-
-	exit;
+	cacti_redirect('logout.php');
 }
 
 $user = db_fetch_row_prepared('SELECT id, username, tfa_enabled, tfa_secret, login_opts

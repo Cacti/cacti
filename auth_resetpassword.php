@@ -209,9 +209,7 @@ switch ($action) {
 
 			raise_message('password_success');
 
-			header('Location: index.php');
-
-			exit;
+			cacti_redirect('index.php');
 		} else {
 			$action = 'resetpassword';
 			$return = CACTI_PATH_URL . 'resetpassword.php';

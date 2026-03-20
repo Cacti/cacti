@@ -291,7 +291,7 @@ function form_save() : void {
 	kill_session_var('selected_theme');
 
 	$tab = ($currentTab !== '') ? ('?tab=' . rawurlencode($currentTab)) : '';
-	header('Location: auth_profile.php' . $tab);
+	cacti_redirect('auth_profile.php' . $tab);
 }
 
 function settings() : bool {

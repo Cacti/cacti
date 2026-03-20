@@ -50,7 +50,7 @@ switch (grv('action')) {
 			debug_delete($selected_items);
 			debug_rerun($selected_items);
 			raise_message('rerun', __('Data Source debug started.'), MESSAGE_LEVEL_INFO);
-			header('Location: data_debug.php?action=view&id=' . gfrv('id'));
+			cacti_redirect('data_debug.php?action=view&id=' . gfrv('id'));
 		} else {
 			raise_message('repair_error', __('Data Source debug received an invalid Data Source ID.'), MESSAGE_LEVEL_ERROR);
 		}
@@ -73,7 +73,7 @@ switch (grv('action')) {
 
 			raise_message('rerun', __('Automatic Data Source debug being rerun after repair.'), MESSAGE_LEVEL_INFO);
 
-			header('Location: data_debug.php?action=view&id=' . gfrv('id'));
+			cacti_redirect('data_debug.php?action=view&id=' . gfrv('id'));
 		} else {
 			raise_message('repair_error', __('Data Source repair received an invalid Data Source ID.'), MESSAGE_LEVEL_ERROR);
 		}
@@ -248,10 +248,10 @@ function form_actions() : void {
 		if (isrv('save_list')) {
 			if (grv('drp_action') == '2') { // delete
 				debug_delete($selected_items);
-				header('Location: data_debug.php?debug=-1');
+				cacti_redirect('data_debug.php?debug=-1');
 			} elseif (grv('drp_action') == '1') { // Rerun
 				debug_rerun($selected_items);
-				header('Location: data_debug.php?debug=1');
+				cacti_redirect('data_debug.php?debug=1');
 			}
 
 			exit;

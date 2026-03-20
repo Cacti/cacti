@@ -1978,9 +1978,7 @@ function html_tree_get_content() : void {
 	top_graph_header();
 
 	if (!is_view_allowed('show_tree')) {
-		header('Location: permission_denied.php');
-
-		exit;
+		cacti_redirect('permission_denied.php');
 	}
 
 	if (!ierv('node')) {
@@ -2056,9 +2054,7 @@ function html_tree_get_content() : void {
 
 	if ($tree_id > 0) {
 		if (!is_tree_allowed($tree_id)) {
-			header('Location: permission_denied.php');
-
-			exit;
+			cacti_redirect('permission_denied.php');
 		}
 
 		grow_right_pane_tree($tree_id, $node_id, $hgdata);

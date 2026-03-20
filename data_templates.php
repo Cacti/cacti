@@ -157,9 +157,7 @@ function form_save() : void {
 
 				$location = 'data_templates.php?action=template_edit&id=' . $data_template_id_param . $view_rrd_param;
 
-				header('Location: ' . $location);
-
-				exit;
+				cacti_redirect($location);
 			}
 		}
 
@@ -362,7 +360,7 @@ function form_save() : void {
 			}
 		}
 
-		header('Location: data_templates.php?action=template_edit&id=' . (empty($data_template_id) ? grv('data_template_id') : $data_template_id) . (ierv('current_rrd') ? '' : '&view_rrd=' . (gnrv('current_rrd') ? gnrv('current_rrd') : $data_template_rrd_id)));
+		cacti_redirect('data_templates.php?action=template_edit&id=' . (empty($data_template_id) ? grv('data_template_id') : $data_template_id) . (ierv('current_rrd') ? '' : '&view_rrd=' . (gnrv('current_rrd') ? gnrv('current_rrd') : $data_template_rrd_id)));
 	}
 }
 
@@ -457,9 +455,7 @@ function form_actions() : void {
 			}
 		}
 
-		header('Location: data_templates.php');
-
-		exit;
+		cacti_redirect('data_templates.php');
 	} else {
 		$ilist  = '';
 		$iarray = [];
@@ -560,7 +556,7 @@ function template_rrd_remove() : void {
 		}
 	}
 
-	header('Location: data_templates.php?action=template_edit&id=' . grv('data_template_id'));
+	cacti_redirect('data_templates.php?action=template_edit&id=' . grv('data_template_id'));
 }
 
 function template_rrd_add() : void {
@@ -616,7 +612,7 @@ function template_rrd_add() : void {
 		}
 	}
 
-	header('Location: data_templates.php?action=template_edit&id=' . grv('id') . "&view_rrd=$data_template_rrd_id");
+	cacti_redirect('data_templates.php?action=template_edit&id=' . grv('id') . "&view_rrd=$data_template_rrd_id");
 }
 
 function data_template_is_stream(int $data_input_id) : bool {

@@ -90,9 +90,7 @@ function update_policies() : void {
 		}
 	}
 
-	header('Location: user_admin.php?action=user_edit&tab=' . gnrv('tab') . '&id=' . gnrv('id'));
-
-	exit;
+	cacti_redirect('user_admin.php?action=user_edit&tab=' . gnrv('tab') . '&id=' . gnrv('id'));
 }
 
 function form_actions() : void {
@@ -121,9 +119,7 @@ function form_actions() : void {
 			}
 		}
 
-		header('Location: user_admin.php?action=user_edit&tab=permsd&id=' . gnrv('id'));
-
-		exit;
+		cacti_redirect('user_admin.php?action=user_edit&tab=permsd&id=' . gnrv('id'));
 	}
 
 	if (isrv('associate_graph')) {
@@ -148,9 +144,7 @@ function form_actions() : void {
 			}
 		}
 
-		header('Location: user_admin.php?action=user_edit&tab=permsg&id=' . gnrv('id'));
-
-		exit;
+		cacti_redirect('user_admin.php?action=user_edit&tab=permsg&id=' . gnrv('id'));
 	}
 
 	if (isrv('associate_template')) {
@@ -175,9 +169,7 @@ function form_actions() : void {
 			}
 		}
 
-		header('Location: user_admin.php?action=user_edit&tab=permste&id=' . gnrv('id'));
-
-		exit;
+		cacti_redirect('user_admin.php?action=user_edit&tab=permste&id=' . gnrv('id'));
 	}
 
 	if (isrv('associate_groups')) {
@@ -201,9 +193,7 @@ function form_actions() : void {
 			}
 		}
 
-		header('Location: user_admin.php?action=user_edit&tab=permsgr&id=' . gnrv('id'));
-
-		exit;
+		cacti_redirect('user_admin.php?action=user_edit&tab=permsgr&id=' . gnrv('id'));
 	}
 
 	if (isrv('associate_tree')) {
@@ -228,9 +218,7 @@ function form_actions() : void {
 			}
 		}
 
-		header('Location: user_admin.php?action=user_edit&tab=permstr&id=' . gnrv('id'));
-
-		exit;
+		cacti_redirect('user_admin.php?action=user_edit&tab=permstr&id=' . gnrv('id'));
 	}
 
 	if (isrv('selected_items')) {
@@ -322,9 +310,7 @@ function form_actions() : void {
 			}
 		}
 
-		header('Location: user_admin.php');
-
-		exit;
+		cacti_redirect('user_admin.php');
 	} else {
 		$ilist  = '';
 		$iarray = [];
@@ -489,9 +475,7 @@ function form_save() : void {
 		}
 
 		if ($add_button_clicked == true) {
-			header('Location: user_admin.php?action=user_edit&tab=graph_perms_edit&id=' . gnrv('id'));
-
-			exit;
+			cacti_redirect('user_admin.php?action=user_edit&tab=graph_perms_edit&id=' . gnrv('id'));
 		}
 	} elseif (isrv('save_component_user')) {
 		// user management save
@@ -695,7 +679,7 @@ function form_save() : void {
 	}
 
 	// redirect to the appropriate page
-	header('Location: user_admin.php?action=user_edit&id=' . (empty($user_id) ? gfrv('id') : $user_id));
+	cacti_redirect('user_admin.php?action=user_edit&id=' . (empty($user_id) ? gfrv('id') : $user_id));
 }
 
 function perm_remove() : void {
@@ -730,7 +714,7 @@ function perm_remove() : void {
 			[grv('user_id'), grv('id')]);
 	}
 
-	header('Location: user_admin.php?action=user_edit&tab=graph_perms_edit&id=' . grv('user_id'));
+	cacti_redirect('user_admin.php?action=user_edit&tab=graph_perms_edit&id=' . grv('user_id'));
 }
 
 function graph_perms_edit(string $tab, string $header_label) : void {
@@ -764,7 +748,7 @@ function graph_perms_edit(string $tab, string $header_label) : void {
 	switch($tab) {
 		case 'permsg':
 			if (ierv('id')) {
-				header('Location: user_admin.php');
+				cacti_redirect('user_admin.php');
 			}
 
 			graph_filter($header_label);
@@ -961,7 +945,7 @@ function graph_perms_edit(string $tab, string $header_label) : void {
 			break;
 		case 'permsgr':
 			if (ierv('id')) {
-				header('Location: user_admin.php');
+				cacti_redirect('user_admin.php');
 			}
 
 			group_filter($header_label);
@@ -1066,7 +1050,7 @@ function graph_perms_edit(string $tab, string $header_label) : void {
 			break;
 		case 'permsd':
 			if (ierv('id')) {
-				header('Location: user_admin.php');
+				cacti_redirect('user_admin.php');
 			}
 
 			device_filter($header_label);
@@ -1236,7 +1220,7 @@ function graph_perms_edit(string $tab, string $header_label) : void {
 			break;
 		case 'permste':
 			if (ierv('id')) {
-				header('Location: user_admin.php');
+				cacti_redirect('user_admin.php');
 			}
 
 			template_filter($header_label);
@@ -1392,7 +1376,7 @@ function graph_perms_edit(string $tab, string $header_label) : void {
 			break;
 		case 'permstr':
 			if (ierv('id')) {
-				header('Location: user_admin.php');
+				cacti_redirect('user_admin.php');
 			}
 
 			tree_filter($header_label);

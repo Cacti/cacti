@@ -21,4 +21,4 @@
  | http://www.cacti.net/                                                   |
  +-------------------------------------------------------------------------+
 */
-header('Location:../index.php');
+cacti_redirect('../index.php');

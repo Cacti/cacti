@@ -79,7 +79,7 @@ switch (grv('action')) {
 	case 'reindex':
 		host_reindex();
 
-		header('Location: host.php?action=edit&id=' . grv('host_id'));
+		cacti_redirect('host.php?action=edit&id=' . grv('host_id'));
 
 		break;
 	case 'actions':
@@ -91,7 +91,7 @@ switch (grv('action')) {
 
 		host_add_gt();
 
-		header('Location: host.php?action=edit&id=' . grv('host_id'));
+		cacti_redirect('host.php?action=edit&id=' . grv('host_id'));
 
 		break;
 	case 'gt_remove':
@@ -99,7 +99,7 @@ switch (grv('action')) {
 
 		host_remove_gt();
 
-		header('Location: host.php?action=edit&id=' . grv('host_id'));
+		cacti_redirect('host.php?action=edit&id=' . grv('host_id'));
 
 		break;
 	case 'query_add':
@@ -107,7 +107,7 @@ switch (grv('action')) {
 
 		host_add_query();
 
-		header('Location: host.php?action=edit&id=' . grv('host_id'));
+		cacti_redirect('host.php?action=edit&id=' . grv('host_id'));
 
 		break;
 	case 'query_remove':
@@ -115,7 +115,7 @@ switch (grv('action')) {
 
 		host_remove_query();
 
-		header('Location: host.php?action=edit&id=' . grv('host_id'));
+		cacti_redirect('host.php?action=edit&id=' . grv('host_id'));
 
 		break;
 	case 'query_change':
@@ -123,7 +123,7 @@ switch (grv('action')) {
 
 		host_change_query();
 
-		header('Location: host.php?action=edit&id=' . grv('host_id'));
+		cacti_redirect('host.php?action=edit&id=' . grv('host_id'));
 
 		break;
 	case 'query_reload':
@@ -132,7 +132,7 @@ switch (grv('action')) {
 		host_reload_query();
 		raise_message('query_reloaded', __('Data Query Re-indexed.'), MESSAGE_LEVEL_INFO);
 
-		header('Location: host.php?action=edit&id=' . grv('host_id'));
+		cacti_redirect('host.php?action=edit&id=' . grv('host_id'));
 
 		break;
 	case 'query_verbose':
@@ -141,7 +141,7 @@ switch (grv('action')) {
 		host_reload_query();
 		raise_message('query_reloaded', __('Device Data Query Re-indexed.  Verbose output displayed.'), MESSAGE_LEVEL_INFO);
 
-		header('Location: host.php?action=edit&id=' . grv('host_id') . '&display_dq_details=true');
+		cacti_redirect('host.php?action=edit&id=' . grv('host_id') . '&display_dq_details=true');
 
 		break;
 	case 'edit':
@@ -161,14 +161,14 @@ switch (grv('action')) {
 		enable_device_debug(gfrv('host_id'));
 		raise_message('enable_debug', __('Device Debugging Enabled for Device.'), MESSAGE_LEVEL_INFO);
 
-		header('Location: host.php?action=edit&id=' . grv('host_id'));
+		cacti_redirect('host.php?action=edit&id=' . grv('host_id'));
 
 		break;
 	case 'disable_debug':
 		disable_device_debug(gfrv('host_id'));
 		raise_message('disable_debug', __('Device Debugging Disabled for Device.'), MESSAGE_LEVEL_INFO);
 
-		header('Location: host.php?action=edit&id=' . grv('host_id'));
+		cacti_redirect('host.php?action=edit&id=' . grv('host_id'));
 
 		break;
 	case 'repopulate':
@@ -179,7 +179,7 @@ switch (grv('action')) {
 			raise_message('repopulate_error', __('ERROR: Invalid Device ID.'), MESSAGE_LEVEL_ERROR);
 		}
 
-		header('Location: host.php?action=edit&id=' . grv('host_id'));
+		cacti_redirect('host.php?action=edit&id=' . grv('host_id'));
 
 		break;
 	case 'ajax_locations':
@@ -317,7 +317,7 @@ function form_save() : void {
 			}
 		}
 
-		header('Location: host.php?action=edit&id=' . (empty($host_id) ? gnrv('id') : $host_id));
+		cacti_redirect('host.php?action=edit&id=' . (empty($host_id) ? gnrv('id') : $host_id));
 	}
 }
 
@@ -392,9 +392,7 @@ function form_actions() : void {
 
 		api_plugin_hook_function('device_action_bottom', [gnrv('drp_action'), $selected_items]);
 
-		header('Location: host.php');
-
-		exit;
+		cacti_redirect('host.php');
 	} else {
 		$ilist   = '';
 		$iarray  = [];

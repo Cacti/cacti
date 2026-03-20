@@ -59,7 +59,7 @@ switch (grv('action')) {
 
 		reports_send(grv('id'));
 
-		header('Location: reports.php?action=edit&tab=' . grv('tab') . '&id=' . grv('id'));
+		cacti_redirect('reports.php?action=edit&tab=' . grv('tab') . '&id=' . grv('id'));
 
 		break;
 	case 'remove_history':
@@ -72,13 +72,13 @@ switch (grv('action')) {
 			reports_remove_history($history_id, $report_id);
 		}
 
-		header('Location: reports.php?action=edit&tab=preview&rdate=-1&id=' . $report_id);
+		cacti_redirect('reports.php?action=edit&tab=preview&rdate=-1&id=' . $report_id);
 
 		break;
 	case 'ajax_dnd':
 		reports_item_dnd();
 
-		header('Location: reports.php?action=edit&tab=items&id=' . grv('id'));
+		cacti_redirect('reports.php?action=edit&tab=items&id=' . grv('id'));
 
 		break;
 	case 'setvar':
@@ -160,7 +160,7 @@ switch (grv('action')) {
 
 		reports_item_movedown();
 
-		header('Location: reports.php?action=edit&tab=items&id=' . grv('id'));
+		cacti_redirect('reports.php?action=edit&tab=items&id=' . grv('id'));
 
 		break;
 	case 'item_moveup':
@@ -168,7 +168,7 @@ switch (grv('action')) {
 
 		reports_item_moveup();
 
-		header('Location: reports.php?action=edit&tab=items&id=' . grv('id'));
+		cacti_redirect('reports.php?action=edit&tab=items&id=' . grv('id'));
 
 		break;
 	case 'item_remove':
@@ -176,7 +176,7 @@ switch (grv('action')) {
 
 		reports_item_remove();
 
-		header('Location: reports.php?action=edit&tab=items&id=' . grv('id'));
+		cacti_redirect('reports.php?action=edit&tab=items&id=' . grv('id'));
 
 		break;
 	case 'item_edit':

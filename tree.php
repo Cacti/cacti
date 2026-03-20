@@ -95,12 +95,12 @@ switch (grv('action')) {
 		break;
 	case 'sortasc':
 		tree_sort_name_asc();
-		header('Location: tree.php');
+		cacti_redirect('tree.php');
 
 		break;
 	case 'sortdesc':
 		tree_sort_name_desc();
-		header('Location: tree.php');
+		cacti_redirect('tree.php');
 
 		break;
 	case 'edit':
@@ -254,9 +254,7 @@ function tree_down() : void {
 		WHERE id = ?',
 		[$new_seq, $tree_id]);
 
-	header('Location: tree.php');
-
-	exit;
+	cacti_redirect('tree.php');
 }
 
 function tree_up() : void {
@@ -283,9 +281,7 @@ function tree_up() : void {
 		WHERE id = ?',
 		[$new_seq, $tree_id]);
 
-	header('Location: tree.php');
-
-	exit;
+	cacti_redirect('tree.php');
 }
 
 function tree_dnd() : void {
@@ -312,9 +308,7 @@ function tree_dnd() : void {
 		set_config_option('time_last_change_branch', time());
 	}
 
-	header('Location: tree.php');
-
-	exit;
+	cacti_redirect('tree.php');
 }
 
 function get_host_sort_type() : void {
@@ -570,9 +564,7 @@ function form_save() : void {
 			}
 		}
 
-		header('Location: tree.php?action=edit&id=' . (isset($tree_id) ? $tree_id : ''));
-
-		exit;
+		cacti_redirect('tree.php?action=edit&id=' . (isset($tree_id) ? $tree_id : ''));
 	}
 }
 
@@ -672,9 +664,7 @@ function form_actions() : void {
 			}
 		}
 
-		header('Location: tree.php');
-
-		exit;
+		cacti_redirect('tree.php');
 	} else {
 		$ilist  = '';
 		$iarray = [];

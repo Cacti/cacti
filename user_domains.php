@@ -165,7 +165,7 @@ function form_save() : void {
 		}
 	}
 
-	header('Location: user_domains.php?action=edit&domain_id=' . (empty($domain_id) ? gnrv('domain_id') : $domain_id));
+	cacti_redirect('user_domains.php?action=edit&domain_id=' . (empty($domain_id) ? gnrv('domain_id') : $domain_id));
 }
 
 function form_actions() : void {
@@ -199,9 +199,7 @@ function form_actions() : void {
 			}
 		}
 
-		header('Location: user_domains.php');
-
-		exit;
+		cacti_redirect('user_domains.php');
 	} else {
 		$ilist  = '';
 		$iarray = [];

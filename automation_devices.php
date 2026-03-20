@@ -135,9 +135,7 @@ function form_actions() : void {
 			}
 		}
 
-		header('Location: automation_devices.php');
-
-		exit;
+		cacti_redirect('automation_devices.php');
 	} else {
 		$ilist  = '';
 		$iarray = [];
@@ -686,9 +684,7 @@ function purge_discovery_results() : void {
 		db_execute('TRUNCATE TABLE automation_devices');
 	}
 
-	header('Location: automation_devices.php');
-
-	exit;
+	cacti_redirect('automation_devices.php');
 }
 
 function snmp_data(string $item) : string {

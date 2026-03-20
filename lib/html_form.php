@@ -1547,9 +1547,7 @@ function form_continue_confirmation(array $form_data, string $plugin_hook = '', 
 
 		if (isset($data['return']) && $data['return'] == true) {
 			raise_message('form_return', $data['rmessage'], MESSAGE_LEVEL_ERROR);
-			header('Location: ' . $page);
-
-			exit;
+			cacti_redirect($page);
 		}
 
 		if (cacti_sizeof($iarray) > 1) {
@@ -1579,9 +1577,7 @@ function form_continue_confirmation(array $form_data, string $plugin_hook = '', 
 		}
 	} else {
 		raise_message(40);
-		header('Location: ' . $page);
-
-		exit;
+		cacti_redirect($page);
 	}
 
 	top_header();

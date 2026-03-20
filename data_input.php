@@ -52,7 +52,7 @@ switch (grv('action')) {
 	case 'field_remove':
 		field_remove();
 
-		header('Location: data_input.php?action=edit&id=' . gfrv('data_input_id'));
+		cacti_redirect('data_input.php?action=edit&id=' . gfrv('data_input_id'));
 
 		break;
 	case 'field_edit':
@@ -119,7 +119,7 @@ function form_save() : void {
 			}
 		}
 
-		header('Location: data_input.php?action=edit&id=' . (empty($data_input_id) ? gnrv('id') : $data_input_id));
+		cacti_redirect('data_input.php?action=edit&id=' . (empty($data_input_id) ? gnrv('id') : $data_input_id));
 	} elseif (isrv('save_component_field')) {
 		// ================= input validation =================
 		gfrv('id');
@@ -159,9 +159,9 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: data_input.php?action=field_edit&data_input_id=' . grv('data_input_id') . '&id=' . (empty($data_input_field_id) ? grv('id') : $data_input_field_id) . (!ierv('input_output') ? '&type=' . grv('input_output') : ''));
+			cacti_redirect('data_input.php?action=field_edit&data_input_id=' . grv('data_input_id') . '&id=' . (empty($data_input_field_id) ? grv('id') : $data_input_field_id) . (!ierv('input_output') ? '&type=' . grv('input_output') : ''));
 		} else {
-			header('Location: data_input.php?action=edit&id=' . grv('data_input_id'));
+			cacti_redirect('data_input.php?action=edit&id=' . grv('data_input_id'));
 		}
 	}
 }
@@ -216,9 +216,7 @@ function form_actions() : void {
 			}
 		}
 
-		header('Location: data_input.php');
-
-		exit;
+		cacti_redirect('data_input.php');
 	} else {
 		$ilist  = '';
 		$iarray = [];
@@ -431,9 +429,7 @@ function field_edit() : void {
 	// if there are no input fields to choose from, complain
 	if ((!cacti_sizeof($array_field_names)) && (isrv('type') ? grv('type') == 'in' : false) && ($data_input['type_id'] == 1)) {
 		raise_message('invalid_inputs', __('This script appears to have no input values, therefore there is nothing to add.'), MESSAGE_LEVEL_WARN);
-		header('Location: data_input.php?action=edit&id=' . gfrv('data_input_id'));
-
-		exit;
+		cacti_redirect('data_input.php?action=edit&id=' . gfrv('data_input_id'));
 	}
 
 	if ($current_field_type == 'out') {
@@ -496,7 +492,7 @@ function data_input_edit() : void {
 		$data_id = get_nonsystem_data_input(grv('id'));
 
 		if ($data_id == 0 || $data_id == null) {
-			header('Location: data_input.php');
+			cacti_redirect('data_input.php');
 
 			return;
 		}

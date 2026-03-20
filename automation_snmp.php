@@ -72,7 +72,7 @@ switch (grv('action')) {
 
 		automation_snmp_item_movedown();
 
-		header('Location: automation_snmp.php?action=edit&id=' . grv('id'));
+		cacti_redirect('automation_snmp.php?action=edit&id=' . grv('id'));
 
 		break;
 	case 'item_moveup':
@@ -80,7 +80,7 @@ switch (grv('action')) {
 
 		automation_snmp_item_moveup();
 
-		header('Location: automation_snmp.php?action=edit&id=' . grv('id'));
+		cacti_redirect('automation_snmp.php?action=edit&id=' . grv('id'));
 
 		break;
 	case 'item_remove_confirm':
@@ -92,7 +92,7 @@ switch (grv('action')) {
 
 		automation_snmp_item_remove();
 
-		header('Location: automation_snmp.php?action=edit&id=' . grv('id'));
+		cacti_redirect('automation_snmp.php?action=edit&id=' . grv('id'));
 
 		break;
 	case 'item_edit':
@@ -261,7 +261,7 @@ function automation_import_process() : void {
 		$_SESSION['import_debug_info'] = $debug_data;
 	}
 
-	header('Location: automation_snmp.php?action=import');
+	cacti_redirect('automation_snmp.php?action=import');
 
 	exit();
 }
@@ -286,7 +286,7 @@ function form_save() : void {
 			}
 		}
 
-		header('Location: automation_snmp.php?action=edit&id=' . (empty($id) ? gnrv('id') : $id));
+		cacti_redirect('automation_snmp.php?action=edit&id=' . (empty($id) ? gnrv('id') : $id));
 	} elseif (isrv('save_component_automation_snmp_item')) {
 		// ================= input validation =================
 		gfrv('item_id');
@@ -327,13 +327,13 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_snmp.php?action=item_edit&id=' . gnrv('id') . '&item_id=' . ($item_id === null ? gfrv('id') : $item_id));
+			cacti_redirect('automation_snmp.php?action=item_edit&id=' . gnrv('id') . '&item_id=' . ($item_id === null ? gfrv('id') : $item_id));
 		} else {
-			header('Location: automation_snmp.php?action=edit&id=' . gnrv('id'));
+			cacti_redirect('automation_snmp.php?action=edit&id=' . gnrv('id'));
 		}
 	} else {
 		raise_message(2);
-		header('Location: automation_snmp.php');
+		cacti_redirect('automation_snmp.php');
 	}
 }
 
@@ -381,9 +381,7 @@ function form_actions() : void {
 			}
 		}
 
-		header('Location: automation_snmp.php');
-
-		exit;
+		cacti_redirect('automation_snmp.php');
 	} else {
 		$ilist  = '';
 		$iarray = [];
@@ -498,9 +496,7 @@ function automation_snmp_item_dnd() : void {
 		}
 	}
 
-	header('Location: automation_snmp.php?action=edit&id=' . grv('id'));
-
-	exit;
+	cacti_redirect('automation_snmp.php?action=edit&id=' . grv('id'));
 }
 
 function automation_snmp_item_movedown() : void {

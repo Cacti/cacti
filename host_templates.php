@@ -80,7 +80,7 @@ switch (grv('action')) {
 	case 'item_add_gt':
 		template_item_add_gt();
 
-		header('Location: host_templates.php?action=edit&id=' . gfrv('host_template_id'));
+		cacti_redirect('host_templates.php?action=edit&id=' . gfrv('host_template_id'));
 
 		break;
 	case 'item_remove_gt_confirm':
@@ -90,13 +90,13 @@ switch (grv('action')) {
 	case 'item_remove_gt':
 		template_item_remove_gt();
 
-		header('Location: host_templates.php?action=edit&id=' . gfrv('host_template_id'));
+		cacti_redirect('host_templates.php?action=edit&id=' . gfrv('host_template_id'));
 
 		break;
 	case 'item_add_dq':
 		template_item_add_dq();
 
-		header('Location: host_templates.php?action=edit&id=' . gfrv('host_template_id'));
+		cacti_redirect('host_templates.php?action=edit&id=' . gfrv('host_template_id'));
 
 		break;
 	case 'item_remove_dq_confirm':
@@ -106,7 +106,7 @@ switch (grv('action')) {
 	case 'item_remove_dq':
 		template_item_remove_dq();
 
-		header('Location: host_templates.php?action=edit&id=' . gfrv('host_template_id'));
+		cacti_redirect('host_templates.php?action=edit&id=' . gfrv('host_template_id'));
 
 		break;
 	case 'edit':
@@ -162,7 +162,7 @@ function form_save() : void {
 			}
 		}
 
-		header('Location: host_templates.php?action=edit&id=' . (empty($host_template_id) ? gnrv('id') : $host_template_id));
+		cacti_redirect('host_templates.php?action=edit&id=' . (empty($host_template_id) ? gnrv('id') : $host_template_id));
 	}
 }
 
@@ -254,7 +254,7 @@ function form_actions() : void {
 				}
 			}
 
-			header('Location: host_templates.php?action=templates&action=templates');
+			cacti_redirect('host_templates.php?action=templates&action=templates');
 		} else {
 			$selected_items = sanitize_unserialize_selected_items(gnrv('selected_items'));
 
@@ -293,7 +293,7 @@ function form_actions() : void {
 				}
 			}
 
-			header('Location: host_templates.php?action=archives');
+			cacti_redirect('host_templates.php?action=archives');
 		}
 
 		exit;

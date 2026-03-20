@@ -46,7 +46,7 @@ function csrf_error_callback() : void {
 	session_regenerate_id();
 	raise_message('csrf_timeout');
 	ob_end_clean();
-	header('Location: ' . sanitize_uri($_SERVER['REQUEST_URI']));
+	cacti_redirect(sanitize_uri($_SERVER['REQUEST_URI']));
 	csrf_log(__FUNCTION__, 'Timeout, redirecting to ' . sanitize_uri($_SERVER['REQUEST_URI']));
 
 	exit;

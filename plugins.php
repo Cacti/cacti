@@ -165,16 +165,12 @@ if (isrv('plugin')) {
 
 	if (!in_array($plugin, $pluginslist, true) && !in_array($action, $safe_actions, true)) {
 		raise_message('invalid_plugin', __('The action \'%s\' on Plugin \'%s\' can not be performed due to the Plugin in it\'s current state.', $display_action, $plugin), MESSAGE_LEVEL_ERROR);
-		header('Location: plugins.php');
-
-		exit;
+		cacti_redirect('plugins.php');
 	}
 
 	if (in_array($plugin, $plugins_integrated, true)) {
 		raise_message('invalid_plugin_action', __('The action \'%s\' \'%s\' on Plugin \'%s\' can not be taken as the Plugin is integrated.', $display_action, $plugin), MESSAGE_LEVEL_ERROR);
-		header('Location: plugins.php');
-
-		exit;
+		cacti_redirect('plugins.php');
 	}
 } else {
 	$plugin = '';
@@ -195,9 +191,7 @@ switch($action) {
 
 		api_plugin_archive_restore($plugin, $tag, 'available');
 
-		header('Location: plugins.php');
-
-		exit;
+		cacti_redirect('plugins.php');
 	case 'readme':
 		$tag = gnrv('tag');
 
@@ -226,11 +220,11 @@ switch($action) {
 				raise_message('fetch_background', __('The fetch latest plugins process has already been started.'), MESSAGE_LEVEL_WARN);
 			}
 
-			header('Location: plugins.php');
+			cacti_redirect('plugins.php');
 		} else {
 			raise_message('get_latest1', __('You must enter your GitHub user, repo and personal access token before you can refresh the plugins.  You can set the GitHub defaults under Console > Configuration > Settings > General.'), MESSAGE_LEVEL_ERROR);
 
-			header('Location: plugins.php');
+			cacti_redirect('plugins.php');
 		}
 
 		break;
@@ -240,9 +234,9 @@ switch($action) {
 		define('IN_PLUGIN_INSTALL', 1);
 
 		if ($_SESSION['sess_plugins_state'] >= 0) {
-			header('Location: plugins.php?state=5');
+			cacti_redirect('plugins.php?state=5');
 		} else {
-			header('Location: plugins.php');
+			cacti_redirect('plugins.php');
 		}
 
 		break;
@@ -251,25 +245,25 @@ switch($action) {
 
 		api_plugin_uninstall($plugin);
 
-		header('Location: plugins.php');
+		cacti_redirect('plugins.php');
 
 		break;
 	case 'remove_data':
 		api_plugin_remove_data($plugin);
 
-		header('Location: plugins.php');
+		cacti_redirect('plugins.php');
 
 		break;
 	case 'disable':
 		api_plugin_disable($plugin);
 
-		header('Location: plugins.php');
+		cacti_redirect('plugins.php');
 
 		break;
 	case 'enable':
 		api_plugin_enable($plugin);
 
-		header('Location: plugins.php');
+		cacti_redirect('plugins.php');
 
 		break;
 	case 'check':
@@ -287,19 +281,19 @@ switch($action) {
 			raise_message('plugin_good', __('Plugin \'%s\' Check Configuration function returned a null response which is invalid.  Please check with Plugin Developer for an update.', $plugin), MESSAGE_LEVEL_WARN);
 		}
 
-		header('Location: plugins.php');
+		cacti_redirect('plugins.php');
 
 		break;
 	case 'moveup':
 		api_plugin_moveup($plugin);
 
-		header('Location: plugins.php');
+		cacti_redirect('plugins.php');
 
 		break;
 	case 'movedown':
 		api_plugin_movedown($plugin);
 
-		header('Location: plugins.php');
+		cacti_redirect('plugins.php');
 
 		break;
 	case 'remote_enable':
@@ -310,7 +304,7 @@ switch($action) {
 				[$plugin], false, $local_db_cnn_id);
 		}
 
-		header('Location: plugins.php');
+		cacti_redirect('plugins.php');
 
 		break;
 	case 'remote_disable':
@@ -321,7 +315,7 @@ switch($action) {
 				[$plugin], false, $local_db_cnn_id);
 		}
 
-		header('Location: plugins.php');
+		cacti_redirect('plugins.php');
 
 		break;
 	case 'restore':
@@ -329,7 +323,7 @@ switch($action) {
 
 		api_plugin_archive_restore($plugin, $id, 'archive');
 
-		header('Location: plugins.php');
+		cacti_redirect('plugins.php');
 
 		break;
 	case 'delete':
@@ -337,7 +331,7 @@ switch($action) {
 
 		api_plugin_archive_remove($plugin, $id);
 
-		header('Location: plugins.php');
+		cacti_redirect('plugins.php');
 
 		break;
 	case 'archive':
@@ -345,7 +339,7 @@ switch($action) {
 
 		api_plugin_archive($plugin, $archive_note);
 
-		header('Location: plugins.php');
+		cacti_redirect('plugins.php');
 
 		break;
 	case 'ajax_dnd':
@@ -353,7 +347,7 @@ switch($action) {
 
 		api_plugin_reorder($new_order);
 
-		header('Location: plugins.php');
+		cacti_redirect('plugins.php');
 
 		break;
 }

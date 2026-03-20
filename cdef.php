@@ -49,7 +49,7 @@ switch (grv('action')) {
 	case 'item_remove':
 		cdef_item_remove();
 
-		header('Location: cdef.php?action=edit&id=' . grv('cdef_id'));
+		cacti_redirect('cdef.php?action=edit&id=' . grv('cdef_id'));
 
 		break;
 	case 'item_movedown':
@@ -57,7 +57,7 @@ switch (grv('action')) {
 
 		item_movedown();
 
-		header('Location: cdef.php?action=edit&id=' . grv('cdef_id'));
+		cacti_redirect('cdef.php?action=edit&id=' . grv('cdef_id'));
 
 		break;
 	case 'item_moveup':
@@ -65,7 +65,7 @@ switch (grv('action')) {
 
 		item_moveup();
 
-		header('Location: cdef.php?action=edit&id=' . grv('cdef_id'));
+		cacti_redirect('cdef.php?action=edit&id=' . grv('cdef_id'));
 
 		break;
 	case 'item_edit':
@@ -134,7 +134,7 @@ function form_save() : void {
 			}
 		}
 
-		header('Location: cdef.php?action=edit&id=' . (empty($cdef_id) ? gnrv('id') : $cdef_id));
+		cacti_redirect('cdef.php?action=edit&id=' . (empty($cdef_id) ? gnrv('id') : $cdef_id));
 	} elseif (isrv('save_component_item')) {
 		// ================= input validation =================
 		gfrv('id');
@@ -164,9 +164,9 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: cdef.php?action=item_edit&cdef_id=' . gnrv('cdef_id') . '&id=' . ($cdef_item_id === null ? gnrv('id') : $cdef_item_id));
+			cacti_redirect('cdef.php?action=item_edit&cdef_id=' . gnrv('cdef_id') . '&id=' . ($cdef_item_id === null ? gnrv('id') : $cdef_item_id));
 		} else {
-			header('Location: cdef.php?action=edit&id=' . gnrv('cdef_id'));
+			cacti_redirect('cdef.php?action=edit&id=' . gnrv('cdef_id'));
 		}
 	}
 }
@@ -231,9 +231,7 @@ function form_actions() : void {
 			}
 		}
 
-		header('Location: cdef.php');
-
-		exit;
+		cacti_redirect('cdef.php');
 	} else {
 		$ilist  = '';
 		$iarray = [];
@@ -542,7 +540,7 @@ function cdef_item_dnd() : void {
 		}
 	}
 
-	header('Location: cdef.php?action=edit&id=' . grv('id'));
+	cacti_redirect('cdef.php?action=edit&id=' . grv('id'));
 }
 
 function cdef_edit() : void {

@@ -695,7 +695,7 @@ function form_save() : void {
 
 	switch(gnrv('tab')) {
 		case 'notifications':
-			header('Location: managers.php?action=edit&tab=notifications&id=' . grv('id'));
+			cacti_redirect('managers.php?action=edit&tab=notifications&id=' . grv('id'));
 
 			break;
 		default:
@@ -745,7 +745,7 @@ function form_save() : void {
 			break;
 	}
 
-	header('Location: managers.php?action=edit&id=' . (empty($manager_id) ? gnrv('id') : $manager_id));
+	cacti_redirect('managers.php?action=edit&id=' . (empty($manager_id) ? gnrv('id') : $manager_id));
 }
 
 function form_actions() : void {
@@ -766,9 +766,7 @@ function form_actions() : void {
 					db_execute("UPDATE snmpagent_managers SET disabled = '' WHERE id IN (" . implode(',' ,$selected_items) . ')');
 				}
 
-				header('Location: managers.php');
-
-				exit;
+				cacti_redirect('managers.php');
 			}
 		} elseif (isrv('action_receiver_notifications')) {
 			// ================= input validation =================
@@ -801,9 +799,7 @@ function form_actions() : void {
 				}
 			}
 
-			header('Location: managers.php?action=edit&id=' . gnrv('id') . '&tab=notifications');
-
-			exit;
+			cacti_redirect('managers.php?action=edit&id=' . gnrv('id') . '&tab=notifications');
 		}
 	} elseif (isrv('action_receivers')) {
 		$ilist  = '';

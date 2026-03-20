@@ -121,7 +121,7 @@ function clog_purge_logfile(string $action = 'purge') : void {
 
 	if (!clog_validate_filename($filename, $logpath, $logname)) {
 		raise_message('clog_invalid');
-		header('Location: ' . get_current_page());
+		cacti_redirect(get_current_page());
 
 		exit(0);
 	}
@@ -241,9 +241,7 @@ function clog_view_logfile() : void {
 		if ($redirect) {
 			$logfile = read_config_option('path_cactilog');
 
-			header('Location: clog.php?filename=' . basename($logfile));
-
-			exit;
+			cacti_redirect('clog.php?filename=' . basename($logfile));
 		}
 	}
 

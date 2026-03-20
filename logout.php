@@ -74,5 +74,5 @@ if (grv('action') == 'timeout' || grv('action') == 'disabled' || grv('action') =
 	// Default action
 	clear_auth_cookie();
 
-	header('Location: index.php');
+	cacti_redirect('index.php');
 }
