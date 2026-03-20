@@ -56,14 +56,14 @@ switch (get_request_var('action')) {
 
 		automation_snmp_item_movedown();
 
-		header('Location: automation_snmp.php?action=edit&id=' . get_request_var('id'));
+		cacti_redirect('automation_snmp.php?action=edit&id=' . get_request_var('id'));
 		break;
 	case 'item_moveup':
 		get_filter_request_var('id');
 
 		automation_snmp_item_moveup();
 
-		header('Location: automation_snmp.php?action=edit&id=' . get_request_var('id'));
+		cacti_redirect('automation_snmp.php?action=edit&id=' . get_request_var('id'));
 		break;
 	case 'item_remove_confirm':
 		automation_snmp_item_remove_confirm();
@@ -74,7 +74,7 @@ switch (get_request_var('action')) {
 
 		automation_snmp_item_remove();
 
-		header('Location: automation_snmp.php?header=false&action=edit&header=false&id=' . get_request_var('id'));
+		cacti_redirect('automation_snmp.php?header=false&action=edit&header=false&id=' . get_request_var('id'));
 		break;
 	case 'item_edit':
 		top_header();
@@ -117,7 +117,7 @@ function form_automation_snmp_save() {
 			}
 		}
 
-		header('Location: automation_snmp.php?header=false&action=edit&id=' . (empty($id) ? get_nfilter_request_var('id') : $id));
+		cacti_redirect('automation_snmp.php?header=false&action=edit&id=' . (empty($id) ? get_nfilter_request_var('id') : $id));
 	} elseif (isset_request_var('save_component_automation_snmp_item')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('item_id');
@@ -154,13 +154,13 @@ function form_automation_snmp_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_snmp.php?header=false&action=item_edit&id=' . get_nfilter_request_var('id') . '&item_id=' . (empty($item_id) ? get_filter_request_var('id') : $item_id));
+			cacti_redirect('automation_snmp.php?header=false&action=item_edit&id=' . get_nfilter_request_var('id') . '&item_id=' . (empty($item_id) ? get_filter_request_var('id') : $item_id));
 		} else {
-			header('Location: automation_snmp.php?header=false&action=edit&id=' . get_nfilter_request_var('id'));
+			cacti_redirect('automation_snmp.php?header=false&action=edit&id=' . get_nfilter_request_var('id'));
 		}
 	} else {
 		raise_message(2);
-		header('Location: automation_snmp.php?header=false');
+		cacti_redirect('automation_snmp.php?header=false');
 	}
 }
 
@@ -190,8 +190,7 @@ function form_automation_snmp_actions() {
 			}
 		}
 
-		header('Location: automation_snmp.php?header=false');
-		exit;
+		cacti_redirect('automation_snmp.php?header=false');
 	}
 
 	/* setup some variables */
@@ -224,8 +223,7 @@ function form_automation_snmp_actions() {
 
 	if (!isset($automation_array)) {
 		raise_message(40);
-		header('Location: automation_snmp.php?header=false');
-		exit;
+		cacti_redirect('automation_snmp.php?header=false');
 	} else {
 		$save_html = "<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' name='save'>";
 
@@ -320,8 +318,7 @@ function automation_snmp_item_dnd() {
 		}
     }
 
-    header('Location: automation_snmp.php?action=edit&header=false&id=' . get_request_var('id'));
-	exit;
+    cacti_redirect('automation_snmp.php?action=edit&header=false&id=' . get_request_var('id'));
 }
 
 function automation_snmp_item_movedown() {

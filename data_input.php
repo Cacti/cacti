@@ -52,7 +52,7 @@ switch (get_request_var('action')) {
 	case 'field_remove':
 		field_remove();
 
-		header('Location: data_input.php?header=false&action=edit&id=' . get_filter_request_var('data_input_id'));
+		cacti_redirect('data_input.php?header=false&action=edit&id=' . get_filter_request_var('data_input_id'));
 		break;
 	case 'field_edit':
 		top_header();
@@ -115,7 +115,7 @@ function form_save() {
 			}
 		}
 
-		header('Location: data_input.php?header=false&action=edit&id=' . (empty($data_input_id) ? get_nfilter_request_var('id') : $data_input_id));
+		cacti_redirect('data_input.php?header=false&action=edit&id=' . (empty($data_input_id) ? get_nfilter_request_var('id') : $data_input_id));
 	} elseif (isset_request_var('save_component_field')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
@@ -153,9 +153,9 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: data_input.php?header=false&action=field_edit&data_input_id=' . get_request_var('data_input_id') . '&id=' . (empty($data_input_field_id) ? get_request_var('id') : $data_input_field_id) . (!isempty_request_var('input_output') ? '&type=' . get_request_var('input_output') : ''));
+			cacti_redirect('data_input.php?header=false&action=field_edit&data_input_id=' . get_request_var('data_input_id') . '&id=' . (empty($data_input_field_id) ? get_request_var('id') : $data_input_field_id) . (!isempty_request_var('input_output') ? '&type=' . get_request_var('input_output') : ''));
 		} else {
-			header('Location: data_input.php?header=false&action=edit&id=' . get_request_var('data_input_id'));
+			cacti_redirect('data_input.php?header=false&action=edit&id=' . get_request_var('data_input_id'));
 		}
 	}
 }
@@ -210,8 +210,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: data_input.php?header=false');
-		exit;
+		cacti_redirect('data_input.php?header=false');
 	}
 
 	/* setup some variables */
@@ -260,8 +259,7 @@ function form_actions() {
 		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Data Input Method', 'Delete Data Input Methods', cacti_sizeof($di_array)) . "'>";
 	} else {
 		raise_message(40);
-		header('Location: data_input.php?header=none');
-		exit;
+		cacti_redirect('data_input.php?header=none');
 	}
 
 	print "<tr>
@@ -422,8 +420,7 @@ function field_edit() {
 	/* if there are no input fields to choose from, complain */
 	if ((!isset($array_field_names)) && (isset_request_var('type') ? get_request_var('type') == 'in' : false) && ($data_input['type_id'] == '1')) {
 		raise_message('invalid_inputs', __('This script appears to have no input values, therefore there is nothing to add.'), MESSAGE_LEVEL_WARN);
-		header('Location: data_input.php?header=false&action=edit&id=' . get_filter_request_var('data_input_id'));
-		exit;
+		cacti_redirect('data_input.php?header=false&action=edit&id=' . get_filter_request_var('data_input_id'));
 	}
 
 	if ($current_field_type == 'out') {
@@ -485,7 +482,7 @@ function data_edit() {
 	if (!isempty_request_var('id')) {
 		$data_id = get_nonsystem_data_input(get_request_var('id'));
 		if ($data_id == 0 || $data_id == NULL) {
-			header('Location: data_input.php');
+			cacti_redirect('data_input.php');
 			return;
 		}
 

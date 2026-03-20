@@ -67,7 +67,7 @@ switch (get_request_var('action')) {
 function aggregate_form_save() {
 	/* make sure we are saving aggregate template */
 	if (!isset_request_var('save_component_template')) {
-		header('Location: aggregate_templates.php?header=false&action=edit&id=' . get_nfilter_request_var('id'));
+		cacti_redirect('aggregate_templates.php?header=false&action=edit&id=' . get_nfilter_request_var('id'));
 		return null;
 	}
 
@@ -102,7 +102,7 @@ function aggregate_form_save() {
 
 	/* form validation failed */
 	if (is_error_message()) {
-		header('Location: aggregate_templates.php?header=false&action=edit&id=' . get_nfilter_request_var('id'));
+		cacti_redirect('aggregate_templates.php?header=false&action=edit&id=' . get_nfilter_request_var('id'));
 		return null;
 	}
 
@@ -147,7 +147,7 @@ function aggregate_form_save() {
 
 	if (!$id) {
 		raise_message(2);
-		header('Location: aggregate_templates.php?header=false&action=edit&id=' . get_nfilter_request_var('id'));
+		cacti_redirect('aggregate_templates.php?header=false&action=edit&id=' . get_nfilter_request_var('id'));
 		return null;
 	}
 
@@ -244,7 +244,7 @@ function aggregate_form_save() {
 
 	raise_message(1);
 
-	header('Location: aggregate_templates.php?header=false&action=edit&id=' . (empty($id) ? get_nfilter_request_var('id') : $id));
+	cacti_redirect('aggregate_templates.php?header=false&action=edit&id=' . (empty($id) ? get_nfilter_request_var('id') : $id));
 }
 
 
@@ -279,8 +279,7 @@ function aggregate_form_actions() {
 		} else {
 		}
 
-		header('Location: aggregate_templates.php?header=false');
-		exit;
+		cacti_redirect('aggregate_templates.php?header=false');
 	}
 
 	/* setup some variables */
@@ -316,8 +315,7 @@ function aggregate_form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: aggregate_templates.php?header=false');
-		exit;
+		cacti_redirect('aggregate_templates.php?header=false');
 	}
 
 	print "<tr>

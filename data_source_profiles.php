@@ -194,7 +194,7 @@ function form_save() {
 			}
 		}
 
-		header('Location: data_source_profiles.php?header=false&action=edit&id=' . (empty($profile_id) ? get_request_var('id') : $profile_id));
+		cacti_redirect('data_source_profiles.php?header=false&action=edit&id=' . (empty($profile_id) ? get_request_var('id') : $profile_id));
 	} elseif (isset_request_var('save_component_rra')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
@@ -234,9 +234,9 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: data_source_profiles.php?header=false&action=item_edit&profile_id=' . get_request_var('profile_id') . '&id=' . (empty($profile_rra_id) ? get_request_var('id') : $profile_rra_id));
+			cacti_redirect('data_source_profiles.php?header=false&action=item_edit&profile_id=' . get_request_var('profile_id') . '&id=' . (empty($profile_rra_id) ? get_request_var('id') : $profile_rra_id));
 		} else {
-			header('Location: data_source_profiles.php?header=false&action=edit&id=' . get_request_var('profile_id'));
+			cacti_redirect('data_source_profiles.php?header=false&action=edit&id=' . get_request_var('profile_id'));
 		}
 	}
 }
@@ -266,8 +266,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: data_source_profiles.php?header=false');
-		exit;
+		cacti_redirect('data_source_profiles.php?header=false');
 	}
 
 	/* setup some variables */
@@ -316,8 +315,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: data_source_profiles.php?header=false');
-		exit;
+		cacti_redirect('data_source_profiles.php?header=false');
 	}
 
 	print "<tr>

@@ -54,7 +54,7 @@ switch (get_request_var('action')) {
 	case 'item_add_gt':
 		template_item_add_gt();
 
-		header('Location: host_templates.php?header=false&action=edit&id=' . get_filter_request_var('host_template_id'));
+		cacti_redirect('host_templates.php?header=false&action=edit&id=' . get_filter_request_var('host_template_id'));
 		break;
     case 'item_remove_gt_confirm':
         template_item_remove_gt_confirm();
@@ -63,12 +63,12 @@ switch (get_request_var('action')) {
 	case 'item_remove_gt':
 		template_item_remove_gt();
 
-		header('Location: host_templates.php?header=false&action=edit&id=' . get_filter_request_var('host_template_id'));
+		cacti_redirect('host_templates.php?header=false&action=edit&id=' . get_filter_request_var('host_template_id'));
 		break;
 	case 'item_add_dq':
 		template_item_add_dq();
 
-		header('Location: host_templates.php?header=false&action=edit&id=' . get_filter_request_var('host_template_id'));
+		cacti_redirect('host_templates.php?header=false&action=edit&id=' . get_filter_request_var('host_template_id'));
 		break;
     case 'item_remove_dq_confirm':
         template_item_remove_dq_confirm();
@@ -77,7 +77,7 @@ switch (get_request_var('action')) {
 	case 'item_remove_dq':
 		template_item_remove_dq();
 
-		header('Location: host_templates.php?header=false&action=edit&id=' . get_filter_request_var('host_template_id'));
+		cacti_redirect('host_templates.php?header=false&action=edit&id=' . get_filter_request_var('host_template_id'));
 		break;
 	case 'edit':
 		top_header();
@@ -123,7 +123,7 @@ function form_save() {
 			}
 		}
 
-		header('Location: host_templates.php?header=false&action=edit&id=' . (empty($host_template_id) ? get_nfilter_request_var('id') : $host_template_id));
+		cacti_redirect('host_templates.php?header=false&action=edit&id=' . (empty($host_template_id) ? get_nfilter_request_var('id') : $host_template_id));
 	}
 }
 
@@ -189,8 +189,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: host_templates.php?header=false');
-		exit;
+		cacti_redirect('host_templates.php?header=false');
 	}
 
 	/* setup some variables */
@@ -254,8 +253,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: host_templates.php?header=false');
-		exit;
+		cacti_redirect('host_templates.php?header=false');
 	}
 
 	print "<tr>

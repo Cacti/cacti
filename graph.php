@@ -71,8 +71,7 @@ if (!$exists) {
 
 /* take graph permissions into account here */
 if (!is_graph_allowed(get_request_var('local_graph_id'))) {
-	header('Location: permission_denied.php');
-	exit;
+	cacti_redirect('permission_denied.php');
 }
 
 $graph_title = get_graph_title(get_request_var('local_graph_id'));

@@ -98,16 +98,14 @@ function form_save() {
 
 			file_put_contents($xmlfile, $_SESSION['sess_import_package']);
 		} else {
-			header('Location: package_import.php');
-			exit;
+			cacti_redirect('package_import.php');
 		}
 
 		if (isset_request_var('trust_signer') && get_request_var('trust_signer') == 'on') {
 			import_validate_public_key($xmlfile, true);
 		} elseif (!package_validate_signature($xmlfile)) {
 			raise_message('verify_warning', __('You have not Trusted this Package Author.  If you wish to import, check the Automatically Trust Author checkbox'), MESSAGE_LEVEL_ERROR);
-			header('Location: package_import?package_location=0');
-			exit;
+			cacti_redirect('package_import?package_location=0');
 		}
 
 		if (get_filter_request_var('data_source_profile') == '0') {
@@ -211,8 +209,7 @@ function form_save() {
 
 			unset($_SESSION['sess_import_package']);
 
-			header('Location: package_import.php');
-			exit;
+			cacti_redirect('package_import.php');
 		}
 	}
 }

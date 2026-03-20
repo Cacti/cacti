@@ -54,14 +54,14 @@ switch (get_request_var('action')) {
 
 		item_movedown();
 
-		header('Location: vdef.php?header=false&action=edit&id=' . get_request_var('vdef_id'));
+		cacti_redirect('vdef.php?header=false&action=edit&id=' . get_request_var('vdef_id'));
 		break;
 	case 'item_moveup':
 		get_filter_request_var('vdef_id');
 
 		item_moveup();
 
-		header('Location: vdef.php?header=false&action=edit&id=' . get_request_var('vdef_id'));
+		cacti_redirect('vdef.php?header=false&action=edit&id=' . get_request_var('vdef_id'));
 		break;
 	case 'item_edit':
 		top_header();
@@ -125,7 +125,7 @@ function vdef_form_save() {
 			}
 		}
 
-		header('Location: vdef.php?action=edit&header=false&id=' . (empty($vdef_id) ? get_request_var('id') : $vdef_id));
+		cacti_redirect('vdef.php?action=edit&header=false&id=' . (empty($vdef_id) ? get_request_var('id') : $vdef_id));
 	} elseif (isset_request_var('save_component_item')) {
 		$sequence = get_sequence(get_filter_request_var('id'), 'sequence', 'vdef_items', 'vdef_id=' . get_filter_request_var('vdef_id'));
 
@@ -147,9 +147,9 @@ function vdef_form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: vdef.php?action=item_edit&header=false&vdef_id=' . get_request_var('vdef_id') . '&id=' . (empty($vdef_item_id) ? get_request_var('id') : $vdef_item_id));
+			cacti_redirect('vdef.php?action=item_edit&header=false&vdef_id=' . get_request_var('vdef_id') . '&id=' . (empty($vdef_item_id) ? get_request_var('id') : $vdef_item_id));
 		} else {
-			header('Location: vdef.php?action=edit&header=false&id=' . get_request_var('vdef_id'));
+			cacti_redirect('vdef.php?action=edit&header=false&id=' . get_request_var('vdef_id'));
 		}
 	}
 }
@@ -232,9 +232,7 @@ function vdef_form_actions() {
 			}
 		}
 
-		header('Location: vdef.php?header=false');
-
-		exit;
+		cacti_redirect('vdef.php?header=false');
 	}
 
 	/* setup some variables */
@@ -281,8 +279,7 @@ function vdef_form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: vdef.php?header=false');
-		exit;
+		cacti_redirect('vdef.php?header=false');
 	}
 
     print "<tr>
@@ -533,7 +530,7 @@ function vdef_item_dnd() {
 		}
 	}
 
-	header('Location: vdef.php?action=edit&header=false&id=' . get_request_var('id'));
+	cacti_redirect('vdef.php?action=edit&header=false&id=' . get_request_var('id'));
 }
 
 function vdef_edit() {

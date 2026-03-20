@@ -40,11 +40,11 @@ switch (get_request_var('action')) {
 		ini_set('max_execution_time', '0');
 		repopulate_poller_cache();
 		ini_set('max_execution_time', $max_execution);
-		header('Location: utilities.php?action=view_poller_cache');exit;
+		cacti_redirect('utilities.php?action=view_poller_cache');
 		break;
 	case 'rebuild_resource_cache':
 		rebuild_resource_cache();
-		header('Location: utilities.php?header=false');exit;
+		cacti_redirect('utilities.php?header=false');
 		break;
 	case 'view_snmp_cache':
 		top_header();
@@ -92,11 +92,11 @@ switch (get_request_var('action')) {
 	case 'purge_data_source_statistics';
 		purge_data_source_statistics();
 		raise_message('purge_dss', __('Data Source Statistics Purged.'), MESSAGE_LEVEL_INFO);
-		header('Location: utilities.php');
+		cacti_redirect('utilities.php');
 		break;
 	case 'rebuild_snmpagent_cache';
 		snmpagent_cache_rebuilt();
-		header('Location: utilities.php?action=view_snmpagent_cache');exit;
+		cacti_redirect('utilities.php?action=view_snmpagent_cache');
 		break;
 	case 'view_snmpagent_events':
 		top_header();
@@ -1275,7 +1275,7 @@ function utilities_view_logfile() {
 
 	if (!clog_validate_filename($logfile, $logpath, $logname, true)) {
 		raise_message('clog_invalid');
-		header('Location: utilities.php?action=view_logfile&filename=' . $logbase);
+		cacti_redirect('utilities.php?action=view_logfile&filename=' . $logbase);
 		exit(0);
 	} else {
 		$logfile = $logpath . '/' . $logfile;

@@ -341,9 +341,7 @@ function reports_form_save() {
 			}
 		}
 
-		header('Location: ' . get_reports_page() . '?action=edit&header=false&id=' . (empty($id) ? get_nfilter_request_var('id') : $id));
-
-		exit;
+		cacti_redirect(get_reports_page() . '?action=edit&header=false&id=' . (empty($id) ? get_nfilter_request_var('id') : $id));
 	} elseif (isset_request_var('save_component_report_item')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('report_id');
@@ -393,9 +391,9 @@ function reports_form_save() {
 			}
 		}
 
-		header('Location: ' . get_reports_page() . '?action=item_edit&id=' . get_nfilter_request_var('report_id') . '&item_id=' . (empty($item_id) ? get_nfilter_request_var('id') : $item_id));
+		cacti_redirect(get_reports_page() . '?action=item_edit&id=' . get_nfilter_request_var('report_id') . '&item_id=' . (empty($item_id) ? get_nfilter_request_var('id') : $item_id));
 	} else {
-		header('Location: ' . get_reports_page() . '?header=false');
+		cacti_redirect('' . get_reports_page() . '?header=false');
 	}
 
 	exit;
@@ -464,8 +462,7 @@ function reports_form_actions() {
 
 		force_session_data();
 
-		header('Location: ' . get_reports_page() . '?header=false');
-		exit;
+		cacti_redirect('' . get_reports_page() . '?header=false');
 	}
 
 	/* setup some variables */
@@ -493,8 +490,7 @@ function reports_form_actions() {
 
 	if (!isset($reports_array)) {
 		raise_message(40);
-		header('Location: ' . get_reports_page() . '?header=false');
-		exit;
+		cacti_redirect('' . get_reports_page() . '?header=false');
 	} else {
 		$save_html = "<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' name='save'>";
 

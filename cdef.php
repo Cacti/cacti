@@ -49,21 +49,21 @@ switch (get_request_var('action')) {
 	case 'item_remove':
 		cdef_item_remove();
 
-		header('Location: cdef.php?action=edit&id=' . get_request_var('cdef_id'));
+		cacti_redirect('cdef.php?action=edit&id=' . get_request_var('cdef_id'));
 		break;
 	case 'item_movedown':
 		get_filter_request_var('cdef_id');
 
 		item_movedown();
 
-		header('Location: cdef.php?action=edit&id=' . get_request_var('cdef_id'));
+		cacti_redirect('cdef.php?action=edit&id=' . get_request_var('cdef_id'));
 		break;
 	case 'item_moveup':
 		get_filter_request_var('cdef_id');
 
 		item_moveup();
 
-		header('Location: cdef.php?action=edit&id=' . get_request_var('cdef_id'));
+		cacti_redirect('cdef.php?action=edit&id=' . get_request_var('cdef_id'));
 		break;
 	case 'item_edit':
 		top_header();
@@ -138,7 +138,7 @@ function form_save() {
 			}
 		}
 
-		header('Location: cdef.php?header=false&action=edit&id=' . (empty($cdef_id) ? get_nfilter_request_var('id') : $cdef_id));
+		cacti_redirect('cdef.php?header=false&action=edit&id=' . (empty($cdef_id) ? get_nfilter_request_var('id') : $cdef_id));
 	} elseif (isset_request_var('save_component_item')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
@@ -166,9 +166,9 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: cdef.php?header=false&action=item_edit&cdef_id=' . get_nfilter_request_var('cdef_id') . '&id=' . (empty($cdef_item_id) ? get_nfilter_request_var('id') : $cdef_item_id));
+			cacti_redirect('cdef.php?header=false&action=item_edit&cdef_id=' . get_nfilter_request_var('cdef_id') . '&id=' . (empty($cdef_item_id) ? get_nfilter_request_var('id') : $cdef_item_id));
 		} else {
-			header('Location: cdef.php?header=false&action=edit&id=' . get_nfilter_request_var('cdef_id'));
+			cacti_redirect('cdef.php?header=false&action=edit&id=' . get_nfilter_request_var('cdef_id'));
 		}
 	}
 }
@@ -237,8 +237,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: cdef.php?header=false');
-		exit;
+		cacti_redirect('cdef.php?header=false');
 	}
 
 	/* setup some variables */
@@ -288,8 +287,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: cdef.php?header=false');
-		exit;
+		cacti_redirect('cdef.php?header=false');
 	}
 
 	print "<tr>
@@ -544,7 +542,7 @@ function cdef_item_dnd() {
 		}
 	}
 
-	header('Location: cdef.php?action=edit&header=false&id=' . get_request_var('id'));
+	cacti_redirect('cdef.php?action=edit&header=false&id=' . get_request_var('id'));
 }
 
 function cdef_edit() {

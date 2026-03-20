@@ -47,17 +47,17 @@ switch (get_request_var('action')) {
 	case 'item_movedown':
 		automation_graph_rules_item_movedown();
 
-		header('Location: automation_graph_rules.php?action=edit&id=' . get_filter_request_var('id'));
+		cacti_redirect('automation_graph_rules.php?action=edit&id=' . get_filter_request_var('id'));
 		break;
 	case 'item_moveup':
 		automation_graph_rules_item_moveup();
 
-		header('Location: automation_graph_rules.php?action=edit&id=' . get_filter_request_var('id'));
+		cacti_redirect('automation_graph_rules.php?action=edit&id=' . get_filter_request_var('id'));
 		break;
 	case 'item_remove':
 		automation_graph_rules_item_remove();
 
-		header('Location: automation_graph_rules.php?action=edit&id=' . get_filter_request_var('id'));
+		cacti_redirect('automation_graph_rules.php?action=edit&id=' . get_filter_request_var('id'));
 		break;
 	case 'item_edit':
 		top_header();
@@ -67,12 +67,12 @@ switch (get_request_var('action')) {
 	case 'qedit':
 		automation_change_query_type();
 
-		header('Location: automation_graph_rules.php?header=false&action=edit&name=' . get_request_var('name') . '&id=' . get_filter_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+		cacti_redirect('automation_graph_rules.php?header=false&action=edit&name=' . get_request_var('name') . '&id=' . get_filter_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
 		break;
 	case 'remove':
 		automation_graph_rules_remove();
 
-		header ('Location: automation_graph_rules.php');
+		cacti_redirect('automation_graph_rules.php');
 		break;
 	case 'edit':
 		top_header();
@@ -111,7 +111,7 @@ function save() {
 			}
 		}
 
-		header('Location: automation_graph_rules.php?header=false&action=edit&id=' . (empty($rule_id) ? get_nfilter_request_var('id') : $rule_id));
+		cacti_redirect('automation_graph_rules.php?header=false&action=edit&id=' . (empty($rule_id) ? get_nfilter_request_var('id') : $rule_id));
 	} elseif (isset_request_var('save_component_automation_graph_rule_item')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
@@ -144,9 +144,7 @@ function save() {
 
 					cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Graph Automation from client address \'%s\'', get_client_addr()), false, 'SECURITY');
 
-					header('Location: automation_graph_rules.php?header=false&action=edit&id=' . get_request_var('id'));
-
-					exit;
+					cacti_redirect('automation_graph_rules.php?header=false&action=edit&id=' . get_request_var('id'));
 				}
 			}
 		}
@@ -162,9 +160,9 @@ function save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_graph_rules.php?header=false&action=item_edit&id=' . get_request_var('id') . '&item_id=' . (empty($item_id) ? get_request_var('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
+			cacti_redirect('automation_graph_rules.php?header=false&action=item_edit&id=' . get_request_var('id') . '&item_id=' . (empty($item_id) ? get_request_var('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
 		} else {
-			header('Location: automation_graph_rules.php?header=false&action=edit&id=' . get_request_var('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
+			cacti_redirect('automation_graph_rules.php?header=false&action=edit&id=' . get_request_var('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
 		}
 	} elseif (isset_request_var('save_component_automation_match_item')) {
 		/* ================= input validation ================= */
@@ -190,9 +188,7 @@ function save() {
 
 			cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Graph Automation from client address \'%s\'', get_client_addr()), false, 'SECURITY');
 
-			header('Location: automation_graph_rules.php?header=false&action=edit&id=' . get_request_var('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
-
-			exit;
+			cacti_redirect('automation_graph_rules.php?header=false&action=edit&id=' . get_request_var('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
 		}
 
 		if (!is_error_message()) {
@@ -206,13 +202,13 @@ function save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_graph_rules.php?header=false&action=item_edit&id=' . get_request_var('id') . '&item_id=' . (empty($item_id) ? get_request_var('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_MATCH);
+			cacti_redirect('automation_graph_rules.php?header=false&action=item_edit&id=' . get_request_var('id') . '&item_id=' . (empty($item_id) ? get_request_var('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_MATCH);
 		} else {
-			header('Location: automation_graph_rules.php?header=false&action=edit&id=' . get_request_var('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_MATCH);
+			cacti_redirect('automation_graph_rules.php?header=false&action=edit&id=' . get_request_var('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_MATCH);
 		}
 	} else {
 		raise_message(2);
-		header('Location: automation_graph_rules.php?header=false');
+		cacti_redirect('automation_graph_rules.php?header=false');
 	}
 }
 
@@ -262,9 +258,7 @@ function automation_graph_rules_form_actions() {
 			}
 		}
 
-		header('Location: automation_graph_rules.php?header=false');
-
-		exit;
+		cacti_redirect('automation_graph_rules.php?header=false');
 	}
 
 	/* setup some variables */
@@ -321,8 +315,7 @@ function automation_graph_rules_form_actions() {
 
 	if (!isset($automation_graph_rules_array)) {
 		raise_message(40);
-		header('Location: automation_graph_rules.php?header=false');
-		exit;
+		cacti_redirect('automation_graph_rules.php?header=false');
 	} else {
 		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Apply requested action') . "'>";
 	}

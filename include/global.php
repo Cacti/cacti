@@ -418,8 +418,7 @@ if ($config['is_web']) {
 		$is_https = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== '' && strtolower($_SERVER['HTTPS']) !== 'off');
 
 		if (!$is_https && isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
-			header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-			exit;
+			cacti_redirect('https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 		}
 	}
 

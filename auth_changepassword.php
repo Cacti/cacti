@@ -44,13 +44,12 @@ switch ($action) {
 		// If the user is not logged in, redirect them to the login page
 		if (!isset($_SESSION['sess_user_id'])) {
 			if (isset($_SERVER['HTTP_REFERER'])) {
-				header('Location: ' . $_SERVER['HTTP_REFERER']);
+				cacti_redirect($_SERVER['HTTP_REFERER']);
 			} else {
-				header('Location: index.php');
+				cacti_redirect('index.php');
 			}
 
-			header('Location: index.php');
-			exit;
+			cacti_redirect('index.php');
 		}
 }
 
@@ -92,9 +91,9 @@ if (!cacti_sizeof($user) || $user['realm'] != 0) {
 	}
 
 	if (isset($_SERVER['HTTP_REFERER'])) {
-		header('Location: ' . $_SERVER['HTTP_REFERER']);
+		cacti_redirect($_SERVER['HTTP_REFERER']);
 	} else {
-		header('Location: index.php');
+		cacti_redirect('index.php');
 	}
 
 	exit;
@@ -108,17 +107,16 @@ if ($user['password_change'] != 'on') {
 	cacti_cookie_logout();
 
 	if (isset($_SERVER['HTTP_REFERER'])) {
-		header('Location: ' . $_SERVER['HTTP_REFERER']);
+		cacti_redirect($_SERVER['HTTP_REFERER']);
 	} else {
-		header('Location: index.php');
+		cacti_redirect('index.php');
 	}
 	exit;
 }
 
 /* find out if we are logged in as a 'guest user' or not, if we are redirect away from password change */
 if (cacti_sizeof($user) && $user['id'] === get_guest_account()) {
-	header('Location: graph_view.php');
-	exit;
+	cacti_redirect('graph_view.php');
 }
 
 /* default to !bad_password */
@@ -241,9 +239,7 @@ case 'changepassword':
 		raise_message('password_success');
 
 		// Redirect to login with new password
-		header('Location: logout.php');
-
-		exit;
+		cacti_redirect('logout.php');
 	} else {
 		$bad_password = true;
 	}
@@ -334,8 +330,7 @@ if (isset_request_var('ref')) {
 		cacti_log('WARNING: User attempted to access Cacti from unknown URL', false, 'AUTH');
 
 		raise_message('problems_with_page', __('There are problems with the Change Password page.  Contact your Cacti administrator right away.'), MESSAGE_LEVEL_ERROR);
-		header('Location:index.php');
-		exit;
+		cacti_redirect('index.php');
 	}
 }
 

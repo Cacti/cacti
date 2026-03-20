@@ -184,7 +184,7 @@ case 'ajax_reports':
 		raise_message('reports_no_graph');
 	}
 
-	header('Location: graph_view.php?action=list&header=false');
+	cacti_redirect('graph_view.php?action=list&header=false');
 
 	break;
 case 'update_timespan':
@@ -385,8 +385,7 @@ case 'tree_content':
 
 	if ($tree_id > 0) {
 		if (!is_tree_allowed($tree_id)) {
-			header('Location: permission_denied.php');
-			exit;
+			cacti_redirect('permission_denied.php');
 		}
 
 		grow_right_pane_tree($tree_id, $node_id, $hgdata);

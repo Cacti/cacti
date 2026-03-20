@@ -58,7 +58,7 @@ switch (get_request_var('action')) {
 
 		input_remove();
 
-		header('Location: graph_templates.php?header=false&action=template_edit&id=' . get_request_var('graph_template_id'));
+		cacti_redirect('graph_templates.php?header=false&action=template_edit&id=' . get_request_var('graph_template_id'));
 		break;
 	case 'input_edit':
 		top_header();
@@ -207,7 +207,7 @@ function form_save() {
 		}
 	}
 
-	header('Location: graph_templates.php?header=false&action=template_edit&id=' . (empty($graph_template_id) ? get_nfilter_request_var('graph_template_id') : $graph_template_id));
+	cacti_redirect('graph_templates.php?header=false&action=template_edit&id=' . (empty($graph_template_id) ? get_nfilter_request_var('graph_template_id') : $graph_template_id));
 }
 
 /* ------------------------
@@ -337,8 +337,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: graph_templates.php?header=false');
-		exit;
+		cacti_redirect('graph_templates.php?header=false');
 	}
 
 	/* setup some variables */
@@ -427,8 +426,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: graph_templates.php?header=false');
-		exit;
+		cacti_redirect('graph_templates.php?header=false');
 	}
 
 	print "<tr>

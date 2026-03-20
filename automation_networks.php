@@ -69,7 +69,7 @@ function form_save() {
 	if (isset_request_var('save_component_network')) {
 		$network_id = api_networks_save($_POST);
 
-		header('Location: automation_networks.php?header=false&action=edit&id=' . (empty($network_id) ? get_nfilter_request_var('id') : $network_id));
+		cacti_redirect('automation_networks.php?header=false&action=edit&id=' . (empty($network_id) ? get_nfilter_request_var('id') : $network_id));
 	}
 }
 
@@ -309,9 +309,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: automation_networks.php?header=false');
-
-		exit;
+		cacti_redirect('automation_networks.php?header=false');
 	}
 
 	/* setup some variables */
@@ -379,8 +377,7 @@ function form_actions() {
 
 	if (!isset($networks_array)) {
 		raise_message(40);
-		header('Location: automation_networks.php?header=false');
-		exit;
+		cacti_redirect('automation_networks.php?header=false');
 	} else {
 		$save_html = "<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' name='save'>";
 	}

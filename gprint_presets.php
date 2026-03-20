@@ -82,12 +82,9 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: gprint_presets.php?header=false&action=edit&id=' . (empty($gprint_preset_id) ? get_nfilter_request_var('id') : $gprint_preset_id));
-			exit;
+			cacti_redirect('gprint_presets.php?header=false&action=edit&id=' . (empty($gprint_preset_id) ? get_nfilter_request_var('id') : $gprint_preset_id));
 		} else {
-			header('Location: gprint_presets.php?header=false');
-
-			exit;
+			cacti_redirect('gprint_presets.php?header=false');
 		}
 	}
 }
@@ -113,9 +110,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: gprint_presets.php?header=false');
-
-		exit;
+		cacti_redirect('gprint_presets.php?header=false');
 	}
 
 	/* setup some variables */
@@ -154,8 +149,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: gprint_presets.php?header=false');
-        exit;
+		cacti_redirect('gprint_presets.php?header=false');
 	}
 
 	print "<tr>

@@ -59,7 +59,7 @@ switch (get_request_var('action')) {
 	case 'template_remove':
 		template_remove();
 
-		header('Location: data_templates.php?header=false');
+		cacti_redirect('data_templates.php?header=false');
 		break;
 	case 'template_edit':
 		top_header();
@@ -158,8 +158,7 @@ function form_save() {
 
 				$_SESSION['sess_error_fields']['rrd_maximum'] = 'rrd_maximum';
 
-				header('Location: data_templates.php?header=false&action=template_edit&id=' . (empty($data_template_id) ? get_request_var('data_template_id') : $data_template_id) . (isempty_request_var('current_rrd') ? '' : '&view_rrd=' . (get_nfilter_request_var('current_rrd') ? get_nfilter_request_var('current_rrd') : get_request_var('data_template_rrd_id'))));
-				exit;
+				cacti_redirect('data_templates.php?header=false&action=template_edit&id=' . (empty($data_template_id) ? get_request_var('data_template_id') : $data_template_id) . (isempty_request_var('current_rrd') ? '' : '&view_rrd=' . (get_nfilter_request_var('current_rrd') ? get_nfilter_request_var('current_rrd') : get_request_var('data_template_rrd_id'))));
 			}
 		}
 
@@ -345,7 +344,7 @@ function form_save() {
 			}
 		}
 
-		header('Location: data_templates.php?header=false&action=template_edit&id=' . (empty($data_template_id) ? get_request_var('data_template_id') : $data_template_id) . (isempty_request_var('current_rrd') ? '' : '&view_rrd=' . (get_nfilter_request_var('current_rrd') ? get_nfilter_request_var('current_rrd') : $data_template_rrd_id)));
+		cacti_redirect('data_templates.php?header=false&action=template_edit&id=' . (empty($data_template_id) ? get_request_var('data_template_id') : $data_template_id) . (isempty_request_var('current_rrd') ? '' : '&view_rrd=' . (get_nfilter_request_var('current_rrd') ? get_nfilter_request_var('current_rrd') : $data_template_rrd_id)));
 	}
 }
 
@@ -428,8 +427,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: data_templates.php?header=false');
-		exit;
+		cacti_redirect('data_templates.php?header=false');
 	}
 
 	/* setup some variables */
@@ -494,8 +492,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: data_templates.php?header=false');
-		exit;
+		cacti_redirect('data_templates.php?header=false');
 	}
 
 	print "<tr>
@@ -538,7 +535,7 @@ function template_rrd_remove() {
 		}
 	}
 
-	header('Location: data_templates.php?action=template_edit&id=' . get_request_var('data_template_id'));
+	cacti_redirect('data_templates.php?action=template_edit&id=' . get_request_var('data_template_id'));
 }
 
 function template_rrd_add() {
@@ -591,7 +588,7 @@ function template_rrd_add() {
 		}
 	}
 
-	header('Location: data_templates.php?action=template_edit&id=' . get_request_var('id') . "&view_rrd=$data_template_rrd_id");
+	cacti_redirect('data_templates.php?action=template_edit&id=' . get_request_var('id') . "&view_rrd=$data_template_rrd_id");
 }
 
 function template_edit() {

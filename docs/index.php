@@ -31,5 +31,5 @@ if (file_exists($config['base_path'] . "/" . CACTI_DOCUMENTATION_TOC)) {
 	print file_get_contents($config['base_path'] . "/" . CACTI_DOCUMENTATION_TOC);
 } else {
 	// Redirect to GitHub documentation
-	header("Location: https://github.com/Cacti/documentation/blob/develop/README.md");
+	cacti_redirect("https://github.com/Cacti/documentation/blob/develop/README.md");
 }

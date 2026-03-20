@@ -468,8 +468,7 @@ function html_graph_new_graphs($page, $host_id, $host_template_id, $selected_gra
 
 		host_new_graphs_save($host_id);
 
-		header('Location: ' . $page . '?host_id=' . $host_id . '&header=false');
-		exit;
+		cacti_redirect('' . $page . '?host_id=' . $host_id . '&header=false');
 	}
 
 	form_hidden_box('host_template_id', $host_template_id, '0');

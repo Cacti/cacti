@@ -136,8 +136,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: automation_devices.php?header=false');
-		exit;
+		cacti_redirect('automation_devices.php?header=false');
 	}
 
 	/* setup some variables */
@@ -228,8 +227,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: automation_devices.php?header=false');
-		exit;
+		cacti_redirect('automation_devices.php?header=false');
 	}
 
 	print "<tr>
@@ -670,9 +668,7 @@ function purge_discovery_results() {
 		db_execute('TRUNCATE TABLE automation_devices');
 	}
 
-	header('Location: automation_devices.php?header=false');
-
-	exit;
+	cacti_redirect('automation_devices.php?header=false');
 }
 
 function snmp_data($item) {

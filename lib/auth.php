@@ -4250,8 +4250,7 @@ function secpass_login_process($username) {
 			$error_msg = __('Your Cacti administrator has forced complex passwords for logins and your current Cacti password does not match the new requirements.  Therefore, you must change your password now.');
 
 			raise_message('forced_password', $error_msg, MESSAGE_LEVEL_INFO);
-			header('Location: auth_changepassword.php?header=false');
-			exit;
+			cacti_redirect('auth_changepassword.php?header=false');
 		}
 	}
 
@@ -4672,28 +4671,28 @@ function auth_login_redirect($login_opts = '') {
 			$referer  = str_replace('?action=login', '', $referer);
 
 			if (api_user_realm_auth(auth_basename($referer))) {
-				header('Location: ' . $referer);
+				cacti_redirect($referer);
 			} elseif (!is_realm_allowed(8)) {
 				cacti_log(sprintf("DEBUG: Referer Overridden Due to Permissions to '%s'", 'graph_view.php'), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
-				header('Location: graph_view.php');
+				cacti_redirect('graph_view.php');
 			} else {
 				cacti_log(sprintf("DEBUG: Referer Overridden Due to Permissions to '%s'", 'index.php'), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
-				header('Location: index.php');
+				cacti_redirect('index.php');
 			}
 
 			break;
 		case '2': /* default console page */
 			if (!is_realm_allowed(8)) {
-				header('Location: ' . $config['url_path'] . 'graph_view.php' . ($newtheme ? '?newtheme=1':''));
+				cacti_redirect($config['url_path'] . 'graph_view.php' . ($newtheme ? '?newtheme=1':''));
 			} else {
-				header('Location: ' . $config['url_path'] . 'index.php' . ($newtheme ? '?newtheme=1':''));
+				cacti_redirect($config['url_path'] . 'index.php' . ($newtheme ? '?newtheme=1':''));
 			}
 
 			break;
 		case '3': /* default graph page */
-			header('Location: ' . $config['url_path'] . 'graph_view.php' . ($newtheme ? '?newtheme=1':''));
+			cacti_redirect($config['url_path'] . 'graph_view.php' . ($newtheme ? '?newtheme=1':''));
 
 			break;
 		default:
@@ -4883,8 +4882,7 @@ function check_reset_no_authentication($auth_method) {
 
 		$_SESSION['sess_user_id'] = $admin_id;
 		$_SESSION['sess_change_password'] = true;
-		header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?action=force&ref=' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php'));
-		exit;
+		cacti_redirect($config['url_path'] . 'auth_changepassword.php?action=force&ref=' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php'));
 	}
 }
 

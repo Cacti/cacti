@@ -93,6 +93,6 @@ if (get_request_var('action') == 'timeout' || get_request_var('action') == 'disa
 	/* Default action */
 	clear_auth_cookie();
 
-	header('Location: index.php');
+	cacti_redirect('index.php');
 }
 

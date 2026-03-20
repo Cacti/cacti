@@ -263,9 +263,9 @@ function form_save() {
 
 		if (isset($return_array['local_graph_id'])) {
 			$local_graph_id = $return_array['local_graph_id'];
-			header('Location: graphs.php?action=graph_edit&header=false&id=' . $local_graph_id);
+			cacti_redirect('graphs.php?action=graph_edit&header=false&id=' . $local_graph_id);
 		} else {
-			header('Location: graphs.php?header=false');
+			cacti_redirect('graphs.php?header=false');
 		}
 
 		exit;
@@ -417,13 +417,13 @@ function form_save() {
 	}
 
 	if ((isset_request_var('save_component_graph_new')) && (isempty_request_var('graph_template_id'))) {
-		header('Location: graphs.php?action=graph_edit&header=false&host_id=' . get_nfilter_request_var('host_id') . '&new=1');
+		cacti_redirect('graphs.php?action=graph_edit&header=false&host_id=' . get_nfilter_request_var('host_id') . '&new=1');
 	} elseif ((is_error_message()) || (isempty_request_var('local_graph_id')) || (get_nfilter_request_var('graph_template_id') != get_nfilter_request_var('graph_template_id_prev')) || (get_nfilter_request_var('host_id') != get_nfilter_request_var('host_id_prev'))) {
-		header('Location: graphs.php?action=graph_edit&header=false&id=' . (empty($local_graph_id) ? get_nfilter_request_var('local_graph_id') : $local_graph_id) . (isset_request_var('host_id') ? '&host_id=' . get_nfilter_request_var('host_id') : ''));
+		cacti_redirect('graphs.php?action=graph_edit&header=false&id=' . (empty($local_graph_id) ? get_nfilter_request_var('local_graph_id') : $local_graph_id) . (isset_request_var('host_id') ? '&host_id=' . get_nfilter_request_var('host_id') : ''));
 	} elseif (!empty($local_graph_id)) {
-		header('Location: graphs.php?action=graph_edit&header=false&id=' . $local_graph_id);
+		cacti_redirect('graphs.php?action=graph_edit&header=false&id=' . $local_graph_id);
 	} else {
-		header('Location: graphs.php?header=false');
+		cacti_redirect('graphs.php?header=false');
 	}
 
 	exit;
@@ -750,8 +750,7 @@ function form_actions() {
 				/* create actual graph items */
 				aggregate_create_update($local_graph_id, $member_graphs, $attribs);
 
-				header("Location: aggregate_graphs.php?header=false&action=edit&tab=details&id=$local_graph_id");
-				exit;
+				cacti_redirect("aggregate_graphs.php?header=false&action=edit&tab=details&id=$local_graph_id");
 			} elseif (get_request_var('drp_action') == '8') { // automation
 				cacti_log('automation_graph_action_execute called: ' . get_request_var('drp_action'), true, 'AUTM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
@@ -783,9 +782,9 @@ function form_actions() {
 		}
 
 		if (get_request_var('drp_action') == '2') { // change graph template
-			header('Location: graphs.php?header=false&template_id=-1');
+			cacti_redirect('graphs.php?header=false&template_id=-1');
 		} else {
-			header('Location: graphs.php?header=false');
+			cacti_redirect('graphs.php?header=false');
 		}
 
 		exit;
@@ -1299,8 +1298,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: graphs.php?header=false');
-		exit;
+		cacti_redirect('graphs.php?header=false');
 	}
 
 	print "<tr>
@@ -1474,8 +1472,7 @@ function graph_edit() {
 		/* case of a deleted graph */
 		if (!cacti_sizeof($graph)) {
 			raise_message(31);
-			header('Location: graphs.php');
-			exit;
+			cacti_redirect('graphs.php');
 		}
 
 		$header_label = __esc('Graph [edit: %s]', get_graph_title(get_request_var('id')));

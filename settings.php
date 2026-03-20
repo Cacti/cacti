@@ -298,9 +298,9 @@ case 'save':
 	kill_session_var('sess_config_array');
 
 	if (isset_request_var('header') && get_nfilter_request_var('header') == 'false') {
-		header('Location: settings.php?header=false&tab=' . get_request_var('tab'));
+		cacti_redirect('settings.php?header=false&tab=' . get_request_var('tab'));
 	} else {
-		header('Location: settings.php?tab=' . get_request_var('tab'));
+		cacti_redirect('settings.php?tab=' . get_request_var('tab'));
 	}
 
 	break;

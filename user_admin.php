@@ -90,8 +90,7 @@ function update_policies() {
 		}
 	}
 
-	header('Location: user_admin.php?action=user_edit&header=false&tab=' .  get_nfilter_request_var('tab') . '&id=' . get_filter_request_var('id'));
-	exit;
+	cacti_redirect('user_admin.php?action=user_edit&header=false&tab=' . get_nfilter_request_var('tab') . '&id=' . get_filter_request_var('id'));
 }
 
 function form_actions() {
@@ -120,8 +119,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: user_admin.php?action=user_edit&header=false&tab=permsd&id=' . get_nfilter_request_var('id'));
-		exit;
+		cacti_redirect('user_admin.php?action=user_edit&header=false&tab=permsd&id=' . get_nfilter_request_var('id'));
 	} elseif (isset_request_var('associate_graph')) {
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
@@ -144,8 +142,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: user_admin.php?action=user_edit&header=false&tab=permsg&id=' . get_nfilter_request_var('id'));
-		exit;
+		cacti_redirect('user_admin.php?action=user_edit&header=false&tab=permsg&id=' . get_nfilter_request_var('id'));
 	} elseif (isset_request_var('associate_template')) {
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
@@ -168,8 +165,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: user_admin.php?action=user_edit&header=false&tab=permste&id=' . get_nfilter_request_var('id'));
-		exit;
+		cacti_redirect('user_admin.php?action=user_edit&header=false&tab=permste&id=' . get_nfilter_request_var('id'));
 	} elseif (isset_request_var('associate_groups')) {
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
@@ -191,8 +187,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: user_admin.php?action=user_edit&header=false&tab=permsgr&id=' . get_nfilter_request_var('id'));
-		exit;
+		cacti_redirect('user_admin.php?action=user_edit&header=false&tab=permsgr&id=' . get_nfilter_request_var('id'));
 	} elseif (isset_request_var('associate_tree')) {
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
@@ -215,8 +210,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: user_admin.php?action=user_edit&header=false&tab=permstr&id=' . get_nfilter_request_var('id'));
-		exit;
+		cacti_redirect('user_admin.php?action=user_edit&header=false&tab=permstr&id=' . get_nfilter_request_var('id'));
 	} elseif (isset_request_var('selected_items')) {
 		if (get_nfilter_request_var('drp_action') == '2') { /* copy */
 			/* ================= input validation ================= */
@@ -302,8 +296,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: user_admin.php?header=false');
-		exit;
+		cacti_redirect('user_admin.php?header=false');
 	}
 
 	/* loop through each of the users and process them */
@@ -429,8 +422,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: user_admin.php?header=false');
-		exit;
+		cacti_redirect('user_admin.php?header=false');
 	}
 
 	print "<tr>
@@ -509,8 +501,7 @@ function form_save() {
 		}
 
 		if ($add_button_clicked == true) {
-			header('Location: user_admin.php?action=user_edit&header=false&tab=graph_perms_edit&id=' . get_nfilter_request_var('id'));
-			exit;
+			cacti_redirect('user_admin.php?action=user_edit&header=false&tab=graph_perms_edit&id=' . get_nfilter_request_var('id'));
 		}
 	} elseif (isset_request_var('save_component_user')) {
 		/* user management save */
@@ -673,7 +664,7 @@ function form_save() {
 	}
 
 	/* redirect to the appropriate page */
-	header('Location: user_admin.php?action=user_edit&header=false&id=' . (empty($user_id) ? get_filter_request_var('id') : $user_id));
+	cacti_redirect('user_admin.php?action=user_edit&header=false&id=' . (empty($user_id) ? get_filter_request_var('id') : $user_id));
 }
 
 function perm_remove() {
@@ -708,7 +699,7 @@ function perm_remove() {
 			array(get_request_var('user_id'), get_request_var('id')));
 	}
 
-	header('Location: user_admin.php?action=user_edit&header=false&tab=graph_perms_edit&id=' . get_request_var('user_id'));
+	cacti_redirect('user_admin.php?action=user_edit&header=false&tab=graph_perms_edit&id=' . get_request_var('user_id'));
 }
 
 function graph_perms_edit($tab, $header_label) {
@@ -742,7 +733,7 @@ function graph_perms_edit($tab, $header_label) {
 	switch($tab) {
 	case 'permsg':
 		if (isempty_request_var('id')) {
-			header('Location: user_admin.php&header=false');
+			cacti_redirect('user_admin.php&header=false');
 		}
 
 		process_graph_request_vars();
@@ -938,7 +929,7 @@ function graph_perms_edit($tab, $header_label) {
 		break;
 	case 'permsgr':
 		if (isempty_request_var('id')) {
-			header('Location: user_admin.php&header=false');
+			cacti_redirect('user_admin.php&header=false');
 		}
 
 		process_group_request_vars();
@@ -1035,7 +1026,7 @@ function graph_perms_edit($tab, $header_label) {
 		break;
 	case 'permsd':
 		if (isempty_request_var('id')) {
-			header('Location: user_admin.php&header=false');
+			cacti_redirect('user_admin.php&header=false');
 		}
 
 		process_device_request_vars();
@@ -1200,7 +1191,7 @@ function graph_perms_edit($tab, $header_label) {
 		break;
 	case 'permste':
 		if (isempty_request_var('id')) {
-			header('Location: user_admin.php&header=false');
+			cacti_redirect('user_admin.php&header=false');
 		}
 
 		process_template_request_vars();
@@ -1344,7 +1335,7 @@ function graph_perms_edit($tab, $header_label) {
 		break;
 	case 'permstr':
 		if (isempty_request_var('id')) {
-			header('Location: user_admin.php&header=false');
+			cacti_redirect('user_admin.php&header=false');
 		}
 
 		process_tree_request_vars();

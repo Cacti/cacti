@@ -50,7 +50,7 @@ switch (get_request_var('action')) {
 			debug_delete($selected_items);
 			debug_rerun($selected_items);
 			raise_message('rerun', __('Data Source debug started.'), MESSAGE_LEVEL_INFO);
-			header('Location: data_debug.php?action=view&id=' . get_filter_request_var('id'));
+			cacti_redirect('data_debug.php?action=view&id=' . get_filter_request_var('id'));
 		} else {
 			raise_message('repair_error', __('Data Source debug received an invalid Data Source ID.'), MESSAGE_LEVEL_ERROR);
 		}
@@ -73,7 +73,7 @@ switch (get_request_var('action')) {
 
 			raise_message('rerun', __('Automatic Data Source debug being rerun after repair.'), MESSAGE_LEVEL_INFO);
 
-			header('Location: data_debug.php?action=view&id=' . get_filter_request_var('id'));
+			cacti_redirect('data_debug.php?action=view&id=' . get_filter_request_var('id'));
 		} else {
 			raise_message('repair_error', __('Data Source repair received an invalid Data Source ID.'), MESSAGE_LEVEL_ERROR);
 		}
@@ -233,10 +233,10 @@ function form_actions() {
 		if (isset_request_var('save_list')) {
 			if (get_request_var('drp_action') == '2') { /* delete */
 				debug_delete($selected_items);
-				header('Location: data_debug.php?header=false&debug=-1');
+				cacti_redirect('data_debug.php?header=false&debug=-1');
 			} elseif (get_request_var('drp_action') == '1') { /* Rerun */
 				debug_rerun($selected_items);
-				header('Location: data_debug.php?header=false&debug=1');
+				cacti_redirect('data_debug.php?header=false&debug=1');
 			}
 
 			exit;

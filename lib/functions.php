@@ -7598,5 +7598,24 @@ function cacti_format_ipv6_colon($address) {
 	}
 
 	return($address);
-}
+	}
 
+	/**
+	* Validates and performs an HTTP redirect
+	*
+	* @param string $url The URL to redirect to
+	* @param bool $internal_only If true, prevents redirecting to external hosts
+	*
+	* @return never
+	*/
+	function cacti_redirect(string $url, bool $internal_only = true) : never {
+	if ($internal_only) {
+	$host = parse_url($url, PHP_URL_HOST);
+	if ($host !== null && $host !== ($_SERVER['SERVER_NAME'] ?? '')) {
+	$url = 'index.php'; // fallback to safe default
+	}
+	}
+
+	header('Location: ' . $url);
+	exit;
+	}

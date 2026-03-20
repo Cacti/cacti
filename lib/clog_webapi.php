@@ -96,7 +96,7 @@ function clog_purge_logfile() {
 
 	if (!clog_validate_filename($filename, $logpath, $logname)) {
 		raise_message('clog_invalid');
-		header('Location: ' . get_current_page());
+		cacti_redirect(get_current_page());
 		exit(0);
 	}
 

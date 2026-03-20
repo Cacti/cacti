@@ -43,7 +43,7 @@ switch (get_request_var('action')) {
 	case 'remove':
 		color_remove();
 
-		header ('Location: color.php');
+		cacti_redirect('color.php');
 		break;
 	case 'edit':
 		top_header();
@@ -103,9 +103,9 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: color.php?header=false&action=edit&id=' . (empty($color_id) ? get_nfilter_request_var('id') : $color_id));
+			cacti_redirect('color.php?header=false&action=edit&id=' . (empty($color_id) ? get_nfilter_request_var('id') : $color_id));
 		} else {
-			header('Location: color.php?header=false');
+			cacti_redirect('color.php?header=false');
 		}
 	} elseif (isset_request_var('save_component_import')) {
 		if (isset($_FILES['import_file']['tmp_name'])) {
@@ -117,12 +117,12 @@ function form_save() {
 					$_SESSION['import_debug_info'] = $debug_data;
 				}
 
-				header('Location: color.php?action=import');
+				cacti_redirect('color.php?action=import');
 			}
 		} else {
 			raise_message(35);
 
-			header('Location: color.php?action=import');
+			cacti_redirect('color.php?action=import');
 		}
 	}
 
@@ -150,8 +150,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: color.php?header=false');
-		exit;
+		cacti_redirect('color.php?header=false');
 	}
 
 	/* setup some variables */
@@ -193,8 +192,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: color.php?header=false');
-		exit;
+		cacti_redirect('color.php?header=false');
 	}
 
 	print "<tr>

@@ -163,7 +163,7 @@ function form_save() {
 		}
 	}
 
-	header('Location: user_domains.php?header=false&action=edit&domain_id=' . (empty($domain_id) ? get_nfilter_request_var('domain_id') : $domain_id));
+	cacti_redirect('user_domains.php?header=false&action=edit&domain_id=' . (empty($domain_id) ? get_nfilter_request_var('domain_id') : $domain_id));
 }
 
 function form_actions() {
@@ -197,8 +197,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: user_domains.php?header=false');
-		exit;
+		cacti_redirect('user_domains.php?header=false');
 	}
 
 	/* setup some variables */
@@ -263,8 +262,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: user_domains.php?header=false');
-		exit;
+		cacti_redirect('user_domains.php?header=false');
 	}
 
 	print "<tr>

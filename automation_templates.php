@@ -49,17 +49,17 @@ switch (get_request_var('action')) {
     case 'movedown':
         automation_movedown();
 
-        header('Location: automation_templates.php?header=false');
+        cacti_redirect('automation_templates.php?header=false');
 		break;
     case 'moveup':
         automation_moveup();
 
-        header('Location: automation_templates.php?header=false');
+        cacti_redirect('automation_templates.php?header=false');
 		break;
     case 'remove':
         automation_remove();
 
-        header('Location: automation_templates.php?header=false');
+        cacti_redirect('automation_templates.php?header=false');
 		break;
 	case 'edit':
 		top_header();
@@ -95,8 +95,7 @@ function automation_template_dnd() {
 		}
 	}
 
-	header('Location: automation_templates.php?header=false');
-	exit;
+	cacti_redirect('automation_templates.php?header=false');
 }
 
 function automation_movedown() {
@@ -129,8 +128,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: automation_templates.php?header=false');
-		exit;
+		cacti_redirect('automation_templates.php?header=false');
 	}
 
 	/* setup some variables */
@@ -168,8 +166,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: automation_templates.php?header=false');
-		exit;
+		cacti_redirect('automation_templates.php?header=false');
 	}
 
 	print "<tr>
@@ -215,9 +212,9 @@ function form_save() {
 		}
 
 		if (is_error_message() || isempty_request_var('id')) {
-			header('Location: automation_templates.php?header=false&id=' . (empty($template_id) ? get_nfilter_request_var('id') : $template_id));
+			cacti_redirect('automation_templates.php?header=false&id=' . (empty($template_id) ? get_nfilter_request_var('id') : $template_id));
 		} else {
-			header('Location: automation_templates.php?header=false');
+			cacti_redirect('automation_templates.php?header=false');
 		}
 	}
 }

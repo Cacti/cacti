@@ -37,9 +37,9 @@ if (!clog_authorized()) {
 			print '<div style="display:none">cactiPermissionDenied</div>';
 		}
 	} elseif ($config['poller_id'] > 1) {
-		header('Location: logout.php?action=remote');
+		cacti_redirect('logout.php?action=remote');
 	} else {
-		header('Location: permission_denied.php');
+		cacti_redirect('permission_denied.php');
 	}
 
 	exit;

@@ -334,7 +334,7 @@ function form_save() {
 			}
 		}
 
-		header('Location: pollers.php?header=false&action=edit&id=' . (empty($poller_id) ? get_nfilter_request_var('id') : $poller_id));
+		cacti_redirect('pollers.php?header=false&action=edit&id=' . (empty($poller_id) ? get_nfilter_request_var('id') : $poller_id));
 	}
 }
 
@@ -524,8 +524,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: pollers.php?header=false');
-		exit;
+		cacti_redirect('pollers.php?header=false');
 	}
 
 	/* setup some variables */
@@ -600,8 +599,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: pollers.php?header=false');
-		exit;
+		cacti_redirect('pollers.php?header=false');
 	}
 
 	print "<tr>

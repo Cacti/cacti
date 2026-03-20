@@ -68,7 +68,7 @@ function form_save() {
 			$xml_data = fread($fp,filesize($_FILES['import_file']['tmp_name']));
 			fclose($fp);
 		} else {
-			header('Location: templates_import.php'); exit;
+			cacti_redirect('templates_import.php');
 		}
 
 		if (get_filter_request_var('import_data_source_profile') == '0') {
@@ -119,7 +119,7 @@ function form_save() {
 		if (!$preview_only) {
 			raise_message('import_success', __('The Template Import Succeeded.'), MESSAGE_LEVEL_INFO);
 
-			header('Location: templates_import.php');
+			cacti_redirect('templates_import.php');
 		} elseif ($debug_data !== false && cacti_sizeof($debug_data)) {
 			//print '<pre>';print_r($debug_data);print '</pre>';exit;
 

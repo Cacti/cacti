@@ -81,9 +81,9 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 			define('IN_PLUGIN_INSTALL', 1);
 
 			if ($_SESSION['sess_plugins_state'] >= 0) {
-				header('Location: plugins.php?state=5' . ($option != '' ? '&' . $option:''));
+				cacti_redirect('plugins.php?state=5' . ($option != '' ? '&' . $option:''));
 			} else {
-				header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
+				cacti_redirect('plugins.php' . ($option != '' ? '?' . $option:''));
 			}
 			exit;
 
@@ -97,8 +97,7 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 
 			api_plugin_uninstall($id);
 
-			header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
-			exit;
+			cacti_redirect('plugins.php' . ($option != '' ? '?' . $option:''));
 
 			break;
 		case 'disable':
@@ -108,8 +107,7 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 
 			api_plugin_disable($id);
 
-			header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
-			exit;
+			cacti_redirect('plugins.php' . ($option != '' ? '?' . $option:''));
 
 			break;
 		case 'enable':
@@ -121,8 +119,7 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 				api_plugin_enable($id);
 			}
 
-			header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
-			exit;
+			cacti_redirect('plugins.php' . ($option != '' ? '?' . $option:''));
 
 			break;
 		case 'check':
@@ -142,8 +139,7 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 
 			api_plugin_moveup($id);
 
-			header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
-			exit;
+			cacti_redirect('plugins.php' . ($option != '' ? '?' . $option:''));
 
 			break;
 		case 'movedown':
@@ -157,8 +153,7 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 
 			api_plugin_movedown($id);
 
-			header('Location: plugins.php' . ($option != '' ? '&' . $option:''));
-			exit;
+			cacti_redirect('plugins.php' . ($option != '' ? '&' . $option:''));
 
 			break;
 		case 'remote_enable':
@@ -177,8 +172,7 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 					array($id), false, $local_db_cnn_id);
 			}
 
-			header('Location: plugins.php' . ($option != '' ? '&' . $option:''));
-			exit;
+			cacti_redirect('plugins.php' . ($option != '' ? '&' . $option:''));
 
 			break;
 		case 'remote_disable':
@@ -197,8 +191,7 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 					array($id), false, $local_db_cnn_id);
 			}
 
-			header('Location: plugins.php' . ($option != '' ? '&' . $option:''));
-			exit;
+			cacti_redirect('plugins.php' . ($option != '' ? '&' . $option:''));
 
 			break;
 	}

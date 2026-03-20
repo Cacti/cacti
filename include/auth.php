@@ -47,8 +47,7 @@ check_reset_no_authentication($auth_method);
  * process if found to be different.
  */
 if ($version != CACTI_VERSION && !defined('IN_CACTI_INSTALL')) {
-	header ('Location: ' . $config['url_path'] . 'install/');
-	exit;
+	cacti_redirect('' . $config['url_path'] . 'install/');
 }
 
 /**
@@ -68,8 +67,7 @@ if ($auth_method != 0) {
 	 */
 	if ($auth_method != 2) {
 		if (isset($_SESSION['sess_change_password'])) {
-			header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?ref=' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php'));
-			exit;
+			cacti_redirect($config['url_path'] . 'auth_changepassword.php?ref=' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php'));
 		}
 
 		/* check for remember me functionality */

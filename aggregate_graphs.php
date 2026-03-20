@@ -88,7 +88,7 @@ function add_tree_names_to_actions_array() {
 
 function form_save() {
 	if (!isset_request_var('save_component_graph')) {
-		header('Location: aggregate_graphs.php?header=false&action=edit&id=' . get_nfilter_request_var('id'));
+		cacti_redirect('aggregate_graphs.php?header=false&action=edit&id=' . get_nfilter_request_var('id'));
 		return null;
 	}
 
@@ -99,7 +99,7 @@ function form_save() {
 	$graph_title           = form_input_validate(get_nfilter_request_var('title_format'), 'title_format', '', false, 3);
 	if (is_error_message()) {
 		raise_message(2);
-		header('Location: aggregate_graphs.php?header=false&action=edit&id=' . $local_graph_id);
+		cacti_redirect('aggregate_graphs.php?header=false&action=edit&id=' . $local_graph_id);
 		return null;
 	}
 
@@ -118,7 +118,7 @@ function form_save() {
 
 	if (is_error_message()) {
 		raise_message(2);
-		header('Location: aggregate_graphs.php?header=false&action=edit&id=' . $local_graph_id);
+		cacti_redirect('aggregate_graphs.php?header=false&action=edit&id=' . $local_graph_id);
 		return null;
 	}
 
@@ -245,7 +245,7 @@ function form_save() {
 
 	raise_message(1);
 
-	header('Location: aggregate_graphs.php?header=false&action=edit&id=' . $local_graph_id);
+	cacti_redirect('aggregate_graphs.php?header=false&action=edit&id=' . $local_graph_id);
 }
 
 /* ------------------------
@@ -290,20 +290,17 @@ function form_actions() {
 			} elseif (get_request_var('drp_action') == '5') { // Convert to a normal graph
 				api_aggregate_convert_to_graph($selected_items);
 
-				header('Location: aggregate_graphs.php?header=false');
-				exit;
+				cacti_redirect('aggregate_graphs.php?header=false');
 			} elseif (get_request_var('drp_action') == '10') { // associate with aggregate
 				$local_graph_id = get_filter_request_var('local_graph_id');
 				api_aggregate_associate($local_graph_id, $selected_items);
 
-				header('Location: aggregate_graphs.php?header=false&action=edit&tab=items&id=' . $local_graph_id);
-				exit;
+				cacti_redirect('aggregate_graphs.php?header=false&action=edit&tab=items&id=' . $local_graph_id);
 			} elseif (get_request_var('drp_action') == '11') { // dis-associate with aggregate
 				$local_graph_id = get_filter_request_var('local_graph_id');
 				api_aggregate_disassociate($local_graph_id, $selected_items);
 
-				header('Location: aggregate_graphs.php?header=false&action=edit&tab=items&id=' . $local_graph_id);
-				exit;
+				cacti_redirect('aggregate_graphs.php?header=false&action=edit&tab=items&id=' . $local_graph_id);
 			} elseif (preg_match('/^tr_([0-9]+)$/', get_request_var('drp_action'), $matches)) { // place on tree
 				get_filter_request_var('tree_id');
 				get_filter_request_var('tree_item_id');
@@ -313,8 +310,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: aggregate_graphs.php?header=false');
-		exit;
+		cacti_redirect('aggregate_graphs.php?header=false');
 	}
 
 	/* setup some variables */
@@ -527,8 +523,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: aggregate_graphs.php?header=false');
-		exit;
+		cacti_redirect('aggregate_graphs.php?header=false');
 	}
 
 	print "	<tr>
@@ -622,9 +617,9 @@ function graph_edit() {
 
 		if (isset($_SERVER['HTTP_REFERER'])) {
 			$referer = $_SERVER['HTTP_REFERER'];
-			header('Location: ' . $referer);
+			cacti_redirect($referer);
 		} else {
-			header('Location: aggregate_graphs.php');
+			cacti_redirect('aggregate_graphs.php');
 		}
 
 		exit;

@@ -69,7 +69,7 @@ function form_save() {
 			print $xml_data;
 		} elseif (get_nfilter_request_var('output_format') == '3') {
 			if ($export_errors) {
-				header('Location: templates_export.php');
+				cacti_redirect('templates_export.php');
 			} else {
 				header('Content-type: application/xml');
 				header('Content-Disposition: attachment; filename=cacti_' . get_nfilter_request_var('export_type') . '_' . strtolower(clean_up_file_name(db_fetch_cell(str_replace('|id|', get_nfilter_request_var('export_item_id'), $export_types[get_nfilter_request_var('export_type')]['title_sql'])))) . '.xml');

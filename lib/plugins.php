@@ -697,9 +697,7 @@ function api_plugin_install($plugin) {
 
 		raise_message('dependency_check', $message, MESSAGE_LEVEL_ERROR);
 
-		header('Location: plugins.php?header=false');
-
-		exit;
+		cacti_redirect('plugins.php?header=false');
 	}
 
 	include_once($config['base_path'] . "/plugins/$plugin/setup.php");

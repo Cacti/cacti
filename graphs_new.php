@@ -45,7 +45,7 @@ switch (get_request_var('action')) {
 	case 'query_reload':
 		host_reload_query();
 
-		header('Location: graphs_new.php?host_id=' . get_request_var('host_id') . '&header=false');
+		cacti_redirect('graphs_new.php?host_id=' . get_request_var('host_id') . '&header=false');
 		break;
 	case 'ajax_hosts':
 		get_allowed_ajax_hosts(false, false);
@@ -165,13 +165,13 @@ function form_save() {
 			exit;
 		}
 
-		header('Location: graphs_new.php?host_id=' . $host_id . '&header=false');
+		cacti_redirect('graphs_new.php?host_id=' . $host_id . '&header=false');
 	}
 
 	if (isset_request_var('save_component_new_graphs')) {
 		host_new_graphs_save(get_filter_request_var('host_id'));
 
-		header('Location: graphs_new.php?host_id=' . get_filter_request_var('host_id') . '&header=false');
+		cacti_redirect('graphs_new.php?host_id=' . get_filter_request_var('host_id') . '&header=false');
 	}
 }
 

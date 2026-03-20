@@ -165,7 +165,7 @@ function aggregate_color_form_save() {
 		}
 	}
 
-	header('Location: color_templates.php?header=false&action=template_edit&color_template_id=' . (empty($color_template_id) ? get_nfilter_request_var('color_template_id') : $color_template_id));
+	cacti_redirect('color_templates.php?header=false&action=template_edit&color_template_id=' . (empty($color_template_id) ? get_nfilter_request_var('color_template_id') : $color_template_id));
 }
 
 /* ------------------------
@@ -201,8 +201,7 @@ function aggregate_color_form_actions() {
 			}
 		}
 
-		header('Location: color_templates.php?header=false');
-		exit;
+		cacti_redirect('color_templates.php?header=false');
 	}
 
 	/* setup some variables */
@@ -265,8 +264,7 @@ function aggregate_color_form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: color_templates.php?header=false');
-		exit;
+		cacti_redirect('color_templates.php?header=false');
 	}
 
 	print "<tr>

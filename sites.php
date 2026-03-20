@@ -262,7 +262,7 @@ function form_save() {
 			}
 		}
 
-		header('Location: sites.php?header=false&action=edit&id=' . (empty($site_id) ? get_nfilter_request_var('id') : $site_id));
+		cacti_redirect('sites.php?header=false&action=edit&id=' . (empty($site_id) ? get_nfilter_request_var('id') : $site_id));
 	}
 }
 
@@ -343,8 +343,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: sites.php?header=false');
-		exit;
+		cacti_redirect('sites.php?header=false');
 	}
 
 	/* setup some variables */
@@ -393,8 +392,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: sites.php?header=false');
-		exit;
+		cacti_redirect('sites.php?header=false');
 	}
 
 	print "<tr>
