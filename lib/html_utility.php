@@ -878,6 +878,10 @@ function validate_is_regex($regex) {
 		return __('Cacti regular expressions can not includes the semi-color character.');
 	}
 
+	if (strpos($regex, "'") !== false) {
+		return __('Cacti regular expressions can not include the single quote character.');
+	}
+
 	restore_error_handler();
 
 	$track_errors = ini_get('track_errors');

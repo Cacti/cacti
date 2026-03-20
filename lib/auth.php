@@ -25,6 +25,24 @@
 use phpseclib3\Crypt\RSA;
 
 /**
+ * @phpstan-type CactiUser array{
+ *   id: int|string,
+ *   username: string,
+ *   password?: string,
+ *   realm: int|string,
+ *   enabled: string,
+ *   locked: string,
+ *   lastfail?: int|string,
+ *   failed_attempts?: int|string,
+ *   password_history?: string,
+ *   show_tree?: string,
+ *   show_list?: string,
+ *   show_preview?: string,
+ *   email_address?: string
+ * }
+ */
+
+/**
  * clear_auth_cookie - clears a users security token
  *
  * @return (void)
@@ -69,7 +87,7 @@ function clear_auth_cookie() {
 /**
  * set_auth_cookie - sets a users security token
  *
- * @param  (array) user is the user_auth row for the user
+ * @param  CactiUser $user is the user_auth row for the user
  *
  * @return (bool) True if token set worked, otherwise false
  */
@@ -3651,13 +3669,11 @@ function basic_auth_login_process($username) {
 }
 
 /**
- * local_auth_login_process - login a local account or generate an error
- *   if there is an error, the globals error and error_msg will be set to notify the caller
- *   that error and not to proceed with login.
+ * local_auth_login_process - processes a local login attempt
  *
- * @param  (string) $username - The user to process
+ * @param string $username The username to authenticate
  *
- * @return (array)  $user - The valid user information, or empty array if user must be created
+ * @return CactiUser The user information
  */
 function local_auth_login_process($username) {
 	$user = array();
