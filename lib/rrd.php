@@ -305,8 +305,12 @@ function rrdtool_execute() : mixed {
 	return call_user_func_array($function, $args);
 }
 
-function __rrd_execute(string $command_line, bool $log_to_stdout, int $output_flag = RRDTOOL_OUTPUT_STDOUT, mixed $rrdtool_pipe = null, string $logopt = 'WEBLOG') : mixed {
+function __rrd_execute(string|array $command_line, bool $log_to_stdout, int $output_flag = RRDTOOL_OUTPUT_STDOUT, mixed $rrdtool_pipe = null, string $logopt = 'WEBLOG') : mixed {
 	static $last_command;
+
+	if (is_array($command_line)) {
+		$command_line = implode(' ', array_map('cacti_escapeshellarg', $command_line));
+	}
 
 	/**
 	 * WIN32: before sending this command off to rrdtool, get rid
