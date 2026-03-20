@@ -29,15 +29,3 @@ parameters:
 			identifier: postInc.type
 			count: 1
 			path: rrdcleaner.php
-
-		-
-			message: '#^Variable \$calculated_index in isset\(\) always exists and is not nullable\.$#'
-			identifier: isset.variable
-			count: 1
-			path: cli/rrdresize.php
-
-		-
-			message: '#^Offset 1 on array\{non\-falsy\-string, string\} in isset\(\) always exists and is not nullable\.$#'
-			identifier: isset.offset
-			count: 1
-			path: lib/functions.php
