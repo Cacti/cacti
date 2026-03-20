@@ -31,6 +31,24 @@ include(__DIR__ . '/../include/vendor/GoogleAuthenticator/RuntimeException.php')
 use phpseclib3\Crypt\RSA;
 
 /**
+ * @phpstan-type CactiUser array{
+ *   id: int|string,
+ *   username: string,
+ *   password?: string,
+ *   realm: int|string,
+ *   enabled: string,
+ *   locked: string,
+ *   lastfail?: int|string,
+ *   failed_attempts?: int|string,
+ *   password_history?: string,
+ *   show_tree?: string,
+ *   show_list?: string,
+ *   show_preview?: string,
+ *   email_address?: string
+ * }
+ */
+
+/**
  * Clears a users security token
  *
  * @return void
@@ -73,7 +91,7 @@ function clear_auth_cookie() : void {
 /**
  * set_auth_cookie - sets a users security token
  *
- * @param array $user Is the user_auth row for the user
+ * @param CactiUser $user Is the user_auth row for the user
  *
  * @return void
  */
@@ -3671,13 +3689,11 @@ function basic_auth_login_process(string $username) : array {
 }
 
 /**
- * Login a local account or generate an error
- * if there is an error, the globals error and error_msg will be set to notify the caller
- * that error and not to proceed with login.
+ * local_auth_login_process - processes a local login attempt
  *
  * @param string $username The username of the user attempting to log in.
  *
- * @return array The valid user information, or empty array if user must be created
+ * @return CactiUser The user information
  */
 function local_auth_login_process(string $username) : array {
 	$user = [];
