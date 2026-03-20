@@ -47,14 +47,14 @@ if (!empty($config['i18n_force_language'])) {
 	set_request_var('language', $config['i18n_force_language']);
 }
 
-if (isrv('language')) {
+if (!isempty_request_var('language')) {
 	set_request_var('language', repair_locale(grv('language')));
 }
 
 // determine whether or not we can support the language
 $user_locale = '';
 
-if (isrv('language') && !empty($lang2locale[grv('language')])) {
+if (!isempty_request_var('language') && !empty($lang2locale[grv('language')])) {
 	// user requests another language
 	$user_locale = apply_locale(grv('language'));
 	unset($_SESSION['sess_current_date1']);
