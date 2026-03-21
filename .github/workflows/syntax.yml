@@ -43,7 +43,7 @@ jobs:
 #    runs-on: ubuntu-latest
 #    steps:
 #    - name: Checkout
-#      uses: actions/checkout@v3
+#      uses: actions/checkout@v4
 
 #    - name: Install codespell
 #      run: pip install codespell==2.4.1
@@ -79,7 +79,7 @@ jobs:
     name: PHP ${{ matrix.php }} Test on ${{ matrix.os }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Install PHP ${{ matrix.php }}
       uses: shivammathur/setup-php@v2
@@ -99,7 +99,7 @@ jobs:
 
     - name: Cache Composer packages
       id: composer-cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: include/vendor
         key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
@@ -216,7 +216,7 @@ jobs:
       
     - name: Configure Apache Site
       run: |
-        cat ${{ github.workspace }}/tests/tools/cacti.conf | sed -r 's#GITHUB_WORKSPACE#${{ github.workspace }}#g' > /tmp/cacti.conf
+        cat ${{ github.workspace }}/tests/tools/cacti.conf | sed -r "s#GITHUB_WORKSPACE#${{ github.workspace }}#g" > /tmp/cacti.conf
         sudo cp /tmp/cacti.conf /etc/apache2/sites-available/000-default.conf
 
     - name: Restart Apache2
@@ -224,7 +224,7 @@ jobs:
       
     - name: Create and Initialize Database
       env:
-        MYSQL_AUTH_USR: '--defaults-file=~/.my.cnf'
+        MYSQL_AUTH_USR: "--defaults-file=~/.my.cnf"
       run: |
         echo -e "[client]\nuser = root\npassword = cactiroot\nhost = 127.0.0.1\nmax_allowed_packet = 500000000\n" >> ~/.my.cnf
         cat ~/.my.cnf
@@ -238,7 +238,7 @@ jobs:
 
     - name: Prime Cacti config.php File
       run: |
-        cat ${{ github.workspace }}/include/config.php.dist | sed -r "s/localhost/127.0.0.1/g" > ${{ github.workspace }}/include/config.php
+        sed -i "s/localhost/127.0.0.1/g" ${{ github.workspace }}/include/config.php
         sudo chmod 777 ${{ github.workspace }}/include/config.php
         cat ${{ github.workspace}}/include/config.php
 
@@ -266,7 +266,7 @@ jobs:
         sudo php tests/tools/check_xml_syntax.php
 
     - name: Check Poller Script Syntax after Package Import
-      run: if find ${{ github.workspace }}/scripts -name '*.php' -exec php -l {} 2>&1 \; | grep -iv 'no syntax errors detected'; then exit 1; fi
+      run: find ${{ github.workspace }}/scripts -name '*.php' -exec php -l {} 2>&1 \; | grep -iv 'no syntax errors detected' && exit 1
 
     - name: Check that all CLI scripts have a valid --version flag
       run: |
@@ -291,7 +291,7 @@ jobs:
     - name: Check all perl scripts for syntax errors
       run: |
         cd ${{ github.workspace }}
-        if find scripts -name '*.pl' -exec perl -c {} 2>&1 \; | grep -iv 'syntax OK'; then exit 1; fi
+        find scripts -name '*.pl' -exec perl -c {} 2>&1 \; | grep -iv 'syntax OK' && exit 1
 
     - name: Audit the Installation Schema
       run: |
