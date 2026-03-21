@@ -399,6 +399,8 @@ function form_save() : void {
 	validate_request_vars();
 
 	if (isrv('save_component_import')) {
+		$xmlfile = '';
+
 		if (isset($_FILES['import_file']['tmp_name']) &&
 			($_FILES['import_file']['tmp_name'] != 'none') &&
 			($_FILES['import_file']['tmp_name'] != '')) {

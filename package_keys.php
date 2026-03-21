@@ -88,9 +88,9 @@ function form_actions() : void {
 
 	html_start_box($actions[gnrv('drp_action')], '60%', false, 3, 'center', '');
 
-	if (cacti_sizeof($p_array)) {
-		$save_html = '';
+	$save_html = '';
 
+	if (cacti_sizeof($p_array)) {
 		if (gnrv('drp_action') == '1') { // delete
 			print "<tr>
 				<td class='textArea'>

@@ -57,6 +57,8 @@ function form_save() : void {
 	global $preview_only, $messages, $import_messages;
 
 	if (isrv('save_component_import')) {
+		$xml_data = '';
+
 		// print '<pre>';print_r($_FILES);print '</pre>';exit;
 		if (($_FILES['import_file']['tmp_name'] != 'none') && ($_FILES['import_file']['tmp_name'] != '')) {
 			// file upload

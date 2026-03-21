@@ -387,9 +387,9 @@ function form_save() : void {
  * This saves any overrides to item properties from graph template item.
  * Inserting new items here is not possible. Just editing existing ones.
  */
-function form_save_aggregate() : mixed {
+function form_save_aggregate() : void {
 	if (!isrv('save_component_item')) {
-		return false;
+		return;
 	}
 
 	// two possible tables to save to - aggregate template or aggregate graph
