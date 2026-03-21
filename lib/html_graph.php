@@ -1428,12 +1428,13 @@ function html_graph_list_view() : void {
 		<div style='float:left'><img src='images/arrow.gif' alt=''>&nbsp;</div>
 		<div style='float:right'><button type='button' class='ui-button ui-corner-all ui-widget' title='<?php print __esc('View Graphs'); ?>' onClick='viewGraphs()'><?php print __esc('View'); ?></button></div>
 	</div>
-	<?php print $report_text; ?>
 	<?php
-	$graph_list_js = [];
+	print $report_text;
 
+	$graph_list_js  = [];
 	$graph_list_js  = sanitize_graph_id_list((string) grv('graph_list'));
 	$graph_list_csv = implode(',', $graph_list_js);
+
 	?>
 	<script type='text/javascript'>
 		refreshMSeconds=999999999;
@@ -1955,7 +1956,8 @@ function html_graph_single_view() : void {
  * Parse and sanitize a comma-separated graph list into validated integer IDs.
  *
  * @param string $csv_list  Comma-separated list of graph IDs (from request var)
- * @return array  Array of unique positive integer graph IDs
+ *
+ * @return array Array of unique positive integer graph IDs
  */
 function sanitize_graph_id_list(string $csv_list): array {
 	$result = [];
