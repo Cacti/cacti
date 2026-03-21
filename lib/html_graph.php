@@ -1955,7 +1955,7 @@ function html_graph_single_view() : void {
 /**
  * Parse and sanitize a comma-separated graph list into validated integer IDs.
  *
- * @param string $csv_list  Comma-separated list of graph IDs (from request var)
+ * @param string $csv_list Comma-separated list of graph IDs (from request var)
  *
  * @return array Array of unique positive integer graph IDs
  */
