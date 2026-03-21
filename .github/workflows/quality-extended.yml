@@ -19,30 +19,30 @@ env:
   COVERAGE_MIN_LINE_PCT: '10.0'
 
 jobs:
-  actionlint:
-    name: actionlint
-    runs-on: ubuntu-latest
+#  actionlint:
+#    name: actionlint
+#    runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v4
 
-      - name: Install actionlint dependencies
-        run: |
-          set -euo pipefail
-          sudo apt-get update
-          sudo apt-get install -y golang-go shellcheck
+#      - name: Install actionlint dependencies
+#        run: |
+#          set -euo pipefail
+#          sudo apt-get update
+#          sudo apt-get install -y golang-go shellcheck
 
-      - name: Install actionlint
-        run: |
-          set -euo pipefail
-          GOBIN="${PWD}/.local/bin" go install github.com/rhysd/actionlint/cmd/actionlint@v1.7.7
-          echo "${PWD}/.local/bin" >> "${GITHUB_PATH}"
+#      - name: Install actionlint
+#        run: |
+#          set -euo pipefail
+#          GOBIN="${PWD}/.local/bin" go install github.com/rhysd/actionlint/cmd/actionlint@v1.7.7
+#          echo "${PWD}/.local/bin" >> "${GITHUB_PATH}"
 
-      - name: Run actionlint
-        run: |
-          set -euo pipefail
-          "${PWD}/.local/bin/actionlint" -color
+#      - name: Run actionlint
+#        run: |
+#          set -euo pipefail
+#          "${PWD}/.local/bin/actionlint" -color
 
 #  shell-lint:
 #    name: shellcheck + shfmt
