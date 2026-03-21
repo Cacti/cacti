@@ -45,7 +45,7 @@ test('plugins page normalizes state and encodes sort column in JavaScript', func
 test('graph list view uses JSON and sanitized CSV for graph list', function () use ($htmlGraphPath) {
 	$contents = file_get_contents($htmlGraphPath);
 
-	expect($contents)->toContain('$graph_list_js = []');
+	expect($contents)->toContain('$graph_list_js  = []');
 	expect($contents)->toContain('ctype_digit($item)');
 	expect($contents)->toContain('json_encode($graph_list_js)');
 	expect($contents)->toContain("graph_list=<?php print \$graph_list_csv; ?>");
