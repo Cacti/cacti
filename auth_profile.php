@@ -259,6 +259,7 @@ function form_save() : void {
 	}
 
 	$errors = [];
+
 	$currentTab = '';
 
 	if (isrv('tab')) {
