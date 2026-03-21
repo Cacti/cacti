@@ -258,7 +258,7 @@ function form_save() : void {
 		);
 	}
 
-	$errors = [];
+	$errors     = [];
 	$currentTab = '';
 
 	if (isrv('tab')) {
