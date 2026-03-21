@@ -3974,7 +3974,7 @@ function build_where_from_array(array $filters, array &$params) : string {
 			continue;
 		}
 
-		$where[] = "`$field` = ?";
+		$where[]  = "`$field` = ?";
 		$params[] = $value;
 	}
 
@@ -4002,6 +4002,7 @@ function get_item(string $tblname, string $field, int $startid, string|array $lm
 
 	if ($sql_operator != '') {
 		$where_clause = '';
+
 		if (is_array($lmt_query)) {
 			$where_clause = build_where_from_array($lmt_query, $params);
 		} else {
@@ -4034,6 +4035,7 @@ function get_item(string $tblname, string $field, int $startid, string|array $lm
 function get_sequence(mixed $id, string $field, string $table_name, string|array $group_query) : int {
 	if (empty($id)) {
 		$params = [];
+
 		if (is_array($group_query)) {
 			$where_clause = build_where_from_array($group_query, $params);
 		} else {
