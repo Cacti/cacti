@@ -14,7 +14,13 @@
 
 require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
 
-// Mock html_auth_footer logic for testing escaping
+/**
+ * Mock html_auth_footer logic for testing escaping.
+ *
+ * @param  string $error The error message to render
+ *
+ * @return string The rendered HTML fragment
+ */
 function test_html_auth_footer_logic($error) {
 	// The Hardened Logic: htmle($error)
 	if (!function_exists('htmle')) {
