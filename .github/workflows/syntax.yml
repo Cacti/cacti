@@ -188,7 +188,7 @@ jobs:
       run: |
         cp -p ${{ github.workspace }}/plugins/flowview/config.php.dist ${{ github.workspace }}/plugins/flowview/config.php
         cp -p ${{ github.workspace }}/plugins/syslog/config.php.dist ${{ github.workspace }}/plugins/syslog/config.php
-        sed -i "s/\/\/\$/\$/g" ${{ github.workspace }}/plugins/syslog/config.php
+        sed -i 's/\/\/\$/\$/g' ${{ github.workspace }}/plugins/syslog/config.php
 
     - name: Run apt-get update
       run: sudo apt-get -y update
