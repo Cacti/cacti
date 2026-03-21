@@ -44,20 +44,20 @@ jobs:
           set -euo pipefail
           "${PWD}/.local/bin/actionlint" -color
 
-  shell-lint:
-    name: shellcheck + shfmt
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
+#  shell-lint:
+#    name: shellcheck + shfmt
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v4
+#
 #      - name: Install shell lint dependencies
 #        run: |
 #          set -euo pipefail
 #          sudo apt-get update
 #          sudo apt-get install -y shellcheck shfmt
-
+#
 #      - name: Run shfmt and shellcheck
 #        run: |
 #          set -euo pipefail
@@ -75,12 +75,12 @@ jobs:
 #              fi
 #            done | sort -u
 #          )
-
+#
 #          if [[ "${#shell_files[@]}" -eq 0 ]]; then
 #            echo 'No shell files found for linting.'
 #            exit 0
 #          fi
-
+#
 #          # Relax indentation (-i 0) to avoid failing on mixed project styles for now
 #          shfmt -d -i 0 -ci "${shell_files[@]}"
 #          shellcheck -x "${shell_files[@]}"
@@ -119,7 +119,7 @@ jobs:
 #        run: |
 #          set -euo pipefail
 #          include/vendor/bin/pest --display-warnings --coverage-clover=coverage.xml --coverage-text | tee coverage-summary.txt
-
+#
 #      - name: Enforce minimum line coverage
 #        run: |
 #          set -euo pipefail
