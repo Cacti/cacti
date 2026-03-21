@@ -6790,7 +6790,7 @@ function CactiErrorHandler(int $level, string $message, string $file, int $line,
 
 	preg_match("/.*\/plugins\/([\w-]*)\/.*/", $file, $output_array);
 
-	$plugin = ($output_array != null && isset($output_array[1]) ? $output_array[1] : '');
+	$plugin = $output_array[1] ?? '';
 	$error  = 'Unknown error occurred';
 
 	if ($level != null && isset($phperrors[$level])) {
