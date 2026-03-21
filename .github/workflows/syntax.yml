@@ -269,10 +269,7 @@ jobs:
 
     - name: Check Poller Script Syntax after Package Import
       run: 
-        if [[ $(find ${{ github.workspace }}/scripts -name '*.php' -exec php -l {} 2>&1 \; | grep -iv 'no syntax errors detected') -gt 0 ]]; then
-          echo "Syntax errors found in php code"
-          exit 1
-        fi
+        if $(find ${{ github.workspace }}/scripts -name '*.php' -exec php -l {} 2>&1 \; | grep -iv "no syntax errors detected"); then exit 1; fi
 
     - name: Check that all CLI scripts have a valid --version flag
       run: |
@@ -297,10 +294,7 @@ jobs:
     - name: Check all perl scripts for syntax errors
       run: |
         cd ${{ github.workspace }}
-        if [[ $(find scripts -name '*.pl' -exec perl -c {} 2>&1 \; | grep -iv 'syntax OK') -gt 0 ]]; then 
-          echo "Syntax errors found in perl code"
-          exit 1
-        fi
+        if $(find scripts -name '*.pl' -exec perl -c {} 2>&1 \; | grep -iv "syntax OK"); then exit 1; fi
 
     - name: Audit the Installation Schema
       run: |
