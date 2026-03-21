@@ -182,7 +182,7 @@ jobs:
         # With syslog we have to enable batch installs using the lines below
         cd ${{ github.workspace }}/plugins/syslog
         cp -p config.php.dist config.php
-        sed -i "s/\/\/\$syslog_install_options/\$syslog_install_options/g" config.php
+        sed -i 's/\/\/\$syslog_install_options/\$syslog_install_options/g' config.php
 
     - name: Move plugin config files
       run: |
