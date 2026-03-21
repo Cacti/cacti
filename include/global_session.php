@@ -133,5 +133,5 @@ if ($graphs) {
 	var sessionLocale='<?php print CACTI_LOCALE; ?>';
 	var sessionNotices=<?php print display_output_messages(); ?>;
     var sessionMessage={};
-	var csrfMagicToken='<?php print csrf_get_tokens(); ?>';
+	var csrfMagicToken='<?php print function_exists('csrf_get_tokens') ? csrf_get_tokens() : ''; ?>';
 </script>
