@@ -239,7 +239,8 @@ jobs:
 
     - name: Prime Cacti config.php File
       run: |
-        sed -i "s/localhost/127.0.0.1/g" ${{ github.workspace }}/include/config.php
+        sudo cp -p ${{ github.workspace }}/include/config.php.dist ${{ github.workspace }}/include/config.php
+        sudo sed -i "s/localhost/127.0.0.1/g" ${{ github.workspace }}/include/config.php
         sudo chmod 777 ${{ github.workspace }}/include/config.php
         cat ${{ github.workspace}}/include/config.php
 
