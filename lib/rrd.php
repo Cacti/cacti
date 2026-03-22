@@ -933,8 +933,12 @@ function rrdtool_function_create(int $local_data_id, bool $show_source, mixed $r
 		$success = rrdtool_execute("create $data_source_path $create_ds$create_rra", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
 
 		if (CACTI_SERVER_OS != 'win32' && posix_getuid() == 0) {
-			chown($data_source_path, (int) $owner_id);
-			chgrp($data_source_path, (int) $group_id);
+			if (file_exists($data_source_path)) {
+				chown($data_source_path, (int) $owner_id);
+				chgrp($data_source_path, (int) $group_id);
+			} else {
+				cacti_log("WARNING: RRDCreate using command 'create $data_source_path $create_ds$create_rra' failed!", false, 'POLLER');
+			}
 		}
 
 		return $success;
@@ -2367,6 +2371,15 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 
 				// replace query variables in cdefs
 				$cdef_string = rrd_substitute_host_query_data($cdef_string, $graph, $graph_item);
+
+				// aggregate graphs can produce an empty RPN expression for GPRINT items
+				// whose consolidation function does not match the data source; skip them
+				// rather than emitting a bare "CDEF:cdefX=" which rrdtool rejects.
+				if ($cdef_string === '') {
+					cacti_log('Empty CDEF string for graph ' . $graph['local_graph_id'] . '; skipping.', true, 'RRD', POLLER_VERBOSITY_DEBUG);
+
+					continue;
+				}
 
 				// make the initial 'virtual' cdef name: 'cdef' + [a,b,c,d...]
 				$cdef_graph_defs .= 'CDEF:cdef' . generate_graph_def_name(intval($i)) . '=';
