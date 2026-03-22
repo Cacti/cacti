@@ -640,8 +640,6 @@ function process_poller_output(mixed &$rrdtool_pipe, int $remainder = 0) : int {
 								$rrd_update_array[$rrd_path]['times'][$unix_time][$field] = 'U';
 							}
 
-							$rrd_update_array[$rrd_path]['times'][$unix_time][$field] = $matches[1];
-
 							$rrd_tmpl .= ($rrd_tmpl != '' ? ':' : '') . $field;
 
 							$rrd_update_array[$rrd_path]['template'] = $rrd_tmpl;
