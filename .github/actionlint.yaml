@@ -1,0 +1,5 @@
+# Disable shellcheck integration in actionlint.
+# The embedded shellcheck produces too many false positives on YAML run: blocks
+# (PHP code in single quotes, intentional word splitting, etc.).
+# Standalone shellcheck runs on actual .sh files in the quality-extended workflow.
+no-shellcheck: true
