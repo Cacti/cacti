@@ -632,11 +632,10 @@ require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/snmpagent.php');
 require_once(CACTI_PATH_LIBRARY . '/aggregate.php');
 require_once(CACTI_PATH_LIBRARY . '/api_automation.php');
+require_once(CACTI_PATH_INCLUDE . '/csrf.php');
 require_once(CACTI_PATH_INCLUDE . '/vendor/autoload.php');
 
 if ($config['is_web']) {
-	require_once(CACTI_PATH_INCLUDE . '/csrf.php');
-
 	// raise a message and perform a page refresh if we've changed modes
 	if ($config['poller_id'] > 1) {
 		if (isset($_SESSION['connection_mode'])) {
