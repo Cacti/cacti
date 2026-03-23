@@ -397,7 +397,7 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 			print $li . 'the credentials in config.php are valid.' . $il;
 			print $lu . $sp;
 
-			if (isset($_REQUEST['display_db_errors']) && !empty($config['DATABASE_ERROR'])) { // @phpstan-ignore-line
+			if (isrv('display_db_errors') && !empty($config['DATABASE_ERROR'])) { // @phpstan-ignore-line
 				print $ps . 'The following database errors occurred: ' . $ul;
 
 				foreach ($config['DATABASE_ERROR'] as $e) { // @phpstan-ignore-line
@@ -419,7 +419,7 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 			print $li . 'the credentials in config.php are valid and correct.' . $il;
 			print $lu . $sp;
 
-			if (isset($_REQUEST['display_db_errors']) && !empty($config['DATABASE_ERROR'])) { // @phpstan-ignore-line
+			if (isrv('display_db_errors') && !empty($config['DATABASE_ERROR'])) { // @phpstan-ignore-line
 				print $ps . 'The following database errors occurred: ' . $ul;
 
 				foreach ($config['DATABASE_ERROR'] as $e) { // @phpstan-ignore-line

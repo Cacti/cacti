@@ -89,17 +89,15 @@ switch ($providerName) {
 		die('Provider missing');
 }
 
-if (!isset($_GET['code'])) { // If we don't have an authorization code then get one
+if (!isrv('code')) { // If we don't have an authorization code then get one
 	$authUrl                 = $provider->getAuthorizationUrl($options);
 	$_SESSION['oauth2state'] = $provider->getState();
-	header('Location: ' . $authUrl);
-
-	exit;
+	cacti_redirect($authUrl, false);
 
 	// Check given state against previously stored one to mitigate CSRF attack
 }
 
-if (empty($_GET['state']) || (isset($_SESSION['oauth2state']) && ($_GET['state'] !== $_SESSION['oauth2state']))) {
+if (isempty_request_var('state') || (isset($_SESSION['oauth2state']) && (grv('state') !== $_SESSION['oauth2state']))) {
 	unset($_SESSION['oauth2state']);
 
 	exit('Invalid state');
@@ -107,7 +105,7 @@ if (empty($_GET['state']) || (isset($_SESSION['oauth2state']) && ($_GET['state']
 	$token = $provider->getAccessToken(
 		'authorization_code',
 		[
-			'code' => $_GET['code']
+			'code' => grv('code')
 		]
 	);
 
