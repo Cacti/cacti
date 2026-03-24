@@ -1423,9 +1423,9 @@ function get_order_string_page() : string {
  *
  * @param string $regex The regular expression to validate.
  *
- * @return true|string Returns true if the regular expression is valid, otherwise returns an error message string.
+ * @return bool|string Returns true if the regular expression is valid, otherwise returns an error message string.
  */
-function validate_is_regex(string $regex) : true|string {
+function validate_is_regex(string $regex) : bool|string {
 	if ($regex == '') {
 		return true;
 	}

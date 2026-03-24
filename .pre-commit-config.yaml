@@ -5,19 +5,16 @@ repos:
         name: PHP Lint Checking
         entry: composer run-script lint
         language: system
-        files: ^app/
         always_run: true
 
       - id: phpcsfixer
         name: PHP CS Fixer Validation
         entry: composer run-script phpcsfixer
         language: system
-        files: ^app/
         always_run: true
 
       - id: phpstan
         name: PHPStan Validation
         entry: composer run-script phpstan
         language: system
-        files: ^app/
         always_run: true
