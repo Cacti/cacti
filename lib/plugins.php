@@ -110,17 +110,6 @@ function api_plugin_hook(string $name) : array {
 	return $args;
 }
 
-/**
- * api_plugin_hook_function - Calls a plugin hook that can modify a value.
- *
- * Unlike api_plugin_hook(), this variant passes a parameter to each hook
- * and returns the (possibly modified) value after all plugins have run.
- *
- * @param string $name The name of the hook to call.
- * @param mixed  $parm The value passed to and returned from each plugin hook.
- *
- * @return mixed The parameter value, potentially modified by plugin hooks.
- */
 function api_plugin_hook_function(string $name, mixed $parm = null) : mixed {
 	global $plugin_hooks, $plugins_integrated;
 
