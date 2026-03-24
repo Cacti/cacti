@@ -305,8 +305,23 @@ function rrdtool_execute() : mixed {
 	return call_user_func_array($function, $args);
 }
 
-function __rrd_execute(string $command_line, bool $log_to_stdout, int $output_flag = RRDTOOL_OUTPUT_STDOUT, mixed $rrdtool_pipe = null, string $logopt = 'WEBLOG') : mixed {
+/**
+ * Execute an RRDtool command and return the output.
+ *
+ * @param string|array $command_line  The RRDtool command to execute
+ * @param bool         $log_to_stdout Whether to echo output to stdout
+ * @param int          $output_flag   Output format constant (RRDTOOL_OUTPUT_*)
+ * @param mixed        $rrdtool_pipe  An open RRDtool pipe resource, or null
+ * @param string       $logopt        Logging context identifier
+ *
+ * @return mixed The command output in the requested format
+ */
+function __rrd_execute(string|array $command_line, bool $log_to_stdout, int $output_flag = RRDTOOL_OUTPUT_STDOUT, mixed $rrdtool_pipe = null, string $logopt = 'WEBLOG') : mixed {
 	static $last_command;
+
+	if (is_array($command_line)) {
+		$command_line = implode(' ', array_map('cacti_escapeshellarg', $command_line));
+	}
 
 	/**
 	 * WIN32: before sending this command off to rrdtool, get rid
@@ -2055,9 +2070,6 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 					$cf_id = 1; // CF: AVERAGE
 				}
 			}
-
-			// now remember the correct CF reference
-			$cf_id = $graph_item['cf_reference'];
 
 			// +++++++++++++++++++++++ GRAPH ITEMS: CDEF START +++++++++++++++++++++++
 
