@@ -128,7 +128,7 @@ scan_folders() {
 
 YEAR=$(date +"%Y")
 EXC_FOLDERS=".git .vscode images include/vendor include/themes/\*/vendor include/themes/\*/default include/themes/\*/images vendor fonts include/fonts include/fa include/js plugins/\*/.git plugins/\*/include/vendor plugins/\*/Net plugins/\*/lib/Doctrine"
-EXC_FILES="LICENSE \*.rrd \*.cache \*.ttf \*.pdf \*.jpg \*.jpeg \*.csv c3.css pace.css billboard.css .rnd Diff.css \*.png \*.gif jquery\* colors.csv \*.xml.gz \*.format cacti_version \*.log\* \*.mo \*.po \*.pot \*.xml"EXC_FILES="LICENSE pace.css billboard.css .rnd Diff.css \*.png \*.gif jquery\* colors.csv \*.xml.gz \*.format cacti_version \*.log\* \*.mo \*.po \*.pot \*.xml"
+EXC_FILES="LICENSE \*.rrd \*.cache \*.ttf \*.pdf \*.jpg \*.jpeg \*.csv c3.css pace.css billboard.css .rnd Diff.css \*.png \*.gif jquery\* colors.csv \*.xml.gz \*.format cacti_version \*.log\* \*.mo \*.po \*.pot \*.xml"
 INC_EXTENSIONS=""
 INC_FOLDERS=""
 ERRORS_ONLY=1
@@ -140,7 +140,7 @@ while [ -n "$1" ]; do
 		echo "usage: copyright_year.sh [-a]"
 		echo ""
 		;;
-	"-S" | "-S")
+	"-S" | "-s")
 		shift
 		EXC_FILES="$1"
 		;;
