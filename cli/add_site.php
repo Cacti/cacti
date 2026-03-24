@@ -179,19 +179,19 @@ if (sizeof($parms)) {
 			case '--version':
 			case '-V':
 			case '-v':
-				displayVersion();
+				display_version();
 
 				exit;
 			case '--help':
 			case '-H':
 			case '-h':
-				displayHelp();
+				display_help();
 
 				exit;
 
 			default:
 				echoQuiet("ERROR: Invalid Argument: ($arg)\n\n" . PHP_EOL . PHP_EOL);
-				displayHelp();
+				display_help();
 
 				exit(1);
 		}
@@ -215,7 +215,7 @@ if (sizeof($parms)) {
 		}
 	}
 } else {
-	displayHelp();
+	display_help();
 
 	exit(0);
 }
@@ -437,7 +437,11 @@ function geocodeAddress(string $siteAddr1, string $siteAddr2, string $siteCity, 
 
 	if (!$geocodeApiKey) {
 		// Dont even try without the key
-		displayHelp('Error: --geocode-api-key must be given with --geocode-address');
+		print 'Error: --geocode-api-key must be given with --geocode-address' . PHP_EOL;
+
+		display_help();
+
+		exit(1);
 	}
 
 	$requestUrl = sprintf('%s?address=%s,%s,%s,%s&key=%s', $googleApiUrl, urlencode($siteAddr1), urlencode($siteAddr2), urlencode($siteCity), urlencode($siteCountry), $geocodeApiKey);
@@ -511,12 +515,16 @@ function fetchCurl(string $url) : string|false {
 	global $verbose, $debug, $httpsProxy;
 
 	if (!function_exists('curl_init')) {
-		displayHelp('Error: cURL must be enabled in PHP if --geocode is specified.' . PHP_EOL . 'See http://php.net/manual/en/curl.setup.php for help.' . PHP_EOL);
+		print 'Error: cURL must be enabled in PHP if --geocode is specified.' . PHP_EOL . 'See http://php.net/manual/en/curl.setup.php for help.' . PHP_EOL;
+
+		display_help();
+
+		exit(1);
 	}
 
-	$curl      = curl_init();
-	$header[0] = 'Accept: text/xml,application/xml,application/json,application/xhtml+xml,';
-	$header[0] .= 'text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5';
+	$curl     = curl_init();
+
+	$header[] = 'Accept: text/xml,application/xml,application/json,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5';
 	$header[] = 'Cache-Control: max-age=0';
 	$header[] = 'Connection: keep-alive';
 	$header[] = 'Keep-Alive: 300';
@@ -535,6 +543,7 @@ function fetchCurl(string $url) : string|false {
 		if ($verbose || $debug) {
 			echoQuiet("Using HTTPS proxy: $httpsProxy" . PHP_EOL);
 		}
+
 		curl_setopt($curl, CURLOPT_PROXY, $httpsProxy);
 	}
 
@@ -542,6 +551,7 @@ function fetchCurl(string $url) : string|false {
 
 	if ($buffer === false) {
 		$error = curl_error($curl);
+
 		echoQuiet('Error: cURL request failed: ' . $error . PHP_EOL);
 
 		return false;
@@ -551,11 +561,11 @@ function fetchCurl(string $url) : string|false {
 }
 
 /**
- * displayVersion - displays version information
+ * display_version - displays version information
  *
  * @return void
  */
-function displayVersion() : void {
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	echoQuiet("Cacti Add Site Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL);
 }
@@ -565,14 +575,10 @@ function displayVersion() : void {
  *
  * @return void
  */
-function displayHelp(mixed $errorMessage = null) : void {
+function display_help() : void {
 	global $log;
 	$log = false;
-	displayVersion();
-
-	if ($errorMessage) {
-		echoQuiet("$errorMessage" . PHP_EOL . PHP_EOL);
-	}
+	display_version();
 
 	echoQuiet(PHP_EOL);
 	echoQuiet('Usage: add_site.php [site-options] [--quiet]' . PHP_EOL . PHP_EOL);
