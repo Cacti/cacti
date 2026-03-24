@@ -2071,9 +2071,6 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 				}
 			}
 
-			// now remember the correct CF reference
-			$cf_id = $graph_item['cf_reference'];
-
 			// +++++++++++++++++++++++ GRAPH ITEMS: CDEF START +++++++++++++++++++++++
 
 			/**
