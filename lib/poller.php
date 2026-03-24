@@ -113,7 +113,7 @@ function exec_poll_php(string $command, bool $using_proc_function, array $pipes,
  * exec_background - executes a program in the background so that php can continue
  * to execute code in the foreground.
  *
- * @param string $filename      The full pathname to the script to execute
+ * @param string       $filename      The full pathname to the script to execute
  * @param string|array $args          Any additional arguments. Arrays are escaped per-element via cacti_escapeshellarg.
  * @param string|array $redirect_args Any additional arguments for file re-direction.  Otherwise output goes to /dev/null
  *
