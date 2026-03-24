@@ -113,22 +113,14 @@ function exec_poll_php(string $command, bool $using_proc_function, array $pipes,
  * exec_background - executes a program in the background so that php can continue
  * to execute code in the foreground.
  *
- * @param string       $filename      The full pathname to the script to execute
- * @param string|array $args          Any additional arguments. Arrays are escaped per-element via cacti_escapeshellarg.
- * @param string|array $redirect_args Any additional arguments for file re-direction.  Otherwise output goes to /dev/null
+ * @param string $filename      The full pathname to the script to execute
+ * @param string $args          Any additional arguments that must be passed onto the executable
+ * @param string $redirect_args Any additional arguments for file re-direction.  Otherwise output goes to /dev/null
  *
  * @return void
  */
-function exec_background(string $filename, string|array $args = '', string|array $redirect_args = '') : void {
+function exec_background(string $filename, string $args = '', string $redirect_args = '') : void {
 	global $debug;
-
-	if (is_array($args)) {
-		$args = implode(' ', array_map('cacti_escapeshellarg', $args));
-	}
-
-	if (is_array($redirect_args)) {
-		$redirect_args = implode(' ', $redirect_args); // redirect args should not be shell escaped generally as they contain > etc
-	}
 
 	cacti_log("DEBUG: About to Spawn a Remote Process [CMD: $filename, ARGS: $args]", true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE : POLLER_VERBOSITY_DEBUG));
 
