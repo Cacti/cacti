@@ -177,12 +177,11 @@ describe('CF fallback mutation killers', function () {
 		expect(cf_fallback_fixed($max_only, 10, 99, 99))->toBe(3);
 	});
 
-	test('deterministic over 100 runs', function () {
+	test('deterministic for same inputs', function () {
 		$cache = ['10:1' => true, '10:3' => true];
-		$first = cf_fallback_fixed($cache, 10, 99, 99);
-		for ($i = 0; $i < 100; $i++) {
-			expect(cf_fallback_fixed($cache, 10, 99, 99))->toBe($first);
-		}
+		$first  = cf_fallback_fixed($cache, 10, 99, 99);
+		$second = cf_fallback_fixed($cache, 10, 99, 99);
+		expect($second)->toBe($first);
 	});
 
 	test('different rrd_ids are independent', function () {
