@@ -92,7 +92,9 @@ switch ($providerName) {
 if (!isrv('code')) { // If we don't have an authorization code then get one
 	$authUrl                 = $provider->getAuthorizationUrl($options);
 	$_SESSION['oauth2state'] = $provider->getState();
-	cacti_redirect($authUrl, false);
+	header('Location: ' . $authUrl);
+
+	exit;
 
 	// Check given state against previously stored one to mitigate CSRF attack
 }
