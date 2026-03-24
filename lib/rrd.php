@@ -308,11 +308,11 @@ function rrdtool_execute() : mixed {
 /**
  * Execute an RRDtool command and return the output.
  *
- * @param  string|array $command_line  The RRDtool command to execute
- * @param  bool         $log_to_stdout Whether to echo output to stdout
- * @param  int          $output_flag   Output format constant (RRDTOOL_OUTPUT_*)
- * @param  mixed        $rrdtool_pipe  An open RRDtool pipe resource, or null
- * @param  string       $logopt        Logging context identifier
+ * @param string|array $command_line  The RRDtool command to execute
+ * @param bool         $log_to_stdout Whether to echo output to stdout
+ * @param int          $output_flag   Output format constant (RRDTOOL_OUTPUT_*)
+ * @param mixed        $rrdtool_pipe  An open RRDtool pipe resource, or null
+ * @param string       $logopt        Logging context identifier
  *
  * @return mixed The command output in the requested format
  */
