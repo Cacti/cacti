@@ -126,8 +126,11 @@ function exec_background(string $filename, string|array $args = '', string|array
 		$args = implode(' ', array_map('cacti_escapeshellarg', $args));
 	}
 
+	/* redirect_args intentionally bypass escapeshellarg because they contain
+	 * shell operators (>, 2>&1, etc.) that must be passed through literally.
+	 * Only hardcoded redirect strings should be passed here, never user input. */
 	if (is_array($redirect_args)) {
-		$redirect_args = implode(' ', $redirect_args); // redirect args should not be shell escaped generally as they contain > etc
+		$redirect_args = implode(' ', $redirect_args);
 	}
 
 	cacti_log("DEBUG: About to Spawn a Remote Process [CMD: $filename, ARGS: $args]", true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE : POLLER_VERBOSITY_DEBUG));
