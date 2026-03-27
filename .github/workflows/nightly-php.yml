@@ -31,8 +31,8 @@ jobs:
           php-version: '8.4'
           extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring
 
-      - name: Install composer
-        run: composer install
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
 
       - name: Validate composer files
         run: composer validate --strict
