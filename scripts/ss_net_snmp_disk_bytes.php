@@ -31,7 +31,7 @@ if (!isset($called_by_script_server)) {
 
 	array_shift($_SERVER['argv']);
 
-	print call_user_func_array('ss_net_snmp_disk_bytes', $_SERVER['argv']);
+	print call_user_func_array(ss_net_snmp_disk_bytes(...), $_SERVER['argv']);
 } else {
 	include_once(__DIR__ . '/../lib/snmp.php');
 }
@@ -86,7 +86,7 @@ function ss_net_snmp_disk_bytes(mixed $host_id_or_hostname = '') : string {
 		}
 	} else {
 		$previous = json_decode(
-			db_fetch_cell_prepared('SELECT value
+			(string) db_fetch_cell_prepared('SELECT value
 				FROM host_value_cache
 				WHERE host_id = ?
 				AND dimension = ?
@@ -154,12 +154,12 @@ function ss_net_snmp_disk_bytes(mixed $host_id_or_hostname = '') : string {
 		$host['snmp_engine_id']);
 
 	foreach ($names as $measure) {
-		if (preg_match('/^(?:sd|nvme|xvd|vd|vm|hd|md|dm-)/', $measure['value'])) {
-			if (preg_match('/(?:p\d+|\d+)$/', $measure['value']) && !preg_match('/^nvme\d+n\d+$/', $measure['value'])) {
+		if (preg_match('/^(?:sd|nvme|xvd|vd|vm|hd|md|dm-)/', (string) $measure['value'])) {
+			if (preg_match('/(?:p\d+|\d+)$/', (string) $measure['value']) && !preg_match('/^nvme\d+n\d+$/', (string) $measure['value'])) {
 				continue;
 			}
 
-			$parts = explode('.', $measure['oid']);
+			$parts = explode('.', (string) $measure['oid']);
 
 			$indexes[$parts[cacti_sizeof($parts) - 1]] = $parts[cacti_sizeof($parts) - 1];
 		}
@@ -185,7 +185,7 @@ function ss_net_snmp_disk_bytes(mixed $host_id_or_hostname = '') : string {
 			$host['snmp_engine_id']);
 
 		foreach ($bytes as $measure) {
-			$parts = explode('.', $measure['oid']);
+			$parts = explode('.', (string) $measure['oid']);
 			$index = $parts[cacti_sizeof($parts) - 1];
 
 			if (array_key_exists($index, $indexes)) {
@@ -231,7 +231,7 @@ function ss_net_snmp_disk_bytes(mixed $host_id_or_hostname = '') : string {
 			$host['snmp_engine_id']);
 
 		foreach ($bytes as $measure) {
-			$parts = explode('.', $measure['oid']);
+			$parts = explode('.', (string) $measure['oid']);
 			$index = $parts[cacti_sizeof($parts) - 1];
 
 			if (array_key_exists($index, $indexes)) {

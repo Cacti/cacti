@@ -35,13 +35,12 @@ function get_vdef_item_name(int $vdef_item_id) : string {
 	$vdef_item          = db_fetch_row_prepared('SELECT type, value FROM vdef_items WHERE id = ?', [$vdef_item_id]);
 	$current_vdef_value = $vdef_item['value'];
 
-	switch ($vdef_item['type']) {
-		case '1': return $vdef_functions[$current_vdef_value];
-		case '4': return $current_vdef_value;
-		case '6': return $current_vdef_value;
-	}
-
-	return '';
+	return match ($vdef_item['type']) {
+		'1'     => $vdef_functions[$current_vdef_value],
+		'4'     => $current_vdef_value,
+		'6'     => $current_vdef_value,
+		default => '',
+	};
 }
 
 /**

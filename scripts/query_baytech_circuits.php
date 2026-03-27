@@ -91,7 +91,7 @@ if ($cmd == 'index') {
 		$snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, $max_oids, SNMP_POLLER));
 
 	// and print each index as a separate line
-	for ($i = 0; ($i < sizeof($return_arr)); $i++) {
+	for ($i = 0; ($i < count($return_arr)); $i++) {
 		print $return_arr[$i] . "\n";
 	}
 }
@@ -129,7 +129,7 @@ elseif ($cmd == 'query' && isset($query_field)) {
 			$snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol,
 			$snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, $max_oids, SNMP_POLLER));
 	} else {
-		for ($i = 0; ($i < sizeof($arr_index)); $i++) {
+		for ($i = 0; ($i < count($arr_index)); $i++) {
 			$result = cacti_snmp_get($hostname, $snmp_community,
 				str_replace('X', "$arr_index[$i]", $oids[$query_field]), $snmp_version, $snmp_auth_username,
 				$snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol,
@@ -145,7 +145,7 @@ elseif ($cmd == 'query' && isset($query_field)) {
 		}
 	}
 
-	for ($i = 0; ($i < sizeof($arr_index)); $i++) {
+	for ($i = 0; ($i < count($arr_index)); $i++) {
 		print $arr_index[$i] . $xml_delimiter . $arr[$i] . "\n";
 	}
 }
@@ -203,7 +203,7 @@ else {
 function reindex(array $arr) : array {
 	$return_arr = [];
 
-	for ($i = 0; ($i < sizeof($arr)); $i++) {
+	for ($i = 0; ($i < count($arr)); $i++) {
 		$return_arr[$i] = $arr[$i]['value'];
 	}
 

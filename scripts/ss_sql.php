@@ -28,7 +28,7 @@ error_reporting(0);
 if (!isset($called_by_script_server)) {
 	include_once(__DIR__ . '/../include/cli_check.php');
 
-	print call_user_func('ss_sql');
+	print call_user_func(ss_sql(...));
 }
 
 function ss_sql() : string {
@@ -47,11 +47,11 @@ function ss_sql() : string {
 	$result = shell_exec($cmd) ?? '';
 
 	$result = preg_replace('/: /', ':', $result);
-	$result = preg_replace('/  /', ' ', $result);
-	$result = preg_replace('/Slow queries/', 'SlowQueries', $result);
-	$result = preg_replace('/Open tables/', 'OpenTables', $result);
-	$result = preg_replace('/Queries per second avg/', 'QPS', $result);
-	$result = preg_replace('/Flush tables/', 'FlushTables', $result);
+	$result = preg_replace('/  /', ' ', (string) $result);
+	$result = preg_replace('/Slow queries/', 'SlowQueries', (string) $result);
+	$result = preg_replace('/Open tables/', 'OpenTables', (string) $result);
+	$result = preg_replace('/Queries per second avg/', 'QPS', (string) $result);
+	$result = preg_replace('/Flush tables/', 'FlushTables', (string) $result);
 
-	return trim($result) ?: 'U';
+	return trim((string) $result) ?: 'U';
 }

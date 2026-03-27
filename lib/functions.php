@@ -882,7 +882,7 @@ function form_input_validate(mixed $field_value, string $field_name, string $reg
 
 	if ($allow_nulls == false && $field_value == '') {
 		$report_message = __("Form Validation Failed: Variable '%s' does not allow nulls and variable is null", $field_name);
-	} elseif ($regexp_match != '' && !preg_match('/' . $regexp_match . '/', $field_value)) {
+	} elseif ($regexp_match != '' && !preg_match('/' . $regexp_match . '/', (string) $field_value)) {
 		$report_message = __("Form Validation Failed: Variable '%s' with Value '%s' Failed REGEX '%s'", $field_name, $field_value, $regexp_match);
 	}
 
@@ -1388,14 +1388,14 @@ function get_selective_log_level() : mixed {
 	}
 
 	if (isset($_SERVER['PHP_SELF'])) {
-		$current_file = basename($_SERVER['PHP_SELF']);
-		$dir_name     = dirname($_SERVER['PHP_SELF']);
+		$current_file = basename((string) $_SERVER['PHP_SELF']);
+		$dir_name     = dirname((string) $_SERVER['PHP_SELF']);
 	} elseif (isset($_SERVER['SCRIPT_NAME'])) {
-		$current_file = basename($_SERVER['SCRIPT_NAME']);
-		$dir_name     = dirname($_SERVER['SCRIPT_NAME']);
+		$current_file = basename((string) $_SERVER['SCRIPT_NAME']);
+		$dir_name     = dirname((string) $_SERVER['SCRIPT_NAME']);
 	} elseif (isset($_SERVER['SCRIPT_FILENAME'])) {
-		$current_file = basename($_SERVER['SCRIPT_FILENAME']);
-		$dir_name     = dirname($_SERVER['SCRIPT_FILENAME']);
+		$current_file = basename((string) $_SERVER['SCRIPT_FILENAME']);
+		$dir_name     = dirname((string) $_SERVER['SCRIPT_FILENAME']);
 	} else {
 		$current_file = basename(__FILE__);
 		$dir_name     = __DIR__;
@@ -1463,7 +1463,7 @@ function cacti_log(mixed $string, bool $output = false, string $environ = 'CMDPH
 
 	if ($depth > 1) {
 		print 'Recursion Loop detected.  Check Database' . PHP_EOL;
-		print 'Message: ' . trim($string) . PHP_EOL;
+		print 'Message: ' . trim((string) $string) . PHP_EOL;
 		exit;
 	}
 
@@ -1473,7 +1473,7 @@ function cacti_log(mixed $string, bool $output = false, string $environ = 'CMDPH
 
 	if (is_array($string)) {
 		$string = json_encode($string);
-	} elseif ($string == '' || trim($string) == '') {
+	} elseif ($string == '' || trim((string) $string) == '') {
 		return false;
 	}
 
@@ -1565,13 +1565,13 @@ function cacti_log(mixed $string, bool $output = false, string $environ = 'CMDPH
 	if ($logdestination == 2 || $logdestination == 3) {
 		$log_type = '';
 
-		if (str_contains($string, 'ERROR:')) {
+		if (str_contains((string) $string, 'ERROR:')) {
 			$log_type = 'err';
-		} elseif (str_contains($string, 'WARNING:')) {
+		} elseif (str_contains((string) $string, 'WARNING:')) {
 			$log_type = 'warn';
-		} elseif (str_contains($string, 'STATS:')) {
+		} elseif (str_contains((string) $string, 'STATS:')) {
 			$log_type = 'stat';
-		} elseif (str_contains($string, 'NOTICE:')) {
+		} elseif (str_contains((string) $string, 'NOTICE:')) {
 			$log_type = 'note';
 		}
 
@@ -1947,13 +1947,13 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
 	if ($host['status_fail_date'] == '') {
 		$host['status_fail_date'] = 0;
 	} else {
-		$host['status_fail_date'] = strtotime($host['status_fail_date']);
+		$host['status_fail_date'] = strtotime((string) $host['status_fail_date']);
 	}
 
 	if ($host['status_rec_date'] == '') {
 		$host['status_rec_date'] = 0;
 	} else {
-		$host['status_rec_date'] = strtotime($host['status_rec_date']);
+		$host['status_rec_date'] = strtotime((string) $host['status_rec_date']);
 	}
 
 	if ($status == HOST_DOWN) {
@@ -2359,7 +2359,7 @@ function prepare_validate_result(string &$result) : mixed {
  */
 function strip_alpha(mixed $string) : mixed {
 	// strip all non numeric data
-	$string = trim(preg_replace('/[^0-9,.+-]/', '', $string));
+	$string = trim((string) preg_replace('/[^0-9,.+-]/', '', (string) $string));
 
 	// check the easy cases first
 	// it has no delimiters, and no space, therefore, must be numeric
@@ -2577,7 +2577,7 @@ function test_data_source(int $data_template_id, int $host_id, int $snmp_query_i
 			} else {
 				// Script server is a bit more complicated
 				$php   = read_config_option('path_php_binary');
-				$parts = explode(' ', $script_path);
+				$parts = explode(' ', (string) $script_path);
 
 				dsv_log('parts', $parts);
 
@@ -3081,7 +3081,7 @@ function get_data_source_path(int $local_data_id, bool $expand_paths) : string {
 		if (empty($data_source['data_source_path'])) {
 			// no custom path was specified
 			$data_source_path = generate_data_source_path($local_data_id);
-		} elseif (!strstr($data_source['data_source_path'], '/')) {
+		} elseif (!strstr((string) $data_source['data_source_path'], '/')) {
 			$data_source_path = '<path_rra>/' . $data_source['data_source_path'];
 		} else {
 			$data_source_path = $data_source['data_source_path'];
@@ -3222,7 +3222,7 @@ function get_data_source_title(int $local_data_id) : string {
 	$title = 'Missing Datasource ' . $local_data_id;
 
 	if (cacti_sizeof($data)) {
-		if (str_contains($data['name'], '|') && $data['host_id'] > 0) {
+		if (str_contains((string) $data['name'], '|') && $data['host_id'] > 0) {
 			$data['name'] = substitute_data_input_data($data['name'], [], $local_data_id);
 			$title        = expand_title($data['host_id'], $data['snmp_query_id'], $data['snmp_index'], $data['name']);
 		} else {
@@ -3324,7 +3324,7 @@ function get_graph_title(int $local_graph_id) : string {
 		[$local_graph_id]);
 
 	if (cacti_sizeof($graph)) {
-		if (str_contains($graph['title'], '|') && $graph['host_id'] > 0 && empty($graph['t_title'])) {
+		if (str_contains((string) $graph['title'], '|') && $graph['host_id'] > 0 && empty($graph['t_title'])) {
 			$graph['title'] = substitute_data_input_data($graph['title'], $graph, 0);
 
 			return expand_title($graph['host_id'], $graph['snmp_query_id'], $graph['snmp_index'], $graph['title']);
@@ -3595,7 +3595,7 @@ function get_rrd_cfs(int $local_data_id) : array {
 	 * or similar
 	 */
 	if ($output != '') {
-		$output = explode("\n", $output);
+		$output = explode("\n", (string) $output);
 
 		if (cacti_sizeof($output)) {
 			foreach ($output as $line) {
@@ -3841,7 +3841,7 @@ function get_graph_group(int $graph_template_item_id) : array {
 	}
 
 	// parents are LINE%, AREA%, and STACK%. If not return
-	if (!preg_match('/(LINE|AREA|STACK)/', $graph_item_types[$graph_item['graph_type_id']])) {
+	if (!preg_match('/(LINE|AREA|STACK)/', (string) $graph_item_types[$graph_item['graph_type_id']])) {
 		return [];
 	}
 
@@ -3865,17 +3865,17 @@ function get_graph_group(int $graph_template_item_id) : array {
 				return $graph_item_children_array;
 			}
 
-			if (str_contains($graph_item_types[$item['graph_type_id']], 'GPRINT')) {
+			if (str_contains((string) $graph_item_types[$item['graph_type_id']], 'GPRINT')) {
 				// a child must be a GPRINT
 				$graph_item_children_array[$item['id']] = $item['id'];
 
 				if ($item['hard_return'] == 'on') {
 					$is_hard = true;
 				}
-			} elseif (str_contains($graph_item_types[$item['graph_type_id']], 'COMMENT')) {
-				if (preg_match_all('/\|([0-9]{1,2}):(bits|bytes):(\d):(current|total|max|total_peak|all_max_current|all_max_peak|aggregate_max|aggregate_sum|aggregate_current|aggregate):(\d)?\|/', $item['text_format'], $matches, PREG_SET_ORDER)) {
+			} elseif (str_contains((string) $graph_item_types[$item['graph_type_id']], 'COMMENT')) {
+				if (preg_match_all('/\|([0-9]{1,2}):(bits|bytes):(\d):(current|total|max|total_peak|all_max_current|all_max_peak|aggregate_max|aggregate_sum|aggregate_current|aggregate):(\d)?\|/', (string) $item['text_format'], $matches, PREG_SET_ORDER)) {
 					$graph_item_children_array[$item['id']] = $item['id'];
-				} elseif (preg_match_all('/\|sum:(\d|auto):(current|total|atomic):(\d):(\d+|auto)\|/', $item['text_format'], $matches, PREG_SET_ORDER)) {
+				} elseif (preg_match_all('/\|sum:(\d|auto):(current|total|atomic):(\d):(\d+|auto)\|/', (string) $item['text_format'], $matches, PREG_SET_ORDER)) {
 					$graph_item_children_array[$item['id']] = $item['id'];
 				} else {
 					// if not a GPRINT or special COMMENT then get out
@@ -3968,7 +3968,7 @@ function build_where_from_array(array $filters, array &$params) : string {
 	$where = [];
 
 	foreach ($filters as $field => $value) {
-		if (!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $field)) {
+		if (!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', (string) $field)) {
 			cacti_log('ERROR: Invalid field name in build_where_from_array: ' . $field, false, 'SECURITY');
 
 			continue;
@@ -4151,11 +4151,11 @@ function exec_into_array(string $command_line) : array {
  */
 function get_web_browser() : string {
 	if (!empty($_SERVER['HTTP_USER_AGENT'])) {
-		if (stristr($_SERVER['HTTP_USER_AGENT'], 'Mozilla') && (!(stristr($_SERVER['HTTP_USER_AGENT'], 'compatible')))) {
+		if (stristr((string) $_SERVER['HTTP_USER_AGENT'], 'Mozilla') && (!(stristr((string) $_SERVER['HTTP_USER_AGENT'], 'compatible')))) {
 			return 'moz';
 		}
 
-		if (stristr($_SERVER['HTTP_USER_AGENT'], 'MSIE')) {
+		if (stristr((string) $_SERVER['HTTP_USER_AGENT'], 'MSIE')) {
 			return 'ie';
 		} else {
 			return 'other';
@@ -4247,14 +4247,14 @@ function draw_navigation_text(string $type = 'url') : string {
 		// If it's not set in the array, then default to a generic title
 		$current_array = [
 			'mapping' => 'index.php:',
-			'title'   => ucwords(str_replace('_', ' ', basename(get_current_page(), '.php'))),
+			'title'   => ucwords(str_replace('_', ' ', basename((string) get_current_page(), '.php'))),
 			'level'   => 0
 		];
 	}
 
 	// Extract the full breadcrumb path from the current_array
 	if (isset($current_array['mapping'])) {
-		$current_mappings = explode(',', $current_array['mapping']);
+		$current_mappings = explode(',', (string) $current_array['mapping']);
 	} else {
 		$current_mappings = [];
 	}
@@ -4279,7 +4279,7 @@ function draw_navigation_text(string $type = 'url') : string {
 			// Always use the default for level == 0
 			$url = $navigation[basename($breadcrumb)]['url'];
 
-			if (basename($url) == 'graph_view.php') {
+			if (basename((string) $url) == 'graph_view.php') {
 				continue;
 			}
 		} elseif (isset($current_array['url']) && $current_array['url'] != '') {
@@ -4327,13 +4327,13 @@ function draw_navigation_text(string $type = 'url') : string {
 		$leaf_id = 0;
 
 		if (isrv('node')) {
-			$parts = explode('-', grv('node'));
+			$parts = explode('-', (string) grv('node'));
 
 			// Check for tree anchor
-			if (str_contains(grv('node'), 'tree_anchor')) {
+			if (str_contains((string) grv('node'), 'tree_anchor')) {
 				$tree_id = $parts[1];
 				$leaf_id = 0;
-			} elseif (str_contains(grv('node'), 'tbranch')) {
+			} elseif (str_contains((string) grv('node'), 'tbranch')) {
 				// Check for branch
 				$leaf_id = $parts[1];
 				$tree_id = db_fetch_cell_prepared('SELECT graph_tree_id
@@ -4369,7 +4369,7 @@ function draw_navigation_text(string $type = 'url') : string {
 			}
 
 			if (isrv('hgd') && gnrv('hgd') != '') {
-				$parts = explode(':', gnrv('hgd'));
+				$parts = explode(':', (string) gnrv('hgd'));
 				input_validate_input_number($parts[1], 'hgd[1]');
 
 				if ($parts[0] == 'gt') {
@@ -4404,12 +4404,12 @@ function draw_navigation_text(string $type = 'url') : string {
 			}
 		}
 
-		$tree_title = $tree_name . ($leaf_name != '' ? ' (' . trim($leaf_name) : '') . ($leaf_sub != '' ? ':' . trim($leaf_sub) . ')' : ($leaf_name != '' ? ')' : ''));
+		$tree_title = $tree_name . ($leaf_name != '' ? ' (' . trim((string) $leaf_name) : '') . ($leaf_sub != '' ? ':' . trim((string) $leaf_sub) . ')' : ($leaf_name != '' ? ')' : ''));
 
 		if ($tree_title != '') {
 			$current_nav .= "<li><a id='nav_title' href='#'>" . htmle($tree_title) . '</a></li>';
 		}
-	} elseif (preg_match('#link.php\?id=(\d+)#', $_SERVER['REQUEST_URI'], $matches)) {
+	} elseif (preg_match('#link.php\?id=(\d+)#', (string) $_SERVER['REQUEST_URI'], $matches)) {
 		$externalLinks = db_fetch_row_prepared('SELECT title, style FROM external_links WHERE id = ?', [$matches[1]]);
 		$title         = is_array($externalLinks) ? $externalLinks['title'] : '';
 		$style         = is_array($externalLinks) ? $externalLinks['style'] : '';
@@ -4577,13 +4577,13 @@ function get_browser_query_string() : string {
 function get_current_page(bool $basename = true) : mixed {
 	if (isset($_SERVER['SCRIPT_NAME']) && $_SERVER['SCRIPT_NAME'] != '') {
 		if ($basename) {
-			return basename($_SERVER['SCRIPT_NAME']);
+			return basename((string) $_SERVER['SCRIPT_NAME']);
 		} else {
 			return $_SERVER['SCRIPT_NAME'];
 		}
 	} elseif (isset($_SERVER['SCRIPT_FILENAME']) && $_SERVER['SCRIPT_FILENAME'] != '') {
 		if ($basename) {
-			return basename($_SERVER['SCRIPT_FILENAME']);
+			return basename((string) $_SERVER['SCRIPT_FILENAME']);
 		} else {
 			return $_SERVER['SCRIPT_FILENAME'];
 		}
@@ -5373,7 +5373,7 @@ function send_mail(mixed $to, mixed $from = null, string $subject = '',
 			}
 		}
 
-		if ($from != '' && !str_contains($from, '<')) {
+		if ($from != '' && !str_contains((string) $from, '<')) {
 			if ($name == '') {
 				$full_name = db_fetch_cell_prepared('SELECT full_name
 					FROM user_auth
@@ -5494,7 +5494,7 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 	$mail::$validator = 'eai';
 
 	// Setup i18n
-	$langparts = explode('-', $cacti_locale);
+	$langparts = explode('-', (string) $cacti_locale);
 
 	if (file_exists(CACTI_PATH_INCLUDE . '/vendor/phpmailer/phpmailer/language/phpmailer.lang-' . $langparts[0] . '.php')) {
 		$mail->setLanguage($langparts[0], CACTI_PATH_INCLUDE . '/vendor/phpmailer/phpmailer/language/');
@@ -5620,7 +5620,7 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 		$date = read_config_option('date');
 
 		if (!empty($date)) {
-			$time = strtotime($date);
+			$time = strtotime((string) $date);
 		} else {
 			$time = time();
 		}
@@ -5659,7 +5659,7 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 	}
 
 	$result    = false;
-	$fromText  = add_email_details([$from], $result, [$mail, 'setFrom']);
+	$fromText  = add_email_details([$from], $result, $mail->setFrom(...));
 
 	if ($result == false) {
 		return record_mailer_error($fromText, $mail->ErrorInfo);
@@ -5667,21 +5667,21 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 
 	// Convert $to variable to proper array structure
 	$to        = parse_email_details($to);
-	$toText    = add_email_details($to, $result, [$mail, 'addAddress']);
+	$toText    = add_email_details($to, $result, $mail->addAddress(...));
 
 	if ($result == false) {
 		return record_mailer_error($toText, $mail->ErrorInfo);
 	}
 
 	$cc        = parse_email_details($cc);
-	$ccText    = add_email_details($cc, $result, [$mail, 'addCC']);
+	$ccText    = add_email_details($cc, $result, $mail->addCC(...));
 
 	if ($result == false) {
 		return record_mailer_error($ccText, $mail->ErrorInfo);
 	}
 
 	$bcc       = parse_email_details($bcc);
-	$bccText   = add_email_details($bcc, $result, [$mail, 'addBCC']);
+	$bccText   = add_email_details($bcc, $result, $mail->addBCC(...));
 
 	if ($result == false) {
 		return record_mailer_error($bccText, $mail->ErrorInfo);
@@ -5696,7 +5696,7 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 	}
 
 	$replyto   = parse_email_details($replyto);
-	$replyText = add_email_details($replyto, $result, [$mail, 'addReplyTo']);
+	$replyText = add_email_details($replyto, $result, $mail->addReplyTo(...));
 
 	if ($result == false) {
 		return record_mailer_error($replyText, $mail->ErrorInfo);
@@ -5777,7 +5777,7 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 
 			if (!empty($attachment['attachment'])) {
 				if (is_base64_encoded($attachment['attachment'])) {
-					$attachment['attachment'] = base64_decode($attachment['attachment'], true);
+					$attachment['attachment'] = base64_decode((string) $attachment['attachment'], true);
 				}
 
 				// get content id and create attachment
@@ -5925,7 +5925,7 @@ function parse_email_details(mixed $emails, int $max_records = 0, array $details
 	foreach ($emails as $check_email) {
 		if (!empty($check_email)) {
 			if (!is_array($check_email)) {
-				$emails = explode(',', $check_email);
+				$emails = explode(',', (string) $check_email);
 
 				foreach ($emails as $email) {
 					$email_array = split_emaildetail($email);
@@ -5944,7 +5944,7 @@ function parse_email_details(mixed $emails, int $max_records = 0, array $details
 					$email = array_key_exists(0, $check_email) ? $check_email[0] : '';
 				}
 
-				$details[mb_strtolower($email)] = ['name' => $name, 'email' => mb_strtolower($email)];
+				$details[mb_strtolower((string) $email)] = ['name' => $name, 'email' => mb_strtolower((string) $email)];
 			}
 		}
 	}
@@ -5975,7 +5975,7 @@ function split_emaildetail(mixed $email) : array {
 	$rmail = '';
 
 	if (!is_array($email)) {
-		$email = trim($email);
+		$email = trim((string) $email);
 	}
 
 	/**
@@ -6022,7 +6022,7 @@ function split_emaildetail(mixed $email) : array {
 		$rname = $email[1];
 	}
 
-	return ['name' => $rname, 'email' => mb_strtolower($rmail)];
+	return ['name' => $rname, 'email' => mb_strtolower((string) $rmail)];
 }
 
 function create_emailtext(array $e) : string {
@@ -6396,7 +6396,7 @@ function cacti_debug_backtrace(string $entry = '', bool $html = false, bool $rec
 		if (!empty($entry)) {
 			return trim("$entry Backtrace: " . clean_up_lines($s));
 		} else {
-			return trim(clean_up_lines($s));
+			return trim((string) clean_up_lines($s));
 		}
 	}
 }
@@ -6474,10 +6474,10 @@ function get_timeinstate(array $host, bool $return_as_date = false) : string {
 		$time = $host['instate'];
 	} elseif ($host['status_event_count'] > 0 && ($host['status'] == 1 || $host['status'] == 2 || $host['status'] == 5)) {
 		$time = $host['status_event_count'] * $interval;
-	} elseif (strtotime($host['status_rec_date']) < 943916400 && ($host['status'] == 0 || $host['status'] == 3)) {
+	} elseif (strtotime((string) $host['status_rec_date']) < 943916400 && ($host['status'] == 0 || $host['status'] == 3)) {
 		$time = $host['total_polls'] * $interval;
-	} elseif (strtotime($host['status_rec_date']) > 943916400) {
-		$time = time() - strtotime($host['status_rec_date']);
+	} elseif (strtotime((string) $host['status_rec_date']) > 943916400) {
+		$time = time() - strtotime((string) $host['status_rec_date']);
 	} elseif ($host['snmp_sysUpTimeInstance'] > 0) {
 		$time = $host['snmp_sysUpTimeInstance'] / 100;
 	} else {
@@ -6968,7 +6968,7 @@ function enable_device_debug(int $host_id) : bool {
 	$devices = [];
 
 	if ($device_debug != '') {
-		$devices = array_map('intval', explode(',', $device_debug));
+		$devices = array_map(intval(...), explode(',', (string) $device_debug));
 	}
 
 	if (!in_array($host_id, $devices, true)) {
@@ -6992,7 +6992,7 @@ function disable_device_debug(int $host_id) : bool {
 	$device_debug = read_config_option('selective_device_debug', true);
 
 	if ($device_debug != '') {
-		$devices      = explode(',', $device_debug);
+		$devices      = explode(',', (string) $device_debug);
 		$devices      = array_diff($devices, [$host_id]);
 		$device_debug = implode(',', $devices);
 		set_config_option('selective_device_debug', $device_debug, true);
@@ -7011,7 +7011,7 @@ function disable_device_debug(int $host_id) : bool {
  */
 function is_device_debug_enabled(int $host_id) : bool {
 	$device_debug = read_config_option('selective_device_debug', true);
-	$devices      = array_map('intval', explode(',', $device_debug));
+	$devices      = array_map(intval(...), explode(',', (string) $device_debug));
 
 	if (in_array($host_id, $devices, true)) {
 		return true;
@@ -7068,7 +7068,7 @@ function call_remote_data_collector(int $poller_id, string $url, string $logtype
 
 	// register error handlers for the remote agent calls
 	set_error_handler(
-		function ($severity, $message, $file, $line) {
+		function ($severity, $message, $file, $line): void {
 			throw new ErrorException($message, $severity, $severity, $file, $line);
 		}
 	);
@@ -7434,22 +7434,15 @@ function date_time_format() : string {
 
 	$datecharacter = $datechar[$dateCharSetting];
 
-	switch ($date_fmt) {
-		case GD_MO_D_Y:
-			return 'm' . $datecharacter . 'd' . $datecharacter . 'Y H:i:s';
-		case GD_MN_D_Y:
-			return 'M' . $datecharacter . 'd' . $datecharacter . 'Y H:i:s';
-		case GD_D_MO_Y:
-			return 'd' . $datecharacter . 'm' . $datecharacter . 'Y H:i:s';
-		case GD_D_MN_Y:
-			return 'd' . $datecharacter . 'M' . $datecharacter . 'Y H:i:s';
-		case GD_Y_MO_D:
-			return 'Y' . $datecharacter . 'm' . $datecharacter . 'd H:i:s';
-		case GD_Y_MN_D:
-			return 'Y' . $datecharacter . 'M' . $datecharacter . 'd H:i:s';
-		default:
-			return 'Y' . $datecharacter . 'm' . $datecharacter . 'd H:i:s';
-	}
+	return match ($date_fmt) {
+		GD_MO_D_Y => 'm' . $datecharacter . 'd' . $datecharacter . 'Y H:i:s',
+		GD_MN_D_Y => 'M' . $datecharacter . 'd' . $datecharacter . 'Y H:i:s',
+		GD_D_MO_Y => 'd' . $datecharacter . 'm' . $datecharacter . 'Y H:i:s',
+		GD_D_MN_Y => 'd' . $datecharacter . 'M' . $datecharacter . 'Y H:i:s',
+		GD_Y_MO_D => 'Y' . $datecharacter . 'm' . $datecharacter . 'd H:i:s',
+		GD_Y_MN_D => 'Y' . $datecharacter . 'M' . $datecharacter . 'd H:i:s',
+		default   => 'Y' . $datecharacter . 'm' . $datecharacter . 'd H:i:s',
+	};
 }
 
 function get_last_line(string $file) : string {
@@ -7614,7 +7607,7 @@ function get_cacti_db_version_raw(bool $force = false) : string {
 	static $version = '';
 
 	if ($version == '' || $force) {
-		$version = trim(db_fetch_cell('SELECT cacti FROM version LIMIT 1'));
+		$version = trim((string) db_fetch_cell('SELECT cacti FROM version LIMIT 1'));
 	}
 
 	return $version;
@@ -8089,7 +8082,7 @@ function get_include_relpath(string $path, mixed $basePath = null) : string {
 		$basePath = CACTI_PATH_BASE;
 	}
 
-	$basePath = rtrim($basePath, '/') . '/';
+	$basePath = rtrim((string) $basePath, '/') . '/';
 
 	$npath = '';
 
@@ -8543,7 +8536,7 @@ function get_client_addr() : string|false {
 
 	foreach ($proxy_headers as $header) {
 		if (!empty($_SERVER[$header])) {
-			$header_ips = explode(',', $_SERVER[$header]);
+			$header_ips = explode(',', (string) $_SERVER[$header]);
 
 			foreach ($header_ips as $header_ip) {
 				if (!empty($header_ip)) {
@@ -8576,7 +8569,7 @@ function cacti_is_https() : bool {
 		return false;
 	}
 
-	return strtolower($_SERVER['HTTPS']) !== 'off';
+	return strtolower((string) $_SERVER['HTTPS']) !== 'off';
 }
 
 /**
@@ -8748,7 +8741,7 @@ function cacti_strtoupper(string $string) : string {
 
 function is_function_enabled(string $name) : bool {
 	return function_exists($name) &&
-		!in_array($name, array_map('trim', explode(', ', (string) (ini_get('disable_functions') ?: ''))), true) &&
+		!in_array($name, array_map(trim(...), explode(', ', (string) (ini_get('disable_functions') ?: ''))), true) &&
 		cacti_strtolower((string) (ini_get('safe_mode') ?: '')) != 1;
 }
 
@@ -8856,9 +8849,9 @@ function cacti_cookie_set($session, $val, $timeout = null) : void {
 			'samesite' => 'Strict'
 		];
 
-		setcookie((string) $session, $val, $options);
+		setcookie((string) $session, (string) $val, $options);
 	} else {
-		setcookie((string) $session, $val, ['expires' => time() + 3600, 'path' => CACTI_PATH_URL, 'domain' => $domain, 'secure' => $secure, 'httponly' => true]);
+		setcookie((string) $session, (string) $val, ['expires' => time() + 3600, 'path' => CACTI_PATH_URL, 'domain' => $domain, 'secure' => $secure, 'httponly' => true]);
 	}
 }
 
@@ -9146,7 +9139,7 @@ function cacti_time_zone_set(mixed $gmt_offset = null) : void {
 }
 
 function debounce_run_notification(mixed $id, int $frequency = 7200) : bool {
-	$key = 'debounce_' . md5($id);
+	$key = 'debounce_' . md5((string) $id);
 
 	// debounce admin emails
 	$last = read_config_option($key);
@@ -9158,7 +9151,7 @@ function debounce_run_notification(mixed $id, int $frequency = 7200) : bool {
 	if ($last != '' && is_numeric($last)) {
 		$last_timestamp = $last;
 	} elseif ($last != '') {
-		$last = json_decode($last, true);
+		$last = json_decode((string) $last, true);
 
 		if (isset($last['timestamp'])) {
 			$last_timestamp = $last['timestamp'];
@@ -9199,7 +9192,7 @@ function cacti_unique_ids(mixed $ids, bool $shouldExplode = true) : array {
 		$ids = [$ids];
 	}
 
-	$ids = array_map('intval', array_filter(array_unique($ids)));
+	$ids = array_map(intval(...), array_filter(array_unique($ids)));
 	sort($ids);
 
 	return $ids;

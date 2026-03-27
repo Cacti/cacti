@@ -142,7 +142,7 @@ function do_rrdcheck(int $thread_id = 1) : void {
 			$data_sources  = [];
 
 			// Rekey the Data Sources key
-			$sources = explode(',', $rrdval['data_source_names']);
+			$sources = explode(',', (string) $rrdval['data_source_names']);
 
 			foreach ($sources as $s) {
 				$data_sources[$s] = $s;
@@ -216,7 +216,7 @@ function do_rrdcheck(int $thread_id = 1) : void {
 
 				$matches     = [];
 				$rrd_info    = [];
-				$output      = explode("\n", $output);
+				$output      = explode("\n", (string) $output);
 				$last_update = false;
 				$rrd_step    = false;
 
@@ -371,7 +371,7 @@ function do_rrdcheck(int $thread_id = 1) : void {
 				}
 
 				// don't do anything if RRDfile did not return data
-				$info_array = explode("\n", $info_array);
+				$info_array = explode("\n", (string) $info_array);
 
 				if (cacti_sizeof($info_array)) {
 					$first    = true;
@@ -909,15 +909,11 @@ function rrdcheck_launch_children(string $type) : void {
  * @return string The sub type
  */
 function rrdcheck_get_subtype(string $type) : string {
-	switch($type) {
-		case 'master':
-		case 'pmaster':
-			return 'child';
-		case 'bmaster':
-			return 'bchild';
-		default:
-			return 'unknown';
-	}
+	return match ($type) {
+		'master', 'pmaster' => 'child',
+		'bmaster' => 'bchild',
+		default   => 'unknown',
+	};
 }
 
 /**
@@ -947,7 +943,7 @@ function rrdcheck_kill_running_processes() : void {
 
 	if (cacti_sizeof($processes)) {
 		foreach ($processes as $p) {
-			cacti_log(sprintf('WARNING: Killing rrdcheck %s PID %d due to another due to signal or overrun.', ucfirst($p['taskname']), $p['pid']), false, 'BOOST');
+			cacti_log(sprintf('WARNING: Killing rrdcheck %s PID %d due to another due to signal or overrun.', ucfirst((string) $p['taskname']), $p['pid']), false, 'BOOST');
 
 			posix_kill($p['pid'], SIGTERM);
 

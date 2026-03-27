@@ -30,7 +30,7 @@ if (!isset($called_by_script_server)) {
 	include_once(__DIR__ . '/../lib/snmp.php');
 
 	array_shift($_SERVER['argv']);
-	print call_user_func_array('ss_fortigate_virus', $_SERVER['argv']);
+	print call_user_func_array(ss_fortigate_virus(...), $_SERVER['argv']);
 } else {
 	include_once(__DIR__ . '/../lib/snmp.php');
 }
@@ -88,7 +88,7 @@ function ss_fortigate_virus(int $host_id = 0) : mixed {
 
 	$email = 0;
 
-	foreach ($oids as $name => $oid) {
+	foreach ($oids as $oid) {
 		$x = cacti_snmp_get($host['hostname'],
 			$host['snmp_community'],
 			$oid,

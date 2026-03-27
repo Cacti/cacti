@@ -47,8 +47,8 @@ function duplicate_reports(int $_id, string $_title) : void {
 	$save = [];
 
 	foreach ($fields_reports_edit as $field => $array) {
-		if (!preg_match('/^hidden/', $array['method']) &&
-			!preg_match('/^spacer/', $array['method'])) {
+		if (!preg_match('/^hidden/', (string) $array['method']) &&
+			!preg_match('/^spacer/', (string) $array['method'])) {
 			$save[$field] = $report[$field];
 		}
 	}
@@ -507,7 +507,7 @@ function generate_report(int $schedule_id, array $report, bool $force = false) :
 			switch($report['attachment_type']) {
 				case REPORTS_TYPE_INLINE_PNG:
 					$attachments[] = [
-						'attachment'     => base64_encode(rrdtool_function_graph($local_graph_id, '', $graph_data_array, null, $xport_meta, $user)),
+						'attachment'     => base64_encode((string) rrdtool_function_graph($local_graph_id, '', $graph_data_array, null, $xport_meta, $user)),
 						'filename'       => 'graph_' . $local_graph_id . '.png',
 						'mime_type'      => 'image/png',
 						'local_graph_id' => $local_graph_id,
@@ -540,7 +540,7 @@ function generate_report(int $schedule_id, array $report, bool $force = false) :
 					break;
 				case REPORTS_TYPE_ATTACH_PNG:
 					$attachments[] = [
-						'attachment'     => base64_encode(rrdtool_function_graph($local_graph_id, '', $graph_data_array, null, $xport_meta, $user)),
+						'attachment'     => base64_encode((string) rrdtool_function_graph($local_graph_id, '', $graph_data_array, null, $xport_meta, $user)),
 						'filename'       => 'graph_' . $local_graph_id . '.png',
 						'mime_type'      => 'image/png',
 						'local_graph_id' => $local_graph_id,
@@ -792,7 +792,7 @@ function reports_generate_history_html(int $history_id, int $output = REPORTS_OU
 			$instyle  = false;
 			$pinstyle = null;
 			$nreport  = '';
-			$lines    = explode("\n", $report);
+			$lines    = explode("\n", (string) $report);
 
 			foreach ($lines as $l) {
 				if (str_contains($l, '<style')) {
@@ -825,7 +825,7 @@ function reports_generate_history_html(int $history_id, int $output = REPORTS_OU
 			$report = str_replace('<table>', '<table class="cactiTable">', $report);
 		}
 
-		$graph_data = json_decode(base64_decode($data['report_attachments'], true), true);
+		$graph_data = json_decode(base64_decode((string) $data['report_attachments'], true), true);
 
 		foreach ($graph_data as $graph) {
 			$report = str_replace('<GRAPH:' . $graph['local_graph_id'] . ':' . $graph['timespan'] . '>',
@@ -1119,7 +1119,7 @@ function reports_graph_image($report, $item, $timespan, $output = REPORTS_OUTPUT
 	}
 
 	if ($report['graph_linked'] == 'on') {
-		if (!str_starts_with(read_config_option('base_url'), 'http')) {
+		if (!str_starts_with((string) read_config_option('base_url'), 'http')) {
 			if (read_config_option('force_https') == 'on') {
 				$prefix = 'https://';
 			} else {
@@ -1260,7 +1260,7 @@ function reports_expand_device(array &$report, array $item, int $device_id, int 
 
 		if (cacti_sizeof($outgraphs)) {
 			// let's sort the graphs naturally
-			usort($outgraphs, 'necturally_sort_graphs');
+			usort($outgraphs, necturally_sort_graphs(...));
 
 			// start graph display
 			if ($title != '') {
@@ -1573,7 +1573,7 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
 
 							if (cacti_sizeof($outgraphs)) {
 								// let's sort the graphs naturally
-								usort($outgraphs, 'necturally_sort_graphs'); // @phpstan-ignore-line
+								usort($outgraphs, necturally_sort_graphs(...)); // @phpstan-ignore-line
 
 								// start graph display
 								if ($title != '') {
@@ -1672,7 +1672,7 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
 									}
 
 									// let's sort the graphs naturally
-									usort($graphs, 'necturally_sort_graphs');
+									usort($graphs, necturally_sort_graphs(...));
 
 									foreach ($graphs as $graph) {
 										$snmp_index_to_graph[$graph['snmp_index']][$graph['local_graph_id']] = $graph['title_cache'];
@@ -1768,7 +1768,7 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
  * @return int The case comparison
  */
 function necturally_sort_graphs(mixed $a, mixed $b) : int {
-	return strnatcasecmp($a['title_cache'], $b['title_cache']);
+	return strnatcasecmp((string) $a['title_cache'], (string) $b['title_cache']);
 }
 
 /**
@@ -2184,7 +2184,7 @@ function reports_log_and_notify(int $id, int $start_time, string $report_type, s
 
 	if (cacti_sizeof($report)) {
 		if ($report['notification'] != '') {
-			$notifications = json_decode($report['notification'], true);
+			$notifications = json_decode((string) $report['notification'], true);
 
 			foreach ($notifications as $type => $data) {
 				switch($type) {
@@ -2423,12 +2423,12 @@ function get_notification_emails(int $id = 0, string $recipient = 'to') : string
 
 	if ($id > 0) {
 		if ($recipient == 'to') {
-			return trim(db_fetch_cell_prepared('SELECT emails
+			return trim((string) db_fetch_cell_prepared('SELECT emails
 				FROM plugin_notification_lists
 				WHERE id = ?',
 				[$id]));
 		} else {
-			return trim(db_fetch_cell_prepared('SELECT bcc_emails
+			return trim((string) db_fetch_cell_prepared('SELECT bcc_emails
 				FROM plugin_notification_lists
 				WHERE id = ?',
 				[$id]));

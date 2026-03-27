@@ -92,7 +92,7 @@ class Installer implements JsonSerializable {
 	const PROGRESS_VERSION_END          = 85;
 	const PROGRESS_COMPLETE             = 100;
 
-	private string $old_cacti_version;
+	private readonly string $old_cacti_version;
 
 	// Common variables
 	private int $mode = 1;
@@ -105,7 +105,7 @@ class Installer implements JsonSerializable {
 	private array $templates;
 	private array $paths;
 	private string $theme;
-	private array $locales;
+	private readonly array $locales;
 	private string $language;
 	private array $tables;
 	private string $runtime;
@@ -119,7 +119,7 @@ class Installer implements JsonSerializable {
 	private array $iconClass;
 	private int $eula;
 	private int $cronInterval;
-	private array $defaultAutomation;
+	private readonly array $defaultAutomation;
 	private array $permissions;
 	private array $extensions;
 	private array $modules;
@@ -901,7 +901,7 @@ class Installer implements JsonSerializable {
 		$paths = [];
 
 		foreach ($this->paths as $name => $array) {
-			if (str_starts_with($name, 'path_') || $name == 'settings_sendmail_path') {
+			if (str_starts_with((string) $name, 'path_') || $name == 'settings_sendmail_path') {
 				if (array_key_exists('default', $array)) {
 					$paths[$name] = $array['default'];
 				} else {
@@ -943,7 +943,7 @@ class Installer implements JsonSerializable {
 				if ($blank && empty($path)) {
 					// allow this
 				} elseif ($check == 'writable') {
-					$should_set = is_resource_writable(dirname($path) . '/') || $optional;
+					$should_set = is_resource_writable(dirname((string) $path) . '/') || $optional;
 
 					if ($should_set) {
 						$should_set = is_resource_writable($path) || $optional;
@@ -1868,14 +1868,11 @@ class Installer implements JsonSerializable {
 	}
 
 	public function exitWithReason(mixed $reason) : string {
-		switch ($reason) {
-			case Installer::EXIT_DB_EMPTY:
-				return $this->exitSqlNeeded();
-			case Installer::EXIT_DB_OLD:
-				return $this->exitDbTooOld();
-			default:
-				return $this->exitWithUnknownReason($reason);
-		}
+		return match ($reason) {
+			Installer::EXIT_DB_EMPTY => $this->exitSqlNeeded(),
+			Installer::EXIT_DB_OLD   => $this->exitDbTooOld(),
+			default                  => $this->exitWithUnknownReason($reason),
+		};
 	}
 
 	private function exitWithUnknownReason(string $reason) : string {
@@ -2024,36 +2021,22 @@ class Installer implements JsonSerializable {
 			return $this->exitWithReason($exitReason);
 		}
 
-		switch ($this->stepCurrent) {
-			case Installer::STEP_WELCOME:
-				return $this->processStepWelcome();
-			case Installer::STEP_CHECK_DEPENDENCIES:
-				return $this->processStepCheckDependencies();
-			case Installer::STEP_INSTALL_TYPE:
-				return $this->processStepMode();
-			case Installer::STEP_BINARY_LOCATIONS:
-				return $this->processStepBinaryLocations();
-			case Installer::STEP_PERMISSION_CHECK:
-				return $this->processStepPermissionCheck();
-			case Installer::STEP_INPUT_VALIDATION:
-				return $this->processStepNoticesRecommendations();
-			case Installer::STEP_PROFILE_AND_AUTOMATION:
-				return $this->processStepProfileAndAutomation();
-			case Installer::STEP_TEMPLATE_INSTALL:
-				return $this->processStepTemplateInstall();
-			case Installer::STEP_CHECK_TABLES:
-				return $this->processStepCheckTables();
-			case Installer::STEP_INSTALL_CONFIRM:
-				return $this->processStepInstallConfirm();
-			case Installer::STEP_INSTALL:
-				return $this->processStepInstall();
-			case Installer::STEP_ERROR:
-				return $this->processStepComplete();
-			case Installer::STEP_COMPLETE:
-				return $this->processStepComplete();
-			default:
-				return $this->exitWithReason(($this->stepCurrent));
-		}
+		return match ($this->stepCurrent) {
+			Installer::STEP_WELCOME                => $this->processStepWelcome(),
+			Installer::STEP_CHECK_DEPENDENCIES     => $this->processStepCheckDependencies(),
+			Installer::STEP_INSTALL_TYPE           => $this->processStepMode(),
+			Installer::STEP_BINARY_LOCATIONS       => $this->processStepBinaryLocations(),
+			Installer::STEP_PERMISSION_CHECK       => $this->processStepPermissionCheck(),
+			Installer::STEP_INPUT_VALIDATION       => $this->processStepNoticesRecommendations(),
+			Installer::STEP_PROFILE_AND_AUTOMATION => $this->processStepProfileAndAutomation(),
+			Installer::STEP_TEMPLATE_INSTALL       => $this->processStepTemplateInstall(),
+			Installer::STEP_CHECK_TABLES           => $this->processStepCheckTables(),
+			Installer::STEP_INSTALL_CONFIRM        => $this->processStepInstallConfirm(),
+			Installer::STEP_INSTALL                => $this->processStepInstall(),
+			Installer::STEP_ERROR                  => $this->processStepComplete(),
+			Installer::STEP_COMPLETE               => $this->processStepComplete(),
+			default                                => $this->exitWithReason(($this->stepCurrent)),
+		};
 	}
 
 	public function processStepWelcome() : string {
@@ -2094,7 +2077,7 @@ class Installer implements JsonSerializable {
 				$selected = ' selected';
 			}
 
-			$flags = explode('-', $key);
+			$flags = explode('-', (string) $key);
 
 			if (cacti_count($flags) > 1) {
 				$flagName = cacti_strtolower($flags[1]);
@@ -2157,7 +2140,7 @@ class Installer implements JsonSerializable {
 			$test_request_uri = $_SERVER['REQUEST_URI'];
 		}
 
-		$test_request_parts = parse_url($test_request_uri);
+		$test_request_parts = parse_url((string) $test_request_uri);
 		$test_request_path  = $test_request_parts['path'];
 		$test_request_len   = strlen($test_request_parts['path']);
 
@@ -2958,7 +2941,7 @@ class Installer implements JsonSerializable {
 			$author      = (isset($p['author']) && !empty($p['author'])) ? $p['author'] : '';
 
 			if (isset($p['homepage']) && !empty($p['homepage'])) {
-				if (!str_starts_with($p['homepage'], 'http://') && strncmp($p['homepage'], 'http://', 8) !== 0) {
+				if (!str_starts_with((string) $p['homepage'], 'http://') && strncmp((string) $p['homepage'], 'http://', 8) !== 0) {
 					$p['homepage'] = 'https://' . $p['homepage'];
 				}
 				$homepage = '<a href="' . $p['homepage'] . '" target="_new">' . $p['homepage'] . '</a>';
@@ -3122,7 +3105,7 @@ class Installer implements JsonSerializable {
 
 			$output .= Installer::sectionNormal(__('Your Cacti Server is almost ready.  Please check that you are happy to proceed.'));
 
-			$output .= Installer::showInstallOptions();
+			$output .= $this->showInstallOptions();
 
 			$output .= Installer::sectionNote(
 				__('Press \'%s\' then click \'%s\' to complete the installation process after selecting your Device Templates.', $title, $button)
@@ -3156,32 +3139,14 @@ class Installer implements JsonSerializable {
 		$output .= Installer::sectionNormal(__('The following General Install Options will be applied.'));
 		$output .= Installer::sectionNormal('<b>' . __('EULA') . '</b>: ' . __('GPL License Accepted'));
 
-		switch ($opt['install_mode']) {
-			case Installer::MODE_INSTALL:
-				$output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: ' . __('New Install'));
-
-				break;
-			case Installer::MODE_UPGRADE:
-				$output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: ' . __('Upgrade'));
-
-				break;
-			case Installer::MODE_DOWNGRADE:
-				$output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: ' . __('Downgrade'));
-
-				break;
-			case Installer::MODE_POLLER:
-				$output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: ' . __('Poller'));
-
-				break;
-			case Installer::MODE_NONE:
-				$output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: ' . __('None'));
-
-				break;
-			default:
-				$output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: ' . __('Unknown'));
-
-				break;
-		}
+		match ($opt['install_mode']) {
+			Installer::MODE_INSTALL   => $output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: ' . __('New Install')),
+			Installer::MODE_UPGRADE   => $output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: ' . __('Upgrade')),
+			Installer::MODE_DOWNGRADE => $output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: ' . __('Downgrade')),
+			Installer::MODE_POLLER    => $output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: ' . __('Poller')),
+			Installer::MODE_NONE      => $output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: ' . __('None')),
+			default                   => $output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: ' . __('Unknown')),
+		};
 
 		$topts = db_fetch_assoc('SELECT *
 			FROM settings
@@ -3441,12 +3406,12 @@ class Installer implements JsonSerializable {
 								if (!empty($sectionId)) {
 									$sections[$sectionId] = $sectionStatus;
 									$output .= '</table>';
-									$output .= $this->sectionSubTitleEnd();
+									$output .= static::sectionSubTitleEnd();
 								}
 
 								$sectionId = str_replace('.', '_', $version);
-								$output .= $this->sectionSubTitle('Database Upgrade - Version ' . $version, $sectionId);
-								$output .= $this->sectionNormal('The following table lists the status of each upgrade performed on the database');
+								$output .= static::sectionSubTitle('Database Upgrade - Version ' . $version, $sectionId);
+								$output .= static::sectionNormal('The following table lists the status of each upgrade performed on the database');
 								$output .= '<table class=\'cactiInstallSqlResults\'>';
 
 								$sectionStatus = DB_STATUS_SKIPPED;
@@ -3498,7 +3463,7 @@ class Installer implements JsonSerializable {
 			}
 		}
 
-		$output .= $this->sectionSubTitle('Process Log');
+		$output .= static::sectionSubTitle('Process Log');
 		$output .= Installer::getInstallLog();
 
 		$this->buttonPrevious->Visible = false;
@@ -3527,20 +3492,11 @@ class Installer implements JsonSerializable {
 	private function install() : void {
 		$failure = '';
 
-		switch ($this->mode) {
-			case Installer::MODE_UPGRADE:
-				$which = 'UPGRADE';
-
-				break;
-			case Installer::MODE_DOWNGRADE:
-				$which = 'DOWNGRADE';
-
-				break;
-			default:
-				$which = 'INSTALL';
-
-				break;
-		}
+		$which = match ($this->mode) {
+			Installer::MODE_UPGRADE   => 'UPGRADE',
+			Installer::MODE_DOWNGRADE => 'DOWNGRADE',
+			default                   => 'INSTALL',
+		};
 
 		log_install_always('', __('Starting %s Process for v%s', $which, CACTI_VERSION_FULL));
 

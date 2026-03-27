@@ -23,15 +23,13 @@
  */
 
 class MibCache {
-	private mixed  $active_mib            = '';
 	private mixed  $active_object         = '';
 	private string $active_table          = '';
 	private string $active_table_entry    = '';
 	private array  $cache__tables         = [];
 	private array  $cache__tables_columns = [];
 
-	public function __construct(string $mib = 'CACTI-MIB') {
-		$this->active_mib = $mib;
+	public function __construct(private mixed $active_mib = 'CACTI-MIB') {
 	}
 
 	public function __destruct() {
@@ -81,7 +79,7 @@ class MibCache {
 						VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
 						[$object_params['oid'], $object_name, $object_params['mib'], $object_params['syntax'],
 							$object_params['otype'], $object_params['kind'], $object_params['max-access'],
-							str_replace("\r\n", '<br>', trim($object_params['description']))]);
+							str_replace("\r\n", '<br>', trim((string) $object_params['description']))]);
 
 					if ($object_params['otype'] == 'NOTIFICATION-TYPE') {
 						foreach ($object_params['objects'] as $notification_object_index => $notification_object) {
@@ -95,7 +93,7 @@ class MibCache {
 					db_execute_prepared('INSERT INTO `snmpagent_cache_textual_conventions`
 						(`name`, `mib`, `type`, `description`)
 						VALUES (?, ?, ?, ?)',
-						[$object_name, $object_params['mib'], $object_params['syntax'], nl2br($object_params['description'])]);
+						[$object_name, $object_params['mib'], $object_params['syntax'], nl2br((string) $object_params['description'])]);
 				}
 			}
 
@@ -220,7 +218,7 @@ class MibCache {
 						`max-access`=VALUES(`max-access`), `value`=VALUES(`value`)',
 						[$column_params['oid'], $column_params['name'], $column_params['mib'],
 							$column_params['type'], $column_params['otype'], 'Column Data',
-							$column_params['max-access'], trim($column_params['value'])]);
+							$column_params['max-access'], trim((string) $column_params['value'])]);
 				}
 
 				return true;

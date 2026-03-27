@@ -129,7 +129,7 @@ function dsdebug_poller_output(array &$rrd_update_array) : void {
 	}
 
 	// install the dsstats error handler
-	set_error_handler('dsdebug_error_handler');
+	set_error_handler(dsdebug_error_handler(...));
 
 	// do not make any calculations unless enabled
 	$checks = db_fetch_assoc('SELECT * FROM data_debug WHERE `done` = 0');
@@ -160,7 +160,7 @@ function dsdebug_poller_bottom() : bool {
 	global $start;
 
 	// install the dsstats error handler
-	set_error_handler('dsdebug_error_handler');
+	set_error_handler(dsdebug_error_handler(...));
 
 	// take time and log performance data
 	$start = microtime(true);

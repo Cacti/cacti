@@ -535,7 +535,7 @@ class Ldap {
 		restore_error_handler();
 
 		// set an error handler for ldap
-		set_error_handler([$this, 'ErrorHandler']);
+		set_error_handler($this->ErrorHandler(...));
 
 		cacti_session_close();
 	}
@@ -545,7 +545,7 @@ class Ldap {
 		restore_error_handler();
 
 		// set an error handler for Cacti
-		set_error_handler('CactiErrorHandler');
+		set_error_handler(CactiErrorHandler(...));
 
 		cacti_session_start();
 	}
@@ -609,7 +609,7 @@ class Ldap {
 		if ($this->encryption >= 1) {
 			$cert = $this->tls_certificate;
 
-			if ($cert === '') {
+			if ($cert === 0) {
 				$cert = LDAP_OPT_X_TLS_NEVER;
 			}
 
@@ -662,7 +662,7 @@ class Ldap {
 
 			if (!ldap_set_option($ldap_conn, LDAP_OPT_PROTOCOL_VERSION, $this->version)) {
 				$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorVersion, $ldap_conn, $this->host);
-				Ldap::RecordError($output);
+				$this->RecordError($output);
 				ldap_close($ldap_conn);
 
 				return [
@@ -691,7 +691,7 @@ class Ldap {
 				if (!ldap_set_option($ldap_conn, LDAP_OPT_REFERRALS, 0)) {
 					$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorReferral, $ldap_conn, $this->host);
 
-					Ldap::RecordError($output);
+					$this->RecordError($output);
 
 					ldap_close($ldap_conn);
 
@@ -707,7 +707,7 @@ class Ldap {
 				if (!ldap_start_tls($ldap_conn)) {
 					$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorTls, $ldap_conn, $this->host);
 
-					Ldap::RecordError($output);
+					$this->RecordError($output);
 
 					ldap_close($ldap_conn);
 
@@ -723,7 +723,7 @@ class Ldap {
 			cacti_log('WARNING: Unable to Connect to LDAP', false, 'AUTH', $this->debug);
 
 			$output = LdapError::GetErrorDetails(LdapError::ConnectionUnavailable, $ldap_conn, $this->host);
-			Ldap::RecordError($output);
+			$this->RecordError($output);
 
 			return [
 				'ldap_conn' => $ldap_conn,
@@ -759,9 +759,9 @@ class Ldap {
 		$ldap_conn = $this->connection['ldap_conn'];
 
 		// Decode username, and remove bad characters
-		$this->username = html_entity_decode($this->username, $this->GetMask(), 'UTF-8');
+		$this->username = html_entity_decode((string) $this->username, $this->GetMask(), 'UTF-8');
 		$this->username = str_replace(['&', '|', '(', ')', '*', '>', '<', '!', '='], '', $this->username);
-		$this->password = html_entity_decode($this->password, $this->GetMask(), 'UTF-8');
+		$this->password = html_entity_decode((string) $this->password, $this->GetMask(), 'UTF-8');
 		$this->dn       = str_replace('<username>', $this->username, $this->dn);
 
 		if ($this->password == '') {
@@ -782,7 +782,7 @@ class Ldap {
 					$ldap_group_response = ldap_compare($ldap_conn, $this->group_dn, $this->group_attrib, $this->dn);
 
 					if (!$ldap_group_response) {
-						$ldap_group_response = Ldap::isUserInLDAPGroup($ldap_conn, $this->search_base, $this->group_dn, $this->dn);
+						$ldap_group_response = $this->isUserInLDAPGroup($ldap_conn, $this->search_base, $this->group_dn, $this->dn);
 					}
 				} elseif ($this->group_member_type == 2) {
 					// Do a lookup to find this user's true DN.
@@ -808,14 +808,14 @@ class Ldap {
 					$output = LdapError::GetErrorDetails(LdapError::Success);
 				} elseif ($ldap_group_response === false) {
 					$output = LdapError::GetErrorDetails(LdapError::InsufficientAccess, $ldap_conn, $this->host);
-					Ldap::RecordError($output);
+					$this->RecordError($output);
 					ldap_close($ldap_conn);
 					$this->RestoreCactiHandler();
 
 					return $output;
 				} else {
 					$output = LdapError::GetErrorDetails(LdapError::SearchFoundNoGroup, $ldap_conn, $this->host);
-					Ldap::RecordError($output);
+					$this->RecordError($output);
 					ldap_close($ldap_conn);
 					$this->RestoreCactiHandler();
 
@@ -854,7 +854,7 @@ class Ldap {
 		ldap_close($ldap_conn);
 
 		if ($output['error_num'] > 0) {
-			Ldap::RecordError($output);
+			$this->RecordError($output);
 		}
 
 		$this->RestoreCactiHandler();
@@ -895,7 +895,7 @@ class Ldap {
 		$ldap_conn = $this->connection['ldap_conn'];
 
 		// Decode username, and remove bad characters
-		$this->username = html_entity_decode($this->username, $this->GetMask(), 'UTF-8');
+		$this->username = html_entity_decode((string) $this->username, $this->GetMask(), 'UTF-8');
 		$this->username = str_replace(['&', '|', '(', ')', '*', '>', '<', '!', '='], '', $this->username);
 		$this->dn       = str_replace('<username>', $this->username, $this->dn);
 
@@ -913,7 +913,7 @@ class Ldap {
 			if (empty($this->specific_dn) || empty($this->specific_password)) {
 				$output       = LdapError::GetErrorDetails(LdapError::UndefinedDnOrPassword);
 				$output['dn'] = $this->dn;
-				Ldap::RecordError($output, 'LDAP_SEARCH');
+				$this->RecordError($output, 'LDAP_SEARCH');
 				$this->RestoreCactiHandler();
 
 				return $output;
@@ -942,7 +942,7 @@ class Ldap {
 					// single response return user dn
 					$output       = LdapError::GetErrorDetails(LdapError::Success);
 					$output['dn'] = $ldap_entries['0']['dn'];
-					Ldap::RecordError($output, 'LDAP_SEARCH');
+					$this->RecordError($output, 'LDAP_SEARCH');
 				} elseif (is_numeric($ldap_entries['count']) && $ldap_entries['count'] > 1) {
 					// more than 1 result
 					$output = LdapError::GetErrorDetails(LdapError::SearchFoundMultiUser);
@@ -982,7 +982,7 @@ class Ldap {
 		ldap_close($ldap_conn);
 
 		if ($output['error_num'] > 0) {
-			Ldap::RecordError($output, 'LDAP_SEARCH');
+			$this->RecordError($output, 'LDAP_SEARCH');
 		}
 
 		$this->RestoreCactiHandler();
@@ -1015,7 +1015,7 @@ class Ldap {
 		$ldap_conn = $this->connection['ldap_conn'];
 
 		// Decode username, and remove bad characters
-		$this->username = html_entity_decode($this->username, $this->GetMask(), 'UTF-8');
+		$this->username = html_entity_decode((string) $this->username, $this->GetMask(), 'UTF-8');
 		$this->username = str_replace(['&', '|', '(', ')', '*', '>', '<', '!', '='], '', $this->username);
 		$this->dn       = str_replace('<username>', $this->username, $this->dn);
 
@@ -1107,7 +1107,7 @@ class Ldap {
 		ldap_close($ldap_conn);
 
 		if ($output['error_num'] > 0) {
-			Ldap::RecordError($output, 'LDAP_SEARCH_CN');
+			$this->RecordError($output, 'LDAP_SEARCH_CN');
 		}
 
 		$this->RestoreCactiHandler();

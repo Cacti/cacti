@@ -229,7 +229,7 @@ function api_data_source_remove_multi(array $local_data_ids, bool $update_totals
 	foreach ($local_data_ids_chunks as $ids_to_delete) {
 		$poller_ids = get_remote_poller_ids_from_data_sources($ids_to_delete);
 
-		$ids_to_delete = implode(', ', array_map('intval', $ids_to_delete));
+		$ids_to_delete = implode(', ', array_map(intval(...), $ids_to_delete));
 
 		$data_template_data_ids = db_fetch_assoc('SELECT id
 			FROM data_template_data
@@ -437,7 +437,7 @@ function api_data_source_disable_multi(array $local_data_ids) : void {
 
 	$poller_ids = [];
 
-	$local_data_ids_chunks = array_chunk(array_map('intval', $local_data_ids), 1000);
+	$local_data_ids_chunks = array_chunk(array_map(intval(...), $local_data_ids), 1000);
 
 	foreach ($local_data_ids_chunks as $ids_to_disable) {
 		$ids_to_disable = implode(', ', $ids_to_disable);
@@ -618,7 +618,7 @@ function api_reapply_suggested_data_source_data(int $local_data_id) : void {
 
 	if (cacti_sizeof($svs)) {
 		foreach ($svs as $sv) {
-			$sv['text'] = trim($sv['text']);
+			$sv['text'] = trim((string) $sv['text']);
 
 			if (($sv['text'] == '|query_ifSpeed|' || $sv['text'] == '|query_ifHighSpeed|') && $sv['field_name'] == 'rrd_maximum') {
 				$subs_string = api_data_source_get_interface_speed($data_local);
@@ -635,7 +635,7 @@ function api_reapply_suggested_data_source_data(int $local_data_id) : void {
 			}
 
 			// if there are no '|query' characters, all of the substitutions were successful
-			if (!str_contains($subs_string, '|query')) {
+			if (!str_contains((string) $subs_string, '|query')) {
 				if (in_array($sv['field_name'], $matches, true)) {
 					continue;
 				}

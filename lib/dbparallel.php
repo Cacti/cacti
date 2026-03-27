@@ -624,10 +624,10 @@ function db_table_partitioned(string $table, bool $log = true, mixed $db_conn = 
 			$create = $create['Create Table'];
 		}
 
-		if (stripos($create, 'PARTITION ') !== false) {
+		if (stripos((string) $create, 'PARTITION ') !== false) {
 			$results[$table]['result'] = true;
 
-			$parts = explode("\n", $create);
+			$parts = explode("\n", (string) $create);
 
 			foreach ($parts as $l) {
 				if (stripos($l, 'PARTITION ') !== false && stripos($l, 'PARTITION BY') === false) {

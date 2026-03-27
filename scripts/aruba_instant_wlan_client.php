@@ -196,7 +196,7 @@ if ($cmd == 'index') {
 function reindex(array $arr) : array {
 	$return_arr = [];
 
-	for ($i = 0; ($i < sizeof($arr)); $i++) {
+	for ($i = 0; ($i < count($arr)); $i++) {
 		$return_arr[$i] = $arr[$i]['value'];
 	}
 

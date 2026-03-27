@@ -30,7 +30,7 @@ if (!isset($called_by_script_server)) {
 
 	array_shift($_SERVER['argv']);
 
-	print call_user_func_array('ss_webseer', $_SERVER['argv']);
+	print call_user_func_array(ss_webseer(...), $_SERVER['argv']);
 }
 
 function ss_webseer(string $cmd = 'index', string $arg1 = '', string $arg2 = '') : mixed {

@@ -471,9 +471,9 @@ function substitute_snmp_query_data(string $string, int $host_id, int $snmp_quer
 
 	if (cacti_sizeof($snmp_cache_data)) {
 		foreach ($snmp_cache_data as $data) {
-			if (trim($data['field_value']) != '') {
+			if (trim((string) $data['field_value']) != '') {
 				if ($max_chars > 0) {
-					$data['field_value'] = substr($data['field_value'], 0, $max_chars);
+					$data['field_value'] = substr((string) $data['field_value'], 0, $max_chars);
 				}
 
 				$string = stri_replace('|query_' . $data['field_name'] . '|', $data['field_value'], $string);
@@ -539,7 +539,7 @@ function substitute_data_input_data(string $string, array $graph, int $local_dat
 			foreach ($data as $item) {
 				if ($item['value'] != '') {
 					if ($max_chars > 0) {
-						$item['value'] = substr($item['field_value'], 0, $max_chars);
+						$item['value'] = substr((string) $item['field_value'], 0, $max_chars);
 					}
 
 					$string = stri_replace('|input_' . $item['data_name'] . '|', $item['value'], $string);

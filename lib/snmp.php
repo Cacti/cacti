@@ -75,7 +75,7 @@ function cacti_snmp_session(string $hostname, mixed $community, mixed $version, 
 
 	try {
 		$session = new SNMP($version, $hostname . ':' . $port, ($version == 3 ? $auth_user : $community), $timeout_us, $retries);
-	} catch (Exception $e) {
+	} catch (Exception) {
 		return false;
 	}
 
@@ -460,10 +460,10 @@ function cacti_snmp_session_walk(object $session, mixed $oid, bool $dummy = fals
 
 	if (is_array($oid)) {
 		foreach ($oid as $index => $o) {
-			$oid[$index] = trim($o);
+			$oid[$index] = trim((string) $o);
 		}
 	} else {
-		$oid = trim($oid);
+		$oid = trim((string) $oid);
 	}
 
 	$session->value_output_format = $value_output_format;
@@ -529,10 +529,10 @@ function cacti_snmp_session_get(object $session, mixed $oid, bool $strip_alpha =
 
 	if (is_array($oid)) {
 		foreach ($oid as $index => $o) {
-			$oid[$index] = trim($o);
+			$oid[$index] = trim((string) $o);
 		}
 	} else {
-		$oid = trim($oid);
+		$oid = trim((string) $oid);
 	}
 
 	try {
@@ -576,10 +576,10 @@ function cacti_snmp_session_getnext(object $session, mixed $oid) : mixed {
 
 	if (is_array($oid)) {
 		foreach ($oid as $index => $o) {
-			$oid[$index] = trim($o);
+			$oid[$index] = trim((string) $o);
 		}
 	} else {
-		$oid = trim($oid);
+		$oid = trim((string) $oid);
 	}
 
 	try {
@@ -616,7 +616,7 @@ function cacti_snmp_validate_oid(string $oid) : bool {
 		return false;
 	}
 
-	$validate = array_map('is_numeric', explode('.', $oid));
+	$validate = array_map(is_numeric(...), explode('.', $oid));
 
 	return !in_array(false, $validate, true);
 }
@@ -677,7 +677,7 @@ function cacti_snmp_walk(string $hostname, mixed $community, string $oid, mixed 
 		if ($temp_array !== false && cacti_sizeof($temp_array)) {
 			foreach ($temp_array as $key => $value) {
 				foreach ($banned_snmp_strings as $item) {
-					if (strstr($value, $item) != '') {
+					if (strstr((string) $value, (string) $item) != '') {
 						unset($temp_array[$key]);
 
 						continue 2;
@@ -689,7 +689,7 @@ function cacti_snmp_walk(string $hostname, mixed $community, string $oid, mixed 
 
 			for (reset($temp_array); $i = key($temp_array); next($temp_array)) {
 				if ($temp_array[$i] != 'NULL') {
-					$snmp_array[$o]['oid']   = preg_replace('/^\./', '', $i);
+					$snmp_array[$o]['oid']   = preg_replace('/^\./', '', (string) $i);
 					$snmp_array[$o]['value'] = format_snmp_string($temp_array[$i], $snmp_oid_included, $value_output_format);
 				}
 				$o++;
@@ -760,7 +760,7 @@ function cacti_snmp_walk(string $hostname, mixed $community, string $oid, mixed 
 		if (cacti_sizeof($temp_array)) {
 			foreach ($temp_array as $key => $value) {
 				foreach ($banned_snmp_strings as $item) {
-					if (strstr($value, $item) != '') {
+					if (strstr((string) $value, (string) $item) != '') {
 						unset($temp_array[$key]);
 
 						continue 2;
@@ -776,8 +776,8 @@ function cacti_snmp_walk(string $hostname, mixed $community, string $oid, mixed 
 			$i = 0;
 
 			foreach ($temp_array as $value) {
-				if (preg_match('/(.*) =.*/', $value)) {
-					$parts   = explode('=', $value, 2);
+				if (preg_match('/(.*) =.*/', (string) $value)) {
+					$parts   = explode('=', (string) $value, 2);
 					$t_oid   = trim($parts[0]);
 					$t_value = $parts[1];
 
@@ -820,12 +820,12 @@ function format_snmp_string(string $string, bool $snmp_oid_included, int $value_
 
 	if ($snmp_oid_included) {
 		// strip off all leading junk (the oid and stuff)
-		$string_array = explode('=', $string, 2);
+		$string_array = explode('=', (string) $string, 2);
 
 		if (cacti_sizeof($string_array) == 1) {
 			// trim excess first
-			$string = trim($string);
-		} elseif ((str_starts_with($string, '.')) || (str_contains($string, '::'))) {
+			$string = trim((string) $string);
+		} elseif ((str_starts_with((string) $string, '.')) || (str_contains((string) $string, '::'))) {
 			// drop the OID from the array
 			array_shift($string_array);
 			$string = trim(implode('=', $string_array));
@@ -833,7 +833,7 @@ function format_snmp_string(string $string, bool $snmp_oid_included, int $value_
 			$string = trim(implode('=', $string_array));
 		}
 	} else {
-		$string = trim($string);
+		$string = trim((string) $string);
 	}
 
 	// remove quotes and extraneous data
@@ -910,7 +910,7 @@ function format_snmp_string(string $string, bool $snmp_oid_included, int $value_
 	}
 
 	// Trim the string of trailing and leading spaces
-	$string = trim($string);
+	$string = trim((string) $string);
 
 	// convert hex strings to numeric values
 	if (is_hex_string($string)) {
@@ -996,7 +996,7 @@ function format_snmp_string(string $string, bool $snmp_oid_included, int $value_
 	}
 
 	foreach ($banned_snmp_strings as $item) {
-		if (str_contains($string, $item)) {
+		if (str_contains($string, (string) $item)) {
 			$string = '';
 
 			break;
@@ -1012,7 +1012,7 @@ function snmp_escape_string(string $string) : string {
 	}
 
 	if (CACTI_SERVER_OS == 'win32') {
-		if (substr_count($string, SNMP_ESCAPE_CHARACTER)) {
+		if (substr_count($string, (string) SNMP_ESCAPE_CHARACTER)) {
 			$string = str_replace(SNMP_ESCAPE_CHARACTER, '\\' . SNMP_ESCAPE_CHARACTER, $string);
 
 			return SNMP_ESCAPE_CHARACTER . $string . SNMP_ESCAPE_CHARACTER;

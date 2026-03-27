@@ -31,7 +31,7 @@ if (!function_exists('cacti_snmp_walk')) {
 // ------------------------------------------------------------------------------------
 if (!isset($called_by_script_server)) {
 	array_shift($_SERVER['argv']);
-	print call_user_func_array('ss_netsnmp_lmsensors', $_SERVER['argv']);
+	print call_user_func_array(ss_netsnmp_lmsensors(...), $_SERVER['argv']);
 }
 
 function ss_netsnmp_lmsensors_is_vhost() : bool {
@@ -197,7 +197,7 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 		// set snmp_get_arguments to sensorIndex plus the requested index value and query
 		// ------------------------------------------------------------------------------------
 		$snmp_get_arguments[2] = $oid_array['sensorReading'] . '.' . $data_request_key;
-		$snmp_test             = trim(call_user_func_array('cacti_snmp_get', $snmp_get_arguments));
+		$snmp_test             = trim((string) call_user_func_array(cacti_snmp_get(...), $snmp_get_arguments));
 
 		// ------------------------------------------------------------------------------------
 		// The snmp response should contain a numeric counter (NOT the device index)
@@ -227,7 +227,7 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 		// ------------------------------------------------------------------------------------
 		// walk the tree and capture the resulting array of sensors
 		// ------------------------------------------------------------------------------------
-		$snmp_array = call_user_func_array('cacti_snmp_walk', $snmp_walk_arguments);
+		$snmp_array = call_user_func_array(cacti_snmp_walk(...), $snmp_walk_arguments);
 
 		// ------------------------------------------------------------------------------------
 		// verify that the response contains expected data structures
@@ -235,7 +235,7 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 		if ((count($snmp_array) == 0) ||
 			(array_key_exists('oid', $snmp_array[0]) == false) ||
 			(array_key_exists('value', $snmp_array[0]) == false) ||
-			(substr($snmp_array[0]['value'],0,16) == 'No Such Instance') ||
+			(str_starts_with((string) $snmp_array[0]['value'], 'No Such Instance')) ||
 			(is_numeric($snmp_array[0]['value']) == false) ||
 			(trim($snmp_array[0]['value']) == '')) {
 			cacti_log(sprintf('WARNING: Device with ID %s Does not appear to have lmsensors installed!', $host_id), false, 'LMSENSORS');
@@ -254,7 +254,7 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 			// the trailing block of digits in each response OID identifies the sensor index
 			// remove whitespace from around the OIDs in $snmp_array so we can match the digits
 			// ------------------------------------------------------------------------------------
-			$snmp_response['oid'] = trim($snmp_response['oid']);
+			$snmp_response['oid'] = trim((string) $snmp_response['oid']);
 
 			// ------------------------------------------------------------------------------------
 			// use regex to locate the relative OIDs
@@ -291,12 +291,12 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 						//
 						$snmp_get_arguments[2] = ($oid_array['sensorName'] . '.' . $sensor['index']);
 
-						$scratch = trim(call_user_func_array('cacti_snmp_get', $snmp_get_arguments));
+						$scratch = trim((string) call_user_func_array(cacti_snmp_get(...), $snmp_get_arguments));
 
 						//
 						// snmp response should contain the sensor name
 						//
-						if ((substr($scratch, 0, 16) == 'No Such Instance') || ($scratch == '')) {
+						if ((str_starts_with($scratch, 'No Such Instance')) || ($scratch == '')) {
 							//
 							// sensor name unknown, so call it 'sensor N'
 							//
@@ -335,12 +335,12 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 						// get the sensor reading for each entry
 						//
 						$snmp_get_arguments[2] = ($oid_array['sensorReading'] . '.' . $sensor['index']);
-						$scratch               = trim(call_user_func_array('cacti_snmp_get', $snmp_get_arguments));
+						$scratch               = trim((string) call_user_func_array(cacti_snmp_get(...), $snmp_get_arguments));
 
 						//
 						// if no useful data was returned, null the results
 						//
-						if ((substr($scratch, 0, 16) == 'No Such Instance') || (is_numeric($scratch) === false) || ($scratch === '')) {
+						if ((str_starts_with($scratch, 'No Such Instance')) || (is_numeric($scratch) === false) || ($scratch === '')) {
 							$scratch = '';
 						}
 
@@ -348,14 +348,14 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 						// negative voltage readings must be converted to negative numbers
 						//
 						if (($sensor_type == 'voltage') && ($scratch > 2147483647)) {
-							$scratch = ($scratch - 4294967294);
+							$scratch -= 4294967294;
 						}
 
 						//
 						// move the voltage and thermal decimal place left by three places
 						//
 						if (($sensor_type == 'voltage') || ($sensor_type == 'temperature')) {
-							$scratch = ($scratch / 1000);
+							$scratch /= 1000;
 						}
 
 						//

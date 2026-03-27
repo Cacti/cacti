@@ -7,7 +7,7 @@ if (!isset($called_by_script_server)) {
 	include_once(__DIR__ . '/../lib/snmp.php');
 
 	array_shift($_SERVER['argv']);
-	print call_user_func_array('ss_aruba_oscx_6x00', $_SERVER['argv']);
+	print call_user_func_array(ss_aruba_oscx_6x00(...), $_SERVER['argv']);
 } else {
 	include_once(__DIR__ . '/../lib/snmp.php');
 }
@@ -117,8 +117,8 @@ function ss_aruba_oscx_6x00(int $host_id = 0, string $object = 'fan', string $cm
 				SNMP_POLLER,
 				$host['snmp_engine_id']);
 
-			foreach ($return_arr as $key=>$value) {
-				$parts = explode('.', $value['oid']);
+			foreach ($return_arr as $value) {
+				$parts = explode('.', (string) $value['oid']);
 				$count = cacti_sizeof($parts);
 
 				if ($object == 'vsf') {
@@ -174,8 +174,8 @@ function ss_aruba_oscx_6x00(int $host_id = 0, string $object = 'fan', string $cm
 				SNMP_POLLER,
 				$host['snmp_engine_id']);
 
-			foreach ($return_arr as $key=>$value) {
-				$parts = explode('.', $value['oid']);
+			foreach ($return_arr as $value) {
+				$parts = explode('.', (string) $value['oid']);
 				$count = cacti_sizeof($parts);
 
 				if ($object == 'vsf') {

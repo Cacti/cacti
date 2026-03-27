@@ -800,7 +800,7 @@ function snmpagent_notification(string $notification, string $mib, array $varbin
 
 		return false;
 	} else {
-		$branches             = explode('.', $enterprise_oid);
+		$branches             = explode('.', (string) $enterprise_oid);
 		$specific_trap_number = array_pop($branches);
 	}
 

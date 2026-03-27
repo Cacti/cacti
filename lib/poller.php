@@ -123,7 +123,7 @@ function exec_background(string $filename, string|array $args = '', string|array
 	global $debug;
 
 	if (is_array($args)) {
-		$args = implode(' ', array_map('cacti_escapeshellarg', $args));
+		$args = implode(' ', array_map(cacti_escapeshellarg(...), $args));
 	}
 
 	/* redirect_args intentionally bypass escapeshellarg because they contain
@@ -493,7 +493,7 @@ function poller_update_poller_reindex_from_buffer(int $host_id, int $data_query_
 
 		$buffer .= $delim . $record;
 
-		$buf_len += strlen($record);
+		$buf_len += strlen((string) $record);
 
 		if (($overhead + $buf_len) > ($max_packet - 1024)) {
 			db_execute($sql_prefix . $buffer . $sql_suffix);
@@ -604,16 +604,16 @@ function process_poller_output(mixed &$rrdtool_pipe, int $remainder = 0) : int {
 					$vallen = strlen($value);
 
 					for ($i = 1; $i <= $vallen; $i++) {
-						$dec = bcadd($dec, bcmul(strval(hexdec($value[$i - 1])), bcpow('16', strval($vallen - $i))));
+						$dec = bcadd((string) $dec, bcmul(strval(hexdec($value[$i - 1])), bcpow('16', strval($vallen - $i))));
 					}
 
 					$rrd_update_array[$rrd_path]['times'][$unix_time][$rrd_name] = $dec;
 				} else {
 					$rrd_update_array[$rrd_path]['times'][$unix_time][$rrd_name] = 'U';
 				}
-			} elseif (str_contains($value, ':')) {
+			} elseif (str_contains((string) $value, ':')) {
 				// multiple value output
-				$values = preg_split('/\s+/', $value);
+				$values = preg_split('/\s+/', (string) $value);
 
 				if ($data_template_id > 0) {
 					$unused_data_source_names = array_rekey(
@@ -1289,9 +1289,9 @@ function resource_cache_out(string $type, array $path) : void {
 						// If for some reason, the attributes are empty, assume 0644
 						$attributes = empty($e['attributes']) ? 33188 : $e['attributes'];
 
-						$extension = substr(strrchr($e['path'], '.'), 1);
+						$extension = substr(strrchr((string) $e['path'], '.'), 1);
 						$exit      = -1;
-						$contents  = base64_decode(db_fetch_cell_prepared('SELECT contents
+						$contents  = base64_decode((string) db_fetch_cell_prepared('SELECT contents
 							FROM poller_resource_cache
 							WHERE id = ?',
 							[$e['id']], '', true, $remote_db_cnn_id), true);
@@ -1301,7 +1301,7 @@ function resource_cache_out(string $type, array $path) : void {
 							// Executable check
 							$executable = false;
 
-							if (!str_contains($e['path'], 'lib/poller.php')) {
+							if (!str_contains((string) $e['path'], 'lib/poller.php')) {
 								if (str_contains($contents, '#!/usr/bin/env php')) {
 									$executable = true;
 								} elseif (str_contains($contents, '#!/usr/bin/php')) {

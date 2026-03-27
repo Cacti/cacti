@@ -288,11 +288,11 @@ class spikekill {
 		 */
 		if ($this->method == SPIKE_METHOD_FLOAT || $this->method == SPIKE_METHOD_FILL || $this->method == SPIKE_METHOD_ABSOLUTE) {
 			if (!is_numeric($this->out_start)) {
-				$this->out_start = strtotime($this->out_start);
+				$this->out_start = strtotime((string) $this->out_start);
 			}
 
 			if (!is_numeric($this->out_end)) {
-				$this->out_end = strtotime($this->out_end);
+				$this->out_end = strtotime((string) $this->out_end);
 			}
 
 			if ($this->out_start === false || $this->out_end === false) {
@@ -354,7 +354,7 @@ class spikekill {
 
 		$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . __esc('Method:        %s', $dispmethod) . ($this->html ? '</p>' : PHP_EOL);
 		$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . __esc('RRDfile:       %s', $this->rrdfile) . ($this->html ? '</p>' : PHP_EOL);
-		$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . __esc('Repair Type:   %s', ucfirst($this->avgnan)) . ($this->html ? '</p>' : PHP_EOL);
+		$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . __esc('Repair Type:   %s', ucfirst((string) $this->avgnan)) . ($this->html ? '</p>' : PHP_EOL);
 
 		if ($this->method == SPIKE_METHOD_STDDEV) {
 			$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') . __esc('Max Kills:     %s', $this->numspike) . ($this->html ? '</p>' : PHP_EOL);
@@ -533,8 +533,8 @@ class spikekill {
 		 */
 		if (cacti_sizeof($output)) {
 			foreach ($output as $line) {
-				if (substr_count($line, '<v>')) {
-					$linearray = explode('<v>', $line);
+				if (substr_count((string) $line, '<v>')) {
+					$linearray = explode('<v>', (string) $line);
 
 					// get the timestamp
 					$timestamp_part = $linearray[0];
@@ -631,23 +631,23 @@ class spikekill {
 
 						$ds_num++;
 					}
-				} elseif (substr_count($line, '<rra>')) {
+				} elseif (substr_count((string) $line, '<rra>')) {
 					$in_rra = true;
-				} elseif (substr_count($line, '<min>')) {
-					$this->ds_min[] = trim(str_replace('<min>', '', str_replace('</min>', '', trim($line))));
-				} elseif (substr_count($line, '<max>')) {
-					$this->ds_max[] = trim(str_replace('<max>', '', str_replace('</max>', '', trim($line))));
-				} elseif (substr_count($line, '<name>')) {
-					$this->ds_name[] = trim(str_replace('<name>', '', str_replace('</name>', '', trim($line))));
-				} elseif (substr_count($line, '<cf>')) {
-					$this->rra_cf[] = trim(str_replace('<cf>', '', str_replace('</cf>', '', trim($line))));
-				} elseif (substr_count($line, '<pdp_per_row>')) {
-					$this->rra_pdp[] = trim(str_replace('<pdp_per_row>', '', str_replace('</pdp_per_row>', '', trim($line))));
-				} elseif (substr_count($line, '</rra>')) {
+				} elseif (substr_count((string) $line, '<min>')) {
+					$this->ds_min[] = trim(str_replace('<min>', '', str_replace('</min>', '', trim((string) $line))));
+				} elseif (substr_count((string) $line, '<max>')) {
+					$this->ds_max[] = trim(str_replace('<max>', '', str_replace('</max>', '', trim((string) $line))));
+				} elseif (substr_count((string) $line, '<name>')) {
+					$this->ds_name[] = trim(str_replace('<name>', '', str_replace('</name>', '', trim((string) $line))));
+				} elseif (substr_count((string) $line, '<cf>')) {
+					$this->rra_cf[] = trim(str_replace('<cf>', '', str_replace('</cf>', '', trim((string) $line))));
+				} elseif (substr_count((string) $line, '<pdp_per_row>')) {
+					$this->rra_pdp[] = trim(str_replace('<pdp_per_row>', '', str_replace('</pdp_per_row>', '', trim((string) $line))));
+				} elseif (substr_count((string) $line, '</rra>')) {
 					$in_rra = false;
 					$rra_num++;
-				} elseif (substr_count($line, '<step>')) {
-					$this->step = intval(trim(str_replace('<step>', '', str_replace('</step>', '', trim($line)))));
+				} elseif (substr_count((string) $line, '<step>')) {
+					$this->step = intval(trim(str_replace('<step>', '', str_replace('</step>', '', trim((string) $line)))));
 				}
 			}
 		}
@@ -1064,8 +1064,8 @@ class spikekill {
 
 		if (cacti_sizeof($output)) {
 			foreach ($output as $line) {
-				if (substr_count($line, '<v>')) {
-					$linearray = explode('<v>', $line);
+				if (substr_count((string) $line, '<v>')) {
+					$linearray = explode('<v>', (string) $line);
 
 					// get the timestamp
 					$timestamp_part = $linearray[0];
@@ -1268,13 +1268,13 @@ class spikekill {
 
 					$new_array[] = $out_row;
 				} else {
-					if (substr_count($line, '</rra>')) {
+					if (substr_count((string) $line, '</rra>')) {
 						$ds_minmax = [];
 						$rra_num++;
 
 						$kills    = 0;
 						$last_num = [];
-					} elseif (substr_count($line, '</database>')) {
+					} elseif (substr_count((string) $line, '</database>')) {
 						$ds_num++;
 
 						$kills    = 0;
@@ -1294,7 +1294,7 @@ class spikekill {
 
 		if (cacti_sizeof($output)) {
 			foreach ($output as $line) {
-				$line = trim($line);
+				$line = trim((string) $line);
 
 				if ($line == '') {
 					continue;

@@ -1534,7 +1534,7 @@ function display_graph_rule_items(string $title, array &$rule, int $rule_type, s
 	$details = automation_get_new_graphs_sql($rule);
 
 	if (isset($details['indexes_query']) && $details['indexes_query'] != '') {
-		$data = db_fetch_assoc(trim($details['indexes_query']));
+		$data = db_fetch_assoc(trim((string) $details['indexes_query']));
 
 		print '<div id="sql_query" style="display:none"><div style="white-space:pre">' . str_replace(["\n"], ['<br>'], $details['indexes_query']) . '</div><br><hr><br><div>' . db_error() . '</div></div>';
 	} else {
@@ -1675,7 +1675,7 @@ function duplicate_automation_graph_rules(int $_id, string $_title) : void {
 
 	if (cacti_sizeof($rule)) {
 		foreach ($fields_automation_graph_rules_edit as $field => $array) {
-			if (!preg_match('/^hidden/', $array['method'])) {
+			if (!preg_match('/^hidden/', (string) $array['method'])) {
 				$save[$field] = $rule[$field];
 			}
 		}
@@ -1744,7 +1744,7 @@ function duplicate_automation_tree_rules(int $_id, string $_title) : void {
 
 	if (cacti_sizeof($rule)) {
 		foreach ($fields_automation_tree_rules_edit as $field => $array) {
-			if (!preg_match('/^hidden/', $array['method'])) {
+			if (!preg_match('/^hidden/', (string) $array['method'])) {
 				$save[$field] = $rule[$field];
 			}
 		}
@@ -1801,7 +1801,7 @@ function build_graph_object_sql_having(array $rule, string $filter) : string {
 			$i = 0;
 
 			foreach ($field_names as $column) {
-				$sql_having .= ($i == 0 ? '' : ' OR ') . '`' . implode('`.`', explode('.', $column['field_name'])) . '`' . ' LIKE ' . db_qstr('%' . $filter . '%');
+				$sql_having .= ($i == 0 ? '' : ' OR ') . '`' . implode('`.`', explode('.', (string) $column['field_name'])) . '`' . ' LIKE ' . db_qstr('%' . $filter . '%');
 				$i++;
 			}
 
@@ -1945,7 +1945,7 @@ function build_rule_item_filter(array $automation_rule_items, string $prefix = '
 
 			// field name
 			if ($automation_rule_item['field'] != '') {
-				$sql_filter .= ' ' . $prefix . '`' . implode('`.`', explode('.', $automation_rule_item['field'])) . '`';
+				$sql_filter .= ' ' . $prefix . '`' . implode('`.`', explode('.', (string) $automation_rule_item['field'])) . '`';
 				$sql_filter .= ' ' . $automation_op_array['op'][$automation_rule_item['operator']] . ' ';
 
 				if ($automation_op_array['binary'][$automation_rule_item['operator']]) {
@@ -2527,7 +2527,7 @@ function global_item_edit(int $rule_id, int $rule_item_id, int $rule_type) : voi
 			if (empty($missing_key)) {
 				// Fixed String
 			} elseif (isset($_fields_rule_item_edit) && !array_key_exists($missing_key, $_fields_rule_item_edit['field']['array'])) {
-				$missing_array = explode('.',$missing_key);
+				$missing_array = explode('.',(string) $missing_key);
 
 				if (cacti_sizeof($missing_array) > 1) {
 					$missing_table = cacti_strtoupper($missing_array[0]);
@@ -2729,8 +2729,8 @@ function automation_graph_automation_eligible(int $graph_template_id) : bool {
 	// Check the Graph Template first for adherence
 	if (cacti_sizeof($graph_template)) {
 		foreach ($graph_template as $field => $value) {
-			if (str_starts_with($field, 't_')) {
-				$parent = substr($field, 2);
+			if (str_starts_with((string) $field, 't_')) {
+				$parent = substr((string) $field, 2);
 
 				if (isset($graph_template[$parent])) {
 					if ($value == 'on' && $graph_template[$parent] == '') {
@@ -2757,8 +2757,8 @@ function automation_graph_automation_eligible(int $graph_template_id) : bool {
 	if (cacti_sizeof($data_templates)) {
 		foreach ($data_templates as $dtd) {
 			foreach ($dtd as $field => $value) {
-				if (str_starts_with($field, 't_')) {
-					$parent = substr($field, 2);
+				if (str_starts_with((string) $field, 't_')) {
+					$parent = substr((string) $field, 2);
 
 					if (isset($dtd[$parent])) {
 						if ($value == 'on' && $dtd[$parent] == '') {

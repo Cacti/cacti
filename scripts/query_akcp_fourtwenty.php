@@ -71,7 +71,7 @@ if ($cmd == 'index') {
 		$snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, $max_oids, SNMP_POLLER));
 
 	// and print each index as a separate line, after doing some stuff :)
-	for ($i = 0; ($i < sizeof($return_arr)); $i++) {
+	for ($i = 0; ($i < count($return_arr)); $i++) {
 		// Index is returned as -1 for all sensors that are something other than humidity sensors ??:
 		// SPAGENT-MIB::sensorProbeTempIndex.1 = INTEGER: -1
 		// It's not worth doing anything if this is clearly not a valid sensor for this query.
@@ -116,7 +116,7 @@ elseif ($cmd == 'query' && isset($query_field)) {
 		$snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol,
 		$snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, $max_oids, SNMP_POLLER));
 
-	for ($i = 0; ($i < sizeof($arr_index)); $i++) {
+	for ($i = 0; ($i < count($arr_index)); $i++) {
 		// Index is returned as -1 for all sensors that are something other than humidity sensors ??:
 		// SPAGENT-MIB::sensorProbeTempIndex.1 = INTEGER: -1
 		// It's not worth doing anything if this is clearly not a valid sensor for this query.
@@ -167,7 +167,7 @@ else {
 function reindex(array $arr) : array {
 	$return_arr = [];
 
-	for ($i = 0; ($i < sizeof($arr)); $i++) {
+	for ($i = 0; ($i < count($arr)); $i++) {
 		$return_arr[$i] = $arr[$i]['value'];
 	}
 

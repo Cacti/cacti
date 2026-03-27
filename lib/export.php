@@ -333,7 +333,7 @@ function data_input_method_to_xml(int $data_input_id) : string {
 			($field_array['method'] != 'spacer') &&
 			($field_array['method'] != 'other')) {
 			if ($field_name == 'input_string') {
-				$xml_text .= "\t<$field_name>" . base64_encode($data_input[$field_name]) . "</$field_name>\n";
+				$xml_text .= "\t<$field_name>" . base64_encode((string) $data_input[$field_name]) . "</$field_name>\n";
 			} else {
 				$xml_text .= "\t<$field_name>" . xml_character_encode($data_input[$field_name]) . "</$field_name>\n";
 			}
@@ -1185,7 +1185,7 @@ function get_item_xml(string $type, int $id, bool $follow_deps) : string {
 		}
 	}
 
-	$xml_array = explode("\n", $xml_text);
+	$xml_array = explode("\n", (string) $xml_text);
 
 	for ($i = 0; $i < cacti_count($xml_array); $i++) {
 		$xml_indent .= "\t" . $xml_array[$i] . "\n";

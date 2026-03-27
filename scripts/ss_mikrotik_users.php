@@ -28,7 +28,7 @@ error_reporting(0);
 if (!isset($called_by_script_server)) {
 	include(__DIR__ . '/../include/cli_check.php');
 	array_shift($_SERVER['argv']);
-	print call_user_func_array('ss_mikrotik_users', $_SERVER['argv']);
+	print call_user_func_array(ss_mikrotik_users(...), $_SERVER['argv']);
 }
 
 function ss_mikrotik_users(int $host_id = 0) : mixed {

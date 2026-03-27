@@ -376,7 +376,7 @@ function api_scheduler_augment_save(array $save, array $post) : array {
 		$next_start = 0;
 	}
 
-	$start_at   = strtotime($save['start_at']);
+	$start_at   = strtotime((string) $save['start_at']);
 	$poller_int = read_config_option('poller_interval');
 
 	/**
@@ -424,7 +424,7 @@ function api_scheduler_is_time_to_start(array $schedule, string $table = 'automa
 	$now   = time();
 
 	if (empty($schedule['next_start'])) {
-		$schedule['next_start'] = date('Y-m-d H:i:s', strtotime($schedule['start_at']) + 86400);
+		$schedule['next_start'] = date('Y-m-d H:i:s', strtotime((string) $schedule['start_at']) + 86400);
 	}
 
 	if (is_null($schedule['start_at'])) {
@@ -442,8 +442,8 @@ function api_scheduler_is_time_to_start(array $schedule, string $table = 'automa
 				$recur = $schedule['recur_every'] * 86400; // days
 			}
 
-			$start = strtotime($schedule['start_at']);
-			$next  = strtotime($schedule['next_start']);
+			$start = strtotime((string) $schedule['start_at']);
+			$next  = strtotime((string) $schedule['next_start']);
 
 			if ($schedule['next_start'] == '0000-00-00 00:00:00') {
 				$target = $start;
@@ -467,9 +467,9 @@ function api_scheduler_is_time_to_start(array $schedule, string $table = 'automa
 			return false;
 		case SCHEDULE_WEEKLY:
 			$recur = $schedule['recur_every'] * 86400 * 7; // weeks
-			$start = strtotime($schedule['start_at']);
-			$next  = strtotime($schedule['next_start']);
-			$days  = explode(',', $schedule['day_of_week']);
+			$start = strtotime((string) $schedule['start_at']);
+			$next  = strtotime((string) $schedule['next_start']);
+			$days  = explode(',', (string) $schedule['day_of_week']);
 			$day   = 86400;
 			$week  = 86400 * 7;
 
@@ -514,12 +514,12 @@ function api_scheduler_is_time_to_start(array $schedule, string $table = 'automa
 				[date('Y-m-d H:i', $next), $schedule['id']]);
 
 			if ($schedule['next_start'] == '0000-00-00 00:00:00') {
-				if ($now > strtotime($schedule['start_at'])) {
+				if ($now > strtotime((string) $schedule['start_at'])) {
 					return true;
 				} else {
 					return false;
 				}
-			} elseif ($now > strtotime($schedule['next_start'])) {
+			} elseif ($now > strtotime((string) $schedule['next_start'])) {
 				return true;
 			}
 
@@ -549,8 +549,8 @@ function api_scheduler_calculate_next_start(array $schedule) : mixed {
 		case SCHEDULE_MANUAL:
 			break;
 		case SCHEDULE_MONTHLY:
-			$months = explode(',', $schedule['month']);
-			$days   = explode(',', $schedule['day_of_month']);
+			$months = explode(',', (string) $schedule['month']);
+			$days   = explode(',', (string) $schedule['day_of_month']);
 
 			foreach ($months as $month) {
 				foreach ($days as $day) {
@@ -615,9 +615,9 @@ function api_scheduler_calculate_next_start(array $schedule) : mixed {
 
 			break;
 		case SCHEDULE_MONTHLY_ON_DAY:
-			$months = explode(',', $schedule['month']);
-			$weeks  = explode(',', $schedule['monthly_week']);
-			$days   = explode(',', $schedule['monthly_day']);
+			$months = explode(',', (string) $schedule['month']);
+			$weeks  = explode(',', (string) $schedule['monthly_week']);
+			$days   = explode(',', (string) $schedule['monthly_day']);
 			$now    = time();
 			$dates  = [];
 
@@ -679,69 +679,27 @@ function api_scheduler_calculate_next_start(array $schedule) : mixed {
 								break;
 						}
 
-						switch($week) {
-							case '1':
-								$sweek = 'first';
+						$sweek = match ($week) {
+							'1'     => 'first',
+							'2'     => 'second',
+							'3'     => 'third',
+							'4'     => 'forth',
+							'32'    => 'last',
+							default => 'first',
+						};
 
-								break;
-							case '2':
-								$sweek = 'second';
+						$sday = match ($day) {
+							'1'     => 'Sunday',
+							'2'     => 'Monday',
+							'3'     => 'Tuesday',
+							'4'     => 'Wednesday',
+							'5'     => 'Thursday',
+							'6'     => 'Friday',
+							'7'     => 'Saturday',
+							default => 'Sunday',
+						};
 
-								break;
-							case '3':
-								$sweek = 'third';
-
-								break;
-							case '4':
-								$sweek = 'forth';
-
-								break;
-							case '32':
-								$sweek = 'last';
-
-								break;
-							default:
-								$sweek = 'first';
-
-								break;
-						}
-
-						switch($day) {
-							case '1':
-								$sday = 'Sunday';
-
-								break;
-							case '2':
-								$sday = 'Monday';
-
-								break;
-							case '3':
-								$sday = 'Tuesday';
-
-								break;
-							case '4':
-								$sday = 'Wednesday';
-
-								break;
-							case '5':
-								$sday = 'Thursday';
-
-								break;
-							case '6':
-								$sday = 'Friday';
-
-								break;
-							case '7':
-								$sday = 'Saturday';
-
-								break;
-							default:
-								$sday = 'Sunday';
-
-								break;
-						}
-
-						$dates[] = strtotime("$sweek $sday of $smonth", strtotime($schedule['start_at']));
+						$dates[] = strtotime("$sweek $sday of $smonth", strtotime((string) $schedule['start_at']));
 					}
 				}
 			}
@@ -755,7 +713,7 @@ function api_scheduler_calculate_next_start(array $schedule) : mixed {
 		$newdates = [];
 
 		foreach ($dates as $date) {
-			$ndate = date('Y-m-d', $date) . ' ' . date('H:i:s', strtotime($schedule['start_at']));
+			$ndate = date('Y-m-d', $date) . ' ' . date('H:i:s', strtotime((string) $schedule['start_at']));
 			$ntime = strtotime($ndate);
 
 			cacti_log('Start At: ' . $schedule['start_at'] . ', Possible Next Start: ' . $ndate . ' with Timestamp: ' . $ntime, false, 'SCHEDULER', POLLER_VERBOSITY_DEBUG);

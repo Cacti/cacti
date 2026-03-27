@@ -413,8 +413,8 @@ function get_tree_path() : array {
 		$nnodes = [];
 		$rnodes = [];
 
-		if (str_contains(grv('node'), 'tbranch')) {
-			$parts = explode('-', grv('node'));
+		if (str_contains((string) grv('node'), 'tbranch')) {
+			$parts = explode('-', (string) grv('node'));
 			$node  = $parts[1];
 
 			$linknode = db_fetch_row_prepared('SELECT *
@@ -450,7 +450,7 @@ function get_tree_path() : array {
 				}
 
 				if (isrv('hgd')) {
-					$parts = explode(':', grv('hgd'));
+					$parts = explode(':', (string) grv('hgd'));
 
 					switch($parts[0]) {
 						case 'gt':
@@ -493,8 +493,8 @@ function get_tree_path() : array {
 			if (cacti_sizeof($nnodes)) {
 				$nodes = array_merge($nodes, $nnodes);
 			}
-		} elseif (str_contains(grv('node'), 'tree_anchor')) {
-			$parts   = explode('-', grv('node'));
+		} elseif (str_contains((string) grv('node'), 'tree_anchor')) {
+			$parts   = explode('-', (string) grv('node'));
 			$nodes[] = 'tree_anchor-' . $parts[1] . '_anchor';
 		}
 
@@ -515,30 +515,14 @@ function get_tree_path() : array {
 function get_device_leaf_class(int $host_id) : string {
 	$status = db_fetch_cell_prepared('SELECT status FROM host WHERE id = ?', [$host_id]);
 
-	switch($status) {
-		case HOST_DOWN:
-			$class = 'deviceDown';
-
-			break;
-		case HOST_RECOVERING:
-			$class = 'deviceRecovering';
-
-			break;
-		case HOST_UP:
-			$class = 'deviceUp';
-
-			break;
-		case HOST_UNKNOWN:
-			$class = 'deviceUnknown';
-
-			break;
-		case HOST_ERROR:
-			$class = 'deviceError';
-
-			break;
-		default:
-			$class = '';
-	}
+	$class = match ($status) {
+		HOST_DOWN       => 'deviceDown',
+		HOST_RECOVERING => 'deviceRecovering',
+		HOST_UP         => 'deviceUp',
+		HOST_UNKNOWN    => 'deviceUnknown',
+		HOST_ERROR      => 'deviceError',
+		default         => '',
+	};
 
 	return $class;
 }
@@ -903,7 +887,7 @@ function create_data_query_branch(array $leaf, int $site_id = -1, int $ht = -1) 
 					foreach ($sfd as $snmp_index => $sort_field_value) {
 						$unique_id++;
 
-						$dhtml_tree[] = "\t\t\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . ($site_id > 0 ? '-site-' . $site_id . ($ht > 0 ? '-ht-' . $ht : '') . '-host-' . $leaf['host_id'] : '') . '-dq-' . $data_query['id'] . '-' . urlencode($snmp_index) . "-uid-$unique_id' data-jstree='{ \"type\" : \"graph\" }'><a class='treepick' href='" . htmle(CACTI_PATH_URL . 'graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&host_id=' . $leaf['host_id'] . '&site_id=' . $site_id . '&host_template_id=' . $ht . '&hgd=dqi:' . $data_query['id'] . ':' . $snmp_index) . "'>" . htmle($sort_field_value) . "</a></li>\n";
+						$dhtml_tree[] = "\t\t\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . ($site_id > 0 ? '-site-' . $site_id . ($ht > 0 ? '-ht-' . $ht : '') . '-host-' . $leaf['host_id'] : '') . '-dq-' . $data_query['id'] . '-' . urlencode((string) $snmp_index) . "-uid-$unique_id' data-jstree='{ \"type\" : \"graph\" }'><a class='treepick' href='" . htmle(CACTI_PATH_URL . 'graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&host_id=' . $leaf['host_id'] . '&site_id=' . $site_id . '&host_template_id=' . $ht . '&hgd=dqi:' . $data_query['id'] . ':' . $snmp_index) . "'>" . htmle($sort_field_value) . "</a></li>\n";
 					}
 
 					$dhtml_tree[] = "\t\t\t\t\t\t\t</ul>\n";
@@ -950,7 +934,7 @@ function create_tree_filter() : array {
 
 	// unset the ordering if we have a setup that does not support ordering
 	if (isrv('graph_template_id')) {
-		if (str_contains(gnrv('graph_template_id'), ',') || gnrv('graph_template_id') <= 0) {
+		if (str_contains((string) gnrv('graph_template_id'), ',') || gnrv('graph_template_id') <= 0) {
 			srv('graph_order', '');
 			srv('graph_source', '');
 		}
@@ -1461,7 +1445,7 @@ function grow_right_pane_tree(int $tree_id, int $leaf_id, string $host_group_dat
 		}
 
 		if (isrv('hgd')) {
-			$parts = explode(':', grv('hgd'));
+			$parts = explode(':', (string) grv('hgd'));
 
 			switch($parts[0]) {
 				case 'gt':
@@ -1519,7 +1503,7 @@ function grow_right_pane_tree(int $tree_id, int $leaf_id, string $host_group_dat
 		$graphs = array_merge($graphs, $agg);
 
 		// let's sort the graphs naturally
-		usort($graphs, 'naturally_sort_graphs');
+		usort($graphs, naturally_sort_graphs(...));
 
 		if (cacti_sizeof($graphs)) {
 			foreach ($graphs as $graph) {
@@ -1676,7 +1660,7 @@ function get_host_graph_list(int $host_id, int $graph_template_id, int $data_que
 			$graphs = array_merge($graphs, $agg);
 
 			// let's sort the graphs naturally
-			usort($graphs, 'naturally_sort_graphs');
+			usort($graphs, naturally_sort_graphs(...));
 
 			if (cacti_sizeof($graphs)) {
 				foreach ($graphs as $graph) {
@@ -1757,7 +1741,7 @@ function get_host_graph_list(int $host_id, int $graph_template_id, int $data_que
 
 				if (cacti_sizeof($graphs)) {
 					// let's sort the graphs naturally
-					usort($graphs, 'naturally_sort_graphs');
+					usort($graphs, naturally_sort_graphs(...));
 
 					foreach ($graphs as $graph) {
 						$snmp_index_to_graph[$graph['snmp_index']][$graph['local_graph_id']] = $graph['title_cache'];
@@ -1926,7 +1910,7 @@ function html_tree_get_node() : void {
 	$tree_id = 0;
 
 	if (isrv('tree_id')) {
-		if (gnrv('tree_id') == 0 && str_contains(gnrv('id'), 'tbranch-')) {
+		if (gnrv('tree_id') == 0 && str_contains((string) gnrv('id'), 'tbranch-')) {
 			$tree_id = db_fetch_cell_prepared('SELECT graph_tree_id
 			FROM graph_tree_items
 			WHERE id = ?',
@@ -1936,8 +1920,8 @@ function html_tree_get_node() : void {
 			gnrv('tree_id') == '') {
 			$tree_id = read_user_setting('default_tree_id');
 		} elseif (gnrv('tree_id') == 0 &&
-			substr_count(gnrv('id'), 'tree_anchor') > 0) {
-			$ndata   = explode('-', gnrv('id'));
+			substr_count((string) gnrv('id'), 'tree_anchor') > 0) {
+			$ndata   = explode('-', (string) gnrv('id'));
 			$tree_id = $ndata[1];
 			input_validate_input_number($tree_id, 'tree_id');
 		}
@@ -1946,10 +1930,10 @@ function html_tree_get_node() : void {
 	}
 
 	if (isrv('id') && gnrv('id') != '#') {
-		if (substr_count(gnrv('id'), 'tree_anchor')) {
+		if (substr_count((string) gnrv('id'), 'tree_anchor')) {
 			$parent = -1;
 		} else {
-			$ndata = explode('_', gnrv('id'));
+			$ndata = explode('_', (string) gnrv('id'));
 
 			foreach ($ndata as $node) {
 				$pnode = explode('-', $node);
@@ -2037,10 +2021,10 @@ function html_tree_get_content() : void {
 		$parts = explode('-', sanitize_search_string(grv('node')));
 
 		// Check for tree anchor
-		if (str_contains(gnrv('node'), 'tree_anchor')) {
+		if (str_contains((string) gnrv('node'), 'tree_anchor')) {
 			$tree_id = $parts[1];
 			$node_id = 0;
-		} elseif (str_contains(gnrv('node'), 'tbranch')) {
+		} elseif (str_contains((string) gnrv('node'), 'tbranch')) {
 			// Check for branch
 			$node_id = $parts[1];
 			$tree_id = db_fetch_cell_prepared('SELECT graph_tree_id

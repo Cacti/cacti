@@ -61,7 +61,7 @@ if (!isset($called_by_script_server)) {
 }
 
 function ss_thold_time() : mixed {
-	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_thold"'));
+	$_stats = explode(' ', (string) db_fetch_cell('SELECT value FROM settings WHERE name="stats_thold"'));
 
 	$stats = '';
 
@@ -75,7 +75,7 @@ function ss_thold_time() : mixed {
 }
 
 function ss_thold_checks() : mixed {
-	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_thold"'));
+	$_stats = explode(' ', (string) db_fetch_cell('SELECT value FROM settings WHERE name="stats_thold"'));
 
 	$stats = '';
 
@@ -89,7 +89,7 @@ function ss_thold_checks() : mixed {
 }
 
 function ss_thold_hstats() : mixed {
-	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_thold"'));
+	$_stats = explode(' ', (string) db_fetch_cell('SELECT value FROM settings WHERE name="stats_thold"'));
 
 	$stats = '';
 
@@ -105,7 +105,7 @@ function ss_thold_hstats() : mixed {
 }
 
 function ss_monitor_time() : mixed {
-	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_monitor"'));
+	$_stats = explode(' ', (string) db_fetch_cell('SELECT value FROM settings WHERE name="stats_monitor"'));
 
 	$stats = '';
 
@@ -119,7 +119,7 @@ function ss_monitor_time() : mixed {
 }
 
 function ss_monitor_stats() : mixed {
-	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_monitor"'));
+	$_stats = explode(' ', (string) db_fetch_cell('SELECT value FROM settings WHERE name="stats_monitor"'));
 
 	$stats = '';
 
@@ -139,7 +139,7 @@ function ss_monitor_stats() : mixed {
 }
 
 function ss_syslog_time() : mixed {
-	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="syslog_stats"'));
+	$_stats = explode(' ', (string) db_fetch_cell('SELECT value FROM settings WHERE name="syslog_stats"'));
 
 	$stats = '';
 
@@ -153,7 +153,7 @@ function ss_syslog_time() : mixed {
 }
 
 function ss_syslog_stats() : mixed {
-	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="syslog_stats"'));
+	$_stats = explode(' ', (string) db_fetch_cell('SELECT value FROM settings WHERE name="syslog_stats"'));
 
 	$stats = '';
 
@@ -200,7 +200,7 @@ function ss_webseer_counts() : mixed {
 }
 
 function ss_webseer_stats() : mixed {
-	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_webseer"'));
+	$_stats = explode(' ', (string) db_fetch_cell('SELECT value FROM settings WHERE name="stats_webseer"'));
 
 	$stats = '';
 
@@ -290,7 +290,7 @@ function ss_boost_avg_size() : mixed {
 }
 
 function ss_boost_timing() : mixed {
-	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_detail_boost"'));
+	$_stats = explode(' ', (string) db_fetch_cell('SELECT value FROM settings WHERE name="stats_detail_boost"'));
 
 	$stats = '';
 
@@ -314,7 +314,7 @@ function ss_boost_timing() : mixed {
 }
 
 function ss_export() : mixed {
-	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_export"'));
+	$_stats = explode(' ', (string) db_fetch_cell('SELECT value FROM settings WHERE name="stats_export"'));
 
 	$stats = '';
 

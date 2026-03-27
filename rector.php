@@ -9,6 +9,7 @@ use Rector\Php54\Rector\Array_\LongArrayToShortArrayRector;
 
 return RectorConfig::configure()
 	->withRootFiles()
+	->withIndent("\t", 1)
 	->withPaths([
 		__DIR__ . '/include',
 		__DIR__ . '/lib',

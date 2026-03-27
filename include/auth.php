@@ -135,7 +135,7 @@ if (CACTI_WEB && isset($_SESSION[SESS_USER_ID])) {
 	$lockout = read_config_option('cacti_lockout_status', true);
 
 	if ($lockout != '') {
-		$lockout    = json_decode($lockout, true);
+		$lockout    = json_decode((string) $lockout, true);
 		$admin_user = read_config_option('admin_user');
 		$enabled    = read_config_option('auth_maint_lockout_type', true);
 

@@ -28,7 +28,7 @@ error_reporting(0);
 if (!isset($called_by_script_server)) {
 	include(__DIR__ . '/../include/cli_check.php');
 	array_shift($_SERVER['argv']);
-	print call_user_func_array('ss_mikrotik_interfaces', $_SERVER['argv']);
+	print call_user_func_array(ss_mikrotik_interfaces(...), $_SERVER['argv']);
 }
 
 function ss_mikrotik_interfaces(int $host_id, string $cmd = 'index', string $arg1 = '', string $arg2 = '') : mixed {
@@ -110,16 +110,10 @@ function ss_mikrotik_interfaces_getnames(int $host_id) : array {
 function ss_mikrotik_interfaces_getinfo(int $host_id, string $info_requested) : array {
 	$return_arr = [];
 
-	switch($info_requested) {
-		case 'intName':
-			$column = 'name';
-
-			break;
-		default:
-			$column = 'name';
-
-			break;
-	}
+	$column = match ($info_requested) {
+		'intName' => 'name',
+		default   => 'name',
+	};
 
 	$arr = db_fetch_assoc_prepared("SELECT
 		REPLACE(name, ' ', '_') AS qry_index,

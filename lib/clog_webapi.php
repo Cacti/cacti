@@ -77,28 +77,28 @@ function clog_validate_filename(string &$file, string &$filepath = '', string &$
 	}
 
 	$errfile   = read_config_option('path_stderrlog');
-	$errbase   = basename($errfile);
+	$errbase   = basename((string) $errfile);
 
 	$boostfile = read_config_option('path_boost_log');
-	$boostbase = basename($boostfile);
+	$boostbase = basename((string) $boostfile);
 
 	$file     = basename($file);
-	$logbase  = basename($logfile);
+	$logbase  = basename((string) $logfile);
 
 	$filepath = '';
 	$filename = '';
 	$filefull = '';
 
 	if (!empty($errfile) && str_starts_with($file, $errbase)) {
-		$filepath = dirname($errfile);
+		$filepath = dirname((string) $errfile);
 		$filename = $errbase;
 		$filefull = $filepath . '/' . $file;
 	} elseif (!empty($logfile) && str_starts_with($file, $logbase)) {
-		$filepath = dirname($logfile);
+		$filepath = dirname((string) $logfile);
 		$filename = $logbase;
 		$filefull = $filepath . '/' . $file;
 	} elseif (!empty($boostfile) && str_starts_with($file, $boostbase)) {
-		$filepath = dirname($boostfile);
+		$filepath = dirname((string) $boostfile);
 		$filename = $boostbase;
 		$filefull = $filepath . '/' . $file;
 	}
@@ -131,8 +131,8 @@ function clog_purge_logfile(string $action = 'purge') : void {
 	$log_action = read_config_option('log_action');
 
 	// get base filenames for rotate assessment
-	$cactiLog  = basename(read_config_option('path_cactilog'));
-	$errorLog  = basename(read_config_option('path_stderrlog'));
+	$cactiLog  = basename((string) read_config_option('path_cactilog'));
+	$errorLog  = basename((string) read_config_option('path_stderrlog'));
 
 	// basic checking
 	if ($action == 'rotate' && $log_action == LOG_ACTION_PURGE) {
@@ -211,9 +211,9 @@ function clog_view_logfile() : void {
 	kill_session_var('custom');
 
 	if (isrv('filename')) {
-		$logfile = basename(gnrv('filename'));
+		$logfile = basename((string) gnrv('filename'));
 	} elseif (isset($_SESSION['sess_clog']['filename'])) {
-		$logfile = basename($_SESSION['sess_clog']['filename']);
+		$logfile = basename((string) $_SESSION['sess_clog']['filename']);
 	} else {
 		$logfile = 'cacti.log';
 	}
@@ -241,7 +241,7 @@ function clog_view_logfile() : void {
 		if ($redirect) {
 			$logfile = read_config_option('path_cactilog');
 
-			header('Location: clog.php?filename=' . basename($logfile));
+			header('Location: clog.php?filename=' . basename((string) $logfile));
 
 			exit;
 		}
@@ -269,13 +269,13 @@ function clog_view_logfile() : void {
 			$header  = '';
 
 			if (gnrv('action') == 'purge') {
-				$message = __('Click \'Continue\' to Purge the Log File \'' . htmle(basename($logfile)) . '\'.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog.');
+				$message = __('Click \'Continue\' to Purge the Log File \'' . htmle(basename((string) $logfile)) . '\'.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog.');
 				$action  = 'purge_continue';
 				$button  = __esc('Purge');
 				$title   = __esc('Purge Log');
 				$header  = $logfile_actions[LOG_ACTION_PURGE];
 			} elseif (gnrv('action') == 'rotate') {
-				$message = __('Click \'Continue\' to Rotate the existing Log File \'' . htmle(basename($logfile)) . '\'.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog.');
+				$message = __('Click \'Continue\' to Rotate the existing Log File \'' . htmle(basename((string) $logfile)) . '\'.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog.');
 				$action  = 'rotate_continue';
 				$button  = __esc('Rotate');
 				$title   = __esc('Rotate Log');
@@ -297,7 +297,7 @@ function clog_view_logfile() : void {
 					<button type='button' class='ui-button ui-corner-all ui-widget' id='pc' name='purge_continue' title='$title'>" . __esc('Continue') . "</button>
 					<script type='text/javascript'>
 					$('#pc').click(function() {
-						strURL = location.pathname+'?$action=1&filename=" . basename($logfile) . "';
+						strURL = location.pathname+'?$action=1&filename=" . basename((string) $logfile) . "';
 						loadUrl({url:strURL})
 					});
 
@@ -483,16 +483,16 @@ function filter_sort(string $a, string $b) : int {
 function clog_get_logfiles() : array {
 	$stdFileArray  = $stdLogFileArray = $stdErrFileArray = $boostFileArray = [];
 	$configLogPath = read_config_option('path_cactilog');
-	$configLogBase = basename($configLogPath);
+	$configLogBase = basename((string) $configLogPath);
 	$stderrLogPath = read_config_option('path_stderrlog');
-	$stderrLogBase = basename($stderrLogPath);
+	$stderrLogBase = basename((string) $stderrLogPath);
 	$boostLogPath  = read_config_option('path_boost_log');
-	$boostLogBase  = basename($boostLogPath);
+	$boostLogBase  = basename((string) $boostLogPath);
 
 	if ($configLogPath == '') {
 		$logPath = CACTI_PATH_LOG . '/';
 	} else {
-		$logPath = dirname($configLogPath);
+		$logPath = dirname((string) $configLogPath);
 	}
 
 	if (is_readable($logPath)) {
@@ -504,7 +504,7 @@ function clog_get_logfiles() : array {
 	$logName = '';
 
 	// Defaults go first and second
-	$stdFileArray[] = basename($configLogPath);
+	$stdFileArray[] = basename((string) $configLogPath);
 
 	// After Defaults, do Cacti log first (of archived)
 	if (cacti_sizeof($files)) {
@@ -541,11 +541,11 @@ function clog_get_logfiles() : array {
 
 	// Defaults go first and second
 	if (!empty($stderrLogPath)) {
-		$stdFileArray[] = basename($stderrLogPath);
+		$stdFileArray[] = basename((string) $stderrLogPath);
 
 		// After Defaults, do Cacti StdErr log second (of archived)
-		if (dirname($stderrLogPath) != $logPath) {
-			$errFiles = @scandir(dirname($stderrLogPath));
+		if (dirname((string) $stderrLogPath) != $logPath) {
+			$errFiles = @scandir(dirname((string) $stderrLogPath));
 			$files    = $errFiles;
 
 			if (cacti_sizeof($files)) {
@@ -606,7 +606,7 @@ function create_clog_filter(string $logfile, bool $clogAdmin) : array {
 
 	if (cacti_sizeof($logFileArray)) {
 		foreach ($logFileArray as $logFile) {
-			$logParts              = explode('-', $logFile);
+			$logParts              = explode('-', (string) $logFile);
 			$logDate               = cacti_count($logParts) < 2 ? '' : $logParts[1] . (isset($logParts[2]) ? '-' . $logParts[2] : '');
 			$logName               = $logParts[0];
 			$newLogArray[$logFile] = $logName . ($logDate != '' ? ' [' . substr($logDate,4) . ']' : '');

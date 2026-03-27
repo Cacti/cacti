@@ -724,7 +724,7 @@ function variable_bandwidth_summation(array &$regexp_match_array, array &$graph,
 			break;
 	}
 
-	if (preg_match('/\d+/', $regexp_match_array[1])) {
+	if (preg_match('/\d+/', (string) $regexp_match_array[1])) {
 		$summation /= $base ** $regexp_match_array[1];
 	} elseif ($regexp_match_array[1] == 'auto') {
 		if ($graph['base_value'] == 1000) {

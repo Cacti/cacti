@@ -39,7 +39,7 @@ function aggregate_graph_save(int $_local_graph_id, int $_graph_template_id, str
 	error_reporting(E_ALL);
 
 	// install own error handler
-	set_error_handler('aggregate_error_handler');
+	set_error_handler(aggregate_error_handler(...));
 
 	cacti_log(__FUNCTION__ . ' local_graph: ' . $_local_graph_id . ' template: ' . $_graph_template_id . ' graph title: ' . $_graph_title . ' aggregate template: ' . $_aggregate_template_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
@@ -117,8 +117,8 @@ function aggregate_graph_templates_graph_save(int $local_graph_id, int $graph_te
 
 		if (cacti_sizeof($aggregate_data)) {
 			foreach ($aggregate_data as $field => $value) {
-				if (str_starts_with($field, 't_') && $value == 'on') {
-					$value_field_name                 = substr($field, 2);
+				if (str_starts_with((string) $field, 't_') && $value == 'on') {
+					$value_field_name                 = substr((string) $field, 2);
 					$template_data[$value_field_name] = $aggregate_data[$value_field_name];
 				}
 			}
@@ -208,7 +208,7 @@ function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph
 	error_reporting(E_ALL);
 
 	// install own error handler
-	set_error_handler('aggregate_error_handler');
+	set_error_handler(aggregate_error_handler(...));
 
 	cacti_log(__FUNCTION__ . ' called. Insert example graph:' . $_old_graph_id . ' Graph Template:' . $_graph_template_id . ' into Graph:' . $_new_graph_id . ' at Sequence:' . $_graph_item_sequence . ' Graph_No:' . $_selected_graph_index . ' Type Action: ' . $_graph_type, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
@@ -276,9 +276,9 @@ function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph
 			}
 
 			if ($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_COMMENT) {
-				if (preg_match('/(:bits:|:bytes:|\|sum:)/', $graph_item['text_format'])) {
+				if (preg_match('/(:bits:|:bytes:|\|sum:)/', (string) $graph_item['text_format'])) {
 					// Only skip nth percentile COMMENT values
-					$parts = explode('|', $graph_item['text_format']);
+					$parts = explode('|', (string) $graph_item['text_format']);
 
 					if (isset($parts[1])) {
 						$pparts = explode(':', $parts[1]);
@@ -408,7 +408,7 @@ function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph
 					// no more prepending until next line break is encountered
 					$prepend = false;
 					$prepend_cnt++;
-				} elseif (str_contains($save['text_format'], ':current:')) {
+				} elseif (str_contains((string) $save['text_format'], ':current:')) {
 					if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL) {
 						$save['text_format'] = str_replace(':current:', ':aggregate_sum:', $save['text_format']);
 					} elseif ($_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
@@ -416,7 +416,7 @@ function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph
 					} else {
 						cacti_log(__FUNCTION__ . ' unhandled total_type ' . $_total_type . ' for :current: in text_format', true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 					}
-				} elseif (str_contains($save['text_format'], ':max:')) {
+				} elseif (str_contains((string) $save['text_format'], ':max:')) {
 					if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL) {
 						$save['text_format'] = str_replace(':max:', ':aggregate_sum_peak:', $save['text_format']);
 					} elseif ($_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
@@ -636,7 +636,7 @@ function aggregate_validate_graph_params(array $posted, bool $has_override = fal
 function aggregate_validate_graph_items(array $posted, array &$graph_items) : void {
 	foreach ($posted as $var => $val) {
 		// work on color_templates
-		if (preg_match('/^agg_color_([0-9]+)$/', $var, $matches)) {
+		if (preg_match('/^agg_color_([0-9]+)$/', (string) $var, $matches)) {
 			// ================= input validation =================
 			input_validate_input_number($matches[1], 'agg_color');
 			// ====================================================
@@ -650,7 +650,7 @@ function aggregate_validate_graph_items(array $posted, array &$graph_items) : vo
 		}
 
 		// work on checkboxed for skipping items
-		if (preg_match('/^agg_skip_([0-9]+)$/', $var, $matches)) {
+		if (preg_match('/^agg_skip_([0-9]+)$/', (string) $var, $matches)) {
 			// ================= input validation =================
 			input_validate_input_number($matches[1], 'agg_skip');
 			// ====================================================
@@ -664,7 +664,7 @@ function aggregate_validate_graph_items(array $posted, array &$graph_items) : vo
 		}
 
 		// work on checkboxed for totalling items
-		if (preg_match('/^agg_total_([0-9]+)$/', $var, $matches)) {
+		if (preg_match('/^agg_total_([0-9]+)$/', (string) $var, $matches)) {
 			// ================= input validation =================
 			input_validate_input_number($matches[1], 'agg_total');
 			// ====================================================
@@ -697,7 +697,7 @@ function aggregate_graphs_cleanup(int $base, int $aggregate, int $reorder) : voi
 	error_reporting(E_ALL);
 
 	// install own error handler
-	set_error_handler('aggregate_error_handler');
+	set_error_handler(aggregate_error_handler(...));
 
 	// restore original error handler
 	restore_error_handler();
@@ -721,7 +721,7 @@ function aggregate_reorder_ds_graph(int $base, string $graph_template_id, int $a
 	error_reporting(E_ALL);
 
 	// install own error handler
-	set_error_handler('aggregate_error_handler');
+	set_error_handler(aggregate_error_handler(...));
 
 	$new_seq       = 1;
 	$base_handler  = false;
@@ -1113,7 +1113,7 @@ function aggregate_create_update(int &$local_graph_id, array $member_graphs, arr
 	error_reporting(E_ALL);
 
 	// install own error handler
-	set_error_handler('aggregate_error_handler');
+	set_error_handler(aggregate_error_handler(...));
 
 	if (cacti_sizeof($member_graphs)) {
 		$graph_title          = ($attribs['graph_title'] ?? '');
@@ -1419,10 +1419,10 @@ function aggregate_handle_ptile_type(array $member_graphs, array $skipped_items,
 			switch($item['graph_type_id']) {
 				case GRAPH_ITEM_TYPE_COMMENT:
 					if (!isset($special_comments[$item['text_format'] . '|' . $item['value'] . '|' . $item['task_item_id']])) {
-						if (preg_match('/(:bits:|:bytes:)/', $item['text_format'])) {
+						if (preg_match('/(:bits:|:bytes:)/', (string) $item['text_format'])) {
 							$special_comments[$item['text_format'] . '|' . $item['value'] . '|' . $item['task_item_id']] = true;
 
-							$parts = explode('|', $item['text_format']);
+							$parts = explode('|', (string) $item['text_format']);
 
 							if (isset($parts[1])) {
 								$pparts = explode(':', $parts[1]);
@@ -1438,43 +1438,15 @@ function aggregate_handle_ptile_type(array $member_graphs, array $skipped_items,
 										cacti_log(__FUNCTION__ . ' unhandled total_type ' . $_total_type . ' for pparts[3] in text_format', true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 									}
 
-									switch($pparts[3]) {
-										case 'current':
-											$new_ppart = 'current';
-
-											break;
-										case 'total':
-											$new_ppart = 'aggregate_sum';
-
-											break;
-										case 'max':
-											$new_ppart = 'max';
-
-											break;
-										case 'total_peak':
-											$new_ppart = 'total_peak';
-
-											break;
-										case 'all_max_current':
-										case 'all_max_peak':
-										case 'aggregate_max':
-											$new_ppart = 'aggregate_peak';
-
-											break;
-										case 'aggregate_sum':
-										case 'aggregate_sum_peak':
-										case 'aggregate_current':
-										case 'aggregate_current_peak':
-										case 'aggregate':
-										case 'aggregate_peak':
-											$new_ppart = $pparts[3];
-
-											break;
-										default:
-											$new_ppart = 'max';
-
-											break;
-									}
+									$new_ppart = match ($pparts[3]) {
+										'current'    => 'current',
+										'total'      => 'aggregate_sum',
+										'max'        => 'max',
+										'total_peak' => 'total_peak',
+										'all_max_current', 'all_max_peak', 'aggregate_max' => 'aggregate_peak',
+										'aggregate_sum', 'aggregate_sum_peak', 'aggregate_current', 'aggregate_current_peak', 'aggregate', 'aggregate_peak' => $pparts[3],
+										default => 'max',
+									};
 
 									$pparts[3] = $new_ppart;
 
@@ -1501,10 +1473,10 @@ function aggregate_handle_ptile_type(array $member_graphs, array $skipped_items,
 					break;
 				case GRAPH_ITEM_TYPE_HRULE:
 					if (!isset($special_hrules[$item['text_format'] . '|' . $item['value'] . '|' . $item['task_item_id']])) {
-						if (preg_match('/(:bits:|:bytes:)/', $item['value'])) {
+						if (preg_match('/(:bits:|:bytes:)/', (string) $item['value'])) {
 							$special_hrules[$item['text_format'] . '|' . $item['value'] . '|' . $item['task_item_id']] = true;
 
-							$parts = explode('|', $item['value']);
+							$parts = explode('|', (string) $item['value']);
 
 							if (isset($parts[1])) {
 								$pparts = explode(':', $parts[1]);
@@ -1520,43 +1492,15 @@ function aggregate_handle_ptile_type(array $member_graphs, array $skipped_items,
 										cacti_log(__FUNCTION__ . ' unhandled total_type ' . $_total_type . ' for pparts[3] in value', true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 									}
 
-									switch($pparts[3]) {
-										case 'current':
-											$new_ppart = 'current';
-
-											break;
-										case 'total':
-											$new_ppart = 'aggregate_sum';
-
-											break;
-										case 'max':
-											$new_ppart = 'max';
-
-											break;
-										case 'total_peak':
-											$new_ppart = 'total_peak';
-
-											break;
-										case 'all_max_current':
-										case 'all_max_peak':
-										case 'aggregate_max':
-											$new_ppart = 'aggregate_peak';
-
-											break;
-										case 'aggregate_peak':
-										case 'aggregate_sum':
-										case 'aggregate_sum_peak':
-										case 'aggregate_current':
-										case 'aggregate_current_peak':
-										case 'aggregate':
-											$new_ppart = $pparts[3];
-
-											break;
-										default:
-											$new_ppart = 'max';
-
-											break;
-									}
+									$new_ppart = match ($pparts[3]) {
+										'current'    => 'current',
+										'total'      => 'aggregate_sum',
+										'max'        => 'max',
+										'total_peak' => 'total_peak',
+										'all_max_current', 'all_max_peak', 'aggregate_max' => 'aggregate_peak',
+										'aggregate_peak', 'aggregate_sum', 'aggregate_sum_peak', 'aggregate_current', 'aggregate_current_peak', 'aggregate' => $pparts[3],
+										default => 'max',
+									};
 
 									$pparts[3] = $new_ppart;
 
@@ -1856,7 +1800,7 @@ function draw_aggregate_graph_items_list(int $_graph_id = 0, int $_graph_templat
 			$matrix_title     = '';
 			$customClass      = '';
 
-			if (!preg_match('/(GPRINT|TEXTALIGN|HRULE|VRULE|TICK)/', $graph_item_types[$item['graph_type_id']])) {
+			if (!preg_match('/(GPRINT|TEXTALIGN|HRULE|VRULE|TICK)/', (string) $graph_item_types[$item['graph_type_id']])) {
 				$this_row_style   = 'font-weight: bold;';
 				$use_custom_class = true;
 
@@ -1874,37 +1818,37 @@ function draw_aggregate_graph_items_list(int $_graph_id = 0, int $_graph_templat
 			$force_skip       = false;
 
 			switch (true) {
-				case preg_match('/(TEXTALIGN)/', $_graph_type_name):
-					$matrix_title = 'TEXTALIGN: ' . ucfirst($item['textalign']);
+				case preg_match('/(TEXTALIGN)/', (string) $_graph_type_name):
+					$matrix_title = 'TEXTALIGN: ' . ucfirst((string) $item['textalign']);
 
 					break;
-				case preg_match('/(TICK)/', $_graph_type_name):
+				case preg_match('/(TICK)/', (string) $_graph_type_name):
 					$matrix_title = '(' . $item['data_source_name'] . '): ' . $item['text_format'];
 
 					break;
-				case preg_match('/(AREA|STACK|GPRINT|LINE[123])/', $_graph_type_name):
+				case preg_match('/(AREA|STACK|GPRINT|LINE[123])/', (string) $_graph_type_name):
 					$matrix_title = $item['text_format'];
 
 					break;
-				case preg_match('/(HRULE)/', $_graph_type_name):
+				case preg_match('/(HRULE)/', (string) $_graph_type_name):
 					$matrix_title = 'HRULE: ' . $item['value'];
 
-					if (preg_match('/(:bits:|:bytes:|\|sum:)/', $item['value'])) {
+					if (preg_match('/(:bits:|:bytes:|\|sum:)/', (string) $item['value'])) {
 						$force_skip = false;
 					} else {
 						$force_skip = true;
 					}
 
 					break;
-				case preg_match('/(VRULE)/', $_graph_type_name):
+				case preg_match('/(VRULE)/', (string) $_graph_type_name):
 					$force_skip   = true;
 					$matrix_title = 'VRULE: ' . $item['value'];
 
 					break;
-				case preg_match('/(COMMENT)/', $_graph_type_name):
+				case preg_match('/(COMMENT)/', (string) $_graph_type_name):
 					$matrix_title = 'COMMENT: ' . $item['text_format'];
 
-					if (preg_match('/(:bits:|:bytes:|\|sum:)/', $item['text_format'])) {
+					if (preg_match('/(:bits:|:bytes:|\|sum:)/', (string) $item['text_format'])) {
 						$force_skip = false;
 					} elseif ($item['text_format'] != '') {
 						$force_skip = false;

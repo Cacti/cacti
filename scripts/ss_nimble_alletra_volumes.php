@@ -7,7 +7,7 @@ if (!isset($called_by_script_server)) {
 	include_once(__DIR__ . '/../lib/snmp.php');
 
 	array_shift($_SERVER['argv']);
-	print call_user_func_array('ss_nimble_alletra_volumes', $_SERVER['argv']);
+	print call_user_func_array(ss_nimble_alletra_volumes(...), $_SERVER['argv']);
 } else {
 	include_once(__DIR__ . '/../lib/snmp.php');
 }
@@ -60,8 +60,8 @@ function ss_nimble_alletra_volumes(int $host_id = 0, string $cmd = 'index', stri
 			SNMP_POLLER,
 			$host['snmp_engine_id']);
 
-		foreach ($return_arr as $key=>$value) {
-			$parts = explode('.', $value['oid']);
+		foreach ($return_arr as $value) {
+			$parts = explode('.', (string) $value['oid']);
 			$count = cacti_sizeof($parts);
 
 			$index = $parts[$count - 1];
@@ -101,8 +101,8 @@ function ss_nimble_alletra_volumes(int $host_id = 0, string $cmd = 'index', stri
 				SNMP_POLLER,
 				$host['snmp_engine_id']);
 
-			foreach ($return_arr as $key=>$value) {
-				$parts = explode('.', $value['oid']);
+			foreach ($return_arr as $value) {
+				$parts = explode('.', (string) $value['oid']);
 				$count = cacti_sizeof($parts);
 
 				$index = $parts[$count - 1];
@@ -146,21 +146,21 @@ function ss_nimble_alletra_volumes(int $host_id = 0, string $cmd = 'index', stri
 			$high = [];
 
 			foreach ($return_arr_low as $key=>$value) {
-				$parts       = explode('.', $value['oid']);
+				$parts       = explode('.', (string) $value['oid']);
 				$count       = cacti_sizeof($parts);
 				$index       = $parts[$count - 1];
 				$low[$index] = str_pad(decbin($value['value']), 32, '0', STR_PAD_LEFT);
 			}
 
 			foreach ($return_arr_high as $key=>$value) {
-				$parts        = explode('.', $value['oid']);
+				$parts        = explode('.', (string) $value['oid']);
 				$count        = cacti_sizeof($parts);
 				$index        = $parts[$count - 1];
 				$high[$index] = str_pad(decbin($value['value']), 32, '0', STR_PAD_LEFT);
 			}
 
 			foreach ($low as $key => $value) {
-				$long = isset($high[$key]) ? $high[$key] : '' . $value;
+				$long = $high[$key] ?? '' . $value;
 
 				if ($what == 'data' || $what == 'snapshot') {
 					print $key . ':' . bindec($long) . PHP_EOL;

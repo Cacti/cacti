@@ -931,7 +931,7 @@ function api_tree_get_item_type(int $tree_item_id) : string {
  * @return int Returns < 0 if $a is less than $b; > 0 if $a is greater than $b, and 0 if they are equal.
  */
 function naturally_sort_graphs(array $a, array $b) : int {
-	return strnatcasecmp($a['title_cache'], $b['title_cache']);
+	return strnatcasecmp((string) $a['title_cache'], (string) $b['title_cache']);
 }
 
 /**

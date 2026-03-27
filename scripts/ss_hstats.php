@@ -30,7 +30,7 @@ if (!isset($called_by_script_server)) {
 
 	array_shift($_SERVER['argv']);
 
-	print call_user_func_array('ss_hstats', $_SERVER['argv']);
+	print call_user_func_array(ss_hstats(...), $_SERVER['argv']);
 }
 
 /**
@@ -41,21 +41,11 @@ if (!isset($called_by_script_server)) {
  * @return string|null Column name or null if invalid stat
  */
 function ss_hstats_map_stat_to_column(string $stat) : ?string {
-	switch ($stat) {
-		case 'polling_time':
-		case 'min_time':
-		case 'max_time':
-		case 'cur_time':
-		case 'avg_time':
-		case 'failed_polls':
-		case 'availability':
-		case 'current_errors':
-			return $stat;
-		case 'uptime':
-			return 'snmp_sysUpTimeInstance';
-		default:
-			return null;
-	}
+	return match ($stat) {
+		'polling_time', 'min_time', 'max_time', 'cur_time', 'avg_time', 'failed_polls', 'availability', 'current_errors' => $stat,
+		'uptime' => 'snmp_sysUpTimeInstance',
+		default  => null,
+	};
 }
 
 function ss_hstats(int $host_id = 0, string $stat = '') : string {

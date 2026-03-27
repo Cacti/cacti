@@ -32,7 +32,7 @@ if (!isset($called_by_script_server)) {
 
 	array_shift($_SERVER['argv']);
 
-	print call_user_func_array('ss_fping', $_SERVER['argv']);
+	print call_user_func_array(ss_fping(...), $_SERVER['argv']);
 } else {
 	include_once(__DIR__ . '/../lib/snmp.php');
 	include_once(__DIR__ . '/../lib/ping.php');
@@ -69,24 +69,12 @@ function ss_fping(string $hostname = '', int $ping_sweeps = 6, string $ping_type
 		$ping_timeout = read_config_option('ping_timeout');
 	}
 
-	switch (cacti_strtoupper($ping_type)) {
-		case 'ICMP':
-			$method = PING_ICMP;
-
-			break;
-		case 'TCP':
-			$method = PING_TCP;
-
-			break;
-		case 'UDP':
-			$method = PING_UDP;
-
-			break;
-		default:
-			$method = PING_ICMP;
-
-			break;
-	}
+	$method = match (cacti_strtoupper($ping_type)) {
+		'ICMP'  => PING_ICMP,
+		'TCP'   => PING_TCP,
+		'UDP'   => PING_UDP,
+		default => PING_ICMP,
+	};
 
 	$i = 0;
 

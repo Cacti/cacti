@@ -42,7 +42,7 @@ $snmp_auth  = $_SERVER['argv'][3];
 $cmd        = $_SERVER['argv'][4];
 
 // support for SNMP V2 and SNMP V3 parameters
-$snmp          = explode(':', $snmp_auth);
+$snmp          = explode(':', (string) $snmp_auth);
 $snmp_version  = intval($snmp[0]);
 $snmp_port     = intval($snmp[1]);
 $snmp_timeout  = intval($snmp[2]);

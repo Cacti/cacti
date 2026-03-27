@@ -25,15 +25,7 @@
 // Create a consistent responsive filter
 
 class CactiTableFilter {
-	// constructor variables
-	public string $form_header      = '';
-	public string $form_action      = '';
-	public string $form_id          = '';
 	public string $form_method      = 'get';
-	public string $session_var      = 'sess_';
-	public string $action_url       = '';
-	public string $action_label     = '';
-	public bool $show_columns       = true;
 	public array $default_filter    = [];
 	public string $rows_label       = '';
 	public string $associated_label = '';
@@ -68,17 +60,9 @@ class CactiTableFilter {
 	private array $filter_array    = [];
 	private array $frequencies     = [];
 
-	public function __construct(string $form_header = '', string $form_action = '', string $form_id = '',
-		string $session_var = '', string $action_url = '', mixed $action_label = '', bool $show_columns = true) {
+	public function __construct(public string $form_header = '', public string $form_action = '', public string $form_id = '',
+		public string $session_var = '', public string $action_url = '', public string $action_label = '', public bool $show_columns = true) {
 		global $item_rows, $graph_timespans, $graph_timeshifts;
-
-		$this->form_header   = $form_header;
-		$this->form_action   = $form_action;
-		$this->form_id       = $form_id;
-		$this->session_var   = $session_var;
-		$this->action_url    = $action_url;
-		$this->action_label  = $action_label;
-		$this->show_columns  = $show_columns;
 
 		$this->item_rows     = $item_rows;
 		$this->timespans     = $graph_timespans;
@@ -101,11 +85,11 @@ class CactiTableFilter {
 			$tab    = gnrv('tab');
 
 			if ($action != '') {
-				$this->session_var .= basename(get_current_page(), '.php') . '_' . $action;
+				$this->session_var .= basename((string) get_current_page(), '.php') . '_' . $action;
 			} elseif ($tab != '') {
-				$this->session_var .= basename(get_current_page(), '.php') . '_' . $tab;
+				$this->session_var .= basename((string) get_current_page(), '.php') . '_' . $tab;
 			} else {
-				$this->session_var .= basename(get_current_page(), '.php');
+				$this->session_var .= basename((string) get_current_page(), '.php');
 			}
 		}
 
@@ -608,7 +592,7 @@ class CactiTableFilter {
 								print '<div class="filterColumn"><div class="filterFieldName"><label for="' . $field_name . '">' . $field_array['friendly_name'] . '</label></div></div>' . PHP_EOL;
 							}
 
-							if (isrv($field_name) && !str_contains($field_array['method'], 'callback')) {
+							if (isrv($field_name) && !str_contains((string) $field_array['method'], 'callback')) {
 								$field_array['value'] = gnrv($field_name);
 							}
 
@@ -839,11 +823,11 @@ class CactiTableFilter {
 		}
 
 		if (isset($this->filter_array['javascript']['ready']) && $this->filter_array['javascript']['ready'] != '') {
-			$readyAdd .= "\t\t" . trim($this->filter_array['javascript']['ready']) . PHP_EOL;
+			$readyAdd .= "\t\t" . trim((string) $this->filter_array['javascript']['ready']) . PHP_EOL;
 		}
 
 		if (isset($this->filter_array['javascript']['global']) && $this->filter_array['javascript']['global'] != '') {
-			$globalAdd .= "\t\t" . trim($this->filter_array['javascript']['global']) . PHP_EOL;
+			$globalAdd .= "\t\t" . trim((string) $this->filter_array['javascript']['global']) . PHP_EOL;
 		}
 
 		if (!$this->has_refresh && isrv('refresh') && grv('refresh') > 0) {

@@ -5,7 +5,7 @@ include_once(__DIR__ . '/../lib/snmp.php');
 
 if (!isset($called_by_script_server)) {
 	array_shift($_SERVER['argv']);
-	print call_user_func_array('ss_esxi_vhosts', $_SERVER['argv']);
+	print call_user_func_array(ss_esxi_vhosts(...), $_SERVER['argv']);
 }
 
 function ss_esxi_vhosts(int $device_id) : string {
@@ -41,8 +41,8 @@ function ss_esxi_vhosts(int $device_id) : string {
 	$array  = cacti_snmp_walk($hostname, $community, $oids['vh_state'], 1, '','', '','', '', '', $port, $timeout, 2, 20, SNMP_POLLER);
 
 	if (cacti_sizeof($array)) {
-		foreach ($array as $key => $value) {
-			if (cacti_strtolower(trim($value['value'])) == 'powered on' || cacti_strtolower(trim($value['value'])) == 'poweredon') {
+		foreach ($array as $value) {
+			if (cacti_strtolower(trim((string) $value['value'])) == 'powered on' || cacti_strtolower(trim((string) $value['value'])) == 'poweredon') {
 				$vh_state++;
 			}
 		}
@@ -51,10 +51,10 @@ function ss_esxi_vhosts(int $device_id) : string {
 	$array  = cacti_snmp_walk($hostname, $community, $oids['vh_tools'], 1, '', '', '', '', '', '', $port, $timeout, 2, 20, SNMP_POLLER);
 
 	if (cacti_sizeof($array)) {
-		foreach ($array as $key => $value) {
-			if (str_contains($value['value'], 'not installed')) {
+		foreach ($array as $value) {
+			if (str_contains((string) $value['value'], 'not installed')) {
 				$vh_tools_ninst++;
-			} elseif (str_contains($value['value'], 'not running')) {
+			} elseif (str_contains((string) $value['value'], 'not running')) {
 				$vh_tools_nrun++;
 			} else {
 				$vh_tools_run++;

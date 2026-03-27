@@ -140,11 +140,11 @@ function process_user_input(array &$timespan, int $timeshift) : void {
 		$date2      = gnrv('date2');
 
 		if (!is_numeric($date1)) {
-			$date1 = strtotime($date1);
+			$date1 = strtotime((string) $date1);
 		}
 
 		if (!is_numeric($date2)) {
-			$date2 = strtotime($date2);
+			$date2 = strtotime((string) $date2);
 		}
 
 		$errors = 0;
@@ -237,7 +237,7 @@ function set_preset_timespan(array &$timespan) : void {
 		$_SESSION['sess_current_timespan'] = read_user_setting('default_timespan');
 	}
 
-	if (preg_match('/graph/i', get_current_page())) {
+	if (preg_match('/graph/i', (string) get_current_page())) {
 		$graph = true;
 	} else {
 		$graph = false;

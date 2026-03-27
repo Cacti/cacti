@@ -1015,7 +1015,7 @@ function api_device_save(int $id, int $device_template_id, string $description, 
 		$save['snmp_context']         = form_input_validate($snmp_context, 'snmp_context', '', true, 3);
 		$save['snmp_engine_id']       = form_input_validate($snmp_engine_id, 'snmp_engine_id', '', true, 3);
 
-		if (strlen($save['snmp_password']) < 8 && $snmp_auth_protocol != '[None]') {
+		if (strlen((string) $save['snmp_password']) < 8 && $snmp_auth_protocol != '[None]') {
 			raise_message(32);
 			$_SESSION[SESS_ERROR_FIELDS]['snmp_password'] = 'snmp_password';
 		}
@@ -1628,7 +1628,7 @@ function api_device_ping_device(string|null $device_id, bool $from_remote = fals
 
 					// modify for some system descriptions
 					// 0000937: System output in host.php poor for Alcatel
-					if (substr_count($snmp_system, '00:')) {
+					if (substr_count((string) $snmp_system, '00:')) {
 						$snmp_system = str_replace('00:', '', $snmp_system);
 						$snmp_system = str_replace(':', ' ', $snmp_system);
 					}
@@ -1729,7 +1729,7 @@ function api_duplicate_device_template(int $_host_template_id, string $host_temp
 		$save['hash'] = get_hash_host_template(0);
 
 		foreach ($fields_host_template_edit as $field => $array) {
-			if (!preg_match('/^hidden/', $array['method'])) {
+			if (!preg_match('/^hidden/', (string) $array['method'])) {
 				$save[$field] = $host_template[$field];
 			}
 		}
@@ -2105,7 +2105,7 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 					$errors++;
 					$return['errors'][] = sprintf('FATAL: Data Query to be cloned %s is not numeric', $id);
 				} elseif (isset($data_query['script_path']) && $data_query['script_path'] != '') {
-					$parts = explode('.', $data_query['script_path']);
+					$parts = explode('.', (string) $data_query['script_path']);
 					$name  = $data_query['name'];
 
 					$xml_script = $parts[0] . $suffix . (isset($parts[1]) ? '.' . $parts[1] : '');
@@ -2402,7 +2402,7 @@ function api_clone_device_template_get_objects(int $device_template_id) : array 
 					$parts = explode(' ', $data_template['input_string']);
 
 					foreach ($parts as $p) {
-						if (str_contains($p, CACTI_PATH_BASE)) {
+						if (str_contains($p, (string) CACTI_PATH_BASE)) {
 							if (file_exists($p)) {
 								$objects['data_templates'][$id]['script_path'] = $p;
 
@@ -2983,7 +2983,7 @@ function api_device_template_download(string $type, array $ids) : void {
 				$name = 'device_template_' . clean_up_name($data['name']) . '.tgz';
 			}
 
-			$contents = base64_decode($data['archive'], true);
+			$contents = base64_decode((string) $data['archive'], true);
 
 			$archive->addFromString('./' . $name, $contents);
 		} else {
@@ -3059,7 +3059,7 @@ function api_device_template_archive_for_export(int $id) : mixed {
 			// search xml files for scripts
 			if (cacti_sizeof($files)) {
 				foreach ($files as $file) {
-					if (str_contains($file['file'], '.xml')) {
+					if (str_contains((string) $file['file'], '.xml')) {
 						$files = array_merge($files, find_dependent_files(file_get_contents($file['file'])));
 					}
 				}
@@ -3142,7 +3142,7 @@ function api_device_template_archive(int $id, string $archive_note) : bool {
 			// search xml files for scripts
 			if (cacti_sizeof($files)) {
 				foreach ($files as $file) {
-					if (str_contains($file['file'], '.xml')) {
+					if (str_contains((string) $file['file'], '.xml')) {
 						$files = array_merge($files, find_dependent_files(file_get_contents($file['file'])));
 					}
 				}

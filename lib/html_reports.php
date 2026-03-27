@@ -411,7 +411,7 @@ function reports_form_actions() : void {
 
 		if ($selected_items != false) {
 			foreach ($selected_items as $report) {
-				[$type, $report_id] = explode('_', $report);
+				[$type, $report_id] = explode('_', (string) $report);
 
 				$report_id = intval($report_id);
 
@@ -491,7 +491,7 @@ function reports_form_actions() : void {
 
 		// loop through each of the graphs selected on the previous page and get more info about them
 		foreach ($_POST as $var => $val) {
-			if (preg_match('/^chk_([a-z_0-9]+)$/', $var, $matches)) {
+			if (preg_match('/^chk_([a-z_0-9]+)$/', (string) $var, $matches)) {
 				[$type, $id] = explode('_', $matches[1]);
 				// ================= input validation =================
 				input_validate_input_number($id);
@@ -2295,12 +2295,12 @@ function reports() : void {
 			form_selectable_cell($report['enabled'] ? '<i class="ti ti-check deviceUp"></i>' : '<i class="ti ti-x deviceDown"></i>', $id, '', 'right');
 
 			if ($report['sched_type'] != 1) {
-				form_selectable_cell(date($date_format, strtotime($report['next_start'])), $id, '', 'right');
+				form_selectable_cell(date($date_format, strtotime((string) $report['next_start'])), $id, '', 'right');
 			} else {
 				form_selectable_cell(__('N/A'), $id, '', 'right');
 			}
 
-			form_selectable_cell($report['last_started'] == '0000-00-00 00:00:00' ? __('Never') : date($date_format, strtotime($report['last_started'])), $id, '', 'right');
+			form_selectable_cell($report['last_started'] == '0000-00-00 00:00:00' ? __('Never') : date($date_format, strtotime((string) $report['last_started'])), $id, '', 'right');
 
 			form_selectable_cell(__('%s sec', number_format_i18n($report['run_limit'], 1)), $id, '', 'right');
 

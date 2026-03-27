@@ -174,7 +174,7 @@ function db_connect_real(string $device, string $user, string $pass, string $db_
 
 			$ver = db_get_global_variable('version', $cnn_id);
 
-			if (str_contains($ver, 'MariaDB')) {
+			if (str_contains((string) $ver, 'MariaDB')) {
 				$srv              = 'MariaDB';
 				$ver              = str_replace('-MariaDB', '', $ver);
 				$required_modes[] = 'NO_ENGINE_SUBSTITUTION';
@@ -192,7 +192,7 @@ function db_connect_real(string $device, string $user, string $pass, string $db_
 			}
 
 			// Get rid of bad modes
-			$modes     = explode(',', db_fetch_cell('SELECT @@sql_mode', '', false));
+			$modes     = explode(',', (string) db_fetch_cell('SELECT @@sql_mode', '', false));
 			$new_modes = [];
 
 			foreach ($modes as $mode) {
@@ -572,7 +572,7 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 			db_echo_sql('db_' . $execute_name . ' Memory [Before]: ' . memory_get_usage() . ' / ' . memory_get_peak_usage() . "\n");
 		}
 
-		set_error_handler('db_warning_handler', E_WARNING | E_NOTICE);
+		set_error_handler(db_warning_handler(...), E_WARNING | E_NOTICE);
 
 		try {
 			if (empty($params) || cacti_count($params) == 0) {
@@ -1696,7 +1696,7 @@ function db_format_index_create(mixed $indexes) : string {
 		$outindex = '';
 
 		foreach ($indexes as $index) {
-			$index = trim($index);
+			$index = trim((string) $index);
 
 			if (str_ends_with($index, ')')) {
 				$outindex .= ($outindex != '' ? ',' : '') . $index;
@@ -1707,7 +1707,7 @@ function db_format_index_create(mixed $indexes) : string {
 
 		return $outindex;
 	} else {
-		$indexes = trim($indexes);
+		$indexes = trim((string) $indexes);
 
 		if (str_ends_with($indexes, ')')) {
 			return $indexes;
@@ -1997,7 +1997,7 @@ function array_to_sql_or(array $array, string $sql_column) : mixed {
 	}
 
 	if (cacti_sizeof($array)) {
-		$sql_or = '(' . $sql_column . ' IN(' . implode(',', array_map('db_qstr', $array)) . '))';
+		$sql_or = '(' . $sql_column . ' IN(' . implode(',', array_map(db_qstr(...), $array)) . '))';
 
 		return $sql_or;
 	}
@@ -2146,15 +2146,15 @@ function sql_save(array $array_items, string $table_name, mixed $key_cols = 'id'
 			return false;
 		}
 
-		if (str_contains($cols[$key]['type'], 'int') ||
-			str_contains($cols[$key]['type'], 'float') ||
-			str_contains($cols[$key]['type'], 'double') ||
-			str_contains($cols[$key]['type'], 'decimal')) {
+		if (str_contains((string) $cols[$key]['type'], 'int') ||
+			str_contains((string) $cols[$key]['type'], 'float') ||
+			str_contains((string) $cols[$key]['type'], 'double') ||
+			str_contains((string) $cols[$key]['type'], 'decimal')) {
 			if ($value == '') {
 				if ($cols[$key]['null'] == 'YES') {
 					// TODO: We should make 'NULL', but there are issues that need to be addressed first
 					$array_items[$key] = 0;
-				} elseif (str_contains($cols[$key]['extra'], 'auto_increment')) {
+				} elseif (str_contains((string) $cols[$key]['extra'], 'auto_increment')) {
 					$array_items[$key] = 0;
 				} elseif ($cols[$key]['default'] == '') {
 					// TODO: We should make 'NULL', but there are issues that need to be addressed first
@@ -2231,7 +2231,7 @@ function db_qstr(mixed $s, mixed $db_conn = false) : string {
  * @return string The SQL command
  */
 function db_strip_control_chars(string $sql) : string {
-	return trim(clean_up_lines($sql), ';');
+	return trim((string) clean_up_lines($sql), ';');
 }
 
 /**
@@ -2461,7 +2461,7 @@ function db_dump_data(string $database = '', string $tables = '', array $credent
 
 	if (cacti_sizeof($credentials)) {
 		foreach ($credentials as $key => $value) {
-			$name = trim($key);
+			$name = trim((string) $key);
 
 			if (str_contains($name, '--')) {      // name like --host
 				if ($name == '--password') {
@@ -2507,7 +2507,7 @@ function db_dump_data(string $database = '', string $tables = '', array $credent
 
 	$dump_esc   = cacti_escapeshellcmd($dump);
 	$output_esc = cacti_escapeshellarg((string) $output_file);
-	$tables_esc = $tables !== '' ? implode(' ', array_map('cacti_escapeshellarg', preg_split('/\s+/', trim($tables)))) : '';
+	$tables_esc = $tables !== '' ? implode(' ', array_map(cacti_escapeshellarg(...), preg_split('/\s+/', trim($tables)))) : '';
 
 	if (str_contains($options, '--defaults-extra-file')) {
 		exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ($tables_esc !== '' ? ' ' . $tables_esc : '') . " > $output_esc", $output, $retval);
@@ -2582,7 +2582,7 @@ function db_get_permissions(bool $include_unknown = false, bool $log = false, mi
 		foreach ($db_grants as $db_grants_user) {
 			foreach ($db_grants_user as $db_grant) {
 				// We are only interested in GRANT lines
-				if (preg_match('/GRANT (.*) ON (.+)\.(.+) TO/i', $db_grant, $db_grant_match)) {
+				if (preg_match('/GRANT (.*) ON (.+)\.(.+) TO/i', (string) $db_grant, $db_grant_match)) {
 					// Replace any * used with .* for preg_match
 					// Replace any % used with .* for preg_match
 					$db_grant_regex = str_replace(['*', '%'], ['.*', '.*'], $db_grant_match[2]);
@@ -2608,13 +2608,13 @@ function db_get_permissions(bool $include_unknown = false, bool $log = false, mi
 									}
 
 									if (array_key_exists($db_grant_perm, $perms)) {
-										if (str_contains($db_grant, "`$database_default`.*")) {
+										if (str_contains((string) $db_grant, "`$database_default`.*")) {
 											$perms[$db_name][$db_grant_perm . ' ON *'] = true;
 										} else {
 											$perms[$db_name][$db_grant_perm] = true;
 										}
 									} elseif ($include_unknown) {
-										$gs                                                = explode('.', $db_grant);
+										$gs                                                = explode('.', (string) $db_grant);
 										$table                                             = explode(' ', $gs[1]);
 										$table                                             = str_replace('`', '', $table[0]);
 										$perms[$db_name][$db_grant_perm . ' ON ' . $table] = true;
@@ -2689,7 +2689,7 @@ function get_mysql_info(int $poller_id = 1) : array {
 		$variables = array_rekey(db_fetch_assoc('SHOW GLOBAL VARIABLES', false, $local_db_cnn_id), 'Variable_name', 'Value');
 	}
 
-	if (str_contains($variables['version'], 'MariaDB')) {
+	if (str_contains((string) $variables['version'], 'MariaDB')) {
 		$database = 'MariaDB';
 		$version  = str_replace('-MariaDB', '', $variables['version']);
 
@@ -2701,7 +2701,7 @@ function get_mysql_info(int $poller_id = 1) : array {
 	} else {
 		$database = 'MySQL';
 		$version  = $variables['version'];
-		$link_ver = substr($variables['version'], 0, 3);
+		$link_ver = substr((string) $variables['version'], 0, 3);
 	}
 
 	return [

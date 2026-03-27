@@ -256,7 +256,7 @@ function encrypt(string $output, string $rsa_key) : string {
 
 		$aes->setKey($aes_key);
 		$ciphertext     = base64_encode($aes->encrypt($output));
-		$aes_key        = base64_encode($public->encrypt($aes_key));
+		$aes_key        = base64_encode((string) $public->encrypt($aes_key));
 		$aes_key_length = str_pad(dechex(strlen($aes_key)), 3, '0', STR_PAD_LEFT);
 
 		return $aes_key_length . $aes_key . $ciphertext;
@@ -320,7 +320,7 @@ function __rrd_execute(string|array $command_line, bool $log_to_stdout, int $out
 	static $last_command;
 
 	if (is_array($command_line)) {
-		$command_line = implode(' ', array_map('cacti_escapeshellarg', $command_line));
+		$command_line = implode(' ', array_map(cacti_escapeshellarg(...), $command_line));
 	}
 
 	/**
@@ -844,7 +844,7 @@ function rrdtool_function_create(int $local_data_id, bool $show_source, mixed $r
 			$data_source_name = get_data_source_item_name($data_source['id']);
 
 			// Trim the data source maximum
-			$data_source['rrd_maximum'] = trim($data_source['rrd_maximum']);
+			$data_source['rrd_maximum'] = trim((string) $data_source['rrd_maximum']);
 
 			if ($data_source['rrd_maximum'] == 'U') {
 				// in case no maximum is given, use "Undef" value
@@ -1286,7 +1286,7 @@ function rrd_function_process_graph_options(int $graph_start, int $graph_end, ar
 		$unit_value = '--y-grid=' . cacti_escapeshellarg($graph['unit_value']) . RRD_NL;
 	}
 
-	if (preg_match('/^[0-9]+$/', $graph['unit_exponent_value'])) {
+	if (preg_match('/^[0-9]+$/', (string) $graph['unit_exponent_value'])) {
 		$unit_exponent_value = '--units-exponent=' . cacti_escapeshellarg($graph['unit_exponent_value']) . RRD_NL;
 	}
 
@@ -1373,7 +1373,7 @@ function rrd_function_process_graph_options(int $graph_start, int $graph_end, ar
 
 				break;
 			case 'unit_exponent_value':
-				if (preg_match('/^[0-9]+$/', $value)) {
+				if (preg_match('/^[0-9]+$/', (string) $value)) {
 					$graph_opts .= '--units-exponent=' . $value . RRD_NL;
 				}
 
@@ -1761,7 +1761,7 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 		$cactiLastDate = date('Y-m-d H:i:s');
 	}
 
-	$dateTime = date($dateTimeFormat, strtotime($cactiLastDate));
+	$dateTime = date($dateTimeFormat, strtotime((string) $cactiLastDate));
 
 	// the following fields will be searched for graph variables
 	$variable_fields = [
@@ -1937,13 +1937,13 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 				$replace = [];
 
 				// date/time substitution
-				if (strstr($graph_variables[$field_name][$graph_item_id], '|date_time|')) {
+				if (strstr((string) $graph_variables[$field_name][$graph_item_id], '|date_time|')) {
 					$search[]  = '|date_time|';
 					$replace[] =  $dateTime;
 				}
 
 				// data source title substitution
-				if (strstr($graph_variables[$field_name][$graph_item_id], '|data_source_title|')) {
+				if (strstr((string) $graph_variables[$field_name][$graph_item_id], '|data_source_title|')) {
 					$search[]  = '|data_source_title|';
 					$replace[] =  get_data_source_title($graph_item['local_data_id']);
 				}
@@ -2021,8 +2021,8 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 				 */
 				if ($graph['auto_padding'] == 'on') {
 					// only applies to AREA, STACK and LINEs
-					if (preg_match('/(AREA|STACK|LINE[123])/', $graph_item_types[$graph_item['graph_type_id']])) {
-						$text_format_length = mb_strlen(trim($graph_variables['text_format'][$graph_item_id]), 'UTF-8');
+					if (preg_match('/(AREA|STACK|LINE[123])/', (string) $graph_item_types[$graph_item['graph_type_id']])) {
+						$text_format_length = mb_strlen(trim((string) $graph_variables['text_format'][$graph_item_id]), 'UTF-8');
 
 						if ($text_format_length > $pad_number) {
 							$pad_number = $text_format_length;
@@ -2133,7 +2133,7 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 					// loop over all graph items
 					foreach ($graph_items as $gi_check) {
 						// only work on graph items, omit GRPINTs, COMMENTs and stuff
-						if ((preg_match('/(AREA|STACK|LINE[123])/', $graph_item_types[$gi_check['graph_type_id']])) && (!empty($gi_check['data_template_rrd_id']))) {
+						if ((preg_match('/(AREA|STACK|LINE[123])/', (string) $graph_item_types[$gi_check['graph_type_id']])) && (!empty($gi_check['data_template_rrd_id']))) {
 							// if the user screws up CF settings, PHP will generate warnings if left unchecked
 							$magic_cf_ds_key = "{$gi_check['data_template_rrd_id']}:{$cf_id}";
 
@@ -2631,7 +2631,7 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 						break;
 					case GRAPH_ITEM_TYPE_AREA:
 						if ($graph_variables['text_format'][$graph_item_id] != '') {
-							$text_format = rrdtool_escape_string(htmle(str_pad($graph_variables['text_format'][$graph_item_id], $pad_number)));
+							$text_format = rrdtool_escape_string(htmle(str_pad((string) $graph_variables['text_format'][$graph_item_id], $pad_number)));
 						} elseif (isset($graph_data_array['graph_nolegend'])) {
 							if (isset($legends[$graph_item['local_data_id']][$graph_item['data_source_name']][$consolidation_functions[$graph_cf]])) {
 								$text_format = $legends[$graph_item['local_data_id']][$graph_item['data_source_name']][$consolidation_functions[$graph_cf]];
@@ -2659,13 +2659,13 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 							$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . $graph_item['value'];
 						}
 
-						$text_format                        = trim(preg_replace('/[^a-z0-9 _()]/i', '', $text_format));
+						$text_format                        = trim((string) preg_replace('/[^a-z0-9 _()]/i', '', (string) $text_format));
 						$xport_meta['legend'][$text_format] = $graph_item_color_code;
 
 						break;
 					case GRAPH_ITEM_TYPE_STACK:
 						if ($graph_variables['text_format'][$graph_item_id] != '') {
-							$text_format = rrdtool_escape_string(htmle(str_pad($graph_variables['text_format'][$graph_item_id], $pad_number)));
+							$text_format = rrdtool_escape_string(htmle(str_pad((string) $graph_variables['text_format'][$graph_item_id], $pad_number)));
 						} elseif (isset($graph_data_array['graph_nolegend'])) {
 							if (isset($legends[$graph_item['local_data_id']][$graph_item['data_source_name']][$consolidation_functions[$graph_cf]])) {
 								$text_format = $legends[$graph_item['local_data_id']][$graph_item['data_source_name']][$consolidation_functions[$graph_cf]];
@@ -2686,7 +2686,7 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 							$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . $graph_item['value'];
 						}
 
-						$text_format                        = trim(preg_replace('/[^a-z0-9 _()]/i', '', $text_format));
+						$text_format                        = trim((string) preg_replace('/[^a-z0-9 _()]/i', '', (string) $text_format));
 						$xport_meta['legend'][$text_format] = $graph_item_color_code;
 
 						break;
@@ -2694,7 +2694,7 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 					case GRAPH_ITEM_TYPE_LINE2:
 					case GRAPH_ITEM_TYPE_LINE3:
 						if ($graph_variables['text_format'][$graph_item_id] != '') {
-							$text_format = rrdtool_escape_string(htmle(str_pad($graph_variables['text_format'][$graph_item_id], $pad_number)));
+							$text_format = rrdtool_escape_string(htmle(str_pad((string) $graph_variables['text_format'][$graph_item_id], $pad_number)));
 						} elseif (isset($graph_data_array['graph_nolegend'])) {
 							if (isset($legends[$graph_item['local_data_id']][$graph_item['data_source_name']][$consolidation_functions[$graph_cf]])) {
 								$text_format = $legends[$graph_item['local_data_id']][$graph_item['data_source_name']][$consolidation_functions[$graph_cf]];
@@ -2711,13 +2711,13 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 							$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . $graph_item['value'];
 						}
 
-						$text_format                        = trim(preg_replace('/[^a-z0-9 _()]/i', '', $text_format));
+						$text_format                        = trim((string) preg_replace('/[^a-z0-9 _()]/i', '', (string) $text_format));
 						$xport_meta['legend'][$text_format] = $graph_item_color_code;
 
 						break;
 					case GRAPH_ITEM_TYPE_LINESTACK:
 						if ($graph_variables['text_format'][$graph_item_id] != '') {
-							$text_format = rrdtool_escape_string(htmle(str_pad($graph_variables['text_format'][$graph_item_id], $pad_number)));
+							$text_format = rrdtool_escape_string(htmle(str_pad((string) $graph_variables['text_format'][$graph_item_id], $pad_number)));
 						} elseif (isset($graph_data_array['graph_nolegend'])) {
 							if (isset($legends[$graph_item['local_data_id']][$graph_item['data_source_name']][$consolidation_functions[$graph_cf]])) {
 								$text_format = $legends[$graph_item['local_data_id']][$graph_item['data_source_name']][$consolidation_functions[$graph_cf]];
@@ -2734,7 +2734,7 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 							$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . $graph_item['value'];
 						}
 
-						$text_format                        = trim(preg_replace('/[^a-z0-9 _()]/i', '', $text_format));
+						$text_format                        = trim((string) preg_replace('/[^a-z0-9 _()]/i', '', (string) $text_format));
 						$xport_meta['legend'][$text_format] = $graph_item_color_code;
 
 						break;
@@ -2761,8 +2761,8 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 
 						break;
 					case GRAPH_ITEM_TYPE_VRULE:
-						if (substr_count($graph_item['value'], ':')) {
-							$value_array = explode(':', $graph_item['value']);
+						if (substr_count((string) $graph_item['value'], ':')) {
+							$value_array = explode(':', (string) $graph_item['value']);
 
 							if ($value_array[0] < 0) {
 								$value = date('U') - (-3600 * (int) $value_array[0]) - 60 * (int) $value_array[1];
@@ -2783,11 +2783,11 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 						$need_rrd_nl = false;
 				}
 			} else {
-				if (preg_match('/^(AREA|AREA:STACK|LINE[123]|STACK)$/', $graph_item_types[$graph_item['graph_type_id']])) {
+				if (preg_match('/^(AREA|AREA:STACK|LINE[123]|STACK)$/', (string) $graph_item_types[$graph_item['graph_type_id']])) {
 					$legend_name = '';
 
 					// give all export items a name
-					if (trim($graph_variables['text_format'][$graph_item_id]) == '') {
+					if (trim((string) $graph_variables['text_format'][$graph_item_id]) == '') {
 						if (isset($legends[$graph_item['local_data_id']][$graph_item['data_source_name']][$consolidation_functions[$graph_cf]])) {
 							$legend_name = $legends[$graph_item['local_data_id']][$graph_item['data_source_name']][$consolidation_functions[$graph_cf]];
 						}
@@ -2872,7 +2872,7 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 				$output      = rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, $output_flag, $rrdtool_pipe);
 
 				if ($fp = fopen($graph_data_array['export_realtime'], 'w')) {
-					fwrite($fp, $output, strlen($output));
+					fwrite($fp, (string) $output, strlen((string) $output));
 					fclose($fp);
 					chmod($graph_data_array['export_realtime'], 0644);
 				}
@@ -2939,36 +2939,15 @@ function rrdtool_function_format_graph_date(array &$graph_data_array) : string {
 	$dateCharSetting = read_user_setting('default_datechar',read_config_option('default_datechar'));
 	$datecharacter   = $datechar[$dateCharSetting];
 
-	switch ($date_fmt) {
-		case GD_MO_D_Y:
-			$graph_date = 'm' . $datecharacter . 'd' . $datecharacter . 'Y H:i:s';
-
-			break;
-		case GD_MN_D_Y:
-			$graph_date = 'M' . $datecharacter . 'd' . $datecharacter . 'Y H:i:s';
-
-			break;
-		case GD_D_MO_Y:
-			$graph_date = 'd' . $datecharacter . 'm' . $datecharacter . 'Y H:i:s';
-
-			break;
-		case GD_D_MN_Y:
-			$graph_date = 'd' . $datecharacter . 'M' . $datecharacter . 'Y H:i:s';
-
-			break;
-		case GD_Y_MO_D:
-			$graph_date = 'Y' . $datecharacter . 'm' . $datecharacter . 'd H:i:s';
-
-			break;
-		case GD_Y_MN_D:
-			$graph_date = 'Y' . $datecharacter . 'M' . $datecharacter . 'd H:i:s';
-
-			break;
-		default:
-			$graph_date = 'Y' . $datecharacter . 'M' . $datecharacter . 'd H:i:s';
-
-			break;
-	}
+	$graph_date = match ($date_fmt) {
+		GD_MO_D_Y => 'm' . $datecharacter . 'd' . $datecharacter . 'Y H:i:s',
+		GD_MN_D_Y => 'M' . $datecharacter . 'd' . $datecharacter . 'Y H:i:s',
+		GD_D_MO_Y => 'd' . $datecharacter . 'm' . $datecharacter . 'Y H:i:s',
+		GD_D_MN_Y => 'd' . $datecharacter . 'M' . $datecharacter . 'Y H:i:s',
+		GD_Y_MO_D => 'Y' . $datecharacter . 'm' . $datecharacter . 'd H:i:s',
+		GD_Y_MN_D => 'Y' . $datecharacter . 'M' . $datecharacter . 'd H:i:s',
+		default   => 'Y' . $datecharacter . 'M' . $datecharacter . 'd H:i:s',
+	};
 
 	if (CACTI_WEB) {
 		cacti_time_zone_set();
@@ -3576,7 +3555,7 @@ function rrdtool_cacti_compare(int $data_source_id, array &$info) : array {
 					}
 
 					// correct issue with older rrdtools
-					$file_rra['cf'] = trim($file_rra['cf'], '"');
+					$file_rra['cf'] = trim((string) $file_rra['cf'], '"');
 
 					if ($cacti_rra['cf'] == $file_rra['cf'] && $cacti_rra_id == $file_rra_id) {
 						if (isset($info['rra'][$file_rra_id]['seen'])) {
@@ -3927,7 +3906,7 @@ function rrd_datasource_add(array $file_array, array $ds_array, bool $debug) : m
 		 * version 0003 => RRDtool 1.2.x, 1.3.x, 1.4.x, 1.5.x, 1.6.x
 		 */
 		$version_node = $dom->getElementsByTagName('version')->item(0);
-		$version      = $version_node !== null ? trim($version_node->nodeValue) : RRD_FILE_VERSION3;
+		$version      = $version_node !== null ? trim((string) $version_node->nodeValue) : RRD_FILE_VERSION3;
 
 		// now start XML processing
 		foreach ($ds_array as $ds) {
@@ -4498,7 +4477,7 @@ function rrdtool_parse_error(string $string) : string {
 				$rra_name = str_replace(CACTI_PATH_RRA . '/', '', $rra_path);
 				$rra_path = '';
 			} else {
-				$found = stripos($filename, CACTI_PATH_BASE);
+				$found = stripos($filename, (string) CACTI_PATH_BASE);
 
 				if ($found > 0 || $found === 0) {
 					$rra_file = str_replace(CACTI_PATH_RRA . '/', '', $filename);
@@ -4754,10 +4733,10 @@ function gradient(string $vname = '', string $start_color = '#0000a0', string $e
 	$spline_vname = 'var_' . substr(sha1((string) random_int(0, mt_getrandmax())), 1, 4);
 	$vnamet       = $vname . substr(sha1((string) random_int(0, mt_getrandmax())), 1, 4);
 
-	if (preg_match('/^([0-9]{1,3})%$/', $lower, $matches)) {
+	if (preg_match('/^([0-9]{1,3})%$/', (string) $lower, $matches)) {
 		$lower   = $matches[1];
 		$spline .= sprintf('CDEF:%s_min=%s,100,/,%d,* ' . RRD_NL, $vnamet, $vname, $lower);
-	} elseif (preg_match('/^([0-9]+)$/', $lower, $matches)) {
+	} elseif (preg_match('/^([0-9]+)$/', (string) $lower, $matches)) {
 		$lower   = $matches[1];
 		$spline .= sprintf('CDEF:%s_min=%s,%d,- ' . RRD_NL, $vnamet, $vname, $lower);
 	} else {
@@ -4921,17 +4900,17 @@ function add_business_hours(array $data, mixed &$xport_meta) : array {
 			$bh_graph_end   =  $data['end'];
 		}
 
-		preg_match('/(\d+)\:(\d+)/',read_config_option('business_hours_start'), $bh_start_matches);
-		preg_match('/(\d+)\:(\d+)/',read_config_option('business_hours_end'), $bh_end_matches);
+		preg_match('/(\d+)\:(\d+)/',(string) read_config_option('business_hours_start'), $bh_start_matches);
+		preg_match('/(\d+)\:(\d+)/',(string) read_config_option('business_hours_end'), $bh_end_matches);
 
 		// Convert all the responses to integers
-		$bh_start_matches = array_map('intval', $bh_start_matches);
-		$bh_end_matches   = array_map('intval', $bh_end_matches);
+		$bh_start_matches = array_map(intval(...), $bh_start_matches);
+		$bh_end_matches   = array_map(intval(...), $bh_end_matches);
 
-		$bh_start_matches[1] = $bh_start_matches[1] ?? 0;
-		$bh_start_matches[2] = $bh_start_matches[2] ?? 0;
-		$bh_end_matches[1]   = $bh_end_matches[1] ?? 0;
-		$bh_end_matches[2]   = $bh_end_matches[2] ?? 0;
+		$bh_start_matches[1] ??= 0;
+		$bh_start_matches[2] ??= 0;
+		$bh_end_matches[1] ??= 0;
+		$bh_end_matches[2] ??= 0;
 
 		$start_bh_time = mktime($bh_start_matches[1], $bh_start_matches[2], 0, intval(date('m', $bh_graph_start)), intval(date('d', $bh_graph_start)), intval(date('Y', $bh_graph_start)));
 		$end_bh_time   = mktime($bh_end_matches[1], $bh_end_matches[2], 0, intval(date('m', $bh_graph_end)), intval(date('d', $bh_graph_end)), intval(date('Y', $bh_graph_end)));
@@ -4994,7 +4973,7 @@ function add_business_hours(array $data, mixed &$xport_meta) : array {
 					$bh_opacity = '7F';
 				}
 
-				if (preg_match('/[0-9A-Fa-f]{2}/', $bh_opacity)) {
+				if (preg_match('/[0-9A-Fa-f]{2}/', (string) $bh_opacity)) {
 					$bh_color .= $bh_opacity;
 				} else {
 					$bh_color .= '7F';

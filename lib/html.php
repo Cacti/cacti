@@ -94,7 +94,7 @@ function html_start_box(string $title, string $width, bool $div, int $cell_paddi
 		$mode_count++;
 	}
 
-	$table_prefix = basename(get_current_page(), '.php');
+	$table_prefix = basename((string) get_current_page(), '.php');
 
 	if (!ierv('action')) {
 		$table_prefix .= '_' . clean_up_name(gnrv('action'));
@@ -130,7 +130,7 @@ function html_start_box(string $title, string $width, bool $div, int $cell_paddi
 		}
 
 		if ($help_file !== false && $help_count == 0 && is_realm_allowed(28)) {
-			print "<span class='cactiHelp' title='" . __esc('Get Page Help') . "'><a class='linkOverDark helpPage' data-page='" . htmle(basename($help_file)) . "' href='#'><i class='ti ti-help actionHelp'></i></a></span>";
+			print "<span class='cactiHelp' title='" . __esc('Get Page Help') . "'><a class='linkOverDark helpPage' data-page='" . htmle(basename((string) $help_file)) . "' href='#'><i class='ti ti-help actionHelp'></i></a></span>";
 			$help_count++;
 		}
 
@@ -230,7 +230,7 @@ function html_filter_start_box(string $title, mixed $url_or_buttons = '', bool $
 function html_sub_tabs(array $tabs, string $uri = '', string $session_var = '') : void {
 	// determine the session variables if not set
 	if ($session_var == '') {
-		$session_var = basename(get_current_page(), '.php') . '_current_tab';
+		$session_var = basename((string) get_current_page(), '.php') . '_current_tab';
 	}
 
 	$page_name = get_current_page() . '?' . $uri . ($uri != '' ? '&' : '');
@@ -865,7 +865,7 @@ function html_header_sort(array $header_items, string $sort_column, string $sort
 			$icon = 'ti ti-caret-up-down-filled';
 		}
 
-		if (($db_column == '') || (substr_count($db_column, 'nosort'))) {
+		if (($db_column == '') || (substr_count((string) $db_column, 'nosort'))) {
 			print '<th ' . ($tip != '' ? "title='" . htmle($tip) . "'" : '') . " class='$nohide $align' " . ((($i + 1) == cacti_count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . $display_text . '</th>';
 		} else {
 			print '<th ' . ($tip != '' ? "title='" . htmle($tip) . "'" : '') . " class='sortable $align $nohide $isSort'>";
@@ -1063,7 +1063,7 @@ function html_header_sort_checkbox(array $header_items, string $sort_column, str
 			$icon = 'ti ti-caret-down-filled';
 		}
 
-		if (($db_column == '') || (substr_count($db_column, 'nosort'))) {
+		if (($db_column == '') || (substr_count((string) $db_column, 'nosort'))) {
 			print '<th ' . ($tip != '' ? "title='" . htmle($tip) . "'" : '') . " class='$align $nohide'>" . $display_text . '</th>';
 		} else {
 			print '<th ' . ($tip != '' ? "title='" . htmle($tip) . "'" : '') . " class='sortable $align $nohide $isSort'>";
@@ -1497,7 +1497,7 @@ function draw_graph_items_list(array $item_list, string $filename, string $url_d
 			$use_custom_class = false;
 			$hard_return      = '';
 
-			if (!preg_match('/(GPRINT|TEXTALIGN|HRULE|VRULE|TICK)/', $_graph_type_name)) {
+			if (!preg_match('/(GPRINT|TEXTALIGN|HRULE|VRULE|TICK)/', (string) $_graph_type_name)) {
 				$this_row_style      = 'font-weight: bold;';
 				$use_custom_class    = true;
 				$item['gprint_name'] = '-';
@@ -1523,33 +1523,33 @@ function draw_graph_items_list(array $item_list, string $filename, string $url_d
 			}
 
 			switch (true) {
-				case preg_match('/(TEXTALIGN)/', $_graph_type_name):
-					$matrix_title = 'TEXTALIGN: ' . ucfirst($item['textalign']);
+				case preg_match('/(TEXTALIGN)/', (string) $_graph_type_name):
+					$matrix_title = 'TEXTALIGN: ' . ucfirst((string) $item['textalign']);
 
 					break;
-				case preg_match('/(TICK)/', $_graph_type_name):
+				case preg_match('/(TICK)/', (string) $_graph_type_name):
 					$matrix_title = $item['data_source_name'] . ': ' . $item['text_format'];
 
 					break;
-				case preg_match('/(AREA|STACK|GPRINT|LINE[123])/', $_graph_type_name):
+				case preg_match('/(AREA|STACK|GPRINT|LINE[123])/', (string) $_graph_type_name):
 					$matrix_title = $item['data_source_name'] . ': ' . $item['text_format'];
 
 					break;
-				case preg_match('/(HRULE)/', $_graph_type_name):
+				case preg_match('/(HRULE)/', (string) $_graph_type_name):
 					$matrix_title = 'HRULE: ' . $item['value'];
 
 					break;
-				case preg_match('/(VRULE)/', $_graph_type_name):
+				case preg_match('/(VRULE)/', (string) $_graph_type_name):
 					$matrix_title = 'VRULE: ' . $item['value'];
 
 					break;
-				case preg_match('/(COMMENT)/', $_graph_type_name):
+				case preg_match('/(COMMENT)/', (string) $_graph_type_name):
 					$matrix_title = 'COMMENT: ' . $item['text_format'];
 
 					break;
 			}
 
-			if (preg_match('/(TEXTALIGN)/', $_graph_type_name)) {
+			if (preg_match('/(TEXTALIGN)/', (string) $_graph_type_name)) {
 				$hard_return = '';
 			} elseif ($item['hard_return'] == 'on') {
 				$hard_return = "<span style='font-weight:bold;color:#FF0000;'>&lt;HR&gt;</span>";
@@ -1571,7 +1571,7 @@ function draw_graph_items_list(array $item_list, string $filename, string $url_d
 			print "<td style='$this_row_style'>" . $graph_item_types[$item['graph_type_id']] . '</td>';
 
 			// consolidation function display
-			if (!preg_match('/(TICK|TEXTALIGN|HRULE|VRULE)/', $_graph_type_name)) {
+			if (!preg_match('/(TICK|TEXTALIGN|HRULE|VRULE)/', (string) $_graph_type_name)) {
 				print "<td style='$this_row_style'>" . $consolidation_functions[$item['consolidation_function_id']] . '</td>';
 			} else {
 				print '<td>-</td>';
@@ -1617,8 +1617,8 @@ function draw_graph_items_list(array $item_list, string $filename, string $url_d
 			// color display
 			$blank = '-';
 
-			if (preg_match('/(AREA|STACK|TICK|LINE[123])/', $_graph_type_name)) {
-				if (preg_match('/(AREA|STACK)/', $_graph_type_name)) {
+			if (preg_match('/(AREA|STACK|TICK|LINE[123])/', (string) $_graph_type_name)) {
+				if (preg_match('/(AREA|STACK)/', (string) $_graph_type_name)) {
 					if ($item['hex'] != '') {
 						$color1 = $item['hex'] . $item['alpha'];
 
@@ -1642,8 +1642,8 @@ function draw_graph_items_list(array $item_list, string $filename, string $url_d
 				$color1 = $color2 = $blank;
 			}
 
-			if (!preg_match('/(TEXTALIGN)/', $_graph_type_name)) {
-				if (preg_match('/(AREA|STACK)/', $_graph_type_name)) {
+			if (!preg_match('/(TEXTALIGN)/', (string) $_graph_type_name)) {
+				if (preg_match('/(AREA|STACK)/', (string) $_graph_type_name)) {
 					// color1
 					print "<td class='nowrap'>";
 					print "<div style='display:table-cell;min-width:16px;background-color:#{$color1}'></div>";
@@ -1721,7 +1721,7 @@ function is_menu_pick_active(string $menu_url) : bool {
 	$menu_parts = [];
 
 	// special case for host.php?action=edit&create=true
-	if (str_contains($_SERVER['REQUEST_URI'], 'host.php?action=edit&create=true')) {
+	if (str_contains((string) $_SERVER['REQUEST_URI'], 'host.php?action=edit&create=true')) {
 		if (str_contains($menu_url, 'host.php?action=edit&create=true')) {
 			return true;
 		} else {
@@ -1729,7 +1729,7 @@ function is_menu_pick_active(string $menu_url) : bool {
 		}
 	} elseif (!is_array($url_array) || !cacti_sizeof($url_array)) {
 		// break out the URL and variables
-		$url_array = parse_url($_SERVER['REQUEST_URI']);
+		$url_array = parse_url((string) $_SERVER['REQUEST_URI']);
 
 		if (isset($url_array['query'])) {
 			parse_str($url_array['query'], $url_parts);
@@ -1753,7 +1753,7 @@ function is_menu_pick_active(string $menu_url) : bool {
 		return false;
 	}
 
-	$base_url_path = basename($url_array['path']);
+	$base_url_path = basename((string) $url_array['path']);
 
 	if (empty($base_url_path)) {
 		cacti_log('INFO: Empty url path detceted - ' . json_encode($url_array), false, 'MENU', POLLER_VERBOSITY_DEBUG);
@@ -1821,17 +1821,17 @@ function draw_menu(mixed $user_menu = '') : void {
 		$show_header_items = false;
 
 		foreach ($header_array as $item_url => $item_title) {
-			$basename = explode('?', basename($item_url));
+			$basename = explode('?', basename((string) $item_url));
 			$basename = $basename[0];
 
-			if (preg_match('#link.php\?id=(\d+)#', $item_url, $matches)) {
+			if (preg_match('#link.php\?id=(\d+)#', (string) $item_url, $matches)) {
 				if (is_realm_allowed($matches[1] + 10000)) {
 					$show_header_items = true;
 				} else {
 					$show_header_items = false;
 				}
 			} else {
-				$current_realm_id = ($user_auth_realm_filenames[basename($item_url)] ?? 0);
+				$current_realm_id = ($user_auth_realm_filenames[basename((string) $item_url)] ?? 0);
 
 				if (is_realm_allowed($current_realm_id)) {
 					$show_header_items = true;
@@ -1861,7 +1861,7 @@ function draw_menu(mixed $user_menu = '') : void {
 
 			// pass 2: loop through each top level item and render it
 			foreach ($header_array as $item_url => $item_title) {
-				$basename         = explode('?', basename($item_url));
+				$basename         = explode('?', basename((string) $item_url));
 				$basename         = $basename[0];
 				$current_realm_id = ($user_auth_realm_filenames[$basename] ?? 0);
 
@@ -1881,9 +1881,9 @@ function draw_menu(mixed $user_menu = '') : void {
 						}
 
 						foreach ($item_title as $item_sub_url => $item_sub_title) {
-							if (str_starts_with($item_sub_url, 'EXTERNAL::')) {
+							if (str_starts_with((string) $item_sub_url, 'EXTERNAL::')) {
 								$item_sub_external = true;
-								$item_sub_url      = substr($item_sub_url, 10);
+								$item_sub_url      = substr((string) $item_sub_url, 10);
 							} else {
 								$item_sub_external = false;
 								$item_sub_url      = CACTI_PATH_URL . $item_sub_url;
@@ -1917,9 +1917,9 @@ function draw_menu(mixed $user_menu = '') : void {
 				} else {
 					if ($current_realm_id == -1 || is_realm_allowed($current_realm_id) || !isset($user_auth_realm_filenames[$basename])) {
 						// draw normal (non sub-item) menu item
-						if (str_starts_with($item_url, 'EXTERNAL::')) {
+						if (str_starts_with((string) $item_url, 'EXTERNAL::')) {
 							$item_external = true;
-							$item_url      = substr($item_url, 10);
+							$item_url      = substr((string) $item_url, 10);
 						} else {
 							$item_external = false;
 							$item_url      = CACTI_PATH_URL . $item_url;
@@ -2122,7 +2122,7 @@ function is_console_page(string $url) : bool {
 		foreach ($menu as $children) {
 			if (cacti_sizeof($children)) {
 				foreach ($children as $page => $name) {
-					if (basename($page) == $basename) {
+					if (basename((string) $page) == $basename) {
 						return true;
 					}
 				}
@@ -2289,7 +2289,7 @@ function html_show_tabs_left() : void {
 	$me_base = get_current_page();
 
 	foreach ($tabs_left as $tab) {
-		$tab_base = basename($tab['url']);
+		$tab_base = basename((string) $tab['url']);
 
 		if ($tab_base == 'graph_view.php' && ($me_base == 'graph_view.php' || $me_base == 'graph.php')) {
 			$tabs_left[$i]['selected'] = true;
@@ -2373,7 +2373,7 @@ function html_graph_tabs_right() : void {
 			if (isrv('action') && gnrv('action') == 'preview') {
 				$tabs_right[$i]['selected'] = true;
 			}
-		} elseif (strstr(get_current_page(false), $tab['url'])) {
+		} elseif (strstr((string) get_current_page(false), (string) $tab['url'])) {
 			$tabs_right[$i]['selected'] = true;
 		}
 
@@ -2417,8 +2417,8 @@ function html_graph_tabs_right() : void {
 function html_transform_graph_template_ids(mixed $ids) : string {
 	$return_ids = [];
 
-	if (str_contains($ids, ',')) {
-		$ids = explode(',', $ids);
+	if (str_contains((string) $ids, ',')) {
+		$ids = explode(',', (string) $ids);
 	} else {
 		$ids = [$ids];
 	}
@@ -2426,7 +2426,7 @@ function html_transform_graph_template_ids(mixed $ids) : string {
 	foreach ($ids as $id) {
 		if (is_numeric($id)) {
 			$return_ids[] = $id;
-		} elseif (str_contains($id, 'cg_')) {
+		} elseif (str_contains((string) $id, 'cg_')) {
 			$new_id       = str_replace('cg_', '', $id);
 			$return_ids[] = $new_id;
 		} else {

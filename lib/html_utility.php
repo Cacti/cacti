@@ -252,7 +252,7 @@ function form_selectable_cell(mixed $contents, mixed $id, mixed $width = '', str
 	$table_id = form_get_table_id();
 
 	if (!isset($tableColumns[$table_id])) {
-		$tableColumns[$table_id] = json_decode(read_user_setting("visible_columns_{$table_id}{$tableCount[$table_id]}"), true);
+		$tableColumns[$table_id] = json_decode((string) read_user_setting("visible_columns_{$table_id}{$tableCount[$table_id]}"), true);
 	}
 
 	static $col_num = null;
@@ -332,17 +332,17 @@ function form_get_table_id(mixed $increment = false) : string {
 	}
 
 	if (isset_request_var('action') && get_nfilter_request_var('action') != '' && isset_request_var('tab') && get_nfilter_request_var('tab') != '') {
-		return basename(get_current_page(), '.php') . ':' . $table_count . ':action-tab-' . get_nfilter_request_var('action') . '-' . get_nfilter_request_var('tab') . ':';
+		return basename((string) get_current_page(), '.php') . ':' . $table_count . ':action-tab-' . get_nfilter_request_var('action') . '-' . get_nfilter_request_var('tab') . ':';
 	}
 
 	if (isset_request_var('action') && get_nfilter_request_var('action') != '') {
-		return basename(get_current_page(), '.php') . ':' . $table_count . ':action-' . get_nfilter_request_var('action') . ':';
+		return basename((string) get_current_page(), '.php') . ':' . $table_count . ':action-' . get_nfilter_request_var('action') . ':';
 	}
 
 	if (isset_request_var('tab') && get_nfilter_request_var('tab') != '') {
-		return basename(get_current_page(), '.php') . ':tab-' . get_nfilter_request_var('tab') . ':';
+		return basename((string) get_current_page(), '.php') . ':tab-' . get_nfilter_request_var('tab') . ':';
 	} else {
-		return basename(get_current_page(), '.php') . ':' . $table_count;
+		return basename((string) get_current_page(), '.php') . ':' . $table_count;
 	}
 }
 
@@ -369,7 +369,7 @@ function form_selectable_vcell(mixed $contents, string $table_id = '', string $c
 	}
 
 	if (!isset($tableColumns[$table_id])) {
-		$tableColumns[$table_id] = json_decode(read_user_setting("visible_columns_{$table_id}{$tableCount[$table_id]}"), true);
+		$tableColumns[$table_id] = json_decode((string) read_user_setting("visible_columns_{$table_id}{$tableCount[$table_id]}"), true);
 	}
 
 	if (isset($tableColumns[$table_id]) && cacti_sizeof($tableColumns[$table_id])) {
@@ -438,7 +438,7 @@ function form_process_visible_display_text(string $table_id, array $display_text
 
 			$tableColumns[$table_id] = [];
 		} else {
-			$tableColumns[$table_id] = json_decode(read_user_setting("visible_columns_{$table_id}{$tableCount[$table_id]}"), true);
+			$tableColumns[$table_id] = json_decode((string) read_user_setting("visible_columns_{$table_id}{$tableCount[$table_id]}"), true);
 		}
 	} else {
 		$tableCount[$table_id]++;
@@ -451,7 +451,7 @@ function form_process_visible_display_text(string $table_id, array $display_text
 
 			$tableColumns[$table_id] = [];
 		} else {
-			$tableColumns[$table_id] = json_decode(read_user_setting("visible_columns_{$table_id}{$tableCount[$table_id]}"), true);
+			$tableColumns[$table_id] = json_decode((string) read_user_setting("visible_columns_{$table_id}{$tableCount[$table_id]}"), true);
 		}
 	}
 
@@ -891,7 +891,7 @@ function get_filter_request_var(string $name, int $filter = FILTER_VALIDATE_INT,
 				}
 			} elseif ($filter == FILTER_VALIDATE_IS_REGEX) {
 				if (is_base64_encoded($_REQUEST[$name])) {
-					$_REQUEST[$name] = mb_convert_encoding(base64_decode($_REQUEST[$name], true), 'UTF-8');
+					$_REQUEST[$name] = mb_convert_encoding(base64_decode((string) $_REQUEST[$name], true), 'UTF-8');
 				}
 
 				$valid = validate_is_regex($_REQUEST[$name]);
@@ -924,7 +924,7 @@ function get_filter_request_var(string $name, int $filter = FILTER_VALIDATE_INT,
 				}
 			} elseif ($filter == FILTER_VALIDATE_IS_NUMERIC_LIST) {
 				$valid  = true;
-				$values = preg_split('/,/', $_REQUEST[$name], -1, PREG_SPLIT_NO_EMPTY);
+				$values = preg_split('/,/', (string) $_REQUEST[$name], -1, PREG_SPLIT_NO_EMPTY);
 
 				foreach ($values as $number) {
 					if (!is_numeric($number)) {
@@ -1151,7 +1151,7 @@ function validate_store_request_vars(array $filters, string $sess_prefix = '') :
 					$value = '';
 				} elseif ($options['filter'] == FILTER_VALIDATE_IS_REGEX) {
 					if (is_base64_encoded($_REQUEST[$variable])) {
-						$_REQUEST[$variable] = mb_convert_encoding(base64_decode($_REQUEST[$variable], true), 'UTF-8');
+						$_REQUEST[$variable] = mb_convert_encoding(base64_decode((string) $_REQUEST[$variable], true), 'UTF-8');
 					}
 
 					$valid = validate_is_regex($_REQUEST[$variable]);
@@ -1184,7 +1184,7 @@ function validate_store_request_vars(array $filters, string $sess_prefix = '') :
 					}
 				} elseif ($options['filter'] == FILTER_VALIDATE_IS_NUMERIC_LIST) {
 					$valid  = true;
-					$values = preg_split('/,/', $_REQUEST[$variable], -1, PREG_SPLIT_NO_EMPTY);
+					$values = preg_split('/,/', (string) $_REQUEST[$variable], -1, PREG_SPLIT_NO_EMPTY);
 
 					foreach ($values as $number) {
 						if (!is_numeric($number)) {
@@ -1254,7 +1254,7 @@ function update_order_string(bool $inplace = false) : void {
 
 	$order = '';
 
-	if (!str_contains(get_request_var('sort_column'), '(') && !str_contains(get_request_var('sort_column'), '`')) {
+	if (!str_contains((string) get_request_var('sort_column'), '(') && !str_contains((string) get_request_var('sort_column'), '`')) {
 		$del = '`';
 	} else {
 		$del = '';
@@ -1299,9 +1299,9 @@ function update_order_string(bool $inplace = false) : void {
 			if ($column == 'ip' || $column == 'ip_address') {
 				$_SESSION['sort_string'][$page] = 'ORDER BY INET_ATON(' . $column . ') ' . $direction;
 			} elseif ($column == 'hostname' && $natural) {
-				$_SESSION['sort_string'][$page] = 'ORDER BY NATURAL_SORT_KEY(' . $del . implode($del . '.' . $del, explode('.', get_request_var('sort_column'))) . $del . ') ' . get_request_var('sort_direction');
+				$_SESSION['sort_string'][$page] = 'ORDER BY NATURAL_SORT_KEY(' . $del . implode($del . '.' . $del, explode('.', (string) get_request_var('sort_column'))) . $del . ') ' . get_request_var('sort_direction');
 			} else {
-				$_SESSION['sort_string'][$page] = 'ORDER BY ' . $del . implode($del . '.' . $del, explode('.', get_request_var('sort_column'))) . $del . ' ' . get_request_var('sort_direction');
+				$_SESSION['sort_string'][$page] = 'ORDER BY ' . $del . implode($del . '.' . $del, explode('.', (string) get_request_var('sort_column'))) . $del . ' ' . get_request_var('sort_direction');
 			}
 		} elseif (isset_request_var('sort_column')) {
 			if (isset_request_var('reset')) {
@@ -1314,7 +1314,7 @@ function update_order_string(bool $inplace = false) : void {
 			$_SESSION['sort_string'][$page] = 'ORDER BY ';
 
 			foreach ($_SESSION['sort_data'][$page] as $column => $direction) {
-				if (!str_contains($column, '(') && !str_contains($column, '`')) {
+				if (!str_contains((string) $column, '(') && !str_contains((string) $column, '`')) {
 					$del = '`';
 				} else {
 					$del = '';
@@ -1327,9 +1327,9 @@ function update_order_string(bool $inplace = false) : void {
 				if ($column == 'ip' || $column == 'ip_address') {
 					$order .= ($order != '' ? ', ' : '') . 'INET_ATON(' . $column . ') ' . $direction;
 				} elseif ($column == 'hostname' && $natural) {
-					$order .= ($order != '' ? ', ' : '') . 'NATURAL_SORT_KEY(' . $del . implode($del . '.' . $del, explode('.', $column)) . $del . ') ' . $direction;
+					$order .= ($order != '' ? ', ' : '') . 'NATURAL_SORT_KEY(' . $del . implode($del . '.' . $del, explode('.', (string) $column)) . $del . ') ' . $direction;
 				} else {
-					$order .= ($order != '' ? ', ' : '') . $del . implode($del . '.' . $del, explode('.', $column)) . $del . ' ' . $direction;
+					$order .= ($order != '' ? ', ' : '') . $del . implode($del . '.' . $del, explode('.', (string) $column)) . $del . ' ' . $direction;
 				}
 			}
 
@@ -1353,7 +1353,7 @@ function update_order_string(bool $inplace = false) : void {
 function get_order_string() : string {
 	$page = get_order_string_page();
 
-	if (!str_contains(get_request_var('sort_column'), '(') && !str_contains(get_request_var('sort_column'), '`')) {
+	if (!str_contains((string) get_request_var('sort_column'), '(') && !str_contains((string) get_request_var('sort_column'), '`')) {
 		$del = '`';
 	} else {
 		$del = '';
@@ -1362,7 +1362,7 @@ function get_order_string() : string {
 	if (isset($_SESSION['sort_string'][$page])) {
 		return $_SESSION['sort_string'][$page];
 	} else {
-		return 'ORDER BY ' . $del . implode($del . '.' . $del, explode('.', get_request_var('sort_column'))) . $del . ' ' . get_request_var('sort_direction');
+		return 'ORDER BY ' . $del . implode($del . '.' . $del, explode('.', (string) get_request_var('sort_column'))) . $del . ' ' . get_request_var('sort_direction');
 	}
 }
 
@@ -1471,7 +1471,7 @@ function validate_is_regex(string $regex) : bool|string {
 	$error = preg_last_error();
 
 	if (!defined('IN_CACTI_INSTALL')) {
-		set_error_handler('CactiErrorHandler');
+		set_error_handler(CactiErrorHandler(...));
 	}
 
 	if (empty($error)) {

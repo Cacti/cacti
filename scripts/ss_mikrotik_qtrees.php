@@ -28,7 +28,7 @@ error_reporting(0);
 if (!isset($called_by_script_server)) {
 	include(__DIR__ . '/../include/cli_check.php');
 	array_shift($_SERVER['argv']);
-	print call_user_func_array('ss_mikrotik_qtrees', $_SERVER['argv']);
+	print call_user_func_array(ss_mikrotik_qtrees(...), $_SERVER['argv']);
 }
 
 function ss_mikrotik_qtrees(int $host_id, string $cmd = 'index', string $arg1 = '', string $arg2 = '') : mixed {
@@ -58,20 +58,11 @@ function ss_mikrotik_qtrees(int $host_id, string $cmd = 'index', string $arg1 = 
 }
 
 function ss_mikrotik_qtrees_getvalue(int $host_id, string $index, string $column) : string {
-	switch ($column) {
-		case 'qtBytes':
-			$column = 'curHCBytes';
-
-			break;
-		case 'qtPackets':
-			$column = 'curPackets';
-
-			break;
-		default:
-			$column = 'curHCBytes';
-
-			break;
-	}
+	$column = match ($column) {
+		'qtBytes'   => 'curHCBytes',
+		'qtPackets' => 'curPackets',
+		default     => 'curHCBytes',
+	};
 
 	$index2 = str_replace('_', ' ', $index);
 
@@ -104,24 +95,12 @@ function ss_mikrotik_qtrees_getnames(int $host_id) : array {
 function ss_mikrotik_qtrees_getinfo(int $host_id, string $info_requested) : array {
 	$return_arr = [];
 
-	switch($info_requested) {
-		case 'qtName':
-			$column = 'name';
-
-			break;
-		case 'qtFlow':
-			$column = 'flow';
-
-			break;
-		case 'qtParent':
-			$column = 'parentIndex';
-
-			break;
-		default:
-			$column = 'name';
-
-			break;
-	}
+	$column = match ($info_requested) {
+		'qtName'   => 'name',
+		'qtFlow'   => 'flow',
+		'qtParent' => 'parentIndex',
+		default    => 'name',
+	};
 
 	$arr = db_fetch_assoc_prepared("SELECT
 		REPLACE(name, ' ', '_') AS qry_index,

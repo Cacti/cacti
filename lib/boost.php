@@ -49,7 +49,7 @@ function boost_array_orderby() : array {
 
 	$args[] = &$data;
 
-	call_user_func_array('array_multisort', $args);
+	call_user_func_array(array_multisort(...), $args);
 
 	return array_pop($args);
 }
@@ -240,7 +240,7 @@ function boost_poller_on_demand(array &$results) : bool {
 		}
 
 		// install the boost error handler
-		set_error_handler('boost_error_handler');
+		set_error_handler(boost_error_handler(...));
 
 		$out_buffer  = '';
 		$sql_prefix  = 'INSERT INTO poller_output_boost (local_data_id, rrd_name, time, output) VALUES ';
@@ -388,7 +388,7 @@ function boost_fetch_cache_check(int $local_data_id, mixed $rrdtool_pipe = null)
 		}
 
 		// install the boost error handler
-		set_error_handler('boost_error_handler');
+		set_error_handler(boost_error_handler(...));
 
 		// process input parameters
 		if (!is_resource($rrdtool_pipe)) {
@@ -479,7 +479,7 @@ function boost_graph_cache_check(int $local_graph_id, mixed $rra_id, mixed $rrdt
 	}
 
 	// install the boost error handler
-	set_error_handler('boost_error_handler');
+	set_error_handler(boost_error_handler(...));
 
 	// check to see if boost can do its job
 	if (!boost_poller_id_check()) {
@@ -650,7 +650,7 @@ function boost_prep_graph_array(array $graph_data_array) : array {
 	}
 
 	// install the boost error handler
-	set_error_handler('boost_error_handler');
+	set_error_handler(boost_error_handler(...));
 
 	if (boost_determine_caching_state()) {
 		if (!isset($graph_data_array['output_flag'])) {
@@ -696,7 +696,7 @@ function boost_graph_set_file(string|null &$output, int $local_graph_id, int|nul
 	}
 
 	// install the boost error handler
-	set_error_handler('boost_error_handler');
+	set_error_handler(boost_error_handler(...));
 
 	if (isset($_SESSION['sess_current_timespan'])) {
 		$timespan = $_SESSION['sess_current_timespan'];
@@ -740,9 +740,9 @@ function boost_graph_set_file(string|null &$output, int $local_graph_id, int|nul
 
 				if (is_writable($cache_directory)) {
 					// if the cache file was created in a prior step, save it
-					if (strlen($output) > 10) {
+					if (strlen((string) $output) > 10) {
 						if ($fileptr = fopen($cache_file, 'w')) {
-							fwrite($fileptr, $output, strlen($output));
+							fwrite($fileptr, (string) $output, strlen((string) $output));
 							fclose($fileptr);
 							chmod($cache_file, 0666);
 
@@ -907,7 +907,7 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 	}
 
 	// install the boost error handler
-	set_error_handler('boost_error_handler');
+	set_error_handler(boost_error_handler(...));
 
 	if (cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
 		while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds.$local_data_id', 1)")) {
@@ -1105,7 +1105,7 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 				cacti_log("WARNING: Stale Poller Data Found! Item Time:'" . $time . "', RRD Time:'" . $last_update . "' Ignoring Value!", false, 'BOOST', POLLER_VERBOSITY_HIGH);
 				$value = 'DNP';
 			} else {
-				$value = trim($item['output']);
+				$value = trim((string) $item['output']);
 			}
 
 			if ($time != $item['timestamp']) {
@@ -1380,7 +1380,7 @@ function boost_rrdtool_get_last_update_time(string $rrd_path, mixed $rrdtool_pip
 		$return_value = rrdtool_execute("last $rrd_path", true, RRDTOOL_OUTPUT_STDOUT, false, 'BOOST');
 	}
 
-	return trim($return_value);
+	return trim((string) $return_value);
 }
 
 /**
@@ -1608,7 +1608,7 @@ function boost_rrdtool_function_create(int $local_data_id, bool $show_source, mi
 			if (empty($data_source['rrd_maximum'])) {
 				// in case no maximum is given, use "Undef" value
 				$data_source['rrd_maximum'] = 'U';
-			} elseif (str_contains($data_source['rrd_maximum'], '|query_')) {
+			} elseif (str_contains((string) $data_source['rrd_maximum'], '|query_')) {
 				$data_local = db_fetch_row_prepared('SELECT * FROM data_local WHERE id = ?', [$local_data_id]);
 
 				$speed = rrdtool_function_interface_speed($data_local);
@@ -1827,7 +1827,7 @@ function boost_poller_bottom() : void {
 
 		$boost_log     = read_config_option('path_boost_log');
 		$boost_debug   = read_config_option('boost_debug_enabled') == 'on' ? true : false;
-		$boost_logdir  = dirname($boost_log);
+		$boost_logdir  = dirname((string) $boost_log);
 
 		if ($boost_debug && $boost_log != '') {
 			if (!is_writable($boost_log) || !is_dir($boost_logdir) || !is_writable($boost_logdir)) {
@@ -1903,7 +1903,7 @@ function boost_update_snmp_statistics() : void {
 	$total_records  = $pending_records + $arch_records;
 	$avg_row_length = ($total_records ? intval($data_length / $total_records) : 0);
 
-	if (strcmp($engine, 'MEMORY') == 0) {
+	if (strcmp((string) $engine, 'MEMORY') == 0) {
 		$max_length        = db_fetch_cell('SELECT MAX(LENGTH(output)) FROM poller_output_boost');
 		$max_table_allowed = $max_data_length;
 		$max_table_records = ($avg_row_length ? round($max_data_length / $avg_row_length, 0) : 0);

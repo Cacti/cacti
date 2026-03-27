@@ -712,7 +712,7 @@ function poller_update_poller_cache_from_buffer(array $local_data_ids, array &$p
 
 			$buffer .= $delim . $record;
 
-			$buf_len += strlen($record);
+			$buf_len += strlen((string) $record);
 
 			if ($overhead + $buf_len > $max_packet - 1024) {
 				db_execute($sql_prefix . $buffer . $sql_suffix);
@@ -904,7 +904,7 @@ function push_out_host(int $host_id, int $local_data_id = 0, int $data_template_
 					}
 
 					// Only override if the template value is null as this point
-					if (preg_match('/^' . VALID_HOST_FIELDS . '$/i', $template_field['type_code'])) {
+					if (preg_match('/^' . VALID_HOST_FIELDS . '$/i', (string) $template_field['type_code'])) {
 						if ($template_field['t_value'] != 'on') {
 							// It's a valid host type-code
 							$update = true;
@@ -1434,7 +1434,7 @@ function utilities_get_mysql_recommendations() : int {
 
 						if ($r['measure'] == 'equalint') {
 							$e_var = (!strcasecmp('on', $e_var) ? 1 : (!strcasecmp('off', $e_var) ? 0 : $e_var));
-							$e_rec = (!strcasecmp('on', $e_rec) ? 1 : (!strcasecmp('off', $e_rec) ? 0 : $e_rec));
+							$e_rec = (!strcasecmp('on', (string) $e_rec) ? 1 : (!strcasecmp('off', (string) $e_rec) ? 0 : $e_rec));
 						}
 						$passed = $e_var == $e_rec;
 					}
@@ -1672,17 +1672,17 @@ function utilities_php_modules() : string {
 	// Remove nasty style sheets, links and other junk
 	$php_info = str_replace("\n", '', $php_info);
 	$php_info = preg_replace('/^.*\<body\>/', '', $php_info);
-	$php_info = preg_replace('/\<\/body\>.*$/', '', $php_info);
-	$php_info = preg_replace('/(\<a name.*\>)([^<>]*)(\<\/a\>)/U', '$2', $php_info);
-	$php_info = preg_replace('/\<img.*\>/U', '', $php_info);
-	$php_info = preg_replace('/\<div[^<>]*\>\<\/div\>/U', '', $php_info);
-	$php_info = preg_replace('/\<\/?address\>/', '', $php_info);
+	$php_info = preg_replace('/\<\/body\>.*$/', '', (string) $php_info);
+	$php_info = preg_replace('/(\<a name.*\>)([^<>]*)(\<\/a\>)/U', '$2', (string) $php_info);
+	$php_info = preg_replace('/\<img.*\>/U', '', (string) $php_info);
+	$php_info = preg_replace('/\<div[^<>]*\>\<\/div\>/U', '', (string) $php_info);
+	$php_info = preg_replace('/\<\/?address\>/', '', (string) $php_info);
 
 	return $php_info;
 }
 
 function memory_bytes(mixed $val) : mixed {
-	$val  = trim($val);
+	$val  = trim((string) $val);
 	$last = cacti_strtolower($val[strlen($val) - 1]);
 	$val  = (float) trim($val, 'GMKgmk');
 
@@ -1798,7 +1798,7 @@ function utility_php_sort_extensions(mixed $a, mixed $b) : int {
 	$name_a = $a['name'] ?? '';
 	$name_b = $b['name'] ?? '';
 
-	return strcasecmp($name_a, $name_b);
+	return strcasecmp((string) $name_a, (string) $name_b);
 }
 
 function utility_php_extensions() : array {
@@ -1853,7 +1853,7 @@ function utility_php_verify_extensions(mixed &$extensions, string $source) : voi
 		}
 	}
 
-	uksort($extensions, 'utility_php_sort_extensions');
+	uksort($extensions, utility_php_sort_extensions(...));
 
 	foreach ($extensions as $name=>$extension) {
 		if (extension_loaded($name)) {
@@ -1884,7 +1884,7 @@ function utility_get_formatted_bytes(mixed $input_value, string $wanted_type, mi
 		'G' => 1073741824,
 	];
 
-	if ($input_value > 0 && preg_match('/([0-9.]+)([BKMG]){0,1}/i',$input_value,$matches)) {
+	if ($input_value > 0 && preg_match('/([0-9.]+)([BKMG]){0,1}/i',(string) $input_value,$matches)) {
 		$input_value = floatval($matches[1]);
 
 		if (isset($matches[2])) {
@@ -2056,7 +2056,7 @@ function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = 
 	global $object_totals, $object_totals_diff;
 
 	if (!is_array($object_ids)) {
-		$object_ids = explode(',', $object_ids);
+		$object_ids = explode(',', (string) $object_ids);
 	}
 
 	// temp variable for object array

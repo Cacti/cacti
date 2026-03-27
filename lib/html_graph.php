@@ -140,7 +140,7 @@ function create_graphs_preview_filter(string $session_var) : array {
 
 	// unset the ordering if we have a setup that does not support ordering
 	if (isrv('graph_template_id')) {
-		if (str_contains(gnrv('graph_template_id'), ',') || gnrv('graph_template_id') <= 0) {
+		if (str_contains((string) gnrv('graph_template_id'), ',') || gnrv('graph_template_id') <= 0) {
 			srv('graph_order', '');
 			srv('graph_source', '');
 		}
@@ -579,8 +579,8 @@ function html_graph_new_graphs(string $page, int $host_id, int $host_template_id
 	form_hidden_box('save_component_new_graphs', '1', '');
 	form_hidden_box('selected_graphs_array', serialize($selected_graphs_array), '');
 
-	if (isset($_SERVER['HTTP_REFERER']) && !str_contains($_SERVER['HTTP_REFERER'], 'graphs_new')) {
-		srv('returnto', basename($_SERVER['HTTP_REFERER']));
+	if (isset($_SERVER['HTTP_REFERER']) && !str_contains((string) $_SERVER['HTTP_REFERER'], 'graphs_new')) {
+		srv('returnto', basename((string) $_SERVER['HTTP_REFERER']));
 	}
 
 	load_current_session_value('returnto', 'sess_grn_returnto', '');
@@ -813,7 +813,7 @@ function html_graph_preview_view() : void {
 
 			// process selected graphs
 			if (!ierv('graph_list')) {
-				foreach (explode(',', grv('graph_list')) as $item) {
+				foreach (explode(',', (string) grv('graph_list')) as $item) {
 					if (is_numeric($item)) {
 						$graph_list[$item] = 1;
 					}
@@ -821,7 +821,7 @@ function html_graph_preview_view() : void {
 			}
 
 			if (!ierv('graph_add')) {
-				foreach (explode(',', grv('graph_add')) as $item) {
+				foreach (explode(',', (string) grv('graph_add')) as $item) {
 					if (is_numeric($item)) {
 						$graph_list[$item] = 1;
 					}
@@ -830,7 +830,7 @@ function html_graph_preview_view() : void {
 
 			// remove items
 			if (!ierv('graph_remove')) {
-				foreach (explode(',', grv('graph_remove')) as $item) {
+				foreach (explode(',', (string) grv('graph_remove')) as $item) {
 					unset($graph_list[$item]);
 				}
 			}
@@ -1185,7 +1185,7 @@ function html_graph_list_view() : void {
 
 	// save selected graphs into url
 	if (!ierv('graph_list')) {
-		foreach (explode(',', grv('graph_list')) as $item) {
+		foreach (explode(',', (string) grv('graph_list')) as $item) {
 			if (is_numeric($item)) {
 				$graph_list[$item] = 1;
 			}
@@ -1193,7 +1193,7 @@ function html_graph_list_view() : void {
 	}
 
 	if (!ierv('graph_add')) {
-		foreach (explode(',', grv('graph_add')) as $item) {
+		foreach (explode(',', (string) grv('graph_add')) as $item) {
 			if (is_numeric($item)) {
 				$graph_list[$item] = 1;
 			}
@@ -1202,7 +1202,7 @@ function html_graph_list_view() : void {
 
 	// remove items
 	if (!ierv('graph_remove')) {
-		foreach (explode(',', grv('graph_remove')) as $item) {
+		foreach (explode(',', (string) grv('graph_remove')) as $item) {
 			unset($graph_list[$item]);
 		}
 	}
@@ -1623,7 +1623,7 @@ function html_graph_get_reports() : void {
 	gfrv('align');
 
 	if (isrv('graph_list')) {
-		$items = explode(',', grv('graph_list'));
+		$items = explode(',', (string) grv('graph_list'));
 
 		if (cacti_sizeof($items)) {
 			$good = true;
@@ -1729,7 +1729,7 @@ function html_graph_single_view() : void {
 		general_header();
 	}
 
-	if (str_contains(grv('action'), 'tree')) {
+	if (str_contains((string) grv('action'), 'tree')) {
 		$suffix = 'tree';
 	} else {
 		$suffix = 'preview';
@@ -1986,7 +1986,7 @@ function html_graph_zoom() : void {
 	$rras        = $info['rras'];
 	$graph_title = $info['title'];
 
-	if (str_contains(gnrv('action'), 'tree')) {
+	if (str_contains((string) gnrv('action'), 'tree')) {
 		$suffix = 'tree';
 	} else {
 		$suffix = 'preview';

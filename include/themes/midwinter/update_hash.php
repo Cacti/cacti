@@ -30,7 +30,7 @@ function file_search(string $folder, array $pattern_array) : array {
 	$iti    = new RecursiveDirectoryIterator($folder);
 
 	foreach (new RecursiveIteratorIterator($iti) as $file) {
-		$fileParts = explode('.', $file);
+		$fileParts = explode('.', (string) $file);
 
 		if (in_array(cacti_strtolower(array_pop($fileParts)), $pattern_array, true)) {
 			$return[] = $file;
@@ -42,7 +42,7 @@ function file_search(string $folder, array $pattern_array) : array {
 
 function file_hash(array $match) : string {
 	global $cssFile;
-	$md5File = dirname($cssFile) . '/' . $match[2];
+	$md5File = dirname((string) $cssFile) . '/' . $match[2];
 	$md5Real = realpath($md5File);
 	$md5Hash = md5_file($md5File);
 	$result  = $match[1] . $match[2] . '?' . $md5Hash . $match[4];

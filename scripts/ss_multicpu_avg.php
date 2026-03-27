@@ -5,7 +5,7 @@ include_once(__DIR__ . '/../lib/snmp.php');
 
 if (!isset($called_by_script_server)) {
 	array_shift($_SERVER['argv']);
-	print call_user_func_array('ss_multicpu_avg', $_SERVER['argv']);
+	print call_user_func_array(ss_multicpu_avg(...), $_SERVER['argv']);
 }
 
 function ss_multicpu_avg(int $device_id) : string {
@@ -41,14 +41,14 @@ function ss_multicpu_avg(int $device_id) : string {
 	$load = 0;
 
 	if (cacti_sizeof($array)) {
-		foreach ($array as $key=>$value) {
+		foreach ($array as $value) {
 			$load += $value['value'];
 		}
 	} else {
 		return "load:0\n";
 	}
 
-	$load = $load / cacti_count($array);
+	$load /= cacti_count($array);
 
 	return "load:$load\n";
 }

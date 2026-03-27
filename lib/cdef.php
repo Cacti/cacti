@@ -38,20 +38,14 @@ function get_cdef_item_name(int $cdef_item_id) : string {
 	$cdef_item          = db_fetch_row_prepared('SELECT type, value FROM cdef_items WHERE id = ?', [$cdef_item_id]);
 	$current_cdef_value = $cdef_item['value'];
 
-	switch ($cdef_item['type']) {
-		case '1':
-			return (string) $cdef_functions[$current_cdef_value];
-		case '2':
-			return (string) $cdef_operators[$current_cdef_value];
-		case '4':
-			return (string) $current_cdef_value;
-		case '5':
-			return (string) db_fetch_cell_prepared('SELECT name FROM cdef WHERE id = ?', [$current_cdef_value]);
-		case '6':
-			return (string) $current_cdef_value;
-	}
-
-	return '';
+	return match ($cdef_item['type']) {
+		'1'     => (string) $cdef_functions[$current_cdef_value],
+		'2'     => (string) $cdef_operators[$current_cdef_value],
+		'4'     => (string) $current_cdef_value,
+		'5'     => (string) db_fetch_cell_prepared('SELECT name FROM cdef WHERE id = ?', [$current_cdef_value]),
+		'6'     => (string) $current_cdef_value,
+		default => '',
+	};
 }
 /**
  * Resolves an entire CDEF into its text-based representation for use in the RRDtool 'graph'

@@ -128,7 +128,7 @@ function push_out_data_source_custom_data(int $data_template_id) : bool {
 						 * do not push out 'host fields'.  This list should never match as we have already
 						 * excluded these special types codes.  However, we will maintain for reference.
 						 */
-						if (!preg_match('/^' . VALID_HOST_FIELDS . '$/i', $input_field['type_code'])) {
+						if (!preg_match('/^' . VALID_HOST_FIELDS . '$/i', (string) $input_field['type_code'])) {
 							// this is not a 'host field', so we should either push out the value if it is templated
 							$did_vals .= ($did_cnt == 0 ? '' : ',') .
 								'(' .
@@ -225,7 +225,7 @@ function push_out_data_source_item(int $data_template_rrd_id) : bool {
 	// loop through each data source column name (from the above array)
 	foreach ($struct_data_source_item as $field_name => $field_array) {
 		// are we allowed to push out the column?
-		if (((empty($data_template_rrd['t_' . $field_name])) || (preg_match('/FORCE:/', $field_name))) && ((isset($data_template_rrd['t_' . $field_name])) && (isset($data_template_rrd[$field_name])))) {
+		if (((empty($data_template_rrd['t_' . $field_name])) || (preg_match('/FORCE:/', (string) $field_name))) && ((isset($data_template_rrd['t_' . $field_name])) && (isset($data_template_rrd[$field_name])))) {
 			db_execute_prepared("UPDATE data_template_rrd
 				SET $field_name = ?
 				WHERE local_data_template_rrd_id = ?",
@@ -257,7 +257,7 @@ function push_out_data_source(int $data_template_data_id) : bool {
 	// loop through each data source column name (from the above array)
 	foreach ($struct_data_source as $field_name => $field_array) {
 		// are we allowed to push out the column?
-		if (((empty($data_template_data['t_' . $field_name])) || (preg_match('/FORCE:/', $field_name))) && ((isset($data_template_data['t_' . $field_name])) && (isset($data_template_data[$field_name])))) {
+		if (((empty($data_template_data['t_' . $field_name])) || (preg_match('/FORCE:/', (string) $field_name))) && ((isset($data_template_data['t_' . $field_name])) && (isset($data_template_data[$field_name])))) {
 			db_execute_prepared("UPDATE data_template_data
 				SET $field_name = ?
 				WHERE local_data_template_data_id=?",
@@ -718,7 +718,7 @@ function graph_template_has_override(int $graph_template_id) : bool {
 	// Check the Graph Template first for adherence
 	if (cacti_sizeof($graph_template)) {
 		foreach ($graph_template as $field => $value) {
-			if (str_starts_with($field, 't_')) {
+			if (str_starts_with((string) $field, 't_')) {
 				if ($value == 'on') {
 					return true;
 				}
@@ -742,7 +742,7 @@ function graph_template_has_override(int $graph_template_id) : bool {
 	if (cacti_sizeof($data_templates)) {
 		foreach ($data_templates as $dtd) {
 			foreach ($dtd as $field => $value) {
-				if (str_starts_with($field, 't_')) {
+				if (str_starts_with((string) $field, 't_')) {
 					if ($value == 'on') {
 						return true;
 					}
@@ -785,8 +785,8 @@ function graph_template_has_override(int $graph_template_id) : bool {
 }
 
 function parse_graph_template_id(mixed $value) : mixed {
-	if (str_contains($value, '_')) {
-		$template_parts = explode('_', $value);
+	if (str_contains((string) $value, '_')) {
+		$template_parts = explode('_', (string) $value);
 
 		if (is_numeric($template_parts[0]) && is_numeric($template_parts[1])) {
 			return ['graph_template_id' => $template_parts[0], 'output_type_id' => $template_parts[1]];
@@ -1157,10 +1157,10 @@ function change_graph_template(int $local_graph_id, int $graph_template_id, bool
 						case 'sequence':
 							break;
 						default:
-							if (str_contains($cols[$column]['type'], 'int') ||
-								str_contains($cols[$column]['type'], 'float') ||
-								str_contains($cols[$column]['type'], 'decimal') ||
-								str_contains($cols[$column]['type'], 'double')) {
+							if (str_contains((string) $cols[$column]['type'], 'int') ||
+								str_contains((string) $cols[$column]['type'], 'float') ||
+								str_contains((string) $cols[$column]['type'], 'decimal') ||
+								str_contains((string) $cols[$column]['type'], 'double')) {
 								if (!empty($value)) {
 									$save[$column] = $value;
 								} else {
@@ -1219,10 +1219,10 @@ function change_graph_template(int $local_graph_id, int $graph_template_id, bool
 						case 'task_item_id':
 							break;
 						default:
-							if (str_contains($cols[$column]['type'], 'int') ||
-								str_contains($cols[$column]['type'], 'float') ||
-								str_contains($cols[$column]['type'], 'decimal') ||
-								str_contains($cols[$column]['type'], 'double')) {
+							if (str_contains((string) $cols[$column]['type'], 'int') ||
+								str_contains((string) $cols[$column]['type'], 'float') ||
+								str_contains((string) $cols[$column]['type'], 'decimal') ||
+								str_contains((string) $cols[$column]['type'], 'double')) {
 								if (!empty($value)) {
 									$save[$column] = $value;
 								} else {
@@ -1379,10 +1379,10 @@ function update_graph_template_items(int $graph_template_id, int $graph_template
 									case 'sequence':
 										break;
 									default:
-										if (str_contains($cols[$column]['type'], 'int') ||
-											str_contains($cols[$column]['type'], 'float') ||
-											str_contains($cols[$column]['type'], 'decimal') ||
-											str_contains($cols[$column]['type'], 'double')) {
+										if (str_contains((string) $cols[$column]['type'], 'int') ||
+											str_contains((string) $cols[$column]['type'], 'float') ||
+											str_contains((string) $cols[$column]['type'], 'decimal') ||
+											str_contains((string) $cols[$column]['type'], 'double')) {
 											if (!empty($value)) {
 												$save[$column] = $value;
 											} else {
@@ -1441,10 +1441,10 @@ function update_graph_template_items(int $graph_template_id, int $graph_template
 									case 'task_item_id':
 										break;
 									default:
-										if (str_contains($cols[$column]['type'], 'int') ||
-											str_contains($cols[$column]['type'], 'float') ||
-											str_contains($cols[$column]['type'], 'decimal') ||
-											str_contains($cols[$column]['type'], 'double')) {
+										if (str_contains((string) $cols[$column]['type'], 'int') ||
+											str_contains((string) $cols[$column]['type'], 'float') ||
+											str_contains((string) $cols[$column]['type'], 'decimal') ||
+											str_contains((string) $cols[$column]['type'], 'double')) {
 											if (!empty($value)) {
 												$save[$column] = $value;
 											} else {

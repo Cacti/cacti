@@ -271,7 +271,7 @@ function get_package_contents(string $export_type, int $export_item_id, bool $in
 		// search xml files for scripts
 		if (cacti_sizeof($files)) {
 			foreach ($files as $file) {
-				if (str_contains($file['file'], '.xml')) {
+				if (str_contains((string) $file['file'], '.xml')) {
 					$files = array_merge($files, find_dependent_files(file_get_contents($file['file']), true));
 				}
 			}
@@ -293,7 +293,7 @@ function get_package_contents(string $export_type, int $export_item_id, bool $in
 			// search xml files for scripts
 			if (cacti_sizeof($nfiles)) {
 				foreach ($nfiles as $file) {
-					if (str_contains($file['file'], '.xml')) {
+					if (str_contains((string) $file['file'], '.xml')) {
 						$files = array_merge($files, find_dependent_files(file_get_contents($file['file']), true));
 					}
 				}
@@ -358,9 +358,9 @@ function get_package_contents(string $export_type, int $export_item_id, bool $in
 
 		foreach ($files as $file) {
 			if (array_search($file, $found, true) === false) {
-				if (!str_contains($file['file'], '/resource/')) {
+				if (!str_contains((string) $file['file'], '/resource/')) {
 					$exists = file_exists($file['file']);
-					$output .= '<div class="formRow"><div class="formColumnLeft nowrap">' . htmle(basename($file['file'])) . ($exists ? '<i class="fa-solid fa-circle-check deviceUp"></i>' : '<i class="ti ti-cross deviceDown"></i>') . '</div></div>';
+					$output .= '<div class="formRow"><div class="formColumnLeft nowrap">' . htmle(basename((string) $file['file'])) . ($exists ? '<i class="fa-solid fa-circle-check deviceUp"></i>' : '<i class="ti ti-cross deviceDown"></i>') . '</div></div>';
 				}
 
 				$found[] = $file;
@@ -621,7 +621,7 @@ function package_template(string &$template, array &$info, array &$files, string
 
 	if (cacti_sizeof($files)) {
 		foreach ($files as $file) {
-			$directories[dirname($file['file'])] = dirname($file['file']);
+			$directories[dirname((string) $file['file'])] = dirname((string) $file['file']);
 		}
 	}
 
@@ -670,7 +670,7 @@ function package_template(string &$template, array &$info, array &$files, string
 		$xml .= "       <file>\n";
 
 		if ($type != '') {
-			$xml .= '           <name>' . basename($name) . "</name>\n";
+			$xml .= '           <name>' . basename((string) $name) . "</name>\n";
 		} else {
 			$xml .= '           <name>' . str_replace($my_base, '', $name) . "</name>\n";
 		}
@@ -696,13 +696,13 @@ function package_template(string &$template, array &$info, array &$files, string
 		}
 
 		$xml .= "           <data>$data</data>\n";
-		$xml .= '           <filesignature>' . base64_encode($binary_signature) . "</filesignature>\n";
+		$xml .= '           <filesignature>' . base64_encode((string) $binary_signature) . "</filesignature>\n";
 		$xml .= "       </file>\n";
 	}
 
 	$xml .= "   </files>\n";
 	$xml .= '   <publickeyname>' . $info['author'] . "</publickeyname>\n";
-	$xml .= '   <publickey>' . base64_encode($public_key) . "</publickey>\n";
+	$xml .= '   <publickey>' . base64_encode((string) $public_key) . "</publickey>\n";
 
 	// get rid of the temp file
 	unlink($files['template']['file']);
@@ -716,7 +716,7 @@ function package_template(string &$template, array &$info, array &$files, string
 	$debug .= "NOTE: Base 64 Encoding Files and SHA256 Signing each file\n";
 
 	if ($ok == 1) {
-		$basesig = base64_encode($binary_signature);
+		$basesig = base64_encode((string) $binary_signature);
 		$debug .= "NOTE: Signing Complete\n";
 	} elseif ($ok == 0) {
 		$basesig = '';

@@ -371,13 +371,13 @@ function import_package_get_details(string $xmlfile) : array {
 	$return = $pkgarr['info'];
 
 	if (isset($pkgarr['publickey'])) {
-		$return['public_key'] = base64_decode($pkgarr['publickey'], true);
+		$return['public_key'] = base64_decode((string) $pkgarr['publickey'], true);
 	} else {
 		$return['public_key'] = get_public_key();
 	}
 
 	if (isset($pkgarr['publickeyname'])) {
-		$return['public_key_name'] = base64_decode($pkgarr['publickeyname'], true);
+		$return['public_key_name'] = base64_decode((string) $pkgarr['publickeyname'], true);
 	}
 
 	if (!isset($return['name']) || is_array($return['name'])) {
@@ -474,7 +474,7 @@ function import_get_package_info(string $xmlfile) : mixed {
 			}
 
 			if (isset($xml['publickey'])) {
-				$package_publickey = base64_decode($xml['publickey'], true);
+				$package_publickey = base64_decode((string) $xml['publickey'], true);
 			}
 
 			return [
@@ -624,8 +624,8 @@ function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orpha
 	}
 
 	foreach ($data['files']['file'] as $f) {
-		$binary_signature = base64_decode($f['filesignature'], true);
-		$fdata            = base64_decode($f['data'], true);
+		$binary_signature = base64_decode((string) $f['filesignature'], true);
+		$fdata            = base64_decode((string) $f['data'], true);
 
 		if (strlen($public_key) < 200) {
 			$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA1);
@@ -649,10 +649,10 @@ function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orpha
 	}
 
 	foreach ($data['files']['file'] as $f) {
-		$fdata = base64_decode($f['data'], true);
+		$fdata = base64_decode((string) $f['data'], true);
 		$name  = $f['name'];
 
-		if (str_contains($name, 'scripts/') || str_contains($name, 'resource/')) {
+		if (str_contains((string) $name, 'scripts/') || str_contains((string) $name, 'resource/')) {
 			$filename = CACTI_PATH_BASE . "/$name";
 
 			if (!$preview) {
@@ -740,7 +740,7 @@ function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orpha
 	 */
 	if (!$preview) {
 		foreach ($data['files']['file'] as $f) {
-			$fdata = base64_decode($f['data'], true);
+			$fdata = base64_decode((string) $f['data'], true);
 			$name  = $f['name'];
 
 			if (isset($f['type']) && $f['type'] == 'template') {
@@ -1014,9 +1014,9 @@ function xml_to_graph_template(string $hash, array &$xml_array, array &$hash_cac
 				// make sure this field exists in the xml array first
 				if (isset($item_array[$field_name])) {
 					// is the value of this field a hash or not?
-					if (preg_match('/hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})/', $item_array[$field_name])) {
+					if (preg_match('/hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})/', (string) $item_array[$field_name])) {
 						$save[$field_name] = resolve_hash_to_id($item_array[$field_name], $hash_cache, 'graph_templates_item');
-					} elseif (($field_name == 'color_id') && (preg_match('/^[a-fA-F0-9]{6}$/', $item_array[$field_name])) && (get_version_index($parsed_hash['version']) >= get_version_index('0.8.5'))) { // treat the 'color' field differently
+					} elseif (($field_name == 'color_id') && (preg_match('/^[a-fA-F0-9]{6}$/', (string) $item_array[$field_name])) && (get_version_index($parsed_hash['version']) >= get_version_index('0.8.5'))) { // treat the 'color' field differently
 						$color_id = db_fetch_cell_prepared('SELECT id
 							FROM colors
 							WHERE hex = ?',
@@ -1035,7 +1035,7 @@ function xml_to_graph_template(string $hash, array &$xml_array, array &$hash_cac
 						}
 
 						$save[$field_name] = $color_id;
-					} elseif (($field_name == 'color2_id') && (preg_match('/^[a-fA-F0-9]{6}$/', $item_array[$field_name])) && (get_version_index($parsed_hash['version']) >= get_version_index('0.8.5'))) { // treat the 'color' field differently
+					} elseif (($field_name == 'color2_id') && (preg_match('/^[a-fA-F0-9]{6}$/', (string) $item_array[$field_name])) && (get_version_index($parsed_hash['version']) >= get_version_index('0.8.5'))) { // treat the 'color' field differently
 						$color2_id = db_fetch_cell_prepared('SELECT id
 							FROM colors
 							WHERE hex = ?',
@@ -1127,7 +1127,7 @@ function xml_to_graph_template(string $hash, array &$xml_array, array &$hash_cac
 				$hash_cache['graph_template_input'][$parsed_hash['hash']] = $graph_template_input_id;
 
 				// import into: graph_template_input_defs
-				$hash_items = explode('|', $item_array['items']);
+				$hash_items = explode('|', (string) $item_array['items']);
 
 				if (!empty($hash_items[0])) {
 					for ($i = 0; $i < cacti_count($hash_items); $i++) {
@@ -1346,7 +1346,7 @@ function xml_to_data_template(string $hash, array &$xml_array, array &$hash_cach
 				// make sure this field exists in the xml array first
 				if (isset($item_array[$field_name])) {
 					// is the value of this field a hash or not?
-					if (preg_match('/hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})/', $item_array[$field_name])) {
+					if (preg_match('/hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})/', (string) $item_array[$field_name])) {
 						$save[$field_name] = resolve_hash_to_id($item_array[$field_name], $hash_cache, 'data_template_rrd');
 					} else {
 						$save[$field_name] = xml_character_decode($item_array[$field_name]);
@@ -1574,7 +1574,7 @@ function xml_to_data_query(string $hash, array &$xml_array, array &$hash_cache, 
 				// make sure this field exists in the xml array first
 				if (isset($item_array[$field_name])) {
 					// is the value of this field a hash or not?
-					if (preg_match('/hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})/', $item_array[$field_name])) {
+					if (preg_match('/hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})/', (string) $item_array[$field_name])) {
 						$save[$field_name] = resolve_hash_to_id($item_array[$field_name], $hash_cache, 'snmp_query_graph');
 					} else {
 						$save[$field_name] = xml_character_decode($item_array[$field_name]);
@@ -1828,7 +1828,7 @@ function xml_to_data_source_profile(string $hash, array &$xml_array, array &$has
 			$hash_cache['data_source_profiles'][$hash] = $dsp_id;
 
 			// import into: data_source_profiles_cf
-			$hash_items = explode('|', $xml_array['cf_items']);
+			$hash_items = explode('|', (string) $xml_array['cf_items']);
 
 			if (!empty($hash_items[0])) {
 				for ($i = 0; $i < cacti_count($hash_items); $i++) {
@@ -1971,7 +1971,7 @@ function xml_to_host_template(string $hash, array &$xml_array, array &$hash_cach
 		$hash_cache['host_template'][$hash] = $host_template_id;
 
 		// import into: host_template_graph
-		$hash_items = explode('|', $xml_array['graph_templates']);
+		$hash_items = explode('|', (string) $xml_array['graph_templates']);
 
 		if (!empty($hash_items[0])) {
 			for ($i = 0; $i < cacti_count($hash_items); $i++) {
@@ -1993,7 +1993,7 @@ function xml_to_host_template(string $hash, array &$xml_array, array &$hash_cach
 		}
 
 		// import into: host_template_snmp_query
-		$hash_items = explode('|', $xml_array['data_queries']);
+		$hash_items = explode('|', (string) $xml_array['data_queries']);
 
 		if (!empty($hash_items[0])) {
 			for ($i = 0; $i < cacti_count($hash_items); $i++) {
@@ -2511,10 +2511,10 @@ function compare_data(array $save, array $previous_data, string $table) : int {
 			if ($previous_data[$column] != $value) {
 				$cols = db_get_table_column_types($table);
 
-				if (str_contains($cols[$column]['type'], 'int') ||
-					str_contains($cols[$column]['type'], 'float') ||
-					str_contains($cols[$column]['type'], 'decimal') ||
-					str_contains($cols[$column]['type'], 'double')) {
+				if (str_contains((string) $cols[$column]['type'], 'int') ||
+					str_contains((string) $cols[$column]['type'], 'float') ||
+					str_contains((string) $cols[$column]['type'], 'decimal') ||
+					str_contains((string) $cols[$column]['type'], 'double')) {
 					if (empty($previous_data[$column]) && empty($value)) {
 						continue;
 					}

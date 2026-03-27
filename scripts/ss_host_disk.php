@@ -31,13 +31,13 @@ if (!isset($called_by_script_server)) {
 
 	array_shift($_SERVER['argv']);
 
-	print call_user_func_array('ss_host_disk', $_SERVER['argv']);
+	print call_user_func_array(ss_host_disk(...), $_SERVER['argv']);
 } else {
 	include_once(__DIR__ . '/../lib/snmp.php');
 }
 
 function ss_host_disk(string $hostname = '', int $host_id = 0, mixed $snmp_auth = '', string $cmd = 'index', string $arg1 = '', string $arg2 = '') : mixed {
-	$snmp           = explode(':', $snmp_auth);
+	$snmp           = explode(':', (string) $snmp_auth);
 	$snmp_version   = $snmp[0];
 	$snmp_port      = $snmp[1];
 	$snmp_timeout   = $snmp[2];
@@ -131,7 +131,7 @@ function ss_host_disk(string $hostname = '', int $host_id = 0, mixed $snmp_auth 
 
 		if (is_array($value)) {
 			if (($arg == 'total') || ($arg == 'used')) {
-				$sau = preg_replace('/[^0-9]/i', '', db_fetch_cell_prepared("SELECT field_value
+				$sau = preg_replace('/[^0-9]/i', '', (string) db_fetch_cell_prepared("SELECT field_value
 					FROM host_snmp_cache
 					WHERE host_id = ?
 					AND field_name = 'hrStorageAllocationUnits'

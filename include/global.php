@@ -76,7 +76,7 @@ $is_request_ajax = false;
 // If HTTP_X_REQUESTED_WITH is equal to xmlhttprequest
 // We assume this is an ajax call
 if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
-	strcasecmp($_SERVER['HTTP_X_REQUESTED_WITH'], 'xmlhttprequest') == 0) {
+	strcasecmp((string) $_SERVER['HTTP_X_REQUESTED_WITH'], 'xmlhttprequest') == 0) {
 	$is_request_ajax = true;
 } elseif (isset($_REQUEST['header']) && $_REQUEST['header'] == 'false') {
 	$is_request_ajax = true;
@@ -490,8 +490,8 @@ if ($config['poller_id'] > 1) {
 }
 
 if (!defined('IN_CACTI_INSTALL')) {
-	set_error_handler('CactiErrorHandler');
-	register_shutdown_function('CactiShutdownHandler');
+	set_error_handler(CactiErrorHandler(...));
+	register_shutdown_function(CactiShutdownHandler(...));
 }
 
 // verify the cacti database is initialized before moving past here

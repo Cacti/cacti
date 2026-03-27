@@ -146,10 +146,10 @@ function cacti_db_session_clean(string $max) : bool {
 session_set_save_handler(
 	'cacti_db_session_open',
 	'cacti_db_session_close',
-	'cacti_db_session_read',
-	'cacti_db_session_write',
-	'cacti_db_session_destroy',
-	'cacti_db_session_clean'
+	cacti_db_session_read(...),
+	cacti_db_session_write(...),
+	cacti_db_session_destroy(...),
+	cacti_db_session_clean(...)
 );
 
-register_shutdown_function('session_write_close');
+register_shutdown_function(session_write_close(...));

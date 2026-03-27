@@ -11,7 +11,7 @@ if (!isset($called_by_script_server)) {
 
 	array_shift($_SERVER['argv']);
 
-	print call_user_func_array('ss_apache_stats', $_SERVER['argv']);
+	print call_user_func_array(ss_apache_stats(...), $_SERVER['argv']);
 }
 
 function ss_apache_stats(string $host = '', string $section = 'all') : mixed {

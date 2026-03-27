@@ -30,7 +30,7 @@ if (!isset($called_by_script_server)) {
 
 	array_shift($_SERVER['argv']);
 
-	print call_user_func_array('ss_cpoller', $_SERVER['argv']);
+	print call_user_func_array(ss_cpoller(...), $_SERVER['argv']);
 }
 
 function ss_cpoller(string $cmd = 'index', string $arg1 = '', string $arg2 = '') : mixed {
@@ -70,7 +70,7 @@ function ss_cpoller(string $cmd = 'index', string $arg1 = '', string $arg2 = '')
 		switch($arg) {
 			case 'recacheTime':
 				$value = 'U';
-				$stats = explode(' ', db_fetch_cell_prepared('SELECT value FROM settings WHERE name = ?', ['stats_recache_' . $index]));
+				$stats = explode(' ', (string) db_fetch_cell_prepared('SELECT value FROM settings WHERE name = ?', ['stats_recache_' . $index]));
 
 				foreach ($stats as $_stat) {
 					if (preg_match('/^RecacheTime:/', $_stat)) {
@@ -82,7 +82,7 @@ function ss_cpoller(string $cmd = 'index', string $arg1 = '', string $arg2 = '')
 				break;
 			case 'recacheDevices':
 				$value = 'U';
-				$stats = explode(' ', db_fetch_cell_prepared('SELECT value FROM settings WHERE name = ?', ['stats_recache_' . $index]));
+				$stats = explode(' ', (string) db_fetch_cell_prepared('SELECT value FROM settings WHERE name = ?', ['stats_recache_' . $index]));
 
 				foreach ($stats as $_stat) {
 					if (preg_match('/^DevicesRecached:/', $_stat)) {

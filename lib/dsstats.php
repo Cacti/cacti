@@ -157,7 +157,7 @@ function dsstats_get_and_store_ds_avgpeak_values(string $interval, string $type,
 			if ($file['data_source_path'] != '') {
 				$rrdfile       = str_replace('<path_rra>', CACTI_PATH_RRA, $file['data_source_path']);
 				$local_data_id = $file['local_data_id'];
-				$dsnames       = explode(',', $file['dsnames']);
+				$dsnames       = explode(',', (string) $file['dsnames']);
 
 				$stats[$local_data_id] = dsstats_obtain_data_source_avgpeak_values($local_data_id, $rrdfile, $interval, $mode, $peak, $rrd_process);
 			} else {
@@ -379,7 +379,7 @@ function dsstats_obtain_data_source_avgpeak_values(int $local_data_id, string $r
 			}
 
 			// now execute the graph command
-			$stats_cmd = 'graph x --start now-1' . $interval . ' --end now ' . trim($stats_command);
+			$stats_cmd = 'graph x --start now-1' . $interval . ' --end now ' . trim((string) $stats_command);
 
 			// print $stats_cmd . PHP_EOL . PHP_EOL;
 
@@ -391,7 +391,7 @@ function dsstats_obtain_data_source_avgpeak_values(int $local_data_id, string $r
 
 			// process the xport array and return average and peak values
 			if ($xport_data != '') {
-				$xport_array = explode("\n", $xport_data);
+				$xport_array = explode("\n", (string) $xport_data);
 
 				if (cacti_sizeof($xport_array)) {
 					foreach ($xport_array as $index => $line) {
@@ -483,13 +483,13 @@ function dsstats_get_stats_command(int $local_data_id, string $rrdfile, bool $us
 	set_config_option('dsstats_temp_mode', $temp_mode);
 	set_config_option('dsstats_temp_peak', $temp_peak);
 
-	$length = strlen($info);
+	$length = strlen((string) $info);
 
 	$command = '';
 
 	// don't do anything if RRDfile did not return data
 	if ($info != '') {
-		$info_array = explode("\n", $info);
+		$info_array = explode("\n", (string) $info);
 
 		$average = false;
 		$max     = false;
@@ -838,7 +838,7 @@ function dsstats_poller_output(mixed &$rrd_update_array) : void {
 	}
 
 	// install the dsstats error handler
-	set_error_handler('dsstats_error_handler');
+	set_error_handler(dsstats_error_handler(...));
 
 	// do not make any calculations unless enabled
 	if (read_config_option('dsstats_enable') == 'on') {
@@ -1356,18 +1356,13 @@ function dsstats_launch_children(string $type) : void {
  *
  * @return string - The sub type
  */
-function dsstats_get_subtype(string $type) : string {
-	switch($type) {
-		case 'master':
-		case 'pmaster':
-			return 'child';
-		case 'bmaster':
-			return 'bchild';
-		case 'dmaster':
-			return 'dchild';
-	}
-
-	return 'false';
+function dsstats_get_subtype(string $type): string {
+	return match ($type) {
+		'master', 'pmaster' => 'child',
+		'bmaster' => 'bchild',
+		'dmaster' => 'dchild',
+		default   => 'false',
+	};
 }
 
 /**
@@ -1397,7 +1392,7 @@ function dsstats_kill_running_processes() : void {
 
 	if (cacti_sizeof($processes)) {
 		foreach ($processes as $p) {
-			cacti_log(sprintf('WARNING: Killing DSStats %s PID %d due to another due to signal or overrun.', ucfirst($p['taskname']), $p['pid']), false, 'BOOST');
+			cacti_log(sprintf('WARNING: Killing DSStats %s PID %d due to another due to signal or overrun.', ucfirst((string) $p['taskname']), $p['pid']), false, 'BOOST');
 			posix_kill($p['pid'], SIGTERM);
 
 			unregister_process($p['tasktype'], $p['taskname'], $p['taskid'], $p['pid']);

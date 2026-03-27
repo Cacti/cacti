@@ -38,7 +38,7 @@ $snmp_auth = $_SERVER['argv'][3];
 $cmd       = $_SERVER['argv'][4];
 
 // support for SNMP V2 and SNMP V3 parameters
-$snmp          = explode(':', $snmp_auth);
+$snmp          = explode(':', (string) $snmp_auth);
 $snmp_version  = intval($snmp[0]);
 $snmp_port     = intval($snmp[1]);
 $snmp_timeout  = intval($snmp[2]);
@@ -113,7 +113,7 @@ function get_cpu_usage(string $hostname, string $snmp_community, int $snmp_versi
 	$j = 0;
 
 	for ($i = 0; ($i < cacti_sizeof($arr)); $i++) {
-		if (preg_match('/^[0-9]+$/', $arr[$i])) {
+		if (preg_match('/^[0-9]+$/', (string) $arr[$i])) {
 			$return_arr[$j] = $arr[$i];
 			$j++;
 		}
@@ -131,7 +131,7 @@ function get_indexes(string $hostname, string $snmp_community, int $snmp_version
 	$j = 0;
 
 	for ($i = 0; ($i < cacti_sizeof($arr)); $i++) {
-		if (preg_match('/^[0-9]+$/', $arr[$i])) {
+		if (preg_match('/^[0-9]+$/', (string) $arr[$i])) {
 			$return_arr[$j] = $j;
 			$j++;
 		}

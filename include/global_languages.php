@@ -283,7 +283,7 @@ function get_language_file(string $extension, string $prefix, array $names, stri
 	}
 
 	$base_path = empty($base_path) ? CACTI_PATH_BASE : $base_path;
-	$base_path = rtrim($base_path, '/') . '/';
+	$base_path = rtrim((string) $base_path, '/') . '/';
 
 	foreach ($names as $name) {
 		$file   = $base_path . $prefix . $name . $extension;
@@ -531,7 +531,7 @@ function apply_locale(string $language) : mixed {
 	// If the users has not elected a language and autodetect is on
 	if (!$locale_set && (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && (read_config_option('i18n_auto_detection') == '' || read_config_option('i18n_auto_detection') == '1'))) {
 		// detect browser settings if auto detection is enabled
-		$accepted = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+		$accepted = explode(',', (string) $_SERVER['HTTP_ACCEPT_LANGUAGE']);
 		$accepted = $accepted[0];
 
 		$language   = repair_locale($accepted);
@@ -570,11 +570,11 @@ function repair_locale(mixed $language) : string {
 		if (array_key_exists($locale, $lang2locale)) {
 			$language = $locale;
 		} else {
-			$wanted_locale = substr($language, 0, 2);
+			$wanted_locale = substr((string) $language, 0, 2);
 			$language      = '';
 
 			foreach ($lang2locale as $locale => $data) {
-				if (substr($locale, 0, 2) == $wanted_locale) {
+				if (substr((string) $locale, 0, 2) == $wanted_locale) {
 					$language = $locale;
 
 					break;
@@ -592,19 +592,19 @@ function repair_locale(mixed $language) : string {
  * Universal escaping wrappers
  */
 function __esc() : string {
-	return htmlspecialchars(call_user_func_array('__', func_get_args()), ENT_QUOTES);
+	return htmlspecialchars((string) call_user_func_array(__(...), func_get_args()), ENT_QUOTES);
 }
 
 function __esc_n() : string {
-	return htmlspecialchars(call_user_func_array('__n', func_get_args()), ENT_QUOTES);
+	return htmlspecialchars((string) call_user_func_array(__n(...), func_get_args()), ENT_QUOTES);
 }
 
 function __esc_x() : string {
-	return htmlspecialchars(call_user_func_array('__x', func_get_args()), ENT_QUOTES);
+	return htmlspecialchars((string) call_user_func_array(__x(...), func_get_args()), ENT_QUOTES);
 }
 
 function __esc_xn() : string {
-	return htmlspecialchars(call_user_func_array('__xn', func_get_args()), ENT_QUOTES);
+	return htmlspecialchars((string) call_user_func_array(__xn(...), func_get_args()), ENT_QUOTES);
 }
 
 /**
@@ -804,7 +804,7 @@ function __() : string {
 
 	if (preg_match($valid_regexp, $args[0])) {
 		// process return string against input arguments
-		return __uf(call_user_func_array('sprintf', $args));
+		return __uf(call_user_func_array(sprintf(...), $args));
 	} else {
 		return $args[0];
 	}
@@ -870,7 +870,7 @@ function __x() : false|string {
 		$args[0] = ($msgstr == $xmsgid) ? $msgid : $msgstr;
 
 		// process return string against input arguments
-		return __uf(call_user_func_array('sprintf', $args));
+		return __uf(call_user_func_array(sprintf(...), $args));
 	}
 }
 

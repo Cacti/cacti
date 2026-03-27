@@ -31,7 +31,7 @@ if (!isset($called_by_script_server)) {
 
 	array_shift($_SERVER['argv']);
 
-	print call_user_func_array('ss_aruba_instant_client', $_SERVER['argv']);
+	print call_user_func_array(ss_aruba_instant_client(...), $_SERVER['argv']);
 } else {
 	include_once(__DIR__ . '/../lib/snmp.php');
 }

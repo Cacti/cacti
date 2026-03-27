@@ -28,7 +28,7 @@ error_reporting(0);
 if (!isset($called_by_script_server)) {
 	include(__DIR__ . '/../include/cli_check.php');
 	array_shift($_SERVER['argv']);
-	print call_user_func_array('ss_mikrotik_queues', $_SERVER['argv']);
+	print call_user_func_array(ss_mikrotik_queues(...), $_SERVER['argv']);
 }
 
 function ss_mikrotik_queues(int $host_id, string $cmd = 'index', string $arg1 = '', string $arg2 = '') : mixed {
@@ -136,36 +136,15 @@ function ss_mikrotik_queues_getnames(int $host_id) : array {
 function ss_mikrotik_queues_getinfo(int $host_id, string $info_requested) : array {
 	$return_arr = [];
 
-	switch($info_requested) {
-		case 'qsName':
-			$column = 'name';
-
-			break;
-		case 'qsInterface':
-			$column = 'iFace';
-
-			break;
-		case 'qsTargetIp':
-			$column = 'srcAddr';
-
-			break;
-		case 'qsTargetMask':
-			$column = 'srcMask';
-
-			break;
-		case 'qsDstIp':
-			$column = 'dstAddr';
-
-			break;
-		case 'qsDstMask':
-			$column = 'dstMask';
-
-			break;
-		default:
-			$column = 'name';
-
-			break;
-	}
+	$column = match ($info_requested) {
+		'qsName'       => 'name',
+		'qsInterface'  => 'iFace',
+		'qsTargetIp'   => 'srcAddr',
+		'qsTargetMask' => 'srcMask',
+		'qsDstIp'      => 'dstAddr',
+		'qsDstMask'    => 'dstMask',
+		default        => 'name',
+	};
 
 	$arr = db_fetch_assoc_prepared("SELECT
 		REPLACE(name, ' ', '_') AS qry_index,

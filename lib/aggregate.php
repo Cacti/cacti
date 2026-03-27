@@ -949,7 +949,7 @@ function auto_title(int $_local_graph_id) : string {
 
 	// remove all '- |host_*|' occurrences
 	$pattern     = '/-?\s+\|host_\w+\|/';
-	$graph_title = preg_replace($pattern, '', $graph_title);
+	$graph_title = preg_replace($pattern, '', (string) $graph_title);
 
 	cacti_log('title:' . $graph_title, true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
