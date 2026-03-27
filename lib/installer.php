@@ -1774,7 +1774,7 @@ class Installer implements JsonSerializable {
 	private function setAdminEmailAddress(string $admin_email_address = '') : void {
 		if ($admin_email_address != '') {
 			if (filter_var($admin_email_address, FILTER_VALIDATE_EMAIL)) {
-				db_execute("UPDATE user_auth SET email_address = '" . $admin_email_address . "'");
+				db_execute_prepared('UPDATE user_auth SET email_address = ? WHERE id = 1', [$admin_email_address]);
 				log_install_always('email', 'Admin email address set to ' . $admin_email_address);
 			} else {
 				$this->addError(Installer::STEP_PROFILE_AND_AUTOMATION, 'Email', __('Incorrect email address'));

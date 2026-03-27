@@ -406,11 +406,14 @@ function reports_form_actions() : void {
 
 	// if we are to save this form, instead of display it
 	if (isrv('selected_items')) {
-		$reference_items = gnrv('selected_items');
-		$selected_items  = unserialize(stripslashes($reference_items), ['allowed_classes' => false]);
+		$selected_items = cacti_unserialize(stripslashes(gnrv('selected_items')));
 
-		if ($selected_items != false) {
+		if (is_array($selected_items)) {
 			foreach ($selected_items as $report) {
+				if (!is_string($report) || !preg_match('/^[a-z]+_[0-9]+$/', $report)) {
+					continue;
+				}
+
 				[$type, $report_id] = explode('_', $report);
 
 				$report_id = intval($report_id);

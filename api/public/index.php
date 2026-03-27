@@ -8,11 +8,21 @@ include __DIR__ . '/../include/db_functions.php';
 include __DIR__ . '/../include/arrays.php';
 include  '../../include/global.php';
 
+// Require authenticated session for all API access
+if (empty($_SESSION[SESS_USER_ID])) {
+	http_response_code(401);
+	header('Content-Type: application/json');
+
+	echo json_encode(['error' => 'Authentication required']);
+
+	exit;
+}
+
 $client_ip = get_client_addr();
 
 $app = AppFactory::create();
 
-$app->addErrorMiddleware(true, true, true);
+$app->addErrorMiddleware(false, true, true);
 
 $app->get('/', function (Request $request, Response $response) {
 	$response->getBody()->write('Welcome to the Cacti API!');

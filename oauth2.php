@@ -24,6 +24,12 @@
 
 require('./include/global.php');
 
+if (empty($_SESSION[SESS_USER_ID])) {
+	header('Location: ' . CACTI_PATH_URL . 'index.php');
+
+	exit;
+}
+
 if (read_config_option('settings_how') != 3) {
 	cacti_log('WARNING: Trying get OAuth2 token but different mail method is configured');
 
