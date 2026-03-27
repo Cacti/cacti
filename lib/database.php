@@ -2224,6 +2224,21 @@ function db_qstr(mixed $s, mixed $db_conn = false) : string {
 }
 
 /**
+ * db_qstr_rlike - Safely quote a value for use in a RLIKE/REGEXP clause.
+ *
+ * Returns the string 'RLIKE <quoted_value>' where the value is properly
+ * escaped via db_qstr(), preventing SQL injection through regex patterns.
+ *
+ * @param string $s       The regex pattern value to quote
+ * @param mixed  $db_conn An optional database connection object
+ *
+ * @return string The safe 'RLIKE <quoted>' SQL fragment
+ */
+function db_qstr_rlike(string $s, mixed $db_conn = false) : string {
+	return 'RLIKE ' . db_qstr($s, $db_conn);
+}
+
+/**
  * db_strip_control_chars - Strip control characters from SQL command
  *
  * @param string $sql The SQL command to loose it's control chars

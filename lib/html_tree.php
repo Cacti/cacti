@@ -1429,7 +1429,7 @@ function grow_right_pane_tree(int $tree_id, int $leaf_id, string $host_group_dat
 		$sql_where = '';
 
 		if (grv('rfilter') != '') {
-			$sql_where .= " (gtg.title_cache RLIKE '" . grv('rfilter') . "' OR gtg.title RLIKE '" . grv('rfilter') . "')";
+			$sql_where .= ' (gtg.title_cache ' . db_qstr_rlike(grv('rfilter')) . ' OR gtg.title ' . db_qstr_rlike(grv('rfilter')) . ')';
 		}
 
 		if (isrv('graph_template_id') && grv('graph_template_id') != '' && grv('graph_template_id') != -1) {
@@ -1486,7 +1486,7 @@ function grow_right_pane_tree(int $tree_id, int $leaf_id, string $host_group_dat
 		}
 
 		if (grv('rfilter') != '') {
-			$sql_where .= ($sql_where != '' ? ' AND ' : '') . "(gtg.title_cache RLIKE '" . grv('rfilter') . "')";
+			$sql_where .= ($sql_where != '' ? ' AND ' : '') . '(gtg.title_cache ' . db_qstr_rlike(grv('rfilter')) . ')';
 		}
 
 		if (isrv('graph_template_id') && grv('graph_template_id') != '') {
@@ -1637,7 +1637,7 @@ function get_host_graph_list(int $host_id, int $graph_template_id, int $data_que
 			$sql_where = '';
 
 			if (grv('rfilter') != '') {
-				$sql_where .= " (gtg.title_cache RLIKE '" . grv('rfilter') . "')";
+				$sql_where .= ' (gtg.title_cache ' . db_qstr_rlike(grv('rfilter')) . ')';
 			}
 
 			if ($host_id > 0) {
@@ -1721,7 +1721,7 @@ function get_host_graph_list(int $host_id, int $graph_template_id, int $data_que
 				$sfd = get_formatted_data_query_indexes($host_id, $data_query['id']);
 
 				if (grv('rfilter') != '') {
-					$sql_where = " (gtg.title_cache RLIKE '" . grv('rfilter') . "')";
+					$sql_where = ' (gtg.title_cache ' . db_qstr_rlike(grv('rfilter')) . ')';
 				}
 
 				// grab a list of all graphs for this host/data query combination
