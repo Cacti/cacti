@@ -271,7 +271,16 @@ function reports_form_save() : void {
 		if (ierv('id')) {
 			$save['user_id'] = $_SESSION[SESS_USER_ID];
 		} else {
-			$save['user_id'] = db_fetch_cell_prepared('SELECT user_id FROM reports WHERE id = ?', [$post['id']]);
+			$owner_id = db_fetch_cell_prepared('SELECT user_id FROM reports WHERE id = ?', [$post['id']]);
+
+			if ($owner_id != $_SESSION[SESS_USER_ID] && !is_realm_allowed(21)) {
+				raise_message('permission_denied');
+				header('Location: reports.php');
+
+				exit;
+			}
+
+			$save['user_id'] = $owner_id;
 		}
 
 		$save['id']            = $post['id'];
@@ -280,7 +289,7 @@ function reports_form_save() : void {
 		$save['enabled']       = (isset($post['enabled']) ? 'on' : '');
 
 		$save['cformat']       = (isset($post['cformat']) ? 'on' : '');
-		$save['format_file']   = $post['format_file'];
+		$save['format_file']   = basename($post['format_file']);
 		$save['font_size']     = form_input_validate($post['font_size'], 'font_size', '^[0-9]+$', false, 3);
 		$save['alignment']     = form_input_validate($post['alignment'], 'alignment', '^[0-9]+$', false, 3);
 		$save['graph_linked']  = (isset($post['graph_linked']) ? 'on' : '');
@@ -1513,6 +1522,13 @@ function reports_edit() : void {
 
 	if (gfrv('id') > 0) {
 		$report = db_fetch_row_prepared('SELECT * FROM reports WHERE id = ?', [grv('id')]);
+
+		if (!empty($report) && $report['user_id'] != $_SESSION[SESS_USER_ID] && !is_realm_allowed(21)) {
+			raise_message('permission_denied');
+			header('Location: reports.php');
+
+			exit;
+		}
 	}
 
 	reports_tabs(grv('id'));

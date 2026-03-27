@@ -288,7 +288,7 @@ if (isset($xport_array['meta']['start'])) {
 			<th class='tableSubHeaderColumn left ui-resizable'>" . __('Date') . '</th>';
 
 		for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
-			print "<th class='{sorter: \"numberFormat\"} tableSubHeaderColumn right ui-resizable'>" . $xport_array['meta']['legend']['col' . $i] . '</th>';
+			print "<th class='{sorter: \"numberFormat\"} tableSubHeaderColumn right ui-resizable'>" . htmle($xport_array['meta']['legend']['col' . $i]) . '</th>';
 		}
 
 		print '</tr></thead>';

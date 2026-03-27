@@ -1415,6 +1415,52 @@ function get_order_string_page() : string {
 }
 
 /**
+ * Validate that a redirect URL points to an internal Cacti page.
+ * Prevents open redirect attacks by rejecting external URLs.
+ *
+ * @param string $url The URL to validate
+ *
+ * @return string The validated URL, or 'index.php' if invalid
+ */
+function validate_redirect_url(string $url) : string {
+	if ($url === '') {
+		return 'index.php';
+	}
+
+	$url = trim($url);
+
+	// reject URLs with protocol schemes (external redirects, javascript:, data:)
+	if (preg_match('#^[a-z][a-z0-9+.\-]*:#i', $url)) {
+		$base = read_config_option('base_url');
+
+		$base = rtrim($base, '/') . '/';
+
+		if ($base !== '/' && str_starts_with($url, $base)) {
+			return $url;
+		}
+
+		return 'index.php';
+	}
+
+	// reject protocol-relative URLs
+	if (str_starts_with($url, '//')) {
+		return 'index.php';
+	}
+
+	// reject URLs with newlines (header injection)
+	if (preg_match('/[\r\n]/', $url)) {
+		return 'index.php';
+	}
+
+	// reject path traversal sequences
+	if (str_contains($url, '..')) {
+		return 'index.php';
+	}
+
+	return $url;
+}
+
+/**
  * Validates if the given string is a valid regular expression.
  *
  * This function checks if the provided regular expression is valid and safe to use.

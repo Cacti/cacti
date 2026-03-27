@@ -671,7 +671,15 @@ function package_diff_file() : void {
 		$newfile = explode("\n", $newfile);
 	}
 
-	$oldfile = file_get_contents(CACTI_PATH_BASE . '/' . $filename);
+	$validated_path = validate_relative_path_within($filename, CACTI_PATH_BASE);
+
+	if ($validated_path === false) {
+		print '<h3>' . __('Error: Invalid file path.') . '</h3>';
+
+		return;
+	}
+
+	$oldfile = file_get_contents($validated_path);
 
 	if ($oldfile !== false) {
 		$oldfile = str_replace("\n\r", "\n", $oldfile);

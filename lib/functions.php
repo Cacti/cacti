@@ -5103,6 +5103,60 @@ function sanitize_cdef(string $cdef) : string {
 }
 
 /**
+ * Validate that a filename resolves to a path within a flat directory.
+ * Uses basename() to strip traversal, then verifies via realpath().
+ *
+ * @param string $filename The user-supplied filename
+ * @param string $base_dir The base directory the file must reside in
+ *
+ * @return string|false The validated real path, or false if invalid
+ */
+function validate_path_within(string $filename, string $base_dir) : string|false {
+	$filename = basename($filename);
+
+	if ($filename === '' || $filename === '.' || $filename === '..') {
+		return false;
+	}
+
+	$base_real = realpath($base_dir);
+
+	if ($base_real === false) {
+		return false;
+	}
+
+	return $base_real . '/' . $filename;
+}
+
+/**
+ * Validate that a relative path resolves within a base directory.
+ * Allows subdirectory paths but rejects '..' traversal components.
+ *
+ * @param string $path     The user-supplied relative path
+ * @param string $base_dir The base directory the path must stay within
+ *
+ * @return string|false The validated real path, or false if invalid
+ */
+function validate_relative_path_within(string $path, string $base_dir) : string|false {
+	if ($path === '' || $path[0] === '/' || str_contains($path, "\0")) {
+		return false;
+	}
+
+	foreach (explode('/', $path) as $part) {
+		if ($part === '..') {
+			return false;
+		}
+	}
+
+	$base_real = realpath($base_dir);
+
+	if ($base_real === false) {
+		return false;
+	}
+
+	return $base_real . '/' . $path;
+}
+
+/**
  * verifies all selected items are numeric to guard against injection
  *
  * @param mixed $items An array of serialized items from a post
