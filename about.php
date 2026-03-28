@@ -48,8 +48,8 @@ html_start_box(__('About Cacti'), '100%', false, 3, 'center', '');
 		<div class='flexContainer'>
 		<div class='flexChild' style='min-width:300px;'>
 		<p><strong><?php print __('Active Developers'); ?></strong></p>
-		<p style='min-height:45px'><?php print __('Developers working on Cacti, its Architecture, Documentation and Future Releases.'); ?></strong></p>
-		<ul type='disc'>
+		<p style='min-height:45px'><?php print __('Developers working on Cacti, its Architecture, Documentation and Future Releases.'); ?></p>
+		<ul style='list-style-type:disc'>
 			<li>Larry Adams <i>(TheWitness)</i></li>
 			<li>Mark Brugnoli-Vinten <i>(netniV)</i></li>
 			<li>Jimmy Conner <i>(cigamit)</i></li>
@@ -57,33 +57,34 @@ html_start_box(__('About Cacti'), '100%', false, 3, 'center', '');
 			<li>Andreas Braun <i>(browniebraun)</i></li>
 			<li>Thomas Urban <i>(phalek)</i></li>
 			<li>Jing Chen <i>(ddb4github)</i></li>
+			<li>Thomas Vincent <i>(somethingwithproof)</i></li>
 		</ul>
 		</div>
 		<div class='flexChild' style='min-width:300px;'>
 		<p><strong><?php print __('Honorable Mentions'); ?></strong></p>
-		<p style='min-height:45px'><?php print __('Contributors to Documentation, QA, Packaging, the Forums and our YouTube page.'); ?></strong></p>
-		<ul type='disc'>
+		<p style='min-height:45px'><?php print __('Contributors to Documentation, QA, Packaging, the Forums and our YouTube page.'); ?></p>
+		<ul style='list-style-type:disc'>
 			<li>Sean Mancini <i>(bmfmancini)</i></li>
-			<li>J.P. Pasnak, CD <i>(Linegod)</i></strong></li>
+			<li>J.P. Pasnak, CD <i>(Linegod)</i></li>
 			<li>Chris Bell (Windows) <i>(BSOD2600)</i></li>
-			<li>Paul Gevers (Debian) <i>(paulgevers)</i></strong></li>
-			<li>Morten Stevens (Fedora) <i>(mortenstevens)</i></strong></li>
+			<li>Paul Gevers (Debian) <i>(paulgevers)</i></li>
+			<li>Morten Stevens (Fedora) <i>(mortenstevens)</i></li>
 		</ul>
 		</div>
 		<div class='flexChild' style='min-width:300px;'>
 		<p><strong><?php print __('Emeritus Members'); ?></strong></p>
-		<p style='min-height:45px'><?php print __('Members of the original Cacti Group that have since moved on in their careers.  We continue to wish them the best.'); ?></strong></p>
-		<ul type='disc'>
+		<p style='min-height:45px'><?php print __('Members of the original Cacti Group that have since moved on in their careers.  We continue to wish them the best.'); ?></p>
+		<ul style='list-style-type:disc'>
 			<li>Ian Berry <i>(raX)</i></li>
 			<li>Reinhard Scheck <i>(gandalf)</i></li>
-			<li>Tony Roman <i>(rony)</i></strong></li>
-			<li>Andy Blyler <i>(ablyler)</i></strong></li>
+			<li>Tony Roman <i>(rony)</i></li>
+			<li>Andy Blyler <i>(ablyler)</i></li>
 		</ul>
 		</div>
 		</div>
 
-		<p><strong><?php print __('Thanks'); ?></a></strong><br>
-		<ul type='disc'>
+		<p><strong><?php print __('Thanks'); ?></strong></p>
+		<ul style='list-style-type:disc'>
 			<li>
 				<?php print __('A very special thanks to %sTobi Oetiker%s, the creator of %sRRDtool%s and the very popular %sMRTG%s.', '<a href="http://tobi.oetiker.ch/" target="_blank"><strong>', '</strong></a>', '<a href="http://www.rrdtool.org/" target="_blank">', '</a>', '<a href="http://www.rrdtool.org" target="_blank">', '</a>'); ?>
 			</li>
@@ -92,7 +93,6 @@ html_start_box(__('About Cacti'), '100%', false, 3, 'center', '');
 				<?php print __('Especially anyone who has taken the time to create an issue report, or otherwise help fix a Cacti related problems. Also to anyone who has contributed to supporting Cacti.'); ?>
 			</li>
 		</ul>
-		</p>
 
 		<strong><?php print __('License'); ?></strong><br>
 
