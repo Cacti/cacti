@@ -255,6 +255,11 @@ function rrdtool_execute() {
 function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pipe = false, $logopt = 'WEBLOG') {
 	global $config;
 
+	if (is_array($command_line)) {
+		$cmd = array_shift($command_line);
+		$command_line = $cmd . ' ' . implode(' ', array_map('cacti_escapeshellarg', $command_line));
+	}
+
 	static $last_command;
 
 	if (!is_numeric($output_flag)) {
