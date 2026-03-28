@@ -44,7 +44,7 @@ switch ($action) {
 		// If the user is not logged in, redirect them to the login page
 		if (!isset($_SESSION['sess_user_id'])) {
 			if (isset($_SERVER['HTTP_REFERER'])) {
-				header('Location: ' . $_SERVER['HTTP_REFERER']);
+				header('Location: ' . sanitize_uri($_SERVER['HTTP_REFERER']));
 			} else {
 				header('Location: index.php');
 			}
@@ -92,7 +92,8 @@ if (!cacti_sizeof($user) || $user['realm'] != 0) {
 	}
 
 	if (isset($_SERVER['HTTP_REFERER'])) {
-		header('Location: ' . $_SERVER['HTTP_REFERER']);
+		$_ref = sanitize_uri($_SERVER['HTTP_REFERER']);
+		header('Location: ' . ((parse_url($_ref, PHP_URL_HOST) === null || parse_url($_ref, PHP_URL_HOST) === $_SERVER['HTTP_HOST']) ? $_ref : 'index.php'));
 	} else {
 		header('Location: index.php');
 	}
@@ -108,7 +109,8 @@ if ($user['password_change'] != 'on') {
 	cacti_cookie_logout();
 
 	if (isset($_SERVER['HTTP_REFERER'])) {
-		header('Location: ' . $_SERVER['HTTP_REFERER']);
+		$_ref = sanitize_uri($_SERVER['HTTP_REFERER']);
+		header('Location: ' . ((parse_url($_ref, PHP_URL_HOST) === null || parse_url($_ref, PHP_URL_HOST) === $_SERVER['HTTP_HOST']) ? $_ref : 'index.php'));
 	} else {
 		header('Location: index.php');
 	}
@@ -331,7 +333,7 @@ if (isset_request_var('ref')) {
 	}
 
 	if (!$valid) {
-		cacti_log('WARNING: User attempted to access Cacti from unknown URL', false, 'AUTH');
+		cacti_log('WARNING: User attempted to access Cacti from unkonwn URL', false, 'AUTH');
 
 		raise_message('problems_with_page', __('There are problems with the Change Password page.  Contact your Cacti administrator right away.'), MESSAGE_LEVEL_ERROR);
 		header('Location:index.php');

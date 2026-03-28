@@ -4489,60 +4489,8 @@ function sanitize_cdef($cdef) {
 }
 
 /**
- * validates that a user-supplied filename resolves to a path within a given
- * base directory to guard against directory traversal and injection
+ * verifies all selected items are numeric to guard against injection
  *
- * @param string $filename The user-supplied filename
- * @param string $base_dir The base directory the file must reside in
- *
- * @return mixed The validated real path, or false if invalid
- */
-function validate_path_within($filename, $base_dir) {
-	$filename = basename($filename);
-
-	if ($filename === '' || $filename === '.' || $filename === '..') {
-		return false;
-	}
-
-	$base_real = realpath($base_dir);
-
-	if ($base_real === false) {
-		return false;
-	}
-
-	return $base_real . '/' . $filename;
-}
-
-/**
- * Validate that a relative path resolves within a base directory.
- * Allows subdirectory paths but rejects '..' traversal components.
- *
- * @param string $path     The user-supplied relative path
- * @param string $base_dir The base directory the path must stay within
- *
- * @return mixed The validated real path, or false if invalid
- */
-function validate_relative_path_within($path, $base_dir) {
-	if ($path === '' || $path[0] === '/' || strpos($path, "\0") !== false) {
-		return false;
-	}
-
-	foreach (explode('/', $path) as $part) {
-		if ($part === '..') {
-			return false;
-		}
-	}
-
-	$base_real = realpath($base_dir);
-
-	if ($base_real === false) {
-		return false;
-	}
-
-	return $base_real . '/' . $path;
-}
-
-/**
  * @param string $items   An array of serialized items from a post
  *
  * @return array          The sanitized selected items array
@@ -5321,7 +5269,7 @@ function split_emaildetail($email) {
 	}
 
 	/**
-	 * Handle the case where the Email is a string, but may
+	 * Handle the case where the Email is a tring, but may
 	 * include the name at the beginning of the Email.
 	 */
 	if (!is_array($email) && strpos($email, '@') !== false) {
@@ -7043,6 +6991,33 @@ function get_client_addr() {
 
 	$proxy_headers = (isset($config['proxy_headers']) ? $config['proxy_headers'] : []);
 
+	if ($proxy_headers === null) {
+		$last_time = read_config_option('proxy_alert');
+
+		if (empty($last_time)) {
+			// First run — no record yet; log immediately and record today
+			cacti_log('NOTICE: proxy_headers is not set in config.php; defaulting to false (only REMOTE_ADDR trusted). Set proxy_headers if Cacti is behind a reverse proxy.', false, 'AUTH');
+			set_config_option('proxy_alert', date('Y-m-d'));
+		} else {
+			$last_date = new DateTime($last_time);
+			$this_date = new DateTime();
+
+			$this_diff = $this_date->diff($last_date);
+			$this_days = $this_diff->format('%a');
+
+			if ((int) $this_days >= 1) {
+				cacti_log('NOTICE: proxy_headers is not set in config.php; defaulting to false (only REMOTE_ADDR trusted). Set proxy_headers if Cacti is behind a reverse proxy.', false, 'AUTH');
+				set_config_option('proxy_alert', date('Y-m-d'));
+			}
+		}
+
+		$proxy_headers = false;
+	}
+
+	/* If proxy_headers is true, allow all known headers -- NOT advised
+	 * If proxy_headers is false, allow only REMOTE_ADDR
+	 * IF proxy_headers is an array, filter by known headers
+	 */
 	if ($proxy_headers === true) {
 		$proxy_headers = $allowed_proxy_headers;
 	} elseif (is_array($proxy_headers) && is_array($allowed_proxy_headers)) {
@@ -7308,7 +7283,7 @@ function cacti_session_destroy() {
 }
 
 /**
- * cacti_cookie_set - Allows for settings an arbitrary cookie name and value
+ * cacti_cookie_set - Allows for settings an arbitry cookie name and value
  * used for CSRF protection.
  *
  * @return - null
@@ -7505,9 +7480,9 @@ function cacti_browser_zone_enabled() {
 }
 
 /**
- * cacti_time_zone_set - Given an offset in minutes, attempt
+ * cacti_time_zone_set - Givin an offset in minutes, attempt
  * to set a PHP date.timezone.  There are some oddballs that
- * we have to accommodate.
+ * we have to accomodate.
  *
  * @return - null
  */
