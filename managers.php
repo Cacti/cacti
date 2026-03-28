@@ -818,14 +818,19 @@ function manager_logs($id, $header_label) {
 			if ($item['description']) {
 				$description = '';
 				$lines = preg_split( '/\r\n|\r|\n/', $item['description']);
+
 				foreach($lines as $line) {
 					$description .= html_escape(trim($line)) . '<br>';
 				}
+
 				print '<td><a href="#" onMouseOut="hideTooltip(snmpagentTooltip)" onMouseMove="showTooltip(event, snmpagentTooltip, \'' . $item['notification'] . '\', \'' . $description . '\')">' . $item['notification'] . '</a></td>';
 			} else {
+
 				print "<td>{$item['notification']}</td>";
 			}
+
 			print "<td>$varbinds</td>";
+
 			form_end_row();
 		}
 	} else {
@@ -845,7 +850,9 @@ function manager_logs($id, $header_label) {
 }
 
 function form_save() {
-	if (!isset_request_var('tab')) set_request_var('tab', 'general');
+	if (!isset_request_var('tab')) {
+		set_request_var('tab', 'general');
+	}
 
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -915,7 +922,7 @@ function form_actions() {
 
 	if (isset_request_var('selected_items')) {
 		if (isset_request_var('action_receivers')) {
-			$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_graphs_array'));
+			$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 			if ($selected_items !== false) {
 				$ids = implode(',', array_map('intval', $selected_items));
@@ -930,7 +937,8 @@ function form_actions() {
 					db_execute("UPDATE snmpagent_managers SET disabled = 'on' WHERE id IN (" . $ids . ')');
 				}
 
-				header('Location: managers.php?header=false');
+				header('Location: managers.php');
+
 				exit;
 			}
 		} elseif (isset_request_var('action_receiver_notifications')) {
@@ -1020,7 +1028,7 @@ function form_actions() {
 				<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
 				$save_html
 				</td>
-			</tr>\n";
+			</tr>";
 
 			html_end_box();
 
@@ -1068,7 +1076,7 @@ function form_actions() {
 
 				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Disable Notification Objects') . "'>";
 			} else {
-				print "<tr><td><span class='textError'>" . __('You must select at least one notification object.') . "</span></td></tr>\n";
+				print "<tr><td><span class='textError'>" . __('You must select at least one notification object.') . "</span></td></tr>";
 				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 			}
 
