@@ -860,6 +860,52 @@ function get_order_string_page() {
 	return $page;
 }
 
+/**
+ * Validate that a redirect URL points to an internal Cacti page.
+ * Prevents open redirect attacks by rejecting external URLs.
+ *
+ * @param string $url The URL to validate
+ *
+ * @return string The validated URL, or 'index.php' if invalid
+ */
+function validate_redirect_url($url) {
+	if ($url === '') {
+		return 'index.php';
+	}
+
+	$url = trim($url);
+
+	// reject URLs with protocol schemes (external redirects, javascript:, data:)
+	if (preg_match('#^[a-z][a-z0-9+.\-]*:#i', $url)) {
+		$base = read_config_option('base_url');
+
+		$base = rtrim($base, '/') . '/';
+
+		if ($base !== '/' && strpos($url, $base) === 0) {
+			return $url;
+		}
+
+		return 'index.php';
+	}
+
+	// reject protocol-relative URLs
+	if (strpos($url, '//') === 0) {
+		return 'index.php';
+	}
+
+	// reject URLs with newlines (header injection)
+	if (preg_match('/[\r\n]/', $url)) {
+		return 'index.php';
+	}
+
+	// reject path traversal sequences
+	if (strpos($url, '..') !== false) {
+		return 'index.php';
+	}
+
+	return $url;
+}
+
 function validate_is_regex($regex) {
 	if ($regex == '') {
 		return true;

@@ -637,7 +637,15 @@ function reports_load_format_file($format_file, &$output, &$report_tag_included,
 		$format_file = 'cacti_group.format';
 	}
 
-	$format_file = $config['base_path'] . '/formats/' . $format_file;
+	$validated = validate_path_within($format_file, $config['base_path'] . '/formats');
+
+	if ($validated === false) {
+		cacti_log('ERROR: Invalid format file path rejected: ' . json_encode($format_file), false, 'REPORTS');
+
+		return false;
+	}
+
+	$format_file = $validated;
 
 	if (file_exists($format_file) && is_readable($format_file)) {
 		$contents = file($format_file);
@@ -685,7 +693,7 @@ function reports_tree_has_graphs($tree_id, $branch_id, $effective_user, $search_
 	$new_graphs = array();
 
 	if ($search_key != '') {
-		$sql_swhere = " AND gtg.title_cache REGEXP '" . $search_key . "'";
+		$sql_swhere = ' AND gtg.title_cache ' . db_qstr_rlike($search_key);
 	}
 
 	$device_id = db_fetch_cell_prepared('SELECT host_id
@@ -1095,7 +1103,7 @@ function reports_expand_device(&$report, $item, $device_id, $output, $format_ok,
 	if (cacti_sizeof($graph_templates)) {
 		foreach ($graph_templates as $id => $name) {
 			if ($item['graph_name_regexp'] != '') {
-				$sql_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
+				$sql_where .= ' AND title_cache ' . db_qstr_rlike($item['graph_name_regexp']);
 			}
 
 			$graphs = db_fetch_assoc_prepared("SELECT
@@ -1266,27 +1274,27 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 			}
 
 			if (!empty($tree_name) && empty($leaf_name) && empty($host_name)) {
-				$title = $title_delimiter . __('Tree:') . " $tree_name";
+				$title = $title_delimiter . __('Tree:') . ' ' . html_escape($tree_name);
 				$title_delimiter = ' > ';
 			}
 
 			if (!empty($leaf_name)) {
-				$title .= $title_delimiter . " $leaf_name";
+				$title .= $title_delimiter . ' ' . html_escape($leaf_name);
 				$title_delimiter = ' > ';
 			}
 
 			if (!empty($host_name)) {
-				$title .= $title_delimiter . " $host_name";
+				$title .= $title_delimiter . ' ' . html_escape($host_name);
 				$title_delimiter = ' > ';
 			}
 
 			if (!empty($graph_name) && !$nested) {
-				$title .= $title_delimiter . " $graph_name";
+				$title .= $title_delimiter . ' ' . html_escape($graph_name);
 				$title_delimiter = ' > ';
 			}
 
 			if ($item['graph_name_regexp'] != '') {
-				$sql_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
+				$sql_where .= ' AND title_cache ' . db_qstr_rlike($item['graph_name_regexp']);
 			}
 
 			if ($leaf_type == 'header' && $nested) {
@@ -1330,7 +1338,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 			} elseif ($leaf_type == 'graph' && $nested) {
 				$gr_where = '';
 				if ($item['graph_name_regexp'] != '') {
-					$gr_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
+					$gr_where .= ' AND title_cache ' . db_qstr_rlike($item['graph_name_regexp']);
 				}
 
 				$graph = db_fetch_row("SELECT local_graph_id, title_cache
@@ -1345,7 +1353,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 			} elseif ($leaf_type == 'graph') {
 				$gr_where = '';
 				if ($item['graph_name_regexp'] != '') {
-					$gr_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
+					$gr_where .= ' AND title_cache ' . db_qstr_rlike($item['graph_name_regexp']);
 				}
 
 				$graph = db_fetch_cell("SELECT count(*)
