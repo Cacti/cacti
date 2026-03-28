@@ -693,6 +693,46 @@ function discoverDevices($network_id, $thread) {
 									$device['host_template']        = $fos['host_template'];
 									$device['availability_method']  = $fos['availability_method'];
 
+									if ($fos['populate_location'] == 'on') {
+										$device['location'] = $device['snmp_sysLocation'];
+									}
+
+									if ($fos['description_pattern'] != '') {
+										$sysName     = $device['snmp_sysName'];
+										$ip_address  = $device['ip_address'];
+										$dnsname     = $device['dnsname'];
+										$shortname   = $device['dnsname_short'];
+										$sysLocation = $device['snmp_sysLocation'];
+
+										if ($sysName != '') {
+											$pattern = str_replace('|sysName|', $sysName, $fos['description_pattern']);
+										} else {
+											$pattern = $fos['description_pattern'];
+										}
+
+										if ($ip_address != '') {
+											$pattern = str_replace('|ipAddress|', $ip_address, $pattern);
+										}
+
+										if ($dnsname != '') {
+											$pattern = str_replace('|dnsName|', $dnsname, $pattern);
+										}
+
+										if ($shortname != '') {
+											$pattern = str_replace('|dnsShortName|', $shortname, $pattern);
+										}
+
+										if ($sysLocation != '') {
+											$pattern = str_replace('|sysLocation|', $sysLocation, $pattern);
+										}
+
+										$description = db_fetch_cell_prepared('SELECT ?', [$pattern]);
+
+										if ($description != '') {
+											$device['description'] = $description;
+										}
+									}
+
 									$host_id = automation_add_device($device);
 
 									if (!empty($host_id)) {

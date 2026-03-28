@@ -99,9 +99,9 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 		}
 	}
 
-	/* set connection timeout for down servers */
+	/* set connection timout for down servers */
 	$flags[PDO::ATTR_TIMEOUT] = 2;
-	$flags[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
+	$flage[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
 
 	while ($i <= $retries) {
 		try {
@@ -240,7 +240,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
  *  attempt to reconnect, otherwise return the connection
  *
  * @param bool|object  The connection to check
- * @param bool         Whether or not to log the connection check
+ * @param bool         Wether or not to log the connection check
  *
  * @return bool        The database true is the database is connected else false
  */
@@ -1120,7 +1120,7 @@ function db_index_matches($table, $index, $columns, $log = true, $db_conn = fals
 function db_table_exists($table, $log = true, $db_conn = false) {
 	static $results;
 
-	if ($db_conn == false) {
+	if ($db_conn === false) {
 		$index = '-1';
 	} else {
 		$index = md5(json_encode($db_conn));
@@ -1197,7 +1197,7 @@ function db_cacti_initialized($is_web = true) {
 function db_column_exists($table, $column, $log = true, $db_conn = false) {
 	static $results = array();
 
-	if ($db_conn == false) {
+	if ($db_conn === false) {
 		$index = '-1';
 	} else {
 		$index = md5(json_encode($db_conn));
@@ -1956,18 +1956,6 @@ function db_qstr($s, $db_conn = false) {
 	$s = str_replace(array('\\', "\0", "'"), array('\\\\', "\\\0", "\\'"), $s);
 
 	return  "'" . $s . "'";
-}
-
-/**
- * db_qstr_rlike - Safely quote a value for use in a RLIKE/REGEXP clause.
- *
- * @param string $s       The regex pattern value to quote
- * @param mixed  $db_conn An optional database connection object
- *
- * @return string The safe 'RLIKE <quoted>' SQL fragment
- */
-function db_qstr_rlike($s, $db_conn = false) {
-	return 'RLIKE ' . db_qstr($s, $db_conn);
 }
 
 /**

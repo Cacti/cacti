@@ -52,9 +52,18 @@ function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 
 	$tmpdir = sys_get_temp_dir();
 
-	if ($environ != 'realtime') {
-		$tmpdir = $tmpdir . '/cacti/net-snmp-devio';
-		$tmpfile = $host_id . '_io';
+	if (!db_table_exists('host_value_cache')) {
+		if ($environ != 'realtime') {
+			$tmpdir .= '/cacti/net-snmp-devio';
+			$tmpfile = $host_id . '_io';
+		} else {
+			$tmpdir .= '/cacti-rt/net-snmp-devio';
+			$tmpfile = $host_id . '_' . $poller_id . '_io_rt';
+		}
+
+		if (!is_dir($tmpdir)) {
+			mkdir($tmpdir, 0755, true);
+		}
 	} else {
 		$tmpdir = $tmpdir . '/cacti-rt/net-snmp-devio';
 		$tmpfile = $host_id . '_' . $poller_id . '_io_rt';
@@ -116,9 +125,9 @@ function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 		SNMP_POLLER,
 		$host['snmp_engine_id']);
 
-	foreach($names as $measure) {
-		if (substr($measure['value'],0,2) == 'sd' || substr($measure['value'],0,4) == 'nvme' || substr($measure['value'],0,2) == 'vm') {
-			if (is_numeric(substr(strrev($measure['value']),0,1))) {
+	foreach ($names as $measure) {
+		if (preg_match('/^(?:sd|nvme|xvd|vd|vm|hd|md|dm-)/', $measure['value'])) {
+			if (preg_match('/(?:p\d+|\d+)$/', $measure['value']) && !preg_match('/^nvme\d+n\d+$/', $measure['value'])) {
 				continue;
 			}
 
@@ -154,15 +163,15 @@ function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 			if (array_key_exists($index, $indexes)) {
 				if (!isset($previous['uptime'])) {
 					$reads = 'U';
-				} elseif ($current['uptime'] < $previous['uptime']) {
+				} elseif (intval($current['uptime']) < intval($previous['uptime'])) {
 					$reads = 'U';
 				} elseif (!isset($previous["dr$index"])) {
 					$reads = 'U';
 				} elseif ($previous["dr$index"] > $measure['value']) {
 					if ($reads != 'U') {
-						$reads += intval($measure['value']) + 4294967295 - intval($previous["dr$index"]) - intval($previous["dr$index"]);
+						$reads += intval($measure['value']) + 4294967296 - intval($previous["dr$index"]);
 					} else {
-						$reads = intval($measure['value']) + 4294967295 - intval($previous["dr$index"]) - intval($previous["dr$index"]);
+						$reads = intval($measure['value']) + 4294967296 - intval($previous["dr$index"]);
 					}
 				} else {
 					if ($reads != 'U') {
@@ -200,15 +209,15 @@ function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 			if (array_key_exists($index, $indexes)) {
 				if (!isset($previous['uptime'])) {
 					$writes = 'U';
-				} elseif ($current['uptime'] < $previous['uptime']) {
+				} elseif (intval($current['uptime']) < intval($previous['uptime'])) {
 					$writes = 'U';
 				} elseif (!isset($previous["dw$index"])) {
 					$writes = 'U';
 				} elseif ($previous["dw$index"] > $measure['value']) {
 					if ($writes != 'U') {
-						$writes += $measure['value'] + 4294967295 - $previous["dw$index"] - $previous["dw$index"];
+						$writes += $measure['value'] + 4294967296 - $previous["dw$index"];
 					} else {
-						$writes = $measure['value'] + 4294967295 - $previous["dw$index"] - $previous["dw$index"];
+						$writes = $measure['value'] + 4294967296 - $previous["dw$index"];
 					}
 				} else {
 					if ($writes != 'U') {

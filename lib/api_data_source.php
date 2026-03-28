@@ -189,10 +189,7 @@ function api_data_source_remove_multi($local_data_ids) {
 	foreach ($local_data_ids_chunks as $ids_to_delete) {
 		$poller_ids = get_remote_poller_ids_from_data_sources($ids_to_delete);
 
-		if (is_array($ids_to_delete)) {
-			cacti_log("Found as an array");
-			$ids_to_delete = implode(', ', $ids_to_delete);
-		}
+		$ids_to_delete = implode(', ', array_map('intval', $ids_to_delete));
 
 		$data_template_data_ids = db_fetch_assoc('SELECT id
 			FROM data_template_data
@@ -369,61 +366,40 @@ function api_data_source_disable($local_data_id) {
 	}
 }
 
-function api_data_source_disable_multi($local_data_ids) {
-	/* initialize variables */
-	$ids_to_disable = '';
-	$i = 0;
+/**
+ * Disables multiple data sources by their local data IDs.
+ *
+ * @param array $local_data_ids An array of local data IDs to be disabled.
+ *
+ * @return void
+ */
+function api_data_source_disable_multi(array $local_data_ids) : void {
+	if (!cacti_sizeof($local_data_ids)) {
+		return;
+	}
 
-	/* build the array */
-	if (cacti_sizeof($local_data_ids)) {
-		foreach ($local_data_ids as $local_data_id) {
-			if ($i == 0) {
-				$ids_to_disable .= $local_data_id;
-			} else {
-				$ids_to_disable .= ', ' . $local_data_id;
-			}
+	$poller_ids = [];
 
-			$i++;
+	$local_data_ids_chunks = array_chunk(array_map('intval', $local_data_ids), 1000);
 
-			if (!($i % 1000)) {
-				$poller_ids = array_rekey(db_fetch_assoc('SELECT poller_id
-					FROM poller_item
-					WHERE local_data_id IN(' . $ids_to_disable . ')'), 'poller_id', 'poller_id');
+	foreach ($local_data_ids_chunks as $ids_to_disable) {
+		$ids_to_disable = implode(', ', $ids_to_disable);
 
-				db_execute("DELETE FROM poller_item WHERE local_data_id IN ($ids_to_disable)");
-				db_execute("UPDATE data_template_data SET active='' WHERE local_data_id IN ($ids_to_disable)");
+		$poller_ids += array_rekey(
+			db_fetch_assoc('SELECT poller_id
+				FROM poller_item
+				WHERE local_data_id IN(' . $ids_to_disable . ')'),
+			'poller_id', 'poller_id'
+		);
 
-				if (cacti_sizeof($poller_ids)) {
-					foreach ($poller_ids as $poller_id) {
-						if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
-							db_execute("DELETE FROM poller_item WHERE local_data_id IN ($ids_to_disable)", true, $rcnn_id);
-							db_execute("UPDATE data_template_data SET active='' WHERE local_data_id IN ($ids_to_disable)", true, $rcnn_id);
-						}
-					}
-				}
+		db_execute("DELETE FROM poller_item WHERE local_data_id IN ($ids_to_disable)");
+		db_execute("UPDATE data_template_data SET active='' WHERE local_data_id IN ($ids_to_disable)");
 
-				$i = 0;
-				$ids_to_disable = '';
-			}
-		}
-
-		if ($i > 0) {
-			$poller_ids = array_rekey(
-				db_fetch_assoc('SELECT poller_id
-					FROM poller_item
-					WHERE local_data_id IN(' . $ids_to_disable .')'),
-				'poller_id', 'poller_id'
-			);
-
-			db_execute("DELETE FROM poller_item WHERE local_data_id IN ($ids_to_disable)");
-			db_execute("UPDATE data_template_data SET active='' WHERE local_data_id IN ($ids_to_disable)");
-
-			if (cacti_sizeof($poller_ids)) {
-				foreach ($poller_ids as $poller_id) {
-					if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
-						db_execute("DELETE FROM poller_item WHERE local_data_id IN ($ids_to_disable)", true, $rcnn_id);
-						db_execute("UPDATE data_template_data SET active='' WHERE local_data_id IN ($ids_to_disable)", true, $rcnn_id);
-					}
+		if (cacti_sizeof($poller_ids)) {
+			foreach ($poller_ids as $poller_id) {
+				if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
+					db_execute("DELETE FROM poller_item WHERE local_data_id IN ($ids_to_disable)", true, $rcnn_id);
+					db_execute("UPDATE data_template_data SET active='' WHERE local_data_id IN ($ids_to_disable)", true, $rcnn_id);
 				}
 			}
 		}
