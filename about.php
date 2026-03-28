@@ -57,6 +57,7 @@ html_start_box(__('About Cacti'), '100%', false, 3, 'center', '');
 			<li>Andreas Braun <i>(browniebraun)</i></li>
 			<li>Thomas Urban <i>(phalek)</i></li>
 			<li>Jing Chen <i>(ddb4github)</i></li>
+			<li>Thomas Vincent <i>(somethingwithproof)</i></li>
 		</ul>
 		</div>
 		<div class='flexChild' style='min-width:300px;'>
