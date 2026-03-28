@@ -4491,6 +4491,57 @@ function sanitize_cdef($cdef) {
 /**
  * verifies all selected items are numeric to guard against injection
  *
+ * @param string $filename The user-supplied filename
+ * @param string $base_dir The base directory the file must reside in
+ *
+ * @return mixed The validated real path, or false if invalid
+ */
+function validate_path_within($filename, $base_dir) {
+	$filename = basename($filename);
+
+	if ($filename === '' || $filename === '.' || $filename === '..') {
+		return false;
+	}
+
+	$base_real = realpath($base_dir);
+
+	if ($base_real === false) {
+		return false;
+	}
+
+	return $base_real . '/' . $filename;
+}
+
+/**
+ * Validate that a relative path resolves within a base directory.
+ * Allows subdirectory paths but rejects '..' traversal components.
+ *
+ * @param string $path     The user-supplied relative path
+ * @param string $base_dir The base directory the path must stay within
+ *
+ * @return mixed The validated real path, or false if invalid
+ */
+function validate_relative_path_within($path, $base_dir) {
+	if ($path === '' || $path[0] === '/' || strpos($path, "\0") !== false) {
+		return false;
+	}
+
+	foreach (explode('/', $path) as $part) {
+		if ($part === '..') {
+			return false;
+		}
+	}
+
+	$base_real = realpath($base_dir);
+
+	if ($base_real === false) {
+		return false;
+	}
+
+	return $base_real . '/' . $path;
+}
+
+/**
  * @param string $items   An array of serialized items from a post
  *
  * @return array          The sanitized selected items array

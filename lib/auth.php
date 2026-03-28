@@ -4460,7 +4460,7 @@ function compat_password_verify($password, $hash) {
 
 	$md5 = md5($password);
 
-	return ($md5 === $hash);
+	return hash_equals($md5, $hash);
 }
 
 /**
@@ -4639,7 +4639,7 @@ function auth_login_redirect($login_opts = '') {
 
 				cacti_log(sprintf("DEBUG: Referer from REDIRECT_URL with Value: '%s', Effective: '%s'", $_SERVER['REDIRECT_URL'], $referer), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 			} elseif (isset($_SERVER['HTTP_REFERER'])) {
-				$referer = $_SERVER['HTTP_REFERER'];
+				$referer = validate_redirect_url($_SERVER['HTTP_REFERER']);
 
 				if (auth_basename($referer) == 'logout.php') {
 					$referer = $config['url_path'] . 'index.php';
@@ -4883,7 +4883,7 @@ function check_reset_no_authentication($auth_method) {
 
 		$_SESSION['sess_user_id'] = $admin_id;
 		$_SESSION['sess_change_password'] = true;
-		header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?action=force&ref=' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php'));
+		header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?action=force&ref=' . urlencode(validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php')));
 		exit;
 	}
 }

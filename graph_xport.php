@@ -234,7 +234,7 @@ if (is_array($xport_array) && isset($xport_array['meta']['start'])) {
 			<th class='tableSubHeaderColumn left ui-resizable'>" . __('Date') . "</th>\n";
 
 		for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
-			print "<th class='{sorter: \"numberFormat\"} tableSubHeaderColumn right ui-resizable'>" . $xport_array['meta']['legend']['col' . $i] . "</th>\n";
+			print "<th class='{sorter: \"numberFormat\"} tableSubHeaderColumn right ui-resizable'>" . html_escape($xport_array['meta']['legend']['col' . $i]) . "</th>\n";
 		}
 
 		print "</tr></thead>\n";
