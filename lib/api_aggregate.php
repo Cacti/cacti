@@ -142,7 +142,7 @@ function aggregate_graph_templates_graph_save($local_graph_id, $graph_template_i
 		$graph_data['title_cache'] = $existing_data['title_cache'];
 	} else {
 		/* this is an existing graph and not templated from aggregate,
-		 * reuse its old data */
+		 * re-use its old data */
 		$graph_data = $existing_data;
 	}
 

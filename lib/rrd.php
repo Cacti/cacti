@@ -1637,6 +1637,18 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$data_source_path = get_data_source_path($graph_item['local_data_id'], true);
 				}
 
+				if (!rrdtool_file_exists($data_source_path, $rrdtool_pipe)) {
+					if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG || isset($graph_data_array['get_error'])) {
+						cacti_log("WARNING: RRD file '$data_source_path' does not exist", false, 'GRAPH');
+					}
+
+					if (isset($graph_data_array['export_csv'])) {
+						return false;
+					}
+
+					return rrdtool_create_error_image(__('The Cacti Poller has not run yet.'));
+				}
+
 				/* FOR WIN32: Escape all colon for drive letters (ex. D\:/path/to/rra) */
 				$data_source_path = rrdtool_escape_string($data_source_path);
 
@@ -2972,7 +2984,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 				}
 
 				/**
-				 * Accommodate a Cacti bug where the heartbeat was not
+				 * Accomodate a Cacti bug where the heartbeat was not
 				 * propagated.
 				 */
 				if ($data_source['minimal_heartbeat'] != $profile_heartbeat) {
@@ -2998,7 +3010,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 					$diff['tune'][] = $info['filename'] . ' ' . '--data-source-type ' . $data_source_name . ':' . $data_source['type'];
 				}
 
-				/* check the minimal heartbeat */
+				/* check the mimimal heartbeat */
 				if ($data_source['minimal_heartbeat'] != $info['ds'][$data_source_name]['minimal_heartbeat']) {
 					$diff['ds'][$data_source_name]['minimal_heartbeat'] = __("Heartbeat for Data Source '%s' should be '%s'", $data_source_name, $data_source['minimal_heartbeat']);
 					$diff['tune'][] = $info['filename'] . ' ' . '--heartbeat ' . $data_source_name . ':' . $data_source['minimal_heartbeat'];
@@ -3072,7 +3084,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 						$file_rra['pdp_per_row'] = 0;
 					}
 
-					/* correct issue with older rrdtools */
+					/* corrrect issue with older rrdtools */
 					$file_rra['cf'] = trim($file_rra['cf'], '"');
 
 					if ($cacti_rra['cf'] == $file_rra['cf'] && $cacti_rra_id == $file_rra_id) {

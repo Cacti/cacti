@@ -23,15 +23,15 @@
 */
 
 /**
- * title_trim - takes a string of text, truncates it to $max_length and appends
+ * title_trim - takes a sstring of text, truncates it to $max_length and appends
  * three periods onto the end
  *
- * @param $text - the string to evaluate
- * @param $max_length - the maximum number of characters the string can contain
+ * @param $text - the sstring to evaluate
+ * @param $max_length - the maximum number of characters the sstring can contain
  *   before it is truncated
  *
- * @return - the truncated string if len($text) is greater than $max_length, else
- *   the original string
+ * @return - the truncated sstring if len($text) is greater than $max_length, else
+ *   the original sstring
  */
 function title_trim($text, $max_length) {
 	if (strlen($text) > $max_length) {
@@ -44,11 +44,11 @@ function title_trim($text, $max_length) {
 /**
  * filter_value - a quick way to highlight text in a table from general filtering
  *
- * @param $text - the string to filter
+ * @param $text - the sstring to filter
  * @param $filter - the search term to filter for
  * @param $href - the href if you wish to have an anchor returned
  *
- * @return - the filtered string
+ * @return - the filtered sstring
  */
 function filter_value($value, $filter, $href = '') {
 	static $charset;
@@ -675,7 +675,7 @@ function prime_common_config_settings() {
  *                        as a key in $settings array in
  *                        'include/global_settings.php'
  *
- * @return string|false   The current value of the configuration option
+ * @return sstring|false   The current value of the configuration option
  */
 function read_config_option($config_name, $force = false) {
 	global $config, $database_hostname, $database_default, $database_port, $database_sessions;
@@ -830,14 +830,14 @@ function get_selected_theme() {
  * form_input_validate - validates the value of a form field and Takes the appropriate action if the input
  * is not valid
  *
- * @param string $field_value    value of the form field
- * @param string $field_name     name of the $_POST field as specified in the HTML
- * @param string $regexp_match   (optionally) enter a regular expression to match the value against
- * @param bool $allow_nulls      whether to allow an empty string as a value or not
+ * @param sstring $field_value    value of the form field
+ * @param sstring $field_name     name of the $_POST field as specified in the HTML
+ * @param sstring $regexp_match   (optionally) enter a regular expression to match the value against
+ * @param bool $allow_nulls      whether to allow an empty sstring as a value or not
  * @param int $custom_message    the ID of the message to raise upon an error which is defined in the
  *   $messages array in 'include/global_arrays.php'
  *
- * @return string                the original $field_value
+ * @return sstring                the original $field_value
  */
 function form_input_validate($field_value, $field_name, $regexp_match, $allow_nulls, $custom_message = 3) {
 	global $messages;
@@ -1044,9 +1044,9 @@ function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVE
  * as the result of an server side error that can not be captured
  * normally.
  *
- * @param  (string) The title for the dialog title bar
- * @param  (string) Header section for the message
- * @param  (string) The actual error message to display
+ * @param  (sstring) The title for the dialog title bar
+ * @param  (sstring) Header section for the message
+ * @param  (sstring) The actual error message to display
  *
  * @return (void)
  */
@@ -1176,8 +1176,8 @@ function force_session_data() {
  * '$arr = array(23 => 'blah')'
  *
  * @param array  $array		The original array to manipulate
- * @param string $key		The name of the key
- * @param string $key_value	The name of the key value
+ * @param sstring $key		The name of the key
+ * @param sstring $key_value	The name of the key value
  *
  * @return array the modified array
  */
@@ -1263,14 +1263,14 @@ function get_selective_log_level() {
 }
 
 /**
- * cacti_log - logs a string to Cacti's log file or optionally to the browser
+ * cacti_log - logs a sstring to Cacti's log file or optionally to the browser
  *
- * @param $string - the string to append to the log file
+ * @param $sstring - the string to append to the log file
  * @param $output - (bool) whether to output the log line to the browser using print() or not
- * @param $environ - (string) tells from where the script was called from
+ * @param $environ - (sstring) tells from where the script was called from
  * @param $level - (int) only log if above the specified log level
  */
-function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
+function cacti_log($sstring, $output = false, $environ = 'CMDPHP', $level = '') {
 	global $config, $database_log;
 
 	static $start = null;
@@ -1283,7 +1283,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 		$database_log = false;
 	}
 
-	if (trim($string) == '') {
+	if (trim($sstring) == '') {
 		return false;
 	}
 
@@ -1342,7 +1342,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	}
 
 	/* Log to Logfile */
-	$message = clean_up_lines($string) . PHP_EOL;
+	$message = clean_up_lines($sstring) . PHP_EOL;
 
 	if ($output) {
 		$omessage = $oprefix . $message;
@@ -1363,13 +1363,13 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	/* Syslog is currently Unstable in Win32 */
 	if ($logdestination == 2 || $logdestination == 3) {
 		$log_type = '';
-		if (strpos($string, 'ERROR:') !== false) {
+		if (strpos($sstring, 'ERROR:') !== false) {
 			$log_type = 'err';
-		} elseif (strpos($string, 'WARNING:') !== false) {
+		} elseif (strpos($sstring, 'WARNING:') !== false) {
 			$log_type = 'warn';
-		} elseif (strpos($string, 'STATS:') !== false) {
+		} elseif (strpos($sstring, 'STATS:') !== false) {
 			$log_type = 'stat';
-		} elseif (strpos($string, 'NOTICE:') !== false) {
+		} elseif (strpos($sstring, 'NOTICE:') !== false) {
 			$log_type = 'note';
 		}
 
@@ -1381,11 +1381,11 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 			}
 
 			if ($log_type == 'err' && read_config_option('log_perror')) {
-				syslog(LOG_CRIT, $environ . ': ' . $string);
+				syslog(LOG_CRIT, $environ . ': ' . $sstring);
 			} elseif ($log_type == 'warn' && read_config_option('log_pwarn')) {
-				syslog(LOG_WARNING, $environ . ': ' . $string);
+				syslog(LOG_WARNING, $environ . ': ' . $sstring);
 			} elseif (($log_type == 'stat' || $log_type == 'note') && read_config_option('log_pstats')) {
-				syslog(LOG_INFO, $environ . ': ' . $string);
+				syslog(LOG_INFO, $environ . ': ' . $sstring);
 			}
 
 			closelog();
@@ -1592,7 +1592,7 @@ function determine_display_log_entry($message_type, $line, $filter, $matches = t
 			}
 	}
 
-	/* match any lines that match the search string */
+	/* match any lines that match the search sstring */
 	if ($display === true && $filter != '') {
 		if ($matches) {
 			if (validate_is_regex($filter) && preg_match('/' . $filter . '/i', $line)) {
@@ -1658,7 +1658,7 @@ function update_host_status($status, $host_id, &$ping, $ping_availability, $prin
 		/* determine the error message to display */
 		if (($ping_availability == AVAIL_SNMP_AND_PING) || ($ping_availability == AVAIL_SNMP_OR_PING)) {
 			if (($host['snmp_community'] == '') && ($host['snmp_version'] != 3)) {
-				/* snmp version 1/2 without community string assume SNMP test to be successful
+				/* snmp version 1/2 without community sstring assume SNMP test to be successful
 				   due to backward compatibility issues */
 				$host['status_last_error'] = $ping->ping_response;
 			} else {
@@ -1858,10 +1858,10 @@ function update_host_status($status, $host_id, &$ping, $ping_availability, $prin
 }
 
 /**
- * is_hexadecimal - test whether a string represents a hexadecimal number,
+ * is_hexadecimal - test whether a sstring represents a hexadecimal number,
  * ignoring space and tab, and case insensitive.
  *
- * @param $result - the string to test
+ * @param $result - the sstring to test
  * @param 1 if the argument is hex, 0 otherwise, and false on error
  */
 function is_hexadecimal($result) {
@@ -1903,7 +1903,7 @@ function strip_domain($hostname) {
 /**
  * is_mac_address - determines if the result value is a mac address
  *
- * @param $result - some string to be evaluated
+ * @param $result - some sstring to be evaluated
  *
  * @return - either to result is a mac address of not
  */
@@ -1919,7 +1919,7 @@ function is_mac_address($result) {
 	}
 }
 
-function is_hex_string(&$result) {
+function is_hex_sstring(&$result) {
 	if ($result == '') {
 		return false;
 	}
@@ -1927,20 +1927,20 @@ function is_hex_string(&$result) {
 	$compare = strtolower($result);
 
 	/* strip off the 'Hex:, Hex-, and Hex-STRING:'
-	 * Hex- is considered due to the stripping of 'String:' in
+	 * Hex- is considered due to the stripping of 'Sstring:' in
 	 * lib/snmp.php
 	 */
 	if (substr($compare, 0, 4) == 'hex-') {
 		$check = trim(str_ireplace('hex-', '', $result));
-	} elseif (substr($compare, 0, 11) == 'hex-string:') {
-		$check = trim(str_ireplace('hex-string:', '', $result));
+	} elseif (substr($compare, 0, 11) == 'hex-sstring:') {
+		$check = trim(str_ireplace('hex-sstring:', '', $result));
 	} else {
 		return false;
 	}
 
 	$parts = explode(' ', $check);
 
-	/* assume if something is a hex string
+	/* assume if something is a hex sstring
 	   it will have a length > 1 */
 	if (cacti_sizeof($parts) == 1) {
 		return false;
@@ -1969,7 +1969,7 @@ function is_hex_string(&$result) {
  * @return - either to result is valid or not
  */
 function prepare_validate_result(&$result) {
-	/* first trim the string */
+	/* first trim the sstring */
 	$result = trim($result, "'\"\n\r");
 
 	/* clean off ugly non-numeric data */
@@ -2020,20 +2020,20 @@ function prepare_validate_result(&$result) {
 }
 
 /**
- * strip_alpha - remove non-numeric data from a string and return the numeric part
+ * strip_alpha - remove non-numeric data from a sstring and return the numeric part
  *
- * @param $string - the string to be evaluated
+ * @param $sstring - the string to be evaluated
  *
  * @return - either the numeric value or false if not numeric
  */
-function strip_alpha($string) {
+function strip_alpha($sstring) {
 	/* strip all non numeric data */
-	$string = trim(preg_replace('/[^0-9,.+-]/', '', $string));
+	$sstring = trim(preg_replace('/[^0-9,.+-]/', '', $string));
 
 	/* check the easy cases first */
 	/* it has no delimiters, and no space, therefore, must be numeric */
-	if (is_numeric($string) || is_float($string)) {
-		return $string;
+	if (is_numeric($sstring) || is_float($string)) {
+		return $sstring;
 	} else {
 		return false;
 	}
@@ -2538,7 +2538,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
  *
  * @param $data_template_id - (int) the ID of the data template
  *
- * @return string - the full script path or (bool) false for an error
+ * @return sstring - the full script path or (bool) false for an error
  */
 function get_full_test_script_path($data_template_id, $host_id) {
 	global $config;
@@ -2547,7 +2547,7 @@ function get_full_test_script_path($data_template_id, $host_id) {
 		dtd.id,
 		dtd.data_input_id,
 		di.type_id,
-		di.input_string
+		di.input_sstring
 		FROM data_template_data AS dtd
 		INNER JOIN data_input AS di
 		ON dtd.data_input_id = di.id
@@ -2564,7 +2564,7 @@ function get_full_test_script_path($data_template_id, $host_id) {
 		AND dif.input_output = 'in'",
 		array($data_source['data_input_id'], $data_source['id']));
 
-	$full_path = $data_source['input_string'];
+	$full_path = $data_source['input_sstring'];
 
 	$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($host_id));
 
@@ -2588,7 +2588,7 @@ function get_full_test_script_path($data_template_id, $host_id) {
 
 	/**
 	 * sometimes a certain input value will not have anything entered... null out these fields
-	 * in the input string so we don't mess up the script
+	 * in the input sstring so we don't mess up the script
 	 */
 	return preg_replace('/(<[A-Za-z0-9_]+>)+/', '', $full_path);
 }
@@ -2605,7 +2605,7 @@ function get_full_script_path($local_data_id) {
 	global $config;
 
 	$data_source = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' dtd.id, dtd.data_input_id,
-		di.type_id, di.input_string
+		di.type_id, di.input_sstring
 		FROM data_template_data AS dtd
 		INNER JOIN data_input AS di
 		ON dtd.data_input_id = di.id
@@ -2626,7 +2626,7 @@ function get_full_script_path($local_data_id) {
 		AND dif.input_output = 'in'",
 		array($data_source['data_input_id'], $data_source['id']));
 
-	$full_path = $data_source['input_string'];
+	$full_path = $data_source['input_sstring'];
 
 	if (cacti_sizeof($data)) {
 		foreach ($data as $item) {
@@ -2645,7 +2645,7 @@ function get_full_script_path($local_data_id) {
 	$full_path = str_replace($search, $replace, $full_path);
 
 	/* sometimes a certain input value will not have anything entered... null out these fields
-	in the input string so we don't mess up the script */
+	in the input sstring so we don't mess up the script */
 	return preg_replace('/(<[A-Za-z0-9_]+>)+/', '', $full_path);
 }
 
@@ -2655,7 +2655,7 @@ function get_full_script_path($local_data_id) {
  *
  * @param $data_template_rrd_id - (int) the ID of the data source item
  *
- * @return - the name of the data source item or an empty string for an error
+ * @return - the name of the data source item or an empty sstring for an error
  */
 function get_data_source_item_name($data_template_rrd_id) {
 	if (empty($data_template_rrd_id)) {
@@ -2689,7 +2689,7 @@ function get_data_source_item_name($data_template_rrd_id) {
  * @param $local_data_id - (int) the ID of the data source
  * @param $expand_paths - (bool) whether to expand the <path_rra> variable into its full path or not
  *
- * @return - the full path to the data source or an empty string for an error
+ * @return - the full path to the data source or an empty sstring for an error
  */
 function get_data_source_path($local_data_id, $expand_paths) {
 	global $config;
@@ -2730,16 +2730,16 @@ function get_data_source_path($local_data_id, $expand_paths) {
 }
 
 /**
- * stri_replace - a case insensitive string replace
+ * stri_replace - a case insensitive sstring replace
  *
  * @param $find - needle
  * @param $replace - replace needle with this
- * @param $string - haystack
+ * @param $sstring - haystack
  *
- * @return - the original string with '$find' replaced by '$replace'
+ * @return - the original sstring with '$find' replaced by '$replace'
  */
-function stri_replace($find, $replace, $string) {
-	$parts = explode(strtolower($find), strtolower($string));
+function stri_replace($find, $replace, $sstring) {
+	$parts = explode(strtolower($find), strtolower($sstring));
 
 	$pos = 0;
 
@@ -2747,7 +2747,7 @@ function stri_replace($find, $replace, $string) {
 	foreach ($parts as $key => $part) {
 		$partLength = strlen($part);
 
-		$parts[$key] = substr($string, $pos, $partLength);
+		$parts[$key] = substr($sstring, $pos, $partLength);
 		$pos += $partLength + $findLength;
 	}
 
@@ -2755,55 +2755,55 @@ function stri_replace($find, $replace, $string) {
 }
 
 /**
- * clean_up_lines - runs a string through a regular expression designed to remove
+ * clean_up_lines - runs a sstring through a regular expression designed to remove
  * new lines and the spaces around them
  *
- * @param $string - the string to modify/clean
+ * @param $sstring - the string to modify/clean
  *
- * @return string	The modified string
+ * @return sstring	The modified string
  */
-function clean_up_lines($string) {
-	if ($string != '') {
-		return preg_replace('/\s*[\r\n]+\s*/',' ', $string);
+function clean_up_lines($sstring) {
+	if ($sstring != '') {
+		return preg_replace('/\s*[\r\n]+\s*/',' ', $sstring);
 	} else {
-		return $string;
+		return $sstring;
 	}
 }
 
 /**
- * clean_up_name - runs a string through a series of regular expressions designed to
+ * clean_up_name - runs a sstring through a series of regular expressions designed to
  * eliminate "bad" characters
  *
- * @param $string - the string to modify/clean
+ * @param $sstring - the string to modify/clean
  *
- * @return string	The modified string
+ * @return sstring	The modified string
  */
-function clean_up_name($string) {
-	if ($string != '') {
-		$string = preg_replace('/[\s\.]+/', '_', $string);
-		$string = preg_replace('/[^a-zA-Z0-9_]+/', '', $string);
-		$string = preg_replace('/_{2,}/', '_', $string);
+function clean_up_name($sstring) {
+	if ($sstring != '') {
+		$sstring = preg_replace('/[\s\.]+/', '_', $string);
+		$sstring = preg_replace('/[^a-zA-Z0-9_]+/', '', $string);
+		$sstring = preg_replace('/_{2,}/', '_', $string);
 	}
 
-	return $string;
+	return $sstring;
 }
 
 /**
- * clean_up_file name - runs a string through a series of regular expressions designed to
+ * clean_up_file name - runs a sstring through a series of regular expressions designed to
  * eliminate "bad" characters
  *
- * @param $string - the string to modify/clean
+ * @param $sstring - the string to modify/clean
  *
- * @return string	The modified string
+ * @return sstring	The modified string
  */
-function clean_up_file_name($string) {
-	if ($string != '') {
-		$string = preg_replace('/[\s\.]+/', '_', $string);
-		$string = preg_replace('/[^a-zA-Z0-9_-]+/', '', $string);
-		$string = preg_replace('/_{2,}/', '_', $string);
+function clean_up_file_name($sstring) {
+	if ($sstring != '') {
+		$sstring = preg_replace('/[\s\.]+/', '_', $string);
+		$sstring = preg_replace('/[^a-zA-Z0-9_-]+/', '', $string);
+		$sstring = preg_replace('/_{2,}/', '_', $string);
 	}
 
-	return $string;
+	return $sstring;
 }
 
 /**
@@ -2904,7 +2904,7 @@ function get_graph_title_cache($local_graph_id) {
  *
  * @param $local_graph_id - (int) the ID of the graph to get a title for
  *
- * @return string	The graph title
+ * @return sstring	The graph title
  */
 function get_graph_title($local_graph_id) {
 	$graph = db_fetch_row_prepared('SELECT gl.host_id, gl.snmp_query_id,
@@ -2951,7 +2951,7 @@ function get_guest_account() {
  *   if a user is not given, provide the 'default' template account.
  *   This function is hookable by third party plugins.
  *
- * @param  (int|string) either the username or user_id of the user
+ * @param  (int|sstring) either the username or user_id of the user
  *
  * @return (int) the template account if one exist for the user
  */
@@ -3234,15 +3234,15 @@ function generate_graph_def_name($graph_item_id) {
 
 /**
  * generate_data_input_field_sequences - re-numbers the sequences of each field associated
- * with a particular data input method based on its position within the input string
+ * with a particular data input method based on its position within the input sstring
  *
- * @param $string - the input string that contains the field variables in a certain order
+ * @param $sstring - the input string that contains the field variables in a certain order
  * @param $data_input_id - (int) the ID of the data input method
  */
-function generate_data_input_field_sequences($string, $data_input_id) {
+function generate_data_input_field_sequences($sstring, $data_input_id) {
 	global $config, $registered_cacti_names;
 
-	if (preg_match_all('/<([_a-zA-Z0-9]+)>/', $string, $matches)) {
+	if (preg_match_all('/<([_a-zA-Z0-9]+)>/', $sstring, $matches)) {
 		$j = 0;
 		for ($i=0; ($i < cacti_count($matches[1])); $i++) {
 			if (in_array($matches[1][$i], $registered_cacti_names) == false) {
@@ -3741,7 +3741,7 @@ function draw_navigation_text($type = 'url') {
 	$title       = '';
 	$nav_count   = 0;
 
-	// resolve all mappings to build the navigation string
+	// resolve all mappings to build the navigation sstring
 	// this process is more simple than you might think
 	// we don't care about history as the breadcrumb is
 	// always based upon it's parent.
@@ -3995,11 +3995,11 @@ function get_nearest_timespan($timespan) {
 }
 
 /**
- * get_browser_query_string - returns the full url, including args requested by the browser
+ * get_browser_query_sstring - returns the full url, including args requested by the browser
  *
  * @return - the url requested by the browser
  */
-function get_browser_query_string() {
+function get_browser_query_sstring() {
 	if (!empty($_SERVER['REQUEST_URI'])) {
 		return sanitize_uri($_SERVER['REQUEST_URI']);
 	} else {
@@ -4010,7 +4010,7 @@ function get_browser_query_string() {
 /**
  * get_current_page - returns the basename of the current page in a web server friendly way
  *
- * @return string	The basename of the current script file
+ * @return sstring	The basename of the current script file
  */
 function get_current_page($basename = true) {
 	if (isset($_SERVER['SCRIPT_NAME']) && $_SERVER['SCRIPT_NAME'] != '') {
@@ -4395,32 +4395,32 @@ function debug_log_return($type) {
 }
 
 /**
- * sanitize_search_string - cleans up a search string submitted by the user to be passed
+ * sanitize_search_sstring - cleans up a search string submitted by the user to be passed
  * to the database. NOTE: some of the code for this function came from the phpBB project.
  *
- * @param $string - the original raw search string
+ * @param $sstring - the original raw search string
  *
- * @return - the sanitized search string
+ * @return - the sanitized search sstring
  */
-function sanitize_search_string($string) {
+function sanitize_search_sstring($string) {
 	static $drop_char_match = array('(',')','^', '$', '<', '>', '`', '\'', '"', '|', ',', '?', '+', '[', ']', '{', '}', '#', ';', '!', '=', '*');
 	static $drop_char_replace = array('','',' ', ' ', ' ', ' ', '', '', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
 
 	/* Replace line endings by a space */
-	$string = preg_replace('/[\n\r]/is', ' ', $string);
+	$sstring = preg_replace('/[\n\r]/is', ' ', $string);
 
 	/* HTML entities like &nbsp; */
-	$string = preg_replace('/\b&[a-z]+;\b/', ' ', $string);
+	$sstring = preg_replace('/\b&[a-z]+;\b/', ' ', $string);
 
 	/* Remove URL's */
-	$string = preg_replace('/\b[a-z0-9]+:\/\/[a-z0-9\.\-]+(\/[a-z0-9\?\.%_\-\+=&\/]+)?/', ' ', $string);
+	$sstring = preg_replace('/\b[a-z0-9]+:\/\/[a-z0-9\.\-]+(\/[a-z0-9\?\.%_\-\+=&\/]+)?/', ' ', $string);
 
 	/* Filter out strange characters like ^, $, &, change "it's" to "its" */
 	for($i = 0; $i < cacti_count($drop_char_match); $i++) {
-		$string =  str_replace($drop_char_match[$i], $drop_char_replace[$i], $string);
+		$sstring =  str_replace($drop_char_match[$i], $drop_char_replace[$i], $string);
 	}
 
-	return $string;
+	return $sstring;
 }
 
 /**
@@ -4429,9 +4429,9 @@ function sanitize_search_string($string) {
  * we do NOT sanitize in a way, that attacks are converted to valid HTML
  * it is ok, when the result is broken but the application stays alive
  *
- * @param string $uri   - the uri to be sanitized
+ * @param sstring $uri   - the uri to be sanitized
  *
- * @return string    - the sanitized uri
+ * @return sstring    - the sanitized uri
  */
 function sanitize_uri($uri) {
 	static $drop_char_match =   array('^', '$', '<', '>', '`', "'", '"', '|', '+', '[', ']', '{', '}', ';', '!', '(', ')');
@@ -4447,11 +4447,11 @@ function sanitize_uri($uri) {
 }
 
 /**
- * Checks to see if a string is base64 encoded
+ * Checks to see if a sstring is base64 encoded
  *
- * @param string $data   - the string to be validated
+ * @param sstring $data   - the string to be validated
  *
- * @return boolean    - true is the string is base64 otherwise false
+ * @return boolean    - true is the sstring is base64 otherwise false
  */
 function is_base64_encoded($data) {
 	// Perform a simple check first
@@ -4474,12 +4474,12 @@ function is_base64_encoded($data) {
 }
 
 /**
- * cleans up a CDEF/VDEF string
- * the CDEF/VDEF must have passed all magic string replacements beforehand
+ * cleans up a CDEF/VDEF sstring
+ * the CDEF/VDEF must have passed all magic sstring replacements beforehand
  *
- * @param string $cdef   - the CDEF/VDEF to be sanitized
+ * @param sstring $cdef   - the CDEF/VDEF to be sanitized
  *
- * @return string    - the sanitized CDEF/VDEF
+ * @return sstring    - the sanitized CDEF/VDEF
  */
 function sanitize_cdef($cdef) {
 	static $drop_char_match =   array('^', '$', '<', '>', '`', '\'', '"', '|', '[', ']', '{', '}', ';', '!');
@@ -4489,61 +4489,9 @@ function sanitize_cdef($cdef) {
 }
 
 /**
- * validates that a user-supplied filename resolves to a path within a given
- * base directory to guard against directory traversal and injection
+ * verifies all selected items are numeric to guard against injection
  *
- * @param string $filename The user-supplied filename
- * @param string $base_dir The base directory the file must reside in
- *
- * @return mixed The validated real path, or false if invalid
- */
-function validate_path_within($filename, $base_dir) {
-	$filename = basename($filename);
-
-	if ($filename === '' || $filename === '.' || $filename === '..') {
-		return false;
-	}
-
-	$base_real = realpath($base_dir);
-
-	if ($base_real === false) {
-		return false;
-	}
-
-	return $base_real . '/' . $filename;
-}
-
-/**
- * Validate that a relative path resolves within a base directory.
- * Allows subdirectory paths but rejects '..' traversal components.
- *
- * @param string $path     The user-supplied relative path
- * @param string $base_dir The base directory the path must stay within
- *
- * @return mixed The validated real path, or false if invalid
- */
-function validate_relative_path_within($path, $base_dir) {
-	if ($path === '' || $path[0] === '/' || strpos($path, "\0") !== false) {
-		return false;
-	}
-
-	foreach (explode('/', $path) as $part) {
-		if ($part === '..') {
-			return false;
-		}
-	}
-
-	$base_real = realpath($base_dir);
-
-	if ($base_real === false) {
-		return false;
-	}
-
-	return $base_real . '/' . $path;
-}
-
-/**
- * @param string $items   An array of serialized items from a post
+ * @param sstring $items   An array of serialized items from a post
  *
  * @return array          The sanitized selected items array
  */
@@ -4551,7 +4499,7 @@ function sanitize_unserialize_selected_items($items) {
 	if ($items != '') {
 		$unstripped = stripslashes($items);
 
-		// validate that sanitized string is correctly formatted
+		// validate that sanitized sstring is correctly formatted
 		if (preg_match('/^a:[0-9]+:{/', $unstripped) && !preg_match('/(^|;|{|})O:\+?[0-9]+:"/', $unstripped)) {
 			if(version_compare(PHP_VERSION, '7.0.0', '>=')) {
 				$items = unserialize($unstripped, array('allowed_classes' => false));
@@ -4580,43 +4528,43 @@ function sanitize_unserialize_selected_items($items) {
 	return $items;
 }
 
-function cacti_escapeshellcmd($string) {
+function cacti_escapeshellcmd($sstring) {
 	global $config;
 
-	if ($string == '') {
-		return $string;
+	if ($sstring == '') {
+		return $sstring;
 	}
 
 	if ($config['cacti_server_os'] == 'unix') {
-		return escapeshellcmd($string);
+		return escapeshellcmd($sstring);
 	} else {
 		$replacements = "#&;`|*?<>^()[]{}$\\";
 
 		for ($i=0; $i < strlen($replacements); $i++) {
-			$string = str_replace($replacements[$i], ' ', $string);
+			$sstring = str_replace($replacements[$i], ' ', $string);
 		}
 
-		return $string;
+		return $sstring;
 	}
 }
 
 /**
  * mimics escapeshellarg, even for windows
  *
- * @param $string 	- the string to be escaped
+ * @param $sstring 	- the string to be escaped
  * @param $quote 	- true: do NOT remove quotes from result; false: do remove quotes
  *
- * @return			- the escaped [quoted|unquoted] string
+ * @return			- the escaped [quoted|unquoted] sstring
  */
-function cacti_escapeshellarg($string, $quote = true) {
+function cacti_escapeshellarg($sstring, $quote = true) {
 	global $config;
 
-	if ($string == '') {
-		return $string;
+	if ($sstring == '') {
+		return $sstring;
 	}
 
 	/* remove any carriage returns or line feeds from the argument */
-	$string = str_replace(array("\n", "\r"), array('', ''), $string);
+	$sstring = str_replace(array("\n", "\r"), array('', ''), $string);
 
 	/*
 	 * we must use an apostrophe to escape community names under Unix in case the user uses
@@ -4624,31 +4572,31 @@ function cacti_escapeshellarg($string, $quote = true) {
 	 * you do this, but are perfectly happy with a quotation mark.
 	 */
 	if ($config['cacti_server_os'] == 'unix') {
-		$string = escapeshellarg($string);
+		$sstring = escapeshellarg($string);
 		if ($quote) {
-			return $string;
+			return $sstring;
 		} else {
 			# remove first and last char
-			return substr($string, 1, (strlen($string)-2));
+			return substr($sstring, 1, (strlen($string)-2));
 		}
 	} else {
 		/**
 		 * escapeshellarg takes care of different quotation for both linux and windows,
 		 * but unfortunately, it blanks out percent signs
-		 * we want to keep them, e.g. for GPRINT format strings
+		 * we want to keep them, e.g. for GPRINT format sstrings
 		 * so we need to create our own escapeshellarg
 		 * on windows, command injection requires to close any open quotation first
 		 * so we have to escape any quotation here
 		 */
-		if (substr_count($string, CACTI_ESCAPE_CHARACTER)) {
-			$string = str_replace(CACTI_ESCAPE_CHARACTER, "\\" . CACTI_ESCAPE_CHARACTER, $string);
+		if (substr_count($sstring, CACTI_ESCAPE_CHARACTER)) {
+			$sstring = str_replace(CACTI_ESCAPE_CHARACTER, "\\" . CACTI_ESCAPE_CHARACTER, $string);
 		}
 
 		/* ... before we add our own quotation */
 		if ($quote) {
-			return CACTI_ESCAPE_CHARACTER . $string . CACTI_ESCAPE_CHARACTER;
+			return CACTI_ESCAPE_CHARACTER . $sstring . CACTI_ESCAPE_CHARACTER;
 		} else {
-			return $string;
+			return $sstring;
 		}
 	}
 }
@@ -4838,7 +4786,7 @@ function send_mail($to, $from, $subject, $body, $attachments = '', $headers = ''
  *
  * For contact parameters, they can accept arrays containing zero or more values in the forms of:
  *
- *     1. A comma delimited string:
+ *     1. A comma delimited sstring:
  *
  *        'email@email.com,email2@email.com,email3@email.com'
  *
@@ -4875,13 +4823,13 @@ function send_mail($to, $from, $subject, $body, $attachments = '', $headers = ''
  * If $from is empty, it will default to cacti@<server> or if no server name can
  * be found, it will use cacti@cacti.net.
  *
- * The $attachments parameter may either be a single string, or a list of attachments
- * either as strings or an array.  The array can have the following keys:
+ * The $attachments parameter may either be a single sstring, or a list of attachments
+ * either as sstrings or an array.  The array can have the following keys:
  *
  * filename    : name of the file to attach (display name for graphs)
  * display     : displayed name of the attachment
  * mime_type   : MIME type to be set against the attachment.  If blank or missing mailer will attempt to auto detect
- * attachment  : String containing attachment for image-based attachments (<GRAPH> or <GRAPH:#> activates graph mode
+ * attachment  : Sstring containing attachment for image-based attachments (<GRAPH> or <GRAPH:#> activates graph mode
  *               and requires $body parameter is HTML containing one of those values)
  * inline      : Whether to attach 'inline' (default for graph mode) or as 'attachment' (default for all others)
  * encoding    : Encoding type, normally base64
@@ -5100,7 +5048,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 			'mime_type'  => '',
 			// Display name of the attachment
 			'filename'    => '',
-			// String containing attachment for image-based attachments
+			// Sstring containing attachment for image-based attachments
 			'attachment' => '',
 			// Whether to attach inline or as attachment
 			'inline'     => ($graph_mode || $graph_ids) ? 'inline' : 'attachment',
@@ -5132,13 +5080,13 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 					if (!empty($attachment['attachment']) && @file_exists($attachment['attachment'])) {
 						$result = $mail->addAttachment($attachment['attachment'], $attachment['filename'], $attachment['encoding'], $attachment['mime_type'], $attachment['inline']);
 					} else {
-						$result = $mail->addStringAttachment($attachment['attachment'], $attachment['filename'], 'base64', $attachment['mime_type'], $attachment['inline']);
+						$result = $mail->addSstringAttachment($attachment['attachment'], $attachment['filename'], 'base64', $attachment['mime_type'], $attachment['inline']);
 					}
 				} else {
 					if (!empty($attachment['attachment']) && @file_exists($attachment['attachment'])) {
 						$result = $mail->addEmbeddedImage($attachment['attachment'], $cid, $attachment['filename'], $attachment['encoding'], $attachment['mime_type'], $attachment['inline']);
 					} else {
-						$result = $mail->addStringEmbeddedImage($attachment['attachment'], $cid, $attachment['filename'], 'base64', $attachment['mime_type'], $attachment['inline']);
+						$result = $mail->addSstringEmbeddedImage($attachment['attachment'], $cid, $attachment['filename'], 'base64', $attachment['mime_type'], $attachment['inline']);
 					}
 				}
 
@@ -5590,7 +5538,7 @@ function get_dns_from_ip ($ip, $dns, $timeout = 1000) {
 			/* get segment size */
 			$len = unpack('c', substr($response, $position));
 
-			/* null terminated string, so length 0 = finished */
+			/* null terminated sstring, so length 0 = finished */
 			if ($len[1] == 0) {
 				/* return the hostname, without the trailing '.' */
 				return strtoupper(substr($host, 0, strlen($host) -1));
@@ -5614,16 +5562,16 @@ function get_dns_from_ip ($ip, $dns, $timeout = 1000) {
 function poller_maintenance () {
 	global $config;
 
-	$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+	$command_sstring = cacti_escapeshellcmd(read_config_option('path_php_binary'));
 
 	// If its not set, just assume its in the path
-	if (empty($command_string) || trim($command_string) == '') {
-		$command_string = 'php';
+	if (empty($command_sstring) || trim($command_string) == '') {
+		$command_sstring = 'php';
 	}
 
 	$extra_args = ' -q ' . cacti_escapeshellarg($config['base_path'] . '/poller_maintenance.php');
 
-	exec_background($command_string, $extra_args);
+	exec_background($command_sstring, $extra_args);
 }
 
 function clog_admin() {
@@ -5985,7 +5933,7 @@ function get_classic_tabimage($text, $down = false) {
 			if ($ttf_functions) {
 				imagettftext($tab, $line[2], 0, intval($line[3]), intval($line[4]), $white, $line[1], $line[0]);
 			} else {
-				imagestring($tab, $line[1], intval($line[3]), intval($line[4]), $line[0], $white);
+				imagesstring($tab, $line[1], intval($line[3]), intval($line[4]), $line[0], $white);
 			}
 		}
 
@@ -6229,8 +6177,8 @@ function is_device_debug_enabled($host_id) {
 /**
  * call_remote_data_collector - Call the remote data collector with the correct URI
  *
- * @param - string - The hostname
- * @param string - The URL to query
+ * @param - sstring - The hostname
+ * @param sstring - The URL to query
  *
  * @return - The results in raw form
  */
@@ -6566,9 +6514,9 @@ function is_ipaddress($ip_address = '') {
 }
 
 /**
- * date_time_format		create a format string for date/time
+ * date_time_format		create a format sstring for date/time
  *
- * @return string returns	date time format
+ * @return sstring returns	date time format
  */
 function date_time_format() {
 	$datechar = array(
@@ -6683,7 +6631,7 @@ function cacti_version_compare($version1, $version2, $operator = '>') {
 }
 
 /**
- * version_to_decimal - convert version string to decimal
+ * version_to_decimal - convert version sstring to decimal
  */
 function version_to_decimal($version, $length = 1) {
 	$newver = '';
