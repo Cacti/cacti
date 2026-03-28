@@ -4460,7 +4460,43 @@ function compat_password_verify($password, $hash) {
 
 	$md5 = md5($password);
 
-	return ($md5 === $hash);
+	return compat_hash_equals($md5, $hash);
+}
+
+/**
+ * compat_hash_equals - compatibility wrapper for hash_equals
+ *   Uses native hash_equals when available, otherwise falls back
+ *   to a constant-time string comparison.
+ *
+ * @param (string) $known_string - expected string
+ * @param (string) $user_string  - user-provided string
+ *
+ * @return (bool) true if strings are identical, false otherwise
+ */
+function compat_hash_equals($known_string, $user_string) {
+	if (function_exists('hash_equals')) {
+		return hash_equals($known_string, $user_string);
+	}
+
+	// Fallback implementation for PHP < 5.6
+	if (!is_string($known_string) || !is_string($user_string)) {
+		return false;
+	}
+
+	$known_len = strlen($known_string);
+	$user_len  = strlen($user_string);
+
+	if ($known_len !== $user_len) {
+		return false;
+	}
+
+	$result = 0;
+
+	for ($i = 0; $i < $known_len; $i++) {
+		$result |= ord($known_string[$i]) ^ ord($user_string[$i]);
+	}
+
+	return $result === 0;
 }
 
 /**
@@ -4639,7 +4675,7 @@ function auth_login_redirect($login_opts = '') {
 
 				cacti_log(sprintf("DEBUG: Referer from REDIRECT_URL with Value: '%s', Effective: '%s'", $_SERVER['REDIRECT_URL'], $referer), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 			} elseif (isset($_SERVER['HTTP_REFERER'])) {
-				$referer = $_SERVER['HTTP_REFERER'];
+				$referer = validate_redirect_url($_SERVER['HTTP_REFERER']);
 
 				if (auth_basename($referer) == 'logout.php') {
 					$referer = $config['url_path'] . 'index.php';
@@ -4883,7 +4919,7 @@ function check_reset_no_authentication($auth_method) {
 
 		$_SESSION['sess_user_id'] = $admin_id;
 		$_SESSION['sess_change_password'] = true;
-		header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?action=force&ref=' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php'));
+		header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?action=force&ref=' . urlencode(validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php')));
 		exit;
 	}
 }
