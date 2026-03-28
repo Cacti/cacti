@@ -191,7 +191,8 @@ function host_reindex() {
 
 	$start = microtime(true);
 
-	shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/cli/poller_reindex_hosts.php --qid=all --id=' . get_filter_request_var('host_id'));
+	$host_id = (int) get_filter_request_var('host_id');
+	shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg($config['base_path'] . '/cli/poller_reindex_hosts.php') . ' --qid=all --id=' . $host_id);
 
 	$end = microtime(true);
 
@@ -200,7 +201,7 @@ function host_reindex() {
 	$items = db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM host_snmp_cache
 		WHERE host_id = ?',
-		array(get_filter_request_var('host_id')));
+		array($host_id));
 
 	raise_message('host_reindex', __('Device Reindex Completed in %0.2f seconds.  There were %d items updated.', $total_time, $items), MESSAGE_LEVEL_INFO);
 }
