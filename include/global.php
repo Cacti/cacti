@@ -104,7 +104,7 @@ $database_persist                = true;
 // Default session name - Session name must contain alpha characters
 $cacti_session_name = 'Cacti';
 
-if (isset($_COOKIE['CactiTab']) && ctype_alnum($_COOKIE['CactiTab'])) {
+if (isset($_COOKIE['CactiTab']) && ctype_digit($_COOKIE['CactiTab']) && strlen($_COOKIE['CactiTab']) <= 10) {
 	$cacti_session_name = 'CactiTabId' . $_COOKIE['CactiTab'];
 }
 
