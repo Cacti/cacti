@@ -33,7 +33,10 @@ $page = db_fetch_row_prepared('SELECT
 // Prevent redirect loops
 if (isset($_SERVER['HTTP_REFERER'])) {
 	if (strpos($_SERVER['HTTP_REFERER'], 'link.php') === false) {
-		$referer = $_SERVER['HTTP_REFERER'];
+		$raw      = sanitize_uri($_SERVER['HTTP_REFERER']);
+		$ref_host = parse_url($raw, PHP_URL_HOST);
+		$srv_host = preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST']);
+		$referer  = ($ref_host === null || $ref_host === $srv_host) ? $raw : 'index.php';
 		$_SESSION['link_referer'] = $referer;
 	} elseif (isset($_SESSION['link_referer'])) {
 		$referer = sanitize_uri($_SESSION['link_referer']);

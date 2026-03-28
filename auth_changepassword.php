@@ -92,7 +92,10 @@ if (!cacti_sizeof($user) || $user['realm'] != 0) {
 	}
 
 	if (isset($_SERVER['HTTP_REFERER'])) {
-		header('Location: ' . $_SERVER['HTTP_REFERER']);
+		$_ref = sanitize_uri($_SERVER['HTTP_REFERER']);
+		$_ref_host = parse_url($_ref, PHP_URL_HOST);
+		$_srv_host = preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST']);
+		header('Location: ' . (($_ref_host === null || $_ref_host === $_srv_host) ? $_ref : 'index.php'));
 	} else {
 		header('Location: index.php');
 	}
@@ -108,7 +111,10 @@ if ($user['password_change'] != 'on') {
 	cacti_cookie_logout();
 
 	if (isset($_SERVER['HTTP_REFERER'])) {
-		header('Location: ' . $_SERVER['HTTP_REFERER']);
+		$_ref = sanitize_uri($_SERVER['HTTP_REFERER']);
+		$_ref_host = parse_url($_ref, PHP_URL_HOST);
+		$_srv_host = preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST']);
+		header('Location: ' . (($_ref_host === null || $_ref_host === $_srv_host) ? $_ref : 'index.php'));
 	} else {
 		header('Location: index.php');
 	}
@@ -387,7 +393,9 @@ if ($skip_current) {
 						</tr>
 						<tr>
 							<td class='nowrap' colspan='2'><input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Save'); ?>'>
-								<?php print $user['must_change_password'] != 'on' ? "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='document.location=\"$return\"' value='".  __esc('Return') . "'>":"";?>
+								<?php if ($user['must_change_password'] != 'on') { ?>
+								<input type='button' class='ui-button ui-corner-all ui-widget' onClick='document.location=<?php print json_encode((string) $return); ?>' value='<?php print __esc('Return'); ?>'>
+								<?php } ?>
 							</td>
 						</tr>
 					</table>
