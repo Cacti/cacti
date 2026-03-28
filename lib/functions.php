@@ -3494,7 +3494,37 @@ function get_graph_parent($graph_template_item_id, $direction) {
  *
  * @return - (int) the ID of the next or previous item id
  */
+/**
+ * build_where_from_array - builds a parameterized WHERE clause from an associative array
+ *
+ * @param $filters - associative array of field => value pairs
+ * @param $params  - (byref) array to append parameter values to
+ *
+ * @return - (string) the WHERE clause fragment, or '1=1' if filters is empty
+ */
+function build_where_from_array($filters, &$params) {
+	if (empty($filters)) {
+		return '1=1';
+	}
+
+	$where = array();
+
+	foreach ($filters as $field => $value) {
+		if (!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $field)) {
+			cacti_log('ERROR: Invalid field name in build_where_from_array: ' . $field, false, 'SECURITY');
+			continue;
+		}
+
+		$where[]  = "`$field` = ?";
+		$params[] = $value;
+	}
+
+	return implode(' AND ', $where);
+}
+
 function get_item($tblname, $field, $startid, $lmt_query, $direction) {
+	$params = array();
+
 	if ($direction == 'next') {
 		$sql_operator = '>';
 		$sql_order = 'ASC';
@@ -3508,11 +3538,21 @@ function get_item($tblname, $field, $startid, $lmt_query, $direction) {
 		WHERE id = ?",
 		array($startid));
 
-	$new_item_id = db_fetch_cell("SELECT id
-		FROM $tblname
-		WHERE $field $sql_operator $current_sequence " . ($lmt_query != '' ? " AND $lmt_query":"") . "
-		ORDER BY $field $sql_order
-		LIMIT 1");
+	$where_clause = '';
+
+	if (is_array($lmt_query)) {
+		$where_clause = build_where_from_array($lmt_query, $params);
+	} else {
+		$where_clause = $lmt_query;
+	}
+
+	$sql_query = "SELECT id FROM $tblname WHERE $field $sql_operator ? " .
+		($where_clause != '' ? " AND $where_clause" : '') .
+		" ORDER BY $field $sql_order LIMIT 1";
+
+	array_unshift($params, $current_sequence);
+
+	$new_item_id = db_fetch_cell_prepared($sql_query, $params);
 
 	if (empty($new_item_id)) {
 		return $startid;
@@ -3533,9 +3573,17 @@ function get_item($tblname, $field, $startid, $lmt_query, $direction) {
  */
 function get_sequence($id, $field, $table_name, $group_query) {
 	if (empty($id)) {
-		$data = db_fetch_row("SELECT max($field)+1 AS seq
+		$params = array();
+
+		if (is_array($group_query)) {
+			$where_clause = build_where_from_array($group_query, $params);
+		} else {
+			$where_clause = $group_query;
+		}
+
+		$data = db_fetch_row_prepared("SELECT max($field)+1 AS seq
 			FROM $table_name
-			WHERE $group_query");
+			WHERE $where_clause", $params);
 
 		if ($data['seq'] == '') {
 			return 1;
