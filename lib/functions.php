@@ -4489,7 +4489,8 @@ function sanitize_cdef($cdef) {
 }
 
 /**
- * verifies all selected items are numeric to guard against injection
+ * validates that a user-supplied filename resolves to a path within a given
+ * base directory to guard against directory traversal and injection
  *
  * @param string $filename The user-supplied filename
  * @param string $base_dir The base directory the file must reside in

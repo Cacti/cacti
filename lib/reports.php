@@ -640,7 +640,7 @@ function reports_load_format_file($format_file, &$output, &$report_tag_included,
 	$validated = validate_path_within($format_file, $config['base_path'] . '/formats');
 
 	if ($validated === false) {
-		cacti_log('ERROR: Invalid format file path rejected: ' . $format_file, false, 'REPORTS');
+		cacti_log('ERROR: Invalid format file path rejected: ' . json_encode($format_file), false, 'REPORTS');
 
 		return false;
 	}

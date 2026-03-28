@@ -4460,7 +4460,43 @@ function compat_password_verify($password, $hash) {
 
 	$md5 = md5($password);
 
-	return hash_equals($md5, $hash);
+	return compat_hash_equals($md5, $hash);
+}
+
+/**
+ * compat_hash_equals - compatibility wrapper for hash_equals
+ *   Uses native hash_equals when available, otherwise falls back
+ *   to a constant-time string comparison.
+ *
+ * @param (string) $known_string - expected string
+ * @param (string) $user_string  - user-provided string
+ *
+ * @return (bool) true if strings are identical, false otherwise
+ */
+function compat_hash_equals($known_string, $user_string) {
+	if (function_exists('hash_equals')) {
+		return hash_equals($known_string, $user_string);
+	}
+
+	// Fallback implementation for PHP < 5.6
+	if (!is_string($known_string) || !is_string($user_string)) {
+		return false;
+	}
+
+	$known_len = strlen($known_string);
+	$user_len  = strlen($user_string);
+
+	if ($known_len !== $user_len) {
+		return false;
+	}
+
+	$result = 0;
+
+	for ($i = 0; $i < $known_len; $i++) {
+		$result |= ord($known_string[$i]) ^ ord($user_string[$i]);
+	}
+
+	return $result === 0;
 }
 
 /**
