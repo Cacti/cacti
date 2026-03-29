@@ -456,7 +456,7 @@ function settings_javascript() {
 	<script type='text/javascript'>
 
 	var themeFonts   = <?php print read_config_option('font_method');?>;
-	var currentTab   = '<?php print get_nfilter_request_var('tab');?>';
+	var currentTab   = <?php print json_encode((string) get_nfilter_request_var('tab'));?>;
 	var currentTheme = '<?php print get_selected_theme();?>';
 	var currentLang  = '<?php print read_config_option('user_language');?>';
 	var authMethod   = '<?php print read_config_option('auth_method');?>';

@@ -255,6 +255,11 @@ function rrdtool_execute() {
 function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pipe = false, $logopt = 'WEBLOG') {
 	global $config;
 
+	if (is_array($command_line)) {
+		$cmd = array_shift($command_line);
+		$command_line = $cmd . ' ' . implode(' ', array_map('cacti_escapeshellarg', $command_line));
+	}
+
 	static $last_command;
 
 	if (!is_numeric($output_flag)) {
@@ -1637,6 +1642,18 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$data_source_path = get_data_source_path($graph_item['local_data_id'], true);
 				}
 
+				if (!rrdtool_file_exists($data_source_path, $rrdtool_pipe)) {
+					if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG || isset($graph_data_array['get_error'])) {
+						cacti_log("WARNING: RRD file '$data_source_path' does not exist", false, 'GRAPH');
+					}
+
+					if (isset($graph_data_array['export_csv'])) {
+						return false;
+					}
+
+					return rrdtool_create_error_image(__('The Cacti Poller has not run yet.'));
+				}
+
 				/* FOR WIN32: Escape all colon for drive letters (ex. D\:/path/to/rra) */
 				$data_source_path = rrdtool_escape_string($data_source_path);
 
@@ -2723,6 +2740,28 @@ function rrdtool_function_get_resstep($local_data_ids, $graph_start, $graph_end,
 	}
 
 	return 0;
+}
+
+/**
+ * rrdtool_file_exists - given a data source path check either
+ * the local file system of the rrdtool proxy to see if the
+ * data source path exists.
+ *
+ * @param string $data_source_path The data source rrdfile path
+ * @param mixed  $rrdtool_pipe     The rrdtool pipe if available
+ *
+ * @return bool A boolean to tell if the file exists
+ */
+function rrdtool_file_exists(string $data_source_path, mixed $rrdtool_pipe = null) : bool {
+	if (read_config_option('storage_location')) {
+		if (!rrdtool_execute("file_exists $data_source_path", true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER')) {
+			return false;
+		}
+	} elseif (!file_exists($data_source_path)) {
+		return false;
+	}
+
+	return true;
 }
 
 /**
