@@ -2192,11 +2192,13 @@ function db_switch_main_to_local() {
  */
 function db_dump_data($database = '', $tables = '', $credentials = array(), $output_file = false, $options = '--extended-insert=FALSE') {
 	global $database_default, $database_username, $database_password;
+
 	$credentials_string = '';
 
 	if ($database == '') {
 		$database = $database_default;
 	}
+
 	if (cacti_sizeof($credentials)) {
 		foreach ($credentials as $key => $value) {
 			$name = trim($key);
@@ -2227,22 +2229,35 @@ function db_dump_data($database = '', $tables = '', $credentials = array(), $out
 			}
 		}
 	}
+
 	if (!isset($password)) {
 		$password = $database_password;
 	}
+
 	if (!isset($username)) {
 		$username = $database_username;
 	}
+
+	if ($output_file === false) {
+		$output_file = '/tmp/cacti.dump.sql';
+	}
+
+	$safe_database   = cacti_escapeshellarg($database);
+	$safe_output     = cacti_escapeshellarg($output_file);
+
 	if (strstr($options, '--defaults-extra-file') !== false) {
-		exec("mysqldump $options $credentials_string $database $tables > " . $output_file, $output, $retval);
+		exec("mysqldump $options $credentials_string $safe_database $tables > " . $safe_output, $output, $retval);
 	} else {
-		exec("mysqldump $options $credentials_string " . $database . ' version >/dev/null 2>&1', $output, $retval);
+		exec("mysqldump $options $credentials_string " . $safe_database . ' version >/dev/null 2>&1', $output, $retval);
+
 		if ($retval) {
-			exec("mysqldump $options $credentials_string -u" . $username . ' -p' . $password . ' ' . $database . " $tables > " . $output_file, $output, $retval);
+			$pass_arg = ($password != '') ? ' -p' . cacti_escapeshellarg($password) : '';
+			exec("mysqldump $options $credentials_string -u" . cacti_escapeshellarg($username) . $pass_arg . ' ' . $safe_database . " $tables > " . $safe_output, $output, $retval);
 		} else {
-			exec("mysqldump $options $credentials_string $database $tables > " . $output_file, $output, $retval);
+			exec("mysqldump $options $credentials_string $safe_database $tables > " . $safe_output, $output, $retval);
 		}
 	}
+
 	return $retval;
 }
 
