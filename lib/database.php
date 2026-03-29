@@ -2236,6 +2236,9 @@ function db_dump_data($database = '', $tables = '', $credentials = array(), $out
 	if ($output_file === false) {
 		$output_file = '/tmp/cacti.dump.sql';
 	}
+	if ($output_file === false) {
+		$output_file = '/tmp/cacti.dump.sql';
+	}
 
 	$safe_database   = cacti_escapeshellarg($database);
 	$safe_output     = cacti_escapeshellarg($output_file);
