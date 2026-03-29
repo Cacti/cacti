@@ -42,6 +42,8 @@ function ss_sql() {
 		$cmd .= ' --password=' . cacti_escapeshellarg($database_password);
 	}
 
+	$result = shell_exec($cmd);
+	
 	$result = preg_replace('/: /', ':', $result);
 	$result = preg_replace('/  /', ' ', $result);
 	$result = preg_replace('/Slow queries/', 'SlowQueries', $result);
