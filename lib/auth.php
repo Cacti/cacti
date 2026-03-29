@@ -79,7 +79,11 @@ function set_auth_cookie($user) {
 	if (db_table_exists('user_auth_cache')) {
 		clear_auth_cookie();
 
-		$nssecret = md5($_SERVER['REQUEST_TIME'] .  mt_rand(10000,10000000)) . md5(get_client_addr());
+		try {
+			$nssecret = bin2hex(random_bytes(32));
+		} catch (Exception $e) {
+			$nssecret = md5($_SERVER['REQUEST_TIME'] . mt_rand(10000, 10000000)) . md5(get_client_addr());
+		}
 
 		$secret = hash('sha512', $nssecret, false);
 
