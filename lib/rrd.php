@@ -2743,6 +2743,28 @@ function rrdtool_function_get_resstep($local_data_ids, $graph_start, $graph_end,
 }
 
 /**
+ * rrdtool_file_exists - given a data source path check either
+ * the local file system of the rrdtool proxy to see if the
+ * data source path exists.
+ *
+ * @param string $data_source_path The data source rrdfile path
+ * @param mixed  $rrdtool_pipe     The rrdtool pipe if available
+ *
+ * @return bool A boolean to tell if the file exists
+ */
+function rrdtool_file_exists(string $data_source_path, mixed $rrdtool_pipe = null) : bool {
+	if (read_config_option('storage_location')) {
+		if (!rrdtool_execute("file_exists $data_source_path", true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER')) {
+			return false;
+		}
+	} elseif (!file_exists($data_source_path)) {
+		return false;
+	}
+
+	return true;
+}
+
+/**
  * rrdtool_function_info - given a data source id, return rrdtool info array
  *
  * @param  (int)   $local_data_id - data source id
