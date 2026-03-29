@@ -3484,17 +3484,6 @@ function get_graph_parent($graph_template_item_id, $direction) {
 }
 
 /**
- * get_item - returns the ID of the next or previous item id
- *
- * @param $tblname - the table name that contains the target id
- * @param $field - the field name that contains the target id
- * @param $startid - (int) the current id
- * @param $lmt_query - an SQL "where" clause to limit the query
- * @param $direction - ('next' or 'previous') whether to find the next or previous item id
- *
- * @return - (int) the ID of the next or previous item id
- */
-/**
  * build_where_from_array - builds a parameterized WHERE clause from an associative array
  *
  * @param $filters - associative array of field => value pairs
@@ -3522,6 +3511,17 @@ function build_where_from_array($filters, &$params) {
 	return implode(' AND ', $where);
 }
 
+/**
+ * get_item - returns the ID of the next or previous item id
+ *
+ * @param $tblname - the table name that contains the target id
+ * @param $field - the field name that contains the target id
+ * @param $startid - (int) the current id
+ * @param $lmt_query - an SQL "where" clause to limit the query
+ * @param $direction - ('next' or 'previous') whether to find the next or previous item id
+ *
+ * @return - (int) the ID of the next or previous item id
+ */
 function get_item($tblname, $field, $startid, $lmt_query, $direction) {
 	$params = array();
 
