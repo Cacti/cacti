@@ -6255,7 +6255,7 @@ function call_remote_data_collector($poller_id, $url, $logtype = 'WEBUI') {
 	}
 
 	// Validate URL is a relative path to prevent SSRF
-	if (strpos($url, '://') !== false || strpos($url, '@') !== false || (strlen($url) > 0 && $url[0] !== '/')) {
+	if (strpos($url, '://') !== false || strpos($url, '@') !== false || strpos($url, '../') !== false || (strlen($url) > 0 && $url[0] !== '/')) {
 		cacti_log('ERROR: Invalid URL passed to call_remote_data_collector: ' . $url, false, 'SECURITY');
 		return '';
 	}
