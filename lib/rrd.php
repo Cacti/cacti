@@ -1642,8 +1642,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$data_source_path = get_data_source_path($graph_item['local_data_id'], true);
 				}
 
-				if (!rrdtool_file_exists($data_source_path, $rrdtool_pipe)) {
-					if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG || isset($graph_data_array['get_error'])) {
+				if ($config['poller_id'] == 1 && !rrdtool_file_exists($data_source_path, $rrdtool_pipe)) {
+					if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG || (isset($graph_data_array['get_error']) && $graph_data_array['get_error'] === true)) {
 						cacti_log("WARNING: RRD file '$data_source_path' does not exist", false, 'GRAPH');
 					}
 
@@ -2450,7 +2450,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				$graph = 'graph';
 			}
 
-			if (isset($graph_data_array['get_error'])) {
+			if (isset($graph_data_array['get_error']) && $graph_data_array['get_error'] === true) {
 				return rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, RRDTOOL_OUTPUT_STDERR);
 			} elseif (isset($graph_data_array['export'])) {
 				rrdtool_execute("graph $graph_opts$graph_defs$txt_graph_items", false, RRDTOOL_OUTPUT_NULL, $rrdtool_pipe);
