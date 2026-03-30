@@ -49,7 +49,7 @@ function exec_poll($command) {
 
 		pclose($fp);
 	} else {
-		$output = `$command`;
+		$output = shell_exec($command);
 	}
 
 	return $output;
@@ -112,7 +112,7 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 
 			pclose($fp);
 		} else {
-			$output = `$command`;
+			$output = shell_exec($command);
 		}
 	}
 
