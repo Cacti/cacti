@@ -1644,7 +1644,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 				if ($config['poller_id'] == 1 && !rrdtool_file_exists($data_source_path, $rrdtool_pipe)) {
 					if (isset($graph_data_array['get_error']) && $graph_data_array['get_error'] === true) {
-						cacti_log("WARNING: RRD file '$data_source_path' does not exist", false, 'GRAPH', POLLER_VERBOSITY_DEBUG);
+						cacti_log("WARNING: RRD file '$data_source_path' does not exist", false, 'GRAPH', POLLER_VERBOSITY_MEDIUM);
 					}
 
 					if (isset($graph_data_array['export_csv'])) {
