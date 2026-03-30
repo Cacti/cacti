@@ -1643,8 +1643,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				}
 
 				if ($config['poller_id'] == 1 && !rrdtool_file_exists($data_source_path, $rrdtool_pipe)) {
-					if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG || (isset($graph_data_array['get_error']) && $graph_data_array['get_error'] === true)) {
-						cacti_log("WARNING: RRD file '$data_source_path' does not exist", false, 'GRAPH');
+					if (isset($graph_data_array['get_error']) && $graph_data_array['get_error'] === true) {
+						cacti_log("WARNING: RRD file '$data_source_path' does not exist", false, 'GRAPH', POLLER_VERBOSITY_DEBUG);
 					}
 
 					if (isset($graph_data_array['export_csv'])) {
