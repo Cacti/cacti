@@ -269,7 +269,7 @@ if (cacti_sizeof($idbyhost)) {
 	if (($using_proc_function == true) && ($script_server_calls > 0)) {
 		if ($cactiphp) {
 			// close php server process
-			if ($pipes !== false) {
+			if (cacti_sizeof($pipes)) {
 				fwrite($pipes[0], "quit\r\n");
 				fclose($pipes[0]);
 				fclose($pipes[1]);

@@ -95,7 +95,7 @@ class Installer implements JsonSerializable {
 	private string $old_cacti_version;
 
 	// Common variables
-	private int $mode = 1;
+	private int $mode = -1;
 	private int $stepCurrent;
 	private int $stepPrevious;
 	private int $stepNext;
@@ -1646,7 +1646,7 @@ class Installer implements JsonSerializable {
 
 	// getMode - gets the current mode
 	public function getMode() : int {
-		if (isset($this->mode)) {
+		if ($this->mode != -1) {
 			$mode = $this->mode;
 		} else {
 			$mode = Installer::MODE_INSTALL;
