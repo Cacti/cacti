@@ -54,7 +54,7 @@
         "phpmailer/phpmailer": "^7.0.2",
         "phpseclib/phpseclib": "^3.0",
         "slim/slim": "^4.14",
-        "stevenmaguire/oauth2-keycloak": "^5.1",
+        "stevenmaguire/oauth2-keycloak": "^6.1.0",
         "stevenmaguire/oauth2-microsoft": "^2.2"
     },
     "require-dev": {
