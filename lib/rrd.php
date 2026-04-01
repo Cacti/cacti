@@ -1647,6 +1647,13 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 						return false;
 					}
 
+					// Both get_error (STDERR output) and print_source (HTML debug view)
+					// are text-output modes; returning PNG bytes in either would produce
+					// garbage in the browser or CLI. Return a human-readable error instead.
+					if (isset($graph_data_array['get_error']) || isset($graph_data_array['print_source'])) {
+						return __('ERROR: RRD file does not exist: %s', $data_source_path);
+					}
+
 					return rrdtool_create_error_image(__('The Cacti Poller has not run yet.'));
 				}
 
