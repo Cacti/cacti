@@ -622,7 +622,7 @@ function item_edit() {
 
 	function applyFilter() {
 		strURL = 'graphs_items.php?header=false&action=item_edit<?php print $id;?>' +
-			'&local_graph_id=<?php print (int) get_request_var('local_graph_id');?>' +
+			'&local_graph_id=<?php print get_request_var('local_graph_id');?>' +
 			'&data_template_id='+$('#data_template_id').val()+
 			'&host_id='+$('#host_id').val();
 
