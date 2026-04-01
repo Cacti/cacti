@@ -439,8 +439,8 @@ case 'zoom':
 		<td id='data'></td>
 	</tr>
 	<script type='text/javascript'>
-	var graph_id      = <?php print get_request_var('local_graph_id') . ";\n";?>
-	var rra_id        = <?php print get_request_var('rra_id') . ";\n";?>
+	var graph_id      = <?php print (int) get_request_var('local_graph_id');?>;
+	var rra_id        = <?php print (int) get_request_var('rra_id');?>;
 	var graph_start   = 0;
 	var graph_end     = 0;
 	var graph_height  = 0;

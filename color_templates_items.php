@@ -288,11 +288,11 @@ function aggregate_color_item_remove_confirm() {
 		$('#continue').click(function(data) {
 			$.post('color_templates_items.php?action=item_remove', {
 				__csrf_magic: csrfMagicToken,
-				color_id: <?php print get_request_var('color_id');?>,
-				id: <?php print get_request_var('id');?>
+				color_id: <?php print (int) get_request_var('color_id');?>,
+				id: <?php print (int) get_request_var('id');?>
 			}, function(data) {
 				$('#cdialog').dialog('close');
-				loadPageNoHeader('color_templates.php?action=template_edit&header=false&color_template_id=<?php print get_request_var('id');?>');
+				loadPageNoHeader('color_templates.php?action=template_edit&header=false&color_template_id=<?php print (int) get_request_var('id');?>');
 			});
 		});
 	});
