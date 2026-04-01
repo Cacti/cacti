@@ -4167,14 +4167,22 @@ function colourBrightness($hex, $percent) {
 	$rgb = array(hexdec(substr($hex, 0, 2)), hexdec(substr($hex, 2, 2)), hexdec(substr($hex, 4, 2)));
 
 	//// CALCULATE
+	if (abs($percent) > 1) {
+		$percent = $percent / 100;
+	}
+
 	for ($i = 0; $i < 3; $i++) { // See if brighter or darker
 		if ($percent > 0) {
 			// Lighter
 			$rgb[$i] = round($rgb[$i] * $percent) + round(255 * (1 - $percent));
 		} else {
 			// Darker
-			$positivePercent = $percent - ($percent*2);
-			$rgb[$i] = round($rgb[$i] * (1 - $positivePercent)); // round($rgb[$i] * (1-$positivePercent));
+			$positivePercent = abs($percent);
+			$rgb[$i] = round($rgb[$i] * (1 - $positivePercent));
+		}
+
+		if ($rgb[$i] < 0) {
+			$rgb[$i] = 0;
 		}
 
 		// In case rounding up causes us to go to 256
