@@ -4794,10 +4794,12 @@ function gradient(string $vname = '', string $start_color = '#0000a0', string $e
 /**
  * colourBrightness - Add colourBrightness support for the gradient charts. This function calculates the darker version of a given color
  *
- * @param string $hex     The hex representation of a color
- * @param float  $percent The percentage to darken the given color. decimal number ( 0.4 -> 40% )
+ * @param string $hex     The hex representation of a color (with or without leading #)
+ * @param float  $percent Brightness adjustment: decimal in [-1, 1] (e.g. 0.4 = +40%)
+ *                        or coerced integer in [-100, 100] (e.g. 40.0 = +40%). Values
+ *                        outside [-100, 100] are normalized then clamped to [-1, 1].
  *
- * @return string The darker version of the given color
+ * @return string The adjusted color in the same format as the input
  *
  * License: GPLv2
  * Original Code: http://www.barelyfitz.com/projects/csscolor/
@@ -4815,14 +4817,24 @@ function colourBrightness(string $hex, float $percent) : string {
 	$rgb = [hexdec(substr($hex, 0, 2)), hexdec(substr($hex, 2, 2)), hexdec(substr($hex, 4, 2))];
 
 	// // CALCULATE
+	if (abs($percent) > 1) {
+		$percent = $percent / 100;
+	}
+
+	$percent = max(-1.0, min(1.0, $percent));
+
 	for ($i = 0; $i < 3; $i++) { // See if brighter or darker
 		if ($percent > 0) {
 			// Lighter
 			$rgb[$i] = round($rgb[$i] * $percent) + round(255 * (1 - $percent));
 		} else {
 			// Darker
-			$positivePercent = $percent - ($percent * 2);
-			$rgb[$i]         = round($rgb[$i] * (1 - $positivePercent)); // round($rgb[$i] * (1-$positivePercent));
+			$positivePercent = abs($percent);
+			$rgb[$i]         = round($rgb[$i] * (1 - $positivePercent));
+		}
+
+		if ($rgb[$i] < 0) {
+			$rgb[$i] = 0;
 		}
 
 		// In case rounding up causes us to go to 256
