@@ -4792,12 +4792,18 @@ function gradient(string $vname = '', string $start_color = '#0000a0', string $e
 }
 
 /**
- * colourBrightness - Add colourBrightness support for the gradient charts. This function calculates the darker version of a given color
+ * colourBrightness - Adjust the brightness of a hex color for gradient charts.
+ * Positive percent lightens; negative percent darkens.
  *
  * @param string $hex     The hex representation of a color (with or without leading #)
  * @param float  $percent Brightness adjustment: decimal in [-1, 1] (e.g. 0.4 = +40%)
- *                        or coerced integer in [-100, 100] (e.g. 40.0 = +40%). Values
+ *                        or coerced integer in [-100, 100] (e.g. 40 = +40%). Values
  *                        outside [-100, 100] are normalized then clamped to [-1, 1].
+ *                        NOTE: values in the open interval (1.0, 2.0) are treated as
+ *                        integers and divided by 100 (e.g. 1.5 → 0.015). The value
+ *                        1.0 itself is NOT divided — it means 100% original color
+ *                        (the identity). There is no decimal representation of "1%
+ *                        brighter"; use 0.01 instead.
  *
  * @return string The adjusted color in the same format as the input
  *
