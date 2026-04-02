@@ -49,6 +49,9 @@ test('colourBrightness darker black stays black', function () {
 
 test('colourBrightness does not produce negative RGB values', function () {
 	$result = colourBrightness('010101', -0.99);
+	// dechex() on a negative int yields a two's-complement string, so
+	// assert well-formed 6-char hex before extracting individual channels.
+	expect($result)->toMatch('/^[0-9a-f]{6}$/i');
 	$r = hexdec(substr($result, 0, 2));
 	$g = hexdec(substr($result, 2, 2));
 	$b = hexdec(substr($result, 4, 2));
@@ -65,4 +68,27 @@ test('colourBrightness does not exceed 255 for any channel', function () {
 	expect($r)->toBeLessThanOrEqual(255);
 	expect($g)->toBeLessThanOrEqual(255);
 	expect($b)->toBeLessThanOrEqual(255);
+});
+
+// Boundary: percent=0 routes to the darker branch with zero darkening;
+// the result must be the original colour unchanged.
+test('colourBrightness with percent 0 returns original colour', function () {
+	expect(colourBrightness('4080c0', 0))->toBe('4080c0');
+});
+
+// Boundary: integer 1 is within [-1, 1] so the normalisation path is skipped.
+// The lighter formula at percent=1.0 keeps 100% of original and adds 0% white
+// — result equals the original colour. Integer 1 and decimal 1.0 must agree.
+test('colourBrightness with integer percent 1 returns original colour', function () {
+	expect(colourBrightness('4080c0', 1))->toBe(colourBrightness('4080c0', 1.0));
+	expect(colourBrightness('4080c0', 1))->toBe('4080c0');
+});
+
+// Boundary: integer -1 is within [-1, 1] so the normalisation path is skipped.
+// The darker formula at percent=-1.0 multiplies by 0 — result is pure black.
+// Integer -1, decimal -1.0, and integer -100 must all agree.
+test('colourBrightness with integer percent -1 returns black', function () {
+	expect(colourBrightness('4080c0', -1))->toBe(colourBrightness('4080c0', -1.0));
+	expect(colourBrightness('4080c0', -1))->toBe(colourBrightness('4080c0', -100));
+	expect(colourBrightness('4080c0', -1))->toBe('000000');
 });
