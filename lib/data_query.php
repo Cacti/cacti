@@ -721,6 +721,16 @@ function get_data_query_array(int $snmp_query_id) : array {
 		$replace       = [CACTI_PATH_BASE, read_config_option('path_snmpget'), read_config_option('path_php_binary')];
 		$xml_file_path = str_replace($search, $replace, $xml_file_path);
 
+		$allowed_base = realpath(CACTI_PATH_BASE);
+		$resolved     = realpath($xml_file_path);
+
+		if ($allowed_base === false || $resolved === false
+			|| !str_starts_with($resolved . DIRECTORY_SEPARATOR, $allowed_base . DIRECTORY_SEPARATOR)) {
+			query_debug_timer_offset('data_query', __esc('SECURITY: data query XML path outside Cacti base: \'%s\'', $xml_file_path));
+
+			return [];
+		}
+
 		if (!file_exists($xml_file_path)) {
 			query_debug_timer_offset('data_query', __esc('Could not find data query XML file at \'%s\'', $xml_file_path));
 
