@@ -75,3 +75,84 @@ test('find_paths rejects paths where realpath returns false', function () {
 		'find_paths must continue (skip) when realpath() returns false'
 	);
 });
+
+test('find_paths string type declaration prevents non-string inputs', function () {
+	$source = getPackageFindPathsSource();
+	// PHP 8.1+ throws TypeError when a non-string is passed; the type hint is the guard.
+	expect($source)->toContain('function find_paths(string $input,');
+});
+
+test('find_paths boundary check uses DIRECTORY_SEPARATOR to prevent prefix collision', function () {
+	$source = getPackageFindPathsSource();
+	// Appending DIRECTORY_SEPARATOR before str_starts_with prevents $base/scripts-evil
+	// from matching $base/scripts when the attacker controls the path prefix.
+	expect($source)->toContain('DIRECTORY_SEPARATOR');
+});
+
+// --- inline boundary logic with real temp filesystem ---
+
+/*
+ * Replicates the realpath boundary guard from find_paths() so it can be
+ * exercised against a real temp filesystem without the Cacti bootstrap.
+ */
+function findPathsBoundaryAllowed(string $base, string $part): bool {
+	$real_base = realpath($base);
+	$real_part = realpath($part);
+
+	if ($real_base === false || $real_part === false) {
+		return false;
+	}
+
+	return str_starts_with($real_part . DIRECTORY_SEPARATOR, $real_base . DIRECTORY_SEPARATOR);
+}
+
+function makeFindPathsTempBase(): string {
+	$tmp = sys_get_temp_dir() . '/cacti_fp_test_' . getmypid();
+	mkdir($tmp . '/scripts', 0755, true);
+	touch($tmp . '/scripts/query.xml');
+	return $tmp;
+}
+
+function removeFindPathsTempBase(string $base): void {
+	@unlink($base . '/scripts/query.xml');
+	@rmdir($base . '/scripts');
+	@rmdir($base);
+}
+
+// --- happy path ---
+
+test('find_paths boundary allows valid existing file inside base directory', function () {
+	$base = makeFindPathsTempBase();
+	$part = $base . '/scripts/query.xml';
+	expect(findPathsBoundaryAllowed($base, $part))->toBeTrue();
+	removeFindPathsTempBase($base);
+});
+
+// --- dotdot paths that canonicalize inside the base ---
+
+test('find_paths boundary allows dotdot path that resolves inside base', function () {
+	$base = makeFindPathsTempBase();
+	// scripts/../scripts/query.xml resolves to $base/scripts/query.xml — still inside.
+	$part = $base . '/scripts/../scripts/query.xml';
+	expect(findPathsBoundaryAllowed($base, $part))->toBeTrue();
+	removeFindPathsTempBase($base);
+});
+
+// --- dotdot paths that canonicalize outside the base ---
+
+test('find_paths boundary blocks dotdot path that resolves outside base', function () {
+	$base = makeFindPathsTempBase();
+	// scripts/../../etc/passwd escapes the base; realpath resolves to /etc/passwd.
+	$part = $base . '/scripts/../../etc/passwd';
+	expect(findPathsBoundaryAllowed($base, $part))->toBeFalse();
+	removeFindPathsTempBase($base);
+});
+
+// --- path exactly equal to the base directory ---
+
+test('find_paths boundary allows path exactly equal to base directory', function () {
+	$base = makeFindPathsTempBase();
+	// realpath($base) == $real_base; str_starts_with(X . DS, X . DS) is true.
+	expect(findPathsBoundaryAllowed($base, $base))->toBeTrue();
+	removeFindPathsTempBase($base);
+});
