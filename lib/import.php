@@ -650,11 +650,18 @@ function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orpha
 
 	foreach ($data['files']['file'] as $f) {
 		$name  = $f['name'];
+
+		if (str_contains($name, '..') || str_contains($name, chr(0))) {
+			cacti_log("WARNING: Skipping file with path traversal attempt: $name", false, 'IMPORT');
+
+			continue;
+		}
+
 		$fdata = base64_decode($f['data'], true);
 
 		if (str_contains($name, 'scripts/') || str_contains($name, 'resource/')) {
 			$filename = CACTI_PATH_BASE . "/$name";
-			// Fail-closed boundary validation — prevents path traversal via $name.
+			// Fail-closed boundary validation: prevents path traversal via $name.
 			$allowed_base_scripts  = realpath(CACTI_PATH_BASE . '/scripts');
 			$allowed_base_resource = realpath(CACTI_PATH_BASE . '/resource');
 			$resolved_dir          = realpath(dirname($filename));
