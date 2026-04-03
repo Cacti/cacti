@@ -92,7 +92,7 @@ function ss_gexport(string $cmd = 'index', string $arg1 = '', string $arg2 = '')
 			}
 		}
 
-		return ($value == '' ? 'U' : $value);
+		return ($value === '' || $value === false || $value === null ? 'U' : $value);
 	}
 
 	return 'U';

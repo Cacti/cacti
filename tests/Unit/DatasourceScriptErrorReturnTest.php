@@ -65,3 +65,38 @@ test('query_host_cpu.php prints U when get index is absent', function () {
 		->and($src)->toContain('} else {')
 		->and($src)->not->toContain("/* print 'U'");
 });
+
+test('ss_webseer.php guard covers false and null from db_fetch_cell_prepared', function () {
+	$src = file_get_contents(__DIR__ . '/../../scripts/ss_webseer.php');
+	expect($src)->toContain('$value === false')
+		->and($src)->toContain('$value === null');
+});
+
+test('ss_gexport.php guard covers false and null from db_fetch_cell_prepared', function () {
+	$src = file_get_contents(__DIR__ . '/../../scripts/ss_gexport.php');
+	expect($src)->toContain('$value === false')
+		->and($src)->toContain('$value === null');
+});
+
+// Behavioural tests for the return guard expression used in both scripts:
+//   ($value === '' || $value === false || $value === null ? 'U' : $value)
+// Tested via an inline closure so no DB connection is required.
+
+dataset('datasource_guard_cases', [
+	'non-empty string passes through' => ['123', '123'],
+	'empty string maps to U'          => ['', 'U'],
+	'false maps to U'                 => [false, 'U'],
+	'null maps to U'                  => [null, 'U'],
+	'numeric 0 passes through'        => [0, 0],
+]);
+
+test('datasource return guard behaves correctly', function ($value, $expected) {
+	$guard = static fn ($v) => ($v === '' || $v === false || $v === null ? 'U' : $v);
+	expect($guard($value))->toBe($expected);
+})->with('datasource_guard_cases');
+
+test('datasource return guard does not throw on non-scalar input', function () {
+	$guard = static fn ($v) => ($v === '' || $v === false || $v === null ? 'U' : $v);
+	// Arrays pass strict === checks without error; result is the array itself.
+	expect($guard([]))->toBe([]);
+});
