@@ -649,11 +649,24 @@ function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orpha
 	}
 
 	foreach ($data['files']['file'] as $f) {
-		$fdata = base64_decode($f['data'], true);
 		$name  = $f['name'];
+		$fdata = base64_decode($f['data'], true);
 
 		if (str_contains($name, 'scripts/') || str_contains($name, 'resource/')) {
 			$filename = CACTI_PATH_BASE . "/$name";
+			// Fail-closed boundary validation — prevents path traversal via $name.
+			$allowed_base_scripts  = realpath(CACTI_PATH_BASE . '/scripts');
+			$allowed_base_resource = realpath(CACTI_PATH_BASE . '/resource');
+			$resolved_dir          = realpath(dirname($filename));
+
+			$in_scripts  = $allowed_base_scripts !== false && str_starts_with($resolved_dir . DIRECTORY_SEPARATOR, $allowed_base_scripts . DIRECTORY_SEPARATOR);
+			$in_resource = $allowed_base_resource !== false && str_starts_with($resolved_dir . DIRECTORY_SEPARATOR, $allowed_base_resource . DIRECTORY_SEPARATOR);
+
+			if ($resolved_dir === false || (!$in_scripts && !$in_resource)) {
+				cacti_log('FATAL: Package file destination outside allowed boundaries: ' . $name, true, 'IMPORT');
+
+				continue;
+			}
 
 			if (!$preview) {
 				if (!cacti_sizeof($import_files) || in_array($name, $import_files, true)) {
