@@ -117,6 +117,17 @@ switch (grv('action')) {
 
 exit;
 
+function remote_agent_validate_oid(string $oid) : string|false {
+	$oid = trim($oid);
+
+	// Accept dotted-numeric OIDs (.1.3.6.1...) and named MIB OIDs (hrSystemProcesses)
+	if (preg_match('/^\.?[0-9]+(\.[0-9]+)*$/', $oid) || preg_match('/^[a-zA-Z][a-zA-Z0-9\-\.]*$/', $oid)) {
+		return $oid;
+	}
+
+	return false;
+}
+
 function debug(string $message) : void {
 	global $debug;
 
@@ -240,7 +251,7 @@ function get_graph_data() : bool {
 
 	// set the theme
 	if (isrv('effective_user')) {
-		$user = grv('effective_user');
+		$user = (int) gfrv('effective_user');
 	} else {
 		$user = 0;
 	}
@@ -256,8 +267,14 @@ function get_graph_data() : bool {
 
 function get_snmp_data() : void {
 	$host_id = gfrv('host_id');
-	$oid     = gnrv('oid');
+	$oid     = grv('oid');
 	$output  = '';
+
+	if (remote_agent_validate_oid($oid) === false) {
+		print 'U';
+
+		return;
+	}
 
 	if (!empty($host_id)) {
 		$host    = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', [$host_id]);
@@ -279,8 +296,14 @@ function get_snmp_data() : void {
 
 function get_snmp_data_walk() : void {
 	$host_id = gfrv('host_id');
-	$oid     = gnrv('oid');
+	$oid     = grv('oid');
 	$output  = '';
+
+	if (remote_agent_validate_oid($oid) === false) {
+		print 'U';
+
+		return;
+	}
 
 	if (!empty($host_id)) {
 		$host    = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', [$host_id]);
