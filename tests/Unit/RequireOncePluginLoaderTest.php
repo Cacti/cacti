@@ -28,10 +28,11 @@ test('include/global.php uses require_once for all core library includes', funct
 test('lib/plugins.php uses require_once for plugin setup.php in install path', function () {
 	$source = file_get_contents(__DIR__ . '/../../lib/plugins.php');
 
-	/* The install path now has an explicit file_exists guard followed by
-	 * require_once — verify no bare include_once remains for setup.php. */
+	/* All plugin setup.php inclusion sites now use the realpath()-validated
+	 * variable rather than the raw CACTI_PATH_PLUGINS path, closing TOCTOU
+	 * and symlink swap windows between validation and the actual file load. */
 	expect(preg_match('/include_once\s*\(\s*CACTI_PATH_PLUGINS/', $source))->toBe(0);
-	expect(preg_match('/require_once\s*\(\s*CACTI_PATH_PLUGINS/', $source))->toBe(1);
+	expect($source)->toContain('require_once($real_setup_i)');
 });
 
 test('lib/plugins.php install path hard-fails with sanitized log when setup.php missing', function () {

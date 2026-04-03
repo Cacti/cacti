@@ -93,7 +93,15 @@ function api_plugin_hook(string $name) : array {
 				$debounce    = 'mpf_' . $plugin_name . '_' . $plugin_func;
 
 				if (file_exists($full_path)) {
-					include_once($full_path);
+					$real_plugins  = realpath(CACTI_PATH_PLUGINS);
+					$real_fullpath = realpath($full_path);
+
+					if ($real_plugins !== false && $real_fullpath !== false
+						&& str_starts_with($real_fullpath . DIRECTORY_SEPARATOR, $real_plugins . DIRECTORY_SEPARATOR)) {
+						include_once($real_fullpath);
+					} else {
+						cacti_log('SECURITY: Plugin hook file resolves outside plugin directory: ' . $full_path, false, 'SECURITY');
+					}
 				}
 
 				if (function_exists($plugin_func)) {
@@ -153,8 +161,18 @@ function api_plugin_hook_function(string $name, mixed $parm = null) : mixed {
 				if (api_plugin_can_install($hdata['name'], $message)) {
 					$p[] = $hdata['name'];
 
-					if (file_exists(CACTI_PATH_PLUGINS . '/' . $hdata['name'] . '/' . $hdata['file'])) {
-						require_once(CACTI_PATH_PLUGINS . '/' . $hdata['name'] . '/' . $hdata['file']);
+					$hook_fullpath = CACTI_PATH_PLUGINS . '/' . $hdata['name'] . '/' . $hdata['file'];
+
+					if (file_exists($hook_fullpath)) {
+						$real_plugins  = realpath(CACTI_PATH_PLUGINS);
+						$real_hookpath = realpath($hook_fullpath);
+
+						if ($real_plugins !== false && $real_hookpath !== false
+							&& str_starts_with($real_hookpath . DIRECTORY_SEPARATOR, $real_plugins . DIRECTORY_SEPARATOR)) {
+							require_once($real_hookpath);
+						} else {
+							cacti_log('SECURITY: Plugin hook function file resolves outside plugin directory: ' . $hook_fullpath, false, 'SECURITY');
+						}
 					}
 
 					$function = $hdata['function'];
@@ -712,7 +730,18 @@ function api_plugin_install(string $plugin) : bool {
 		exit;
 	}
 
-	require_once(CACTI_PATH_PLUGINS . "/$plugin/setup.php");
+	$real_plugins_i = realpath(CACTI_PATH_PLUGINS);
+	$real_setup_i   = realpath(CACTI_PATH_PLUGINS . "/$plugin/setup.php");
+
+	if ($real_plugins_i === false || $real_setup_i === false
+		|| !str_starts_with($real_setup_i . DIRECTORY_SEPARATOR, $real_plugins_i . DIRECTORY_SEPARATOR)) {
+		cacti_log('SECURITY: Plugin install path outside plugin directory: ' . $plugin, false, 'SECURITY');
+		raise_message('plugin_path_error', __('Plugin path is invalid.'), MESSAGE_LEVEL_ERROR);
+		header('Location: plugins.php');
+		exit;
+	}
+
+	require_once($real_setup_i);
 
 	$exists = db_fetch_assoc_prepared('SELECT id
 		FROM plugin_config
@@ -857,9 +886,14 @@ function api_plugin_realms_found(string $plugin) : mixed {
 function api_plugin_uninstall(string $plugin, bool $tables = true) : void {
 	$plugin_found = false;
 
-	if (file_exists(CACTI_PATH_PLUGINS . "/$plugin/setup.php")) {
+	$real_plugins_u = realpath(CACTI_PATH_PLUGINS);
+	$real_setup_u   = realpath(CACTI_PATH_PLUGINS . "/$plugin/setup.php");
+
+	if (file_exists(CACTI_PATH_PLUGINS . "/$plugin/setup.php")
+		&& $real_plugins_u !== false && $real_setup_u !== false
+		&& str_starts_with($real_setup_u . DIRECTORY_SEPARATOR, $real_plugins_u . DIRECTORY_SEPARATOR)) {
 		cacti_log(sprintf('NOTE: Loading setup.php for plugin %s (uninstall)', $plugin), false, 'PLUGIN', POLLER_VERBOSITY_DEBUG);
-		require_once(CACTI_PATH_PLUGINS . "/$plugin/setup.php");
+		require_once($real_setup_u);
 
 		// Run the Plugin's Uninstall Function first
 		$function = "plugin_{$plugin}_uninstall";
@@ -901,9 +935,14 @@ function api_plugin_uninstall(string $plugin, bool $tables = true) : void {
 function api_plugin_check_config(string $plugin) : bool {
 	clearstatcache();
 
-	if (file_exists(CACTI_PATH_PLUGINS . "/$plugin/setup.php")) {
+	$real_plugins_c = realpath(CACTI_PATH_PLUGINS);
+	$real_setup_c   = realpath(CACTI_PATH_PLUGINS . "/$plugin/setup.php");
+
+	if (file_exists(CACTI_PATH_PLUGINS . "/$plugin/setup.php")
+		&& $real_plugins_c !== false && $real_setup_c !== false
+		&& str_starts_with($real_setup_c . DIRECTORY_SEPARATOR, $real_plugins_c . DIRECTORY_SEPARATOR)) {
 		cacti_log(sprintf('NOTE: Loading setup.php for plugin %s (check_config)', $plugin), false, 'PLUGIN', POLLER_VERBOSITY_DEBUG);
-		require_once(CACTI_PATH_PLUGINS . "/$plugin/setup.php");
+		require_once($real_setup_c);
 
 		$function = "plugin_{$plugin}_check_config";
 
@@ -969,10 +1008,14 @@ function api_plugin_disable(string $plugin) : void {
 }
 
 function api_plugin_remove_data(string $plugin) : void {
-	$setup_file = CACTI_PATH_BASE . "/plugins/$plugin/setup.php";
+	$setup_file     = CACTI_PATH_PLUGINS . "/$plugin/setup.php";
+	$real_plugins_r = realpath(CACTI_PATH_PLUGINS);
+	$real_setup_r   = realpath($setup_file);
 
-	if (file_exists($setup_file)) {
-		require_once($setup_file);
+	if (file_exists($setup_file)
+		&& $real_plugins_r !== false && $real_setup_r !== false
+		&& str_starts_with($real_setup_r . DIRECTORY_SEPARATOR, $real_plugins_r . DIRECTORY_SEPARATOR)) {
+		require_once($real_setup_r);
 
 		$rmdata_function = "plugin_{$plugin}_remove_data";
 
