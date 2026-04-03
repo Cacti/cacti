@@ -69,7 +69,7 @@ function ss_webseer(string $cmd = 'index', string $arg1 = '', string $arg2 = '')
 	} elseif ($cmd == 'get') {
 		$arg   = $arg1;
 		$index = $arg2;
-		$value = '0';
+		$value = 'U';
 
 		if (db_table_exists('plugin_webseer_urls')) {
 			switch($arg) {
@@ -125,8 +125,8 @@ function ss_webseer(string $cmd = 'index', string $arg1 = '', string $arg2 = '')
 			}
 		}
 
-		return (empty($value) ? '0' : $value);
+		return ($value === '' ? 'U' : $value);
 	}
 
-	return false;
+	return 'U';
 }
