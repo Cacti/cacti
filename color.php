@@ -225,11 +225,61 @@ function color_import_processor(&$colors) {
 
 			/* header row */
 			if ($i == 0) {
-				$save_order = '(';
-				$j = 0;
+=======
+				$j             = 0;
+				$first_column  = true;
+				$required      = 0;
+
+				if (cacti_sizeof($line_array)) {
+					foreach ($line_array as $line_item) {
+						$line_item = trim(str_replace("'", '', $line_item));
+						$line_item = trim(str_replace('"', '', $line_item));
+
+						switch ($line_item) {
+							case 'hex':
+								$hexcol = $j;
+							case 'name':
+								if (!$first_column) {
+									$save_order .= ', ';
+								}
+
+								$save_order .= $line_item;
+
+								$insert_columns[] = $j;
+								$first_column     = false;
+
+								if ($update_suffix != '') {
+									$update_suffix .= ", $line_item=VALUES($line_item)";
+								} else {
+									$update_suffix .= " ON DUPLICATE KEY UPDATE $line_item=VALUES($line_item)";
+								}
+
+								$required++;
+
+								break;
+							default:
+								// ignore unknown columns
+						}
+
+						$j++;
+					}
+				}
+
+				$save_order .= ')';
+
+				if ($required >= 2) {
+					array_push($return_array, '<b>HEADER LINE PROCESSED OK</b>:  <br>Columns found where: ' . $save_order . '<br>');
+				} else {
+					array_push($return_array, '<b>HEADER LINE PROCESSING ERROR</b>: Missing required field <br>Columns found where:' . $save_order . '<br>');
+
+					break;
+				}
+			} else {
+				$save_value   = '(';
+				$save_params  = [];
+				$j            = 0;
 				$first_column = true;
-				$required = 0;
-				$update_suffix = '';
+				$hex_value    = '';
 
 				if (cacti_sizeof($line_array)) {
 				foreach($line_array as $line_item) {
@@ -255,12 +305,13 @@ function color_import_processor(&$colors) {
 								$update_suffix .= " ON DUPLICATE KEY UPDATE $line_item=VALUES($line_item)";
 							}
 
-							$required++;
+							$save_value    .= '?';
+							$save_params[]  = $line_item;
 
-							break;
-						default:
-							/* ignore unknown columns */
-					}
+							if ($j === $hexcol) {
+								$hex_value = $line_item;
+							}
+						}
 
 					$j++;
 				}
@@ -325,10 +376,26 @@ function color_import_processor(&$colors) {
 						$sql_execute = 'INSERT INTO colors ' . $save_order .
 							' VALUES ' . $save_value;
 
-						if (db_execute($sql_execute)) {
+						if (db_execute_prepared($sql_execute, $save_params)) {
 							array_push($return_array,"INSERT SUCCEEDED: $save_value");
 						} else {
 							array_push($return_array,"INSERT FAILED: $save_value");
+						}
+				} else {
+						// perform check to see if the row exists
+						$existing_row = db_fetch_row_prepared('SELECT * FROM colors WHERE hex = ?', [$hex_value]);
+
+						if (cacti_sizeof($existing_row)) {
+							array_push($return_array,"<strong>INSERT SKIPPED, EXISTING:</strong> $save_value");
+						} else {
+							$sql_execute = 'INSERT INTO colors ' . $save_order .
+								' VALUES ' . $save_value;
+
+							if (db_execute_prepared($sql_execute, $save_params)) {
+								array_push($return_array,"INSERT SUCCEEDED: $save_value");
+							} else {
+								array_push($return_array,"INSERT FAILED: $save_value");
+							}
 						}
 					}
 				}
@@ -629,9 +696,11 @@ function color() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
+	$sql_params = [];
+
 	if (get_request_var('filter') != '') {
-		$sql_where = 'WHERE (name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR hex LIKE ' . db_qstr('%' .  get_request_var('filter') . '%') . ')';
+		$sql_where  = 'WHERE (name LIKE ? OR hex LIKE ?)';
+		$sql_params = ['%' . get_request_var('filter') . '%', '%' . get_request_var('filter') . '%'];
 	} else {
 		$sql_where = '';
 	}
@@ -646,7 +715,7 @@ function color() {
 		$sql_having = '';
 	}
 
-	$total_rows = db_fetch_cell("SELECT
+	$total_rows = db_fetch_cell_prepared("SELECT
 		COUNT(color)
 		FROM (
 			SELECT
@@ -663,12 +732,12 @@ function color() {
 			$sql_where
 			GROUP BY c.id
 			$sql_having
-		) AS rs");
+		) AS rs", $sql_params);
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-	$colors = db_fetch_assoc("SELECT *,
+	$colors = db_fetch_assoc_prepared("SELECT *,
         SUM(CASE WHEN local_graph_id>0 THEN 1 ELSE 0 END) AS graphs,
         SUM(CASE WHEN local_graph_id=0 THEN 1 ELSE 0 END) AS templates
         FROM (
@@ -685,7 +754,7 @@ function color() {
 		GROUP BY rs.id
 		$sql_having
 		$sql_order
-		$sql_limit");
+		$sql_limit", $sql_params);
 
     $nav = html_nav_bar('color.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('Colors'), 'page', 'main');
 
@@ -751,9 +820,11 @@ function color_export() {
 	process_request_vars();
 
 	/* form the 'where' clause for our main sql query */
+	$sql_params = [];
+
 	if (get_request_var('filter') != '') {
-		$sql_where = 'WHERE (name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR hex LIKE ' . db_qstr('%' .  get_request_var('filter') . '%') . ')';
+		$sql_where  = 'WHERE (name LIKE ? OR hex LIKE ?)';
+		$sql_params = ['%' . get_request_var('filter') . '%', '%' . get_request_var('filter') . '%'];
 	} else {
 		$sql_where = '';
 	}
@@ -768,7 +839,7 @@ function color_export() {
 		$sql_having = '';
 	}
 
-	$colors = db_fetch_assoc("SELECT *,
+	$colors = db_fetch_assoc_prepared("SELECT *,
         SUM(CASE WHEN local_graph_id>0 THEN 1 ELSE 0 END) AS graphs,
         SUM(CASE WHEN local_graph_id=0 THEN 1 ELSE 0 END) AS templates
         FROM (
@@ -783,7 +854,7 @@ function color_export() {
 		) AS rs
 		$sql_where
 		GROUP BY rs.id
-		$sql_having");
+		$sql_having", $sql_params);
 
 	if (cacti_sizeof($colors)) {
 		header('Content-type: application/csv');

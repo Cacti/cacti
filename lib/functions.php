@@ -4487,7 +4487,7 @@ function sanitize_search_string($string) {
  */
 function sanitize_uri($uri) {
 	static $drop_char_match =   array('^', '$', '<', '>', '`', "'", '"', '|', '+', '[', ']', '{', '}', ';', '!', '(', ')');
-	static $drop_char_replace = array( '', '',  '',  '',  '',  '',   '',  '',  '',  '',  '',  '',  '',  '',  '');
+	static $drop_char_replace = array( '', '',  '',  '',  '',  '',   '',  '',  '',  '',  '',  '',  '',  '',  '',  '',  '');
 
 	if (strpos($uri, 'graph_view.php')) {
 		if (!strpos($uri, 'action=')) {
@@ -4495,7 +4495,27 @@ function sanitize_uri($uri) {
 		}
 	}
 
-	return str_replace($drop_char_match, $drop_char_replace, strip_tags(urldecode($uri)));
+	$sanitized = str_replace($drop_char_match, $drop_char_replace, strip_tags(urldecode($uri)));
+
+	// Strip CRLF sequences that survive urldecode to prevent header injection.
+	$sanitized = preg_replace('/[\r\n]/', '', $sanitized);
+
+	// Trim leading/trailing whitespace before scheme checks. Browsers silently
+	// ignore leading whitespace in href/Location values, so "\tjavascript:..."
+	// would bypass a check anchored at ^ without this trim.
+	$sanitized = trim($sanitized);
+
+	// Reject absolute-scheme URIs (https://, ftp://, ...), dangerous
+	// schemeless protocols (javascript:, data:, vbscript:), and
+	// protocol-relative references (//evil.com) that bypass the scheme check.
+	if (preg_match('#^[a-zA-Z][a-zA-Z0-9+.\-]*://#', $sanitized) ||
+		preg_match('#^(javascript|data|vbscript):#i', $sanitized) ||
+		preg_match('#^//#', $sanitized)) {
+		cacti_log('WARNING: Suspicious URI rejected: ' . substr($uri, 0, 200), false, 'AUTH', POLLER_VERBOSITY_HIGH);
+		return 'index.php';
+	}
+
+	return $sanitized;
 }
 
 /**

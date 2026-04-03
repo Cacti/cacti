@@ -621,8 +621,19 @@ function graph_edit() {
 		raise_message('missing_aggregate', __('Aggregate Graphs Accessed does not Exist'), MESSAGE_LEVEL_ERROR);
 
 		if (isset($_SERVER['HTTP_REFERER'])) {
-			$referer = $_SERVER['HTTP_REFERER'];
-			header('Location: ' . $referer);
+			// Parse host directly from the raw referer value. sanitize_uri() now
+			// rejects any URI with a scheme, so passing an absolute referer through
+			// it first would always produce 'index.php' and fail the host comparison.
+			$_ref_host = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
+			$_srv_host = preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST']);
+			if ($_ref_host !== null && $_ref_host === $_srv_host) {
+				$_ref_path  = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_PATH) ?: '';
+				$_ref_query = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_QUERY);
+				$_safe = sanitize_uri($_ref_path . ($_ref_query !== null ? '?' . $_ref_query : ''));
+				header('Location: ' . $_safe);
+			} else {
+				header('Location: aggregate_graphs.php');
+			}
 		} else {
 			header('Location: aggregate_graphs.php');
 		}

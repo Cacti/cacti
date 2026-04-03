@@ -464,7 +464,7 @@ function html_graph_new_graphs($page, $host_id, $host_template_id, $selected_gra
 		/* since the user didn't actually click "Create" to POST the data; we have to
 		pretend like they did here */
 		set_request_var('save_component_new_graphs', '1');
-		set_request_var('selected_graphs_array', serialize($selected_graphs_array));
+		set_request_var('selected_graphs_array', json_encode($selected_graphs_array));
 
 		host_new_graphs_save($host_id);
 
@@ -475,7 +475,7 @@ function html_graph_new_graphs($page, $host_id, $host_template_id, $selected_gra
 	form_hidden_box('host_template_id', $host_template_id, '0');
 	form_hidden_box('host_id', $host_id, '0');
 	form_hidden_box('save_component_new_graphs', '1', '');
-	form_hidden_box('selected_graphs_array', serialize($selected_graphs_array), '');
+	form_hidden_box('selected_graphs_array', json_encode($selected_graphs_array), '');
 
 	if (isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], 'graphs_new') === false) {
 		set_request_var('returnto', basename($_SERVER['HTTP_REFERER']));

@@ -415,11 +415,46 @@ db_cacti_initialized($config['is_web']);
 
 if ($config['is_web']) {
 	if (read_config_option('force_https') == 'on') {
-		$is_https = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== '' && strtolower($_SERVER['HTTPS']) !== 'off');
+		if (!cacti_is_https() && isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
+			// IPv6 literals in HTTP Host headers look like [2001:db8::1]:8080.
+			// Brackets are required in the URL so they must be preserved, not stripped.
+			if (preg_match('/^\\[([0-9a-fA-F:]+)\\](:\\d+)?$/', $_SERVER['HTTP_HOST'], $_m)) {
+				$host = '[' . $_m[1] . ']' . (isset($_m[2]) ? $_m[2] : '');
+			} else {
+				// For regular hostnames strip any character that cannot appear in
+				// a host:port token. Punycode-encoded IDN hostnames use only ASCII,
+				// so this does not break internationalised domain names as sent
+				// over HTTP. If the result is empty (e.g. a non-ASCII host that
+				// was not Punycode-encoded) we skip the redirect to avoid emitting
+				// a malformed Location header.
+				$host = preg_replace('/[^a-zA-Z0-9.\\-:]/', '', $_SERVER['HTTP_HOST']);
+			}
+			// Strip literal and percent-encoded CRLF sequences. nginx and some
+			// FastCGI setups forward REQUEST_URI without decoding percent-escapes,
+			// so %0d/%0a must be removed explicitly to prevent header injection
+			// on PHP 7.x, which does not validate CRLF in header() values.
+			$uri = preg_replace('/[\r\n]|%0[dD]|%0[aA]/', '', $_SERVER['REQUEST_URI']);
+			// Validate against the Cacti-configured base URL to prevent open redirect.
+			// HTTP_HOST is user-controlled; character-class filtering prevents CRLF
+			// injection but leaves the hostname attacker-influenced when the Host
+			// header can be spoofed (MitM, misconfigured proxy). Fail closed: skip
+			// the redirect if the header does not match the authoritative hostname.
+			$configured_url = read_config_option('base_url');
+			$expected_host  = ($configured_url !== '' && $configured_url !== false)
+				? parse_url($configured_url, PHP_URL_HOST)
+				: false;
 
-		if (!$is_https && isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
-			header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-			exit;
+			// Strip port suffix before comparing; parse_url(PHP_URL_HOST) never
+			// includes the port. IPv6 literals arrive bracketed ([::1]) but
+			// parse_url strips the brackets, so strip them here too.
+			$host_only = preg_replace('/:\d+$/', '', $host);
+			$host_only = trim($host_only, '[]');
+
+			if ($host !== '' && $expected_host !== false && $expected_host !== null &&
+				strcasecmp($host_only, $expected_host) === 0) {
+				header('Location: https://' . $host . $uri);
+				exit;
+			}
 		}
 	}
 

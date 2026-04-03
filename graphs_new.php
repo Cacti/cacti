@@ -193,7 +193,16 @@ function host_reload_query() {
    ------------------- */
 
 function host_new_graphs_save($host_id) {
-	$selected_graphs_array = cacti_unserialize(stripslashes(get_nfilter_request_var('selected_graphs_array')));
+	$selected_graphs_array = json_decode(get_nfilter_request_var('selected_graphs_array'), true);
+
+	if ($selected_graphs_array === null || !is_array($selected_graphs_array)) {
+		raise_message('deserialization_failed', __('Invalid graph selection data'), MESSAGE_LEVEL_ERROR);
+		// Use max(1,...) so a non-numeric or zero $host_id does not silently
+		// redirect to host_id=0, which would show the host list instead of the
+		// expected device page.
+		header('Location: graphs_new.php?host_id=' . max(1, (int) $host_id) . '&header=false');
+		exit;
+	}
 
 	$values = array();
 	$form_data = array();
