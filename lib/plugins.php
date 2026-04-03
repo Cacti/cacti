@@ -1530,9 +1530,28 @@ function api_plugin_archive_restore(string $plugin, string $id, string $type = '
 						continue;
 					}
 
+					// block server-executable file types; writing them to the
+					// web-accessible plugin directory would enable webshell execution
+					$ext = strtolower(pathinfo($tfile, PATHINFO_EXTENSION));
+					if (in_array($ext, ['php', 'php3', 'php4', 'php5', 'php7', 'php8', 'phtml', 'phar'], true)) {
+						continue;
+					}
+
 					$archive_files[$tfile] = $pfile;
 				} else {
 					$tfile = str_replace("phar://{$tmpfile}", '', $file->getPathname());
+
+					// type='archive' had no content filter; apply hidden-file and
+					// executable-extension guards here as well
+					$basename_tfile = basename($tfile);
+					if (str_starts_with($basename_tfile, '.') && $basename_tfile != '.htaccess') {
+						continue;
+					}
+
+					$ext = strtolower(pathinfo($tfile, PATHINFO_EXTENSION));
+					if (in_array($ext, ['php', 'php3', 'php4', 'php5', 'php7', 'php8', 'phtml', 'phar'], true)) {
+						continue;
+					}
 
 					$archive_files[$tfile] = $tfile;
 				}
@@ -1590,6 +1609,11 @@ function api_plugin_archive_restore(string $plugin, string $id, string $type = '
 			chdir($restore_path);
 
 			foreach ($archive_files as $basefile => $pharpath) {
+				// reject paths with traversal sequences that slipped through normalisation
+				if (str_contains($basefile, '..')) {
+					continue;
+				}
+
 				$output = file_get_contents("phar://my.tgz{$pharpath}");
 
 				if (strlen($output)) {
