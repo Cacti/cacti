@@ -659,6 +659,14 @@ function package_diff_file() : void {
 	$package_file     = grv('package_file');
 	$filename         = grv('filename');
 
+	// Prevent path traversal: resolved path must stay within the Cacti base.
+	$real_base = realpath(CACTI_PATH_BASE);
+	$real_file = realpath(CACTI_PATH_BASE . '/' . $filename);
+
+	if ($real_base === false || $real_file === false || strncmp($real_file, $real_base . DIRECTORY_SEPARATOR, strlen($real_base) + 1) !== 0) {
+		return;
+	}
+
 	$options = [
 		'ignoreWhitespace' => true,
 		'ignoreCase'       => false
@@ -671,7 +679,7 @@ function package_diff_file() : void {
 		$newfile = explode("\n", $newfile);
 	}
 
-	$oldfile = file_get_contents(CACTI_PATH_BASE . '/' . $filename);
+	$oldfile = file_get_contents($real_file);
 
 	if ($oldfile !== false) {
 		$oldfile = str_replace("\n\r", "\n", $oldfile);
