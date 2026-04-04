@@ -1739,7 +1739,7 @@ function graph_edit() {
 	<script type='text/javascript'>
 
 	var locked         = <?php print ($locked ? 'true':'false');?>;
-	var imageSource    = '<?php print $graph['src'];?>';
+	var imageSource    = <?php print json_encode($graph['src']);?>;
 	var originalWidth  = null;
 	var originalHeight = null;
 
