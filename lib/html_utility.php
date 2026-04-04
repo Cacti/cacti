@@ -896,7 +896,7 @@ function validate_redirect_url($url = '', $default = 'index.php') {
 	}
 
 	// reject path traversal sequences
-	if (strpos($url, '..') !== false) {
+	if (stripos($url, '..') !== false) {
 		return $default;
 	}
 
