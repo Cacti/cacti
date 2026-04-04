@@ -21,24 +21,28 @@
 
 $_src   = file_get_contents(__DIR__ . '/../../remote_agent.php');
 $_start = strpos($_src, 'function remote_agent_validate_oid(');
-$_end   = strpos($_src, "\n}\n", $_start) + 3;
-eval(substr($_src, $_start, $_end - $_start));
-unset($_src, $_start, $_end);
+$_next  = strpos($_src, "\nfunction ", $_start + 1);
+eval(substr($_src, $_start, $_next - $_start));
+unset($_src, $_start, $_next);
+
+if (!function_exists('remote_agent_validate_oid')) {
+	throw new \RuntimeException('eval() did not define remote_agent_validate_oid — check source extraction');
+}
 
 test('accepts dotted-numeric OID with leading dot', function () {
-	expect(remote_agent_validate_oid('.1.3.6.1.2.1.1.1.0'))->not->toBeFalse();
+	expect(remote_agent_validate_oid('.1.3.6.1.2.1.1.1.0'))->toBe('.1.3.6.1.2.1.1.1.0');
 });
 
 test('accepts dotted-numeric OID without leading dot', function () {
-	expect(remote_agent_validate_oid('1.3.6.1.2.1.1.1.0'))->not->toBeFalse();
+	expect(remote_agent_validate_oid('1.3.6.1.2.1.1.1.0'))->toBe('1.3.6.1.2.1.1.1.0');
 });
 
 test('accepts named MIB OID', function () {
-	expect(remote_agent_validate_oid('hrSystemProcesses'))->not->toBeFalse();
+	expect(remote_agent_validate_oid('hrSystemProcesses'))->toBe('hrSystemProcesses');
 });
 
 test('accepts named MIB OID with dots', function () {
-	expect(remote_agent_validate_oid('SNMPv2-MIB.sysDescr'))->not->toBeFalse();
+	expect(remote_agent_validate_oid('SNMPv2-MIB.sysDescr'))->toBe('SNMPv2-MIB.sysDescr');
 });
 
 test('rejects empty string', function () {
@@ -63,6 +67,24 @@ test('rejects null byte', function () {
 
 test('rejects pipe character', function () {
 	expect(remote_agent_validate_oid('.1.3.6.1|cat /etc/passwd'))->toBeFalse();
+});
+
+test('rejects OID with trailing dot', function () {
+	expect(remote_agent_validate_oid('1.3.6.1.'))->toBeFalse();
+});
+
+test('rejects OID with multiple leading dots', function () {
+	expect(remote_agent_validate_oid('..1.3.6.1'))->toBeFalse();
+});
+
+test('rejects OID with consecutive dots', function () {
+	expect(remote_agent_validate_oid('1..3.6'))->toBeFalse();
+});
+
+test('handles extremely long valid OID without timeout', function () {
+	// 501-char dotted-numeric OID; verifies no catastrophic regex backtracking
+	$oid = str_repeat('1.', 250) . '0';
+	expect(remote_agent_validate_oid($oid))->not->toBeFalse();
 });
 
 // Verify the source also contains the validator to keep source and tests in sync

@@ -82,3 +82,58 @@ test('oid validation is applied before SNMP session in get_snmp_data', function 
 		->and($snmp_pos)->not->toBeFalse()
 		->and($val_pos)->toBeLessThan($snmp_pos);
 });
+
+test('get_snmp_data prints U and returns immediately on invalid oid', function () use ($src) {
+	$fn = substr($src, strpos($src, 'function get_snmp_data() :'));
+	$fn = substr($fn, 0, strpos($fn, 'function get_snmp_data_walk()'));
+
+	expect($fn)->toContain("\$oid === false")
+		->and($fn)->toContain("print 'U'")
+		->and($fn)->toContain('return;');
+});
+
+test('get_snmp_data_walk prints U and returns immediately on invalid oid', function () use ($src) {
+	$fn = substr($src, strpos($src, 'function get_snmp_data_walk() :'));
+	$fn = substr($fn, 0, strpos($fn, 'function ping_device()'));
+
+	expect($fn)->toContain("\$oid === false")
+		->and($fn)->toContain("print 'U'")
+		->and($fn)->toContain('return;');
+});
+
+test('oid validation is applied before SNMP session in get_snmp_data_walk', function () use ($src) {
+	$fn      = substr($src, strpos($src, 'function get_snmp_data_walk() :'));
+	$fn      = substr($fn, 0, strpos($fn, 'function ping_device()'));
+	$val_pos  = strpos($fn, 'remote_agent_validate_oid');
+	$snmp_pos = strpos($fn, 'cacti_snmp_session');
+
+	expect($val_pos)->not->toBeFalse()
+		->and($snmp_pos)->not->toBeFalse()
+		->and($val_pos)->toBeLessThan($snmp_pos);
+});
+
+test('effective_user is guarded by isrv and cast to int before use', function () use ($src) {
+	$fn = substr($src, strpos($src, 'function get_graph_data() :'));
+	$fn = substr($fn, 0, strpos($fn, 'function get_snmp_data()'));
+
+	expect($fn)->toContain("isrv('effective_user')")
+		->and($fn)->toContain("(int) gfrv('effective_user')")
+		->and($fn)->not->toContain('$user = grv(\'effective_user\')');
+});
+
+test('get_graph_data defaults effective_user to 0 when absent', function () use ($src) {
+	$fn = substr($src, strpos($src, 'function get_graph_data() :'));
+	$fn = substr($fn, 0, strpos($fn, 'function get_snmp_data()'));
+
+	// Failure path: no effective_user in request => $user must fall back to 0
+	expect($fn)->toContain('$user = 0');
+});
+
+test('get_graph_data passes $user to rrdtool_function_graph', function () use ($src) {
+	$fn = substr($src, strpos($src, 'function get_graph_data() :'));
+	$fn = substr($fn, 0, strpos($fn, 'function get_snmp_data()'));
+
+	// Happy path: integer $user (whether cast from input or defaulted to 0) reaches the graph renderer
+	expect($fn)->toContain('rrdtool_function_graph(')
+		->and($fn)->toContain(', $user)');
+});
