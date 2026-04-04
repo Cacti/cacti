@@ -902,9 +902,13 @@ function validate_redirect_url($url = '', $default = 'index.php') {
 
 	// Prevent referring off site
 	$ref_host = parse_url($url, PHP_URL_HOST);
-	$srv_host = preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST']);
+	$srv_host = null;
 
-	if ($ref_host === null || $ref_host === $srv_host) {
+	if (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '') {
+		$srv_host = preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST']);
+	}
+
+	if ($ref_host === null || ($srv_host !== null && $ref_host === $srv_host)) {
 		$ref_path  = parse_url($url, PHP_URL_PATH) ?: '';
 		$ref_query = parse_url($url, PHP_URL_QUERY);
 
