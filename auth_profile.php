@@ -266,7 +266,7 @@ function settings() {
 		return;
 	}
 
-	$referer = validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '', 'graph_view.php');;
+	$referer = validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '', 'graph_view.php');
 
 	if (strpos($referer, 'auth_profile.php') === false) {
 		$timespan_sel_pos = strpos($referer, '&predefined_timespan');
