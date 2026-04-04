@@ -904,14 +904,14 @@ function validate_redirect_url($url = '', $default = 'index.php') {
 	$ref_host = parse_url($url, PHP_URL_HOST);
 	$srv_host = preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST']);
 
-	if ($ref_host !== null && $ref_host === $srv_host) {
+	if ($ref_host === null || $ref_host === $srv_host) {
 		$ref_path  = parse_url($url, PHP_URL_PATH) ?: '';
 		$ref_query = parse_url($url, PHP_URL_QUERY);
 
 		$safe = sanitize_uri($ref_path . ($ref_query !== null ? '?' . $ref_query : ''));
 
 		return $safe;
-	} else {
+	} else { {
 		return $default;
 	}
 }
