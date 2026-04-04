@@ -1,0 +1,166 @@
+name: AI Security Review
+
+# Calls claude-opus-4-6 with the PR diff, grep hits on changed PHP files, and
+# excerpts from historically vulnerable hotspot files. Posts the model's
+# structured review as a PR comment and fails the job when the model
+# recommends blocking the PR.
+#
+# Requires the ANTHROPIC_API_KEY repository secret to be configured.
+# For fork PRs the secret is not available; the job skips gracefully.
+
+on:
+  pull_request:
+    branches: [develop]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: ai-security-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  security-review:
+    name: AI security review
+    runs-on: ubuntu-latest
+    # Skip drafts and skip when the secret is absent (fork PRs)
+    if: >
+      github.event.pull_request.draft == false &&
+      secrets.ANTHROPIC_API_KEY != ''
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+
+      - name: Fetch base branch
+        run: |
+          set -euo pipefail
+          git fetch origin "${{ github.base_ref }}" --depth=1
+
+      - name: Collect PR diff
+        run: |
+          set -euo pipefail
+          git diff "origin/${{ github.base_ref }}...HEAD" > /tmp/pr.diff
+          printf 'Diff: %d bytes\n' "$(wc -c < /tmp/pr.diff)"
+
+      - name: Collect changed PHP files
+        id: changed
+        run: |
+          set -euo pipefail
+          git diff --name-only "origin/${{ github.base_ref }}...HEAD" \
+            | grep '\.php$' \
+            | grep -v '^include/vendor/' \
+            | grep -v '^locales/' \
+            > /tmp/changed_php_files.txt || true
+
+          count=$(wc -l < /tmp/changed_php_files.txt)
+          printf 'Changed PHP files: %d\n' "$count"
+          printf 'count=%d\n' "$count" >> "$GITHUB_OUTPUT"
+
+      - name: Run grep patterns on changed files
+        run: |
+          set -euo pipefail
+          out=/tmp/grep_hits.txt
+          : > "$out"
+
+          if [[ ! -s /tmp/changed_php_files.txt ]]; then
+            printf '(no PHP files changed)\n' > "$out"
+            exit 0
+          fi
+
+          mapfile -t files < /tmp/changed_php_files.txt
+
+          # Keep only files that still exist (deleted files cannot be grepped)
+          existing=()
+          for f in "${files[@]}"; do
+            [[ -f "$f" ]] && existing+=("$f")
+          done
+
+          if [[ "${#existing[@]}" -eq 0 ]]; then
+            printf '(all changed PHP files were deleted)\n' > "$out"
+            exit 0
+          fi
+
+          run_grep() {
+            local label="$1"; shift
+            printf '=== %s ===\n' "$label" >> "$out"
+            grep -nP "$@" "${existing[@]}" >> "$out" 2>/dev/null || true
+            printf '\n' >> "$out"
+          }
+
+          run_grep "SQL sinks (db_query / db_execute / db_fetch_*)" \
+            'db_(query|execute|fetch_assoc|fetch_row|fetch_cell)\s*\('
+
+          run_grep "String concatenation into SQL keywords" \
+            '"(SELECT|INSERT|UPDATE|DELETE|WHERE|FROM|ORDER BY|LIMIT).*\.\s*\$'
+
+          run_grep "Direct superglobal access (\$_GET / \$_POST / \$_REQUEST)" \
+            '\$_(GET|POST|REQUEST|COOKIE|FILES)\s*\['
+
+          run_grep "get_nfilter_request_var (unfiltered taint)" \
+            'get_nfilter_request_var\s*\('
+
+          run_grep "echo / print with apparent variable output" \
+            '(echo|print)\s+\$'
+
+          run_grep "Command execution sinks" \
+            '\b(exec|system|shell_exec|passthru|proc_open|popen)\s*\('
+
+          run_grep "Dynamic include / require" \
+            '\b(include|require)(_once)?\s+\$'
+
+          run_grep "File write sinks" \
+            '\b(file_put_contents|move_uploaded_file|fopen|rename|copy)\s*\('
+
+          run_grep "Archive extraction" \
+            '\b(extractTo|ZipArchive|PharData)\b'
+
+          run_grep "Missing realpath / basename on user paths" \
+            '(include|require|fopen|file_get_contents)\s*\(\s*\$(?!real_path|resolved)'
+
+          printf 'Grep complete: %d lines\n' "$(wc -l < "$out")"
+
+      - name: Collect hotspot file excerpts
+        run: |
+          set -euo pipefail
+          out=/tmp/hotspot_contents.txt
+          : > "$out"
+
+          # Files with a history of security issues in Cacti advisories
+          hotspots=(
+            "auth/auth_login.php"
+            "auth/changepassword.php"
+            "lib/import.php"
+            "lib/package.php"
+            "lib/plugins.php"
+            "lib/auth.php"
+            "managers.php"
+            "help.php"
+            "install/index.php"
+          )
+
+          for f in "${hotspots[@]}"; do
+            if [[ -f "$f" ]]; then
+              printf '=== %s ===\n' "$f" >> "$out"
+              # First 120 lines is enough to see includes, auth guards, input handling
+              head -n 120 "$f" >> "$out"
+              printf '\n' >> "$out"
+            fi
+          done
+
+          printf 'Hotspot content: %d bytes\n' "$(wc -c < "$out")"
+
+      - name: Run AI security review
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
+          SECURITY_PROMPT_FILE: .github/prompts/security-review.md
+          PR_DIFF_FILE: /tmp/pr.diff
+          GREP_HITS_FILE: /tmp/grep_hits.txt
+          HOTSPOT_FILE: /tmp/hotspot_contents.txt
+        run: python3 .github/scripts/security_review.py
