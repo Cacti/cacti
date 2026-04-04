@@ -71,7 +71,7 @@ function ss_gexport(string $cmd = 'index', string $arg1 = '', string $arg2 = '')
 	} elseif ($cmd == 'get') {
 		$arg   = $arg1;
 		$index = $arg2;
-		$value = '0';
+		$value = 'U';
 
 		if (db_table_exists('graph_exports')) {
 			switch($arg) {
@@ -92,8 +92,8 @@ function ss_gexport(string $cmd = 'index', string $arg1 = '', string $arg2 = '')
 			}
 		}
 
-		return ($value == '' ? '0' : $value);
+		return ($value === '' || $value === false || $value === null ? 'U' : $value);
 	}
 
-	return null;
+	return 'U';
 }
