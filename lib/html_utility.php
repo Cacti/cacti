@@ -1254,11 +1254,20 @@ function update_order_string(bool $inplace = false) : void {
 
 	$order = '';
 
-	if (!str_contains(get_request_var('sort_column'), '(') && !str_contains(get_request_var('sort_column'), '`')) {
-		$del = '`';
-	} else {
-		$del = '';
+	$sort_column = get_nfilter_request_var('sort_column');
+	$sort_dir    = strtoupper(get_nfilter_request_var('sort_direction'));
+
+	/* Allowlist: identifiers are word chars and dots only; anything else could escape
+	   backtick quoting.  Validate direction to prevent SQL keyword injection. */
+	if (!preg_match('/^[a-zA-Z][a-zA-Z0-9_.]*$/', $sort_column)) {
+		$sort_column = '';
 	}
+
+	if ($sort_dir !== 'ASC' && $sort_dir !== 'DESC') {
+		$sort_dir = 'ASC';
+	}
+
+	$del = ($sort_column !== '') ? '`' : '';
 
 	$database = get_mysql_info();
 	$natural  = false;
@@ -1291,17 +1300,19 @@ function update_order_string(bool $inplace = false) : void {
 			unset($_SESSION['sort_data'][$page]);
 			unset($_SESSION['sort_string'][$page]);
 
-			$_SESSION['sort_data'][$page][get_request_var('sort_column')] = get_request_var('sort_direction');
+			if ($sort_column !== '') {
+				$_SESSION['sort_data'][$page][$sort_column] = $sort_dir;
+			}
 
-			$column    = get_request_var('sort_column');
-			$direction = get_request_var('sort_direction');
+			$column    = $sort_column;
+			$direction = $sort_dir;
 
 			if ($column == 'ip' || $column == 'ip_address') {
 				$_SESSION['sort_string'][$page] = 'ORDER BY INET_ATON(' . $column . ') ' . $direction;
 			} elseif ($column == 'hostname' && $natural) {
-				$_SESSION['sort_string'][$page] = 'ORDER BY NATURAL_SORT_KEY(' . $del . implode($del . '.' . $del, explode('.', get_request_var('sort_column'))) . $del . ') ' . get_request_var('sort_direction');
-			} else {
-				$_SESSION['sort_string'][$page] = 'ORDER BY ' . $del . implode($del . '.' . $del, explode('.', get_request_var('sort_column'))) . $del . ' ' . get_request_var('sort_direction');
+				$_SESSION['sort_string'][$page] = 'ORDER BY NATURAL_SORT_KEY(' . $del . implode($del . '.' . $del, explode('.', $sort_column)) . $del . ') ' . $sort_dir;
+			} elseif ($sort_column !== '') {
+				$_SESSION['sort_string'][$page] = 'ORDER BY ' . $del . implode($del . '.' . $del, explode('.', $sort_column)) . $del . ' ' . $sort_dir;
 			}
 		} elseif (isset_request_var('sort_column')) {
 			if (isset_request_var('reset')) {
@@ -1309,7 +1320,9 @@ function update_order_string(bool $inplace = false) : void {
 				unset($_SESSION['sort_string'][$page]);
 			}
 
-			$_SESSION['sort_data'][$page][get_request_var('sort_column')] = get_nfilter_request_var('sort_direction');
+			if ($sort_column !== '') {
+				$_SESSION['sort_data'][$page][$sort_column] = $sort_dir;
+			}
 
 			$_SESSION['sort_string'][$page] = 'ORDER BY ';
 
@@ -1353,16 +1366,27 @@ function update_order_string(bool $inplace = false) : void {
 function get_order_string() : string {
 	$page = get_order_string_page();
 
-	if (!str_contains(get_request_var('sort_column'), '(') && !str_contains(get_request_var('sort_column'), '`')) {
-		$del = '`';
-	} else {
-		$del = '';
+	$sort_column = get_nfilter_request_var('sort_column');
+	$sort_dir    = strtoupper(get_nfilter_request_var('sort_direction'));
+
+	if (!preg_match('/^[a-zA-Z][a-zA-Z0-9_.]*$/', $sort_column)) {
+		$sort_column = '';
 	}
+
+	if ($sort_dir !== 'ASC' && $sort_dir !== 'DESC') {
+		$sort_dir = 'ASC';
+	}
+
+	$del = ($sort_column !== '') ? '`' : '';
 
 	if (isset($_SESSION['sort_string'][$page])) {
 		return $_SESSION['sort_string'][$page];
+	}
+
+	if ($sort_column !== '') {
+		return 'ORDER BY ' . $del . implode($del . '.' . $del, explode('.', $sort_column)) . $del . ' ' . $sort_dir;
 	} else {
-		return 'ORDER BY ' . $del . implode($del . '.' . $del, explode('.', get_request_var('sort_column'))) . $del . ' ' . get_request_var('sort_direction');
+		return '';
 	}
 }
 
