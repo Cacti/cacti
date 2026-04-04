@@ -382,7 +382,7 @@ $selectedTheme = get_selected_theme();
 			<div class='loginErrors'>
 				<?php
 				if ($error) {
-					print htmlspecialchars($error_msg, ENT_QUOTES, 'UTF-8');
+					print html_escape($error_msg);
 				}
 				?>
 			</div>
