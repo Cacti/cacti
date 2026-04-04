@@ -605,7 +605,7 @@ function form_actions() {
 					update_graph_title_cache($selected_items[$i]);
 				}
 			} elseif (get_request_var('drp_action') == '9' || get_request_var('drp_action') == '10') {
-				/* get common info - not dependant on template/no template*/
+				/* get common info - not dependent on template/no template*/
 				$local_graph_id = 0; // this will be a new graph
 				$member_graphs  = $selected_items;
 				$graph_title    = form_input_validate(get_nfilter_request_var('title_format'), 'title_format', '', true, 3);
@@ -1683,8 +1683,8 @@ function graph_edit() {
 				<span class='textInfo'><?php print __('RRDtool Command:');?></span><br>
 				<pre><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);?></pre>
 				<span class='textInfo'><?php print __('RRDtool Says:');?></span><br>
-				<?php unset($graph_data_array['print_source']);?>
 				<pre><?php print ($config['poller_id'] == 1 ? @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']):__esc('Not Checked'));?></pre>
+				<?php unset($graph_data_array['print_source']);?>
 			</div>
 		<?php
 		}
@@ -1739,7 +1739,7 @@ function graph_edit() {
 	<script type='text/javascript'>
 
 	var locked         = <?php print ($locked ? 'true':'false');?>;
-	var imageSource    = '<?php print $graph['src'];?>';
+	var imageSource    = <?php print json_encode($graph['src']);?>;
 	var originalWidth  = null;
 	var originalHeight = null;
 

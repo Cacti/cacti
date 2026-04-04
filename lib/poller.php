@@ -49,7 +49,7 @@ function exec_poll($command) {
 
 		pclose($fp);
 	} else {
-		$output = `$command`;
+		$output = shell_exec($command);
 	}
 
 	return $output;
@@ -112,7 +112,7 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 
 			pclose($fp);
 		} else {
-			$output = `$command`;
+			$output = shell_exec($command);
 		}
 	}
 
@@ -131,6 +131,14 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
  */
 function exec_background($filename, $args = '', $redirect_args = '') {
 	global $config, $debug;
+
+	if (is_array($args)) {
+		$args = implode(' ', array_map('cacti_escapeshellarg', $args));
+	}
+
+	if (is_array($redirect_args)) {
+		$redirect_args = '';
+	}
 
 	cacti_log("DEBUG: About to Spawn a Remote Process [CMD: $filename, ARGS: $args]", true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_DEBUG));
 
@@ -590,7 +598,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 			} elseif (is_hexadecimal($value)) {
 				/**
 				 * special case of one value output: hexadecimal to decimal conversion
-				 * attempt to accomodate 32bit and 64bit systems
+				 * attempt to accommodate 32bit and 64bit systems
 				 */
 				$value = str_replace(' ', '', $value);
 

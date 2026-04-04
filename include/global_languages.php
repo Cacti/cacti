@@ -282,7 +282,7 @@ function get_src_language_files($i18n_handler) {
 			],
 			/*
 			 * This was 'files' => ['Translator.php', 'StringReader.php' ],
-			 * but has been replaced with autoload.php to suppor Debian
+			 * but has been replaced with autoload.php to support Debian
 			 * bullseye which has an updated version of MoTranslator
 			 */
 			'files' => ['autoload.php', ],
