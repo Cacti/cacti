@@ -2999,7 +2999,7 @@ function rrdtool_function_theme_font_options(array &$graph_data_array) : string 
 	$themecolors = 'rrdcolors';
 	$themeborder = 'rrdborder';
 
-	if (isset($graph_data_array['graph_theme'])) {
+	if (isset($graph_data_array['graph_theme']) && preg_match('/^[a-zA-Z0-9_-]+$/', $graph_data_array['graph_theme'])) {
 		$rrdtheme = CACTI_PATH_INCLUDE . '/themes/' . $graph_data_array['graph_theme'] . '/rrdtheme.php';
 	} else {
 		$rrdtheme = CACTI_PATH_INCLUDE . '/themes/' . get_selected_theme() . '/rrdtheme.php';
