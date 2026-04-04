@@ -266,9 +266,7 @@ function settings() {
 		return;
 	}
 
-cacti_log('The redirect url is ' . $_SERVER['HTTP_REFERER']);
 	$referer = validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '', 'graph_view.php');;
-cacti_log('The sanitized redirect url is ' . $referer);
 
 	if (strpos($referer, 'auth_profile.php') === false) {
 		$timespan_sel_pos = strpos($referer, '&predefined_timespan');
