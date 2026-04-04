@@ -880,7 +880,7 @@ function validate_redirect_url($url = '', $default = 'index.php') {
 	$bad_strings = array('javascript:', 'data:', 'vbscript:');
 
 	foreach($bad_strings as $bstring) {
-		if (str_contains($url, $bstring)) {
+		if (strpos($url, $bstring) !== false) {
 			return $default;
 		}
 	}
