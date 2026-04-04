@@ -622,12 +622,19 @@ function host_export() : void {
 	header('Content-type: application/excel');
 	header('Content-Disposition: attachment; filename=cacti-devices-' . time() . '.csv');
 
+	// Credential fields must never appear in the exported CSV (GHSA-9829-w9mx-2cgm).
+	$redact = ['snmp_community', 'snmp_username', 'snmp_password', 'snmp_priv_passphrase'];
+
 	if (cacti_sizeof($hosts)) {
-		$columns = array_keys($hosts[0]);
+		$columns = array_diff(array_keys($hosts[0]), $redact);
 
 		fputcsv($stdout, $columns);
 
 		foreach ($hosts as $h) {
+			foreach ($redact as $col) {
+				unset($h[$col]);
+			}
+
 			foreach (array_keys($h) as $hc) {
 				if ($h[$hc] != '' && (str_contains($h[$hc], "\n") || str_contains($h[$hc], "\r"))) {
 					$h[$hc] = str_replace(["\n", "\r"], ' ', $h[$hc]);
