@@ -867,7 +867,7 @@ function get_order_string_page() {
  * @param string $url The URL to validate
  * @param string $default The URL to travel to upon failure
  *
- * @return string The validated URL, or 'index.php' if invalid
+ * @return string The validated URL, or the provided $default if invalid
  */
 function validate_redirect_url($url = '', $default = 'index.php') {
 	if ($url === '') {

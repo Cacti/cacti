@@ -564,7 +564,7 @@ function graph_edit() {
 	if (isset_request_var('reset')) {
 		$_SESSION['aggregate_referer'] = 'aggregate_graphs.php';
 	} elseif (isset($_SERVER['HTTP_REFERER'])) {
-		if (!isset($_SESSION['aggregate_referer')) {
+		if (!isset($_SESSION['aggregate_referer'])) {
 			$_SESSION['aggregate_referer'] = validate_redirect_url($_SERVER['HTTP_REFERER'], 'aggregate_graphs.php');
 		}
 	} else {
