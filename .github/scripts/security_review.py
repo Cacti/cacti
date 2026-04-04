@@ -2,13 +2,13 @@
 # Copyright (C) 2004-2026 The Cacti Group
 # GPL-2.0-or-later
 """
-AI security review runner.
+Security review runner.
 
 Reads the PR diff, grep hits, and hotspot excerpts from disk, calls the
-Anthropic API with the security review prompt, then posts the result as a
+review API with the security review prompt, then posts the result as a
 PR issue comment via the GitHub REST API.
 
-Exits 1 when the model recommends blocking the PR so the workflow step
+Exits 1 when the review recommends blocking the PR so the workflow step
 fails and gates the merge. Exits 0 for all other outcomes (including API
 errors) to avoid blocking PRs on infrastructure failures.
 """
@@ -158,10 +158,9 @@ def main() -> None:
         sys.exit(0)
 
     comment_body = (
-        "## AI Security Review\n\n"
+        "## Security Review\n\n"
         + review
-        + f"\n\n---\n*Model: `{MODEL}` | "
-        "[security-review.yml](.github/workflows/security-review.yml)*"
+        + "\n\n---\n*[security-review.yml](.github/workflows/security-review.yml)*"
     )
 
     try:
@@ -175,7 +174,7 @@ def main() -> None:
 
     # Gate the merge when the model recommends blocking
     if "BLOCK PR" in review:
-        print("::error::AI security review recommends blocking this PR.", file=sys.stderr)
+        print("::error::Security review recommends blocking this PR.", file=sys.stderr)
         sys.exit(1)
 
 

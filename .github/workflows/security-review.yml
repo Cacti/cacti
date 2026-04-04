@@ -1,9 +1,9 @@
-name: AI Security Review
+name: Security Review
 
-# Calls claude-opus-4-6 with the PR diff, grep hits on changed PHP files, and
-# excerpts from historically vulnerable hotspot files. Posts the model's
-# structured review as a PR comment and fails the job when the model
-# recommends blocking the PR.
+# Runs the security review prompt against the PR diff, grep hits on changed
+# PHP files, and excerpts from historically vulnerable hotspot files. Posts
+# findings as a PR comment and fails the job when the review recommends
+# blocking the PR.
 #
 # Requires the ANTHROPIC_API_KEY repository secret to be configured.
 # For fork PRs the secret is not available; the job skips gracefully.
@@ -18,12 +18,12 @@ permissions:
   pull-requests: write
 
 concurrency:
-  group: ai-security-review-${{ github.event.pull_request.number }}
+  group: security-review-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 jobs:
   security-review:
-    name: AI security review
+    name: security review
     runs-on: ubuntu-latest
     # Skip drafts and skip when the secret is absent (fork PRs)
     if: >
@@ -154,7 +154,7 @@ jobs:
 
           printf 'Hotspot content: %d bytes\n' "$(wc -c < "$out")"
 
-      - name: Run AI security review
+      - name: Run security review
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
