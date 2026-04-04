@@ -744,7 +744,7 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 /* update_order_string - creates a sort string for standard Cacti tables
    @returns - null */
 function update_order_string($inplace = false) {
-	$page = get_order_string_page();
+	$page = get_order_string_page(false);
 
 	$order = '';
 
@@ -818,12 +818,26 @@ function update_order_string($inplace = false) {
 /* get_order_string - returns a valid order string for a table
    @returns - the order string */
 function get_order_string() {
-	$page = get_order_string_page();
+	$page        = get_order_string_page(true);
+	$sort_column = get_nfilter_request_var('sort_column');
+	$sort_dir    = strtoupper(get_nfilter_request_var('sort_direction'));
 
-	if (strpos(get_request_var('sort_column'), '(') === false && strpos(get_request_var('sort_column'), '`') === false) {
+	if ($sort_dir !== 'ASC' && $sort_dir !== 'DESC') {
+		$sort_dir = 'ASC';
+	}
+
+	if (strpos($sort_column, '(') === false && strpos($sort_column, '`') === false) {
 		$del = '`';
 	} else {
 		$del = '';
+	}
+
+	/**
+	 * Allowlist: identifiers are word chars and dots only; anything else could escape
+	 * backtick quoting.  Validate direction to prevent SQL keyword injection.
+	 */
+	if (!preg_match('/^[a-zA-Z][a-zA-Z0-9_.()]*$/', $sort_column)) {
+		$sort_column = '';
 	}
 
 	if (isset($_SESSION['sort_string'][$page])) {
@@ -834,7 +848,7 @@ function get_order_string() {
 }
 
 function remove_column_from_order_string($column) {
-	$page = get_order_string_page();
+	$page = get_order_string_page(true);
 
 	if (isset($_SESSION['sort_data'][$page][$column])) {
 		unset($_SESSION['sort_data'][$page][$column]);
@@ -842,7 +856,7 @@ function remove_column_from_order_string($column) {
 	}
 }
 
-function get_order_string_page() {
+function get_order_string_page($increment = true) {
 	static $page_count = 0;
 
 	$page = $page_count . '_' . str_replace('.php', '', get_current_page());
@@ -855,7 +869,9 @@ function get_order_string_page() {
 		$page .= '_' . get_nfilter_request_var('tab');
 	}
 
-	$page_count++;
+	if ($increment == true) {
+		$page_count++;
+	}
 
 	return $page;
 }
