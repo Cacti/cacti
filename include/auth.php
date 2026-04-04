@@ -271,7 +271,7 @@ if ($auth_method != 0) {
 			}
 
 			if (isset($_SERVER['HTTP_REFERER'])) {
-				$goBack = "<td colspan='2' class='center'>[<a href='" . validate_redirect_url($_SERVER['HTTP_REFERER'], $_SERVER['SCRIPT_NAME']) . "'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
+				$goBack = "<td colspan='2' class='center'>[<a href='" . rawurlencode(validate_redirect_url($_SERVER['HTTP_REFERER'], $_SERVER['SCRIPT_NAME'])) . "'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
 			} elseif ($auth_method != 2 && $auth_method > 0) {
 				$goBack = "<td colspan='2' class='center'>[<a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
 			}
