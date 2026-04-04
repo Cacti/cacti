@@ -1924,14 +1924,7 @@ function get_repo_file(string $repo_id, string $filename = 'package.manifest', b
 		} elseif ($repo['repo_type'] == 2) { // Direct URL
 			$file = $repo['repo_location'] . '/' . $filename;
 
-			$context = [
-				'ssl' => [
-					'verify_peer'      => false,
-					'verify_peer_name' => false,
-				],
-			];
-
-			$data = file_get_contents($file, false, stream_context_create($context));
+			$data = file_get_contents($file);
 
 			if ($data != '') {
 				return $data;
