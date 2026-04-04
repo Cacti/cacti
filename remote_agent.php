@@ -151,12 +151,22 @@ function remote_client_authorized() : bool {
 		return false;
 	}
 
-	$client_name = gethostbyaddr($client_addr);
+	$client_name_raw = gethostbyaddr($client_addr);
 
-	if ($client_name == $client_addr) {
+	if ($client_name_raw == $client_addr) {
 		cacti_log('NOTE: Unable to resolve hostname from address ' . $client_addr, false, 'WEBUI', POLLER_VERBOSITY_MEDIUM);
+		$client_name = $client_addr;
 	} else {
-		$client_name = remote_agent_strip_domain($client_name);
+		// Forward-verify the PTR result. An attacker can craft any PTR record but
+		// cannot pass this check without also controlling the forward zone for that name.
+		$forward_ip = gethostbyname($client_name_raw);
+
+		if ($forward_ip !== $client_addr) {
+			cacti_log('NOTE: PTR/forward DNS mismatch for ' . $client_addr . ' (PTR=' . $client_name_raw . ', forward=' . $forward_ip . ') - treating as unresolved', false, 'WEBUI', POLLER_VERBOSITY_MEDIUM);
+			$client_name = $client_addr;
+		} else {
+			$client_name = remote_agent_strip_domain($client_name_raw);
+		}
 	}
 
 	$pollers = db_fetch_assoc('SELECT * FROM poller WHERE disabled = ""', true, $poller_db_cnn_id);
