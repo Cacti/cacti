@@ -494,3 +494,103 @@ test('relative path is blocked when str_replace substitution fails to produce an
 
 	expect($result)->toBeFalse();
 });
+
+// --- edge case: trailing slash or special characters in CACTI_PATH_BASE ---
+
+test('CACTI_PATH_BASE with trailing slash: in-bounds path is still allowed', function () {
+	$base = makeDQTempBase();
+	$file = $base . '/resource/snmp-queries/interface.xml';
+	file_put_contents($file, '<query/>');
+
+	// realpath() on $base.'/' strips the trailing slash before the boundary
+	// comparison, so rtrim() in the guard is a second layer of defence.
+	// Both must agree: a file genuinely inside the base must remain allowed.
+	$result = dataQueryBoundaryAllowed($base . '/', $file);
+
+	unlink($file);
+	removeDQTempBase($base);
+
+	expect($result)->toBeTrue();
+});
+
+test('CACTI_PATH_BASE with trailing slash: out-of-bounds path is still blocked', function () {
+	$tmp  = sys_get_temp_dir() . '/cacti_trailing_base_test_' . getmypid();
+	$base = $tmp . '/cacti';
+	mkdir($base . '/resource/snmp-queries', 0755, true);
+	mkdir($tmp . '/outside', 0755, true);
+	$evil = $tmp . '/outside/secret.txt';
+	file_put_contents($evil, 'secret');
+
+	// Trailing slash on the base must not widen the allowed region.
+	// A file outside the canonical base must still be rejected.
+	$result = dataQueryBoundaryAllowed($base . '/', $evil);
+
+	unlink($evil);
+	rmdir($tmp . '/outside');
+	rmdir($base . '/resource/snmp-queries');
+	rmdir($base . '/resource');
+	rmdir($base);
+	rmdir($tmp);
+
+	expect($result)->toBeFalse();
+});
+
+test('CACTI_PATH_BASE with spaces in directory name: in-bounds path is allowed', function () {
+	$base = sys_get_temp_dir() . '/cacti dq base ' . getmypid();
+	mkdir($base . '/resource/snmp-queries', 0755, true);
+	$file = $base . '/resource/snmp-queries/interface.xml';
+	file_put_contents($file, '<query/>');
+
+	// str_starts_with operates on plain strings; spaces are not special.
+	// A base path with spaces must not confuse the boundary check.
+	$result = dataQueryBoundaryAllowed($base, $file);
+
+	unlink($file);
+	rmdir($base . '/resource/snmp-queries');
+	rmdir($base . '/resource');
+	rmdir($base);
+
+	expect($result)->toBeTrue();
+});
+
+test('CACTI_PATH_BASE with spaces in directory name: out-of-bounds path is blocked', function () {
+	$tmp     = sys_get_temp_dir() . '/cacti dq outer ' . getmypid();
+	$base    = $tmp . '/cacti base';
+	mkdir($base . '/resource/snmp-queries', 0755, true);
+	mkdir($tmp . '/outside', 0755, true);
+	$evil = $tmp . '/outside/secret.txt';
+	file_put_contents($evil, 'secret');
+
+	$result = dataQueryBoundaryAllowed($base, $evil);
+
+	unlink($evil);
+	rmdir($tmp . '/outside');
+	rmdir($base . '/resource/snmp-queries');
+	rmdir($base . '/resource');
+	rmdir($base);
+	rmdir($tmp);
+
+	expect($result)->toBeFalse();
+});
+
+// --- TOCTOU mitigation: all post-boundary I/O uses the canonical $resolved path ---
+
+test('is_file check after boundary guard uses $resolved not raw $xml_file_path', function () use ($src) {
+	// Between file_exists() and the final file() read, a symlink swap could
+	// redirect I/O to a different target. Using $resolved (the realpath()-
+	// canonicalised path) for every subsequent operation closes this window:
+	// the path passed to is_file() must be the same value that passed the guard.
+	$boundary_pos = strpos($src, '!str_starts_with($resolved . DIRECTORY_SEPARATOR');
+	$isfile_pos   = strpos($src, 'is_file($resolved)');
+
+	expect($boundary_pos)->not->toBeFalse()
+		->and($isfile_pos)->not->toBeFalse()
+		->and($isfile_pos)->toBeGreaterThan($boundary_pos);
+});
+
+test('raw $xml_file_path is not used for any file read after boundary check', function () use ($src) {
+	// Confirmed absence of file($xml_file_path) ensures that even if a symlink
+	// is swapped between the boundary check and the read, the I/O path cannot
+	// diverge from the path that was validated.
+	expect($src)->not->toContain('file($xml_file_path)');
+});

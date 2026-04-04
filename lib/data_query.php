@@ -747,7 +747,7 @@ function get_data_query_array(int $snmp_query_id) : array {
 		$resolved = realpath($xml_file_path);
 
 		if ($resolved === false
-			|| !str_starts_with($resolved . DIRECTORY_SEPARATOR, $allowed_base . DIRECTORY_SEPARATOR)) {
+			|| !str_starts_with($resolved . DIRECTORY_SEPARATOR, rtrim($allowed_base, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR)) {
 			cacti_log('SECURITY: data query XML path outside Cacti base: ' . $safe_path, false, 'SECURITY');
 			query_debug_timer_offset('data_query', __esc('SECURITY: data query XML path outside Cacti base: \'%s\'', $safe_path));
 
