@@ -267,10 +267,13 @@ function get_graph_data() : bool {
 
 function get_snmp_data() : void {
 	$host_id = gfrv('host_id');
+	gfrv('oid');
 	$oid     = grv('oid');
 	$output  = '';
 
-	if (remote_agent_validate_oid($oid) === false) {
+	$oid = remote_agent_validate_oid($oid);
+
+	if ($oid === false) {
 		print 'U';
 
 		return;
@@ -296,10 +299,13 @@ function get_snmp_data() : void {
 
 function get_snmp_data_walk() : void {
 	$host_id = gfrv('host_id');
+	gfrv('oid');
 	$oid     = grv('oid');
 	$output  = '';
 
-	if (remote_agent_validate_oid($oid) === false) {
+	$oid = remote_agent_validate_oid($oid);
+
+	if ($oid === false) {
 		print 'U';
 
 		return;

@@ -58,13 +58,16 @@ check_composer_lock() {
 }
 
 check_vendor_dev_deps() {
-    staged_vendor=$(git diff --cached --name-only | grep '^include/vendor/' | head -5)
+    # Composer autoload metadata (include/vendor/composer/) is generated from
+    # composer.json and must be committed when dev dependencies are added.
+    # Only reject actual package source trees (everything else under include/vendor/).
+    staged_vendor=$(git diff --cached --name-only | grep '^include/vendor/' | grep -v '^include/vendor/composer/' | head -5)
 
     if [ -n "$staged_vendor" ]; then
         echo ""
-        echo "WARNING: Vendor files are staged for commit:"
+        echo "WARNING: Vendor package files are staged for commit:"
         echo "$staged_vendor"
-        echo "  Dev dependencies should not be committed to include/vendor/."
+        echo "  Package source trees should not be committed to include/vendor/."
         echo "  Run: git reset HEAD include/vendor/"
         echo ""
 
