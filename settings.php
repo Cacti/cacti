@@ -482,8 +482,8 @@ default:
 	var currentLang    = '';
 	var rrdArchivePath = '';
 	var smtpPath       = '';
-	var currentTab     = '<?php print $current_tab;?>';
-	var dataCollectors = '<?php print $data_collectors;?>';
+	var currentTab     = <?php print json_encode($current_tab);?>;
+	var dataCollectors = <?php print json_encode($data_collectors);?>;
 	var permsTitle     = '<?php print __esc('Changing Permission Model Warning');?>';
 	var permsHeader    = '<?php print __esc('Changing Permission Model will alter a users effective Graph permissions.');?>';
 	var permsMessage   = '<?php print __esc('After you change the Graph Permission Model you should audit your Users and User Groups Effective Graph permission to ensure that you still have adequate control of your Graphs.  NOTE: If you want to restrict all Graphs at the Device or Graph Template Graph Permission Model, the default Graph Policy should be set to \'Deny\'.');?>';

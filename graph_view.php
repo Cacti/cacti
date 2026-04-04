@@ -913,7 +913,7 @@ case 'list':
 	<?php print $report_text;?>
 	<script type='text/javascript'>
 	var refreshMSeconds=999999999;
-	var graph_list_array = new Array(<?php print get_request_var('graph_list');?>);
+	var graph_list_array = <?php print json_encode(array_values(array_filter(array_map('intval', explode(',', get_request_var('graph_list'))))));?>;
 
 	function clearFilter() {
 		strURL = 'graph_view.php?action=list&header=false&clear=1';

@@ -1189,8 +1189,8 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	var graph_end   = <?php print get_current_graph_end();?>;
 	var timeOffset  = <?php print date('Z');?>;
 	var pageAction  = 'tree';
-	var graphPage   = '<?php print $config['url_path'];?>graph_view.php';
-	var hgd         = '<?php print $host_group_data;?>';
+	var graphPage   = <?php print json_encode($config['url_path'] . 'graph_view.php');?>;
+	var hgd         = <?php print json_encode($host_group_data);?>;
 	var date1Open   = false;
 	var date2Open   = false;
 

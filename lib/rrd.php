@@ -1647,6 +1647,13 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 						return false;
 					}
 
+					// Both get_error (STDERR output) and print_source (HTML debug view)
+					// are text-output modes; returning PNG bytes in either would produce
+					// garbage in the browser or CLI. Return a human-readable error instead.
+					if (isset($graph_data_array['get_error']) || isset($graph_data_array['print_source'])) {
+						return __('ERROR: RRD file does not exist: %s', $data_source_path);
+					}
+
 					return rrdtool_create_error_image(__('The Cacti Poller has not run yet.'));
 				}
 
@@ -4144,12 +4151,19 @@ function gradient($vname = false, $start_color = '#0000a0', $end_color = '#f0f0f
 }
 
 /**
- * colourBrightness - Add colourBrightness support for the gradient charts. This function calculates the darker version of a given color
+ * colourBrightness - Adjust the brightness of a hex color for gradient charts.
+ * Positive percent lightens; negative percent darkens.
  *
- * @param  (bool)   $hex     - The hex representation of a color
- * @param  (string) $percent - the percentage to darken the given color. decimal number ( 0.4 -> 40% )
+ * @param  (string) $hex     - The hex representation of a color (with or without leading #)
+ * @param  (float)  $percent - Brightness adjustment: decimal in [-1, 1] (e.g. 0.4 = +40%)
+ *                             or coerced integer in [-100, 100] (e.g. 40 = +40%). Values
+ *                             outside [-100, 100] are normalized then clamped to [-1, 1].
+ *                             NOTE: values in the open interval (1.0, 2.0) are treated as
+ *                             integers and divided by 100 (e.g. 1.5 -> 0.015). The value
+ *                             1.0 itself is NOT divided — it means 100% original color
+ *                             (the identity). Use 0.01 to express "1% brighter".
  *
- * @return (string) - the darker version of the given color
+ * @return (string) - the adjusted color in the same format as the input
  *
  * License:			GPLv2
  * Original Code		http://www.barelyfitz.com/projects/csscolor/
@@ -4167,14 +4181,22 @@ function colourBrightness($hex, $percent) {
 	$rgb = array(hexdec(substr($hex, 0, 2)), hexdec(substr($hex, 2, 2)), hexdec(substr($hex, 4, 2)));
 
 	//// CALCULATE
+	if (abs($percent) > 1) {
+		$percent = $percent / 100;
+	}
+
 	for ($i = 0; $i < 3; $i++) { // See if brighter or darker
 		if ($percent > 0) {
 			// Lighter
 			$rgb[$i] = round($rgb[$i] * $percent) + round(255 * (1 - $percent));
 		} else {
 			// Darker
-			$positivePercent = $percent - ($percent*2);
-			$rgb[$i] = round($rgb[$i] * (1 - $positivePercent)); // round($rgb[$i] * (1-$positivePercent));
+			$positivePercent = abs($percent);
+			$rgb[$i] = round($rgb[$i] * (1 - $positivePercent));
+		}
+
+		if ($rgb[$i] < 0) {
+			$rgb[$i] = 0;
 		}
 
 		// In case rounding up causes us to go to 256
