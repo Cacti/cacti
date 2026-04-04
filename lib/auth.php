@@ -702,7 +702,7 @@ function auth_augment_roles_byname($role_name, $auth_name) {
  * @return (bool) whether the current user is allowed the view the specified graph tree or not
  */
 function is_tree_allowed($tree_id, $user_id = 0) {
-	if ($user_id == -1) {
+	if ($user_id === -1) {
 		return true;
 	}
 
@@ -711,7 +711,7 @@ function is_tree_allowed($tree_id, $user_id = 0) {
 	}
 
 	if (read_config_option('auth_method') != 0) {
-		if ($user_id == 0) {
+		if ($user_id === 0) {
 			if (isset($_SESSION['sess_user_id'])) {
 				$user_id = $_SESSION['sess_user_id'];
 			} else {
@@ -979,7 +979,7 @@ function is_realm_allowed($realm, $check_user = false) {
 	/* list all realms that this user has access to */
 	if (read_config_option('auth_method') != 0) {
 		/* if we are only checking another users permission, don't check cache */
-		if ($check_user == false) {
+		if ($check_user === false) {
 			/* user is not set, no permissions */
 			if (!isset($_SESSION['sess_user_id'])) {
 				return false;
@@ -1072,27 +1072,27 @@ function is_realm_allowed($realm, $check_user = false) {
 			}
 
 			if (!empty($user_realm)) {
-				if ($check_user == false) {
+				if ($check_user === false) {
 					$_SESSION['sess_user_realms'][$realm] = true;
 				} else {
 					return true;
 				}
 			} else {
-				if ($check_user == false) {
+				if ($check_user === false) {
 					$_SESSION['sess_user_realms'][$realm] = false;
 				} else {
 					return false;
 				}
 			}
 		} else {
-			if ($check_user == false) {
+			if ($check_user === false) {
 				$_SESSION['sess_user_realms'][$realm] = true;
 			} else {
 				return true;
 			}
 		}
 	} else {
-		if ($check_user == false) {
+		if ($check_user === false) {
 			$_SESSION['sess_user_realms'][$realm] = true;
 		} else {
 			return true;
@@ -1315,13 +1315,13 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 		return array();
 	}
 
-	if ($user_id == -1) {
+	if ($user_id === -1) {
 		$auth_method = 0;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method > 0 && $user_id == 0) {
+	if ($auth_method > 0 && $user_id === 0) {
 		if (isset($_SESSION['sess_user_id'])) {
 			$user_id = $_SESSION['sess_user_id'];
 		} else {
@@ -1409,13 +1409,13 @@ function get_allowed_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sq
 		return array();
 	}
 
-	if ($user_id == -1) {
+	if ($user_id === -1) {
 		$auth_method = 0;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method > 0 && $user_id == 0) {
+	if ($auth_method > 0 && $user_id === 0) {
 		if (isset($_SESSION['sess_user_id'])) {
 			$user_id = $_SESSION['sess_user_id'];
 		} else {
@@ -1511,13 +1511,13 @@ function get_allowed_aggregate_graphs($sql_where = '', $sql_order = 'gtg.title_c
 		return array();
 	}
 
-	if ($user_id == -1) {
+	if ($user_id === -1) {
 		$auth_method = 0;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method > 0 && $user_id == 0) {
+	if ($auth_method > 0 && $user_id === 0) {
 		if (isset($_SESSION['sess_user_id'])) {
 			$user_id = $_SESSION['sess_user_id'];
 		} else {
@@ -1786,13 +1786,13 @@ function get_allowed_graph_templates($sql_where = '', $sql_order = 'gt.name', $s
 		return array();
 	}
 
-	if ($user_id == -1) {
+	if ($user_id === -1) {
 		$auth_method = 0;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($user_id == 0) {
+	if ($user_id === 0) {
 		if (isset($_SESSION['sess_user_id'])) {
 			$user_id = $_SESSION['sess_user_id'];
 		} else {
@@ -1833,7 +1833,7 @@ function get_allowed_graph_templates($sql_where = '', $sql_order = 'gt.name', $s
 	$policies = get_policies($user_id);
 
 	/* short circuit if we don't have a user */
-	if ($auth_method > 0 && $user_id == 0) {
+	if ($auth_method > 0 && $user_id === 0) {
 		return array();
 	}
 
@@ -2444,14 +2444,14 @@ function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', 
 		$sql_order = "ORDER BY $sql_order";
 	}
 
-	if ($user_id == -1) {
+	if ($user_id === -1) {
 		$auth_method = 0;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
 	if ($auth_method != 0) {
-		if ($user_id == 0) {
+		if ($user_id === 0) {
 			if (isset($_SESSION['sess_user_id'])) {
 				$user_id = $_SESSION['sess_user_id'];
 			} else {
@@ -2564,13 +2564,13 @@ function get_allowed_branches($sql_where = '', $sql_order = 'name', $sql_limit =
 	// suppress total rows
 	$total_rows = -1;
 
-	if ($user_id == -1) {
+	if ($user_id === -1) {
 		$auth_method = 0;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method > 0 && $user_id == 0) {
+	if ($auth_method > 0 && $user_id === 0) {
 		if (isset($_SESSION['sess_user_id'])) {
 			$user_id = $_SESSION['sess_user_id'];
 		} else {
@@ -2719,13 +2719,13 @@ function get_allowed_devices($sql_where = '', $sql_order = 'description', $sql_l
 		return array();
 	}
 
-	if ($user_id == -1) {
+	if ($user_id === -1) {
 		$auth_method = 0;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method > 0 && $user_id == 0) {
+	if ($auth_method > 0 && $user_id === 0) {
 		if (isset($_SESSION['sess_user_id'])) {
 			$user_id = $_SESSION['sess_user_id'];
 		} else {
@@ -2855,13 +2855,13 @@ function get_allowed_sites($sql_where = '', $sql_order = 'name', $sql_limit = ''
 		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . " s.id=$site_id";
 	}
 
-	if ($user_id == -1) {
+	if ($user_id === -1) {
 		$auth_method = 0;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if (isset($_SESSION['sess_user_id']) && $user_id == 0) {
+	if (isset($_SESSION['sess_user_id']) && $user_id === 0) {
 		$user_id = $_SESSION['sess_user_id'];
 	} elseif ($auth_method > 0) {
 		return array();
@@ -2906,13 +2906,13 @@ function get_allowed_site_devices($site_id, $sql_where = '', $sql_order = 'descr
 		return array();
 	}
 
-	if ($user_id == -1) {
+	if ($user_id === -1) {
 		$auth_method = 0;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method > 0 && $user_id == 0) {
+	if ($auth_method > 0 && $user_id === 0) {
 		if (isset($_SESSION['sess_user_id'])) {
 			$user_id = $_SESSION['sess_user_id'];
 		} else {
@@ -3374,7 +3374,7 @@ function get_allowed_graph_items($sql_where, $sql_order = 'name', $sql_limit = 2
 
 	$return = array();
 
-	if ($user_id == 0 && isset($_SESSION['sess_user_id'])) {
+	if ($user_id === 0 && isset($_SESSION['sess_user_id'])) {
 		$user_id = $_SESSION['sess_user_id'];
 	}
 
