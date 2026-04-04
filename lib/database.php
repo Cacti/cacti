@@ -1120,7 +1120,7 @@ function db_index_matches($table, $index, $columns, $log = true, $db_conn = fals
 function db_table_exists($table, $log = true, $db_conn = false) {
 	static $results;
 
-	if ($db_conn == false) {
+	if ($db_conn === false) {
 		$index = '-1';
 	} else {
 		$index = md5(json_encode($db_conn));
@@ -1197,7 +1197,7 @@ function db_cacti_initialized($is_web = true) {
 function db_column_exists($table, $column, $log = true, $db_conn = false) {
 	static $results = array();
 
-	if ($db_conn == false) {
+	if ($db_conn === false) {
 		$index = '-1';
 	} else {
 		$index = md5(json_encode($db_conn));
