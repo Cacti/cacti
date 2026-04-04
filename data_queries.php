@@ -416,7 +416,7 @@ function data_query_item_movedown_gsv() : void {
 	gfrv('snmp_query_graph_id');
 	// ====================================================
 
-	move_item_down('snmp_query_graph_sv', grv('id'), ['snmp_query_graph_id' => grv('snmp_query_graph_id'), 'field_name' => gnrv('field_name')]);
+	move_item_down('snmp_query_graph_sv', grv('id'), 'snmp_query_graph_id=' . grv('snmp_query_graph_id') . ' AND field_name=' . db_qstr(gnrv('field_name')));
 }
 
 function data_query_item_moveup_gsv() : void {
@@ -425,7 +425,7 @@ function data_query_item_moveup_gsv() : void {
 	gfrv('snmp_query_graph_id');
 	// ====================================================
 
-	move_item_up('snmp_query_graph_sv', grv('id'), ['snmp_query_graph_id' => grv('snmp_query_graph_id'), 'field_name' => gnrv('field_name')]);
+	move_item_up('snmp_query_graph_sv', grv('id'), 'snmp_query_graph_id=' . grv('snmp_query_graph_id') . ' AND field_name=' . db_qstr(gnrv('field_name')));
 }
 
 function data_query_item_remove_gsv() : void {
@@ -445,7 +445,7 @@ function data_query_item_movedown_dssv() : void {
 	gfrv('snmp_query_graph_id');
 	// ====================================================
 
-	move_item_down('snmp_query_graph_rrd_sv', grv('id'), ['data_template_id' => grv('data_template_id'), 'snmp_query_graph_id' => grv('snmp_query_graph_id'), 'field_name' => gnrv('field_name')]);
+	move_item_down('snmp_query_graph_rrd_sv', grv('id'), 'data_template_id=' . grv('data_template_id') . ' AND snmp_query_graph_id=' . grv('snmp_query_graph_id') . ' AND field_name=' . db_qstr(gnrv('field_name')));
 }
 
 function data_query_item_moveup_dssv() : void {
@@ -455,7 +455,7 @@ function data_query_item_moveup_dssv() : void {
 	gfrv('snmp_query_graph_id');
 	// ====================================================
 
-	move_item_up('snmp_query_graph_rrd_sv', grv('id'), ['data_template_id' => grv('data_template_id'), 'snmp_query_graph_id' => grv('snmp_query_graph_id'), 'field_name' => gnrv('field_name')]);
+	move_item_up('snmp_query_graph_rrd_sv', grv('id'), 'data_template_id=' . grv('data_template_id') . ' AND snmp_query_graph_id=' . grv('snmp_query_graph_id') . ' AND field_name=' . db_qstr(gnrv('field_name')));
 }
 
 function data_query_sv_check_sequences(string $type, int $snmp_query_graph_id, string $field_name) : bool {

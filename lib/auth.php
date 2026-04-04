@@ -4808,6 +4808,9 @@ function check_reset_no_authentication(int $auth_method) : bool {
 		$auth_method = AUTH_METHOD_CACTI;
 		set_config_option('auth_method', $auth_method, true);
 
+		// Rotate the session ID to prevent session fixation (GHSA-273r-qr93-wgcp).
+		session_regenerate_id(true);
+
 		$_SESSION[SESS_USER_ID]         = $admin_id;
 		$_SESSION[SESS_CHANGE_PASSWORD] = true;
 		header('Location: ' . CACTI_PATH_URL . 'auth_changepassword.php?action=force&ref=' . ($_SERVER['HTTP_REFERER'] ?? 'index.php'));

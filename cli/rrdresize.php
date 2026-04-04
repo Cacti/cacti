@@ -838,7 +838,7 @@ if ($scanned_directory['folders']) {
 
 					// return the last identified value
 					if ($selected_archive_index !== false) {
-						$last_values = (!isset($calculated_index)) ? 'NaN' : $rrd_data['rra'][$selected_archive_index]['database']['row'][$calculated_index]['v'];
+						$last_values = (!isset($calculated_index) || !isset($rrd_data['rra'][$selected_archive_index]['database']['row'][$calculated_index]['v'])) ? 'NaN' : $rrd_data['rra'][$selected_archive_index]['database']['row'][$calculated_index]['v']; // @phpstan-ignore isset.variable
 					}
 
 					if (is_array($last_values)) {

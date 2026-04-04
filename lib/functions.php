@@ -3956,36 +3956,10 @@ function get_graph_parent(int $graph_template_item_id, string $direction) : int 
  *
  * @return int The ID of the next or previous item id
  */
-/**
- * build_where_from_array - builds a SQL WHERE clause fragment from an associative array
- *
- * @param array $filters An associative array of field => value
- * @param array $params  A reference to the params array for prepared statements
- *
- * @return string The SQL WHERE fragment
- */
-function build_where_from_array(array $filters, array &$params) : string {
-	$where = [];
-
-	foreach ($filters as $field => $value) {
-		if (!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $field)) {
-			cacti_log('ERROR: Invalid field name in build_where_from_array: ' . $field, false, 'SECURITY');
-
-			continue;
-		}
-
-		$where[]  = "`$field` = ?";
-		$params[] = $value;
-	}
-
-	return implode(' AND ', $where);
-}
-
-function get_item(string $tblname, string $field, int $startid, string|array $lmt_query, string $direction) : int {
+function get_item(string $tblname, string $field, int $startid, string $lmt_query, string $direction) : int {
 	$sql_operator = '';
 	$sql_order    = '';
 	$new_item_id  = 0;
-	$params       = [];
 
 	if ($direction == 'next') {
 		$sql_operator = '>';
@@ -4001,18 +3975,11 @@ function get_item(string $tblname, string $field, int $startid, string|array $lm
 		[$startid]);
 
 	if ($sql_operator != '') {
-		$where_clause = '';
-
-		if (is_array($lmt_query)) {
-			$where_clause = build_where_from_array($lmt_query, $params);
-		} else {
-			$where_clause = $lmt_query;
-		}
-
-		$sql_query = "SELECT id FROM $tblname WHERE $field $sql_operator ? " . ($where_clause != '' ? " AND $where_clause" : '') . " ORDER BY $field $sql_order LIMIT 1";
-		array_unshift($params, $current_sequence);
-
-		$new_item_id = db_fetch_cell_prepared($sql_query, $params);
+		$new_item_id = db_fetch_cell("SELECT id
+			FROM $tblname
+			WHERE $field $sql_operator $current_sequence " . ($lmt_query != '' ? " AND $lmt_query" : '') . "
+			ORDER BY $field $sql_order
+			LIMIT 1");
 	}
 
 	if (empty($new_item_id)) {
@@ -4032,19 +3999,11 @@ function get_item(string $tblname, string $field, int $startid, string|array $lm
  *
  * @return int The next available sequence id
  */
-function get_sequence(mixed $id, string $field, string $table_name, string|array $group_query) : int {
+function get_sequence(mixed $id, string $field, string $table_name, string $group_query) : int {
 	if (empty($id)) {
-		$params = [];
-
-		if (is_array($group_query)) {
-			$where_clause = build_where_from_array($group_query, $params);
-		} else {
-			$where_clause = $group_query;
-		}
-
-		$data = db_fetch_row_prepared("SELECT max($field)+1 AS seq
+		$data = db_fetch_row("SELECT max($field)+1 AS seq
 			FROM $table_name
-			WHERE $where_clause", $params);
+			WHERE $group_query");
 
 		if (!is_array($data) || $data['seq'] == '') {
 			return 1;
@@ -4070,7 +4029,7 @@ function get_sequence(mixed $id, string $field, string $table_name, string|array
  *
  * @return void
  */
-function move_item_down(string $table_name, int $current_id, string|array $group_query = '') : void {
+function move_item_down(string $table_name, int $current_id, string $group_query = '') : void {
 	$next_item = get_item($table_name, 'sequence', $current_id, $group_query, 'next');
 
 	$sequence = db_fetch_cell_prepared("SELECT sequence
@@ -4103,7 +4062,7 @@ function move_item_down(string $table_name, int $current_id, string|array $group
  *
  * @return void
  */
-function move_item_up(string $table_name, int $current_id, string|array $group_query = '') : void {
+function move_item_up(string $table_name, int $current_id, string $group_query = '') : void {
 	$last_item = get_item($table_name, 'sequence', $current_id, $group_query, 'previous');
 
 	$sequence = db_fetch_cell_prepared("SELECT sequence
@@ -6831,7 +6790,7 @@ function CactiErrorHandler(int $level, string $message, string $file, int $line,
 
 	preg_match("/.*\/plugins\/([\w-]*)\/.*/", $file, $output_array);
 
-	$plugin = $output_array[1] ?? '';
+	$plugin = ($output_array !== [] && isset($output_array[1]) ? $output_array[1] : '');
 	$error  = 'Unknown error occurred';
 
 	if ($level != null && isset($phperrors[$level])) {
@@ -9019,7 +8978,7 @@ function cacti_browser_zone_enabled() : bool {
 }
 
 /**
- * cacti_time_zone_set - Given an offset in minutes, attempt
+ * cacti_time_zone_set - Givin an offset in minutes, attempt
  * to set a PHP date.timezone.  There are some oddballs that
  * we have to accommodate.
  *
