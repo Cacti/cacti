@@ -43,19 +43,19 @@ if (!read_config_option('i18n_language_support') && read_config_option('i18n_lan
 
 /* Repair legacy language support */
 if (!empty($config['i18n_force_language'])) {
-	$_REQUEST['language'] = $config['i18n_force_language'];
+	set_request_var('language', $config['i18n_force_language']);
 }
 
-if (!empty($_REQUEST['language'])) {
-	$_REQUEST['language'] = repair_locale($_REQUEST['language']);
+if (!isempty_request_var('language')) {
+	set_request_var('language', repair_locale(get_request_var('language')));
 }
 
 /* determine whether or not we can support the language */
 $user_locale = '';
 
-if (!empty($_REQUEST['language']) && !empty($lang2locale[$_REQUEST['language']])) {
+if (!isempty_request_var('language') && !empty($lang2locale[get_request_var('language')])) {
 	/* user requests another language */
-	$user_locale = apply_locale($_REQUEST['language']);
+	$user_locale = apply_locale(get_request_var('language'));
 	unset($_SESSION['sess_current_date1']);
 	unset($_SESSION['sess_current_date2']);
 

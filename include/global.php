@@ -371,7 +371,7 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 		print $li . 'the database is running.' . $il;
 		print $li . 'the credentials in config.php are valid.' . $il;
 		print $lu . $sp;
-		if (isset($_REQUEST['display_db_errors']) && !empty($config['DATABASE_ERROR'])) {
+		if (!isempty_request_var('display_db_errors') && !empty($config['DATABASE_ERROR'])) {
 			print $ps . 'The following database errors occurred: ' . $ul;
 			foreach ($config['DATABASE_ERROR'] as $e) {
 				print $li . $e['Code'] . ': ' . $e['Error'] . $il;
