@@ -865,45 +865,55 @@ function get_order_string_page() {
  * Prevents open redirect attacks by rejecting external URLs.
  *
  * @param string $url The URL to validate
+ * @param string $default The URL to travel to upon failure
  *
  * @return string The validated URL, or 'index.php' if invalid
  */
-function validate_redirect_url($url) {
+function validate_redirect_url($url = '', $default = 'index.php') {
 	if ($url === '') {
-		return 'index.php';
+		return $default;
 	}
 
 	$url = trim($url);
 
 	// reject URLs with protocol schemes (external redirects, javascript:, data:)
-	if (preg_match('#^[a-z][a-z0-9+.\-]*:#i', $url)) {
-		$base = read_config_option('base_url');
+	$bad_strings = array('javascript:', 'data:', 'vbscript:');
 
-		$base = rtrim($base, '/') . '/';
-
-		if ($base !== '/' && strpos($url, $base) === 0) {
-			return $url;
+	foreach($bad_strings as $bstring) {
+		if (str_contains($url, $bstring)) {
+			return $default;
 		}
-
-		return 'index.php';
 	}
 
 	// reject protocol-relative URLs
 	if (strpos($url, '//') === 0) {
-		return 'index.php';
+		return $default;
 	}
 
 	// reject URLs with newlines (header injection)
 	if (preg_match('/[\r\n]/', $url)) {
-		return 'index.php';
+		return $default;
 	}
 
 	// reject path traversal sequences
 	if (strpos($url, '..') !== false) {
-		return 'index.php';
+		return $default;
 	}
 
-	return $url;
+	// Prevent referring off site
+	$ref_host = parse_url($url, PHP_URL_HOST);
+	$srv_host = preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST']);
+
+	if ($ref_host !== null && $ref_host === $srv_host) {
+		$ref_path  = parse_url($url, PHP_URL_PATH) ?: '';
+		$ref_query = parse_url($url, PHP_URL_QUERY);
+
+		$safe = sanitize_uri($ref_path . ($ref_query !== null ? '?' . $ref_query : ''));
+
+		return $safe;
+	} else {
+		return $default;
+	}
 }
 
 function validate_is_regex($regex) {
