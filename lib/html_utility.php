@@ -911,7 +911,7 @@ function validate_redirect_url($url = '', $default = 'index.php') {
 		$safe = sanitize_uri($ref_path . ($ref_query !== null ? '?' . $ref_query : ''));
 
 		return $safe;
-	} else { {
+	} else {
 		return $default;
 	}
 }
