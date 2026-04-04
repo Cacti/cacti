@@ -877,7 +877,13 @@ function validate_redirect_url($url = '', $default = 'index.php') {
 	$url = trim($url);
 
 	// reject URLs with protocol schemes (external redirects, javascript:, data:)
-	$bad_strings = array('javascript:', 'data:', 'vbscript:');
+	$bad_strings = array(
+		'javascript:',
+		'data:',
+		'vbscript:',
+		'mailto:',
+		'file:'
+	);
 
 	foreach($bad_strings as $bstring) {
 		if (strpos($url, $bstring) !== false) {
