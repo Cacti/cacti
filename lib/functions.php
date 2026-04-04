@@ -8999,6 +8999,11 @@ function cacti_time_zone_set(mixed $gmt_offset = null) : void {
 		}
 	}
 
+	// Reject non-numeric or out-of-range offsets (valid UTC range: -840 to +840 minutes)
+	if (!is_numeric($gmt_offset) || $gmt_offset < -840 || $gmt_offset > 840) {
+		return;
+	}
+
 	$hours     = floor($gmt_offset / 60);
 	$remaining = $gmt_offset % 60;
 

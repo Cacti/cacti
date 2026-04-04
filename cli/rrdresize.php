@@ -839,14 +839,14 @@ if ($scanned_directory['folders']) {
 					// return the last identified value
 					if ($selected_archive_index !== false) {
 						$last_values = (!isset($calculated_index) || !isset($rrd_data['rra'][$selected_archive_index]['database']['row'][$calculated_index]['v'])) ? 'NaN' : $rrd_data['rra'][$selected_archive_index]['database']['row'][$calculated_index]['v']; // @phpstan-ignore isset.variable
-					}
 
-					if (is_array($last_values)) {
-						foreach ($last_values as $index => $value) {
-							$rrd_new_body = str_replace('>__placeholder__' . $index . '<', '>' . $value . '<', $rrd_new_body);
+						if (is_array($last_values)) {
+							foreach ($last_values as $index => $value) {
+								$rrd_new_body = str_replace('>__placeholder__' . $index . '<', '>' . $value . '<', $rrd_new_body);
+							}
+						} else {
+							$rrd_new_body = str_replace('>__placeholder__0<', '>' . $last_values . '<', $rrd_new_body);
 						}
-					} else {
-						$rrd_new_body = str_replace('>__placeholder__0<', '>' . $last_values . '<', $rrd_new_body);
 					}
 
 					$rrd_new_body .= "\t\t</database>" . PHP_EOL .

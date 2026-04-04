@@ -1052,38 +1052,42 @@ function rrdtool_function_tune(array $rrd_tune_array) : void {
 	$data_source_type = $data_source_types[$rrd_tune_array['data-source-type']];
 	$data_source_path = get_data_source_path($rrd_tune_array['data_source_id'], true);
 
+	// Build shell-safe argument list. Each rrdtool tune flag is a single argument
+	// of the form --flag dsname:value; wrap the whole token in cacti_escapeshellarg()
+	// so that shell metacharacters in any DB-sourced value cannot escape the argument.
 	$rrd_tune = '';
 
 	if ($rrd_tune_array['heartbeat'] != '') {
-		$rrd_tune .= " --heartbeat $data_source_name:" . $rrd_tune_array['heartbeat'];
+		$rrd_tune .= ' ' . cacti_escapeshellarg("--heartbeat $data_source_name:" . $rrd_tune_array['heartbeat']);
 	}
 
 	if ($rrd_tune_array['minimum'] != '') {
-		$rrd_tune .= " --minimum $data_source_name:" . $rrd_tune_array['minimum'];
+		$rrd_tune .= ' ' . cacti_escapeshellarg("--minimum $data_source_name:" . $rrd_tune_array['minimum']);
 	}
 
 	if ($rrd_tune_array['maximum'] != '') {
-		$rrd_tune .= " --maximum $data_source_name:" . $rrd_tune_array['maximum'];
+		$rrd_tune .= ' ' . cacti_escapeshellarg("--maximum $data_source_name:" . $rrd_tune_array['maximum']);
 	}
 
 	if ($rrd_tune_array['data-source-type'] != '') {
-		$rrd_tune .= " --data-source-type $data_source_name:" . $data_source_type;
+		$rrd_tune .= ' ' . cacti_escapeshellarg("--data-source-type $data_source_name:" . $data_source_type);
 	}
 
 	if ($rrd_tune_array['data-source-rename'] != '') {
-		$rrd_tune .= " --data-source-rename $data_source_name:" . $rrd_tune_array['data-source-rename'];
+		$rrd_tune .= ' ' . cacti_escapeshellarg("--data-source-rename $data_source_name:" . $rrd_tune_array['data-source-rename']);
 	}
 
 	if ($rrd_tune != '') {
 		if (file_exists($data_source_path) == true) {
 			if (is_file(read_config_option('path_rrdtool')) && is_executable(read_config_option('path_rrdtool'))) {
-				$fp = popen(read_config_option('path_rrdtool') . " tune $data_source_path $rrd_tune", 'r');
+				$safe_path = cacti_escapeshellarg($data_source_path);
+				$fp = popen(read_config_option('path_rrdtool') . " tune $safe_path $rrd_tune", 'r');
 
 				if ($fp !== false) {
 					pclose($fp);
 				}
 
-				cacti_log('CACTI2RRD: ' . read_config_option('path_rrdtool') . " tune $data_source_path $rrd_tune", false, 'WEBLOG', POLLER_VERBOSITY_DEBUG);
+				cacti_log('CACTI2RRD: ' . read_config_option('path_rrdtool') . " tune $safe_path $rrd_tune", false, 'WEBLOG', POLLER_VERBOSITY_DEBUG);
 			} else {
 				cacti_log("ERROR: RRDtool executable not found, not executable or error in path '" . read_config_option('path_rrdtool') . "'.  No output written to RRDfile.");
 			}
