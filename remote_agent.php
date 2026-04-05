@@ -238,9 +238,9 @@ function get_graph_data() : bool {
 		$graph_data_array['graph_theme'] = grv('graph_theme');
 	}
 
-	// set the theme
+	// set the effective user
 	if (isrv('effective_user')) {
-		$user = grv('effective_user');
+		$user = (int) grv('effective_user');
 	} else {
 		$user = 0;
 	}
@@ -257,6 +257,12 @@ function get_graph_data() : bool {
 function get_snmp_data() : void {
 	$host_id = gfrv('host_id');
 	$oid     = gnrv('oid');
+
+	if (!is_string($oid) || !preg_match('/^[0-9.]+$/', $oid)) {
+		print 'U';
+		return;
+	}
+
 	$output  = '';
 
 	if (!empty($host_id)) {
@@ -280,6 +286,12 @@ function get_snmp_data() : void {
 function get_snmp_data_walk() : void {
 	$host_id = gfrv('host_id');
 	$oid     = gnrv('oid');
+
+	if (!is_string($oid) || !preg_match('/^[0-9.]+$/', $oid)) {
+		print 'U';
+		return;
+	}
+
 	$output  = '';
 
 	if (!empty($host_id)) {
