@@ -843,14 +843,14 @@ function get_order_string() {
 	if (isset($_SESSION['sort_string'][$page])) {
 		return $_SESSION['sort_string'][$page];
 	} elseif ($sort_column != '') {
-		return 'ORDER BY ' . $del . implode($del . '.' . $del, explode('.', $sort_column)) . $del . ' ' . $sort_direction;
+		return 'ORDER BY ' . $del . implode($del . '.' . $del, explode('.', $sort_column)) . $del . ' ' . $sort_dir;
 	} else {
 		return '';
 	}
 }
 
 function remove_column_from_order_string($column) {
-	$page = get_order_string_page(true);
+	$page = get_order_string_page(false);
 
 	if (isset($_SESSION['sort_data'][$page][$column])) {
 		unset($_SESSION['sort_data'][$page][$column]);
@@ -949,6 +949,17 @@ function validate_redirect_url($url = '', $default = 'index.php') {
 	}
 }
 
+/**
+ * Validates if the given string is a valid regular expression.
+ *
+ * This function checks if the provided regular expression is valid and safe to use.
+ * It prevents exploits by limiting the length of the regular expression to 50 bytes
+ * and disallowing the use of the semicolon character.
+ *
+ * @param string $regex The regular expression to validate.
+ *
+ * @return bool|string Returns true if the regular expression is valid, otherwise returns an error message string.
+ */
 function validate_is_regex($regex) {
 	if ($regex == '') {
 		return true;
