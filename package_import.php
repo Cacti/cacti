@@ -1926,8 +1926,8 @@ function get_repo_file(string $repo_id, string $filename = 'package.manifest', b
 
 			$context = [
 				'ssl' => [
-					'verify_peer'      => false,
-					'verify_peer_name' => false,
+					'verify_peer'      => true,
+					'verify_peer_name' => true,
 				],
 			];
 
