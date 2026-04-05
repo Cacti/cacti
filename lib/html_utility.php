@@ -1412,11 +1412,11 @@ function remove_column_from_order_string(string $column) : void {
  * such as 'action' and 'tab'. The page count is incremented with each call to
  * ensure uniqueness.
  *
- * @param bool Increment the page counter if true
+ * @param bool $increment Increment the page counter if true
  *
  * @return string A unique order string for the current page.
  */
-function get_order_string_page($increment = true) : string {
+function get_order_string_page(bool $increment = true) : string {
 	static $page_count = 0;
 
 	$page = $page_count . '_' . str_replace('.php', '', get_current_page());
