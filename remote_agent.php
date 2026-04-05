@@ -224,7 +224,7 @@ function get_graph_data() {
 
 	/* set the theme */
 	if (isset_request_var('effective_user')) {
-		$user = get_request_var('effective_user');
+		$user = (int) get_request_var('effective_user');
 	} else {
 		$user = 0;
 	}
@@ -241,6 +241,11 @@ function get_graph_data() {
 function get_snmp_data() {
 	$host_id = get_filter_request_var('host_id');
 	$oid     = get_nfilter_request_var('oid');
+
+	if (!is_string($oid) || !preg_match('/^[0-9.]+$/', $oid)) {
+		print 'U';
+		return;
+	}
 
 	if (!empty($host_id)) {
 		$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($host_id));
@@ -263,6 +268,11 @@ function get_snmp_data() {
 function get_snmp_data_walk() {
 	$host_id = get_filter_request_var('host_id');
 	$oid     = get_nfilter_request_var('oid');
+
+	if (!is_string($oid) || !preg_match('/^[0-9.]+$/', $oid)) {
+		print 'U';
+		return;
+	}
 
 	if (!empty($host_id)) {
 		$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($host_id));
