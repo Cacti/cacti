@@ -1376,7 +1376,7 @@ function get_order_string() : string {
 	if (isset($_SESSION['sort_string'][$page])) {
 		return $_SESSION['sort_string'][$page];
 	} elseif ($sort_column != '') {
-		return 'ORDER BY ' . $del . implode($del . '.' . $del, explode('.', $sort_column)) . $del . ' ' . $sort_direction;
+		return 'ORDER BY ' . $del . implode($del . '.' . $del, explode('.', $sort_column)) . $del . ' ' . $sort_dir;
 	} else {
 		return '';
 	}
