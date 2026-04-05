@@ -260,6 +260,7 @@ function get_snmp_data() : void {
 
 	if (!is_string($oid) || !preg_match('/^[0-9.]+$/', $oid)) {
 		print 'U';
+
 		return;
 	}
 
@@ -289,6 +290,7 @@ function get_snmp_data_walk() : void {
 
 	if (!is_string($oid) || !preg_match('/^[0-9.]+$/', $oid)) {
 		print 'U';
+
 		return;
 	}
 
