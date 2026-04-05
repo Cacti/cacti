@@ -5047,8 +5047,33 @@ function sanitize_search_string(string $string) : string {
  * @return string The sanitized uri
  */
 function sanitize_uri($uri) {
-	static $drop_char_match   =   ['^', '$', '<', '>', '`', "'", '"', '|', '+', '[', ']', '{', '}', ';', '!', '(', ')'];
-	static $drop_char_replace = [ '', '',  '',  '',  '',  '',   '',  '',  '',  '',  '',  '',  '',  '',  ''];
+	static $drop_char_match = array(
+		'^', '$',
+		'<', '>',
+		'`', "'",
+		'"', '|',
+		'+', '[',
+		']', '{',
+		'}', ';',
+		'!', '(',
+		')'
+	);
+
+	static $drop_char_replace = array(
+		'', '',
+		'', '',
+		'', '',
+		'', '',
+		'', '',
+		'', '',
+		'', '',
+		'', '',
+		''
+	);
+
+	if (is_urlencoded($uri)) {
+		$uri = urldecode($uri);
+	}
 
 	if (str_contains($uri, 'graph_view.php')) {
 		if (!strpos($uri, 'action=')) {
@@ -5056,7 +5081,22 @@ function sanitize_uri($uri) {
 		}
 	}
 
-	return str_replace($drop_char_match, $drop_char_replace, strip_tags(urldecode($uri)));
+	return str_replace($drop_char_match, $drop_char_replace, strip_tags($uri));
+}
+
+/**
+ * Checks to see if a string is urlencoded
+ *
+ * @param  string $string the string to be validated
+ *
+ * @return boolean - true is the string is urlencoded otherwise false
+ */
+function is_urlencoded($string) {
+	if ($string != urldecode($string)) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 /**
