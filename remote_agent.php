@@ -240,7 +240,7 @@ function get_graph_data() : bool {
 
 	// set the effective user
 	if (isrv('effective_user')) {
-		$user = (int) grv('effective_user');
+		$user = grv('effective_user');
 	} else {
 		$user = 0;
 	}
