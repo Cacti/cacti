@@ -280,7 +280,15 @@ function package_diff_file() {
 		$newfile = explode("\n", $newfile);
 	}
 
-	$oldfile = file_get_contents($config['base_path'] . '/' . $filename);
+	$validated_path = validate_relative_path_within($filename, $config['base_path']);
+
+	if ($validated_path === false) {
+		print '<h3>' . __('Error: Invalid file path.') . '</h3>';
+
+		return;
+	}
+
+	$oldfile = file_get_contents($validated_path);
 
 	if ($oldfile !== false) {
 		$oldfile = str_replace("\n\r", "\n", $oldfile);

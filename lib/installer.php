@@ -246,7 +246,7 @@ class Installer implements JsonSerializable {
 	}
 
 	/* jsonSerialize() - provides JSON object of return data with optional
-	 *                   values output dependant on Runtime mode */
+	 *                   values output dependent on Runtime mode */
 	#[ReturnTypeWillChange]
 	public function jsonSerialize() {
 		if (empty($this->output)) {
@@ -611,7 +611,7 @@ class Installer implements JsonSerializable {
 		return $language;
 	}
 
-	/* setLanguage() - sets the langauge of the Installer
+	/* setLanguage() - sets the language of the Installer
 	 * @param_language - Must be a valid language which is returned from
 	 *                   apply_locale() function located in Core
 	 *
@@ -1914,7 +1914,7 @@ class Installer implements JsonSerializable {
 					}
 				} elseif ($recommend['status'] == DB_STATUS_RESTART) {
 					$status_font = 'orange';
-					$status_text = '<span title="' . __('The specificed value appears to be different in the running config versus the INI file.') . '">' . __('Restart Required') . '</span>';
+					$status_text = '<span title="' . __('The specified value appears to be different in the running config versus the INI file.') . '">' . __('Restart Required') . '</span>';
 					if ($status > DB_STATUS_RESTART) {
 						$status = DB_STATUS_RESTART;
 					}
@@ -2426,7 +2426,7 @@ class Installer implements JsonSerializable {
 		$output  = Installer::sectionTitle(__('Input Validation Whitelist Protection'));
 		$output .= Installer::sectionNormal(__('Cacti Data Input methods that call a script can be exploited in ways that a non-administrator can perform damage to either files owned by the poller account, and in cases where someone runs the Cacti poller as root, can compromise the operating system allowing attackers to exploit your infrastructure.'));
 		$output .= Installer::sectionNormal(__('Therefore, several versions ago, Cacti was enhanced to provide Whitelist capabilities on the these types of Data Input Methods.  Though this does secure Cacti more thoroughly, it does increase the amount of work required by the Cacti administrator to import and manage Templates and Packages.'));
-		$output .= Installer::sectionNormal(__('The way that the Whitelisting works is that when you first import a Data Input Method, or you re-import a Data Input Method, and the script and or arguments change in any way, the Data Input Method, and all the corresponding Data Sources will be immediatly disabled until the administrator validates that the Data Input Method is valid.'));
+		$output .= Installer::sectionNormal(__('The way that the Whitelisting works is that when you first import a Data Input Method, or you re-import a Data Input Method, and the script and or arguments change in any way, the Data Input Method, and all the corresponding Data Sources will be immediately disabled until the administrator validates that the Data Input Method is valid.'));
 		$output .= Installer::sectionNormal(__('To make identifying Data Input Methods in this state, we have provided a validation script in Cacti\'s CLI directory that can be run with the following options:'));
 
 		$output .= Installer::sectionNormal(

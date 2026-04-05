@@ -191,7 +191,7 @@ function api_data_source_remove_multi($local_data_ids) {
 
 		if (is_array($ids_to_delete)) {
 			cacti_log("Found as an array");
-			$ids_to_delete = implode(', ', $ids_to_delete);
+			$ids_to_delete = implode(', ', array_map('intval', $ids_to_delete));
 		}
 
 		$data_template_data_ids = db_fetch_assoc('SELECT id

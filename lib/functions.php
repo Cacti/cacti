@@ -3484,6 +3484,34 @@ function get_graph_parent($graph_template_item_id, $direction) {
 }
 
 /**
+ * build_where_from_array - builds a parameterized WHERE clause from an associative array
+ *
+ * @param $filters - associative array of field => value pairs
+ * @param $params  - (byref) array to append parameter values to
+ *
+ * @return - (string) the WHERE clause fragment, or '1=1' if filters is empty
+ */
+function build_where_from_array($filters, &$params) {
+	if (empty($filters)) {
+		return '1=1';
+	}
+
+	$where = array();
+
+	foreach ($filters as $field => $value) {
+		if (!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $field)) {
+			cacti_log('ERROR: Invalid field name in build_where_from_array: ' . $field, false, 'SECURITY');
+			continue;
+		}
+
+		$where[]  = "`$field` = ?";
+		$params[] = $value;
+	}
+
+	return implode(' AND ', $where);
+}
+
+/**
  * get_item - returns the ID of the next or previous item id
  *
  * @param $tblname - the table name that contains the target id
@@ -3495,6 +3523,8 @@ function get_graph_parent($graph_template_item_id, $direction) {
  * @return - (int) the ID of the next or previous item id
  */
 function get_item($tblname, $field, $startid, $lmt_query, $direction) {
+	$params = array();
+
 	if ($direction == 'next') {
 		$sql_operator = '>';
 		$sql_order = 'ASC';
@@ -3508,11 +3538,21 @@ function get_item($tblname, $field, $startid, $lmt_query, $direction) {
 		WHERE id = ?",
 		array($startid));
 
-	$new_item_id = db_fetch_cell("SELECT id
-		FROM $tblname
-		WHERE $field $sql_operator $current_sequence " . ($lmt_query != '' ? " AND $lmt_query":"") . "
-		ORDER BY $field $sql_order
-		LIMIT 1");
+	$where_clause = '';
+
+	if (is_array($lmt_query)) {
+		$where_clause = build_where_from_array($lmt_query, $params);
+	} else {
+		$where_clause = $lmt_query;
+	}
+
+	$sql_query = "SELECT id FROM $tblname WHERE $field $sql_operator ? " .
+		($where_clause != '' ? " AND $where_clause" : '') .
+		" ORDER BY $field $sql_order LIMIT 1";
+
+	array_unshift($params, $current_sequence);
+
+	$new_item_id = db_fetch_cell_prepared($sql_query, $params);
 
 	if (empty($new_item_id)) {
 		return $startid;
@@ -3533,9 +3573,17 @@ function get_item($tblname, $field, $startid, $lmt_query, $direction) {
  */
 function get_sequence($id, $field, $table_name, $group_query) {
 	if (empty($id)) {
-		$data = db_fetch_row("SELECT max($field)+1 AS seq
+		$params = array();
+
+		if (is_array($group_query)) {
+			$where_clause = build_where_from_array($group_query, $params);
+		} else {
+			$where_clause = $group_query;
+		}
+
+		$data = db_fetch_row_prepared("SELECT max($field)+1 AS seq
 			FROM $table_name
-			WHERE $group_query");
+			WHERE $where_clause", $params);
 
 		if ($data['seq'] == '') {
 			return 1;
@@ -4284,7 +4332,11 @@ function get_hash_version($type) {
  * @return - a 128-bit, hexadecimal hash
  */
 function generate_hash() {
-	return md5(session_id() . microtime() . rand(0,1000));
+	try {
+		return bin2hex(random_bytes(16));
+	} catch (Exception $e) {
+		return md5(session_id() . microtime() . rand(0, 1000));
+	}
 }
 
 /**
@@ -4489,8 +4541,60 @@ function sanitize_cdef($cdef) {
 }
 
 /**
- * verifies all selected items are numeric to guard against injection
+ * validates that a user-supplied filename resolves to a path within a given
+ * base directory to guard against directory traversal and injection
  *
+ * @param string $filename The user-supplied filename
+ * @param string $base_dir The base directory the file must reside in
+ *
+ * @return mixed The validated real path, or false if invalid
+ */
+function validate_path_within($filename, $base_dir) {
+	$filename = basename($filename);
+
+	if ($filename === '' || $filename === '.' || $filename === '..') {
+		return false;
+	}
+
+	$base_real = realpath($base_dir);
+
+	if ($base_real === false) {
+		return false;
+	}
+
+	return $base_real . '/' . $filename;
+}
+
+/**
+ * Validate that a relative path resolves within a base directory.
+ * Allows subdirectory paths but rejects '..' traversal components.
+ *
+ * @param string $path     The user-supplied relative path
+ * @param string $base_dir The base directory the path must stay within
+ *
+ * @return mixed The validated real path, or false if invalid
+ */
+function validate_relative_path_within($path, $base_dir) {
+	if ($path === '' || $path[0] === '/' || strpos($path, "\0") !== false) {
+		return false;
+	}
+
+	foreach (explode('/', $path) as $part) {
+		if ($part === '..') {
+			return false;
+		}
+	}
+
+	$base_real = realpath($base_dir);
+
+	if ($base_real === false) {
+		return false;
+	}
+
+	return $base_real . '/' . $path;
+}
+
+/**
  * @param string $items   An array of serialized items from a post
  *
  * @return array          The sanitized selected items array
@@ -5265,7 +5369,7 @@ function split_emaildetail($email) {
 	}
 
 	/**
-	 * Handle the case where the Email is a tring, but may
+	 * Handle the case where the Email is a string, but may
 	 * include the name at the beginning of the Email.
 	 */
 	if (!is_array($email) && strpos($email, '@') !== false) {
@@ -6196,6 +6300,12 @@ function call_remote_data_collector($poller_id, $url, $logtype = 'WEBUI') {
 
 			return '';
 		}
+	}
+
+	// Validate URL is a relative path to prevent SSRF
+	if (strpos($url, '://') !== false || strpos($url, '@') !== false || strpos($url, '../') !== false || (strlen($url) > 0 && $url[0] !== '/')) {
+		cacti_log('ERROR: Invalid URL passed to call_remote_data_collector: ' . $url, false, 'SECURITY');
+		return '';
 	}
 
 	$fgc_contextoption = get_default_contextoption();
@@ -7252,7 +7362,7 @@ function cacti_session_destroy() {
 }
 
 /**
- * cacti_cookie_set - Allows for settings an arbitry cookie name and value
+ * cacti_cookie_set - Allows for settings an arbitrary cookie name and value
  * used for CSRF protection.
  *
  * @return - null
@@ -7449,9 +7559,9 @@ function cacti_browser_zone_enabled() {
 }
 
 /**
- * cacti_time_zone_set - Givin an offset in minutes, attempt
+ * cacti_time_zone_set - Given an offset in minutes, attempt
  * to set a PHP date.timezone.  There are some oddballs that
- * we have to accomodate.
+ * we have to accommodate.
  *
  * @return - null
  */

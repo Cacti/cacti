@@ -99,9 +99,9 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 		}
 	}
 
-	/* set connection timout for down servers */
+	/* set connection timeout for down servers */
 	$flags[PDO::ATTR_TIMEOUT] = 2;
-	$flage[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
+	$flags[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
 
 	while ($i <= $retries) {
 		try {
@@ -240,7 +240,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
  *  attempt to reconnect, otherwise return the connection
  *
  * @param bool|object  The connection to check
- * @param bool         Wether or not to log the connection check
+ * @param bool         Whether or not to log the connection check
  *
  * @return bool        The database true is the database is connected else false
  */
@@ -1120,7 +1120,7 @@ function db_index_matches($table, $index, $columns, $log = true, $db_conn = fals
 function db_table_exists($table, $log = true, $db_conn = false) {
 	static $results;
 
-	if ($db_conn == false) {
+	if ($db_conn === false) {
 		$index = '-1';
 	} else {
 		$index = md5(json_encode($db_conn));
@@ -1197,7 +1197,7 @@ function db_cacti_initialized($is_web = true) {
 function db_column_exists($table, $column, $log = true, $db_conn = false) {
 	static $results = array();
 
-	if ($db_conn == false) {
+	if ($db_conn === false) {
 		$index = '-1';
 	} else {
 		$index = md5(json_encode($db_conn));
@@ -1959,6 +1959,18 @@ function db_qstr($s, $db_conn = false) {
 }
 
 /**
+ * db_qstr_rlike - Safely quote a value for use in a RLIKE/REGEXP clause.
+ *
+ * @param string $s       The regex pattern value to quote
+ * @param mixed  $db_conn An optional database connection object
+ *
+ * @return string The safe 'RLIKE <quoted>' SQL fragment
+ */
+function db_qstr_rlike($s, $db_conn = false) {
+	return 'RLIKE ' . db_qstr($s, $db_conn);
+}
+
+/**
  * db_strip_control_chars - Strip control characters from SQL command
  *
  * @param  (string) The SQL command to loose it's control chars
@@ -2173,18 +2185,20 @@ function db_switch_main_to_local() {
  * @param  (string)     $database - default $database_default
  * @param  (string)     $tables - default all tables
  * @param  (array)      $credentials - array($name => value, ...) for user, password, host, port, ssl ...
- * @param  (sting|bool) $output_file - dump file name, default /tmp/cacti.dump.sql
+ * @param  (string|bool) $output_file - dump file name, default /tmp/cacti.dump.sql
  * @param  (string)     $options - option strings for mysqldump, if --defaults-extra-file set, dump the data directly
  *
  * @return (int) return status of the executed command
  */
 function db_dump_data($database = '', $tables = '', $credentials = array(), $output_file = false, $options = '--extended-insert=FALSE') {
 	global $database_default, $database_username, $database_password;
+
 	$credentials_string = '';
 
 	if ($database == '') {
 		$database = $database_default;
 	}
+
 	if (cacti_sizeof($credentials)) {
 		foreach ($credentials as $key => $value) {
 			$name = trim($key);
@@ -2215,22 +2229,35 @@ function db_dump_data($database = '', $tables = '', $credentials = array(), $out
 			}
 		}
 	}
+
 	if (!isset($password)) {
 		$password = $database_password;
 	}
+
 	if (!isset($username)) {
 		$username = $database_username;
 	}
+
+	if ($output_file === false) {
+		$output_file = '/tmp/cacti.dump.sql';
+	}
+
+	$safe_database   = cacti_escapeshellarg($database);
+	$safe_output     = cacti_escapeshellarg($output_file);
+
 	if (strstr($options, '--defaults-extra-file') !== false) {
-		exec("mysqldump $options $credentials_string $database $tables > " . $output_file, $output, $retval);
+		exec("mysqldump $options $credentials_string $safe_database $tables > " . $safe_output, $output, $retval);
 	} else {
-		exec("mysqldump $options $credentials_string " . $database . ' version >/dev/null 2>&1', $output, $retval);
+		exec("mysqldump $options $credentials_string " . $safe_database . ' version >/dev/null 2>&1', $output, $retval);
+
 		if ($retval) {
-			exec("mysqldump $options $credentials_string -u" . $username . ' -p' . $password . ' ' . $database . " $tables > " . $output_file, $output, $retval);
+			$pass_arg = ($password != '') ? ' -p' . cacti_escapeshellarg($password) : '';
+			exec("mysqldump $options $credentials_string -u" . cacti_escapeshellarg($username) . $pass_arg . ' ' . $safe_database . " $tables > " . $safe_output, $output, $retval);
 		} else {
-			exec("mysqldump $options $credentials_string $database $tables > " . $output_file, $output, $retval);
+			exec("mysqldump $options $credentials_string $safe_database $tables > " . $safe_output, $output, $retval);
 		}
 	}
+
 	return $retval;
 }
 
