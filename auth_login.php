@@ -382,7 +382,7 @@ $selectedTheme = get_selected_theme();
 			<div class='loginErrors'>
 				<?php
 				if ($error) {
-					print $error_msg;
+					print html_escape($error_msg);
 				}
 				?>
 			</div>
