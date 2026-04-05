@@ -820,7 +820,19 @@ function update_order_string($inplace = false) {
 function get_order_string() {
 	$page = get_order_string_page();
 
-	if (strpos(get_request_var('sort_column'), '(') === false && strpos(get_request_var('sort_column'), '`') === false) {
+	$sort_direction = strtoupper(get_request_var('sort_direction'));
+
+	if ($sort_direction !== 'ASC' && $sort_direction !== 'DESC') {
+		$sort_direction = 'ASC';
+	}
+
+	$sort_column = get_request_var('sort_column');
+
+	if (!preg_match('/^[a-zA-Z0-9_`.]+$/', $sort_column)) {
+		return '';
+	}
+
+	if (strpos($sort_column, '(') === false && strpos($sort_column, '`') === false) {
 		$del = '`';
 	} else {
 		$del = '';
@@ -829,7 +841,7 @@ function get_order_string() {
 	if (isset($_SESSION['sort_string'][$page])) {
 		return $_SESSION['sort_string'][$page];
 	} else {
-		return 'ORDER BY ' . $del . implode($del . '.' . $del, explode('.', get_request_var('sort_column'))) . $del . ' ' . get_request_var('sort_direction');
+		return 'ORDER BY ' . $del . implode($del . '.' . $del, explode('.', $sort_column)) . $del . ' ' . $sort_direction;
 	}
 }
 
