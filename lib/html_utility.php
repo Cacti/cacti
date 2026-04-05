@@ -1375,11 +1375,13 @@ function get_order_string() : string {
 
 	if (isset($_SESSION['sort_string'][$page])) {
 		return $_SESSION['sort_string'][$page];
-	} elseif ($sort_column != '') {
-		return 'ORDER BY ' . $del . implode($del . '.' . $del, explode('.', $sort_column)) . $del . ' ' . $sort_dir;
-	} else {
-		return '';
 	}
+
+	if ($sort_column != '') {
+		return 'ORDER BY ' . $del . implode($del . '.' . $del, explode('.', $sort_column)) . $del . ' ' . $sort_dir;
+	}
+
+	return '';
 }
 
 /**
@@ -1410,6 +1412,8 @@ function remove_column_from_order_string(string $column) : void {
  * such as 'action' and 'tab'. The page count is incremented with each call to
  * ensure uniqueness.
  *
+ * @param bool Increment the page counter if true
+ *
  * @return string A unique order string for the current page.
  */
 function get_order_string_page($increment = true) : string {
@@ -1439,7 +1443,7 @@ function get_order_string_page($increment = true) : string {
  * It prevents exploits by limiting the length of the regular expression to 50 bytes
  * and disallowing the use of the semicolon character.
  *
- * @param string $regex The regular expression to validate.
+ * @param string $url     The regular expression to validate.
  * @param string $default The URL to travel to upon failure
  *
  * @return string The validated URL, or the provided $default if invalid
@@ -1457,13 +1461,13 @@ function validate_redirect_url($url = '', $default = 'index.php') {
 	}
 
 	// reject URLs with protocol schemes (external redirects, javascript:, data:)
-	$bad_strings = array(
+	$bad_strings = [
 		'javascript:',
 		'data:',
 		'vbscript:',
 		'mailto:',
 		'file:'
-	);
+	];
 
 	foreach ($bad_strings as $bstring) {
 		if (stripos($url, $bstring) !== false) {

@@ -5047,7 +5047,7 @@ function sanitize_search_string(string $string) : string {
  * @return string The sanitized uri
  */
 function sanitize_uri(string $uri) : string {
-	static $drop_char_match = array(
+	static $drop_char_match = [
 		'^', '$',
 		'<', '>',
 		'`', "'",
@@ -5057,9 +5057,9 @@ function sanitize_uri(string $uri) : string {
 		'}', ';',
 		'!', '(',
 		')'
-	);
+	];
 
-	static $drop_char_replace = array(
+	static $drop_char_replace = [
 		'', '',
 		'', '',
 		'', '',
@@ -5069,7 +5069,7 @@ function sanitize_uri(string $uri) : string {
 		'', '',
 		'', '',
 		''
-	);
+	];
 
 	if (is_urlencoded($uri)) {
 		$uri = urldecode($uri);
@@ -5087,7 +5087,7 @@ function sanitize_uri(string $uri) : string {
 /**
  * Checks to see if a string is urlencoded
  *
- * @param  string $string the string to be validated
+ * @param string $string the string to be validated
  *
  * @return boolean - true is the string is urlencoded otherwise false
  */

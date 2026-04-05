@@ -309,6 +309,7 @@ function settings() : bool {
 
 	if (strpos($referer, 'auth_profile.php') === false) {
 		$timespan_sel_pos = strpos($referer, '&predefined_timespan');
+
 		if ($timespan_sel_pos !== false) {
 			$referer = substr($referer, 0, $timespan_sel_pos);
 		}
