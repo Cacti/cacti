@@ -147,7 +147,7 @@ function remote_client_authorized() {
 
 	/* Forward-verify PTR result to prevent DNS spoofing */
 	if ($client_name != $client_addr) {
-		$forward_records = @dns_get_record($client_name, DNS_A + DNS_AAAA);
+		$forward_records = @dns_get_record($client_name, DNS_A | DNS_AAAA);
 		$forward_match   = false;
 
 		if (is_array($forward_records)) {
