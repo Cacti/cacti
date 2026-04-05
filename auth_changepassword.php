@@ -40,37 +40,34 @@ switch ($action) {
 
 		exit;
 	default:
-		// If the user is not logged in, redirect them to the login page
+		/**
+		 * If the user is not logged in, redirect them back to the page
+		 * they came from, or to the login page.
+		 */
 		if (!isset($_SESSION[SESS_USER_ID])) {
-			/* HTTP_REFERER redirect here is overridden by the unconditional
-			 * index.php header below; use the safe fallback directly. */
-			header('Location: index.php');
-
+			$referer = validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '', 'index.php');
+			header("Location: $referer");
 			exit;
 		}
 }
 
-if (isset($_SERVER['HTTP_REFERER'])) {
-	$return = $_SERVER['HTTP_REFERER'];
+$return = validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '', 'index.php');
 
-	if (basename($return) != 'auth_changepassword.php') {
-		if (str_contains($return, '/plugins/')) {
-			$parts  = explode('/plugins/', $return);
-			$return = CACTI_PATH_URL . 'plugins/' . $parts[1];
-		} else {
-			$return = CACTI_PATH_URL . basename($return);
-		}
-
-		$_SESSION['acp_return'] = $return;
+if (basename($return) != 'auth_changepassword.php') {
+	if (strpos($return, '/plugins/') !== false) {
+		$parts  = explode('/plugins/', $return);
+		$return = CACTI_PATH_URL . 'plugins/' . $parts[1];
 	} else {
-		if (isset($_SESSION['acp_return'])) {
-			$return = $_SESSION['acp_return'];
-		} else {
-			$return = CACTI_PATH_URL . 'index.php';
-		}
+		$return = CACTI_PATH_URL . basename($return);
 	}
+
+	$_SESSION['acp_return'] = $return;
 } else {
-	$return = CACTI_PATH_URL . 'index.php';
+	if (isset($_SESSION['acp_return'])) {
+		$return = $_SESSION['acp_return'];
+	} else {
+		$return = CACTI_PATH_URL . 'index.php';
+	}
 }
 
 $user = db_fetch_row_prepared('SELECT *
@@ -89,13 +86,9 @@ if (!cacti_sizeof($user) || $user['realm'] != 0) {
 		raise_message('nodomainpassword');
 	}
 
-	if (isset($_SERVER['HTTP_REFERER'])) {
-		// global.php already sanitized HTTP_REFERER; validate host before redirect.
-		$_ref = $_SERVER['HTTP_REFERER'];
-		header('Location: ' . ((parse_url($_ref, PHP_URL_HOST) === null || parse_url($_ref, PHP_URL_HOST) === $_SERVER['HTTP_HOST']) ? $_ref : 'index.php'));
-	} else {
-		header('Location: index.php');
-	}
+	$return = validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '', 'index.php');
+
+	header("Location: $return");
 
 	exit;
 }
@@ -107,13 +100,9 @@ if ($user['password_change'] != 'on') {
 	kill_session_var(SESS_USER_ID);
 	cacti_cookie_logout();
 
-	if (isset($_SERVER['HTTP_REFERER'])) {
-		// global.php already sanitized HTTP_REFERER; validate host before redirect.
-		$_ref = $_SERVER['HTTP_REFERER'];
-		header('Location: ' . ((parse_url($_ref, PHP_URL_HOST) === null || parse_url($_ref, PHP_URL_HOST) === $_SERVER['HTTP_HOST']) ? $_ref : 'index.php'));
-	} else {
-		header('Location: index.php');
-	}
+	$return = validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '', 'index.php');
+
+	header("Location: $return");
 
 	exit;
 }

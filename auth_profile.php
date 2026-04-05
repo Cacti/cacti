@@ -305,20 +305,16 @@ function settings() : bool {
 		return false;
 	}
 
-	if (isset($_SERVER['HTTP_REFERER'])) {
-		$referer = $_SERVER['HTTP_REFERER'];
+	$referer = validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '', 'graph_view.php');
 
-		if (!str_contains($referer, 'auth_profile.php')) {
-			$timespan_sel_pos = strpos($referer, '&predefined_timespan');
+	if (strpos($referer, 'auth_profile.php') === false) {
+		$timespan_sel_pos = strpos($referer, '&predefined_timespan');
 
-			if ($timespan_sel_pos !== false) {
-				$referer = substr($referer, 0, $timespan_sel_pos);
-			}
-
-			$_SESSION['profile_referer'] = $referer;
+		if ($timespan_sel_pos !== false) {
+			$referer = substr($referer, 0, $timespan_sel_pos);
 		}
-	} elseif (!isset($_SESSION['profile_referer'])) {
-		$_SESSION['profile_referer'] = 'graph_view.php';
+
+		$_SESSION['profile_referer'] = $referer;
 	}
 
 	form_start('auth_profile.php', 'chk');

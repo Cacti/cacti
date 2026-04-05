@@ -5046,9 +5046,34 @@ function sanitize_search_string(string $string) : string {
  *
  * @return string The sanitized uri
  */
-function sanitize_uri($uri) {
-	static $drop_char_match   =   ['^', '$', '<', '>', '`', "'", '"', '|', '+', '[', ']', '{', '}', ';', '!', '(', ')'];
-	static $drop_char_replace = [ '', '',  '',  '',  '',  '',   '',  '',  '',  '',  '',  '',  '',  '',  ''];
+function sanitize_uri(string $uri) : string {
+	static $drop_char_match = [
+		'^', '$',
+		'<', '>',
+		'`', "'",
+		'"', '|',
+		'+', '[',
+		']', '{',
+		'}', ';',
+		'!', '(',
+		')'
+	];
+
+	static $drop_char_replace = [
+		'', '',
+		'', '',
+		'', '',
+		'', '',
+		'', '',
+		'', '',
+		'', '',
+		'', '',
+		''
+	];
+
+	if (is_urlencoded($uri)) {
+		$uri = urldecode($uri);
+	}
 
 	if (str_contains($uri, 'graph_view.php')) {
 		if (!strpos($uri, 'action=')) {
@@ -5056,7 +5081,22 @@ function sanitize_uri($uri) {
 		}
 	}
 
-	return str_replace($drop_char_match, $drop_char_replace, strip_tags(urldecode($uri)));
+	return str_replace($drop_char_match, $drop_char_replace, strip_tags($uri));
+}
+
+/**
+ * Checks to see if a string is urlencoded
+ *
+ * @param string $string the string to be validated
+ *
+ * @return boolean - true is the string is urlencoded otherwise false
+ */
+function is_urlencoded(string $string) : bool {
+	if ($string != urldecode($string)) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 /**
@@ -5066,7 +5106,7 @@ function sanitize_uri($uri) {
  *
  * @return bool true is the string is base64 otherwise false
  */
-function is_base64_encoded($data) {
+function is_base64_encoded(string $data) : bool {
 	// Perform a simple check first
 	if (!preg_match('/^[a-zA-Z0-9\/\r\n+]*={0,2}$/', $data)) {
 		return false;

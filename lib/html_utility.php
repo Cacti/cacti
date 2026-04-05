@@ -1250,7 +1250,7 @@ function validate_store_request_vars(array $filters, string $sess_prefix = '') :
  * @return void
  */
 function update_order_string(bool $inplace = false) : void {
-	$page = get_order_string_page();
+	$page = get_order_string_page(false);
 
 	$order = '';
 
@@ -1351,19 +1351,37 @@ function update_order_string(bool $inplace = false) : void {
  * @return string The generated ORDER BY clause.
  */
 function get_order_string() : string {
-	$page = get_order_string_page();
+	$page        = get_order_string_page(true);
+	$sort_column = get_nfilter_request_var('sort_column');
+	$sort_dir    = strtoupper(get_nfilter_request_var('sort_direction'));
 
-	if (!str_contains(get_request_var('sort_column'), '(') && !str_contains(get_request_var('sort_column'), '`')) {
+	if ($sort_dir !== 'ASC' && $sort_dir !== 'DESC') {
+		$sort_dir = 'ASC';
+	}
+
+	if (strpos($sort_column, '(') === false && strpos($sort_column, '`') === false) {
 		$del = '`';
 	} else {
 		$del = '';
 	}
 
+	/**
+	 * Allowlist: identifiers are word chars and dots only; anything else could escape
+	 * backtick quoting.  Validate direction to prevent SQL keyword injection.
+	 */
+	if (!preg_match('/^[a-zA-Z][a-zA-Z0-9_.()]*$/', $sort_column)) {
+		$sort_column = '';
+	}
+
 	if (isset($_SESSION['sort_string'][$page])) {
 		return $_SESSION['sort_string'][$page];
-	} else {
-		return 'ORDER BY ' . $del . implode($del . '.' . $del, explode('.', get_request_var('sort_column'))) . $del . ' ' . get_request_var('sort_direction');
 	}
+
+	if ($sort_column != '') {
+		return 'ORDER BY ' . $del . implode($del . '.' . $del, explode('.', $sort_column)) . $del . ' ' . $sort_dir;
+	}
+
+	return '';
 }
 
 /**
@@ -1378,7 +1396,7 @@ function get_order_string() : string {
  * @return void
  */
 function remove_column_from_order_string(string $column) : void {
-	$page = get_order_string_page();
+	$page = get_order_string_page(false);
 
 	if (isset($_SESSION['sort_data'][$page][$column])) {
 		unset($_SESSION['sort_data'][$page][$column]);
@@ -1394,9 +1412,11 @@ function remove_column_from_order_string(string $column) : void {
  * such as 'action' and 'tab'. The page count is incremented with each call to
  * ensure uniqueness.
  *
+ * @param bool $increment Increment the page counter if true
+ *
  * @return string A unique order string for the current page.
  */
-function get_order_string_page() : string {
+function get_order_string_page(bool $increment = true) : string {
 	static $page_count = 0;
 
 	$page = $page_count . '_' . str_replace('.php', '', get_current_page());
@@ -1409,9 +1429,81 @@ function get_order_string_page() : string {
 		$page .= '_' . get_nfilter_request_var('tab');
 	}
 
-	$page_count++;
+	if ($increment == true) {
+		$page_count++;
+	}
 
 	return $page;
+}
+
+/**
+ * Validate the redirect url provider by the HTTP_REFERER from PHP
+ *
+ * @param string $url     The regular expression to validate.
+ * @param string $default The URL to travel to upon failure
+ *
+ * @return string The validated URL, or the provided $default if invalid
+ */
+function validate_redirect_url($url = '', $default = 'index.php') {
+	if ($url === '') {
+		return $default;
+	}
+
+	$url = trim($url);
+
+	// Decode the url to make it readable if encoded
+	if (is_urlencoded($url)) {
+		$url = urldecode($url);
+	}
+
+	// reject URLs with protocol schemes (external redirects, javascript:, data:)
+	$bad_strings = [
+		'javascript:',
+		'data:',
+		'vbscript:',
+		'mailto:',
+		'file:'
+	];
+
+	foreach ($bad_strings as $bstring) {
+		if (stripos($url, $bstring) !== false) {
+			return $default;
+		}
+	}
+
+	// reject protocol-relative URLs
+	if (strpos($url, '//') === 0) {
+		return $default;
+	}
+
+	// reject URLs with newlines (header injection)
+	if (preg_match('/[\r\n]/', $url)) {
+		return $default;
+	}
+
+	// reject path traversal sequences
+	if (stripos($url, '..') !== false) {
+		return $default;
+	}
+
+	// Prevent referring off site
+	$ref_host = parse_url($url, PHP_URL_HOST);
+	$srv_host = null;
+
+	if (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '') {
+		$srv_host = preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST']);
+	}
+
+	if ($ref_host === null || ($srv_host !== null && $ref_host === $srv_host)) {
+		$ref_path  = parse_url($url, PHP_URL_PATH) ?: '';
+		$ref_query = parse_url($url, PHP_URL_QUERY);
+
+		$safe = sanitize_uri($ref_path . ($ref_query !== null ? '?' . $ref_query : ''));
+
+		return $safe;
+	} else {
+		return $default;
+	}
 }
 
 /**

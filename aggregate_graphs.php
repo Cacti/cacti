@@ -1019,13 +1019,15 @@ function graph_edit() : bool {
 
 	if (isrv('reset')) {
 		$_SESSION['aggregate_referer'] = 'aggregate_graphs.php';
-	} elseif (isset($_SERVER['HTTP_REFERER']) && !substr_count($_SERVER['HTTP_REFERER'], 'aggregate_graphs.php')) {
-		$_SESSION['aggregate_referer'] = $_SERVER['HTTP_REFERER'];
-	} elseif (isset($_SERVER['HTTP_REFERER']) && !isset($_SESSION['aggregate_referer'])) {
-		$_SESSION['aggregate_referer'] = $_SERVER['HTTP_REFERER'];
+	} elseif (isset($_SERVER['HTTP_REFERER'])) {
+		if (!isset($_SESSION['aggregate_referer'])) {
+			$_SESSION['aggregate_referer'] = validate_redirect_url($_SERVER['HTTP_REFERER'], 'aggregate_graphs.php');
+		}
+	} else {
+		$_SESSION['aggregate_referer'] = 'aggregate_graphs.php';
 	}
 
-	$referer = isset($_SESSION['aggregate_referer']) ? $_SESSION['aggregate_referer'] : 'aggregate_graphs.php';
+	$referer = $_SESSION['aggregate_referer'];
 
 	$use_graph_template = false;
 	$aginfo             = [];
@@ -1074,14 +1076,11 @@ function graph_edit() : bool {
 	} elseif (cacti_sizeof($graphs)) {
 		$template = [];
 	} else {
-		raise_message('missing_aggregate', __('Aggregate Graphs Accessed does not Exist'), MESSAGE_LEVEL_ERROR);
+		raise_message('missing_aggregate', __('Aggregate Graph Accessed does not exist'), MESSAGE_LEVEL_ERROR);
 
-		if (isset($_SERVER['HTTP_REFERER'])) {
-			$referer = $_SERVER['HTTP_REFERER'];
-			header('Location: ' . $referer);
-		} else {
-			header('Location: aggregate_graphs.php');
-		}
+		$referer = validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '', 'aggregate_graphs.php');
+
+		header('Location: ' . $referer);
 
 		exit;
 	}
