@@ -439,8 +439,8 @@ case 'zoom':
 		<td id='data'></td>
 	</tr>
 	<script type='text/javascript'>
-	var graph_id      = <?php print get_request_var('local_graph_id') . ";\n";?>
-	var rra_id        = <?php print get_request_var('rra_id') . ";\n";?>
+	var graph_id      = <?php print get_request_var('local_graph_id');?>;
+	var rra_id        = <?php print get_request_var('rra_id');?>;
 	var graph_start   = 0;
 	var graph_end     = 0;
 	var graph_height  = 0;
@@ -452,7 +452,7 @@ case 'zoom':
 	var refreshMSeconds=9999999;
 
 	function graphProperties() {
-		$.get(urlPath+'graph.php?action=properties&header=false&local_graph_id='+graph_id+'&rra_id=<?php print get_request_var('rra_id');?>&view_type=<?php print get_request_var('view_type');?>&graph_start='+$('#graph_start').val()+'&graph_end='+$('#graph_end').val())
+		$.get(urlPath+'graph.php?action=properties&header=false&local_graph_id='+graph_id+'&rra_id='+<?php print json_encode(get_request_var('rra_id'));?>+'&view_type='+<?php print json_encode(get_request_var('view_type'));?>+'&graph_start='+$('#graph_start').val()+'&graph_end='+$('#graph_end').val())
 			.done(function(data) {
 				$('#data').html(data);
 			})

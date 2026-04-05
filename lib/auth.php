@@ -79,7 +79,11 @@ function set_auth_cookie($user) {
 	if (db_table_exists('user_auth_cache')) {
 		clear_auth_cookie();
 
-		$nssecret = md5($_SERVER['REQUEST_TIME'] .  mt_rand(10000,10000000)) . md5(get_client_addr());
+		try {
+			$nssecret = bin2hex(random_bytes(32));
+		} catch (Exception $e) {
+			$nssecret = md5($_SERVER['REQUEST_TIME'] . mt_rand(10000, 10000000)) . md5(get_client_addr());
+		}
 
 		$secret = hash('sha512', $nssecret, false);
 
@@ -4324,7 +4328,7 @@ function secpass_check_history($id, $password) {
 		}
 
 		$passes = explode('|', $user['password_history']);
-		// Double check this incase the password history setting was changed
+		// Double check this in case the password history setting was changed
 		while (cacti_count($passes) > $history) {
 			array_shift($passes);
 		}
@@ -4460,7 +4464,43 @@ function compat_password_verify($password, $hash) {
 
 	$md5 = md5($password);
 
-	return ($md5 === $hash);
+	return compat_hash_equals($md5, $hash);
+}
+
+/**
+ * compat_hash_equals - compatibility wrapper for hash_equals
+ *   Uses native hash_equals when available, otherwise falls back
+ *   to a constant-time string comparison.
+ *
+ * @param (string) $known_string - expected string
+ * @param (string) $user_string  - user-provided string
+ *
+ * @return (bool) true if strings are identical, false otherwise
+ */
+function compat_hash_equals($known_string, $user_string) {
+	if (function_exists('hash_equals')) {
+		return hash_equals($known_string, $user_string);
+	}
+
+	// Fallback implementation for PHP < 5.6
+	if (!is_string($known_string) || !is_string($user_string)) {
+		return false;
+	}
+
+	$known_len = strlen($known_string);
+	$user_len  = strlen($user_string);
+
+	if ($known_len !== $user_len) {
+		return false;
+	}
+
+	$result = 0;
+
+	for ($i = 0; $i < $known_len; $i++) {
+		$result |= ord($known_string[$i]) ^ ord($user_string[$i]);
+	}
+
+	return $result === 0;
 }
 
 /**
@@ -4639,7 +4679,7 @@ function auth_login_redirect($login_opts = '') {
 
 				cacti_log(sprintf("DEBUG: Referer from REDIRECT_URL with Value: '%s', Effective: '%s'", $_SERVER['REDIRECT_URL'], $referer), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 			} elseif (isset($_SERVER['HTTP_REFERER'])) {
-				$referer = $_SERVER['HTTP_REFERER'];
+				$referer = validate_redirect_url($_SERVER['HTTP_REFERER']);
 
 				if (auth_basename($referer) == 'logout.php') {
 					$referer = $config['url_path'] . 'index.php';
@@ -4704,7 +4744,7 @@ function auth_login_redirect($login_opts = '') {
 }
 
 /**
- * auth_basename - provides a URL knowledgable basename function
+ * auth_basename - provides a URL-knowledgeable basename function
  *
  * @param  (string) $referer - a URL that will included a basename
  *
@@ -4883,7 +4923,7 @@ function check_reset_no_authentication($auth_method) {
 
 		$_SESSION['sess_user_id'] = $admin_id;
 		$_SESSION['sess_change_password'] = true;
-		header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?action=force&ref=' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php'));
+		header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?action=force&ref=' . urlencode(validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php')));
 		exit;
 	}
 }
