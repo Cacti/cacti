@@ -1189,8 +1189,8 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	var graph_end   = <?php print get_current_graph_end();?>;
 	var timeOffset  = <?php print date('Z');?>;
 	var pageAction  = 'tree';
-	var graphPage   = '<?php print $config['url_path'];?>graph_view.php';
-	var hgd         = '<?php print $host_group_data;?>';
+	var graphPage   = <?php print json_encode($config['url_path'] . 'graph_view.php');?>;
+	var hgd         = <?php print json_encode($host_group_data);?>;
 	var date1Open   = false;
 	var date2Open   = false;
 
@@ -1285,7 +1285,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		$sql_where = '';
 
 		if (get_request_var('rfilter') != '') {
-			$sql_where .= " (gtg.title_cache RLIKE '" . get_request_var('rfilter') . "' OR gtg.title RLIKE '" . get_request_var('rfilter') . "')";
+			$sql_where .= ' (gtg.title_cache ' . db_qstr_rlike(get_request_var('rfilter')) . ' OR gtg.title ' . db_qstr_rlike(get_request_var('rfilter')) . ')';
 		}
 
 		if (isset_request_var('graph_template_id') && get_request_var('graph_template_id') >= 0) {
@@ -1336,7 +1336,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		}
 
 		if (get_request_var('rfilter') != '') {
-			$sql_where .= ($sql_where != '' ? ' AND ':'') . "(gtg.title_cache RLIKE '" . get_request_var('rfilter') . "')";
+			$sql_where .= ($sql_where != '' ? ' AND ' : '') . '(gtg.title_cache ' . db_qstr_rlike(get_request_var('rfilter')) . ')';
 		}
 
 		if (isset_request_var('graph_template_id') && get_request_var('graph_template_id') >= 0) {
@@ -1452,7 +1452,7 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 		if (cacti_sizeof($final_templates)) {
 			$sql_where = '';
 			if (get_request_var('rfilter') != '') {
-				$sql_where = " (gtg.title_cache RLIKE '" . get_request_var('rfilter') . "')";
+				$sql_where = ' (gtg.title_cache ' . db_qstr_rlike(get_request_var('rfilter')) . ')';
 			}
 
 			if ($host_id > 0) {
@@ -1522,7 +1522,7 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 				$sfd = get_formatted_data_query_indexes($host_id, $data_query['id']);
 
 				if (get_request_var('rfilter') != '') {
-					$sql_where = " (gtg.title_cache RLIKE '" . get_request_var('rfilter') . "')";
+					$sql_where = ' (gtg.title_cache ' . db_qstr_rlike(get_request_var('rfilter')) . ')';
 				}
 
 				/* grab a list of all graphs for this host/data query combination */
@@ -1558,7 +1558,7 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 					/* render each graph for the current data query index */
 					if (isset($snmp_index_to_graph[$snmp_index])) {
 						foreach ($snmp_index_to_graph[$snmp_index] as $local_graph_id => $graph_title) {
-							/* reformat the array so it's compatable with the html_graph* area functions */
+							/* reformat the array so it's compatible with the html_graph* area functions */
 							array_push($graph_list, array(
 								'data_query_name'  => $data_query['name'],
 								'sort_field_value' => $sort_field_value,

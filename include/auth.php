@@ -55,7 +55,7 @@ if ($version != CACTI_VERSION && !defined('IN_CACTI_INSTALL')) {
  * The logout page does not require authentication
  * so, short cut the process.
  */
-if (get_current_page() == 'logout.php') {
+if (get_current_page() == 'logout.php' || get_current_page() == 'auth_changepassword.php') {
 	return true;
 }
 

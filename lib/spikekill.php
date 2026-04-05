@@ -201,49 +201,49 @@ class spikekill {
 		/* set the correct value */
 		if ($this->avgnan == '') {
 			if (!empty($uavgnan)) {
-				$this->avgnan = $this->davgnan;
-			} else {
 				$this->avgnan = $uavgnan;
+			} else {
+				$this->avgnan = $this->davgnan;
 			}
 		}
 
 		if ($this->method == '') {
 			if (!empty($umethod)) {
-				$this->method = $this->dmethod;
-			} else {
 				$this->method = $umethod;
+			} else {
+				$this->method = $this->dmethod;
 			}
 		}
 
 		if ($this->numspike == '') {
 			if (!empty($unumspike)) {
-				$this->numspike = $this->dnumspike;
-			} else {
 				$this->numspike = $unumspike;
+			} else {
+				$this->numspike = $this->dnumspike;
 			}
 		}
 
 		if ($this->stddev == '') {
 			if (!empty($ustddev)) {
-				$this->stddev = $this->dstddev;
-			} else {
 				$this->stddev = $ustddev;
+			} else {
+				$this->stddev = $this->dstddev;
 			}
 		}
 
 		if ($this->percent == '') {
 			if (!empty($upercent)) {
-				$this->percent = $this->dpercent;
-			} else {
 				$this->percent = $upercent;
+			} else {
+				$this->percent = $this->dpercent;
 			}
 		}
 
 		if ($this->outliers == '') {
 			if (!empty($uoutliers)) {
-				$this->outliers = $this->doutliers;
-			} else {
 				$this->outliers = $uoutliers;
+			} else {
+				$this->outliers = $this->doutliers;
 			}
 		}
 
