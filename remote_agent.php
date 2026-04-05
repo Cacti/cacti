@@ -266,6 +266,11 @@ function get_snmp_data() {
 	$host_id = get_filter_request_var('host_id');
 	$oid     = get_nfilter_request_var('oid');
 
+	if (!is_string($oid) || !preg_match('/^[0-9.]+$/', $oid)) {
+		print 'U';
+		return;
+	}
+
 	if (!empty($host_id)) {
 		$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($host_id));
 		$session = cacti_snmp_session($host['hostname'], $host['snmp_community'], $host['snmp_version'],
@@ -287,6 +292,11 @@ function get_snmp_data() {
 function get_snmp_data_walk() {
 	$host_id = get_filter_request_var('host_id');
 	$oid     = get_nfilter_request_var('oid');
+
+	if (!is_string($oid) || !preg_match('/^[0-9.]+$/', $oid)) {
+		print 'U';
+		return;
+	}
 
 	if (!empty($host_id)) {
 		$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($host_id));
