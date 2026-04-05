@@ -27,7 +27,8 @@ include('./include/auth.php');
 $version = get_cacti_version();
 
 if (isset($_SERVER['HTTP_REFERER'])) {
-	$goBack = "<td colspan='2' class='center'>[<a href='" . $_SERVER['HTTP_REFERER'] . "'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
+	$redirect = validate_redirect_url($_SERVER['HTTP_REFERER'], 'index.php');
+	$goBack = "<td colspan='2' class='center'>[<a href='" . $redirect . "'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
 } else {
 	$goBack = "<td colspan='2' class='center'>[<a href='#' onClick='window.history.back()'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
 }

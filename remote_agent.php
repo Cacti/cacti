@@ -145,6 +145,30 @@ function remote_client_authorized() {
 
 	$client_name = gethostbyaddr($client_addr);
 
+	/* Forward-verify PTR result to prevent DNS spoofing */
+	if ($client_name != $client_addr) {
+		$forward_records = @dns_get_record($client_name, DNS_A + DNS_AAAA);
+		$forward_match   = false;
+
+		if (is_array($forward_records)) {
+			foreach ($forward_records as $record) {
+				$ip = isset($record['ip']) ? $record['ip'] : (isset($record['ipv6']) ? $record['ipv6'] : '');
+
+				if ($ip === $client_addr) {
+					$forward_match = true;
+					break;
+				}
+			}
+		}
+
+		if (!$forward_match) {
+			$safe_name = preg_replace('/[^a-zA-Z0-9.\-:]/', '', $client_name);
+			cacti_log('WARNING: PTR record for ' . $client_addr . ' resolves to ' . $safe_name . ' but forward lookup does not match. Rejecting.', false, 'SECURITY');
+
+			return false;
+		}
+	}
+
 	if ($client_name == $client_addr) {
 		cacti_log('NOTE: Unable to resolve hostname from address ' . $client_addr, false, 'WEBUI', POLLER_VERBOSITY_MEDIUM);
 	}
