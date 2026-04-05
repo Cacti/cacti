@@ -322,7 +322,7 @@ if (empty($_SESSION[SESS_USER_ID])) {
 
 		if (isset($_SERVER['HTTP_REFERER'])) {
 			$goBack = "<td colspan='2' class='center'>[<a href='" . validate_redirect_url($_SERVER['HTTP_REFERER'], $_SERVER['SCRIPT_NAME']) . "'>" . __('Return') . "</a> | <a href='" . CACTI_PATH_URL . "logout.php'>" . __('Login Again') . "</a>]</td>";
-		} elseif ($auth_method != 2 && $auth_method > 0) {
+		} elseif ($auth_method != AUTH_METHOD_BASIC) {
 			$goBack = "<td colspan='2' class='center'>[<a href='" . CACTI_PATH_URL . "logout.php'>" . __('Login Again') . "</a>]</td>";
 		} else {
 			$goBack = '';
