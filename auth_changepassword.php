@@ -41,40 +41,34 @@ switch ($action) {
 
 		break;
 	default:
-		// If the user is not logged in, redirect them to the login page
+		/**
+		 * If the user is not logged in, redirect back to the page they came
+		 * of the login page.
+		 */
 		if (!isset($_SESSION['sess_user_id'])) {
-			if (isset($_SERVER['HTTP_REFERER'])) {
-				header('Location: ' . $_SERVER['HTTP_REFERER']);
-			} else {
-				header('Location: index.php');
-			}
-
-			header('Location: index.php');
+			$referer = validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '', 'index.php');
+			header("Location: $referer");
 			exit;
 		}
 }
 
-if (isset($_SERVER['HTTP_REFERER'])) {
-	$return = $_SERVER['HTTP_REFERER'];
+$return = validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '', 'index.php');
 
-	if (basename($return) != 'auth_changepassword.php') {
-		if (strpos($return, '/plugins/') !== false) {
-			$parts  = explode('/plugins/', $return);
-			$return = $config['url_path'] . 'plugins/' . $parts[1];
-		} else {
-			$return = $config['url_path'] . basename($return);
-		}
-
-		$_SESSION['acp_return'] = $return;
+if (basename($return) != 'auth_changepassword.php') {
+	if (strpos($return, '/plugins/') !== false) {
+		$parts  = explode('/plugins/', $return);
+		$return = $config['url_path'] . 'plugins/' . $parts[1];
 	} else {
-		if (isset($_SESSION['acp_return'])) {
-			$return = $_SESSION['acp_return'];
-		} else {
-			$return = $config['url_path'] . 'index.php';
-		}
+		$return = $config['url_path'] . basename($return);
 	}
+
+	$_SESSION['acp_return'] = $return;
 } else {
-	$return = $config['url_path'] . 'index.php';
+	if (isset($_SESSION['acp_return'])) {
+		$return = $_SESSION['acp_return'];
+	} else {
+		$return = $config['url_path'] . 'index.php';
+	}
 }
 
 $user = db_fetch_row_prepared('SELECT *
@@ -91,14 +85,9 @@ if (!cacti_sizeof($user) || $user['realm'] != 0) {
 		raise_message('nodomainpassword');
 	}
 
-	if (isset($_SERVER['HTTP_REFERER'])) {
-		$_ref = sanitize_uri($_SERVER['HTTP_REFERER']);
-		$_ref_host = parse_url($_ref, PHP_URL_HOST);
-		$_srv_host = preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST']);
-		header('Location: ' . (($_ref_host === null || $_ref_host === $_srv_host) ? $_ref : 'index.php'));
-	} else {
-		header('Location: index.php');
-	}
+	$return = validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '', 'index.php');
+
+	header("Location: $return");
 
 	exit;
 }
@@ -110,14 +99,10 @@ if ($user['password_change'] != 'on') {
 	kill_session_var('sess_user_id');
 	cacti_cookie_logout();
 
-	if (isset($_SERVER['HTTP_REFERER'])) {
-		$_ref = sanitize_uri($_SERVER['HTTP_REFERER']);
-		$_ref_host = parse_url($_ref, PHP_URL_HOST);
-		$_srv_host = preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST']);
-		header('Location: ' . (($_ref_host === null || $_ref_host === $_srv_host) ? $_ref : 'index.php'));
-	} else {
-		header('Location: index.php');
-	}
+	$return = validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '', 'index.php');
+
+	header("Location: $return");
+
 	exit;
 }
 
