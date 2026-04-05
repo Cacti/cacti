@@ -842,8 +842,10 @@ function get_order_string() {
 
 	if (isset($_SESSION['sort_string'][$page])) {
 		return $_SESSION['sort_string'][$page];
-	} else {
+	} elseif ($sort_column != '') {
 		return 'ORDER BY ' . $del . implode($del . '.' . $del, explode('.', get_request_var('sort_column'))) . $del . ' ' . get_request_var('sort_direction');
+	} else {
+		return '';
 	}
 }
 
@@ -891,6 +893,11 @@ function validate_redirect_url($url = '', $default = 'index.php') {
 	}
 
 	$url = trim($url);
+
+	// Decode the url to make it readable if encoded
+	if (is_urlencoded($url)) {
+		$url = urldecode($url);
+	}
 
 	// reject URLs with protocol schemes (external redirects, javascript:, data:)
 	$bad_strings = array(
