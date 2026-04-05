@@ -4510,7 +4510,7 @@ function sanitize_uri($uri) {
 		''
 	);
 
-	if (is_urlencoded($string)) {
+	if (is_urlencoded($uri)) {
 		$uri = urldecode($uri);
 	}
 
