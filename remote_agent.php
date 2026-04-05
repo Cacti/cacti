@@ -159,6 +159,30 @@ function remote_client_authorized() : bool {
 		$client_name = remote_agent_strip_domain($client_name);
 	}
 
+	if ($client_name != $client_addr) {
+		$forward_records = @dns_get_record($client_name, DNS_A | DNS_AAAA);
+		$forward_match   = false;
+
+		if (is_array($forward_records)) {
+			foreach ($forward_records as $record) {
+				$ip = isset($record['ip']) ? $record['ip'] : (isset($record['ipv6']) ? $record['ipv6'] : '');
+
+				if ($ip === $client_addr) {
+					$forward_match = true;
+
+					break;
+				}
+			}
+		}
+
+		if (!$forward_match) {
+			$safe_name = preg_replace('/[^a-zA-Z0-9.\-:]/', '', $client_name);
+			cacti_log('WARNING: PTR record for ' . $client_addr . ' resolves to ' . $safe_name . ' but forward lookup does not match. Rejecting.', false, 'SECURITY');
+
+			return false;
+		}
+	}
+
 	$pollers = db_fetch_assoc('SELECT * FROM poller WHERE disabled = ""', true, $poller_db_cnn_id);
 
 	if (cacti_sizeof($pollers) > 1) {
