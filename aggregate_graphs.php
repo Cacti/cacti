@@ -1076,7 +1076,7 @@ function graph_edit() : bool {
 	} elseif (cacti_sizeof($graphs)) {
 		$template = [];
 	} else {
-		raise_message('missing_aggregate', __('Aggregate Graph Accessed does not Exist'), MESSAGE_LEVEL_ERROR);
+		raise_message('missing_aggregate', __('Aggregate Graph Accessed does not exist'), MESSAGE_LEVEL_ERROR);
 
 		$referer = validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '', 'aggregate_graphs.php');
 
