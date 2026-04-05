@@ -1095,7 +1095,7 @@ function reports_expand_device(&$report, $item, $device_id, $output, $format_ok,
 	if (cacti_sizeof($graph_templates)) {
 		foreach ($graph_templates as $id => $name) {
 			if ($item['graph_name_regexp'] != '') {
-				$sql_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
+				$sql_where .= " AND title_cache REGEXP " . db_qstr($item['graph_name_regexp']);
 			}
 
 			$graphs = db_fetch_assoc_prepared("SELECT
@@ -1286,7 +1286,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 			}
 
 			if ($item['graph_name_regexp'] != '') {
-				$sql_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
+				$sql_where .= " AND title_cache REGEXP " . db_qstr($item['graph_name_regexp']);
 			}
 
 			if ($leaf_type == 'header' && $nested) {
@@ -1330,7 +1330,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 			} elseif ($leaf_type == 'graph' && $nested) {
 				$gr_where = '';
 				if ($item['graph_name_regexp'] != '') {
-					$gr_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
+					$gr_where .= " AND title_cache REGEXP " . db_qstr($item['graph_name_regexp']);
 				}
 
 				$graph = db_fetch_row("SELECT local_graph_id, title_cache
@@ -1345,7 +1345,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 			} elseif ($leaf_type == 'graph') {
 				$gr_where = '';
 				if ($item['graph_name_regexp'] != '') {
-					$gr_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
+					$gr_where .= " AND title_cache REGEXP " . db_qstr($item['graph_name_regexp']);
 				}
 
 				$graph = db_fetch_cell("SELECT count(*)
