@@ -1437,11 +1437,7 @@ function get_order_string_page(bool $increment = true) : string {
 }
 
 /**
- * Validates if the given string is a valid regular expression.
- *
- * This function checks if the provided regular expression is valid and safe to use.
- * It prevents exploits by limiting the length of the regular expression to 50 bytes
- * and disallowing the use of the semicolon character.
+ * Validate the redirect url provider by the HTTP_REFERER from PHP
  *
  * @param string $url     The regular expression to validate.
  * @param string $default The URL to travel to upon failure
@@ -1510,7 +1506,18 @@ function validate_redirect_url($url = '', $default = 'index.php') {
 	}
 }
 
-function validate_is_regex($regex) {
+/**
+ * Validates if the given string is a valid regular expression.
+ *
+ * This function checks if the provided regular expression is valid and safe to use.
+ * It prevents exploits by limiting the length of the regular expression to 50 bytes
+ * and disallowing the use of the semicolon character.
+ *
+ * @param string $regex The regular expression to validate.
+ *
+ * @return bool|string Returns true if the regular expression is valid, otherwise returns an error message string.
+ */
+function validate_is_regex(string $regex) : bool|string {
 	if ($regex == '') {
 		return true;
 	}

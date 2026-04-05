@@ -1027,7 +1027,7 @@ function graph_edit() : bool {
 		$_SESSION['aggregate_referer'] = 'aggregate_graphs.php';
 	}
 
-	$referer = isset($_SESSION['aggregate_referer']) ? $_SESSION['aggregate_referer'] : 'aggregate_graphs.php';
+	$referer = $_SESSION['aggregate_referer'];
 
 	$use_graph_template = false;
 	$aginfo             = [];
