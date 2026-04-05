@@ -5046,7 +5046,7 @@ function sanitize_search_string(string $string) : string {
  *
  * @return string The sanitized uri
  */
-function sanitize_uri($uri) {
+function sanitize_uri(string $uri) : string {
 	static $drop_char_match = array(
 		'^', '$',
 		'<', '>',
@@ -5091,7 +5091,7 @@ function sanitize_uri($uri) {
  *
  * @return boolean - true is the string is urlencoded otherwise false
  */
-function is_urlencoded($string) {
+function is_urlencoded(string $string) : bool {
 	if ($string != urldecode($string)) {
 		return true;
 	} else {
@@ -5106,7 +5106,7 @@ function is_urlencoded($string) {
  *
  * @return bool true is the string is base64 otherwise false
  */
-function is_base64_encoded($data) {
+function is_base64_encoded(string $data) : bool {
 	// Perform a simple check first
 	if (!preg_match('/^[a-zA-Z0-9\/\r\n+]*={0,2}$/', $data)) {
 		return false;
