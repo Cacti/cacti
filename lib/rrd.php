@@ -1640,18 +1640,6 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				/* FOR WIN32: Escape all colon for drive letters (ex. D\:/path/to/rra) */
 				$data_source_path = rrdtool_escape_string($data_source_path);
 
-				if (!file_exists($data_source_path)) {
-					if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
-						cacti_log("WARNING: RRD file '$data_source_path' does not exist", false, 'GRAPH');
-					}
-
-					if (isset($graph_data_array['export_csv'])) {
-						return false;
-					}
-
-					return rrdtool_create_error_image(__('The Cacti Poller has not run yet.'));
-				}
-
 				if (!empty($data_source_path)) {
 					/* NOTE: (Update) Data source DEF names are created using the graph_item_id; then passed
 					to a function that matches the digits with letters. rrdtool likes letters instead
