@@ -1394,7 +1394,7 @@ function get_order_string() : string {
  * @return void
  */
 function remove_column_from_order_string(string $column) : void {
-	$page = get_order_string_page(true);
+	$page = get_order_string_page(false);
 
 	if (isset($_SESSION['sort_data'][$page][$column])) {
 		unset($_SESSION['sort_data'][$page][$column]);
