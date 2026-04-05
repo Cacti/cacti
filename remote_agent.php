@@ -248,7 +248,7 @@ function get_graph_data() {
 
 	/* set the theme */
 	if (isset_request_var('effective_user')) {
-		$user = (int) get_request_var('effective_user');
+		$user = get_request_var('effective_user');
 	} else {
 		$user = 0;
 	}
