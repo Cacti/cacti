@@ -255,6 +255,11 @@ function rrdtool_execute() {
 function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pipe = false, $logopt = 'WEBLOG') {
 	global $config;
 
+	if (is_array($command_line)) {
+		$cmd = array_shift($command_line);
+		$command_line = $cmd . ' ' . implode(' ', array_map('cacti_escapeshellarg', $command_line));
+	}
+
 	static $last_command;
 
 	if (!is_numeric($output_flag)) {
@@ -1637,6 +1642,21 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$data_source_path = get_data_source_path($graph_item['local_data_id'], true);
 				}
 
+				if (!rrdtool_file_exists($data_source_path, $rrdtool_pipe)) {
+					if (isset($graph_data_array['export_csv'])) {
+						return false;
+					}
+
+					// Both get_error (STDERR output) and print_source (HTML debug view)
+					// are text-output modes; returning PNG bytes in either would produce
+					// garbage in the browser or CLI. Return a human-readable error instead.
+					if (isset($graph_data_array['get_error']) || isset($graph_data_array['print_source'])) {
+						return __('ERROR: RRD file does not exist: %s', $data_source_path);
+					}
+
+					return rrdtool_create_error_image(__('The Cacti Poller has not run yet.'));
+				}
+
 				/* FOR WIN32: Escape all colon for drive letters (ex. D\:/path/to/rra) */
 				$data_source_path = rrdtool_escape_string($data_source_path);
 
@@ -2726,6 +2746,28 @@ function rrdtool_function_get_resstep($local_data_ids, $graph_start, $graph_end,
 }
 
 /**
+ * rrdtool_file_exists - given a data source path check either
+ * the local file system of the rrdtool proxy to see if the
+ * data source path exists.
+ *
+ * @param string $data_source_path The data source rrdfile path
+ * @param mixed  $rrdtool_pipe     The rrdtool pipe if available
+ *
+ * @return bool A boolean to tell if the file exists
+ */
+function rrdtool_file_exists(string $data_source_path, mixed $rrdtool_pipe = null) : bool {
+	if (read_config_option('storage_location')) {
+		if (!rrdtool_execute("file_exists $data_source_path", true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER')) {
+			return false;
+		}
+	} elseif (!file_exists($data_source_path)) {
+		return false;
+	}
+
+	return true;
+}
+
+/**
  * rrdtool_function_info - given a data source id, return rrdtool info array
  *
  * @param  (int)   $local_data_id - data source id
@@ -2972,7 +3014,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 				}
 
 				/**
-				 * Accomodate a Cacti bug where the heartbeat was not
+				 * Accommodate a Cacti bug where the heartbeat was not
 				 * propagated.
 				 */
 				if ($data_source['minimal_heartbeat'] != $profile_heartbeat) {
@@ -2998,7 +3040,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 					$diff['tune'][] = $info['filename'] . ' ' . '--data-source-type ' . $data_source_name . ':' . $data_source['type'];
 				}
 
-				/* check the mimimal heartbeat */
+				/* check the minimal heartbeat */
 				if ($data_source['minimal_heartbeat'] != $info['ds'][$data_source_name]['minimal_heartbeat']) {
 					$diff['ds'][$data_source_name]['minimal_heartbeat'] = __("Heartbeat for Data Source '%s' should be '%s'", $data_source_name, $data_source['minimal_heartbeat']);
 					$diff['tune'][] = $info['filename'] . ' ' . '--heartbeat ' . $data_source_name . ':' . $data_source['minimal_heartbeat'];
@@ -3072,7 +3114,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 						$file_rra['pdp_per_row'] = 0;
 					}
 
-					/* corrrect issue with older rrdtools */
+					/* correct issue with older rrdtools */
 					$file_rra['cf'] = trim($file_rra['cf'], '"');
 
 					if ($cacti_rra['cf'] == $file_rra['cf'] && $cacti_rra_id == $file_rra_id) {
@@ -4109,12 +4151,19 @@ function gradient($vname = false, $start_color = '#0000a0', $end_color = '#f0f0f
 }
 
 /**
- * colourBrightness - Add colourBrightness support for the gradient charts. This function calculates the darker version of a given color
+ * colourBrightness - Adjust the brightness of a hex color for gradient charts.
+ * Positive percent lightens; negative percent darkens.
  *
- * @param  (bool)   $hex     - The hex representation of a color
- * @param  (string) $percent - the percentage to darken the given color. decimal number ( 0.4 -> 40% )
+ * @param  (string) $hex     - The hex representation of a color (with or without leading #)
+ * @param  (float)  $percent - Brightness adjustment: decimal in [-1, 1] (e.g. 0.4 = +40%)
+ *                             or coerced integer in [-100, 100] (e.g. 40 = +40%). Values
+ *                             outside [-100, 100] are normalized then clamped to [-1, 1].
+ *                             NOTE: values in the open interval (1.0, 2.0) are treated as
+ *                             integers and divided by 100 (e.g. 1.5 -> 0.015). The value
+ *                             1.0 itself is NOT divided — it means 100% original color
+ *                             (the identity). Use 0.01 to express "1% brighter".
  *
- * @return (string) - the darker version of the given color
+ * @return (string) - the adjusted color in the same format as the input
  *
  * License:			GPLv2
  * Original Code		http://www.barelyfitz.com/projects/csscolor/
@@ -4132,14 +4181,22 @@ function colourBrightness($hex, $percent) {
 	$rgb = array(hexdec(substr($hex, 0, 2)), hexdec(substr($hex, 2, 2)), hexdec(substr($hex, 4, 2)));
 
 	//// CALCULATE
+	if (abs($percent) > 1) {
+		$percent = $percent / 100;
+	}
+
 	for ($i = 0; $i < 3; $i++) { // See if brighter or darker
 		if ($percent > 0) {
 			// Lighter
 			$rgb[$i] = round($rgb[$i] * $percent) + round(255 * (1 - $percent));
 		} else {
 			// Darker
-			$positivePercent = $percent - ($percent*2);
-			$rgb[$i] = round($rgb[$i] * (1 - $positivePercent)); // round($rgb[$i] * (1-$positivePercent));
+			$positivePercent = abs($percent);
+			$rgb[$i] = round($rgb[$i] * (1 - $positivePercent));
+		}
+
+		if ($rgb[$i] < 0) {
+			$rgb[$i] = 0;
 		}
 
 		// In case rounding up causes us to go to 256

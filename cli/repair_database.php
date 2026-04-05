@@ -695,7 +695,7 @@ function snmp_index_repairs() {
 		printf('Detailed SNMP Index Checks and Repairs.' . PHP_EOL . PHP_EOL);
 	}
 
-	printf('NOTE: Searching for Data Sources with damaged Data Query infromation' . PHP_EOL);
+	printf('NOTE: Searching for Data Sources with damaged Data Query information' . PHP_EOL);
 	printf('      using multiple techniques to attempt the repair.' . PHP_EOL);
 
 	// Correct bad hostnames and host_id's in the data_input_data table
@@ -776,7 +776,7 @@ function snmp_index_repairs() {
 		$total_errors  += $fixes;
 		$total_repairs += $fixes;
 	} else {
-		printf('NOTE: Found 0 Data Sources with invalid Device infromation.' . PHP_EOL);
+		printf('NOTE: Found 0 Data Sources with invalid Device information.' . PHP_EOL);
 	}
 
 	// Correct issues with non-checked data input columns that must be checked.

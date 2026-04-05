@@ -265,7 +265,16 @@ function reports_form_save() {
 		if (isempty_request_var('id')) {
 			$save['user_id'] = $_SESSION['sess_user_id'];
 		} else {
-			$save['user_id'] = db_fetch_cell_prepared('SELECT user_id FROM reports WHERE id = ?', array(get_nfilter_request_var('id')));
+			$owner_id = db_fetch_cell_prepared('SELECT user_id FROM reports WHERE id = ?', array(get_nfilter_request_var('id')));
+
+			if ($owner_id != $_SESSION['sess_user_id'] && !is_realm_allowed(21)) {
+				raise_message('permission_denied');
+				header('Location: reports.php');
+
+				exit;
+			}
+
+			$save['user_id'] = $owner_id;
 		}
 
 		$save['id']            = get_nfilter_request_var('id');
@@ -274,7 +283,7 @@ function reports_form_save() {
 		$save['enabled']       = (isset_request_var('enabled') ? 'on' : '');
 
 		$save['cformat']       = (isset_request_var('cformat') ? 'on' : '');
-		$save['format_file']   = get_nfilter_request_var('format_file');
+		$save['format_file']   = basename(get_nfilter_request_var('format_file'));
 		$save['font_size']     = form_input_validate(get_nfilter_request_var('font_size'), 'font_size', '^[0-9]+$', false, 3);
 		$save['alignment']     = form_input_validate(get_nfilter_request_var('alignment'), 'alignment', '^[0-9]+$', false, 3);
 		$save['graph_linked']  = (isset_request_var('graph_linked') ? 'on' : '');
@@ -1458,6 +1467,13 @@ function reports_edit() {
 	$report = array();
 	if (get_filter_request_var('id') > 0) {
 		$report = db_fetch_row_prepared('SELECT * FROM reports WHERE id = ?', array(get_request_var('id')));
+
+		if (!empty($report) && $report['user_id'] != $_SESSION['sess_user_id'] && !is_realm_allowed(21)) {
+			raise_message('permission_denied');
+			header('Location: reports.php');
+
+			exit;
+		}
 	}
 
 	reports_tabs(get_request_var('id'));

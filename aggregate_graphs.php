@@ -1122,7 +1122,7 @@ function aggregate_items() {
 	if (get_request_var('rfilter') == '') {
 		$sql_where = '';
 	} elseif (validate_is_regex(get_request_var('rfilter'))) {
-		$sql_where = "WHERE gtg.title_cache RLIKE '" . get_request_var('rfilter') . "'";
+		$sql_where = 'WHERE gtg.title_cache ' . db_qstr_rlike(get_request_var('rfilter'));
 	} else {
 		$filters = explode(' ', get_request_var('rfilter'));
 		$sql_where = '';
@@ -1238,7 +1238,7 @@ function aggregate_items() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='45' onChange='applyFilter()' value='<?php print get_request_var('rfilter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='45' onChange='applyFilter()' value='<?php print html_escape_request_var('rfilter');?>'>
 					</td>
 					<td>
 						<?php print __('Graphs');?>

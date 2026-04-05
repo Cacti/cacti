@@ -326,7 +326,7 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 	return false;
 }
 
-/* api_get_graphs_from_datasource - get's all graphs related to a data source
+/* api_get_graphs_from_datasource - gets all graphs related to a data source
    @arg $local_data_id - the id of the data source
    @returns - array($id => $name_cache) returns the graph id's and names of the graphs
   */

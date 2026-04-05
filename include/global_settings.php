@@ -932,7 +932,7 @@ $settings = array(
 		),
 		'default_graphs_new_dropdown' => array(
 			'friendly_name' => __('Default Graph Type'),
-			'description' => __('When creating graphs, what Graph Type would you like pre-selected?'),
+			'description' => __('When creating graphs, what Graph Type would you like preselected?'),
 			'method' => 'drop_array',
 			'default' => '-2',
 			'array' => array(
@@ -1611,7 +1611,7 @@ $settings = array(
 		),
 		'secpass_history' => array(
 			'friendly_name' => __('Password History'),
-			'description' => __('Remember this number of old passwords and disallow re-using them.'),
+			'description' => __('Remember this number of old passwords and disallow reusing them.'),
 			'method' => 'drop_array',
 			'default' => '0',
 			'array' => array(

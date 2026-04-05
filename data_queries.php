@@ -457,7 +457,7 @@ function data_query_item_movedown_gsv() {
 	get_filter_request_var('snmp_query_graph_id');
 	/* ==================================================== */
 
-	move_item_down('snmp_query_graph_sv', get_request_var('id'), 'snmp_query_graph_id=' . get_request_var('snmp_query_graph_id') . " AND field_name = " . db_qstr(get_nfilter_request_var('field_name')));
+	move_item_down('snmp_query_graph_sv', get_request_var('id'), array('snmp_query_graph_id' => get_request_var('snmp_query_graph_id'), 'field_name' => get_nfilter_request_var('field_name')));
 }
 
 function data_query_item_moveup_gsv() {
@@ -466,7 +466,7 @@ function data_query_item_moveup_gsv() {
 	get_filter_request_var('snmp_query_graph_id');
 	/* ==================================================== */
 
-	move_item_up('snmp_query_graph_sv', get_request_var('id'), 'snmp_query_graph_id=' . get_request_var('snmp_query_graph_id') . " AND field_name = " . db_qstr(get_nfilter_request_var('field_name')));
+	move_item_up('snmp_query_graph_sv', get_request_var('id'), array('snmp_query_graph_id' => get_request_var('snmp_query_graph_id'), 'field_name' => get_nfilter_request_var('field_name')));
 }
 
 function data_query_item_remove_gsv() {
@@ -486,7 +486,7 @@ function data_query_item_movedown_dssv() {
 	get_filter_request_var('snmp_query_graph_id');
 	/* ==================================================== */
 
-	move_item_down('snmp_query_graph_rrd_sv', get_request_var('id'), 'data_template_id=' . get_request_var('data_template_id') . ' AND snmp_query_graph_id=' . get_request_var('snmp_query_graph_id') . " AND field_name = " . db_qstr(get_nfilter_request_var('field_name')));
+	move_item_down('snmp_query_graph_rrd_sv', get_request_var('id'), array('data_template_id' => get_request_var('data_template_id'), 'snmp_query_graph_id' => get_request_var('snmp_query_graph_id'), 'field_name' => get_nfilter_request_var('field_name')));
 }
 
 function data_query_item_moveup_dssv() {
@@ -496,7 +496,7 @@ function data_query_item_moveup_dssv() {
 	get_filter_request_var('snmp_query_graph_id');
 	/* ==================================================== */
 
-	move_item_up('snmp_query_graph_rrd_sv', get_request_var('id'), 'data_template_id=' . get_request_var('data_template_id') . ' AND snmp_query_graph_id=' . get_request_var('snmp_query_graph_id') . " AND field_name = " . db_qstr(get_nfilter_request_var('field_name')));
+	move_item_up('snmp_query_graph_rrd_sv', get_request_var('id'), array('data_template_id' => get_request_var('data_template_id'), 'snmp_query_graph_id' => get_request_var('snmp_query_graph_id'), 'field_name' => get_nfilter_request_var('field_name')));
 }
 
 function data_query_sv_check_sequences($type, $snmp_query_graph_id, $field_name) {
@@ -539,7 +539,7 @@ function data_query_sv_check_sequences($type, $snmp_query_graph_id, $field_name)
 
 	if ($bad_seq > 0 || $dup_seq > 0) {
 		// resequence the list so it has no gaps, and 0 values will appear at the top
-		// since thats where they would have been displayed
+		// since that's where they would have been displayed
 		db_execute_prepared("SET @seq = 0;
 			UPDATE $table
 			SET sequence = (@seq:=@seq+1)

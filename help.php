@@ -46,15 +46,18 @@ if (isset_request_var('error')) {
 } elseif (isset_request_var('page')) {
 	get_filter_request_var('page', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
 
-	$page = str_replace('.html', '.md', get_request_var('page'));
+	$page = basename(str_replace('.html', '.md', get_request_var('page')));
 
 	$fgc_contextoption = array(
 		'ssl' => array(
-			'verify_peer'       => false,
-			'verify_peer_name'  => false,
-			'allow_self_signed' => true,
+			'verify_peer'       => true,
+			'verify_peer_name'  => true,
+			'allow_self_signed' => false,
 			'timeout'           => 2,
 			'ignore_errors'     => true
+		),
+		'http' => array(
+			'follow_location' => 0
 		)
 	);
 

@@ -313,7 +313,7 @@ function display_help () {
 
 	print PHP_EOL . 'usage: poller_dsstats.php [--force] [--debug]' . PHP_EOL . PHP_EOL;
 
-	print 'Cacti\'s Data Source Statics poller.  This poller will periodically' . PHP_EOL;
+	print 'Cacti\'s Data Source Statistics poller.  This poller will periodically' . PHP_EOL;
 	print 'to calculate Data Source statistics for Cacti and works in conjunction' . PHP_EOL;
 	print 'with Cacti\'s performance boosting poller as required.' . PHP_EOL . PHP_EOL;
 
