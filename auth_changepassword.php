@@ -44,7 +44,7 @@ switch ($action) {
 		 * If the user is not logged in, redirect them back to the page
 		 * they came from, or to the login page.
 		 */
-		if (!isset($_SESSION['sess_user_id'])) {
+		if (!isset($_SESSION[SESS_USER_ID])) {
 			$referer = validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '', 'index.php');
 			header("Location: $referer");
 			exit;
