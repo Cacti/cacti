@@ -1444,7 +1444,6 @@ function get_order_string_page($increment = true) : string {
  *
  * @return string The validated URL, or the provided $default if invalid
  */
- */
 function validate_redirect_url($url = '', $default = 'index.php') {
 	if ($url === '') {
 		return $default;
