@@ -1953,7 +1953,9 @@ function db_qstr($s, $db_conn = false) {
 		return $db_conn->quote($s);
 	}
 
-	$s = str_replace(array('\\', "\0", "'"), array('\\\\', "\\\0", "\\'"), $s);
+	cacti_log('WARNING: db_qstr() called without a valid database connection. Escaping may be unsafe.', false, 'DBCALL');
+
+	$s = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $s);
 
 	return  "'" . $s . "'";
 }
@@ -2193,69 +2195,67 @@ function db_switch_main_to_local() {
 function db_dump_data($database = '', $tables = '', $credentials = array(), $output_file = false, $options = '--extended-insert=FALSE') {
 	global $database_default, $database_username, $database_password;
 
-	$credentials_string = '';
+	$database    = ($database == '') ? $database_default : $database;
+	$output_file = ($output_file === false) ? '/tmp/cacti.dump.sql' : $output_file;
 
-	if ($database == '') {
-		$database = $database_default;
+	/* Extract username and password from credentials array or globals */
+	$username = isset($credentials['user']) ? $credentials['user'] : (isset($credentials['--user']) ? $credentials['--user'] : $database_username);
+	$password = isset($credentials['password']) ? $credentials['password'] : (isset($credentials['--password']) ? $credentials['--password'] : $database_password);
+
+	/* Use mariadb-dump if available to avoid deprecation warnings on MariaDB */
+	$dump_binary = 'mysqldump';
+	if (file_exists('/usr/bin/mariadb-dump') || file_exists('/usr/local/bin/mariadb-dump')) {
+		$dump_binary = 'mariadb-dump';
 	}
 
-	if (cacti_sizeof($credentials)) {
-		foreach ($credentials as $key => $value) {
-			$name = trim($key);
-			if (strstr($name, '--') !== false) {      //name like --host
-				if($name == '--password') {
-					$password = $value;
-				} elseif ($name == '--user') {
-					$username = $value;
-				} else {
-					$credentials_string .= $name . '=' . $value . ' ';
-				}
-			} elseif(strstr($name, '-') !== false) { //name like -h
-				if($name == '-p') {
-					$password = $value;
-				} elseif ($name == '-u') {
-					$username = $value;
-				} else {
-					$credentials_string .= $name . $value . ' ';
-				}
-			} else {                                  //name like host
-				if($name == 'password') {
-					$password = $value;
-				} elseif ($name == 'user') {
-					$username = $value;
-				} else {
-					$credentials_string .= '--' . $name . '=' . $value . ' ';
-				}
+	$command = array(
+		$dump_binary,
+		$options,
+		'-u',
+		$username,
+		$database
+	);
+
+	/* Safely parse and append table names */
+	if (trim($tables) != '') {
+		$table_arr = is_array($tables) ? $tables : explode(' ', trim($tables));
+
+		foreach ($table_arr as $table) {
+			if (trim($table) != '') {
+				$command[] = trim($table);
 			}
 		}
 	}
 
-	if (!isset($password)) {
-		$password = $database_password;
+	$env = array(
+		'MYSQL_PWD' => $password
+	);
+
+	$descriptors = array(
+		1 => array('file', $output_file, 'w'),
+		2 => array('pipe', 'w')
+	);
+
+	/* Construct safe shell arguments using cacti_escapeshellarg */
+	$cmd_string = '';
+
+	foreach ($command as $arg) {
+		$cmd_string .= cacti_escapeshellarg($arg) . ' ';
 	}
 
-	if (!isset($username)) {
-		$username = $database_username;
+	$process = proc_open(trim($cmd_string), $descriptors, $pipes, null, $env);
+
+	if (!is_resource($process)) {
+		cacti_log("ERROR: Failed to initialize mysqldump process for database '$database'", false, 'DBCALL');
+
+		return 1;
 	}
 
-	if ($output_file === false) {
-		$output_file = '/tmp/cacti.dump.sql';
-	}
+	fclose($pipes[2]);
+	$retval = proc_close($process);
 
-	$safe_database   = cacti_escapeshellarg($database);
-	$safe_output     = cacti_escapeshellarg($output_file);
-
-	if (strstr($options, '--defaults-extra-file') !== false) {
-		exec("mysqldump $options $credentials_string $safe_database $tables > " . $safe_output, $output, $retval);
-	} else {
-		exec("mysqldump $options $credentials_string " . $safe_database . ' version >/dev/null 2>&1', $output, $retval);
-
-		if ($retval) {
-			$pass_arg = ($password != '') ? ' -p' . cacti_escapeshellarg($password) : '';
-			exec("mysqldump $options $credentials_string -u" . cacti_escapeshellarg($username) . $pass_arg . ' ' . $safe_database . " $tables > " . $safe_output, $output, $retval);
-		} else {
-			exec("mysqldump $options $credentials_string $safe_database $tables > " . $safe_output, $output, $retval);
-		}
+	if ($retval !== 0) {
+		cacti_log("ERROR: mysqldump failed with exit code $retval for database '$database'", false, 'DBCALL');
 	}
 
 	return $retval;
