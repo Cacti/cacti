@@ -934,13 +934,28 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 	/* Filtered index by value */
 	if (isset($snmp_queries['value_index_parse'])) {
-		$value_parse_regexp = '/' . str_replace('VALUE/REGEXP:', '', $snmp_queries['value_index_parse']) . '/';
+		$raw_pattern = str_replace('VALUE/REGEXP:', '', $snmp_queries['value_index_parse']);
+		$value_parse_regexp = '/' . str_replace('/', '\/', $raw_pattern) . '/';
+
+		/* SECURITY: Prevent Regex Denial of Service (ReDoS) on imported patterns */
+		$old_backtrack = ini_get('pcre.backtrack_limit');
+		$old_recursion = ini_get('pcre.recursion_limit');
+		ini_set('pcre.backtrack_limit', '10000');
+		ini_set('pcre.recursion_limit', '10000');
 
 		foreach ($snmp_indexes as $oid => $value) {
-			if (!preg_match($value_parse_regexp, $value)) {
+			$matched = @preg_match($value_parse_regexp, $value);
+
+			if ($matched === false) {
+				cacti_log('ERROR: Malformed or complex regex in Data Query (ReDoS prevented): ' . $value_parse_regexp, true, 'REINDEX');
+				unset($snmp_indexes[$oid]);
+			} elseif (!$matched) {
 				unset($snmp_indexes[$oid]);
 			}
 		}
+
+		ini_set('pcre.backtrack_limit', $old_backtrack);
+		ini_set('pcre.recursion_limit', $old_recursion);
 		query_debug_timer_offset('data_query', __esc('List of indexes filtered by value @ \'%s\' Index Count: %s', $snmp_queries['oid_index'] , cacti_sizeof($snmp_indexes)));
 
 		/* show list of indices found */
@@ -2358,8 +2373,19 @@ function get_script_query_path($args, $script_path, $host_id) {
 		$extra_arguments = '';
 	}
 
-	/* get a complete path for out target script */
-	return substitute_script_query_path($script_path) . ' ' . $extra_arguments;
+	/* SECURITY: The base script path MUST be sanitized to prevent RCE from malicious templates */
+	$parsed_script_path = substitute_script_query_path($script_path);
+
+	if (strpos($parsed_script_path, '..') !== false) {
+		cacti_log('FATAL: Malicious path traversal detected in Data Query script path: ' . $parsed_script_path, true, 'REINDEX');
+
+		return false;
+	}
+
+	$safe_script_path = cacti_escapeshellcmd($parsed_script_path);
+
+	/* get a complete path for our target script */
+	return $safe_script_path . ' ' . $extra_arguments;
 }
 
 
@@ -2517,6 +2543,9 @@ function data_query_duplicate($_data_query_id, $data_query_name) {
 	}
 
 	$data_query_name = str_replace('<dataquery_name>', $data_query['name'], $data_query_name);
+
+	/* SECURITY: Strip HTML tags to prevent Stored XSS while preserving legitimate characters */
+	$data_query_name = strip_tags($data_query_name);
 
 	$save         = $data_query;
 	$save['id']   = 0;

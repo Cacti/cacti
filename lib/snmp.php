@@ -1009,10 +1009,11 @@ function snmp_escape_string($string) {
 	}
 
 	if ($config['cacti_server_os'] == 'win32') {
-		if (substr_count($string, SNMP_ESCAPE_CHARACTER)) {
-			$string = str_replace(SNMP_ESCAPE_CHARACTER, "\\" . SNMP_ESCAPE_CHARACTER, $string);
-			return SNMP_ESCAPE_CHARACTER . $string . SNMP_ESCAPE_CHARACTER;
-		}
+		/* SECURITY: Always wrap the string in quotes on Windows,
+		 * preventing command chaining via &, |, or ^ operators. */
+		$string = str_replace(SNMP_ESCAPE_CHARACTER, "\\" . SNMP_ESCAPE_CHARACTER, $string);
+
+		return SNMP_ESCAPE_CHARACTER . $string . SNMP_ESCAPE_CHARACTER;
 	}
 
 	return cacti_escapeshellarg($string);
