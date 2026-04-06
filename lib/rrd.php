@@ -1843,8 +1843,6 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$cf_id = 1; /* CF: AVERAGE */
 				}
 			}
-			/* now remember the correct CF reference */
-			$cf_id = $graph_item['cf_reference'];
 
 			/* +++++++++++++++++++++++ GRAPH ITEMS: CDEF START +++++++++++++++++++++++ */
 
@@ -2093,6 +2091,15 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 				/* replace query variables in cdefs */
 				$cdef_string = rrd_substitute_host_query_data($cdef_string, $graph, $graph_item);
+
+				/* aggregate graphs can produce an empty RPN expression for GPRINT items
+				   whose consolidation function does not match the data source; skip them
+				   rather than emitting a bare "CDEF:cdefX=" which rrdtool rejects. */
+				if ($cdef_string === '') {
+					cacti_log('Empty CDEF string for graph ' . $graph['local_graph_id'] . '; skipping.', true, 'RRD', POLLER_VERBOSITY_DEBUG);
+
+					continue;
+				}
 
 				/* make the initial 'virtual' cdef name: 'cdef' + [a,b,c,d...] */
 				$cdef_graph_defs .= 'CDEF:cdef' . generate_graph_def_name(strval($i)) . '=';
