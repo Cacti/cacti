@@ -154,7 +154,7 @@ class CactiTableFilter {
 		html_start_box($this->form_header, $this->form_width, true, '3', 'center', $this->action_url, $this->action_label);
 
 		if (isset($this->filter_array['rows'])) {
-			print "<form id='" . htmlspecialchars($this->form_id, ENT_QUOTES, 'UTF-8') . "' action='" . htmlspecialchars($this->form_action, ENT_QUOTES, 'UTF-8') . "'>\n";
+			print "<form id='" . html_escape($this->form_id) . "' action='" . html_escape($this->form_action) . "'>\n";
 
 			foreach($this->filter_array['rows'] as $index => $row) {
 				print "<div class='filterTable'>\n";
@@ -261,7 +261,7 @@ class CactiTableFilter {
 		}
 
 		$(function() {
-			$('#<?php print htmlspecialchars($this->form_id, ENT_QUOTES, 'UTF-8');?>').submit(function(event) {
+			$('#<?php print html_escape($this->form_id);?>').submit(function(event) {
 				event.preventDefault();
 				applyFilter();
 			});
