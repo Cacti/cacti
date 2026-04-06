@@ -134,6 +134,10 @@ function exec_background($filename, $args = '', $redirect_args = '') {
 
 	if (is_array($args)) {
 		$args = implode(' ', array_map('cacti_escapeshellarg', $args));
+	} else {
+		/* SECURITY: If args are passed as a string, strip shell operators to
+		 * prevent background command chaining if a caller forgot to escape */
+		$args = preg_replace('/[&;|]+/', '', $args);
 	}
 
 	if (is_array($redirect_args)) {
