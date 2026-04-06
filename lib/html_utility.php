@@ -908,8 +908,10 @@ function validate_redirect_url($url = '', $default = 'index.php') {
 		'file:'
 	);
 
+	$url_lower = strtolower($url);
+
 	foreach($bad_strings as $bstring) {
-		if (strpos($url, $bstring) !== false) {
+		if (strpos($url_lower, $bstring) !== false) {
 			return $default;
 		}
 	}
@@ -933,7 +935,11 @@ function validate_redirect_url($url = '', $default = 'index.php') {
 	$ref_host = parse_url($url, PHP_URL_HOST);
 	$srv_host = null;
 
-	if (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '') {
+	/* Prefer SERVER_NAME (set by server config) over HTTP_HOST (client-supplied)
+	   to prevent open redirect via Host header spoofing */
+	if (isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME'] != '') {
+		$srv_host = preg_replace('/:\d+$/', '', $_SERVER['SERVER_NAME']);
+	} elseif (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '') {
 		$srv_host = preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST']);
 	}
 
