@@ -648,6 +648,11 @@ class Net_Ping
 			cacti_log('WARNING: sockets support not enabled in PHP, falling back to SNMP ping');
 		}
 
+		/* SECURITY: Enforce strict integer casting to prevent string-to-int
+		 * loose comparison bypasses leading to OS command injection */
+		$retries = (int)$retries;
+		$timeout = (int)$timeout;
+
 		if (($retries <= 0) || ($retries > 5)) {
 			$this->retries = 2;
 		} else {
