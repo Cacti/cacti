@@ -1843,8 +1843,6 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$cf_id = 1; /* CF: AVERAGE */
 				}
 			}
-			/* now remember the correct CF reference */
-			$cf_id = $graph_item['cf_reference'];
 
 			/* +++++++++++++++++++++++ GRAPH ITEMS: CDEF START +++++++++++++++++++++++ */
 
