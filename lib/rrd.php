@@ -869,12 +869,19 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false) {
 
 					$rrd_update_template .= $field_name;
 
-					/* if we have "invalid data", give rrdtool an Unknown (U) */
-					if (!isset($value) || !is_numeric($value)) {
-						$value = 'U';
+					/* Sanitize control characters that poison the rrdtool IPC pipe */
+					if (is_string($value)) {
+						$value = trim($value);
 					}
 
-					$rrd_update_values .= $value;
+					/* Enforce strict fail-closed NaN propagation */
+					if ($value === null || $value === '' || !is_numeric($value)) {
+						$rrd_update_values .= 'U';
+					} else {
+						/* Force standard decimal separator to bypass LC_NUMERIC locale
+						   bugs without truncating 64-bit counter precision */
+						$rrd_update_values .= str_replace(',', '.', (string)$value);
+					}
 				}
 
 				if (cacti_version_compare(get_rrdtool_version(), '1.5', '>=')) {
