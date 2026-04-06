@@ -614,13 +614,13 @@ function cacti_snmp_session_getnext($session, $oid) {
 function cacti_snmp_validate_oid($oid) {
 	$oid = ltrim($oid, '.');
 
-	$validate = array_unique(array_map('is_numeric', explode('.', $oid)));
-
-	if (array_search(false, $validate, true)) {
+	if ($oid === '') {
 		return false;
-	} else {
-		return true;
 	}
+
+	$validate = array_map('is_numeric', explode('.', $oid));
+
+	return !in_array(false, $validate, true);
 }
 
 function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '', $auth_pass = '',
