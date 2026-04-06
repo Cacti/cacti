@@ -82,7 +82,9 @@ function set_auth_cookie($user) {
 		try {
 			$nssecret = bin2hex(random_bytes(32));
 		} catch (Exception $e) {
-			$nssecret = md5($_SERVER['REQUEST_TIME'] . mt_rand(10000, 10000000)) . md5(get_client_addr());
+			cacti_log('FATAL: CSPRNG failed. Cannot generate secure authentication token.', false, 'AUTH');
+
+			return false;
 		}
 
 		$secret = hash('sha512', $nssecret, false);
@@ -3542,12 +3544,11 @@ function auth_process_lockout_check($username, $realm) {
 function auth_process_lockout($username, $realm) {
 	global $error, $error_msg;
 
-	// Mark failed login attempts
 	$secPassLockFailed = read_config_option('secpass_lockfailed');
 	if ($secPassLockFailed > 0) {
 		$max = intval($secPassLockFailed);
 		if ($max > 0) {
-			$user = db_fetch_row_prepared("SELECT id, username, enabled, lastfail, failed_attempts, `locked`, password
+			$user = db_fetch_row_prepared("SELECT id, enabled, `locked`
 				FROM user_auth
 				WHERE username = ?
 				AND realm = ?",
@@ -3555,17 +3556,32 @@ function auth_process_lockout($username, $realm) {
 
 			if (cacti_sizeof($user)) {
 				if ($user['enabled'] == '') {
-					cacti_log("LOGIN FAILED: Local Login Failed for user '" . $username . "' from IP Address '" . get_client_addr() . "'.  User account Disabled.", false, 'AUTH');
+					cacti_log("LOGIN FAILED: Local Login Failed for user '" . $username . "'. User account Disabled.", false, 'AUTH');
 
 					$error     = true;
 					$error_msg = __('Access Denied!  Login Disabled.');
+
+					return;
 				}
 
-				$failed = intval($user['failed_attempts']) + 1;
+				/* Atomic increment to prevent TOCTOU race in concurrent requests */
+				db_execute_prepared("UPDATE user_auth
+					SET lastfail = ?, failed_attempts = failed_attempts + 1
+					WHERE username = ?
+					AND realm = ?
+					AND enabled = 'on'",
+					array(time(), $username, $realm));
 
-				cacti_log('LOGIN FAILED: User \'' . $username . '\' failed authentication, incrementing lockout (' . $failed . ' of ' . $max . ')', false, 'AUTH', POLLER_VERBOSITY_LOW);
+				/* Retrieve deterministic state post-increment */
+				$failed = db_fetch_cell_prepared("SELECT failed_attempts
+					FROM user_auth
+					WHERE username = ?
+					AND realm = ?",
+					array($username, $realm));
 
-				if ($failed >= $max) {
+				cacti_log("LOGIN FAILED: User '$username' failed authentication, incrementing lockout ($failed of $max)", false, 'AUTH', POLLER_VERBOSITY_LOW);
+
+				if ($failed >= $max && $user['locked'] != 'on') {
 					db_execute_prepared("UPDATE user_auth
 						SET `locked` = 'on'
 						WHERE username = ?
@@ -3576,35 +3592,24 @@ function auth_process_lockout($username, $realm) {
 					$user['locked'] = 'on';
 				}
 
-				$user['lastfail'] = time();
-
-				db_execute_prepared("UPDATE user_auth
-					SET lastfail = ?, failed_attempts = ?
-					WHERE username = ?
-					AND realm = ?
-					AND enabled = 'on'",
-					array($user['lastfail'], $failed, $username, $realm));
-
-				// Log the invalid password attempt
 				db_execute_prepared('INSERT IGNORE INTO user_log
 					(username, user_id, result, ip, time)
 					VALUES (?, ?, 0, ?, NOW())',
 					array($username, isset($user['id']) ? $user['id']:0, get_client_addr()));
 
 				if ($user['locked'] == 'on') {
-					cacti_log("LOGIN FAILED: Local Login Failed for user '" . $username . "' from IP Address '" . get_client_addr() . "'.  Account is locked out.", false, 'AUTH');
+					cacti_log("LOGIN FAILED: Local Login Failed for user '" . $username . "'. Account is locked out.", false, 'AUTH');
 
 					$error     = true;
 					$error_msg = __('Your account has been locked.  Please contact your Administrator.');
 				} else {
-					cacti_log("LOGIN FAILED: Local Login Failed for user '" . $username . "' from IP Address '" . get_client_addr() . "'.", false, 'AUTH');
+					cacti_log("LOGIN FAILED: Local Login Failed for user '" . $username . "'.", false, 'AUTH');
 
-					/* error */
 					$error     = true;
 					$error_msg = __('Access Denied!  Login Failed.');
 				}
 			} else {
-				cacti_log("LOGIN FAILED: Local Login Failed to find user '" . $username . "' from IP Address '" . get_client_addr() . "'.", false, 'AUTH');
+				cacti_log("LOGIN FAILED: Local Login Failed to find user '" . $username . "'.", false, 'AUTH');
 
 				$error     = true;
 				$error_msg = __('Access Denied!  Login Failed.');
@@ -4631,7 +4636,7 @@ function auth_display_custom_error_message($message) {
 
 	print '</head>';
 	print '<body><center>';
-	print '<div class="ui-state-error ui-corner-all" style="width:50%;margin-left:auto;margin-right:auto;margin-top:200px;padding:20px"><p>' . $message . '</p><p>' . $custom_message . '</p></div>';
+	print '<div class="ui-state-error ui-corner-all" style="width:50%;margin-left:auto;margin-right:auto;margin-top:200px;padding:20px"><p>' . htmlspecialchars($message, ENT_QUOTES, 'UTF-8') . '</p><p>' . htmlspecialchars($custom_message, ENT_QUOTES, 'UTF-8') . '</p></div>';
 
 	if ($auth_method != 2) {
 		print '<div class="ui-corner-all" style="width:50%;margin:auto;padding:20px"><a href="index.php">' . __('Login Again') . '</a></div><script type="text/javascript">$(function() { $("a").button(); });</script>';
@@ -4672,6 +4677,12 @@ function auth_login_redirect($login_opts = '') {
 			 */
 			if (isset($_SERVER['REDIRECT_URL'])) {
 				$referer = sanitize_uri($_SERVER['REDIRECT_URL']);
+
+				/* Enforce relative path to prevent open redirect via
+				   protocol-relative URLs (//evil.com) or external schemes */
+				if ($referer !== '' && ($referer[0] !== '/' || (isset($referer[1]) && $referer[1] === '/'))) {
+					$referer = $config['url_path'] . 'index.php';
+				}
 
 				if (isset($_SERVER['REDIRECT_QUERY_STRING'])) {
 					$referer .= '?' . $_SERVER['REDIRECT_QUERY_STRING'];
