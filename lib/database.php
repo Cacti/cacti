@@ -2202,8 +2202,14 @@ function db_dump_data($database = '', $tables = '', $credentials = array(), $out
 	$username = isset($credentials['user']) ? $credentials['user'] : (isset($credentials['--user']) ? $credentials['--user'] : $database_username);
 	$password = isset($credentials['password']) ? $credentials['password'] : (isset($credentials['--password']) ? $credentials['--password'] : $database_password);
 
+	/* Use mariadb-dump if available to avoid deprecation warnings on MariaDB */
+	$dump_binary = 'mysqldump';
+	if (file_exists('/usr/bin/mariadb-dump') || file_exists('/usr/local/bin/mariadb-dump')) {
+		$dump_binary = 'mariadb-dump';
+	}
+
 	$command = array(
-		'mysqldump',
+		$dump_binary,
 		$options,
 		'-u',
 		$username,
