@@ -1953,7 +1953,9 @@ function db_qstr($s, $db_conn = false) {
 		return $db_conn->quote($s);
 	}
 
-	$s = str_replace(array('\\', "\0", "'"), array('\\\\', "\\\0", "\\'"), $s);
+	cacti_log('WARNING: db_qstr() called without a valid database connection. Escaping may be unsafe.', false, 'SECURITY');
+
+	$s = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $s);
 
 	return  "'" . $s . "'";
 }
@@ -2248,13 +2250,33 @@ function db_dump_data($database = '', $tables = '', $credentials = array(), $out
 	if (strstr($options, '--defaults-extra-file') !== false) {
 		exec("mysqldump $options $credentials_string $safe_database $tables > " . $safe_output, $output, $retval);
 	} else {
-		exec("mysqldump $options $credentials_string " . $safe_database . ' version >/dev/null 2>&1', $output, $retval);
+		/* Use proc_open with MYSQL_PWD env var to avoid exposing the
+		   password in the process list visible via ps aux or /proc. */
+		$env = null;
 
-		if ($retval) {
-			$pass_arg = ($password != '') ? ' -p' . cacti_escapeshellarg($password) : '';
-			exec("mysqldump $options $credentials_string -u" . cacti_escapeshellarg($username) . $pass_arg . ' ' . $safe_database . " $tables > " . $safe_output, $output, $retval);
+		if ($password != '') {
+			$env = array('MYSQL_PWD' => $password);
+		}
+
+		$cmd = "mysqldump $options $credentials_string -u" . cacti_escapeshellarg($username) . ' ' . $safe_database . " $tables > " . $safe_output . ' 2>&1';
+
+		$descriptors = array(
+			0 => array('pipe', 'r'),
+			1 => array('pipe', 'w'),
+			2 => array('pipe', 'w')
+		);
+
+		$process = proc_open($cmd, $descriptors, $pipes, null, $env);
+
+		if (is_resource($process)) {
+			fclose($pipes[0]);
+			fclose($pipes[1]);
+			fclose($pipes[2]);
+
+			$retval = proc_close($process);
 		} else {
-			exec("mysqldump $options $credentials_string $safe_database $tables > " . $safe_output, $output, $retval);
+			cacti_log('ERROR: Failed to initialize mysqldump process.', false, 'SYSTEM');
+			$retval = 1;
 		}
 	}
 
