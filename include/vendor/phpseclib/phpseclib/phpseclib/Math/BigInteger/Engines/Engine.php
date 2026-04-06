@@ -365,6 +365,44 @@ abstract class Engine implements \JsonSerializable
     }
 
     /**
+     *  __serialize() magic method
+     *
+     * __sleep / __wakeup were depreciated in PHP 8.5
+     * Will be called, automatically, when serialize() is called on a Math_BigInteger object.
+     *
+     * @see self::__unserialize()
+     * @access public
+     */
+    public function __serialize()
+    {
+        $result = ['hex' => $this->toHex(true)];
+        if ($this->precision > 0) {
+            $result['precision'] = $this->precision;
+        }
+        return $result;
+    }
+
+    /**
+     *  __unserialize() magic method
+     *
+     * __sleep / __wakeup were depreciated in PHP 8.5
+     * Will be called, automatically, when unserialize() is called on a Math_BigInteger object.
+     *
+     * @see self::__serialize()
+     * @access public
+     */
+    public function __unserialize(array $data)
+    {
+        $temp = new static($data['hex'], -16);
+        $this->value = $temp->value;
+        $this->is_negative = $temp->is_negative;
+        if (isset($data['precision']) && $data['precision'] > 0) {
+            // recalculate $this->bitmask
+            $this->setPrecision($data['precision']);
+        }
+    }
+
+    /**
      * JSON Serialize
      *
      * Will be called, automatically, when json_encode() is called on a BigInteger object.
@@ -511,8 +549,8 @@ abstract class Engine implements \JsonSerializable
 
         $carry = 0;
         for ($i = strlen($x) - 1; $i >= 0; --$i) {
-            $temp = ord($x[$i]) << $shift | $carry;
-            $x[$i] = chr($temp);
+            $temp = (ord($x[$i]) << $shift) | $carry;
+            $x[$i] = chr($temp & 0xFF);
             $carry = $temp >> 8;
         }
         $carry = ($carry != 0) ? chr($carry) : '';
