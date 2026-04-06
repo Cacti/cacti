@@ -727,14 +727,22 @@ class Net_Ping
 	} /* end_ping */
 
 	function is_ipaddress($ip_address = '') {
+		/* Strip IPv6 Scope ID (Zone Index) for validation, as
+		   filter_var rejects valid link-local addresses like fe80::1%eth0 */
+		$clean_ip = $ip_address;
+		if (strpos($clean_ip, '%') !== false) {
+			$parts = explode('%', $clean_ip, 2);
+			$clean_ip = $parts[0];
+		}
+
 		/* check for ipv4/v6 */
 		if (function_exists('filter_var')) {
-			if (filter_var($ip_address, FILTER_VALIDATE_IP) !== false) {
+			if (filter_var($clean_ip, FILTER_VALIDATE_IP) !== false) {
 				return true;
 			} else {
 				return false;
 			}
-		} elseif (inet_pton($ip_address) !== false) {
+		} elseif (@inet_pton($clean_ip) !== false) {
 			return true;
 		} else {
 			return false;
