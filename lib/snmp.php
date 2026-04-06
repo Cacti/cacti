@@ -71,8 +71,15 @@ function cacti_snmp_session($hostname, $community, $version, $auth_user = '', $a
 
 	$timeout_us = (int) ($timeout_ms * 1000);
 
+	/* Encapsulate IPv6 addresses in brackets to prevent the SNMP library
+	   from interpreting the port as an IPv6 hextet */
+	$snmp_hostname = $hostname;
+	if (strpos($snmp_hostname, ':') !== false && strpos($snmp_hostname, '[') === false) {
+		$snmp_hostname = '[' . $snmp_hostname . ']';
+	}
+
 	try {
-		$session = @new SNMP($version, $hostname . ':' . $port, ($version == 3 ? $auth_user : $community), $timeout_us, $retries);
+		$session = @new SNMP($version, $snmp_hostname . ':' . $port, ($version == 3 ? $auth_user : $community), $timeout_us, $retries);
 	} catch (Exception $e) {
 		return false;
 	}
@@ -197,7 +204,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $auth_user = '', 
 			' -v ' . $version .
 			' -t ' . $timeout_s .
 			' -r ' . $retries .
-			' '    . cacti_escapeshellarg($hostname) . ':' . $port .
+			' '    . snmp_format_target($hostname, $port) .
 			' '    . cacti_escapeshellarg($oid);
 
 		if (isset($_SESSION)) {
@@ -297,7 +304,7 @@ function cacti_snmp_get_raw($hostname, $community, $oid, $version, $auth_user = 
 			' -v ' . $version .
 			' -t ' . $timeout_s .
 			' -r ' . $retries .
-			' '    . cacti_escapeshellarg($hostname) . ':' . $port .
+			' '    . snmp_format_target($hostname, $port) .
 			' '    . cacti_escapeshellarg($oid);
 
 		if (isset($_SESSION)) {
@@ -392,7 +399,7 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $auth_user = 
 			' -v ' . $version .
 			' -t ' . $timeout_s .
 			' -r ' . $retries .
-			' '    . cacti_escapeshellarg($hostname) . ':' . $port .
+			' '    . snmp_format_target($hostname, $port) .
 			' '    . cacti_escapeshellarg($oid);
 
 		if (isset($_SESSION)) {
@@ -724,7 +731,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 				' -r '     . $retries .
 				' -Cr'     . $bulk_walk_size .
 				' '        . $oidCheck . ' ' .
-				cacti_escapeshellarg($hostname) . ':' . $port . ' ' .
+				snmp_format_target($hostname, $port) . ' ' .
 				cacti_escapeshellarg($oid);
 
 			if (isset($_SESSION)) {
@@ -739,7 +746,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 				' -t '     . $timeout_s .
 				' -r '     . $retries .
 				' '        . $oidCheck . ' ' .
-				' '        . cacti_escapeshellarg($hostname) . ':' . $port .
+				' '        . snmp_format_target($hostname, $port) .
 				' '        . cacti_escapeshellarg($oid);
 
 			if (isset($_SESSION)) {
@@ -999,6 +1006,26 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 	}
 
 	return $string;
+}
+
+/**
+ * snmp_format_target - format hostname:port for binary SNMP commands,
+ * forcing udp6: transport for IPv6 to prevent DNS ambiguity.
+ *
+ * @param string $hostname - The target hostname or IP
+ * @param int    $port     - The SNMP port
+ *
+ * @return string The formatted target string
+ */
+function snmp_format_target($hostname, $port) {
+	if (strpos($hostname, ':') !== false) {
+		/* IPv6: force udp6: transport and bracket-encapsulate */
+		$clean = str_replace(array('[', ']'), '', $hostname);
+
+		return cacti_escapeshellarg('udp6:[' . $clean . ']:' . $port);
+	}
+
+	return cacti_escapeshellarg($hostname) . ':' . $port;
 }
 
 function snmp_escape_string($string) {
