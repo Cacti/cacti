@@ -7731,11 +7731,11 @@ function debounce_run_notification($id, $frequency = 7200) {
 }
 
 function cacti_unserialize($strobj) {
-	if (version_compare(PHP_VERSION, '7.0.0', '>=')) {
-		return unserialize($strobj, array('allowed_classes' => false));
-	} else {
-		return unserialize($strobj);
+	if ($strobj === null || $strobj === '') {
+		return false;
 	}
+
+	return @unserialize($strobj, array('allowed_classes' => false));
 }
 
 function cacti_format_ipv6_colon($address) {

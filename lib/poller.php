@@ -191,7 +191,10 @@ function exec_with_timeout($cmd, &$output, &$return_code, $timeout = 5) {
 	);
 
 	// Start the process.
-	$process = proc_open('exec setsid ' . $cmd, $descriptors, $pipes);
+	/* Removed 'exec setsid' to allow native PHP process management
+	   (proc_terminate/posix_kill) to target the actual child process
+	   on timeout, preventing zombie process table exhaustion */
+	$process = proc_open($cmd, $descriptors, $pipes);
 
 	if (!is_resource($process)) {
 		return false;
