@@ -1541,16 +1541,19 @@ function boost_poller_bottom() {
 		}
 
 		$command_string = read_config_option('path_php_binary');
+		$safe_poller    = cacti_escapeshellarg($config['base_path'] . '/poller_boost.php');
+		$safe_log       = cacti_escapeshellarg($boost_log);
+
 		if ($boost_log != '') {
 			if ($config['cacti_server_os'] == 'unix') {
-				$extra_args    = '-q '  . $config['base_path'] . '/poller_boost.php --debug';
-				$redirect_args =  '>> ' . $boost_log . ' 2>&1';
+				$extra_args    = "-q $safe_poller --debug";
+				$redirect_args = ">> $safe_log 2>&1";
 			} else {
-				$extra_args    = '-q ' . $config['base_path'] . '/poller_boost.php --debug';
-				$redirect_args = '>> ' . $boost_log;
+				$extra_args    = "-q $safe_poller --debug";
+				$redirect_args = ">> $safe_log";
 			}
 		} else {
-			$extra_args = '-q ' . $config['base_path'] . '/poller_boost.php';
+			$extra_args = "-q $safe_poller";
 		}
 
 		exec_background($command_string, $extra_args, $redirect_args);

@@ -784,7 +784,16 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = f
 		$success = rrdtool_execute("create $data_source_path $create_ds$create_rra", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
 
 		if ($config['cacti_server_os'] != 'win32' && posix_getuid() == 0) {
-			shell_exec("chown $owner_id:$group_id $data_source_path");
+			if (file_exists($data_source_path)) {
+				if (!chown($data_source_path, $owner_id)) {
+					cacti_log("ERROR: Unable to set ownership for '$data_source_path'", false, 'POLLER');
+				}
+				if (!chgrp($data_source_path, $group_id)) {
+					cacti_log("ERROR: Unable to set group for '$data_source_path'", false, 'POLLER');
+				}
+			} else {
+				cacti_log("ERROR: RRD file '$data_source_path' does not exist for ownership assignment", false, 'POLLER');
+			}
 		}
 
 		return $success;
@@ -860,12 +869,19 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false) {
 
 					$rrd_update_template .= $field_name;
 
-					/* if we have "invalid data", give rrdtool an Unknown (U) */
-					if (!isset($value) || !is_numeric($value)) {
-						$value = 'U';
+					/* Sanitize control characters that poison the rrdtool IPC pipe */
+					if (is_string($value)) {
+						$value = trim($value);
 					}
 
-					$rrd_update_values .= $value;
+					/* Enforce strict fail-closed NaN propagation */
+					if ($value === null || $value === '' || !is_numeric($value)) {
+						$rrd_update_values .= 'U';
+					} else {
+						/* Force standard decimal separator to bypass LC_NUMERIC locale
+						   bugs without truncating 64-bit counter precision */
+						$rrd_update_values .= str_replace(',', '.', (string)$value);
+					}
 				}
 
 				if (cacti_version_compare(get_rrdtool_version(), '1.5', '>=')) {

@@ -909,7 +909,7 @@ function validate_redirect_url($url = '', $default = 'index.php') {
 	);
 
 	foreach($bad_strings as $bstring) {
-		if (strpos($url, $bstring) !== false) {
+		if (stripos($url, $bstring) !== false) {
 			return $default;
 		}
 	}
@@ -933,11 +933,15 @@ function validate_redirect_url($url = '', $default = 'index.php') {
 	$ref_host = parse_url($url, PHP_URL_HOST);
 	$srv_host = null;
 
-	if (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '') {
+	/* Prefer SERVER_NAME (set by server config) over HTTP_HOST (client-supplied)
+	   to prevent open redirect via Host header spoofing */
+	if (isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME'] != '') {
+		$srv_host = preg_replace('/:\d+$/', '', $_SERVER['SERVER_NAME']);
+	} elseif (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '') {
 		$srv_host = preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST']);
 	}
 
-	if ($ref_host === null || ($srv_host !== null && $ref_host === $srv_host)) {
+	if ($ref_host === null || ($srv_host !== null && strtolower($ref_host) === strtolower($srv_host))) {
 		$ref_path  = parse_url($url, PHP_URL_PATH) ?: '';
 		$ref_query = parse_url($url, PHP_URL_QUERY);
 
