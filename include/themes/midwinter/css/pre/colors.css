@@ -19,6 +19,7 @@
     --text-color-navigation: hsl(var(--hue), 7%, 60%);
     --text-color-navigation-highlight: hsl(var(--hue), 7%, 85%);
     --text-search-highlight: yellow;
+    --text-color-disabled: hsl(var(--hue), 23%, 30%);
     --background: hsl(var(--hue), 19%, 17%);
     --background-content: hsl(var(--hue), 23%, 5%);
     --background-content-element : hsl(var(--hue), 23%, 9%);
@@ -71,6 +72,7 @@
     --text-color-navigation-highlight:hsl(var(--hue), 7%, 100%);
     --text-color-highlight-a: hsl(var(--special2-hue), 100%, 50%);
     --text-search-highlight: royalblue;
+    --text-color-disabled: hsl(var(--hue), 5%, 40%);
     --background: hsl(var(--hue), 27.3%, 97.1%);
     --background-content: hsl(var(--hue), 0%, 98%);
     --background-content-element : hsl(var(--hue), 0%, 94%);
