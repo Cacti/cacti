@@ -513,7 +513,7 @@ function find_paths(string $input, string $type = 'cacti_xml') : array {
 		$valid = true;
 
 		if (file_exists($part)) {
-			$real_part = realpath($part);
+			$real_part   = realpath($part);
 			$base_prefix = $real_base . DIRECTORY_SEPARATOR;
 			$path_prefix = ($real_part === false ? '' : $real_part . DIRECTORY_SEPARATOR);
 
