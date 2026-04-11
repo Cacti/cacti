@@ -1774,7 +1774,15 @@ function db_replace($table_name, $array_items, $keyCols, $db_conn = false) {
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 
-	cacti_log("DEVEL: SQL Replace on table '$table_name': '" . serialize($array_items) . "'", false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
+	$log_items = $array_items;
+	$redact_fields = array('snmp_community', 'snmp_password', 'snmp_priv_passphrase', 'password', 'proxy_password');
+	foreach ($redact_fields as $field) {
+		if (isset($log_items[$field])) {
+			$log_items[$field] = '********';
+		}
+	}
+
+	cacti_log("DEVEL: SQL Replace on table '$table_name': '" . serialize($log_items) . "'", false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 
 	_db_replace($db_conn, $table_name, $array_items, $keyCols);
 

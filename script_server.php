@@ -258,7 +258,30 @@ while (1) {
 
 			/* validate the existence of the function, and include if applicable */
 			if (!function_exists($function)) {
-				if (file_exists($include_file)) {
+				$real_include = realpath($include_file);
+				$base_real    = realpath($config['base_path']);
+
+				if ($real_include !== false) {
+					$real_include = str_replace('\\', '/', $real_include);
+				}
+				if ($base_real !== false) {
+					$base_real = str_replace('\\', '/', $base_real);
+				}
+
+				/* On Windows, realpath() may return mixed-case drive letters; use
+				 * case-insensitive comparison to avoid false rejections. */
+				$path_cmp = (DIRECTORY_SEPARATOR === '\\') ? 'stripos' : 'strpos';
+				if ($real_include !== false && $base_real !== false && $path_cmp($real_include, $base_real . '/') === 0) {
+					$include_file = $real_include;
+				} elseif ($real_include !== false) {
+					cacti_log("WARNING: Script file '$include_file' resolves outside base path. Rejected.", false, 'PHPSVR');
+					$include_file = '';
+				} else {
+					cacti_log("WARNING: Script file '$include_file' could not be resolved. Rejected.", false, 'PHPSVR');
+					$include_file = '';
+				}
+
+				if ($include_file != '' && file_exists($include_file)) {
 					/**
 					 * quirk in php on Windows, believe it or not....
 					 * path must be lower case

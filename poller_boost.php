@@ -506,7 +506,7 @@ function boost_launch_children() {
 
 			cacti_log("WARNING: Boost log '$boost_log' is not writable!", true, 'BOOST');
 		} else {
-			$redirect_args = '>> ' . $boost_log;
+			$redirect_args = '>> ' . cacti_escapeshellarg($boost_log);
 		}
 	}
 
@@ -1372,6 +1372,8 @@ function boost_log_child_statistics($rrd_updates, $child) {
 }
 
 function boost_purge_cached_png_files($forcerun) {
+	global $config;
+
 	/* remove stale png's from the cache.  I consider png's stale after 1 hour */
 	if ((read_config_option('boost_png_cache_enable') == 'on') || $forcerun) {
 		$cache_directory = read_config_option('boost_png_cache_directory');
@@ -1380,8 +1382,33 @@ function boost_purge_cached_png_files($forcerun) {
 		$directory_contents = array();
 
 		if (is_dir($cache_directory)) {
-			if ($handle = opendir($cache_directory)) {
-				/* This is the correct way to loop over the directory. */
+			$real_cache_directory = realpath($cache_directory);
+			$real_base_path       = realpath($config['base_path']);
+			$normalized_cache     = ($real_cache_directory === false ? false : str_replace('\\', '/', $real_cache_directory));
+			$normalized_base      = ($real_base_path === false ? false : rtrim(str_replace('\\', '/', $real_base_path), '/'));
+
+			if ($normalized_cache !== false) {
+				$normalized_cache = rtrim($normalized_cache, '/');
+			}
+
+			if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+				if ($normalized_cache !== false) {
+					$normalized_cache = strtolower($normalized_cache);
+				}
+
+				if ($normalized_base !== false) {
+					$normalized_base = strtolower($normalized_base);
+				}
+			}
+
+			// Verify directory is within CACTI_PATH_BASE to prevent arbitrary file deletion
+			if ($normalized_cache === false || $normalized_base === false
+				|| ($normalized_cache !== $normalized_base && strpos($normalized_cache, $normalized_base . '/') !== 0)) {
+				cacti_log("ERROR: Boost PNG Cache Directory '$cache_directory' is outside of Cacti base path. Purge aborted.", true, 'BOOST');
+				return;
+			}
+
+			if ($handle = opendir($cache_directory)) {				/* This is the correct way to loop over the directory. */
 				while (false !== ($file = readdir($handle))) {
 					$directory_contents[] = $file;
 				}
@@ -1431,4 +1458,3 @@ function display_help () {
 	print "    --force   - Force the execution of a update process\n";
 	print "    --debug   - Display verbose output during execution\n\n";
 }
-

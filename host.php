@@ -604,6 +604,12 @@ function host_export() {
 				}
 			}
 
+			foreach ($h as &$field) {
+				$field = cacti_csv_safe($field);
+			}
+
+			unset($field);
+
 			fputcsv($stdout, $h);
 		}
 	}
@@ -1920,4 +1926,3 @@ function host() {
 
 	api_plugin_hook('device_table_bottom');
 }
-

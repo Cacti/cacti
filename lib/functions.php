@@ -7295,6 +7295,25 @@ function cacti_ptoa($title, $addr) {
 	}
 }
 
+/**
+ * cacti_csv_safe - sanitzes a string for inclusion in a CSV file to prevent formula injection
+ *
+ * @param $value - (string) The string to be sanitized
+ *
+ * @returns - (string) The sanitized string
+ */
+function cacti_csv_safe($value) {
+	$value = (string)$value;
+
+	if ($value != '') {
+		if (strpos($value, '=') === 0 || strpos($value, '+') === 0 || strpos($value, '-') === 0 || strpos($value, '@') === 0) {
+			$value = "'" . $value;
+		}
+	}
+
+	return $value;
+}
+
 function cacti_sizeof($array) {
 	return ($array === false || !is_array($array)) ? 0 : sizeof($array);
 }
@@ -7753,4 +7772,3 @@ function cacti_format_ipv6_colon($address) {
 
 	return($address);
 }
-

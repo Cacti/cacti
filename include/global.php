@@ -430,6 +430,7 @@ if ($config['is_web']) {
 	ini_set('session.cookie_httponly', true);
 	ini_set('session.cookie_path', $config['url_path']);
 	ini_set('session.use_strict_mode', true);
+	ini_set('session.use_only_cookies', true);
 
 	$options = array(
 		'cookie_httponly' => true,
@@ -479,8 +480,10 @@ if ($config['is_web']) {
 
 	/* prevent IE from silently rejects cookies sent from third party sites. */
 	header('P3P: CP="CAO PSA OUR"');
+	header('X-Content-Type-Options: nosniff');
+	header('Referrer-Policy: strict-origin-when-cross-origin');
+	header('Permissions-Policy: camera=(), geolocation=(), interest-cohort=(), microphone=(), payment=(), usb=()');
 	header('Cache-Control: no-store, no-cache, must-revalidate');
-	header('Cache-Control: max-age=31536000');
 
 	cacti_session_start();
 

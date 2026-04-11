@@ -80,6 +80,29 @@ function check_tmp_dir() {
 	}
 }
 
+function package_import_write_session_file() {
+	if (!isset($_SESSION['sess_import_package'])) {
+		return false;
+	}
+
+	$xmlfile = tempnam(sys_get_temp_dir(), 'cacti_pkg_');
+
+	if ($xmlfile === false) {
+		cacti_log('FATAL: Unable to create temporary package import file', true, 'IMPORT');
+
+		return false;
+	}
+
+	if (file_put_contents($xmlfile, $_SESSION['sess_import_package']) === false) {
+		cacti_log('FATAL: Unable to write temporary package import file', true, 'IMPORT');
+		unlink($xmlfile);
+
+		return false;
+	}
+
+	return $xmlfile;
+}
+
 function form_save() {
 	global $config, $preview_only;
 
@@ -94,9 +117,15 @@ function form_save() {
 
 			$_SESSION['sess_import_package'] = file_get_contents($xmlfile);
 		} elseif (isset($_SESSION['sess_import_package'])) {
-			$xmlfile = sys_get_temp_dir() . '/package_import_' . rand();
+			$xmlfile = package_import_write_session_file();
 
-			file_put_contents($xmlfile, $_SESSION['sess_import_package']);
+			if ($xmlfile === false) {
+				/* Session is always active here: auth.php called cacti_session_start()
+				 * before any action dispatch, so raise_message() can safely write. */
+				raise_message('import_fail', __('Unable to create temporary package file.'), MESSAGE_LEVEL_ERROR);
+				header('Location: package_import.php');
+				exit;
+			}
 		} else {
 			header('Location: package_import.php');
 			exit;
@@ -219,9 +248,11 @@ function form_save() {
 
 function package_file_get_contents($filename) {
 	if (isset($_SESSION['sess_import_package'])) {
-		$xmlfile = sys_get_temp_dir() . '/package_import_' . rand();
+		$xmlfile = package_import_write_session_file();
 
-		file_put_contents($xmlfile, $_SESSION['sess_import_package']);
+		if ($xmlfile === false) {
+			return false;
+		}
 
 		$data = import_read_package_data($xmlfile, $binary_signature);
 
@@ -1110,4 +1141,3 @@ function package_prepare_import_array(&$templates, &$files, $package_name, $pack
 		}
 	}
 }
-
