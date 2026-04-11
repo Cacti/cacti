@@ -34,8 +34,8 @@ function getImportPackageSource(): string {
 
 test('import.php boundary guard resolves target dir with realpath', function () {
 	$src = getImportPackageSource();
-	expect($src)->toContain('$resolved_dir          = false');
-	expect($src)->toContain('$resolved_dir = realpath($target_dir)');
+	expect($src)->toMatch('/\$resolved_dir\s*=\s*false\s*;/');
+	expect($src)->toMatch('/\$resolved_dir\s*=\s*realpath\(\$target_dir\)/');
 });
 
 test('import.php boundary guard resolves both scripts and resource bases', function () {
@@ -49,10 +49,10 @@ test('import.php guard blocks when resolved_dir is false', function () {
 	expect($src)->toContain('$resolved_dir === false');
 });
 
-test('import.php guard uses str_starts_with with DIRECTORY_SEPARATOR', function () {
+test('import.php guard verifies resolved dir is inside each allowed base', function () {
 	$src = getImportPackageSource();
-	expect($src)->toContain('strpos($normalized_resolved, $normalized_scripts . \'/\') === 0');
-	expect($src)->toContain('strpos($normalized_resolved, $normalized_resource . \'/\') === 0');
+	expect($src)->toMatch('/strpos\(\s*\$normalized_resolved,\s*\$normalized_scripts\s*\.\s*\'\/\'\s*\)\s*===\s*0/');
+	expect($src)->toMatch('/strpos\(\s*\$normalized_resolved,\s*\$normalized_resource\s*\.\s*\'\/\'\s*\)\s*===\s*0/');
 });
 
 test('import.php guard logs FATAL on boundary violation', function () {
@@ -62,8 +62,8 @@ test('import.php guard logs FATAL on boundary violation', function () {
 
 test('import.php uses a segment-aware fast reject before the ancestor boundary check', function () {
 	$src = getImportPackageSource();
-	expect($src)->toContain("preg_match('#(^|/)\\.\\.(/|$)#', \$normalized_name)");
-	expect($src)->toContain("strpos(\$name, chr(0)) !== false");
+	expect($src)->toMatch('/preg_match\(\s*[\'"]#\(\^\|\/\)\\\\\.\\\\\.\(\/\|\$\)#[\'"]\s*,\s*\$normalized_name\s*\)/');
+	expect($src)->toMatch('/strpos\(\s*\$name\s*,\s*chr\(0\)\s*\)\s*!==\s*false/');
 });
 
 // --- inline boundary logic with real temp filesystem ---
@@ -73,6 +73,10 @@ test('import.php uses a segment-aware fast reject before the ancestor boundary c
  * in isolation without loading the full Cacti bootstrap.
  */
 function importBoundaryAllowed(string $base, string $name): bool {
+	if (strpos($name, chr(0)) !== false) {
+		return false;
+	}
+
 	$filename              = $base . "/$name";
 	$allowed_base_scripts  = realpath($base . '/scripts');
 	$allowed_base_resource = realpath($base . '/resource');
@@ -160,9 +164,9 @@ test('new nested resource/ subdirectory is allowed when its first existing ances
 
 test('trailing slash on scripts/ resolves to directory itself which is within boundary', function () {
 	$base = makeTempBase();
-	// dirname('scripts/') resolves to $base/scripts — inside the boundary.
-	// The actual write would fail (fopen on a directory) but the guard permits it.
-	expect(importBoundaryAllowed($base, 'scripts/'))->toBeTrue();
+	// dirname("$base/scripts/") resolves to $base, so the boundary guard rejects
+	// it before any write attempt.
+	expect(importBoundaryAllowed($base, 'scripts/'))->toBeFalse();
 	removeTempBase($base);
 });
 
@@ -198,7 +202,7 @@ test('excessive traversal segments are blocked', function () {
 
 test('null byte in path is blocked', function () {
 	$base = makeTempBase();
-	// realpath() returns false for paths containing null bytes.
+	// Import hardening rejects NUL before attempting any path resolution.
 	$name = "scripts/\x00../evil";
 	expect(importBoundaryAllowed($base, $name))->toBeFalse();
 	removeTempBase($base);
