@@ -732,8 +732,8 @@ function get_data_query_array(int $snmp_query_id) : array {
 		// boundary check trivially true for every absolute path (fails open). Also
 		// reject Windows drive-letter roots (C:\, D:\, ...) which are too broad
 		// for a safe containment check.
-		if ($allowed_base === false
-			|| $allowed_base === DIRECTORY_SEPARATOR
+		if ($allowed_base                                      === false
+			|| $allowed_base                                      === DIRECTORY_SEPARATOR
 			|| preg_match('#^[A-Za-z]:[\\\\/]?$#', $allowed_base) === 1) {
 			cacti_log('SECURITY: CACTI_PATH_BASE is invalid or resolves to filesystem root', false, 'SECURITY');
 
