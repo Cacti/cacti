@@ -148,8 +148,8 @@
 						pair[1] = true;
 					} else if (pair[1] === 'false') {
 						pair[1] = false;
-					} else if ($.isNumeric(pair[1])) {
-						pair[1] = +pair[1];
+					} else if (typeof pair[1] === 'number' || (typeof pair[1] === 'string' && /^-?\d+$/.test(pair[1].trim()))) {
+						pair[1] = parseInt(pair[1], 10);
 					}
 					obj[pair[0]] = pair[1];
 				}
@@ -905,7 +905,7 @@
 						newGraphStartTime = parseInt(parseInt(zoom.graph.start) - (0.5 * multiplier * zoom.graph.timespan));
 						newGraphEndTime   = parseInt(parseInt(zoom.graph.end) + (0.5 * multiplier * zoom.graph.timespan));
 					} else{
-						let now = parseInt($.now() / 1000);
+						let now = parseInt(Date.now() / 1000);
 						newGraphEndTime   = parseInt(parseInt(zoom.graph.end) + (0.5 * multiplier * zoom.graph.timespan));
 						newGraphStartTime = parseInt(parseInt(zoom.graph.start) - (0.5 * multiplier * zoom.graph.timespan));
 
@@ -1059,7 +1059,7 @@
 			$('[class^=zoomContextMenuAction__]').off().on('click', function() {
 				let zoomContextMenuAction = false;
 				let zoomContextMenuActionValue = false;
-				let classList = $.trim($(this).attr('class')).split(/\s+/);
+				let classList = $(this).attr('class').trim().split(/\s+/);
 
 				$.each( classList, function(index, item){
 					if ( item.search('zoomContextMenuAction__') !== -1) {
