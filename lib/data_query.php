@@ -721,15 +721,63 @@ function get_data_query_array(int $snmp_query_id) : array {
 		$replace       = [CACTI_PATH_BASE, read_config_option('path_snmpget'), read_config_option('path_php_binary')];
 		$xml_file_path = str_replace($search, $replace, $xml_file_path);
 
-		if (!file_exists($xml_file_path)) {
-			query_debug_timer_offset('data_query', __esc('Could not find data query XML file at \'%s\'', $xml_file_path));
+		// Sanitise for log calls — encodes CR/LF and strips the full ASCII control
+		// range (0x00-0x1F plus DEL 0x7F) to prevent log injection via crafted
+		// xml_path values. LF/CR are already encoded by str_replace above, so
+		// preg_replace never sees raw newlines; the wider range closes the TAB gap.
+		$safe_path    = preg_replace('/[\x00-\x1F\x7F]/', '', str_replace(["\r", "\n"], ['\\r', '\\n'], $xml_file_path));
+		$allowed_base = realpath(CACTI_PATH_BASE);
+
+		// Reject root or unresolvable base. rtrim('/') returns '' which makes the
+		// boundary check trivially true for every absolute path (fails open). Also
+		// reject Windows drive-letter roots (C:\, D:\, ...) which are too broad
+		// for a safe containment check.
+		if ($allowed_base                                      === false
+			|| $allowed_base                                      === DIRECTORY_SEPARATOR
+			|| preg_match('#^[A-Za-z]:[\\\\/]?$#', $allowed_base) === 1) {
+			cacti_log('SECURITY: CACTI_PATH_BASE is invalid or resolves to filesystem root', false, 'SECURITY');
 
 			return [];
 		}
 
-		query_debug_timer_offset('data_query', __esc('Found data query XML file at \'%s\'', $xml_file_path));
+		// Reject null bytes before any filesystem call. PHP 8.0+ throws ValueError
+		// when passing a string containing \0 to realpath()/file_exists(), so catch
+		// it explicitly as a traversal attempt.
+		if (str_contains($xml_file_path, "\0")) {
+			cacti_log('SECURITY: Null byte in data query XML path rejected', false, 'SECURITY');
 
-		$data = implode('',file($xml_file_path));
+			return [];
+		}
+
+		// Check existence before resolving — realpath() returns false for missing
+		// files, which would otherwise trigger a misleading SECURITY log entry.
+		if (!file_exists($xml_file_path)) {
+			query_debug_timer_offset('data_query', __esc('Could not find data query XML file at \'%s\'', $safe_path));
+
+			return [];
+		}
+
+		$resolved = realpath($xml_file_path);
+
+		if ($resolved === false
+			|| !str_starts_with($resolved . DIRECTORY_SEPARATOR, rtrim($allowed_base, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR)) {
+			cacti_log('SECURITY: data query XML path outside Cacti base: ' . $safe_path, false, 'SECURITY');
+			query_debug_timer_offset('data_query', __esc('SECURITY: data query XML path outside Cacti base: \'%s\'', $safe_path));
+
+			return [];
+		}
+
+		query_debug_timer_offset('data_query', __esc('Found data query XML file at \'%s\'', $safe_path));
+
+		// Reject directories — realpath() resolves both files and dirs, so the
+		// boundary check alone does not prevent file() being called on a directory.
+		if (!is_file($resolved)) {
+			cacti_log('SECURITY: data query XML path is not a file: ' . $safe_path, false, 'SECURITY');
+
+			return [];
+		}
+
+		$data = implode('', file($resolved));
 
 		$xml_data = xml2array($data);
 
