@@ -2458,7 +2458,7 @@ function loadPageUsingPost(href, postData, returnLocation) {
 function setNavigationScroll() {
 	var object = '';
 
-	$('.cactiConsoleNavigationArea, .cactiTreeNavigationArea').unbind('mousemove').on('mousemove', function (pos) {
+	$('.cactiConsoleNavigationArea, .cactiTreeNavigationArea').off('mousemove').on('mousemove', function (pos) {
 		object = '';
 
 		if ($('.cactiConsoleNavigationArea').length) {
@@ -2497,7 +2497,7 @@ function setNavigationScroll() {
 		}
 	});
 
-	$('.cactiConsoleNavigationArea, .cactiTreeNavigationArea').unbind('mouseleave').on('mouseleave', function (pos) {
+	$('.cactiConsoleNavigationArea, .cactiTreeNavigationArea').off('mouseleave').on('mouseleave', function (pos) {
 		if ($('.cactiConsoleNavigationArea').length) {
 			object = '.cactiConsoleNavigationArea';
 		} else if ($('.cactiTreeNavigationArea').length) {
@@ -3382,7 +3382,7 @@ function cactiReady() {
 	/**
 	 * Unbind key elements to debounce actions
 	 */
-	$('input, select, textarea, a').unbind();
+	$('input, select, textarea, a').off();
 
 	// Use traditional popstate handler
 	window.onpopstate = function (event) {
@@ -4347,11 +4347,16 @@ function refreshGraphs() {
 		__csrf_magic: csrfMagicToken
 	};
 
-	$.post(document.location.pathname + '?action=update_timespan', post, function(data) {
+	$.ajax({
+		type: 'POST',
+		url: document.location.pathname + '?action=update_timespan',
+		data: post,
+		dataType: 'json'
+	}).done(function(data) {
 		$('#date1').val(data.date1);
 		$('#date2').val(data.date2);
 		initializeGraphs();
-	}, 'json');
+	});
 }
 
 function initializeGraphs(disable_cache) {
@@ -4795,8 +4800,8 @@ $.widget('custom.dropcolor', {
 			.autocomplete({
 				delay: 0,
 				minLength: 0,
-				source: $.proxy(this, '_source'),
-				select: $.proxy(this, '_select'),
+				source: this._source.bind(this),
+				select: this._select.bind(this),
 				search: function () {
 					$(this).data('ui-autocomplete').menu.bindings = $();
 				},
