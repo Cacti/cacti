@@ -159,7 +159,7 @@ function do_rrdcheck($thread_id = 1) {
 			$file = $rrdval['data_source_path'];
 
 			if ($use_proxy) {
-				$file_exists = rrdtool_execute("file_exists $file", true, RRDTOOL_OUTPUT_BOOLEAN, false, 'RRDCHECK');
+				$file_exists = rrdtool_execute('file_exists ' . cacti_escapeshellarg($file), true, RRDTOOL_OUTPUT_BOOLEAN, false, 'RRDCHECK');
 			} else {
 				clearstatcache();
 				$file_exists = file_exists($file);
@@ -210,9 +210,9 @@ function do_rrdcheck($thread_id = 1) {
 				}
 
 				if ($use_proxy) {
-					$output = rrdtool_execute("info $file", false, RRDTOOL_OUTPUT_STDOUT, false, 'RRDCHECK');
+					$output = rrdtool_execute('info ' . cacti_escapeshellarg($file), false, RRDTOOL_OUTPUT_STDOUT, false, 'RRDCHECK');
 				} else {
-					$output = rrdcheck_rrdtool_execute("info $file", $pipes);
+					$output = rrdcheck_rrdtool_execute(['info', $file], $pipes);
 				}
 
 				$matches     = array();
@@ -364,9 +364,9 @@ function do_rrdcheck($thread_id = 1) {
 				$one_hour_limit = ($duration - 3600) / $step;
 
 				if ($use_proxy) {
-					$info_array = rrdtool_execute("fetch $file LAST -s $pstart -e $pend ", false, RRDTOOL_OUTPUT_STDOUT, false, 'RRDCHECK');
+					$info_array = rrdtool_execute(['fetch', $file, 'LAST', '-s', $pstart, '-e', $pend], false, RRDTOOL_OUTPUT_STDOUT, false, 'RRDCHECK');
 				} else {
-					$info_array = rrdcheck_rrdtool_execute("fetch $file LAST -s $pstart -e $pend", $pipes);
+					$info_array = rrdcheck_rrdtool_execute(['fetch', $file, 'LAST', '-s', $pstart, '-e', $pend], $pipes);
 				}
 
 				/* don't do anything if RRDfile did not return data */
@@ -751,9 +751,9 @@ function rrdcheck_poller_bottom () {
 
 		if (read_config_option('path_rrdcheck_log') != '') {
 			if ($config['cacti_server_os'] == 'unix') {
-				$extra_args = '-q ' . $config['base_path'] . '/poller_rrdcheck.php >> ' . read_config_option('path_rrdcheck_log') . ' 2>&1';
+				$extra_args = '-q ' . $config['base_path'] . '/poller_rrdcheck.php >> ' . cacti_escapeshellarg(read_config_option('path_rrdcheck_log')) . ' 2>&1';
 			} else {
-				$extra_args = '-q ' . $config['base_path'] . '/poller_rrdcheck.php >> ' . read_config_option('path_rrdcheck_log');
+				$extra_args = '-q ' . $config['base_path'] . '/poller_rrdcheck.php >> ' . cacti_escapeshellarg(read_config_option('path_rrdcheck_log'));
 			}
 		} else {
 			$extra_args = '-q ' . $config['base_path'] . '/poller_rrdcheck.php';
@@ -818,6 +818,26 @@ function rrdcheck_rrdtool_init() {
  */
 function rrdcheck_rrdtool_execute($command, &$pipes) {
 	static $broken = false;
+
+	if (is_array($command)) {
+		if (cacti_sizeof($command)) {
+			$command_line = array_shift($command);
+
+			if (cacti_sizeof($command)) {
+				$escaped_args = array();
+
+				foreach($command as $arg) {
+					$escaped_args[] = cacti_escapeshellarg($arg);
+				}
+
+				$command_line .= ' ' . implode(' ', $escaped_args);
+			}
+
+			$command = $command_line;
+		} else {
+			$command = '';
+		}
+	}
 
 	$stdout = '';
 
@@ -974,4 +994,3 @@ function rrdcheck_processes_running($type) {
 
 	return $running;
 }
-

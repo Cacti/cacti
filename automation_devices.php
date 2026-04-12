@@ -687,7 +687,7 @@ function export_data($item) {
 	if ($item == '') {
 		return 'N/A';
 	} else {
-		return $item;
+		return cacti_csv_safe($item);
 	}
 }
 

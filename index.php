@@ -39,16 +39,27 @@ function render_external_links($style = 'FRONT') {
 		foreach($consoles as $page) {
 			if (is_realm_allowed($page['id']+10000)) {
 				if (preg_match('/^((((ht|f)tp(s?))\:\/\/){1}\S+)/i', $page['contentfile'])) {
-					print '<iframe class="content" src="' . $page['contentfile'] . '" frameborder="0"></iframe>';
+					print '<iframe class="content" src="' . html_escape($page['contentfile']) . '" frameborder="0"></iframe>';
 				} else {
 					print '<div id="content">';
 
-					$file = $config['base_path'] . "/include/content/" . $page['contentfile'];
+					$content_dir = realpath($config['base_path'] . '/include/content');
+					$file = realpath($config['base_path'] . '/include/content/' . $page['contentfile']);
 
-					if (file_exists($file)) {
+					if ($content_dir !== false) {
+						$content_dir = str_replace('\\', '/', $content_dir);
+					}
+					if ($file !== false) {
+						$file = str_replace('\\', '/', $file);
+					}
+
+					/* On Windows, realpath() may return mixed-case drive letters; use
+					 * case-insensitive comparison to avoid false rejections. */
+					$path_cmp = (DIRECTORY_SEPARATOR === '\\') ? 'stripos' : 'strpos';
+					if ($file !== false && $content_dir !== false && $path_cmp($file, $content_dir . '/') === 0) {
 						include_once($file);
 					} else {
-						print '<h1>The file \'' . $page['contentfile'] . '\' does not exist!!</h1>';
+						print '<h1>The file \'' . html_escape($page['contentfile']) . '\' does not exist!!</h1>';
 					}
 
 					print '</div>';
