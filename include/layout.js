@@ -1061,6 +1061,7 @@ function applySkin() {
 	});
 
 	$(document)
+		.off('.cactiTooltipPin')
 		.on('click.cactiTooltipPin', 'div.cactiTooltipHint, span.cactiTooltipHint', function (event) {
 			var target = $(this);
 			var isPinned = target.data('cacti-tooltip-pinned') === true;
