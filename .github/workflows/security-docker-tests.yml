@@ -1,0 +1,113 @@
+name: Security Docker Tests
+
+on:
+  pull_request:
+    branches: [develop]
+    paths:
+      - '.github/workflows/security-docker-tests.yml'
+      - 'docker-compose.yml'
+      - 'docker/**'
+      - 'tests/Unit/**'
+      - 'tests/tools/**'
+      - 'lib/**'
+      - 'include/global.php'
+      - 'data_input.php'
+      - 'managers.php'
+      - 'remote_agent.php'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: security-docker-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  security-docker:
+    name: docker security test suite
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.draft == false }}
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP for Composer
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: intl, mysqli, pdo_mysql, mbstring, xml
+
+      - name: Install PHP dependencies
+        timeout-minutes: 8
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Create test environment
+        run: |
+          cat > .env.test <<'EOF'
+          WEB_PORT=18080
+          DB_ROOT_PASSWORD=testroot
+          DB_NAME=cacti
+          DB_USER=cacti
+          DB_PASSWORD=testpass
+          DB_PORT=13306
+          TIMEZONE=UTC
+          PHP_MEMORY_LIMIT=256M
+          DB_MAX_CONNECTIONS=50
+          DB_BUFFER_POOL_SIZE=256M
+          EOF
+
+      - name: Build and start docker stack
+        timeout-minutes: 12
+        run: |
+          docker compose --env-file .env.test build --pull
+          docker compose --env-file .env.test up -d
+
+      - name: Wait for healthy containers
+        timeout-minutes: 5
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 24); do
+            DB_HEALTH=$(docker compose --env-file .env.test ps --format json | grep -o '"Health":"[^"]*"' | head -1 | cut -d'"' -f4 || true)
+            WEB_HEALTH=$(docker compose --env-file .env.test ps --format json | grep -o '"Health":"[^"]*"' | tail -1 | cut -d'"' -f4 || true)
+            if [ "$DB_HEALTH" = "healthy" ] && [ "$WEB_HEALTH" = "healthy" ]; then
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "Timed out waiting for docker health"
+          docker compose --env-file .env.test ps
+          exit 1
+
+      - name: Run basic docker smoke checks
+        run: |
+          curl -fsS http://localhost:18080/cacti/ >/dev/null
+          docker compose --env-file .env.test exec -T web test -f /var/www/html/cacti/include/config.php
+          docker compose --env-file .env.test exec -T web php -r "new PDO('mysql:host=db;dbname=cacti', 'cacti', 'testpass');"
+
+      - name: Run security-focused unit suite in container
+        timeout-minutes: 8
+        run: |
+          docker compose --env-file .env.test exec -T web include/vendor/bin/pest --colors=never \
+            tests/Unit/Pr7036ReviewCoverageTest.php \
+            tests/Unit/PathValidationIntegrationTest.php \
+            tests/Unit/SecurityValidationHelpersTest.php \
+            tests/Unit/RemoteAgentAuthTest.php
+
+      - name: Collect docker logs
+        if: always()
+        run: docker compose --env-file .env.test logs --no-color > docker-security-tests.log
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-security-tests-log
+          path: docker-security-tests.log
+          if-no-files-found: ignore
+
+      - name: Tear down docker stack
+        if: always()
+        run: docker compose --env-file .env.test down -v --remove-orphans

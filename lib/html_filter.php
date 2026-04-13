@@ -963,7 +963,9 @@ class CactiTableFilter {
 			$filters['sort_column']['default']    = $this->filter_array['sort']['sort_column'];
 
 			$filters['sort_direction']['filter']  = FILTER_CALLBACK;
-			$filters['sort_direction']['options'] = ['options' => 'sanitize_search_string'];
+			$filters['sort_direction']['options'] = ['options' => function ($v) {
+				return cacti_validate_sort_direction($v, 'ASC');
+			}];
 			$filters['sort_direction']['default'] = $this->filter_array['sort']['sort_direction'];
 		}
 

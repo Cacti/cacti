@@ -201,6 +201,9 @@ if (gnrv('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
 		}
 
 		if (!$error) {
+			// rotate session ID to prevent session fixation
+			session_regenerate_id(true);
+
 			// set the php session
 			$_SESSION[SESS_USER_ID]     = $user['id'];
 			$_SESSION[SESS_USER_AGENT]  = $_SERVER['HTTP_USER_AGENT'];

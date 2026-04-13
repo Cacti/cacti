@@ -5182,6 +5182,83 @@ function sanitize_unserialize_selected_items(mixed $items) : mixed {
 	return $return_items;
 }
 
+function validate_path_within(string $filename, string $base_dir) : string|false {
+	if (str_contains($filename, "\0")) {
+		return false;
+	}
+
+	// Enforce leaf filenames only; do not normalize potentially hostile input.
+	if (str_contains($filename, '/') || str_contains($filename, '\\')) {
+		return false;
+	}
+
+	if ($filename === '' || $filename === '.' || $filename === '..') {
+		return false;
+	}
+
+	$base_real = realpath($base_dir);
+
+	if ($base_real === false) {
+		return false;
+	}
+
+	$combined = $base_real . '/' . $filename;
+	$resolved = realpath($combined);
+
+	// Existing file case: ensure realpath resolves within base (symlink-safe).
+	if ($resolved !== false) {
+		if (!str_starts_with($resolved, $base_real . '/') && $resolved !== $base_real) {
+			return false;
+		}
+
+		return $resolved;
+	}
+
+	// New file case: allow a safe path under base for write/create operations.
+	return $combined;
+}
+
+function validate_relative_path_within(string $path, string $base_dir) : string|false {
+	if ($path === '' || $path[0] === '/' || str_contains($path, "\0")) {
+		return false;
+	}
+
+	// Reject traversal on both Unix and Windows separators
+	foreach (preg_split('/[\/\\\\]/', $path) as $part) {
+		if ($part === '..') {
+			return false;
+		}
+	}
+
+	$base_real = realpath($base_dir);
+
+	if ($base_real === false) {
+		return false;
+	}
+
+	$combined = $base_real . '/' . $path;
+	$resolved = realpath($combined);
+
+	// If the file exists, verify it resolves within the base (catches symlinks)
+	if ($resolved !== false) {
+		if (!str_starts_with($resolved, $base_real . '/')) {
+			return false;
+		}
+
+		return $resolved;
+	}
+
+	// File doesn't exist yet (write case). Verify the parent directory
+	// resolves within the base to guard against symlink escapes.
+	$parent_real = realpath(dirname($combined));
+
+	if ($parent_real !== false && !str_starts_with($parent_real, $base_real . '/') && $parent_real !== $base_real) {
+		return false;
+	}
+
+	return $combined;
+}
+
 /**
  * verifies all selected graphs only contain numeric and string values
  *
@@ -6915,7 +6992,7 @@ function CactiErrorHandler(int $level, string $message, string $file, int $line,
 			cacti_debug_backtrace('PHP ERROR NOTICE', false, true, 0, 1);
 
 			break;
-		case E_STRICT:
+		case 2048: // E_STRICT (deprecated constant in newer PHP)
 			cacti_log($error, false, 'ERROR');
 			cacti_debug_backtrace('PHP ERROR STRICT', false, true, 0, 1);
 
@@ -6943,7 +7020,7 @@ function CactiShutdownHandler() : bool {
 		E_USER_ERROR         => 'USER_ERROR',
 		E_USER_WARNING       => 'USER_WARNING',
 		E_USER_NOTICE        => 'USER_NOTICE',
-		E_STRICT             => 'STRICT',
+		2048                 => 'STRICT', // E_STRICT
 		E_RECOVERABLE_ERROR  => 'RECOVERABLE_ERROR',
 		E_DEPRECATED         => 'DEPRECATED',
 		E_USER_DEPRECATED    => 'USER_DEPRECATED',

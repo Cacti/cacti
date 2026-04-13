@@ -3577,7 +3577,21 @@ function auth_process_lockout(string $username, int $realm) : void {
 					$error_msg = __('Access Denied!  Login Disabled.');
 				}
 
-				$failed = intval($user['failed_attempts']) + 1;
+				// Atomic increment to prevent TOCTOU race on lockout counter
+				db_execute_prepared("UPDATE user_auth
+					SET lastfail = ?, failed_attempts = failed_attempts + 1
+					WHERE username = ?
+					AND realm = ?
+					AND enabled = 'on'",
+					[time(), $username, $realm]);
+
+				$user = db_fetch_row_prepared('SELECT failed_attempts, locked
+					FROM user_auth
+					WHERE username = ?
+					AND realm = ?',
+					[$username, $realm]);
+
+				$failed = $user['failed_attempts'];
 
 				cacti_log(sprintf('LOGIN FAILED: User \'%s\' failed authentication, incrementing lockout (%d of %d)',$username, $failed, $max), false, 'AUTH', POLLER_VERBOSITY_LOW);
 
@@ -3591,15 +3605,6 @@ function auth_process_lockout(string $username, int $realm) : void {
 
 					$user['locked'] = 'on';
 				}
-
-				$user['lastfail'] = time();
-
-				db_execute_prepared("UPDATE user_auth
-					SET lastfail = ?, failed_attempts = ?
-					WHERE username = ?
-					AND realm = ?
-					AND enabled = 'on'",
-					[$user['lastfail'], $failed, $username, $realm]);
 
 				// Log the invalid password attempt
 				db_execute_prepared('INSERT IGNORE INTO user_log
@@ -4565,7 +4570,7 @@ function auth_login_redirect(string $login_opts = '') : void {
 
 				cacti_log(sprintf("DEBUG: Referer from REDIRECT_URL with Value: '%s', Effective: '%s'", $_SERVER['REDIRECT_URL'], $referer), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 			} elseif (isset($_SERVER['HTTP_REFERER'])) {
-				$referer = $_SERVER['HTTP_REFERER'];
+				$referer = validate_redirect_url($_SERVER['HTTP_REFERER']);
 
 				if (auth_basename($referer) == 'logout.php') {
 					$referer = CACTI_PATH_URL . 'index.php';

@@ -2223,6 +2223,10 @@ function db_qstr(mixed $s, mixed $db_conn = false) : string {
 	return "'" . $s . "'";
 }
 
+function db_qstr_rlike(string $s, mixed $db_conn = false) : string {
+	return 'RLIKE ' . db_qstr($s, $db_conn);
+}
+
 /**
  * db_strip_control_chars - Strip control characters from SQL command
  *

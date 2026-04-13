@@ -752,12 +752,16 @@ function automation_get_new_graphs_sql(array $rule) : mixed {
 		'sort_column' => [
 			'filter'  => FILTER_CALLBACK,
 			'default' => 'description',
-			'options' => ['options' => 'sanitize_search_string']
+			'options' => ['options' => function ($v) {
+				return cacti_validate_sort_column($v, 'description');
+			}]
 		],
 		'sort_direction' => [
 			'filter'  => FILTER_CALLBACK,
 			'default' => 'ASC',
-			'options' => ['options' => 'sanitize_search_string']
+			'options' => ['options' => function ($v) {
+				return cacti_validate_sort_direction($v, 'ASC');
+			}]
 		]
 	];
 

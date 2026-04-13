@@ -130,9 +130,9 @@ function remote_agent_strip_domain(string $host) : string {
 		$parts = explode('.', $host);
 
 		return $parts[0];
-	} else {
-		return $host;
 	}
+
+	return $host;
 }
 
 function remote_client_authorized() : bool {
@@ -155,25 +155,12 @@ function remote_client_authorized() : bool {
 
 	if ($client_name == $client_addr) {
 		cacti_log('NOTE: Unable to resolve hostname from address ' . $client_addr, false, 'WEBUI', POLLER_VERBOSITY_MEDIUM);
-	} else {
-		$client_name = remote_agent_strip_domain($client_name);
 	}
 
 	if ($client_name != $client_addr) {
-		$forward_records = @dns_get_record($client_name, DNS_A | DNS_AAAA);
-		$forward_match   = false;
-
-		if (is_array($forward_records)) {
-			foreach ($forward_records as $record) {
-				$ip = isset($record['ip']) ? $record['ip'] : (isset($record['ipv6']) ? $record['ipv6'] : '');
-
-				if ($ip === $client_addr) {
-					$forward_match = true;
-
-					break;
-				}
-			}
-		}
+		$forward_match = cacti_remote_agent_forward_matches($client_addr, $client_name, function (string $host) {
+			return @dns_get_record($host, DNS_A | DNS_AAAA);
+		});
 
 		if (!$forward_match) {
 			$safe_name = preg_replace('/[^a-zA-Z0-9.\-:]/', '', $client_name);
@@ -186,22 +173,28 @@ function remote_client_authorized() : bool {
 	$pollers = db_fetch_assoc('SELECT * FROM poller WHERE disabled = ""', true, $poller_db_cnn_id);
 
 	if (cacti_sizeof($pollers) > 1) {
+		if (cacti_remote_agent_is_authorized_host($client_name, $client_addr, $pollers, $remote_agent_whitelist)) {
+			return true;
+		}
+	}
+
+	// Check if a short-hostname match would have succeeded (migration aid)
+	if ($client_name != $client_addr && str_contains($client_name, '.')) {
+		$short_name = explode('.', $client_name)[0];
+
 		foreach ($pollers as $poller) {
-			if (remote_agent_strip_domain($poller['hostname']) == $client_name) {
-				return true;
-			}
+			$poller_short = str_contains($poller['hostname'], '.') ? explode('.', $poller['hostname'])[0] : $poller['hostname'];
 
-			if ($poller['hostname'] == $client_addr) {
-				return true;
-			}
+			if ($poller_short == $short_name) {
+				$poller_id = isset($poller['id']) ? (int) $poller['id'] : 0;
+				cacti_log("SECURITY: Remote agent '$client_name' ($client_addr) matches poller '{$poller['hostname']}' (id:$poller_id) by short hostname but not FQDN. Update the poller hostname to the FQDN.", false, 'AUTH');
 
-			if (in_array($client_addr,$remote_agent_whitelist, true)) {
-				return true;
+				break;
 			}
 		}
 	}
 
-	cacti_log("Unauthorized remote agent access attempt from $client_name ($client_addr)");
+	cacti_log(sprintf('WARNING: Unauthorized remote agent access attempt from %s (%s)', $client_name, $client_addr), false, 'AUTH');
 
 	return false;
 }
@@ -215,8 +208,6 @@ function get_graph_data() : bool {
 	gfrv('rra_id');
 	gfrv('graph_theme', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
 	gfrv('graph_nolegend', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
-	gfrv('effective_user');
-
 	$local_graph_id   = gfrv('local_graph_id');
 	$rra_id           = gfrv('rra_id');
 
@@ -262,12 +253,8 @@ function get_graph_data() : bool {
 		$graph_data_array['graph_theme'] = grv('graph_theme');
 	}
 
-	// set the effective user
-	if (isrv('effective_user')) {
-		$user = grv('effective_user');
-	} else {
-		$user = 0;
-	}
+	// The remote agent runs as the authenticated session user, not a request override.
+	$user = $_SESSION[SESS_USER_ID] ?? 0;
 
 	$graph_data_array['graphv'] = true;
 

@@ -31,9 +31,14 @@ if (read_config_option('storage_location')) {
 }
 
 function escape_command(string $command) : string {
-	return $command;		// we escape every single argument now, no need for 'special' escaping
-	// return preg_replace("/(\\\$|`)/", "", $command); # current cacti code
-	// TODO return preg_replace((\\\$(?=\w+|\*|\@|\#|\?|\-|\\\$|\!|\_|[0-9]|\(.*\))|`(?=.*(?=`)))","$2", $command);  #suggested by ldevantier to allow for a single $
+	// Strip shell command substitution patterns that could allow injection
+	// when the command is passed to shell_exec. Backticks enable command
+	// substitution; $() enables subshell execution. Standalone $ in text
+	// (e.g., "$5.00" in graph legends) is preserved.
+	$command = str_replace('`', '', $command);
+	$command = preg_replace('/\$\(/', '(', $command);
+
+	return $command;
 }
 
 /**
@@ -320,7 +325,8 @@ function __rrd_execute(string|array $command_line, bool $log_to_stdout, int $out
 	static $last_command;
 
 	if (is_array($command_line)) {
-		$command_line = implode(' ', array_map('cacti_escapeshellarg', $command_line));
+		$cmd          = array_shift($command_line);
+		$command_line = $cmd . ' ' . implode(' ', array_map('cacti_escapeshellarg', $command_line));
 	}
 
 	/**

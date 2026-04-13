@@ -35,6 +35,10 @@ function xml2array(string $data) : mixed {
 	 * original ripped from  on the php-manual:gdemartini@bol.com.br
 	 * to be used for data retrieval(result-structure is Data oriented)
 	 */
+	if (function_exists('libxml_disable_entity_loader')) {
+		$loader = libxml_disable_entity_loader(true);
+	}
+
 	$p     = xml_parser_create();
 	$vals  = [];
 	$index = [];
@@ -42,6 +46,10 @@ function xml2array(string $data) : mixed {
 	xml_parser_set_option($p, XML_OPTION_SKIP_WHITE, 1);
 	xml_parser_set_option($p, XML_OPTION_CASE_FOLDING, 0);
 	xml_parse_into_struct($p, $data, $vals, $index);
+
+	if (isset($loader)) {
+		libxml_disable_entity_loader($loader);
+	}
 
 	if (version_compare(PHP_VERSION, '8.0', '<')) {
 		xml_parser_free($p);
@@ -130,6 +138,10 @@ function rrdxport2array(string $data) : array {
 	/* mvo voncken@mailandnews.com
 	original ripped from  on the php-manual:gdemartini@bol.com.br
 	to be used for data retrieval(result-structure is Data oriented) */
+	if (function_exists('libxml_disable_entity_loader')) {
+		$loader = libxml_disable_entity_loader(true);
+	}
+
 	$p     = xml_parser_create('UTF-8');
 	$vals  = [];
 	$index = [];
@@ -137,6 +149,10 @@ function rrdxport2array(string $data) : array {
 	xml_parser_set_option($p, XML_OPTION_CASE_FOLDING, 0);
 	xml_parser_set_option($p, XML_OPTION_TARGET_ENCODING, 'UTF-8');
 	xml_parse_into_struct($p, $data, $vals, $index);
+
+	if (isset($loader)) {
+		libxml_disable_entity_loader($loader);
+	}
 
 	if (version_compare(PHP_VERSION, '8.0', '<')) {
 		xml_parser_free($p);

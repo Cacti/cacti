@@ -753,17 +753,26 @@ function form_actions() : void {
 
 	if (isrv('selected_items')) {
 		if (isrv('action_receivers')) {
-			$selected_items = cacti_unserialize(stripslashes(gnrv('selected_graphs_array')));
+			$selected_items = sanitize_unserialize_selected_items(gnrv('selected_graphs_array'));
 
 			if ($selected_items != false) {
+				$ids = cacti_extract_positive_int_ids($selected_items);
+
+				if (empty($ids)) {
+					header('Location: managers.php');
+					exit;
+				}
+
+				$ids = implode(',', $ids);
+
 				if (gnrv('drp_action') == '1') { // delete
-					db_execute('DELETE FROM snmpagent_managers WHERE id IN (' . implode(',' ,$selected_items) . ')');
-					db_execute('DELETE FROM snmpagent_managers_notifications WHERE manager_id IN (' . implode(',' ,$selected_items) . ')');
-					db_execute('DELETE FROM snmpagent_notifications_log WHERE manager_id IN (' . implode(',' ,$selected_items) . ')');
+					db_execute('DELETE FROM snmpagent_managers WHERE id IN (' . $ids . ')');
+					db_execute('DELETE FROM snmpagent_managers_notifications WHERE manager_id IN (' . $ids . ')');
+					db_execute('DELETE FROM snmpagent_notifications_log WHERE manager_id IN (' . $ids . ')');
 				} elseif (gnrv('drp_action') == '2') { // disable
-					db_execute("UPDATE snmpagent_managers SET disabled = 'on' WHERE id IN (" . implode(',' ,$selected_items) . ')');
+					db_execute("UPDATE snmpagent_managers SET disabled = 'on' WHERE id IN (" . $ids . ')');
 				} elseif (gnrv('drp_action') == '3') { // enable
-					db_execute("UPDATE snmpagent_managers SET disabled = '' WHERE id IN (" . implode(',' ,$selected_items) . ')');
+					db_execute("UPDATE snmpagent_managers SET disabled = '' WHERE id IN (" . $ids . ')');
 				}
 
 				header('Location: managers.php');

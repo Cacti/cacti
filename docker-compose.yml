@@ -12,7 +12,6 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile
-    container_name: cacti_web
     ports:
       - "${WEB_PORT:-8080}:80"
     volumes:
@@ -36,7 +35,6 @@ services:
 
   db:
     image: mariadb:11.8
-    container_name: cacti_db
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
       MYSQL_DATABASE: ${DB_NAME:-cacti}

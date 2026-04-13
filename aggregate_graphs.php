@@ -1575,7 +1575,7 @@ function aggregate_items() : void {
 	if (grv('rfilter') == '') {
 		$sql_where = '';
 	} elseif (validate_is_regex(grv('rfilter'))) {
-		$sql_where = "WHERE gtg.title_cache RLIKE '" . grv('rfilter') . "'";
+		$sql_where = 'WHERE gtg.title_cache ' . db_qstr_rlike(grv('rfilter'));
 	} else {
 		$filters   = explode(' ', grv('rfilter'));
 		$sql_where = '';
@@ -1697,7 +1697,7 @@ function aggregate_items() : void {
 							<?php print __('Search'); ?>
 						</td>
 						<td>
-							<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='45' onChange='applyFilter()' value='<?php print grv('rfilter'); ?>'>
+							<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='45' onChange='applyFilter()' value='<?php print htmlerv('rfilter'); ?>'>
 						</td>
 						<td>
 							<?php print __('Graphs'); ?>

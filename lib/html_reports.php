@@ -271,7 +271,15 @@ function reports_form_save() : void {
 		if (ierv('id')) {
 			$save['user_id'] = $_SESSION[SESS_USER_ID];
 		} else {
-			$save['user_id'] = db_fetch_cell_prepared('SELECT user_id FROM reports WHERE id = ?', [$post['id']]);
+			$owner_id = db_fetch_cell_prepared('SELECT user_id FROM reports WHERE id = ?', [$post['id']]);
+
+			if ($owner_id != $_SESSION[SESS_USER_ID] && !is_realm_allowed(21)) {
+				raise_message('permission_denied');
+				header('Location: reports.php');
+				exit;
+			}
+
+			$save['user_id'] = $owner_id;
 		}
 
 		$save['id']            = $post['id'];
@@ -280,7 +288,7 @@ function reports_form_save() : void {
 		$save['enabled']       = (isset($post['enabled']) ? 'on' : '');
 
 		$save['cformat']       = (isset($post['cformat']) ? 'on' : '');
-		$save['format_file']   = $post['format_file'];
+		$save['format_file']   = basename($post['format_file']);
 		$save['font_size']     = form_input_validate($post['font_size'], 'font_size', '^[0-9]+$', false, 3);
 		$save['alignment']     = form_input_validate($post['alignment'], 'alignment', '^[0-9]+$', false, 3);
 		$save['graph_linked']  = (isset($post['graph_linked']) ? 'on' : '');
@@ -415,9 +423,22 @@ function reports_form_actions() : void {
 
 				$report_id = intval($report_id);
 
+				// Verify ownership before any mutation
+				if ($type == 'reports') {
+					$owner_id = db_fetch_cell_prepared('SELECT user_id FROM reports WHERE id = ?', [$report_id]);
+
+					if ($owner_id != $_SESSION[SESS_USER_ID] && !is_realm_allowed(21)) {
+						continue;
+					}
+				}
+
 				if (gnrv('drp_action') == REPORTS_DELETE) { // delete
 					if ($type == 'reports') {
-						db_execute_prepared('DELETE FROM reports WHERE id = ?', [$report_id]);
+						if (is_realm_allowed(21)) {
+							db_execute_prepared('DELETE FROM reports WHERE id = ?', [$report_id]);
+						} else {
+							db_execute_prepared('DELETE FROM reports WHERE id = ? AND user_id = ?', [$report_id, $_SESSION[SESS_USER_ID]]);
+						}
 						db_execute_prepared('DELETE FROM reports_items WHERE report_id = ?', [$report_id]);
 					} elseif ($type == 'reportit') {
 						if (function_exists('api_reportit_delete_report')) {

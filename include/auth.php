@@ -83,6 +83,7 @@ if ($auth_method != AUTH_METHOD_BASIC) {
 		$cookie_user = check_auth_cookie();
 
 		if ($cookie_user !== false) {
+			session_regenerate_id(true);
 			$_SESSION[SESS_USER_ID]     = $cookie_user;
 			$_SESSION[SESS_USER_AGENT]  = $_SERVER['HTTP_USER_AGENT'];
 			$_SESSION[SESS_CLIENT_ADDR] = get_client_addr();

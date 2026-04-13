@@ -1844,10 +1844,10 @@ function boost_poller_bottom() : void {
 		if ($boost_debug && $boost_log != '') {
 			if (CACTI_SERVER_OS == 'unix') {
 				$extra_args    = '-q ' . CACTI_PATH_BASE . '/poller_boost.php --debug';
-				$redirect_args =  '>> ' . $boost_log . ' 2>&1';
+				$redirect_args = '>> ' . cacti_escapeshellarg($boost_log) . ' 2>&1';
 			} else {
 				$extra_args    = '-q ' . CACTI_PATH_BASE . '/poller_boost.php --debug';
-				$redirect_args = '>> ' . $boost_log;
+				$redirect_args = '>> ' . cacti_escapeshellarg($boost_log);
 			}
 		} else {
 			$extra_args = '-q ' . CACTI_PATH_BASE . '/poller_boost.php';

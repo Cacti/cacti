@@ -1,0 +1,34 @@
+name: Workflow Lint
+
+on:
+  pull_request:
+    branches: [develop]
+    paths:
+      - '.github/workflows/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: workflow-lint-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-workflows:
+    name: actionlint + yamllint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run actionlint
+        run: docker run --rm -v "$PWD":/repo -w /repo rhysd/actionlint:1.7.8
+
+      - name: Install yamllint
+        run: python3 -m pip install --user yamllint
+
+      - name: Run yamllint on workflows
+        run: ~/.local/bin/yamllint .github/workflows
