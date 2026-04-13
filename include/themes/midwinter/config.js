@@ -1,4 +1,4 @@
-/*
+    /*
   +-------------------------------------------------------------------------+
   | Copyright (C) 2004-2026 The Cacti Group                                 |
   |                                                                         |
@@ -42,6 +42,17 @@ const uiConfig = {
             type: 'tree',
             overrides: { title: 'Tree' }
         },
+        {   // New Cacti NavigationBox Table Plugin
+            type: 'table',
+            overrides: { title: 'Table Layout' }
+        },
+        {   // New Cacti Navigation Filter Table Plugin
+            type: 'filter',
+            overrides: {
+               //layout: { align: 'right' },
+                title: 'Display Filter'
+            }
+        },
         {
             title: window.help,
             helper: 'help',
@@ -57,21 +68,10 @@ const uiConfig = {
             contentLoader: `${content}.user`
         },
         {
-            title: 'Table Layout',
-            helper: 'displayOptions',
-            layout: { align: 'right' },
-        },
-        {
             title: 'Theme',
             helper: 'theme',
             layout: { align: 'right' },
             contentLoader: `${content}.theme`
-        },
-        {
-            title: 'Filter',
-            helper: 'displayFilterOptions',
-            layout: { align: 'right' },
-            header: 'Display Filter',
         },
     ],
     buttons: [
@@ -160,6 +160,13 @@ const uiConfig = {
             helper: "displayFilterOptions",
             tooltip: "Show Display Filter",
             iconClass: "ti ti-filter",
+            destination: "#mdw-ActionBarTop",
+        },
+        {
+            title: "Table",
+            helper: "displayOptions",
+            tooltip: "Setup Table Layout",
+            iconClass: "ti ti-table-options",
             destination: "#mdw-ActionBarTop",
         },
     ]

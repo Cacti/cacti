@@ -279,9 +279,13 @@
             }
             .navBox-control {
                 display: inline-flex;
+                justify-content: right;
                 & .navBox-control-group {
                     display: flex;
                     justify-content: flex-end;
+                }
+                & .navBox-control-btn {
+                    margin-left: 3px;
                 }
             }
             .navBox-content {
@@ -427,12 +431,18 @@
                     padding-bottom: 2px;
                 }
 
-                &  .navBox-content {
+                & .navBox-content {
                     min-width: unset !important;
                     width: calc(100% - 3px);
                     border-top: none;
                     padding: 1rem 0.5rem 0 1rem;
                     scrollbar-gutter: stable;
+                }
+
+                & .navBox-item-row {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
                 }
             }
 
@@ -1014,6 +1024,7 @@ html[data-theme-pwa="on"] {
         background: var(--background-content);
         & .elementsOnTop {
             height: 3.5rem;
+            min-height: min-content;
             padding: 2px 0.5rem 3px 0.75rem;
         }
     }

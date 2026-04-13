@@ -646,7 +646,6 @@ html {
     flex-direction: column;
     justify-content: center;
     text-align: center;
-    background: var(--background-navigation);
     transition: flex 0.3s ease-in-out, visibility 0.25s ease-in-out;
     padding: 0 1rem;
     flex-shrink: 0;

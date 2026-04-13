@@ -33,30 +33,55 @@ midwinter.navigationBox = {
         const plugin = parts.reduce((obj, key) => (obj && obj[key] ? obj[key] : null), window);
 
         if (plugin && typeof plugin.getDefaultConfig === 'function') {
-            const type = parts.pop();
-            this._plugins[type] = plugin;
+            // Check if the plugin is actually allowed to run (e.g., dependency check)
+            const config = plugin.getDefaultConfig();
+
+            if (config !== null) {
+                const type = parts.pop();
+                this._plugins[type] = plugin;
+                // console.log(`[Plugin] Registered: ${type}`);
+            } else {
+                // Plugin aborted registration itself due to missing dependencies
+                console.warn(`[Plugin] Registration aborted for ${path} (dependencies not met).`);
+            }
         }
     },
 
-    /**
-     * builds configs by mixing plugin-based and legacy definitions
-     * @param {array} boxDefinitions - list of box objects
-     * @returns {array} processed configurations
-     */
     buildConfigs: function (boxDefinitions) {
         return boxDefinitions.map(def => {
-            // check if this is a new plugin-based type
             if (def.type && this._plugins[def.type]) {
-                return this._plugins[def.type].getDefaultConfig(def.overrides || {});
+                // get the default config from the plugin
+                const config = this._plugins[def.type].getDefaultConfig(def.overrides || {});
+                if (config) {
+                    // we just ensure the type is set so add() can pick it up
+                    config.pluginType = def.type;
+                }
+                return config;
             }
-
-            // fallback - legacy config object
             return def;
+        }).filter(config => config !== null);
+    },
+
+    refreshPlugins: function() {
+        Object.keys(this._plugins).forEach(type => {
+            const plugin = this._plugins[type];
+
+            // Only target boxes that have the data-refresh attribute set to true
+            $(`[data-plugin="${type}"][data-refresh="true"]`).each((index, el) => {
+                const $box = $(el);
+
+                if (typeof plugin.content === 'function') {
+                    $box.find('.navBox-content').html(plugin.content($box));
+                }
+                if (typeof plugin.init === 'function') {
+                    plugin.init($box);
+                }
+            });
         });
     }
 }
 
-class Navigation {
+class cactiNavigation {
     #refreshStorage = false;
     #prefix = 'mdw';
     #storageKey = 'navigationBox';
@@ -90,7 +115,7 @@ class Navigation {
         this._restoreLocalStorage();
 
         /* setup limited to parent instance only */
-        if (this.target === Navigation) {
+        if (this.target === cactiNavigation) {
             this._validateOptions(options, this.#navOptions);
             this.#nav.session = $.extend(true, {}, this.#navOptions, this.#nav.session);
             this._checkContainers();
@@ -275,7 +300,7 @@ class Navigation {
                     } else {
                         // Direct assignment for primitives or our special toggle-objects
                         defaults[key] = value;
-                        if (this.target === Navigation) {
+                        if (this.target === cactiNavigation) {
                             this.#refreshStorage = true;
                         }
                     }
@@ -433,6 +458,8 @@ class Navigation {
 
     _checkDockInnerSiblings($destination) {
         const $sibling = $destination.siblings().eq(0);
+
+        // combined check: Box must be logically OPEN and visually VISIBLE
         const hasChildVisible = $destination.find('[data-status="open"]').length > 0;
         const hasNieceVisible = $sibling.find('[data-status="open"]').length > 0;
 
@@ -525,9 +552,34 @@ class Navigation {
             }
         });
     }
+
+    setBoxPresence(helper, visible) {
+        const $box = this._getBox(helper);
+        if (!$box.length) return;
+
+        const currentStatus = $box.attr('data-status'); // 'open' or 'closed'
+        const isUserOpen = (currentStatus === 'open');
+
+        if (visible) {
+            // CONTENT IS THERE:
+            // Only show if the user actually wants it open (respect storage)
+            if (isUserOpen) {
+                this._updateNavigationBox($box, true);
+            }
+        } else {
+            // NO CONTENT:
+            // Hide visually, but DO NOT change data-status or fire events
+            this._updateNavigationBox($box, false);
+        }
+
+        // Always update Dock layout if it's a dock style
+        if ($box.attr('data-style') === 'dock') {
+            this._checkDockInnerSiblings($box.parent());
+        }
+    }
 }
 
-class Button extends Navigation {
+class cactiButton extends cactiNavigation {
     constructor() {
         super();
     }
@@ -562,7 +614,7 @@ class Button extends Navigation {
         const containerHtml = `
             <div class="compact_nav_icon hint--info hint--right hint--rounded" 
                  data-subtitle="${config.title}" 
-                 data-helper="${config.helper}" 
+                 data-helper="${config.helper}"  
                  aria-label="${tooltip}" 
                  role="button" 
                  tabindex="0" 
@@ -642,7 +694,7 @@ class Button extends Navigation {
     }
 }
 
-class Box extends Navigation {
+class cactiBox extends cactiNavigation {
 
     #searchTimer = null;
 
@@ -672,7 +724,6 @@ class Box extends Navigation {
         // listen to our parent for synchronization
         window.addEventListener('box:stateChanged', (e) => {
             const { helper, attributes } = e.detail;
-            console.log(helper +'::' + attributes)
             this.#saveBoxState(helper, attributes);
         });
     }
@@ -691,6 +742,8 @@ class Box extends Navigation {
             controlLoader   : '',
             status          : 'closed',
             initCallback    : '',
+            pluginType      : '',
+            isRefreshable   : false,
         };
 
         // validate and merge
@@ -738,6 +791,8 @@ class Box extends Navigation {
         // assemble container
         const containerHtml = `
             <div class="${this.prefix}-${this.className}" data-title="${title}" data-helper="${helper}" 
+                 data-plugin="${config.pluginType}"
+                 data-refresh="${config.isRefreshable}" 
                  data-status="${config.status}" 
                  data-height="${layout.height}" data-width="${width}" data-align="${layout.align}"
                  data-style="${layout.style}" data-dock="${layout.dock}" data-overlay="${layout.overlay}"
@@ -832,7 +887,6 @@ class Box extends Navigation {
     }
 
     #prepareContextMenuItems(config) {
-
         // define basic menu structure
         let menuItems = {
             "search": {
