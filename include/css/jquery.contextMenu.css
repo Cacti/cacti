@@ -125,6 +125,26 @@
           animation: cm-spin 2s infinite;
 }
 
+.context-menu-icon.context-menu-icon-ti::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 1.85rem;
+  font-family: "tabler-icons";
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  color: #2980b9;
+  text-align: center;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  -o-transform: translateY(-50%);
+  transform: translateY(-50%);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 .context-menu-icon.context-menu-icon--fa {
   display: list-item;
   font-family: inherit;

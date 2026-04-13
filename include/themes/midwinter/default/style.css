@@ -308,17 +308,15 @@
 }
 .jstree-default .jstree-anchor,
 .jstree-default .jstree-wholerow {
-  transition: background-color 0.15s, box-shadow 0.15s;
+  /*transition: background-color 0.15s, box-shadow 0.15s;*/
 }
 .jstree-default .jstree-hovered {
   background: #e7f4f9;
   border-radius: 2px;
-  box-shadow: inset 0 0 1px #cccccc;
 }
 .jstree-default .jstree-clicked {
   background: #beebff;
   border-radius: 2px;
-  box-shadow: inset 0 0 1px #999999;
 }
 .jstree-default .jstree-no-icons .jstree-anchor > .jstree-themeicon {
   display: none;
@@ -382,39 +380,40 @@
   box-sizing: border-box;
 }
 .jstree-default .jstree-wholerow-hovered {
-  #background: rgba(0,0,0,0.1);
-  border: none;
+  background: var(--table-selectable);
+  border: 1px solid transparent;
+  border-radius: 4px;
 }
 .jstree-default .jstree-wholerow-clicked {
   border-left: 3px solid #151725;
   color: white;
 }
 .jstree-default .jstree-node {
-  min-height: 20px;
-  line-height: 20px;
-  margin-left: 7px;
+  min-height: 1.5rem;
+  line-height: 1.5rem;
+  margin: .2rem .2rem .2rem .4rem;
   min-width: 22px;
 }
 .jstree-default .jstree-anchor {
-  line-height: 20px;
-  height: 20px;
+  line-height: 1.5rem;
+  height: 1.5rem;
   color: #7e818f;
 }
 .jstree-default .jstree-icon {
   width: 22px;
-  height: 20px;
-  line-height: 20px;
+  height: 1.5rem;
+  line-height: 1.5rem;
 }
 .jstree-default .jstree-icon:empty {
   width: 22px;
-  height: 20px;
-  line-height: 20px;
+  height: 1.5rem;
+  line-height: 1.5rem;
 }
 .jstree-default.jstree-rtl .jstree-node {
   margin-right: 24px;
 }
 .jstree-default .jstree-wholerow {
-  height: 24px;
+  height: 1.75rem;
 }
 .jstree-default .jstree-node,
 .jstree-default .jstree-icon {

@@ -13,7 +13,7 @@ div[class*=" fa-icon-"], span[class*=" fa-icon-"] {
 }
 
 div[class*=" ti-icon-"], span[class*=" ti-icon-"] {
-    font-family: 'tabler-icons';
+    font-family: "tabler-icons";
     font-weight: 600;
 
     &.ti-icon-dots-vertical::after  { content: "\ea94"; }
