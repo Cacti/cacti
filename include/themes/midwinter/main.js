@@ -690,13 +690,11 @@ function setupDefaultElements() {
 		$('.tableHeader th').has('i.fa-sort').removeClass('tableHeaderColumnHover tableHeaderColumnSelected');
 		$('.tableHeader th').has('i.fa-sort-up').addClass('tableHeaderColumnSelected');
 		$('.tableHeader th').has('i.fa-sort-down').addClass('tableHeaderColumnSelected');
-		$('.tableHeader th').has('i.fa-sort').hover(
-			function () {
-				$(this).addClass("tableHeaderColumnHover");
-			}, function () {
-				$(this).removeClass("tableHeaderColumnHover");
-			}
-		);
+		$('.tableHeader th').has('i.fa-sort').on('mouseenter', function () {
+			$(this).addClass("tableHeaderColumnHover");
+		}).on('mouseleave', function () {
+			$(this).removeClass("tableHeaderColumnHover");
+		});
 
 
 		//$('td:nth-child(2), th:nth-child(2)').addClass('hide');
@@ -713,7 +711,7 @@ function setupDefaultElements() {
 
 		// Turn file buttons into jQueryUI buttons
 		$('.import_label').button();
-		$('.import_button').change(function () {
+		$('.import_button').on('change', function () {
 			text = this.value;
 			setImportFile(text);
 		});
@@ -725,32 +723,29 @@ function setupDefaultElements() {
 		}
 
 		// Hide the graph icons until you hover
-		$('.graphDrillDown').hover(
-			function () {
-				element = $(this);
+		$('.graphDrillDown').on('mouseenter', function () {
+			element = $(this);
 
-				// hide the previously shown element
-				if (element.attr('id').replace('dd', '') != graphMenuElement && graphMenuElement > 0) {
-					$('#dd' + graphMenuElement).find('.iconWrapper:first').hide(300);
-				}
-
-				clearTimeout(graphMenuTimer);
-				graphMenuTimer = setTimeout(function () {
-					showGraphMenu(element);
-				}, 400);
-			},
-			function () {
-				element = $(this);
-				clearTimeout(graphMenuTimer);
-				graphMenuTimer = setTimeout(function () {
-					hideGraphMenu(element);
-				}, 400);
-
-				if (typeof spikeKillClose == 'function') {
-					spikeKillClose();
-				}
+			// hide the previously shown element
+			if (element.attr('id').replace('dd', '') != graphMenuElement && graphMenuElement > 0) {
+				$('#dd' + graphMenuElement).find('.iconWrapper:first').hide(300);
 			}
-		);
+
+			clearTimeout(graphMenuTimer);
+			graphMenuTimer = setTimeout(function () {
+				showGraphMenu(element);
+			}, 400);
+		}).on('mouseleave', function () {
+			element = $(this);
+			clearTimeout(graphMenuTimer);
+			graphMenuTimer = setTimeout(function () {
+				hideGraphMenu(element);
+			}, 400);
+
+			if (typeof spikeKillClose == 'function') {
+				spikeKillClose();
+			}
+		});
 
 		function showGraphMenu(element) {
 			element.find('.spikekillMenu').menu('disable');

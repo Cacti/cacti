@@ -103,7 +103,7 @@ function themeReady() {
 
 	$(window).trigger('resize');
 
-	$('.action-icon-user').unbind().click(function(event) {
+	$('.action-icon-user').off('click').on('click', function(event) {
 		event.preventDefault();
 
 		if ($('.menuoptions').is(':visible') === false) {
@@ -120,13 +120,11 @@ function themeReady() {
 	$('.tableHeader th').has('i.fa-sort').removeClass('tableHeaderColumnHover tableHeaderColumnSelected');
 	$('.tableHeader th').has('i.fa-sort-up').addClass('tableHeaderColumnSelected');
 	$('.tableHeader th').has('i.fa-sort-down').addClass('tableHeaderColumnSelected');
-	$('.tableHeader th').has('i.fa-sort').hover(
-		function() {
+	$('.tableHeader th').has('i.fa-sort').on('mouseenter', function() {
 			$(this).addClass('tableHeaderColumnHover');
-		}, function() {
+		}).on('mouseleave', function() {
 			$(this).removeClass('tableHeaderColumnHover');
-		}
-	);
+		});
 
 	$('input#filter, input#rfilter').addClass('ui-state-default ui-corner-all');
 
@@ -154,7 +152,7 @@ function setMenuVisibility() {
 	$('#navigation').show();
 
 	// Functon to give life to the Navigation pane
-	$('#nav li:has(ul) a.active').unbind().click(function(event) {
+	$('#nav li:has(ul) a.active').off('click').on('click', function(event) {
 		event.preventDefault();
 
 		id = $(this).closest('.menuitem').attr('id');
