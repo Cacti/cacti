@@ -160,7 +160,7 @@ class Net_Ping {
 			if ($fping != '' && file_exists($fping) && is_executable($fping)) {
 				$using_fping = true;
 
-				if (str_contains($this->host['hostname'], ':')) {
+				if (filter_var($this->host['hostname'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
 					if (file_exists('/usr/sbin/fping6')) {
 						$fping = '/usr/sbin/fping6';
 					} elseif (file_exists('/usr/bin/fping6')) {
@@ -189,7 +189,7 @@ class Net_Ping {
 				} elseif (substr_count(cacti_strtolower(PHP_OS), 'mac')) {
 					$result = shell_exec('ping -t ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg($this->host['hostname']));
 				} elseif (substr_count(cacti_strtolower(PHP_OS), 'freebsd')) {
-					if (str_contains($this->host['hostname'], ':')) {
+					if (filter_var($host_ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
 						$result = shell_exec('ping6 -t ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg($this->host['hostname']));
 					} else {
 						$result = shell_exec('ping -t ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg($this->host['hostname']));
@@ -209,7 +209,7 @@ class Net_Ping {
 					 * as it now tries to open an ICMP socket and fails
 					 * $result will be empty, then.
 					 */
-					if (str_contains($host_ip, ':')) {
+					if (filter_var($host_ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
 						$result = shell_exec('ping -6 -W ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . cacti_escapeshellarg($this->host['hostname']));
 					} else {
 						$result = shell_exec('ping -W ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . cacti_escapeshellarg($this->host['hostname']) . ' 2>&1');
@@ -423,7 +423,7 @@ class Net_Ping {
 			}
 
 			// initialize the socket
-			if (str_contains($host_ip, ':')) {
+			if (filter_var($host_ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
 				if (defined('AF_INET6')) {
 					$this->socket = socket_create(AF_INET6, SOCK_DGRAM, SOL_UDP);
 				} else {
@@ -553,7 +553,7 @@ class Net_Ping {
 			}
 
 			// initialize the socket
-			if (str_contains($host_ip, ':')) {
+			if (filter_var($host_ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
 				if (defined('AF_INET6')) {
 					$this->socket = socket_create(AF_INET6, SOCK_STREAM, SOL_TCP);
 				} else {

@@ -25,7 +25,7 @@ function themeReady() {
 	// Setup the navigation menu
 	setMenuVisibility();
 
-	$('#navigation_right').unbind().scroll(function (event) {
+	$('#navigation_right').off('scroll').on('scroll', function (event) {
         var scroll_position_x = $('#navigation_right').scrollLeft();
         var scroll_position_y = $('#navigation_right').scrollTop();
         $('.bottom_scroll_up').css({'color': ((scroll_position_x == 0 & scroll_position_y == 0) ? '' : '#93CEFF') });
@@ -109,7 +109,7 @@ function themeReady() {
 	/* User Menu */
 	$('.menuoptions').parent().appendTo('body');
 
-	$('.action-icon-user').unbind().click(function(event) {
+	$('.action-icon-user').off('click').on('click', function(event) {
 		event.preventDefault();
 
 		if ($('.menuoptions').is(':visible') === false) {
@@ -122,7 +122,7 @@ function themeReady() {
 		return false;
 	});
 
-	$('.bottom_scroll_up').unbind().click(function(event) {
+	$('.bottom_scroll_up').off('click').on('click', function(event) {
 		event.preventDefault();
 		$('#navigation_right').animate({ scrollLeft:0, scrollTop: 0 }, 1000, 'easeInOutQuart');
 	});
@@ -131,13 +131,11 @@ function themeReady() {
 	$('.tableHeader th').has('i.fa-sort').removeClass('tableHeaderColumnHover tableHeaderColumnSelected');
 	$('.tableHeader th').has('i.fa-sort-up').addClass('tableHeaderColumnSelected');
 	$('.tableHeader th').has('i.fa-sort-down').addClass('tableHeaderColumnSelected');
-	$('.tableHeader th').has('i.fa-sort').hover(
-		function() {
+	$('.tableHeader th').has('i.fa-sort').on('mouseenter', function() {
 			$(this).addClass("tableHeaderColumnHover");
-		}, function() {
+		}).on('mouseleave', function() {
 			$(this).removeClass("tableHeaderColumnHover");
-		}
-	);
+		});
 
 	$('input#filter, input#rfilter').addClass('ui-state-default ui-corner-all');
 
@@ -145,7 +143,7 @@ function themeReady() {
 
 	// Turn file buttons into jQueryUI buttons
 	$('.import_label').button();
-	$('.import_button').change(function() {
+	$('.import_button').on('change', function() {
 		text=this.value;
 		setImportFile(text);
 	});
@@ -157,8 +155,7 @@ function themeReady() {
 	}
 
 	// Hide the graph icons until you hover
-	$('.graphDrillDown').hover(
-		function() {
+	$('.graphDrillDown').on('mouseenter', function() {
 			element = $(this);
 
 			// hide the previously shown element
@@ -168,8 +165,7 @@ function themeReady() {
 
 			clearTimeout(graphMenuTimer);
 			graphMenuTimer = setTimeout(function() { showGraphMenu(element); }, 400);
-		},
-		function() {
+		}).on('mouseleave', function() {
 			element = $(this);
 			clearTimeout(graphMenuTimer);
 			graphMenuTimer = setTimeout(function() { hideGraphMenu(element); }, 400);
@@ -177,8 +173,7 @@ function themeReady() {
 			if (typeof spikeKillClose == 'function') {
 				spikeKillClose();
 			}
-		}
-	);
+		});
 
 	function showGraphMenu(element) {
 		element.find('.spikekillMenu').menu('disable');
@@ -234,7 +229,7 @@ function setMenuVisibility() {
 	});
 
 	// Function to give life to the Navigation pane
-	$('#nav li:has(ul) a.active').unbind().click(function(event) {
+	$('#nav li:has(ul) a.active').off('click').on('click', function(event) {
 		event.preventDefault();
 
 		id = $(this).closest('.menuitem').attr('id');

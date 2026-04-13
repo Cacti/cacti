@@ -282,13 +282,13 @@ function setupTheme() {
 					'<div class="navBackdrop"></div>'+
 				'</div></div>');
 			if (cactiConsoleAllowed) {
-				$("#navBackdrop").click( function() {
+				$("#navBackdrop").on('click', function() {
 					/* hide open menu boxes first and remove menu selection */
 					$('[class^="cactiConsoleNavigation"]').removeClass('visible');
 					loadUrl({url:urlPath+'index.php'});
 				});
 			} else {
-				$("#navBackdrop").click( function() {
+				$("#navBackdrop").on('click', function() {
 					window.open('https://cacti.net', '_blank');
 				});
 			}
@@ -483,7 +483,7 @@ function toggleCactiNavigationBox(event) {
 			if(event.data.filter !== 'reset') {
 				navBox_input_field.trigger('focus').val(event.data.filter).trigger('input');
 			}else {
-				navBox_input_field.val('').trigger('input').blur();
+				navBox_input_field.val('').trigger('input').trigger('blur');
 			}
 		}
 	}else if(param === 'force_close') {
@@ -863,13 +863,11 @@ function setupDefaultElements() {
 		$('.tableHeader th').has('i.fa-sort').removeClass('tableHeaderColumnHover tableHeaderColumnSelected');
 		$('.tableHeader th').has('i.fa-sort-up').addClass('tableHeaderColumnSelected');
 		$('.tableHeader th').has('i.fa-sort-down').addClass('tableHeaderColumnSelected');
-		$('.tableHeader th').has('i.fa-sort').hover(
-			function () {
+		$('.tableHeader th').has('i.fa-sort').on('mouseenter', function () {
 				$(this).addClass("tableHeaderColumnHover");
-			}, function () {
+			}).on('mouseleave', function () {
 				$(this).removeClass("tableHeaderColumnHover");
-			}
-		);
+			});
 
 
 		//$('td:nth-child(2), th:nth-child(2)').addClass('hide');
@@ -886,7 +884,7 @@ function setupDefaultElements() {
 
 		// Turn file buttons into jQueryUI buttons
 		$('.import_label').button();
-		$('.import_button').change(function () {
+		$('.import_button').on('change', function () {
 			text = this.value;
 			setImportFile(text);
 		});
@@ -898,8 +896,7 @@ function setupDefaultElements() {
 		}
 
 		// Hide the graph icons until you hover
-		$('.graphDrillDown').hover(
-			function () {
+		$('.graphDrillDown').on('mouseenter', function () {
 				element = $(this);
 
 				// hide the previously shown element
@@ -911,8 +908,7 @@ function setupDefaultElements() {
 				graphMenuTimer = setTimeout(function () {
 					showGraphMenu(element);
 				}, 400);
-			},
-			function () {
+			}).on('mouseleave', function () {
 				element = $(this);
 				clearTimeout(graphMenuTimer);
 				graphMenuTimer = setTimeout(function () {
@@ -922,8 +918,7 @@ function setupDefaultElements() {
 				if (typeof spikeKillClose == 'function') {
 					spikeKillClose();
 				}
-			}
-		);
+			});
 
 		function showGraphMenu(element) {
 			element.find('.spikekillMenu').menu('disable');
