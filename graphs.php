@@ -291,7 +291,7 @@ function add_tree_names_to_actions_array() : void {
 function parse_validate_graph_template_id(string $variable) : string {
 	$output_type_id = 0;
 
-	if (strpos(gnrv($variable), '_') !== false) {
+	if (str_contains(gnrv($variable), '_')) {
 		$template_parts = explode('_', gnrv($variable));
 
 		if (is_numeric($template_parts[0]) && is_numeric($template_parts[1])) {
@@ -1403,7 +1403,7 @@ function form_actions() : void {
 					update_graph_title_cache($selected_items[$i]);
 				}
 			} elseif (grv('drp_action') == '9' || grv('drp_action') == '10') {
-				// get common info - not dependant on template/no template
+				// get common info - not dependent on template/no template
 				$local_graph_id = 0; // this will be a new graph
 				$member_graphs  = $selected_items;
 				$graph_title    = form_input_validate(gnrv('title_format'), 'title_format', '', true, 3);
@@ -1437,6 +1437,7 @@ function form_actions() : void {
 					$ag_data['template_propogation']  = '';
 					$ag_data['graph_template_id']     = form_input_validate(gnrv('graph_template_id'), 'graph_template_id', '^[0-9]+$', true, 3);
 					$ag_data['gprint_prefix']         = form_input_validate(gnrv('gprint_prefix'), 'gprint_prefix', '', true, 3);
+					$ag_data['gprint_format']         = isset_request_var('gprint_format') ? 'on' : '';
 					$ag_data['graph_type']            = form_input_validate(gnrv('aggregate_graph_type'), 'aggregate_graph_type', '^[0-9]+$', true, 3);
 					$ag_data['total']                 = form_input_validate(gnrv('aggregate_total'), 'aggregate_total', '^[0-9]+$', true, 3);
 					$ag_data['total_type']            = form_input_validate(gnrv('aggregate_total_type'), 'aggregate_total_type', '^[0-9]+$', true, 3);
@@ -1457,6 +1458,7 @@ function form_actions() : void {
 					$ag_data['template_propogation']  = 'on';
 					$ag_data['graph_template_id']     = $template_data['graph_template_id'];
 					$ag_data['gprint_prefix']         = $template_data['gprint_prefix'];
+					$ag_data['gprint_format']         = $template_data['gprint_format'];
 					$ag_data['graph_type']            = $template_data['graph_type'];
 					$ag_data['total']                 = $template_data['total'];
 					$ag_data['total_type']            = $template_data['total_type'];

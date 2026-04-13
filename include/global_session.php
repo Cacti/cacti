@@ -24,7 +24,7 @@
 
 global $config, $refresh, $messages;
 
-$script = basename($_SERVER['SCRIPT_NAME']);
+$script = get_current_script_name();
 $graphs = false;
 
 if ($script == 'graph_view.php' || $script == 'graph.php') {

@@ -53,7 +53,7 @@ if (CACTI_PHP_SNMP) {
 
 use phpsnmp\SNMP;
 
-function cacti_snmp_session(string $hostname, string $community, mixed $version, mixed $auth_user = '', mixed $auth_pass = '',
+function cacti_snmp_session(string $hostname, mixed $community, mixed $version, mixed $auth_user = '', mixed $auth_pass = '',
 	mixed $auth_proto = '', mixed $priv_pass = '', mixed $priv_proto = '', mixed $context = '', mixed $engineid = '',
 	mixed $port = 161, mixed $timeout_ms = 500, mixed $retries = 0, mixed $max_oids = 10, mixed $bulk_walk_size = 10) : mixed {
 	switch ($version) {
@@ -219,7 +219,7 @@ function cacti_snmp_get(string $hostname, mixed $community, string $oid, mixed $
 	return $snmp_value;
 }
 
-function cacti_snmp_get_raw(string $hostname, string $community, string $oid, mixed $version, mixed $auth_user = '', string $auth_pass = '',
+function cacti_snmp_get_raw(string $hostname, mixed $community, string $oid, mixed $version, mixed $auth_user = '', string $auth_pass = '',
 	mixed $auth_proto = '', mixed $priv_pass = '', mixed $priv_proto = '', mixed $context = '',
 	mixed $port = 161, mixed $timeout_ms = 500, mixed $retries = 0, mixed $environ = SNMP_POLLER,
 	string $engineid = '', int $value_output_format = SNMP_STRING_OUTPUT_GUESS) : string {
@@ -314,7 +314,7 @@ function cacti_snmp_get_raw(string $hostname, string $community, string $oid, mi
 	return $snmp_value;
 }
 
-function cacti_snmp_getnext(string $hostname, string $community, mixed $oid, mixed $version, mixed $auth_user = '', mixed $auth_pass = '',
+function cacti_snmp_getnext(string $hostname, mixed $community, mixed $oid, mixed $version, mixed $auth_user = '', mixed $auth_pass = '',
 	mixed $auth_proto = '', mixed $priv_pass = '', mixed $priv_proto = '', mixed $context = '',
 	mixed $port = 161, mixed $timeout_ms = 500, mixed $retries = 0, mixed $environ = 'SNMP',
 	string $engineid = '', int $value_output_format = SNMP_STRING_OUTPUT_GUESS) : string {
@@ -612,16 +612,16 @@ function cacti_snmp_session_getnext(object $session, mixed $oid) : mixed {
 function cacti_snmp_validate_oid(string $oid) : bool {
 	$oid = ltrim($oid, '.');
 
-	$validate = array_unique(array_map('is_numeric', explode('.', $oid)));
-
-	if (array_search(false, $validate, true)) {
+	if ($oid === '') {
 		return false;
-	} else {
-		return true;
 	}
+
+	$validate = array_map('is_numeric', explode('.', $oid));
+
+	return !in_array(false, $validate, true);
 }
 
-function cacti_snmp_walk(string $hostname, string $community, string $oid, mixed $version, mixed $auth_user = '', mixed $auth_pass = '',
+function cacti_snmp_walk(string $hostname, mixed $community, string $oid, mixed $version, mixed $auth_user = '', mixed $auth_pass = '',
 	mixed $auth_proto = '', mixed $priv_pass = '', mixed $priv_proto = '', mixed $context = '',
 	mixed $port = 161, mixed $timeout_ms = 500, mixed $retries = 0, mixed $bulk_walk_size = 10, mixed $environ = 'SNMP',
 	mixed $engineid = '', int $value_output_format = SNMP_STRING_OUTPUT_GUESS) : array {
@@ -957,14 +957,14 @@ function format_snmp_string(string $string, bool $snmp_oid_included, int $value_
 			}
 
 			if (is_numeric($output)) {
-				$string = number_format((double) $output, 0, '', '');
+				$string = number_format((float) $output, 0, '', '');
 			} else {
 				$string = $output;
 			}
 		} else {
 			$possible_ip = false;
 		}
-	} elseif (str_starts_with(strtolower($string), 'hex:')) {
+	} elseif (str_starts_with(cacti_strtolower($string), 'hex:')) {
 		// strip off the 'Hex:'
 		$string = trim(str_ireplace('hex:', '', $string));
 
@@ -986,7 +986,7 @@ function format_snmp_string(string $string, bool $snmp_oid_included, int $value_
 			}
 
 			if (is_numeric($output)) {
-				$string = number_format((double) $output, 0, '', '');
+				$string = number_format((float) $output, 0, '', '');
 			} else {
 				$string = $output;
 			}
@@ -1051,7 +1051,7 @@ function snmp_get_method(string $type = 'walk', mixed $version = 1, mixed $conte
 	}
 }
 
-function cacti_snmp_options_sanitize(mixed $version, string $community, mixed &$port, mixed &$timeout, mixed &$retries, mixed &$max_oids) : bool {
+function cacti_snmp_options_sanitize(mixed $version, mixed $community, mixed &$port, mixed &$timeout, mixed &$retries, mixed &$max_oids) : bool {
 	// determine default retries
 	if ($retries == 0 || !is_numeric($retries)) {
 		$retries = intval(read_config_option('snmp_retries'));

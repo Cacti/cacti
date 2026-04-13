@@ -58,19 +58,34 @@ function ss_mikrotik_interfaces(int $host_id, string $cmd = 'index', string $arg
 }
 
 function ss_mikrotik_interfaces_getvalue(int $host_id, string $index, string $column) : string {
+	if (!preg_match('/^[a-zA-Z0-9_]+$/', $column)) {
+		return 'U';
+	}
+
 	$column = 'cur' . $column;
+
+	$allowed_columns = [
+		'curInOctets', 'curOutOctets', 'curInErrors', 'curOutErrors',
+		'curInDiscards', 'curOutDiscards', 'curInUnicastPkts', 'curOutUnicastPkts',
+		'curInMulticastPkts', 'curOutMulticastPkts', 'curInBroadcastPkts', 'curOutBroadcastPkts',
+		'curSpeed',
+	];
+
+	if (!in_array($column, $allowed_columns, true)) {
+		return 'U';
+	}
 
 	$index2 = str_replace('_', ' ', $index);
 
-	$value = db_fetch_cell_prepared("SELECT
-		$column AS value
+	$value = db_fetch_cell_prepared('SELECT
+		' . $column . ' AS value
 		FROM plugin_mikrotik_interfaces
-		WHERE name IN ('$index', '$index2')
-		AND host_id = ?",
-		[$host_id]);
+		WHERE name IN (?, ?)
+		AND host_id = ?',
+		[$index, $index2, $host_id]);
 
 	if ($value === false) {
-		return '0';
+		return 'U';
 	} else {
 		return $value;
 	}

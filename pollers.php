@@ -387,7 +387,7 @@ function poller_check_duplicate_poller_id(int $poller_id, string $hostname, stri
 		}
 
 		$ip_addresses[$hostname] = $hostname;
-	} elseif (strpos($hostname, '.') !== false) {
+	} elseif (str_contains($hostname, '.')) {
 		$addresses = @dns_get_record($hostname);
 		$ip        = @gethostbyname($hostname);
 

@@ -188,9 +188,9 @@ function upgrade_database() : void {
 	$preorder[] = CACTI_PATH_PLUGINS . '/syslog';
 
 	foreach ($plugins as $p) {
-		if (strpos($p, 'thold') !== false) {
+		if (str_contains($p, 'thold')) {
 			// Skip, upgrading this first
-		} elseif (strpos($p, 'syslog') !== false) {
+		} elseif (str_contains($p, 'syslog')) {
 			// Skip, upgrading this second
 		} else {
 			$preorder[] = $p;
@@ -229,10 +229,10 @@ function upgrade_database() : void {
 
 				if ($version != $old) {
 					if (file_exists($plugin . '/setup.php')) {
-						include_once($plugin . '/setup.php');
+						require_once($plugin . '/setup.php');
 
 						if (file_exists($plugin . '/includes/database.php')) {
-							include_once($plugin . '/includes/database.php');
+							require_once($plugin . '/includes/database.php');
 						}
 
 						// Always run the new function if it's there
@@ -536,7 +536,7 @@ function report_audit_results(bool $output = true) : array {
 								$dbc[$dbcol] = ! $dbc[$dbcol] ?: str_replace('on update', 'ON UPDATE', $dbc[$dbcol]);
 
 								// work around MySQL 8.x simplified int columns
-								if (strpos($dbc[$dbcol], 'int(') !== false) {
+								if (str_contains($dbc[$dbcol], 'int(')) {
 									// Get the integer first
 									$parts   = explode('(', $dbc[$dbcol]);
 									$adbccol = $parts[0];
@@ -782,7 +782,7 @@ function make_column_props(array &$dbc) : string {
 		if ($dbc['table_default'] == 'CURRENT_TIMESTAMP') {
 			$alter_cmd .= ' DEFAULT CURRENT_TIMESTAMP';
 		} elseif ($dbc['table_extra'] != 'auto_increment') {
-			if (strpos($dbc['table_type'], 'int(') !== false && $dbc['table_default'] == '') {
+			if (str_contains($dbc['table_type'], 'int(') && $dbc['table_default'] == '') {
 				$alter_cmd .= ' DEFAULT "0"';
 			} else {
 				$alter_cmd .= " DEFAULT '" . $dbc['table_default'] . "'";

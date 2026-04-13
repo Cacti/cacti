@@ -1,3 +1,4 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Cacti Russian Language File\n"
@@ -16806,7 +16807,7 @@ msgstr "Щелкните, чтобы показать вывод запроса 
 #: lib/data_query.php:741
 #, php-format
 msgid "Sort field returned no data for field name %s, skipping"
-msgstr "Поле сортировки не возвращает никаких данных. Нельзя продолжать ре-индекс."
+msgstr ""
 
 #: lib/data_query.php:743
 #, fuzzy, php-format
@@ -27210,7 +27211,6 @@ msgstr "Нет VDEFs"
 #~ msgstr "Конвертировать в нормальный График(и)"
 
 #, fuzzy
-#~| msgid "DES"
 #~ msgid "DS"
 #~ msgstr "DES"
 

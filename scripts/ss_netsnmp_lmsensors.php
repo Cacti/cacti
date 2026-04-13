@@ -61,7 +61,7 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 		return 'U';
 	}
 
-	$sensor_type = strtolower(trim($sensor_type));
+	$sensor_type = cacti_strtolower(trim($sensor_type));
 
 	if (($sensor_type != 'fan') && ($sensor_type != 'temperature') && ($sensor_type != 'voltage')) {
 		cacti_log(sprintf('ERROR: Device with ID %s has an invalid Sensor Type of %s', $host_id, $sensor_type), false, 'LMSENSORS');
@@ -69,7 +69,7 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 		return 'U';
 	}
 
-	$cacti_request = strtolower(trim($cacti_request));
+	$cacti_request = cacti_strtolower(trim($cacti_request));
 
 	if ($cacti_request == '') {
 		cacti_log(sprintf('ERROR: Device with ID %s has an empty request type', $host_id), false, 'LMSENSORS');
@@ -87,7 +87,7 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 	// remaining function arguments are $data_request and $data_request_key
 	// ------------------------------------------------------------------------------------
 	if ($cacti_request == 'query' || $cacti_request == 'get') {
-		$data_request = strtolower(trim($data_request));
+		$data_request = cacti_strtolower(trim($data_request));
 
 		if ($data_request == '') {
 			cacti_log(sprintf('ERROR: Device with ID %s has an empty get or query data request.', $host_id), false, 'LMSENSORS');
@@ -105,7 +105,7 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 		// get the index variable
 		// ------------------------------------------------------------------------------------
 		if ($cacti_request == 'get') {
-			$data_request_key = strtolower(trim($data_request_key));
+			$data_request_key = cacti_strtolower(trim($data_request_key));
 
 			if ($data_request_key == '') {
 				cacti_log(sprintf('ERROR: Device with ID %s has an empty get or query data request.', $host_id), false, 'LMSENSORS');
@@ -165,7 +165,7 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 		$host['snmp_context'],
 		$host['snmp_port'],
 		$host['snmp_timeout'],
-		$host['ping_retries'],
+		$host['snmp_retries'],
 		SNMP_POLLER,
 		$host['snmp_engine_id']
 	];
@@ -183,7 +183,7 @@ function ss_netsnmp_lmsensors(int $host_id = 0, string $sensor_type = '', string
 		$host['snmp_context'],
 		$host['snmp_port'],
 		$host['snmp_timeout'],
-		$host['ping_retries'],
+		$host['snmp_retries'],
 		$host['max_oids'],
 		SNMP_POLLER,
 		$host['snmp_engine_id']

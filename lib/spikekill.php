@@ -113,17 +113,17 @@ class spikekill {
 		if ($out_start != '') {
 			if (!is_numeric($out_start)) {
 				$this->out_start = strtotime($out_start);
+			} else {
+				$this->out_start = $out_start;
 			}
-
-			$this->out_start = $out_start;
 		}
 
 		if ($out_end != '') {
 			if (!is_numeric($out_end)) {
 				$this->out_end = strtotime($out_end);
+			} else {
+				$this->out_end = $out_end;
 			}
-
-			$this->out_end = $out_end;
 		}
 
 		if ($numspike != '') {
@@ -188,57 +188,57 @@ class spikekill {
 
 		$umethod   = read_user_setting('spikekill_method', $this->dmethod, true);
 		$uavgnan   = read_user_setting('spikekill_avgnan', $this->davgnan, true);
-		$udsfilter = read_user_setting('spikekill_dsfilter', $this->dsfilter, true);
+		$udsfilter = read_user_setting('spikekill_dsfilter', $this->ddsfilter, true);
 		$unumspike = read_user_setting('spikekill_number', $this->dnumspike, true);
 		$ustddev   = read_user_setting('spikekill_deviations', $this->dstddev, true);
-		$uabsmax   = read_user_setting('spikekill_absmax', $this->absmax, true);
+		$uabsmax   = read_user_setting('spikekill_absmax', $this->dabsmax, true);
 
-		// set the correct value
+		// set the correct value: prefer user setting, fall back to default
 		if ($this->avgnan == '') {
 			if (!empty($uavgnan)) {
-				$this->avgnan = $this->davgnan;
-			} else {
 				$this->avgnan = $uavgnan;
+			} else {
+				$this->avgnan = $this->davgnan;
 			}
 		}
 
 		if ($this->method == '') {
 			if (!empty($umethod)) {
-				$this->method = $this->dmethod;
-			} else {
 				$this->method = $umethod;
+			} else {
+				$this->method = $this->dmethod;
 			}
 		}
 
 		if ($this->numspike == '') {
 			if (!empty($unumspike)) {
-				$this->numspike = $this->dnumspike;
-			} else {
 				$this->numspike = $unumspike;
+			} else {
+				$this->numspike = $this->dnumspike;
 			}
 		}
 
 		if ($this->stddev == '') {
 			if (!empty($ustddev)) {
-				$this->stddev = $this->dstddev;
-			} else {
 				$this->stddev = $ustddev;
+			} else {
+				$this->stddev = $this->dstddev;
 			}
 		}
 
 		if ($this->dsfilter == '') {
 			if (!empty($udsfilter)) {
-				$this->dsfilter = $this->ddsfilter;
-			} else {
 				$this->dsfilter = $udsfilter;
+			} else {
+				$this->dsfilter = $this->ddsfilter;
 			}
 		}
 
 		if ($this->absmax == '') {
 			if (!empty($uabsmax)) {
-				$this->absmax = $this->dabsmax;
-			} else {
 				$this->absmax = $uabsmax;
+			} else {
+				$this->absmax = $this->dabsmax;
 			}
 		}
 
@@ -300,13 +300,13 @@ class spikekill {
 			}
 		}
 
-		if (!$this->numspike != '') {
+		if ($this->numspike != '') {
 			if (!is_numeric($this->numspike) || ($this->numspike < 1)) {
 				$this->set_error(__('FATAL: Number of spikes to remove must be a positive integer'));
 			}
 		}
 
-		if (!$this->absmax != '') {
+		if ($this->absmax != '') {
 			if (!is_numeric($this->absmax) || ($this->absmax < 1)) {
 				$this->set_error(__('FATAL: Number value for absolute maximum value positive integer'));
 			}
@@ -318,7 +318,7 @@ class spikekill {
 		}
 
 		// Check a bad range of the window start and end
-		if (empty($this->out_start)) {
+		if (!empty($this->out_start)) {
 			if ($this->out_start >= $this->out_end) {
 				$this->set_error(__('FATAL: Outlier time range requires outlier-start to be less than outlier-end.'));
 			}
@@ -674,7 +674,7 @@ class spikekill {
 			$this->strout .= ($this->html ? "<p class='spikekillNote'>" : '') .
 				__esc('NOTE: Limited to Time Window: %s through %s', date('M j, Y H:i:s', $this->out_start), date('M j, Y H:i:s',$this->out_end)) . ($this->html ? "</p><br>\n" : "\n");
 
-			cacti_log('DEBUG: Limited to Tiem Window: ' . date('M j, Y H:i:s',$this->out_start) . ' thru ' . date('M j, Y H:i:s',$this->out_end), false, 'SPIKE', POLLER_VERBOSITY_DEBUG);
+			cacti_log('DEBUG: Limited to Time Window: ' . date('M j, Y H:i:s',$this->out_start) . ' thru ' . date('M j, Y H:i:s',$this->out_end), false, 'SPIKE', POLLER_VERBOSITY_DEBUG);
 		}
 
 		$this->calculateOverallStatistics($rra, $samples);
@@ -770,7 +770,7 @@ class spikekill {
 			unlink($xmlfile);
 		}
 
-		if (file_exists($xmlfile)) {
+		if (file_exists($bakfile)) {
 			unlink($bakfile);
 		}
 
@@ -1190,6 +1190,8 @@ class spikekill {
 												$this->debug($message);
 
 												$dsvalue = 'NaN';
+												$this->total_kills++;
+												$kills++;
 											} elseif ($this->avgnan == 'last' && isset($last_num[$ds_num])) {
 												$message = sprintf('Replacing dsvalue %s with last value %s', $dsvalue, $last_num[$ds_num]);
 
@@ -1403,7 +1405,7 @@ class spikekill {
 		$carry = 0.0;
 
 		foreach ($items as $val) {
-			$d = ((double) $val) - $mean;
+			$d = ((float) $val) - $mean;
 			$carry += $d * $d;
 		}
 

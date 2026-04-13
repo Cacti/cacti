@@ -517,7 +517,7 @@ function form_actions() : void {
 					'pmessage' => __('Click \'Continue\' to Change Profile following Data Templates.'),
 					'scont'    => __('Change Profile for Data Template'),
 					'pcont'    => __('Change Profile for Data Templates'),
-					'footer'   => __('NOTE: This change only will affect future Data Sources and does not alter existing Data Sources.'),
+					'footer'   => __('NOTE: This change will only affect future Data Sources and does not alter existing Data Sources.'),
 					'extra'    => [
 						'data_source_profile_id' => [
 							'method'  => 'drop_array',
@@ -900,7 +900,7 @@ function template_edit() : void {
 
 				// Data Query Key fields
 				if (data_input_field_always_checked($field['id'])) {
-					$message = __esc('This value is disabled due to it either it value being derived from the Device or special Data Query object that keeps track of critical data Data Query associations.');
+					$message = __esc('This value is disabled due to its value being derived from the Device or special Data Query object that keeps track of Data Query associations.');
 
 					if (cacti_sizeof($data_input_data)) {
 						$old_value  = $data_input_data['value'] ?? '';

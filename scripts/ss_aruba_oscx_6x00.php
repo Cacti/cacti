@@ -87,7 +87,7 @@ function ss_aruba_oscx_6x00(int $host_id = 0, string $object = 'fan', string $cm
 			$host['snmp_context'],
 			$host['snmp_port'],
 			$host['snmp_timeout'],
-			$host['ping_retries'],
+			$host['snmp_retries'],
 			SNMP_POLLER,
 			$host['snmp_engine_id'])) { // it is standalone
 			$oids['vsf'] = $oids['vsf_standalone'];
@@ -113,7 +113,7 @@ function ss_aruba_oscx_6x00(int $host_id = 0, string $object = 'fan', string $cm
 				$host['snmp_context'],
 				$host['snmp_port'],
 				$host['snmp_timeout'],
-				$host['ping_retries'],
+				$host['snmp_retries'],
 				SNMP_POLLER,
 				$host['snmp_engine_id']);
 
@@ -149,7 +149,7 @@ function ss_aruba_oscx_6x00(int $host_id = 0, string $object = 'fan', string $cm
 				$host['snmp_context'],
 				$host['snmp_port'],
 				$host['snmp_timeout'],
-				$host['ping_retries'],
+				$host['snmp_retries'],
 				SNMP_POLLER,
 				$host['snmp_engine_id']));
 		}
@@ -170,7 +170,7 @@ function ss_aruba_oscx_6x00(int $host_id = 0, string $object = 'fan', string $cm
 				$host['snmp_context'],
 				$host['snmp_port'],
 				$host['snmp_timeout'],
-				$host['ping_retries'],
+				$host['snmp_retries'],
 				SNMP_POLLER,
 				$host['snmp_engine_id']);
 
@@ -195,9 +195,9 @@ function ss_aruba_oscx_6x00(int $host_id = 0, string $object = 'fan', string $cm
 				// ok = fan, normal = tempsensor
 				if ($what == 'state') {
 					if ($object == 'fan' || $object == 'power') {
-						print $index . ':' . (strtolower($value['value']) == 'ok' ? '1' : '0') . PHP_EOL;
+						print $index . ':' . (cacti_strtolower($value['value']) == 'ok' ? '1' : '0') . PHP_EOL;
 					} elseif ($object == 'temp') {
-						print $index . ':' . (strtolower($value['value']) == 'normal' ? '1' : '0') . PHP_EOL;
+						print $index . ':' . (cacti_strtolower($value['value']) == 'normal' ? '1' : '0') . PHP_EOL;
 					} elseif ($object == 'vsf') {
 						print $index . ':' . $state_table[$value['value']] . PHP_EOL;
 					}
@@ -230,7 +230,7 @@ function ss_aruba_oscx_6x00(int $host_id = 0, string $object = 'fan', string $cm
 					$host['snmp_context'],
 					$host['snmp_port'],
 					$host['snmp_timeout'],
-					$host['ping_retries'],
+					$host['snmp_retries'],
 					SNMP_POLLER,
 					$host['snmp_engine_id']);
 			}
@@ -247,18 +247,18 @@ function ss_aruba_oscx_6x00(int $host_id = 0, string $object = 'fan', string $cm
 				$host['snmp_context'],
 				$host['snmp_port'],
 				$host['snmp_timeout'],
-				$host['ping_retries'],
+				$host['snmp_retries'],
 				SNMP_POLLER,
 				$host['snmp_engine_id']);
 		}
 
 		if ($what == 'state') {
 			if ($object == 'fan' || $object == 'power') {
-				return (strtolower($return_val) == 'ok' ? '1' : '0');
+				return (cacti_strtolower($return_val) == 'ok' ? '1' : '0');
 			}
 
 			if ($object == 'temp') {
-				return (strtolower($return_val) == 'normal' ? '1' : '0');
+				return (cacti_strtolower($return_val) == 'normal' ? '1' : '0');
 			}
 
 			if ($object == 'vsf') {

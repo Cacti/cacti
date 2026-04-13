@@ -87,19 +87,20 @@ function reset_timespan_settings() : void {
 }
 
 function process_span_shift(string $type, array &$allvals) : void {
-	$default = read_user_setting("default_$type");
+	$default    = read_user_setting("default_$type");
+	$predefined = gfrv("predefined_$type");
 
 	if (isrv("predefined_$type")) {
-		if (!is_numeric(gfrv("predefined_$type"))) {
+		if (!is_numeric($predefined)) {
 			srv("predefined_$type", $default);
-		} elseif (!array_key_exists(gfrv("predefined_$type"), $allvals) &&
-			grv("predefined_$type") != 0) {
+		} elseif (!array_key_exists($predefined, $allvals) &&
+			$predefined != 0) {
 			srv("predefined_$type", $default);
 		}
 	} elseif (isset($_SESSION["sess_current_$type"])) {
 		srv("predefined_$type", $_SESSION["sess_current_$type"]);
-	} elseif (!array_key_exists(gfrv("predefined_$type"), $allvals) &&
-		grv("predefined_$type") != 0) {
+	} elseif (!array_key_exists($predefined, $allvals) &&
+		$predefined != 0) {
 		srv("predefined_$type", $default);
 	} else {
 		srv("predefined_$type", $default);

@@ -260,10 +260,19 @@ function form_save() : void {
 
 	$errors = [];
 
+	$currentTab = '';
+
+	if (isrv('tab')) {
+		// ================= input validation =================
+		gfrv('tab', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([0-9a-z_A-Z]+)$/']]);
+		// ====================================================
+		$currentTab = (string) gnrv('tab');
+	}
+
 	// Save the users graph settings if they have permission
-	if (is_view_allowed('graph_settings') == true && isrv('tab') && gnrv('tab') == 'general') {
+	if (is_view_allowed('graph_settings') == true && $currentTab == 'general') {
 		save_user_settings($_SESSION[SESS_USER_ID]);
-	} elseif (isrv('tab')) {
+	} elseif ($currentTab !== '') {
 		api_plugin_hook('auth_profile_save');
 	}
 
@@ -282,7 +291,7 @@ function form_save() : void {
 	kill_session_var(OPTIONS_USER);
 	kill_session_var('selected_theme');
 
-	$tab = (isrv('tab') && gnrv('tab')) ? ('?tab=' . gnrv('tab')) : '';
+	$tab = ($currentTab !== '') ? ('?tab=' . rawurlencode($currentTab)) : '';
 	header('Location: auth_profile.php' . $tab);
 }
 
@@ -296,20 +305,16 @@ function settings() : bool {
 		return false;
 	}
 
-	if (isset($_SERVER['HTTP_REFERER'])) {
-		$referer = $_SERVER['HTTP_REFERER'];
+	$referer = validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '', 'graph_view.php');
 
-		if (strpos($referer, 'auth_profile.php') === false) {
-			$timespan_sel_pos = strpos($referer, '&predefined_timespan');
+	if (strpos($referer, 'auth_profile.php') === false) {
+		$timespan_sel_pos = strpos($referer, '&predefined_timespan');
 
-			if ($timespan_sel_pos) {
-				$referer = substr($referer, 0, $timespan_sel_pos);
-			}
-
-			$_SESSION['profile_referer'] = $referer;
+		if ($timespan_sel_pos !== false) {
+			$referer = substr($referer, 0, $timespan_sel_pos);
 		}
-	} elseif (!isset($_SESSION['profile_referer'])) {
-		$_SESSION['profile_referer'] = 'graph_view.php';
+
+		$_SESSION['profile_referer'] = $referer;
 	}
 
 	form_start('auth_profile.php', 'chk');
@@ -510,10 +515,10 @@ function settings_2fa() : bool {
 	if (isset($_SERVER['HTTP_REFERER'])) {
 		$referer = $_SERVER['HTTP_REFERER'];
 
-		if (strpos($referer, 'auth_profile.php') === false) {
+		if (!str_contains($referer, 'auth_profile.php')) {
 			$timespan_sel_pos = strpos($referer, '&predefined_timespan');
 
-			if ($timespan_sel_pos) {
+			if ($timespan_sel_pos !== false) {
 				$referer = substr($referer, 0, $timespan_sel_pos);
 			}
 
@@ -680,7 +685,7 @@ function settings_javascript() : void {
 	?>
 	<script type='text/javascript'>
 		var themeFonts = <?php print read_config_option('font_method'); ?>;
-		var currentTab = '<?php print gnrv('tab'); ?>';
+		var currentTab = <?php print json_encode((string) grv('tab')); ?>;
 		var currentTheme = '<?php print get_selected_theme(); ?>';
 		var currentLang = '<?php print read_config_option('user_language'); ?>';
 		var authMethod = '<?php print read_config_option('auth_method'); ?>';

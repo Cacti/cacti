@@ -55,7 +55,7 @@ $quietMode            = false;
 $overrides = [];
 
 foreach ($parms as $parameter) {
-	if (strpos($parameter, '=')) {
+	if (str_contains($parameter, '=')) {
 		[$arg, $value] = explode('=', $parameter, 2);
 	} else {
 		$arg   = $parameter;
@@ -218,7 +218,7 @@ foreach ($parms as $parameter) {
 
 			break;
 		case '--ping_method':
-			switch(strtolower($value)) {
+			switch(cacti_strtolower($value)) {
 				case 'icmp':
 					$overrides['ping_method'] = PING_ICMP;
 

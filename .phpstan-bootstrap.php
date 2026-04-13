@@ -1,3 +1,3 @@
 <?php
 
-define('PHP_STAN', true);
+define('PHP_TESTING', true);

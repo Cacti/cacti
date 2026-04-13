@@ -8,7 +8,7 @@ include __DIR__ . '/../include/db_functions.php';
 include __DIR__ . '/../include/arrays.php';
 include  '../../include/global.php';
 
-$client_ip = $_SERVER['REMOTE_ADDR'];
+$client_ip = get_client_addr();
 
 $app = AppFactory::create();
 

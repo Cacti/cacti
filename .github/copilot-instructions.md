@@ -43,6 +43,13 @@
   - Avoid direct `$_GET/$_POST/$_REQUEST`.
   - Use `get_request_var()` / `get_filter_request_var()` and `form_input_validate()`.
   - Validation: Use `validate_store_request_vars()` where possible.
+  - **Request variable caching** (aliases in `lib/html_utility.php`):
+    - `gfrv($name)` / `get_filter_request_var()` — validates input (default: integer via `filter_var`), stores the sanitized value in `$_CACTI_REQUEST`, and **returns** it.
+    - `grv($name)` / `get_request_var()` — retrieves from `$_CACTI_REQUEST` cache. Returns pre-validated data if `gfrv()` was called first for that variable.
+    - `gnrv($name)` / `get_nfilter_request_var()` — retrieves from cache without filtering. Safe if `gfrv()` was called first.
+    - `srv($name, $value)` / `set_request_var()` — stores a value in `$_CACTI_REQUEST`, `$_REQUEST`, `$_POST`, and `$_GET`.
+    - **Do NOT flag `grv()`/`gnrv()` calls as unsanitized when `gfrv()` was already called for that variable in the same request.** The validation happens once at the `gfrv()` call site; subsequent retrievals return cached, pre-validated data.
+    - Adding redundant `(int)` casts or parameterization after `gfrv()` has validated is unnecessary.
 - **Common page flow**: `set_default_action(); switch (get_request_var('action')) { ... }` and render via `top_header()`/`bottom_footer()`.
 - **CSRF**: AJAX posts include `__csrf_magic: csrfMagicToken`.
 - **Logging**: use `cacti_log(...)` and `cacti_log_file()`.

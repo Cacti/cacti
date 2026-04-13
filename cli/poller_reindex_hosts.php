@@ -80,8 +80,8 @@ if ($threads == 0) {
 $forcerun = false;
 
 foreach ($parms as $parameter) {
-	if (strpos($parameter, '=')) {
-		[$arg, $value] = explode('=', $parameter);
+	if (str_contains($parameter, '=')) {
+		[$arg, $value] = explode('=', $parameter, 2);
 	} else {
 		$arg   = $parameter;
 		$value = '';
@@ -90,7 +90,7 @@ foreach ($parms as $parameter) {
 	switch ($arg) {
 		case '-id':
 		case '--id':
-			if (strtolower($value) == 'all') {
+			if (cacti_strtolower($value) == 'all') {
 				$host_id = -1;
 			} elseif (is_numeric($value) && $value > 0) {
 				$host_id = intval($value);
@@ -102,7 +102,7 @@ foreach ($parms as $parameter) {
 
 			break;
 		case '--qid':
-			if (strtolower($value) == 'all') {
+			if (cacti_strtolower($value) == 'all') {
 				$query_id = -1;
 			} elseif (is_numeric($value) && $value > 0) {
 				$query_id = intval($value);
@@ -436,7 +436,7 @@ function sig_handler(int $signo) : void {
 		case SIGINT:
 			cacti_log('WARNING: Poller reindex hosts terminated by user', false, 'REINDEX');
 
-			if (strpos($type, 'rmaster') !== false) {
+			if (str_contains($type, 'rmaster')) {
 				reindex_kill_running_processes();
 			}
 

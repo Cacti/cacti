@@ -126,7 +126,7 @@ function debug(string $message) : void {
 }
 
 function remote_agent_strip_domain(string $host) : string {
-	if (strpos($host, '.') !== false) {
+	if (str_contains($host, '.')) {
 		$parts = explode('.', $host);
 
 		return $parts[0];
@@ -157,6 +157,30 @@ function remote_client_authorized() : bool {
 		cacti_log('NOTE: Unable to resolve hostname from address ' . $client_addr, false, 'WEBUI', POLLER_VERBOSITY_MEDIUM);
 	} else {
 		$client_name = remote_agent_strip_domain($client_name);
+	}
+
+	if ($client_name != $client_addr) {
+		$forward_records = @dns_get_record($client_name, DNS_A | DNS_AAAA);
+		$forward_match   = false;
+
+		if (is_array($forward_records)) {
+			foreach ($forward_records as $record) {
+				$ip = isset($record['ip']) ? $record['ip'] : (isset($record['ipv6']) ? $record['ipv6'] : '');
+
+				if ($ip === $client_addr) {
+					$forward_match = true;
+
+					break;
+				}
+			}
+		}
+
+		if (!$forward_match) {
+			$safe_name = preg_replace('/[^a-zA-Z0-9.\-:]/', '', $client_name);
+			cacti_log('WARNING: PTR record for ' . $client_addr . ' resolves to ' . $safe_name . ' but forward lookup does not match. Rejecting.', false, 'SECURITY');
+
+			return false;
+		}
 	}
 
 	$pollers = db_fetch_assoc('SELECT * FROM poller WHERE disabled = ""', true, $poller_db_cnn_id);
@@ -238,7 +262,7 @@ function get_graph_data() : bool {
 		$graph_data_array['graph_theme'] = grv('graph_theme');
 	}
 
-	// set the theme
+	// set the effective user
 	if (isrv('effective_user')) {
 		$user = grv('effective_user');
 	} else {
@@ -257,6 +281,13 @@ function get_graph_data() : bool {
 function get_snmp_data() : void {
 	$host_id = gfrv('host_id');
 	$oid     = gnrv('oid');
+
+	if (!is_string($oid) || !preg_match('/^[0-9.]+$/', $oid)) {
+		print 'U';
+
+		return;
+	}
+
 	$output  = '';
 
 	if (!empty($host_id)) {
@@ -280,6 +311,13 @@ function get_snmp_data() : void {
 function get_snmp_data_walk() : void {
 	$host_id = gfrv('host_id');
 	$oid     = gnrv('oid');
+
+	if (!is_string($oid) || !preg_match('/^[0-9.]+$/', $oid)) {
+		print 'U';
+
+		return;
+	}
+
 	$output  = '';
 
 	if (!empty($host_id)) {

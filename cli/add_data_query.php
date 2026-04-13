@@ -57,7 +57,7 @@ if (cacti_sizeof($parms)) {
 	unset($reindex_method);
 
 	foreach ($parms as $parameter) {
-		if (strpos($parameter, '=')) {
+		if (str_contains($parameter, '=')) {
 			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
@@ -95,7 +95,7 @@ if (cacti_sizeof($parms)) {
 					($value <= DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION)) {
 					$reindex_method = $value;
 				} else {
-					switch (strtolower($value)) {
+					switch (cacti_strtolower($value)) {
 						case 'none':
 							$reindex_method = DATA_QUERY_AUTOINDEX_NONE;
 

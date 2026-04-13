@@ -335,11 +335,7 @@ if (read_config_option('auth_method') == AUTH_METHOD_LDAP || read_config_option(
 <?php
 }
 
-if (isset($_SERVER['HTTPS']) && isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
-	$is_https = true;
-} else {
-	$is_https = false;
-}
+$is_https = cacti_is_https();
 
 if (read_config_option('auth_cache_enabled') == 'on' && $is_https) { ?>
 	<tr>

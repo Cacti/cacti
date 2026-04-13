@@ -84,7 +84,7 @@ array_shift($parms);
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
-		if (strpos($parameter, '=')) {
+		if (str_contains($parameter, '=')) {
 			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
@@ -104,7 +104,7 @@ if (cacti_sizeof($parms)) {
 				break;
 			case '--avgnan':
 			case '-A':
-				$avgnan = strtolower($value);
+				$avgnan = cacti_strtolower($value);
 
 				break;
 			case '--rrdfile':

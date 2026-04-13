@@ -64,8 +64,8 @@ if (sizeof($parms)) {
 	$hosts   = '';
 
 	foreach ($parms as $parameter) {
-		if (strpos($parameter, '=')) {
-			[$arg, $value] = explode('=', $parameter);
+		if (str_contains($parameter, '=')) {
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
 			$value = '';
@@ -179,19 +179,19 @@ if (sizeof($parms)) {
 			case '--version':
 			case '-V':
 			case '-v':
-				displayVersion();
+				display_version();
 
 				exit;
 			case '--help':
 			case '-H':
 			case '-h':
-				displayHelp();
+				display_help();
 
 				exit;
 
 			default:
 				echoQuiet("ERROR: Invalid Argument: ($arg)\n\n" . PHP_EOL . PHP_EOL);
-				displayHelp();
+				display_help();
 
 				exit(1);
 		}
@@ -215,7 +215,7 @@ if (sizeof($parms)) {
 		}
 	}
 } else {
-	displayHelp();
+	display_help();
 
 	exit(0);
 }
@@ -227,12 +227,12 @@ if (sizeof($parms)) {
  * @return int
  */
 function addSite() : int {
-	global $quiet, $siteName, $siteAddr1, $siteAddr2, $siteCity, $siteState, $siteZip, $siteCountry, $siteTimezone, $siteLatitude, $siteLongitude, $siteAltname, $geocodeAddress, $siteNotes;
+	global $quiet, $siteName, $siteAddr1, $siteAddr2, $siteCity, $siteState, $siteZip, $siteCountry, $siteTimezone, $siteLatitude, $siteLongitude, $siteAltname, $geocodeAddress, $siteNotes, $replaceSites;
 
 	$siteData = db_fetch_assoc_prepared('SELECT * from sites where name = ?', [$siteName]);
 
 	// Fix nasty DMS values
-	fixCoordinates($siteLatitude, $siteLongitude);
+	[$siteLatitude, $siteLongitude] = fixCoordinates($siteLatitude, $siteLongitude);
 
 	if ($geocodeAddress) {
 		[$siteLatitude, $siteLongitude] = geocodeAddress($siteAddr1, $siteAddr2, $siteCity, $siteZip, $siteCountry);
@@ -247,7 +247,7 @@ function addSite() : int {
 	$siteNotes = str_replace('%GOOGLE_MAPS_URL%', $googleMapsUrl, $siteNotes);
 	$siteNotes = str_replace('%BR%', "\n", $siteNotes);
 
-	if ($siteData) {
+	if ($siteData && $replaceSites) {
 		echoQuiet("Updating existing site: $siteName\n" . PHP_EOL);
 
 		$siteId = isset($siteData[0]['id']) ? $siteData[0]['id'] : 0;
@@ -318,17 +318,23 @@ function mapDevices(int $siteId, bool $doMap) : void {
 
 	if ($deviceMapRegex && !preg_match('/^\/.+\//', $deviceMapRegex)) {
 		// Just in case the slashes aren't passed to us
-		$deviceMapRegex = '/^' . $deviceMapRegex . '$/';
+		$deviceMapRegex = '/^' . preg_quote($deviceMapRegex, '/') . '$/';
+	} elseif ($deviceMapRegex && @preg_match($deviceMapRegex, '') === false) {
+		print 'ERROR: Invalid device-map-regex pattern' . PHP_EOL;
+		exit(1);
 	}
 
 	if ($ipMapRegex && !preg_match('/^\/.+\//', $ipMapRegex)) {
 		// Make it more restrictive too - add the ^ and $ anchors if the regex isn't specified correctly to stop sillyness
-		$ipMapRegex = '/^' . $ipMapRegex . '$/';
+		$ipMapRegex = '/^' . preg_quote($ipMapRegex, '/') . '$/';
+	} elseif ($ipMapRegex && @preg_match($ipMapRegex, '') === false) {
+		print 'ERROR: Invalid ip-map-regex pattern' . PHP_EOL;
+		exit(1);
 	}
 
 	// Cheating and just expanding % into .+ regex matches to avoid having to do DB queries again
-	$deviceMapWild = $deviceMapWild ? '/' . str_replace('%', '.+', $deviceMapWild) . '/' : '';
-	$ipMapWild 	   = $ipMapWild ? '/' . str_replace('%', '.+', $ipMapWild) . '/' : '';
+	$deviceMapWild = $deviceMapWild ? '/' . str_replace('\%', '.+', preg_quote($deviceMapWild, '/')) . '/' : '';
+	$ipMapWild 	   = $ipMapWild ? '/' . str_replace('\%', '.+', preg_quote($ipMapWild, '/')) . '/' : '';
 
 	$matchedDevices = [];
 
@@ -397,7 +403,7 @@ function mapDevices(int $siteId, bool $doMap) : void {
  * @return bool - true if successful
  */
 function doDeviceMap(int $deviceId, int $siteId) : bool {
-	if (!$deviceId && $siteId) {
+	if (!$deviceId || !$siteId) {
 		return false;
 	}
 
@@ -431,7 +437,11 @@ function geocodeAddress(string $siteAddr1, string $siteAddr2, string $siteCity, 
 
 	if (!$geocodeApiKey) {
 		// Dont even try without the key
-		displayHelp('Error: --geocode-api-key must be given with --geocode-address');
+		print 'Error: --geocode-api-key must be given with --geocode-address' . PHP_EOL;
+
+		display_help();
+
+		exit(1);
 	}
 
 	$requestUrl = sprintf('%s?address=%s,%s,%s,%s&key=%s', $googleApiUrl, urlencode($siteAddr1), urlencode($siteAddr2), urlencode($siteCity), urlencode($siteCountry), $geocodeApiKey);
@@ -466,8 +476,8 @@ function geocodeAddress(string $siteAddr1, string $siteAddr2, string $siteCity, 
 	return ([$latGeocode, $lngGeocode]);
 }
 
-function fixCoordinates(float $lat, float $lng) : array {
-	$utfCoord = utf8_decode("$lat $lng"); // Normalise the characters to put them through a regex
+function fixCoordinates(string $lat, string $lng) : array {
+	$utfCoord = mb_convert_encoding("$lat $lng", 'ISO-8859-1', 'UTF-8'); // Normalise the characters to put them through a regex
 
 	if (preg_match('/(\d+)\xB0(\d+)\'((?:[.]\d+|\d+(?:[.]\d*)?))"?([NS]) +(\d+)\xB0(\d+)\'((?:[.]\d+|\d+(?:[.]\d*)?))"?([EW])/', $utfCoord, $matches)) {
 		array_shift($matches); // Get rid of $matches[0]
@@ -501,16 +511,20 @@ function echoQuiet(string $str, int $level = 0) : void {
 	}
 }
 
-function fetchCurl(string $url) : string {
+function fetchCurl(string $url) : string|false {
 	global $verbose, $debug, $httpsProxy;
 
 	if (!function_exists('curl_init')) {
-		displayHelp('Error: cURL must be enabled in PHP if --geocode is specified.' . PHP_EOL . 'See http://php.net/manual/en/curl.setup.php for help.' . PHP_EOL);
+		print 'Error: cURL must be enabled in PHP if --geocode is specified.' . PHP_EOL . 'See http://php.net/manual/en/curl.setup.php for help.' . PHP_EOL;
+
+		display_help();
+
+		exit(1);
 	}
 
-	$curl      = curl_init();
-	$header[0] = 'Accept: text/xml,application/xml,application/json,application/xhtml+xml,';
-	$header[0] .= 'text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5';
+	$curl     = curl_init();
+
+	$header[] = 'Accept: text/xml,application/xml,application/json,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5';
 	$header[] = 'Cache-Control: max-age=0';
 	$header[] = 'Connection: keep-alive';
 	$header[] = 'Keep-Alive: 300';
@@ -520,7 +534,7 @@ function fetchCurl(string $url) : string {
 	curl_setopt($curl, CURLOPT_URL, $url);
 	curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
 	curl_setopt($curl, CURLOPT_TIMEOUT, 10);
-	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
 	curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($curl, CURLOPT_HEADER, false);
@@ -529,21 +543,29 @@ function fetchCurl(string $url) : string {
 		if ($verbose || $debug) {
 			echoQuiet("Using HTTPS proxy: $httpsProxy" . PHP_EOL);
 		}
+
 		curl_setopt($curl, CURLOPT_PROXY, $httpsProxy);
 	}
 
 	$buffer = curl_exec($curl);
-	curl_close($curl);
+
+	if ($buffer === false) {
+		$error = curl_error($curl);
+
+		echoQuiet('Error: cURL request failed: ' . $error . PHP_EOL);
+
+		return false;
+	}
 
 	return $buffer;
 }
 
 /**
- * displayVersion - displays version information
+ * display_version - displays version information
  *
  * @return void
  */
-function displayVersion() : void {
+function display_version() : void {
 	$version = get_cacti_cli_version();
 	echoQuiet("Cacti Add Site Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL);
 }
@@ -553,14 +575,10 @@ function displayVersion() : void {
  *
  * @return void
  */
-function displayHelp(mixed $errorMessage = null) : void {
+function display_help() : void {
 	global $log;
 	$log = false;
-	displayVersion();
-
-	if ($errorMessage) {
-		echoQuiet("$errorMessage" . PHP_EOL . PHP_EOL);
-	}
+	display_version();
 
 	echoQuiet(PHP_EOL);
 	echoQuiet('Usage: add_site.php [site-options] [--quiet]' . PHP_EOL . PHP_EOL);

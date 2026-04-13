@@ -45,8 +45,8 @@ if (sizeof($parms)) {
 	$tmp_backup_folder    = false;
 
 	foreach ($parms as $parameter) {
-		if (strpos($parameter, '=')) {
-			[$arg, $value] = explode('=', $parameter);
+		if (str_contains($parameter, '=')) {
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
 			$value = '';
@@ -394,7 +394,7 @@ if ($scanned_directory['folders']) {
 				f_notify('RRDtool info');
 				$output = rrdtool_pipe_execute(' info ' . $file . "\r\n", $rrdtool_pipes);
 
-				if (strpos($output, 'ERROR')) {
+				if (str_contains($output, 'ERROR')) {
 					f_notify(false, "\033[0;31m[FAILED]\033[0m");
 					f_log('[ERROR] Unable to fetch RRDtool Info: ' . $file);
 
@@ -550,7 +550,7 @@ if ($scanned_directory['folders']) {
 				f_notify('RRDtool dump');
 				$file_dump = rrdtool_pipe_execute(' dump ' . $file . "\r\n", $rrdtool_pipes);
 
-				if (strpos($file_dump, 'ERROR')) {
+				if (str_contains($file_dump, 'ERROR')) {
 					f_notify(false, "\033[0;31m[FAILED]\033[0m");
 
 					// ## log_missing
@@ -875,7 +875,7 @@ if ($scanned_directory['folders']) {
 				f_notify('RRDtool Restore');
 				$file_restore = rrdtool_pipe_execute(' restore -r -f ' . $tmp_xml_file . ' ' . $tmp_rrd_file . "\r\n", $rrdtool_pipes);
 
-				if (strpos($file_restore, 'ERROR')) {
+				if (str_contains($file_restore, 'ERROR')) {
 					f_notify(false, "\033[0;31m[FAILED]\033[0m");
 
 					// / log_missing
@@ -1042,13 +1042,13 @@ function f_log(string $msg) : void {
 
 	fwrite($log_handle, date('Y-m-d H:i:s T', time()) . '   ' . $msg . PHP_EOL);
 
-	if (strpos($msg, '[ERROR]')) {
+	if (str_contains($msg, '[ERROR]')) {
 		$total_errors++;
 		$total_skipped++;
-	} elseif (strpos($msg, '[OUTDATED]')) {
+	} elseif (str_contains($msg, '[OUTDATED]')) {
 		$total_outdated++;
 		$total_skipped++;
-	} elseif (strpos($msg, '[SKIPPED]')) {
+	} elseif (str_contains($msg, '[SKIPPED]')) {
 		$total_skipped++;
 	}
 }

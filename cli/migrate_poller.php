@@ -57,7 +57,7 @@ $migration_log_file = CACTI_PATH_LOG . '/migration_log_' . date('Y-m-d_H-i-s') .
 $migration_csv_file = CACTI_PATH_LOG . '/migration_list_' . date('Y-m-d_H-i-s') . '.csv';
 
 foreach ($parms as $parameter) {
-	if (strpos($parameter, '=')) {
+	if (str_contains($parameter, '=')) {
 		[$arg, $value] = explode('=', $parameter, 2);
 	} else {
 		$arg   = $parameter;
@@ -339,7 +339,7 @@ function migrate_all_devices(int $source_poller, int $dest_poller, bool $quietMo
 		print 'Are you sure you want to continue? (y/N): ';
 		$confirmation = trim(fgets(STDIN));
 
-		if (strtolower($confirmation) !== 'y') {
+		if (cacti_strtolower($confirmation) !== 'y') {
 			print 'Migration cancelled by user' . PHP_EOL;
 
 			return false;
@@ -434,7 +434,7 @@ function migrate_from_host_ids(string $host_ids_string, int $source_poller, int 
 		print 'Are you sure you want to continue? (y/N): ';
 		$confirmation = trim(fgets(STDIN));
 
-		if (strtolower($confirmation) !== 'y') {
+		if (cacti_strtolower($confirmation) !== 'y') {
 			print 'Migration cancelled by user' . PHP_EOL;
 
 			return false;

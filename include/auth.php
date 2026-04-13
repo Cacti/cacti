@@ -62,7 +62,7 @@ if (is_install_needed() && !defined('IN_CACTI_INSTALL')) {
  * The logout page does not require authentication
  * so, short cut the process.
  */
-if (get_current_page() == 'logout.php') {
+if (get_current_page() == 'logout.php' || get_current_page() == 'auth_changepassword.php' || get_current_page() == 'auth_resetpassword.php') {
 	return true;
 }
 
@@ -74,8 +74,7 @@ api_plugin_hook_function('auth_alternate_realms');
  */
 if ($auth_method != AUTH_METHOD_BASIC) {
 	if (isset($_SESSION[SESS_CHANGE_PASSWORD])) {
-		header('Location: ' . CACTI_PATH_URL . 'auth_changepassword.php?ref=' . ($_SERVER['HTTP_REFERER'] ?? 'index.php'));
-
+		header('Location: ' . CACTI_PATH_URL . 'auth_changepassword.php?ref=' . rawurlencode(validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '', 'index.php')));
 		exit;
 	}
 
@@ -322,7 +321,7 @@ if (empty($_SESSION[SESS_USER_ID])) {
 		}
 
 		if (isset($_SERVER['HTTP_REFERER'])) {
-			$goBack = "<td colspan='2' class='center'>[<a href='" . $_SERVER['HTTP_REFERER'] . "'>" . __('Return') . "</a> | <a href='" . CACTI_PATH_URL . "logout.php'>" . __('Login Again') . '</a>]</td>';
+			$goBack = "<td colspan='2' class='center'>[<a href='" . validate_redirect_url($_SERVER['HTTP_REFERER'], $_SERVER['SCRIPT_NAME']) . "'>" . __('Return') . "</a> | <a href='" . CACTI_PATH_URL . "logout.php'>" . __('Login Again') . '</a>]</td>';
 		} elseif ($auth_method != AUTH_METHOD_BASIC) {
 			$goBack = "<td colspan='2' class='center'>[<a href='" . CACTI_PATH_URL . "logout.php'>" . __('Login Again') . '</a>]</td>';
 		} else {

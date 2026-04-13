@@ -1253,9 +1253,9 @@ function query_snmp_host(int $host_id, int $snmp_query_id) : bool {
 
 						foreach ($parts as $idx => $part) {
 							if (is_numeric($part)) {
-								$parts[$idx] = substr(strtoupper('00' . dechex(intval($part))), -2);
+								$parts[$idx] = substr(cacti_strtoupper('00' . dechex(intval($part))), -2);
 							} else {
-								$parts[$idx] = substr(strtoupper('00' . $part), -2);
+								$parts[$idx] = substr(cacti_strtoupper('00' . $part), -2);
 							}
 
 							if ($idx % 2 == 0 && $idx > 0) {
@@ -1565,9 +1565,9 @@ function query_snmp_host(int $host_id, int $snmp_query_id) : bool {
 
 						foreach ($parts as $idx => $part) {
 							if (is_numeric($part)) {
-								$parts[$idx] = substr(strtoupper('00' . dechex(intval($part))), -2);
+								$parts[$idx] = substr(cacti_strtoupper('00' . dechex(intval($part))), -2);
 							} else {
-								$parts[$idx] = substr(strtoupper('00' . $part), -2);
+								$parts[$idx] = substr(cacti_strtoupper('00' . $part), -2);
 							}
 
 							if ($idx % 2 == 0 && $idx > 0) {
@@ -2411,7 +2411,7 @@ function get_ordered_index_type_list(int $host_id, int $data_query_id) : array {
 			cacti_log("Available Sort Fields for Re-Index for Device[$host_id], DQ[$data_query_id] are [" . $raw_xml['index_order'] . ']', false, 'DSTRACE');
 		}
 	} elseif (!isset($raw_xml['arg_index'])) {
-		cacti_log("WARNING: Missing index_order_type XML tag for Device[$host_id], DQ[$data_query_id].  Permitted types [alpha:numeric:alphanumeric].  If a monitored object changes it's index, those changes will not be detected.", false, 'REINDEX');
+		cacti_log("WARNING: Missing index_order_type XML tag for Device[$host_id], DQ[$data_query_id].  Permitted types [alpha:numeric:alphanumeric].  If a monitored object changes its index, those changes will not be detected.", false, 'REINDEX');
 		$order_found = false;
 	}
 

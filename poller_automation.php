@@ -151,8 +151,8 @@ global $debug, $poller_id, $network_id, $thread, $master, $dryrun;
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
-		if (strpos($parameter, '=')) {
-			[$arg, $value] = explode('=', $parameter);
+		if (str_contains($parameter, '=')) {
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
 			$value = '';
@@ -232,7 +232,7 @@ if (!$master && $thread == 0) {
 		[$network_id, $poller_id]);
 
 	if ($status != 'on' && !$force) {
-		cacti_log(automation_get_pid() . " WARNING: The Network ID: $network_id is disabled.  You must use the 'force' option to force it's execution.", true, 'AUTOM8');
+		cacti_log(automation_get_pid() . " WARNING: The Network ID: $network_id is disabled.  You must use the 'force' option to force its execution.", true, 'AUTOM8');
 
 		exit(1);
 	}
@@ -493,7 +493,7 @@ function discoverDevices(int $network_id, int $thread) : bool {
 
 					$device['hostname']      = $dnsname;
 					$device['dnsname']       = $dnsname;
-					$device['dnsname_short'] = explode('.', strtolower($dnsname))[0];
+					$device['dnsname_short'] = explode('.', cacti_strtolower($dnsname))[0];
 				} elseif ($network['enable_netbios'] == 'on') {
 					automation_debug('Device: ' . $device['ip_address'] . ', Checking DNS: Not found, Checking NetBIOS:');
 
@@ -535,7 +535,7 @@ function discoverDevices(int $network_id, int $thread) : bool {
 						[$dnsname, $device['ip_address']]);
 
 					$device['dnsname']       = $dnsname;
-					$device['dnsname_short'] = explode('.', strtolower($dnsname))[0];
+					$device['dnsname_short'] = explode('.', cacti_strtolower($dnsname))[0];
 				} elseif ($network['enable_netbios'] == 'on') {
 					automation_debug('Device: ' . $device['ip_address'] . ', Checking DNS: Not found, Checking NetBIOS:');
 
@@ -696,7 +696,7 @@ function discoverDevices(int $network_id, int $thread) : bool {
 								$hostname = gethostbyaddr($device['ip_address']);
 
 								if ($hostname != $device['ip_address']) {
-									if (strpos($hostname, '.')) {
+									if (str_contains($hostname, '.')) {
 										$hostname = substr($hostname, 0, strpos($hostname, '.') - 1);
 									}
 								}
@@ -784,7 +784,7 @@ function discoverDevices(int $network_id, int $thread) : bool {
 											$pattern = str_replace('|sysLocation|', $sysLocation, $pattern);
 										}
 
-										$description = db_fetch_cell("SELECT '$pattern'");
+										$description = db_fetch_cell_prepared('SELECT ?', [$pattern]);
 
 										if ($description != '') {
 											$device['description'] = $description;

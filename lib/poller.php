@@ -113,14 +113,25 @@ function exec_poll_php(string $command, bool $using_proc_function, array $pipes,
  * exec_background - executes a program in the background so that php can continue
  * to execute code in the foreground.
  *
- * @param string $filename      The full pathname to the script to execute
- * @param string $args          Any additional arguments that must be passed onto the executable
- * @param string $redirect_args Any additional arguments for file re-direction.  Otherwise output goes to /dev/null
+ * @param string       $filename      The full pathname to the script to execute
+ * @param string|array $args          Any additional arguments. Arrays are escaped per-element via cacti_escapeshellarg.
+ * @param string|array $redirect_args Any additional arguments for file re-direction.  Otherwise output goes to /dev/null
  *
  * @return void
  */
-function exec_background(string $filename, string $args = '', string $redirect_args = '') : void {
+function exec_background(string $filename, string|array $args = '', string|array $redirect_args = '') : void {
 	global $debug;
+
+	if (is_array($args)) {
+		$args = implode(' ', array_map('cacti_escapeshellarg', $args));
+	}
+
+	/* redirect_args intentionally bypass escapeshellarg because they contain
+	 * shell operators (>, 2>&1, etc.) that must be passed through literally.
+	 * Only hardcoded redirect strings should be passed here, never user input. */
+	if (is_array($redirect_args)) {
+		$redirect_args = implode(' ', $redirect_args);
+	}
 
 	cacti_log("DEBUG: About to Spawn a Remote Process [CMD: $filename, ARGS: $args]", true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE : POLLER_VERBOSITY_DEBUG));
 
@@ -167,8 +178,23 @@ function exec_with_timeout(string $cmd, array &$output, int &$return_code, int $
 		2 => ['pipe', 'w']   // stderr
 	];
 
+	// Use setsid when available (Linux) so the child becomes a process-group leader,
+	// allowing posix_kill(-pid, 9) to reliably kill the entire subtree on timeout.
+	// Falls back to plain exec on systems without setsid (macOS, BSD).
+	$setsid = '';
+
+	if (CACTI_SERVER_OS != 'win32') {
+		$setsid_path = trim(shell_exec('which setsid 2>/dev/null') ?? '');
+
+		if ($setsid_path !== '') {
+			$setsid = 'setsid -- ';
+		}
+	}
+
+	$cmd_full = $setsid . $cmd;
+
 	// Start the process.
-	$process = proc_open('exec ' . $cmd, $descriptors, $pipes);
+	$process = proc_open('exec ' . $cmd_full, $descriptors, $pipes);
 
 	if (!is_resource($process)) {
 		return false;
@@ -211,7 +237,7 @@ function exec_with_timeout(string $cmd, array &$output, int &$return_code, int $
 		}
 
 		// Subtract the number of microseconds that we waited.
-		$timeout -= (int) (microtime(true) - $start) * 1000000;
+		$timeout -= (int) ((microtime(true) - $start) * 1000000);
 	}
 
 	// Check if there were any errors.
@@ -223,12 +249,19 @@ function exec_with_timeout(string $cmd, array &$output, int &$return_code, int $
 		$return_code = 1;
 	}
 
-	if (!empty($errors)) {
-		return false;
+	// Only surface stderr noise when the command actually failed; successful
+	// commands may write informational output to stderr that isn't actionable.
+	if ($return_code != 0 && !empty($errors)) {
+		cacti_log("WARNING: Command '$cmd' exited with code $return_code, stderr: " . trim($errors), false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 	}
 
 	// Kill the process in case the timeout expired and it's still running.
 	// If the process already exited this won't do anything.
+	// Use negative PID to kill the entire process group (setsid makes child the group leader).
+	if (isset($status['pid']) && $status['running'] && function_exists('posix_kill')) {
+		posix_kill(-$status['pid'], 9);
+	}
+
 	proc_terminate($process, 9);
 
 	// Close all streams.
@@ -618,8 +651,6 @@ function process_poller_output(mixed &$rrdtool_pipe, int $remainder = 0) : int {
 								$rrd_update_array[$rrd_path]['times'][$unix_time][$field] = 'U';
 							}
 
-							$rrd_update_array[$rrd_path]['times'][$unix_time][$field] = $matches[1];
-
 							$rrd_tmpl .= ($rrd_tmpl != '' ? ':' : '') . $field;
 
 							$rrd_update_array[$rrd_path]['template'] = $rrd_tmpl;
@@ -898,7 +929,7 @@ function update_resource_cache($poller_id = 1) : bool {
 				$pathinfo = pathinfo($path['path']);
 
 				if (isset($pathinfo['extension'])) {
-					$extension = strtolower($pathinfo['extension']);
+					$extension = cacti_strtolower($pathinfo['extension']);
 				} else {
 					$extension = '';
 				}
@@ -959,7 +990,7 @@ function update_resource_cache($poller_id = 1) : bool {
 									$pathinfo = pathinfo($fpath);
 
 									if (isset($pathinfo['extension'])) {
-										$extension = strtolower($pathinfo['extension']);
+										$extension = cacti_strtolower($pathinfo['extension']);
 									} else {
 										$extension = '';
 									}
@@ -1063,7 +1094,7 @@ function cache_in_path(string $path, string $type, bool $recursive = true) : voi
 		$pathinfo            = pathinfo($path);
 
 		if (isset($pathinfo['extension'])) {
-			$extension = strtolower($pathinfo['extension']);
+			$extension = cacti_strtolower($pathinfo['extension']);
 		} else {
 			$extension = '';
 		}
@@ -1140,7 +1171,7 @@ function update_db_from_path(string $path, string $type, bool $recursive = true)
 					$pathinfo = pathinfo($entry);
 
 					if (isset($pathinfo['extension'])) {
-						$extension = strtolower($pathinfo['extension']);
+						$extension = cacti_strtolower($pathinfo['extension']);
 					} else {
 						$extension = '';
 					}
@@ -1178,7 +1209,7 @@ function update_db_from_path(string $path, string $type, bool $recursive = true)
 			$pathinfo = pathinfo($path);
 
 			if (isset($pathinfo['extension'])) {
-				$extension = strtolower($pathinfo['extension']);
+				$extension = cacti_strtolower($pathinfo['extension']);
 			} else {
 				$extension = '';
 			}
@@ -1362,7 +1393,7 @@ function md5sum_path(string $path, bool $recursive = true) : mixed {
 			$pathinfo = pathinfo($entry);
 
 			if (isset($pathinfo['extension'])) {
-				$extension = strtolower($pathinfo['extension']);
+				$extension = cacti_strtolower($pathinfo['extension']);
 			} else {
 				$extension = '';
 			}
@@ -2134,8 +2165,8 @@ function replicate_table_to_poller(mixed $db_conn, array &$data, string $table, 
 		foreach ($columns as $index => $c) {
 			if (!db_column_exists($table, $c, false, $db_conn)) {
 				$skipcols[$index] = $c;
-			} elseif ($exclude != false && array_search($c, $exclude, true) == true) {
-				// Do not update this column
+			} elseif ($exclude !== false && array_search($c, $exclude, true) !== false) {
+				$skipcols[$index] = $c;
 			} else {
 				$prefix .= ($colcnt > 0 ? ', ' : '') . $c;
 				$suffix .= ($colcnt > 0 ? ', ' : '') . "$c=VALUES($c)";

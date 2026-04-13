@@ -75,11 +75,11 @@ function ss_mikrotik_qtrees_getvalue(int $host_id, string $index, string $column
 
 	$index2 = str_replace('_', ' ', $index);
 
-	$value = db_fetch_cell_prepared("SELECT
-		$column AS value
+	$value = db_fetch_cell_prepared('SELECT
+		' . $column . ' AS value
 		FROM plugin_mikrotik_trees
-		WHERE name IN ('$index', '$index2', '<$index>')
-		AND host_id = ?",
+		WHERE name IN (' . db_qstr($index) . ', ' . db_qstr($index2) . ', ' . db_qstr('<' . $index . '>') . ')
+		AND host_id = ?',
 		[$host_id]);
 
 	return $value;

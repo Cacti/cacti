@@ -57,8 +57,8 @@ $start    = microtime(true);
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
-		if (strpos($parameter, '=')) {
-			[$arg, $value] = explode('=', $parameter);
+		if (str_contains($parameter, '=')) {
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
 			$value = '';
@@ -673,7 +673,7 @@ function logrotate_file_clean(string $name, string $log, object $date, int $rota
 			$fileparts = explode('-', $d);
 			$matches   = false;
 
-			if (strpos($d, $baselogname) !== false) {
+			if (str_contains($d, $baselogname)) {
 				if (cacti_sizeof($fileparts) > 1) {
 					foreach ($fileparts as $p) {
 						// Is it in the form YYYYMMDD?
@@ -799,7 +799,7 @@ function remove_files(array $file_array) : void {
 		if (read_config_option('storage_location') == 0) {
 			switch ($file['action']) {
 				case '1':
-					if (file_exists($real_file) && strtolower(pathinfo($real_file, PATHINFO_EXTENSION)) === 'rrd') {
+					if (file_exists($real_file) && cacti_strtolower(pathinfo($real_file, PATHINFO_EXTENSION)) === 'rrd') {
 						if (unlink($real_file)) {
 							maint_debug('Deleted: ' . $real_file);
 							$purged++;

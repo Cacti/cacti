@@ -1230,7 +1230,7 @@ function utilities_get_mysql_recommendations() : int {
 			'value'   => 'ON',
 			'measure' => 'equalint',
 			'class'   => 'error',
-			'comment' => __('This settings should remain ON unless your Cacti instances is running on either ZFS or FusionI/O which both have internal journaling to accommodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance.')
+			'comment' => __('This setting should remain ON unless your Cacti instances are running on either ZFS or FusionI/O which both have internal journaling to accommodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance.')
 		],
 		'innodb_additional_mem_pool_size' => [
 			'value'   => '80M',
@@ -1683,8 +1683,8 @@ function utilities_php_modules() : string {
 
 function memory_bytes(mixed $val) : mixed {
 	$val  = trim($val);
-	$last = strtolower($val[strlen($val) - 1]);
-	$val  = (double) trim($val, 'GMKgmk');
+	$last = cacti_strtolower($val[strlen($val) - 1]);
+	$val  = (float) trim($val, 'GMKgmk');
 
 	switch($last) {
 		case 'g':
@@ -1876,7 +1876,7 @@ function utility_php_recommends() : array {
 }
 
 function utility_get_formatted_bytes(mixed $input_value, string $wanted_type, mixed &$output_value, string $default_type = 'B') : mixed {
-	$default_type = strtoupper($default_type);
+	$default_type = cacti_strtoupper($default_type);
 	$multiplier   = [
 		'B' => 1,
 		'K' => 1024,
@@ -2032,7 +2032,7 @@ function utility_php_set_installed(array &$extensions) : void {
 }
 
 /**
- * object_cache_get_totals - This function get's the count of objects
+ * object_cache_get_totals - This function gets the count of objects
  *   for a set of object types.  The object types include:
  *
  *   - device_state  - Load the object database with the current state

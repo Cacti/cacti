@@ -62,7 +62,7 @@ $params            = [];
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
-		if (strpos($parameter, '=')) {
+		if (str_contains($parameter, '=')) {
 			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
@@ -111,7 +111,7 @@ if (cacti_sizeof($parms)) {
 }
 
 // determine the hosts to reindex
-if (strtolower($host_id) == 'all') {
+if (cacti_strtolower($host_id) == 'all') {
 	$sql_where = '';
 } elseif ($host_id > 0) {
 	$sql_where = ' WHERE id = ?';

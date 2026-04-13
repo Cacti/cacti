@@ -279,8 +279,13 @@ function install_create_csrf_secret(string $file) : bool {
 		if (is_resource_writable($file)) {
 			// Write the file
 			$fh = fopen($file, 'w');
-			fwrite($fh, csrf_get_secret());
-			fclose($fh);
+
+			if ($fh !== false) {
+				fwrite($fh, csrf_get_secret());
+				fclose($fh);
+			} else {
+				return false;
+			}
 
 			return true;
 		} else {
@@ -298,7 +303,7 @@ function install_unlink(string $file) : void {
 		$full_file = $file;
 	}
 
-	if (strpos($full_file, CACTI_PATH_BASE) === false) {
+	if (!str_contains($full_file, CACTI_PATH_BASE)) {
 		log_install_high('file', "Not Unlinking file: $full_file due to it not being in the Cacti base path.");
 	}
 
@@ -316,7 +321,7 @@ function install_rmdir(string $directory) : void {
 		$directory = CACTI_PATH_BASE . '/' . $directory;
 	}
 
-	if (strpos($directory, CACTI_PATH_BASE) === false) {
+	if (!str_contains($directory, CACTI_PATH_BASE)) {
 		log_install_high('file', "Not Unlinking directory: $directory due to it not being in the Cacti base path.");
 	}
 
@@ -343,11 +348,15 @@ function install_rmdir_recursive(string $directory, bool $del_parent = false) : 
 		$directory = CACTI_PATH_BASE . '/' . $directory;
 	}
 
-	if (strpos($directory, CACTI_PATH_BASE) === false) {
+	if (!str_contains($directory, CACTI_PATH_BASE)) {
 		log_install_high('file', "Not Unlinking directory: $directory due to it not being in the Cacti base path.");
 	}
 
 	$files = glob($directory . '/{,.}[!.,!..]*',GLOB_MARK | GLOB_BRACE);
+
+	if ($files === false) {
+		return;
+	}
 
 	foreach ($files as $file) {
 		if (is_dir($file)) {
@@ -362,7 +371,7 @@ function install_rmdir_recursive(string $directory, bool $del_parent = false) : 
 	}
 }
 
-function install_test_local_database_connection() : string {
+function install_test_local_database_connection() : string|false {
 	global $database_type, $database_hostname, $database_username, $database_password, $database_default,
 	$database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key,
 	$database_ssl_cert, $database_ssl_ca, $database_ssl_capath, $database_ssl_verify_server_cert;
@@ -416,7 +425,7 @@ function install_test_local_database_connection() : string {
 	}
 }
 
-function install_test_remote_database_connection() : string {
+function install_test_remote_database_connection() : string|false {
 	global $rdatabase_type, $rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default,
 	$rdatabase_type, $rdatabase_port, $rdatabase_retries, $rdatabase_ssl, $rdatabase_ssl_key,
 	$rdatabase_ssl_cert, $rdatabase_ssl_ca, $rdatabase_ssl_capath, $rdatabase_ssl_verify_server_cert;
@@ -524,9 +533,7 @@ function db_install_fetch_function(string $func, string $sql, array $params = []
 
 	if (!is_callable($func)) {
 		$status = DB_STATUS_ERROR;
-	}
-
-	if ($func == 'db_fetch_cell_prepared') {
+	} elseif ($func == 'db_fetch_cell_prepared') {
 		$data = $func($sql, $params, '', $log);
 	} else {
 		$data = $func($sql, $params, $log);
@@ -611,7 +618,7 @@ function db_install_add_key(string $table, string $type, string $key, mixed $col
 		$columns = [$columns];
 	}
 
-	$type = strtoupper($type);
+	$type = cacti_strtoupper($type);
 
 	if ($type == 'KEY' && $key == 'PRIMARY') {
 		$sql = 'ALTER TABLE `' . $table . '` ADD ' . $key . ' ' . $type . '(' . implode(',', $columns) . ')';
@@ -641,7 +648,7 @@ function db_install_add_key(string $table, string $type, string $key, mixed $col
 }
 
 function db_install_drop_key(string $table, string $type, string $key) : int {
-	$type = strtoupper(str_ireplace('UNIQUE ', '', $type));
+	$type = cacti_strtoupper(str_ireplace('UNIQUE ', '', $type));
 
 	if ($type == 'KEY' && $key == 'PRIMARY') {
 		$sql = "ALTER TABLE $table DROP $key $type;";
@@ -909,7 +916,12 @@ function install_setup_get_templates() : array {
 			// Loading Template Information from package
 			$filename = "compress.zlib://$path/$xmlfile";
 
-			$xml    = file_get_contents($filename);
+			$xml = file_get_contents($filename);
+
+			if ($xml === false) {
+				continue;
+			}
+
 			$xmlget = simplexml_load_string($xml);
 			$data   = to_array($xmlget);
 
@@ -934,7 +946,8 @@ function install_setup_get_templates() : array {
 			$info[]                   = $data['info'];
 		} else {
 			// Loading Template Information from package
-			$myinfo             = @json_decode(shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/import_package.php') . ' --filename=' . cacti_escapeshellarg("/$path/$xmlfile") . ' --info'), true);
+			$shell_output       = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/import_package.php') . ' --filename=' . cacti_escapeshellarg("/$path/$xmlfile") . ' --info');
+			$myinfo             = @json_decode($shell_output !== false && $shell_output !== null ? $shell_output : '', true) ?? [];
 			$myinfo['filename'] = $xmlfile;
 			$myinfo['name']     = $xmlfile;
 			$info[]             = $myinfo;
@@ -982,10 +995,10 @@ function install_setup_get_tables() : mixed {
 
 		if ($table_status === false || $collation != '' || $engine != '' || $row_format != '') {
 			$t[$table]['Name']       = $table;
-			$t[$table]['Collation']  = $table_status['Collation'];
-			$t[$table]['Engine']     = $table_status['Engine'];
+			$t[$table]['Collation']  = is_array($table_status) ? $table_status['Collation'] : '';
+			$t[$table]['Engine']     = is_array($table_status) ? $table_status['Engine'] : '';
 			$t[$table]['Rows']       = $rows;
-			$t[$table]['Row_format'] = $table_status['Row_format'];
+			$t[$table]['Row_format'] = is_array($table_status) ? $table_status['Row_format'] : '';
 		}
 	}
 
@@ -1281,9 +1294,9 @@ function remote_update_config_file() : string {
 			if (is_writable($config_file)) {
 				$file_array = file($config_file);
 
-				if (cacti_sizeof($file_array)) {
+				if (is_array($file_array) && cacti_sizeof($file_array)) {
 					foreach ($file_array as $line) {
-						if (strpos(trim($line), '$poller_id') !== false) {
+						if (str_contains(trim($line), '$poller_id')) {
 							$newfile[] = "\$poller_id = $poller_id;" . PHP_EOL;
 						} else {
 							$newfile[] = $line;
@@ -1292,10 +1305,14 @@ function remote_update_config_file() : string {
 
 					$fp = fopen($config_file, 'w');
 
-					foreach ($newfile as $line) {
-						fwrite($fp, $line);
+					if ($fp !== false) {
+						foreach ($newfile as $line) {
+							fwrite($fp, $line);
+						}
+						fclose($fp);
+					} else {
+						$failure = 'Failed to open configuration file for writing';
 					}
-					fclose($fp);
 				} else {
 					$failure = 'Failed to read configuration file';
 				}
@@ -1359,7 +1376,7 @@ function import_colors() : bool {
 
 	$contents = file(__DIR__ . '/colors.csv');
 
-	if (cacti_count($contents)) {
+	if (is_array($contents) && cacti_count($contents)) {
 		foreach ($contents as $line) {
 			$line    = trim($line);
 			$parts   = explode(',',$line);
@@ -1405,7 +1422,7 @@ function log_install_and_file(int $level, string $text, string $section = '', bo
 	$name  = 'INSTALL:';
 
 	if (!empty($section)) {
-		$name = 'INSTALL-' . strtoupper($section) . ':';
+		$name = 'INSTALL-' . cacti_strtoupper($section) . ':';
 	}
 
 	cacti_log(log_install_level_name($level) . ': ' . $text, false, $name, $level);
@@ -1602,7 +1619,7 @@ function install_full_sync() : array {
 
 	log_install_always('sync', 'Found ' . cacti_sizeof($pollers) . ' poller(s) to sync');
 
-	if (cacti_sizeof($pollers)) {
+	if (is_array($pollers) && cacti_sizeof($pollers)) {
 		foreach ($pollers as $poller) {
 			log_install_debug('sync', 'Poller ' . $poller['id'] . ' has a status of ' . $poller['status'] . ' with gap ' . $poller['gap']);
 

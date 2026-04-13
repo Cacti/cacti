@@ -54,7 +54,7 @@ if (cacti_sizeof($parms)) {
 	$debug       = false;
 
 	foreach ($parms as $parameter) {
-		if (strpos($parameter, '=')) {
+		if (str_contains($parameter, '=')) {
 			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
@@ -83,7 +83,7 @@ if (cacti_sizeof($parms)) {
 			case '--id':
 				$id = trim($value);
 
-				if (strpos($id, ',') !== false) {
+				if (str_contains($id, ',')) {
 					$ids_id = explode(',', $id);
 				} else {
 					$ids_id = [$id];

@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-// Work aorund issue where phpstan is not detecting globals
+// Work around issue where phpstan is not detecting globals
 
 include_once(__DIR__ . '/global_arrays.php');
 
@@ -448,7 +448,7 @@ $fields_data_input_edit = [
 		'method'        => 'other',
 		'value'         => '',
 		'friendly_name' => __('White List Check'),
-		'description'   => __('The result of the Whitespace verification check for the specific Input Method.  If the Input String changes, and the Whitelist file is not update, Graphs will not be allowed to be created.')
+		'description'   => __('The result of the Whitespace verification check for the specific Input Method.  If the Input String changes, and the Whitelist file is not updated, Graphs will not be allowed to be created.')
 	],
 	'id' => [
 		'method' => 'hidden_zero',
@@ -476,7 +476,7 @@ $fields_data_input_field_edit_2 = [
 	'data_name' => [
 		'method'        => 'textbox',
 		'friendly_name' => __('Field [%s]', '|arg1:|'),
-		'description'   => __('Enter a name for this %s field.  Note: If using name value pairs in your script, for example: NAME:VALUE, it is important that the name match your output field name identically to the script output name or names.', '|arg1:|'),
+		'description'   => __('Enter a name for this %s field.  Note: If using name value pairs in your script, for example: NAME:VALUE, it is important that the name matches your output field name identically to the script output name or names.', '|arg1:|'),
 		'value'         => '|arg2:data_name|',
 		'max_length'    => '50',
 		'size'          => '40'
@@ -1278,7 +1278,7 @@ $fields_host_edit = [
 	'location' => [
 		'method'        => 'drop_callback',
 		'friendly_name' => __('Location'),
-		'description'   => __('The physical location of the Device.  This free form text can be a room, rack location, etc.'),
+		'description'   => __('The physical location of the Device.  This free-form text can be a room, rack location, etc.'),
 		'none_value'    => __('None'),
 		'sql'           => 'SELECT DISTINCT location AS id, location AS name FROM host ORDER BY location',
 		'action'        => 'ajax_locations',
@@ -1352,7 +1352,7 @@ $fields_host_edit = [
 	],
 	'ping_method' => [
 		'friendly_name' => __('Ping Method'),
-		'description'   => __('The type of ping packet to sent.  <br><i>NOTE: ICMP on Linux/UNIX requires root privileges.</i>  <br><i>NOTE: TCP Ping Closed - Even if the tcp ping is not successful, the device can be considered UP.</i>'),
+		'description'   => __('The type of ping packet to send.  <br><i>NOTE: ICMP on Linux/UNIX requires root privileges.</i>  <br><i>NOTE: TCP Ping Closed - Even if the tcp ping is not successful, the device can be considered UP.</i>'),
 		'on_change'     => 'changeHostForm()',
 		'value'         => '|arg1:ping_method|',
 		'method'        => 'drop_array',

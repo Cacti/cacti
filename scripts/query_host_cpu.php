@@ -101,6 +101,9 @@ if ($cmd == 'index') {
 
 	if (isset($arr_index[$index])) {
 		print $arr[$index];
+	} else {
+		// Index absent — return U so RRDtool records an unknown sample.
+		print 'U';
 	}
 }
 

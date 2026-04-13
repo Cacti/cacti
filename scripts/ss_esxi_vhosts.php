@@ -42,7 +42,7 @@ function ss_esxi_vhosts(int $device_id) : string {
 
 	if (cacti_sizeof($array)) {
 		foreach ($array as $key => $value) {
-			if (strtolower(trim($value['value'])) == 'powered on' || strtolower(trim($value['value'])) == 'poweredon') {
+			if (cacti_strtolower(trim($value['value'])) == 'powered on' || cacti_strtolower(trim($value['value'])) == 'poweredon') {
 				$vh_state++;
 			}
 		}
@@ -52,9 +52,9 @@ function ss_esxi_vhosts(int $device_id) : string {
 
 	if (cacti_sizeof($array)) {
 		foreach ($array as $key => $value) {
-			if (strpos($value['value'], 'not installed')) {
+			if (str_contains($value['value'], 'not installed')) {
 				$vh_tools_ninst++;
-			} elseif (strpos($value['value'], 'not running') !== false) {
+			} elseif (str_contains($value['value'], 'not running')) {
 				$vh_tools_nrun++;
 			} else {
 				$vh_tools_run++;
