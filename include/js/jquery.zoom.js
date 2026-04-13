@@ -148,8 +148,11 @@
 						pair[1] = true;
 					} else if (pair[1] === 'false') {
 						pair[1] = false;
-					} else if (typeof pair[1] === 'number' || (typeof pair[1] === 'string' && /^-?\d+$/.test(pair[1].trim()))) {
-						pair[1] = parseInt(pair[1], 10);
+					} else if (typeof pair[1] === 'string') {
+						let numeric = pair[1].trim();
+						if (numeric !== '' && !isNaN(numeric)) {
+							pair[1] = +numeric;
+						}
 					}
 					obj[pair[0]] = pair[1];
 				}
