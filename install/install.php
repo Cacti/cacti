@@ -61,7 +61,7 @@ $help = '';
 
 if (CACTI_SERVER_OS == 'unix') {
 	if ($config['cacti_db_version'] == 'new_install') {
-		if (isset($_SERVER['SERVER_SOFTWARE']) && strpos($_SERVER['SERVER_SOFTWARE'], 'Apache') !== false) {
+		if (isset($_SERVER['SERVER_SOFTWARE']) && str_contains($_SERVER['SERVER_SOFTWARE'], 'Apache')) {
 			$help = 'Install-Under-CentOS_LAMP.html';
 		} elseif (file_exists('/etc/redhat-release')) {
 			$help = 'Install-Under-CentOS_LAMP.html';

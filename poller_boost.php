@@ -58,8 +58,8 @@ global $boost_debug, $boost_log, $cacti_log;
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
-		if (strpos($parameter, '=')) {
-			[$arg, $value] = explode('=', $parameter);
+		if (str_contains($parameter, '=')) {
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
 			$value = '';
@@ -210,9 +210,6 @@ if ($child == false) {
 
 		// Launch the boost children
 		if ($continue) {
-			// Allow mysql to flush the rename transaction
-			sleep(7);
-
 			cacti_log('INFO: Boost spawning child processes ...', true, 'BOOST');
 			boost_launch_children();
 
@@ -324,6 +321,16 @@ function sig_handler(int $signo) : void {
 			// tell the main poller that we are done
 			set_config_option('boost_poller_status', 'terminated - end time:' . date('Y-m-d H:i:s'));
 
+			// release any held GET_LOCK() before exiting; rrdtool >= 1.5 does
+			// not use these locks, so skip on modern installs
+			if (cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
+				if ($current_lock !== false && $child) {
+					db_execute_prepared('SELECT RELEASE_LOCK(?)', ["boost.single_ds.$current_lock"]);
+				} elseif (!$child) {
+					db_execute_prepared('SELECT RELEASE_ALL_LOCKS()', []);
+				}
+			}
+
 			if ($child) {
 				unregister_process('boost', 'child', $child, getmypid());
 			} else {
@@ -333,14 +340,6 @@ function sig_handler(int $signo) : void {
 			exit;
 		default:
 			// ignore all other signals
-	}
-
-	if (cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
-		if ($current_lock !== false && $child) {
-			db_execute("SELECT RELEASE_LOCK('boost.single_ds.$current_lock')");
-		} elseif (!$child) {
-			db_execute('SELECT RELEASE_ALL_LOCKS()');
-		}
 	}
 }
 
@@ -556,10 +555,11 @@ function boost_time_to_run(bool $forcerun, int $current_time, int $last_run_time
 
 		$seconds_offset = read_config_option('boost_rrd_update_interval') * 60;
 
-		// Initialize seconds offset, if not set to 2 hours
+		// Initialize seconds offset, if not set to 2 hours.
+		// boost_rrd_update_interval is stored in minutes; multiply to get seconds.
 		if (empty($seconds_offset)) {
-			$seconds_offset = 120;
 			set_config_option('boost_rrd_update_interval', 120);
+			$seconds_offset = 120 * 60;
 		}
 
 		boost_debug('Last Runtime was ' . date('Y-m-d H:i:s', $last_run_time) . " ($last_run_time).");
@@ -696,7 +696,7 @@ function boost_output_rrd_data(int $child) : mixed {
 
 		$curpass++;
 
-		$data_ids = db_fetch_cell_prepared('SELECT *
+		$data_ids = db_fetch_cell_prepared('SELECT COUNT(*)
 			FROM poller_output_boost_local_data_ids
 			WHERE process_handler = ?',
 			[$child]);
@@ -840,7 +840,7 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 		// we are going to blow away all record if ok
 		$vals_in_buffer = 0;
 
-		// innitialize some variables
+		// initialize some variables
 		$rrd_tmpl           = '';
 		$rrd_tmplp          = [];
 		$rrd_tmplpts        = 0;
@@ -861,7 +861,7 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 			if (!$locked) {
 				// acquire lock in order to prevent race conditions, only a problem pre-rrdtool 1.5
 				if (cacti_version_compare($rrdtool_version, '1.5', '<')) {
-					while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds." . $item['local_data_id'] . "', 1)")) {
+					while (!db_fetch_cell_prepared('SELECT GET_LOCK(?, 1)', ['boost.single_ds.' . $item['local_data_id']])) {
 						usleep(50000);
 					}
 				}
@@ -897,14 +897,14 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 
 				// release the previous lock
 				if (cacti_version_compare($rrdtool_version, '1.5', '<')) {
-					db_execute("SELECT RELEASE_LOCK('boost.single_ds.$local_data_id')");
+					db_execute_prepared('SELECT RELEASE_LOCK(?)', ["boost.single_ds.$local_data_id"]);
 				}
 
 				$current_lock = false;
 
 				// acquire lock in order to prevent race conditions, only a problem pre-rrdtool 1.5
 				if (cacti_version_compare($rrdtool_version, '1.5', '<')) {
-					while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds." . $item['local_data_id'] . "', 1)")) {
+					while (!db_fetch_cell_prepared('SELECT GET_LOCK(?, 1)', ['boost.single_ds.' . $item['local_data_id']])) {
 						usleep(50000);
 					}
 				}
@@ -998,7 +998,7 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 			}
 
 			// single one value output
-			if (strpos($value, 'DNP') !== false) {
+			if (str_contains($value, 'DNP')) {
 				// continue, bad time
 			} elseif ((is_numeric($value)) || ($value == 'U' && $item['rrd_name'] !== '')) {
 				$tv_tmpl[$item['rrd_name']] = $value;
@@ -1009,7 +1009,7 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 				$tv_tmpl[$item['rrd_name']] = $tval;
 				$buflen += strlen(':' . $tval);
 				$vals_in_buffer++;
-			} elseif (strpos($value, ':') !== false) {
+			} elseif (str_contains($value, ':')) {
 				// break out multiple value output to an array
 				$values = preg_split('/\s+/', $value);
 
@@ -1202,7 +1202,7 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 
 		// release the last lock
 		if (cacti_version_compare(get_rrdtool_version(), '1.5', '<') && isset($item['local_data_id'])) {
-			db_execute("SELECT RELEASE_LOCK('boost.single_ds." . $item['local_data_id'] . "')");
+			db_execute_prepared('SELECT RELEASE_LOCK(?)', ['boost.single_ds.' . $item['local_data_id']]);
 		}
 
 		$current_lock = false;
@@ -1430,8 +1430,8 @@ function boost_purge_cached_png_files(bool $forcerun) : void {
 
 						if ($modify_time < $remove_time) {
 							// only remove jpeg's and png's
-							if ((substr_count(strtolower($file), '.png')) ||
-								(substr_count(strtolower($file), '.jpg'))) {
+							if ((substr_count(cacti_strtolower($file), '.png')) ||
+								(substr_count(cacti_strtolower($file), '.jpg'))) {
 								unlink($file);
 							}
 						}

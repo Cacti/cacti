@@ -43,7 +43,7 @@ $filter  = '';
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
-		if (strpos($parameter, '=')) {
+		if (str_contains($parameter, '=')) {
 			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
@@ -101,7 +101,7 @@ if ($filter != '') {
 	$sql_where = '';
 }
 
-if (strtolower($host_id) == 'all') {
+if (cacti_strtolower($host_id) == 'all') {
 	// Act on all graphs
 } elseif (substr_count($host_id, ',')) {
 	$hosts    = explode(',', $host_id);

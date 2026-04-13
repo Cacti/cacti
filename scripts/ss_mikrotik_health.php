@@ -31,7 +31,13 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_mikrotik_health', $_SERVER['argv']);
 }
 
-function ss_mikrotik_health(int $host_id = 0, string $column = 'no') : string {
+function ss_mikrotik_health(mixed $host_id = 0, string $column = 'no') : string {
+	$allowed_columns = ['voltage', 'temperature', 'processorTemperature', 'current', 'power', 'fanSpeed', 'cpuFrequency'];
+
+	if (!in_array($column, $allowed_columns, true)) {
+		return 'U';
+	}
+
 	$value = db_fetch_cell_prepared("SELECT $column
 		FROM plugin_mikrotik_system_health
 		WHERE host_id = ?",

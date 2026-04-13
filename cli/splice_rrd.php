@@ -115,7 +115,7 @@ array_shift($parms);
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
-		if (strpos($parameter, '=')) {
+		if (str_contains($parameter, '=')) {
 			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
@@ -248,7 +248,7 @@ debug('Entering Mainline');
 // let's see if we can find rrdtool
 global $rrdtool, $use_db, $db;
 
-// see if sqlLite is available
+// see if SQLite is available
 if (class_exists('SQLite3')) {
 	print 'NOTE: Using SQLite Database for performance.' . PHP_EOL;
 	$use_db = true;

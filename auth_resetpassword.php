@@ -272,13 +272,13 @@ html_auth_header('reset_password', __('Reset Password'), __('Reset Password'), $
 	<tr>
 		<td colspan='2' class='nowrap'>
 			<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' value='send'><?php print __esc('Send reset token by email'); ?></button>
-			<button type='button' class='ui-button ui-corner-all ui-widget' onClick='document.location="<?php print $return; ?>"' value='return'><?php print __esc('Return'); ?></button>
+			<button type='button' class='ui-button ui-corner-all ui-widget' onClick='document.location=<?php print json_encode((string) $return); ?>' value='return'><?php print __esc('Return'); ?></button>
 		</td>
 	</tr>
 	<tr>
 		<td colspan='2'>
 			<input type='hidden' name='action' value='resetrequest'>
-			<input type='hidden' name='hash' value='<?php print gnrv('hash'); ?>'>
+			<input type='hidden' name='hash' value='<?php print htmlerv('hash'); ?>'>
 		</td>
 	</tr>
 <?php }
@@ -299,13 +299,13 @@ if ($action == 'formreset') {?>
 	<tr>
 		<td colspan='2' class='nowrap'>
 			<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' value='save'><?php print __esc('Save'); ?></button>
-			<button type='button' class='ui-button ui-corner-all ui-widget' onClick='document.location="<?php print $return; ?>"' value='return'><?php print __esc('Return'); ?></button>
+			<button type='button' class='ui-button ui-corner-all ui-widget' onClick='document.location=<?php print json_encode((string) $return); ?>' value='return'><?php print __esc('Return'); ?></button>
 		</td>
 	</tr>
 	<tr>
 		<td colspan='2'>
 			<input type='hidden' name='action' value='resetpassword'>
-			<input type='hidden' name='hash' value='<?php print gnrv('hash'); ?>'>
+			<input type='hidden' name='hash' value='<?php print htmlerv('hash'); ?>'>
 		</td>
 	</tr>
 <?php

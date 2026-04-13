@@ -116,7 +116,6 @@ function db_connect_real(string $device, string $user, string $pass, string $db_
 
 	// set connection timeout for down servers
 	$flags[PDO::ATTR_TIMEOUT] = 2;
-	$flage[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
 
 	while ($i <= $retries) {
 		try {
@@ -125,7 +124,6 @@ function db_connect_real(string $device, string $user, string $pass, string $db_
 			} else {
 				$cnn_id = new PDO("$db_type:host=$device;port=$port;dbname=$db_name;charset=utf8", $user, $pass, $flags);
 			}
-			$cnn_id->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
 
 			if (!empty($config['DEBUG_SQL_CONNECT'])) {
 				error_log(sprintf('NOTE: New connection to %s:%s/%s.', $device, $port, $db_name));
@@ -164,7 +162,7 @@ function db_connect_real(string $device, string $user, string $pass, string $db_
 			];
 
 			// test if cacti database is imported from SQL file
-			if (!defined('PHP_STAN')) {
+			if (!defined('PHP_TESTING')) {
 				$table_exists = db_fetch_cell("SELECT count(*) FROM information_schema.tables
 					WHERE table_schema = DATABASE() and TABLE_NAME = 'version'");
 
@@ -399,7 +397,7 @@ function db_binlog_enabled() : bool {
 	$enabled = db_fetch_row('SHOW GLOBAL VARIABLES LIKE "log_bin"');
 
 	if (cacti_sizeof($enabled)) {
-		if (strtolower($enabled['Value']) == 'on' || $enabled['Value'] == 1) {
+		if (cacti_strtolower($enabled['Value']) == 'on' || $enabled['Value'] == 1) {
 			return true;
 		}
 	}
@@ -566,10 +564,9 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 	$affected_rows[spl_object_hash($db_conn)] = 0;
 
 	while (true) {
+		$code  = 0;
+		$en    = '';
 		$query = $db_conn->prepare($sql);
-
-		$code = 0;
-		$en   = '';
 
 		if (!empty($config['DEBUG_SQL_CMD'])) {
 			db_echo_sql('db_' . $execute_name . ' Memory [Before]: ' . memory_get_usage() . ' / ' . memory_get_peak_usage() . "\n");
@@ -586,7 +583,7 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 		} catch (Exception $ex) {
 			$code      = $ex->getCode();
 			$en        = $code;
-			$errorinfo = [1=>$code, 2=>$ex->getMessage()];
+			$errorinfo = [1 => $code, 2 => $ex->getMessage()];
 		}
 
 		restore_error_handler();
@@ -653,52 +650,51 @@ function db_execute_prepared(string $sql, array $params = [], bool $log = true, 
 
 			unset($query);
 
-			if (!db_column_exists('settings', 'name')) {
+			if ($en == 2002 || $en == 2006) {
 				$log = false;
 			}
 
-			if ($log) {
-				if ($en == 1213 || $en == 1205 || $en == 1020) {
-					$errors++;
+			if ($en == 1213 || $en == 1205 || $en == 1020) {
+				$errors++;
 
-					if ($errors > 30) {
-						cacti_log("ERROR: Too many Lock/Deadlock errors occurred! SQL:'" . clean_up_lines($sql) . "'", true, 'DBCALL', POLLER_VERBOSITY_DEBUG);
-						$database_last_error = 'Too many Lock/Deadlock errors occurred!';
-					} else {
-						usleep(200000);
+				if ($errors > 30) {
+					cacti_log("ERROR: Too many Lock/Deadlock errors occurred! SQL:'" . clean_up_lines($sql) . "'", true, 'DBCALL', POLLER_VERBOSITY_DEBUG);
+					$database_last_error = 'Too many Lock/Deadlock errors occurred!';
+				} else {
+					usleep(200000);
 
-						continue;
-					}
-				} elseif ($en == 1153) {
-					if (strlen($sql) > 1024) {
-						$sql = substr($sql, 0, 1024) . '...';
-					}
+					continue;
+				}
+			} elseif ($en == 1153) {
+				if (strlen($sql) > 1024) {
+					$sql = substr($sql, 0, 1024) . '...';
+				}
 
+				if ($log) {
 					cacti_log('ERROR: A DB ' . $execute_name . ' Too Large!, Error: ' . $en . ', SQL: \'' . clean_up_lines($sql) . '\'', false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
 					cacti_log('ERROR: A DB ' . $execute_name . ' Too Large!, Error: ' . ($errorinfo[2] ?? '<no error>'), false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
 					cacti_debug_backtrace('SQL', false, true, 0, 1);
 
 					$database_last_error = 'DB ' . $execute_name . ' Too Large!, Error ' . $en . ': ' . ($errorinfo[2] ?? '<no error>');
-				} elseif ($en == 2002 || $en == 2006) {
-					$errors++;
-
-					cacti_log('WARNING: The DB has gone away during a query.  Retry to connect and query in 5 seconds.', false, 'DBCALL', POLLER_VERBOSITY_LOW);
-
-					sleep(5);
-
-					if (db_check_reconnect($db_conn)) {
-						if ($errors < 5) {
-							// retry the query now
-							continue;
-						}
-					}
-				} else {
-					cacti_log('ERROR: A DB ' . $execute_name . ' Failed!, Error: ' . $en . ', SQL: \'' . clean_up_lines($sql) . '\'', false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
-					cacti_log('ERROR: A DB ' . $execute_name . ' Failed!, Error: ' . ($errorinfo[2] ?? '<no error>'), false);
-					cacti_debug_backtrace('SQL', false, true, 0, 1);
-
-					$database_last_error = 'DB ' . $execute_name . ' Failed!, Error ' . $en . ': ' . ($errorinfo[2] ?? '<no error>');
 				}
+			} elseif ($en == 2002 || $en == 2006) {
+				$errors++;
+
+				syslog(LOG_WARNING, 'WARNING: The Cacti Database has gone away during a query.  Attempting to re-connect and query in 5 seconds.');
+
+				sleep(5);
+
+				if (db_check_reconnect($db_conn)) {
+					if ($errors < 5) {
+						continue;
+					}
+				}
+			} elseif ($log) {
+				cacti_log('ERROR: A DB ' . $execute_name . ' Failed!, Error: ' . $en . ', SQL: \'' . clean_up_lines($sql) . '\'', false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
+				cacti_log('ERROR: A DB ' . $execute_name . ' Failed!, Error: ' . ($errorinfo[2] ?? '<no error>'), false);
+				cacti_debug_backtrace('SQL', false, true, 0, 1);
+
+				$database_last_error = 'DB ' . $execute_name . ' Failed!, Error ' . $en . ': ' . ($errorinfo[2] ?? '<no error>');
 			}
 
 			if (!empty($config['DEBUG_SQL_FLOW'])) {
@@ -1009,7 +1005,7 @@ function db_add_column(string $table, array $column, bool $log = true, mixed $db
 			}
 
 			if (isset($column['default'])) {
-				if (in_array(strtolower($column['type']), ['timestamp', 'datetime', 'date'], true) && str_contains($column['default'], 'CURRENT_TIMESTAMP')) {
+				if (in_array(cacti_strtolower($column['type']), ['timestamp', 'datetime', 'date'], true) && str_contains($column['default'], 'CURRENT_TIMESTAMP')) {
 					$sql .= ' default ' . $column['default'];
 				} else {
 					$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
@@ -1105,7 +1101,7 @@ function db_change_column(string $table, array $column, bool $log = true, mixed 
 				}
 
 				if (isset($column['default'])) {
-					if (strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
+					if (cacti_strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
 						$sql .= ' default CURRENT_TIMESTAMP';
 					} else {
 						$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
@@ -1313,7 +1309,7 @@ function db_index_matches(string $table, string $index, array $columns, bool $lo
 function db_table_exists(string $table, bool $log = true, mixed $db_conn = false) : bool {
 	static $results;
 
-	if ($db_conn == false) {
+	if ($db_conn === false) {
 		$index = '-1';
 	} else {
 		$index = md5(json_encode($db_conn));
@@ -1357,10 +1353,14 @@ function db_cacti_initialized(bool $is_web = true) : bool {
 		return false;
 	}
 
-	$query = $db_conn->prepare('SELECT cacti FROM version');
-	$query->execute();
-	$errorinfo = $query->errorInfo();
-	$query->closeCursor();
+	try {
+		$query = $db_conn->prepare('SELECT cacti FROM version');
+		$query->execute();
+		$errorinfo = $query->errorInfo();
+		$query->closeCursor();
+	} catch (PDOException $e) {
+		$errorinfo = [0 => $e->getCode(), 1 => $e->getCode(), 2 => $e->getMessage()];
+	}
 
 	if ($errorinfo[1] != 0) {
 		print($is_web ? '<head><link href="' . CACTI_PATH_URL . 'include/themes/modern/main.css" type="text/css" rel="stylesheet"></head>' : '');
@@ -1397,7 +1397,7 @@ function db_cacti_initialized(bool $is_web = true) : bool {
 function db_column_exists(string $table, string $column, bool $log = true, mixed $db_conn = false) : bool {
 	static $results = [];
 
-	if ($db_conn == false) {
+	if ($db_conn === false) {
 		$index = '-1';
 	} else {
 		$index = md5(json_encode($db_conn));
@@ -1493,13 +1493,13 @@ function db_update_table(string $table, array $data, bool $removecolumns = false
 		WHERE TABLE_SCHEMA = SCHEMA()
 		AND TABLE_NAME = '$table'", $log, $db_conn);
 
-	if (isset($info['ENGINE']) && isset($data['type']) && strtolower($info['ENGINE']) != strtolower($data['type'])) {
+	if (isset($info['ENGINE']) && isset($data['type']) && cacti_strtolower($info['ENGINE']) != cacti_strtolower($data['type'])) {
 		if (!db_execute("ALTER TABLE `$table` ENGINE = " . $data['type'], $log, $db_conn)) {
 			return false;
 		}
 	}
 
-	if (isset($data['row_format']) && strtolower(db_get_global_variable('innodb_file_format', $db_conn)) == 'barracuda') {
+	if (isset($data['row_format']) && cacti_strtolower(db_get_global_variable('innodb_file_format', $db_conn)) == 'barracuda') {
 		db_execute("ALTER TABLE `$table` ROW_FORMAT = " . $data['row_format'], $log, $db_conn);
 	}
 
@@ -1524,7 +1524,7 @@ function db_update_table(string $table, array $data, bool $removecolumns = false
 			// FIXME: Need to still check default value
 			$arr = db_fetch_row("SHOW columns FROM `$table` LIKE '" . $column['name'] . "'", $log, $db_conn);
 
-			if (str_contains(strtolower($arr['Type']), ' unsigned')) {
+			if (str_contains(cacti_strtolower($arr['Type']), ' unsigned')) {
 				$arr['Type']     = str_ireplace(' unsigned', '', $arr['Type']);
 				$arr['unsigned'] = true;
 			}
@@ -1552,7 +1552,7 @@ function db_update_table(string $table, array $data, bool $removecolumns = false
 				}
 
 				if (isset($column['default'])) {
-					if (strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
+					if (cacti_strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
 						$sql .= ' default CURRENT_TIMESTAMP';
 					} else {
 						$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
@@ -1770,7 +1770,7 @@ function db_table_create(string $table, array $data, bool $log = true, mixed $db
 				}
 
 				if (isset($column['default'])) {
-					if (strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
+					if (cacti_strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
 						$sql .= ' default CURRENT_TIMESTAMP';
 					} else {
 						$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
@@ -1818,7 +1818,7 @@ function db_table_create(string $table, array $data, bool $log = true, mixed $db
 			$sql .= " COMMENT = '" . $data['comment'] . "'";
 		}
 
-		if (isset($data['row_format']) && strtolower(db_get_global_variable('innodb_file_format', $db_conn)) == 'barracuda') {
+		if (isset($data['row_format']) && cacti_strtolower(db_get_global_variable('innodb_file_format', $db_conn)) == 'barracuda') {
 			$sql .= ' ROW_FORMAT = ' . $data['row_format'];
 		}
 
@@ -1997,7 +1997,7 @@ function array_to_sql_or(array $array, string $sql_column) : mixed {
 	}
 
 	if (cacti_sizeof($array)) {
-		$sql_or = "($sql_column IN('" . implode("','", $array) . "'))";
+		$sql_or = '(' . $sql_column . ' IN(' . implode(',', array_map('db_qstr', $array)) . '))';
 
 		return $sql_or;
 	}
@@ -2505,15 +2505,19 @@ function db_dump_data(string $database = '', string $tables = '', array $credent
 		$dump = 'mysqldump';
 	}
 
+	$dump_esc   = cacti_escapeshellcmd($dump);
+	$output_esc = cacti_escapeshellarg((string) $output_file);
+	$tables_esc = $tables !== '' ? implode(' ', array_map('cacti_escapeshellarg', preg_split('/\s+/', trim($tables)))) : '';
+
 	if (str_contains($options, '--defaults-extra-file')) {
-		exec("$dump $options $credentials_string $database $tables > $output_file", $output, $retval);
+		exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ($tables_esc !== '' ? ' ' . $tables_esc : '') . " > $output_esc", $output, $retval);
 	} else {
-		exec("$dump $options $credentials_string $database version >/dev/null 2>&1", $output, $retval);
+		exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ' version >/dev/null 2>&1', $output, $retval);
 
 		if ($retval) {
-			exec("$dump $options $credentials_string --user=" . $username . ' --password=' . $password . " $database $tables > $output_file", $output, $retval);
+			exec("$dump_esc $options $credentials_string --user=" . cacti_escapeshellarg($username) . ' --password=' . cacti_escapeshellarg($password) . ' ' . cacti_escapeshellarg($database) . ($tables_esc !== '' ? ' ' . $tables_esc : '') . " > $output_esc", $output, $retval);
 		} else {
-			exec("$dump $options $credentials_string $database $tables > $output_file", $output, $retval);
+			exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ($tables_esc !== '' ? ' ' . $tables_esc : '') . " > $output_esc", $output, $retval);
 		}
 	}
 
@@ -2594,7 +2598,7 @@ function db_get_permissions(bool $include_unknown = false, bool $log = false, mi
 
 							if (cacti_sizeof($db_grant_perms)) {
 								foreach ($db_grant_perms as $db_grant_perm) {
-									$db_grant_perm = strtoupper($db_grant_perm);
+									$db_grant_perm = cacti_strtoupper($db_grant_perm);
 
 									if ($db_grant_perm == 'ALL' ||
 										$db_grant_perm == 'ALL PRIVILEGES') {

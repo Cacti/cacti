@@ -40,8 +40,8 @@ $kills     = 0;
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
-		if (strpos($parameter, '=')) {
-			[$arg, $value] = explode('=', $parameter);
+		if (str_contains($parameter, '=')) {
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
 			$value = '';
@@ -191,7 +191,7 @@ function timeToRun() : bool {
 		}
 	} elseif ($forcerun) {
 		debug('Force to Run');
-		db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("spikekill_lastrun", ?', [time()]);
+		db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("spikekill_lastrun", ?)', [time()]);
 
 		return true;
 	} else {
@@ -228,7 +228,7 @@ function purge_spike_backups() : mixed {
 			foreach ($files as $file) {
 				$filepath = $directory . '/' . $file;
 
-				if (is_file($filepath) && strpos($filepath, 'rrd') !== false) {
+				if (is_file($filepath) && str_contains($filepath, 'rrd')) {
 					$mtime = filemtime($filepath);
 
 					if ($mtime < $earlytime) {

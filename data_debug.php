@@ -808,7 +808,7 @@ function debug_view() : void {
 			$icon = $field['icon'];
 		}
 
-		$value_title = $value;
+		$value_title = htmle((string) $value);
 
 		if (strlen($value) > 100) {
 			$value = substr($value, 0, 100);

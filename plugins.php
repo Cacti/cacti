@@ -777,9 +777,9 @@ function update_show_current() : void {
 			}
 
 			$(function() {
-				var sortColumn = '<?php print grv('sort_column'); ?>';
+				var sortColumn = <?php print json_encode((string) grv('sort_column')); ?>;
 				var dndActive  = <?php print read_config_option('drag_and_drop') == 'on' ? 'true' : 'false'; ?>;
-				var tableState = <?php print grv('state'); ?>
+				var tableState = <?php print (int) grv('state'); ?>;
 
 				$('#refresh').click(function() {
 					applyFilter();
@@ -1380,7 +1380,7 @@ function format_plugin_row(array $plugin, bool $last_plugin, bool $include_order
 
 	$row = plugin_actions($plugin, $table);
 
-	$uname = strtoupper($plugin['plugin']);
+	$uname = cacti_strtoupper($plugin['plugin']);
 
 	if ($uname == $plugin['plugin']) {
 		$plugin_name = $uname;
@@ -1425,7 +1425,7 @@ function format_plugin_row(array $plugin, bool $last_plugin, bool $include_order
 	}
 
 	if (POLLER_ID > 1) {
-		if (isset($plugin['capabilities']) && (strpos($plugin['capabilities'], 'remote_collect:1') !== false || strpos($plugin['capabilities'], 'remote_poller:1') !== false)) {
+		if (isset($plugin['capabilities']) && (str_contains($plugin['capabilities'], 'remote_collect:1') || str_contains($plugin['capabilities'], 'remote_poller:1'))) {
 			if ($plugin['remote_status'] == '-1') {
 				$status = plugin_is_compatible($plugin['plugin']);
 				$row .= ' / ' . __('Not Compatible, \'%s\'', $status['requires']);
@@ -1555,7 +1555,7 @@ function format_available_plugin_row(array $plugin, string $table) : string {
 
 	$row .= '</td>';
 
-	$uname = strtoupper($plugin['plugin']);
+	$uname = cacti_strtoupper($plugin['plugin']);
 
 	if ($uname == $plugin['plugin']) {
 		$plugin_name = $uname;
@@ -1664,7 +1664,7 @@ function format_archive_plugin_row(array $plugin, string $table) : string {
 	$row .= "<a class='pirmarchive' href='" . htmle(CACTI_PATH_URL . 'plugins.php?action=delete&plugin=' . $plugin['plugin'] . '&id=' . $plugin['id']) . "' title='" . __esc('Delete this Plugin archive') . "' class='linkEditMain'><i class='ti ti-trash deviceRecovering'></i></a>";
 	$row .= '</td>';
 
-	$uname = strtoupper($plugin['plugin']);
+	$uname = cacti_strtoupper($plugin['plugin']);
 
 	if ($uname == $plugin['plugin']) {
 		$plugin_name = $uname;
@@ -1775,13 +1775,13 @@ function plugin_display_compat(string $compat) : string {
 	$compat = explode(' ', $compat);
 
 	foreach ($compat as $index => $c) {
-		if (strpos($c, '>=') != false) {
+		if (str_contains($c, '>=')) {
 			$compat[$index] = str_replace('>=', '>= ', $c);
-		} elseif (strpos($c, '>=') != false) {
-			$compat[$index] = str_replace('>=', '>= ', $c);
-		} elseif (strpos($c, '>') != false) {
+		} elseif (str_contains($c, '<=')) {
+			$compat[$index] = str_replace('<=', '<= ', $c);
+		} elseif (str_contains($c, '>')) {
 			$compat[$index] = str_replace('>', '> ', $c);
-		} elseif (strpos($c, '<') != false) {
+		} elseif (str_contains($c, '<')) {
 			$compat[$index] = str_replace('<', '< ', $c);
 		} else {
 			$compat[$index] = '>= ' . $c;
@@ -1923,7 +1923,7 @@ function plugin_actions(array $plugin, string $table) : string {
 
 			break;
 		case '-2': // Naming issues
-			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin directory is not correct.  Should be \'%s\' but is \'%s\'', strtolower($plugin['plugin']), $plugin['plugin']) . "' class='linkEditMain'><i class='ti ti-settings-filled deviceUnknown'></i></a>";
+			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin directory is not correct.  Should be \'%s\' but is \'%s\'', cacti_strtolower($plugin['plugin']), $plugin['plugin']) . "' class='linkEditMain'><i class='ti ti-settings-filled deviceUnknown'></i></a>";
 
 			break;
 		default: // Old PIA
@@ -1943,7 +1943,7 @@ function plugin_actions(array $plugin, string $table) : string {
 	}
 
 	if (POLLER_ID > 1) {
-		if (isset($plugin['capabilities']) && (strpos($plugin['capabilities'], 'remote_collect:1') !== false || strpos($plugin['capabilities'], 'remote_poller:1') !== false)) {
+		if (isset($plugin['capabilities']) && (str_contains($plugin['capabilities'], 'remote_collect:1') || str_contains($plugin['capabilities'], 'remote_poller:1'))) {
 			if ($plugin['remote_status'] == 1) { // Installed and Active
 				// ToDo: Disabling here does not make much sense as the main will be replicated
 				// with any change of any other plugin thus undoing.  Fix that moving forward

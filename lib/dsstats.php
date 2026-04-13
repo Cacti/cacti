@@ -734,7 +734,7 @@ function dsstats_log_child_stats(string $type, int $thread_id, float $total_time
 		WHERE name LIKE ?',
 		['dsstats_total_dsses_%' . $type . '_' . $thread_id . '%']);
 
-	$cacti_stats = sprintf('Time:%01.2f Type:%s ProcessNumber:%s RRDfiles:%s DSSes:%s RRDUser:%01.2f RRDSystem:%01.2f RRDReal:%01.2f', $total_time, strtoupper($type), $thread_id, $rrd_files, $dsses, $rrd_user, $rrd_system, $rrd_real);
+	$cacti_stats = sprintf('Time:%01.2f Type:%s ProcessNumber:%s RRDfiles:%s DSSes:%s RRDUser:%01.2f RRDSystem:%01.2f RRDReal:%01.2f', $total_time, cacti_strtoupper($type), $thread_id, $rrd_files, $dsses, $rrd_user, $rrd_system, $rrd_real);
 
 	cacti_log('DSSTATS CHILD STATS: ' . $cacti_stats, true, 'SYSTEM');
 }
@@ -906,7 +906,7 @@ function dsstats_poller_output(mixed &$rrd_update_array) : void {
 
 							if (is_numeric($value)) {
 								$result['output'] = $value;
-							} elseif ($value == 'U' || strtolower($value) == 'nan') {
+							} elseif ($value == 'U' || cacti_strtolower($value) == 'nan') {
 								$result['output'] = 'NULL';
 							} else {
 								$result['output'] = 'NULL';
@@ -1010,9 +1010,7 @@ function dsstats_poller_output(mixed &$rrd_update_array) : void {
 
 									break;
 								case 4:	// ABSOLUTE
-									if ($result['output']          != 'NULL' &&
-										$result['output']             != 'U' &&
-										strtolower($result['output']) != 'nan') {
+									if (!dsstats_is_unknown_data($result['output'])) {
 										$currentval = abs($result['output']);
 										$lastval    = $currentval;
 									} else {
@@ -1022,9 +1020,7 @@ function dsstats_poller_output(mixed &$rrd_update_array) : void {
 
 									break;
 								case 1:	// GAUGE
-									if ($result['output']          != 'NULL' &&
-										$result['output']             != 'U' &&
-										strtolower($result['output']) != 'nan') {
+									if (!dsstats_is_unknown_data($result['output'])) {
 										$currentval = $result['output'];
 										$lastval    = $result['output'];
 									} else {
@@ -1120,6 +1116,21 @@ function dsstats_poller_output(mixed &$rrd_update_array) : void {
 
 	// restore original error handler
 	restore_error_handler();
+}
+
+/**
+ * checks the output from the rrdfile column and returns false if it's unknown data
+ *
+ * @param string $value - The rrdtool value data
+ *
+ * @return bool
+ */
+function dsstats_is_unknown_data(string $value) : bool {
+	if ($value != 'NULL' && $value != 'U' && cacti_strtolower($value) != 'nan') {
+		return false;
+	} else {
+		return true;
+	}
 }
 
 /**

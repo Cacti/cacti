@@ -35,8 +35,8 @@ $template_user = '';
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
-		if (strpos($parameter, '=')) {
-			[$arg, $value] = explode('=', $parameter);
+		if (str_contains($parameter, '=')) {
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
 			$value = '';
@@ -157,7 +157,7 @@ function validate_field(string $field, string $value) : string {
 }
 
 function validate_boolean(string $field, string $value) : string {
-	$value = empty($value) ? '' : strtolower($value);
+	$value = empty($value) ? '' : cacti_strtolower($value);
 
 	if ($value == 'on' || $value == 'yes') {
 		$result = true;

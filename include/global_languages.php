@@ -44,19 +44,19 @@ if (!read_config_option('i18n_language_support') && read_config_option('i18n_lan
 
 // Repair legacy language support
 if (!empty($config['i18n_force_language'])) {
-	$_REQUEST['language'] = $config['i18n_force_language'];
+	set_request_var('language', $config['i18n_force_language']);
 }
 
-if (!empty($_REQUEST['language'])) {
-	$_REQUEST['language'] = repair_locale($_REQUEST['language']);
+if (!isempty_request_var('language')) {
+	set_request_var('language', repair_locale(grv('language')));
 }
 
 // determine whether or not we can support the language
 $user_locale = '';
 
-if (!empty($_REQUEST['language']) && !empty($lang2locale[$_REQUEST['language']])) {
+if (!isempty_request_var('language') && !empty($lang2locale[grv('language')])) {
 	// user requests another language
-	$user_locale = apply_locale($_REQUEST['language']);
+	$user_locale = apply_locale(grv('language'));
 	unset($_SESSION['sess_current_date1']);
 	unset($_SESSION['sess_current_date2']);
 
@@ -638,7 +638,7 @@ function load_fallback_procedure() : void {
  */
 function set_language_constants(array $constants) : void {
 	foreach ($constants as $key => $value) {
-		$upperKey = strtoupper($key);
+		$upperKey = cacti_strtoupper($key);
 
 		switch ($upperKey) {
 			case 'LOCALE':
@@ -1068,7 +1068,7 @@ function number_format_i18n(mixed $number, mixed $decimals = null, mixed $baseu 
 		return '0';
 	}
 
-	$country = strtoupper($cacti_country);
+	$country = cacti_strtoupper($cacti_country);
 
 	if (function_exists('numfmt_create')) {
 		$fmt_key = $cacti_locale . '_' . $country;

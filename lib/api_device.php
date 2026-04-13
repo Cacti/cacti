@@ -892,6 +892,8 @@ function api_device_replicate_out(int $device_id, int $poller_id = 1) : bool {
 		replicate_table_to_poller($rcnn_id, $data, 'data_input_data', $poller_id);
 	}
 
+	api_plugin_hook_function('replicate_out', ['remote_poller_id' => $poller_id, 'rcnn_id' => $rcnn_id, 'class' => 'all']);
+
 	$stats = db_fetch_row_prepared('SELECT
 		SUM(CASE WHEN action=0 THEN 1 ELSE 0 END) AS snmp,
 		SUM(CASE WHEN action=1 THEN 1 ELSE 0 END) AS script,
@@ -1633,7 +1635,10 @@ function api_device_ping_device(string|null $device_id, bool $from_remote = fals
 						$snmp_system = str_replace(':', ' ', $snmp_system);
 					}
 
-					if ($snmp_system == '') {
+					// Some devices (Dell iDRAC, Fortigate, etc.) may have an empty system value. This causes a false down status
+					$snmp_uptime = cacti_snmp_session_get($session, '.1.3.6.1.6.3.10.2.1.3.0');
+
+					if ($snmp_system == '' && empty($snmp_uptime)) {
 						print "<span class='hostDown'>" . __('Host') . ' ' . __('SNMP error');
 
 						if ($snmp_error != '') {
@@ -1889,12 +1894,12 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 
 	$errors     = 0;
 	$warnings   = 0;
-	$include_gt = strtolower($include_gt);
-	$include_dq = strtolower($include_dq);
-	$include_dt = strtolower($include_dt);
-	$clone_gt   = strtolower($clone_gt);
-	$clone_dq   = strtolower($clone_dq);
-	$clone_dt   = strtolower($clone_dt);
+	$include_gt = cacti_strtolower($include_gt);
+	$include_dq = cacti_strtolower($include_dq);
+	$include_dt = cacti_strtolower($include_dt);
+	$clone_gt   = cacti_strtolower($clone_gt);
+	$clone_dq   = cacti_strtolower($clone_dq);
+	$clone_dt   = cacti_strtolower($clone_dt);
 
 	printf('Cloning Criteria for Device Template are:' . PHP_EOL);
 	printf('---------------------------------------------------------------------------' . PHP_EOL);
@@ -2958,7 +2963,7 @@ function api_device_template_download(string $type, array $ids) : void {
 			$name = clean_up_name(db_fetch_cell_prepared('SELECT name FROM host_template_archive WHERE id = ?', $ids));
 		}
 
-		$filename = 'device_package_' . strtolower($name) . '_download.tar';
+		$filename = 'device_package_' . cacti_strtolower($name) . '_download.tar';
 	} else {
 		$filename = 'device_package_multiple_download.tar';
 	}

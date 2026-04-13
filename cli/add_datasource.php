@@ -43,7 +43,7 @@ unset($graph_template_id);
 unset($data_template_id);
 
 foreach ($parms as $parameter) {
-	if (strpos($parameter, '=')) {
+	if (str_contains($parameter, '=')) {
 		[$arg, $value] = explode('=', $parameter, 2);
 	} else {
 		$arg   = $parameter;

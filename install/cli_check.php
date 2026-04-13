@@ -32,7 +32,7 @@ include(__DIR__ . '/../include/cli_check.php');
 include(__DIR__ . '/../lib/utility.php');
 
 if (is_array($argv) && $argc > 1) {
-	$value = strtolower($argv[1]);
+	$value = cacti_strtolower($argv[1]);
 
 	if ($value == 'extensions') {
 		$ext = false;

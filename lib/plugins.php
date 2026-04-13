@@ -154,7 +154,7 @@ function api_plugin_hook_function(string $name, mixed $parm = null) : mixed {
 					$p[] = $hdata['name'];
 
 					if (file_exists(CACTI_PATH_PLUGINS . '/' . $hdata['name'] . '/' . $hdata['file'])) {
-						include_once(CACTI_PATH_PLUGINS . '/' . $hdata['name'] . '/' . $hdata['file']);
+						require_once(CACTI_PATH_PLUGINS . '/' . $hdata['name'] . '/' . $hdata['file']);
 					}
 
 					$function = $hdata['function'];
@@ -494,7 +494,7 @@ function api_plugin_db_table_create(string $plugin, string $table, array $data) 
 				}
 
 				if (isset($column['default'])) {
-					if (strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
+					if (cacti_strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
 						$sql .= ' default CURRENT_TIMESTAMP';
 					} else {
 						$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
@@ -535,7 +535,7 @@ function api_plugin_db_table_create(string $plugin, string $table, array $data) 
 			$sql .= ' DEFAULT CHARSET = ' . $data['charset'];
 		}
 
-		if (isset($data['row_format']) && strtolower(db_get_global_variable('innodb_file_format')) == 'barracuda') {
+		if (isset($data['row_format']) && cacti_strtolower(db_get_global_variable('innodb_file_format')) == 'barracuda') {
 			$sql .= ' ROW_FORMAT = ' . $data['row_format'];
 		}
 
@@ -637,7 +637,7 @@ function api_plugin_db_add_column(string $plugin, string $table, array $column) 
 		}
 
 		if (isset($column['default'])) {
-			if (strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
+			if (cacti_strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
 				$sql .= ' default CURRENT_TIMESTAMP';
 			} else {
 				$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
@@ -705,7 +705,14 @@ function api_plugin_install(string $plugin) : bool {
 		exit;
 	}
 
-	include_once(CACTI_PATH_PLUGINS . "/$plugin/setup.php");
+	if (!file_exists(CACTI_PATH_PLUGINS . "/$plugin/setup.php")) {
+		cacti_log('ERROR: Plugin \'' . preg_replace('/[^a-zA-Z0-9_\-]/', '', $plugin) . '\' setup.php not found, cannot install', false, 'PLUGIN');
+		raise_message('plugin_missing', __('Plugin setup file not found.'), MESSAGE_LEVEL_ERROR);
+		header('Location: plugins.php');
+		exit;
+	}
+
+	require_once(CACTI_PATH_PLUGINS . "/$plugin/setup.php");
 
 	$exists = db_fetch_assoc_prepared('SELECT id
 		FROM plugin_config
@@ -851,7 +858,8 @@ function api_plugin_uninstall(string $plugin, bool $tables = true) : void {
 	$plugin_found = false;
 
 	if (file_exists(CACTI_PATH_PLUGINS . "/$plugin/setup.php")) {
-		include_once(CACTI_PATH_PLUGINS . "/$plugin/setup.php");
+		cacti_log(sprintf('NOTE: Loading setup.php for plugin %s (uninstall)', $plugin), false, 'PLUGIN', POLLER_VERBOSITY_DEBUG);
+		require_once(CACTI_PATH_PLUGINS . "/$plugin/setup.php");
 
 		// Run the Plugin's Uninstall Function first
 		$function = "plugin_{$plugin}_uninstall";
@@ -894,7 +902,8 @@ function api_plugin_check_config(string $plugin) : bool {
 	clearstatcache();
 
 	if (file_exists(CACTI_PATH_PLUGINS . "/$plugin/setup.php")) {
-		include_once(CACTI_PATH_PLUGINS . "/$plugin/setup.php");
+		cacti_log(sprintf('NOTE: Loading setup.php for plugin %s (check_config)', $plugin), false, 'PLUGIN', POLLER_VERBOSITY_DEBUG);
+		require_once(CACTI_PATH_PLUGINS . "/$plugin/setup.php");
 
 		$function = "plugin_{$plugin}_check_config";
 
@@ -1235,7 +1244,7 @@ function api_plugin_register_realm(string $plugin, string $file, string $display
 				db_execute_prepared('DELETE FROM plugin_realms
 					WHERE id = ?',
 					[$realm_info['id']]);
-			} elseif (strpos($realm_info['file'], (string) $file)) {
+			} elseif (str_contains($realm_info['file'], (string) $file)) {
 				if (str_starts_with($realm_info['file'], $file)) {
 					$file = substr($file, strlen($file) - 1);
 				} else {
@@ -1872,7 +1881,7 @@ function plugin_load_info_defaults(string $file, mixed $info, array $defaults = 
 	if ($info_fields['status'] == 0) {
 		if (str_contains($dir, ' ')) {
 			$result['status'] = -3;
-		} elseif (strtolower($dir) != strtolower($result['name'])) {
+		} elseif (cacti_strtolower($dir) != cacti_strtolower($result['name'])) {
 			$result['status'] = -2;
 		} elseif (!isset($result['compat']) || cacti_version_compare(CACTI_VERSION, $result['compat'], '<')) {
 			$result['status'] = -1;
@@ -2316,8 +2325,6 @@ function plugin_make_github_request(string $url, string $type = 'json') : mixed 
 		$info  = curl_getinfo($ch);
 		$errno = curl_errno($ch);
 		$error = curl_error($ch);
-
-		curl_close($ch);
 
 		if ($info['http_code'] == 403 || $info['http_code'] == 429) {
 			$json_data = json_decode($data, true);

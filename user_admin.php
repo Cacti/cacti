@@ -1683,7 +1683,7 @@ function user_realms_edit(string $header_label) : void {
 
 			$local_user_auth_realms = __($user_auth_realms[$realm], $r['directory']);
 
-			$pos = (strpos($local_user_auth_realms, '->') !== false ? strpos($local_user_auth_realms, '->') + 2 : 0);
+			$pos = (str_contains($local_user_auth_realms, '->') ? strpos($local_user_auth_realms, '->') + 2 : 0);
 
 			if ($i == 0) {
 				print "<tr class='tableHeader'><th class='left' colspan='2'>" . __('Plugin Permissions') . '</th></tr>';
@@ -1718,7 +1718,7 @@ function user_realms_edit(string $header_label) : void {
 				$old_value = '';
 			}
 
-			$pos = (strpos($user_auth_realms[$realm], '->') !== false ? strpos($user_auth_realms[$realm], '->') + 2 : 0);
+			$pos = (str_contains($user_auth_realms[$realm], '->') ? strpos($user_auth_realms[$realm], '->') + 2 : 0);
 
 			print '<div class="flexChild">';
 			form_checkbox('section' . $realm, $old_value, substr($user_auth_realms[$realm], $pos), '', '', '', '', $name, true);
@@ -1817,7 +1817,7 @@ function settings_edit(string $header_label) : void {
 		var custom_fonts = $('#custom_fonts').is(':checked');
 		var fields = {
 			fonts: (themeFonts == 1),
-			custom_fonts: themeFonts != 1 && custom_fonts,
+			custom_fonts: themeFonts != 1,
 			title_size: themeFonts != 1 && custom_fonts,
 			title_font: themeFonts != 1 && custom_fonts,
 			legend_size: themeFonts != 1 && custom_fonts,
@@ -1827,6 +1827,8 @@ function settings_edit(string $header_label) : void {
 			unit_size: themeFonts != 1 && custom_fonts,
 			unit_font: themeFonts != 1 && custom_fonts,
 		}
+
+		toggleFields(fields);
 	}
 
 	$(function() {

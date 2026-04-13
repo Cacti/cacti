@@ -197,7 +197,7 @@ switch (grv('action')) {
 					break;
 			}
 		} else {
-			switch(strtolower(gnrv('image_format'))) {
+			switch(cacti_strtolower(gnrv('image_format'))) {
 				case 'png':
 					$graph_data_array['image_format'] = 'png';
 
@@ -216,11 +216,13 @@ switch (grv('action')) {
 		$graph_data_array['image_format'] = $gtype;
 
 		// call poller
-		$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . hash('sha256', session_id()) . '_lgi_' . grv('local_graph_id') . '.png';
-		$command   = read_config_option('path_php_binary');
-		$args      = sprintf('poller_realtime.php --graph=%s --interval=%d --poller_id=' . hash('sha256',session_id()), grv('local_graph_id'), $graph_data_array['ds_step']);
+		$local_graph_id = (int) gfrv('local_graph_id');
+		$graph_rrd      = read_config_option('realtime_cache_path') . '/user_' . hash('sha256', session_id()) . '_lgi_' . $local_graph_id . '.png';
+		$php_binary     = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+		$script_path    = cacti_escapeshellarg(CACTI_PATH_BASE . '/poller_realtime.php');
+		$args           = '--graph=' . $local_graph_id . ' --interval=' . ((int) $graph_data_array['ds_step']) . ' --poller_id=' . hash('sha256', session_id());
 
-		shell_exec("$command $args");
+		shell_exec($php_binary . ' -q ' . $script_path . ' ' . $args);
 
 		// construct the image name
 		$graph_data_array['export_realtime'] = $graph_rrd;

@@ -91,17 +91,26 @@ $graph_data_array['export_csv'] = true;
 // Get graph export
 $xport_array = rrdtool_function_xport(grv('local_graph_id'), grv('rra_id'), $graph_data_array, $xport_meta, $_SESSION[SESS_USER_ID]);
 
-// Make graph title the suggested file name
-if (isset($xport_array['meta']) && is_array($xport_array['meta'])) {
-	$filename = $xport_array['meta']['title_cache'] . '.csv';
-} else {
-	$filename = 'graph_export.csv';
+// Bail out early if xport returned no data
+if (!is_array($xport_array) || !isset($xport_array['meta']['start'])) {
+	cacti_log('WARNING: Graph export for Local Graph ID ' . grv('local_graph_id') . ' returned no data.  Check RRDtool errors in the Cacti log.', false, 'EXPORT');
+
+	header('Content-type: text/html; charset=UTF-8');
+	print __('Error: Graph export returned no data. Check the Cacti log for RRDtool errors.');
+
+	// log the memory usage
+	cacti_log("The Peak Graph XPORT Memory Usage was '" . memory_get_peak_usage() . "'", false, 'WEBUI', POLLER_VERBOSITY_MEDIUM);
+
+	exit;
 }
+
+// Make graph title the suggested file name
+$filename = $xport_array['meta']['title_cache'] . '.csv';
 
 header('Content-type: application/vnd.ms-excel; charset=UTF-8');
 header('Content-Transfer-Encoding: binary');
 
-if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
+if (cacti_is_https()) {
 	header('Pragma: cache');
 }
 

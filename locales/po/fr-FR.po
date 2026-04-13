@@ -1,3 +1,4 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Cacti\n"
@@ -2657,7 +2658,7 @@ msgstr "Option SNMP :"
 #: automation_snmp.php:537
 #, php-format
 msgid "SNMP Version: <b>%s</b>"
-msgstr "Version SNMP"
+msgstr ""
 
 #: automation_snmp.php:538
 #, php-format
@@ -11635,7 +11636,7 @@ msgstr "Le nombre par défaut de threads de périphérique.  Ceci s'applique uni
 #: include/global_settings.php:816
 #, php-format
 msgid "%s Thread"
-msgstr "sécurité"
+msgstr ""
 
 #: include/global_settings.php:817 include/global_settings.php:818
 #: include/global_settings.php:819 include/global_settings.php:820
@@ -21491,7 +21492,7 @@ msgstr "Changelog"
 #: support.php:81
 #, php-format
 msgid "Technical Support [%s]"
-msgstr "Support technique"
+msgstr ""
 
 #: support.php:288
 msgid "Include Poller"
@@ -23997,7 +23998,6 @@ msgstr "Pas de VDEF"
 #~ msgstr "Cliquez sur 'Continuer' pour copier l'utilisateur sélectionné vers un nouvel utilisateur ci-dessous."
 
 #, fuzzy
-#~| msgid "Click 'Continue' to delete the folling Automation Template(s)."
 #~ msgid "Click 'Continue' to delete the following Automation Template(s)."
 #~ msgstr "Cliquez sur 'Continuer' pour supprimer le(s) modèle(s) d'automatisation suivant(s)."
 
@@ -24107,7 +24107,6 @@ msgstr "Pas de VDEF"
 #~ msgstr "Convertir en graphique(s) normal(aux)"
 
 #, fuzzy
-#~| msgid "DES"
 #~ msgid "DS"
 #~ msgstr "DES"
 
@@ -24188,7 +24187,6 @@ msgstr "Pas de VDEF"
 #~ msgstr "Hauteur du Graphique"
 
 #, fuzzy
-#~| msgid "Graph, Data Source"
 #~ msgid "Graph Source"
 #~ msgstr "Graphique, Source des données"
 

@@ -65,12 +65,12 @@ function ss_cpoller(string $cmd = 'index', string $arg1 = '', string $arg2 = '')
 	} elseif ($cmd == 'get') {
 		$arg   = $arg1;
 		$index = $arg2;
-		$value = '0';
+		$value = 'U';
 
 		switch($arg) {
 			case 'recacheTime':
-				$value = '0';
-				$stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_recache_' . $index . '"'));
+				$value = 'U';
+				$stats = explode(' ', db_fetch_cell_prepared('SELECT value FROM settings WHERE name = ?', ['stats_recache_' . $index]));
 
 				foreach ($stats as $_stat) {
 					if (preg_match('/^RecacheTime:/', $_stat)) {
@@ -81,8 +81,8 @@ function ss_cpoller(string $cmd = 'index', string $arg1 = '', string $arg2 = '')
 
 				break;
 			case 'recacheDevices':
-				$value = '0';
-				$stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_recache_' . $index . '"'));
+				$value = 'U';
+				$stats = explode(' ', db_fetch_cell_prepared('SELECT value FROM settings WHERE name = ?', ['stats_recache_' . $index]));
 
 				foreach ($stats as $_stat) {
 					if (preg_match('/^DevicesRecached:/', $_stat)) {
@@ -167,7 +167,7 @@ function ss_cpoller(string $cmd = 'index', string $arg1 = '', string $arg2 = '')
 				break;
 		}
 
-		return ($value == '' ? '0' : $value);
+		return ($value == '' ? 'U' : $value);
 	}
 
 	return 'U';

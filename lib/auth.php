@@ -81,7 +81,7 @@ function set_auth_cookie(array $user) : void {
 	if (db_table_exists('user_auth_cache')) {
 		clear_auth_cookie();
 
-		$nssecret = md5($_SERVER['REQUEST_TIME'] . mt_rand(10000,10000000)) . md5(get_client_addr());
+		$nssecret = bin2hex(random_bytes(32));
 
 		$secret = hash('sha512', $nssecret, false);
 
@@ -226,22 +226,28 @@ function is_template_account(null|int|string $user_id) : bool {
  */
 function get_basic_auth_username() : string|false {
 	if (isset($_SERVER['PHP_AUTH_USER'])) {
-		$username = str_replace('\\', '\\\\', $_SERVER['PHP_AUTH_USER']);
+		$raw      = is_array($_SERVER['PHP_AUTH_USER']) ? ($_SERVER['PHP_AUTH_USER'][0] ?? '') : $_SERVER['PHP_AUTH_USER'];
+		$username = str_replace('\\', '\\\\', $raw);
 	} elseif (isset($_SERVER['REMOTE_USER'])) {
-		$username = str_replace('\\', '\\\\', $_SERVER['REMOTE_USER']);
+		$raw      = is_array($_SERVER['REMOTE_USER']) ? ($_SERVER['REMOTE_USER'][0] ?? '') : $_SERVER['REMOTE_USER'];
+		$username = str_replace('\\', '\\\\', $raw);
 	} elseif (isset($_SERVER['REDIRECT_REMOTE_USER'])) {
-		$username = str_replace('\\', '\\\\', $_SERVER['REDIRECT_REMOTE_USER']);
+		$raw      = is_array($_SERVER['REDIRECT_REMOTE_USER']) ? ($_SERVER['REDIRECT_REMOTE_USER'][0] ?? '') : $_SERVER['REDIRECT_REMOTE_USER'];
+		$username = str_replace('\\', '\\\\', $raw);
 	} elseif (isset($_SERVER['HTTP_PHP_AUTH_USER'])) {
-		$username = str_replace('\\', '\\\\', $_SERVER['HTTP_PHP_AUTH_USER']);
+		$raw      = is_array($_SERVER['HTTP_PHP_AUTH_USER']) ? ($_SERVER['HTTP_PHP_AUTH_USER'][0] ?? '') : $_SERVER['HTTP_PHP_AUTH_USER'];
+		$username = str_replace('\\', '\\\\', $raw);
 	} elseif (isset($_SERVER['HTTP_REMOTE_USER'])) {
-		$username = str_replace('\\', '\\\\', $_SERVER['HTTP_REMOTE_USER']);
+		$raw      = is_array($_SERVER['HTTP_REMOTE_USER']) ? ($_SERVER['HTTP_REMOTE_USER'][0] ?? '') : $_SERVER['HTTP_REMOTE_USER'];
+		$username = str_replace('\\', '\\\\', $raw);
 	} elseif (isset($_SERVER['HTTP_REDIRECT_REMOTE_USER'])) {
-		$username = str_replace('\\', '\\\\', $_SERVER['HTTP_REDIRECT_REMOTE_USER']);
+		$raw      = is_array($_SERVER['HTTP_REDIRECT_REMOTE_USER']) ? ($_SERVER['HTTP_REDIRECT_REMOTE_USER'][0] ?? '') : $_SERVER['HTTP_REDIRECT_REMOTE_USER'];
+		$username = str_replace('\\', '\\\\', $raw);
 	} else {
 		$username = false;
 	}
 
-	if ($username !== false) {
+	if ($username !== false && is_string($username)) {
 		if (str_contains($username, '@')) {
 			$upart    = explode('@', $username);
 			$username = $upart[0];
@@ -259,8 +265,8 @@ function get_basic_auth_username() : string|false {
 				foreach ($records as $r) {
 					[$basic, $shortform] = str_getcsv($r);
 
-					if (trim($basic) == $username) {
-						$username = trim($shortform);
+					if (trim($basic ?? '') == $username) {
+						$username = trim($shortform ?? '');
 						$found    = true;
 
 						break;
@@ -274,7 +280,7 @@ function get_basic_auth_username() : string|false {
 		}
 	}
 
-	return $username;
+	return is_string($username) ? $username : false;
 }
 
 /**
@@ -844,16 +850,24 @@ function is_graph_template_allowed(int $graph_template_id, int $user = 0) : bool
  * @return bool Returns true if the view is allowed for the user, false otherwise.
  */
 function is_view_allowed(string $view = 'show_tree') : bool {
+	$allowed_views = ['show_tree', 'show_list', 'show_preview', 'graph_settings'];
+
+	if (!in_array($view, $allowed_views, true)) {
+		cacti_log("WARNING: Invalid view parameter '$view' in is_view_allowed()", false, 'AUTH');
+
+		return false;
+	}
+
 	if (!isset($_SESSION[SESS_USER_ID])) {
 		return false;
 	}
 
 	if (db_table_exists('user_auth_group')) {
 		$values = array_rekey(
-			db_fetch_assoc_prepared("SELECT DISTINCT $view
+			db_fetch_assoc_prepared("SELECT DISTINCT `$view`
 				FROM user_auth_group AS uag
 				INNER JOIN user_auth_group_members AS uagm
-				ON uag.id = uagm.user_id
+				ON uag.id = uagm.group_id
 				WHERE uag.enabled = 'on'
 				AND uagm.user_id = ?",
 				[$_SESSION[SESS_USER_ID]]
@@ -873,7 +887,7 @@ function is_view_allowed(string $view = 'show_tree') : bool {
 		}
 	}
 
-	$value = db_fetch_cell_prepared("SELECT $view
+	$value = db_fetch_cell_prepared("SELECT `$view`
 		FROM user_auth
 		WHERE id = ?",
 		[$_SESSION[SESS_USER_ID]]
@@ -1355,7 +1369,7 @@ function get_allowed_tree_header_graphs(int $tree_id, int $leaf_id = 0, string $
 
 	$total_rows = get_total_row_data($user_id, $sql, [], 'graph');
 
-	return $graphs;
+	return is_array($graphs) ? $graphs : [];
 }
 
 /**
@@ -1448,6 +1462,8 @@ function get_allowed_graphs(string $sql_where = '', mixed $sql_order = 'gtg.titl
 		$sql_order = "ORDER BY $sql_order";
 	}
 
+	$sql_order = is_string($sql_order) ? $sql_order : '';
+
 	if ($graph_id > 0) {
 		$sql_where .= ($sql_where != '' ? ' AND ' : ' ') . ' gl.id = ' . $graph_id;
 	}
@@ -1512,7 +1528,7 @@ function get_allowed_graphs(string $sql_where = '', mixed $sql_order = 'gtg.titl
 		$total_rows = db_fetch_cell($sql);
 	}
 
-	return $graphs;
+	return is_array($graphs) ? $graphs : [];
 }
 
 /**
@@ -1626,7 +1642,7 @@ function get_allowed_aggregate_graphs(string $sql_where = '', string $sql_order 
 
 	$total_rows = get_total_row_data($user_id, $sql, [], 'aggregate_graph');
 
-	return $graphs;
+	return is_array($graphs) ? $graphs : [];
 }
 
 /**
@@ -1897,7 +1913,7 @@ function get_allowed_graph_templates(string $sql_where = '', string $sql_order =
 
 	cacti_log(sprintf('The Get Templates total time was %4.2f', $end - $start), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
-	if ($templates === false) {
+	if (!is_array($templates)) {
 		$templates = [];
 	}
 
@@ -2534,7 +2550,7 @@ function get_allowed_trees(bool $edit = false, bool $return_sql = false, string 
 		$total_rows = get_total_row_data($user_id, $sql, [], 'tree');
 	}
 
-	return $trees;
+	return is_array($trees) ? $trees : [];
 }
 
 /**
@@ -2606,6 +2622,10 @@ function get_allowed_branches(string $sql_where = '', string $sql_order = 'name'
 			$tree_hosts = array_rekey($tree_hosts, 'id', 'description');
 		}
 
+		if (!is_array($tree_hosts)) {
+			$tree_hosts = [];
+		}
+
 		$hosts = array_intersect_key($hosts, $tree_hosts);
 
 		if (cacti_sizeof($hosts) > 0) {
@@ -2664,7 +2684,7 @@ function get_allowed_branches(string $sql_where = '', string $sql_order = 'name'
 
 	$total_rows = get_total_row_data($user_id, $sql, [], 'branch');
 
-	return $branches;
+	return is_array($branches) ? $branches : [];
 }
 
 /**
@@ -2777,7 +2797,7 @@ function get_allowed_devices(string $sql_where = '', string $sql_order = 'descri
 		}
 	}
 
-	return $host_list;
+	return is_array($host_list) ? $host_list : [];
 }
 
 /**
@@ -2840,7 +2860,7 @@ function get_allowed_sites(string $sql_where = '', string $sql_order = 'name', s
 
 	$total_rows = get_total_row_data($user_id, $sql, [], 'site_device');
 
-	return $sites;
+	return is_array($sites) ? $sites : [];
 }
 
 /**
@@ -2946,7 +2966,7 @@ function get_allowed_site_devices(int $site_id, string $sql_where = '', string $
 
 	$total_rows = get_total_row_data($user_id, $sql, [], 'site_device');
 
-	return $host_list;
+	return is_array($host_list) ? $host_list : [];
 }
 
 /**
@@ -3004,7 +3024,7 @@ function get_allowed_graph_templates_normalized(string $sql_where = '', string $
 		$sql_order
 		$sql_limit");
 
-	return $templates;
+	return is_array($templates) ? $templates : [];
 }
 
 /**
@@ -3104,7 +3124,7 @@ function get_total_row_data(int $user_id, string $sql, array $sql_params = [], s
 	if (cacti_sizeof($sql_params)) {
 		$nsql = json_encode([$sql, $sql_params]);
 
-		$hash = md5($nsql);
+		$hash = md5((string) $nsql);
 	} else {
 		$hash = md5($sql);
 	}
@@ -3636,7 +3656,7 @@ function basic_auth_login_process(string $username) : array {
 		AND realm = 2',
 		[$username]);
 
-	if (!$user && get_template_account($username) == 0 && get_guest_account() === 0) {
+	if (!is_array($user) && get_template_account($username) == 0 && get_guest_account() === 0) {
 		$error     = true;
 		$error_msg = __esc('%s authenticated by Web Server, but both Template and Guest Users are not defined in Cacti.', $username);
 
@@ -3647,7 +3667,7 @@ function basic_auth_login_process(string $username) : array {
 		exit;
 	}
 
-	return $user;
+	return is_array($user) ? $user : [];
 }
 
 /**
@@ -3701,7 +3721,7 @@ function local_auth_login_process(string $username) : array {
 		}
 	}
 
-	return $user;
+	return is_array($user) ? $user : [];
 }
 
 /**
@@ -3866,7 +3886,7 @@ function domains_login_process(string $username) : array {
 		auth_process_lockout($username, $realm);
 	}
 
-	return $user;
+	return is_array($user) ? $user : [];
 }
 
 /**
@@ -3901,13 +3921,17 @@ function domains_ldap_auth(string $username, string $password = '', string $dn =
 
 	$response = [];
 
+	if (!is_array($ldap_servers)) {
+		return $response;
+	}
+
 	foreach ($ldap_servers as $ldap_server) {
 		$ldap->host = $ldap_server;
 
 		$response = $ldap->Authenticate();
 
 		if ($response['error_num'] == 0) {
-			cacti_log(sprintf('LDAP: Login for User \'%s\' Succeded on Server %s', $username, $ldap_server), false, 'AUTH', $debug);
+			cacti_log(sprintf('LDAP: Login for User \'%s\' Succeeded on Server %s', $username, $ldap_server), false, 'AUTH', $debug);
 
 			return $response;
 		}
@@ -3944,13 +3968,17 @@ function domains_ldap_search_dn(string $username, int $realm) : mixed {
 
 	$response = [];
 
+	if (!is_array($ldap_servers)) {
+		return $response;
+	}
+
 	foreach ($ldap_servers as $ldap_server) {
 		$ldap->host = $ldap_server;
 
 		$response = $ldap->Search();
 
 		if ($response['error_num'] == 0) {
-			cacti_log(sprintf('LDAP: Search for User \'%s\' at Server \'%s\' Suceeded', $username, $ldap_server), false, 'AUTH', $debug);
+			cacti_log(sprintf('LDAP: Search for User \'%s\' at Server \'%s\' Succeeded', $username, $ldap_server), false, 'AUTH', $debug);
 
 			return $response;
 		}
@@ -3986,13 +4014,17 @@ function domains_ldap_search_cn(string $username, array $cn = [], int $realm = 0
 	$ldap_servers = preg_split('/\s+/', $ldap->host);
 	$response     = [];
 
+	if (!is_array($ldap_servers)) {
+		return $response;
+	}
+
 	foreach ($ldap_servers as $ldap_server) {
 		$ldap->host = $ldap_server;
 
 		$response = $ldap->Getcn();
 
 		if ($response['error_num'] == 0) {
-			cacti_log(sprintf('LDAP: Search for User \'%s\' CN at Server \'%s\' Suceeded', $username, $ldap_server), false, 'AUTH', $debug);
+			cacti_log(sprintf('LDAP: Search for User \'%s\' CN at Server \'%s\' Succeeded', $username, $ldap_server), false, 'AUTH', $debug);
 
 			return $response;
 		}
@@ -4126,7 +4158,7 @@ function secpass_login_process(string $username) : array {
 			[time(), $username]);
 	}
 
-	return $user;
+	return is_array($user) ? $user : [];
 }
 
 /**
@@ -4149,7 +4181,7 @@ function secpass_check_pass(string $password) : string {
 		return __('Your password must contain at least 1 numerical character!');
 	}
 
-	if (read_config_option('secpass_reqmixcase') == 'on' && strtolower($password) == $password) {
+	if (read_config_option('secpass_reqmixcase') == 'on' && cacti_strtolower($password) == $password) {
 		return __('Your password must contain a mix of lower case and upper case characters!');
 	}
 
@@ -4160,7 +4192,7 @@ function secpass_check_pass(string $password) : string {
 	}
 
 	if (read_config_option('secpass_pwnedcheck') == 'on') {
-		$sha1    = strtoupper(sha1($password));
+		$sha1    = cacti_strtoupper(sha1($password));
 		$suffix  = substr($sha1,5);
 		$options = [
 			CURLOPT_RETURNTRANSFER => true,   // return web page
@@ -4179,8 +4211,7 @@ function secpass_check_pass(string $password) : string {
 
 		$content  = curl_exec($ch);
 
-		curl_close($ch);
-		$lines = explode("\r\n", $content);
+		$lines = is_string($content) ? explode("\r\n", $content) : [];
 		$count = 0;
 
 		foreach ($lines as $line) {
@@ -4218,13 +4249,17 @@ function secpass_check_history(int $id, string $password) : bool {
 			AND enabled = 'on'",
 			[$id]);
 
+		if (!cacti_sizeof($user)) {
+			return true;
+		}
+
 		if (compat_password_verify($password, $user['password'])) {
 			return false;
 		}
 
-		$passes = explode('|', $user['password_history']);
+		$passes = explode('|', is_string($user['password_history']) ? $user['password_history'] : '');
 
-		// Double check this incase the password history setting was changed
+		// Double check this in case the password history setting was changed
 		while (cacti_count($passes) > $history) {
 			array_shift($passes);
 		}
@@ -4350,16 +4385,14 @@ function is_user_perms_valid(int $user_id) : bool {
  * @return bool Returns true if the password matches the hash, false otherwise.
  */
 function compat_password_verify(string $password, string $hash) : bool {
-	if (function_exists('password_verify')) {
-		if (password_verify($password, $hash)) {
-			return true;
-		}
+	if (password_verify($password, $hash)) {
+		return true;
 	}
 
 	if (function_exists('md5')) {
 		$md5 = md5($password);
 
-		if ($md5 == $hash) {
+		if ($md5 === $hash) {
 			return true;
 		}
 	}
@@ -4380,14 +4413,10 @@ function compat_password_verify(string $password, string $hash) : bool {
  * @return string The hashed password.
  */
 function compat_password_hash(string $password, string|int $algo, array $options = []) : string {
-	if (function_exists('password_hash')) {
-		// Check if options array has anything, only pass when required
-		return (cacti_sizeof($options) > 0) ?
-			password_hash($password, $algo, $options) :
-			password_hash($password, $algo);
-	}
-
-	return md5($password);
+	// Check if options array has anything, only pass when required
+	return (cacti_sizeof($options) > 0) ?
+		password_hash($password, $algo, $options) :
+		password_hash($password, $algo);
 }
 
 /**
@@ -4401,14 +4430,10 @@ function compat_password_hash(string $password, string|int $algo, array $options
  * @return bool Returns true if the password needs to be rehashed, false otherwise.
  */
 function compat_password_needs_rehash(string $password, string|int $algo, array $options = []) : bool {
-	if (function_exists('password_needs_rehash')) {
-		// Check if options array has anything, only pass when required
-		return (cacti_sizeof($options) > 0) ?
-			password_needs_rehash($password, $algo, $options) :
-			password_needs_rehash($password, $algo);
-	}
-
-	return true;
+	// Check if options array has anything, only pass when required
+	return (cacti_sizeof($options) > 0) ?
+		password_needs_rehash($password, $algo, $options) :
+		password_needs_rehash($password, $algo);
 }
 
 /**
@@ -4605,7 +4630,7 @@ function auth_login_redirect(string $login_opts = '') : void {
 }
 
 /**
- * Provides a URL knowledgable basename function
+ * Provides a URL-knowledgeable basename function
  *
  * @param string $referer The referer URL or file path to extract the base name from.
  *
@@ -4642,7 +4667,7 @@ function auth_login_create_user_from_template(string $username, int $realm) : ar
 		[get_template_account($username)]);
 
 	// check that template user exists
-	if (!empty($user_template)) {
+	if (is_array($user_template) && !empty($user_template)) {
 		if ($realm == 3) { // This is an ldap login
 			// get user CN
 			$cn_full_name = read_config_option('cn_full_name');
@@ -4700,7 +4725,7 @@ function auth_login_create_user_from_template(string $username, int $realm) : ar
 		}
 	}
 
-	return $user;
+	return is_array($user) ? $user : [];
 }
 
 /**
@@ -4821,7 +4846,7 @@ function disable_2fa(int $user_id) : string {
 			[$_SESSION[SESS_USER_ID]]
 		);
 
-		if ($current_user['tfa_enabled'] != '') {
+		if (cacti_sizeof($current_user) && $current_user['tfa_enabled'] != '') {
 			$result['status'] = '501';
 			$result['text']   = __('2FA failed to be disabled');
 		} else {
@@ -4830,7 +4855,7 @@ function disable_2fa(int $user_id) : string {
 		}
 	}
 
-	return json_encode($result);
+	return json_encode($result) ?: '';
 }
 
 /**
@@ -4865,7 +4890,10 @@ function enable_2fa(int $user_id) : string {
 			[$_SESSION[SESS_USER_ID]]
 		);
 
-		if ($current_user['tfa_secret'] != $secret) {
+		if (!cacti_sizeof($current_user)
+			|| !isset($current_user['tfa_secret'])
+			|| !isset($current_user['username'])
+			|| $current_user['tfa_secret'] != $secret) {
 			$result['status'] = '501';
 			$result['text']   = __('2FA secret failed to be generated/updated');
 		} else {
@@ -4875,7 +4903,7 @@ function enable_2fa(int $user_id) : string {
 		}
 	}
 
-	return json_encode($result);
+	return json_encode($result) ?: '';
 }
 
 /**
@@ -4914,7 +4942,7 @@ function verify_2fa(int $user_id, string $code) : string {
 		}
 	}
 
-	return json_encode($result);
+	return json_encode($result) ?: '';
 }
 
 /**

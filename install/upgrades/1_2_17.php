@@ -136,13 +136,13 @@ function database_fix_mediumint_columns() : int {
 			$attribs = database_get_column_attribs($table, $c);
 
 			if (cacti_sizeof($attribs)) {
-				if (strpos($attribs['Type'], 'mediumint') === false) {
-					if (strpos($attribs['Type'], 'int(10) unsigned') !== false) {
+				if (!str_contains($attribs['Type'], 'mediumint')) {
+					if (str_contains($attribs['Type'], 'int(10) unsigned')) {
 						continue;
 					}
 				}
 
-				if (strtolower($attribs['Extra']) == 'auto_increment') {
+				if (cacti_strtolower($attribs['Extra']) == 'auto_increment') {
 					$sql .= ($i == 0 ? '' : ', ') . ' MODIFY COLUMN ' . $c . ' int(10) unsigned NOT NULL AUTO_INCREMENT';
 				} else {
 					if ($c != 'id') {
@@ -185,13 +185,13 @@ function database_fix_mediumint_columns() : int {
 
 			foreach ($columns as $field => $attribs) {
 				if (array_key_exists($field, $known_columns)) {
-					if (strpos($attribs['Type'], 'mediumint') === false) {
-						if (strpos($attribs['Type'], 'int(10) unsigned') !== false) {
+					if (!str_contains($attribs['Type'], 'mediumint')) {
+						if (str_contains($attribs['Type'], 'int(10) unsigned')) {
 							continue;
 						}
 					}
 
-					if (strtolower($attribs['Extra']) == 'auto_increment') {
+					if (cacti_strtolower($attribs['Extra']) == 'auto_increment') {
 						$sql .= ($i == 0 ? '' : ', ') . ' MODIFY COLUMN ' . $field . ' int(10) unsigned NOT NULL AUTO_INCREMENT';
 					} else {
 						if ($attribs['Default'] != '') {

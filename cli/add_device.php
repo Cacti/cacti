@@ -90,7 +90,7 @@ if (cacti_sizeof($parms)) {
 	$quietMode            = false;
 
 	foreach ($parms as $parameter) {
-		if (strpos($parameter, '=')) {
+		if (str_contains($parameter, '=')) {
 			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
@@ -153,7 +153,7 @@ if (cacti_sizeof($parms)) {
 
 				break;
 			case '--security-level':
-				$snmp_security_level = strtolower(trim($value));
+				$snmp_security_level = cacti_strtolower(trim($value));
 
 				break;
 			case '--username':
@@ -243,7 +243,7 @@ if (cacti_sizeof($parms)) {
 
 				break;
 			case '--ping_method':
-				switch(strtolower($value)) {
+				switch(cacti_strtolower($value)) {
 					case 'icmp':
 						$ping_method = PING_ICMP;
 
@@ -366,7 +366,7 @@ if (cacti_sizeof($parms)) {
 
 	// process host description
 	if (isset($hosts[$description])) {
-		db_execute("UPDATE host SET hostname='$ip' WHERE deleted = '' AND id=" . $hosts[$description]);
+		db_execute_prepared('UPDATE host SET hostname = ? WHERE deleted = "" AND id = ?', [$ip, $hosts[$description]]);
 		print "This host already exists in the database ($description) device-id: (" . $hosts[$description] . ')' . PHP_EOL;
 
 		exit(1);
@@ -474,7 +474,7 @@ if (cacti_sizeof($parms)) {
 		}
 
 		if ($fail) {
-			db_execute("UPDATE host SET description = '$description' WHERE deleted = '' AND id = " . $addresses[$ip]);
+			db_execute_prepared('UPDATE host SET description = ? WHERE deleted = "" AND id = ?', [$description, $addresses[$ip]]);
 			print "ERROR: This IP already exists in the database ($ip) device-id: (" . $addresses[$ip] . ')' . PHP_EOL;
 
 			exit(1);

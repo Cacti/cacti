@@ -40,7 +40,7 @@ $create = true;
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
-		if (strpos($parameter, '=')) {
+		if (str_contains($parameter, '=')) {
 			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
@@ -122,18 +122,18 @@ function sqltable_to_php(string $table, bool $create, string $plugin = '') : str
 				$text .= "\$data['columns'][] = array(";
 				$text .= "'name' => '" . $r['Field'] . "'";
 
-				if (strpos(strtolower($r['Type']), ' unsigned') !== false) {
+				if (str_contains(cacti_strtolower($r['Type']), ' unsigned')) {
 					$r['Type'] = str_ireplace(' unsigned', '', $r['Type']);
 					$text .= ", 'unsigned' => true";
 				}
 
 				$text .= ", 'type' => " . db_qstr($r['Type']);
-				$text .= ", 'NULL' => " . (strtolower($r['Null']) == 'no' ? 'false' : 'true');
+				$text .= ", 'NULL' => " . (cacti_strtolower($r['Null']) == 'no' ? 'false' : 'true');
 
 				if ($r['Default'] != '' && trim($r['Default']) != '') {
 					if ($r['Default'] == "''") {
 						$r['Default'] = '';
-					} elseif (strpos($r['Default'], 'current_timestamp()') !== false) {
+					} elseif (str_contains($r['Default'], 'current_timestamp()')) {
 						$r['Default'] = str_replace('current_timestamp()', 'CURRENT_TIMESTAMP', $r['Default']);
 					}
 
@@ -143,11 +143,11 @@ function sqltable_to_php(string $table, bool $create, string $plugin = '') : str
 				}
 
 				if (trim($r['Extra']) != '') {
-					if (strtolower($r['Extra']) == 'on update current_timestamp') {
+					if (cacti_strtolower($r['Extra']) == 'on update current_timestamp') {
 						$text .= ", 'on_update' => 'CURRENT_TIMESTAMP'";
 					}
 
-					if (strtolower($r['Extra']) == 'auto_increment') {
+					if (cacti_strtolower($r['Extra']) == 'auto_increment') {
 						$text .= ", 'auto_increment' => true";
 					}
 				}
@@ -267,10 +267,10 @@ function display_help() : void {
 	print 'A simple developers utility to create a save schema for a newly created or' . PHP_EOL;
 	print 'modified database table in a format that is consumable by Cacti.' . PHP_EOL . PHP_EOL;
 
-	print "These save schema's can be placed into a plugins setup.php file in order" . PHP_EOL;
-	print "to create the tables inside of a plugin as a part of it's install function." . PHP_EOL;
+	print 'These save schemas can be placed into a plugin\'s setup.php file in order' . PHP_EOL;
+	print 'to create the tables inside of a plugin as a part of its install function.' . PHP_EOL;
 	print 'The plugin parameter is optional, but if you want the table(s) automatically' . PHP_EOL;
-	print "removed from Cacti when uninstalling the plugin, specify it's name." . PHP_EOL . PHP_EOL;
+	print 'removed from Cacti when uninstalling the plugin, specify its name.' . PHP_EOL . PHP_EOL;
 
 	print 'Required:' . PHP_EOL;
 	print '--table=table_name - The table that you want exported' . PHP_EOL . PHP_EOL;

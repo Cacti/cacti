@@ -101,7 +101,7 @@ function form_save() : void {
 		// search xml files for scripts
 		if (cacti_sizeof($files)) {
 			foreach ($files as $file) {
-				if (strpos($file['file'], '.xml') !== false) {
+				if (str_contains($file['file'], '.xml')) {
 					$files = array_merge($files, find_dependent_files(file_get_contents($file['file'])));
 				}
 			}

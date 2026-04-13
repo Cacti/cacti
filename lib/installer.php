@@ -95,7 +95,7 @@ class Installer implements JsonSerializable {
 	private string $old_cacti_version;
 
 	// Common variables
-	private int $mode = 1;
+	private int $mode = -1;
 	private int $stepCurrent;
 	private int $stepPrevious;
 	private int $stepNext;
@@ -248,7 +248,7 @@ class Installer implements JsonSerializable {
 
 	/**
 	 * jsonSerialize() - provides JSON object of return data with optional
-	 * values output dependant on Runtime mode.
+	 * values output dependent on Runtime mode.
 	 *
 	 * @return array - An array of options data
 	 */
@@ -1646,7 +1646,7 @@ class Installer implements JsonSerializable {
 
 	// getMode - gets the current mode
 	public function getMode() : int {
-		if (isset($this->mode)) {
+		if ($this->mode != -1) {
 			$mode = $this->mode;
 		} else {
 			$mode = Installer::MODE_INSTALL;
@@ -2097,9 +2097,9 @@ class Installer implements JsonSerializable {
 			$flags = explode('-', $key);
 
 			if (cacti_count($flags) > 1) {
-				$flagName = strtolower($flags[1]);
+				$flagName = cacti_strtolower($flags[1]);
 			} else {
-				$flagName = strtolower($flags[0]);
+				$flagName = cacti_strtolower($flags[0]);
 			}
 			$langOutput .= '<option value=\'' . $key . '\'' . $selected . ' data-class=\'fi-' . $flagName . '\'><span class="fi fis fi-' . $flagName . '"></span>' . $value . '</option>';
 		}
@@ -2162,7 +2162,7 @@ class Installer implements JsonSerializable {
 		$test_request_len   = strlen($test_request_parts['path']);
 
 		// Get current script name (filename only)
-		$test_script_name = basename($_SERVER['SCRIPT_NAME']);
+		$test_script_name = get_current_script_name();
 		$test_script_len  = strlen($test_script_name);
 
 		// Get end of the path of URI and see if it's our script

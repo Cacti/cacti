@@ -40,41 +40,34 @@ switch ($action) {
 
 		exit;
 	default:
-		// If the user is not logged in, redirect them to the login page
+		/**
+		 * If the user is not logged in, redirect them back to the page
+		 * they came from, or to the login page.
+		 */
 		if (!isset($_SESSION[SESS_USER_ID])) {
-			if (isset($_SERVER['HTTP_REFERER'])) {
-				header('Location: ' . $_SERVER['HTTP_REFERER']);
-			} else {
-				header('Location: index.php');
-			}
-
-			header('Location: index.php');
-
+			$referer = validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '', 'index.php');
+			header("Location: $referer");
 			exit;
 		}
 }
 
-if (isset($_SERVER['HTTP_REFERER'])) {
-	$return = $_SERVER['HTTP_REFERER'];
+$return = validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '', 'index.php');
 
-	if (basename($return) != 'auth_changepassword.php') {
-		if (strpos($return, '/plugins/') !== false) {
-			$parts  = explode('/plugins/', $return);
-			$return = CACTI_PATH_URL . 'plugins/' . $parts[1];
-		} else {
-			$return = CACTI_PATH_URL . basename($return);
-		}
-
-		$_SESSION['acp_return'] = $return;
+if (basename($return) != 'auth_changepassword.php') {
+	if (strpos($return, '/plugins/') !== false) {
+		$parts  = explode('/plugins/', $return);
+		$return = CACTI_PATH_URL . 'plugins/' . $parts[1];
 	} else {
-		if (isset($_SESSION['acp_return'])) {
-			$return = $_SESSION['acp_return'];
-		} else {
-			$return = CACTI_PATH_URL . 'index.php';
-		}
+		$return = CACTI_PATH_URL . basename($return);
 	}
+
+	$_SESSION['acp_return'] = $return;
 } else {
-	$return = CACTI_PATH_URL . 'index.php';
+	if (isset($_SESSION['acp_return'])) {
+		$return = $_SESSION['acp_return'];
+	} else {
+		$return = CACTI_PATH_URL . 'index.php';
+	}
 }
 
 $user = db_fetch_row_prepared('SELECT *
@@ -93,11 +86,9 @@ if (!cacti_sizeof($user) || $user['realm'] != 0) {
 		raise_message('nodomainpassword');
 	}
 
-	if (isset($_SERVER['HTTP_REFERER'])) {
-		header('Location: ' . $_SERVER['HTTP_REFERER']);
-	} else {
-		header('Location: index.php');
-	}
+	$return = validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '', 'index.php');
+
+	header("Location: $return");
 
 	exit;
 }
@@ -109,11 +100,9 @@ if ($user['password_change'] != 'on') {
 	kill_session_var(SESS_USER_ID);
 	cacti_cookie_logout();
 
-	if (isset($_SERVER['HTTP_REFERER'])) {
-		header('Location: ' . $_SERVER['HTTP_REFERER']);
-	} else {
-		header('Location: index.php');
-	}
+	$return = validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '', 'index.php');
+
+	header("Location: $return");
 
 	exit;
 }
@@ -407,7 +396,9 @@ html_auth_header('change_password', __('Change Password'), __('Change Password')
 	</tr>
 	<tr>
 		<td colspan='3' class='nowrap'><button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' value='save'><?php print __esc('Save'); ?></button>
-			<?php print $user['must_change_password'] != 'on' ? "<button type='button' class='ui-button ui-corner-all ui-widget' onClick='document.location=\"$return\"'>" . __esc('Return') . "'></button>" : ''; ?>
+			<?php if ($user['must_change_password'] != 'on') { ?>
+			<button type='button' class='ui-button ui-corner-all ui-widget' onClick='document.location=<?php print json_encode((string) $return); ?>'><?php print __esc('Return'); ?></button>
+			<?php } ?>
 		</td>
 	</tr>
 <?php

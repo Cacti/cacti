@@ -71,7 +71,7 @@ if ($threads == 0) {
 $forcerun = false;
 
 foreach ($parms as $parameter) {
-	if (strpos($parameter, '=')) {
+	if (str_contains($parameter, '=')) {
 		[$arg, $value] = explode('=', $parameter, 2);
 	} else {
 		$arg   = $parameter;
@@ -394,7 +394,7 @@ function sig_handler(int $signo) : void {
 		case SIGINT:
 			cacti_log('WARNING: Rebuild poller cache terminated by user', false, 'PUSHOUT');
 
-			if (strpos($type, 'rmaster') !== false) {
+			if (str_contains($type, 'rmaster')) {
 				pushout_kill_running_processes();
 			}
 

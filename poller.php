@@ -100,8 +100,8 @@ array_shift($parms);
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
-		if (strpos($parameter, '=')) {
-			[$arg, $value] = explode('=', $parameter);
+		if (str_contains($parameter, '=')) {
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
 			$value = '';
@@ -562,7 +562,7 @@ while ($poller_runs_completed < $poller_runs) {
 	$first_host        = 0;
 	$last_host         = 0;
 	$rrds_processed    = 0;
-	$webroot           = addslashes((CACTI_SERVER_OS == 'win32') ? strtr(strtolower(substr(__DIR__, 0, 1)) . substr(__DIR__, 1),'\\', '/') : __DIR__);
+	$webroot           = addslashes((CACTI_SERVER_OS == 'win32') ? strtr(cacti_strtolower(substr(__DIR__, 0, 1)) . substr(__DIR__, 1),'\\', '/') : __DIR__);
 
 	// update web paths for the poller
 	set_config_option('path_webroot', $webroot);
@@ -715,7 +715,7 @@ while ($poller_runs_completed < $poller_runs) {
 			$total_procs    = $concurrent_processes;
 		} else {
 			$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
-			$extra_args     = '-q ' . cacti_escapeshellarg(strtolower(CACTI_PATH_BASE . '/cmd.php'));
+			$extra_args     = '-q ' . cacti_escapeshellarg(cacti_strtolower(CACTI_PATH_BASE . '/cmd.php'));
 			$method         = 'cmd.php';
 			$total_procs    = $concurrent_processes;
 		}
@@ -1003,30 +1003,6 @@ while ($poller_runs_completed < $poller_runs) {
 	}
 }
 
-function poller_heartbeat_check() : void {
-	$poller_interval = read_config_option('poller_interval');
-
-	$heartbeat_pollers = db_fetch_assoc_prepared('SELECT *, UNIX_TIMESTAMP() - UNIX_TIMESTAMP(last_status) AS heartbeat
-		FROM poller
-		WHERE disabled = ""
-		HAVING heartbeat > ? * 2
-		OR status = 6',
-		[$poller_interval]);
-
-	if (cacti_sizeof($heartbeat_pollers)) {
-		foreach ($heartbeat_pollers as $p) {
-			db_execute_prepared('UPDATE poller SET status = 6 WHERE id = ?', [$p['id']]);
-
-			if (debounce_run_notification('poller_heartbeat_' . $p['id'], 1800)) {
-				$log_message   = sprintf('WARNING: Poller[%s] with Name:%s is in Heartbeat Status', $p['id'], $p['name']);
-				$email_message = __('WARNING: PollerID:%s with Name:%s is in Heartbeat Status', $p['id'], $p['name']);
-				cacti_log($log_message, false, 'POLLER');
-				admin_email(__('Poller in Heartbeat Mode'), $email_message);
-			}
-		}
-	}
-}
-
 // start post data processing
 if ($poller_id == 1) {
 	multiple_poller_boost_check();
@@ -1054,6 +1030,32 @@ if ($poller_id == 1) {
 	automation_poller_bottom();
 	poller_maintenance();
 	api_plugin_hook('poller_bottom');
+}
+
+exit(0);
+
+function poller_heartbeat_check() : void {
+	$poller_interval = read_config_option('poller_interval');
+
+	$heartbeat_pollers = db_fetch_assoc_prepared('SELECT *, UNIX_TIMESTAMP() - UNIX_TIMESTAMP(last_status) AS heartbeat
+		FROM poller
+		WHERE disabled = ""
+		HAVING heartbeat > ? * 2
+		OR status = 6',
+		[$poller_interval]);
+
+	if (cacti_sizeof($heartbeat_pollers)) {
+		foreach ($heartbeat_pollers as $p) {
+			db_execute_prepared('UPDATE poller SET status = 6 WHERE id = ?', [$p['id']]);
+
+			if (debounce_run_notification('poller_heartbeat_' . $p['id'], 1800)) {
+				$log_message   = sprintf('WARNING: Poller[%s] with Name:%s is in Heartbeat Status', $p['id'], $p['name']);
+				$email_message = __('WARNING: PollerID:%s with Name:%s is in Heartbeat Status', $p['id'], $p['name']);
+				cacti_log($log_message, false, 'POLLER');
+				admin_email(__('Poller in Heartbeat Mode'), $email_message);
+			}
+		}
+	}
 }
 
 function host_status_cache_check() : void {

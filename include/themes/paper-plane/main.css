@@ -645,37 +645,38 @@ label {
 }
 
 .tableRow {
-	background: none repeat scroll 0 0 #EBEDEF;
+	color: white;
 	line-height: 20px;
 }
 
 .odd {
 	border: none;
-	background: none repeat scroll 0 0 #EBEDEF;
+	background: none repeat scroll 0 0 #222;
 }
 
 .odd.tableRow {
-	color: #000000;
-	background: none repeat scroll 0 0 #EBEDEF;
+	color: #CCC;
+	background: none repeat scroll 0 0 #252525;
 }
 
 .even {
 	border: none;
-	background: none repeat scroll 0 0 #FFFFFF;
+	background: none repeat scroll 0 0 #222;
+	color: #CCC;
 }
 
 .even.tableRow {
-	color: #000000;
-	background: none repeat scroll 0 0 #FFFFFF;
+	color: #CCC;
+	background: none repeat scroll 0 0 #222;
 }
 
 .even-alternate {
-	background: none repeat scroll 0 0 #FFFFFF;
+	background: none repeat scroll 0 0 #252525;
 }
 
 .even-alternate.tableRow {
-	color: #000000;
-	background: none repeat scroll 0 0 #FFFFFF;
+	color: #CCC;
+	background: none repeat scroll 0 0 #222;
 }
 
 .tableRow {
@@ -1157,6 +1158,7 @@ legend {
 
 .cactiGraphContentAreaPreview .cactitable {
 	background: none !important;
+	color: #CCC;
 }
 
 .cactiConsoleContentArea {
@@ -1200,7 +1202,7 @@ legend {
 }
 
 .linkEditMain, .linkEditMain:visited, .linkEditMain:active {
-	color: #2d4ca8;
+	color: #DDD;
 	text-decoration: none;
 	font-size: 12px;
 	white-space: nowrap;
@@ -1267,7 +1269,7 @@ tr>td.textInfo.left {
 
 tr>td.textInfo.right {
 	background: #F7F7F7;
-	color: #000000;
+	color: #CCC;
 }
 
 .textHeader {
@@ -1343,7 +1345,7 @@ tr>td.textInfo.right {
 }
 
 .cactiInstallLoaderSpinnerTheme {
-	border-top-color: #3a3b3c !important;
+	border-top-color: #CCC !important;
 }
 
 .cactiTableTitleRow {
@@ -2288,8 +2290,8 @@ tr.selectable a.linkEditMain:hover {
 }
 
 tr.selectable:hover:not(.selected) {
-	background: #AAAAAA;
-	color: #000000;
+	background: #444;
+	color: #FFF;
 }
 
 tr.selected a {
@@ -3054,3 +3056,10 @@ circle {
 	color:#9BB7D4 !important;
 }
 
+
+.ui-state-default, .ui-selectmenu-button, .ui-button {
+	border: 1px solid #d3d3d3;
+	background: #111 !important;
+	font-weight: normal;
+	color: #555555;
+}

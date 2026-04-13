@@ -45,7 +45,7 @@ define('log_install_echo', 'on');
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
-		if (strpos($parameter, '=')) {
+		if (str_contains($parameter, '=')) {
 			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
@@ -175,7 +175,7 @@ if (cacti_sizeof($parms)) {
 				break;
 			case '--notifyadmin':
 			case '-n':
-				$value = strtolower($value) == 'true' ? 'on' : '';
+				$value = cacti_strtolower($value) == 'true' ? 'on' : '';
 				set_install_option($options, 'notify_admin', 'Notify Admin', $value);
 
 				break;

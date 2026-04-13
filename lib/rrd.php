@@ -184,6 +184,12 @@ function __rrd_proxy_init(string $logopt = 'WEBLOG') : mixed {
 		}
 	}
 
+	if ($rrdp_public_key === false || trim($rrdp_public_key) === '') {
+		cacti_log('CACTI2RRDP ERROR: Public RSA Key Exchange failed - no key received.', false, $logopt, POLLER_VERBOSITY_LOW);
+
+		return false;
+	}
+
 	$public      = phpseclib3\Crypt\RSA::loadPublicKey($rrdp_public_key);
 	$fingerprint = $public->getFingerprint('md5');
 
@@ -269,9 +275,13 @@ function decrypt(string $input) : string {
 
 		$aes = new \phpseclib3\Crypt\Rijndael('stream');
 
-		$aes_key_length = hexdec(substr($input, 0, 3));
+		$aes_key_length = (int) hexdec(substr($input, 0, 3));
 		$aes_key        = base64_decode(substr($input, 3, $aes_key_length), true);
 		$ciphertext     = base64_decode(substr($input, 3 + $aes_key_length), true);
+
+		if ($aes_key === false || $ciphertext === false) {
+			return $input;
+		}
 
 		$aes_key = $public->decrypt($aes_key);
 		$aes->setKey($aes_key);
@@ -295,8 +305,23 @@ function rrdtool_execute() : mixed {
 	return call_user_func_array($function, $args);
 }
 
-function __rrd_execute(string $command_line, bool $log_to_stdout, int $output_flag = RRDTOOL_OUTPUT_STDOUT, mixed $rrdtool_pipe = null, string $logopt = 'WEBLOG') : mixed {
+/**
+ * Execute an RRDtool command and return the output.
+ *
+ * @param string|array $command_line  The RRDtool command to execute
+ * @param bool         $log_to_stdout Whether to echo output to stdout
+ * @param int          $output_flag   Output format constant (RRDTOOL_OUTPUT_*)
+ * @param mixed        $rrdtool_pipe  An open RRDtool pipe resource, or null
+ * @param string       $logopt        Logging context identifier
+ *
+ * @return mixed The command output in the requested format
+ */
+function __rrd_execute(string|array $command_line, bool $log_to_stdout, int $output_flag = RRDTOOL_OUTPUT_STDOUT, mixed $rrdtool_pipe = null, string $logopt = 'WEBLOG') : mixed {
 	static $last_command;
+
+	if (is_array($command_line)) {
+		$command_line = implode(' ', array_map('cacti_escapeshellarg', $command_line));
+	}
 
 	/**
 	 * WIN32: before sending this command off to rrdtool, get rid
@@ -588,7 +613,11 @@ function __rrd_proxy_execute(string $command_line, bool $log_to_stdout, int $out
 	$rrdp_public_key = $rrdp[1];
 
 	if (strlen($command_line) >= 8192) {
-		$command_line = gzencode($command_line, 1);
+		$compressed = gzencode($command_line, 1);
+
+		if ($compressed !== false) {
+			$command_line = $compressed;
+		}
 	}
 	socket_write($rrdp_socket, encrypt($command_line, $rrdp_public_key) . $end_of_sequence);
 
@@ -652,7 +681,9 @@ function __rrd_proxy_execute(string $command_line, bool $log_to_stdout, int $out
 			return false;
 		case RRDTOOL_OUTPUT_STDOUT:
 		case RRDTOOL_OUTPUT_GRAPH_DATA:
-			return rtrim(substr($output, 0, strpos($output, 'OK u')));
+			$ok_pos = strpos($output, 'OK u');
+
+			return rtrim(substr($output, 0, $ok_pos !== false ? $ok_pos : null));
 		case RRDTOOL_OUTPUT_STDERR:
 			if (substr($output, 1, 3) == 'PNG') {
 				return 'OK';
@@ -806,7 +837,7 @@ function rrdtool_function_create(int $local_data_id, bool $show_source, mixed $r
 			[$local_data_id]
 		);
 
-		$speed = rrdtool_function_interface_speed($data_local);
+		$speed = is_array($data_local) ? rrdtool_function_interface_speed($data_local) : (string) intval(read_config_option('default_interface_speed')) * 1000000;
 
 		foreach ($data_sources as $data_source) {
 			// use the cacti ds name by default or the user defined one, if entered
@@ -822,7 +853,7 @@ function rrdtool_function_create(int $local_data_id, bool $show_source, mixed $r
 				// in case a query variable is given, evaluate it
 				if ($data_source['rrd_maximum'] == '|query_ifSpeed|' || $data_source['rrd_maximum'] == '|query_ifHighSpeed|') {
 					$data_source['rrd_maximum'] = $speed;
-				} else {
+				} elseif (is_array($data_local)) {
 					$data_source['rrd_maximum'] = substitute_snmp_query_data($data_source['rrd_maximum'], $data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']);
 				}
 			} elseif ($data_source['rrd_maximum'] != 'U' && (int)$data_source['rrd_maximum'] <= (int)$data_source['rrd_minimum']) {
@@ -849,6 +880,9 @@ function rrdtool_function_create(int $local_data_id, bool $show_source, mixed $r
 	foreach ($rras as $rra) {
 		$create_rra .= 'RRA:' . $consolidation_functions[$rra['consolidation_function_id']] . ':' . $rra['x_files_factor'] . ':' . $rra['steps'] . ':' . $rra['rows'] . RRD_NL;
 	}
+
+	$owner_id = 0;
+	$group_id = 0;
 
 	if (CACTI_SERVER_OS != 'win32') {
 		$owner_id = fileowner(CACTI_PATH_RRA);
@@ -882,13 +916,13 @@ function rrdtool_function_create(int $local_data_id, bool $show_source, mixed $r
 							$spath .= '/' . $path;
 
 							$powner_id = fileowner(CACTI_PATH_RRA . $spath);
-							$pgroup_id = fileowner(CACTI_PATH_RRA . $spath);
+							$pgroup_id = filegroup(CACTI_PATH_RRA . $spath);
 
-							if ($powner_id != $owner_id) {
+							if ($powner_id !== false && $owner_id !== false && $powner_id != $owner_id) {
 								$success = chown(CACTI_PATH_RRA . $spath, $owner_id);
 							}
 
-							if ($pgroup_id != $group_id && $success) {
+							if ($pgroup_id !== false && $group_id !== false && $pgroup_id != $group_id && $success) {
 								$success = chgrp(CACTI_PATH_RRA . $spath, $group_id);
 							}
 
@@ -914,7 +948,12 @@ function rrdtool_function_create(int $local_data_id, bool $show_source, mixed $r
 		$success = rrdtool_execute("create $data_source_path $create_ds$create_rra", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
 
 		if (CACTI_SERVER_OS != 'win32' && posix_getuid() == 0) {
-			shell_exec("chown $owner_id:$group_id $data_source_path");
+			if (file_exists($data_source_path)) {
+				chown($data_source_path, (int) $owner_id);
+				chgrp($data_source_path, (int) $group_id);
+			} else {
+				cacti_log("WARNING: RRDCreate using command 'create $data_source_path $create_ds$create_rra' failed!", false, 'POLLER');
+			}
 		}
 
 		return $success;
@@ -928,7 +967,7 @@ function rrdtool_function_update(array $update_cache_array, mixed $rrdtool_pipe 
 	foreach ($update_cache_array as $rrd_path => $rrd_fields) {
 		$create_rrd_file = false;
 
-		if (is_array($rrd_fields['times']) && cacti_sizeof($rrd_fields['times'])) {
+		if (cacti_sizeof($rrd_fields['times'])) {
 			$file_exists = rrdtool_file_exists($rrd_path, $rrdtool_pipe);
 
 			ksort($rrd_fields['times']);
@@ -1016,32 +1055,37 @@ function rrdtool_function_tune(array $rrd_tune_array) : void {
 	$rrd_tune = '';
 
 	if ($rrd_tune_array['heartbeat'] != '') {
-		$rrd_tune .= " --heartbeat $data_source_name:" . $rrd_tune_array['heartbeat'];
+		$rrd_tune .= ' --heartbeat ' . cacti_escapeshellarg($data_source_name . ':' . $rrd_tune_array['heartbeat']);
 	}
 
 	if ($rrd_tune_array['minimum'] != '') {
-		$rrd_tune .= " --minimum $data_source_name:" . $rrd_tune_array['minimum'];
+		$rrd_tune .= ' --minimum ' . cacti_escapeshellarg($data_source_name . ':' . $rrd_tune_array['minimum']);
 	}
 
 	if ($rrd_tune_array['maximum'] != '') {
-		$rrd_tune .= " --maximum $data_source_name:" . $rrd_tune_array['maximum'];
+		$rrd_tune .= ' --maximum ' . cacti_escapeshellarg($data_source_name . ':' . $rrd_tune_array['maximum']);
 	}
 
 	if ($rrd_tune_array['data-source-type'] != '') {
-		$rrd_tune .= " --data-source-type $data_source_name:" . $data_source_type;
+		$rrd_tune .= ' --data-source-type ' . cacti_escapeshellarg($data_source_name . ':' . $data_source_type);
 	}
 
 	if ($rrd_tune_array['data-source-rename'] != '') {
-		$rrd_tune .= " --data-source-rename $data_source_name:" . $rrd_tune_array['data-source-rename'];
+		$rrd_tune .= ' --data-source-rename ' . cacti_escapeshellarg($data_source_name . ':' . $rrd_tune_array['data-source-rename']);
 	}
 
 	if ($rrd_tune != '') {
 		if (file_exists($data_source_path) == true) {
 			if (is_file(read_config_option('path_rrdtool')) && is_executable(read_config_option('path_rrdtool'))) {
-				$fp = popen(read_config_option('path_rrdtool') . " tune $data_source_path $rrd_tune", 'r');
-				pclose($fp);
+				$rrd_cmd = cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' tune ' . cacti_escapeshellarg($data_source_path) . $rrd_tune;
 
-				cacti_log('CACTI2RRD: ' . read_config_option('path_rrdtool') . " tune $data_source_path $rrd_tune", false, 'WEBLOG', POLLER_VERBOSITY_DEBUG);
+				$fp = popen($rrd_cmd, 'r');
+
+				if ($fp !== false) {
+					pclose($fp);
+				}
+
+				cacti_log('CACTI2RRD: ' . $rrd_cmd, false, 'WEBLOG', POLLER_VERBOSITY_DEBUG);
 			} else {
 				cacti_log("ERROR: RRDtool executable not found, not executable or error in path '" . read_config_option('path_rrdtool') . "'.  No output written to RRDfile.");
 			}
@@ -1118,6 +1162,11 @@ function rrdtool_function_fetch(int $local_data_id, int $start_time, int $end_ti
 	}
 
 	$output = rrdtool_execute($cmd_line, false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe);
+
+	if (!is_string($output)) {
+		return $fetch_array;
+	}
+
 	$output = explode("\n", $output);
 
 	$first  = true;
@@ -1146,7 +1195,7 @@ function rrdtool_function_fetch(int $local_data_id, int $start_time, int $end_ti
 
 				// process out bad data
 				foreach ($data as $index => $number) {
-					if (strtolower($number) == 'nan' || strtolower($number) == '-nan') {
+					if (cacti_strtolower($number) == 'nan' || cacti_strtolower($number) == '-nan') {
 						if ($show_unknown) {
 							$fetch_array['values'][$index][$timestamp] = 'U';
 						}
@@ -1187,7 +1236,7 @@ function rrd_function_process_graph_options(int $graph_start, int $graph_end, ar
 				$scale = '--alt-autoscale-max' . RRD_NL;
 
 				if (is_numeric($graph['lower_limit'])) {
-					$scale .= '--lower-limit=' . cacti_escapeshellarg($graph['lower_limit']) . RRD_NL;
+					$scale .= '--lower-limit=' . cacti_escapeshellarg((string) $graph['lower_limit']) . RRD_NL;
 				}
 
 				break;
@@ -1195,7 +1244,7 @@ function rrd_function_process_graph_options(int $graph_start, int $graph_end, ar
 				$scale = '--alt-autoscale-min' . RRD_NL;
 
 				if (is_numeric($graph['upper_limit'])) {
-					$scale .= '--upper-limit=' . cacti_escapeshellarg($graph['upper_limit']) . RRD_NL;
+					$scale .= '--upper-limit=' . cacti_escapeshellarg((string) $graph['upper_limit']) . RRD_NL;
 				}
 
 				break;
@@ -1203,11 +1252,11 @@ function rrd_function_process_graph_options(int $graph_start, int $graph_end, ar
 				$scale = '--alt-autoscale' . RRD_NL;
 
 				if (is_numeric($graph['upper_limit'])) {
-					$scale .= '--upper-limit=' . cacti_escapeshellarg($graph['upper_limit']) . RRD_NL;
+					$scale .= '--upper-limit=' . cacti_escapeshellarg((string) $graph['upper_limit']) . RRD_NL;
 				}
 
 				if (is_numeric($graph['lower_limit'])) {
-					$scale .= '--lower-limit=' . cacti_escapeshellarg($graph['lower_limit']) . RRD_NL;
+					$scale .= '--lower-limit=' . cacti_escapeshellarg((string) $graph['lower_limit']) . RRD_NL;
 				}
 
 				break;
@@ -1613,9 +1662,10 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 			[$rra_id]
 		);
 
-		if (isset($rra['steps'])) {
+		if (is_array($rra) && isset($rra['steps'])) {
 			$rra['timespan'] = $rra['rows'] * $rra['step'] * $rra['steps'];
 		} else {
+			$rra             = [];
 			$rra['timespan'] = 86400;
 			$rra['steps']    = 1;
 			$rra['rows']     = 600;
@@ -1783,20 +1833,8 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 
 					break;
 				case GRAPH_ITEM_TYPE_GPRINT_AVERAGE:
-					$graph_cf                          = $graph_item['consolidation_function_id'];
-					$graph_items[$key]['cf_reference'] = $graph_cf;
-
-					break;
 				case GRAPH_ITEM_TYPE_GPRINT_LAST:
-					$graph_cf                          = $graph_item['consolidation_function_id'];
-					$graph_items[$key]['cf_reference'] = $graph_cf;
-
-					break;
 				case GRAPH_ITEM_TYPE_GPRINT_MAX:
-					$graph_cf                          = $graph_item['consolidation_function_id'];
-					$graph_items[$key]['cf_reference'] = $graph_cf;
-
-					break;
 				case GRAPH_ITEM_TYPE_GPRINT_MIN:
 					$graph_cf                          = $graph_item['consolidation_function_id'];
 					$graph_items[$key]['cf_reference'] = $graph_cf;
@@ -1816,13 +1854,28 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 			if ($graph_item['local_data_id'] > 0 && !isset($cf_ds_cache[$cf_ds_key])) {
 				// use a user-specified ds path if one is entered
 				if (isset($graph_data_array['export_realtime'])) {
-					$data_source_path = $realtimeCachePath . '/user_' . hash('sha256',session_id()) . '_' . $graph_item['local_data_id'] . '.rrd';
+					$data_source_path = $realtimeCachePath . '/user_' . hash('sha256', session_id() ?: '') . '_' . $graph_item['local_data_id'] . '.rrd';
 				} else {
 					$data_source_path = get_data_source_path($graph_item['local_data_id'], true);
 				}
 
-				if (!rrdtool_file_exists($data_source_path, $rrdtool_pipe) && (isset($graph_data_array['export_realtime']) || isset($graph_data_array['export_csv']))) {
-					return false;
+				if (!rrdtool_file_exists($data_source_path, $rrdtool_pipe)) {
+					if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG || isset($graph_data_array['get_error'])) {
+						cacti_log("WARNING: RRD file '$data_source_path' does not exist", false, 'GRAPH');
+					}
+
+					if (isset($graph_data_array['export_csv'])) {
+						return false;
+					}
+
+					// Both get_error (STDERR output) and print_source (HTML debug view)
+					// are text-output modes; returning PNG bytes in either would produce
+					// garbage in the browser or CLI. Return a human-readable error instead.
+					if (isset($graph_data_array['get_error']) || isset($graph_data_array['print_source'])) {
+						return __('ERROR: RRD file does not exist: %s', $data_source_path);
+					}
+
+					return rrdtool_create_error_image(__('The Cacti Poller has not run yet.'));
 				}
 
 				// FOR WIN32: Escape all colon for drive letters (ex. D\:/path/to/rra)
@@ -2027,9 +2080,6 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 				}
 			}
 
-			// now remember the correct CF reference
-			$cf_id = $graph_item['cf_reference'];
-
 			// +++++++++++++++++++++++ GRAPH ITEMS: CDEF START +++++++++++++++++++++++
 
 			/**
@@ -2042,6 +2092,7 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 			$cdef_cache_key = "{$graph_item['cdef_id']}:{$graph_item['data_template_rrd_id']}:{$cf_id}";
 
 			if ($graph_item['cdef_id'] > 0 && !isset($cdef_cache[$cdef_cache_key])) {
+				/** @var string $cdef_string */
 				$cdef_string  = $graph_variables['cdef_cache'][$graph_item['graph_templates_item_id']];
 				$magic_item   = [];
 				$already_seen = [];
@@ -2334,13 +2385,22 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 						WHERE id = ?',
 						[$graph_item['local_data_id']]);
 
-					$speed = rrdtool_function_interface_speed($local_data);
+					$speed = is_array($local_data) ? rrdtool_function_interface_speed($local_data) : '0';
 
 					$cdef_string = str_replace(['|query_ifHighSpeed|', '|query_ifSpeed|'], [$speed, $speed], $cdef_string);
 				}
 
 				// replace query variables in cdefs
 				$cdef_string = rrd_substitute_host_query_data($cdef_string, $graph, $graph_item);
+
+				// aggregate graphs can produce an empty RPN expression for GPRINT items
+				// whose consolidation function does not match the data source; skip them
+				// rather than emitting a bare "CDEF:cdefX=" which rrdtool rejects.
+				if ($cdef_string === '') {
+					cacti_log('Empty CDEF string for graph ' . $graph['local_graph_id'] . '; skipping.', true, 'RRD', POLLER_VERBOSITY_DEBUG);
+
+					continue;
+				}
 
 				// make the initial 'virtual' cdef name: 'cdef' + [a,b,c,d...]
 				$cdef_graph_defs .= 'CDEF:cdef' . generate_graph_def_name(intval($i)) . '=';
@@ -2716,7 +2776,8 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 							if ($value_array[0] < 0) {
 								$value = date('U') - (-3600 * (int) $value_array[0]) - 60 * (int) $value_array[1];
 							} else {
-								$value = date('U', mktime((int) $value_array[0], (int) $value_array[1], 0));
+								$mktime = mktime((int) $value_array[0], (int) $value_array[1], 0);
+								$value  = date('U', $mktime !== false ? $mktime : 0);
 							}
 
 							$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $value . $graph_item_color_code . ':' . cacti_escapeshellarg(rrdtool_escape_string(htmle($graph_variables['text_format'][$graph_item_id])) . $hardreturn[$graph_item_id]) . $dash;
@@ -2847,12 +2908,18 @@ function rrdtool_function_graph(int $local_graph_id, mixed $rra_id, array $graph
 
 		$xport_array = rrdxport2array(rrdtool_execute("xport $graph_opts$graph_defs$txt_graph_items", false, $output_flag, $rrdtool_pipe));
 
+		if (!isset($xport_array['meta'])) {
+			cacti_log('WARNING: RRDtool xport returned no valid data for Local Graph ID ' . $local_graph_id, false, 'EXPORT');
+
+			return [];
+		}
+
 		// add host and graph information
 		$xport_array['meta']['stacked_columns'] = $stacked_columns;
-		$xport_array['meta']['title_cache']     = $graph['title_cache'];
-		$xport_array['meta']['vertical_label']  = $graph['vertical_label'];
+		$xport_array['meta']['title_cache']     = is_array($graph) ? $graph['title_cache'] : '';
+		$xport_array['meta']['vertical_label']  = is_array($graph) ? $graph['vertical_label'] : '';
 		$xport_array['meta']['local_graph_id']  = $local_graph_id;
-		$xport_array['meta']['host_id']         = $graph['host_id'];
+		$xport_array['meta']['host_id']         = is_array($graph) ? $graph['host_id'] : 0;
 
 		return $xport_array;
 	}
@@ -2868,7 +2935,7 @@ function rrdtool_escape_string(string $text, bool $ignore_percent = true) : stri
 	}
 }
 
-function rrdtool_function_xport(int $local_graph_id, int $rra_id, array $xport_data_array, array &$xport_meta, int $user = 0) : array {
+function rrdtool_function_xport(int $local_graph_id, int $rra_id, array $xport_data_array, array &$xport_meta, int $user = 0) : mixed {
 	return rrdtool_function_graph($local_graph_id, $rra_id, $xport_data_array, null, $xport_meta, $user);
 }
 
@@ -2942,7 +3009,13 @@ function rrdtool_function_theme_font_options(array &$graph_data_array) : string 
 	$themeborder = 'rrdborder';
 
 	if (isset($graph_data_array['graph_theme'])) {
-		$rrdtheme = CACTI_PATH_INCLUDE . '/themes/' . $graph_data_array['graph_theme'] . '/rrdtheme.php';
+		$theme = basename($graph_data_array['graph_theme']);
+
+		if ($theme === '' || $theme === '.' || $theme === '..') {
+			$theme = get_selected_theme();
+		}
+
+		$rrdtheme = CACTI_PATH_INCLUDE . '/themes/' . $theme . '/rrdtheme.php';
 	} else {
 		$rrdtheme = CACTI_PATH_INCLUDE . '/themes/' . get_selected_theme() . '/rrdtheme.php';
 	}
@@ -2963,7 +3036,7 @@ function rrdtool_function_theme_font_options(array &$graph_data_array) : string 
 
 		if (isset(${$themecolors}) && is_array(${$themecolors})) { // @phpstan-ignore-line
 			foreach (${$themecolors} as $colortag => $color) { // @phpstan-ignore-line
-				$graph_opts .= '--color ' . strtoupper($colortag) . '#' . strtoupper($color) . RRD_NL;
+				$graph_opts .= '--color ' . cacti_strtoupper($colortag) . '#' . cacti_strtoupper($color) . RRD_NL;
 			}
 		}
 
@@ -3033,7 +3106,7 @@ function rrdtool_function_set_font(string $type, string $no_legend, array $theme
 		$size = 8;
 	}
 
-	return '--font ' . strtoupper($type) . ':' . floatval($size) . ':' . $font . RRD_NL;
+	return '--font ' . cacti_strtoupper($type) . ':' . floatval($size) . ':' . $font . RRD_NL;
 }
 
 function rrd_substitute_host_query_data(string $txt_graph_item, array $graph, array $graph_item) : string {
@@ -3177,7 +3250,7 @@ function rrdtool_function_info(int $local_data_id, mixed $rrdtool_pipe = null) :
 	$cmd_line = ' info ' . $data_source_path;
 	$output   = rrdtool_execute($cmd_line, RRDTOOL_OUTPUT_NULL, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe);
 
-	if ($output == '') {
+	if (!is_string($output) || $output == '') {
 		return false;
 	}
 
@@ -3188,6 +3261,7 @@ function rrdtool_function_info(int $local_data_id, mixed $rrdtool_pipe = null) :
 
 	// Parse the output
 	$matches  = [];
+	/** @var array<string, mixed> $rrd_info */
 	$rrd_info = ['rra' => [], 'ds' => []];
 	$output   = explode("\n", $output);
 
@@ -3278,7 +3352,7 @@ function rrdtool_function_info_from_ds(int $data_source_id) : array {
 			[$data_source_id]);
 
 		// get the speed just in case we have replacement data
-		$speed = rrdtool_function_interface_speed($data_local);
+		$speed = is_array($data_local) ? rrdtool_function_interface_speed($data_local) : '0';
 
 		// complete the 'ds' component of the info array
 		foreach ($cacti_ds_array as $index => $ds) {
@@ -3696,7 +3770,7 @@ function rrdtool_info2html(array $info_array, array $diff = []) : void {
 			form_selectable_cell(($value['cur_row'] ?? ''), 'cur_row', '', 'text-align:right');
 			form_selectable_cell(($value['pdp_per_row'] ?? ''), 'pdp_per_row', '', 'text-align:right');
 			form_selectable_cell((isset($value['xff']) ? floatval($value['xff']) : ''), 'xff', '', (isset($diff['rra'][$key]['xff']) ? 'color:red;text-align:right' : 'text-align:right'));
-			form_selectable_cell((isset($value['cdp_prep'][0]['value']) ? ((strtolower($value['cdp_prep'][0]['value']) == 'nan') ? $value['cdp_prep'][0]['value'] : floatval($value['cdp_prep'][0]['value'])) : ''), 'value', '', 'text-align:right');
+			form_selectable_cell((isset($value['cdp_prep'][0]['value']) ? ((cacti_strtolower($value['cdp_prep'][0]['value']) == 'nan') ? $value['cdp_prep'][0]['value'] : floatval($value['cdp_prep'][0]['value'])) : ''), 'value', '', 'text-align:right');
 			form_selectable_cell(($value['cdp_prep'][0]['unknown_datapoints'] ?? ''), 	'unknown_datapoints', '', 'text-align:right');
 
 			form_end_row();
@@ -3867,7 +3941,8 @@ function rrd_datasource_add(array $file_array, array $ds_array, bool $debug) : m
 		 * version 0001 => RRDtool 1.0.x
 		 * version 0003 => RRDtool 1.2.x, 1.3.x, 1.4.x, 1.5.x, 1.6.x
 		 */
-		$version = trim($dom->getElementsByTagName('version')->item(0)->nodeValue);
+		$version_node = $dom->getElementsByTagName('version')->item(0);
+		$version      = $version_node !== null ? trim($version_node->nodeValue) : RRD_FILE_VERSION3;
 
 		// now start XML processing
 		foreach ($ds_array as $ds) {
@@ -4099,10 +4174,12 @@ function rrd_append_ds(object $dom, string $version, string $name, string $type,
 	// $insert = $xpath->query('/rrd/rra')->item(0);
 	$insert = $dom->getElementsByTagName('rra')->item(0);
 
-	// import the new node
-	$new_node = $dom->importNode($new_node, true);
-	// and insert it at the correct place
-	$insert->parentNode->insertBefore($new_node, $insert);
+	if ($insert !== null && $new_node !== null) {
+		// import the new node
+		$new_node = $dom->importNode($new_node, true);
+		// and insert it at the correct place
+		$insert->parentNode->insertBefore($new_node, $insert);
+	}
 
 	return $dom;
 }
@@ -4155,10 +4232,12 @@ function rrd_append_compute_ds(object $dom, string $version, string $name, strin
 	// $insert = $xpath->query('/rrd/rra')->item(0);
 	$insert = $dom->getElementsByTagName('rra')->item(0);
 
-	// import the new node
-	$new_node = $dom->importNode($new_node, true);
-	// and insert it at the correct place
-	$insert->parentNode->insertBefore($new_node, $insert);
+	if ($insert !== null && $new_node !== null) {
+		// import the new node
+		$new_node = $dom->importNode($new_node, true);
+		// and insert it at the correct place
+		$insert->parentNode->insertBefore($new_node, $insert);
+	}
 
 	return $dom;
 }
@@ -4174,14 +4253,31 @@ function rrd_append_compute_ds(object $dom, string $version, string $name, strin
 function rrd_append_cdp_prep_ds(object $dom, string $version) : object {
 	// get all <cdp_prep><ds> entries
 	// $cdp_prep_list = $xpath->query('/rrd/rra/cdp_prep');
-	$cdp_prep_list = $dom->getElementsByTagName('rra')->item(0)->getElementsByTagName('cdp_prep');
+	$rra_node = $dom->getElementsByTagName('rra')->item(0);
+
+	if ($rra_node === null) {
+		return $dom;
+	}
+
+	$cdp_prep_list = $rra_node->getElementsByTagName('cdp_prep');
 
 	// get XPATH notation required for positioning
 	// $xpath = new DOMXPath($dom);
 
 	// get XPATH for source <ds> entry
 	// $src_ds = $xpath->query('/rrd/rra/cdp_prep/ds')->item(0);
-	$src_ds = $dom->getElementsByTagName('rra')->item(0)->getElementsByTagName('cdp_prep')->item(0)->getElementsByTagName('ds')->item(0);
+	$cdp_prep_first = $cdp_prep_list->item(0);
+
+	if ($cdp_prep_first === null) {
+		return $dom;
+	}
+
+	$src_ds = $cdp_prep_first->getElementsByTagName('ds')->item(0);
+
+	if ($src_ds === null) {
+		return $dom;
+	}
+
 	// clone the source ds entry to preserve RRDtool notation
 	$new_ds = $src_ds->cloneNode(true);
 
@@ -4200,7 +4296,7 @@ function rrd_append_cdp_prep_ds(object $dom, string $version) : object {
 		foreach ($cdp_prep_list as $cdp_prep) {
 			/* $cdp_prep now points to the next <cdp_prep> XML Element
 			 * and append new ds entry at end of <cdp_prep> child list */
-			$cdp_prep->appendChild($new_ds);
+			$cdp_prep->appendChild($new_ds->cloneNode(true));
 		}
 	}
 
@@ -4215,6 +4311,10 @@ function rrd_append_cdp_prep_ds(object $dom, string $version) : object {
  * @return object The modified DOM object
  */
 function rrd_append_value(object $dom) : object {
+	if (!$dom instanceof DOMDocument) {
+		return $dom;
+	}
+
 	// get XPATH notation required for positioning
 	// $xpath = new DOMXPath($dom);
 
@@ -4228,9 +4328,9 @@ function rrd_append_value(object $dom) : object {
 	// iterate all entries found, equals 'number of <rra>' times 'number of <ds>'
 	if ($itemList->length) {
 		foreach ($itemList as $item) {
-			/* $item now points to the next <cdp_prep> XML Element
-			 * and append new ds entry at end of <cdp_prep> child list */
-			$item->appendChild($new_v);
+			/* $item now points to the next <row> XML Element
+			 * and append new v entry at end of <row> child list */
+			$item->appendChild($new_v->cloneNode(true));
 		}
 	}
 
@@ -4246,6 +4346,10 @@ function rrd_append_value(object $dom) : object {
  * @return object The modified DOM object
  */
 function rrd_delete_rra(object $dom, array $rra_parm) : object {
+	if (!$dom instanceof DOMDocument) {
+		return $dom;
+	}
+
 	// find all RRA DOMNodes
 	$rras = $dom->getElementsByTagName('rra');
 
@@ -4286,6 +4390,10 @@ function rrd_delete_rra(object $dom, array $rra_parm) : object {
  * @return object The modified DOM object
  */
 function rrd_copy_rra(object $dom, string $cf, array $rra_parm) : object {
+	if (!$dom instanceof DOMDocument) {
+		return $dom;
+	}
+
 	// find all RRA DOMNodes
 	$rras = $dom->getElementsByTagName('rra');
 
@@ -4310,11 +4418,14 @@ function rrd_copy_rra(object $dom, string $cf, array $rra_parm) : object {
 
 			// get a clone of the matching RRA
 			$new_rra = $rra->cloneNode(true);
+
 			// and find the 'old' cf
 			// $old_cf = $new_rra->getElementsByTagName('cf')->item(0);
 			// now replace old cf with new one
 			// $old_cf->childNodes->item(0)->replaceData(0,20,$cf);
-			$new_rra->getElementsByTagName('cf')->item(0)->nodeValue = $cf;
+			if ($new_rra instanceof DOMElement) {
+				$new_rra->getElementsByTagName('cf')->item(0)->nodeValue = $cf;
+			}
 
 			// append new rra entry at end of the list
 			$parent->appendChild($new_rra);
@@ -4491,34 +4602,62 @@ function rrdtool_create_error_image(string $string, mixed $width = '', mixed $he
 
 	// create a transparent color
 	$transparent = imagecolorallocatealpha($image, 0, 0, 0, 127);
-	imagefill($image, 0, 0, $transparent);
+
+	if ($transparent !== false) {
+		imagefill($image, 0, 0, $transparent);
+	}
 
 	// background the entire image with the frame
-	[$red, $green, $blue] = sscanf($shadeb, '%02x%02x%02x');
+	$shadeb_parsed = sscanf($shadeb, '%02x%02x%02x');
+	$red           = min(255, max(0, (int) ($shadeb_parsed[0] ?? 0)));
+	$green         = min(255, max(0, (int) ($shadeb_parsed[1] ?? 0)));
+	$blue          = min(255, max(0, (int) ($shadeb_parsed[2] ?? 0)));
 
-	$shadeb = imagecolorallocate($image, $red, $green, $blue);
+	$shadeb_color = imagecolorallocate($image, $red, $green, $blue);
 
-	imagefill($image, 0, 0, $shadeb);
+	if ($shadeb_color !== false) {
+		imagefill($image, 0, 0, $shadeb_color);
+	}
 
 	// set the background color
-	[$red, $green, $blue]     = sscanf($shadea, '%02x%02x%02x');
-	$shadea                   = imagecolorallocate($image, $red, $green, $blue);
-	imagefilledrectangle($image, 1, 1, 448, 198, $shadea);
+	$shadea_parsed = sscanf($shadea, '%02x%02x%02x');
+	$red           = min(255, max(0, (int) ($shadea_parsed[0] ?? 0)));
+	$green         = min(255, max(0, (int) ($shadea_parsed[1] ?? 0)));
+	$blue          = min(255, max(0, (int) ($shadea_parsed[2] ?? 0)));
+
+	$shadea_color = imagecolorallocate($image, $red, $green, $blue);
+
+	if ($shadea_color !== false) {
+		imagefilledrectangle($image, 1, 1, 448, 198, $shadea_color);
+	}
 
 	// set the background color
-	[$red, $green, $blue]     = sscanf($back_color, '%02x%02x%02x');
-	$back_color               = imagecolorallocate($image, $red, $green, $blue);
-	imagefilledrectangle($image, 2, 2, 447, 197, $back_color);
+	$back_parsed = sscanf($back_color, '%02x%02x%02x');
+	$red         = min(255, max(0, (int) ($back_parsed[0] ?? 0)));
+	$green       = min(255, max(0, (int) ($back_parsed[1] ?? 0)));
+	$blue        = min(255, max(0, (int) ($back_parsed[2] ?? 0)));
+
+	$back_color_alloc = imagecolorallocate($image, $red, $green, $blue);
+
+	if ($back_color_alloc !== false) {
+		imagefilledrectangle($image, 2, 2, 447, 197, $back_color_alloc);
+	}
 
 	// allocate the image
 	$logo = imagecreatefrompng(CACTI_PATH_IMAGES . '/cacti_error_image.png');
 
 	// merge the two images
-	imagecopy($image, $logo, 0, 0, 0, 0, 450, 200);
+	if ($logo !== false) {
+		imagecopy($image, $logo, 0, 0, 0, 0, 450, 200);
+	}
 
 	// set the background color
-	[$red, $green, $blue]     = sscanf($font_color, '%02x%02x%02x');
-	$text_color               = imagecolorallocate($image, $red, $green, $blue);
+	$font_parsed = sscanf($font_color, '%02x%02x%02x');
+	$red         = min(255, max(0, (int) ($font_parsed[0] ?? 0)));
+	$green       = min(255, max(0, (int) ($font_parsed[1] ?? 0)));
+	$blue        = min(255, max(0, (int) ($font_parsed[2] ?? 0)));
+
+	$text_color = imagecolorallocate($image, $red, $green, $blue);
 
 	// see the size of the string
 	$string    = trim($string);
@@ -4543,6 +4682,10 @@ function rrdtool_create_error_image(string $string, mixed $width = '', mixed $he
 	$xpos  = 125;
 	$texth = ($lines * $font_size + (($lines - 1) * $padding));
 	$ypos  = round((200 / 2) + ($texth / 2),0);
+
+	if ($text_color === false) {
+		$text_color = 0;
+	}
 
 	// set the font of the image
 	if (isset($font_file) && file_exists($font_file) && is_readable($font_file) && function_exists('imagettftext')) {
@@ -4579,18 +4722,10 @@ function rrdtool_create_error_image(string $string, mixed $width = '', mixed $he
 	// get the image from the buffer
 	$image_data = ob_get_contents();
 
-	// destroy the image object
-	imagedestroy($image);
-	imagedestroy($logo);
-
-	if (isset($nimage)) {
-		imagedestroy($nimage);
-	}
-
 	// flush the buffer
 	ob_end_clean();
 
-	return $image_data;
+	return $image_data !== false ? $image_data : '';
 }
 
 /**
@@ -4672,12 +4807,20 @@ function gradient(string $vname = '', string $start_color = '#0000a0', string $e
 }
 
 /**
- * colourBrightness - Add colourBrightness support for the gradient charts. This function calculates the darker version of a given color
+ * colourBrightness - Adjust the brightness of a hex color for gradient charts.
+ * Positive percent lightens; negative percent darkens.
  *
- * @param string $hex     The hex representation of a color
- * @param float  $percent The percentage to darken the given color. decimal number ( 0.4 -> 40% )
+ * @param string $hex     The hex representation of a color (with or without leading #)
+ * @param float  $percent Brightness adjustment: decimal in [-1, 1] (e.g. 0.4 = +40%)
+ *                        or coerced integer in [-100, 100] (e.g. 40 = +40%). Values
+ *                        outside [-100, 100] are normalized then clamped to [-1, 1].
+ *                        NOTE: values in the open interval (1.0, 2.0) are treated as
+ *                        integers and divided by 100 (e.g. 1.5 → 0.015). The value
+ *                        1.0 itself is NOT divided — it means 100% original color
+ *                        (the identity). There is no decimal representation of "1%
+ *                        brighter"; use 0.01 instead.
  *
- * @return string The darker version of the given color
+ * @return string The adjusted color in the same format as the input
  *
  * License: GPLv2
  * Original Code: http://www.barelyfitz.com/projects/csscolor/
@@ -4695,14 +4838,24 @@ function colourBrightness(string $hex, float $percent) : string {
 	$rgb = [hexdec(substr($hex, 0, 2)), hexdec(substr($hex, 2, 2)), hexdec(substr($hex, 4, 2))];
 
 	// // CALCULATE
+	if (abs($percent) > 1) {
+		$percent = $percent / 100;
+	}
+
+	$percent = max(-1.0, min(1.0, $percent));
+
 	for ($i = 0; $i < 3; $i++) { // See if brighter or darker
 		if ($percent > 0) {
 			// Lighter
 			$rgb[$i] = round($rgb[$i] * $percent) + round(255 * (1 - $percent));
 		} else {
 			// Darker
-			$positivePercent = $percent - ($percent * 2);
-			$rgb[$i]         = round($rgb[$i] * (1 - $positivePercent)); // round($rgb[$i] * (1-$positivePercent));
+			$positivePercent = abs($percent);
+			$rgb[$i]         = round($rgb[$i] * (1 - $positivePercent));
+		}
+
+		if ($rgb[$i] < 0) {
+			$rgb[$i] = 0;
 		}
 
 		// In case rounding up causes us to go to 256
@@ -4716,7 +4869,7 @@ function colourBrightness(string $hex, float $percent) : string {
 
 	for ($i = 0; $i < 3; $i++) {
 		// Convert the decimal digit to hex
-		$hexDigit = dechex($rgb[$i]);
+		$hexDigit = dechex((int) $rgb[$i]);
 
 		// Add a leading zero if necessary
 		if (strlen($hexDigit) == 1) {
@@ -4808,14 +4961,27 @@ function add_business_hours(array $data, mixed &$xport_meta) : array {
 		$bh_start_matches = array_map('intval', $bh_start_matches);
 		$bh_end_matches   = array_map('intval', $bh_end_matches);
 
+		$bh_start_matches[1] = $bh_start_matches[1] ?? 0;
+		$bh_start_matches[2] = $bh_start_matches[2] ?? 0;
+		$bh_end_matches[1]   = $bh_end_matches[1] ?? 0;
+		$bh_end_matches[2]   = $bh_end_matches[2] ?? 0;
+
 		$start_bh_time = mktime($bh_start_matches[1], $bh_start_matches[2], 0, intval(date('m', $bh_graph_start)), intval(date('d', $bh_graph_start)), intval(date('Y', $bh_graph_start)));
 		$end_bh_time   = mktime($bh_end_matches[1], $bh_end_matches[2], 0, intval(date('m', $bh_graph_end)), intval(date('d', $bh_graph_end)), intval(date('Y', $bh_graph_end)));
+
+		if ($start_bh_time === false || $end_bh_time === false) {
+			return $data;
+		}
 
 		if ($start_bh_time < $bh_graph_start) {
 			if ($start_bh_time < $end_bh_time) {
 				$start_bh_time = $bh_graph_start;
 			} else {
-				$start_bh_time = mktime($bh_start_matches[1], $bh_start_matches[2], 0, intval(date('m', $bh_graph_start)), date('d', $bh_graph_start) + 1, intval(date('Y', $bh_graph_start)));
+				$next_day_time = mktime($bh_start_matches[1], $bh_start_matches[2], 0, intval(date('m', $bh_graph_start)), intval(date('d', $bh_graph_start)) + 1, intval(date('Y', $bh_graph_start)));
+
+				if ($next_day_time !== false) {
+					$start_bh_time = $next_day_time;
+				}
 			}
 		}
 
@@ -4825,8 +4991,12 @@ function add_business_hours(array $data, mixed &$xport_meta) : array {
 
 		if ($num_of_days <= read_config_option('business_hours_max_days')) {
 			for ($day = 0; $day < $num_of_days; $day++) {
-				$current_start_bh_time = mktime($bh_start_matches[1], $bh_start_matches[2], 0, intval(date('m', $start_bh_time)), date('d', $start_bh_time) + $day, intval(date('Y', $start_bh_time)));
-				$current_end_bh_time   = mktime($bh_end_matches[1], $bh_end_matches[2], 0, intval(date('m', $start_bh_time)), date('d', $start_bh_time) + $day, intval(date('Y', $start_bh_time)));
+				$current_start_bh_time = mktime($bh_start_matches[1], $bh_start_matches[2], 0, intval(date('m', $start_bh_time)), intval(date('d', $start_bh_time)) + $day, intval(date('Y', $start_bh_time)));
+				$current_end_bh_time   = mktime($bh_end_matches[1], $bh_end_matches[2], 0, intval(date('m', $start_bh_time)), intval(date('d', $start_bh_time)) + $day, intval(date('Y', $start_bh_time)));
+
+				if ($current_start_bh_time === false || $current_end_bh_time === false) {
+					continue;
+				}
 
 				if ($current_start_bh_time < $bh_graph_start) {
 					$current_start_bh_time = $bh_graph_start;
