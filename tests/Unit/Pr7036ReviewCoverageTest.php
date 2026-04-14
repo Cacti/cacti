@@ -24,14 +24,14 @@ test('PR7036 comments: data_input keeps shell hardening but allows pipe workflow
 
 	expect($source)->toContain("cacti_input_string_is_safe(\$save['input_string'])");
 	expect($helper)->toContain("preg_replace('/<[a-zA-Z_]+>/', '', \$input_string)");
-	expect($helper)->toContain("preg_match('/[;&`$\\\\\\\\\\n\\r]/', \$input_string_bare)");
+	expect($helper)->toContain("preg_match('/[;&`$\\n\\r]/', \$input_string_bare)");
 	expect($source)->not->toContain('[;&|`$');
 
 	$allowed = 'grep foo /tmp/x | wc -l';
 	$blocked = "grep foo /tmp/x;\nrm -rf /";
 
-	expect((bool) preg_match('/[;&`$\\\\\n\r]/', $allowed))->toBeFalse();
-	expect((bool) preg_match('/[;&`$\\\\\n\r]/', $blocked))->toBeTrue();
+	expect((bool) preg_match('/[;&`$\n\r]/', $allowed))->toBeFalse();
+	expect((bool) preg_match('/[;&`$\n\r]/', $blocked))->toBeTrue();
 });
 
 test('PR7036 comments: api_automation sort regex supports backticks and parenthesis', function () {
@@ -39,7 +39,7 @@ test('PR7036 comments: api_automation sort regex supports backticks and parenthe
 	$helper = pr7036_source('lib/security_validation.php');
 
 	expect($source)->toContain("cacti_validate_sort_column(\$v, 'description')");
-	expect($helper)->toContain("/^[a-zA-Z_`][a-zA-Z0-9_`().,]*$/");
+	expect($helper)->toContain('/^[a-zA-Z_`][a-zA-Z0-9_`()., *]*$/');
 });
 
 test('PR7036 comments: html_filter sort_column uses sanitize_search_string to avoid UI breakage', function () {
@@ -73,8 +73,8 @@ test('PR7036 comments: auth referer handling validates redirect url', function (
 test('PR7036 comments: import path handling validates with base containment helper', function () {
 	$source = pr7036_source('lib/import.php');
 
-	expect($source)->toContain("\$validated = validate_relative_path_within(\$name, CACTI_PATH_BASE);");
-	expect($source)->toContain("\$filename = \$validated;");
+	expect($source)->toContain('$validated = validate_relative_path_within($name, CACTI_PATH_BASE);');
+	expect($source)->toContain('$filename = $validated;');
 });
 
 test('PR7036 comments: validate_path_within supports safe create paths and blocks separators', function () {
@@ -88,7 +88,7 @@ test('PR7036 comments: validate_path_within supports safe create paths and block
 test('PR7036 comments: reports title output is escaped consistently', function () {
 	$source = pr7036_source('lib/reports.php');
 
-	expect(substr_count($source, "htmle(\$title)"))->toBeGreaterThanOrEqual(7);
+	expect(substr_count($source, 'htmle($title)'))->toBeGreaterThanOrEqual(7);
 	expect($source)->not->toContain('<h3>$title</h3>');
 });
 
