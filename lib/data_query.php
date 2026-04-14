@@ -1095,6 +1095,24 @@ function query_snmp_host(int $host_id, int $snmp_query_id) : bool {
 	// the last octet of the oid is the index by default
 	$index_parse_regexp = '/.*\.([0-9]+)$/';
 
+	/* Some devices (e.g. Juniper Netscreen) pad OID indexes with trailing
+	   .0 octets. When the default regex extracts the last octet, every
+	   index resolves to 0. Detect this and strip the padding before
+	   downstream parsing. This intentionally fixes the all-zero collapse
+	   without changing the existing last-octet parsing model. See GitHub
+	   issue #6108. */
+	if (!isset($snmp_queries['oid_index_parse']) && oid_index_should_strip_trailing_zero_padding($snmp_indexes, $index_parse_regexp)) {
+		query_debug_timer_offset('data_query', __('All indexes resolved to 0; stripping trailing .0 padding from OIDs'));
+
+		$result = oid_index_strip_trailing_zero_padding($snmp_indexes);
+
+		if ($result !== $snmp_indexes) {
+			$snmp_indexes = $result;
+		} else {
+			query_debug_timer_offset('data_query', __('Skipping trailing-zero stripping: collision detected after stripping'));
+		}
+	}
+
 	// Filtered index by value
 	if (isset($snmp_queries['value_index_parse'])) {
 		$value_parse_regexp = '/' . str_replace('VALUE/REGEXP:', '', $snmp_queries['value_index_parse']) . '/';
@@ -2948,4 +2966,85 @@ function data_query_duplicate(int $_data_query_id, string $data_query_name) : in
 	}
 
 	return false;
+}
+
+/**
+ * Detect when a multi-row OID walk appears padded with trailing .0 octets and
+ * can safely be considered for stripping.
+ *
+ * @param array  $indexes            Associative array of OID => value.
+ * @param string $index_parse_regexp Default last-octet index regexp.
+ */
+function oid_index_should_strip_trailing_zero_padding(array $indexes, string $index_parse_regexp): bool {
+	if (cacti_sizeof($indexes) <= 1) {
+		return false;
+	}
+
+	$test_indexes            = [];
+	$all_end_with_zero       = true;
+	$has_multi_trailing_zero = false;
+
+	foreach ($indexes as $oid => $value) {
+		if (preg_match($index_parse_regexp, $oid, $matches)) {
+			$test_indexes[$oid] = $matches[1];
+		}
+
+		if (!preg_match('/(?:\.0)+$/', $oid)) {
+			$all_end_with_zero = false;
+		}
+
+		if (preg_match('/(?:\.0){2,}$/', $oid)) {
+			$has_multi_trailing_zero = true;
+		}
+	}
+
+	$unique = array_unique(array_values($test_indexes));
+
+	return $all_end_with_zero
+		&& $has_multi_trailing_zero
+		&& cacti_sizeof($unique) === 1
+		&& $unique[0]            === '0';
+}
+
+/**
+ * Strips trailing .0 octets from SNMP OID index keys when all indexes in a
+ * multi-row walk resolve to 0 under the default last-octet regex.
+ *
+ * Only called when cacti_sizeof($indexes) > 1 and oid_index_parse is absent,
+ * so scalar OIDs (single-row walks and custom-regex walks) are never touched.
+ *
+ * Detection is intentionally conservative: stripping is only attempted when all
+ * OIDs end in .0 and at least one OID ends in repeated .0.0 padding, which
+ * avoids touching common single-.0 index patterns.
+ *
+ * Residual risk: a multi-row walk where every legitimate index ends in .0.0
+ * (e.g., IP-valued table indexes for a subnet ending in .0.0, such as
+ * 192.168.0.0) will match the heuristic. Full mitigation requires tightening
+ * the detection regex to (?:\.0){2,}$ and a collision-free resolve across all
+ * indexes; the collision check below catches the common sub-case but cannot
+ * distinguish padded zeros from legitimate trailing .0.0 index components.
+ *
+ * @param array $indexes Associative array of OID => value from an SNMP walk.
+ *
+ * @return array Stripped array if safe (no key collisions); original array otherwise.
+ */
+function oid_index_strip_trailing_zero_padding(array $indexes): array {
+	if (cacti_sizeof($indexes) <= 1) {
+		return $indexes;
+	}
+
+	$stripped = [];
+
+	foreach ($indexes as $oid => $value) {
+		$stripped_oid = preg_replace('/(?:\.0)+$/', '', $oid);
+
+		if (isset($stripped[$stripped_oid])) {
+			// Stripping would merge two distinct OIDs — bail out entirely.
+			return $indexes;
+		}
+
+		$stripped[$stripped_oid] = $value;
+	}
+
+	return $stripped;
 }
