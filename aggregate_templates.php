@@ -130,6 +130,12 @@ function aggregate_form_save() : void {
 			[$save1['id']]
 		);
 
+		if (!cacti_sizeof($old)) {
+			raise_message('aggregate_not_found', __('Aggregate Template not found.'), MESSAGE_LEVEL_ERROR);
+			header('Location: aggregate_templates.php');
+			exit;
+		}
+
 		$save_me = 0;
 
 		$save_me += ($old['name']          != $save1['name']);
@@ -353,6 +359,12 @@ function aggregate_template_edit() : void {
 			WHERE id = ?',
 			[grv('id')]
 		);
+
+		if (!cacti_sizeof($template)) {
+			raise_message('aggregate_not_found', __('Aggregate Template not found.'), MESSAGE_LEVEL_ERROR);
+			header('Location: aggregate_templates.php');
+			exit;
+		}
 
 		$header_label = __esc('Aggregate Template [edit: %s]', $template['name']);
 	} else {

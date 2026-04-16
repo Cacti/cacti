@@ -165,6 +165,11 @@ function upgrade_to_1_2_20() : void {
 								WHERE id = ?',
 								[$id['local_graph_id']]);
 
+							if (!cacti_sizeof($local_graph)) {
+								cacti_log('NOTE: Skipping local_graph_id ' . $id['local_graph_id'] . ' during upgrade - not found', false, 'UPGRADE');
+								continue;
+							}
+
 							switch($field_data['type_code']) {
 								case 'index_type':
 									$index_type = get_best_data_query_index_type($local_graph['host_id'], $local_graph['snmp_query_id']);
