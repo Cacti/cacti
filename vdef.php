@@ -158,6 +158,13 @@ function duplicate_vdef($_vdef_id, $vdef_title) {
 	global $fields_vdef_edit;
 
 	$vdef       = db_fetch_row_prepared('SELECT * FROM vdef WHERE id = ?', array($_vdef_id));
+
+	if (!cacti_sizeof($vdef)) {
+		raise_message('vdef_not_found', __('VDEF not found.'), MESSAGE_LEVEL_ERROR);
+		header('Location: vdef.php');
+		exit;
+	}
+
 	$vdef_items = db_fetch_assoc_prepared('SELECT * FROM vdef_items WHERE vdef_id = ?', array($_vdef_id));
 
 	/* substitute the title variable */
@@ -322,6 +329,12 @@ function vdef_item_remove_confirm() {
 
 	$vdef       = db_fetch_row_prepared('SELECT * FROM vdef WHERE id = ?', array(get_request_var('id')));
 	$vdef_item  = db_fetch_row_prepared('SELECT * FROM vdef_items WHERE id = ?', array(get_request_var('vdef_id')));
+
+	if (!cacti_sizeof($vdef) || !cacti_sizeof($vdef_item)) {
+		raise_message('vdef_item_not_found', __('VDEF or VDEF Item not found.'), MESSAGE_LEVEL_ERROR);
+		header('Location: vdef.php');
+		exit;
+	}
 
 	?>
 	<tr>
@@ -548,6 +561,12 @@ function vdef_edit() {
 			FROM vdef
 			WHERE id = ?',
 			array(get_request_var('id')));
+
+		if (!cacti_sizeof($vdef)) {
+			raise_message('vdef_not_found', __('VDEF not found.'), MESSAGE_LEVEL_ERROR);
+			header('Location: vdef.php');
+			exit;
+		}
 
 		$header_label = __esc('VDEFs [edit: %s]', $vdef['name']);
 	} else {

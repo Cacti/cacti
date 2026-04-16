@@ -181,6 +181,11 @@ function data_input_save_message($data_input_id, $type = 'input') {
 		WHERE di.id = ?",
 		array($data_input_id));
 
+	if (!cacti_sizeof($counts)) {
+		raise_message(1);
+		return;
+	}
+
 	if ($counts['templates'] == 0 && $counts['data_sources'] == 0) {
 		raise_message(1);
 	} elseif ($counts['templates'] > 0 && $counts['data_sources'] == 0) {
@@ -310,6 +315,12 @@ function field_remove_confirm() {
 		WHERE id = ?',
 		array(get_request_var('id')));
 
+	if (!cacti_sizeof($field)) {
+		raise_message('field_not_found', __('Data Input Field not found.'), MESSAGE_LEVEL_ERROR);
+		header('Location: data_input.php');
+		exit;
+	}
+
 	?>
 	<tr>
 		<td class='topBoxAlt'>
@@ -360,6 +371,12 @@ function field_remove() {
 		FROM data_input_fields
 		WHERE id = ?',
 		array(get_request_var('id')));
+
+	if (!cacti_sizeof($field)) {
+		raise_message('field_not_found', __('Data Input Field not found.'), MESSAGE_LEVEL_ERROR);
+		header('Location: data_input.php');
+		exit;
+	}
 
 	db_execute_prepared('DELETE FROM data_input_fields WHERE id = ?', array(get_request_var('id')));
 	db_execute_prepared('DELETE FROM data_input_data WHERE data_input_field_id = ?', array(get_request_var('id')));
@@ -504,6 +521,12 @@ function data_edit() {
 			FROM data_input
 			WHERE id = ?',
 			array(get_request_var('id')));
+
+		if (!cacti_sizeof($data_input)) {
+			raise_message('data_input_not_found', __('Data Input Method not found.'), MESSAGE_LEVEL_ERROR);
+			header('Location: data_input.php');
+			exit;
+		}
 
 		$header_label = __esc('Data Input Method [edit: %s]', $data_input['name']);
 	} else {

@@ -343,6 +343,10 @@ if (!$master && $thread == 0) {
 				WHERE network_id = ?',
 				array($network_id));
 
+			if (!cacti_sizeof($totals)) {
+				$totals = array('up' => 0, 'snmp' => 0);
+			}
+
 			/* take time and log performance data */
 			$end = microtime(true);
 
@@ -375,6 +379,11 @@ function discoverDevices($network_id, $thread) {
 		FROM automation_networks
 		WHERE id = ?',
 		array($network_id));
+
+	if (!cacti_sizeof($network)) {
+		cacti_log('ERROR: Network ID ' . $network_id . ' not found in automation_networks', false, 'AUTOM8');
+		return;
+	}
 
 	$temp = db_fetch_assoc('SELECT automation_templates.*, host_template.name
 		FROM automation_templates
@@ -1067,6 +1076,11 @@ function reportNetworkStatus($network_id, $old_devices) {
 				FROM automation_networks
 				WHERE id = ?',
 				array($network_id));
+
+			if (!cacti_sizeof($network)) {
+				cacti_log('ERROR: Network ID ' . $network_id . ' not found for notification', false, 'AUTOM8');
+				return;
+			}
 
 			$subject = 'Discovery of ' . $network['name'] . ' (' . $network['subnet_range'] . ') - ' . $status;
 			$output = '<h1>Discovery of ' . $network['name'] . '</h1><hr><br>' .
