@@ -557,6 +557,12 @@ function template_edit() {
 			WHERE id = ?',
 			array(get_request_var('id')));
 
+		if (!cacti_sizeof($template)) {
+			raise_message('graph_template_not_found', __('Graph Template not found.'), MESSAGE_LEVEL_ERROR);
+			header('Location: graph_templates.php');
+			exit;
+		}
+
 		$template_graph = db_fetch_row_prepared('SELECT *
 			FROM graph_templates_graph
 			WHERE graph_template_id = ?

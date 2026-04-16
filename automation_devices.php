@@ -101,6 +101,11 @@ function form_actions() {
 
 				foreach($selected_items as $id) {
 					$d = db_fetch_row_prepared('SELECT * FROM automation_devices WHERE id = ?', array($id));
+
+					if (!cacti_sizeof($d)) {
+						continue;
+					}
+
 					$d['poller_id']           = get_filter_request_var('poller_id');
 					$d['host_template']       = get_filter_request_var('host_template');
 					$d['availability_method'] = get_filter_request_var('availability_method');

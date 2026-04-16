@@ -426,6 +426,13 @@ function site_edit() {
 
 	if (!isempty_request_var('id')) {
 		$site = db_fetch_row_prepared('SELECT * FROM sites WHERE id = ?', array(get_request_var('id')));
+
+		if (!cacti_sizeof($site)) {
+			raise_message('site_not_found', __('Site not found.'), MESSAGE_LEVEL_ERROR);
+			header('Location: sites.php');
+			exit;
+		}
+
 		$header_label = __esc('Site [edit: %s]', $site['name']);
 	} else {
 		$header_label = __('Site [new]');

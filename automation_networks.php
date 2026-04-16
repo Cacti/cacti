@@ -325,6 +325,11 @@ function form_actions() {
 			/* ==================================================== */
 
 			$networks_info = db_fetch_row_prepared('SELECT name FROM automation_networks WHERE id = ?', array($matches[1]));
+
+			if (!cacti_sizeof($networks_info)) {
+				continue;
+			}
+
 			$networks_list .= '<li>' . html_escape($networks_info['name']) . '</li>';
 			$networks_array[$i] = $matches[1];
 		}
@@ -420,6 +425,13 @@ function network_edit() {
 
 	if (!isempty_request_var('id')) {
 		$network = db_fetch_row_prepared('SELECT * FROM automation_networks WHERE id = ?', array(get_request_var('id')));
+
+		if (!cacti_sizeof($network)) {
+			raise_message('network_not_found', __('Network not found.'), MESSAGE_LEVEL_ERROR);
+			header('Location: automation_networks.php');
+			exit;
+		}
+
 		$header_label = __esc('Network Discovery Range [edit: %s]', $network['name']);
 	} else {
 		$header_label = __('Network Discovery Range [new]');
