@@ -111,6 +111,12 @@ case 'view':
 		WHERE gtg.local_graph_id = ?',
 		array(get_request_var('local_graph_id')));
 
+	if (!cacti_sizeof($graph)) {
+		raise_message('graph_not_found', __('The Graph you requested does not exist.'), MESSAGE_LEVEL_ERROR);
+		header('Location: graph_view.php');
+		exit;
+	}
+
 	$graph_template_id = $graph['graph_template_id'];
 
 	$i = 0;
