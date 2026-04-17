@@ -478,7 +478,9 @@ function poll_for_data() {
 						);
 
 						if (function_exists('proc_open')) {
-							$cactiphp = proc_open(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg($config['base_path'] . '/script_server.php') . ' realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);
+							$php_bin  = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+							$srv_path = cacti_escapeshellarg($config['base_path'] . '/script_server.php');
+							$cactiphp = proc_open($php_bin . ' -q ' . $srv_path . ' realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);
 							$output = fgets($pipes[1], 1024);
 							$using_proc_function = true;
 						} else {
