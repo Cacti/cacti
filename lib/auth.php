@@ -4969,21 +4969,31 @@ function cacti_auth_transition($user_id, $reason = 'login') {
 	}
 
 	/* rotate remember-me cookie if present */
-	if (isset($_COOKIE['cacti_remembers']) && read_config_option('auth_cache_enabled') == 'on') {
-		$new_token = bin2hex(random_bytes(32));
-		$secret    = hash('sha512', $new_token, false);
+	if (isset($_COOKIE['cacti_remembers']) &&
+		read_config_option('auth_cache_enabled') == 'on' &&
+		db_table_exists('user_auth_cache')) {
+		try {
+			$new_token = bin2hex(random_bytes(32));
+		} catch (Exception $e) {
+			cacti_log('WARNING: cacti_auth_transition: random_bytes failed — skipping cookie rotation', false, 'AUTH');
+			$new_token = false;
+		}
 
-		db_execute_prepared('UPDATE user_auth_cache
-			SET token = ?, last_update = NOW()
-			WHERE user_id = ?',
-			array($secret, $user_id));
+		if ($new_token !== false) {
+			$secret = hash('sha512', $new_token, false);
 
-		$parts = explode(',', $_COOKIE['cacti_remembers']);
+				db_execute_prepared('UPDATE user_auth_cache
+				SET token = ?, last_update = NOW()
+				WHERE user_id = ?',
+				array($secret, $user_id));
 
-		if (cacti_sizeof($parts) == 2) {
-			cacti_cookie_set('cacti_remembers', $user_id . ',' . $new_token);
-		} elseif (cacti_sizeof($parts) >= 3) {
-			cacti_cookie_set('cacti_remembers', $user_id . ',' . $parts[1] . ',' . $new_token);
+			$parts = explode(',', $_COOKIE['cacti_remembers']);
+
+			if (cacti_sizeof($parts) == 2) {
+				cacti_cookie_set('cacti_remembers', $user_id . ',' . $new_token);
+			} elseif (cacti_sizeof($parts) >= 3) {
+				cacti_cookie_set('cacti_remembers', $user_id . ',' . $parts[1] . ',' . $new_token);
+			}
 		}
 	}
 
