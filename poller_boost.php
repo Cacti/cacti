@@ -1401,9 +1401,10 @@ function boost_purge_cached_png_files($forcerun) {
 				}
 			}
 
-			// Verify directory is within CACTI_PATH_BASE to prevent arbitrary file deletion
+			// Reject if cache dir IS the base path or is outside it (must be a strict subdirectory)
 			if ($normalized_cache === false || $normalized_base === false
-				|| ($normalized_cache !== $normalized_base && strpos($normalized_cache, $normalized_base . '/') !== 0)) {
+				|| $normalized_cache === $normalized_base
+				|| strpos($normalized_cache, $normalized_base . '/') !== 0) {
 				cacti_log("ERROR: Boost PNG Cache Directory '$cache_directory' is outside of Cacti base path. Purge aborted.", true, 'BOOST');
 				return;
 			}

@@ -7303,11 +7303,21 @@ function cacti_ptoa($title, $addr) {
  * @returns - (string) The sanitized string
  */
 function cacti_csv_safe($value) {
+	if (!is_string($value) && !is_numeric($value)) {
+		return $value;
+	}
+
 	$value = (string)$value;
 
-	if ($value != '') {
-		if (strpos($value, '=') === 0 || strpos($value, '+') === 0 || strpos($value, '-') === 0 || strpos($value, '@') === 0) {
-			$value = "'" . $value;
+	// Strip leading whitespace and control characters that spreadsheets
+	// treat as formula-start triggers (OWASP CSV injection)
+	$trimmed = ltrim($value, " \t\n\r\0\x0B");
+
+	$dangerous = array('=', '+', '-', '@', "\t", "\r");
+
+	foreach ($dangerous as $char) {
+		if (isset($trimmed[0]) && $trimmed[0] === $char) {
+			return "'" . $value;
 		}
 	}
 
@@ -7771,4 +7781,36 @@ function cacti_format_ipv6_colon($address) {
 	}
 
 	return($address);
+}
+
+/**
+ * cacti_path_is_within - Check whether a candidate path resolves to a
+ * location inside a given base directory.  Both paths are resolved via
+ * realpath() so symlinks and relative components are handled.  On
+ * Windows the comparison is case-insensitive.
+ *
+ * @param  string $candidate  The path to test
+ * @param  string $base       The base directory that must contain it
+ *
+ * @return bool  True when $candidate is strictly inside $base
+ */
+function cacti_path_is_within($candidate, $base) {
+	$resolved = realpath($candidate);
+
+	if ($resolved === false) {
+		return false;
+	}
+
+	$base_resolved = realpath($base);
+
+	if ($base_resolved === false) {
+		return false;
+	}
+
+	if (DIRECTORY_SEPARATOR === '\\') {
+		$resolved      = str_replace('\\', '/', strtolower($resolved));
+		$base_resolved = str_replace('\\', '/', strtolower($base_resolved));
+	}
+
+	return strpos($resolved, $base_resolved . '/') === 0;
 }
