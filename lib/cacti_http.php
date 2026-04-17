@@ -145,3 +145,29 @@ function cacti_http_fetch($url, $opts = array(), $timeout = 10) {
 
 	return $result;
 }
+
+/**
+ * cacti_remote_url - Build a URL with action and query parameters.
+ *
+ * Appends an action parameter and any additional key/value pairs to
+ * the base URL, properly encoding each component with rawurlencode().
+ *
+ * @param  string $base_url  The base URL (may already contain a query string)
+ * @param  string $action    The action name (empty string to skip)
+ * @param  array  $params    Additional query parameters as key => value
+ *
+ * @return string  The assembled URL
+ */
+function cacti_remote_url($base_url, $action, $params = array()) {
+	$url = $base_url;
+
+	if (!empty($action)) {
+		$url .= (strpos($url, '?') === false ? '?' : '&') . 'action=' . rawurlencode($action);
+	}
+
+	foreach ($params as $key => $value) {
+		$url .= '&' . rawurlencode($key) . '=' . rawurlencode($value);
+	}
+
+	return $url;
+}

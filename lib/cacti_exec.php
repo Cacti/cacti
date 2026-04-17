@@ -205,3 +205,59 @@ function cacti_exec_redact_cmd($cmd) {
 
 	return $cmd;
 }
+
+/**
+ * cacti_exec_with_redirect - Execute a command with stdout/stderr file redirection.
+ *
+ * Builds the command from an argv array using cacti_escapeshellcmd/arg,
+ * then runs it via proc_open with optional file descriptors for stdout
+ * and stderr.
+ *
+ * @param  array       $argv         Command and arguments
+ * @param  string|null $stdout_file  File path for stdout (null = pipe)
+ * @param  string|null $stderr_file  File path for stderr (null = pipe)
+ * @param  bool        $append       Append to files instead of truncating
+ *
+ * @return int|false  Exit code, or false on failure
+ */
+function cacti_exec_with_redirect($argv, $stdout_file = null, $stderr_file = null, $append = false) {
+	if (!is_array($argv) || empty($argv)) {
+		cacti_log('ERROR: cacti_exec_with_redirect: empty argv', false, 'SYSTEM');
+		return false;
+	}
+
+	$cmd = cacti_escapeshellcmd($argv[0]);
+
+	for ($i = 1; $i < count($argv); $i++) {
+		$cmd .= ' ' . cacti_escapeshellarg($argv[$i]);
+	}
+
+	$mode = $append ? 'a' : 'w';
+
+	$descriptors = array(
+		0 => array('pipe', 'r'),
+		1 => $stdout_file !== null ? array('file', $stdout_file, $mode) : array('pipe', 'w'),
+		2 => $stderr_file !== null ? array('file', $stderr_file, $mode) : array('pipe', 'w'),
+	);
+
+	$process = proc_open($cmd, $descriptors, $pipes);
+
+	if (!is_resource($process)) {
+		return false;
+	}
+
+	fclose($pipes[0]);
+
+	if (!isset($descriptors[1][0]) || $descriptors[1][0] === 'pipe') {
+		$stdout = stream_get_contents($pipes[1]);
+		fclose($pipes[1]);
+	}
+
+	if (!isset($descriptors[2][0]) || $descriptors[2][0] === 'pipe') {
+		fclose($pipes[2]);
+	}
+
+	$retval = proc_close($process);
+
+	return $retval;
+}

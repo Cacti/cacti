@@ -2285,3 +2285,49 @@ function db_dump_data($database = '', $tables = '', $credentials = array(), $out
 	return $retval;
 }
 
+/**
+ * cacti_fetch_by_id - Fetch a single row by its integer primary key.
+ *
+ * Sanitizes the table name, column list, and ID column to prevent
+ * injection. Returns false when the ID is non-positive or no row
+ * is found.
+ *
+ * @param  string       $table      Table name (alphanumeric + underscore only)
+ * @param  int          $id         The row ID to look up
+ * @param  string|array $columns    Column(s) to select ('*' for all)
+ * @param  string       $id_column  Name of the primary key column
+ * @param  mixed        $db_conn    Optional database connection
+ *
+ * @return array|false  The row as an associative array, or false
+ */
+function cacti_fetch_by_id($table, $id, $columns = '*', $id_column = 'id', $db_conn = false) {
+	$id = intval($id);
+
+	if ($id <= 0) {
+		return false;
+	}
+
+	$safe_table  = preg_replace('/[^a-zA-Z0-9_]/', '', $table);
+	$safe_id_col = preg_replace('/[^a-zA-Z0-9_]/', '', $id_column);
+
+	if (is_array($columns)) {
+		$safe_cols = implode(', ', array_map(function($c) {
+			return '`' . preg_replace('/[^a-zA-Z0-9_]/', '', $c) . '`';
+		}, $columns));
+	} else {
+		$safe_cols = $columns === '*' ? '*' : '`' . preg_replace('/[^a-zA-Z0-9_]/', '', $columns) . '`';
+	}
+
+	$row = db_fetch_row_prepared(
+		"SELECT $safe_cols FROM `$safe_table` WHERE `$safe_id_col` = ?",
+		array($id),
+		$db_conn
+	);
+
+	if (!cacti_sizeof($row)) {
+		return false;
+	}
+
+	return $row;
+}
+

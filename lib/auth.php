@@ -4997,3 +4997,30 @@ function cacti_auth_transition($user_id, $reason = 'login') {
 	return true;
 }
 
+/**
+ * cacti_csrf_rotate - Rotate CSRF token by regenerating the session.
+ *
+ * Call at privilege boundaries (login, role change, sensitive form post)
+ * to prevent session fixation and CSRF token reuse. Also refreshes the
+ * remember-me cookie when present.
+ *
+ * @param  string $reason  Reason for the rotation (logged at medium verbosity)
+ *
+ * @return void
+ */
+function cacti_csrf_rotate($reason = 'boundary') {
+	cacti_session_regenerate();
+
+	if (isset($_SESSION['sess_user_id'])) {
+		$user_id = $_SESSION['sess_user_id'];
+
+		if (isset($_COOKIE['cacti_remembers'])) {
+			set_auth_cookie(array('id' => $user_id));
+		}
+
+		if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM) {
+			cacti_log("AUTH: CSRF rotate for user $user_id ($reason)", false, 'AUTH');
+		}
+	}
+}
+

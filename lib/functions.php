@@ -7812,5 +7812,104 @@ function cacti_path_is_within($candidate, $base) {
 		$base_resolved = str_replace('\\', '/', strtolower($base_resolved));
 	}
 
-	return strpos($resolved, $base_resolved . '/') === 0;
+	return strpos($resolved, $base_resolved . '/') === 0 || $resolved === $base_resolved;
+}
+
+/**
+ * cacti_redirect - Redirect to a validated URL.
+ *
+ * Uses validate_redirect_url() to ensure the target is safe before
+ * sending the Location header. Falls back to $default when the URL
+ * is empty or fails validation.
+ *
+ * @param  string $url      Target URL (empty to use HTTP_REFERER)
+ * @param  string $default  Fallback URL when input is empty or invalid
+ * @param  int    $status   HTTP status code for the redirect
+ *
+ * @return void  (exits after sending the header)
+ */
+function cacti_redirect($url = '', $default = 'index.php', $status = 302) {
+	$safe_url = validate_redirect_url(
+		!empty($url) ? $url : (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $default),
+		$default
+	);
+
+	header('Location: ' . $safe_url, true, $status);
+	exit;
+}
+
+/**
+ * cacti_redact_sensitive - Replace sensitive values in an associative array.
+ *
+ * Walks the array recursively and replaces any value whose key matches
+ * a known sensitive name (password, token, community, etc.) with
+ * '[REDACTED]'. Safe for logging request data or debug dumps.
+ *
+ * @param  mixed $data  Array to redact (non-arrays returned unchanged)
+ *
+ * @return mixed  The redacted copy
+ */
+function cacti_redact_sensitive($data) {
+	static $sensitive_keys = null;
+
+	if ($sensitive_keys === null) {
+		$sensitive_keys = array(
+			'password', 'pass', 'snmp_password', 'snmp_priv_passphrase',
+			'snmp_auth_passphrase', 'rsa_private_key', 'secret',
+			'auth_key', 'priv_key', 'token', 'cookie', 'community',
+			'snmp_community', 'specific_password', 'ldap_password',
+		);
+	}
+
+	if (!is_array($data)) {
+		return $data;
+	}
+
+	$redacted = array();
+
+	foreach ($data as $key => $value) {
+		$lower = strtolower($key);
+		$is_sensitive = false;
+
+		foreach ($sensitive_keys as $sk) {
+			if ($lower === $sk || strpos($lower, $sk) !== false) {
+				$is_sensitive = true;
+				break;
+			}
+		}
+
+		$redacted[$key] = $is_sensitive
+			? '[REDACTED]'
+			: (is_array($value) ? cacti_redact_sensitive($value) : $value);
+	}
+
+	return $redacted;
+}
+
+/**
+ * cacti_temp_file - Execute a callback with a temporary file, then clean up.
+ *
+ * Creates a temp file via tempnam(), passes its path to $callback,
+ * and deletes the file in a finally block regardless of exceptions.
+ *
+ * @param  string   $prefix    Prefix for the temp filename
+ * @param  callable $callback  Receives the temp file path as its argument
+ *
+ * @return mixed  The return value of $callback, or false on tempnam failure
+ */
+function cacti_temp_file($prefix, $callback) {
+	$path = tempnam(sys_get_temp_dir(), $prefix);
+
+	if ($path === false) {
+		cacti_log('ERROR: cacti_temp_file: tempnam failed', false, 'SYSTEM');
+		return false;
+	}
+
+	try {
+		$result = call_user_func($callback, $path);
+	} finally {
+		@unlink($path);
+	}
+
+	return $result;
 }
