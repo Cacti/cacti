@@ -118,9 +118,12 @@ if (isset_request_var('disable_cache')) {
 	$graph_data_array['disable_cache'] = true;
 }
 
-/* set the theme */
+/* set the theme — validate against installed themes to prevent LFI */
 if (isset_request_var('graph_theme')) {
-	$graph_data_array['graph_theme'] = get_request_var('graph_theme');
+	$requested_theme = basename(get_request_var('graph_theme'));
+	if (is_dir($config['base_path'] . '/include/themes/' . $requested_theme)) {
+		$graph_data_array['graph_theme'] = $requested_theme;
+	}
 }
 
 if (isset_request_var('rra_id')) {
