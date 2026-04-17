@@ -43,21 +43,10 @@ function render_external_links($style = 'FRONT') {
 				} else {
 					print '<div id="content">';
 
-					$content_dir = realpath($config['base_path'] . '/include/content');
-					$file = realpath($config['base_path'] . '/include/content/' . $page['contentfile']);
+					$file = $config['base_path'] . '/include/content/' . $page['contentfile'];
 
-					if ($content_dir !== false) {
-						$content_dir = str_replace('\\', '/', $content_dir);
-					}
-					if ($file !== false) {
-						$file = str_replace('\\', '/', $file);
-					}
-
-					/* On Windows, realpath() may return mixed-case drive letters; use
-					 * case-insensitive comparison to avoid false rejections. */
-					$path_cmp = (DIRECTORY_SEPARATOR === '\\') ? 'stripos' : 'strpos';
-					if ($file !== false && $content_dir !== false && $path_cmp($file, $content_dir . '/') === 0) {
-						include_once($file);
+					if (cacti_path_is_within($file, $config['base_path'] . '/include/content')) {
+						include_once(realpath($file));
 					} else {
 						print '<h1>The file \'' . html_escape($page['contentfile']) . '\' does not exist!!</h1>';
 					}
