@@ -656,8 +656,24 @@ function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orpha
 		$fdata = base64_decode($f['data'], true);
 		$name  = $f['name'];
 
-		if (str_contains($name, 'scripts/') || str_contains($name, 'resource/')) {
+		if (strpos($name, 'scripts/') !== false || strpos($name, 'resource/') !== false) {
 			$filename = CACTI_PATH_BASE . "/$name";
+
+			if (preg_match('#^[a-z][a-z0-9+.\-]*://#i', $name)) {
+				cacti_log('FATAL: Stream wrapper rejected in import file name: ' . $name, true, 'IMPORT', POLLER_VERBOSITY_LOW);
+				$filestatus[$filename] = __('stream wrapper rejected');
+				continue;
+			}
+
+			$validated_path = validate_relative_path_within($name, CACTI_PATH_BASE);
+
+			if ($validated_path === false) {
+				cacti_log('FATAL: Path traversal detected in import file name: ' . $name, true, 'IMPORT', POLLER_VERBOSITY_LOW);
+				$filestatus[$filename] = __('path traversal rejected');
+				continue;
+			}
+
+			$filename = $validated_path;
 
 			if (!$preview) {
 				if (!cacti_sizeof($import_files) || in_array($name, $import_files, true)) {
