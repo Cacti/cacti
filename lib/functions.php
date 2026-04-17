@@ -9805,20 +9805,3 @@ if (!function_exists('stats_standard_deviation')) {
 	}
 }
 
-/**
- * Returns $column if it is in $allowed, else $default.
- * Prevents ORDER BY injection via unsanitized sort_column parameters.
- *
- * @param string $column  The requested sort column
- * @param array  $allowed Allowlist of valid column names
- * @param string $default Default when $column is not in $allowed
- *
- * @return string safe column name
- */
-function cacti_validate_sort_column(string $column, array $allowed, string $default = '') : string {
-	if (in_array($column, $allowed, true)) {
-		return $column;
-	}
-
-	return $default !== '' ? $default : (count($allowed) > 0 ? $allowed[0] : 'id');
-}
