@@ -973,9 +973,9 @@ function get_format_message_instance($current_message) {
 
 			break;
 		default:
-		$message = '<span class="deviceUnknown">' . $fmessage . '</span>';
+			$message = '<span class="deviceUnknown">' . $fmessage . '</span>';
 
-		break;
+			break;
 	}
 
 	return $message;
