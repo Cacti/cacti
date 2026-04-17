@@ -54,7 +54,7 @@
         "phpmailer/phpmailer": "^7.0.2",
         "phpseclib/phpseclib": "^3.0",
         "slim/slim": "^4.14",
-        "stevenmaguire/oauth2-keycloak": "^5.1",
+        "stevenmaguire/oauth2-keycloak": "^6.0",
         "stevenmaguire/oauth2-microsoft": "^2.2"
     },
     "require-dev": {
@@ -91,7 +91,7 @@
         "sort-packages": true,
         "vendor-dir": "./include/vendor",
         "audit": {
-          "block-insecure": false
+            "block-insecure": false
         },
         "allow-plugins": {
             "pestphp/pest-plugin": true
