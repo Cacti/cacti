@@ -142,7 +142,7 @@ if ($config['poller_id'] == 1 || read_config_option('storage_location')) {
 	$url .= '&rra_id=' . $rra_id;
 
 	foreach($graph_data_array as $variable => $value) {
-		$url .= '&' . $variable . '=' . $value;
+		$url .= '&' . rawurlencode((string)$variable) . '=' . rawurlencode((string)$value);
 	}
 
 	$output = call_remote_data_collector(1, $url);

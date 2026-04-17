@@ -650,7 +650,7 @@ function settings_javascript() {
 		});
 
 		$('#return').click(function() {
-			document.location = '<?php print $_SESSION['profile_referer'];?>';
+			document.location = <?php print json_encode($_SESSION['profile_referer'] ?? '');?>;
 		});
 
 		// set the buttons active
