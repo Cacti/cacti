@@ -109,6 +109,8 @@ function form_save() {
 	validate_request_vars();
 
 	if (isset_request_var('save_component_import')) {
+		$session_tmpfile = false;
+
 		if (isset($_FILES['import_file']['tmp_name']) &&
 			($_FILES['import_file']['tmp_name'] != 'none') &&
 			($_FILES['import_file']['tmp_name'] != '')) {
@@ -126,6 +128,8 @@ function form_save() {
 				header('Location: package_import.php');
 				exit;
 			}
+
+			$session_tmpfile = true;
 		} else {
 			header('Location: package_import.php');
 			exit;
@@ -134,6 +138,10 @@ function form_save() {
 		if (isset_request_var('trust_signer') && get_request_var('trust_signer') == 'on') {
 			import_validate_public_key($xmlfile, true);
 		} elseif (!package_validate_signature($xmlfile)) {
+			if ($session_tmpfile) {
+				@unlink($xmlfile);
+			}
+
 			raise_message('verify_warning', __('You have not Trusted this Package Author.  If you wish to import, check the Automatically Trust Author checkbox'), MESSAGE_LEVEL_ERROR);
 			header('Location: package_import?package_location=0');
 			exit;
