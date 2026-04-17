@@ -351,7 +351,34 @@ function import_package_get_name($xmlfile) {
 	}
 }
 
+
+/**
+ * Validate that a file path is safe for use with PHP stream wrappers.
+ * Rejects nested wrappers (phar://, php://filter, expect://, data://)
+ * that could lead to deserialization or information disclosure.
+ *
+ * @param string $path  The file path to validate
+ * @return bool  True if safe, false if wrapper injection detected
+ */
+function cacti_validate_stream_path($path) {
+	$dangerous_wrappers = array('phar://', 'php://', 'expect://', 'data://', 'glob://', 'ssh2://');
+
+	$lower = strtolower($path);
+	foreach ($dangerous_wrappers as $wrapper) {
+		if (strpos($lower, $wrapper) !== false) {
+			cacti_log("ERROR: Dangerous stream wrapper detected in path: $path", false, 'IMPORT');
+			return false;
+		}
+	}
+
+	return true;
+}
+
 function import_package_get_details($xmlfile) {
+	if (!cacti_validate_stream_path($xmlfile)) {
+		return array();
+	}
+
 	$filename = "compress.zlib://$xmlfile";
 
 	$return = array();
@@ -434,6 +461,10 @@ function import_package_get_details($xmlfile) {
 
 function import_read_package_data($xmlfile, &$public_key) {
 	$public_key = import_package_get_public_key($xmlfile);
+
+	if (!cacti_validate_stream_path($xmlfile)) {
+		return false;
+	}
 
 	$filename = "compress.zlib://$xmlfile";
 
