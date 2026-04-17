@@ -3950,12 +3950,20 @@ function tabsWrapping() {
 	var mainTabPos = $('.maintabs:first').position();
 	var tabHeight = $('#tabs').height();
 
+	if (mainTabPos == null) {
+		return false;
+	}
+
 	if ($('.usertabs').length) {
 		var mainTabHeight = tabHeight;
 		var userTabPos = $('.usertabs').position();
 	} else {
 		var mainTabHeight = $('.maintabs:first nav').height();
 		var userTabPos = mainTabPos;
+	}
+
+	if (userTabPos == null) {
+		return false;
 	}
 
 	var bodyWidth = $('body').width();
@@ -3991,7 +3999,7 @@ function tabsWrapping() {
 }
 
 /* Graph related javascript functions */
-if (typeof urlPath == 'undefined') {
+if (!urlPath) {
 	var urlPath = '';
 }
 
