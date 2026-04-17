@@ -624,7 +624,12 @@ if ($config['is_web']) {
 	if (isset_request_var('action')) {
 		$action = get_nfilter_request_var('action');
 
-		$bad_actions = array('save', 'update_data', 'changepassword');
+		$bad_actions = array(
+			'save', 'update_data', 'changepassword',
+			'delete', 'remove', 'purge', 'disable', 'enable',
+			'install', 'uninstall', 'moveup', 'movedown',
+			'clear', 'kill', 'apply', 'ajax_save', 'update_fields'
+		);
 
 		foreach($bad_actions as $bad) {
 			if ($action == $bad && !isset($_POST['__csrf_magic'])) {
