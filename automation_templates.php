@@ -1064,14 +1064,14 @@ function template_edit() : void {
 		'sysName' => [
 			'method'        => 'textbox',
 			'friendly_name' => __('System Name Match'),
-			'description'   => __('This is a unique string that will be matched to a device's sysName string to pair it to this Device Rule.  Any Perl regular expression can be used in addition to any SQL Where expression.'),
+			'description'   => __('This is a unique string that will be matched to a device\'s sysName string to pair it to this Device Rule.  Any Perl regular expression can be used in addition to any SQL Where expression.'),
 			'value'         => '|arg1:sysName|',
 			'max_length'    => '128',
 		],
 		'sysOid' => [
 			'method'        => 'textbox',
 			'friendly_name' => __('System OID Match'),
-			'description'   => __('This is a unique string that will be matched to a device's sysOid string to pair it to this Device Rule.  Any Perl regular expression can be used in addition to any SQL Where expression.'),
+			'description'   => __('This is a unique string that will be matched to a device\'s sysOid string to pair it to this Device Rule.  Any Perl regular expression can be used in addition to any SQL Where expression.'),
 			'value'         => '|arg1:sysOid|',
 			'max_length'    => '128',
 		],
