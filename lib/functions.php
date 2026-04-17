@@ -9804,4 +9804,3 @@ if (!function_exists('stats_standard_deviation')) {
 		return sqrt($carry / $total_items);
 	}
 }
-
