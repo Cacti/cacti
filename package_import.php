@@ -304,19 +304,19 @@ function package_diff_file() {
 		'ignoreCase' => false
 	);
 
-	$newfile = package_file_get_contents($filename);
-
-	if ($newfile !== false) {
-		$newfile = str_replace("\n\r", "\n", $newfile);
-		$newfile = explode("\n", $newfile);
-	}
-
 	$validated_path = validate_relative_path_within($filename, $config['base_path']);
 
 	if ($validated_path === false) {
 		print '<h3>' . __('Error: Invalid file path.') . '</h3>';
 
 		return;
+	}
+
+	$newfile = package_file_get_contents($filename);
+
+	if ($newfile !== false) {
+		$newfile = str_replace("\n\r", "\n", $newfile);
+		$newfile = explode("\n", $newfile);
 	}
 
 	$oldfile = file_get_contents($validated_path);
