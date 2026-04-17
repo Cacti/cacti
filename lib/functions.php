@@ -6397,6 +6397,8 @@ function get_default_contextoption($timeout = false) {
 				'verify_peer'       => true,
 				'verify_peer_name'  => true,
 				'allow_self_signed' => false,
+			),
+			'http' => array(
 				'follow_location'   => 0,
 			)
 		);
@@ -7772,4 +7774,24 @@ function cacti_format_ipv6_colon($address) {
 	}
 
 	return($address);
+}
+
+/**
+ * cacti_validate_sort_column - returns $column if it is in $allowed, else $default.
+ * Prevents ORDER BY injection from user-controlled sort parameters.
+ *
+ * @param  string $column   - the requested sort column
+ * @param  array  $allowed  - allowlist of valid column names
+ * @param  string $default  - value to return when $column is not in $allowed
+ *
+ * @return string  safe column name
+ */
+function cacti_validate_sort_column($column, $allowed, $default = '') {
+	if (in_array($column, $allowed, true)) {
+		return $column;
+	}
+	if ($default !== '') {
+		return $default;
+	}
+	return count($allowed) > 0 ? $allowed[0] : 'id';
 }
