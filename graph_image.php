@@ -22,17 +22,17 @@
  +-------------------------------------------------------------------------+
 */
 
-/* since we'll have additional headers, tell php when to flush them */
+// since we'll have additional headers, tell php when to flush them
 ob_start();
 
 $guest_account = true;
 $auth_text     = true;
-$gtype = 'png';
+$gtype         = 'png';
 
 include('./include/auth.php');
 include_once('./lib/rrd.php');
 
-/* ================= input validation ================= */
+// ================= input validation =================
 get_filter_request_var('graph_start');
 get_filter_request_var('graph_end');
 get_filter_request_var('graph_height');
@@ -43,39 +43,44 @@ if (isset_request_var('graph_nolegend')) {
 	set_request_var('graph_nolegend', 'true');
 }
 
-get_filter_request_var('graph_theme', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
-/* ==================================================== */
+get_filter_request_var('graph_theme', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
+// ====================================================
 
 api_plugin_hook_function('graph_image');
 
-$graph_data_array = array();
+$graph_data_array = [];
 
 // Determine the graph type of the output
 if (!isset_request_var('image_format')) {
 	$type   = db_fetch_cell_prepared('SELECT image_format_id
 		FROM graph_templates_graph
 		WHERE local_graph_id = ?',
-		array(get_request_var('local_graph_id')));
+		[get_request_var('local_graph_id')]);
 
 	switch($type) {
-	case '1':
-		$gtype = 'png';
-		break;
-	case '3':
-		$gtype = 'svg+xml';
-		break;
+		case '1':
+			$gtype = 'png';
+
+			break;
+		case '3':
+			$gtype = 'svg+xml';
+
+			break;
 	}
 } else {
 	switch(strtolower(get_nfilter_request_var('image_format'))) {
-	case 'png':
-		$gtype = 'png';
-		break;
-	case 'svg':
-		$gtype = 'svg+xml';
-		break;
-	default:
-		$gtype = 'png';
-		break;
+		case 'png':
+			$gtype = 'png';
+
+			break;
+		case 'svg':
+			$gtype = 'svg+xml';
+
+			break;
+		default:
+			$gtype = 'png';
+
+			break;
 	}
 }
 
@@ -83,44 +88,45 @@ $graph_data_array['image_format'] = $gtype;
 
 cacti_session_close();
 
-/* override: graph start time (unix time) */
+// override: graph start time (unix time)
 if (!isempty_request_var('graph_start') && get_request_var('graph_start') < FILTER_VALIDATE_MAX_DATE_AS_INT) {
 	$graph_data_array['graph_start'] = get_request_var('graph_start');
 }
 
-/* override: graph end time (unix time) */
+// override: graph end time (unix time)
 if (!isempty_request_var('graph_end') && get_request_var('graph_end') < FILTER_VALIDATE_MAX_DATE_AS_INT) {
 	$graph_data_array['graph_end'] = get_request_var('graph_end');
 }
 
-/* override: graph height (in pixels) */
+// override: graph height (in pixels)
 if (!isempty_request_var('graph_height') && get_request_var('graph_height') < 3000) {
 	$graph_data_array['graph_height'] = get_request_var('graph_height');
 }
 
-/* override: graph width (in pixels) */
+// override: graph width (in pixels)
 if (!isempty_request_var('graph_width') && get_request_var('graph_width') < 3000) {
 	$graph_data_array['graph_width'] = get_request_var('graph_width');
 }
 
-/* override: skip drawing the legend? */
+// override: skip drawing the legend?
 if (!isempty_request_var('graph_nolegend')) {
 	$graph_data_array['graph_nolegend'] = get_request_var('graph_nolegend');
 }
 
-/* print RRDtool graph source? */
+// print RRDtool graph source?
 if (!isempty_request_var('show_source')) {
 	$graph_data_array['print_source'] = get_request_var('show_source');
 }
 
-/* disable cache check */
+// disable cache check
 if (isset_request_var('disable_cache')) {
 	$graph_data_array['disable_cache'] = true;
 }
 
-/* set the theme — validate against installed themes to prevent LFI */
+// set the theme — validate against installed themes to prevent LFI
 if (isset_request_var('graph_theme')) {
 	$requested_theme = basename(get_request_var('graph_theme'));
+
 	if (is_dir($config['base_path'] . '/include/themes/' . $requested_theme)) {
 		$graph_data_array['graph_theme'] = $requested_theme;
 	}
@@ -137,14 +143,14 @@ if (isset_request_var('rra_id')) {
 }
 
 if ($config['poller_id'] == 1 || read_config_option('storage_location')) {
-	$null_param = array();
-	$output = rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
+	$null_param = [];
+	$output     = rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
 } else {
 	$url  = $config['url_path'] . 'remote_agent.php?action=graph_json';
 	$url .= '&local_graph_id=' . get_request_var('local_graph_id');
 	$url .= '&rra_id=' . $rra_id;
 
-	foreach($graph_data_array as $variable => $value) {
+	foreach ($graph_data_array as $variable => $value) {
 		$url .= '&' . rawurlencode((string)$variable) . '=' . rawurlencode((string)$value);
 	}
 
@@ -163,19 +169,19 @@ if ($config['poller_id'] == 1 || read_config_option('storage_location')) {
 }
 
 if ($output !== false && $output != '') {
-	/* flush the headers now */
+	// flush the headers now
 	ob_end_clean();
 
-	header('Content-type: image/'. $gtype);
+	header('Content-type: image/' . $gtype);
 	header('Cache-Control: max-age=15');
 
 	print $output;
 } else {
 	ob_start();
 
-	/* get the error string */
+	// get the error string
 	$graph_data_array['get_error'] = true;
-	$null_param = array();
+	$null_param                    = [];
 	rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
 
 	$error = ob_get_contents();
@@ -201,4 +207,3 @@ if ($output !== false && $output != '') {
 		print file_get_contents(__DIR__ . '/images/cacti_error_image.png');
 	}
 }
-

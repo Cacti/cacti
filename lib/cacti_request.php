@@ -27,6 +27,11 @@
  *
  * These helpers eliminate repetitive inline validation that is easy to
  * get wrong. Each function returns a safe-by-construction value.
+ * @param mixed $col_param
+ * @param mixed $dir_param
+ * @param mixed $default_col
+ * @param mixed $default_dir
+ * @param mixed $allowed
  */
 
 /**
@@ -35,11 +40,11 @@
  * Only column names present in $allowed are accepted. Direction is
  * forced to ASC or DESC regardless of user input.
  *
- * @param  string $col_param  Request variable name for the sort column
- * @param  string $dir_param  Request variable name for the sort direction
- * @param  string $default_col  Default column if input is missing/invalid
- * @param  string $default_dir  Default direction (ASC or DESC)
- * @param  array  $allowed      Whitelist of valid column names
+ * @param string $col_param   Request variable name for the sort column
+ * @param string $dir_param   Request variable name for the sort direction
+ * @param string $default_col Default column if input is missing/invalid
+ * @param string $default_dir Default direction (ASC or DESC)
+ * @param array  $allowed     Whitelist of valid column names
  *
  * @return array Two-element array: [column, direction]
  */
@@ -55,7 +60,7 @@ function get_request_sort($col_param, $dir_param, $default_col, $default_dir, $a
 		$dir = $default_dir;
 	}
 
-	return array($col, $dir);
+	return [$col, $dir];
 }
 
 /**
@@ -64,7 +69,7 @@ function get_request_sort($col_param, $dir_param, $default_col, $default_dir, $a
  * Filters out non-numeric values and casts all results to int.
  * Returns an empty array if the variable is missing or empty.
  *
- * @param  string $name The request variable name
+ * @param string $name The request variable name
  *
  * @return array Array of integer IDs
  */
@@ -73,13 +78,13 @@ function get_request_ids($name) {
 
 	if (!is_array($raw)) {
 		if (is_numeric($raw)) {
-			return array((int) $raw);
+			return [(int) $raw];
 		}
 
-		return array();
+		return [];
 	}
 
-	$ids = array();
+	$ids = [];
 
 	foreach ($raw as $val) {
 		if (is_numeric($val)) {
@@ -96,14 +101,14 @@ function get_request_ids($name) {
  * Wraps the escaped value in percent signs for substring matching
  * and passes the result through db_qstr() for quoting.
  *
- * @param  string $value  The raw user input
+ * @param string $value The raw user input
  *
  * @return string A db_qstr()-quoted, LIKE-safe value (e.g. '%term%')
  */
 function db_qstr_like($value) {
 	$escaped = str_replace(
-		array('%', '_', '\\'),
-		array('\\%', '\\_', '\\\\'),
+		['%', '_', '\\'],
+		['\\%', '\\_', '\\\\'],
 		$value
 	);
 
@@ -116,9 +121,9 @@ function db_qstr_like($value) {
  * Each value is cast to int via intval(). Returns '(0)' for empty
  * or non-array input, which safely matches nothing.
  *
- * @param  array $values  Array of integer values
+ * @param array $values Array of integer values
  *
- * @return string  SQL fragment like '(1,2,3)'
+ * @return string SQL fragment like '(1,2,3)'
  */
 function cacti_db_in(array $values) {
 	if (empty($values)) {
@@ -138,29 +143,29 @@ function cacti_db_in(array $values) {
  *   list($clause, $param) = cacti_db_like($user_input);
  *   db_fetch_assoc_prepared("SELECT * FROM t WHERE col $clause", array($param));
  *
- * @param  string $pattern  Raw user input
+ * @param string $pattern Raw user input
  *
- * @return array  ['LIKE ?', '%escaped_pattern%']
+ * @return array ['LIKE ?', '%escaped_pattern%']
  */
 function cacti_db_like($pattern) {
 	$escaped = str_replace(
-		array('%', '_', '\\'),
-		array('\\%', '\\_', '\\\\'),
+		['%', '_', '\\'],
+		['\\%', '\\_', '\\\\'],
 		$pattern
 	);
 
-	return array('LIKE ?', '%' . $escaped . '%');
+	return ['LIKE ?', '%' . $escaped . '%'];
 }
 
 /**
  * cacti_validate_sort_column - returns $column if it is in $allowed, else $default.
  * Prevents ORDER BY injection from user-controlled sort parameters.
  *
- * @param  string $column   - the requested sort column
- * @param  array  $allowed  - allowlist of valid column names
- * @param  string $default  - value to return when $column is not in $allowed
+ * @param string $column  - the requested sort column
+ * @param array  $allowed - allowlist of valid column names
+ * @param string $default - value to return when $column is not in $allowed
  *
- * @return string  safe column name
+ * @return string safe column name
  */
 function cacti_validate_sort_column($column, array $allowed, $default = '') {
 	return in_array($column, $allowed, true) ? $column : $default;

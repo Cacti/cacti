@@ -29,16 +29,20 @@
  * cacti_exec_background(). Direct calls to shell_exec(), system(),
  * exec(), passthru(), popen(), and proc_open() are banned outside
  * this file.
+ * @param mixed      $output
+ * @param mixed      $retval
+ * @param mixed      $timeout
+ * @param null|mixed $cwd
  */
 
 /**
  * Execute a command as an argv array. Each element is escaped individually.
  *
- * @param  array       $argv    Command + arguments as separate array elements
- * @param  string      $output  Captured stdout (passed by reference)
- * @param  int         $retval  Exit code (passed by reference)
- * @param  int         $timeout Max execution seconds (0 = no limit)
- * @param  string|null $cwd     Working directory (null = inherit)
+ * @param array       $argv    Command + arguments as separate array elements
+ * @param string      $output  Captured stdout (passed by reference)
+ * @param int         $retval  Exit code (passed by reference)
+ * @param int         $timeout Max execution seconds (0 = no limit)
+ * @param string|null $cwd     Working directory (null = inherit)
  *
  * @return string|false stdout on success, false on failure
  */
@@ -70,11 +74,11 @@ function cacti_exec(array $argv, &$output = '', &$retval = 0, $timeout = 0, $cwd
 		return cacti_exec_with_timeout($cmd, $output, $retval, $timeout, $cwd);
 	}
 
-	$descriptors = array(
-		0 => array('pipe', 'r'),
-		1 => array('pipe', 'w'),
-		2 => array('pipe', 'w'),
-	);
+	$descriptors = [
+		0 => ['pipe', 'r'],
+		1 => ['pipe', 'w'],
+		2 => ['pipe', 'w'],
+	];
 
 	$process = proc_open($cmd, $descriptors, $pipes, $cwd);
 
@@ -104,20 +108,20 @@ function cacti_exec(array $argv, &$output = '', &$retval = 0, $timeout = 0, $cwd
 /**
  * Execute with a timeout via proc_open + stream_select.
  *
- * @param  string      $cmd     Pre-escaped command string
- * @param  string      $output  Captured stdout (passed by reference)
- * @param  int         $retval  Exit code (passed by reference)
- * @param  int         $timeout Max execution seconds
- * @param  string|null $cwd     Working directory (null = inherit)
+ * @param string      $cmd     Pre-escaped command string
+ * @param string      $output  Captured stdout (passed by reference)
+ * @param int         $retval  Exit code (passed by reference)
+ * @param int         $timeout Max execution seconds
+ * @param string|null $cwd     Working directory (null = inherit)
  *
  * @return string|false stdout on success, false on timeout/failure
  */
 function cacti_exec_with_timeout($cmd, &$output, &$retval, $timeout, $cwd = null) {
-	$descriptors = array(
-		0 => array('pipe', 'r'),
-		1 => array('pipe', 'w'),
-		2 => array('pipe', 'w'),
-	);
+	$descriptors = [
+		0 => ['pipe', 'r'],
+		1 => ['pipe', 'w'],
+		2 => ['pipe', 'w'],
+	];
 
 	$process = proc_open($cmd, $descriptors, $pipes, $cwd);
 
@@ -157,7 +161,7 @@ function cacti_exec_with_timeout($cmd, &$output, &$retval, $timeout, $cwd = null
 			return false;
 		}
 
-		$read   = array($pipes[1], $pipes[2]);
+		$read   = [$pipes[1], $pipes[2]];
 		$write  = null;
 		$except = null;
 
@@ -186,15 +190,15 @@ function cacti_exec_with_timeout($cmd, &$output, &$retval, $timeout, $cwd = null
  *
  * Covers password/key/secret/token/auth flags and SNMP community strings.
  *
- * @param  string $cmd The command string to redact
+ * @param string $cmd The command string to redact
  *
  * @return string The redacted command string
  */
 function cacti_exec_redact_cmd($cmd) {
-	/* redact long-form password/key/secret/token/auth flags */
+	// redact long-form password/key/secret/token/auth flags
 	$cmd = preg_replace('/(--?(?:password|pass|key|secret|token|auth|community)[= ])\S+/i', '$1[REDACTED]', $cmd);
 
-	/* redact SNMP -c community strings */
+	// redact SNMP -c community strings
 	$cmd = preg_replace('/(-c\s+)\S+/', '$1[REDACTED]', $cmd);
 
 	return $cmd;
@@ -207,16 +211,17 @@ function cacti_exec_redact_cmd($cmd) {
  * then runs it via proc_open with optional file descriptors for stdout
  * and stderr.
  *
- * @param  array       $argv         Command and arguments
- * @param  string|null $stdout_file  File path for stdout (null = pipe)
- * @param  string|null $stderr_file  File path for stderr (null = pipe)
- * @param  bool        $append       Append to files instead of truncating
+ * @param array       $argv        Command and arguments
+ * @param string|null $stdout_file File path for stdout (null = pipe)
+ * @param string|null $stderr_file File path for stderr (null = pipe)
+ * @param bool        $append      Append to files instead of truncating
  *
- * @return int|false  Exit code, or false on failure
+ * @return int|false Exit code, or false on failure
  */
 function cacti_exec_with_redirect(array $argv, $stdout_file = null, $stderr_file = null, $append = false) {
 	if (empty($argv)) {
 		cacti_log('ERROR: cacti_exec_with_redirect: empty argv', false, 'SYSTEM');
+
 		return false;
 	}
 
@@ -228,11 +233,11 @@ function cacti_exec_with_redirect(array $argv, $stdout_file = null, $stderr_file
 
 	$mode = $append ? 'a' : 'w';
 
-	$descriptors = array(
-		0 => array('pipe', 'r'),
-		1 => $stdout_file !== null ? array('file', $stdout_file, $mode) : array('pipe', 'w'),
-		2 => $stderr_file !== null ? array('file', $stderr_file, $mode) : array('pipe', 'w'),
-	);
+	$descriptors = [
+		0 => ['pipe', 'r'],
+		1 => $stdout_file !== null ? ['file', $stdout_file, $mode] : ['pipe', 'w'],
+		2 => $stderr_file !== null ? ['file', $stderr_file, $mode] : ['pipe', 'w'],
+	];
 
 	$process = proc_open($cmd, $descriptors, $pipes);
 

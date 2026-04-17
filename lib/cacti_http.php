@@ -28,6 +28,7 @@
  * All outbound HTTP requests from Cacti SHOULD route through
  * cacti_http_fetch() to enforce TLS verification, reserved-IP
  * rejection, and timeout defaults.
+ * @param mixed $ip
  */
 
 /**
@@ -36,7 +37,7 @@
  * Covers RFC 1918, RFC 6598, loopback, link-local, multicast,
  * and IPv6 equivalents.
  *
- * @param  string $ip The IP address to check
+ * @param string $ip The IP address to check
  *
  * @return bool True if the IP is reserved/private
  */
@@ -47,25 +48,25 @@ function cacti_is_reserved_ip($ip) {
 /**
  * Build a stream context for HTTPS with sane defaults.
  *
- * @param  array $opts Override options merged into the ssl context
+ * @param array $opts Override options merged into the ssl context
  *
  * @return resource A stream context resource
  */
-function cacti_https_context($opts = array()) {
-	$defaults = array(
-		'ssl' => array(
+function cacti_https_context($opts = []) {
+	$defaults = [
+		'ssl' => [
 			'verify_peer'       => true,
 			'verify_peer_name'  => true,
 			'allow_self_signed' => false,
 			'SNI_enabled'       => true,
-		),
-		'http' => array(
-			'timeout'         => 10,
-			'follow_location' => 0,
-			'max_redirects'   => 0,
+		],
+		'http' => [
+			'timeout'          => 10,
+			'follow_location'  => 0,
+			'max_redirects'    => 0,
 			'protocol_version' => 1.1,
-		),
-	);
+		],
+	];
 
 	if (!empty($opts['ssl'])) {
 		$defaults['ssl'] = array_merge($defaults['ssl'], $opts['ssl']);
@@ -81,13 +82,13 @@ function cacti_https_context($opts = array()) {
 /**
  * Fetch a URL with SSRF protection and TLS verification.
  *
- * @param  string $url     The URL to fetch
- * @param  array  $opts    Stream context overrides (ssl, http keys)
- * @param  int    $timeout Connection timeout in seconds
+ * @param string $url     The URL to fetch
+ * @param array  $opts    Stream context overrides (ssl, http keys)
+ * @param int    $timeout Connection timeout in seconds
  *
  * @return string|false Response body on success, false on failure
  */
-function cacti_http_fetch($url, $opts = array(), $timeout = 10) {
+function cacti_http_fetch($url, $opts = [], $timeout = 10) {
 	$parsed = parse_url($url);
 
 	if ($parsed === false || !isset($parsed['scheme']) || !isset($parsed['host'])) {
@@ -106,7 +107,7 @@ function cacti_http_fetch($url, $opts = array(), $timeout = 10) {
 
 	$host = $parsed['host'];
 
-	/* resolve hostname and check against reserved ranges */
+	// resolve hostname and check against reserved ranges
 	$ips = gethostbynamel($host);
 
 	if ($ips === false) {
@@ -152,13 +153,13 @@ function cacti_http_fetch($url, $opts = array(), $timeout = 10) {
  * Appends an action parameter and any additional key/value pairs to
  * the base URL, properly encoding each component with rawurlencode().
  *
- * @param  string $base_url  The base URL (may already contain a query string)
- * @param  string $action    The action name (empty string to skip)
- * @param  array  $params    Additional query parameters as key => value
+ * @param string $base_url The base URL (may already contain a query string)
+ * @param string $action   The action name (empty string to skip)
+ * @param array  $params   Additional query parameters as key => value
  *
- * @return string  The assembled URL
+ * @return string The assembled URL
  */
-function cacti_remote_url($base_url, $action, $params = array()) {
+function cacti_remote_url($base_url, $action, $params = []) {
 	$url = $base_url;
 
 	if (!empty($action)) {

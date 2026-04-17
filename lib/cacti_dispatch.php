@@ -28,6 +28,8 @@
  * Replaces ad-hoc switch/case blocks on $_REQUEST['action'] with a
  * declarative action table that enforces HTTP method, realm
  * permission, and optional object-level ACL before dispatching.
+ * @param mixed $actions
+ * @param mixed $default
  */
 
 /**
@@ -39,8 +41,8 @@
  *   'realm'      => int|null  Realm ID required (null = no check, default null)
  *   'object_acl' => callable|null  Extra ACL callback returning bool (default null)
  *
- * @param  array  $actions  Action dispatch table
- * @param  string $default  Action name to use when request var is missing
+ * @param array  $actions Action dispatch table
+ * @param string $default Action name to use when request var is missing
  *
  * @return void
  */
@@ -61,7 +63,7 @@ function cacti_dispatch($actions, $default = '') {
 
 	$entry = $actions[$action];
 
-	/* enforce HTTP method */
+	// enforce HTTP method
 	$method = isset($entry['method']) ? strtoupper($entry['method']) : 'ANY';
 
 	if ($method !== 'ANY' && $_SERVER['REQUEST_METHOD'] !== $method) {
@@ -73,7 +75,7 @@ function cacti_dispatch($actions, $default = '') {
 		return;
 	}
 
-	/* enforce realm permission */
+	// enforce realm permission
 	if (isset($entry['realm'])) {
 		if (!is_realm_allowed($entry['realm'])) {
 			cacti_log('WARNING: cacti_dispatch: realm ' . $entry['realm'] . ' denied for action "' . $action . '"', false, 'WEBUI');
@@ -84,7 +86,7 @@ function cacti_dispatch($actions, $default = '') {
 		}
 	}
 
-	/* enforce object-level ACL */
+	// enforce object-level ACL
 	if (isset($entry['object_acl']) && is_callable($entry['object_acl'])) {
 		if (!call_user_func($entry['object_acl'])) {
 			cacti_log('WARNING: cacti_dispatch: object ACL denied for action "' . $action . '"', false, 'WEBUI');
@@ -95,7 +97,7 @@ function cacti_dispatch($actions, $default = '') {
 		}
 	}
 
-	/* dispatch */
+	// dispatch
 	if (is_callable($entry['callback'])) {
 		call_user_func($entry['callback']);
 	} else {
