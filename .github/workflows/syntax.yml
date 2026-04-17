@@ -270,7 +270,7 @@ jobs:
         sudo php tests/tools/check_xml_syntax.php
 
     - name: Check Poller Script Syntax after Package Import
-      run: 
+      run: |
         # shellcheck disable=SC2091,SC2227
         if $(find ${{ github.workspace }}/scripts -name '*.php' -exec php -l {} 2>&1 \; | grep -iv "no syntax errors detected"); then exit 1; fi
 
