@@ -22,246 +22,37 @@
  +-------------------------------------------------------------------------+
 */
 
-include_once(CACTI_PATH_LIBRARY . '/xml.php');
-
-function prune_deprecated_files() : void {
-	$files = [
-		'reports_admin.php',
-		'reports_user.php',
-		'rrd.php',
-		'graph_templates_inputs.php',
-		'graph_templates_items.php',
-		'poller_export.php',
-		'script_server.pl',
-		'lib/graph_export.php',
-		'lib/adodb',
-		'include/zoom.js',
-		'formats/lotus_notes.format',
-		'include/main.css',
-		'include/jscalendar',
-		'include/html',
-		'include/constants.php',
-		'include/treeview',
-		'include/tabler/eps',
-		'include/tabler/pdf',
-		'include/tabler/png',
-		'include/tabler/svg',
-		'include/js/jquery',
-		'include/js/dygraph-combined.js',
-		'include/js/jquery.sparkline.js',
-		'include/vendor/phpmailer/src',
-		'include/vendor/phpmailer/languages',
-		'include/vendor/phpmailer/composer.json',
-		'include/vendor/phpmailer/get_oauth_token.php',
-		'include/vendor/phpmailer/VERSION',
-		'include/vendor/phpmailer/COMMITMENT',
-		'include/vendor/phpmailer/LICENSE',
-		'include/vendor/phpmailer/README.md',
-		'include/vendor/phpmailer/SECURITY.md',
-		'include/vendor/phpmailer/.editorconfig',
-		'include/vendor/flag-icons',
-		'install/0_8_1_to_0_8_2.php',
-		'install/0_8_2a_to_0_8_3.php',
-		'install/0_8_2_to_0_8_2a.php',
-		'install/0_8_3_to_0_8_4.php',
-		'install/0_8_4_to_0_8_5.php',
-		'install/0_8_5a_to_0_8_6.php',
-		'install/0_8_6c_to_0_8_6d.php',
-		'install/0_8_6d_to_0_8_6e.php',
-		'install/0_8_6f_to_0_8_6g.php',
-		'install/0_8_6g_to_0_8_6h.php',
-		'install/0_8_6h_to_0_8_6i.php',
-		'install/0_8_6j_to_0_8_7.php',
-		'install/0_8_6_to_0_8_6a.php',
-		'install/0_8_7a_to_0_8_7b.php',
-		'install/0_8_7b_to_0_8_7c.php',
-		'install/0_8_7c_to_0_8_7d.php',
-		'install/0_8_7d_to_0_8_7e.php',
-		'install/0_8_7e_to_0_8_7f.php',
-		'install/0_8_7f_to_0_8_7g.php',
-		'install/0_8_7g_to_0_8_7h.php',
-		'install/0_8_7h_to_0_8_7i.php',
-		'install/0_8_7i_to_0_8_8.php',
-		'install/0_8_7_to_0_8_7a.php',
-		'install/0_8_8_to_0_8_8a.php',
-		'install/0_8_8_to_0_8_8b.php',
-		'install/0_8_to_0_8_1.php',
-		'install/install_finish.gif',
-		'install/install_next.gif',
-		'images/auth_deny.gif',
-		'images/auth_login.gif',
-		'images/auth_logout.gif',
-		'images/button_add.gif',
-		'images/button_cancel.gif',
-		'images/button_clear.gif',
-		'images/button_colapse_all.gif',
-		'images/button_create.gif',
-		'images/button_default.gif',
-		'images/button_delete.gif',
-		'images/button_expand_all.gif',
-		'images/button_export.gif',
-		'images/button_go.gif',
-		'images/button_help.gif',
-		'images/button_import.gif',
-		'images/button_no.gif',
-		'images/button_purge.gif',
-		'images/button_refresh.gif',
-		'images/button_save.gif',
-		'images/button_view.gif',
-		'images/button_yes.gif',
-		'images/hide.gif',
-		'images/left_border.gif',
-		'images/menu_line.gif',
-		'images/show.gif',
-		'images/auth_background.gif',
-		'images/cacti_backdrop.gif',
-		'images/cacti_logo_new.gif',
-		'images/cacti_logo.png',
-		'images/cog_delete.png',
-		'images/cog_error.png',
-		'images/delete_icon.gif',
-		'images/delete_icon_large.gif',
-		'images/disable_icon.png',
-		'images/enable_icon_disabled.png',
-		'images/enable_icon.png',
-		'images/graph_page_top.gif',
-		'images/graph_query.png',
-		'images/graph_zoom.gif',
-		'images/install_icon_disabled.png',
-		'images/install_icon.png',
-		'images/move_down.gif',
-		'images/move_left.gif',
-		'images/move_right.gif',
-		'images/move_up.gif',
-		'images/reload_icon_small.gif',
-		'images/rrd_not_found.png',
-		'images/tab_cacti.gif',
-		'images/tab_clog_down.png',
-		'images/tab_clog.png',
-		'images/tab_console_down.gif',
-		'images/tab_graphs_down.gif',
-		'images/tab_graphs.gif',
-		'images/tab_mode_list_down.gif',
-		'images/tab_mode_list.gif',
-		'images/tab_mode_preview_down.gif',
-		'images/tab_mode_preview.gif',
-		'images/tab_mode_tree_down.gif',
-		'images/tab_mode_tree.gif',
-		'images/tab_nectar_down.gif',
-		'images/tab_nectar.gif',
-		'images/tab_settings_down.gif',
-		'images/tab_settings.gif',
-		'images/uninstall_icon.gif',
-		'install/upgrades/0_8_1_to_0_8_2.php',
-		'install/upgrades/0_8_2a_to_0_8_3.php',
-		'install/upgrades/0_8_2_to_0_8_2a.php',
-		'install/upgrades/0_8_3_to_0_8_4.php',
-		'install/upgrades/0_8_4_to_0_8_5.php',
-		'install/upgrades/0_8_5a_to_0_8_6.php',
-		'install/upgrades/0_8_6c_to_0_8_6d.php',
-		'install/upgrades/0_8_6d_to_0_8_6e.php',
-		'install/upgrades/0_8_6f_to_0_8_6g.php',
-		'install/upgrades/0_8_6g_to_0_8_6h.php',
-		'install/upgrades/0_8_6h_to_0_8_6i.php',
-		'install/upgrades/0_8_6j_to_0_8_7.php',
-		'install/upgrades/0_8_6_to_0_8_6a.php',
-		'include/themes/dark/c3.css',
-		'include/themes/modern/c3.css',
-		'include/themes/paper-plane/c3.css',
-		'include/themes/paw/c3.css',
-		'include/themes/sunrise/c3.css',
-		'include/themes/cacti/c3.css',
-		'include/themes/carrot/c3.css',
-		'include/themes/hollyberry/c3.css',
-		'include/themes/raspberry/c3.css',
-		'include/themes/midwinter/c3.css',
-		'include/themes/dark/billboard.css',
-		'include/themes/modern/billboard.css',
-		'include/themes/paper-plane/billboard.css',
-		'include/themes/paw/billboard.css',
-		'include/themes/sunrise/billboard.css',
-		'include/themes/cacti/billboard.css',
-		'include/themes/carrot/billboard.css',
-		'include/themes/hollyberry/billboard.css',
-		'include/themes/raspberry/billboard.css',
-		'include/themes/midwinter/billboard.css',
-		'include/js/c3.js',
-		'include/js/c3.js',
-	];
-
-	foreach ($files as $file) {
-		$full_path = CACTI_PATH_BASE . '/' . $file;
-
-		if (file_exists($full_path)) {
-			if (is_writable($full_path)) {
-				if (is_dir($full_path)) {
-					install_rmdir_recursive($file, true);
-				} else {
-					install_unlink($file);
-				}
-			} else {
-				log_install_high('file', "Unlinking file: $file failed due to permission errors.");
-			}
-		}
-	}
-
-	$remove_plugins = [
-		'aggregate',
-		'autom8',
-		'clog',
-		'discovery',
-		'domains',
-		'dsstats',
-		'nectar',
-		'realtime',
-		'rrdclean',
-		'settings',
-		'snmpagent',
-		'spikekill',
-		'superlinks',
-		'ugroup'
-	];
-
-	foreach ($remove_plugins as $pi) {
-		$full_path = CACTI_PATH_BASE . '/plugins/' . $pi;
-
-		if (file_exists($full_path) && is_dir($full_path)) {
-			install_rmdir_recursive("plugins/$pi", true);
-		}
-	}
-}
-
-function prime_default_settings() : void {
+function prime_default_settings() {
 	global $settings;
 
 	if (is_array($settings) && !isset($_SESSION['settings_primed'])) {
 		foreach ($settings as $tab_array) {
 			if (cacti_sizeof($tab_array)) {
-				foreach ($tab_array as $setting => $attributes) {
+				foreach($tab_array as $setting => $attributes) {
 					if (isset($attributes['default'])) {
 						$current = db_fetch_cell_prepared('SELECT value
 							FROM settings
 							WHERE name = ?',
-							[$setting]);
+							array($setting));
 
 						if ($current == '' || $current == null) {
 							db_execute_prepared('INSERT IGNORE INTO settings
 								(name, value) VALUES (?, ?)',
-								[$setting, $attributes['default']]);
+								array($setting, $attributes['default']));
 						}
 					} elseif (isset($attributes['items'])) {
-						foreach ($attributes['items'] as $isetting => $iattributes) {
+						foreach($attributes['items'] as $isetting => $iattributes) {
 							if (isset($iattributes['default'])) {
 								$current = db_fetch_cell_prepared('SELECT value
 									FROM settings
 									WHERE name = ?',
-									[$isetting]);
+									array($isetting));
 
 								if ($current == '' || $current == null) {
 									db_execute_prepared('INSERT IGNORE INTO settings
 										(name, value)
 										VALUES (?, ?)',
-										[$isetting, $iattributes['default']]);
+										array($isetting, $iattributes['default']));
 								}
 							}
 						}
@@ -274,18 +65,13 @@ function prime_default_settings() : void {
 	$_SESSION['settings_primed'] = true;
 }
 
-function install_create_csrf_secret(string $file) : bool {
+function install_create_csrf_secret($file) {
 	if (!file_exists($file)) {
 		if (is_resource_writable($file)) {
 			// Write the file
 			$fh = fopen($file, 'w');
-
-			if ($fh !== false) {
-				fwrite($fh, csrf_get_secret());
-				fclose($fh);
-			} else {
-				return false;
-			}
+			fwrite($fh, csrf_get_secret());
+			fclose($fh);
 
 			return true;
 		} else {
@@ -296,109 +82,13 @@ function install_create_csrf_secret(string $file) : bool {
 	return true;
 }
 
-function install_unlink(string $file) : void {
-	if (substr($file, 0, 1) != '/') {
-		$full_file = CACTI_PATH_BASE . '/' . $file;
-	} else {
-		$full_file = $file;
-	}
+function install_test_local_database_connection() {
+	global $database_type, $database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca;
 
-	if (!str_contains($full_file, CACTI_PATH_BASE)) {
-		log_install_high('file', "Not Unlinking file: $full_file due to it not being in the Cacti base path.");
-	}
-
-	if (file_exists($full_file) && is_writable($full_file)) {
-		log_install_high('file', "Unlinking file: $full_file");
-
-		unlink($full_file);
-	} else {
-		log_install_high('file', "Unlinking file: $full_file failed due to permission errors.");
-	}
-}
-
-function install_rmdir(string $directory) : void {
-	if (substr($directory, 0, 1) != '/') {
-		$directory = CACTI_PATH_BASE . '/' . $directory;
-	}
-
-	if (!str_contains($directory, CACTI_PATH_BASE)) {
-		log_install_high('file', "Not Unlinking directory: $directory due to it not being in the Cacti base path.");
-	}
-
-	if (file_exists($directory) && is_writable($directory)) {
-		log_install_high('file', "Unlinking directory: $directory");
-		rmdir($directory);
-	} else {
-		log_install_high('file', "Unlinking directory: $directory failed due to permission errors.");
-	}
-}
-
-/**
- * install_rmdir_recursive - Simple function to recursively remove a directory
- *  structure.
- *
- * @param string $directory  Directory name
- * @param bool   $del_parent True, and the directory and contents will be
- *                           removed.  Otherwise the directory will remain.
- *
- * @return void
- */
-function install_rmdir_recursive(string $directory, bool $del_parent = false) : void {
-	if (substr($directory, 0, 1) != '/') {
-		$directory = CACTI_PATH_BASE . '/' . $directory;
-	}
-
-	if (!str_contains($directory, CACTI_PATH_BASE)) {
-		log_install_high('file', "Not Unlinking directory: $directory due to it not being in the Cacti base path.");
-	}
-
-	$files = glob($directory . '/{,.}[!.,!..]*',GLOB_MARK | GLOB_BRACE);
-
-	if ($files === false) {
-		return;
-	}
-
-	foreach ($files as $file) {
-		if (is_dir($file)) {
-			install_rmdir_recursive($file, true);
-		} else {
-			install_unlink($file);
-		}
-	}
-
-	if ($del_parent) {
-		install_rmdir($directory);
-	}
-}
-
-function install_test_local_database_connection() : string|false {
-	global $database_type, $database_hostname, $database_username, $database_password, $database_default,
-	$database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key,
-	$database_ssl_cert, $database_ssl_ca, $database_ssl_capath, $database_ssl_verify_server_cert;
-
-	if (!isset($database_ssl)) {
-		$database_ssl        = false;
-	}
-
-	if (!isset($database_ssl_key)) {
-		$database_ssl_key    = false;
-	}
-
-	if (!isset($database_ssl_cert)) {
-		$database_ssl_cert   = false;
-	}
-
-	if (!isset($database_ssl_ca)) {
-		$database_ssl_ca     = false;
-	}
-
-	if (!isset($database_ssl_capath)) {
-		$database_ssl_capath = false;
-	}
-
-	if (!isset($database_ssl_verify_server_cert)) {
-		$database_ssl_verify_server_cert = false;
-	}
+	if (!isset($database_ssl))      $database_ssl      = false;
+	if (!isset($database_ssl_key))  $database_ssl_key  = false;
+	if (!isset($database_ssl_cert)) $database_ssl_cert = false;
+	if (!isset($database_ssl_ca))   $database_ssl_ca   = false;
 
 	$connection = db_connect_real(
 		$database_hostname,
@@ -411,48 +101,24 @@ function install_test_local_database_connection() : string|false {
 		$database_ssl,
 		$database_ssl_key,
 		$database_ssl_cert,
-		$database_ssl_ca,
-		$database_ssl_capath,
-		$database_ssl_verify_server_cert
+		$database_ssl_ca
 	);
 
 	if (is_object($connection)) {
 		db_close($connection);
-
-		return json_encode(['status' => 'true']);
+		return json_encode(array('status' => 'true'));
 	} else {
-		return json_encode(['status' => 'false']);
+		return json_encode(array('status' => 'false'));
 	}
 }
 
-function install_test_remote_database_connection() : string|false {
-	global $rdatabase_type, $rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default,
-	$rdatabase_type, $rdatabase_port, $rdatabase_retries, $rdatabase_ssl, $rdatabase_ssl_key,
-	$rdatabase_ssl_cert, $rdatabase_ssl_ca, $rdatabase_ssl_capath, $rdatabase_ssl_verify_server_cert;
+function install_test_remote_database_connection() {
+	global $rdatabase_type, $rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_retries, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca;
 
-	if (!isset($rdatabase_ssl)) {
-		$rdatabase_ssl        = false;
-	}
-
-	if (!isset($rdatabase_ssl_key)) {
-		$rdatabase_ssl_key    = false;
-	}
-
-	if (!isset($rdatabase_ssl_cert)) {
-		$rdatabase_ssl_cert   = false;
-	}
-
-	if (!isset($rdatabase_ssl_ca)) {
-		$rdatabase_ssl_ca     = false;
-	}
-
-	if (!isset($rdatabase_ssl_capath)) {
-		$rdatabase_ssl_capath = false;
-	}
-
-	if (!isset($rdatabase_ssl_verify_server_cert)) {
-		$rdatabase_ssl_verify_server_cert = false;
-	}
+	if (!isset($rdatabase_ssl))      $rdatabase_ssl      = false;
+	if (!isset($rdatabase_ssl_key))  $rdatabase_ssl_key  = false;
+	if (!isset($rdatabase_ssl_cert)) $rdatabase_ssl_cert = false;
+	if (!isset($rdatabase_ssl_ca))   $rdatabase_ssl_ca   = false;
 
 	$connection = db_connect_real(
 		$rdatabase_hostname,
@@ -465,33 +131,18 @@ function install_test_remote_database_connection() : string|false {
 		$rdatabase_ssl,
 		$rdatabase_ssl_key,
 		$rdatabase_ssl_cert,
-		$rdatabase_ssl_ca,
-		$rdatabase_ssl_capath,
-		$rdatabase_ssl_verify_server_cert
+		$rdatabase_ssl_ca
 	);
 
 	if (is_object($connection)) {
-		$version = db_fetch_cell('SELECT cacti FROM version', '', true, $connection);
-
-		if (cacti_version_compare($version, CACTI_VERSION, '<')) {
-			$failed  = true;
-			$message = __('Test Failed! Remote version newer than Primary.  Main Primary at %s and Remote at %s.', $version, CACTI_VERSION);
-		} else {
-			$failed  = false;
-			$message = __('Check ran successfully.');
-		}
-
 		db_close($connection);
-
-		return json_encode(['status' => $failed, 'message' => $message]);
+		return json_encode(array('status' => 'true'));
 	} else {
-		$message = __('Unable to connect to the main Cacti server.');
-
-		return json_encode(['status' => 'false', 'message' => $message]);
+		return json_encode(array('status' => 'false'));
 	}
 }
 
-function install_test_temporary_table() : bool {
+function install_test_temporary_table() {
 	$table = 'test_temp_' . rand();
 
 	if (!db_execute('CREATE TEMPORARY TABLE ' . $table . ' (`cacti` char(20) NOT NULL DEFAULT "", PRIMARY KEY (`cacti`)) ENGINE=InnoDB')) {
@@ -505,7 +156,7 @@ function install_test_temporary_table() : bool {
 	return true;
 }
 
-function db_install_execute(string $sql, array $params = [], bool $log = true) : int {
+function db_install_execute($sql, $params = array(), $log = true) {
 	$status = (db_execute_prepared($sql, $params, $log) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR);
 
 	if ($log) {
@@ -515,62 +166,51 @@ function db_install_execute(string $sql, array $params = [], bool $log = true) :
 	return $status;
 }
 
-/**
- * Provides database fetch functions during install
- *
- * @param string  $func
- * @param string  $sql
- * @param array   $params
- * @param boolean $log
- *
- * @return array
- */
-function db_install_fetch_function(string $func, string $sql, array $params = [], bool $log = true) : array {
+function db_install_fetch_function($func, $sql, $params = array(), $log = true) {
 	global $database_last_error;
 
 	$database_last_error = false;
-	$data                = false;
-
-	if (!is_callable($func)) {
+	$data = false;
+	if (!is_callable($func) || !function_exists($func)) {
 		$status = DB_STATUS_ERROR;
-	} elseif ($func == 'db_fetch_cell_prepared') {
+	}
+
+	if ($func == 'db_fetch_cell_prepared') {
 		$data = $func($sql, $params, '', $log);
 	} else {
 		$data = $func($sql, $params, $log);
 	}
+	$status = ($database_last_error ? DB_STATUS_ERROR : DB_STATUS_SUCCESS);
 
-	$status = $database_last_error != '' ? DB_STATUS_ERROR : DB_STATUS_SUCCESS;
-
-	if ($log || $status === DB_STATUS_ERROR) {
+	if ($log || $status == DB_STATUS_ERROR) {
 		db_install_add_cache($status, $sql, $params);
 	}
 
-	return ['status' => $status, 'data' => $data];
+	return array('status' => $status, 'data' => $data);
 }
 
-function db_install_fetch_assoc(string $sql, array $params = [], bool $log = true) : array {
+function db_install_fetch_assoc($sql, $params = array(), $log = true) {
 	return db_install_fetch_function('db_fetch_assoc_prepared', $sql, $params, $log);
 }
 
-function db_install_fetch_cell(string $sql, array $params = [], bool $log = true) : array {
+function db_install_fetch_cell($sql, $params = array(), $log = true) {
 	return db_install_fetch_function('db_fetch_cell_prepared', $sql, $params, $log);
 }
 
-function db_install_fetch_row(string $sql, array $params = [], bool $log = true) : array {
+function db_install_fetch_row($sql, $params = array(), $log = true) {
 	return db_install_fetch_function('db_fetch_row_prepared', $sql, $params, $log);
 }
 
-function db_install_add_column(string $table, array $column, bool $ignore = true) : int {
+function db_install_add_column($table, $column, $ignore = true) {
 	// Example: db_install_add_column ('plugin_config', array('name' => 'test' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false));
 	global $database_last_error;
-
 	$status = DB_STATUS_SKIPPED;
 
-	$sql = 'ALTER TABLE `' . $table . '` ADD COLUMN `' . $column['name'] . '`';
+	$sql = 'ALTER TABLE `' . $table . '` ADD `' . $column['name'] . '`';
 
 	if (!db_table_exists($table)) {
 		$database_last_error = 'Table \'' . $table . '\' missing, cannot add column \'' . $column['name'] . '\'';
-		$status              = DB_STATUS_WARNING;
+		$status = DB_STATUS_WARNING;
 	} elseif (!db_column_exists($table, $column['name'], false)) {
 		$status = db_add_column($table, $column, false) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR;
 	} elseif (!$ignore) {
@@ -580,46 +220,15 @@ function db_install_add_column(string $table, array $column, bool $ignore = true
 	}
 
 	db_install_add_cache($status, $sql);
-
 	return $status;
 }
 
-function db_install_change_column(string $table, array $column, bool $ignore = true) : int {
-	// Example: db_install_add_column ('plugin_config', array('name' => 'test' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false));
-	global $database_last_error;
-	$status = DB_STATUS_SKIPPED;
-
-	if (!isset($column['old_name']) && isset($column['name'])) {
-		$column['old_name'] = $column['name'];
-	}
-
-	$sql = 'ALTER TABLE `' . $table . '` CHANGE `' . $column['old_name'] . '` `' . $column['name'] . '`';
-
-	if (!db_table_exists($table)) {
-		$database_last_error = 'Table \'' . $table . '\' missing, cannot change column \'' . $column['name'] . '\'';
-		$status              = DB_STATUS_WARNING;
-	} elseif ($column['old_name'] == $column['name'] || !db_column_exists($table, $column['name'], false)) {
-		$status = db_change_column($table, $column, false) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR;
-	} elseif (db_column_exists($table, $column['old_name'], false)) {
-		$status = DB_STATUS_WARNING;
-	} elseif (!$ignore) {
-		$status = DB_STATUS_SKIPPED;
-	} else {
-		$status = DB_STATUS_SUCCESS;
-	}
-
-	db_install_add_cache($status, $sql);
-
-	return $status;
-}
-
-function db_install_add_key(string $table, string $type, string $key, mixed $columns, string $using = '') : int {
+function db_install_add_key($table, $type, $key, $columns, $using = '') {
 	if (!is_array($columns)) {
-		$columns = [$columns];
+		$columns = array($columns);
 	}
 
-	$type = cacti_strtoupper($type);
-
+	$type = strtoupper($type);
 	if ($type == 'KEY' && $key == 'PRIMARY') {
 		$sql = 'ALTER TABLE `' . $table . '` ADD ' . $key . ' ' . $type . '(' . implode(',', $columns) . ')';
 	} else {
@@ -631,7 +240,6 @@ function db_install_add_key(string $table, string $type, string $key, mixed $col
 	}
 
 	$status = DB_STATUS_SKIPPED;
-
 	if (db_index_matches($table, $key, $columns, false) !== 0) {
 		if (db_index_exists($table, $key)) {
 			$status = db_install_drop_key($table, $type, $key);
@@ -643,13 +251,11 @@ function db_install_add_key(string $table, string $type, string $key, mixed $col
 	}
 
 	db_install_add_cache($status, $sql);
-
 	return $status;
 }
 
-function db_install_drop_key(string $table, string $type, string $key) : int {
-	$type = cacti_strtoupper(str_ireplace('UNIQUE ', '', $type));
-
+function db_install_drop_key($table, $type, $key) {
+	$type = strtoupper(str_ireplace('UNIQUE ', '', $type));
 	if ($type == 'KEY' && $key == 'PRIMARY') {
 		$sql = "ALTER TABLE $table DROP $key $type;";
 	} else {
@@ -657,94 +263,84 @@ function db_install_drop_key(string $table, string $type, string $key) : int {
 	}
 
 	$status = DB_STATUS_SKIPPED;
-
 	if (db_index_exists($table, $key, false)) {
 		$status = db_install_execute($sql);
 	}
 
 	db_install_add_cache($status, $sql);
-
 	return $status;
 }
 
-function db_install_drop_table(string $table) : int {
+function db_install_drop_table($table) {
 	$sql = 'DROP TABLE `' . $table . '`';
 
 	$status = DB_STATUS_SKIPPED;
-
 	if (db_table_exists($table, false)) {
-		$status = db_install_execute($sql, [], false) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR;
+		$status = db_install_execute($sql, array(), false) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR;
 	}
 
 	db_install_add_cache($status, $sql);
-
 	return $status;
 }
 
-function db_install_rename_table(string $table, string $newname) : int {
+function db_install_rename_table($table, $newname) {
 	$sql = 'RENAME TABLE `' . $table . '` TO `' . $newname . '`';
 
 	$status = DB_STATUS_SKIPPED;
-
 	if (db_table_exists($table, false) && !db_table_exists($newname, false)) {
-		$status = db_install_execute($sql, [], false) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR;
+		$status = db_install_execute($sql, array(), false) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR;
 	}
 
 	db_install_add_cache($status, $sql);
-
 	return $status;
 }
 
-function db_install_drop_column(string $table, string $column) : int {
+function db_install_drop_column($table, $column) {
 	$sql = 'ALTER TABLE `' . $table . '` DROP `' . $column . '`';
 
 	$status = DB_STATUS_SKIPPED;
-
 	if (db_column_exists($table, $column, false)) {
 		$status = db_remove_column($table, $column) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR;
 	}
 
 	db_install_add_cache($status, $sql);
-
 	return $status;
 }
 
-function db_install_add_cache(int $status, string $sql, mixed $params = null) : void {
+function db_install_add_cache($status, $sql, $params = NULL) {
 	global $cacti_upgrade_version, $database_last_error, $database_upgrade_status;
 
 	set_config_option('install_updated', microtime(true));
 
-	$status_char  = '?';
-	$status_array = [
+	$status_char = '?';
+	$status_array = array(
 		DB_STATUS_SKIPPED => '-',
 		DB_STATUS_SUCCESS => '+',
 		DB_STATUS_WARNING => '!',
 		DB_STATUS_ERROR   => 'x',
-	];
+	);
 
 	if (array_key_exists($status, $status_array)) {
 		$status_char = $status_array[$status];
 	}
 
-	print $status_char;
-
+	echo $status_char;
 	if (!isset($database_upgrade_status)) {
-		$database_upgrade_status = [];
+		$database_upgrade_status = array();
 	}
 
 	// add query to upgrade results array by version to the cli global session
 	if (!isset($database_upgrade_status[$cacti_upgrade_version])) {
-		$database_upgrade_status[$cacti_upgrade_version] = [];
+		$database_upgrade_status[$cacti_upgrade_version] = array();
 	}
 
-	$query    = clean_up_lines($sql);
-	$actual   = 0;
+	$query = clean_up_lines($sql);
+	$actual = 0;
 	$expected = substr_count($query, '?');
 
 	if (cacti_sizeof($params)) {
 		foreach ($params as $arg) {
 			$pos = strpos($query, '?');
-
 			if ($pos !== false) {
 				$actual++;
 				$query = substr_replace($query, "'$arg'", $pos, 1);
@@ -753,15 +349,13 @@ function db_install_add_cache(int $status, string $sql, mixed $params = null) : 
 	}
 
 	$sql = clean_up_lines($query);
-
 	if ($actual !== $expected) {
 		$sql .= "\n [[ WARNING: $expected parameters expected, $actual provided ]]";
 	}
 
-	$database_upgrade_status[$cacti_upgrade_version][] = ['status' => $status, 'sql' => $sql, 'error' => $database_last_error];
+	$database_upgrade_status[$cacti_upgrade_version][] = array('status' => $status, 'sql' => $sql, 'error' => $database_last_error);
 
 	$cacheFile = '';
-
 	if (isset($database_upgrade_status['file'])) {
 		$cacheFile = $database_upgrade_status['file'];
 	}
@@ -772,11 +366,13 @@ function db_install_add_cache(int $status, string $sql, mixed $params = null) : 
 	}
 }
 
-function find_search_paths(string $os = 'unix') : array {
+function find_search_paths($os = 'unix') {
+	global $config;
+
 	if ($os == 'win32') {
 		$search_suffix = ';';
 		$search_slash  = '\\';
-		$search_paths  = [
+		$search_paths  = array(
 			'c:/usr/bin',
 			'c:/cacti',
 			'c:/rrdtool',
@@ -797,11 +393,11 @@ function find_search_paths(string $os = 'unix') : array {
 			'd:/progra~1/php',
 			'd:/progra~1/spine',
 			'd:/progra~1/spine/bin'
-		];
+		);
 	} else {
 		$search_suffix = ':';
 		$search_slash  = '';
-		$search_paths  = [
+		$search_paths  = array(
 			'/bin',
 			'/sbin',
 			'/usr/bin',
@@ -810,14 +406,12 @@ function find_search_paths(string $os = 'unix') : array {
 			'/usr/local/sbin',
 			'/usr/local/spine/bin',
 			'/usr/spine/bin'
-		];
+		);
 	}
 
 	$env_path = getenv('PATH');
-
 	if ($env_path) {
 		$env_paths = explode($search_suffix,$env_path);
-
 		if (!empty($search_slash)) {
 			foreach ($env_paths as $env_key => $env_folder) {
 				$env_paths[$env_key] = str_replace($search_slash, '/', $env_folder);
@@ -827,74 +421,74 @@ function find_search_paths(string $os = 'unix') : array {
 	}
 
 	$env_php = getenv('PHP_BINDIR');
-
 	if ($env_php) {
 		$search_paths = array_merge(explode($search_suffix,$env_php), $search_paths);
 	}
 
-	if (!empty(CACTI_PATH_PHP)) {
-		$search_paths = array_merge(explode($search_suffix, CACTI_PATH_PHP), $search_paths);
+	if (!empty($config['php_path'])) {
+		$search_paths = array_merge(explode($search_suffix,$config['php_path']), $search_paths);
 	}
 
 	// Filter out any blank lines and then make sure those remaining are unique
-	$search_paths = array_unique(array_filter($search_paths, function ($value) { return $value !== ''; }));
-
+	$search_paths = array_unique(array_filter($search_paths, function($value) { return !is_null($value) && $value !== ''; }));
 	return $search_paths;
 }
 
-function db_install_swap_setting(string $old_setting, string $new_setting) : void {
-	$exists = db_install_fetch_cell('SELECT COUNT(*) FROM settings WHERE name = ?', [$new_setting]);
-
+function db_install_swap_setting($old_setting, $new_setting) {
+	$exists = db_install_fetch_cell('SELECT COUNT(*) FROM settings WHERE name = ?', array($new_setting));
 	if (empty($exists['data'])) {
-		db_install_execute('UPDATE `settings` SET name = ? WHERE name = ?', [$new_setting, $old_setting]);
+		db_install_execute('UPDATE `settings` SET name = ? WHERE name = ?', array($new_setting, $old_setting));
 	} else {
-		$old_value = db_install_fetch_cell('SELECT value FROM settings WHERE NAME = ?', [$old_setting]);
-		db_install_execute('UPDATE `settings` SET value = ? WHERE name = ?', [$old_value['data'], $new_setting]);
-		db_install_execute('DELETE FROM `settings` WHERE name = ?', [$old_setting]);
+		$old_value = db_install_fetch_cell('SELECT value FROM settings WHERE NAME = ?', array($old_setting));
+		db_install_execute('UPDATE `settings` SET value = ? WHERE name = ?', array($old_value['data'], $new_setting));
+		db_install_execute('DELETE FROM `settings` WHERE name = ?', array($old_setting));
 	}
 }
 
-function find_best_path(string $binary_name) : string {
-	$search_paths = find_search_paths(CACTI_SERVER_OS);
+function find_best_path($binary_name) {
+	global $config;
+
+	$search_paths = find_search_paths($config['cacti_server_os']);
 
 	if (cacti_sizeof($search_paths)) {
-		foreach ($search_paths as $path) {
+		foreach($search_paths as $path) {
 			$desired_path = $path . '/' . $binary_name;
-
 			if ((@file_exists($desired_path)) && (@is_readable($desired_path))) {
 				return $desired_path;
 			}
 		}
 	}
-
 	return '';
 }
 
-function install_setup_get_templates() : array {
-	if (CACTI_WEB) {
+function install_setup_get_templates() {
+	global $config;
+
+	if ($config['is_web']) {
 		ini_set('zlib.output_compression', '0');
 	}
 
-	$templates = [
+	$templates = array(
 		'ACME.xml.gz',
 		'AKCP_Device.xml.gz',
 		'APC_InfraStruXure_InRow_CRAC.xml.gz',
 		'APC_InfraStruXure_PDU.xml.gz',
 		'Apache_Webserver.xml.gz',
 		'ArubaOS_switch.xml.gz',
-		'Aruba_Instant_AP_Cluster.xml.gz',
 		'Aruba_OSCX_switch_6x00.xml.gz',
+		'Aruba_Instant_AP_Cluster.xml.gz',
 		'Aruba_Wireless_Controller.xml.gz',
 		'BayTech_PDU.xml.gz',
 		'Cacti_Stats.xml.gz',
 		'Cisco_Router.xml.gz',
 		'Citrix_NetScaler_VPX.xml.gz',
 		'Clearpass_policy_manager.xml.gz',
+		'Dell_iDrac.xml.gz',
 		'ESXi_Device.xml.gz',
 		'Fortigate.xml.gz',
+		'Generic_SNMP_Device.xml.gz',
 		'HPE_iLO.xml.gz',
 		'HPE_NimbleAlletra_storage.xml.gz',
-		'Generic_SNMP_Device.xml.gz',
 		'Local_Linux_Machine.xml.gz',
 		'MikroTik_Device.xml.gz',
 		'MikroTik_Switch_SWOS.xml.gz',
@@ -905,24 +499,43 @@ function install_setup_get_templates() : array {
 		'SNMP_UPS.xml.gz',
 		'Synology_NAS.xml.gz',
 		'Windows_Device.xml.gz'
-	];
+	);
 
-	$path      = CACTI_PATH_INSTALL . '/templates';
-	$info      = [];
+	$path = $config['base_path'] . '/install/templates';
+	$info = array();
 	$canUnpack = (extension_loaded('simplexml') && extension_loaded('zlib'));
 
 	foreach ($templates as $xmlfile) {
 		if ($canUnpack) {
-			// Loading Template Information from package
+			//Loading Template Information from package
 			$filename = "compress.zlib://$path/$xmlfile";
 
-			$xml = file_get_contents($filename);
+			$xml    = file_get_contents($filename);;
 
-			if ($xml === false) {
+			$max_xml_size = 50 * 1024 * 1024;
+
+			if (strlen($xml) > $max_xml_size) {
+				cacti_log('ERROR: XML input exceeds maximum size (' . strlen($xml) . ' > ' . $max_xml_size . ')', false, 'IMPORT');
 				continue;
 			}
 
+			libxml_use_internal_errors(true);
 			$xmlget = simplexml_load_string($xml);
+
+			if ($xmlget === false) {
+				$errors = libxml_get_errors();
+
+				foreach ($errors as $error) {
+					cacti_log('ERROR: XML parse error: ' . trim($error->message), false, 'IMPORT');
+				}
+
+				libxml_clear_errors();
+				libxml_use_internal_errors(false);
+
+				continue;
+			}
+
+			libxml_use_internal_errors(false);
 			$data   = to_array($xmlget);
 
 			if (is_array($data['info']['author'])) {
@@ -943,30 +556,27 @@ function install_setup_get_templates() : array {
 
 			$data['info']['filename'] = $xmlfile;
 			$data['info']['name']     = $xmlfile;
-			$info[]                   = $data['info'];
+			$info[] = $data['info'];
 		} else {
 			// Loading Template Information from package
-			$shell_output       = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/import_package.php') . ' --filename=' . cacti_escapeshellarg("/$path/$xmlfile") . ' --info');
-			$myinfo             = @json_decode($shell_output !== false && $shell_output !== null ? $shell_output : '', true) ?? [];
+			$myinfo = @json_decode(shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg($config['base_path'] . '/cli/import_package.php') . ' --filename=' . cacti_escapeshellarg("/$path/$xmlfile") . ' --info'), true);
 			$myinfo['filename'] = $xmlfile;
 			$myinfo['name']     = $xmlfile;
-			$info[]             = $myinfo;
+			$info[] = $myinfo;
 		}
 	}
 
 	return $info;
 }
 
-function install_setup_get_tables() : mixed {
-	// ensure all tables are utf8 enabled
+function install_setup_get_tables() {
+	/* ensure all tables are utf8 enabled */
 	$db_tables = get_cacti_base_tables();
-
 	if ($db_tables === false) {
 		return false;
 	}
 
-	$t = [];
-
+	$t = array();
 	foreach ($db_tables as $table) {
 		$table_status = db_fetch_row("SHOW TABLE STATUS LIKE '$table'");
 
@@ -995,50 +605,45 @@ function install_setup_get_tables() : mixed {
 
 		if ($table_status === false || $collation != '' || $engine != '' || $row_format != '') {
 			$t[$table]['Name']       = $table;
-			$t[$table]['Collation']  = is_array($table_status) ? $table_status['Collation'] : '';
-			$t[$table]['Engine']     = is_array($table_status) ? $table_status['Engine'] : '';
+			$t[$table]['Collation']  = $table_status['Collation'];
+			$t[$table]['Engine']     = $table_status['Engine'];
 			$t[$table]['Rows']       = $rows;
-			$t[$table]['Row_format'] = is_array($table_status) ? $table_status['Row_format'] : '';
+			$t[$table]['Row_format'] = $table_status['Row_format'];
 		}
 	}
 
 	return $t;
 }
 
-function to_array(SimpleXMLElement|false|string|array $data) : mixed {
+function to_array ($data) {
 	if (is_object($data)) {
 		$data = get_object_vars($data);
 	}
-
-	return (is_array($data)) ? array_map(__FUNCTION__, $data) : $data;
+	return (is_array($data)) ? array_map(__FUNCTION__,$data) : $data;
 }
 
-/**
- * Here, we define each name, default value, type, and path check for each value
- * we want the user to input. The "name" field must exist in the 'settings' table for
- * this to work. Cacti also uses different default values depending on what OS it is
- * running on.
- */
+/* Here, we define each name, default value, type, and path check for each value
+we want the user to input. The "name" field must exist in the 'settings' table for
+this to work. Cacti also uses different default values depending on what OS it is
+running on. */
 
-function install_tool_path(string $name, array $defaultPaths) : mixed {
-	global $settings;
+function install_tool_path($name, $defaultPaths) {
+	global $config, $settings;
 
-	$os = CACTI_SERVER_OS;
-
+	$os = $config['cacti_server_os'];
 	if (!isset($defaultPaths[$os])) {
 		return false;
 	}
 
-	$tool = [
+	$tool = array(
 		'friendly_name' => $name,
-		'description'   => __('Path for %s', $name),
-		'method'        => 'filepath',
-		'max_length'    => 255,
-		'default'       => ''
-	];
+		'description' => __('Path for %s', $name),
+		'method' => 'filepath',
+		'max_length' => 255,
+		'default' => ''
+	);
 
 	log_install_debug('file', "$name: Locations ($os), Paths: " . clean_up_lines(var_export($defaultPaths, true)));
-
 	if (isset($settings) && isset($settings['path']) && isset($settings['path']['path_' . $name])) {
 		$tool = $settings['path']['path_' . $name];
 	} elseif (isset($settings) && isset($settings['mail']) && isset($settings['mail'][$name])) {
@@ -1046,17 +651,14 @@ function install_tool_path(string $name, array $defaultPaths) : mixed {
 	}
 
 	$which_tool = '';
-
 	if (config_value_exists('path_' . $name)) {
 		$which_tool = read_config_option('path_' . $name, true);
 		log_install_high('file', "Using config location: $which_tool");
 	}
 
-	$defaultPath = '';
-
 	if (empty($which_tool) && isset($defaultPaths[$os])) {
 		$defaultPath = $defaultPaths[$os];
-		$basename    = basename($defaultPath);
+		$basename = basename($defaultPath);
 		log_install_debug('file', "Searching best path with location: $defaultPath");
 		$which_tool = find_best_path($basename);
 		log_install_debug('file', "Searching best path with location return: $which_tool");
@@ -1068,115 +670,93 @@ function install_tool_path(string $name, array $defaultPaths) : mixed {
 	}
 
 	$tool['default'] = $which_tool;
-
 	return $tool;
 }
 
-function install_file_paths() : array {
-	global $settings;
+function install_file_paths() {
+	global $config, $settings;
 
-	$input = [];
+	$input = array();
 
-	// PHP Binary Path
+	/* PHP Binary Path */
 	$input['path_php_binary'] = install_tool_path('php_binary',
-		[
+		array(
 			'unix'  => '/bin/php',
 			'win32' => 'c:/php/php.exe'
-		]
-	);
+		));
 
 	// Workaround to support xampp
-	if (CACTI_SERVER_OS == 'win32') {
-		$paths = ['c:/php/php.exe', 'd:/php/php.exe', 'c:/xampp/php/php.exe', 'd:/xampp/php/php.exe'];
-
-		foreach ($paths as $path) {
+	if ($config['cacti_server_os'] == 'win32') {
+		$paths = array('c:/php/php.exe', 'd:/php/php.exe', 'c:/xampp/php/php.exe', 'd:/xampp/php/php.exe');
+		foreach($paths as $path) {
 			if (file_exists($path)) {
 				$input['path_php_binary']['default'] = $path;
-
 				break;
 			}
 		}
 	}
 
-	// RRDtool Binary Path
+	/* RRDtool Binary Path */
 	$input['path_rrdtool'] = install_tool_path('rrdtool',
-		[
+		array(
 			'unix'  => '/usr/bin/rrdtool',
 			'win32' => 'c:/rrdtool/rrdtool.exe'
-		]
-	);
+		));
 
-	// snmpwalk Binary Path
+	/* snmpwalk Binary Path */
 	$input['path_snmpwalk'] = install_tool_path('snmpwalk',
-		[
+		array(
 			'unix'  => '/usr/bin/snmpwalk',
 			'win32' => 'c:/usr/bin/snmpwalk.exe'
-		]
-	);
+		));
 
-	// snmpget Binary Path
+	/* snmpget Binary Path */
 	$input['path_snmpget'] = install_tool_path('snmpget',
-		[
+		array(
 			'unix'  => '/usr/bin/snmpget',
 			'win32' => 'c:/usr/bin/snmpget.exe'
-		]
-	);
+		));
 
-	// snmpbulkwalk Binary Path
+	/* snmpbulkwalk Binary Path */
 	$input['path_snmpbulkwalk'] = install_tool_path('snmpbulkwalk',
-		[
+		array(
 			'unix'  => '/usr/bin/snmpbulkwalk',
 			'win32' => 'c:/usr/bin/snmpbulkwalk.exe'
-		]
-	);
+		));
 
-	// snmpgetnext Binary Path
+	/* snmpgetnext Binary Path */
 	$input['path_snmpgetnext'] = install_tool_path('snmpgetnext',
-		[
+		array(
 			'unix'  => '/usr/bin/snmpgetnext',
 			'win32' => 'c:/usr/bin/snmpgetnext.exe'
-		]
-	);
+		));
 
-	// snmptrap Binary Path
+	/* snmptrap Binary Path */
 	$input['path_snmptrap'] = install_tool_path('snmptrap',
-		[
+		array(
 			'unix'  => '/usr/bin/snmptrap',
 			'win32' => 'c:/usr/bin/snmptrap.exe'
-		]
-	);
+		));
 
-	// fping Binary Path
-	$input['path_fping'] = install_tool_path('fping',
-		[
-			'unix'  => '/usr/sbin/fping',
-			'win32' => 'c:/fping/fping.exe'
-		]
-	);
-
-	// sendmail Binary Path
+	/* sendmail Binary Path */
 	$input['settings_sendmail_path'] = install_tool_path('settings_sendmail_path',
-		[
+		array(
 			'unix'  => '/usr/sbin/sendmail',
-		]
-	);
+		));
 
-	// spine Binary Path
+	/* spine Binary Path */
 	$input['path_spine'] = install_tool_path('spine',
-		[
+		array(
 			'unix'  => '/usr/local/spine/bin/spine',
 			'win32' => 'c:/spine/bin/spine.exe'
-		]
-	);
+		));
 
 	// Workaround to support *BSD systems
-	if (CACTI_SERVER_OS == 'unix') {
-		$paths = ['/usr/local/spine/bin/spine', '/usr/local/bin/spine'];
-
-		foreach ($paths as $path) {
+	if ($config['cacti_server_os'] == 'unix') {
+		$paths = array('/usr/local/spine/bin/spine', '/usr/local/bin/spine');
+		foreach($paths as $path) {
 			if (file_exists($path)) {
 				$input['path_spine']['default'] = $path;
-
 				break;
 			}
 		}
@@ -1184,33 +764,32 @@ function install_file_paths() : array {
 
 	$input['path_spine_config'] = $settings['path']['path_spine_config'];
 
-	// log file path
+	/* log file path */
 	if (!config_value_exists('path_cactilog')) {
 		$input['path_cactilog'] = $settings['path']['path_cactilog'];
 	} else {
-		$input['path_cactilog']            = $settings['path']['path_cactilog'];
+		$input['path_cactilog'] = $settings['path']['path_cactilog'];
 		$input['path_cactilog']['default'] = read_config_option('path_cactilog');
 	}
 
 	if (empty($input['path_cactilog']['default'])) {
-		$input['path_cactilog']['default'] = CACTI_PATH_LOG . '/cacti.log';
+		$input['path_cactilog']['default'] = $config['base_path'] . '/log/cacti.log';
 	}
 
-	// stderr log file path
+	/* stderr log file path */
 	if (!config_value_exists('path_cactilog')) {
 		$input['path_stderrlog'] = $settings['path']['path_stderrlog'];
-
 		if (empty($input['path_stderrlog']['default'])) {
-			$input['path_stderrlog']['default'] = CACTI_PATH_LOG . '/cacti.stderr.log';
+			$input['path_stderrlog']['default'] = $config['base_path'] . '/log/cacti.stderr.log';
 		}
 	} else {
-		$input['path_stderrlog']            = $settings['path']['path_stderrlog'];
+		$input['path_stderrlog'] = $settings['path']['path_stderrlog'];
 		$input['path_stderrlog']['default'] = read_config_option('path_stderrlog');
 	}
 
-	// RRDtool Version
-	if ((@file_exists($input['path_rrdtool']['default'])) && ((CACTI_SERVER_OS == 'win32') || (is_executable($input['path_rrdtool']['default'])))) {
-		$input['rrdtool_version'] = $settings['general']['rrdtool_version'] ?? [];
+	/* RRDtool Version */
+	if ((@file_exists($input['path_rrdtool']['default'])) && (($config['cacti_server_os'] == 'win32') || (is_executable($input['path_rrdtool']['default']))) ) {
+		$input['rrdtool_version'] = $settings['general']['rrdtool_version'];
 
 		$temp_ver = get_installed_rrdtool_version();
 
@@ -1228,19 +807,18 @@ function install_file_paths() : array {
 	return $input;
 }
 
-function remote_update_config_file() : string {
-	global $rdatabase_type, $rdatabase_hostname, $rdatabase_username,
-	$rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_retries,
-	$rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca, $rdatabase_ssl_capath, $rdatabase_ssl_verify_server_cert;
+function remote_update_config_file() {
+	global $config, $rdatabase_type, $rdatabase_hostname, $rdatabase_username,
+		$rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_retries,
+		$rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca;
 
 	global $database_type, $database_hostname, $database_username,
-	$database_password, $database_default, $database_type, $database_port, $database_retries,
-	$database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca,
-	$database_ssl_capath, $database_ssl_verify_server_cert;
+		$database_password, $database_default, $database_type, $database_port, $database_retries,
+		$database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca;
 
 	$failure     = '';
-	$newfile     = [];
-	$config_file = CACTI_PATH_INCLUDE . '/config.php';
+	$newfile     = array();
+	$config_file = $config['base_path'] . '/include/config.php';
 
 	$connection = db_connect_real(
 		$rdatabase_hostname,
@@ -1253,9 +831,7 @@ function remote_update_config_file() : string {
 		$rdatabase_ssl,
 		$rdatabase_ssl_key,
 		$rdatabase_ssl_cert,
-		$rdatabase_ssl_ca,
-		$rdatabase_ssl_capath,
-		$rdatabase_ssl_verify_server_cert
+		$rdatabase_ssl_ca
 	);
 
 	if (is_object($connection)) {
@@ -1269,23 +845,21 @@ function remote_update_config_file() : string {
 		$poller_id = db_fetch_cell_prepared('SELECT id
 			FROM poller
 			WHERE hostname = ?',
-			[$hostname], '', true, $connection);
+			array($hostname), true, $connection);
 
 		if (empty($poller_id)) {
-			$save['name']                  = __('New Poller');
-			$save['hostname']              = $hostname;
-			$save['dbdefault']             = $database_default;
-			$save['dbhost']                = $database_hostname;
-			$save['dbuser']                = $database_username;
-			$save['dbpass']                = $database_password;
-			$save['dbport']                = $database_port;
-			$save['dbretries']             = $database_retries;
-			$save['dbssl']                 = $database_ssl ? 'on' : '';
-			$save['dbsslkey']              = $database_ssl_key;
-			$save['dbsslcert']             = $database_ssl_cert;
-			$save['dbsslca']               = $database_ssl_ca;
-			$save['dbsslcapath']           = $database_ssl_capath;
-			$save['dbsslverifyservercert'] = $database_ssl_verify_server_cert ? 'on' : '';
+			$save['name'] = __('New Poller');
+			$save['hostname']  = $hostname;
+			$save['dbdefault'] = $database_default;
+			$save['dbhost']    = $database_hostname;
+			$save['dbuser']    = $database_username;
+			$save['dbpass']    = $database_password;
+			$save['dbport']    = $database_port;
+			$save['dbretries'] = $database_retries;
+			$save['dbssl']     = $database_ssl ? 'on' : '';
+			$save['dbsslkey']  = $database_ssl_key;
+			$save['dbsslcert'] = $database_ssl_cert;
+			$save['dbsslca']   = $database_ssl_ca;
 
 			$poller_id = sql_save($save, 'poller', 'id', true, $connection);
 		}
@@ -1294,9 +868,9 @@ function remote_update_config_file() : string {
 			if (is_writable($config_file)) {
 				$file_array = file($config_file);
 
-				if (is_array($file_array) && cacti_sizeof($file_array)) {
-					foreach ($file_array as $line) {
-						if (str_contains(trim($line), '$poller_id')) {
+				if (cacti_sizeof($file_array)) {
+					foreach($file_array as $line) {
+						if (strpos(trim($line), "\$poller_id") !== false) {
 							$newfile[] = "\$poller_id = $poller_id;" . PHP_EOL;
 						} else {
 							$newfile[] = $line;
@@ -1304,15 +878,10 @@ function remote_update_config_file() : string {
 					}
 
 					$fp = fopen($config_file, 'w');
-
-					if ($fp !== false) {
-						foreach ($newfile as $line) {
-							fwrite($fp, $line);
-						}
-						fclose($fp);
-					} else {
-						$failure = 'Failed to open configuration file for writing';
+					foreach($newfile as $line) {
+						fwrite($fp, $line);
 					}
+					fclose($fp);
 				} else {
 					$failure = 'Failed to read configuration file';
 				}
@@ -1334,21 +903,21 @@ function remote_update_config_file() : string {
 /**
  * set_install_config_option - Set a config option into the local database only
  *
- * @param string $name  The name of the configuration setting as specified $settings array
- * @param mixed  $value The values to be saved
+ * @param $config_name - the name of the configuration setting as specified $settings array
+ * @param $value       - the values to be saved
  *
- * @return void
+ * @return null        - nothing is returned
  */
-function set_install_config_option(string $name, mixed $value) : void {
-	global $local_db_cnn_id;
+function set_install_config_option($name, $value) {
+	global $config, $local_db_cnn_id;
 
-	// some additional extension checks
+	/* some additional extension checks */
 	switch($name) {
 		case 'path_cactilog':
 			$extension = pathinfo($value, PATHINFO_EXTENSION);
 
 			if ($extension != 'log') {
-				$value = CACTI_PATH_BASE . '/log/cacti.log';
+				$value = $config['base_path'] . '/log/cacti.log';
 			}
 
 			break;
@@ -1356,28 +925,30 @@ function set_install_config_option(string $name, mixed $value) : void {
 			$extension = pathinfo($value, PATHINFO_EXTENSION);
 
 			if ($extension != 'log') {
-				$value = CACTI_PATH_BASE . '/log/cacti.stderr.log';
+				$value = $config['base_path'] . '/log/cacti.stderr.log';
 			}
 
 			break;
 	}
 
 	if (is_object($local_db_cnn_id)) {
-		db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', [$name, $value], false, $local_db_cnn_id);
+		db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($name, $value), false, $local_db_cnn_id);
 	} else {
 		set_config_option($name, $value);
 	}
 }
 
-function import_colors() : bool {
-	if (!file_exists(__DIR__ . '/colors.csv')) {
+function import_colors() {
+	global $config;
+
+	if (!file_exists(dirname(__FILE__) . '/colors.csv')) {
 		return false;
 	}
 
-	$contents = file(__DIR__ . '/colors.csv');
+	$contents = file(dirname(__FILE__) . '/colors.csv');
 
-	if (is_array($contents) && cacti_count($contents)) {
-		foreach ($contents as $line) {
+	if (cacti_count($contents)) {
+		foreach($contents as $line) {
 			$line    = trim($line);
 			$parts   = explode(',',$line);
 			$natural = $parts[0];
@@ -1385,7 +956,6 @@ function import_colors() : bool {
 			$name    = $parts[2];
 
 			$id = db_fetch_cell("SELECT hex FROM colors WHERE hex='$hex'");
-
 			if (!empty($id)) {
 				db_execute("UPDATE colors SET name='$name', read_only='on' WHERE hex='$hex'");
 			} else {
@@ -1397,47 +967,43 @@ function import_colors() : bool {
 	return true;
 }
 
-function log_install_debug(string $section, string $text, bool $background = false) : void {
+function log_install_debug($section, $text, $background = false) {
 	log_install_and_file(POLLER_VERBOSITY_DEBUG, $text, $section, $background);
 }
 
-function log_install_low(string $section, string $text, bool $background = false) : void {
+function log_install_low($section, $text, $background = false) {
 	log_install_and_file(POLLER_VERBOSITY_LOW, $text, $section, $background);
 }
 
-function log_install_medium(string $section, string $text, bool $background = false) : void {
+function log_install_medium($section, $text, $background = false) {
 	log_install_and_file(POLLER_VERBOSITY_MEDIUM, $text, $section, $background);
 }
 
-function log_install_high(string $section, string $text, bool $background = false) : void {
+function log_install_high($section, $text, $background = false) {
 	log_install_and_file(POLLER_VERBOSITY_HIGH, $text, $section, $background);
 }
 
-function log_install_always(string $section, string $text, bool $background = false) : void {
+function log_install_always($section, $text, $background = false) {
 	log_install_and_file(POLLER_VERBOSITY_NONE, $text, $section, $background);
 }
 
-function log_install_and_file(int $level, string $text, string $section = '', bool $background = false) : void {
+function log_install_and_file($level, $text, $section = '', $background = false) {
 	$level = log_install_level_sanitize($level);
-	$name  = 'INSTALL:';
-
+	$name = 'INSTALL:';
 	if (!empty($section)) {
-		$name = 'INSTALL-' . cacti_strtoupper($section) . ':';
+		$name = 'INSTALL-' . strtoupper($section) . ':';
 	}
-
 	cacti_log(log_install_level_name($level) . ': ' . $text, false, $name, $level);
-
 	log_install_to_file($section, $text, FILE_APPEND, $level);
-
 	if ($background) {
 		set_config_option('install_updated', microtime(true));
 	}
 }
 
-function log_install_section_level(string $section) : int {
-	$log_level   = POLLER_VERBOSITY_NONE;
+function log_install_section_level($section) {
+	$log_level = POLLER_VERBOSITY_NONE;
 	$log_install = log_install_level('log_install', POLLER_VERBOSITY_NONE);
-	$log_section = log_install_level('log_install_' . $section, POLLER_VERBOSITY_NONE);
+	$log_section = log_install_level('log_install_'.$section, POLLER_VERBOSITY_NONE);
 
 	if ($log_install > $log_level) {
 		$log_level = $log_install;
@@ -1446,70 +1012,59 @@ function log_install_section_level(string $section) : int {
 	if ($log_section > $log_level) {
 		$log_level = $log_section;
 	}
-
 	return $log_level;
 }
 
-function log_install_level(string $option, int $default_level) : int {
+function log_install_level($option, $default_level) {
 	$level = read_config_option($option, true);
-
 	return log_install_level_sanitize($level, $default_level, $option);
 }
 
-// TODO: Why is option passed to this function?
-function log_install_level_sanitize(mixed $level, int $default_level = POLLER_VERBOSITY_NONE, string $option = '') : int {
-	if ($level == 0) {
+function log_install_level_sanitize($level, $default_level = POLLER_VERBOSITY_NONE, $option = '') {
+	if (empty($level) || !is_numeric($level)) {
 		$level = $default_level;
 	}
 
 	if ($level < POLLER_VERBOSITY_NONE) {
-		print 'Level too low - "' . $level . '"' . PHP_EOL;
+		echo 'Level too low - "' . $level . '"' . PHP_EOL;
 		$level = POLLER_VERBOSITY_NONE;
-	} elseif ($level > POLLER_VERBOSITY_DEBUG) {
-		print 'Level too high - "' . $level . '"' . PHP_EOL;
+	} else if ($level > POLLER_VERBOSITY_DEBUG) {
+		echo 'Level too high - "' . $level . '"' . PHP_EOL;
 		$level = POLLER_VERBOSITY_DEBUG;
 	}
-
 	return $level;
 }
 
-function log_install_level_name(int $level) : string {
+function log_install_level_name($level) {
 	$name = 'Unknown (' . $level . ')';
-
 	switch ($level) {
 		case POLLER_VERBOSITY_NONE:
 			$name = 'always';
-
 			break;
 		case POLLER_VERBOSITY_LOW:
 			$name = 'general';
-
 			break;
 		case POLLER_VERBOSITY_MEDIUM:
 			$name = 'info';
-
 			break;
 		case POLLER_VERBOSITY_HIGH:
 			$name = 'notice';
-
 			break;
 		case POLLER_VERBOSITY_DEBUG:
 			$name = 'debug';
-
 			break;
 	}
-
 	return $name;
 }
 
-function log_install_to_file(string $section, string $data, int $flags = FILE_APPEND, int $level = POLLER_VERBOSITY_DEBUG, bool $force = false) : void {
-	global $debug;
+function log_install_to_file($section, $data, $flags = FILE_APPEND, $level = POLLER_VERBOSITY_DEBUG, $force = false) {
+	global $config, $debug;
 	$log_level = log_install_section_level($section);
 
-	$can_log     = $level <= $log_level;
-	$day         = date('Y-m-d');
-	$time        = date('H:i:s');
-	$levelname   = log_install_level_name($level);
+	$can_log = $level <= $log_level;
+	$day = date('Y-m-d');
+	$time = date('H:i:s');
+	$levelname = log_install_level_name($level);
 	$sectionname = empty($section) ? 'global' : $section;
 
 	$format_cli  = '[%s] [ %15s %-7s ] %s%s';
@@ -1525,92 +1080,93 @@ function log_install_to_file(string $section, string $data, int $flags = FILE_AP
 			$section = 'general';
 		}
 		$logfile = 'install' . '-' . $section;
-		file_put_contents(CACTI_PATH_LOG . '/' . $logfile . '.log', sprintf($format_log1, $day, $time, $levelname, $data, PHP_EOL), $flags);
-		file_put_contents(CACTI_PATH_LOG . '/install-complete.log', sprintf($format_log2, $day, $time, $sectionname, $levelname, $data, PHP_EOL), $flags);
+		file_put_contents($config['base_path'] . '/log/' . $logfile . '.log', sprintf($format_log1, $day, $time, $levelname, $data, PHP_EOL), $flags);
+		file_put_contents($config['base_path'] . '/log/install-complete.log', sprintf($format_log2, $day, $time, $sectionname, $levelname, $data, PHP_EOL), $flags);
 	}
 }
 
-/**
- * repair_automation() - Repairs mangled automation graph rules based
- * upon the change in the way that Cacti imports the Graph Templates after
- * Cacti 1.2.4.
- */
-function repair_automation() : void {
+/** repair_automation() - Repairs mangled automation graph rules based
+ *  upon the change in the way that Cacti imports the Graph Templates after
+ *  Cacti 1.2.4.
+ **/
+function repair_automation() {
 	log_install_always('', 'Repairing Automation Rules');
 
-	$hash_array = [
-		[
-			'name'                 => 'Traffic 64 bit Server',
-			'automation_id'        => 1,
-			'snmp_query_graph_id'  => 9,
-			'snmp_query_id'        => 1,
-			'snmp_query_hash'      => 'd75e406fdeca4fcef45b8be3a9a63cbc',
+	$hash_array = array(
+		array(
+			'name' => 'Traffic 64 bit Server',
+			'automation_id' => 1,
+			'snmp_query_graph_id' => 9,
+			'snmp_query_id' => 1,
+			'snmp_query_hash' => 'd75e406fdeca4fcef45b8be3a9a63cbc',
 			'snmp_query_graph_hash'=> 'ab93b588c29731ab15db601ca0bc9dec',
-		],
-		[
-			'name'                 => 'Traffic 64 bit Server Linux',
-			'automation_id'        => 2,
-			'snmp_query_graph_id'  => 9,
-			'snmp_query_id'        => 1,
-			'snmp_query_hash'      => 'd75e406fdeca4fcef45b8be3a9a63cbc',
+		),
+		array(
+			'name' => 'Traffic 64 bit Server Linux',
+			'automation_id' => 2,
+			'snmp_query_graph_id' => 9,
+			'snmp_query_id' => 1,
+			'snmp_query_hash' => 'd75e406fdeca4fcef45b8be3a9a63cbc',
 			'snmp_query_graph_hash'=> 'ab93b588c29731ab15db601ca0bc9dec',
-		],
-		[
-			'name'                 => 'Disk Space',
-			'automation_id'        => 3,
-			'snmp_query_graph_id'  => 18,
-			'snmp_query_id'        => 8,
-			'snmp_query_hash'      => '9343eab1f4d88b0e61ffc9d020f35414',
+		),
+		array(
+			'name' => 'Disk Space',
+			'automation_id' => 3,
+			'snmp_query_graph_id' => 18,
+			'snmp_query_id' => 8,
+			'snmp_query_hash' => '9343eab1f4d88b0e61ffc9d020f35414',
 			'snmp_query_graph_hash'=> '46c4ee688932cf6370459527eceb8ef3',
-		]
-	];
+		)
+	);
 
-	foreach ($hash_array as $item) {
+	foreach($hash_array as $item) {
 		$exists = db_fetch_row_prepared('SELECT *
 			FROM automation_graph_rules
 			WHERE id = ?
 			AND name = ?',
-			[
+			array(
 				$item['automation_id'],
 				$item['name']
-			]
+			)
 		);
 
 		if (cacti_sizeof($exists)) {
 			$exists_snmp_query_id = db_fetch_cell_prepared('SELECT id
 				FROM snmp_query
 				WHERE hash = ?',
-				[$item['snmp_query_hash']]);
+				array($item['snmp_query_hash']));
 
 			$exists_snmp_query_graph_id = db_fetch_cell_prepared('SELECT id
 				FROM snmp_query_graph
 				WHERE hash = ?',
-				[$item['snmp_query_graph_hash']]);
+				array($item['snmp_query_graph_hash']));
 
 			db_execute_prepared('UPDATE automation_graph_rules
 				SET snmp_query_id = ?, graph_type_id = ?
 				WHERE id = ?',
-				[
+				array(
 					$exists_snmp_query_id,
 					$exists_snmp_query_graph_id,
 					$item['automation_id']
-				]
+				)
 			);
 		}
 	}
 }
 
-function install_full_sync() : array {
-	include_once(CACTI_PATH_LIBRARY . '/poller.php');
+function install_full_sync() {
+	global $config;
+
+	include_once($config['base_path'] . '/lib/poller.php');
 
 	$pinterval = read_config_option('poller_interval');
 	$gap_time  = $pinterval * 2;
 
-	// counter arrays
-	$failed    = [];
-	$success   = [];
-	$skipped   = [];
-	$timeout   = [];
+	/* counter arrays */
+	$failed    = array();
+	$success   = array();
+	$skipped   = array();
+	$timeout   = array();
 
 	$pollers = db_fetch_assoc('SELECT id, status, UNIX_TIMESTAMP() - UNIX_TIMESTAMP(last_update) AS gap
 		FROM poller
@@ -1619,8 +1175,8 @@ function install_full_sync() : array {
 
 	log_install_always('sync', 'Found ' . cacti_sizeof($pollers) . ' poller(s) to sync');
 
-	if (is_array($pollers) && cacti_sizeof($pollers)) {
-		foreach ($pollers as $poller) {
+	if (cacti_sizeof($pollers)) {
+		foreach($pollers as $poller) {
 			log_install_debug('sync', 'Poller ' . $poller['id'] . ' has a status of ' . $poller['status'] . ' with gap ' . $poller['gap']);
 
 			if (($poller['status'] == POLLER_STATUS_NEW) ||
@@ -1631,24 +1187,17 @@ function install_full_sync() : array {
 				$skipped[] = $poller['id'];
 			} elseif ($poller['gap'] < $gap_time) {
 				log_install_medium('sync', 'Replicating to Poller ' . $poller['id']);
+				if (replicate_out($poller['id'])) {
+					log_install_debug('sync', 'Completed replication to Poller ' . $poller['id']);
+					$success[] = $poller['id'];
 
-				if (read_config_option('disable_full_sync_on_upgrade') == '' && read_config_option('install_replicate', true) == '') {
-					set_config_option('install_replicate', 1);
-
-					if (replicate_out($poller['id'])) {
-						log_install_debug('sync', 'Completed replication to Poller ' . $poller['id']);
-						$success[] = $poller['id'];
-
-						db_execute_prepared('UPDATE poller
-							SET last_sync = NOW()
-							WHERE id = ?',
-							[$poller['id']]);
-					} else {
-						log_install_debug('sync', 'Failed replication to Poller ' . $poller['id']);
-						$failed[] = $poller['id'];
-					}
+					db_execute_prepared('UPDATE poller
+						SET last_sync = NOW()
+						WHERE id = ?',
+						array($poller['id']));
 				} else {
-					log_install_low('sync', 'Database replication skipped for Poller ' . $poller['id']);
+					log_install_debug('sync', 'Failed replication to Poller ' . $poller['id']);
+					$failed[] = $poller['id'];
 				}
 			} else {
 				$timeout[] = $poller['id'];
@@ -1658,11 +1207,11 @@ function install_full_sync() : array {
 
 	log_install_debug('sync', 'Success: ' . cacti_sizeof($success) . ', Failed: ' . cacti_sizeof($failed) . ', Skipped: ' . cacti_sizeof($skipped) . ', Total: ' . cacti_sizeof($pollers));
 
-	return [
+	return array(
 		'success' => $success,
 		'failed'  => $failed,
 		'skipped' => $skipped,
 		'timeout' => $timeout,
 		'total'   => cacti_sizeof($pollers)
-	];
+	);
 }
