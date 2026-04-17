@@ -11,6 +11,9 @@ rules:
   comments:
     min-spaces-from-content: 1
   comments-indentation: disable
+  indentation:
+    spaces: 2
+    indent-sequences: false
   brackets:
     min-spaces-inside: 0
     max-spaces-inside: 1
