@@ -109,3 +109,45 @@ function db_qstr_like($value) {
 
 	return db_qstr('%' . $escaped . '%');
 }
+
+/**
+ * cacti_db_in - Build a safe SQL IN clause from an array of integers.
+ *
+ * Each value is cast to int via intval(). Returns '(0)' for empty
+ * or non-array input, which safely matches nothing.
+ *
+ * @param  array $values  Array of integer values
+ *
+ * @return string  SQL fragment like '(1,2,3)'
+ */
+function cacti_db_in($values) {
+	if (!is_array($values) || empty($values)) {
+		return '(0)';
+	}
+
+	return '(' . implode(',', array_map('intval', $values)) . ')';
+}
+
+/**
+ * cacti_db_like - Escape a pattern for use in a prepared LIKE clause.
+ *
+ * Returns a two-element array: the SQL fragment with a placeholder
+ * and the escaped value wrapped in percent signs for substring matching.
+ *
+ * Usage:
+ *   list($clause, $param) = cacti_db_like($user_input);
+ *   db_fetch_assoc_prepared("SELECT * FROM t WHERE col $clause", array($param));
+ *
+ * @param  string $pattern  Raw user input
+ *
+ * @return array  ['LIKE ?', '%escaped_pattern%']
+ */
+function cacti_db_like($pattern) {
+	$escaped = str_replace(
+		array('%', '_', '\\'),
+		array('\\%', '\\_', '\\\\'),
+		$pattern
+	);
+
+	return array('LIKE ?', '%' . $escaped . '%');
+}
