@@ -4935,3 +4935,65 @@ function check_reset_no_authentication($auth_method) {
 	}
 }
 
+/**
+ * Perform a safe authentication state transition.
+ *
+ * Regenerates the session ID to prevent fixation, checks the
+ * lockout table, rotates the remember-me cookie if present,
+ * and logs the transition reason for audit purposes.
+ *
+ * Call this at privilege-level changes: login, role switch,
+ * password change, or sudo-style elevation.
+ *
+ * @param  int    $user_id The user ID undergoing the transition
+ * @param  string $reason  Short label for audit log (e.g. 'login', 'role_switch')
+ *
+ * @return bool True if the transition succeeded, false if the user is locked out
+ */
+function cacti_auth_transition($user_id, $reason = 'login') {
+	/* check lockout status before allowing transition */
+	$locked = db_fetch_cell_prepared('SELECT locked
+		FROM user_auth
+		WHERE id = ?',
+		array($user_id));
+
+	if ($locked == 'on') {
+		cacti_log('SECURITY: auth transition blocked for locked user ' . $user_id . ' reason=' . $reason, false, 'AUTH');
+
+		return false;
+	}
+
+	/* regenerate session ID to prevent fixation */
+	if (session_status() === PHP_SESSION_ACTIVE) {
+		session_regenerate_id(true);
+	}
+
+	/* rotate remember-me cookie if present */
+	if (isset($_COOKIE['cacti_remembers']) && read_config_option('auth_cache_enabled') == 'on') {
+		$new_token = bin2hex(random_bytes(32));
+		$secret    = hash('sha512', $new_token, false);
+
+		db_execute_prepared('UPDATE user_auth_cache
+			SET token = ?, last_update = NOW()
+			WHERE user_id = ?',
+			array($secret, $user_id));
+
+		$parts = explode(',', $_COOKIE['cacti_remembers']);
+
+		if (cacti_sizeof($parts) == 2) {
+			cacti_cookie_set('cacti_remembers', $user_id . ',' . $new_token);
+		} elseif (cacti_sizeof($parts) >= 3) {
+			cacti_cookie_set('cacti_remembers', $user_id . ',' . $parts[1] . ',' . $new_token);
+		}
+	}
+
+	/* invalidate cached permissions so fresh checks occur */
+	kill_session_var('sess_user_realms');
+	kill_session_var('sess_user_config_array');
+	kill_session_var('sess_config_array');
+
+	cacti_log('NOTE: auth transition completed for user ' . $user_id . ' reason=' . $reason, false, 'AUTH');
+
+	return true;
+}
+
