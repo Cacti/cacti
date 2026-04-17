@@ -41,3 +41,15 @@ parameters:
 			identifier: isset.offset
 			count: 1
 			path: lib/functions.php
+
+		-
+			message: '#^Parameter \#6 \$gc of function session_set_save_handler expects callable\(int\)\: bool, .+ given\.$#'
+			identifier: argument.type
+			count: 1
+			path: include/session.php
+
+		-
+			message: '#^Variable \$dep_hash_cache might not be defined\.$#'
+			identifier: variable.undefined
+			count: 41
+			path: lib/import.php
