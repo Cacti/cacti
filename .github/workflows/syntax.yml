@@ -188,6 +188,7 @@ jobs:
       run: |
         cp -p ${{ github.workspace }}/plugins/flowview/config.php.dist ${{ github.workspace }}/plugins/flowview/config.php
         cp -p ${{ github.workspace }}/plugins/syslog/config.php.dist ${{ github.workspace }}/plugins/syslog/config.php
+        # shellcheck disable=SC2016
         sed -i 's/\/\/\$/\$/g' ${{ github.workspace }}/plugins/syslog/config.php
 
     - name: Run apt-get update
@@ -229,13 +230,13 @@ jobs:
       run: |
         echo -e "[client]\nuser = root\npassword = cactiroot\nhost = 127.0.0.1\nmax_allowed_packet = 500000000\n" >> ~/.my.cnf
         cat ~/.my.cnf
-        mysql $MYSQL_AUTH_USR -e "CREATE DATABASE IF NOT EXISTS cacti;"
-        mysql $MYSQL_AUTH_USR -e "CREATE USER 'cactiuser'@'localhost' IDENTIFIED BY 'cactiuser';"
-        mysql $MYSQL_AUTH_USR -e "GRANT ALL PRIVILEGES ON cacti.* TO 'cactiuser'@'localhost';"
-        mysql $MYSQL_AUTH_USR -e "FLUSH PRIVILEGES;"
-        mysql $MYSQL_AUTH_USR -e "SET GLOBAL max_allowed_packet=500000000;"
-        mysql $MYSQL_AUTH_USR cacti < ${{ github.workspace }}/cacti.sql
-        mysql $MYSQL_AUTH_USR -e "INSERT INTO settings (name, value) VALUES ('path_php_binary', '/bin/php')" cacti
+        mysql "$MYSQL_AUTH_USR" -e "CREATE DATABASE IF NOT EXISTS cacti;"
+        mysql "$MYSQL_AUTH_USR" -e "CREATE USER 'cactiuser'@'localhost' IDENTIFIED BY 'cactiuser';"
+        mysql "$MYSQL_AUTH_USR" -e "GRANT ALL PRIVILEGES ON cacti.* TO 'cactiuser'@'localhost';"
+        mysql "$MYSQL_AUTH_USR" -e "FLUSH PRIVILEGES;"
+        mysql "$MYSQL_AUTH_USR" -e "SET GLOBAL max_allowed_packet=500000000;"
+        mysql "$MYSQL_AUTH_USR" cacti < ${{ github.workspace }}/cacti.sql
+        mysql "$MYSQL_AUTH_USR" -e "INSERT INTO settings (name, value) VALUES ('path_php_binary', '/bin/php')" cacti
 
     - name: Prime Cacti config.php File
       run: |

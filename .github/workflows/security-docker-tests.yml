@@ -69,7 +69,7 @@ jobs:
         timeout-minutes: 5
         run: |
           set -euo pipefail
-          for i in $(seq 1 24); do
+          for _ in $(seq 1 24); do
             DB_HEALTH=$(docker compose --env-file .env.test ps --format json | grep -o '"Health":"[^"]*"' | head -1 | cut -d'"' -f4 || true)
             WEB_HEALTH=$(docker compose --env-file .env.test ps --format json | grep -o '"Health":"[^"]*"' | tail -1 | cut -d'"' -f4 || true)
             if [ "$DB_HEALTH" = "healthy" ] && [ "$WEB_HEALTH" = "healthy" ]; then
