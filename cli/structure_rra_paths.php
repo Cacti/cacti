@@ -199,7 +199,7 @@ foreach ($data_sources as $info) {
 	$lock_acquired = false;
 
 	while (!$lock_acquired && $retry < $max_retries) {
-		$lock_acquired = db_fetch_cell("SELECT GET_LOCK('$lock_name', 1)");
+		$lock_acquired = db_fetch_cell_prepared('SELECT GET_LOCK(?, ?)', array($lock_name, 1));
 
 		if (!$lock_acquired) {
 			usleep($wait_us);
@@ -214,7 +214,7 @@ foreach ($data_sources as $info) {
 	}
 
 	register_shutdown_function(function() use ($lock_name) {
-		db_execute("SELECT RELEASE_LOCK('$lock_name')");
+		db_execute_prepared('SELECT RELEASE_LOCK(?)', array($lock_name));
 	});
 
 	/* create one subfolder for every host */
