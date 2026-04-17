@@ -151,3 +151,20 @@ function cacti_db_like($pattern) {
 
 	return array('LIKE ?', '%' . $escaped . '%');
 }
+
+/**
+ * Validates a sort column against an explicit allowlist.
+ * Prevents ORDER BY injection via unsanitized sort_column parameters.
+ *
+ * @param string $column    The requested sort column
+ * @param array  $allowed   Allowlist of valid column names
+ * @param string $default   Default column if $column not in allowlist
+ * @return string           Safe, allowlisted column name
+ */
+function cacti_validate_sort_column(string $column, array $allowed, string $default = '') : string {
+	if (in_array($column, $allowed, true)) {
+		return $column;
+	}
+
+	return $default !== '' ? $default : (count($allowed) > 0 ? $allowed[0] : 'id');
+}

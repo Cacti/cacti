@@ -171,3 +171,21 @@ function cacti_remote_url($base_url, $action, $params = array()) {
 
 	return $url;
 }
+
+/**
+ * Builds a URL with properly encoded query parameters for remote agent calls.
+ * Prevents HTTP parameter pollution via rawurlencode on all key/value pairs.
+ *
+ * @param string $base    Base URL (e.g. $config['url_path'] . 'remote_agent.php')
+ * @param array  $params  Associative array of query parameters
+ * @return string         URL with safely encoded query string
+ */
+function cacti_build_remote_url(string $base, array $params) : string {
+	$query = [];
+
+	foreach ($params as $key => $value) {
+		$query[] = rawurlencode((string)$key) . '=' . rawurlencode((string)$value);
+	}
+
+	return $base . (count($query) > 0 ? '?' . implode('&', $query) : '');
+}
