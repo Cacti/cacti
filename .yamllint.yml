@@ -13,7 +13,7 @@ rules:
   comments-indentation: disable
   indentation:
     spaces: 2
-    indent-sequences: false
+    indent-sequences: whatever
   brackets:
     min-spaces-inside: 0
     max-spaces-inside: 1
