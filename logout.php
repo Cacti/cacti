@@ -23,56 +23,82 @@
 */
 
 define('CACTI_IN_INSTALL', 1);
-require('./include/auth.php');
+include('./include/auth.php');
 
-// forcibly unlock cacti if the user logg's out
-$admin_user = read_config_option('admin_user');
-$lockout    = read_config_option('cacti_lockout_status', true);
-
-if ($lockout != '') {
-	$lockout = json_decode($lockout, true);
-
-	if ($admin_user == $_SESSION[SESS_USER_ID] && $lockout['session'] == session_id()) {
-		set_config_option('cacti_lockout_status', '');
-	}
-}
+global $config;
 
 set_default_action();
 
 api_plugin_hook('logout_pre_session_destroy');
 
-// Clear session
+/* Note: logout is reachable via GET without CSRF token. Impact is limited
+ * to forced-logout (annoyance, no privilege escalation). SameSite=Strict
+ * on the session cookie prevents cross-site exploitation on modern browsers.
+ * Tracked in issue #7051 (csrf-magic evaluation). */
+
+
+/* Clear session */
 cacti_cookie_logout();
 cacti_session_destroy();
 
-$version = CACTI_VERSION;
+$version = get_cacti_version();
 
 api_plugin_hook('logout_post_session_destroy');
 
-// allow for plugin based logout page
+/* allow for plugin based logout page */
 if (api_plugin_hook_function('custom_logout_message', OPER_MODE_NATIVE) === OPER_MODE_RESKIN) {
 	exit;
 }
 
-// Check to see if we are using Web Basic Auth
-if (grv('action') == 'timeout' || grv('action') == 'disabled' || grv('action') == 'remote') {
-	$hook   = 'logout';
-	$reason = __('a Session Timeout');
-
-	if (grv('action') == 'disabled') {
-		$hook   = 'disabled';
-		$reason = __('an Account Suspension');
-	} elseif (grv('action') == 'remote') {
-		$hook   = 'logout';
-		$reason = __('a change in state of the Remote Data Collector');
+/* Check to see if we are using Web Basic Auth */
+if (get_request_var('action') == 'timeout' || get_request_var('action') == 'disabled' || get_request_var('action') == 'remote') {
+	if (get_request_var('action') == 'timeout') {
+		$message = __('You have been logged out of Cacti due to a session timeout.');
+	} elseif (get_request_var('action') == 'disabled') {
+		$message = __('You have been logged out of Cacti due to an account suspension.');
+	} elseif (get_request_var('action') == 'remove') {
+		$message = __('You have been logged out of Cacti due to a Remote Data Collector state change');
+	} else {
+		$message = '';
 	}
 
-	html_auth_header($hook, __('Logout of Cacti'),  __('Automatic Logout'), __('You have been logged out of Cacti due to %s.', $reason));
-	print '<div>' . __('Please close your browser or %sLogin Again%s', '[<a href="index.php">', '</a>]') . '</div>';
-	html_auth_footer($hook, __('Cookies have been cleared'), '');
+	print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>";
+	print "<html>";
+	print "<head>";
+	html_common_header(__('Logout of Cacti'));
+	print "</head>";
+	print "<body class='logoutBody'>
+	<div class='logoutLeft'></div>
+	<div class='logoutCenter'>
+		<div class='logoutArea'>
+			<div class='cactiLogoutLogo'></div>
+			<legend>" . __('Automatic Logout') . "</legend>
+			<div class='logoutTitle'>
+				<p>" . $message . "</p>
+				<p>" . __('Please close your browser or %sLogin Again%s', '</p><center>[<a href="index.php">', '</a>]</center>') . "
+			</div>
+			<div class='logoutErrors'></div>
+		</div>
+		<div class='versionInfo'>" . __('Version %s', $version) . " | " . COPYRIGHT_YEARS_SHORT . "</div>
+	</div>
+	<div class='logoutRight'></div>
+	<script type='text/javascript'>
+	$(function() {
+		if (typeof myRefresh != 'undefined') {
+			clearTimeout(myRefresh);
+		}
+
+		$('.loginLeft').css('width',parseInt($(window).width()*0.33)+'px');
+		$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
+	});
+	</script>";
+	include('./include/global_session.php');
+	print "</body>
+	</html>";
 } else {
-	// Default action
+	/* Default action */
 	clear_auth_cookie();
 
 	header('Location: index.php');
 }
+
