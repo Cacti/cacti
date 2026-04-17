@@ -242,12 +242,12 @@ function cacti_exec_with_redirect(array $argv, $stdout_file = null, $stderr_file
 
 	fclose($pipes[0]);
 
-	if (!isset($descriptors[1][0]) || $descriptors[1][0] === 'pipe') {
+	if ($descriptors[1][0] === 'pipe') {
 		$stdout = stream_get_contents($pipes[1]);
 		fclose($pipes[1]);
 	}
 
-	if (!isset($descriptors[2][0]) || $descriptors[2][0] === 'pipe') {
+	if ($descriptors[2][0] === 'pipe') {
 		fclose($pipes[2]);
 	}
 
