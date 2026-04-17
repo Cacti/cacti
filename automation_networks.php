@@ -428,7 +428,7 @@ function network_edit() {
 
 		if (!cacti_sizeof($network)) {
 			raise_message('network_not_found', __('Network not found.'), MESSAGE_LEVEL_ERROR);
-			header('Location: automation_networks.php');
+			header('Location: ' . validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'automation_networks.php', 'automation_networks.php'));
 			exit;
 		}
 

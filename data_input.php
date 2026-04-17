@@ -317,7 +317,7 @@ function field_remove_confirm() {
 
 	if (!cacti_sizeof($field)) {
 		raise_message('field_not_found', __('Data Input Field not found.'), MESSAGE_LEVEL_ERROR);
-		header('Location: data_input.php');
+		header('Location: ' . validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'data_input.php', 'data_input.php'));
 		exit;
 	}
 
@@ -374,7 +374,7 @@ function field_remove() {
 
 	if (!cacti_sizeof($field)) {
 		raise_message('field_not_found', __('Data Input Field not found.'), MESSAGE_LEVEL_ERROR);
-		header('Location: data_input.php');
+		header('Location: ' . validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'data_input.php', 'data_input.php'));
 		exit;
 	}
 
@@ -524,7 +524,7 @@ function data_edit() {
 
 		if (!cacti_sizeof($data_input)) {
 			raise_message('data_input_not_found', __('Data Input Method not found.'), MESSAGE_LEVEL_ERROR);
-			header('Location: data_input.php');
+			header('Location: ' . validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'data_input.php', 'data_input.php'));
 			exit;
 		}
 

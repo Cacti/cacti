@@ -1471,7 +1471,7 @@ function template_edit() : void {
 
 		if (!cacti_sizeof($template)) {
 			raise_message('graph_template_not_found', __('Graph Template not found.'), MESSAGE_LEVEL_ERROR);
-			header('Location: graph_templates.php');
+			header('Location: ' . validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'graph_templates.php', 'graph_templates.php'));
 			exit;
 		}
 

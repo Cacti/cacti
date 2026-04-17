@@ -1850,7 +1850,7 @@ function user_edit() {
 
 		if (!cacti_sizeof($user)) {
 			raise_message('user_not_found', __('User not found.'), MESSAGE_LEVEL_ERROR);
-			header('Location: user_admin.php');
+			header('Location: ' . validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'user_admin.php', 'user_admin.php'));
 			exit;
 		}
 
