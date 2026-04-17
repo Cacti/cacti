@@ -181,3 +181,47 @@ test('import.php logs XML parse errors', function () use ($importSource) {
 	expect($importSource)->toContain('XML parse error');
 	expect($importSource)->toContain('libxml_get_errors()');
 });
+
+/* Item A: cacti_safe_write */
+test('cacti_safe_write rejects absolute paths', function () {
+	$source = file_get_contents(__DIR__ . '/../../lib/cacti_safe_write.php');
+	expect($source)->toContain('absolute path rejected');
+});
+
+test('cacti_safe_write rejects traversal segments', function () {
+	$source = file_get_contents(__DIR__ . '/../../lib/cacti_safe_write.php');
+	expect($source)->toContain('traversal rejected');
+});
+
+test('cacti_safe_write uses atomic rename', function () {
+	$source = file_get_contents(__DIR__ . '/../../lib/cacti_safe_write.php');
+	expect($source)->toContain('rename(');
+});
+
+test('cacti_safe_write verifies realpath post-write', function () {
+	$source = file_get_contents(__DIR__ . '/../../lib/cacti_safe_write.php');
+	expect($source)->toContain('post-write realpath check');
+});
+
+/* Item B: cacti_plugin_path */
+test('cacti_plugin_path uses basename on plugin name', function () {
+	$source = file_get_contents(__DIR__ . '/../../lib/cacti_plugin_path.php');
+	expect($source)->toContain('basename($plugin_name)');
+});
+
+test('cacti_plugin_path verifies realpath containment', function () {
+	$source = file_get_contents(__DIR__ . '/../../lib/cacti_plugin_path.php');
+	expect($source)->toContain('path escapes plugins dir');
+});
+
+test('lib/plugins.php uses cacti_plugin_path for includes', function () {
+	$source = file_get_contents(__DIR__ . '/../../lib/plugins.php');
+	expect($source)->toContain('cacti_plugin_path(');
+});
+
+/* SHA-1 removal */
+test('import.php uses SHA-256 for package verification', function () {
+	$source = file_get_contents(__DIR__ . '/../../lib/import.php');
+	expect($source)->toContain('OPENSSL_ALGO_SHA256');
+	expect($source)->not->toMatch('/openssl_verify\([^)]*OPENSSL_ALGO_SHA1/');
+});
