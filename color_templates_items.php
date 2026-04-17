@@ -275,7 +275,7 @@ function aggregate_color_item_remove_confirm() {
 
 	if (!cacti_sizeof($template) || !cacti_sizeof($color_item)) {
 		raise_message('color_item_not_found', __('Color Template or Item not found.'), MESSAGE_LEVEL_ERROR);
-		header('Location: color_templates.php');
+		header('Location: ' . validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'color_templates.php', 'color_templates.php'));
 		exit;
 	}
 
