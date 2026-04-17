@@ -356,6 +356,13 @@ function import_package_get_details($xmlfile) {
 	$return = array();
 	$data = file_get_contents($filename, 'r');
 
+	$max_xml_size = 50 * 1024 * 1024;
+
+	if (strlen($data) > $max_xml_size) {
+		cacti_log('ERROR: XML input exceeds maximum size (' . strlen($data) . ' > ' . $max_xml_size . ')', false, 'IMPORT');
+		return array();
+	}
+
 	/* SECURITY: Disable external entity loading to prevent XXE on PHP < 8.0 */
 	$disable_entities = false;
 	if (LIBXML_VERSION < 20900) {
@@ -364,16 +371,28 @@ function import_package_get_details($xmlfile) {
 
 	libxml_use_internal_errors(true);
 	$xmlget = simplexml_load_string($data);
+
+	if ($xmlget === false) {
+		$errors = libxml_get_errors();
+
+		foreach ($errors as $error) {
+			cacti_log('ERROR: XML parse error: ' . trim($error->message), false, 'IMPORT');
+		}
+
+		libxml_clear_errors();
+		libxml_use_internal_errors(false);
+
+		if (LIBXML_VERSION < 20900) {
+			libxml_disable_entity_loader($disable_entities);
+		}
+
+		return array();
+	}
+
 	libxml_use_internal_errors(false);
 
 	if (LIBXML_VERSION < 20900) {
 		libxml_disable_entity_loader($disable_entities);
-	}
-
-	if ($xmlget === false) {
-		cacti_log('FATAL: Unable to parse package XML structure.', true, 'IMPORT', POLLER_VERBOSITY_LOW);
-
-		return array();
 	}
 
 	$pkgarr = xml_to_array($xmlget);
@@ -468,6 +487,13 @@ function import_read_package_data($xmlfile, &$public_key) {
 
 	cacti_log('Loading Plugin Information from package', false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 
+	$max_xml_size = 50 * 1024 * 1024;
+
+	if (strlen($xml) > $max_xml_size) {
+		cacti_log('ERROR: XML input exceeds maximum size (' . strlen($xml) . ' > ' . $max_xml_size . ')', false, 'IMPORT');
+		return false;
+	}
+
 	/* SECURITY: Disable external entity loading to prevent XXE on PHP < 8.0 */
 	$disable_entities = false;
 	if (LIBXML_VERSION < 20900) {
@@ -476,16 +502,28 @@ function import_read_package_data($xmlfile, &$public_key) {
 
 	libxml_use_internal_errors(true);
 	$xmlget = simplexml_load_string($xml);
+
+	if ($xmlget === false) {
+		$errors = libxml_get_errors();
+
+		foreach ($errors as $error) {
+			cacti_log('ERROR: XML parse error: ' . trim($error->message), false, 'IMPORT');
+		}
+
+		libxml_clear_errors();
+		libxml_use_internal_errors(false);
+
+		if (LIBXML_VERSION < 20900) {
+			libxml_disable_entity_loader($disable_entities);
+		}
+
+		return false;
+	}
+
 	libxml_use_internal_errors(false);
 
 	if (LIBXML_VERSION < 20900) {
 		libxml_disable_entity_loader($disable_entities);
-	}
-
-	if ($xmlget === false) {
-		cacti_log('FATAL: Unable to parse XML structure.', true, 'IMPORT', POLLER_VERBOSITY_LOW);
-
-		return false;
 	}
 
 	$data = xml_to_array($xmlget);

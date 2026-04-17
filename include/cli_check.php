@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/* reject non-CLI invocations early */
+if (php_sapi_name() !== 'cli') {
+	http_response_code(404);
+	exit;
+}
+
 /* do NOT run this script through a web browser */
 define('CACTI_CLI_ONLY', true);
 
