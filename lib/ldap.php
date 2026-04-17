@@ -988,3 +988,26 @@ class Ldap {
 	}
 }
 
+/**
+ * Build an LDAP filter string with safe variable substitution.
+ *
+ * Each placeholder in $template (e.g. <username>) is replaced with
+ * the ldap_escape()'d value from $vars. This prevents LDAP filter
+ * injection attacks.
+ *
+ * @param  string $template Filter template with <key> placeholders
+ * @param  array  $vars     Associative array of key => value pairs
+ *
+ * @return string The assembled, injection-safe LDAP filter
+ */
+function cacti_ldap_filter($template, $vars) {
+	$result = $template;
+
+	foreach ($vars as $key => $value) {
+		$escaped = ldap_escape((string) $value, '', LDAP_ESCAPE_FILTER);
+		$result  = str_replace('<' . $key . '>', $escaped, $result);
+	}
+
+	return $result;
+}
+
