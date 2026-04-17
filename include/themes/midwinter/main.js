@@ -130,10 +130,10 @@ function midWinterNavigation(element) {
 	let helper   		= element.closest('div[class^="mdw-ConsoleNavigationBox"]').data('helper');
 	let rubric		 	= element.closest('div[class^="mdw-ConsoleNavigationBox"]').data('title');
 
-	$('#navBreadCrumb .rubric').html( '<span>'+rubric+'</span>').attr('data-helper', helper).off().on(
+	$('#navBreadCrumb .rubric').empty().append($('<span>').text(rubric)).attr('data-helper', helper).off().on(
 		"click", {param: 'force_open', filter: 'reset'}, toggleCactiNavigationBox
 	);
-	$('#navBreadCrumb .category').html( '<span>'+category+'</span>' ).attr('data-helper', helper).off().on(
+	$('#navBreadCrumb .category').empty().append($('<span>').text(category)).attr('data-helper', helper).off().on(
 		"click", {param: 'force_open', filter: category}, toggleCactiNavigationBox
 	);
 	$('#navBreadCrumb .action').html( action );
@@ -818,7 +818,7 @@ function setupDefaultElements() {
 					cVisible = columns[4];
 
 					if (cHideable) {
-						columns_filter += '<div>' + cTitle + '</div>'
+						columns_filter += '<div>' + cactiEscapeHtml(cTitle) + '</div>'
 							+ '<div>'
 							//+ '<label class="checkboxSwitch">'
 							+ '<input data-scope="theme" id="mdw_' + 'col_' + cIndex + '" data-func="toggleTableColumn" data-table="' + tableHash + '" data-column="' + cIndex + '" class="formCheckbox" type="checkbox" name="mdw_' + 'col_' + cIndex + '"' + (cVisible ? ' checked' : '') + ((cIndex === 1) ? ' disabled' : '') + '>'
