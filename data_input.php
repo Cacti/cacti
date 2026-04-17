@@ -118,7 +118,7 @@ function form_save() : void {
 				if (!ierv('id')) {
 					db_execute_prepared('UPDATE data_input_fields SET sequence = 0 WHERE data_input_id = ?', [gnrv('id')]);
 
-					generate_data_input_field_sequences(gnrv('input_string'), gnrv('id'));
+					generate_data_input_field_sequences($save['input_string'], $data_input_id);
 
 					update_replication_crc(0, 'poller_replicate_data_input_fields_crc');
 				}
