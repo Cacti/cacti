@@ -86,7 +86,7 @@ function draw_edit_form($array) {
 				$collapsible = (isset($field_array['collapsible']) && $field_array['collapsible'] == 'true');
 
 				print "<div class='spacer formHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$field_name'><div class='formHeaderText'>" . html_escape($field_array['friendly_name']);
-				print '<div class="formTooltip">' . (isset($field_array['description']) ? display_tooltip($field_array['description']):'') . '</div>';
+				print '<div class="formTooltip">' . (isset($field_array['description']) ? display_tooltip(html_escape($field_array['description'])):'') . '</div>';
 				print ($collapsible ? "<div class='formHeaderAnchor'><i class='fa fa-angle-double-up'></i></div>":'') . '</div></div>';
 			} else {
 				// Make a row using a div
@@ -132,10 +132,10 @@ function draw_edit_form($array) {
 				print html_escape($field_array['friendly_name']);
 
 				if (read_config_option('hide_form_description') == 'on') {
-					print '<br><span class="formFieldDescription">' . ((isset($field_array['description'])) ? $field_array['description'] : '') . "</span>\n";
+					print '<br><span class="formFieldDescription">' . ((isset($field_array['description'])) ? html_escape($field_array['description']) : '') . "</span>\n";
 				} else {
 					print '<div class="formTooltip">';
-					print display_tooltip((isset($field_array['description'])) ? $field_array['description'] : '');
+					print display_tooltip((isset($field_array['description'])) ? html_escape($field_array['description']) : '');
 					print '</div>';
 				}
 
