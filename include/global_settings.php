@@ -2888,7 +2888,7 @@ $settings['spikes'] = [
 		'friendly_name' => __('Removal Method'),
 		'description'   => __('There are two removal methods.  The first, Standard Deviation, will remove any sample that is X number of standard deviations away from the average of samples.'),
 		'method'        => 'drop_array',
-		'default'       => '2',
+		'default'       => '1',
 		'array'         => [
 			1 => __('Standard Deviation'),
 		]
