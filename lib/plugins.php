@@ -145,8 +145,9 @@ function api_plugin_hook_function($name, $parm = NULL) {
 			if (!in_array($hdata['name'], $plugins_integrated)) {
 				$p[] = $hdata['name'];
 
-				if (file_exists($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file'])) {
-					include_once($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file']);
+				$plugin_file = cacti_plugin_path($hdata['name'], $hdata['file']);
+				if ($plugin_file !== false) {
+					include_once($plugin_file);
 				}
 
 				$function = $hdata['function'];
@@ -702,7 +703,12 @@ function api_plugin_install($plugin) {
 		exit;
 	}
 
-	include_once($config['base_path'] . "/plugins/$plugin/setup.php");
+	$plugin_setup = cacti_plugin_path($plugin, 'setup.php');
+	if ($plugin_setup === false) {
+		cacti_log("ERROR: Plugin '$plugin' setup.php not found or path invalid", false, 'PLUGIN');
+		return;
+	}
+	include_once($plugin_setup);
 
 	$exists = db_fetch_assoc_prepared('SELECT id
 		FROM plugin_config
@@ -792,7 +798,12 @@ function api_plugin_uninstall($plugin, $tables = true) {
 	$plugin_found = false;
 
 	if (file_exists($config['base_path'] . "/plugins/$plugin/setup.php")) {
-		include_once($config['base_path'] . "/plugins/$plugin/setup.php");
+		$plugin_setup = cacti_plugin_path($plugin, 'setup.php');
+	if ($plugin_setup === false) {
+		cacti_log("ERROR: Plugin '$plugin' setup.php not found or path invalid", false, 'PLUGIN');
+		return;
+	}
+	include_once($plugin_setup);
 
 		// Run the Plugin's Uninstall Function first
 		$function = 'plugin_' . $plugin . '_uninstall';
@@ -835,7 +846,12 @@ function api_plugin_check_config($plugin) {
 	clearstatcache();
 
 	if (file_exists($config['base_path'] . "/plugins/$plugin/setup.php")) {
-		include_once($config['base_path'] . "/plugins/$plugin/setup.php");
+		$plugin_setup = cacti_plugin_path($plugin, 'setup.php');
+	if ($plugin_setup === false) {
+		cacti_log("ERROR: Plugin '$plugin' setup.php not found or path invalid", false, 'PLUGIN');
+		return;
+	}
+	include_once($plugin_setup);
 
 		$function = 'plugin_' . $plugin . '_check_config';
 
