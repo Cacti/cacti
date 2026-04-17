@@ -187,7 +187,7 @@ if (!isset($guest_account) && isset($_SESSION[SESS_USER_ID])) {
 	if (get_guest_account() === $_SESSION[SESS_USER_ID]) {
 		kill_session_var(SESS_USER_ID);
 		cacti_session_destroy();
-		cacti_session_start();
+		cacti_session_start(true);
 	}
 }
 

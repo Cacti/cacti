@@ -6394,9 +6394,10 @@ function get_default_contextoption($timeout = false) {
 	if (in_array($protocol, array('ssl', 'https', 'ftps'))) {
 		$fgc_contextoption = array(
 			'ssl' => array(
-				'verify_peer' => false,
-				'verify_peer_name' => false,
-				'allow_self_signed' => true,
+				'verify_peer' => true,
+				'verify_peer_name' => true,
+				'allow_self_signed' => false,
+				'follow_location' => 0,
 			)
 		);
 	}

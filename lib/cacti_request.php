@@ -151,3 +151,17 @@ function cacti_db_like($pattern) {
 
 	return array('LIKE ?', '%' . $escaped . '%');
 }
+
+/**
+ * cacti_validate_sort_column - returns $column if it is in $allowed, else $default.
+ * Prevents ORDER BY injection from user-controlled sort parameters.
+ *
+ * @param  string $column   - the requested sort column
+ * @param  array  $allowed  - allowlist of valid column names
+ * @param  string $default  - value to return when $column is not in $allowed
+ *
+ * @return string  safe column name
+ */
+function cacti_validate_sort_column($column, array $allowed, $default = '') {
+	return in_array($column, $allowed, true) ? $column : $default;
+}

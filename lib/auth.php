@@ -158,6 +158,10 @@ function check_auth_cookie() {
 				} else {
 					set_auth_cookie($user_info);
 
+					if (auth_process_lockout_check($user_info['username'], $user_info['realm'])) {
+						return false;
+					}
+
 					cacti_log("LOGIN: User '" . $user_info['username'] . "' Authenticated via Authentication Cookie", false, 'AUTH');
 
 					db_execute_prepared('INSERT IGNORE INTO user_log
