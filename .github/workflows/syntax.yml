@@ -54,7 +54,7 @@ jobs:
   check:
     runs-on: ${{ matrix.os }}
 #    runs-on: self-hosted
-#    container: 
+#    container:
 #      ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -107,7 +107,7 @@ jobs:
           ${{ runner.os }}-php-
 
     - name: Install dependencies
-      run: sudo composer install 
+      run: sudo composer install
 
     - name: Run Linter on base code
       run: composer run-script lint
@@ -215,7 +215,7 @@ jobs:
         sudo chmod o+x /home/runner/work
         sudo chmod o+x /home/runner/work/cacti
         sudo chmod o+x /home/runner/work/cacti/cacti
-      
+
     - name: Configure Apache Site
       run: |
         cp ${{ github.workspace }}/tests/tools/cacti.conf /tmp/cacti.conf
@@ -224,7 +224,7 @@ jobs:
 
     - name: Restart Apache2
       run: sudo systemctl restart apache2
-      
+
     - name: Create and Initialize Database
       env:
         MYSQL_AUTH_USR: "--defaults-file=~/.my.cnf"
@@ -293,7 +293,7 @@ jobs:
       run: |
         cd ${{ github.workspace }}
         sudo php tests/tools/check_xml_syntax.php
-    
+
     - name: Check all perl scripts for syntax errors
       run: |
         cd ${{ github.workspace }}
