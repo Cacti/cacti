@@ -384,6 +384,11 @@ function import_package_get_details($xmlfile) {
 	$return = array();
 	$data = file_get_contents($filename, 'r');
 
+	if ($data === false) {
+		cacti_log('ERROR: Failed to read XML file: ' . $filename, false, 'IMPORT');
+		return array();
+	}
+
 	$max_xml_size = 50 * 1024 * 1024;
 
 	if (strlen($data) > $max_xml_size) {
@@ -518,6 +523,11 @@ function import_read_package_data($xmlfile, &$public_key) {
 	}
 
 	cacti_log('Loading Plugin Information from package', false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
+
+	if ($xml === false) {
+		cacti_log('ERROR: Failed to read XML package data', false, 'IMPORT');
+		return false;
+	}
 
 	$max_xml_size = 50 * 1024 * 1024;
 
