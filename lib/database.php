@@ -1775,7 +1775,11 @@ function db_replace($table_name, $array_items, $keyCols, $db_conn = false) {
 	}
 
 	$log_items = $array_items;
-	$redact_fields = array('snmp_community', 'snmp_password', 'snmp_priv_passphrase', 'password', 'proxy_password');
+	$redact_fields = array(
+		'snmp_community', 'snmp_password', 'snmp_priv_passphrase',
+		'snmp_auth_passphrase', 'password', 'proxy_password',
+		'rsa_private_key', 'secret', 'auth_key', 'priv_key'
+	);
 	foreach ($redact_fields as $field) {
 		if (isset($log_items[$field])) {
 			$log_items[$field] = '********';
