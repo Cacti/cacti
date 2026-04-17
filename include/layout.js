@@ -28,6 +28,17 @@ const MESSAGE_LEVEL_ERROR = 3;
 const MESSAGE_LEVEL_CSRF = 4;
 const MESSAGE_LEVEL_MIXED = 5;
 
+// Escape HTML metacharacters to prevent DOM XSS when inserting text into HTML
+function cactiEscapeHtml(str) {
+	if (str == null) return '';
+	return String(str)
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/"/g, '&quot;')
+		.replace(/'/g, '&#039;');
+}
+
 var theme;
 var myRefresh;
 var userMenuTimer;
@@ -391,7 +402,7 @@ $.fn.enableOptions = function (values, valueCheckFunc) {
  */
 $.fn.textWidth = function (text) {
 	var org = $(this);
-	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px">' + (text || org.text()) + '</span>');
+	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px"></span>').text(text || org.text());
 	if (!text) {
 		html.css('font-family', org.css('font-family'));
 		html.css('font-weight', org.css('font-weight'));
@@ -1467,7 +1478,9 @@ function makeFiltersResponsive() {
 
 				if (filterContents.find('#export').length) {
 					title = $('#export').attr('title');
-					filterHeader.find('div.cactiTableButton').append('<span title="' + title + '" style="display:none;" class="cactiFilterExport"><i class="ti ti-chevron-down"></i></span>');
+					filterHeader.find('div.cactiTableButton').append(
+						$('<span style="display:none;" class="cactiFilterExport"><i class="ti ti-chevron-down"></i></span>').attr('title', title)
+					);
 
 					$('.cactiFilterExport').off('click').on('click', function (event) {
 						event.stopPropagation();
@@ -1477,7 +1490,9 @@ function makeFiltersResponsive() {
 
 				if (filterContents.find('#import').length) {
 					title = $('#import').attr('title');
-					filterHeader.find('div.cactiTableButton').append('<span title="' + title + '" style="display:none;" class="cactiFilterImport"><i class="ti ti-chevron-up"></i></span>');
+					filterHeader.find('div.cactiTableButton').append(
+						$('<span style="display:none;" class="cactiFilterImport"><i class="ti ti-chevron-up"></i></span>').attr('title', title)
+					);
 
 					$('.cactiFilterImport').off('click').on('click', function (event) {
 						event.stopPropagation();
@@ -3929,10 +3944,16 @@ function hideCurrentTab(id, shrinking) {
 		var selected = $('#' + id).hasClass('selected');
 		var text = $('#' + id).text();
 
+		var tabLink = $('<a class="lefttab"></a>').attr('id', myid).attr('href', href).text(text);
+		if (selected) {
+			tabLink.addClass('selected');
+		}
+		var tabItem = $('<li>').append(tabLink);
+
 		if (shrinking) {
-			$('#submenu-ellipsis').prepend('<li><a class="lefttab' + (selected ? ' selected' : '') + '" id="' + myid + '" href="' + href + '">' + text + '</a></li>');
+			$('#submenu-ellipsis').prepend(tabItem);
 		} else {
-			$('#submenu-ellipsis').append('<li><a class="lefttab' + (selected ? ' selected' : '') + '" id="' + myid + '" href="' + href + '">' + text + '</a></li>');
+			$('#submenu-ellipsis').append(tabItem);
 		}
 
 		setupResponsiveMenuAndTabs();
@@ -4812,9 +4833,13 @@ $.widget('custom.dropcolor', {
 
 						if (hex !== null) {
 							color = hex[1];
-							return $('<li>').attr('data-value', item.value).html('<div><span style="background-color:#' + color + ';" class="ui-icon color-icon"></span>' + label + '</div>').appendTo(ul);
+							return $('<li>').attr('data-value', item.value).append(
+								$('<div>').append($('<span class="ui-icon color-icon"></span>').css('background-color', '#' + color)).append(document.createTextNode(label))
+							).appendTo(ul);
 						} else {
-							return $('<li>').attr('data-value', item.value).html('<div><span class="ui-icon color-icon"></span>' + label + '</div>').appendTo(ul);
+							return $('<li>').attr('data-value', item.value).append(
+								$('<div>').append('<span class="ui-icon color-icon"></span>').append(document.createTextNode(label))
+							).appendTo(ul);
 						}
 					}
 
@@ -4959,14 +4984,16 @@ function makeCallbacks() {
 			value = title;
 		}
 
-		var dialogForm = "<span id='" + dcWrapId + "' class='ui-selectmenu-button ui-selectmenu-button-closed ui-corner-all ui-button ui-widget" + (dcDisable ? ' ui-selectmenu-disabled ui-state-disabled':'') + "'>";
-		dialogForm    += "<span id='" + dcClickId + "' style='z-index:4' class='ui-selectmenu-icon ui-icon ui-icon-triangle-1-s'></span>";
-		dialogForm    += "<span class='ui-select-text'>";
-		dialogForm    += "<input type='text' class='ui-state-default ui-corner-all' id='" + dcInputId + "' value='" + value + "'>";
-		dialogForm    += "</span>";
-		dialogForm    += "</span>&nbsp;";
+		var wrapClasses = 'ui-selectmenu-button ui-selectmenu-button-closed ui-corner-all ui-button ui-widget' + (dcDisable ? ' ui-selectmenu-disabled ui-state-disabled' : '');
+		var dialogWrap = $('<span>').attr('id', dcWrapId).attr('class', wrapClasses);
+		dialogWrap.append($('<span>').attr('id', dcClickId).css('z-index', 4).attr('class', 'ui-selectmenu-icon ui-icon ui-icon-triangle-1-s'));
+		dialogWrap.append(
+			$('<span class="ui-select-text">').append(
+				$('<input type="text" class="ui-state-default ui-corner-all">').attr('id', dcInputId).val(value)
+			)
+		);
 
-		$(this).after(dialogForm);
+		$(this).after(dialogWrap).after('&nbsp;');
 		$(this).hide();
 
 		$(dcInput).autocomplete({
