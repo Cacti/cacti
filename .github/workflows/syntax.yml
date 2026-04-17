@@ -182,6 +182,7 @@ jobs:
         # With syslog we have to enable batch installs using the lines below
         cd ${{ github.workspace }}/plugins/syslog
         cp -p config.php.dist config.php
+        # shellcheck disable=SC2016
         sed -i 's/\/\/\$syslog_install_options/\$syslog_install_options/g' config.php
 
     - name: Move plugin config files
@@ -270,6 +271,7 @@ jobs:
 
     - name: Check Poller Script Syntax after Package Import
       run: 
+        # shellcheck disable=SC2091,SC2227
         if $(find ${{ github.workspace }}/scripts -name '*.php' -exec php -l {} 2>&1 \; | grep -iv "no syntax errors detected"); then exit 1; fi
 
     - name: Check that all CLI scripts have a valid --version flag
@@ -295,6 +297,7 @@ jobs:
     - name: Check all perl scripts for syntax errors
       run: |
         cd ${{ github.workspace }}
+        # shellcheck disable=SC2091,SC2227
         if $(find scripts -name '*.pl' -exec perl -c {} 2>&1 \; | grep -iv "syntax OK"); then exit 1; fi
 
     - name: Audit the Installation Schema
@@ -317,6 +320,7 @@ jobs:
     - name: Run Cacti poller
       run: |
         sudo php ${{ github.workspace }}/poller.php --poller=1 --force --debug
+        # shellcheck disable=SC2091
         if ! $(grep -q "SYSTEM STATS" ${{ github.workspace }}/log/cacti.log); then exit 1; fi
 
     - name: Check All Pages Using Recursive wget
