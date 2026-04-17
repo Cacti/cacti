@@ -22,6 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
+include_once($config['base_path'] . '/lib/cacti_plugin_path.php');
+
 function do_hook($name) {
 	$data = func_get_args();
 	$data = api_plugin_hook($name, $data);

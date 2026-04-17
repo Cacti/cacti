@@ -102,8 +102,8 @@ function get_request_ids($name) {
  */
 function db_qstr_like($value) {
 	$escaped = str_replace(
-		array('%', '_', '\\'),
-		array('\\%', '\\_', '\\\\'),
+		array('\\', '%', '_'),
+		array('\\\\', '\\%', '\\_'),
 		$value
 	);
 
@@ -120,8 +120,8 @@ function db_qstr_like($value) {
  *
  * @return string  SQL fragment like '(1,2,3)'
  */
-function cacti_db_in($values) {
-	if (!is_array($values) || empty($values)) {
+function cacti_db_in(array $values) {
+	if (empty($values)) {
 		return '(0)';
 	}
 

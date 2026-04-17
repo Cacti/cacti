@@ -74,7 +74,7 @@ function cacti_dispatch($actions, $default = '') {
 	}
 
 	/* enforce realm permission */
-	if (isset($entry['realm']) && $entry['realm'] !== null) {
+	if (isset($entry['realm'])) {
 		if (!is_realm_allowed($entry['realm'])) {
 			cacti_log('WARNING: cacti_dispatch: realm ' . $entry['realm'] . ' denied for action "' . $action . '"', false, 'WEBUI');
 

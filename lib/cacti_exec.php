@@ -42,13 +42,7 @@
  *
  * @return string|false stdout on success, false on failure
  */
-function cacti_exec($argv, &$output = '', &$retval = 0, $timeout = 0, $cwd = null) {
-	if (!is_array($argv)) {
-		cacti_log('ERROR: cacti_exec requires an array argument, string input is forbidden', false, 'SYSTEM');
-
-		return false;
-	}
-
+function cacti_exec(array $argv, &$output = '', &$retval = 0, $timeout = 0, $cwd = null) {
 	if (empty($argv)) {
 		cacti_log('ERROR: cacti_exec called with empty argv', false, 'SYSTEM');
 
@@ -92,7 +86,7 @@ function cacti_exec($argv, &$output = '', &$retval = 0, $timeout = 0, $cwd = nul
 
 	fclose($pipes[0]);
 
-	$output = stream_get_contents($pipes[1]);
+	$output = (string) stream_get_contents($pipes[1]);
 	$stderr = stream_get_contents($pipes[2]);
 
 	fclose($pipes[1]);
@@ -220,8 +214,8 @@ function cacti_exec_redact_cmd($cmd) {
  *
  * @return int|false  Exit code, or false on failure
  */
-function cacti_exec_with_redirect($argv, $stdout_file = null, $stderr_file = null, $append = false) {
-	if (!is_array($argv) || empty($argv)) {
+function cacti_exec_with_redirect(array $argv, $stdout_file = null, $stderr_file = null, $append = false) {
+	if (empty($argv)) {
 		cacti_log('ERROR: cacti_exec_with_redirect: empty argv', false, 'SYSTEM');
 		return false;
 	}
