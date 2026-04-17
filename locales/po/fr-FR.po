@@ -2657,7 +2657,7 @@ msgstr "Option SNMP :"
 #: automation_snmp.php:537
 #, php-format
 msgid "SNMP Version: <b>%s</b>"
-msgstr "Version SNMP"
+msgstr ""
 
 #: automation_snmp.php:538
 #, php-format
@@ -11635,7 +11635,7 @@ msgstr "Le nombre par défaut de threads de périphérique.  Ceci s'applique uni
 #: include/global_settings.php:816
 #, php-format
 msgid "%s Thread"
-msgstr "sécurité"
+msgstr ""
 
 #: include/global_settings.php:817 include/global_settings.php:818
 #: include/global_settings.php:819 include/global_settings.php:820
@@ -21491,7 +21491,7 @@ msgstr "Changelog"
 #: support.php:81
 #, php-format
 msgid "Technical Support [%s]"
-msgstr "Support technique"
+msgstr ""
 
 #: support.php:288
 msgid "Include Poller"
