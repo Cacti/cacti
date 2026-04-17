@@ -302,7 +302,8 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 
 function is_cacti_public_key($public_key) {
 	$public_key = trim($public_key);
-	$keys[] = get_public_key_sha1();
+	/* Legacy SHA-1 key removed for security. SHA-256 only. */
+	// $keys[] = get_public_key_sha1();
 	$keys[] = get_public_key_sha256();
 
 	foreach($keys as $key) {
@@ -470,7 +471,7 @@ function import_read_package_data($xmlfile, &$public_key) {
 
 	// Verify Signature
 	if (strlen($public_key) < 200) {
-		$ok = openssl_verify($xml, $binary_signature, $public_key, OPENSSL_ALGO_SHA1);
+		$ok = openssl_verify($xml, $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
 	} else {
 		$ok = openssl_verify($xml, $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
 	}
