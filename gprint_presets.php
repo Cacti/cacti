@@ -186,7 +186,7 @@ function gprint_presets_edit() {
 
 		if (!cacti_sizeof($gprint_preset)) {
 			raise_message('gprint_not_found', __('GPRINT Preset not found.'), MESSAGE_LEVEL_ERROR);
-			header('Location: gprint_presets.php');
+			header('Location: ' . validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'gprint_presets.php', 'gprint_presets.php'));
 			exit;
 		}
 

@@ -113,7 +113,7 @@ case 'view':
 
 	if (!cacti_sizeof($graph)) {
 		raise_message('graph_not_found', __('The Graph you requested does not exist.'), MESSAGE_LEVEL_ERROR);
-		header('Location: graph_view.php');
+		header('Location: ' . validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'graph_view.php', 'graph_view.php'));
 		exit;
 	}
 
