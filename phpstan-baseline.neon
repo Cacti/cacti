@@ -4857,3 +4857,15 @@ parameters:
 			identifier: parameterByRef.type
 			count: 1
 			path: vdef.php
+
+		-
+			message: '#^Cannot use \+\+ on bool\.$#'
+			identifier: postInc.type
+			count: 3
+			path: lib/api_aggregate.php
+
+		-
+			message: '#^Cannot use \+\+ on bool\.$#'
+			identifier: postInc.type
+			count: 1
+			path: lib/reports.php
