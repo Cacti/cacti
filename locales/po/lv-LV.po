@@ -20583,12 +20583,12 @@ msgstr "Aptaujas veicējs sirdspukstu režīmā"
 #: poller.php:1253
 #, php-format
 msgid "WARNING: 24 hours Poller[%d] avg. run time is %f seconds (more than %d &#37; of time limit)"
-msgstr "BRĪDINĀJUMS: 24 stundu aptaujas[%d] vidējais izpildes laiks ir %f sekundes (vairāk nekā %d %% no laika ierobežojuma)"
+msgstr ""
 
 #: poller.php:1269
 #, php-format
 msgid "WARNING: In last hour Poller[%d] run time %d times reached more than %d &#37; of time limit"
-msgstr "BRĪDINĀJUMS: pēdējās stundas laikā Poller[%d] izpildes laiks %d reizes sasniedza vairāk nekā %d %% no laika ierobežojuma"
+msgstr ""
 
 #: poller.php:1291
 msgid "Cacti System Notification"
@@ -23987,8 +23987,6 @@ msgstr "Nav VDEF"
 #~ msgstr "Noklikšķiniet uz \"Turpināt\", lai sinhronizētu ierīces, kas saistītas ar atlasīto(-ajām) ierīces veidni(-ēm). Ņemiet vērā, ka šī darbība var aizņemt kādu laiku atkarībā no ierīces veidnei piesaistīto ierīču skaita."
 
 #, fuzzy
-#~| msgid "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Template."
-#~| msgid_plural "Click 'Continue' to Syncrhonize all Aggregate Graphs with the selected Color Templates."
 #~ msgid "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Template."
 #~ msgid_plural "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Templates."
 #~ msgstr[0] "Noklikšķiniet uz 'Turpināt', lai sinhronizētu visus apkopotos grafikus ar atlasīto krāsu veidni."
@@ -24014,7 +24012,6 @@ msgstr "Nav VDEF"
 #~ msgstr "Noklikšķiniet uz 'Turpināt', lai kopētu atlasīto lietotāju uz jaunu tālāk norādīto lietotāju."
 
 #, fuzzy
-#~| msgid "Click 'Continue' to delete the folling Automation Template(s)."
 #~ msgid "Click 'Continue' to delete the following Automation Template(s)."
 #~ msgstr "Noklikšķiniet uz 'Turpināt', lai dzēstu sekojošo(-ās) automatizācijas veidni(-es)."
 
@@ -24112,7 +24109,6 @@ msgstr "Nav VDEF"
 #~ msgstr "Konvertēt uz parasto(-iem) grafiku(-iem)"
 
 #, fuzzy
-#~| msgid "DES"
 #~ msgid "DS"
 #~ msgstr "DES"
 

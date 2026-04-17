@@ -20543,12 +20543,12 @@ msgstr "하트비트 모드의 폴러"
 #: poller.php:1253
 #, php-format
 msgid "WARNING: 24 hours Poller[%d] avg. run time is %f seconds (more than %d &#37; of time limit)"
-msgstr "경고: 24시간 폴러 [%d] 평균 실행 시간은 %f 초입니다 (시간 제한의 %d %% 초과)"
+msgstr ""
 
 #: poller.php:1269
 #, php-format
 msgid "WARNING: In last hour Poller[%d] run time %d times reached more than %d &#37; of time limit"
-msgstr "경고: 지난 시간 동안 폴러 [%d] 실행 시간이 %d 번 시간 제한의 %d %% 이상 도달했습니다"
+msgstr ""
 
 #: poller.php:1291
 msgid "Cacti System Notification"

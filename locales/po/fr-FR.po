@@ -1,3 +1,4 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Cacti\n"
@@ -23997,7 +23998,6 @@ msgstr "Pas de VDEF"
 #~ msgstr "Cliquez sur 'Continuer' pour copier l'utilisateur sélectionné vers un nouvel utilisateur ci-dessous."
 
 #, fuzzy
-#~| msgid "Click 'Continue' to delete the folling Automation Template(s)."
 #~ msgid "Click 'Continue' to delete the following Automation Template(s)."
 #~ msgstr "Cliquez sur 'Continuer' pour supprimer le(s) modèle(s) d'automatisation suivant(s)."
 
@@ -24107,7 +24107,6 @@ msgstr "Pas de VDEF"
 #~ msgstr "Convertir en graphique(s) normal(aux)"
 
 #, fuzzy
-#~| msgid "DES"
 #~ msgid "DS"
 #~ msgstr "DES"
 
@@ -24188,7 +24187,6 @@ msgstr "Pas de VDEF"
 #~ msgstr "Hauteur du Graphique"
 
 #, fuzzy
-#~| msgid "Graph, Data Source"
 #~ msgid "Graph Source"
 #~ msgstr "Graphique, Source des données"
 
