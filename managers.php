@@ -588,7 +588,7 @@ function manager_notifications($id, $header_label) {
 			form_alternate_row('line' . $row_id, false);
 
 			if ($item['description']) {
-				print '<td><a href="#" title="<div class=\'header\'>' . html_escape($item['name']) . '</div><div class=\'content preformatted\'>' . html_escape($item['description']) . '</div>" class="tooltip">' . $name . '</a></td>';
+				print '<td><a href="#" title="<div class=\'header\'>' . $name . '</div><div class=\'content preformatted\'>' . html_escape($item['description']) . '</div>" class="tooltip">' . $name . '</a></td>';
 			} else {
 				form_selectable_cell($name, $row_id);
 			}
