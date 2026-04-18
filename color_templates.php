@@ -387,7 +387,9 @@ function aggregate_color_template_edit() {
 
 		if (!cacti_sizeof($template)) {
 			raise_message('color_template_not_found', __('Color Template not found.'), MESSAGE_LEVEL_ERROR);
-			header('Location: ' . validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'color_templates.php', 'color_templates.php'));
+
+			cacti_header('color_templates.php');
+
 			exit;
 		}
 

@@ -622,9 +622,7 @@ function graph_edit() {
 	} else {
 		raise_message('missing_aggregate', __('Aggregate Graph Accessed does not Exist'), MESSAGE_LEVEL_ERROR);
 
-		$referer = validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '', 'aggregate_graphs.php');
-
-		header('Location: ' . $referer);
+		cacti_header('aggregate_graphs.php');
 
 		exit;
 	}

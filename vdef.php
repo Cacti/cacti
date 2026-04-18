@@ -161,7 +161,9 @@ function duplicate_vdef($_vdef_id, $vdef_title) {
 
 	if (!cacti_sizeof($vdef)) {
 		raise_message('vdef_not_found', __('VDEF not found.'), MESSAGE_LEVEL_ERROR);
-		header('Location: ' . validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'vdef.php', 'vdef.php'));
+
+		cacti_header('vdef.php');
+
 		exit;
 	}
 
@@ -332,7 +334,9 @@ function vdef_item_remove_confirm() {
 
 	if (!cacti_sizeof($vdef) || !cacti_sizeof($vdef_item)) {
 		raise_message('vdef_item_not_found', __('VDEF or VDEF Item not found.'), MESSAGE_LEVEL_ERROR);
-		header('Location: ' . validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'vdef.php', 'vdef.php'));
+
+		cacti_header('vdef.php');
+
 		exit;
 	}
 
@@ -564,7 +568,9 @@ function vdef_edit() {
 
 		if (!cacti_sizeof($vdef)) {
 			raise_message('vdef_not_found', __('VDEF not found.'), MESSAGE_LEVEL_ERROR);
-			header('Location: ' . validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'vdef.php', 'vdef.php'));
+
+			cacti_header('vdef.php');
+
 			exit;
 		}
 

@@ -117,7 +117,9 @@ function aggregate_form_save() {
 
 		if (!cacti_sizeof($old)) {
 			raise_message('aggregate_not_found', __('Aggregate Template not found.'), MESSAGE_LEVEL_ERROR);
-			header('Location: ' . validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'aggregate_templates.php', 'aggregate_templates.php'));
+
+			cacti_header('aggregate_templates.php');
+
 			exit;
 		}
 
@@ -360,7 +362,9 @@ function aggregate_template_edit() {
 
 		if (!cacti_sizeof($template)) {
 			raise_message('aggregate_not_found', __('Aggregate Template not found.'), MESSAGE_LEVEL_ERROR);
-			header('Location: ' . validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'aggregate_templates.php', 'aggregate_templates.php'));
+
+			cacti_header('aggregate_templates.php');
+
 			exit;
 		}
 
