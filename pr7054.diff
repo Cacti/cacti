@@ -1,0 +1,3390 @@
+diff --git a/.github/workflows/phpstan.yml b/.github/workflows/phpstan.yml
+new file mode 100644
+index 0000000000..4753beeecb
+--- /dev/null
++++ b/.github/workflows/phpstan.yml
+@@ -0,0 +1,54 @@
++# +-------------------------------------------------------------------------+
++# | Copyright (C) 2004-2026 The Cacti Group                                 |
++# |                                                                         |
++# | This program is free software; you can redistribute it and/or           |
++# | modify it under the terms of the GNU General Public License             |
++# | as published by the Free Software Foundation; either version 2          |
++# | of the License, or (at your option) any later version.                  |
++# |                                                                         |
++# | This program is distributed in the hope that it will be useful,         |
++# | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
++# | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
++# | GNU General Public License for more details.                            |
++# +-------------------------------------------------------------------------+
++# | Cacti: The Complete RRDtool-based Graphing Solution                     |
++# +-------------------------------------------------------------------------+
++# | This code is designed, written, and maintained by the Cacti Group. See  |
++# | about.php and/or the AUTHORS file for specific developer information.   |
++# +-------------------------------------------------------------------------+
++# | http://www.cacti.net/                                                   |
++# +-------------------------------------------------------------------------+
++
++name: PHPStan Static Analysis
++
++on:
++  push:
++    branches: [ 1.2.x ]
++  pull_request:
++    branches: [ 1.2.x ]
++
++permissions:
++  contents: read
++
++concurrency:
++  group: phpstan-${{ github.event.pull_request.number || github.ref }}
++  cancel-in-progress: true
++
++jobs:
++  phpstan:
++    runs-on: ubuntu-latest
++    name: PHPStan Level 5
++
++    steps:
++      - name: Checkout
++        uses: actions/checkout@v3
++
++      - name: Install PHP
++        uses: shivammathur/setup-php@v2
++        with:
++          php-version: '8.1'
++          extensions: ldap, xml, curl, mbstring
++          tools: phpstan
++
++      - name: Run PHPStan
++        run: phpstan analyse --configuration=phpstan.neon --no-progress
+diff --git a/aggregate_templates.php b/aggregate_templates.php
+index cfea59b75f..0c1405dadc 100644
+--- a/aggregate_templates.php
++++ b/aggregate_templates.php
+@@ -115,6 +115,12 @@ function aggregate_form_save() {
+ 			WHERE id = ?',
+ 			array($save1['id']));
+ 
++		if (!cacti_sizeof($old)) {
++			raise_message('aggregate_not_found', __('Aggregate Template not found.'), MESSAGE_LEVEL_ERROR);
++			header('Location: ' . validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'aggregate_templates.php', 'aggregate_templates.php'));
++			exit;
++		}
++
+ 		$save_me = 0;
+ 
+ 		$save_me += ($old['name']          != $save1['name']);
+@@ -352,6 +358,12 @@ function aggregate_template_edit() {
+ 			WHERE id = ?',
+ 			array(get_request_var('id')));
+ 
++		if (!cacti_sizeof($template)) {
++			raise_message('aggregate_not_found', __('Aggregate Template not found.'), MESSAGE_LEVEL_ERROR);
++			header('Location: ' . validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'aggregate_templates.php', 'aggregate_templates.php'));
++			exit;
++		}
++
+ 		$header_label = __esc('Aggregate Template [edit: %s]', $template['name']);
+ 	} else {
+ 		$header_label = __('Aggregate Template [new]');
+diff --git a/automation_devices.php b/automation_devices.php
+index 86d577cb18..9180259a02 100644
+--- a/automation_devices.php
++++ b/automation_devices.php
+@@ -101,6 +101,11 @@ function form_actions() {
+ 
+ 				foreach($selected_items as $id) {
+ 					$d = db_fetch_row_prepared('SELECT * FROM automation_devices WHERE id = ?', array($id));
++
++					if (!cacti_sizeof($d)) {
++						continue;
++					}
++
+ 					$d['poller_id']           = get_filter_request_var('poller_id');
+ 					$d['host_template']       = get_filter_request_var('host_template');
+ 					$d['availability_method'] = get_filter_request_var('availability_method');
+diff --git a/automation_networks.php b/automation_networks.php
+index 99835343af..6793c06bfc 100644
+--- a/automation_networks.php
++++ b/automation_networks.php
+@@ -325,6 +325,11 @@ function form_actions() {
+ 			/* ==================================================== */
+ 
+ 			$networks_info = db_fetch_row_prepared('SELECT name FROM automation_networks WHERE id = ?', array($matches[1]));
++
++			if (!cacti_sizeof($networks_info)) {
++				continue;
++			}
++
+ 			$networks_list .= '<li>' . html_escape($networks_info['name']) . '</li>';
+ 			$networks_array[$i] = $matches[1];
+ 		}
+@@ -420,6 +425,13 @@ function network_edit() {
+ 
+ 	if (!isempty_request_var('id')) {
+ 		$network = db_fetch_row_prepared('SELECT * FROM automation_networks WHERE id = ?', array(get_request_var('id')));
++
++		if (!cacti_sizeof($network)) {
++			raise_message('network_not_found', __('Network not found.'), MESSAGE_LEVEL_ERROR);
++			header('Location: ' . validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'automation_networks.php', 'automation_networks.php'));
++			exit;
++		}
++
+ 		$header_label = __esc('Network Discovery Range [edit: %s]', $network['name']);
+ 	} else {
+ 		$header_label = __('Network Discovery Range [new]');
+diff --git a/cli/structure_rra_paths.php b/cli/structure_rra_paths.php
+index 4648edfe80..c1153ab9f1 100755
+--- a/cli/structure_rra_paths.php
++++ b/cli/structure_rra_paths.php
+@@ -191,10 +191,31 @@
+ 	$old_rrd_path  = $info['rrd_path'];
+ 	$local_data_id = $info['local_data_id'];
+ 
+-    /* acquire lock in order to prevent race conditions */
+-    while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds.$local_data_id', 1)")) {
+-        usleep(50000);
+-    }
++	/* acquire lock in order to prevent race conditions */
++	$lock_name = 'boost.single_ds.' . $local_data_id;
++	$max_retries = 30;
++	$retry = 0;
++	$wait_us = 100000;
++	$lock_acquired = false;
++
++	while (!$lock_acquired && $retry < $max_retries) {
++		$lock_acquired = db_fetch_cell_prepared('SELECT GET_LOCK(?, ?)', array($lock_name, 1));
++
++		if (!$lock_acquired) {
++			usleep($wait_us);
++			$wait_us = min($wait_us * 2, 5000000);
++			$retry++;
++		}
++	}
++
++	if (!$lock_acquired) {
++		cacti_log('ERROR: Failed to acquire lock after ' . $max_retries . ' retries for ds ' . $local_data_id, false, 'BOOST');
++		continue;
++	}
++
++	register_shutdown_function(function() use ($lock_name) {
++		db_execute_prepared('SELECT RELEASE_LOCK(?)', array($lock_name));
++	});
+ 
+ 	/* create one subfolder for every host */
+ 	if (!is_dir($new_base_path)) {
+diff --git a/color_templates.php b/color_templates.php
+index 800bd9414e..4e9f3d15a0 100644
+--- a/color_templates.php
++++ b/color_templates.php
+@@ -384,6 +384,13 @@ function aggregate_color_template_edit() {
+ 
+ 	if (!isempty_request_var('color_template_id')) {
+ 		$template = db_fetch_row_prepared('SELECT * FROM color_templates WHERE color_template_id = ?', array(get_request_var('color_template_id')));
++
++		if (!cacti_sizeof($template)) {
++			raise_message('color_template_not_found', __('Color Template not found.'), MESSAGE_LEVEL_ERROR);
++			header('Location: ' . validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'color_templates.php', 'color_templates.php'));
++			exit;
++		}
++
+ 		$header_label = __esc('Color Template [edit: %s]', $template['name']);
+ 	} else {
+ 		$header_label = __('Color Template [new]');
+diff --git a/color_templates_items.php b/color_templates_items.php
+index 6838eb133d..5e81c0d3ef 100644
+--- a/color_templates_items.php
++++ b/color_templates_items.php
+@@ -170,6 +170,10 @@ function aggregate_color_item_movedown() {
+ 		WHERE color_template_item_id = ?',
+ 		array(get_request_var('color_template_item_id')));
+ 
++	if (!cacti_sizeof($current_sequence)) {
++		return;
++	}
++
+ 	cacti_log('movedown Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'],
+ 		false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+ 
+@@ -180,6 +184,10 @@ function aggregate_color_item_movedown() {
+ 		ORDER BY sequence ASC limit 1',
+ 		array($current_sequence['sequence'], get_request_var('color_template_id')));
+ 
++	if (!cacti_sizeof($next_sequence)) {
++		return;
++	}
++
+ 	cacti_log('movedown Id: ' . $next_sequence['color_template_item_id'] . ' Seq:' . $next_sequence['sequence'],
+ 		false, POLLER_VERBOSITY_DEBUG);
+ 
+@@ -211,6 +219,10 @@ function aggregate_color_item_moveup() {
+ 		WHERE color_template_item_id = ?',
+ 		array(get_request_var('color_template_item_id')));
+ 
++	if (!cacti_sizeof($current_sequence)) {
++		return;
++	}
++
+ 	cacti_log('moveup Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'],
+ 		false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+ 
+@@ -221,6 +233,10 @@ function aggregate_color_item_moveup() {
+ 		ORDER BY sequence DESC limit 1',
+ 		array($current_sequence['sequence'], get_request_var('color_template_id')));
+ 
++	if (!cacti_sizeof($previous_sequence)) {
++		return;
++	}
++
+ 	cacti_log('moveup Id: ' . $previous_sequence['color_template_item_id'] . ' Seq:' . $previous_sequence['sequence'],
+ 		false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+ 
+@@ -257,6 +273,12 @@ function aggregate_color_item_remove_confirm() {
+ 		WHERE color_template_item_id = ?',
+ 		array(get_request_var('color_id')));
+ 
++	if (!cacti_sizeof($template) || !cacti_sizeof($color_item)) {
++		raise_message('color_item_not_found', __('Color Template or Item not found.'), MESSAGE_LEVEL_ERROR);
++		header('Location: ' . validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'color_templates.php', 'color_templates.php'));
++		exit;
++	}
++
+ 	$color_hex  = db_fetch_cell_prepared('SELECT hex
+ 		FROM colors
+ 		WHERE id = ?',
+diff --git a/data_debug.php b/data_debug.php
+index 8936490547..0b62be3c11 100644
+--- a/data_debug.php
++++ b/data_debug.php
+@@ -376,9 +376,9 @@ function validate_request_vars() {
+ function debug_get_filter(&$sql_where, &$dd_join) {
+ 	/* form the 'where' clause for our main sql query */
+ 	if (get_request_var('rfilter') != '') {
+-		$sql_where = "WHERE (dtd.name_cache RLIKE '" . get_request_var('rfilter') . "'" .
+-			" OR dtd.local_data_id RLIKE '" . get_request_var('rfilter') . "'" .
+-			" OR dt.name RLIKE '" . get_request_var('rfilter') . "')";
++		$sql_where = 'WHERE (dtd.name_cache ' . db_qstr_rlike(get_request_var('rfilter')) .
++			' OR dtd.local_data_id ' . db_qstr_rlike(get_request_var('rfilter')) .
++			' OR dt.name ' . db_qstr_rlike(get_request_var('rfilter')) . ')';
+ 	} else {
+ 		$sql_where = '';
+ 	}
+diff --git a/data_input.php b/data_input.php
+index 0ba8e3d0b5..acaa8f3976 100644
+--- a/data_input.php
++++ b/data_input.php
+@@ -181,6 +181,11 @@ function data_input_save_message($data_input_id, $type = 'input') {
+ 		WHERE di.id = ?",
+ 		array($data_input_id));
+ 
++	if (!cacti_sizeof($counts)) {
++		raise_message(1);
++		return;
++	}
++
+ 	if ($counts['templates'] == 0 && $counts['data_sources'] == 0) {
+ 		raise_message(1);
+ 	} elseif ($counts['templates'] > 0 && $counts['data_sources'] == 0) {
+@@ -310,6 +315,12 @@ function field_remove_confirm() {
+ 		WHERE id = ?',
+ 		array(get_request_var('id')));
+ 
++	if (!cacti_sizeof($field)) {
++		raise_message('field_not_found', __('Data Input Field not found.'), MESSAGE_LEVEL_ERROR);
++		header('Location: ' . validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'data_input.php', 'data_input.php'));
++		exit;
++	}
++
+ 	?>
+ 	<tr>
+ 		<td class='topBoxAlt'>
+@@ -361,6 +372,12 @@ function field_remove() {
+ 		WHERE id = ?',
+ 		array(get_request_var('id')));
+ 
++	if (!cacti_sizeof($field)) {
++		raise_message('field_not_found', __('Data Input Field not found.'), MESSAGE_LEVEL_ERROR);
++		header('Location: ' . validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'data_input.php', 'data_input.php'));
++		exit;
++	}
++
+ 	db_execute_prepared('DELETE FROM data_input_fields WHERE id = ?', array(get_request_var('id')));
+ 	db_execute_prepared('DELETE FROM data_input_data WHERE data_input_field_id = ?', array(get_request_var('id')));
+ 
+@@ -505,6 +522,12 @@ function data_edit() {
+ 			WHERE id = ?',
+ 			array(get_request_var('id')));
+ 
++		if (!cacti_sizeof($data_input)) {
++			raise_message('data_input_not_found', __('Data Input Method not found.'), MESSAGE_LEVEL_ERROR);
++			header('Location: ' . validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'data_input.php', 'data_input.php'));
++			exit;
++		}
++
+ 		$header_label = __esc('Data Input Method [edit: %s]', $data_input['name']);
+ 	} else {
+ 		$data_input = array();
+diff --git a/data_sources.php b/data_sources.php
+index 2a448ef292..c514e86906 100644
+--- a/data_sources.php
++++ b/data_sources.php
+@@ -1485,10 +1485,10 @@ function clearFilter() {
+ 
+ 	/* form the 'where' clause for our main sql query */
+ 	if (get_request_var('rfilter') != '') {
+-		$sql_where1 = "WHERE (dtd.name_cache RLIKE '" . get_request_var('rfilter') . "'" .
+-			" OR dtd.local_data_id RLIKE '" . get_request_var('rfilter') . "'" .
+-			" OR dt.name RLIKE '" . get_request_var('rfilter') . "'" .
+-			" OR dl.id = '" . get_request_var('rfilter') . "')";
++		$sql_where1 = 'WHERE (dtd.name_cache ' . db_qstr_rlike(get_request_var('rfilter')) .
++			' OR dtd.local_data_id ' . db_qstr_rlike(get_request_var('rfilter')) .
++			' OR dt.name ' . db_qstr_rlike(get_request_var('rfilter')) .
++			' OR dl.id = ' . db_qstr(get_request_var('rfilter')) . ')';
+ 	} else {
+ 		$sql_where1 = '';
+ 	}
+diff --git a/docs/csrf-migration.md b/docs/csrf-migration.md
+new file mode 100644
+index 0000000000..c218dcdc0d
+--- /dev/null
++++ b/docs/csrf-migration.md
+@@ -0,0 +1,45 @@
++# CSRF Protection Migration Plan
++
++## Current State
++
++Cacti uses the `csrf-magic` library (`include/csrf.php`) for CSRF token
++generation and validation. Tokens are tied to the PHP session and
++verified on form submission. The library handles most POST forms
++automatically via output buffering.
++
++Known gaps:
++
++- AJAX endpoints that accept GET with side effects lack CSRF checks.
++- Some plugin hooks bypass the csrf-magic output buffer.
++- Token rotation does not occur on privilege transitions (addressed
++  by `cacti_auth_transition()` in this PR).
++
++## Short Term (1.2.x)
++
++- Audit all `action=save` and `action=delete` endpoints for CSRF
++  token presence. File issues for any missing coverage.
++- Ensure `cacti_auth_transition()` is called at login and password
++  change to rotate session-bound CSRF tokens.
++- Document which AJAX endpoints are POST-only via `cacti_dispatch()`.
++
++## Medium Term (1.3.x)
++
++- Migrate from csrf-magic output buffering to explicit token embedding
++  using a `cacti_csrf_field()` helper in form templates.
++- Add `SameSite=Lax` as the default cookie attribute for the session
++  cookie (already partially done via `session.cookie_samesite`).
++- Require POST for all state-changing operations enforced through
++  `cacti_dispatch()` method checks.
++
++## Long Term (2.x)
++
++- Evaluate double-submit cookie pattern as a csrf-magic replacement.
++- Consider per-request tokens with HMAC binding to the session ID.
++- Remove csrf-magic dependency once all forms use explicit tokens.
++
++## References
++
++- [#7051](https://github.com/Cacti/cacti/issues/7051) - CSRF audit tracking issue
++- `include/csrf.php` - Current csrf-magic integration
++- `lib/cacti_dispatch.php` - Method enforcement dispatcher
++- `lib/auth.php:cacti_auth_transition()` - Session rotation on privilege change
+diff --git a/gprint_presets.php b/gprint_presets.php
+index aa38e7191a..61b3e7a151 100644
+--- a/gprint_presets.php
++++ b/gprint_presets.php
+@@ -183,6 +183,13 @@ function gprint_presets_edit() {
+ 
+ 	if (!isempty_request_var('id')) {
+ 		$gprint_preset = db_fetch_row_prepared('SELECT * FROM graph_templates_gprint WHERE id = ?', array(get_request_var('id')));
++
++		if (!cacti_sizeof($gprint_preset)) {
++			raise_message('gprint_not_found', __('GPRINT Preset not found.'), MESSAGE_LEVEL_ERROR);
++			header('Location: ' . validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'gprint_presets.php', 'gprint_presets.php'));
++			exit;
++		}
++
+ 		$header_label = __esc('GPRINT Presets [edit: %s]', $gprint_preset['name']);
+ 	} else {
+ 		$header_label = __('GPRINT Presets [new]');
+diff --git a/graph.php b/graph.php
+index 583a6d82e8..78247ed3df 100644
+--- a/graph.php
++++ b/graph.php
+@@ -111,6 +111,12 @@
+ 		WHERE gtg.local_graph_id = ?',
+ 		array(get_request_var('local_graph_id')));
+ 
++	if (!cacti_sizeof($graph)) {
++		raise_message('graph_not_found', __('The Graph you requested does not exist.'), MESSAGE_LEVEL_ERROR);
++		header('Location: ' . validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'graph_view.php', 'graph_view.php'));
++		exit;
++	}
++
+ 	$graph_template_id = $graph['graph_template_id'];
+ 
+ 	$i = 0;
+diff --git a/graph_image.php b/graph_image.php
+index 0d9b4a36e4..51ed3bfd4a 100644
+--- a/graph_image.php
++++ b/graph_image.php
+@@ -118,9 +118,12 @@
+ 	$graph_data_array['disable_cache'] = true;
+ }
+ 
+-/* set the theme */
++/* set the theme — validate against installed themes to prevent LFI */
+ if (isset_request_var('graph_theme')) {
+-	$graph_data_array['graph_theme'] = get_request_var('graph_theme');
++	$requested_theme = basename(get_request_var('graph_theme'));
++	if (is_dir($config['base_path'] . '/include/themes/' . $requested_theme)) {
++		$graph_data_array['graph_theme'] = $requested_theme;
++	}
+ }
+ 
+ if (isset_request_var('rra_id')) {
+diff --git a/graph_json.php b/graph_json.php
+index 8752075f49..a811b9e1a6 100644
+--- a/graph_json.php
++++ b/graph_json.php
+@@ -103,9 +103,12 @@
+ 	$graph_data_array['disable_cache'] = true;
+ }
+ 
+-/* set the theme */
++/* set the theme — validate against installed themes to prevent LFI */
+ if (isset_request_var('graph_theme')) {
+-	$graph_data_array['graph_theme'] = get_request_var('graph_theme');
++	$requested_theme = basename(get_request_var('graph_theme'));
++	if (is_dir($config['base_path'] . '/include/themes/' . $requested_theme)) {
++		$graph_data_array['graph_theme'] = $requested_theme;
++	}
+ }
+ 
+ if (isset_request_var('rra_id')) {
+diff --git a/graph_templates.php b/graph_templates.php
+index c8b2341891..b30e7ef6c1 100644
+--- a/graph_templates.php
++++ b/graph_templates.php
+@@ -557,6 +557,12 @@ function template_edit() {
+ 			WHERE id = ?',
+ 			array(get_request_var('id')));
+ 
++		if (!cacti_sizeof($template)) {
++			raise_message('graph_template_not_found', __('Graph Template not found.'), MESSAGE_LEVEL_ERROR);
++			header('Location: ' . validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'graph_templates.php', 'graph_templates.php'));
++			exit;
++		}
++
+ 		$template_graph = db_fetch_row_prepared('SELECT *
+ 			FROM graph_templates_graph
+ 			WHERE graph_template_id = ?
+diff --git a/graph_view.php b/graph_view.php
+index 570c225beb..0fa952a54d 100644
+--- a/graph_view.php
++++ b/graph_view.php
+@@ -467,7 +467,7 @@ function get_matching_nodes() {
+ 	/* create filter for sql */
+ 	$sql_where  = '';
+ 	if (!isempty_request_var('rfilter')) {
+-		$sql_where .= " gtg.title_cache RLIKE '" . get_request_var('rfilter') . "'";
++		$sql_where .= ' gtg.title_cache ' . db_qstr_rlike(get_request_var('rfilter'));
+ 	}
+ 
+ 	$sql_where .= ($sql_or != '' && $sql_where != '' ? ' AND ':'') . $sql_or;
+@@ -750,7 +750,7 @@ function get_matching_nodes() {
+ 	/* create filter for sql */
+ 	$sql_where  = '';
+ 	if (!isempty_request_var('rfilter')) {
+-		$sql_where .= " gtg.title_cache RLIKE '" . get_request_var('rfilter') . "'";
++		$sql_where .= ' gtg.title_cache ' . db_qstr_rlike(get_request_var('rfilter'));
+ 	}
+ 
+ 	if (!isempty_request_var('site_id') && get_request_var('site_id') > 0) {
+diff --git a/graphs.php b/graphs.php
+index ffa62f651a..dce40dcf49 100644
+--- a/graphs.php
++++ b/graphs.php
+@@ -2087,9 +2087,9 @@ function clearFilter() {
+ 	$sql_where  = '';
+ 	$sql_where2 = '';
+ 	if (get_request_var('rfilter') != '') {
+-		$sql_where = " WHERE (gtg.title_cache RLIKE '" . get_request_var('rfilter') . "'" .
+-			" OR gt.name RLIKE '" . get_request_var('rfilter') . "'" .
+-			" OR gl.id = '" . get_request_var('rfilter') . "')";
++		$sql_where = ' WHERE (gtg.title_cache ' . db_qstr_rlike(get_request_var('rfilter')) .
++			' OR gt.name ' . db_qstr_rlike(get_request_var('rfilter')) .
++			' OR gl.id = ' . db_qstr(get_request_var('rfilter')) . ')';
+ 
+ 		$sql_where2 = " AND (gl.id = '" . get_request_var('rfilter') . "')";
+ 	}
+diff --git a/include/cli_check.php b/include/cli_check.php
+index 373fd4049d..10023c4870 100644
+--- a/include/cli_check.php
++++ b/include/cli_check.php
+@@ -22,6 +22,12 @@
+  +-------------------------------------------------------------------------+
+ */
+ 
++/* reject non-CLI invocations early */
++if (php_sapi_name() !== 'cli') {
++	http_response_code(404);
++	exit;
++}
++
+ /* do NOT run this script through a web browser */
+ define('CACTI_CLI_ONLY', true);
+ 
+diff --git a/include/global.php b/include/global.php
+index c03cda1a95..3deb7be5ac 100644
+--- a/include/global.php
++++ b/include/global.php
+@@ -476,7 +476,14 @@
+ 	}
+ 	$alternates = html_escape(read_config_option('content_security_alternate_sources'));
+ 
+-	header("Content-Security-Policy: default-src *; img-src 'self' $alternates data: blob:; style-src 'self' 'unsafe-inline' $alternates; script-src 'self' $script_policy 'unsafe-inline' $alternates; frame-ancestors 'self'; worker-src 'self' $alternates;");
++	header("Content-Security-Policy: default-src 'self'; script-src 'self' $script_policy 'unsafe-inline' $alternates; style-src 'self' 'unsafe-inline' $alternates; img-src 'self' $alternates data: blob:; font-src 'self' $alternates; connect-src 'self' $alternates; frame-src 'self'; frame-ancestors 'self'; worker-src 'self' $alternates;");
++
++	if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
++		header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
++	}
++
++	header('Cross-Origin-Opener-Policy: same-origin');
++	header('Cross-Origin-Resource-Policy: same-origin');
+ 
+ 	/* prevent IE from silently rejects cookies sent from third party sites. */
+ 	header('P3P: CP="CAO PSA OUR"');
+@@ -617,7 +624,12 @@
+ 	if (isset_request_var('action')) {
+ 		$action = get_nfilter_request_var('action');
+ 
+-		$bad_actions = array('save', 'update_data', 'changepassword');
++		$bad_actions = array(
++			'save', 'update_data', 'changepassword',
++			'delete', 'remove', 'purge', 'disable', 'enable',
++			'install', 'uninstall', 'moveup', 'movedown',
++			'clear', 'kill', 'apply', 'ajax_save', 'update_fields'
++		);
+ 
+ 		foreach($bad_actions as $bad) {
+ 			if ($action == $bad && !isset($_POST['__csrf_magic'])) {
+diff --git a/include/vendor/csrf/csrf-magic.php b/include/vendor/csrf/csrf-magic.php
+index 272e70f2b5..47c50c9b62 100644
+--- a/include/vendor/csrf/csrf-magic.php
++++ b/include/vendor/csrf/csrf-magic.php
+@@ -140,7 +140,13 @@ function csrf_get_tokens() {
+ 		$token = 'sid:' . csrf_hash(session_id()) . $ip;
+ 	} elseif ($GLOBALS['csrf']['cookie']) {
+ 		$val = csrf_generate_secret();
+-		setcookie($GLOBALS['csrf']['cookie'], $val, time() + 3600, $GLOBALS['csrf']['url_path']);
++		setcookie($GLOBALS['csrf']['cookie'], $val, array(
++            'expires'  => time() + 3600,
++            'path'     => $GLOBALS['csrf']['url_path'],
++            'secure'   => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
++            'httponly'  => true,
++            'samesite' => 'Strict',
++        ));
+ 		$token = 'cookie:' . csrf_hash($val) . $ip;
+ 	} elseif ($GLOBALS['csrf']['key']) {
+ 		$token = 'key:' . csrf_hash($GLOBALS['csrf']['key']) . $ip;
+@@ -260,17 +266,17 @@ function csrf_check_token($token) {
+ 			if ($check_token) {
+ 				switch ($type) {
+ 					case 'sid':
+-						$valid_token = ($value === csrf_hash(session_id(), $time));
++						$valid_token = hash_equals(csrf_hash(session_id(), $time), $value);
+ 						break;
+ 					case 'cookie':
+ 						$n = $GLOBALS['csrf']['cookie'];
+ 						if ($n && isset($_COOKIE[$n])) {
+-							$valid_token = ($value === csrf_hash($_COOKIE[$n], $time));
++							$valid_token = hash_equals(csrf_hash($_COOKIE[$n], $time), $value);
+ 						}
+ 						break;
+ 					case 'key':
+ 						if ($GLOBALS['csrf']['key']) {
+-							$valid_token = ($value === csrf_hash($GLOBALS['csrf']['key'], $time));
++							$valid_token = hash_equals(csrf_hash($GLOBALS['csrf']['key'], $time), $value);
+ 						}
+ 						break;
+ 
+@@ -279,7 +285,7 @@ function csrf_check_token($token) {
+ 						// implementation.
+ 					case 'user':
+ 						if (csrf_get_secret() && $GLOBALS['csrf']['user'] !== false) {
+-							$valid_token = ($value === csrf_hash($GLOBALS['csrf']['user'], $time));
++							$valid_token = hash_equals(csrf_hash($GLOBALS['csrf']['user'], $time), $value);
+ 						}
+ 						break;
+ 					case 'ip':
+@@ -292,7 +298,7 @@ function csrf_check_token($token) {
+ 
+ 							$client_ip = csrf_get_client_addr();
+ 							if (!empty($client_ip)) {
+-								$valid_token = ($value === csrf_hash($client_ip, $time));
++								$valid_token = hash_equals(csrf_hash($client_ip, $time), $value);
+ 							}
+ 						}
+ 						break;
+diff --git a/index.php b/index.php
+index f72652d361..b11020206f 100644
+--- a/index.php
++++ b/index.php
+@@ -43,21 +43,10 @@ function render_external_links($style = 'FRONT') {
+ 				} else {
+ 					print '<div id="content">';
+ 
+-					$content_dir = realpath($config['base_path'] . '/include/content');
+-					$file = realpath($config['base_path'] . '/include/content/' . $page['contentfile']);
++					$file = $config['base_path'] . '/include/content/' . $page['contentfile'];
+ 
+-					if ($content_dir !== false) {
+-						$content_dir = str_replace('\\', '/', $content_dir);
+-					}
+-					if ($file !== false) {
+-						$file = str_replace('\\', '/', $file);
+-					}
+-
+-					/* On Windows, realpath() may return mixed-case drive letters; use
+-					 * case-insensitive comparison to avoid false rejections. */
+-					$path_cmp = (DIRECTORY_SEPARATOR === '\\') ? 'stripos' : 'strpos';
+-					if ($file !== false && $content_dir !== false && $path_cmp($file, $content_dir . '/') === 0) {
+-						include_once($file);
++					if (cacti_path_is_within($file, $config['base_path'] . '/include/content')) {
++						include_once(realpath($file));
+ 					} else {
+ 						print '<h1>The file \'' . html_escape($page['contentfile']) . '\' does not exist!!</h1>';
+ 					}
+diff --git a/install/functions.php b/install/functions.php
+index 7529010749..7b8eca0288 100644
+--- a/install/functions.php
++++ b/install/functions.php
+@@ -510,8 +510,37 @@ function install_setup_get_templates() {
+ 			//Loading Template Information from package
+ 			$filename = "compress.zlib://$path/$xmlfile";
+ 
+-			$xml    = file_get_contents($filename);;
++			$xml    = file_get_contents($filename);
++
++			if ($xml === false) {
++				cacti_log('ERROR: Failed to read XML file: ' . $filename, false, 'IMPORT');
++				continue;
++			}
++
++			$max_xml_size = 50 * 1024 * 1024;
++
++			if (strlen($xml) > $max_xml_size) {
++				cacti_log('ERROR: XML input exceeds maximum size (' . strlen($xml) . ' > ' . $max_xml_size . ')', false, 'IMPORT');
++				continue;
++			}
++
++			libxml_use_internal_errors(true);
+ 			$xmlget = simplexml_load_string($xml);
++
++			if ($xmlget === false) {
++				$errors = libxml_get_errors();
++
++				foreach ($errors as $error) {
++					cacti_log('ERROR: XML parse error: ' . trim($error->message), false, 'IMPORT');
++				}
++
++				libxml_clear_errors();
++				libxml_use_internal_errors(false);
++
++				continue;
++			}
++
++			libxml_use_internal_errors(false);
+ 			$data   = to_array($xmlget);
+ 
+ 			if (is_array($data['info']['author'])) {
+diff --git a/install/upgrades/1_2_20.php b/install/upgrades/1_2_20.php
+index 6468829c92..12c03124d4 100644
+--- a/install/upgrades/1_2_20.php
++++ b/install/upgrades/1_2_20.php
+@@ -165,6 +165,11 @@ function upgrade_to_1_2_20() {
+ 								WHERE id = ?',
+ 								array($id['local_graph_id']));
+ 
++							if (!cacti_sizeof($local_graph)) {
++								cacti_log('NOTE: Skipping local_graph_id ' . $id['local_graph_id'] . ' during upgrade - not found', false, 'UPGRADE');
++								continue;
++							}
++
+ 							switch($field_data['type_code']) {
+ 								case 'index_type':
+ 									$index_type = get_best_data_query_index_type($local_graph['host_id'], $local_graph['snmp_query_id']);
+diff --git a/lib/auth.php b/lib/auth.php
+index 60502167a8..8192bc0845 100644
+--- a/lib/auth.php
++++ b/lib/auth.php
+@@ -4935,3 +4935,102 @@ function check_reset_no_authentication($auth_method) {
+ 	}
+ }
+ 
++/**
++ * Perform a safe authentication state transition.
++ *
++ * Regenerates the session ID to prevent fixation, checks the
++ * lockout table, rotates the remember-me cookie if present,
++ * and logs the transition reason for audit purposes.
++ *
++ * Call this at privilege-level changes: login, role switch,
++ * password change, or sudo-style elevation.
++ *
++ * @param  int    $user_id The user ID undergoing the transition
++ * @param  string $reason  Short label for audit log (e.g. 'login', 'role_switch')
++ *
++ * @return bool True if the transition succeeded, false if the user is locked out
++ */
++function cacti_auth_transition($user_id, $reason = 'login') {
++	/* check lockout status before allowing transition */
++	$locked = db_fetch_cell_prepared('SELECT locked
++		FROM user_auth
++		WHERE id = ?',
++		array($user_id));
++
++	if ($locked == 'on') {
++		cacti_log('SECURITY: auth transition blocked for locked user ' . $user_id . ' reason=' . $reason, false, 'AUTH');
++
++		return false;
++	}
++
++	/* regenerate session ID to prevent fixation */
++	if (session_status() === PHP_SESSION_ACTIVE) {
++		session_regenerate_id(true);
++	}
++
++	/* rotate remember-me cookie if present */
++	if (isset($_COOKIE['cacti_remembers']) &&
++		read_config_option('auth_cache_enabled') == 'on' &&
++		db_table_exists('user_auth_cache')) {
++		try {
++			$new_token = bin2hex(random_bytes(32));
++		} catch (Exception $e) {
++			cacti_log('WARNING: cacti_auth_transition: random_bytes failed — skipping cookie rotation', false, 'AUTH');
++			$new_token = false;
++		}
++
++		if ($new_token !== false) {
++			$secret = hash('sha512', $new_token, false);
++
++				db_execute_prepared('UPDATE user_auth_cache
++				SET token = ?, last_update = NOW()
++				WHERE user_id = ?',
++				array($secret, $user_id));
++
++			$parts = explode(',', $_COOKIE['cacti_remembers']);
++
++			if (cacti_sizeof($parts) == 2) {
++				cacti_cookie_set('cacti_remembers', $user_id . ',' . $new_token);
++			} elseif (cacti_sizeof($parts) >= 3) {
++				cacti_cookie_set('cacti_remembers', $user_id . ',' . $parts[1] . ',' . $new_token);
++			}
++		}
++	}
++
++	/* invalidate cached permissions so fresh checks occur */
++	kill_session_var('sess_user_realms');
++	kill_session_var('sess_user_config_array');
++	kill_session_var('sess_config_array');
++
++	cacti_log('NOTE: auth transition completed for user ' . $user_id . ' reason=' . $reason, false, 'AUTH');
++
++	return true;
++}
++
++/**
++ * cacti_csrf_rotate - Rotate CSRF token by regenerating the session.
++ *
++ * Call at privilege boundaries (login, role change, sensitive form post)
++ * to prevent session fixation and CSRF token reuse. Also refreshes the
++ * remember-me cookie when present.
++ *
++ * @param  string $reason  Reason for the rotation (logged at medium verbosity)
++ *
++ * @return void
++ */
++function cacti_csrf_rotate($reason = 'boundary') {
++	cacti_session_regenerate();
++
++	if (isset($_SESSION['sess_user_id'])) {
++		$user_id = $_SESSION['sess_user_id'];
++
++		if (isset($_COOKIE['cacti_remembers'])) {
++			set_auth_cookie(array('id' => $user_id));
++		}
++
++		if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM) {
++			cacti_log("AUTH: CSRF rotate for user $user_id ($reason)", false, 'AUTH');
++		}
++	}
++}
++
+diff --git a/lib/cacti_dispatch.php b/lib/cacti_dispatch.php
+new file mode 100644
+index 0000000000..a0338d7436
+--- /dev/null
++++ b/lib/cacti_dispatch.php
+@@ -0,0 +1,119 @@
++<?php
++/*
++ +-------------------------------------------------------------------------+
++ | Copyright (C) 2004-2026 The Cacti Group                                 |
++ |                                                                         |
++ | This program is free software; you can redistribute it and/or           |
++ | modify it under the terms of the GNU General Public License             |
++ | as published by the Free Software Foundation; either version 2          |
++ | of the License, or (at your option) any later version.                  |
++ |                                                                         |
++ | This program is distributed in the hope that it will be useful,         |
++ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
++ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
++ | GNU General Public License for more details.                            |
++ +-------------------------------------------------------------------------+
++ | Cacti: The Complete RRDtool-based Graphing Solution                     |
++ +-------------------------------------------------------------------------+
++ | This code is designed, written, and maintained by the Cacti Group. See  |
++ | about.php and/or the AUTHORS file for specific developer information.   |
++ +-------------------------------------------------------------------------+
++ | http://www.cacti.net/                                                   |
++ +-------------------------------------------------------------------------+
++*/
++
++/**
++ * Centralized action dispatcher with method and realm enforcement.
++ *
++ * Replaces ad-hoc switch/case blocks on $_REQUEST['action'] with a
++ * declarative action table that enforces HTTP method, realm
++ * permission, and optional object-level ACL before dispatching.
++ */
++
++/**
++ * Dispatch the current request to an action handler.
++ *
++ * Each entry in $actions is keyed by action name and contains:
++ *   'callback'   => callable  (required)
++ *   'method'     => string    HTTP method: 'GET', 'POST', or 'ANY' (default 'ANY')
++ *   'realm'      => int|null  Realm ID required (null = no check, default null)
++ *   'object_acl' => callable|null  Extra ACL callback returning bool (default null)
++ *
++ * @param  array  $actions  Action dispatch table
++ * @param  string $default  Action name to use when request var is missing
++ *
++ * @return void
++ */
++function cacti_dispatch($actions, $default = '') {
++	$action = get_nfilter_request_var('action');
++
++	if ($action === '' || $action === null) {
++		$action = $default;
++	}
++
++	if (!isset($actions[$action])) {
++		cacti_log('WARNING: cacti_dispatch: unknown action "' . $action . '" from ' . get_client_addr(), false, 'WEBUI');
++
++		raise_ajax_permission_denied();
++
++		return;
++	}
++
++	$entry = $actions[$action];
++
++	/* enforce HTTP method */
++	$method = isset($entry['method']) ? strtoupper($entry['method']) : 'ANY';
++
++	if ($method !== 'ANY' && $_SERVER['REQUEST_METHOD'] !== $method) {
++		cacti_log('WARNING: cacti_dispatch: method mismatch for action "' . $action . '" (expected ' . $method . ', got ' . $_SERVER['REQUEST_METHOD'] . ')', false, 'WEBUI');
++
++		header('HTTP/1.1 405 Method Not Allowed');
++		header('Allow: ' . $method);
++
++		return;
++	}
++
++	/* enforce realm permission */
++	if (isset($entry['realm'])) {
++		if (!is_realm_allowed($entry['realm'])) {
++			cacti_log('WARNING: cacti_dispatch: realm ' . $entry['realm'] . ' denied for action "' . $action . '"', false, 'WEBUI');
++
++			raise_ajax_permission_denied();
++
++			return;
++		}
++	}
++
++	/* enforce object-level ACL */
++	if (isset($entry['object_acl']) && is_callable($entry['object_acl'])) {
++		if (!call_user_func($entry['object_acl'])) {
++			cacti_log('WARNING: cacti_dispatch: object ACL denied for action "' . $action . '"', false, 'WEBUI');
++
++			raise_ajax_permission_denied();
++
++			return;
++		}
++	}
++
++	/* dispatch */
++	if (is_callable($entry['callback'])) {
++		call_user_func($entry['callback']);
++	} else {
++		cacti_log('ERROR: cacti_dispatch: callback for action "' . $action . '" is not callable', false, 'WEBUI');
++	}
++}
++
++/**
++ * Return a 403 response for permission failures.
++ *
++ * Wraps the existing raise_ajax_permission_denied() or falls back
++ * to a plain header if the function is not yet loaded.
++ *
++ * @return void
++ */
++if (!function_exists('raise_ajax_permission_denied')) {
++	function raise_ajax_permission_denied() {
++		header('HTTP/1.1 403 Forbidden');
++		print 'Access Denied';
++	}
++}
+diff --git a/lib/cacti_exec.php b/lib/cacti_exec.php
+new file mode 100644
+index 0000000000..9a55808dea
+--- /dev/null
++++ b/lib/cacti_exec.php
+@@ -0,0 +1,257 @@
++<?php
++/*
++ +-------------------------------------------------------------------------+
++ | Copyright (C) 2004-2026 The Cacti Group                                 |
++ |                                                                         |
++ | This program is free software; you can redistribute it and/or           |
++ | modify it under the terms of the GNU General Public License             |
++ | as published by the Free Software Foundation; either version 2          |
++ | of the License, or (at your option) any later version.                  |
++ |                                                                         |
++ | This program is distributed in the hope that it will be useful,         |
++ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
++ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
++ | GNU General Public License for more details.                            |
++ +-------------------------------------------------------------------------+
++ | Cacti: The Complete RRDtool-based Graphing Solution                     |
++ +-------------------------------------------------------------------------+
++ | This code is designed, written, and maintained by the Cacti Group. See  |
++ | about.php and/or the AUTHORS file for specific developer information.   |
++ +-------------------------------------------------------------------------+
++ | http://www.cacti.net/                                                   |
++ +-------------------------------------------------------------------------+
++*/
++
++/**
++ * Centralized shell execution gateway.
++ *
++ * Every shell command in Cacti MUST route through cacti_exec() or
++ * cacti_exec_background(). Direct calls to shell_exec(), system(),
++ * exec(), passthru(), popen(), and proc_open() are banned outside
++ * this file.
++ */
++
++/**
++ * Execute a command as an argv array. Each element is escaped individually.
++ *
++ * @param  array       $argv    Command + arguments as separate array elements
++ * @param  string      $output  Captured stdout (passed by reference)
++ * @param  int         $retval  Exit code (passed by reference)
++ * @param  int         $timeout Max execution seconds (0 = no limit)
++ * @param  string|null $cwd     Working directory (null = inherit)
++ *
++ * @return string|false stdout on success, false on failure
++ */
++function cacti_exec(array $argv, &$output = '', &$retval = 0, $timeout = 0, $cwd = null) {
++	if (empty($argv)) {
++		cacti_log('ERROR: cacti_exec called with empty argv', false, 'SYSTEM');
++
++		return false;
++	}
++
++	$cmd = '';
++
++	foreach ($argv as $i => $arg) {
++		$arg = (string) $arg;
++
++		if ($i === 0) {
++			$cmd = cacti_escapeshellcmd($arg);
++		} else {
++			$cmd .= ' ' . cacti_escapeshellarg($arg);
++		}
++	}
++
++	if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
++		$safe_cmd = cacti_exec_redact_cmd($cmd);
++		cacti_log('DEBUG: cacti_exec: ' . $safe_cmd, false, 'SYSTEM', POLLER_VERBOSITY_DEBUG);
++	}
++
++	if ($timeout > 0) {
++		return cacti_exec_with_timeout($cmd, $output, $retval, $timeout, $cwd);
++	}
++
++	$descriptors = array(
++		0 => array('pipe', 'r'),
++		1 => array('pipe', 'w'),
++		2 => array('pipe', 'w'),
++	);
++
++	$process = proc_open($cmd, $descriptors, $pipes, $cwd);
++
++	if (!is_resource($process)) {
++		cacti_log('ERROR: cacti_exec: proc_open failed for: ' . cacti_exec_redact_cmd($cmd), false, 'SYSTEM');
++
++		return false;
++	}
++
++	fclose($pipes[0]);
++
++	$output = (string) stream_get_contents($pipes[1]);
++	$stderr = stream_get_contents($pipes[2]);
++
++	fclose($pipes[1]);
++	fclose($pipes[2]);
++
++	$retval = proc_close($process);
++
++	if ($retval !== 0 && read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM) {
++		cacti_log('WARNING: cacti_exec: exit code ' . $retval . ' for: ' . cacti_exec_redact_cmd($cmd), false, 'SYSTEM');
++	}
++
++	return $output;
++}
++
++/**
++ * Execute with a timeout via proc_open + stream_select.
++ *
++ * @param  string      $cmd     Pre-escaped command string
++ * @param  string      $output  Captured stdout (passed by reference)
++ * @param  int         $retval  Exit code (passed by reference)
++ * @param  int         $timeout Max execution seconds
++ * @param  string|null $cwd     Working directory (null = inherit)
++ *
++ * @return string|false stdout on success, false on timeout/failure
++ */
++function cacti_exec_with_timeout($cmd, &$output, &$retval, $timeout, $cwd = null) {
++	$descriptors = array(
++		0 => array('pipe', 'r'),
++		1 => array('pipe', 'w'),
++		2 => array('pipe', 'w'),
++	);
++
++	$process = proc_open($cmd, $descriptors, $pipes, $cwd);
++
++	if (!is_resource($process)) {
++		return false;
++	}
++
++	fclose($pipes[0]);
++	stream_set_blocking($pipes[1], false);
++	stream_set_blocking($pipes[2], false);
++
++	$output = '';
++	$stderr = '';
++	$start  = time();
++
++	while (true) {
++		$status = proc_get_status($process);
++
++		if (!$status['running']) {
++			$output .= stream_get_contents($pipes[1]);
++			$stderr .= stream_get_contents($pipes[2]);
++			$retval  = $status['exitcode'];
++
++			break;
++		}
++
++		if (time() - $start > $timeout) {
++			proc_terminate($process, 9);
++			cacti_log('ERROR: cacti_exec: timeout after ' . $timeout . 's for: ' . cacti_exec_redact_cmd($cmd), false, 'SYSTEM');
++
++			fclose($pipes[1]);
++			fclose($pipes[2]);
++			proc_close($process);
++
++			$retval = -1;
++
++			return false;
++		}
++
++		$read   = array($pipes[1], $pipes[2]);
++		$write  = null;
++		$except = null;
++
++		if (stream_select($read, $write, $except, 1) > 0) {
++			foreach ($read as $pipe) {
++				$data = fread($pipe, 8192);
++
++				if ($pipe === $pipes[1]) {
++					$output .= $data;
++				} else {
++					$stderr .= $data;
++				}
++			}
++		}
++	}
++
++	fclose($pipes[1]);
++	fclose($pipes[2]);
++	proc_close($process);
++
++	return $output;
++}
++
++/**
++ * Redact sensitive patterns from command strings before logging.
++ *
++ * Covers password/key/secret/token/auth flags and SNMP community strings.
++ *
++ * @param  string $cmd The command string to redact
++ *
++ * @return string The redacted command string
++ */
++function cacti_exec_redact_cmd($cmd) {
++	/* redact long-form password/key/secret/token/auth flags */
++	$cmd = preg_replace('/(--?(?:password|pass|key|secret|token|auth|community)[= ])\S+/i', '$1[REDACTED]', $cmd);
++
++	/* redact SNMP -c community strings */
++	$cmd = preg_replace('/(-c\s+)\S+/', '$1[REDACTED]', $cmd);
++
++	return $cmd;
++}
++
++/**
++ * cacti_exec_with_redirect - Execute a command with stdout/stderr file redirection.
++ *
++ * Builds the command from an argv array using cacti_escapeshellcmd/arg,
++ * then runs it via proc_open with optional file descriptors for stdout
++ * and stderr.
++ *
++ * @param  array       $argv         Command and arguments
++ * @param  string|null $stdout_file  File path for stdout (null = pipe)
++ * @param  string|null $stderr_file  File path for stderr (null = pipe)
++ * @param  bool        $append       Append to files instead of truncating
++ *
++ * @return int|false  Exit code, or false on failure
++ */
++function cacti_exec_with_redirect(array $argv, $stdout_file = null, $stderr_file = null, $append = false) {
++	if (empty($argv)) {
++		cacti_log('ERROR: cacti_exec_with_redirect: empty argv', false, 'SYSTEM');
++		return false;
++	}
++
++	$cmd = cacti_escapeshellcmd($argv[0]);
++
++	for ($i = 1; $i < count($argv); $i++) {
++		$cmd .= ' ' . cacti_escapeshellarg($argv[$i]);
++	}
++
++	$mode = $append ? 'a' : 'w';
++
++	$descriptors = array(
++		0 => array('pipe', 'r'),
++		1 => $stdout_file !== null ? array('file', $stdout_file, $mode) : array('pipe', 'w'),
++		2 => $stderr_file !== null ? array('file', $stderr_file, $mode) : array('pipe', 'w'),
++	);
++
++	$process = proc_open($cmd, $descriptors, $pipes);
++
++	if (!is_resource($process)) {
++		return false;
++	}
++
++	fclose($pipes[0]);
++
++	if ($descriptors[1][0] === 'pipe') {
++		$stdout = stream_get_contents($pipes[1]);
++		fclose($pipes[1]);
++	}
++
++	if ($descriptors[2][0] === 'pipe') {
++		fclose($pipes[2]);
++	}
++
++	$retval = proc_close($process);
++
++	return $retval;
++}
+diff --git a/lib/cacti_http.php b/lib/cacti_http.php
+new file mode 100644
+index 0000000000..bae9326f0c
+--- /dev/null
++++ b/lib/cacti_http.php
+@@ -0,0 +1,191 @@
++<?php
++/*
++ +-------------------------------------------------------------------------+
++ | Copyright (C) 2004-2026 The Cacti Group                                 |
++ |                                                                         |
++ | This program is free software; you can redistribute it and/or           |
++ | modify it under the terms of the GNU General Public License             |
++ | as published by the Free Software Foundation; either version 2          |
++ | of the License, or (at your option) any later version.                  |
++ |                                                                         |
++ | This program is distributed in the hope that it will be useful,         |
++ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
++ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
++ | GNU General Public License for more details.                            |
++ +-------------------------------------------------------------------------+
++ | Cacti: The Complete RRDtool-based Graphing Solution                     |
++ +-------------------------------------------------------------------------+
++ | This code is designed, written, and maintained by the Cacti Group. See  |
++ | about.php and/or the AUTHORS file for specific developer information.   |
++ +-------------------------------------------------------------------------+
++ | http://www.cacti.net/                                                   |
++ +-------------------------------------------------------------------------+
++*/
++
++/**
++ * Centralized HTTP fetch gateway with SSRF protection.
++ *
++ * All outbound HTTP requests from Cacti SHOULD route through
++ * cacti_http_fetch() to enforce TLS verification, reserved-IP
++ * rejection, and timeout defaults.
++ */
++
++/**
++ * Check whether an IP address falls into a reserved/private range.
++ *
++ * Covers RFC 1918, RFC 6598, loopback, link-local, multicast,
++ * and IPv6 equivalents.
++ *
++ * @param  string $ip The IP address to check
++ *
++ * @return bool True if the IP is reserved/private
++ */
++function cacti_is_reserved_ip($ip) {
++	return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE | FILTER_FLAG_NO_PRIV_RANGE) === false;
++}
++
++/**
++ * Build a stream context for HTTPS with sane defaults.
++ *
++ * @param  array $opts Override options merged into the ssl context
++ *
++ * @return resource A stream context resource
++ */
++function cacti_https_context($opts = array()) {
++	$defaults = array(
++		'ssl' => array(
++			'verify_peer'       => true,
++			'verify_peer_name'  => true,
++			'allow_self_signed' => false,
++			'SNI_enabled'       => true,
++		),
++		'http' => array(
++			'timeout'         => 10,
++			'follow_location' => 0,
++			'max_redirects'   => 0,
++			'protocol_version' => 1.1,
++		),
++	);
++
++	if (!empty($opts['ssl'])) {
++		$defaults['ssl'] = array_merge($defaults['ssl'], $opts['ssl']);
++	}
++
++	if (!empty($opts['http'])) {
++		$defaults['http'] = array_merge($defaults['http'], $opts['http']);
++	}
++
++	return stream_context_create($defaults);
++}
++
++/**
++ * Fetch a URL with SSRF protection and TLS verification.
++ *
++ * @param  string $url     The URL to fetch
++ * @param  array  $opts    Stream context overrides (ssl, http keys)
++ * @param  int    $timeout Connection timeout in seconds
++ *
++ * @return string|false Response body on success, false on failure
++ */
++function cacti_http_fetch($url, $opts = array(), $timeout = 10) {
++	$parsed = parse_url($url);
++
++	if ($parsed === false || !isset($parsed['scheme']) || !isset($parsed['host'])) {
++		cacti_log('ERROR: cacti_http_fetch: invalid URL', false, 'SYSTEM');
++
++		return false;
++	}
++
++	$scheme = strtolower($parsed['scheme']);
++
++	if ($scheme !== 'http' && $scheme !== 'https') {
++		cacti_log('ERROR: cacti_http_fetch: scheme must be http or https', false, 'SYSTEM');
++
++		return false;
++	}
++
++	$host = $parsed['host'];
++
++	/* resolve hostname and check against reserved ranges */
++	$ips = gethostbynamel($host);
++
++	if ($ips === false) {
++		cacti_log('ERROR: cacti_http_fetch: DNS resolution failed for ' . $host, false, 'SYSTEM');
++
++		return false;
++	}
++
++	foreach ($ips as $ip) {
++		if (cacti_is_reserved_ip($ip)) {
++			cacti_log('ERROR: cacti_http_fetch: reserved IP rejected for ' . $host . ' (' . $ip . ')', false, 'SYSTEM');
++
++			return false;
++		}
++	}
++
++	if (!isset($opts['http']['timeout'])) {
++		$opts['http']['timeout'] = $timeout;
++	}
++
++	$context = cacti_https_context($opts);
++
++	$result = @file_get_contents($url, false, $context);
++
++	if ($result === false) {
++		$err = error_get_last();
++		$msg = ($err !== null) ? $err['message'] : 'unknown error';
++		cacti_log('WARNING: cacti_http_fetch: fetch failed for ' . $host . ': ' . $msg, false, 'SYSTEM');
++
++		return false;
++	}
++
++	if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
++		cacti_log('DEBUG: cacti_http_fetch: fetched ' . strlen($result) . ' bytes from ' . $host, false, 'SYSTEM', POLLER_VERBOSITY_DEBUG);
++	}
++
++	return $result;
++}
++
++/**
++ * cacti_remote_url - Build a URL with action and query parameters.
++ *
++ * Appends an action parameter and any additional key/value pairs to
++ * the base URL, properly encoding each component with rawurlencode().
++ *
++ * @param  string $base_url  The base URL (may already contain a query string)
++ * @param  string $action    The action name (empty string to skip)
++ * @param  array  $params    Additional query parameters as key => value
++ *
++ * @return string  The assembled URL
++ */
++function cacti_remote_url($base_url, $action, $params = array()) {
++	$url = $base_url;
++
++	if (!empty($action)) {
++		$url .= (strpos($url, '?') === false ? '?' : '&') . 'action=' . rawurlencode($action);
++	}
++
++	foreach ($params as $key => $value) {
++		$url .= '&' . rawurlencode($key) . '=' . rawurlencode($value);
++	}
++
++	return $url;
++}
++
++/**
++ * Builds a URL with properly encoded query parameters for remote agent calls.
++ * Prevents HTTP parameter pollution via rawurlencode on all key/value pairs.
++ *
++ * @param string $base    Base URL (e.g. $config['url_path'] . 'remote_agent.php')
++ * @param array  $params  Associative array of query parameters
++ * @return string         URL with safely encoded query string
++ */
++function cacti_build_remote_url(string $base, array $params) : string {
++	$query = [];
++
++	foreach ($params as $key => $value) {
++		$query[] = rawurlencode((string)$key) . '=' . rawurlencode((string)$value);
++	}
++
++	return $base . (count($query) > 0 ? '?' . implode('&', $query) : '');
++}
+diff --git a/lib/cacti_plugin_path.php b/lib/cacti_plugin_path.php
+new file mode 100644
+index 0000000000..b628498b51
+--- /dev/null
++++ b/lib/cacti_plugin_path.php
+@@ -0,0 +1,83 @@
++<?php
++/*
++ +-------------------------------------------------------------------------+
++ | Copyright (C) 2004-2026 The Cacti Group                                 |
++ |                                                                         |
++ | This program is free software; you can redistribute it and/or           |
++ | modify it under the terms of the GNU General Public License             |
++ | as published by the Free Software Foundation; either version 2          |
++ | of the License, or (at your option) any later version.                  |
++ |                                                                         |
++ | This program is distributed in the hope that it will be useful,         |
++ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
++ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
++ | GNU General Public License for more details.                            |
++ +-------------------------------------------------------------------------+
++ | Cacti: The Complete RRDtool-based Graphing Solution                     |
++ +-------------------------------------------------------------------------+
++ | This code is designed, written, and maintained by the Cacti Group. See  |
++ | about.php and/or the AUTHORS file for specific developer information.   |
++ +-------------------------------------------------------------------------+
++ | http://www.cacti.net/                                                   |
++ +-------------------------------------------------------------------------+
++*/
++
++/**
++ * Safe plugin path resolution.
++ *
++ * Eliminates the LFI/include-path vulnerability class by enforcing
++ * that every plugin file inclusion resolves to a path inside the
++ * Cacti plugins directory after symlink resolution.
++ */
++
++/**
++ * Resolve a safe path to a plugin file.
++ *
++ * @param string $plugin_name  Plugin directory name (e.g., 'thold')
++ * @param string $subpath      File within the plugin (default 'setup.php')
++ *
++ * @return string|false  Resolved absolute path, or false if invalid
++ */
++function cacti_plugin_path($plugin_name, $subpath = 'setup.php') {
++	global $config;
++
++	/* Strip any traversal from the plugin name */
++	$safe_name = basename($plugin_name);
++
++	if (empty($safe_name) || $safe_name !== $plugin_name) {
++		cacti_log("WARNING: cacti_plugin_path: invalid plugin name rejected: '$plugin_name'", false, 'SYSTEM');
++		return false;
++	}
++
++	/* Build the candidate path */
++	$plugins_dir = $config['base_path'] . '/plugins';
++	$candidate   = $plugins_dir . '/' . $safe_name . '/' . $subpath;
++
++	/* Verify the file exists */
++	if (!file_exists($candidate)) {
++		return false;
++	}
++
++	/* Resolve symlinks and verify containment */
++	$real_path    = realpath($candidate);
++	$real_plugins = realpath($plugins_dir);
++
++	if ($real_path === false || $real_plugins === false) {
++		return false;
++	}
++
++	$sep = DIRECTORY_SEPARATOR;
++
++	if (DIRECTORY_SEPARATOR === '\\') {
++		$real_path    = strtolower(str_replace('\\', '/', $real_path));
++		$real_plugins = strtolower(str_replace('\\', '/', $real_plugins));
++		$sep = '/';
++	}
++
++	if (strpos($real_path, $real_plugins . $sep) !== 0) {
++		cacti_log("WARNING: cacti_plugin_path: path escapes plugins dir: '$candidate' -> '$real_path'", false, 'SYSTEM');
++		return false;
++	}
++
++	return $real_path;
++}
+diff --git a/lib/cacti_request.php b/lib/cacti_request.php
+new file mode 100644
+index 0000000000..a468c091b5
+--- /dev/null
++++ b/lib/cacti_request.php
+@@ -0,0 +1,170 @@
++<?php
++/*
++ +-------------------------------------------------------------------------+
++ | Copyright (C) 2004-2026 The Cacti Group                                 |
++ |                                                                         |
++ | This program is free software; you can redistribute it and/or           |
++ | modify it under the terms of the GNU General Public License             |
++ | as published by the Free Software Foundation; either version 2          |
++ | of the License, or (at your option) any later version.                  |
++ |                                                                         |
++ | This program is distributed in the hope that it will be useful,         |
++ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
++ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
++ | GNU General Public License for more details.                            |
++ +-------------------------------------------------------------------------+
++ | Cacti: The Complete RRDtool-based Graphing Solution                     |
++ +-------------------------------------------------------------------------+
++ | This code is designed, written, and maintained by the Cacti Group. See  |
++ | about.php and/or the AUTHORS file for specific developer information.   |
++ +-------------------------------------------------------------------------+
++ | http://www.cacti.net/                                                   |
++ +-------------------------------------------------------------------------+
++*/
++
++/**
++ * Request-layer helpers for safe sorting, ID extraction, and LIKE escaping.
++ *
++ * These helpers eliminate repetitive inline validation that is easy to
++ * get wrong. Each function returns a safe-by-construction value.
++ */
++
++/**
++ * Extract and validate a sort column/direction pair from the request.
++ *
++ * Only column names present in $allowed are accepted. Direction is
++ * forced to ASC or DESC regardless of user input.
++ *
++ * @param  string $col_param  Request variable name for the sort column
++ * @param  string $dir_param  Request variable name for the sort direction
++ * @param  string $default_col  Default column if input is missing/invalid
++ * @param  string $default_dir  Default direction (ASC or DESC)
++ * @param  array  $allowed      Whitelist of valid column names
++ *
++ * @return array Two-element array: [column, direction]
++ */
++function get_request_sort($col_param, $dir_param, $default_col, $default_dir, $allowed) {
++	$col = get_nfilter_request_var($col_param);
++	$dir = strtoupper(get_nfilter_request_var($dir_param));
++
++	if (!in_array($col, $allowed, true)) {
++		$col = $default_col;
++	}
++
++	if ($dir !== 'ASC' && $dir !== 'DESC') {
++		$dir = $default_dir;
++	}
++
++	return array($col, $dir);
++}
++
++/**
++ * Extract an array of integer IDs from a request variable.
++ *
++ * Filters out non-numeric values and casts all results to int.
++ * Returns an empty array if the variable is missing or empty.
++ *
++ * @param  string $name The request variable name
++ *
++ * @return array Array of integer IDs
++ */
++function get_request_ids($name) {
++	$raw = get_nfilter_request_var($name);
++
++	if (!is_array($raw)) {
++		if (is_numeric($raw)) {
++			return array((int) $raw);
++		}
++
++		return array();
++	}
++
++	$ids = array();
++
++	foreach ($raw as $val) {
++		if (is_numeric($val)) {
++			$ids[] = (int) $val;
++		}
++	}
++
++	return $ids;
++}
++
++/**
++ * Escape a user-supplied string for safe use in a SQL LIKE clause.
++ *
++ * Wraps the escaped value in percent signs for substring matching
++ * and passes the result through db_qstr() for quoting.
++ *
++ * @param  string $value  The raw user input
++ *
++ * @return string A db_qstr()-quoted, LIKE-safe value (e.g. '%term%')
++ */
++function db_qstr_like($value) {
++	$escaped = str_replace(
++		array('\\', '%', '_'),
++		array('\\\\', '\\%', '\\_'),
++		$value
++	);
++
++	return db_qstr('%' . $escaped . '%');
++}
++
++/**
++ * cacti_db_in - Build a safe SQL IN clause from an array of integers.
++ *
++ * Each value is cast to int via intval(). Returns '(0)' for empty
++ * or non-array input, which safely matches nothing.
++ *
++ * @param  array $values  Array of integer values
++ *
++ * @return string  SQL fragment like '(1,2,3)'
++ */
++function cacti_db_in(array $values) {
++	if (empty($values)) {
++		return '(0)';
++	}
++
++	return '(' . implode(',', array_map('intval', $values)) . ')';
++}
++
++/**
++ * cacti_db_like - Escape a pattern for use in a prepared LIKE clause.
++ *
++ * Returns a two-element array: the SQL fragment with a placeholder
++ * and the escaped value wrapped in percent signs for substring matching.
++ *
++ * Usage:
++ *   list($clause, $param) = cacti_db_like($user_input);
++ *   db_fetch_assoc_prepared("SELECT * FROM t WHERE col $clause", array($param));
++ *
++ * @param  string $pattern  Raw user input
++ *
++ * @return array  ['LIKE ?', '%escaped_pattern%']
++ */
++function cacti_db_like($pattern) {
++	$escaped = str_replace(
++		array('%', '_', '\\'),
++		array('\\%', '\\_', '\\\\'),
++		$pattern
++	);
++
++	return array('LIKE ?', '%' . $escaped . '%');
++}
++
++/**
++ * Validates a sort column against an explicit allowlist.
++ * Prevents ORDER BY injection via unsanitized sort_column parameters.
++ *
++ * @param string $column    The requested sort column
++ * @param array  $allowed   Allowlist of valid column names
++ * @param string $default   Default column if $column not in allowlist
++ * @return string           Safe, allowlisted column name
++ */
++function cacti_validate_sort_column(string $column, array $allowed, string $default = '') : string {
++	if (in_array($column, $allowed, true)) {
++		return $column;
++	}
++
++	return $default !== '' ? $default : (count($allowed) > 0 ? $allowed[0] : 'id');
++}
+diff --git a/lib/cacti_safe_write.php b/lib/cacti_safe_write.php
+new file mode 100644
+index 0000000000..061ed73e87
+--- /dev/null
++++ b/lib/cacti_safe_write.php
+@@ -0,0 +1,150 @@
++<?php
++/*
++ +-------------------------------------------------------------------------+
++ | Copyright (C) 2004-2026 The Cacti Group                                 |
++ |                                                                         |
++ | This program is free software; you can redistribute it and/or           |
++ | modify it under the terms of the GNU General Public License             |
++ | as published by the Free Software Foundation; either version 2          |
++ | of the License, or (at your option) any later version.                  |
++ |                                                                         |
++ | This program is distributed in the hope that it will be useful,         |
++ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
++ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
++ | GNU General Public License for more details.                            |
++ +-------------------------------------------------------------------------+
++ | Cacti: The Complete RRDtool-based Graphing Solution                     |
++ +-------------------------------------------------------------------------+
++ | This code is designed, written, and maintained by the Cacti Group. See  |
++ | about.php and/or the AUTHORS file for specific developer information.   |
++ +-------------------------------------------------------------------------+
++ | http://www.cacti.net/                                                   |
++ +-------------------------------------------------------------------------+
++*/
++
++/**
++ * Safe file-write gateway for package imports and template installs.
++ *
++ * Eliminates the path-traversal vulnerability class by enforcing that
++ * every written file resolves to one of the allowed base directories
++ * after symlink resolution. Replaces direct fopen/fwrite on
++ * user-influenced paths throughout the import subsystem.
++ */
++
++/**
++ * Write data to a file, enforcing that the resolved path is inside
++ * one of the allowed directories.
++ *
++ * @param string   $relative_name   Relative filename (e.g., 'scripts/ss_net_snmp_disk_io.php')
++ * @param string   $data            File contents to write
++ * @param array    $allowed_bases   Absolute paths that the file must resolve under
++ *                                  (e.g., [CACTI_PATH_BASE . '/scripts', CACTI_PATH_BASE . '/resource'])
++ * @param int      $mode            File permissions (default 0644)
++ *
++ * @return string|false  The resolved path on success, false on rejection
++ */
++function cacti_safe_write($relative_name, $data, $allowed_bases, $mode = 0644) {
++	/* Reject empty or whitespace-only names */
++	if (empty(trim($relative_name))) {
++		cacti_log('ERROR: cacti_safe_write: empty filename rejected', false, 'IMPORT');
++		return false;
++	}
++
++	/* Reject absolute paths */
++	if ($relative_name[0] === '/' || $relative_name[0] === '\\' || preg_match('/^[A-Za-z]:/', $relative_name)) {
++		cacti_log("ERROR: cacti_safe_write: absolute path rejected: $relative_name", false, 'IMPORT');
++		return false;
++	}
++
++	/* Normalize separators */
++	$normalized = str_replace('\\', '/', $relative_name);
++
++	/* Reject path-traversal segments */
++	if (preg_match('#(^|/)\.\.(/|$)#', $normalized)) {
++		cacti_log("ERROR: cacti_safe_write: traversal rejected: $relative_name", false, 'IMPORT');
++		return false;
++	}
++
++	$matched_base = false;
++
++	foreach ($allowed_bases as $base) {
++		$real_base = realpath($base);
++
++		if ($real_base === false) {
++			continue;
++		}
++
++		/* Build the candidate path */
++		$candidate     = $real_base . '/' . basename($relative_name);
++		$candidate_dir = dirname($candidate);
++
++		/* Ensure the target directory exists or can be created */
++		if (!is_dir($candidate_dir)) {
++			@mkdir($candidate_dir, 0755, true);
++		}
++
++		$real_dir = realpath($candidate_dir);
++
++		if ($real_dir === false) {
++			continue;
++		}
++
++		/* Verify resolved directory is under the allowed base */
++		$sep       = DIRECTORY_SEPARATOR;
++		$check_base = $real_base . $sep;
++
++		if (DIRECTORY_SEPARATOR === '\\') {
++			$real_dir   = strtolower(str_replace('\\', '/', $real_dir));
++			$check_base = strtolower(str_replace('\\', '/', $check_base));
++		}
++
++		if (strpos($real_dir . '/', $check_base) === 0 || $real_dir === $real_base) {
++			$matched_base = $real_base;
++			break;
++		}
++	}
++
++	if ($matched_base === false) {
++		cacti_log("ERROR: cacti_safe_write: path not inside any allowed base: $relative_name", false, 'IMPORT');
++		return false;
++	}
++
++	/* Atomic write: write to temp, rename into place */
++	$final_path = $matched_base . '/' . basename($relative_name);
++	$tmp_path   = $final_path . '.cacti_tmp_' . getmypid();
++
++	$fp = @fopen($tmp_path, 'wb');
++
++	if ($fp === false) {
++		cacti_log("ERROR: cacti_safe_write: failed to open temp file: $tmp_path", false, 'IMPORT');
++		return false;
++	}
++
++	$written = fwrite($fp, $data);
++	fclose($fp);
++
++	if ($written === false || $written !== strlen($data)) {
++		@unlink($tmp_path);
++		cacti_log("ERROR: cacti_safe_write: incomplete write to $tmp_path", false, 'IMPORT');
++		return false;
++	}
++
++	@chmod($tmp_path, $mode);
++
++	if (!@rename($tmp_path, $final_path)) {
++		@unlink($tmp_path);
++		cacti_log("ERROR: cacti_safe_write: rename failed: $tmp_path -> $final_path", false, 'IMPORT');
++		return false;
++	}
++
++	/* Final paranoid check: verify the written file is where we expect */
++	$real_final = realpath($final_path);
++
++	if ($real_final === false || strpos($real_final, realpath($matched_base) . DIRECTORY_SEPARATOR) !== 0) {
++		@unlink($final_path);
++		cacti_log("ERROR: cacti_safe_write: post-write realpath check failed: $final_path", false, 'IMPORT');
++		return false;
++	}
++
++	return $real_final;
++}
+diff --git a/lib/database.php b/lib/database.php
+index cde200cb84..7cd6f1a62f 100644
+--- a/lib/database.php
++++ b/lib/database.php
+@@ -1775,7 +1775,11 @@ function db_replace($table_name, $array_items, $keyCols, $db_conn = false) {
+ 	}
+ 
+ 	$log_items = $array_items;
+-	$redact_fields = array('snmp_community', 'snmp_password', 'snmp_priv_passphrase', 'password', 'proxy_password');
++	$redact_fields = array(
++		'snmp_community', 'snmp_password', 'snmp_priv_passphrase',
++		'snmp_auth_passphrase', 'password', 'proxy_password',
++		'rsa_private_key', 'secret', 'auth_key', 'priv_key'
++	);
+ 	foreach ($redact_fields as $field) {
+ 		if (isset($log_items[$field])) {
+ 			$log_items[$field] = '********';
+@@ -1799,6 +1803,17 @@ function db_replace($table_name, $array_items, $keyCols, $db_conn = false) {
+  *
+  * @return (bool|int) Either the insert id of the replace of false on error
+  */
++/**
++ * Sanitize a column name for safe SQL interpolation.
++ * Strips backticks and any character that is not alphanumeric or underscore.
++ *
++ * @param string $col  Raw column name
++ * @return string      Safe column name
++ */
++function cacti_safe_column_name($col) {
++	return preg_replace('/[^a-zA-Z0-9_]/', '', $col);
++}
++
+ function _db_replace($db_conn, $table, $fieldArray, $keyCols) {
+ 	global $database_sessions, $database_default, $database_hostname, $database_port;
+ 
+@@ -1826,6 +1841,7 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCols) {
+ 			$sql  .= ', ';
+ 			$sql2 .= ', ';
+ 		}
++		$k = cacti_safe_column_name($k);
+ 		$sql   .= "`$k`";
+ 		$sql2  .= $v;
+ 		$first  = false;
+@@ -2269,3 +2285,49 @@ function db_dump_data($database = '', $tables = '', $credentials = array(), $out
+ 	return $retval;
+ }
+ 
++/**
++ * cacti_fetch_by_id - Fetch a single row by its integer primary key.
++ *
++ * Sanitizes the table name, column list, and ID column to prevent
++ * injection. Returns false when the ID is non-positive or no row
++ * is found.
++ *
++ * @param  string       $table      Table name (alphanumeric + underscore only)
++ * @param  int          $id         The row ID to look up
++ * @param  string|array $columns    Column(s) to select ('*' for all)
++ * @param  string       $id_column  Name of the primary key column
++ * @param  mixed        $db_conn    Optional database connection
++ *
++ * @return array|false  The row as an associative array, or false
++ */
++function cacti_fetch_by_id($table, $id, $columns = '*', $id_column = 'id', $db_conn = false) {
++	$id = intval($id);
++
++	if ($id <= 0) {
++		return false;
++	}
++
++	$safe_table  = preg_replace('/[^a-zA-Z0-9_]/', '', $table);
++	$safe_id_col = preg_replace('/[^a-zA-Z0-9_]/', '', $id_column);
++
++	if (is_array($columns)) {
++		$safe_cols = implode(', ', array_map(function($c) {
++			return '`' . preg_replace('/[^a-zA-Z0-9_]/', '', $c) . '`';
++		}, $columns));
++	} else {
++		$safe_cols = $columns === '*' ? '*' : '`' . preg_replace('/[^a-zA-Z0-9_]/', '', $columns) . '`';
++	}
++
++	$row = db_fetch_row_prepared(
++		"SELECT $safe_cols FROM `$safe_table` WHERE `$safe_id_col` = ?",
++		array($id),
++		$db_conn
++	);
++
++	if (!cacti_sizeof($row)) {
++		return false;
++	}
++
++	return $row;
++}
++
+diff --git a/lib/functions.php b/lib/functions.php
+index 92b30afceb..0673acf887 100644
+--- a/lib/functions.php
++++ b/lib/functions.php
+@@ -7303,11 +7303,21 @@ function cacti_ptoa($title, $addr) {
+  * @returns - (string) The sanitized string
+  */
+ function cacti_csv_safe($value) {
++	if (!is_string($value) && !is_numeric($value)) {
++		return $value;
++	}
++
+ 	$value = (string)$value;
+ 
+-	if ($value != '') {
+-		if (strpos($value, '=') === 0 || strpos($value, '+') === 0 || strpos($value, '-') === 0 || strpos($value, '@') === 0) {
+-			$value = "'" . $value;
++	// Strip leading whitespace and control characters that spreadsheets
++	// treat as formula-start triggers (OWASP CSV injection)
++	$trimmed = ltrim($value, " \t\n\r\0\x0B");
++
++	$dangerous = array('=', '+', '-', '@', "\t", "\r");
++
++	foreach ($dangerous as $char) {
++		if (isset($trimmed[0]) && $trimmed[0] === $char) {
++			return "'" . $value;
+ 		}
+ 	}
+ 
+@@ -7772,3 +7782,134 @@ function cacti_format_ipv6_colon($address) {
+ 
+ 	return($address);
+ }
++
++/**
++ * cacti_path_is_within - Check whether a candidate path resolves to a
++ * location inside a given base directory.  Both paths are resolved via
++ * realpath() so symlinks and relative components are handled.  On
++ * Windows the comparison is case-insensitive.
++ *
++ * @param  string $candidate  The path to test
++ * @param  string $base       The base directory that must contain it
++ *
++ * @return bool  True when $candidate is strictly inside $base
++ */
++function cacti_path_is_within($candidate, $base) {
++	$resolved = realpath($candidate);
++
++	if ($resolved === false) {
++		return false;
++	}
++
++	$base_resolved = realpath($base);
++
++	if ($base_resolved === false) {
++		return false;
++	}
++
++	if (DIRECTORY_SEPARATOR === '\\') {
++		$resolved      = str_replace('\\', '/', strtolower($resolved));
++		$base_resolved = str_replace('\\', '/', strtolower($base_resolved));
++	}
++
++	return strpos($resolved, $base_resolved . '/') === 0 || $resolved === $base_resolved;
++}
++
++/**
++ * cacti_redirect - Redirect to a validated URL.
++ *
++ * Uses validate_redirect_url() to ensure the target is safe before
++ * sending the Location header. Falls back to $default when the URL
++ * is empty or fails validation.
++ *
++ * @param  string $url      Target URL (empty to use HTTP_REFERER)
++ * @param  string $default  Fallback URL when input is empty or invalid
++ * @param  int    $status   HTTP status code for the redirect
++ *
++ * @return void  (exits after sending the header)
++ */
++function cacti_redirect($url = '', $default = 'index.php', $status = 302) {
++	$safe_url = validate_redirect_url(
++		!empty($url) ? $url : (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $default),
++		$default
++	);
++
++	header('Location: ' . $safe_url, true, $status);
++	exit;
++}
++
++/**
++ * cacti_redact_sensitive - Replace sensitive values in an associative array.
++ *
++ * Walks the array recursively and replaces any value whose key matches
++ * a known sensitive name (password, token, community, etc.) with
++ * '[REDACTED]'. Safe for logging request data or debug dumps.
++ *
++ * @param  mixed $data  Array to redact (non-arrays returned unchanged)
++ *
++ * @return mixed  The redacted copy
++ */
++function cacti_redact_sensitive($data) {
++	static $sensitive_keys = null;
++
++	if ($sensitive_keys === null) {
++		$sensitive_keys = array(
++			'password', 'pass', 'snmp_password', 'snmp_priv_passphrase',
++			'snmp_auth_passphrase', 'rsa_private_key', 'secret',
++			'auth_key', 'priv_key', 'token', 'cookie', 'community',
++			'snmp_community', 'specific_password', 'ldap_password',
++		);
++	}
++
++	if (!is_array($data)) {
++		return $data;
++	}
++
++	$redacted = array();
++
++	foreach ($data as $key => $value) {
++		$lower = strtolower($key);
++		$is_sensitive = false;
++
++		foreach ($sensitive_keys as $sk) {
++			if ($lower === $sk || strpos($lower, $sk) !== false) {
++				$is_sensitive = true;
++				break;
++			}
++		}
++
++		$redacted[$key] = $is_sensitive
++			? '[REDACTED]'
++			: (is_array($value) ? cacti_redact_sensitive($value) : $value);
++	}
++
++	return $redacted;
++}
++
++/**
++ * cacti_temp_file - Execute a callback with a temporary file, then clean up.
++ *
++ * Creates a temp file via tempnam(), passes its path to $callback,
++ * and deletes the file in a finally block regardless of exceptions.
++ *
++ * @param  string   $prefix    Prefix for the temp filename
++ * @param  callable $callback  Receives the temp file path as its argument
++ *
++ * @return mixed  The return value of $callback, or false on tempnam failure
++ */
++function cacti_temp_file($prefix, $callback) {
++	$path = tempnam(sys_get_temp_dir(), $prefix);
++
++	if ($path === false) {
++		cacti_log('ERROR: cacti_temp_file: tempnam failed', false, 'SYSTEM');
++		return false;
++	}
++
++	try {
++		$result = call_user_func($callback, $path);
++	} finally {
++		@unlink($path);
++	}
++
++	return $result;
++}
+diff --git a/lib/html_form.php b/lib/html_form.php
+index 617a3f189a..52d49f4a7f 100644
+--- a/lib/html_form.php
++++ b/lib/html_form.php
+@@ -86,7 +86,7 @@ function draw_edit_form($array) {
+ 				$collapsible = (isset($field_array['collapsible']) && $field_array['collapsible'] == 'true');
+ 
+ 				print "<div class='spacer formHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$field_name'><div class='formHeaderText'>" . html_escape($field_array['friendly_name']);
+-				print '<div class="formTooltip">' . (isset($field_array['description']) ? display_tooltip($field_array['description']):'') . '</div>';
++				print '<div class="formTooltip">' . (isset($field_array['description']) ? display_tooltip(html_escape($field_array['description'])):'') . '</div>';
+ 				print ($collapsible ? "<div class='formHeaderAnchor'><i class='fa fa-angle-double-up'></i></div>":'') . '</div></div>';
+ 			} else {
+ 				// Make a row using a div
+@@ -132,10 +132,10 @@ function draw_edit_form($array) {
+ 				print html_escape($field_array['friendly_name']);
+ 
+ 				if (read_config_option('hide_form_description') == 'on') {
+-					print '<br><span class="formFieldDescription">' . ((isset($field_array['description'])) ? $field_array['description'] : '') . "</span>\n";
++					print '<br><span class="formFieldDescription">' . ((isset($field_array['description'])) ? html_escape($field_array['description']) : '') . "</span>\n";
+ 				} else {
+ 					print '<div class="formTooltip">';
+-					print display_tooltip((isset($field_array['description'])) ? $field_array['description'] : '');
++					print display_tooltip((isset($field_array['description'])) ? html_escape($field_array['description']) : '');
+ 					print '</div>';
+ 				}
+ 
+diff --git a/lib/import.php b/lib/import.php
+index 99f3eb1a59..fa2c0f6a55 100644
+--- a/lib/import.php
++++ b/lib/import.php
+@@ -302,7 +302,8 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
+ 
+ function is_cacti_public_key($public_key) {
+ 	$public_key = trim($public_key);
+-	$keys[] = get_public_key_sha1();
++	/* Legacy SHA-1 key removed for security. SHA-256 only. */
++	// $keys[] = get_public_key_sha1();
+ 	$keys[] = get_public_key_sha256();
+ 
+ 	foreach($keys as $key) {
+@@ -350,12 +351,51 @@ function import_package_get_name($xmlfile) {
+ 	}
+ }
+ 
++
++/**
++ * Validate that a file path is safe for use with PHP stream wrappers.
++ * Rejects nested wrappers (phar://, php://filter, expect://, data://)
++ * that could lead to deserialization or information disclosure.
++ *
++ * @param string $path  The file path to validate
++ * @return bool  True if safe, false if wrapper injection detected
++ */
++function cacti_validate_stream_path($path) {
++	$dangerous_wrappers = array('phar://', 'php://', 'expect://', 'data://', 'glob://', 'ssh2://');
++
++	$lower = strtolower($path);
++	foreach ($dangerous_wrappers as $wrapper) {
++		if (strpos($lower, $wrapper) !== false) {
++			cacti_log("ERROR: Dangerous stream wrapper detected in path: $path", false, 'IMPORT');
++			return false;
++		}
++	}
++
++	return true;
++}
++
+ function import_package_get_details($xmlfile) {
++	if (!cacti_validate_stream_path($xmlfile)) {
++		return array();
++	}
++
+ 	$filename = "compress.zlib://$xmlfile";
+ 
+ 	$return = array();
+ 	$data = file_get_contents($filename, 'r');
+ 
++	if ($data === false) {
++		cacti_log('ERROR: Failed to read XML file: ' . $filename, false, 'IMPORT');
++		return array();
++	}
++
++	$max_xml_size = 50 * 1024 * 1024;
++
++	if (strlen($data) > $max_xml_size) {
++		cacti_log('ERROR: XML input exceeds maximum size (' . strlen($data) . ' > ' . $max_xml_size . ')', false, 'IMPORT');
++		return array();
++	}
++
+ 	/* SECURITY: Disable external entity loading to prevent XXE on PHP < 8.0 */
+ 	$disable_entities = false;
+ 	if (LIBXML_VERSION < 20900) {
+@@ -364,18 +404,30 @@ function import_package_get_details($xmlfile) {
+ 
+ 	libxml_use_internal_errors(true);
+ 	$xmlget = simplexml_load_string($data);
+-	libxml_use_internal_errors(false);
+-
+-	if (LIBXML_VERSION < 20900) {
+-		libxml_disable_entity_loader($disable_entities);
+-	}
+ 
+ 	if ($xmlget === false) {
+-		cacti_log('FATAL: Unable to parse package XML structure.', true, 'IMPORT', POLLER_VERBOSITY_LOW);
++		$errors = libxml_get_errors();
++
++		foreach ($errors as $error) {
++			cacti_log('ERROR: XML parse error: ' . trim($error->message), false, 'IMPORT');
++		}
++
++		libxml_clear_errors();
++		libxml_use_internal_errors(false);
++
++		if (LIBXML_VERSION < 20900) {
++			libxml_disable_entity_loader($disable_entities);
++		}
+ 
+ 		return array();
+ 	}
+ 
++	libxml_use_internal_errors(false);
++
++	if (LIBXML_VERSION < 20900) {
++		libxml_disable_entity_loader($disable_entities);
++	}
++
+ 	$pkgarr = xml_to_array($xmlget);
+ 	$return = $pkgarr['info'];
+ 
+@@ -415,6 +467,10 @@ function import_package_get_details($xmlfile) {
+ function import_read_package_data($xmlfile, &$public_key) {
+ 	$public_key = import_package_get_public_key($xmlfile);
+ 
++	if (!cacti_validate_stream_path($xmlfile)) {
++		return false;
++	}
++
+ 	$filename = "compress.zlib://$xmlfile";
+ 
+ 	if (!is_cacti_public_key($public_key)) {
+@@ -451,7 +507,7 @@ function import_read_package_data($xmlfile, &$public_key) {
+ 
+ 	// Verify Signature
+ 	if (strlen($public_key) < 200) {
+-		$ok = openssl_verify($xml, $binary_signature, $public_key, OPENSSL_ALGO_SHA1);
++		$ok = openssl_verify($xml, $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
+ 	} else {
+ 		$ok = openssl_verify($xml, $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
+ 	}
+@@ -468,6 +524,18 @@ function import_read_package_data($xmlfile, &$public_key) {
+ 
+ 	cacti_log('Loading Plugin Information from package', false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
+ 
++	if ($xml === false) {
++		cacti_log('ERROR: Failed to read XML package data', false, 'IMPORT');
++		return false;
++	}
++
++	$max_xml_size = 50 * 1024 * 1024;
++
++	if (strlen($xml) > $max_xml_size) {
++		cacti_log('ERROR: XML input exceeds maximum size (' . strlen($xml) . ' > ' . $max_xml_size . ')', false, 'IMPORT');
++		return false;
++	}
++
+ 	/* SECURITY: Disable external entity loading to prevent XXE on PHP < 8.0 */
+ 	$disable_entities = false;
+ 	if (LIBXML_VERSION < 20900) {
+@@ -476,18 +544,30 @@ function import_read_package_data($xmlfile, &$public_key) {
+ 
+ 	libxml_use_internal_errors(true);
+ 	$xmlget = simplexml_load_string($xml);
+-	libxml_use_internal_errors(false);
+-
+-	if (LIBXML_VERSION < 20900) {
+-		libxml_disable_entity_loader($disable_entities);
+-	}
+ 
+ 	if ($xmlget === false) {
+-		cacti_log('FATAL: Unable to parse XML structure.', true, 'IMPORT', POLLER_VERBOSITY_LOW);
++		$errors = libxml_get_errors();
++
++		foreach ($errors as $error) {
++			cacti_log('ERROR: XML parse error: ' . trim($error->message), false, 'IMPORT');
++		}
++
++		libxml_clear_errors();
++		libxml_use_internal_errors(false);
++
++		if (LIBXML_VERSION < 20900) {
++			libxml_disable_entity_loader($disable_entities);
++		}
+ 
+ 		return false;
+ 	}
+ 
++	libxml_use_internal_errors(false);
++
++	if (LIBXML_VERSION < 20900) {
++		libxml_disable_entity_loader($disable_entities);
++	}
++
+ 	$data = xml_to_array($xmlget);
+ 
+ 	if (cacti_sizeof($data)) {
+diff --git a/lib/ldap.php b/lib/ldap.php
+index 015afc79c8..2f5807f240 100644
+--- a/lib/ldap.php
++++ b/lib/ldap.php
+@@ -988,3 +988,26 @@ function isUserInLDAPGroup($ldapConn, $ldapbasedn, $groupDN, $ldapUser) {
+ 	}
+ }
+ 
++/**
++ * Build an LDAP filter string with safe variable substitution.
++ *
++ * Each placeholder in $template (e.g. <username>) is replaced with
++ * the ldap_escape()'d value from $vars. This prevents LDAP filter
++ * injection attacks.
++ *
++ * @param  string $template Filter template with <key> placeholders
++ * @param  array  $vars     Associative array of key => value pairs
++ *
++ * @return string The assembled, injection-safe LDAP filter
++ */
++function cacti_ldap_filter($template, $vars) {
++	$result = $template;
++
++	foreach ($vars as $key => $value) {
++		$escaped = ldap_escape((string) $value, '', LDAP_ESCAPE_FILTER);
++		$result  = str_replace('<' . $key . '>', $escaped, $result);
++	}
++
++	return $result;
++}
++
+diff --git a/lib/plugins.php b/lib/plugins.php
+index db404c5369..9e6543b74d 100644
+--- a/lib/plugins.php
++++ b/lib/plugins.php
+@@ -22,6 +22,8 @@
+  +-------------------------------------------------------------------------+
+ */
+ 
++include_once($config['base_path'] . '/lib/cacti_plugin_path.php');
++
+ function do_hook($name) {
+ 	$data = func_get_args();
+ 	$data = api_plugin_hook($name, $data);
+@@ -145,8 +147,9 @@ function api_plugin_hook_function($name, $parm = NULL) {
+ 			if (!in_array($hdata['name'], $plugins_integrated)) {
+ 				$p[] = $hdata['name'];
+ 
+-				if (file_exists($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file'])) {
+-					include_once($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file']);
++				$plugin_file = cacti_plugin_path($hdata['name'], $hdata['file']);
++				if ($plugin_file !== false) {
++					include_once($plugin_file);
+ 				}
+ 
+ 				$function = $hdata['function'];
+@@ -702,7 +705,12 @@ function api_plugin_install($plugin) {
+ 		exit;
+ 	}
+ 
+-	include_once($config['base_path'] . "/plugins/$plugin/setup.php");
++	$plugin_setup = cacti_plugin_path($plugin, 'setup.php');
++	if ($plugin_setup === false) {
++		cacti_log("ERROR: Plugin '$plugin' setup.php not found or path invalid", false, 'PLUGIN');
++		return;
++	}
++	include_once($plugin_setup);
+ 
+ 	$exists = db_fetch_assoc_prepared('SELECT id
+ 		FROM plugin_config
+@@ -792,7 +800,12 @@ function api_plugin_uninstall($plugin, $tables = true) {
+ 	$plugin_found = false;
+ 
+ 	if (file_exists($config['base_path'] . "/plugins/$plugin/setup.php")) {
+-		include_once($config['base_path'] . "/plugins/$plugin/setup.php");
++		$plugin_setup = cacti_plugin_path($plugin, 'setup.php');
++	if ($plugin_setup === false) {
++		cacti_log("ERROR: Plugin '$plugin' setup.php not found or path invalid", false, 'PLUGIN');
++		return;
++	}
++	include_once($plugin_setup);
+ 
+ 		// Run the Plugin's Uninstall Function first
+ 		$function = 'plugin_' . $plugin . '_uninstall';
+@@ -835,7 +848,12 @@ function api_plugin_check_config($plugin) {
+ 	clearstatcache();
+ 
+ 	if (file_exists($config['base_path'] . "/plugins/$plugin/setup.php")) {
+-		include_once($config['base_path'] . "/plugins/$plugin/setup.php");
++		$plugin_setup = cacti_plugin_path($plugin, 'setup.php');
++	if ($plugin_setup === false) {
++		cacti_log("ERROR: Plugin '$plugin' setup.php not found or path invalid", false, 'PLUGIN');
++		return;
++	}
++	include_once($plugin_setup);
+ 
+ 		$function = 'plugin_' . $plugin . '_check_config';
+ 
+diff --git a/logout.php b/logout.php
+index 07eaae4d7b..e04cbb5e68 100644
+--- a/logout.php
++++ b/logout.php
+@@ -31,6 +31,12 @@
+ 
+ api_plugin_hook('logout_pre_session_destroy');
+ 
++/* Note: logout is reachable via GET without CSRF token. Impact is limited
++ * to forced-logout (annoyance, no privilege escalation). SameSite=Strict
++ * on the session cookie prevents cross-site exploitation on modern browsers.
++ * Tracked in issue #7051 (csrf-magic evaluation). */
++
++
+ /* Clear session */
+ cacti_cookie_logout();
+ cacti_session_destroy();
+diff --git a/managers.php b/managers.php
+index a526af354d..3d441669d2 100644
+--- a/managers.php
++++ b/managers.php
+@@ -588,7 +588,7 @@ function clearFilter() {
+ 			form_alternate_row('line' . $row_id, false);
+ 
+ 			if ($item['description']) {
+-				print '<td><a href="#" title="<div class=\'header\'>' . $name . '</div><div class=\'content preformatted\'>' . $item['description']. '</div>" class="tooltip">' . $name . '</a></td>';
++				print '<td><a href="#" title="<div class=\'header\'>' . html_escape($item['name']) . '</div><div class=\'content preformatted\'>' . html_escape($item['description']) . '</div>" class="tooltip">' . $name . '</a></td>';
+ 			} else {
+ 				form_selectable_cell($name, $row_id);
+ 			}
+diff --git a/package_import.php b/package_import.php
+index c7d4b16cfc..6bf2ff45f1 100644
+--- a/package_import.php
++++ b/package_import.php
+@@ -109,6 +109,8 @@ function form_save() {
+ 	validate_request_vars();
+ 
+ 	if (isset_request_var('save_component_import')) {
++		$session_tmpfile = false;
++
+ 		if (isset($_FILES['import_file']['tmp_name']) &&
+ 			($_FILES['import_file']['tmp_name'] != 'none') &&
+ 			($_FILES['import_file']['tmp_name'] != '')) {
+@@ -126,6 +128,8 @@ function form_save() {
+ 				header('Location: package_import.php');
+ 				exit;
+ 			}
++
++			$session_tmpfile = true;
+ 		} else {
+ 			header('Location: package_import.php');
+ 			exit;
+@@ -134,6 +138,10 @@ function form_save() {
+ 		if (isset_request_var('trust_signer') && get_request_var('trust_signer') == 'on') {
+ 			import_validate_public_key($xmlfile, true);
+ 		} elseif (!package_validate_signature($xmlfile)) {
++			if ($session_tmpfile) {
++				@unlink($xmlfile);
++			}
++
+ 			raise_message('verify_warning', __('You have not Trusted this Package Author.  If you wish to import, check the Automatically Trust Author checkbox'), MESSAGE_LEVEL_ERROR);
+ 			header('Location: package_import?package_location=0');
+ 			exit;
+diff --git a/phpstan.neon b/phpstan.neon
+new file mode 100644
+index 0000000000..4e5ffb812d
+--- /dev/null
++++ b/phpstan.neon
+@@ -0,0 +1,28 @@
++parameters:
++    level: 5
++    paths:
++        - lib/cacti_exec.php
++        - lib/cacti_http.php
++        - lib/cacti_dispatch.php
++        - lib/cacti_request.php
++    excludePaths:
++        - vendor/*
++    reportUnmatchedIgnoredErrors: false
++    ignoreErrors:
++        - '#Function cacti_log not found#'
++        - '#Function read_config_option not found#'
++        - '#Function get_nfilter_request_var not found#'
++        - '#Function get_client_addr not found#'
++        - '#Function is_realm_allowed not found#'
++        - '#Function html_escape not found#'
++        - '#Function db_qstr not found#'
++        - '#Function db_fetch_cell_prepared not found#'
++        - '#Function db_execute_prepared not found#'
++        - '#Function cacti_escapeshellcmd not found#'
++        - '#Function cacti_escapeshellarg not found#'
++        - '#Function cacti_sizeof not found#'
++        - '#Function cacti_cookie_set not found#'
++        - '#Function kill_session_var not found#'
++        - '#Function raise_ajax_permission_denied not found#'
++        - '#Constant POLLER_VERBOSITY_DEBUG not found#'
++        - '#Constant POLLER_VERBOSITY_MEDIUM not found#'
+diff --git a/poller_automation.php b/poller_automation.php
+index 56671b919f..9807e59029 100755
+--- a/poller_automation.php
++++ b/poller_automation.php
+@@ -343,6 +343,10 @@ function sig_handler($signo) {
+ 				WHERE network_id = ?',
+ 				array($network_id));
+ 
++			if (!cacti_sizeof($totals)) {
++				$totals = array('up' => 0, 'snmp' => 0);
++			}
++
+ 			/* take time and log performance data */
+ 			$end = microtime(true);
+ 
+@@ -376,6 +380,11 @@ function discoverDevices($network_id, $thread) {
+ 		WHERE id = ?',
+ 		array($network_id));
+ 
++	if (!cacti_sizeof($network)) {
++		cacti_log('ERROR: Network ID ' . $network_id . ' not found in automation_networks', false, 'AUTOM8');
++		return;
++	}
++
+ 	$temp = db_fetch_assoc('SELECT automation_templates.*, host_template.name
+ 		FROM automation_templates
+ 		LEFT JOIN host_template
+@@ -1068,6 +1077,11 @@ function reportNetworkStatus($network_id, $old_devices) {
+ 				WHERE id = ?',
+ 				array($network_id));
+ 
++			if (!cacti_sizeof($network)) {
++				cacti_log('ERROR: Network ID ' . $network_id . ' not found for notification', false, 'AUTOM8');
++				return;
++			}
++
+ 			$subject = 'Discovery of ' . $network['name'] . ' (' . $network['subnet_range'] . ') - ' . $status;
+ 			$output = '<h1>Discovery of ' . $network['name'] . '</h1><hr><br>' .
+ 				'<h2>Summary</h2><table>' .
+diff --git a/poller_boost.php b/poller_boost.php
+index 9615d9f661..1d2f098b42 100755
+--- a/poller_boost.php
++++ b/poller_boost.php
+@@ -1401,9 +1401,10 @@ function boost_purge_cached_png_files($forcerun) {
+ 				}
+ 			}
+ 
+-			// Verify directory is within CACTI_PATH_BASE to prevent arbitrary file deletion
++			// Reject if cache dir IS the base path or is outside it (must be a strict subdirectory)
+ 			if ($normalized_cache === false || $normalized_base === false
+-				|| ($normalized_cache !== $normalized_base && strpos($normalized_cache, $normalized_base . '/') !== 0)) {
++				|| $normalized_cache === $normalized_base
++				|| strpos($normalized_cache, $normalized_base . '/') !== 0) {
+ 				cacti_log("ERROR: Boost PNG Cache Directory '$cache_directory' is outside of Cacti base path. Purge aborted.", true, 'BOOST');
+ 				return;
+ 			}
+diff --git a/rrdcleaner.php b/rrdcleaner.php
+index 84a219bba3..4c66f3d447 100644
+--- a/rrdcleaner.php
++++ b/rrdcleaner.php
+@@ -477,6 +477,10 @@ function do_rrd() {
+ 				FROM data_source_purge_temp
+ 				WHERE id = ?', array($matches[1]));
+ 
++			if (!cacti_sizeof($unused_file)) {
++				continue;
++			}
++
+ 			/* add to data_source_purge_action table */
+ 			$sql = "INSERT INTO data_source_purge_action
+ 				(name, local_data_id, action)
+diff --git a/script_server.php b/script_server.php
+index 36f731f6a1..287b8c68aa 100644
+--- a/script_server.php
++++ b/script_server.php
+@@ -258,22 +258,9 @@
+ 
+ 			/* validate the existence of the function, and include if applicable */
+ 			if (!function_exists($function)) {
+-				$real_include = realpath($include_file);
+-				$base_real    = realpath($config['base_path']);
+-
+-				if ($real_include !== false) {
+-					$real_include = str_replace('\\', '/', $real_include);
+-				}
+-				if ($base_real !== false) {
+-					$base_real = str_replace('\\', '/', $base_real);
+-				}
+-
+-				/* On Windows, realpath() may return mixed-case drive letters; use
+-				 * case-insensitive comparison to avoid false rejections. */
+-				$path_cmp = (DIRECTORY_SEPARATOR === '\\') ? 'stripos' : 'strpos';
+-				if ($real_include !== false && $base_real !== false && $path_cmp($real_include, $base_real . '/') === 0) {
+-					$include_file = $real_include;
+-				} elseif ($real_include !== false) {
++				if (cacti_path_is_within($include_file, $config['base_path'])) {
++					$include_file = realpath($include_file);
++				} elseif (realpath($include_file) !== false) {
+ 					cacti_log("WARNING: Script file '$include_file' resolves outside base path. Rejected.", false, 'PHPSVR');
+ 					$include_file = '';
+ 				} else {
+diff --git a/sites.php b/sites.php
+index 43cb4eec5d..7a63dc4ebc 100644
+--- a/sites.php
++++ b/sites.php
+@@ -426,6 +426,13 @@ function site_edit() {
+ 
+ 	if (!isempty_request_var('id')) {
+ 		$site = db_fetch_row_prepared('SELECT * FROM sites WHERE id = ?', array(get_request_var('id')));
++
++		if (!cacti_sizeof($site)) {
++			raise_message('site_not_found', __('Site not found.'), MESSAGE_LEVEL_ERROR);
++			header('Location: ' . validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'sites.php', 'sites.php'));
++			exit;
++		}
++
+ 		$header_label = __esc('Site [edit: %s]', $site['name']);
+ 	} else {
+ 		$header_label = __('Site [new]');
+diff --git a/tests/Unit/CsrfHardeningTest.php b/tests/Unit/CsrfHardeningTest.php
+new file mode 100644
+index 0000000000..8e246cd195
+--- /dev/null
++++ b/tests/Unit/CsrfHardeningTest.php
+@@ -0,0 +1,28 @@
++<?php
++
++$globalPath = __DIR__ . '/../../include/global.php';
++$csrfPath = __DIR__ . '/../../include/vendor/csrf/csrf-magic.php';
++
++test('global.php GET deny-list covers state-mutating actions', function () use ($globalPath) {
++    $source = file_get_contents($globalPath);
++    $actions = array('save', 'delete', 'remove', 'purge', 'disable', 'enable',
++        'install', 'uninstall', 'moveup', 'movedown', 'kill', 'clear');
++    foreach ($actions as $action) {
++        expect($source)->toContain("'" . $action . "'");
++    }
++});
++
++test('csrf-magic fallback cookie sets httponly flag', function () use ($csrfPath) {
++    $source = file_get_contents($csrfPath);
++    expect($source)->toContain("'httponly'");
++});
++
++test('csrf-magic fallback cookie sets samesite flag', function () use ($csrfPath) {
++    $source = file_get_contents($csrfPath);
++    expect($source)->toContain("'samesite'");
++});
++
++test('csrf-magic uses hash_equals for token comparison', function () use ($csrfPath) {
++    $source = file_get_contents($csrfPath);
++    expect($source)->toContain('hash_equals');
++});
+diff --git a/tests/Unit/DbFetchRowGuardTest.php b/tests/Unit/DbFetchRowGuardTest.php
+new file mode 100644
+index 0000000000..3ebc39be92
+--- /dev/null
++++ b/tests/Unit/DbFetchRowGuardTest.php
+@@ -0,0 +1,70 @@
++<?php
++/*
++ +-------------------------------------------------------------------------+
++ | Copyright (C) 2004-2026 The Cacti Group                                 |
++ |                                                                         |
++ | This program is free software; you can redistribute it and/or           |
++ | modify it under the terms of the GNU General Public License             |
++ | as published by the Free Software Foundation; either version 2          |
++ | of the License, or (at your option) any later version.                  |
++ +-------------------------------------------------------------------------+
++ | Cacti: The Complete RRDtool-based Graphing Solution                     |
++ +-------------------------------------------------------------------------+
++*/
++
++$basePath = dirname(__DIR__, 2);
++
++$files = array(
++	'auth_login.php',
++	'graph_view.php',
++	'graph.php',
++	'sites.php',
++	'automation_devices.php',
++	'automation_networks.php',
++	'gprint_presets.php',
++	'color_templates.php',
++	'color_templates_items.php',
++	'graph_templates.php',
++	'data_input.php',
++	'vdef.php',
++	'aggregate_templates.php',
++	'rrdcleaner.php',
++	'user_admin.php',
++	'poller_automation.php',
++);
++
++foreach ($files as $file) {
++	$path = $basePath . '/' . $file;
++
++	test("$file guards db_fetch_row results before dereference", function () use ($path, $file) {
++		if (!file_exists($path)) {
++			$this->markTestSkipped("$file not found");
++		}
++
++		$contents = file_get_contents($path);
++
++		// Find each db_fetch_row assignment
++		preg_match_all('/(\$\w+)\s*=\s*db_fetch_row/', $contents, $matches, PREG_OFFSET_CAPTURE);
++
++		foreach ($matches[1] as $match) {
++			$var = $match[0];
++			$pos = $match[1];
++
++			// Look at next 500 chars
++			$chunk = substr($contents, $pos, 500);
++
++			// Find first dereference
++			$derefPattern = '/' . preg_quote($var, '/') . '\[\s*[\'\"]/';
++			if (!preg_match($derefPattern, $chunk, $dm, PREG_OFFSET_CAPTURE)) {
++				continue;
++			}
++
++			$beforeDeref = substr($chunk, 0, $dm[0][1]);
++
++			// Must have a guard
++			$guardPattern = '/cacti_sizeof|isset|empty|!\s*' . preg_quote($var, '/') . '\b/';
++			expect(preg_match($guardPattern, $beforeDeref))
++				->toBeGreaterThan(0, "$file: $var dereferenced without cacti_sizeof/isset/empty guard");
++		}
++	});
++}
+diff --git a/tests/Unit/DefenseInDepthFollowupTest.php b/tests/Unit/DefenseInDepthFollowupTest.php
+new file mode 100644
+index 0000000000..f85bb4d3f1
+--- /dev/null
++++ b/tests/Unit/DefenseInDepthFollowupTest.php
+@@ -0,0 +1,121 @@
++<?php
++/*
++ +-------------------------------------------------------------------------+
++ | Copyright (C) 2004-2026 The Cacti Group                                 |
++ +-------------------------------------------------------------------------+
++ | Cacti: The Complete RRDtool-based Graphing Solution                     |
++ +-------------------------------------------------------------------------+
++*/
++
++$funcSource  = file_get_contents(__DIR__ . '/../../lib/functions.php');
++$dbSource    = file_get_contents(__DIR__ . '/../../lib/database.php');
++$boostSource = file_get_contents(__DIR__ . '/../../poller_boost.php');
++$importSource = file_get_contents(__DIR__ . '/../../package_import.php');
++$indexSource = file_get_contents(__DIR__ . '/../../index.php');
++$ssSource    = file_get_contents(__DIR__ . '/../../script_server.php');
++
++// --- cacti_csv_safe ---
++
++test('cacti_csv_safe strips leading whitespace before checking dangerous chars', function () use ($funcSource) {
++	$start = strpos($funcSource, 'function cacti_csv_safe(');
++	$body = substr($funcSource, $start, 600);
++	expect($body)->toContain('ltrim(');
++});
++
++test('cacti_csv_safe includes tab in dangerous list', function () use ($funcSource) {
++	$start = strpos($funcSource, 'function cacti_csv_safe(');
++	$body = substr($funcSource, $start, 600);
++	expect($body)->toContain('"\t"');
++});
++
++test('cacti_csv_safe includes carriage return in dangerous list', function () use ($funcSource) {
++	$start = strpos($funcSource, 'function cacti_csv_safe(');
++	$body = substr($funcSource, $start, 600);
++	expect($body)->toContain('"\r"');
++});
++
++test('cacti_csv_safe guards non-string non-numeric input', function () use ($funcSource) {
++	$start = strpos($funcSource, 'function cacti_csv_safe(');
++	$body = substr($funcSource, $start, 600);
++	expect($body)->toContain('!is_string($value) && !is_numeric($value)');
++});
++
++// --- cacti_path_is_within ---
++
++test('cacti_path_is_within helper exists in functions.php', function () use ($funcSource) {
++	expect($funcSource)->toContain('function cacti_path_is_within(');
++});
++
++test('cacti_path_is_within uses realpath for both candidate and base', function () use ($funcSource) {
++	$start = strpos($funcSource, 'function cacti_path_is_within(');
++	$body = substr($funcSource, $start, 800);
++	expect($body)->toContain('realpath($candidate)');
++	expect($body)->toContain('realpath($base)');
++});
++
++test('cacti_path_is_within handles Windows case-insensitive comparison', function () use ($funcSource) {
++	$start = strpos($funcSource, 'function cacti_path_is_within(');
++	$body = substr($funcSource, $start, 800);
++	expect($body)->toContain("DIRECTORY_SEPARATOR === '\\\\'");
++	expect($body)->toContain('strtolower(');
++});
++
++// --- index.php uses cacti_path_is_within ---
++
++test('index.php uses cacti_path_is_within for include path validation', function () use ($indexSource) {
++	expect($indexSource)->toContain('cacti_path_is_within(');
++});
++
++// --- script_server.php uses cacti_path_is_within ---
++
++test('script_server.php uses cacti_path_is_within for include path validation', function () use ($ssSource) {
++	expect($ssSource)->toContain('cacti_path_is_within(');
++});
++
++// --- db_replace redaction ---
++
++test('db_replace redacts snmp_auth_passphrase', function () use ($dbSource) {
++	expect($dbSource)->toContain("'snmp_auth_passphrase'");
++});
++
++test('db_replace redacts rsa_private_key', function () use ($dbSource) {
++	expect($dbSource)->toContain("'rsa_private_key'");
++});
++
++test('db_replace redacts secret', function () use ($dbSource) {
++	expect($dbSource)->toContain("'secret'");
++});
++
++test('db_replace redacts auth_key', function () use ($dbSource) {
++	expect($dbSource)->toContain("'auth_key'");
++});
++
++test('db_replace redacts priv_key', function () use ($dbSource) {
++	expect($dbSource)->toContain("'priv_key'");
++});
++
++// --- boost path confinement ---
++
++test('poller_boost rejects cache_directory equal to base_path', function () use ($boostSource) {
++	expect($boostSource)->toMatch('/\$normalized_cache\s*===\s*\$normalized_base/');
++});
++
++test('poller_boost requires strict subdirectory check', function () use ($boostSource) {
++	$start = strpos($boostSource, 'Reject if cache dir IS the base path');
++	$block = substr($boostSource, $start, 300);
++	// Must have separate equality check AND prefix check
++	expect($block)->toContain('$normalized_cache === $normalized_base');
++	expect($block)->toContain("\$normalized_base . '/'");
++});
++
++// --- package_import tempfile cleanup ---
++
++test('package_import cleans up session tempfile on signature failure', function () use ($importSource) {
++	$start = strpos($importSource, 'session_tmpfile');
++	expect($start)->not->toBeFalse();
++
++	// The unlink must appear before the exit on signature failure path
++	$sig_fail = strpos($importSource, 'package_validate_signature');
++	$block = substr($importSource, $sig_fail, 400);
++	expect($block)->toContain('@unlink($xmlfile)');
++});
+diff --git a/tests/Unit/GraphInvalidLocalGraphIdTest.php b/tests/Unit/GraphInvalidLocalGraphIdTest.php
+new file mode 100644
+index 0000000000..00f884f75f
+--- /dev/null
++++ b/tests/Unit/GraphInvalidLocalGraphIdTest.php
+@@ -0,0 +1,78 @@
++<?php
++/*
++ +-------------------------------------------------------------------------+
++ | Copyright (C) 2004-2026 The Cacti Group                                 |
++ |                                                                         |
++ | This program is free software; you can redistribute it and/or           |
++ | modify it under the terms of the GNU General Public License             |
++ | as published by the Free Software Foundation; either version 2          |
++ | of the License, or (at your option) any later version.                  |
++ +-------------------------------------------------------------------------+
++ | Cacti: The Complete RRDtool-based Graphing Solution                     |
++ +-------------------------------------------------------------------------+
++*/
++
++/*
++ * Tests for the invalid-local_graph_id short-circuit in graph.php.
++ *
++ * When graph.php is loaded without a valid local_graph_id, the
++ * db_fetch_row_prepared call returns false. Before the fix, line 114
++ * dereferenced $graph['graph_template_id'] on a non-array, producing
++ * PHP 8.x "Undefined array key" warnings. The fix adds a
++ * cacti_sizeof($graph) guard that redirects with raise_message().
++ *
++ * These tests verify the guard exists and that the code does not
++ * dereference $graph before validating it.
++ */
++
++$graphPath = __DIR__ . '/../../graph.php';
++
++test('graph.php checks cacti_sizeof($graph) before dereferencing', function () use ($graphPath) {
++	$contents = file_get_contents($graphPath);
++
++	expect($contents)->toContain("cacti_sizeof(\$graph)");
++});
++
++test('graph.php calls raise_message when graph row is empty', function () use ($graphPath) {
++	$contents = file_get_contents($graphPath);
++
++	expect($contents)->toContain("raise_message('graph_not_found'");
++});
++
++test('graph.php redirects via validate_redirect_url on invalid graph', function () use ($graphPath) {
++	$contents = file_get_contents($graphPath);
++
++	// The raise_message block must use validate_redirect_url with HTTP_REFERER
++	// and fall back to graph_view.php
++	expect($contents)->toContain("validate_redirect_url(isset(\$_SERVER['HTTP_REFERER'])");
++	expect($contents)->toContain("'graph_view.php'");
++});
++
++test('graph.php does not dereference $graph before the size check', function () use ($graphPath) {
++	$contents = file_get_contents($graphPath);
++
++	// Find the db_fetch_row_prepared that populates $graph
++	$fetchPos = strpos($contents, "db_fetch_row_prepared('SELECT gtg.local_graph_id, width, height, title_cache");
++	expect($fetchPos)->not->toBeFalse();
++
++	// Find the cacti_sizeof guard
++	$guardPos = strpos($contents, 'cacti_sizeof($graph)', $fetchPos);
++	expect($guardPos)->not->toBeFalse();
++
++	// Find the first $graph['...'] dereference after the fetch
++	$derefPos = false;
++	if (preg_match('/\$graph\[\s*[\'"]/', $contents, $m, PREG_OFFSET_CAPTURE, $fetchPos)) {
++		$derefPos = $m[0][1];
++	}
++	expect($derefPos)->not->toBeFalse();
++
++	// The guard must come BEFORE the first dereference
++	expect($guardPos)->toBeLessThan($derefPos);
++});
++
++test('graph.php exits after raise_message redirect', function () use ($graphPath) {
++	$contents = file_get_contents($graphPath);
++
++	// After the redirect header there must be an exit before any $graph usage
++	expect($contents)->toMatch("/raise_message\('graph_not_found'.*?exit;/s");
++});
+diff --git a/tests/Unit/SecurityArchitectureTest.php b/tests/Unit/SecurityArchitectureTest.php
+new file mode 100644
+index 0000000000..92399293c6
+--- /dev/null
++++ b/tests/Unit/SecurityArchitectureTest.php
+@@ -0,0 +1,389 @@
++<?php
++/*
++ +-------------------------------------------------------------------------+
++ | Copyright (C) 2004-2026 The Cacti Group                                 |
++ +-------------------------------------------------------------------------+
++ | Cacti: The Complete RRDtool-based Graphing Solution                     |
++ +-------------------------------------------------------------------------+
++*/
++
++$execSource     = file_get_contents(__DIR__ . '/../../lib/cacti_exec.php');
++$httpSource     = file_get_contents(__DIR__ . '/../../lib/cacti_http.php');
++$ldapSource     = file_get_contents(__DIR__ . '/../../lib/ldap.php');
++$requestSource  = file_get_contents(__DIR__ . '/../../lib/cacti_request.php');
++$dispatchSource = file_get_contents(__DIR__ . '/../../lib/cacti_dispatch.php');
++$managersSource = file_get_contents(__DIR__ . '/../../managers.php');
++$htmlFormSource = file_get_contents(__DIR__ . '/../../lib/html_form.php');
++$authSource     = file_get_contents(__DIR__ . '/../../lib/auth.php');
++$globalSource   = file_get_contents(__DIR__ . '/../../include/global.php');
++$cliCheckSource = file_get_contents(__DIR__ . '/../../include/cli_check.php');
++$importSource    = file_get_contents(__DIR__ . '/../../lib/import.php');
++$functionsSource = file_get_contents(__DIR__ . '/../../lib/functions.php');
++$databaseSource  = file_get_contents(__DIR__ . '/../../lib/database.php');
++
++/* Item 1: cacti_exec shell execution gateway */
++test('cacti_exec requires array input', function () use ($execSource) {
++	expect($execSource)->toContain('if (!is_array($argv))');
++});
++
++test('cacti_exec uses cacti_escapeshellcmd on binary', function () use ($execSource) {
++	expect($execSource)->toContain('cacti_escapeshellcmd($arg)');
++});
++
++test('cacti_exec uses cacti_escapeshellarg on arguments', function () use ($execSource) {
++	expect($execSource)->toContain('cacti_escapeshellarg($arg)');
++});
++
++test('cacti_exec redacts sensitive flags in logs', function () use ($execSource) {
++	expect($execSource)->toContain('cacti_exec_redact_cmd');
++	expect($execSource)->toContain('[REDACTED]');
++});
++
++test('cacti_exec supports timeout via proc_open', function () use ($execSource) {
++	expect($execSource)->toContain('function cacti_exec_with_timeout');
++	expect($execSource)->toContain('proc_terminate($process, 9)');
++});
++
++/* Item 2: cacti_http SSRF protection */
++test('cacti_http_fetch rejects reserved IPs', function () use ($httpSource) {
++	expect($httpSource)->toContain('cacti_is_reserved_ip');
++	expect($httpSource)->toContain('reserved IP rejected');
++});
++
++test('cacti_is_reserved_ip uses FILTER_FLAG_NO_RES_RANGE', function () use ($httpSource) {
++	expect($httpSource)->toContain('FILTER_FLAG_NO_RES_RANGE');
++	expect($httpSource)->toContain('FILTER_FLAG_NO_PRIV_RANGE');
++});
++
++test('cacti_https_context enforces verify_peer by default', function () use ($httpSource) {
++	expect($httpSource)->toContain("'verify_peer'       => true");
++	expect($httpSource)->toContain("'verify_peer_name'  => true");
++});
++
++test('cacti_http_fetch restricts scheme to http/https', function () use ($httpSource) {
++	expect($httpSource)->toContain("scheme must be http or https");
++});
++
++test('cacti_https_context disables follow_location by default', function () use ($httpSource) {
++	expect($httpSource)->toContain("'follow_location' => 0");
++});
++
++/* Item 3: LDAP filter injection prevention */
++test('cacti_ldap_filter uses ldap_escape', function () use ($ldapSource) {
++	expect($ldapSource)->toContain('function cacti_ldap_filter');
++	expect($ldapSource)->toContain('ldap_escape(');
++	expect($ldapSource)->toContain('LDAP_ESCAPE_FILTER');
++});
++
++/* Item 4: Request-layer helpers */
++test('get_request_sort whitelists column names', function () use ($requestSource) {
++	expect($requestSource)->toContain('function get_request_sort');
++	expect($requestSource)->toContain("in_array(\$col, \$allowed, true)");
++});
++
++test('get_request_sort forces ASC or DESC', function () use ($requestSource) {
++	$start = strpos($requestSource, 'function get_request_sort');
++	$body  = substr($requestSource, $start, 600);
++	expect($body)->toContain("!== 'ASC'");
++	expect($body)->toContain("!== 'DESC'");
++});
++
++test('get_request_ids filters non-numeric values', function () use ($requestSource) {
++	expect($requestSource)->toContain('function get_request_ids');
++	expect($requestSource)->toContain('is_numeric($val)');
++});
++
++test('db_qstr_like escapes percent and underscore', function () use ($requestSource) {
++	expect($requestSource)->toContain('function db_qstr_like');
++	expect($requestSource)->toContain("'\\\\%'");
++	expect($requestSource)->toContain("'\\\\_'");
++});
++
++/* Item 5: Centralized dispatch */
++test('cacti_dispatch enforces HTTP method', function () use ($dispatchSource) {
++	expect($dispatchSource)->toContain('function cacti_dispatch');
++	expect($dispatchSource)->toContain('405 Method Not Allowed');
++});
++
++test('cacti_dispatch enforces realm permission', function () use ($dispatchSource) {
++	expect($dispatchSource)->toContain('is_realm_allowed');
++});
++
++test('cacti_dispatch supports object-level ACL', function () use ($dispatchSource) {
++	expect($dispatchSource)->toContain('object_acl');
++	expect($dispatchSource)->toContain('is_callable($entry[\'object_acl\'])');
++});
++
++test('cacti_dispatch logs unknown actions', function () use ($dispatchSource) {
++	expect($dispatchSource)->toContain('unknown action');
++});
++
++/* Item 6: XSS fixes */
++test('managers.php escapes description in tooltip', function () use ($managersSource) {
++	expect($managersSource)->toContain("html_escape(\$item['description'])");
++});
++
++test('html_form.php escapes description in formFieldDescription span', function () use ($htmlFormSource) {
++	expect($htmlFormSource)->toContain("html_escape(\$field_array['description']) : ''");
++});
++
++test('html_form.php escapes description in tooltip display', function () use ($htmlFormSource) {
++	expect($htmlFormSource)->toContain("display_tooltip(html_escape(\$field_array['description']))");
++});
++
++/* Item 7: Auth transition helper */
++test('cacti_auth_transition regenerates session ID', function () use ($authSource) {
++	expect($authSource)->toContain('function cacti_auth_transition');
++	expect($authSource)->toContain('session_regenerate_id(true)');
++});
++
++test('cacti_auth_transition checks lockout status', function () use ($authSource) {
++	$start = strpos($authSource, 'function cacti_auth_transition');
++	$body  = substr($authSource, $start, 1500);
++	expect($body)->toContain("locked == 'on'");
++});
++
++test('cacti_auth_transition rotates remember-me cookie', function () use ($authSource) {
++	$start = strpos($authSource, 'function cacti_auth_transition');
++	$body  = substr($authSource, $start, 1500);
++	expect($body)->toContain('cacti_remembers');
++	expect($body)->toContain('random_bytes');
++});
++
++test('cacti_auth_transition invalidates permission cache', function () use ($authSource) {
++	$start = strpos($authSource, 'function cacti_auth_transition');
++	$body  = substr($authSource, $start, 1500);
++	expect($body)->toContain("kill_session_var('sess_user_realms')");
++});
++
++/* CSP and header hardening (from commit 2) */
++test('global.php sets default-src to self', function () use ($globalSource) {
++	expect($globalSource)->toContain("default-src 'self'");
++});
++
++test('global.php sets HSTS header on HTTPS', function () use ($globalSource) {
++	expect($globalSource)->toContain('Strict-Transport-Security');
++});
++
++test('global.php sets COOP header', function () use ($globalSource) {
++	expect($globalSource)->toContain('Cross-Origin-Opener-Policy: same-origin');
++});
++
++test('cli_check.php rejects non-CLI SAPI', function () use ($cliCheckSource) {
++	expect($cliCheckSource)->toContain("php_sapi_name() !== 'cli'");
++	expect($cliCheckSource)->toContain('http_response_code(404)');
++});
++
++/* XML hardening (from commit 2) */
++test('import.php enforces XML size limit', function () use ($importSource) {
++	expect($importSource)->toContain('$max_xml_size = 50 * 1024 * 1024');
++});
++
++test('import.php logs XML parse errors', function () use ($importSource) {
++	expect($importSource)->toContain('XML parse error');
++	expect($importSource)->toContain('libxml_get_errors()');
++});
++
++/* Item A: cacti_safe_write */
++test('cacti_safe_write rejects absolute paths', function () {
++	$source = file_get_contents(__DIR__ . '/../../lib/cacti_safe_write.php');
++	expect($source)->toContain('absolute path rejected');
++});
++
++test('cacti_safe_write rejects traversal segments', function () {
++	$source = file_get_contents(__DIR__ . '/../../lib/cacti_safe_write.php');
++	expect($source)->toContain('traversal rejected');
++});
++
++test('cacti_safe_write uses atomic rename', function () {
++	$source = file_get_contents(__DIR__ . '/../../lib/cacti_safe_write.php');
++	expect($source)->toContain('rename(');
++});
++
++test('cacti_safe_write verifies realpath post-write', function () {
++	$source = file_get_contents(__DIR__ . '/../../lib/cacti_safe_write.php');
++	expect($source)->toContain('post-write realpath check');
++});
++
++/* Item B: cacti_plugin_path */
++test('cacti_plugin_path uses basename on plugin name', function () {
++	$source = file_get_contents(__DIR__ . '/../../lib/cacti_plugin_path.php');
++	expect($source)->toContain('basename($plugin_name)');
++});
++
++test('cacti_plugin_path verifies realpath containment', function () {
++	$source = file_get_contents(__DIR__ . '/../../lib/cacti_plugin_path.php');
++	expect($source)->toContain('path escapes plugins dir');
++});
++
++test('lib/plugins.php uses cacti_plugin_path for includes', function () {
++	$source = file_get_contents(__DIR__ . '/../../lib/plugins.php');
++	expect($source)->toContain('cacti_plugin_path(');
++});
++
++/* SHA-1 removal */
++test('import.php uses SHA-256 for package verification', function () {
++	$source = file_get_contents(__DIR__ . '/../../lib/import.php');
++	expect($source)->toContain('OPENSSL_ALGO_SHA256');
++	expect($source)->not->toMatch('/openssl_verify\([^)]*OPENSSL_ALGO_SHA1/');
++});
++
++/* Tier 1 Item 1: cacti_path_is_within */
++test('cacti_path_is_within resolves both paths via realpath', function () use ($functionsSource) {
++	$start = strpos($functionsSource, 'function cacti_path_is_within');
++	$body  = substr($functionsSource, $start, 800);
++	expect($body)->toContain('realpath($candidate)');
++	expect($body)->toContain('realpath($base)');
++});
++
++test('cacti_path_is_within handles Windows path separators', function () use ($functionsSource) {
++	$start = strpos($functionsSource, 'function cacti_path_is_within');
++	$body  = substr($functionsSource, $start, 800);
++	expect($body)->toContain("DIRECTORY_SEPARATOR === '\\\\'");
++	expect($body)->toContain("str_replace('\\\\', '/'");
++});
++
++test('cacti_path_is_within allows path equal to base', function () use ($functionsSource) {
++	$start = strpos($functionsSource, 'function cacti_path_is_within');
++	$body  = substr($functionsSource, $start, 800);
++	expect($body)->toContain('$resolved === $base_resolved');
++});
++
++/* Tier 1 Item 2: cacti_remote_url */
++test('cacti_remote_url encodes action parameter', function () use ($httpSource) {
++	expect($httpSource)->toContain('function cacti_remote_url');
++	expect($httpSource)->toContain('rawurlencode($action)');
++});
++
++test('cacti_remote_url encodes additional params', function () use ($httpSource) {
++	$start = strpos($httpSource, 'function cacti_remote_url');
++	$body  = substr($httpSource, $start, 800);
++	expect($body)->toContain('rawurlencode($key)');
++	expect($body)->toContain('rawurlencode($value)');
++});
++
++/* Tier 1 Item 3: cacti_redirect */
++test('cacti_redirect uses validate_redirect_url', function () use ($functionsSource) {
++	expect($functionsSource)->toContain('function cacti_redirect');
++	$start = strpos($functionsSource, 'function cacti_redirect');
++	$body  = substr($functionsSource, $start, 600);
++	expect($body)->toContain('validate_redirect_url');
++});
++
++test('cacti_redirect falls back to HTTP_REFERER', function () use ($functionsSource) {
++	$start = strpos($functionsSource, 'function cacti_redirect');
++	$body  = substr($functionsSource, $start, 600);
++	expect($body)->toContain('HTTP_REFERER');
++});
++
++/* Tier 1 Item 4: cacti_fetch_by_id */
++test('cacti_fetch_by_id sanitizes table and column names', function () use ($databaseSource) {
++	expect($databaseSource)->toContain('function cacti_fetch_by_id');
++	$start = strpos($databaseSource, 'function cacti_fetch_by_id');
++	$body  = substr($databaseSource, $start, 1200);
++	expect($body)->toContain("preg_replace('/[^a-zA-Z0-9_]/', '', \$table)");
++	expect($body)->toContain("preg_replace('/[^a-zA-Z0-9_]/', '', \$id_column)");
++});
++
++test('cacti_fetch_by_id rejects non-positive IDs', function () use ($databaseSource) {
++	$start = strpos($databaseSource, 'function cacti_fetch_by_id');
++	$body  = substr($databaseSource, $start, 600);
++	expect($body)->toContain('$id <= 0');
++});
++
++test('cacti_fetch_by_id uses prepared statement', function () use ($databaseSource) {
++	$start = strpos($databaseSource, 'function cacti_fetch_by_id');
++	$body  = substr($databaseSource, $start, 1200);
++	expect($body)->toContain('db_fetch_row_prepared');
++});
++
++/* Tier 1 Item 5: cacti_redact_sensitive */
++test('cacti_redact_sensitive replaces known sensitive keys', function () use ($functionsSource) {
++	expect($functionsSource)->toContain('function cacti_redact_sensitive');
++	$start = strpos($functionsSource, 'function cacti_redact_sensitive');
++	$body  = substr($functionsSource, $start, 1200);
++	expect($body)->toContain("'password'");
++	expect($body)->toContain("'snmp_community'");
++	expect($body)->toContain("'[REDACTED]'");
++});
++
++test('cacti_redact_sensitive recurses into nested arrays', function () use ($functionsSource) {
++	$start = strpos($functionsSource, 'function cacti_redact_sensitive');
++	$body  = substr($functionsSource, $start, 1200);
++	expect($body)->toContain('cacti_redact_sensitive($value)');
++});
++
++/* Tier 1 Item 6: cacti_temp_file */
++test('cacti_temp_file cleans up in finally block', function () use ($functionsSource) {
++	expect($functionsSource)->toContain('function cacti_temp_file');
++	$start = strpos($functionsSource, 'function cacti_temp_file');
++	$body  = substr($functionsSource, $start, 600);
++	expect($body)->toContain('finally');
++	expect($body)->toContain('@unlink($path)');
++});
++
++test('cacti_temp_file logs on tempnam failure', function () use ($functionsSource) {
++	$start = strpos($functionsSource, 'function cacti_temp_file');
++	$body  = substr($functionsSource, $start, 600);
++	expect($body)->toContain('tempnam failed');
++});
++
++/* Tier 2 Item 7: cacti_exec_with_redirect */
++test('cacti_exec_with_redirect validates argv', function () use ($execSource) {
++	expect($execSource)->toContain('function cacti_exec_with_redirect');
++	$start = strpos($execSource, 'function cacti_exec_with_redirect');
++	$body  = substr($execSource, $start, 400);
++	expect($body)->toContain('!is_array($argv) || empty($argv)');
++});
++
++test('cacti_exec_with_redirect uses cacti_escapeshellcmd and cacti_escapeshellarg', function () use ($execSource) {
++	$start = strpos($execSource, 'function cacti_exec_with_redirect');
++	$body  = substr($execSource, $start, 800);
++	expect($body)->toContain('cacti_escapeshellcmd($argv[0])');
++	expect($body)->toContain('cacti_escapeshellarg($argv[$i])');
++});
++
++test('cacti_exec_with_redirect supports file redirection', function () use ($execSource) {
++	$start = strpos($execSource, 'function cacti_exec_with_redirect');
++	$body  = substr($execSource, $start, 1200);
++	expect($body)->toContain("array('file', \$stdout_file, \$mode)");
++	expect($body)->toContain('proc_open');
++});
++
++/* Tier 2 Item 8: cacti_csrf_rotate */
++test('cacti_csrf_rotate regenerates session', function () use ($authSource) {
++	expect($authSource)->toContain('function cacti_csrf_rotate');
++	$start = strpos($authSource, 'function cacti_csrf_rotate');
++	$body  = substr($authSource, $start, 800);
++	expect($body)->toContain('cacti_session_regenerate()');
++});
++
++test('cacti_csrf_rotate refreshes remember-me cookie', function () use ($authSource) {
++	$start = strpos($authSource, 'function cacti_csrf_rotate');
++	$body  = substr($authSource, $start, 800);
++	expect($body)->toContain('cacti_remembers');
++	expect($body)->toContain('set_auth_cookie');
++});
++
++/* Tier 2 Item 9: cacti_db_in + cacti_db_like */
++test('cacti_db_in casts values to int', function () use ($requestSource) {
++	expect($requestSource)->toContain('function cacti_db_in');
++	$start = strpos($requestSource, 'function cacti_db_in');
++	$body  = substr($requestSource, $start, 400);
++	expect($body)->toContain("array_map('intval'");
++});
++
++test('cacti_db_in returns (0) for empty input', function () use ($requestSource) {
++	$start = strpos($requestSource, 'function cacti_db_in');
++	$body  = substr($requestSource, $start, 400);
++	expect($body)->toContain("return '(0)'");
++});
++
++test('cacti_db_like escapes wildcards for prepared statements', function () use ($requestSource) {
++	expect($requestSource)->toContain('function cacti_db_like');
++	$start = strpos($requestSource, 'function cacti_db_like');
++	$body  = substr($requestSource, $start, 400);
++	expect($body)->toContain("'\\\\%'");
++	expect($body)->toContain("'\\\\_'");
++	expect($body)->toContain("'LIKE ?'");
++});
+diff --git a/user_admin.php b/user_admin.php
+index 608160e9c3..12be58c9a2 100644
+--- a/user_admin.php
++++ b/user_admin.php
+@@ -1847,6 +1847,13 @@ function user_edit() {
+ 
+ 	if (!isempty_request_var('id')) {
+ 		$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array(get_request_var('id')));
++
++		if (!cacti_sizeof($user)) {
++			raise_message('user_not_found', __('User not found.'), MESSAGE_LEVEL_ERROR);
++			header('Location: ' . validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'user_admin.php', 'user_admin.php'));
++			exit;
++		}
++
+ 		$header_label = __('[edit: %s]', $user['username']);
+ 	} else {
+ 		$header_label = __('[new]');
+diff --git a/vdef.php b/vdef.php
+index 55f9a75d63..0c32ef3099 100644
+--- a/vdef.php
++++ b/vdef.php
+@@ -158,6 +158,13 @@ function duplicate_vdef($_vdef_id, $vdef_title) {
+ 	global $fields_vdef_edit;
+ 
+ 	$vdef       = db_fetch_row_prepared('SELECT * FROM vdef WHERE id = ?', array($_vdef_id));
++
++	if (!cacti_sizeof($vdef)) {
++		raise_message('vdef_not_found', __('VDEF not found.'), MESSAGE_LEVEL_ERROR);
++		header('Location: ' . validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'vdef.php', 'vdef.php'));
++		exit;
++	}
++
+ 	$vdef_items = db_fetch_assoc_prepared('SELECT * FROM vdef_items WHERE vdef_id = ?', array($_vdef_id));
+ 
+ 	/* substitute the title variable */
+@@ -323,6 +330,12 @@ function vdef_item_remove_confirm() {
+ 	$vdef       = db_fetch_row_prepared('SELECT * FROM vdef WHERE id = ?', array(get_request_var('id')));
+ 	$vdef_item  = db_fetch_row_prepared('SELECT * FROM vdef_items WHERE id = ?', array(get_request_var('vdef_id')));
+ 
++	if (!cacti_sizeof($vdef) || !cacti_sizeof($vdef_item)) {
++		raise_message('vdef_item_not_found', __('VDEF or VDEF Item not found.'), MESSAGE_LEVEL_ERROR);
++		header('Location: ' . validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'vdef.php', 'vdef.php'));
++		exit;
++	}
++
+ 	?>
+ 	<tr>
+ 		<td class='topBoxAlt'>
+@@ -549,6 +562,12 @@ function vdef_edit() {
+ 			WHERE id = ?',
+ 			array(get_request_var('id')));
+ 
++		if (!cacti_sizeof($vdef)) {
++			raise_message('vdef_not_found', __('VDEF not found.'), MESSAGE_LEVEL_ERROR);
++			header('Location: ' . validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'vdef.php', 'vdef.php'));
++			exit;
++		}
++
+ 		$header_label = __esc('VDEFs [edit: %s]', $vdef['name']);
+ 	} else {
+ 		$header_label = __('VDEFs [new]');

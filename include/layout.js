@@ -28,17 +28,6 @@ const MESSAGE_LEVEL_ERROR = 3;
 const MESSAGE_LEVEL_CSRF = 4;
 const MESSAGE_LEVEL_MIXED = 5;
 
-// Escape HTML metacharacters to prevent DOM XSS when inserting text into HTML
-function cactiEscapeHtml(str) {
-	if (str == null) return '';
-	return String(str)
-		.replace(/&/g, '&amp;')
-		.replace(/</g, '&lt;')
-		.replace(/>/g, '&gt;')
-		.replace(/"/g, '&quot;')
-		.replace(/'/g, '&#039;');
-}
-
 var theme;
 var myRefresh;
 var userMenuTimer;
@@ -260,7 +249,7 @@ $.fn.delayKeyup = function (callback, ms) {
 		ms = keyup_delay;
 	}
 
-	$(this).on('keyup', function () {
+	$(this).keyup(function () {
 		clearTimeout(timer);
 		timer = setTimeout(callback, ms);
 	});
@@ -402,7 +391,7 @@ $.fn.enableOptions = function (values, valueCheckFunc) {
  */
 $.fn.textWidth = function (text) {
 	var org = $(this);
-	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px"></span>').text(text || org.text());
+	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px">' + (text || org.text()) + '</span>');
 	if (!text) {
 		html.css('font-family', org.css('font-family'));
 		html.css('font-weight', org.css('font-weight'));
@@ -943,7 +932,7 @@ function applySkin() {
 		theme = 'midwinter';
 
 		// debounce submits
-		$('form').on('submit', function () {
+		$('form').submit(function () {
 			$('input[type="submit"], button[type="submit"]').not('.import, .export').prop('disabled', true);
 		});
 	} else {
@@ -953,7 +942,7 @@ function applySkin() {
 		$('fieldset.reindex_methods').buttonset();
 
 		// debounce submits
-		$('form').on('submit', function () {
+		$('form').submit(function () {
 			$('input[type="submit"], button[type="submit"]').not('.import, .export').button('disable');
 		});
 	}
@@ -1478,9 +1467,7 @@ function makeFiltersResponsive() {
 
 				if (filterContents.find('#export').length) {
 					title = $('#export').attr('title');
-					filterHeader.find('div.cactiTableButton').append(
-						$('<span style="display:none;" class="cactiFilterExport"><i class="ti ti-chevron-down"></i></span>').attr('title', title)
-					);
+					filterHeader.find('div.cactiTableButton').append('<span title="' + title + '" style="display:none;" class="cactiFilterExport"><i class="ti ti-chevron-down"></i></span>');
 
 					$('.cactiFilterExport').off('click').on('click', function (event) {
 						event.stopPropagation();
@@ -1490,9 +1477,7 @@ function makeFiltersResponsive() {
 
 				if (filterContents.find('#import').length) {
 					title = $('#import').attr('title');
-					filterHeader.find('div.cactiTableButton').append(
-						$('<span style="display:none;" class="cactiFilterImport"><i class="ti ti-chevron-up"></i></span>').attr('title', title)
-					);
+					filterHeader.find('div.cactiTableButton').append('<span title="' + title + '" style="display:none;" class="cactiFilterImport"><i class="ti ti-chevron-up"></i></span>');
 
 					$('.cactiFilterImport').off('click').on('click', function (event) {
 						event.stopPropagation();
@@ -1561,7 +1546,7 @@ function makeFiltersResponsive() {
 	}
 
 	if ($('#form_graph_view').length) {
-		$('#form_graph_view').filter('input, select').not('#date1, #date2').on('click', function () {
+		$('#form_graph_view').filter('input, select').not('#date1, #date2').click(function () {
 			closeDateFilters();
 		});
 	}
@@ -2462,7 +2447,7 @@ function userMenuNavigationExists(url) {
 
 function loadPageUsingPost(href, postData, returnLocation) {
 	var stack = ''; //getStackTrace(); // new Error().stack;
-	console.error("Function loadPageUsingPost is now deprecated, use postUrl instead\n" + stack);
+	console.error("Function loadPageUsingPost is now depreciated, use postUrl instead\n" + stack);
 	return postUrl({
 		url: href,
 		tabId: returnLocation,
@@ -2473,7 +2458,7 @@ function loadPageUsingPost(href, postData, returnLocation) {
 function setNavigationScroll() {
 	var object = '';
 
-	$('.cactiConsoleNavigationArea, .cactiTreeNavigationArea').off('mousemove').on('mousemove', function (pos) {
+	$('.cactiConsoleNavigationArea, .cactiTreeNavigationArea').unbind('mousemove').on('mousemove', function (pos) {
 		object = '';
 
 		if ($('.cactiConsoleNavigationArea').length) {
@@ -2512,7 +2497,7 @@ function setNavigationScroll() {
 		}
 	});
 
-	$('.cactiConsoleNavigationArea, .cactiTreeNavigationArea').off('mouseleave').on('mouseleave', function (pos) {
+	$('.cactiConsoleNavigationArea, .cactiTreeNavigationArea').unbind('mouseleave').on('mouseleave', function (pos) {
 		if ($('.cactiConsoleNavigationArea').length) {
 			object = '.cactiConsoleNavigationArea';
 		} else if ($('.cactiTreeNavigationArea').length) {
@@ -2530,7 +2515,7 @@ function setNavigationScroll() {
 
 function loadPageNoHeader(href, scroll, force) {
 	var stack = ''; //getStackTrace(); // new Error().stack;
-	console.error("Function loadPageNoHeader is now deprecated, use loadUrl instead\n" + stack);
+	console.error("Function loadPageNoHeader is now depreciated, use loadUrl instead\n" + stack);
 	return loadUrl({
 		url: href,
 		scroll: scroll,
@@ -2541,7 +2526,7 @@ function loadPageNoHeader(href, scroll, force) {
 
 function loadPage(href, force) {
 	var stack = ''; //getStackTrace(); // new Error().stack;
-	console.error("Function loadPage is now deprecated, use loadUrl instead\n" + stack);
+	console.error("Function loadPage is now depreciated, use loadUrl instead\n" + stack);
 	return loadUrl({
 		url: href,
 		force: force,
@@ -3052,7 +3037,7 @@ function setupCollapsible() {
 			$(this).removeClass('collapsed');
 			$(this).nextUntil('div.spacer').slideDown('slow');
 			$(this).nextUntil('div.spacer').each(function (data) {
-				$(this).find('input, select').trigger('change');
+				$(this).find('input, select').change();
 			});
 			$(this).find('i').removeClass('ti-chevrons-down').addClass('ti-chevrons-up');
 			storage.set(id, 'show');
@@ -3086,19 +3071,19 @@ function handleConsole(pageName) {
 function setupUserMenu() {
 	handleConsole();
 
-	$('.menuoptions').on('mouseenter', function () {
+	$('.menuoptions').mouseenter(function () {
 		clearTimeout(userMenuTimer);
-	}).on('mouseleave', function () {
+	}).mouseleave(function () {
 		if ($('.menuoptions').is(':visible')) {
 			userMenuTimer = setTimeout(function () { closeUserMenu(); }, 1000);
 		}
 	});
 
-	$('.user').on('mouseenter', function (data) {
+	$('.user').mouseenter(function (data) {
 		clearTimeout(userMenuTimer);
 		userMenuOpenTimer = setTimeout(function () { openUserMenu(); }, 400);
 		openUserMenu();
-	}).on('mouseleave', function (data) {
+	}).mouseleave(function (data) {
 		if ($('.menuoptions').is(':visible')) {
 			userMenuTimer = setTimeout(function () { closeUserMenu(); }, 1000);
 		} else {
@@ -3109,7 +3094,7 @@ function setupUserMenu() {
 
 function setupSpecialKeys() {
 	if (!isMobile.any()) {
-		$('#filter, #rfilter').trigger('focus');
+		$('#filter, #rfilter').focus();
 	} else {
 		$('#filter, #rfilter').prop('size', '15');
 	}
@@ -3158,7 +3143,7 @@ function shouldCaptureClick(event) {
 }
 
 function setupBreadcrumbs() {
-	$('#breadcrumbs > li > a').on('click', function (event) {
+	$('#breadcrumbs > li > a').click(function (event) {
 		if (!shouldCaptureClick(event))
 			return
 
@@ -3397,7 +3382,7 @@ function cactiReady() {
 	/**
 	 * Unbind key elements to debounce actions
 	 */
-	$('input, select, textarea, a').off();
+	$('input, select, textarea, a').unbind();
 
 	// Use traditional popstate handler
 	window.onpopstate = function (event) {
@@ -3405,13 +3390,13 @@ function cactiReady() {
 	}
 
 	// Don't allow selection when shift is pressed
-	$(document).on('mousedown', function (event) {
+	$(document).mousedown(function (event) {
 		if (event.shiftKey) {
 			event.preventDefault();
 		}
 	});
 
-	$('#filter, #rfilter').on('keydown', function (event) {
+	$('#filter, #rfilter').keydown(function (event) {
 		if (event.keyCode == 8 && $(this).val() == '') {
 			handlePopState();
 		}
@@ -3629,11 +3614,11 @@ function setSelectMenus() {
 						let search = instance.menuWrap.find('input');
 
 						if (search.length > 0) {
-							search.trigger('focus');
+							search.focus();
 						}
 					},
 					change: function(event, ui) {
-						$(this).val(ui.item.value).trigger('change');
+						$(this).val(ui.item.value).change();
 					},
 					position: {
 						my: 'left top',
@@ -3691,7 +3676,7 @@ function setSelectMenus() {
 			applyGraphFilter();
 		},
 		open: function(event, ui) {
-			$("input[type='search']:first").trigger('focus');
+			$("input[type='search']:first").focus();
 		},
 		click: function(event, ui) {
 			var checked = $(this).multiselect('widget').find('input:checked').length;
@@ -3749,7 +3734,7 @@ function setupObjectChange() {
 		}
 	}
 
-	$('.confirm_actions').find('input[id^="t_"]').on('click', function() {
+	$('.confirm_actions').find('input[id^="t_"]').click(function() {
 		var id = $(this).attr('id').substring(2);
 		if ($(this).is(':checked')) {
 			enableField(id);
@@ -3796,9 +3781,9 @@ function setupEllipsis() {
 		return false;
 	});
 
-	$('.submenuoptions').on('mouseenter', function (event) {
+	$('.submenuoptions').mouseenter(function (event) {
 		clearTimeout(userMenuTimer);
-	}).on('mouseleave', function (event) {
+	}).mouseleave(function (event) {
 		if ($('.submenuoptions').is(':visible')) {
 			userMenuTimer = setTimeout(function () { $('.submenuoptions').stop().slideUp(120); }, 1000);
 		} else {
@@ -3817,7 +3802,7 @@ function setupEllipsis() {
 }
 
 function keepWindowSize() {
-	$(window).on('resize', function (event) {
+	$(window).resize(function (event) {
 		waitForFinalEvent(function () {
 			$('.cactiGraphContentArea').show();
 
@@ -3944,16 +3929,10 @@ function hideCurrentTab(id, shrinking) {
 		var selected = $('#' + id).hasClass('selected');
 		var text = $('#' + id).text();
 
-		var tabLink = $('<a class="lefttab"></a>').attr('id', myid).attr('href', href).text(text);
-		if (selected) {
-			tabLink.addClass('selected');
-		}
-		var tabItem = $('<li>').append(tabLink);
-
 		if (shrinking) {
-			$('#submenu-ellipsis').prepend(tabItem);
+			$('#submenu-ellipsis').prepend('<li><a class="lefttab' + (selected ? ' selected' : '') + '" id="' + myid + '" href="' + href + '">' + text + '</a></li>');
 		} else {
-			$('#submenu-ellipsis').append(tabItem);
+			$('#submenu-ellipsis').append('<li><a class="lefttab' + (selected ? ' selected' : '') + '" id="' + myid + '" href="' + href + '">' + text + '</a></li>');
 		}
 
 		setupResponsiveMenuAndTabs();
@@ -4631,7 +4610,7 @@ function initializeGraphs(disable_cache) {
 			event.stopPropagation();
 
 			if (realtimeArray[graph_id]) {
-				$('#wrapper_' + graph_id).html(keepRealtime[graph_id]).trigger('change');
+				$('#wrapper_' + graph_id).html(keepRealtime[graph_id]).change();
 				$(this).html("<i class='drillDown ti ti-chart-area-line-filled realTime' title='" + realtimeClickOn + "'></i>");
 
 				$('graph_id' + graph_id).tooltip().zoom({
@@ -4833,13 +4812,9 @@ $.widget('custom.dropcolor', {
 
 						if (hex !== null) {
 							color = hex[1];
-							return $('<li>').attr('data-value', item.value).append(
-								$('<div>').append($('<span class="ui-icon color-icon"></span>').css('background-color', '#' + color)).append(document.createTextNode(label))
-							).appendTo(ul);
+							return $('<li>').attr('data-value', item.value).html('<div><span style="background-color:#' + color + ';" class="ui-icon color-icon"></span>' + label + '</div>').appendTo(ul);
 						} else {
-							return $('<li>').attr('data-value', item.value).append(
-								$('<div>').append('<span class="ui-icon color-icon"></span>').append(document.createTextNode(label))
-							).appendTo(ul);
+							return $('<li>').attr('data-value', item.value).html('<div><span class="ui-icon color-icon"></span>' + label + '</div>').appendTo(ul);
 						}
 					}
 
@@ -4984,16 +4959,14 @@ function makeCallbacks() {
 			value = title;
 		}
 
-		var wrapClasses = 'ui-selectmenu-button ui-selectmenu-button-closed ui-corner-all ui-button ui-widget' + (dcDisable ? ' ui-selectmenu-disabled ui-state-disabled' : '');
-		var dialogWrap = $('<span>').attr('id', dcWrapId).attr('class', wrapClasses);
-		dialogWrap.append($('<span>').attr('id', dcClickId).css('z-index', 4).attr('class', 'ui-selectmenu-icon ui-icon ui-icon-triangle-1-s'));
-		dialogWrap.append(
-			$('<span class="ui-select-text">').append(
-				$('<input type="text" class="ui-state-default ui-corner-all">').attr('id', dcInputId).val(value)
-			)
-		);
+		var dialogForm = "<span id='" + dcWrapId + "' class='ui-selectmenu-button ui-selectmenu-button-closed ui-corner-all ui-button ui-widget" + (dcDisable ? ' ui-selectmenu-disabled ui-state-disabled':'') + "'>";
+		dialogForm    += "<span id='" + dcClickId + "' style='z-index:4' class='ui-selectmenu-icon ui-icon ui-icon-triangle-1-s'></span>";
+		dialogForm    += "<span class='ui-select-text'>";
+		dialogForm    += "<input type='text' class='ui-state-default ui-corner-all' id='" + dcInputId + "' value='" + value + "'>";
+		dialogForm    += "</span>";
+		dialogForm    += "</span>&nbsp;";
 
-		$(this).after(dialogWrap).after('&nbsp;');
+		$(this).after(dialogForm);
 		$(this).hide();
 
 		$(dcInput).autocomplete({
@@ -5634,7 +5607,7 @@ function formValidate(formId, href) {
 		});
 
 
-		$(formObj).on('submit', function (event) {
+		$(formObj).submit(function (event) {
 			event.preventDefault();
 
 			// Disable the submit button so it can't be done twice
