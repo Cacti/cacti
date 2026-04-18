@@ -19,7 +19,8 @@
  */
 
 beforeAll(function () {
-	require_once dirname(__DIR__, 2) . '/lib/cacti_validate_theme.php';
+	require_once dirname(__DIR__, 2) . '/include/global_constants.php';
+	require_once dirname(__DIR__, 2) . '/lib/functions.php';
 });
 
 /**
@@ -33,7 +34,7 @@ function resolve_theme_under(array $allowlist, $requested, $default) {
 }
 
 describe('cacti_validate_theme source contract', function () {
-	$src = file_get_contents(__DIR__ . '/../../lib/cacti_validate_theme.php');
+	$src = file_get_contents(__DIR__ . '/../../lib/functions.php');
 
 	it('uses static cache so scandir runs once per request', function () use ($src) {
 		expect($src)->toContain('static $valid_themes');

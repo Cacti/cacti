@@ -52,7 +52,7 @@ function decide_authorize($user_id, $resource_id, $resource_type, $owner_of_reso
 }
 
 describe('cacti_authorize_resource source contract', function () {
-	$src = file_get_contents(__DIR__ . '/../../lib/cacti_authorize.php');
+	$src = file_get_contents(__DIR__ . '/../../lib/auth.php');
 
 	it('casts user_id and resource_id to int before any decision', function () use ($src) {
 		expect($src)->toContain('$user_id     = (int) $user_id');
