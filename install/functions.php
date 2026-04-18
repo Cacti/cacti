@@ -509,37 +509,9 @@ function install_setup_get_templates() {
 		if ($canUnpack) {
 			//Loading Template Information from package
 			$filename = "compress.zlib://$path/$xmlfile";
-			$xml      = file_get_contents($filename);
 
-			if ($xml === false) {
-				cacti_log('ERROR: Failed to read XML file: ' . $filename, false, 'IMPORT');
-				continue;
-			}
-
-			$max_xml_size = 50 * 1024 * 1024;
-
-			if (strlen($xml) > $max_xml_size) {
-				cacti_log('ERROR: XML input exceeds maximum size (' . strlen($xml) . ' > ' . $max_xml_size . ')', false, 'IMPORT');
-				continue;
-			}
-
-			libxml_use_internal_errors(true);
+			$xml    = file_get_contents($filename);;
 			$xmlget = simplexml_load_string($xml);
-
-			if ($xmlget === false) {
-				$errors = libxml_get_errors();
-
-				foreach ($errors as $error) {
-					cacti_log('ERROR: XML parse error: ' . trim($error->message), false, 'IMPORT');
-				}
-
-				libxml_clear_errors();
-				libxml_use_internal_errors(false);
-
-				continue;
-			}
-
-			libxml_use_internal_errors(false);
 			$data   = to_array($xmlget);
 
 			if (is_array($data['info']['author'])) {
