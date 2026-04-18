@@ -653,16 +653,7 @@ function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orpha
 		$name  = $f['name'];
 
 		if (str_contains($name, 'scripts/') || str_contains($name, 'resource/')) {
-			$validated = validate_relative_path_within($name, CACTI_PATH_BASE);
-
-			if ($validated === false) {
-				cacti_log('SECURITY: Path traversal rejected in import: ' . $name, true, 'IMPORT');
-				$filestatus[$name] = __('path traversal rejected');
-
-				continue;
-			}
-
-			$filename = $validated;
+			$filename = CACTI_PATH_BASE . "/$name";
 
 			if (!$preview) {
 				if (!cacti_sizeof($import_files) || in_array($name, $import_files, true)) {
