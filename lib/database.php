@@ -1841,7 +1841,9 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCols) {
 			$sql  .= ', ';
 			$sql2 .= ', ';
 		}
+
 		$k = cacti_safe_column_name($k);
+
 		$sql   .= "`$k`";
 		$sql2  .= $v;
 		$first  = false;

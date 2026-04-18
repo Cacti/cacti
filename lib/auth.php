@@ -4982,7 +4982,7 @@ function cacti_auth_transition($user_id, $reason = 'login') {
 		if ($new_token !== false) {
 			$secret = hash('sha512', $new_token, false);
 
-				db_execute_prepared('UPDATE user_auth_cache
+			db_execute_prepared('UPDATE user_auth_cache
 				SET token = ?, last_update = NOW()
 				WHERE user_id = ?',
 				array($secret, $user_id));

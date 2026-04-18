@@ -302,8 +302,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 
 function is_cacti_public_key($public_key) {
 	$public_key = trim($public_key);
-	/* Legacy SHA-1 key removed for security. SHA-256 only. */
-	// $keys[] = get_public_key_sha1();
+	$keys[] = get_public_key_sha1();
 	$keys[] = get_public_key_sha256();
 
 	foreach($keys as $key) {
@@ -351,50 +350,11 @@ function import_package_get_name($xmlfile) {
 	}
 }
 
-
-/**
- * Validate that a file path is safe for use with PHP stream wrappers.
- * Rejects nested wrappers (phar://, php://filter, expect://, data://)
- * that could lead to deserialization or information disclosure.
- *
- * @param string $path  The file path to validate
- * @return bool  True if safe, false if wrapper injection detected
- */
-function cacti_validate_stream_path($path) {
-	$dangerous_wrappers = array('phar://', 'php://', 'expect://', 'data://', 'glob://', 'ssh2://');
-
-	$lower = strtolower($path);
-	foreach ($dangerous_wrappers as $wrapper) {
-		if (strpos($lower, $wrapper) !== false) {
-			cacti_log("ERROR: Dangerous stream wrapper detected in path: $path", false, 'IMPORT');
-			return false;
-		}
-	}
-
-	return true;
-}
-
 function import_package_get_details($xmlfile) {
-	if (!cacti_validate_stream_path($xmlfile)) {
-		return array();
-	}
-
 	$filename = "compress.zlib://$xmlfile";
 
 	$return = array();
 	$data = file_get_contents($filename, 'r');
-
-	if ($data === false) {
-		cacti_log('ERROR: Failed to read XML file: ' . $filename, false, 'IMPORT');
-		return array();
-	}
-
-	$max_xml_size = 50 * 1024 * 1024;
-
-	if (strlen($data) > $max_xml_size) {
-		cacti_log('ERROR: XML input exceeds maximum size (' . strlen($data) . ' > ' . $max_xml_size . ')', false, 'IMPORT');
-		return array();
-	}
 
 	/* SECURITY: Disable external entity loading to prevent XXE on PHP < 8.0 */
 	$disable_entities = false;
@@ -404,28 +364,16 @@ function import_package_get_details($xmlfile) {
 
 	libxml_use_internal_errors(true);
 	$xmlget = simplexml_load_string($data);
-
-	if ($xmlget === false) {
-		$errors = libxml_get_errors();
-
-		foreach ($errors as $error) {
-			cacti_log('ERROR: XML parse error: ' . trim($error->message), false, 'IMPORT');
-		}
-
-		libxml_clear_errors();
-		libxml_use_internal_errors(false);
-
-		if (LIBXML_VERSION < 20900) {
-			libxml_disable_entity_loader($disable_entities);
-		}
-
-		return array();
-	}
-
 	libxml_use_internal_errors(false);
 
 	if (LIBXML_VERSION < 20900) {
 		libxml_disable_entity_loader($disable_entities);
+	}
+
+	if ($xmlget === false) {
+		cacti_log('FATAL: Unable to parse package XML structure.', true, 'IMPORT', POLLER_VERBOSITY_LOW);
+
+		return array();
 	}
 
 	$pkgarr = xml_to_array($xmlget);
@@ -467,10 +415,6 @@ function import_package_get_details($xmlfile) {
 function import_read_package_data($xmlfile, &$public_key) {
 	$public_key = import_package_get_public_key($xmlfile);
 
-	if (!cacti_validate_stream_path($xmlfile)) {
-		return false;
-	}
-
 	$filename = "compress.zlib://$xmlfile";
 
 	if (!is_cacti_public_key($public_key)) {
@@ -507,7 +451,7 @@ function import_read_package_data($xmlfile, &$public_key) {
 
 	// Verify Signature
 	if (strlen($public_key) < 200) {
-		$ok = openssl_verify($xml, $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
+		$ok = openssl_verify($xml, $binary_signature, $public_key, OPENSSL_ALGO_SHA1);
 	} else {
 		$ok = openssl_verify($xml, $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
 	}
@@ -524,18 +468,6 @@ function import_read_package_data($xmlfile, &$public_key) {
 
 	cacti_log('Loading Plugin Information from package', false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 
-	if ($xml === false) {
-		cacti_log('ERROR: Failed to read XML package data', false, 'IMPORT');
-		return false;
-	}
-
-	$max_xml_size = 50 * 1024 * 1024;
-
-	if (strlen($xml) > $max_xml_size) {
-		cacti_log('ERROR: XML input exceeds maximum size (' . strlen($xml) . ' > ' . $max_xml_size . ')', false, 'IMPORT');
-		return false;
-	}
-
 	/* SECURITY: Disable external entity loading to prevent XXE on PHP < 8.0 */
 	$disable_entities = false;
 	if (LIBXML_VERSION < 20900) {
@@ -544,28 +476,16 @@ function import_read_package_data($xmlfile, &$public_key) {
 
 	libxml_use_internal_errors(true);
 	$xmlget = simplexml_load_string($xml);
-
-	if ($xmlget === false) {
-		$errors = libxml_get_errors();
-
-		foreach ($errors as $error) {
-			cacti_log('ERROR: XML parse error: ' . trim($error->message), false, 'IMPORT');
-		}
-
-		libxml_clear_errors();
-		libxml_use_internal_errors(false);
-
-		if (LIBXML_VERSION < 20900) {
-			libxml_disable_entity_loader($disable_entities);
-		}
-
-		return false;
-	}
-
 	libxml_use_internal_errors(false);
 
 	if (LIBXML_VERSION < 20900) {
 		libxml_disable_entity_loader($disable_entities);
+	}
+
+	if ($xmlget === false) {
+		cacti_log('FATAL: Unable to parse XML structure.', true, 'IMPORT', POLLER_VERBOSITY_LOW);
+
+		return false;
 	}
 
 	$data = xml_to_array($xmlget);

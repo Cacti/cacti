@@ -509,8 +509,7 @@ function install_setup_get_templates() {
 		if ($canUnpack) {
 			//Loading Template Information from package
 			$filename = "compress.zlib://$path/$xmlfile";
-
-			$xml    = file_get_contents($filename);
+			$xml      = file_get_contents($filename);
 
 			if ($xml === false) {
 				cacti_log('ERROR: Failed to read XML file: ' . $filename, false, 'IMPORT');
