@@ -7816,6 +7816,19 @@ function cacti_path_is_within($candidate, $base) {
 }
 
 /**
+ * cacti_header - Redirect to the default if the HTTP_REFERER is empty
+ *
+ * @param string $default The default to redirect to unless
+ *
+ * @return void
+ */
+function cacti_header($default = 'index.php') {
+	$save_url = validate_redirect_url($_SERVER['HTTP_REFERER'] ?? $default, $default);
+
+	header('Location: ' . $safe_url);
+}
+
+/**
  * cacti_redirect - Redirect to a validated URL.
  *
  * Uses validate_redirect_url() to ensure the target is safe before
