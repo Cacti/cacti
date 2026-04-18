@@ -8058,3 +8058,43 @@ function cacti_html_context_escape($value, $context) {
 			return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 	}
 }
+
+/**
+ * cacti_validate_sort_column - returns $column if it exactly matches an
+ * entry in $allowed (strict comparison), otherwise returns $default or the
+ * first allowlist entry.
+ *
+ * Root-cause mitigation for ORDER BY SQL injection via unsanitized
+ * sort_column request parameters.
+ *
+ * The allowlist may contain:
+ *   - bare column names:  'name', 'hostname', 'time'
+ *   - fully-qualified names:  'h.description', 'dl.host_id'
+ *   - function expressions:  'INET_ATON(hostname)', 'LENGTH(description)'
+ *
+ * Callers pass the exact SQL fragment they want to allow. Matching is
+ * strict (===), case-sensitive, and whitespace-sensitive. Request values
+ * that don't match any allowlist entry fall through to $default.
+ *
+ * Example (with function expression):
+ *   $col = cacti_validate_sort_column(
+ *       get_request_var('sort_column'),
+ *       array('description', 'hostname', 'INET_ATON(hostname)'),
+ *       'description'
+ *   );
+ *
+ * Applies to GHSA-3p6w, GHSA-84q3, GHSA-gp82 and future ORDER BY reports.
+ *
+ * @param string $column   Requested sort column
+ * @param array  $allowed  Allowlist of acceptable SQL fragments
+ * @param string $default  Fallback when $column is not in $allowed
+ *
+ * @return string  Safe SQL fragment
+ */
+function cacti_validate_sort_column(string $column, array $allowed, string $default = '') : string {
+	if (in_array($column, $allowed, true)) {
+		return $column;
+	}
+
+	return $default !== '' ? $default : (count($allowed) > 0 ? $allowed[0] : 'id');
+}

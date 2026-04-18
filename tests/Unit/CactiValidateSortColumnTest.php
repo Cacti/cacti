@@ -17,7 +17,7 @@
  */
 
 beforeAll(function () {
-	require_once dirname(__DIR__, 2) . '/lib/cacti_request.php';
+	require_once dirname(__DIR__, 2) . '/lib/functions.php';
 });
 
 describe('cacti_validate_sort_column', function () {
@@ -82,6 +82,29 @@ describe('cacti_validate_sort_column', function () {
 			->toBe('name');
 		expect(cacti_validate_sort_column('name', ['name'], 'name'))
 			->toBe('name');
+	});
+
+	it('accepts function-expression entries in the allowlist', function () {
+		// Cacti's existing get_order_string() can legitimately sort by
+		// function expressions like INET_ATON(hostname) or LENGTH(description).
+		// The allowlist accepts any string the caller approves — strict ===
+		// comparison means a function-wrapped entry passes iff the caller
+		// put that exact fragment in $allowed.
+		$allowed = ['description', 'hostname', 'INET_ATON(hostname)', 'LENGTH(description)'];
+
+		expect(cacti_validate_sort_column('INET_ATON(hostname)', $allowed, 'description'))
+			->toBe('INET_ATON(hostname)');
+
+		expect(cacti_validate_sort_column('LENGTH(description)', $allowed, 'description'))
+			->toBe('LENGTH(description)');
+
+		// Attacker-crafted function-looking input without exact allowlist
+		// entry is still rejected.
+		expect(cacti_validate_sort_column('INET_ATON(password)', $allowed, 'description'))
+			->toBe('description');
+
+		expect(cacti_validate_sort_column('SLEEP(10)', $allowed, 'description'))
+			->toBe('description');
 	});
 
 	it('handles whitespace-padded input as non-matching', function () {
