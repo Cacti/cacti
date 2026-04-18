@@ -923,8 +923,12 @@ function form_actions() {
 		if (isset_request_var('action_receivers')) {
 			$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
-			if ($selected_items !== false) {
-				$ids = implode(',', array_map('intval', $selected_items));
+			if (is_array($selected_items) && count($selected_items) > 0) {
+				$selected_items = array_values(array_filter(array_map('intval', $selected_items)));
+			}
+
+			if (is_array($selected_items) && count($selected_items) > 0) {
+				$ids = implode(',', $selected_items);
 
 				if (get_nfilter_request_var('drp_action') == '1') { // delete
 					db_execute('DELETE FROM snmpagent_managers WHERE id IN (' . $ids . ')');
@@ -935,11 +939,10 @@ function form_actions() {
 				} elseif (get_nfilter_request_var('drp_action') == '3') { // disable
 					db_execute("UPDATE snmpagent_managers SET disabled = 'on' WHERE id IN (" . $ids . ')');
 				}
-
-				header('Location: managers.php');
-
-				exit;
 			}
+			header('Location: managers.php');
+
+			exit;
 		} elseif (isset_request_var('action_receiver_notifications')) {
 			/* ================= input validation ================= */
 			get_filter_request_var('id');
