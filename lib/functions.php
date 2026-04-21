@@ -4615,14 +4615,24 @@ function validate_path_within($filename, $base_dir) {
  * @return mixed The validated real path, or false if invalid
  */
 function validate_relative_path_within($path, $base_dir) {
-	if ($path === '' || $path[0] === '/' || strpos($path, "\0") !== false) {
+	if (!is_string($path) || $path === '' || strpos($path, "\0") !== false) {
 		return false;
 	}
 
-	foreach (explode('/', $path) as $part) {
-		if ($part === '..') {
+	$normalized = str_replace('\\', '/', $path);
+
+	if ($normalized === '' || $normalized[0] === '/' || preg_match('/^[a-zA-Z]:\//', $normalized)) {
+		return false;
+	}
+
+	$parts = array();
+
+	foreach (explode('/', $normalized) as $part) {
+		if ($part === '' || $part === '.' || $part === '..') {
 			return false;
 		}
+
+		$parts[] = $part;
 	}
 
 	$base_real = realpath($base_dir);
@@ -4631,7 +4641,33 @@ function validate_relative_path_within($path, $base_dir) {
 		return false;
 	}
 
-	return $base_real . '/' . $path;
+	$candidate = $base_real . '/' . implode('/', $parts);
+
+	/* Block symlink pivots under writable base paths. */
+	$walk = $base_real;
+	foreach ($parts as $part) {
+		$walk .= '/' . $part;
+
+		if (file_exists($walk) && is_link($walk)) {
+			return false;
+		}
+	}
+
+	if (file_exists($candidate)) {
+		$resolved = realpath($candidate);
+
+		if ($resolved === false || !cacti_path_is_within($resolved, $base_real)) {
+			return false;
+		}
+	} else {
+		$parent = realpath(dirname($candidate));
+
+		if ($parent === false || !cacti_path_is_within($parent, $base_real)) {
+			return false;
+		}
+	}
+
+	return $candidate;
 }
 
 /**
@@ -7825,7 +7861,8 @@ function cacti_path_is_within($candidate, $base) {
 function cacti_header($default = 'index.php') {
 	$save_url = validate_redirect_url($_SERVER['HTTP_REFERER'] ?? $default, $default);
 
-	header('Location: ' . $safe_url);
+	header('Location: ' . $save_url);
+	exit;
 }
 
 /**

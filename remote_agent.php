@@ -143,51 +143,77 @@ function remote_client_authorized() {
 		return false;
 	}
 
-	$client_name = gethostbyaddr($client_addr);
-
-	/* Forward-verify PTR result to prevent DNS spoofing */
-	if ($client_name != $client_addr) {
-		$forward_records = @dns_get_record($client_name, DNS_A | DNS_AAAA);
-		$forward_match   = false;
-
-		if (is_array($forward_records)) {
-			foreach ($forward_records as $record) {
-				$ip = isset($record['ip']) ? $record['ip'] : (isset($record['ipv6']) ? $record['ipv6'] : '');
-
-				if ($ip === $client_addr) {
-					$forward_match = true;
-					break;
-				}
-			}
-		}
-
-		if (!$forward_match) {
-			$safe_name = preg_replace('/[^a-zA-Z0-9.\-:]/', '', $client_name);
-			cacti_log('WARNING: PTR record for ' . $client_addr . ' resolves to ' . $safe_name . ' but forward lookup does not match. Rejecting.', false, 'SECURITY');
-
-			return false;
-		}
-	}
-
-	if ($client_name == $client_addr) {
-		cacti_log('NOTE: Unable to resolve hostname from address ' . $client_addr, false, 'WEBUI', POLLER_VERBOSITY_MEDIUM);
-	}
-
 	$pollers = db_fetch_assoc('SELECT * FROM poller WHERE disabled = ""', true, $poller_db_cnn_id);
 
-	if (cacti_sizeof($pollers) > 1) {
-		foreach($pollers as $poller) {
-			if ($poller['hostname'] == $client_name) {
-				return true;
-			} elseif ($poller['hostname'] == $client_addr) {
-				return true;
+	if (cacti_sizeof($pollers) <= 1) {
+		cacti_log("Unauthorized remote agent access attempt from $client_addr", false, 'SECURITY');
+
+		return false;
+	}
+
+	$allowed_hostnames = array();
+
+	foreach($pollers as $poller) {
+		$poller_host = trim($poller['hostname']);
+
+		if ($poller_host === '') {
+			continue;
+		}
+
+		/* Fast-path: exact IP match requires no DNS lookups */
+		if ($poller_host == $client_addr) {
+			return true;
+		}
+
+		if (!filter_var($poller_host, FILTER_VALIDATE_IP)) {
+			$allowed_hostnames[] = $poller_host;
+		}
+	}
+
+	if (!cacti_sizeof($allowed_hostnames)) {
+		cacti_log("Unauthorized remote agent access attempt from $client_addr", false, 'SECURITY');
+
+		return false;
+	}
+
+	$client_name = gethostbyaddr($client_addr);
+
+	if ($client_name === false || $client_name == $client_addr) {
+		cacti_log('NOTE: Unable to resolve hostname from address ' . $client_addr, false, 'WEBUI', POLLER_VERBOSITY_MEDIUM);
+		cacti_log("Unauthorized remote agent access attempt from $client_addr", false, 'SECURITY');
+
+		return false;
+	}
+
+	if (!in_array($client_name, $allowed_hostnames, true)) {
+		cacti_log("Unauthorized remote agent access attempt from $client_name ($client_addr)", false, 'SECURITY');
+
+		return false;
+	}
+
+	/* Forward-verify PTR result to prevent DNS spoofing */
+	$forward_records = dns_get_record($client_name, DNS_A | DNS_AAAA);
+	$forward_match   = false;
+
+	if (is_array($forward_records)) {
+		foreach ($forward_records as $record) {
+			$ip = isset($record['ip']) ? $record['ip'] : (isset($record['ipv6']) ? $record['ipv6'] : '');
+
+			if ($ip === $client_addr) {
+				$forward_match = true;
+				break;
 			}
 		}
 	}
 
-	cacti_log("Unauthorized remote agent access attempt from $client_name ($client_addr)");
+	if (!$forward_match) {
+		$safe_name = preg_replace('/[^a-zA-Z0-9.\-:]/', '', $client_name);
+		cacti_log('WARNING: PTR record for ' . $client_addr . ' resolves to ' . $safe_name . ' but forward lookup does not match. Rejecting.', false, 'SECURITY');
 
-	return false;
+		return false;
+	}
+
+	return true;
 }
 
 function get_graph_data() {
@@ -496,4 +522,3 @@ function run_remote_discovery() {
 
 	return;
 }
-

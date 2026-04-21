@@ -580,9 +580,10 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 	foreach ($data['files']['file'] as $f) {
 		$fdata = base64_decode($f['data']);
 		$name = $f['name'];
+		$normalized_name = str_replace('\\', '/', $name);
 
-		if (strpos($name, 'scripts/') !== false || strpos($name, 'resource/') !== false) {
-			$filename = validate_relative_path_within($name, $config['base_path']);
+		if (preg_match('/^(scripts|resource)\/[A-Za-z0-9._\/-]+$/', $normalized_name)) {
+			$filename = validate_relative_path_within($normalized_name, $config['base_path']);
 
 			if ($filename === false) {
 				cacti_log('FATAL: Rejected package file with invalid path: ' . $name, true, 'IMPORT');
@@ -590,7 +591,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 			}
 
 			if (!$preview) {
-				if (!cacti_sizeof($import_files) || in_array($name, $import_files)) {
+				if (!cacti_sizeof($import_files) || in_array($name, $import_files) || in_array($normalized_name, $import_files)) {
 					cacti_log('Writing file: ' . $filename, false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 
 					if ((is_writeable(dirname($filename)) && !file_exists($filename)) || is_writable($filename)) {
