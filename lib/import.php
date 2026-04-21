@@ -582,7 +582,12 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 		$name = $f['name'];
 
 		if (strpos($name, 'scripts/') !== false || strpos($name, 'resource/') !== false) {
-			$filename = $config['base_path'] . "/$name";
+			$filename = validate_relative_path_within($name, $config['base_path']);
+
+			if ($filename === false) {
+				cacti_log('FATAL: Rejected package file with invalid path: ' . $name, true, 'IMPORT');
+				continue;
+			}
 
 			if (!$preview) {
 				if (!cacti_sizeof($import_files) || in_array($name, $import_files)) {
