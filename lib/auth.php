@@ -167,6 +167,11 @@ function check_auth_cookie() {
 						array($user_info['username'], $user_info['id'], get_client_addr())
 					);
 
+					/* verify account is not locked out */
+					if (auth_process_lockout_check($user_info['username'], $user_info['realm']) === false) {
+						return false;
+					}
+
 					return $user_info['id'];
 				}
 			}

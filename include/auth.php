@@ -147,7 +147,7 @@ if ($auth_method != 0) {
 		if (get_guest_account() === $_SESSION['sess_user_id']) {
 			kill_session_var('sess_user_id');
 			cacti_session_destroy();
-			cacti_session_start();
+			cacti_session_start(true);
 		}
 	}
 
