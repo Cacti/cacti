@@ -22,3 +22,11 @@ test('remote agent authorization no longer suppresses dns_get_record errors', fu
 	expect($remoteAgentSource)->toContain('dns_get_record($client_name, DNS_A | DNS_AAAA)');
 });
 
+test('remote agent authorization does not trust HTTP Host header', function () use ($remoteAgentSource) {
+	$start = strpos($remoteAgentSource, 'function remote_client_authorized()');
+	expect($start)->not->toBeFalse();
+
+	$body = substr($remoteAgentSource, $start, 2200);
+	expect($body)->not->toContain('HTTP_HOST');
+	expect($body)->not->toContain('SERVER_NAME');
+});

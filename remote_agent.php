@@ -161,12 +161,12 @@ function remote_client_authorized() {
 		}
 
 		/* Fast-path: exact IP match requires no DNS lookups */
-		if ($poller_host == $client_addr) {
+		if ($poller_host === $client_addr) {
 			return true;
 		}
 
 		if (!filter_var($poller_host, FILTER_VALIDATE_IP)) {
-			$allowed_hostnames[] = $poller_host;
+			$allowed_hostnames[] = strtolower(rtrim($poller_host, '.'));
 		}
 	}
 
@@ -185,7 +185,9 @@ function remote_client_authorized() {
 		return false;
 	}
 
-	if (!in_array($client_name, $allowed_hostnames, true)) {
+	$normalized_client_name = strtolower(rtrim($client_name, '.'));
+
+	if (!in_array($normalized_client_name, $allowed_hostnames, true)) {
 		cacti_log("Unauthorized remote agent access attempt from $client_name ($client_addr)", false, 'SECURITY');
 
 		return false;
