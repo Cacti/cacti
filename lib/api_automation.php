@@ -258,13 +258,16 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	$rows_query = $sql_query . $sql_where . $sql_filter;
 	$total_rows = cacti_sizeof(db_fetch_assoc($rows_query, false));
 
-	$sortby = get_request_var('sort_column');
-	if ($sortby=='hostname') {
+	$sortby = cacti_validate_sort_column(get_request_var('sort_column'),
+		array('description', 'hostname', 'status', 'host_template_name', 'id'),
+		'description');
+	if ($sortby == 'hostname') {
 		$sortby = 'INET_ATON(hostname)';
 	}
+	$sort_dir = strtoupper(get_request_var('sort_direction')) === 'DESC' ? 'DESC' : 'ASC';
 
 	$sql_query = $rows_query .
-		' ORDER BY ' . $sortby . ' ' . get_request_var('sort_direction') .
+		' ORDER BY ' . $sortby . ' ' . $sort_dir .
 		' LIMIT ' . ($rows*(get_request_var('paged')-1)) . ',' . $rows;
 	$hosts = db_fetch_assoc($sql_query, false);
 
@@ -555,7 +558,9 @@ function display_matching_graphs($rule, $rule_type, $url) {
 		LEFT JOIN host_template AS ht
 		ON h.host_template_id=ht.id
 		$sql_where
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
+		ORDER BY " . cacti_validate_sort_column(get_request_var('sort_column'),
+			array('description', 'hostname', 'host_template_name', 'status', 'title_cache', 'local_graph_id', 'name'),
+			'description') . ' ' . (strtoupper(get_request_var('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') . '
 		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 	$graph_list = db_fetch_assoc($sql, false);

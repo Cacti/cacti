@@ -674,8 +674,8 @@ class Ldap {
 					 * And the patch against latest PHP release:
 					 * http://cvsweb.netbsd.org/bsdweb.cgi/pkgsrc/databases/php-ldap/files/ldap-ctrl-exop.patch
 					*/
-					$safe_dn = ldap_escape($this->dn, '', LDAP_ESCAPE_FILTER);
-					$true_dn_result = ldap_search($ldap_conn, $this->search_base, '(|(uid=' . $safe_dn . ')(cn=' . $safe_dn . ')(userPrincipalName=' . $safe_dn . '))', array('dn'));
+					$filter = cacti_ldap_filter('(|(uid=<dn>)(cn=<dn>)(userPrincipalName=<dn>))', array('dn' => $this->dn));
+					$true_dn_result = ldap_search($ldap_conn, $this->search_base, $filter, array('dn'));
 					$first_entry    = ldap_first_entry($ldap_conn, $true_dn_result);
 
 					/* we will test in two ways */

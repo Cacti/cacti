@@ -123,7 +123,7 @@ if ($hostname != '') {
 
 	if (validate_is_regex($hostname)) {
 		$regex = true;
-		$sql_where .= 'h.hostname RLIKE ' . db_qstr($hostname);
+		$sql_where .= 'h.hostname ' . db_qstr_rlike($hostname);
 	}
 
 	$hostname = '%' . $hostname . '%';
@@ -137,7 +137,7 @@ if ($description != '') {
 
 	if (validate_is_regex($description)) {
 		$regex = true;
-		$sql_where .= 'h.description RLIKE ' . db_qstr($description);
+		$sql_where .= 'h.description ' . db_qstr_rlike($description);
 	}
 
 	$description = '%' . $description . '%';
