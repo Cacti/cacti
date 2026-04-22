@@ -99,3 +99,21 @@ describe('theme allowlist algorithm', function () {
 		expect(resolve_theme_under($allow, false, 'modern'))->toBe('modern');
 	});
 });
+
+describe('theme ingress enforcement', function () {
+	$graphImageSource = file_get_contents(__DIR__ . '/../../graph_image.php');
+	$graphJsonSource  = file_get_contents(__DIR__ . '/../../graph_json.php');
+	$remoteSource     = file_get_contents(__DIR__ . '/../../remote_agent.php');
+
+	it('uses cacti_validate_theme in graph_image request handling', function () use ($graphImageSource) {
+		expect($graphImageSource)->toContain("cacti_validate_theme(get_request_var('graph_theme'))");
+	});
+
+	it('uses cacti_validate_theme in graph_json request handling', function () use ($graphJsonSource) {
+		expect($graphJsonSource)->toContain("cacti_validate_theme(get_request_var('graph_theme'))");
+	});
+
+	it('uses cacti_validate_theme in remote_agent graph handler', function () use ($remoteSource) {
+		expect($remoteSource)->toContain("cacti_validate_theme(get_request_var('graph_theme'))");
+	});
+});
