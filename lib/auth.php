@@ -5082,8 +5082,28 @@ function cacti_authorize_resource($user_id, $resource_id, $resource_type) {
 
 	switch ($resource_type) {
 		case 'reports':
+			// Reports admins (realm 21) manage any report row.
+			if (cacti_authorize_has_realm($user_id, 21)) {
+				return true;
+			}
+
 			$owner = db_fetch_cell_prepared(
 				'SELECT user_id FROM reports WHERE id = ?',
+				array($resource_id)
+			);
+
+			return $owner !== false && $owner !== null && (int) $owner === $user_id;
+
+		case 'report_item':
+			// Item ownership follows the parent report row.
+			if (cacti_authorize_has_realm($user_id, 21)) {
+				return true;
+			}
+
+			$owner = db_fetch_cell_prepared(
+				'SELECT r.user_id FROM reports_items AS ri
+				INNER JOIN reports AS r ON ri.report_id = r.id
+				WHERE ri.id = ?',
 				array($resource_id)
 			);
 
@@ -5105,6 +5125,46 @@ function cacti_authorize_resource($user_id, $resource_id, $resource_type) {
 			// Unknown type — fail closed. Extend this function to opt in.
 			return false;
 	}
+}
+
+/**
+ * cacti_authorize_has_realm - returns true iff the user is assigned the
+ * given realm_id through user_auth_realm or via group membership.
+ *
+ * Helper for cacti_authorize_resource to express "admins of this resource
+ * class bypass ownership". Realm ids are the fixed values in
+ * user_auth_realm_subrealm (21 = reports, 1 = system admin, etc).
+ */
+function cacti_authorize_has_realm($user_id, $realm_id) {
+	static $realm_cache = array();
+
+	$user_id  = (int) $user_id;
+	$realm_id = (int) $realm_id;
+	$key      = $user_id . ':' . $realm_id;
+
+	if (isset($realm_cache[$key])) {
+		return $realm_cache[$key];
+	}
+
+	$has = (bool) db_fetch_cell_prepared(
+		'SELECT 1
+		FROM user_auth_realm
+		WHERE user_id = ?
+		AND realm_id = ?
+		UNION
+		SELECT 1
+		FROM user_auth_group_realm AS ugr
+		INNER JOIN user_auth_group_members AS ugm
+		ON ugm.group_id = ugr.group_id
+		WHERE ugm.user_id = ?
+		AND ugr.realm_id = ?
+		LIMIT 1',
+		array($user_id, $realm_id, $user_id, $realm_id)
+	);
+
+	$realm_cache[$key] = $has;
+
+	return $has;
 }
 
 /**

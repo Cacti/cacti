@@ -226,6 +226,10 @@ function reports_item_dnd() {
 	get_filter_request_var('id');
 	/* ================= Input validation ================= */
 
+	if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) get_request_var('id'), 'reports')) {
+		return;
+	}
+
 	$continue = true;
 
 	if (isset_request_var('report_item') && is_array(get_nfilter_request_var('report_item'))) {
@@ -425,6 +429,22 @@ function reports_form_actions() {
 	if (isset_request_var('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
+		/* Drop any report id the current user is not authorised to mutate so
+		 * every action branch below runs only on rows owned by the caller or
+		 * accessible to a reports admin (realm 21). */
+		if (is_array($selected_items)) {
+			$selected_items = array_values(array_filter(
+				$selected_items,
+				function ($rid) {
+					return cacti_authorize_resource($_SESSION['sess_user_id'], (int) $rid, 'reports');
+				}
+			));
+
+			if (cacti_sizeof($selected_items) === 0) {
+				$selected_items = false;
+			}
+		}
+
 		if ($selected_items != false) {
 			if (get_nfilter_request_var('drp_action') == REPORTS_DELETE) { // delete
 				db_execute('DELETE FROM reports WHERE ' . array_to_sql_or($selected_items, 'id'));
@@ -620,6 +640,10 @@ function reports_item_movedown() {
 	get_filter_request_var('id');
 	/* ==================================================== */
 
+	if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) get_request_var('id'), 'reports')) {
+		return;
+	}
+
 	move_item_down('reports_items', get_request_var('item_id'), 'report_id=' . get_request_var('id'));
 }
 
@@ -628,6 +652,11 @@ function reports_item_moveup() {
 	get_filter_request_var('item_id');
 	get_filter_request_var('id');
 	/* ==================================================== */
+
+	if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) get_request_var('id'), 'reports')) {
+		return;
+	}
+
 	move_item_up('reports_items', get_request_var('item_id'), 'report_id=' . get_request_var('id'));
 }
 
@@ -635,7 +664,14 @@ function reports_item_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('item_id');
 	/* ==================================================== */
-	db_execute_prepared('DELETE FROM reports_items WHERE id = ?', array(get_request_var('item_id')));
+
+	$item_id = (int) get_request_var('item_id');
+
+	if (!cacti_authorize_resource($_SESSION['sess_user_id'], $item_id, 'report_item')) {
+		return;
+	}
+
+	db_execute_prepared('DELETE FROM reports_items WHERE id = ?', array($item_id));
 }
 
 function reports_item_resequence($report_id) {

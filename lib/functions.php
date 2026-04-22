@@ -7901,17 +7901,6 @@ function cacti_redirect($url = '', $default = 'index.php', $status = 302) {
  * @return mixed  The redacted copy
  */
 function cacti_redact_sensitive($data) {
-	static $sensitive_keys = null;
-
-	if ($sensitive_keys === null) {
-		$sensitive_keys = array(
-			'password', 'pass', 'snmp_password', 'snmp_priv_passphrase',
-			'snmp_auth_passphrase', 'rsa_private_key', 'secret',
-			'auth_key', 'priv_key', 'token', 'cookie', 'community',
-			'snmp_community', 'specific_password', 'ldap_password',
-		);
-	}
-
 	if (!is_array($data)) {
 		return $data;
 	}
@@ -7919,22 +7908,48 @@ function cacti_redact_sensitive($data) {
 	$redacted = array();
 
 	foreach ($data as $key => $value) {
-		$lower = strtolower($key);
-		$is_sensitive = false;
-
-		foreach ($sensitive_keys as $sk) {
-			if ($lower === $sk || strpos($lower, $sk) !== false) {
-				$is_sensitive = true;
-				break;
-			}
-		}
-
-		$redacted[$key] = $is_sensitive
+		$redacted[$key] = cacti_is_sensitive_key($key)
 			? '[REDACTED]'
 			: (is_array($value) ? cacti_redact_sensitive($value) : $value);
 	}
 
 	return $redacted;
+}
+
+/**
+ * cacti_is_sensitive_key - Returns true if the given key name suggests
+ * the value holds a secret (password, token, SNMP community, etc.).
+ *
+ * Exposed so callers that log a single "$key => $value" pair (for
+ * example the poller cache diff log) can redact without building an
+ * intermediate array.
+ */
+function cacti_is_sensitive_key($key) {
+	static $sensitive_keys = array(
+		'password', 'pass', 'snmp_password', 'snmp_priv_passphrase',
+		'snmp_auth_passphrase', 'rsa_private_key', 'secret',
+		'auth_key', 'priv_key', 'token', 'cookie', 'community',
+		'snmp_community', 'specific_password', 'ldap_password',
+	);
+
+	$lower = strtolower((string) $key);
+
+	foreach ($sensitive_keys as $sk) {
+		if ($lower === $sk || strpos($lower, $sk) !== false) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+/**
+ * cacti_redact_value - Returns '[REDACTED]' if the key is sensitive,
+ * otherwise returns the original value. Companion to cacti_redact_sensitive
+ * for scalar log statements.
+ */
+function cacti_redact_value($key, $value) {
+	return cacti_is_sensitive_key($key) ? '[REDACTED]' : $value;
 }
 
 /**
