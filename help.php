@@ -70,6 +70,8 @@ if (isset_request_var('error')) {
 		$response_code = 200;
 	}
 
+	header('Content-Type: application/json');
+
 	if ($response_code != 200) {
 		print json_encode(
 			array(

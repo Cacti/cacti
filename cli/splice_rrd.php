@@ -267,10 +267,10 @@ if ($finrrd == '') {
 
 /* execute the dump commands */
 debug("Creating XML file '$oldxmlfile' from '$oldrrd'");
-shell_exec("$rrdtool dump $oldrrd > $oldxmlfile");
+shell_exec(cacti_escapeshellcmd($rrdtool) . ' dump ' . cacti_escapeshellarg($oldrrd) . ' > ' . cacti_escapeshellarg($oldxmlfile));
 
 debug("Creating XML file '$newxmlfile' from '$newrrd'");
-shell_exec("$rrdtool dump $newrrd > $newxmlfile");
+shell_exec(cacti_escapeshellcmd($rrdtool) . ' dump ' . cacti_escapeshellarg($newrrd) . ' > ' . cacti_escapeshellarg($newxmlfile));
 
 /* read the xml files into arrays */
 if (file_exists($oldxmlfile)) {
@@ -851,7 +851,7 @@ function createRRDFileFromXML($xmlfile, $rrdfile) {
 	print 'NOTE: Re-Importing \'' . $xmlfile . '\' to \'' . $rrdfile . '\'' . PHP_EOL;
 	$return_code = 0;
 	$output      = array();
-	$command     = "$rrdtool restore -f -r $xmlfile $rrdfile";
+	$command     = cacti_escapeshellcmd($rrdtool) . ' restore -f -r ' . cacti_escapeshellarg($xmlfile) . ' ' . cacti_escapeshellarg($rrdfile);
 	$result      = exec($command, $output, $return_var);
 
 	if ($return_var == 0) {

@@ -181,6 +181,7 @@ function get_ajax_graph_items() {
 		$items[$key]['label'] = $item['name'];
 	}
 
+	header('Content-Type: application/json');
 	print json_encode($items);
 }
 

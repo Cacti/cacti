@@ -131,8 +131,11 @@ function api_networks_discover($network_id, $discover_debug) {
 	if ($enabled == 'on') {
 		if (!$running) {
 			if ($config['poller_id'] == $poller_id) {
-				$args_debug = ($discover_debug) ? ' --debug' : '';
-				exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . "/poller_automation.php --network=$network_id --force" . $args_debug);
+				$argv = array('-q', read_config_option('path_webroot') . '/poller_automation.php', '--network=' . (int)$network_id, '--force');
+				if ($discover_debug) {
+					$argv[] = '--debug';
+				}
+				exec_background(read_config_option('path_php_binary'), $argv);
 			} else {
 				$args_debug = ($discover_debug) ? '&debug=true' : '';
 

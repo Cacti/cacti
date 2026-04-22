@@ -194,6 +194,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'ajax_tz':
+		header('Content-Type: application/json');
 		print json_encode(db_fetch_assoc_prepared('SELECT Name AS label, Name AS `value`
 			FROM mysql.time_zone_name
 			WHERE Name LIKE ?
