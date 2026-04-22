@@ -4,6 +4,18 @@ Cacti CHANGELOG
 
 -security#GHSA-6RVG-2VM8-5WRF: CVE-2026-22802 Authentication Bypass leads to information disclosure
 -security: CVE-2026-1513 billboard.js before 3.18.0 Improper Input Sanitization Allows Remote JavaScript Execution
+-security#GHSA-9wvp-cfx6-hj7p: CVE-2026-24482 1st argument to preg_replace is not sanitized and given from user_inputs
+-security#GHSA-j3p9-q28q-8j33: CVE-2026-24483 Unsafe serialization usage in the maint plugin on user supplied POST data
+-security#GHSA-23g4-vf2j-94w4: CVE-2026-39894 RRDtool metric shift via LC_NUMERIC locale comma decimal formatting
+-security#GHSA-wpjq-m269-mghj: CVE-2026-39895 Second-order RCE via unescaped log path in exec_background shell redirection
+-security#GHSA-hr82-h9vr-587w: CVE-2026-39896 TOCTOU race in auth_process_lockout allows brute-force lockout bypass
+-security#GHSA-2j98-xfjq-gw39: CVE-2026-39897 Reflected XSS in html_auth_footer error message output
+-security#GHSA-fwh3-8c8r-378r: CVE-2026-39898 Reflected XSS via rfilter parameter in aggregate_graphs.php input value
+-security#GHSA-pr9x-34w8-4mf7: CVE-2026-39899 Path traversal via filename parameter in package_import.php
+-security#GHSA-34rf-frc3-v48r: CVE-2026-39900 Reflected XSS via tab parameter in auth_profile.php JavaScript context
+-security#GHSA-w47c-53f9-w47g: CVE-2026-39947 RRDtool IPC pipe poisoning via is_numeric newline bypass in rrdtool_function_update
+-security#GHSA-9jqv-4cpm-vm2c: CVE-2026-39948 SQL Injection via rfilter parameter in RLIKE clauses
+-security#GHSA-xq98-376r-hv9j: CVE-2026-40079 Command Injection via escape_command() no-op in RRDtool execution
 -issue#6168: When purging RRD files, paths are not correctly handled
 -issue#6202: When using automation, devices may not be added as expected
 -issue#6204: Attempting to match a field in automation may cause unexpected errors
