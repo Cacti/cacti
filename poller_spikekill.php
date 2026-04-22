@@ -264,7 +264,7 @@ function kill_spikes(array $templates, int &$found) : int {
 			debug("Removing Spikes from '$f'");
 
 			$response = exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
-				cacti_escapeshellarg(CACTI_PATH_CLI . '/removespikes.php') . ' --rrdfile=' . $f . ($debug ? ' --debug' : ''));
+				cacti_escapeshellarg(CACTI_PATH_CLI . '/removespikes.php') . ' --rrdfile=' . cacti_escapeshellarg($f) . ($debug ? ' --debug' : ''));
 
 			if (substr_count($response, 'Spikes Found and Remediated')) {
 				$found++;

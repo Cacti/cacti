@@ -173,7 +173,7 @@ function stopRealtime() {
 		$('#graph_'+graph_id+'_realtime').empty().html("<img class='drillDown' alt='' title='"+realtimeClickOn+"' src='"+urlPath+"images/chart_curve_go.png'>").find('img').tooltip();
 
 		// Disable right click
-		$(this).children().bind('contextmenu', function(event) {
+		$(this).children().on('contextmenu', function(event) {
 			return false;
 		});
 
@@ -272,7 +272,7 @@ function realtimeGrapher() {
 
 					$.get(urlPath+'graph_realtime.php?action=countdown&top='+parseInt(position.top)+'&left='+parseInt(position.left)+(isThumb ? '&graph_nolegend=true':'&graph_nolegend=false')+'&graph_end=0&graph_start=-'+(parseInt(graph_start) > 0 ? graph_start:'60')+'&local_graph_id='+local_graph_id+'&ds_step='+ds_step+'&count='+count+'&size='+size)
 						.done(function(data) {
-							var results = $.parseJSON(data);
+							var results = (typeof data === 'string') ? JSON.parse(data) : data;
 
 							if (realtimeArray[results.local_graph_id] == true) {
 								var image_format = (results.image_format == 'svg+xml') ? 'svg+xml' : 'png';

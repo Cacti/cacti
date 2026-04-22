@@ -32,6 +32,7 @@ function import_xml_data(string &$xml_data, bool $import_as_new, int $profile_id
 	$info_array       = [];
 	$files            = [];
 	$ignorable_hashes = [];
+	$dep_hash_cache   = [];
 
 	$xml_array = xml2array($xml_data);
 
