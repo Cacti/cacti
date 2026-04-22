@@ -8195,3 +8195,168 @@ function cacti_validate_sort_column(string $column, array $allowed, string $defa
 
 	return $default !== '' ? $default : (count($allowed) > 0 ? $allowed[0] : 'id');
 }
+
+/**
+ * cacti_exec - Run a shell command with strict argument separation.
+ *
+ * The binary is passed through cacti_escapeshellcmd and each argument
+ * through cacti_escapeshellarg. Callers must pass the binary as its own
+ * parameter and arguments as an array; mixing them in one string is
+ * rejected so a reviewer can tell at a glance that no unescaped user
+ * input reaches the shell.
+ *
+ * Callers should still restrict the binary to a known-safe value: a
+ * hardcoded path, a path allowlist, or a path_* config option that
+ * itself is admin-only.
+ *
+ * @param string $binary  Path or name of the executable. Must not contain spaces.
+ * @param array  $args    Arguments. Each is escaped independently.
+ * @param array  $out     By-ref slot for captured stdout (one line per entry).
+ *
+ * @return int  Process exit code. 0 usually means success.
+ *
+ * @throws InvalidArgumentException  If the binary contains whitespace.
+ */
+function cacti_exec($binary, array $args = array(), array &$out = array()) {
+	$binary = trim((string) $binary);
+
+	if ($binary === '' || preg_match('/\s/', $binary)) {
+		throw new InvalidArgumentException('cacti_exec(): binary must be a single token with no whitespace. Arguments go in $args.');
+	}
+
+	$command = cacti_escapeshellcmd($binary);
+
+	foreach ($args as $arg) {
+		$command .= ' ' . cacti_escapeshellarg((string) $arg);
+	}
+
+	$exit_code = 0;
+	exec($command, $out, $exit_code);
+
+	return (int) $exit_code;
+}
+
+/**
+ * cacti_exec_string - Run a shell command via cacti_exec and return the
+ * combined stdout as a single newline-joined string.
+ *
+ * @param string $binary
+ * @param array  $args
+ *
+ * @return string
+ */
+function cacti_exec_string($binary, array $args = array()) {
+	$out = array();
+	cacti_exec($binary, $args, $out);
+
+	return implode("\n", $out);
+}
+
+/**
+ * cacti_http - SSRF-hardened HTTP GET.
+ *
+ * Wraps file_get_contents() with a stream context that enables TLS peer
+ * verification, disables redirect-following, and rejects non-http(s)
+ * schemes. Callers may pass an optional host allowlist; if set, only
+ * matching hostnames pass.
+ *
+ * @param string $url        Absolute http(s) URL to fetch.
+ * @param int    $timeout    Seconds before the request is aborted.
+ * @param array  $allowlist  Optional case-insensitive list of allowed hostnames (exact match).
+ * @param int    $status     By-ref HTTP status code, or 0 on transport failure.
+ *
+ * @return mixed  Response body string on 2xx, false on any failure.
+ */
+function cacti_http($url, $timeout = 10, array $allowlist = array(), &$status = 0) {
+	$status = 0;
+
+	$parts = parse_url((string) $url);
+
+	if ($parts === false || !isset($parts['scheme']) || !isset($parts['host'])) {
+		return false;
+	}
+
+	$scheme = strtolower($parts['scheme']);
+
+	if ($scheme !== 'http' && $scheme !== 'https') {
+		return false;
+	}
+
+	if (!empty($allowlist)) {
+		$host_lower = strtolower($parts['host']);
+		$allowed = array_map('strtolower', $allowlist);
+
+		if (!in_array($host_lower, $allowed, true)) {
+			return false;
+		}
+	}
+
+	$ssl = ($scheme === 'https') ? array(
+		'verify_peer'       => true,
+		'verify_peer_name'  => true,
+		'allow_self_signed' => false,
+	) : array();
+
+	$ctx = stream_context_create(array(
+		'http' => array(
+			'method'          => 'GET',
+			'timeout'         => (int) $timeout,
+			'follow_location' => 0,
+			'max_redirects'   => 0,
+			'ignore_errors'   => true,
+			'header'          => "Accept: */*\r\nConnection: close\r\n",
+		),
+		'ssl' => $ssl,
+	));
+
+	$body = @file_get_contents($url, false, $ctx);
+
+	if (isset($http_response_header) && is_array($http_response_header) && count($http_response_header) > 0) {
+		if (preg_match('#HTTP/\S+\s+(\d+)#', $http_response_header[0], $m)) {
+			$status = (int) $m[1];
+		}
+	}
+
+	if ($body === false || $status < 200 || $status >= 300) {
+		return false;
+	}
+
+	return $body;
+}
+
+/**
+ * cacti_plugin_path - Resolve a file inside a named plugin's directory.
+ *
+ * Builds and realpath-validates base_path/plugins/<plugin>/<relative>
+ * to prevent ../ traversal leaving the plugin subtree. Returns the
+ * validated absolute path on success, or false if the plugin name is
+ * unsafe or the resulting path escapes plugins/<plugin>/.
+ *
+ * @param string $plugin    Plugin directory name (e.g. 'thold').
+ * @param string $relative  Relative file path under the plugin directory (e.g. 'setup.php').
+ *
+ * @return string|false     Validated absolute path, or false on rejection.
+ */
+function cacti_plugin_path($plugin, $relative = '') {
+	global $config;
+
+	$plugin = (string) $plugin;
+
+	if ($plugin === '' || !preg_match('/^[A-Za-z0-9_-]+$/', $plugin)) {
+		return false;
+	}
+
+	$plugin_base = realpath($config['base_path'] . '/plugins/' . $plugin);
+
+	if ($plugin_base === false) {
+		return false;
+	}
+
+	if ($relative === '') {
+		return $plugin_base;
+	}
+
+	$resolved = validate_relative_path_within((string) $relative, $plugin_base);
+
+	return $resolved !== false ? $resolved : false;
+}
