@@ -5087,8 +5087,9 @@ function cacti_authorize_resource($user_id, $resource_id, $resource_type) {
 				return true;
 			}
 
-			$owner = db_fetch_cell_prepared(
-				'SELECT user_id FROM reports WHERE id = ?',
+			$owner = db_fetch_cell_prepared('SELECT user_id 
+				FROM reports 
+				WHERE id = ?',
 				array($resource_id)
 			);
 
@@ -5100,9 +5101,10 @@ function cacti_authorize_resource($user_id, $resource_id, $resource_type) {
 				return true;
 			}
 
-			$owner = db_fetch_cell_prepared(
-				'SELECT r.user_id FROM reports_items AS ri
-				INNER JOIN reports AS r ON ri.report_id = r.id
+			$owner = db_fetch_cell_prepared('SELECT r.user_id 
+				FROM reports_items AS ri
+				INNER JOIN reports AS r 
+				ON ri.report_id = r.id
 				WHERE ri.id = ?',
 				array($resource_id)
 			);
@@ -5110,8 +5112,9 @@ function cacti_authorize_resource($user_id, $resource_id, $resource_type) {
 			return $owner !== false && $owner !== null && (int) $owner === $user_id;
 
 		case 'graph_tree':
-			$owner = db_fetch_cell_prepared(
-				'SELECT user_id FROM graph_tree WHERE id = ?',
+			$owner = db_fetch_cell_prepared('SELECT user_id 
+				FROM graph_tree 
+				WHERE id = ?',
 				array($resource_id)
 			);
 
@@ -5146,8 +5149,7 @@ function cacti_authorize_has_realm($user_id, $realm_id) {
 		return $realm_cache[$key];
 	}
 
-	$has = (bool) db_fetch_cell_prepared(
-		'SELECT 1
+	$has = (bool) db_fetch_cell_prepared('SELECT 1
 		FROM user_auth_realm
 		WHERE user_id = ?
 		AND realm_id = ?
@@ -5188,8 +5190,10 @@ function cacti_authorize_is_admin($user_id) {
 		return $admin_cache[$user_id];
 	}
 
-	$is_admin = (bool) db_fetch_cell_prepared(
-		'SELECT 1 FROM user_auth_realm WHERE user_id = ? AND realm_id = 1',
+	$is_admin = (bool) db_fetch_cell_prepared('SELECT 1 
+		FROM user_auth_realm 
+		WHERE user_id = ? 
+		AND realm_id = 1',
 		array($user_id)
 	);
 
