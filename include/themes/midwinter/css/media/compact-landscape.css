@@ -667,9 +667,15 @@ html {
 
 .navBox-control {
     height: 0;
+    display: inline-flex;
+    justify-content: right;
     &:has(.navBox-control-group) {
         border-top: 1px solid var(--background-navigation-top);
         height: 2.5rem;
+    }
+    & .navBox-control-group {
+        display: flex;
+        justify-content: flex-end;
     }
 }
 

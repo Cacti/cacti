@@ -39,6 +39,11 @@
     line-height: 2.0rem;
 }
 
+/* Styling the native highlights */
+::highlight(search-results) {
+    color: var(--mdw-highlight-color, #ffeb3b);
+}
+
 .compact_nav_icon,
 .navBox-header-button,
 .navBox-control-btn {
