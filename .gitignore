@@ -108,3 +108,7 @@ vendor/**
 .env.local
 .env.*.local
 docker-compose.override.yml
+
+# Ignore Claude and Worktrees
+.worktrees/**
+.claude/**
