@@ -977,7 +977,10 @@ class Ldap {
 	}
 
 	function isUserInLDAPGroup($ldapConn, $ldapbasedn, $groupDN, $ldapUser) {
-		$query       = "(&(distinguishedName=$ldapUser)(memberOf:1.2.840.113556.1.4.1941:=$groupDN))";
+		$query       = cacti_ldap_filter(
+			'(&(distinguishedName=<user>)(memberOf:1.2.840.113556.1.4.1941:=<group>))',
+			array('user' => $ldapUser, 'group' => $groupDN)
+		);
 		$ldapSearch  = ldap_search($ldapConn, $ldapbasedn, $query, array("dn"));
 
 		if ($ldapSearch) {
