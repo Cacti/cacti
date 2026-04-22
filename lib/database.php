@@ -1989,12 +1989,25 @@ function db_qstr($s, $db_conn = false) {
 /**
  * db_qstr_rlike - Safely quote a value for use in a RLIKE/REGEXP clause.
  *
+ * Caps the length and strips alternation and bounded-repeat metacharacters
+ * to limit catastrophic backtracking on attacker-supplied filter input.
+ * Normal regex features (anchors, character classes, simple quantifiers)
+ * remain available.
+ *
  * @param string $s       The regex pattern value to quote
  * @param mixed  $db_conn An optional database connection object
  *
  * @return string The safe 'RLIKE <quoted>' SQL fragment
  */
 function db_qstr_rlike($s, $db_conn = false) {
+	$s = (string) $s;
+
+	if (strlen($s) > 255) {
+		$s = substr($s, 0, 255);
+	}
+
+	$s = str_replace(array("\0", '|', '{', '}'), '', $s);
+
 	return 'RLIKE ' . db_qstr($s, $db_conn);
 }
 

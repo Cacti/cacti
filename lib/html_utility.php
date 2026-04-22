@@ -826,24 +826,20 @@ function get_order_string() {
 		$sort_dir = 'ASC';
 	}
 
-	if (strpos($sort_column, '(') === false && strpos($sort_column, '`') === false) {
-		$del = '`';
-	} else {
-		$del = '';
-	}
-
 	/**
-	 * Allowlist: identifiers are word chars and dots only; anything else could escape
-	 * backtick quoting.  Validate direction to prevent SQL keyword injection.
+	 * Allowlist: identifiers are letters, digits, underscore, and dot
+	 * separator.  SQL function calls in ORDER BY are rejected because a
+	 * regex allowing parentheses also matches SLEEP(...)/BENCHMARK(...)
+	 * time-based injection payloads.
 	 */
-	if (!preg_match('/^[a-zA-Z][a-zA-Z0-9_.()]*$/', $sort_column)) {
+	if (!preg_match('/^[a-zA-Z][a-zA-Z0-9_]*(?:\.[a-zA-Z][a-zA-Z0-9_]*)*$/', $sort_column)) {
 		$sort_column = '';
 	}
 
 	if (isset($_SESSION['sort_string'][$page])) {
 		return $_SESSION['sort_string'][$page];
 	} elseif ($sort_column != '') {
-		return 'ORDER BY ' . $del . implode($del . '.' . $del, explode('.', $sort_column)) . $del . ' ' . $sort_dir;
+		return 'ORDER BY `' . implode('`.`', explode('.', $sort_column)) . '` ' . $sort_dir;
 	} else {
 		return '';
 	}

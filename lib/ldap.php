@@ -644,11 +644,11 @@ class Ldap {
 
 		$ldap_conn = $connection['ldap_conn'];
 
-		/* Decode username, and remove bad characters */
+		/* Decode username and DN-escape before substitution into template */
 		$this->username = html_entity_decode($this->username, $this->GetMask(), 'UTF-8');
-		$this->username = str_replace(array('&', '|', '(', ')', '*', '>', '<', '!', '='), '', $this->username);
+		$safe_username  = ldap_escape($this->username, '', LDAP_ESCAPE_DN);
 		$this->password = html_entity_decode($this->password, $this->GetMask(), 'UTF-8');
-		$this->dn = str_replace('<username>', $this->username, $this->dn);
+		$this->dn = str_replace('<username>', $safe_username, $this->dn);
 
 		if ($this->password == '') {
 			return LdapError::GetErrorDetails(LdapError::EmptyPassword);
@@ -770,10 +770,11 @@ class Ldap {
 
 		$ldap_conn = $connection['ldap_conn'];
 
-		/* Decode username, and remove bad characters */
-		$this->username = html_entity_decode($this->username, $this->GetMask(), 'UTF-8');
-		$this->username = str_replace(array('&', '|', '(', ')', '*', '>', '<', '!', '='), '', $this->username);
-		$this->dn       = str_replace('<username>', $this->username, $this->dn);
+		/* Decode username and escape for DN and filter contexts separately */
+		$this->username       = html_entity_decode($this->username, $this->GetMask(), 'UTF-8');
+		$safe_username_dn     = ldap_escape($this->username, '', LDAP_ESCAPE_DN);
+		$safe_username_filter = ldap_escape($this->username, '', LDAP_ESCAPE_FILTER);
+		$this->dn       = str_replace('<username>', $safe_username_dn, $this->dn);
 
 		if ($this->mode == '0') {
 			/* Just bind mode, make dn and return */
@@ -796,7 +797,7 @@ class Ldap {
 			$this->specific_password = '';
 		}
 
-		$this->search_filter = str_replace('<username>', $this->username, $this->search_filter);
+		$this->search_filter = str_replace('<username>', $safe_username_filter, $this->search_filter);
 
 		/* Fix encoding on ldap specific search DN and password */
 		$this->specific_password = html_entity_decode($this->specific_password, $this->GetMask(), 'UTF-8');
@@ -879,10 +880,11 @@ class Ldap {
 
 		$ldap_conn = $connection['ldap_conn'];
 
-		/* Decode username, and remove bad characters */
-		$this->username = html_entity_decode($this->username, $this->GetMask(), 'UTF-8');
-		$this->username = str_replace(array('&', '|', '(', ')', '*', '>', '<', '!', '='), '', $this->username);
-		$this->dn       = str_replace('<username>', $this->username, $this->dn);
+		/* Decode username and escape for DN and filter contexts separately */
+		$this->username       = html_entity_decode($this->username, $this->GetMask(), 'UTF-8');
+		$safe_username_dn     = ldap_escape($this->username, '', LDAP_ESCAPE_DN);
+		$safe_username_filter = ldap_escape($this->username, '', LDAP_ESCAPE_FILTER);
+		$this->dn       = str_replace('<username>', $safe_username_dn, $this->dn);
 
 		if ($this->mode == '0') {
 			/* Just bind mode, make dn and return */
@@ -902,7 +904,7 @@ class Ldap {
 			$this->specific_password = '';
 		}
 
-		$this->search_filter = str_replace('<username>', $this->username, $this->search_filter);
+		$this->search_filter = str_replace('<username>', $safe_username_filter, $this->search_filter);
 
 		/* Fix encoding on ldap specific search DN and password */
 		$this->specific_password = html_entity_decode($this->specific_password, $this->GetMask(), 'UTF-8');

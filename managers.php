@@ -815,19 +815,18 @@ function manager_logs($id, $header_label) {
 			print "<td title='" . __esc('Severity Level') . ": " . $severity_levels[ $item['severity'] ] . "' style='width:10px;background-color: " . $severity_colors[ $item['severity'] ] . ";border-top:1px solid white;border-bottom:1px solid white;'></td>";
 			print "<td class='nowrap'>" . date('Y/m/d H:i:s', $item['time']) . '</td>';
 
-			if ($item['description']) {
-				$description = '';
-				$lines = preg_split( '/\r\n|\r|\n/', $item['description']);
+				if ($item['description']) {
+					$description = '';
+					$lines = preg_split( '/\r\n|\r|\n/', $item['description']);
 
 				foreach($lines as $line) {
 					$description .= html_escape(trim($line)) . '<br>';
 				}
 
 				print '<td><a href="#" onMouseOut="hideTooltip(snmpagentTooltip)" onMouseMove="showTooltip(event, snmpagentTooltip, \'' . html_escape($item['notification']) . '\', \'' . $description . '\')">' . html_escape($item['notification']) . '</a></td>';
-			} else {
-
-				print "<td>{$item['notification']}</td>";
-			}
+				} else {
+					print '<td>' . html_escape($item['notification']) . '</td>';
+				}
 
 			print "<td>$varbinds</td>";
 
@@ -1099,4 +1098,3 @@ function form_actions() {
 		}
 	}
 }
-
