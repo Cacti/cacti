@@ -269,16 +269,14 @@ function reports_form_save() {
 		if (isempty_request_var('id')) {
 			$save['user_id'] = $_SESSION['sess_user_id'];
 		} else {
-			$owner_id = db_fetch_cell_prepared('SELECT user_id FROM reports WHERE id = ?', array(get_nfilter_request_var('id')));
-
-			if ($owner_id != $_SESSION['sess_user_id'] && !is_realm_allowed(21)) {
+			if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) get_nfilter_request_var('id'), 'reports')) {
 				raise_message('permission_denied');
 				header('Location: reports.php');
 
 				exit;
 			}
 
-			$save['user_id'] = $owner_id;
+			$save['user_id'] = db_fetch_cell_prepared('SELECT user_id FROM reports WHERE id = ?', array(get_nfilter_request_var('id')));
 		}
 
 		$save['id']            = get_nfilter_request_var('id');
@@ -1504,7 +1502,7 @@ function reports_edit() {
 	if (get_filter_request_var('id') > 0) {
 		$report = db_fetch_row_prepared('SELECT * FROM reports WHERE id = ?', array(get_request_var('id')));
 
-		if (!empty($report) && $report['user_id'] != $_SESSION['sess_user_id'] && !is_realm_allowed(21)) {
+		if (!empty($report) && !cacti_authorize_resource($_SESSION['sess_user_id'], (int) get_request_var('id'), 'reports')) {
 			raise_message('permission_denied');
 			header('Location: reports.php');
 

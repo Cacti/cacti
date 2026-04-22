@@ -976,8 +976,21 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 
 				sql_save($save, 'snmpagent_notifications_log');
 
-				/* log the net-snmp command for Cacti admins if they wish for */
-				cacti_log("NOTE: $path_snmptrap " . str_replace(array($notification_manager['snmp_password'], $notification_manager['snmp_priv_passphrase']), '********', $args), false, 'SNMPAGENT', POLLER_VERBOSITY_MEDIUM);
+				/* log the net-snmp command with every sensitive value from the
+				 * manager row masked. Sweeps the full row so future credential
+				 * fields are covered without editing this call site. */
+				$redactable = array();
+				if (is_array($notification_manager)) {
+					foreach ($notification_manager as $k => $v) {
+						if ($v !== '' && $v !== null && cacti_is_sensitive_key($k)) {
+							$redactable[] = (string) $v;
+						}
+					}
+				}
+
+				$safe_args = cacti_sizeof($redactable) ? str_replace($redactable, '[REDACTED]', $args) : $args;
+
+				cacti_log("NOTE: $path_snmptrap " . $safe_args, false, 'SNMPAGENT', POLLER_VERBOSITY_MEDIUM);
 			}
 		}
 	} else {

@@ -72,12 +72,7 @@ function duplicate_reports($_id, $_title) {
 }
 
 function reports_add_devices($report_id, $device_ids, $timespan, $align) {
-	$report_user = db_fetch_cell_prepared('SELECT user_id
-		FROM reports
-		WHERE id = ?',
-		array($report_id));
-
-	if ($report_user != $_SESSION['sess_user_id']) {
+	if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) $report_id, 'reports')) {
 		raise_message('reports_not_owner');
 
 		return false;
@@ -160,12 +155,7 @@ function reports_add_devices($report_id, $device_ids, $timespan, $align) {
 }
 
 function reports_add_graphs($report_id, $local_graph_id, $timespan, $align) {
-	$report_user = db_fetch_cell_prepared('SELECT user_id
-		FROM reports
-		WHERE id = ?',
-		array($report_id));
-
-	if ($report_user != $_SESSION['sess_user_id']) {
+	if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) $report_id, 'reports')) {
 		raise_message('reports_not_owner');
 
 		return false;

@@ -493,6 +493,14 @@ function form_save() {
 		get_filter_request_var('sequence');
 		/* ==================================================== */
 
+		/* Block edits to trees the caller does not own (admin realm 1 bypasses) */
+		if (get_filter_request_var('id') > 0
+			&& !cacti_authorize_resource($_SESSION['sess_user_id'], (int) get_request_var('id'), 'graph_tree')) {
+			raise_message('tree_idor', __('You do not have permission to modify this tree.'), MESSAGE_LEVEL_ERROR);
+			header('Location: tree.php');
+			exit;
+		}
+
 		if (get_filter_request_var('id') > 0) {
 			$prev_order = db_fetch_cell_prepared('SELECT sort_type
 				FROM graph_tree
@@ -601,6 +609,22 @@ function form_actions() {
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
+
+		/* Drop any tree id the current user is not authorised to mutate so
+		 * every action branch below runs only on rows owned by the caller or
+		 * accessible to a system admin (realm 1). */
+		if (is_array($selected_items)) {
+			$selected_items = array_values(array_filter(
+				$selected_items,
+				function ($tid) {
+					return cacti_authorize_resource($_SESSION['sess_user_id'], (int) $tid, 'graph_tree');
+				}
+			));
+
+			if (cacti_sizeof($selected_items) === 0) {
+				$selected_items = false;
+			}
+		}
 
 		if ($selected_items != false) {
 			if (get_nfilter_request_var('drp_action') == '1') { // delete

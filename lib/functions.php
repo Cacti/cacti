@@ -7823,8 +7823,20 @@ function cacti_format_ipv6_colon($address) {
 /**
  * cacti_path_is_within - Check whether a candidate path resolves to a
  * location inside a given base directory.  Both paths are resolved via
- * realpath() so symlinks and relative components are handled.  On
- * Windows the comparison is case-insensitive.
+ * realpath() so symlinks and relative components are handled.
+ *
+ * Windows notes:
+ *   - comparison is case-insensitive (NTFS is case-preserving but not
+ *     case-sensitive).
+ *   - both backslashes and forward slashes are normalised to '/' before
+ *     the comparison.
+ *   - the long-path prefixes "\\?\" and "\\?\UNC\" that realpath may
+ *     return for deep trees or UNC shares are stripped so a candidate
+ *     returned in extended form still matches a base in classic form
+ *     (and vice versa).
+ *   - UNC shares ("\\server\share\path") are supported.  The leading
+ *     "\\" is preserved as "//" after slash normalisation so the prefix
+ *     check still discriminates "//server/share" from "//server/shareX".
  *
  * @param  string $candidate  The path to test
  * @param  string $base       The base directory that must contain it
@@ -7845,11 +7857,43 @@ function cacti_path_is_within($candidate, $base) {
 	}
 
 	if (DIRECTORY_SEPARATOR === '\\') {
-		$resolved      = str_replace('\\', '/', strtolower($resolved));
-		$base_resolved = str_replace('\\', '/', strtolower($base_resolved));
+		$resolved      = cacti_normalize_windows_path($resolved);
+		$base_resolved = cacti_normalize_windows_path($base_resolved);
 	}
 
 	return strpos($resolved, $base_resolved . '/') === 0 || $resolved === $base_resolved;
+}
+
+/**
+ * cacti_normalize_windows_path - Internal helper for cacti_path_is_within.
+ *
+ * Lowercases the path for case-insensitive comparison, converts all
+ * backslashes to forward slashes, strips Windows long-path prefixes
+ * (\\?\UNC\ becomes \\, \\?\ is removed), and trims trailing slashes.
+ *
+ * @param  string $path  A path already passed through realpath()
+ * @return string        Normalised path suitable for strpos comparison
+ */
+function cacti_normalize_windows_path($path) {
+	$lower = strtolower((string) $path);
+
+	/* Long-path prefixes. Strip \\?\UNC\ first so the remaining \\ is
+	 * preserved for UNC share comparison; then strip bare \\?\ (which
+	 * only wraps drive-letter paths for filesystem APIs). */
+	if (strpos($lower, '\\\\?\\unc\\') === 0) {
+		$lower = '\\\\' . substr($lower, 8);
+	} elseif (strpos($lower, '\\\\?\\') === 0) {
+		$lower = substr($lower, 4);
+	}
+
+	$lower = str_replace('\\', '/', $lower);
+
+	/* Drop trailing slashes except for a lone '/' (drive-root case). */
+	if (strlen($lower) > 1) {
+		$lower = rtrim($lower, '/');
+	}
+
+	return $lower;
 }
 
 /**
