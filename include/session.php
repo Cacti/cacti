@@ -128,7 +128,7 @@ function cacti_db_session_destroy(string $id) : bool {
 	return true;
 }
 
-function cacti_db_session_clean(string $max) : bool {
+function cacti_db_session_clean(mixed $max) : bool { // @phpstan-ignore argument.type
 	if (!is_numeric($max)) {
 		$old = time() - 14400;
 	} else {
