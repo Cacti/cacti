@@ -143,7 +143,11 @@ if (is_array($xport_array) && isset($xport_array['meta']['start'])) {
 
 		$header = '"' . __('Date') . '"';
 		for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
-			$header .= ',"' . $xport_array['meta']['legend']['col' . $i] . '"';
+			$legend = isset($xport_array['meta']['legend']['col' . $i]) ? (string) $xport_array['meta']['legend']['col' . $i] : '';
+			/* RFC 4180 CSV quoting so a column name carrying a double-quote
+			 * or newline (often from SNMP-sourced ifAlias/ifDescr) cannot
+			 * break the CSV shape downstream. */
+			$header .= ',"' . str_replace(array("\r", "\n", '"'), array(' ', ' ', '""'), $legend) . '"';
 		}
 		$output .= $header . "\n";
 	} else {
