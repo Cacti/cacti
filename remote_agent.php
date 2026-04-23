@@ -129,6 +129,25 @@ function remote_agent_strip_domain($host) {
 	}
 }
 
+function remote_agent_auth_cache_get($key) {
+	if (function_exists('apcu_fetch')) {
+		$success = false;
+		$result = apcu_fetch($key, $success);
+
+		if ($success) {
+			return (bool)$result;
+		}
+	}
+
+	return null;
+}
+
+function remote_agent_auth_cache_set($key, $value, $ttl = 30) {
+	if (function_exists('apcu_store')) {
+		apcu_store($key, (bool)$value, $ttl);
+	}
+}
+
 function remote_client_authorized() {
 	global $config, $poller_db_cnn_id;
 
@@ -176,11 +195,19 @@ function remote_client_authorized() {
 		return false;
 	}
 
+	sort($allowed_hostnames);
+	$cache_key = 'remote_agent_auth:' . md5($client_addr . '|' . implode(',', $allowed_hostnames));
+	$cached = remote_agent_auth_cache_get($cache_key);
+	if ($cached !== null) {
+		return $cached;
+	}
+
 	$client_name = gethostbyaddr($client_addr);
 
 	if ($client_name === false || $client_name == $client_addr) {
 		cacti_log('NOTE: Unable to resolve hostname from address ' . $client_addr, false, 'WEBUI', POLLER_VERBOSITY_MEDIUM);
 		cacti_log("Unauthorized remote agent access attempt from $client_addr", false, 'SECURITY');
+		remote_agent_auth_cache_set($cache_key, false);
 
 		return false;
 	}
@@ -189,6 +216,7 @@ function remote_client_authorized() {
 
 	if (!in_array($normalized_client_name, $allowed_hostnames, true)) {
 		cacti_log("Unauthorized remote agent access attempt from $client_name ($client_addr)", false, 'SECURITY');
+		remote_agent_auth_cache_set($cache_key, false);
 
 		return false;
 	}
@@ -211,9 +239,12 @@ function remote_client_authorized() {
 	if (!$forward_match) {
 		$safe_name = preg_replace('/[^a-zA-Z0-9.\-:]/', '', $client_name);
 		cacti_log('WARNING: PTR record for ' . $client_addr . ' resolves to ' . $safe_name . ' but forward lookup does not match. Rejecting.', false, 'SECURITY');
+		remote_agent_auth_cache_set($cache_key, false);
 
 		return false;
 	}
+
+	remote_agent_auth_cache_set($cache_key, true);
 
 	return true;
 }
@@ -271,7 +302,7 @@ function get_graph_data() {
 
 	/* set the theme */
 	if (isset_request_var('graph_theme')) {
-		$graph_data_array['graph_theme'] = get_request_var('graph_theme');
+		$graph_data_array['graph_theme'] = cacti_validate_theme(get_request_var('graph_theme'));
 	}
 
 	/* set the theme */

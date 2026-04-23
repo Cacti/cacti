@@ -105,10 +105,7 @@ if (isset_request_var('disable_cache')) {
 
 /* set the theme — validate against installed themes to prevent LFI */
 if (isset_request_var('graph_theme')) {
-	$requested_theme = basename(get_request_var('graph_theme'));
-	if (is_dir($config['base_path'] . '/include/themes/' . $requested_theme)) {
-		$graph_data_array['graph_theme'] = $requested_theme;
-	}
+	$graph_data_array['graph_theme'] = cacti_validate_theme(get_request_var('graph_theme'));
 }
 
 if (isset_request_var('rra_id')) {
@@ -173,7 +170,7 @@ if ($config['poller_id'] == 1 || read_config_option('storage_location')) {
 
 	/* get the theme */
 	if (!isset_request_var('graph_theme')) {
-		$graph_data_array['graph_theme'] = get_selected_theme();
+		$graph_data_array['graph_theme'] = cacti_validate_theme(get_selected_theme());
 	}
 
 	if (isset($_SESSION['sess_user_id'])) {
@@ -266,5 +263,4 @@ header('Cache-Control: max-age=15');
 $json = json_encode($oarray);
 header('Content-Length: ' . strlen($json));
 print $json;
-
 

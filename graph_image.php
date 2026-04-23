@@ -120,10 +120,7 @@ if (isset_request_var('disable_cache')) {
 
 /* set the theme — validate against installed themes to prevent LFI */
 if (isset_request_var('graph_theme')) {
-	$requested_theme = basename(get_request_var('graph_theme'));
-	if (is_dir($config['base_path'] . '/include/themes/' . $requested_theme)) {
-		$graph_data_array['graph_theme'] = $requested_theme;
-	}
+	$graph_data_array['graph_theme'] = cacti_validate_theme(get_request_var('graph_theme'));
 }
 
 if (isset_request_var('rra_id')) {
@@ -201,4 +198,3 @@ if ($output !== false && $output != '') {
 		print file_get_contents(__DIR__ . '/images/cacti_error_image.png');
 	}
 }
-
