@@ -30,6 +30,7 @@ An advisory is considered fully proven only when all of the following are presen
 4. `Cross-call-site containment`
    - Review and cover other call sites with the same sink pattern.
    - Add/extend shared helper usage or central validation so future call sites inherit protection.
+   - Track helper adoption and hotspot drift using architectural helper reports.
 
 ## Proof Status Levels
 
@@ -65,3 +66,5 @@ Use:
 - `scripts/security/freeze_private_advisory_evidence.sh`
 - `scripts/security/build_sink_inventory.sh`
 - `scripts/security/verify_sink_inventory.sh`
+- `scripts/security/build_architectural_helper_report.sh`
+- `scripts/security/verify_architectural_hotspots.sh`

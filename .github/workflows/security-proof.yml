@@ -29,7 +29,7 @@ concurrency:
 
 jobs:
   sink-inventory-guard:
-    name: sink inventory guard
+    name: sink and architectural hotspot guard
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -37,6 +37,9 @@ jobs:
 
       - name: Verify tracked sink baseline
         run: scripts/security/verify_sink_inventory.sh
+
+      - name: Verify no new architectural hotspots
+        run: scripts/security/verify_architectural_hotspots.sh
 
   advisory-proof-matrix:
     name: private advisory proof matrix
@@ -60,6 +63,8 @@ jobs:
             "${{ inputs.branch_list }}" \
             "${out_dir}"
           scripts/security/build_sink_inventory.sh > "${out_dir}/sink_inventory.current.tsv"
+          scripts/security/build_architectural_helper_report.sh --summary > "${out_dir}/architectural_helper.summary.tsv"
+          scripts/security/build_architectural_helper_report.sh --hotspots > "${out_dir}/architectural_helper.hotspots.tsv"
 
       - name: Enforce closure gate
         if: inputs.strict_gate == 'true'
