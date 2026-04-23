@@ -22,6 +22,13 @@
  +-------------------------------------------------------------------------+
 */
 
+/* xml2array() is defined in lib/xml.php. Several functions here
+ * (import_xml_data, import_get_package_info, and the template import
+ * loop) call it without the package_read pipeline first visiting
+ * import_xml_data, so the include is hoisted to file scope rather
+ * than kept inside import_xml_data. */
+include_once(CACTI_PATH_LIBRARY . '/xml.php');
+
 function import_xml_data(string &$xml_data, bool $import_as_new, int $profile_id,
 	bool $remove_orphans = false, bool $replace_svalues = false, array $import_hashes = []) : mixed {
 	global $hash_type_codes, $cacti_version_codes, $ignorable_hashes, $preview_only;
