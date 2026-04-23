@@ -36,8 +36,8 @@
  * (405 for method, 403 for realm/ACL), and returns. A mis-declared
  * ACL (non-callable) denies rather than silently bypasses.
  *
- * @param array  $actions  Action table (see shape above).
- * @param string $default  Action name to use when the request has none.
+ * @param array  $actions Action table (see shape above).
+ * @param string $default Action name to use when the request has none.
  *
  * @return void
  */
@@ -63,7 +63,7 @@ function cacti_dispatch(array $actions, $default = '') {
 	/* Enforce HTTP method. cacti_strtoupper() is preferred over strtoupper()
 	 * so the locale does not affect the comparison, and REQUEST_METHOD is
 	 * defaulted because CLI contexts (tests) do not set it. */
-	$method = isset($entry['method']) ? cacti_strtoupper((string) $entry['method']) : 'ANY';
+	$method         = isset($entry['method']) ? cacti_strtoupper((string) $entry['method']) : 'ANY';
 	$request_method = isset($_SERVER['REQUEST_METHOD']) ? cacti_strtoupper((string) $_SERVER['REQUEST_METHOD']) : 'GET';
 
 	if ($method !== 'ANY' && $request_method !== $method) {
@@ -74,7 +74,7 @@ function cacti_dispatch(array $actions, $default = '') {
 		return;
 	}
 
-	/* Enforce realm permission. */
+	// Enforce realm permission.
 	if (isset($entry['realm']) && !is_realm_allowed($entry['realm'])) {
 		cacti_log('WARNING: cacti_dispatch: realm ' . $entry['realm'] . ' denied for action "' . $action . '"', false, 'WEBUI');
 		cacti_dispatch_deny(403);
@@ -101,7 +101,7 @@ function cacti_dispatch(array $actions, $default = '') {
 		}
 	}
 
-	/* Dispatch. */
+	// Dispatch.
 	if (!isset($entry['callback']) || !is_callable($entry['callback'])) {
 		cacti_log('ERROR: cacti_dispatch: callback for action "' . $action . '" is not callable', false, 'WEBUI');
 		cacti_dispatch_deny(500);
@@ -124,12 +124,13 @@ function cacti_dispatch(array $actions, $default = '') {
  * the existing raise_ajax_permission_denied() function that Cacti
  * loads unconditionally from lib/functions.php.
  *
- * @param int $status  HTTP status code to emit. Defaults to 403.
+ * @param int $status HTTP status code to emit. Defaults to 403.
  *
  * @return void
  */
 function cacti_dispatch_deny($status = 403) {
 	$status = (int) $status;
+
 	if ($status < 400 || $status >= 600) {
 		$status = 403;
 	}

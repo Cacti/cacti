@@ -51,7 +51,7 @@ test('cacti_dispatch rejects non-string action inputs before offset access', fun
 });
 
 test('cacti_dispatch denies unknown actions via cacti_dispatch_deny', function () use ($source) {
-	$start = strpos($source, "!isset(\$actions[\$action])");
+	$start = strpos($source, '!isset($actions[$action])');
 	expect($start)->not->toBeFalse();
 
 	$block = substr($source, $start, 400);
@@ -72,7 +72,7 @@ test('cacti_dispatch uses cacti_strtoupper and defaults REQUEST_METHOD for CLI',
 
 test('cacti_dispatch denies the request when the declared realm is not allowed', function () use ($source) {
 	expect($source)->toContain("!is_realm_allowed(\$entry['realm'])");
-	$start = strpos($source, "!is_realm_allowed");
+	$start = strpos($source, '!is_realm_allowed');
 	$block = substr($source, $start, 400);
 	expect($block)->toContain("cacti_log('WARNING: cacti_dispatch: realm ");
 	expect($block)->toContain('cacti_dispatch_deny(403)');
