@@ -64,6 +64,8 @@ resource/**
 
 # Ignore Cacti script files/folders
 scripts/**
+!scripts/security/
+!scripts/security/*.sh
 
 # Ignore Custom Cacti theme folders
 include/themes/*/*
