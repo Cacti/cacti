@@ -21,14 +21,14 @@ printf 'category\tlocation\tmatch\n'
 scan() {
 	local category="$1"
 	local pattern="$2"
-	rg -n --pcre2 "$pattern" "${EXCLUDE[@]}" --glob '*.php' . | while IFS= read -r line; do
+	rg -n --pcre2 "$pattern" "${EXCLUDE[@]}" --glob '*.php' . 2>/dev/null | while IFS= read -r line; do
 		file="${line%%:*}"
 		rest="${line#*:}"
 		lineno="${rest%%:*}"
 		loc="${file}:${lineno}"
 		match="${line#*:*:}"
 		printf '%s\t%s\t%s\n' "$category" "$loc" "$match"
-	done
+	done || true
 }
 
 # Command execution sinks
