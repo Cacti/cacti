@@ -23,99 +23,122 @@
 */
 
 /**
- * Centralized action dispatcher with method and realm enforcement.
- *
- * Replaces ad-hoc switch/case blocks on $_REQUEST['action'] with a
- * declarative action table that enforces HTTP method, realm
- * permission, and optional object-level ACL before dispatching.
- * @param mixed $actions
- * @param mixed $default
- */
-
-/**
- * Dispatch the current request to an action handler.
+ * cacti_dispatch - Run the current request against a declarative action table.
  *
  * Each entry in $actions is keyed by action name and contains:
- *   'callback'   => callable  (required)
- *   'method'     => string    HTTP method: 'GET', 'POST', or 'ANY' (default 'ANY')
- *   'realm'      => int|null  Realm ID required (null = no check, default null)
- *   'object_acl' => callable|null  Extra ACL callback returning bool (default null)
+ *   'callback'   => callable  (required; the handler)
+ *   'method'     => string    'GET', 'POST', or 'ANY' (default 'ANY')
+ *   'realm'      => int|null  Realm id that must be allowed (default null)
+ *   'object_acl' => callable  Optional per-row ACL returning bool
  *
- * @param array  $actions Action dispatch table
- * @param string $default Action name to use when request var is missing
+ * Guards run in method -> realm -> object-ACL order. A fail at any
+ * guard logs with category 'WEBUI', emits the matching HTTP status
+ * (405 for method, 403 for realm/ACL), and returns. A mis-declared
+ * ACL (non-callable) denies rather than silently bypasses.
+ *
+ * @param array  $actions  Action table (see shape above).
+ * @param string $default  Action name to use when the request has none.
  *
  * @return void
  */
-function cacti_dispatch($actions, $default = '') {
-	$action = get_nfilter_request_var('action');
+function cacti_dispatch(array $actions, $default = '') {
+	$default = is_string($default) ? $default : '';
+	$action  = get_nfilter_request_var('action');
 
-	if ($action === '' || $action === null) {
+	/* Reject array / non-scalar action inputs before using as an offset
+	 * so `?action[]=x` cannot produce a TypeError on isset(). */
+	if (!is_string($action) || $action === '') {
 		$action = $default;
 	}
 
-	if (!isset($actions[$action])) {
-		cacti_log('WARNING: cacti_dispatch: unknown action "' . $action . '" from ' . get_client_addr(), false, 'WEBUI');
-
-		raise_ajax_permission_denied();
+	if ($action === '' || !isset($actions[$action])) {
+		cacti_log('WARNING: cacti_dispatch: unknown action "' . (is_string($action) ? $action : '(non-string)') . '" from ' . get_client_addr(), false, 'WEBUI');
+		cacti_dispatch_deny(403);
 
 		return;
 	}
 
 	$entry = $actions[$action];
 
-	// enforce HTTP method
-	$method = isset($entry['method']) ? strtoupper($entry['method']) : 'ANY';
+	/* Enforce HTTP method. cacti_strtoupper() is preferred over strtoupper()
+	 * so the locale does not affect the comparison, and REQUEST_METHOD is
+	 * defaulted because CLI contexts (tests) do not set it. */
+	$method = isset($entry['method']) ? cacti_strtoupper((string) $entry['method']) : 'ANY';
+	$request_method = isset($_SERVER['REQUEST_METHOD']) ? cacti_strtoupper((string) $_SERVER['REQUEST_METHOD']) : 'GET';
 
-	if ($method !== 'ANY' && $_SERVER['REQUEST_METHOD'] !== $method) {
-		cacti_log('WARNING: cacti_dispatch: method mismatch for action "' . $action . '" (expected ' . $method . ', got ' . $_SERVER['REQUEST_METHOD'] . ')', false, 'WEBUI');
-
+	if ($method !== 'ANY' && $request_method !== $method) {
+		cacti_log('WARNING: cacti_dispatch: method mismatch for action "' . $action . '" (expected ' . $method . ', got ' . $request_method . ')', false, 'WEBUI');
 		header('HTTP/1.1 405 Method Not Allowed');
 		header('Allow: ' . $method);
 
 		return;
 	}
 
-	// enforce realm permission
-	if (isset($entry['realm'])) {
-		if (!is_realm_allowed($entry['realm'])) {
-			cacti_log('WARNING: cacti_dispatch: realm ' . $entry['realm'] . ' denied for action "' . $action . '"', false, 'WEBUI');
+	/* Enforce realm permission. */
+	if (isset($entry['realm']) && !is_realm_allowed($entry['realm'])) {
+		cacti_log('WARNING: cacti_dispatch: realm ' . $entry['realm'] . ' denied for action "' . $action . '"', false, 'WEBUI');
+		cacti_dispatch_deny(403);
 
-			raise_ajax_permission_denied();
+		return;
+	}
+
+	/* Enforce object-level ACL. A declared-but-non-callable ACL is
+	 * treated as a misdeclaration and fails closed rather than silently
+	 * bypassing authorisation. */
+	if (array_key_exists('object_acl', $entry) && $entry['object_acl'] !== null) {
+		if (!is_callable($entry['object_acl'])) {
+			cacti_log('ERROR: cacti_dispatch: object_acl for action "' . $action . '" is not callable', false, 'WEBUI');
+			cacti_dispatch_deny(403);
 
 			return;
 		}
-	}
 
-	// enforce object-level ACL
-	if (isset($entry['object_acl']) && is_callable($entry['object_acl'])) {
 		if (!call_user_func($entry['object_acl'])) {
 			cacti_log('WARNING: cacti_dispatch: object ACL denied for action "' . $action . '"', false, 'WEBUI');
-
-			raise_ajax_permission_denied();
+			cacti_dispatch_deny(403);
 
 			return;
 		}
 	}
 
-	// dispatch
-	if (is_callable($entry['callback'])) {
-		call_user_func($entry['callback']);
-	} else {
+	/* Dispatch. */
+	if (!isset($entry['callback']) || !is_callable($entry['callback'])) {
 		cacti_log('ERROR: cacti_dispatch: callback for action "' . $action . '" is not callable', false, 'WEBUI');
+		cacti_dispatch_deny(500);
+
+		return;
 	}
+
+	call_user_func($entry['callback']);
 }
 
 /**
- * Return a 403 response for permission failures.
+ * cacti_dispatch_deny - Emit the denial response for a failed guard.
  *
- * Wraps the existing raise_ajax_permission_denied() or falls back
- * to a plain header if the function is not yet loaded.
+ * Uses raise_ajax_permission_denied() from lib/functions.php when that
+ * helper is already loaded so AJAX callers see the right 401 envelope,
+ * and always follows with an explicit 403 Forbidden (or the requested
+ * status) header so non-AJAX callers do not fall through to a 200.
+ *
+ * The helper is prefixed with cacti_dispatch_ to avoid colliding with
+ * the existing raise_ajax_permission_denied() function that Cacti
+ * loads unconditionally from lib/functions.php.
+ *
+ * @param int $status  HTTP status code to emit. Defaults to 403.
  *
  * @return void
  */
-if (!function_exists('raise_ajax_permission_denied')) {
-	function raise_ajax_permission_denied() {
-		header('HTTP/1.1 403 Forbidden');
-		print 'Access Denied';
+function cacti_dispatch_deny($status = 403) {
+	$status = (int) $status;
+	if ($status < 400 || $status >= 600) {
+		$status = 403;
+	}
+
+	if (function_exists('raise_ajax_permission_denied')) {
+		raise_ajax_permission_denied();
+	}
+
+	if (!headers_sent()) {
+		http_response_code($status);
 	}
 }
