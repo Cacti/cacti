@@ -8208,7 +8208,9 @@ function cacti_validate_sort_column(string $column, array $allowed, string $defa
  * hardcoded path, a path allowlist, or a path_* config option that
  * itself is admin-only.
  *
- * @param string $binary  Path or name of the executable. Must not contain spaces.
+ * @param string $binary  Path or name of the executable. Must not contain spaces
+ *                        and must not begin with '-'. A leading dash can be
+ *                        interpreted as an option by shell/process wrappers.
  * @param array  $args    Arguments. Each is escaped independently.
  * @param array  $out     By-ref slot for captured stdout (one line per entry).
  *
@@ -8221,6 +8223,10 @@ function cacti_exec($binary, array $args = array(), array &$out = array()) {
 
 	if ($binary === '' || preg_match('/\s/', $binary)) {
 		throw new InvalidArgumentException('cacti_exec(): binary must be a single token with no whitespace. Arguments go in $args.');
+	}
+
+	if ($binary[0] === '-') {
+		throw new InvalidArgumentException('cacti_exec(): binary must not begin with "-".');
 	}
 
 	$command = cacti_escapeshellcmd($binary);
@@ -8358,153 +8364,4 @@ function cacti_plugin_path($plugin, $relative = '') {
 	$resolved = validate_relative_path_within((string) $relative, $plugin_base);
 
 	return $resolved !== false ? $resolved : false;
-}
-||||||| parent of e7b55cedd (fix(security): use allowlist for graph_theme to prevent LFI)
-
-/**
- * cacti_time_zone_set - Given an offset in minutes, attempt
- * to set a PHP date.timezone.  There are some oddballs that
- * we have to accommodate.
- *
- * @return - null
- */
-function cacti_time_zone_set($gmt_offset) {
-	if (!cacti_browser_zone_enabled()) {
-		return;
-	}
-
-	$hours     = floor($gmt_offset / 60);
-	$remaining = $gmt_offset % 60;
-
-	if (!isset($_SESSION['sess_php_tz'])) {
-		$_SESSION['sess_php_tz']    = ini_get('date.timezone');
-		$_SESSION['sess_system_tz'] = getenv('TZ');
-	}
-
-	$zone = timezone_name_from_abbr('', $gmt_offset);
-
-	if ($remaining == 0) {
-		putenv('TZ=GMT' . ($hours > 0 ? '-':'+') . abs($hours));
-
-		$sys_offset = 'GMT' . ($hours > 0 ? '-':'+') . abs($hours);
-
-		if ($zone !== false) {
-			$php_offset = $zone;
-			ini_set('date.timezone', $zone);
-		} else {
-			// Adding the rounding function as some timezones are Etc/GMT+5.5 which is
-			// not supported in PHP yet.
-			$php_offset = 'Etc/GMT' . ($hours > 0 ? '-':'+') . abs(round($hours));
-			ini_set('date.timezone', 'Etc/GMT' . ($hours > 0 ? '-':'+') . abs(round($hours)));
-		}
-
-		$_SESSION['sess_browser_system_tz'] = $sys_offset;
-		$_SESSION['sess_browser_php_tz']    = $php_offset;
-	} else {
-		$time = ($hours > 0 ? '-':'+') . abs($hours) . ':' . substr('00' . $remaining, -2);
-
-		if ($zone === false) {
-			switch($time) {
-				case '+3:30':
-					$zone = 'IRST';
-					break;
-				case '+4:30':
-					$zone = 'IRDT';
-					break;
-				case '+5:30':
-					$zone = 'IST';
-					break;
-				case '+5:45':
-					$zone = 'NPT';
-					break;
-				case '+6:30':
-					$zone = 'CCT';
-					break;
-				case '+9:30':
-					$zone = 'ACST';
-					break;
-				case '+10:30':
-					$zone = 'ACDT';
-					break;
-				case '+8:45':
-					$zone = 'ACWST';
-					break;
-				case '+12:45':
-					$zone = 'CHAST';
-					break;
-				case '+13:45':
-					$zone = 'CHADT';
-					break;
-				case '-3:30':
-					$zone = 'NST';
-					break;
-				case '-2:30':
-					$zone = 'NDT';
-					break;
-				case '-9:30':
-					$zone = 'MART';
-					break;
-			}
-
-			if ($zone !== false) {
-				$zone = timezone_name_from_abbr($zone);
-			}
-		}
-
-		$php_offset = $zone;
-		$sys_offset = 'GMT' . $time;
-
-		putenv('TZ=GMT' . $time);
-
-		if ($zone != '') {
-			ini_set('date.timezone', $zone);
-		}
-
-		$_SESSION['sess_browser_system_tz'] = $sys_offset;
-		$_SESSION['sess_browser_php_tz']    = $php_offset;
-	}
-}
-
-function debounce_run_notification($id, $frequency = 7200) {
-	$full = 'debounce_' . $id;
-	$key   = substr($full, 0, 50);
-
-	if ($full !== $key) {
-		cacti_debug_backtrace("ERROR: debounce key was truncated from $full to $key");
-	}
-
-	/* debounce admin emails */
-	$last = read_config_option($key);
-	$now  = time();
-
-	if (empty($last) || $now - $last > $frequency) {
-		set_config_option($key, $now);
-		return true;
-	}
-
-	return false;
-}
-
-function cacti_unserialize($strobj) {
-	if (version_compare(PHP_VERSION, '7.0.0', '>=')) {
-		return unserialize($strobj, array('allowed_classes' => false));
-	} else {
-		return unserialize($strobj);
-	}
-}
-
-function cacti_format_ipv6_colon($address) {
-	if (!filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-		return $address;
-	}
-
-	if (strpos($address, '[') !== false) {
-		return $address;
-	}
-
-	if (strpos($address, ':') !== false) {
-		return '[' . $address . ']';
-	}
-
-	return($address);
 }

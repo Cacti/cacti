@@ -9,7 +9,7 @@
 
 $reportsSource = file_get_contents(__DIR__ . '/../../lib/reports.php');
 
-test('GHSA-g37j / GHSA-mjvw: reports_load_format_file anchors the path to the formats directory', function () use ($reportsSource) {
+test('GHSA-g37j-39f4-6r4j / GHSA-mjvw-mhj5-9jcj: reports_load_format_file anchors the path to the formats directory', function () use ($reportsSource) {
 	$start = strpos($reportsSource, 'function reports_load_format_file(');
 	expect($start)->not->toBeFalse();
 
@@ -21,7 +21,7 @@ test('GHSA-g37j / GHSA-mjvw: reports_load_format_file anchors the path to the fo
 	expect($body)->toContain("validate_path_within(\$format_file, \$config['base_path'] . '/formats')");
 });
 
-test('GHSA-g37j / GHSA-mjvw: invalid format paths are logged and rejected', function () use ($reportsSource) {
+test('GHSA-g37j-39f4-6r4j / GHSA-mjvw-mhj5-9jcj: invalid format paths are logged and rejected', function () use ($reportsSource) {
 	$start = strpos($reportsSource, 'function reports_load_format_file(');
 	$end   = strpos($reportsSource, "\n}\n", $start);
 	$body  = substr($reportsSource, $start, $end - $start);
@@ -31,7 +31,7 @@ test('GHSA-g37j / GHSA-mjvw: invalid format paths are logged and rejected', func
 	expect($body)->toContain('return false;');
 });
 
-test('GHSA-g37j / GHSA-mjvw: validation precedes any file read', function () use ($reportsSource) {
+test('GHSA-g37j-39f4-6r4j / GHSA-mjvw-mhj5-9jcj: validation precedes any file read', function () use ($reportsSource) {
 	$start = strpos($reportsSource, 'function reports_load_format_file(');
 	$end   = strpos($reportsSource, "\n}\n", $start);
 	$body  = substr($reportsSource, $start, $end - $start);
@@ -47,7 +47,7 @@ test('GHSA-g37j / GHSA-mjvw: validation precedes any file read', function () use
 	expect($validatePos)->toBeLessThan($filePos);
 });
 
-test('GHSA-g37j / GHSA-mjvw: validated path is re-assigned before use', function () use ($reportsSource) {
+test('GHSA-g37j-39f4-6r4j / GHSA-mjvw-mhj5-9jcj: validated path is re-assigned before use', function () use ($reportsSource) {
 	$start = strpos($reportsSource, 'function reports_load_format_file(');
 	$end   = strpos($reportsSource, "\n}\n", $start);
 	$body  = substr($reportsSource, $start, $end - $start);
