@@ -11,6 +11,8 @@ mkdir -p "$OUT_BASE"
 
 "${ROOT_DIR}/scripts/security/build_private_advisory_matrix.sh" "$REPO" "$BRANCHES" "$OUT_BASE"
 "${ROOT_DIR}/scripts/security/build_sink_inventory.sh" > "${OUT_BASE}/sink_inventory.current.tsv"
+"${ROOT_DIR}/scripts/security/build_architectural_helper_report.sh" --summary > "${OUT_BASE}/architectural_helper.summary.tsv"
+"${ROOT_DIR}/scripts/security/build_architectural_helper_report.sh" --hotspots > "${OUT_BASE}/architectural_helper.hotspots.tsv"
 
 cat > "${OUT_BASE}/README.txt" <<EOF
 Private advisory evidence freeze
@@ -23,6 +25,8 @@ Artifacts:
 - private_advisory_keys.txt
 - private_advisory_proof_matrix.tsv
 - sink_inventory.current.tsv
+- architectural_helper.summary.tsv
+- architectural_helper.hotspots.tsv
 EOF
 
 echo "WROTE: ${OUT_BASE}"
