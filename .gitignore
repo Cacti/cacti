@@ -99,6 +99,12 @@ include/vendor/csrf/csrf-secret.php
 # Ignore visual studio code
 .vscode/**
 
+# Ignore local developer tooling state (Claude Code, oh-my-claudecode, git worktrees, local notes)
+.claude/
+.omc/
+.worktrees/
+notepad.md
+
 # Ignore vendor folders
 include/vendor/**
 vendor/**
