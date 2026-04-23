@@ -35,6 +35,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install ripgrep
+        run: sudo apt-get install -y ripgrep
+
       - name: Verify tracked sink baseline
         run: scripts/security/verify_sink_inventory.sh
 
