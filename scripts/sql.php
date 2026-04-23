@@ -6,15 +6,18 @@ include(dirname(__FILE__) . '/../include/cli_check.php');
 
 global $database_hostname, $database_username, $database_password;
 
-$cmd = 'mysqladmin -h ' . cacti_escapeshellarg($database_hostname) . ' -u ' . cacti_escapeshellarg($database_username);
+$args = array(
+	'--host=' . $database_hostname,
+	'--user=' . $database_username
+);
 
 if ($database_password != '') {
-	$cmd .= ' -p' . cacti_escapeshellarg($database_password);
+	$args[] = '--password=' . $database_password;
 }
 
-$cmd .= ' status';
+$args[] = 'status';
 
-$output = shell_exec($cmd);
+$output = cacti_exec_string('mysqladmin', $args);
 
 if ($output === null || $output === '') {
 	print 'U';

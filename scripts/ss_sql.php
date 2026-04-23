@@ -36,13 +36,16 @@ function ss_sql() {
 	global $database_password;
 	global $database_hostname;
 
-	$cmd = 'mysqladmin --host=' . cacti_escapeshellarg($database_hostname) . ' --user=' . cacti_escapeshellarg($database_username);
+	$args = array(
+		'--host=' . $database_hostname,
+		'--user=' . $database_username
+	);
 
 	if ($database_password != '') {
-		$cmd .= ' --password=' . cacti_escapeshellarg($database_password);
+		$args[] = '--password=' . $database_password;
 	}
 
-	$result = shell_exec($cmd);
+	$result = cacti_exec_string('mysqladmin', $args);
 	
 	$result = preg_replace('/: /', ':', $result);
 	$result = preg_replace('/  /', ' ', $result);
@@ -53,4 +56,3 @@ function ss_sql() {
 
 	return trim($result) ?: 'U';
 }
-

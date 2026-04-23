@@ -15,11 +15,10 @@
 /*
  * Tests for scripts/sql.php and scripts/ss_sql.php.
  *
- * Covers two hardening steps:
- * 1. Backtick-to-shell_exec migration (PHP 8.4 deprecates the backtick
- *    operator; the fix replaces backticks with shell_exec()).
- * 2. cacti_escapeshellarg() wrapper (Cacti's internal contract; bare
- *    escapeshellarg() bypasses any future Cacti-level escaping hooks).
+ * Covers the mysqladmin wrapper hardening:
+ * 1. Commands are executed through cacti_exec_string().
+ * 2. Arguments are passed as structured argv pieces (no hand-built shell
+ *    command strings in these scripts).
  */
 
 $sqlPhpPath   = __DIR__ . '/../../scripts/sql.php';
@@ -33,48 +32,42 @@ test('sql.php contains no backtick operators', function () use ($sqlPhpPath) {
 	expect($contents)->not->toMatch('/`[^`]*mysqladmin[^`]*`/');
 });
 
-test('sql.php uses shell_exec for command execution', function () use ($sqlPhpPath) {
+test('sql.php uses cacti_exec_string for command execution', function () use ($sqlPhpPath) {
 	$contents = file_get_contents($sqlPhpPath);
 
-	expect($contents)->toContain('shell_exec(');
+	expect($contents)->toContain("cacti_exec_string('mysqladmin', \$args)");
 });
 
-test('sql.php escapes database_hostname with cacti_escapeshellarg', function () use ($sqlPhpPath) {
+test('sql.php passes host argument as structured mysqladmin flag', function () use ($sqlPhpPath) {
 	$contents = file_get_contents($sqlPhpPath);
 
-	expect($contents)->toContain('cacti_escapeshellarg($database_hostname)');
+	expect($contents)->toContain("'--host=' . \$database_hostname");
 });
 
-test('sql.php escapes database_username with cacti_escapeshellarg', function () use ($sqlPhpPath) {
+test('sql.php passes user argument as structured mysqladmin flag', function () use ($sqlPhpPath) {
 	$contents = file_get_contents($sqlPhpPath);
 
-	expect($contents)->toContain('cacti_escapeshellarg($database_username)');
+	expect($contents)->toContain("'--user=' . \$database_username");
 });
 
-test('sql.php escapes database_password with cacti_escapeshellarg', function () use ($sqlPhpPath) {
+test('sql.php passes password argument as structured mysqladmin flag', function () use ($sqlPhpPath) {
 	$contents = file_get_contents($sqlPhpPath);
 
-	expect($contents)->toContain('cacti_escapeshellarg($database_password)');
+	expect($contents)->toContain("'--password=' . \$database_password");
 });
 
-test('sql.php uses no bare escapeshellarg calls', function () use ($sqlPhpPath) {
+test('sql.php does not call shell_exec directly', function () use ($sqlPhpPath) {
 	$contents = file_get_contents($sqlPhpPath);
 
-	// Negative lookbehind: match escapeshellarg( NOT preceded by cacti_
-	expect(preg_match('/(?<!cacti_)escapeshellarg\(/', $contents))->toBe(0);
+	expect($contents)->not->toContain('shell_exec(');
 });
 
-test('sql.php handles null return from shell_exec', function () use ($sqlPhpPath) {
-	$contents = file_get_contents($sqlPhpPath);
-
-	expect($contents)->toContain("?? ''");
-});
-
-test('sql.php returns U on empty/null shell_exec output', function () use ($sqlPhpPath) {
+test('sql.php returns U on empty execution output', function () use ($sqlPhpPath) {
 	$contents = file_get_contents($sqlPhpPath);
 
 	/* Cacti data source scripts must return 'U' on error, never empty string. */
-	expect($contents)->toContain(": 'U'");
+	expect($contents)->toContain("if (\$output === null || \$output === '')");
+	expect($contents)->toContain("print 'U';");
 });
 
 // --- scripts/ss_sql.php: no backtick operators remain ---
@@ -85,41 +78,34 @@ test('ss_sql.php contains no backtick operators', function () use ($ssSqlPhpPath
 	expect($contents)->not->toMatch('/`[^`]*mysqladmin[^`]*`/');
 });
 
-test('ss_sql.php uses shell_exec for command execution', function () use ($ssSqlPhpPath) {
+test('ss_sql.php uses cacti_exec_string for command execution', function () use ($ssSqlPhpPath) {
 	$contents = file_get_contents($ssSqlPhpPath);
 
-	expect($contents)->toContain('shell_exec(');
+	expect($contents)->toContain("cacti_exec_string('mysqladmin', \$args)");
 });
 
-test('ss_sql.php escapes database_hostname with cacti_escapeshellarg', function () use ($ssSqlPhpPath) {
+test('ss_sql.php passes host argument as structured mysqladmin flag', function () use ($ssSqlPhpPath) {
 	$contents = file_get_contents($ssSqlPhpPath);
 
-	expect($contents)->toContain('cacti_escapeshellarg($database_hostname)');
+	expect($contents)->toContain("'--host=' . \$database_hostname");
 });
 
-test('ss_sql.php escapes database_username with cacti_escapeshellarg', function () use ($ssSqlPhpPath) {
+test('ss_sql.php passes user argument as structured mysqladmin flag', function () use ($ssSqlPhpPath) {
 	$contents = file_get_contents($ssSqlPhpPath);
 
-	expect($contents)->toContain('cacti_escapeshellarg($database_username)');
+	expect($contents)->toContain("'--user=' . \$database_username");
 });
 
-test('ss_sql.php escapes database_password with cacti_escapeshellarg', function () use ($ssSqlPhpPath) {
+test('ss_sql.php passes password argument as structured mysqladmin flag', function () use ($ssSqlPhpPath) {
 	$contents = file_get_contents($ssSqlPhpPath);
 
-	expect($contents)->toContain('cacti_escapeshellarg($database_password)');
+	expect($contents)->toContain("'--password=' . \$database_password");
 });
 
-test('ss_sql.php uses no bare escapeshellarg calls', function () use ($ssSqlPhpPath) {
+test('ss_sql.php does not call shell_exec directly', function () use ($ssSqlPhpPath) {
 	$contents = file_get_contents($ssSqlPhpPath);
 
-	// Negative lookbehind: match escapeshellarg( NOT preceded by cacti_
-	expect(preg_match('/(?<!cacti_)escapeshellarg\(/', $contents))->toBe(0);
-});
-
-test('ss_sql.php handles null return from shell_exec', function () use ($ssSqlPhpPath) {
-	$contents = file_get_contents($ssSqlPhpPath);
-
-	expect($contents)->toContain("?? ''");
+	expect($contents)->not->toContain('shell_exec(');
 });
 
 test('ss_sql.php returns U on empty/null shell_exec output', function () use ($ssSqlPhpPath) {
@@ -129,14 +115,13 @@ test('ss_sql.php returns U on empty/null shell_exec output', function () use ($s
 	expect($contents)->toContain(": 'U'");
 });
 
-// --- runtime: cacti_escapeshellarg is callable and ss_sql() falls back to 'U' ---
+// --- runtime: cacti_exec_string is callable and ss_sql() falls back to 'U' ---
 
-test('ss_sql() returns U when shell_exec produces no output', function () use ($ssSqlPhpPath) {
-	/* Bootstrap cacti_escapeshellarg if global.php has not yet been loaded. */
-	if (!function_exists('cacti_escapeshellarg')) {
-		/* Minimal stub: delegate to the native call so arg-quoting still works. */
-		function cacti_escapeshellarg(string $arg, bool $quote = true): string {
-			return escapeshellarg($arg);
+test('ss_sql() returns U when cacti_exec_string produces no output', function () use ($ssSqlPhpPath) {
+	/* Bootstrap cacti_exec_string if global.php has not yet been loaded. */
+	if (!function_exists('cacti_exec_string')) {
+		function cacti_exec_string($binary, array $args = array()) {
+			return '';
 		}
 	}
 
@@ -152,7 +137,7 @@ test('ss_sql() returns U when shell_exec produces no output', function () use ($
 		require $ssSqlPhpPath;
 	}
 
-	/* mysqladmin will fail (bad credentials / no server), shell_exec returns
+	/* mysqladmin will fail (bad credentials / no server), cacti_exec_string returns
 	 * null or empty.  ss_sql() must map that to 'U'. */
 	expect(ss_sql())->toBe('U');
 });

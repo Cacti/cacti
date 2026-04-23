@@ -34,7 +34,7 @@ get_filter_request_var('graph_start');
 get_filter_request_var('graph_end');
 get_filter_request_var('graph_height');
 get_filter_request_var('graph_width');
-get_filter_request_var('graph_nolegend', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '(true|false)')));
+get_filter_request_var('graph_nolegend', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '^(true|false)$')));
 get_filter_request_var('local_graph_id');
 get_filter_request_var('size');
 get_filter_request_var('ds_step');
@@ -471,4 +471,3 @@ $sizes = array(
 	</form>
 </body>
 </html>
-

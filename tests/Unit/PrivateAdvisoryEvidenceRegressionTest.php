@@ -25,6 +25,12 @@ test('GHSA-84q3-92xc-c3pf: ORDER BY inputs pass through allowlist validation hel
 	expect($src)->toContain('cacti_validate_sort_column(');
 });
 
+test('GHSA-84q3-92xc-c3pf: user_group_admin ORDER BY inputs pass through allowlist validation helper', function () {
+	$src = file_get_contents(__DIR__ . '/../../user_group_admin.php');
+
+	expect($src)->toContain('cacti_validate_sort_column(');
+});
+
 test('GHSA-8522-5p3m-754c: script-server PHP binary path is shell-escaped before execution', function () {
 	$src = file_get_contents(__DIR__ . '/../../cmd_realtime.php');
 
@@ -50,6 +56,12 @@ test('GHSA-vp35-4h28-r883: package import file write path stays within base path
 
 	expect($src)->toContain('validate_relative_path_within($name, CACTI_PATH_BASE)');
 	expect($src)->toContain("path traversal rejected");
+});
+
+test('graph_realtime nolegend filter is anchored to true/false', function () {
+	$src = file_get_contents(__DIR__ . '/../../graph_realtime.php');
+
+	expect($src)->toContain("'regexp' => '^(true|false)$'");
 });
 
 test('GHSA-pf37-v86f-5xwp: reports graph_name_regexp filter uses db_qstr_rlike helper', function () {

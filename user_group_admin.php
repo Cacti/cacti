@@ -1991,16 +1991,23 @@ function user_group() {
 		FROM user_auth_group
 		$sql_where");
 
+	$sort_col = cacti_validate_sort_column(
+		get_request_var('sort_column'),
+		array('name', 'members', 'description', 'policy_graphs', 'policy_hosts', 'policy_graph_templates', 'enabled'),
+		'name'
+	);
+	$sort_dir = (get_request_var('sort_direction') === 'DESC' ? 'DESC' : 'ASC');
+
 	$group_list = db_fetch_assoc("SELECT uag.id, uag.name, uag.description,
 		uag.policy_graphs, uag.policy_hosts, uag.policy_graph_templates,
 		uag.enabled, count(uagm.group_id) AS members
 		FROM user_auth_group AS uag
-		LEFT JOIN user_auth_group_members AS uagm
-		ON uag.id = uagm.group_id
-		$sql_where
-		GROUP BY uag.id
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
-		' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows);
+			LEFT JOIN user_auth_group_members AS uagm
+			ON uag.id = uagm.group_id
+			$sql_where
+			GROUP BY uag.id
+			ORDER BY " . $sort_col . ' ' . $sort_dir .
+			' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows);
 
 	$nav = html_nav_bar('user_group_admin.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('Groups'), 'page', 'main');
 
@@ -2742,4 +2749,3 @@ function member_filter($header_label) {
 
 	html_end_box();
 }
-

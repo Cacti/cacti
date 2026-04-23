@@ -89,4 +89,5 @@ test('help.php uses cacti_http for the docs fetch', function () use ($helpSource
 test('lib/plugins.php routes plugin setup.php includes through cacti_plugin_path', function () use ($pluginsSource) {
 	expect($pluginsSource)->toContain("cacti_plugin_path(\$plugin, 'setup.php')");
 	expect($pluginsSource)->toContain("cacti_plugin_path(\$hdata['name'], \$hdata['file'])");
+	expect($pluginsSource)->toContain("cacti_plugin_path(\$plugin_name, \$plugin_file)");
 });

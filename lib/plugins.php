@@ -76,16 +76,15 @@ function api_plugin_hook($name) {
 			$plugin_name = $hdata['name'];
 			$plugin_file = $hdata['file'];
 
-			// Security check
-			if (strpos($plugin_file, '..') !== false) {
-				cacti_log("ERROR: Attempted inclusion of not plugin file $plugin_file from $plugin_name with the hook name $name", false, 'SECURITY');
-				continue;
-			}
-
 			if (!in_array($plugin_name, $plugins_integrated, true)) {
 				$plugin_func = $hdata['function'];
-				$full_path   = $config['base_path'] . '/plugins/' . $plugin_name . '/' . $plugin_file;
 				$debounce    = 'mpf_' . $plugin_name . '_' . $plugin_func;
+				$full_path   = cacti_plugin_path($plugin_name, $plugin_file);
+
+				if ($full_path === false) {
+					cacti_log("ERROR: Attempted inclusion of invalid plugin file $plugin_file from $plugin_name with the hook name $name", false, 'SECURITY');
+					continue;
+				}
 
 				if (file_exists($full_path)) {
 					include_once($full_path);
@@ -1371,4 +1370,3 @@ function plugin_load_info_file($file) {
 
 	return $info;
 }
-
