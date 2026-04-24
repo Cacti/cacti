@@ -121,12 +121,25 @@ jobs:
           exit 1
 
       - name: Dump Cacti container logs (diagnostic)
+        if: always()
         working-directory: tests/e2e
         run: |
-          echo "=== php ===" && docker compose logs php --tail=80 || true
-          echo "=== mariadb ===" && docker compose logs mariadb --tail=40 || true
-          echo "=== CSP header on / ==="
-          curl -sI http://localhost:8080/ | grep -i "content-security" || true
+          echo "=== php ==="
+          docker compose logs php --tail=80 || true
+          echo ""
+          echo "=== mariadb settings rows ==="
+          docker compose exec -T mariadb mariadb -ucactiuser -pcactipass cacti \
+              -e "SELECT name,value FROM settings WHERE name IN ('install_complete','content_security_policy_script'); SELECT cacti FROM version;" \
+              2>&1 || true
+          echo ""
+          echo "=== curl -sI / full response headers ==="
+          curl -sI http://localhost:8080/ || true
+          echo ""
+          echo "=== curl -s / first 400 bytes of body ==="
+          curl -s http://localhost:8080/ | head -c 400 || true
+          echo ""
+          echo "=== include/config.php url_path line ==="
+          docker compose exec -T php grep -E "^\$(url_path|database_hostname)" /var/www/html/cacti/include/config.php || true
 
       - name: Install Playwright dependencies
         working-directory: tests/e2e
