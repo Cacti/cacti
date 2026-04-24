@@ -48,28 +48,13 @@ jobs:
       - name: Composer install
         run: composer install --prefer-dist --no-progress --no-interaction
 
-      - name: Install test runner (Pest)
-        run: |
-          # Pest registers a Composer plugin; composer 2.2+ blocks plugins
-          # by default. Whitelist explicitly (test scope only, not committed).
-          composer config --no-plugins allow-plugins.pestphp/pest-plugin true
-          composer require --dev --no-interaction --no-progress \
-            pestphp/pest:^1.23
+      - name: Install test runner (Pest) scoped to tests/
+        working-directory: tests
+        run: composer install --no-interaction --no-progress --prefer-dist
 
-      - name: Run Pest unit tests (fall back to PHPUnit)
-        run: |
-          set -euo pipefail
-          unit_files="tests/Unit/HeadersSecureTest.php tests/Unit/CspReportEndpointTest.php"
-          if [ -x ./vendor/bin/pest ]; then
-            ./vendor/bin/pest $unit_files
-          elif [ -x ./include/vendor/bin/pest ]; then
-            ./include/vendor/bin/pest $unit_files
-          elif [ -x ./vendor/bin/phpunit ]; then
-            ./vendor/bin/phpunit $unit_files
-          else
-            echo "No Pest/PHPUnit runner found" >&2
-            exit 1
-          fi
+      - name: Run Pest unit tests
+        working-directory: tests
+        run: ./vendor/bin/pest Unit/HeadersSecureTest.php Unit/CspReportEndpointTest.php
 
   integration:
     name: Integration tests (php -S harness)
@@ -88,27 +73,13 @@ jobs:
       - name: Composer install
         run: composer install --prefer-dist --no-progress --no-interaction
 
-      - name: Install test runner (Pest)
-        run: |
-          # Pest registers a Composer plugin; composer 2.2+ blocks plugins
-          # by default. Whitelist explicitly (test scope only, not committed).
-          composer config --no-plugins allow-plugins.pestphp/pest-plugin true
-          composer require --dev --no-interaction --no-progress \
-            pestphp/pest:^1.23
+      - name: Install test runner (Pest) scoped to tests/
+        working-directory: tests
+        run: composer install --no-interaction --no-progress --prefer-dist
 
-      - name: Run Pest integration tests (fall back to PHPUnit)
-        run: |
-          set -euo pipefail
-          if [ -x ./vendor/bin/pest ]; then
-            ./vendor/bin/pest tests/integration/
-          elif [ -x ./include/vendor/bin/pest ]; then
-            ./include/vendor/bin/pest tests/integration/
-          elif [ -x ./vendor/bin/phpunit ]; then
-            ./vendor/bin/phpunit tests/integration/
-          else
-            echo "No Pest/PHPUnit runner found" >&2
-            exit 1
-          fi
+      - name: Run Pest integration tests
+        working-directory: tests
+        run: ./vendor/bin/pest integration/
 
   e2e:
     name: Playwright E2E (docker-compose + Playwright)
