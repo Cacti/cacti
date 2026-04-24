@@ -41,9 +41,8 @@
  *
  * @return void
  */
-function cacti_dispatch(array $actions, $default = '') {
-	$default = is_string($default) ? $default : '';
-	$action  = get_nfilter_request_var('action');
+function cacti_dispatch(array $actions, string $default = '') {
+	$action = get_nfilter_request_var('action');
 
 	/* Reject array / non-scalar action inputs before using as an offset
 	 * so `?action[]=x` cannot produce a TypeError on isset(). */
@@ -52,7 +51,7 @@ function cacti_dispatch(array $actions, $default = '') {
 	}
 
 	if ($action === '' || !isset($actions[$action])) {
-		cacti_log('WARNING: cacti_dispatch: unknown action "' . (is_string($action) ? $action : '(non-string)') . '" from ' . get_client_addr(), false, 'WEBUI');
+		cacti_log('WARNING: cacti_dispatch: unknown action "' . $action . '" from ' . get_client_addr(), false, 'WEBUI');
 		cacti_dispatch_deny(403);
 
 		return;
