@@ -1,0 +1,74 @@
+# Cacti E2E stack. Three services on a private network; nginx exposes
+# localhost:8080 so Playwright's default baseURL works unchanged.
+#
+# Tags are unpinned here for readability. CI pins via --pull=always plus a
+# digest-pinned override in the workflow if reproducibility is required.
+
+services:
+  mariadb:
+    image: mariadb:10.11
+    container_name: cacti-e2e-mariadb
+    environment:
+      MARIADB_ROOT_PASSWORD: cactiroot
+      MARIADB_DATABASE: cacti
+      MARIADB_USER: cactiuser
+      MARIADB_PASSWORD: cactipass
+    # The schema file is the standard Cacti bootstrap dump. Mounted read-only
+    # into the MariaDB init hook directory so the container seeds the `cacti`
+    # DB on first start.
+    volumes:
+      - ../../cacti.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-ucactiuser", "-pcactipass"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+    networks:
+      - cacti-e2e
+
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cacti-e2e-php
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    environment:
+      CACTI_DB_HOST: mariadb
+      CACTI_DB_NAME: cacti
+      CACTI_DB_USER: cactiuser
+      CACTI_DB_PASS: cactipass
+      CACTI_DB_PORT: "3306"
+      CACTI_CSP_MODE: nonce
+    # Mount the repo root read-write: Cacti writes into cache/, log/, and
+    # resource/ at runtime. The entrypoint creates include/config.php from
+    # the .dist template, so mounting rw is required.
+    volumes:
+      - ../..:/var/www/html/cacti
+    networks:
+      - cacti-e2e
+
+  nginx:
+    image: nginx:alpine
+    container_name: cacti-e2e-nginx
+    depends_on:
+      - php
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ../..:/var/www/html/cacti:ro
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "-", "http://127.0.0.1/"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    networks:
+      - cacti-e2e
+
+networks:
+  cacti-e2e:
+    driver: bridge

@@ -3,18 +3,13 @@ import { test, expect, type ConsoleMessage, type Response } from '@playwright/te
 /*
  * E2E assertions for the CSP nonce pilot. These exercise the three pages
  * converted in tranche A (about.php, logout.php, permission_denied.php)
- * plus a header/DOM cross-check.
- *
- * The whole suite is skipped by default because the docker-compose stack
- * that serves Cacti at E2E_BASE_URL does not land until tranche C. The
- * tests themselves are real and pass once the stack is running: drop the
- * `.skip` or export E2E_STACK_UP=1 to enable them locally.
+ * plus a header/DOM cross-check. The docker-compose stack in
+ * tests/e2e/docker-compose.yml provisions the DB with
+ * content_security_policy_script='nonce', so these tests run against
+ * enforce mode by default.
  */
 
-const stackUp = process.env.E2E_STACK_UP === '1';
-const describeOrSkip = stackUp ? test.describe : test.describe.skip;
-
-describeOrSkip('CSP nonce mode (requires docker-compose stack from tranche C)', () => {
+test.describe('CSP nonce mode', () => {
     /* Collect browser console errors so each test can assert "no CSP
      * violations" without littering the test body. Playwright does not
      * have a built-in "no console errors" matcher, so roll our own. */
@@ -85,9 +80,10 @@ describeOrSkip('CSP nonce mode (requires docker-compose stack from tranche C)', 
     });
 
     test.fixme('nonce-report mode emits Content-Security-Policy-Report-Only', async ({ page }) => {
-        /* TODO(tranche-C): this requires setting content_security_policy_script
-         * to 'nonce-report' via an admin action or a pre-seeded DB fixture.
-         * Blocked on the docker-compose stack and a seeded admin session. */
+        /* The docker-compose stack provisions nonce (enforce) mode. Flipping
+         * to 'nonce-report' mid-run needs either an authenticated admin
+         * session that toggles the setting through the UI or a dedicated
+         * report-only compose profile. Tracked for tranche D. */
         const resp = await page.goto('/about.php');
         const reportOnly = resp?.headers()['content-security-policy-report-only'];
         expect(reportOnly, 'expected Report-Only header in nonce-report mode').toBeTruthy();
