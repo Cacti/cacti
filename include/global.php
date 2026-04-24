@@ -276,6 +276,7 @@ if (isset($i18n_text_log)) {
 /* include base modules */
 include_once($config['library_path'] . '/database.php');
 include_once($config['library_path'] . '/functions.php');
+include_once($config['library_path'] . '/headers_secure.php');
 include_once($config['include_path'] . '/global_constants.php');
 include_once($config['library_path'] . '/html.php');
 include_once($config['library_path'] . '/html_utility.php');
@@ -465,32 +466,12 @@ if ($config['is_web']) {
 
 	/* we don't want these pages cached */
 	header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-	header('X-Frame-Options: SAMEORIGIN');
 
-	/* increased web hardening */
-	$script_policy = read_config_option('content_security_policy_script');
-	if ($script_policy == 'unsafe-eval') {
-		$script_policy = "'$script_policy'";
-	} else {
-		$script_policy = '';
-	}
-	$alternates = html_escape(read_config_option('content_security_alternate_sources'));
-
-	header("Content-Security-Policy: default-src 'self'; script-src 'self' $script_policy 'unsafe-inline' $alternates; style-src 'self' 'unsafe-inline' $alternates; img-src 'self' $alternates data: blob:; font-src 'self' $alternates; connect-src 'self' $alternates; frame-src 'self'; frame-ancestors 'self'; worker-src 'self' $alternates;");
-
-	if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
-		header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
-	}
-
-	header('Cross-Origin-Opener-Policy: same-origin');
-	header('Cross-Origin-Resource-Policy: same-origin');
-
-	/* prevent IE from silently rejects cookies sent from third party sites. */
-	header('P3P: CP="CAO PSA OUR"');
-	header('X-Content-Type-Options: nosniff');
-	header('Referrer-Policy: strict-origin-when-cross-origin');
-	header('Permissions-Policy: camera=(), geolocation=(), interest-cohort=(), microphone=(), payment=(), usb=()');
-	header('Cache-Control: no-store, no-cache, must-revalidate');
+	/* All CSP / HSTS / X-Frame-Options / Referrer / Permissions headers
+	 * flow through one helper so the policy has a single authoritative
+	 * source. The prior layout also duplicated CSP as a <meta> tag,
+	 * which weakened the header policy. */
+	CactiSecureHeaders::emitHeaders();
 
 	cacti_session_start();
 

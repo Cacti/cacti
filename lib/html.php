@@ -2500,21 +2500,12 @@ function html_common_header($title, $selectedTheme = '') {
 		print "<meta content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5' name='viewport'>" . PHP_EOL;
 	}
 
-	$script_policy = read_config_option('content_security_policy_script');
-	if ($script_policy == 'unsafe-eval') {
-		$script_policy = "'$script_policy'";
-	} else {
-		$script_policy = '';
-	}
-	$alternates = html_escape(read_config_option('content_security_alternate_sources'));
-
 	?>
 	<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>
 	<meta name='apple-mobile-web-app-capable' content='yes'>
 	<meta name='description' content='Monitoring tool of the Internet'>
 	<meta name='mobile-web-app-capable' content='yes'>
 	<meta name="theme-color" content="#161616"/>
-	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' <?php print $alternates;?> data: blob:; style-src 'self' 'unsafe-inline' <?php print $alternates;?>; script-src 'self' <?php print html_escape($script_policy);?> 'unsafe-inline' <?php print $alternates;?>; worker-src 'self' <?php print $alternates;?>;">
 	<meta name='robots' content='noindex,nofollow'>
 	<title><?php print $title; ?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
