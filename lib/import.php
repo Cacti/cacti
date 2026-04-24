@@ -26,8 +26,10 @@
  * (import_xml_data, import_get_package_info, and the template import
  * loop) call it without the package_read pipeline first visiting
  * import_xml_data, so the include is hoisted to file scope rather
- * than kept inside import_xml_data. */
-include_once(CACTI_PATH_LIBRARY . '/xml.php');
+ * than kept inside import_xml_data. Use __DIR__ so this file can be
+ * included before include/global.php has defined $config or
+ * CACTI_PATH_LIBRARY. */
+include_once(__DIR__ . '/xml.php');
 
 function import_xml_data(string &$xml_data, bool $import_as_new, int $profile_id,
 	bool $remove_orphans = false, bool $replace_svalues = false, array $import_hashes = []) : mixed {
