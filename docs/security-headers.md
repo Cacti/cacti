@@ -34,6 +34,72 @@ place (`CactiSecureHeaders::getNonce()`, `::getNonceAttribute()`); new code
 should use them and existing inline tags get converted as their pages are
 touched.
 
+## Nonce mode
+
+The config option `content_security_policy_script` controls how inline scripts
+and styles are handled. It accepts four values:
+
+- Empty string (default): legacy mode with `'unsafe-inline'` in both
+  `script-src` and `style-src`. Existing inline tags work without change.
+- `unsafe-eval`: same as empty, plus `'unsafe-eval'` in `script-src` for
+  plugins that need `eval()` or similar dynamic code execution.
+- `nonce-report`: enables nonce-based CSP but delivers it via the
+  `Content-Security-Policy-Report-Only` header. The page renders normally but
+  the browser reports violations to the configured report URI without blocking
+  any content. This mode is useful for testing nonce deployment before
+  enforcement.
+- `nonce`: enforcing nonce-based CSP. Every inline `<script>` and `<style>`
+  must include a `nonce` attribute matching the request nonce, or the browser
+  blocks it.
+
+Plugin authors should check for nonce mode and emit the nonce attribute when
+present:
+
+```php
+if (class_exists('CactiSecureHeaders') && CactiSecureHeaders::isNonceMode()) {
+    echo '<script ' . CactiSecureHeaders::getNonceAttribute() . '>';
+    // ... JavaScript code ...
+    echo '</script>';
+} else {
+    echo '<script>';
+    // ... JavaScript code ...
+    echo '</script>';
+}
+```
+
+The `class_exists` check keeps plugin code compatible with Cacti versions that
+predate the `CactiSecureHeaders` class.
+
+In `nonce-report` mode, set `content_security_alternate_sources` to include
+the report endpoint. The reports are POSTed to `/cacti/csp_report.php`
+(root-relative path), which accepts `application/csp-report` or
+`application/json` bodies up to 16 KB. The endpoint logs each violation via
+`cacti_log()` using the `CSP-REPORT` facility.
+
+The public API for nonce handling:
+
+- `CactiSecureHeaders::getNonce(): string` — returns a 22-character base64url
+  token. The nonce is idempotent within a single request; calling it multiple
+  times returns the same value.
+- `CactiSecureHeaders::getNonceAttribute(): string` — returns the string
+  `nonce="..."` ready for direct HTML emission.
+- `CactiSecureHeaders::getCspMode(): string` — returns the normalized mode
+  value (empty, `unsafe-eval`, `nonce-report`, or `nonce`).
+- `CactiSecureHeaders::isNonceMode(): bool` — convenience method; returns true
+  if the mode is `nonce` or `nonce-report`.
+
+To rollback from nonce mode, switch `content_security_policy_script` back to
+empty in the settings UI. The policy reverts to `'unsafe-inline'` immediately;
+no code changes are needed.
+
+The migration is incremental. The pilot phase has converted `logout.php` and
+`permission_denied.php` to use nonces. The remaining ~180 inline tags across
+the UI continue to work under the default (empty) mode. Each page adopts nonce
+attributes as it gets touched for other changes. Plugins that emit inline
+scripts will work under empty, `unsafe-eval`, and `nonce-report` modes, but
+will break under `nonce` enforcement until the plugin calls
+`getNonceAttribute()`.
+
 ## Static-file headers
 
 PHP responses get the full header set. Static files (images, CSS, JS, and
