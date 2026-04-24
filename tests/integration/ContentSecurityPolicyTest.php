@@ -256,8 +256,7 @@ test('X-Content-Type-Options nosniff emitted in all modes', function () {
 		$server = _csp_start_server($mode);
 		try {
 			$resp = _csp_fetch($server['port']);
-			expect($resp['headers'])
-				->toHaveKey('x-content-type-options', "missing in mode='{$mode}'");
+			expect($resp['headers'])->toHaveKey('x-content-type-options');
 			expect($resp['headers']['x-content-type-options'][0])->toBe('nosniff');
 		} finally {
 			_csp_stop_server($server);
@@ -270,8 +269,7 @@ test('X-Frame-Options SAMEORIGIN emitted in all modes', function () {
 		$server = _csp_start_server($mode);
 		try {
 			$resp = _csp_fetch($server['port']);
-			expect($resp['headers'])
-				->toHaveKey('x-frame-options', "missing in mode='{$mode}'");
+			expect($resp['headers'])->toHaveKey('x-frame-options');
 			expect($resp['headers']['x-frame-options'][0])->toBe('SAMEORIGIN');
 		} finally {
 			_csp_stop_server($server);
