@@ -54,7 +54,7 @@ test('GHSA-j696-m433-87qq: plugin/package extraction rejects stream wrappers', f
 test('GHSA-vp35-4h28-r883: package import file write path stays within base path', function () {
 	$src = file_get_contents(__DIR__ . '/../../lib/import.php');
 
-	expect($src)->toContain('validate_relative_path_within($name, CACTI_PATH_BASE)');
+	expect($src)->toContain("validate_relative_path_within(\$name, \$config['base_path'])");
 	expect($src)->toContain("path traversal rejected");
 });
 

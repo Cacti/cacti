@@ -26,17 +26,16 @@
  * (import_xml_data, import_get_package_info, and the template import
  * loop) call it without the package_read pipeline first visiting
  * import_xml_data, so the include is hoisted to file scope rather
- * than kept inside import_xml_data. Use __DIR__ so this file can be
- * included before include/global.php has defined $config or
- * CACTI_PATH_LIBRARY. */
+ * than kept inside import_xml_data. */
 include_once(__DIR__ . '/xml.php');
 
 function import_xml_data(string &$xml_data, bool $import_as_new, int $profile_id,
 	bool $remove_orphans = false, bool $replace_svalues = false, array $import_hashes = []) : mixed {
+	global $config;
 	global $hash_type_codes, $cacti_version_codes, $ignorable_hashes, $preview_only;
 	global $import_debug_info, $import_messages, $legacy_template;
 
-	include_once(CACTI_PATH_LIBRARY . '/xml.php');
+	include_once($config['library_path'] . '/xml.php');
 
 	$info_array       = [];
 	$files            = [];
@@ -605,6 +604,7 @@ function import_read_package_data(string $xmlfile, string &$public_key, bool $pr
 function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orphans = false,
 	bool $replace_svalues = false, bool $preview = false, bool $info_only = false, bool $limitex = true,
 	array $import_hashes = [], array $import_files = []) : mixed {
+	global $config;
 	global $preview_only;
 
 	$preview_only = $preview;
@@ -666,7 +666,7 @@ function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orpha
 		$name  = $f['name'];
 
 		if (strpos($name, 'scripts/') !== false || strpos($name, 'resource/') !== false) {
-			$filename = CACTI_PATH_BASE . "/$name";
+			$filename = $config['base_path'] . "/$name";
 
 			if (preg_match('#^[a-z][a-z0-9+.\-]*://#i', $name)) {
 				cacti_log('FATAL: Stream wrapper rejected in import file name: ' . $name, true, 'IMPORT', POLLER_VERBOSITY_LOW);
@@ -674,7 +674,7 @@ function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orpha
 				continue;
 			}
 
-			$validated_path = validate_relative_path_within($name, CACTI_PATH_BASE);
+			$validated_path = validate_relative_path_within($name, $config['base_path']);
 
 			if ($validated_path === false) {
 				cacti_log('FATAL: Path traversal detected in import file name: ' . $name, true, 'IMPORT', POLLER_VERBOSITY_LOW);
@@ -1505,6 +1505,7 @@ function xml_to_data_template(string $hash, array &$xml_array, array &$hash_cach
 }
 
 function xml_to_data_query(string $hash, array &$xml_array, array &$hash_cache, array &$files, bool $replace_svalues = false) : mixed {
+	global $config;
 	global $fields_data_query_edit, $fields_data_query_item_edit, $preview_only, $import_debug_info;
 
 	// track changes
@@ -1541,7 +1542,7 @@ function xml_to_data_query(string $hash, array &$xml_array, array &$hash_cache, 
 	}
 
 	if (isset($save['xml_path'])) {
-		$path = str_replace('<path_cacti>', CACTI_PATH_BASE, $save['xml_path']);
+		$path = str_replace('<path_cacti>', $config['base_path'], $save['xml_path']);
 
 		if (!file_exists($path)) {
 			$files[$path] = 'missing';
@@ -2205,9 +2206,10 @@ function xml_to_cdef(string $hash, array &$xml_array, array &$hash_cache) : mixe
 }
 
 function xml_to_vdef(string $hash, array &$xml_array, array &$hash_cache) : mixed {
+	global $config;
 	global $preview_only, $import_debug_info;
 
-	include_once(CACTI_PATH_LIBRARY . '/vdef.php');
+	include_once($config['library_path'] . '/vdef.php');
 
 	// track changes
 	$status = 0;
