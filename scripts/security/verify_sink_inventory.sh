@@ -22,11 +22,6 @@ fi
 
 echo "ERROR: sink inventory drift detected."
 echo "See: /tmp/sink_inventory.diff"
-echo "DEBUG: rg version: $(rg --version | head -n1)"
-echo "DEBUG: baseline/current hashes:"
-sha256sum "$TMP_BASELINE" "$TMP_CUR" || true
-echo "DEBUG: first diff hunk:"
-sed -n '1,160p' /tmp/sink_inventory.diff || true
 echo "If intentional, review and refresh baseline:"
 echo "  scripts/security/build_sink_inventory.sh | LC_ALL=C sort > security/baselines/sink_inventory.baseline.tsv"
 exit 1
