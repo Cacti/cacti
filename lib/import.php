@@ -658,6 +658,7 @@ function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orpha
 
 			if ($validated === false) {
 				cacti_log('FATAL: Rejected package file with invalid path: ' . $name, true, 'IMPORT');
+
 				continue;
 			}
 
