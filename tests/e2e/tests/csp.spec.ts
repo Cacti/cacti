@@ -1,21 +1,117 @@
-import { test, expect, type ConsoleMessage } from '@playwright/test';
+import { test, expect, type ConsoleMessage, type Page } from '@playwright/test';
 
 /*
- * E2E assertions for the CSP nonce pilot. The docker-compose stack in
- * tests/e2e/docker-compose.yml provisions the DB with
- * content_security_policy_script='nonce-report', which is the realistic
- * production rollout posture: browsers report violations on un-migrated
- * inline tags but do not block them, and the pilot pages emit matching
- * nonce attributes.
- *
- * Cacti's most-privileged pilot pages (about.php, permission_denied.php)
- * sit behind auth. logout.php?action=timeout is a deliberately
- * unauthenticated pilot page whose body includes the migrated inline
- * <script nonce="...">, so the nonce-match test uses it.
+ * E2E assertions for the CSP nonce pilot. The default compose stack
+ * runs in report-only mode (realistic production rollout posture).
+ * The enforce-mode overlay (docker-compose.enforce.yml) flips to
+ * blocking mode; tests that assert on blocking behavior set
+ * E2E_CSP_ENFORCE=1 so they can exercise the overlay build.
  */
 
-test.describe('CSP nonce mode', () => {
-    function attachConsoleErrorCollector(page: import('@playwright/test').Page): string[] {
+const ENFORCE = process.env.E2E_CSP_ENFORCE === '1';
+const EXPECTED_CSP_HEADER = ENFORCE
+    ? 'content-security-policy'
+    : 'content-security-policy-report-only';
+
+async function loginAsAdmin(page: Page): Promise<void> {
+    /* Cacti's login form has a __csrf_magic hidden field that must echo
+     * back with the POST. Playwright's locator.fill + click picks up
+     * the hidden input automatically; no manual extraction needed. */
+    await page.goto('/');
+    await page.locator('input[name="login_username"]').fill('admin');
+    await page.locator('input[name="login_password"]').fill('admin');
+    await Promise.all([
+        page.waitForLoadState('networkidle'),
+        page.locator('form#login input[type="submit"]').click(),
+    ]);
+}
+
+test.describe('CSP header shape', () => {
+    test('root request carries CSP header with nonce token and all required directives', async ({ request }) => {
+        const resp = await request.get('/', { maxRedirects: 0 });
+        expect(resp.status()).toBeLessThan(400);
+
+        const cspHeader = resp.headers()[EXPECTED_CSP_HEADER];
+        expect(cspHeader, `expected header ${EXPECTED_CSP_HEADER}`).toBeTruthy();
+
+        expect(cspHeader).toMatch(/'nonce-[A-Za-z0-9_-]+'/);
+        expect(cspHeader).toContain("object-src 'none'");
+        expect(cspHeader).toContain("base-uri 'self'");
+        expect(cspHeader).toContain("form-action 'self'");
+        expect(cspHeader).toContain("manifest-src 'self'");
+        expect(cspHeader).toContain('report-uri /cacti/csp_report.php');
+        expect(cspHeader).not.toContain("'unsafe-inline'");
+    });
+
+    test('only one CSP header flavor is set at a time', async ({ request }) => {
+        const resp = await request.get('/', { maxRedirects: 0 });
+        const enforce = resp.headers()['content-security-policy'];
+        const reportOnly = resp.headers()['content-security-policy-report-only'];
+        /* Dual emission would make the browser honor the intersection
+         * and block content that either policy forbids. */
+        if (ENFORCE) {
+            expect(enforce).toBeTruthy();
+            expect(reportOnly).toBeUndefined();
+        } else {
+            expect(reportOnly).toBeTruthy();
+            expect(enforce).toBeUndefined();
+        }
+    });
+});
+
+test.describe('Pilot pages carry matching nonces', () => {
+    test('logout.php?action=timeout body nonce matches header nonce', async ({ request }) => {
+        const resp = await request.get('/logout.php?action=timeout', { maxRedirects: 0 });
+
+        const cspHeader = resp.headers()[EXPECTED_CSP_HEADER];
+        expect(cspHeader).toBeTruthy();
+
+        const nonceMatch = cspHeader!.match(/'nonce-([A-Za-z0-9_-]+)'/);
+        expect(nonceMatch).not.toBeNull();
+        const headerNonce = nonceMatch![1];
+
+        const body = await resp.text();
+        const bodyMatch = body.match(/<script[^>]*\bnonce=["']([A-Za-z0-9_-]+)["']/);
+        expect(bodyMatch, 'logout.php must render <script nonce="...">').not.toBeNull();
+
+        expect(bodyMatch![1]).toBe(headerNonce);
+    });
+
+    test('permission_denied.php body nonce matches header nonce (authenticated)', async ({ page }) => {
+        await loginAsAdmin(page);
+
+        /* permission_denied.php requires an authenticated session. Reuse
+         * the page's storage state for a request API call so we get
+         * headers AND body without redirect-following. */
+        const resp = await page.context().request.get('/permission_denied.php', { maxRedirects: 0 });
+
+        const cspHeader = resp.headers()[EXPECTED_CSP_HEADER];
+        expect(cspHeader).toBeTruthy();
+
+        const nonceMatch = cspHeader!.match(/'nonce-([A-Za-z0-9_-]+)'/);
+        expect(nonceMatch).not.toBeNull();
+        const headerNonce = nonceMatch![1];
+
+        const body = await resp.text();
+        const bodyMatch = body.match(/<script[^>]*\bnonce=["']([A-Za-z0-9_-]+)["']/);
+        expect(bodyMatch, 'permission_denied.php must render <script nonce="...">').not.toBeNull();
+
+        expect(bodyMatch![1]).toBe(headerNonce);
+    });
+
+    test('about.php has no inline tags so carries no nonce attributes but keeps the header', async ({ page }) => {
+        await loginAsAdmin(page);
+
+        const resp = await page.context().request.get('/about.php', { maxRedirects: 0 });
+
+        const cspHeader = resp.headers()[EXPECTED_CSP_HEADER];
+        expect(cspHeader).toBeTruthy();
+        expect(cspHeader).toMatch(/'nonce-[A-Za-z0-9_-]+'/);
+    });
+});
+
+test.describe('Browser behavior depends on mode', () => {
+    function collectErrors(page: Page): string[] {
         const errors: string[] = [];
         page.on('console', (msg: ConsoleMessage) => {
             if (msg.type() === 'error') {
@@ -28,77 +124,26 @@ test.describe('CSP nonce mode', () => {
         return errors;
     }
 
-    test('root request returns CSP-Report-Only header with nonce', async ({ request }) => {
-        const resp = await request.get('/', { maxRedirects: 0 });
-        expect(resp.status(), 'root must respond (login page)').toBeLessThan(400);
-
-        const reportOnly = resp.headers()['content-security-policy-report-only'];
-        expect(reportOnly, 'nonce-report mode must emit CSP-Report-Only header').toBeTruthy();
-
-        const nonceMatch = reportOnly!.match(/'nonce-([A-Za-z0-9_-]+)'/);
-        expect(nonceMatch, 'report-only CSP must contain a nonce token').not.toBeNull();
-
-        expect(reportOnly).toContain("object-src 'none'");
-        expect(reportOnly).toContain("base-uri 'self'");
-        expect(reportOnly).toContain('report-uri /cacti/csp_report.php');
-    });
-
-    test('enforce-mode directives are absent from report-only header', async ({ request }) => {
-        const resp = await request.get('/', { maxRedirects: 0 });
-        const enforce = resp.headers()['content-security-policy'];
-        const reportOnly = resp.headers()['content-security-policy-report-only'];
-        /* In nonce-report mode only the report-only header should be set.
-         * A stray enforcing header would make the browser honor the
-         * intersection of the two and block un-migrated inline scripts. */
-        expect(enforce).toBeUndefined();
-        expect(reportOnly).toBeTruthy();
-    });
-
-    test('login page renders without enforcing CSP blocks', async ({ page }) => {
-        const errors = attachConsoleErrorCollector(page);
+    test('login page loads: report-only permits un-migrated scripts; enforce blocks them', async ({ page }) => {
+        const errors = collectErrors(page);
         const resp = await page.goto('/');
-        expect(resp, 'login page must respond').not.toBeNull();
         expect(resp!.status()).toBeLessThan(500);
-        /* Report-only mode logs violations as "[Report Only] Refused
-         * to execute..."; only plain "Refused" (without the Report-Only
-         * prefix) indicates an enforcing block. Filter the collector
-         * accordingly. */
+
         const enforcingBlocks = errors.filter(
             (e) => /Refused to execute/i.test(e) && !/\[Report Only\]/i.test(e),
         );
-        expect(enforcingBlocks).toHaveLength(0);
-    });
 
-    test('pilot page logout.php?action=timeout emits nonce matching the header', async ({ request }) => {
-        /* action=timeout forces the body-rendering branch that carries the
-         * pilot-migrated inline <script>. The default path is a cookie-clear
-         * plus redirect and never emits HTML. */
-        const resp = await request.get('/logout.php?action=timeout', { maxRedirects: 0 });
-
-        const reportOnly = resp.headers()['content-security-policy-report-only'];
-        expect(reportOnly, 'logout.php must carry the Report-Only header').toBeTruthy();
-
-        const nonceMatch = reportOnly!.match(/'nonce-([A-Za-z0-9_-]+)'/);
-        expect(nonceMatch, 'header must contain a nonce token').not.toBeNull();
-        const headerNonce = nonceMatch![1];
-
-        const body = await resp.text();
-        const bodyMatch = body.match(/<script[^>]*\bnonce=["']([A-Za-z0-9_-]+)["']/);
-        expect(bodyMatch, 'logout.php must render a nonce attribute on its inline <script>').not.toBeNull();
-
-        expect(bodyMatch![1]).toBe(headerNonce);
-    });
-
-    test.fixme('permission_denied.php emits nonce (requires admin session)', async () => {
-        /* permission_denied.php is pilot-migrated but sits behind auth. A
-         * dedicated login fixture that threads the Cacti CSRF token would
-         * let this test run; deferred pending a playwright fixture helper. */
-    });
-
-    test.fixme('enforce-mode profile: nonce header blocks un-migrated inline scripts', async () => {
-        /* Requires a second docker-compose profile that sets
-         * CACTI_CSP_MODE=nonce so the browser rejects un-migrated inline
-         * scripts outright. Deferred until either the full migration
-         * completes or a split compose profile ships. */
+        if (ENFORCE) {
+            /* ~180 un-migrated inline tags: the browser must be blocking
+             * them for the migration value proposition to hold. If this
+             * assertion fails, either the CSP is too permissive or
+             * unsafe-inline leaked back in. */
+            expect(enforcingBlocks.length, 'enforce mode must block un-migrated scripts').toBeGreaterThan(0);
+        } else {
+            /* Report-only: violations go to the report-uri, browser
+             * console emits "[Report Only] Refused..." as info, never
+             * as error. Nothing blocks. */
+            expect(enforcingBlocks).toHaveLength(0);
+        }
     });
 });

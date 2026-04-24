@@ -42,6 +42,7 @@ services:
       CACTI_DB_PASS: cactipass
       CACTI_DB_PORT: "3306"
       CACTI_CSP_MODE: nonce-report
+      CACTI_FORCE_CONFIG: "1"
     # Mount the repo root read-write: Cacti writes into cache/, log/, and
     # resource/ at runtime. The entrypoint creates include/config.php from
     # the .dist template, so mounting rw is required.
