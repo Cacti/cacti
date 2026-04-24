@@ -114,6 +114,17 @@ mysql_cmd "UPDATE user_auth SET must_change_password='', password_change='', las
 
 log "post-seed SQL complete; CSP mode=${CSP_MODE}"
 
-# 4. Hand off to php-fpm.
+# 4. Make Cacti's writable directories world-writable. CI checks out the
+#    repo as the runner user; the php-fpm container runs as www-data. The
+#    bind mount preserves host UIDs, so without this Cacti dies on its
+#    very first log line with "System log file is not available for
+#    writing", killing emitHeaders() before it runs.
+for d in log cache rra resource; do
+    if [ -d "${CACTI_ROOT}/${d}" ]; then
+        chmod -R a+w "${CACTI_ROOT}/${d}" 2>/dev/null || true
+    fi
+done
+
+# 5. Hand off to php-fpm.
 log "exec: $*"
 exec "$@"
