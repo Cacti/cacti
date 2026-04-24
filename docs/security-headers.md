@@ -78,14 +78,14 @@ the report endpoint. The reports are POSTed to `/cacti/csp_report.php`
 
 The public API for nonce handling:
 
-- `CactiSecureHeaders::getNonce(): string` — returns a 22-character base64url
+- `CactiSecureHeaders::getNonce(): string`: returns a 24-character base64url
   token. The nonce is idempotent within a single request; calling it multiple
   times returns the same value.
-- `CactiSecureHeaders::getNonceAttribute(): string` — returns the string
+- `CactiSecureHeaders::getNonceAttribute(): string`: returns the string
   `nonce="..."` ready for direct HTML emission.
-- `CactiSecureHeaders::getCspMode(): string` — returns the normalized mode
+- `CactiSecureHeaders::getCspMode(): string`: returns the normalized mode
   value (empty, `unsafe-eval`, `nonce-report`, or `nonce`).
-- `CactiSecureHeaders::isNonceMode(): bool` — convenience method; returns true
+- `CactiSecureHeaders::isNonceMode(): bool`: convenience method; returns true
   if the mode is `nonce` or `nonce-report`.
 
 To rollback from nonce mode, switch `content_security_policy_script` back to
