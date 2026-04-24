@@ -529,7 +529,7 @@ function import_read_package_data(string $xmlfile, string &$public_key, bool $pr
 				return false;
 			}
 
-			if (str_contains($x, '<signature>')) {
+			if (strpos($x, '<signature>') !== false) {
 				$binary_signature =  base64_decode(trim(str_replace(['<signature>', '</signature>'], ['', ''], $x)), true);
 				$x                = "   <signature></signature>\n";
 
@@ -2542,10 +2542,10 @@ function compare_data(array $save, array $previous_data, string $table) : int {
 			if ($previous_data[$column] != $value) {
 				$cols = db_get_table_column_types($table);
 
-				if (str_contains($cols[$column]['type'], 'int') ||
-					str_contains($cols[$column]['type'], 'float') ||
-					str_contains($cols[$column]['type'], 'decimal') ||
-					str_contains($cols[$column]['type'], 'double')) {
+				if (strpos($cols[$column]['type'], 'int') !== false ||
+					strpos($cols[$column]['type'], 'float') !== false ||
+					strpos($cols[$column]['type'], 'decimal') !== false ||
+					strpos($cols[$column]['type'], 'double') !== false) {
 					if (empty($previous_data[$column]) && empty($value)) {
 						continue;
 					}
