@@ -48,15 +48,25 @@ jobs:
       - name: Composer install
         run: composer install --prefer-dist --no-progress --no-interaction
 
+      - name: Install test runner (Pest)
+        run: |
+          composer require --dev --no-interaction --no-progress \
+            pestphp/pest:^1.23
+
       - name: Run Pest unit tests (fall back to PHPUnit)
         run: |
           set -euo pipefail
           unit_files="tests/Unit/HeadersSecureTest.php tests/Unit/CspReportEndpointTest.php"
-          if ./include/vendor/bin/pest $unit_files; then
-            exit 0
+          if [ -x ./vendor/bin/pest ]; then
+            ./vendor/bin/pest $unit_files
+          elif [ -x ./include/vendor/bin/pest ]; then
+            ./include/vendor/bin/pest $unit_files
+          elif [ -x ./vendor/bin/phpunit ]; then
+            ./vendor/bin/phpunit $unit_files
+          else
+            echo "No Pest/PHPUnit runner found" >&2
+            exit 1
           fi
-          echo "Pest runner failed; falling back to PHPUnit."
-          ./include/vendor/bin/phpunit $unit_files
 
   integration:
     name: Integration tests (php -S harness)
@@ -75,14 +85,24 @@ jobs:
       - name: Composer install
         run: composer install --prefer-dist --no-progress --no-interaction
 
+      - name: Install test runner (Pest)
+        run: |
+          composer require --dev --no-interaction --no-progress \
+            pestphp/pest:^1.23
+
       - name: Run Pest integration tests (fall back to PHPUnit)
         run: |
           set -euo pipefail
-          if ./include/vendor/bin/pest tests/integration/; then
-            exit 0
+          if [ -x ./vendor/bin/pest ]; then
+            ./vendor/bin/pest tests/integration/
+          elif [ -x ./include/vendor/bin/pest ]; then
+            ./include/vendor/bin/pest tests/integration/
+          elif [ -x ./vendor/bin/phpunit ]; then
+            ./vendor/bin/phpunit tests/integration/
+          else
+            echo "No Pest/PHPUnit runner found" >&2
+            exit 1
           fi
-          echo "Pest runner failed; falling back to PHPUnit."
-          ./include/vendor/bin/phpunit tests/integration/
 
   e2e:
     name: Playwright E2E (docker-compose + Playwright)
@@ -99,8 +119,6 @@ jobs:
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8  # v4.0.2
         with:
           node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: tests/e2e/package-lock.json
 
       - name: Build and start compose stack
         working-directory: tests/e2e
@@ -122,7 +140,7 @@ jobs:
 
       - name: Install Playwright dependencies
         working-directory: tests/e2e
-        run: npm ci
+        run: npm install
 
       - name: Install Playwright browser (chromium)
         working-directory: tests/e2e
