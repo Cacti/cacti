@@ -951,20 +951,20 @@ function xml_to_graph_template(string $hash, array &$xml_array, array &$hash_cac
 			if ($field_name == 'unit_exponent_value' && $xml_array['graph'][$field_name] == '0') {
 				$save[$field_name] = '';
 			} elseif ($field_name == 'graph_width') {
-				if (isrv('graph_width') && !ierv('graph_width')) {
-					$save[$field_name] = gfrv('graph_width');
+				if (isset_request_var('graph_width') && !isempty_request_var('graph_width')) {
+					$save[$field_name] = get_filter_request_var('graph_width');
 				} else {
 					$save[$field_name] = read_config_option('default_graph_width');
 				}
 			} elseif ($field_name == 'graph_height') {
-				if (isrv('graph_height') && !ierv('graph_height')) {
-					$save[$field_name] = gfrv('graph_height');
+				if (isset_request_var('graph_height') && !isempty_request_var('graph_height')) {
+					$save[$field_name] = get_filter_request_var('graph_height');
 				} else {
 					$save[$field_name] = read_config_option('default_graph_height');
 				}
 			} elseif ($field_name == 'image_format_id') {
-				if (isrv('image_format') && !ierv('image_format')) {
-					$save[$field_name] = gfrv('image_format');
+				if (isset_request_var('image_format') && !isempty_request_var('image_format')) {
+					$save[$field_name] = get_filter_request_var('image_format');
 				} else {
 					$save[$field_name] = read_config_option('default_image_format');
 				}
