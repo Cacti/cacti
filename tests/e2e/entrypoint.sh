@@ -32,6 +32,7 @@ if [ ! -f "${config_php}" ]; then
         -e "s|^\$database_password = 'cactiuser';|\$database_password = '${DB_PASS}';|" \
         -e "s|^\$database_default  = 'cacti';|\$database_default  = '${DB_NAME}';|" \
         -e "s|^\$database_port     = '3306';|\$database_port     = '${DB_PORT}';|" \
+        -e "s|^\$url_path          = '/cacti/';|\$url_path          = '/';|" \
         "${config_php}"
 else
     log "include/config.php already present; leaving it alone"
@@ -67,12 +68,14 @@ log "MariaDB reachable after ${attempt} attempt(s)"
 #    - user_auth.admin gets must_change_password cleared so logging in as
 #      admin/admin does not redirect into the force-change page.
 
-CACTI_VER=$(grep -E "^define\\('CACTI_VERSION'" "${CACTI_ROOT}/include/cacti_version.php" 2>/dev/null \
-    | sed -E "s/.*'([^']+)'\\).*/\\1/" || true)
+if [ -f "${CACTI_ROOT}/include/cacti_version" ]; then
+    CACTI_VER=$(tr -d '[:space:]' < "${CACTI_ROOT}/include/cacti_version")
+else
+    # Older 1.2 trees shipped the version in a PHP constant file.
+    CACTI_VER=$(grep -E "^define\\('CACTI_VERSION'" "${CACTI_ROOT}/include/cacti_version.php" 2>/dev/null \
+        | sed -E "s/.*'([^']+)'\\).*/\\1/" || true)
+fi
 if [ -z "${CACTI_VER}" ]; then
-    # Fallback: Cacti 1.2.x style constant file moved between releases. If
-    # we cannot discover it, use a placeholder that still exits the
-    # installer (any non-'new_install' value is treated as installed).
     CACTI_VER="1.2.0"
 fi
 log "marking Cacti version as ${CACTI_VER} (was new_install)"

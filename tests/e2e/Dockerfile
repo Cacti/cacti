@@ -22,7 +22,8 @@ RUN set -eux; \
         libldap \
         net-snmp-libs \
         freetype \
-        libjpeg-turbo; \
+        libjpeg-turbo \
+        oniguruma; \
     apk add --no-cache --virtual .build-deps \
         $PHPIZE_DEPS \
         libpng-dev \
@@ -32,7 +33,8 @@ RUN set -eux; \
         openldap-dev \
         net-snmp-dev \
         freetype-dev \
-        libjpeg-turbo-dev; \
+        libjpeg-turbo-dev \
+        oniguruma-dev; \
     docker-php-ext-configure gd --with-freetype --with-jpeg; \
     docker-php-ext-install -j"$(nproc)" \
         pdo_mysql \
