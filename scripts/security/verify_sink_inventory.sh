@@ -12,7 +12,7 @@ if [ ! -f "$BASELINE" ]; then
 	exit 1
 fi
 
-tr -d '\r' < "$BASELINE" > "$TMP_BASELINE"
+tr -d '\r' < "$BASELINE" | LC_ALL=C sort -u > "$TMP_BASELINE"
 "${ROOT_DIR}/scripts/security/build_sink_inventory.sh" | tr -d '\r' | LC_ALL=C sort -u > "$TMP_CUR"
 
 if diff -u "$TMP_BASELINE" "$TMP_CUR" > /tmp/sink_inventory.diff; then

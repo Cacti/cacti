@@ -25,6 +25,10 @@ scan() {
 		file="${line%%:*}"
 		rest="${line#*:}"
 		lineno="${rest%%:*}"
+		case "$file" in
+			./*) ;;
+			*) file="./$file" ;;
+		esac
 		loc="${file}:${lineno}"
 		match="${line#*:*:}"
 		printf '%s\t%s\t%s\n' "$category" "$loc" "$match"
