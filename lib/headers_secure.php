@@ -160,7 +160,7 @@ class CactiSecureHeaders {
 		if (function_exists('read_config_option')) {
 			$cfg_alternates = read_config_option('content_security_alternate_sources');
 			if ($cfg_alternates !== null && $cfg_alternates !== false) {
-				/* html_escape() leaves ';' intact — wrong for CSP directive values.
+				/* html_escape() leaves ';' intact; wrong for CSP directive values.
 				 * The CSP scrubber drops any char that could terminate a directive
 				 * or inject a header line. */
 				$alternates = self::sanitizeCspSources((string)$cfg_alternates);

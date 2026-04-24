@@ -509,6 +509,13 @@ $settings = array(
 				'nonce'        => __('[Pilot] Nonce mode (enforce)'),
 			)
 		),
+		'content_security_report_uri' => array(
+			'friendly_name' => __('CSP Violation Report URI'),
+			'description' => __('URL where browsers POST CSP violation reports in nonce-report and nonce modes. Leave empty to use /cacti/csp_report.php at the installation root. Must contain only safe URL characters.'),
+			'method' => 'textbox',
+			'default' => '',
+			'max_length' => 255,
+		),
 		'content_security_alternate_sources' => array(
 			'friendly_name' => __('Content-Security Alternate Sources'),
 			'description' => __('Space delimited domain names that will be permitted to be accessed outside of the Web Server itself.  This is important for users choosing to use a CDN, or hosting site.  Sources can includes wildcards for example: *.mydomain.com, or a protocol, for example: https://*.example.com.  These Alternate Sources include Image, CSS and JavaScript types only.'),

@@ -28,24 +28,6 @@ if (!function_exists('html_escape')) {
 	}
 }
 
-/* Reset nonce between tests: the static variable persists across the process,
- * so we use reflection to wipe it before any test that needs a fresh value.
- * getNonce() re-seeds on the next call. */
-function _reset_nonce() {
-	$ref = new ReflectionMethod('CactiSecureHeaders', 'getNonce');
-	$ref->invoke(null);
-	/* Use closure binding to clear the static local inside getNonce(). */
-	$clear = static function () {
-		static $nonce = null;
-		$nonce = null;
-	};
-	/* PHP does not expose static locals via reflection; work around by
-	 * calling the method via a closure that shadows the static with null.
-	 * The real fix is a dedicated reset path; here we simply accept that
-	 * the nonce will be the same value within a single PHP process unless
-	 * the test explicitly exercises the "same value" invariant. */
-}
-
 /* ---- tests ---- */
 
 test('getNonce returns same value within request', function () {
