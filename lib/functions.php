@@ -6943,25 +6943,49 @@ function get_installed_rrdtool_version() {
 	return $version;
 }
 
-function get_md5_hash($path) {
-	$md5 = 0;
+function get_resource_hash($path, $algorithm = 'md5') {
+	$hash = '';
 
-	if (db_table_exists('poller_resource_cache')) {
-		$md5 = db_fetch_cell_prepared('SELECT md5sum
+	if ($algorithm === 'md5' && db_table_exists('poller_resource_cache')) {
+		$hash = db_fetch_cell_prepared('SELECT md5sum
 			FROM poller_resource_cache
 			WHERE `path` = ?',
 			array($path));
 	}
 
-	if (empty($md5)) {
+	if (empty($hash)) {
+		$real_path = '';
 		if (file_exists($path)) {
-			$md5 = md5_file($path);
+			$real_path = $path;
 		} elseif (file_exists(dirname(__FILE__) . '/../' . $path)) {
-			$md5 = md5_file(dirname(__FILE__) . '/../' . $path);
+			$real_path = dirname(__FILE__) . '/../' . $path;
 		}
-    }
 
-	return $md5;
+		if ($real_path !== '') {
+			if ($algorithm === 'sha384') {
+				$hash = base64_encode(hash_file('sha384', $real_path, true));
+			} else {
+				$hash = md5_file($real_path);
+			}
+		}
+	}
+
+	return $hash;
+}
+
+/**
+ * Returns the SRI integrity string (e.g. "sha384-...") for a given resource.
+ *
+ * @param string $path The path to the file
+ * @return string The integrity string
+ */
+function get_resource_integrity($path) {
+	$hash = get_resource_hash($path, 'sha384');
+	return $hash !== '' ? 'sha384-' . $hash : '';
+}
+
+function get_md5_hash($path) {
+	return get_resource_hash($path, 'md5');
 }
 
 function get_include_relpath($path) {
@@ -6992,10 +7016,14 @@ function get_md5_include_js($path, $async = false) {
 		return '';
 	}
 
+	$integrity = get_resource_integrity($path);
+	$int_attr  = $integrity !== '' ? ' integrity=\'' . $integrity . '\' crossorigin=\'anonymous\'' : '';
+	$hash      = get_resource_hash($path, 'md5');
+
 	if ($async) {
-		return '<script type=\'text/javascript\' src=\'' . $config['url_path'] . $relpath . '?' . get_md5_hash($path) . '\' async></script>' . PHP_EOL;
+		return '<script type=\'text/javascript\' src=\'' . $config['url_path'] . $relpath . '?' . $hash . '\'' . $int_attr . ' async></script>' . PHP_EOL;
 	} else {
-		return '<script type=\'text/javascript\' src=\'' . $config['url_path'] . $relpath . '?' . get_md5_hash($path) . '\'></script>' . PHP_EOL;
+		return '<script type=\'text/javascript\' src=\'' . $config['url_path'] . $relpath . '?' . $hash . '\'' . $int_attr . '></script>' . PHP_EOL;
 	}
 }
 
