@@ -512,7 +512,7 @@ $settings = array(
 				'0'            => __('No (unsafe-inline)'),
 				'unsafe-eval'  => __('Allow unsafe-eval'),
 				'nonce-report' => __('Nonce mode (report-only)'),
-				'nonce'        => __('Nonce mode (enforce)'),
+				'nonce'        => __('[Pilot] Nonce mode (enforce)'),
 			)
 		),
 		'content_security_alternate_sources' => array(

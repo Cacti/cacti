@@ -59,10 +59,10 @@ test('getNonce output is base64url only', function () {
 	expect($nonce)->toMatch('/^[A-Za-z0-9_-]+$/');
 });
 
-test('getNonce length is 22 chars', function () {
-	/* 16 bytes base64url-encoded without padding: ceil(16*4/3) = 22 */
+test('getNonce length is 24 chars', function () {
+	/* 18 bytes base64url-encoded without padding: ceil(18*4/3) = 24 */
 	$nonce = CactiSecureHeaders::getNonce();
-	expect(strlen($nonce))->toBe(22);
+	expect(strlen($nonce))->toBe(24);
 });
 
 test('getNonceAttribute wraps in nonce="..."', function () {
@@ -127,4 +127,24 @@ test('buildCspPolicy unsafe-eval mode keeps unsafe-inline and adds unsafe-eval',
 	$scriptSrc = substr($policy, $start, $end - $start);
 	expect($scriptSrc)->toContain("'unsafe-inline'");
 	expect($scriptSrc)->toContain("'unsafe-eval'");
+});
+
+test('buildCspPolicy nonce-report with report_uri includes report-uri directive', function () {
+	$policy = CactiSecureHeaders::buildCspPolicy('nonce-report', 'ABC', '', '/cacti/csp_report.php');
+	expect($policy)->toContain('report-uri /cacti/csp_report.php;');
+});
+
+test('buildCspPolicy nonce enforce mode also appends report-uri when provided', function () {
+	$policy = CactiSecureHeaders::buildCspPolicy('nonce', 'ABC', '', '/cacti/csp_report.php');
+	expect($policy)->toContain('report-uri /cacti/csp_report.php;');
+});
+
+test('buildCspPolicy does not append report-uri for unsafe-eval mode', function () {
+	$policy = CactiSecureHeaders::buildCspPolicy('unsafe-eval', '', '', '/cacti/csp_report.php');
+	expect($policy)->not->toContain('report-uri');
+});
+
+test('buildCspPolicy does not append report-uri when empty string passed', function () {
+	$policy = CactiSecureHeaders::buildCspPolicy('nonce-report', 'ABC', '', '');
+	expect($policy)->not->toContain('report-uri');
 });
