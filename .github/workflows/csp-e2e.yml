@@ -50,6 +50,9 @@ jobs:
 
       - name: Install test runner (Pest)
         run: |
+          # Pest registers a Composer plugin; composer 2.2+ blocks plugins
+          # by default. Whitelist explicitly (test scope only, not committed).
+          composer config --no-plugins allow-plugins.pestphp/pest-plugin true
           composer require --dev --no-interaction --no-progress \
             pestphp/pest:^1.23
 
@@ -87,6 +90,9 @@ jobs:
 
       - name: Install test runner (Pest)
         run: |
+          # Pest registers a Composer plugin; composer 2.2+ blocks plugins
+          # by default. Whitelist explicitly (test scope only, not committed).
+          composer config --no-plugins allow-plugins.pestphp/pest-plugin true
           composer require --dev --no-interaction --no-progress \
             pestphp/pest:^1.23
 
@@ -127,16 +133,29 @@ jobs:
       - name: Wait for Cacti to respond on :8080
         run: |
           set -euo pipefail
+          # Require the CSP-Report-Only header to be present before
+          # declaring the stack ready. A bare 200 can be served by the
+          # install wizard or an intermediate bootstrap page that does
+          # not run the global.php header block.
           for i in $(seq 1 60); do
-            if curl -fsS -o /dev/null -w '%{http_code}' http://localhost:8080/ | grep -qE '^(200|302)$'; then
-              echo "Cacti is up after ${i} attempt(s)."
+            if curl -fsSI http://localhost:8080/ 2>/dev/null | grep -iq '^content-security-policy-report-only:'; then
+              echo "Cacti is up with report-only CSP header after ${i} attempt(s)."
               exit 0
             fi
             sleep 2
           done
-          echo "Cacti did not respond on :8080 within 120s" >&2
+          echo "Cacti did not emit the expected CSP header within 120s" >&2
+          curl -sI http://localhost:8080/ || true
           docker compose -f tests/e2e/docker-compose.yml logs --tail=200 || true
           exit 1
+
+      - name: Dump Cacti container logs (diagnostic)
+        working-directory: tests/e2e
+        run: |
+          echo "=== php ===" && docker compose logs php --tail=80 || true
+          echo "=== mariadb ===" && docker compose logs mariadb --tail=40 || true
+          echo "=== CSP header on / ==="
+          curl -sI http://localhost:8080/ | grep -i "content-security" || true
 
       - name: Install Playwright dependencies
         working-directory: tests/e2e
