@@ -28,6 +28,22 @@
 require_once(__DIR__ . '/functions.php');
 
 /**
+ * Strip log-injection characters from a CSP report field before interpolation.
+ * A crafted report body with embedded CR/LF would forge extra log lines.
+ */
+function csp_report_sanitize_field($v) {
+	if (!is_string($v)) {
+		return '(unknown)';
+	}
+	/* Strip CR/LF and other C0 controls; truncate to 256 chars for log sanity. */
+	$v = preg_replace('/[\x00-\x1f\x7f]/', ' ', $v);
+	if (strlen($v) > 256) {
+		$v = substr($v, 0, 253) . '...';
+	}
+	return $v;
+}
+
+/**
  * Validate and normalise a raw CSP report POST.
  *
  * Kept as a pure function so it can be exercised in unit tests without
@@ -76,15 +92,16 @@ function csp_report_validate_payload(array $headers, $body, $maxBytes) {
 	 * Normalise both into a flat map of the violation fields. */
 	if (isset($decoded['csp-report']) && is_array($decoded['csp-report'])) {
 		$report = $decoded['csp-report'];
-		$directive  = isset($report['violated-directive'])  ? $report['violated-directive']  : '(unknown)';
-		$blockedUri = isset($report['blocked-uri'])         ? $report['blocked-uri']          : '(unknown)';
-		$docUri     = isset($report['document-uri'])        ? $report['document-uri']         : '(unknown)';
+		/* Sanitize before interpolation: a crafted report can embed CR/LF to forge log lines. */
+		$directive  = csp_report_sanitize_field(isset($report['violated-directive'])  ? $report['violated-directive']  : '(unknown)');
+		$blockedUri = csp_report_sanitize_field(isset($report['blocked-uri'])         ? $report['blocked-uri']          : '(unknown)');
+		$docUri     = csp_report_sanitize_field(isset($report['document-uri'])        ? $report['document-uri']         : '(unknown)');
 	} elseif (isset($decoded['body']) && is_array($decoded['body'])) {
 		$report = $decoded['body'];
-		/* report-to uses camelCase keys */
-		$directive  = isset($report['effectiveDirective'])  ? $report['effectiveDirective']   : '(unknown)';
-		$blockedUri = isset($report['blockedURL'])          ? $report['blockedURL']            : '(unknown)';
-		$docUri     = isset($report['documentURL'])         ? $report['documentURL']           : '(unknown)';
+		/* report-to uses camelCase keys; same log-injection risk applies. */
+		$directive  = csp_report_sanitize_field(isset($report['effectiveDirective'])  ? $report['effectiveDirective']   : '(unknown)');
+		$blockedUri = csp_report_sanitize_field(isset($report['blockedURL'])          ? $report['blockedURL']            : '(unknown)');
+		$docUri     = csp_report_sanitize_field(isset($report['documentURL'])         ? $report['documentURL']           : '(unknown)');
 	} else {
 		return array('ok' => false, 'reason' => 'Missing csp-report or body field', 'summary' => '');
 	}

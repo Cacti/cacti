@@ -26,16 +26,17 @@
  */
 class CactiSecureHeaders {
 	/**
-	 * Per-request cryptographic nonce. 16 bytes base64url-encoded (RFC 4648 §5).
-	 * Base64url avoids '+' and '/' which are not safe unquoted in CSP values.
+	 * Per-request cryptographic nonce. 18 bytes base64url-encoded (RFC 4648 §5)
+	 * yields 24 chars with no padding. Base64url avoids '+' and '/' which are
+	 * not safe unquoted in CSP values.
 	 */
 	public static function getNonce() {
 		static $nonce = null;
 		if ($nonce === null) {
 			if (function_exists('random_bytes')) {
-				$nonce = rtrim(strtr(base64_encode(random_bytes(16)), '+/', '-_'), '=');
+				$nonce = rtrim(strtr(base64_encode(random_bytes(18)), '+/', '-_'), '=');
 			} else {
-				$nonce = rtrim(strtr(base64_encode(openssl_random_pseudo_bytes(16)), '+/', '-_'), '=');
+				$nonce = rtrim(strtr(base64_encode(openssl_random_pseudo_bytes(18)), '+/', '-_'), '=');
 			}
 		}
 		return $nonce;
@@ -78,10 +79,11 @@ class CactiSecureHeaders {
 	 *
 	 * @param string $mode       One of '', 'unsafe-eval', 'nonce', 'nonce-report'.
 	 * @param string $nonce      Base64url nonce; ignored when mode is not nonce-based.
-	 * @param string $alternates Space-separated alternate source hosts (already escaped).
+	 * @param string $alternates Space-separated alternate source hosts (already sanitized).
+	 * @param string $report_uri Pre-validated report URI; appended only for nonce modes.
 	 * @return string            Full CSP value, suitable for use after the header name.
 	 */
-	public static function buildCspPolicy($mode, $nonce, $alternates) {
+	public static function buildCspPolicy($mode, $nonce, $alternates, $report_uri = '') {
 		if ($mode === 'nonce' || $mode === 'nonce-report') {
 			$script_src = "script-src 'self' 'nonce-{$nonce}' {$alternates}";
 			$style_src  = "style-src 'self' 'nonce-{$nonce}' {$alternates}";
@@ -91,7 +93,7 @@ class CactiSecureHeaders {
 			$style_src  = "style-src 'self' 'unsafe-inline' {$alternates}";
 		}
 
-		return "default-src 'self'; "
+		$policy = "default-src 'self'; "
 			. "{$script_src}; "
 			. "{$style_src}; "
 			. "img-src 'self' {$alternates} data: blob:; "
@@ -104,6 +106,28 @@ class CactiSecureHeaders {
 			. "base-uri 'self'; "
 			. "form-action 'self'; "
 			. "manifest-src 'self';";
+
+		/* Browsers honor report-uri on both enforcing and report-only policies.
+		 * Only attach when a URI is configured and we're in a nonce mode; the
+		 * unsafe-inline modes do not warrant violation tracking here. */
+		if ($report_uri !== '' && ($mode === 'nonce' || $mode === 'nonce-report')) {
+			$policy .= " report-uri {$report_uri};";
+		}
+
+		return $policy;
+	}
+
+	/**
+	 * Strip characters that are not valid inside a CSP source list token.
+	 * html_escape() is wrong for CSP context because it leaves ';' intact,
+	 * which would terminate a directive early and allow header injection.
+	 */
+	private static function sanitizeCspSources($raw) {
+		if (!is_string($raw) || $raw === '') {
+			return '';
+		}
+		/* Drop everything that isn't a CSP source-list safe char. */
+		return preg_replace('/[^A-Za-z0-9.:\-*\/ ]/', '', $raw);
 	}
 
 	/*
@@ -131,17 +155,33 @@ class CactiSecureHeaders {
 		$mode       = self::getCspMode();
 		$nonce      = self::isNonceMode() ? self::getNonce() : '';
 		$alternates = '';
+		$report_uri = '';
 
 		if (function_exists('read_config_option')) {
 			$cfg_alternates = read_config_option('content_security_alternate_sources');
 			if ($cfg_alternates !== null && $cfg_alternates !== false) {
-				$alternates = function_exists('html_escape')
-					? html_escape($cfg_alternates)
-					: htmlspecialchars((string)$cfg_alternates, ENT_QUOTES, 'UTF-8');
+				/* html_escape() leaves ';' intact — wrong for CSP directive values.
+				 * The CSP scrubber drops any char that could terminate a directive
+				 * or inject a header line. */
+				$alternates = self::sanitizeCspSources((string)$cfg_alternates);
+			}
+
+			/* Allow operators to configure the violation report endpoint; fall back
+			 * to the Cacti-bundled handler if the option is missing or invalid. */
+			$cfg_report_uri = read_config_option('content_security_report_uri');
+			if ($cfg_report_uri !== null && $cfg_report_uri !== false && $cfg_report_uri !== '') {
+				/* Reject URIs containing chars that would break the CSP header line. */
+				if (preg_match('/[;\r\n "\s]/', (string)$cfg_report_uri)) {
+					$report_uri = '/cacti/csp_report.php';
+				} else {
+					$report_uri = (string)$cfg_report_uri;
+				}
+			} else {
+				$report_uri = '/cacti/csp_report.php';
 			}
 		}
 
-		$csp = self::buildCspPolicy($mode, $nonce, $alternates);
+		$csp = self::buildCspPolicy($mode, $nonce, $alternates, $report_uri);
 
 		header('X-Frame-Options: SAMEORIGIN');
 
