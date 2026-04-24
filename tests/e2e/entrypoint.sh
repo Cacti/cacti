@@ -19,23 +19,32 @@ CSP_MODE="${CACTI_CSP_MODE:-nonce}"
 
 log() { printf '[entrypoint] %s\n' "$*" >&2; }
 
-# 1. Seed include/config.php from the .dist template if it is absent. We
-#    rewrite only the four DB credential lines; everything else matches the
-#    upstream template.
+# 1. Seed include/config.php from the .dist template. CACTI_FORCE_CONFIG=1
+#    overwrites an existing file so dev re-runs and CI always start with
+#    DB creds matching this compose stack. Developer installs with the
+#    default empty value keep their edited config across restarts.
 config_php="${CACTI_ROOT}/include/config.php"
-if [ ! -f "${config_php}" ]; then
-    log "creating include/config.php from include/config.php.dist"
+FORCE_CONFIG="${CACTI_FORCE_CONFIG:-0}"
+if [ ! -f "${config_php}" ] || [ "${FORCE_CONFIG}" = "1" ]; then
+    if [ -f "${config_php}" ]; then
+        log "overwriting include/config.php (CACTI_FORCE_CONFIG=1)"
+    else
+        log "creating include/config.php from include/config.php.dist"
+    fi
     cp "${CACTI_ROOT}/include/config.php.dist" "${config_php}"
-    sed -i \
-        -e "s|^\$database_hostname = 'localhost';|\$database_hostname = '${DB_HOST}';|" \
-        -e "s|^\$database_username = 'cactiuser';|\$database_username = '${DB_USER}';|" \
-        -e "s|^\$database_password = 'cactiuser';|\$database_password = '${DB_PASS}';|" \
-        -e "s|^\$database_default  = 'cacti';|\$database_default  = '${DB_NAME}';|" \
-        -e "s|^\$database_port     = '3306';|\$database_port     = '${DB_PORT}';|" \
-        -e "s|^\$url_path          = '/cacti/';|\$url_path          = '/';|" \
+    # Rewrite rules tolerate varying whitespace around '=' so they work
+    # against both the .dist (aligned) and hand-edited (single-space)
+    # variants of the template.
+    sed -i -E \
+        -e "s|^(\\\$database_hostname[[:space:]]*=[[:space:]]*)'[^']*';|\\1'${DB_HOST}';|" \
+        -e "s|^(\\\$database_username[[:space:]]*=[[:space:]]*)'[^']*';|\\1'${DB_USER}';|" \
+        -e "s|^(\\\$database_password[[:space:]]*=[[:space:]]*)'[^']*';|\\1'${DB_PASS}';|" \
+        -e "s|^(\\\$database_default[[:space:]]*=[[:space:]]*)'[^']*';|\\1'${DB_NAME}';|" \
+        -e "s|^(\\\$database_port[[:space:]]*=[[:space:]]*)'[^']*';|\\1'${DB_PORT}';|" \
+        -e "s|^(\\\$url_path[[:space:]]*=[[:space:]]*)'[^']*';|\\1'/';|" \
         "${config_php}"
 else
-    log "include/config.php already present; leaving it alone"
+    log "include/config.php present; CACTI_FORCE_CONFIG unset. leaving it alone"
 fi
 
 # 2. Wait for MariaDB using the PHP mysqli client (same stack Cacti uses at
