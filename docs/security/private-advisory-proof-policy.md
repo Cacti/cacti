@@ -61,10 +61,10 @@ For every closure pass:
 
 Use:
 
-- `scripts/security/build_private_advisory_matrix.sh`
-- `scripts/security/verify_private_advisory_matrix.sh`
-- `scripts/security/freeze_private_advisory_evidence.sh`
-- `scripts/security/build_sink_inventory.sh`
-- `scripts/security/verify_sink_inventory.sh`
-- `scripts/security/build_architectural_helper_report.sh`
-- `scripts/security/verify_architectural_hotspots.sh`
+- `tests/scripts/security/build_private_advisory_matrix.sh`
+- `tests/scripts/security/verify_private_advisory_matrix.sh`
+- `tests/scripts/security/freeze_private_advisory_evidence.sh`
+- `tests/scripts/security/build_sink_inventory.sh`
+- `tests/scripts/security/verify_sink_inventory.sh`
+- `tests/scripts/security/build_architectural_helper_report.sh`
+- `tests/scripts/security/verify_architectural_hotspots.sh`
