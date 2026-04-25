@@ -6430,9 +6430,9 @@ function get_default_contextoption($timeout = false) {
 	if (in_array($protocol, array('ssl', 'https', 'ftps'))) {
 		$fgc_contextoption = array(
 			'ssl' => array(
-				'verify_peer'       => true,
-				'verify_peer_name'  => read_config_option('allow_unsafe_httpd') != 'on' ? true : false,
-				'allow_self_signed' => read_config_option('allow_unsafe_httpd') == 'on' ? true : false,
+				'verify_peer'       => read_config_option('allow_unsafe_https') != 'on' ? true : false,
+				'verify_peer_name'  => read_config_option('allow_unsafe_https') != 'on' ? true : false,
+				'allow_self_signed' => read_config_option('allow_unsafe_https') == 'on' ? true : false,
 				'follow_location'   => 0,
 			)
 		);
@@ -8319,9 +8319,9 @@ function cacti_http($url, $timeout = 10, array $allowlist = array(), &$status = 
 	}
 
 	$ssl = ($scheme === 'https') ? array(
-		'verify_peer'       => true,
-		'verify_peer_name'  => read_config_option('allow_unsafe_httpd') != 'on' ? true : false,
-		'allow_self_signed' => read_config_option('allow_unsafe_httpd') == 'on' ? true : false,
+		'verify_peer'       => read_config_option('allow_unsafe_https') != 'on' ? true : false,
+		'verify_peer_name'  => read_config_option('allow_unsafe_https') != 'on' ? true : false,
+		'allow_self_signed' => read_config_option('allow_unsafe_https') == 'on' ? true : false,
 	) : array();
 
 	$ctx = stream_context_create(array(
