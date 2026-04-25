@@ -6432,7 +6432,7 @@ function get_default_contextoption($timeout = false) {
 			'ssl' => array(
 				'verify_peer'       => true,
 				'verify_peer_name'  => true,
-				'allow_self_signed' => false,
+				'allow_self_signed' => read_config_option('allow_self_signed') == 'on' ? true : false,
 				'follow_location'   => 0,
 			)
 		);
@@ -8299,7 +8299,7 @@ function cacti_http($url, $timeout = 10, array $allowlist = array(), &$status = 
 	$ssl = ($scheme === 'https') ? array(
 		'verify_peer'       => true,
 		'verify_peer_name'  => true,
-		'allow_self_signed' => false,
+		'allow_self_signed' => read_config_option('allow_self_signed') == 'on' ? true : false,
 	) : array();
 
 	$ctx = stream_context_create(array(

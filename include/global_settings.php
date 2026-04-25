@@ -497,6 +497,12 @@ $settings = array(
 			'default' => '',
 			'method' => 'checkbox',
 		),
+		'allow_self_signed' => array(
+			'friendly_name' => __('Allow Self Signed Certificate Use'),
+			'description' => __('Allow the use of Self Signed Certificate when communicating between Remote Data Collectors.'),
+			'default' => 'on',
+			'method' => 'checkbox',
+		),
 		'content_security_policy_script' => array(
 			'method' => 'drop_array',
 			'friendly_name' => __('Content-Security Allow Unsafe JavaScript eval() calls'),
