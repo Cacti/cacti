@@ -79,7 +79,6 @@ jobs:
         repository: 'plugin_thold'
 
     - name: Checkout Monitor Plugin
-      if: matrix.php != '7.4'
       uses: GuillaumeFalourd/clone-github-repo-action@v2
       with:
         owner: 'Cacti'
@@ -118,9 +117,7 @@ jobs:
     - name: Move Plugins to Plugin Directory
       run: |
         mv plugin_thold ${{ github.workspace }}/plugins/thold
-        if [ "${{ matrix.php }}" != "7.4" ]; then
-          mv plugin_monitor ${{ github.workspace }}/plugins/monitor
-        fi
+        mv plugin_monitor ${{ github.workspace }}/plugins/monitor
         mv plugin_mactrack ${{ github.workspace }}/plugins/mactrack
         mv plugin_audit ${{ github.workspace }}/plugins/audit
         mv plugin_flowview ${{ github.workspace }}/plugins/flowview
@@ -227,9 +224,7 @@ jobs:
       run: |
         cd ${{ github.workspace }}
         plugins='--plugin=thold --plugin=intropage --plugin=mactrack --plugin=audit --plugin=flowview --plugin=syslog'
-        if [ "${{ matrix.php }}" != "7.4" ]; then
-          plugins="$plugins --plugin=monitor"
-        fi
+        plugins="$plugins --plugin=monitor"
         sudo php cli/plugin_manage.php $plugins --install --enable --allperms
 
     - name: Add Device for Moc Test, Check CLI scripts for Errors
