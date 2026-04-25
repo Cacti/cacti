@@ -377,14 +377,14 @@ dynamic_include	./lib/functions.php:5503	    require_once($config['include_path'
 dynamic_include	./lib/functions.php:5504	    require_once($config['include_path'] . '/vendor/phpmailer/src/PHPMailer.php');
 dynamic_include	./lib/functions.php:5505	    require_once($config['include_path'] . '/vendor/phpmailer/src/SMTP.php');
 dynamic_include	./lib/graph_variables.php:65		include_once($config['library_path'] . '/rrd.php');
-dynamic_include	./lib/html.php:1194		include($config['include_path'] . '/global_arrays.php');
+dynamic_include	./lib/html.php:1207		include($config['include_path'] . '/global_arrays.php');
 dynamic_include	./lib/html_tree.php:479		include_once($config['base_path'] . '/lib/data_query.php');
 dynamic_include	./lib/html_tree.php:823		include($config['include_path'] . '/global_arrays.php');
 dynamic_include	./lib/html_tree.php:824		include_once($config['library_path'] . '/data_query.php');
 dynamic_include	./lib/html_tree.php:825		include_once($config['library_path'] . '/html_utility.php');
 dynamic_include	./lib/html_tree.php:93		include_once($config['library_path'] . '/data_query.php');
-dynamic_include	./lib/import.php:2212		include_once($config['library_path'] . '/vdef.php');
-dynamic_include	./lib/import.php:38		include_once($config['library_path'] . '/xml.php');
+dynamic_include	./lib/import.php:1986		include_once($config['library_path'] . '/vdef.php');
+dynamic_include	./lib/import.php:29		include_once($config['library_path'] . '/xml.php');
 dynamic_include	./lib/installer.php:3429					include_once($upgrade_file);
 dynamic_include	./lib/mib_cache.php:57			include_once($config['include_path'] . '/vendor/phpsnmp/mib_parser.php');
 dynamic_include	./lib/plugins.php:150						include_once($plugin_include);
@@ -569,8 +569,8 @@ fs_write	./lib/functions.php:7032		if (($f = @fopen($path, 'w'))) {
 fs_write	./lib/functions.php:710				file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() .
 fs_write	./lib/functions.php:7106				file_put_contents($tmp_file, 'cacti');
 fs_write	./lib/functions.php:719					file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() .
-fs_write	./lib/import.php:516		$f   = fopen($filename, 'r');
-fs_write	./lib/import.php:692							$file = fopen($filename, 'wb');
+fs_write	./lib/import.php:425		$f   = fopen($filename, 'r');
+fs_write	./lib/import.php:592							$file = fopen($filename, 'wb');
 fs_write	./lib/installer.php:2889				$file = fopen($cacheFile, "r");
 fs_write	./lib/poller.php:1299									if (file_put_contents($tmpfile, $contents) !== false) {
 fs_write	./lib/poller.php:1306												file_put_contents($mypath, $contents);
@@ -996,5 +996,5 @@ header_redirect	./vdef.php:553		header('Location: vdef.php?action=edit&header=fa
 header_redirect	./vdef.php:57			header('Location: vdef.php?header=false&action=edit&id=' . get_request_var('vdef_id'));
 header_redirect	./vdef.php:64			header('Location: vdef.php?header=false&action=edit&id=' . get_request_var('vdef_id'));
 xml_parse	./install/functions.php:514				$xmlget = simplexml_load_string($xml);
-xml_parse	./lib/import.php:377		$xmlget = simplexml_load_string($data);
-xml_parse	./lib/import.php:570		$xmlget = simplexml_load_string($xml);
+xml_parse	./lib/import.php:366		$xmlget = simplexml_load_string($data);
+xml_parse	./lib/import.php:478		$xmlget = simplexml_load_string($xml);
