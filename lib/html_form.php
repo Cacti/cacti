@@ -43,7 +43,7 @@ function draw_edit_form($array) {
 
 	if (cacti_sizeof($fields_array)) {
 		if (!isset($config_array['no_form_tag'])) {
-			print "<form class='cactiForm' method='post' autocomplete='off' action='" . ((isset($config_array['post_to'])) ? $config_array['post_to'] : get_current_page()) . "'" . ((isset($config_array['form_name'])) ? " name='" . $config_array['form_name'] . "'" : '') . ((isset($config_array['enctype'])) ? " enctype='" . $config_array['enctype'] . "'" : '') . ">\n";
+			print "<form class='cactiForm' method='post' autocomplete='off' action='" . ((isset($config_array['post_to'])) ? $config_array['post_to'] : get_current_page()) . "'" . ((isset($config_array['form_name'])) ? " name='" . $config_array['form_name'] . "'" : '') . ((isset($config_array['enctype'])) ? " enctype='" . $config_array['enctype'] . "'" : '') . ">";
 		}
 
 		$i = 0;
@@ -86,7 +86,7 @@ function draw_edit_form($array) {
 				$collapsible = (isset($field_array['collapsible']) && $field_array['collapsible'] == 'true');
 
 				print "<div class='spacer formHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$field_name'><div class='formHeaderText'>" . html_escape($field_array['friendly_name']);
-				print '<div class="formTooltip">' . (isset($field_array['description']) ? display_tooltip(html_escape($field_array['description'])):'') . '</div>';
+				print '<div class="formTooltip">' . (isset($field_array['description']) ? display_tooltip($field_array['description']):'') . '</div>';
 				print ($collapsible ? "<div class='formHeaderAnchor'><i class='fa fa-angle-double-up'></i></div>":'') . '</div></div>';
 			} else {
 				// Make a row using a div
@@ -132,10 +132,10 @@ function draw_edit_form($array) {
 				print html_escape($field_array['friendly_name']);
 
 				if (read_config_option('hide_form_description') == 'on') {
-					print '<br><span class="formFieldDescription">' . ((isset($field_array['description'])) ? html_escape($field_array['description']) : '') . "</span>\n";
+					print '<br><span class="formFieldDescription">' . ((isset($field_array['description'])) ? $field_array['description'] : '') . '</span>';
 				} else {
 					print '<div class="formTooltip">';
-					print display_tooltip((isset($field_array['description'])) ? html_escape($field_array['description']) : '');
+					print display_tooltip((isset($field_array['description'])) ? $field_array['description'] : '');
 					print '</div>';
 				}
 
@@ -545,8 +545,8 @@ function form_submit($form_name, $value, $title = '', $action = '') {
    @arg $form_accept - the file types permitted
  */
 function form_file($form_name, $form_size = 30, $form_accept = '') {
-	print "<div>\n";
-	print "<label class='import_label' for='$form_name'>" . __('Select a File'). "</label>\n";
+	print "<div>";
+	print "<label class='import_label' for='$form_name'>" . __('Select a File'). "</label>";
 	print "<input type='file'";
 
 	if (isset($_SESSION['sess_error_fields']) && !empty($_SESSION['sess_error_fields'][$form_name])) {
@@ -556,9 +556,9 @@ function form_file($form_name, $form_size = 30, $form_accept = '') {
 		print " class='import_button ui-state-default ui-corner-all'";
 	}
 
-	print " id='$form_name' name='$form_name' size='$form_size'" . ($form_accept != '' ? " accept='$form_accept'":'') . ">\n";
-	print "<span class='import_text'></span>\n";
-	print "</div>\n";
+	print " id='$form_name' name='$form_name' size='$form_size'" . ($form_accept != '' ? " accept='$form_accept'":'') . ">";
+	print "<span class='import_text'></span>";
+	print "</div>";
 }
 
 /* form_filepath_box - draws a standard html textbox and provides status of a files existence
@@ -721,7 +721,7 @@ function form_text_box($form_name, $form_previous_value, $form_default_value, $f
 		}
 	}
 
-	print " id='$form_name' " . ($placeholder != '' ? "placeholder='" . html_escape($placeholder) . "'":'') . " name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : '') . " value='" . html_escape($form_previous_value) . "'>\n";
+	print " id='$form_name' " . ($placeholder != '' ? "placeholder='" . html_escape($placeholder) . "'":'') . " name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : '') . " value='" . html_escape($form_previous_value) . "'>";
 }
 
 /* form_hidden_box - draws a standard html hidden element
@@ -784,12 +784,12 @@ function form_dropdown($form_name, $form_data, $column_display, $column_id, $for
 	print "<select id='" . html_escape($form_name) . "' name='" . html_escape($form_name) . "'" . $class . $on_change . '>';
 
 	if (!empty($form_none_entry)) {
-		print "<option value='0'" . (empty($form_previous_value) ? ' selected' : '') . ">$form_none_entry</option>\n";
+		print "<option value='0'" . (empty($form_previous_value) ? ' selected' : '') . ">$form_none_entry</option>";
 	}
 
 	html_create_list($form_data, $column_display, $column_id, $form_previous_value);
 
-	print "</select>\n";
+	print "</select>";
 }
 
 function form_droplanguage($form_name, $column_display, $column_id, $form_previous_value, $form_none_entry, $form_default_value, $class = '', $on_change = '') {
@@ -863,14 +863,14 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 		print "<select id='" . html_escape($form_name) . "' name='" . html_escape($form_name) . "'" . $class . '>';
 
 		if (!empty($none_entry)) {
-			print "<option value='0'" . (empty($previous_value) ? ' selected' : '') . ">$none_entry</option>\n";
+			print "<option value='0'" . (empty($previous_value) ? ' selected' : '') . ">$none_entry</option>";
 		}
 
 		$form_data = db_fetch_assoc($classic_sql);
 
 		html_create_list($form_data, $column_display, $column_id, $previous_id);
 
-		print "</select>\n";
+		print "</select>";
 	} else {
 		if (empty($previous_id) && $previous_value == '') {
 			$previous_value = $none_entry;
@@ -1091,7 +1091,7 @@ function form_text_area($form_name, $form_previous_value, $form_rows, $form_colu
 		$placeholder = " placeholder='" . html_escape($placeholder) . "'";
 	}
 
-	print "<textarea class='$class ui-state-default ui-corner-all' aria-multiline='true' cols='$form_columns' rows='$form_rows' id='$form_name' name='$form_name'" . $on_change . $placeholder . '>' . html_escape($form_previous_value) . "</textarea>\n";
+	print "<textarea class='$class ui-state-default ui-corner-all' aria-multiline='true' cols='$form_columns' rows='$form_rows' id='$form_name' name='$form_name'" . $on_change . $placeholder . '>' . html_escape($form_previous_value) . "</textarea>";
 }
 
 /* form_multi_dropdown - draws a standard html multiple select dropdown
@@ -1136,7 +1136,7 @@ function form_multi_dropdown($form_name, $array_display, $sql_previous_values, $
 		$on_change = " onChange='$on_change' ";
 	}
 
-	print "<select style='height:20px;' size='1' class='$class' id='$form_name' name='$form_name" . "[]' multiple>\n";
+	print "<select style='height:20px;' size='1' class='$class' id='$form_name' name='$form_name" . "[]' multiple>";
 
 	foreach (array_keys($array_display) as $id) {
 		print "<option value='" . $id . "'";
@@ -1150,10 +1150,10 @@ function form_multi_dropdown($form_name, $array_display, $sql_previous_values, $
 		}
 
 		print '>' . html_escape($array_display[$id]);
-		print "</option>\n";
+		print "</option>";
 	}
 
-	print "</select>\n";
+	print "</select>";
 }
 
 /*
@@ -1376,7 +1376,7 @@ function form_save_buttons($buttons) {
 			<td class='saveRow'>
 				<input type='hidden' name='action' value='save'>
 				<?php foreach($buttons as $b) {
-					print "<input type='button' class='ui-button ui-corner-all ui-widget' id='" . $b['id'] . "' value='" . html_escape($b['value']) . "'>\n";
+					print "<input type='button' class='ui-button ui-corner-all ui-widget' id='" . $b['id'] . "' value='" . html_escape($b['value']) . "'>";
 				} ?>
 			</td>
 		</tr>
@@ -1400,7 +1400,7 @@ function form_start($action, $id = '', $multipart = false) {
 
 	$form_action = $action;
 
-	print "<form class='cactiFormStart' id='$form_id' name='$form_id' action='$form_action' autocomplete='off' method='post'" . ($multipart ? " enctype='multipart/form-data'":'') . ">\n";
+	print "<form class='cactiFormStart' id='$form_id' name='$form_id' action='$form_action' autocomplete='off' method='post'" . ($multipart ? " enctype='multipart/form-data'":'') . ">";
 }
 
 /* form_end - draws post form end. To be combined with form_start() */
