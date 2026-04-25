@@ -7361,6 +7361,28 @@ function cacti_csv_safe($value) {
 	return $value;
 }
 
+/**
+ * cacti_input_string_is_safe - guard against shell metacharacters smuggled
+ *   into a data_input.input_string template. The placeholder syntax is
+ *   <field_name>, never <;rm -rf /;>, so any of [;&|`$\\\r\n] outside a
+ *   placeholder is taken as a command-injection attempt. The same regex
+ *   gates both the GUI save path (data_input.php) and XML/package import
+ *   (lib/import.php) so the two cannot drift.
+ *
+ * @param $input_string - (string) The candidate input_string template
+ *
+ * @returns - (bool) true if the value is safe to persist
+ */
+function cacti_input_string_is_safe($input_string) {
+	if ($input_string === '' || $input_string === null) {
+		return true;
+	}
+
+	$bare = preg_replace('/<[a-zA-Z_]+>/', '', $input_string);
+
+	return !preg_match('/[;&|`$\\\\\n\r]/', $bare);
+}
+
 function cacti_sizeof($array) {
 	return ($array === false || !is_array($array)) ? 0 : sizeof($array);
 }

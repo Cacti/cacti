@@ -2171,6 +2171,16 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 					$save[$field_name] = str_replace('>\'\'<', '>\' \'<', $save[$field_name]);
 				}
 			}
+
+			/* Apply the same shell-metacharacter guard the GUI save path uses
+			 * so a hostile XML/package cannot persist a command-injection
+			 * payload that the UI would have rejected at data_input.php. */
+			if ($field_name == 'input_string' && !cacti_input_string_is_safe($save[$field_name])) {
+				cacti_log("ERROR: Refusing to import data input method '$hash' - input_string contains shell metacharacters", false, 'IMPORT');
+				$import_debug_info['type']     = 'fail';
+				$import_debug_info['unsafe']   = true;
+				return false;
+			}
 		}
 	}
 
