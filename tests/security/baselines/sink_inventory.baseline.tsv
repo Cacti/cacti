@@ -30,7 +30,7 @@ cmd_exec	./lib/functions.php:6928				$shell = shell_exec(cacti_escapeshellcmd(re
 cmd_exec	./lib/functions.php:6930				$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v 2>&1');
 cmd_exec	./lib/functions.php:7129				exec('id -nu', $o, $r);
 cmd_exec	./lib/functions.php:7139				exec(sprintf('grep :%s: /etc/passwd | cut -d: -f1', (int) $uid), $o, $r);
-cmd_exec	./lib/functions.php:8239		exec($command, $out, $exit_code);
+cmd_exec	./lib/functions.php:8261		exec($command, $out, $exit_code);
 cmd_exec	./lib/installer.php:3288				$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 cmd_exec	./lib/installer.php:3320						shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 cmd_exec	./lib/installer.php:3376						$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
@@ -99,7 +99,7 @@ cmd_exec	./utilities.php:219					exec(cacti_escapeshellcmd(read_config_option('p
 cmd_exec	./utilities.php:237				$snmp_version = shell_exec(cacti_escapeshellcmd(read_config_option('path_snmpget')) . ' -V 2>&1');
 cmd_exec	./utilities.php:257				exec(cacti_escapeshellcmd(read_config_option('path_spine')) . ' --version', $out_array);
 deserialize	./lib/functions.php:4684				$items = unserialize($unstripped, array('allowed_classes' => false));
-deserialize	./lib/functions.php:7803		return @unserialize($strobj, array('allowed_classes' => false));
+deserialize	./lib/functions.php:7825		return @unserialize($strobj, array('allowed_classes' => false));
 dynamic_include	./automation_snmp.php:410		#include_once($config['base_path'].'/plugins/mactrack/lib/automation_functions.php');
 dynamic_include	./automation_tree_rules.php:524		include_once($config['base_path'].'/lib/html_tree.php');
 dynamic_include	./cli/add_data_query.php:27	require_once($config['base_path'] . '/lib/api_automation_tools.php');
@@ -274,8 +274,8 @@ dynamic_include	./color_templates.php:379		include_once($config['base_path'] . '
 dynamic_include	./color_templates.php:429		include_once($config['base_path'] . '/lib/api_aggregate.php');
 dynamic_include	./color_templates.php:485		include_once($config['base_path'] . '/lib/api_aggregate.php');
 dynamic_include	./graph_realtime.php:382	    <?php include($config['base_path'] . '/include/global_session.php'); ?>
-dynamic_include	./include/auth.php:112					require_once($config['base_path'] . '/auth_login.php');
-dynamic_include	./include/auth.php:167				require_once($config['base_path'] . '/auth_login.php');
+dynamic_include	./include/auth.php:119					require_once($config['base_path'] . '/auth_login.php');
+dynamic_include	./include/auth.php:174				require_once($config['base_path'] . '/auth_login.php');
 dynamic_include	./include/csrf.php:25	require_once($config['include_path'] .'/vendor/csrf/csrf-conf.php');
 dynamic_include	./include/csrf.php:56	include_once($config['include_path'] . '/vendor/csrf/csrf-magic.php');
 dynamic_include	./include/global.php:277	include_once($config['library_path'] . '/database.php');
@@ -527,7 +527,7 @@ dynamic_include	./reports_user.php:29	include_once($config['library_path'] . '/t
 dynamic_include	./rrdcheck.php:26	include_once ($config['library_path'] . '/functions.php');
 dynamic_include	./rrdcleaner.php:26	include_once ($config['library_path'] . '/functions.php');
 dynamic_include	./rrdcleaner.php:27	include_once ($config['library_path'] . '/rrd.php');
-dynamic_include	./script_server.php:288						include_once($include_file);
+dynamic_include	./script_server.php:310				include_once($include_file);
 dynamic_include	./scripts/ss_netsnmp_lmsensors.php:24		include($config['base_path'] . '/lib/snmp.php');
 dynamic_include	./snmpagent_persist.php:165				include( $path_mibcache );
 dynamic_include	./spikekill.php:26	include_once($config['base_path'] . '/lib/spikekill.php');
@@ -701,14 +701,14 @@ header_redirect	./data_debug.php:236					header('Location: data_debug.php?header
 header_redirect	./data_debug.php:239					header('Location: data_debug.php?header=false&debug=1');
 header_redirect	./data_debug.php:53				header('Location: data_debug.php?action=view&id=' . get_filter_request_var('id'));
 header_redirect	./data_debug.php:76				header('Location: data_debug.php?action=view&id=' . get_filter_request_var('id'));
-header_redirect	./data_input.php:103					header('Location: data_input.php?action=edit&id=' . (empty($save['id']) ? '' : $save['id']));
-header_redirect	./data_input.php:129			header('Location: data_input.php?header=false&action=edit&id=' . (empty($data_input_id) ? get_nfilter_request_var('id') : $data_input_id));
-header_redirect	./data_input.php:167				header('Location: data_input.php?header=false&action=field_edit&data_input_id=' . get_request_var('data_input_id') . '&id=' . (empty($data_input_field_id) ? get_request_var('id') : $data_input_field_id) . (!isempty_request_var('input_output') ? '&type=' . get_request_var('input_output') : ''));
-header_redirect	./data_input.php:169				header('Location: data_input.php?header=false&action=edit&id=' . get_request_var('data_input_id'));
-header_redirect	./data_input.php:229			header('Location: data_input.php?header=false');
-header_redirect	./data_input.php:279			header('Location: data_input.php?header=none');
-header_redirect	./data_input.php:457			header('Location: data_input.php?header=false&action=edit&id=' . get_filter_request_var('data_input_id'));
-header_redirect	./data_input.php:520				header('Location: data_input.php');
+header_redirect	./data_input.php:101					header('Location: data_input.php?action=edit&id=' . (empty($save['id']) ? '' : $save['id']));
+header_redirect	./data_input.php:127			header('Location: data_input.php?header=false&action=edit&id=' . (empty($data_input_id) ? get_nfilter_request_var('id') : $data_input_id));
+header_redirect	./data_input.php:165				header('Location: data_input.php?header=false&action=field_edit&data_input_id=' . get_request_var('data_input_id') . '&id=' . (empty($data_input_field_id) ? get_request_var('id') : $data_input_field_id) . (!isempty_request_var('input_output') ? '&type=' . get_request_var('input_output') : ''));
+header_redirect	./data_input.php:167				header('Location: data_input.php?header=false&action=edit&id=' . get_request_var('data_input_id'));
+header_redirect	./data_input.php:222			header('Location: data_input.php?header=false');
+header_redirect	./data_input.php:272			header('Location: data_input.php?header=none');
+header_redirect	./data_input.php:434			header('Location: data_input.php?header=false&action=edit&id=' . get_filter_request_var('data_input_id'));
+header_redirect	./data_input.php:497				header('Location: data_input.php');
 header_redirect	./data_input.php:55			header('Location: data_input.php?header=false&action=edit&id=' . get_filter_request_var('data_input_id'));
 header_redirect	./data_queries.php:1107				header('Location: data_queries.php');
 header_redirect	./data_queries.php:154			header('Location: data_queries.php?header=false&action=edit&id=' . (empty($snmp_query_id) ? get_request_var('id') : $snmp_query_id));
@@ -867,8 +867,8 @@ header_redirect	./lib/auth.php:4743					header('Location: ' . $config['url_path'
 header_redirect	./lib/auth.php:4748				header('Location: ' . $config['url_path'] . 'graph_view.php' . ($newtheme ? '?newtheme=1':''));
 header_redirect	./lib/auth.php:4938			header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?action=force&ref=' . urlencode(validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php')));
 header_redirect	./lib/clog_webapi.php:99			header('Location: ' . get_current_page());
-header_redirect	./lib/functions.php:7908		header('Location: ' . $save_url);
-header_redirect	./lib/functions.php:7931		header('Location: ' . $safe_url, true, $status);
+header_redirect	./lib/functions.php:7930		header('Location: ' . $save_url);
+header_redirect	./lib/functions.php:7953		header('Location: ' . $safe_url, true, $status);
 header_redirect	./lib/html_graph.php:471			header('Location: ' . $page . '?host_id=' . $host_id . '&header=false');
 header_redirect	./lib/html_reports.php:1507				header('Location: reports.php');
 header_redirect	./lib/html_reports.php:274					header('Location: reports.php');
