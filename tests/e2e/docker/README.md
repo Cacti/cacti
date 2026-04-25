@@ -12,14 +12,12 @@ docker-compose.yml         master + remote poller + MariaDB
 Dockerfile.cacti           PHP 8.2 + Apache + RRDtool + extensions
 setup.sh                   idempotent DB seed + admin/lowpriv user
 run.sh                     bring up, seed, run tests, tear down
-playwright.config.js       Playwright 1.45 config (chromium, headless)
-package.json               Playwright dev dep
 probes/
   probe_remote_fetch.php   drives call_remote_data_collector() in-process
 tests/
   01-form-description-html.sh    html_form.php description rendering
   02-self-signed-tls.sh          self-signed HTTPS poller fetch
-  03-session-persistence.spec.js cacti_auth_transition() does not bounce
+  03-session-persistence.sh      cacti_auth_transition() does not bounce (curl-based)
   04-realm-enforcement.sh        is_realm_allowed() guardrail + runtime
 ```
 
@@ -42,7 +40,7 @@ By default the master Cacti UI binds to `127.0.0.1:8088`. To use a different por
 | --- | --- | --- |
 | `01-form-description-html.sh` | `settings.php?tab=path` body contains literal `<strong>` and not `&lt;strong&gt;`. | `lib/html_form.php` wrapping `$field_array['description']` in `html_escape()` (PR #7054 commit `50d5fe3dd`). |
 | `02-self-signed-tls.sh` | `call_remote_data_collector(2, '/index.php')` returns a non-empty body and no TLS verification noise hits `log/cacti.log`. | A future re-introduction of `verify_peer => true` defaults that breaks self-signed remote pollers. |
-| `03-session-persistence.spec.js` | After login, `/index.php`, `/host.php`, `/data_sources.php`, `/graphs.php`, `/user_admin.php` all return < 400 and the admin layout marker is present. | `cacti_auth_transition()` bouncing the user via `session_regenerate_id(true)` plus aggressive remember-me cookie rotation. |
+| `03-session-persistence.sh` | After login via the same CSRF + index.php curl flow as test 01, `/index.php`, `/host.php`, `/data_sources.php`, `/graphs.php`, `/user_admin.php` all return < 400 and the admin layout marker is present. No Playwright dependency. | `cacti_auth_transition()` bouncing the user via `session_regenerate_id(true)` plus aggressive remember-me cookie rotation. |
 | `04-realm-enforcement.sh` | (a) `grep -RnE 'function (cacti_realm_check\|realm_allowed\|dispatch_realm\|check_user_realm)\b'` matches nothing in `lib/` or `include/`. (b) The seeded `lowpriv` user is denied on `/user_admin.php`, `/settings.php`, `/host.php`. | A parallel realm-check helper being reintroduced (the earlier `lib/cacti_dispatch.php`) or admin pages skipping `is_realm_allowed()`. |
 
 ## Debugging a failure
@@ -73,8 +71,7 @@ master container so the algorithm matches the running PHP build.
 - Setup is idempotent: re-running `run.sh` drops and recreates the schema, and
   user/poller rows use `ON DUPLICATE KEY UPDATE`.
 - Teardown uses `--volumes --remove-orphans` so nothing is left behind.
-- Playwright runs inside the official `mcr.microsoft.com/playwright:v1.49.1-jammy`
-  image, so the host does not need Node installed.
+- All tests are curl-based shell scripts; no Node or Playwright dependency on the host or in CI.
 
 ## Current status (work in progress)
 
@@ -89,7 +86,7 @@ maturity and are honest regression detectors at different fidelity levels.
 | 04 realm enforcement (runtime) | LENIENT PASS | low-priv user fetch returns status=200 with no admin marker; the script accepts that as denied. A status=200 from a hostile redirect or noop page would also pass — tighten if higher confidence is needed. |
 | 02 self-signed TLS | FAIL (correctly) | `get_default_contextoption()` on this branch returns SSL options that verify the peer cert, so `file_get_contents()` against the self-signed poller fails with `error:0A000086:SSL routines::certificate verify failed`. **This is the regression TheWitness reported.** Making it green requires an application-code fix (loosen `verify_peer` to opt-in or honor a setting). |
 | 01 form description HTML | FAIL | `curl` round-trips through `auth_login.php` POST but the subsequent `settings.php?tab=path` fetch returns the login page rather than the settings UI; the cookie jar isn't carrying the authenticated session. Likely a missing form field (CSRF token, `action`, or similar) in the POST. |
-| 03 session persistence | FAIL | Playwright times out waiting for `#login_username` after `page.goto('/auth_login.php')`. The page IS being served (the spec reaches the right host) but rendering or readiness is the wait failure. Worth a manual debug session with `KEEP_UP=1 ./run.sh` followed by browsing to the master from the host. |
+| 03 session persistence | PASS-state TBD | Curl-based 5-page navigation loop; flips to FAIL if cacti_auth_transition destroys the session at login. Currently PASS-state TBD pending application of the stashed auth fix. |
 
 ## CSRF tokens
 
@@ -102,7 +99,7 @@ form field in the subsequent POST. POSTing directly to
 /auth_login.php is unsupported — that file only loads lib/ldap.php and
 does not bring in global.php, so calling its set_default_action() at
 line 29 fatal-errors. The canonical entry for the auth flow is
-/index.php.
+/index.php. Test 03 uses the same GET-then-POST CSRF flow as test 01.
 
 ## Known follow-up work
 

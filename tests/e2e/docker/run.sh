@@ -60,18 +60,6 @@ for t in "${sorted[@]}"; do
         *.sh)
             bash "$t" || rc=$?
             ;;
-        *.spec.js)
-            # Run Playwright inside an ephemeral node sidecar so we don't depend on
-            # the host's Node install. Mount the harness dir; install on first run.
-            docker run --rm \
-                --network "$(${DC[@]} ps --format '{{.Networks}}' cacti-master | head -1)" \
-                -v "$PWD":/work \
-                -w /work \
-                -e PWBASEURL=http://cacti-master \
-                mcr.microsoft.com/playwright:v1.49.1-jammy \
-                sh -c 'npm ci --no-audit --no-fund --silent || npm install --no-audit --no-fund --silent; npx playwright test' \
-                || rc=$?
-            ;;
         *)
             echo "[run] skipping unknown test type: $t"
             ;;
