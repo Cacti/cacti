@@ -498,7 +498,7 @@ $settings = array(
 			'method' => 'checkbox',
 		),
 		'allow_unsafe_https' => array(
-			'friendly_name' => __('Allow Unsafe HTTPS'),
+			'friendly_name' => __('Allow Unsafe Remote Data Collector HTTPS'),
 			'description' => __('Allow the use of Self Signed Certificates and allow the hostname of the Certificate to differ from that of the Remote Data Collector.'),
 			'default' => 'on',
 			'method' => 'checkbox',
