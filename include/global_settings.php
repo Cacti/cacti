@@ -497,9 +497,9 @@ $settings = array(
 			'default' => '',
 			'method' => 'checkbox',
 		),
-		'allow_self_signed' => array(
-			'friendly_name' => __('Allow Self Signed Certificate Use'),
-			'description' => __('Allow the use of Self Signed Certificate when communicating between Remote Data Collectors.'),
+		'allow_unsafe_https' => array(
+			'friendly_name' => __('Allow Unsafe HTTPS'),
+			'description' => __('Allow the use of Self Signed Certificates and allow the hostname of the Certificate to differ from that of the Remote Data Collector.'),
 			'default' => 'on',
 			'method' => 'checkbox',
 		),
