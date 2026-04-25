@@ -198,7 +198,7 @@ case 'save':
 		get_filter_request_var('predefined_timespan');
 		get_filter_request_var('predefined_timeshift');
 		get_filter_request_var('graphs');
-		get_filter_request_var('thumbnails', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '^(true|false)$')));
+		get_filter_request_var('thumbnails', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '(true|false)')));
 
 		if (isset_request_var('predefined_timespan')) {
 			set_graph_config_option('default_timespan', get_request_var('predefined_timespan'));
