@@ -39,10 +39,10 @@ jobs:
         run: sudo apt-get install -y ripgrep
 
       - name: Verify tracked sink baseline
-        run: scripts/security/verify_sink_inventory.sh
+        run: tests/security/verify_sink_inventory.sh
 
       - name: Verify no new architectural hotspots
-        run: scripts/security/verify_architectural_hotspots.sh
+        run: tests/security/verify_architectural_hotspots.sh
 
   advisory-proof-matrix:
     name: private advisory proof matrix
@@ -61,19 +61,19 @@ jobs:
           set -euo pipefail
           out_dir="security/proof-run/${GITHUB_RUN_ID}"
           mkdir -p "${out_dir}"
-          scripts/security/build_private_advisory_matrix.sh \
+          tests/security/build_private_advisory_matrix.sh \
             "${{ inputs.repo_name }}" \
             "${{ inputs.branch_list }}" \
             "${out_dir}"
-          scripts/security/build_sink_inventory.sh > "${out_dir}/sink_inventory.current.tsv"
-          scripts/security/build_architectural_helper_report.sh --summary > "${out_dir}/architectural_helper.summary.tsv"
-          scripts/security/build_architectural_helper_report.sh --hotspots > "${out_dir}/architectural_helper.hotspots.tsv"
+          tests/security/build_sink_inventory.sh > "${out_dir}/sink_inventory.current.tsv"
+          tests/security/build_architectural_helper_report.sh --summary > "${out_dir}/architectural_helper.summary.tsv"
+          tests/security/build_architectural_helper_report.sh --hotspots > "${out_dir}/architectural_helper.hotspots.tsv"
 
       - name: Enforce closure gate
         if: inputs.strict_gate == 'true'
         run: |
           set -euo pipefail
-          scripts/security/verify_private_advisory_matrix.sh "security/proof-run/${GITHUB_RUN_ID}/private_advisory_proof_matrix.tsv"
+          tests/security/verify_private_advisory_matrix.sh "security/proof-run/${GITHUB_RUN_ID}/private_advisory_proof_matrix.tsv"
 
       - name: Upload proof artifacts
         uses: actions/upload-artifact@v4
