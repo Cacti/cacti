@@ -30,7 +30,7 @@ cmd_exec	./lib/functions.php:6928				$shell = shell_exec(cacti_escapeshellcmd(re
 cmd_exec	./lib/functions.php:6930				$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v 2>&1');
 cmd_exec	./lib/functions.php:7129				exec('id -nu', $o, $r);
 cmd_exec	./lib/functions.php:7139				exec(sprintf('grep :%s: /etc/passwd | cut -d: -f1', (int) $uid), $o, $r);
-cmd_exec	./lib/functions.php:8239		exec($command, $out, $exit_code);
+cmd_exec	./lib/functions.php:8261		exec($command, $out, $exit_code);
 cmd_exec	./lib/installer.php:3288				$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 cmd_exec	./lib/installer.php:3320						shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 cmd_exec	./lib/installer.php:3376						$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
@@ -272,8 +272,8 @@ dynamic_include	./color_templates.php:379		include_once($config['base_path'] . '
 dynamic_include	./color_templates.php:429		include_once($config['base_path'] . '/lib/api_aggregate.php');
 dynamic_include	./color_templates.php:485		include_once($config['base_path'] . '/lib/api_aggregate.php');
 dynamic_include	./graph_realtime.php:382	    <?php include($config['base_path'] . '/include/global_session.php'); ?>
-dynamic_include	./include/auth.php:112					require_once($config['base_path'] . '/auth_login.php');
-dynamic_include	./include/auth.php:167				require_once($config['base_path'] . '/auth_login.php');
+dynamic_include	./include/auth.php:119					require_once($config['base_path'] . '/auth_login.php');
+dynamic_include	./include/auth.php:174				require_once($config['base_path'] . '/auth_login.php');
 dynamic_include	./include/csrf.php:25	require_once($config['include_path'] .'/vendor/csrf/csrf-conf.php');
 dynamic_include	./include/csrf.php:56	include_once($config['include_path'] . '/vendor/csrf/csrf-magic.php');
 dynamic_include	./include/global.php:277	include_once($config['library_path'] . '/database.php');
@@ -525,7 +525,7 @@ dynamic_include	./reports_user.php:29	include_once($config['library_path'] . '/t
 dynamic_include	./rrdcheck.php:26	include_once ($config['library_path'] . '/functions.php');
 dynamic_include	./rrdcleaner.php:26	include_once ($config['library_path'] . '/functions.php');
 dynamic_include	./rrdcleaner.php:27	include_once ($config['library_path'] . '/rrd.php');
-dynamic_include	./script_server.php:288						include_once($include_file);
+dynamic_include	./script_server.php:310				include_once($include_file);
 dynamic_include	./scripts/ss_netsnmp_lmsensors.php:24		include($config['base_path'] . '/lib/snmp.php');
 dynamic_include	./snmpagent_persist.php:165				include( $path_mibcache );
 dynamic_include	./spikekill.php:26	include_once($config['base_path'] . '/lib/spikekill.php');
