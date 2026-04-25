@@ -375,14 +375,14 @@ dynamic_include	./lib/functions.php:5503	    require_once($config['include_path'
 dynamic_include	./lib/functions.php:5504	    require_once($config['include_path'] . '/vendor/phpmailer/src/PHPMailer.php');
 dynamic_include	./lib/functions.php:5505	    require_once($config['include_path'] . '/vendor/phpmailer/src/SMTP.php');
 dynamic_include	./lib/graph_variables.php:65		include_once($config['library_path'] . '/rrd.php');
-dynamic_include	./lib/html.php:1194		include($config['include_path'] . '/global_arrays.php');
+dynamic_include	./lib/html.php:1207		include($config['include_path'] . '/global_arrays.php');
 dynamic_include	./lib/html_tree.php:479		include_once($config['base_path'] . '/lib/data_query.php');
 dynamic_include	./lib/html_tree.php:823		include($config['include_path'] . '/global_arrays.php');
 dynamic_include	./lib/html_tree.php:824		include_once($config['library_path'] . '/data_query.php');
 dynamic_include	./lib/html_tree.php:825		include_once($config['library_path'] . '/html_utility.php');
 dynamic_include	./lib/html_tree.php:93		include_once($config['library_path'] . '/data_query.php');
-dynamic_include	./lib/import.php:2212		include_once($config['library_path'] . '/vdef.php');
-dynamic_include	./lib/import.php:38		include_once($config['library_path'] . '/xml.php');
+dynamic_include	./lib/import.php:1986		include_once($config['library_path'] . '/vdef.php');
+dynamic_include	./lib/import.php:29		include_once($config['library_path'] . '/xml.php');
 dynamic_include	./lib/installer.php:3429					include_once($upgrade_file);
 dynamic_include	./lib/mib_cache.php:57			include_once($config['include_path'] . '/vendor/phpsnmp/mib_parser.php');
 dynamic_include	./lib/plugins.php:150						include_once($plugin_include);
