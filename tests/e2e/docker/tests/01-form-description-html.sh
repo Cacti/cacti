@@ -18,15 +18,22 @@ run_curl() {
 # Reset session state inside the container.
 "${DC[@]}" exec -T cacti-master rm -f /tmp/c01.jar
 
-# Prime the session and capture the login form (some installs set a CSRF cookie).
-run_curl -o /dev/null http://127.0.0.1/auth_login.php
+# GET /index.php to prime the PHP session and collect the CSRF token.
+run_curl -L -o /tmp/c01_form 'http://127.0.0.1/index.php'
+CSRF=$("${DC[@]}" exec -T cacti-master sh -c "grep -oE 'name=.__csrf_magic. value=\"[^\"]+\"' /tmp/c01_form | head -1 | sed 's|.*value=\"\\([^\"]*\\)\"|\\1|'")
+if [ -z "$CSRF" ]; then
+    echo "FAIL: could not extract __csrf_magic token from index.php" >&2
+    exit 1
+fi
 
-# Authenticate.
+# Authenticate via /index.php (auth_login.php does not load global.php on its own).
 run_curl -o /dev/null \
     --data-urlencode "action=login" \
     --data-urlencode "login_username=admin" \
     --data-urlencode "login_password=cacti-e2e-admin" \
-    http://127.0.0.1/auth_login.php
+    --data-urlencode "__csrf_magic=$CSRF" \
+    --data-urlencode "realm=local" \
+    'http://127.0.0.1/index.php'
 
 # Fetch settings.php?tab=path. Several Path-tab descriptions contain literal <strong>
 # (see include/global_settings.php). Also check tab=general for a <br> marker.

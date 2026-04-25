@@ -38,12 +38,22 @@ run_curl() {
     "${DC[@]}" exec -T cacti-master curl -sS -b /tmp/c04.jar -c /tmp/c04.jar "$@"
 }
 
-run_curl -o /dev/null http://127.0.0.1/auth_login.php
+# GET /index.php to prime the PHP session and collect the CSRF token.
+run_curl -L -o /tmp/c04_form 'http://127.0.0.1/index.php'
+CSRF=$("${DC[@]}" exec -T cacti-master sh -c "grep -oE 'name=.__csrf_magic. value=\"[^\"]+\"' /tmp/c04_form | head -1 | sed 's|.*value=\"\\([^\"]*\\)\"|\\1|'")
+if [ -z "$CSRF" ]; then
+    echo "FAIL: could not extract __csrf_magic token from index.php" >&2
+    exit 1
+fi
+
+# Authenticate via /index.php (auth_login.php does not load global.php on its own).
 run_curl -o /dev/null \
     --data-urlencode "action=login" \
     --data-urlencode "login_username=lowpriv" \
     --data-urlencode "login_password=cacti-e2e-lowpriv" \
-    http://127.0.0.1/auth_login.php
+    --data-urlencode "__csrf_magic=$CSRF" \
+    --data-urlencode "realm=local" \
+    'http://127.0.0.1/index.php'
 
 assert_denied() {
     local path="$1"

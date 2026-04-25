@@ -91,6 +91,19 @@ maturity and are honest regression detectors at different fidelity levels.
 | 01 form description HTML | FAIL | `curl` round-trips through `auth_login.php` POST but the subsequent `settings.php?tab=path` fetch returns the login page rather than the settings UI; the cookie jar isn't carrying the authenticated session. Likely a missing form field (CSRF token, `action`, or similar) in the POST. |
 | 03 session persistence | FAIL | Playwright times out waiting for `#login_username` after `page.goto('/auth_login.php')`. The page IS being served (the spec reaches the right host) but rendering or readiness is the wait failure. Worth a manual debug session with `KEEP_UP=1 ./run.sh` followed by browsing to the master from the host. |
 
+## CSRF tokens
+
+Cacti's csrf-magic middleware (include/csrf.php) rejects every POST that
+does not carry a fresh `__csrf_magic` hidden field whose token contains
+a sid hash matching the current PHP session and an ip hash matching the
+client. Tests that drive a login over curl must GET /index.php first,
+extract the `__csrf_magic` value from the form, and include it as a
+form field in the subsequent POST. POSTing directly to
+/auth_login.php is unsupported — that file only loads lib/ldap.php and
+does not bring in global.php, so calling its set_default_action() at
+line 29 fatal-errors. The canonical entry for the auth flow is
+/index.php.
+
 ## Known follow-up work
 
 1. **Tests 01 + 03 login flow.** Inspect what fields `auth_login.php` POST

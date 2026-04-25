@@ -16,8 +16,21 @@ test('admin session survives 5 navigations after login', async ({ browser }) => 
     const ctx = await browser.newContext();
     const page = await ctx.newPage();
 
-    // Log in via the form so cacti_auth_transition() runs the same path the UI uses.
-    await page.goto('/auth_login.php');
+    // Log in via /index.php — auth_login.php alone does not load global.php.
+    await page.goto('/index.php');
+    await page.waitForSelector('#login_username', { timeout: 30000 });
+
+    // Verify the CSRF token is present in the rendered form before submitting.
+    const csrf = await page.locator('input[name="__csrf_magic"]').getAttribute('value');
+    expect(csrf, 'CSRF token must be present in the login form').toBeTruthy();
+
+    // Select local realm if the dropdown is visible (hidden when only one auth method is active).
+    try {
+        await page.selectOption('select[name="realm"]', { label: 'Local' });
+    } catch (_) {
+        // dropdown absent or hidden — single-auth installs skip realm selection
+    }
+
     await page.fill('#login_username', 'admin');
     await page.fill('#login_password', 'cacti-e2e-admin');
     await Promise.all([
