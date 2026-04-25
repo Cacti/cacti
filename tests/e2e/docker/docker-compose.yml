@@ -40,7 +40,11 @@ services:
       cacti-db:
         condition: service_healthy
     volumes:
-      - ../..:/var/www/html/tests/e2e:ro
+      # The harness directory is .dockerignore'd from the COPY layer to keep
+      # the image small. Bind-mount only the probes/ subtree onto its
+      # canonical absolute path so probe_remote_fetch.php is reachable
+      # without leaking the rest of the harness into the container.
+      - ./probes:/var/www/html/tests/e2e/docker/probes:ro
       - cacti-master-state:/var/cacti-state
     ports:
       - "127.0.0.1:${CACTI_E2E_PORT:-8088}:80"

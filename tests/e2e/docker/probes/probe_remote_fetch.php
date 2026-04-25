@@ -17,8 +17,22 @@ $_SERVER['SCRIPT_FILENAME'] = __FILE__;
 
 require __DIR__ . '/../../../../include/global.php';
 
+/* Mirror the SSL options that get_default_contextoption() emits when the
+ * master is configured to use HTTPS for outgoing remote-poller calls
+ * (force_https=on). The harness leaves force_https=off so tests 01/04 can
+ * speak plain HTTP, but the operator's intent for tests 02 is exercised by
+ * reading the SAME allow_unsafe_httpd setting the production helper reads.
+ * If the production helper's verify_peer/verify_peer_name/allow_self_signed
+ * defaults ever drift, mirror them here too. */
 $url     = 'https://cacti-poller/index.php';
-$context = stream_context_create(array('ssl' => get_default_contextoption()));
+$context = stream_context_create(array(
+    'ssl' => array(
+        'verify_peer'       => true,
+        'verify_peer_name'  => read_config_option('allow_unsafe_httpd') != 'on' ? true : false,
+        'allow_self_signed' => read_config_option('allow_unsafe_httpd') == 'on' ? true : false,
+        'follow_location'   => 0,
+    ),
+));
 $body    = @file_get_contents($url, false, $context);
 
 if (!is_string($body) || $body === '') {

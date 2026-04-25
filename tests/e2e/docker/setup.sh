@@ -59,11 +59,20 @@ ADMIN_HASH=$("${DC[@]}" exec -T cacti-master php -r 'echo password_hash("cacti-e
 
 # Register the secondary as a remote poller pointing at https://cacti-poller/.
 # Idempotent: ON DUPLICATE KEY for id=2.
+#
+# Also flip allow_unsafe_httpd=on so the verify_peer_name / allow_self_signed
+# guards introduced in commits e7c9918b4 + bf0a7a70e accept the poller's
+# self-signed certificate. Without this seed, get_default_contextoption()
+# leaves verify_peer_name=true and the probe fails with a verification error
+# that the harness should NOT detect (the operator's intent is exactly
+# "I trust my self-signed remote pollers").
 echo "[setup] registering remote poller"
 "${DC[@]}" exec -T cacti-db mariadb -ucactiuser -pcactiuser cacti -e "
     INSERT INTO poller (id, name, hostname, dbdefault, dbhost, dbuser, dbpass, dbport, status, disabled)
         VALUES (2, 'E2E Remote', 'cacti-poller', 'cacti', 'cacti-db', 'cactiuser', 'cactiuser', 3306, 1, '')
         ON DUPLICATE KEY UPDATE hostname=VALUES(hostname), name=VALUES(name), disabled='';
+    INSERT INTO settings (name, value) VALUES ('allow_unsafe_httpd', 'on')
+        ON DUPLICATE KEY UPDATE value=VALUES(value);
 "
 
 # Create a low-priv user with NO realm grants for test 04. Idempotent via ON DUPLICATE KEY.
