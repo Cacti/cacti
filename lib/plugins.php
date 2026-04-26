@@ -76,16 +76,15 @@ function api_plugin_hook($name) {
 			$plugin_name = $hdata['name'];
 			$plugin_file = $hdata['file'];
 
-			// Security check
-			if (strpos($plugin_file, '..') !== false) {
-				cacti_log("ERROR: Attempted inclusion of not plugin file $plugin_file from $plugin_name with the hook name $name", false, 'SECURITY');
-				continue;
-			}
-
 			if (!in_array($plugin_name, $plugins_integrated, true)) {
 				$plugin_func = $hdata['function'];
-				$full_path   = $config['base_path'] . '/plugins/' . $plugin_name . '/' . $plugin_file;
 				$debounce    = 'mpf_' . $plugin_name . '_' . $plugin_func;
+				$full_path   = cacti_plugin_path($plugin_name, $plugin_file);
+
+				if ($plugin_name !== 'internal' && $full_path === false) {
+					cacti_log("ERROR: Attempted inclusion of invalid plugin file $plugin_file from $plugin_name with the hook name $name", false, 'SECURITY');
+					continue;
+				}
 
 				if (file_exists($full_path)) {
 					include_once($full_path);
@@ -145,8 +144,10 @@ function api_plugin_hook_function($name, $parm = NULL) {
 			if (!in_array($hdata['name'], $plugins_integrated)) {
 				$p[] = $hdata['name'];
 
-				if (file_exists($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file'])) {
-					include_once($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file']);
+				$plugin_include = cacti_plugin_path($hdata['name'], $hdata['file']);
+
+				if ($hdata['name'] !== 'internal' && $plugin_include !== false && file_exists($plugin_include)) {
+					include_once($plugin_include);
 				}
 
 				$function = $hdata['function'];
@@ -702,7 +703,11 @@ function api_plugin_install($plugin) {
 		exit;
 	}
 
-	include_once($config['base_path'] . "/plugins/$plugin/setup.php");
+	$plugin_setup = cacti_plugin_path($plugin, 'setup.php');
+
+	if ($plugin !== 'internal' && $plugin_setup !== false && file_exists($plugin_setup)) {
+		include_once($plugin_setup);
+	}
 
 	$exists = db_fetch_assoc_prepared('SELECT id
 		FROM plugin_config
@@ -791,8 +796,10 @@ function api_plugin_uninstall($plugin, $tables = true) {
 
 	$plugin_found = false;
 
-	if (file_exists($config['base_path'] . "/plugins/$plugin/setup.php")) {
-		include_once($config['base_path'] . "/plugins/$plugin/setup.php");
+	$plugin_setup = cacti_plugin_path($plugin, 'setup.php');
+
+	if ($plugin !== 'internal' && $plugin_setup !== false && file_exists($plugin_setup)) {
+		include_once($plugin_setup);
 
 		// Run the Plugin's Uninstall Function first
 		$function = 'plugin_' . $plugin . '_uninstall';
@@ -834,8 +841,10 @@ function api_plugin_check_config($plugin) {
 
 	clearstatcache();
 
-	if (file_exists($config['base_path'] . "/plugins/$plugin/setup.php")) {
-		include_once($config['base_path'] . "/plugins/$plugin/setup.php");
+	$plugin_setup = cacti_plugin_path($plugin, 'setup.php');
+
+	if ($plugin !== 'internal' && $plugin_setup !== false && file_exists($plugin_setup)) {
+		include_once($plugin_setup);
 
 		$function = 'plugin_' . $plugin . '_check_config';
 
@@ -1361,4 +1370,3 @@ function plugin_load_info_file($file) {
 
 	return $info;
 }
-

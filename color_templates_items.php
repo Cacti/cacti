@@ -170,6 +170,10 @@ function aggregate_color_item_movedown() {
 		WHERE color_template_item_id = ?',
 		array(get_request_var('color_template_item_id')));
 
+	if (!cacti_sizeof($current_sequence)) {
+		return;
+	}
+
 	cacti_log('movedown Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'],
 		false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
@@ -179,6 +183,10 @@ function aggregate_color_item_movedown() {
 		AND color_template_id = ?
 		ORDER BY sequence ASC limit 1',
 		array($current_sequence['sequence'], get_request_var('color_template_id')));
+
+	if (!cacti_sizeof($next_sequence)) {
+		return;
+	}
 
 	cacti_log('movedown Id: ' . $next_sequence['color_template_item_id'] . ' Seq:' . $next_sequence['sequence'],
 		false, POLLER_VERBOSITY_DEBUG);
@@ -211,6 +219,10 @@ function aggregate_color_item_moveup() {
 		WHERE color_template_item_id = ?',
 		array(get_request_var('color_template_item_id')));
 
+	if (!cacti_sizeof($current_sequence)) {
+		return;
+	}
+
 	cacti_log('moveup Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'],
 		false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
@@ -220,6 +232,10 @@ function aggregate_color_item_moveup() {
 		AND color_template_id = ?
 		ORDER BY sequence DESC limit 1',
 		array($current_sequence['sequence'], get_request_var('color_template_id')));
+
+	if (!cacti_sizeof($previous_sequence)) {
+		return;
+	}
 
 	cacti_log('moveup Id: ' . $previous_sequence['color_template_item_id'] . ' Seq:' . $previous_sequence['sequence'],
 		false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
@@ -256,6 +272,14 @@ function aggregate_color_item_remove_confirm() {
 		FROM color_template_items
 		WHERE color_template_item_id = ?',
 		array(get_request_var('color_id')));
+
+	if (!cacti_sizeof($template) || !cacti_sizeof($color_item)) {
+		raise_message('color_item_not_found', __('Color Template or Item not found.'), MESSAGE_LEVEL_ERROR);
+
+		cacti_header('color_templates.php');
+
+		exit;
+	}
 
 	$color_hex  = db_fetch_cell_prepared('SELECT hex
 		FROM colors

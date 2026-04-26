@@ -1775,7 +1775,11 @@ function db_replace($table_name, $array_items, $keyCols, $db_conn = false) {
 	}
 
 	$log_items = $array_items;
-	$redact_fields = array('snmp_community', 'snmp_password', 'snmp_priv_passphrase', 'password', 'proxy_password');
+	$redact_fields = array(
+		'snmp_community', 'snmp_password', 'snmp_priv_passphrase',
+		'snmp_auth_passphrase', 'password', 'proxy_password',
+		'rsa_private_key', 'secret', 'auth_key', 'priv_key'
+	);
 	foreach ($redact_fields as $field) {
 		if (isset($log_items[$field])) {
 			$log_items[$field] = '********';
@@ -1799,6 +1803,17 @@ function db_replace($table_name, $array_items, $keyCols, $db_conn = false) {
  *
  * @return (bool|int) Either the insert id of the replace of false on error
  */
+/**
+ * Sanitize a column name for safe SQL interpolation.
+ * Strips backticks and any character that is not alphanumeric or underscore.
+ *
+ * @param string $col  Raw column name
+ * @return string      Safe column name
+ */
+function cacti_safe_column_name($col) {
+	return preg_replace('/[^a-zA-Z0-9_]/', '', $col);
+}
+
 function _db_replace($db_conn, $table, $fieldArray, $keyCols) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
@@ -1826,6 +1841,9 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCols) {
 			$sql  .= ', ';
 			$sql2 .= ', ';
 		}
+
+		$k = cacti_safe_column_name($k);
+
 		$sql   .= "`$k`";
 		$sql2  .= $v;
 		$first  = false;
@@ -1971,12 +1989,25 @@ function db_qstr($s, $db_conn = false) {
 /**
  * db_qstr_rlike - Safely quote a value for use in a RLIKE/REGEXP clause.
  *
+ * Caps the length and strips alternation and bounded-repeat metacharacters
+ * to limit catastrophic backtracking on attacker-supplied filter input.
+ * Normal regex features (anchors, character classes, simple quantifiers)
+ * remain available.
+ *
  * @param string $s       The regex pattern value to quote
  * @param mixed  $db_conn An optional database connection object
  *
  * @return string The safe 'RLIKE <quoted>' SQL fragment
  */
 function db_qstr_rlike($s, $db_conn = false) {
+	$s = (string) $s;
+
+	if (strlen($s) > 255) {
+		$s = substr($s, 0, 255);
+	}
+
+	$s = str_replace(array("\0", '|', '{', '}'), '', $s);
+
 	return 'RLIKE ' . db_qstr($s, $db_conn);
 }
 
@@ -2267,5 +2298,51 @@ function db_dump_data($database = '', $tables = '', $credentials = array(), $out
 	}
 
 	return $retval;
+}
+
+/**
+ * cacti_fetch_by_id - Fetch a single row by its integer primary key.
+ *
+ * Sanitizes the table name, column list, and ID column to prevent
+ * injection. Returns false when the ID is non-positive or no row
+ * is found.
+ *
+ * @param  string       $table      Table name (alphanumeric + underscore only)
+ * @param  int          $id         The row ID to look up
+ * @param  string|array $columns    Column(s) to select ('*' for all)
+ * @param  string       $id_column  Name of the primary key column
+ * @param  mixed        $db_conn    Optional database connection
+ *
+ * @return array|false  The row as an associative array, or false
+ */
+function cacti_fetch_by_id($table, $id, $columns = '*', $id_column = 'id', $db_conn = false) {
+	$id = intval($id);
+
+	if ($id <= 0) {
+		return false;
+	}
+
+	$safe_table  = preg_replace('/[^a-zA-Z0-9_]/', '', $table);
+	$safe_id_col = preg_replace('/[^a-zA-Z0-9_]/', '', $id_column);
+
+	if (is_array($columns)) {
+		$safe_cols = implode(', ', array_map(function($c) {
+			return '`' . preg_replace('/[^a-zA-Z0-9_]/', '', $c) . '`';
+		}, $columns));
+	} else {
+		$safe_cols = $columns === '*' ? '*' : '`' . preg_replace('/[^a-zA-Z0-9_]/', '', $columns) . '`';
+	}
+
+	$row = db_fetch_row_prepared(
+		"SELECT $safe_cols FROM `$safe_table` WHERE `$safe_id_col` = ?",
+		array($id),
+		$db_conn
+	);
+
+	if (!cacti_sizeof($row)) {
+		return false;
+	}
+
+	return $row;
 }
 

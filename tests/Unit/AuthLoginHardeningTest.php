@@ -13,6 +13,7 @@
 */
 
 $authSource = file_get_contents(dirname(__DIR__, 2) . '/lib/auth.php');
+$authLoginSource = file_get_contents(dirname(__DIR__, 2) . '/auth_login.php');
 
 test('auth_process_lockout uses atomic SQL increment for failed_attempts', function () use ($authSource) {
 	// The fix replaces SELECT-then-UPDATE with a single atomic UPDATE
@@ -105,5 +106,10 @@ test('auth_login_redirect validates referer starts with slash', function () use 
 	$body = substr($authSource, $start, 3000);
 	// Must check $referer[0] to ensure path is relative
 	expect(str_contains($body, "\$referer[0] !== '/'"))
+		->toBeTrue();
+});
+
+test('auth_login performs auth transition hardening on successful login', function () use ($authLoginSource) {
+	expect(str_contains($authLoginSource, "cacti_auth_transition((int)\$user['id'], 'login')"))
 		->toBeTrue();
 });

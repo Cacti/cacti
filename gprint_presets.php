@@ -183,6 +183,15 @@ function gprint_presets_edit() {
 
 	if (!isempty_request_var('id')) {
 		$gprint_preset = db_fetch_row_prepared('SELECT * FROM graph_templates_gprint WHERE id = ?', array(get_request_var('id')));
+
+		if (!cacti_sizeof($gprint_preset)) {
+			raise_message('gprint_not_found', __('GPRINT Preset not found.'), MESSAGE_LEVEL_ERROR);
+
+			cacti_header('gprint_presets.php');
+
+			exit;
+		}
+
 		$header_label = __esc('GPRINT Presets [edit: %s]', $gprint_preset['name']);
 	} else {
 		$header_label = __('GPRINT Presets [new]');

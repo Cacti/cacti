@@ -732,11 +732,16 @@ function domains() {
 		FROM user_domains
 		$sql_where");
 
+	$sort_col = cacti_validate_sort_column(get_request_var('sort_column'),
+		array('domain_name', 'type', 'defdomain', 'user_id', 'cn_full_name', 'cn_email', 'enabled'),
+		'domain_name');
+	$sort_dir = strtoupper(get_request_var('sort_direction')) === 'DESC' ? 'DESC' : 'ASC';
+
 	$domains = db_fetch_assoc("SELECT *
 		FROM user_domains
 		$sql_where
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
-		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
+		ORDER BY $sort_col $sort_dir
+		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
 	$nav = html_nav_bar('user_user_domains.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('User Domains'), 'page', 'main');
 

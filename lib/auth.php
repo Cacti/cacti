@@ -167,6 +167,11 @@ function check_auth_cookie() {
 						array($user_info['username'], $user_info['id'], get_client_addr())
 					);
 
+					/* verify account is not locked out */
+					if (auth_process_lockout_check($user_info['username'], $user_info['realm']) === false) {
+						return false;
+					}
+
 					return $user_info['id'];
 				}
 			}
@@ -4935,3 +4940,264 @@ function check_reset_no_authentication($auth_method) {
 	}
 }
 
+/**
+ * Perform a safe authentication state transition.
+ *
+ * Regenerates the session ID to prevent fixation, checks the
+ * lockout table, rotates the remember-me cookie if present,
+ * and logs the transition reason for audit purposes.
+ *
+ * Call this at privilege-level changes: login, role switch,
+ * password change, or sudo-style elevation.
+ *
+ * @param  int    $user_id The user ID undergoing the transition
+ * @param  string $reason  Short label for audit log (e.g. 'login', 'role_switch')
+ *
+ * @return bool True if the transition succeeded, false if the user is locked out
+ */
+function cacti_auth_transition($user_id, $reason = 'login') {
+	/* check lockout status before allowing transition */
+	$locked = db_fetch_cell_prepared('SELECT locked
+		FROM user_auth
+		WHERE id = ?',
+		array($user_id));
+
+	if ($locked == 'on') {
+		cacti_log('SECURITY: auth transition blocked for locked user ' . $user_id . ' reason=' . $reason, false, 'AUTH');
+
+		return false;
+	}
+
+	/* regenerate session ID to prevent fixation */
+	if (session_status() === PHP_SESSION_ACTIVE) {
+		session_regenerate_id(true);
+	}
+
+	/* rotate remember-me cookie if present */
+	if (isset($_COOKIE['cacti_remembers']) &&
+		read_config_option('auth_cache_enabled') == 'on' &&
+		db_table_exists('user_auth_cache')) {
+		try {
+			$new_token = bin2hex(random_bytes(32));
+		} catch (Exception $e) {
+			cacti_log('WARNING: cacti_auth_transition: random_bytes failed — skipping cookie rotation', false, 'AUTH');
+			$new_token = false;
+		}
+
+		if ($new_token !== false) {
+			$secret = hash('sha512', $new_token, false);
+
+			db_execute_prepared('UPDATE user_auth_cache
+				SET token = ?, last_update = NOW()
+				WHERE user_id = ?',
+				array($secret, $user_id));
+
+			$parts = explode(',', $_COOKIE['cacti_remembers']);
+
+			if (cacti_sizeof($parts) == 2) {
+				cacti_cookie_set('cacti_remembers', $user_id . ',' . $new_token);
+			} elseif (cacti_sizeof($parts) >= 3) {
+				cacti_cookie_set('cacti_remembers', $user_id . ',' . $parts[1] . ',' . $new_token);
+			}
+		}
+	}
+
+	/* invalidate cached permissions so fresh checks occur */
+	kill_session_var('sess_user_realms');
+	kill_session_var('sess_user_config_array');
+	kill_session_var('sess_config_array');
+
+	cacti_log('NOTE: auth transition completed for user ' . $user_id . ' reason=' . $reason, false, 'AUTH');
+
+	return true;
+}
+
+/**
+ * cacti_csrf_rotate - Rotate CSRF token by regenerating the session.
+ *
+ * Call at privilege boundaries (login, role change, sensitive form post)
+ * to prevent session fixation and CSRF token reuse. Also refreshes the
+ * remember-me cookie when present.
+ *
+ * @param  string $reason  Reason for the rotation (logged at medium verbosity)
+ *
+ * @return void
+ */
+function cacti_csrf_rotate($reason = 'boundary') {
+	cacti_session_regenerate();
+
+	if (isset($_SESSION['sess_user_id'])) {
+		$user_id = $_SESSION['sess_user_id'];
+
+		if (isset($_COOKIE['cacti_remembers'])) {
+			set_auth_cookie(array('id' => $user_id));
+		}
+
+		if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM) {
+			cacti_log("AUTH: CSRF rotate for user $user_id ($reason)", false, 'AUTH');
+		}
+	}
+}
+
+
+
+/**
+ * cacti_authorize_resource - returns true iff the given user has ownership
+ * or admin-level access to a specific resource row.
+ *
+ * Root-cause mitigation for IDOR (Insecure Direct Object Reference) bugs:
+ * endpoints that accept a resource ID from the request and act on it
+ * without checking that the current user is allowed to touch that row.
+ *
+ * Applies to:
+ *   GHSA-8p2f-6jvx-j75j (Reports IDOR — any authenticated user can modify
+ *                        reports owned by other users)
+ *
+ * The helper is intentionally strict:
+ *   - unknown resource_type returns false (fail closed)
+ *   - a user who is not the owner AND not a system admin returns false
+ *   - missing resource row returns false (don't leak existence)
+ *
+ * Extend by adding a new case to the resource-type switch below; the same
+ * ownership predicate then applies to every endpoint that calls this helper.
+ *
+ * @param int    $user_id        The id of the acting user (from $_SESSION[SESS_USER_ID])
+ * @param int    $resource_id    The id of the row being acted on
+ * @param string $resource_type  A short string naming the resource (e.g. 'reports')
+ *
+ * @return bool  true if the user may act on the resource, false otherwise
+ */
+function cacti_authorize_resource($user_id, $resource_id, $resource_type) {
+	$user_id     = (int) $user_id;
+	$resource_id = (int) $resource_id;
+
+	if ($user_id <= 0 || $resource_id <= 0) {
+		return false;
+	}
+
+	// Admins bypass ownership for any resource they can reach via realm perms.
+	if (cacti_authorize_is_admin($user_id)) {
+		return true;
+	}
+
+	switch ($resource_type) {
+		case 'reports':
+			// Reports admins (realm 21) manage any report row.
+			if (cacti_authorize_has_realm($user_id, 21)) {
+				return true;
+			}
+
+			$owner = db_fetch_cell_prepared('SELECT user_id 
+				FROM reports 
+				WHERE id = ?',
+				array($resource_id)
+			);
+
+			return $owner !== false && $owner !== null && (int) $owner === $user_id;
+
+		case 'report_item':
+			// Item ownership follows the parent report row.
+			if (cacti_authorize_has_realm($user_id, 21)) {
+				return true;
+			}
+
+			$owner = db_fetch_cell_prepared('SELECT r.user_id 
+				FROM reports_items AS ri
+				INNER JOIN reports AS r 
+				ON ri.report_id = r.id
+				WHERE ri.id = ?',
+				array($resource_id)
+			);
+
+			return $owner !== false && $owner !== null && (int) $owner === $user_id;
+
+		case 'graph_tree':
+			$owner = db_fetch_cell_prepared('SELECT user_id 
+				FROM graph_tree 
+				WHERE id = ?',
+				array($resource_id)
+			);
+
+			return $owner !== false && $owner !== null && (int) $owner === $user_id;
+
+		case 'settings_user':
+			// Users may only read/write their own settings row.
+			return $resource_id === $user_id;
+
+		default:
+			// Unknown type — fail closed. Extend this function to opt in.
+			return false;
+	}
+}
+
+/**
+ * cacti_authorize_has_realm - returns true iff the user is assigned the
+ * given realm_id through user_auth_realm or via group membership.
+ *
+ * Helper for cacti_authorize_resource to express "admins of this resource
+ * class bypass ownership". Realm ids are the fixed values in
+ * user_auth_realm_subrealm (21 = reports, 1 = system admin, etc).
+ */
+function cacti_authorize_has_realm($user_id, $realm_id) {
+	static $realm_cache = array();
+
+	$user_id  = (int) $user_id;
+	$realm_id = (int) $realm_id;
+	$key      = $user_id . ':' . $realm_id;
+
+	if (isset($realm_cache[$key])) {
+		return $realm_cache[$key];
+	}
+
+	$has = (bool) db_fetch_cell_prepared('SELECT 1
+		FROM user_auth_realm
+		WHERE user_id = ?
+		AND realm_id = ?
+		UNION
+		SELECT 1
+		FROM user_auth_group_realm AS ugr
+		INNER JOIN user_auth_group_members AS ugm
+		ON ugm.group_id = ugr.group_id
+		WHERE ugm.user_id = ?
+		AND ugr.realm_id = ?
+		LIMIT 1',
+		array($user_id, $realm_id, $user_id, $realm_id)
+	);
+
+	$realm_cache[$key] = $has;
+
+	return $has;
+}
+
+/**
+ * cacti_authorize_is_admin - returns true iff the user holds the system
+ * admin realm (realm 1 in Cacti's user_auth_realm table).
+ *
+ * Cached per-request to avoid hammering the DB on hot paths. Intentionally
+ * a private helper — callers should use cacti_authorize_resource() which
+ * consults this internally.
+ *
+ * @param int $user_id
+ *
+ * @return bool
+ */
+function cacti_authorize_is_admin($user_id) {
+	static $admin_cache = array();
+
+	$user_id = (int) $user_id;
+
+	if (isset($admin_cache[$user_id])) {
+		return $admin_cache[$user_id];
+	}
+
+	$is_admin = (bool) db_fetch_cell_prepared('SELECT 1 
+		FROM user_auth_realm 
+		WHERE user_id = ? 
+		AND realm_id = 1',
+		array($user_id)
+	);
+
+	$admin_cache[$user_id] = $is_admin;
+
+	return $is_admin;
+}

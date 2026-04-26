@@ -46,8 +46,8 @@ switch ($action) {
 		 * of the login page.
 		 */
 		if (!isset($_SESSION['sess_user_id'])) {
-			$referer = validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '', 'index.php');
-			header("Location: $referer");
+			cacti_header('index.php');
+
 			exit;
 		}
 }
@@ -85,9 +85,7 @@ if (!cacti_sizeof($user) || $user['realm'] != 0) {
 		raise_message('nodomainpassword');
 	}
 
-	$return = validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '', 'index.php');
-
-	header("Location: $return");
+	cacti_header($return);
 
 	exit;
 }
@@ -97,11 +95,10 @@ if ($user['password_change'] != 'on') {
 
 	/* destroy session information */
 	kill_session_var('sess_user_id');
+
 	cacti_cookie_logout();
 
-	$return = validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '', 'index.php');
-
-	header("Location: $return");
+	cacti_header('index.php');
 
 	exit;
 }

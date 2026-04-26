@@ -1847,6 +1847,15 @@ function user_edit() {
 
 	if (!isempty_request_var('id')) {
 		$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array(get_request_var('id')));
+
+		if (!cacti_sizeof($user)) {
+			raise_message('user_not_found', __('User not found.'), MESSAGE_LEVEL_ERROR);
+
+			cacti_header('user_admin.php');
+
+			exit;
+		}
+
 		$header_label = __('[edit: %s]', $user['username']);
 	} else {
 		$header_label = __('[new]');

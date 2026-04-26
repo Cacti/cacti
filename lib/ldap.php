@@ -644,11 +644,11 @@ class Ldap {
 
 		$ldap_conn = $connection['ldap_conn'];
 
-		/* Decode username, and remove bad characters */
+		/* Decode username and DN-escape before substitution into template */
 		$this->username = html_entity_decode($this->username, $this->GetMask(), 'UTF-8');
-		$this->username = str_replace(array('&', '|', '(', ')', '*', '>', '<', '!', '='), '', $this->username);
+		$safe_username  = ldap_escape($this->username, '', LDAP_ESCAPE_DN);
 		$this->password = html_entity_decode($this->password, $this->GetMask(), 'UTF-8');
-		$this->dn = str_replace('<username>', $this->username, $this->dn);
+		$this->dn = str_replace('<username>', $safe_username, $this->dn);
 
 		if ($this->password == '') {
 			return LdapError::GetErrorDetails(LdapError::EmptyPassword);
@@ -674,7 +674,8 @@ class Ldap {
 					 * And the patch against latest PHP release:
 					 * http://cvsweb.netbsd.org/bsdweb.cgi/pkgsrc/databases/php-ldap/files/ldap-ctrl-exop.patch
 					*/
-					$true_dn_result = ldap_search($ldap_conn, $this->search_base, '(|(uid=' . $this->dn . ')(cn=' . $this->dn . ')(userPrincipalName=' . $this->dn . '))', array('dn'));
+					$filter = cacti_ldap_filter('(|(uid=<dn>)(cn=<dn>)(userPrincipalName=<dn>))', array('dn' => $this->dn));
+					$true_dn_result = ldap_search($ldap_conn, $this->search_base, $filter, array('dn'));
 					$first_entry    = ldap_first_entry($ldap_conn, $true_dn_result);
 
 					/* we will test in two ways */
@@ -769,10 +770,11 @@ class Ldap {
 
 		$ldap_conn = $connection['ldap_conn'];
 
-		/* Decode username, and remove bad characters */
-		$this->username = html_entity_decode($this->username, $this->GetMask(), 'UTF-8');
-		$this->username = str_replace(array('&', '|', '(', ')', '*', '>', '<', '!', '='), '', $this->username);
-		$this->dn       = str_replace('<username>', $this->username, $this->dn);
+		/* Decode username and escape for DN and filter contexts separately */
+		$this->username       = html_entity_decode($this->username, $this->GetMask(), 'UTF-8');
+		$safe_username_dn     = ldap_escape($this->username, '', LDAP_ESCAPE_DN);
+		$safe_username_filter = ldap_escape($this->username, '', LDAP_ESCAPE_FILTER);
+		$this->dn       = str_replace('<username>', $safe_username_dn, $this->dn);
 
 		if ($this->mode == '0') {
 			/* Just bind mode, make dn and return */
@@ -795,7 +797,7 @@ class Ldap {
 			$this->specific_password = '';
 		}
 
-		$this->search_filter = str_replace('<username>', $this->username, $this->search_filter);
+		$this->search_filter = str_replace('<username>', $safe_username_filter, $this->search_filter);
 
 		/* Fix encoding on ldap specific search DN and password */
 		$this->specific_password = html_entity_decode($this->specific_password, $this->GetMask(), 'UTF-8');
@@ -878,10 +880,11 @@ class Ldap {
 
 		$ldap_conn = $connection['ldap_conn'];
 
-		/* Decode username, and remove bad characters */
-		$this->username = html_entity_decode($this->username, $this->GetMask(), 'UTF-8');
-		$this->username = str_replace(array('&', '|', '(', ')', '*', '>', '<', '!', '='), '', $this->username);
-		$this->dn       = str_replace('<username>', $this->username, $this->dn);
+		/* Decode username and escape for DN and filter contexts separately */
+		$this->username       = html_entity_decode($this->username, $this->GetMask(), 'UTF-8');
+		$safe_username_dn     = ldap_escape($this->username, '', LDAP_ESCAPE_DN);
+		$safe_username_filter = ldap_escape($this->username, '', LDAP_ESCAPE_FILTER);
+		$this->dn       = str_replace('<username>', $safe_username_dn, $this->dn);
 
 		if ($this->mode == '0') {
 			/* Just bind mode, make dn and return */
@@ -901,7 +904,7 @@ class Ldap {
 			$this->specific_password = '';
 		}
 
-		$this->search_filter = str_replace('<username>', $this->username, $this->search_filter);
+		$this->search_filter = str_replace('<username>', $safe_username_filter, $this->search_filter);
 
 		/* Fix encoding on ldap specific search DN and password */
 		$this->specific_password = html_entity_decode($this->specific_password, $this->GetMask(), 'UTF-8');
@@ -974,7 +977,10 @@ class Ldap {
 	}
 
 	function isUserInLDAPGroup($ldapConn, $ldapbasedn, $groupDN, $ldapUser) {
-		$query       = "(&(distinguishedName=$ldapUser)(memberOf:1.2.840.113556.1.4.1941:=$groupDN))";
+		$query       = cacti_ldap_filter(
+			'(&(distinguishedName=<user>)(memberOf:1.2.840.113556.1.4.1941:=<group>))',
+			array('user' => $ldapUser, 'group' => $groupDN)
+		);
 		$ldapSearch  = ldap_search($ldapConn, $ldapbasedn, $query, array("dn"));
 
 		if ($ldapSearch) {
@@ -986,5 +992,28 @@ class Ldap {
 			return false;
 		}
 	}
+}
+
+/**
+ * Build an LDAP filter string with safe variable substitution.
+ *
+ * Each placeholder in $template (e.g. <username>) is replaced with
+ * the ldap_escape()'d value from $vars. This prevents LDAP filter
+ * injection attacks.
+ *
+ * @param  string $template Filter template with <key> placeholders
+ * @param  array  $vars     Associative array of key => value pairs
+ *
+ * @return string The assembled, injection-safe LDAP filter
+ */
+function cacti_ldap_filter($template, $vars) {
+	$result = $template;
+
+	foreach ($vars as $key => $value) {
+		$escaped = ldap_escape((string) $value, '', LDAP_ESCAPE_FILTER);
+		$result  = str_replace('<' . $key . '>', $escaped, $result);
+	}
+
+	return $result;
 }
 

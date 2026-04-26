@@ -131,8 +131,11 @@ function api_networks_discover($network_id, $discover_debug) {
 	if ($enabled == 'on') {
 		if (!$running) {
 			if ($config['poller_id'] == $poller_id) {
-				$args_debug = ($discover_debug) ? ' --debug' : '';
-				exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . "/poller_automation.php --network=$network_id --force" . $args_debug);
+				$argv = array('-q', read_config_option('path_webroot') . '/poller_automation.php', '--network=' . (int)$network_id, '--force');
+				if ($discover_debug) {
+					$argv[] = '--debug';
+				}
+				exec_background(read_config_option('path_php_binary'), $argv);
 			} else {
 				$args_debug = ($discover_debug) ? '&debug=true' : '';
 
@@ -325,6 +328,11 @@ function form_actions() {
 			/* ==================================================== */
 
 			$networks_info = db_fetch_row_prepared('SELECT name FROM automation_networks WHERE id = ?', array($matches[1]));
+
+			if (!cacti_sizeof($networks_info)) {
+				continue;
+			}
+
 			$networks_list .= '<li>' . html_escape($networks_info['name']) . '</li>';
 			$networks_array[$i] = $matches[1];
 		}
@@ -420,6 +428,15 @@ function network_edit() {
 
 	if (!isempty_request_var('id')) {
 		$network = db_fetch_row_prepared('SELECT * FROM automation_networks WHERE id = ?', array(get_request_var('id')));
+
+		if (!cacti_sizeof($network)) {
+			raise_message('network_not_found', __('Network not found.'), MESSAGE_LEVEL_ERROR);
+
+			cacti_header('automation_networks.php');
+
+			exit;
+		}
+
 		$header_label = __esc('Network Discovery Range [edit: %s]', $network['name']);
 	} else {
 		$header_label = __('Network Discovery Range [new]');

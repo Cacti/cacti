@@ -76,7 +76,10 @@ if ($auth_method != 0) {
 		if (!isset($_SESSION['sess_user_id'])) {
 			$cookie_user = check_auth_cookie();
 			if ($cookie_user !== false) {
-				$_SESSION['sess_user_id'] = $cookie_user;
+				/* GHSA-273r-qr93-wgcp: regenerate session id on auth transition */
+				if (cacti_auth_transition((int)$cookie_user, 'cookie_restore')) {
+					$_SESSION['sess_user_id'] = $cookie_user;
+				}
 			}
 		}
 	}
@@ -96,6 +99,10 @@ if ($auth_method != 0) {
 				array($username));
 
 			if (cacti_sizeof($current_user)) {
+				/* GHSA-273r-qr93-wgcp: regenerate session id on auth transition */
+				if (!cacti_auth_transition((int)$current_user['id'], 'basic_auth')) {
+					return false;
+				}
 				$_SESSION['sess_user_id'] = $current_user['id'];;
 
 				$client_addr = get_client_addr();
@@ -147,7 +154,7 @@ if ($auth_method != 0) {
 		if (get_guest_account() === $_SESSION['sess_user_id']) {
 			kill_session_var('sess_user_id');
 			cacti_session_destroy();
-			cacti_session_start();
+			cacti_session_start(true);
 		}
 	}
 

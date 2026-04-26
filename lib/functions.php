@@ -2234,7 +2234,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 				$output = shell_exec($script_path);
 			} else {
 				// Script server is a bit more complicated
-				$php   = read_config_option('path_php_binary');
+				$php   = cacti_escapeshellcmd(read_config_option('path_php_binary'));
 				$parts = explode(' ', $script_path);
 
 				dsv_log('parts', $parts);
@@ -2246,7 +2246,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 
 					dsv_log('script', $script);
 
-					$output = shell_exec("$php -q $script");
+					$output = shell_exec($php . ' -q ' . $script);
 
 					if ($output == '' || $output == false) {
 						$output = 'U';
@@ -2505,7 +2505,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 								$prepend = $script_queries['arg_prepend'];
 							}
 
-							$script_path = read_config_option('path_php_binary') . ' -q ' . get_script_query_path(trim($prepend . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' "' . $snmp_index . '"'), $script_queries['script_path'], $host_id);
+							$script_path = cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . get_script_query_path(trim($prepend . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' "' . $snmp_index . '"'), $script_queries['script_path'], $host_id);
 						} else {
 							$action = POLLER_ACTION_SCRIPT;
 							$script_path = get_script_query_path(trim((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] : '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' "' . $snmp_index . '"'), $script_queries['script_path'], $host_id);
@@ -2575,7 +2575,7 @@ function get_full_test_script_path($data_template_id, $host_id) {
 			} elseif ($item['data_name'] == 'host_id' || $item['data_name'] == 'hostid') {
 				$value = cacti_escapeshellarg($host['id']);
 			} else {
-				$value = "'" . $item['value'] . "'";
+				$value = cacti_escapeshellarg((string) $item['value']);
 			}
 
 			$full_path = str_replace('<' . $item['data_name'] . '>', $value, $full_path);
@@ -4615,14 +4615,24 @@ function validate_path_within($filename, $base_dir) {
  * @return mixed The validated real path, or false if invalid
  */
 function validate_relative_path_within($path, $base_dir) {
-	if ($path === '' || $path[0] === '/' || strpos($path, "\0") !== false) {
+	if (!is_string($path) || $path === '' || strpos($path, "\0") !== false) {
 		return false;
 	}
 
-	foreach (explode('/', $path) as $part) {
-		if ($part === '..') {
+	$normalized = str_replace('\\', '/', $path);
+
+	if ($normalized === '' || $normalized[0] === '/' || preg_match('/^[a-zA-Z]:\//', $normalized)) {
+		return false;
+	}
+
+	$parts = array();
+
+	foreach (explode('/', $normalized) as $part) {
+		if ($part === '' || $part === '.' || $part === '..') {
 			return false;
 		}
+
+		$parts[] = $part;
 	}
 
 	$base_real = realpath($base_dir);
@@ -4631,7 +4641,33 @@ function validate_relative_path_within($path, $base_dir) {
 		return false;
 	}
 
-	return $base_real . '/' . $path;
+	$candidate = $base_real . '/' . implode('/', $parts);
+
+	/* Block symlink pivots under writable base paths. */
+	$walk = $base_real;
+	foreach ($parts as $part) {
+		$walk .= '/' . $part;
+
+		if (file_exists($walk) && is_link($walk)) {
+			return false;
+		}
+	}
+
+	if (file_exists($candidate)) {
+		$resolved = realpath($candidate);
+
+		if ($resolved === false || !cacti_path_is_within($resolved, $base_real)) {
+			return false;
+		}
+	} else {
+		$parent = realpath(dirname($candidate));
+
+		if ($parent === false || !cacti_path_is_within($parent, $base_real)) {
+			return false;
+		}
+	}
+
+	return $candidate;
 }
 
 /**
@@ -6394,9 +6430,10 @@ function get_default_contextoption($timeout = false) {
 	if (in_array($protocol, array('ssl', 'https', 'ftps'))) {
 		$fgc_contextoption = array(
 			'ssl' => array(
-				'verify_peer' => false,
-				'verify_peer_name' => false,
-				'allow_self_signed' => true,
+				'verify_peer'       => read_config_option('allow_unsafe_https') != 'on' ? true : false,
+				'verify_peer_name'  => read_config_option('allow_unsafe_https') != 'on' ? true : false,
+				'allow_self_signed' => read_config_option('allow_unsafe_https') == 'on' ? true : false,
+				'follow_location'   => 0,
 			)
 		);
 	}
@@ -7303,15 +7340,47 @@ function cacti_ptoa($title, $addr) {
  * @returns - (string) The sanitized string
  */
 function cacti_csv_safe($value) {
+	if (!is_string($value) && !is_numeric($value)) {
+		return $value;
+	}
+
 	$value = (string)$value;
 
-	if ($value != '') {
-		if (strpos($value, '=') === 0 || strpos($value, '+') === 0 || strpos($value, '-') === 0 || strpos($value, '@') === 0) {
-			$value = "'" . $value;
+	// Strip leading whitespace and control characters that spreadsheets
+	// treat as formula-start triggers (OWASP CSV injection)
+	$trimmed = ltrim($value, " \t\n\r\0\x0B");
+
+	$dangerous = array('=', '+', '-', '@', "\t", "\r");
+
+	foreach ($dangerous as $char) {
+		if (isset($trimmed[0]) && $trimmed[0] === $char) {
+			return "'" . $value;
 		}
 	}
 
 	return $value;
+}
+
+/**
+ * cacti_input_string_is_safe - guard against shell metacharacters smuggled
+ *   into a data_input.input_string template. The placeholder syntax is
+ *   <field_name>, never <;rm -rf /;>, so any of [;&|`$\\\r\n] outside a
+ *   placeholder is taken as a command-injection attempt. The same regex
+ *   gates both the GUI save path (data_input.php) and XML/package import
+ *   (lib/import.php) so the two cannot drift.
+ *
+ * @param $input_string - (string) The candidate input_string template
+ *
+ * @returns - (bool) true if the value is safe to persist
+ */
+function cacti_input_string_is_safe($input_string) {
+	if ($input_string === '' || $input_string === null) {
+		return true;
+	}
+
+	$bare = preg_replace('/<[a-zA-Z_]+>/', '', $input_string);
+
+	return !preg_match('/[;&|`$\\\\\n\r]/', $bare);
 }
 
 function cacti_sizeof($array) {
@@ -7624,7 +7693,6 @@ function cacti_browser_zone_enabled() {
 		return true;
 	}
 }
-
 /**
  * cacti_time_zone_set - Given an offset in minutes, attempt
  * to set a PHP date.timezone.  There are some oddballs that
@@ -7771,4 +7839,551 @@ function cacti_format_ipv6_colon($address) {
 	}
 
 	return($address);
+}
+
+/**
+ * cacti_path_is_within - Check whether a candidate path resolves to a
+ * location inside a given base directory.  Both paths are resolved via
+ * realpath() so symlinks and relative components are handled.
+ *
+ * Windows notes:
+ *   - comparison is case-insensitive (NTFS is case-preserving but not
+ *     case-sensitive).
+ *   - both backslashes and forward slashes are normalised to '/' before
+ *     the comparison.
+ *   - the long-path prefixes "\\?\" and "\\?\UNC\" that realpath may
+ *     return for deep trees or UNC shares are stripped so a candidate
+ *     returned in extended form still matches a base in classic form
+ *     (and vice versa).
+ *   - UNC shares ("\\server\share\path") are supported.  The leading
+ *     "\\" is preserved as "//" after slash normalisation so the prefix
+ *     check still discriminates "//server/share" from "//server/shareX".
+ *
+ * @param  string $candidate  The path to test
+ * @param  string $base       The base directory that must contain it
+ *
+ * @return bool  True when $candidate is strictly inside $base
+ */
+function cacti_path_is_within($candidate, $base) {
+	$resolved = realpath($candidate);
+
+	if ($resolved === false) {
+		return false;
+	}
+
+	$base_resolved = realpath($base);
+
+	if ($base_resolved === false) {
+		return false;
+	}
+
+	if (DIRECTORY_SEPARATOR === '\\') {
+		$resolved      = cacti_normalize_windows_path($resolved);
+		$base_resolved = cacti_normalize_windows_path($base_resolved);
+	}
+
+	return strpos($resolved, $base_resolved . '/') === 0 || $resolved === $base_resolved;
+}
+
+/**
+ * cacti_normalize_windows_path - Internal helper for cacti_path_is_within.
+ *
+ * Lowercases the path for case-insensitive comparison, converts all
+ * backslashes to forward slashes, strips Windows long-path prefixes
+ * (\\?\UNC\ becomes \\, \\?\ is removed), and trims trailing slashes.
+ *
+ * @param  string $path  A path already passed through realpath()
+ * @return string        Normalised path suitable for strpos comparison
+ */
+function cacti_normalize_windows_path($path) {
+	$lower = strtolower((string) $path);
+
+	/* Long-path prefixes. Strip \\?\UNC\ first so the remaining \\ is
+	 * preserved for UNC share comparison; then strip bare \\?\ (which
+	 * only wraps drive-letter paths for filesystem APIs). */
+	if (strpos($lower, '\\\\?\\unc\\') === 0) {
+		$lower = '\\\\' . substr($lower, 8);
+	} elseif (strpos($lower, '\\\\?\\') === 0) {
+		$lower = substr($lower, 4);
+	}
+
+	$lower = str_replace('\\', '/', $lower);
+
+	/* Drop trailing slashes except for a lone '/' (drive-root case). */
+	if (strlen($lower) > 1) {
+		$lower = rtrim($lower, '/');
+	}
+
+	return $lower;
+}
+
+/**
+ * cacti_header - Redirect to the default if the HTTP_REFERER is empty
+ *
+ * @param string $default The default to redirect to unless
+ *
+ * @return void
+ */
+function cacti_header($default = 'index.php') {
+	$save_url = validate_redirect_url($_SERVER['HTTP_REFERER'] ?? $default, $default);
+
+	header('Location: ' . $save_url);
+	exit;
+}
+
+/**
+ * cacti_redirect - Redirect to a validated URL.
+ *
+ * Uses validate_redirect_url() to ensure the target is safe before
+ * sending the Location header. Falls back to $default when the URL
+ * is empty or fails validation.
+ *
+ * @param  string $url      Target URL (empty to use HTTP_REFERER)
+ * @param  string $default  Fallback URL when input is empty or invalid
+ * @param  int    $status   HTTP status code for the redirect
+ *
+ * @return void  (exits after sending the header)
+ */
+function cacti_redirect($url = '', $default = 'index.php', $status = 302) {
+	$safe_url = validate_redirect_url(
+		!empty($url) ? $url : (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $default),
+		$default
+	);
+
+	header('Location: ' . $safe_url, true, $status);
+	exit;
+}
+
+/**
+ * cacti_redact_sensitive - Replace sensitive values in an associative array.
+ *
+ * Walks the array recursively and replaces any value whose key matches
+ * a known sensitive name (password, token, community, etc.) with
+ * '[REDACTED]'. Safe for logging request data or debug dumps.
+ *
+ * @param  mixed $data  Array to redact (non-arrays returned unchanged)
+ *
+ * @return mixed  The redacted copy
+ */
+function cacti_redact_sensitive($data) {
+	if (!is_array($data)) {
+		return $data;
+	}
+
+	$redacted = array();
+
+	foreach ($data as $key => $value) {
+		$redacted[$key] = cacti_is_sensitive_key($key)
+			? '[REDACTED]'
+			: (is_array($value) ? cacti_redact_sensitive($value) : $value);
+	}
+
+	return $redacted;
+}
+
+/**
+ * cacti_is_sensitive_key - Returns true if the given key name suggests
+ * the value holds a secret (password, token, SNMP community, etc.).
+ *
+ * Exposed so callers that log a single "$key => $value" pair (for
+ * example the poller cache diff log) can redact without building an
+ * intermediate array.
+ */
+function cacti_is_sensitive_key($key) {
+	static $sensitive_keys = array(
+		'password', 'pass', 'snmp_password', 'snmp_priv_passphrase',
+		'snmp_auth_passphrase', 'rsa_private_key', 'secret',
+		'auth_key', 'priv_key', 'token', 'cookie', 'community',
+		'snmp_community', 'specific_password', 'ldap_password',
+	);
+
+	$lower = strtolower((string) $key);
+
+	foreach ($sensitive_keys as $sk) {
+		if ($lower === $sk || strpos($lower, $sk) !== false) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+/**
+ * cacti_redact_value - Returns '[REDACTED]' if the key is sensitive,
+ * otherwise returns the original value. Companion to cacti_redact_sensitive
+ * for scalar log statements.
+ */
+function cacti_redact_value($key, $value) {
+	return cacti_is_sensitive_key($key) ? '[REDACTED]' : $value;
+}
+
+/**
+ * cacti_temp_file - Execute a callback with a temporary file, then clean up.
+ *
+ * Creates a temp file via tempnam(), passes its path to $callback,
+ * and deletes the file in a finally block regardless of exceptions.
+ *
+ * @param  string   $prefix    Prefix for the temp filename
+ * @param  callable $callback  Receives the temp file path as its argument
+ *
+ * @return mixed  The return value of $callback, or false on tempnam failure
+ */
+function cacti_temp_file($prefix, $callback) {
+	$path = tempnam(sys_get_temp_dir(), $prefix);
+
+	if ($path === false) {
+		cacti_log('ERROR: cacti_temp_file: tempnam failed', false, 'SYSTEM');
+		return false;
+	}
+
+	try {
+		$result = call_user_func($callback, $path);
+	} finally {
+		@unlink($path);
+	}
+
+	return $result;
+}
+
+
+/**
+ * cacti_validate_theme - returns the requested theme name iff it names a
+ * real directory under include/themes/ that contains an rrdtheme.php file.
+ * Otherwise returns the configured default theme.
+ *
+ * Root-cause mitigation for LFI via the graph_theme request parameter.
+ * basename() on the request value is not sufficient because an attacker
+ * who can place files at predictable paths (plugin uploads, session files,
+ * log rotation) can satisfy a basename + is_dir check with an
+ * attacker-controlled directory. This helper builds the allowlist from the
+ * filesystem once per request (cached statically) and rejects anything
+ * that is not a genuine shipped theme.
+ *
+ * Applies to:
+ *   GHSA-rm7p-qcqm-x5m6 (unauth LFI via graph_theme + rrdtool IPC)
+ *   GHSA-cx5r-8q6h-r772 (pre-auth LFI via graph_theme)
+ *
+ * @param string $requested  The raw value from the request
+ *
+ * @return string  A validated theme name safe for path concatenation
+ */
+function cacti_validate_theme($requested) {
+	global $config;
+	static $valid_themes = null;
+
+	$default = read_config_option('selected_theme');
+
+	if (empty($default)) {
+		$default = 'modern';
+	}
+
+	if ($valid_themes === null) {
+		$valid_themes = array();
+		$themes_dir   = $config['base_path'] . '/include/themes';
+
+		if (is_dir($themes_dir)) {
+			$entries = scandir($themes_dir);
+
+			if ($entries !== false) {
+				foreach ($entries as $entry) {
+					if ($entry === '.' || $entry === '..') {
+						continue;
+					}
+
+					$full = $themes_dir . '/' . $entry;
+
+					if (is_dir($full) && is_file($full . '/rrdtheme.php')) {
+						$valid_themes[$entry] = true;
+					}
+				}
+			}
+		}
+	}
+
+	$requested = basename((string) $requested);
+
+	return isset($valid_themes[$requested]) ? $requested : $default;
+}
+
+/**
+ * cacti_html_context_escape - escape a value for safe insertion into a
+ * specific HTML / JS / URL / CSS context.
+ *
+ * Different contexts require different escape rules. Using the wrong escape
+ * (e.g., htmlspecialchars for a JavaScript string) leaves exploitable holes.
+ * This helper picks the right primitive per context and fails closed when
+ * an unknown context is passed.
+ *
+ * Root-cause mitigation for context-confusion XSS:
+ *   GHSA-7gx8-f5q4-86mv (tooltip HTML attr via SNMP description)
+ *   GHSA-m544-32jr-54xw (JS string via session referer in auth_profile)
+ *   GHSA-6233-v5hc-6gvf (HTML element via Report Tree titles)
+ *   GHSA-977w-79m7-xjc4 (HTML element via SNMP data in graph export)
+ *   GHSA-cfhh-pwvx-gp5g (reflected XSS via rfilter PCRE differential)
+ *
+ * Usage:
+ *   print cacti_html_context_escape($value, CACTI_ESC_ELEMENT);
+ *   print "<a title='" . cacti_html_context_escape($v, CACTI_ESC_ATTR) . "'>";
+ *   print "var x = '" . cacti_html_context_escape($v, CACTI_ESC_JS_STRING) . "';";
+ *   print "<a href='?q=" . cacti_html_context_escape($v, CACTI_ESC_URL) . "'>";
+ *
+ * @param mixed  $value    The value to escape
+ * @param string $context  One of CACTI_ESC_* constants
+ *
+ * @return string  The escaped value safe for the given context
+ */
+function cacti_html_context_escape($value, $context) {
+	$value = (string) $value;
+
+	switch ($context) {
+		case CACTI_ESC_ELEMENT:
+		case CACTI_ESC_ATTR:
+			// htmlspecialchars with ENT_QUOTES is safe for both element
+			// content and both ' / " quoted attribute values.
+			return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+
+		case CACTI_ESC_JS_STRING:
+			// Emit a JSON-encoded string literal body (without the
+			// surrounding quotes). Caller supplies the delimiting quotes.
+			// JSON_HEX_TAG/APOS/QUOT/AMP keep the result safe inside <script>
+			// tags and inside HTML attributes that contain JS.
+			$flags = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE;
+			$json  = json_encode($value, $flags);
+
+			if ($json === false) {
+				// Fail closed on encode failure.
+				return '';
+			}
+
+			// Strip the surrounding double quotes; caller owns the delimiters.
+			return substr($json, 1, -1);
+
+		case CACTI_ESC_URL:
+			// rawurlencode per RFC 3986 (spaces as %20, not +).
+			return rawurlencode($value);
+
+		case CACTI_ESC_CSS:
+			// Only allow safe chars; escape everything else as \XX hex.
+			// Keeps attacker out of style="expression(...)", url(...), etc.
+			return preg_replace_callback('/[^a-zA-Z0-9\-\_]/', function ($m) {
+				return '\\' . bin2hex($m[0]) . ' ';
+			}, $value);
+
+		default:
+			// Unknown context — fail closed by escaping aggressively as
+			// HTML element content. Preserves safety, alerts on misuse via
+			// visibly escaped output.
+			return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+	}
+}
+
+/**
+ * cacti_validate_sort_column - returns $column if it exactly matches an
+ * entry in $allowed (strict comparison), otherwise returns $default or the
+ * first allowlist entry.
+ *
+ * Root-cause mitigation for ORDER BY SQL injection via unsanitized
+ * sort_column request parameters.
+ *
+ * The allowlist may contain:
+ *   - bare column names:  'name', 'hostname', 'time'
+ *   - fully-qualified names:  'h.description', 'dl.host_id'
+ *   - function expressions:  'INET_ATON(hostname)', 'LENGTH(description)'
+ *
+ * Callers pass the exact SQL fragment they want to allow. Matching is
+ * strict (===), case-sensitive, and whitespace-sensitive. Request values
+ * that don't match any allowlist entry fall through to $default.
+ *
+ * Example (with function expression):
+ *   $col = cacti_validate_sort_column(
+ *       get_request_var('sort_column'),
+ *       array('description', 'hostname', 'INET_ATON(hostname)'),
+ *       'description'
+ *   );
+ *
+ * Applies to GHSA-3p6w, GHSA-84q3, GHSA-gp82 and future ORDER BY reports.
+ *
+ * @param string $column   Requested sort column
+ * @param array  $allowed  Allowlist of acceptable SQL fragments
+ * @param string $default  Fallback when $column is not in $allowed
+ *
+ * @return string  Safe SQL fragment
+ */
+function cacti_validate_sort_column(string $column, array $allowed, string $default = '') : string {
+	if (in_array($column, $allowed, true)) {
+		return $column;
+	}
+
+	return $default !== '' ? $default : (count($allowed) > 0 ? $allowed[0] : 'id');
+}
+
+/**
+ * cacti_exec - Run a shell command with strict argument separation.
+ *
+ * The binary is passed through cacti_escapeshellcmd and each argument
+ * through cacti_escapeshellarg. Callers must pass the binary as its own
+ * parameter and arguments as an array; mixing them in one string is
+ * rejected so a reviewer can tell at a glance that no unescaped user
+ * input reaches the shell.
+ *
+ * Callers should still restrict the binary to a known-safe value: a
+ * hardcoded path, a path allowlist, or a path_* config option that
+ * itself is admin-only.
+ *
+ * @param string $binary  Path or name of the executable. Must not contain spaces
+ *                        and must not begin with '-'. A leading dash can be
+ *                        interpreted as an option by shell/process wrappers.
+ * @param array  $args    Arguments. Each is escaped independently.
+ * @param array  $out     By-ref slot for captured stdout (one line per entry).
+ *
+ * @return int  Process exit code. 0 usually means success.
+ *
+ * @throws InvalidArgumentException  If the binary contains whitespace.
+ */
+function cacti_exec($binary, array $args = array(), array &$out = array()) {
+	$binary = trim((string) $binary);
+
+	if ($binary === '' || preg_match('/\s/', $binary)) {
+		throw new InvalidArgumentException('cacti_exec(): binary must be a single token with no whitespace. Arguments go in $args.');
+	}
+
+	if ($binary[0] === '-') {
+		throw new InvalidArgumentException('cacti_exec(): binary must not begin with "-".');
+	}
+
+	$command = cacti_escapeshellcmd($binary);
+
+	foreach ($args as $arg) {
+		$command .= ' ' . cacti_escapeshellarg((string) $arg);
+	}
+
+	$exit_code = 0;
+	exec($command, $out, $exit_code);
+
+	return (int) $exit_code;
+}
+
+/**
+ * cacti_exec_string - Run a shell command via cacti_exec and return the
+ * combined stdout as a single newline-joined string.
+ *
+ * @param string $binary
+ * @param array  $args
+ *
+ * @return string
+ */
+function cacti_exec_string($binary, array $args = array()) {
+	$out = array();
+	cacti_exec($binary, $args, $out);
+
+	return implode("\n", $out);
+}
+
+/**
+ * cacti_http - SSRF-hardened HTTP GET.
+ *
+ * Wraps file_get_contents() with a stream context that enables TLS peer
+ * verification, disables redirect-following, and rejects non-http(s)
+ * schemes. Callers may pass an optional host allowlist; if set, only
+ * matching hostnames pass.
+ *
+ * @param string $url        Absolute http(s) URL to fetch.
+ * @param int    $timeout    Seconds before the request is aborted.
+ * @param array  $allowlist  Optional case-insensitive list of allowed hostnames (exact match).
+ * @param int    $status     By-ref HTTP status code, or 0 on transport failure.
+ *
+ * @return mixed  Response body string on 2xx, false on any failure.
+ */
+function cacti_http($url, $timeout = 10, array $allowlist = array(), &$status = 0) {
+	$status = 0;
+
+	$parts = parse_url((string) $url);
+
+	if ($parts === false || !isset($parts['scheme']) || !isset($parts['host'])) {
+		return false;
+	}
+
+	$scheme = strtolower($parts['scheme']);
+
+	if ($scheme !== 'http' && $scheme !== 'https') {
+		return false;
+	}
+
+	if (!empty($allowlist)) {
+		$host_lower = strtolower($parts['host']);
+		$allowed = array_map('strtolower', $allowlist);
+
+		if (!in_array($host_lower, $allowed, true)) {
+			return false;
+		}
+	}
+
+	$ssl = ($scheme === 'https') ? array(
+		'verify_peer'       => read_config_option('allow_unsafe_https') != 'on' ? true : false,
+		'verify_peer_name'  => read_config_option('allow_unsafe_https') != 'on' ? true : false,
+		'allow_self_signed' => read_config_option('allow_unsafe_https') == 'on' ? true : false,
+	) : array();
+
+	$ctx = stream_context_create(array(
+		'http' => array(
+			'method'          => 'GET',
+			'timeout'         => (int) $timeout,
+			'follow_location' => 0,
+			'max_redirects'   => 0,
+			'ignore_errors'   => true,
+			'header'          => "Accept: */*\r\nConnection: close\r\n",
+		),
+		'ssl' => $ssl,
+	));
+
+	$body = @file_get_contents($url, false, $ctx);
+
+	if (isset($http_response_header) && is_array($http_response_header) && count($http_response_header) > 0) {
+		if (preg_match('#HTTP/\S+\s+(\d+)#', $http_response_header[0], $m)) {
+			$status = (int) $m[1];
+		}
+	}
+
+	if ($body === false || $status < 200 || $status >= 300) {
+		return false;
+	}
+
+	return $body;
+}
+
+/**
+ * cacti_plugin_path - Resolve a file inside a named plugin's directory.
+ *
+ * Builds and realpath-validates base_path/plugins/<plugin>/<relative>
+ * to prevent ../ traversal leaving the plugin subtree. Returns the
+ * validated absolute path on success, or false if the plugin name is
+ * unsafe or the resulting path escapes plugins/<plugin>/.
+ *
+ * @param string $plugin    Plugin directory name (e.g. 'thold').
+ * @param string $relative  Relative file path under the plugin directory (e.g. 'setup.php').
+ *
+ * @return string|false     Validated absolute path, or false on rejection.
+ */
+function cacti_plugin_path($plugin, $relative = '') {
+	global $config;
+
+	$plugin = (string) $plugin;
+
+	if ($plugin === '' || !preg_match('/^[A-Za-z0-9_-]+$/', $plugin)) {
+		return false;
+	}
+
+	$plugin_base = realpath($config['base_path'] . '/plugins/' . $plugin);
+
+	if ($plugin_base === false) {
+		return false;
+	}
+
+	if ($relative === '') {
+		return $plugin_base;
+	}
+
+	$resolved = validate_relative_path_within((string) $relative, $plugin_base);
+
+	return $resolved !== false ? $resolved : false;
 }

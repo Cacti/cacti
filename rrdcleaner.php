@@ -477,6 +477,10 @@ function do_rrd() {
 				FROM data_source_purge_temp
 				WHERE id = ?', array($matches[1]));
 
+			if (!cacti_sizeof($unused_file)) {
+				continue;
+			}
+
 			/* add to data_source_purge_action table */
 			$sql = "INSERT INTO data_source_purge_action
 				(name, local_data_id, action)

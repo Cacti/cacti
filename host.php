@@ -256,6 +256,7 @@ function get_site_locations() {
 		$return[] = array('label' => __('None'), 'value' => '', 'id' => __('None'));
 	}
 
+	header('Content-Type: application/json');
 	print json_encode($return);
 }
 

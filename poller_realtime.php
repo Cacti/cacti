@@ -67,7 +67,8 @@ if (cacti_sizeof($parms)) {
 				$interval = (int)$value;
 				break;
 			case '--poller_id':
-				$poller_id = $value;
+				/* Web caller passes a hex session hash; reject anything else to keep shell-safe */
+				$poller_id = preg_match('/^[a-zA-Z0-9_-]{1,64}$/', $value) ? $value : '';
 				break;
 			case '--version':
 			case '-V':
@@ -129,7 +130,7 @@ $max_threads = read_config_option('max_threads');
 
 /* Determine Command Name */
 $command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
-$extra_args     = '-q ' . cacti_escapeshellarg($config['base_path'] . '/cmd_realtime.php') . " $poller_id $graph_id $interval";
+$extra_args     = '-q ' . cacti_escapeshellarg($config['base_path'] . '/cmd_realtime.php') . ' ' . cacti_escapeshellarg($poller_id) . ' ' . (int)$graph_id . ' ' . (int)$interval;
 
 /* Determine if Realtime will work or not */
 $cache_dir = read_config_option('realtime_cache_path');

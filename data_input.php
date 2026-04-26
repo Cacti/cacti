@@ -96,9 +96,7 @@ function form_save() {
 
 		// Reject shell metacharacters outside of <placeholder> markers to prevent command injection
 		if (!is_error_message()) {
-			$input_string_bare = preg_replace('/<([_a-zA-Z0-9]+)>/', '', $save['input_string']);
-
-			if (preg_match('/[;&|`$\\\\\n\r]/', $input_string_bare)) {
+			if (!cacti_input_string_is_safe($save['input_string'])) {
 				raise_message('validation_error', __('Input string contains dangerous shell characters'), MESSAGE_LEVEL_ERROR);
 				header('Location: data_input.php?action=edit&id=' . (empty($save['id']) ? '' : $save['id']));
 				exit;
@@ -929,3 +927,4 @@ function data() {
 
 	form_end();
 }
+

@@ -476,7 +476,14 @@ if ($config['is_web']) {
 	}
 	$alternates = html_escape(read_config_option('content_security_alternate_sources'));
 
-	header("Content-Security-Policy: default-src *; img-src 'self' $alternates data: blob:; style-src 'self' 'unsafe-inline' $alternates; script-src 'self' $script_policy 'unsafe-inline' $alternates; frame-ancestors 'self'; worker-src 'self' $alternates;");
+	header("Content-Security-Policy: default-src 'self'; script-src 'self' $script_policy 'unsafe-inline' $alternates; style-src 'self' 'unsafe-inline' $alternates; img-src 'self' $alternates data: blob:; font-src 'self' $alternates; connect-src 'self' $alternates; frame-src 'self'; frame-ancestors 'self'; worker-src 'self' $alternates;");
+
+	if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
+		header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
+	}
+
+	header('Cross-Origin-Opener-Policy: same-origin');
+	header('Cross-Origin-Resource-Policy: same-origin');
 
 	/* prevent IE from silently rejects cookies sent from third party sites. */
 	header('P3P: CP="CAO PSA OUR"');

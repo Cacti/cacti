@@ -376,9 +376,9 @@ function validate_request_vars() {
 function debug_get_filter(&$sql_where, &$dd_join) {
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('rfilter') != '') {
-		$sql_where = "WHERE (dtd.name_cache RLIKE '" . get_request_var('rfilter') . "'" .
-			" OR dtd.local_data_id RLIKE '" . get_request_var('rfilter') . "'" .
-			" OR dt.name RLIKE '" . get_request_var('rfilter') . "')";
+		$sql_where = 'WHERE (dtd.name_cache ' . db_qstr_rlike(get_request_var('rfilter')) .
+			' OR dtd.local_data_id ' . db_qstr_rlike(get_request_var('rfilter')) .
+			' OR dt.name ' . db_qstr_rlike(get_request_var('rfilter')) . ')';
 	} else {
 		$sql_where = '';
 	}

@@ -194,6 +194,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'ajax_tz':
+		header('Content-Type: application/json');
 		print json_encode(db_fetch_assoc_prepared('SELECT Name AS label, Name AS `value`
 			FROM mysql.time_zone_name
 			WHERE Name LIKE ?
@@ -426,6 +427,15 @@ function site_edit() {
 
 	if (!isempty_request_var('id')) {
 		$site = db_fetch_row_prepared('SELECT * FROM sites WHERE id = ?', array(get_request_var('id')));
+
+		if (!cacti_sizeof($site)) {
+			raise_message('site_not_found', __('Site not found.'), MESSAGE_LEVEL_ERROR);
+
+			cacti_header('sites.php');
+
+			exit;
+		}
+
 		$header_label = __esc('Site [edit: %s]', $site['name']);
 	} else {
 		$header_label = __('Site [new]');

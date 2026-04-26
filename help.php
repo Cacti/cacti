@@ -48,27 +48,21 @@ if (isset_request_var('error')) {
 
 	$page = basename(str_replace('.html', '.md', get_request_var('page')));
 
-	$fgc_contextoption = array(
-		'ssl' => array(
-			'verify_peer'       => true,
-			'verify_peer_name'  => true,
-			'allow_self_signed' => false,
-			'timeout'           => 2,
-			'ignore_errors'     => true
-		),
-		'http' => array(
-			'follow_location' => 0
-		)
-	);
-
 	if (read_config_option('local_documentation') != 'on') {
-		$fgc_context   = stream_context_create($fgc_contextoption);
-		$contents      = @file_get_contents('https://docs.cacti.net/' . $page, false, $fgc_context);
-		$response_code = http_response_code();
+		$response_code = 0;
+		$contents      = cacti_http('https://docs.cacti.net/' . $page, 2, array('docs.cacti.net'), $response_code);
+		if ($contents === false && $response_code === 0) {
+			$response_code = 599;
+		}
+		if ($contents === false && $response_code >= 200 && $response_code < 300) {
+			$response_code = 599;
+		}
 	} else {
 		$contents      = '';
 		$response_code = 200;
 	}
+
+	header('Content-Type: application/json');
 
 	if ($response_code != 200) {
 		print json_encode(

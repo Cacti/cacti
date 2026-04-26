@@ -588,7 +588,7 @@ function manager_notifications($id, $header_label) {
 			form_alternate_row('line' . $row_id, false);
 
 			if ($item['description']) {
-				print '<td><a href="#" title="<div class=\'header\'>' . $name . '</div><div class=\'content preformatted\'>' . $item['description']. '</div>" class="tooltip">' . $name . '</a></td>';
+				print '<td><a href="#" title="<div class=\'header\'>' . html_escape($item['name']) . '</div><div class=\'content preformatted\'>' . html_escape($item['description']) . '</div>" class="tooltip">' . html_escape($item['name']) . '</a></td>';
 			} else {
 				form_selectable_cell($name, $row_id);
 			}
@@ -817,16 +817,15 @@ function manager_logs($id, $header_label) {
 
 			if ($item['description']) {
 				$description = '';
-				$lines = preg_split( '/\r\n|\r|\n/', $item['description']);
+				$lines = preg_split('/\r\n|\r|\n/', $item['description']);
 
-				foreach($lines as $line) {
+				foreach ($lines as $line) {
 					$description .= html_escape(trim($line)) . '<br>';
 				}
 
-				print '<td><a href="#" onMouseOut="hideTooltip(snmpagentTooltip)" onMouseMove="showTooltip(event, snmpagentTooltip, \'' . $item['notification'] . '\', \'' . $description . '\')">' . $item['notification'] . '</a></td>';
+				print '<td><a href="#" onMouseOut="hideTooltip(snmpagentTooltip)" onMouseMove="showTooltip(event, snmpagentTooltip, \'' . html_escape($item['notification']) . '\', \'' . $description . '\')">' . html_escape($item['notification']) . '</a></td>';
 			} else {
-
-				print "<td>{$item['notification']}</td>";
+				print '<td>' . html_escape($item['notification']) . '</td>';
 			}
 
 			print "<td>$varbinds</td>";
@@ -924,8 +923,12 @@ function form_actions() {
 		if (isset_request_var('action_receivers')) {
 			$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
-			if ($selected_items !== false) {
-				$ids = implode(',', array_map('intval', $selected_items));
+			if (is_array($selected_items) && count($selected_items) > 0) {
+				$selected_items = array_values(array_filter(array_map('intval', $selected_items)));
+			}
+
+			if (is_array($selected_items) && count($selected_items) > 0) {
+				$ids = implode(',', $selected_items);
 
 				if (get_nfilter_request_var('drp_action') == '1') { // delete
 					db_execute('DELETE FROM snmpagent_managers WHERE id IN (' . $ids . ')');
@@ -936,11 +939,10 @@ function form_actions() {
 				} elseif (get_nfilter_request_var('drp_action') == '3') { // disable
 					db_execute("UPDATE snmpagent_managers SET disabled = 'on' WHERE id IN (" . $ids . ')');
 				}
-
-				header('Location: managers.php');
-
-				exit;
 			}
+			header('Location: managers.php');
+
+			exit;
 		} elseif (isset_request_var('action_receiver_notifications')) {
 			/* ================= input validation ================= */
 			get_filter_request_var('id');
@@ -1099,4 +1101,3 @@ function form_actions() {
 		}
 	}
 }
-

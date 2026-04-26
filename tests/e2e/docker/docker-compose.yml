@@ -1,0 +1,90 @@
+# E2E harness for PR #7054 feedback. See tests/e2e/docker/README.md.
+# All services share an internal network; only cacti-master is published to the host.
+
+services:
+  cacti-db:
+    image: mariadb:10.11
+    container_name: cacti-e2e-db
+    environment:
+      MARIADB_ROOT_PASSWORD: cacti-e2e-root
+      MARIADB_DATABASE: cacti
+      MARIADB_USER: cactiuser
+      MARIADB_PASSWORD: cactiuser
+    command:
+      - --max_allowed_packet=128M
+      - --innodb_buffer_pool_size=256M
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD-SHELL", "mariadb-admin ping -ucactiuser -pcactiuser --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    networks:
+      - cacti-e2e
+
+  cacti-master:
+    build:
+      context: ../../..
+      dockerfile: tests/e2e/docker/Dockerfile.cacti
+    image: cacti-e2e:latest
+    container_name: cacti-e2e-master
+    environment:
+      ROLE: master
+      DB_HOST: cacti-db
+      DB_NAME: cacti
+      DB_USER: cactiuser
+      DB_PASS: cactiuser
+      REMOTE_POLLER_HOST: cacti-poller
+    depends_on:
+      cacti-db:
+        condition: service_healthy
+    volumes:
+      # The harness directory is .dockerignore'd from the COPY layer to keep
+      # the image small. Bind-mount only the probes/ subtree onto its
+      # canonical absolute path so probe_remote_fetch.php is reachable
+      # without leaking the rest of the harness into the container.
+      - ./probes:/var/www/html/tests/e2e/docker/probes:ro
+      - cacti-master-state:/var/cacti-state
+    ports:
+      - "127.0.0.1:${CACTI_E2E_PORT:-8088}:80"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1/index.php > /dev/null || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    networks:
+      - cacti-e2e
+
+  cacti-poller:
+    build:
+      context: ../../..
+      dockerfile: tests/e2e/docker/Dockerfile.cacti
+    image: cacti-e2e:latest
+    container_name: cacti-e2e-poller
+    environment:
+      ROLE: poller
+      DB_HOST: cacti-db
+      DB_NAME: cacti
+      DB_USER: cactiuser
+      DB_PASS: cactiuser
+    depends_on:
+      cacti-db:
+        condition: service_healthy
+    volumes:
+      - cacti-poller-state:/var/cacti-state
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsSk https://127.0.0.1/index.php > /dev/null || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    networks:
+      - cacti-e2e
+
+networks:
+  cacti-e2e:
+    driver: bridge
+
+volumes:
+  cacti-master-state:
+  cacti-poller-state:

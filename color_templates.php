@@ -384,6 +384,15 @@ function aggregate_color_template_edit() {
 
 	if (!isempty_request_var('color_template_id')) {
 		$template = db_fetch_row_prepared('SELECT * FROM color_templates WHERE color_template_id = ?', array(get_request_var('color_template_id')));
+
+		if (!cacti_sizeof($template)) {
+			raise_message('color_template_not_found', __('Color Template not found.'), MESSAGE_LEVEL_ERROR);
+
+			cacti_header('color_templates.php');
+
+			exit;
+		}
+
 		$header_label = __esc('Color Template [edit: %s]', $template['name']);
 	} else {
 		$header_label = __('Color Template [new]');

@@ -33,7 +33,7 @@ test('graph_realtime.php uses cacti_escapeshellcmd for PHP binary', function () 
 test('graph_realtime.php uses cacti_escapeshellarg for poller_realtime script path', function () use ($graphRealtimePath) {
 	$contents = file_get_contents($graphRealtimePath);
 
-	expect($contents)->toContain('cacti_escapeshellarg(CACTI_PATH_BASE');
+	expect($contents)->toContain("\$config['base_path'] . '/poller_realtime.php'");
 	expect($contents)->toContain('poller_realtime.php');
 });
 

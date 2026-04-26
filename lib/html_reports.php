@@ -226,6 +226,10 @@ function reports_item_dnd() {
 	get_filter_request_var('id');
 	/* ================= Input validation ================= */
 
+	if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) get_request_var('id'), 'reports')) {
+		return;
+	}
+
 	$continue = true;
 
 	if (isset_request_var('report_item') && is_array(get_nfilter_request_var('report_item'))) {
@@ -265,16 +269,14 @@ function reports_form_save() {
 		if (isempty_request_var('id')) {
 			$save['user_id'] = $_SESSION['sess_user_id'];
 		} else {
-			$owner_id = db_fetch_cell_prepared('SELECT user_id FROM reports WHERE id = ?', array(get_nfilter_request_var('id')));
-
-			if ($owner_id != $_SESSION['sess_user_id'] && !is_realm_allowed(21)) {
+			if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) get_nfilter_request_var('id'), 'reports')) {
 				raise_message('permission_denied');
 				header('Location: reports.php');
 
 				exit;
 			}
 
-			$save['user_id'] = $owner_id;
+			$save['user_id'] = db_fetch_cell_prepared('SELECT user_id FROM reports WHERE id = ?', array(get_nfilter_request_var('id')));
 		}
 
 		$save['id']            = get_nfilter_request_var('id');
@@ -424,6 +426,22 @@ function reports_form_actions() {
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
+
+		/* Drop any report id the current user is not authorised to mutate so
+		 * every action branch below runs only on rows owned by the caller or
+		 * accessible to a reports admin (realm 21). */
+		if (is_array($selected_items)) {
+			$selected_items = array_values(array_filter(
+				$selected_items,
+				function ($rid) {
+					return cacti_authorize_resource($_SESSION['sess_user_id'], (int) $rid, 'reports');
+				}
+			));
+
+			if (cacti_sizeof($selected_items) === 0) {
+				$selected_items = false;
+			}
+		}
 
 		if ($selected_items != false) {
 			if (get_nfilter_request_var('drp_action') == REPORTS_DELETE) { // delete
@@ -620,6 +638,10 @@ function reports_item_movedown() {
 	get_filter_request_var('id');
 	/* ==================================================== */
 
+	if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) get_request_var('id'), 'reports')) {
+		return;
+	}
+
 	move_item_down('reports_items', get_request_var('item_id'), 'report_id=' . get_request_var('id'));
 }
 
@@ -628,6 +650,11 @@ function reports_item_moveup() {
 	get_filter_request_var('item_id');
 	get_filter_request_var('id');
 	/* ==================================================== */
+
+	if (!cacti_authorize_resource($_SESSION['sess_user_id'], (int) get_request_var('id'), 'reports')) {
+		return;
+	}
+
 	move_item_up('reports_items', get_request_var('item_id'), 'report_id=' . get_request_var('id'));
 }
 
@@ -635,7 +662,14 @@ function reports_item_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('item_id');
 	/* ==================================================== */
-	db_execute_prepared('DELETE FROM reports_items WHERE id = ?', array(get_request_var('item_id')));
+
+	$item_id = (int) get_request_var('item_id');
+
+	if (!cacti_authorize_resource($_SESSION['sess_user_id'], $item_id, 'report_item')) {
+		return;
+	}
+
+	db_execute_prepared('DELETE FROM reports_items WHERE id = ?', array($item_id));
 }
 
 function reports_item_resequence($report_id) {
@@ -1468,7 +1502,7 @@ function reports_edit() {
 	if (get_filter_request_var('id') > 0) {
 		$report = db_fetch_row_prepared('SELECT * FROM reports WHERE id = ?', array(get_request_var('id')));
 
-		if (!empty($report) && $report['user_id'] != $_SESSION['sess_user_id'] && !is_realm_allowed(21)) {
+		if (!empty($report) && !cacti_authorize_resource($_SESSION['sess_user_id'], (int) get_request_var('id'), 'reports')) {
 			raise_message('permission_denied');
 			header('Location: reports.php');
 

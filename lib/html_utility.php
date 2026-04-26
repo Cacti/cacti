@@ -741,29 +741,66 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 	}
 }
 
+function cacti_normalize_sort_direction($direction) {
+	$direction = strtoupper((string) $direction);
+
+	return ($direction === 'DESC') ? 'DESC' : 'ASC';
+}
+
+function cacti_normalize_sort_column($column) {
+	$column = trim((string) $column);
+
+	if (!preg_match('/^[a-zA-Z][a-zA-Z0-9_]*(?:\.[a-zA-Z][a-zA-Z0-9_]*)*$/', $column)) {
+		return '';
+	}
+
+	return $column;
+}
+
+function cacti_build_sort_fragment($column, $direction) {
+	if ($column === '') {
+		return '';
+	}
+
+	if ($column === 'hostname' || $column === 'ip' || $column === 'ip_address') {
+		return 'INET_ATON(' . $column . ') ' . cacti_normalize_sort_direction($direction);
+	}
+
+	return '`' . implode('`.`', explode('.', $column)) . '` ' . cacti_normalize_sort_direction($direction);
+}
+
 /* update_order_string - creates a sort string for standard Cacti tables
    @returns - null */
 function update_order_string($inplace = false) {
 	$page = get_order_string_page(false);
 
-	$order = '';
-
-	if (strpos(get_request_var('sort_column'), '(') === false && strpos(get_request_var('sort_column'), '`') === false) {
-		$del = '`';
-	} else {
-		$del = '';
-	}
+	$order_parts = array();
 
 	if ($inplace) {
-		$_SESSION['sort_string'][$page] = 'ORDER BY ';
+		if (!isset($_SESSION['sort_data'][$page]) || !is_array($_SESSION['sort_data'][$page])) {
+			unset($_SESSION['sort_string'][$page]);
+			return;
+		}
+
+		$validated = array();
+
 		foreach($_SESSION['sort_data'][$page] as $column => $direction) {
-			if ($column == 'hostname' || $column == 'ip' || $column == 'ip_address') {
-				$order .= ($order != '' ? ', ':'') . 'INET_ATON(' . $column . ') ' . $direction;
-			} else {
-				$order .= ($order != '' ? ', ':'') . $column . ' ' . $direction;
+			$column = cacti_normalize_sort_column($column);
+			$order  = cacti_build_sort_fragment($column, $direction);
+
+			if ($order !== '') {
+				$validated[$column] = cacti_normalize_sort_direction($direction);
+				$order_parts[]      = $order;
 			}
 		}
-		$_SESSION['sort_string'][$page] .= $order;
+
+		if (cacti_sizeof($order_parts)) {
+			$_SESSION['sort_data'][$page]   = $validated;
+			$_SESSION['sort_string'][$page] = 'ORDER BY ' . implode(', ', $order_parts);
+		} else {
+			unset($_SESSION['sort_data'][$page]);
+			unset($_SESSION['sort_string'][$page]);
+		}
 	} else {
 		if (isset_request_var('clear')) {
 			unset($_SESSION['sort_data'][$page]);
@@ -772,42 +809,24 @@ function update_order_string($inplace = false) {
 			unset($_SESSION['sort_data'][$page]);
 			unset($_SESSION['sort_string'][$page]);
 
-			$_SESSION['sort_data'][$page][get_request_var('sort_column')] = get_request_var('sort_direction');
-
-			$column    = get_request_var('sort_column');
-			$direction = get_request_var('sort_direction');
-
-			if ($column == 'hostname' || $column == 'ip' || $column == 'ip_address') {
-				$_SESSION['sort_string'][$page] ='ORDER BY INET_ATON(' . $column . ") " . $direction;
-			} else {
-				$_SESSION['sort_string'][$page] = 'ORDER BY ' . $del . implode($del . '.'. $del, explode('.', get_request_var('sort_column'))) . $del . ' ' . get_request_var('sort_direction');
+			$column = cacti_normalize_sort_column(get_request_var('sort_column'));
+			if ($column !== '') {
+				$_SESSION['sort_data'][$page][$column] = cacti_normalize_sort_direction(get_request_var('sort_direction'));
 			}
+
+			update_order_string(true);
 		} elseif (isset_request_var('sort_column')) {
 			if (isset_request_var('reset')) {
 				unset($_SESSION['sort_data'][$page]);
 				unset($_SESSION['sort_string'][$page]);
 			}
 
-			$_SESSION['sort_data'][$page][get_request_var('sort_column')] = get_nfilter_request_var('sort_direction');
-			$_SESSION['sort_string'][$page] = 'ORDER BY ';
-
-			foreach($_SESSION['sort_data'][$page] as $column => $direction) {
-				if (strpos($column, '(') === false && strpos($column, '`') === false) {
-					$del = '`';
-				} else {
-					$del = '';
-					break;
-				}
+			$column = cacti_normalize_sort_column(get_request_var('sort_column'));
+			if ($column !== '') {
+				$_SESSION['sort_data'][$page][$column] = cacti_normalize_sort_direction(get_nfilter_request_var('sort_direction'));
 			}
 
-			foreach($_SESSION['sort_data'][$page] as $column => $direction) {
-				if ($column == 'hostname' || $column == 'ip' || $column == 'ip_address') {
-					$order .= ($order != '' ? ', ':'') . 'INET_ATON(' . $column . ") " . $direction;
-				} else {
-					$order .= ($order != '' ? ', ' . $del:$del) . implode($del . '.' . $del, explode('.', $column)) . $del . ' ' . $direction;
-				}
-			}
-			$_SESSION['sort_string'][$page] .= $order;
+			update_order_string(true);
 		} else {
 			unset($_SESSION['sort_data'][$page]);
 			unset($_SESSION['sort_string'][$page]);
@@ -819,31 +838,37 @@ function update_order_string($inplace = false) {
    @returns - the order string */
 function get_order_string() {
 	$page        = get_order_string_page(true);
-	$sort_column = get_nfilter_request_var('sort_column');
-	$sort_dir    = strtoupper(get_nfilter_request_var('sort_direction'));
+	$sort_column = cacti_normalize_sort_column(get_nfilter_request_var('sort_column'));
+	$sort_dir    = cacti_normalize_sort_direction(get_nfilter_request_var('sort_direction'));
 
-	if ($sort_dir !== 'ASC' && $sort_dir !== 'DESC') {
-		$sort_dir = 'ASC';
+	if (isset($_SESSION['sort_data'][$page]) && is_array($_SESSION['sort_data'][$page])) {
+		$order_parts = array();
+		$validated   = array();
+
+		foreach ($_SESSION['sort_data'][$page] as $column => $direction) {
+			$column = cacti_normalize_sort_column($column);
+			$order  = cacti_build_sort_fragment($column, $direction);
+
+			if ($order !== '') {
+				$validated[$column] = cacti_normalize_sort_direction($direction);
+				$order_parts[]      = $order;
+			}
+		}
+
+		if (cacti_sizeof($order_parts)) {
+			$_SESSION['sort_data'][$page]   = $validated;
+			$_SESSION['sort_string'][$page] = 'ORDER BY ' . implode(', ', $order_parts);
+			return $_SESSION['sort_string'][$page];
+		}
+
+		unset($_SESSION['sort_data'][$page]);
+		unset($_SESSION['sort_string'][$page]);
 	}
 
-	if (strpos($sort_column, '(') === false && strpos($sort_column, '`') === false) {
-		$del = '`';
-	} else {
-		$del = '';
-	}
-
-	/**
-	 * Allowlist: identifiers are word chars and dots only; anything else could escape
-	 * backtick quoting.  Validate direction to prevent SQL keyword injection.
-	 */
-	if (!preg_match('/^[a-zA-Z][a-zA-Z0-9_.()]*$/', $sort_column)) {
-		$sort_column = '';
-	}
-
-	if (isset($_SESSION['sort_string'][$page])) {
-		return $_SESSION['sort_string'][$page];
-	} elseif ($sort_column != '') {
-		return 'ORDER BY ' . $del . implode($del . '.' . $del, explode('.', $sort_column)) . $del . ' ' . $sort_dir;
+	if ($sort_column != '') {
+		return cacti_build_sort_fragment($sort_column, $sort_dir) !== ''
+			? 'ORDER BY ' . cacti_build_sort_fragment($sort_column, $sort_dir)
+			: '';
 	} else {
 		return '';
 	}
@@ -893,10 +918,12 @@ function validate_redirect_url($url = '', $default = 'index.php') {
 	}
 
 	$url = trim($url);
+	$url = str_replace('\\', '/', $url);
 
 	// Decode the url to make it readable if encoded
 	if (is_urlencoded($url)) {
 		$url = urldecode($url);
+		$url = str_replace('\\', '/', $url);
 	}
 
 	// reject URLs with protocol schemes (external redirects, javascript:, data:)
@@ -929,8 +956,29 @@ function validate_redirect_url($url = '', $default = 'index.php') {
 		return $default;
 	}
 
-	// Prevent referring off site
-	$ref_host = parse_url($url, PHP_URL_HOST);
+	$parsed = parse_url($url);
+	if ($parsed === false) {
+		return $default;
+	}
+
+	$ref_host = isset($parsed['host']) ? $parsed['host'] : null;
+	$ref_user = isset($parsed['user']) ? $parsed['user'] : null;
+	$ref_pass = isset($parsed['pass']) ? $parsed['pass'] : null;
+	$ref_port = isset($parsed['port']) ? $parsed['port'] : null;
+	$ref_scheme = isset($parsed['scheme']) ? strtolower($parsed['scheme']) : null;
+
+	if ($ref_user !== null || $ref_pass !== null) {
+		return $default;
+	}
+
+	if ($ref_scheme !== null && !in_array($ref_scheme, array('http', 'https'), true)) {
+		return $default;
+	}
+
+	if ($ref_scheme !== null && $ref_host === null) {
+		return $default;
+	}
+
 	$srv_host = null;
 
 	/* Prefer SERVER_NAME (set by server config) over HTTP_HOST (client-supplied)
@@ -941,16 +989,37 @@ function validate_redirect_url($url = '', $default = 'index.php') {
 		$srv_host = preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST']);
 	}
 
-	if ($ref_host === null || ($srv_host !== null && strtolower($ref_host) === strtolower($srv_host))) {
-		$ref_path  = parse_url($url, PHP_URL_PATH) ?: '';
-		$ref_query = parse_url($url, PHP_URL_QUERY);
+	if ($ref_host !== null) {
+		if ($srv_host === null || strtolower($ref_host) !== strtolower($srv_host)) {
+			return $default;
+		}
+	}
 
-		$safe = sanitize_uri($ref_path . ($ref_query !== null ? '?' . $ref_query : ''));
+	if ($ref_port !== null) {
+		if (!isset($_SERVER['SERVER_PORT']) || (string)$ref_port !== (string)$_SERVER['SERVER_PORT']) {
+			return $default;
+		}
+	}
 
-		return $safe;
-	} else {
+	$ref_path  = isset($parsed['path']) ? $parsed['path'] : '';
+	$ref_query = isset($parsed['query']) ? $parsed['query'] : null;
+
+	if ($ref_path !== '') {
+		if (strpos($ref_path, '//') === 0) {
+			return $default;
+		}
+
+		if ($ref_path[0] !== '/' && strpos($ref_path, ':') !== false) {
+			return $default;
+		}
+	}
+
+	$safe = sanitize_uri($ref_path . ($ref_query !== null ? '?' . $ref_query : ''));
+	if ($safe === '' || strpos($safe, '//') === 0) {
 		return $default;
 	}
+
+	return $safe;
 }
 
 /**

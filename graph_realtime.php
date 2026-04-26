@@ -471,4 +471,3 @@ $sizes = array(
 	</form>
 </body>
 </html>
-

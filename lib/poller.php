@@ -295,15 +295,7 @@ function file_escaped($file) {
  * @return (int) 1 if the file exists otherwise 0
  */
 function file_exists_2gb($filename) {
-	global $config;
-
-	$rval = 0;
-	if ($config['cacti_server_os'] != 'win32') {
-		system("test -f $filename", $rval);
-		return ($rval == 0);
-	} else {
-		return 0;
-	}
+	return @file_exists($filename);
 }
 
 /**
