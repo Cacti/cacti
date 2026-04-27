@@ -45,9 +45,6 @@ jobs:
           extensions: mbstring, intl, json, openssl, curl, xml
           coverage: none
 
-      - name: Composer install
-        run: composer install --prefer-dist --no-progress --no-interaction
-
       - name: Install test runner (Pest) scoped to tests/
         working-directory: tests
         run: composer install --no-interaction --no-progress --prefer-dist
@@ -69,9 +66,6 @@ jobs:
           php-version: '7.4'
           extensions: mbstring, intl, json, openssl, curl, xml
           coverage: none
-
-      - name: Composer install
-        run: composer install --prefer-dist --no-progress --no-interaction
 
       - name: Install test runner (Pest) scoped to tests/
         working-directory: tests
