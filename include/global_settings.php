@@ -505,7 +505,7 @@ $settings = array(
 		),
 		'content_security_policy_script' => array(
 			'method' => 'drop_array',
-			'friendly_name' => __('Content-Security Allow Unsafe JavaScript eval() calls'),
+			'friendly_name' => __('Content-Security Script Policy'),
 			'description' => __('Controls the script-src CSP policy.  Nonce modes require every plugin-emitted inline script and style to call CactiSecureHeaders::getNonceAttribute(); without it, those scripts will be blocked by the browser.'),
 			'default' => '',
 			'array' => array(

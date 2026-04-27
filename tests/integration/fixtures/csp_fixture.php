@@ -37,14 +37,6 @@ if (!function_exists('read_config_option')) {
 	}
 }
 
-/* Passthrough html_escape() so the fixture does not have to pull in
- * lib/functions.php (which would drag in the whole Cacti bootstrap). */
-if (!function_exists('html_escape')) {
-	function html_escape($str) {
-		return htmlspecialchars((string)$str, ENT_QUOTES, 'UTF-8');
-	}
-}
-
 CactiSecureHeaders::emitHeaders();
 
 /* Exercise the "calling emitHeaders twice in the same request is safe"

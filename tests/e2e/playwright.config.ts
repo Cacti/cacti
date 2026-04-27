@@ -1,10 +1,9 @@
 import { defineConfig, devices } from '@playwright/test';
 
 /*
- * The E2E stack (docker-compose bringing up PHP+Apache+MariaDB) lands in
- * tranche C. Until then, these tests are skipped by default (see
- * tests/*.spec.ts). When the stack exists, point E2E_BASE_URL at it and
- * remove the skip markers.
+ * The E2E stack (docker-compose bringing up PHP+Apache+MariaDB) is managed
+ * externally. Point E2E_BASE_URL at that stack when it is available; if the
+ * stack is not running, the suite will fail fast with a connection error.
  */
 
 const baseURL = process.env.E2E_BASE_URL ?? 'http://localhost:8080';
