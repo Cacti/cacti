@@ -1116,6 +1116,19 @@ function html_create_list($form_data, $column_display, $column_id, $form_previou
 	}
 }
 
+/**
+ * Sanifizes html to remove harmful content
+ *
+ * @param string $string The string to be sanifized
+ *
+ * @return string The sanitized string
+ */
+function html_purify($string) {
+	$purifier = new HTMLPurifier();
+
+	return $purifier->purify($string);
+}
+
 /* html_escape_request_var - sanitizes a request variable for display
    @arg $string - string the request variable to escape
    @returns $new_string - the escaped request variable to be returned. */
