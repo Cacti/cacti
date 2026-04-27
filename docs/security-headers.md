@@ -70,11 +70,14 @@ if (class_exists('CactiSecureHeaders') && CactiSecureHeaders::isNonceMode()) {
 The `class_exists` check keeps plugin code compatible with Cacti versions that
 predate the `CactiSecureHeaders` class.
 
-In `nonce-report` mode, set `content_security_alternate_sources` to include
-the report endpoint. The reports are POSTed to `/cacti/csp_report.php`
-(root-relative path), which accepts `application/csp-report` or
-`application/json` bodies up to 16 KB. The endpoint logs each violation via
-`cacti_log()` using the `CSP-REPORT` facility.
+In `nonce-report` mode, configure CSP violation reporting via the
+`content_security_report_uri` setting (which drives the `report-uri`
+directive). `content_security_alternate_sources` controls source lists
+like `script-src`, `style-src`, and `img-src`; it does not affect where
+violation reports are sent. Reports are POSTed to `/cacti/csp_report.php`
+by default (root-relative path), which accepts `application/csp-report`
+or `application/json` bodies up to 16 KB. The endpoint logs each violation
+via `cacti_log()` using the `CSP-REPORT` facility.
 
 The public API for nonce handling:
 
@@ -129,8 +132,7 @@ location /cacti/ {
 
 Don't. Put the JavaScript in an external file under
 `include/themes/<theme>/` or `include/js/` and load it via
-`get_md5_include_js($path)` (which now emits `integrity="sha384-..."` for
-SRI automatically).
+`get_md5_include_js($path)`.
 
 If an inline tag is genuinely unavoidable, attach a nonce:
 
