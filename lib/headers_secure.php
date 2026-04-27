@@ -32,13 +32,43 @@ class CactiSecureHeaders {
 	 */
 	public static function getNonce() {
 		static $nonce = null;
-		if ($nonce === null) {
-			if (function_exists('random_bytes')) {
-				$nonce = rtrim(strtr(base64_encode(random_bytes(18)), '+/', '-_'), '=');
-			} else {
-				$nonce = rtrim(strtr(base64_encode(openssl_random_pseudo_bytes(18)), '+/', '-_'), '=');
+		if ($nonce !== null) {
+			return $nonce;
+		}
+
+		$bytes = false;
+
+		/* Preferred: CSPRNG via random_bytes(). Throws on entropy failure. */
+		if (function_exists('random_bytes')) {
+			try {
+				$bytes = random_bytes(18);
+			} catch (\Exception $e) {
+				if (function_exists('cacti_log')) {
+					cacti_log('CSP nonce generation via random_bytes() failed: ' . $e->getMessage(), false, 'SYSTEM');
+				}
 			}
 		}
+
+		/* Second choice: OpenSSL CSPRNG. */
+		if ($bytes === false && function_exists('openssl_random_pseudo_bytes')) {
+			$bytes = openssl_random_pseudo_bytes(18);
+			if ($bytes === false) {
+				if (function_exists('cacti_log')) {
+					cacti_log('CSP nonce generation via openssl_random_pseudo_bytes() failed', false, 'SYSTEM');
+				}
+			}
+		}
+
+		/* Last resort: non-CSPRNG. Acceptable only when both CSPRNGs are
+		 * unavailable; warns operators so they can investigate the environment. */
+		if ($bytes === false) {
+			if (function_exists('cacti_log')) {
+				cacti_log('CSP nonce falling back to non-CSPRNG source; check PHP entropy configuration', false, 'SYSTEM');
+			}
+			$bytes = substr(hash('sha256', uniqid(mt_rand(), true), true), 0, 18);
+		}
+
+		$nonce = rtrim(strtr(base64_encode($bytes), '+/', '-_'), '=');
 		return $nonce;
 	}
 
