@@ -24,6 +24,7 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
+require_once(CACTI_PATH_LIBRARY . '/CactiProcess.php');
 chdir('..');
 
 if (POLLER_ID > 1) {
@@ -256,7 +257,24 @@ function upgrade_database() : void {
 							$return_var = 0;
 							$output     = [];
 
-							exec('php ' . CACTI_PATH_PLUGINS . '/' . $pname . '/database_upgrade.php --type=large --force-ver=' . $old, $output, $return_var);
+							/* $pname comes from the plugin table; reject anything that isn't a plain
+							 * directory name before splicing it into a path. The directory_upgrade.php
+							 * filename and --type=large are constants. --force-ver carries the
+							 * previous semver string. */
+							if (!preg_match('/^[a-zA-Z0-9_-]+$/', $pname)) {
+								cacti_log("WARNING: Plugin $pname has an unsafe directory name; skipping upgrade script.", true, 'UPGRADE');
+
+								continue;
+							}
+
+							$result      = CactiProcess::run([
+								'php',
+								CACTI_PATH_PLUGINS . '/' . $pname . '/database_upgrade.php',
+								'--type=large',
+								'--force-ver=' . $old,
+							], ['expected_exit_codes' => range(0, 255)]);
+							$output      = $result->outputLines();
+							$return_var  = $result->exitCode();
 
 							if ($return_var == 0) {
 								print implode(PHP_EOL, $output) . PHP_EOL;

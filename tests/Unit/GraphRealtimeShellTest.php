@@ -13,31 +13,22 @@
 */
 
 /*
- * Tests for command injection hardening in graph_realtime.php.
+ * Tests for command-injection hardening in graph_realtime.php.
  *
- * grv('local_graph_id') was interpolated into shell_exec via sprintf without
- * escaping. The fix casts to (int), uses cacti_escapeshellcmd for the PHP
- * binary, and cacti_escapeshellarg for the script path.
+ * History: grv('local_graph_id') used to be interpolated into a shell_exec
+ * string via sprintf without escaping. The original fix wrapped values in
+ * cacti_escapeshellcmd / cacti_escapeshellarg. The current fix routes the
+ * spawn through CactiProcess::run([...]) in array-mode argv, which removes
+ * the shell entirely and makes interpretation of metacharacters impossible.
+ *
+ * These tests assert on the structural invariants that close the bug, not
+ * on a specific escaping idiom. Either escapeshellarg-style or array-argv
+ * style satisfies the contract.
  */
 
 $graphRealtimePath = __DIR__ . '/../../graph_realtime.php';
 
-// --- graph_realtime.php: shell escaping for poller invocation ---
-
-test('graph_realtime.php uses cacti_escapeshellcmd for PHP binary', function () use ($graphRealtimePath) {
-	$contents = file_get_contents($graphRealtimePath);
-
-	expect($contents)->toContain("cacti_escapeshellcmd(read_config_option('path_php_binary')");
-});
-
-test('graph_realtime.php uses cacti_escapeshellarg for poller_realtime script path', function () use ($graphRealtimePath) {
-	$contents = file_get_contents($graphRealtimePath);
-
-	expect($contents)->toContain('cacti_escapeshellarg(CACTI_PATH_BASE');
-	expect($contents)->toContain('poller_realtime.php');
-});
-
-test('graph_realtime.php casts local_graph_id to int before shell_exec', function () use ($graphRealtimePath) {
+test('graph_realtime.php casts local_graph_id to int', function () use ($graphRealtimePath) {
 	$contents = file_get_contents($graphRealtimePath);
 
 	expect($contents)->toMatch('/\(int\)\s+gfrv\s*\(\s*[\'"]local_graph_id[\'"]\s*\)/');
@@ -47,4 +38,17 @@ test('graph_realtime.php does not pass raw grv local_graph_id to sprintf for she
 	$contents = file_get_contents($graphRealtimePath);
 
 	expect($contents)->not->toMatch('/sprintf\s*\([^)]*grv\s*\(\s*[\'"]local_graph_id[\'"]\s*\)/');
+});
+
+test('graph_realtime.php does not invoke shell_exec for the poller spawn', function () use ($graphRealtimePath) {
+	$contents = file_get_contents($graphRealtimePath);
+
+	expect($contents)->not->toContain('shell_exec(');
+});
+
+test('graph_realtime.php spawns the poller through CactiProcess in array-argv mode', function () use ($graphRealtimePath) {
+	$contents = file_get_contents($graphRealtimePath);
+
+	expect($contents)->toContain('CactiProcess::run');
+	expect($contents)->toContain('poller_realtime.php');
 });

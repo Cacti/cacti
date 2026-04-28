@@ -1,4 +1,3 @@
-#!/usr/bin/env php
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -23,44 +22,5 @@
  +-------------------------------------------------------------------------+
 */
 
-ini_set('output_buffering', 'Off');
-
-require(__DIR__ . '/../include/cli_check.php');
-
-require_once(CACTI_PATH_LIBRARY . '/utility.php');
-require_once(CACTI_PATH_LIBRARY . '/CactiProcess.php');
-
-ini_set('max_execution_time', '0');
-ini_set('memory_limit', '-1');
-
-// process calling arguments
-$parms = $_SERVER['argv'];
-array_shift($parms);
-
-$php_binary = read_config_option('path_php_binary');
-
-cacti_log('WARNING: Deprecated script push_out_hosts.php. Please use rebuild_poller_cache.php.', false, 'PUSHOUT');
-
-if (in_array('-v', $parms, true) || in_array('-V', $parms, true) || in_array('--version', $parms, true)) {
-	// exception for github tests
-	print 'Cacti Repopulate poller cache Tool, Version ' . CACTI_VERSION . ' ' . COPYRIGHT_YEARS . PHP_EOL;
-} else {
-	print 'WARNING: Deprecated script push_out_hosts.php. Please use rebuild_poller_cache.php.' . PHP_EOL;
-
-	// Pass through with no shell interpretation; deprecated wrapper just
-	// forwards argv to the real script. runStreaming() emits child stderr
-	// to STDERR internally, matching the prior passthru() behaviour. We
-	// also intentionally exit 0 like the original passthru() call did,
-	// so existing cron jobs keep their exit-code expectations.
-	$argv_forward = array_merge([$php_binary, CACTI_PATH_CLI . '/rebuild_poller_cache.php'], $parms);
-
-	CactiProcess::runStreaming(
-		$argv_forward,
-		['timeout' => null, 'expected_exit_codes' => range(0, 255)],
-		static function ($line) {
-			print $line . PHP_EOL;
-		}
-	);
-
-	exit(0);
+class CactiProcessException extends \RuntimeException {
 }

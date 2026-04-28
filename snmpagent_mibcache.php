@@ -46,15 +46,18 @@ if (file_exists($path_mibcache_lock) && is_writable($path_mibcache_lock)) {
 }
 
 // start background caching process if not running
-$php        = cacti_escapeshellcmd(read_config_option('path_php_binary'));
-$extra_args = ' ' . cacti_escapeshellarg('./snmpagent_mibcachechild.php');
+$php        = read_config_option('path_php_binary');
+
+/* TODO: CactiProcess::run is a foreground/run-to-completion wrapper, so it
+ * cannot replace this detached background-fork pattern. The argv list is
+ * forwarded to exec_background(), which escapes each element via
+ * cacti_escapeshellarg, eliminating the concat-with-shell-string pattern even
+ * though the final spawn still goes through /bin/sh on POSIX (start on Windows).
+ * A streaming-detached helper on CactiProcess would be the long-term fix. */
+$child_argv = ['./snmpagent_mibcachechild.php'];
 
 while (true) {
-	if (cacti_strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-		popen('start "CactiSNMPCacheChild" /I ' . $php . ' ' . $extra_args, 'r');
-	} else {
-		exec($php . ' ' . $extra_args . ' > /dev/null &');
-	}
+	exec_background($php, $child_argv);
 
 	sleep(30 - time() % 30);
 }
