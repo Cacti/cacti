@@ -142,6 +142,50 @@ location /cacti/ {
 }
 ```
 
+## Testing CSP under plugin load
+
+The Playwright harness in `tests/e2e/` brings up Cacti with two third-party
+plugins from the Cacti project preinstalled — `plugin_thold` and
+`plugin_monitor` — and walks each plugin's admin pages with
+`content_security_policy_script=nonce-report`. Any inline `<script>` tag
+a plugin emits without a request nonce produces a violation report to
+`<url_path>/csp_report.php`; the harness captures those reports through a
+Playwright network listener and fails the test with the violating directive
+and source file named. Inline `<style>` tags and inline style attributes
+are not covered by this nonce reporting because the policy keeps
+`'unsafe-inline'` on `style-src` (style XSS is a much narrower attack
+surface and jQuery `.css()` and the legacy inline `style=""` attributes
+across Cacti pages depend on it).
+
+Plugin sources are cloned into the PHP image at build time via the
+`PLUGIN_THOLD_REPO`, `PLUGIN_THOLD_REF`, `PLUGIN_MONITOR_REPO`, and
+`PLUGIN_MONITOR_REF` build args. Defaults track `develop-1.2.x` on both
+plugins. The container entrypoint copies the cloned trees into
+`plugins/<dir>` and seeds `plugin_config` rows with `status=1` (installed,
+not active). Status 1 is enough for `plugins.php?plugin=<dir>` to render
+the plugin's UI hooks, which is where most CSP-relevant inline tags
+surface; full activation is intentionally not done because thold and
+monitor's install hooks reach into rrdtool and poller paths the harness
+does not seed.
+
+To add another plugin to the matrix:
+
+1. Extend `tests/e2e/Dockerfile` with a `git clone` for the plugin into
+   `/opt/cacti-plugins/<dir>` plus matching `ARG` lines so CI can pin the
+   ref.
+2. Pass the build args from `tests/e2e/docker-compose.yml`.
+3. Add a `plugin_config` insert and a stage-from-image copy in
+   `tests/e2e/entrypoint.sh`.
+4. Add a `PluginWalk` entry to `tests/e2e/tests/csp-plugins.spec.ts`
+   listing the URLs the spec should walk. Start with
+   `/plugins.php?plugin=<dir>`; add plugin-specific pages once you confirm
+   they render with the harness's seeded state.
+
+The harness scopes plugin coverage to "admin index loads with no CSP
+violations" rather than full feature flows. A plugin that activates
+cleanly under harness seeding can graduate to a deeper walk by adding more
+URLs to its `PluginWalk.pages` array.
+
 ## Adding a new inline script
 
 Don't. Put the JavaScript in an external file under

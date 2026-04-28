@@ -31,6 +31,15 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        # Pinning is intentionally loose; CI overrides via
+        # `docker compose build --build-arg PLUGIN_*_REF=<sha>` when a
+        # specific commit is needed. Public Cacti plugin repos clone over
+        # HTTPS without auth.
+        PLUGIN_THOLD_REPO: ${PLUGIN_THOLD_REPO:-https://github.com/Cacti/plugin_thold.git}
+        PLUGIN_THOLD_REF: ${PLUGIN_THOLD_REF:-develop-1.2.x}
+        PLUGIN_MONITOR_REPO: ${PLUGIN_MONITOR_REPO:-https://github.com/Cacti/plugin_monitor.git}
+        PLUGIN_MONITOR_REF: ${PLUGIN_MONITOR_REF:-develop-1.2.x}
     container_name: cacti-e2e-php
     depends_on:
       mariadb:
