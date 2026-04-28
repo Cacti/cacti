@@ -159,3 +159,34 @@ echo '</script>';
 ```
 
 The nonce rotates per request; do not cache its value.
+
+## Recovery from a broken CSP configuration
+
+If `nonce` enforcing mode breaks the UI badly enough that the Settings page
+itself is unreachable, restore the default policy directly in the database:
+
+```sql
+UPDATE settings SET value='' WHERE name='content_security_policy_script';
+```
+
+That sets the policy back to the legacy `'unsafe-inline'` posture every Cacti
+install has run on for years. No restart or cache flush is required; the next
+request reads the new value through `read_config_option()`.
+
+The same pattern works for `content_security_alternate_sources` and
+`content_security_report_uri` if those settings end up with values that
+prevent normal page rendering:
+
+```sql
+UPDATE settings SET value='' WHERE name IN (
+    'content_security_policy_script',
+    'content_security_alternate_sources',
+    'content_security_report_uri'
+);
+```
+
+Operators rolling out nonce mode for the first time should run `nonce-report`
+for at least a week before flipping to enforcing `nonce`. The report-only
+mode produces violation reports without blocking content, which gives a clean
+inventory of every inline tag that would fail under enforcement; that
+inventory is the migration backlog.
