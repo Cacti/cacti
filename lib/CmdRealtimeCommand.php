@@ -33,32 +33,26 @@ use Symfony\Component\Console\Output\OutputInterface;
  * beyond a count check; poller_id was used directly in shell_exec via
  * proc_open. This Command keeps the positional-arg interface so existing
  * cron/shell callers continue to work unchanged, but the values are now
- * coerced through filter_var FILTER_VALIDATE_INT before they touch the
- * process or query.
+ * validated before they touch the process or query.
  */
 #[AsCommand(name: 'realtime', description: 'Poll a graph for realtime data')]
 class CmdRealtimeCommand extends CactiCommand {
 	protected function configure() : void {
 		$this
-			->addArgument('poller-id', InputArgument::REQUIRED, 'Data Collector (poller) id')
+			->addArgument('poller-id', InputArgument::REQUIRED, 'Realtime poller token')
 			->addArgument('graph-id', InputArgument::REQUIRED, 'Local graph id to poll')
 			->addArgument('interval', InputArgument::REQUIRED, 'Polling interval in seconds');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output) : int {
-		// Accept poller-id >= 0. The realtime caller in graph_realtime.php
-		// passes a session-derived value that historically intvals down to
-		// 0 in some workflows; rejecting 0 here would break that path. The
-		// downstream code reads from the pollers table by id; an id that
-		// does not match any row simply produces no work, which is safe.
-		$poller_id = $this->validateInt($input, 'poller-id', 0);
+		$poller_id = $this->validatePollerToken((string) $input->getArgument('poller-id'));
 		$graph_id  = $this->validateInt($input, 'graph-id', 1);
 		$interval  = $this->validateInt($input, 'interval', 1);
 
 		// In the test harness PHP_TESTING is set and the bootstrap is skipped,
 		// so the legacy collection flow below would explode. Bail out clean.
 		if (defined('PHP_TESTING')) {
-			$output->writeln(sprintf('OK realtime poller_id=%d graph_id=%d interval=%d', $poller_id, $graph_id, $interval));
+			$output->writeln(sprintf('OK realtime poller_id=%s graph_id=%d interval=%d', $poller_id, $graph_id, $interval));
 
 			return self::SUCCESS;
 		}
@@ -127,12 +121,12 @@ class CmdRealtimeCommand extends CactiCommand {
 				2 => ['pipe', 'w'],
 			];
 
-			// poller_id is now a validated int, so escapeshellarg is enough.
+			// poller_id is now a validated token, so escapeshellarg is enough.
 			$cmd = cacti_escapeshellcmd(read_config_option('path_php_binary'))
 				. ' -q '
 				. cacti_escapeshellarg(CACTI_PATH_BASE . '/script_server.php')
 				. ' realtime '
-				. cacti_escapeshellarg((string) $poller_id);
+				. cacti_escapeshellarg($poller_id);
 
 			$cactiphp            = proc_open($cmd, $cactides, $pipes);
 			$using_proc_function = is_resource($cactiphp);
@@ -268,5 +262,13 @@ class CmdRealtimeCommand extends CactiCommand {
 		}
 
 		return null;
+	}
+
+	private function validatePollerToken(string $poller_id) : string {
+		if (!preg_match('/^(?:[0-9]+|[A-Fa-f0-9]{64})$/', $poller_id)) {
+			throw new \InvalidArgumentException(sprintf('Value for "poller-id" must be a numeric legacy id or 64-character session token, got %s.', var_export($poller_id, true)));
+		}
+
+		return $poller_id;
 	}
 }

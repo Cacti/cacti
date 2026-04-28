@@ -47,7 +47,21 @@ test('realtime succeeds with valid positional arguments', function () {
 	expect($tester->getDisplay())->toContain('OK realtime poller_id=1 graph_id=42 interval=5');
 });
 
-test('realtime rejects non-integer poller-id with a clear error', function () {
+test('realtime succeeds with session token poller-id', function () {
+	$tester = makeRealtimeTester();
+	$poller_id = str_repeat('a', 64);
+
+	$tester->execute([
+		'poller-id' => $poller_id,
+		'graph-id'  => '42',
+		'interval'  => '5',
+	]);
+
+	$tester->assertCommandIsSuccessful();
+	expect($tester->getDisplay())->toContain('OK realtime poller_id=' . $poller_id . ' graph_id=42 interval=5');
+});
+
+test('realtime rejects malformed poller-id with a clear error', function () {
 	$tester = makeRealtimeTester();
 
 	expect(fn () => $tester->execute([
