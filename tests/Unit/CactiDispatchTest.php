@@ -32,6 +32,14 @@
 
 $source = file_get_contents(__DIR__ . '/../../lib/cacti_dispatch.php');
 
+/* file_get_contents() returns false when the file is missing or
+ * unreadable; coerce to an empty string here so each test can rely on
+ * $source being a string and the dedicated load-test below still flags
+ * the regression with a clear failure. */
+if ($source === false) {
+	$source = '';
+}
+
 test('cacti_dispatch source loads as a string', function () use ($source) {
 	expect($source)->toBeString();
 	expect(strlen($source))->toBeGreaterThan(0);

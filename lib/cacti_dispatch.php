@@ -41,12 +41,18 @@
  *
  * @return void
  */
-function cacti_dispatch(array $actions, string $default = '') {
-	$action = get_nfilter_request_var('action');
+function cacti_dispatch(array $actions, string $default = ''): void {
+	$action  = get_nfilter_request_var('action');
 
 	/* Reject array / non-scalar action inputs before using as an offset
-	 * so `?action[]=x` cannot produce a TypeError on isset(). */
+	 * so `?action[]=x` cannot produce a TypeError on isset(). The
+	 * strspn() whitelist further rejects any character outside the
+	 * action-name alphabet so a hostile key cannot reach the table. */
 	if (!is_string($action) || $action === '') {
+		$action = $default;
+	}
+
+	if ($action !== '' && strspn($action, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-') !== strlen($action)) {
 		$action = $default;
 	}
 
@@ -134,7 +140,10 @@ function cacti_dispatch_deny($status = 403) {
 		$status = 403;
 	}
 
-	if (function_exists('raise_ajax_permission_denied')) {
+	$xrw     = isset($_SERVER['HTTP_X_REQUESTED_WITH']) ? (string) $_SERVER['HTTP_X_REQUESTED_WITH'] : '';
+	$is_ajax = defined('AJAX_REQUEST') || cacti_strtolower($xrw) === 'xmlhttprequest';
+
+	if ($is_ajax && function_exists('raise_ajax_permission_denied')) {
 		raise_ajax_permission_denied();
 	}
 
