@@ -39,7 +39,11 @@ test.describe('CSP header shape', () => {
         expect(cspHeader).toContain("base-uri 'self'");
         expect(cspHeader).toContain("form-action 'self'");
         expect(cspHeader).toContain("manifest-src 'self'");
-        expect(cspHeader).toContain('report-uri /cacti/csp_report.php');
+        // The default report-uri is now derived from $url_path so installs
+        // at /, /cacti2, or behind a rewrite still get reports. Assert the
+        // directive is present and points at the expected shim filename
+        // without pinning the leading base path.
+        expect(cspHeader).toMatch(/report-uri\s+\S*csp_report\.php/);
         expect(cspHeader).not.toContain("'unsafe-inline'");
     });
 
