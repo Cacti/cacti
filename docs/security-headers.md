@@ -48,9 +48,23 @@ and styles are handled. It accepts four values:
   the browser reports violations to the configured report URI without blocking
   any content. This mode is useful for testing nonce deployment before
   enforcement.
-- `nonce`: enforcing nonce-based CSP. Every inline `<script>` and `<style>`
-  must include a `nonce` attribute matching the request nonce, or the browser
-  blocks it.
+- `nonce`: enforcing nonce-based CSP. Every inline `<script>` must include a
+  `nonce` attribute matching the request nonce, or the browser blocks it.
+
+In both nonce modes the `script-src` directive also carries `'strict-dynamic'`
+and `'unsafe-eval'`. `'strict-dynamic'` lets a nonced page script transitively
+trust scripts it inserts via DOM manipulation (jQuery `.html()`, `.append()`,
+etc.), which would otherwise fail because injected `<script>` tags don't carry
+a nonce. `'unsafe-eval'` covers jQuery's `globalEval` and `new Function()`
+paths. Without these two keywords most jQuery-driven UIs and Cacti plugins
+break under nonce mode. Browser support: Chrome 52+, Firefox 60+,
+Safari 15.4+.
+
+The `style-src` directive keeps `'unsafe-inline'` in nonce modes because
+jQuery `.css()`, `setAttribute('style', ...)`, and the legacy inline `style=""`
+attributes scattered across Cacti pages all rely on inline-style execution.
+Style XSS is a much narrower attack surface than script XSS; the trade-off is
+intentional and documented.
 
 Plugin authors should check for nonce mode and emit the nonce attribute when
 present:
