@@ -82,7 +82,7 @@ if (get_request_var('action') == 'timeout' || get_request_var('action') == 'disa
 		<div class='versionInfo'>" . __('Version %s', $version) . " | " . COPYRIGHT_YEARS_SHORT . "</div>
 	</div>
 	<div class='logoutRight'></div>
-	<script type='text/javascript'>
+	<script type='text/javascript' " . CactiSecureHeaders::getNonceAttribute() . ">
 	$(function() {
 		if (typeof myRefresh != 'undefined') {
 			clearTimeout(myRefresh);
