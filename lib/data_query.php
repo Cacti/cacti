@@ -2970,7 +2970,9 @@ function data_query_duplicate(int $_data_query_id, string $data_query_name) : in
 
 /**
  * Detect when a multi-row OID walk appears padded with trailing .0 octets and
- * can safely be considered for stripping.
+ * can safely be considered for stripping. The final safety check parses the
+ * candidate stripped OIDs and requires unique indexes, so single-.0 padding
+ * can be repaired without accepting collisions.
  *
  * @param array  $indexes            Associative array of OID => value.
  * @param string $index_parse_regexp Default last-octet index regexp.
@@ -2980,30 +2982,44 @@ function oid_index_should_strip_trailing_zero_padding(array $indexes, string $in
 		return false;
 	}
 
-	$test_indexes            = [];
-	$all_end_with_zero       = true;
-	$has_multi_trailing_zero = false;
+	$test_indexes      = [];
+	$all_end_with_zero = true;
 
 	foreach ($indexes as $oid => $value) {
 		if (preg_match($index_parse_regexp, $oid, $matches)) {
 			$test_indexes[$oid] = $matches[1];
+		} else {
+			return false;
 		}
 
 		if (!preg_match('/(?:\.0)+$/', $oid)) {
 			$all_end_with_zero = false;
 		}
-
-		if (preg_match('/(?:\.0){2,}$/', $oid)) {
-			$has_multi_trailing_zero = true;
-		}
 	}
 
 	$unique = array_unique(array_values($test_indexes));
 
-	return $all_end_with_zero
-		&& $has_multi_trailing_zero
-		&& cacti_sizeof($unique) === 1
-		&& $unique[0]            === '0';
+	if (!$all_end_with_zero || cacti_sizeof($unique) !== 1 || $unique[0] !== '0') {
+		return false;
+	}
+
+	$stripped = oid_index_strip_trailing_zero_padding($indexes);
+
+	if ($stripped === $indexes) {
+		return false;
+	}
+
+	$stripped_indexes = [];
+
+	foreach (array_keys($stripped) as $oid) {
+		if (!preg_match($index_parse_regexp, $oid, $matches)) {
+			return false;
+		}
+
+		$stripped_indexes[] = $matches[1];
+	}
+
+	return cacti_sizeof(array_unique($stripped_indexes)) === cacti_sizeof($stripped_indexes);
 }
 
 /**
@@ -3014,15 +3030,12 @@ function oid_index_should_strip_trailing_zero_padding(array $indexes, string $in
  * so scalar OIDs (single-row walks and custom-regex walks) are never touched.
  *
  * Detection is intentionally conservative: stripping is only attempted when all
- * OIDs end in .0 and at least one OID ends in repeated .0.0 padding, which
- * avoids touching common single-.0 index patterns.
+ * OIDs currently resolve to index 0, every OID ends in .0, and the stripped
+ * OIDs parse to a unique index set.
  *
- * Residual risk: a multi-row walk where every legitimate index ends in .0.0
- * (e.g., IP-valued table indexes for a subnet ending in .0.0, such as
- * 192.168.0.0) will match the heuristic. Full mitigation requires tightening
- * the detection regex to (?:\.0){2,}$ and a collision-free resolve across all
- * indexes; the collision check below catches the common sub-case but cannot
- * distinguish padded zeros from legitimate trailing .0.0 index components.
+ * Residual risk: a multi-row walk where every legitimate index ends in .0 and
+ * stripping still yields unique indexes can match the heuristic. Operators can
+ * avoid auto-detection for those walks by configuring oid_index_parse.
  *
  * @param array $indexes Associative array of OID => value from an SNMP walk.
  *

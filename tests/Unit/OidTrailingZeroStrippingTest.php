@@ -50,24 +50,33 @@ describe('OID trailing zero stripping', function () {
 				->and($unique[0])->toBe('0');
 		})->with('trailing zero OIDs');
 
-		it('only enables stripping when at least one OID has multi trailing zeros', function () use ($defaultRegex) {
-			$oids = [
-				'.1.3.6.1.4.1.2636.3.39.1.8.1.1.1.1.1.84.114.117.115.116.0.0.0'         => 'Trust',
-				'.1.3.6.1.4.1.2636.3.39.1.8.1.1.1.1.1.85.110.116.114.117.115.117.0.0.0' => 'Untrust',
-			];
+			it('enables stripping when multi-zero padding resolves to unique indexes', function () use ($defaultRegex) {
+				$oids = [
+					'.1.3.6.1.4.1.2636.3.39.1.8.1.1.1.1.1.84.114.117.115.116.0.0.0'         => 'Trust',
+					'.1.3.6.1.4.1.2636.3.39.1.8.1.1.1.1.1.85.110.116.114.117.115.117.0.0.0' => 'Untrust',
+				];
 
-			expect(oid_index_should_strip_trailing_zero_padding($oids, $defaultRegex))->toBeTrue();
+				expect(oid_index_should_strip_trailing_zero_padding($oids, $defaultRegex))->toBeTrue();
+			});
+
+			it('enables stripping when single-zero padding resolves to unique indexes', function () use ($defaultRegex) {
+				$oids = [
+					'.1.2.3.10.0' => 'a',
+					'.1.2.3.20.0' => 'b',
+				];
+
+				expect(oid_index_should_strip_trailing_zero_padding($oids, $defaultRegex))->toBeTrue();
+			});
+
+			it('does not enable stripping when stripped indexes collide', function () use ($defaultRegex) {
+				$oids = [
+					'.1.2.3.0'   => 'first',
+					'.1.2.3.0.0' => 'second',
+				];
+
+				expect(oid_index_should_strip_trailing_zero_padding($oids, $defaultRegex))->toBeFalse();
+			});
 		});
-
-		it('does not enable stripping when all OIDs end with a single .0', function () use ($defaultRegex) {
-			$oids = [
-				'.1.2.3.10.0' => 'a',
-				'.1.2.3.20.0' => 'b',
-			];
-
-			expect(oid_index_should_strip_trailing_zero_padding($oids, $defaultRegex))->toBeFalse();
-		});
-	});
 
 	describe('stripping via oid_index_strip_trailing_zero_padding()', function () use ($defaultRegex) {
 		it('strips trailing .0 octets from a padded multi-row walk', function () use ($defaultRegex) {
@@ -112,19 +121,16 @@ describe('OID trailing zero stripping', function () {
 				->and(array_unique($indexes))->toHaveCount(3);
 		});
 
-		/* These cases exercise oid_index_strip_trailing_zero_padding() in
-		   isolation. Real callers gate it behind oid_index_should_strip_trailing_zero_padding(),
-		   which requires at least one OID with two or more trailing .0 octets;
-		   the single-.0 case below would never reach the helper in production
-		   but documents the helper's identity-of-stripping behaviour for any
-		   caller that invokes it directly. */
-		dataset('padded strip cases', [
-			'helper strips single .0 when called directly (gated off in production)' => [
-				['.1.3.6.1.4.1.2636.3.39.1.8.1.1.1.1.1.84.0'           => 'a',
-				 '.1.3.6.1.4.1.2636.3.39.1.8.1.1.1.1.1.85.0'           => 'b'],
-				['.1.3.6.1.4.1.2636.3.39.1.8.1.1.1.1.1.84'             => 'a',
-				 '.1.3.6.1.4.1.2636.3.39.1.8.1.1.1.1.1.85'             => 'b'],
-			],
+			/* These cases exercise oid_index_strip_trailing_zero_padding() in
+			   isolation. Real callers gate it behind oid_index_should_strip_trailing_zero_padding(),
+			   which also requires the stripped OIDs to parse to unique indexes. */
+			dataset('padded strip cases', [
+				'helper strips single .0' => [
+					['.1.3.6.1.4.1.2636.3.39.1.8.1.1.1.1.1.84.0'           => 'a',
+					 '.1.3.6.1.4.1.2636.3.39.1.8.1.1.1.1.1.85.0'           => 'b'],
+					['.1.3.6.1.4.1.2636.3.39.1.8.1.1.1.1.1.84'             => 'a',
+					 '.1.3.6.1.4.1.2636.3.39.1.8.1.1.1.1.1.85'             => 'b'],
+				],
 			'multiple trailing zeros' => [
 				['.1.3.6.1.4.1.2636.3.39.1.8.1.1.1.1.1.84.114.0.0.0'   => 'a',
 				 '.1.3.6.1.4.1.2636.3.39.1.8.1.1.1.1.1.85.110.0.0.0'   => 'b'],
