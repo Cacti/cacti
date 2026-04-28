@@ -3039,11 +3039,20 @@ function oid_index_strip_trailing_zero_padding(array $indexes): array {
 		$stripped_oid = preg_replace('/(?:\.0)+$/', '', $oid);
 
 		if (isset($stripped[$stripped_oid])) {
-			// Stripping would merge two distinct OIDs — bail out entirely.
+			/* Stripping would merge two distinct OIDs into one key,
+			   silently dropping a row. Bail out and keep originals. */
 			return $indexes;
 		}
 
 		$stripped[$stripped_oid] = $value;
+	}
+
+	/* Defence-in-depth: if any row was lost between the input and the
+	   stripped map (collisions the isset() guard above did not catch,
+	   e.g. via type juggling on numeric string keys), return originals
+	   rather than silently dropping rows. */
+	if (cacti_sizeof($stripped) !== cacti_sizeof($indexes)) {
+		return $indexes;
 	}
 
 	return $stripped;

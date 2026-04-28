@@ -89,9 +89,9 @@ describe('OID trailing zero stripping', function () {
 		});
 
 		it('produces unique last-octet indexes after stripping', function () use ($defaultRegex) {
-			// Trust   -> ...116   (last octet 116)
-			// Untrust -> ...117   (last octet 117)
-			// DMZ     -> ...90    (last octet 90)
+			// Trust   -> ASCII T,r,u,s,t (84,114,117,115,116) -> last octet 116
+			// Untrust -> ASCII U,n,t,r,u,s,t (85,110,116,114,117,115,117) -> last octet 117
+			// DMZ     -> ASCII D,M,Z (68,77,90) -> last octet 90
 			$oids = [
 				'.1.3.6.1.4.1.2636.3.39.1.8.1.1.1.1.1.84.114.117.115.116.0.0.0'         => 'Trust',
 				'.1.3.6.1.4.1.2636.3.39.1.8.1.1.1.1.1.85.110.116.114.117.115.117.0.0.0' => 'Untrust',
@@ -100,20 +100,26 @@ describe('OID trailing zero stripping', function () {
 
 			$stripped = oid_index_strip_trailing_zero_padding($oids);
 
-			$indexes = [];
+			// Sanity: stripping must preserve row count so no row is lost.
+			expect($stripped)->toHaveCount(count($oids));
 
-			foreach ($stripped as $oid => $value) {
-				if (preg_match($defaultRegex, $oid, $matches)) {
-					$indexes[] = $matches[1];
-				}
-			}
+			// Extract last-octet indexes directly from the stripped keys.
+			$indexes = array_map(function ($oid) use ($defaultRegex) {
+				return preg_match($defaultRegex, $oid, $matches) ? $matches[1] : null;
+			}, array_keys($stripped));
 
 			expect($indexes)->toBe(['116', '117', '90'])
-				->and(array_unique($indexes))->toBe(['116', '117', '90']);
+				->and(array_unique($indexes))->toHaveCount(3);
 		});
 
+		/* These cases exercise oid_index_strip_trailing_zero_padding() in
+		   isolation. Real callers gate it behind oid_index_should_strip_trailing_zero_padding(),
+		   which requires at least one OID with two or more trailing .0 octets;
+		   the single-.0 case below would never reach the helper in production
+		   but documents the helper's identity-of-stripping behaviour for any
+		   caller that invokes it directly. */
 		dataset('padded strip cases', [
-			'single trailing zero' => [
+			'helper strips single .0 when called directly (gated off in production)' => [
 				['.1.3.6.1.4.1.2636.3.39.1.8.1.1.1.1.1.84.0'           => 'a',
 				 '.1.3.6.1.4.1.2636.3.39.1.8.1.1.1.1.1.85.0'           => 'b'],
 				['.1.3.6.1.4.1.2636.3.39.1.8.1.1.1.1.1.84'             => 'a',
@@ -140,23 +146,32 @@ describe('OID trailing zero stripping', function () {
 				'.1.3.6.1.2.1.2.2.1.1.3' => 'lo0',
 			];
 
-			// No .0 padding detected — function returns originals unchanged
+			// No .0 padding detected; function returns originals unchanged.
 			$result = oid_index_strip_trailing_zero_padding($oids);
 
 			expect($result)->toBe($oids);
 		});
 
-		it('does not strip when only one index exists', function () {
-			// The > 1 guard in query_snmp_host prevents calling the helper for
-			// single-row walks. Verify the function itself still returns the
-			// input unchanged (identity behaviour, no collision possible).
+		it('does not strip when only one index exists', function () use ($defaultRegex) {
+			// The cacti_sizeof($indexes) <= 1 guard in the helper short-circuits
+			// for single-row walks. The detection helper must also report false
+			// so query_snmp_host never invokes the strip helper. Both the strip
+			// helper and the detection helper are exercised here so the guard
+			// cannot regress unnoticed.
 			$oids = [
 				'.1.3.6.1.4.1.2636.3.39.1.8.1.1.1.1.1.84.0.0.0' => 'Trust',
 			];
 
 			$result = oid_index_strip_trailing_zero_padding($oids);
 
-			expect($result)->toBe($oids);
+			// Strip helper is identity for a single-row input, even one
+			// padded with multiple .0 octets.
+			expect($result)
+				->toBe($oids)
+				->and(array_keys($result))->toBe(array_keys($oids));
+
+			// Detection helper rejects single-row walks regardless of padding.
+			expect(oid_index_should_strip_trailing_zero_padding($oids, $defaultRegex))->toBeFalse();
 		});
 
 		it('does not strip when a zero index is legitimate (scalar OID)', function () use ($defaultRegex) {
@@ -169,7 +184,7 @@ describe('OID trailing zero stripping', function () {
 
 			$result = oid_index_strip_trailing_zero_padding($oids);
 
-			// Input equals output — the .0 is preserved.
+			// Input equals output; the .0 is preserved.
 			expect($result)->toBe($oids);
 
 			$indexes = [];
@@ -193,7 +208,7 @@ describe('OID trailing zero stripping', function () {
 
 			$result = oid_index_strip_trailing_zero_padding($oids);
 
-			// Collision detected — originals returned unchanged.
+			// Collision detected; originals returned unchanged.
 			expect($result)->toBe($oids);
 		});
 
