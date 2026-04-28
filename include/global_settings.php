@@ -22,6 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 $dir = dir(CACTI_PATH_INCLUDE . '/themes/');
 
 // Work around issue where phpstan is not detecting globals
@@ -184,14 +186,20 @@ $settings['path'] = [
 		'description'   => __('The path to your snmpwalk binary.'),
 		'method'        => 'filepath',
 		'file_type'     => 'binary',
-		'max_length'    => '255'
+		'max_length'    => '255',
+		'constraints'   => [
+			fn () => new Assert\Length(min: 1, max: 255),
+		],
 	],
 	'path_snmpget' => [
 		'friendly_name' => __('snmpget Binary Path'),
 		'description'   => __('The path to your snmpget binary.'),
 		'method'        => 'filepath',
 		'file_type'     => 'binary',
-		'max_length'    => '255'
+		'max_length'    => '255',
+		'constraints'   => [
+			fn () => new Assert\Length(min: 1, max: 255),
+		],
 	],
 	'path_snmpbulkwalk' => [
 		'friendly_name' => __('snmpbulkwalk Binary Path'),
@@ -219,14 +227,22 @@ $settings['path'] = [
 		'description'   => __('The path to the rrdtool binary.'),
 		'method'        => 'filepath',
 		'file_type'     => 'binary',
-		'max_length'    => '255'
+		'max_length'    => '255',
+		'constraints'   => [
+			fn () => new Assert\NotBlank(),
+			fn () => new Assert\Length(min: 1, max: 255),
+		],
 	],
 	'path_php_binary' => [
 		'friendly_name' => __('PHP Binary Path'),
 		'description'   => __('The path to your PHP binary file (may require a php recompile to get this file).'),
 		'method'        => 'filepath',
 		'file_type'     => 'binary',
-		'max_length'    => '255'
+		'max_length'    => '255',
+		'constraints'   => [
+			fn () => new Assert\NotBlank(),
+			fn () => new Assert\Length(min: 1, max: 255),
+		],
 	],
 	'path_fping' => [
 		'friendly_name' => __('FPing Binary Path'),
@@ -1001,7 +1017,11 @@ $settings['snmp'] = [
 		'method'        => 'textbox',
 		'default'       => '500',
 		'max_length'    => '10',
-		'size'          => '5'
+		'size'          => '5',
+		'constraints'   => [
+			fn () => new Assert\Regex(pattern: '/^\d+$/', message: __('must be a positive integer (milliseconds).')),
+			fn () => new Assert\Range(min: 1, max: 600000),
+		],
 	],
 	'snmp_retries' => [
 		'friendly_name' => __('Retries'),
@@ -1009,7 +1029,11 @@ $settings['snmp'] = [
 		'method'        => 'textbox',
 		'default'       => '3',
 		'max_length'    => '10',
-		'size'          => '5'
+		'size'          => '5',
+		'constraints'   => [
+			fn () => new Assert\Regex(pattern: '/^\d+$/', message: __('must be a non-negative integer.')),
+			fn () => new Assert\Range(min: 0, max: 100),
+		],
 	],
 	'snmp_bulk_walk_size' => [
 		'friendly_name' => __('Bulkwalk Fetch Size'),
@@ -1388,6 +1412,11 @@ $settings['visual'] = [
 		'default'       => CACTI_PATH_CACHE . '/realtime/',
 		'max_length'    => 255,
 		'size'          => 40,
+		'constraints'   => [
+			fn () => new Assert\NotBlank(),
+			fn () => new Assert\Regex(pattern: '#^([A-Za-z]:\\\\|/)#', message: __('must be an absolute path.')),
+			fn () => new Assert\Length(max: 255),
+		],
 	],
 	'rrdtool_header' => [
 		'friendly_name' => __('RRDtool Graph Options'),
@@ -1527,6 +1556,15 @@ $settings['poller'] = [
 		'method'        => 'drop_array',
 		'default'       => 300,
 		'array'         => $poller_intervals,
+		// Choices derive from $poller_intervals (keys are interval seconds).
+		// Both string and int forms are accepted because $_POST values arrive
+		// as strings while the canonical keys are int.
+		'constraints'   => [
+			fn () => new Assert\Choice(choices: array_merge(
+				array_keys($GLOBALS['poller_intervals']),
+				array_map('strval', array_keys($GLOBALS['poller_intervals']))
+			)),
+		],
 	],
 	'cron_interval' => [
 		'friendly_name' => __('Cron/Daemon Interval'),
@@ -1534,6 +1572,13 @@ $settings['poller'] = [
 		'method'        => 'drop_array',
 		'default'       => 300,
 		'array'         => $cron_intervals,
+		// Choices derive from $cron_intervals (keys are interval seconds).
+		'constraints'   => [
+			fn () => new Assert\Choice(choices: array_merge(
+				array_keys($GLOBALS['cron_intervals']),
+				array_map('strval', array_keys($GLOBALS['cron_intervals']))
+			)),
+		],
 	],
 	'process_leveling' => [
 		'friendly_name' => __('Balance Process Load'),
@@ -2268,6 +2313,13 @@ $settings['mail'] = [
 		'method'        => 'textbox',
 		'default'       => 'localhost',
 		'max_length'    => 255,
+		// NotBlank is intentionally NOT applied: SMTP hostname is only
+		// load-bearing when settings_how is CACTI_MAIL_SMTP. Sites using
+		// PHP's mail() / sendmail can leave this empty without harm.
+		// Length cap is still enforced to keep DB inserts well-formed.
+		'constraints'   => [
+			fn () => new Assert\Length(max: 255),
+		],
 	],
 	'settings_smtp_port' => [
 		'friendly_name' => __('SMTP Port'),
@@ -2275,7 +2327,11 @@ $settings['mail'] = [
 		'method'        => 'textbox',
 		'max_length'    => 255,
 		'default'       => 25,
-		'size'          => 5
+		'size'          => 5,
+		'constraints'   => [
+			fn () => new Assert\Regex(pattern: '/^\d+$/', message: __('must be a positive integer.')),
+			fn () => new Assert\Range(min: 1, max: 65535),
+		],
 	],
 	'settings_smtp_username' => [
 		'friendly_name' => __('SMTP Username'),
@@ -3130,7 +3186,11 @@ $settings_user = [
 			'description'   => __('The default RRA to use in rare occasions.'),
 			'method'        => 'drop_sql',
 			'sql'           => 'SELECT id, name FROM data_source_profiles_rra ORDER BY steps',
-			'default'       => '1'
+			'default'       => '1',
+			'constraints'   => [
+				fn () => new Assert\Regex(pattern: '/^\d+$/', message: __('must be a positive integer id.')),
+				fn () => new Assert\Positive(),
+			],
 		],
 		'default_timespan' => [
 			'friendly_name' => __('Default Timespan'),
