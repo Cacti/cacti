@@ -27,6 +27,7 @@ require_once(CACTI_PATH_LIBRARY . '/import.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
+require_once(CACTI_PATH_LIBRARY . '/CactiMime.php');
 
 // set default action
 set_default_action();
@@ -60,6 +61,19 @@ function form_save() : void {
 		// print '<pre>';print_r($_FILES);print '</pre>';exit;
 		if (($_FILES['import_file']['tmp_name'] != 'none') && ($_FILES['import_file']['tmp_name'] != '')) {
 			// file upload
+
+			// Defense in depth: reject the upload by content-derived MIME before
+			// any extension-based or signature handling sees it. Strict mode
+			// fails closed if libmagic is unavailable.
+			$allowed_mimes = ['application/xml', 'application/x-xml', 'text/xml'];
+
+			if (!CactiMime::validate($_FILES['import_file']['tmp_name'], $allowed_mimes, true)) {
+				raise_message('import_mime_reject', __('The uploaded file was rejected because its detected content type is not an accepted template format.'), MESSAGE_LEVEL_ERROR);
+				header('Location: templates_import.php');
+
+				exit;
+			}
+
 			$fp       = fopen($_FILES['import_file']['tmp_name'],'r');
 			$xml_data = fread($fp,filesize($_FILES['import_file']['tmp_name']));
 			fclose($fp);

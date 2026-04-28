@@ -25,6 +25,7 @@
 require('./include/auth.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
+require_once(CACTI_PATH_LIBRARY . '/CactiMime.php');
 
 $actions = [
 	1 => __('Delete'),
@@ -466,8 +467,15 @@ function profile_validate_upload() : bool {
 			}
 		}
 
-		// check mine type of the uploaded file
-		if ($_FILES['import_file']['type'] != 'application/json') {
+		// Defense in depth: validate by content-derived MIME, not the
+		// browser-supplied $_FILES['type'] field which is spoofable.
+		// libmagic sometimes detects JSON payloads as text/plain depending
+		// on shape (no BOM, leading whitespace, embedded text), so both
+		// application/json and text/plain are accepted; json_decode below
+		// remains the authoritative format check.
+		$allowed_mimes = ['application/json', 'text/plain'];
+
+		if (!CactiMime::validate($_FILES['import_file']['tmp_name'], $allowed_mimes, true)) {
 			raise_message('ife', __('Invalid file extension.'), MESSAGE_LEVEL_ERROR);
 
 			return false;

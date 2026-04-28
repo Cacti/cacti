@@ -28,6 +28,7 @@ require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 require_once(CACTI_PATH_LIBRARY . '/xml.php');
+require_once(CACTI_PATH_LIBRARY . '/CactiMime.php');
 require_once('./include/vendor/phpdiff/Diff.php');
 require_once('./include/vendor/phpdiff/Renderer/Html/Inline.php');
 
@@ -412,6 +413,25 @@ function form_save() : void {
 			($_FILES['import_file']['tmp_name'] != '')) {
 			// file upload
 			$xmlfile = $_FILES['import_file']['tmp_name'];
+
+			// Defense in depth: reject the upload by content-derived MIME before
+			// any extension-based or signature handling sees it. Strict mode
+			// fails closed if libmagic is unavailable; surface that case with
+			// a separate message so the operator knows it is a server-config
+			// problem rather than a bad upload.
+			if (!function_exists('finfo_open')) {
+				raise_message('import_mime_unavailable', __('The uploaded file could not be validated because the PHP fileinfo extension (libmagic) is not available on this server.'), MESSAGE_LEVEL_ERROR);
+				header('Location: package_import.php');
+
+				exit;
+			}
+
+			if (!CactiMime::validate($xmlfile, CactiMime::packageImportMimes())) {
+				raise_message('import_mime_reject', __('The uploaded file was rejected because its detected content type is not an accepted package format.'), MESSAGE_LEVEL_ERROR);
+				header('Location: package_import.php');
+
+				exit;
+			}
 
 			$_SESSION['sess_import_package'] = file_get_contents($xmlfile);
 		} elseif (isset($_SESSION['sess_import_package'])) {

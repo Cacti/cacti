@@ -23,6 +23,7 @@
 */
 
 require('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/CactiMime.php');
 
 $actions = [
 	'1' => __('Delete')
@@ -106,6 +107,21 @@ function form_save() : void {
 	} elseif (isrv('save_component_import')) {
 		if (isset($_FILES['import_file']['tmp_name'])) {
 			if (($_FILES['import_file']['tmp_name'] != 'none') && ($_FILES['import_file']['tmp_name'] != '')) {
+				// Defense in depth: reject the upload by content-derived MIME
+				// before file() touches it. libmagic detects CSV content as
+				// text/csv, application/csv, or text/plain depending on the
+				// payload (header row, delimiter, line endings); all three
+				// are accepted. Strict mode fails closed if libmagic is
+				// unavailable.
+				$allowed_mimes = ['text/csv', 'text/plain', 'application/csv'];
+
+				if (!CactiMime::validate($_FILES['import_file']['tmp_name'], $allowed_mimes, true)) {
+					raise_message('import_mime_reject', __('The uploaded file was rejected because its detected content type is not an accepted CSV format.'), MESSAGE_LEVEL_ERROR);
+					header('Location: color.php?action=import');
+
+					exit;
+				}
+
 				$csv_data   = file($_FILES['import_file']['tmp_name']);
 				$debug_data = color_import_processor($csv_data);
 
