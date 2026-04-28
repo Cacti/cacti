@@ -506,21 +506,14 @@ $settings = array(
 		'content_security_policy_script' => array(
 			'method' => 'drop_array',
 			'friendly_name' => __('Content-Security Script Policy'),
-			'description' => __('Controls the script-src CSP policy.  Nonce modes require every plugin-emitted inline script and style to call CactiSecureHeaders::getNonceAttribute(); without it, those scripts will be blocked by the browser.'),
+			'description' => __('Controls the script-src CSP policy.  Nonce modes require every Cacti plugin that uses inline scripts or styles to call CactiSecureHeaders::getNonceAttribute().  Without it, those scripts will be blocked by the browser.'),
 			'default' => '',
 			'array' => array(
-				'0'            => __('No (unsafe-inline)'),
-				'unsafe-eval'  => __('Allow unsafe-eval'),
-				'nonce-report' => __('Nonce mode (report-only)'),
-				'nonce'        => __('[Pilot] Nonce mode (enforce)'),
+				'0'            => __('Allow Non-Nonced Inline Plugin JavaScript'),
+				'unsafe-eval'  => __('Allow both unsafe-eval and Non-Nonced Inline JavaScript'),
+				'nonce-report' => __('Nonce Mode - Reporting Only'),
+				'nonce'        => __('[Pilot] Nonce Mode - Enforcing'),
 			)
-		),
-		'content_security_report_uri' => array(
-			'friendly_name' => __('CSP Violation Report URI'),
-			'description' => __('URL where browsers POST CSP violation reports in nonce-report and nonce modes. Leave empty to use /cacti/csp_report.php at the installation root. Must contain only safe URL characters.'),
-			'method' => 'textbox',
-			'default' => '',
-			'max_length' => 255,
 		),
 		'content_security_alternate_sources' => array(
 			'friendly_name' => __('Content-Security Alternate Sources'),
@@ -529,6 +522,13 @@ $settings = array(
 			'default' => '',
 			'size' => '100',
 			'max_length' => '255',
+		),
+		'content_security_report_uri' => array(
+			'friendly_name' => __('CSP Violation Report URI'),
+			'description' => __('URL where browsers POST CSP violation reports in nonce-report and nonce modes. Leave empty to use /cacti/csp_report.php at the installation root. Must contain only safe URL characters.'),
+			'method' => 'textbox',
+			'default' => '',
+			'max_length' => 255,
 		),
 		'automation_header' => array(
 			'friendly_name' => __('Automation'),
