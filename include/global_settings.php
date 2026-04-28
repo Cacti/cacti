@@ -510,7 +510,7 @@ $settings = array(
 			'default' => '',
 			'array' => array(
 				'0'            => __('Allow Non-Nonced Inline Plugin JavaScript'),
-				'unsafe-eval'  => __('Allow both Unsafe-Eval and Non-Nonced Inline JavaScript'),
+				'unsafe-eval'  => __('Allow both unsafe-eval and Non-Nonced Inline JavaScript'),
 				'nonce-report' => __('Nonce Mode - Reporting Only'),
 				'nonce'        => __('[Pilot] Nonce Mode - Enforcing'),
 			)
