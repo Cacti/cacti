@@ -506,7 +506,7 @@ $settings = array(
 		'content_security_policy_script' => array(
 			'method' => 'drop_array',
 			'friendly_name' => __('Content-Security Script Policy'),
-			'description' => __('Controls the script-src CSP policy.  Nonce modes require every plugin-emitted inline script and style to call CactiSecureHeaders::getNonceAttribute(); without it, those scripts will be blocked by the browser.'),
+			'description' => __('Controls the script-src CSP policy. In nonce modes, plugin-emitted inline <script> tags must include the attribute returned by CactiSecureHeaders::getNonceAttribute(); without it those scripts are blocked by the browser. Inline <style> tags and inline style attributes remain allowed because the style-src directive keeps unsafe-inline.'),
 			'default' => '',
 			'array' => array(
 				'0'            => __('No (unsafe-inline)'),
@@ -517,7 +517,7 @@ $settings = array(
 		),
 		'content_security_report_uri' => array(
 			'friendly_name' => __('CSP Violation Report URI'),
-			'description' => __('URL where browsers POST CSP violation reports in nonce-report and nonce modes. Leave empty to use /cacti/csp_report.php at the installation root. Must contain only safe URL characters.'),
+			'description' => __('URL where browsers POST CSP violation reports in nonce-report and nonce modes. Leave empty to use <url_path>/csp_report.php (the default is derived from the configured Cacti base URL, so installs at /, /cacti, or any other prefix all resolve correctly). Must contain only safe URL characters.'),
 			'method' => 'textbox',
 			'default' => '',
 			'max_length' => 255,

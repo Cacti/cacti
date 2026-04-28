@@ -88,10 +88,12 @@ In `nonce-report` mode, configure CSP violation reporting via the
 `content_security_report_uri` setting (which drives the `report-uri`
 directive). `content_security_alternate_sources` controls source lists
 like `script-src`, `style-src`, and `img-src`; it does not affect where
-violation reports are sent. Reports are POSTed to `/cacti/csp_report.php`
-by default (root-relative path), which accepts `application/csp-report`
-or `application/json` bodies up to 16 KB. The endpoint logs each violation
-via `cacti_log()` using the `CSP-REPORT` facility.
+violation reports are sent. Reports are POSTed by default to
+`<url_path>/csp_report.php`, where `<url_path>` is the configured Cacti
+base path: `/csp_report.php` for root installs, `/cacti/csp_report.php`
+when `$url_path` is `/cacti/`, and so on. The endpoint accepts
+`application/csp-report` or `application/json` bodies up to 16 KB and
+logs each violation via `cacti_log()` using the `CSP-REPORT` facility.
 
 The public API for nonce handling:
 
