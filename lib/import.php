@@ -649,8 +649,11 @@ function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orpha
 		cacti_log('Processing Files for Preview', false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 	}
 
+	// Resolve allowed bases once; the foreach below only consults these.
 	$allowed_base_scripts  = realpath(CACTI_PATH_BASE . '/scripts');
 	$allowed_base_resource = realpath(CACTI_PATH_BASE . '/resource');
+	$normalized_scripts    = ($allowed_base_scripts === false) ? false : rtrim(str_replace('\\', '/', $allowed_base_scripts),  '/');
+	$normalized_resource   = ($allowed_base_resource === false) ? false : rtrim(str_replace('\\', '/', $allowed_base_resource), '/');
 
 	foreach ($data['files']['file'] as $f) {
 		$name            = $f['name'];
@@ -676,10 +679,8 @@ function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orpha
 
 			// Allow new nested subdirectories, but ensure the first existing ancestor
 			// still resolves within the intended scripts/resource boundary.
-			$target_dir            = dirname($filename);
-			$resolved_dir          = false;
-			$normalized_scripts    = ($allowed_base_scripts === false ? false : rtrim(str_replace('\\', '/', $allowed_base_scripts), '/'));
-			$normalized_resource   = ($allowed_base_resource === false ? false : rtrim(str_replace('\\', '/', $allowed_base_resource), '/'));
+			$target_dir   = dirname($filename);
+			$resolved_dir = false;
 
 			while ($target_dir !== dirname($target_dir)) {
 				$resolved_dir = realpath($target_dir);

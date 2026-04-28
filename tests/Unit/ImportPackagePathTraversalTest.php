@@ -35,6 +35,7 @@ function getImportPackageSource(): string {
 test('import.php boundary guard resolves target dir with realpath', function () {
 	$src = getImportPackageSource();
 	expect($src)->toMatch('/\$resolved_dir\s*=\s*false\s*;/');
+	expect($src)->toMatch('/\$target_dir\s*=\s*dirname\(\$filename\)\s*;/');
 	expect($src)->toMatch('/\$resolved_dir\s*=\s*realpath\(\$target_dir\)/');
 });
 
@@ -174,7 +175,7 @@ test('trailing slash on scripts/ resolves to directory itself which is within bo
 
 test('traversal from scripts/ via ../ to webroot is blocked', function () {
 	$base = makeTempBase();
-	// scripts/../../webroot/evil.php — dirname resolves to $base/webroot, not scripts/.
+	// scripts/../../webroot/evil.php; dirname resolves to $base/webroot, not scripts/.
 	expect(importBoundaryAllowed($base, 'scripts/../../webroot/evil.php'))->toBeFalse();
 	removeTempBase($base);
 });
@@ -217,7 +218,7 @@ test('empty name is blocked', function () {
 
 test('absolute path embedding scripts/ substring is blocked', function () {
 	$base = makeTempBase();
-	// $base . "//tmp/scripts/evil.php" — dirname resolves outside the base.
+	// $base . "//tmp/scripts/evil.php"; dirname resolves outside the base.
 	expect(importBoundaryAllowed($base, '/tmp/scripts/evil.php'))->toBeFalse();
 	removeTempBase($base);
 });
@@ -237,9 +238,10 @@ test('non-existent nested subdirectory under resource/ is allowed when it stays 
 });
 
 test('missing scripts/ directory in base causes scripts/ writes to be blocked', function () {
-	$base = sys_get_temp_dir() . '/cacti_import_noscripts_' . getmypid();
+	// Unique random suffix per test run; avoids collisions on parallel/failed cleanup.
+	$base = sys_get_temp_dir() . '/cacti_import_noscripts_' . bin2hex(random_bytes(4));
 	mkdir($base . '/resource', 0755, true);
-	// No scripts/ dir — realpath($base/scripts) returns false; $in_scripts always false.
+	// No scripts/ dir; realpath($base/scripts) returns false; $in_scripts always false.
 	expect(importBoundaryAllowed($base, 'scripts/file.sh'))->toBeFalse();
 	rmdir($base . '/resource');
 	rmdir($base);
