@@ -22,10 +22,30 @@
  +-------------------------------------------------------------------------+
 */
 
-/* Functions.php provides cacti_log() without dragging in the full session/
- * auth stack that include/global.php would start. This endpoint is
- * intentionally unauthenticated, so we want the lightest possible bootstrap. */
-require_once(__DIR__ . '/functions.php');
+/* This endpoint is unauthenticated and reachable pre-bootstrap, so it
+ * deliberately avoids loading lib/functions.php or include/global.php.
+ * Loading functions.php alone surfaced undefined-$config warnings in
+ * targeted PHP checks. csp_report_log() below writes to PHP's default
+ * error log, falling through to cacti_log() only if a parent caller
+ * already set up $config and that function is available. */
+
+/**
+ * Self-contained logger for the CSP report endpoint. Prefers cacti_log()
+ * when a parent caller has already bootstrapped $config; otherwise writes
+ * to PHP's default error log. Either way the report lands somewhere an
+ * operator can read it without depending on the Cacti DB.
+ */
+function csp_report_log($message) {
+	$message = preg_replace('/[\x00-\x1f\x7f]/', ' ', (string) $message);
+
+	if (function_exists('cacti_log') && isset($GLOBALS['config']['base_path'])) {
+		@cacti_log($message, false, 'CSP-REPORT');
+
+		return;
+	}
+
+	error_log('CACTI CSP-REPORT: ' . $message);
+}
 
 /**
  * Strip log-injection characters from a CSP report field before interpolation.
@@ -145,7 +165,7 @@ $result = csp_report_validate_payload(
 );
 
 if ($result['ok']) {
-	cacti_log($result['summary'], false, 'CSP-REPORT');
+	csp_report_log($result['summary']);
 	http_response_code(204);
 } else {
 	http_response_code(400);
