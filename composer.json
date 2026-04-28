@@ -55,7 +55,8 @@
         "phpseclib/phpseclib": "^3.0",
         "slim/slim": "^4.14",
         "stevenmaguire/oauth2-keycloak": "^6.1.0",
-        "stevenmaguire/oauth2-microsoft": "^2.2"
+        "stevenmaguire/oauth2-microsoft": "^2.2",
+        "symfony/console": "^6.4"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.86",

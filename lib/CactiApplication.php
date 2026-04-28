@@ -22,25 +22,53 @@
  +-------------------------------------------------------------------------+
 */
 
-// Legacy entrypoint kept so poller_realtime.php and any operator cron lines
-// of the form `php cmd_realtime.php POLLER_ID GRAPH_ID INTERVAL` keep working.
-// The actual implementation lives in lib/CmdRealtimeCommand.php; we register
-// it as the default command so the script does not need its own subcommand
-// argument.
+use Symfony\Component\Console\Application;
 
-/* Load the autoloader before cli_check.php so Symfony Console classes
- * resolve even when --help is invoked from an environment without a
- * fully bootstrapped Cacti config (test harness, install). The full
- * Cacti bootstrap is loaded in CactiCommand::initialize() and only
- * fires when the Command actually executes work. */
-require_once(__DIR__ . '/include/vendor/autoload.php');
-require_once(__DIR__ . '/lib/CactiApplication.php');
-require_once(__DIR__ . '/lib/CactiCommand.php');
-require_once(__DIR__ . '/lib/CmdRealtimeCommand.php');
+/**
+ * Single Symfony Console application for every Cacti CLI tool. The legacy
+ * scripts each rolled their own argv parser with subtle differences; routing
+ * them through one Application removes that drift and gives us one place to
+ * add input validation, telemetry, and consistent --help output.
+ */
+class CactiApplication extends Application {
+	public function __construct(?string $version = null) {
+		parent::__construct('Cacti CLI', $version ?? self::resolveVersion());
+	}
 
-$app = new CactiApplication();
-$cmd = new CmdRealtimeCommand();
-$app->add($cmd);
-$app->setDefaultCommand((string) $cmd->getName(), true);
+	/**
+	 * Build a fully wired Application with every known Command registered.
+	 * Used by cli/cacti.php and by the legacy shims that need a one-Command
+	 * Application as their default.
+	 */
+	public static function bootstrap() : self {
+		$app = new self();
 
-exit($app->run());
+		require_once __DIR__ . '/CactiCommand.php';
+		require_once __DIR__ . '/CmdRealtimeCommand.php';
+		require_once __DIR__ . '/SpliceRrdCommand.php';
+
+		$app->add(new CmdRealtimeCommand());
+		$app->add(new SpliceRrdCommand());
+
+		return $app;
+	}
+
+	/**
+	 * Read the version from include/cacti_version, the same source global.php
+	 * uses. Fall back to 'unknown' when the file is missing so the framework
+	 * does not throw before the user sees a real error.
+	 */
+	private static function resolveVersion() : string {
+		$file = __DIR__ . '/../include/cacti_version';
+
+		if (is_file($file)) {
+			$contents = @file_get_contents($file);
+
+			if (is_string($contents) && trim($contents) !== '') {
+				return trim($contents);
+			}
+		}
+
+		return 'unknown';
+	}
+}

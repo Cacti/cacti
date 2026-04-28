@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -22,25 +23,14 @@
  +-------------------------------------------------------------------------+
 */
 
-// Legacy entrypoint kept so poller_realtime.php and any operator cron lines
-// of the form `php cmd_realtime.php POLLER_ID GRAPH_ID INTERVAL` keep working.
-// The actual implementation lives in lib/CmdRealtimeCommand.php; we register
-// it as the default command so the script does not need its own subcommand
-// argument.
+/* Load the autoloader first so Symfony Console classes resolve even
+ * for `list` and `--help`, which must work without a full Cacti
+ * bootstrap (config.php may not exist in test/install environments).
+ * The full bootstrap is loaded in CactiCommand::initialize() and only
+ * fires when a Command actually executes work. */
+require_once(__DIR__ . '/../include/vendor/autoload.php');
+require_once(__DIR__ . '/../lib/CactiApplication.php');
 
-/* Load the autoloader before cli_check.php so Symfony Console classes
- * resolve even when --help is invoked from an environment without a
- * fully bootstrapped Cacti config (test harness, install). The full
- * Cacti bootstrap is loaded in CactiCommand::initialize() and only
- * fires when the Command actually executes work. */
-require_once(__DIR__ . '/include/vendor/autoload.php');
-require_once(__DIR__ . '/lib/CactiApplication.php');
-require_once(__DIR__ . '/lib/CactiCommand.php');
-require_once(__DIR__ . '/lib/CmdRealtimeCommand.php');
-
-$app = new CactiApplication();
-$cmd = new CmdRealtimeCommand();
-$app->add($cmd);
-$app->setDefaultCommand((string) $cmd->getName(), true);
+$app = CactiApplication::bootstrap();
 
 exit($app->run());
