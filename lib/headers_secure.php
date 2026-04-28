@@ -160,6 +160,32 @@ class CactiSecureHeaders {
 		return preg_replace('/[^A-Za-z0-9.:\-*\/ ]/', '', $raw);
 	}
 
+	/**
+	 * Default CSP violation report URI. Derived from $url_path so installs
+	 * at /, /cacti2, or behind a rewriting reverse proxy still point at the
+	 * bundled csp_report.php shim. Falls back to /cacti/csp_report.php only
+	 * when $url_path is unset or unreadable.
+	 *
+	 * The result is always normalised to start with a single '/' and to
+	 * collapse any duplicate path separators introduced by trailing slashes
+	 * in the configured base.
+	 */
+	private static function defaultReportUri() {
+		$base = '';
+		if (isset($GLOBALS['url_path']) && is_string($GLOBALS['url_path']) && $GLOBALS['url_path'] !== '') {
+			$base = $GLOBALS['url_path'];
+		}
+		if ($base === '') {
+			return '/cacti/csp_report.php';
+		}
+		/* Drop trailing slashes; ensure single leading slash. */
+		$base = '/' . ltrim(rtrim($base, '/'), '/');
+		if ($base === '/') {
+			return '/csp_report.php';
+		}
+		return $base . '/csp_report.php';
+	}
+
 	/*
 	 * Mode branching for emitHeaders():
 	 *
@@ -197,17 +223,19 @@ class CactiSecureHeaders {
 			}
 
 			/* Allow operators to configure the violation report endpoint; fall back
-			 * to the Cacti-bundled handler if the option is missing or invalid. */
+			 * to the Cacti-bundled handler if the option is missing or invalid.
+			 * The fallback is derived from $url_path so installs at /, /cacti2,
+			 * or behind a rewrite still point at the right shim. */
 			$cfg_report_uri = read_config_option('content_security_report_uri');
 			if ($cfg_report_uri !== null && $cfg_report_uri !== false && $cfg_report_uri !== '') {
 				/* Reject URIs containing chars that would break the CSP header line. */
 				if (preg_match('/[;\r\n "\s]/', (string)$cfg_report_uri)) {
-					$report_uri = '/cacti/csp_report.php';
+					$report_uri = self::defaultReportUri();
 				} else {
 					$report_uri = (string)$cfg_report_uri;
 				}
 			} else {
-				$report_uri = '/cacti/csp_report.php';
+				$report_uri = self::defaultReportUri();
 			}
 		}
 
