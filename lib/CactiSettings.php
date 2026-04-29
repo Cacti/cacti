@@ -55,6 +55,14 @@ class CactiSettings {
 	/**
 	 * Validate posted settings against their declared Symfony constraints.
 	 *
+	 * CONTRACT: only keys present in $posted_settings run their constraints.
+	 * Unposted keys (an unchecked checkbox, an inactive tab, a multiselect
+	 * that submitted nothing) are silently skipped. NotBlank-style guards
+	 * therefore only fire on fields that always post a value (textboxes,
+	 * required selects). For settings that may legitimately not post, write
+	 * the constraint as a closure that tolerates an empty string, or
+	 * enforce the requirement at the consumer site instead.
+	 *
 	 * @param array $posted_settings      Map of {name => raw posted value} (typically $_POST).
 	 * @param array $settings_definitions Settings definition array as built by global_settings.php.
 	 *                                    Either a flat name=>def map or a tab=>name=>def map; both
