@@ -14,9 +14,12 @@
 
 /*
  * End-to-end checks for the CLI shims. Runs each entrypoint under a fresh PHP
- * process via proc_open and asserts on stdout / exit code so any regression in
- * the bootstrap chain (cli_check.php -> autoload.php -> CactiApplication)
- * shows up here.
+ * process via proc_open and asserts on argv parsing, exit codes, and shim
+ * wiring (autoload.php -> CactiApplication -> Command). The Cacti bootstrap
+ * (cli_check.php) is intentionally skipped by setting CACTI_PHP_TESTING=1 in
+ * the child env because these tests run without a database; the source-scan
+ * test in tests/Unit/CliInvocationTest.php covers that initialize() still
+ * requires cli_check.php on the production code path.
  */
 
 const CLI_INTEGRATION_REPO_ROOT = __DIR__ . '/../..';

@@ -29,3 +29,18 @@ test('session.php uses CACTI_CLI not php_sapi_name', function () {
 		->not->toContain("php_sapi_name() === 'cli'");
 	expect($source)->toContain('CACTI_CLI');
 });
+
+/*
+ * The production code path of CactiCommand::initialize() must require
+ * cli_check.php; the test-only escape hatch (PHP_TESTING constant /
+ * CACTI_PHP_TESTING env var) must not become the only branch.
+ */
+test('CactiCommand::initialize requires cli_check.php on production path', function () {
+	$source = file_get_contents(__DIR__ . '/../../lib/CactiCommand.php');
+	expect($source)->toContain("require_once dirname(__DIR__) . '/include/cli_check.php'");
+});
+
+test('CactiCommand::initialize bypass is gated on PHP_TESTING and CACTI_PHP_TESTING only', function () {
+	$source = file_get_contents(__DIR__ . '/../../lib/CactiCommand.php');
+	expect($source)->toMatch("/defined\\('PHP_TESTING'\\)\\s*\\|\\|\\s*getenv\\('CACTI_PHP_TESTING'\\)/");
+});
