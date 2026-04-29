@@ -367,7 +367,9 @@ function import_package_get_details(string $xmlfile) : array {
 
 	$return = [];
 	$data   = file_get_contents($filename);
-	$xmlget = simplexml_load_string($data);
+	// LIBXML_NONET blocks network entity loading as defense-in-depth even
+	// though libxml2 ≥ 2.9.0 disables external entities by default.
+	$xmlget = simplexml_load_string($data, null, LIBXML_NONET);
 	$pkgarr = xml_to_array($xmlget);
 	$return = $pkgarr['info'];
 
@@ -556,7 +558,7 @@ function import_read_package_data(string $xmlfile, string &$public_key, bool $pr
 
 	cacti_log('Loading Plugin Information from package', false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 
-	$xmlget = simplexml_load_string($xml);
+	$xmlget = simplexml_load_string($xml, null, LIBXML_NONET);
 	$data   = xml_to_array($xmlget);
 
 	if (cacti_sizeof($data)) {
