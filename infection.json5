@@ -1,0 +1,30 @@
+{
+    "$schema": "vendor/infection/infection/resources/schema.json",
+    "source": {
+        "directories": [
+            "lib"
+        ],
+        "excludes": [
+            "vendor"
+        ]
+    },
+    "timeout": 30,
+    "tmpDir": "build/infection",
+    "logs": {
+        "text": "build/infection/infection.log",
+        "html": "build/infection/infection.html",
+        "summary": "build/infection/infection-summary.log",
+        "json": "build/infection/infection.json"
+    },
+    "mutators": {
+        "@default": true
+    },
+    "testFramework": "pest",
+    "testFrameworkOptions": "--filter='Csp|HeadersSecure|HandOff'",
+    "phpUnit": {
+        "configDir": "."
+    },
+    "minMsi": 70,
+    "minCoveredMsi": 80,
+    "filter": "lib/headers_secure.php,lib/csp_report_endpoint.php"
+}
