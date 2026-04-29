@@ -282,7 +282,7 @@ function pages() {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function applyFilter() {
 		strURL  = 'links.php?rows=' + $('#rows').val();
 		strURL += '&filter=' + $('#filter').val();
@@ -598,7 +598,7 @@ function edit_page() {
 	form_save_button('links.php', 'save');
 
     ?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
 		// hide and show the extra console fields when necessary
 		$('#style').change(function() {

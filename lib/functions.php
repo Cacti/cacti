@@ -1052,7 +1052,7 @@ function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVE
  */
 function raise_message_javascript($title, $header, $message) {
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	var mixedReasonTitle = DOMPurify.sanitize(<?php print json_encode($title, JSON_THROW_ON_ERROR);?>);
 	var mixedOnPage      = DOMPurify.sanitize(<?php print json_encode($header, JSON_THROW_ON_ERROR);?>);
 	sessionMessage   = {
@@ -6993,9 +6993,9 @@ function get_md5_include_js($path, $async = false) {
 	}
 
 	if ($async) {
-		return '<script type=\'text/javascript\' src=\'' . $config['url_path'] . $relpath . '?' . get_md5_hash($path) . '\' async></script>' . PHP_EOL;
+		return '<script type=\'text/javascript\' ' . CactiSecureHeaders::getNonceAttribute() . ' src=\'' . $config['url_path'] . $relpath . '?' . get_md5_hash($path) . '\' async></script>' . PHP_EOL;
 	} else {
-		return '<script type=\'text/javascript\' src=\'' . $config['url_path'] . $relpath . '?' . get_md5_hash($path) . '\'></script>' . PHP_EOL;
+		return '<script type=\'text/javascript\' ' . CactiSecureHeaders::getNonceAttribute() . ' src=\'' . $config['url_path'] . $relpath . '?' . get_md5_hash($path) . '\'></script>' . PHP_EOL;
 	}
 }
 

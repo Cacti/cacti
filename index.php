@@ -105,7 +105,7 @@ render_external_links('FRONT');
 api_plugin_hook('console_after');
 
 ?>
-<script type='text/javascript'>
+<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 $(function() {
 	resizeWindow();
 	$(window).resize(function() {

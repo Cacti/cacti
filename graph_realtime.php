@@ -425,7 +425,7 @@ $sizes = array(
 		<div id='image' class='center' style='padding:2px;'></div>
 		<input type='hidden' id='url_path' name='url_path' value='<?php echo $config['url_path'];?>'/>
 		<input type='hidden' id='local_graph_id' name='local_graph_id' value='<?php echo get_request_var('local_graph_id'); ?>'/>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 		var url;
 		var ds_step = 0;

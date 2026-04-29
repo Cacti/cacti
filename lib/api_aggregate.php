@@ -1629,8 +1629,8 @@ function aggregate_get_data_sources(&$graph_array, &$data_sources, &$graph_templ
 			print '</ul></td></tr>';
 
 			?>
-			<script type='text/javascript'>
-			$().ready(function() {
+			<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
+			$(function() {
 				$('#continue').hide();
 				$('#cancel').attr('value', '<?php print __esc('Return');?>');
 			});
@@ -1644,7 +1644,7 @@ function aggregate_get_data_sources(&$graph_array, &$data_sources, &$graph_templ
 			print '</td></tr>';
 
 			?>
-			<script type='text/javascript'>
+			<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 			$(function() {
 				$('#continue').hide();
 				$('#cancel').attr('value', '<?php print __esc('Return');?>');
@@ -1969,7 +1969,7 @@ function draw_aggregate_template_graph_config($aggregate_template_id, $graph_tem
 
 	/* some javascript do dynamically disable non-overridden fields */
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	$(function() {
 		setFieldsDisabled();

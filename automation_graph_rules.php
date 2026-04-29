@@ -412,7 +412,7 @@ function automation_graph_rules_item_edit() {
 	form_save_button('automation_graph_rules.php?action=edit&id=' . get_request_var('id') . '&rule_type='. get_request_var('rule_type'));
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	$(function() {
 		toggle_operation();
@@ -690,7 +690,7 @@ function automation_graph_rules_edit() {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function applySNMPQueryIdChange() {
 		strURL  = 'automation_graph_rules.php?action=qedit';
 		strURL += '&id=' + $('#id').val();
@@ -837,7 +837,7 @@ function automation_graph_rules() {
 					</tr>
 				</table>
 		</form>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 		function applyFilter() {
 			strURL = 'automation_graph_rules.php' +
 				'?status='        + $('#status').val()+

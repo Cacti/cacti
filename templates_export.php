@@ -181,7 +181,7 @@ function export() {
 	html_end_box();
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	var stopTimer;
 
 	$(function() {

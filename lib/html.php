@@ -294,7 +294,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	var refreshMSeconds = <?php print read_user_setting('page_refresh')*1000;?>;
 	var graph_start     = <?php print get_current_graph_start();?>;
 	var graph_end       = <?php print get_current_graph_end();?>;
@@ -387,7 +387,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	var refreshMSeconds = <?php print read_user_setting('page_refresh')*1000;?>;
 	var graph_start     = <?php print get_current_graph_start();?>;
 	var graph_end       = <?php print get_current_graph_end();?>;
@@ -633,9 +633,9 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 			</div>\n";
 
 			if ($return_to != '') {//code as in get_page_list()
-				$nav .= "<script type='text/javascript'>function goto$page_var(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') } else { var url_add=''; }; $.get('" . $base_url . "header=false&" . $page_var . "='+pageNo+url_add).done(function(data) { $('#$return_to').html(data); applySkin(); }); }</script>";
+				$nav .= "<script type='text/javascript' " . CactiSecureHeaders::getNonceAttribute() . ">function goto$page_var(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') } else { var url_add=''; }; $.get('" . $base_url . "header=false&" . $page_var . "='+pageNo+url_add).done(function(data) { $('#$return_to').html(data); applySkin(); }); }</script>";
 			} else {
-				$nav .= "<script type='text/javascript'>function goto{$page_var}(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') } else { var url_add=''; }; document.location='$base_url$page_var='+pageNo+url_add }</script>";
+				$nav .= "<script type='text/javascript' " . CactiSecureHeaders::getNonceAttribute() . ">function goto{$page_var}(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') } else { var url_add=''; }; document.location='$base_url$page_var='+pageNo+url_add }</script>";
 			}
 		}
 	} else {
@@ -1624,7 +1624,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 		</div>
 	</div>
 	<input type='hidden' id='action' name='action' value='actions'>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function setDisabled() {
 		$('tr[id^="line"]').addClass('selectable').prop('disabled', false).removeClass('disabled_row').unbind('click').prop('disabled', false);
@@ -2359,7 +2359,7 @@ function html_spikekill_menu($local_graph_id) {
 
 function html_spikekill_js() {
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	spikeKillOpen = false;
 	$(function() {
 		$(document).click(function() {
@@ -2509,7 +2509,7 @@ function html_common_header($title, $selectedTheme = '') {
 	<meta name='robots' content='noindex,nofollow'>
 	<title><?php print $title; ?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 		var theme='<?php print $selectedTheme;?>';
 		var hScroll=<?php print read_user_setting('enable_hscroll', '') == 'on' ? 'true':'false';?>;
 		var userSettings=<?php print is_view_allowed('graph_settings') ? 'true':'false';?>;

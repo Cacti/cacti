@@ -538,7 +538,7 @@ function domain_edit() {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function initGroupMember() {
 		if ($('#group_require').is(':checked')) {
 			$('#row_group_header').show();
@@ -684,7 +684,7 @@ function domains() {
 				</tr>
 			</table>
 		</form>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 		function applyFilter() {
 			strURL  = 'user_domains.php?rows=' + $('#rows').val();
 			strURL += '&filter=' + $('#filter').val();

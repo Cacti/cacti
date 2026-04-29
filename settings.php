@@ -474,7 +474,7 @@ default:
 	form_save_button('', 'save');
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	var themeChanged   = false;
 	var langRefresh    = false;

@@ -242,7 +242,7 @@ case 'tree':
 	top_graph_header();
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	minTreeWidth = <?php print read_user_setting('min_tree_width');?>;
 	maxTreeWidth = <?php print read_user_setting('max_tree_width');?>;
 	</script>
@@ -328,7 +328,7 @@ case 'tree_content':
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	var graph_start     = <?php print get_current_graph_start();?>;
 	var graph_end       = <?php print get_current_graph_end();?>;
@@ -911,7 +911,7 @@ case 'list':
 		<div style='float:right'><input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('View');?>' title='<?php print __esc('View Graphs');?>' onClick='viewGraphs()'></div>
 	</div>
 	<?php print $report_text;?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	var refreshMSeconds=999999999;
 	var graph_list_array = <?php print json_encode(array_values(array_filter(array_map('intval', explode(',', get_request_var('graph_list'))))));?>;
 

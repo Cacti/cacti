@@ -313,7 +313,7 @@ function template_item_remove_gt_confirm() {
 	form_end();
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$('#continue').click(function(data) {
 		$.post('host_templates.php?action=item_remove_gt', {
 			__csrf_magic: csrfMagicToken,
@@ -376,7 +376,7 @@ function template_item_remove_dq_confirm() {
 	form_end();
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$('#continue').click(function(data) {
 		$.post('host_templates.php?action=item_remove_dq', {
 			__csrf_magic: csrfMagicToken,
@@ -564,7 +564,7 @@ function template_edit() {
 	form_save_button('host_templates.php', 'return');
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	$(function() {
 		$('#cdialog').remove();
@@ -797,7 +797,7 @@ function template() {
 			</table>
 		</form>
 		</td>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 		function applyFilter() {
 			strURL  = 'host_templates.php?header=false';
 			strURL += '&filter='+$('#filter').val();

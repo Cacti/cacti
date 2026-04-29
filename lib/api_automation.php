@@ -94,7 +94,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function applyDeviceFilter() {
 		strURL  = '<?php print $url;?>' + '&host_status=' + $('#host_status').val();
 		strURL += '&host_template_id=' + $('#host_template_id').val();
@@ -378,7 +378,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL  = '<?php print $url;?>' + '&host_id=' + $('#host_id').val();
@@ -665,7 +665,7 @@ function display_new_graphs($rule, $url) {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function applyObjectFilter() {
 		strURL  = '<?php print $url;?>';
 		strURL += '&rows=' + $('#orows').val();
@@ -1024,7 +1024,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL  = '<?php print $url;?>' + '&host_status=' + $('#host_status').val();

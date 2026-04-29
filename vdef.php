@@ -483,7 +483,7 @@ function vdef_item_edit() {
 	);
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
 		$('#type_select').unbind().change(function() {
 			strURL  = 'vdef.php?action=item_edit';
@@ -661,7 +661,7 @@ function vdef_edit() {
 	form_save_button('vdef.php', 'return');
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	$(function() {
 		$('#vdef_edit3').find('.cactiTable').attr('id', 'vdef_item');
@@ -761,7 +761,7 @@ function vdef_filter() {
 				</tr>
 			</table>
 			</form>
-			<script type='text/javascript'>
+			<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 			function applyFilter() {
 				strURL  = 'vdef.php?header=false';

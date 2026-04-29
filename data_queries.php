@@ -665,7 +665,7 @@ function data_query_item_edit() {
 	html_end_box(true, true);
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function assignDataQueryGraphName(init) {
 		if (init == false || $('#name').val() == '') {
 			$('#name').val($('#graph_template_id').children(':selected').text());
@@ -978,7 +978,7 @@ function data_query_item_edit() {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	var graph_template_id_prev=<?php print $item;?>;
 
 	$('.remover').click(function(event) {
@@ -1207,7 +1207,7 @@ function data_query_edit() {
 	form_save_button('data_queries.php', 'return');
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	var snmp_query_id = '<?php print isset($snmp_query['id']) ? $snmp_query['id']:'0';?>';
 	var snmp_query_graph_id = '<?php print isset($snmp_query_graph['id']) ? $snmp_query_graph['id']:'0';?>';
@@ -1334,7 +1334,7 @@ function data_query() {
 				</tr>
 			</table>
 		</form>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 		function applyFilter() {
 			strURL  = 'data_queries.php?header=false';
 			strURL += '&filter='+$('#filter').val();

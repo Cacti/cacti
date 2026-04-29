@@ -419,7 +419,7 @@ function template() {
 				</tr>
 			</table>
 			</form>
-			<script type='text/javascript'>
+			<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 			function applyFilter() {
 				strURL = 'automation_templates.php' +
 					'?filter='     + $('#filter').val() +
@@ -556,7 +556,7 @@ function template() {
 	form_end();
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
         $('#automation_templates2_child').attr('id', 'template_ids');
 

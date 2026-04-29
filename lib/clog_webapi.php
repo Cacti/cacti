@@ -231,7 +231,7 @@ function clog_view_logfile() {
 			<td colspan='2' class='right'>
 				<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='" . __esc('Cancel') . "'>&nbsp
 				<input type='button' class='ui-button ui-corner-all ui-widget' id='pc' name='purge_continue' value='" . __esc('Continue') . "' title='" . __esc('Purge Log') . "'>
-				<script type='text/javascript'>
+				<script type='text/javascript' " . CactiSecureHeaders::getNonceAttribute() . ">
 				$('#pc').click(function() {
 					strURL = location.pathname+'?purge_continue=1&header=false&filename=" . basename($logfile) . "';
 					loadPageNoHeader(strURL);
@@ -619,7 +619,7 @@ function filter($clogAdmin, $selectedFile) {
 				</tr>
 			</table>
 		</form>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 		$(function() {
 			$('#rfilter, #reverse, #refresh, #message_type, #filename, #tail_lines, #matches').unbind().change(function() {
