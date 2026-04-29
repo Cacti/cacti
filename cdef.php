@@ -495,7 +495,7 @@ function item_edit() {
 	);
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
 		$('#type_select').unbind().change(function() {
 			strURL  = 'cdef.php?action=item_edit';
@@ -636,7 +636,7 @@ function cdef_edit() {
 	form_save_button('cdef.php', 'return');
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	$(function() {
 		$('#cdef_edit3').find('.cactiTable').attr('id', 'cdef_item');
@@ -779,7 +779,7 @@ function cdef() {
 				</tr>
 			</table>
 			</form>
-			<script type='text/javascript'>
+			<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 			function applyFilter() {
 				strURL  = 'cdef.php?header=false';

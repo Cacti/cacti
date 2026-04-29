@@ -348,7 +348,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 				</tr>
 			</table>
 		</form>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 		var graph_start     = <?php print get_current_graph_start();?>;
 		var graph_end       = <?php print get_current_graph_end();?>;

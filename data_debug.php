@@ -929,7 +929,7 @@ function debug_view() {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
 		$('.repairme').click(function(event) {
 			event.preventDefault();
@@ -1143,7 +1143,7 @@ function data_debug_filter() {
 				</tr>
 			</table>
 		</form>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 		function applyFilter() {
 			strURL  = 'data_debug.php' +
 				'?host_id=' + $('#host_id').val() +

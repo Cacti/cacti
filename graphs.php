@@ -1077,7 +1077,7 @@ function form_actions() {
 				html_start_box(__('Please confirm'), '100%', '', '3', 'center', '');
 
 				?>
-				<script type='text/javascript'>
+				<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 				function changeTotals() {
 					switch ($('#aggregate_total').val()) {
 						case '<?php print AGGREGATE_TOTAL_NONE;?>':
@@ -1384,7 +1384,7 @@ function item() {
 	draw_graph_items_list($template_item_list, 'graphs_items.php', $anchor_link, (empty($graph_template_id) || empty($host_id) ? false : true));
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
 		$('.deleteMarker, .moveArrow').unbind().click(function(event) {
 			event.preventDefault();
@@ -1737,7 +1737,7 @@ function graph_edit() {
 
 	//Now we need some javascript to make it dynamic
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	var locked         = <?php print ($locked ? 'true':'false');?>;
 	var imageSource    = <?php print json_encode($graph['src']);?>;
@@ -1928,7 +1928,7 @@ function graph_management() {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL  = 'graphs.php' +

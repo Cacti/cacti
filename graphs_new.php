@@ -279,7 +279,7 @@ function host_new_graphs_save($host_id) {
 		kill_session_var('sess_graphs_new_form');
 
 		?>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 		var formData=<?php print $form_data;?>;
 
 		$(function() {
@@ -360,7 +360,7 @@ function graphs() {
 	print '<tr><td class="even">';
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL  = '?graph_type=' + $('#graph_type').val();
@@ -526,7 +526,7 @@ function graphs() {
 		}
 	}
 
-	$script = "<script type='text/javascript'>\nvar created_graphs = new Array();\n";
+	$script = "<script type='text/javascript' " . CactiSecureHeaders::getNonceAttribute() . ">\nvar created_graphs = new Array();\n";
 
 	if (get_request_var('graph_type') < 0) {
 		html_start_box(__('New Graph Template'), '100%', '', '3', 'center', '');

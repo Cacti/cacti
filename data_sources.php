@@ -1306,7 +1306,7 @@ function ds() {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function applyFilter() {
 		strURL  = 'data_sources.php' +
 			'?host_id=' + $('#host_id').val() +

@@ -4644,7 +4644,7 @@ function auth_display_custom_error_message($message) {
 	print '<div class="ui-state-error ui-corner-all" style="width:50%;margin-left:auto;margin-right:auto;margin-top:200px;padding:20px"><p>' . html_escape($message) . '</p><p>' . html_escape($custom_message) . '</p></div>';
 
 	if ($auth_method != 2) {
-		print '<div class="ui-corner-all" style="width:50%;margin:auto;padding:20px"><a href="index.php">' . __('Login Again') . '</a></div><script type="text/javascript">$(function() { $("a").button(); });</script>';
+		print '<div class="ui-corner-all" style="width:50%;margin:auto;padding:20px"><a href="index.php">' . __('Login Again') . '</a></div><script type="text/javascript" ' . CactiSecureHeaders::getNonceAttribute() . '>$(function() { $("a").button(); });</script>';
 	}
 
 	print '</center></body></html>';
@@ -5087,8 +5087,8 @@ function cacti_authorize_resource($user_id, $resource_id, $resource_type) {
 				return true;
 			}
 
-			$owner = db_fetch_cell_prepared('SELECT user_id 
-				FROM reports 
+			$owner = db_fetch_cell_prepared('SELECT user_id
+				FROM reports
 				WHERE id = ?',
 				array($resource_id)
 			);
@@ -5101,9 +5101,9 @@ function cacti_authorize_resource($user_id, $resource_id, $resource_type) {
 				return true;
 			}
 
-			$owner = db_fetch_cell_prepared('SELECT r.user_id 
+			$owner = db_fetch_cell_prepared('SELECT r.user_id
 				FROM reports_items AS ri
-				INNER JOIN reports AS r 
+				INNER JOIN reports AS r
 				ON ri.report_id = r.id
 				WHERE ri.id = ?',
 				array($resource_id)
@@ -5112,8 +5112,8 @@ function cacti_authorize_resource($user_id, $resource_id, $resource_type) {
 			return $owner !== false && $owner !== null && (int) $owner === $user_id;
 
 		case 'graph_tree':
-			$owner = db_fetch_cell_prepared('SELECT user_id 
-				FROM graph_tree 
+			$owner = db_fetch_cell_prepared('SELECT user_id
+				FROM graph_tree
 				WHERE id = ?',
 				array($resource_id)
 			);
@@ -5190,9 +5190,9 @@ function cacti_authorize_is_admin($user_id) {
 		return $admin_cache[$user_id];
 	}
 
-	$is_admin = (bool) db_fetch_cell_prepared('SELECT 1 
-		FROM user_auth_realm 
-		WHERE user_id = ? 
+	$is_admin = (bool) db_fetch_cell_prepared('SELECT 1
+		FROM user_auth_realm
+		WHERE user_id = ?
 		AND realm_id = 1',
 		array($user_id)
 	);

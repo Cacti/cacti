@@ -296,7 +296,7 @@ if (isset($xport_array['data']) && is_array($xport_array['data'])) {
 		print "<tr><td>\n";
 
 		?>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 		$(function() {
 			$('#csvExport').tablesorter({
 				widgets: ['zebra'],

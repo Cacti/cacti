@@ -561,7 +561,7 @@ function filter() {
 				</tr>
 			</table>
 			</form>
-			<script type="text/javascript">
+			<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 			function refreshForm() {
 				strURL = 'rrdcleaner.php?header=false'+
 					'&filter='+$('#filter').val()+

@@ -106,7 +106,7 @@ function manager() {
 	}
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function applyFilter() {
 		strURL  = 'managers.php';
 		strURL += '?filter=' + $('#filter').val();
@@ -307,7 +307,7 @@ function manager_edit() {
 		print '</ul></nav></div>';
 
 		if (read_config_option('legacy_menu_nav') != 'on') { ?>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 		$(function() {
 			$('.subTab').find('a').click(function(event) {
@@ -348,7 +348,7 @@ function manager_edit() {
 			form_save_button('managers.php', 'return');
 
 			?>
-			<script type='text/javascript'>
+			<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 			// Need to set this for global snmpv3 functions to remain sane between edits
 			snmp_security_initialized = false;
@@ -361,7 +361,7 @@ function manager_edit() {
 	}
 
 	?>
-	<script language='javascript' type='text/javascript' >
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
 		$('.tooltip').tooltip({
 			track: true,
@@ -438,7 +438,7 @@ function manager_notifications($id, $header_label) {
 	html_start_box($header_label, '100%', '', '3', 'center', '');
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL  = 'managers.php?action=edit&tab=notifications&id=<?php print $id; ?>';
@@ -685,7 +685,7 @@ function manager_logs($id, $header_label) {
 	html_start_box($header_label, '100%', '', '3', 'center', '');
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter(objForm) {
 		strURL  = '?header=false&severity=' + $('#severity').val();

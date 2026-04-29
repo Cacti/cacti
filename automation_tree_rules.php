@@ -440,7 +440,7 @@ function automation_tree_rules_item_edit() {
 
 	//Now we need some javascript to make it dynamic
 ?>
-<script type='text/javascript'>
+<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 applyHeaderChange();
 toggle_operation();
@@ -651,7 +651,7 @@ function automation_tree_rules_edit() {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	var automationLeafTypeOriginal = $('#leaf_type').val();
 
 	<?php
@@ -859,7 +859,7 @@ function automation_tree_rules() {
 					</tr>
 				</table>
 			</form>
-			<script type='text/javascript'>
+			<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 			function applyFilter() {
 				strURL = 'automation_tree_rules.php' +
 					'?status='+$('#status').val() +

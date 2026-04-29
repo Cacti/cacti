@@ -978,7 +978,7 @@ function tree_edit($partial = false) {
 		print "</td></tr></table>\n";
 
 		?>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 		<?php
 		if ($select_first) {
 			print "var reset=true;\n";
@@ -2080,7 +2080,7 @@ function tree() {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function applyFilter() {
 		strURL  = 'tree.php?rows=' + $('#rows').val();
 		strURL += '&filter=' + $('#filter').val();
@@ -2359,7 +2359,7 @@ function tree() {
 
 	if (get_request_var('sort_column') == 'sequence' && get_request_var('sort_direction') == 'ASC') {
 		?>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 		$(function() {
 			$('#tree2_child').attr('id', 'tree_ids');
 

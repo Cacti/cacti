@@ -313,7 +313,7 @@ if ($auth_method != 0) {
 				<div class='versionInfo'>" . __('Version') . ' ' . $version . " | " . COPYRIGHT_YEARS_SHORT . "</div>
 			</div>
 			<div class='logoutRight'></div>
-			<script type='text/javascript'>
+			<script type='text/javascript'" . CactiSecureHeaders::getNonceAttribute() . "
 			$(function() {
 				$('.loginLeft').css('width',parseInt($(window).width()*0.33)+'px');
 				$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');

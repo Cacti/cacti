@@ -591,7 +591,7 @@ function item_edit() {
 	form_save_button('graph_templates.php?action=template_edit&id=' . get_request_var('graph_template_id'));
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	$(function() {
 		$('#shift').click(function(data) {

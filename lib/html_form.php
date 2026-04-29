@@ -889,7 +889,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 		print "</span>";
 		print "<input type='hidden' id='" . $form_name . "' name='" . $form_name . "' value='" . html_escape($previous_id) . "'>";
 		?>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 		var <?php print $form_name;?>Timer;
 		var <?php print $form_name;?>ClickTimer;
 		var <?php print $form_name;?>Open = false;
@@ -1410,7 +1410,7 @@ function form_end($ajax = true) {
 	print '</form>' . PHP_EOL;
 
 	if ($ajax) { ?>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 		var formArray = [];
 		var changed = false;
 

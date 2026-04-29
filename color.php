@@ -434,7 +434,7 @@ function color_edit() {
 	form_save_button('color.php');
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
 		checkReadonly();
 
@@ -573,7 +573,7 @@ function color() {
 				</tr>
 			</table>
 			</form>
-			<script type='text/javascript'>
+			<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 			function applyFilter() {
 				strURL  = 'color.php?header=false';
 				strURL += '&filter='+$('#filter').val();

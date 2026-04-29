@@ -141,7 +141,7 @@ function grow_dhtml_trees() {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	<?php
 	if (isset_request_var('hyper')) {
 		$path = json_encode(get_tree_path());
@@ -1183,7 +1183,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	html_end_box();
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	var graph_start = <?php print get_current_graph_start();?>;
 	var graph_end   = <?php print get_current_graph_end();?>;

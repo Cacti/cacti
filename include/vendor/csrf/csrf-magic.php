@@ -36,7 +36,7 @@ function csrf_ob_handler($buffer, $flags) {
 		$buffer = preg_replace('#(<form[^>]*method\s*=\s*["\']post["\'][^>]*>)#i', '$1' . $input, $buffer);
 
 		if ($GLOBALS['csrf']['frame-breaker']) {
-			$buffer = str_ireplace('</head>', '<script type="text/javascript">if (top != self) {top.location.href = self.location.href;}</script></head>', $buffer);
+			$buffer = str_ireplace('</head>', '<script type="text/javascript" ' . CactiSecureHeaders::getNonceAttribute() . '>if (top != self) {top.location.href = self.location.href;}</script></head>', $buffer);
 		}
 
 		$js = $GLOBALS['csrf']['rewrite-js'];
@@ -44,14 +44,14 @@ function csrf_ob_handler($buffer, $flags) {
 		if (!empty($js)) {
 			$buffer = str_ireplace(
 				'</head>',
-				'<script type="text/javascript">'.
+				'<script type="text/javascript" ' . CactiSecureHeaders::getNonceAttribute() . '>'.
 					'var csrfMagicToken = "'.$tokens.'";'.
 					'var csrfMagicName = "'.$name.'";</script>'.
-				'<script src="'.$js.'" type="text/javascript"></script></head>',
+				'<script src="'.$js.'" type="text/javascript" ' . CactiSecureHeaders::getNonceAttribute() . '></script></head>',
 				$buffer
 			);
 
-			$script = '<script type="text/javascript">CsrfMagic.end();</script>';
+			$script = '<script type="text/javascript" ' . CactiSecureHeaders::getNonceAttribute() . '>CsrfMagic.end();</script>';
 			$buffer = str_ireplace('</body>', $script . '</body>', $buffer, $count);
 
 			if (!$count) {

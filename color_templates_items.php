@@ -307,7 +307,7 @@ function aggregate_color_item_remove_confirm() {
 	form_end();
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
 		$('#continue').click(function(data) {
 			$.post('color_templates_items.php?action=item_remove', {

@@ -522,7 +522,7 @@ function item() {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
 		$('.deleteMarker, .moveArrow').click(function(event) {
 			event.preventDefault();
@@ -626,7 +626,7 @@ function template_edit() {
 
 	//Now we need some javascript to make it dynamic
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	$(function() {
 		dynamic();
@@ -743,7 +743,7 @@ function template() {
 				</tr>
 			</table>
 		</form>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 		var disabled = true;
 
 		function applyFilter() {

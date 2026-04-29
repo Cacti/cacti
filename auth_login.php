@@ -408,7 +408,7 @@ $selectedTheme = get_selected_theme();
 		<div class='versionInfo'><?php print __('Version %s | %s', $version, COPYRIGHT_YEARS_SHORT);?></div>
 	</div>
 	<div class='loginRight'></div>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	var storage = Storages.localStorage;
 
 	$(function() {

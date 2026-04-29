@@ -211,7 +211,7 @@ function form_automation_snmp_actions() {
 	general_header();
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function goTo(location) {
 		document.location = location;
 	}
@@ -377,7 +377,7 @@ function automation_snmp_item_remove_confirm() {
     form_end();
 
     ?>
-    <script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
     $(function() {
     	$('#continue').click(function(data) {
 			$.post('automation_snmp.php?action=item_remove', {
@@ -465,7 +465,7 @@ function automation_snmp_item_edit() {
 	form_save_button('automation_snmp.php?action=edit&id=' . get_request_var('id'));
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	$(function() {
 		// Need to set this for global snmpv3 functions to remain sane between edits
@@ -600,7 +600,7 @@ function automation_snmp_edit() {
 	form_save_button('automation_snmp.php', 'return');
 
     ?>
-    <script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
     $(function() {
 		$('.cdialog').remove();
 		$('#main').append("<div class='cdialog' id='cdialog'></div>");
@@ -724,7 +724,7 @@ function automation_snmp() {
 		</form>
 		</td>
 	</tr>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function applyFilter() {
 		strURL  = 'automation_snmp.php?header=false';
 		strURL += '&filter='+$('#filter').val();
@@ -840,7 +840,7 @@ function automation_snmp() {
 	form_end();
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function applyFilter() {
 		strURL  = 'automation_snmp.php?header=false&rows=' + $('#rows').val();
 		strURL += strURL + '&filter=' + $('#filter').val();

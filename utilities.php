@@ -908,7 +908,7 @@ function utilities_view_tech() {
 	html_end_box();
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
 		$('#tables').tablesorter({
 			widgets: ['zebra'],
@@ -977,7 +977,7 @@ function utilities_view_user_log() {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function clearFilter() {
 		strURL = urlPath+'utilities.php?action=view_user_log&clear=1&header=false';
 		loadPageNoHeader(strURL);
@@ -1331,7 +1331,7 @@ function utilities_view_logfile() {
 	top_header();
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function purgeLog() {
 		strURL = urlPath+'utilities.php?action=purge_logfile&header=false&filename='+$('#filename').val();
@@ -1678,7 +1678,7 @@ function utilities_view_snmp_cache() {
 	set_page_refresh($refresh);
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL  = urlPath+'utilities.php?host_id=' + $('#host_id').val();
@@ -1974,7 +1974,7 @@ function utilities_view_poller_cache() {
 	set_page_refresh($refresh);
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL  = urlPath+'utilities.php?poller_action=' + $('#poller_action').val();
@@ -2443,7 +2443,7 @@ function boost_display_run_status() {
 	html_start_box(__('Boost Status'), '100%', '', '3', 'center', '');
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL = urlPath+'utilities.php?action=view_boost_status&header=false&refresh=' + $('#refresh').val();
@@ -2932,7 +2932,7 @@ function snmpagent_utilities_run_cache() {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function applyFilter() {
 		strURL  = 'utilities.php?action=view_snmpagent_cache';
 		strURL += '&mib=' + $('#mib').val();
@@ -3087,7 +3087,7 @@ function snmpagent_utilities_run_cache() {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
 		$('.tooltip').tooltip({
 			track: true,
@@ -3176,7 +3176,7 @@ function snmpagent_utilities_run_eventlog(){
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function applyFilter() {
 		strURL  = 'utilities.php?action=view_snmpagent_events';
 		strURL += '&severity=' + $('#severity').val();
@@ -3366,7 +3366,7 @@ function snmpagent_utilities_run_eventlog(){
 
 	?>
 
-	<script type='text/javascript' >
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$('.tooltip').tooltip({
 		track: true,
 		position: { collision: 'flipfit' },

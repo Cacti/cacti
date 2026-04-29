@@ -692,7 +692,7 @@ function poller_edit() {
 	if (isset($poller) && cacti_sizeof($poller)) {
 		if ($poller['id'] > 1) {
 			?>
-			<script type='text/javascript'>
+			<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 			pt = <?php print $pt;?>;
 
 			function showHideRemoteDB() {
@@ -749,7 +749,7 @@ function poller_edit() {
 			<?php
 		} else {
 			?>
-			<script type='text/javascript'>
+			<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 			pt = <?php print $pt;?>;
 
 			$(function() {
@@ -933,7 +933,7 @@ function pollers() {
 				</tr>
 			</table>
 			</form>
-			<script type='text/javascript'>
+			<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 			function applyFilter() {
 				strURL  = 'pollers.php?header=false';
