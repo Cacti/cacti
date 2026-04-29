@@ -97,7 +97,8 @@
           "block-insecure": false
         },
         "allow-plugins": {
-            "pestphp/pest-plugin": true
+            "pestphp/pest-plugin": true,
+            "infection/extension-installer": true
         }
     }
 }
