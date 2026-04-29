@@ -65,6 +65,7 @@
         "pestphp/pest": "^2",
         "pestphp/pest-plugin-drift": "^2.0",
         "composer/xdebug-handler": "^3.0",
+        "infection/infection": "^0.27",
         "rector/rector": "^2.1.2"
     },
     "scripts": {

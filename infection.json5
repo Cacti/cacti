@@ -1,0 +1,22 @@
+{
+  $schema: "https://raw.githubusercontent.com/infection/infection/0.27.x/resources/schema.json",
+  source: {
+    directories: ["lib"],
+    excludes: ["vendor", "tests"]
+  },
+  mutators: {
+    "@default": true,
+    // PHP signature mutations false-positive on type-hinted Symfony args
+    // (Process, ProcessTimedOutException) where parameter types are
+    // load-bearing for the wrapper's contract.
+    "@function_signature": false
+  },
+  testFramework: "pest",
+  // Restrict the runner to the CactiProcess suites so mutation scoring
+  // reflects the PR's source files rather than the whole lib/ tree.
+  testFrameworkOptions: "--filter=CactiProcess",
+  minMsi: 70,
+  minCoveredMsi: 80,
+  logs: { text: "infection-log.txt" },
+  timeout: 30
+}
