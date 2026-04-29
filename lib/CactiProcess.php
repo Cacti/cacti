@@ -93,7 +93,7 @@ class CactiProcess {
 	 * common Cacti use case is a producer that emits records on stdout while
 	 * the parent watches counts/timing.
 	 */
-	public static function runStreaming(array $argv, array $opts, callable $onOutput): int {
+	public static function runStreaming(array $argv, array $opts, callable $onOutput, ?callable $onError = null): int {
 		if (count($argv) === 0) {
 			throw new CactiProcessException('CactiProcess::runStreaming requires a non-empty argv array');
 		}
@@ -106,15 +106,18 @@ class CactiProcess {
 		$err_buffer = '';
 
 		try {
-			$exit = $process->run(static function ($type, $data) use (&$buffer, &$err_buffer, $onOutput) {
+			$exit = $process->run(static function ($type, $data) use (&$buffer, &$err_buffer, $onOutput, $onError) {
 				if ($type === \Symfony\Component\Process\Process::ERR) {
-					// Forward stderr to the parent's STDERR so terminal users see
-					// child diagnostics, matching the prior passthru() behaviour.
-					// Also buffer for inclusion in the exception on non-zero exit.
-					if (defined('STDERR')) {
+					$err_buffer .= $data;
+
+					if ($onError !== null) {
+						$onError($data);
+					} elseif (defined('STDERR')) {
+						// No dedicated handler: mirror to the parent's STDERR so
+						// terminal users see child diagnostics, matching the prior
+						// passthru() behaviour.
 						fwrite(STDERR, $data);
 					}
-					$err_buffer .= $data;
 
 					return;
 				}
@@ -178,10 +181,20 @@ class CactiProcess {
 			throw new CactiProcessException('CactiProcess timeout must be non-negative');
 		}
 
+		// Cast to float so Symfony Process always receives a stable type regardless
+		// of whether the caller passed an int literal or a float.
+		$timeout = $timeout !== null ? (float) $timeout : null;
+
 		$env_opt = $opts['env'] ?? [];
 
 		if (!is_array($env_opt)) {
-			throw new CactiProcessException('CactiProcess env must be an array of env-var names');
+			throw new CactiProcessException('CactiProcess env must be an array of strings');
+		}
+
+		foreach ($env_opt as $key => $name) {
+			if (!is_int($key) || !is_string($name)) {
+				throw new CactiProcessException('CactiProcess env must be an array of strings');
+			}
 		}
 
 		$env = self::resolveEnv($env_opt);
