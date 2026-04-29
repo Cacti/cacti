@@ -7,7 +7,7 @@
 // on the Infection CLI. The thresholds below (minMsi / minCoveredMsi) are
 // the project floor; feature PRs may raise them but should not lower them.
 {
-	$schema: "vendor/infection/infection/resources/schema.json",
+	$schema: "include/vendor/infection/infection/resources/schema.json",
 	source: {
 		directories: ["lib"],
 		excludes: ["vendor", "tests"]
