@@ -110,9 +110,12 @@ test('validate(strict=true) fails closed when finfo functions are unavailable', 
 	}
 });
 
-test('validate accepts the gzipped XML format used by package_import', function () {
+test('packageImportMimes() rejects gzip uploads', function () {
+	// package_import.php has no decompression step. A gz upload would pass
+	// MIME validation but fail downstream with a confusing parse error, so
+	// the allowlist must reject it at the front door.
 	$fx       = cacti_mime_build_fixtures();
 	$detected = CactiMime::detect($fx['gz']);
 	expect($detected)->toBeIn(['application/gzip', 'application/x-gzip']);
-	expect(CactiMime::validate($fx['gz'], ['application/gzip', 'application/x-gzip']))->toBeTrue();
+	expect(CactiMime::validate($fx['gz'], CactiMime::packageImportMimes()))->toBeFalse();
 });

@@ -66,13 +66,16 @@ class CactiMime {
 	 * Allowlist for the package-import upload form. Centralised so the
 	 * production caller and the test suite stay in lockstep.
 	 *
+	 * Cacti package files are either a single XML document or a ZIP that
+	 * the importer extracts in place; gzip is intentionally absent because
+	 * package_import.php has no decompression step and a gz upload would
+	 * pass MIME validation only to fail with a confusing parse error.
+	 *
 	 * @return string[]
 	 */
 	public static function packageImportMimes() : array {
 		return [
 			'application/zip',
-			'application/gzip',
-			'application/x-gzip',
 			'application/xml',
 			'application/x-xml',
 			'text/xml',
