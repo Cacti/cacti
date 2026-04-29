@@ -71,44 +71,32 @@ test('set_auth_cookie fails closed on CSPRNG failure', function () use ($authSou
 		->toBeTrue();
 });
 
-test('auth_display_custom_error_message escapes message with htmlspecialchars', function () use ($authSource) {
+test('auth_display_custom_error_message escapes message with html_escape', function () use ($authSource) {
 	$start = strpos($authSource, 'function auth_display_custom_error_message(');
 	expect($start)->not->toBeFalse();
 
 	$body = substr($authSource, $start, 1500);
-	expect(str_contains($body, 'htmlspecialchars($message'))
-		->toBeTrue();
+	expect(str_contains($body, 'html_escape($message'))
+			->toBeTrue();
 });
 
-test('auth_display_custom_error_message escapes custom_message with htmlspecialchars', function () use ($authSource) {
+test('auth_display_custom_error_message escapes custom_message with html_escape', function () use ($authSource) {
 	$start = strpos($authSource, 'function auth_display_custom_error_message(');
 	expect($start)->not->toBeFalse();
 
 	$body = substr($authSource, $start, 1500);
-	expect(str_contains($body, 'htmlspecialchars($custom_message'))
-		->toBeTrue();
+	expect(str_contains($body, 'html_escape($custom_message'))
+			->toBeTrue();
 });
 
-test('auth_login_redirect blocks protocol-relative open redirect', function () use ($authSource) {
+test('auth_login_redirect uses validate_redirect_url', function () use ($authSource) {
 	$start = strpos($authSource, 'function auth_login_redirect(');
 	expect($start)->not->toBeFalse();
 
 	$body = substr($authSource, $start, 3000);
-	// The fix checks that $referer[1] === '/' to block //evil.com
-	expect(str_contains($body, "\$referer[1] === '/'"))
-		->toBeTrue();
+	expect(str_contains($body, "validate_redirect_url("))
+			->toBeTrue();
 });
-
-test('auth_login_redirect validates referer starts with slash', function () use ($authSource) {
-	$start = strpos($authSource, 'function auth_login_redirect(');
-	expect($start)->not->toBeFalse();
-
-	$body = substr($authSource, $start, 3000);
-	// Must check $referer[0] to ensure path is relative
-	expect(str_contains($body, "\$referer[0] !== '/'"))
-		->toBeTrue();
-});
-
 test('auth_login performs auth transition hardening on successful login', function () use ($authLoginSource) {
 	expect(str_contains($authLoginSource, "cacti_auth_transition((int)\$user['id'], 'login')"))
 		->toBeTrue();

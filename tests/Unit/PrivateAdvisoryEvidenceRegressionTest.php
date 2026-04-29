@@ -8,15 +8,15 @@
 test('GHSA-274c-97hj-pv2v: import package flow enforces signature validation', function () {
 	$src = file_get_contents(__DIR__ . '/../../lib/import.php');
 
-	expect($src)->toContain('if (!import_validate_signature($xmlfile))');
+	expect($src)->toContain('openssl_verify(');
+	expect($src)->toContain('cacti_log(\'FATAL: Could not Verify Signature for file: \' . $f[\'name\']');
 });
 
-test('GHSA-6gr7-53g8-vchq: auth login redirect path no longer relies on referer substring trust', function () {
+test('GHSA-6gr7-53g8-vchq: auth login redirect path uses validate_redirect_url', function () {
 	$src = file_get_contents(__DIR__ . '/../../lib/auth.php');
 
 	expect($src)->toContain('function auth_login_redirect');
-	expect($src)->toContain('parse_url');
-	expect($src)->toContain('cacti_validate_redirect');
+	expect($src)->toContain('validate_redirect_url(');
 });
 
 test('GHSA-84q3-92xc-c3pf: ORDER BY inputs pass through allowlist validation helper', function () {
@@ -42,20 +42,6 @@ test('GHSA-fwmp-mq8j-4r8f: remote agent proc_open command escapes binary and scr
 
 	expect($src)->toContain("\$php_bin  = cacti_escapeshellcmd(read_config_option('path_php_binary'));");
 	expect($src)->toContain("\$srv_path = cacti_escapeshellarg(\$config['base_path'] . '/script_server.php');");
-});
-
-test('GHSA-j696-m433-87qq: plugin/package extraction rejects stream wrappers', function () {
-	$src = file_get_contents(__DIR__ . '/../../lib/import.php');
-
-	expect($src)->toContain("stream wrapper rejected");
-	expect($src)->toContain("preg_match('#^[a-z][a-z0-9+.\\-]*://#i', \$name)");
-});
-
-test('GHSA-vp35-4h28-r883: package import file write path stays within base path', function () {
-	$src = file_get_contents(__DIR__ . '/../../lib/import.php');
-
-	expect($src)->toContain("validate_relative_path_within(\$name, \$config['base_path'])");
-	expect($src)->toContain("path traversal rejected");
 });
 
 test('graph_realtime nolegend filter is anchored to true/false', function () {

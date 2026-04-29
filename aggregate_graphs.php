@@ -1150,7 +1150,8 @@ function aggregate_items() {
 	}
 
 	if (get_request_var('local_graph_ids') != '') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' agi.local_graph_id IN(' . get_request_var('local_graph_ids') . ')';
+		$ids = array_map('intval', explode(',', get_request_var('local_graph_ids')));
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' agi.local_graph_id IN(' . implode(',', $ids) . ')';
 	}
 
 	$sql = "SELECT COUNT(DISTINCT gl.id) AS total

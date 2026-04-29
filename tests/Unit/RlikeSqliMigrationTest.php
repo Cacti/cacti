@@ -44,27 +44,27 @@ test('migrated files do not build RLIKE from double-quoted concat', function () 
 });
 
 test('data_debug.php uses db_qstr_rlike for all rfilter RLIKE clauses', function () use ($dataDebug) {
-	expect($dataDebug)->toContain("dtd.name_cache \" . db_qstr_rlike(get_request_var('rfilter'))")
-		->and($dataDebug)->toContain("dtd.local_data_id \" . db_qstr_rlike(get_request_var('rfilter'))")
-		->and($dataDebug)->toContain("dt.name \" . db_qstr_rlike(get_request_var('rfilter'))");
+	expect($dataDebug)->toMatch('/dtd\.name_cache [\'"] \. db_qstr_rlike\(get_request_var\(\'rfilter\'\)\)/')
+		->and($dataDebug)->toMatch('/dtd\.local_data_id [\'"] \. db_qstr_rlike\(get_request_var\(\'rfilter\'\)\)/')
+		->and($dataDebug)->toMatch('/dt\.name [\'"] \. db_qstr_rlike\(get_request_var\(\'rfilter\'\)\)/');
 });
 
 test('data_sources.php uses db_qstr_rlike and casts dl.id to int', function () use ($dataSources) {
-	expect($dataSources)->toContain("dtd.name_cache \" . db_qstr_rlike(get_request_var('rfilter'))")
-		->and($dataSources)->toContain("dtd.local_data_id \" . db_qstr_rlike(get_request_var('rfilter'))")
-		->and($dataSources)->toContain("dt.name \" . db_qstr_rlike(get_request_var('rfilter'))")
-		->and($dataSources)->toContain("dl.id = \" . (int) get_request_var('rfilter')");
+	expect($dataSources)->toMatch('/dtd\.name_cache [\'"] \. db_qstr_rlike\(get_request_var\(\'rfilter\'\)\)/')
+		->and($dataSources)->toMatch('/dtd\.local_data_id [\'"] \. db_qstr_rlike\(get_request_var\(\'rfilter\'\)\)/')
+		->and($dataSources)->toMatch('/dt\.name [\'"] \. db_qstr_rlike\(get_request_var\(\'rfilter\'\)\)/')
+		->and($dataSources)->toMatch('/dl\.id = [\'"] \. \(int\) get_request_var\(\'rfilter\'\)/');
 });
 
 test('graph_view.php uses db_qstr_rlike for rfilter RLIKE clauses', function () use ($graphView) {
-	$count = substr_count($graphView, "gtg.title_cache \" . db_qstr_rlike(get_request_var('rfilter'))");
+	$count = preg_match_all('/gtg\.title_cache [\'"] \. db_qstr_rlike\(get_request_var\(\'rfilter\'\)\)/', $graphView);
 	expect($count)->toBeGreaterThanOrEqual(2);
 });
 
 test('graphs.php uses db_qstr_rlike and casts gl.id to int', function () use ($graphs) {
-	expect($graphs)->toContain("gtg.title_cache \" . db_qstr_rlike(get_request_var('rfilter'))")
-		->and($graphs)->toContain("gt.name \" . db_qstr_rlike(get_request_var('rfilter'))")
-		->and($graphs)->toContain("gl.id = \" . (int) get_request_var('rfilter')");
+	expect($graphs)->toMatch('/gtg\.title_cache [\'"] \. db_qstr_rlike\(get_request_var\(\'rfilter\'\)\)/')
+		->and($graphs)->toMatch('/gt\.name [\'"] \. db_qstr_rlike\(get_request_var\(\'rfilter\'\)\)/')
+		->and($graphs)->toMatch('/gl\.id = [\'"] \. \(int\) get_request_var\(\'rfilter\'\)/');
 });
 
 test('cli/remove_graphs.php uses db_qstr_rlike for regex list', function () use ($removeGraphs) {
