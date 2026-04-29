@@ -36,15 +36,14 @@ if (!function_exists('cacti_handoff_stub_cacti_log')) {
 	 * buffer directly via cacti_handoff_get_log_buffer().
 	 */
 	function &cacti_handoff_stub_cacti_log(): array {
-		static $buffer = array();
-
 		if (!function_exists('cacti_log')) {
-			eval('function cacti_log($string, $output = false, $environ = "CMDPHP", $level = 0) { '
-				. '\cacti_handoff_record_log_line($string, $environ, $level); '
-				. '}');
+			function cacti_log(string $string, bool $output = false, string $environ = 'CMDPHP', int $level = 0): bool {
+				cacti_handoff_record_log_line($string, $environ, $level);
+				return true;
+			}
 		}
 
-		return $buffer;
+		return cacti_handoff_log_buffer_ref();
 	}
 
 	/*
@@ -128,7 +127,10 @@ if (!function_exists('cacti_handoff_stub_cacti_log')) {
 		}
 
 		foreach ($entries as $name => $contents) {
-			$zip->addFromString((string) $name, (string) $contents);
+			if ($zip->addFromString((string) $name, (string) $contents) === false) {
+				$zip->close();
+				throw new RuntimeException('cacti_handoff_make_zip: failed to add ZIP entry "' . (string) $name . '"');
+			}
 		}
 
 		$zip->close();
