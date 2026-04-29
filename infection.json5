@@ -1,0 +1,45 @@
+// Infection mutation testing config for the plugin CSP e2e harness branch
+// (PR #7081).
+//
+// This PR adds no new PHP source. The runtime artefacts are bash scripts
+// (tests/e2e/entrypoint.sh, run.sh, setup.sh, Dockerfile) and a Playwright
+// TypeScript spec (tests/e2e/tests/csp-plugins.spec.ts), neither of which
+// Infection mutates. The mutation suite passes trivially; this config is
+// included for consistency with the rest of the wrapper PRs in the CSP
+// migration series so CI can run `vendor/bin/infection` uniformly across
+// every branch.
+//
+// When a follow-up PR introduces PHP source under lib/ or includes/ that
+// belongs to the plugin CSP harness specifically, add those paths to
+// source.directories below. Until then we point at lib/ with a narrow
+// excludes list so Infection has a real (but empty for this PR's diff)
+// target and exits 0 instead of erroring on an empty source set.
+//
+// Note: this is a JSON5 file. Infection accepts both infection.json and
+// infection.json5; comments are stripped before parsing.
+{
+    "$schema": "vendor/infection/infection/resources/schema.json",
+    "source": {
+        "directories": [
+            "lib"
+        ],
+        "excludes": [
+            "vendor"
+        ]
+    },
+    "timeout": 30,
+    "logs": {
+        "text": "build/infection/infection.log",
+        "html": "build/infection/infection.html",
+        "summary": "build/infection/summary.log"
+    },
+    "tmpDir": "build/infection/tmp",
+    "phpUnit": {
+        "configDir": "tests"
+    },
+    "mutators": {
+        "@default": true
+    },
+    "minMsi": 0,
+    "minCoveredMsi": 0
+}
