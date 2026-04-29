@@ -1,0 +1,24 @@
+{
+    "source": {
+        "directories": [
+            "lib"
+        ],
+        "excludes": [
+            "vendor",
+            "tests"
+        ]
+    },
+    "mutators": {
+        "@default": true,
+        "@function_signature": false
+    },
+    "filter": "lib/CactiMime.php",
+    "testFramework": "pest",
+    "testFrameworkOptions": "--filter=CactiMime",
+    "minMsi": 70,
+    "minCoveredMsi": 80,
+    "logs": {
+        "text": "infection-log.txt"
+    },
+    "timeout": 30
+}
