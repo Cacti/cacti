@@ -3046,6 +3046,14 @@ function oid_index_strip_trailing_zero_padding(array $indexes): array {
 		return $indexes;
 	}
 
+	/* Partial padding would silently reshape a legitimate walk: only strip
+	   when every OID in the set ends with a .0 segment. */
+	foreach ($indexes as $oid => $value) {
+		if (!preg_match('/(?:\.0)+$/', (string) $oid)) {
+			return $indexes;
+		}
+	}
+
 	$stripped = [];
 
 	foreach ($indexes as $oid => $value) {
