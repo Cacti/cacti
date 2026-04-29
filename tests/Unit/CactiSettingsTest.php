@@ -12,8 +12,6 @@
  +-------------------------------------------------------------------------+
 */
 
-require_once dirname(__DIR__, 2) . '/lib/CactiSettings.php';
-
 use Symfony\Component\Validator\Constraints as Assert;
 
 // =====================================================================
