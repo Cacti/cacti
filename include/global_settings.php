@@ -517,7 +517,7 @@ $settings = array(
 		),
 		'content_security_report_uri' => array(
 			'friendly_name' => __('CSP Violation Report URI'),
-			'description' => __('URL where browsers POST CSP violation reports in nonce-report and nonce modes. Leave empty to use /cacti/csp_report.php at the installation root. Must contain only safe URL characters.'),
+			'description' => __('URL where browsers POST CSP violation reports in nonce-report and nonce modes. Leave empty to use <url_path>/csp_report.php. Must contain only safe URL characters.'),
 			'method' => 'textbox',
 			'default' => '',
 			'max_length' => 255,
