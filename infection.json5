@@ -1,0 +1,39 @@
+{
+    "$schema": "vendor/infection/infection/resources/schema.json",
+    "source": {
+        "directories": [
+            "lib"
+        ]
+    },
+    "timeout": 30,
+    "logs": {
+        "text": "build/infection/infection.log",
+        "html": "build/infection/infection.html",
+        "summary": "build/infection/summary.log",
+        "json": "build/infection/infection.json",
+        "stryker": {
+            "report": "main"
+        }
+    },
+    "tmpDir": "build/infection/tmp",
+    "minMsi": 70,
+    "minCoveredMsi": 80,
+    "mutators": {
+        "@default": true,
+        "global-ignoreSourceCodeByRegex": [
+            "cacti_log\\(.*\\);",
+            "raise_message\\(.*\\);"
+        ],
+        "MethodCallRemoval": {
+            "ignore": [
+                "lib/data_query.php::query_snmp_host"
+            ]
+        }
+    },
+    "testFramework": "pest",
+    "testFrameworkOptions": "--filter='OidTrailingZeroStripping|OidStripHandOff'",
+    "phpUnit": {
+        "configDir": "."
+    },
+    "bootstrap": "tests/Helpers/CactiStubs.php"
+}
