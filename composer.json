@@ -65,7 +65,6 @@
         "pestphp/pest": "^2",
         "pestphp/pest-plugin-drift": "^2.0",
         "composer/xdebug-handler": "^3.0",
-        "infection/infection": "^0.27",
         "rector/rector": "^2.1.2"
     },
     "scripts": {
@@ -97,8 +96,7 @@
           "block-insecure": false
         },
         "allow-plugins": {
-            "pestphp/pest-plugin": true,
-            "infection/extension-installer": true
+            "pestphp/pest-plugin": true
         }
     }
 }

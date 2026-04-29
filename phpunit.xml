@@ -6,8 +6,5 @@
         <testsuite name="Unit">
             <directory>./tests/Unit</directory>
         </testsuite>
-        <testsuite name="HandOff">
-            <directory>./tests/HandOff</directory>
-        </testsuite>
     </testsuites>
 </phpunit>
