@@ -27,12 +27,13 @@ whitelisted CDN. `content_security_policy_script=unsafe-eval` adds
 ## `'unsafe-inline'` status
 
 Both `script-src` and `style-src` still allow `'unsafe-inline'`. Cacti ships
-~180 inline `<script>` / `<style>` tags across the UI. Each has to be
-migrated to either an external file or a `nonce=` attribute before
-`'unsafe-inline'` can come out of the policy. The nonce primitives are in
-place (`CactiSecureHeaders::getNonce()`, `::getNonceAttribute()`); new code
-should use them and existing inline tags get converted as their pages are
-touched.
+~180 inline `<script>` tags across the UI that each need to be migrated to
+either an external file or a `nonce=` attribute before `'unsafe-inline'` can
+come out of `script-src`. Inline `<style>` tags are not part of this migration:
+`style-src` retains `'unsafe-inline'` permanently (see Nonce mode section).
+The nonce primitives are in place (`CactiSecureHeaders::getNonce()`,
+`::getNonceAttribute()`); new code should use them and existing inline
+`<script>` tags get converted as their pages are touched.
 
 ## Nonce mode
 
@@ -88,9 +89,10 @@ In `nonce-report` mode, configure CSP violation reporting via the
 `content_security_report_uri` setting (which drives the `report-uri`
 directive). `content_security_alternate_sources` controls source lists
 like `script-src`, `style-src`, and `img-src`; it does not affect where
-violation reports are sent. Reports are POSTed to `/cacti/csp_report.php`
-by default (root-relative path), which accepts `application/csp-report`
-or `application/json` bodies up to 16 KB. The endpoint logs each violation
+violation reports are sent. Reports are POSTed to `<url_path>/csp_report.php`
+by default, where `<url_path>` is the value of `$url_path` in
+`include/config.php` (root installs use `/csp_report.php`). The endpoint
+accepts `application/csp-report` or `application/json` bodies up to 16 KB and logs each violation
 via `cacti_log()` using the `CSP-REPORT` facility.
 
 The public API for nonce handling:
