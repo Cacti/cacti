@@ -34,7 +34,12 @@
  * Guards run in method -> realm -> object-ACL order. A fail at any
  * guard logs with category 'WEBUI', emits the matching HTTP status
  * (405 for method, 403 for realm/ACL), and returns. A mis-declared
- * ACL (non-callable) denies rather than silently bypasses.
+ * ACL (non-callable) or method (anything other than GET/POST/ANY)
+ * denies rather than silently bypasses.
+ *
+ * NOTE: CSRF is intentionally out of scope. State-changing handlers
+ * still need their own form_security() / nonce check; the method gate
+ * narrows the attack surface but does not replace it.
  *
  * @param array  $actions Action table (see shape above).
  * @param string $default Action name to use when the request has none.
@@ -67,9 +72,18 @@ function cacti_dispatch(array $actions, string $default = ''): void {
 
 	/* Enforce HTTP method. cacti_strtoupper() is preferred over strtoupper()
 	 * so the locale does not affect the comparison, and REQUEST_METHOD is
-	 * defaulted because CLI contexts (tests) do not set it. */
+	 * defaulted because CLI contexts (tests) do not set it. A typoed verb
+	 * (e.g. 'PUT ' or 'gET') would otherwise silently soft-brick the action
+	 * because no real request would match; treat it as misdeclaration. */
 	$method         = isset($entry['method']) ? cacti_strtoupper((string) $entry['method']) : 'ANY';
 	$request_method = isset($_SERVER['REQUEST_METHOD']) ? cacti_strtoupper((string) $_SERVER['REQUEST_METHOD']) : 'GET';
+
+	if (!in_array($method, ['GET', 'POST', 'ANY'], true)) {
+		cacti_log('WARNING: cacti_dispatch: invalid method "' . $method . '" declared for action "' . $action . '"; failing closed', false, 'WEBUI');
+		cacti_dispatch_deny(403);
+
+		return;
+	}
 
 	if ($method !== 'ANY' && $request_method !== $method) {
 		cacti_log('WARNING: cacti_dispatch: method mismatch for action "' . $action . '" (expected ' . $method . ', got ' . $request_method . ')', false, 'WEBUI');
