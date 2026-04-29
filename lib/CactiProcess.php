@@ -219,12 +219,20 @@ class CactiProcess {
 	 * php-binary callouts to find their tools and resolve user paths without
 	 * leaking arbitrary parent-process state.
 	 *
+	 * On Windows the baseline also includes SYSTEMROOT, COMSPEC, and PATHEXT
+	 * because PHP refuses to start without SYSTEMROOT and proc_open() relies
+	 * on COMSPEC/PATHEXT to resolve executables under cmd.exe.
+	 *
 	 * Callers that legitimately need more (SNMP_PERSISTENT_DIR, SSH_AUTH_SOCK,
 	 * a plugin-specific variable) pass that name in $opts['env']; only those
 	 * names plus the baseline are forwarded.
 	 */
 	private static function resolveEnv(array $names): array {
 		$allowed = ['PATH', 'HOME', 'LANG', 'TZ'];
+
+		if (PHP_OS_FAMILY === 'Windows') {
+			$allowed = array_merge($allowed, ['SYSTEMROOT', 'COMSPEC', 'PATHEXT', 'WINDIR']);
+		}
 
 		foreach ($names as $name) {
 			if ($name !== '' && !in_array($name, $allowed, true)) {

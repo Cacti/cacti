@@ -101,3 +101,16 @@ test('caller can opt a parent env var into the child via env allowlist', functio
 		putenv($marker);
 	}
 });
+
+test('Windows env baseline preserves SYSTEMROOT, COMSPEC, PATHEXT, WINDIR', function () {
+	// PHP refuses to start without SYSTEMROOT on Windows and proc_open()
+	// relies on COMSPEC/PATHEXT for cmd.exe resolution. Source-scan so the
+	// branch can be verified on a Linux CI without standing up Windows.
+	$source = file_get_contents(__DIR__ . '/../../lib/CactiProcess.php');
+
+	expect($source)->toContain("PHP_OS_FAMILY === 'Windows'");
+
+	foreach (['SYSTEMROOT', 'COMSPEC', 'PATHEXT', 'WINDIR'] as $name) {
+		expect($source)->toContain("'" . $name . "'");
+	}
+});
