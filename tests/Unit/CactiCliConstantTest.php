@@ -40,7 +40,8 @@ test('CactiCommand::initialize requires cli_check.php on production path', funct
 	expect($source)->toContain("require_once dirname(__DIR__) . '/include/cli_check.php'");
 });
 
-test('CactiCommand::initialize bypass is gated on PHP_TESTING and CACTI_PHP_TESTING only', function () {
+test('CactiCommand::initialize bypass requires CLI SAPI and strict env equality', function () {
 	$source = file_get_contents(__DIR__ . '/../../lib/CactiCommand.php');
-	expect($source)->toMatch("/defined\\('PHP_TESTING'\\)\\s*\\|\\|\\s*getenv\\('CACTI_PHP_TESTING'\\)/");
+	expect($source)->toContain("PHP_SAPI === 'cli'");
+	expect($source)->toContain("getenv('CACTI_PHP_TESTING') === '1'");
 });

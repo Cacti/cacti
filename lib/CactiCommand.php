@@ -44,7 +44,9 @@ abstract class CactiCommand extends Command {
 		// Spawned subprocesses (CliInvocationTest spawns the real shims via
 		// proc_open) cannot inherit a PHP-level constant, so they signal the
 		// same intent via CACTI_PHP_TESTING=1 in the environment instead.
-		if (defined('PHP_TESTING') || getenv('CACTI_PHP_TESTING')) {
+		// Both gates require PHP_SAPI === 'cli' so a leaked env on a web
+		// request can never bypass the bootstrap.
+		if (PHP_SAPI === 'cli' && (defined('PHP_TESTING') || getenv('CACTI_PHP_TESTING') === '1')) {
 			return;
 		}
 
