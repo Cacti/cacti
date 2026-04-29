@@ -218,6 +218,18 @@ describe('OID trailing zero stripping', function () {
 			expect($result)->toBe($oids);
 		});
 
+		it('does not strip when only some rows end in .0', function () use ($defaultRegex) {
+			// Mixed padding: the $all_end_with_zero false branch must reject
+			// the strip so partial padding never reshapes a legitimate walk.
+			$oids = [
+				'.1.3.6.1.2.1.2.2.1.1.1.0' => 'eth0',
+				'.1.3.6.1.2.1.2.2.1.1.2'   => 'eth1',
+			];
+
+			expect(oid_index_should_strip_trailing_zero_padding($oids, $defaultRegex))->toBeFalse();
+			expect(oid_index_strip_trailing_zero_padding($oids))->toBe($oids);
+		});
+
 		it('one-row guard: single row ending in .0 is preserved by the helper', function () {
 			// Companion to the > 1 guard in query_snmp_host. Even if the
 			// helper were called with one entry, it returns input unchanged.
