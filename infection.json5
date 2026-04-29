@@ -1,0 +1,40 @@
+{
+    "$schema": "vendor/infection/infection/resources/schema.json",
+    "source": {
+        "directories": [
+            "lib"
+        ],
+        "excludes": [
+            "vendor",
+            "include/vendor"
+        ]
+    },
+    "timeout": 30,
+    "logs": {
+        "text": "build/infection/infection.log",
+        "html": "build/infection/infection.html",
+        "summary": "build/infection/summary.log",
+        "json": "build/infection/infection.json",
+        "stryker": {
+            "report": "main"
+        }
+    },
+    "tmpDir": "build/infection/tmp",
+    "minMsi": 0,
+    "minCoveredMsi": 0,
+    "mutators": {
+        "@default": true,
+        "global-ignoreSourceCodeByRegex": [
+            "cacti_log\\(.*\\);"
+        ],
+        "global-ignore": [
+            "lib\\import.php::import_xml_data",
+            "lib\\import.php::import_display_results"
+        ]
+    },
+    "phpUnit": {
+        "configDir": "."
+    },
+    "testFramework": "pest",
+    "testFrameworkOptions": "--filter='ImportPackage'"
+}
