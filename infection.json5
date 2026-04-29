@@ -1,0 +1,33 @@
+{
+	"$schema": "vendor/infection/infection/resources/schema.json",
+	"source": {
+		"directories": [
+			"lib"
+		],
+		"includes": [
+			"CactiApplication.php",
+			"CactiCommand.php",
+			"CmdRealtimeCommand.php",
+			"SpliceRrdCommand.php",
+			"splice_rrd_functions.php"
+		]
+	},
+	"timeout": 30,
+	"logs": {
+		"text": "tests/_output/infection.log",
+		"summary": "tests/_output/infection-summary.log",
+		"json": "tests/_output/infection.json",
+		"perMutator": "tests/_output/infection-per-mutator.md"
+	},
+	"tmpDir": "tests/_output/infection-tmp",
+	"minMsi": 70,
+	"minCoveredMsi": 75,
+	"testFramework": "pest",
+	"testFrameworkOptions": "--testsuite=Unit,HandOff,Integration",
+	"mutators": {
+		"@default": true,
+		"global-ignore": [
+			"CactiApplication::resolveVersion"
+		]
+	}
+}
