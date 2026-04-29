@@ -62,7 +62,7 @@ function check_tmp_dir() {
 		return true;
 	} else {
 		?>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 		var mixedReasonTitle = '<?php print __('Key Generation Required to Use Plugin');?>';
 		var mixedOnPage      = '<?php print __esc('Package Key Information Not Found');?>';
 		sessionMessage   = {
@@ -718,7 +718,7 @@ function import_display_package_data($templates, $files, $package_name, $xmlfile
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function getURLVariable(url, varname) {
 		var urlparts = url.slice(url.indexOf('?') + 1).split('&');
@@ -996,7 +996,7 @@ function package_import() {
 	form_save_button('', 'import', 'import', false);
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	$(function() {
 		$('#import_file').change(function() {

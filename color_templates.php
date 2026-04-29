@@ -324,7 +324,7 @@ function aggregate_color_item() {
 	html_end_box();
 
     ?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	$(function() {
 		$('#color_templates_template_edit2_child').attr('id', 'color_item');
@@ -701,7 +701,7 @@ function aggregate_color_template() {
 	form_end();
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL  = 'color_templates.php';

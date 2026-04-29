@@ -919,7 +919,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		}
 
 		?>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 		$(function() {
 			$(document).tooltip({
 				items: '[data-tooltip]',
@@ -1560,7 +1560,7 @@ function user_group_realms_edit($header_label) {
 
 	print '</table></td></tr>';
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function selectAllRealms(checked) {
 		if (checked) {
 			$('input[id^=\"section\"]').prop('checked', true);
@@ -1641,7 +1641,7 @@ function user_group_settings_edit($header_label) {
 	form_save_button('user_group_admin.php', 'return');
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	var themeFonts=<?php print read_config_option('font_method');?>;
 
@@ -1773,7 +1773,7 @@ function group_edit() {
 		form_save_button('user_group_admin.php', 'return');
 
 		?>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 		var consoleAllowed=<?php print is_user_group_realm_allowed(8, (isset($group) ? $group['id'] : 0)) ? 'true':'false';?>;
 
 		$(function() {
@@ -1882,7 +1882,7 @@ function user_group() {
 	/* ================= input validation ================= */
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL  = 'user_group_admin.php'
@@ -2227,7 +2227,7 @@ function graph_filter($header_label) {
 	global $config, $item_rows;
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL  = 'user_group_admin.php?action=edit&tab=permsg&id=<?php print get_request_var('id');?>'
@@ -2347,7 +2347,7 @@ function device_filter($header_label) {
 	global $config, $item_rows;
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL  = 'user_group_admin.php?action=edit&tab=permsd&id=<?php print get_request_var('id');?>'
@@ -2463,7 +2463,7 @@ function template_filter($header_label) {
 	global $config, $item_rows;
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL  = 'user_group_admin.php?action=edit&tab=permste&id=<?php print get_request_var('id');?>'
@@ -2560,7 +2560,7 @@ function tree_filter($header_label) {
 	global $config, $item_rows;
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL  = 'user_group_admin.php?action=edit&tab=permstr&id=<?php print get_request_var('id');?>'
@@ -2657,7 +2657,7 @@ function member_filter($header_label) {
 	global $config, $item_rows;
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL  = 'user_group_admin.php?action=edit&tab=members&id=<?php print get_request_var('id');?>'

@@ -1191,7 +1191,7 @@ function reports_item_edit() {
 	$_SESSION['custom'] = 'true';
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	useCss=<?php print ($report['cformat'] == 'on' ? 'true':'false');?>;
 
@@ -1542,7 +1542,7 @@ function reports_edit() {
 		form_hidden_box('save_component_report', '1', '');
 
 		?>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 		function changeFormat() {
 			if (cformat && cformat.checked) {
 				$('#row_font_size').hide();
@@ -1590,7 +1590,7 @@ function reports_edit() {
 
 		if (!empty($report['id']) && read_config_option('drag_and_drop') == 'on') {
 			?>
-			<script type='text/javascript'>
+			<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 			var reportsPage = '<?php print get_reports_page();?>';
 			var reportId    = <?php print $report['id'];?>;
 
@@ -2055,7 +2055,7 @@ function reports() {
 	form_end();
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function applyFilter() {
 		strURL  = '<?php print get_reports_page();?>?header=false&status=' + $('#status').val();
 		strURL += '&rows=' + $('#rows').val();

@@ -923,7 +923,7 @@ function template_edit() {
 	form_save_button('data_templates.php', 'return');
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	var readOnly = <?php print $readOnly ? 'true':'false';?>;
 
@@ -1091,7 +1091,7 @@ function template() {
 			</table>
 		</form>
 		</td>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 		function applyFilter() {
 			strURL  = 'data_templates.php?header=false';
 			strURL += '&filter='+$('#filter').val();

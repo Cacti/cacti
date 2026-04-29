@@ -526,7 +526,7 @@ function item_edit() {
 	form_save_button('data_source_profiles.php?action=edit&id=' . get_request_var('profile_id'));
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	var profile_id=<?php print get_request_var('profile_id') != '' ? get_request_var('profile_id'):0;?>;
 	var rows_to = false;
@@ -680,7 +680,7 @@ function profile_edit() {
 	form_save_button('data_source_profiles.php', 'return');
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	var profile_id=<?php print get_request_var('id') != '' ? get_request_var('id'):0;?>;
 
@@ -944,7 +944,7 @@ function profile() {
 				</tr>
 			</table>
 			</form>
-			<script type='text/javascript'>
+			<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 			function applyFilter() {
 				strURL  = 'data_source_profiles.php?header=false';

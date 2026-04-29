@@ -1050,7 +1050,7 @@ function device_reindex_methods($item, $host) {
 
 function device_change_javascript() {
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function disableField(id) {
 		$('#'+id).prop('disabled', true).addClass('ui-state-disabled');;
 
@@ -1094,7 +1094,7 @@ function device_change_javascript() {
 
 function device_javascript() {
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	// default snmp information
 	var snmp_community       = $('#snmp_community').val();
@@ -1718,7 +1718,7 @@ function host() {
 				</tr>
 			</table>
 		</form>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 		function applyFilter() {
 			strURL  = 'host.php';

@@ -535,7 +535,7 @@ function sites() {
 				</tr>
 			</table>
 			</form>
-			<script type='text/javascript'>
+			<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 			function applyFilter() {
 				strURL  = 'sites.php?header=false';

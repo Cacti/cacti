@@ -449,7 +449,7 @@ function settings_javascript() {
 	global $config;
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	var themeFonts   = <?php print read_config_option('font_method');?>;
 	var currentTab   = <?php print json_encode((string) get_nfilter_request_var('tab'));?>;

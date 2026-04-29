@@ -249,7 +249,7 @@ class CactiTableFilter {
 		}
 
 		?>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 		function applyFilter() {
 			strURL = <?php print $applyFilter;?>

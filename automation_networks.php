@@ -793,7 +793,7 @@ function network_edit() {
 	form_save_button('automation_networks.php', 'return');
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
 		$('#day_of_week').multiselect({
 			selectedList: 7,
@@ -1243,7 +1243,7 @@ function networks_filter() {
 				</tr>
 			</table>
 			</form>
-			<script type='text/javascript'>
+			<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 			function applyFilter() {
 				strURL  = '?rows=' + $('#rows').val();
 				strURL += '&filter=' + $('#filter').val();

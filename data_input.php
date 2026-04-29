@@ -329,7 +329,7 @@ function field_remove_confirm() {
 	form_end();
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
 		$('#continue').unbind('click').click(function(data) {
 			$.post('data_input.php?action=field_remove', {
@@ -673,7 +673,7 @@ function data_edit() {
 	form_save_button('data_input.php', 'return');
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	$(function() {
 		$('.cdialog').remove();
@@ -785,7 +785,7 @@ function data() {
 				</tr>
 			</table>
 		</form>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 		function applyFilter() {
 			strURL  = 'data_input.php?header=false';

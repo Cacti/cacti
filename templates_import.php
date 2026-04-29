@@ -476,7 +476,7 @@ function import() {
 	form_save_button('', 'import', 'import', false);
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
 		$('#import_file').change(function() {
 			var form = $('#import')[0];

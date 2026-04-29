@@ -303,7 +303,7 @@ function gprint_presets() {
 				</tr>
 			</table>
 			</form>
-			<script type='text/javascript'>
+			<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 			function applyFilter() {
 				strURL  = 'gprint_presets.php?header=false';

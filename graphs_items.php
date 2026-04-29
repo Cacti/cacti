@@ -533,7 +533,7 @@ function item_edit() {
 	form_save_button('graphs.php?action=graph_edit&id=' . get_request_var('local_graph_id'));
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	$(function() {
 		$('#shift').click(function(data) {

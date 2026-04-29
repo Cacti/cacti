@@ -133,8 +133,9 @@ if (read_config_option('auth_method') == 2) {
 }
 
 ?>
-<script type='text/javascript'>
+<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	var cactiVersion='<?php print $config['cacti_version'];?>';
+	var cactiNonce='<?php print CactiSecureHeaders::getNonce();?>'
 	var cactiServerOS='<?php print $config['cacti_server_os'];?>';
 	var cactiAction='<?php print get_filter_request_var('action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([-a-zA-Z0-9_\s]+)$/')));?>';
 	var theme='<?php print get_selected_theme();?>';
@@ -145,4 +146,8 @@ if (read_config_option('auth_method') == 2) {
 	var previousPage='';
 	var sessionMessage=<?php print display_output_messages(false);?>;
 	var csrfMagicToken='<?php print csrf_get_tokens();?>';
+
+	$.ajaxSetup({
+		nonce: cactiNonce
+	});
 </script>

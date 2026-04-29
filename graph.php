@@ -180,7 +180,7 @@ case 'view':
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	var originalWidth = null;
 	var refreshTime   = <?php print read_user_setting('page_refresh')*1000;?>;
@@ -446,7 +446,7 @@ case 'zoom':
 	<tr class='odd'>
 		<td id='data'></td>
 	</tr>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	var graph_id      = <?php print get_request_var('local_graph_id');?>;
 	var rra_id        = <?php print get_request_var('rra_id');?>;
 	var graph_start   = 0;

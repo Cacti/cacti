@@ -388,7 +388,7 @@ if ($skip_current) {
 		<div class='versionInfo'><?php __('Version %s | %s', $version, COPYRIGHT_YEARS_SHORT); ?></div>
 	</div>
 	<div class='loginRight'></div>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	var minChars=<?php print read_config_option('secpass_minlen');?>;
 

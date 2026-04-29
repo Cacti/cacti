@@ -433,7 +433,7 @@ function aggregate_template_edit() {
 	form_save_button('aggregate_templates.php', 'return', 'id');
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	$(function() {
 		if ($('#id').val() == 0) {
@@ -745,7 +745,7 @@ function aggregate_template() {
 	form_end();
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL  = 'aggregate_templates.php';

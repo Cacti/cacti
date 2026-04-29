@@ -416,7 +416,7 @@ function update_show_current () {
 	$table = plugins_load_temp_table();
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function applyFilter() {
 		strURL  = 'plugins.php?header=false';
 		strURL += '&filter='+$('#filter').val();
@@ -657,7 +657,7 @@ function update_show_current () {
 	$uninstall_title = __('Are you sure you want to Uninstall?');
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	var url = '';
 
 	$(function() {

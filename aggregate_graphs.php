@@ -712,7 +712,7 @@ function graph_edit() {
 		?>
 		<tr><td id='imagewindow' class='center'>
 			<img src='<?php print html_escape($config['url_path'] . 'graph_image.php?action=edit&disable_cache=1&local_graph_id=' . get_request_var('id') . '&rra_id=' . read_user_setting('default_rra_id') . '&random=' . mt_rand());?>' alt=''>
-			<script type='text/javascript'>
+			<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 			$(function() {
 				$('#agg_preview').show();
 			});
@@ -730,7 +730,7 @@ function graph_edit() {
 					<?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);?>
 					<span class='textInfo'><?php print __('RRDtool Says:');?></span><br><?php unset($graph_data_array['print_source']);?><pre class='monoSpace tableRow left'><?php print ($config['poller_id'] == 1 ? @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']):__esc('Not Checked'));?></pre>
 				</div>
-				<script type='text/javascript'>
+				<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 				$(function() {
 					var rrdwidth = $(window).width() - $('.cactiConsoleNavigationArea').width();
 					$('#agg_preview').show();
@@ -803,7 +803,7 @@ function graph_edit() {
 			form_hidden_box('save_component_template', '1', '');
 
 			?>
-			<script type='text/javascript'>
+			<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 			var templated_selectors = [
 				'#gprint_prefix',
@@ -1011,7 +1011,7 @@ function graph_edit() {
 		echo '</div>';
 
 		?>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 		$(function() {
 			dynamic();
@@ -1184,7 +1184,7 @@ function aggregate_items() {
 		$sql_limit");
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	var totalItems=<?php print $total_items;?>;
 
 	function applyFilter() {
@@ -1463,7 +1463,7 @@ function aggregate_graph() {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL  = 'aggregate_graphs.php';
