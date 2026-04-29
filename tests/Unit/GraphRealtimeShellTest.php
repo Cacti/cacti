@@ -60,7 +60,7 @@ test('poller_realtime.php keeps poller_id as a validated string token', function
 	$contents = file_get_contents(__DIR__ . '/../../poller_realtime.php');
 
 	expect($contents)->toContain('$poller_id = (string) $value;');
-	expect($contents)->toContain("preg_match('/^(?:[0-9]+|[A-Fa-f0-9]{64})$/', $poller_id)");
+	expect($contents)->toContain("preg_match('/^(?:[0-9]+|[A-Fa-f0-9]{64})$/', \$poller_id)");
 	expect($contents)->toContain('function process_poller_output_rt(mixed $rrdtool_pipe, string $poller_id, int $interval) : int');
 	expect($contents)->not->toContain('$poller_id = intval($value);');
 });
