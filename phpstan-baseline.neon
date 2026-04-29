@@ -41,3 +41,69 @@ parameters:
 			identifier: isset.offset
 			count: 1
 			path: lib/functions.php
+
+		-
+			message: '#^Undefined variable\: \$graph_template_item_id$#'
+			identifier: variable.undefined
+			count: 1
+			path: aggregate_graphs.php
+
+		-
+			message: '#^Variable \$graph_template_item_id in empty\(\) is never defined\.$#'
+			identifier: empty.variable
+			count: 1
+			path: aggregate_graphs.php
+
+		-
+			message: '#^Undefined variable\: \$color_template_item_id$#'
+			identifier: variable.undefined
+			count: 1
+			path: color_templates.php
+
+		-
+			message: '#^Variable \$color_template_item_id in empty\(\) is never defined\.$#'
+			identifier: empty.variable
+			count: 1
+			path: color_templates.php
+
+		-
+			message: '#^Undefined variable\: \$graph_template_item_id$#'
+			identifier: variable.undefined
+			count: 1
+			path: graph_templates.php
+
+		-
+			message: '#^Variable \$graph_template_item_id in empty\(\) is never defined\.$#'
+			identifier: empty.variable
+			count: 1
+			path: graph_templates.php
+
+		-
+			message: '#^Undefined variable\: \$graph_template_item_id$#'
+			identifier: variable.undefined
+			count: 1
+			path: graphs.php
+
+		-
+			message: '#^Variable \$graph_template_item_id in empty\(\) is never defined\.$#'
+			identifier: empty.variable
+			count: 1
+			path: graphs.php
+
+		-
+			message: '#^Offset ''image'' on array\{title\: string, image\: string, id\: ''tree'', url\: ''graph_view\.php…'', selected\?\: true\} in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.offset
+			count: 1
+			path: lib/html.php
+
+		-
+			message: '#^Offset ''image'' on array\{title\: string, image\: string, id\: ''list'', url\: ''graph_view\.php…'', selected\?\: true\} in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.offset
+			count: 1
+			path: lib/html.php
+
+		-
+			message: '#^Offset ''image'' on array\{title\: string, image\: string, id\: ''preview'', url\: ''graph_view\.php…'', selected\?\: true\} in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.offset
+			count: 1
+			path: lib/html.php
