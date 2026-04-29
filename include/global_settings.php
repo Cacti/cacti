@@ -22,6 +22,14 @@
  +-------------------------------------------------------------------------+
 */
 
+// Symfony Validator is an optional composer dependency. global_settings.php is
+// included by global.php before vendor/autoload.php is registered (line 625 vs
+// 636). Guard the require so that the autoloader is available when the closures
+// in the constraints arrays are eventually invoked by CactiSettings::validate().
+if (file_exists(CACTI_PATH_INCLUDE . '/vendor/autoload.php')) {
+	require_once(CACTI_PATH_INCLUDE . '/vendor/autoload.php');
+}
+
 use Symfony\Component\Validator\Constraints as Assert;
 
 $dir = dir(CACTI_PATH_INCLUDE . '/themes/');
