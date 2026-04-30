@@ -199,19 +199,9 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == 2) {
 			}
 		}
 
-		/* remember me support.  Not for guest of basic auth */
-		if ($auth_method != 2 && $user['id'] !== get_guest_account()) {
-			if (!$error && isset_request_var('remember_me') && read_config_option('auth_cache_enabled') == 'on') {
-				set_auth_cookie($user);
-			}
-		}
-
 			if (!$error) {
 				/* avoid session fixation */
 				cacti_session_start(true);
-
-				/* set the php session */
-				$_SESSION['sess_user_id'] = $user['id'];
 
 				/* enforce post-auth session/cookie transition hardening */
 				if (!cacti_auth_transition((int)$user['id'], 'login')) {
@@ -219,6 +209,18 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == 2) {
 					$error_msg = __('Access Denied! User account locked.');
 					cacti_session_destroy();
 					cacti_session_start(true);
+				} else {
+					$_SESSION['sess_user_id'] = $user['id'];
+
+					/* remember me - only create a cookie when no existing one was
+					 * already rotated by cacti_auth_transition above.  Not for guest or basic auth. */
+					if ($auth_method != 2 && $user['id'] !== get_guest_account()) {
+						if (isset_request_var('remember_me') && read_config_option('auth_cache_enabled') == 'on') {
+							if (!isset($_COOKIE['cacti_remembers'])) {
+								set_auth_cookie($user);
+							}
+						}
+					}
 				}
 
 				if ($error) {
