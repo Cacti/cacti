@@ -2299,6 +2299,8 @@ function html_show_tabs_left() : void {
 			$tabs_left[$i]['selected'] = true;
 		} elseif ($tab_base == $me_base) {
 			$tabs_left[$i]['selected'] = true;
+		} else {
+			$tabs_left[$i]['selected'] = false;
 		}
 
 		$i++;
