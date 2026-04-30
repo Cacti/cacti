@@ -52,13 +52,13 @@ function clear_auth_cookie() {
 				$user_id = db_fetch_cell_prepared('SELECT id
 					FROM user_auth
 					WHERE username = ?
-					AND realm_id = 0',
+					AND realm = 0',
 					array($user_id));
 			} else {
 				$user_id = db_fetch_cell_prepared('SELECT id
 					FROM user_auth
 					WHERE username = ?
-					AND realm_id = ?',
+					AND realm = ?',
 					array($user_id, $realm_id));
 			}
 		}
