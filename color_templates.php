@@ -217,6 +217,8 @@ function form_save() : void {
 		$items[0] = [];
 		$sequence = gnrv('sequence');
 
+		$color_template_item_id = '';
+
 		foreach ($items as $item) {
 			// generate a new sequence if needed
 			if (empty($sequence)) {

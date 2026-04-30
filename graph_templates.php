@@ -435,6 +435,8 @@ function form_save() : void {
 
 		$sequence = grv('sequence');
 
+		$graph_template_item_id = '';
+
 		foreach ($items as $item) {
 			// generate a new sequence if needed
 			if (empty($sequence)) {
