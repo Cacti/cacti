@@ -9,5 +9,8 @@
         <testsuite name="HandOff">
             <directory>./tests/HandOff</directory>
         </testsuite>
+        <testsuite name="Integration">
+            <directory>./tests/Integration</directory>
+        </testsuite>
     </testsuites>
 </phpunit>
