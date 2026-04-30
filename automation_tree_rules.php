@@ -178,6 +178,29 @@ function automation_tree_rules_form_save() {
 		$save['search_pattern']    = isset_request_var('search_pattern') ? form_input_validate(get_nfilter_request_var('search_pattern'), 'search_pattern', '', false, 3) : '';
 		$save['replace_pattern']   = isset_request_var('replace_pattern') ? form_input_validate(get_nfilter_request_var('replace_pattern'), 'replace_pattern', '', true, 3) : '';
 
+		$field_name = str_replace(array('ht.', 'h.', 'gt.', 'gtg.'), '', $save['field']);
+
+		$exists = db_fetch_cell_prepared('SELECT field_name
+			FROM host_snmp_cache
+			WHERE field_name = ?
+			LIMIT 1',
+			array($field_name));
+
+		if (!$exists) {
+			/* check the case where there is no entry in the host_snmp_cache table yet */
+			if ("'$field_name'" != db_qstr($field_name)) {
+				if (!db_column_exists('host', $field_name) && !db_column_exists('host_template', $field_name) && !db_column_exists('graph_templates', $field_name) && !db_column_exists('graph_templates_graph', $field_name)) {
+					raise_message('sql_injection', __('An attempt was made to perform a SQL injection in Graph Tree automation'), MESSAGE_LEVEL_ERROR);
+
+					cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Graph Tree Automation from client address \'%s\'', get_client_addr()), false, 'SECURITY');
+
+					header('Location: automation_tree_rules.php?header=false&action=edit&id=' . get_request_var('id'));
+
+					exit;
+				}
+			}
+		}
+
 		if (!is_error_message()) {
 			$automation_graph_rule_item_id = sql_save($save, 'automation_tree_rule_items');
 
