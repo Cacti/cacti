@@ -178,6 +178,11 @@ function check_auth_cookie() {
 				if (empty($found)) {
 					return false;
 				} else {
+					/* verify account is not locked out */
+					if (auth_process_lockout_check($user_info['username'], $user_info['realm']) === true) {
+						return false;
+					}
+
 					set_auth_cookie($user_info);
 
 					cacti_log("LOGIN: User '" . $user_info['username'] . "' with ID '" . $user_info['id'] . "' Authenticated via Authentication Cookie", false, 'AUTH');
@@ -188,11 +193,6 @@ function check_auth_cookie() {
 						(?, ?, 2, ?, NOW())',
 						array($user_info['username'], $user_info['id'], get_client_addr())
 					);
-
-					/* verify account is not locked out */
-					if (auth_process_lockout_check($user_info['username'], $user_info['realm']) === true) {
-						return false;
-					}
 
 					return $user_info['id'];
 				}
