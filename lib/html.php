@@ -2385,26 +2385,26 @@ function html_graph_tabs_right() : void {
 	foreach ($tabs_right as $tab) {
 		switch($tab['id']) {
 			case 'tree':
-				if (isset($tab['image']) && $tab['image'] != '') {
-					print "<li><a id='treeview' role='tab' title='" . htmle($tab['title']) . "' class='righttab " . ($tab['selected'] ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
+				if ($tab['image'] != '') {
+					print "<li><a id='treeview' role='tab' title='" . htmle($tab['title']) . "' class='righttab " . ($tab['selected'] === true ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
 				} else {
-					print "<li><a role='tab' title='" . htmle($tab['title']) . "' class='righttab " . ($tab['selected'] ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
+					print "<li><a role='tab' title='" . htmle($tab['title']) . "' class='righttab " . ($tab['selected'] === true ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
 				}
 
 				break;
 			case 'list':
-				if (isset($tab['image']) && $tab['image'] != '') {
-					print "<li><a id='listview' role='tab' title='" . htmle($tab['title']) . "' class='righttab " . ($tab['selected'] ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
+				if ($tab['image'] != '') {
+					print "<li><a id='listview' role='tab' title='" . htmle($tab['title']) . "' class='righttab " . ($tab['selected'] === true ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
 				} else {
-					print "<li><a role='tab' title='" . htmle($tab['title']) . "' class='righttab " . ($tab['selected'] ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
+					print "<li><a role='tab' title='" . htmle($tab['title']) . "' class='righttab " . ($tab['selected'] === true ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
 				}
 
 				break;
 			case 'preview':
-				if (isset($tab['image']) && $tab['image'] != '') {
-					print "<li><a role='tab' id='preview' title='" . htmle($tab['title']) . "' class='righttab " . ($tab['selected'] ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
+				if ($tab['image'] != '') {
+					print "<li><a role='tab' id='preview' title='" . htmle($tab['title']) . "' class='righttab " . ($tab['selected'] === true ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
 				} else {
-					print "<li><a role='tab' title='" . htmle($tab['title']) . "' class='righttab " . ($tab['selected'] ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
+					print "<li><a role='tab' title='" . htmle($tab['title']) . "' class='righttab " . ($tab['selected'] === true ? " selected' aria-selected='true'" : "' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
 				}
 
 				break;
