@@ -737,25 +737,27 @@ function cactiReturnTo(href) {
 }
 
 function handleTableNav() {
-	$('.navBarNavigation, .navBarNavigationNext, .navBarNavigationCenter, .navBarNavigationPrevious').find('a').each(function() {
-		$(this).on('click', function() {
-			console.log('click');
+	$('.navBarNavigationNext, .navBarNavigationCenter, .navBarNavigationPrevious').find('a').each(function() {
+		$(this).on('click', function(event) {
+			var data_url = $(this).data('url');
+			var returnTo = $(this).data('return');
+
+			event.preventDefault();
+
 			if (typeof url_graph === 'function') {
 				var url_add = url_graph('');
 			} else {
 				var url_add = '';
 			}
 
-			if ($(this).attr('data-url') != '') {
-				if ($(this).attr('data-return') != '') {
-					var returnTo = $(this).attr('data-return');
-
-					$.get($(this).attr('data-url')+url_add+'&header=false', function(data) {
-						$('#'+returnTo).html(data);
+			if (data_url) {
+				if (returnTo) {
+					$.get(data_url+url_add+'&header=false', function(data) {
+						$('#' + returnTo).html(data);
 						applySkin();
 					});
 				} else {
-					document.location = $(this).attr('data-url')+url_add;
+					document.location = data_url + url_add;
 				}
 			}
 		});
