@@ -160,6 +160,18 @@ var isMobile = {
 	}
 };
 
+/* Global AJAX setup for CSRF consistency */
+$.ajaxSetup({
+	beforeSend: function(xhr, settings) {
+		if (typeof csrfMagicToken !== 'undefined') {
+			// Attach CSRF token to all internal requests if not already set
+			if (!/^(http:|https:|\/\/)/.test(settings.url)) {
+				xhr.setRequestHeader('X-CSRF-Token', csrfMagicToken);
+			}
+		}
+	}
+});
+
 /* simple ajax request queueing */
 jQuery.ajaxQ = (function () {
 	var id = 0, Q = {};

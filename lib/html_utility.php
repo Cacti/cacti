@@ -705,7 +705,7 @@ function isrv(string $variable) : bool {
  * @return bool
  */
 function isset_request_var(string $variable) : bool {
-	return isset($_REQUEST[$variable]);
+	return \Cacti\Http\CactiRequest::has($variable);
 }
 
 /**
@@ -728,7 +728,7 @@ function ierv(string $variable) : bool {
  */
 function isempty_request_var(string $variable) : bool {
 	if (isset_request_var($variable)) {
-		$value = $_REQUEST[$variable];
+		$value = \Cacti\Http\CactiRequest::get($variable);
 
 		if (!empty($value)) {
 			return false;
@@ -762,9 +762,7 @@ function set_request_var(string $variable, mixed $value) : void {
 	global $_CACTI_REQUEST;
 
 	$_CACTI_REQUEST[$variable] = $value;
-	$_REQUEST[$variable]       = $value;
-	$_POST[$variable]          = $value;
-	$_GET[$variable]           = $value;
+	\Cacti\Http\CactiRequest::set($variable, $value);
 }
 
 /**
@@ -794,9 +792,10 @@ function get_request_var(string $name, mixed $default = '') : mixed {
 			html_log_input_error($name);
 		}
 
-		set_request_var($name, $_REQUEST[$name]);
+		$value = \Cacti\Http\CactiRequest::get($name);
+		set_request_var($name, $value);
 
-		return $_REQUEST[$name];
+		return $value;
 	} else {
 		return $default;
 	}
@@ -890,23 +889,25 @@ function get_filter_request_var(string $name, int $filter = FILTER_VALIDATE_INT,
 					$value = '';
 				}
 			} elseif ($filter == FILTER_VALIDATE_IS_REGEX) {
-				if (is_base64_encoded($_REQUEST[$name])) {
-					$_REQUEST[$name] = mb_convert_encoding(base64_decode($_REQUEST[$name], true), 'UTF-8');
+				$val = \Cacti\Http\CactiRequest::get($name);
+				if (is_base64_encoded($val)) {
+					$val = mb_convert_encoding(base64_decode($val, true), 'UTF-8');
 				}
 
-				$valid = validate_is_regex($_REQUEST[$name]);
+				$valid = validate_is_regex($val);
 
 				if ($valid === true) {
-					$value = $_REQUEST[$name];
+					$value = $val;
 				} else {
 					$value        = false;
 					$custom_error = $valid;
 				}
 			} elseif ($filter == FILTER_VALIDATE_IS_NUMERIC_ARRAY) {
 				$valid = true;
+				$val   = \Cacti\Http\CactiRequest::get($name);
 
-				if (is_array($_REQUEST[$name])) {
-					foreach ($_REQUEST[$name] as $number) {
+				if (is_array($val)) {
+					foreach ($val as $number) {
 						if (!is_numeric($number)) {
 							$valid = false;
 
@@ -918,13 +919,14 @@ function get_filter_request_var(string $name, int $filter = FILTER_VALIDATE_INT,
 				}
 
 				if ($valid == true) {
-					$value = $_REQUEST[$name];
+					$value = $val;
 				} else {
 					$value = false;
 				}
 			} elseif ($filter == FILTER_VALIDATE_IS_NUMERIC_LIST) {
 				$valid  = true;
-				$values = preg_split('/,/', $_REQUEST[$name], -1, PREG_SPLIT_NO_EMPTY);
+				$val    = \Cacti\Http\CactiRequest::get($name);
+				$values = preg_split('/,/', $val, -1, PREG_SPLIT_NO_EMPTY);
 
 				foreach ($values as $number) {
 					if (!is_numeric($number)) {
@@ -935,14 +937,14 @@ function get_filter_request_var(string $name, int $filter = FILTER_VALIDATE_INT,
 				}
 
 				if ($valid == true) {
-					$value = $_REQUEST[$name];
+					$value = $val;
 				} else {
 					$value = false;
 				}
 			} elseif (!cacti_sizeof($options)) {
-				$value = filter_var($_REQUEST[$name], $filter);
+				$value = filter_var(\Cacti\Http\CactiRequest::get($name), $filter);
 			} else {
-				$value = filter_var($_REQUEST[$name], $filter, $options);
+				$value = filter_var(\Cacti\Http\CactiRequest::get($name), $filter, $options);
 			}
 		}
 
@@ -1011,8 +1013,8 @@ function get_nfilter_request_var(string $name, mixed $default = '') : mixed {
 		return $_CACTI_REQUEST[$name];
 	}
 
-	if (isset($_REQUEST[$name])) {
-		return $_REQUEST[$name];
+	if (isset_request_var($name)) {
+		return \Cacti\Http\CactiRequest::get($name);
 	} else {
 		return $default;
 	}
@@ -1696,8 +1698,70 @@ function display_tooltip(string $text) : string {
 }
 
 /**
- * Generates a paginated list of links for navigating through pages.
+ * Safely validate a redirect URL to prevent open redirects.
  *
+ * @param string $url     The URL to validate
+ * @param string $default The default fallback URL if validation fails
+ *
+ * @return string The validated URL or the default fallback
+ */
+function validate_redirect_url(string $url = '', string $default = 'index.php') : string {
+	if ($url === '') {
+		return $default;
+	}
+
+	$url = trim($url);
+	$url = str_replace('\\', '/', $url);
+
+	// Decode the url to make it readable if encoded
+	if (is_urlencoded($url)) {
+		$url = urldecode($url);
+		$url = str_replace('\\', '/', $url);
+	}
+
+	// reject URLs with protocol schemes (external redirects, javascript:, data:)
+	$bad_strings = [
+		'javascript:',
+		'data:',
+		'vbscript:',
+		'mailto:',
+		'file:',
+		'ftp:',
+		'http:',
+		'https:',
+	];
+
+	foreach($bad_strings as $bstring) {
+		if (stripos($url, $bstring) !== false) {
+			return $default;
+		}
+	}
+
+	// reject protocol-relative URLs
+	if (str_starts_with($url, '//')) {
+		return $default;
+	}
+
+	// reject URLs with newlines (header injection)
+	if (preg_match('/[\r\n]/', $url)) {
+		return $default;
+	}
+
+	// Ensure the URL starts with a single slash (site-relative)
+	if (!str_starts_with($url, '/')) {
+		// If it doesn't start with a slash, it might be a filename like index.php
+		// which is fine as long as it doesn't contain a colon (scheme)
+		if (str_contains($url, ':')) {
+			return $default;
+		}
+	}
+
+	return $url;
+}
+
+/**
+ * Generates a paginated list of links for navigating through pages.
+...
  * @param int    $current_page     The current page number.
  * @param int    $pages_per_screen The number of pages to display in the pagination control.
  * @param int    $rows_per_page    The number of rows per page.

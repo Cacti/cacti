@@ -75,12 +75,11 @@ $is_request_ajax = false;
 
 // If HTTP_X_REQUESTED_WITH is equal to xmlhttprequest
 // We assume this is an ajax call
-if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
-	strcasecmp($_SERVER['HTTP_X_REQUESTED_WITH'], 'xmlhttprequest') == 0) {
+if (strcasecmp(\Cacti\Http\CactiRequest::current()->headers->get('X-Requested-With', ''), 'xmlhttprequest') == 0) {
 	$is_request_ajax = true;
-} elseif (isset($_REQUEST['header']) && $_REQUEST['header'] == 'false') {
+} elseif (\Cacti\Http\CactiRequest::get('header') == 'false') {
 	$is_request_ajax = true;
-} elseif (isset($_REQUEST['headercontent'])) {
+} elseif (\Cacti\Http\CactiRequest::has('headercontent')) {
 	$is_request_ajax = false;
 }
 
@@ -104,8 +103,8 @@ $database_persist                = true;
 // Default session name - Session name must contain alpha characters
 $cacti_session_name = 'Cacti';
 
-if (isset($_COOKIE['CactiTab'])) {
-	$cacti_session_name = 'CactiTabId:' . $_COOKIE['CactiTab'];
+if (\Cacti\Http\CactiRequest::current()->cookies->has('CactiTab')) {
+	$cacti_session_name = 'CactiTabId:' . \Cacti\Http\CactiRequest::current()->cookies->get('CactiTab');
 }
 
 // define default url path
