@@ -36,15 +36,21 @@ function ss_sql() : string {
 	global $database_password;
 	global $database_hostname;
 
-	$cmd = 'mysqladmin --host=' . cacti_escapeshellarg($database_hostname) . ' --user=' . cacti_escapeshellarg($database_username);
+	require_once(__DIR__ . '/../lib/CactiProcess.php');
+
+	$argv = ['mysqladmin', '--host=' . $database_hostname, '--user=' . $database_username, 'status'];
+	$env = [];
 
 	if ($database_password != '') {
-		$cmd .= ' --password=' . cacti_escapeshellarg($database_password);
+		$env['MYSQL_PWD'] = $database_password;
 	}
 
-	$cmd .= ' status';
-
-	$result = shell_exec($cmd) ?? '';
+	try {
+		$process = \Cacti\Process\CactiProcess::run($argv, $env);
+		$result = $process->getOutput();
+	} catch (\Exception $e) {
+		$result = '';
+	}
 
 	$result = preg_replace('/: /', ':', $result);
 	$result = preg_replace('/  /', ' ', $result);

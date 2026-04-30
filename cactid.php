@@ -81,7 +81,12 @@ if (DIRECTORY_SEPARATOR != '\\') {
 	$STDERR = fopen('/dev/null', 'wb');
 
 	// check if cactid daemon is already running
-	exec('pgrep -a php | grep cactid.php', $output);
+	try {
+		$process = \Cacti\Process\CactiProcess::run(['pgrep', '-a', 'php']);
+		$output = preg_grep('/cactid\.php/', explode("\n", $process->getOutput()));
+	} catch (\Exception $e) {
+		$output = [];
+	}
 
 	if (sizeof($output) >= 2) {
 		print 'The Cacti Daemon is still running' . PHP_EOL;

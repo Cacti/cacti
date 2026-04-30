@@ -400,16 +400,16 @@ if ($child == 0) {
 		$output     = [];
 		$return_var = 0;
 
-		// Format the command
-		$command = sprintf("%s -q %s/cli/removespikes.php --rrdfile='%s' --outlier-start='%s' --outlier-end='%s' --method=%s --avgnan=%s",
+		$argv = [
 			$php_bin,
-			CACTI_PATH_BASE,
-			$rrdfile['data_source_path'],
-			$start_date,
-			$end_date,
-			$method,
-			$avgnan
-		);
+			'-q',
+			CACTI_PATH_BASE . '/cli/removespikes.php',
+			'--rrdfile=' . $rrdfile['data_source_path'],
+			'--outlier-start=' . $start_date,
+			'--outlier-end=' . $end_date,
+			'--method=' . $method,
+			'--avgnan=' . $avgnan
+		];
 
 		db_execute_prepared('UPDATE graph_local_spikekill
 			SET started = NOW()
@@ -417,9 +417,16 @@ if ($child == 0) {
 			[$rrdfile['id']]);
 
 		// Run the command
-		debug("NOTE: Running command: $command");
+		debug("NOTE: Running command: " . implode(' ', $argv));
 
-		exec($command, $output, $return_var);
+		try {
+			$process = \Cacti\Process\CactiProcess::run($argv);
+			$output = explode("\n", $process->getOutput() . $process->getErrorOutput());
+			$return_var = $process->getExitCode();
+		} catch (\Exception $e) {
+			$output = [$e->getMessage()];
+			$return_var = 1;
+		}
 
 		db_execute_prepared('UPDATE graph_local_spikekill
 			SET ended = NOW(), exit_code = ?

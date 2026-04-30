@@ -40,6 +40,10 @@ if (file_exists(__DIR__ . '/../include/cli_check.php')) {
 	$from_cacti = false;
 }
 
+if (file_exists(__DIR__ . '/../lib/CactiProcess.php')) {
+	require_once(__DIR__ . '/../lib/CactiProcess.php');
+}
+
 if ($from_cacti) {
 	if (POLLER_ID > 1) {
 		print 'FATAL: This utility is designed for the main Data Collector only' . PHP_EOL;
@@ -270,8 +274,12 @@ if (!file_exists($rrdtool)) {
 	}
 }
 
-$response = shell_exec($rrdtool);
-
+if (class_exists('\\Cacti\\Process\\CactiProcess')) {
+	$process = \Cacti\Process\CactiProcess::run([$rrdtool]);
+	$response = $process->getOutput() . $process->getErrorOutput();
+} else {
+	$response = shell_exec($rrdtool);
+}
 if (strlen($response)) {
 	$response_array = explode(' ', $response);
 	print 'NOTE: Using ' . $response_array[0] . ' Version ' . $response_array[1] . PHP_EOL;
@@ -302,10 +310,20 @@ if ($finrrd === '') {
 
 // execute the dump commands
 debug("Creating XML file '$oldxmlfile' from '$oldrrd'");
-shell_exec("$rrdtool dump $oldrrd > $oldxmlfile");
+if (class_exists('\\Cacti\\Process\\CactiProcess')) {
+	$processOld = \Cacti\Process\CactiProcess::run([$rrdtool, 'dump', $oldrrd]);
+	file_put_contents($oldxmlfile, $processOld->getOutput());
+} else {
+	shell_exec("$rrdtool dump $oldrrd > $oldxmlfile");
+}
 
 debug("Creating XML file '$newxmlfile' from '$newrrd'");
-shell_exec("$rrdtool dump $newrrd > $newxmlfile");
+if (class_exists('\\Cacti\\Process\\CactiProcess')) {
+	$processNew = \Cacti\Process\CactiProcess::run([$rrdtool, 'dump', $newrrd]);
+	file_put_contents($newxmlfile, $processNew->getOutput());
+} else {
+	shell_exec("$rrdtool dump $newrrd > $newxmlfile");
+}
 
 // read the xml files into arrays
 if (file_exists($oldxmlfile)) {

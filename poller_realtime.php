@@ -138,8 +138,14 @@ $change_files = false;
 $max_threads = read_config_option('max_threads');
 
 // Determine Command Name
-$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
-$extra_args     = '-q ' . cacti_escapeshellarg(CACTI_PATH_BASE . '/cmd_realtime.php') . " $poller_id $graph_id $interval";
+$argv = [
+	read_config_option('path_php_binary'),
+	'-q',
+	CACTI_PATH_BASE . '/cmd_realtime.php',
+	(string)$poller_id,
+	(string)$graph_id,
+	(string)$interval
+];
 
 // Determine if Realtime will work or not
 $cache_dir = read_config_option('realtime_cache_path');
@@ -156,7 +162,11 @@ if (!is_writable($cache_dir)) {
 	return -2;
 }
 
-shell_exec("$command_string $extra_args");
+try {
+	\Cacti\Process\CactiProcess::run($argv, [], 30.0);
+} catch (\Exception $e) {
+	cacti_log("ERROR: Realtime poller failed to run cmd_realtime: " . $e->getMessage(), false, 'POLLER');
+}
 
 // open a pipe to rrdtool for writing
 $rrdtool_pipe = rrd_init();
@@ -242,7 +252,11 @@ function process_poller_output_rt(mixed $rrdtool_pipe, int $poller_id, int $inte
 				$command = str_replace("\\\n", ' ', $command);
 
 				// create the rrdfile
-				shell_exec($command);
+				try {
+					\Cacti\Process\CactiProcess::run(\Cacti\Process\CactiProcess::split($command), [], 30.0);
+				} catch (\Exception $e) {
+					cacti_log("ERROR: Realtime poller failed to create rrdfile: " . $e->getMessage(), false, 'POLLER');
+				}
 
 				// change permissions so that the poller can clear
 				@chmod($rt_graph_path, 0644);

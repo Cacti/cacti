@@ -1025,7 +1025,12 @@ function create_tables(bool $load = true) : void {
 		} elseif (file_exists('/usr/local/bin/mysql')) {
 			$db_shell = '/usr/local/bin/mysql';
 		} else {
-			$db_shell = shell_exec('which mysql');
+			try {
+				$process = \Cacti\Process\CactiProcess::run(['which', 'mysql']);
+				$db_shell = trim($process->getOutput());
+			} catch (\Exception $e) {
+				$db_shell = '';
+			}
 
 			if ($db_shell == '') {
 				print 'FATAL: mysql or mariadb command not found!' . PHP_EOL;

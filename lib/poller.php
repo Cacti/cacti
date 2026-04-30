@@ -22,6 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
+include_once(dirname(__FILE__) . '/CactiProcess.php');
+
 /**
  * exec_poll - executes a command and returns its output
  *
@@ -137,20 +139,19 @@ function exec_background(string $filename, string|array $args = '', string|array
 
 	if ($filename != '') {
 		if (file_exists($filename)) {
-			if (CACTI_SERVER_OS == 'win32') {
-				if (!file_escaped($filename)) {
-					$filename = cacti_escapeshellcmd($filename);
+			$argv = [$filename];
+			if ($args !== '') {
+				foreach (explode(' ', $args) as $arg) {
+					if ($arg !== '') {
+						$argv[] = $arg;
+					}
 				}
+			}
 
-				if ($redirect_args == '') {
-					pclose(popen('start "Cactiplus" /I ' . $filename . ' ' . $args, 'r'));
-				} else {
-					pclose(popen('start "Cactiplus" /I ' . $filename . ' ' . $args . ' ' . $redirect_args, 'r'));
-				}
-			} elseif ($redirect_args == '') {
-				exec($filename . ' ' . $args . ' > /dev/null 2>&1 &');
-			} else {
-				exec($filename . ' ' . $args . ' ' . $redirect_args . ' &');
+			try {
+				\Cacti\Process\CactiProcess::start($argv);
+			} catch (\Exception $e) {
+				cacti_log('ERROR: exec_background failed to start: ' . $e->getMessage(), false, 'POLLER');
 			}
 		}
 	} else {

@@ -22,6 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
+include_once(dirname(__FILE__) . '/CactiProcess.php');
+
 define('RRD_NL', " \\\n");
 define('MAX_FETCH_CACHE_SIZE', 5);
 
@@ -418,7 +420,14 @@ function __rrd_execute(string|array $command_line, bool $log_to_stdout, int $out
 						proc_close($process);
 					}
 				} else {
-					$output = shell_exec($full_commandline);
+					$argv = \Cacti\Process\CactiProcess::split(read_config_option('path_rrdtool') . ' ' . $command_line);
+					try {
+						$process = \Cacti\Process\CactiProcess::run($argv, [], 30.0);
+						$output = $process->getOutput() . $process->getErrorOutput();
+					} catch (\Exception $e) {
+						cacti_log('ERROR: RRDtool failed to run: ' . $e->getMessage(), false, 'RRDTOOL');
+						$output = '';
+					}
 				}
 
 				if ($output_flag == RRDTOOL_OUTPUT_STDOUT || $output_flag == RRDTOOL_OUTPUT_GRAPH_DATA) {

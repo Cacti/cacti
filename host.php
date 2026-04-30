@@ -200,8 +200,17 @@ function host_reindex() : void {
 	$start = microtime(true);
 
 	$host_id = gfrv('host_id');
-	shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg(CACTI_PATH_CLI . '/poller_reindex_hosts.php') . ' --qid=all --id=' . $host_id);
-
+	try {
+		\Cacti\Process\CactiProcess::run([
+			read_config_option('path_php_binary'),
+			'-q',
+			CACTI_PATH_CLI . '/poller_reindex_hosts.php',
+			'--qid=all',
+			'--id=' . $host_id
+		]);
+	} catch (\Exception $e) {
+		cacti_log("ERROR: Failed to run poller_reindex_hosts.php: " . $e->getMessage(), false, 'WEBUI');
+	}
 	$end = microtime(true);
 
 	$total_time = $end - $start;

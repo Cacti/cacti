@@ -216,13 +216,21 @@ switch (grv('action')) {
 		$graph_data_array['image_format'] = $gtype;
 
 		// call poller
-		$local_graph_id = (int) gfrv('local_graph_id');
+		$local_graph_id = CactiSecureType::toInt(gfrv('local_graph_id'));
 		$graph_rrd      = read_config_option('realtime_cache_path') . '/user_' . hash('sha256', session_id()) . '_lgi_' . $local_graph_id . '.png';
-		$php_binary     = cacti_escapeshellcmd(read_config_option('path_php_binary'));
-		$script_path    = cacti_escapeshellarg(CACTI_PATH_BASE . '/poller_realtime.php');
-		$args           = '--graph=' . $local_graph_id . ' --interval=' . ((int) $graph_data_array['ds_step']) . ' --poller_id=' . hash('sha256', session_id());
-
-		shell_exec($php_binary . ' -q ' . $script_path . ' ' . $args);
+		$argv = [
+			read_config_option('path_php_binary'),
+			'-q',
+			CACTI_PATH_BASE . '/poller_realtime.php',
+			'--graph=' . $local_graph_id,
+			'--interval=' . ((int) $graph_data_array['ds_step']),
+			'--poller_id=' . hash('sha256', session_id())
+		];
+		try {
+			\Cacti\Process\CactiProcess::run($argv);
+		} catch (\Exception $e) {
+			cacti_log("ERROR: Realtime poller failed to run: " . $e->getMessage(), false, 'POLLER');
+		}
 
 		// construct the image name
 		$graph_data_array['export_realtime'] = $graph_rrd;

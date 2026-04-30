@@ -328,6 +328,11 @@ exit(0);
 function float_rrdfile(string $rrd_path, int $local_data_id, mixed $step, int $start_time, int $end_time) : bool {
 	global $seebug;
 
+	if (!\Cacti\Security\CactiValidator::isValidRrdPath($rrd_path)) {
+		cacti_log("ERROR: Invalid RRDfile path provided to float_rrdfile: $rrd_path", false, 'RFLOAT');
+		return false;
+	}
+
 	static $rrdtool_bin = false;
 	static $tmp_dir     = false;
 
@@ -344,12 +349,19 @@ function float_rrdfile(string $rrd_path, int $local_data_id, mixed $step, int $s
 
 	$return     = 0;
 	$output     = [];
-	$command    = "$rrdtool_bin dump $rrd_path";
+	$argv       = [$rrdtool_bin, 'dump', $rrd_path];
 	$db_prefix  = '                       ';
 
 	if (file_exists($rrd_path)) {
 		if (is_writable($rrd_path)) {
-			$response = exec($command, $output, $return);
+			try {
+				$process = \Cacti\Process\CactiProcess::run($argv);
+				$output = explode("\n", $process->getOutput() . $process->getErrorOutput());
+				$return = $process->getExitCode();
+			} catch (\Exception $e) {
+				$output = [$e->getMessage()];
+				$return = 1;
+			}
 
 			if ($return != 0) {
 				cacti_log(sprintf('ERROR: Unable to dump file %s to XML', $rrd_path), false, 'RFLOAT');
@@ -459,10 +471,16 @@ function float_rrdfile(string $rrd_path, int $local_data_id, mixed $step, int $s
 				// restore the file
 				$return  = 0;
 				$output  = [];
-				$command = "$rrdtool_bin restore -f $tmp_file $rrd_path";
+				$argv    = [$rrdtool_bin, 'restore', '-f', $tmp_file, $rrd_path];
 
-				$response = exec($command, $output, $return);
-
+				try {
+					$process = \Cacti\Process\CactiProcess::run($argv);
+					$output = explode("\n", $process->getOutput() . $process->getErrorOutput());
+					$return = $process->getExitCode();
+				} catch (\Exception $e) {
+					$output = [$e->getMessage()];
+					$return = 1;
+				}
 				if (!$seebug && file_exists($tmp_file)) {
 					unlink($tmp_file);
 				}

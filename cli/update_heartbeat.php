@@ -257,21 +257,29 @@ $i = 0;
 if (cacti_sizeof($rrdfiles)) {
 	foreach ($rrdfiles as $f) {
 		if (file_exists($f['rrd'])) {
-			$command = sprintf('rrdtool tune %s ', $f['rrd']);
+			$argv = ['rrdtool', 'tune', $f['rrd']];
 
 			$data_sources = explode(',', $f['data_sources']);
 
 			foreach ($data_sources as $ds) {
-				$command .= " --heartbeat $ds:$new_heartbeat";
+				$argv[] = '--heartbeat';
+				$argv[] = "$ds:$new_heartbeat";
 			}
 
 			$output      = [];
 			$return_code = 0;
 
 			debug(sprintf('Updating Heartbeat for Data Source:%s, Data Template:%s, RRD:%s from 600 to 900' . PHP_EOL, $f['name_cache'], $f['name'], $f['rrd']));
-			debug(sprintf("The RRDtool command is '$command'" . PHP_EOL));
+			debug(sprintf("The RRDtool command is '%s'" . PHP_EOL, implode(' ', $argv)));
 
-			$result = exec($command, $output, $return_code);
+			try {
+				$process = \Cacti\Process\CactiProcess::run($argv);
+				$output = explode("\n", $process->getOutput() . $process->getErrorOutput());
+				$return_code = $process->getExitCode();
+			} catch (\Exception $e) {
+				$output = [$e->getMessage()];
+				$return_code = 1;
+			}
 
 			if ($return_code != 0) {
 				printf('Warning Error Occurred: ' . implode(', ', $output) . PHP_EOL);

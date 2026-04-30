@@ -53,7 +53,7 @@ while (true) {
 	if (cacti_strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
 		popen('start "CactiSNMPCacheChild" /I ' . $php . ' ' . $extra_args, 'r');
 	} else {
-		exec($php . ' ' . $extra_args . ' > /dev/null &');
+		\Cacti\Process\CactiProcess::start(array_merge([$php], explode(' ', $extra_args)));
 	}
 
 	sleep(30 - time() % 30);

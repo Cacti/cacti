@@ -36,10 +36,13 @@ if (!isset($called_by_script_server)) {
 
 function ss_netsnmp_lmsensors_is_vhost() : bool {
 	if (file_exists('/usr/bin/hostnamectl')) {
-		$virtual = intval(shell_exec('/usr/bin/hostnamectl 2> /dev/null | grep -i virtual | wc -l'));
-
-		if ($virtual) {
-			return true;
+		try {
+			$process = \Cacti\Process\CactiProcess::run(['/usr/bin/hostnamectl']);
+			if (stripos($process->getOutput(), 'virtual') !== false) {
+				return true;
+			}
+		} catch (\Exception $e) {
+			// Do nothing on failure
 		}
 	}
 

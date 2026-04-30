@@ -190,7 +190,12 @@ while (1) {
 		if (!empty($parent_pid)) {
 			if (cacti_strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
 				$out = [];
-				exec("TASKLIST /FO LIST /FI \"PID eq $parent_pid\"", $out);
+				try {
+					$process = \Cacti\Process\CactiProcess::run(['TASKLIST', '/FO', 'LIST', '/FI', "PID eq $parent_pid"]);
+					$out = explode("\n", $process->getOutput());
+				} catch (\Exception $e) {
+					$out = [];
+				}
 
 				$isParentRunning = (cacti_count($out) > 1);
 			} elseif (function_exists('posix_kill')) {

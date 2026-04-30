@@ -82,10 +82,15 @@ if (cacti_strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
 	// windows part missing
 	pclose(popen('start "CactiSNMPCache" /I /B ' . $php . ' ' . $extra_args, 'r'));
 } else {
-	exec('ps -ef | grep -v grep | grep -v "sh -c" | grep snmpagent_mibcache.php', $output);
+	try {
+		$process = \Cacti\Process\CactiProcess::run(['ps', '-ef']);
+		$output = preg_grep('/snmpagent_mibcache\.php/', explode("\n", $process->getOutput()));
+	} catch (\Exception $e) {
+		$output = [];
+	}
 
-	if (!cacti_sizeof($output)) {
-		exec($php . ' ' . $extra_args . ' > /dev/null &');
+	if (cacti_sizeof($output) == 0) {
+		\Cacti\Process\CactiProcess::start(array_merge([$php], explode(' ', $extra_args)));
 	}
 }
 

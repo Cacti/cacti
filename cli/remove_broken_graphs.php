@@ -44,7 +44,12 @@ $remove  = false;
 $columns = 80;
 
 if (empty($github_actions) && CACTI_SERVER_OS == 'unix') {
-	$stty  = shell_exec('stty size');
+	try {
+		$process = \Cacti\Process\CactiProcess::run(['stty', 'size']);
+		$stty = $process->getOutput();
+	} catch (\Exception $e) {
+		$stty = '';
+	}
 	$sizes = explode(' ', $stty);
 
 	if (!empty($sizes[1])) {

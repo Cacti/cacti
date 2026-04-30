@@ -47,5 +47,11 @@ if (in_array('-v', $parms, true) || in_array('-V', $parms, true) || in_array('--
 	print 'Cacti Repopulate poller cache Tool, Version ' . CACTI_VERSION . ' ' . COPYRIGHT_YEARS . PHP_EOL;
 } else {
 	print 'WARNING: Deprecated script push_out_hosts.php. Please use rebuild_poller_cache.php.' . PHP_EOL;
-	passthru($php_binary . ' ' . CACTI_PATH_CLI . '/rebuild_poller_cache.php ' . $parameters);
+	try {
+		$argv = array_merge([$php_binary, CACTI_PATH_CLI . '/rebuild_poller_cache.php'], explode(' ', $parameters));
+		$process = \Cacti\Process\CactiProcess::run(array_filter($argv));
+		print $process->getOutput() . $process->getErrorOutput();
+	} catch (\Exception $e) {
+		print "ERROR: Failed to run rebuild_poller_cache.php: " . $e->getMessage() . PHP_EOL;
+	}
 }
