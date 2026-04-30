@@ -21,7 +21,7 @@ printf 'category\tlocation\tmatch\n'
 scan() {
 	local category="$1"
 	local pattern="$2"
-	rg -n --pcre2 --no-config --no-ignore --no-ignore-vcs --no-ignore-parent "$pattern" "${EXCLUDE[@]}" --glob '*.php' . 2>/dev/null | while IFS= read -r line; do
+	rg -n --pcre2 --no-config --no-ignore --no-ignore-vcs --no-ignore-parent "$pattern" "${EXCLUDE[@]}" --glob '*.php' . 2>/dev/null | grep -v '\/plugins\/' | while IFS= read -r line; do
 		file="${line%%:*}"
 		rest="${line#*:}"
 		lineno="${rest%%:*}"

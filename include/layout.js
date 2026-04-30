@@ -736,9 +736,42 @@ function cactiReturnTo(href) {
 	}
 }
 
+function handleTableNav() {
+	$('.navBarNavigationNext, .navBarNavigationCenter, .navBarNavigationPrevious').find('a').each(function() {
+		$(this).on('click', function(event) {
+			var data_url = $(this).data('url');
+			var returnTo = $(this).data('return');
+
+			event.preventDefault();
+
+			if (typeof url_graph === 'function') {
+				var url_add = url_graph('');
+			} else {
+				var url_add = '';
+			}
+
+			if (data_url) {
+				if (returnTo) {
+					$.get(data_url+url_add+'&header=false', function(data) {
+						$('#' + returnTo).html(data);
+						applySkin();
+					});
+				} else {
+					document.location = data_url + url_add;
+				}
+			}
+		});
+	});
+}
+
 /** applySkin - This function re-asserts all javascript behavior to a page
  *  that can't be set using a live attribute 'on()' */
 function applySkin() {
+	// Support callback nonces
+	$.ajaxSetup({
+		nonce: cactiNonce
+	});
+
 	pageName = basename($(location).attr('pathname'));
 
 	$('#messageContainer').remove();
@@ -781,6 +814,8 @@ function applySkin() {
 	ajaxAnchors();
 
 	applySelectorVisibilityAndActions();
+
+	handleTableNav();
 
 	$('.helpPage').off('click').on('click', function(event) {
 		event.stopPropagation();
