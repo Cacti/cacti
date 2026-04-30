@@ -13,6 +13,7 @@
 
 $functionsSource = file_get_contents(__DIR__ . '/../../lib/functions.php');
 $databaseSource  = file_get_contents(__DIR__ . '/../../lib/database.php');
+$authSource      = file_get_contents(__DIR__ . '/../../lib/auth.php');
 
 // -------------------------------------------------------------------------
 // sanitize_uri — double-decode prevention (M-2)
@@ -114,4 +115,71 @@ test('db_dump_data never interpolates password into command string', function ()
 	$cmdBody  = substr($body, $cmdStart, $cmdEnd - $cmdStart);
 	expect($cmdBody)->not->toContain('$password');
 	expect($cmdBody)->not->toContain('--password');
+});
+
+// -------------------------------------------------------------------------
+// check_auth_cookie — lockout ordering (H-5)
+//
+// Before the fix, check_auth_cookie called set_auth_cookie (rotating the
+// remember-me token) before calling auth_process_lockout_check.  A locked
+// account would have its token rotated and a fresh Set-Cookie header emitted
+// before the function returned false.  The auth event was also written to
+// user_log before the lockout was detected.
+//
+// After the fix auth_process_lockout_check runs first.  A locked account is
+// rejected immediately; no token is rotated and no log entry is written.
+// -------------------------------------------------------------------------
+
+test('check_auth_cookie rejects locked accounts before rotating the cookie', function () use ($authSource) {
+	$start = strpos($authSource, 'function check_auth_cookie(');
+	expect($start)->not->toBeFalse('check_auth_cookie not found in lib/auth.php');
+
+	$end  = strpos($authSource, "\nfunction ", $start + 1);
+	$body = $end !== false ? substr($authSource, $start, $end - $start) : substr($authSource, $start, 3000);
+
+	$lockoutPos   = strpos($body, 'auth_process_lockout_check(');
+	$setCookiePos = strpos($body, 'set_auth_cookie(');
+
+	expect($lockoutPos)->not->toBeFalse('auth_process_lockout_check not present in check_auth_cookie');
+	expect($setCookiePos)->not->toBeFalse('set_auth_cookie not present in check_auth_cookie');
+
+	// Lockout must be evaluated before the cookie is rotated.
+	expect($lockoutPos)->toBeLessThan($setCookiePos,
+		'auth_process_lockout_check must appear before set_auth_cookie');
+});
+
+test('check_auth_cookie lockout check uses truthy result not inverted === false', function () use ($authSource) {
+	$start = strpos($authSource, 'function check_auth_cookie(');
+	$end   = strpos($authSource, "\nfunction ", $start + 1);
+	$body  = $end !== false ? substr($authSource, $start, $end - $start) : substr($authSource, $start, 3000);
+
+	// The broken form returned false for locked accounts and allowed them through.
+	expect($body)->not->toContain('auth_process_lockout_check($user_info[\'username\'], $user_info[\'realm\']) === false');
+});
+
+// -------------------------------------------------------------------------
+// cacti_auth_transition — no cookie rotation on 1.2.x (H-6)
+//
+// An earlier revision added cookie rotation inside cacti_auth_transition.
+// This caused a double rotation on the cookie-restore path: check_auth_cookie
+// called set_auth_cookie (T1->T2), then cacti_auth_transition read the stale
+// $_COOKIE (still T1), found no DB row, and emitted a third cookie T3.  The
+// browser held T3 while the DB stored T2, breaking remember-me on the next
+// visit.
+//
+// On 1.2.x the rotation was moved back to set_auth_cookie / check_auth_cookie
+// exclusively.  cacti_auth_transition must not touch user_auth_cache.
+// -------------------------------------------------------------------------
+
+test('cacti_auth_transition does not update user_auth_cache', function () use ($authSource) {
+	$start = strpos($authSource, 'function cacti_auth_transition(');
+	expect($start)->not->toBeFalse('cacti_auth_transition not found in lib/auth.php');
+
+	$end  = strpos($authSource, "\nfunction ", $start + 1);
+	$body = $end !== false ? substr($authSource, $start, $end - $start) : substr($authSource, $start, 3000);
+
+	expect($body)->not->toContain('UPDATE user_auth_cache',
+		'cacti_auth_transition must not rotate the remember-me token on 1.2.x');
+	expect($body)->not->toContain('set_auth_cookie(',
+		'cacti_auth_transition must not call set_auth_cookie on 1.2.x');
 });
