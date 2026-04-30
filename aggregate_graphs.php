@@ -375,15 +375,14 @@ function form_save() : void {
 		}
 
 		if (is_error_message()) {
-			header('Location: ' . CACTI_PATH_URL . 'aggregate_graphs.php?action=item_edit&graph_template_item_id=' . (empty($graph_template_item_id) ? gfrv('graph_template_item_id') : $graph_template_item_id) . '&id=' . gfrv('local_graph_id'));
+			header('Location: ' . validate_redirect_url(CACTI_PATH_URL . 'aggregate_graphs.php?action=item_edit&graph_template_item_id=' . (empty($graph_template_item_id) ? gfrv('graph_template_item_id') : $graph_template_item_id) . '&id=' . gfrv('local_graph_id')));
 
 			exit;
 		} else {
-			header('Location: ' . CACTI_PATH_URL . 'aggregate_graphs.php?action=edit&id=' . gfrv('local_graph_id'));
+			header('Location: ' . validate_redirect_url(CACTI_PATH_URL . 'aggregate_graphs.php?action=edit&id=' . gfrv('local_graph_id')));
 
 			exit;
-		}
-	}
+		}	}
 }
 
 /**
@@ -452,11 +451,11 @@ function form_save_aggregate() : mixed {
 	}
 
 	if (is_error_message()) {
-		header('Location: ' . CACTI_PATH_URL . $location_failure);
+		header('Location: ' . validate_redirect_url(CACTI_PATH_URL . $location_failure));
 
 		exit;
 	} else {
-		header('Location: ' . CACTI_PATH_URL . $location_success);
+		header('Location: ' . validate_redirect_url(CACTI_PATH_URL . $location_success));
 
 		exit;
 	}
@@ -1078,7 +1077,7 @@ function graph_edit() : bool {
 
 		if (isset($_SERVER['HTTP_REFERER'])) {
 			$referer = $_SERVER['HTTP_REFERER'];
-			header('Location: ' . $referer);
+			header('Location: ' . validate_redirect_url($referer));
 		} else {
 			header('Location: aggregate_graphs.php');
 		}
@@ -1576,7 +1575,7 @@ function aggregate_items() : void {
 	if (grv('rfilter') == '') {
 		$sql_where = '';
 	} elseif (validate_is_regex(grv('rfilter'))) {
-		$sql_where = "WHERE gtg.title_cache RLIKE '" . grv('rfilter') . "'";
+		$sql_where = 'WHERE gtg.title_cache ' . db_qstr_rlike(grv('rfilter'));
 	} else {
 		$filters   = explode(' ', grv('rfilter'));
 		$sql_where = '';
@@ -1610,7 +1609,8 @@ function aggregate_items() : void {
 	}
 
 	if (grv('local_graph_ids') != '') {
-		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' agi.local_graph_id IN(' . grv('local_graph_ids') . ')';
+		$ids = array_map(fn($id) => CactiSecureType::toInt($id), explode(',', grv('local_graph_ids')));
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' agi.local_graph_id IN(' . implode(',', $ids) . ')';
 	}
 
 	$sql = "SELECT COUNT(DISTINCT gl.id) AS total

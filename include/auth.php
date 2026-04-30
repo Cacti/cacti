@@ -53,7 +53,7 @@ check_reset_no_authentication($auth_method);
  * process if found to be different.
  */
 if (is_install_needed() && !defined('IN_CACTI_INSTALL')) {
-	header('Location: ' . CACTI_PATH_URL . 'install/');
+	header('Location: ' . validate_redirect_url(CACTI_PATH_URL . 'install/'));
 
 	exit;
 }
@@ -74,7 +74,7 @@ api_plugin_hook_function('auth_alternate_realms');
  */
 if ($auth_method != AUTH_METHOD_BASIC) {
 	if (isset($_SESSION[SESS_CHANGE_PASSWORD])) {
-		header('Location: ' . CACTI_PATH_URL . 'auth_changepassword.php?ref=' . ($_SERVER['HTTP_REFERER'] ?? 'index.php'));
+		header('Location: ' . CACTI_PATH_URL . 'auth_changepassword.php?ref=' . validate_redirect_url($_SERVER['HTTP_REFERER'] ?? 'index.php'));
 
 		exit;
 	}
@@ -212,10 +212,9 @@ if (empty($_SESSION[SESS_USER_ID])) {
 	if (!$cookie_user && empty($_SESSION[SESS_USER_2FA]) && db_column_exists('user_auth', 'tfa_enabled')) {
 		if (read_config_option('secpass_2fa_enabled') == 'on') {
 			if (is_2fa_enabled($_SESSION[SESS_USER_ID])) {
-				header('Location: ' . CACTI_PATH_URL . 'auth_2fa.php');
+				header('Location: ' . validate_redirect_url(CACTI_PATH_URL . 'auth_2fa.php'));
 				exit;
-			} else {
-				$_SESSION[SESS_USER_2FA] = time();
+			} else {				$_SESSION[SESS_USER_2FA] = time();
 			}
 		}
 	}

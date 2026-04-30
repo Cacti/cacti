@@ -48,7 +48,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 
 if (!cacti_sizeof($page)) {
 	raise_message('page_not_defined');
-	header('Location: ' . $referer);
+	header('Location: ' . validate_redirect_url($referer));
 
 	exit;
 } else {
@@ -98,7 +98,7 @@ if (!cacti_sizeof($page)) {
 		bottom_footer();
 	} else {
 		raise_message('permission_denied');
-		header('Location: ' . $referer);
+		header('Location: ' . validate_redirect_url($referer));
 
 		exit;
 	}

@@ -284,7 +284,7 @@ if ($listGraphTemplates) {
 		$sql_cwhere = '';
 
 		foreach ($regex as $r) {
-			$sql_cwhere .= ($sql_cwhere == '' ? '' : ' OR ') . 'title_cache RLIKE "' . $r . '"';
+			$sql_cwhere .= ($sql_cwhere == '' ? '' : ' OR ') . 'title_cache ' . db_qstr_rlike($r);
 		}
 
 		$sql_where .= $sql_cwhere . ')';

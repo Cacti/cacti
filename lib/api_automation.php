@@ -179,8 +179,8 @@ function display_matching_hosts(array $rule, int $rule_type, string $url) : void
 	$total_rows = cacti_sizeof(db_fetch_assoc($details['rows_query'], false));
 	$sortby     = $details['sortby'];
 	$sql_query  = $details['rows_query'] .
-		' ORDER BY ' . $sortby . ' ' . grv('sort_direction') .
-		' LIMIT ' . ($details['rows'] * (grv('page') - 1)) . ',' . $details['rows'];
+		' ORDER BY ' . $sortby . ' ' . (grv('sort_direction') == 'ASC' ? 'ASC' : 'DESC') .
+		' LIMIT ' . ($details['rows'] * (CactiSecureType::toInt(grv('page')) - 1)) . ',' . $details['rows'];
 
 	$hosts = db_fetch_assoc($sql_query, false);
 
@@ -466,9 +466,8 @@ function automation_get_matching_graphs_sql(array $rule, int $rule_type) : array
 		LEFT JOIN host_template AS ht
 		ON h.host_template_id = ht.id
 		$sql_where
-		ORDER BY " . grv('sort_column') . ' ' . grv('sort_direction') . '
-		LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows;
-
+		ORDER BY " . grv('sort_column') . ' ' . (grv('sort_direction') == 'ASC' ? 'ASC' : 'DESC') . '
+		LIMIT ' . ($rows * (CactiSecureType::toInt(grv('page')) - 1)) . ',' . $rows;
 	return [
 		'rows_query' => $rows_query,
 		'total_rows' => $total_rows_query,
@@ -1210,8 +1209,8 @@ function display_matching_trees(int $rule_id, int $rule_type, array $item, strin
 	}
 
 	$sql_query = "$rows_query ORDER BY $sortby " .
-		grv('sort_direction') . ' LIMIT ' .
-		($rows * (grv('page') - 1)) . ',' . $rows;
+		(grv('sort_direction') == 'ASC' ? 'ASC' : 'DESC') . ' LIMIT ' .
+		($rows * (CactiSecureType::toInt(grv('page')) - 1)) . ',' . $rows;
 
 	$templates = db_fetch_assoc($sql_query, false);
 

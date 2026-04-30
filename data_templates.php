@@ -157,7 +157,7 @@ function form_save() : void {
 
 				$location = 'data_templates.php?action=template_edit&id=' . $data_template_id_param . $view_rrd_param;
 
-				header('Location: ' . $location);
+				header('Location: ' . validate_redirect_url($location));
 
 				exit;
 			}

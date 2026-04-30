@@ -4598,7 +4598,7 @@ function auth_login_redirect(string $login_opts = '') : void {
 			$referer  = str_replace('?action=login', '', $referer);
 
 			if (api_user_realm_auth(auth_basename($referer))) {
-				header('Location: ' . $referer);
+				header('Location: ' . validate_redirect_url($referer));
 			} elseif (!is_realm_allowed(8)) {
 				cacti_log(sprintf("DEBUG: Referer Overridden Due to Permissions to '%s'", 'graph_view.php'), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
@@ -4810,7 +4810,7 @@ function check_reset_no_authentication(int $auth_method) : bool {
 
 		$_SESSION[SESS_USER_ID]         = $admin_id;
 		$_SESSION[SESS_CHANGE_PASSWORD] = true;
-		header('Location: ' . CACTI_PATH_URL . 'auth_changepassword.php?action=force&ref=' . ($_SERVER['HTTP_REFERER'] ?? 'index.php'));
+		header('Location: ' . CACTI_PATH_URL . 'auth_changepassword.php?action=force&ref=' . validate_redirect_url($_SERVER['HTTP_REFERER'] ?? 'index.php'));
 
 		exit;
 	}

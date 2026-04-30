@@ -779,7 +779,7 @@ function update_show_current() : void {
 			$(function() {
 				var sortColumn = '<?php print grv('sort_column'); ?>';
 				var dndActive  = <?php print read_config_option('drag_and_drop') == 'on' ? 'true' : 'false'; ?>;
-				var tableState = <?php print grv('state'); ?>
+				var tableState = <?php print CactiSecureType::toInt(grv('state')); ?>;
 
 				$('#refresh').click(function() {
 					applyFilter();

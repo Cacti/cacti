@@ -2224,6 +2224,29 @@ function db_qstr(mixed $s, mixed $db_conn = false) : string {
 }
 
 /**
+ * db_qstr_rlike - Safely quote a value for use in a RLIKE/REGEXP clause.
+ *
+ * It combines db_qstr() escaping with protection against RLIKE-specific
+ * metacharacters like pipe (|) and NUL to prevent SQL injection.
+ *
+ * @param mixed $s       The string to be quoted
+ * @param mixed $db_conn The connection name or false if one is not passed
+ *
+ * @return string The quoted string
+ */
+function db_qstr_rlike(mixed $s, mixed $db_conn = false) : string {
+	$s = CactiSecureType::toString($s);
+
+	// Cap operand length at 255 bytes for performance and safety
+	$s = substr($s, 0, 255);
+
+	// Strip NUL, pipe and brace metacharacters that can be used for injection
+	$s = str_replace(["\0", '|', '{', '}', '[', ']', '(', ')'], '', $s);
+
+	return 'RLIKE ' . db_qstr($s, $db_conn);
+}
+
+/**
  * db_strip_control_chars - Strip control characters from SQL command
  *
  * @param string $sql The SQL command to loose it's control chars
@@ -2453,7 +2476,7 @@ function db_switch_main_to_local() : bool {
 function db_dump_data(string $database = '', string $tables = '', array $credentials = [], mixed $output_file = false, string $options = '--extended-insert=FALSE') : int {
 	global $database_default, $database_username, $database_password;
 
-	$credentials_string = '';
+	$env = [];
 
 	if ($database == '') {
 		$database = $database_default;
@@ -2468,24 +2491,18 @@ function db_dump_data(string $database = '', string $tables = '', array $credent
 					$password = $value;
 				} elseif ($name == '--user') {
 					$username = $value;
-				} else {
-					$credentials_string .= $name . '=' . $value . ' ';
 				}
 			} elseif (str_contains($name, '-')) { // name like -h
 				if ($name == '-p') {
 					$password = $value;
 				} elseif ($name == '-u') {
 					$username = $value;
-				} else {
-					$credentials_string .= $name . $value . ' ';
 				}
 			} else {                                  // name like host
 				if ($name == 'password') {
 					$password = $value;
 				} elseif ($name == 'user') {
 					$username = $value;
-				} else {
-					$credentials_string .= '--' . $name . '=' . $value . ' ';
 				}
 			}
 		}
@@ -2505,20 +2522,56 @@ function db_dump_data(string $database = '', string $tables = '', array $credent
 		$dump = 'mysqldump';
 	}
 
-	$dump_esc   = cacti_escapeshellcmd($dump);
-	$output_esc = cacti_escapeshellarg((string) $output_file);
-	$tables_esc = $tables !== '' ? implode(' ', array_map('cacti_escapeshellarg', preg_split('/\s+/', trim($tables)))) : '';
+	$argv = [$dump];
 
-	if (str_contains($options, '--defaults-extra-file')) {
-		exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ($tables_esc !== '' ? ' ' . $tables_esc : '') . " > $output_esc", $output, $retval);
-	} else {
-		exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ' version >/dev/null 2>&1', $output, $retval);
-
-		if ($retval) {
-			exec("$dump_esc $options $credentials_string --user=" . cacti_escapeshellarg($username) . ' --password=' . cacti_escapeshellarg($password) . ' ' . cacti_escapeshellarg($database) . ($tables_esc !== '' ? ' ' . $tables_esc : '') . " > $output_esc", $output, $retval);
-		} else {
-			exec("$dump_esc $options $credentials_string " . cacti_escapeshellarg($database) . ($tables_esc !== '' ? ' ' . $tables_esc : '') . " > $output_esc", $output, $retval);
+	// Handle options - split by space but keep quoted strings together if needed
+	// For simplicity in this legacy bridge, we assume $options are trusted or pre-validated
+	if ($options !== '') {
+		foreach (explode(' ', $options) as $opt) {
+			if ($opt !== '') {
+				$argv[] = $opt;
+			}
 		}
+	}
+
+	// Set credentials via environment or argv
+	$env['MYSQL_PWD'] = $password;
+	$argv[] = '--user=' . $username;
+	$argv[] = $database;
+
+	if ($tables !== '') {
+		foreach (preg_split('/\s+/', trim($tables)) as $table) {
+			if ($table !== '') {
+				$argv[] = $table;
+			}
+		}
+	}
+
+	try {
+		$process = new \Symfony\Component\Process\Process($argv);
+		$process->setEnv($env);
+		$process->setTimeout(null); // mysqldump can take a long time
+
+		if ($output_file) {
+			$fd = fopen($output_file, 'w');
+			if (!$fd) {
+				cacti_log("ERROR: db_dump_data failed to open output file '$output_file'", false, 'DBCALL');
+				return 1;
+			}
+
+			$retval = $process->run(function ($type, $buffer) use ($fd) {
+				if ($type === \Symfony\Component\Process\Process::OUT) {
+					fwrite($fd, $buffer);
+				}
+			});
+
+			fclose($fd);
+		} else {
+			$retval = $process->run();
+		}
+	} catch (\Exception $e) {
+		cacti_log('ERROR: db_dump_data failed to execute: ' . $e->getMessage(), false, 'DBCALL');
+		return 1;
 	}
 
 	return $retval;
