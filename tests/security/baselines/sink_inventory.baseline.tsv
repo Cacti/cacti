@@ -25,11 +25,11 @@ cmd_exec	./lib/functions.php:2249						$output = shell_exec($php . ' -q ' . $scr
 cmd_exec	./lib/functions.php:2516							$output = shell_exec($script_path);
 cmd_exec	./lib/functions.php:3017			return exec('whoami');
 cmd_exec	./lib/functions.php:3676		exec($command_line,$out,$err);
-cmd_exec	./lib/functions.php:6928				$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v');
-cmd_exec	./lib/functions.php:6930				$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v 2>&1');
-cmd_exec	./lib/functions.php:7129				exec('id -nu', $o, $r);
-cmd_exec	./lib/functions.php:7139				exec(sprintf('grep :%s: /etc/passwd | cut -d: -f1', (int) $uid), $o, $r);
-cmd_exec	./lib/functions.php:8261		exec($command, $out, $exit_code);
+cmd_exec	./lib/functions.php:6924				$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v');
+cmd_exec	./lib/functions.php:6926				$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v 2>&1');
+cmd_exec	./lib/functions.php:7125				exec('id -nu', $o, $r);
+cmd_exec	./lib/functions.php:7135				exec(sprintf('grep :%s: /etc/passwd | cut -d: -f1', (int) $uid), $o, $r);
+cmd_exec	./lib/functions.php:8257		exec($command, $out, $exit_code);
 cmd_exec	./lib/installer.php:3288				$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 cmd_exec	./lib/installer.php:3320						shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 cmd_exec	./lib/installer.php:3376						$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
@@ -97,8 +97,8 @@ cmd_exec	./snmpagent_persist.php:86			exec($php . ' ' . $extra_args . ' > /dev/n
 cmd_exec	./utilities.php:219					exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')), $out_array);
 cmd_exec	./utilities.php:237				$snmp_version = shell_exec(cacti_escapeshellcmd(read_config_option('path_snmpget')) . ' -V 2>&1');
 cmd_exec	./utilities.php:257				exec(cacti_escapeshellcmd(read_config_option('path_spine')) . ' --version', $out_array);
-deserialize	./lib/functions.php:4684				$items = unserialize($unstripped, array('allowed_classes' => false));
-deserialize	./lib/functions.php:7825		return @unserialize($strobj, array('allowed_classes' => false));
+deserialize	./lib/functions.php:4680				$items = unserialize($unstripped, array('allowed_classes' => false));
+deserialize	./lib/functions.php:7821		return @unserialize($strobj, array('allowed_classes' => false));
 dynamic_include	./automation_tree_rules.php:547		include_once($config['base_path'].'/lib/html_tree.php');
 dynamic_include	./cli/add_data_query.php:27	require_once($config['base_path'] . '/lib/api_automation_tools.php');
 dynamic_include	./cli/add_data_query.php:28	require_once($config['base_path'] . '/lib/api_automation.php');
@@ -362,17 +362,17 @@ dynamic_include	./lib/dsstats.php:1009			include_once($config['library_path'] . 
 dynamic_include	./lib/dsstats.php:967			include_once($config['base_path'] . '/lib/rrd.php');
 dynamic_include	./lib/export.php:465		include_once($config['library_path'] . '/vdef.php');
 dynamic_include	./lib/functions.php:421		include_once($config['base_path'] . '/lib/poller.php');
-dynamic_include	./lib/functions.php:4812		include_once($config['base_path'] . '/include/global_session.php');
-dynamic_include	./lib/functions.php:4815			include_once($config['base_path'] . '/include/bottom_footer.php');
-dynamic_include	./lib/functions.php:4840			include_once($config['base_path'] . '/include/top_header.php');
-dynamic_include	./lib/functions.php:4847			include_once($config['base_path'] . '/include/top_graph_header.php');
-dynamic_include	./lib/functions.php:4854			include_once($config['base_path'] . '/include/top_general_header.php');
-dynamic_include	./lib/functions.php:5016		require_once($config['include_path'] . '/vendor/phpmailer/src/Exception.php');
-dynamic_include	./lib/functions.php:5017		require_once($config['include_path'] . '/vendor/phpmailer/src/PHPMailer.php');
-dynamic_include	./lib/functions.php:5018		require_once($config['include_path'] . '/vendor/phpmailer/src/SMTP.php');
-dynamic_include	./lib/functions.php:5503	    require_once($config['include_path'] . '/vendor/phpmailer/src/Exception.php');
-dynamic_include	./lib/functions.php:5504	    require_once($config['include_path'] . '/vendor/phpmailer/src/PHPMailer.php');
-dynamic_include	./lib/functions.php:5505	    require_once($config['include_path'] . '/vendor/phpmailer/src/SMTP.php');
+dynamic_include	./lib/functions.php:4808		include_once($config['base_path'] . '/include/global_session.php');
+dynamic_include	./lib/functions.php:4811			include_once($config['base_path'] . '/include/bottom_footer.php');
+dynamic_include	./lib/functions.php:4836			include_once($config['base_path'] . '/include/top_header.php');
+dynamic_include	./lib/functions.php:4843			include_once($config['base_path'] . '/include/top_graph_header.php');
+dynamic_include	./lib/functions.php:4850			include_once($config['base_path'] . '/include/top_general_header.php');
+dynamic_include	./lib/functions.php:5012		require_once($config['include_path'] . '/vendor/phpmailer/src/Exception.php');
+dynamic_include	./lib/functions.php:5013		require_once($config['include_path'] . '/vendor/phpmailer/src/PHPMailer.php');
+dynamic_include	./lib/functions.php:5014		require_once($config['include_path'] . '/vendor/phpmailer/src/SMTP.php');
+dynamic_include	./lib/functions.php:5499	    require_once($config['include_path'] . '/vendor/phpmailer/src/Exception.php');
+dynamic_include	./lib/functions.php:5500	    require_once($config['include_path'] . '/vendor/phpmailer/src/PHPMailer.php');
+dynamic_include	./lib/functions.php:5501	    require_once($config['include_path'] . '/vendor/phpmailer/src/SMTP.php');
 dynamic_include	./lib/graph_variables.php:65		include_once($config['library_path'] . '/rrd.php');
 dynamic_include	./lib/html.php:1207		include($config['include_path'] . '/global_arrays.php');
 dynamic_include	./lib/html_tree.php:479		include_once($config['base_path'] . '/lib/data_query.php');
@@ -560,10 +560,10 @@ fs_write	./lib/functions.php:1353			$fp = @fopen($logfile, 'a');
 fs_write	./lib/functions.php:1428		$fp = fopen($file_name, 'r');
 fs_write	./lib/functions.php:483			file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() . cacti_debug_backtrace($config_name, false, false, 0, 1) . "\n", FILE_APPEND);
 fs_write	./lib/functions.php:698			file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() . cacti_debug_backtrace($config_name, false, false, 0, 1) . "\n", FILE_APPEND);
-fs_write	./lib/functions.php:7023			if (($f = @fopen($path, 'a'))) {
-fs_write	./lib/functions.php:7032		if (($f = @fopen($path, 'w'))) {
+fs_write	./lib/functions.php:7019			if (($f = @fopen($path, 'a'))) {
+fs_write	./lib/functions.php:7028		if (($f = @fopen($path, 'w'))) {
 fs_write	./lib/functions.php:710				file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() .
-fs_write	./lib/functions.php:7106				file_put_contents($tmp_file, 'cacti');
+fs_write	./lib/functions.php:7102				file_put_contents($tmp_file, 'cacti');
 fs_write	./lib/functions.php:719					file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() .
 fs_write	./lib/import.php:425		$f   = fopen($filename, 'r');
 fs_write	./lib/import.php:592							$file = fopen($filename, 'wb');
@@ -864,8 +864,8 @@ header_redirect	./lib/auth.php:4764					header('Location: ' . $config['url_path'
 header_redirect	./lib/auth.php:4769				header('Location: ' . $config['url_path'] . 'graph_view.php' . ($newtheme ? '?newtheme=1':''));
 header_redirect	./lib/auth.php:4964			header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?action=force&ref=' . urlencode(validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php')));
 header_redirect	./lib/clog_webapi.php:99			header('Location: ' . get_current_page());
-header_redirect	./lib/functions.php:7930		header('Location: ' . $save_url);
-header_redirect	./lib/functions.php:7953		header('Location: ' . $safe_url, true, $status);
+header_redirect	./lib/functions.php:7926		header('Location: ' . $save_url);
+header_redirect	./lib/functions.php:7949		header('Location: ' . $safe_url, true, $status);
 header_redirect	./lib/html_graph.php:471			header('Location: ' . $page . '?host_id=' . $host_id . '&header=false');
 header_redirect	./lib/html_reports.php:1507				header('Location: reports.php');
 header_redirect	./lib/html_reports.php:274					header('Location: reports.php');
