@@ -511,8 +511,7 @@ $settings = array(
 			'array' => array(
 				'0'            => __('Allow Non-Nonced Inline Plugin JavaScript'),
 				'unsafe-eval'  => __('Allow both unsafe-eval and Non-Nonced Inline JavaScript'),
-				'nonce-report' => __('Nonce Mode - Reporting Only'),
-				'nonce'        => __('[Pilot] Nonce Mode - Enforcing'),
+				'nonce-report' => __('Nonce Mode - Reporting Only')
 			)
 		),
 		'content_security_alternate_sources' => array(
