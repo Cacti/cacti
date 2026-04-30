@@ -4987,17 +4987,20 @@ function cacti_auth_transition($user_id, $reason = 'login') {
 		if ($new_token !== false) {
 			$secret = hash('sha512', $new_token, false);
 
+			/* refresh hostname so the cache row stays bound to the current IP */
 			db_execute_prepared('UPDATE user_auth_cache
-				SET token = ?, last_update = NOW()
+				SET token = ?, last_update = NOW(), hostname = ?
 				WHERE user_id = ?',
-				array($secret, $user_id));
+				array($secret, get_client_addr(), $user_id));
 
 			$parts = explode(',', $_COOKIE['cacti_remembers']);
 
 			if (cacti_sizeof($parts) == 2) {
-				cacti_cookie_set('cacti_remembers', $user_id . ',' . $new_token);
+				/* old 2-part cookie; look up realm so we can use the full session setter */
+				$realm = (int) db_fetch_cell_prepared('SELECT realm FROM user_auth WHERE id = ?', array($user_id));
+				cacti_cookie_session_set($user_id, $realm, $new_token);
 			} elseif (cacti_sizeof($parts) >= 3) {
-				cacti_cookie_set('cacti_remembers', $user_id . ',' . $parts[1] . ',' . $new_token);
+				cacti_cookie_session_set($user_id, $parts[1], $new_token);
 			}
 		}
 	}
