@@ -782,7 +782,7 @@ function get_selected_theme() : string {
 		}
 	}
 
-	if (!file_exists(CACTI_PATH_INCLUDE . '/themes/' . $theme . '/main.css')) {
+	if (isset($_SESSION[SESS_USER_ID]) && !file_exists(CACTI_PATH_INCLUDE . '/themes/' . $theme . '/main.css')) {
 		foreach ($themes as $t => $name) {
 			if (file_exists(CACTI_PATH_INCLUDE . '/themes/' . $t . '/main.css')) {
 				$theme = $t;
