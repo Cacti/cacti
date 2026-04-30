@@ -35,6 +35,7 @@ Cacti CHANGELOG
 -security#GHSA-g37j-39f4-6r4j: CVE-2026-41884 Arbitrary File Read via Reports format_file path traversal
 -security: CVE-2026-1513 billboard.js before 3.18.0 Improper Input Sanitization Allows Remote JavaScript Execution
 -security: CVE-2026-40194, CVE-2026-32935 in phpseclib - This is breaking change for RRDProxy
+-security: CVE-2026-XXXXX - SQL Injection in automation_tree_rules.php
 -issue#6168: When purging RRD files, paths are not correctly handled
 -issue#6202: When using automation, devices may not be added as expected
 -issue#6204: Attempting to match a field in automation may cause unexpected errors
