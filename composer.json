@@ -49,6 +49,8 @@
         "paragonie/random_compat": "*",
         "phpseclib/phpseclib": "^3.0"
     },
+    "require-dev": {
+    },
     "authors": [
         {
             "name": "The Cacti Group",

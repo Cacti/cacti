@@ -94,12 +94,31 @@ test('buildCspPolicy nonce mode has nonce token and no unsafe-inline in script-s
 	expect($scriptSrc)->not->toContain("'unsafe-inline'");
 });
 
-test('buildCspPolicy nonce mode also covers style-src', function () {
+test('buildCspPolicy nonce mode includes strict-dynamic and unsafe-eval for jQuery compat', function () {
+	/* Without strict-dynamic, jQuery .html() / .append() injected scripts fail
+	 * because they do not carry the nonce. Without unsafe-eval, jQuery's
+	 * globalEval and new Function() paths fail. Both are required for
+	 * Cacti core + plugins (thold, monitor, etc) to render under nonce mode. */
 	$policy = CactiSecureHeaders::buildCspPolicy('nonce', 'XYZ', '');
-	$start = strpos($policy, 'style-src');
-	$end   = strpos($policy, ';', $start);
+	$start  = strpos($policy, 'script-src');
+	$end    = strpos($policy, ';', $start);
+	$scriptSrc = substr($policy, $start, $end - $start);
+	expect($scriptSrc)->toContain("'strict-dynamic'");
+	expect($scriptSrc)->toContain("'unsafe-eval'");
+});
+
+test('buildCspPolicy nonce mode style-src keeps unsafe-inline for jQuery .css() / inline style attrs', function () {
+	/* jQuery .css() and the dozens of legacy inline style="" attributes
+	 * across Cacti pages need unsafe-inline. Style XSS is a much narrower
+	 * attack surface than script XSS, so the trade-off is intentional. */
+	$policy = CactiSecureHeaders::buildCspPolicy('nonce', 'XYZ', '');
+	$start  = strpos($policy, 'style-src');
+	$end    = strpos($policy, ';', $start);
 	$styleSrc = substr($policy, $start, $end - $start);
-	expect($styleSrc)->toContain("'nonce-XYZ'");
+	expect($styleSrc)->toContain("'unsafe-inline'");
+	/* Style-src no longer carries the nonce in nonce mode; the nonce is
+	 * scoped to script-src only. */
+	expect($styleSrc)->not->toContain("'nonce-XYZ'");
 });
 
 test('buildCspPolicy unsafe-eval mode keeps unsafe-inline and adds unsafe-eval', function () {

@@ -115,8 +115,20 @@ class CactiSecureHeaders {
 	 */
 	public static function buildCspPolicy($mode, $nonce, $alternates, $report_uri = '') {
 		if ($mode === 'nonce' || $mode === 'nonce-report') {
-			$script_src = "script-src 'self' 'nonce-{$nonce}' {$alternates}";
-			$style_src  = "style-src 'self' 'nonce-{$nonce}' {$alternates}";
+			/* 'strict-dynamic' lets a nonced page script transitively trust
+			 * scripts it inserts via DOM (jQuery .html(), .append(), etc).
+			 * Without it most jQuery-driven UIs break under nonce mode.
+			 * 'unsafe-eval' covers jQuery's globalEval + new Function() paths.
+			 * Browsers that honour strict-dynamic (Chrome 52+, Firefox 60+,
+			 * Safari 15.4+) ignore the 'self' source list once strict-dynamic
+			 * is present; the nonce becomes the sole script trust anchor. */
+			$script_src = "script-src 'self' 'nonce-{$nonce}' 'strict-dynamic' 'unsafe-eval' {$alternates}";
+			/* Style-src keeps 'unsafe-inline' on purpose: jQuery .css(),
+			 * setAttribute('style', ...), and the dozens of legacy inline
+			 * style="" attributes scattered across Cacti pages all rely on
+			 * inline-style execution. Style XSS is a much narrower attack
+			 * surface than script XSS; the trade-off is operator-friendly. */
+			$style_src  = "style-src 'self' 'unsafe-inline' {$alternates}";
 		} else {
 			$eval_token = ($mode === 'unsafe-eval') ? " 'unsafe-eval'" : '';
 			$script_src = "script-src 'self'{$eval_token} 'unsafe-inline' {$alternates}";

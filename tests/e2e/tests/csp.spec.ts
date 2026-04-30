@@ -44,7 +44,15 @@ test.describe('CSP header shape', () => {
         // directive is present and points at the expected shim filename
         // without pinning the leading base path.
         expect(cspHeader).toMatch(/report-uri\s+\S*csp_report\.php/);
-        expect(cspHeader).not.toContain("'unsafe-inline'");
+        // Script-src must NOT carry 'unsafe-inline' (that's the whole point
+        // of nonce mode). Style-src DOES still carry 'unsafe-inline' for
+        // jQuery .css() and the legacy inline-style attributes scattered
+        // across Cacti pages — narrow the assertion to script-src only.
+        const scriptSrc = cspHeader!.match(/script-src[^;]*/)?.[0] ?? '';
+        expect(scriptSrc).not.toContain("'unsafe-inline'");
+        // jQuery interop requires strict-dynamic + unsafe-eval in nonce mode.
+        expect(scriptSrc).toContain("'strict-dynamic'");
+        expect(scriptSrc).toContain("'unsafe-eval'");
     });
 
     test('only one CSP header flavor is set at a time', async ({ request }) => {

@@ -6,4 +6,4 @@
  * Cacti's existing test conventions.
  */
 
-uses(PHPUnit\Framework\TestCase::class)->in('Unit', 'integration');
+uses(PHPUnit\Framework\TestCase::class)->in('Unit', 'integration', 'HandOff');

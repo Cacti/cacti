@@ -143,9 +143,18 @@ jobs:
         working-directory: tests/e2e
         run: npx playwright install --with-deps chromium
 
-      - name: Run Playwright suite
+      - name: Run Playwright suite (core CSP)
         working-directory: tests/e2e
-        run: npx playwright test
+        run: npx playwright test tests/csp.spec.ts
+
+      - name: Run Playwright suite (plugin CSP -- thold + monitor)
+        working-directory: tests/e2e
+        # Separate step so a plugin-clone failure or a plugin-side CSP
+        # regression is visually distinct from a core CSP failure in the
+        # GitHub Actions UI. The plugin spec depends on thold and
+        # monitor sources baked into the image at build time; the
+        # docker compose up --build above runs the clone.
+        run: npx playwright test tests/csp-plugins.spec.ts
 
       - name: Upload Playwright report
         if: failure()

@@ -164,8 +164,40 @@ $result = csp_report_validate_payload(
 	16384
 );
 
+/* Per-IP / per-minute rate cap. The endpoint is unauthenticated by design
+ * (the browser fires reports without credentials) so an attacker can flood
+ * cacti_log / error_log unless we drop excess events. We always return the
+ * normal HTTP status so probing cannot infer the cap. */
+function csp_report_should_log() : bool {
+	$ip      = isset($_SERVER['REMOTE_ADDR']) ? (string) $_SERVER['REMOTE_ADDR'] : 'unknown';
+	$bucket  = sys_get_temp_dir() . '/cacti_csp_' . hash('sha256', $ip . '|' . gmdate('YmdHi'));
+	$cap     = 30;
+
+	$fh = @fopen($bucket, 'c+');
+	if ($fh === false) {
+		return true;
+	}
+
+	$logged = false;
+	if (flock($fh, LOCK_EX)) {
+		$count = (int) fread($fh, 16);
+		if ($count < $cap) {
+			rewind($fh);
+			ftruncate($fh, 0);
+			fwrite($fh, (string) ($count + 1));
+			$logged = true;
+		}
+		flock($fh, LOCK_UN);
+	}
+	fclose($fh);
+
+	return $logged;
+}
+
 if ($result['ok']) {
-	csp_report_log($result['summary']);
+	if (csp_report_should_log()) {
+		csp_report_log($result['summary']);
+	}
 	http_response_code(204);
 } else {
 	http_response_code(400);
