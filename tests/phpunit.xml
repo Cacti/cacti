@@ -11,5 +11,8 @@
         <testsuite name="Integration">
             <directory>integration</directory>
         </testsuite>
+        <testsuite name="HandOff">
+            <directory>HandOff</directory>
+        </testsuite>
     </testsuites>
 </phpunit>

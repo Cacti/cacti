@@ -15,7 +15,7 @@ DB_PORT="${CACTI_DB_PORT:-3306}"
 DB_NAME="${CACTI_DB_NAME:-cacti}"
 DB_USER="${CACTI_DB_USER:-cactiuser}"
 DB_PASS="${CACTI_DB_PASS:-cactipass}"
-CSP_MODE="${CACTI_CSP_MODE:-nonce}"
+CSP_MODE="${CACTI_CSP_MODE:-nonce-report}"
 
 log() { printf '[entrypoint] %s\n' "$*" >&2; }
 
@@ -114,7 +114,70 @@ mysql_cmd "UPDATE user_auth SET must_change_password='', password_change='', las
 
 log "post-seed SQL complete; CSP mode=${CSP_MODE}"
 
-# 4. Make Cacti's writable directories world-writable. CI checks out the
+# 4. Stage CSP-harness plugins into the bind-mounted plugins/ tree. Plugin
+#    sources are baked into /opt/cacti-plugins at image build time; the bind
+#    mount of the repo root would otherwise hide them. Copy is idempotent:
+#    re-running on an existing volume leaves the tree alone unless
+#    CACTI_FORCE_PLUGINS=1 is set, which deletes and re-copies. This way a
+#    developer editing thold or monitor source on the host doesn't get
+#    silently overwritten on container restart.
+FORCE_PLUGINS="${CACTI_FORCE_PLUGINS:-0}"
+for plugin in thold monitor; do
+    src="/opt/cacti-plugins/${plugin}"
+    dst="${CACTI_ROOT}/plugins/${plugin}"
+    if [ ! -d "${src}" ]; then
+        log "skip ${plugin}: ${src} not present in image"
+        continue
+    fi
+    if [ -d "${dst}" ] && [ "${FORCE_PLUGINS}" != "1" ]; then
+        log "plugin ${plugin} already staged at ${dst}; leaving it alone"
+        continue
+    fi
+    if [ -d "${dst}" ]; then
+        log "CACTI_FORCE_PLUGINS=1: removing existing ${dst}"
+        rm -rf "${dst}"
+    fi
+    log "staging ${plugin} from ${src} to ${dst}"
+    mkdir -p "${dst}"
+    cp -a "${src}/." "${dst}/"
+done
+
+# 5. Seed plugin_config rows so the plugin admin pages render. Status=1 is
+#    "installed but not active" and status=5 is "active" in lib/plugins.php;
+#    we use 1 because activating runs the plugin's install hook, which on
+#    thold and monitor reaches into rrdtool / poller paths the harness does
+#    not seed. Status=1 is enough for the plugin's index UI to render under
+#    plugins.php and exercise its inline scripts, which is what the CSP
+#    spec actually walks.
+for plugin in thold monitor; do
+    if [ ! -d "${CACTI_ROOT}/plugins/${plugin}" ]; then
+        continue
+    fi
+    case "${plugin}" in
+        thold)
+            display="Threshold Engine"
+            page="https://github.com/Cacti/plugin_thold"
+            ;;
+        monitor)
+            display="Cacti Monitor Plugin"
+            page="https://github.com/Cacti/plugin_monitor"
+            ;;
+    esac
+    # plugin_config.directory is not a unique key in the stock schema, so
+    # ON DUPLICATE KEY UPDATE would not actually deduplicate on re-run.
+    # UPDATE first; INSERT only when no row already exists.
+    mysql_cmd "UPDATE plugin_config
+               SET name='${display}', status=1, author='Various', webpage='${page}', version='1.x'
+               WHERE directory='${plugin}';"
+    mysql_cmd "INSERT INTO plugin_config (directory, name, status, author, webpage, version)
+               SELECT '${plugin}', '${display}', 1, 'Various', '${page}', '1.x'
+               WHERE NOT EXISTS (
+                   SELECT 1 FROM plugin_config WHERE directory='${plugin}'
+               );"
+    log "seeded plugin_config row for ${plugin} (status=1, installed)"
+done
+
+# 6. Make Cacti's writable directories world-writable. CI checks out the
 #    repo as the runner user; the php-fpm container runs as www-data. The
 #    bind mount preserves host UIDs, so without this Cacti dies on its
 #    very first log line with "System log file is not available for
@@ -124,7 +187,14 @@ for d in log cache rra resource; do
         chmod -R a+w "${CACTI_ROOT}/${d}" 2>/dev/null || true
     fi
 done
+# Plugin dirs need to be readable by the php-fpm user; copy from the image
+# preserves the build user's UID, which won't match www-data.
+for plugin in thold monitor; do
+    if [ -d "${CACTI_ROOT}/plugins/${plugin}" ]; then
+        chmod -R a+rX "${CACTI_ROOT}/plugins/${plugin}" 2>/dev/null || true
+    fi
+done
 
-# 5. Hand off to php-fpm.
+# 7. Hand off to php-fpm.
 log "exec: $*"
 exec "$@"
