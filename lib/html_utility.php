@@ -1237,23 +1237,24 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 
 	if ($total_pages > 0) {
 		if ($current_page == 1) {
-			$url_page_select .= "<li><a href='#' class='active' onClick='goto$page_var(1);return false'>1</a></li>";
+			$url_page_select .= "<li><a data-url='$url$page_var=1' data-return='$return_to' href='#' class='active'>1</a></li>";
 		} else {
-			$url_page_select .= "<li><a href='#' onClick='goto$page_var(1);return false'>1</a></li>";
+			$url_page_select .= "<li><a data-url='$url$page_var=1' data-return='$return_to' href='#'>1</a></li>";
 		}
 	}
 
 	for ($page_number=0; (($page_number+$start_page) <= $end_page); $page_number++) {
 		$page = $page_number + $start_page;
+
 		if ($page_number < $pages_per_screen) {
 			if ($page_number == 0 && $start_page > 2) {
 				$url_page_select .= $url_ellipsis;
 			}
 
 			if ($current_page == $page) {
-				$url_page_select .= "<li><a href='#' class='active' onClick='goto$page_var($page);return false'>$page</a></li>";
+				$url_page_select .= "<li><a data-url='$url$page_var=$page' data-return='$return_to' href='#' class='active'>$page</a></li>";
 			} else {
-				$url_page_select .= "<li><a href='#' onClick='goto$page_var($page);return false'>$page</a></li>";
+				$url_page_select .= "<li><a data-url='$url$page_var=$page' data-return='$return_to' href='#'>$page</a></li>";
 			}
 		}
 	}
@@ -1263,20 +1264,15 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 	}
 
 	if ($total_pages > 1) {
+		$page = $current_page + 1;
 		if ($current_page == $total_pages) {
-			$url_page_select .= "<li><a href='#' class='active' onClick='goto$page_var($total_pages);return false'>$total_pages</a></li>";
+			$url_page_select .= "<li><a data-url='$url$page_var=$page' data-return='$return_to' href='#' class='active'>$total_pages</a></li>";
 		} else {
-			$url_page_select .= "<li><a href='#' onClick='goto$page_var($total_pages);return false'>$total_pages</a></li>";
+			$url_page_select .= "<li><a data-url='$url$page_var=$page' data-return='$return_to' href='#'>$total_pages</a></li>";
 		}
 	}
 
 	$url_page_select .= '</ul>';
-
-	if ($return_to != '') {
-		$url_page_select .= "<script type='text/javascript' " . CactiSecureHeaders::getNonceAttribute() . ">function goto$page_var(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') } else { var url_add=''; }; $.get('" . sanitize_uri($url) . "header=false&" . $page_var . "='+pageNo+url_add).done(function(data) { $('#$return_to').html(data); applySkin(); }); }</script>";
-	} else {
-		$url_page_select .= "<script type='text/javascript' " . CactiSecureHeaders::getNonceAttribute() . ">function goto{$page_var}(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') } else { var url_add=''; }; document.location='$url$page_var='+pageNo+url_add }</script>";
-	}
 
 	return $url_page_select;
 }
