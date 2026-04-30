@@ -2238,8 +2238,8 @@ function db_dump_data($database = '', $tables = '', $credentials = array(), $out
 	$output_file = ($output_file === false) ? '/tmp/cacti.dump.sql' : $output_file;
 
 	/* Extract username and password from credentials array or globals */
-	$username = isset($credentials['user']) ? $credentials['user'] : (isset($credentials['--user']) ? $credentials['--user'] : $database_username);
-	$password = isset($credentials['password']) ? $credentials['password'] : (isset($credentials['--password']) ? $credentials['--password'] : $database_password);
+	$username = isset($credentials['user']) ? $credentials['user'] : $database_username;
+	$password = isset($credentials['password']) ? $credentials['password'] : $database_password;
 
 	/* Use mariadb-dump if available to avoid deprecation warnings on MariaDB */
 	$dump_binary = 'mysqldump';
