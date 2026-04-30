@@ -2377,6 +2377,8 @@ function html_graph_tabs_right() : void {
 			}
 		} elseif (strstr(get_current_page(false), $tab['url'])) {
 			$tabs_right[$i]['selected'] = true;
+		} else {
+			$tabs_right[$i]['selected'] = false;
 		}
 
 		$i++;
