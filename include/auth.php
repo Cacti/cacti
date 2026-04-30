@@ -75,8 +75,9 @@ if ($auth_method != 0) {
 		/* check for remember me functionality */
 		if (!isset($_SESSION['sess_user_id'])) {
 			$cookie_user = check_auth_cookie();
-			if ($cookie_user !== false) {
+			if ($cookie_user > 0) {
 				/* GHSA-273r-qr93-wgcp: regenerate session id on auth transition */
+
 				if (cacti_auth_transition((int)$cookie_user, 'cookie_restore')) {
 					$_SESSION['sess_user_id'] = $cookie_user;
 				}
@@ -103,6 +104,7 @@ if ($auth_method != 0) {
 				if (!cacti_auth_transition((int)$current_user['id'], 'basic_auth')) {
 					return false;
 				}
+
 				$_SESSION['sess_user_id'] = $current_user['id'];;
 
 				$client_addr = get_client_addr();

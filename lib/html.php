@@ -591,24 +591,27 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 
 		$url_page_select = get_page_list($current_page, $max_pages, $rows_per_page, $total_rows, $base_url, $page_var, $return_to);
 
+		$next_page = $current_page + 1;
+		$prev_page = $current_page - 1;
+
 		$nav = "<div class='navBarNavigation'>
 			<div class='navBarNavigationPrevious'>
-				" . (($current_page > 1) ? "<a href='#' onClick='goto$page_var(" . ($current_page-1) . ");return false;'><i class='fa fa-angle-double-left previous'></i>" . __('Previous'). '</a>':'') . "
+				" . (($current_page > 1) ? "<a data-url='$base_url$page_var=$prev_page' data-return='$return_to' href='#'><i class='fa fa-angle-double-left previous'></i>" . __('Previous'). '</a>':'') . "
 			</div>
 			<div class='navBarNavigationCenter'>
 				" . __('%d to %d of %s [ %s ]', (($rows_per_page*($current_page-1))+1), (($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page*$current_page)) ? $total_rows : $rows_per_page*$current_page), $total_rows, $url_page_select) . "
 			</div>
 			<div class='navBarNavigationNext'>
-				" . (($current_page*$rows_per_page) < $total_rows ? "<a href='#' onClick='goto$page_var(" . ($current_page+1) . ");return false;'>" . __('Next'). "<i class='fa fa-angle-double-right next'></i></a>":'') . "
+				" . (($current_page*$rows_per_page) < $total_rows ? "<a data-url='$base_url$page_var=$next_page' data-return='$return_to' href='#'>" . __('Next'). "<i class='fa fa-angle-double-right next'></i></a>":'') . "
 			</div>
 		</div>";
 	} elseif ($total_rows > 0) {
-		if ($page_count || ($total_rows < $rows_per_page && $current_page ==1) ) {
+		if ($page_count || ($total_rows < $rows_per_page && $current_page == 1)) {
 			$nav = "<div class='navBarNavigation'>
 				<div class='navBarNavigationNone'>
 					" . __('All %d %s', $total_rows, $object) . "
 				</div>
-			</div>\n";
+			</div>";
 		} else {
 			if (substr_count($base_url, '?') == 0) {
 				$base_url = trim($base_url) . '?';
@@ -620,23 +623,20 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 			$url_page_select .= "<li>$current_page</a></li>";
 			$url_page_select .= '</ul>';
 
+			$next_page = $current_page + 1;
+			$prev_page = $current_page - 1;
+
 			$nav = "<div class='navBarNavigation'>
 				<div class='navBarNavigationPrevious'>
-					" . (($current_page > 1) ? "<a href='#' onClick='goto$page_var(" . ($current_page-1) . ");return false;'><i class='fa fa-angle-double-left previous'></i>" . __('Previous'). "</a>":"") . "
+					" . (($current_page > 1) ? "<a data-url='$base_url$page_var=$prev_page' data-return='$return_to' href='#'><i class='fa fa-angle-double-left previous'></i>" . __('Previous'). "</a>":"") . "
 				</div>
 				<div class='navBarNavigationCenter'>
 					" . __('Current Page: %s', $url_page_select) . "
 				</div>
 				<div class='navBarNavigationNext'>
-					" . ($total_rows >= $rows_per_page ? "<a href='#' onClick='goto$page_var(" . ($current_page+1) . ");return false;'>" . __('Next'). "<i class='fa fa-angle-double-right next'></i></a>":"") . "
+					" . ($total_rows >= $rows_per_page ? "<a data-url='$base_url$page_var=$next_page' data-return='$return_to' href='#'>" . __('Next'). "<i class='fa fa-angle-double-right next'></i></a>":"") . "
 				</div>
-			</div>\n";
-
-			if ($return_to != '') {//code as in get_page_list()
-				$nav .= "<script type='text/javascript' " . CactiSecureHeaders::getNonceAttribute() . ">function goto$page_var(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') } else { var url_add=''; }; $.get('" . $base_url . "header=false&" . $page_var . "='+pageNo+url_add).done(function(data) { $('#$return_to').html(data); applySkin(); }); }</script>";
-			} else {
-				$nav .= "<script type='text/javascript' " . CactiSecureHeaders::getNonceAttribute() . ">function goto{$page_var}(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') } else { var url_add=''; }; document.location='$base_url$page_var='+pageNo+url_add }</script>";
-			}
+			</div>";
 		}
 	} else {
 		$nav = "<div class='navBarNavigation'>

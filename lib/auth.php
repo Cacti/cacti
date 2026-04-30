@@ -47,10 +47,20 @@ function clear_auth_cookie() {
 
 		// Legacy support which leaked usernames
 		if (!is_numeric($user_id)) {
-			$user_id = db_fetch_cell_prepared('SELECT id
-				FROM user_auth
-				WHERE username = ?',
-				array($user_id));
+			if ($realm_id == -1) {
+				// Assume local realm for tokens without a realm_id
+				$user_id = db_fetch_cell_prepared('SELECT id
+					FROM user_auth
+					WHERE username = ?
+					AND realm = 0',
+					array($user_id));
+			} else {
+				$user_id = db_fetch_cell_prepared('SELECT id
+					FROM user_auth
+					WHERE username = ?
+					AND realm = ?',
+					array($user_id, $realm_id));
+			}
 		}
 
 		if ($user_id > 0) {
@@ -89,7 +99,7 @@ function set_auth_cookie($user) {
 
 		$secret = hash('sha512', $nssecret, false);
 
-		db_execute_prepared('REPLACE INTO user_auth_cache
+		db_execute_prepared('INSERT INTO user_auth_cache
 			(user_id, hostname, last_update, token)
 			VALUES
 			(?, ?, NOW(), ?);',
@@ -123,17 +133,28 @@ function check_auth_cookie() {
 
 		// Legacy support which leaked usernames
 		if (!is_numeric($user_id)) {
-			$user_id = db_fetch_cell_prepared('SELECT id
-				FROM user_auth
-				WHERE username = ?',
-				array($user_id));
+			if ($realm_id == -1) {
+				// Assume local realm for tokens without a realm_id
+				$user_id = db_fetch_cell_prepared('SELECT id
+					FROM user_auth
+					WHERE username = ?
+					AND realm = 0',
+					array($user_id));
+			} else {
+				$user_id = db_fetch_cell_prepared('SELECT id
+					FROM user_auth
+					WHERE username = ?
+					AND realm = ?',
+					array($user_id, $realm_id));
+			}
 		}
 
 		if ($user_id > 0 && $user_id != get_guest_account()) {
 			if ($realm_id == -1) {
 				$user_info = db_fetch_row_prepared('SELECT id, realm, username
 					FROM user_auth
-					WHERE id = ?',
+					WHERE id = ?
+					AND realm = 0',
 					array($user_id));
 			} else {
 				$user_info = db_fetch_row_prepared('SELECT id, realm, username
@@ -149,8 +170,9 @@ function check_auth_cookie() {
 				$found  = db_fetch_cell_prepared('SELECT user_id
 					FROM user_auth_cache
 					WHERE user_id = ?
-					AND token = ?',
-					array($user_info['id'], $secret)
+					AND token = ?
+					AND hostname = ?',
+					array($user_info['id'], $secret, get_client_addr())
 				);
 
 				if (empty($found)) {
@@ -161,7 +183,7 @@ function check_auth_cookie() {
 						return false;
 					}
 
-					cacti_log("LOGIN: User '" . $user_info['username'] . "' Authenticated via Authentication Cookie", false, 'AUTH');
+					cacti_log("LOGIN: User '" . $user_info['username'] . "' with ID '" . $user_info['id'] . "' Authenticated via Authentication Cookie", false, 'AUTH');
 
 					db_execute_prepared('INSERT IGNORE INTO user_log
 						(username, user_id, result, ip, time)
@@ -3519,16 +3541,15 @@ function auth_process_lockout_check($username, $realm) {
 				FROM user_auth
 				WHERE username = ?
 				AND realm = ?
+				AND locked = 'on'
 				AND enabled = 'on'",
 				array($username, $realm));
 
 			if (cacti_sizeof($user)) {
-				if ($user['locked'] == 'on') {
-					$error     = true;
-					$error_msg = __('Your account has been locked.  Please contact your Administrator.');
+				$error     = true;
+				$error_msg = __('Your account has been locked.  Please contact your Administrator.');
 
-					return true;
-				}
+				return true;
 			}
 		}
 	}
@@ -4820,8 +4841,10 @@ function auth_login_create_user_from_template($username, $realm) {
 					user_copy($user_template['username'], $username, $user_template['realm'], $realm, false, $data_override);
 				} else {
 					$ldap_response = (isset($ldap_cn_search_response[0]) ? $ldap_cn_search_response[0] : '(no response given)');
-					$ldap_code = (isset($ldap_cn_search_response['error_num']) ? $ldap_cn_search_response['error_num'] : '(no code given)');
+					$ldap_code     = (isset($ldap_cn_search_response['error_num']) ? $ldap_cn_search_response['error_num'] : '(no code given)');
+
 					cacti_log('LOGIN: Email Address and Full Name fields not found, reason: ' . $ldap_response . 'code: ' . $ldap_code, false, 'AUTH');
+
 					user_copy($user_template['username'], $username, $user_template['realm'], $realm);
 				}
 			} else {
@@ -4904,12 +4927,15 @@ function check_reset_no_authentication($auth_method) {
 
 			cacti_log('SQL query ' . $admin_sql_query, true, 'AUTH_NONE', POLLER_VERBOSITY_DEVDBG);
 			cacti_log('SQL param ' . implode(',', $admin_sql_params), true, 'AUTH_NONE', POLLER_VERBOSITY_DEVDBG);
+
 			$admin_id = db_fetch_cell_prepared($admin_sql_query, $admin_sql_params);
+
 			cacti_log('SQL result ' . $admin_id, true, 'AUTH_NONE', POLLER_VERBOSITY_DEVDBG);
 		}
 
 		if (!$admin_id) {
 			$admin_id = db_fetch_cell('SELECT id FROM user_auth WHERE username = \'admin\'');
+
 			cacti_log('Final attempt ' . $admin_id, true, 'AUTH_NONE', POLLER_VERBOSITY_DEVDBG);
 		}
 
@@ -4963,7 +4989,7 @@ function cacti_auth_transition($user_id, $reason = 'login') {
 		array($user_id));
 
 	if ($locked == 'on') {
-		cacti_log('SECURITY: auth transition blocked for locked user ' . $user_id . ' reason=' . $reason, false, 'AUTH');
+		cacti_log('SECURITY: auth transition blocked for locked user: ' . $user_id . ' reason: ' . $reason, false, 'AUTH');
 
 		return false;
 	}
@@ -4978,7 +5004,7 @@ function cacti_auth_transition($user_id, $reason = 'login') {
 	kill_session_var('sess_user_config_array');
 	kill_session_var('sess_config_array');
 
-	cacti_log('NOTE: auth transition completed for user ' . $user_id . ' reason=' . $reason, false, 'AUTH');
+	cacti_log('NOTE: auth transition completed for user ' . $user_id . ' reason=' . $reason, false, 'AUTH', POLLER_VERBOSITY_MEDIUM);
 
 	return true;
 }
