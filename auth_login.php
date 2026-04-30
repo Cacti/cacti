@@ -212,13 +212,10 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == 2) {
 				} else {
 					$_SESSION['sess_user_id'] = $user['id'];
 
-					/* remember me - only create a cookie when no existing one was
-					 * already rotated by cacti_auth_transition above.  Not for guest or basic auth. */
+					/* remember me.  Not for guest or basic auth. */
 					if ($auth_method != 2 && $user['id'] !== get_guest_account()) {
 						if (isset_request_var('remember_me') && read_config_option('auth_cache_enabled') == 'on') {
-							if (!isset($_COOKIE['cacti_remembers'])) {
-								set_auth_cookie($user);
-							}
+							set_auth_cookie($user);
 						}
 					}
 				}

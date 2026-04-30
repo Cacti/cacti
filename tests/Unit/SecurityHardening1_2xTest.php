@@ -96,24 +96,36 @@ test('check_auth_cookie uses truthy lockout check not inverted === false', funct
 	expect($body)->not->toContain('auth_process_lockout_check($user_info[\'username\'], $user_info[\'realm\']) === false');
 });
 
-// H-6: cacti_auth_transition must use cacti_cookie_session_set (30-day expiry)
+// H-6: cacti_auth_transition must not touch user_auth_cache (no cookie rotation)
 //
-// cacti_cookie_set() sets a 1-hour expiry and omits $_SESSION['cacti_remembers'].
-// Using it in the token rotation path silently downgrades the remember-me cookie.
+// On 1.2.x cookie rotation belongs to set_auth_cookie / check_auth_cookie.
+// Putting it in cacti_auth_transition causes a double rotation: check_auth_cookie
+// rotates T1->T2, then the transition reads the stale $_COOKIE (still T1),
+// its UPDATE matches nothing, and it queues a third cookie T3.  The browser
+// gets T3 while the DB holds T2, breaking remember-me on the next visit.
 
-test('cacti_auth_transition uses cacti_cookie_session_set not cacti_cookie_set', function () use ($authSource) {
+test('cacti_auth_transition does not rotate the remember-me cookie', function () use ($authSource) {
 	$start = strpos($authSource, 'function cacti_auth_transition(');
 	expect($start)->not->toBeFalse();
 
-	$body = substr($authSource, $start, 2000);
-	expect($body)->toContain('cacti_cookie_session_set(');
-	expect($body)->not->toContain("cacti_cookie_set('cacti_remembers'");
+	$end   = strpos($authSource, "\nfunction ", $start + 1);
+	$body  = $end !== false ? substr($authSource, $start, $end - $start) : substr($authSource, $start, 3000);
+
+	expect($body)->not->toContain('UPDATE user_auth_cache');
+	expect($body)->not->toContain('cacti_cookie_session_set(');
 });
 
-test('cacti_auth_transition updates hostname in user_auth_cache on rotation', function () use ($authSource) {
-	$start = strpos($authSource, 'function cacti_auth_transition(');
-	$body = substr($authSource, $start, 2000);
-	// The UPDATE must refresh the hostname column
-	expect($body)->toContain('hostname = ?');
-	expect($body)->toContain('get_client_addr()');
+test('check_auth_cookie calls set_auth_cookie after the lockout check', function () use ($authSource) {
+	$start = strpos($authSource, 'function check_auth_cookie(');
+	expect($start)->not->toBeFalse();
+
+	$end  = strpos($authSource, "\nfunction ", $start + 1);
+	$body = $end !== false ? substr($authSource, $start, $end - $start) : substr($authSource, $start, 3000);
+
+	$lockoutPos    = strpos($body, 'auth_process_lockout_check(');
+	$setCookiePos  = strpos($body, 'set_auth_cookie(');
+
+	expect($lockoutPos)->not->toBeFalse('auth_process_lockout_check not found in check_auth_cookie');
+	expect($setCookiePos)->not->toBeFalse('set_auth_cookie not found in check_auth_cookie');
+	expect($lockoutPos)->toBeLessThan($setCookiePos, 'lockout check must come before set_auth_cookie');
 });

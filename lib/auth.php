@@ -170,6 +170,8 @@ function check_auth_cookie() {
 						array($user_info['username'], $user_info['id'], get_client_addr())
 					);
 
+					set_auth_cookie($user_info);
+
 					return $user_info['id'];
 				}
 			}
@@ -4969,52 +4971,6 @@ function cacti_auth_transition($user_id, $reason = 'login') {
 	/* regenerate session ID to prevent fixation */
 	if (session_status() === PHP_SESSION_ACTIVE) {
 		session_regenerate_id(true);
-	}
-
-	/* rotate remember-me cookie if present */
-	if (isset($_COOKIE['cacti_remembers']) &&
-		read_config_option('auth_cache_enabled') == 'on' &&
-		db_table_exists('user_auth_cache')) {
-
-		$parts = explode(',', $_COOKIE['cacti_remembers']);
-
-		/* extract the old plain-text token to target the exact cache row;
-		 * a user can have multiple rows (one per browser/IP) so we cannot
-		 * update by user_id alone or we risk duplicate-key violations */
-		if (cacti_sizeof($parts) == 2) {
-			$old_plain = $parts[1];
-		} elseif (cacti_sizeof($parts) >= 3) {
-			$old_plain = $parts[2];
-		} else {
-			$old_plain = '';
-		}
-
-		if ($old_plain !== '') {
-			try {
-				$new_token = bin2hex(random_bytes(32));
-			} catch (Exception $e) {
-				cacti_log('WARNING: cacti_auth_transition: random_bytes failed, skipping cookie rotation', false, 'AUTH');
-				$new_token = false;
-			}
-
-			if ($new_token !== false) {
-				$old_secret = hash('sha512', $old_plain, false);
-				$new_secret = hash('sha512', $new_token, false);
-
-				db_execute_prepared('UPDATE user_auth_cache
-					SET token = ?, last_update = NOW(), hostname = ?
-					WHERE user_id = ?
-					AND token = ?',
-					array($new_secret, get_client_addr(), $user_id, $old_secret));
-
-				if (cacti_sizeof($parts) == 2) {
-					$realm = (int) db_fetch_cell_prepared('SELECT realm FROM user_auth WHERE id = ?', array($user_id));
-					cacti_cookie_session_set($user_id, $realm, $new_token);
-				} else {
-					cacti_cookie_session_set($user_id, $parts[1], $new_token);
-				}
-			}
-		}
 	}
 
 	/* invalidate cached permissions so fresh checks occur */
