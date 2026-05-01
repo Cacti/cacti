@@ -675,7 +675,13 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		$reg_page .= '_' . get_request_var('tab');
 	}
 
-	$_SESSION['valid_sort_columns'][$reg_page] = array_keys($header_items);
+	$valid_columns = [];
+	foreach (array_keys($header_items) as $key) {
+		if ($key !== '' && strpos((string)$key, 'nosort') === false) {
+			$valid_columns[] = $key;
+		}
+	}
+	$_SESSION['valid_sort_columns'][$reg_page] = $valid_columns;
 
 	/* reverse the sort direction */
 	if ($sort_direction == 'ASC') {
@@ -849,7 +855,13 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		$reg_page .= '_' . get_request_var('tab');
 	}
 
-	$_SESSION['valid_sort_columns'][$reg_page] = array_keys($header_items);
+	$valid_columns = [];
+	foreach (array_keys($header_items) as $key) {
+		if ($key !== '' && strpos((string)$key, 'nosort') === false) {
+			$valid_columns[] = $key;
+		}
+	}
+	$_SESSION['valid_sort_columns'][$reg_page] = $valid_columns;
 
 	/* reverse the sort direction */
 	if ($sort_direction == 'ASC') {
