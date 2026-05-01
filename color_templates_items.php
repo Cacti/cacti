@@ -309,7 +309,7 @@ function aggregate_color_item_remove_confirm() {
 	?>
 	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
-		$('#clear').on('click', function() {
+		$('#cancel').on('click', function() {
 			$('#cdialog').dialog('close');
 		});
 

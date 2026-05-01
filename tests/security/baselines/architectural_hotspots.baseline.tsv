@@ -545,4 +545,4 @@ sort_order_input	./host_templates.php:524				ORDER BY snmp_query.name', array(ge
 sort_order_input	./host_templates.php:559									ORDER BY snmp_query.name', array(get_request_var('id'))),'name','id','','','');?>
 sort_order_input	./lib/api_automation.php:565			ORDER BY " . cacti_validate_sort_column(get_request_var('sort_column'),
 sort_order_input	./utilities.php:1142			ORDER BY " . cacti_validate_sort_column(get_request_var('sort_column'), array('username', 'time', 'result', 'ip'), 'time') . ' ' . (get_request_var('sort_direction') === 'ASC' ? 'ASC' : 'DESC') . '
-sort_order_input	./utilities.php:2187			ORDER BY " . cacti_validate_sort_column(get_request_var('sort_column'), array('action', 'hostname', 'rrd_path', 'arg1', 'arg2', 'arg3'), 'hostname') . ' ' . (get_request_var('sort_direction') === 'ASC' ? 'ASC' : 'DESC') . ', action ASC
+sort_order_input	./utilities.php:2183			ORDER BY " . cacti_validate_sort_column(get_request_var('sort_column'), array('action', 'hostname', 'rrd_path', 'arg1', 'arg2', 'arg3'), 'hostname') . ' ' . (get_request_var('sort_direction') === 'ASC' ? 'ASC' : 'DESC') . ', action ASC
