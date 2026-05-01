@@ -661,7 +661,7 @@ case 'list':
 						<span>
 							<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='view' value='<?php print __esc('View');?>' title='<?php print __esc('View Graphs');?>''>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='viewgr' value='<?php print __esc('View');?>' title='<?php print __esc('View Graphs');?>'>
 							<?php if (cacti_sizeof($reports)) {?>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='addreport' value='<?php print __esc('Report');?>' title='<?php print __esc('Add to a Report');?>'>
 							<?php } ?>
@@ -1082,7 +1082,7 @@ case 'list':
 			clearFilter();
 		});
 
-		$('#view').on('click', function() {
+		$('#viewgr').on('click', function() {
 			viewGraphs();
 		});
 
