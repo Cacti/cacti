@@ -853,19 +853,19 @@ function network_edit() {
 			minDateTime: new Date(<?php print date("Y") . ', ' . (date("m")-1) . ', ' . date("d, H") . ', ' . date('i', ceil(time()/300)*300) . ', 0, 0';?>)
 		});
 
-		$('#sched_type').change(function() {
+		$('#sched_type').on('change', function() {
 			setSchedule();
 		});
 
 		setSchedule();
 
-		$('#notification_enabled').click(function() {
+		$('#notification_enabled').on('click', function() {
 			setNotification();
 		});
 
 		setNotification();
 
-		$('#ping_method').change(function() {
+		$('#ping_method').on('change', function() {
 			setPing();
 		});
 
@@ -1264,15 +1264,15 @@ function networks_filter() {
 			}
 
 			$(function() {
-				$('#go').click(function() {
+				$('#go').on('click', function() {
 					applyFilter();
 				});
 
-				$('#clear').click(function() {
+				$('#clear').on('click', function() {
 					clearFilter();
 				});
 
-				$('#networks').submit(function(event) {
+				$('#networks').on('submit', function(event) {
 					event.preventDefault();
 					applyFilter();
 				});

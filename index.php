@@ -108,7 +108,7 @@ api_plugin_hook('console_after');
 <script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 $(function() {
 	resizeWindow();
-	$(window).resize(function() {
+	$(window).on('resize', function() {
 		resizeWindow();
 	});
 });

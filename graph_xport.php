@@ -315,7 +315,7 @@ if (isset($xport_array['data']) && is_array($xport_array['data'])) {
 				$('.wrapperTop').scrollLeft($('.wrapperMain').scrollLeft());
 			});
 
-			$(window).resize(function() {
+			$(window).on('resize', function() {
 				resizeWrapper();
 			});
 		});

@@ -865,7 +865,7 @@ function graph_edit() {
 					$('#row_spacer0').hide();
 				}
 
-				$('input[id^="agg_total"], input[id^="agg_skip"]').click(function() {
+				$('input[id^="agg_total"], input[id^="agg_skip"]').on('click', function() {
 					id = $(this).attr('id');
 
 					if (id.indexOf('skip') > 0) {
@@ -885,15 +885,15 @@ function graph_edit() {
 					updateSaveButton();
 				});
 
-				$('#total').change(function() {
+				$('#total').on('change', function() {
 					changeTotals();
 				});
 
-				$('#total_type').change(function() {
+				$('#total_type').on('change', function() {
 					changeTotalsType();
 				});
 
-				$('#template_propogation').change(function() {
+				$('#template_propogation').on('change', function() {
 					if (!$('#template_propogation').is(':checked')) {
 						for (var i = 0; i < templated_selectors.length; i++) {
 							$(templated_selectors[i]).prop('disabled', false);
@@ -1020,7 +1020,7 @@ function graph_edit() {
 			}
 		});
 
-		$('#toggle_items').click(function() {
+		$('#toggle_items').on('click', function() {
 			if ($('#toggle_items').is(":contains('<?php print __('Show');?>')")) {
 				$('#local_graph_template_graph_id').next('table').css('display', '');
 				$('#toggle_items').text('<?php print __('Hide Item Details');?>');
@@ -1211,15 +1211,15 @@ function aggregate_items() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#rfilter').change(function() {
+		$('#rfilter').on('change', function() {
 			applyFilter();
 		});
 
-		$('#forms').submit(function(event) {
+		$('#forms').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -1492,11 +1492,11 @@ function aggregate_graph() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#forms').submit(function(event) {
+		$('#forms').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});

@@ -433,7 +433,7 @@ $selectedTheme = get_selected_theme();
 		}
 
 		// Control submit in order to store preferred realm
-		$('#login').submit(function(event) {
+		$('#login').on('submit', function(event) {
 			event.preventDefault();
 			if ($('#realm').length) {
 				storage.set('user_realm', $('#realm').val());

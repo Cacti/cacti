@@ -451,7 +451,7 @@ function aggregate_template_edit() {
 			$('#row_total_prefix').hide();
 			$('#row_order_type').hide();
 
-			$('#graph_template_id').change(function() {
+			$('#graph_template_id').on('change', function() {
 				$('#template_edit').submit();
 			});
 
@@ -463,15 +463,15 @@ function aggregate_template_edit() {
 			}
 		}
 
-		$('#total').change(function() {
+		$('#total').on('change', function() {
 			changeTotals();
 		});
 
-		$('#total_type').change(function() {
+		$('#total_type').on('change', function() {
 			changeTotalsType();
 		});
 
-		$('input[id^="agg_total"], input[id^="agg_skip"]').click(function() {
+		$('input[id^="agg_total"], input[id^="agg_skip"]').on('click', function() {
 			id = $(this).attr('id');
 
 			if (id.indexOf('skip') > 0) {
@@ -762,16 +762,16 @@ function aggregate_template() {
 	}
 
 	$(function() {
-		$('#clear').click(function() {
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#template').submit(function(event) {
+		$('#template').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
 
-		$('#forms').submit(function(event) {
+		$('#forms').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});

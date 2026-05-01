@@ -536,12 +536,12 @@ function item_edit() {
 		get_span();
 		get_size();
 
-		$('#steps').change(function() {
+		$('#steps').on('change', function() {
 			get_span();
 			get_size();
 		});
 
-        $('#rows').keyup(function() {
+        $('#rows').on('keyup', function() {
             if (rows_to) { clearTimeout(rows_to); }
             rows_to = setTimeout(function () { get_span(); get_size() }, 250);
         });
@@ -702,7 +702,7 @@ function profile_edit() {
         });
 
 		get_size();
-		$('consolidation_function_id').change(function() {
+		$('consolidation_function_id').on('change', function() {
 			get_size();
 		});
 

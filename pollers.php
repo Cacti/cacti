@@ -710,11 +710,11 @@ function poller_edit() {
 
 			$(function() {
 				$('#row_dbsslca').after('<?php print $row_html;?>');
-				$('#dbssl').click(function() {
+				$('#dbssl').on('click', function() {
 					showHideRemoteDB();
 				});
 
-				$('#dbtest').click(function() {
+				$('#dbtest').on('click', function() {
 					ping_database();
 				});
 

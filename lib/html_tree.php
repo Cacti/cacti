@@ -311,7 +311,7 @@ function grow_dhtml_trees() {
 			});
 		});
 
-		$('#searcher').keyup(function() {
+		$('#searcher').on('keyup', function() {
 			if(search_to) { clearTimeout(search_to); }
 			search_to = setTimeout(function() {
 				var v = $('#searcher').val();

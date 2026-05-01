@@ -649,7 +649,7 @@ function settings_javascript() {
 			});
 		});
 
-		$('#return').click(function() {
+		$('#return').on('click', function() {
 			document.location = <?php print json_encode($_SESSION['profile_referer'] ?? '');?>;
 		});
 

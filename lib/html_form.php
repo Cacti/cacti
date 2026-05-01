@@ -1473,7 +1473,7 @@ function form_end($ajax = true) {
 			formArray['<?php print $form_id;?>'] = $('#<?php print $form_id;?>').serializeForm();
 			changed = false;
 
-			$('#<?php print $form_id;?>').submit(function(event) {
+			$('#<?php print $form_id;?>').on('submit', function(event) {
 				event.preventDefault();
 
 				// Enable the form if it's disabled

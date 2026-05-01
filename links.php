@@ -609,7 +609,7 @@ function edit_page() {
 	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
 		// hide and show the extra console fields when necessary
-		$('#style').change(function() {
+		$('#style').on('change', function() {
 			if ($('#style').val() != 'CONSOLE') {
 				$('#row_consolesection').hide();
 				$('#row_consolenewsection').hide();

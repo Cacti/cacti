@@ -439,11 +439,11 @@ function color_edit() {
 		checkReadonly();
 
 		$('#hex').colorpicker().css({'width':'60px'});
-		$('#read_only').click(function() {
+		$('#read_only').on('click', function() {
 			checkReadonly();
 		});
 
-		$('#name').keyup(function() {
+		$('#name').on('keyup', function() {
 			$('#hidden_name').val($(this).val());
 		});
 

@@ -564,7 +564,7 @@ function template() {
 	$(function() {
         $('#automation_templates2_child').attr('id', 'template_ids');
 
-		$('img.action').click(function() {
+		$('img.action').on('click', function() {
 			strURL = $(this).attr('href');
 			loadPageNoHeader(strURL);
 		});

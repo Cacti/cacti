@@ -1797,7 +1797,7 @@ function graph_edit() {
 			loadPageNoHeader('graphs.php?action=lock&header=false&id='+$('#local_graph_id').val());
 		});
 
-		$(window).resize(function() {
+		$(window).on('resize', function() {
 			imageWidth    = $('.cactiGraphImage').width();
 			imageHeight   = $('.cactiGraphImage').height();
 			aspectRatio   = imageWidth/imageHeight;

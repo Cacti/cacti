@@ -609,7 +609,7 @@ function automation_snmp_edit() {
 		$('.cdialog').remove();
 		$('#main').append("<div class='cdialog' id='cdialog'></div>");
 		$('#automation_snmp_edit2_child').attr('id', 'snmp_item');
-        $('img.action').click(function() {
+        $('img.action').on('click', function() {
             strURL = $(this).attr('href');
 			loadPageNoHeader(strURL);
         });
@@ -622,7 +622,7 @@ function automation_snmp_edit() {
         });
 		<?php } ?>
 
-		$('.delete').click(function (event) {
+		$('.delete').on('click', function (event) {
 			event.preventDefault();
 
 			id = $(this).attr('id').split('_');

@@ -743,7 +743,7 @@ function import_display_package_data($templates, $files, $package_name, $xmlfile
 			});
 		}
 
-		$('.diffme').click(function(event) {
+		$('.diffme').on('click', function(event) {
 			event.preventDefault();
 
 			var url = $(this).attr('href');
@@ -999,7 +999,7 @@ function package_import() {
 	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	$(function() {
-		$('#import_file').change(function() {
+		$('#import_file').on('change', function() {
 			$('#preview_only').val('on');
 
 			var form = $('#import')[0];

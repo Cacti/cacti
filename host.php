@@ -1360,12 +1360,12 @@ function device_javascript() {
 			changeHostForm();
 		});
 
-		$('#snmp_version').change(function() {
+		$('#snmp_version').on('change', function() {
 			setAvailability();
 			setPing();
 		});
 
-		$('#location_input').keyup(function() {
+		$('#location_input').on('keyup', function() {
 			$('#location').val($('#location_input').val());
 		}).mouseup(function() {
 			$('#location').val($('#location_input').val());
@@ -1380,7 +1380,7 @@ function device_javascript() {
 				getPresentHTTPError(data);
 			});
 
-		$('input[id^="reindex_"]').change(function() {
+		$('input[id^="reindex_"]').on('change', function() {
 			strURL  = urlPath+'host.php?action=query_change&header=false';
 			strURL += '&host_id='+$(this).attr('data-device-id');
 			strURL += '&data_query_id='+$(this).attr('data-query-id');
@@ -1745,7 +1745,7 @@ function host() {
 		}
 
 		$(function() {
-			$('#rows, #site_id, #poller_id, #location, #host_template_id, #host_status').change(function() {
+			$('#rows, #site_id, #poller_id, #location, #host_template_id, #host_status').on('change', function() {
 				applyFilter();
 			});
 

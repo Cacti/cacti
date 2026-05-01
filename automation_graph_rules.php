@@ -854,15 +854,15 @@ function automation_graph_rules() {
 		}
 
 		$(function() {
-			$('#refresh, #rules, #rows, #status, #snmp_query_id').change(function() {
+			$('#refresh, #rules, #rows, #status, #snmp_query_id').on('change', function() {
 				applyFilter();
 			});
 
-			$('#clear').click(function() {
+			$('#clear').on('click', function() {
 				clearFilter();
 			});
 
-			$('#form_automation').submit(function(event) {
+			$('#form_automation').on('submit', function(event) {
 				event.preventDefault();
 				applyFilter();
 			});

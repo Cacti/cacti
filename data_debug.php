@@ -931,18 +931,18 @@ function debug_view() {
 	?>
 	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
-		$('.repairme').click(function(event) {
+		$('.repairme').on('click', function(event) {
 			event.preventDefault();
 			id = $(this).attr('data-id');
 			loadPage('data_debug.php?action=run_repair&id=' + id);
 		});
 
-		$('.reloadquery').click(function() {
+		$('.reloadquery').on('click', function() {
 			id = $(this).attr('data-id');
 			loadPage('data_debug.php?action=view&id=' + id);
 		});
 
-		$('.rerun').click(function(event) {
+		$('.rerun').on('click', function(event) {
 			event.preventDefault();
 			id = $(this).attr('data-id');
 			loadPage('data_debug.php?action=run_debug&id=' + id);

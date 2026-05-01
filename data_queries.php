@@ -673,7 +673,7 @@ function data_query_item_edit() {
 	}
 
 	$(function() {
-		$('form#data_queries').find('#graph_template_id').change(function() {
+		$('form#data_queries').find('#graph_template_id').on('change', function() {
 			assignDataQueryGraphName(false);
 		});
 		assignDataQueryGraphName(true);
@@ -981,7 +981,7 @@ function data_query_item_edit() {
 	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	var graph_template_id_prev=<?php print $item;?>;
 
-	$('.remover').click(function(event) {
+	$('.remover').on('click', function(event) {
 		event.preventDefault();
 		href=$(this).attr('href');
 		$.get(href)
@@ -995,7 +995,7 @@ function data_query_item_edit() {
 			});
 	});
 
-	$('input[id="svg_x"]').click(function() {
+	$('input[id="svg_x"]').on('click', function() {
 		$.post('data_queries.php', {
 			action: 'save',
 			save_component_svg: '1',
@@ -1012,7 +1012,7 @@ function data_query_item_edit() {
 		});
 	});
 
-    $('.svds_x').click(function() {
+    $('.svds_x').on('click', function() {
 		// Get the dsid value
 		var id    = $(this).attr('id');
 		var parts = id.split('_');
@@ -1218,7 +1218,7 @@ function data_query_edit() {
 
 		$('.noLinkEditMain').tooltip();
 
-		$('.delete').click(function (event) {
+		$('.delete').on('click', function (event) {
 			event.preventDefault();
 
 			request = $(this).attr('href');
@@ -1228,7 +1228,7 @@ function data_query_edit() {
 
 					applySkin();
 
-					$('#continue').click(function(data) {
+					$('#continue').on('click', function(data) {
 						$.post('data_queries.php?action=item_remove', {
 							__csrf_magic: csrfMagicToken,
 							snmp_query_id: snmp_query_id,

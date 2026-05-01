@@ -1960,11 +1960,11 @@ function user_edit() {
 			$('#password').val('');
 			$('#password_confirm').val('');
 
-			$('#password').keyup(function() {
+			$('#password').on('keyup', function() {
 				checkPassword();
 			});
 
-			$('#password_confirm').keyup(function() {
+			$('#password_confirm').on('keyup', function() {
 				checkPasswordConfirm();
 			});
 
