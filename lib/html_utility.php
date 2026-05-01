@@ -920,8 +920,7 @@ function remove_column_from_order_string($column) {
 		update_order_string(true);
 	}
 }
-
-function get_order_string_page() {
+function get_order_string_page($increment = false) {
 	static $page_count = 0;
 
 	$page = $page_count . '_' . str_replace('.php', '', get_current_page());
@@ -934,9 +933,20 @@ function get_order_string_page() {
 		$page .= '_' . get_nfilter_request_var('tab');
 	}
 
-	$page_count++;
+	if ($increment) {
+		$page_count++;
+	}
 
 	return $page;
+}
+
+/**
+ * next_order_string_page - advances the sort context counter
+ *
+ * @return void
+ */
+function next_order_string_page() {
+	get_order_string_page(true);
 }
 
 function validate_is_regex($regex) {
