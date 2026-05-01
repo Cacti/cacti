@@ -103,3 +103,4 @@ include/vendor/csrf/csrf-secret.php
 include/vendor/*
 vendor/*
 .worktrees/
+tests/e2e/test-results/

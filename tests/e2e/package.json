@@ -1,0 +1,11 @@
+{
+  "name": "cacti-e2e",
+  "private": true,
+  "scripts": {
+    "test:themes": "node ./node_modules/@playwright/test/cli.js test theme-css.spec.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.49.0",
+    "playwright": "1.49.0"
+  }
+}

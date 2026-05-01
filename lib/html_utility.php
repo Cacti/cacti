@@ -748,7 +748,12 @@ function update_order_string($inplace = false) {
 
 	$order = '';
 
-	if (strpos(get_request_var('sort_column'), '(') === false && strpos(get_request_var('sort_column'), '`') === false) {
+	$request_column = get_request_var('sort_column');
+	if (!is_scalar($request_column)) {
+		$request_column = '';
+	}
+
+	if (strpos((string)$request_column, '(') === false && strpos((string)$request_column, '`') === false) {
 		$del = '`';
 	} else {
 		$del = '';
@@ -759,7 +764,7 @@ function update_order_string($inplace = false) {
 			$_SESSION['sort_string'][$page] = 'ORDER BY ';
 			foreach($_SESSION['sort_data'][$page] as $column => $direction) {
 				$column    = validate_sort_column($column, $page);
-				$direction = (strtoupper($direction) == 'DESC' ? 'DESC' : 'ASC');
+				$direction = (strtoupper((string)$direction) == 'DESC' ? 'DESC' : 'ASC');
 
 				if ($column == '') continue;
 
@@ -786,8 +791,10 @@ function update_order_string($inplace = false) {
 			unset($_SESSION['sort_data'][$page]);
 			unset($_SESSION['sort_string'][$page]);
 
-			$column    = validate_sort_column(get_request_var('sort_column'), $page);
-			$direction = (strtoupper(get_nfilter_request_var('sort_direction')) == 'DESC' ? 'DESC' : 'ASC');
+			$column    = validate_sort_column($request_column, $page);
+			$direction_raw = get_nfilter_request_var('sort_direction');
+			if (!is_scalar($direction_raw)) $direction_raw = '';
+			$direction = (strtoupper((string)$direction_raw) == 'DESC' ? 'DESC' : 'ASC');
 
 			if ($column != '') {
 				$_SESSION['sort_data'][$page][$column] = $direction;
@@ -804,8 +811,10 @@ function update_order_string($inplace = false) {
 				unset($_SESSION['sort_string'][$page]);
 			}
 
-			$column    = validate_sort_column(get_request_var('sort_column'), $page);
-			$direction = (strtoupper(get_nfilter_request_var('sort_direction')) == 'DESC' ? 'DESC' : 'ASC');
+			$column    = validate_sort_column($request_column, $page);
+			$direction_raw = get_nfilter_request_var('sort_direction');
+			if (!is_scalar($direction_raw)) $direction_raw = '';
+			$direction = (strtoupper((string)$direction_raw) == 'DESC' ? 'DESC' : 'ASC');
 
 			if ($column != '') {
 				$_SESSION['sort_data'][$page][$column] = $direction;
@@ -815,7 +824,7 @@ function update_order_string($inplace = false) {
 				$_SESSION['sort_string'][$page] = 'ORDER BY ';
 
 				foreach($_SESSION['sort_data'][$page] as $column => $direction) {
-					if (strpos($column, '(') === false && strpos($column, '`') === false) {
+					if (strpos((string)$column, '(') === false && strpos((string)$column, '`') === false) {
 						$del = '`';
 					} else {
 						$del = '';
@@ -825,7 +834,7 @@ function update_order_string($inplace = false) {
 
 				foreach($_SESSION['sort_data'][$page] as $column => $direction) {
 					$column    = validate_sort_column($column, $page);
-					$direction = (strtoupper($direction) == 'DESC' ? 'DESC' : 'ASC');
+					$direction = (strtoupper((string)$direction) == 'DESC' ? 'DESC' : 'ASC');
 
 					if ($column == '') continue;
 
@@ -856,7 +865,12 @@ function update_order_string($inplace = false) {
 function get_order_string() {
 	$page = get_order_string_page();
 
-	if (strpos(get_request_var('sort_column'), '(') === false && strpos(get_request_var('sort_column'), '`') === false) {
+	$request_column = get_request_var('sort_column');
+	if (!is_scalar($request_column)) {
+		$request_column = '';
+	}
+
+	if (strpos((string)$request_column, '(') === false && strpos((string)$request_column, '`') === false) {
 		$del = '`';
 	} else {
 		$del = '';
@@ -865,8 +879,10 @@ function get_order_string() {
 	if (isset($_SESSION['sort_string'][$page])) {
 		return $_SESSION['sort_string'][$page];
 	} else {
-		$column    = validate_sort_column(get_request_var('sort_column'), $page);
-		$direction = (strtoupper(get_nfilter_request_var('sort_direction')) == 'DESC' ? 'DESC' : 'ASC');
+		$column    = validate_sort_column($request_column, $page);
+		$direction_raw = get_nfilter_request_var('sort_direction');
+		if (!is_scalar($direction_raw)) $direction_raw = '';
+		$direction = (strtoupper((string)$direction_raw) == 'DESC' ? 'DESC' : 'ASC');
 
 		if ($column == '') {
 			return '';
