@@ -88,6 +88,7 @@ Cacti CHANGELOG
 -feature: Update DOMPurify to 3.3.0
 -feature: Update PHPMailer to 6.10 to support SMTPUTF8
 -feature: Update phpseclib for the Service Check plugin
+-feature: Update jstree to 3.3.17 for CSP Level 3 compliance
 
 1.2.30
 -issue#6089: Unable to add new users
