@@ -1283,7 +1283,7 @@ function makeFiltersResponsive() {
 	}
 
 	if ($('#form_graph_view').length) {
-		$('#form_graph_view').filter('input, select').not('#date1, #date2').on('click', function() {
+		$('#form_graph_view').find('input, select').not('#date1, #date2').on('click', function() {
 			closeDateFilters();
 		});
 	}
