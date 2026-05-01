@@ -1343,10 +1343,6 @@ function utilities_view_logfile() {
 	}
 
 	$(function() {
-		$('#refreshme').on('click', function() {
-			applyFilter();
-		});
-
 		$('#filename, #tail_lines, #message_type, #reverse, #refresh').on('change', function() {
 			applyFilter();
 		});
