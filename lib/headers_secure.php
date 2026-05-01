@@ -141,7 +141,7 @@ class CactiSecureHeaders {
 			. "img-src 'self' {$alternates} data: blob:; "
 			. "font-src 'self' {$alternates}; "
 			. "connect-src 'self' {$alternates}; "
-			. "frame-src 'self' {$alternatives}; "
+			. "frame-src 'self' {$alternates}; "
 			. "frame-ancestors 'self'; "
 			. "worker-src 'self' {$alternates}; "
 			. "object-src 'none'; "
