@@ -435,7 +435,7 @@ dynamic_include	./lib/utility.php:181		include_once($config['library_path'] . '/
 dynamic_include	./lib/utility.php:182		include_once($config['library_path'] . '/api_poller.php');
 dynamic_include	./lib/utility.php:46		include_once($config['library_path'] . '/api_data_source.php');
 dynamic_include	./lib/utility.php:803		include_once($config['library_path'] . '/api_data_source.php');
-dynamic_include	./link.php:92					include_once($file);
+dynamic_include	./link.php:73					include_once($file);
 dynamic_include	./poller.php:1042	    include_once($config['base_path'] . '/lib/poller.php');
 dynamic_include	./poller.php:1193	    include_once($config['base_path'] . '/lib/poller.php');
 dynamic_include	./poller.php:35	require_once($config['base_path'] . '/lib/poller.php');
@@ -877,7 +877,7 @@ header_redirect	./lib/html_reports.php:494			header('Location: ' . get_reports_p
 header_redirect	./lib/html_reports.php:523			header('Location: ' . get_reports_page() . '?header=false');
 header_redirect	./lib/index.php:25	header("Location:../index.php");
 header_redirect	./lib/plugins.php:701			header('Location: plugins.php?header=false');
-header_redirect	./link.php:103			header('Location: ' . $referer);
+header_redirect	./link.php:84			header('Location: index.php');
 header_redirect	./links.php:109			header('Location: links.php?header=false');
 header_redirect	./links.php:114			header('Location: links.php?action=edit&header=false&id=' . (isset_request_var('id') ? get_filter_request_var('id'):''));
 header_redirect	./links.php:166			header('Location: links.php?header=false');
