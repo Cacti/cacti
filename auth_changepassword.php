@@ -376,7 +376,7 @@ if ($skip_current) {
 						<tr>
 							<td class='nowrap' colspan='2'><input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Save'); ?>'>
 								<?php if ($user['must_change_password'] != 'on') { ?>
-								<input type='button' class='ui-button ui-corner-all ui-widget passwordReturn' data-location='<?php print $return;?>' value='<?php print __esc('Return'); ?>'>
+								<input type='button' class='ui-button ui-corner-all ui-widget passwordReturn' data-location='<?php print html_escape($return);?>' value='<?php print __esc('Return'); ?>'>
 								<?php } ?>
 							</td>
 						</tr>

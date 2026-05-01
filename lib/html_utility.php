@@ -1237,9 +1237,9 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 
 	if ($total_pages > 0) {
 		if ($current_page == 1) {
-			$url_page_select .= "<li><a data-url='$url$page_var=1' data-return='$return_to' href='#' class='active'>1</a></li>";
+			$url_page_select .= "<li><a data-url='" . html_escape($url . $page_var . "=1") . "' data-return='" . html_escape($return_to) . "' href='#' class='active'>1</a></li>";
 		} else {
-			$url_page_select .= "<li><a data-url='$url$page_var=1' data-return='$return_to' href='#'>1</a></li>";
+			$url_page_select .= "<li><a data-url='" . html_escape($url . $page_var . "=1") . "' data-return='" . html_escape($return_to) . "' href='#'>1</a></li>";
 		}
 	}
 
@@ -1252,9 +1252,9 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 			}
 
 			if ($current_page == $page) {
-				$url_page_select .= "<li><a data-url='$url$page_var=$page' data-return='$return_to' href='#' class='active'>$page</a></li>";
+				$url_page_select .= "<li><a data-url='" . html_escape($url . $page_var . "=" . $page) . "' data-return='" . html_escape($return_to) . "' href='#' class='active'>$page</a></li>";
 			} else {
-				$url_page_select .= "<li><a data-url='$url$page_var=$page' data-return='$return_to' href='#'>$page</a></li>";
+				$url_page_select .= "<li><a data-url='" . html_escape($url . $page_var . "=" . $page) . "' data-return='" . html_escape($return_to) . "' href='#'>$page</a></li>";
 			}
 		}
 	}
@@ -1264,11 +1264,10 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 	}
 
 	if ($total_pages > 1) {
-		$page = $current_page + 1;
 		if ($current_page == $total_pages) {
-			$url_page_select .= "<li><a data-url='$url$page_var=$page' data-return='$return_to' href='#' class='active'>$total_pages</a></li>";
+			$url_page_select .= "<li><a data-url='" . html_escape($url . $page_var . "=" . $total_pages) . "' data-return='" . html_escape($return_to) . "' href='#' class='active'>$total_pages</a></li>";
 		} else {
-			$url_page_select .= "<li><a data-url='$url$page_var=$page' data-return='$return_to' href='#'>$total_pages</a></li>";
+			$url_page_select .= "<li><a data-url='" . html_escape($url . $page_var . "=" . $total_pages) . "' data-return='" . html_escape($return_to) . "' href='#'>$total_pages</a></li>";
 		}
 	}
 
