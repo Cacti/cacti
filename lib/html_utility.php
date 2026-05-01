@@ -755,18 +755,29 @@ function update_order_string($inplace = false) {
 	}
 
 	if ($inplace) {
-		$_SESSION['sort_string'][$page] = 'ORDER BY ';
-		foreach($_SESSION['sort_data'][$page] as $column => $direction) {
-			$column    = validate_sort_column($column, $page);
-			$direction = (strtoupper($direction) == 'DESC' ? 'DESC' : 'ASC');
+		if (!empty($_SESSION['sort_data'][$page])) {
+			$_SESSION['sort_string'][$page] = 'ORDER BY ';
+			foreach($_SESSION['sort_data'][$page] as $column => $direction) {
+				$column    = validate_sort_column($column, $page);
+				$direction = (strtoupper($direction) == 'DESC' ? 'DESC' : 'ASC');
 
-			if ($column == 'hostname' || $column == 'ip' || $column == 'ip_address') {
-				$order .= ($order != '' ? ', ':'') . 'INET_ATON(' . $column . ') ' . $direction;
-			} else {
-				$order .= ($order != '' ? ', ':'') . $column . ' ' . $direction;
+				if ($column == '') continue;
+
+				if ($column == 'hostname' || $column == 'ip' || $column == 'ip_address') {
+					$order .= ($order != '' ? ', ':'') . 'INET_ATON(' . $column . ') ' . $direction;
+				} else {
+					$order .= ($order != '' ? ', ':'') . $column . ' ' . $direction;
+				}
 			}
+
+			if ($order != '') {
+				$_SESSION['sort_string'][$page] .= $order;
+			} else {
+				unset($_SESSION['sort_string'][$page]);
+			}
+		} else {
+			unset($_SESSION['sort_string'][$page]);
 		}
-		$_SESSION['sort_string'][$page] .= $order;
 	} else {
 		if (isset_request_var('clear')) {
 			unset($_SESSION['sort_data'][$page]);
@@ -778,12 +789,14 @@ function update_order_string($inplace = false) {
 			$column    = validate_sort_column(get_request_var('sort_column'), $page);
 			$direction = (strtoupper(get_nfilter_request_var('sort_direction')) == 'DESC' ? 'DESC' : 'ASC');
 
-			$_SESSION['sort_data'][$page][$column] = $direction;
+			if ($column != '') {
+				$_SESSION['sort_data'][$page][$column] = $direction;
 
-			if ($column == 'hostname' || $column == 'ip' || $column == 'ip_address') {
-				$_SESSION['sort_string'][$page] ='ORDER BY INET_ATON(' . $column . ") " . $direction;
-			} else {
-				$_SESSION['sort_string'][$page] = 'ORDER BY ' . $del . implode($del . '.'. $del, explode('.', $column)) . $del . ' ' . $direction;
+				if ($column == 'hostname' || $column == 'ip' || $column == 'ip_address') {
+					$_SESSION['sort_string'][$page] ='ORDER BY INET_ATON(' . $column . ") " . $direction;
+				} else {
+					$_SESSION['sort_string'][$page] = 'ORDER BY ' . $del . implode($del . '.'. $del, explode('.', $column)) . $del . ' ' . $direction;
+				}
 			}
 		} elseif (isset_request_var('sort_column')) {
 			if (isset_request_var('reset')) {
@@ -794,29 +807,43 @@ function update_order_string($inplace = false) {
 			$column    = validate_sort_column(get_request_var('sort_column'), $page);
 			$direction = (strtoupper(get_nfilter_request_var('sort_direction')) == 'DESC' ? 'DESC' : 'ASC');
 
-			$_SESSION['sort_data'][$page][$column] = $direction;
-			$_SESSION['sort_string'][$page] = 'ORDER BY ';
-
-			foreach($_SESSION['sort_data'][$page] as $column => $direction) {
-				if (strpos($column, '(') === false && strpos($column, '`') === false) {
-					$del = '`';
-				} else {
-					$del = '';
-					break;
-				}
+			if ($column != '') {
+				$_SESSION['sort_data'][$page][$column] = $direction;
 			}
 
-			foreach($_SESSION['sort_data'][$page] as $column => $direction) {
-				$column    = validate_sort_column($column, $page);
-				$direction = (strtoupper($direction) == 'DESC' ? 'DESC' : 'ASC');
+			if (!empty($_SESSION['sort_data'][$page])) {
+				$_SESSION['sort_string'][$page] = 'ORDER BY ';
 
-				if ($column == 'hostname' || $column == 'ip' || $column == 'ip_address') {
-					$order .= ($order != '' ? ', ':'') . 'INET_ATON(' . $column . ") " . $direction;
-				} else {
-					$order .= ($order != '' ? ', ' . $del:$del) . implode($del . '.' . $del, explode('.', $column)) . $del . ' ' . $direction;
+				foreach($_SESSION['sort_data'][$page] as $column => $direction) {
+					if (strpos($column, '(') === false && strpos($column, '`') === false) {
+						$del = '`';
+					} else {
+						$del = '';
+						break;
+					}
 				}
+
+				foreach($_SESSION['sort_data'][$page] as $column => $direction) {
+					$column    = validate_sort_column($column, $page);
+					$direction = (strtoupper($direction) == 'DESC' ? 'DESC' : 'ASC');
+
+					if ($column == '') continue;
+
+					if ($column == 'hostname' || $column == 'ip' || $column == 'ip_address') {
+						$order .= ($order != '' ? ', ':'') . 'INET_ATON(' . $column . ") " . $direction;
+					} else {
+						$order .= ($order != '' ? ', ' . $del:$del) . implode($del . '.' . $del, explode('.', $column)) . $del . ' ' . $direction;
+					}
+				}
+
+				if ($order != '') {
+					$_SESSION['sort_string'][$page] .= $order;
+				} else {
+					unset($_SESSION['sort_string'][$page]);
+				}
+			} else {
+				unset($_SESSION['sort_string'][$page]);
 			}
-			$_SESSION['sort_string'][$page] .= $order;
 		} else {
 			unset($_SESSION['sort_data'][$page]);
 			unset($_SESSION['sort_string'][$page]);
