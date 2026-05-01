@@ -2167,6 +2167,13 @@ function utilities_view_poller_cache() {
 
 	$total_rows = get_total_row_data($_SESSION['sess_user_id'], $sql, array(), 'poller_item');
 
+	$order_string = get_order_string();
+	if ($order_string == '') {
+		$order_string = 'ORDER BY action ASC';
+	} else {
+		$order_string .= ', action ASC';
+	}
+
 	$poller_sql = "SELECT pi.*, dtd.name_cache, h.description, h.id AS host_id
 		FROM poller_item AS pi
 		INNER JOIN data_local AS dl
@@ -2176,7 +2183,7 @@ function utilities_view_poller_cache() {
 		LEFT JOIN host AS h
 		ON pi.host_id = h.id
 		$sql_where
-		" . get_order_string() . ", action ASC
+		$order_string
 		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 	$poller_cache = db_fetch_assoc($poller_sql);
