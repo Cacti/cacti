@@ -1082,7 +1082,7 @@ case 'list':
 			clearFilter();
 		});
 
-		$('#viewgr').on('click', function() {
+		$('#view, #viewgr').on('click', function() {
 			viewGraphs();
 		});
 
