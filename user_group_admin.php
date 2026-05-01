@@ -1999,7 +1999,7 @@ function user_group() {
 		ON uag.id = uagm.group_id
 		$sql_where
 		GROUP BY uag.id
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
+		" . get_order_string() .
 		' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows);
 
 	$nav = html_nav_bar('user_group_admin.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('Groups'), 'page', 'main');

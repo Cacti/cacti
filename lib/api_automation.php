@@ -258,13 +258,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	$rows_query = $sql_query . $sql_where . $sql_filter;
 	$total_rows = cacti_sizeof(db_fetch_assoc($rows_query, false));
 
-	$sortby = get_request_var('sort_column');
-	if ($sortby=='hostname') {
-		$sortby = 'INET_ATON(hostname)';
-	}
-
-	$sql_query = $rows_query .
-		' ORDER BY ' . $sortby . ' ' . get_request_var('sort_direction') .
+	$sql_query = $rows_query . ' ' . get_order_string() .
 		' LIMIT ' . ($rows*(get_request_var('paged')-1)) . ',' . $rows;
 	$hosts = db_fetch_assoc($sql_query, false);
 
@@ -555,8 +549,8 @@ function display_matching_graphs($rule, $rule_type, $url) {
 		LEFT JOIN host_template AS ht
 		ON h.host_template_id=ht.id
 		$sql_where
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
-		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+		" . get_order_string() . "
+		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 	$graph_list = db_fetch_assoc($sql, false);
 
@@ -1202,13 +1196,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 
 	$total_rows = cacti_sizeof(db_fetch_assoc($rows_query, false));
 
-	$sortby = get_request_var('sort_column');
-	if ($sortby=='h.hostname') {
-		$sortby = 'INET_ATON(h.hostname)';
-	}
-
-	$sql_query = "$rows_query ORDER BY $sortby " .
-		get_request_var('sort_direction') . ' LIMIT ' .
+	$sql_query = "$rows_query " . get_order_string() . ' LIMIT ' .
 		($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 	$templates = db_fetch_assoc($sql_query, false);

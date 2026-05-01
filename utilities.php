@@ -1135,8 +1135,8 @@ function utilities_view_user_log() {
 		RIGHT JOIN user_log AS ul
 		ON ua.username=ul.username
 		$sql_where
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
-		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+		" . get_order_string() . "
+		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 	$user_log = db_fetch_assoc($user_log_sql);
 
@@ -2176,8 +2176,8 @@ function utilities_view_poller_cache() {
 		LEFT JOIN host AS h
 		ON pi.host_id = h.id
 		$sql_where
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . ', action ASC
-		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+		" . get_order_string() . ", action ASC
+		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 	$poller_cache = db_fetch_assoc($poller_sql);
 

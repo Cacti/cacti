@@ -1914,9 +1914,7 @@ function reports() {
 		FROM reports
 		$sql_join
 		$sql_where
-		ORDER BY " .
-		get_request_var('sort_column') . ' ' .
-		get_request_var('sort_direction') .
+		" . get_order_string() .
 		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
 	form_start(get_reports_page(), 'chk');
