@@ -2458,6 +2458,10 @@ function boost_display_run_status() {
 		$('#refresh').on('change', function() {
 			applyFilter();
 		});
+
+		$('#go').on('click', function() {
+			applyFilter();
+		});
 	});
 	</script>
 	<tr class='even'>
@@ -2477,7 +2481,7 @@ function boost_display_run_status() {
 						?>
 					</td>
 					<td>
-						<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Refresh');?>' onClick='applyFilter()'>
+						<input type='button' id='go' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Refresh');?>'>
 					</td>
 				</tr>
 			</table>
