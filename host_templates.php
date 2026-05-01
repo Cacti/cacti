@@ -225,7 +225,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Device Template(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Device Template(s)') . "'>";
 		} elseif (get_request_var('drp_action') == '2') { // duplicate
 			print "<tr>
 				<td class='textArea'>
@@ -239,7 +239,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') ."' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Duplicate Device Template(s)') ."'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') ."'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Duplicate Device Template(s)') ."'>";
 		} elseif (get_request_var('drp_action') == '3') { // sync devices
 			print "<tr>
 				<td class='textArea'>
@@ -250,7 +250,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') ."' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Sync Devices to Device Template(s)') ."'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') ."'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Sync Devices to Device Template(s)') ."'>";
 		}
 	} else {
 		raise_message(40);
@@ -302,7 +302,7 @@ function template_item_remove_gt_confirm() {
 	</tr>
 	<tr>
 		<td class='right'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close")' name='cancel'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' name='cancel'>
 			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove Data Input Field');?>'>
 		</td>
 	</tr>
@@ -314,16 +314,22 @@ function template_item_remove_gt_confirm() {
 
 	?>
 	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
-	$('#continue').click(function(data) {
-		$.post('host_templates.php?action=item_remove_gt', {
-			__csrf_magic: csrfMagicToken,
-			host_template_id: <?php print get_request_var('host_template_id');?>,
-			id: <?php print get_request_var('id');?>
-		}, function(data) {
+	$(function() {
+		$('#cancel').on('click', function() {
 			$('#cdialog').dialog('close');
-			$('div[class^="ui-"]').remove();
-			$('#main').html(data);
-			applySkin();
+		});
+
+		$('#continue').on('click', function(data) {
+			$.post('host_templates.php?action=item_remove_gt', {
+				__csrf_magic: csrfMagicToken,
+				host_template_id: <?php print get_request_var('host_template_id');?>,
+				id: <?php print get_request_var('id');?>
+			}, function(data) {
+				$('#cdialog').dialog('close');
+				$('div[class^="ui-"]').remove();
+				$('#main').html(data);
+				applySkin();
+			});
 		});
 	});
 	</script>
@@ -365,7 +371,7 @@ function template_item_remove_dq_confirm() {
 	</tr>
 	<tr>
 		<td class='right'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close")' name='cancel'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' name='cancel'>
 			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove Data Input Field');?>'>
 		</td>
 	</tr>
@@ -377,16 +383,22 @@ function template_item_remove_dq_confirm() {
 
 	?>
 	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
-	$('#continue').click(function(data) {
-		$.post('host_templates.php?action=item_remove_dq', {
-			__csrf_magic: csrfMagicToken,
-			host_template_id: <?php print get_request_var('host_template_id');?>,
-			id: <?php print get_request_var('id');?>
-		}, function(data) {
+	$(function() {
+		$('#cancel').on('click', function() {
 			$('#cdialog').dialog('close');
-			$('div[class^="ui-"]').remove();
-			$('#main').html(data);
-			applySkin();
+		});
+
+		$('#continue').on('click', function(data) {
+			$.post('host_templates.php?action=item_remove_dq', {
+				__csrf_magic: csrfMagicToken,
+				host_template_id: <?php print get_request_var('host_template_id');?>,
+				id: <?php print get_request_var('id');?>
+			}, function(data) {
+				$('#cdialog').dialog('close');
+				$('div[class^="ui-"]').remove();
+				$('#main').html(data);
+				applySkin();
+			});
 		});
 	});
 	</script>
@@ -570,7 +582,7 @@ function template_edit() {
 		$('#cdialog').remove();
 		$('#main').append("<div id='cdialog' class='cdialog'></div>");
 
-		$('.delete').click(function (event) {
+		$('.delete').on('click', function (event) {
 			event.preventDefault();
 
 			request = $(this).attr('href');
@@ -592,7 +604,7 @@ function template_edit() {
 				});
 		}).css('cursor', 'pointer');
 
-		$('#add_dq').click(function() {
+		$('#add_dq').on('click', function() {
 			$.post('host_templates.php?action=item_add_dq', {
 				host_template_id: $('#id').val(),
 				snmp_query_id: $('#snmp_query_id').val(),
@@ -605,7 +617,7 @@ function template_edit() {
 			});
 		});
 
-		$('#add_gt').click(function() {
+		$('#add_gt').on('click', function() {
 			$.post('host_templates.php?action=item_add_gt', {
 				host_template_id: $('#id').val(),
 				graph_template_id: $('#graph_template_id').val(),
@@ -814,19 +826,19 @@ function template() {
 		}
 
 		$(function() {
-			$('#graph_template, #class, #rows').change(function() {
+			$('#graph_template, #class, #rows').on('change', function() {
 				applyFilter();
 			});
 
-			$('#refresh, #has_hosts').click(function() {
+			$('#refresh, #has_hosts').on('click', function() {
 				applyFilter();
 			});
 
-			$('#clear').click(function() {
+			$('#clear').on('click', function() {
 				clearFilter();
 			});
 
-			$('#form_host_template').submit(function(event) {
+			$('#form_host_template').on('submit', function(event) {
 				event.preventDefault();
 				applyFilter();
 			});

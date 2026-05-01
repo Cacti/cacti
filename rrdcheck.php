@@ -119,7 +119,9 @@ function rrdcheck_display_problems() {
 
 	if (get_request_var('filter') != '') {
 		$sql_where .= ' AND (
-			message LIKE '          . db_qstr('%' . get_request_var('filter') . '%') . ')';
+			message LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR
+			dtd.name_cache LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR
+			h.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') .  ')';
 	}
 
 	$total_rows = db_fetch_cell("SELECT COUNT(local_data_id)
@@ -232,7 +234,7 @@ function filter() {
 						<?php print __('Age');?>
 					</td>
 					<td>
-						<select id='age' onChange='refreshForm()'>
+						<select id='age'>
 							<option value='0'   <?php print (get_request_var('age') == '0'   ? ' selected':'');?>>&lt; <?php print __('%d hours', 2);?></option>
 							<option value='14400'   <?php print (get_request_var('age') == '14400'   ? ' selected':'');?>>&gt; <?php print __('%d hours', 4);?></option>
 							<option value='43200'  <?php print (get_request_var('age') == '43200'  ? ' selected':'');?>>&gt;  <?php print __('%d hours',12);?></option>
@@ -277,21 +279,21 @@ function filter() {
 			}
 
 			$(function() {
-				$('#form_rrdcheck').submit(function() {
+				$('#form_rrdcheck').on('submit', function() {
 					refreshForm();
 					return false;
 				});
 
-				$('#rows').change(function() {
+				$('#rows, #age').on('change', function() {
 					refreshForm();
 				});
 
-				$('#clear').click(function() {
+				$('#clear').on('click', function() {
 					strURL = 'rrdcheck.php?header=false&clear=1';
 					loadPageNoHeader(strURL);
 				});
 
-				$('#purge').click(function() {
+				$('#purge').on('click', function() {
 					strURL = 'rrdcheck.php?action=purge&header=false';
 					loadPageNoHeader(strURL);
 				});

@@ -371,9 +371,9 @@ function form_actions() {
 					<p>" . __('Click \'Continue\' to delete the following Graph Template(s).  Any Graph(s) associated with the Template(s) will become individual Graph(s).') . "</p>
 					<div class='itemlist'><ul>$graph_list</ul></div>
 				</td>
-			</tr>\n";
+			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Graph Template(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Graph Template(s)') . "'>";
 		} elseif (get_request_var('drp_action') == '2') { // duplicate
 			print "<tr>
 				<td class='textArea'>
@@ -381,9 +381,9 @@ function form_actions() {
 					<div class='itemlist'><ul>$graph_list</ul></div>
 					<p><strong>" . __('Title Format:'). "</strong><br>"; form_text_box('title_format', '<template_title> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
-			</tr>\n";
+			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue'). "' title='" . __esc('Duplicate Graph Template(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue'). "' title='" . __esc('Duplicate Graph Template(s)') . "'>";
 		} elseif (get_request_var('drp_action') == '3') { // resize
 			print "<tr>
 				<td class='textArea'>
@@ -403,27 +403,27 @@ function form_actions() {
 			print '</td></tr><tr><td>' . __('Image Format') . '</td><td>';
 			form_dropdown('image_format_id', $image_types, '', '', read_config_option('default_image_format'), '', '');
 
-			print "</td></tr></table><div class='break'></div><table style='width:100%'>\n";
+			print "</td></tr></table><div class='break'></div><table style='width:100%'>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Resize Selected Graph Template(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Resize Selected Graph Template(s)') . "'>";
 		} elseif (get_request_var('drp_action') == '4') { // retemplate
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to perform a Full Synchronization between your Graphs and the chosen Graph Templates(s). If you simply have a situation where the Graph Items don\'t match the Graph Template, try the Quick Sync Graphs option first as it will take much less time.  This function is important if you have Graphs that exist with multiple versions of a Graph Template and wish to make them all common in appearance.') . "</p>
 					<div class='itemlist'><ul>$graph_list</ul></div>
 				</td>
-			</tr>\n";
+			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue'). "' title='" . __esc('Synchronize Graphs to Graph Template(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue'). "' title='" . __esc('Synchronize Graphs to Graph Template(s)') . "'>";
 		} elseif (get_request_var('drp_action') == '5') { // retemplate only where sequences are off
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to perform a Quick Synchronization of your Graphs for the following Graph Template(s). Use this option if your Graphs have Graph Items that do not match your Graph Template.  If this option does not work, use the Full Sync Graphs option, which will take more time to complete.') . "</p>
 					<div class='itemlist'><ul>$graph_list</ul></div>
 				</td>
-			</tr>\n";
+			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue'). "' title='" . __esc('Synchronize Graphs to Graph Template(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue'). "' title='" . __esc('Synchronize Graphs to Graph Template(s)') . "'>";
 		}
 	} else {
 		raise_message(40);
@@ -438,7 +438,7 @@ function form_actions() {
 			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
 			$save_html
 		</td>
-	</tr>\n";
+	</tr>";
 
 	html_end_box();
 
@@ -524,7 +524,7 @@ function item() {
 	?>
 	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
-		$('.deleteMarker, .moveArrow').click(function(event) {
+		$('.deleteMarker, .moveArrow').on('click', function(event) {
 			event.preventDefault();
 			loadPageNoHeader($(this).attr('href'));
 		});
@@ -635,6 +635,7 @@ function template_edit() {
 	function dynamic() {
 		$('#t_scale_log_units').prop('disabled', true);
 		$('#scale_log_units').prop('disabled', true);
+
 		if ($('#auto_scale_log').is(':checked')) {
 			$('#t_scale_log_units').prop('disabled', false);
 			$('#scale_log_units').prop('disabled', false);
@@ -644,6 +645,7 @@ function template_edit() {
 	function changeScaleLog() {
 		$('#t_scale_log_units').prop('disabled', true);
 		$('#scale_log_units').prop('disabled', true);
+
 		if ($('#auto_scale_log').is(':checked')) {
 			$('#t_scale_log_units').prop('disabled', false);
 			$('#scale_log_units').prop('disabled', false);
@@ -717,12 +719,12 @@ function template() {
 						<?php print __('Graph Templates');?>
 					</td>
 					<td>
-						<select id='rows' name='rows' onChange='applyFilter()'>
+						<select id='rows' name='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>";
 								}
 							}
 							?>
@@ -760,19 +762,19 @@ function template() {
 		}
 
 		$(function() {
-			$('#refresh').click(function() {
+			$('#refresh, #has_graphs').on('click', function() {
 				applyFilter();
 			});
 
-			$('#has_graphs').click(function() {
+			$('#rows').on('change', function() {
 				applyFilter();
 			});
 
-			$('#clear').click(function() {
+			$('#clear').on('click', function() {
 				clearFilter();
 			});
 
-			$('#form_graph_template').submit(function(event) {
+			$('#form_graph_template').on('submit', function(event) {
 				event.preventDefault();
 				applyFilter();
 			});
@@ -908,7 +910,7 @@ function template() {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Graph Templates Found') . "</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Graph Templates Found') . "</em></td></tr>";
 	}
 	html_end_box(false);
 

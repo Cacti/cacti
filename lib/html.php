@@ -969,7 +969,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}
 	}
 
-	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' onClick='selectAll(\"$prefix\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All Rows') . "' for='selectall'></label></th>" . ($include_form ? "<th style='display:none;'><form id='$prefix' name='$prefix' method='post' action='$form_action'></th>":'');
+	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' data-prefix='$prefix'><label class='formCheckboxLabel' title='" . __esc('Select All Rows') . "' for='selectall'></label></th>" . ($include_form ? "<th style='display:none;'><form id='$prefix' name='$prefix' method='post' action='$form_action'></th>":'');
 	print '</tr>';
 
 	$page_count++;
@@ -1068,7 +1068,7 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 		}
 	}
 
-	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' onClick='selectAll(\"$prefix\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All') . "' for='selectall'></label></th>" . ($include_form ? "<th style='display:none;'><form id='$prefix' name='$prefix' method='post' action='$form_action'></th>":'');
+	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' data-prefix='$prefix'><label class='formCheckboxLabel' title='" . __esc('Select All') . "' for='selectall'></label></th>" . ($include_form ? "<th style='display:none;'><form id='$prefix' name='$prefix' method='post' action='$form_action'></th>":'');
 	print '</tr>';
 }
 
@@ -1627,7 +1627,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function setDisabled() {
-		$('tr[id^="line"]').addClass('selectable').prop('disabled', false).removeClass('disabled_row').unbind('click').prop('disabled', false);
+		$('tr[id^="line"]').addClass('selectable').prop('disabled', false).removeClass('disabled_row').off('click').prop('disabled', false);
 
 		if ($('#drp_action').val() == <?php print $delete_action;?>) {
 			$(':checkbox.disabled').each(function(data) {
@@ -1668,7 +1668,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 			});
 		}
 
-		$('tr[id^="line"]').filter(':not(.disabled_row)').off('click').on('click', function(event) {
+		$('tr[id^="line"]').filter(':not(.disabled_row)').on('click', function(event) {
 			selectUpdateRow(event, $(this));
 		});
 	}
@@ -1676,7 +1676,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 	$(function() {
 		setDisabled();
 
-		$('#drp_action').change(function() {
+		$('#drp_action').on('change', function() {
 			setDisabled();
 		});
 	});
@@ -2135,7 +2135,7 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 			<?php print __('Device');?>
 		</td>
 		<td>
-			<select id='host_id' name='host_id' onChange='<?php print $call_back;?>'>
+			<select id='host_id' name='host_id'>
 				<?php if (!$noany) {?><option value='-1'<?php if ($host_id == '-1') {?> selected<?php }?>><?php print __('Any');?></option><?php }?>
 				<?php if (!$nonone) {?><option value='0'<?php if ($host_id == '0') {?> selected<?php }?>><?php print __('None');?></option><?php }?>
 				<?php
@@ -2196,7 +2196,7 @@ function html_site_filter($site_id = '-1', $call_back = 'applyFilter', $sql_wher
 		<?php print __('Site');?>
 	</td>
 	<td>
-		<select id='site_id' onChange='<?php print $call_back;?>'>
+		<select id='site_id'>
 			<?php if (!$noany) {?><option value='-1'<?php if ($site_id == '-1') {?> selected<?php }?>><?php print __('Any');?></option><?php }?>
 			<?php if (!$nonone) {?><option value='0'<?php if ($site_id == '0') {?> selected<?php }?>><?php print __('None');?></option><?php }?>
 			<?php
@@ -2226,7 +2226,7 @@ function html_location_filter($location = '', $call_back = 'applyFilter', $sql_w
 		<?php print __('Location');?>
 	</td>
 	<td>
-		<select id='location' onChange='<?php print $call_back;?>'>
+		<select id='location'>
 			<?php if (!$noany) {?><option value='-1'<?php if ($location == '-1') {?> selected<?php }?>><?php print __('Any');?></option><?php }?>
 			<?php if (!$nonone) {?><option value='0'<?php if ($location == '0') {?> selected<?php }?>><?php print __('None');?></option><?php }?>
 			<?php
@@ -2362,7 +2362,7 @@ function html_spikekill_js() {
 	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	spikeKillOpen = false;
 	$(function() {
-		$(document).click(function() {
+		$(document).on('click', function() {
 			if (spikeKillOpen) {
 				$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 				spikeKillOpen = false;
@@ -2373,7 +2373,7 @@ function html_spikekill_js() {
 			return false;
 		});
 
-		$('span.spikekill').unbind().click(function() {
+		$('span.spikekill').on('click', function() {
 			if (spikeKillOpen == false) {
 				local_graph_id = $(this).attr('data-graph');
 
@@ -2413,37 +2413,37 @@ function html_spikekill_js() {
 	});
 
 	function spikeKillActions() {
-		$('.rstddev').unbind().click(function() {
+		$('.rstddev').on('click', function() {
 			removeSpikes('stddev', false, $(this).attr('data-graph'));
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 		});
 
-		$('.dstddev').unbind().click(function() {
+		$('.dstddev').on('click', function() {
 			removeSpikes('stddev', true, $(this).attr('data-graph'));
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 		});
 
-		$('.rfill').unbind().click(function() {
+		$('.rfill').on('click', function() {
 			removeSpikes('fill', false, $(this).attr('data-graph'));
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 		});
 
-		$('.dfill').unbind().click(function() {
+		$('.dfill').on('click', function() {
 			removeSpikes('fill', true, $(this).attr('data-graph'));
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 		});
 
-		$('.rfloat').unbind().click(function() {
+		$('.rfloat').on('click', function() {
 			removeSpikes('float', false, $(this).attr('data-graph'));
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 		});
 
-		$('.dfloat').unbind().click(function() {
+		$('.dfloat').on('click', function() {
 			removeSpikes('float', true, $(this).attr('data-graph'));
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 		});
 
-		$('.skmethod').unbind().click(function() {
+		$('.skmethod').on('click', function() {
 			$('.skmethod').find('i').removeClass('fa fa-check');
 			$(this).find('i:first').addClass('fa fa-check');
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
@@ -2455,7 +2455,7 @@ function html_spikekill_js() {
 				});
 		});
 
-		$('.skills').unbind().click(function() {
+		$('.skills').on('click', function() {
 			$('.skills').find('i').removeClass('fa fa-check');
 			$(this).find('i:first').addClass('fa fa-check');
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
@@ -2467,7 +2467,7 @@ function html_spikekill_js() {
 				});
 		});
 
-		$('.skstddev').unbind().click(function() {
+		$('.skstddev').on('click', function() {
 			$('.skstddev').find('i').removeClass('fa fa-check');
 			$(this).find('i:first').addClass('fa fa-check');
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();

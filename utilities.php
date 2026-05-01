@@ -989,19 +989,23 @@ function utilities_view_user_log() {
 	}
 
 	$(function() {
-		$('#refresh').click(function() {
+		$('#refresh').on('click', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#username, #result, #rows').on('change', function() {
+			applyFilter();
+		});
+
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#purge').click(function() {
+		$('#purge').on('click', function() {
 			purgeLog();
 		});
 
-		$('#form_userlog').submit(function(event) {
+		$('#form_userlog').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -1031,7 +1035,7 @@ function utilities_view_user_log() {
 						<?php print __('User');?>
 					</td>
 					<td>
-						<select id='username' onChange='applyFilter()'>
+						<select id='username'>
 							<option value='-1'<?php if (get_request_var('username') == '-1') {?> selected<?php }?>><?php print __('All');?></option>
 							<option value='-2'<?php if (get_request_var('username') == '-2') {?> selected<?php }?>><?php print __('Deleted/Invalid');?></option>
 							<?php
@@ -1049,7 +1053,7 @@ function utilities_view_user_log() {
 						<?php print __('Result');?>
 					</td>
 					<td>
-						<select id='result' onChange='applyFilter()'>
+						<select id='result'>
 							<option value='-1'<?php if (get_request_var('result') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='1'<?php if (get_request_var('result') == '1') {?> selected<?php }?>><?php print __('Success - Password');?></option>
 							<option value='2'<?php if (get_request_var('result') == '2') {?> selected<?php }?>><?php print __('Success - Token');?></option>
@@ -1061,7 +1065,7 @@ function utilities_view_user_log() {
 						<?php print __('Attempts');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
@@ -1074,7 +1078,7 @@ function utilities_view_user_log() {
 					</td>
 					<td>
 						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='purge' value='<?php print __esc_x('Button: delete all table entries', 'Purge');?>' title='<?php print __esc('Purge User Log');?>'>
 						</span>
@@ -1339,19 +1343,23 @@ function utilities_view_logfile() {
 	}
 
 	$(function() {
-		$('#refreshme').click(function() {
+		$('#refreshme').on('click', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#filename, #tail_lines, #message_type, #reverse, #refresh').on('change', function() {
+			applyFilter();
+		});
+
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#purge').click(function() {
+		$('#purge').on('click', function() {
 			purgeLog();
 		});
 
-		$('#form_logfile').submit(function(event) {
+		$('#form_logfile').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -1392,7 +1400,7 @@ function utilities_view_logfile() {
 						<?php print __('File');?>
 					</td>
 					<td>
-						<select id='filename' onChange='applyFilter()'>
+						<select id='filename'>
 							<?php
 							$logFileArray = clog_get_logfiles();
 
@@ -1419,7 +1427,7 @@ function utilities_view_logfile() {
 						<?php print __('Tail Lines');?>
 					</td>
 					<td>
-						<select id='tail_lines' onChange='applyFilter()'>
+						<select id='tail_lines'>
 							<?php
 							foreach($log_tail_lines AS $tail_lines => $display_text) {
 								print "<option value='" . $tail_lines . "'"; if (get_request_var('tail_lines') == $tail_lines) { print ' selected'; } print '>' . $display_text . '</option>';
@@ -1429,7 +1437,7 @@ function utilities_view_logfile() {
 					</td>
 					<td>
 						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='refreshme' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' id='refreshme' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='purge' value='<?php print __esc_x('Button: delete all table entries', 'Purge');?>' title='<?php print __esc('Purge Log');?>'>
 						</span>
@@ -1442,7 +1450,7 @@ function utilities_view_logfile() {
 						<?php print __('Type');?>
 					</td>
 					<td>
-						<select id='message_type' onChange='applyFilter()'>
+						<select id='message_type'>
 							<option value='-1'<?php if (get_request_var('message_type') == '-1') {?> selected<?php }?>><?php print __('All');?></option>
 							<option value='1'<?php if (get_request_var('message_type') == '1') {?> selected<?php }?>><?php print __('Stats');?></option>
 							<option value='2'<?php if (get_request_var('message_type') == '2') {?> selected<?php }?>><?php print __('Warnings');?></option>
@@ -1455,7 +1463,7 @@ function utilities_view_logfile() {
 						<?php print __('Display Order');?>
 					</td>
 					<td>
-						<select id='reverse' onChange='applyFilter()'>
+						<select id='reverse'>
 							<option value='1'<?php if (get_request_var('reverse') == '1') {?> selected<?php }?>><?php print __('Newest First');?></option>
 							<option value='2'<?php if (get_request_var('reverse') == '2') {?> selected<?php }?>><?php print __('Oldest First');?></option>
 						</select>
@@ -1464,7 +1472,7 @@ function utilities_view_logfile() {
 						<?php print __('Refresh');?>
 					</td>
 					<td>
-						<select id='refresh' onChange='applyFilter()'>
+						<select id='refresh'>
 							<?php
 							foreach($page_refresh_interval AS $seconds => $display_text) {
 								print "<option value='" . $seconds . "'"; if (get_request_var('refresh') == $seconds) { print ' selected'; } print '>' . $display_text . '</option>';
@@ -1517,7 +1525,7 @@ function utilities_view_logfile() {
 
 	$nav = html_nav_bar($base_url, MAX_DISPLAY_PAGES, $page_nr, $number_of_lines, $total_rows, 13, __('Entries'), 'page', 'main');
 
-	echo $nav;
+	print $nav;
 
 	html_start_box($start_string, '100%', '', '3', 'center', '');
 
@@ -1576,7 +1584,7 @@ function utilities_view_logfile() {
 	html_end_box();
 
 	if ($total_rows) {
-		echo $nav;
+		print $nav;
 	}
 
 	bottom_footer();
@@ -1701,15 +1709,15 @@ function utilities_view_snmp_cache() {
 	}
 
 	$(function() {
-		$('#refresh').click(function() {
+		$('#refresh').on('click', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#form_snmpcache').submit(function(event) {
+		$('#form_snmpcache').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -1994,15 +2002,15 @@ function utilities_view_poller_cache() {
 	}
 
 	$(function() {
-		$('#refresh').click(function() {
+		$('#refresh').on('click', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#form_pollercache').submit(function(event) {
+		$('#form_pollercache').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -2948,15 +2956,15 @@ function snmpagent_utilities_run_cache() {
 	}
 
 	$(function() {
-		$('#refresh').click(function() {
+		$('#refresh').on('click', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#form_snmpagent_cache').submit(function(event) {
+		$('#form_snmpagent_cache').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -3198,19 +3206,23 @@ function snmpagent_utilities_run_eventlog(){
 	}
 
 	$(function() {
-		$('#refresh').click(function() {
+		$('#refresh').on('click', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#severity, #receiver, #rows').on('change', function() {
+			applyFilter();
+		});
+
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#purge').click(function() {
+		$('#purge').on('click', function() {
 			purgeFilter();
 		});
 
-		$('#form_snmpagent_notifications').submit(function(event) {
+		$('#form_snmpagent_notifications').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -3236,7 +3248,7 @@ function snmpagent_utilities_run_eventlog(){
 							<?php print __('Severity');?>
 						</td>
 						<td>
-							<select id='severity' onChange='applyFilter()'>
+							<select id='severity'>
 								<option value='-1'<?php if (get_request_var('severity') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 								<?php
 								foreach ($severity_levels as $level => $name) {
@@ -3249,7 +3261,7 @@ function snmpagent_utilities_run_eventlog(){
 							<?php print __('Receiver');?>
 						</td>
 						<td>
-							<select id='receiver' onChange='applyFilter()'>
+							<select id='receiver'>
 								<option value='-1'<?php if (get_request_var('receiver') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 								<?php
 								foreach ($receivers as $receiver) {
@@ -3262,7 +3274,7 @@ function snmpagent_utilities_run_eventlog(){
 							<?php print __('Entries');?>
 						</td>
 						<td>
-							<select id='rows' onChange='applyFilter()'>
+							<select id='rows'>
 								<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 								<?php
 								if (cacti_sizeof($item_rows)) {

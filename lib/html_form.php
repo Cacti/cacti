@@ -1307,8 +1307,8 @@ function form_confirm_buttons($action_url, $cancel_url) {
 	?>
 	<tr>
 		<td class='right'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo("<?php print html_escape($config['url_path'] . $cancel_url);?>")' value='<?php print __esc('Cancel');?>'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo("<?php print html_escape($config['url_path'] . $action_url . '&confirm=true');?>")' value='<?php print __esc('Delete');?>'>
+			<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' data-url='<?php print html_escape($config['url_path'] . $cancel_url);?>' value='<?php print __esc('Cancel');?>'>
+			<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' data-url='<?php print html_escape($config['url_path'] . $action_url . '&confirm=true');?>' value='<?php print __esc('Delete');?>'>
 		</td>
 	</tr>
 <?php }
@@ -1346,7 +1346,7 @@ function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $aja
 	}
 
 	if ($force_type != 'import' && $force_type != 'export' && $force_type != 'save' && $force_type != 'close' && $cancel_url != '') {
-		$cancel_action = "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo(\"" . html_escape(sanitize_uri($cancel_url)) . "\")' value='" . $calt . "'>";
+		$cancel_action = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' data-url='" . html_escape(sanitize_uri($cancel_url)) . "' value='" . $calt . "'>";
 	} else {
 		$cancel_action = '';
 	}

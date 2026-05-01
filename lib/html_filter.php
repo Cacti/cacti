@@ -266,11 +266,11 @@ class CactiTableFilter {
 				applyFilter();
 			});
 
-			$('<?php print $changeChain;?>').change(function() {
+			$('<?php print $changeChain;?>').on('change', function() {
 				applyFilter();
 			});
 
-			$('#clear').click(function() {
+			$('#clear').on('click', function() {
 				clearFilter();
 			})
 		});

@@ -398,8 +398,8 @@ function form_actions() {
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($networks_array) ? serialize($networks_array) : '') . "'>
 			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>" . ($save_html != '' ? "
-			<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()' name='cancel' value='" . __esc('Cancel') . "'>
-			$save_html" : "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()' name='cancel' value='" . __esc('Return') . "'>") . "
+			<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' name='cancel' value='" . __esc('Cancel') . "'>
+			$save_html" : "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' name='cancel' value='" . __esc('Return') . "'>") . "
 		</td>
 	</tr>";
 
@@ -1201,7 +1201,7 @@ function networks_filter() {
 						<?php print __('Networks');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
@@ -1216,7 +1216,7 @@ function networks_filter() {
 						<?php print __('Refresh');?>
 					</td>
 					<td>
-						<select id='refresh' onChange='applyFilter()'>
+						<select id='refresh'>
 							<?php
 							$frequency = array(
 								10  => __('%d Seconds', 10),
@@ -1252,6 +1252,10 @@ function networks_filter() {
 
 				loadPageNoHeader(strURL);
 			}
+
+			$('#network, #refresh').on('change', function() {
+				applyFilter();
+			});
 
 			function clearFilter() {
 				strURL = '?clear=true&header=false';

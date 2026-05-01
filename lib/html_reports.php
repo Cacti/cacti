@@ -581,7 +581,7 @@ function reports_form_actions() {
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($reports_array) ? serialize($reports_array) : '') . "'>
 			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()' value='" . ($save_html == '' ? 'Return':'Cancel') . "' name='cancel'>
+			<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . ($save_html == '' ? __esc('Return') : __esc('Cancel')) . "' name='cancel'>
 			$save_html
 		</td>
 	</tr>\n";
@@ -1566,7 +1566,7 @@ function reports_edit() {
 				dateFormat: 'yy-mm-dd'
 			});
 
-			$('#cformat').click(function() {
+			$('#cformat').on('click', function() {
 				changeFormat();
 			});
 
@@ -1893,7 +1893,7 @@ function reports() {
 						" . __('Status') . "
 					</td>
 					<td>
-						<select id='status' onChange='applyFilter()'>
+						<select id='status'>
 							<option value='-1'" . (get_request_var('status') == '-1' ? ' selected':'') . ">" . __('Any') . "</option>
 							<option value='-2'" . (get_request_var('status') == '-2' ? ' selected':'') . ">" . __('Enabled') . "</option>
 							<option value='-3'" . (get_request_var('status') == '-3' ? ' selected':'') . ">" . __('Disabled') . "</option>
@@ -1903,7 +1903,7 @@ function reports() {
 						" . __('Reports') . "
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value='-1'" . (get_request_var('rows') == '-1' ? ' selected':'') . '>' . __('Default') . '</option>';
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
@@ -2069,15 +2069,19 @@ function reports() {
 	}
 
 	$(function() {
-		$('#refresh').click(function() {
+		$('#refresh').on('click', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#rows, #status').on('change', function() {
+			applyFilter();
+		});
+
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#form_report').submit(function(event) {
+		$('#form_report').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});

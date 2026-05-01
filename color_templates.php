@@ -339,7 +339,7 @@ function aggregate_color_item() {
 		});
 		<?php } ?>
 
-		$('.delete').click(function (event) {
+		$('.delete').on('click', function (event) {
 			event.preventDefault();
 
 			id = $(this).attr('id').split('_');
@@ -718,11 +718,11 @@ function aggregate_color_template() {
 	}
 
 	$(function() {
-		$('#clear').click(function() {
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#form_template').submit(function(event) {
+		$('#form_template').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});

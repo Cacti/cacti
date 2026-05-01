@@ -232,12 +232,12 @@ function clog_view_logfile() {
 				<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='" . __esc('Cancel') . "'>&nbsp
 				<input type='button' class='ui-button ui-corner-all ui-widget' id='pc' name='purge_continue' value='" . __esc('Continue') . "' title='" . __esc('Purge Log') . "'>
 				<script type='text/javascript' " . CactiSecureHeaders::getNonceAttribute() . ">
-				$('#pc').click(function() {
+				$('#pc').on('click', function() {
 					strURL = location.pathname+'?purge_continue=1&header=false&filename=" . basename($logfile) . "';
 					loadPageNoHeader(strURL);
 				});
 
-				$('#cancel').click(function() {
+				$('#cancel').on('click', function() {
 					strURL = location.pathname+'?header=false';
 					loadPageNoHeader(strURL);
 				});
@@ -622,21 +622,21 @@ function filter($clogAdmin, $selectedFile) {
 		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 		$(function() {
-			$('#rfilter, #reverse, #refresh, #message_type, #filename, #tail_lines, #matches').unbind().change(function() {
+			$('#rfilter, #reverse, #refresh, #message_type, #filename, #tail_lines, #matches').on('change', function() {
 				applyFilter();
 			});
 
-			$('#clear').unbind().click(function() {
+			$('#clear').on('click', function() {
 				strURL = basename(location.pathname) + '?clear=true&header=false';
 				loadPageNoHeader(strURL);
 			});
 
-			$('#purge').unbind().click(function() {
+			$('#purge').on('click', function() {
 				strURL = basename(location.pathname) + '?purge=true&header=false&filename=' + $('#filename').val();
 				loadPageNoHeader(strURL);
 			});
 
-			$('#logfile').submit(function(event) {
+			$('#logfile').on('submit', function(event) {
 				event.preventDefault();
 				applyFilter();
 			});

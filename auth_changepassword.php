@@ -376,7 +376,7 @@ if ($skip_current) {
 						<tr>
 							<td class='nowrap' colspan='2'><input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Save'); ?>'>
 								<?php if ($user['must_change_password'] != 'on') { ?>
-								<input type='button' class='ui-button ui-corner-all ui-widget' onClick='document.location=<?php print json_encode((string) $return); ?>' value='<?php print __esc('Return'); ?>'>
+								<input type='button' class='ui-button ui-corner-all ui-widget passwordReturn' data-location='<?php print $return;?>' value='<?php print __esc('Return'); ?>'>
 								<?php } ?>
 							</td>
 						</tr>
@@ -435,17 +435,23 @@ if ($skip_current) {
 	var password_change = $('#password_change').is(':checked');
 
 	$(function() {
+		$('.passwordReturn').on('click', function() {
+			var url = $(this).data('location');
+
+			document.location = url;
+		});
+
 		$('#current').focus();
 
 		/* clear passwords */
 		$('#password').val('');
 		$('#password_confirm').val('');
 
-		$('#password').keyup(function() {
+		$('#password').on('keyup', function() {
 			checkPassword();
 		});
 
-		$('#password_confirm').keyup(function() {
+		$('#password_confirm').on('keyup', function() {
 			checkPasswordConfirm();
 		});
 	});

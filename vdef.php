@@ -276,7 +276,7 @@ function vdef_form_actions() {
 					</td>
 				</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc_n('Delete VDEF', 'Delete VDEFs', cacti_sizeof($vdef_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc_n('Delete VDEF', 'Delete VDEFs', cacti_sizeof($vdef_array)) . "'>";
 		} elseif (get_nfilter_request_var('drp_action') === '2') { // duplicate
 			print "	<tr>
 					<td class='topBoxAlt'>
@@ -286,7 +286,7 @@ function vdef_form_actions() {
 					</td>
 				</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc_n('Duplicate VDEF', 'Duplicate VDEFs', cacti_sizeof($vdef_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc_n('Duplicate VDEF', 'Duplicate VDEFs', cacti_sizeof($vdef_array)) . "'>";
 		}
 	} else {
 		raise_message(40);
@@ -485,7 +485,7 @@ function vdef_item_edit() {
 	?>
 	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
-		$('#type_select').unbind().change(function() {
+		$('#type_select').on('change', function() {
 			strURL  = 'vdef.php?action=item_edit';
 			strURL += '&id=' + $('#id').val();
 			strURL += '&vdef_id=' + $('#vdef_id').val();
@@ -669,14 +669,14 @@ function vdef_edit() {
 		$('#main').append("<div class='cdialog' id='cdialog'></div>");
 
 		<?php if (read_config_option('drag_and_drop') == 'on') { ?>
-		$('#vdef_item').unbind().tableDnD({
+		$('#vdef_item').tableDnD({
 			onDrop: function(table, row) {
 				loadPageNoHeader('vdef.php?action=ajax_dnd&id=<?php isset_request_var('id') ? print get_request_var('id') : print 0;?>&'+$.tableDnD.serialize());
 			}
 		});
 		<?php } ?>
 
-		$('.delete').unbind().click(function (event) {
+		$('.delete').on('click', function (event) {
 			event.preventDefault();
 
 			id = $(this).attr('id').split('_');
@@ -735,7 +735,7 @@ function vdef_filter() {
 						<?php print __('VDEFs');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
@@ -754,7 +754,7 @@ function vdef_filter() {
                     </td>
 					<td>
 						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' id='refresh'>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' id='refresh'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' id='clear'>
 						</span>
 					</td>
@@ -777,19 +777,19 @@ function vdef_filter() {
 			}
 
 			$(function() {
-				$('#refresh').click(function() {
+				$('#refresh, #has_graphs').on('click', function() {
 					applyFilter();
 				});
 
-				$('#has_graphs').click(function() {
+				$('#rows').on('change', function() {
 					applyFilter();
 				});
 
-				$('#clear').click(function() {
+				$('#clear').on('click', function() {
 					clearFilter();
 				});
 
-				$('#form_vdef').submit(function(event) {
+				$('#form_vdef').on('submit', function(event) {
 					event.preventDefault();
 					applyFilter();
 				});

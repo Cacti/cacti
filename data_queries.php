@@ -409,7 +409,7 @@ function form_actions() {
 				</td>
 			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Data Query', 'Delete Data Queries', cacti_sizeof($dq_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Data Query', 'Delete Data Queries', cacti_sizeof($dq_array)) . "'>";
 		} elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicatie */
 			print "<tr>
 				<td class='textArea' class='odd'>
@@ -423,7 +423,7 @@ function form_actions() {
                 </td>
             </tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Duplicate Data Query', 'Duplicate Data Queries', cacti_sizeof($dq_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Duplicate Data Query', 'Duplicate Data Queries', cacti_sizeof($dq_array)) . "'>";
 		}
 	} else {
 		raise_message(40);
@@ -986,7 +986,7 @@ function data_query_item_edit() {
 		href=$(this).attr('href');
 		$.get(href)
 			.done(function(data) {
-				$('form[action="data_queries.php"]').unbind();
+				$('form[action="data_queries.php"]').off();
 				$('#main').html(data);
 				applySkin();
 			})
@@ -1314,7 +1314,7 @@ function data_query() {
 						<?php print __('Data Queries');?>
 					</td>
 					<td>
-						<select id='rows' name='rows' onChange='applyFilter()'>
+						<select id='rows' name='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
@@ -1348,15 +1348,19 @@ function data_query() {
 		}
 
 		$(function() {
-			$('#refresh').click(function() {
+			$('#refresh').on('click', function() {
 				applyFilter();
 			});
 
-			$('#clear').click(function() {
+			$('#rows').on('change', function() {
+				applyFilter();
+			});
+
+			$('#clear').on('click', function() {
 				clearFilter();
 			});
 
-			$('#form_data_queries').submit(function(event) {
+			$('#form_data_queries').on('submit', function(event) {
 				event.preventDefault();
 				applyFilter();
 			});

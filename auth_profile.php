@@ -557,7 +557,7 @@ function settings_javascript() {
 		$('#navigation, #navigation_right').show();
 		$('#tabs').find('li a.selected').removeClass('selected');
 
-		$('input[value="<?php print __esc('Save');?>"]').unbind().click(function(event) {
+		$('input[value="<?php print __esc('Save');?>"]').on('click', function(event) {
 			event.preventDefault();
 			$.post('auth_profile.php?header=false', $('input, select, textarea').serialize()).done(function(data) {
 				loadPageNoHeader('auth_profile.php?action=noreturn&header=false');
@@ -609,7 +609,7 @@ function settings_javascript() {
 			}
 		});
 
-		$('select, input[type!="button"]').unbind().keyup(function() {
+		$('select, input[type!="button"]').on('keyup', function() {
 			name  = $(this).attr('id');
 			if ($(this).attr('type') == 'checkbox') {
 				if ($(this).is(':checked')) {
@@ -626,7 +626,7 @@ function settings_javascript() {
 				name: name,
 				value: value
 			});
-		}).change(function() {
+		}).on('change', function() {
 			name  = $(this).attr('id');
 			if ($(this).attr('type') == 'checkbox') {
 				if ($(this).is(':checked')) {
