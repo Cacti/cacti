@@ -478,7 +478,7 @@ case 'zoom':
 				resizeWrapper();
 
 				$('.download').on('click', function(event) {
-					event.preventDefault;
+					event.preventDefault();
 					graph_id = $(this).attr('id').replace('graph_','');
 					document.location = urlPath+'graph_xport.php?local_graph_id='+graph_id+'&rra_id=0&view_type=tree&graph_start='+$('#graph_start').val()+'&graph_end='+$('#graph_end').val();
 					Pace.stop();
