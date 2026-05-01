@@ -32,7 +32,7 @@ $page = db_fetch_row_prepared('SELECT
 
 if (!cacti_sizeof($page)) {
 	raise_message('page_not_defined');
-	header('index.php');
+	header('Location: index.php');
 	exit;
 } else {
 	global $link_nav;
