@@ -261,16 +261,16 @@ class CactiTableFilter {
 		}
 
 		$(function() {
-			$('#<?php print html_escape($this->form_id);?>').submit(function(event) {
+			$('#<?php print html_escape($this->form_id);?>').on('submit', function(event) {
 				event.preventDefault();
 				applyFilter();
 			});
 
-			$('<?php print $changeChain;?>').change(function() {
+			$('<?php print $changeChain;?>').on('change', function() {
 				applyFilter();
 			});
 
-			$('#clear').click(function() {
+			$('#clear').on('click', function() {
 				clearFilter();
 			})
 		});

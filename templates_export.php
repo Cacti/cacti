@@ -185,12 +185,12 @@ function export() {
 	var stopTimer;
 
 	$(function() {
-		$('#export_type').change(function() {
+		$('#export_type').on('change', function() {
 			strURL = 'templates_export.php?header=false&export_type='+$('#export_type').val();
 			loadPageNoHeader(strURL);
 		});
 
-		$('form#export').submit(function(event) {
+		$('form#export').on('submit', function(event) {
 			stopTimer = setTimeout(function() { Pace.stop() }, 1000);
 		});
 	});

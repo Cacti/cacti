@@ -145,7 +145,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 	?>
 	<tr class='even noprint'>
 		<td class='noprint'>
-		<form id='form_graph_view' method='post' action='<?php print $page;?>?action=<?php print $action;?>'>
+		<form id='form_graph_view'>
 			<table id='device' class='filterTable'>
 				<tr>
 					<?php print html_host_filter(get_request_var('host_id'), 'applyGraphFilter', $devices_where);?>
@@ -187,7 +187,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 					</td>
 					<td>
 						<span>
-							<input type='submit' class='ui-button ui-corner-all ui-widget' id='go' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' id='previewgo' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 							<?php if (is_view_allowed('graph_settings')) {?>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='save' value='<?php print __esc('Save');?>' title='<?php print __esc('Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift preferences to your profile');?>'>
@@ -209,7 +209,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						<?php print __('Graphs');?>
 					</td>
 					<td>
-						<select id='graphs' onChange='applyGraphFilter()'>
+						<select id='graphs'>
 							<?php
 							if (cacti_sizeof($graphs_per_page)) {
 								foreach ($graphs_per_page as $key => $value) {
@@ -223,7 +223,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						<?php print __('Columns');?>
 					</td>
 					<td>
-						<select id='columns' onChange='applyGraphFilter()'>
+						<select id='columns'>
 							<option value='1'<?php if (get_request_var('columns') == '1') {?> selected<?php }?>><?php print __('%d Column', 1);?></option>
 							<option value='2'<?php if (get_request_var('columns') == '2') {?> selected<?php }?>><?php print __('%d Columns', 2);?></option>
 							<option value='3'<?php if (get_request_var('columns') == '3') {?> selected<?php }?>><?php print __('%d Columns', 3);?></option>
@@ -234,7 +234,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 					</td>
 					<td>
 						<span>
-							<input id='thumbnails' type='checkbox' onClick='applyGraphFilter()' <?php print ((get_request_var('thumbnails') == 'true') ? 'checked':'');?>>
+							<input id='thumbnails' type='checkbox' <?php print ((get_request_var('thumbnails') == 'true') ? 'checked':'');?>>
 							<label for='thumbnails'><?php print __('Thumbnails');?></label>
 						</span>
 					</td>
@@ -252,7 +252,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						<?php print __('Presets');?>
 					</td>
 					<td>
-						<select id='predefined_timespan' onChange='applyGraphTimespan()'>
+						<select id='predefined_timespan'>
 							<?php
 							$graph_timespans = array_merge(array(GT_CUSTOM => __('Custom')), $graph_timespans);
 
@@ -287,7 +287,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 					</td>
 					<td>
 						<span>
-							<i class='shiftArrow fa fa-backward' onClick='timeshiftGraphFilterLeft()' title='<?php print __esc('Shift Time Backward');?>'></i>
+							<i class='shiftArrow fa fa-backward' id='shiftLeft' title='<?php print __esc('Shift Time Backward');?>'></i>
 							<select id='predefined_timeshift' name='predefined_timeshift' title='<?php print __esc('Define Shifting Interval');?>'>
 								<?php
 								$start_val = 1;
@@ -299,13 +299,13 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 								}
 								?>
 							</select>
-							<i class='shiftArrow fa fa-forward' onClick='timeshiftGraphFilterRight()' title='<?php print __esc('Shift Time Forward');?>'></i>
+							<i class='shiftArrow fa fa-forward' id='shiftRight' title='<?php print __esc('Shift Time Forward');?>'></i>
 						</span>
 					</td>
 					<td>
 						<span>
-							<input id='tsrefresh' type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Refresh');?>' name='button_refresh_x' title='<?php print __esc('Refresh selected time span');?>' onClick='refreshGraphTimespanFilter()'>
-							<input id='tsclear' type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Clear');?>' title='<?php print __esc('Return to the default time span');?>' onClick='clearGraphTimespanFilter()'>
+							<input id='tsrefresh' type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Refresh');?>' name='button_refresh_x' title='<?php print __esc('Refresh selected time span');?>'>
+							<input id='tsclear' type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Clear');?>' title='<?php print __esc('Return to the default time span');?>'>
 						</span>
 					</td>
 				</tr>
@@ -316,7 +316,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						<?php print __('Window');?>
 					</td>
 					<td>
-						<select name='graph_start' id='graph_start' onChange='realtimeGrapher()'>
+						<select name='graph_start' id='graph_start'>
 						<?php
 						foreach ($realtime_window as $interval => $text) {
 							printf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_window'] ? 'selected="selected"' : '', $text);
@@ -328,7 +328,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						<?php print __('Interval');?>
 					</td>
 					<td>
-						<select name='ds_step' id='ds_step' onChange="realtimeGrapher()">
+						<select name='ds_step' id='ds_step'>
 							<?php
 							foreach ($realtime_refresh as $interval => $text) {
 								printf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_dsstep'] ? ' selected="selected"' : '', $text);
@@ -361,7 +361,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 		function initPage() {
 			<?php html_graph_template_multiselect();?>
 
-			$('#startDate').click(function() {
+			$('#startDate').on('click', function() {
 				if (date1Open) {
 					date1Open = false;
 					$('#date1').datetimepicker('hide');
@@ -371,7 +371,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 				}
 			});
 
-			$('#endDate').click(function() {
+			$('#endDate').on('click', function() {
 				if (date2Open) {
 					date2Open = false;
 					$('#date2').datetimepicker('hide');
@@ -409,16 +409,43 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 
 			setupPageTimeout();
 
-			$('#go').off('click').on('click', function(event) {
-				event.preventDefault();
+			$('#graphs, #columns').on('change', function() {
 				applyGraphFilter();
 			});
 
-			$('#clear').off('click').on('click', function() {
+			$('#shiftLeft').on('click', function() {
+				timeshiftGraphFilterLeft();
+			});
+
+			$('#shiftRight').on('click', function() {
+				timeshiftGraphFilterRight();
+			});
+
+			$('#tsrefresh').on('click', function() {
+				refreshGraphTimespanFilter();
+			});
+
+			$('#graph_start, #ds_step').on('change', function() {
+				realtimeGrapher();
+			});
+
+			$('#predefined_timespan').on('change', function() {
+				applyGraphTimespan();
+			});
+
+			$('#thumbnails').on('click', function() {
+				applyGraphFilter();
+			});
+
+			$('#clear').on('click', function() {
 				clearGraphFilter();
 			});
 
-			$('#save').off('click').on('click', function() {
+			$('#tsclear').on('click', function() {
+				clearGraphTimespanFilter();
+			});
+
+			$('#save').on('click', function() {
 				 saveGraphFilter('preview');
 			});
 

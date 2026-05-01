@@ -311,7 +311,7 @@ function grow_dhtml_trees() {
 			});
 		});
 
-		$('#searcher').keyup(function() {
+		$('#searcher').on('keyup', function() {
 			if(search_to) { clearTimeout(search_to); }
 			search_to = setTimeout(function() {
 				var v = $('#searcher').val();
@@ -1039,7 +1039,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						<?php print __('Graphs');?>
 					</td>
 					<td>
-						<select id='graphs' onChange='applyGraphFilter()'>
+						<select id='graphs'>
 							<?php
 							if (cacti_sizeof($graphs_per_page)) {
 								foreach ($graphs_per_page as $key => $value) {
@@ -1053,7 +1053,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						<?php print __('Columns');?>
 					</td>
 					<td>
-						<select id='columns' onChange='applyGraphFilter()'>
+						<select id='columns'>
 							<option value='1' <?php print (get_request_var('columns') == '1' ? ' selected':'');?>><?php print __('%d Column', 1);?></option>
 							<option value='2' <?php print (get_request_var('columns') == '2' ? ' selected':'');?>><?php print __('%d Columns', 2);?></option>
 							<option value='3' <?php print (get_request_var('columns') == '3' ? ' selected':'');?>><?php print __('%d Columns', 3);?></option>
@@ -1082,7 +1082,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						<?php print __('Presets');?>
 					</td>
 					<td>
-						<select id='predefined_timespan' onChange='applyGraphTimespan()'>
+						<select id='predefined_timespan'>
 							<?php
 							$graph_timespans = array_merge(array(GT_CUSTOM => __('Custom')), $graph_timespans);
 
@@ -1146,7 +1146,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						<?php print __('Window');?>
 					</td>
 					<td>
-						<select id='graph_start' onChange='realtimeGrapher()'>
+						<select id='graph_start'>
 							<?php
 							foreach ($realtime_window as $interval => $text) {
 								printf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_window'] ? ' selected="selected"' : '', $text);
@@ -1158,7 +1158,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						<?php print __('Refresh');?>
 					</td>
 					<td>
-						<select id='ds_step' onChange="realtimeGrapher()">
+						<select id='ds_step'>
 							<?php
 							foreach ($realtime_refresh as $interval => $text) {
 								printf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_dsstep'] ? ' selected="selected"' : '', $text);
@@ -1197,7 +1197,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	function initPage() {
 		<?php html_graph_template_multiselect();?>
 
-		$('#startDate').click(function() {
+		$('#startDate').on('click', function() {
 			if (date1Open) {
 				date1Open = false;
 				$('#date1').datetimepicker('hide');
@@ -1207,7 +1207,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			}
 		});
 
-		$('#endDate').click(function() {
+		$('#endDate').on('click', function() {
 			if (date2Open) {
 				date2Open = false;
 				$('#date2').datetimepicker('hide');
@@ -1246,16 +1246,28 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	}
 
 	$(function() {
-		$('#go').off('click').on('click', function(event) {
+		$('#go').on('click', function(event) {
 			event.preventDefault();
 			applyGraphFilter();
 		});
 
-		$('#clear').off('click').on('click', function() {
+		$('#graphs, #columns').on('change', function() {
+			applyGraphFilter();
+		});
+
+		$('#graph_start, #ds_step').on('change', function() {
+			realtimeGrapher();
+		});
+
+		$('#predefined_timespan').on('change', function() {
+			applyGraphTimespan();
+		});
+
+		$('#clear').on('click', function() {
 			clearGraphFilter();
 		});
 
-		$('#save').off('click').on('click', function() {
+		$('#save').on('click', function() {
 			 saveGraphFilter('tree');
 		});
 

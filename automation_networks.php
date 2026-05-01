@@ -398,8 +398,8 @@ function form_actions() {
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($networks_array) ? serialize($networks_array) : '') . "'>
 			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>" . ($save_html != '' ? "
-			<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()' name='cancel' value='" . __esc('Cancel') . "'>
-			$save_html" : "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()' name='cancel' value='" . __esc('Return') . "'>") . "
+			<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' name='cancel' value='" . __esc('Cancel') . "'>
+			$save_html" : "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' name='cancel' value='" . __esc('Return') . "'>") . "
 		</td>
 	</tr>";
 
@@ -853,19 +853,19 @@ function network_edit() {
 			minDateTime: new Date(<?php print date("Y") . ', ' . (date("m")-1) . ', ' . date("d, H") . ', ' . date('i', ceil(time()/300)*300) . ', 0, 0';?>)
 		});
 
-		$('#sched_type').change(function() {
+		$('#sched_type').on('change', function() {
 			setSchedule();
 		});
 
 		setSchedule();
 
-		$('#notification_enabled').click(function() {
+		$('#notification_enabled').on('click', function() {
 			setNotification();
 		});
 
 		setNotification();
 
-		$('#ping_method').change(function() {
+		$('#ping_method').on('change', function() {
 			setPing();
 		});
 
@@ -1201,7 +1201,7 @@ function networks_filter() {
 						<?php print __('Networks');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
@@ -1216,7 +1216,7 @@ function networks_filter() {
 						<?php print __('Refresh');?>
 					</td>
 					<td>
-						<select id='refresh' onChange='applyFilter()'>
+						<select id='refresh'>
 							<?php
 							$frequency = array(
 								10  => __('%d Seconds', 10),
@@ -1253,6 +1253,10 @@ function networks_filter() {
 				loadPageNoHeader(strURL);
 			}
 
+			$('#network, #refresh').on('change', function() {
+				applyFilter();
+			});
+
 			function clearFilter() {
 				strURL = '?clear=true&header=false';
 
@@ -1260,15 +1264,15 @@ function networks_filter() {
 			}
 
 			$(function() {
-				$('#go').click(function() {
+				$('#go').on('click', function() {
 					applyFilter();
 				});
 
-				$('#clear').click(function() {
+				$('#clear').on('click', function() {
 					clearFilter();
 				});
 
-				$('#networks').submit(function(event) {
+				$('#networks').on('submit', function(event) {
 					event.preventDefault();
 					applyFilter();
 				});

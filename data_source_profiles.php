@@ -302,7 +302,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Data Source Profile', 'Delete Data Source Profiles', cacti_sizeof($profile_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Data Source Profile', 'Delete Data Source Profiles', cacti_sizeof($profile_array)) . "'>";
 		} elseif (get_request_var('drp_action') == '2') { // duplicate
 			print "<tr>
 				<td class='textArea' class='odd'>
@@ -312,7 +312,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Duplicate Data Source Profile', 'Duplicate Date Source Profiles', cacti_sizeof($profile_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Duplicate Data Source Profile', 'Duplicate Date Source Profiles', cacti_sizeof($profile_array)) . "'>";
 		}
 	} else {
 		raise_message(40);
@@ -536,12 +536,12 @@ function item_edit() {
 		get_span();
 		get_size();
 
-		$('#steps').change(function() {
+		$('#steps').on('change', function() {
 			get_span();
 			get_size();
 		});
 
-        $('#rows').keyup(function() {
+        $('#rows').on('keyup', function() {
             if (rows_to) { clearTimeout(rows_to); }
             rows_to = setTimeout(function () { get_span(); get_size() }, 250);
         });
@@ -702,12 +702,12 @@ function profile_edit() {
         });
 
 		get_size();
-		$('consolidation_function_id').change(function() {
+		$('consolidation_function_id').on('change', function() {
 			get_size();
 		});
 
 		<?php if (!$readonly) {?>
-		$('.delete').click(function (event) {
+		$('.delete').on('click', function (event) {
 			event.preventDefault();
 
 			id = $(this).attr('id').split('_');
@@ -918,7 +918,7 @@ function profile() {
 						<?php print __('Profiles');?>
 					</td>
 					<td>
-						<select id='rows' name='rows' onChange='applyFilter()'>
+						<select id='rows' name='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows) > 0) {
@@ -960,15 +960,19 @@ function profile() {
 			}
 
 			$(function() {
-				$('#has_data').click(function() {
+				$('#has_data').on('click', function() {
 					applyFilter();
 				});
 
-				$('#clear').click(function() {
+				$('#rows').on('change', function() {
+					applyFilter();
+				});
+
+				$('#clear').on('click', function() {
 					clearFilter();
 				});
 
-				$('#form_dsp').submit(function(event) {
+				$('#form_dsp').on('submit', function(event) {
 					event.preventDefault();
 					applyFilter();
 				});

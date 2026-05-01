@@ -197,27 +197,27 @@ function form_actions() {
 					<p>" . __('Click \'Continue\' to Enable the following Page(s).') . "</p>
 					<ul>" . $page_list . "</ul>
 				</td>
-			</tr>\n";
+			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __('Continue') . "' title='" . __esc('Enable Page(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __('Continue') . "' title='" . __esc('Enable Page(s)') . "'>";
 		} elseif (get_request_var('drp_action') == '2') { // Disable Pages
 			print "<tr>
 				<td colspan='2' class='textArea'>
 					<p>" . __('Click \'Continue\' to Disable the following Page(s).') . "</p>
 					<ul>" . $page_list . "</ul>
 				</td>
-			</tr>\n";
+			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __('Continue') . "' title='" . __esc('Disable Page(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __('Continue') . "' title='" . __esc('Disable Page(s)') . "'>";
 		} elseif (get_request_var('drp_action') == '1') { // Delete Pages
 			print "<tr>
 				<td colspan='2' class='textArea'>
 					<p>" . __('Click \'Continue\' to Delete the following Page(s).') . "</p>
 					<ul>" . $page_list . "</ul>
 				</td>
-			</tr>\n";
+			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __('Continue') . "' title='" . __esc('Delete Page(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __('Continue') . "' title='" . __esc('Delete Page(s)') . "'>";
 		}
 	} else {
 		raise_message(40);
@@ -232,7 +232,7 @@ function form_actions() {
 			<input type='hidden' name='drp_action' value='" . get_request_var('drp_action') . "'>
 			$save_html
 		</td>
-	</tr>\n";
+	</tr>";
 
 	html_end_box();
 
@@ -296,7 +296,15 @@ function pages() {
 	}
 
 	$(function() {
-		$('#links').submit(function(event) {
+		$('#rows').on('change', function() {
+			applyFilter();
+		});
+
+		$('#clear').on('click', function() {
+			clearFilter();
+		});
+
+		$('#links').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -321,7 +329,7 @@ function pages() {
 						<?php print __('Links');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value=-1 <?php get_request_var('rows') == -1 ? 'selected':'';?>><?php print __('Default');?></option>
 							<?php
 							foreach ($item_rows as $key => $row) {
@@ -332,8 +340,8 @@ function pages() {
 					</td>
 					<td>
 						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __('Go');?>' title='<?php print __esc('Apply Filter');?>' onClick='applyFilter()'>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __('Clear');?>' title='<?php print __esc('Reset filters');?>' onClick='clearFilter()'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __('Go');?>' title='<?php print __esc('Apply Filter');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __('Clear');?>' title='<?php print __esc('Reset filters');?>'>
 						</span>
 					</td>
 				</tr>
@@ -432,7 +440,7 @@ function pages() {
 			$i++;
 		}
 	} else {
-		print "<tr><td colspan='" . (cacti_sizeof($nav) + 1) . "'><em>" . __('No Pages Found') . "</em></td></tr>\n";
+		print "<tr><td colspan='" . (cacti_sizeof($nav) + 1) . "'><em>" . __('No Pages Found') . "</em></td></tr>";
 	}
 
 	html_end_box(false);
@@ -601,7 +609,7 @@ function edit_page() {
 	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
 		// hide and show the extra console fields when necessary
-		$('#style').change(function() {
+		$('#style').on('change', function() {
 			if ($('#style').val() != 'CONSOLE') {
 				$('#row_consolesection').hide();
 				$('#row_consolenewsection').hide();
@@ -611,13 +619,13 @@ function edit_page() {
 			}
 		}).change();
 
-		$('#filename').change(function() {
+		$('#filename').on('change', function() {
 			changeFilename();
 		}).change();
 
 		// if you change the section, make the 'new' textbox reflect it
 		// if you change it to 'new', then clear the textbox, and jump to it
-		$('#consolesection').change(function() {
+		$('#consolesection').on('change', function() {
 			setConsoleNewSectionVisibility();
 		}).change();
 	});

@@ -340,7 +340,7 @@ function form_actions() {
 				</td>
 			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'><input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete User(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'><input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete User(s)') . "'>";
 		}
 		$user_id = '';
 
@@ -380,7 +380,7 @@ function form_actions() {
 			print "</p></td>
 				</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Copy User') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Copy User') . "'>";
 		}
 
 		if ((get_nfilter_request_var('drp_action') == '3') && (cacti_sizeof($user_array))) { // enable
@@ -391,7 +391,7 @@ function form_actions() {
 				</td>
 			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Enable User(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Enable User(s)') . "'>";
 		}
 
 		if ((get_nfilter_request_var('drp_action') == '4') && (cacti_sizeof($user_array))) { // disable
@@ -402,7 +402,7 @@ function form_actions() {
 				</td>
 			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Disable User(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Disable User(s)') . "'>";
 		}
 
 		if ((get_nfilter_request_var('drp_action') == '5') && (cacti_sizeof($user_array))) { // batch copy
@@ -425,7 +425,7 @@ function form_actions() {
 					</td>
 				</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Reset User(s) Settings') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Reset User(s) Settings') . "'>";
 		}
 	} else {
 		raise_message(40);
@@ -1495,7 +1495,7 @@ function user_realms_edit($header_label) {
 	print "<div class='cactiTable' style='width:100%;text-align:left;'>
 		<div>
 			<div class='cactiTableTitle'><span style='padding:3px;'>" . __('User Permissions') . " " . html_escape($header_label) . "</span></div>
-			<div class='cactiTableButton'><span style='padding:3px;'><input class='checkbox' type='checkbox' id='all' name='all' title='" . __esc('Select All') . "' onClick='selectAllRealms(this.checked)'></a><label class='formCheckboxLabel' title='" . __esc('Select All') . "' for='all'></label></span></div>
+			<div class='cactiTableButton'><span style='padding:3px;'><input class='checkbox selectAllRealms' type='checkbox' id='all' name='all' title='" . __esc('Select All') . "'></a><label class='formCheckboxLabel' title='" . __esc('Select All') . "' for='all'></label></span></div>
 		</div>
 	</div>";
 
@@ -1960,19 +1960,19 @@ function user_edit() {
 			$('#password').val('');
 			$('#password_confirm').val('');
 
-			$('#password').keyup(function() {
+			$('#password').on('keyup', function() {
 				checkPassword();
 			});
 
-			$('#password_confirm').keyup(function() {
+			$('#password_confirm').on('keyup', function() {
 				checkPasswordConfirm();
 			});
 
-			$('#realm').change(function() {
+			$('#realm').on('change', function() {
 				changeRealm();
 			});
 
-			$('#password_change').click(function() {
+			$('#password_change').on('click', function() {
 				password_change = $('#password_change').is(':checked');
 
 				if (!password_change && $('#must_change_password').is(':checked')) {
@@ -1985,7 +1985,7 @@ function user_edit() {
 				}
 			});
 
-			$('#must_change_password').click(function() {
+			$('#must_change_password').on('click', function() {
 				if ($(this).is(':checked')) {
 					button = ($('#must_change_password').button('instance') !== undefined);
 					if (button) {
@@ -2120,19 +2120,19 @@ function user() {
 	}
 
 	$(function() {
-		$('#refresh').click(function() {
+		$('#refresh').on('click', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#realm, #rows, #group, #login').change(function() {
+		$('#realm, #rows, #group, #login').on('change', function() {
 			applyFilter();
 		});
 
-		$('#forms').submit(function(event) {
+		$('#forms').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -2575,19 +2575,19 @@ function graph_filter($header_label) {
 	}
 
 	$(function() {
-		$('#associated').click(function() {
+		$('#associated').on('click', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#rows, #graph_template_id').change(function() {
+		$('#rows, #graph_template_id').on('change', function() {
 			applyFilter();
 		})
 
-		$('#forms').submit(function(event) {
+		$('#forms').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -2694,19 +2694,19 @@ function group_filter($header_label) {
 	}
 
 	$(function() {
-		$('#associated').click(function() {
+		$('#associated').on('click', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#rows').change(function() {
+		$('#rows').on('change', function() {
 			applyFilter();
 		});
 
-		$('#forms').submit(function(event) {
+		$('#forms').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -2792,19 +2792,19 @@ function device_filter($header_label) {
 	}
 
 	$(function() {
-		$('#associated').click(function() {
+		$('#associated').on('click', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#rows, #host_template_id').change(function() {
+		$('#rows, #host_template_id').on('change', function() {
 			applyFilter();
 		});
 
-		$('#forms').submit(function(event) {
+		$('#forms').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -2907,19 +2907,19 @@ function template_filter($header_label) {
 	}
 
 	$(function() {
-		$('#associated').click(function() {
+		$('#associated').on('click', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#rows').change(function() {
+		$('#rows').on('change', function() {
 			applyFilter();
 		});
 
-		$('#forms').submit(function(event) {
+		$('#forms').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -3004,19 +3004,19 @@ function tree_filter($header_label) {
 	}
 
 	$(function() {
-		$('#associated').click(function() {
+		$('#associated').on('click', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#rows').change(function() {
+		$('#rows').on('change', function() {
 			applyFilter();
 		});
 
-		$('#forms').submit(function(event) {
+		$('#forms').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -3101,19 +3101,19 @@ function member_filter($header_label) {
 	}
 
 	$(function() {
-		$('#associated').click(function() {
+		$('#associated').on('click', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#rows').change(function() {
+		$('#rows').on('change', function() {
 			applyFilter();
 		});
 
-		$('#forms').submit(function(event) {
+		$('#forms').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});

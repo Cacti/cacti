@@ -150,7 +150,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') ."' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete GPRINT Preset(s)') ."'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') ."'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete GPRINT Preset(s)') ."'>";
 		}
 	} else {
 		raise_message(40);
@@ -277,7 +277,7 @@ function gprint_presets() {
 						<?php print __('GPRINTs');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
@@ -319,19 +319,19 @@ function gprint_presets() {
 			}
 
 			$(function() {
-				$('#refresh').click(function() {
+				$('#refresh, #has_graphs').on('click', function() {
 					applyFilter();
 				});
 
-				$('#has_graphs').click(function() {
+				$('#rows').on('change', function() {
 					applyFilter();
 				});
 
-				$('#clear').click(function() {
+				$('#clear').on('click', function() {
 					clearFilter();
 				});
 
-				$('#form_gprint').submit(function(event) {
+				$('#form_gprint').on('submit', function(event) {
 					event.preventDefault();
 					applyFilter();
 				});

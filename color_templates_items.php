@@ -296,7 +296,7 @@ function aggregate_color_item_remove_confirm() {
 	</tr>
 	<tr>
 		<td class='right'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' name='cancel'>
 			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove Color Item');?>'>
 		</td>
 	</tr>
@@ -309,7 +309,11 @@ function aggregate_color_item_remove_confirm() {
 	?>
 	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
-		$('#continue').click(function(data) {
+		$('#clear').on('click', function() {
+			$('#cdialog').dialog('close');
+		});
+
+		$('#continue').on('click', function(data) {
 			$.post('color_templates_items.php?action=item_remove', {
 				__csrf_magic: csrfMagicToken,
 				color_id: <?php print get_request_var('color_id');?>,
@@ -324,7 +328,6 @@ function aggregate_color_item_remove_confirm() {
 	<?php
 }
 
-
 /**
  * aggregate_color_item_remove		remove item
  */
@@ -338,7 +341,6 @@ function aggregate_color_item_remove() {
 		WHERE color_template_item_id = ?',
 		array(get_request_var('color_id')));
 }
-
 
 /**
  * aggregate_color_item_edit		edit item

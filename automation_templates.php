@@ -164,7 +164,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Automation Template(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Automation Template(s)') . "'>";
 		}
 	} else {
 		raise_message(40);
@@ -399,7 +399,7 @@ function template() {
 						<?php print __('Templates');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows) > 0) {
@@ -435,15 +435,19 @@ function template() {
 			}
 
 			$(function() {
-				$('#refresh').click(function() {
+				$('#refresh').on('click', function() {
 					applyFilter();
 				});
 
-				$('#clear').click(function() {
+				$('#rows').on('change', function() {
+					applyFilter();
+				});
+
+				$('#clear').on('click', function() {
 					clearFilter();
 				});
 
-				$('#form_at').submit(function(event) {
+				$('#form_at').on('submit', function(event) {
 					event.preventDefault();
 					applyFilter();
 				});
@@ -560,7 +564,7 @@ function template() {
 	$(function() {
         $('#automation_templates2_child').attr('id', 'template_ids');
 
-		$('img.action').click(function() {
+		$('img.action').on('click', function() {
 			strURL = $(this).attr('href');
 			loadPageNoHeader(strURL);
 		});

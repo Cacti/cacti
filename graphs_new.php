@@ -390,20 +390,24 @@ function graphs() {
 	}
 
 	$(function() {
-		$('[id^="reload"]').click(function(data) {
+		$('[id^="reload"]').on('click', function(data) {
 			$(this).addClass('fa-spin');
 			loadPageNoHeader('graphs_new.php?action=query_reload&header=false&id='+$(this).attr('data-id')+'&host_id='+$('#host_id').val());
 		});
 
-		$('#clear').click(function() {
+		$('#graph_type, #rows').on('change', function() {
+			applyFilter();
+		});
+
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#save').click(function() {
+		$('#save').on('click', function() {
 			saveFilter();
 		});
 
-		$('#graphs_new').submit(function(event) {
+		$('#graphs_new').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -420,7 +424,7 @@ function graphs() {
 							<?php print __('Graph Types');?>
 						</td>
 						<td>
-							<select id='graph_type' name='graph_type' onChange='applyFilter()'>
+							<select id='graph_type' name='graph_type'>
 								<option value='-2'<?php if (get_request_var('graph_type') == '-2') {?> selected<?php }?>><?php print __('All');?></option>
 								<option value='-1'<?php if (get_request_var('graph_type') == '-1') {?> selected<?php }?>><?php print __('Graph Template Based');?></option>
 								<?php
@@ -463,7 +467,7 @@ function graphs() {
 							<?php print __('Rows');?>
 						</td>
 						<td>
-							<select id='rows' name='rows' onChange='applyFilter()'>
+							<select id='rows' name='rows'>
 								<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 								<?php
 								if (cacti_sizeof($item_rows) > 0) {
@@ -563,7 +567,7 @@ function graphs() {
 
 		print "<tr class='tableHeader'>
 				<th class='tableSubHeaderColumn'>" . __('Graph Template Name') . "</th>
-				<th class='tableSubHeaderCheckbox'><input class='checkbox' type='checkbox' id='all_cg' title='" . __esc('Select All') . "' onClick='selectAll(\"sg\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All Rows'). "' for='all_cg'></label></th>
+				<th class='tableSubHeaderCheckbox'><input class='checkbox' type='checkbox' id='all_cg' title='" . __esc('Select All') . "' data-prefix='sg'><label class='formCheckboxLabel' title='" . __esc('Select All Rows'). "' for='all_cg'></label></th>
 			</tr>";
 
 		if (get_request_var('filter') != '') {
@@ -861,7 +865,7 @@ function graphs() {
 						} else {
 							print "<tr class='tableHeader'>
 									$html_dq_header
-									<th class='tableSubHeaderCheckbox'><input class='checkbox' id='all_" . $snmp_query['id'] . "' type='checkbox' name='all_" . $snmp_query['id'] . "' title='" . __esc('Select All') . "' onClick='selectAll(\"sg_" . $snmp_query['id'] . "\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All Rows'). "' for='all_" . $snmp_query['id'] . "'></label></th>
+									<th class='tableSubHeaderCheckbox'><input class='checkbox' id='all_" . $snmp_query['id'] . "' type='checkbox' name='all_" . $snmp_query['id'] . "' title='" . __esc('Select All') . "' data-prefix='sg_" . $snmp_query['id'] . "'><label class='formCheckboxLabel' title='" . __esc('Select All Rows'). "' for='all_" . $snmp_query['id'] . "'></label></th>
 								</tr>";
 						}
 
@@ -959,7 +963,7 @@ function graphs() {
 							<input type='button' class='ui-button ui-corner-all ui-widget default' id='default_" .  $snmp_query['id'] . "' value='" . __esc('Set Default') . "' title='" . __esc('Make selection default') . "'>
 						</td>
 						<td class='right'>
-							<select class='dqselect' name='sgg_" . $snmp_query['id'] . "' id='sgg_" . $snmp_query['id'] . "' onChange='dqUpdateDeps(" . $snmp_query['id'] . ',' . (isset($column_counter) ? $column_counter:'') . ");'>
+							<select class='dqselect' name='sgg_" . $snmp_query['id'] . "' id='sgg_" . $snmp_query['id'] . "' data-prefix='" . $snmp_query['id'] . ',' . (isset($column_counter) ? $column_counter:'') . "'>
 								"; html_create_list($data_query_graphs, 'name', 'id', $selected); print "
 							</select>
 						</td>
@@ -974,7 +978,22 @@ function graphs() {
 	}
 
 	if ($script != '') {
-		$script .= "$('.default').click(function() { $.get('graphs_new.php?action=ajax_save&query=" . (isset($snmp_query['id']) ? $snmp_query['id']:'') . "'+'&item='+$(\".dqselect\").val()).fail(function(data) { getPresentHTTPError(data); });}); $('tr.notemplate').tooltip();</script>";
+		$script .= "
+			$('.default').on('click', function() {
+				$.get('graphs_new.php?action=ajax_save&query=" . (isset($snmp_query['id']) ? $snmp_query['id']:'') . "'+'&item='+$(\".dqselect\").val())
+				.fail(function(data) {
+						getPresentHTTPError(data);
+				});
+			});
+
+			$('tr.notemplate').tooltip();
+
+			$('.dqselect').on('change', function() {
+				var prefix = $(this).data('prefix');
+				dqUpdateDeps(prefix);
+			});
+		</script>";
+
 		print $script;
 	}
 

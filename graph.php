@@ -477,7 +477,7 @@ case 'zoom':
 				$('#data').html(data);
 				resizeWrapper();
 
-				$('.download').click(function(event) {
+				$('.download').on('click', function(event) {
 					event.preventDefault;
 					graph_id = $(this).attr('id').replace('graph_','');
 					document.location = urlPath+'graph_xport.php?local_graph_id='+graph_id+'&rra_id=0&view_type=tree&graph_start='+$('#graph_start').val()+'&graph_end='+$('#graph_end').val();
@@ -562,12 +562,12 @@ case 'zoom':
 				});
 		});
 
-		$('a[id$="_properties"]').unbind('click').click(function() {
+		$('a[id$="_properties"]').unbind('click').on('click', function() {
 			graph_id = $(this).attr('id').replace('graph_', '').replace('_properties', '');
 			graphProperties();
 		});
 
-		$('a[id$="_csv"]').unbind('click').click(function() {
+		$('a[id$="_csv"]').unbind('click').on('click', function() {
 			graph_id = $(this).attr('id').replace('graph_', '').replace('_csv', '');
 			graphXport();
 		});

@@ -273,7 +273,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete CDEF', 'Delete CDEFs', cacti_sizeof($cdef_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete CDEF', 'Delete CDEFs', cacti_sizeof($cdef_array)) . "'>";
 		} elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
 			print "<tr>
 				<td class='textArea'>
@@ -284,7 +284,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Duplicate CDEF', 'Duplicate CDEFs', cacti_sizeof($cdef_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Duplicate CDEF', 'Duplicate CDEFs', cacti_sizeof($cdef_array)) . "'>";
 		}
 	} else {
 		raise_message(40);
@@ -497,7 +497,7 @@ function item_edit() {
 	?>
 	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
-		$('#type_select').unbind().change(function() {
+		$('#type_select').on('change', function() {
 			strURL  = 'cdef.php?action=item_edit';
 			strURL += '&id=' + $('#id').val();
 			strURL += '&cdef_id=' + $('#cdef_id').val();
@@ -651,7 +651,7 @@ function cdef_edit() {
 		});
 		<?php } ?>
 
-		$('.delete').click(function(event) {
+		$('.delete').on('click', function(event) {
 			event.preventDefault();
 
 			id = $(this).attr('id').split('_');
@@ -753,7 +753,7 @@ function cdef() {
 						<?php print __('CDEFs');?>
 					</td>
 					<td>
-						<select id='rows' name='rows' onChange='applyFilter()'>
+						<select id='rows' name='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows) > 0) {
@@ -795,19 +795,19 @@ function cdef() {
 			}
 
 			$(function() {
-				$('#refresh').click(function() {
+				$('#refresh, #has_graphs').on('click', function() {
 					applyFilter();
 				});
 
-				$('#has_graphs').click(function() {
+				$('#rows').on('change', function() {
 					applyFilter();
 				});
 
-				$('#clear').click(function() {
+				$('#clear').on('click', function() {
 					clearFilter();
 				});
 
-				$('#form_cdef').submit(function(event) {
+				$('#form_cdef').on('submit', function(event) {
 					event.preventDefault();
 					applyFilter();
 				});
