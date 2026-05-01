@@ -977,7 +977,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	?>
 	<tr class='even noprint' id='search'>
 		<td class='noprint'>
-		<form id='form_graph_view' method='post' onSubmit='applyGraphFilter();return false'>
+		<form id='form_graph_view' method='post'>
 			<table class='filterTable'>
 				<tr>
 					<td>
@@ -1064,7 +1064,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					</td>
 					<td>
 						<span>
-							<input id='thumbnails' type='checkbox' name='thumbnails' onClick='applyGraphFilter()' <?php print ((get_request_var('thumbnails') == 'true' || get_request_var('thumbnails') == 'on') ? 'checked':'');?>>
+							<input id='thumbnails' type='checkbox' name='thumbnails' <?php print ((get_request_var('thumbnails') == 'true' || get_request_var('thumbnails') == 'on') ? 'checked':'');?>>
 							<label for='thumbnails'><?php print __('Thumbnails');?></label>
 						</span>
 					</td>
@@ -1117,7 +1117,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					</td>
 					<td>
 						<span>
-							<i class='shiftArrow fa fa-backward' onClick='timeshiftGraphFilterLeft()' title='<?php print __esc('Shift Time Backward');?>'></i>
+							<i class='shiftArrow fa fa-backward' id='shiftLeft' title='<?php print __esc('Shift Time Backward');?>'></i>
 							<select id='predefined_timeshift' title='<?php print __esc('Define Shifting Interval');?>'>
 								<?php
 								$start_val = 1;
@@ -1129,13 +1129,13 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 								}
 								?>
 							</select>
-							<i class='shiftArrow fa fa-forward' onClick='timeshiftGraphFilterRight()' title='<?php print __esc('Shift Time Forward');?>'></i>
+							<i class='shiftArrow fa fa-forward' id='shiftRight' title='<?php print __esc('Shift Time Forward');?>'></i>
 						</span>
 					</td>
 					<td>
 						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='tsrefresh' value='<?php print __esc('Refresh');?>' title='<?php print __esc('Refresh selected time span');?>' onClick='refreshGraphTimespanFilter()'>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='tsclear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Return to the default time span');?>' onClick='clearGraphTimespanFilter()'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='tsrefresh' value='<?php print __esc('Refresh');?>' title='<?php print __esc('Refresh selected time span');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='tsclear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Return to the default time span');?>'>
 						</span>
 					</td>
 				</tr>
@@ -1246,8 +1246,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	}
 
 	$(function() {
-		$('#go').on('click', function(event) {
-			event.preventDefault();
+		$('#thumbnails').on('click', function() {
 			applyGraphFilter();
 		});
 
@@ -1257,6 +1256,22 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 		$('#graph_start, #ds_step').on('change', function() {
 			realtimeGrapher();
+		});
+
+		$('#shiftLeft').on('click', function() {
+			timeshiftGraphFilterLeft();
+		});
+
+		$('#shiftRight').on('click', function() {
+			timeshiftGraphFilterRight();
+		});
+
+		$('#tsrefresh').on('click', function() {
+			refreshGraphTimespanFilter();
+		});
+
+		$('#tsclear').on('click', function() {
+			clearGraphTimespanFilter();
 		});
 
 		$('#predefined_timespan').on('change', function() {
