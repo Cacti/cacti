@@ -585,7 +585,7 @@ fs_write	./scripts/ss_net_snmp_disk_io.php:226			file_put_contents("$tmpdir/$tmp
 fs_write	./snmpagent_mibcachechild.php:90		$lock = fopen($path_mibcache_lock, 'w');
 fs_write	./snmpagent_mibcachechild.php:94			file_put_contents($path_mibcache, '<?php $cache = ' . var_export($cache, true) . ';', LOCK_EX);
 fs_write	./templates_import.php:67				$fp = fopen($_FILES['import_file']['tmp_name'],'r');
-fs_write	./utilities.php:1620				$log_fh = fopen($logfile, 'w');
+fs_write	./utilities.php:1616				$log_fh = fopen($logfile, 'w');
 header_redirect	./aggregate_graphs.php:102			header('Location: aggregate_graphs.php?header=false&action=edit&id=' . $local_graph_id);
 header_redirect	./aggregate_graphs.php:121			header('Location: aggregate_graphs.php?header=false&action=edit&id=' . $local_graph_id);
 header_redirect	./aggregate_graphs.php:248		header('Location: aggregate_graphs.php?header=false&action=edit&id=' . $local_graph_id);
