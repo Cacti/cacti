@@ -1066,10 +1066,6 @@ function form_radio_button($form_name, $form_previous_value, $form_current_value
 		$class = " $class";
 	}
 
-	if ($on_change != '') {
-		$_SESSION['form_change_actions'][$form_name] = $on_change;
-	}
-
 	if ($form_previous_value == $form_current_value) {
 		$checked = " checked aria-checked='true'";
 	} else {
@@ -1078,6 +1074,9 @@ function form_radio_button($form_name, $form_previous_value, $form_current_value
 
 	$css_id = $form_name . '_' . $form_current_value;
 
+	if ($on_change != '') {
+		$_SESSION['form_change_actions'][$css_id] = $on_change;
+	}
 
 	print "<span class='nowrap'>";
 	print "<label class='radioSwitch'><input value='" . html_escape($form_current_value) .
