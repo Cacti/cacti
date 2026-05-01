@@ -32,9 +32,7 @@ $page = db_fetch_row_prepared('SELECT
 
 if (!cacti_sizeof($page)) {
 	raise_message('page_not_defined');
-
 	header('index.php');
-
 	exit;
 } else {
 	global $link_nav;
@@ -83,10 +81,7 @@ if (!cacti_sizeof($page)) {
 		bottom_footer();
 	} else {
 		raise_message('permission_denied');
-
 		header('Location: index.php');
-
 		exit;
 	}
 }
-
