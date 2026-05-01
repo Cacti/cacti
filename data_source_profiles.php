@@ -702,7 +702,8 @@ function profile_edit() {
         });
 
 		get_size();
-		$('consolidation_function_id').on('change', function() {
+
+		$('#consolidation_function_id').on('change', function() {
 			get_size();
 		});
 
