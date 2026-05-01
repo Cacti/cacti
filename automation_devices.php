@@ -220,7 +220,7 @@ function form_actions() {
 
 			print "</td></tr></table></td></tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Add Device(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Add Device(s)') . "'>";
 		} elseif (get_request_var('drp_action') == '2') { /* remove */
 			print "<tr>
 				<td class='textArea odd'>
@@ -229,7 +229,7 @@ function form_actions() {
 				</td>
 			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Device(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Device(s)') . "'>";
 		}
 	} else {
 		raise_message(40);
@@ -507,7 +507,7 @@ function draw_filter() {
 						</select>
 					<td>
 						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Reset fields to defaults');?>'>
 						</span>
 					</td>
@@ -587,7 +587,7 @@ function draw_filter() {
 		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 		$(function() {
-			$('#refresh').click(function() {
+			$('#refresh').on('click', function() {
 				applyFilter();
 			});
 
@@ -595,20 +595,20 @@ function draw_filter() {
 				applyFilter();
 			});
 
-			$('#clear').click(function() {
+			$('#clear').on('click', function() {
 				clearFilter();
 			});
 
-			$('#form_devices').submit(function(event) {
+			$('#form_devices').on('submit', function(event) {
 				event.preventDefault();
 				applyFilter();
 			});
 
-			$('#purge').click(function() {
+			$('#purge').on('click', function() {
 				loadPageNoHeader('automation_devices.php?header=false&action=purge&network_id='+$('#network').val());
 			});
 
-			$('#export').click(function() {
+			$('#export').on('click', function() {
 				document.location = 'automation_devices.php?action=export';
 				Pace.stop();
 			});
