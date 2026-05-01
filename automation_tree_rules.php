@@ -180,6 +180,7 @@ function automation_tree_rules_form_save() {
 
 		if ($save['field'] != AUTOMATION_TREE_ITEM_TYPE_STRING && $save['field'] != '') {
 			$field_name = str_replace(array('ht.', 'h.', 'gt.', 'gl.', 'gtg.'), '', $save['field']);
+			$field_name = preg_replace('/[^a-zA-Z0-9_]/', '', $field_name);
 			if (!db_column_exists('host', $field_name) &&
 				!db_column_exists('host_template', $field_name) &&
 				!db_column_exists('graph_templates', $field_name) &&

@@ -188,6 +188,7 @@ function save() {
 
 		/* Test for SQL injections */
 		$field_name = str_replace(array('ht.', 'h.', 'gt.', 'gl.', 'gtg.'), '', $save['field']);
+		$field_name = preg_replace('/[^a-zA-Z0-9_]/', '', $field_name);
 
 		if (!db_column_exists('host', $field_name) &&
 			!db_column_exists('host_template', $field_name) &&
