@@ -42,6 +42,27 @@ test('update_order_string() enforces ASC/DESC direction', function () {
 	expect($order)->not->toContain('--');
 });
 
+test('update_order_string() handles multi-column sorting', function () {
+	if (session_status() === PHP_SESSION_NONE) {
+		@session_start();
+	}
+
+	$page = get_order_string_page();
+	$_SESSION['valid_sort_columns'][$page] = ['col1', 'col2'];
+
+	// Simulate multiple columns in sort_data
+	$_SESSION['sort_data'][$page] = [
+		'col1' => 'ASC',
+		'col2' => 'DESC'
+	];
+	
+	update_order_string(true); // true for inplace update
+
+	$order = get_order_string();
+	expect($order)->toContain('`col1` ASC');
+	expect($order)->toContain('`col2` DESC');
+});
+
 test('update_order_string() uses session allowlist', function () {
 	if (session_status() === PHP_SESSION_NONE) {
 		@session_start();
@@ -61,4 +82,14 @@ test('update_order_string() uses session allowlist', function () {
 	update_order_string();
 	$order = get_order_string();
 	expect($order)->toContain('description');
+});
+
+test('get_order_string() fallback sanitization works', function () {
+	$_SESSION = [];
+	set_request_var('sort_column', 'dangerous` column');
+	set_request_var('sort_direction', 'ASC');
+	
+	$order = get_order_string();
+	expect($order)->not->toContain('`');
+	expect($order)->toContain('dangerouscolumn');
 });
