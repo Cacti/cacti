@@ -138,7 +138,7 @@ class CactiSecureHeaders {
 		$policy = "default-src 'self'; "
 			. "{$script_src}; "
 			. "{$style_src}; "
-			. "img-src 'self' {$alternates} data: blob:; "
+			. "img-src 'self' data: blob: {$alternates}; "
 			. "font-src 'self' {$alternates}; "
 			. "connect-src 'self' {$alternates}; "
 			. "frame-src 'self' {$alternates}; "

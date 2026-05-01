@@ -49,8 +49,8 @@ finalize_timespan($timespan);
 function initialize_timespan(&$timespan) {
 	/* initialize the default timespan if not set */
 	if ((!isset($_SESSION['sess_current_timespan'])) || (isset_request_var('button_clear'))) {
-		$_SESSION['sess_current_timespan'] = read_user_setting('default_timespan');
-		set_request_var('predefined_timespan', read_user_setting('default_timespan'));
+		$_SESSION['sess_current_timespan'] = read_user_setting('default_timespan') ?? 7;
+		set_request_var('predefined_timespan', read_user_setting('default_timespan') ?? 7);
 		$_SESSION['custom'] = 0;
 	}
 
