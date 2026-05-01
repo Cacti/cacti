@@ -178,6 +178,17 @@ function automation_tree_rules_form_save() {
 		$save['search_pattern']    = isset_request_var('search_pattern') ? form_input_validate(get_nfilter_request_var('search_pattern'), 'search_pattern', '', false, 3) : '';
 		$save['replace_pattern']   = isset_request_var('replace_pattern') ? form_input_validate(get_nfilter_request_var('replace_pattern'), 'replace_pattern', '', true, 3) : '';
 
+		if ($save['field'] != AUTOMATION_TREE_ITEM_TYPE_STRING && $save['field'] != '') {
+			$field_name = str_replace(array('ht.', 'h.', 'gt.', 'gl.', 'gtg.'), '', $save['field']);
+			if (!db_column_exists('host', $field_name) &&
+				!db_column_exists('host_template', $field_name) &&
+				!db_column_exists('graph_templates', $field_name) &&
+				!db_column_exists('graph_local', $field_name) &&
+				!db_column_exists('graph_templates_graph', $field_name)) {
+				raise_message('field_invalid', __('Invalid Field Name specified for Tree Rule Item.'), MESSAGE_LEVEL_ERROR);
+			}
+		}
+
 		if (!is_error_message()) {
 			$automation_graph_rule_item_id = sql_save($save, 'automation_tree_rule_items');
 

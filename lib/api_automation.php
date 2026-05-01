@@ -2756,7 +2756,7 @@ function create_all_header_nodes($item_id, $rule) {
 				$sql = '';
 				$target = $automation_tree_header_types[AUTOMATION_TREE_ITEM_TYPE_STRING];
 			} else {
-				$sql_field = $tree_item['field'] . ' AS source ';
+				$sql_field = sanitize_sql_column($tree_item['field']) . ' AS source ';
 
 				/* now we build up a new query for counting the rows */
 				$sql = 'SELECT ' .
