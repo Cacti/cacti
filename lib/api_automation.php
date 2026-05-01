@@ -2769,10 +2769,11 @@ function create_all_header_nodes($item_id, $rule) {
 				$sql_tables .
 				$sql_where . ' AND (' . $sql_filter . ')';
 
-				$target = db_fetch_cell($sql, '', false);
+				$target = db_fetch_cell_prepared($sql, array($item_id), '', false);
 			}
 
-			cacti_log($function . ' Item ' . $item_id . ' - sql: ' . str_replace("\m",'',$sql) . ' matches: ' . $target, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
+			cacti_log($function . ' Item ' . $item_id . ' - sql: ' . str_replace("\m", '', $sql) . ' matches: ' . $target, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
+
 
 			$parent_tree_item_id = create_multi_header_node($target, $rule, $tree_item, $parent_tree_item_id);
 		}

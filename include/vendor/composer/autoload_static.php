@@ -7,28 +7,39 @@ namespace Composer\Autoload;
 class ComposerStaticInitdc6b32dad13fa4041cc9058b131d1519
 {
     public static $files = array (
+        '2cffec82183ee1cea088009cef9a6fc3' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
         'decc78cc4436b1292c6c0d151b19445c' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/bootstrap.php',
     );
 
     public static $prefixLengthsPsr4 = array (
-        'p' =>
+        'p' => 
         array (
             'phpseclib3\\' => 11,
         ),
-        'P' =>
+        'P' => 
         array (
             'ParagonIE\\ConstantTime\\' => 23,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'phpseclib3\\' =>
+        'phpseclib3\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib',
         ),
-        'ParagonIE\\ConstantTime\\' =>
+        'ParagonIE\\ConstantTime\\' => 
         array (
             0 => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src',
+        ),
+    );
+
+    public static $prefixesPsr0 = array (
+        'H' => 
+        array (
+            'HTMLPurifier' => 
+            array (
+                0 => __DIR__ . '/..' . '/ezyang/htmlpurifier/library',
+            ),
         ),
     );
 
@@ -41,6 +52,7 @@ class ComposerStaticInitdc6b32dad13fa4041cc9058b131d1519
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInitdc6b32dad13fa4041cc9058b131d1519::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInitdc6b32dad13fa4041cc9058b131d1519::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitdc6b32dad13fa4041cc9058b131d1519::$prefixesPsr0;
             $loader->classMap = ComposerStaticInitdc6b32dad13fa4041cc9058b131d1519::$classMap;
 
         }, null, ClassLoader::class);

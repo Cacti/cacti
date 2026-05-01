@@ -1101,33 +1101,36 @@ function utilities_view_user_log() {
 
 	$sql_where = '';
 
+	$params = array();
+
 	/* filter by username */
 	if (get_request_var('username') == '-2') {
 		$sql_where = 'WHERE ul.username NOT IN (SELECT DISTINCT username FROM user_auth)';
 	} elseif (get_request_var('username') != '-1') {
-		$sql_where = "WHERE ul.username='" . get_request_var('username') . "'";
+		$sql_where = 'WHERE ul.username = ?';
+		$params[] = get_request_var('username');
 	}
 
 	/* filter by result */
 	if (get_request_var('result') != '-1') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ul.result=' . get_request_var('result');
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ul.result = ?';
+		$params[] = get_request_var('result');
 	}
 
 	/* filter by search string */
 	if (get_request_var('filter') != '') {
 		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (
-			ul.username LIKE '     . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR ul.time LIKE '      . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR ua.full_name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR ul.ip LIKE '        . db_qstr('%' . get_request_var('filter') . '%') . ')';
+			ul.username LIKE ?
+			OR ul.time LIKE ?
+			OR ua.full_name LIKE ?
+			OR ul.ip LIKE ?)';
+		$params[] = '%' . get_request_var('filter') . '%';
+		$params[] = '%' . get_request_var('filter') . '%';
+		$params[] = '%' . get_request_var('filter') . '%';
+		$params[] = '%' . get_request_var('filter') . '%';
 	}
 
-	$total_rows = db_fetch_cell("SELECT
-		COUNT(*)
-		FROM user_auth AS ua
-		RIGHT JOIN user_log AS ul
-		ON ua.username=ul.username
-		$sql_where");
+	$total_rows = get_total_row_data($_SESSION['sess_user_id'], "SELECT COUNT(*) FROM user_auth AS ua RIGHT JOIN user_log AS ul ON ua.username=ul.username $sql_where", $params);
 
 	$user_log_sql = "SELECT ul.username, ua.full_name, ua.realm,
 		ul.time, ul.result, ul.ip
@@ -1138,7 +1141,7 @@ function utilities_view_user_log() {
 		" . get_order_string() . "
 		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-	$user_log = db_fetch_assoc($user_log_sql);
+	$user_log = db_fetch_assoc_prepared($user_log_sql, $params);
 
 	$nav = html_nav_bar('utilities.php?action=view_user_log&username=' . get_request_var('username') . '&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 6, __('User Logins'), 'page', 'main');
 
@@ -2111,10 +2114,12 @@ function utilities_view_poller_cache() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
+	$params = array();
 	$sql_where = '';
 
 	if (get_request_var('poller_action') != '-1') {
-		$sql_where .= ($sql_where != '' ? ' AND ':' WHERE') . " pi.action='" . get_request_var('poller_action') . "'";
+		$sql_where .= ($sql_where != '' ? ' AND ':' WHERE') . " pi.action = ?";
+		$params[] = get_request_var('poller_action');
 	}
 
 	if (get_request_var('host_id') == '-1') {
@@ -2122,7 +2127,8 @@ function utilities_view_poller_cache() {
 	} elseif (get_request_var('host_id') == '0') {
 		$sql_where .= ($sql_where != '' ? ' AND ':' WHERE') . ' pi.host_id = 0';
 	} elseif (!isempty_request_var('host_id')) {
-		$sql_where .= ($sql_where != '' ? ' AND ':' WHERE') . ' pi.host_id = ' . get_request_var('host_id');
+		$sql_where .= ($sql_where != '' ? ' AND ':' WHERE') . ' pi.host_id = ?';
+		$params[] = get_request_var('host_id');
 	}
 
 	if (get_request_var('template_id') == '-1') {
@@ -2130,7 +2136,8 @@ function utilities_view_poller_cache() {
 	} elseif (get_request_var('template_id') == '0') {
 		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' dtd.data_template_id=0';
 	} elseif (!isempty_request_var('template_id')) {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' dl.data_template_id=' . get_request_var('template_id');
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' dl.data_template_id = ?';
+		$params[] = get_request_var('template_id');
 	}
 
 	if (get_request_var('status') == 0) {
@@ -2142,16 +2149,24 @@ function utilities_view_poller_cache() {
 	if (get_request_var('filter') != '') {
 		if (get_request_var('host_id') > 0) {
 			$sql_where .= ($sql_where != '' ? ' AND ':' WHERE') . ' (
-				dtd.name_cache LIKE '   . db_qstr('%' . get_request_var('filter') . '%') . '
-				OR pi.arg1 LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . '
-				OR pi.rrd_path  LIKE '  . db_qstr('%' . get_request_var('filter') . '%') . ')';
+				dtd.name_cache LIKE ?
+				OR pi.arg1 LIKE ?
+				OR pi.rrd_path  LIKE ?)';
+			$params[] = '%' . get_request_var('filter') . '%';
+			$params[] = '%' . get_request_var('filter') . '%';
+			$params[] = '%' . get_request_var('filter') . '%';
 		} else {
 			$sql_where .= ($sql_where != '' ? ' AND ':' WHERE') . ' (
-				dtd.name_cache LIKE '   . db_qstr('%' . get_request_var('filter') . '%') . '
-				OR h.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-				OR pi.arg1 LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . '
-				OR pi.hostname LIKE '   . db_qstr('%' . get_request_var('filter') . '%') . '
-				OR pi.rrd_path  LIKE '  . db_qstr('%' . get_request_var('filter') . '%') . ')';
+				dtd.name_cache LIKE ?
+				OR h.description LIKE ?
+				OR pi.arg1 LIKE ?
+				OR pi.hostname LIKE ?
+				OR pi.rrd_path  LIKE ?)';
+			$params[] = '%' . get_request_var('filter') . '%';
+			$params[] = '%' . get_request_var('filter') . '%';
+			$params[] = '%' . get_request_var('filter') . '%';
+			$params[] = '%' . get_request_var('filter') . '%';
+			$params[] = '%' . get_request_var('filter') . '%';
 		}
 	}
 
@@ -2165,7 +2180,7 @@ function utilities_view_poller_cache() {
 		ON pi.host_id = h.id
 		$sql_where";
 
-	$total_rows = get_total_row_data($_SESSION['sess_user_id'], $sql, array(), 'poller_item');
+	$total_rows = get_total_row_data($_SESSION['sess_user_id'], $sql, $params, 'poller_item');
 
 	$order_string = get_order_string();
 	if ($order_string == '') {
@@ -2186,7 +2201,7 @@ function utilities_view_poller_cache() {
 		$order_string
 		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-	$poller_cache = db_fetch_assoc($poller_sql);
+	$poller_cache = db_fetch_assoc_prepared($poller_sql, $params);
 
 	$nav = html_nav_bar('utilities.php?action=view_poller_cache&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 3, __('Entries'), 'page', 'main');
 

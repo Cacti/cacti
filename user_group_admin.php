@@ -1978,20 +1978,18 @@ function user_group() {
 	}
 
 	/* form the 'where' clause for our main sql query */
+	$params = array();
 	if (get_request_var('filter') != '') {
-		$sql_where = 'WHERE (
-			name LIKE '           . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
+		$sql_where = 'WHERE (name LIKE ? OR description LIKE ?)';
+		$params[] = '%' . get_request_var('filter') . '%';
+		$params[] = '%' . get_request_var('filter') . '%';
 	} else {
 		$sql_where = '';
 	}
 
-	$total_rows = db_fetch_cell("SELECT
-		COUNT(*)
-		FROM user_auth_group
-		$sql_where");
+	$total_rows = get_total_row_data($_SESSION['sess_user_id'], "SELECT COUNT(*) FROM user_auth_group $sql_where", $params);
 
-	$group_list = db_fetch_assoc("SELECT uag.id, uag.name, uag.description,
+	$group_list = db_fetch_assoc_prepared("SELECT uag.id, uag.name, uag.description,
 		uag.policy_graphs, uag.policy_hosts, uag.policy_graph_templates,
 		uag.enabled, count(uagm.group_id) AS members
 		FROM user_auth_group AS uag
@@ -1999,8 +1997,8 @@ function user_group() {
 		ON uag.id = uagm.group_id
 		$sql_where
 		GROUP BY uag.id
-		" . get_order_string() .
-		' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows);
+		" . get_order_string() . "
+		LIMIT " . ($rows * (get_request_var('page') - 1)) . ',' . $rows, $params);
 
 	$nav = html_nav_bar('user_group_admin.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('Groups'), 'page', 'main');
 
