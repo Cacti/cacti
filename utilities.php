@@ -3339,6 +3339,10 @@ function snmpagent_utilities_run_eventlog(){
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*)
 		FROM snmpagent_notifications_log AS snl
+		INNER JOIN snmpagent_managers AS sm
+		ON sm.id = snl.manager_id
+		LEFT JOIN snmpagent_cache AS sc
+		ON sc.name = snl.notification
 		WHERE $sql_where");
 
 	$logs = db_fetch_assoc($sql_query);
