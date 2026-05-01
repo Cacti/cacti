@@ -665,6 +665,18 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 function html_header_sort($header_items, $sort_column, $sort_direction, $last_item_colspan = 1, $url = '', $return_to = '') {
 	static $page_count = 0;
 
+	$reg_page = $page_count . '_' . str_replace('.php', '', basename($_SERVER['SCRIPT_NAME']));
+
+	if (isset_request_var('action')) {
+		$reg_page .= '_' . get_request_var('action');
+	}
+
+	if (isset_request_var('tab')) {
+		$reg_page .= '_' . get_request_var('tab');
+	}
+
+	$_SESSION['valid_sort_columns'][$reg_page] = array_keys($header_items);
+
 	/* reverse the sort direction */
 	if ($sort_direction == 'ASC') {
 		$new_sort_direction = 'DESC';
@@ -826,6 +838,18 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
    @arg $return_to - the id of the object to inject output into as a result of the sort action */
 function html_header_sort_checkbox($header_items, $sort_column, $sort_direction, $include_form = true, $form_action = '', $return_to = '', $prefix = 'chk') {
 	static $page_count = 0;
+
+	$reg_page = $page_count . '_' . str_replace('.php', '', basename($_SERVER['SCRIPT_NAME']));
+
+	if (isset_request_var('action')) {
+		$reg_page .= '_' . get_request_var('action');
+	}
+
+	if (isset_request_var('tab')) {
+		$reg_page .= '_' . get_request_var('tab');
+	}
+
+	$_SESSION['valid_sort_columns'][$reg_page] = array_keys($header_items);
 
 	/* reverse the sort direction */
 	if ($sort_direction == 'ASC') {

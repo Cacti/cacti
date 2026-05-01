@@ -7600,3 +7600,14 @@ function cacti_format_ipv6_colon($address) {
 	return($address);
 }
 
+
+/**
+ * sanitize_sql_column - sanitizes a column name to prevent SQL injection
+ *
+ * @param string $column - the column name to sanitize
+ *
+ * @return string - the sanitized column name
+ */
+function sanitize_sql_column($column) {
+	return preg_replace('/[^a-zA-Z0-9_.]/', '', (string)$column);
+}
