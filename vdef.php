@@ -777,7 +777,7 @@ function vdef_filter() {
 			}
 
 			$(function() {
-				$('#refresh, #has_graphs').on('click', function() {
+				$('#has_graphs').on('click', function() {
 					applyFilter();
 				});
 
