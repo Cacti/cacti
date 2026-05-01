@@ -139,7 +139,11 @@ function save() {
 		if (!$exists) {
 			/* check the case where there is no entry in the host_snmp_cache table yet */
 			if ("'$field_name'" != db_qstr($field_name)) {
-				if (!db_column_exists('host', $field_name) && !db_column_exists('host_template', $field_name) && !db_column_exists('graph_templates', $field_name) && !db_column_exists('graph_templates_graph', $field_name)) {
+			if (!db_column_exists('host', $field_name) &&
+				!db_column_exists('host_template', $field_name) &&
+				!db_column_exists('graph_templates', $field_name) &&
+				!db_column_exists('graph_local', $field_name) &&
+				!db_column_exists('graph_templates_graph', $field_name)) {
 					raise_message('sql_injection', __('An attempt was made to perform a SQL injection in Graph automation'), MESSAGE_LEVEL_ERROR);
 
 					cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Graph Automation from client address \'%s\'', get_client_addr()), false, 'SECURITY');
@@ -183,9 +187,13 @@ function save() {
 		$save['pattern']   = form_input_validate((isset_request_var('pattern') ? get_nfilter_request_var('pattern') : ''), 'pattern', '', true, 3);
 
 		/* Test for SQL injections */
-		$field_name = str_replace(array('ht.', 'h.', 'gt.'), '', $save['field']);
+		$field_name = str_replace(array('ht.', 'h.', 'gt.', 'gl.', 'gtg.'), '', $save['field']);
 
-		if (!db_column_exists('host', $field_name) && !db_column_exists('host_template', $field_name) && !db_column_exists('graph_templates', $field_name)) {
+		if (!db_column_exists('host', $field_name) &&
+			!db_column_exists('host_template', $field_name) &&
+			!db_column_exists('graph_templates', $field_name) &&
+			!db_column_exists('graph_local', $field_name) &&
+			!db_column_exists('graph_templates_graph', $field_name)) {
 			raise_message('sql_injection', __('An attempt was made to perform a SQL injection in Graph automation'), MESSAGE_LEVEL_ERROR);
 
 			cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Graph Automation from client address \'%s\'', get_client_addr()), false, 'SECURITY');
