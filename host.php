@@ -191,7 +191,8 @@ function host_reindex() {
 
 	$start = microtime(true);
 
-	shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/cli/poller_reindex_hosts.php --qid=all --id=' . get_filter_request_var('host_id'));
+	$host_id = get_filter_request_var('host_id');
+	shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg($config['base_path'] . '/cli/poller_reindex_hosts.php') . ' --qid=all --id=' . $host_id);
 
 	$end = microtime(true);
 
@@ -200,7 +201,7 @@ function host_reindex() {
 	$items = db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM host_snmp_cache
 		WHERE host_id = ?',
-		array(get_filter_request_var('host_id')));
+		array($host_id));
 
 	raise_message('host_reindex', __('Device Reindex Completed in %0.2f seconds.  There were %d items updated.', $total_time, $items), MESSAGE_LEVEL_INFO);
 }
@@ -255,6 +256,7 @@ function get_site_locations() {
 		$return[] = array('label' => __('None'), 'value' => '', 'id' => __('None'));
 	}
 
+	header('Content-Type: application/json');
 	print json_encode($return);
 }
 
@@ -401,7 +403,7 @@ function form_actions() {
 				</td>
 			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Enable Device(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Enable Device(s)') . "'>";
 		} elseif (get_nfilter_request_var('drp_action') == '3') { // Disable Devices
 			print "	<tr>
 				<td colspan='2' class='textArea'>
@@ -410,7 +412,7 @@ function form_actions() {
 				</td>
 				</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Disable Device(s)') ."'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Disable Device(s)') ."'>";
 		} elseif (get_nfilter_request_var('drp_action') == '4') { // Change Device options
 			print "<tr>
 				<td colspan='2' class='textArea'>
@@ -457,7 +459,7 @@ function form_actions() {
 
 			device_change_javascript();
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Change Device(s) SNMP Options') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Change Device(s) SNMP Options') . "'>";
 		} elseif (get_request_var('drp_action') == '5') { // Clear Statistics for Selected Devices
 			print "<tr>
 				<td colspan='2' class='textArea'>
@@ -466,7 +468,7 @@ function form_actions() {
 				</td>
 			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Clear Statistics on Device(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Clear Statistics on Device(s)') . "'>";
 		} elseif (get_nfilter_request_var('drp_action') == '7') { // sync device template
 			print "	<tr>
 				<td colspan='2' class='textArea'>
@@ -475,7 +477,7 @@ function form_actions() {
 				</td>
 				</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Synchronize Device(s)') ."'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Synchronize Device(s)') ."'>";
 		} elseif (get_request_var('drp_action') == '1') { // Delete
 			print "<tr>
 				<td class='textArea'>
@@ -489,7 +491,7 @@ function form_actions() {
 				</td>
 			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Device(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Device(s)') . "'>";
 		} elseif (preg_match('/^tr_([0-9]+)$/', get_request_var('drp_action'), $matches)) { // place on tree
 			print "<tr>
 				<td class='textArea'>
@@ -503,7 +505,7 @@ function form_actions() {
 			</tr>
 			<input type='hidden' name='tree_id' value='" . $matches[1] . "'>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Place Device(s) on Tree') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Place Device(s) on Tree') . "'>";
 		} elseif (get_request_var('drp_action') == 6) { // automation
 			print "<tr>
 				<td class='textArea'>
@@ -512,7 +514,7 @@ function form_actions() {
 				</td>
 			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel'). "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Run Automation on Device(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel'). "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Run Automation on Device(s)') . "'>";
         } elseif (get_request_var('drp_action') == '8') {
 			global $alignment, $graph_timespans;
 
@@ -539,12 +541,12 @@ function form_actions() {
 
 				print '<tr><td>' . __('Align') . '<br>';
 				form_dropdown('align', $alignment, '', '', '', '', REPORTS_ALIGN_CENTER);
-				print "</td></tr>\n";
+				print "</td></tr>";
 
-				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Add Devices to Report') . "'>";
+				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Add Devices to Report') . "'>";
             } else {
-                print "<tr><td class='even'><span class='textError'>" . __('You currently have no Reports defined.') . "</span></td></tr>\n";
-                $save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+                print "<tr><td class='even'><span class='textError'>" . __('You currently have no Reports defined.') . "</span></td></tr>";
+                $save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Return') . "'>";
             }
 		} else {
 			$save['drp_action'] = get_request_var('drp_action');
@@ -553,7 +555,7 @@ function form_actions() {
 
 			api_plugin_hook_function('device_action_prepare', $save);
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "'>";
 		}
 	} else {
 		raise_message(40);
@@ -602,6 +604,12 @@ function host_export() {
 					$h[$hc] = str_replace(array("\n", "\r"), ' ', $h[$hc]);
 				}
 			}
+
+			foreach ($h as &$field) {
+				$field = cacti_csv_safe($field);
+			}
+
+			unset($field);
 
 			fputcsv($stdout, $h);
 		}
@@ -1042,7 +1050,7 @@ function device_reindex_methods($item, $host) {
 
 function device_change_javascript() {
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function disableField(id) {
 		$('#'+id).prop('disabled', true).addClass('ui-state-disabled');;
 
@@ -1064,7 +1072,7 @@ function device_change_javascript() {
 	}
 
 	$(function() {
-		$('input[id^="t_"]').click(function() {
+		$('input[id^="t_"]').on('click', function() {
 			id = $(this).attr('id').substring(2);
 			if ($(this).is(':checked')) {
 				enableField(id);
@@ -1086,7 +1094,7 @@ function device_change_javascript() {
 
 function device_javascript() {
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	// default snmp information
 	var snmp_community       = $('#snmp_community').val();
@@ -1241,7 +1249,7 @@ function device_javascript() {
 		$('#cdialog').remove();
 		$('#main').append("<div id='cdialog' class='cdialog'></div>");
 
-		$('.delete').click(function (event) {
+		$('.delete').on('click', function (event) {
 			event.preventDefault();
 
 			request = $(this).attr('href');
@@ -1289,29 +1297,29 @@ function device_javascript() {
 			}
 		}
 
-		$('[id^="reload"]').click(function(data) {
+		$('[id^="reload"]').on('click', function(data) {
 			$(this).addClass('fa-spin');
 			strURL = 'host.php?action=query_reload&id='+$(this).attr('data-id')+'&host_id='+$('#id').val()+'&nostate=true';
 			hostPageLoad(strURL);
 		});
 
-		$('[id^="verbose"]').click(function(data) {
+		$('[id^="verbose"]').on('click', function(data) {
 			$(this).addClass('fa-spin');
 			var strURL = 'host.php?action=query_verbose&id='+$(this).attr('data-id')+'&host_id='+$('#id').val()+'&nostate=true';
 			loadPageNoHeader(strURL, true);
 		});
 
-		$('[id^="remove"]').click(function(data) {
+		$('[id^="remove"]').on('click', function(data) {
 			var strURL = 'host.php?action=query_remove&id='+$(this).attr('data-id')+'&host_id='+$('#id').val()+'&nostate=true';
 			hostPageLoad(strURL);
 		});
 
-		$('[id^="gtremove"]').click(function(data) {
+		$('[id^="gtremove"]').on('click', function(data) {
 			strURL = 'host.php?action=gt_remove&id='+$(this).attr('data-id')+'&host_id='+$('#id').val()+'&nostate=true';
 			hostPageLoad(strURL);
 		});
 
-		$('#add_dq').click(function() {
+		$('#add_dq').on('click', function() {
 			scrollTop = $(window).scrollTop();
 			Pace.start();
 			$.post('host.php?action=query_add', {
@@ -1326,7 +1334,7 @@ function device_javascript() {
 			});
 		});
 
-		$('#add_gt').click(function() {
+		$('#add_gt').on('click', function() {
 			scrollTop = $(window).scrollTop();
 			$.post('host.php?action=gt_add', {
 				host_id: $('#id').val(),
@@ -1339,7 +1347,7 @@ function device_javascript() {
 		});
 
 		changeHostForm();
-		$('#dbghide').click(function(data) {
+		$('#dbghide').on('click', function(data) {
 			$('#dqdebug').empty().fadeOut('fast');
 		});
 
@@ -1348,16 +1356,16 @@ function device_javascript() {
 			$('.cactiConsoleContentArea').scrollTop(dbgloc);
 		}
 
-		$('[id$="spacer"]').click(function() {
+		$('[id$="spacer"]').on('click', function() {
 			changeHostForm();
 		});
 
-		$('#snmp_version').change(function() {
+		$('#snmp_version').on('change', function() {
 			setAvailability();
 			setPing();
 		});
 
-		$('#location_input').keyup(function() {
+		$('#location_input').on('keyup', function() {
 			$('#location').val($('#location_input').val());
 		}).mouseup(function() {
 			$('#location').val($('#location_input').val());
@@ -1372,7 +1380,7 @@ function device_javascript() {
 				getPresentHTTPError(data);
 			});
 
-		$('input[id^="reindex_"]').change(function() {
+		$('input[id^="reindex_"]').on('change', function() {
 			strURL  = urlPath+'host.php?action=query_change&header=false';
 			strURL += '&host_id='+$(this).attr('data-device-id');
 			strURL += '&data_query_id='+$(this).attr('data-query-id');
@@ -1710,7 +1718,7 @@ function host() {
 				</tr>
 			</table>
 		</form>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 		function applyFilter() {
 			strURL  = 'host.php';
@@ -1737,19 +1745,19 @@ function host() {
 		}
 
 		$(function() {
-			$('#rows, #site_id, #poller_id, #location, #host_template_id, #host_status').change(function() {
+			$('#rows, #site_id, #poller_id, #location, #host_template_id, #host_status').on('change', function() {
 				applyFilter();
 			});
 
-			$('#clear').click(function() {
+			$('#clear').on('click', function() {
 				clearFilter();
 			});
 
-			$('#export').click(function() {
+			$('#export').on('click', function() {
 				exportRecords();
 			});
 
-			$('#form_devices').submit(function(event) {
+			$('#form_devices').on('submit', function(event) {
 				event.preventDefault();
 				applyFilter();
 			});
@@ -1919,4 +1927,3 @@ function host() {
 
 	api_plugin_hook('device_table_bottom');
 }
-

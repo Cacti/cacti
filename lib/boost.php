@@ -326,6 +326,10 @@ function boost_return_cached_image(&$graph_data_array) {
 function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, &$graph_data_array, $return = true) {
 	global $config;
 
+	/* SECURITY: Cast identifiers to integers to prevent path traversal */
+	$local_graph_id = (int)$local_graph_id;
+	$rra_id         = (int)$rra_id;
+
 	/* include poller processing routines */
 	include_once($config['library_path'] . '/poller.php');
 
@@ -507,6 +511,10 @@ function boost_prep_graph_array($graph_data_array) {
 function boost_graph_set_file(&$output, $local_graph_id, $rra_id) {
 	global $config, $boost_sock, $graph_data_array;
 
+	/* SECURITY: Cast identifiers to integers to prevent path traversal */
+	$local_graph_id = (int)$local_graph_id;
+	$rra_id         = (int)$rra_id;
+
 	/* get access to the SNMP Cache of BOOST*/
 	$mc = new MibCache('CACTI-BOOST-MIB');
 
@@ -557,15 +565,20 @@ function boost_graph_set_file(&$output, $local_graph_id, $rra_id) {
 				if (is_writable($cache_directory)) {
 					/* if the cache file was created in a prior step, save it */
 					if (strlen($output) > 10) {
+						/* SECURITY: Use umask to set permissions at creation time,
+						   preventing symlink TOCTOU privilege escalation */
+						$old_umask = umask(0111);
+
 						if ($fileptr = fopen($cache_file, 'w')) {
 							fwrite($fileptr, $output, strlen($output));
 							fclose($fileptr);
-							chmod($cache_file, 0666);
 
 							/* count the number of images that had to be cached */
 							$mc->object('boostStatsTotalsImagesCacheWrites')->count();
 							$mc->object('boostStatsLastUpdate')->set( time() );
 						}
+
+						umask($old_umask);
 					}
 				} else {
 					cacti_log('ERROR: Boost Cache Directory is not writable!  Can not cache images', false, 'BOOST');
@@ -669,7 +682,7 @@ function boost_get_arch_table_names($latest_table = '') {
  * 5) Process the entire result set
  *
  * @param  (int)      local_data_id - the local data id to update
- * @param  (resourse) rrdtool_pipe - a pointer to the rrdtool process
+ * @param  (resource) rrdtool_pipe - a pointer to the rrdtool process
  *
  * @return (void)
  */
@@ -693,11 +706,6 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 	/* install the boost error handler */
 	set_error_handler('boost_error_handler');
 
-	if (cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
-		while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds.$local_data_id', 1)")) {
-			usleep(50000);
-		}
-	}
 
 	$data_ids_to_get = read_config_option('boost_rrd_update_max_records_per_select');
 
@@ -1430,7 +1438,13 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
 		$success = rrdtool_execute("create $data_source_path $create_ds$create_rra", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
 
 		if ($config['cacti_server_os'] != 'win32' && posix_getuid() == 0) {
-			shell_exec("chown $owner_id:$group_id $data_source_path");
+			if (!chown($data_source_path, (int) $owner_id)) {
+				cacti_log("WARNING: Unable to set owner for '" . $data_source_path . "'", false, 'BOOST');
+			}
+
+			if (!chgrp($data_source_path, (int) $group_id)) {
+				cacti_log("WARNING: Unable to set group for '" . $data_source_path . "'", false, 'BOOST');
+			}
 		}
 
 		return $success;
@@ -1535,16 +1549,19 @@ function boost_poller_bottom() {
 		}
 
 		$command_string = read_config_option('path_php_binary');
+		$safe_poller    = cacti_escapeshellarg($config['base_path'] . '/poller_boost.php');
+		$safe_log       = cacti_escapeshellarg($boost_log);
+
 		if ($boost_log != '') {
 			if ($config['cacti_server_os'] == 'unix') {
-				$extra_args    = '-q '  . $config['base_path'] . '/poller_boost.php --debug';
-				$redirect_args =  '>> ' . $boost_log . ' 2>&1';
+				$extra_args    = "-q $safe_poller --debug";
+				$redirect_args = ">> $safe_log 2>&1";
 			} else {
-				$extra_args    = '-q ' . $config['base_path'] . '/poller_boost.php --debug';
-				$redirect_args = '>> ' . $boost_log;
+				$extra_args    = "-q $safe_poller --debug";
+				$redirect_args = ">> $safe_log";
 			}
 		} else {
-			$extra_args = '-q ' . $config['base_path'] . '/poller_boost.php';
+			$extra_args = "-q $safe_poller";
 		}
 
 		exec_background($command_string, $extra_args, $redirect_args);

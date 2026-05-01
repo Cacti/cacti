@@ -354,8 +354,28 @@ function import_package_get_details($xmlfile) {
 	$filename = "compress.zlib://$xmlfile";
 
 	$return = array();
-	$data   = file_get_contents($filename, 'r');
+	$data = file_get_contents($filename, 'r');
+
+	/* SECURITY: Disable external entity loading to prevent XXE on PHP < 8.0 */
+	$disable_entities = false;
+	if (LIBXML_VERSION < 20900) {
+		$disable_entities = libxml_disable_entity_loader(true);
+	}
+
+	libxml_use_internal_errors(true);
 	$xmlget = simplexml_load_string($data);
+	libxml_use_internal_errors(false);
+
+	if (LIBXML_VERSION < 20900) {
+		libxml_disable_entity_loader($disable_entities);
+	}
+
+	if ($xmlget === false) {
+		cacti_log('FATAL: Unable to parse package XML structure.', true, 'IMPORT', POLLER_VERBOSITY_LOW);
+
+		return array();
+	}
+
 	$pkgarr = xml_to_array($xmlget);
 	$return = $pkgarr['info'];
 
@@ -448,8 +468,27 @@ function import_read_package_data($xmlfile, &$public_key) {
 
 	cacti_log('Loading Plugin Information from package', false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 
+	/* SECURITY: Disable external entity loading to prevent XXE on PHP < 8.0 */
+	$disable_entities = false;
+	if (LIBXML_VERSION < 20900) {
+		$disable_entities = libxml_disable_entity_loader(true);
+	}
+
+	libxml_use_internal_errors(true);
 	$xmlget = simplexml_load_string($xml);
-	$data   = xml_to_array($xmlget);
+	libxml_use_internal_errors(false);
+
+	if (LIBXML_VERSION < 20900) {
+		libxml_disable_entity_loader($disable_entities);
+	}
+
+	if ($xmlget === false) {
+		cacti_log('FATAL: Unable to parse XML structure.', true, 'IMPORT', POLLER_VERBOSITY_LOW);
+
+		return false;
+	}
+
+	$data = xml_to_array($xmlget);
 
 	if (cacti_sizeof($data)) {
 		return $data;
@@ -2131,6 +2170,16 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 					$save[$field_name] = str_replace('>""<', '>" "<', $save[$field_name]);
 					$save[$field_name] = str_replace('>\'\'<', '>\' \'<', $save[$field_name]);
 				}
+			}
+
+			/* Apply the same shell-metacharacter guard the GUI save path uses
+			 * so a hostile XML/package cannot persist a command-injection
+			 * payload that the UI would have rejected at data_input.php. */
+			if ($field_name == 'input_string' && !cacti_input_string_is_safe($save[$field_name])) {
+				cacti_log("ERROR: Refusing to import data input method '$hash' - input_string contains shell metacharacters", false, 'IMPORT');
+				$import_debug_info['type']     = 'fail';
+				$import_debug_info['unsafe']   = true;
+				return false;
 			}
 		}
 	}

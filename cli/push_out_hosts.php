@@ -38,8 +38,6 @@ array_shift($parms);
 
 $php_binary = read_config_option('path_php_binary');
 
-$parameters = implode(' ', $parms);
-
 cacti_log('WARNING: Deprecated script push_out_hosts.php. Please use rebuild_poller_cache.php.', false, 'PUSHOUT');
 
 if (in_array('-v', $parms) || in_array('-V', $parms) || in_array('--version', $parms)) {
@@ -48,5 +46,14 @@ if (in_array('-v', $parms) || in_array('-V', $parms) || in_array('--version', $p
 }
 else {
 	print 'WARNING: Deprecated script push_out_hosts.php. Please use rebuild_poller_cache.php.' . PHP_EOL;
-	passthru ($php_binary . ' ' . $config['base_path'] . '/cli/rebuild_poller_cache.php ' .$parameters);
+	$output = array();
+	$status = cacti_exec($php_binary, array_merge(array($config['base_path'] . '/cli/rebuild_poller_cache.php'), $parms), $output);
+
+	if (cacti_sizeof($output)) {
+		print implode(PHP_EOL, $output) . PHP_EOL;
+	}
+
+	if ($status !== 0) {
+		exit($status);
+	}
 }

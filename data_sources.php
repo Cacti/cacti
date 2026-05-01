@@ -532,7 +532,7 @@ function form_actions() {
 			print "</td>
 				</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Data Source', 'Delete Data Sources', cacti_sizeof($ds_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Data Source', 'Delete Data Sources', cacti_sizeof($ds_array)) . "'>";
 		} elseif (get_nfilter_request_var('drp_action') == '3') { // change host
 			print "<tr>
 				<td class='textArea'>
@@ -542,7 +542,7 @@ function form_actions() {
 				</td>
 			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Change Device') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Change Device') . "'>";
 		} elseif (get_nfilter_request_var('drp_action') == '6') { // data source enable
 			print "<tr>
 				<td class='textArea'>
@@ -551,7 +551,7 @@ function form_actions() {
 				</td>
 			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Enable Data Source', 'Enable Data Sources', cacti_sizeof($ds_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Enable Data Source', 'Enable Data Sources', cacti_sizeof($ds_array)) . "'>";
 		} elseif (get_nfilter_request_var('drp_action') == '7') { // data source disable
 			print "<tr>
 				<td class='textArea'>
@@ -560,7 +560,7 @@ function form_actions() {
 				</td>
 			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Disable Data Source', 'Disable Data Sources', cacti_sizeof($ds_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Disable Data Source', 'Disable Data Sources', cacti_sizeof($ds_array)) . "'>";
 		} elseif (get_nfilter_request_var('drp_action') == '8') { // reapply suggested data source naming
 			print "<tr>
 				<td class='textArea'>
@@ -569,13 +569,13 @@ function form_actions() {
 				</td>
 			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Reapply Suggested Naming to Data Source', 'Reapply Suggested Naming to Data Sources', cacti_sizeof($ds_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Reapply Suggested Naming to Data Source', 'Reapply Suggested Naming to Data Sources', cacti_sizeof($ds_array)) . "'>";
 		} else {
 			$save['drp_action'] = get_nfilter_request_var('drp_action');
 			$save['ds_list'] = $ds_list;
 			$save['ds_array'] = (isset($ds_array)? $ds_array : array());
 			api_plugin_hook_function('data_source_action_prepare', $save);
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "'>";
 		}
 	} else {
 		raise_message(40);
@@ -1306,7 +1306,7 @@ function ds() {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function applyFilter() {
 		strURL  = 'data_sources.php' +
 			'?host_id=' + $('#host_id').val() +
@@ -1327,15 +1327,19 @@ function ds() {
 	}
 
 	$(function() {
-		$('#refresh').click(function() {
+		$('#refresh').on('click', function() {
 			applyFilter()
 		});
 
-		$('#clear').click(function() {
+		$('#host_id, #site_id, #rows, #status, #profile, #orphans, #template_id').on('change', function() {
+			applyFilter();
+		});
+
+		$('#clear').on('click', function() {
 			clearFilter()
 		});
 
-		$('#form_data_sources').submit(function(event) {
+		$('#form_data_sources').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -1384,7 +1388,7 @@ function ds() {
 						<?php print __('Template');?>
 					</td>
 					<td>
-						<select id='template_id' name='template_id' onChange='applyFilter()'>
+						<select id='template_id' name='template_id'>
 							<option value='-1'<?php if (get_request_var('template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='0'<?php if (get_request_var('template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
@@ -1419,7 +1423,7 @@ function ds() {
 						<?php print __('Profile');?>
 					</td>
 					<td>
-						<select id='profile' name='profile' onChange='applyFilter()'>
+						<select id='profile' name='profile'>
 							<option value='-1'<?php print (get_request_var('profile') == '-1' ? ' selected>':'>') . __('All');?></option>
 							<?php
 							$profiles = array_rekey(db_fetch_assoc('SELECT id, name FROM data_source_profiles ORDER BY name'), 'id', 'name');
@@ -1436,7 +1440,7 @@ function ds() {
 						<?php print __('Status');?>
 					</td>
 					<td>
-						<select id='status' name='status' onChange='applyFilter()'>
+						<select id='status' name='status'>
 							<option value='-1'<?php if (get_request_var('status') == '-1') {?> selected<?php }?>><?php print __('All');?></option>
 							<option value='1'<?php if (get_request_var('status') == '1') {?> selected<?php }?>><?php print __('Enabled');?></option>
 							<option value='2'<?php if (get_request_var('status') == '2') {?> selected<?php }?>><?php print __('Disabled');?></option>
@@ -1445,7 +1449,7 @@ function ds() {
 					</td>
 					<td>
 						<span>
-							<input type='checkbox' id='orphans' onChange='applyFilter()' <?php print (get_request_var('orphans') == 'true' || get_request_var('orphans') == 'on' ? 'checked':'');?>>
+							<input type='checkbox' id='orphans' <?php print (get_request_var('orphans') == 'true' || get_request_var('orphans') == 'on' ? 'checked':'');?>>
    	                    	<label for='orphans' title='<?php print __esc('Note that this query may take some time to run.');?>'><?php print __('Orphaned');?></label>
 						</span>
 					</td>
@@ -1457,13 +1461,13 @@ function ds() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='55' value='<?php print html_escape_request_var('rfilter');?>' onChange='applyFilter()'>
+						<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='55' value='<?php print html_escape_request_var('rfilter');?>'>
 					</td>
 					<td>
 						<?php print __('Data Sources');?>
 					</td>
 					<td>
-						<select id='rows' name='rows' onChange='applyFilter()'>
+						<select id='rows' name='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows) > 0) {
@@ -1485,10 +1489,10 @@ function ds() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('rfilter') != '') {
-		$sql_where1 = "WHERE (dtd.name_cache RLIKE '" . get_request_var('rfilter') . "'" .
-			" OR dtd.local_data_id RLIKE '" . get_request_var('rfilter') . "'" .
-			" OR dt.name RLIKE '" . get_request_var('rfilter') . "'" .
-			" OR dl.id = '" . get_request_var('rfilter') . "')";
+		$sql_where1 = "WHERE (dtd.name_cache " . db_qstr_rlike(get_request_var('rfilter')) .
+			" OR dtd.local_data_id " . db_qstr_rlike(get_request_var('rfilter')) .
+			" OR dt.name " . db_qstr_rlike(get_request_var('rfilter')) .
+			" OR dl.id = " . (int) get_request_var('rfilter') . ")";
 	} else {
 		$sql_where1 = '';
 	}
@@ -1782,4 +1786,3 @@ function get_graphs_aggregates_url($local_data_id) {
 
 	return $url;
 }
-

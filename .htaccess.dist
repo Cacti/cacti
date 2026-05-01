@@ -1,0 +1,28 @@
+# +-------------------------------------------------------------------------+
+# | Copyright (C) 2004-2026 The Cacti Group                                 |
+# +-------------------------------------------------------------------------+
+# | Optional security-header overlay for Apache deployments.                |
+# |                                                                         |
+# | Rename to `.htaccess` if you want Apache to apply these headers to      |
+# | the PHP entry points AND to the static assets Cacti serves (images,    |
+# | JS, CSS, robots.txt). PHP responses already get the full header set    |
+# | via CactiSecureHeaders::emitHeaders(); this file covers the static     |
+# | files that never touch PHP.                                            |
+# |                                                                         |
+# | Distros that manage Apache config centrally should put the same        |
+# | directives in /etc/httpd/conf.d/cacti.conf instead of enabling this    |
+# | file.                                                                   |
+# +-------------------------------------------------------------------------+
+
+<IfModule mod_headers.c>
+	# Applied to every response (including static files).
+	Header always set X-Content-Type-Options "nosniff"
+	Header always set X-Frame-Options "SAMEORIGIN"
+	Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+	# Narrow CSP for static files. PHP responses overwrite this with the
+	# richer policy from CactiSecureHeaders.
+	<FilesMatch "\.(gif|jpg|jpeg|png|svg|webp|ico|css|js|woff|woff2|ttf|map|txt)$">
+		Header always set Content-Security-Policy "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'self';"
+	</FilesMatch>
+</IfModule>

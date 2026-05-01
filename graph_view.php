@@ -242,7 +242,7 @@ case 'tree':
 	top_graph_header();
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	minTreeWidth = <?php print read_user_setting('min_tree_width');?>;
 	maxTreeWidth = <?php print read_user_setting('max_tree_width');?>;
 	</script>
@@ -328,7 +328,7 @@ case 'tree_content':
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	var graph_start     = <?php print get_current_graph_start();?>;
 	var graph_end       = <?php print get_current_graph_end();?>;
@@ -467,7 +467,7 @@ case 'preview':
 	/* create filter for sql */
 	$sql_where  = '';
 	if (!isempty_request_var('rfilter')) {
-		$sql_where .= " gtg.title_cache RLIKE '" . get_request_var('rfilter') . "'";
+		$sql_where .= ' gtg.title_cache ' . db_qstr_rlike(get_request_var('rfilter'));
 	}
 
 	$sql_where .= ($sql_or != '' && $sql_where != '' ? ' AND ':'') . $sql_or;
@@ -660,8 +660,8 @@ case 'list':
 					<td>
 						<span>
 							<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>' onClick='clearFilter()'>
-							<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('View');?>' title='<?php print __esc('View Graphs');?>' onClick='viewGraphs()'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='view' value='<?php print __esc('View');?>' title='<?php print __esc('View Graphs');?>''>
 							<?php if (cacti_sizeof($reports)) {?>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='addreport' value='<?php print __esc('Report');?>' title='<?php print __esc('Add to a Report');?>'>
 							<?php } ?>
@@ -680,7 +680,7 @@ case 'list':
 						$loc_where = '';
 					}
 
-					html_location_filter(get_request_var('location'), 'applyFilter', $loc_where);
+					html_location_filter(get_request_var('location'), '', $loc_where);
 					?>
 					<td>
 						<?php print __('Template');?>
@@ -724,7 +724,7 @@ case 'list':
 						<?php print __('Graphs');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
@@ -750,7 +750,7 @@ case 'list':
 	/* create filter for sql */
 	$sql_where  = '';
 	if (!isempty_request_var('rfilter')) {
-		$sql_where .= " gtg.title_cache RLIKE '" . get_request_var('rfilter') . "'";
+		$sql_where .= ' gtg.title_cache ' . db_qstr_rlike(get_request_var('rfilter'));
 	}
 
 	if (!isempty_request_var('site_id') && get_request_var('site_id') > 0) {
@@ -908,12 +908,12 @@ case 'list':
 	<div class='break'></div>
 	<div class='cactiTable'>
 		<div style='float:left'><img src='images/arrow.gif' alt=''>&nbsp;</div>
-		<div style='float:right'><input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('View');?>' title='<?php print __esc('View Graphs');?>' onClick='viewGraphs()'></div>
+		<div style='float:right'><input type='button' class='ui-button ui-corner-all ui-widget' id='view' value='<?php print __esc('View');?>' title='<?php print __esc('View Graphs');?>'></div>
 	</div>
 	<?php print $report_text;?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	var refreshMSeconds=999999999;
-	var graph_list_array = new Array(<?php print get_request_var('graph_list');?>);
+	var graph_list_array = <?php print json_encode(array_values(array_filter(array_map('intval', explode(',', get_request_var('graph_list'))))));?>;
 
 	function clearFilter() {
 		strURL = 'graph_view.php?action=list&header=false&clear=1';
@@ -1070,16 +1070,23 @@ case 'list':
 
 		initializeChecks();
 
-		$('#addreport').click(function() {
+		$('#site_id, #rows, #location, #host_id').on('change', function() {
+			applyFilter();
+		});
+
+		$('#addreport').on('click', function() {
 			addReport();
 		});
 
-		<?php html_graph_template_multiselect('list');?>
-
-		$('#chk').unbind().on('submit', function(event) {
-			event.preventDefault();
-			applyFilter();
+		$('#clear').on('click', function() {
+			clearFilter();
 		});
+
+		$('#view').on('click', function() {
+			viewGraphs();
+		});
+
+		<?php html_graph_template_multiselect('list');?>
 	});
 	</script>
 	<?php

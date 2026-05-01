@@ -527,7 +527,7 @@ function report_audit_results($output = true) {
 									if ($output) {
 										if ($col != 'Key') {
 											if ($col == 'Extra' && $dbc[$dbcol] == '1' && $c[$col] == '') {
-												// Handle Timestmap on DEFAULT/ON UPDATE irregularities
+												// Handle Timestamp on DEFAULT/ON UPDATE irregularities
 												continue;
 											} else {
 												print PHP_EOL . 'ERROR Col: \'' . $c['Field'] . '\', Attribute \'' . $col . '\' invalid. Should be: \'' . $dbc[$dbcol] . '\', Is: \'' . $c[$col] . '\'';

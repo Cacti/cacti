@@ -159,7 +159,7 @@ function do_rrdcheck($thread_id = 1) {
 			$file = $rrdval['data_source_path'];
 
 			if ($use_proxy) {
-				$file_exists = rrdtool_execute("file_exists $file", true, RRDTOOL_OUTPUT_BOOLEAN, false, 'RRDCHECK');
+				$file_exists = rrdtool_execute('file_exists ' . cacti_escapeshellarg($file), true, RRDTOOL_OUTPUT_BOOLEAN, false, 'RRDCHECK');
 			} else {
 				clearstatcache();
 				$file_exists = file_exists($file);
@@ -210,9 +210,9 @@ function do_rrdcheck($thread_id = 1) {
 				}
 
 				if ($use_proxy) {
-					$output = rrdtool_execute("info $file", false, RRDTOOL_OUTPUT_STDOUT, false, 'RRDCHECK');
+					$output = rrdtool_execute('info ' . cacti_escapeshellarg($file), false, RRDTOOL_OUTPUT_STDOUT, false, 'RRDCHECK');
 				} else {
-					$output = rrdcheck_rrdtool_execute("info $file", $pipes);
+					$output = rrdcheck_rrdtool_execute(['info', $file], $pipes);
 				}
 
 				$matches     = array();
@@ -344,7 +344,7 @@ function do_rrdcheck($thread_id = 1) {
 						);
 					}
 
-					// Should never happend
+					// Should never happen
 					if (empty($dsname)) {
 						db_execute_prepared ('INSERT INTO rrdcheck
 							(local_data_id, test_date, message)
@@ -364,9 +364,9 @@ function do_rrdcheck($thread_id = 1) {
 				$one_hour_limit = ($duration - 3600) / $step;
 
 				if ($use_proxy) {
-					$info_array = rrdtool_execute("fetch $file LAST -s $pstart -e $pend ", false, RRDTOOL_OUTPUT_STDOUT, false, 'RRDCHECK');
+					$info_array = rrdtool_execute(['fetch', $file, 'LAST', '-s', $pstart, '-e', $pend], false, RRDTOOL_OUTPUT_STDOUT, false, 'RRDCHECK');
 				} else {
-					$info_array = rrdcheck_rrdtool_execute("fetch $file LAST -s $pstart -e $pend", $pipes);
+					$info_array = rrdcheck_rrdtool_execute(['fetch', $file, 'LAST', '-s', $pstart, '-e', $pend], $pipes);
 				}
 
 				/* don't do anything if RRDfile did not return data */
@@ -544,7 +544,7 @@ function do_rrdcheck($thread_id = 1) {
 
 /**
  * rrdcheck_log_statistics - provides generic timing message to both the Cacti log and the settings
- *   table so that the statistcs can be graphed as well.
+ *   table so that the statistics can be graphed as well.
  *
  * @param $type - (string) the type of statistics to log, either 'HOURLY', 'BOOST'.
  *
@@ -703,7 +703,7 @@ function rrdcheck_error_handler($errno, $errmsg, $filename, $linenum, $vars = []
 }
 
 /**
- * rrdcheck_boost_bottom - this routine accomodates rrdcheck after the boost process
+ * rrdcheck_boost_bottom - this routine accommodates rrdcheck after the boost process
  *   has completed.  The use of boost will require boost version 2.5 or above.  The idea
  *   if that rrdcheck will be started on the boost cycle.
  *
@@ -751,9 +751,9 @@ function rrdcheck_poller_bottom () {
 
 		if (read_config_option('path_rrdcheck_log') != '') {
 			if ($config['cacti_server_os'] == 'unix') {
-				$extra_args = '-q ' . $config['base_path'] . '/poller_rrdcheck.php >> ' . read_config_option('path_rrdcheck_log') . ' 2>&1';
+				$extra_args = '-q ' . $config['base_path'] . '/poller_rrdcheck.php >> ' . cacti_escapeshellarg(read_config_option('path_rrdcheck_log')) . ' 2>&1';
 			} else {
-				$extra_args = '-q ' . $config['base_path'] . '/poller_rrdcheck.php >> ' . read_config_option('path_rrdcheck_log');
+				$extra_args = '-q ' . $config['base_path'] . '/poller_rrdcheck.php >> ' . cacti_escapeshellarg(read_config_option('path_rrdcheck_log'));
 			}
 		} else {
 			$extra_args = '-q ' . $config['base_path'] . '/poller_rrdcheck.php';
@@ -807,7 +807,7 @@ function rrdcheck_rrdtool_init() {
 /**
  * rrdcheck_rrdtool_execute - this routine passes commands to RRDtool and returns the information
  *   back to rrdcheck.  It is important to note here that RRDtool needs to provide an either 'OK'
- *   or 'ERROR' response accross the pipe as it does not provide EOF characters to key upon.
+ *   or 'ERROR' response across the pipe as it does not provide EOF characters to key upon.
  *   This may not be the best method and may be changed after I have a conversation with a few
  *   developers.
  *
@@ -818,6 +818,26 @@ function rrdcheck_rrdtool_init() {
  */
 function rrdcheck_rrdtool_execute($command, &$pipes) {
 	static $broken = false;
+
+	if (is_array($command)) {
+		if (cacti_sizeof($command)) {
+			$command_line = array_shift($command);
+
+			if (cacti_sizeof($command)) {
+				$escaped_args = array();
+
+				foreach($command as $arg) {
+					$escaped_args[] = cacti_escapeshellarg($arg);
+				}
+
+				$command_line .= ' ' . implode(' ', $escaped_args);
+			}
+
+			$command = $command_line;
+		} else {
+			$command = '';
+		}
+	}
 
 	$stdout = '';
 
@@ -974,4 +994,3 @@ function rrdcheck_processes_running($type) {
 
 	return $running;
 }
-

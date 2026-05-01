@@ -106,7 +106,7 @@ function manager() {
 	}
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function applyFilter() {
 		strURL  = 'managers.php';
 		strURL += '?filter=' + $('#filter').val();
@@ -121,15 +121,19 @@ function manager() {
 	}
 
 	$(function() {
-		$('#refresh').click(function() {
+		$('#refresh').on('click', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#rows').on('change', function() {
+			applyFilter();
+		});
+
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#form_snmpagent_managers').submit(function(event) {
+		$('#form_snmpagent_managers').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -149,13 +153,13 @@ function manager() {
 							<?php print __('Search'); ?>
 						</td>
 						<td>
-							<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>' onChange='applyFilter()'>
+							<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 						</td>
 						<td>
 							<?php print __('Receivers'); ?>
 						</td>
 						<td>
-							<select id='rows' onChange='applyFilter()'>
+							<select id='rows'>
 								<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 								<?php
 								if (cacti_sizeof($item_rows)) {
@@ -238,7 +242,7 @@ function manager() {
 			$description = filter_value($item['description'], get_request_var('filter'));
 			$hostname    = filter_value($item['hostname'], get_request_var('filter'));
 			form_alternate_row('line' . $item['id'], false);
-			form_selectable_cell('<a class="linkEditMain" href="' . html_escape($config['url_path'] . 'managers.php?action=edit&id=' . $item['id']) . '">' . html_escape($description) . '</a>', $item['id']);
+			form_selectable_cell('<a class="linkEditMain" href="' . html_escape($config['url_path'] . 'managers.php?action=edit&id=' . $item['id']) . '">' . $description . '</a>', $item['id']);
 			form_selectable_cell($item['id'], $item['id']);
 			form_selectable_cell($item['disabled'] ? '<span class="deviceDown">' . __('Disabled') . '</span>' : '<span class="deviceUp">' . __('Enabled') . '</span>', $item['id']);
 			form_selectable_ecell($hostname, $item['id']);
@@ -307,10 +311,10 @@ function manager_edit() {
 		print '</ul></nav></div>';
 
 		if (read_config_option('legacy_menu_nav') != 'on') { ?>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 		$(function() {
-			$('.subTab').find('a').click(function(event) {
+			$('.subTab').find('a').on('click', function(event) {
 				event.preventDefault();
 
 				strURL  = $(this).attr('href');
@@ -348,7 +352,7 @@ function manager_edit() {
 			form_save_button('managers.php', 'return');
 
 			?>
-			<script type='text/javascript'>
+			<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 			// Need to set this for global snmpv3 functions to remain sane between edits
 			snmp_security_initialized = false;
@@ -361,7 +365,7 @@ function manager_edit() {
 	}
 
 	?>
-	<script language='javascript' type='text/javascript' >
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
 		$('.tooltip').tooltip({
 			track: true,
@@ -438,7 +442,7 @@ function manager_notifications($id, $header_label) {
 	html_start_box($header_label, '100%', '', '3', 'center', '');
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL  = 'managers.php?action=edit&tab=notifications&id=<?php print $id; ?>';
@@ -456,15 +460,19 @@ function manager_notifications($id, $header_label) {
 	}
 
 	$(function() {
-		$('#refresh').click(function() {
+		$('#refresh').on('click', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#mib, #rows').on('change', function() {
+			applyFilter();
+		});
+
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#form_snmpagent_managers').submit(function(event) {
+		$('#form_snmpagent_managers').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -480,7 +488,7 @@ function manager_notifications($id, $header_label) {
 							<?php print __('MIB');?>
 						</td>
 						<td>
-							<select id='mib' name='mib' onChange='applyFilter()'>
+							<select id='mib' name='mib'>
 								<option value='-1'<?php if (get_request_var('mib') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 								<?php
 								if (cacti_sizeof($mibs)) {
@@ -495,13 +503,13 @@ function manager_notifications($id, $header_label) {
 							<?php print __('Search');?>
 						</td>
 						<td>
-							<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>' onChange='applyFilter()'>
+							<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 						</td>
 						<td>
 							<?php print __('Receivers');?>
 						</td>
 						<td>
-							<select id='rows' name='rows' onChange='applyFilter()'>
+							<select id='rows' name='rows'>
 								<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 								<?php
 								if (cacti_sizeof($item_rows)) {
@@ -588,7 +596,7 @@ function manager_notifications($id, $header_label) {
 			form_alternate_row('line' . $row_id, false);
 
 			if ($item['description']) {
-				print '<td><a href="#" title="<div class=\'header\'>' . $name . '</div><div class=\'content preformatted\'>' . $item['description']. '</div>" class="tooltip">' . $name . '</a></td>';
+				print '<td><a href="#" title="<div class=\'header\'>' . html_escape($item['name']) . '</div><div class=\'content preformatted\'>' . html_escape($item['description']) . '</div>" class="tooltip">' . html_escape($item['name']) . '</a></td>';
 			} else {
 				form_selectable_cell($name, $row_id);
 			}
@@ -685,7 +693,7 @@ function manager_logs($id, $header_label) {
 	html_start_box($header_label, '100%', '', '3', 'center', '');
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter(objForm) {
 		strURL  = '?header=false&severity=' + $('#severity').val();
@@ -717,6 +725,16 @@ function manager_logs($id, $header_label) {
 		}
 	}
 
+	$(function() {
+		$('#severity').on('change', function() {
+			applyFilter();
+		});
+
+		$('#form_snmpagent_manager_logs').on('submit', function() {
+			applyFilter();
+		});
+	});
+
 	</script>
 	<tr class='even'>
 		<td>
@@ -733,7 +751,7 @@ function manager_logs($id, $header_label) {
 							<?php print __('Severity');?>
 						</td>
 						<td>
-							<select id='severity' onChange='applyFilter()'>
+							<select id='severity'>
 								<option value='-1'<?php if (get_request_var('severity') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 								<?php
 								foreach ($severity_levels as $level => $name) {
@@ -744,7 +762,7 @@ function manager_logs($id, $header_label) {
 						</td>
 						<td>
 							<span>
-								<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+								<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 								<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 								<input type='button' class='ui-button ui-corner-all ui-widget' id='purge' value='<?php print __esc('Purge');?>' title='<?php print __esc('Purge Notification Log');?>'>
 							</span>
@@ -817,15 +835,19 @@ function manager_logs($id, $header_label) {
 
 			if ($item['description']) {
 				$description = '';
-				$lines = preg_split( '/\r\n|\r|\n/', $item['description']);
-				foreach($lines as $line) {
+				$lines = preg_split('/\r\n|\r|\n/', $item['description']);
+
+				foreach ($lines as $line) {
 					$description .= html_escape(trim($line)) . '<br>';
 				}
-				print '<td><a href="#" onMouseOut="hideTooltip(snmpagentTooltip)" onMouseMove="showTooltip(event, snmpagentTooltip, \'' . $item['notification'] . '\', \'' . $description . '\')">' . $item['notification'] . '</a></td>';
+
+				print '<td><a href="#" onMouseOut="hideTooltip(snmpagentTooltip)" onMouseMove="showTooltip(event, snmpagentTooltip, \'' . html_escape($item['notification']) . '\', \'' . $description . '\')">' . html_escape($item['notification']) . '</a></td>';
 			} else {
-				print "<td>{$item['notification']}</td>";
+				print '<td>' . html_escape($item['notification']) . '</td>';
 			}
+
 			print "<td>$varbinds</td>";
+
 			form_end_row();
 		}
 	} else {
@@ -845,7 +867,9 @@ function manager_logs($id, $header_label) {
 }
 
 function form_save() {
-	if (!isset_request_var('tab')) set_request_var('tab', 'general');
+	if (!isset_request_var('tab')) {
+		set_request_var('tab', 'general');
+	}
 
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -915,27 +939,28 @@ function form_actions() {
 
 	if (isset_request_var('selected_items')) {
 		if (isset_request_var('action_receivers')) {
-			$selected_items = cacti_unserialize(stripslashes(get_nfilter_request_var('selected_graphs_array')));
+			$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
-			if ($selected_items !== false) {
-				/* validate the selected items are ids */
-				foreach($selected_items as $index => $id) {
-					input_validate_input_number($id);
-				}
+			if (is_array($selected_items) && count($selected_items) > 0) {
+				$selected_items = array_values(array_filter(array_map('intval', $selected_items)));
+			}
+
+			if (is_array($selected_items) && count($selected_items) > 0) {
+				$ids = implode(',', $selected_items);
 
 				if (get_nfilter_request_var('drp_action') == '1') { // delete
-					db_execute('DELETE FROM snmpagent_managers WHERE id IN (' . implode(',' ,$selected_items) . ')');
-					db_execute('DELETE FROM snmpagent_managers_notifications WHERE manager_id IN (' . implode(',' ,$selected_items) . ')');
-					db_execute('DELETE FROM snmpagent_notifications_log WHERE manager_id IN (' . implode(',' ,$selected_items) . ')');
+					db_execute('DELETE FROM snmpagent_managers WHERE id IN (' . $ids . ')');
+					db_execute('DELETE FROM snmpagent_managers_notifications WHERE manager_id IN (' . $ids . ')');
+					db_execute('DELETE FROM snmpagent_notifications_log WHERE manager_id IN (' . $ids . ')');
 				} elseif (get_nfilter_request_var('drp_action') == '2') { // enable
-					db_execute("UPDATE snmpagent_managers SET disabled = '' WHERE id IN (" . implode(',' ,$selected_items) . ')');
+					db_execute("UPDATE snmpagent_managers SET disabled = '' WHERE id IN (" . $ids . ')');
 				} elseif (get_nfilter_request_var('drp_action') == '3') { // disable
-					db_execute("UPDATE snmpagent_managers SET disabled = 'on' WHERE id IN (" . implode(',' ,$selected_items) . ')');
+					db_execute("UPDATE snmpagent_managers SET disabled = 'on' WHERE id IN (" . $ids . ')');
 				}
-
-				header('Location: managers.php?header=false');
-				exit;
 			}
+			header('Location: managers.php');
+
+			exit;
 		} elseif (isset_request_var('action_receiver_notifications')) {
 			/* ================= input validation ================= */
 			get_filter_request_var('id');
@@ -943,7 +968,7 @@ function form_actions() {
 
 			$selected_items = cacti_unserialize(stripslashes(get_nfilter_request_var('selected_items')));
 
-			if ($selected_items !== false) {
+			if (is_array($selected_items)) {
 				if (get_nfilter_request_var('drp_action') == '1') { // disable
 					foreach($selected_items as $mib => $notifications) {
 						foreach($notifications as $notification => $state) {
@@ -1008,7 +1033,7 @@ function form_actions() {
 					</td>
 				</tr>";
 
-				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'><input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('%s Notification Receivers', $manager_actions[get_nfilter_request_var('drp_action')]) . "'>";
+				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'><input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('%s Notification Receivers', $manager_actions[get_nfilter_request_var('drp_action')]) . "'>";
 			} else {
 				raise_message(40);
 				header('Location: managers.php?header=false');
@@ -1023,7 +1048,7 @@ function form_actions() {
 				<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
 				$save_html
 				</td>
-			</tr>\n";
+			</tr>";
 
 			html_end_box();
 
@@ -1069,10 +1094,10 @@ function form_actions() {
 					</td>
 				</tr>";
 
-				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Disable Notification Objects') . "'>";
+				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Disable Notification Objects') . "'>";
 			} else {
-				print "<tr><td><span class='textError'>" . __('You must select at least one notification object.') . "</span></td></tr>\n";
-				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+				print "<tr><td><span class='textError'>" . __('You must select at least one notification object.') . "</span></td></tr>";
+				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Return') . "'>";
 			}
 
 			print "<tr>
@@ -1094,4 +1119,3 @@ function form_actions() {
 		}
 	}
 }
-

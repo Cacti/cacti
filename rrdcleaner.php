@@ -477,6 +477,10 @@ function do_rrd() {
 				FROM data_source_purge_temp
 				WHERE id = ?', array($matches[1]));
 
+			if (!cacti_sizeof($unused_file)) {
+				continue;
+			}
+
 			/* add to data_source_purge_action table */
 			$sql = "INSERT INTO data_source_purge_action
 				(name, local_data_id, action)
@@ -513,7 +517,7 @@ function filter() {
 						<?php print __('Time Since Update');?>
 					</td>
 					<td>
-						<select id='age' onChange='refreshForm()'>
+						<select id='age'>
 							<option value='0'   <?php print (get_request_var('age') == '0'   ? ' selected':'');?>>&lt; <?php print __('%d Week', 1);?></option>
 							<option value='604800'   <?php print (get_request_var('age') == '604800'   ? ' selected':'');?>>&gt; <?php print __('%d Week', 1);?></option>
 							<option value='1209600'  <?php print (get_request_var('age') == '1209600'  ? ' selected':'');?>>&gt; <?php print __('%d Weeks',2);?></option>
@@ -557,7 +561,7 @@ function filter() {
 				</tr>
 			</table>
 			</form>
-			<script type="text/javascript">
+			<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 			function refreshForm() {
 				strURL = 'rrdcleaner.php?header=false'+
 					'&filter='+$('#filter').val()+
@@ -567,21 +571,21 @@ function filter() {
 			}
 
 			$(function() {
-				$('#form_rrdclean').submit(function() {
+				$('#form_rrdclean').on('submit', function() {
 					refreshForm();
 					return false;
 				});
 
-				$('#rows').change(function() {
+				$('#rows, #age').on('change', function() {
 					refreshForm();
 				});
 
-				$('#clear').click(function() {
+				$('#clear').on('click', function() {
 					strURL = 'rrdcleaner.php?header=false&clear=1';
 					loadPageNoHeader(strURL);
 				});
 
-				$('#rescan').click(function() {
+				$('#rescan').on('click', function() {
 					$('#text').text('Rebuilding RRDfile Listing');
 					pulsate('#text');
 					$.get('rrdcleaner.php?header=false&rescan=1&clear=1')
@@ -597,7 +601,7 @@ function filter() {
 						});
 				});
 
-				$('#arcall').click(function() {
+				$('#arcall').on('click', function() {
 					$('#text').text('Scheduling Archiving of All Unknowns');
 					pulsate('#text');
 					$.get('rrdcleaner.php?header=false&action=arcall&raction=3&clear=1')
@@ -613,7 +617,7 @@ function filter() {
 						});
 				});
 
-				$('#remall').click(function() {
+				$('#remall').on('click', function() {
 					$('#text').text('Scheduling Purging of All Unknowns');
 					pulsate('#text');
 					$.get('rrdcleaner.php?header=false&action=remall&raction=1&clear=1')

@@ -94,6 +94,15 @@ function form_save() {
 		$save['input_string'] = form_input_validate(get_nfilter_request_var('input_string'), 'input_string', '', true, 3);
 		$save['type_id']      = form_input_validate(get_nfilter_request_var('type_id'), 'type_id', '^[0-9]+$', true, 3);
 
+		// Reject shell metacharacters outside of <placeholder> markers to prevent command injection
+		if (!is_error_message()) {
+			if (!cacti_input_string_is_safe($save['input_string'])) {
+				raise_message('validation_error', __('Input string contains dangerous shell characters'), MESSAGE_LEVEL_ERROR);
+				header('Location: data_input.php?action=edit&id=' . (empty($save['id']) ? '' : $save['id']));
+				exit;
+			}
+		}
+
 		if (!is_error_message()) {
 			$data_input_id = sql_save($save, 'data_input');
 
@@ -257,7 +266,7 @@ function form_actions() {
 			</tr>\n";
 		}
 
-		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Data Input Method', 'Delete Data Input Methods', cacti_sizeof($di_array)) . "'>";
+		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Data Input Method', 'Delete Data Input Methods', cacti_sizeof($di_array)) . "'>";
 	} else {
 		raise_message(40);
 		header('Location: data_input.php?header=none');
@@ -320,9 +329,9 @@ function field_remove_confirm() {
 	form_end();
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
-		$('#continue').unbind('click').click(function(data) {
+		$('#continue').on('click', function(data) {
 			$.post('data_input.php?action=field_remove', {
 				__csrf_magic: csrfMagicToken,
 				data_input_id: <?php print get_request_var('data_input_id');?>,
@@ -664,13 +673,13 @@ function data_edit() {
 	form_save_button('data_input.php', 'return');
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	$(function() {
 		$('.cdialog').remove();
 		$('#main').append("<div id='cdialog' class='cdialog'></div>");
 
-		$('.delete').unbind().click(function (event) {
+		$('.delete').on('click', function (event) {
 			event.preventDefault();
 
 			request = $(this).attr('href');
@@ -756,7 +765,7 @@ function data() {
 						<?php print __('Input Methods');?>
 					</td>
 					<td>
-						<select id='rows' name='rows' onChange='applyFilter()'>
+						<select id='rows' name='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows) > 0) {
@@ -776,7 +785,7 @@ function data() {
 				</tr>
 			</table>
 		</form>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 		function applyFilter() {
 			strURL  = 'data_input.php?header=false';
@@ -791,15 +800,19 @@ function data() {
 		}
 
 		$(function() {
-			$('#refresh').click(function() {
+			$('#refresh').on('click', function() {
 				applyFilter();
 			});
 
-			$('#clear').click(function() {
+			$('#rows').on('change', function() {
+				applyFilter();
+			});
+
+			$('#clear').on('click', function() {
 				clearFilter();
 			});
 
-			$('#form_data_input').submit(function(event) {
+			$('#form_data_input').on('submit', function(event) {
 				event.preventDefault();
 				applyFilter();
 			});

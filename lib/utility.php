@@ -27,11 +27,17 @@
    @arg $poller_id - the id of the poller impacted by hash update
    @arg $variable  - the variable name to store in the settings table */
 function update_replication_crc($poller_id, $variable) {
-	$hash = hash('ripemd160', date('Y-m-d H:i:s') . rand() . $poller_id);
+	try {
+		$entropy = bin2hex(random_bytes(16));
+	} catch (Exception $e) {
+		$entropy = md5(uniqid('', true) . mt_rand());
+	}
 
-	db_execute_prepared("REPLACE INTO settings
-		SET value = ?, name='$variable" . ($poller_id > 0 ? "_" . "$poller_id'":"'"),
-		array($hash));
+	$hash         = hash('ripemd160', date('Y-m-d H:i:s') . $entropy . $poller_id);
+	$setting_name = $variable . ($poller_id > 0 ? '_' . $poller_id : '');
+
+	db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)',
+		array($setting_name, $hash));
 }
 
 function repopulate_poller_cache() {
@@ -121,11 +127,14 @@ function update_poller_cache_from_query($host_id, $data_query_id, $local_data_id
 
 	include_once($config['library_path'] . '/api_data_source.php');
 
+	/* SECURITY: Cast all elements to integers to prevent SQL Injection */
+	$safe_ids = array_map('intval', $local_data_ids);
+
 	$poller_data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' *
 		FROM data_local
 		WHERE host_id = ?
 		AND snmp_query_id = ?
-		AND id IN(' . implode(', ', $local_data_ids) . ')
+		AND id IN(' . implode(', ', $safe_ids) . ')
 		AND snmp_index != ""',
 		array($host_id, $data_query_id));
 
@@ -614,7 +623,9 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 
 	/* set all fields present value to 0, to mark the outliers when we are all done */
 	if (cacti_sizeof($local_data_ids)) {
-		$ids = implode(', ', $local_data_ids);
+		/* SECURITY: Cast all elements to integers to prevent SQL Injection */
+		$safe_ids = array_map('intval', $local_data_ids);
+		$ids      = implode(', ', $safe_ids);
 
 		if ($ids != '') {
 			db_execute_prepared("UPDATE poller_item
@@ -914,7 +925,9 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 								array($template_field['id'], $data_source['id']));
 
 							if (isset($old_value['value']) && $old_data['value'] != $host[$field]) {
-								cacti_log("WARNING: Poller Cache updated Device[{$host['id']}], Field[$field], Old[{$old_data['value']}], New[{$host[$field]}]", false, 'PCACHE', POLLER_VERBOSITY_MEDIUM);
+								$old_log = cacti_redact_value($field, $old_data['value']);
+								$new_log = cacti_redact_value($field, $host[$field]);
+								cacti_log("WARNING: Poller Cache updated Device[{$host['id']}], Field[$field], Old[$old_log], New[$new_log]", false, 'PCACHE', POLLER_VERBOSITY_MEDIUM);
 							}
 
 							db_execute_prepared('REPLACE INTO data_input_data
@@ -1242,7 +1255,7 @@ function utilities_get_mysql_recommendations() {
 			'value'   => 'ON',
 			'measure' => 'equalint',
 			'class' => 'error',
-			'comment' => __('This settings should remain ON unless your Cacti instances is running on either ZFS or FusionI/O which both have internal journaling to accomodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance.')
+			'comment' => __('This settings should remain ON unless your Cacti instances is running on either ZFS or FusionI/O which both have internal journaling to accommodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance.')
 			),
 		'innodb_additional_mem_pool_size' => array(
 			'value'   => '80M',
@@ -1641,11 +1654,11 @@ function utilities_get_mysql_recommendations() {
 
 				form_alternate_row();
 
-				print "<td>" . $name . "</td>";
-				print "<td class='right $class'>$value_display</td>";
-				print "<td class='center'>$compare</td>";
-				print "<td>$value_recommend</td>";
-				print "<td class='$class'>" . $r['comment'] . "</td>";
+				print '<td>' . html_escape($name) . '</td>';
+				print "<td class='right $class'>" . html_escape($value_display) . '</td>';
+				print "<td class='center'>" . html_escape($compare) . '</td>';
+				print '<td>' . html_escape($value_recommend) . '</td>';
+				print "<td class='$class'>" . html_escape($r['comment']) . '</td>';
 
 				form_end_row();
 			}
@@ -1798,9 +1811,18 @@ function utility_php_sort_extensions($a, $b) {
 function utility_php_extensions() {
 	global $config;
 
-	$php = cacti_escapeshellcmd(read_config_option('path_php_binary', true));
+	$php_binary = read_config_option('path_php_binary', true);
+
+	/* SECURITY: Validate the binary path prevents RCE if the database is compromised */
+	if (empty($php_binary) || !is_executable($php_binary) || !preg_match('/^php[0-9.]*(?:-cgi|-fpm)?(?:\.exe)?$/i', basename($php_binary))) {
+		cacti_log('ERROR: Invalid or non-executable PHP binary path configured: ' . $php_binary, false, 'SYSTEM');
+
+		return array();
+	}
+
+	$php      = cacti_escapeshellcmd($php_binary);
 	$php_file = cacti_escapeshellarg($config['base_path'] . '/install/cli_check.php') . ' extensions';
-	$json = shell_exec($php . ' -q ' . $php_file);
+	$json     = shell_exec($php . ' -q ' . $php_file);
 	$ext = @json_decode($json, true);
 
 	utility_php_verify_extensions($ext, 'web');
@@ -1857,9 +1879,18 @@ function utility_php_verify_extensions(&$extensions, $source) {
 function utility_php_recommends() {
 	global $config;
 
-	$php = cacti_escapeshellcmd(read_config_option('path_php_binary', true));
+	$php_binary = read_config_option('path_php_binary', true);
+
+	/* SECURITY: Validate the binary path prevents RCE if the database is compromised */
+	if (empty($php_binary) || !is_executable($php_binary) || !preg_match('/^php[0-9.]*(?:-cgi|-fpm)?(?:\.exe)?$/i', basename($php_binary))) {
+		cacti_log('ERROR: Invalid or non-executable PHP binary path configured: ' . $php_binary, false, 'SYSTEM');
+
+		return array();
+	}
+
+	$php      = cacti_escapeshellcmd($php_binary);
 	$php_file = cacti_escapeshellarg($config['base_path'] . '/install/cli_check.php') . ' recommends';
-	$json = shell_exec($php . ' -q ' . $php_file);
+	$json     = shell_exec($php . ' -q ' . $php_file);
 	$ext = array('web' => '', 'cli' => '');
 	$ext['cli'] = @json_decode($json, true);
 
@@ -1980,9 +2011,18 @@ function utility_php_set_recommends_text(&$recs) {
 function utility_php_optionals() {
 	global $config;
 
-	$php = cacti_escapeshellcmd(read_config_option('path_php_binary', true));
+	$php_binary = read_config_option('path_php_binary', true);
+
+	/* SECURITY: Validate the binary path prevents RCE if the database is compromised */
+	if (empty($php_binary) || !is_executable($php_binary) || !preg_match('/^php[0-9.]*(?:-cgi|-fpm)?(?:\.exe)?$/i', basename($php_binary))) {
+		cacti_log('ERROR: Invalid or non-executable PHP binary path configured: ' . $php_binary, false, 'SYSTEM');
+
+		return array();
+	}
+
+	$php      = cacti_escapeshellcmd($php_binary);
 	$php_file = cacti_escapeshellarg($config['base_path'] . '/install/cli_check.php') . ' optionals';
-	$json = shell_exec($php . ' -q ' . $php_file);
+	$json     = shell_exec($php . ' -q ' . $php_file);
 	$opt = @json_decode($json, true);
 
 	utility_php_verify_optionals($opt, 'web');

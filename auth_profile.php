@@ -266,19 +266,15 @@ function settings() {
 		return;
 	}
 
-	if (isset($_SERVER['HTTP_REFERER'])) {
-		$referer = $_SERVER['HTTP_REFERER'];
+	$referer = validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '', 'graph_view.php');
 
-		if (strpos($referer, 'auth_profile.php') === false) {
-			$timespan_sel_pos = strpos($referer, '&predefined_timespan');
-			if ($timespan_sel_pos) {
-				$referer = substr($referer, 0, $timespan_sel_pos);
-			}
-
-			$_SESSION['profile_referer'] = $referer;
+	if (strpos($referer, 'auth_profile.php') === false) {
+		$timespan_sel_pos = strpos($referer, '&predefined_timespan');
+		if ($timespan_sel_pos) {
+			$referer = substr($referer, 0, $timespan_sel_pos);
 		}
-	} elseif (!isset($_SESSION['profile_referer'])) {
-		$_SESSION['profile_referer'] = 'graph_view.php';
+
+		$_SESSION['profile_referer'] = $referer;
 	}
 
 	form_start('auth_profile.php', 'chk');
@@ -453,10 +449,10 @@ function settings_javascript() {
 	global $config;
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	var themeFonts   = <?php print read_config_option('font_method');?>;
-	var currentTab   = '<?php print get_nfilter_request_var('tab');?>';
+	var currentTab   = <?php print json_encode((string) get_nfilter_request_var('tab'));?>;
 	var currentTheme = '<?php print get_selected_theme();?>';
 	var currentLang  = '<?php print read_config_option('user_language');?>';
 	var authMethod   = '<?php print read_config_option('auth_method');?>';
@@ -561,7 +557,7 @@ function settings_javascript() {
 		$('#navigation, #navigation_right').show();
 		$('#tabs').find('li a.selected').removeClass('selected');
 
-		$('input[value="<?php print __esc('Save');?>"]').unbind().click(function(event) {
+		$('input[value="<?php print __esc('Save');?>"]').on('click', function(event) {
 			event.preventDefault();
 			$.post('auth_profile.php?header=false', $('input, select, textarea').serialize()).done(function(data) {
 				loadPageNoHeader('auth_profile.php?action=noreturn&header=false');
@@ -613,7 +609,7 @@ function settings_javascript() {
 			}
 		});
 
-		$('select, input[type!="button"]').unbind().keyup(function() {
+		$('select, input[type!="button"]').on('keyup', function() {
 			name  = $(this).attr('id');
 			if ($(this).attr('type') == 'checkbox') {
 				if ($(this).is(':checked')) {
@@ -630,7 +626,7 @@ function settings_javascript() {
 				name: name,
 				value: value
 			});
-		}).change(function() {
+		}).on('change', function() {
 			name  = $(this).attr('id');
 			if ($(this).attr('type') == 'checkbox') {
 				if ($(this).is(':checked')) {
@@ -653,8 +649,8 @@ function settings_javascript() {
 			});
 		});
 
-		$('#return').click(function() {
-			document.location = '<?php print $_SESSION['profile_referer'];?>';
+		$('#return').on('click', function() {
+			document.location = <?php print json_encode($_SESSION['profile_referer'] ?? '');?>;
 		});
 
 		// set the buttons active

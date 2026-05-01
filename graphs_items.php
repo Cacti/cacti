@@ -533,10 +533,10 @@ function item_edit() {
 	form_save_button('graphs.php?action=graph_edit&id=' . get_request_var('local_graph_id'));
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	$(function() {
-		$('#shift').click(function(data) {
+		$('#shift').on('click', function(data) {
 			if ($('#shift').is(':checked')) {
 				$('#row_value').show();
 			} else {
@@ -555,12 +555,12 @@ function item_edit() {
 				}
 			});
 		} else {
-			$('#cdef_id').click(function() {
+			$('#cdef_id').on('click', function() {
 				cdefAlignment();
 			});
 		}
 
-		$('#graph_type_id').change(function(data) {
+		$('#graph_type_id').on('change', function(data) {
 			setRowVisibility();
 		});
 	});

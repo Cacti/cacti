@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+         cacheResultFile=".phpunit.result.cache">
+    <testsuites>
+        <testsuite name="Unit">
+            <directory>Unit</directory>
+        </testsuite>
+        <testsuite name="Integration">
+            <directory>integration</directory>
+        </testsuite>
+        <testsuite name="HandOff">
+            <directory>HandOff</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

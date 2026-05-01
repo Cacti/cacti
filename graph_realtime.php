@@ -210,18 +210,20 @@ case 'countdown':
 	$graph_data_array['image_format'] = $gtype;
 
 	/* call poller */
-	$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . $hash . '_lgi_' . get_request_var('local_graph_id') . '.png';
-	$command   = read_config_option('path_php_binary');
-	$args      = sprintf('poller_realtime.php --graph=%s --interval=%d --poller_id=' . $hash, get_request_var('local_graph_id'), $graph_data_array['ds_step']);
+	$local_graph_id = get_filter_request_var('local_graph_id');
+	$graph_rrd      = read_config_option('realtime_cache_path') . '/user_' . $hash . '_lgi_' . $local_graph_id . '.png';
+	$php_binary     = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+	$script_path    = cacti_escapeshellarg($config['base_path'] . '/poller_realtime.php');
+	$args           = '--graph=' . $local_graph_id . ' --interval=' . $graph_data_array['ds_step'] . ' --poller_id=' . $hash;
 
-	shell_exec("$command $args");
+	shell_exec($php_binary . ' -q ' . $script_path . ' ' . $args);
 
 	/* construct the image name  */
 	$graph_data_array['export_realtime'] = $graph_rrd;
 	$graph_data_array['output_flag']     = RRDTOOL_OUTPUT_GRAPH_DATA;
 	$null_param = array();
 
-	$output = rrdtool_function_graph(get_request_var('local_graph_id'), '', $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
+	$output = rrdtool_function_graph($local_graph_id, '', $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
 
 	$error = '';
 	if (file_exists($graph_rrd)) {
@@ -235,7 +237,7 @@ case 'countdown':
 	if (empty($output) && empty($error)) {
 		$graph_data_array['get_error'] = true;
 		$null_param = array();
-		rrdtool_function_graph(get_request_var('local_graph_id'), '', $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
+		rrdtool_function_graph($local_graph_id, '', $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
 
 		$error = ob_get_contents();
 
@@ -278,7 +280,7 @@ case 'countdown':
 
 	/* send text information back to browser as well as image information */
 	$return_array = array(
-		'local_graph_id' => get_request_var('local_graph_id'),
+		'local_graph_id' => $local_graph_id,
 		'top'            => get_request_var('top'),
 		'left'           => get_request_var('left'),
 		'ds_step'        => html_escape(isset($_SESSION['sess_realtime_ds_step']) ? $_SESSION['sess_realtime_ds_step']:$graph_data_array['ds_step']),
@@ -294,7 +296,7 @@ case 'countdown':
 	exit;
 	break;
 case 'view':
-	$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . $hash . '_lgi_' . get_request_var('local_graph_id') . '.png';
+	$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . $hash . '_lgi_' . get_filter_request_var('local_graph_id') . '.png';
 
 	if (file_exists($graph_rrd)) {
 		print base64_encode(file_get_contents($graph_rrd));
@@ -423,7 +425,7 @@ $sizes = array(
 		<div id='image' class='center' style='padding:2px;'></div>
 		<input type='hidden' id='url_path' name='url_path' value='<?php echo $config['url_path'];?>'/>
 		<input type='hidden' id='local_graph_id' name='local_graph_id' value='<?php echo get_request_var('local_graph_id'); ?>'/>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 		var url;
 		var ds_step = 0;
@@ -469,4 +471,3 @@ $sizes = array(
 	</form>
 </body>
 </html>
-

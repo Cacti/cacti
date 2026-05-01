@@ -142,7 +142,7 @@ function aggregate_graph_templates_graph_save($local_graph_id, $graph_template_i
 		$graph_data['title_cache'] = $existing_data['title_cache'];
 	} else {
 		/* this is an existing graph and not templated from aggregate,
-		 * re-use its old data */
+		 * reuse its old data */
 		$graph_data = $existing_data;
 	}
 
@@ -403,20 +403,20 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 					$prepend = false;
 					$prepend_cnt++;
 				} elseif (strpos($save['text_format'], ':current:')) {
-					if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL || $_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
-						// All so use sum functions
+					if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL) {
 						$save['text_format'] = str_replace(':current:', ':aggregate_sum:', $save['text_format']);
+					} elseif ($_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
+						$save['text_format'] = str_replace(':current:', ':aggregate_current:', $save['text_format']);
 					} else {
-						// Similar to separate
-						$save['text_format'] = str_replace(':current:', ':current:', $save['text_format']);
+						cacti_log(__FUNCTION__ . ' unhandled total_type ' . $_total_type . ' for :current: in text_format', true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 					}
 				} elseif (strpos($save['text_format'], ':max:')) {
-					if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL || $_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
-						// All so use sum functions
-						$save['text_format'] = str_replace(':max:', ':aggregate_sum:', $save['text_format']);
+					if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL) {
+						$save['text_format'] = str_replace(':max:', ':aggregate_sum_peak:', $save['text_format']);
+					} elseif ($_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
+						$save['text_format'] = str_replace(':max:', ':aggregate_current_peak:', $save['text_format']);
 					} else {
-						// Similar to separate
-						$save['text_format'] = str_replace(':max:', ':max:', $save['text_format']);
+						cacti_log(__FUNCTION__ . ' unhandled total_type ' . $_total_type . ' for :max: in text_format', true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 					}
 				}
 			}
@@ -1377,14 +1377,14 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 								$pparts = explode(':', $parts[1]);
 
 								if (isset($pparts[3])) {
-									if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL || $_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
-										// All so use sum functions
+									if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL) {
 										$pparts[3] = str_replace('current', 'aggregate_sum', $pparts[3]);
 										$pparts[3] = str_replace('max',     'aggregate_sum_peak', $pparts[3]);
-									} else {
-										// Similar to separate
+									} elseif ($_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
 										$pparts[3] = str_replace('current', 'aggregate_current', $pparts[3]);
 										$pparts[3] = str_replace('max',     'aggregate_current_peak', $pparts[3]);
+									} else {
+										cacti_log(__FUNCTION__ . ' unhandled total_type ' . $_total_type . ' for pparts[3] in text_format', true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 									}
 
 									switch($pparts[3]) {
@@ -1451,14 +1451,14 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 								$pparts = explode(':', $parts[1]);
 
 								if (isset($pparts[3])) {
-									if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL || $_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
-										// All so use sum functions
+									if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL) {
 										$pparts[3] = str_replace('current', 'aggregate_sum', $pparts[3]);
 										$pparts[3] = str_replace('max',     'aggregate_sum_peak', $pparts[3]);
-									} else {
-										// Similar to separate
+									} elseif ($_total_type == AGGREGATE_TOTAL_TYPE_SIMILAR) {
 										$pparts[3] = str_replace('current', 'aggregate_current', $pparts[3]);
 										$pparts[3] = str_replace('max',     'aggregate_current_peak', $pparts[3]);
+									} else {
+										cacti_log(__FUNCTION__ . ' unhandled total_type ' . $_total_type . ' for pparts[3] in value', true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 									}
 
 									switch($pparts[3]) {
@@ -1629,8 +1629,8 @@ function aggregate_get_data_sources(&$graph_array, &$data_sources, &$graph_templ
 			print '</ul></td></tr>';
 
 			?>
-			<script type='text/javascript'>
-			$().ready(function() {
+			<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
+			$(function() {
 				$('#continue').hide();
 				$('#cancel').attr('value', '<?php print __esc('Return');?>');
 			});
@@ -1644,7 +1644,7 @@ function aggregate_get_data_sources(&$graph_array, &$data_sources, &$graph_templ
 			print '</td></tr>';
 
 			?>
-			<script type='text/javascript'>
+			<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 			$(function() {
 				$('#continue').hide();
 				$('#cancel').attr('value', '<?php print __esc('Return');?>');
@@ -1969,7 +1969,7 @@ function draw_aggregate_template_graph_config($aggregate_template_id, $graph_tem
 
 	/* some javascript do dynamically disable non-overridden fields */
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	$(function() {
 		setFieldsDisabled();

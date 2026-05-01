@@ -230,7 +230,14 @@ if ($master) {
 
 			if (api_automation_is_time_to_start($network['id']) || $force) {
 				automation_debug("Launching Network Master for '" . $network['name'] . "'\n");
-				exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . '/poller_automation.php --poller=' . $poller_id . ' --network=' . $network['id'] . ($force ? ' --force':'') . ($debug ? ' --debug':''));
+				$argv = array('-q', read_config_option('path_webroot') . '/poller_automation.php', '--poller=' . (int)$poller_id, '--network=' . (int)$network['id']);
+				if ($force) {
+					$argv[] = '--force';
+				}
+				if ($debug) {
+					$argv[] = '--debug';
+				}
+				exec_background(read_config_option('path_php_binary'), $argv);
 				$launched++;
 			} else {
 				automation_debug("Not time to Run Discovery for '" . $network['name'] . "'\n");
@@ -303,7 +310,14 @@ if (!$master && $thread == 0) {
 	$curthread = 1;
 	while($curthread <= $threads) {
 		automation_debug("Launching Thread $curthread\n");
-		exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . '/poller_automation.php --poller=' . $poller_id . " --thread=$curthread --network=$network_id" . ($force ? ' --force':'') . ($debug ? ' --debug':''));
+		$argv = array('-q', read_config_option('path_webroot') . '/poller_automation.php', '--poller=' . (int)$poller_id, '--thread=' . (int)$curthread, '--network=' . (int)$network_id);
+		if ($force) {
+			$argv[] = '--force';
+		}
+		if ($debug) {
+			$argv[] = '--debug';
+		}
+		exec_background(read_config_option('path_php_binary'), $argv);
 		$curthread++;
 	}
 
@@ -343,6 +357,10 @@ if (!$master && $thread == 0) {
 				WHERE network_id = ?',
 				array($network_id));
 
+			if (!cacti_sizeof($totals)) {
+				$totals = array('up' => 0, 'snmp' => 0);
+			}
+
 			/* take time and log performance data */
 			$end = microtime(true);
 
@@ -375,6 +393,11 @@ function discoverDevices($network_id, $thread) {
 		FROM automation_networks
 		WHERE id = ?',
 		array($network_id));
+
+	if (!cacti_sizeof($network)) {
+		cacti_log('ERROR: Network ID ' . $network_id . ' not found in automation_networks', false, 'AUTOM8');
+		return;
+	}
 
 	$temp = db_fetch_assoc('SELECT automation_templates.*, host_template.name
 		FROM automation_templates
@@ -1067,6 +1090,11 @@ function reportNetworkStatus($network_id, $old_devices) {
 				FROM automation_networks
 				WHERE id = ?',
 				array($network_id));
+
+			if (!cacti_sizeof($network)) {
+				cacti_log('ERROR: Network ID ' . $network_id . ' not found for notification', false, 'AUTOM8');
+				return;
+			}
 
 			$subject = 'Discovery of ' . $network['name'] . ' (' . $network['subnet_range'] . ') - ' . $status;
 			$output = '<h1>Discovery of ' . $network['name'] . '</h1><hr><br>' .

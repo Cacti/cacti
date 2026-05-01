@@ -23,9 +23,9 @@ name: Cacti Commit Audit
 
 on:
   push:
-    branches: [ 1.2.x ]
+    branches: [ develop, 1.2.x ]
   pull_request:
-    branches: [ 1.2.x ]
+    branches: [ develop, 1.2.x ]
 
 permissions:
   contents: read
@@ -41,7 +41,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        php: ['7.4', '8.0', '8.1', '8.2', '8.3', '8.4']
+        php: ${{ fromJSON((github.base_ref == '1.2.x' || github.ref_name == '1.2.x') && '["8.0","8.1","8.2","8.3","8.4"]' || '["8.1","8.2","8.3","8.4"]') }}
         experimental: [false]
         
     services:
@@ -60,7 +60,7 @@ jobs:
     name: PHP ${{ matrix.php }} Test on ${{ matrix.os }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v6
 
     - name: Install PHP ${{ matrix.php }}
       uses: shivammathur/setup-php@v2
@@ -223,7 +223,9 @@ jobs:
     - name: Install and Enable Plugins
       run: |
         cd ${{ github.workspace }}
-        sudo php cli/plugin_manage.php --plugin=thold --plugin=intropage --plugin=monitor --plugin=mactrack --plugin=audit --plugin=flowview --plugin=syslog --install --enable --allperms
+        plugins='--plugin=thold --plugin=intropage --plugin=mactrack --plugin=audit --plugin=flowview --plugin=syslog'
+        plugins="$plugins --plugin=monitor"
+        sudo php cli/plugin_manage.php $plugins --install --enable --allperms
 
     - name: Add Device for Moc Test, Check CLI scripts for Errors
       run: |

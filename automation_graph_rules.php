@@ -324,7 +324,7 @@ function automation_graph_rules_form_actions() {
 		header('Location: automation_graph_rules.php?header=false');
 		exit;
 	} else {
-		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Apply requested action') . "'>";
+		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Apply requested action') . "'>";
 	}
 
 	print "	<tr>
@@ -412,7 +412,7 @@ function automation_graph_rules_item_edit() {
 	form_save_button('automation_graph_rules.php?action=edit&id=' . get_request_var('id') . '&rule_type='. get_request_var('rule_type'));
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	$(function() {
 		toggle_operation();
@@ -690,7 +690,7 @@ function automation_graph_rules_edit() {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function applySNMPQueryIdChange() {
 		strURL  = 'automation_graph_rules.php?action=qedit';
 		strURL += '&id=' + $('#id').val();
@@ -837,7 +837,7 @@ function automation_graph_rules() {
 					</tr>
 				</table>
 		</form>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 		function applyFilter() {
 			strURL = 'automation_graph_rules.php' +
 				'?status='        + $('#status').val()+
@@ -854,15 +854,15 @@ function automation_graph_rules() {
 		}
 
 		$(function() {
-			$('#refresh, #rules, #rows, #status, #snmp_query_id').change(function() {
+			$('#refresh, #rules, #rows, #status, #snmp_query_id').on('change', function() {
 				applyFilter();
 			});
 
-			$('#clear').click(function() {
+			$('#clear').on('click', function() {
 				clearFilter();
 			});
 
-			$('#form_automation').submit(function(event) {
+			$('#form_automation').on('submit', function(event) {
 				event.preventDefault();
 				applyFilter();
 			});

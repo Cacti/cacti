@@ -181,6 +181,7 @@ function get_ajax_graph_items() {
 		$items[$key]['label'] = $item['name'];
 	}
 
+	header('Content-Type: application/json');
 	print json_encode($items);
 }
 
@@ -605,7 +606,7 @@ function form_actions() {
 					update_graph_title_cache($selected_items[$i]);
 				}
 			} elseif (get_request_var('drp_action') == '9' || get_request_var('drp_action') == '10') {
-				/* get common info - not dependant on template/no template*/
+				/* get common info - not dependent on template/no template*/
 				$local_graph_id = 0; // this will be a new graph
 				$member_graphs  = $selected_items;
 				$graph_title    = form_input_validate(get_nfilter_request_var('title_format'), 'title_format', '', true, 3);
@@ -884,11 +885,11 @@ function form_actions() {
 					<div class='itemlist'><ul>$graph_list</ul></div>";
 
 			if (isset($data_sources) && cacti_sizeof($data_sources)) {
-				print "<tr><td class='textArea'><p>" . __('The following Data Source(s) are in use by these Graph(s).') . "</p>\n";
+				print "<tr><td class='textArea'><p>" . __('The following Data Source(s) are in use by these Graph(s).') . "</p>";
 
 				print '<div class="itemlist"><ul>';
 				foreach ($data_sources as $data_source) {
-					print '<li>' . html_escape($data_source['name_cache']) . "</li>\n";
+					print '<li>' . html_escape($data_source['name_cache']) . "</li>";
 				}
 				print '</ul></div><br>';
 
@@ -911,9 +912,9 @@ function form_actions() {
 				print '</td></tr>';
 			}
 
-			print "</td></tr>\n";
+			print "</td></tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') ."' title='" . __esc('Delete Graph(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') ."' title='" . __esc('Delete Graph(s)') . "'>";
 		} elseif (get_request_var('drp_action') == '2') { // change graph template
 			print "<tr>
 				<td class='textArea'>
@@ -927,9 +928,9 @@ function form_actions() {
 
 					print "</p>
 				</td>
-			</tr>\n";
+			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Change Graph Template') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Change Graph Template') . "'>";
 		} elseif (get_request_var('drp_action') == '3') { // duplicate
 			print "<tr>
 				<td class='textArea'>
@@ -939,8 +940,8 @@ function form_actions() {
 			form_text_box('title_format', __('<graph_title> (1)'), '', '255', '30', 'text');
 			print "</p>
 				</td>
-			</tr>\n";
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Duplicate Graph(s)') . "'>";
+			</tr>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Duplicate Graph(s)') . "'>";
 		} elseif (get_request_var('drp_action') == '4') { // graph -> graph template
 			print "<tr>
 				<td class='textArea'>
@@ -950,8 +951,8 @@ function form_actions() {
 			form_text_box('title_format', __('<graph_title> Template'), '', '255', '30', 'text');
 			print "</p>
 				</td>
-			</tr>\n";
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Convert to Graph Template') . "'>";
+			</tr>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Convert to Graph Template') . "'>";
 		} elseif (preg_match('/^tr_([0-9]+)$/', get_request_var('drp_action'), $matches)) { // place on tree
 			print "<tr>
 				<td class='textArea'>
@@ -964,9 +965,9 @@ function form_actions() {
 			print "</p>
 				</td>
 				</tr>
-				<input type='hidden' name='tree_id' value='" . html_escape($matches[1]) . "'>\n";
+				<input type='hidden' name='tree_id' value='" . html_escape($matches[1]) . "'>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Place Graph(s) on Tree') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Place Graph(s) on Tree') . "'>";
 		} elseif (get_request_var('drp_action') == '5') { // change host
 			print "<tr>
 				<td class='textArea'>
@@ -978,18 +979,18 @@ function form_actions() {
 
 			print "</p>
 				</td>
-			</tr>\n";
+			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Change Graph(s) Associated Device') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Change Graph(s) Associated Device') . "'>";
 		} elseif (get_request_var('drp_action') == '6') { // reapply suggested naming to host
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to re-apply suggested naming to the following Graph(s).') . "</p>
 					<div class='itemlist'><ul>$graph_list</ul></div>
 				</td>
-			</tr>\n";
+			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Reapply Suggested Naming to Graph(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Reapply Suggested Naming to Graph(s)') . "'>";
 		} elseif (get_request_var('drp_action') == '9') {
 			include_once('./lib/api_aggregate.php');
 
@@ -1076,7 +1077,7 @@ function form_actions() {
 				html_start_box(__('Please confirm'), '100%', '', '3', 'center', '');
 
 				?>
-				<script type='text/javascript'>
+				<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 				function changeTotals() {
 					switch ($('#aggregate_total').val()) {
 						case '<?php print AGGREGATE_TOTAL_NONE;?>':
@@ -1153,15 +1154,15 @@ function form_actions() {
 				}
 
 				$(function() {
-					$('#aggregate_total').change(function() {
+					$('#aggregate_total').on('change', function() {
 						changeTotals();
 					});
 
-					$('#aggregate_total_type').change(function() {
+					$('#aggregate_total_type').on('change', function() {
 						changeTotalsType();
 					});
 
-					$('input[id^="agg_total"], input[id^="agg_skip"]').click(function() {
+					$('input[id^="agg_total"], input[id^="agg_skip"]').on('click', function() {
 						id = $(this).attr('id');
 
 						if (id.indexOf('skip') > 0) {
@@ -1189,9 +1190,9 @@ function form_actions() {
 				</script>
 				<?php
 
-				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Create Aggregate Graph') . "'>";
+				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Create Aggregate Graph') . "'>";
 			} else {
-				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Return') . "'>";
 			}
 		} elseif (get_request_var('drp_action') == '10') { // aggregate template
 			include_once('./lib/api_aggregate.php');
@@ -1214,7 +1215,7 @@ function form_actions() {
 							<p>" . __('Select the Aggregate Template to use and press \'Continue\' to create your Aggregate Graph.  Otherwise press \'Cancel\' to return.') . "</p>
 							<div class='itemlist'><ul>" . $graph_list . "</ul></div>
 						</td>
-					</tr>\n";
+					</tr>";
 
 					print "<tr><td><table>
 						<tr>
@@ -1224,27 +1225,27 @@ function form_actions() {
 						<tr>
 							<td>" . __('Aggregate Template') . "</td>
 							<td>
-								<select name='aggregate_template_id'>\n";
+								<select name='aggregate_template_id'>";
 
 					html_create_list($aggregate_templates, 'name', 'id', $aggregate_templates[0]['id']);
 
 					print "</select>
 						</td>
-					</tr></table></td></tr>\n";
+					</tr></table></td></tr>";
 
-					$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Create Aggregate from Template') . "'>";
+					$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Create Aggregate from Template') . "'>";
 				} else {
 					print "<tr>
 						<td class='textArea'>
 							<p>" . __('There are presently no Aggregate Templates defined for this Graph Template.  Please either first create an Aggregate Template for the selected Graphs Graph Template and try again, or simply crease an un-templated Aggregate Graph.') . "</p>
 							<p>" . __('Press \'Return\' to return and select different Graphs.') . "</p>
 						</td>
-					</tr>\n";
+					</tr>";
 
-					$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+					$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Return') . "'>";
 				}
 			} else {
-				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Return') . "'>";
 			}
 		} elseif (get_request_var('drp_action') == 8) { // automation
 			print "<tr>
@@ -1252,9 +1253,9 @@ function form_actions() {
 					<p>" . __('Click \'Continue\' to apply Automation Rules to the following Graphs.') . "</p>
 					<div class='itemlist'><ul>$graph_list</ul></div>
 				</td>
-			</tr>\n";
+			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Apply Automation Rules') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Apply Automation Rules') . "'>";
 		} elseif (get_request_var('drp_action') == '11') {
 			global $alignment, $graph_timespans;
 
@@ -1281,12 +1282,12 @@ function form_actions() {
 
 				print '<tr><td>' . __('Align') . '<br>';
 				form_dropdown('align',$alignment, '', '', '', '', REPORTS_ALIGN_CENTER);
-				print "</td></tr>\n";
+				print '</td></tr>';
 
-				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Add Graphs to Report') . "'>";
+				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Add Graphs to Report') . "'>";
 			} else {
-				print "<tr><td class='even'><span class='textError'>" . __('You currently have no reports defined.') . "</span></td></tr>\n";
-				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+				print "<tr><td class='even'><span class='textError'>" . __('You currently have no reports defined.') . "</span></td></tr>";
+				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Return') . "'>";
 			}
 		} else {
 			$save['drp_action'] = get_nfilter_request_var('drp_action');
@@ -1295,7 +1296,7 @@ function form_actions() {
 
 			api_plugin_hook_function('graphs_action_prepare', $save);
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "'>";
 		}
 	} else {
 		raise_message(40);
@@ -1310,7 +1311,7 @@ function form_actions() {
 			<input type='hidden' name='drp_action' value='" . get_request_var('drp_action') . "'>
 			$save_html
 		</td>
-	</tr>\n";
+	</tr>";
 
 	html_end_box();
 
@@ -1383,9 +1384,9 @@ function item() {
 	draw_graph_items_list($template_item_list, 'graphs_items.php', $anchor_link, (empty($graph_template_id) || empty($host_id) ? false : true));
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
-		$('.deleteMarker, .moveArrow').unbind().click(function(event) {
+		$('.deleteMarker, .moveArrow').on('click', function(event) {
 			event.preventDefault();
 			loadPageNoHeader($(this).attr('href'));
 		});
@@ -1683,8 +1684,8 @@ function graph_edit() {
 				<span class='textInfo'><?php print __('RRDtool Command:');?></span><br>
 				<pre><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);?></pre>
 				<span class='textInfo'><?php print __('RRDtool Says:');?></span><br>
-				<?php unset($graph_data_array['print_source']);?>
 				<pre><?php print ($config['poller_id'] == 1 ? @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']):__esc('Not Checked'));?></pre>
+				<?php unset($graph_data_array['print_source']);?>
 			</div>
 		<?php
 		}
@@ -1736,10 +1737,10 @@ function graph_edit() {
 
 	//Now we need some javascript to make it dynamic
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	var locked         = <?php print ($locked ? 'true':'false');?>;
-	var imageSource    = '<?php print $graph['src'];?>';
+	var imageSource    = <?php print json_encode($graph['src']);?>;
 	var originalWidth  = null;
 	var originalHeight = null;
 
@@ -1764,7 +1765,7 @@ function graph_edit() {
 	$(function() {
 		dynamic();
 
-		$('#unlockid').click(function(event) {
+		$('#unlockid').on('click', function(event) {
 			event.preventDefault;
 
 			$('body').append("<div id='modal' class='ui-widget-overlay ui-front' style='z-index: 100;'><i style='position:absolute;top:50%;left:50%;' class='fa fa-spin fa-circle-notch'/></div>");
@@ -1790,13 +1791,13 @@ function graph_edit() {
 			});
 
 
-		$('#lockid').click(function(event) {
+		$('#lockid').on('click', function(event) {
 			event.preventDefault;
 
 			loadPageNoHeader('graphs.php?action=lock&header=false&id='+$('#local_graph_id').val());
 		});
 
-		$(window).resize(function() {
+		$(window).on('resize', function() {
 			imageWidth    = $('.cactiGraphImage').width();
 			imageHeight   = $('.cactiGraphImage').height();
 			aspectRatio   = imageWidth/imageHeight;
@@ -1927,7 +1928,7 @@ function graph_management() {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL  = 'graphs.php' +
@@ -1948,15 +1949,15 @@ function graph_management() {
 	}
 
 	$(function() {
-		$('#clear').unbind().on('click', function() {
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#filter').unbind().on('change', function() {
+		$('#host_id, #site_id, #rows, #source, #orphans, #rfilter, #template_id').on('change', function() {
 			applyFilter();
 		});
 
-		$('#form_graphs').unbind().on('submit', function(event) {
+		$('#form_graphs').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -2002,7 +2003,7 @@ function graph_management() {
 						<?php print __('Template');?>
 					</td>
 					<td>
-						<select id='template_id' onChange='applyFilter()'>
+						<select id='template_id'>
 							<option value='-1'<?php if (get_request_var('template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='0'<?php if (get_request_var('template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
@@ -2020,7 +2021,7 @@ function graph_management() {
 
 							if (cacti_sizeof($templates)) {
 								foreach ($templates as $template) {
-									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . html_escape($template['name']) . "</option>\n";
+									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . html_escape($template['name']) . "</option>";
 								}
 							}
 							?>
@@ -2028,7 +2029,7 @@ function graph_management() {
 					</td>
 					<td>
 						<span>
-							<input type='checkbox' id='orphans' onChange='applyFilter()' <?php print (get_request_var('orphans') == 'true' || get_request_var('orphans') == 'on' ? 'checked':'');?>>
+							<input type='checkbox' id='orphans' <?php print (get_request_var('orphans') == 'true' || get_request_var('orphans') == 'on' ? 'checked':'');?>>
    	                    	<label for='orphans' title='<?php print __esc('Note that this query may take some time to run.');?>'><?php print __('Orphaned');?></label>
 						</span>
 					</td>
@@ -2052,7 +2053,7 @@ function graph_management() {
 						<?php print __('Graph Source');?>
 					</td>
 					<td>
-						<select id='source' onChange='applyFilter()'>
+						<select id='source'>
 							<option value='-1'<?php print (get_request_var('source') == '-1' ? ' selected>':'>') . __('All');?></option>
 							<option value='0'<?php print (get_request_var('source') == '0' ? ' selected>':'>') . __('Non Templated');?></option>
 							<option value='1'<?php print (get_request_var('source') == '1' ? ' selected>':'>') . __('Graph Template');?></option>
@@ -2063,12 +2064,12 @@ function graph_management() {
 						<?php print __('Graphs');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>";
 								}
 							}
 							?>
@@ -2087,11 +2088,10 @@ function graph_management() {
 	$sql_where  = '';
 	$sql_where2 = '';
 	if (get_request_var('rfilter') != '') {
-		$sql_where = " WHERE (gtg.title_cache RLIKE '" . get_request_var('rfilter') . "'" .
-			" OR gt.name RLIKE '" . get_request_var('rfilter') . "'" .
-			" OR gl.id = '" . get_request_var('rfilter') . "')";
-
-		$sql_where2 = " AND (gl.id = '" . get_request_var('rfilter') . "')";
+		$sql_where = " WHERE (gtg.title_cache " . db_qstr_rlike(get_request_var('rfilter')) .
+			" OR gt.name " . db_qstr_rlike(get_request_var('rfilter')) .
+			" OR gl.id = " . (int) get_request_var('rfilter') . ")";
+		$sql_where2 = " AND (gl.id = " . (int) get_request_var('rfilter') . ")";
 	}
 
 	if (get_request_var('host_id') == '-1') {

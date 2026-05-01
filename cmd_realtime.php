@@ -39,7 +39,7 @@ if (cacti_count($_SERVER['argv']) < 4) {
 	exit(-1);
 }
 
-$poller_id = $_SERVER['argv'][1];
+$poller_id = preg_match('/^[a-zA-Z0-9_-]{1,64}$/', $_SERVER['argv'][1]) ? $_SERVER['argv'][1] : '';
 $graph_id  = (int)$_SERVER['argv'][2];
 $interval  = (int)$_SERVER['argv'][3];
 
@@ -112,7 +112,7 @@ if (cacti_sizeof($idbyhost)) {
 		);
 
 		if (function_exists('proc_open')) {
-			$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/script_server.php realtime ' . $poller_id, $cactides, $pipes);
+			$cactiphp = proc_open(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg($config['base_path'] . '/script_server.php') . ' realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);
 			$output = fgets($pipes[1], 1024);
 			$using_proc_function = true;
 		} else {

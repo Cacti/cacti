@@ -41,40 +41,34 @@ switch ($action) {
 
 		break;
 	default:
-		// If the user is not logged in, redirect them to the login page
+		/**
+		 * If the user is not logged in, redirect back to the page they came
+		 * of the login page.
+		 */
 		if (!isset($_SESSION['sess_user_id'])) {
-			if (isset($_SERVER['HTTP_REFERER'])) {
-				header('Location: ' . $_SERVER['HTTP_REFERER']);
-			} else {
-				header('Location: index.php');
-			}
+			cacti_header('index.php');
 
-			header('Location: index.php');
 			exit;
 		}
 }
 
-if (isset($_SERVER['HTTP_REFERER'])) {
-	$return = $_SERVER['HTTP_REFERER'];
+$return = validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '', 'index.php');
 
-	if (basename($return) != 'auth_changepassword.php') {
-		if (strpos($return, '/plugins/') !== false) {
-			$parts  = explode('/plugins/', $return);
-			$return = $config['url_path'] . 'plugins/' . $parts[1];
-		} else {
-			$return = $config['url_path'] . basename($return);
-		}
-
-		$_SESSION['acp_return'] = $return;
+if (basename($return) != 'auth_changepassword.php') {
+	if (strpos($return, '/plugins/') !== false) {
+		$parts  = explode('/plugins/', $return);
+		$return = $config['url_path'] . 'plugins/' . $parts[1];
 	} else {
-		if (isset($_SESSION['acp_return'])) {
-			$return = $_SESSION['acp_return'];
-		} else {
-			$return = $config['url_path'] . 'index.php';
-		}
+		$return = $config['url_path'] . basename($return);
 	}
+
+	$_SESSION['acp_return'] = $return;
 } else {
-	$return = $config['url_path'] . 'index.php';
+	if (isset($_SESSION['acp_return'])) {
+		$return = $_SESSION['acp_return'];
+	} else {
+		$return = $config['url_path'] . 'index.php';
+	}
 }
 
 $user = db_fetch_row_prepared('SELECT *
@@ -91,11 +85,7 @@ if (!cacti_sizeof($user) || $user['realm'] != 0) {
 		raise_message('nodomainpassword');
 	}
 
-	if (isset($_SERVER['HTTP_REFERER'])) {
-		header('Location: ' . $_SERVER['HTTP_REFERER']);
-	} else {
-		header('Location: index.php');
-	}
+	cacti_header($return);
 
 	exit;
 }
@@ -105,13 +95,11 @@ if ($user['password_change'] != 'on') {
 
 	/* destroy session information */
 	kill_session_var('sess_user_id');
+
 	cacti_cookie_logout();
 
-	if (isset($_SERVER['HTTP_REFERER'])) {
-		header('Location: ' . $_SERVER['HTTP_REFERER']);
-	} else {
-		header('Location: index.php');
-	}
+	cacti_header('index.php');
+
 	exit;
 }
 
@@ -331,7 +319,7 @@ if (isset_request_var('ref')) {
 	}
 
 	if (!$valid) {
-		cacti_log('WARNING: User attempted to access Cacti from unkonwn URL', false, 'AUTH');
+		cacti_log('WARNING: User attempted to access Cacti from unknown URL', false, 'AUTH');
 
 		raise_message('problems_with_page', __('There are problems with the Change Password page.  Contact your Cacti administrator right away.'), MESSAGE_LEVEL_ERROR);
 		header('Location:index.php');
@@ -387,7 +375,9 @@ if ($skip_current) {
 						</tr>
 						<tr>
 							<td class='nowrap' colspan='2'><input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Save'); ?>'>
-								<?php print $user['must_change_password'] != 'on' ? "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='document.location=\"$return\"' value='".  __esc('Return') . "'>":"";?>
+								<?php if ($user['must_change_password'] != 'on') { ?>
+								<input type='button' class='ui-button ui-corner-all ui-widget passwordReturn' data-location='<?php print $return;?>' value='<?php print __esc('Return'); ?>'>
+								<?php } ?>
 							</td>
 						</tr>
 					</table>
@@ -398,7 +388,7 @@ if ($skip_current) {
 		<div class='versionInfo'><?php __('Version %s | %s', $version, COPYRIGHT_YEARS_SHORT); ?></div>
 	</div>
 	<div class='loginRight'></div>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	var minChars=<?php print read_config_option('secpass_minlen');?>;
 
@@ -445,17 +435,23 @@ if ($skip_current) {
 	var password_change = $('#password_change').is(':checked');
 
 	$(function() {
+		$('.passwordReturn').on('click', function() {
+			var url = $(this).data('location');
+
+			document.location = url;
+		});
+
 		$('#current').focus();
 
 		/* clear passwords */
 		$('#password').val('');
 		$('#password_confirm').val('');
 
-		$('#password').keyup(function() {
+		$('#password').on('keyup', function() {
 			checkPassword();
 		});
 
-		$('#password_confirm').keyup(function() {
+		$('#password_confirm').on('keyup', function() {
 			checkPasswordConfirm();
 		});
 	});

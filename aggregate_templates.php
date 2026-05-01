@@ -115,6 +115,14 @@ function aggregate_form_save() {
 			WHERE id = ?',
 			array($save1['id']));
 
+		if (!cacti_sizeof($old)) {
+			raise_message('aggregate_not_found', __('Aggregate Template not found.'), MESSAGE_LEVEL_ERROR);
+
+			cacti_header('aggregate_templates.php');
+
+			exit;
+		}
+
 		$save_me = 0;
 
 		$save_me += ($old['name']          != $save1['name']);
@@ -312,7 +320,7 @@ function aggregate_form_actions() {
 					</td>
 				</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Color Template(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Color Template(s)') . "'>";
 		}
 	} else {
 		raise_message(40);
@@ -351,6 +359,14 @@ function aggregate_template_edit() {
 			FROM aggregate_graph_templates
 			WHERE id = ?',
 			array(get_request_var('id')));
+
+		if (!cacti_sizeof($template)) {
+			raise_message('aggregate_not_found', __('Aggregate Template not found.'), MESSAGE_LEVEL_ERROR);
+
+			cacti_header('aggregate_templates.php');
+
+			exit;
+		}
 
 		$header_label = __esc('Aggregate Template [edit: %s]', $template['name']);
 	} else {
@@ -417,7 +433,7 @@ function aggregate_template_edit() {
 	form_save_button('aggregate_templates.php', 'return', 'id');
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	$(function() {
 		if ($('#id').val() == 0) {
@@ -435,7 +451,7 @@ function aggregate_template_edit() {
 			$('#row_total_prefix').hide();
 			$('#row_order_type').hide();
 
-			$('#graph_template_id').change(function() {
+			$('#graph_template_id').on('change', function() {
 				$('#template_edit').submit();
 			});
 
@@ -447,15 +463,15 @@ function aggregate_template_edit() {
 			}
 		}
 
-		$('#total').change(function() {
+		$('#total').on('change', function() {
 			changeTotals();
 		});
 
-		$('#total_type').change(function() {
+		$('#total_type').on('change', function() {
 			changeTotalsType();
 		});
 
-		$('input[id^="agg_total"], input[id^="agg_skip"]').click(function() {
+		$('input[id^="agg_total"], input[id^="agg_skip"]').on('click', function() {
 			id = $(this).attr('id');
 
 			if (id.indexOf('skip') > 0) {
@@ -729,7 +745,7 @@ function aggregate_template() {
 	form_end();
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL  = 'aggregate_templates.php';
@@ -746,16 +762,16 @@ function aggregate_template() {
 	}
 
 	$(function() {
-		$('#clear').click(function() {
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#template').submit(function(event) {
+		$('#template').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
 
-		$('#forms').submit(function(event) {
+		$('#forms').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});

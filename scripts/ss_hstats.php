@@ -34,34 +34,22 @@ if (!isset($called_by_script_server)) {
 }
 
 function ss_hstats($host_id = 0, $stat = '') {
-	switch ($stat) {
-		case 'polling_time':
-			$column = $stat;
-			break;
-		case 'min_time':
-			$column = $stat;
-			break;
-		case 'max_time':
-			$column = $stat;
-			break;
-		case 'cur_time':
-			$column = $stat;
-			break;
-		case 'avg_time':
-			$column = $stat;
-			break;
-		case 'uptime':
-			$column = 'snmp_sysUpTimeInstance';
-			break;
-		case 'failed_polls':
-			$column = $stat;
-			break;
-		case 'availability':
-			$column = $stat;
-			break;
-		default:
-			return '0';
+	$allowed_columns = array(
+		'polling_time'  => 'polling_time',
+		'min_time'      => 'min_time',
+		'max_time'      => 'max_time',
+		'cur_time'      => 'cur_time',
+		'avg_time'      => 'avg_time',
+		'uptime'        => 'snmp_sysUpTimeInstance',
+		'failed_polls'  => 'failed_polls',
+		'availability'  => 'availability',
+	);
+
+	if (!isset($allowed_columns[$stat])) {
+		return '0';
 	}
+
+	$column = $allowed_columns[$stat];
 
 	if ($host_id > 0) {
 		$value = db_fetch_cell_prepared("SELECT $column

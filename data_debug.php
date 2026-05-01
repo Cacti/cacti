@@ -376,9 +376,9 @@ function validate_request_vars() {
 function debug_get_filter(&$sql_where, &$dd_join) {
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('rfilter') != '') {
-		$sql_where = "WHERE (dtd.name_cache RLIKE '" . get_request_var('rfilter') . "'" .
-			" OR dtd.local_data_id RLIKE '" . get_request_var('rfilter') . "'" .
-			" OR dt.name RLIKE '" . get_request_var('rfilter') . "')";
+		$sql_where = 'WHERE (dtd.name_cache ' . db_qstr_rlike(get_request_var('rfilter')) .
+			' OR dtd.local_data_id ' . db_qstr_rlike(get_request_var('rfilter')) .
+			' OR dt.name ' . db_qstr_rlike(get_request_var('rfilter')) . ')';
 	} else {
 		$sql_where = '';
 	}
@@ -929,20 +929,20 @@ function debug_view() {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
-		$('.repairme').click(function(event) {
+		$('.repairme').on('click', function(event) {
 			event.preventDefault();
 			id = $(this).attr('data-id');
 			loadPage('data_debug.php?action=run_repair&id=' + id);
 		});
 
-		$('.reloadquery').click(function() {
+		$('.reloadquery').on('click', function() {
 			id = $(this).attr('data-id');
 			loadPage('data_debug.php?action=view&id=' + id);
 		});
 
-		$('.rerun').click(function(event) {
+		$('.rerun').on('click', function(event) {
 			event.preventDefault();
 			id = $(this).attr('data-id');
 			loadPage('data_debug.php?action=run_debug&id=' + id);
@@ -1025,7 +1025,7 @@ function data_debug_filter() {
 						<?php print __('Template');?>
 					</td>
 					<td>
-						<select id='template_id' name='template_id' onChange='applyFilter()'>
+						<select id='template_id' name='template_id'>
 							<option value='-1'<?php if (get_request_var('template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='0'<?php if (get_request_var('template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
@@ -1062,7 +1062,7 @@ function data_debug_filter() {
 						<?php print __('Profile');?>
 					</td>
 					<td>
-						<select id='profile' name='profile' onChange='applyFilter()'>
+						<select id='profile' name='profile'>
 							<option value='-1'<?php print (get_request_var('profile') == '-1' ? ' selected>':'>') . __('All');?></option>
 							<?php
 							$profiles = array_rekey(db_fetch_assoc('SELECT id, name FROM data_source_profiles ORDER BY name'), 'id', 'name');
@@ -1078,7 +1078,7 @@ function data_debug_filter() {
 						<?php print __('Status');?>
 					</td>
 					<td>
-						<select id='status' name='status' onChange='applyFilter()'>
+						<select id='status' name='status'>
 							<option value='-1'<?php if (get_request_var('status') == '-1') {?> selected<?php }?>><?php print __('All');?></option>
 							<option value='0'<?php if (get_request_var('status') == '0') {?> selected<?php }?>><?php print __('Failed');?></option>
 							<option value='1'<?php if (get_request_var('status') == '1') {?> selected<?php }?>><?php print __('Enabled');?></option>
@@ -1089,7 +1089,7 @@ function data_debug_filter() {
 						<?php print __('Debugging');?>
 					</td>
 					<td>
-						<select id='debug' name='debug' onChange='applyFilter()'>
+						<select id='debug' name='debug'>
 							<option value='-1'<?php print (get_request_var('debug') == '-1' ? ' selected>':'>') . __('All');?></option>
 							<option value='1'<?php print (get_request_var('debug') == '1' ? ' selected>':'>') . __('Debugging');?></option>
 							<option value='0'<?php print (get_request_var('debug') == '0' ? ' selected>':'>') . __('Not Debugging');?></option>
@@ -1099,7 +1099,7 @@ function data_debug_filter() {
 						<?php print __('Refresh');?>
 					</td>
 					<td>
-						<select id='refresh' name='refresh' onChange='applyFilter()'>
+						<select id='refresh' name='refresh'>
 							<?php
 							unset($page_refresh_interval[5]);
 							unset($page_refresh_interval[10]);
@@ -1123,13 +1123,13 @@ function data_debug_filter() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='30' value='<?php print html_escape_request_var('rfilter');?>' onChange='applyFilter()'>
+						<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='30' value='<?php print html_escape_request_var('rfilter');?>'>
 					</td>
 					<td>
 						<?php print __('Data Sources');?>
 					</td>
 					<td>
-						<select id='rows' name='rows' onChange='applyFilter()'>
+						<select id='rows' name='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows) > 0) {
@@ -1143,7 +1143,7 @@ function data_debug_filter() {
 				</tr>
 			</table>
 		</form>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 		function applyFilter() {
 			strURL  = 'data_debug.php' +
 				'?host_id=' + $('#host_id').val() +
@@ -1175,23 +1175,27 @@ function data_debug_filter() {
 		}
 
 		$(function() {
-			$('#go').click(function() {
+			$('#go').on('click', function() {
 				applyFilter()
 			});
 
-			$('#clear').click(function() {
+			$('#rfilter, #status, #rows, #debug, #refresh, #profile, #site_id, #host_id, #template_id').on('change', function() {
+				applyFilter();
+			});
+
+			$('#clear').on('click', function() {
 				clearFilter()
 			});
 
-			$('#purge').click(function() {
+			$('#purge').on('click', function() {
 				purgeFilter()
 			});
 
-			$('#runall').click(function() {
+			$('#runall').on('click', function() {
 				runallFilter()
 			});
 
-			$('#form_data_debug').submit(function(event) {
+			$('#form_data_debug').on('submit', function(event) {
 				event.preventDefault();
 				applyFilter();
 			});

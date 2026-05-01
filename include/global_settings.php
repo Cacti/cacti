@@ -497,15 +497,29 @@ $settings = array(
 			'default' => '',
 			'method' => 'checkbox',
 		),
+		'allow_unsafe_https' => array(
+			'friendly_name' => __('Allow Unsafe Remote Data Collector HTTPS'),
+			'description' => __('Allow the use of Self Signed Certificates and allow the hostname of the Certificate to differ from that of the Remote Data Collector.'),
+			'default' => 'on',
+			'method' => 'checkbox',
+		),
 		'content_security_policy_script' => array(
 			'method' => 'drop_array',
-			'friendly_name' => __('Content-Security Allow Unsafe JavaScript eval() calls'),
-			'description' => __('Certain Cacti plugins require the use of unsafe JavaScript eval() calls.  If you select this option, they will be allowed in Cacti.'),
+			'friendly_name' => __('Content-Security Script Policy'),
+			'description' => __('Controls the script-src CSP policy.  In nonce modes, plugin-emitted inline <script> tags must include the nonce attribute from CactiSecureHeaders::getNonceAttribute(); otherwise, those scripts will be blocked by the browser.'),
 			'default' => '',
 			'array' => array(
-				'0'           => __('No'),
-				'unsafe-eval' => __('Yes')
+				'0'            => __('Allow Non-Nonced Inline JavaScript'),
+				'unsafe-eval'  => __('Allow both unsafe-eval and Non-Nonced Inline JavaScript'),
+				'nonce-report' => __('Nonce Mode - Reporting Only')
 			)
+		),
+		'content_security_report_uri' => array(
+			'friendly_name' => __('CSP Violation Report URI'),
+			'description' => __('URL where browsers POST CSP violation reports in nonce-report and nonce modes. Leave empty to use <url_path>/csp_report.php. Must contain only safe URL characters.'),
+			'method' => 'textbox',
+			'default' => '',
+			'max_length' => 255,
 		),
 		'content_security_alternate_sources' => array(
 			'friendly_name' => __('Content-Security Alternate Sources'),
@@ -514,6 +528,13 @@ $settings = array(
 			'default' => '',
 			'size' => '100',
 			'max_length' => '255',
+		),
+		'content_security_report_uri' => array(
+			'friendly_name' => __('CSP Violation Report URI'),
+			'description' => __('URL where browsers POST CSP violation reports in nonce-report and nonce modes. Leave empty to use /cacti/csp_report.php at the installation root. Must contain only safe URL characters.'),
+			'method' => 'textbox',
+			'default' => '',
+			'max_length' => 255,
 		),
 		'automation_header' => array(
 			'friendly_name' => __('Automation'),
@@ -932,7 +953,7 @@ $settings = array(
 		),
 		'default_graphs_new_dropdown' => array(
 			'friendly_name' => __('Default Graph Type'),
-			'description' => __('When creating graphs, what Graph Type would you like pre-selected?'),
+			'description' => __('When creating graphs, what Graph Type would you like preselected?'),
 			'method' => 'drop_array',
 			'default' => '-2',
 			'array' => array(
@@ -1611,7 +1632,7 @@ $settings = array(
 		),
 		'secpass_history' => array(
 			'friendly_name' => __('Password History'),
-			'description' => __('Remember this number of old passwords and disallow re-using them.'),
+			'description' => __('Remember this number of old passwords and disallow reusing them.'),
 			'method' => 'drop_array',
 			'default' => '0',
 			'array' => array(

@@ -240,7 +240,7 @@ function aggregate_color_form_actions() {
 				</td>
 			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Color Template', 'Delete Color Templates', cacti_sizeof($color_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Color Template', 'Delete Color Templates', cacti_sizeof($color_array)) . "'>";
 		} elseif (get_request_var('drp_action') == '2') { // duplicate
 			print "<tr>
 				<td class='textArea'>
@@ -252,7 +252,7 @@ function aggregate_color_form_actions() {
 				</td>
 			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Duplicate Color Template', 'Duplicate Color Templates', cacti_sizeof($color_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Duplicate Color Template', 'Duplicate Color Templates', cacti_sizeof($color_array)) . "'>";
 		} elseif (get_request_var('drp_action') == '3') { // sync
 			print "<tr>
 				<td class='textArea'>
@@ -261,7 +261,7 @@ function aggregate_color_form_actions() {
 				</td>
 			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Synchronize Color Template', 'Synchronize Color Templates', cacti_sizeof($color_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Synchronize Color Template', 'Synchronize Color Templates', cacti_sizeof($color_array)) . "'>";
 		}
 	} else {
 		raise_message(40);
@@ -324,7 +324,7 @@ function aggregate_color_item() {
 	html_end_box();
 
     ?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	$(function() {
 		$('#color_templates_template_edit2_child').attr('id', 'color_item');
@@ -339,7 +339,7 @@ function aggregate_color_item() {
 		});
 		<?php } ?>
 
-		$('.delete').click(function (event) {
+		$('.delete').on('click', function (event) {
 			event.preventDefault();
 
 			id = $(this).attr('id').split('_');
@@ -384,6 +384,15 @@ function aggregate_color_template_edit() {
 
 	if (!isempty_request_var('color_template_id')) {
 		$template = db_fetch_row_prepared('SELECT * FROM color_templates WHERE color_template_id = ?', array(get_request_var('color_template_id')));
+
+		if (!cacti_sizeof($template)) {
+			raise_message('color_template_not_found', __('Color Template not found.'), MESSAGE_LEVEL_ERROR);
+
+			cacti_header('color_templates.php');
+
+			exit;
+		}
+
 		$header_label = __esc('Color Template [edit: %s]', $template['name']);
 	} else {
 		$header_label = __('Color Template [new]');
@@ -692,7 +701,7 @@ function aggregate_color_template() {
 	form_end();
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL  = 'color_templates.php';
@@ -709,11 +718,11 @@ function aggregate_color_template() {
 	}
 
 	$(function() {
-		$('#clear').click(function() {
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#form_template').submit(function(event) {
+		$('#form_template').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});

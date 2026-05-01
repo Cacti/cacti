@@ -194,6 +194,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'ajax_tz':
+		header('Content-Type: application/json');
 		print json_encode(db_fetch_assoc_prepared('SELECT Name AS label, Name AS `value`
 			FROM mysql.time_zone_name
 			WHERE Name LIKE ?
@@ -379,7 +380,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Site', 'Delete Sites', cacti_sizeof($site_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Site', 'Delete Sites', cacti_sizeof($site_array)) . "'>";
 		} elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
 			print "<tr>
 				<td class='textArea' class='odd'>
@@ -389,7 +390,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Duplicate Site', 'Duplicate Sites', cacti_sizeof($site_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Duplicate Site', 'Duplicate Sites', cacti_sizeof($site_array)) . "'>";
 		}
 	} else {
 		raise_message(40);
@@ -426,6 +427,15 @@ function site_edit() {
 
 	if (!isempty_request_var('id')) {
 		$site = db_fetch_row_prepared('SELECT * FROM sites WHERE id = ?', array(get_request_var('id')));
+
+		if (!cacti_sizeof($site)) {
+			raise_message('site_not_found', __('Site not found.'), MESSAGE_LEVEL_ERROR);
+
+			cacti_header('sites.php');
+
+			exit;
+		}
+
 		$header_label = __esc('Site [edit: %s]', $site['name']);
 	} else {
 		$header_label = __('Site [new]');
@@ -505,7 +515,7 @@ function sites() {
 						<?php print __('Sites');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
@@ -525,7 +535,7 @@ function sites() {
 				</tr>
 			</table>
 			</form>
-			<script type='text/javascript'>
+			<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 			function applyFilter() {
 				strURL  = 'sites.php?header=false';
@@ -540,15 +550,19 @@ function sites() {
 			}
 
 			$(function() {
-				$('#refresh').click(function() {
+				$('#refresh').on('click', function() {
 					applyFilter();
 				});
 
-				$('#clear').click(function() {
+				$('#rows').on('change', function() {
+					applyFilter();
+				});
+
+				$('#clear').on('click', function() {
 					clearFilter();
 				});
 
-				$('#form_site').submit(function(event) {
+				$('#form_site').on('submit', function(event) {
 					event.preventDefault();
 					applyFilter();
 				});

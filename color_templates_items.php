@@ -170,6 +170,10 @@ function aggregate_color_item_movedown() {
 		WHERE color_template_item_id = ?',
 		array(get_request_var('color_template_item_id')));
 
+	if (!cacti_sizeof($current_sequence)) {
+		return;
+	}
+
 	cacti_log('movedown Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'],
 		false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
@@ -179,6 +183,10 @@ function aggregate_color_item_movedown() {
 		AND color_template_id = ?
 		ORDER BY sequence ASC limit 1',
 		array($current_sequence['sequence'], get_request_var('color_template_id')));
+
+	if (!cacti_sizeof($next_sequence)) {
+		return;
+	}
 
 	cacti_log('movedown Id: ' . $next_sequence['color_template_item_id'] . ' Seq:' . $next_sequence['sequence'],
 		false, POLLER_VERBOSITY_DEBUG);
@@ -211,6 +219,10 @@ function aggregate_color_item_moveup() {
 		WHERE color_template_item_id = ?',
 		array(get_request_var('color_template_item_id')));
 
+	if (!cacti_sizeof($current_sequence)) {
+		return;
+	}
+
 	cacti_log('moveup Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'],
 		false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
@@ -220,6 +232,10 @@ function aggregate_color_item_moveup() {
 		AND color_template_id = ?
 		ORDER BY sequence DESC limit 1',
 		array($current_sequence['sequence'], get_request_var('color_template_id')));
+
+	if (!cacti_sizeof($previous_sequence)) {
+		return;
+	}
 
 	cacti_log('moveup Id: ' . $previous_sequence['color_template_item_id'] . ' Seq:' . $previous_sequence['sequence'],
 		false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
@@ -257,6 +273,14 @@ function aggregate_color_item_remove_confirm() {
 		WHERE color_template_item_id = ?',
 		array(get_request_var('color_id')));
 
+	if (!cacti_sizeof($template) || !cacti_sizeof($color_item)) {
+		raise_message('color_item_not_found', __('Color Template or Item not found.'), MESSAGE_LEVEL_ERROR);
+
+		cacti_header('color_templates.php');
+
+		exit;
+	}
+
 	$color_hex  = db_fetch_cell_prepared('SELECT hex
 		FROM colors
 		WHERE id = ?',
@@ -272,7 +296,7 @@ function aggregate_color_item_remove_confirm() {
 	</tr>
 	<tr>
 		<td class='right'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' name='cancel'>
 			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove Color Item');?>'>
 		</td>
 	</tr>
@@ -283,9 +307,13 @@ function aggregate_color_item_remove_confirm() {
 	form_end();
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
-		$('#continue').click(function(data) {
+		$('#clear').on('click', function() {
+			$('#cdialog').dialog('close');
+		});
+
+		$('#continue').on('click', function(data) {
 			$.post('color_templates_items.php?action=item_remove', {
 				__csrf_magic: csrfMagicToken,
 				color_id: <?php print get_request_var('color_id');?>,
@@ -300,7 +328,6 @@ function aggregate_color_item_remove_confirm() {
 	<?php
 }
 
-
 /**
  * aggregate_color_item_remove		remove item
  */
@@ -314,7 +341,6 @@ function aggregate_color_item_remove() {
 		WHERE color_template_item_id = ?',
 		array(get_request_var('color_id')));
 }
-
 
 /**
  * aggregate_color_item_edit		edit item

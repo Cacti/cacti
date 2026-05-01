@@ -301,13 +301,13 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 			2 => array('pipe', 'w')  // stderr is a pipe to write to
 		);
 
-		$php_path = read_config_option('path_php_binary');
+		$php_path = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+		$script   = cacti_escapeshellarg($config['base_path'] . '/script_server.php');
 
-		$command = $php_path     . ' -q ' .
-			$config['base_path'] . '/script_server.php ' .
-			' --environ=cmd '    .
-			' --poller='         . $poller_id .
-			' --mode='           . $config['connection'];
+		$command = $php_path . ' -q ' . $script .
+			' --environ=' . cacti_escapeshellarg('cmd') .
+			' --poller='  . cacti_escapeshellarg((string) $poller_id) .
+			' --mode='    . cacti_escapeshellarg($config['connection']);
 
 		$cactiphp = proc_open($command, $cactides, $pipes);
 		$output = fgets($pipes[1], 1024);
@@ -1036,4 +1036,3 @@ function display_help () {
 	print '    --mibs   - Refresh all system mibs from hosts supporting snmp.' . PHP_EOL;
 	print '    --debug  - Display verbose output during execution.' . PHP_EOL . PHP_EOL;
 }
-

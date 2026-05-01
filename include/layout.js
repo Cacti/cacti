@@ -736,9 +736,56 @@ function cactiReturnTo(href) {
 	}
 }
 
+function handleTableNav() {
+	$('.navBarNavigationNext, .navBarNavigationCenter, .navBarNavigationPrevious').find('a').each(function() {
+		$(this).on('click', function(event) {
+			var data_url = $(this).data('url');
+			var returnTo = $(this).data('return');
+
+			event.preventDefault();
+
+			if (typeof url_graph === 'function') {
+				var url_add = url_graph('');
+			} else {
+				var url_add = '';
+			}
+
+			if (data_url) {
+				if (returnTo) {
+					$.get(data_url+url_add+'&header=false', function(data) {
+						$('#' + returnTo).html(data);
+						applySkin();
+					});
+				} else {
+					document.location = data_url + url_add;
+				}
+			}
+		});
+	});
+
+	$('.tableSubHeaderCheckbox > input[type="checkbox"]').on('click', function() {
+		var prefix = $(this).data('prefix');
+		selectAll(prefix, $(this).is(':checked'));
+	});
+
+	$('.selectAllRealms').on('click', function() {
+		selectAllRealms($(this).is(':checked'));
+	});
+
+	$('.cactiReturnTo').on('click', function() {
+		var url = $(this).data('url');
+		cactiReturnTo(url);
+	});
+}
+
 /** applySkin - This function re-asserts all javascript behavior to a page
  *  that can't be set using a live attribute 'on()' */
 function applySkin() {
+	// Support callback nonces
+	$.ajaxSetup({
+		nonce: cactiNonce
+	});
+
 	pageName = basename($(location).attr('pathname'));
 
 	$('#messageContainer').remove();
@@ -747,7 +794,7 @@ function applySkin() {
 		theme = 'classic';
 
 		// debounce submits
-		$('form').submit(function() {
+		$('form').on('submit', function() {
 			$('input[type="submit"], button[type="submit"]').not('.import, .export').prop('disabled', true);
 		});
 	} else {
@@ -757,7 +804,7 @@ function applySkin() {
 		$('fieldset.reindex_methods').buttonset();
 
 		// debounce submits
-		$('form').submit(function() {
+		$('form').on('submit', function() {
 			$('input[type="submit"], button[type="submit"]').not('.import, .export').button('disable');
 		});
 	}
@@ -781,6 +828,8 @@ function applySkin() {
 	ajaxAnchors();
 
 	applySelectorVisibilityAndActions();
+
+	handleTableNav();
 
 	$('.helpPage').off('click').on('click', function(event) {
 		event.stopPropagation();
@@ -1234,7 +1283,7 @@ function makeFiltersResponsive() {
 	}
 
 	if ($('#form_graph_view').length) {
-		$('#form_graph_view').filter('input, select').not('#date1, #date2').click(function() {
+		$('#form_graph_view').filter('input, select').not('#date1, #date2').on('click', function() {
 			closeDateFilters();
 		});
 	}
@@ -2772,7 +2821,7 @@ function setupSortable() {
 }
 
 function setupBreadcrumbs() {
-	$('#breadcrumbs > li > a').click(function(event) {
+	$('#breadcrumbs > li > a').on('click', function(event) {
 		event.preventDefault();
 		event.stopPropagation();
 
@@ -3029,7 +3078,7 @@ $(function() {
 		handlePopState();
 	}
 
-	$('#filter, #rfilter').keydown(function(event) {
+	$('#filter, #rfilter').on('keydown', function(event) {
 		if (event.keyCode == 8 && $(this).val() == '') {
 			handlePopState();
 		}
@@ -3139,7 +3188,7 @@ function setupEllipsis() {
 }
 
 function keepWindowSize() {
-	$(window).resize(function (event) {
+	$(window).on('resize', function (event) {
 		waitForFinalEvent(function() {
 			$('.cactiGraphContentArea').show();
 
@@ -3841,7 +3890,7 @@ function initializeGraphs(disable_cache) {
 	$('#form_graph_view').off('submit').on('submit', function(event) {
 		event.preventDefault();
 		event.stopPropagation();
-		applyFilter();
+		applyGraphFilter();
 	});
 
 	var mainWidth = getMainWidth() - 30;
@@ -4488,19 +4537,19 @@ function setSNMPSecurity() {
 				$('#snmp_security_level').selectmenu('refresh');
 			}
 
-			$('#snmp_password').keyup(function() {
+			$('#snmp_password').on('keyup', function() {
 				checkSNMPPassphrase('auth');
 			});
 
-			$('#snmp_password_confirm').keyup(function() {
+			$('#snmp_password_confirm').on('keyup', function() {
 				checkSNMPPassphraseConfirm('auth');
 			});
 
-			$('#snmp_priv_passphrase').keyup(function() {
+			$('#snmp_priv_passphrase').on('keyup', function() {
 				checkSNMPPassphrase('priv');
 			});
 
-			$('#snmp_priv_passphrase_confirm').keyup(function() {
+			$('#snmp_priv_passphrase_confirm').on('keyup', function() {
 				checkSNMPPassphraseConfirm('priv');
 			});
 		}
