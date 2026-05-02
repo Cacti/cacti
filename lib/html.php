@@ -1327,7 +1327,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 			/* color name */
 			if (!preg_match('/(TEXTALIGN)/', $_graph_type_name)) {
-				form_selectable_ecell('', $rid, '', !empty($item['hex']) ? 'width:1%;background-color:#' . $item['hex'] . ";'" : "'");
+				form_selectable_ecell('', $rid, '', !empty($item['hex']) ? 'width:1%;background-color:#' . $item['hex'] : '');
 				form_selectable_ecell($item['hex'], $rid);
 			} else {
 				form_selectable_ecell('', $rid);
