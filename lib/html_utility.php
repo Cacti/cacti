@@ -199,6 +199,23 @@ function form_alternate_row($row_id = '', $light = false, $disabled = false) {
 	}
 }
 
+/**
+ * form_alternate_row_class - starts an HTML row with specific class
+ *
+ * @param mixed  $row_id   The id of the row
+ * @param string $class    The class of the row to use
+ * @param bool   $disabled True if the row is disabled
+ */
+function form_alternate_row_class($row_id = '', $class = 'tableRow', $disabled = false) {
+	if ($row_id != '' && !$disabled && substr($row_id, 0, 4) != 'row_') {
+		print "<tr class='$class selectable' id='$row_id'>";
+	} elseif (substr($row_id, 0, 4) == 'row_' || $row_id != '') {
+		print "<tr class='$class' id='$row_id'>";
+	} else {
+		print "<tr class='$class'>";
+	}
+}
+
 /* form_selectable_ecell - a wrapper to form_selectable_cell that escapes the contents
    @arg $contents - the readable portion of the
    @arg $id - the id of the object that will be highlighted
