@@ -200,7 +200,7 @@ test('nonce mode replaces unsafe-inline with nonce in script-src and style-src',
 		$sStart = strpos($csp, 'script-src');
 		$sEnd   = strpos($csp, ';', $sStart);
 		$scriptSrc = substr($csp, $sStart, $sEnd - $sStart);
-		expect($scriptSrc)->toContain("/'nonce-[A-Za-z0-9_-]+'/");
+		expect(preg_match("/'nonce-[A-Za-z0-9_-]+'/", $scriptSrc))->toBe(1);
 		expect($scriptSrc)->not->toContain("'unsafe-inline'");
 
 		$yStart = strpos($csp, 'style-src');
