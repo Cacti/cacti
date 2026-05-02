@@ -1206,37 +1206,44 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 	include($config['include_path'] . '/global_arrays.php');
 
-	print "<tr class='tableHeader'>";
-		DrawMatrixHeaderItem(__('Graph Item'),'',1);
-		DrawMatrixHeaderItem(__('#'), '', 1);
-		DrawMatrixHeaderItem(__('Data Source'),'',1);
-		DrawMatrixHeaderItem(__('Graph Item Type'),'',1);
-		DrawMatrixHeaderItem(__('CF Type'),'',1);
-		DrawMatrixHeaderItem(__('GPrint'),'',1);
-		DrawMatrixHeaderItem(__('CDEF'),'',1);
-		DrawMatrixHeaderItem(__('VDEF'),'',1);
-		DrawMatrixHeaderItem(__('Alpha %'),'',1);
-		DrawMatrixHeaderItem(__('Item Color'),'',4);
-	print '</tr>';
+	$display_text = [
+		__('Graph Item'),
+		__('#'),
+		__('Data Source'),
+		__('Graph Item Type'),
+		__('CF Type'),
+		__('GPrint'),
+		__('CDEF'),
+		__('VDEF'),
+		__('Alpha %'),
+		__('Item Color'),
+	];
 
-	$group_counter = 0; $_graph_type_name = ''; $i = 0;
+	$group_counter    = 0;
+	$_graph_type_name = '';
+
+	$i = 0;
+
+	html_header($display_text, 4);
 
 	if (cacti_sizeof($item_list)) {
 		foreach ($item_list as $item) {
 			/* graph grouping display logic */
-			$this_row_style   = '';
-			$use_custom_class = false;
-			$hard_return      = '';
+			$bold    = false;
+			$class   = false;
+			$rclass  = '';
+			$hreturn = '';
+			$rid     = "row_$id";
 
 			if (!preg_match('/(GPRINT|TEXTALIGN|HRULE|VRULE|TICK)/', $graph_item_types[$item['graph_type_id']])) {
-				$this_row_style = 'font-weight: bold;';
-				$use_custom_class = true;
+				$bold  = true;
+				$class = true;
 				$item['gprint_name'] = __('N/A');
 
 				if ($group_counter % 2 == 0) {
-					$customClass = 'graphItem';
+					$rclass = 'graphItem';
 				} else {
-					$customClass = 'graphItemAlternate';
+					$rclass = 'graphItemAlternate';
 				}
 
 				$group_counter++;
@@ -1245,111 +1252,110 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			$_graph_type_name = $graph_item_types[$item['graph_type_id']];
 
 			/* alternating row color */
-			if ($use_custom_class == false) {
-				print "<tr class='tableRowGraph'>";
+			if ($class == false) {
+				$rclass = 'tableRowGraph' . ($bold ? ' bold':'');
 			} else {
-				print "<tr class='tableRowGraph $customClass'>";
+				$rclass = 'tableRowGraph' . ($bold ? ' bold ':' ') . $rclass;
 			}
 
-			print '<td>';
-			if ($disable_controls == false) { print "<a class='linkEditMain' href='" . html_escape("$filename?action=item_edit&id=" . $item['id'] . "&$url_data") . "'>"; }
-			print __('Item # %d', ($i+1));
-			if ($disable_controls == false) { print '</a>'; }
-			print '</td>';
-			print '<td>' . $item['sequence'] . '</td>';
+			form_alternate_row_class($rid, $rclass);
 
-			if (empty($item['data_source_name'])) {
+			$url = html_escape("$filename?action=item_edit&id=" . $item['id'] . "&$url_data");
+
+			if (!$disable_controls) {
+				form_selectable_cell(__('Item # %d', ($i+1)), $rid);
+			} else {
+				form_selectable_cell(filter_value(__('Item # %d', ($i+1)), '', $url), $rid);
+			}
+
+			form_selectable_ecell($item['sequence'], $rid);
+
+			if ($item['data_source_name'] == '') {
 				$item['data_source_name'] = __('No Source');
 			}
 
 			switch (true) {
-			case preg_match('/(TEXTALIGN)/', $_graph_type_name):
-				$matrix_title = 'TEXTALIGN: ' . ucfirst($item['textalign']);
-				break;
-			case preg_match('/(TICK)/', $_graph_type_name):
-				$matrix_title = $item['data_source_name'] . ': ' . $item['text_format'];
-				break;
-			case preg_match('/(AREA|STACK|GPRINT|LINE[123])/', $_graph_type_name):
-				$matrix_title = $item['data_source_name'] . ': ' . $item['text_format'];
-				break;
-			case preg_match('/(HRULE)/', $_graph_type_name):
-				$matrix_title = 'HRULE: ' . $item['value'];
-				break;
-			case preg_match('/(VRULE)/', $_graph_type_name):
-				$matrix_title = 'VRULE: ' . $item['value'];
-				break;
-			case preg_match('/(COMMENT)/', $_graph_type_name):
-				$matrix_title = 'COMMENT: ' . $item['text_format'];
-				break;
+				case preg_match('/(TEXTALIGN)/', $_graph_type_name):
+					$title = 'TEXTALIGN: ' . ucfirst($item['textalign']);
+					break;
+				case preg_match('/(TICK)/', $_graph_type_name):
+					$title = $item['data_source_name'] . ': ' . $item['text_format'];
+					break;
+				case preg_match('/(AREA|STACK|GPRINT|LINE[123])/', $_graph_type_name):
+					$title = $item['data_source_name'] . ': ' . $item['text_format'];
+					break;
+				case preg_match('/(HRULE)/', $_graph_type_name):
+					$title = 'HRULE: ' . $item['value'];
+					break;
+				case preg_match('/(VRULE)/', $_graph_type_name):
+					$title = 'VRULE: ' . $item['value'];
+					break;
+				case preg_match('/(COMMENT)/', $_graph_type_name):
+					$title = 'COMMENT: ' . $item['text_format'];
+					break;
 			}
 
 			if (preg_match('/(TEXTALIGN)/', $_graph_type_name)) {
-				$hard_return = '';
+				$hreturn = '';
 			} elseif ($item['hard_return'] == 'on') {
-				$hard_return = "<span style='font-weight:bold;color:#FF0000;'>&lt;HR&gt;</span>";
+				$hreturn = "<span style='font-weight:bold;color:#FF0000;'>&lt;HR&gt;</span>";
 			}
 
 			/* data source */
-			print "<td style='$this_row_style'>" . html_escape($matrix_title) . $hard_return . '</td>';
+			form_selectable_cell(html_escape($title) . $hreturn, $rid);
 
 			/* graph item type */
-			print "<td style='$this_row_style'>" . $graph_item_types[$item['graph_type_id']] . '</td>';
+			form_selectable_cell($graph_item_types[$item['graph_type_id']], $rid);
+
 			if (!preg_match('/(TICK|TEXTALIGN|HRULE|VRULE)/', $_graph_type_name)) {
-				print "<td style='$this_row_style'>" . $consolidation_functions[$item['consolidation_function_id']] . '</td>';
+				form_selectable_cell($consolidation_functions[$item['consolidation_function_id']], $rid);
 			} else {
-				print '<td>' . __('N/A') . '</td>';
+				form_selectable_cell(__('N/A'), $rid);
 			}
 
-			print "<td style='$this_row_style'>";
-			print $item['gprint_name'];
-			print "</td>";
-			print "<td style='$this_row_style'>";
-			print $item['cdef_name'];
-			print "</td>";
-			print "<td style='$this_row_style'>";
-			print $item['vdef_name'];
-			print "</td>";
+			form_selectable_ecell($item['gprint_name'], $rid);
+			form_selectable_ecell($item['cdef_name'], $rid);
+			form_selectable_ecell($item['vdef_name'], $rid);
 
 			/* alpha type */
 			if (preg_match('/(AREA|STACK|TICK|LINE[123])/', $_graph_type_name)) {
-				print "<td style='$this_row_style'>" . round((hexdec($item['alpha'])/255)*100) . '%</td>';
+				form_selectable_ecell(round((hexdec($item['alpha'])/255)*100) . '%', $rid);
 			} else {
-				print "<td style='$this_row_style'></td>";
+				form_selectable_cell('', $rid);
 			}
 
 			/* color name */
 			if (!preg_match('/(TEXTALIGN)/', $_graph_type_name)) {
-				print "<td style='width:1%;" . ((!empty($item['hex'])) ? 'background-color:#' . $item['hex'] . ";'" : "'") . '></td>';
-				print "<td style='$this_row_style'>" . $item['hex'] . '</td>';
+				form_selectable_ecell('', $rid, '', !empty($item['hex']) ? 'width:1%;background-color:#' . $item['hex'] . ";'" : "'");
+				form_selectable_ecell($item['hex'], $rid);
 			} else {
-				print '<td></td><td></td>';
+				form_selectable_ecell('', $rid);
+				form_selectable_ecell('', $rid);
 			}
 
 			if ($disable_controls == false) {
-				print "<td class='right nowrap'>";
+				$line = '';
 
 				if ($i != cacti_sizeof($item_list)-1) {
-					print "<span><a class='moveArrow fa fa-caret-down' title='" . __esc('Move Down'). "' href='" . html_escape("$filename?action=item_movedown&id=" . $item['id'] . "&$url_data") . "'></a></span>";
+					$line .= "<span><a class='moveArrow fa fa-caret-down' title='" . __esc('Move Down'). "' href='" . html_escape("$filename?action=item_movedown&id=" . $item['id'] . "&$url_data") . "'></a></span>";
 				} else {
-					print "<span class='moveArrowNone'></span>";
+					$line .= "<span class='moveArrowNone'></span>";
 				}
 
 				if ($i > 0) {
-					print "<span><a class='moveArrow fa fa-caret-up' title='" . __esc('Move Up') . "' href='" . html_escape("$filename?action=item_moveup&id=" . $item['id'] . "&$url_data") . "'></a></span>";
+					$line .= "<span><a class='moveArrow fa fa-caret-up' title='" . __esc('Move Up') . "' href='" . html_escape("$filename?action=item_moveup&id=" . $item['id'] . "&$url_data") . "'></a></span>";
 				} else {
-					print "<span class='moveArrowNone'></span>";
+					$line .= "<span class='moveArrowNone'></span>";
 				}
 
-				print '</td>';
+				form_selectable_cell($line, $rid, '', 'right nowrap');
 
-				print "<td style='width:1%' class='right'>";
+				$line = "<a class='deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape("$filename?action=item_remove&id=" . $item['id'] . "&nostate=true&$url_data") . "'></a>";
 
-				print "<a class='deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape("$filename?action=item_remove&id=" . $item['id'] . "&nostate=true&$url_data") . "'></a>";
-
-				print "</td>";
+				form_selectable_cell($line, $rid, '1%', 'right');
 			}
 
-			print '</tr>';
+			form_end_row();
 
 			$i++;
 		}
