@@ -532,8 +532,8 @@ dynamic_include	./snmpagent_persist.php:165				include( $path_mibcache );
 dynamic_include	./spikekill.php:26	include_once($config['base_path'] . '/lib/spikekill.php');
 host_header	./include/global.php:421			if (!$is_https && isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
 host_header	./include/global.php:422				header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-host_header	./lib/html_utility.php:988		} elseif (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '') {
-host_header	./lib/html_utility.php:989			$srv_host = preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST']);
+host_header	./lib/html_utility.php:1005		} elseif (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '') {
+host_header	./lib/html_utility.php:1006			$srv_host = preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST']);
 sort_order_input	./automation_snmp.php:533				ORDER BY sequence', array(get_request_var('id')));
 sort_order_input	./data_queries.php:872						ORDER BY field_name, sequence', array(get_request_var('id'), $data_template['id']));
 sort_order_input	./graph_templates.php:504			ORDER BY name', array(get_request_var('id')));
