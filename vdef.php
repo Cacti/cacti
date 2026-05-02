@@ -113,7 +113,7 @@ function vdef_form_save() {
 	if (isset_request_var('save_component_vdef')) {
 		$save['id']   = get_filter_request_var('id');
 		$save['hash'] = get_hash_vdef(get_request_var('id'));
-		$save['name'] = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+		$save['name'] = form_input_validate(get_nfilter_request_var('name'), 'name', '^[a-zA-Z0-9 _\-\.\/\(\)]+$', false, 3);
 
 		if (!is_error_message()) {
 			$vdef_id = sql_save($save, 'vdef');

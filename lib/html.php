@@ -1304,13 +1304,13 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			}
 
 			print "<td style='$this_row_style'>";
-			print $item['gprint_name'];
+			print html_escape($item['gprint_name']);
 			print "</td>";
 			print "<td style='$this_row_style'>";
-			print $item['cdef_name'];
+			print html_escape($item['cdef_name']);
 			print "</td>";
 			print "<td style='$this_row_style'>";
-			print $item['vdef_name'];
+			print html_escape($item['vdef_name']);
 			print "</td>";
 
 			/* alpha type */

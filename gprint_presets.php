@@ -68,8 +68,8 @@ function form_save() {
 
 		$save['id']          = get_request_var('id');
 		$save['hash']        = get_hash_gprint(get_request_var('id'));
-		$save['name']        = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
-		$save['gprint_text'] = form_input_validate(get_nfilter_request_var('gprint_text'), 'gprint_text', '', false, 3);
+		$save['name']        = form_input_validate(get_nfilter_request_var('name'), 'name', '^[a-zA-Z0-9 _\-\.\/\(\)]+$', false, 3);
+		$save['gprint_text'] = form_input_validate(get_nfilter_request_var('gprint_text'), 'gprint_text', '^[a-zA-Z0-9 _\-\.\/\(\)%:\\]+$', false, 3);
 
 		if (!is_error_message()) {
 			$gprint_preset_id = sql_save($save, 'graph_templates_gprint');

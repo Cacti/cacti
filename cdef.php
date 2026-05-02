@@ -125,7 +125,7 @@ function form_save() {
 	if (isset_request_var('save_component_cdef')) {
 		$save['id']     = form_input_validate(get_nfilter_request_var('id'), 'id', '^[0-9]+$', false, 3);
 		$save['hash']   = get_hash_cdef(get_nfilter_request_var('id'));
-		$save['name']   = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+		$save['name']   = form_input_validate(get_nfilter_request_var('name'), 'name', '^[a-zA-Z0-9 _\-\.\/\(\)]+$', false, 3);
 		$save['system'] = 0;
 
 		if (!is_error_message()) {
