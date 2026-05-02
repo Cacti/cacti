@@ -1234,6 +1234,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			$rclass  = '';
 			$hreturn = '';
 			$rid     = "row_$i";
+			$title   = '';
 
 			if (!preg_match('/(GPRINT|TEXTALIGN|HRULE|VRULE|TICK)/', $graph_item_types[$item['graph_type_id']])) {
 				$bold  = true;
