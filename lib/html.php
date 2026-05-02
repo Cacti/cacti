@@ -1233,7 +1233,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			$class   = false;
 			$rclass  = '';
 			$hreturn = '';
-			$rid     = "row_$id";
+			$rid     = "row_$i";
 
 			if (!preg_match('/(GPRINT|TEXTALIGN|HRULE|VRULE|TICK)/', $graph_item_types[$item['graph_type_id']])) {
 				$bold  = true;
