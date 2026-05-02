@@ -544,7 +544,7 @@ function aggregate_color_template() {
 							' . __('Color Templates') . '
 						</td>
 						<td>
-							<select id="rows" onChange="applyFilter()">
+							<select id="rows">
 								<option value="-1" ';
 
 	if (get_request_var('rows') == '-1') {
@@ -567,7 +567,7 @@ function aggregate_color_template() {
 							</td>
 							<td>
 								<span>
-									<input type="checkbox" id="has_graphs" ' . (get_request_var('has_graphs') == 'true' ? 'checked':'') . ' onChange="applyFilter()">
+									<input type="checkbox" id="has_graphs" ' . (get_request_var('has_graphs') == 'true' ? 'checked':'') . '>
 									<label for="has_graphs">' . __('Has Graphs') . '</label>
 								</span>
 							</td>
@@ -720,6 +720,14 @@ function aggregate_color_template() {
 	$(function() {
 		$('#clear').on('click', function() {
 			clearFilter();
+		});
+
+		$('#rows').on('change', function() {
+			applyFilter();
+		});
+
+		$('#has_graphs').on('click', function() {
+			applyFilter();
 		});
 
 		$('#form_template').on('submit', function(event) {

@@ -353,7 +353,7 @@ function item_edit() {
 						<?php print __('Data Template');?>
 					</td>
 					<td>
-						<select id='data_template_id' onChange='applyFilter()'>
+						<select id='data_template_id'>
 							<option value='-1'<?php if (get_request_var('data_template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='0'<?php if (get_request_var('data_template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
@@ -559,6 +559,10 @@ function item_edit() {
 				cdefAlignment();
 			});
 		}
+
+		$('#data_template_id').on('change', function() {
+			applyFilter();
+		});
 
 		$('#graph_type_id').on('change', function(data) {
 			setRowVisibility();

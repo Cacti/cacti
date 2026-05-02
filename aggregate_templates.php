@@ -318,7 +318,7 @@ function aggregate_form_actions() {
 						<p>" . __('Click \'Continue\' to Delete the following Aggregate Graph Template(s).') . "</p>
 						<div class='itemlist'><ul>$aggregate_list</ul></div>
 					</td>
-				</tr>\n";
+				</tr>";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Color Template(s)') . "'>";
 		}
@@ -335,7 +335,7 @@ function aggregate_form_actions() {
 			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
 			$save_html
 		</td>
-	</tr>\n";
+	</tr>";
 
 	html_end_box();
 
@@ -613,7 +613,7 @@ function aggregate_template() {
 							' . __('Templates') . '
 						</td>
 						<td>
-							<select id="rows" onChange="applyFilter()">
+							<select id="rows">
 							<option value="-1" ';
 
 	if (get_request_var("rows") == "-1") {
@@ -627,15 +627,15 @@ function aggregate_template() {
 			if (get_request_var("rows") == $key) {
 				$filter_html .= " selected";
 			}
-			$filter_html .= ">" . $value . "</option>\n";
+			$filter_html .= ">" . $value . "</option>";
 		}
 	}
 
 	$filter_html .= '</select>
-					</td>
+						</td>
 						<td>
 							<span>
-								<input type="checkbox" id="has_graphs" ' . (get_request_var('has_graphs') == 'true' ? 'checked':'') . ' onChange="applyFilter()">
+								<input type="checkbox" id="has_graphs" ' . (get_request_var('has_graphs') == 'true' ? 'checked':'') . '>
 								<label for="has_graphs">' . __('Has Graphs') . '</label>
 							</span>
 						</td>
@@ -729,7 +729,7 @@ function aggregate_template() {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Aggregate Templates Found') . "</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Aggregate Templates Found') . "</em></td></tr>";
 	}
 
 	html_end_box(false);
@@ -766,8 +766,11 @@ function aggregate_template() {
 			clearFilter();
 		});
 
-		$('#template').on('submit', function(event) {
-			event.preventDefault();
+		$('#has_graphs').on('click', function() {
+			applyFilter();
+		});
+
+		$('#rows').on('change', function() {
 			applyFilter();
 		});
 
