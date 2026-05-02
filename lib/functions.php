@@ -7068,6 +7068,49 @@ function get_url_type() {
 }
 
 /**
+ * validate_redirect_url - Validates a URL before use in a Location header to
+ * prevent open-redirect attacks.  Only same-origin paths and URLs whose host
+ * matches the server's HTTP_HOST are allowed; everything else is replaced with
+ * the Cacti base URL so redirects always land within the application.
+ *
+ * @param string $url The candidate redirect URL
+ *
+ * @return string A safe URL guaranteed to redirect within this Cacti instance
+ */
+function validate_redirect_url(string $url): string {
+	/* Relative paths are safe as-is. */
+	if (substr($url, 0, 1) === '/') {
+		return $url;
+	}
+
+	/* For absolute URLs verify the host matches this server. */
+	$parsed = parse_url($url);
+
+	if ($parsed === false) {
+		return CACTI_PATH_URL;
+	}
+
+	/* No host component means it is a relative reference. */
+	if (!isset($parsed['host'])) {
+		return $url;
+	}
+
+	$server_host = isset($_SERVER['HTTP_HOST']) ? strtolower((string) $_SERVER['HTTP_HOST']) : '';
+	$url_host    = strtolower($parsed['host']);
+
+	/* Strip port from comparison if present. */
+	if (strpos($server_host, ':') !== false) {
+		$server_host = strstr($server_host, ':', true);
+	}
+
+	if ($url_host !== $server_host) {
+		return CACTI_PATH_URL;
+	}
+
+	return $url;
+}
+
+/**
  * get_default_contextoption - Sets default context options for self-signed SSL
  * related protocols if necessary. Allows plugins to add additional header information
  * to fulfill system setup related requirements like the usage of Web Single Login
