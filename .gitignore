@@ -118,3 +118,10 @@ docker-compose.override.yml
 # Ignore Claude and Worktrees
 .worktrees/**
 .claude/**
+
+# Ignore dev tooling artifacts
+.gemini_security/
+docs/superpowers/
+CLAUDE.md
+reproduce_ghsa_*.php
+verify_task*.php
