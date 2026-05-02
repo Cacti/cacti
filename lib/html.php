@@ -294,7 +294,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 	}
 
 	?>
-	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
+	<script type='text/javascript'>
 	var refreshMSeconds = <?php print read_user_setting('page_refresh')*1000;?>;
 	var graph_start     = <?php print get_current_graph_start();?>;
 	var graph_end       = <?php print get_current_graph_end();?>;
@@ -387,7 +387,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 	}
 
 	?>
-	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
+	<script type='text/javascript'>
 	var refreshMSeconds = <?php print read_user_setting('page_refresh')*1000;?>;
 	var graph_start     = <?php print get_current_graph_start();?>;
 	var graph_end       = <?php print get_current_graph_end();?>;
@@ -591,27 +591,24 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 
 		$url_page_select = get_page_list($current_page, $max_pages, $rows_per_page, $total_rows, $base_url, $page_var, $return_to);
 
-		$next_page = $current_page + 1;
-		$prev_page = $current_page - 1;
-
 		$nav = "<div class='navBarNavigation'>
 			<div class='navBarNavigationPrevious'>
-				" . (($current_page > 1) ? "<a data-url='" . html_escape($base_url . $page_var . "=" . $prev_page) . "' data-return='" . html_escape($return_to) . "' href='#'><i class='fa fa-angle-double-left previous'></i>" . __('Previous'). '</a>':'') . "
+				" . (($current_page > 1) ? "<a href='#' onClick='goto$page_var(" . ($current_page-1) . ");return false;'><i class='fa fa-angle-double-left previous'></i>" . __('Previous'). '</a>':'') . "
 			</div>
 			<div class='navBarNavigationCenter'>
 				" . __('%d to %d of %s [ %s ]', (($rows_per_page*($current_page-1))+1), (($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page*$current_page)) ? $total_rows : $rows_per_page*$current_page), $total_rows, $url_page_select) . "
 			</div>
 			<div class='navBarNavigationNext'>
-				" . (($current_page*$rows_per_page) < $total_rows ? "<a data-url='" . html_escape($base_url . $page_var . "=" . $next_page) . "' data-return='" . html_escape($return_to) . "' href='#'>" . __('Next'). "<i class='fa fa-angle-double-right next'></i></a>":'') . "
+				" . (($current_page*$rows_per_page) < $total_rows ? "<a href='#' onClick='goto$page_var(" . ($current_page+1) . ");return false;'>" . __('Next'). "<i class='fa fa-angle-double-right next'></i></a>":'') . "
 			</div>
 		</div>";
 	} elseif ($total_rows > 0) {
-		if ($page_count || ($total_rows < $rows_per_page && $current_page == 1)) {
+		if ($page_count || ($total_rows < $rows_per_page && $current_page ==1) ) {
 			$nav = "<div class='navBarNavigation'>
 				<div class='navBarNavigationNone'>
 					" . __('All %d %s', $total_rows, $object) . "
 				</div>
-			</div>";
+			</div>\n";
 		} else {
 			if (substr_count($base_url, '?') == 0) {
 				$base_url = trim($base_url) . '?';
@@ -623,20 +620,23 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 			$url_page_select .= "<li>$current_page</a></li>";
 			$url_page_select .= '</ul>';
 
-			$next_page = $current_page + 1;
-			$prev_page = $current_page - 1;
-
 			$nav = "<div class='navBarNavigation'>
 				<div class='navBarNavigationPrevious'>
-					" . (($current_page > 1) ? "<a data-url='" . html_escape($base_url . $page_var . "=" . $prev_page) . "' data-return='" . html_escape($return_to) . "' href='#'><i class='fa fa-angle-double-left previous'></i>" . __('Previous'). "</a>":"") . "
+					" . (($current_page > 1) ? "<a href='#' onClick='goto$page_var(" . ($current_page-1) . ");return false;'><i class='fa fa-angle-double-left previous'></i>" . __('Previous'). "</a>":"") . "
 				</div>
 				<div class='navBarNavigationCenter'>
 					" . __('Current Page: %s', $url_page_select) . "
 				</div>
 				<div class='navBarNavigationNext'>
-					" . ($total_rows >= $rows_per_page ? "<a data-url='" . html_escape($base_url . $page_var . "=" . $next_page) . "' data-return='" . html_escape($return_to) . "' href='#'>" . __('Next'). "<i class='fa fa-angle-double-right next'></i></a>":"") . "
+					" . ($total_rows >= $rows_per_page ? "<a href='#' onClick='goto$page_var(" . ($current_page+1) . ");return false;'>" . __('Next'). "<i class='fa fa-angle-double-right next'></i></a>":"") . "
 				</div>
-			</div>";
+			</div>\n";
+
+			if ($return_to != '') {//code as in get_page_list()
+				$nav .= "<script type='text/javascript'>function goto$page_var(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') } else { var url_add=''; }; $.get('" . $base_url . "header=false&" . $page_var . "='+pageNo+url_add).done(function(data) { $('#$return_to').html(data); applySkin(); }); }</script>";
+			} else {
+				$nav .= "<script type='text/javascript'>function goto{$page_var}(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') } else { var url_add=''; }; document.location='$base_url$page_var='+pageNo+url_add }</script>";
+			}
 		}
 	} else {
 		$nav = "<div class='navBarNavigation'>
@@ -663,7 +663,15 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
    @arg $url - a base url to redirect sort actions to
    @arg $return_to - the id of the object to inject output into as a result of the sort action */
 function html_header_sort($header_items, $sort_column, $sort_direction, $last_item_colspan = 1, $url = '', $return_to = '') {
-	static $page_count = 0;
+	$reg_page = get_order_string_page();
+
+	$valid_columns = [];
+	foreach (array_keys($header_items) as $key) {
+		if ($key !== '' && strpos((string)$key, 'nosort') === false) {
+			$valid_columns[] = $key;
+		}
+	}
+	$_SESSION['valid_sort_columns'][$reg_page] = $valid_columns;
 
 	/* reverse the sort direction */
 	if ($sort_direction == 'ASC') {
@@ -825,7 +833,15 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
    @arg $form_action - the url to post the 'select all' form to
    @arg $return_to - the id of the object to inject output into as a result of the sort action */
 function html_header_sort_checkbox($header_items, $sort_column, $sort_direction, $include_form = true, $form_action = '', $return_to = '', $prefix = 'chk') {
-	static $page_count = 0;
+	$reg_page = get_order_string_page();
+
+	$valid_columns = [];
+	foreach (array_keys($header_items) as $key) {
+		if ($key !== '' && strpos((string)$key, 'nosort') === false) {
+			$valid_columns[] = $key;
+		}
+	}
+	$_SESSION['valid_sort_columns'][$reg_page] = $valid_columns;
 
 	/* reverse the sort direction */
 	if ($sort_direction == 'ASC') {
@@ -969,7 +985,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}
 	}
 
-	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' data-prefix='$prefix'><label class='formCheckboxLabel' title='" . __esc('Select All Rows') . "' for='selectall'></label></th>" . ($include_form ? "<th style='display:none;'><form id='$prefix' name='$prefix' method='post' action='$form_action'></th>":'');
+	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' onClick='selectAll(\"$prefix\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All Rows') . "' for='selectall'></label></th>" . ($include_form ? "<th style='display:none;'><form id='$prefix' name='$prefix' method='post' action='$form_action'></th>":'');
 	print '</tr>';
 
 	$page_count++;
@@ -1068,7 +1084,7 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 		}
 	}
 
-	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' data-prefix='$prefix'><label class='formCheckboxLabel' title='" . __esc('Select All') . "' for='selectall'></label></th>" . ($include_form ? "<th style='display:none;'><form id='$prefix' name='$prefix' method='post' action='$form_action'></th>":'');
+	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' onClick='selectAll(\"$prefix\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All') . "' for='selectall'></label></th>" . ($include_form ? "<th style='display:none;'><form id='$prefix' name='$prefix' method='post' action='$form_action'></th>":'');
 	print '</tr>';
 }
 
@@ -1114,19 +1130,6 @@ function html_create_list($form_data, $column_display, $column_id, $form_previou
 			}
 		}
 	}
-}
-
-/**
- * Sanifizes html to remove harmful content
- *
- * @param string $string The string to be sanifized
- *
- * @return string The sanitized string
- */
-function html_purify($string) {
-	$purifier = new HTMLPurifier();
-
-	return $purifier->purify($string);
 }
 
 /* html_escape_request_var - sanitizes a request variable for display
@@ -1624,10 +1627,10 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 		</div>
 	</div>
 	<input type='hidden' id='action' name='action' value='actions'>
-	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
+	<script type='text/javascript'>
 
 	function setDisabled() {
-		$('tr[id^="line"]').addClass('selectable').prop('disabled', false).removeClass('disabled_row').off('click').prop('disabled', false);
+		$('tr[id^="line"]').addClass('selectable').prop('disabled', false).removeClass('disabled_row').unbind('click').prop('disabled', false);
 
 		if ($('#drp_action').val() == <?php print $delete_action;?>) {
 			$(':checkbox.disabled').each(function(data) {
@@ -1668,7 +1671,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 			});
 		}
 
-		$('tr[id^="line"]').filter(':not(.disabled_row)').on('click', function(event) {
+		$('tr[id^="line"]').filter(':not(.disabled_row)').off('click').on('click', function(event) {
 			selectUpdateRow(event, $(this));
 		});
 	}
@@ -1676,7 +1679,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 	$(function() {
 		setDisabled();
 
-		$('#drp_action').on('change', function() {
+		$('#drp_action').change(function() {
 			setDisabled();
 		});
 	});
@@ -2135,7 +2138,7 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 			<?php print __('Device');?>
 		</td>
 		<td>
-			<select id='host_id' name='host_id'>
+			<select id='host_id' name='host_id' onChange='<?php print $call_back;?>'>
 				<?php if (!$noany) {?><option value='-1'<?php if ($host_id == '-1') {?> selected<?php }?>><?php print __('Any');?></option><?php }?>
 				<?php if (!$nonone) {?><option value='0'<?php if ($host_id == '0') {?> selected<?php }?>><?php print __('None');?></option><?php }?>
 				<?php
@@ -2196,7 +2199,7 @@ function html_site_filter($site_id = '-1', $call_back = 'applyFilter', $sql_wher
 		<?php print __('Site');?>
 	</td>
 	<td>
-		<select id='site_id'>
+		<select id='site_id' onChange='<?php print $call_back;?>'>
 			<?php if (!$noany) {?><option value='-1'<?php if ($site_id == '-1') {?> selected<?php }?>><?php print __('Any');?></option><?php }?>
 			<?php if (!$nonone) {?><option value='0'<?php if ($site_id == '0') {?> selected<?php }?>><?php print __('None');?></option><?php }?>
 			<?php
@@ -2226,7 +2229,7 @@ function html_location_filter($location = '', $call_back = 'applyFilter', $sql_w
 		<?php print __('Location');?>
 	</td>
 	<td>
-		<select id='location'>
+		<select id='location' onChange='<?php print $call_back;?>'>
 			<?php if (!$noany) {?><option value='-1'<?php if ($location == '-1') {?> selected<?php }?>><?php print __('Any');?></option><?php }?>
 			<?php if (!$nonone) {?><option value='0'<?php if ($location == '0') {?> selected<?php }?>><?php print __('None');?></option><?php }?>
 			<?php
@@ -2359,10 +2362,10 @@ function html_spikekill_menu($local_graph_id) {
 
 function html_spikekill_js() {
 	?>
-	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
+	<script type='text/javascript'>
 	spikeKillOpen = false;
 	$(function() {
-		$(document).on('click', function() {
+		$(document).click(function() {
 			if (spikeKillOpen) {
 				$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 				spikeKillOpen = false;
@@ -2373,7 +2376,7 @@ function html_spikekill_js() {
 			return false;
 		});
 
-		$('span.spikekill').on('click', function() {
+		$('span.spikekill').unbind().click(function() {
 			if (spikeKillOpen == false) {
 				local_graph_id = $(this).attr('data-graph');
 
@@ -2413,37 +2416,37 @@ function html_spikekill_js() {
 	});
 
 	function spikeKillActions() {
-		$('.rstddev').on('click', function() {
+		$('.rstddev').unbind().click(function() {
 			removeSpikes('stddev', false, $(this).attr('data-graph'));
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 		});
 
-		$('.dstddev').on('click', function() {
+		$('.dstddev').unbind().click(function() {
 			removeSpikes('stddev', true, $(this).attr('data-graph'));
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 		});
 
-		$('.rfill').on('click', function() {
+		$('.rfill').unbind().click(function() {
 			removeSpikes('fill', false, $(this).attr('data-graph'));
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 		});
 
-		$('.dfill').on('click', function() {
+		$('.dfill').unbind().click(function() {
 			removeSpikes('fill', true, $(this).attr('data-graph'));
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 		});
 
-		$('.rfloat').on('click', function() {
+		$('.rfloat').unbind().click(function() {
 			removeSpikes('float', false, $(this).attr('data-graph'));
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 		});
 
-		$('.dfloat').on('click', function() {
+		$('.dfloat').unbind().click(function() {
 			removeSpikes('float', true, $(this).attr('data-graph'));
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 		});
 
-		$('.skmethod').on('click', function() {
+		$('.skmethod').unbind().click(function() {
 			$('.skmethod').find('i').removeClass('fa fa-check');
 			$(this).find('i:first').addClass('fa fa-check');
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
@@ -2455,7 +2458,7 @@ function html_spikekill_js() {
 				});
 		});
 
-		$('.skills').on('click', function() {
+		$('.skills').unbind().click(function() {
 			$('.skills').find('i').removeClass('fa fa-check');
 			$(this).find('i:first').addClass('fa fa-check');
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
@@ -2467,7 +2470,7 @@ function html_spikekill_js() {
 				});
 		});
 
-		$('.skstddev').on('click', function() {
+		$('.skstddev').unbind().click(function() {
 			$('.skstddev').find('i').removeClass('fa fa-check');
 			$(this).find('i:first').addClass('fa fa-check');
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
@@ -2500,16 +2503,25 @@ function html_common_header($title, $selectedTheme = '') {
 		print "<meta content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5' name='viewport'>" . PHP_EOL;
 	}
 
+	$script_policy = read_config_option('content_security_policy_script');
+	if ($script_policy == 'unsafe-eval') {
+		$script_policy = "'$script_policy'";
+	} else {
+		$script_policy = '';
+	}
+	$alternates = html_escape(read_config_option('content_security_alternate_sources'));
+
 	?>
 	<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>
 	<meta name='apple-mobile-web-app-capable' content='yes'>
 	<meta name='description' content='Monitoring tool of the Internet'>
 	<meta name='mobile-web-app-capable' content='yes'>
 	<meta name="theme-color" content="#161616"/>
+	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' <?php print $alternates;?> data: blob:; style-src 'self' 'unsafe-inline' <?php print $alternates;?>; script-src 'self' <?php print html_escape($script_policy);?> 'unsafe-inline' <?php print $alternates;?>; worker-src 'self' <?php print $alternates;?>;">
 	<meta name='robots' content='noindex,nofollow'>
 	<title><?php print $title; ?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
-	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
+	<script type='text/javascript'>
 		var theme='<?php print $selectedTheme;?>';
 		var hScroll=<?php print read_user_setting('enable_hscroll', '') == 'on' ? 'true':'false';?>;
 		var userSettings=<?php print is_view_allowed('graph_settings') ? 'true':'false';?>;

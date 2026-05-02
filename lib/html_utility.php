@@ -531,7 +531,7 @@ function get_nfilter_request_var($name, $default = '') {
 	}
 }
 
-/* get_request_var_post - deprecated - returns the current value of a
+/* get_request_var_post - depricated - returns the current value of a
      PHP $_POST variable, optionally returning a default value if the
      request variable does not exist.
    @arg $name - the name of the request variable. this should be a valid key in the
@@ -741,64 +741,46 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 	}
 }
 
-function cacti_normalize_sort_direction($direction) {
-	$direction = strtoupper((string) $direction);
-
-	return ($direction === 'DESC') ? 'DESC' : 'ASC';
-}
-
-function cacti_normalize_sort_column($column) {
-	$column = trim((string) $column);
-
-	if (!preg_match('/^[a-zA-Z][a-zA-Z0-9_]*(?:\.[a-zA-Z][a-zA-Z0-9_]*)*$/', $column)) {
-		return '';
-	}
-
-	return $column;
-}
-
-function cacti_build_sort_fragment($column, $direction) {
-	if ($column === '') {
-		return '';
-	}
-
-	if ($column === 'hostname' || $column === 'ip' || $column === 'ip_address') {
-		return 'INET_ATON(' . $column . ') ' . cacti_normalize_sort_direction($direction);
-	}
-
-	return '`' . implode('`.`', explode('.', $column)) . '` ' . cacti_normalize_sort_direction($direction);
-}
-
 /* update_order_string - creates a sort string for standard Cacti tables
    @returns - null */
 function update_order_string($inplace = false) {
-	$page = get_order_string_page(false);
+	$page = get_order_string_page();
 
-	$order_parts = array();
+	$order = '';
+
+	$request_column = get_request_var('sort_column');
+	if (!is_scalar($request_column)) {
+		$request_column = '';
+	}
+
+	if (strpos((string)$request_column, '(') === false && strpos((string)$request_column, '`') === false) {
+		$del = '`';
+	} else {
+		$del = '';
+	}
 
 	if ($inplace) {
-		if (!isset($_SESSION['sort_data'][$page]) || !is_array($_SESSION['sort_data'][$page])) {
-			unset($_SESSION['sort_string'][$page]);
-			return;
-		}
+		if (!empty($_SESSION['sort_data'][$page])) {
+			$_SESSION['sort_string'][$page] = 'ORDER BY ';
+			foreach($_SESSION['sort_data'][$page] as $column => $direction) {
+				$column    = validate_sort_column($column, $page);
+				$direction = (strtoupper((string)$direction) == 'DESC' ? 'DESC' : 'ASC');
 
-		$validated = array();
+				if ($column == '') continue;
 
-		foreach($_SESSION['sort_data'][$page] as $column => $direction) {
-			$column = cacti_normalize_sort_column($column);
-			$order  = cacti_build_sort_fragment($column, $direction);
-
-			if ($order !== '') {
-				$validated[$column] = cacti_normalize_sort_direction($direction);
-				$order_parts[]      = $order;
+				if ($column == 'hostname' || $column == 'ip' || $column == 'ip_address') {
+					$order .= ($order != '' ? ', ':'') . 'INET_ATON(' . $column . ') ' . $direction;
+				} else {
+					$order .= ($order != '' ? ', ':'') . $column . ' ' . $direction;
+				}
 			}
-		}
 
-		if (cacti_sizeof($order_parts)) {
-			$_SESSION['sort_data'][$page]   = $validated;
-			$_SESSION['sort_string'][$page] = 'ORDER BY ' . implode(', ', $order_parts);
+			if ($order != '') {
+				$_SESSION['sort_string'][$page] .= $order;
+			} else {
+				unset($_SESSION['sort_string'][$page]);
+			}
 		} else {
-			unset($_SESSION['sort_data'][$page]);
 			unset($_SESSION['sort_string'][$page]);
 		}
 	} else {
@@ -809,24 +791,68 @@ function update_order_string($inplace = false) {
 			unset($_SESSION['sort_data'][$page]);
 			unset($_SESSION['sort_string'][$page]);
 
-			$column = cacti_normalize_sort_column(get_request_var('sort_column'));
-			if ($column !== '') {
-				$_SESSION['sort_data'][$page][$column] = cacti_normalize_sort_direction(get_request_var('sort_direction'));
-			}
+			$column    = validate_sort_column($request_column, $page);
+			$direction_raw = get_nfilter_request_var('sort_direction');
+			if (!is_scalar($direction_raw)) $direction_raw = '';
+			$direction = (strtoupper((string)$direction_raw) == 'DESC' ? 'DESC' : 'ASC');
 
-			update_order_string(true);
+			if ($column != '') {
+				$_SESSION['sort_data'][$page][$column] = $direction;
+
+				if ($column == 'hostname' || $column == 'ip' || $column == 'ip_address') {
+					$_SESSION['sort_string'][$page] ='ORDER BY INET_ATON(' . $column . ") " . $direction;
+				} else {
+					$_SESSION['sort_string'][$page] = 'ORDER BY ' . $del . implode($del . '.'. $del, explode('.', $column)) . $del . ' ' . $direction;
+				}
+			}
 		} elseif (isset_request_var('sort_column')) {
 			if (isset_request_var('reset')) {
 				unset($_SESSION['sort_data'][$page]);
 				unset($_SESSION['sort_string'][$page]);
 			}
 
-			$column = cacti_normalize_sort_column(get_request_var('sort_column'));
-			if ($column !== '') {
-				$_SESSION['sort_data'][$page][$column] = cacti_normalize_sort_direction(get_nfilter_request_var('sort_direction'));
+			$column    = validate_sort_column($request_column, $page);
+			$direction_raw = get_nfilter_request_var('sort_direction');
+			if (!is_scalar($direction_raw)) $direction_raw = '';
+			$direction = (strtoupper((string)$direction_raw) == 'DESC' ? 'DESC' : 'ASC');
+
+			if ($column != '') {
+				$_SESSION['sort_data'][$page][$column] = $direction;
 			}
 
-			update_order_string(true);
+			if (!empty($_SESSION['sort_data'][$page])) {
+				$_SESSION['sort_string'][$page] = 'ORDER BY ';
+
+				foreach($_SESSION['sort_data'][$page] as $column => $direction) {
+					if (strpos((string)$column, '(') === false && strpos((string)$column, '`') === false) {
+						$del = '`';
+					} else {
+						$del = '';
+						break;
+					}
+				}
+
+				foreach($_SESSION['sort_data'][$page] as $column => $direction) {
+					$column    = validate_sort_column($column, $page);
+					$direction = (strtoupper((string)$direction) == 'DESC' ? 'DESC' : 'ASC');
+
+					if ($column == '') continue;
+
+					if ($column == 'hostname' || $column == 'ip' || $column == 'ip_address') {
+						$order .= ($order != '' ? ', ':'') . 'INET_ATON(' . $column . ") " . $direction;
+					} else {
+						$order .= ($order != '' ? ', ' . $del:$del) . implode($del . '.' . $del, explode('.', $column)) . $del . ' ' . $direction;
+					}
+				}
+
+				if ($order != '') {
+					$_SESSION['sort_string'][$page] .= $order;
+				} else {
+					unset($_SESSION['sort_string'][$page]);
+				}
+			} else {
+				unset($_SESSION['sort_string'][$page]);
+			}
 		} else {
 			unset($_SESSION['sort_data'][$page]);
 			unset($_SESSION['sort_string'][$page]);
@@ -837,53 +863,64 @@ function update_order_string($inplace = false) {
 /* get_order_string - returns a valid order string for a table
    @returns - the order string */
 function get_order_string() {
-	$page        = get_order_string_page(true);
-	$sort_column = cacti_normalize_sort_column(get_nfilter_request_var('sort_column'));
-	$sort_dir    = cacti_normalize_sort_direction(get_nfilter_request_var('sort_direction'));
+	$page = get_order_string_page();
 
-	if (isset($_SESSION['sort_data'][$page]) && is_array($_SESSION['sort_data'][$page])) {
-		$order_parts = array();
-		$validated   = array();
-
-		foreach ($_SESSION['sort_data'][$page] as $column => $direction) {
-			$column = cacti_normalize_sort_column($column);
-			$order  = cacti_build_sort_fragment($column, $direction);
-
-			if ($order !== '') {
-				$validated[$column] = cacti_normalize_sort_direction($direction);
-				$order_parts[]      = $order;
-			}
-		}
-
-		if (cacti_sizeof($order_parts)) {
-			$_SESSION['sort_data'][$page]   = $validated;
-			$_SESSION['sort_string'][$page] = 'ORDER BY ' . implode(', ', $order_parts);
-			return $_SESSION['sort_string'][$page];
-		}
-
-		unset($_SESSION['sort_data'][$page]);
-		unset($_SESSION['sort_string'][$page]);
+	$request_column = get_request_var('sort_column');
+	if (!is_scalar($request_column)) {
+		$request_column = '';
 	}
 
-	if ($sort_column != '') {
-		return cacti_build_sort_fragment($sort_column, $sort_dir) !== ''
-			? 'ORDER BY ' . cacti_build_sort_fragment($sort_column, $sort_dir)
-			: '';
+	if (strpos((string)$request_column, '(') === false && strpos((string)$request_column, '`') === false) {
+		$del = '`';
 	} else {
-		return '';
+		$del = '';
+	}
+
+	if (isset($_SESSION['sort_string'][$page])) {
+		return $_SESSION['sort_string'][$page];
+	} else {
+		$column    = validate_sort_column($request_column, $page);
+		$direction_raw = get_nfilter_request_var('sort_direction');
+		if (!is_scalar($direction_raw)) $direction_raw = '';
+		$direction = (strtoupper((string)$direction_raw) == 'DESC' ? 'DESC' : 'ASC');
+
+		if ($column == '') {
+			return '';
+		}
+
+		return 'ORDER BY ' . $del . implode($del . '.' . $del, explode('.', $column)) . $del . ' ' . $direction;
 	}
 }
 
+/**
+ * validate_sort_column - validates a sort column against the session allowlist
+ *
+ * @param string $column - the column to validate
+ * @param string $page - the page identifier
+ *
+ * @return string - the validated/sanitized column
+ */
+function validate_sort_column($column, $page) {
+	if (isset($_SESSION['valid_sort_columns'][$page])) {
+		if (in_array($column, $_SESSION['valid_sort_columns'][$page])) {
+			return $column;
+		} else {
+			return '';
+		}
+	}
+
+	return sanitize_sql_column($column);
+}
+
 function remove_column_from_order_string($column) {
-	$page = get_order_string_page(false);
+	$page = get_order_string_page();
 
 	if (isset($_SESSION['sort_data'][$page][$column])) {
 		unset($_SESSION['sort_data'][$page][$column]);
 		update_order_string(true);
 	}
 }
-
-function get_order_string_page($increment = true) {
+function get_order_string_page($increment = false) {
 	static $page_count = 0;
 
 	$page = $page_count . '_' . str_replace('.php', '', get_current_page());
@@ -896,7 +933,7 @@ function get_order_string_page($increment = true) {
 		$page .= '_' . get_nfilter_request_var('tab');
 	}
 
-	if ($increment == true) {
+	if ($increment) {
 		$page_count++;
 	}
 
@@ -904,135 +941,14 @@ function get_order_string_page($increment = true) {
 }
 
 /**
- * Validate that a redirect URL points to an internal Cacti page.
- * Prevents open redirect attacks by rejecting external URLs.
+ * next_order_string_page - advances the sort context counter
  *
- * @param string $url The URL to validate
- * @param string $default The URL to travel to upon failure
- *
- * @return string The validated URL, or the provided $default if invalid
+ * @return void
  */
-function validate_redirect_url($url = '', $default = 'index.php') {
-	if ($url === '') {
-		return $default;
-	}
-
-	$url = trim($url);
-	$url = str_replace('\\', '/', $url);
-
-	// Decode the url to make it readable if encoded
-	if (is_urlencoded($url)) {
-		$url = urldecode($url);
-		$url = str_replace('\\', '/', $url);
-	}
-
-	// reject URLs with protocol schemes (external redirects, javascript:, data:)
-	$bad_strings = array(
-		'javascript:',
-		'data:',
-		'vbscript:',
-		'mailto:',
-		'file:'
-	);
-
-	foreach($bad_strings as $bstring) {
-		if (stripos($url, $bstring) !== false) {
-			return $default;
-		}
-	}
-
-	// reject protocol-relative URLs
-	if (strpos($url, '//') === 0) {
-		return $default;
-	}
-
-	// reject URLs with newlines (header injection)
-	if (preg_match('/[\r\n]/', $url)) {
-		return $default;
-	}
-
-	// reject path traversal sequences
-	if (stripos($url, '..') !== false) {
-		return $default;
-	}
-
-	$parsed = parse_url($url);
-	if ($parsed === false) {
-		return $default;
-	}
-
-	$ref_host = isset($parsed['host']) ? $parsed['host'] : null;
-	$ref_user = isset($parsed['user']) ? $parsed['user'] : null;
-	$ref_pass = isset($parsed['pass']) ? $parsed['pass'] : null;
-	$ref_port = isset($parsed['port']) ? $parsed['port'] : null;
-	$ref_scheme = isset($parsed['scheme']) ? strtolower($parsed['scheme']) : null;
-
-	if ($ref_user !== null || $ref_pass !== null) {
-		return $default;
-	}
-
-	if ($ref_scheme !== null && !in_array($ref_scheme, array('http', 'https'), true)) {
-		return $default;
-	}
-
-	if ($ref_scheme !== null && $ref_host === null) {
-		return $default;
-	}
-
-	$srv_host = null;
-
-	/* Prefer SERVER_NAME (set by server config) over HTTP_HOST (client-supplied)
-	   to prevent open redirect via Host header spoofing */
-	if (isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME'] != '') {
-		$srv_host = preg_replace('/:\d+$/', '', $_SERVER['SERVER_NAME']);
-	} elseif (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '') {
-		$srv_host = preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST']);
-	}
-
-	if ($ref_host !== null) {
-		if ($srv_host === null || strtolower($ref_host) !== strtolower($srv_host)) {
-			return $default;
-		}
-	}
-
-	if ($ref_port !== null) {
-		if (!isset($_SERVER['SERVER_PORT']) || (string)$ref_port !== (string)$_SERVER['SERVER_PORT']) {
-			return $default;
-		}
-	}
-
-	$ref_path  = isset($parsed['path']) ? $parsed['path'] : '';
-	$ref_query = isset($parsed['query']) ? $parsed['query'] : null;
-
-	if ($ref_path !== '') {
-		if (strpos($ref_path, '//') === 0) {
-			return $default;
-		}
-
-		if ($ref_path[0] !== '/' && strpos($ref_path, ':') !== false) {
-			return $default;
-		}
-	}
-
-	$safe = sanitize_uri($ref_path . ($ref_query !== null ? '?' . $ref_query : ''));
-	if ($safe === '' || strpos($safe, '//') === 0) {
-		return $default;
-	}
-
-	return $safe;
+function next_order_string_page() {
+	get_order_string_page(true);
 }
 
-/**
- * Validates if the given string is a valid regular expression.
- *
- * This function checks if the provided regular expression is valid and safe to use.
- * It prevents exploits by limiting the length of the regular expression to 50 bytes
- * and disallowing the use of the semicolon character.
- *
- * @param string $regex The regular expression to validate.
- *
- * @return bool|string Returns true if the regular expression is valid, otherwise returns an error message string.
- */
 function validate_is_regex($regex) {
 	if ($regex == '') {
 		return true;
@@ -1182,7 +1098,7 @@ function display_tooltip($text) {
      in length and number of rows per page
    @arg $current_page - the current page number
    @arg $pages_per_screen - the maximum number of pages allowed on a single screen. odd numbered
-     values for this argument are preferred for equality reasons
+     values for this argument are prefered for equality reasons
    @arg $current_page - the current page number
    @arg $total_rows - the total number of available rows
    @arg $url - the url string to prepend to each page click
@@ -1237,24 +1153,23 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 
 	if ($total_pages > 0) {
 		if ($current_page == 1) {
-			$url_page_select .= "<li><a data-url='" . html_escape($url . $page_var . "=1") . "' data-return='" . html_escape($return_to) . "' href='#' class='active'>1</a></li>";
+			$url_page_select .= "<li><a href='#' class='active' onClick='goto$page_var(1);return false'>1</a></li>";
 		} else {
-			$url_page_select .= "<li><a data-url='" . html_escape($url . $page_var . "=1") . "' data-return='" . html_escape($return_to) . "' href='#'>1</a></li>";
+			$url_page_select .= "<li><a href='#' onClick='goto$page_var(1);return false'>1</a></li>";
 		}
 	}
 
 	for ($page_number=0; (($page_number+$start_page) <= $end_page); $page_number++) {
 		$page = $page_number + $start_page;
-
 		if ($page_number < $pages_per_screen) {
 			if ($page_number == 0 && $start_page > 2) {
 				$url_page_select .= $url_ellipsis;
 			}
 
 			if ($current_page == $page) {
-				$url_page_select .= "<li><a data-url='" . html_escape($url . $page_var . "=" . $page) . "' data-return='" . html_escape($return_to) . "' href='#' class='active'>$page</a></li>";
+				$url_page_select .= "<li><a href='#' class='active' onClick='goto$page_var($page);return false'>$page</a></li>";
 			} else {
-				$url_page_select .= "<li><a data-url='" . html_escape($url . $page_var . "=" . $page) . "' data-return='" . html_escape($return_to) . "' href='#'>$page</a></li>";
+				$url_page_select .= "<li><a href='#' onClick='goto$page_var($page);return false'>$page</a></li>";
 			}
 		}
 	}
@@ -1265,13 +1180,19 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 
 	if ($total_pages > 1) {
 		if ($current_page == $total_pages) {
-			$url_page_select .= "<li><a data-url='" . html_escape($url . $page_var . "=" . $total_pages) . "' data-return='" . html_escape($return_to) . "' href='#' class='active'>$total_pages</a></li>";
+			$url_page_select .= "<li><a href='#' class='active' onClick='goto$page_var($total_pages);return false'>$total_pages</a></li>";
 		} else {
-			$url_page_select .= "<li><a data-url='" . html_escape($url . $page_var . "=" . $total_pages) . "' data-return='" . html_escape($return_to) . "' href='#'>$total_pages</a></li>";
+			$url_page_select .= "<li><a href='#' onClick='goto$page_var($total_pages);return false'>$total_pages</a></li>";
 		}
 	}
 
 	$url_page_select .= '</ul>';
+
+	if ($return_to != '') {
+		$url_page_select .= "<script type='text/javascript'>function goto$page_var(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') } else { var url_add=''; }; $.get('" . sanitize_uri($url) . "header=false&" . $page_var . "='+pageNo+url_add).done(function(data) { $('#$return_to').html(data); applySkin(); }); }</script>";
+	} else {
+		$url_page_select .= "<script type='text/javascript'>function goto{$page_var}(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') } else { var url_add=''; }; document.location='$url$page_var='+pageNo+url_add }</script>";
+	}
 
 	return $url_page_select;
 }

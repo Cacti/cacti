@@ -239,9 +239,9 @@ function form_save() {
 			unlink($xmlfile);
 		} else {
 			if ($data !== false) {
-				raise_message('import_success', __('The Package %s Imported Successfully', $package_name), MESSAGE_LEVEL_INFO);
+				raise_message('import_success', __('The Package %s Imported Successfully', html_escape($package_name)), MESSAGE_LEVEL_INFO);
 			} else {
-				raise_message('import_fail', __('The Package %s Import Failed', $package_name), MESSAGE_LEVEL_ERROR);
+				raise_message('import_fail', __('The Package %s Import Failed', html_escape($package_name)), MESSAGE_LEVEL_ERROR);
 			}
 
 			unlink($xmlfile);
@@ -398,7 +398,7 @@ function package_get_details() {
 
 				unlink($xmlfile);
 			} else {
-				raise_message_javascript(__('Error in Package'), __('The package "%s" download or validation failed', $package_name), __('See the cacti.log for more information.  It could be that you had either an API Key error or the package was tamered with, or the location is not available.'));
+				raise_message_javascript(__('Error in Package'), __('The package "%s" download or validation failed', html_escape($package_name)), __('See the cacti.log for more information.  It could be that you had either an API Key error or the package was tamered with, or the location is not available.'));
 			}
 		}
 
@@ -525,16 +525,16 @@ function import_display_package_data($templates, $files, $package_name, $xmlfile
 	$id = 99;
 
 	form_alternate_row('line_' . $id);
-	form_selectable_cell($details['author'], $id);
-	form_selectable_cell($details['homepage'], $id);
-	form_selectable_cell($details['email'], $id);
+	form_selectable_cell(html_escape($details['author']), $id);
+	form_selectable_cell(html_escape($details['homepage']), $id);
+	form_selectable_cell(html_escape($details['email']), $id);
 	if (isset($details['class']) && array_key_exists($details['class'], $device_classes)) {
-		form_selectable_cell($device_classes[$details['class']], $id);
+		form_selectable_cell(html_escape($device_classes[$details['class']]), $id);
 	} else {
 		form_selectable_cell(__('Unknown'), $id);
 	}
-	form_selectable_cell($details['version'], $id);
-	form_selectable_cell($details['copyright'], $id);
+	form_selectable_cell(html_escape($details['version']), $id);
+	form_selectable_cell(html_escape($details['copyright']), $id);
 	form_end_row();
 
 	html_end_box();

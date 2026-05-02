@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cacti>
+    <info>
+        <name>&lt;script&gt;alert('XSS')&lt;/script&gt;</name>
+    </info>
+</cacti>

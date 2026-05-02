@@ -111,3 +111,4 @@ notepad.md
 include/vendor/*
 vendor/*
 .worktrees/
+tests/e2e/test-results/
