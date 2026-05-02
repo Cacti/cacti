@@ -1261,7 +1261,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 			form_alternate_row_class($rid, $rclass);
 
-			$url = html_escape("$filename?action=item_edit&id=" . $item['id'] . "&$url_data");
+			$url = "$filename?action=item_edit&id=" . $item['id'] . "&$url_data";
 
 			if (!$disable_controls) {
 				form_selectable_cell(filter_value(__('Item # %d', ($i+1)), '', $url), $rid);
