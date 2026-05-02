@@ -30,7 +30,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 	$redirect = validate_redirect_url($_SERVER['HTTP_REFERER'], 'index.php');
 	$goBack = "<td colspan='2' class='center'>[<a href='" . $redirect . "'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
 } else {
-	$goBack = "<td colspan='2' class='center'>[<a class='cactiReturnTo' href='#'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
+	$goBack = "<td colspan='2' class='center'>[<a class='returnTo' href='#'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
 }
 
 /* allow for plugin based permission denied page */
@@ -64,6 +64,9 @@ print "<body class='logoutBody'>
 	$(function() {
 		$('.loginLeft').css('width',parseInt($(window).width()*0.33)+'px');
 		$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
+		$('.returnTo').on('click', function() {
+			window.history.back();
+		});
 	});
 	</script>";
 
