@@ -668,11 +668,11 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 	$reg_page = $page_count . '_' . str_replace('.php', '', basename($_SERVER['SCRIPT_NAME']));
 
 	if (isset_request_var('action')) {
-		$reg_page .= '_' . get_request_var('action');
+		$reg_page .= '_' . get_nfilter_request_var('action');
 	}
 
 	if (isset_request_var('tab')) {
-		$reg_page .= '_' . get_request_var('tab');
+		$reg_page .= '_' . get_nfilter_request_var('tab');
 	}
 
 	$valid_columns = [];
@@ -848,11 +848,11 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 	$reg_page = $page_count . '_' . str_replace('.php', '', basename($_SERVER['SCRIPT_NAME']));
 
 	if (isset_request_var('action')) {
-		$reg_page .= '_' . get_request_var('action');
+		$reg_page .= '_' . get_nfilter_request_var('action');
 	}
 
 	if (isset_request_var('tab')) {
-		$reg_page .= '_' . get_request_var('tab');
+		$reg_page .= '_' . get_nfilter_request_var('tab');
 	}
 
 	$valid_columns = [];

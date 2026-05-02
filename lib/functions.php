@@ -7609,6 +7609,9 @@ function cacti_format_ipv6_colon($address) {
  * @return string - the sanitized column name
  */
 function sanitize_sql_column($column) {
+	if (is_array($column)) {
+		return '';
+	}
 	if (!is_scalar($column)) {
 		return '';
 	}
