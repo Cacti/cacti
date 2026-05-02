@@ -635,7 +635,7 @@ function aggregate_template() {
 						</td>
 						<td>
 							<span>
-								<input type="checkbox" id="has_graphs" ' . (get_request_var('has_graphs') == 'true' ? 'checked':'') . '">
+								<input type="checkbox" id="has_graphs" ' . (get_request_var('has_graphs') == 'true' ? 'checked':'') . '>
 								<label for="has_graphs">' . __('Has Graphs') . '</label>
 							</span>
 						</td>
