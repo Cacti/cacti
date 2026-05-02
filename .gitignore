@@ -101,11 +101,20 @@ include/vendor/csrf/csrf-secret.php
 # Ignore visual studio code
 .vscode/**
 
-# Ignore local developer tooling state (Claude Code, oh-my-claudecode, git worktrees, local notes)
+# Ignore local developer tooling state (Claude Code, oh-my-claudecode, Gemini, git worktrees, local notes)
 .claude/
 .omc/
+.gemini_security/
 .worktrees/
 notepad.md
+CLAUDE.md
+
+# Ignore local planning and AI-generated docs
+docs/superpowers/
+
+# Ignore local reproduce/verification scripts
+reproduce_ghsa_*.php
+verify_task*.php
 
 # Ignore vendor folders
 include/vendor/*
