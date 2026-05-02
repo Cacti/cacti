@@ -1965,8 +1965,10 @@ function reports() {
 		$sql_join
 		$sql_where
 		ORDER BY " .
-		get_request_var('sort_column') . ' ' .
-		get_request_var('sort_direction') .
+		cacti_validate_sort_column(get_request_var('sort_column'),
+			array('name', 'cint', 'lastsent', 'mailtime', 'full_name', 'username', 'from_name', 'attachment_type', 'enabled'),
+			'name') . ' ' .
+		(get_request_var('sort_direction') === 'DESC' ? 'DESC' : 'ASC') .
 		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
 	form_start(get_reports_page(), 'chk');
