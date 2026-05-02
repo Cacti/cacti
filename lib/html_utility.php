@@ -902,7 +902,7 @@ function get_order_string() {
  */
 function validate_sort_column($column, $page) {
 	if (isset($_SESSION['valid_sort_columns'][$page])) {
-		if (in_array($column, $_SESSION['valid_sort_columns'][$page])) {
+		if (in_array($column, $_SESSION['valid_sort_columns'][$page], true)) {
 			return $column;
 		} else {
 			return '';
