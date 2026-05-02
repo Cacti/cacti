@@ -478,16 +478,16 @@ function import_display_package_data($templates, $files, $package_name, $xmlfile
 	$id = 99;
 
 	form_alternate_row('line_' . $id);
-	form_selectable_cell(html_escape($details['author']), $id);
-	form_selectable_cell(html_escape($details['homepage']), $id);
-	form_selectable_cell(html_escape($details['email']), $id);
+	form_selectable_ecell($details['author'], $id);
+	form_selectable_ecell($details['homepage'], $id);
+	form_selectable_ecell($details['email'], $id);
 	if (isset($details['class']) && array_key_exists($details['class'], $device_classes)) {
-		form_selectable_cell(html_escape($device_classes[$details['class']]), $id);
+		form_selectable_ecell($device_classes[$details['class']], $id);
 	} else {
 		form_selectable_cell(__('Unknown'), $id);
 	}
-	form_selectable_cell(html_escape($details['version']), $id);
-	form_selectable_cell(html_escape($details['copyright']), $id);
+	form_selectable_ecell($details['version'], $id);
+	form_selectable_ecell($details['copyright'], $id);
 	form_end_row();
 
 	html_end_box();
