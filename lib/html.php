@@ -1263,9 +1263,9 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			$url = html_escape("$filename?action=item_edit&id=" . $item['id'] . "&$url_data");
 
 			if (!$disable_controls) {
-				form_selectable_cell(__('Item # %d', ($i+1)), $rid);
-			} else {
 				form_selectable_cell(filter_value(__('Item # %d', ($i+1)), '', $url), $rid);
+			} else {
+				form_selectable_cell(__('Item # %d', ($i+1)), $rid);
 			}
 
 			form_selectable_ecell($item['sequence'], $rid);
