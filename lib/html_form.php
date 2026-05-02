@@ -159,10 +159,33 @@ function draw_edit_form($array) {
 			$i++;
 		}
 
+		if ((isset($_SESSION['form_change_action']) && cacti_sizeof($_SESSION['form_change_actions'])) ||
+			(isset($_SESSION['form_click_actions']) && cacti_sizeof($_SESSION['form_click_actions']))) {
+			print PHP_EOL . '<script type="text/javascript" ' . CactiSecureHeaders::getNonceAttribute() . '>' . PHP_EOL;
+
+			if (isset($_SESSION['form_change_actions']) && cacti_sizeof($_SESSION['form_change_actions'])) {
+				foreach($_SESSION['form_change_actions'] as $form_name => $action) {
+					print "$('#" . html_escape($form_name) . "').on('change', function() { " . $action . "; });" . PHP_EOL;
+				}
+			}
+
+			if (isset($_SESSION['form_click_actions']) && cacti_sizeof($_SESSION['form_click_actions'])) {
+				foreach($_SESSION['form_click_actions'] as $form_name => $action) {
+					print "$('#" . html_escape($form_name) . "').on('click', function() { " . $action . "; });" . PHP_EOL;
+				}
+			}
+
+			print '</script>' . PHP_EOL;
+
+			kill_session_var('form_change_actions');
+			kill_session_var('form_click_actions');
+		}
+
 		if (isset($_SESSION['sess_error_fields'])) {
 			kill_session_var('sess_error_fields');
 		}
 	}
+
 }
 
 /* draw_edit_control - draws a single control to be used on an html edit form
@@ -517,11 +540,14 @@ function draw_edit_control($field_name, &$field_array) {
    @arg $title - the hover title for the button
    @arg $action - the onClick action for the button */
 function form_button($form_name, $value, $title = '', $action = '') {
+	if ($action != '') {
+		$_SESSION['form_click_actions'][$form_name] = $action;
+	}
+
 	print "<input type='button' class='ui-button ui-corner-all ui-widget' " .
 		"id='$form_name' " .
 		"name='$form_name' " .
 		"value='" . html_escape($value) . "' " .
-		($action!='' ? "onClick='$action'":"") .
 		($title!='' ? "title='" . html_escape($title) . "'":"") . ">";
 }
 
@@ -531,11 +557,14 @@ function form_button($form_name, $value, $title = '', $action = '') {
    @arg $title - the hover title for the button
    @arg $action - the onClick action for the button */
 function form_submit($form_name, $value, $title = '', $action = '') {
+	if ($action != '') {
+		$_SESSION['form_click_actions'][$form_name] = $action;
+	}
+
 	print "<input type='submit' class='ui-button ui-corner-all ui-widget' " .
 		"id='$form_name' " .
 		"name='$form_name' " .
 		"value='" . html_escape($value) . "' " .
-		($action!='' ? "onClick='$action'":"") .
 		($title!='' ? "title='" . html_escape($title) . "'":"") . ">";
 }
 
@@ -778,10 +807,10 @@ function form_dropdown($form_name, $form_data, $column_display, $column_id, $for
 	}
 
 	if ($on_change != '') {
-		$on_change = " onChange='$on_change' ";
+		$_SESSION['form_change_actions'][$form_name] = $on_change;
 	}
 
-	print "<select id='" . html_escape($form_name) . "' name='" . html_escape($form_name) . "'" . $class . $on_change . '>';
+	print "<select id='" . html_escape($form_name) . "' name='" . html_escape($form_name) . "'" . $class . '>';
 
 	if (!empty($form_none_entry)) {
 		print "<option value='0'" . (empty($form_previous_value) ? ' selected' : '') . ">$form_none_entry</option>";
@@ -815,12 +844,12 @@ function form_droplanguage($form_name, $column_display, $column_id, $form_previo
 	}
 
 	if ($on_change != '') {
-		$on_change = " onChange='$on_change' ";
+		$_SESSION['form_change_actions'][$form_name] = $on_change;
 	}
 
 	$languages = get_installed_locales();
 
-	print "<select id='" . html_escape($form_name) . "' name='" . html_escape($form_name) . "'" . $class . $on_change . '>';
+	print "<select id='" . html_escape($form_name) . "' name='" . html_escape($form_name) . "'" . $class . '>';
 
 	foreach ($languages as $key => $value) {
 		$selected = '';
@@ -995,7 +1024,7 @@ function form_checkbox($form_name, $form_previous_value, $form_caption, $form_de
 	}
 
 	if ($on_change != '') {
-		$on_change = " onChange='$on_change'";
+		$_SESSION['form_change_actions'][$form_name] = $on_change;
 	}
 
 	if ($form_previous_value == 'on') {
@@ -1010,7 +1039,7 @@ function form_checkbox($form_name, $form_previous_value, $form_caption, $form_de
 	}
 
 	print "<span class='nowrap'>";
-	print "<label class='checkboxSwitch' " . ($title != '' ? " title='" . html_escape($title) . "'":'') . '><input ' . ($title != '' ? " title='" . html_escape($title) . "'":'') . " class='formCheckbox$class' type='checkbox' id='$form_name' name='$form_name'" . $on_change . $checked . "><span class='checkboxSlider checkboxRound'></span></label>";
+	print "<label class='checkboxSwitch' " . ($title != '' ? " title='" . html_escape($title) . "'":'') . '><input ' . ($title != '' ? " title='" . html_escape($title) . "'":'') . " class='formCheckbox$class' type='checkbox' id='$form_name' name='$form_name'" . $checked . "><span class='checkboxSlider checkboxRound'></span></label>";
 	print "<label class='checkboxLabel$labelClass' for='$form_name'>" . html_escape($form_caption) . '</label>';
 	print '</span>';
 }
@@ -1037,10 +1066,6 @@ function form_radio_button($form_name, $form_previous_value, $form_current_value
 		$class = " $class";
 	}
 
-	if ($on_change != '') {
-		$on_change = " onChange='$on_change' ";
-	}
-
 	if ($form_previous_value == $form_current_value) {
 		$checked = " checked aria-checked='true'";
 	} else {
@@ -1049,11 +1074,14 @@ function form_radio_button($form_name, $form_previous_value, $form_current_value
 
 	$css_id = $form_name . '_' . $form_current_value;
 
+	if ($on_change != '') {
+		$_SESSION['form_change_actions'][$css_id] = $on_change;
+	}
 
 	print "<span class='nowrap'>";
 	print "<label class='radioSwitch'><input value='" . html_escape($form_current_value) .
 		"' class='formCheckbox$class' type='radio' id='$css_id' name='$form_name'" .
-		$on_change . $checked . "><span class='radioSlider radioRound'></span></label>";
+		$checked . "><span class='radioSlider radioRound'></span></label>";
 	print "<label class='radioLabelWanted' for='$css_id'>" . html_escape($form_caption) . "</label>";
 	print "</span>";
 }
@@ -1084,14 +1112,14 @@ function form_text_area($form_name, $form_previous_value, $form_rows, $form_colu
 	}
 
 	if ($on_change != '') {
-		$on_change = " onChange='$on_change' ";
+		$_SESSION['form_change_actions'][$form_name] = $on_change;
 	}
 
 	if ($placeholder != '') {
 		$placeholder = " placeholder='" . html_escape($placeholder) . "'";
 	}
 
-	print "<textarea class='$class ui-state-default ui-corner-all' aria-multiline='true' cols='$form_columns' rows='$form_rows' id='$form_name' name='$form_name'" . $on_change . $placeholder . '>' . html_escape($form_previous_value) . "</textarea>";
+	print "<textarea class='$class ui-state-default ui-corner-all' aria-multiline='true' cols='$form_columns' rows='$form_rows' id='$form_name' name='$form_name'" . $placeholder . '>' . html_escape($form_previous_value) . "</textarea>";
 }
 
 /* form_multi_dropdown - draws a standard html multiple select dropdown
@@ -1133,7 +1161,7 @@ function form_multi_dropdown($form_name, $array_display, $sql_previous_values, $
 	}
 
 	if ($on_change != '') {
-		$on_change = " onChange='$on_change' ";
+		$_SESSION['form_change_actions'][$form_name] = $on_change;
 	}
 
 	print "<select style='height:20px;' size='1' class='$class' id='$form_name' name='$form_name" . "[]' multiple>";
@@ -1184,11 +1212,11 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 		WHERE id = ?',
 		array($form_previous_value));
 
-	if ($on_change != '') {
-		$on_change = ' ' . $on_change . ';';
-	}
+	$on_change = "this.style.backgroundColor=this.options[this.selectedIndex].style.backgroundColor;$on_change";
 
-	$on_change = " onChange='this.style.backgroundColor=this.options[this.selectedIndex].style.backgroundColor;$on_change'";
+	if ($on_change != '') {
+		$_SESSION['form_change_actions'][$form_name] = $on_change;
+	}
 
 	$colors_sql = 'SELECT *
 		FROM colors
@@ -1199,7 +1227,7 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 
 	$colors_list = db_fetch_assoc($colors_sql);
 
-	print "<select style='background-color: #$current_color;' id='$form_name' name='$form_name'" . $class . $on_change . ">";
+	print "<select style='background-color: #$current_color;' id='$form_name' name='$form_name'" . $class . ">";
 
 	if ($form_none_entry != '') {
 		print "<option value='0'>$form_none_entry</option>";

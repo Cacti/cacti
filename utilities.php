@@ -1705,7 +1705,7 @@ function utilities_view_snmp_cache() {
 	}
 
 	$(function() {
-		$('#refresh').on('click', function() {
+		$('#snmp_query_id, #rows, #with_index').on('change', function() {
 			applyFilter();
 		});
 
@@ -1734,7 +1734,7 @@ function utilities_view_snmp_cache() {
 						<?php print __('Query Name');?>
 					</td>
 					<td>
-						<select id='snmp_query_id' onChange='applyFilter()'>
+						<select id='snmp_query_id'>
 							<option value='-1'<?php if (get_request_var('host_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
 							if (get_request_var('host_id') == -1) {
@@ -1785,7 +1785,7 @@ function utilities_view_snmp_cache() {
 						<?php print __('Rows');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
@@ -1797,7 +1797,7 @@ function utilities_view_snmp_cache() {
 						</select>
 					</td>
 					<td>
-						<input type='checkbox' id='with_index' onChange='applyFilter()' title='<?php print __esc('Allow the search term to include the index column');?>' <?php if (get_request_var('with_index') == 1) { print ' checked '; }?>>
+						<input type='checkbox' id='with_index' title='<?php print __esc('Allow the search term to include the index column');?>' <?php if (get_request_var('with_index') == 1) { print ' checked '; }?>>
 						<label for='with_index'><?php print __('Include Index') ?></label>
 					</td>
 				</tr>
@@ -1998,7 +1998,7 @@ function utilities_view_poller_cache() {
 	}
 
 	$(function() {
-		$('#refresh').on('click', function() {
+		$('#template_id, #status, #poller_action, #rows').on('change', function() {
 			applyFilter();
 		});
 
@@ -2027,7 +2027,7 @@ function utilities_view_poller_cache() {
 						<?php print __('Template');?>
 					</td>
 					<td>
-						<select id='template_id' onChange='applyFilter()'>
+						<select id='template_id'>
 							<option value='-1'<?php if (get_request_var('template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='0'<?php if (get_request_var('template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
@@ -2072,7 +2072,7 @@ function utilities_view_poller_cache() {
 						<?php print __('Status');?>
 					</td>
 					<td>
-						<select id='status' onChange='applyFilter()'>
+						<select id='status'>
 							<option value='-1'<?php if (get_request_var('status') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='1'<?php if (get_request_var('status') == '1') {?> selected<?php }?>><?php print __('Enabled');?></option>
 							<option value='0'<?php if (get_request_var('status') == '0') {?> selected<?php }?>><?php print __('Disabled');?></option>
@@ -2082,7 +2082,7 @@ function utilities_view_poller_cache() {
 						<?php print __('Action');?>
 					</td>
 					<td>
-						<select id='poller_action' onChange='applyFilter()'>
+						<select id='poller_action'>
 							<option value='-1'<?php if (get_request_var('poller_action') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='0'<?php if (get_request_var('poller_action') == '0') {?> selected<?php }?>><?php print __('SNMP');?></option>
 							<option value='1'<?php if (get_request_var('poller_action') == '1') {?> selected<?php }?>><?php print __('Script');?></option>
@@ -2093,7 +2093,7 @@ function utilities_view_poller_cache() {
 						<?php print __('Entries');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
@@ -2453,6 +2453,16 @@ function boost_display_run_status() {
 		strURL = urlPath+'utilities.php?action=view_boost_status&header=false&refresh=' + $('#refresh').val();
 		loadPageNoHeader(strURL);
 	}
+
+	$(function() {
+		$('#refresh').on('change', function() {
+			applyFilter();
+		});
+
+		$('#go').on('click', function() {
+			applyFilter();
+		});
+	});
 	</script>
 	<tr class='even'>
 		<form id='form_boost_utilities_stats' method='post'>
@@ -2463,7 +2473,7 @@ function boost_display_run_status() {
 						<?php print __('Refresh Interval');?>
 					</td>
 					<td>
-						<select id='refresh' name='refresh' onChange='applyFilter()'>
+						<select id='refresh' name='refresh'>
 						<?php
 						foreach ($boost_utilities_interval as $key => $interval) {
 							print '<option value="' . $key . '"'; if (get_request_var('refresh') == $key) { print ' selected'; } print '>' . $interval . '</option>';
@@ -2471,7 +2481,7 @@ function boost_display_run_status() {
 						?>
 					</td>
 					<td>
-						<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Refresh');?>' onClick='applyFilter()'>
+						<input type='button' id='go' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Refresh');?>'>
 					</td>
 				</tr>
 			</table>
@@ -2952,7 +2962,7 @@ function snmpagent_utilities_run_cache() {
 	}
 
 	$(function() {
-		$('#refresh').on('click', function() {
+		$('#mib, #rows').on('change', function() {
 			applyFilter();
 		});
 
@@ -2986,7 +2996,7 @@ function snmpagent_utilities_run_cache() {
 							<?php print __('MIB');?>
 						</td>
 						<td>
-							<select id='mib' onChange='applyFilter()'>
+							<select id='mib'>
 								<option value='-1'<?php if (get_request_var('mib') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 								<?php
 								if (cacti_sizeof($mibs) > 0) {
@@ -3001,7 +3011,7 @@ function snmpagent_utilities_run_cache() {
 							<?php print __('OIDs');?>
 						</td>
 						<td>
-							<select id='rows' onChange='applyFilter()'>
+							<select id='rows'>
 								<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 								<?php
 								if (cacti_sizeof($item_rows)) {
@@ -3014,7 +3024,7 @@ function snmpagent_utilities_run_cache() {
 						</td>
 						<td>
 							<span>
-								<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+								<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 								<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 							</span>
 						</td>
@@ -3329,6 +3339,10 @@ function snmpagent_utilities_run_eventlog(){
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*)
 		FROM snmpagent_notifications_log AS snl
+		INNER JOIN snmpagent_managers AS sm
+		ON sm.id = snl.manager_id
+		LEFT JOIN snmpagent_cache AS sc
+		ON sc.name = snl.notification
 		WHERE $sql_where");
 
 	$logs = db_fetch_assoc($sql_query);
