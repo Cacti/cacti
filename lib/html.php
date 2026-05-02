@@ -663,7 +663,7 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
    @arg $url - a base url to redirect sort actions to
    @arg $return_to - the id of the object to inject output into as a result of the sort action */
 function html_header_sort($header_items, $sort_column, $sort_direction, $last_item_colspan = 1, $url = '', $return_to = '') {
-	$reg_page = get_order_string_page();
+	$page = get_order_string_page(true);
 
 	$valid_columns = [];
 	foreach (array_keys($header_items) as $key) {
@@ -671,7 +671,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 			$valid_columns[] = $key;
 		}
 	}
-	$_SESSION['valid_sort_columns'][$reg_page] = $valid_columns;
+	$_SESSION['valid_sort_columns'][$page] = $valid_columns;
 
 	/* reverse the sort direction */
 	if ($sort_direction == 'ASC') {
@@ -833,7 +833,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
    @arg $form_action - the url to post the 'select all' form to
    @arg $return_to - the id of the object to inject output into as a result of the sort action */
 function html_header_sort_checkbox($header_items, $sort_column, $sort_direction, $include_form = true, $form_action = '', $return_to = '', $prefix = 'chk') {
-	$reg_page = get_order_string_page();
+	$page = get_order_string_page(true);
 
 	$valid_columns = [];
 	foreach (array_keys($header_items) as $key) {
@@ -841,7 +841,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 			$valid_columns[] = $key;
 		}
 	}
-	$_SESSION['valid_sort_columns'][$reg_page] = $valid_columns;
+	$_SESSION['valid_sort_columns'][$page] = $valid_columns;
 
 	/* reverse the sort direction */
 	if ($sort_direction == 'ASC') {

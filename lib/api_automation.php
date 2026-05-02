@@ -1704,7 +1704,7 @@ function build_rule_item_filter($automation_rule_items, $prefix = '') {
 
 			# field name
 			if ($automation_rule_item['field'] != '') {
-				$sql_filter .= (' ' . $prefix . '`' . implode('`.`', explode('.', $automation_rule_item['field'])) . '`');
+				$sql_filter .= (' ' . $prefix . '`' . implode('`.`', explode('.', sanitize_sql_column($automation_rule_item['field']))) . '`');
 				#
 				$sql_filter .= ' ' . $automation_op_array['op'][$automation_rule_item['operator']] . ' ';
 				if ($automation_op_array['binary'][$automation_rule_item['operator']]) {
@@ -2781,7 +2781,12 @@ function create_all_header_nodes($item_id, $rule) {
 				$sql = '';
 				$target = $automation_tree_header_types[AUTOMATION_TREE_ITEM_TYPE_STRING];
 			} else {
-				$sql_field = $tree_item['field'] . ' AS source ';
+				$sanitized_field = sanitize_sql_column($tree_item['field']);
+				if ($sanitized_field == '') {
+					$sql_field = 'NULL AS source ';
+				} else {
+					$sql_field = $sanitized_field . ' AS source ';
+				}
 
 				/* now we build up a new query for counting the rows */
 				$sql = 'SELECT ' .
@@ -2789,7 +2794,7 @@ function create_all_header_nodes($item_id, $rule) {
 				$sql_tables .
 				$sql_where . ' AND (' . $sql_filter . ')';
 
-				$target = db_fetch_cell($sql, '', false);
+				$target = db_fetch_cell_prepared($sql, array($item_id), '', false);
 			}
 
 			cacti_log($function . ' Item ' . $item_id . ' - sql: ' . str_replace("\m",'',$sql) . ' matches: ' . $target, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
