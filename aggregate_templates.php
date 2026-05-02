@@ -613,29 +613,29 @@ function aggregate_template() {
 							' . __('Templates') . '
 						</td>
 						<td>
-							<select id="rows" onChange="applyFilter()">
+							<select id="rows">
 							<option value="-1" ';
 
-	if (get_request_var("rows") == "-1") {
-		$filter_html .= 'selected';
-	}
+							if (get_request_var("rows") == "-1") {
+								$filter_html .= 'selected';
+							}
 
-	$filter_html .= '>' . __('Default') . '</option>';
-	if (cacti_sizeof($item_rows)) {
-		foreach ($item_rows as $key => $value) {
-			$filter_html .= "<option value='" . $key . "'";
-			if (get_request_var("rows") == $key) {
-				$filter_html .= " selected";
-			}
-			$filter_html .= ">" . $value . "</option>\n";
-		}
-	}
+							$filter_html .= '>' . __('Default') . '</option>';
+							if (cacti_sizeof($item_rows)) {
+								foreach ($item_rows as $key => $value) {
+									$filter_html .= "<option value='" . $key . "'";
+									if (get_request_var("rows") == $key) {
+										$filter_html .= " selected";
+									}
+									$filter_html .= ">" . $value . "</option>\n";
+								}
+							}
 
-	$filter_html .= '</select>
-					</td>
+							$filter_html .= '</select>
+						</td>
 						<td>
 							<span>
-								<input type="checkbox" id="has_graphs" ' . (get_request_var('has_graphs') == 'true' ? 'checked':'') . ' onChange="applyFilter()">
+								<input type="checkbox" id="has_graphs" ' . (get_request_var('has_graphs') == 'true' ? 'checked':'') . '">
 								<label for="has_graphs">' . __('Has Graphs') . '</label>
 							</span>
 						</td>
@@ -766,8 +766,11 @@ function aggregate_template() {
 			clearFilter();
 		});
 
-		$('#template').on('submit', function(event) {
-			event.preventDefault();
+		$('#has_graphs').on('click', function() {
+			applyFilter();
+		});
+
+		$('#rows').on('change', function() {
 			applyFilter();
 		});
 
