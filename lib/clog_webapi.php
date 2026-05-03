@@ -233,7 +233,7 @@ function clog_view_logfile() {
 				<input type='button' class='ui-button ui-corner-all ui-widget' id='pc' name='purge_continue' value='" . __esc('Continue') . "' title='" . __esc('Purge Log') . "'>
 				<script type='text/javascript' " . CactiSecureHeaders::getNonceAttribute() . ">
 				$('#pc').on('click', function() {
-					strURL = location.pathname + '?purge_continue=1&header=false&filename=' + <?php print json_encode(basename($logfile)); ?>;
+					strURL = location.pathname+'?purge_continue=1&header=false&filename=<?php print basename($logfile); ?>';
 					loadPageNoHeader(strURL);
 				});
 				$('#cancel').on('click', function() {
