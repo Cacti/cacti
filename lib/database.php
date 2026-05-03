@@ -2547,32 +2547,28 @@ function db_dump_data(string $database = '', string $tables = '', array $credent
 		}
 	}
 
-	try {
-		$process = new \Symfony\Component\Process\Process($argv);
-		$process->setEnv($env);
-		$process->setTimeout(null); // mysqldump can take a long time
+	$descriptors = [
+		0 => ['pipe', 'r'],
+		1 => $output_file ? ['file', $output_file, 'w'] : ['pipe', 'w'],
+		2 => ['pipe', 'w'],
+	];
 
-		if ($output_file) {
-			$fd = fopen($output_file, 'w');
-			if (!$fd) {
-				cacti_log("ERROR: db_dump_data failed to open output file '$output_file'", false, 'DBCALL');
-				return 1;
-			}
+	$proc = proc_open($argv, $descriptors, $pipes, null, $env);
 
-			$retval = $process->run(function ($type, $buffer) use ($fd) {
-				if ($type === \Symfony\Component\Process\Process::OUT) {
-					fwrite($fd, $buffer);
-				}
-			});
-
-			fclose($fd);
-		} else {
-			$retval = $process->run();
-		}
-	} catch (\Exception $e) {
-		cacti_log('ERROR: db_dump_data failed to execute: ' . $e->getMessage(), false, 'DBCALL');
+	if (!is_resource($proc)) {
+		cacti_log('ERROR: db_dump_data failed to start mysqldump', false, 'DBCALL');
 		return 1;
 	}
+
+	fclose($pipes[0]);
+
+	if (!$output_file) {
+		fclose($pipes[1]);
+	}
+
+	fclose($pipes[2]);
+
+	$retval = proc_close($proc);
 
 	return $retval;
 }

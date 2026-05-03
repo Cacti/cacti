@@ -214,7 +214,8 @@ if (empty($_SESSION[SESS_USER_ID])) {
 			if (is_2fa_enabled($_SESSION[SESS_USER_ID])) {
 				header('Location: ' . validate_redirect_url(CACTI_PATH_URL . 'auth_2fa.php'));
 				exit;
-			} else {				$_SESSION[SESS_USER_2FA] = time();
+			} else {
+				$_SESSION[SESS_USER_2FA] = time();
 			}
 		}
 	}

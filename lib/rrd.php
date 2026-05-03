@@ -143,7 +143,7 @@ function __rrd_proxy_init(string $logopt = 'WEBLOG') : mixed {
 			// Close the failed socket before creating a new one for the backup server
 			@socket_close($rrdp_socket);
 
-			$rrdp_id = ($rrdp_id + 1) % 2;
+			$rrdp_id = ($rrdp_id % 2) + 1;
 			$server  = ($rrdp_id == 1) ? $servera : $serverb;
 			$port    = ($rrdp_id == 1) ? $portp : $portb;
 
