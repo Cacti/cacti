@@ -5119,10 +5119,12 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 		} else {
 			$from['email'] = 'Cacti@cacti.net';
 		}
+	}
 
-		if (empty($from['name'])) {
-			$from['name'] = 'Cacti';
-		}
+	// Ensure name is never null — PHPMailer passes it to preg_replace()
+	// which is deprecated for null in PHP 8.x.
+	if (empty($from['name'])) {
+		$from['name'] = 'Cacti';
 	}
 
 	$result = null;
@@ -5355,7 +5357,7 @@ function add_email_details($emails, &$result, callable $addFunc) {
 		if (!empty($e['email'])) {
 			//if (is_callable($addFunc)) {
 			if (!empty($addFunc)) {
-				$result = $addFunc($e['email'], $e['name']);
+				$result = $addFunc($e['email'], (string) $e['name']);
 				if (!$result) {
 					return '';
 				}
