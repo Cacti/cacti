@@ -22,39 +22,5 @@
  +-------------------------------------------------------------------------+
 */
 
-// let's report all errors
-error_reporting(E_ALL);
-
-require(__DIR__ . '/include/cli_check.php');
-
-// allow the script to hang around.
-set_time_limit(0);
-
-chdir(__DIR__);
-
-$path_mibcache      = CACTI_PATH_CACHE . '/mibcache/mibcache.tmp';
-$path_mibcache_lock = CACTI_PATH_CACHE . '/mibcache/mibcache.lock';
-
-// remove temporary cache
-if (file_exists($path_mibcache) && is_writable($path_mibcache)) {
-	unlink($path_mibcache);
-}
-
-// remove lock file
-if (file_exists($path_mibcache_lock) && is_writable($path_mibcache_lock)) {
-	unlink($path_mibcache_lock);
-}
-
-// start background caching process if not running
-$php        = cacti_escapeshellcmd(read_config_option('path_php_binary'));
-$extra_args = ' ' . cacti_escapeshellarg('./snmpagent_mibcachechild.php');
-
-while (true) {
-	if (cacti_strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-		popen('start "CactiSNMPCacheChild" /I ' . $php . ' ' . $extra_args, 'r');
-	} else {
-		\Cacti\Process\CactiProcess::start([$php, './snmpagent_mibcachechild.php']);
-	}
-
-	sleep(30 - time() % 30);
+class CactiProcessException extends \RuntimeException {
 }

@@ -279,7 +279,7 @@ function toggleSection(key, initial) {
 }
 
 function disableButton(buttonName) {
-	button = $('#button'+buttonName);
+	var button = $('#button'+buttonName);
 	if (button != null) {
 		button.button();
 		button.button('disable');
@@ -287,7 +287,7 @@ function disableButton(buttonName) {
 }
 
 function enableButton(buttonName) {
-	button = $('#button'+buttonName);
+	var button = $('#button'+buttonName);
 	if (button != null) {
 		button.button();
 		button.button('enable');

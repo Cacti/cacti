@@ -175,8 +175,12 @@ class Net_Ping {
 				}
 
 				$argv = [$fping, '-q', '-t', (string)$this->timeout, '-c', '1', '-r', (string)$this->retries, $this->host['hostname']];
-				$process = \Cacti\Process\CactiProcess::run($argv, [], (float)($this->timeout / 1000 + 1));
-				$result = $process->getOutput() . $process->getErrorOutput();
+				try {
+					$process = \Cacti\Process\CactiProcess::run($argv, [], (float)($this->timeout / 1000 + 1));
+					$result = $process->getOutput() . $process->getErrorOutput();
+				} catch (\Exception $e) {
+					$result = '';
+				}
 			} else {
 				$using_fping = false;
 
@@ -214,8 +218,12 @@ class Net_Ping {
 				}
 
 				if (isset($argv)) {
-					$process = \Cacti\Process\CactiProcess::run($argv, [], (float)($this->timeout / 1000 + 5));
-					$result = $process->getOutput() . $process->getErrorOutput();
+					try {
+						$process = \Cacti\Process\CactiProcess::run($argv, [], (float)($this->timeout / 1000 + 5));
+						$result = $process->getOutput() . $process->getErrorOutput();
+					} catch (\Exception $e) {
+						$result = '';
+					}
 				}
 			}
 

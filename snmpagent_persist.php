@@ -90,7 +90,7 @@ if (cacti_strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
 	}
 
 	if (cacti_sizeof($output) == 0) {
-		\Cacti\Process\CactiProcess::start(array_merge([$php], explode(' ', $extra_args)));
+		\Cacti\Process\CactiProcess::start([$php, './snmpagent_mibcache.php']);
 	}
 }
 

@@ -22,39 +22,46 @@
  +-------------------------------------------------------------------------+
 */
 
-// let's report all errors
-error_reporting(E_ALL);
+class CactiProcessResult {
+	private int $exitCode;
+	private string $stdout;
+	private string $stderr;
 
-require(__DIR__ . '/include/cli_check.php');
-
-// allow the script to hang around.
-set_time_limit(0);
-
-chdir(__DIR__);
-
-$path_mibcache      = CACTI_PATH_CACHE . '/mibcache/mibcache.tmp';
-$path_mibcache_lock = CACTI_PATH_CACHE . '/mibcache/mibcache.lock';
-
-// remove temporary cache
-if (file_exists($path_mibcache) && is_writable($path_mibcache)) {
-	unlink($path_mibcache);
-}
-
-// remove lock file
-if (file_exists($path_mibcache_lock) && is_writable($path_mibcache_lock)) {
-	unlink($path_mibcache_lock);
-}
-
-// start background caching process if not running
-$php        = cacti_escapeshellcmd(read_config_option('path_php_binary'));
-$extra_args = ' ' . cacti_escapeshellarg('./snmpagent_mibcachechild.php');
-
-while (true) {
-	if (cacti_strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-		popen('start "CactiSNMPCacheChild" /I ' . $php . ' ' . $extra_args, 'r');
-	} else {
-		\Cacti\Process\CactiProcess::start([$php, './snmpagent_mibcachechild.php']);
+	public function __construct(int $exitCode, string $stdout, string $stderr) {
+		$this->exitCode = $exitCode;
+		$this->stdout   = $stdout;
+		$this->stderr   = $stderr;
 	}
 
-	sleep(30 - time() % 30);
+	public function exitCode(): int {
+		return $this->exitCode;
+	}
+
+	public function stdout(): string {
+		return $this->stdout;
+	}
+
+	public function stderr(): string {
+		return $this->stderr;
+	}
+
+	/*
+	 * Mimic exec()'s $output behaviour: split on newline and drop a trailing
+	 * empty element introduced by the final \n. Callers migrating away from
+	 * exec($cmd, $output) can swap to ::run([...])->outputLines() without
+	 * changing downstream loops.
+	 */
+	public function outputLines(): array {
+		if ($this->stdout === '') {
+			return [];
+		}
+
+		$lines = explode("\n", $this->stdout);
+
+		if (end($lines) === '') {
+			array_pop($lines);
+		}
+
+		return $lines;
+	}
 }
