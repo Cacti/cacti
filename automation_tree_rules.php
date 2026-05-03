@@ -187,6 +187,8 @@ function automation_tree_rules_form_save() {
 				!db_column_exists('graph_local', $field_name) &&
 				!db_column_exists('graph_templates_graph', $field_name)) {
 				raise_message('field_invalid', __('Invalid Field Name specified for Tree Rule Item.'), MESSAGE_LEVEL_ERROR);
+				header('Location: automation_tree_rules.php?header=false&action=item_edit&id=' . get_request_var('id') . '&item_id=' . get_request_var('item_id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_ACTION);
+				exit;
 			}
 		}
 
