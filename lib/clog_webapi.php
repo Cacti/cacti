@@ -236,6 +236,7 @@ function clog_view_logfile() {
 					strURL = location.pathname+'?purge_continue=1&header=false&filename=" . basename($logfile) . "';
 					loadPageNoHeader(strURL);
 				});
+
 				$('#cancel').on('click', function() {
 					strURL = location.pathname+'?header=false';
 					loadPageNoHeader(strURL);
