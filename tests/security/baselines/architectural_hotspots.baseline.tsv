@@ -419,9 +419,9 @@ dynamic_include	./lib/rrd.php:1346		include_once($config['library_path'] . '/gra
 dynamic_include	./lib/rrd.php:1347		include_once($config['library_path'] . '/boost.php');
 dynamic_include	./lib/rrd.php:1348		include_once($config['library_path'] . '/xml.php');
 dynamic_include	./lib/rrd.php:1349		include($config['include_path'] . '/global_arrays.php');
-dynamic_include	./lib/rrd.php:2603			include($rrdtheme);
-dynamic_include	./lib/rrd.php:3208		include_once($config['library_path'] . '/time.php');
-dynamic_include	./lib/rrd.php:3979			include($themefile);
+dynamic_include	./lib/rrd.php:2630			include($rrdtheme);
+dynamic_include	./lib/rrd.php:3235		include_once($config['library_path'] . '/time.php');
+dynamic_include	./lib/rrd.php:4006			include($themefile);
 dynamic_include	./lib/rrd.php:590		include ($config['include_path'] . '/global_arrays.php');
 dynamic_include	./lib/rrd.php:909		include($config['include_path'] . '/global_arrays.php');
 dynamic_include	./lib/rrd.php:983		include_once($config['library_path'] . '/boost.php');
