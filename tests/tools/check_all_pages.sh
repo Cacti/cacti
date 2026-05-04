@@ -372,7 +372,7 @@ shutdown_handler() {
 
   save_log_files
 
-  exit 0
+  exit 1
 }
 
 normal_exit() {
@@ -385,13 +385,13 @@ normal_exit() {
     rm -f /tmp/vmstat.out
   fi
 
-  exit 0
+  exit $exit
 }
 
 # ------------------------------------------------------------------------------
 # To make sure that the autopkgtest/CI sites store the information
 # ------------------------------------------------------------------------------
-trap 'shutdown_handler' 1 2 3 6 9 14 15
+trap 'shutdown_handler' 1 2 3 6 14 15
 trap 'normal_exit' 0
 
 echo "NOTE: Current Directory is $(pwd)"
@@ -642,8 +642,8 @@ error=0
 if [ -n "${FILTERED_LOG}" ] ; then
   echo "ERROR: Fail Unexpected output in ${CACTI_LOG}:"
   echo "${FILTERED_LOG}"
-  exit 179
+  error=179
 else
   echo "NOTE: Success No unexpected output in ${CACTI_LOG}"
-  exit 0
+  error=0
 fi
