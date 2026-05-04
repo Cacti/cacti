@@ -3179,7 +3179,7 @@ function get_total_row_data($user_id, $sql, $sql_params = array(), $class = '', 
 	}
 
 	if (cacti_sizeof($sql_params)) {
-		$rows = db_fetch_cell($sql, $sql_params);
+		$rows = db_fetch_cell_prepared($sql, $sql_params);
 	} else {
 		$rows = db_fetch_cell($sql);
 	}
