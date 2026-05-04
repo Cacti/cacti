@@ -376,8 +376,6 @@ shutdown_handler() {
 }
 
 normal_exit() {
-  echo "NOTE: Process exiting normally.  Killing any background jobs"
-
   # Get rid of any jobs
   kill -SIGINT $(jobs -p) 2> /dev/null
 
@@ -385,7 +383,7 @@ normal_exit() {
     rm -f /tmp/vmstat.out
   fi
 
-  exit $exit
+  exit $error
 }
 
 # ------------------------------------------------------------------------------
