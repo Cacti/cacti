@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Theme Smoke</title>
+	<link rel="icon" href="data:,">
+	<script src="/include/js/jquery.js"></script>
+	<script src="/include/js/jquery-ui.js"></script>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 24px;
+		}
+
+		#sandbox {
+			width: 420px;
+		}
+
+		.row {
+			margin-bottom: 18px;
+		}
+
+		.checkboxgroup label,
+		.checkboxgroup input {
+			margin-right: 8px;
+		}
+	</style>
+</head>
+<body>
+	<div id="sandbox">
+		<div class="row">
+			<div class="checkboxgroup" id="group">
+				<input type="checkbox" id="cb1"><label for="cb1">Alpha</label>
+				<input type="checkbox" id="cb2"><label for="cb2">Beta</label>
+			</div>
+		</div>
+		<div class="row">
+			<select id="theme-select">
+				<option value="one">One</option>
+				<option value="two">Two</option>
+			</select>
+		</div>
+		<div class="row">
+			<button id="open-dialog" type="button">Open Dialog</button>
+		</div>
+		<div id="dialog" title="Theme Dialog">
+			<p>Dialog content</p>
+		</div>
+	</div>
+
+	<script>
+		(function () {
+			const params = new URLSearchParams(window.location.search);
+			const theme = params.get('theme') || 'cacti';
+			const link = document.createElement('link');
+			link.rel = 'stylesheet';
+			link.href = `/include/themes/${theme}/jquery-ui.css`;
+			document.head.appendChild(link);
+
+			link.addEventListener('load', function () {
+				$('#group').buttonset();
+				$('#theme-select').selectmenu();
+				$('#open-dialog').button();
+				$('#dialog').dialog({
+					autoOpen: false,
+					modal: true,
+					width: 320
+				});
+
+				$('#open-dialog').on('click', function () {
+					$('#dialog').dialog('open');
+				});
+
+				window.__themeSmokeReady = true;
+				window.__themeSmokeTheme = theme;
+			});
+
+			link.addEventListener('error', function () {
+				window.__themeSmokeError = `failed to load theme ${theme}`;
+			});
+		}());
+	</script>
+</body>
+</html>
