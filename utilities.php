@@ -2156,6 +2156,7 @@ function utilities_view_poller_cache() {
 				dtd.name_cache LIKE ?
 				OR pi.arg1 LIKE ?
 				OR pi.rrd_path  LIKE ?)';
+
 			$params[] = '%' . get_request_var('filter') . '%';
 			$params[] = '%' . get_request_var('filter') . '%';
 			$params[] = '%' . get_request_var('filter') . '%';
@@ -2166,6 +2167,7 @@ function utilities_view_poller_cache() {
 				OR pi.arg1 LIKE ?
 				OR pi.hostname LIKE ?
 				OR pi.rrd_path  LIKE ?)';
+
 			$params[] = '%' . get_request_var('filter') . '%';
 			$params[] = '%' . get_request_var('filter') . '%';
 			$params[] = '%' . get_request_var('filter') . '%';
