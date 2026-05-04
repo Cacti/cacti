@@ -1,0 +1,63 @@
+# +-------------------------------------------------------------------------+
+# | Copyright (C) 2004-2026 The Cacti Group                                 |
+# |                                                                         |
+# | This program is free software; you can redistribute it and/or           |
+# | modify it under the terms of the GNU General Public License             |
+# | as published by the Free Software Foundation; either version 2          |
+# | of the License, or (at your option) any later version.                  |
+# +-------------------------------------------------------------------------+
+# | Cacti: The Complete RRDtool-based Graphing Solution                     |
+# +-------------------------------------------------------------------------+
+
+name: Theme E2E
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+    branches: [develop]
+
+permissions:
+  contents: read
+
+jobs:
+  theme-e2e:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: tests/e2e/package-lock.json
+
+      - name: Install E2E dependencies
+        run: npm ci
+        working-directory: tests/e2e
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+        working-directory: tests/e2e
+
+      - name: Run theme Playwright suite
+        run: npm run test:themes
+        working-directory: tests/e2e
+
+      - name: Upload Playwright artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-theme-artifacts
+          path: |
+            tests/e2e/test-results
+            tests/e2e/playwright-report
+          if-no-files-found: ignore

@@ -723,29 +723,22 @@ function domains() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
+	$params = array();
 	if (get_request_var('filter') != '') {
-		$sql_where = 'WHERE
-			domain_name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR type LIKE '     . db_qstr('%' . get_request_var('filter') . '%');
+		$sql_where = 'WHERE (domain_name LIKE ? OR type LIKE ?)';
+		$params[] = '%' . get_request_var('filter') . '%';
+		$params[] = '%' . get_request_var('filter') . '%';
 	} else {
 		$sql_where = '';
 	}
 
-	$total_rows = db_fetch_cell("SELECT
-		count(*)
-		FROM user_domains
-		$sql_where");
+	$total_rows = get_total_row_data($_SESSION['sess_user_id'], "SELECT count(*) FROM user_domains $sql_where", $params);
 
-	$sort_col = cacti_validate_sort_column(get_request_var('sort_column'),
-		array('domain_name', 'type', 'defdomain', 'user_id', 'cn_full_name', 'cn_email', 'enabled'),
-		'domain_name');
-	$sort_dir = strtoupper(get_request_var('sort_direction')) === 'DESC' ? 'DESC' : 'ASC';
-
-	$domains = db_fetch_assoc("SELECT *
+	$domains = db_fetch_assoc_prepared("SELECT *
 		FROM user_domains
 		$sql_where
-		ORDER BY $sort_col $sort_dir
-		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows);
+		" . get_order_string() . "
+		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows, $params);
 
 	$nav = html_nav_bar('user_user_domains.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('User Domains'), 'page', 'main');
 

@@ -262,17 +262,9 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	$rows_query = $sql_query . $sql_where . $sql_filter;
 	$total_rows = cacti_sizeof(db_fetch_assoc($rows_query, false));
 
-	$sortby = cacti_validate_sort_column(get_request_var('sort_column'),
-		array('description', 'hostname', 'status', 'host_template_name', 'id'),
-		'description');
-	if ($sortby == 'hostname') {
-		$sortby = 'INET_ATON(hostname)';
-	}
-	$sort_dir = strtoupper(get_request_var('sort_direction')) === 'DESC' ? 'DESC' : 'ASC';
-
-	$sql_query = $rows_query .
-		' ORDER BY ' . $sortby . ' ' . $sort_dir .
+	$sql_query = $rows_query . ' ' . get_order_string() .
 		' LIMIT ' . ($rows*(get_request_var('paged')-1)) . ',' . $rows;
+  
 	$hosts = db_fetch_assoc($sql_query, false);
 
 	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var('paged'), $rows, $total_rows, 7, __('Devices'), 'paged', 'main');
@@ -562,10 +554,8 @@ function display_matching_graphs($rule, $rule_type, $url) {
 		LEFT JOIN host_template AS ht
 		ON h.host_template_id=ht.id
 		$sql_where
-		ORDER BY " . cacti_validate_sort_column(get_request_var('sort_column'),
-			array('description', 'hostname', 'host_template_name', 'status', 'title_cache', 'local_graph_id', 'name'),
-			'description') . ' ' . (strtoupper(get_request_var('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') . '
-		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+		" . get_order_string() . "
+		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 	$graph_list = db_fetch_assoc($sql, false);
 
@@ -1215,13 +1205,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 
 	$total_rows = cacti_sizeof(db_fetch_assoc($rows_query, false));
 
-	$sortby = get_request_var('sort_column');
-	if ($sortby=='h.hostname') {
-		$sortby = 'INET_ATON(h.hostname)';
-	}
-
-	$sql_query = "$rows_query ORDER BY $sortby " .
-		get_request_var('sort_direction') . ' LIMIT ' .
+	$sql_query = "$rows_query " . get_order_string() . ' LIMIT ' .
 		($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 	$templates = db_fetch_assoc($sql_query, false);
@@ -1704,7 +1688,7 @@ function build_rule_item_filter($automation_rule_items, $prefix = '') {
 
 			# field name
 			if ($automation_rule_item['field'] != '') {
-				$sql_filter .= (' ' . $prefix . '`' . implode('`.`', explode('.', $automation_rule_item['field'])) . '`');
+				$sql_filter .= (' ' . $prefix . '`' . implode('`.`', explode('.', sanitize_sql_column($automation_rule_item['field']))) . '`');
 				#
 				$sql_filter .= ' ' . $automation_op_array['op'][$automation_rule_item['operator']] . ' ';
 				if ($automation_op_array['binary'][$automation_rule_item['operator']]) {
@@ -2781,7 +2765,12 @@ function create_all_header_nodes($item_id, $rule) {
 				$sql = '';
 				$target = $automation_tree_header_types[AUTOMATION_TREE_ITEM_TYPE_STRING];
 			} else {
-				$sql_field = $tree_item['field'] . ' AS source ';
+				$sanitized_field = sanitize_sql_column($tree_item['field']);
+				if ($sanitized_field == '') {
+					$sql_field = 'NULL AS source ';
+				} else {
+					$sql_field = $sanitized_field . ' AS source ';
+				}
 
 				/* now we build up a new query for counting the rows */
 				$sql = 'SELECT ' .
@@ -2789,10 +2778,11 @@ function create_all_header_nodes($item_id, $rule) {
 				$sql_tables .
 				$sql_where . ' AND (' . $sql_filter . ')';
 
-				$target = db_fetch_cell($sql, '', false);
+				$target = db_fetch_cell_prepared($sql, array($item_id), '', false);
 			}
 
-			cacti_log($function . ' Item ' . $item_id . ' - sql: ' . str_replace("\m",'',$sql) . ' matches: ' . $target, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
+			cacti_log($function . ' Item ' . $item_id . ' - sql: ' . str_replace("\m", '', $sql) . ' matches: ' . $target, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
+
 
 			$parent_tree_item_id = create_multi_header_node($target, $rule, $tree_item, $parent_tree_item_id);
 		}

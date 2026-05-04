@@ -1105,33 +1105,36 @@ function utilities_view_user_log() {
 
 	$sql_where = '';
 
+	$params = array();
+
 	/* filter by username */
 	if (get_request_var('username') == '-2') {
 		$sql_where = 'WHERE ul.username NOT IN (SELECT DISTINCT username FROM user_auth)';
 	} elseif (get_request_var('username') != '-1') {
-		$sql_where = "WHERE ul.username='" . get_request_var('username') . "'";
+		$sql_where = 'WHERE ul.username = ?';
+		$params[] = get_request_var('username');
 	}
 
 	/* filter by result */
 	if (get_request_var('result') != '-1') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ul.result=' . get_request_var('result');
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ul.result = ?';
+		$params[] = get_request_var('result');
 	}
 
 	/* filter by search string */
 	if (get_request_var('filter') != '') {
 		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (
-			ul.username LIKE '     . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR ul.time LIKE '      . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR ua.full_name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR ul.ip LIKE '        . db_qstr('%' . get_request_var('filter') . '%') . ')';
+			ul.username LIKE ?
+			OR ul.time LIKE ?
+			OR ua.full_name LIKE ?
+			OR ul.ip LIKE ?)';
+		$params[] = '%' . get_request_var('filter') . '%';
+		$params[] = '%' . get_request_var('filter') . '%';
+		$params[] = '%' . get_request_var('filter') . '%';
+		$params[] = '%' . get_request_var('filter') . '%';
 	}
 
-	$total_rows = db_fetch_cell("SELECT
-		COUNT(*)
-		FROM user_auth AS ua
-		RIGHT JOIN user_log AS ul
-		ON ua.username=ul.username
-		$sql_where");
+	$total_rows = get_total_row_data($_SESSION['sess_user_id'], "SELECT COUNT(*) FROM user_auth AS ua RIGHT JOIN user_log AS ul ON ua.username=ul.username $sql_where", $params);
 
 	$user_log_sql = "SELECT ul.username, ua.full_name, ua.realm,
 		ul.time, ul.result, ul.ip
@@ -1139,10 +1142,10 @@ function utilities_view_user_log() {
 		RIGHT JOIN user_log AS ul
 		ON ua.username=ul.username
 		$sql_where
-		ORDER BY " . cacti_validate_sort_column(get_request_var('sort_column'), array('username', 'time', 'result', 'ip'), 'time') . ' ' . (get_request_var('sort_direction') === 'ASC' ? 'ASC' : 'DESC') . '
-		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+		" . get_order_string() . "
+		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-	$user_log = db_fetch_assoc($user_log_sql);
+	$user_log = db_fetch_assoc_prepared($user_log_sql, $params);
 
 	$nav = html_nav_bar('utilities.php?action=view_user_log&username=' . get_request_var('username') . '&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 6, __('User Logins'), 'page', 'main');
 
@@ -1705,7 +1708,7 @@ function utilities_view_snmp_cache() {
 	}
 
 	$(function() {
-		$('#refresh').on('click', function() {
+		$('#snmp_query_id, #rows, #with_index').on('change', function() {
 			applyFilter();
 		});
 
@@ -1734,7 +1737,7 @@ function utilities_view_snmp_cache() {
 						<?php print __('Query Name');?>
 					</td>
 					<td>
-						<select id='snmp_query_id' onChange='applyFilter()'>
+						<select id='snmp_query_id'>
 							<option value='-1'<?php if (get_request_var('host_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
 							if (get_request_var('host_id') == -1) {
@@ -1785,7 +1788,7 @@ function utilities_view_snmp_cache() {
 						<?php print __('Rows');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
@@ -1797,7 +1800,7 @@ function utilities_view_snmp_cache() {
 						</select>
 					</td>
 					<td>
-						<input type='checkbox' id='with_index' onChange='applyFilter()' title='<?php print __esc('Allow the search term to include the index column');?>' <?php if (get_request_var('with_index') == 1) { print ' checked '; }?>>
+						<input type='checkbox' id='with_index' title='<?php print __esc('Allow the search term to include the index column');?>' <?php if (get_request_var('with_index') == 1) { print ' checked '; }?>>
 						<label for='with_index'><?php print __('Include Index') ?></label>
 					</td>
 				</tr>
@@ -1998,7 +2001,7 @@ function utilities_view_poller_cache() {
 	}
 
 	$(function() {
-		$('#refresh').on('click', function() {
+		$('#template_id, #status, #poller_action, #rows').on('change', function() {
 			applyFilter();
 		});
 
@@ -2027,7 +2030,7 @@ function utilities_view_poller_cache() {
 						<?php print __('Template');?>
 					</td>
 					<td>
-						<select id='template_id' onChange='applyFilter()'>
+						<select id='template_id'>
 							<option value='-1'<?php if (get_request_var('template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='0'<?php if (get_request_var('template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
@@ -2072,7 +2075,7 @@ function utilities_view_poller_cache() {
 						<?php print __('Status');?>
 					</td>
 					<td>
-						<select id='status' onChange='applyFilter()'>
+						<select id='status'>
 							<option value='-1'<?php if (get_request_var('status') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='1'<?php if (get_request_var('status') == '1') {?> selected<?php }?>><?php print __('Enabled');?></option>
 							<option value='0'<?php if (get_request_var('status') == '0') {?> selected<?php }?>><?php print __('Disabled');?></option>
@@ -2082,7 +2085,7 @@ function utilities_view_poller_cache() {
 						<?php print __('Action');?>
 					</td>
 					<td>
-						<select id='poller_action' onChange='applyFilter()'>
+						<select id='poller_action'>
 							<option value='-1'<?php if (get_request_var('poller_action') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='0'<?php if (get_request_var('poller_action') == '0') {?> selected<?php }?>><?php print __('SNMP');?></option>
 							<option value='1'<?php if (get_request_var('poller_action') == '1') {?> selected<?php }?>><?php print __('Script');?></option>
@@ -2093,7 +2096,7 @@ function utilities_view_poller_cache() {
 						<?php print __('Entries');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
@@ -2115,10 +2118,12 @@ function utilities_view_poller_cache() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
+	$params = array();
 	$sql_where = '';
 
 	if (get_request_var('poller_action') != '-1') {
-		$sql_where .= ($sql_where != '' ? ' AND ':' WHERE') . " pi.action='" . get_request_var('poller_action') . "'";
+		$sql_where .= ($sql_where != '' ? ' AND ':' WHERE') . " pi.action = ?";
+		$params[] = get_request_var('poller_action');
 	}
 
 	if (get_request_var('host_id') == '-1') {
@@ -2126,7 +2131,8 @@ function utilities_view_poller_cache() {
 	} elseif (get_request_var('host_id') == '0') {
 		$sql_where .= ($sql_where != '' ? ' AND ':' WHERE') . ' pi.host_id = 0';
 	} elseif (!isempty_request_var('host_id')) {
-		$sql_where .= ($sql_where != '' ? ' AND ':' WHERE') . ' pi.host_id = ' . get_request_var('host_id');
+		$sql_where .= ($sql_where != '' ? ' AND ':' WHERE') . ' pi.host_id = ?';
+		$params[] = get_request_var('host_id');
 	}
 
 	if (get_request_var('template_id') == '-1') {
@@ -2134,7 +2140,8 @@ function utilities_view_poller_cache() {
 	} elseif (get_request_var('template_id') == '0') {
 		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' dtd.data_template_id=0';
 	} elseif (!isempty_request_var('template_id')) {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' dl.data_template_id=' . get_request_var('template_id');
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' dl.data_template_id = ?';
+		$params[] = get_request_var('template_id');
 	}
 
 	if (get_request_var('status') == 0) {
@@ -2146,16 +2153,24 @@ function utilities_view_poller_cache() {
 	if (get_request_var('filter') != '') {
 		if (get_request_var('host_id') > 0) {
 			$sql_where .= ($sql_where != '' ? ' AND ':' WHERE') . ' (
-				dtd.name_cache LIKE '   . db_qstr('%' . get_request_var('filter') . '%') . '
-				OR pi.arg1 LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . '
-				OR pi.rrd_path  LIKE '  . db_qstr('%' . get_request_var('filter') . '%') . ')';
+				dtd.name_cache LIKE ?
+				OR pi.arg1 LIKE ?
+				OR pi.rrd_path  LIKE ?)';
+			$params[] = '%' . get_request_var('filter') . '%';
+			$params[] = '%' . get_request_var('filter') . '%';
+			$params[] = '%' . get_request_var('filter') . '%';
 		} else {
 			$sql_where .= ($sql_where != '' ? ' AND ':' WHERE') . ' (
-				dtd.name_cache LIKE '   . db_qstr('%' . get_request_var('filter') . '%') . '
-				OR h.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-				OR pi.arg1 LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . '
-				OR pi.hostname LIKE '   . db_qstr('%' . get_request_var('filter') . '%') . '
-				OR pi.rrd_path  LIKE '  . db_qstr('%' . get_request_var('filter') . '%') . ')';
+				dtd.name_cache LIKE ?
+				OR h.description LIKE ?
+				OR pi.arg1 LIKE ?
+				OR pi.hostname LIKE ?
+				OR pi.rrd_path  LIKE ?)';
+			$params[] = '%' . get_request_var('filter') . '%';
+			$params[] = '%' . get_request_var('filter') . '%';
+			$params[] = '%' . get_request_var('filter') . '%';
+			$params[] = '%' . get_request_var('filter') . '%';
+			$params[] = '%' . get_request_var('filter') . '%';
 		}
 	}
 
@@ -2169,7 +2184,14 @@ function utilities_view_poller_cache() {
 		ON pi.host_id = h.id
 		$sql_where";
 
-	$total_rows = get_total_row_data($_SESSION['sess_user_id'], $sql, array(), 'poller_item');
+	$total_rows = get_total_row_data($_SESSION['sess_user_id'], $sql, $params, 'poller_item');
+
+	$order_string = get_order_string();
+	if ($order_string == '') {
+		$order_string = 'ORDER BY action ASC';
+	} else {
+		$order_string .= ', action ASC';
+	}
 
 	$poller_sql = "SELECT pi.*, dtd.name_cache, h.description, h.id AS host_id
 		FROM poller_item AS pi
@@ -2180,10 +2202,10 @@ function utilities_view_poller_cache() {
 		LEFT JOIN host AS h
 		ON pi.host_id = h.id
 		$sql_where
-		ORDER BY " . cacti_validate_sort_column(get_request_var('sort_column'), array('action', 'hostname', 'rrd_path', 'arg1', 'arg2', 'arg3'), 'hostname') . ' ' . (get_request_var('sort_direction') === 'ASC' ? 'ASC' : 'DESC') . ', action ASC
-		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+		$order_string
+		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-	$poller_cache = db_fetch_assoc($poller_sql);
+	$poller_cache = db_fetch_assoc_prepared($poller_sql, $params);
 
 	$nav = html_nav_bar('utilities.php?action=view_poller_cache&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 3, __('Entries'), 'page', 'main');
 
@@ -2453,6 +2475,16 @@ function boost_display_run_status() {
 		strURL = urlPath+'utilities.php?action=view_boost_status&header=false&refresh=' + $('#refresh').val();
 		loadPageNoHeader(strURL);
 	}
+
+	$(function() {
+		$('#refresh').on('change', function() {
+			applyFilter();
+		});
+
+		$('#go').on('click', function() {
+			applyFilter();
+		});
+	});
 	</script>
 	<tr class='even'>
 		<form id='form_boost_utilities_stats' method='post'>
@@ -2463,7 +2495,7 @@ function boost_display_run_status() {
 						<?php print __('Refresh Interval');?>
 					</td>
 					<td>
-						<select id='refresh' name='refresh' onChange='applyFilter()'>
+						<select id='refresh' name='refresh'>
 						<?php
 						foreach ($boost_utilities_interval as $key => $interval) {
 							print '<option value="' . $key . '"'; if (get_request_var('refresh') == $key) { print ' selected'; } print '>' . $interval . '</option>';
@@ -2471,7 +2503,7 @@ function boost_display_run_status() {
 						?>
 					</td>
 					<td>
-						<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Refresh');?>' onClick='applyFilter()'>
+						<input type='button' id='go' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Refresh');?>'>
 					</td>
 				</tr>
 			</table>
@@ -2952,7 +2984,7 @@ function snmpagent_utilities_run_cache() {
 	}
 
 	$(function() {
-		$('#refresh').on('click', function() {
+		$('#mib, #rows').on('change', function() {
 			applyFilter();
 		});
 
@@ -2986,7 +3018,7 @@ function snmpagent_utilities_run_cache() {
 							<?php print __('MIB');?>
 						</td>
 						<td>
-							<select id='mib' onChange='applyFilter()'>
+							<select id='mib'>
 								<option value='-1'<?php if (get_request_var('mib') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 								<?php
 								if (cacti_sizeof($mibs) > 0) {
@@ -3001,7 +3033,7 @@ function snmpagent_utilities_run_cache() {
 							<?php print __('OIDs');?>
 						</td>
 						<td>
-							<select id='rows' onChange='applyFilter()'>
+							<select id='rows'>
 								<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 								<?php
 								if (cacti_sizeof($item_rows)) {
@@ -3014,7 +3046,7 @@ function snmpagent_utilities_run_cache() {
 						</td>
 						<td>
 							<span>
-								<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+								<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 								<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 							</span>
 						</td>
@@ -3329,6 +3361,10 @@ function snmpagent_utilities_run_eventlog(){
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*)
 		FROM snmpagent_notifications_log AS snl
+		INNER JOIN snmpagent_managers AS sm
+		ON sm.id = snl.manager_id
+		LEFT JOIN snmpagent_cache AS sc
+		ON sc.name = snl.notification
 		WHERE $sql_where");
 
 	$logs = db_fetch_assoc($sql_query);

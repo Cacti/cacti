@@ -1928,9 +1928,12 @@ function reports() {
 
 	form_end();
 
+	$params = array();
+
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = 'WHERE (reports.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
+		$sql_where = 'WHERE (reports.name LIKE ?)';
+		$params[] = '%' . get_request_var('filter') . '%';
 	} else {
 		$sql_where = '';
 	}
@@ -1938,36 +1941,31 @@ function reports() {
 	if (get_request_var('status') == '-1') {
 		/* Show all items */
 	} elseif (get_request_var('status') == '-2') {
-		$sql_where .= ($sql_where != '' ? " AND reports.enabled='on'" : " WHERE reports.enabled='on'");
+		$sql_where .= ($sql_where != '' ? " AND reports.enabled = 'on'" : " WHERE reports.enabled = 'on'");
 	} elseif (get_request_var('status') == '-3') {
-		$sql_where .= ($sql_where != '' ? " AND reports.enabled=''" : " WHERE reports.enabled=''");
+		$sql_where .= ($sql_where != '' ? " AND reports.enabled = ''" : " WHERE reports.enabled = ''");
 	}
 
 	/* account for permissions */
 	if (is_reports_admin()) {
 		$sql_join = 'LEFT JOIN user_auth ON user_auth.id=reports.user_id';
 	} else {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' user_auth.id=' . $_SESSION['sess_user_id'];
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' user_auth.id = ?';
+		$params[] = $_SESSION['sess_user_id'];
 		$sql_join = 'INNER JOIN user_auth ON user_auth.id=reports.user_id';
 	}
 
-	$total_rows = db_fetch_cell("SELECT
-		COUNT(reports.id)
-		FROM reports
-		$sql_join
-		$sql_where");
+	$total_rows = get_total_row_data($_SESSION['sess_user_id'], "SELECT COUNT(reports.id) FROM reports $sql_join $sql_where", $params);
 
-	$reports_list = db_fetch_assoc("SELECT
+	$reports_list = db_fetch_assoc_prepared("SELECT
 		user_auth.full_name, user_auth.username,
 		reports.*,
 		CONCAT_WS('', intrvl, ' ', count, ' ', `offset`, '') AS cint
 		FROM reports
 		$sql_join
 		$sql_where
-		ORDER BY " .
-		get_request_var('sort_column') . ' ' .
-		get_request_var('sort_direction') .
-		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
+		" . get_order_string() . "
+		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows, $params);
 
 	form_start(get_reports_page(), 'chk');
 

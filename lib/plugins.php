@@ -79,15 +79,18 @@ function api_plugin_hook($name) {
 			if (!in_array($plugin_name, $plugins_integrated, true)) {
 				$plugin_func = $hdata['function'];
 				$debounce    = 'mpf_' . $plugin_name . '_' . $plugin_func;
-				$full_path   = cacti_plugin_path($plugin_name, $plugin_file);
 
-				if ($plugin_name !== 'internal' && $full_path === false) {
-					cacti_log("ERROR: Attempted inclusion of invalid plugin file $plugin_file from $plugin_name with the hook name $name", false, 'SECURITY');
-					continue;
-				}
+				if ($plugin_name !== 'internal') {
+					$full_path = cacti_plugin_path($plugin_name, $plugin_file);
 
-				if (file_exists($full_path)) {
-					include_once($full_path);
+					if ($full_path === false) {
+						cacti_log("ERROR: Attempted inclusion of invalid plugin file $plugin_file from $plugin_name with the hook name $name", false, 'SECURITY');
+						continue;
+					}
+
+					if (file_exists($full_path)) {
+						include_once($full_path);
+					}
 				}
 
 				if (function_exists($plugin_func)) {
@@ -144,10 +147,12 @@ function api_plugin_hook_function($name, $parm = NULL) {
 			if (!in_array($hdata['name'], $plugins_integrated)) {
 				$p[] = $hdata['name'];
 
-				$plugin_include = cacti_plugin_path($hdata['name'], $hdata['file']);
+				if ($hdata['name'] !== 'internal') {
+					$plugin_include = cacti_plugin_path($hdata['name'], $hdata['file']);
 
-				if ($hdata['name'] !== 'internal' && $plugin_include !== false && file_exists($plugin_include)) {
-					include_once($plugin_include);
+					if ($plugin_include !== false && file_exists($plugin_include)) {
+						include_once($plugin_include);
+					}
 				}
 
 				$function = $hdata['function'];
@@ -703,10 +708,12 @@ function api_plugin_install($plugin) {
 		exit;
 	}
 
-	$plugin_setup = cacti_plugin_path($plugin, 'setup.php');
+	if ($plugin !== 'internal') {
+		$plugin_setup = cacti_plugin_path($plugin, 'setup.php');
 
-	if ($plugin !== 'internal' && $plugin_setup !== false && file_exists($plugin_setup)) {
-		include_once($plugin_setup);
+		if ($plugin_setup !== false && file_exists($plugin_setup)) {
+			include_once($plugin_setup);
+		}
 	}
 
 	$exists = db_fetch_assoc_prepared('SELECT id
@@ -796,18 +803,20 @@ function api_plugin_uninstall($plugin, $tables = true) {
 
 	$plugin_found = false;
 
-	$plugin_setup = cacti_plugin_path($plugin, 'setup.php');
+	if ($plugin !== 'internal') {
+		$plugin_setup = cacti_plugin_path($plugin, 'setup.php');
 
-	if ($plugin !== 'internal' && $plugin_setup !== false && file_exists($plugin_setup)) {
-		include_once($plugin_setup);
+		if ($plugin_setup !== false && file_exists($plugin_setup)) {
+			include_once($plugin_setup);
 
-		// Run the Plugin's Uninstall Function first
-		$function = 'plugin_' . $plugin . '_uninstall';
+			// Run the Plugin's Uninstall Function first
+			$function = 'plugin_' . $plugin . '_uninstall';
 
-		if (function_exists($function)) {
-			$function();
+			if (function_exists($function)) {
+				$function();
 
-			$plugin_found = true;
+				$plugin_found = true;
+			}
 		}
 	}
 
@@ -841,18 +850,20 @@ function api_plugin_check_config($plugin) {
 
 	clearstatcache();
 
-	$plugin_setup = cacti_plugin_path($plugin, 'setup.php');
+	if ($plugin !== 'internal') {
+		$plugin_setup = cacti_plugin_path($plugin, 'setup.php');
 
-	if ($plugin !== 'internal' && $plugin_setup !== false && file_exists($plugin_setup)) {
-		include_once($plugin_setup);
+		if ($plugin_setup !== false && file_exists($plugin_setup)) {
+			include_once($plugin_setup);
 
-		$function = 'plugin_' . $plugin . '_check_config';
+			$function = 'plugin_' . $plugin . '_check_config';
 
-		if (function_exists($function)) {
-			return $function();
+			if (function_exists($function)) {
+				return $function();
+			}
+
+			return true;
 		}
-
-		return true;
 	}
 
 	return false;

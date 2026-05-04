@@ -111,3 +111,13 @@ notepad.md
 include/vendor/*
 vendor/*
 .worktrees/
+tests/e2e/test-results/
+
+# Dev tooling artifacts (never committed)
+.claude/
+.omc/
+.gemini_security/
+docs/superpowers/
+CLAUDE.md
+reproduce_ghsa_*.php
+verify_task*.php
