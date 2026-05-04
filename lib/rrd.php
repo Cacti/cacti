@@ -1837,6 +1837,19 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 	if (cacti_sizeof($graph_items)) {
 		foreach ($graph_items as $graph_item) {
+			// ToDO: The code blcok appears to not be required as at the end of the block
+			// we simply discard the $cf_id for the computed 'cf_reference' that was already
+			// computed previously.
+
+			// Relative to the ToDo.  I believe that this was a hack put in where a user created a
+			// Data Template that did not include the CF required to generate the graph.  The
+			// cf_reference picks the CF of the first graph item and uses it as the CF.  So,
+			// instead of breaking these graphs, we use the cf_reference to ensure that RRDtool
+			// get's a legit CF.  In many cases, the Data Template, or in Cacti 1.2, the Data Source Profile
+			// misses the LAST consolidatin function.  So, we have to use either Average or Max depending
+			// on what showed up.  So, this code block can be discarded.  We will do this in the near
+			// future when we have more testers available.
+
 			/* hack around RRDtool behavior in first RRA */
 			$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id'], $rra_seconds);
 
@@ -1845,8 +1858,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			if (isset($cf_ds_cache[$graph_item['data_template_rrd_id']][$graph_cf])) {
 				$cf_id = $graph_item['consolidation_function_id'];
 			} else {
-			/* if there is not a DEF defined for the current data source/cf combination, then we will have to
-			improvise. choose the first available cf in the following order: AVERAGE, MAX, MIN, LAST */
+				/* if there is not a DEF defined for the current data source/cf combination, then we will have to
+				improvise. choose the first available cf in the following order: AVERAGE, MAX, MIN, LAST */
 				if (isset($cf_ds_cache[$graph_item['data_template_rrd_id']][1])) {
 					$cf_id = 1; /* CF: AVERAGE */
 				} elseif (isset($cf_ds_cache[$graph_item['data_template_rrd_id']][3])) {
@@ -1859,6 +1872,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$cf_id = 1; /* CF: AVERAGE */
 				}
 			}
+
+			/* Compensate for RRDfiles that are missing CF's required for the Graph Template */
+			$cf_id = $graph_item['cf_reference'];
 
 			/* +++++++++++++++++++++++ GRAPH ITEMS: CDEF START +++++++++++++++++++++++ */
 
