@@ -1251,6 +1251,7 @@ $fields_host_edit = array(
 	'host_snmp_head' => array(
 		'method' => 'spacer',
 		'friendly_name' => __('SNMP Options'),
+		'collapsible' => 'true',
 		),
 	) + $fields_snmp_item_with_oids + array(
 	'host_avail_head' => array(

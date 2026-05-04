@@ -131,8 +131,11 @@ function api_networks_discover($network_id, $discover_debug) {
 	if ($enabled == 'on') {
 		if (!$running) {
 			if ($config['poller_id'] == $poller_id) {
-				$args_debug = ($discover_debug) ? ' --debug' : '';
-				exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . "/poller_automation.php --network=$network_id --force" . $args_debug);
+				$argv = array('-q', read_config_option('path_webroot') . '/poller_automation.php', '--network=' . (int)$network_id, '--force');
+				if ($discover_debug) {
+					$argv[] = '--debug';
+				}
+				exec_background(read_config_option('path_php_binary'), $argv);
 			} else {
 				$args_debug = ($discover_debug) ? '&debug=true' : '';
 
@@ -191,7 +194,7 @@ function api_networks_save($post) {
 		$save['sched_type']    = form_input_validate($post['sched_type'], 'sched_type', '^[0-9]+$', false, 3);
 		$save['start_at']      = form_input_validate($post['start_at'], 'start_at', '', false, 3);;
 
-		// accomodate a schedule start change
+		// accommodate a schedule start change
 		if ($post['orig_start_at'] != $post['start_at']) {
 			$save['next_start'] = '0000-00-00';
 		}
@@ -325,6 +328,11 @@ function form_actions() {
 			/* ==================================================== */
 
 			$networks_info = db_fetch_row_prepared('SELECT name FROM automation_networks WHERE id = ?', array($matches[1]));
+
+			if (!cacti_sizeof($networks_info)) {
+				continue;
+			}
+
 			$networks_list .= '<li>' . html_escape($networks_info['name']) . '</li>';
 			$networks_array[$i] = $matches[1];
 		}
@@ -390,8 +398,8 @@ function form_actions() {
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($networks_array) ? serialize($networks_array) : '') . "'>
 			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>" . ($save_html != '' ? "
-			<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()' name='cancel' value='" . __esc('Cancel') . "'>
-			$save_html" : "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()' name='cancel' value='" . __esc('Return') . "'>") . "
+			<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' name='cancel' value='" . __esc('Cancel') . "'>
+			$save_html" : "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' name='cancel' value='" . __esc('Return') . "'>") . "
 		</td>
 	</tr>";
 
@@ -420,6 +428,15 @@ function network_edit() {
 
 	if (!isempty_request_var('id')) {
 		$network = db_fetch_row_prepared('SELECT * FROM automation_networks WHERE id = ?', array(get_request_var('id')));
+
+		if (!cacti_sizeof($network)) {
+			raise_message('network_not_found', __('Network not found.'), MESSAGE_LEVEL_ERROR);
+
+			cacti_header('automation_networks.php');
+
+			exit;
+		}
+
 		$header_label = __esc('Network Discovery Range [edit: %s]', $network['name']);
 	} else {
 		$header_label = __('Network Discovery Range [new]');
@@ -776,7 +793,7 @@ function network_edit() {
 	form_save_button('automation_networks.php', 'return');
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
 		$('#day_of_week').multiselect({
 			selectedList: 7,
@@ -836,19 +853,19 @@ function network_edit() {
 			minDateTime: new Date(<?php print date("Y") . ', ' . (date("m")-1) . ', ' . date("d, H") . ', ' . date('i', ceil(time()/300)*300) . ', 0, 0';?>)
 		});
 
-		$('#sched_type').change(function() {
+		$('#sched_type').on('change', function() {
 			setSchedule();
 		});
 
 		setSchedule();
 
-		$('#notification_enabled').click(function() {
+		$('#notification_enabled').on('click', function() {
 			setNotification();
 		});
 
 		setNotification();
 
-		$('#ping_method').change(function() {
+		$('#ping_method').on('change', function() {
 			setPing();
 		});
 
@@ -1184,7 +1201,7 @@ function networks_filter() {
 						<?php print __('Networks');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
@@ -1199,7 +1216,7 @@ function networks_filter() {
 						<?php print __('Refresh');?>
 					</td>
 					<td>
-						<select id='refresh' onChange='applyFilter()'>
+						<select id='refresh'>
 							<?php
 							$frequency = array(
 								10  => __('%d Seconds', 10),
@@ -1226,7 +1243,7 @@ function networks_filter() {
 				</tr>
 			</table>
 			</form>
-			<script type='text/javascript'>
+			<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 			function applyFilter() {
 				strURL  = '?rows=' + $('#rows').val();
 				strURL += '&filter=' + $('#filter').val();
@@ -1236,6 +1253,10 @@ function networks_filter() {
 				loadPageNoHeader(strURL);
 			}
 
+			$('#network, #refresh').on('change', function() {
+				applyFilter();
+			});
+
 			function clearFilter() {
 				strURL = '?clear=true&header=false';
 
@@ -1243,15 +1264,15 @@ function networks_filter() {
 			}
 
 			$(function() {
-				$('#go').click(function() {
+				$('#go').on('click', function() {
 					applyFilter();
 				});
 
-				$('#clear').click(function() {
+				$('#clear').on('click', function() {
 					clearFilter();
 				});
 
-				$('#networks').submit(function(event) {
+				$('#networks').on('submit', function(event) {
 					event.preventDefault();
 					applyFilter();
 				});

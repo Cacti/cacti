@@ -154,7 +154,7 @@ class CactiTableFilter {
 		html_start_box($this->form_header, $this->form_width, true, '3', 'center', $this->action_url, $this->action_label);
 
 		if (isset($this->filter_array['rows'])) {
-			print "<form id='" . $this->form_id . "' action='" . $this->form_action . "'>\n";
+			print "<form id='" . html_escape($this->form_id) . "' action='" . html_escape($this->form_action) . "'>\n";
 
 			foreach($this->filter_array['rows'] as $index => $row) {
 				print "<div class='filterTable'>\n";
@@ -249,7 +249,7 @@ class CactiTableFilter {
 		}
 
 		?>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 		function applyFilter() {
 			strURL = <?php print $applyFilter;?>
@@ -261,16 +261,16 @@ class CactiTableFilter {
 		}
 
 		$(function() {
-			$('#<?php print $this->form_id;?>').submit(function(event) {
+			$('#<?php print html_escape($this->form_id);?>').on('submit', function(event) {
 				event.preventDefault();
 				applyFilter();
 			});
 
-			$('<?php print $changeChain;?>').change(function() {
+			$('<?php print $changeChain;?>').on('change', function() {
 				applyFilter();
 			});
 
-			$('#clear').click(function() {
+			$('#clear').on('click', function() {
 				clearFilter();
 			})
 		});
@@ -313,12 +313,20 @@ class CactiTableFilter {
 		}
 
 		if (isset($this->filter_array['sort'])) {
+			$sort_default = $this->filter_array['sort']['sort_column'];
+
 			$filters['sort_column']['filter']     = FILTER_CALLBACK;
-			$filters['sort_column']['options']    = array('options' => 'sanitize_search_string');
-			$filters['sort_column']['default']    = $this->filter_array['sort']['sort_column'];
+			$filters['sort_column']['options']    = array('options' => function ($v) use ($sort_default) {
+				return preg_match('/^[a-zA-Z_][a-zA-Z0-9_.]*$/', $v) ? $v : $sort_default;
+			});
+			$filters['sort_column']['default']    = $sort_default;
 
 			$filters['sort_direction']['filter']  = FILTER_CALLBACK;
-			$filters['sort_direction']['options'] = array('options' => 'sanitize_search_string');
+			$filters['sort_direction']['options'] = array('options' => function ($v) {
+				$v = strtoupper(trim($v));
+
+				return in_array($v, array('ASC', 'DESC'), true) ? $v : 'ASC';
+			});
 			$filters['sort_direction']['default'] = $this->filter_array['sort']['sort_direction'];
 		}
 

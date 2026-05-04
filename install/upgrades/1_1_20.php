@@ -53,7 +53,7 @@ function upgrade_to_1_1_20() {
 
 	db_install_add_key('snmpagent_cache_textual_conventions', 'key', 'PRIMARY', array('name' , 'mib', 'type'));
 
-	/* correct dumplicate notifications */
+	/* correct duplicate notifications */
 	$notifications_results = db_install_fetch_assoc('SELECT *, COUNT(*) AS totals
 		FROM snmpagent_managers_notifications
 		GROUP BY manager_id, notification, mib

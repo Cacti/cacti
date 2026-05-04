@@ -118,9 +118,9 @@ if (isset_request_var('disable_cache')) {
 	$graph_data_array['disable_cache'] = true;
 }
 
-/* set the theme */
+/* set the theme — validate against installed themes to prevent LFI */
 if (isset_request_var('graph_theme')) {
-	$graph_data_array['graph_theme'] = get_request_var('graph_theme');
+	$graph_data_array['graph_theme'] = cacti_validate_theme(get_request_var('graph_theme'));
 }
 
 if (isset_request_var('rra_id')) {
@@ -142,7 +142,7 @@ if ($config['poller_id'] == 1 || read_config_option('storage_location')) {
 	$url .= '&rra_id=' . $rra_id;
 
 	foreach($graph_data_array as $variable => $value) {
-		$url .= '&' . $variable . '=' . $value;
+		$url .= '&' . rawurlencode((string)$variable) . '=' . rawurlencode((string)$value);
 	}
 
 	$output = call_remote_data_collector(1, $url);
@@ -198,4 +198,3 @@ if ($output !== false && $output != '') {
 		print file_get_contents(__DIR__ . '/images/cacti_error_image.png');
 	}
 }
-

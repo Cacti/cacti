@@ -1,0 +1,178 @@
+# +-------------------------------------------------------------------------+
+# | Copyright (C) 2004-2026 The Cacti Group                                 |
+# +-------------------------------------------------------------------------+
+# | CSP nonce migration: unit + integration + (deferred) E2E tests.         |
+# | Scoped to the branch and the CSP-relevant files so it does not run on   |
+# | every unrelated change.                                                 |
+# +-------------------------------------------------------------------------+
+
+name: CSP Migration CI
+
+on:
+  push:
+    branches:
+      - security/csp-nonce-migration
+  pull_request:
+    paths:
+      - lib/headers_secure.php
+      - lib/csp_report_endpoint.php
+      - include/global.php
+      - include/global_settings.php
+      - csp_report.php
+      - tests/integration/**
+      - tests/e2e/**
+      - .github/workflows/csp-e2e.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: csp-e2e-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  unit:
+    name: Unit tests (CactiSecureHeaders, CSP report endpoint)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
+
+      - name: Setup PHP 7.4
+        uses: shivammathur/setup-php@c541c155eee45413f5b09a52248675b1a2575231  # v2.31.1
+        with:
+          php-version: '7.4'
+          extensions: mbstring, intl, json, openssl, curl, xml
+          coverage: none
+
+      - name: Install test runner (Pest) scoped to tests/
+        working-directory: tests
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Run Pest unit tests
+        working-directory: tests
+        run: ./vendor/bin/pest Unit/HeadersSecureTest.php Unit/CspReportEndpointTest.php
+
+  integration:
+    name: Integration tests (php -S harness)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
+
+      - name: Setup PHP 7.4
+        uses: shivammathur/setup-php@c541c155eee45413f5b09a52248675b1a2575231  # v2.31.1
+        with:
+          php-version: '7.4'
+          extensions: mbstring, intl, json, openssl, curl, xml
+          coverage: none
+
+      - name: Install test runner (Pest) scoped to tests/
+        working-directory: tests
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Run Pest integration tests
+        working-directory: tests
+        run: ./vendor/bin/pest integration/
+
+  e2e:
+    name: Playwright E2E (docker-compose + Playwright)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@d70bba72b1f3fd22344832f00baa16ece964efeb  # v3.3.0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8  # v4.0.2
+        with:
+          node-version: '20'
+
+      - name: Build and start compose stack
+        working-directory: tests/e2e
+        run: docker compose up -d --build
+
+      - name: Wait for Cacti to respond on :8080
+        run: |
+          set -euo pipefail
+          # Require the CSP-Report-Only header to be present before
+          # declaring the stack ready. A bare 200 can be served by the
+          # install wizard or an intermediate bootstrap page that does
+          # not run the global.php header block.
+          for i in $(seq 1 60); do
+            if curl -fsSI http://localhost:8080/ 2>/dev/null | grep -iq '^content-security-policy-report-only:'; then
+              echo "Cacti is up with report-only CSP header after ${i} attempt(s)."
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Cacti did not emit the expected CSP header within 120s" >&2
+          curl -sI http://localhost:8080/ || true
+          docker compose -f tests/e2e/docker-compose.yml logs --tail=200 || true
+          exit 1
+
+      - name: Dump Cacti container logs (diagnostic)
+        if: always()
+        working-directory: tests/e2e
+        run: |
+          echo "=== php ==="
+          docker compose logs php --tail=80 || true
+          echo ""
+          echo "=== mariadb settings rows ==="
+          docker compose exec -T mariadb mariadb -ucactiuser -pcactipass cacti \
+              -e "SELECT name,value FROM settings WHERE name IN ('install_complete','content_security_policy_script'); SELECT cacti FROM version;" \
+              2>&1 || true
+          echo ""
+          echo "=== curl -sI / full response headers ==="
+          curl -sI http://localhost:8080/ || true
+          echo ""
+          echo "=== curl -s / first 400 bytes of body ==="
+          curl -s http://localhost:8080/ | head -c 400 || true
+          echo ""
+          echo "=== include/config.php url_path line ==="
+          docker compose exec -T php grep -E "^\$(url_path|database_hostname)" /var/www/html/cacti/include/config.php || true
+
+      - name: Install Playwright dependencies
+        working-directory: tests/e2e
+        run: npm install
+
+      - name: Install Playwright browser (chromium)
+        working-directory: tests/e2e
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright suite (core CSP)
+        working-directory: tests/e2e
+        run: npx playwright test tests/csp.spec.ts
+
+      - name: Run Playwright suite (plugin CSP -- thold + monitor)
+        working-directory: tests/e2e
+        # Separate step so a plugin-clone failure or a plugin-side CSP
+        # regression is visually distinct from a core CSP failure in the
+        # GitHub Actions UI. The plugin spec depends on thold and
+        # monitor sources baked into the image at build time; the
+        # docker compose up --build above runs the clone.
+        run: npx playwright test tests/csp-plugins.spec.ts
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08  # v4.6.0
+        with:
+          name: playwright-report
+          path: tests/e2e/playwright-report
+          retention-days: 7
+
+      - name: Upload test results
+        if: failure()
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08  # v4.6.0
+        with:
+          name: playwright-test-results
+          path: tests/e2e/test-results
+          retention-days: 7
+
+      - name: Tear down compose stack
+        if: always()
+        working-directory: tests/e2e
+        run: docker compose down -v

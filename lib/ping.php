@@ -164,34 +164,34 @@ class Net_Ping
 			 * The other fields are numerical fields only and thus
 			 * not vulnerable for command injection */
 			if (substr_count(strtolower(PHP_OS), 'sun')) {
-				$result = shell_exec('ping ' . $this->host['hostname']);
+				$result = shell_exec('ping ' . cacti_escapeshellarg($this->host['hostname']));
 			} elseif (substr_count(strtolower(PHP_OS), 'hpux')) {
-				$result = shell_exec('ping -m ' . ceil($this->timeout/1000) . ' -n ' . $this->retries . ' ' . $this->host['hostname']);
+				$result = shell_exec('ping -m ' . ceil($this->timeout/1000) . ' -n ' . $this->retries . ' ' . cacti_escapeshellarg($this->host['hostname']));
 			} elseif (substr_count(strtolower(PHP_OS), 'mac')) {
-				$result = shell_exec('ping -t ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
+				$result = shell_exec('ping -t ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg($this->host['hostname']));
 			} elseif (substr_count(strtolower(PHP_OS), 'freebsd')) {
 				if (strpos($host_ip, ':') !== false) {
-					$result = shell_exec('ping6 -t ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
+					$result = shell_exec('ping6 -t ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg($this->host['hostname']));
 				} else {
-					$result = shell_exec('ping -t ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
+					$result = shell_exec('ping -t ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg($this->host['hostname']));
 				}
 			} elseif (substr_count(strtolower(PHP_OS), 'darwin')) {
-				$result = shell_exec('ping -t ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
+				$result = shell_exec('ping -t ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg($this->host['hostname']));
 			} elseif (substr_count(strtolower(PHP_OS), 'bsd')) {
-				$result = shell_exec('ping -w ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
+				$result = shell_exec('ping -w ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg($this->host['hostname']));
 			} elseif (substr_count(strtolower(PHP_OS), 'aix')) {
-				$result = shell_exec('ping -i ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
+				$result = shell_exec('ping -i ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' ' . cacti_escapeshellarg($this->host['hostname']));
 			} elseif (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-				$result = shell_exec('chcp 437 && ping -w ' . $this->timeout . ' -n ' . $this->retries . ' ' . $this->host['hostname']);
+				$result = shell_exec('chcp 437 && ping -w ' . $this->timeout . ' -n ' . $this->retries . ' ' . cacti_escapeshellarg($this->host['hostname']));
 			} else {
 				/* please know, that when running SELinux, httpd will throw
 				 * ping: cap_set_proc: Permission denied
 				 * as it now tries to open an ICMP socket and fails
 				 * $result will be empty, then. */
 				if (strpos($host_ip, ':') !== false) {
-					$result = shell_exec('ping -6 -W ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . $this->host['hostname']);
+					$result = shell_exec('ping -6 -W ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . cacti_escapeshellarg($this->host['hostname']));
 				} else {
-					$result = shell_exec('ping -W ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . $this->host['hostname'] . ' 2>&1');
+					$result = shell_exec('ping -W ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . cacti_escapeshellarg($this->host['hostname']) . ' 2>&1');
 
 					if (strpos($result, 'unknown host') !== false || strpos($result, 'Address family') !== false) {
 						if (file_exists('/usr/bin/ping6')) {
@@ -202,7 +202,7 @@ class Net_Ping
 							$ping_path = '/bin/ping6';
 						}
 
-						$result = shell_exec($ping_path . ' -W ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . $this->host['hostname']);
+						$result = shell_exec($ping_path . ' -W ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . cacti_escapeshellarg($this->host['hostname']));
 					}
 				}
 			}
@@ -648,6 +648,11 @@ class Net_Ping
 			cacti_log('WARNING: sockets support not enabled in PHP, falling back to SNMP ping');
 		}
 
+		/* SECURITY: Enforce strict integer casting to prevent string-to-int
+		 * loose comparison bypasses leading to OS command injection */
+		$retries = (int)$retries;
+		$timeout = (int)$timeout;
+
 		if (($retries <= 0) || ($retries > 5)) {
 			$this->retries = 2;
 		} else {
@@ -722,14 +727,22 @@ class Net_Ping
 	} /* end_ping */
 
 	function is_ipaddress($ip_address = '') {
+		/* Strip IPv6 Scope ID (Zone Index) for validation, as
+		   filter_var rejects valid link-local addresses like fe80::1%eth0 */
+		$clean_ip = $ip_address;
+		if (strpos($clean_ip, '%') !== false) {
+			$parts = explode('%', $clean_ip, 2);
+			$clean_ip = $parts[0];
+		}
+
 		/* check for ipv4/v6 */
 		if (function_exists('filter_var')) {
-			if (filter_var($ip_address, FILTER_VALIDATE_IP) !== false) {
+			if (filter_var($clean_ip, FILTER_VALIDATE_IP) !== false) {
 				return true;
 			} else {
 				return false;
 			}
-		} elseif (inet_pton($ip_address) !== false) {
+		} elseif (@inet_pton($clean_ip) !== false) {
 			return true;
 		} else {
 			return false;

@@ -57,7 +57,7 @@ if (!isset_request_var('headercontent')) { ?>
 				<?php draw_menu($user_menu);?>
 				<tr>
 					<td style='text-align:center;'>
-						<div class='cactiLogo' onclick='loadPage("<?php print $config['url_path'];?>about.php")'></div>
+						<a class='cactiLogo pic' href='<?php print html_escape($config['url_path'] . 'about.php');?>'></a>
 					</td>
 				</tr>
 			</table>

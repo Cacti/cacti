@@ -1052,7 +1052,7 @@ function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVE
  */
 function raise_message_javascript($title, $header, $message) {
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	var mixedReasonTitle = DOMPurify.sanitize(<?php print json_encode($title, JSON_THROW_ON_ERROR);?>);
 	var mixedOnPage      = DOMPurify.sanitize(<?php print json_encode($header, JSON_THROW_ON_ERROR);?>);
 	sessionMessage   = {
@@ -2234,7 +2234,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 				$output = shell_exec($script_path);
 			} else {
 				// Script server is a bit more complicated
-				$php   = read_config_option('path_php_binary');
+				$php   = cacti_escapeshellcmd(read_config_option('path_php_binary'));
 				$parts = explode(' ', $script_path);
 
 				dsv_log('parts', $parts);
@@ -2246,7 +2246,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 
 					dsv_log('script', $script);
 
-					$output = shell_exec("$php -q $script");
+					$output = shell_exec($php . ' -q ' . $script);
 
 					if ($output == '' || $output == false) {
 						$output = 'U';
@@ -2505,7 +2505,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 								$prepend = $script_queries['arg_prepend'];
 							}
 
-							$script_path = read_config_option('path_php_binary') . ' -q ' . get_script_query_path(trim($prepend . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' "' . $snmp_index . '"'), $script_queries['script_path'], $host_id);
+							$script_path = cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . get_script_query_path(trim($prepend . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' "' . $snmp_index . '"'), $script_queries['script_path'], $host_id);
 						} else {
 							$action = POLLER_ACTION_SCRIPT;
 							$script_path = get_script_query_path(trim((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] : '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' "' . $snmp_index . '"'), $script_queries['script_path'], $host_id);
@@ -2575,7 +2575,7 @@ function get_full_test_script_path($data_template_id, $host_id) {
 			} elseif ($item['data_name'] == 'host_id' || $item['data_name'] == 'hostid') {
 				$value = cacti_escapeshellarg($host['id']);
 			} else {
-				$value = "'" . $item['value'] . "'";
+				$value = cacti_escapeshellarg((string) $item['value']);
 			}
 
 			$full_path = str_replace('<' . $item['data_name'] . '>', $value, $full_path);
@@ -3484,6 +3484,34 @@ function get_graph_parent($graph_template_item_id, $direction) {
 }
 
 /**
+ * build_where_from_array - builds a parameterized WHERE clause from an associative array
+ *
+ * @param $filters - associative array of field => value pairs
+ * @param $params  - (byref) array to append parameter values to
+ *
+ * @return - (string) the WHERE clause fragment, or '1=1' if filters is empty
+ */
+function build_where_from_array($filters, &$params) {
+	if (empty($filters)) {
+		return '1=1';
+	}
+
+	$where = array();
+
+	foreach ($filters as $field => $value) {
+		if (!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $field)) {
+			cacti_log('ERROR: Invalid field name in build_where_from_array: ' . $field, false, 'SECURITY');
+			continue;
+		}
+
+		$where[]  = "`$field` = ?";
+		$params[] = $value;
+	}
+
+	return implode(' AND ', $where);
+}
+
+/**
  * get_item - returns the ID of the next or previous item id
  *
  * @param $tblname - the table name that contains the target id
@@ -3495,6 +3523,8 @@ function get_graph_parent($graph_template_item_id, $direction) {
  * @return - (int) the ID of the next or previous item id
  */
 function get_item($tblname, $field, $startid, $lmt_query, $direction) {
+	$params = array();
+
 	if ($direction == 'next') {
 		$sql_operator = '>';
 		$sql_order = 'ASC';
@@ -3508,11 +3538,21 @@ function get_item($tblname, $field, $startid, $lmt_query, $direction) {
 		WHERE id = ?",
 		array($startid));
 
-	$new_item_id = db_fetch_cell("SELECT id
-		FROM $tblname
-		WHERE $field $sql_operator $current_sequence " . ($lmt_query != '' ? " AND $lmt_query":"") . "
-		ORDER BY $field $sql_order
-		LIMIT 1");
+	$where_clause = '';
+
+	if (is_array($lmt_query)) {
+		$where_clause = build_where_from_array($lmt_query, $params);
+	} else {
+		$where_clause = $lmt_query;
+	}
+
+	$sql_query = "SELECT id FROM $tblname WHERE $field $sql_operator ? " .
+		($where_clause != '' ? " AND $where_clause" : '') .
+		" ORDER BY $field $sql_order LIMIT 1";
+
+	array_unshift($params, $current_sequence);
+
+	$new_item_id = db_fetch_cell_prepared($sql_query, $params);
 
 	if (empty($new_item_id)) {
 		return $startid;
@@ -3533,9 +3573,17 @@ function get_item($tblname, $field, $startid, $lmt_query, $direction) {
  */
 function get_sequence($id, $field, $table_name, $group_query) {
 	if (empty($id)) {
-		$data = db_fetch_row("SELECT max($field)+1 AS seq
+		$params = array();
+
+		if (is_array($group_query)) {
+			$where_clause = build_where_from_array($group_query, $params);
+		} else {
+			$where_clause = $group_query;
+		}
+
+		$data = db_fetch_row_prepared("SELECT max($field)+1 AS seq
 			FROM $table_name
-			WHERE $group_query");
+			WHERE $where_clause", $params);
 
 		if ($data['seq'] == '') {
 			return 1;
@@ -4284,7 +4332,11 @@ function get_hash_version($type) {
  * @return - a 128-bit, hexadecimal hash
  */
 function generate_hash() {
-	return md5(session_id() . microtime() . rand(0,1000));
+	try {
+		return bin2hex(random_bytes(16));
+	} catch (Exception $e) {
+		return md5(session_id() . microtime() . rand(0, 1000));
+	}
 }
 
 /**
@@ -4434,8 +4486,33 @@ function sanitize_search_string($string) {
  * @return string    - the sanitized uri
  */
 function sanitize_uri($uri) {
-	static $drop_char_match =   array('^', '$', '<', '>', '`', "'", '"', '|', '+', '[', ']', '{', '}', ';', '!', '(', ')');
-	static $drop_char_replace = array( '', '',  '',  '',  '',  '',   '',  '',  '',  '',  '',  '',  '',  '',  '');
+	static $drop_char_match = array(
+		'^', '$',
+		'<', '>',
+		'`', "'",
+		'"', '|',
+		'+', '[',
+		']', '{',
+		'}', ';',
+		'!', '(',
+		')'
+	);
+
+	static $drop_char_replace = array(
+		'', '',
+		'', '',
+		'', '',
+		'', '',
+		'', '',
+		'', '',
+		'', '',
+		'', '',
+		''
+	);
+
+	if (is_urlencoded($uri)) {
+		$uri = urldecode($uri);
+	}
 
 	if (strpos($uri, 'graph_view.php')) {
 		if (!strpos($uri, 'action=')) {
@@ -4443,7 +4520,22 @@ function sanitize_uri($uri) {
 		}
 	}
 
-	return str_replace($drop_char_match, $drop_char_replace, strip_tags(urldecode($uri)));
+	return str_replace($drop_char_match, $drop_char_replace, strip_tags($uri));
+}
+
+/**
+ * Checks to see if a string is urlencoded
+ *
+ * @param  string $string the string to be validated
+ *
+ * @return boolean - true is the string is urlencoded otherwise false
+ */
+function is_urlencoded($string) {
+	if ($string != urldecode($string)) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 /**
@@ -4489,8 +4581,96 @@ function sanitize_cdef($cdef) {
 }
 
 /**
- * verifies all selected items are numeric to guard against injection
+ * validates that a user-supplied filename resolves to a path within a given
+ * base directory to guard against directory traversal and injection
  *
+ * @param string $filename The user-supplied filename
+ * @param string $base_dir The base directory the file must reside in
+ *
+ * @return mixed The validated real path, or false if invalid
+ */
+function validate_path_within($filename, $base_dir) {
+	$filename = basename($filename);
+
+	if ($filename === '' || $filename === '.' || $filename === '..') {
+		return false;
+	}
+
+	$base_real = realpath($base_dir);
+
+	if ($base_real === false) {
+		return false;
+	}
+
+	return $base_real . '/' . $filename;
+}
+
+/**
+ * Validate that a relative path resolves within a base directory.
+ * Allows subdirectory paths but rejects '..' traversal components.
+ *
+ * @param string $path     The user-supplied relative path
+ * @param string $base_dir The base directory the path must stay within
+ *
+ * @return mixed The validated real path, or false if invalid
+ */
+function validate_relative_path_within($path, $base_dir) {
+	if (!is_string($path) || $path === '' || strpos($path, "\0") !== false) {
+		return false;
+	}
+
+	$normalized = str_replace('\\', '/', $path);
+
+	if ($normalized === '' || $normalized[0] === '/' || preg_match('/^[a-zA-Z]:\//', $normalized)) {
+		return false;
+	}
+
+	$parts = array();
+
+	foreach (explode('/', $normalized) as $part) {
+		if ($part === '' || $part === '.' || $part === '..') {
+			return false;
+		}
+
+		$parts[] = $part;
+	}
+
+	$base_real = realpath($base_dir);
+
+	if ($base_real === false) {
+		return false;
+	}
+
+	$candidate = $base_real . '/' . implode('/', $parts);
+
+	/* Block symlink pivots under writable base paths. */
+	$walk = $base_real;
+	foreach ($parts as $part) {
+		$walk .= '/' . $part;
+
+		if (file_exists($walk) && is_link($walk)) {
+			return false;
+		}
+	}
+
+	if (file_exists($candidate)) {
+		$resolved = realpath($candidate);
+
+		if ($resolved === false || !cacti_path_is_within($resolved, $base_real)) {
+			return false;
+		}
+	} else {
+		$parent = realpath(dirname($candidate));
+
+		if ($parent === false || !cacti_path_is_within($parent, $base_real)) {
+			return false;
+		}
+	}
+
+	return $candidate;
+}
+
+/**
  * @param string $items   An array of serialized items from a post
  *
  * @return array          The sanitized selected items array
@@ -4501,11 +4681,7 @@ function sanitize_unserialize_selected_items($items) {
 
 		// validate that sanitized string is correctly formatted
 		if (preg_match('/^a:[0-9]+:{/', $unstripped) && !preg_match('/(^|;|{|})O:\+?[0-9]+:"/', $unstripped)) {
-			if(version_compare(PHP_VERSION, '7.0.0', '>=')) {
-				$items = unserialize($unstripped, array('allowed_classes' => false));
-			} else {
-				$items = unserialize($unstripped);
-			}
+			$items = unserialize($unstripped, array('allowed_classes' => false));
 
 			if (is_array($items)) {
 				foreach ($items as $item) {
@@ -5269,7 +5445,7 @@ function split_emaildetail($email) {
 	}
 
 	/**
-	 * Handle the case where the Email is a tring, but may
+	 * Handle the case where the Email is a string, but may
 	 * include the name at the beginning of the Email.
 	 */
 	if (!is_array($email) && strpos($email, '@') !== false) {
@@ -6202,6 +6378,12 @@ function call_remote_data_collector($poller_id, $url, $logtype = 'WEBUI') {
 		}
 	}
 
+	// Validate URL is a relative path to prevent SSRF
+	if (strpos($url, '://') !== false || strpos($url, '@') !== false || strpos($url, '../') !== false || (strlen($url) > 0 && $url[0] !== '/')) {
+		cacti_log('ERROR: Invalid URL passed to call_remote_data_collector: ' . $url, false, 'SECURITY');
+		return '';
+	}
+
 	$fgc_contextoption = get_default_contextoption();
 	$fgc_context       = stream_context_create($fgc_contextoption);
 
@@ -6248,9 +6430,10 @@ function get_default_contextoption($timeout = false) {
 	if (in_array($protocol, array('ssl', 'https', 'ftps'))) {
 		$fgc_contextoption = array(
 			'ssl' => array(
-				'verify_peer' => false,
-				'verify_peer_name' => false,
-				'allow_self_signed' => true,
+				'verify_peer'       => read_config_option('allow_unsafe_https') != 'on' ? true : false,
+				'verify_peer_name'  => read_config_option('allow_unsafe_https') != 'on' ? true : false,
+				'allow_self_signed' => read_config_option('allow_unsafe_https') == 'on' ? true : false,
+				'follow_location'   => 0,
 			)
 		);
 	}
@@ -6499,14 +6682,22 @@ if (isset($config['cacti_server_os']) && $config['cacti_server_os'] == 'win32' &
 }
 
 function is_ipaddress($ip_address = '') {
+	/* Strip IPv6 Scope ID (Zone Index) for validation, as
+	   filter_var rejects valid link-local addresses like fe80::1%eth0 */
+	$clean_ip = $ip_address;
+	if (strpos($clean_ip, '%') !== false) {
+		$parts = explode('%', $clean_ip, 2);
+		$clean_ip = $parts[0];
+	}
+
 	/* check for ipv4/v6 */
 	if (function_exists('filter_var')) {
-		if (filter_var($ip_address, FILTER_VALIDATE_IP) !== false) {
+		if (filter_var($clean_ip, FILTER_VALIDATE_IP) !== false) {
 			return true;
 		} else {
 			return false;
 		}
-	} elseif (inet_pton($ip_address) !== false) {
+	} elseif (@inet_pton($clean_ip) !== false) {
 		return true;
 	} else {
 		return false;
@@ -6802,9 +6993,9 @@ function get_md5_include_js($path, $async = false) {
 	}
 
 	if ($async) {
-		return '<script type=\'text/javascript\' src=\'' . $config['url_path'] . $relpath . '?' . get_md5_hash($path) . '\' async></script>' . PHP_EOL;
+		return '<script type=\'text/javascript\' ' . CactiSecureHeaders::getNonceAttribute() . ' src=\'' . $config['url_path'] . $relpath . '?' . get_md5_hash($path) . '\' async></script>' . PHP_EOL;
 	} else {
-		return '<script type=\'text/javascript\' src=\'' . $config['url_path'] . $relpath . '?' . get_md5_hash($path) . '\'></script>' . PHP_EOL;
+		return '<script type=\'text/javascript\' ' . CactiSecureHeaders::getNonceAttribute() . ' src=\'' . $config['url_path'] . $relpath . '?' . get_md5_hash($path) . '\'></script>' . PHP_EOL;
 	}
 }
 
@@ -7141,6 +7332,57 @@ function cacti_ptoa($title, $addr) {
 	}
 }
 
+/**
+ * cacti_csv_safe - sanitzes a string for inclusion in a CSV file to prevent formula injection
+ *
+ * @param $value - (string) The string to be sanitized
+ *
+ * @returns - (string) The sanitized string
+ */
+function cacti_csv_safe($value) {
+	if (!is_string($value) && !is_numeric($value)) {
+		return $value;
+	}
+
+	$value = (string)$value;
+
+	// Strip leading whitespace and control characters that spreadsheets
+	// treat as formula-start triggers (OWASP CSV injection)
+	$trimmed = ltrim($value, " \t\n\r\0\x0B");
+
+	$dangerous = array('=', '+', '-', '@', "\t", "\r");
+
+	foreach ($dangerous as $char) {
+		if (isset($trimmed[0]) && $trimmed[0] === $char) {
+			return "'" . $value;
+		}
+	}
+
+	return $value;
+}
+
+/**
+ * cacti_input_string_is_safe - guard against shell metacharacters smuggled
+ *   into a data_input.input_string template. The placeholder syntax is
+ *   <field_name>, never <;rm -rf /;>, so any of [;&|`$\\\r\n] outside a
+ *   placeholder is taken as a command-injection attempt. The same regex
+ *   gates both the GUI save path (data_input.php) and XML/package import
+ *   (lib/import.php) so the two cannot drift.
+ *
+ * @param $input_string - (string) The candidate input_string template
+ *
+ * @returns - (bool) true if the value is safe to persist
+ */
+function cacti_input_string_is_safe($input_string) {
+	if ($input_string === '' || $input_string === null) {
+		return true;
+	}
+
+	$bare = preg_replace('/<[a-zA-Z_]+>/', '', $input_string);
+
+	return !preg_match('/[;&|`$\\\\\n\r]/', $bare);
+}
+
 function cacti_sizeof($array) {
 	return ($array === false || !is_array($array)) ? 0 : sizeof($array);
 }
@@ -7256,7 +7498,7 @@ function cacti_session_destroy() {
 }
 
 /**
- * cacti_cookie_set - Allows for settings an arbitry cookie name and value
+ * cacti_cookie_set - Allows for settings an arbitrary cookie name and value
  * used for CSRF protection.
  *
  * @return - null
@@ -7451,11 +7693,10 @@ function cacti_browser_zone_enabled() {
 		return true;
 	}
 }
-
 /**
- * cacti_time_zone_set - Givin an offset in minutes, attempt
+ * cacti_time_zone_set - Given an offset in minutes, attempt
  * to set a PHP date.timezone.  There are some oddballs that
- * we have to accomodate.
+ * we have to accommodate.
  *
  * @return - null
  */
@@ -7577,11 +7818,11 @@ function debounce_run_notification($id, $frequency = 7200) {
 }
 
 function cacti_unserialize($strobj) {
-	if (version_compare(PHP_VERSION, '7.0.0', '>=')) {
-		return unserialize($strobj, array('allowed_classes' => false));
-	} else {
-		return unserialize($strobj);
+	if ($strobj === null || $strobj === '') {
+		return false;
 	}
+
+	return @unserialize($strobj, array('allowed_classes' => false));
 }
 
 function cacti_format_ipv6_colon($address) {
@@ -7599,7 +7840,6 @@ function cacti_format_ipv6_colon($address) {
 
 	return($address);
 }
-
 
 /**
  * sanitize_sql_column - sanitizes a column name to prevent SQL injection

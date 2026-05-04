@@ -47,10 +47,20 @@ function clear_auth_cookie() {
 
 		// Legacy support which leaked usernames
 		if (!is_numeric($user_id)) {
-			$user_id = db_fetch_cell_prepared('SELECT id
-				FROM user_auth
-				WHERE username = ?',
-				array($user_id));
+			if ($realm_id == -1) {
+				// Assume local realm for tokens without a realm_id
+				$user_id = db_fetch_cell_prepared('SELECT id
+					FROM user_auth
+					WHERE username = ?
+					AND realm = 0',
+					array($user_id));
+			} else {
+				$user_id = db_fetch_cell_prepared('SELECT id
+					FROM user_auth
+					WHERE username = ?
+					AND realm = ?',
+					array($user_id, $realm_id));
+			}
 		}
 
 		if ($user_id > 0) {
@@ -79,11 +89,17 @@ function set_auth_cookie($user) {
 	if (db_table_exists('user_auth_cache')) {
 		clear_auth_cookie();
 
-		$nssecret = md5($_SERVER['REQUEST_TIME'] .  mt_rand(10000,10000000)) . md5(get_client_addr());
+		try {
+			$nssecret = bin2hex(random_bytes(32));
+		} catch (Exception $e) {
+			cacti_log('FATAL: CSPRNG failed. Cannot generate secure authentication token.', false, 'AUTH');
+
+			return false;
+		}
 
 		$secret = hash('sha512', $nssecret, false);
 
-		db_execute_prepared('REPLACE INTO user_auth_cache
+		db_execute_prepared('INSERT INTO user_auth_cache
 			(user_id, hostname, last_update, token)
 			VALUES
 			(?, ?, NOW(), ?);',
@@ -117,17 +133,28 @@ function check_auth_cookie() {
 
 		// Legacy support which leaked usernames
 		if (!is_numeric($user_id)) {
-			$user_id = db_fetch_cell_prepared('SELECT id
-				FROM user_auth
-				WHERE username = ?',
-				array($user_id));
+			if ($realm_id == -1) {
+				// Assume local realm for tokens without a realm_id
+				$user_id = db_fetch_cell_prepared('SELECT id
+					FROM user_auth
+					WHERE username = ?
+					AND realm = 0',
+					array($user_id));
+			} else {
+				$user_id = db_fetch_cell_prepared('SELECT id
+					FROM user_auth
+					WHERE username = ?
+					AND realm = ?',
+					array($user_id, $realm_id));
+			}
 		}
 
 		if ($user_id > 0 && $user_id != get_guest_account()) {
 			if ($realm_id == -1) {
 				$user_info = db_fetch_row_prepared('SELECT id, realm, username
 					FROM user_auth
-					WHERE id = ?',
+					WHERE id = ?
+					AND realm = 0',
 					array($user_id));
 			} else {
 				$user_info = db_fetch_row_prepared('SELECT id, realm, username
@@ -143,16 +170,20 @@ function check_auth_cookie() {
 				$found  = db_fetch_cell_prepared('SELECT user_id
 					FROM user_auth_cache
 					WHERE user_id = ?
-					AND token = ?',
-					array($user_info['id'], $secret)
+					AND token = ?
+					AND hostname = ?',
+					array($user_info['id'], $secret, get_client_addr())
 				);
 
 				if (empty($found)) {
 					return false;
 				} else {
-					set_auth_cookie($user_info);
+					/* lockout check before logging or rotating the cookie */
+					if (auth_process_lockout_check($user_info['username'], $user_info['realm'])) {
+						return false;
+					}
 
-					cacti_log("LOGIN: User '" . $user_info['username'] . "' Authenticated via Authentication Cookie", false, 'AUTH');
+					cacti_log("LOGIN: User '" . $user_info['username'] . "' with ID '" . $user_info['id'] . "' Authenticated via Authentication Cookie", false, 'AUTH');
 
 					db_execute_prepared('INSERT IGNORE INTO user_log
 						(username, user_id, result, ip, time)
@@ -160,6 +191,8 @@ function check_auth_cookie() {
 						(?, ?, 2, ?, NOW())',
 						array($user_info['username'], $user_info['id'], get_client_addr())
 					);
+
+					set_auth_cookie($user_info);
 
 					return $user_info['id'];
 				}
@@ -702,7 +735,7 @@ function auth_augment_roles_byname($role_name, $auth_name) {
  * @return (bool) whether the current user is allowed the view the specified graph tree or not
  */
 function is_tree_allowed($tree_id, $user_id = 0) {
-	if ($user_id == -1) {
+	if ($user_id === -1) {
 		return true;
 	}
 
@@ -711,7 +744,7 @@ function is_tree_allowed($tree_id, $user_id = 0) {
 	}
 
 	if (read_config_option('auth_method') != 0) {
-		if ($user_id == 0) {
+		if ($user_id === 0) {
 			if (isset($_SESSION['sess_user_id'])) {
 				$user_id = $_SESSION['sess_user_id'];
 			} else {
@@ -979,7 +1012,7 @@ function is_realm_allowed($realm, $check_user = false) {
 	/* list all realms that this user has access to */
 	if (read_config_option('auth_method') != 0) {
 		/* if we are only checking another users permission, don't check cache */
-		if ($check_user == false) {
+		if ($check_user === false) {
 			/* user is not set, no permissions */
 			if (!isset($_SESSION['sess_user_id'])) {
 				return false;
@@ -1072,27 +1105,27 @@ function is_realm_allowed($realm, $check_user = false) {
 			}
 
 			if (!empty($user_realm)) {
-				if ($check_user == false) {
+				if ($check_user === false) {
 					$_SESSION['sess_user_realms'][$realm] = true;
 				} else {
 					return true;
 				}
 			} else {
-				if ($check_user == false) {
+				if ($check_user === false) {
 					$_SESSION['sess_user_realms'][$realm] = false;
 				} else {
 					return false;
 				}
 			}
 		} else {
-			if ($check_user == false) {
+			if ($check_user === false) {
 				$_SESSION['sess_user_realms'][$realm] = true;
 			} else {
 				return true;
 			}
 		}
 	} else {
-		if ($check_user == false) {
+		if ($check_user === false) {
 			$_SESSION['sess_user_realms'][$realm] = true;
 		} else {
 			return true;
@@ -1315,13 +1348,13 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 		return array();
 	}
 
-	if ($user_id == -1) {
+	if ($user_id === -1) {
 		$auth_method = 0;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method > 0 && $user_id == 0) {
+	if ($auth_method > 0 && $user_id === 0) {
 		if (isset($_SESSION['sess_user_id'])) {
 			$user_id = $_SESSION['sess_user_id'];
 		} else {
@@ -1409,13 +1442,13 @@ function get_allowed_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sq
 		return array();
 	}
 
-	if ($user_id == -1) {
+	if ($user_id === -1) {
 		$auth_method = 0;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method > 0 && $user_id == 0) {
+	if ($auth_method > 0 && $user_id === 0) {
 		if (isset($_SESSION['sess_user_id'])) {
 			$user_id = $_SESSION['sess_user_id'];
 		} else {
@@ -1511,13 +1544,13 @@ function get_allowed_aggregate_graphs($sql_where = '', $sql_order = 'gtg.title_c
 		return array();
 	}
 
-	if ($user_id == -1) {
+	if ($user_id === -1) {
 		$auth_method = 0;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method > 0 && $user_id == 0) {
+	if ($auth_method > 0 && $user_id === 0) {
 		if (isset($_SESSION['sess_user_id'])) {
 			$user_id = $_SESSION['sess_user_id'];
 		} else {
@@ -1786,13 +1819,13 @@ function get_allowed_graph_templates($sql_where = '', $sql_order = 'gt.name', $s
 		return array();
 	}
 
-	if ($user_id == -1) {
+	if ($user_id === -1) {
 		$auth_method = 0;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($user_id == 0) {
+	if ($user_id === 0) {
 		if (isset($_SESSION['sess_user_id'])) {
 			$user_id = $_SESSION['sess_user_id'];
 		} else {
@@ -1833,7 +1866,7 @@ function get_allowed_graph_templates($sql_where = '', $sql_order = 'gt.name', $s
 	$policies = get_policies($user_id);
 
 	/* short circuit if we don't have a user */
-	if ($auth_method > 0 && $user_id == 0) {
+	if ($auth_method > 0 && $user_id === 0) {
 		return array();
 	}
 
@@ -2444,14 +2477,14 @@ function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', 
 		$sql_order = "ORDER BY $sql_order";
 	}
 
-	if ($user_id == -1) {
+	if ($user_id === -1) {
 		$auth_method = 0;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
 	if ($auth_method != 0) {
-		if ($user_id == 0) {
+		if ($user_id === 0) {
 			if (isset($_SESSION['sess_user_id'])) {
 				$user_id = $_SESSION['sess_user_id'];
 			} else {
@@ -2564,13 +2597,13 @@ function get_allowed_branches($sql_where = '', $sql_order = 'name', $sql_limit =
 	// suppress total rows
 	$total_rows = -1;
 
-	if ($user_id == -1) {
+	if ($user_id === -1) {
 		$auth_method = 0;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method > 0 && $user_id == 0) {
+	if ($auth_method > 0 && $user_id === 0) {
 		if (isset($_SESSION['sess_user_id'])) {
 			$user_id = $_SESSION['sess_user_id'];
 		} else {
@@ -2719,13 +2752,13 @@ function get_allowed_devices($sql_where = '', $sql_order = 'description', $sql_l
 		return array();
 	}
 
-	if ($user_id == -1) {
+	if ($user_id === -1) {
 		$auth_method = 0;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method > 0 && $user_id == 0) {
+	if ($auth_method > 0 && $user_id === 0) {
 		if (isset($_SESSION['sess_user_id'])) {
 			$user_id = $_SESSION['sess_user_id'];
 		} else {
@@ -2855,13 +2888,13 @@ function get_allowed_sites($sql_where = '', $sql_order = 'name', $sql_limit = ''
 		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . " s.id=$site_id";
 	}
 
-	if ($user_id == -1) {
+	if ($user_id === -1) {
 		$auth_method = 0;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if (isset($_SESSION['sess_user_id']) && $user_id == 0) {
+	if (isset($_SESSION['sess_user_id']) && $user_id === 0) {
 		$user_id = $_SESSION['sess_user_id'];
 	} elseif ($auth_method > 0) {
 		return array();
@@ -2906,13 +2939,13 @@ function get_allowed_site_devices($site_id, $sql_where = '', $sql_order = 'descr
 		return array();
 	}
 
-	if ($user_id == -1) {
+	if ($user_id === -1) {
 		$auth_method = 0;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method > 0 && $user_id == 0) {
+	if ($auth_method > 0 && $user_id === 0) {
 		if (isset($_SESSION['sess_user_id'])) {
 			$user_id = $_SESSION['sess_user_id'];
 		} else {
@@ -3374,7 +3407,7 @@ function get_allowed_graph_items($sql_where, $sql_order = 'name', $sql_limit = 2
 
 	$return = array();
 
-	if ($user_id == 0 && isset($_SESSION['sess_user_id'])) {
+	if ($user_id === 0 && isset($_SESSION['sess_user_id'])) {
 		$user_id = $_SESSION['sess_user_id'];
 	}
 
@@ -3508,16 +3541,15 @@ function auth_process_lockout_check($username, $realm) {
 				FROM user_auth
 				WHERE username = ?
 				AND realm = ?
+				AND locked = 'on'
 				AND enabled = 'on'",
 				array($username, $realm));
 
 			if (cacti_sizeof($user)) {
-				if ($user['locked'] == 'on') {
-					$error     = true;
-					$error_msg = __('Your account has been locked.  Please contact your Administrator.');
+				$error     = true;
+				$error_msg = __('Your account has been locked.  Please contact your Administrator.');
 
-					return true;
-				}
+				return true;
 			}
 		}
 	}
@@ -3538,30 +3570,44 @@ function auth_process_lockout_check($username, $realm) {
 function auth_process_lockout($username, $realm) {
 	global $error, $error_msg;
 
-	// Mark failed login attempts
 	$secPassLockFailed = read_config_option('secpass_lockfailed');
 	if ($secPassLockFailed > 0) {
 		$max = intval($secPassLockFailed);
 		if ($max > 0) {
-			$user = db_fetch_row_prepared("SELECT id, username, enabled, lastfail, failed_attempts, `locked`, password
+			$user = db_fetch_row_prepared("SELECT id, enabled, `locked`
 				FROM user_auth
 				WHERE username = ?
 				AND realm = ?",
 				array($username, $realm));
 
 			if (cacti_sizeof($user)) {
+				/* Atomic increment to prevent TOCTOU race in concurrent requests */
+				db_execute_prepared("UPDATE user_auth
+					SET lastfail = ?, failed_attempts = failed_attempts + 1
+					WHERE username = ?
+					AND realm = ?",
+					array(time(), $username, $realm));
+
 				if ($user['enabled'] == '') {
 					cacti_log("LOGIN FAILED: Local Login Failed for user '" . $username . "' from IP Address '" . get_client_addr() . "'.  User account Disabled.", false, 'AUTH');
 
 					$error     = true;
 					$error_msg = __('Access Denied!  Login Disabled.');
+
+					return;
 				}
 
-				$failed = intval($user['failed_attempts']) + 1;
+				/* Retrieve deterministic state post-increment */
+				$failed = db_fetch_cell_prepared("SELECT failed_attempts
+					FROM user_auth
+					WHERE username = ?
+					AND realm = ?
+					AND enabled = 'on'",
+					array($username, $realm));
 
-				cacti_log('LOGIN FAILED: User \'' . $username . '\' failed authentication, incrementing lockout (' . $failed . ' of ' . $max . ')', false, 'AUTH', POLLER_VERBOSITY_LOW);
+				cacti_log("LOGIN FAILED: User '$username' failed authentication, incrementing lockout ($failed of $max)", false, 'AUTH', POLLER_VERBOSITY_LOW);
 
-				if ($failed >= $max) {
+				if ($failed >= $max && $user['locked'] != 'on') {
 					db_execute_prepared("UPDATE user_auth
 						SET `locked` = 'on'
 						WHERE username = ?
@@ -3572,16 +3618,6 @@ function auth_process_lockout($username, $realm) {
 					$user['locked'] = 'on';
 				}
 
-				$user['lastfail'] = time();
-
-				db_execute_prepared("UPDATE user_auth
-					SET lastfail = ?, failed_attempts = ?
-					WHERE username = ?
-					AND realm = ?
-					AND enabled = 'on'",
-					array($user['lastfail'], $failed, $username, $realm));
-
-				// Log the invalid password attempt
 				db_execute_prepared('INSERT IGNORE INTO user_log
 					(username, user_id, result, ip, time)
 					VALUES (?, ?, 0, ?, NOW())',
@@ -3595,7 +3631,6 @@ function auth_process_lockout($username, $realm) {
 				} else {
 					cacti_log("LOGIN FAILED: Local Login Failed for user '" . $username . "' from IP Address '" . get_client_addr() . "'.", false, 'AUTH');
 
-					/* error */
 					$error     = true;
 					$error_msg = __('Access Denied!  Login Failed.');
 				}
@@ -4324,7 +4359,7 @@ function secpass_check_history($id, $password) {
 		}
 
 		$passes = explode('|', $user['password_history']);
-		// Double check this incase the password history setting was changed
+		// Double check this in case the password history setting was changed
 		while (cacti_count($passes) > $history) {
 			array_shift($passes);
 		}
@@ -4460,7 +4495,43 @@ function compat_password_verify($password, $hash) {
 
 	$md5 = md5($password);
 
-	return ($md5 === $hash);
+	return compat_hash_equals($md5, $hash);
+}
+
+/**
+ * compat_hash_equals - compatibility wrapper for hash_equals
+ *   Uses native hash_equals when available, otherwise falls back
+ *   to a constant-time string comparison.
+ *
+ * @param (string) $known_string - expected string
+ * @param (string) $user_string  - user-provided string
+ *
+ * @return (bool) true if strings are identical, false otherwise
+ */
+function compat_hash_equals($known_string, $user_string) {
+	if (function_exists('hash_equals')) {
+		return hash_equals($known_string, $user_string);
+	}
+
+	// Fallback implementation for PHP < 5.6
+	if (!is_string($known_string) || !is_string($user_string)) {
+		return false;
+	}
+
+	$known_len = strlen($known_string);
+	$user_len  = strlen($user_string);
+
+	if ($known_len !== $user_len) {
+		return false;
+	}
+
+	$result = 0;
+
+	for ($i = 0; $i < $known_len; $i++) {
+		$result |= ord($known_string[$i]) ^ ord($user_string[$i]);
+	}
+
+	return $result === 0;
 }
 
 /**
@@ -4591,10 +4662,10 @@ function auth_display_custom_error_message($message) {
 
 	print '</head>';
 	print '<body><center>';
-	print '<div class="ui-state-error ui-corner-all" style="width:50%;margin-left:auto;margin-right:auto;margin-top:200px;padding:20px"><p>' . $message . '</p><p>' . $custom_message . '</p></div>';
+	print '<div class="ui-state-error ui-corner-all" style="width:50%;margin-left:auto;margin-right:auto;margin-top:200px;padding:20px"><p>' . html_escape($message) . '</p><p>' . html_escape($custom_message) . '</p></div>';
 
 	if ($auth_method != 2) {
-		print '<div class="ui-corner-all" style="width:50%;margin:auto;padding:20px"><a href="index.php">' . __('Login Again') . '</a></div><script type="text/javascript">$(function() { $("a").button(); });</script>';
+		print '<div class="ui-corner-all" style="width:50%;margin:auto;padding:20px"><a href="index.php">' . __('Login Again') . '</a></div><script type="text/javascript" ' . CactiSecureHeaders::getNonceAttribute() . '>$(function() { $("a").button(); });</script>';
 	}
 
 	print '</center></body></html>';
@@ -4631,15 +4702,17 @@ function auth_login_redirect($login_opts = '') {
 			 * have console access
 			 */
 			if (isset($_SERVER['REDIRECT_URL'])) {
-				$referer = sanitize_uri($_SERVER['REDIRECT_URL']);
+				$redirect_url = $_SERVER['REDIRECT_URL'];
 
 				if (isset($_SERVER['REDIRECT_QUERY_STRING'])) {
-					$referer .= '?' . $_SERVER['REDIRECT_QUERY_STRING'];
+					$redirect_url .= '?' . $_SERVER['REDIRECT_QUERY_STRING'];
 				}
+
+				$referer = validate_redirect_url($redirect_url);
 
 				cacti_log(sprintf("DEBUG: Referer from REDIRECT_URL with Value: '%s', Effective: '%s'", $_SERVER['REDIRECT_URL'], $referer), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 			} elseif (isset($_SERVER['HTTP_REFERER'])) {
-				$referer = $_SERVER['HTTP_REFERER'];
+				$referer = validate_redirect_url($_SERVER['HTTP_REFERER']);
 
 				if (auth_basename($referer) == 'logout.php') {
 					$referer = $config['url_path'] . 'index.php';
@@ -4704,7 +4777,7 @@ function auth_login_redirect($login_opts = '') {
 }
 
 /**
- * auth_basename - provides a URL knowledgable basename function
+ * auth_basename - provides a URL-knowledgeable basename function
  *
  * @param  (string) $referer - a URL that will included a basename
  *
@@ -4768,8 +4841,10 @@ function auth_login_create_user_from_template($username, $realm) {
 					user_copy($user_template['username'], $username, $user_template['realm'], $realm, false, $data_override);
 				} else {
 					$ldap_response = (isset($ldap_cn_search_response[0]) ? $ldap_cn_search_response[0] : '(no response given)');
-					$ldap_code = (isset($ldap_cn_search_response['error_num']) ? $ldap_cn_search_response['error_num'] : '(no code given)');
+					$ldap_code     = (isset($ldap_cn_search_response['error_num']) ? $ldap_cn_search_response['error_num'] : '(no code given)');
+
 					cacti_log('LOGIN: Email Address and Full Name fields not found, reason: ' . $ldap_response . 'code: ' . $ldap_code, false, 'AUTH');
+
 					user_copy($user_template['username'], $username, $user_template['realm'], $realm);
 				}
 			} else {
@@ -4852,12 +4927,15 @@ function check_reset_no_authentication($auth_method) {
 
 			cacti_log('SQL query ' . $admin_sql_query, true, 'AUTH_NONE', POLLER_VERBOSITY_DEVDBG);
 			cacti_log('SQL param ' . implode(',', $admin_sql_params), true, 'AUTH_NONE', POLLER_VERBOSITY_DEVDBG);
+
 			$admin_id = db_fetch_cell_prepared($admin_sql_query, $admin_sql_params);
+
 			cacti_log('SQL result ' . $admin_id, true, 'AUTH_NONE', POLLER_VERBOSITY_DEVDBG);
 		}
 
 		if (!$admin_id) {
 			$admin_id = db_fetch_cell('SELECT id FROM user_auth WHERE username = \'admin\'');
+
 			cacti_log('Final attempt ' . $admin_id, true, 'AUTH_NONE', POLLER_VERBOSITY_DEVDBG);
 		}
 
@@ -4883,8 +4961,240 @@ function check_reset_no_authentication($auth_method) {
 
 		$_SESSION['sess_user_id'] = $admin_id;
 		$_SESSION['sess_change_password'] = true;
-		header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?action=force&ref=' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php'));
+		header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?action=force&ref=' . urlencode(validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php')));
 		exit;
 	}
 }
 
+/**
+ * Perform a safe authentication state transition.
+ *
+ * Regenerates the session ID to prevent fixation, checks the
+ * lockout table, rotates the remember-me cookie if present,
+ * and logs the transition reason for audit purposes.
+ *
+ * Call this at privilege-level changes: login, role switch,
+ * password change, or sudo-style elevation.
+ *
+ * @param  int    $user_id The user ID undergoing the transition
+ * @param  string $reason  Short label for audit log (e.g. 'login', 'role_switch')
+ *
+ * @return bool True if the transition succeeded, false if the user is locked out
+ */
+function cacti_auth_transition($user_id, $reason = 'login') {
+	/* check lockout status before allowing transition */
+	$locked = db_fetch_cell_prepared('SELECT locked
+		FROM user_auth
+		WHERE id = ?',
+		array($user_id));
+
+	if ($locked == 'on') {
+		cacti_log('SECURITY: auth transition blocked for locked user: ' . $user_id . ' reason: ' . $reason, false, 'AUTH');
+
+		return false;
+	}
+
+	/* regenerate session ID to prevent fixation */
+	if (session_status() === PHP_SESSION_ACTIVE) {
+		session_regenerate_id(true);
+	}
+
+	/* invalidate cached permissions so fresh checks occur */
+	kill_session_var('sess_user_realms');
+	kill_session_var('sess_user_config_array');
+	kill_session_var('sess_config_array');
+
+	cacti_log('NOTE: auth transition completed for user ' . $user_id . ' reason=' . $reason, false, 'AUTH', POLLER_VERBOSITY_MEDIUM);
+
+	return true;
+}
+
+/**
+ * cacti_csrf_rotate - Rotate CSRF token by regenerating the session.
+ *
+ * Call at privilege boundaries (login, role change, sensitive form post)
+ * to prevent session fixation and CSRF token reuse. Also refreshes the
+ * remember-me cookie when present.
+ *
+ * @param  string $reason  Reason for the rotation (logged at medium verbosity)
+ *
+ * @return void
+ */
+function cacti_csrf_rotate($reason = 'boundary') {
+	cacti_session_regenerate();
+
+	if (isset($_SESSION['sess_user_id'])) {
+		$user_id = $_SESSION['sess_user_id'];
+
+		if (isset($_COOKIE['cacti_remembers'])) {
+			set_auth_cookie(array('id' => $user_id));
+		}
+
+		if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM) {
+			cacti_log("AUTH: CSRF rotate for user $user_id ($reason)", false, 'AUTH');
+		}
+	}
+}
+
+
+
+/**
+ * cacti_authorize_resource - returns true iff the given user has ownership
+ * or admin-level access to a specific resource row.
+ *
+ * Root-cause mitigation for IDOR (Insecure Direct Object Reference) bugs:
+ * endpoints that accept a resource ID from the request and act on it
+ * without checking that the current user is allowed to touch that row.
+ *
+ * Applies to:
+ *   GHSA-8p2f-6jvx-j75j (Reports IDOR — any authenticated user can modify
+ *                        reports owned by other users)
+ *
+ * The helper is intentionally strict:
+ *   - unknown resource_type returns false (fail closed)
+ *   - a user who is not the owner AND not a system admin returns false
+ *   - missing resource row returns false (don't leak existence)
+ *
+ * Extend by adding a new case to the resource-type switch below; the same
+ * ownership predicate then applies to every endpoint that calls this helper.
+ *
+ * @param int    $user_id        The id of the acting user (from $_SESSION[SESS_USER_ID])
+ * @param int    $resource_id    The id of the row being acted on
+ * @param string $resource_type  A short string naming the resource (e.g. 'reports')
+ *
+ * @return bool  true if the user may act on the resource, false otherwise
+ */
+function cacti_authorize_resource($user_id, $resource_id, $resource_type) {
+	$user_id     = (int) $user_id;
+	$resource_id = (int) $resource_id;
+
+	if ($user_id <= 0 || $resource_id <= 0) {
+		return false;
+	}
+
+	// Admins bypass ownership for any resource they can reach via realm perms.
+	if (cacti_authorize_is_admin($user_id)) {
+		return true;
+	}
+
+	switch ($resource_type) {
+		case 'reports':
+			// Reports admins (realm 21) manage any report row.
+			if (cacti_authorize_has_realm($user_id, 21)) {
+				return true;
+			}
+
+			$owner = db_fetch_cell_prepared('SELECT user_id
+				FROM reports
+				WHERE id = ?',
+				array($resource_id)
+			);
+
+			return $owner !== false && $owner !== null && (int) $owner === $user_id;
+
+		case 'report_item':
+			// Item ownership follows the parent report row.
+			if (cacti_authorize_has_realm($user_id, 21)) {
+				return true;
+			}
+
+			$owner = db_fetch_cell_prepared('SELECT r.user_id
+				FROM reports_items AS ri
+				INNER JOIN reports AS r
+				ON ri.report_id = r.id
+				WHERE ri.id = ?',
+				array($resource_id)
+			);
+
+			return $owner !== false && $owner !== null && (int) $owner === $user_id;
+
+		case 'graph_tree':
+			$owner = db_fetch_cell_prepared('SELECT user_id
+				FROM graph_tree
+				WHERE id = ?',
+				array($resource_id)
+			);
+
+			return $owner !== false && $owner !== null && (int) $owner === $user_id;
+
+		case 'settings_user':
+			// Users may only read/write their own settings row.
+			return $resource_id === $user_id;
+
+		default:
+			// Unknown type — fail closed. Extend this function to opt in.
+			return false;
+	}
+}
+
+/**
+ * cacti_authorize_has_realm - returns true iff the user is assigned the
+ * given realm_id through user_auth_realm or via group membership.
+ *
+ * Helper for cacti_authorize_resource to express "admins of this resource
+ * class bypass ownership". Realm ids are the fixed values in
+ * user_auth_realm_subrealm (21 = reports, 1 = system admin, etc).
+ */
+function cacti_authorize_has_realm($user_id, $realm_id) {
+	static $realm_cache = array();
+
+	$user_id  = (int) $user_id;
+	$realm_id = (int) $realm_id;
+	$key      = $user_id . ':' . $realm_id;
+
+	if (isset($realm_cache[$key])) {
+		return $realm_cache[$key];
+	}
+
+	$has = (bool) db_fetch_cell_prepared('SELECT 1
+		FROM user_auth_realm
+		WHERE user_id = ?
+		AND realm_id = ?
+		UNION
+		SELECT 1
+		FROM user_auth_group_realm AS ugr
+		INNER JOIN user_auth_group_members AS ugm
+		ON ugm.group_id = ugr.group_id
+		WHERE ugm.user_id = ?
+		AND ugr.realm_id = ?
+		LIMIT 1',
+		array($user_id, $realm_id, $user_id, $realm_id)
+	);
+
+	$realm_cache[$key] = $has;
+
+	return $has;
+}
+
+/**
+ * cacti_authorize_is_admin - returns true iff the user holds the system
+ * admin realm (realm 1 in Cacti's user_auth_realm table).
+ *
+ * Cached per-request to avoid hammering the DB on hot paths. Intentionally
+ * a private helper — callers should use cacti_authorize_resource() which
+ * consults this internally.
+ *
+ * @param int $user_id
+ *
+ * @return bool
+ */
+function cacti_authorize_is_admin($user_id) {
+	static $admin_cache = array();
+
+	$user_id = (int) $user_id;
+
+	if (isset($admin_cache[$user_id])) {
+		return $admin_cache[$user_id];
+	}
+
+	$is_admin = (bool) db_fetch_cell_prepared('SELECT 1
+		FROM user_auth_realm
+		WHERE user_id = ?
+		AND realm_id = 1',
+		array($user_id)
+	);
+
+	$admin_cache[$user_id] = $is_admin;
+
+	return $is_admin;
+}

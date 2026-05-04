@@ -115,6 +115,14 @@ function aggregate_form_save() {
 			WHERE id = ?',
 			array($save1['id']));
 
+		if (!cacti_sizeof($old)) {
+			raise_message('aggregate_not_found', __('Aggregate Template not found.'), MESSAGE_LEVEL_ERROR);
+
+			cacti_header('aggregate_templates.php');
+
+			exit;
+		}
+
 		$save_me = 0;
 
 		$save_me += ($old['name']          != $save1['name']);
@@ -310,9 +318,9 @@ function aggregate_form_actions() {
 						<p>" . __('Click \'Continue\' to Delete the following Aggregate Graph Template(s).') . "</p>
 						<div class='itemlist'><ul>$aggregate_list</ul></div>
 					</td>
-				</tr>\n";
+				</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Color Template(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Color Template(s)') . "'>";
 		}
 	} else {
 		raise_message(40);
@@ -327,7 +335,7 @@ function aggregate_form_actions() {
 			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
 			$save_html
 		</td>
-	</tr>\n";
+	</tr>";
 
 	html_end_box();
 
@@ -351,6 +359,14 @@ function aggregate_template_edit() {
 			FROM aggregate_graph_templates
 			WHERE id = ?',
 			array(get_request_var('id')));
+
+		if (!cacti_sizeof($template)) {
+			raise_message('aggregate_not_found', __('Aggregate Template not found.'), MESSAGE_LEVEL_ERROR);
+
+			cacti_header('aggregate_templates.php');
+
+			exit;
+		}
 
 		$header_label = __esc('Aggregate Template [edit: %s]', $template['name']);
 	} else {
@@ -417,7 +433,7 @@ function aggregate_template_edit() {
 	form_save_button('aggregate_templates.php', 'return', 'id');
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	$(function() {
 		if ($('#id').val() == 0) {
@@ -435,7 +451,7 @@ function aggregate_template_edit() {
 			$('#row_total_prefix').hide();
 			$('#row_order_type').hide();
 
-			$('#graph_template_id').change(function() {
+			$('#graph_template_id').on('change', function() {
 				$('#template_edit').submit();
 			});
 
@@ -447,15 +463,15 @@ function aggregate_template_edit() {
 			}
 		}
 
-		$('#total').change(function() {
+		$('#total').on('change', function() {
 			changeTotals();
 		});
 
-		$('#total_type').change(function() {
+		$('#total_type').on('change', function() {
 			changeTotalsType();
 		});
 
-		$('input[id^="agg_total"], input[id^="agg_skip"]').click(function() {
+		$('input[id^="agg_total"], input[id^="agg_skip"]').on('click', function() {
 			id = $(this).attr('id');
 
 			if (id.indexOf('skip') > 0) {
@@ -597,7 +613,7 @@ function aggregate_template() {
 							' . __('Templates') . '
 						</td>
 						<td>
-							<select id="rows" onChange="applyFilter()">
+							<select id="rows">
 							<option value="-1" ';
 
 	if (get_request_var("rows") == "-1") {
@@ -611,15 +627,15 @@ function aggregate_template() {
 			if (get_request_var("rows") == $key) {
 				$filter_html .= " selected";
 			}
-			$filter_html .= ">" . $value . "</option>\n";
+			$filter_html .= ">" . $value . "</option>";
 		}
 	}
 
 	$filter_html .= '</select>
-					</td>
+						</td>
 						<td>
 							<span>
-								<input type="checkbox" id="has_graphs" ' . (get_request_var('has_graphs') == 'true' ? 'checked':'') . ' onChange="applyFilter()">
+								<input type="checkbox" id="has_graphs" ' . (get_request_var('has_graphs') == 'true' ? 'checked':'') . '>
 								<label for="has_graphs">' . __('Has Graphs') . '</label>
 							</span>
 						</td>
@@ -713,7 +729,7 @@ function aggregate_template() {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Aggregate Templates Found') . "</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Aggregate Templates Found') . "</em></td></tr>";
 	}
 
 	html_end_box(false);
@@ -729,7 +745,7 @@ function aggregate_template() {
 	form_end();
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL  = 'aggregate_templates.php';
@@ -746,16 +762,19 @@ function aggregate_template() {
 	}
 
 	$(function() {
-		$('#clear').click(function() {
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#template').submit(function(event) {
-			event.preventDefault();
+		$('#has_graphs').on('click', function() {
 			applyFilter();
 		});
 
-		$('#forms').submit(function(event) {
+		$('#rows').on('change', function() {
+			applyFilter();
+		});
+
+		$('#forms').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});

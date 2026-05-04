@@ -416,7 +416,7 @@ function update_show_current () {
 	$table = plugins_load_temp_table();
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function applyFilter() {
 		strURL  = 'plugins.php?header=false';
 		strURL += '&filter='+$('#filter').val();
@@ -431,15 +431,19 @@ function update_show_current () {
 	}
 
 	$(function() {
-		$('#refresh').click(function() {
+		$('#refresh').on('click', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#rows, #state').on('change', function() {
+			applyFilter();
+		});
+
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#form_plugins').submit(function(event) {
+		$('#form_plugins').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -465,7 +469,7 @@ function update_show_current () {
 						<?php print __('Status');?>
 					</td>
 					<td>
-						<select id='state' name='state' onChange='applyFilter()'>
+						<select id='state' name='state'>
 							<option value='-99'<?php if (get_request_var('state') == '-99') {?> selected<?php }?>><?php print __('All');?></option>
 							<option value='-98'<?php if (get_request_var('state') == '-98') {?> selected<?php }?>><?php print __('Plugin Error');?></option>
 							<option value='1'<?php if (get_request_var('state') == '1') {?> selected<?php }?>><?php print __('Active');?></option>
@@ -479,7 +483,7 @@ function update_show_current () {
 						<?php print __('Plugins');?>
 					</td>
 					<td>
-						<select id='rows' name='rows' onChange='applyFilter()'>
+						<select id='rows' name='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows) > 0) {
@@ -657,11 +661,11 @@ function update_show_current () {
 	$uninstall_title = __('Are you sure you want to Uninstall?');
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	var url = '';
 
 	$(function() {
-		$('.piuninstall').click(function(event) {
+		$('.piuninstall').on('click', function(event) {
 			event.preventDefault();
 			url = $(this).attr('href');
 

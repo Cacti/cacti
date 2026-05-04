@@ -232,7 +232,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete User Domain', 'Delete User Domains', cacti_sizeof($d_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete User Domain', 'Delete User Domains', cacti_sizeof($d_array)) . "'>";
 		}else if (get_nfilter_request_var('drp_action') == '2') { // disable
 			print "<tr>
 				<td class='textArea'>
@@ -241,7 +241,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Disable User Domain', 'Disable User Domains', cacti_sizeof($d_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Disable User Domain', 'Disable User Domains', cacti_sizeof($d_array)) . "'>";
 		}else if (get_nfilter_request_var('drp_action') == '3') { // enable
 			print "<tr>
 				<td class='textArea'>
@@ -250,7 +250,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Enabled User Domain', 'Enable User Domains', cacti_sizeof($d_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Enabled User Domain', 'Enable User Domains', cacti_sizeof($d_array)) . "'>";
 		}else if (get_nfilter_request_var('drp_action') == '4') { // default
 			print "<tr>
 				<td class='textArea'>
@@ -259,7 +259,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Make Selected Domain Default') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Make Selected Domain Default') . "'>";
 		}
 	} else {
 		raise_message(40);
@@ -538,7 +538,7 @@ function domain_edit() {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function initGroupMember() {
 		if ($('#group_require').is(':checked')) {
 			$('#row_group_header').show();
@@ -592,11 +592,11 @@ function domain_edit() {
 		initSearch();
 		initGroupMember();
 
-		$('#mode').change(function() {
+		$('#mode').on('change', function() {
 			initSearch();
 		});
 
-		$('#group_require').change(function() {
+		$('#group_require').on('change', function() {
 			initGroupMember();
 		});
 	});
@@ -664,7 +664,7 @@ function domains() {
 						<?php print __('Domains');?>
 					</td>
 					<td>
-						<select id='rows' onChange="applyFilter()">
+						<select id='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
@@ -684,7 +684,7 @@ function domains() {
 				</tr>
 			</table>
 		</form>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 		function applyFilter() {
 			strURL  = 'user_domains.php?rows=' + $('#rows').val();
 			strURL += '&filter=' + $('#filter').val();
@@ -698,15 +698,19 @@ function domains() {
 		}
 
 		$(function() {
-			$('#refresh').click(function() {
+			$('#refresh').on('click', function() {
 				applyFilter();
 			});
 
-			$('#clear').click(function() {
+			$('#rows').on('change', function() {
+				applyFilter();
+			});
+
+			$('#clear').on('click', function() {
 				clearFilter();
 			});
 
-			$('#form_domains').submit(function(event) {
+			$('#form_domains').on('submit', function(event) {
 				event.preventDefault();
 				applyFilter();
 			});

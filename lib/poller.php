@@ -49,7 +49,7 @@ function exec_poll($command) {
 
 		pclose($fp);
 	} else {
-		$output = `$command`;
+		$output = shell_exec($command);
 	}
 
 	return $output;
@@ -112,7 +112,7 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 
 			pclose($fp);
 		} else {
-			$output = `$command`;
+			$output = shell_exec($command);
 		}
 	}
 
@@ -131,6 +131,18 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
  */
 function exec_background($filename, $args = '', $redirect_args = '') {
 	global $config, $debug;
+
+	if (is_array($args)) {
+		$args = implode(' ', array_map('cacti_escapeshellarg', $args));
+	} else {
+		/* SECURITY: If args are passed as a string, strip shell operators to
+		 * prevent background command chaining if a caller forgot to escape */
+		$args = preg_replace('/[&;|]+/', '', $args);
+	}
+
+	if (is_array($redirect_args)) {
+		$redirect_args = '';
+	}
 
 	cacti_log("DEBUG: About to Spawn a Remote Process [CMD: $filename, ARGS: $args]", true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_DEBUG));
 
@@ -179,7 +191,10 @@ function exec_with_timeout($cmd, &$output, &$return_code, $timeout = 5) {
 	);
 
 	// Start the process.
-	$process = proc_open('exec setsid ' . $cmd, $descriptors, $pipes);
+	/* Removed 'exec setsid' to allow native PHP process management
+	   (proc_terminate/posix_kill) to target the actual child process
+	   on timeout, preventing zombie process table exhaustion */
+	$process = proc_open($cmd, $descriptors, $pipes);
 
 	if (!is_resource($process)) {
 		return false;
@@ -280,15 +295,7 @@ function file_escaped($file) {
  * @return (int) 1 if the file exists otherwise 0
  */
 function file_exists_2gb($filename) {
-	global $config;
-
-	$rval = 0;
-	if ($config['cacti_server_os'] != 'win32') {
-		system("test -f $filename", $rval);
-		return ($rval == 0);
-	} else {
-		return 0;
-	}
+	return @file_exists($filename);
 }
 
 /**
@@ -590,7 +597,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 			} elseif (is_hexadecimal($value)) {
 				/**
 				 * special case of one value output: hexadecimal to decimal conversion
-				 * attempt to accomodate 32bit and 64bit systems
+				 * attempt to accommodate 32bit and 64bit systems
 				 */
 				$value = str_replace(' ', '', $value);
 
@@ -647,8 +654,6 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 							} else {
 								$rrd_update_array[$rrd_path]['times'][$unix_time][$field] = 'U';
 							}
-
-							$rrd_update_array[$rrd_path]['times'][$unix_time][$field] = $matches[1];
 
 							$rrd_tmpl .= ($rrd_tmpl != '' ? ':':'') . $field;
 

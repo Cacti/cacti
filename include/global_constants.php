@@ -475,3 +475,10 @@ if (!defined('LDAP_OPT_X_TLS_NEVER')) {
 	define('LDAP_OPT_X_TLS_TRY', 4);
 }
 
+
+/* HTML/JS/URL/CSS context labels for cacti_html_context_escape() */
+define('CACTI_ESC_ELEMENT',   'element');
+define('CACTI_ESC_ATTR',      'attr');
+define('CACTI_ESC_JS_STRING', 'js_string');
+define('CACTI_ESC_URL',       'url');
+define('CACTI_ESC_CSS',       'css');

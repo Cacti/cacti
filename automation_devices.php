@@ -101,6 +101,11 @@ function form_actions() {
 
 				foreach($selected_items as $id) {
 					$d = db_fetch_row_prepared('SELECT * FROM automation_devices WHERE id = ?', array($id));
+
+					if (!cacti_sizeof($d)) {
+						continue;
+					}
+
 					$d['poller_id']           = get_filter_request_var('poller_id');
 					$d['host_template']       = get_filter_request_var('host_template');
 					$d['availability_method'] = get_filter_request_var('availability_method');
@@ -215,7 +220,7 @@ function form_actions() {
 
 			print "</td></tr></table></td></tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Add Device(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Add Device(s)') . "'>";
 		} elseif (get_request_var('drp_action') == '2') { /* remove */
 			print "<tr>
 				<td class='textArea odd'>
@@ -224,7 +229,7 @@ function form_actions() {
 				</td>
 			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Device(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Device(s)') . "'>";
 		}
 	} else {
 		raise_message(40);
@@ -490,7 +495,7 @@ function draw_filter() {
 						<?php print __('Network');?>
 					</td>
 					<td>
-						<select id='network' onChange='applyFilter()'>
+						<select id='network'>
 							<option value='-1' <?php if (get_request_var('network') == -1) {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
 							if (cacti_sizeof($networks)) {
@@ -502,7 +507,7 @@ function draw_filter() {
 						</select>
 					<td>
 						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Reset fields to defaults');?>'>
 						</span>
 					</td>
@@ -520,7 +525,7 @@ function draw_filter() {
 						<?php print __('Status');?>
 					</td>
 					<td>
-						<select id='status' onChange='applyFilter()'>
+						<select id='status'>
 							<option value='-1' <?php if (get_request_var('status') == '') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
 							if (cacti_sizeof($status_arr)) {
@@ -535,7 +540,7 @@ function draw_filter() {
 						<?php print __('OS');?>
 					</td>
 					<td>
-						<select id='os' onChange='applyFilter()'>
+						<select id='os'>
 							<option value='-1' <?php if (get_request_var('os') == '') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
 							if (cacti_sizeof($os_arr)) {
@@ -550,7 +555,7 @@ function draw_filter() {
 						<?php print __('SNMP');?>
 					</td>
 					<td>
-						<select id='snmp' onChange='applyFilter()'>
+						<select id='snmp'>
 							<option value='-1' <?php if (get_request_var('snmp') == '') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
 							if (cacti_sizeof($status_arr)) {
@@ -565,7 +570,7 @@ function draw_filter() {
 						<?php print __('Devices');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows) > 0) {
@@ -579,27 +584,31 @@ function draw_filter() {
 				</tr>
 			</table>
 		</form>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 		$(function() {
-			$('#refresh').click(function() {
+			$('#refresh').on('click', function() {
 				applyFilter();
 			});
 
-			$('#clear').click(function() {
+			$('#network, #status, #os, #snmp, #rows').on('change', function() {
+				applyFilter();
+			});
+
+			$('#clear').on('click', function() {
 				clearFilter();
 			});
 
-			$('#form_devices').submit(function(event) {
+			$('#form_devices').on('submit', function(event) {
 				event.preventDefault();
 				applyFilter();
 			});
 
-			$('#purge').click(function() {
+			$('#purge').on('click', function() {
 				loadPageNoHeader('automation_devices.php?header=false&action=purge&network_id='+$('#network').val());
 			});
 
-			$('#export').click(function() {
+			$('#export').on('click', function() {
 				document.location = 'automation_devices.php?action=export';
 				Pace.stop();
 			});
@@ -687,7 +696,7 @@ function export_data($item) {
 	if ($item == '') {
 		return 'N/A';
 	} else {
-		return $item;
+		return cacti_csv_safe($item);
 	}
 }
 

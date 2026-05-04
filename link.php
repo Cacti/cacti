@@ -30,25 +30,9 @@ $page = db_fetch_row_prepared('SELECT
 	WHERE id = ?',
 	array(get_filter_request_var('id')));
 
-// Prevent redirect loops
-if (isset($_SERVER['HTTP_REFERER'])) {
-	if (strpos($_SERVER['HTTP_REFERER'], 'link.php') === false) {
-		$referer = $_SERVER['HTTP_REFERER'];
-		$_SESSION['link_referer'] = $referer;
-	} elseif (isset($_SESSION['link_referer'])) {
-		$referer = sanitize_uri($_SESSION['link_referer']);
-	} else {
-		$referer = 'index.php';
-	}
-} elseif (isset($_SESSION['link_referer'])) {
-	$referer = sanitize_uri($_SESSION['link_referer']);
-} else {
-	$referer = 'index.php';
-}
-
 if (!cacti_sizeof($page)) {
 	raise_message('page_not_defined');
-	header('Location: ' . $referer);
+	header('Location: index.php');
 	exit;
 } else {
 	global $link_nav;
@@ -97,8 +81,7 @@ if (!cacti_sizeof($page)) {
 		bottom_footer();
 	} else {
 		raise_message('permission_denied');
-		header('Location: ' . $referer);
+		header('Location: index.php');
 		exit;
 	}
 }
-

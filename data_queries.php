@@ -409,7 +409,7 @@ function form_actions() {
 				</td>
 			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Data Query', 'Delete Data Queries', cacti_sizeof($dq_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Data Query', 'Delete Data Queries', cacti_sizeof($dq_array)) . "'>";
 		} elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicatie */
 			print "<tr>
 				<td class='textArea' class='odd'>
@@ -423,7 +423,7 @@ function form_actions() {
                 </td>
             </tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Duplicate Data Query', 'Duplicate Data Queries', cacti_sizeof($dq_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Duplicate Data Query', 'Duplicate Data Queries', cacti_sizeof($dq_array)) . "'>";
 		}
 	} else {
 		raise_message(40);
@@ -457,7 +457,7 @@ function data_query_item_movedown_gsv() {
 	get_filter_request_var('snmp_query_graph_id');
 	/* ==================================================== */
 
-	move_item_down('snmp_query_graph_sv', get_request_var('id'), 'snmp_query_graph_id=' . get_request_var('snmp_query_graph_id') . " AND field_name = " . db_qstr(get_nfilter_request_var('field_name')));
+	move_item_down('snmp_query_graph_sv', get_request_var('id'), array('snmp_query_graph_id' => get_request_var('snmp_query_graph_id'), 'field_name' => get_nfilter_request_var('field_name')));
 }
 
 function data_query_item_moveup_gsv() {
@@ -466,7 +466,7 @@ function data_query_item_moveup_gsv() {
 	get_filter_request_var('snmp_query_graph_id');
 	/* ==================================================== */
 
-	move_item_up('snmp_query_graph_sv', get_request_var('id'), 'snmp_query_graph_id=' . get_request_var('snmp_query_graph_id') . " AND field_name = " . db_qstr(get_nfilter_request_var('field_name')));
+	move_item_up('snmp_query_graph_sv', get_request_var('id'), array('snmp_query_graph_id' => get_request_var('snmp_query_graph_id'), 'field_name' => get_nfilter_request_var('field_name')));
 }
 
 function data_query_item_remove_gsv() {
@@ -486,7 +486,7 @@ function data_query_item_movedown_dssv() {
 	get_filter_request_var('snmp_query_graph_id');
 	/* ==================================================== */
 
-	move_item_down('snmp_query_graph_rrd_sv', get_request_var('id'), 'data_template_id=' . get_request_var('data_template_id') . ' AND snmp_query_graph_id=' . get_request_var('snmp_query_graph_id') . " AND field_name = " . db_qstr(get_nfilter_request_var('field_name')));
+	move_item_down('snmp_query_graph_rrd_sv', get_request_var('id'), array('data_template_id' => get_request_var('data_template_id'), 'snmp_query_graph_id' => get_request_var('snmp_query_graph_id'), 'field_name' => get_nfilter_request_var('field_name')));
 }
 
 function data_query_item_moveup_dssv() {
@@ -496,7 +496,7 @@ function data_query_item_moveup_dssv() {
 	get_filter_request_var('snmp_query_graph_id');
 	/* ==================================================== */
 
-	move_item_up('snmp_query_graph_rrd_sv', get_request_var('id'), 'data_template_id=' . get_request_var('data_template_id') . ' AND snmp_query_graph_id=' . get_request_var('snmp_query_graph_id') . " AND field_name = " . db_qstr(get_nfilter_request_var('field_name')));
+	move_item_up('snmp_query_graph_rrd_sv', get_request_var('id'), array('data_template_id' => get_request_var('data_template_id'), 'snmp_query_graph_id' => get_request_var('snmp_query_graph_id'), 'field_name' => get_nfilter_request_var('field_name')));
 }
 
 function data_query_sv_check_sequences($type, $snmp_query_graph_id, $field_name) {
@@ -539,7 +539,7 @@ function data_query_sv_check_sequences($type, $snmp_query_graph_id, $field_name)
 
 	if ($bad_seq > 0 || $dup_seq > 0) {
 		// resequence the list so it has no gaps, and 0 values will appear at the top
-		// since thats where they would have been displayed
+		// since that's where they would have been displayed
 		db_execute_prepared("SET @seq = 0;
 			UPDATE $table
 			SET sequence = (@seq:=@seq+1)
@@ -665,7 +665,7 @@ function data_query_item_edit() {
 	html_end_box(true, true);
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function assignDataQueryGraphName(init) {
 		if (init == false || $('#name').val() == '') {
 			$('#name').val($('#graph_template_id').children(':selected').text());
@@ -673,7 +673,7 @@ function data_query_item_edit() {
 	}
 
 	$(function() {
-		$('form#data_queries').find('#graph_template_id').change(function() {
+		$('form#data_queries').find('#graph_template_id').on('change', function() {
 			assignDataQueryGraphName(false);
 		});
 		assignDataQueryGraphName(true);
@@ -978,15 +978,15 @@ function data_query_item_edit() {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	var graph_template_id_prev=<?php print $item;?>;
 
-	$('.remover').click(function(event) {
+	$('.remover').on('click', function(event) {
 		event.preventDefault();
 		href=$(this).attr('href');
 		$.get(href)
 			.done(function(data) {
-				$('form[action="data_queries.php"]').unbind();
+				$('form[action="data_queries.php"]').off();
 				$('#main').html(data);
 				applySkin();
 			})
@@ -995,7 +995,7 @@ function data_query_item_edit() {
 			});
 	});
 
-	$('input[id="svg_x"]').click(function() {
+	$('input[id="svg_x"]').on('click', function() {
 		$.post('data_queries.php', {
 			action: 'save',
 			save_component_svg: '1',
@@ -1012,7 +1012,7 @@ function data_query_item_edit() {
 		});
 	});
 
-    $('.svds_x').click(function() {
+    $('.svds_x').on('click', function() {
 		// Get the dsid value
 		var id    = $(this).attr('id');
 		var parts = id.split('_');
@@ -1207,7 +1207,7 @@ function data_query_edit() {
 	form_save_button('data_queries.php', 'return');
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	var snmp_query_id = '<?php print isset($snmp_query['id']) ? $snmp_query['id']:'0';?>';
 	var snmp_query_graph_id = '<?php print isset($snmp_query_graph['id']) ? $snmp_query_graph['id']:'0';?>';
@@ -1218,7 +1218,7 @@ function data_query_edit() {
 
 		$('.noLinkEditMain').tooltip();
 
-		$('.delete').click(function (event) {
+		$('.delete').on('click', function (event) {
 			event.preventDefault();
 
 			request = $(this).attr('href');
@@ -1228,7 +1228,7 @@ function data_query_edit() {
 
 					applySkin();
 
-					$('#continue').click(function(data) {
+					$('#continue').on('click', function(data) {
 						$.post('data_queries.php?action=item_remove', {
 							__csrf_magic: csrfMagicToken,
 							snmp_query_id: snmp_query_id,
@@ -1314,7 +1314,7 @@ function data_query() {
 						<?php print __('Data Queries');?>
 					</td>
 					<td>
-						<select id='rows' name='rows' onChange='applyFilter()'>
+						<select id='rows' name='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
@@ -1334,7 +1334,7 @@ function data_query() {
 				</tr>
 			</table>
 		</form>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 		function applyFilter() {
 			strURL  = 'data_queries.php?header=false';
 			strURL += '&filter='+$('#filter').val();
@@ -1348,15 +1348,19 @@ function data_query() {
 		}
 
 		$(function() {
-			$('#refresh').click(function() {
+			$('#refresh').on('click', function() {
 				applyFilter();
 			});
 
-			$('#clear').click(function() {
+			$('#rows').on('change', function() {
+				applyFilter();
+			});
+
+			$('#clear').on('click', function() {
 				clearFilter();
 			});
 
-			$('#form_data_queries').submit(function(event) {
+			$('#form_data_queries').on('submit', function(event) {
 				event.preventDefault();
 				applyFilter();
 			});

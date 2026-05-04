@@ -908,7 +908,7 @@ function utilities_view_tech() {
 	html_end_box();
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
 		$('#tables').tablesorter({
 			widgets: ['zebra'],
@@ -977,7 +977,7 @@ function utilities_view_user_log() {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function clearFilter() {
 		strURL = urlPath+'utilities.php?action=view_user_log&clear=1&header=false';
 		loadPageNoHeader(strURL);
@@ -989,19 +989,23 @@ function utilities_view_user_log() {
 	}
 
 	$(function() {
-		$('#refresh').click(function() {
+		$('#refresh').on('click', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#username, #result, #rows').on('change', function() {
+			applyFilter();
+		});
+
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#purge').click(function() {
+		$('#purge').on('click', function() {
 			purgeLog();
 		});
 
-		$('#form_userlog').submit(function(event) {
+		$('#form_userlog').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -1031,7 +1035,7 @@ function utilities_view_user_log() {
 						<?php print __('User');?>
 					</td>
 					<td>
-						<select id='username' onChange='applyFilter()'>
+						<select id='username'>
 							<option value='-1'<?php if (get_request_var('username') == '-1') {?> selected<?php }?>><?php print __('All');?></option>
 							<option value='-2'<?php if (get_request_var('username') == '-2') {?> selected<?php }?>><?php print __('Deleted/Invalid');?></option>
 							<?php
@@ -1049,7 +1053,7 @@ function utilities_view_user_log() {
 						<?php print __('Result');?>
 					</td>
 					<td>
-						<select id='result' onChange='applyFilter()'>
+						<select id='result'>
 							<option value='-1'<?php if (get_request_var('result') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='1'<?php if (get_request_var('result') == '1') {?> selected<?php }?>><?php print __('Success - Password');?></option>
 							<option value='2'<?php if (get_request_var('result') == '2') {?> selected<?php }?>><?php print __('Success - Token');?></option>
@@ -1061,7 +1065,7 @@ function utilities_view_user_log() {
 						<?php print __('Attempts');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
@@ -1074,7 +1078,7 @@ function utilities_view_user_log() {
 					</td>
 					<td>
 						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='purge' value='<?php print __esc_x('Button: delete all table entries', 'Purge');?>' title='<?php print __esc('Purge User Log');?>'>
 						</span>
@@ -1334,7 +1338,7 @@ function utilities_view_logfile() {
 	top_header();
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function purgeLog() {
 		strURL = urlPath+'utilities.php?action=purge_logfile&header=false&filename='+$('#filename').val();
@@ -1342,19 +1346,19 @@ function utilities_view_logfile() {
 	}
 
 	$(function() {
-		$('#refreshme').click(function() {
+		$('#filename, #tail_lines, #message_type, #reverse, #refresh').on('change', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#purge').click(function() {
+		$('#purge').on('click', function() {
 			purgeLog();
 		});
 
-		$('#form_logfile').submit(function(event) {
+		$('#form_logfile').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -1395,7 +1399,7 @@ function utilities_view_logfile() {
 						<?php print __('File');?>
 					</td>
 					<td>
-						<select id='filename' onChange='applyFilter()'>
+						<select id='filename'>
 							<?php
 							$logFileArray = clog_get_logfiles();
 
@@ -1422,7 +1426,7 @@ function utilities_view_logfile() {
 						<?php print __('Tail Lines');?>
 					</td>
 					<td>
-						<select id='tail_lines' onChange='applyFilter()'>
+						<select id='tail_lines'>
 							<?php
 							foreach($log_tail_lines AS $tail_lines => $display_text) {
 								print "<option value='" . $tail_lines . "'"; if (get_request_var('tail_lines') == $tail_lines) { print ' selected'; } print '>' . $display_text . '</option>';
@@ -1432,7 +1436,7 @@ function utilities_view_logfile() {
 					</td>
 					<td>
 						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='refreshme' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' id='refreshme' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='purge' value='<?php print __esc_x('Button: delete all table entries', 'Purge');?>' title='<?php print __esc('Purge Log');?>'>
 						</span>
@@ -1445,7 +1449,7 @@ function utilities_view_logfile() {
 						<?php print __('Type');?>
 					</td>
 					<td>
-						<select id='message_type' onChange='applyFilter()'>
+						<select id='message_type'>
 							<option value='-1'<?php if (get_request_var('message_type') == '-1') {?> selected<?php }?>><?php print __('All');?></option>
 							<option value='1'<?php if (get_request_var('message_type') == '1') {?> selected<?php }?>><?php print __('Stats');?></option>
 							<option value='2'<?php if (get_request_var('message_type') == '2') {?> selected<?php }?>><?php print __('Warnings');?></option>
@@ -1458,7 +1462,7 @@ function utilities_view_logfile() {
 						<?php print __('Display Order');?>
 					</td>
 					<td>
-						<select id='reverse' onChange='applyFilter()'>
+						<select id='reverse'>
 							<option value='1'<?php if (get_request_var('reverse') == '1') {?> selected<?php }?>><?php print __('Newest First');?></option>
 							<option value='2'<?php if (get_request_var('reverse') == '2') {?> selected<?php }?>><?php print __('Oldest First');?></option>
 						</select>
@@ -1467,7 +1471,7 @@ function utilities_view_logfile() {
 						<?php print __('Refresh');?>
 					</td>
 					<td>
-						<select id='refresh' onChange='applyFilter()'>
+						<select id='refresh'>
 							<?php
 							foreach($page_refresh_interval AS $seconds => $display_text) {
 								print "<option value='" . $seconds . "'"; if (get_request_var('refresh') == $seconds) { print ' selected'; } print '>' . $display_text . '</option>';
@@ -1520,7 +1524,7 @@ function utilities_view_logfile() {
 
 	$nav = html_nav_bar($base_url, MAX_DISPLAY_PAGES, $page_nr, $number_of_lines, $total_rows, 13, __('Entries'), 'page', 'main');
 
-	echo $nav;
+	print $nav;
 
 	html_start_box($start_string, '100%', '', '3', 'center', '');
 
@@ -1579,7 +1583,7 @@ function utilities_view_logfile() {
 	html_end_box();
 
 	if ($total_rows) {
-		echo $nav;
+		print $nav;
 	}
 
 	bottom_footer();
@@ -1681,7 +1685,7 @@ function utilities_view_snmp_cache() {
 	set_page_refresh($refresh);
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL  = urlPath+'utilities.php?host_id=' + $('#host_id').val();
@@ -1704,15 +1708,15 @@ function utilities_view_snmp_cache() {
 	}
 
 	$(function() {
-		$('#refresh').click(function() {
+		$('#snmp_query_id, #rows, #with_index').on('change', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#form_snmpcache').submit(function(event) {
+		$('#form_snmpcache').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -1733,7 +1737,7 @@ function utilities_view_snmp_cache() {
 						<?php print __('Query Name');?>
 					</td>
 					<td>
-						<select id='snmp_query_id' onChange='applyFilter()'>
+						<select id='snmp_query_id'>
 							<option value='-1'<?php if (get_request_var('host_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
 							if (get_request_var('host_id') == -1) {
@@ -1784,7 +1788,7 @@ function utilities_view_snmp_cache() {
 						<?php print __('Rows');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
@@ -1796,7 +1800,7 @@ function utilities_view_snmp_cache() {
 						</select>
 					</td>
 					<td>
-						<input type='checkbox' id='with_index' onChange='applyFilter()' title='<?php print __esc('Allow the search term to include the index column');?>' <?php if (get_request_var('with_index') == 1) { print ' checked '; }?>>
+						<input type='checkbox' id='with_index' title='<?php print __esc('Allow the search term to include the index column');?>' <?php if (get_request_var('with_index') == 1) { print ' checked '; }?>>
 						<label for='with_index'><?php print __('Include Index') ?></label>
 					</td>
 				</tr>
@@ -1977,7 +1981,7 @@ function utilities_view_poller_cache() {
 	set_page_refresh($refresh);
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL  = urlPath+'utilities.php?poller_action=' + $('#poller_action').val();
@@ -1997,15 +2001,15 @@ function utilities_view_poller_cache() {
 	}
 
 	$(function() {
-		$('#refresh').click(function() {
+		$('#template_id, #status, #poller_action, #rows').on('change', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#form_pollercache').submit(function(event) {
+		$('#form_pollercache').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -2026,7 +2030,7 @@ function utilities_view_poller_cache() {
 						<?php print __('Template');?>
 					</td>
 					<td>
-						<select id='template_id' onChange='applyFilter()'>
+						<select id='template_id'>
 							<option value='-1'<?php if (get_request_var('template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='0'<?php if (get_request_var('template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
@@ -2071,7 +2075,7 @@ function utilities_view_poller_cache() {
 						<?php print __('Status');?>
 					</td>
 					<td>
-						<select id='status' onChange='applyFilter()'>
+						<select id='status'>
 							<option value='-1'<?php if (get_request_var('status') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='1'<?php if (get_request_var('status') == '1') {?> selected<?php }?>><?php print __('Enabled');?></option>
 							<option value='0'<?php if (get_request_var('status') == '0') {?> selected<?php }?>><?php print __('Disabled');?></option>
@@ -2081,7 +2085,7 @@ function utilities_view_poller_cache() {
 						<?php print __('Action');?>
 					</td>
 					<td>
-						<select id='poller_action' onChange='applyFilter()'>
+						<select id='poller_action'>
 							<option value='-1'<?php if (get_request_var('poller_action') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='0'<?php if (get_request_var('poller_action') == '0') {?> selected<?php }?>><?php print __('SNMP');?></option>
 							<option value='1'<?php if (get_request_var('poller_action') == '1') {?> selected<?php }?>><?php print __('Script');?></option>
@@ -2092,7 +2096,7 @@ function utilities_view_poller_cache() {
 						<?php print __('Entries');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
@@ -2465,12 +2469,22 @@ function boost_display_run_status() {
 	html_start_box(__('Boost Status'), '100%', '', '3', 'center', '');
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL = urlPath+'utilities.php?action=view_boost_status&header=false&refresh=' + $('#refresh').val();
 		loadPageNoHeader(strURL);
 	}
+
+	$(function() {
+		$('#refresh').on('change', function() {
+			applyFilter();
+		});
+
+		$('#go').on('click', function() {
+			applyFilter();
+		});
+	});
 	</script>
 	<tr class='even'>
 		<form id='form_boost_utilities_stats' method='post'>
@@ -2481,7 +2495,7 @@ function boost_display_run_status() {
 						<?php print __('Refresh Interval');?>
 					</td>
 					<td>
-						<select id='refresh' name='refresh' onChange='applyFilter()'>
+						<select id='refresh' name='refresh'>
 						<?php
 						foreach ($boost_utilities_interval as $key => $interval) {
 							print '<option value="' . $key . '"'; if (get_request_var('refresh') == $key) { print ' selected'; } print '>' . $interval . '</option>';
@@ -2489,7 +2503,7 @@ function boost_display_run_status() {
 						?>
 					</td>
 					<td>
-						<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Refresh');?>' onClick='applyFilter()'>
+						<input type='button' id='go' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Refresh');?>'>
 					</td>
 				</tr>
 			</table>
@@ -2954,7 +2968,7 @@ function snmpagent_utilities_run_cache() {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function applyFilter() {
 		strURL  = 'utilities.php?action=view_snmpagent_cache';
 		strURL += '&mib=' + $('#mib').val();
@@ -2970,15 +2984,15 @@ function snmpagent_utilities_run_cache() {
 	}
 
 	$(function() {
-		$('#refresh').click(function() {
+		$('#mib, #rows').on('change', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#form_snmpagent_cache').submit(function(event) {
+		$('#form_snmpagent_cache').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -3004,7 +3018,7 @@ function snmpagent_utilities_run_cache() {
 							<?php print __('MIB');?>
 						</td>
 						<td>
-							<select id='mib' onChange='applyFilter()'>
+							<select id='mib'>
 								<option value='-1'<?php if (get_request_var('mib') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 								<?php
 								if (cacti_sizeof($mibs) > 0) {
@@ -3019,7 +3033,7 @@ function snmpagent_utilities_run_cache() {
 							<?php print __('OIDs');?>
 						</td>
 						<td>
-							<select id='rows' onChange='applyFilter()'>
+							<select id='rows'>
 								<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 								<?php
 								if (cacti_sizeof($item_rows)) {
@@ -3032,7 +3046,7 @@ function snmpagent_utilities_run_cache() {
 						</td>
 						<td>
 							<span>
-								<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+								<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 								<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 							</span>
 						</td>
@@ -3109,7 +3123,7 @@ function snmpagent_utilities_run_cache() {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
 		$('.tooltip').tooltip({
 			track: true,
@@ -3198,7 +3212,7 @@ function snmpagent_utilities_run_eventlog(){
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function applyFilter() {
 		strURL  = 'utilities.php?action=view_snmpagent_events';
 		strURL += '&severity=' + $('#severity').val();
@@ -3220,19 +3234,23 @@ function snmpagent_utilities_run_eventlog(){
 	}
 
 	$(function() {
-		$('#refresh').click(function() {
+		$('#refresh').on('click', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#severity, #receiver, #rows').on('change', function() {
+			applyFilter();
+		});
+
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#purge').click(function() {
+		$('#purge').on('click', function() {
 			purgeFilter();
 		});
 
-		$('#form_snmpagent_notifications').submit(function(event) {
+		$('#form_snmpagent_notifications').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -3258,7 +3276,7 @@ function snmpagent_utilities_run_eventlog(){
 							<?php print __('Severity');?>
 						</td>
 						<td>
-							<select id='severity' onChange='applyFilter()'>
+							<select id='severity'>
 								<option value='-1'<?php if (get_request_var('severity') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 								<?php
 								foreach ($severity_levels as $level => $name) {
@@ -3271,7 +3289,7 @@ function snmpagent_utilities_run_eventlog(){
 							<?php print __('Receiver');?>
 						</td>
 						<td>
-							<select id='receiver' onChange='applyFilter()'>
+							<select id='receiver'>
 								<option value='-1'<?php if (get_request_var('receiver') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 								<?php
 								foreach ($receivers as $receiver) {
@@ -3284,7 +3302,7 @@ function snmpagent_utilities_run_eventlog(){
 							<?php print __('Entries');?>
 						</td>
 						<td>
-							<select id='rows' onChange='applyFilter()'>
+							<select id='rows'>
 								<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 								<?php
 								if (cacti_sizeof($item_rows)) {
@@ -3343,6 +3361,10 @@ function snmpagent_utilities_run_eventlog(){
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*)
 		FROM snmpagent_notifications_log AS snl
+		INNER JOIN snmpagent_managers AS sm
+		ON sm.id = snl.manager_id
+		LEFT JOIN snmpagent_cache AS sc
+		ON sc.name = snl.notification
 		WHERE $sql_where");
 
 	$logs = db_fetch_assoc($sql_query);
@@ -3388,7 +3410,7 @@ function snmpagent_utilities_run_eventlog(){
 
 	?>
 
-	<script type='text/javascript' >
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$('.tooltip').tooltip({
 		track: true,
 		position: { collision: 'flipfit' },

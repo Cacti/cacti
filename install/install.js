@@ -318,7 +318,7 @@ function collapseHeadings(headingStates) {
 
 			element.append('<div class="cactiInstallValid"><i class="' + fa_icon + '"></i></div>');
 
-			element.click(function(e) {
+			element.on('click', function(e) {
 				toggleHeader(e.currentTarget);
 			});
 		} else {
@@ -386,16 +386,16 @@ function processStepWelcome(StepData) {
 			}
 		}).iconselectmenu( "menuWidget" ).addClass( "ui-menu-icons customicons" );
 	} else {
-		$('#theme').change(function() {
+		$('#theme').on('change', function() {
 			performStep(STEP_WELCOME, undefined, true);
 		});
-		$('#language').change(function() {
+		$('#language').on('change', function() {
 			performStep(STEP_WELCOME, undefined, true);
 		});
 	}
 
 	if ($('#accept').length) {
-		$('#accept').click(function() {
+		$('#accept').on('click', function() {
 			performStep(STEP_WELCOME);
 			if ($('#accept').is(':checked')) {
 				$('#buttonNext').button('enable');
@@ -435,7 +435,7 @@ function processStepInstallType(StepData) {
 				}
 			});
 		} else {
-			$('#install_type').change(function() {
+			$('#install_type').on('change', function() {
 				performStep(STEP_INSTALL_TYPE);
 			});
 		}
@@ -460,7 +460,7 @@ function processStepProfileAndAutomation(StepData) {
 
 	element = $('#automation_override');
 	if (element != null && element.length > 0) {
-		element.change(function() {
+		element.on('change', function() {
 			setSNMPOverride();
 		});
 	}
@@ -496,7 +496,7 @@ function processStepCheckTables(StepData) {
 
 function processStepInputValidation(StepData) {
 	if ($('#confirm').length) {
-		$('#confirm').click(function() {
+		$('#confirm').on('click', function() {
 			if ($(this).is(':checked')) {
 				$('#buttonNext').button('enable');
 			} else {
@@ -514,7 +514,7 @@ function processStepInputValidation(StepData) {
 
 function processStepInstallConfirm(StepData) {
 	if ($('#confirm').length) {
-		$('#confirm').click(function() {
+		$('#confirm').on('click', function() {
 			if ($(this).is(':checked')) {
 				$('#buttonNext').button('enable');
 			} else {
@@ -855,7 +855,7 @@ $(function() {
 		$('#installData').data('debug', true);
 	}
 
-	$('.installButton').click(function(e) {
+	$('.installButton').on('click', function(e) {
 		button = $(e.currentTarget);
 		if (button != null) {
 			buttonData = button.data('buttonData');
@@ -881,7 +881,7 @@ $(function() {
 
 	waitForFinalEvent(function() {
 		installTimer = setTimeout(function() {
-			$('#installRefresh').click(function() {
+			$('#installRefresh').on('click', function() {
 				performStep();
 			});
 

@@ -94,7 +94,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function applyDeviceFilter() {
 		strURL  = '<?php print $url;?>' + '&host_status=' + $('#host_status').val();
 		strURL += '&host_template_id=' + $('#host_template_id').val();
@@ -110,15 +110,19 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	}
 
 	$(function() {
-		$('#refresh').click(function() {
+		$('#refresh').on('click', function() {
 			applyDeviceFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#host_template_id, #host_status, #rowsd').on('change', function() {
+			applyDeviceFilter();
+		});
+
+		$('#clear').on('click', function() {
 			clearDeviceFilter();
 		});
 
-		$('#form_automation_host').submit(function(event) {
+		$('#form_automation_host').on('submit', function(event) {
 			event.preventDefault();
 			applyDeviceFilter();
 		});
@@ -146,7 +150,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 							<?php print __('Type');?>
 						</td>
 						<td>
-							<select id='host_template_id' onChange='applyDeviceFilter()'>
+							<select id='host_template_id'>
 								<option value='-1'<?php if (get_request_var('host_template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 								<option value='0'<?php if (get_request_var('host_template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 								<?php
@@ -164,7 +168,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 							<?php print __('Status');?>
 						</td>
 						<td>
-							<select id='host_status' onChange='applyDeviceFilter()'>
+							<select id='host_status'>
 								<option value='-1'<?php if (get_request_var('host_status') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 								<option value='-3'<?php if (get_request_var('host_status') == '-3') {?> selected<?php }?>><?php print __('Enabled');?></option>
 								<option value='-2'<?php if (get_request_var('host_status') == '-2') {?> selected<?php }?>><?php print __('Disabled');?></option>
@@ -179,7 +183,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 							<?php print __('Devices');?>
 						</td>
 						<td>
-							<select id='rowsd' onChange='applyDeviceFilter()'>
+							<select id='rowsd'>
 								<option value='-1'<?php if (get_request_var('rowsd') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 								<?php
 								if (cacti_sizeof($item_rows)) {
@@ -260,6 +264,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 
 	$sql_query = $rows_query . ' ' . get_order_string() .
 		' LIMIT ' . ($rows*(get_request_var('paged')-1)) . ',' . $rows;
+  
 	$hosts = db_fetch_assoc($sql_query, false);
 
 	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var('paged'), $rows, $total_rows, 7, __('Devices'), 'paged', 'main');
@@ -369,7 +374,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL  = '<?php print $url;?>' + '&host_id=' + $('#host_id').val();
@@ -386,19 +391,19 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	}
 
 	$(function() {
-		$('#host_id, #template_id, #rows, #filter').change(function() {
+		$('#host_id, #template_id, #rows, #filter').on('change', function() {
 			applyFilter();
 		});
 
-		$('#refresh').click(function() {
+		$('#refresh').on('click', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#form_graphs').submit(function(event) {
+		$('#form_graphs').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -654,7 +659,7 @@ function display_new_graphs($rule, $url) {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function applyObjectFilter() {
 		strURL  = '<?php print $url;?>';
 		strURL += '&rows=' + $('#orows').val();
@@ -669,19 +674,19 @@ function display_new_graphs($rule, $url) {
 	}
 
 	$(function() {
-		$('#orefresh').click(function() {
+		$('#orefresh').on('click', function() {
 			applyObjectFilter();
 		});
 
-		$('#oclear').click(function() {
+		$('#oclear').on('click', function() {
 			clearObjectFilter();
 		});
 
-		$('#orows').change(function() {
+		$('#orows').on('change', function() {
 			applyObjectFilter();
 		});
 
-		$('#form_automation_objects').submit(function(event) {
+		$('#form_automation_objects').on('submit', function(event) {
 			event.preventDefault();
 			applyObjectFilter();
 		});
@@ -1013,7 +1018,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL  = '<?php print $url;?>' + '&host_status=' + $('#host_status').val();
@@ -1030,15 +1035,19 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 	}
 
 	$(function() {
-		$('#refresh').click(function() {
+		$('#refresh').on('click', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#host_template_id, #host_status, #rows').on('change', function() {
+			applyFilter();
+		});
+
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#form_automation_tree').submit(function(event) {
+		$('#form_automation_tree').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -1066,7 +1075,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 						<?php print __('Type');?>
 					</td>
 					<td>
-						<select id='host_template_id' onChange='applyFilter()'>
+						<select id='host_template_id'>
 							<option value='-1'<?php if (get_request_var('host_template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='0'<?php if (get_request_var('host_template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
@@ -1084,7 +1093,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 						<?php print __('Status');?>
 					</td>
 					<td>
-						<select id='host_status' onChange='applyFilter()'>
+						<select id='host_status'>
 							<option value='-1'<?php if (get_request_var('host_status') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='-3'<?php if (get_request_var('host_status') == '-3') {?> selected<?php }?>><?php print __('Enabled');?></option>
 							<option value='-2'<?php if (get_request_var('host_status') == '-2') {?> selected<?php }?>><?php print __('Disabled');?></option>
@@ -1099,7 +1108,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 						<?php print __('Data Queries');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
@@ -1112,7 +1121,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 					</td>
 					<td>
 						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>'>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>'>
 						</span>
 					</td>

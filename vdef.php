@@ -158,6 +158,15 @@ function duplicate_vdef($_vdef_id, $vdef_title) {
 	global $fields_vdef_edit;
 
 	$vdef       = db_fetch_row_prepared('SELECT * FROM vdef WHERE id = ?', array($_vdef_id));
+
+	if (!cacti_sizeof($vdef)) {
+		raise_message('vdef_not_found', __('VDEF not found.'), MESSAGE_LEVEL_ERROR);
+
+		cacti_header('vdef.php');
+
+		exit;
+	}
+
 	$vdef_items = db_fetch_assoc_prepared('SELECT * FROM vdef_items WHERE vdef_id = ?', array($_vdef_id));
 
 	/* substitute the title variable */
@@ -267,7 +276,7 @@ function vdef_form_actions() {
 					</td>
 				</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc_n('Delete VDEF', 'Delete VDEFs', cacti_sizeof($vdef_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc_n('Delete VDEF', 'Delete VDEFs', cacti_sizeof($vdef_array)) . "'>";
 		} elseif (get_nfilter_request_var('drp_action') === '2') { // duplicate
 			print "	<tr>
 					<td class='topBoxAlt'>
@@ -277,7 +286,7 @@ function vdef_form_actions() {
 					</td>
 				</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc_n('Duplicate VDEF', 'Duplicate VDEFs', cacti_sizeof($vdef_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc_n('Duplicate VDEF', 'Duplicate VDEFs', cacti_sizeof($vdef_array)) . "'>";
 		}
 	} else {
 		raise_message(40);
@@ -322,6 +331,14 @@ function vdef_item_remove_confirm() {
 
 	$vdef       = db_fetch_row_prepared('SELECT * FROM vdef WHERE id = ?', array(get_request_var('id')));
 	$vdef_item  = db_fetch_row_prepared('SELECT * FROM vdef_items WHERE id = ?', array(get_request_var('vdef_id')));
+
+	if (!cacti_sizeof($vdef) || !cacti_sizeof($vdef_item)) {
+		raise_message('vdef_item_not_found', __('VDEF or VDEF Item not found.'), MESSAGE_LEVEL_ERROR);
+
+		cacti_header('vdef.php');
+
+		exit;
+	}
 
 	?>
 	<tr>
@@ -466,9 +483,9 @@ function vdef_item_edit() {
 	);
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
-		$('#type_select').unbind().change(function() {
+		$('#type_select').on('change', function() {
 			strURL  = 'vdef.php?action=item_edit';
 			strURL += '&id=' + $('#id').val();
 			strURL += '&vdef_id=' + $('#vdef_id').val();
@@ -548,6 +565,14 @@ function vdef_edit() {
 			FROM vdef
 			WHERE id = ?',
 			array(get_request_var('id')));
+
+		if (!cacti_sizeof($vdef)) {
+			raise_message('vdef_not_found', __('VDEF not found.'), MESSAGE_LEVEL_ERROR);
+
+			cacti_header('vdef.php');
+
+			exit;
+		}
 
 		$header_label = __esc('VDEFs [edit: %s]', $vdef['name']);
 	} else {
@@ -636,7 +661,7 @@ function vdef_edit() {
 	form_save_button('vdef.php', 'return');
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	$(function() {
 		$('#vdef_edit3').find('.cactiTable').attr('id', 'vdef_item');
@@ -644,14 +669,14 @@ function vdef_edit() {
 		$('#main').append("<div class='cdialog' id='cdialog'></div>");
 
 		<?php if (read_config_option('drag_and_drop') == 'on') { ?>
-		$('#vdef_item').unbind().tableDnD({
+		$('#vdef_item').tableDnD({
 			onDrop: function(table, row) {
 				loadPageNoHeader('vdef.php?action=ajax_dnd&id=<?php isset_request_var('id') ? print get_request_var('id') : print 0;?>&'+$.tableDnD.serialize());
 			}
 		});
 		<?php } ?>
 
-		$('.delete').unbind().click(function (event) {
+		$('.delete').on('click', function (event) {
 			event.preventDefault();
 
 			id = $(this).attr('id').split('_');
@@ -710,7 +735,7 @@ function vdef_filter() {
 						<?php print __('VDEFs');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
@@ -729,14 +754,14 @@ function vdef_filter() {
                     </td>
 					<td>
 						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' id='refresh'>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' id='refresh'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' id='clear'>
 						</span>
 					</td>
 				</tr>
 			</table>
 			</form>
-			<script type='text/javascript'>
+			<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 			function applyFilter() {
 				strURL  = 'vdef.php?header=false';
@@ -752,19 +777,19 @@ function vdef_filter() {
 			}
 
 			$(function() {
-				$('#refresh').click(function() {
+				$('#has_graphs').on('click', function() {
 					applyFilter();
 				});
 
-				$('#has_graphs').click(function() {
+				$('#rows').on('change', function() {
 					applyFilter();
 				});
 
-				$('#clear').click(function() {
+				$('#clear').on('click', function() {
 					clearFilter();
 				});
 
-				$('#form_vdef').submit(function(event) {
+				$('#form_vdef').on('submit', function(event) {
 					event.preventDefault();
 					applyFilter();
 				});

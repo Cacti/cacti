@@ -256,54 +256,123 @@ while (1) {
 				"' FUNC: '$function' PARMS: '" . implode('\', \'',$parameter_array) .
 				"'", false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 
-			/* validate the existence of the function, and include if applicable */
-			if (!function_exists($function)) {
-				if (file_exists($include_file)) {
-					/**
-					 * quirk in php on Windows, believe it or not....
-					 * path must be lower case
-					 */
-					if ($config['cacti_server_os'] == 'win32') {
-						$include_file = strtolower($include_file);
-					}
+			/* Validate the include path unconditionally. Built-ins like system,
+			 * passthru, exec satisfy function_exists() without ever loading a
+			 * script file, so the path guard cannot be gated on the function
+			 * being undefined. include_once() is idempotent, so re-running it
+			 * on cached entries is a no-op. */
+			$real_include = realpath($include_file);
+			$base_real    = realpath($config['base_path']);
 
-					/**
-					 * set this variable so the calling script can determine if it was called
-					 * by the script server or stand-alone
-					 */
-					$called_by_script_server = true;
-
-					/* turn on output buffering to avoid problems with nasty scripts */
-					ob_start();
-					include_once($include_file);
-					ob_end_clean();
-
-					error_reporting(0);
-				} else {
-					cacti_log('WARNING: PHP Script File to be included, does not exist', false, 'PHPSVR');
-				}
+			if ($real_include !== false) {
+				$real_include = str_replace('\\', '/', $real_include);
+			}
+			if ($base_real !== false) {
+				$base_real = str_replace('\\', '/', $base_real);
 			}
 
-			if (function_exists($function)) {
-				error_reporting(0);
+			/* On Windows, realpath() may return mixed-case drive letters; use
+			 * case-insensitive comparison to avoid false rejections. */
+			$path_cmp = (DIRECTORY_SEPARATOR === '\\') ? 'stripos' : 'strpos';
+			$path_ok  = ($real_include !== false && $base_real !== false && $path_cmp($real_include, $base_real . '/') === 0);
 
-				if ($parameters == '') {
-					$result = call_user_func($function);
+			if (!$path_ok) {
+				if ($real_include !== false) {
+					cacti_log("WARNING: Script file '$include_file' resolves outside base path. Rejected.", false, 'PHPSVR');
 				} else {
-					$result = call_user_func_array($function, $parameter_array);
+					cacti_log("WARNING: Script file '$include_file' could not be resolved. Rejected.", false, 'PHPSVR');
 				}
-
-				fputs(STDOUT, trim($result) . "\n");
+				fputs(STDOUT, "U\n");
 				fflush(STDOUT);
+				continue;
+			}
 
-				cacti_log("DEBUG: PID[$pid] CTR[$ctr] RESPONSE:'$result'", false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+			$include_file = $real_include;
 
-				$ctr++;
-			} else {
+			if (!file_exists($include_file)) {
+				cacti_log('WARNING: PHP Script File to be included, does not exist', false, 'PHPSVR');
+				fputs(STDOUT, "U\n");
+				fflush(STDOUT);
+				continue;
+			}
+
+			/* quirk in php on Windows, believe it or not....path must be lower case */
+			if ($config['cacti_server_os'] == 'win32') {
+				$include_file = strtolower($include_file);
+			}
+
+			/* set this variable so the calling script can determine if it was
+			 * called by the script server or stand-alone */
+			$called_by_script_server = true;
+
+			/* turn on output buffering to avoid problems with nasty scripts */
+			ob_start();
+			include_once($include_file);
+			ob_end_clean();
+
+			error_reporting(0);
+
+			if (!function_exists($function)) {
 				cacti_log("WARNING: Function does not exist  INC: '". basename($include_file) . "' FUNC: '" .$function . "' PARMS: '" . $parameters . "'", false, 'PHPSVR');
 				fputs(STDOUT, "U\n");
 				fflush(STDOUT);
+				continue;
 			}
+
+			/* Refuse to call PHP internals (system, passthru, exec, ...) and
+			 * any function whose source file lives outside base_path. The
+			 * script-server contract is to dispatch into user scripts in the
+			 * Cacti tree; anything else is a containment failure. */
+			try {
+				$ref = new ReflectionFunction($function);
+			} catch (ReflectionException $e) {
+				cacti_log("WARNING: Function '$function' not introspectable. Rejected.", false, 'PHPSVR');
+				fputs(STDOUT, "U\n");
+				fflush(STDOUT);
+				continue;
+			}
+
+			if ($ref->isInternal()) {
+				cacti_log("WARNING: Refusing to dispatch PHP internal function '$function' from script server.", false, 'PHPSVR');
+				fputs(STDOUT, "U\n");
+				fflush(STDOUT);
+				continue;
+			}
+
+			$fn_file = $ref->getFileName();
+
+			if ($fn_file === false) {
+				cacti_log("WARNING: Function '$function' has no source file. Rejected.", false, 'PHPSVR');
+				fputs(STDOUT, "U\n");
+				fflush(STDOUT);
+				continue;
+			}
+
+			$fn_real = realpath($fn_file);
+
+			if ($fn_real !== false) {
+				$fn_real = str_replace('\\', '/', $fn_real);
+			}
+
+			if ($fn_real === false || $path_cmp($fn_real, $base_real . '/') !== 0) {
+				cacti_log("WARNING: Function '$function' defined outside base path ('$fn_file'). Rejected.", false, 'PHPSVR');
+				fputs(STDOUT, "U\n");
+				fflush(STDOUT);
+				continue;
+			}
+
+			if ($parameters == '') {
+				$result = call_user_func($function);
+			} else {
+				$result = call_user_func_array($function, $parameter_array);
+			}
+
+			fputs(STDOUT, trim($result) . "\n");
+			fflush(STDOUT);
+
+			cacti_log("DEBUG: PID[$pid] CTR[$ctr] RESPONSE:'$result'", false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+
+			$ctr++;
 		}
 	}
 

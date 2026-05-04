@@ -591,10 +591,10 @@ function item_edit() {
 	form_save_button('graph_templates.php?action=template_edit&id=' . get_request_var('graph_template_id'));
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	$(function() {
-		$('#shift').click(function(data) {
+		$('#shift').on('click', function(data) {
 			if ($('#shift').is(':checked')) {
 				$('#row_value').show();
 			} else {
@@ -602,7 +602,7 @@ function item_edit() {
 			}
 		});
 
-		$('#data_template_id').change(function() {
+		$('#data_template_id').on('change', function() {
 			$.get(urlPath+'graph_templates_items.php'+
 				'?action=ajax_data_sources'+
 				'&data_template_id='+$('#data_template_id').val()+
@@ -618,7 +618,7 @@ function item_edit() {
 		});
 
 		setRowVisibility();
-		$('#graph_type_id').change(function(data) {
+		$('#graph_type_id').on('change', function(data) {
 			setRowVisibility();
 		});
 	});

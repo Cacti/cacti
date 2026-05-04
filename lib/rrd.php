@@ -255,6 +255,11 @@ function rrdtool_execute() {
 function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pipe = false, $logopt = 'WEBLOG') {
 	global $config;
 
+	if (is_array($command_line)) {
+		$cmd = array_shift($command_line);
+		$command_line = $cmd . ' ' . implode(' ', array_map('cacti_escapeshellarg', $command_line));
+	}
+
 	static $last_command;
 
 	if (!is_numeric($output_flag)) {
@@ -779,7 +784,16 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = f
 		$success = rrdtool_execute("create $data_source_path $create_ds$create_rra", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
 
 		if ($config['cacti_server_os'] != 'win32' && posix_getuid() == 0) {
-			shell_exec("chown $owner_id:$group_id $data_source_path");
+			if (file_exists($data_source_path)) {
+				if (!chown($data_source_path, $owner_id)) {
+					cacti_log("ERROR: Unable to set ownership for '$data_source_path'", false, 'POLLER');
+				}
+				if (!chgrp($data_source_path, $group_id)) {
+					cacti_log("ERROR: Unable to set group for '$data_source_path'", false, 'POLLER');
+				}
+			} else {
+				cacti_log("ERROR: RRD file '$data_source_path' does not exist for ownership assignment", false, 'POLLER');
+			}
 		}
 
 		return $success;
@@ -855,12 +869,19 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false) {
 
 					$rrd_update_template .= $field_name;
 
-					/* if we have "invalid data", give rrdtool an Unknown (U) */
-					if (!isset($value) || !is_numeric($value)) {
-						$value = 'U';
+					/* Sanitize control characters that poison the rrdtool IPC pipe */
+					if (is_string($value)) {
+						$value = trim($value);
 					}
 
-					$rrd_update_values .= $value;
+					/* Enforce strict fail-closed NaN propagation */
+					if ($value === null || $value === '' || !is_numeric($value)) {
+						$rrd_update_values .= 'U';
+					} else {
+						/* Force standard decimal separator to bypass LC_NUMERIC locale
+						   bugs without truncating 64-bit counter precision */
+						$rrd_update_values .= str_replace(',', '.', (string)$value);
+					}
 				}
 
 				if (cacti_version_compare(get_rrdtool_version(), '1.5', '>=')) {
@@ -893,32 +914,33 @@ function rrdtool_function_tune($rrd_tune_array) {
 
 	$rrd_tune = '';
 	if ($rrd_tune_array['heartbeat'] != '') {
-		$rrd_tune .= " --heartbeat $data_source_name:" . $rrd_tune_array['heartbeat'];
+		$rrd_tune .= ' --heartbeat ' . cacti_escapeshellarg($data_source_name . ':' . $rrd_tune_array['heartbeat']);
 	}
 
 	if ($rrd_tune_array['minimum'] != '') {
-		$rrd_tune .= " --minimum $data_source_name:" . $rrd_tune_array['minimum'];
+		$rrd_tune .= ' --minimum ' . cacti_escapeshellarg($data_source_name . ':' . $rrd_tune_array['minimum']);
 	}
 
 	if ($rrd_tune_array['maximum'] != '') {
-		$rrd_tune .= " --maximum $data_source_name:" . $rrd_tune_array['maximum'];
+		$rrd_tune .= ' --maximum ' . cacti_escapeshellarg($data_source_name . ':' . $rrd_tune_array['maximum']);
 	}
 
 	if ($rrd_tune_array['data-source-type'] != '') {
-		$rrd_tune .= " --data-source-type $data_source_name:" . $data_source_type;
+		$rrd_tune .= ' --data-source-type ' . cacti_escapeshellarg($data_source_name . ':' . $data_source_type);
 	}
 
 	if ($rrd_tune_array['data-source-rename'] != '') {
-		$rrd_tune .= " --data-source-rename $data_source_name:" . $rrd_tune_array['data-source-rename'];
+		$rrd_tune .= ' --data-source-rename ' . cacti_escapeshellarg($data_source_name . ':' . $rrd_tune_array['data-source-rename']);
 	}
 
 	if ($rrd_tune != '') {
 		if (file_exists($data_source_path) == true) {
 			if (is_file(read_config_option('path_rrdtool')) && is_executable(read_config_option('path_rrdtool'))) {
-				$fp = popen(read_config_option('path_rrdtool') . " tune $data_source_path $rrd_tune", 'r');
+				$rrdtool_cmd = cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' tune ' . cacti_escapeshellarg($data_source_path) . $rrd_tune;
+				$fp = popen($rrdtool_cmd, 'r');
 				pclose($fp);
 
-				cacti_log('CACTI2RRD: ' . read_config_option('path_rrdtool') . " tune $data_source_path $rrd_tune", false, 'WEBLOG', POLLER_VERBOSITY_DEBUG);
+				cacti_log('CACTI2RRD: ' . $rrdtool_cmd, false, 'WEBLOG', POLLER_VERBOSITY_DEBUG);
 			} else {
 				cacti_log("ERROR: RRDtool executable not found, not executable or error in path '" . read_config_option('path_rrdtool') . "'.  No output written to RRDfile.");
 			}
@@ -1637,6 +1659,21 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$data_source_path = get_data_source_path($graph_item['local_data_id'], true);
 				}
 
+				if (!rrdtool_file_exists($data_source_path, $rrdtool_pipe)) {
+					if (isset($graph_data_array['export_csv'])) {
+						return false;
+					}
+
+					// Both get_error (STDERR output) and print_source (HTML debug view)
+					// are text-output modes; returning PNG bytes in either would produce
+					// garbage in the browser or CLI. Return a human-readable error instead.
+					if (isset($graph_data_array['get_error']) || isset($graph_data_array['print_source'])) {
+						return __('ERROR: RRD file does not exist: %s', $data_source_path);
+					}
+
+					return rrdtool_create_error_image(__('The Cacti Poller has not run yet.'));
+				}
+
 				/* FOR WIN32: Escape all colon for drive letters (ex. D\:/path/to/rra) */
 				$data_source_path = rrdtool_escape_string($data_source_path);
 
@@ -1822,8 +1859,6 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$cf_id = 1; /* CF: AVERAGE */
 				}
 			}
-			/* now remember the correct CF reference */
-			$cf_id = $graph_item['cf_reference'];
 
 			/* +++++++++++++++++++++++ GRAPH ITEMS: CDEF START +++++++++++++++++++++++ */
 
@@ -2072,6 +2107,15 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 				/* replace query variables in cdefs */
 				$cdef_string = rrd_substitute_host_query_data($cdef_string, $graph, $graph_item);
+
+				/* aggregate graphs can produce an empty RPN expression for GPRINT items
+				   whose consolidation function does not match the data source; skip them
+				   rather than emitting a bare "CDEF:cdefX=" which rrdtool rejects. */
+				if ($cdef_string === '') {
+					cacti_log('Empty CDEF string for graph ' . $graph['local_graph_id'] . '; skipping.', true, 'RRD', POLLER_VERBOSITY_DEBUG);
+
+					continue;
+				}
 
 				/* make the initial 'virtual' cdef name: 'cdef' + [a,b,c,d...] */
 				$cdef_graph_defs .= 'CDEF:cdef' . generate_graph_def_name(strval($i)) . '=';
@@ -2547,10 +2591,12 @@ function rrdtool_function_theme_font_options(&$graph_data_array) {
 
 
 	if (isset($graph_data_array['graph_theme'])) {
-		$rrdtheme = $config['base_path'] . '/include/themes/' . $graph_data_array['graph_theme'] . '/rrdtheme.php';
+		$theme = cacti_validate_theme($graph_data_array['graph_theme']);
 	} else {
-		$rrdtheme = $config['base_path'] . '/include/themes/' . get_selected_theme() . '/rrdtheme.php';
+		$theme = get_selected_theme();
 	}
+
+	$rrdtheme = $config['base_path'] . '/include/themes/' . $theme . '/rrdtheme.php';
 
 	if (file_exists($rrdtheme) && is_readable($rrdtheme)) {
 		$rrdversion = get_rrdtool_version();
@@ -2723,6 +2769,28 @@ function rrdtool_function_get_resstep($local_data_ids, $graph_start, $graph_end,
 	}
 
 	return 0;
+}
+
+/**
+ * rrdtool_file_exists - given a data source path check either
+ * the local file system of the rrdtool proxy to see if the
+ * data source path exists.
+ *
+ * @param string $data_source_path The data source rrdfile path
+ * @param mixed  $rrdtool_pipe     The rrdtool pipe if available
+ *
+ * @return bool A boolean to tell if the file exists
+ */
+function rrdtool_file_exists(string $data_source_path, mixed $rrdtool_pipe = null) : bool {
+	if (read_config_option('storage_location')) {
+		if (!rrdtool_execute("file_exists $data_source_path", true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER')) {
+			return false;
+		}
+	} elseif (!file_exists($data_source_path)) {
+		return false;
+	}
+
+	return true;
 }
 
 /**
@@ -2972,7 +3040,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 				}
 
 				/**
-				 * Accomodate a Cacti bug where the heartbeat was not
+				 * Accommodate a Cacti bug where the heartbeat was not
 				 * propagated.
 				 */
 				if ($data_source['minimal_heartbeat'] != $profile_heartbeat) {
@@ -2998,7 +3066,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 					$diff['tune'][] = $info['filename'] . ' ' . '--data-source-type ' . $data_source_name . ':' . $data_source['type'];
 				}
 
-				/* check the mimimal heartbeat */
+				/* check the minimal heartbeat */
 				if ($data_source['minimal_heartbeat'] != $info['ds'][$data_source_name]['minimal_heartbeat']) {
 					$diff['ds'][$data_source_name]['minimal_heartbeat'] = __("Heartbeat for Data Source '%s' should be '%s'", $data_source_name, $data_source['minimal_heartbeat']);
 					$diff['tune'][] = $info['filename'] . ' ' . '--heartbeat ' . $data_source_name . ':' . $data_source['minimal_heartbeat'];
@@ -3072,7 +3140,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 						$file_rra['pdp_per_row'] = 0;
 					}
 
-					/* corrrect issue with older rrdtools */
+					/* correct issue with older rrdtools */
 					$file_rra['cf'] = trim($file_rra['cf'], '"');
 
 					if ($cacti_rra['cf'] == $file_rra['cf'] && $cacti_rra_id == $file_rra_id) {
@@ -4109,12 +4177,19 @@ function gradient($vname = false, $start_color = '#0000a0', $end_color = '#f0f0f
 }
 
 /**
- * colourBrightness - Add colourBrightness support for the gradient charts. This function calculates the darker version of a given color
+ * colourBrightness - Adjust the brightness of a hex color for gradient charts.
+ * Positive percent lightens; negative percent darkens.
  *
- * @param  (bool)   $hex     - The hex representation of a color
- * @param  (string) $percent - the percentage to darken the given color. decimal number ( 0.4 -> 40% )
+ * @param  (string) $hex     - The hex representation of a color (with or without leading #)
+ * @param  (float)  $percent - Brightness adjustment: decimal in [-1, 1] (e.g. 0.4 = +40%)
+ *                             or coerced integer in [-100, 100] (e.g. 40 = +40%). Values
+ *                             outside [-100, 100] are normalized then clamped to [-1, 1].
+ *                             NOTE: values in the open interval (1.0, 2.0) are treated as
+ *                             integers and divided by 100 (e.g. 1.5 -> 0.015). The value
+ *                             1.0 itself is NOT divided — it means 100% original color
+ *                             (the identity). Use 0.01 to express "1% brighter".
  *
- * @return (string) - the darker version of the given color
+ * @return (string) - the adjusted color in the same format as the input
  *
  * License:			GPLv2
  * Original Code		http://www.barelyfitz.com/projects/csscolor/
@@ -4132,14 +4207,22 @@ function colourBrightness($hex, $percent) {
 	$rgb = array(hexdec(substr($hex, 0, 2)), hexdec(substr($hex, 2, 2)), hexdec(substr($hex, 4, 2)));
 
 	//// CALCULATE
+	if (abs($percent) > 1) {
+		$percent = $percent / 100;
+	}
+
 	for ($i = 0; $i < 3; $i++) { // See if brighter or darker
 		if ($percent > 0) {
 			// Lighter
 			$rgb[$i] = round($rgb[$i] * $percent) + round(255 * (1 - $percent));
 		} else {
 			// Darker
-			$positivePercent = $percent - ($percent*2);
-			$rgb[$i] = round($rgb[$i] * (1 - $positivePercent)); // round($rgb[$i] * (1-$positivePercent));
+			$positivePercent = abs($percent);
+			$rgb[$i] = round($rgb[$i] * (1 - $positivePercent));
+		}
+
+		if ($rgb[$i] < 0) {
+			$rgb[$i] = 0;
 		}
 
 		// In case rounding up causes us to go to 256

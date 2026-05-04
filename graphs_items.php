@@ -353,7 +353,7 @@ function item_edit() {
 						<?php print __('Data Template');?>
 					</td>
 					<td>
-						<select id='data_template_id' onChange='applyFilter()'>
+						<select id='data_template_id'>
 							<option value='-1'<?php if (get_request_var('data_template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='0'<?php if (get_request_var('data_template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
@@ -533,10 +533,10 @@ function item_edit() {
 	form_save_button('graphs.php?action=graph_edit&id=' . get_request_var('local_graph_id'));
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	$(function() {
-		$('#shift').click(function(data) {
+		$('#shift').on('click', function(data) {
 			if ($('#shift').is(':checked')) {
 				$('#row_value').show();
 			} else {
@@ -555,12 +555,16 @@ function item_edit() {
 				}
 			});
 		} else {
-			$('#cdef_id').click(function() {
+			$('#cdef_id').on('click', function() {
 				cdefAlignment();
 			});
 		}
 
-		$('#graph_type_id').change(function(data) {
+		$('#data_template_id').on('change', function() {
+			applyFilter();
+		});
+
+		$('#graph_type_id').on('change', function(data) {
 			setRowVisibility();
 		});
 	});

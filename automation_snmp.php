@@ -211,7 +211,7 @@ function form_automation_snmp_actions() {
 	general_header();
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function goTo(location) {
 		document.location = location;
 	}
@@ -252,7 +252,7 @@ function form_automation_snmp_actions() {
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($automation_array) ? serialize($automation_array) : '') . "'>
 			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()' value='" . ($save_html == '' ? __esc('Return'):__esc('Cancel')) . "' name='cancel'>
+			<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . ($save_html == '' ? __esc('Return'):__esc('Cancel')) . "' name='cancel'>
 			$save_html
 		</td>
 	</tr>";
@@ -366,7 +366,7 @@ function automation_snmp_item_remove_confirm() {
     </tr>
     <tr>
         <td class='right'>
-            <input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
+            <input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' name='cancel'>
             <input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove SNMP Item');?>'>
         </td>
     </tr>
@@ -377,9 +377,13 @@ function automation_snmp_item_remove_confirm() {
     form_end();
 
     ?>
-    <script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
     $(function() {
-    	$('#continue').click(function(data) {
+		$('#cancel').on('click', function() {
+			$('#cdialog').dialog('close');
+		});
+
+    	$('#continue').on('click', function(data) {
 			$.post('automation_snmp.php?action=item_remove', {
 				__csrf_magic: csrfMagicToken,
 				item_id: <?php print get_request_var('item_id');?>,
@@ -465,7 +469,7 @@ function automation_snmp_item_edit() {
 	form_save_button('automation_snmp.php?action=edit&id=' . get_request_var('id'));
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	$(function() {
 		// Need to set this for global snmpv3 functions to remain sane between edits
@@ -600,12 +604,12 @@ function automation_snmp_edit() {
 	form_save_button('automation_snmp.php', 'return');
 
     ?>
-    <script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
     $(function() {
 		$('.cdialog').remove();
 		$('#main').append("<div class='cdialog' id='cdialog'></div>");
 		$('#automation_snmp_edit2_child').attr('id', 'snmp_item');
-        $('img.action').click(function() {
+        $('img.action').on('click', function() {
             strURL = $(this).attr('href');
 			loadPageNoHeader(strURL);
         });
@@ -618,7 +622,7 @@ function automation_snmp_edit() {
         });
 		<?php } ?>
 
-		$('.delete').click(function (event) {
+		$('.delete').on('click', function (event) {
 			event.preventDefault();
 
 			id = $(this).attr('id').split('_');
@@ -702,7 +706,7 @@ function automation_snmp() {
 						<?php print __('SNMP Rules');?>
 					</td>
                     <td>
-                        <select id='rows' onChange='applyFilter()'>
+                        <select id='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
                             <?php
                             if (cacti_sizeof($item_rows)) {
@@ -724,7 +728,7 @@ function automation_snmp() {
 		</form>
 		</td>
 	</tr>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function applyFilter() {
 		strURL  = 'automation_snmp.php?header=false';
 		strURL += '&filter='+$('#filter').val();
@@ -738,15 +742,19 @@ function automation_snmp() {
 	}
 
 	$(function() {
-		$('#refresh').click(function() {
+		$('#refresh').on('click', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#rows').on('change', function() {
+			applyFilter();
+		});
+
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#snmp_form').submit(function(event) {
+		$('#snmp_form').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -840,7 +848,7 @@ function automation_snmp() {
 	form_end();
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function applyFilter() {
 		strURL  = 'automation_snmp.php?header=false&rows=' + $('#rows').val();
 		strURL += strURL + '&filter=' + $('#filter').val();

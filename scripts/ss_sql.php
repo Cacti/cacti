@@ -36,12 +36,17 @@ function ss_sql() {
 	global $database_password;
 	global $database_hostname;
 
+	$args = array(
+		'--host=' . $database_hostname,
+		'--user=' . $database_username
+	);
+
 	if ($database_password != '') {
-		$result = `mysqladmin --host=$database_hostname --user=$database_username --password=$database_password status`;
-	} else {
-		$result = `mysqladmin --host=$database_hostname --user=$database_username status`;
+		$args[] = '--password=' . $database_password;
 	}
 
+	$result = cacti_exec_string('mysqladmin', $args);
+	
 	$result = preg_replace('/: /', ':', $result);
 	$result = preg_replace('/  /', ' ', $result);
 	$result = preg_replace('/Slow queries/', 'SlowQueries', $result);
@@ -49,6 +54,5 @@ function ss_sql() {
 	$result = preg_replace('/Queries per second avg/', 'QPS', $result);
 	$result = preg_replace('/Flush tables/', 'FlushTables', $result);
 
-	return trim($result);
+	return trim($result) ?: 'U';
 }
-

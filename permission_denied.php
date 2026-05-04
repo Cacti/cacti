@@ -27,9 +27,10 @@ include('./include/auth.php');
 $version = get_cacti_version();
 
 if (isset($_SERVER['HTTP_REFERER'])) {
-	$goBack = "<td colspan='2' class='center'>[<a href='" . $_SERVER['HTTP_REFERER'] . "'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
+	$redirect = validate_redirect_url($_SERVER['HTTP_REFERER'], 'index.php');
+	$goBack = "<td colspan='2' class='center'>[<a href='" . $redirect . "'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
 } else {
-	$goBack = "<td colspan='2' class='center'>[<a href='#' onClick='window.history.back()'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
+	$goBack = "<td colspan='2' class='center'>[<a class='returnTo' href='#'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
 }
 
 /* allow for plugin based permission denied page */
@@ -59,10 +60,13 @@ print "<body class='logoutBody'>
 		<div class='versionInfo'>" . __('Version') . " " . $version . " | " . COPYRIGHT_YEARS_SHORT . "</div>
 	</div>
 	<div class='logoutRight'></div>
-	<script type='text/javascript'>
+	<script type='text/javascript' " . CactiSecureHeaders::getNonceAttribute() . ">
 	$(function() {
 		$('.loginLeft').css('width',parseInt($(window).width()*0.33)+'px');
 		$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
+		$('.returnTo').on('click', function() {
+			window.history.back();
+		});
 	});
 	</script>";
 

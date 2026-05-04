@@ -189,7 +189,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Color', 'Delete Colors', cacti_sizeof($color_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Color', 'Delete Colors', cacti_sizeof($color_array)) . "'>";
 		}
 	} else {
 		raise_message(40);
@@ -434,16 +434,16 @@ function color_edit() {
 	form_save_button('color.php');
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	$(function() {
 		checkReadonly();
 
 		$('#hex').colorpicker().css({'width':'60px'});
-		$('#read_only').click(function() {
+		$('#read_only').on('click', function() {
 			checkReadonly();
 		});
 
-		$('#name').keyup(function() {
+		$('#name').on('keyup', function() {
 			$('#hidden_name').val($(this).val());
 		});
 
@@ -535,7 +535,7 @@ function color() {
 						<?php print __('Colors');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows) > 0) {
@@ -573,7 +573,7 @@ function color() {
 				</tr>
 			</table>
 			</form>
-			<script type='text/javascript'>
+			<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 			function applyFilter() {
 				strURL  = 'color.php?header=false';
 				strURL += '&filter='+$('#filter').val();
@@ -589,33 +589,29 @@ function color() {
 			}
 
 			$(function() {
-				$('#refresh').click(function() {
+				$('#refresh, #has_graphs, #named').on('click', function() {
 					applyFilter();
 				});
 
-				$('#has_graphs').click(function() {
+				$('#rows').on('change', function() {
 					applyFilter();
 				});
 
-				$('#named').click(function() {
-					applyFilter();
-				});
-
-				$('#clear').click(function() {
+				$('#clear').on('click', function() {
 					clearFilter();
 				});
 
-				$('#form_color').submit(function(event) {
+				$('#form_color').on('submit', function(event) {
 					event.preventDefault();
 					applyFilter();
 				});
 
-				$('#import').click(function(event) {
+				$('#import').on('click', function(event) {
 					strURL = 'color.php?action=import&header=false';
 					loadPageNoHeader(strURL);
 				});
 
-				$('#export').click(function(event) {
+				$('#export').on('click', function(event) {
 					strURL = 'color.php?action=export&header=false';
 					document.location = strURL;
 					Pace.stop();

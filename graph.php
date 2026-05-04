@@ -111,6 +111,14 @@ case 'view':
 		WHERE gtg.local_graph_id = ?',
 		array(get_request_var('local_graph_id')));
 
+	if (!cacti_sizeof($graph)) {
+		raise_message('graph_not_found', __('The Graph you requested does not exist.'), MESSAGE_LEVEL_ERROR);
+
+		cacti_header('graph_view.php');
+
+		exit;
+	}
+
 	$graph_template_id = $graph['graph_template_id'];
 
 	$i = 0;
@@ -172,7 +180,7 @@ case 'view':
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	var originalWidth = null;
 	var refreshTime   = <?php print read_user_setting('page_refresh')*1000;?>;
@@ -438,9 +446,9 @@ case 'zoom':
 	<tr class='odd'>
 		<td id='data'></td>
 	</tr>
-	<script type='text/javascript'>
-	var graph_id      = <?php print get_request_var('local_graph_id') . ";\n";?>
-	var rra_id        = <?php print get_request_var('rra_id') . ";\n";?>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
+	var graph_id      = <?php print get_request_var('local_graph_id');?>;
+	var rra_id        = <?php print get_request_var('rra_id');?>;
 	var graph_start   = 0;
 	var graph_end     = 0;
 	var graph_height  = 0;
@@ -452,7 +460,7 @@ case 'zoom':
 	var refreshMSeconds=9999999;
 
 	function graphProperties() {
-		$.get(urlPath+'graph.php?action=properties&header=false&local_graph_id='+graph_id+'&rra_id=<?php print get_request_var('rra_id');?>&view_type=<?php print get_request_var('view_type');?>&graph_start='+$('#graph_start').val()+'&graph_end='+$('#graph_end').val())
+		$.get(urlPath+'graph.php?action=properties&header=false&local_graph_id='+graph_id+'&rra_id='+<?php print json_encode(get_request_var('rra_id'));?>+'&view_type='+<?php print json_encode(get_request_var('view_type'));?>+'&graph_start='+$('#graph_start').val()+'&graph_end='+$('#graph_end').val())
 			.done(function(data) {
 				$('#data').html(data);
 			})
@@ -469,8 +477,8 @@ case 'zoom':
 				$('#data').html(data);
 				resizeWrapper();
 
-				$('.download').click(function(event) {
-					event.preventDefault;
+				$('.download').on('click', function(event) {
+					event.preventDefault();
 					graph_id = $(this).attr('id').replace('graph_','');
 					document.location = urlPath+'graph_xport.php?local_graph_id='+graph_id+'&rra_id=0&view_type=tree&graph_start='+$('#graph_start').val()+'&graph_end='+$('#graph_end').val();
 					Pace.stop();
@@ -554,12 +562,12 @@ case 'zoom':
 				});
 		});
 
-		$('a[id$="_properties"]').unbind('click').click(function() {
+		$('a[id$="_properties"]').unbind('click').on('click', function() {
 			graph_id = $(this).attr('id').replace('graph_', '').replace('_properties', '');
 			graphProperties();
 		});
 
-		$('a[id$="_csv"]').unbind('click').click(function() {
+		$('a[id$="_csv"]').unbind('click').on('click', function() {
 			graph_id = $(this).attr('id').replace('graph_', '').replace('_csv', '');
 			graphXport();
 		});

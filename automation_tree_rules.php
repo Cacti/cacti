@@ -316,7 +316,7 @@ function automation_tree_rules_form_actions() {
 		header('Location: automation_tree_rules.php?header=false');
 		exit;
 	}else {
-		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Apply requested action') . "'>";
+		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Apply requested action') . "'>";
 	}
 
 	print "<tr>
@@ -454,7 +454,7 @@ function automation_tree_rules_item_edit() {
 
 	//Now we need some javascript to make it dynamic
 ?>
-<script type='text/javascript'>
+<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 applyHeaderChange();
 toggle_operation();
@@ -665,7 +665,7 @@ function automation_tree_rules_edit() {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	var automationLeafTypeOriginal = $('#leaf_type').val();
 
 	<?php
@@ -873,7 +873,7 @@ function automation_tree_rules() {
 					</tr>
 				</table>
 			</form>
-			<script type='text/javascript'>
+			<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 			function applyFilter() {
 				strURL = 'automation_tree_rules.php' +
 					'?status='+$('#status').val() +
@@ -890,19 +890,19 @@ function automation_tree_rules() {
 			}
 
 			$(function() {
-				$('#rows, #status').change(function() {
+				$('#rows, #status').on('change', function() {
 					applyFilter();
 				});
 
-				$('#refresh').click(function() {
+				$('#refresh').on('click', function() {
 					applyFilter();
 				});
 
-				$('#clear').click(function() {
+				$('#clear').on('click', function() {
 					clearFilter();
 				});
 
-				$('#form_automation').submit(function(event) {
+				$('#form_automation').on('submit', function(event) {
 					event.preventDefault();
 					applyFilter();
 				});

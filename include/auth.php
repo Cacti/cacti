@@ -55,7 +55,7 @@ if ($version != CACTI_VERSION && !defined('IN_CACTI_INSTALL')) {
  * The logout page does not require authentication
  * so, short cut the process.
  */
-if (get_current_page() == 'logout.php') {
+if (get_current_page() == 'logout.php' || get_current_page() == 'auth_changepassword.php') {
 	return true;
 }
 
@@ -68,15 +68,19 @@ if ($auth_method != 0) {
 	 */
 	if ($auth_method != 2) {
 		if (isset($_SESSION['sess_change_password'])) {
-			header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?ref=' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php'));
+			header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?ref=' . rawurlencode(validate_redirect_url($_SERVER['HTTP_REFERER'] ?? '', 'index.php')));
 			exit;
 		}
 
 		/* check for remember me functionality */
 		if (!isset($_SESSION['sess_user_id'])) {
 			$cookie_user = check_auth_cookie();
-			if ($cookie_user !== false) {
-				$_SESSION['sess_user_id'] = $cookie_user;
+			if ($cookie_user > 0) {
+				/* GHSA-273r-qr93-wgcp: regenerate session id on auth transition */
+
+				if (cacti_auth_transition((int)$cookie_user, 'cookie_restore')) {
+					$_SESSION['sess_user_id'] = $cookie_user;
+				}
 			}
 		}
 	}
@@ -96,6 +100,11 @@ if ($auth_method != 0) {
 				array($username));
 
 			if (cacti_sizeof($current_user)) {
+				/* GHSA-273r-qr93-wgcp: regenerate session id on auth transition */
+				if (!cacti_auth_transition((int)$current_user['id'], 'basic_auth')) {
+					return false;
+				}
+
 				$_SESSION['sess_user_id'] = $current_user['id'];;
 
 				$client_addr = get_client_addr();
@@ -147,7 +156,7 @@ if ($auth_method != 0) {
 		if (get_guest_account() === $_SESSION['sess_user_id']) {
 			kill_session_var('sess_user_id');
 			cacti_session_destroy();
-			cacti_session_start();
+			cacti_session_start(true);
 		}
 	}
 
@@ -271,7 +280,7 @@ if ($auth_method != 0) {
 			}
 
 			if (isset($_SERVER['HTTP_REFERER'])) {
-				$goBack = "<td colspan='2' class='center'>[<a href='" . $_SERVER['HTTP_REFERER'] . "'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
+				$goBack = "<td colspan='2' class='center'>[<a href='" . validate_redirect_url($_SERVER['HTTP_REFERER'], $_SERVER['SCRIPT_NAME']) . "'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
 			} elseif ($auth_method != 2 && $auth_method > 0) {
 				$goBack = "<td colspan='2' class='center'>[<a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
 			}
@@ -306,7 +315,7 @@ if ($auth_method != 0) {
 				<div class='versionInfo'>" . __('Version') . ' ' . $version . " | " . COPYRIGHT_YEARS_SHORT . "</div>
 			</div>
 			<div class='logoutRight'></div>
-			<script type='text/javascript'>
+			<script type='text/javascript'" . CactiSecureHeaders::getNonceAttribute() . "
 			$(function() {
 				$('.loginLeft').css('width',parseInt($(window).width()*0.33)+'px');
 				$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');

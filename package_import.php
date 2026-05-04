@@ -62,7 +62,7 @@ function check_tmp_dir() {
 		return true;
 	} else {
 		?>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 		var mixedReasonTitle = '<?php print __('Key Generation Required to Use Plugin');?>';
 		var mixedOnPage      = '<?php print __esc('Package Key Information Not Found');?>';
 		sessionMessage   = {
@@ -80,12 +80,37 @@ function check_tmp_dir() {
 	}
 }
 
+function package_import_write_session_file() {
+	if (!isset($_SESSION['sess_import_package'])) {
+		return false;
+	}
+
+	$xmlfile = tempnam(sys_get_temp_dir(), 'cacti_pkg_');
+
+	if ($xmlfile === false) {
+		cacti_log('FATAL: Unable to create temporary package import file', true, 'IMPORT');
+
+		return false;
+	}
+
+	if (file_put_contents($xmlfile, $_SESSION['sess_import_package']) === false) {
+		cacti_log('FATAL: Unable to write temporary package import file', true, 'IMPORT');
+		unlink($xmlfile);
+
+		return false;
+	}
+
+	return $xmlfile;
+}
+
 function form_save() {
 	global $config, $preview_only;
 
 	validate_request_vars();
 
 	if (isset_request_var('save_component_import')) {
+		$session_tmpfile = false;
+
 		if (isset($_FILES['import_file']['tmp_name']) &&
 			($_FILES['import_file']['tmp_name'] != 'none') &&
 			($_FILES['import_file']['tmp_name'] != '')) {
@@ -94,9 +119,17 @@ function form_save() {
 
 			$_SESSION['sess_import_package'] = file_get_contents($xmlfile);
 		} elseif (isset($_SESSION['sess_import_package'])) {
-			$xmlfile = sys_get_temp_dir() . '/package_import_' . rand();
+			$xmlfile = package_import_write_session_file();
 
-			file_put_contents($xmlfile, $_SESSION['sess_import_package']);
+			if ($xmlfile === false) {
+				/* Session is always active here: auth.php called cacti_session_start()
+				 * before any action dispatch, so raise_message() can safely write. */
+				raise_message('import_fail', __('Unable to create temporary package file.'), MESSAGE_LEVEL_ERROR);
+				header('Location: package_import.php');
+				exit;
+			}
+
+			$session_tmpfile = true;
 		} else {
 			header('Location: package_import.php');
 			exit;
@@ -105,6 +138,10 @@ function form_save() {
 		if (isset_request_var('trust_signer') && get_request_var('trust_signer') == 'on') {
 			import_validate_public_key($xmlfile, true);
 		} elseif (!package_validate_signature($xmlfile)) {
+			if ($session_tmpfile) {
+				@unlink($xmlfile);
+			}
+
 			raise_message('verify_warning', __('You have not Trusted this Package Author.  If you wish to import, check the Automatically Trust Author checkbox'), MESSAGE_LEVEL_ERROR);
 			header('Location: package_import?package_location=0');
 			exit;
@@ -219,9 +256,11 @@ function form_save() {
 
 function package_file_get_contents($filename) {
 	if (isset($_SESSION['sess_import_package'])) {
-		$xmlfile = sys_get_temp_dir() . '/package_import_' . rand();
+		$xmlfile = package_import_write_session_file();
 
-		file_put_contents($xmlfile, $_SESSION['sess_import_package']);
+		if ($xmlfile === false) {
+			return false;
+		}
 
 		$data = import_read_package_data($xmlfile, $binary_signature);
 
@@ -273,6 +312,14 @@ function package_diff_file() {
 		'ignoreCase' => false
 	);
 
+	$validated_path = validate_relative_path_within($filename, $config['base_path']);
+
+	if ($validated_path === false) {
+		print '<h3>' . __('Error: Invalid file path.') . '</h3>';
+
+		return;
+	}
+
 	$newfile = package_file_get_contents($filename);
 
 	if ($newfile !== false) {
@@ -280,7 +327,7 @@ function package_diff_file() {
 		$newfile = explode("\n", $newfile);
 	}
 
-	$oldfile = file_get_contents($config['base_path'] . '/' . $filename);
+	$oldfile = file_get_contents($validated_path);
 
 	if ($oldfile !== false) {
 		$oldfile = str_replace("\n\r", "\n", $oldfile);
@@ -671,7 +718,7 @@ function import_display_package_data($templates, $files, $package_name, $xmlfile
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function getURLVariable(url, varname) {
 		var urlparts = url.slice(url.indexOf('?') + 1).split('&');
@@ -696,7 +743,7 @@ function import_display_package_data($templates, $files, $package_name, $xmlfile
 			});
 		}
 
-		$('.diffme').click(function(event) {
+		$('.diffme').on('click', function(event) {
 			event.preventDefault();
 
 			var url = $(this).attr('href');
@@ -949,10 +996,10 @@ function package_import() {
 	form_save_button('', 'import', 'import', false);
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	$(function() {
-		$('#import_file').change(function() {
+		$('#import_file').on('change', function() {
 			$('#preview_only').val('on');
 
 			var form = $('#import')[0];
@@ -1102,4 +1149,3 @@ function package_prepare_import_array(&$templates, &$files, $package_name, $pack
 		}
 	}
 }
-
