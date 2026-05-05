@@ -41,7 +41,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        php: ${{ fromJSON((github.base_ref == '1.2.x' || github.ref_name == '1.2.x') && '["8.0","8.1","8.2","8.3","8.4"]' || '["8.1","8.2","8.3","8.4"]') }}
+        php: ${{ fromJSON((github.base_ref == '1.2.x' || github.ref_name == '1.2.x') && '["7.4"]' || '["8.1","8.2","8.3","8.4"]') }}
         experimental: [false]
         
     services:
