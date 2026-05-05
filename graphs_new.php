@@ -989,7 +989,7 @@ function graphs() {
 			$('tr.notemplate').tooltip();
 
 			$('.dqselect').on('change', function() {
-				var prefix = $(this).data('prefix');
+				var prefix = $(this).data('prefix').split(',')[0];
 				dqUpdateDeps(prefix);
 			});
 		</script>";
