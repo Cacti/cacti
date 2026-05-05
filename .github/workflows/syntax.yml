@@ -230,7 +230,7 @@ jobs:
     - name: Add Device for Moc Test, Check CLI scripts for Errors
       run: |
         cd ${{ github.workspace }}
-        template=$(php -q add_device.php --list-host-templates | grep "Net-SNMP Device" | awk '{print $1}')
+        template=$(php -q cli/add_device.php --list-host-templates | grep "Net-SNMP Device" | awk '{print $1}')
         sudo php cli/add_device.php --description=test_device --ip=127.0.0.1 --template=$template
         sudo php cli/rebuild_poller_cache.php --debug
         sudo php cli/poller_reindex_hosts.php --id=all --debug
