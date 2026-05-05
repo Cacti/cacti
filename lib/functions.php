@@ -7478,8 +7478,7 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 		return -1;
 	}
 
-	$exit = isset($status['exitcode']) ? (int) $status['exitcode'] : proc_close($process);
-	proc_close($process);
+	$exit = proc_close($process);
 
 	if (!empty($errors)) {
 		cacti_log('WARNING: cacti_exec() stderr: ' . trim($errors), false, 'SYSTEM');
