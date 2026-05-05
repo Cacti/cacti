@@ -138,10 +138,10 @@ jobs:
       run: if find ${{ github.workspace }} -name '*.php' -exec php -l {} 2>&1 \; | grep -iv 'no syntax errors detected'; then exit 1; fi
 
     - name: Run and apt-get update
-      run: sudo apt-get update
+      run: sudo apt-get update -o Acquire::Retries=3 || true
 
     - name: Install Apache and Tools
-      run: sudo apt-get install apache2 snmp snmpd rrdtool libapache2-mod-php${{ matrix.php }}
+      run: sudo apt-get install -o Acquire::Retries=3 apache2 snmp snmpd rrdtool libapache2-mod-php${{ matrix.php }}
 
     - name: Start SNMPD Agent and Test Agent
       run: |

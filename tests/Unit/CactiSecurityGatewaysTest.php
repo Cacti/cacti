@@ -11,21 +11,40 @@ $functionsSource = file_get_contents(__DIR__ . '/../../lib/functions.php');
 $helpSource      = file_get_contents(__DIR__ . '/../../help.php');
 $pluginsSource   = file_get_contents(__DIR__ . '/../../lib/plugins.php');
 
-test('cacti_exec rejects binary with whitespace', function () use ($functionsSource) {
+test('cacti_exec is defined and rejects empty binary', function () use ($functionsSource) {
 	$start = strpos($functionsSource, 'function cacti_exec(');
 	expect($start)->not->toBeFalse();
 
+	/* New implementation guards with trim() and returns -1; it does not
+	 * throw because callers are expected to log and move on. */
 	$body = substr($functionsSource, $start, 900);
-	expect($body)->toContain("preg_match('/\\s/', \$binary)");
-	expect($body)->toContain('throw new InvalidArgumentException');
+	expect($body)->toContain("trim(\$binary) === ''");
+	expect($body)->not->toContain('cacti_escapeshellcmd');
 });
 
-test('cacti_exec escapes binary and every argument', function () use ($functionsSource) {
+test('cacti_exec uses proc_open with argv array to bypass the shell', function () use ($functionsSource) {
 	$start = strpos($functionsSource, 'function cacti_exec(');
-	$body  = substr($functionsSource, $start, 1400);
+	$body  = substr($functionsSource, $start, 3000);
 
-	expect($body)->toContain('cacti_escapeshellcmd($binary)');
-	expect($body)->toContain('cacti_escapeshellarg((string) $arg)');
+	/* argv array passed directly — no shell, no escaping needed */
+	expect($body)->toContain('proc_open($argv, $descriptors, $pipes)');
+	expect($body)->toContain('array_merge(array($binary), array_values($args))');
+});
+
+test('cacti_exec uses non-blocking I/O with stream_select on stdout and stderr', function () use ($functionsSource) {
+	$start = strpos($functionsSource, 'function cacti_exec(');
+	$body  = substr($functionsSource, $start, 3000);
+
+	expect($body)->toContain('stream_set_blocking($pipes[1], 0)');
+	expect($body)->toContain('stream_set_blocking($pipes[2], 0)');
+	expect($body)->toContain('stream_select($read, $write, $except,');
+});
+
+test('cacti_exec returns empty array on empty stdout not array with empty string', function () use ($functionsSource) {
+	$start = strpos($functionsSource, 'function cacti_exec(');
+	$body  = substr($functionsSource, $start, 3000);
+
+	expect($body)->toContain("\$output  = (\$stdout === '') ? array() : explode(\"\\n\", \$stdout)");
 });
 
 test('cacti_http rejects non-http(s) schemes', function () use ($functionsSource) {

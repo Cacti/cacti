@@ -7366,10 +7366,15 @@ function cacti_csv_safe($value) {
 /**
  * cacti_input_string_is_safe - guard against shell metacharacters smuggled
  *   into a data_input.input_string template. The placeholder syntax is
- *   <field_name>, never <;rm -rf /;>, so any of [;&|`$\\\r\n] outside a
- *   placeholder is taken as a command-injection attempt. The same regex
- *   gates both the GUI save path (data_input.php) and XML/package import
- *   (lib/import.php) so the two cannot drift.
+ *   <field_name>, never <;rm -rf /;>, so any character outside a placeholder
+ *   that could be interpreted by a shell is taken as a command-injection
+ *   attempt. The same regex gates both the GUI save path (data_input.php)
+ *   and XML/package import (lib/import.php) so the two cannot drift.
+ *
+ *   Blocked characters: ; & | ` $ \ \n \r ' " < > ( ) { }
+ *   These cover the original set plus single-quote, double-quote, redirect
+ *   operators (<>), and subshell delimiters ((){}), which were absent before
+ *   and allowed bypass payloads such as /bin/sh -c 'id' or cmd > /tmp/x.
  *
  * @param $input_string - (string) The candidate input_string template
  *
@@ -7382,7 +7387,127 @@ function cacti_input_string_is_safe($input_string) {
 
 	$bare = preg_replace('/<[a-zA-Z_]+>/', '', $input_string);
 
-	return !preg_match('/[;&|`$\\\\\n\r]/', $bare);
+	return !preg_match('/[;&|`$\\\\\n\r\'"<>()\{\}]/', $bare);
+}
+
+/**
+ * cacti_exec - run an external command via proc_open with a discrete argv array.
+ *
+ * No shell is involved: the argv array is passed directly to execve(), so shell
+ * metacharacters in argument values are inert. Callers must still validate
+ * argument semantics (e.g. rrdtool DEF lines) themselves.
+ *
+ * This is the argv-array counterpart to exec_with_timeout() in lib/poller.php,
+ * which accepts a pre-built shell string. Use cacti_exec() when the binary and
+ * arguments are known separately; use exec_with_timeout() when migrating legacy
+ * shell_exec() callers that already assemble the command string.
+ *
+ * Requires PHP 7.4+ (array form of proc_open). The 1.2.x branch targets PHP 7.4
+ * as its minimum, so no version gate is needed.
+ *
+ * @param string $binary   Path to the executable. Must not start with '-'.
+ * @param array  $args     Ordered argument strings (not shell-escaped).
+ * @param array  &$output  Receives stdout lines on success; empty array on empty output.
+ * @param int    $timeout  Seconds before the process is killed (default 30).
+ *
+ * @return int Exit code, or -1 on spawn failure or timeout.
+ */
+function cacti_exec($binary, array $args = array(), array &$output = array(), $timeout = 30) {
+	if (!is_string($binary) || trim($binary) === '') {
+		return -1;
+	}
+
+	if (strpos(trim($binary), '-') === 0) {
+		cacti_log('ERROR: cacti_exec() rejected binary starting with dash: ' . $binary, false, 'SYSTEM');
+		return -1;
+	}
+
+	$argv = array_merge(array($binary), array_values($args));
+
+	$descriptors = array(
+		0 => array('pipe', 'r'),
+		1 => array('pipe', 'w'),
+		2 => array('pipe', 'w'),
+	);
+
+	$process = proc_open($argv, $descriptors, $pipes);
+
+	if (!is_resource($process)) {
+		cacti_log('ERROR: cacti_exec() failed to spawn: ' . $binary, false, 'SYSTEM');
+		return -1;
+	}
+
+	fclose($pipes[0]);
+	stream_set_blocking($pipes[1], 0);
+	stream_set_blocking($pipes[2], 0);
+
+	$stdout  = '';
+	$remaining = (int) $timeout * 1000000;
+
+	while ($remaining > 0) {
+		$start  = microtime(true);
+		$read   = array($pipes[1], $pipes[2]);
+		$write  = array();
+		$except = array();
+		stream_select($read, $write, $except, 0, $remaining);
+
+		$status  = proc_get_status($process);
+		$stdout .= stream_get_contents($pipes[1]);
+
+		if (!$status['running']) {
+			break;
+		}
+
+		$remaining -= (int) ((microtime(true) - $start) * 1000000);
+	}
+
+	$errors = stream_get_contents($pipes[2]);
+
+	fclose($pipes[1]);
+	fclose($pipes[2]);
+
+	$status = proc_get_status($process);
+
+	if ($status['running']) {
+		if (isset($status['pid']) && function_exists('posix_kill')) {
+			posix_kill($status['pid'], 9);
+		}
+		proc_terminate($process, 9);
+		proc_close($process);
+		cacti_log('ERROR: cacti_exec() timed out after ' . $timeout . 's: ' . $binary, false, 'SYSTEM');
+		return -1;
+	}
+
+	$exit = isset($status['exitcode']) ? (int) $status['exitcode'] : proc_close($process);
+	proc_close($process);
+
+	if (!empty($errors)) {
+		cacti_log('WARNING: cacti_exec() stderr: ' . trim($errors), false, 'SYSTEM');
+	}
+
+	$stdout  = rtrim($stdout, "\n");
+	$output  = ($stdout === '') ? array() : explode("\n", $stdout);
+
+	return $exit;
+}
+
+/**
+ * cacti_exec_string - run a command and return stdout as a single string.
+ *
+ * Convenience wrapper around cacti_exec() for callers that previously used
+ * shell_exec() and expect a string return value.
+ *
+ * @param string $binary
+ * @param array  $args
+ * @param int    $timeout
+ *
+ * @return string|false stdout on exit code 0, false on failure.
+ */
+function cacti_exec_string($binary, array $args = array(), $timeout = 30) {
+	$output = array();
+	$exit   = cacti_exec($binary, $args, $output, $timeout);
+
+	return ($exit === 0) ? implode("\n", $output) : false;
 }
 
 function cacti_sizeof($array) {
@@ -8217,68 +8342,6 @@ function cacti_validate_sort_column(string $column, array $allowed, string $defa
 	}
 
 	return $default !== '' ? $default : (count($allowed) > 0 ? $allowed[0] : 'id');
-}
-
-/**
- * cacti_exec - Run a shell command with strict argument separation.
- *
- * The binary is passed through cacti_escapeshellcmd and each argument
- * through cacti_escapeshellarg. Callers must pass the binary as its own
- * parameter and arguments as an array; mixing them in one string is
- * rejected so a reviewer can tell at a glance that no unescaped user
- * input reaches the shell.
- *
- * Callers should still restrict the binary to a known-safe value: a
- * hardcoded path, a path allowlist, or a path_* config option that
- * itself is admin-only.
- *
- * @param string $binary  Path or name of the executable. Must not contain spaces
- *                        and must not begin with '-'. A leading dash can be
- *                        interpreted as an option by shell/process wrappers.
- * @param array  $args    Arguments. Each is escaped independently.
- * @param array  $out     By-ref slot for captured stdout (one line per entry).
- *
- * @return int  Process exit code. 0 usually means success.
- *
- * @throws InvalidArgumentException  If the binary contains whitespace.
- */
-function cacti_exec($binary, array $args = array(), array &$out = array()) {
-	$binary = trim((string) $binary);
-
-	if ($binary === '' || preg_match('/\s/', $binary)) {
-		throw new InvalidArgumentException('cacti_exec(): binary must be a single token with no whitespace. Arguments go in $args.');
-	}
-
-	if ($binary[0] === '-') {
-		throw new InvalidArgumentException('cacti_exec(): binary must not begin with "-".');
-	}
-
-	$command = cacti_escapeshellcmd($binary);
-
-	foreach ($args as $arg) {
-		$command .= ' ' . cacti_escapeshellarg((string) $arg);
-	}
-
-	$exit_code = 0;
-	exec($command, $out, $exit_code);
-
-	return (int) $exit_code;
-}
-
-/**
- * cacti_exec_string - Run a shell command via cacti_exec and return the
- * combined stdout as a single newline-joined string.
- *
- * @param string $binary
- * @param array  $args
- *
- * @return string
- */
-function cacti_exec_string($binary, array $args = array()) {
-	$out = array();
-	cacti_exec($binary, $args, $out);
-
-	return implode("\n", $out);
 }
 
 /**
