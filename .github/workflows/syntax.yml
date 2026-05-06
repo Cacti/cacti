@@ -141,7 +141,11 @@ jobs:
       run: true
 
     - name: Install Apache and Tools
-      run: sudo apt-get install -o Acquire::Retries=5 apache2 snmp snmpd rrdtool libapache2-mod-php${{ matrix.php }}
+      run: |
+        sudo apt-get install \
+        -o Acquire::http::Timeout="10" \
+        -o Acquire::https::Timeout="10" \
+        -o Acquire::Retries="30" apache2 snmp snmpd rrdtool libapache2-mod-php${{ matrix.php }}
 
     - name: Start SNMPD Agent and Test Agent
       run: |
