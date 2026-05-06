@@ -7419,9 +7419,7 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 	}
 
 	// Blocking assumes a timeout of 4 hours
-	$blocking = false;
 	if ($timeout === false) {
-		$blocking = true;
 		$timeout  = 3600 * 4;
 	}
 
@@ -7450,8 +7448,8 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 	}
 
 	fclose($pipes[0]);
-	stream_set_blocking($pipes[1], $blocking);
-	stream_set_blocking($pipes[2], $blocking);
+	stream_set_blocking($pipes[1], false);
+	stream_set_blocking($pipes[2], false);
 
 	$stdout    = '';
 	$stderr    = '';
