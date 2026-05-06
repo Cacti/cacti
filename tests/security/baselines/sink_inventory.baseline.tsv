@@ -526,7 +526,6 @@ dynamic_include	./rrdcheck.php:26	include_once ($config['library_path'] . '/func
 dynamic_include	./rrdcleaner.php:26	include_once ($config['library_path'] . '/functions.php');
 dynamic_include	./rrdcleaner.php:27	include_once ($config['library_path'] . '/rrd.php');
 dynamic_include	./script_server.php:310				include_once($include_file);
-dynamic_include	./scripts/ss_mikrotik_snmpget.php:38		include_once($config['base_path'] . '/lib/snmp.php');
 dynamic_include	./scripts/ss_netsnmp_lmsensors.php:24		include($config['base_path'] . '/lib/snmp.php');
 dynamic_include	./snmpagent_persist.php:165				include( $path_mibcache );
 dynamic_include	./spikekill.php:26	include_once($config['base_path'] . '/lib/spikekill.php');
