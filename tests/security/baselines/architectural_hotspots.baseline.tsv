@@ -7,6 +7,7 @@ cmd_exec	./cli/audit_database.php:989				exec($db_shell .
 cmd_exec	./cli/batchgapfix.php:388			exec($command, $output, $return_var);
 cmd_exec	./cli/float_rrdfiles.php:335				$response = exec($command, $output, $return);
 cmd_exec	./cli/float_rrdfiles.php:443					$response = exec($command, $output, $return);
+cmd_exec	./cli/push_out_hosts.php:66		passthru($command, $exit_code);
 cmd_exec	./cli/remove_broken_graphs.php:47		$stty = shell_exec('stty size');
 cmd_exec	./cli/splice_rrd.php:238	$response = shell_exec($rrdtool);
 cmd_exec	./cli/splice_rrd.php:270	shell_exec(cacti_escapeshellcmd($rrdtool) . ' dump ' . cacti_escapeshellarg($oldrrd) . ' > ' . cacti_escapeshellarg($oldxmlfile));
@@ -31,8 +32,8 @@ cmd_exec	./lib/functions.php:6932				$shell = shell_exec(cacti_escapeshellcmd(re
 cmd_exec	./lib/functions.php:7131				exec('id -nu', $o, $r);
 cmd_exec	./lib/functions.php:7141				exec(sprintf('grep :%s: /etc/passwd | cut -d: -f1', (int) $uid), $o, $r);
 cmd_exec	./lib/functions.php:7403	 * shell_exec() callers that already assemble the command string.
-cmd_exec	./lib/functions.php:7433		$process = proc_open($argv, $descriptors, $pipes);
-cmd_exec	./lib/functions.php:7497	 * shell_exec() and expect a string return value.
+cmd_exec	./lib/functions.php:7443		$process = proc_open($argv, $descriptors, $pipes);
+cmd_exec	./lib/functions.php:7515	 * shell_exec() and expect a string return value.
 cmd_exec	./lib/installer.php:3288				$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 cmd_exec	./lib/installer.php:3320						shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 cmd_exec	./lib/installer.php:3376						$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .

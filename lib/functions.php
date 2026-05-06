@@ -7408,18 +7408,28 @@ function cacti_input_string_is_safe($input_string) {
  * @param string $binary   Path to the executable. Must not start with '-'.
  * @param array  $args     Ordered argument strings (not shell-escaped).
  * @param array  &$output  Receives stdout lines on success; empty array on empty output.
- * @param int    $timeout  Seconds before the process is killed (default 30).
+ * @param mixed  $timeout  False for 4 hour timeout or seconds before the process is killed (default 30).
  *
- * @return int Exit code, or -1 on spawn failure or timeout.
+ * @return int Exit code, or 255 on spawn failure, error with binary or timeout.
  */
 function cacti_exec($binary, array $args = array(), array &$output = array(), $timeout = 30) {
+	// Ensure buffers flush automatically
+	if (PHP_SAPI === 'cli') {
+		ini_set('implicit_flush', true);
+	}
+
+	// Blocking assumes a timeout of 4 hours
+	if ($timeout === false) {
+		$timeout  = 3600 * 4;
+	}
+
 	if (!is_string($binary) || trim($binary) === '') {
-		return -1;
+		return 255;
 	}
 
 	if (strpos(trim($binary), '-') === 0) {
 		cacti_log('ERROR: cacti_exec() rejected binary starting with dash: ' . $binary, false, 'SYSTEM');
-		return -1;
+		return 255;
 	}
 
 	$argv = array_merge(array($binary), array_values($args));
@@ -7434,15 +7444,17 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 
 	if (!is_resource($process)) {
 		cacti_log('ERROR: cacti_exec() failed to spawn: ' . $binary, false, 'SYSTEM');
-		return -1;
+		return 255;
 	}
 
 	fclose($pipes[0]);
-	stream_set_blocking($pipes[1], 0);
-	stream_set_blocking($pipes[2], 0);
+	stream_set_blocking($pipes[1], false);
+	stream_set_blocking($pipes[2], false);
 
-	$stdout  = '';
+	$stdout    = '';
+	$stderr    = '';
 	$remaining = (int) $timeout * 1000000;
+	$exit      = false;
 
 	while ($remaining > 0) {
 		$start  = microtime(true);
@@ -7451,17 +7463,20 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 		$except = array();
 		stream_select($read, $write, $except, 0, $remaining);
 
+		usleep(50000);
+
 		$status  = proc_get_status($process);
 		$stdout .= stream_get_contents($pipes[1]);
+		$stderr .= stream_get_contents($pipes[2]);
 
 		if (!$status['running']) {
+			$exit = $status['exit_code'];
+
 			break;
 		}
 
 		$remaining -= (int) ((microtime(true) - $start) * 1000000);
 	}
-
-	$errors = stream_get_contents($pipes[2]);
 
 	fclose($pipes[1]);
 	fclose($pipes[2]);
@@ -7472,16 +7487,19 @@ function cacti_exec($binary, array $args = array(), array &$output = array(), $t
 		if (isset($status['pid']) && function_exists('posix_kill')) {
 			posix_kill($status['pid'], 9);
 		}
+
 		proc_terminate($process, 9);
 		proc_close($process);
+
 		cacti_log('ERROR: cacti_exec() timed out after ' . $timeout . 's: ' . $binary, false, 'SYSTEM');
-		return -1;
+
+		return 1;
 	}
 
-	$exit = proc_close($process);
+	proc_close($process);
 
-	if (!empty($errors)) {
-		cacti_log('WARNING: cacti_exec() stderr: ' . trim($errors), false, 'SYSTEM');
+	if (!empty($stderr)) {
+		cacti_log('WARNING: cacti_exec() stderr: ' . trim($stderr), false, 'SYSTEM');
 	}
 
 	$stdout  = rtrim($stdout, "\n");

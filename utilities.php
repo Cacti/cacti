@@ -2138,7 +2138,7 @@ function utilities_view_poller_cache() {
 	if (get_request_var('template_id') == '-1') {
 		/* Show all items */
 	} elseif (get_request_var('template_id') == '0') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' dtd.data_template_id=0';
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' dtd.data_template_id = 0';
 	} elseif (!isempty_request_var('template_id')) {
 		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' dl.data_template_id = ?';
 		$params[] = get_request_var('template_id');
