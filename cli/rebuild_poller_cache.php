@@ -61,10 +61,10 @@ $host_template_id = false;
 $data_template_id = false;
 
 /* optional for threading and verbose display */
-$threads           = 5;
+$threads          = read_config_option('commands_processes') ?? 5;
 
 /* optional for force handing and resume */
-$forcerun          = false;
+$forcerun         = false;
 
 foreach ($parms as $parameter) {
 	if (strpos($parameter, '=')) {
@@ -136,19 +136,19 @@ foreach ($parms as $parameter) {
 		case '--help':
 			display_help();
 
-			exit;
+			exit(0);
 		case '-v':
 		case '-V':
 		case '--version':
 			display_version();
 
-			exit;
+			exit(0);
 		default:
 			print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 
 			display_help();
 
-			exit;
+			exit(1);
 	}
 }
 
@@ -252,7 +252,6 @@ switch ($type) {
 pushout_debug('Polling Ending');
 
 exit(0);
-
 
 function pushout_master_handler($forcerun, $host_id, $host_template_id, $data_template_id, $threads) {
 	global $type;
@@ -398,8 +397,8 @@ function display_help() {
 	print ' --debug               - Display verbose output during execution' . PHP_EOL . PHP_EOL;
 
 	print 'System Controlled:' . PHP_EOL;
-	print '    --type      - The type and subtype of the rebuild poller cache process' . PHP_EOL;
-	print '    --child     - The thread id of the child process' . PHP_EOL . PHP_EOL;
+	print ' --type      - The type and subtype of the rebuild poller cache process' . PHP_EOL;
+	print ' --child     - The thread id of the child process' . PHP_EOL . PHP_EOL;
 }
 
 /**
