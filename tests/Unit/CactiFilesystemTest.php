@@ -14,8 +14,7 @@
 
 require_once dirname(__DIR__) . '/Helpers/UnitStubs.php';
 require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
-
-use Cacti\Filesystem\CactiFilesystem;
+require_once dirname(__DIR__, 2) . '/lib/CactiFilesystem.php';
 
 beforeEach(function () {
 	CactiFilesystem::reset();

@@ -13,8 +13,6 @@ declare(strict_types = 1);
  +-------------------------------------------------------------------------+
 */
 
-namespace Cacti\Log;
-
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 

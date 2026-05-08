@@ -18,8 +18,6 @@ declare(strict_types = 1);
  +-------------------------------------------------------------------------+
 */
 
-namespace Cacti\Http;
-
 use Symfony\Component\HttpFoundation\Exception\SessionNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;

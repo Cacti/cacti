@@ -14,8 +14,8 @@
 
 require_once dirname(__DIR__) . '/Helpers/UnitStubs.php';
 require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
+require_once dirname(__DIR__, 2) . '/lib/CactiLogger.php';
 
-use Cacti\Log\CactiLogger;
 use Psr\Log\LogLevel;
 
 beforeEach(function () {

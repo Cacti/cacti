@@ -13,10 +13,8 @@ declare(strict_types = 1);
  +-------------------------------------------------------------------------+
 */
 
-namespace Cacti\Filesystem;
-
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 class CactiFilesystem {
 	private static ?Filesystem $filesystem = null;
