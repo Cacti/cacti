@@ -63,7 +63,6 @@
     "require-dev": {
         "composer/xdebug-handler": "^3.0",
         "friendsofphp/php-cs-fixer": "^3.86",
-        "infection/infection": "^0.27",
         "overtrue/phplint": "^9.6",
         "pestphp/pest": "^2",
         "pestphp/pest-plugin-drift": "^2.0",
@@ -99,7 +98,6 @@
             "block-insecure": false
         },
         "allow-plugins": {
-            "infection/extension-installer": true,
             "pestphp/pest-plugin": true
         }
     }
