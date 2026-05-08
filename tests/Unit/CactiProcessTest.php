@@ -102,6 +102,64 @@ test('caller can opt a parent env var into the child via env allowlist', functio
 	}
 });
 
+test('env_set injects a name=value pair into the child environment', function () {
+	$result = CactiProcess::run(['/usr/bin/env'], ['env_set' => ['CACTI_TEST_MARKER' => 'abc']]);
+
+	expect($result->exitCode())->toBe(0)
+		->and($result->stdout())->toContain('CACTI_TEST_MARKER=abc');
+});
+
+test('env_set values do not leak into the parent process env', function () {
+	$marker = 'CACTIPROC_SEALED_' . strtoupper(bin2hex(random_bytes(6)));
+
+	CactiProcess::run(['/usr/bin/env'], ['env_set' => [$marker => 'secret-value']]);
+
+	expect(getenv($marker))->toBeFalse()
+		->and($_ENV[$marker] ?? null)->toBeNull();
+});
+
+test('env_set overrides a same-named entry forwarded via env', function () {
+	$marker = 'CACTIPROC_OVERRIDE_' . strtoupper(bin2hex(random_bytes(6)));
+	putenv($marker . '=parent-value');
+
+	try {
+		$result = CactiProcess::run(
+			['/usr/bin/env'],
+			['env' => [$marker], 'env_set' => [$marker => 'override-value']]
+		);
+
+		expect($result->exitCode())->toBe(0)
+			->and($result->stdout())->toContain($marker . '=override-value')
+			->and($result->stdout())->not->toContain($marker . '=parent-value');
+	} finally {
+		putenv($marker);
+	}
+});
+
+test('env_set rejects lowercase keys', function () {
+	expect(static function () {
+		CactiProcess::run(['echo', 'x'], ['env_set' => ['mysql_pwd' => 'x']]);
+	})->toThrow(CactiProcessException::class);
+});
+
+test('env_set rejects non-array opt', function () {
+	expect(static function () {
+		CactiProcess::run(['echo', 'x'], ['env_set' => 'not-an-array']);
+	})->toThrow(CactiProcessException::class);
+});
+
+test('env_set rejects non-string values', function () {
+	expect(static function () {
+		CactiProcess::run(['echo', 'x'], ['env_set' => ['MYSQL_PWD' => 123]]);
+	})->toThrow(CactiProcessException::class);
+});
+
+test('env_set rejects keys starting with a digit', function () {
+	expect(static function () {
+		CactiProcess::run(['echo', 'x'], ['env_set' => ['1FOO' => 'bar']]);
+	})->toThrow(CactiProcessException::class);
+});
+
 test('Windows env baseline preserves SYSTEMROOT, COMSPEC, PATHEXT, WINDIR', function () {
 	// PHP refuses to start without SYSTEMROOT on Windows and proc_open()
 	// relies on COMSPEC/PATHEXT for cmd.exe resolution. Source-scan so the

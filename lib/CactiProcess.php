@@ -31,7 +31,9 @@ require_once(__DIR__ . '/CactiProcessException.php');
  * argv is always passed as an array, so shell metacharacters in arguments are
  * literal: there is no /bin/sh between us and execve(). The environment is
  * scrubbed to a small allowlist by default; callers that need more must opt in
- * explicitly via $opts['env'].
+ * explicitly via $opts['env'] (forwarded names) or $opts['env_set']
+ * (caller-provided name=>value pairs, e.g. MYSQL_PWD for credential passing
+ * without argv exposure).
  *
  * This wrapper does not replace input validation. Argument values that are
  * later interpreted by downstream tooling (rrdtool DEF lines, SQL fragments
@@ -197,7 +199,30 @@ class CactiProcess {
 			}
 		}
 
+		$env_set_opt = $opts['env_set'] ?? [];
+
+		if (!is_array($env_set_opt)) {
+			throw new CactiProcessException('CactiProcess env_set must be an array of name=>value strings');
+		}
+
+		foreach ($env_set_opt as $name => $value) {
+			if (!is_string($name) || preg_match('/^[A-Z_][A-Z0-9_]*$/', $name) !== 1) {
+				throw new CactiProcessException('CactiProcess env_set keys must match /^[A-Z_][A-Z0-9_]*$/');
+			}
+
+			if (!is_string($value)) {
+				throw new CactiProcessException('CactiProcess env_set values must be strings');
+			}
+		}
+
 		$env = self::resolveEnv($env_opt);
+
+		// env_set wins over forwarded env. These values go straight to proc_open
+		// via Symfony Process; they never touch putenv() or $_ENV in the parent,
+		// so secrets stay sealed to the child invocation.
+		foreach ($env_set_opt as $name => $value) {
+			$env[$name] = $value;
+		}
 
 		$cwd = $opts['cwd'] ?? null;
 
