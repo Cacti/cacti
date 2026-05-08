@@ -5,6 +5,12 @@
  +-------------------------------------------------------------------------+
 */
 
+if (!file_exists(dirname(__DIR__, 2) . '/lib/CactiProcess.php')) {
+    test('CactiProcess integration: feature not present on this branch', function () {})
+        ->skip('lib/CactiProcess.php absent — feature PR #7073 not merged into develop yet');
+    return;
+}
+
 require_once __DIR__ . '/../../lib/CactiProcess.php';
 
 test('Integration: CactiProcess::run executes echo successfully', function () {

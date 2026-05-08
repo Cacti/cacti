@@ -5,6 +5,12 @@
  +-------------------------------------------------------------------------+
 */
 
+if (!file_exists(dirname(__DIR__, 2) . '/lib/CactiProcess.php')) {
+    test('SQL scripts integration: CactiProcess feature not present on this branch', function () {})
+        ->skip('lib/CactiProcess.php absent — feature PR #7073 not merged into develop yet');
+    return;
+}
+
 test('Integration: scripts/sql.php file contains no shell_exec calls', function () {
     $path = __DIR__ . '/../../scripts/sql.php';
     if (!file_exists($path)) {

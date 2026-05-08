@@ -5,6 +5,12 @@
  +-------------------------------------------------------------------------+
 */
 
+if (!file_exists(dirname(__DIR__, 2) . '/lib/CactiProcess.php')) {
+	test('Net_Ping integration: CactiProcess feature not present on this branch', function () {})
+		->skip('lib/CactiProcess.php absent — feature PR #7073 not merged into develop yet');
+	return;
+}
+
 require_once dirname(__DIR__, 2) . '/lib/ping.php';
 require_once dirname(__DIR__, 2) . '/lib/functions.php';
 
