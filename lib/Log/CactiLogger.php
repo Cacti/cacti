@@ -70,9 +70,9 @@ class CactiLogger {
 	 * when global_constants.php has not been loaded (unit-test contexts).
 	 */
 	private static function mapToCactiLevel(string $psrLevel): int {
-		$debug  = defined('POLLER_VERBOSITY_DEBUG')  ? POLLER_VERBOSITY_DEBUG  : 5;
-		$low    = defined('POLLER_VERBOSITY_LOW')    ? POLLER_VERBOSITY_LOW    : 2;
-		$none   = defined('POLLER_VERBOSITY_NONE')   ? POLLER_VERBOSITY_NONE   : 1;
+		$debug = defined('POLLER_VERBOSITY_DEBUG') ? POLLER_VERBOSITY_DEBUG : 5;
+		$low   = defined('POLLER_VERBOSITY_LOW') ? POLLER_VERBOSITY_LOW : 2;
+		$none  = defined('POLLER_VERBOSITY_NONE') ? POLLER_VERBOSITY_NONE : 1;
 
 		return match ($psrLevel) {
 			LogLevel::DEBUG                                          => $debug,

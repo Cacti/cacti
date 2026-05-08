@@ -105,12 +105,15 @@ class CactiRequest {
 	 */
 	public static function isAjax(): bool {
 		$req = self::current();
+
 		if ($req->isXmlHttpRequest()) {
 			return true;
 		}
+
 		if (self::get('header') === 'false') {
 			return true;
 		}
+
 		// headercontent override forces non-AJAX even if other markers were absent.
 		return false;
 	}
@@ -129,6 +132,7 @@ class CactiRequest {
 	 */
 	public static function has(string $key): bool {
 		$req = self::current();
+
 		return $req->query->has($key)
 			|| $req->request->has($key)
 			|| $req->attributes->has($key)
