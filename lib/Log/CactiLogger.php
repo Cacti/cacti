@@ -64,15 +64,25 @@ class CactiLogger {
 
 	/**
 	 * Map PSR-3 levels to Cacti POLLER_VERBOSITY constants.
+	 *
+	 * Constants come from include/global_constants.php; we resolve them at
+	 * call time and fall back to numeric literals so the wrapper still works
+	 * when global_constants.php has not been loaded (unit-test contexts).
 	 */
 	private static function mapToCactiLevel(string $psrLevel): int {
+		$debug  = defined('POLLER_VERBOSITY_DEBUG')  ? POLLER_VERBOSITY_DEBUG  : 5;
+		$low    = defined('POLLER_VERBOSITY_LOW')    ? POLLER_VERBOSITY_LOW    : 2;
+		$none   = defined('POLLER_VERBOSITY_NONE')   ? POLLER_VERBOSITY_NONE   : 1;
+
 		return match ($psrLevel) {
-			LogLevel::DEBUG                                          => 5, // POLLER_VERBOSITY_DEVDBG
-			LogLevel::INFO                                           => 2, // POLLER_VERBOSITY_LOW
-			LogLevel::WARNING                                        => 1, // POLLER_VERBOSITY_NONE (standard)
-			LogLevel::ERROR                                          => 1,
-			LogLevel::CRITICAL, LogLevel::ALERT, LogLevel::EMERGENCY => 1,
-			default                                                  => 1,
+			LogLevel::DEBUG                                          => $debug,
+			LogLevel::INFO, LogLevel::NOTICE                         => $low,
+			LogLevel::WARNING,
+			LogLevel::ERROR,
+			LogLevel::CRITICAL,
+			LogLevel::ALERT,
+			LogLevel::EMERGENCY                                      => $none,
+			default                                                  => $none,
 		};
 	}
 }

@@ -30,7 +30,7 @@ class CactiProcess {
 	public static function run(array $argv, array $env = [], ?float $timeout = 60): Process {
 		$process = new Process($argv);
 
-		if (cacti_sizeof($env)) {
+		if (count($env) > 0) {
 			$process->setEnv($env);
 		}
 		$process->setTimeout($timeout);
@@ -50,7 +50,7 @@ class CactiProcess {
 	public static function start(array $argv, array $env = []): Process {
 		$process = new Process($argv);
 
-		if (cacti_sizeof($env)) {
+		if (count($env) > 0) {
 			$process->setEnv($env);
 		}
 		// Background processes should not have a timeout enforced by the parent

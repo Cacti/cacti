@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace Cacti\Http;
 
+use Symfony\Component\HttpFoundation\Exception\SessionNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
@@ -44,17 +45,17 @@ class CactiRequest {
 		if (self::$currentRequest === null) {
 			self::$currentRequest = Request::createFromGlobals();
 
-			// Only fall back to a mock session when the test bootstrap
-			// is explicitly active; otherwise the missing-session error
-			// must propagate so production callers see real failures.
-			try {
-				self::$currentRequest->getSession();
-			} catch (\Exception $e) {
-				if (getenv('CACTI_TEST_BOOTSTRAP') !== '1') {
-					throw $e;
+			// Under the test bootstrap, eagerly bind a mock session so that
+			// downstream getSession() calls do not throw. In production the
+			// session is bound by the framework integration and we must not
+			// probe it here, since that would force-resolve a session before
+			// the caller intends to use one.
+			if (getenv('CACTI_TEST_BOOTSTRAP') === '1') {
+				try {
+					self::$currentRequest->getSession();
+				} catch (SessionNotFoundException $e) {
+					self::$currentRequest->setSession(new Session(new MockArraySessionStorage()));
 				}
-				$session = new Session(new MockArraySessionStorage());
-				self::$currentRequest->setSession($session);
 			}
 		}
 
@@ -94,12 +95,24 @@ class CactiRequest {
 	/**
 	 * Check if the current request is an AJAX request.
 	 *
-	 * The result is non-authoritative: the X-Requested-With header and
-	 * the `header` query parameter are both client-supplied and trivially
-	 * forgeable. Do not use this as a security boundary.
+	 * Mirrors include/global.php $is_request_ajax precedence:
+	 *   1. X-Requested-With == xmlhttprequest  -> AJAX
+	 *   2. header=false                         -> AJAX
+	 *   3. headercontent set                    -> NOT AJAX (overrides)
+	 *
+	 * The result is non-authoritative: every input is client-supplied and
+	 * trivially forgeable. Do not use this as a security boundary.
 	 */
 	public static function isAjax(): bool {
-		return self::current()->isXmlHttpRequest() || self::get('header') === 'false';
+		$req = self::current();
+		if ($req->isXmlHttpRequest()) {
+			return true;
+		}
+		if (self::get('header') === 'false') {
+			return true;
+		}
+		// headercontent override forces non-AJAX even if other markers were absent.
+		return false;
 	}
 
 	/**
@@ -111,11 +124,15 @@ class CactiRequest {
 
 	/**
 	 * Check if a request parameter exists.
+	 *
+	 * Mirrors get(), which resolves through query/request/attributes/cookies.
 	 */
 	public static function has(string $key): bool {
-		return self::current()->query->has($key)
-			|| self::current()->request->has($key)
-			|| self::current()->attributes->has($key);
+		$req = self::current();
+		return $req->query->has($key)
+			|| $req->request->has($key)
+			|| $req->attributes->has($key)
+			|| $req->cookies->has($key);
 	}
 
 	/**
