@@ -1,0 +1,14 @@
+services:
+  php:
+    container_name: phpunit-architecture-test
+    build:
+      args:
+        user: ${USER}
+        uid: ${USER_ID}
+      context: ./php
+      dockerfile: Dockerfile
+    volumes:
+      - "../:/var/www/html"
+    restart: always
+    environment:
+      COMPOSER_MEMORY_LIMIT: -1

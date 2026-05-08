@@ -1,5 +1,51 @@
 # Changelog
 
+## [7.0.5](https://github.com/firebase/php-jwt/compare/v7.0.4...v7.0.5) (2026-03-31)
+
+
+### Bug Fixes
+
+* RSA from JWK sometimes returns empty Instance ([#628](https://github.com/firebase/php-jwt/issues/628)) ([b4c78aa](https://github.com/firebase/php-jwt/commit/b4c78aa731664122198ad36c0033aa29e807397a))
+
+## [7.0.4](https://github.com/firebase/php-jwt/compare/v7.0.3...v7.0.4) (2026-03-27)
+
+
+### Bug Fixes
+
+* readme examples, add tests for all examples ([#626](https://github.com/firebase/php-jwt/issues/626)) ([510a00c](https://github.com/firebase/php-jwt/commit/510a00c0e6353bc7d68412fab67e57a13954cb46))
+* use urlsafeB64Decode everywhere ([#627](https://github.com/firebase/php-jwt/issues/627)) ([b889495](https://github.com/firebase/php-jwt/commit/b889495c83ddc3f3885ca3f0b65b41b1cb37a3b1))
+
+## [7.0.3](https://github.com/firebase/php-jwt/compare/v7.0.2...v7.0.3) (2026-02-18)
+
+
+### Miscellaneous Chores
+
+* add environment for Release Please job ([#619](https://github.com/firebase/php-jwt/issues/619)) ([300fd02](https://github.com/firebase/php-jwt/commit/300fd02c883f096c9067df652dbd23f62cb5e2a7))
+
+## [7.0.2](https://github.com/firebase/php-jwt/compare/v7.0.1...v7.0.2) (2025-12-16)
+
+
+### Bug Fixes
+
+* add key length validation for ec keys ([#615](https://github.com/firebase/php-jwt/issues/615)) ([7044f9a](https://github.com/firebase/php-jwt/commit/7044f9ae7e7d175d28cca71714feb236f1c0e252))
+
+## [7.0.0](https://github.com/firebase/php-jwt/compare/v6.11.1...v7.0.0) (2025-12-15)
+
+
+### ⚠️ ⚠️ ⚠️  Security Fixes ⚠️ ⚠️ ⚠️ 
+ * add key size validation ([#613](https://github.com/firebase/php-jwt/issues/613)) ([6b80341](https://github.com/firebase/php-jwt/commit/6b80341bf57838ea2d011487917337901cd71576))
+ **NOTE**: This fix will cause keys with a size below the minimally allowed size to break. 
+
+### Features
+
+* add SensitiveParameter attribute to security-critical parameters ([#603](https://github.com/firebase/php-jwt/issues/603)) ([4dbfac0](https://github.com/firebase/php-jwt/commit/4dbfac0260eeb0e9e643063c99998e3219cc539b))
+* store timestamp in `ExpiredException` ([#604](https://github.com/firebase/php-jwt/issues/604)) ([f174826](https://github.com/firebase/php-jwt/commit/f1748260d218a856b6a0c23715ac7fae1d7ca95b))
+
+
+### Bug Fixes
+
+* validate iat and nbf on payload ([#568](https://github.com/firebase/php-jwt/issues/568)) ([953b2c8](https://github.com/firebase/php-jwt/commit/953b2c88bb445b7e3bb82a5141928f13d7343afd))
+
 ## [6.11.1](https://github.com/firebase/php-jwt/compare/v6.11.0...v6.11.1) (2025-04-09)
 
 

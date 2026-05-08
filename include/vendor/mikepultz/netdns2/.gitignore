@@ -1,0 +1,6 @@
+TODO
+tests/vendor/
+tests/.phpunit.result.cache
+tests/.phpunit.cache
+cov-int
+myproject.tgz

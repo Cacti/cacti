@@ -1,0 +1,69 @@
+{
+    "name": "pestphp/pest-plugin-mutate",
+    "description": "Mutates your code to find untested cases",
+    "keywords": [
+        "php",
+        "framework",
+        "pest",
+        "unit",
+        "test",
+        "testing",
+        "mutate",
+        "mutation",
+        "plugin"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sandro Gehri",
+            "email": "sandrogehri@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "nikic/php-parser": "^5.2.0",
+        "pestphp/pest-plugin": "^3.0.0",
+        "psr/simple-cache": "^3.0.0"
+    },
+    "require-dev": {
+        "pestphp/pest": "^3.0.8",
+        "pestphp/pest-dev-tools": "^3.0.0",
+        "pestphp/pest-plugin-type-coverage": "^3.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pest\\Mutate\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests",
+            "Tests\\Tests\\": "tests/.tests"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true,
+        "preferred-install": "dist",
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "scripts": {
+        "refacto": "rector",
+        "lint": "pint",
+        "test:refacto": "rector --dry-run",
+        "test:lint": "pint --test",
+        "test:types": "phpstan analyse --ansi",
+        "test:type-coverage": "pest --type-coverage --min=100",
+        "test:unit": "pest --colors=always",
+        "test": [
+            "@test:refacto",
+            "@test:lint",
+            "@test:types",
+            "@test:type-coverage",
+            "@test:unit"
+        ]
+    }
+}

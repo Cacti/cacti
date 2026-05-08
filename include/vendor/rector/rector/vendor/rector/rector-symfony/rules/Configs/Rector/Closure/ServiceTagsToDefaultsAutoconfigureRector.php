@@ -1,0 +1,122 @@
+<?php
+
+declare (strict_types=1);
+namespace Rector\Symfony\Configs\Rector\Closure;
+
+use PhpParser\Node;
+use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Expr\MethodCall;
+use Rector\PhpParser\Node\Value\ValueResolver;
+use Rector\Rector\AbstractRector;
+use Rector\Symfony\Configs\NodeDecorator\ServiceDefaultsCallClosureDecorator;
+use Rector\Symfony\NodeAnalyzer\SymfonyPhpClosureDetector;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+/**
+ * @see \Rector\Symfony\Tests\Configs\Rector\Closure\ServiceTagsToDefaultsAutoconfigureRector\ServiceTagsToDefaultsAutoconfigureRectorTest
+ */
+final class ServiceTagsToDefaultsAutoconfigureRector extends AbstractRector
+{
+    /**
+     * @readonly
+     */
+    private SymfonyPhpClosureDetector $symfonyPhpClosureDetector;
+    /**
+     * @readonly
+     */
+    private ValueResolver $valueResolver;
+    /**
+     * @readonly
+     */
+    private ServiceDefaultsCallClosureDecorator $serviceDefaultsCallClosureDecorator;
+    /**
+     * @var string[]
+     */
+    private const AUTOCONFIGUREABLE_TAGS = [
+        // @todo fill
+        'twig.extension',
+        'console.command',
+        'kernel.event_subscriber',
+        'monolog.logger',
+        'security.voter',
+    ];
+    public function __construct(SymfonyPhpClosureDetector $symfonyPhpClosureDetector, ValueResolver $valueResolver, ServiceDefaultsCallClosureDecorator $serviceDefaultsCallClosureDecorator)
+    {
+        $this->symfonyPhpClosureDetector = $symfonyPhpClosureDetector;
+        $this->valueResolver = $valueResolver;
+        $this->serviceDefaultsCallClosureDecorator = $serviceDefaultsCallClosureDecorator;
+    }
+    public function getRuleDefinition(): RuleDefinition
+    {
+        return new RuleDefinition('Change $services->set(..., ...)->tag(...) to $services->defaults()->autodiscovery() where meaningful', [new CodeSample(<<<'CODE_SAMPLE'
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use App\Command\SomeCommand;
+
+return static function (ContainerConfigurator $containerConfigurator): void {
+    $services = $containerConfigurator->services();
+
+    $services->set(SomeCommand::class)
+        ->tag('console.command');
+};
+CODE_SAMPLE
+, <<<'CODE_SAMPLE'
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use App\Command\SomeCommand;
+
+return static function (ContainerConfigurator $containerConfigurator): void {
+    $services = $containerConfigurator->services();
+    $services->defaults()
+        ->autoconfigure();
+
+    $services->set(SomeCommand::class);
+};
+CODE_SAMPLE
+)]);
+    }
+    /**
+     * @return array<class-string<Node>>
+     */
+    public function getNodeTypes(): array
+    {
+        return [Closure::class];
+    }
+    /**
+     * @param Closure $node
+     */
+    public function refactor(Node $node): ?Node
+    {
+        if (!$this->symfonyPhpClosureDetector->detect($node)) {
+            return null;
+        }
+        $hasDefaultsAutoconfigure = $this->symfonyPhpClosureDetector->hasDefaultsConfigured($node, 'autoconfigure');
+        $hasChanged = \false;
+        $this->traverseNodesWithCallable($node->stmts, function (Node $node) use (&$hasChanged): ?Expr {
+            if (!$node instanceof MethodCall) {
+                return null;
+            }
+            if (!$this->isName($node->name, 'tag')) {
+                return null;
+            }
+            if (count($node->getArgs()) > 1) {
+                return null;
+            }
+            // is autoconfigureable tag?
+            $firstArg = $node->getArgs()[0];
+            $tagValue = $this->valueResolver->getValue($firstArg->value);
+            if (!in_array($tagValue, self::AUTOCONFIGUREABLE_TAGS, \true)) {
+                return null;
+            }
+            // remove tag() method by returning nested method call
+            $hasChanged = \true;
+            return $node->var;
+        });
+        if ($hasChanged === \false) {
+            return null;
+        }
+        if ($hasDefaultsAutoconfigure === \false) {
+            $this->serviceDefaultsCallClosureDecorator->decorate($node, 'autoconfigure');
+        }
+        return $node;
+    }
+}

@@ -1,0 +1,21 @@
+[
+    "Pest\\Mutate\\Plugins\\Mutate",
+    "Pest\\Plugins\\Configuration",
+    "Pest\\Plugins\\Bail",
+    "Pest\\Plugins\\Cache",
+    "Pest\\Plugins\\Coverage",
+    "Pest\\Plugins\\Init",
+    "Pest\\Plugins\\Environment",
+    "Pest\\Plugins\\Help",
+    "Pest\\Plugins\\Memory",
+    "Pest\\Plugins\\Only",
+    "Pest\\Plugins\\Printer",
+    "Pest\\Plugins\\ProcessIsolation",
+    "Pest\\Plugins\\Profile",
+    "Pest\\Plugins\\Retry",
+    "Pest\\Plugins\\Snapshot",
+    "Pest\\Plugins\\Verbose",
+    "Pest\\Plugins\\Version",
+    "Pest\\Plugins\\Parallel",
+    "Pest\\Arch\\Plugin"
+]

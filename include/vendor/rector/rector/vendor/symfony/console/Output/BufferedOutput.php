@@ -1,0 +1,38 @@
+<?php
+
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+namespace RectorPrefix202604\Symfony\Component\Console\Output;
+
+/**
+ * @author Jean-François Simon <contact@jfsimon.fr>
+ */
+class BufferedOutput extends Output
+{
+    private string $buffer = '';
+    /**
+     * Empties buffer and returns its content.
+     */
+    public function fetch(): string
+    {
+        $content = $this->buffer;
+        $this->buffer = '';
+        return $content;
+    }
+    /**
+     * @return void
+     */
+    protected function doWrite(string $message, bool $newline)
+    {
+        $this->buffer .= $message;
+        if ($newline) {
+            $this->buffer .= \PHP_EOL;
+        }
+    }
+}

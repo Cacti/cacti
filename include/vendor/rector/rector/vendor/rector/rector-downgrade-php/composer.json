@@ -1,0 +1,64 @@
+{
+    "name": "rector\/rector-downgrade-php",
+    "type": "rector-extension",
+    "license": "MIT",
+    "description": "Rector downgrade PHP rules",
+    "require": {
+        "php": ">=8.3"
+    },
+    "require-dev": {
+        "phpstan\/extension-installer": "^1.4",
+        "phpstan\/phpstan": "^2.1.33",
+        "phpstan\/phpstan-webmozart-assert": "^2.0",
+        "phpunit\/phpunit": "^11.5",
+        "rector\/jack": "^0.5.1",
+        "rector\/rector-src": "dev-main",
+        "rector\/swiss-knife": "^2.3",
+        "rector\/type-perfect": "^2.1",
+        "symplify\/easy-coding-standard": "^13.0",
+        "symplify\/phpstan-extensions": "^12.0",
+        "symplify\/phpstan-rules": "^14.9",
+        "symplify\/rule-doc-generator": "^12.2",
+        "symplify\/vendor-patches": "^11.5",
+        "tomasvotruba\/class-leak": "^2.1",
+        "tomasvotruba\/unused-public": "^2.2",
+        "tracy\/tracy": "^2.11"
+    },
+    "autoload": {
+        "psr-4": {
+            "Rector\\": [
+                "src",
+                "rules"
+            ]
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Rector\\Tests\\": [
+                "tests",
+                "rules-tests"
+            ]
+        },
+        "classmap": [
+            "stubs"
+        ]
+    },
+    "scripts": {
+        "phpstan": "vendor\/bin\/phpstan analyse --ansi",
+        "check-cs": "vendor\/bin\/ecs check --ansi",
+        "fix-cs": "vendor\/bin\/ecs check --fix --ansi"
+    },
+    "extra": {
+        "enable-patching": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "cweagans\/composer-patches": true,
+            "rector\/extension-installer": true,
+            "phpstan\/extension-installer": true
+        }
+    }
+}

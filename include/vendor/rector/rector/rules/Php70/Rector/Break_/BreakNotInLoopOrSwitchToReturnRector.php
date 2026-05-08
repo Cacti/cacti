@@ -1,0 +1,84 @@
+<?php
+
+declare (strict_types=1);
+namespace Rector\Php70\Rector\Break_;
+
+use PhpParser\Node;
+use PhpParser\Node\Stmt\Break_;
+use PhpParser\Node\Stmt\Return_;
+use PhpParser\NodeVisitor;
+use Rector\NodeNestingScope\ContextAnalyzer;
+use Rector\Rector\AbstractRector;
+use Rector\ValueObject\PhpVersionFeature;
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+/**
+ * @see \Rector\Tests\Php70\Rector\Break_\BreakNotInLoopOrSwitchToReturnRector\BreakNotInLoopOrSwitchToReturnRectorTest
+ */
+final class BreakNotInLoopOrSwitchToReturnRector extends AbstractRector implements MinPhpVersionInterface
+{
+    /**
+     * @readonly
+     */
+    private ContextAnalyzer $contextAnalyzer;
+    public function __construct(ContextAnalyzer $contextAnalyzer)
+    {
+        $this->contextAnalyzer = $contextAnalyzer;
+    }
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::NO_BREAK_OUTSIDE_LOOP;
+    }
+    public function getRuleDefinition(): RuleDefinition
+    {
+        return new RuleDefinition('Convert break outside for/foreach/switch context to return', [new CodeSample(<<<'CODE_SAMPLE'
+class SomeClass
+{
+    public function run()
+    {
+        if ($isphp5)
+            return 1;
+        else
+            return 2;
+        break;
+    }
+}
+CODE_SAMPLE
+, <<<'CODE_SAMPLE'
+class SomeClass
+{
+    public function run()
+    {
+        if ($isphp5)
+            return 1;
+        else
+            return 2;
+        return;
+    }
+}
+CODE_SAMPLE
+)]);
+    }
+    /**
+     * @return array<class-string<Node>>
+     */
+    public function getNodeTypes(): array
+    {
+        return [Break_::class];
+    }
+    /**
+     * @param Break_ $node
+     * @return Return_|null|NodeVisitor::REMOVE_NODE
+     */
+    public function refactor(Node $node)
+    {
+        if ($this->contextAnalyzer->isInLoop($node)) {
+            return null;
+        }
+        if ($this->contextAnalyzer->isInIf($node)) {
+            return new Return_();
+        }
+        return NodeVisitor::REMOVE_NODE;
+    }
+}

@@ -1,0 +1,36 @@
+---
+site_name: PHPLint
+site_url: https://github.com/overtrue/phplint
+repo_url: https://github.com/overtrue/phplint # https://squidfunk.github.io/mkdocs-material/setup/adding-a-git-repository/#repository
+site_author: overtrue and contributors
+edit_uri: "" # hide edit button -- https://squidfunk.github.io/mkdocs-material/setup/adding-a-git-repository/#edit-button
+theme:
+    name: material
+    palette: # Color palette toggle -- https://squidfunk.github.io/mkdocs-material/setup/changing-the-colors/#color-palette-toggle
+        # editorconfig-checker-disable
+        - scheme: default
+          primary: red
+          toggle:
+              icon: material/lightbulb-outline
+              name: Switch to dark mode
+        - scheme: slate
+          toggle:
+              icon: material/lightbulb
+              name: Switch to light mode
+        # editorconfig-checker-enable
+    features:
+        - navigation.instant # Instant loading -- https://squidfunk.github.io/mkdocs-material/setup/setting-up-navigation/#instant-loading
+        - navigation.tabs # Navigation tabs -- https://squidfunk.github.io/mkdocs-material/setup/setting-up-navigation/#navigation-tabs
+        - navigation.indexes # Section index pages -- https://squidfunk.github.io/mkdocs-material/setup/setting-up-navigation/#section-index-pages
+        - navigation.top # Back-To-Top button -- https://squidfunk.github.io/mkdocs-material/setup/setting-up-navigation/#back-to-top-button
+markdown_extensions:
+    - pymdownx.highlight # https://squidfunk.github.io/mkdocs-material/setup/extensions/python-markdown-extensions/#highlight
+    - pymdownx.superfences # https://squidfunk.github.io/mkdocs-material/setup/extensions/python-markdown-extensions/#superfences
+nav:
+    - "Home": README.md
+    - "Installation": installation.md
+    - "Usage": usage/README.md
+    - "Upgrading": upgrading.md
+    - "Configuration": configuration.md
+    - "Architecture": architecture/README.md
+    - "Contributing": contributing.md

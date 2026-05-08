@@ -1,0 +1,5 @@
+{
+  "notPath": [
+    "tests/Fixtures/Misc/HasNativeFunctions.php"
+  ]
+}

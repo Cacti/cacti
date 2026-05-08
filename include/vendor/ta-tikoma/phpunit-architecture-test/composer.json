@@ -1,0 +1,57 @@
+{
+    "name": "ta-tikoma/phpunit-architecture-test",
+    "description": "Methods for testing application architecture",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "phpunit",
+        "testing",
+        "test",
+        "stucture",
+        "architecture"
+    ],
+    "authors": [
+        {
+            "name": "Ni Shi",
+            "email": "futik0ma011@gmail.com"
+        },
+        {
+            "name": "Nuno Maduro",
+            "email": "enunomaduro@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.1.0",
+        "phpunit/phpunit": "^10.5.5 || ^11.0.0 || ^12.0.0 || ^13.0.0",
+        "nikic/php-parser": "^4.18.0 || ^5.0.0",
+        "symfony/finder": "^6.4.0 || ^7.0.0 || ^8.0.0",
+        "phpdocumentor/reflection-docblock": "^5.3.0 || ^6.0.0"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^1.10.52",
+        "laravel/pint": "^1.13.7"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "PHPUnit\\Architecture\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "classmap": [
+            "tests/"
+        ]
+    },
+    "scripts": {
+        "lint": "pint",
+        "test:lint": "pint --test",
+        "test:type": "phpstan analyse --ansi --memory-limit=-1",
+        "test:unit": "phpunit",
+        "test": [
+            "@test:lint",
+            "@test:type",
+            "@test:unit"
+        ]
+    }
+}

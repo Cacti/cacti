@@ -1,0 +1,5 @@
+{
+  "require-dev": {
+    "phpbench/phpbench": "^1.4"
+  }
+}

@@ -1,0 +1,199 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Parameter \#1 of callable callable\(Pest\\Expectation\<string\|null\>\)\: Pest\\Arch\\Contracts\\ArchExpectation expects Pest\\Expectation\<string\|null\>, Pest\\Expectation\<string\|null\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/ArchPresets/AbstractPreset.php
+
+		-
+			message: '#^Trait Pest\\Concerns\\Expectable is used zero times and is not analysed\.$#'
+			identifier: trait.unused
+			count: 1
+			path: src/Concerns/Expectable.php
+
+		-
+			message: '#^Trait Pest\\Concerns\\Logging\\WritesToConsole is used zero times and is not analysed\.$#'
+			identifier: trait.unused
+			count: 1
+			path: src/Concerns/Logging/WritesToConsole.php
+
+		-
+			message: '#^Trait Pest\\Concerns\\Testable is used zero times and is not analysed\.$#'
+			identifier: trait.unused
+			count: 1
+			path: src/Concerns/Testable.php
+
+		-
+			message: '#^Loose comparison using \!\= between \(Closure\|null\) and false will always evaluate to false\.$#'
+			identifier: notEqual.alwaysFalse
+			count: 1
+			path: src/Expectation.php
+
+		-
+			message: '#^Method Pest\\Expectation\:\:and\(\) should return Pest\\Expectation\<TAndValue\> but returns \(Pest\\Expectation&TAndValue\)\|Pest\\Expectation\<TAndValue of mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Expectation.php
+
+		-
+			message: '#^PHPDoc tag @property for property Pest\\Expectation\:\:\$each contains generic class Pest\\Expectations\\EachExpectation but does not specify its types\: TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Expectation.php
+
+		-
+			message: '#^PHPDoc tag @property for property Pest\\Expectation\:\:\$not contains generic class Pest\\Expectations\\OppositeExpectation but does not specify its types\: TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Expectation.php
+
+		-
+			message: '#^Parameter \#2 \$newScope of method Closure\:\:bindTo\(\) expects ''static''\|class\-string\|object\|null, string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Expectation.php
+
+		-
+			message: '#^Function expect\(\) should return Pest\\Expectation\<TValue\|null\> but returns Pest\\Expectation\<TValue\|null\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Functions.php
+
+		-
+			message: '#^Parameter \#1 \$argv of method PHPUnit\\TextUI\\Application\:\:run\(\) expects list\<string\>, array\<int, string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Kernel.php
+
+		-
+			message: '#^Call to an undefined method object&TValue of mixed\:\:__toString\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Mixins/Expectation.php
+
+		-
+			message: '#^Call to an undefined method object&TValue of mixed\:\:toArray\(\)\.$#'
+			identifier: method.notFound
+			count: 4
+			path: src/Mixins/Expectation.php
+
+		-
+			message: '#^Call to an undefined method object&TValue of mixed\:\:toSnapshot\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Mixins/Expectation.php
+
+		-
+			message: '#^Call to an undefined method object&TValue of mixed\:\:toString\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Mixins/Expectation.php
+
+		-
+			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertTrue\(\) with true will always evaluate to true\.$#'
+			identifier: staticMethod.alreadyNarrowedType
+			count: 2
+			path: src/Mixins/Expectation.php
+
+		-
+			message: '#^PHPDoc tag @var with type callable\(\)\: bool is not subtype of native type Closure\|null\.$#'
+			identifier: varTag.nativeType
+			count: 1
+			path: src/PendingCalls/TestCall.php
+
+		-
+			message: '#^Parameter \#1 \$argv of class Symfony\\Component\\Console\\Input\\ArgvInput constructor expects list\<string\>\|null, array\<int, string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Plugins/Parallel.php
+
+		-
+			message: '#^Parameter \#13 \$testRunnerTriggeredDeprecationEvents of class PHPUnit\\TestRunner\\TestResult\\TestResult constructor expects list\<PHPUnit\\Event\\TestRunner\\DeprecationTriggered\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Plugins/Parallel/Paratest/WrapperRunner.php
+
+		-
+			message: '#^Parameter \#14 \$testRunnerTriggeredWarningEvents of class PHPUnit\\TestRunner\\TestResult\\TestResult constructor expects list\<PHPUnit\\Event\\TestRunner\\WarningTriggered\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Plugins/Parallel/Paratest/WrapperRunner.php
+
+		-
+			message: '#^Parameter \#15 \$errors of class PHPUnit\\TestRunner\\TestResult\\TestResult constructor expects list\<PHPUnit\\TestRunner\\TestResult\\Issues\\Issue\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Plugins/Parallel/Paratest/WrapperRunner.php
+
+		-
+			message: '#^Parameter \#16 \$deprecations of class PHPUnit\\TestRunner\\TestResult\\TestResult constructor expects list\<PHPUnit\\TestRunner\\TestResult\\Issues\\Issue\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Plugins/Parallel/Paratest/WrapperRunner.php
+
+		-
+			message: '#^Parameter \#17 \$notices of class PHPUnit\\TestRunner\\TestResult\\TestResult constructor expects list\<PHPUnit\\TestRunner\\TestResult\\Issues\\Issue\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Plugins/Parallel/Paratest/WrapperRunner.php
+
+		-
+			message: '#^Parameter \#18 \$warnings of class PHPUnit\\TestRunner\\TestResult\\TestResult constructor expects list\<PHPUnit\\TestRunner\\TestResult\\Issues\\Issue\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Plugins/Parallel/Paratest/WrapperRunner.php
+
+		-
+			message: '#^Parameter \#19 \$phpDeprecations of class PHPUnit\\TestRunner\\TestResult\\TestResult constructor expects list\<PHPUnit\\TestRunner\\TestResult\\Issues\\Issue\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Plugins/Parallel/Paratest/WrapperRunner.php
+
+		-
+			message: '#^Parameter \#20 \$phpNotices of class PHPUnit\\TestRunner\\TestResult\\TestResult constructor expects list\<PHPUnit\\TestRunner\\TestResult\\Issues\\Issue\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Plugins/Parallel/Paratest/WrapperRunner.php
+
+		-
+			message: '#^Parameter \#21 \$phpWarnings of class PHPUnit\\TestRunner\\TestResult\\TestResult constructor expects list\<PHPUnit\\TestRunner\\TestResult\\Issues\\Issue\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Plugins/Parallel/Paratest/WrapperRunner.php
+
+		-
+			message: '#^Parameter \#4 \$testErroredEvents of class PHPUnit\\TestRunner\\TestResult\\TestResult constructor expects list\<PHPUnit\\Event\\Test\\AfterLastTestMethodErrored\|PHPUnit\\Event\\Test\\BeforeFirstTestMethodErrored\|PHPUnit\\Event\\Test\\Errored\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Plugins/Parallel/Paratest/WrapperRunner.php
+
+		-
+			message: '#^Parameter \#5 \$testFailedEvents of class PHPUnit\\TestRunner\\TestResult\\TestResult constructor expects list\<PHPUnit\\Event\\Test\\Failed\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Plugins/Parallel/Paratest/WrapperRunner.php
+
+		-
+			message: '#^Parameter \#7 \$testSuiteSkippedEvents of class PHPUnit\\TestRunner\\TestResult\\TestResult constructor expects list\<PHPUnit\\Event\\TestSuite\\Skipped\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Plugins/Parallel/Paratest/WrapperRunner.php
+
+		-
+			message: '#^Parameter \#8 \$testSkippedEvents of class PHPUnit\\TestRunner\\TestResult\\TestResult constructor expects list\<PHPUnit\\Event\\Test\\Skipped\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Plugins/Parallel/Paratest/WrapperRunner.php
+
+		-
+			message: '#^Parameter \#9 \$testMarkedIncompleteEvents of class PHPUnit\\TestRunner\\TestResult\\TestResult constructor expects list\<PHPUnit\\Event\\Test\\MarkedIncomplete\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Plugins/Parallel/Paratest/WrapperRunner.php
+
+		-
+			message: '#^Property Pest\\Plugins\\Parallel\\Paratest\\WrapperRunner\:\:\$pending \(list\<non\-empty\-string\>\) does not accept array\<int, non\-empty\-string\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Plugins/Parallel/Paratest/WrapperRunner.php

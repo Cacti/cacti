@@ -315,6 +315,8 @@ $il = $config['is_web'] ? '</li>' : '';
 if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	if (!defined('PHP_TESTING')) {
 		$local_db_cnn_id = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca, $database_ssl_capath, $database_ssl_verify_server_cert);
+	} else {
+		$local_db_cnn_id = true;
 	}
 
 	if (!isset($rdatabase_retries)) {
@@ -365,6 +367,8 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	if ($conn_mode != 'offline') {
 		if (!defined('PHP_TESTING')) {
 			$remote_db_cnn_id = db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $database_retries, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca, $rdatabase_ssl_capath, $rdatabase_ssl_verify_server_cert);
+		} else {
+			$remote_db_cnn_id = true;
 		}
 	}
 
@@ -408,6 +412,8 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 
 			exit;
 		}
+	} else {
+		$local_db_cnn_id = true;
 	}
 
 	if (!defined('PHP_TESTING')) {

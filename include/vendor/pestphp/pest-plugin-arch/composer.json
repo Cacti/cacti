@@ -1,0 +1,72 @@
+{
+    "name": "pestphp/pest-plugin-arch",
+    "description": "The Arch plugin for Pest PHP.",
+    "keywords": [
+        "php",
+        "framework",
+        "pest",
+        "unit",
+        "test",
+        "testing",
+        "plugin",
+        "arch",
+        "architecture"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": "^8.2",
+        "pestphp/pest-plugin": "^3.0.0",
+        "ta-tikoma/phpunit-architecture-test": "^0.8.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pest\\Arch\\": "src/"
+        },
+        "files": [
+            "src/Autoload.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        },
+        "files": [
+            "tests/Fixtures/Functions.php",
+            "tests/Fixtures/NamespacedFunctions.php"
+        ]
+    },
+    "require-dev": {
+        "pestphp/pest": "^3.8.1",
+        "pestphp/pest-dev-tools": "^3.4.0"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true,
+        "preferred-install": "dist",
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "scripts": {
+        "refacto": "rector",
+        "lint": "pint",
+        "test:refacto": "rector --dry-run",
+        "test:lint": "pint --test",
+        "test:types": "phpstan analyse --ansi",
+        "test:unit": "pest --colors=always",
+        "test": [
+            "@test:refacto",
+            "@test:lint",
+            "@test:types",
+            "@test:unit"
+        ]
+    },
+    "extra": {
+        "pest": {
+            "plugins": [
+                "Pest\\Arch\\Plugin"
+            ]
+        }
+    }
+}

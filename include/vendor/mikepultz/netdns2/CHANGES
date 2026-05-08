@@ -1,0 +1,129 @@
+
+NetDNS2 - PHP DNS Resolver and Updater
+======================================
+
+v2.0.8
+------
+* added new \NetDNS2\DNSSEC\Validator class for client-side DNSSEC signature validation; supports
+  RSA (RSAMD5/RSASHA1/RSASHA256/RSASHA512), ECDSA (P-256/P-384), and ED25519; includes built-in
+  IANA root trust anchors (KSK-2017 keytag 20326, KSK-2024 keytag 38696).
+* added two new resource record types: BRID and HHIT (RFC 9886 - HIP Intermediary Discovery).
+* added complete @property docblock tags to all RR subclasses and OPT subclasses.
+* added EDNS CO (Compact Answers OK) flag support per RFC 9824: OPT::$co property; EDNS::compact_ok() helper.
+* changed the default TSIG signing algorithm from HMAC-MD5 to HMAC-SHA256 (RFC 4635).
+* bugfix: RR/TLSA.php and RR/ZONEMD.php rrGet() used = instead of += for $_packet->offset.
+* bugfix: Data/IPv6.php passed DATA_TYPE_IPV4 to the parent Data constructor instead of DATA_TYPE_IPV6.
+* bugfix: RR/OPT/EXPIRE.php rrToString() referenced $this->timeout instead of $this->expire.
+* bugfix: RR/ISDN.php $sa was not always initialized before use in rrFromString() and rrSet().
+* bugfix: RR/L32.php, RR/L64.php, RR/NID.php did not validate the explode() result count.
+* bugfix: RR/SIG.php and RR/RRSIG.php did not check the preg_match() return before accessing captures.
+* bugfix: Cache/Model/Data.php $smallest_ttl was initialised to time() instead of PHP_INT_MAX,
+  producing a near-zero effective TTL for entries whose first RR had the largest TTL.
+* bugfix: Cache/Model/Data.php put() now deep-clones the response so the cached copy is independent
+  of the caller's object.
+* bugfix: RR/TSIG.php verify() now checks original_id before computing the HMAC.
+* bugfix: RR/TSIG.php rrGet() now throws on base64_decode() failure instead of silently using an
+  empty MAC.
+* security: Updater.php and Notifier.php now call preg_quote() on the zone name before use in regex.
+* security: Data.php _decode() now detects compression pointer cycles and throws rather than looping.
+* security: RR/TSIG.php incoming response MACs are now verified, not just decoded and stored.
+* security: Cache/Model/Data.php unserialize() now restricts allowed_classes to known NetDNS2 types.
+* Cache/Shm.php ftok() project ID is now configurable via $_options['id'] (defaults to 't').
+* Cache.php fixed typo: calcuate_ttl() renamed to calculate_ttl().
+* RR/TSIG.php $other_data is now a typed int; the full 48-bit time_signed timestamp is parsed and
+  encoded correctly; signHMAC() throws on unsupported algorithms.
+* Data.php encode_rfc1035() now throws when a label exceeds 63 octets (RFC 1035 §2.3.4).
+* expanded PHPUnit suite: TSIG sign/verify (all HMAC variants), compression pointer cycle detection,
+  Header round-trip, BitMap multi-window, RR::fromString() error paths, SIG(0), cache cases.
+* bugfix: RR/TKEY.php rrGet() used a hand-calculated offset increment that omitted the
+  variable-length ALGORITHM domain wire bytes; replaced with strlen($data).
+* bugfix: RR/DSYNC.php rrGet() only incremented $_packet->offset by 5 (fixed header), missing the
+  CANON-encoded TARGET domain bytes; build $data first, then use strlen($data).
+* bugfix: RR/IPSECKEY.php rrGet() piecemeal offset strategy silently dropped domain bytes for
+  GATEWAY_TYPE_DOMAIN (CANON encoding ignores the $_offset reference); unified to strlen($data).
+* bugfix: RR/AMTRELAY.php rrGet() double-counted IPv4/IPv6 relay bytes via encode($_packet->offset)
+  then strlen($data); removed the argument from encode().
+* bugfix: RR/DS.php rrGet() used strlen($this->digest) but $this->digest is a hex string so its
+  length is 2x the binary byte count; replaced with strlen($data) after packing.
+* bugfix: RR/APL.php trimZeros() IPv4 case dropped ALL zero octets instead of only trailing ones,
+  causing addresses with internal zeros (e.g. 10.0.2.0) to be encoded incorrectly as [10,2] instead
+  of [10,0,2]; added a $started flag matching the IPv6 $begin pattern.
+* bugfix: Data.php encode_rfc1035() did not increment $_offset by 2 when emitting a compression
+  pointer, causing subsequent compression table entries to record wrong packet offsets; added
+  $_offset += 2 before the early return.
+* bugfix: RR/SVCB.php rrFromString() applied strtolower() to the full key=value string before
+  splitting, corrupting base64-encoded ECH values; also explode('=', ...) without a limit dropped
+  base64 padding '=' characters from values. Fixed by splitting on the first '=' only (limit 2)
+  and lowercasing only the key name.
+
+v2.0.7
+------
+* changed the hashing algorithm used for cache storage from sha256 -> xxh128; the xxHash algorithms are faster
+* bugfix: fixed #177 - the "NULL" resource record has an issue because the name conflicts with the PHP reserved word "null", so I
+  had originally named it "NUL" instead, but apparently this causes a problem for NTFS in Windows. I've changed it now to be
+  "RR_NULL", which is dumb looking, but shouldn't conflict with anything. It can still be created in the way using "NULL", just the
+  class name is named inconsistently.
+* bugfix: fixed #178 - I was trimming periods from names in the new Data class- which is correct for Domains and Mailboxes, but
+  not Text objects, as it can break when you have a domain that happens to line up just right. This fix only trims() the period
+  when it's a Domain or Mailbox class.
+
+v2.0.6
+------
+* bugfix: fixed #173 - the Client.php was comparing the $rr->type value to "SOA" but should have been using the new ENUM value. 
+* changed from mt_rand() to random_int(); provides the same value, but faster and produces less complaints from code scanners about
+  weak RNG, even though it doesn't actually matter since this isn't used for cryptography.
+* realpath() the resolv.conf and private key file path just-in-case; this isn't a real problem.
+* changed the resolver cache to use sha256 instead of md5(); again, this isn't cryptographic, so it doesn't matter, but in my testing
+  the sha256 function is surprisingly slightly faster than md5(), and it kills the complaints from code scanners.
+* dropped the use of curl_close(); it's deprecated as of PHP 8.5.
+* cleaned up the BitMap::arrayToBitMap() function, and created a phpunit test to confirm it's working.
+* changed any isset() cases to use === to avoid "loose comparison" warnings.
+
+v2.0.5
+------
+* bugfix: fixed #169 - the Client.php was comparing the $qtype value to "AXFR" but should have been using the new ENUM value
+* bugfix: fixed #170 - the Socket::read() function could end up in and endless loop when using TCP, and the remote end doesn't
+  return any data at all.
+* bugfix: fixed #171 - added a missing __isset() magic method to the RR object.
+
+v2.0.4
+------
+* bugfix: fixed the phpdoc for the $_options passed to the Resolver, Notifier, & Updater constructors; the array format was incorrect.
+* bugfix: fixed the blocking logic in Socket::read(); there were a couple reports of failures here that could only happen in a specific 
+  case where only one initial byte of data is returned on TCP connections.
+* bugfix: fixed #167 - the Mailbox object (used on SOA, RP) RR's didn't support a value without a "." in it (aka an @). While according 
+  to RFC1035, this value should be an email address, it seems like DNS servers don't enforce this, so you can add a single value in 
+  like "root" and it's accepted.
+* bugfix: fixed #168 - the SHA1 DNSSEC Digest algorithm was configured as id 0, but should be 1.
+
+v2.0.3
+------
+* bugfix: fixed #162; the type() was missing when creating a Data\Mailbox type in RR::__set().
+* changed the default $_offset value for Data types to -1 instead of null; it achieves the same goal (an "unset state"), but resolves a 
+  few PHPstan complaints.
+
+v2.0.2
+------
+* Added support for Internationalized Domain Names (IDN)
+* bugfix: fixed #160 - the Updater() and Notifier() class constructors were accidentially changed to require a response value; this was 
+  changed back to default to null.
+- bugfix: fixed #161 - there was a domain encoding issue related to TSIG signatures, when using key names or algorithms with periods in 
+  them. This was part of a larger encoding logic issue.
+
+v2.0.1
+------
+* bugfix: \NetDNS2\RR\PTR::ptrdname was set to private instead of protected #157
+* bugfix: the IPv4 & IPv6 data objects were missing from the \NetDNS2\RR::set() function.
+* bugfix: the Text data object was being referenced incorrectly with a lead \ in \NetDNS2\RR::set().
+
+v2.0.0
+------
+IMPORTANT: this release is not backwards compatible with v1.x - see the README for more details on upgrading.
+
+* Minimum PHP version was increased to 8.1; this version uses strong typing, ENUMs, and other modern PHP features.
+* Complete code re-factor, converting to PSR-4 style autoloading, and namespace semantics.
+* Added support for DNS over TLS (DoT).
+* Added support for DNS over HTTPS (DoH).
+* Added support for (almost) all EDNS(0) features (client subnet, cookies, TCP keepalives, etc.)
+* Added Memcache & Redis support in the local cache object.
+* Added the HTTPS, SVCB, DSYNC, and other resource records.

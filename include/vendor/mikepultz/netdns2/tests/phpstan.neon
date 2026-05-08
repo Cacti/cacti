@@ -1,0 +1,7 @@
+parameters:
+    bootstrapFiles:
+        - vendor/autoload.php
+    paths:
+        - ../src
+        - ./NetDNS2
+    treatPhpDocTypesAsCertain: false
