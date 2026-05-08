@@ -53,3 +53,41 @@ if (!function_exists('read_user_setting')) {
         return '08:00';
     }
 }
+
+if (!function_exists('cacti_count')) {
+    function cacti_count($array) {
+        return ($array === false || !is_array($array)) ? 0 : count($array);
+    }
+}
+
+if (!function_exists('clean_up_lines')) {
+    // Production version strips comments; the unit form only trims whitespace.
+    function clean_up_lines($s) {
+        return trim((string)$s);
+    }
+}
+
+if (!function_exists('raise_message')) {
+    function raise_message($message_id, $message = '', $message_level = 0, $message_title = null) {
+        return true;
+    }
+}
+
+if (!function_exists('cacti_debug_backtrace')) {
+    function cacti_debug_backtrace($entry = '', $html = false, $record = true, $limit = 0, $skip = 0) {
+        return '';
+    }
+}
+
+if (!function_exists('get_debug_prefix')) {
+    function get_debug_prefix() {
+        return '';
+    }
+}
+
+// Constants required by lib/database.php logging paths and message helpers.
+if (!defined('POLLER_VERBOSITY_DEBUG'))  { define('POLLER_VERBOSITY_DEBUG', 5); }
+if (!defined('POLLER_VERBOSITY_DEVDBG')) { define('POLLER_VERBOSITY_DEVDBG', 6); }
+if (!defined('MESSAGE_LEVEL_NONE'))      { define('MESSAGE_LEVEL_NONE', 0); }
+if (!defined('MESSAGE_LEVEL_ERROR'))     { define('MESSAGE_LEVEL_ERROR', 3); }
+if (!defined('POLLER_ID'))               { define('POLLER_ID', 1); }
