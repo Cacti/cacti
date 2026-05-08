@@ -34,7 +34,10 @@ FAIL=0
 cleanup() {
     cd "$REPO_DIR"
     docker compose -p "$COMPOSE_PROJECT" down -v --remove-orphans 2>/dev/null || true
-    rm -f "$REPO_DIR/.env.test" "$REPO_DIR/include/config.php"
+    # Only remove the .env.test file this script created. We must NEVER touch
+    # $REPO_DIR/include/config.php on the host; that is the developer's real
+    # Cacti configuration and is never written by this smoke test.
+    rm -f "$REPO_DIR/.env.test"
 }
 trap cleanup EXIT
 
