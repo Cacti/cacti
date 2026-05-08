@@ -58,9 +58,7 @@
         "stevenmaguire/oauth2-keycloak": "^6.1.0",
         "stevenmaguire/oauth2-microsoft": "^2.2",
         "symfony/filesystem": "^6.0",
-        "symfony/http-foundation": "^6.0",
-        "symfony/process": "^6.0",
-        "symfony/validator": "^6.0"
+        "symfony/http-foundation": "^6.0"
     },
     "require-dev": {
         "composer/xdebug-handler": "^3.0",
@@ -91,11 +89,6 @@
             "type": "github"
         }
     ],
-    "autoload": {
-        "psr-4": {
-            "Cacti\\": "lib/"
-        }
-    },
     "minimum-stability": "stable",
     "prefer-stable": true,
     "config": {
