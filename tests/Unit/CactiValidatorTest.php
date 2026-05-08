@@ -13,8 +13,8 @@
 */
 
 require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
+require_once dirname(__DIR__, 2) . '/lib/CactiValidator.php';
 
-use Cacti\Security\CactiValidator;
 use Symfony\Component\Validator\Constraints as Assert;
 
 beforeEach(function () {
