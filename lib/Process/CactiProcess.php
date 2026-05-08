@@ -59,7 +59,9 @@ class CactiProcess {
 	}
 
 	/**
-	 * Safely split a command line string into an argv array.
+	 * Best-effort tokenizer for command lines that the caller already controls.
+	 * Does NOT handle escaped quotes, backslash escapes, or mixed quoting.
+	 * NEVER pass attacker-influenced input to this method; use a real argv array.
 	 *
 	 * @param string $commandLine The command line to split.
 	 *

@@ -30,6 +30,13 @@ class CactiValidator {
 	}
 
 	/**
+	 * Reset the cached validator (for tests).
+	 */
+	public static function reset(): void {
+		self::$validator = null;
+	}
+
+	/**
 	 * Validate a value against a set of constraints.
 	 *
 	 * @param mixed $value       The value to validate.
@@ -55,15 +62,65 @@ class CactiValidator {
 
 	/**
 	 * Specifically validate an RRD path to prevent traversal.
+	 *
+	 * When $rraRoot is supplied, the path is also checked against the real
+	 * resolved root to defeat symlink-based escapes. The path must already
+	 * exist on disk for this branch to succeed; callers validating a
+	 * not-yet-created file should pass $rraRoot = null and check
+	 * containment after creation.
 	 */
-	public static function isValidRrdPath(string $path): bool {
-		return self::isValid($path, [
-			new Assert\Regex('/^[a-zA-Z0-9_\-\.\/]+$/'),
-			new Assert\Regex([
-				'pattern' => '/\.\./',
-				'match'   => false,
-				'message' => 'Path cannot contain ".." traversal.',
-			]),
+	public static function isValidRrdPath(string $path, ?string $rraRoot = null): bool {
+		if ($path === '' || strpos($path, "\0") !== false) {
+			return false;
+		}
+		if (!preg_match('/^[a-zA-Z0-9_\-\.\/]+$/', $path)) {
+			return false;
+		}
+		if (str_contains($path, '..')) {
+			return false;
+		}
+		if ($path[0] === '/') {
+			return false;
+		}
+		if ($rraRoot !== null) {
+			$realRoot = realpath($rraRoot);
+			$realPath = realpath($rraRoot . DIRECTORY_SEPARATOR . $path);
+			if ($realRoot === false || $realPath === false) {
+				return false;
+			}
+			if (strncmp($realPath, $realRoot . DIRECTORY_SEPARATOR, strlen($realRoot) + 1) !== 0) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Validate an IP address (v4 or v6).
+	 */
+	public static function isValidIpAddress(string $ip): bool {
+		return self::isValid($ip, [
+			new Assert\Ip(['version' => 'all']),
+		]);
+	}
+
+	/**
+	 * Validate an email address.
+	 */
+	public static function isValidEmail(string $email): bool {
+		return self::isValid($email, [
+			new Assert\Email(['mode' => 'html5']),
+			new Assert\Length(['max' => 254]),
+		]);
+	}
+
+	/**
+	 * Validate an SNMP community string.
+	 */
+	public static function isValidSnmpCommunity(string $community): bool {
+		return self::isValid($community, [
+			new Assert\NotBlank(),
+			new Assert\Regex('/^[a-zA-Z0-9_\-\.]+$/'),
 		]);
 	}
 }

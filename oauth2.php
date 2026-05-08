@@ -47,46 +47,16 @@ $options = [];
 
 $providerName = read_config_option('settings_oauth2_provider');
 
-switch ($providerName) {
-	case 'google':
-		$provider = new League\OAuth2\Client\Provider\Google($params);
-		$options  = [
-			'scope' => [
-				'https://mail.google.com/'
-			]
-		];
+if ($providerName == 'azure') {
+	$params['tenantId'] = $tenantId;
+}
 
-		break;
-	case 'yahoo':
-		$provider = new Hayageek\OAuth2\Client\Provider\Yahoo($params);
+$provider = Cacti\Security\CactiOAuth::getProvider($providerName, $params);
+$options  = Cacti\Security\CactiOAuth::getDefaultOptions($providerName);
 
-		break;
-	case 'microsoft':
-		$provider = new Stevenmaguire\OAuth2\Client\Provider\Microsoft($params);
-		$options  = [
-			'scope' => [
-				'wl.imap',
-				'wl.offline_access'
-			]
-		];
-
-		break;
-	case 'azure':
-		$params['tenantId'] = $tenantId;
-
-		$provider = new Greew\OAuth2\Client\Provider\Azure($params);
-		$options  = [
-			'scope' => [
-				'https://outlook.office.com/SMTP.Send',
-				'offline_access'
-			]
-		];
-
-		break;
-	default:
-		cacti_log('ERROR: Unknown OAuth2 provider');
-
-		die('Provider missing');
+if ($provider === null) {
+	cacti_log('ERROR: Unknown OAuth2 provider');
+	die('Provider missing');
 }
 
 if (!isrv('code')) { // If we don't have an authorization code then get one

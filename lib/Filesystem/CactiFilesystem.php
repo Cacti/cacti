@@ -29,6 +29,13 @@ class CactiFilesystem {
 	}
 
 	/**
+	 * Reset the cached filesystem (for tests).
+	 */
+	public static function reset(): void {
+		self::$filesystem = null;
+	}
+
+	/**
 	 * Remove a file or directory.
 	 */
 	public static function remove(string|iterable $files): void {

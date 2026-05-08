@@ -36,15 +36,23 @@ class CactiRequest {
 
 	/**
 	 * Get the current Symfony Request object.
+	 *
+	 * @throws \Symfony\Component\HttpFoundation\Exception\SessionNotFoundException
+	 *         When no session is bound and the test bootstrap is not active.
 	 */
 	public static function current(): Request {
 		if (self::$currentRequest === null) {
 			self::$currentRequest = Request::createFromGlobals();
-			
-			// Initialize a session if none exists (useful for testing)
+
+			// Only fall back to a mock session when the test bootstrap
+			// is explicitly active; otherwise the missing-session error
+			// must propagate so production callers see real failures.
 			try {
 				self::$currentRequest->getSession();
 			} catch (\Exception $e) {
+				if (getenv('CACTI_TEST_BOOTSTRAP') !== '1') {
+					throw $e;
+				}
 				$session = new Session(new MockArraySessionStorage());
 				self::$currentRequest->setSession($session);
 			}
@@ -84,9 +92,13 @@ class CactiRequest {
 
 	/**
 	 * Check if the current request is an AJAX request.
+	 *
+	 * The result is non-authoritative: the X-Requested-With header and
+	 * the `header` query parameter are both client-supplied and trivially
+	 * forgeable. Do not use this as a security boundary.
 	 */
 	public static function isAjax(): bool {
-		return self::current()->isXmlHttpRequest() || self::get('header') == 'false';
+		return self::current()->isXmlHttpRequest() || self::get('header') === 'false';
 	}
 
 	/**
@@ -100,17 +112,22 @@ class CactiRequest {
 	 * Check if a request parameter exists.
 	 */
 	public static function has(string $key): bool {
-		return self::current()->query->has($key) || self::current()->request->has($key);
+		return self::current()->query->has($key)
+			|| self::current()->request->has($key)
+			|| self::current()->attributes->has($key);
 	}
 
 	/**
-	 * Set a request parameter (defaults to POST/attributes bag).
+	 * Set a request parameter on the attributes bag.
+	 *
+	 * $_REQUEST is also updated for legacy callers that read globals;
+	 * $_POST is intentionally not touched, since writing to $_POST blurs
+	 * the GET/POST boundary and lets attribute writes appear as
+	 * client-supplied form data to downstream code.
 	 */
 	public static function set(string $key, mixed $value): void {
 		self::current()->attributes->set($key, $value);
-		// Also update globals for legacy compatibility
 		$_REQUEST[$key] = $value;
-		$_POST[$key] = $value;
 	}
 
 	/**

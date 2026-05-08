@@ -300,6 +300,19 @@ if ($config['is_web'] && ini_get('session.auto_start') == 1) {
 	exit;
 }
 
+// Test-mode DB sentinel: any method invocation on the sentinel throws,
+// so production-mode code paths can never silently treat a non-handle as
+// a real connection. Gated by the PHP_TESTING constant AND the
+// CACTI_TEST_BOOTSTRAP env var so a stale define alone cannot disable
+// real DB connection logic in a deployed environment.
+if (!class_exists('Cacti_TestDbSentinel')) {
+	final class Cacti_TestDbSentinel {
+		public function __call($name, $args) {
+			throw new \RuntimeException('PHP_TESTING DB sentinel called: ' . $name);
+		}
+	}
+}
+
 // set poller mode
 global $local_db_cnn_id, $remote_db_cnn_id, $conn_mode;
 
@@ -313,10 +326,10 @@ $lu = $config['is_web'] ? '</ul>' : '';
 $il = $config['is_web'] ? '</li>' : '';
 
 if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
-	if (!defined('PHP_TESTING')) {
+	if (!(defined('PHP_TESTING') && getenv('CACTI_TEST_BOOTSTRAP') === '1')) {
 		$local_db_cnn_id = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca, $database_ssl_capath, $database_ssl_verify_server_cert);
 	} else {
-		$local_db_cnn_id = true;
+		$local_db_cnn_id = new Cacti_TestDbSentinel();
 	}
 
 	if (!isset($rdatabase_retries)) {
@@ -365,14 +378,14 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	 * a remote poller, let's attempt to get back online.
 	 */
 	if ($conn_mode != 'offline') {
-		if (!defined('PHP_TESTING')) {
+		if (!(defined('PHP_TESTING') && getenv('CACTI_TEST_BOOTSTRAP') === '1')) {
 			$remote_db_cnn_id = db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $database_retries, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca, $rdatabase_ssl_capath, $rdatabase_ssl_verify_server_cert);
 		} else {
-			$remote_db_cnn_id = true;
+			$remote_db_cnn_id = new Cacti_TestDbSentinel();
 		}
 	}
 
-	if ($config['is_web'] && is_object($remote_db_cnn_id) && $config['connection'] != 'recovery' && $config['cacti_db_version'] != 'new_install' && !defined('IN_CACTI_INSTALL')) {
+	if ($config['is_web'] && is_object($remote_db_cnn_id) && !($remote_db_cnn_id instanceof Cacti_TestDbSentinel) && $config['connection'] != 'recovery' && $config['cacti_db_version'] != 'new_install' && !defined('IN_CACTI_INSTALL')) {
 		// Connection worked, so now override the default settings so that it will always utilize the remote connection
 		$database_default                = $rdatabase_default;
 		$database_hostname               = $rdatabase_hostname;
@@ -393,7 +406,7 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 		$config['connection'] = 'offline';
 	}
 } else {
-	if (!defined('PHP_TESTING')) {
+	if (!(defined('PHP_TESTING') && getenv('CACTI_TEST_BOOTSTRAP') === '1')) {
 		if (!db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca, $database_ssl_capath, $database_ssl_verify_server_cert)) {
 			print $ps . 'FATAL: Connection to Cacti database failed. Please ensure: ' . $ul;
 			print $li . 'the PHP MySQL module is installed and enabled.' . $il;
@@ -413,10 +426,10 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 			exit;
 		}
 	} else {
-		$local_db_cnn_id = true;
+		$local_db_cnn_id = new Cacti_TestDbSentinel();
 	}
 
-	if (!defined('PHP_TESTING')) {
+	if (!(defined('PHP_TESTING') && getenv('CACTI_TEST_BOOTSTRAP') === '1')) {
 		if (!db_table_exists('settings') || !db_table_exists('version')) {
 			print $ps . 'FATAL: Connection to Cacti database succeeded but `settings` table not found. Please ensure: ' . $ul;
 			print $li . 'the PHP MySQL module is installed and enabled.' . $il;

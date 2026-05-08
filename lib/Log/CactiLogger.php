@@ -29,6 +29,13 @@ class CactiLogger {
 	}
 
 	/**
+	 * Reset the configured logger (for tests).
+	 */
+	public static function reset(): void {
+		self::$logger = null;
+	}
+
+	/**
 	 * Log a message at a specific level.
 	 */
 	public static function log(string $level, string|\Stringable $message, array $context = []): void {

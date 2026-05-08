@@ -6,7 +6,11 @@ require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
 use Cacti\Log\CactiLogger;
 use Psr\Log\LogLevel;
 
-// A simple mock logger to verify CactiLogger::setLogger working
+beforeEach(function () {
+    CactiLogger::reset();
+});
+
+// Minimal PSR-3 logger used to verify CactiLogger::setLogger forwards calls.
 class TestLogger extends \Psr\Log\AbstractLogger {
     public array $logs = [];
     public function log($level, $message, array $context = []): void {
@@ -15,13 +19,10 @@ class TestLogger extends \Psr\Log\AbstractLogger {
 }
 
 it('falls back to legacy cacti_log when no logger set', function () {
-    // This is hard to test because cacti_log is stubbed to do nothing.
-    // But we can at least verify it doesn't crash.
-    CactiLogger::setLogger(new TestLogger()); // Reset it first
+    // cacti_log is stubbed to a no-op in UnitStubs.php, so this only proves
+    // the fallback path does not throw. beforeEach() resets the static logger.
     CactiLogger::info("Test message");
-    
-    // Actually, CactiLogger keeps state between tests because it's a static class.
-    // Pest doesn't reset static properties by default.
+    expect(true)->toBeTrue();
 });
 
 it('uses the PSR-3 logger when set', function () {
@@ -36,4 +37,13 @@ it('uses the PSR-3 logger when set', function () {
     expect($logger->logs[0]['message'])->toBe("Hello PSR-3");
     expect($logger->logs[1]['level'])->toBe(LogLevel::ERROR);
     expect($logger->logs[1]['context']['environ'])->toBe('TEST');
+});
+
+it('exercises mapToCactiLevel via fallback', function () {
+    CactiLogger::reset();
+    // No PSR logger set; should fall through to cacti_log stub without throwing for each level.
+    foreach ([LogLevel::DEBUG, LogLevel::INFO, LogLevel::WARNING, LogLevel::ERROR, LogLevel::CRITICAL, LogLevel::ALERT, LogLevel::EMERGENCY] as $level) {
+        CactiLogger::log($level, 'msg');
+    }
+    expect(true)->toBeTrue();
 });

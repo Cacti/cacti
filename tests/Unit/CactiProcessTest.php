@@ -35,3 +35,13 @@ it('handles command failure', function () {
     $process = CactiProcess::run($argv);
     expect($process->isSuccessful())->toBeFalse();
 });
+
+it('split does not handle escaped quotes (documented limitation)', function () {
+    // Documents current behavior. If tokenizer is replaced with a real one, update.
+    $argv = CactiProcess::split('echo "a\\"b"');
+    expect($argv)->not->toBe(['echo', 'a"b']);
+});
+
+it('split returns empty array for empty input', function () {
+    expect(CactiProcess::split(''))->toBe([]);
+});

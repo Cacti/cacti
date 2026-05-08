@@ -5,6 +5,10 @@ require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
 
 use Cacti\Filesystem\CactiFilesystem;
 
+beforeEach(function () {
+    CactiFilesystem::reset();
+});
+
 it('detects existing files', function () {
     expect(CactiFilesystem::exists(__FILE__))->toBeTrue();
 });
@@ -29,6 +33,7 @@ it('can dump content to a file', function () {
     
     CactiFilesystem::dumpFile($file, $content);
     expect(file_get_contents($file))->toBe($content);
-    
+
+    // nosemgrep: php.lang.security.unlink-use.unlink-use - test cleanup of file we just created in temp dir
     unlink($file);
 });
