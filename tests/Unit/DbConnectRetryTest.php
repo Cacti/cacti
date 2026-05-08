@@ -17,30 +17,38 @@ require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
 require_once dirname(__DIR__, 2) . '/lib/database.php';
 
 it('returns false without throwing when MySQL is unreachable', function () {
-    // 127.0.0.1:1 is reserved (tcpmux) and effectively guaranteed closed
-    // on dev hosts. The function loops $retries+1 times and applies a 2s
-    // PDO::ATTR_TIMEOUT internally; with retries=1 the worst-case wall
-    // time is ~4s for a refused-connection failure.
-    $start = microtime(true);
+	// db_connect_real() short-circuits and returns false when the
+	// pdo_mysql extension is not loaded (PDO::MYSQL_ATTR_FOUND_ROWS is
+	// undefined), which would let this test pass without exercising the
+	// retry path. Skip explicitly so green output reflects real coverage.
+	if (!extension_loaded('pdo_mysql')) {
+		test()->markTestSkipped('pdo_mysql extension not loaded; retry path cannot be exercised.');
+	}
 
-    $result = db_connect_real(
-        '127.0.0.1',
-        'invalid_user',
-        'invalid_pass',
-        'invalid_db',
-        'mysql',
-        1,
-        1
-    );
+	// 127.0.0.1:1 is reserved (tcpmux) and effectively guaranteed closed
+	// on dev hosts. The function loops $retries+1 times and applies a 2s
+	// PDO::ATTR_TIMEOUT internally; with retries=1 the worst-case wall
+	// time is ~4s for a refused-connection failure.
+	$start = microtime(true);
 
-    $elapsed = microtime(true) - $start;
+	$result = db_connect_real(
+		'127.0.0.1',
+		'invalid_user',
+		'invalid_pass',
+		'invalid_db',
+		'mysql',
+		1,
+		1
+	);
 
-    if ($elapsed > 10) {
-        test()->markTestSkipped(
-            sprintf('db_connect_real took %.1fs to fail; environment may be '
-                . 'rerouting 127.0.0.1:1.', $elapsed)
-        );
-    }
+	$elapsed = microtime(true) - $start;
 
-    expect($result)->toBe(false);
+	if ($elapsed > 10) {
+		test()->markTestSkipped(
+			sprintf('db_connect_real took %.1fs to fail; environment may be '
+				. 'rerouting 127.0.0.1:1.', $elapsed)
+		);
+	}
+
+	expect($result)->toBe(false);
 });

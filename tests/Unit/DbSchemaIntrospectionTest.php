@@ -23,22 +23,22 @@ require_once dirname(__DIR__, 2) . '/lib/database.php';
 // equivalents so the real lib/database.php functions execute unmodified.
 
 beforeEach(function () {
-    $this->conn = new FakeMySQLPDO();
-    $this->conn->exec('CREATE TABLE host (id INTEGER PRIMARY KEY AUTOINCREMENT, hostname TEXT NOT NULL)');
+	$this->conn = new FakeMySQLPDO();
+	$this->conn->exec('CREATE TABLE host (id INTEGER PRIMARY KEY AUTOINCREMENT, hostname TEXT NOT NULL)');
 });
 
 it('reports an existing table as present', function () {
-    expect(db_table_exists('host', false, $this->conn))->toBe(true);
+	expect(db_table_exists('host', false, $this->conn))->toBe(true);
 });
 
 it('reports a missing table as absent', function () {
-    expect(db_table_exists('does_not_exist', false, $this->conn))->toBe(false);
+	expect(db_table_exists('does_not_exist', false, $this->conn))->toBe(false);
 });
 
 it('reports an existing column as present', function () {
-    expect(db_column_exists('host', 'hostname', false, $this->conn))->toBe(true);
+	expect(db_column_exists('host', 'hostname', false, $this->conn))->toBe(true);
 });
 
 it('reports a missing column as absent', function () {
-    expect(db_column_exists('host', 'missing', false, $this->conn))->toBe(false);
+	expect(db_column_exists('host', 'missing', false, $this->conn))->toBe(false);
 });
