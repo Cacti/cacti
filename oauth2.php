@@ -51,8 +51,8 @@ if ($providerName == 'azure') {
 	$params['tenantId'] = $tenantId;
 }
 
-$provider = Cacti\Security\CactiOAuth::getProvider($providerName, $params);
-$options  = Cacti\Security\CactiOAuth::getDefaultOptions($providerName);
+$provider = CactiOAuth::getProvider($providerName, $params);
+$options  = CactiOAuth::getDefaultOptions($providerName);
 
 if ($provider === null) {
 	cacti_log('ERROR: Unknown OAuth2 provider');

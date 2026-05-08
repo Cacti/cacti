@@ -13,14 +13,12 @@ declare(strict_types = 1);
  +-------------------------------------------------------------------------+
 */
 
-namespace Cacti\Security;
-
-use League\OAuth2\Client\Provider\AbstractProvider;
-use League\OAuth2\Client\Provider\Google;
-use Stevenmaguire\OAuth2\Client\Provider\Microsoft;
-use Stevenmaguire\OAuth2\Client\Provider\Keycloak;
 use Greew\OAuth2\Client\Provider\Azure;
 use Hayageek\OAuth2\Client\Provider\Yahoo;
+use League\OAuth2\Client\Provider\AbstractProvider;
+use League\OAuth2\Client\Provider\Google;
+use Stevenmaguire\OAuth2\Client\Provider\Keycloak;
+use Stevenmaguire\OAuth2\Client\Provider\Microsoft;
 
 class CactiOAuth {
 	/**

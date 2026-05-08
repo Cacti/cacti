@@ -5620,7 +5620,7 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 			$params['tenantId'] = $tenantId;
 		}
 
-		$provider = \Cacti\Security\CactiOAuth::getProvider($providerName, $params);
+		$provider = CactiOAuth::getProvider($providerName, $params);
 
 		if ($provider !== null) {
 			$mail->setOAuth(

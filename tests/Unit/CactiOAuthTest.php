@@ -2,8 +2,8 @@
 
 require_once dirname(__DIR__) . '/Helpers/UnitStubs.php';
 require_once dirname(__DIR__, 2) . '/include/vendor/autoload.php';
+require_once dirname(__DIR__, 2) . '/lib/CactiOAuth.php';
 
-use Cacti\Security\CactiOAuth;
 use League\OAuth2\Client\Provider\Google;
 
 it('returns null for unknown provider', function () {
