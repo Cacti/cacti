@@ -66,6 +66,42 @@ test('change_data_template looks up host_id from data_local for the new row (Mut
 	expect($body)->toContain('[$local_data_id]');
 });
 
+test('api_data_source_duplicate stamps the duplicated identity, not the source (Mutation Protection)', function () use ($apiDataSourceSource) {
+	/* The pre-fix shape (and a regression mutation) binds
+	 * $data_input_data['data_template_id'], ['local_data_id'],
+	 * ['host_id'] from the SOURCE row. For a duplicated data source
+	 * those are wrong (rows still belong to the original source); for
+	 * a duplicated template they are wrong because templates have
+	 * local_data_id = 0. The fix branches on $_local_data_id and uses
+	 * $bound_data_template_id / $bound_local_data_id / $bound_host_id
+	 * for the bind list. */
+	$body = _mut_extract_function($apiDataSourceSource, 'api_data_source_duplicate');
+	$slice = substr($body, strpos($body, 'INSERT IGNORE INTO data_input_data'), 1500);
+
+	expect($slice)->toContain('$bound_data_template_id');
+	expect($slice)->toContain('$bound_local_data_id');
+	expect($slice)->toContain('$bound_host_id');
+
+	/* The literal source-row binds must NOT appear in the bind array
+	 * any more (only inside the upstream SELECT/branch logic). */
+	$bindList = substr($slice, strpos($slice, 'VALUES (?, ?, ?, ?, ?, ?, ?)'), 600);
+	expect(strpos($bindList, "\$data_input_data['data_template_id']"))->toBeFalse();
+	expect(strpos($bindList, "\$data_input_data['local_data_id']"))->toBeFalse();
+	expect(strpos($bindList, "\$data_input_data['host_id']"))->toBeFalse();
+});
+
+test('api_data_source_duplicate template-dup branch zeroes local_data_id and host_id (Mutation Protection)', function () use ($apiDataSourceSource) {
+	/* Templates have no device. If a mutation drops the
+	 * `$bound_local_data_id = 0; $bound_host_id = 0;` assignments in
+	 * the template-dup branch, child rows go out tagged with whatever
+	 * the source happened to carry. */
+	$body = _mut_extract_function($apiDataSourceSource, 'api_data_source_duplicate');
+	$slice = substr($body, strpos($body, 'INSERT IGNORE INTO data_input_data') - 1500, 1500);
+
+	expect($slice)->toContain('$bound_local_data_id    = 0;');
+	expect($slice)->toContain('$bound_host_id          = 0;');
+});
+
 test('seven-column INSERT/REPLACE shape is consistent across both write paths (Mutation Protection)', function () use ($templateSource, $apiDataSourceSource) {
 	/* The two write paths must agree on the column list. A mutation in
 	 * one path only would create a schema-shape skew that downstream
