@@ -563,9 +563,17 @@ function update_poller_cache($data_source, $commit = false) {
 		}
 	}
 
-	if ($commit && cacti_sizeof($poller_items)) {
+	if ($commit) {
+		/* Always flush on commit, even when $poller_items is empty. The
+		 * buffer pass marks existing rows present=0 then DELETEs whatever
+		 * is still present=0 at the end, which is how a data source that
+		 * just lost its data input / went inactive / failed the
+		 * whitelist gets its stale poller_item rows cleaned out. The
+		 * earlier `cacti_sizeof($poller_items)` guard skipped the flush
+		 * for that case, so callers like data_sources.php form_save
+		 * silently left stale rows behind. */
 		poller_update_poller_cache_from_buffer((array)$data_source['id'], $poller_items, $poller_id);
-	} elseif (!$commit) {
+	} else {
 		return $poller_items;
 	}
 }
