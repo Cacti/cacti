@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.2.20\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2026-05-09 07:18+0000\n"
+"PO-Revision-Date: 2026-05-10 08:18+0000\n"
 "Last-Translator: \"Coool (github.com/Coool)\" <coool@mail.lv>\n"
 "Language-Team: Latvian <https://translate.cacti.net/projects/cacti/core/lv/>"
 "\n"
@@ -5955,9 +5955,9 @@ msgstr[2] "Dzēsiet visus datu avotus, uz kuriem ir atsauce šajā grafikā un k
 #: graphs.php:1777
 msgid "Leave the Data Source untouched."
 msgid_plural "Leave the Data Sources untouched"
-msgstr[0] "Atstāt datu avotus neskartus."
-msgstr[1] "Atstāt datu avotu neskartu."
-msgstr[2] "Atstāt datu avotus neskartus."
+msgstr[0] "Atstāt datu avotus neskartus"
+msgstr[1] "Atstāt datu avotu neskartu"
+msgstr[2] "Atstāt datu avotus neskartus"
 
 #: graphs.php:1784
 msgid "Choose a Graph Template and click 'Continue' to Change the Graph Template for the following Graph.  Note that only compatible Graph Templates will be displayed.  Compatible is identified by those having identical Data Sources."
@@ -6160,7 +6160,7 @@ msgstr "Bloķēt grafiku."
 
 #: graphs.php:2290
 msgid "View Timespans."
-msgstr "Laika sprīdis"
+msgstr "Skatīt laika periodus."
 
 #: graphs.php:2319
 msgid "Selected Graph Template"
@@ -7032,7 +7032,7 @@ msgstr "Pašlaik notiek uzstādīšana vai atjaunināšana."
 
 #: include/global.php:644
 msgid "The Main Data Collector has returned to an Online Status"
-msgstr "Pēdējo reizi šis datu savācējs tika pilnībā sinhronizēts ar galveno vietni Cacti."
+msgstr "Galvenais datu apkopotājs atkal ir tiešsaistē"
 
 #: include/global.php:648
 msgid "The Main Data Collector has gone to an Offline or Recovering Status"
@@ -8862,7 +8862,7 @@ msgstr "nebeidzas ar"
 
 #: include/global_arrays.php:1891
 msgid "matches"
-msgstr "sērkociņi"
+msgstr "atbilst"
 
 #: include/global_arrays.php:1892
 msgid "is not equal to"
@@ -10345,7 +10345,9 @@ msgstr "Sniedziet šim saimniekam jēgpilnu aprakstu."
 
 #: include/global_form.php:1257
 msgid "Fully qualified hostname or IP address for this device. IPv6 address insert into brackets (example: [2001:abcd:1234::1])"
-msgstr "Pilnībā kvalificēts saimniekdatora nosaukums vai IP adrese šai ierīcei."
+msgstr ""
+"Pilns šīs ierīces resursdatora nosaukums vai IP adrese. IPv6 adrese "
+"jāieraksta iekavās (piemērs: [2001:abcd:1234::1])"
 
 #: include/global_form.php:1265
 msgid "The physical location of the Device.  This free form text can be a room, rack location, etc."
@@ -10470,7 +10472,7 @@ msgstr "Šīs ierīces veidnes nosaukums."
 
 #: include/global_form.php:1480 package.php:773
 msgid "Installation Instructions"
-msgstr "Uzstādīšanas instrukcijas."
+msgstr "Uzstādīšanas instrukcijas"
 
 #: include/global_form.php:1481
 msgid "Brief installation instructions provided by the Device Template author."
@@ -11345,7 +11347,7 @@ msgstr "Citi iestatījumi"
 
 #: include/global_settings.php:485
 msgid "Show only site specific locations"
-msgstr "Šeit iestatiet visas diagrammai specifiskās opcijas."
+msgstr "Rādīt tikai vietai specifiskas atrašanās vietas"
 
 #: include/global_settings.php:486
 msgid "Show only locations that are available at a devices selected site."
@@ -14328,7 +14330,7 @@ msgstr "Nepabeigta failu pārsūtīšana."
 
 #: lib/api_automation.php:5222 lib/api_automation.php:5250
 msgid "No file uploaded."
-msgstr "Nav atlasīti faili"
+msgstr "Nav augšupielādēta neviena datne."
 
 #: lib/api_automation.php:5225
 msgid "Temporary folder missing."
@@ -14850,7 +14852,7 @@ msgstr "Vecākais pirmais"
 
 #: lib/clog_webapi.php:636
 msgid "Matches"
-msgstr "Atbilstības"
+msgstr "atbilst"
 
 #: lib/clog_webapi.php:637
 msgid "Does Not Match"
@@ -18447,7 +18449,7 @@ msgstr "Ielāde neizdevās!  Nevar atrast pieejamo ierakstu spraudnim '%s' datu 
 #: lib/plugins.php:1717
 #, php-format
 msgid "The Plugin '%s' has been archived successfully."
-msgstr "%s pakotne veiksmīgi importēta"
+msgstr "Spraudnis '%s' veiksmīgi arhivēts."
 
 #: lib/plugins.php:1719
 #, php-format
@@ -21666,7 +21668,7 @@ msgstr "1 process"
 
 #: support.php:506
 msgid "Automation Process"
-msgstr "Aptuvenais process:"
+msgstr "Automatizācijas process"
 
 #: support.php:507
 msgid "HMIB Process"
@@ -22497,7 +22499,7 @@ msgstr "Atiestatīt lietotāja(-u) iestatījumus"
 
 #: user_admin.php:415
 msgid "Template User"
-msgstr "Veidnes lietotājs:"
+msgstr "Veidnes lietotājs"
 
 #: user_admin.php:732 user_group_admin.php:711
 msgid "Deny"
@@ -23157,7 +23159,7 @@ msgstr "Kā rīkoties, kad piesakās lietotājs no šīs lietotāju grupas."
 
 #: user_group_admin.php:455
 msgid "Click 'Continue' to Delete the following User Group."
-msgstr "Noklikšķiniet uz \"Turpināt\", lai dzēstu šo lietotāju grupu"
+msgstr "Noklikšķiniet 'Turpināt', lai dzēstu sekojošu lietotāju grupu."
 
 #: user_group_admin.php:456
 msgid "Click 'Continue' to Delete following User Groups."
@@ -23189,7 +23191,7 @@ msgstr "Kopēt lietotāju grupu"
 
 #: user_group_admin.php:468
 msgid "Group Prefix"
-msgstr "Grupas prefikss:"
+msgstr "Grupas prefikss"
 
 #: user_group_admin.php:469
 msgid "New Group"
