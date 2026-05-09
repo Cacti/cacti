@@ -7376,6 +7376,15 @@ function cacti_csv_safe($value) {
  *   operators (<>), and subshell delimiters ((){}), which were absent before
  *   and allowed bypass payloads such as /bin/sh -c 'id' or cmd > /tmp/x.
  *
+ *   Placeholder names match [a-zA-Z0-9_]+, the same grammar that
+ *   generate_data_input_field_sequences() and get_full_script_path()
+ *   use, so digit-suffixed tokens such as <arg1> and <host_id2> are
+ *   recognised. Paired surrounding quotes ("<x>" or '<x>') are stripped
+ *   together with the placeholder so that legitimate shell-arg quoting
+ *   in templates such as
+ *     <path_cacti>/scripts/x.php "<reason>"
+ *   is preserved.
+ *
  * @param $input_string - (string) The candidate input_string template
  *
  * @returns - (bool) true if the value is safe to persist
@@ -7385,7 +7394,11 @@ function cacti_input_string_is_safe($input_string) {
 		return true;
 	}
 
-	$bare = preg_replace('/<[a-zA-Z_]+>/', '', $input_string);
+	$bare = preg_replace(
+		'/"<[a-zA-Z0-9_]+>"|\'<[a-zA-Z0-9_]+>\'|<[a-zA-Z0-9_]+>/',
+		'',
+		$input_string
+	);
 
 	return !preg_match('/[;&|`$\\\\\n\r\'"<>()\{\}]/', $bare);
 }

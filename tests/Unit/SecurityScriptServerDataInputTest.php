@@ -120,6 +120,17 @@ test('cacti_input_string_is_safe extracts and runs against canonical payloads', 
 	expect(_test_input_string_is_safe('snmpwalk -v 2c -c <community> <host>'))->toBeTrue();
 	expect(_test_input_string_is_safe('/usr/local/bin/check.sh <host_ip>'))->toBeTrue();
 
+	/* Legitimate templates that the strip pattern must accept after the
+	 * issue #7121 fix: paired quotes around placeholders are standard shell
+	 * arg-quoting, and digit-suffixed placeholder names are common in
+	 * grid/RTM-style packages. Both were rejected by the original strip
+	 * (<[a-zA-Z_]+>) plus the GHSA-c4qp blocklist. */
+	expect(_test_input_string_is_safe('<path_cacti>/scripts/ss_grid_preason.php ss_grid_preason <clusterid> "<reason>"'))->toBeTrue();
+	expect(_test_input_string_is_safe('<path_php_binary> -q <path_cacti>/scripts/x.php --hostname="<host>" --community="<community>"'))->toBeTrue();
+	expect(_test_input_string_is_safe("<path_cacti>/scripts/x.php '<reason>'"))->toBeTrue();
+	expect(_test_input_string_is_safe('<path_cacti>/scripts/x.php <arg1> <host_id2>'))->toBeTrue();
+	expect(_test_input_string_is_safe('<path_php_binary> -q <path_cacti>/scripts/x.php "<arg1>"'))->toBeTrue();
+
 	/* original metachar set */
 	expect(_test_input_string_is_safe('cmd <host>; rm -rf /'))->toBeFalse();
 	expect(_test_input_string_is_safe('cmd <host> && reboot'))->toBeFalse();
