@@ -435,6 +435,12 @@ function update_poller_cache($data_source, $commit = false) {
 
 				if (cacti_sizeof($outputs) && cacti_sizeof($snmp_queries)) {
 					foreach ($outputs as $output) {
+						/* Reset between iterations: an output without an
+						 * 'oid' mapping must not inherit the previous
+						 * iteration's value and emit a poller_item with
+						 * the wrong OID. */
+						unset($oid);
+
 						if (isset($snmp_queries['fields'][$output['snmp_field_name']]['oid'])) {
 							$oid = $snmp_queries['fields'][$output['snmp_field_name']]['oid'] . '.' . $data_source['snmp_index'];
 
@@ -517,6 +523,14 @@ function update_poller_cache($data_source, $commit = false) {
 
 				if (cacti_sizeof($outputs) && cacti_sizeof($script_queries)) {
 					foreach ($outputs as $output) {
+						/* Reset between iterations: an output without a
+						 * 'query_name' mapping must not inherit the
+						 * previous iteration's $script_path / $action
+						 * and emit a poller_item built for a different
+						 * output. */
+						unset($script_path);
+						unset($action);
+
 						if (isset($script_queries['fields'][$output['snmp_field_name']]['query_name'])) {
 							$identifier = $script_queries['fields'][$output['snmp_field_name']]['query_name'];
 
