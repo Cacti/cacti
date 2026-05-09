@@ -802,7 +802,7 @@ function api_data_source_duplicate(int $_local_data_id, int $_data_template_id, 
 		foreach ($data_input_datas as $data_input_data) {
 			db_execute_prepared('INSERT IGNORE INTO data_input_data
 				(data_input_field_id, data_template_data_id, data_template_id, local_data_id, host_id, t_value, value)
-				VALUES (?, ?, ?, ?)',
+				VALUES (?, ?, ?, ?, ?, ?, ?)',
 				[
 					$data_input_data['data_input_field_id'],
 					$data_template_data_id,
