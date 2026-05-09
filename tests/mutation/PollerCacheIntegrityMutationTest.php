@@ -61,6 +61,26 @@ test('update_poller_cache commits even when $poller_items is empty (Mutation Pro
 	);
 });
 
+test('update_poller_cache whitelist failure falls through to commit, not early return (Mutation Protection)', function () use ($utilitySource) {
+	/* The pre-fix shape was `if (!data_input_whitelist_check(...)) return $poller_items;`
+	 * which bypassed the commit-time DELETE pass. After the fix, the
+	 * whitelist check gates only the item-generation block; the outer
+	 * if/else and the final `if ($commit)` flush still run. If a
+	 * mutation reintroduces the early `return $poller_items;`
+	 * adjacent to the whitelist check, stale rows will leak again. */
+	$body = _mut_pcache_strip_comments(_mut_pcache_extract($utilitySource, 'update_poller_cache'));
+
+	$whitelistPos = strpos($body, 'data_input_whitelist_check($data_input[\'id\'])');
+	expect($whitelistPos)->not->toBeFalse('whitelist check must remain present');
+
+	/* Slice the 200 chars following the whitelist call. No
+	 * `return $poller_items;` may appear in that window. */
+	$adjacent = substr($body, $whitelistPos, 200);
+	expect(strpos($adjacent, 'return $poller_items;'))->toBeFalse(
+		'whitelist failure must not early-return; the commit-time flush has to run'
+	);
+});
+
 test('push_out_data_input_method appends current data source after every flush (Mutation Protection)', function () use ($utilitySource) {
 	/* The pre-fix shape had the append in an `else` branch attached to
 	 * the flush. The fixed shape always appends. A mutation that

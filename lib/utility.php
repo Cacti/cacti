@@ -212,10 +212,15 @@ function update_poller_cache($data_source, $commit = false) {
 		array($data_source['id']));
 
 	if (cacti_sizeof($data_input)) {
-		// Check whitelist for input validation
-		if (!data_input_whitelist_check($data_input['id'])) {
-			return $poller_items;
-		}
+		/* Whitelist failure must NOT generate poller_items for this
+		 * data source, but on $commit=true we still fall through to
+		 * the buffer flush so the present=0 / DELETE pass cleans up
+		 * rows that used to pass the whitelist. The pre-fix early
+		 * `return $poller_items;` skipped that pass and stranded stale
+		 * rows whenever an existing data input started failing
+		 * validation. The outer if-else still owns the "Data Input
+		 * Missing" warning so that diagnostic stays specific. */
+		if (data_input_whitelist_check($data_input['id'])) {
 
 		/* we have to perform some additional sql queries if this is a 'query' */
 		if (($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) ||
@@ -552,6 +557,7 @@ function update_poller_cache($data_source, $commit = false) {
 				}
 			}
 		}
+		} /* end of: if (data_input_whitelist_check(...)) */
 	} else {
 		$data_template_data = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' *
 			FROM data_template_data
