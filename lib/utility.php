@@ -980,10 +980,27 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 		}
 	}
 
-	$poller_id = db_fetch_cell_prepared('SELECT poller_id
-		FROM host
-		WHERE id = ?',
-		array($host_id));
+	/* Derive the poller for the buffer flush. push_out_host() is documented
+	 * as single-host scoped, but it accepts $host_id = 0 with a non-zero
+	 * $local_data_id (the data_sources.php save_component_data_source path
+	 * uses that signature). When $host_id is 0, looking up host.poller_id
+	 * by id=0 returns null and the flush ends up writing to poller_id 0,
+	 * which never matches a real poller and silently strands the rows. */
+	if ($host_id > 0) {
+		$poller_id = db_fetch_cell_prepared('SELECT poller_id
+			FROM host
+			WHERE id = ?',
+			array($host_id));
+	} elseif (cacti_sizeof($local_data_ids)) {
+		$poller_id = db_fetch_cell_prepared('SELECT h.poller_id
+			FROM host AS h
+			INNER JOIN data_local AS dl
+			ON h.id = dl.host_id
+			WHERE dl.id = ?',
+			array($local_data_ids[0]));
+	} else {
+		$poller_id = 1;
+	}
 
 	if (cacti_sizeof($local_data_ids)) {
 		poller_update_poller_cache_from_buffer($local_data_ids, $poller_items, $poller_id);
