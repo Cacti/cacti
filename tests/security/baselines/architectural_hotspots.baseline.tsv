@@ -24,16 +24,16 @@ cmd_exec	./lib/database.php:2285		$process = proc_open(trim($cmd_string), $descr
 cmd_exec	./lib/dsstats.php:1060		$process = proc_open($command, $fds, $pipes);
 cmd_exec	./lib/functions.php:2234					$output = shell_exec($script_path);
 cmd_exec	./lib/functions.php:2249						$output = shell_exec($php . ' -q ' . $script);
-cmd_exec	./lib/functions.php:2516							$output = shell_exec($script_path);
-cmd_exec	./lib/functions.php:3017			return exec('whoami');
-cmd_exec	./lib/functions.php:3676		exec($command_line,$out,$err);
-cmd_exec	./lib/functions.php:6930				$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v');
-cmd_exec	./lib/functions.php:6932				$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v 2>&1');
-cmd_exec	./lib/functions.php:7131				exec('id -nu', $o, $r);
-cmd_exec	./lib/functions.php:7141				exec(sprintf('grep :%s: /etc/passwd | cut -d: -f1', (int) $uid), $o, $r);
-cmd_exec	./lib/functions.php:7433	 * shell_exec() callers that already assemble the command string.
-cmd_exec	./lib/functions.php:7473		$process = proc_open($argv, $descriptors, $pipes);
-cmd_exec	./lib/functions.php:7545	 * shell_exec() and expect a string return value.
+cmd_exec	./lib/functions.php:2527							$output = shell_exec($script_path);
+cmd_exec	./lib/functions.php:3028			return exec('whoami');
+cmd_exec	./lib/functions.php:3687		exec($command_line,$out,$err);
+cmd_exec	./lib/functions.php:6941				$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v');
+cmd_exec	./lib/functions.php:6943				$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v 2>&1');
+cmd_exec	./lib/functions.php:7142				exec('id -nu', $o, $r);
+cmd_exec	./lib/functions.php:7152				exec(sprintf('grep :%s: /etc/passwd | cut -d: -f1', (int) $uid), $o, $r);
+cmd_exec	./lib/functions.php:7444	 * shell_exec() callers that already assemble the command string.
+cmd_exec	./lib/functions.php:7484		$process = proc_open($argv, $descriptors, $pipes);
+cmd_exec	./lib/functions.php:7556	 * shell_exec() and expect a string return value.
 cmd_exec	./lib/installer.php:3288				$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 cmd_exec	./lib/installer.php:3320						shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 cmd_exec	./lib/installer.php:3376						$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
@@ -77,17 +77,17 @@ cmd_exec	./lib/snmp.php:409			exec($command, $snmp_value);
 cmd_exec	./lib/snmpagent.php:659		/* add pollers of a distributed system (future) */
 cmd_exec	./lib/spikekill.php:446			shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' dump ' . cacti_escapeshellarg($this->rrdfile) . ' > ' . cacti_escapeshellarg($xmlfile));
 cmd_exec	./lib/spikekill.php:772			$response = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' restore -f -r ' . cacti_escapeshellarg($xmlfile) . ' ' . cacti_escapeshellarg($rrdfile));
-cmd_exec	./lib/utility.php:1691						$nproc = system('nproc');
-cmd_exec	./lib/utility.php:1809			exec('wmic os get FreePhysicalMemory', $memInfo['FreePhysicalMemory']);
-cmd_exec	./lib/utility.php:1810			exec('wmic os get FreeSpaceInPagingFiles', $memInfo['FreeSpaceInPagingFiles']);
-cmd_exec	./lib/utility.php:1811			exec('wmic os get FreeVirtualMemory', $memInfo['FreeVirtualMemory']);
-cmd_exec	./lib/utility.php:1812			exec('wmic os get SizeStoredInPagingFiles', $memInfo['SizeStoredInPagingFiles']);
-cmd_exec	./lib/utility.php:1813			exec('wmic os get TotalVirtualMemorySize', $memInfo['TotalVirtualMemorySize']);
-cmd_exec	./lib/utility.php:1814			exec('wmic os get TotalVisibleMemorySize', $memInfo['TotalVisibleMemorySize']);
-cmd_exec	./lib/utility.php:1846				exec('/usr/bin/free', $output, $exit_code);
-cmd_exec	./lib/utility.php:1897		$json     = shell_exec($php . ' -q ' . $php_file);
-cmd_exec	./lib/utility.php:1965		$json     = shell_exec($php . ' -q ' . $php_file);
-cmd_exec	./lib/utility.php:2097		$json     = shell_exec($php . ' -q ' . $php_file);
+cmd_exec	./lib/utility.php:1705						$nproc = system('nproc');
+cmd_exec	./lib/utility.php:1823			exec('wmic os get FreePhysicalMemory', $memInfo['FreePhysicalMemory']);
+cmd_exec	./lib/utility.php:1824			exec('wmic os get FreeSpaceInPagingFiles', $memInfo['FreeSpaceInPagingFiles']);
+cmd_exec	./lib/utility.php:1825			exec('wmic os get FreeVirtualMemory', $memInfo['FreeVirtualMemory']);
+cmd_exec	./lib/utility.php:1826			exec('wmic os get SizeStoredInPagingFiles', $memInfo['SizeStoredInPagingFiles']);
+cmd_exec	./lib/utility.php:1827			exec('wmic os get TotalVirtualMemorySize', $memInfo['TotalVirtualMemorySize']);
+cmd_exec	./lib/utility.php:1828			exec('wmic os get TotalVisibleMemorySize', $memInfo['TotalVisibleMemorySize']);
+cmd_exec	./lib/utility.php:1860				exec('/usr/bin/free', $output, $exit_code);
+cmd_exec	./lib/utility.php:1911		$json     = shell_exec($php . ' -q ' . $php_file);
+cmd_exec	./lib/utility.php:1979		$json     = shell_exec($php . ' -q ' . $php_file);
+cmd_exec	./lib/utility.php:2111		$json     = shell_exec($php . ' -q ' . $php_file);
 cmd_exec	./poller_realtime.php:145	shell_exec("$command_string $extra_args");
 cmd_exec	./poller_realtime.php:229					shell_exec($command);
 cmd_exec	./poller_spikekill.php:247				$response = exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
@@ -367,17 +367,17 @@ dynamic_include	./lib/dsstats.php:1009			include_once($config['library_path'] . 
 dynamic_include	./lib/dsstats.php:967			include_once($config['base_path'] . '/lib/rrd.php');
 dynamic_include	./lib/export.php:465		include_once($config['library_path'] . '/vdef.php');
 dynamic_include	./lib/functions.php:421		include_once($config['base_path'] . '/lib/poller.php');
-dynamic_include	./lib/functions.php:4812		include_once($config['base_path'] . '/include/global_session.php');
-dynamic_include	./lib/functions.php:4815			include_once($config['base_path'] . '/include/bottom_footer.php');
-dynamic_include	./lib/functions.php:4840			include_once($config['base_path'] . '/include/top_header.php');
-dynamic_include	./lib/functions.php:4847			include_once($config['base_path'] . '/include/top_graph_header.php');
-dynamic_include	./lib/functions.php:4854			include_once($config['base_path'] . '/include/top_general_header.php');
-dynamic_include	./lib/functions.php:5016		require_once($config['include_path'] . '/vendor/phpmailer/src/Exception.php');
-dynamic_include	./lib/functions.php:5017		require_once($config['include_path'] . '/vendor/phpmailer/src/PHPMailer.php');
-dynamic_include	./lib/functions.php:5018		require_once($config['include_path'] . '/vendor/phpmailer/src/SMTP.php');
-dynamic_include	./lib/functions.php:5505	    require_once($config['include_path'] . '/vendor/phpmailer/src/Exception.php');
-dynamic_include	./lib/functions.php:5506	    require_once($config['include_path'] . '/vendor/phpmailer/src/PHPMailer.php');
-dynamic_include	./lib/functions.php:5507	    require_once($config['include_path'] . '/vendor/phpmailer/src/SMTP.php');
+dynamic_include	./lib/functions.php:4823		include_once($config['base_path'] . '/include/global_session.php');
+dynamic_include	./lib/functions.php:4826			include_once($config['base_path'] . '/include/bottom_footer.php');
+dynamic_include	./lib/functions.php:4851			include_once($config['base_path'] . '/include/top_header.php');
+dynamic_include	./lib/functions.php:4858			include_once($config['base_path'] . '/include/top_graph_header.php');
+dynamic_include	./lib/functions.php:4865			include_once($config['base_path'] . '/include/top_general_header.php');
+dynamic_include	./lib/functions.php:5027		require_once($config['include_path'] . '/vendor/phpmailer/src/Exception.php');
+dynamic_include	./lib/functions.php:5028		require_once($config['include_path'] . '/vendor/phpmailer/src/PHPMailer.php');
+dynamic_include	./lib/functions.php:5029		require_once($config['include_path'] . '/vendor/phpmailer/src/SMTP.php');
+dynamic_include	./lib/functions.php:5516	    require_once($config['include_path'] . '/vendor/phpmailer/src/Exception.php');
+dynamic_include	./lib/functions.php:5517	    require_once($config['include_path'] . '/vendor/phpmailer/src/PHPMailer.php');
+dynamic_include	./lib/functions.php:5518	    require_once($config['include_path'] . '/vendor/phpmailer/src/SMTP.php');
 dynamic_include	./lib/graph_variables.php:65		include_once($config['library_path'] . '/rrd.php');
 dynamic_include	./lib/html.php:1243		include($config['include_path'] . '/global_arrays.php');
 dynamic_include	./lib/html_tree.php:479		include_once($config['base_path'] . '/lib/data_query.php');
@@ -440,7 +440,7 @@ dynamic_include	./lib/utility.php:128		include_once($config['library_path'] . '/
 dynamic_include	./lib/utility.php:181		include_once($config['library_path'] . '/data_query.php');
 dynamic_include	./lib/utility.php:182		include_once($config['library_path'] . '/api_poller.php');
 dynamic_include	./lib/utility.php:46		include_once($config['library_path'] . '/api_data_source.php');
-dynamic_include	./lib/utility.php:823		include_once($config['library_path'] . '/api_data_source.php');
+dynamic_include	./lib/utility.php:837		include_once($config['library_path'] . '/api_data_source.php');
 dynamic_include	./link.php:73					include_once($file);
 dynamic_include	./poller.php:1042	    include_once($config['base_path'] . '/lib/poller.php');
 dynamic_include	./poller.php:1193	    include_once($config['base_path'] . '/lib/poller.php');
