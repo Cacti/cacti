@@ -980,30 +980,65 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 		}
 	}
 
-	/* Derive the poller for the buffer flush. push_out_host() is documented
-	 * as single-host scoped, but it accepts $host_id = 0 with a non-zero
-	 * $local_data_id (the data_sources.php save_component_data_source path
-	 * uses that signature). When $host_id is 0, looking up host.poller_id
-	 * by id=0 returns null and the flush ends up writing to poller_id 0,
-	 * which never matches a real poller and silently strands the rows. */
+	/* Flush the buffer. push_out_host() is documented as single-host
+	 * scoped, but accepts $host_id = 0 with either a non-zero
+	 * $local_data_id (data_sources.php save_component_data_source path)
+	 * or a $data_template_id (template-wide push). The host-scoped
+	 * branch knows its poller from $host_id; the host_id=0 branch may
+	 * collect data sources spanning multiple pollers, so group by
+	 * poller_id and flush each group separately. The pre-fix code did
+	 * a single SELECT poller_id WHERE id=$host_id which returned NULL
+	 * for $host_id=0 and silently flushed every collected row to
+	 * poller 0. */
 	if ($host_id > 0) {
 		$poller_id = db_fetch_cell_prepared('SELECT poller_id
 			FROM host
 			WHERE id = ?',
 			array($host_id));
+
+		if (cacti_sizeof($local_data_ids)) {
+			poller_update_poller_cache_from_buffer($local_data_ids, $poller_items, $poller_id);
+		}
 	} elseif (cacti_sizeof($local_data_ids)) {
-		$poller_id = db_fetch_cell_prepared('SELECT h.poller_id
-			FROM host AS h
-			INNER JOIN data_local AS dl
+		/* Map each local_data_id to its host's poller. */
+		$safe_ids = array_map('intval', $local_data_ids);
+		$rows     = db_fetch_assoc('SELECT dl.id AS local_data_id, h.poller_id
+			FROM data_local AS dl
+			INNER JOIN host AS h
 			ON h.id = dl.host_id
-			WHERE dl.id = ?',
-			array($local_data_ids[0]));
+			WHERE dl.id IN (' . implode(',', $safe_ids) . ')');
+
+		$ids_by_poller = array();
+		foreach ($rows as $row) {
+			$ids_by_poller[$row['poller_id']][(int) $row['local_data_id']] = true;
+		}
+
+		/* Group $poller_items by their leading local_data_id column.
+		 * api_poller_cache_item_add() emits each entry as a SQL VALUES
+		 * tuple starting with `($local_data_id, ...)`. */
+		$items_by_poller = array();
+		foreach ($poller_items as $item) {
+			if (!preg_match('/^\((\d+),/', $item, $m)) {
+				continue;
+			}
+			$ldid = (int) $m[1];
+			foreach ($ids_by_poller as $pid => $ldid_set) {
+				if (isset($ldid_set[$ldid])) {
+					$items_by_poller[$pid][] = $item;
+					break;
+				}
+			}
+		}
+
+		foreach ($ids_by_poller as $pid => $ldid_set) {
+			$pid_local_data_ids = array_keys($ldid_set);
+			$pid_items          = isset($items_by_poller[$pid]) ? $items_by_poller[$pid] : array();
+			poller_update_poller_cache_from_buffer($pid_local_data_ids, $pid_items, $pid);
+		}
+
+		$poller_id = cacti_sizeof($ids_by_poller) === 1 ? array_key_first($ids_by_poller) : 1;
 	} else {
 		$poller_id = 1;
-	}
-
-	if (cacti_sizeof($local_data_ids)) {
-		poller_update_poller_cache_from_buffer($local_data_ids, $poller_items, $poller_id);
 	}
 
 	/**

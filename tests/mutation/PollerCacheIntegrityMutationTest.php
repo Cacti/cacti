@@ -98,10 +98,42 @@ test('push_out_host derives poller_id from data_local when host_id is 0 (Mutatio
 	expect($body)->not->toBe('');
 
 	/* The fix: an `elseif (cacti_sizeof($local_data_ids))` clause that
-	 * runs a JOIN against data_local. Pin both halves. */
+	 * looks up each local_data_id's poller via JOIN against data_local
+	 * and host. Pin the JOIN shape and the local_data_ids consumer. */
 	expect($body)->toContain('elseif (cacti_sizeof($local_data_ids))');
 	expect($body)->toContain('INNER JOIN data_local AS dl');
-	expect($body)->toContain('array($local_data_ids[0])');
+	expect($body)->toContain('INNER JOIN host AS h');
+});
+
+test('push_out_host groups host_id=0 batches by poller before flush (Mutation Protection)', function () use ($utilitySource) {
+	/* When push_out_host is called with $host_id = 0 and $local_data_ids
+	 * span multiple pollers (e.g. a $data_template_id push that touches
+	 * data sources on different remote pollers), the buffer must flush
+	 * per-poller. A mutation that reintroduces a single
+	 * poller_update_poller_cache_from_buffer call would write/delete
+	 * later pollers' rows under the first poller's id. */
+	$body = _mut_pcache_extract($utilitySource, 'push_out_host');
+
+	/* The grouping shape: an $ids_by_poller map keyed by poller_id. */
+	expect($body)->toContain('$ids_by_poller');
+	expect($body)->toContain('$items_by_poller');
+
+	/* The flush must iterate per poller, not call the buffer flush
+	 * once with all local_data_ids. */
+	expect($body)->toContain('foreach ($ids_by_poller as $pid => $ldid_set)');
+	expect($body)->toContain('poller_update_poller_cache_from_buffer($pid_local_data_ids, $pid_items, $pid);');
+});
+
+test('push_out_host parses leading local_data_id from poller_items (Mutation Protection)', function () use ($utilitySource) {
+	/* poller_items entries are SQL VALUES tuples emitted by
+	 * api_poller_cache_item_add() that begin with `($local_data_id, ...)`.
+	 * The grouping logic relies on that shape; if a future refactor of
+	 * api_poller_cache_item_add changes the leading column, this test
+	 * fires and forces a coupled update. */
+	$body = _mut_pcache_extract($utilitySource, 'push_out_host');
+	/* Loose match: the regex shape may evolve, but the leading-digit
+	 * extraction must remain. */
+	expect(preg_match('/preg_match\([\'"]\/\^\\\\\(\(\\\\d\+\),/', $body))->toBe(1);
 });
 
 test('push_out_host PCACHE change log uses $old_data not $old_value (Mutation Protection)', function () use ($utilitySource) {
