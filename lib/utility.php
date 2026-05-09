@@ -600,14 +600,20 @@ function push_out_data_input_method($data_input_id) {
 	if (cacti_sizeof($data_sources)) {
 		$prev_poller = -1;
 		foreach ($data_sources as $data_source) {
+			/* Flush the previous poller's buffer when crossing a poller
+			 * boundary, then ALWAYS append the current data source. The
+			 * previous shape put the append in an `else` branch, so the
+			 * first data source for every non-first poller was dropped:
+			 * it never made it into the new buffer and never got
+			 * rebuilt. */
 			if ($prev_poller > 0 && $data_source['poller_id'] != $prev_poller) {
 				poller_update_poller_cache_from_buffer($_my_local_data_ids, $poller_items, $prev_poller);
 				$_my_local_data_ids = array();
 				$poller_items = array();
-			} else {
-				$_my_local_data_ids[] = $data_source['id'];
-				$poller_items = array_merge($poller_items, update_poller_cache($data_source));
 			}
+
+			$_my_local_data_ids[] = $data_source['id'];
+			$poller_items = array_merge($poller_items, update_poller_cache($data_source));
 
 			$prev_poller = $data_source['poller_id'];
 		}
