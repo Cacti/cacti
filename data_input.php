@@ -912,7 +912,7 @@ function data() {
 			form_selectable_cell($disabled ? __('No'):__('Yes'), $data_input['id'], '', 'right');
 			form_selectable_cell(number_format_i18n($data_input['data_sources'], '-1'), $data_input['id'],'', 'right');
 			form_selectable_cell(number_format_i18n($data_input['templates'], '-1'), $data_input['id'],'', 'right');
-			form_selectable_cell($input_types[$data_input['type_id']], $data_input['id'], '', 'right');
+			form_selectable_cell($input_types[$data_input['type_id']] ?? __('Unknown'), $data_input['id'], '', 'right');
 			form_checkbox_cell($data_input['name'], $data_input['id'], $disabled);
 			form_end_row();
 		}
