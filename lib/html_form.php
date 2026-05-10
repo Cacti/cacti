@@ -628,7 +628,7 @@ function form_file($form_name, $form_size = 30, $form_accept = '') {
  * @param mixed  $current_id - used to determine if a current value for this form element
  *   exists or not. An empty $current_id indicates that no current value exists,
  *   a non-zero value indicates that a current value does exist
- * @param bool   $data - array containing 'text' element for display and if 'error' element present, shows failure
+ * @param mixed  $data - array containing 'text' element for display and if 'error' element present, shows failure
  *
  * @return void
  */
