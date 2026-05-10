@@ -4,19 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr ""
-"Project-Id-Version: Cacti 1.2.20\n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-04-28 10:15-0400\n"
-"PO-Revision-Date: 2024-10-17 16:22+0000\n"
-"Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
-"Language-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\n"
-"Language: lv-LV\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\n"
-"X-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-04-28 10:15-0400\nPO-Revision-Date: 2026-05-10 08:18+0000\nLast-Translator: \"Coool (github.com/Coool)\" <coool@mail.lv>\nLanguage-Team: Latvian <https://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php:29 include/global_arrays.php:2638 lib/html.php:2563
 msgid "About Cacti"
@@ -960,10 +948,8 @@ msgid "You do not have access to any area of Cacti.  Contact your administrator.
 msgstr "Jums nav piekļuves nevienai Cacti sadaļai.  Sazinieties ar savu Cacti administratoru."
 
 #: auth_login.php:219
-#, fuzzy
-#| msgid "Access Denied!  User account disabled."
 msgid "Access Denied! User account locked."
-msgstr "Pieeja noliegta!  Lietotāja konts ir atspējots."
+msgstr "Piekļuve liegta! Lietotāja konts bloķēts."
 
 #: auth_login.php:301 lib/html_tree.php:164
 msgid "Login to Cacti"
@@ -1273,11 +1259,11 @@ msgstr "Atiestatīt laukus uz to noklusējuma vērtībām"
 #: automation_devices.php:516 color.php:570 host.php:1674
 #: lib/html_form.php:1345
 msgid "Export"
-msgstr "Eksportēt"
+msgstr "Izgūt"
 
 #: automation_devices.php:516
 msgid "Export to a file"
-msgstr "Eksportēt uz failu"
+msgstr "Izgūt datnē"
 
 #: automation_devices.php:517 data_debug.php:1053 lib/clog_webapi.php:223
 #: lib/clog_webapi.php:535 managers.php:749
@@ -2627,9 +2613,9 @@ msgstr "Nosaukuma formāts:"
 #: cdef.php:287
 msgid "Duplicate CDEF"
 msgid_plural "Duplicate CDEFs"
-msgstr[0] "CDEF dublikāts"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Dublēt CDEF vienumus"
+msgstr[1] "Dublēt CDEF vienumu"
+msgstr[2] "Dublēt CDEF vienumus"
 
 #: cdef.php:336
 msgid "Click 'Continue' to delete the following CDEF Item."
@@ -2753,11 +2739,11 @@ msgstr "Cacti importēja sekojošus elementus:"
 
 #: color.php:366 color.php:569
 msgid "Import Colors"
-msgstr "Importēt krāsas"
+msgstr "Ievietot krāsas"
 
 #: color.php:369
 msgid "Import Colors from Local File"
-msgstr "Importēt krāsas no vietējā faila"
+msgstr "Ievietot krāsas no vietējās datnes"
 
 #: color.php:370
 msgid "Please specify the location of the CSV file containing your Color information."
@@ -2773,7 +2759,7 @@ msgstr "Pārrakstīt esošos datus?"
 
 #: color.php:382
 msgid "Should the import process be allowed to overwrite existing data?  Please note, this does not mean delete old rows, only update duplicate rows."
-msgstr "Vai importēšanas procesā ir jāļauj pārrakstīt esošos datus? Lūdzu, ņemiet vērā, ka tas nenozīmē dzēst vecās rindas, tikai atjaunināt dublētās rindas."
+msgstr "Vai ievietošanas procesam vajadzētu ļaut pārrakstīt esošos datus?  Lūdzu, ņemiet vērā, ka tas nenozīmē dzēst vecās rindas, tikai atjaunināt dublētās rindas."
 
 #: color.php:385
 msgid "Allow Existing Rows to be Updated?"
@@ -2815,11 +2801,11 @@ msgstr "Ar nosaukumu Krāsas"
 
 #: color.php:569 lib/html_form.php:1343
 msgid "Import"
-msgstr "Importēt"
+msgstr "Ievietot"
 
 #: color.php:570
 msgid "Export Colors"
-msgstr "Eksportēt krāsas"
+msgstr "Izgūt krāsas"
 
 #: color.php:699 color_templates.php:75
 msgid "Hex"
@@ -4014,9 +4000,9 @@ msgstr[2] ""
 #: data_sources.php:517
 msgid "The following graph is using these data sources:"
 msgid_plural "The following graphs are using these data sources:"
-msgstr[0] "Šajā diagrammā tiek izmantoti šie datu avoti:"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Sekojošie grafiki izmanto šos datu avotus:"
+msgstr[1] "Sekojošais grafiks izmanto šos datu avotus:"
+msgstr[2] "Sekojošie grafiki izmanto šos datu avotus:"
 
 #: data_sources.php:526
 msgid "Leave the <strong>Graph</strong> untouched."
@@ -4243,7 +4229,7 @@ msgstr "Datu avoti [nav balstīti uz ierīci]"
 #: data_sources.php:1370
 #, php-format
 msgid "Data Sources [ %s ]"
-msgstr "Datu avoti [%s]"
+msgstr "Datu avoti [ %s ]"
 
 #: data_sources.php:1443
 msgid "Bad Indexes"
@@ -4540,7 +4526,7 @@ msgstr "Grafika informācija, tālummaiņas un atkļūdošanas utilītas"
 
 #: graph.php:147
 msgid "CSV Export"
-msgstr "CSV eksportēšana"
+msgstr "CSV izgūšana"
 
 #: graph.php:151 graph.php:424 lib/html.php:538
 msgid "Edit Graph Template"
@@ -4689,10 +4675,8 @@ msgid "No Inputs"
 msgstr "Nav ievades"
 
 #: graph_templates.php:561
-#, fuzzy
-#| msgid "No Graph Templates Found"
 msgid "Graph Template not found."
-msgstr "Netika atrasta neviena diagramma veidne"
+msgstr "Grafika veidne nav atrasta."
 
 #: graph_templates.php:574
 #, php-format
@@ -4748,7 +4732,7 @@ msgstr "Vertikālā etiķete iegūtajiem grafikiem."
 
 #: graph_templates.php:911
 msgid "No Graph Templates Found"
-msgstr "Netika atrasta neviena diagramma veidne"
+msgstr "Nav atrasta neviena grafika veidne"
 
 #: graph_templates_inputs.php:148
 #, php-format
@@ -4878,7 +4862,7 @@ msgstr "Avota nosaukums"
 
 #: graph_view.php:811 graphs.php:2260
 msgid "The Graph Template or Data Query that this Graph was based upon."
-msgstr "Diagrammas veidne vai datu vaicājums, uz kura balstījās šī diagramma."
+msgstr "Grafika veidne vai datu vaicājums, uz kuru balstījās šīs grafiks."
 
 #: graph_view.php:816 graph_view.php:829 graphs.php:2266
 msgid "The size of this Graph when not in Preview mode."
@@ -5096,7 +5080,7 @@ msgstr "Grafika elementi [labot: %s]"
 #: graphs.php:1482
 #, php-format
 msgid "Graph [edit: %s]"
-msgstr "Diagramma [labot: %s]"
+msgstr "Grafiks [rediģēt: %s]"
 
 #: graphs.php:1488
 msgid "Graph [new]"
@@ -5125,7 +5109,7 @@ msgstr "Atbloķēt grafiku."
 
 #: graphs.php:1556
 msgid "Lock Graph."
-msgstr "Bloķēšanas diagramma."
+msgstr "Bloķēt grafiku."
 
 #: graphs.php:1585
 msgid "Selected Graph Template"
@@ -5538,7 +5522,7 @@ msgstr "Tiek attēlots grafiks"
 
 #: host.php:838
 msgid "Not Being Graphed"
-msgstr "Netiek attēlots diagrammā"
+msgstr "Netiek zīmēts"
 
 #: host.php:841
 msgid "Delete Graph Template Association"
@@ -5667,7 +5651,7 @@ msgstr "Atrašanās vieta"
 
 #: host.php:1674
 msgid "Export Devices"
-msgstr "Eksportēt ierīces"
+msgstr "Izgūt ierīces"
 
 #: host.php:1695 lib/api_automation.php:171 lib/api_automation.php:1102
 msgid "Not Up"
@@ -5939,7 +5923,7 @@ msgstr "Pašlaik notiek uzstādīšana vai atjaunināšana."
 
 #: include/global.php:568
 msgid "The Main Data Collector has returned to an Online Status"
-msgstr "Galvenais datu apkopotājs atgriezies tiešsaistē"
+msgstr "Galvenais datu apkopotājs atkal ir tiešsaistē"
 
 #: include/global.php:572
 msgid "The Main Data Collector has gone to an Offline or Recovering Status"
@@ -6031,7 +6015,7 @@ msgstr "Lietotāja dzēšana nav atļauta noteiktai veidnei vai vieslietotājam.
 
 #: include/global_arrays.php:214
 msgid "User delete not permitted for designated graph export user."
-msgstr "Lietotāja dzēšana nav atļauta norādītajam diagrammas eksportēšanas lietotājam."
+msgstr "Lietotāja dzēšana nav atļauta norādītajam diagrammas izgūšanas lietotājam."
 
 #: include/global_arrays.php:217
 msgid "Data Template includes deleted Data Source Profile.  Please resave the Data Template with an existing Data Source Profile."
@@ -6051,19 +6035,19 @@ msgstr "Diagrammas veidnē ir dzēsta datu ievades metode. Lūdzu, palaidiet dat
 
 #: include/global_arrays.php:229
 msgid "Data Template not found during Export.  Please run database repair script to identify."
-msgstr "Eksportēšanas laikā datu veidne netika atrasta. Lūdzu, palaidiet datu bāzes labošanas skriptu, lai identificētu."
+msgstr "Izgūšanas laikā netika atrasta neviena datu veidne.  Lūdzu, palaidiet datubāzes labošanas skriptu, lai identificētu."
 
 #: include/global_arrays.php:232
 msgid "Device Template not found during Export.  Please run database repair script to identify."
-msgstr "Eksportēšanas laikā ierīces veidne netika atrasta. Lūdzu, palaidiet datu bāzes labošanas skriptu, lai identificētu."
+msgstr "Izgūšanas laikā netika atrasta neviena ierīces veidne.  Lūdzu, palaidiet datubāzes labošanas skriptu, lai identificētu."
 
 #: include/global_arrays.php:235
 msgid "Data Query not found during Export.  Please run database repair script to identify."
-msgstr "Eksportēšanas laikā datu vaicājums netika atrasts. Lūdzu, palaidiet datu bāzes labošanas skriptu, lai identificētu."
+msgstr "Izgūšanas laikā netika atrasts neviens datu vaicājums.  Lūdzu, palaidiet datubāzes labošanas skriptu, lai identificētu."
 
 #: include/global_arrays.php:238
 msgid "Graph Template not found during Export.  Please run database repair script to identify."
-msgstr "Eksportēšanas laikā diagrammas veidne netika atrasta. Lūdzu, palaidiet datu bāzes labošanas skriptu, lai identificētu."
+msgstr "Izgūšanas laikā netika atrasta neviena diagrammas veidne.  Lūdzu, palaidiet datubāzes labošanas skriptu, lai identificētu."
 
 #: include/global_arrays.php:241
 msgid "Graph not found.  Either it has been deleted or your database needs repair."
@@ -6833,21 +6817,21 @@ msgstr "VDEF"
 
 #: include/global_arrays.php:1037 include/global_arrays.php:1081
 msgid "Import/Export"
-msgstr "Importēt/Eksportēt"
+msgstr "Ievietot/Izgūt"
 
 #: include/global_arrays.php:1038 include/global_arrays.php:1253
 #: include/global_arrays.php:2662
 msgid "Import Templates"
-msgstr "Importēt veidnes"
+msgstr "Ievietot veidnes"
 
 #: include/global_arrays.php:1039 include/global_arrays.php:2668
 msgid "Import Packages"
-msgstr "Importēt pakotnes"
+msgstr "Ievietot pakotnes"
 
 #: include/global_arrays.php:1040 include/global_arrays.php:1252
 #: include/global_arrays.php:2650 templates_export.php:159
 msgid "Export Templates"
-msgstr "Eksportēt veidnes"
+msgstr "Izgūt veidnes"
 
 #: include/global_arrays.php:1042 include/global_arrays.php:1064
 #: include/global_arrays.php:1082 lib/plugins.php:1284
@@ -7441,7 +7425,7 @@ msgstr "Diena(s)"
 
 #: include/global_arrays.php:1714
 msgid "Week(s)"
-msgstr "Nedēļa (as)"
+msgstr "Nedēļa(s)"
 
 #: include/global_arrays.php:1715
 msgid "Month(s), Day of Month"
@@ -7553,7 +7537,7 @@ msgstr "nebeidzas ar"
 
 #: include/global_arrays.php:1760
 msgid "matches"
-msgstr "sērkociņi"
+msgstr "atbilst"
 
 #: include/global_arrays.php:1761
 msgid "is not equal to"
@@ -8016,7 +8000,7 @@ msgstr "Kaktusu mājas"
 
 #: include/global_arrays.php:2656
 msgid "Export Results"
-msgstr "Eksportēšanas rezultāti"
+msgstr "Izgūt rezultātus"
 
 #: include/global_arrays.php:2674 include/global_arrays.php:2704
 #: lib/html.php:1787 lib/html.php:1789 lib/html.php:1868
@@ -8733,6 +8717,7 @@ msgid "When you setup the right axis labeling, apply a rule to the data format. 
 msgstr "Iestatot labās ass marķējumu, piemērojiet kārtulu datu formātam. Atbalstītie formāti ietver \"ciparu\", kur dati tiek apstrādāti kā skaitļi, \"laikspiedols\", kur vērtības tiek interpretētas kā UNIX laikspiedoli (sekunžu skaits kopš 1970. gada janvāra) un izteiktas, izmantojot strftime formātu (noklusējums ir \"%Y-%m-%d %H\". :%JAUNKUNDZE\"). Skatiet arī --units-length un --right-axis-format. Visbeidzot \"ilgums\", kur vērtības tiek interpretētas kā ilgums milisekundēs. Formatēšana notiek saskaņā ar valstrfduration qualified PRINT/GPRINT noteikumiem."
 
 #: include/global_form.php:906
+#, fuzzy
 msgid "Left Axis Formatter (--left-axis-formatter &lt;formatname&gt;)"
 msgstr "Left Axis Formatter (--left-axis-formatter &lt;formatname&gt;)"
 
@@ -8761,6 +8746,7 @@ msgid "Draw line markers as a line."
 msgstr "Zīmējiet līniju marķierus kā līniju."
 
 #: include/global_form.php:931
+#, fuzzy
 msgid "Force Rules Legend (--force-rules-legend)"
 msgstr "Force Rules Legend (--force-rules-legend)"
 
@@ -9174,7 +9160,7 @@ msgstr "Izmanto tikai tad, ja ir iespējota LDAP vai Web pamata autentifikācija
 
 #: include/global_form.php:1684
 msgid "Import Template from Local File"
-msgstr "Importēt veidni no vietējā faila"
+msgstr "Ievietot veidni no vietējās datnes"
 
 #: include/global_form.php:1685
 msgid "If the XML file containing template data is located on your local machine, select it here."
@@ -9872,7 +9858,7 @@ msgstr "Citi iestatījumi"
 
 #: include/global_settings.php:401
 msgid "Show only site specific locations"
-msgstr "Šeit iestatiet visas diagrammai specifiskās opcijas."
+msgstr "Rādīt tikai vietai specifiskas atrašanās vietas"
 
 #: include/global_settings.php:402
 msgid "Show only locations that are available at a devices selected site."
@@ -10007,10 +9993,8 @@ msgid "When checked, any attempts to access Cacti will be redirected to HTTPS to
 msgstr "Ja atzīmēta, visi mēģinājumi piekļūt Cacti tiks novirzīti uz HTTPS, lai nodrošinātu augstu drošību."
 
 #: include/global_settings.php:501
-#, fuzzy
-#| msgid "Remote Data Collector Status:"
 msgid "Allow Unsafe Remote Data Collector HTTPS"
-msgstr "Attālā datu savācēja statuss:"
+msgstr "Atļaut nedrošo attālā datu savācēja HTTPS"
 
 #: include/global_settings.php:502
 msgid "Allow the use of Self Signed Certificates and allow the hostname of the Certificate to differ from that of the Remote Data Collector."
@@ -10507,7 +10491,7 @@ msgstr "Kad opcija ir atzīmēta, lietotāji varēs iestatīt kaktusus reāllaik
 
 #: include/global_settings.php:1011
 msgid "This timespan you wish to see on the default graph."
-msgstr "Šo laika posmu vēlaties redzēt noklusējuma diagrammā."
+msgstr "Šo laika posmu vēlaties redzēt noklusējuma grafikā."
 
 #: include/global_settings.php:1017
 msgid "Minimum Refresh Interval"
@@ -12690,7 +12674,7 @@ msgstr "Darbības laiks:"
 
 #: lib/api_device.php:1605
 msgid "Hostname:"
-msgstr "Resursdatora nosaukums: "
+msgstr "Resursdatora nosaukums:"
 
 #: lib/api_device.php:1606
 msgid "Location:"
@@ -12982,7 +12966,7 @@ msgstr "Vecākais pirmais"
 
 #: lib/clog_webapi.php:612
 msgid "Matches"
-msgstr "sērkociņi"
+msgstr "atbilst"
 
 #: lib/clog_webapi.php:613
 msgid "Does Not Match"
@@ -13696,7 +13680,7 @@ msgstr "Datu vaicājums:"
 
 #: lib/html.php:521
 msgid "CSV Export of Graph Data"
-msgstr "Grafika datu CSV eksportēšana"
+msgstr "Diagrammas datu izgūšana CSV formātā"
 
 #: lib/html.php:522 lib/html.php:2520
 msgid "Time Graph View"
@@ -13788,14 +13772,17 @@ msgid "Float Range"
 msgstr "Float diapazons"
 
 #: lib/html.php:2353
+#, fuzzy
 msgid "Dry Run StdDev"
 msgstr "Dry Run StdDev"
 
 #: lib/html.php:2354
+#, fuzzy
 msgid "Dry Run Gap Fill Range"
 msgstr "Dry Run Gap Fill Range"
 
 #: lib/html.php:2355
+#, fuzzy
 msgid "Dry Run Float Range"
 msgstr "Dry Run Float Range"
 
@@ -14276,7 +14263,7 @@ msgstr "Izveidot %s diagrammas no %s"
 #: lib/html_graph.php:577
 #, php-format
 msgid "Graph [Template: %s]"
-msgstr "Diagramma [Veidne: %s]"
+msgstr "Grafiks [Veidne: %s]"
 
 #: lib/html_graph.php:579
 #, php-format
@@ -14646,7 +14633,7 @@ msgstr "Elementa detalizēta informācija"
 #: lib/html_reports.php:1675
 #, php-format
 msgid "Graph: %s"
-msgstr "Diagramma: %s"
+msgstr "Grafiks: %s"
 
 #: lib/html_reports.php:1678 lib/html_reports.php:1704
 #: lib/html_reports.php:1717 lib/html_reports.php:1718
@@ -14887,11 +14874,11 @@ msgstr "Nezināms lauks"
 
 #: lib/import.php:2631
 msgid "Import Preview Results"
-msgstr "Importēt priekšskatījuma rezultātus"
+msgstr "Ievietot priekšskatījuma rezultātus"
 
 #: lib/import.php:2631
 msgid "Import Results"
-msgstr "Importēt rezultātus"
+msgstr "Ievietot rezultātus"
 
 #: lib/import.php:2635
 msgid "Cacti would make the following changes if the Package was imported:"
@@ -14927,7 +14914,7 @@ msgstr "[neizdevās]"
 
 #: lib/import.php:2670
 msgid "[preview]"
-msgstr "[priekšskatījums] "
+msgstr "[priekšskatījums]"
 
 #: lib/import.php:2674
 msgid "[updated]"
@@ -15783,17 +15770,17 @@ msgstr "Atrastas %s instalējamās veidnes"
 #: lib/installer.php:3090
 #, php-format
 msgid "About to import Package #%s '%s'."
-msgstr "Tiks importēta pakotne Nr. %s \"%s\"."
+msgstr "Tūlīt tiks importēta #%s '%s' pakotne."
 
 #: lib/installer.php:3099
 #, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' succeeded"
-msgstr "Pakotnes Nr. %s '%s' importēšana zem profila '%s' izdevās"
+msgstr "#%s '%s' pakotnes ievietošana '%s' profilā izdevās"
 
 #: lib/installer.php:3105
 #, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' failed"
-msgstr "Pakotnes Nr. %s “%s” importēšana profilā “%s” neizdevās"
+msgstr "#%s '%s' pakotnes ievietošana '%s' profilā neizdevās"
 
 #: lib/installer.php:3120
 #, php-format
@@ -15802,7 +15789,7 @@ msgstr "Kartēšanas automatizācijas veidne ierīces veidnei “%s”"
 
 #: lib/installer.php:3137
 msgid "No templates were selected for import"
-msgstr "Importēšanai netika atlasīta neviena veidne"
+msgstr "Ievietošanai netika atlasīta neviena veidne"
 
 #: lib/installer.php:3146
 msgid "Updating remote configuration file"
@@ -15875,7 +15862,7 @@ msgstr "Ierīces pievienošana noklusējuma kokam"
 
 #: lib/installer.php:3327
 msgid "No templated graphs for Default Device were found"
-msgstr "Netika atrasta neviena veidnes diagramma noklusējuma ierīcei"
+msgstr "Netika atrasts neviens no veidnes veidots grafiks noklusējuma ierīcei"
 
 #: lib/installer.php:3331
 msgid "WARNING: Device Template for your Operating System Not Found.  You will need to import Device Templates or Cacti Packages to monitor your Cacti server."
@@ -16130,10 +16117,9 @@ msgid "TCP Ping Failed: socket_connect(), reason: %s"
 msgstr "TCP ping: socket_connect(), iemesls: %s"
 
 #: lib/ping.php:580
-#, fuzzy, php-format
-#| msgid "TCP ping: socket_select() failed, reason: %s"
+#, php-format
 msgid "TCP Ping Failed: socket_select() failed, reason: %s"
-msgstr "TCP ping: socket_select() neizdevās, iemesls: %s"
+msgstr "TCP ehotests neizdevās: socket_select() neizdevās, iemesls: %s"
 
 #: lib/ping.php:595
 #, php-format
@@ -16325,7 +16311,7 @@ msgstr "Esošajā Cacti RRD failā trūkst '%s' RRA"
 #: lib/rrd.php:3189
 #, php-format
 msgid "RRA '%s' missing in Cacti definition"
-msgstr "Kaktusu definīcijā trūkst RRA “%s”."
+msgstr "Cacti definīcijā trūkst RRA '%s'"
 
 #: lib/rrd.php:3210
 msgid "RRD File Information"
@@ -16453,10 +16439,9 @@ msgid "FATAL: You must specify an RRDfile!"
 msgstr ""
 
 #: lib/spikekill.php:189
-#, fuzzy, php-format
-#| msgid "XML: Cacti version does not exist."
+#, php-format
 msgid "FATAL: File '%s' does not exist."
-msgstr "XML: Cacti versija nepastāv."
+msgstr "LETĀLS: '%s' datne neeksistē."
 
 #: lib/spikekill.php:191
 #, php-format
@@ -16565,7 +16550,7 @@ msgstr ""
 #, fuzzy, php-format
 #| msgid "Standard Deviations"
 msgid "Standard Devs: %s"
-msgstr "Standarta novirzes"
+msgstr "Standarta novirzes: %s"
 
 #: lib/spikekill.php:368
 msgid "Variance %%%:    %s %%%"
@@ -16652,16 +16637,12 @@ msgid "NOTE: Backing Up '%s' to '%s/%s'"
 msgstr ""
 
 #: lib/spikekill.php:1040
-#, fuzzy
-#| msgid "Avg:"
 msgid "Avg"
-msgstr "Vid.:"
+msgstr "Vid."
 
 #: lib/spikekill.php:1040
-#, fuzzy
-#| msgid "CDEF"
 msgid "CF"
-msgstr "CDEF"
+msgstr "CF"
 
 #: lib/spikekill.php:1040
 #, fuzzy
@@ -16693,7 +16674,7 @@ msgstr "Vērtība"
 #, fuzzy
 #| msgid "Dry Run StdDev"
 msgid "MinStdDev"
-msgstr "Dry Run StdDev"
+msgstr "MinStdDev"
 
 #: lib/spikekill.php:1041
 #, fuzzy
@@ -16737,12 +16718,12 @@ msgstr "KĻŪDA: baltā saraksta validācija neizdevās. Pārbaudiet datu ievade
 #: lib/template.php:2159
 #, php-format
 msgid "Graph Not created for %s due to bad data"
-msgstr "Diagramma %s nav izveidota nepareizu datu dēļ"
+msgstr "Grafiks %s nav izveidots sliktu datu dēļ"
 
 #: lib/template.php:2188
 #, php-format
 msgid "NOTE: Graph not added for Data Query %s and index %s due to Data Source verification failure"
-msgstr "PIEZĪME. Diagramma nav pievienota datu vaicājumam %s un indeksam %s datu avota pārbaudes kļūmes dēļ"
+msgstr "PIEZĪME: Grafiks nav pievienots %s datu vaicājumam un %s indeksam datu avota pārbaudes kļūmes dēļ"
 
 #: lib/utility.php:1111
 msgid "MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions to choose. Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability."
@@ -17281,7 +17262,7 @@ msgstr "%s pakotne veiksmīgi importēta"
 #: package_import.php:244
 #, php-format
 msgid "The Package %s Import Failed"
-msgstr "%s pakotni neizdevās importēt"
+msgstr "Neizdevās ievietot %s pakotni"
 
 #: package_import.php:318
 #, fuzzy
@@ -17385,11 +17366,11 @@ msgstr "Failu atšķirības: "
 
 #: package_import.php:864
 msgid "Local Package Import File"
-msgstr "Pakešu faili"
+msgstr "Vietējās pakotnes ievietošanas datne"
 
 #: package_import.php:865
 msgid "The *.xml.gz file located on your Local machine to Upload and Import."
-msgstr "*.xml.gz fails, kas atrodas uz jūsu datora, ko augšupielādēt un importēt."
+msgstr "*.xml.gz datne, kas atrodas uz jūsu datora, ko augšupielādēt un ievietot."
 
 #: package_import.php:870
 msgid "Automatically Trust Signer"
@@ -17405,7 +17386,7 @@ msgstr "Aizstāt datu avota un diagrammas veidnes ieteicamās vērtības ierakst
 
 #: package_import.php:979
 msgid "Package Import"
-msgstr "Pakotnes importēšana"
+msgstr "Pakotnes ievietošana"
 
 #: plugins.php:33 plugins.php:677
 msgid "Uninstall"
@@ -17631,10 +17612,9 @@ msgid "NOTE: A second Cacti data collector has been added.  Therefore, enabling 
 msgstr "PIEZĪME. Ir pievienots otrs Cacti datu savācējs. Tāpēc automātiska pastiprināšana!"
 
 #: poller_automation.php:53
-#, fuzzy, php-format
-#| msgid "WARNING: Main Cacti database offline or in recovery"
+#, php-format
 msgid "WARNING: Main Cacti database %s offline or in recovery"
-msgstr "BRĪDINĀJUMS: Galvenā kaktusu datubāze bezsaistē vai tiek atkopta"
+msgstr "BRĪDINĀJUMS: Galvenā Cacti %s datubāze bezsaistē vai tiek atkopta"
 
 #: poller_automation.php:977 poller_automation.php:1028
 msgid "Cacti Primary Admin"
@@ -18451,23 +18431,23 @@ msgstr "FATAL: Spike Kill nav atļauts"
 
 #: templates_export.php:68
 msgid "WARNING: Export Errors Encountered. Refresh Browser Window for Details!"
-msgstr "BRĪDINĀJUMS: radušās eksportēšanas kļūdas. Lai iegūtu sīkāku informāciju, atsvaidziniet pārlūkprogrammas logu!"
+msgstr "BRĪDINĀJUMS: Radušās izgūšanas kļūdas. Lai iegūtu plašāku informāciju, atsvaidziniet pārlūka logu!"
 
 #: templates_export.php:109
 msgid "What would you like to export?"
-msgstr "Ko jūs vēlētos eksportēt?"
+msgstr "Ko vēlaties izgūt?"
 
 #: templates_export.php:110
 msgid "Select the Template type that you wish to export from Cacti."
-msgstr "Atlasiet veidnes veidu, kuru vēlaties eksportēt no Cacti."
+msgstr "Atlasiet veidnes veidu, kuru vēlaties izgūt no Cacti."
 
 #: templates_export.php:120
 msgid "Device Template to Export"
-msgstr "Ierīces veidne eksportēšanai"
+msgstr "Ierīces veidne, kuru izgūt"
 
 #: templates_export.php:121
 msgid "Choose the Template to export to XML."
-msgstr "Izvēlieties veidni, ko eksportēt uz XML."
+msgstr "Atlasiet veidni, kuru izgūt XML formātā."
 
 #: templates_export.php:128
 msgid "Include Dependencies"
@@ -18504,7 +18484,7 @@ msgstr "Pieejamās veidnes [%s]"
 
 #: templates_import.php:120
 msgid "The Template Import Succeeded."
-msgstr "Veidnes importēšana izdevās."
+msgstr "Veidnes ievietošana izdevās."
 
 #: templates_import.php:145
 msgid "Error in Template"
@@ -18522,7 +18502,7 @@ msgstr "Veidnes XML faila \"%s\" validācija neizdevās"
 
 #: templates_import.php:217
 msgid "Import Files [ If Files are missing, locate and install before using ]"
-msgstr "Importēt failus [ Ja trūkst failu, pirms lietošanas atrodiet un instalējiet]"
+msgstr "Ievietot datnes [ Ja trūkst datņu, pirms lietošanas atrodiet un uzstādiet tos]"
 
 #: templates_import.php:221
 msgid "File Name"
@@ -18534,7 +18514,7 @@ msgstr "Nav Rakstāms"
 
 #: templates_import.php:253
 msgid "Import Templates [ None selected imports all, Check to import selectively ]"
-msgstr "Importēt veidnes [ Neviens atlasīts neimportē visu, atzīmējiet, lai importētu selektīvi ]"
+msgstr "Ievietot veidnes [ Nav nekas atlasīts, ievieto visas, atzīmējiet šo izvēles rūtiņu, lai ievietotu selektīvi ]"
 
 #: templates_import.php:266
 msgid "Dependencies"
@@ -18556,11 +18536,11 @@ msgstr "Neapmierināts: %d"
 
 #: templates_import.php:334
 msgid "Some CDEF Items will not import due to an export error! Contact Template provider for an updated export."
-msgstr "Daži CDEF vienumi netiks importēti eksporta kļūdas dēļ! Sazinieties ar veidnes nodrošinātāju, lai atjauninātu eksportēšanu."
+msgstr "Daži CDEF vienumi netiks ievietoti izgūšanas kļūdas dēļ! Sazinieties ar veidnes nodrošinātāju, lai saņemtu atjauninātu izgūšanas datni."
 
 #: templates_import.php:375 templates_import.php:461
 msgid "Import Template"
-msgstr "Importēt veidni"
+msgstr "Ievietot veidni"
 
 #: templates_import.php:377
 msgid "ERROR"
@@ -18568,7 +18548,7 @@ msgstr "Kļūda"
 
 #: templates_import.php:377
 msgid "Failed to access temporary folder, import functionality is disabled"
-msgstr "Neizdevās piekļūt pagaidu mapei, importēšanas funkcija ir atspējota"
+msgstr "Neizdevās piekļūt pagaidu mapei, ievietošanas funkcija ir atspējota"
 
 #: tree.php:32
 msgctxt "dropdown action"
@@ -18640,9 +18620,9 @@ msgstr[2] ""
 #: tree.php:720
 msgid "Publish Tree"
 msgid_plural "Publish Trees"
-msgstr[0] "Publicēt koku"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Publicēt kokus"
+msgstr[1] "Publicēt koku"
+msgstr[2] "Publicēt kokus"
 
 #: tree.php:724
 msgid "Click 'Continue' to un-publish the following Tree."
@@ -19060,7 +19040,7 @@ msgstr "Kopējie grafiki"
 
 #: user_admin.php:1314 user_group_admin.php:1200
 msgid "No Matching Graph Templates Found"
-msgstr "Netika atrasta neviena atbilstoša diagramma veidne"
+msgstr "Nav atrasta neviena atbilstoša grafika veidne"
 
 #: user_admin.php:1356 user_group_admin.php:1239
 msgid "Default Tree Policy"
@@ -19105,7 +19085,7 @@ msgstr "Dalība grupā"
 
 #: user_admin.php:1829 user_group_admin.php:1715
 msgid "Graph Perms"
-msgstr "Grafiks Perms"
+msgstr "Grafika atļaujas"
 
 #: user_admin.php:1830 user_group_admin.php:1716
 msgid "Device Perms"
@@ -19113,17 +19093,15 @@ msgstr "Ierīces atļaujas"
 
 #: user_admin.php:1831 user_group_admin.php:1717
 msgid "Template Perms"
-msgstr "Veidne Perms"
+msgstr "Veidnes atļaujas"
 
 #: user_admin.php:1832 user_group_admin.php:1718
 msgid "Tree Perms"
-msgstr "Koku ilgviļņi"
+msgstr "Koka atļaujas"
 
 #: user_admin.php:1852
-#, fuzzy
-#| msgid "File not found"
 msgid "User not found."
-msgstr "Fails nav atrasts"
+msgstr "Lietotājs nav atrasts."
 
 #: user_admin.php:1891
 #, php-format
@@ -19135,10 +19113,8 @@ msgid "User Management"
 msgstr "Lietotāju pārvaldība"
 
 #: user_admin.php:2165
-#, fuzzy
-#| msgid "Groups"
 msgid "Group"
-msgstr "Grupas"
+msgstr "Grupa"
 
 #: user_admin.php:2187 user_admin.php:2329
 msgid "Last Login"
@@ -19200,7 +19176,7 @@ msgstr "Veidņu politika"
 
 #: user_admin.php:2351
 msgid "Unavailable"
-msgstr "Nav pieejams"
+msgstr "Nepieejams"
 
 #: user_admin.php:2376
 msgid "No Users Found"
@@ -19351,7 +19327,7 @@ msgstr "e-pasts"
 
 #: user_domains.php:505
 msgid "Field that will replace the email taken from LDAP. (on windows: mail) "
-msgstr "Lauks, kas aizstās e-pastu iegūtu no LDAP. (Windows: pasts)"
+msgstr "Lauks, kas aizstās e-pastu iegūtu no LDAP. (Windows: pasts) "
 
 #: user_domains.php:530
 msgid "Domain Properties"
@@ -20024,7 +20000,7 @@ msgstr "Kaktusu žurnāls saglabā statistiku, kļūdu un citus ziņojumus atkar
 
 #: utilities.php:2273
 msgid "Allows Administrators to browse the user log.  Administrators can filter and export the log as well."
-msgstr "Ļauj administratoriem pārlūkot lietotāja žurnālu. Administratori var arī filtrēt un eksportēt žurnālu."
+msgstr "Ļauj administratoriem pārlūkot lietotāja žurnālu.  Administratori var arī filtrēt un izgūt žurnālu."
 
 #: utilities.php:2277
 msgid "Poller Cache Administration"
@@ -20059,6 +20035,7 @@ msgid "When operating multiple Data Collectors in Cacti, Cacti will attempt to m
 msgstr "Izmantojot vairākus datu vācējus kaktusos, Cacti mēģinās saglabāt galveno failu stāvokli visos datu vācējos. Tas ietver visus galvenos, ar instalēšanu nesaistītos vietņu un spraudņu failus. Piespiedu kārtā veicot resursu kešatmiņas pārbūvi, Cacti notīrīs vietējo resursu kešatmiņu un pēc tam atjaunos to nākamajā plānotajā aptaujas sākšanas reizē. Tas liks visiem attālajiem datu apkopotājiem atkārtoti pārbaudīt savu vietņu un spraudņu failu konsekvenci."
 
 #: utilities.php:2302
+#, fuzzy
 msgid "Boost Utilities"
 msgstr "Boost Utilities"
 
@@ -20380,18 +20357,15 @@ msgid "Severity Level: %s"
 msgstr "Smaguma pakāpe: %s"
 
 #: vdef.php:163 vdef.php:570
-#, fuzzy
-#| msgid "File not found"
 msgid "VDEF not found."
-msgstr "Fails nav atrasts"
+msgstr "VDEF nav atrasts."
 
 #: vdef.php:274
-#, fuzzy
 msgid "Click 'Continue' to delete the following VDEF."
 msgid_plural "Click 'Continue' to delete following VDEFs."
-msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai dzēstu tālāk norādītos VDEF."
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Noklikšķiniet 'Turpināt', lai dzēstu sekojošos VDEF vienumus."
+msgstr[1] "Noklikšķiniet 'Turpināt', lai dzēstu sekojošu VDEF."
+msgstr[2] "Noklikšķiniet 'Turpināt', lai dzēstu sekojošos VDEF vienumus."
 
 #: vdef.php:279
 msgid "Delete VDEF"
@@ -20410,13 +20384,13 @@ msgstr[2] ""
 #: vdef.php:289
 msgid "Duplicate VDEF"
 msgid_plural "Duplicate VDEFs"
-msgstr[0] "VDEF dublikāts"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Dublēt VDEF vienumus"
+msgstr[1] "Dublēt VDEF vienumu"
+msgstr[2] "Dublēt VDEF vienumus"
 
 #: vdef.php:336
 msgid "VDEF or VDEF Item not found."
-msgstr ""
+msgstr "VDEF vai VDEF vienums nav atrasts."
 
 #: vdef.php:346
 msgid "Click 'Continue' to delete the following VDEF's."
