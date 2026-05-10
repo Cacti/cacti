@@ -61,9 +61,9 @@ RUN set -eux; \
 # mounted plugins/ tree at first start (the bind mount would otherwise hide
 # anything baked into the image).
 ARG PLUGIN_THOLD_REPO=https://github.com/Cacti/plugin_thold.git
-ARG PLUGIN_THOLD_REF=develop-1.2.x
+ARG PLUGIN_THOLD_REF=develop
 ARG PLUGIN_MONITOR_REPO=https://github.com/Cacti/plugin_monitor.git
-ARG PLUGIN_MONITOR_REF=develop-1.2.x
+ARG PLUGIN_MONITOR_REF=develop
 
 RUN set -eux; \
     mkdir -p /opt/cacti-plugins; \
