@@ -1354,6 +1354,7 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
  * form_confirm - draws a table presenting the user with some choice and allowing
  * them to either proceed (delete) or cancel
  *
+ * @param string $title_text - the title text for this form
  * @param string $body_text - the text to prompt the user with on this form
  * @param string $cancel_url - the url to go to when the user clicks 'cancel'
  * @param string $action_url - the url to go to when the user clicks 'delete'
