@@ -72,16 +72,16 @@ function _extract_function_body(string $source, string $name): string {
 
 test('change_data_template stamps child data_input_data rows with the new identity tuple', function () use ($templateSource) {
 	$body = _extract_function_body($templateSource, 'change_data_template');
-	expect($body)->not->toBe('', 'change_data_template() must be defined in lib/template.php');
+	expect($body)->not->toBe('');
 
 	/* The function must look up the child host_id from data_local using
 	 * the new $local_data_id. The pre-fix code did not do this and
 	 * relied on $item['host_id'] from the parent row, which is 0 on a
 	 * template. */
 	expect($body)
-		->toContain('SELECT host_id', 'must look up host_id from data_local')
-		->toContain('FROM data_local', 'must look up host_id from data_local')
-		->toContain('[$local_data_id]', 'lookup must key on the new local_data_id');
+		->toContain('SELECT host_id')
+		->toContain('FROM data_local')
+		->toContain('[$local_data_id]');
 
 	/* The REPLACE INTO must use the function's own identity tuple
 	 * ($data_template_id, $local_data_id, $host_id) for the three
@@ -93,14 +93,14 @@ test('change_data_template stamps child data_input_data rows with the new identi
 
 	/* Column count and placeholder count must match. */
 	expect(substr_count($insertSlice, '?'))
-		->toBe(7, 'data_input_data REPLACE must bind seven placeholders');
+		->toBe(7);
 
 	/* The seven bound values must include the function's own variables,
 	 * not just $item[...] readbacks of the parent row. */
 	expect($insertSlice)
-		->toContain('$data_template_id,', 'bind the function-scope $data_template_id')
-		->toContain('$local_data_id,',    'bind the function-scope $local_data_id')
-		->toContain('$host_id,',          'bind the freshly-fetched $host_id');
+		->toContain('$data_template_id,')
+		->toContain('$local_data_id,')
+		->toContain('$host_id,');
 
 	/* The pre-fix bind list pulled these from $item; that pattern must
 	 * not survive in the fixed code for the identity columns. */
@@ -114,7 +114,7 @@ test('change_data_template stamps child data_input_data rows with the new identi
 
 test('api_data_source_duplicate INSERT column count matches placeholder count', function () use ($apiDataSourceSource) {
 	$body = _extract_function_body($apiDataSourceSource, 'api_data_source_duplicate');
-	expect($body)->not->toBe('', 'api_data_source_duplicate() must be defined in lib/api_data_source.php');
+	expect($body)->not->toBe('');
 
 	$insertPos = strpos($body, 'INSERT IGNORE INTO data_input_data');
 	expect($insertPos)->not->toBeFalse('INSERT IGNORE INTO data_input_data must remain present');
@@ -125,11 +125,11 @@ test('api_data_source_duplicate INSERT column count matches placeholder count', 
 	 * already binds. The pre-fix code had four placeholders against
 	 * seven bound values; db_execute_prepared() rejects that. */
 	expect(substr_count($insertSlice, '?'))
-		->toBe(7, 'INSERT IGNORE must bind seven placeholders to match the seven-column list');
+		->toBe(7);
 
 	/* All seven columns must be named in the INSERT list. */
 	foreach (['data_input_field_id', 'data_template_data_id', 'data_template_id', 'local_data_id', 'host_id', 't_value', 'value'] as $col) {
-		expect($insertSlice)->toContain($col, "INSERT must list column $col");
+		expect($insertSlice)->toContain($col);
 	}
 });
 
