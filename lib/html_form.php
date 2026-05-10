@@ -1383,8 +1383,8 @@ function form_confirm($title_text, $body_text, $cancel_url, $action_url) { ?>
  * form_confirm_buttons - draws a cancel and delete button suitable for display
  * on a confirmation form
  *
- * @param string $cancel_url - the url to go to when the user clicks 'cancel'
  * @param string $action_url - the url to go to when the user clicks 'delete'
+ * @param string $cancel_url - the url to go to when the user clicks 'cancel'
  *
  * @return void
  */
