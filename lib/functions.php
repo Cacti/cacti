@@ -7395,7 +7395,7 @@ function cacti_input_string_is_safe($input_string) {
 		return true;
 	}
 
-	$bare = preg_replace('/<[a-zA-Z_]+>/', '', $input_string);
+	$bare = preg_replace('/<[a-zA-Z0-9_]+>/', '', $input_string);
 
 	// Never allow redirects regardless of metachars setting
 	if (str_contains($bare, '>') || str_contains($bare, '<')) {
