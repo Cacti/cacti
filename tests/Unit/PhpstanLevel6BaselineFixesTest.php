@@ -120,7 +120,7 @@ test('the empty() fallback in the error-redirect URL still uses the variable', f
 		'graphs.php'           => '(empty($graph_template_item_id) ? gnrv(\'graph_template_item_id\') : $graph_template_item_id)',
 	];
 	foreach ($expected as $file => $needle) {
-		expect($sources[$file])->toContain($needle, "$file must keep the empty() / gnrv()|gfrv() fallback that the init covers");
+		expect($sources[$file])->toContain($needle);
 	}
 });
 
@@ -143,8 +143,7 @@ test('lib/html.php right-tab block drops the isset($tab[image]) guard', function
 
 	/* Each case branch must still gate its <img> emit on the value
 	 * being non-empty. */
-	expect(substr_count($slice, "\$tab['image'] != ''"))->toBeGreaterThanOrEqual(3,
-		'three case branches must each keep the != \'\' image check');
+	expect(substr_count($slice, "\$tab['image'] != ''"))->toBeGreaterThanOrEqual(3);
 });
 
 /* --- Final structural guard: PHPStan-flagged tuples are gone ----------- */
@@ -164,8 +163,7 @@ test('every PHPStan-flagged file:line shows the post-fix shape', function () use
 		['lib/html.php',         "\$tab['image'] != ''", "isset(\$tab['image'])"],
 	];
 	foreach ($cases as [$file, $kept, $forbidden]) {
-		expect($sources[$file])->toContain($kept,
-			"$file should retain the post-fix pattern: $kept");
+		expect($sources[$file])->toContain($kept);
 		if ($file === 'lib/html.php') {
 			expect(strpos($sources[$file], $forbidden))->toBeFalse(
 				"$file must no longer contain the pre-fix guard: $forbidden"

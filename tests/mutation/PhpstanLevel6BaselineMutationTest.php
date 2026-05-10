@@ -90,10 +90,8 @@ test('init binds to integer 0, not bool false or null (Mutation Protection)', fu
 	 * Pin the integer-zero shape. */
 	foreach (['aggregate_graphs.php', 'color_templates.php', 'graph_templates.php', 'graphs.php'] as $file) {
 		$src = $sources[$file];
-		expect(preg_match('/\$\w*template_item_id\s*=\s*false\s*;/', $src))->toBe(0,
-			"$file must not init *_template_item_id as bool false");
-		expect(preg_match('/\$\w*template_item_id\s*=\s*null\s*;/', $src))->toBe(0,
-			"$file must not init *_template_item_id as null");
+		expect(preg_match('/\$\w*template_item_id\s*=\s*false\s*;/', $src))->toBe(0);
+		expect(preg_match('/\$\w*template_item_id\s*=\s*null\s*;/', $src))->toBe(0);
 	}
 });
 
@@ -109,6 +107,6 @@ test('every Level 6 fix preserves the empty() fallback semantics (Mutation Prote
 		'graphs.php'           => "(empty(\$graph_template_item_id) ? gnrv('graph_template_item_id') : \$graph_template_item_id)",
 	];
 	foreach ($expected as $file => $needle) {
-		expect($sources[$file])->toContain($needle, "$file must keep the empty() ? gnrv()|gfrv() : \$x ternary order");
+		expect($sources[$file])->toContain($needle);
 	}
 });

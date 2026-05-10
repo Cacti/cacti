@@ -26,14 +26,14 @@ test('every touched file is readable and non-empty', function () use ($repoRoot,
 	foreach ($touched as $rel) {
 		$path = "$repoRoot/$rel";
 		expect(file_exists($path))->toBeTrue("$rel must exist");
-		expect(filesize($path))->toBeGreaterThanOrEqual(1, "$rel must be non-empty");
+		expect(filesize($path))->toBeGreaterThanOrEqual(1);
 	}
 });
 
 test('every touched file passes a syntactic shebang/PHP-tag check', function () use ($repoRoot, $touched) {
 	foreach ($touched as $rel) {
 		$head = file_get_contents("$repoRoot/$rel", false, null, 0, 16);
-		expect($head)->toContain('<?php', "$rel must open with <?php");
+		expect($head)->toContain('<?php');
 	}
 });
 
