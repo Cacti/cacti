@@ -567,7 +567,7 @@ function form_button($form_name, $value, $title = '', $action = '') {
 }
 
 /**
- * form_button - draws a standard button form element
+ * form_submit - draws a standard button form element
  *
  * @param string $form_name - the name of this form element
  * @param string $value - the display value for the button
