@@ -7371,7 +7371,14 @@ function cacti_csv_safe($value) {
  *   attempt. The same regex gates both the GUI save path (data_input.php)
  *   and XML/package import (lib/import.php) so the two cannot drift.
  *
- *   Blocked characters: ; & | ` $ \ \n \r ' " < > ( ) { }
+ *   However, for backward compatibility, we check the setting of
+ *   allow unsafe metacharacters for administrators that may have historically
+ *   used simple commands for data input methods including things like
+ *   ps -ef | grep string | wc -l which have been historically allowed,
+ *   but are unsafe for web applications.
+ *
+ *   Otherwise, the following are blocked: ; & | ` $ \ \n \r ' " < > ( ) { }
+ *
  *   These cover the original set plus single-quote, double-quote, redirect
  *   operators (<>), and subshell delimiters ((){}), which were absent before
  *   and allowed bypass payloads such as /bin/sh -c 'id' or cmd > /tmp/x.
@@ -7379,12 +7386,6 @@ function cacti_csv_safe($value) {
  *   This check allows some special cases such as <path_cacti> and input
  *   parameters such as <arg1> <myparametername>, etc. and therefore the
  *   preg_replace before the test for metacharacters.
- *
- *   Additionally, for backward compatibility, we check the setting of
- *   allow unsafe metacharacters for administrators that may have historically
- *   used simple commands for data input methods including things like
- *   ps -ef | grep string | wc -l which have been historically allowed,
- *   but are unsafe for web applications.
  *
  * @param string $input_string The candidate input_string template
  *
