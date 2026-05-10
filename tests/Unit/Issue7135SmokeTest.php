@@ -49,16 +49,16 @@ test('every foreach($outputs as $output) loop has an unset() at iteration top', 
 		}
 	}
 
-	expect(count($bodies))->toBeGreaterThanOrEqual(4, 'expected four foreach($outputs) loops total');
+	expect(count($bodies))->toBeGreaterThanOrEqual(4);
 
 	foreach ($bodies as $entry) {
 		$hasOid    = strpos($entry['body'], '$oid') !== false;
 		$hasScript = strpos($entry['body'], '$script_path') !== false;
 		if ($hasOid) {
-			expect($entry['body'])->toContain('unset($oid)', "{$entry['file']} \$oid loop must reset");
+			expect($entry['body'])->toContain('unset($oid)');
 		}
 		if ($hasScript) {
-			expect($entry['body'])->toContain('unset($script_path)', "{$entry['file']} \$script_path loop must reset");
+			expect($entry['body'])->toContain('unset($script_path)');
 		}
 	}
 });

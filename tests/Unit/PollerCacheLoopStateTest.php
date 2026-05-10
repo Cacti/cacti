@@ -69,14 +69,14 @@ test('lib/utility.php update_poller_cache loops reset $oid and $script_path betw
 	$oidLoops    = array_values(array_filter($loops, function ($body) { return strpos($body, '$oid') !== false; }));
 	$scriptLoops = array_values(array_filter($loops, function ($body) { return strpos($body, '$script_path') !== false; }));
 
-	expect(count($oidLoops))->toBeGreaterThanOrEqual(1, 'utility.php must contain at least one $oid foreach($outputs)');
-	expect(count($scriptLoops))->toBeGreaterThanOrEqual(1, 'utility.php must contain at least one $script_path foreach($outputs)');
+	expect(count($oidLoops))->toBeGreaterThanOrEqual(1);
+	expect(count($scriptLoops))->toBeGreaterThanOrEqual(1);
 
 	foreach ($oidLoops as $body) {
-		expect($body)->toContain('unset($oid)', 'each $oid foreach($outputs) must reset $oid at the top of the iteration');
+		expect($body)->toContain('unset($oid)');
 	}
 	foreach ($scriptLoops as $body) {
-		expect($body)->toContain('unset($script_path)', 'each $script_path foreach($outputs) must reset $script_path at the top of the iteration');
+		expect($body)->toContain('unset($script_path)');
 	}
 });
 
@@ -90,14 +90,14 @@ test('lib/functions.php test_data_source loops reset $oid and $script_path betwe
 	$oidLoops    = array_values(array_filter($loops, function ($body) { return strpos($body, '$oid') !== false; }));
 	$scriptLoops = array_values(array_filter($loops, function ($body) { return strpos($body, '$script_path') !== false; }));
 
-	expect(count($oidLoops))->toBeGreaterThanOrEqual(1, 'functions.php must contain at least one $oid foreach($outputs)');
-	expect(count($scriptLoops))->toBeGreaterThanOrEqual(1, 'functions.php must contain at least one $script_path foreach($outputs)');
+	expect(count($oidLoops))->toBeGreaterThanOrEqual(1);
+	expect(count($scriptLoops))->toBeGreaterThanOrEqual(1);
 
 	foreach ($oidLoops as $body) {
-		expect($body)->toContain('unset($oid)', 'each $oid foreach($outputs) must reset $oid at the top of the iteration');
+		expect($body)->toContain('unset($oid)');
 	}
 	foreach ($scriptLoops as $body) {
-		expect($body)->toContain('unset($script_path)', 'each $script_path foreach($outputs) must reset $script_path at the top of the iteration');
+		expect($body)->toContain('unset($script_path)');
 	}
 });
 
@@ -158,10 +158,10 @@ test('behavioural fixture: foreach without reset would leak; with reset it does 
 
 	/* The bug: the second output (no oid) inherits the first's $oid and
 	 * gets a row built against the wrong OID. */
-	expect($buggy)->toHaveCount(2, 'buggy shape produces two rows (the second is wrong)');
-	expect($buggy[1])->toBe(['second', '.1.3.6.1.2.1.1'], 'second row leaks first row OID');
+	expect($buggy)->toHaveCount(2);
+	expect($buggy[1])->toBe(['second', '.1.3.6.1.2.1.1']);
 
 	/* The fix: only outputs with their own OID produce a row. */
-	expect($fixed)->toHaveCount(1, 'fixed shape only emits a row when the current iteration has its own OID');
+	expect($fixed)->toHaveCount(1);
 	expect($fixed[0])->toBe(['first', '.1.3.6.1.2.1.1']);
 });

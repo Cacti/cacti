@@ -47,10 +47,10 @@ test('every $oid foreach($outputs) loop calls unset($oid) at iteration top (Muta
 		_mut_loop_extract_outputs_loops($functionsSource)
 	);
 	$oidLoops = array_values(array_filter($loops, fn($b) => strpos($b, '$oid') !== false));
-	expect(count($oidLoops))->toBeGreaterThanOrEqual(2, 'two $oid foreach($outputs) loops expected (utility + functions)');
+	expect(count($oidLoops))->toBeGreaterThanOrEqual(2);
 
 	foreach ($oidLoops as $body) {
-		expect($body)->toContain('unset($oid)', 'every $oid loop must reset before the conditional');
+		expect($body)->toContain('unset($oid)');
 
 		/* The unset must precede the conditional that reads
 		 * $output['snmp_field_name']['oid']. If a mutation moves the
@@ -68,7 +68,7 @@ test('every $script_path foreach($outputs) loop calls unset($script_path) at ite
 		_mut_loop_extract_outputs_loops($functionsSource)
 	);
 	$spLoops = array_values(array_filter($loops, fn($b) => strpos($b, '$script_path') !== false));
-	expect(count($spLoops))->toBeGreaterThanOrEqual(2, 'two $script_path foreach($outputs) loops expected (utility + functions)');
+	expect(count($spLoops))->toBeGreaterThanOrEqual(2);
 
 	foreach ($spLoops as $body) {
 		expect($body)->toContain('unset($script_path)');
