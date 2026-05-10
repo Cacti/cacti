@@ -633,7 +633,7 @@ function form_file($form_name, $form_size = 30, $form_accept = '') {
  * @return void
  */
 function form_filepath_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = 'text', $current_id = 0, $data = false) {
-	if ($form_previous_value === null || empty($current_id)) {
+	if (empty($current_id) && empty($form_previous_value)) {
 		$form_previous_value = $form_default_value;
 	}
 
@@ -707,7 +707,7 @@ function form_filepath_box($form_name, $form_previous_value, $form_default_value
  * @return void
  */
 function form_dirpath_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = 'text', $current_id = 0) {
-	if ($form_previous_value === null || empty($current_id)) {
+	if (empty($current_id) && empty($form_previous_value)) {
 		$form_previous_value = $form_default_value;
 	}
 
@@ -761,7 +761,7 @@ function form_dirpath_box($form_name, $form_previous_value, $form_default_value,
  * @return void
  */
 function form_text_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = 'text', $current_id = 0, $placeholder = '', $title = '') {
-	if ($form_previous_value === null || empty($current_id)) {
+	if (empty($current_id) && empty($form_previous_value)) {
 		$form_previous_value = $form_default_value;
 	}
 
@@ -1052,7 +1052,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
    @param boolean $show_label - show the form caption in the checkbox
 */
 function form_checkbox($form_name, $form_previous_value, $form_caption, $form_default_value, $current_id = 0, $class = '', $on_change = '', $title = '', $show_label = false) {
-	if ($form_previous_value === null || empty($current_id)) {
+	if (empty($current_id) && empty($form_previous_value)) {
 		$form_previous_value = $form_default_value;
 	}
 
@@ -1317,7 +1317,7 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 function form_font_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = 'text', $current_id = 0, $placeholder = '') {
 	global $config;
 
-	if ($form_previous_value === null || empty($current_id)) {
+	if (empty($current_id) && empty($form_previous_value)) {
 		$form_previous_value = $form_default_value;
 	}
 
