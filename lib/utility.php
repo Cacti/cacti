@@ -211,7 +211,7 @@ function update_poller_cache($data_source, $commit = false) {
 		WHERE dtd.local_data_id = ?',
 		array($data_source['id']));
 
-	if (cacti_sizeof($data_input)) {
+	if (cacti_sizeof($data_input) && data_input_whitelist_check($data_input['id'])) {
 		/* Whitelist failure must NOT generate poller_items for this
 		 * data source, but on $commit=true we still fall through to
 		 * the buffer flush so the present=0 / DELETE pass cleans up
@@ -220,7 +220,6 @@ function update_poller_cache($data_source, $commit = false) {
 		 * rows whenever an existing data input started failing
 		 * validation. The outer if-else still owns the "Data Input
 		 * Missing" warning so that diagnostic stays specific. */
-		if (data_input_whitelist_check($data_input['id'])) {
 
 		/* we have to perform some additional sql queries if this is a 'query' */
 		if (($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) ||
@@ -557,7 +556,8 @@ function update_poller_cache($data_source, $commit = false) {
 				}
 			}
 		}
-		} /* end of: if (data_input_whitelist_check(...)) */
+	} elseif (cacti_sizeof($data_input) && !data_input_whitelist_check($data_input['id'])) {
+		cacti_log('WARNING: Repopulate Poller Cache found Data Input ID not Passing Input Whitelist Validation for ID ' . $data_source['id'] . '.  Database may be corrupted', false, 'PCACHE');
 	} else {
 		$data_template_data = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' *
 			FROM data_template_data
@@ -1120,6 +1120,8 @@ function data_input_whitelist_check($data_input_id) {
 		} elseif (!isset($notified[$data_input_id])) {
 			cacti_log('WARNING: Data Input ' . $data_input_id . ' failing validation check.');
 			$notified[$data_input_id] = true;
+			return false;
+		} else {
 			return false;
 		}
 	} else {
