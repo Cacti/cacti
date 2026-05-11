@@ -834,15 +834,15 @@ function clog_regex_datainput($matches) {
 
 	$result = $matches[0];
 
-	$local_data_ids = explode(',', str_replace(' ', '', $matches[2]));
+	$data_ids = explode(',', str_replace(' ', '', $matches[2]));
 
-	if (cacti_sizeof($local_data_ids)) {
+	if (cacti_sizeof($data_ids)) {
 		$result = '';
 
-		foreach ($local_data_ids as $ldi) {
-			$name = db_fetch_cell_prepared('SELECT name FROM data_input WHERE id = ?', [$ldi]);
+		foreach ($data_ids as $id) {
+			$name = db_fetch_cell_prepared('SELECT name FROM data_input WHERE id = ?', [$id]);
 
-			$result .= $matches[1] . '<a href=\'' . html_escape($config['url_path'] . 'data_input.php?action=edit&id=' . $ldi) . '\'>' . html_escape($name ?? __('Unknown')) . '</a>' . $matches[3];
+			$result .= $matches[1] . '<a href=\'' . html_escape($config['url_path'] . 'data_input.php?action=edit&id=' . $id) . '\'>' . html_escape($name ?? __('Unknown')) . '</a>' . $matches[3];
 		}
 	}
 
