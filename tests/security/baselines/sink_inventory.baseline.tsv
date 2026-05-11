@@ -30,9 +30,9 @@ cmd_exec	./lib/functions.php:6930				$shell = shell_exec(cacti_escapeshellcmd(re
 cmd_exec	./lib/functions.php:6932				$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v 2>&1');
 cmd_exec	./lib/functions.php:7131				exec('id -nu', $o, $r);
 cmd_exec	./lib/functions.php:7141				exec(sprintf('grep :%s: /etc/passwd | cut -d: -f1', (int) $uid), $o, $r);
-cmd_exec	./lib/functions.php:7416	 * shell_exec() callers that already assemble the command string.
-cmd_exec	./lib/functions.php:7456		$process = proc_open($argv, $descriptors, $pipes);
-cmd_exec	./lib/functions.php:7528	 * shell_exec() and expect a string return value.
+cmd_exec	./lib/functions.php:7433	 * shell_exec() callers that already assemble the command string.
+cmd_exec	./lib/functions.php:7473		$process = proc_open($argv, $descriptors, $pipes);
+cmd_exec	./lib/functions.php:7545	 * shell_exec() and expect a string return value.
 cmd_exec	./lib/installer.php:3288				$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 cmd_exec	./lib/installer.php:3320						shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 cmd_exec	./lib/installer.php:3376						$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
@@ -101,7 +101,7 @@ cmd_exec	./utilities.php:219					exec(cacti_escapeshellcmd(read_config_option('p
 cmd_exec	./utilities.php:237				$snmp_version = shell_exec(cacti_escapeshellcmd(read_config_option('path_snmpget')) . ' -V 2>&1');
 cmd_exec	./utilities.php:257				exec(cacti_escapeshellcmd(read_config_option('path_spine')) . ' --version', $out_array);
 deserialize	./lib/functions.php:4684				$items = unserialize($unstripped, array('allowed_classes' => false));
-deserialize	./lib/functions.php:7982		return @unserialize($strobj, array('allowed_classes' => false));
+deserialize	./lib/functions.php:7999		return @unserialize($strobj, array('allowed_classes' => false));
 dynamic_include	./automation_tree_rules.php:538		include_once($config['base_path'].'/lib/html_tree.php');
 dynamic_include	./cli/add_data_query.php:27	require_once($config['base_path'] . '/lib/api_automation_tools.php');
 dynamic_include	./cli/add_data_query.php:28	require_once($config['base_path'] . '/lib/api_automation.php');
@@ -868,8 +868,8 @@ header_redirect	./lib/auth.php:4764					header('Location: ' . $config['url_path'
 header_redirect	./lib/auth.php:4769				header('Location: ' . $config['url_path'] . 'graph_view.php' . ($newtheme ? '?newtheme=1':''));
 header_redirect	./lib/auth.php:4964			header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?action=force&ref=' . urlencode(validate_redirect_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php')));
 header_redirect	./lib/clog_webapi.php:99			header('Location: ' . get_current_page());
-header_redirect	./lib/functions.php:8087		header('Location: ' . $save_url);
-header_redirect	./lib/functions.php:8110		header('Location: ' . $safe_url, true, $status);
+header_redirect	./lib/functions.php:8104		header('Location: ' . $save_url);
+header_redirect	./lib/functions.php:8127		header('Location: ' . $safe_url, true, $status);
 header_redirect	./lib/html_graph.php:498			header('Location: ' . $page . '?host_id=' . $host_id . '&header=false');
 header_redirect	./lib/html_reports.php:1507				header('Location: reports.php');
 header_redirect	./lib/html_reports.php:274					header('Location: reports.php');
