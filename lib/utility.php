@@ -212,10 +212,15 @@ function update_poller_cache($data_source, $commit = false) {
 		array($data_source['id']));
 
 	if (cacti_sizeof($data_input)) {
-		// Check whitelist for input validation
-		if (!data_input_whitelist_check($data_input['id'])) {
-			return $poller_items;
-		}
+		/* Whitelist failure must NOT generate poller_items for this
+		 * data source, but on $commit=true we still fall through to
+		 * the buffer flush so the present=0 / DELETE pass cleans up
+		 * rows that used to pass the whitelist. The pre-fix early
+		 * `return $poller_items;` skipped that pass and stranded stale
+		 * rows whenever an existing data input started failing
+		 * validation. The outer if-else still owns the "Data Input
+		 * Missing" warning so that diagnostic stays specific. */
+		if (data_input_whitelist_check($data_input['id'])) {
 
 		/* we have to perform some additional sql queries if this is a 'query' */
 		if (($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) ||
@@ -552,6 +557,7 @@ function update_poller_cache($data_source, $commit = false) {
 				}
 			}
 		}
+		} /* end of: if (data_input_whitelist_check(...)) */
 	} else {
 		$data_template_data = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' *
 			FROM data_template_data
@@ -563,9 +569,17 @@ function update_poller_cache($data_source, $commit = false) {
 		}
 	}
 
-	if ($commit && cacti_sizeof($poller_items)) {
+	if ($commit) {
+		/* Always flush on commit, even when $poller_items is empty. The
+		 * buffer pass marks existing rows present=0 then DELETEs whatever
+		 * is still present=0 at the end, which is how a data source that
+		 * just lost its data input / went inactive / failed the
+		 * whitelist gets its stale poller_item rows cleaned out. The
+		 * earlier `cacti_sizeof($poller_items)` guard skipped the flush
+		 * for that case, so callers like data_sources.php form_save
+		 * silently left stale rows behind. */
 		poller_update_poller_cache_from_buffer((array)$data_source['id'], $poller_items, $poller_id);
-	} elseif (!$commit) {
+	} else {
 		return $poller_items;
 	}
 }
@@ -592,14 +606,20 @@ function push_out_data_input_method($data_input_id) {
 	if (cacti_sizeof($data_sources)) {
 		$prev_poller = -1;
 		foreach ($data_sources as $data_source) {
+			/* Flush the previous poller's buffer when crossing a poller
+			 * boundary, then ALWAYS append the current data source. The
+			 * previous shape put the append in an `else` branch, so the
+			 * first data source for every non-first poller was dropped:
+			 * it never made it into the new buffer and never got
+			 * rebuilt. */
 			if ($prev_poller > 0 && $data_source['poller_id'] != $prev_poller) {
 				poller_update_poller_cache_from_buffer($_my_local_data_ids, $poller_items, $prev_poller);
 				$_my_local_data_ids = array();
 				$poller_items = array();
-			} else {
-				$_my_local_data_ids[] = $data_source['id'];
-				$poller_items = array_merge($poller_items, update_poller_cache($data_source));
 			}
+
+			$_my_local_data_ids[] = $data_source['id'];
+			$poller_items = array_merge($poller_items, update_poller_cache($data_source));
 
 			$prev_poller = $data_source['poller_id'];
 		}
@@ -966,13 +986,65 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 		}
 	}
 
-	$poller_id = db_fetch_cell_prepared('SELECT poller_id
-		FROM host
-		WHERE id = ?',
-		array($host_id));
+	/* Flush the buffer. push_out_host() is documented as single-host
+	 * scoped, but accepts $host_id = 0 with either a non-zero
+	 * $local_data_id (data_sources.php save_component_data_source path)
+	 * or a $data_template_id (template-wide push). The host-scoped
+	 * branch knows its poller from $host_id; the host_id=0 branch may
+	 * collect data sources spanning multiple pollers, so group by
+	 * poller_id and flush each group separately. The pre-fix code did
+	 * a single SELECT poller_id WHERE id=$host_id which returned NULL
+	 * for $host_id=0 and silently flushed every collected row to
+	 * poller 0. */
+	if ($host_id > 0) {
+		$poller_id = db_fetch_cell_prepared('SELECT poller_id
+			FROM host
+			WHERE id = ?',
+			array($host_id));
 
-	if (cacti_sizeof($local_data_ids)) {
-		poller_update_poller_cache_from_buffer($local_data_ids, $poller_items, $poller_id);
+		if (cacti_sizeof($local_data_ids)) {
+			poller_update_poller_cache_from_buffer($local_data_ids, $poller_items, $poller_id);
+		}
+	} elseif (cacti_sizeof($local_data_ids)) {
+		/* Map each local_data_id to its host's poller. */
+		$safe_ids = array_map('intval', $local_data_ids);
+		$rows     = db_fetch_assoc('SELECT dl.id AS local_data_id, h.poller_id
+			FROM data_local AS dl
+			INNER JOIN host AS h
+			ON h.id = dl.host_id
+			WHERE dl.id IN (' . implode(',', $safe_ids) . ')');
+
+		$ids_by_poller = array();
+		foreach ($rows as $row) {
+			$ids_by_poller[$row['poller_id']][(int) $row['local_data_id']] = true;
+		}
+
+		/* Group $poller_items by their leading local_data_id column.
+		 * api_poller_cache_item_add() emits each entry as a SQL VALUES
+		 * tuple starting with `($local_data_id, ...)`. */
+		$items_by_poller = array();
+		foreach ($poller_items as $item) {
+			if (!preg_match('/^\((\d+),/', $item, $m)) {
+				continue;
+			}
+			$ldid = (int) $m[1];
+			foreach ($ids_by_poller as $pid => $ldid_set) {
+				if (isset($ldid_set[$ldid])) {
+					$items_by_poller[$pid][] = $item;
+					break;
+				}
+			}
+		}
+
+		foreach ($ids_by_poller as $pid => $ldid_set) {
+			$pid_local_data_ids = array_keys($ldid_set);
+			$pid_items          = isset($items_by_poller[$pid]) ? $items_by_poller[$pid] : array();
+			poller_update_poller_cache_from_buffer($pid_local_data_ids, $pid_items, $pid);
+		}
+
+		$poller_id = cacti_sizeof($ids_by_poller) === 1 ? array_key_first($ids_by_poller) : 1;
+	} else {
+		$poller_id = 1;
 	}
 
 	/**
