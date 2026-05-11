@@ -112,7 +112,7 @@ function form_save() {
 
 			$input_string = db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', [$save['id']]);
 
-			if ($input_string != $save['input_string'] && isset($config['input_whitelist'])) {
+			if ($save['id'] > 0 && $input_string != $save['input_string'] && isset($config['input_whitelist'])) {
 				raise_message('whitelist_change', __('Input Whitelisting is in effect.  Changes in this Data Input Method require rerunning of the Input Whitelist CLI script (cli/input_whitelist.php) using both the --audit and --update options before Data Source will be queried again.'), MESSAGE_LEVEL_WARN);
 			}
 		}
