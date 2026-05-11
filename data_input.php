@@ -53,6 +53,7 @@ switch (get_request_var('action')) {
 		field_remove();
 
 		header('Location: data_input.php?header=false&action=edit&id=' . get_filter_request_var('data_input_id'));
+
 		break;
 	case 'field_edit':
 		top_header();
@@ -60,20 +61,27 @@ switch (get_request_var('action')) {
 		field_edit();
 
 		bottom_footer();
+
 		break;
+	case 'whitelist_update':
+		get_filter_request_var('id');
+
+		$php = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+
+		$output = shell_exec($php . ' -q ' . $config['base_path'] . '/cli/input_whitelist.php --update --push --id=' . get_request_var('id'));
+
+		raise_message('whitelist_updated', $output, MESSAGE_LEVEL_INFO);
 	case 'edit':
 		top_header();
-
 		data_edit();
-
 		bottom_footer();
+
 		break;
 	default:
 		top_header();
-
 		data();
-
 		bottom_footer();
+
 		break;
 }
 
@@ -516,6 +524,8 @@ function data_edit() {
 		$header_label = __('Data Input Method [new]');
 	}
 
+	$whitelist_issues = false;
+
 	if (!isset($config['input_whitelist'])) {
 		unset($fields_data_input_edit['whitelist_verification']);
 	}
@@ -547,8 +557,16 @@ function data_edit() {
 				$fields_data_input_edit['whitelist_verification']['value'] = __('White List Verification Succeeded.');
 			} elseif ($aud == false) {
 				$fields_data_input_edit['whitelist_verification']['value'] = __('White List Verification Failed.  Run CLI script input_whitelist.php to correct.');
+
+				if (is_writable($config['input_whitelist']) && is_writable(dirname($config['input_whitelist']))) {
+					$whitelist_issues = true;
+				}
 			} elseif ($aud == '-1') {
 				$fields_data_input_edit['whitelist_verification']['value'] = __('Input String does not exist in White List.  Run CLI script input_whitelist.php to correct.');
+
+				if (is_writable($config['input_whitelist']) && is_writable(dirname($config['input_whitelist']))) {
+					$whitelist_issues = true;
+				}
 			}
 		}
 	}
@@ -682,6 +700,8 @@ function data_edit() {
 	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	$(function() {
+		var whiteList=<?php print $whitelist_issues ? 'true':'false';?>;
+
 		$('.cdialog').remove();
 		$('#main').append("<div id='cdialog' class='cdialog'></div>");
 
@@ -707,6 +727,21 @@ function data_edit() {
 					getPresentHTTPError(data);
 				});
 		}).css('cursor', 'pointer');
+
+		if (whiteList) {
+			$('input[name="action"]').after('<input id="updateme" class="ui-button ui-corner-all ui-widget" type="button" value="<?php print __('Update Whitelist');?>" role="button" data-id="<?php print get_filter_request_var('id');?>">');
+
+			$('#updateme').on('click', function() {
+				var data = {
+					action: 'whitelist_update',
+					header: false,
+					id: $(this).data('id'),
+					__csrf_magic: csrfMagicToken
+				}
+
+				loadPageUsingPost('data_input.php', data);
+			});
+		}
 	});
 
 	</script>
