@@ -49,9 +49,10 @@ class CmdRealtimeCommand extends CactiCommand {
 		$graph_id  = $this->validateInt($input, 'graph-id', 1);
 		$interval  = $this->validateInt($input, 'interval', 1);
 
-		// In the test harness PHP_TESTING is set and the bootstrap is skipped,
-		// so the legacy collection flow below would explode. Bail out clean.
-		if (defined('PHP_TESTING')) {
+		// In the test harness PHP_TESTING or CACTI_PHP_TESTING=1 skips the
+		// bootstrap, so the legacy collection flow below would explode. Keep
+		// this guard in sync with CactiCommand::initialize().
+		if (PHP_SAPI === 'cli' && (defined('PHP_TESTING') || getenv('CACTI_PHP_TESTING') === '1')) {
 			$output->writeln(sprintf('OK realtime poller_id=%s graph_id=%d interval=%d', $poller_id, $graph_id, $interval));
 
 			return self::SUCCESS;
