@@ -47,6 +47,7 @@ if (!function_exists('ss_counter_step')) {
 	 * unavailable.
 	 *
 	 * Returns a numeric string ('U' is sticky once set).
+	 * @param mixed $running
 	 */
 	function ss_counter_step($running, string $current, string $previous, string $modulus) : string {
 		if (!function_exists('gmp_init')) {
