@@ -36,6 +36,7 @@ if ($config['poller_id'] > 1) {
 $audit  = false;
 $update = false;
 $push   = false;
+$ldi    = false;
 
 // process calling arguments
 $parms = $_SERVER['argv'];
@@ -51,6 +52,10 @@ if (cacti_sizeof($parms)) {
 		}
 
 		switch ($arg) {
+			case '--id':
+			case '-I':
+				$ldi = intval($value);
+				break;
 			case '--audit':
 			case '-A':
 				$audit = true;
@@ -130,6 +135,12 @@ if ($audit) {
 		exit(1);
 	}
 
+	if ($ldi !== false) {
+		$ldi_hash = db_fetch_cell_prepared('SELECT hash FROM data_input WHERE id = ?', [$ldi]);
+	} else {
+		$ldi_hash = false;
+	}
+
 	$input_db = db_fetch_assoc('SELECT id, name, hash, input_string
 		FROM data_input
 		WHERE input_string != ""');
@@ -146,12 +157,17 @@ if ($audit) {
 		// format data for easier consumption
 		$input = array();
 		foreach ($input_db as $value) {
-			if ($push && isset($input_ws[$value['hash']])) {
-				if ($value['input_string'] != $input_ws[$value['hash']]) {
-					$pushes[$value['id']] = $value['name'];
+			if ($ldi_hash === false || $ldi_hash == $value['hash']) {
+				if ($push && isset($input_ws[$value['hash']])) {
+					if ($value['input_string'] != $input_ws[$value['hash']]) {
+						$pushes[$value['id']] = $value['name'];
+					}
 				}
+
+				$input[$value['hash']] = $value['input_string'];
+			} else {
+				$input[$value['hash']] = $input_ws[$value['hash']];
 			}
-			$input[$value['hash']] = $value['input_string'];
 		}
 
 		file_put_contents($config['input_whitelist'], json_encode($input));
@@ -187,12 +203,13 @@ function display_version() {
 function display_help () {
 	display_version();
 
-	print PHP_EOL . "usage: input_whitelist.php [--audit | --update [--push]]" . PHP_EOL . PHP_EOL;
+	print PHP_EOL . "usage: input_whitelist.php [--id=N] [--audit | --update [--push]]" . PHP_EOL . PHP_EOL;
 
 	print "A utility audit and update the Data Input whitelist status and" . PHP_EOL;
 	print "Data Input protection file." . PHP_EOL . PHP_EOL;
 
 	print "Optional:" . PHP_EOL;
+	print "    --id=N        Audit or update only the local data id specified." . PHP_EOL;
 	print "    --audit       Audit but do not update the whitelist file." . PHP_EOL;
 	print "    --update      Update the whitelist file with latest information." . PHP_EOL;
 	print "    --push        If any input strings are being updated to new values," . PHP_EOL;

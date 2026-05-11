@@ -594,7 +594,7 @@ function push_out_data_input_method($data_input_id) {
 			AND local_data_id > 0
 		) AS dtd
 		ON dtd.local_data_id = dl.id
-		INNER JOIN host AS h
+		LEFT JOIN host AS h
 		ON h.id = dl.host_id
 		WHERE dl.snmp_query_id = 0 OR (dl.snmp_query_id > 0 AND dl.snmp_index != "")
 		ORDER BY h.poller_id ASC',
@@ -1100,11 +1100,11 @@ function data_input_whitelist_check($data_input_id) {
 						if ($data_input_whitelist[$hash] == $id['input_string']) {
 							$validated_input_ids[$id['id']] = true;
 						} else {
-							cacti_log('ERROR: Whitelist entry failed validation for Data Input: ' . $id['name'] . '[ ' . $id['id'] . ' ].  Data Collection will not run.  Run CLI command input_whitelist.php --audit and --update to remediate.');
+							cacti_log('ERROR: Whitelist entry failed validation for Data Input: ' . $id['name'] . ' DI[' . $id['id'] . '].  Data Collection will not run.  Run CLI command input_whitelist.php --audit and --update to remediate.');
 							$validated_input_ids[$id['id']] = false;
 						}
 					} else {
-						cacti_log('WARNING: Whitelist entry missing for Data Input: ' . $id['name'] . '[ ' . $id['id'] . ' ].  Run CLI command input_whitelist.php --update to remediate.');
+						cacti_log('WARNING: Whitelist entry missing for Data Input: ' . $id['name'] . ' DI[' . $id['id'] . '].  Run CLI command input_whitelist.php --update to remediate.');
 						$validated_input_ids[$id['id']] = true;
 					}
 				} else {
@@ -1117,7 +1117,7 @@ function data_input_whitelist_check($data_input_id) {
 	if (isset($validated_input_ids[$data_input_id])) {
 		if ($validated_input_ids[$data_input_id] == true) {
 			return true;
-		} else {
+		} elseif (!isset($notified[$data_input_id])) {
 			cacti_log('WARNING: Data Input ' . $data_input_id . ' failing validation check.');
 			$notified[$data_input_id] = true;
 			return false;

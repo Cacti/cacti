@@ -81,7 +81,7 @@ switch (get_request_var('action')) {
  * form_save - Saves the data input method
  */
 function form_save() {
-	global $registered_cacti_names;
+	global $config, $registered_cacti_names;
 
 	if (isset_request_var('save_component_data_input')) {
 		/* ================= input validation ================= */
@@ -100,6 +100,12 @@ function form_save() {
 				raise_message('validation_error', __('Input string contains dangerous shell characters'), MESSAGE_LEVEL_ERROR);
 				header('Location: data_input.php?action=edit&id=' . (empty($save['id']) ? '' : $save['id']));
 				exit;
+			}
+
+			$input_string = db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', [$save['id']]);
+
+			if ($input_string != $save['input_string'] && isset($config['input_whitelist'])) {
+				raise_message('whitelist_change', __('Input Whitelisting is in effect.  Changes in this Data Input Method require rerunning of the Input Whitelist CLI script (cli/input_whitelist.php) using both the --audit and --update options before Data Source will be queried again.'), MESSAGE_LEVEL_WARN);
 			}
 		}
 
@@ -906,6 +912,7 @@ function data() {
 			} else {
 				$disabled = false;
 			}
+
 			form_alternate_row('line' . $data_input['id'], true, $disabled);
 			form_selectable_cell(filter_value($data_input['name'], get_request_var('filter'), 'data_input.php?action=edit&id=' . $data_input['id']), $data_input['id']);
 			form_selectable_cell($data_input['id'], $data_input['id'], '', 'right');
