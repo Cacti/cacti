@@ -31,9 +31,9 @@ cmd_exec	./lib/functions.php:6930				$shell = shell_exec(cacti_escapeshellcmd(re
 cmd_exec	./lib/functions.php:6932				$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v 2>&1');
 cmd_exec	./lib/functions.php:7131				exec('id -nu', $o, $r);
 cmd_exec	./lib/functions.php:7141				exec(sprintf('grep :%s: /etc/passwd | cut -d: -f1', (int) $uid), $o, $r);
-cmd_exec	./lib/functions.php:7424	 * shell_exec() callers that already assemble the command string.
-cmd_exec	./lib/functions.php:7464		$process = proc_open($argv, $descriptors, $pipes);
-cmd_exec	./lib/functions.php:7536	 * shell_exec() and expect a string return value.
+cmd_exec	./lib/functions.php:7433	 * shell_exec() callers that already assemble the command string.
+cmd_exec	./lib/functions.php:7473		$process = proc_open($argv, $descriptors, $pipes);
+cmd_exec	./lib/functions.php:7545	 * shell_exec() and expect a string return value.
 cmd_exec	./lib/installer.php:3288				$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 cmd_exec	./lib/installer.php:3320						shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 cmd_exec	./lib/installer.php:3376						$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .

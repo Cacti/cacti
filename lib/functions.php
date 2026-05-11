@@ -7383,9 +7383,14 @@ function cacti_csv_safe($value) {
  *   operators (<>), and subshell delimiters ((){}), which were absent before
  *   and allowed bypass payloads such as /bin/sh -c 'id' or cmd > /tmp/x.
  *
- *   This check allows some special cases such as <path_cacti> and input
- *   parameters such as <arg1> <myparametername>, etc. and therefore the
- *   preg_replace before the test for metacharacters.
+ *   Placeholder names match [a-zA-Z0-9_]+, the same grammar that
+ *   generate_data_input_field_sequences() and get_full_script_path()
+ *   use, so digit-suffixed tokens such as <arg1> and <host_id2> are
+ *   recognised. Paired surrounding quotes ("<x>" or '<x>') are stripped
+ *   together with the placeholder so that legitimate shell-arg quoting
+ *   in templates such as
+ *     <path_cacti>/scripts/x.php "<reason>"
+ *   is preserved.
  *
  * @param string $input_string The candidate input_string template
  *
@@ -7396,7 +7401,11 @@ function cacti_input_string_is_safe($input_string) {
 		return true;
 	}
 
-	$bare = preg_replace('/<[a-zA-Z0-9_]+>/', '', $input_string);
+	$bare = preg_replace(
+		'/"<[a-zA-Z0-9_]+>"|\'<[a-zA-Z0-9_]+>\'|<[a-zA-Z0-9_]+>/',
+		'',
+		$input_string
+	);
 
 	// Never allow redirects regardless of metachars setting
 	if (str_contains($bare, '>') || str_contains($bare, '<')) {
