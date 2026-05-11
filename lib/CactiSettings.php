@@ -21,8 +21,7 @@
  +-------------------------------------------------------------------------+
 */
 
-use Symfony\Component\Validator\Validation;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
+require_once __DIR__ . '/CactiValidator.php';
 
 /**
  * Declarative settings validation backed by Symfony Validator.
@@ -44,14 +43,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  * wins where both apply.
  */
 class CactiSettings {
-	/**
-	 * Cached validator instance. Symfony's validator is stateless and safe
-	 * to reuse across calls within a single request.
-	 *
-	 * @var ValidatorInterface|null
-	 */
-	private static $validator = null;
-
 	/**
 	 * Validate posted settings against their declared Symfony constraints.
 	 *
@@ -112,7 +103,7 @@ class CactiSettings {
 				}
 			}
 
-			$result = self::validator()->validate($value, $resolved);
+			$result = CactiValidator::validate($value, $resolved);
 
 			if (count($result) === 0) {
 				continue;
@@ -124,25 +115,6 @@ class CactiSettings {
 		}
 
 		return $violations;
-	}
-
-	/**
-	 * Lazily build and cache the Symfony validator.
-	 *
-	 * No Translator is wired in. Symfony's default English messages render
-	 * regardless of the active Cacti locale; constraint definitions in
-	 * global_settings.php should pass custom messages through __() to
-	 * participate in i18n. Wiring a TranslatorInterface here is a planned
-	 * follow-up; see docs/security/settings-validation.md.
-	 *
-	 * @return ValidatorInterface
-	 */
-	private static function validator() : ValidatorInterface {
-		if (self::$validator === null) {
-			self::$validator = Validation::createValidator();
-		}
-
-		return self::$validator;
 	}
 
 	/**
