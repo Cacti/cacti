@@ -45,3 +45,9 @@ test('CactiCommand::initialize bypass requires CLI SAPI and strict env equality'
 	expect($source)->toContain("PHP_SAPI === 'cli'");
 	expect($source)->toContain("getenv('CACTI_PHP_TESTING') === '1'");
 });
+
+test('CmdRealtimeCommand test bypass matches CactiCommand bootstrap bypass', function () {
+	$source = file_get_contents(__DIR__ . '/../../lib/CmdRealtimeCommand.php');
+	expect($source)->toContain("PHP_SAPI === 'cli'");
+	expect($source)->toContain("defined('PHP_TESTING') || getenv('CACTI_PHP_TESTING') === '1'");
+});
