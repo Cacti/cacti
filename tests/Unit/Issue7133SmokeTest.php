@@ -34,7 +34,7 @@ test('poller cache rebuild paths preserve host_id zero data sources', function (
 });
 
 test('update_poller_cache wraps build code in whitelist guard, not early return', function () use ($utility) {
-	expect($utility)->toContain('if (data_input_whitelist_check($data_input[\'id\'])) {');
+	expect($utility)->toContain('if (cacti_sizeof($data_input) && data_input_whitelist_check($data_input[\'id\'])) {');
 });
 
 test('push_out_data_input_method always-appends after boundary flush', function () use ($utility) {

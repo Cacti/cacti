@@ -211,20 +211,12 @@ function update_poller_cache($data_source, $commit = false) {
 		WHERE dtd.local_data_id = ?',
 		array($data_source['id']));
 
-	if (cacti_sizeof($data_input)) {
-		/* Whitelist failure must NOT generate poller_items for this
-		 * data source, but on $commit=true we still fall through to
-		 * the buffer flush so the present=0 / DELETE pass cleans up
-		 * rows that used to pass the whitelist. The pre-fix early
-		 * `return $poller_items;` skipped that pass and stranded stale
-		 * rows whenever an existing data input started failing
-		 * validation. The outer if-else still owns the "Data Input
-		 * Missing" warning so that diagnostic stays specific. */
-		if (data_input_whitelist_check($data_input['id'])) {
-
-		/* we have to perform some additional sql queries if this is a 'query' */
-		if (($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) ||
-			($data_input['type_id'] == DATA_INPUT_TYPE_SCRIPT_QUERY) ||
+		/* Whitelist failures skip item generation, but commit=true still
+		 * falls through to the buffer flush so stale poller_item rows are removed. */
+		if (cacti_sizeof($data_input) && data_input_whitelist_check($data_input['id'])) {
+			/* we have to perform some additional sql queries if this is a 'query' */
+			if (($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) ||
+				($data_input['type_id'] == DATA_INPUT_TYPE_SCRIPT_QUERY) ||
 			($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER)){
 			$field = data_query_field_list($data_input['data_template_data_id']);
 
@@ -570,9 +562,8 @@ function update_poller_cache($data_source, $commit = false) {
 					$poller_items = $arguments['poller_items'];
 				}
 			}
-		}
-		} /* end of: if (data_input_whitelist_check(...)) */
-	} else {
+			}
+		} elseif (!cacti_sizeof($data_input)) {
 		$data_template_data = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' *
 			FROM data_template_data
 			WHERE local_data_id = ?',
