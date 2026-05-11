@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-04-28 10:15-0400\nPO-Revision-Date: 2026-05-09 07:18+0000\nLast-Translator: \"Coool (github.com/Coool)\" <coool@mail.lv>\nLanguage-Team: Latvian <https://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2026-04-28 10:15-0400\nPO-Revision-Date: 2026-05-10 08:18+0000\nLast-Translator: \"Coool (github.com/Coool)\" <coool@mail.lv>\nLanguage-Team: Latvian <https://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php:29 include/global_arrays.php:2638 lib/html.php:2563
 msgid "About Cacti"
@@ -5923,7 +5923,7 @@ msgstr "Pašlaik notiek uzstādīšana vai atjaunināšana."
 
 #: include/global.php:568
 msgid "The Main Data Collector has returned to an Online Status"
-msgstr "Galvenais datu apkopotājs atgriezies tiešsaistē"
+msgstr "Galvenais datu apkopotājs atkal ir tiešsaistē"
 
 #: include/global.php:572
 msgid "The Main Data Collector has gone to an Offline or Recovering Status"
@@ -7537,7 +7537,7 @@ msgstr "nebeidzas ar"
 
 #: include/global_arrays.php:1760
 msgid "matches"
-msgstr "sērkociņi"
+msgstr "atbilst"
 
 #: include/global_arrays.php:1761
 msgid "is not equal to"
@@ -9858,7 +9858,7 @@ msgstr "Citi iestatījumi"
 
 #: include/global_settings.php:401
 msgid "Show only site specific locations"
-msgstr "Šeit iestatiet visas diagrammai specifiskās opcijas."
+msgstr "Rādīt tikai vietai specifiskas atrašanās vietas"
 
 #: include/global_settings.php:402
 msgid "Show only locations that are available at a devices selected site."
@@ -12966,7 +12966,7 @@ msgstr "Vecākais pirmais"
 
 #: lib/clog_webapi.php:612
 msgid "Matches"
-msgstr "sērkociņi"
+msgstr "atbilst"
 
 #: lib/clog_webapi.php:613
 msgid "Does Not Match"

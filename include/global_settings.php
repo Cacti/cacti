@@ -503,10 +503,16 @@ $settings = array(
 			'default' => 'on',
 			'method' => 'checkbox',
 		),
+		'allow_unsafe_metachars' => array(
+			'friendly_name' => __('Allow Unsafe Metacharacters in Data Input Methods'),
+			'description' => __('Historically, Cacti administrators created simple Data Input Methods that include commands like "ps -ef | grep something | wc -l" to represent a numeric value for use in Cacti Graphs.  In earlier versions of Cacti, this was permitted.  However, this is an unsafe practice as it is a gateway for third party users to publish insecure Data Templates.  In modern Cacti, these types of practices should be avoided.  However, we provide this option if you have older Data Input Methods that contain these unsafe Meta Characters and have not converted them to local scripts in the \'scripts\' directory.  When this option is unchecked, Cacti restricts shell-style metacharacters such as quotation marks, curly brackets, vertical bars, backslashes, and backticks.  Cacti continues to allow greater-than and less-than signs for things like <path_cacti> and for input parameters, but if this option is unchecked, that is the limit of their permitted use.'),
+			'default' => '',
+			'method' => 'checkbox',
+		),
 		'content_security_policy_script' => array(
 			'method' => 'drop_array',
 			'friendly_name' => __('Content-Security Script Policy'),
-			'description' => __('Controls the script-src CSP policy.  In nonce modes, plugin-emitted inline <script> tags must include the nonce attribute from CactiSecureHeaders::getNonceAttribute(); otherwise, those scripts will be blocked by the browser.'),
+			'description' => __('Controls the script-src CSP policy.  In Nonce Modes, Cacti Plugins that use inline JavaScript must include the nonce attribute from Cacti\'s builtin function \'CactiSecureHeaders::getNonceAttribute()\'. Otherwise, those scripts will be blocked by the browser.  Currently, Cacti only allows reporting on Cacti Plugins that do not properly use Nonce Mode.  In the future, we will allow Administrators to block such plugins from using their inline JavaScript if they are not using Nonces.'),
 			'default' => '',
 			'array' => array(
 				'0'            => __('Allow Non-Nonced Inline JavaScript'),

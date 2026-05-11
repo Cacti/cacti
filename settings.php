@@ -400,6 +400,12 @@ default:
 
 			if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 				foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
+					/**
+					 * This is a hack for the default value of checkboxes
+					 * if the config value exists that means that the user
+					 * has set this value, and that the form should not use
+					 * the default.  Otherwise, use the default.
+					 */
 					if (config_value_exists($sub_field_name)) {
 						$form_array[$field_name]['items'][$sub_field_name]['form_id'] = 1;
 					}
@@ -417,6 +423,12 @@ default:
 					}
 				}
 			} else {
+				/**
+				 * This is a hack for the default value of checkboxes
+				 * if the config value exists that means that the user
+				 * has saved this value and that the form should not use
+				 * the default.  Otherwise, use the default.
+				 */
 				if (config_value_exists($field_name)) {
 					$form_array[$field_name]['form_id'] = 1;
 				}
