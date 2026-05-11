@@ -558,13 +558,13 @@ function data_edit() {
 			} elseif ($aud == false) {
 				$fields_data_input_edit['whitelist_verification']['value'] = __('White List Verification Failed.  Run CLI script input_whitelist.php to correct.');
 
-				if (is_writable($config['input_whitelist']) && is_writable(dirname($config['input_whitelist']))) {
+				if (is_writable(dirname($config['input_whitelist'])) && (!file_exists($config['input_whitelist']) || is_writable($config['input_whitelist']))) {
 					$whitelist_issues = true;
 				}
 			} elseif ($aud == '-1') {
 				$fields_data_input_edit['whitelist_verification']['value'] = __('Input String does not exist in White List.  Run CLI script input_whitelist.php to correct.');
 
-				if (is_writable($config['input_whitelist']) && is_writable(dirname($config['input_whitelist']))) {
+				if (is_writable(dirname($config['input_whitelist'])) && (!file_exists($config['input_whitelist']) || is_writable($config['input_whitelist']))) {
 					$whitelist_issues = true;
 				}
 			}
