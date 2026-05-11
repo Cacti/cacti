@@ -7371,21 +7371,42 @@ function cacti_csv_safe($value) {
  *   attempt. The same regex gates both the GUI save path (data_input.php)
  *   and XML/package import (lib/import.php) so the two cannot drift.
  *
- *   Blocked characters: ; & | ` $ \ \n \r ' " < > ( ) { }
+ *   However, for backward compatibility, we check the setting of
+ *   allow unsafe metacharacters for administrators that may have historically
+ *   used simple commands for data input methods including things like
+ *   ps -ef | grep string | wc -l which have been historically allowed,
+ *   but are unsafe for web applications.
+ *
+ *   Otherwise, the following are blocked: ; & | ` $ \ \n \r ' " < > ( ) { }
+ *
  *   These cover the original set plus single-quote, double-quote, redirect
  *   operators (<>), and subshell delimiters ((){}), which were absent before
  *   and allowed bypass payloads such as /bin/sh -c 'id' or cmd > /tmp/x.
  *
- * @param $input_string - (string) The candidate input_string template
+ *   This check allows some special cases such as <path_cacti> and input
+ *   parameters such as <arg1> <myparametername>, etc. and therefore the
+ *   preg_replace before the test for metacharacters.
  *
- * @returns - (bool) true if the value is safe to persist
+ * @param string $input_string The candidate input_string template
+ *
+ * @return bool True if the value is safe to persist
  */
 function cacti_input_string_is_safe($input_string) {
 	if ($input_string === '' || $input_string === null) {
 		return true;
 	}
 
-	$bare = preg_replace('/<[a-zA-Z_]+>/', '', $input_string);
+	$bare = preg_replace('/<[a-zA-Z0-9_]+>/', '', $input_string);
+
+	// Never allow redirects regardless of metachars setting
+	if (str_contains($bare, '>') || str_contains($bare, '<')) {
+		return false;
+	}
+
+	// If the Cacti admin permit's unsafe metachars short circuit here
+	if (read_config_option('allow_unsafe_metachars') == 'on') {
+		return true;
+	}
 
 	return !preg_match('/[;&|`$\\\\\n\r\'"<>()\{\}]/', $bare);
 }

@@ -26,10 +26,15 @@
  * Standard HTML form elements
  */
 
-/* draw_edit_form - draws an html edit form
-   @arg $array - an array that contains all of the information needed to draw
-     the html form. see the arrays contained in include/global_settings.php
-     for the extract syntax of this array */
+/**
+ * draw_edit_form - draws an html edit form
+ *
+ * @param array $array - an array that contains all of the information needed to draw
+ *   the html form. see the arrays contained in include/global_settings.php
+ *   for the extract syntax of this array
+ *
+ * @return void
+ */
 function draw_edit_form($array) {
 	if (cacti_sizeof($array)) {
 		foreach ($array as $top_branch => $top_children) {
@@ -188,10 +193,15 @@ function draw_edit_form($array) {
 
 }
 
-/* draw_edit_control - draws a single control to be used on an html edit form
-   @arg $field_name - the name of the control
-   @arg $field_array - an array containing data for this control. see include/global_form.php
-     for more specific syntax */
+/**
+ * draw_edit_control - draws a single control to be used on an html edit form
+ *
+ * @param string $field_name - the name of the control
+ * @param array  $field_array - an array containing data for this control. see include/global_form.php
+ *   for more specific syntax
+ *
+ * @return void
+ */
 function draw_edit_control($field_name, &$field_array) {
 	switch ($field_array['method']) {
 	case 'textbox':
@@ -534,11 +544,16 @@ function draw_edit_control($field_name, &$field_array) {
 	}
 }
 
-/* form_button - draws a standard button form element
-   @arg $form_name - the name of this form element
-   @arg $value - the display value for the button
-   @arg $title - the hover title for the button
-   @arg $action - the onClick action for the button */
+/**
+ * form_button - draws a standard button form element
+ *
+ * @param string $form_name - the name of this form element
+ * @param string $value - the display value for the button
+ * @param string $title - the hover title for the button
+ * @param string $action - the onClick action for the button
+ *
+ * @return void
+ */
 function form_button($form_name, $value, $title = '', $action = '') {
 	if ($action != '') {
 		$_SESSION['form_click_actions'][$form_name] = $action;
@@ -551,11 +566,16 @@ function form_button($form_name, $value, $title = '', $action = '') {
 		($title!='' ? "title='" . html_escape($title) . "'":"") . ">";
 }
 
-/* form_button - draws a standard button form element
-   @arg $form_name - the name of this form element
-   @arg $value - the display value for the button
-   @arg $title - the hover title for the button
-   @arg $action - the onClick action for the button */
+/**
+ * form_submit - draws a standard button form element
+ *
+ * @param string $form_name - the name of this form element
+ * @param string $value - the display value for the button
+ * @param string $title - the hover title for the button
+ * @param string $action - the onClick action for the button
+ *
+ * @return void
+ */
 function form_submit($form_name, $value, $title = '', $action = '') {
 	if ($action != '') {
 		$_SESSION['form_click_actions'][$form_name] = $action;
@@ -568,10 +588,14 @@ function form_submit($form_name, $value, $title = '', $action = '') {
 		($title!='' ? "title='" . html_escape($title) . "'":"") . ">";
 }
 
-/* form_file - draws a standard html file input element
-   @arg $form_name - the name of this form element
-   @arg $form_size - the size (width) of the textbox
-   @arg $form_accept - the file types permitted
+/**
+ * form_file - draws a standard html file input element
+ *
+ * @param string $form_name - the name of this form element
+ * @param mixed  $form_size - the size (width) of the textbox
+ * @param string $form_accept - the file types permitted
+ *
+ * @return void
  */
 function form_file($form_name, $form_size = 30, $form_accept = '') {
 	print "<div>";
@@ -590,21 +614,26 @@ function form_file($form_name, $form_size = 30, $form_accept = '') {
 	print "</div>";
 }
 
-/* form_filepath_box - draws a standard html textbox and provides status of a files existence
-   @arg $form_name - the name of this form element
-   @arg $form_previous_value - the current value of this form element
-   @arg $form_default_value - the value of this form element to use if there is
-     no current value available
-   @arg $form_max_length - the maximum number of characters that can be entered
-     into this textbox
-   @arg $form_size - the size (width) of the textbox
-   @arg $type - the type of textbox, either 'text' or 'password'
-   @arg $current_id - used to determine if a current value for this form element
-     exists or not. a $current_id of '0' indicates that no current value exists,
-     a non-zero value indicates that a current value does exist
-   @arg data - array containing 'text' element for display and if 'error' element present, shows failure */
+/**
+ * form_filepath_box - draws a standard html textbox and provides status of a files existence
+ *
+ * @param string $form_name - the name of this form element
+ * @param mixed  $form_previous_value - the current value of this form element
+ * @param string $form_default_value - the value of this form element to use if there is
+ *   no current value available
+ * @param mixed  $form_max_length - the maximum number of characters that can be entered
+ *   into this textbox
+ * @param mixed  $form_size - the size (width) of the textbox
+ * @param string $type - the type of textbox, either 'text' or 'password'
+ * @param mixed  $current_id - used to determine if a current value for this form element
+ *   exists or not. An empty $current_id indicates that no current value exists,
+ *   a non-zero value indicates that a current value does exist
+ * @param mixed  $data - array containing 'text' element for display and if 'error' element present, shows failure
+ *
+ * @return void
+ */
 function form_filepath_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = 'text', $current_id = 0, $data = false) {
-	if (($form_previous_value == '') && (empty($current_id))) {
+	if (empty($current_id) && empty($form_previous_value)) {
 		$form_previous_value = $form_default_value;
 	}
 
@@ -660,20 +689,25 @@ function form_filepath_box($form_name, $form_previous_value, $form_default_value
 	print " id='$form_name' placeholder='" . __esc('Enter a valid file path') . "' name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : '') . " value='" . html_escape($form_previous_value) . "'>" . $extra_data;
 }
 
-/* form_dirpath_box - draws a standard html textbox and provides status of a directories existence
-   @arg $form_name - the name of this form element
-   @arg $form_previous_value - the current value of this form element
-   @arg $form_default_value - the value of this form element to use if there is
-     no current value available
-   @arg $form_max_length - the maximum number of characters that can be entered
-     into this textbox
-   @arg $form_size - the size (width) of the textbox
-   @arg $type - the type of textbox, either 'text' or 'password'
-   @arg $current_id - used to determine if a current value for this form element
-     exists or not. a $current_id of '0' indicates that no current value exists,
-     a non-zero value indicates that a current value does exist */
+/**
+ * form_dirpath_box - draws a standard html textbox and provides status of a directories existence
+ *
+ * @param string $form_name - the name of this form element
+ * @param mixed  $form_previous_value - the current value of this form element
+ * @param string $form_default_value - the value of this form element to use if there is
+ *   no current value available
+ * @param int    $form_max_length - the maximum number of characters that can be entered
+ *   into this textbox
+ * @param int    $form_size - the size (width) of the textbox
+ * @param string $type - the type of textbox, either 'text' or 'password'
+ * @param mixed  $current_id - used to determine if a current value for this form element
+ *   exists or not. An empty $current_id indicates that no current value exists,
+ *   a non-zero value indicates that a current value does exist
+ *
+ * @return void
+ */
 function form_dirpath_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = 'text', $current_id = 0) {
-	if (($form_previous_value == '') && (empty($current_id))) {
+	if (empty($current_id) && empty($form_previous_value)) {
 		$form_previous_value = $form_default_value;
 	}
 
@@ -707,23 +741,27 @@ function form_dirpath_box($form_name, $form_previous_value, $form_default_value,
 	print " id='$form_name' name='$form_name' placeholder='" . __esc('Enter a valid directory path'). "' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : '') . " value='" . html_escape($form_previous_value) . "'>" . $extra_data;
 }
 
-/* form_text_box - draws a standard html textbox
-   @arg $form_name - the name of this form element
-   @arg $form_previous_value - the current value of this form element
-   @arg $form_default_value - the value of this form element to use if there is
-     no current value available
-   @arg $form_max_length - the maximum number of characters that can be entered
-     into this textbox
-   @arg $form_size - the size (width) of the textbox
-   @arg $type - the type of textbox, either 'text' or 'password'
-   @arg $current_id - used to determine if a current value for this form element
-     exists or not. a $current_id of '0' indicates that no current value exists,
-     a non-zero value indicates that a current value does exist
-   @arg $placeholder - place a placeholder over an empty field
-   @arg $title - use a title attribute when hovering over the textbox
+/**
+ * form_text_box - draws a standard html textbox
+ *
+ * @param string $form_name - the name of this form element
+ * @param mixed  $form_previous_value - the current value of this form element
+ * @param string $form_default_value - the value of this form element to use if there is
+ *   no current value available
+ * @param int    $form_max_length - the maximum number of characters that can be entered
+ *   into this textbox
+ * @param int    $form_size - the size (width) of the textbox
+ * @param string $type - the type of textbox, either 'text' or 'password'
+ * @param mixed  $current_id - used to determine if a current value for this form element
+ *   exists or not. An empty $current_id indicates that no current value exists,
+ *   a non-zero value indicates that a current value does exist
+ * @param string $placeholder - place a placeholder over an empty field
+ * @param string $title - use a title attribute when hovering over the textbox
+ *
+ * @return void
  */
 function form_text_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = 'text', $current_id = 0, $placeholder = '', $title = '') {
-	if (($form_previous_value == '') && (empty($current_id))) {
+	if (empty($current_id) && empty($form_previous_value)) {
 		$form_previous_value = $form_default_value;
 	}
 
@@ -753,11 +791,16 @@ function form_text_box($form_name, $form_previous_value, $form_default_value, $f
 	print " id='$form_name' " . ($placeholder != '' ? "placeholder='" . html_escape($placeholder) . "'":'') . " name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : '') . " value='" . html_escape($form_previous_value) . "'>";
 }
 
-/* form_hidden_box - draws a standard html hidden element
-   @arg $form_name - the name of this form element
-   @arg $form_previous_value - the current value of this form element
-   @arg $form_default_value - the value of this form element to use if there is
-     no current value available */
+/**
+ * form_hidden_box - draws a standard html hidden element
+ *
+ * @param string $form_name - the name of this form element
+ * @param mixed  $form_previous_value - the current value of this form element
+ * @param string $form_default_value - the value of this form element to use if there is
+ *   no current value available
+ *
+ * @return void
+ */
 function form_hidden_box($form_name, $form_previous_value, $form_default_value, $in_form = false) {
 	if ($form_previous_value == '') {
 		$form_previous_value = $form_default_value;
@@ -1001,7 +1044,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
    @param string $form_default_value - the value of this form element to use if there is
      no current value available
    @param int $current_id - used to determine if a current value for this form element
-     exists or not. a $current_id of '0' indicates that no current value exists,
+     exists or not. An empty $current_id indicates that no current value exists,
      a non-zero value indicates that a current value does exist
    @param string $class - specify a css class
    @param string $on_change - specify a javascript onchange action
@@ -1009,7 +1052,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
    @param boolean $show_label - show the form caption in the checkbox
 */
 function form_checkbox($form_name, $form_previous_value, $form_caption, $form_default_value, $current_id = 0, $class = '', $on_change = '', $title = '', $show_label = false) {
-	if (($form_previous_value === null) && (empty($current_id))) {
+	if (empty($current_id) && empty($form_previous_value)) {
 		$form_previous_value = $form_default_value;
 	}
 
@@ -1254,22 +1297,27 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 	print '</select>';
 }
 
-/* form_font_box - draws a standard html textbox and provides status of a fonts existence
-   @arg $form_name - the name of this form element
-   @arg $form_previous_value - the current value of this form element
-   @arg $form_default_value - the value of this form element to use if there is
-     no current value available
-   @arg $form_max_length - the maximum number of characters that can be entered
-     into this textbox
-   @arg $form_size - the size (width) of the textbox
-   @arg $type - the type of textbox, either 'text' or 'password'
-   @arg $current_id - used to determine if a current value for this form element
-     exists or not. a $current_id of '0' indicates that no current value exists,
-     a non-zero value indicates that a current value does exist */
+/**
+ * form_font_box - draws a standard html textbox and provides status of a fonts existence
+ *
+ *  @param string $form_name - the name of this form element
+ *  @param mixed  $form_previous_value - the current value of this form element
+ *  @param string $form_default_value - the value of this form element to use if there is
+ *    no current value available
+ *  @param int    $form_max_length - the maximum number of characters that can be entered
+ *    into this textbox
+ *  @param int    $form_size - the size (width) of the textbox
+ *  @param string $type - the type of textbox, either 'text' or 'password'
+ *  @param mixed  $current_id - used to determine if a current value for this form element
+ *    exists or not. An empty $current_id indicates that no current value exists,
+ *    a non-zero value indicates that a current value does exist
+ *
+ *  @return void
+ */
 function form_font_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = 'text', $current_id = 0, $placeholder = '') {
 	global $config;
 
-	if (($form_previous_value == '') && (empty($current_id))) {
+	if (empty($current_id) && empty($form_previous_value)) {
 		$form_previous_value = $form_default_value;
 	}
 
@@ -1302,11 +1350,17 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
 	print " id='$form_name' " . ($placeholder != '' ? "placeholder='" . html_escape($placeholder) . "'":'') . " name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : '') . " value='" . html_escape($form_previous_value) . "'>" . $extra_data;
 }
 
-/* form_confirm - draws a table presenting the user with some choice and allowing
-     them to either proceed (delete) or cancel
-   @arg $body_text - the text to prompt the user with on this form
-   @arg $cancel_url - the url to go to when the user clicks 'cancel'
-   @arg $action_url - the url to go to when the user clicks 'delete' */
+/**
+ * form_confirm - draws a table presenting the user with some choice and allowing
+ * them to either proceed (delete) or cancel
+ *
+ * @param string $title_text - the title text for this form
+ * @param string $body_text - the text to prompt the user with on this form
+ * @param string $cancel_url - the url to go to when the user clicks 'cancel'
+ * @param string $action_url - the url to go to when the user clicks 'delete'
+ *
+ * @return void
+ */
 function form_confirm($title_text, $body_text, $cancel_url, $action_url) { ?>
 	<br>
 	<table style="width:60%;">
@@ -1326,10 +1380,15 @@ function form_confirm($title_text, $body_text, $cancel_url, $action_url) { ?>
 	</table>
 <?php }
 
-/* form_confirm_buttons - draws a cancel and delete button suitable for display
-     on a confirmation form
-   @arg $cancel_url - the url to go to when the user clicks 'cancel'
-   @arg $action_url - the url to go to when the user clicks 'delete' */
+/**
+ * form_confirm_buttons - draws a cancel and delete button suitable for display
+ * on a confirmation form
+ *
+ * @param string $action_url - the url to go to when the user clicks 'delete'
+ * @param string $cancel_url - the url to go to when the user clicks 'cancel'
+ *
+ * @return void
+ */
 function form_confirm_buttons($action_url, $cancel_url) {
 	global $config;
 	?>
@@ -1341,11 +1400,15 @@ function form_confirm_buttons($action_url, $cancel_url) {
 	</tr>
 <?php }
 
-/* form_save_button - draws a (save|create) and cancel button at the bottom of
-     an html edit form
-   @arg $cancel_url - the url to go to when the user clicks 'cancel'
-   @arg $force_type - if specified, will force the 'action' button to be either
-     'save' or 'create'. otherwise this field should be properly auto-detected */
+/**
+ * form_save_button - draws a (save|create) and cancel button at the bottom of
+ * an html edit form
+ * @param string $cancel_url - the url to go to when the user clicks 'cancel'
+ * @param string $force_type - if specified, will force the 'action' button to be either
+ *   'save' or 'create'. otherwise this field should be properly auto-detected
+ *
+ * @return void
+ */
 function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $ajax = true) {
 	$calt = __('Cancel');
 
@@ -1394,9 +1457,14 @@ function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $aja
 	form_end($ajax);
 }
 
-/* form_save_buttons - draws a set of buttons at the end of a form
-     an html edit form
-   @arg $buttons - an array of 'id', 'name' buttons */
+/**
+ * form_save_buttons - draws a set of buttons at the end of a form
+ * an html edit form.
+ *
+ * @param array $buttons - an array of 'id', 'name' buttons
+ *
+ * @return void
+ */
 function form_save_buttons($buttons) {
 	?>
 	<table style='width:100%;text-align:center;'>
@@ -1412,9 +1480,15 @@ function form_save_buttons($buttons) {
 	<?php
 }
 
-/* form_start - draws post form start. To be combined with form_end()
-   @arg $action - a mandatory php file URI
-   @arg $id     - an optional id, if empty, one will be generated */
+/**
+ * form_start - draws post form start. To be combined with form_end()
+ *
+ * @param string $action - a mandatory php file URI
+ * @param mixed  $id     - an optional id, if empty, one will be generated
+ * @param bool $multipart - Is this a multipart form object
+ *
+ * @return void
+ */
 function form_start($action, $id = '', $multipart = false) {
 	global $form_id, $form_action;
 	static $counter = 1;
@@ -1431,7 +1505,13 @@ function form_start($action, $id = '', $multipart = false) {
 	print "<form class='cactiFormStart' id='$form_id' name='$form_id' action='$form_action' autocomplete='off' method='post'" . ($multipart ? " enctype='multipart/form-data'":'') . ">";
 }
 
-/* form_end - draws post form end. To be combined with form_start() */
+/**
+ * form_end - draws post form end. To be combined with form_start()
+ *
+ * @param  bool $ajax Is this an ajax form end?
+ *
+ * @return void
+ */
 function form_end($ajax = true) {
 	global $form_id, $form_action;
 
@@ -1544,4 +1624,3 @@ function form_end($ajax = true) {
 		<?php
 	}
 }
-
