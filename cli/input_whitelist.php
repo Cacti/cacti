@@ -36,7 +36,7 @@ if ($config['poller_id'] > 1) {
 $audit  = false;
 $update = false;
 $push   = false;
-$ldi    = false;
+$id     = false;
 
 // process calling arguments
 $parms = $_SERVER['argv'];
@@ -54,7 +54,7 @@ if (cacti_sizeof($parms)) {
 		switch ($arg) {
 			case '--id':
 			case '-I':
-				$ldi = intval($value);
+				$id = intval($value);
 				break;
 			case '--audit':
 			case '-A':
@@ -135,10 +135,10 @@ if ($audit) {
 		exit(1);
 	}
 
-	if ($ldi !== false) {
-		$ldi_hash = db_fetch_cell_prepared('SELECT hash FROM data_input WHERE id = ?', [$ldi]);
+	if ($id !== false) {
+		$id_hash = db_fetch_cell_prepared('SELECT hash FROM data_input WHERE id = ?', [$id]);
 	} else {
-		$ldi_hash = false;
+		$id_hash = false;
 	}
 
 	$input_db = db_fetch_assoc('SELECT id, name, hash, input_string
@@ -157,7 +157,7 @@ if ($audit) {
 		// format data for easier consumption
 		$input = array();
 		foreach ($input_db as $value) {
-			if ($ldi_hash === false || $ldi_hash == $value['hash']) {
+			if ($id_hash === false || $id_hash == $value['hash']) {
 				if ($push && isset($input_ws[$value['hash']])) {
 					if ($value['input_string'] != $input_ws[$value['hash']]) {
 						$pushes[$value['id']] = $value['name'];
