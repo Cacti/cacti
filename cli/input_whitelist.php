@@ -137,6 +137,12 @@ if ($audit) {
 
 	if ($id !== false) {
 		$id_hash = db_fetch_cell_prepared('SELECT hash FROM data_input WHERE id = ?', [$id]);
+
+		if (empty($ldi_hash)) {
+			print 'ERROR: Data Input id \'' . $ldi . '\' was not found or has an empty hash.' . PHP_EOL;
+
+			exit(1);
+		}
 	} else {
 		$id_hash = false;
 	}
