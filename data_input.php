@@ -70,7 +70,7 @@ switch (get_request_var('action')) {
 
 		$output = shell_exec($php . ' -q ' . $config['base_path'] . '/cli/input_whitelist.php --update --push --id=' . get_request_var('id'));
 
-		raise_message('whitelist_updated', $output, MESSAGE_LEVEL_INFO);
+		raise_message('whitelist_updated', html_escape($output), MESSAGE_LEVEL_INFO);
 	case 'edit':
 		top_header();
 		data_edit();
