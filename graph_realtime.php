@@ -229,7 +229,7 @@ switch (grv('action')) {
 			'--graph=' . $local_graph_id,
 			'--interval=' . ((int) $graph_data_array['ds_step']),
 			'--poller_id=' . hash('sha256', session_id()),
-		], ['expected_exit_codes' => range(0, 255)]);
+		], ['timeout' => null, 'expected_exit_codes' => range(0, 255)]);
 
 		// construct the image name
 		$graph_data_array['export_realtime'] = $graph_rrd;

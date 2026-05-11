@@ -272,7 +272,7 @@ function upgrade_database() : void {
 								CACTI_PATH_PLUGINS . '/' . $pname . '/database_upgrade.php',
 								'--type=large',
 								'--force-ver=' . $old,
-							], ['expected_exit_codes' => range(0, 255)]);
+							], ['timeout' => null, 'expected_exit_codes' => range(0, 255)]);
 							$output      = $result->outputLines();
 							$return_var  = $result->exitCode();
 
