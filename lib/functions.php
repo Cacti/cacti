@@ -7392,7 +7392,7 @@ function cacti_csv_safe($value) {
  *     <path_cacti>/scripts/x.php "<reason>"
  *   is preserved.
  *
- * @param $input_string - (string) The candidate input_string template
+ * @param string $input_string The candidate input_string template
  *
  * @return bool True if the value is safe to persist
  */
