@@ -166,7 +166,11 @@ if ($audit) {
 
 				$input[$value['hash']] = $value['input_string'];
 			} else {
-				$input[$value['hash']] = $input_ws[$value['hash']];
+				if (isset($input_ws[$value['hash']])) {
+					$input[$value['hash']] = $input_ws[$value['hash']];
+				} else {
+					$input[$value['hash']] = $value['input_string'];
+				}
 			}
 		}
 
