@@ -160,6 +160,12 @@ test('env_set rejects keys starting with a digit', function () {
 	})->toThrow(CactiProcessException::class);
 });
 
+test('plugin database upgrades opt out of the default process timeout', function () {
+	$source = file_get_contents(dirname(__DIR__, 2) . '/cli/audit_database.php');
+
+	expect($source)->toMatch("/CactiProcess::run\\s*\\([\\s\\S]*database_upgrade\\.php[\\s\\S]*'timeout'\\s*=>\\s*null[\\s\\S]*'expected_exit_codes'/");
+});
+
 test('Windows env baseline preserves SYSTEMROOT, COMSPEC, PATHEXT, WINDIR', function () {
 	// PHP refuses to start without SYSTEMROOT on Windows and proc_open()
 	// relies on COMSPEC/PATHEXT for cmd.exe resolution. Source-scan so the

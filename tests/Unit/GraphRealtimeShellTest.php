@@ -52,3 +52,9 @@ test('graph_realtime.php spawns the poller through CactiProcess in array-argv mo
 	expect($contents)->toContain('CactiProcess::run');
 	expect($contents)->toContain('poller_realtime.php');
 });
+
+test('graph_realtime.php disables the default process timeout for realtime poller spawn', function () use ($graphRealtimePath) {
+	$contents = file_get_contents($graphRealtimePath);
+
+	expect($contents)->toMatch("/CactiProcess::run\\s*\\([\\s\\S]*'timeout'\\s*=>\\s*null[\\s\\S]*'expected_exit_codes'/");
+});
