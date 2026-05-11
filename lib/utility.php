@@ -45,12 +45,12 @@ function repopulate_poller_cache() {
 
 	include_once($config['library_path'] . '/api_data_source.php');
 
-	$poller_data = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . ' dl.*, h.poller_id
+	$poller_data = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . ' dl.*, COALESCE(h.poller_id, 1) AS poller_id
 		FROM data_local AS dl
-		INNER JOIN host AS h
+		LEFT JOIN host AS h
 		ON dl.host_id=h.id
 		WHERE dl.snmp_query_id = 0 OR (dl.snmp_query_id > 0 AND dl.snmp_index != "")
-		ORDER BY h.poller_id ASC, h.id ASC');
+		ORDER BY COALESCE(h.poller_id, 1) ASC, h.id ASC');
 
 	$poller_items   = array();
 	$local_data_ids = array();
@@ -585,7 +585,7 @@ function update_poller_cache($data_source, $commit = false) {
 }
 
 function push_out_data_input_method($data_input_id) {
-	$data_sources = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dl.*, h.poller_id
+	$data_sources = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dl.*, COALESCE(h.poller_id, 1) AS poller_id
 		FROM data_local AS dl
 		INNER JOIN (
 			SELECT DISTINCT local_data_id
@@ -597,7 +597,7 @@ function push_out_data_input_method($data_input_id) {
 		LEFT JOIN host AS h
 		ON h.id = dl.host_id
 		WHERE dl.snmp_query_id = 0 OR (dl.snmp_query_id > 0 AND dl.snmp_index != "")
-		ORDER BY h.poller_id ASC',
+		ORDER BY COALESCE(h.poller_id, 1) ASC',
 		array($data_input_id));
 
 	$poller_items = array();
@@ -1008,9 +1008,9 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 	} elseif (cacti_sizeof($local_data_ids)) {
 		/* Map each local_data_id to its host's poller. */
 		$safe_ids = array_map('intval', $local_data_ids);
-		$rows     = db_fetch_assoc('SELECT dl.id AS local_data_id, h.poller_id
+		$rows     = db_fetch_assoc('SELECT dl.id AS local_data_id, COALESCE(h.poller_id, 1) AS poller_id
 			FROM data_local AS dl
-			INNER JOIN host AS h
+			LEFT JOIN host AS h
 			ON h.id = dl.host_id
 			WHERE dl.id IN (' . implode(',', $safe_ids) . ')');
 
