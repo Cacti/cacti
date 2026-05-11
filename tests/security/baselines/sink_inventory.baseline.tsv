@@ -76,17 +76,17 @@ cmd_exec	./lib/snmp.php:409			exec($command, $snmp_value);
 cmd_exec	./lib/snmpagent.php:659		/* add pollers of a distributed system (future) */
 cmd_exec	./lib/spikekill.php:446			shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' dump ' . cacti_escapeshellarg($this->rrdfile) . ' > ' . cacti_escapeshellarg($xmlfile));
 cmd_exec	./lib/spikekill.php:772			$response = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' restore -f -r ' . cacti_escapeshellarg($xmlfile) . ' ' . cacti_escapeshellarg($rrdfile));
-cmd_exec	./lib/utility.php:1705						$nproc = system('nproc');
-cmd_exec	./lib/utility.php:1823			exec('wmic os get FreePhysicalMemory', $memInfo['FreePhysicalMemory']);
-cmd_exec	./lib/utility.php:1824			exec('wmic os get FreeSpaceInPagingFiles', $memInfo['FreeSpaceInPagingFiles']);
-cmd_exec	./lib/utility.php:1825			exec('wmic os get FreeVirtualMemory', $memInfo['FreeVirtualMemory']);
-cmd_exec	./lib/utility.php:1826			exec('wmic os get SizeStoredInPagingFiles', $memInfo['SizeStoredInPagingFiles']);
-cmd_exec	./lib/utility.php:1827			exec('wmic os get TotalVirtualMemorySize', $memInfo['TotalVirtualMemorySize']);
-cmd_exec	./lib/utility.php:1828			exec('wmic os get TotalVisibleMemorySize', $memInfo['TotalVisibleMemorySize']);
-cmd_exec	./lib/utility.php:1860				exec('/usr/bin/free', $output, $exit_code);
-cmd_exec	./lib/utility.php:1911		$json     = shell_exec($php . ' -q ' . $php_file);
-cmd_exec	./lib/utility.php:1979		$json     = shell_exec($php . ' -q ' . $php_file);
-cmd_exec	./lib/utility.php:2111		$json     = shell_exec($php . ' -q ' . $php_file);
+cmd_exec	./lib/utility.php:1706						$nproc = system('nproc');
+cmd_exec	./lib/utility.php:1824			exec('wmic os get FreePhysicalMemory', $memInfo['FreePhysicalMemory']);
+cmd_exec	./lib/utility.php:1825			exec('wmic os get FreeSpaceInPagingFiles', $memInfo['FreeSpaceInPagingFiles']);
+cmd_exec	./lib/utility.php:1826			exec('wmic os get FreeVirtualMemory', $memInfo['FreeVirtualMemory']);
+cmd_exec	./lib/utility.php:1827			exec('wmic os get SizeStoredInPagingFiles', $memInfo['SizeStoredInPagingFiles']);
+cmd_exec	./lib/utility.php:1828			exec('wmic os get TotalVirtualMemorySize', $memInfo['TotalVirtualMemorySize']);
+cmd_exec	./lib/utility.php:1829			exec('wmic os get TotalVisibleMemorySize', $memInfo['TotalVisibleMemorySize']);
+cmd_exec	./lib/utility.php:1861				exec('/usr/bin/free', $output, $exit_code);
+cmd_exec	./lib/utility.php:1912		$json     = shell_exec($php . ' -q ' . $php_file);
+cmd_exec	./lib/utility.php:1980		$json     = shell_exec($php . ' -q ' . $php_file);
+cmd_exec	./lib/utility.php:2112		$json     = shell_exec($php . ' -q ' . $php_file);
 cmd_exec	./poller_realtime.php:145	shell_exec("$command_string $extra_args");
 cmd_exec	./poller_realtime.php:229					shell_exec($command);
 cmd_exec	./poller_spikekill.php:247				$response = exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .

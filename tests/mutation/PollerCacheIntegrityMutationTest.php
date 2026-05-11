@@ -118,11 +118,25 @@ test('push_out_host derives poller_id from data_local when host_id is 0 (Mutatio
 	expect($body)->not->toBe('');
 
 	/* The fix: an `elseif (cacti_sizeof($local_data_ids))` clause that
-	 * looks up each local_data_id's poller via JOIN against data_local
-	 * and host. Pin the JOIN shape and the local_data_ids consumer. */
+	 * looks up each local_data_id's poller via LEFT JOIN against host.
+	 * host_id=0 rows have no host record, so COALESCE keeps them on
+	 * the main poller instead of dropping them from the buffer. */
 	expect($body)->toContain('elseif (cacti_sizeof($local_data_ids))');
-	expect($body)->toContain('INNER JOIN data_local AS dl');
-	expect($body)->toContain('INNER JOIN host AS h');
+	expect($body)->toContain('LEFT JOIN host AS h');
+	expect($body)->toContain('COALESCE(h.poller_id, 1) AS poller_id');
+	expect($body)->toContain('without a device have host_id=0 and belong to the main poller');
+});
+
+test('no-device data sources default to main poller in all rebuild paths (Mutation Protection)', function () use ($utilitySource) {
+	/* Full repopulate, direct update_poller_cache(..., true), data input
+	 * method pushes, and push_out_host(host_id=0) all have to preserve
+	 * local_data rows with host_id=0. Those rows cannot INNER JOIN host,
+	 * so every data_local->host poller lookup must be nullable and
+	 * default to poller 1. */
+	expect(substr_count($utilitySource, 'COALESCE(h.poller_id, 1) AS poller_id'))->toBeGreaterThanOrEqual(4);
+	expect(substr_count($utilitySource, 'LEFT JOIN host AS h'))->toBeGreaterThanOrEqual(4);
+	expect(strpos($utilitySource, 'INNER JOIN host AS h
+		ON h.id = dl.host_id'))->toBeFalse();
 });
 
 test('push_out_host groups host_id=0 batches by poller before flush (Mutation Protection)', function () use ($utilitySource) {
