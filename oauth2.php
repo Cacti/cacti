@@ -23,6 +23,7 @@
 */
 
 require('./include/global.php');
+require_once(CACTI_PATH_LIBRARY . '/CactiOAuth.php');
 
 if (read_config_option('settings_how') != 3) {
 	cacti_log('WARNING: Trying get OAuth2 token but different mail method is configured');

@@ -5610,6 +5610,8 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 			return __('No OAuth2 refresh token is specified. Configure OAuth2 correctly.');
 		}
 
+		require_once(CACTI_PATH_LIBRARY . '/CactiOAuth.php');
+
 		$providerName = read_config_option('settings_oauth2_provider');
 		$params       = [
 			'clientId'     => $clientId,
