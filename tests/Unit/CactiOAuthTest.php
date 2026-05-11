@@ -98,3 +98,13 @@ it('returns empty defaults for an unknown provider', function () {
 it('returns empty defaults for an empty provider name', function () {
     expect(CactiOAuth::getDefaultOptions(''))->toBe([]);
 });
+
+it('runtime OAuth entrypoints load the flat CactiOAuth helper before use', function () {
+    $oauth2 = file_get_contents(dirname(__DIR__, 2) . '/oauth2.php');
+    $functions = file_get_contents(dirname(__DIR__, 2) . '/lib/functions.php');
+
+    expect($oauth2)->toContain("require_once(CACTI_PATH_LIBRARY . '/CactiOAuth.php')")
+        ->and($oauth2)->toContain('CactiOAuth::getProvider')
+        ->and($functions)->toContain("require_once(CACTI_PATH_LIBRARY . '/CactiOAuth.php')")
+        ->and($functions)->toContain('CactiOAuth::getProvider');
+});
