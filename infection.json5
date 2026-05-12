@@ -1,0 +1,26 @@
+// Baseline mutation testing config for Cacti.
+//
+// Feature PRs that want to gate their own files on mutation score should
+// override the `source.directories` / `filter` and `testFrameworkOptions`
+// fields to scope mutation to the files they touched. Either copy this file
+// into the feature branch and edit it, or pass `--filter='lib/yourfile.php'`
+// on the Infection CLI. The thresholds below (minMsi / minCoveredMsi) are
+// the project floor; feature PRs may raise them but should not lower them.
+{
+	$schema: "include/vendor/infection/infection/resources/schema.json",
+	source: {
+		directories: ["lib"],
+		excludes: ["vendor", "tests"]
+	},
+	mutators: {
+		"@default": true
+	},
+	testFramework: "pest",
+	minMsi: 70,
+	minCoveredMsi: 80,
+	timeout: 30,
+	tmpDir: "build/infection",
+	logs: {
+		text: "build/infection/infection.log"
+	}
+}
