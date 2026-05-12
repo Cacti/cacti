@@ -53,17 +53,20 @@
         "php-mqtt/client": "^2.2",
         "phpmailer/phpmailer": "^7.0.2",
         "phpseclib/phpseclib": "^3.0",
+        "psr/log": "^1.1",
         "slim/slim": "^4.14",
         "stevenmaguire/oauth2-keycloak": "^6.1.0",
-        "stevenmaguire/oauth2-microsoft": "^2.2"
+        "stevenmaguire/oauth2-microsoft": "^2.2",
+        "symfony/filesystem": "^6.0",
+        "symfony/http-foundation": "^6.0"
     },
     "require-dev": {
+        "composer/xdebug-handler": "^3.0",
         "friendsofphp/php-cs-fixer": "^3.86",
         "overtrue/phplint": "^9.6",
-        "phpstan/phpstan": "^2.1.21",
         "pestphp/pest": "^2",
         "pestphp/pest-plugin-drift": "^2.0",
-        "composer/xdebug-handler": "^3.0",
+        "phpstan/phpstan": "^2.1.21",
         "rector/rector": "^2.1.2"
     },
     "scripts": {
@@ -92,7 +95,7 @@
         "sort-packages": true,
         "vendor-dir": "./include/vendor",
         "audit": {
-          "block-insecure": false
+            "block-insecure": false
         },
         "allow-plugins": {
             "pestphp/pest-plugin": true
