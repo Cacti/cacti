@@ -64,11 +64,13 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'whitelist_update':
-		get_filter_request_var('id');
+		$id = get_filter_request_var('id');
 
-		$php = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+		$php        = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+		$script     = cacti_escapeshellarg($config['base_path'] . '/cli/input_whitelist.php');
+		$id_arg     = cacti_escapeshellarg('--id=' . $id);
 
-		$output = shell_exec($php . ' -q ' . $config['base_path'] . '/cli/input_whitelist.php --update --push --id=' . get_request_var('id'));
+		$output = shell_exec($php . ' -q ' . $script . ' --update --push ' . $id_arg);
 
 		raise_message('whitelist_updated', html_escape($output), MESSAGE_LEVEL_INFO);
 	case 'edit':
