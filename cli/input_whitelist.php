@@ -36,6 +36,7 @@ if ($config['poller_id'] > 1) {
 $audit  = false;
 $update = false;
 $push   = false;
+$id     = false;
 
 // process calling arguments
 $parms = $_SERVER['argv'];
@@ -51,6 +52,10 @@ if (cacti_sizeof($parms)) {
 		}
 
 		switch ($arg) {
+			case '--id':
+			case '-I':
+				$id = intval($value);
+				break;
 			case '--audit':
 			case '-A':
 				$audit = true;
@@ -130,6 +135,23 @@ if ($audit) {
 		exit(1);
 	}
 
+	if ($id !== false) {
+		if ($id <= 0) {
+			print 'ERROR: Data Input id \'' . $id . '\' is invalid. Please provide a positive integer.' . PHP_EOL;
+			exit(1);
+		}
+
+		$id_hash = db_fetch_cell_prepared('SELECT hash FROM data_input WHERE id = ?', [$id]);
+
+		if (empty($id_hash)) {
+			print 'ERROR: Data Input id \'' . $id . '\' was not found or has an empty hash.' . PHP_EOL;
+
+			exit(1);
+		}
+	} else {
+		$id_hash = false;
+	}
+
 	$input_db = db_fetch_assoc('SELECT id, name, hash, input_string
 		FROM data_input
 		WHERE input_string != ""');
@@ -146,12 +168,21 @@ if ($audit) {
 		// format data for easier consumption
 		$input = array();
 		foreach ($input_db as $value) {
-			if ($push && isset($input_ws[$value['hash']])) {
-				if ($value['input_string'] != $input_ws[$value['hash']]) {
-					$pushes[$value['id']] = $value['name'];
+			if ($id_hash === false || $id_hash == $value['hash']) {
+				if ($push && isset($input_ws[$value['hash']])) {
+					if ($value['input_string'] != $input_ws[$value['hash']]) {
+						$pushes[$value['id']] = $value['name'];
+					}
+				}
+
+				$input[$value['hash']] = $value['input_string'];
+			} else {
+				if (isset($input_ws[$value['hash']])) {
+					$input[$value['hash']] = $input_ws[$value['hash']];
+				} else {
+					$input[$value['hash']] = $value['input_string'];
 				}
 			}
-			$input[$value['hash']] = $value['input_string'];
 		}
 
 		file_put_contents($config['input_whitelist'], json_encode($input));
@@ -187,12 +218,13 @@ function display_version() {
 function display_help () {
 	display_version();
 
-	print PHP_EOL . "usage: input_whitelist.php [--audit | --update [--push]]" . PHP_EOL . PHP_EOL;
+	print PHP_EOL . "usage: input_whitelist.php [--audit | --update [--id=N] [--push]]" . PHP_EOL . PHP_EOL;
 
 	print "A utility audit and update the Data Input whitelist status and" . PHP_EOL;
 	print "Data Input protection file." . PHP_EOL . PHP_EOL;
 
 	print "Optional:" . PHP_EOL;
+	print "    --id=N        Audit or update only the Data Input Method id specified." . PHP_EOL;
 	print "    --audit       Audit but do not update the whitelist file." . PHP_EOL;
 	print "    --update      Update the whitelist file with latest information." . PHP_EOL;
 	print "    --push        If any input strings are being updated to new values," . PHP_EOL;

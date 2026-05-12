@@ -45,12 +45,12 @@ function repopulate_poller_cache() {
 
 	include_once($config['library_path'] . '/api_data_source.php');
 
-	$poller_data = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . ' dl.*, h.poller_id
+	$poller_data = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . ' dl.*, COALESCE(h.poller_id, 1) AS poller_id
 		FROM data_local AS dl
-		INNER JOIN host AS h
+		LEFT JOIN host AS h
 		ON dl.host_id=h.id
 		WHERE dl.snmp_query_id = 0 OR (dl.snmp_query_id > 0 AND dl.snmp_index != "")
-		ORDER BY h.poller_id ASC, h.id ASC');
+		ORDER BY COALESCE(h.poller_id, 1) ASC, h.id ASC');
 
 	$poller_items   = array();
 	$local_data_ids = array();
@@ -211,7 +211,7 @@ function update_poller_cache($data_source, $commit = false) {
 		WHERE dtd.local_data_id = ?',
 		array($data_source['id']));
 
-	if (cacti_sizeof($data_input)) {
+	if (cacti_sizeof($data_input) && data_input_whitelist_check($data_input['id'])) {
 		/* Whitelist failure must NOT generate poller_items for this
 		 * data source, but on $commit=true we still fall through to
 		 * the buffer flush so the present=0 / DELETE pass cleans up
@@ -220,7 +220,6 @@ function update_poller_cache($data_source, $commit = false) {
 		 * rows whenever an existing data input started failing
 		 * validation. The outer if-else still owns the "Data Input
 		 * Missing" warning so that diagnostic stays specific. */
-		if (data_input_whitelist_check($data_input['id'])) {
 
 		/* we have to perform some additional sql queries if this is a 'query' */
 		if (($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) ||
@@ -557,7 +556,8 @@ function update_poller_cache($data_source, $commit = false) {
 				}
 			}
 		}
-		} /* end of: if (data_input_whitelist_check(...)) */
+	} elseif (cacti_sizeof($data_input) && !data_input_whitelist_check($data_input['id'])) {
+		cacti_log('WARNING: Repopulate Poller Cache found Data Input ID not Passing Input Whitelist Validation for ID ' . $data_source['id'] . '.  Database may be corrupted', false, 'PCACHE');
 	} else {
 		$data_template_data = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' *
 			FROM data_template_data
@@ -585,7 +585,7 @@ function update_poller_cache($data_source, $commit = false) {
 }
 
 function push_out_data_input_method($data_input_id) {
-	$data_sources = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dl.*, h.poller_id
+	$data_sources = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dl.*, COALESCE(h.poller_id, 1) AS poller_id
 		FROM data_local AS dl
 		INNER JOIN (
 			SELECT DISTINCT local_data_id
@@ -594,10 +594,10 @@ function push_out_data_input_method($data_input_id) {
 			AND local_data_id > 0
 		) AS dtd
 		ON dtd.local_data_id = dl.id
-		INNER JOIN host AS h
+		LEFT JOIN host AS h
 		ON h.id = dl.host_id
 		WHERE dl.snmp_query_id = 0 OR (dl.snmp_query_id > 0 AND dl.snmp_index != "")
-		ORDER BY h.poller_id ASC',
+		ORDER BY COALESCE(h.poller_id, 1) ASC',
 		array($data_input_id));
 
 	$poller_items = array();
@@ -1008,9 +1008,9 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 	} elseif (cacti_sizeof($local_data_ids)) {
 		/* Map each local_data_id to its host's poller. */
 		$safe_ids = array_map('intval', $local_data_ids);
-		$rows     = db_fetch_assoc('SELECT dl.id AS local_data_id, h.poller_id
+		$rows     = db_fetch_assoc('SELECT dl.id AS local_data_id, COALESCE(h.poller_id, 1) AS poller_id
 			FROM data_local AS dl
-			INNER JOIN host AS h
+			LEFT JOIN host AS h
 			ON h.id = dl.host_id
 			WHERE dl.id IN (' . implode(',', $safe_ids) . ')');
 
@@ -1100,11 +1100,11 @@ function data_input_whitelist_check($data_input_id) {
 						if ($data_input_whitelist[$hash] == $id['input_string']) {
 							$validated_input_ids[$id['id']] = true;
 						} else {
-							cacti_log('ERROR: Whitelist entry failed validation for Data Input: ' . $id['name'] . '[ ' . $id['id'] . ' ].  Data Collection will not run.  Run CLI command input_whitelist.php --audit and --update to remediate.');
+							cacti_log('ERROR: Whitelist entry failed validation for Data Input: ' . $id['name'] . ' DI[' . $id['id'] . '].  Data Collection will not run.  Run CLI command input_whitelist.php --audit and --update to remediate.');
 							$validated_input_ids[$id['id']] = false;
 						}
 					} else {
-						cacti_log('WARNING: Whitelist entry missing for Data Input: ' . $id['name'] . '[ ' . $id['id'] . ' ].  Run CLI command input_whitelist.php --update to remediate.');
+						cacti_log('WARNING: Whitelist entry missing for Data Input: ' . $id['name'] . ' DI[' . $id['id'] . '].  Run CLI command input_whitelist.php --update to remediate.');
 						$validated_input_ids[$id['id']] = true;
 					}
 				} else {
@@ -1117,9 +1117,11 @@ function data_input_whitelist_check($data_input_id) {
 	if (isset($validated_input_ids[$data_input_id])) {
 		if ($validated_input_ids[$data_input_id] == true) {
 			return true;
-		} else {
+		} elseif (!isset($notified[$data_input_id])) {
 			cacti_log('WARNING: Data Input ' . $data_input_id . ' failing validation check.');
 			$notified[$data_input_id] = true;
+			return false;
+		} else {
 			return false;
 		}
 	} else {

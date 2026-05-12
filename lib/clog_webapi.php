@@ -679,6 +679,7 @@ function clog_get_regex_array() {
 			9  => array('name' => 'User',   'regex' => '( User\[)([, \d]+)(\])',     'func' => 'clog_regex_users'),
 			10 => array('name' => 'User',   'regex' => '( Users\[)([, \d]+)(\])',    'func' => 'clog_regex_users'),
 			11 => array('name' => 'Rule',   'regex' => '( Rule\[)([, \d]+)(\])',   	 'func' => 'clog_regex_rule'),
+			12 => array('name' => 'DI',     'regex' => '( DI\[)([, \d]+)(\])',       'func' => 'clog_regex_datainput'),
 		);
 
 		$regex_array = api_plugin_hook_function('clog_regex_array',$regex_array);
@@ -823,6 +824,30 @@ function clog_regex_datasource($matches) {
 		}
 
 		$result .= $matches[3] . $graph_results;
+	}
+
+	return $result;
+}
+
+function clog_regex_datainput($matches) {
+	global $config;
+
+	$result = $matches[0];
+
+	$data_ids = explode(',', str_replace(' ', '', $matches[2]));
+
+	if (cacti_sizeof($data_ids)) {
+		$result = '';
+
+		foreach ($data_ids as $id) {
+			$name = db_fetch_cell_prepared('SELECT name FROM data_input WHERE id = ?', array($id));
+
+			if ($name === false || $name === '') {
+				$name = __('Unknown');
+			}
+
+			$result .= $matches[1] . '<a href=\'' . html_escape($config['url_path'] . 'data_input.php?action=edit&id=' . $id) . '\'>' . html_escape($name) . '</a>' . $matches[3];
+		}
 	}
 
 	return $result;
