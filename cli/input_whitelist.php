@@ -219,7 +219,7 @@ function display_help () {
 	print "Data Input protection file." . PHP_EOL . PHP_EOL;
 
 	print "Optional:" . PHP_EOL;
-	print "    --id=N        Audit or update only the local data id specified." . PHP_EOL;
+	print "    --id=N        Audit or update only the Data Input Method id specified." . PHP_EOL;
 	print "    --audit       Audit but do not update the whitelist file." . PHP_EOL;
 	print "    --update      Update the whitelist file with latest information." . PHP_EOL;
 	print "    --push        If any input strings are being updated to new values," . PHP_EOL;

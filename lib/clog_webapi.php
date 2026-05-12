@@ -840,9 +840,13 @@ function clog_regex_datainput($matches) {
 		$result = '';
 
 		foreach ($data_ids as $id) {
-			$name = db_fetch_cell_prepared('SELECT name FROM data_input WHERE id = ?', [$id]);
+			$name = db_fetch_cell_prepared('SELECT name FROM data_input WHERE id = ?', array($id));
 
-			$result .= $matches[1] . '<a href=\'' . html_escape($config['url_path'] . 'data_input.php?action=edit&id=' . $id) . '\'>' . html_escape($name ?? __('Unknown')) . '</a>' . $matches[3];
+			if ($name === false || $name === '') {
+				$name = __('Unknown');
+			}
+
+			$result .= $matches[1] . '<a href=\'' . html_escape($config['url_path'] . 'data_input.php?action=edit&id=' . $id) . '\'>' . html_escape($name) . '</a>' . $matches[3];
 		}
 	}
 

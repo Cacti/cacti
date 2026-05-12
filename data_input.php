@@ -73,6 +73,8 @@ switch (get_request_var('action')) {
 		$output = shell_exec($php . ' -q ' . $script . ' --update --push ' . $id_arg);
 
 		raise_message('whitelist_updated', html_escape($output), MESSAGE_LEVEL_INFO);
+
+		/* fall through */
 	case 'edit':
 		top_header();
 		data_edit();
