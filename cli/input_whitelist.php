@@ -136,6 +136,11 @@ if ($audit) {
 	}
 
 	if ($id !== false) {
+		if ($id <= 0) {
+			print 'ERROR: Data Input id \'' . $id . '\' is invalid. Please provide a positive integer.' . PHP_EOL;
+			exit(1);
+		}
+
 		$id_hash = db_fetch_cell_prepared('SELECT hash FROM data_input WHERE id = ?', [$id]);
 
 		if (empty($id_hash)) {

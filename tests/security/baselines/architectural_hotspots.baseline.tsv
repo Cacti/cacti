@@ -16,7 +16,7 @@ cmd_exec	./cli/splice_rrd.php:855		$result      = exec($command, $output, $retur
 cmd_exec	./cli/update_heartbeat.php:264				$result = exec($command, $output, $return_code);
 cmd_exec	./cmd.php:312			$cactiphp = proc_open($command, $cactides, $pipes);
 cmd_exec	./cmd_realtime.php:115				$cactiphp = proc_open(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg($config['base_path'] . '/script_server.php') . ' realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);
-cmd_exec	./data_input.php:71			$output = shell_exec($php . ' -q ' . $config['base_path'] . '/cli/input_whitelist.php --update --push --id=' . get_request_var('id'));
+cmd_exec	./data_input.php:73			$output = shell_exec($php . ' -q ' . $script . ' --update --push ' . $id_arg);
 cmd_exec	./graph_realtime.php:219		shell_exec($php_binary . ' -q ' . $script_path . ' ' . $args);
 cmd_exec	./host.php:195		shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg($config['base_path'] . '/cli/poller_reindex_hosts.php') . ' --qid=all --id=' . $host_id);
 cmd_exec	./install/functions.php:538				$myinfo = @json_decode(shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg($config['base_path'] . '/cli/import_package.php') . ' --filename=' . cacti_escapeshellarg("/$path/$xmlfile") . ' --info'), true);
@@ -78,17 +78,17 @@ cmd_exec	./lib/snmp.php:409			exec($command, $snmp_value);
 cmd_exec	./lib/snmpagent.php:659		/* add pollers of a distributed system (future) */
 cmd_exec	./lib/spikekill.php:446			shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' dump ' . cacti_escapeshellarg($this->rrdfile) . ' > ' . cacti_escapeshellarg($xmlfile));
 cmd_exec	./lib/spikekill.php:772			$response = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' restore -f -r ' . cacti_escapeshellarg($xmlfile) . ' ' . cacti_escapeshellarg($rrdfile));
-cmd_exec	./lib/utility.php:1691						$nproc = system('nproc');
-cmd_exec	./lib/utility.php:1809			exec('wmic os get FreePhysicalMemory', $memInfo['FreePhysicalMemory']);
-cmd_exec	./lib/utility.php:1810			exec('wmic os get FreeSpaceInPagingFiles', $memInfo['FreeSpaceInPagingFiles']);
-cmd_exec	./lib/utility.php:1811			exec('wmic os get FreeVirtualMemory', $memInfo['FreeVirtualMemory']);
-cmd_exec	./lib/utility.php:1812			exec('wmic os get SizeStoredInPagingFiles', $memInfo['SizeStoredInPagingFiles']);
-cmd_exec	./lib/utility.php:1813			exec('wmic os get TotalVirtualMemorySize', $memInfo['TotalVirtualMemorySize']);
-cmd_exec	./lib/utility.php:1814			exec('wmic os get TotalVisibleMemorySize', $memInfo['TotalVisibleMemorySize']);
-cmd_exec	./lib/utility.php:1846				exec('/usr/bin/free', $output, $exit_code);
-cmd_exec	./lib/utility.php:1897		$json     = shell_exec($php . ' -q ' . $php_file);
-cmd_exec	./lib/utility.php:1965		$json     = shell_exec($php . ' -q ' . $php_file);
-cmd_exec	./lib/utility.php:2097		$json     = shell_exec($php . ' -q ' . $php_file);
+cmd_exec	./lib/utility.php:1693						$nproc = system('nproc');
+cmd_exec	./lib/utility.php:1811			exec('wmic os get FreePhysicalMemory', $memInfo['FreePhysicalMemory']);
+cmd_exec	./lib/utility.php:1812			exec('wmic os get FreeSpaceInPagingFiles', $memInfo['FreeSpaceInPagingFiles']);
+cmd_exec	./lib/utility.php:1813			exec('wmic os get FreeVirtualMemory', $memInfo['FreeVirtualMemory']);
+cmd_exec	./lib/utility.php:1814			exec('wmic os get SizeStoredInPagingFiles', $memInfo['SizeStoredInPagingFiles']);
+cmd_exec	./lib/utility.php:1815			exec('wmic os get TotalVirtualMemorySize', $memInfo['TotalVirtualMemorySize']);
+cmd_exec	./lib/utility.php:1816			exec('wmic os get TotalVisibleMemorySize', $memInfo['TotalVisibleMemorySize']);
+cmd_exec	./lib/utility.php:1848				exec('/usr/bin/free', $output, $exit_code);
+cmd_exec	./lib/utility.php:1899		$json     = shell_exec($php . ' -q ' . $php_file);
+cmd_exec	./lib/utility.php:1967		$json     = shell_exec($php . ' -q ' . $php_file);
+cmd_exec	./lib/utility.php:2099		$json     = shell_exec($php . ' -q ' . $php_file);
 cmd_exec	./poller_realtime.php:145	shell_exec("$command_string $extra_args");
 cmd_exec	./poller_realtime.php:229					shell_exec($command);
 cmd_exec	./poller_spikekill.php:247				$response = exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
