@@ -326,6 +326,11 @@ function form_save() : void {
 		gfrv('graph_template_item_id');
 		// ====================================================
 
+		/* sql_save() inside the items foreach below assigns this; if the
+		 * loop never enters the !is_error_message() branch we still need a
+		 * defined value for the error-redirect URL fallback. */
+		$graph_template_item_id = 0;
+
 		global $graph_item_types;
 
 		$items[0] = [];
