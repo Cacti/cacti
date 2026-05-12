@@ -213,7 +213,7 @@ function display_version() {
 function display_help () {
 	display_version();
 
-	print PHP_EOL . "usage: input_whitelist.php [--id=N] [--audit | --update [--push]]" . PHP_EOL . PHP_EOL;
+	print PHP_EOL . "usage: input_whitelist.php [--audit | --update [--id=N] [--push]]" . PHP_EOL . PHP_EOL;
 
 	print "A utility audit and update the Data Input whitelist status and" . PHP_EOL;
 	print "Data Input protection file." . PHP_EOL . PHP_EOL;
