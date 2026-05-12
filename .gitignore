@@ -119,9 +119,18 @@ docker-compose.override.yml
 .worktrees/**
 .claude/**
 
-# Ignore dev tooling artifacts
-.gemini_security/
-docs/superpowers/
+# Security research artifacts (never commit)
 CLAUDE.md
 reproduce_ghsa_*.php
 verify_task*.php
+.gemini_security/
+
+# Test/build artifacts
+/tests/composer.lock
+/tests/e2e/playwright-report/
+/tests/e2e/test-results/
+/tests/.phpunit.result.cache
+
+# Local autopilot/session data
+/.omc/
+/docs/superpowers/
