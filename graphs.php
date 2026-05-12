@@ -632,6 +632,8 @@ function form_save() : void {
 
 		$sequence = gnrv('sequence');
 
+		$graph_template_item_id = '';
+
 		if (empty($sequence) || !is_numeric($sequence)) {
 			$sequence = 1;
 		}
