@@ -535,6 +535,11 @@ function form_save() : void {
 		gfrv('local_graph_template_item_id');
 		// ====================================================
 
+		/* sql_save() inside the items foreach below assigns this; if the
+		 * loop never enters the !is_error_message() branch we still need a
+		 * defined value for the error-redirect URL fallback. */
+		$graph_template_item_id = 0;
+
 		$items[0] = [];
 
 		if ($graph_item_types[gnrv('graph_type_id')] == 'LEGEND') {
@@ -626,6 +631,8 @@ function form_save() : void {
 		}
 
 		$sequence = gnrv('sequence');
+
+		$graph_template_item_id = '';
 
 		if (empty($sequence) || !is_numeric($sequence)) {
 			$sequence = 1;
