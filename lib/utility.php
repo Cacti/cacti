@@ -557,7 +557,7 @@ function update_poller_cache($data_source, $commit = false) {
 			}
 		}
 	} elseif (cacti_sizeof($data_input) && !data_input_whitelist_check($data_input['id'])) {
-		cacti_log('WARNING: Repopulate Poller Cache found Data Input ID not Passing Input Whitelist Validation for ID ' . $data_source['id'] . '.  Database may be corrupted', false, 'PCACHE');
+		cacti_log('WARNING: Repopulate Poller Cache found DI[' . $data_input['id'] . '] not Passing Input Whitelist Validation for DS[' . $data_source['id'] . '].  Database may be corrupted', false, 'PCACHE');
 	} else {
 		$data_template_data = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' *
 			FROM data_template_data
