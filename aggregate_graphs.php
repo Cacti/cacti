@@ -291,6 +291,11 @@ function form_save() : void {
 	} elseif (isrv('save_component_item')) {
 		global $graph_item_types;
 
+		/* sql_save() inside the items foreach below assigns this; if the
+		 * loop never enters the !is_error_message() branch we still need a
+		 * defined value for the error-redirect URL fallback. */
+		$graph_template_item_id = 0;
+
 		$items[0] = [];
 
 		// handle saving aggregate graph items in separate function
