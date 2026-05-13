@@ -338,12 +338,15 @@ function form_save() : void {
 			];
 		}
 
+		$graph_template_item_id = '';
+
 		foreach ($items as $item) {
 			// generate a new sequence if needed
 			if (ierv('sequence')) {
 				$sequence = gfrv('sequence');
 				srv('sequence', get_sequence($sequence, 'sequence', 'graph_templates_item', 'local_graph_id=' . grv('local_graph_id')));
 			}
+
 			$save['id']                           = gfrv('graph_template_item_id');
 			$save['graph_template_id']            = gfrv('graph_template_id');
 			$save['local_graph_template_item_id'] = gfrv('local_graph_template_item_id');

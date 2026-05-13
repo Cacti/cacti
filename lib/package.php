@@ -487,8 +487,15 @@ function find_paths(string $input, string $type = 'cacti_xml') : array {
 		'wc'
 	];
 
-	$paths  = [];
-	$mpaths = [];
+	$paths     = [];
+	$mpaths    = [];
+	$real_base = realpath(CACTI_PATH_BASE);
+
+	if ($real_base === false) {
+		cacti_log('WARNING: Unable to resolve CACTI_PATH_BASE in find_paths()', false, 'IMPORT');
+
+		return [];
+	}
 
 	$input = htmlspecialchars_decode($input);
 	$parts = preg_split('/\s+/', $input);
@@ -506,6 +513,17 @@ function find_paths(string $input, string $type = 'cacti_xml') : array {
 		$valid = true;
 
 		if (file_exists($part)) {
+			$real_part   = realpath($part);
+			$base_prefix = $real_base . DIRECTORY_SEPARATOR;
+			$path_prefix = ($real_part === false ? '' : $real_part . DIRECTORY_SEPARATOR);
+
+			if ($real_part === false || strpos($path_prefix, $base_prefix) !== 0) {
+				$mpaths[] = ['opath' => $opath, 'file' => $part];
+				cacti_log("WARNING: Skipping package path outside CACTI_PATH_BASE: $part", false, 'IMPORT');
+
+				continue;
+			}
+
 			foreach ($excluded_paths as $path) {
 				if (str_contains($part, $path)) {
 					$valid = false;
@@ -514,18 +532,12 @@ function find_paths(string $input, string $type = 'cacti_xml') : array {
 				}
 			}
 
-			if ($valid) {
-				foreach ($excluded_basenames as $binary) {
-					if (str_contains($binary, basename($part))) {
-						$valid = false;
-
-						break;
-					}
-				}
+			if ($valid && in_array(basename($part), $excluded_basenames, true)) {
+				$valid = false;
 			}
 
 			if ($valid) {
-				$paths[] = ['opath' => $opath, 'file' => $part];
+				$paths[] = ['opath' => $opath, 'file' => $real_part];
 			}
 		} elseif (str_contains($part, '/') || str_contains($part, '\\')) {
 			$mpaths[] = ['opath' => $opath, 'file' => $part];
