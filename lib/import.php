@@ -649,12 +649,66 @@ function import_package(string $xmlfile, int $profile_id = 1, bool $remove_orpha
 		cacti_log('Processing Files for Preview', false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 	}
 
+	// Resolve allowed bases once; the foreach below only consults these.
+	$allowed_base_scripts  = realpath(CACTI_PATH_BASE . '/scripts');
+	$allowed_base_resource = realpath(CACTI_PATH_BASE . '/resource');
+	$normalized_scripts    = ($allowed_base_scripts === false) ? false : rtrim(str_replace('\\', '/', $allowed_base_scripts),  '/');
+	$normalized_resource   = ($allowed_base_resource === false) ? false : rtrim(str_replace('\\', '/', $allowed_base_resource), '/');
+
 	foreach ($data['files']['file'] as $f) {
+		$name            = $f['name'];
+		$normalized_name = str_replace('\\', '/', $name);
+
+		if (strpos($name, chr(0)) !== false || preg_match('#(^|/)\.\.(/|$)#', $normalized_name)) {
+			cacti_log("WARNING: Skipping file with path traversal attempt: $name", false, 'IMPORT');
+
+			continue;
+		}
+
+		// Reject absolute paths: Unix (/...), Windows (\... or C:\...).
+		if (preg_match('#^([/\\\\]|[A-Za-z]:)#', $name)) {
+			cacti_log("WARNING: Skipping file with absolute path: $name", false, 'IMPORT');
+
+			continue;
+		}
+
 		$fdata = base64_decode($f['data'], true);
-		$name  = $f['name'];
 
 		if (str_contains($name, 'scripts/') || str_contains($name, 'resource/')) {
 			$filename = CACTI_PATH_BASE . "/$name";
+
+			// Allow new nested subdirectories, but ensure the first existing ancestor
+			// still resolves within the intended scripts/resource boundary.
+			$target_dir   = dirname($filename);
+			$resolved_dir = false;
+
+			while ($target_dir !== dirname($target_dir)) {
+				$resolved_dir = realpath($target_dir);
+
+				if ($resolved_dir !== false) {
+					break;
+				}
+
+				$target_dir = dirname($target_dir);
+			}
+
+			if ($resolved_dir === false) {
+				cacti_log('FATAL: Package file destination outside allowed boundaries: ' . $name, true, 'IMPORT');
+
+				continue;
+			}
+
+			$normalized_resolved = rtrim(str_replace('\\', '/', $resolved_dir), '/');
+			$in_scripts          = $normalized_scripts !== false
+				&& ($normalized_resolved === $normalized_scripts || strpos($normalized_resolved, $normalized_scripts . '/') === 0);
+			$in_resource         = $normalized_resource !== false
+				&& ($normalized_resolved === $normalized_resource || strpos($normalized_resolved, $normalized_resource . '/') === 0);
+
+			if (!$in_scripts && !$in_resource) {
+				cacti_log('FATAL: Package file destination outside allowed boundaries: ' . $name, true, 'IMPORT');
+
+				continue;
+			}
 
 			if (!$preview) {
 				if (!cacti_sizeof($import_files) || in_array($name, $import_files, true)) {
