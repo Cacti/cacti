@@ -65,7 +65,6 @@ if (!function_exists('is_resource_writable')) {
 }
 
 ini_set('max_execution_time', '0');
-ini_set('display_errors', 'On');
 
 /* setup defaults */
 $debug     = false;

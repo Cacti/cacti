@@ -262,9 +262,22 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	$rows_query = $sql_query . $sql_where . $sql_filter;
 	$total_rows = cacti_sizeof(db_fetch_assoc($rows_query, false));
 
-	$sql_query = $rows_query . ' ' . get_order_string() .
+	$sort_columns = array(
+		'description'        => 'h.description',
+		'hostname'           => 'INET_ATON(h.hostname)',
+		'status'             => 'h.status',
+		'host_template_name' => 'ht.name',
+		'id'                 => 'h.id',
+	);
+
+	$sort_column = cacti_validate_sort_column(get_request_var('sort_column'), array_keys($sort_columns), 'description');
+	$sortby      = $sort_columns[$sort_column];
+	$sort_dir    = strtoupper(get_request_var('sort_direction')) === 'DESC' ? 'DESC' : 'ASC';
+
+	$sql_query = $rows_query .
+		' ORDER BY ' . $sortby . ' ' . $sort_dir .
 		' LIMIT ' . ($rows*(get_request_var('paged')-1)) . ',' . $rows;
-  
+
 	$hosts = db_fetch_assoc($sql_query, false);
 
 	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var('paged'), $rows, $total_rows, 7, __('Devices'), 'paged', 'main');
@@ -1205,7 +1218,18 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 
 	$total_rows = cacti_sizeof(db_fetch_assoc($rows_query, false));
 
-	$sql_query = "$rows_query " . get_order_string() . ' LIMIT ' .
+	$sort_columns = array(
+		'description'        => 'h.description',
+		'hostname'           => 'INET_ATON(h.hostname)',
+		'status'             => 'h.status',
+		'host_template_name' => 'ht.name'
+	);
+
+	$sort_column = cacti_validate_sort_column(get_request_var('sort_column'), array_keys($sort_columns), 'description');
+	$sortby      = $sort_columns[$sort_column];
+
+	$sql_query = "$rows_query ORDER BY $sortby " .
+		(strtoupper(get_request_var('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') . ' LIMIT ' .
 		($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 	$templates = db_fetch_assoc($sql_query, false);

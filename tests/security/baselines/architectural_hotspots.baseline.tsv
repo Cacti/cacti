@@ -9,21 +9,23 @@ cmd_exec	./cli/float_rrdfiles.php:335				$response = exec($command, $output, $re
 cmd_exec	./cli/float_rrdfiles.php:443					$response = exec($command, $output, $return);
 cmd_exec	./cli/push_out_hosts.php:66		passthru($command, $exit_code);
 cmd_exec	./cli/remove_broken_graphs.php:47		$stty = shell_exec('stty size');
-cmd_exec	./cli/splice_rrd.php:238	$response = shell_exec($rrdtool);
-cmd_exec	./cli/splice_rrd.php:270	shell_exec(cacti_escapeshellcmd($rrdtool) . ' dump ' . cacti_escapeshellarg($oldrrd) . ' > ' . cacti_escapeshellarg($oldxmlfile));
-cmd_exec	./cli/splice_rrd.php:273	shell_exec(cacti_escapeshellcmd($rrdtool) . ' dump ' . cacti_escapeshellarg($newrrd) . ' > ' . cacti_escapeshellarg($newxmlfile));
-cmd_exec	./cli/splice_rrd.php:855		$result      = exec($command, $output, $return_var);
+cmd_exec	./cli/splice_rrd.php:237	$response = shell_exec($rrdtool);
+cmd_exec	./cli/splice_rrd.php:269	shell_exec(cacti_escapeshellcmd($rrdtool) . ' dump ' . cacti_escapeshellarg($oldrrd) . ' > ' . cacti_escapeshellarg($oldxmlfile));
+cmd_exec	./cli/splice_rrd.php:272	shell_exec(cacti_escapeshellcmd($rrdtool) . ' dump ' . cacti_escapeshellarg($newrrd) . ' > ' . cacti_escapeshellarg($newxmlfile));
+cmd_exec	./cli/splice_rrd.php:854		$result      = exec($command, $output, $return_var);
 cmd_exec	./cli/update_heartbeat.php:264				$result = exec($command, $output, $return_code);
 cmd_exec	./cmd.php:312			$cactiphp = proc_open($command, $cactides, $pipes);
 cmd_exec	./cmd_realtime.php:115				$cactiphp = proc_open(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg($config['base_path'] . '/script_server.php') . ' realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);
+cmd_exec	./data_input.php:73			$output = shell_exec($php . ' -q ' . $script . ' --update --push ' . $id_arg);
 cmd_exec	./graph_realtime.php:219		shell_exec($php_binary . ' -q ' . $script_path . ' ' . $args);
-cmd_exec	./host.php:195		shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg($config['base_path'] . '/cli/poller_reindex_hosts.php') . ' --qid=all --id=' . $host_id);
+cmd_exec	./host.php:195		shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg($config['base_path'] . '/cli/poller_reindex_hosts.php') . ' --qid=all --id=' . cacti_escapeshellarg((string) $host_id));
 cmd_exec	./install/functions.php:538				$myinfo = @json_decode(shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg($config['base_path'] . '/cli/import_package.php') . ' --filename=' . cacti_escapeshellarg("/$path/$xmlfile") . ' --info'), true);
 cmd_exec	./install/install.php:125			print '<li>' . __('The shell_exec() and/or exec() functions are currently blocked.') . '<br>' . __('See the PHP Manual: <a href="http://php.net/manual/en/ini.core.php#ini.disable-functions">Disable Functions</a>.') .'</li>';
 cmd_exec	./lib/database.php:2285		$process = proc_open(trim($cmd_string), $descriptors, $pipes, null, $env);
 cmd_exec	./lib/dsstats.php:1060		$process = proc_open($command, $fds, $pipes);
 cmd_exec	./lib/functions.php:2234					$output = shell_exec($script_path);
 cmd_exec	./lib/functions.php:2249						$output = shell_exec($php . ' -q ' . $script);
+<<<<<<< fix/loop-scoped-oid-script-path-leak-1.2.x
 cmd_exec	./lib/functions.php:2527							$output = shell_exec($script_path);
 cmd_exec	./lib/functions.php:3028			return exec('whoami');
 cmd_exec	./lib/functions.php:3687		exec($command_line,$out,$err);
@@ -34,6 +36,18 @@ cmd_exec	./lib/functions.php:7152				exec(sprintf('grep :%s: /etc/passwd | cut -
 cmd_exec	./lib/functions.php:7444	 * shell_exec() callers that already assemble the command string.
 cmd_exec	./lib/functions.php:7484		$process = proc_open($argv, $descriptors, $pipes);
 cmd_exec	./lib/functions.php:7556	 * shell_exec() and expect a string return value.
+=======
+cmd_exec	./lib/functions.php:2516							$output = shell_exec($script_path);
+cmd_exec	./lib/functions.php:3017			return exec('whoami');
+cmd_exec	./lib/functions.php:3676		exec($command_line,$out,$err);
+cmd_exec	./lib/functions.php:6934				$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v');
+cmd_exec	./lib/functions.php:6936				$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v 2>&1');
+cmd_exec	./lib/functions.php:7135				exec('id -nu', $o, $r);
+cmd_exec	./lib/functions.php:7145				exec(sprintf('grep :%s: /etc/passwd | cut -d: -f1', (int) $uid), $o, $r);
+cmd_exec	./lib/functions.php:7437	 * shell_exec() callers that already assemble the command string.
+cmd_exec	./lib/functions.php:7477		$process = proc_open($argv, $descriptors, $pipes);
+cmd_exec	./lib/functions.php:7549	 * shell_exec() and expect a string return value.
+>>>>>>> 1.2.x
 cmd_exec	./lib/installer.php:3288				$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 cmd_exec	./lib/installer.php:3320						shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 cmd_exec	./lib/installer.php:3376						$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
@@ -77,6 +91,7 @@ cmd_exec	./lib/snmp.php:409			exec($command, $snmp_value);
 cmd_exec	./lib/snmpagent.php:659		/* add pollers of a distributed system (future) */
 cmd_exec	./lib/spikekill.php:446			shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' dump ' . cacti_escapeshellarg($this->rrdfile) . ' > ' . cacti_escapeshellarg($xmlfile));
 cmd_exec	./lib/spikekill.php:772			$response = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' restore -f -r ' . cacti_escapeshellarg($xmlfile) . ' ' . cacti_escapeshellarg($rrdfile));
+<<<<<<< fix/loop-scoped-oid-script-path-leak-1.2.x
 cmd_exec	./lib/utility.php:1697						$nproc = system('nproc');
 cmd_exec	./lib/utility.php:1815			exec('wmic os get FreePhysicalMemory', $memInfo['FreePhysicalMemory']);
 cmd_exec	./lib/utility.php:1816			exec('wmic os get FreeSpaceInPagingFiles', $memInfo['FreeSpaceInPagingFiles']);
@@ -88,6 +103,19 @@ cmd_exec	./lib/utility.php:1852				exec('/usr/bin/free', $output, $exit_code);
 cmd_exec	./lib/utility.php:1903		$json     = shell_exec($php . ' -q ' . $php_file);
 cmd_exec	./lib/utility.php:1971		$json     = shell_exec($php . ' -q ' . $php_file);
 cmd_exec	./lib/utility.php:2103		$json     = shell_exec($php . ' -q ' . $php_file);
+=======
+cmd_exec	./lib/utility.php:1693						$nproc = system('nproc');
+cmd_exec	./lib/utility.php:1811			exec('wmic os get FreePhysicalMemory', $memInfo['FreePhysicalMemory']);
+cmd_exec	./lib/utility.php:1812			exec('wmic os get FreeSpaceInPagingFiles', $memInfo['FreeSpaceInPagingFiles']);
+cmd_exec	./lib/utility.php:1813			exec('wmic os get FreeVirtualMemory', $memInfo['FreeVirtualMemory']);
+cmd_exec	./lib/utility.php:1814			exec('wmic os get SizeStoredInPagingFiles', $memInfo['SizeStoredInPagingFiles']);
+cmd_exec	./lib/utility.php:1815			exec('wmic os get TotalVirtualMemorySize', $memInfo['TotalVirtualMemorySize']);
+cmd_exec	./lib/utility.php:1816			exec('wmic os get TotalVisibleMemorySize', $memInfo['TotalVisibleMemorySize']);
+cmd_exec	./lib/utility.php:1848				exec('/usr/bin/free', $output, $exit_code);
+cmd_exec	./lib/utility.php:1899		$json     = shell_exec($php . ' -q ' . $php_file);
+cmd_exec	./lib/utility.php:1967		$json     = shell_exec($php . ' -q ' . $php_file);
+cmd_exec	./lib/utility.php:2099		$json     = shell_exec($php . ' -q ' . $php_file);
+>>>>>>> 1.2.x
 cmd_exec	./poller_realtime.php:145	shell_exec("$command_string $extra_args");
 cmd_exec	./poller_realtime.php:229					shell_exec($command);
 cmd_exec	./poller_spikekill.php:247				$response = exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
@@ -342,11 +370,11 @@ dynamic_include	./lib/aggregate.php:834		include_once($config['base_path'] . '/l
 dynamic_include	./lib/api_aggregate.php:1677		include($config['include_path'] . '/global_arrays.php');
 dynamic_include	./lib/api_aggregate.php:203		include_once($config['base_path'] . '/lib/api_aggregate.php');
 dynamic_include	./lib/api_aggregate.php:671		include_once($config['base_path'] . '/lib/api_aggregate.php');
-dynamic_include	./lib/api_automation.php:2360		include_once($config['base_path'] . '/lib/template.php');
-dynamic_include	./lib/api_automation.php:2361		include_once($config['base_path'] . '/lib/api_automation_tools.php');
-dynamic_include	./lib/api_automation.php:2362		include_once($config['base_path'] . '/lib/utility.php');
-dynamic_include	./lib/api_automation.php:3056					include_once($config['base_path'] . '/plugins/thold/thold-functions.php');
-dynamic_include	./lib/api_automation.php:3059					include_once($config['base_path'] . '/plugins/thold/thold_functions.php');
+dynamic_include	./lib/api_automation.php:2384		include_once($config['base_path'] . '/lib/template.php');
+dynamic_include	./lib/api_automation.php:2385		include_once($config['base_path'] . '/lib/api_automation_tools.php');
+dynamic_include	./lib/api_automation.php:2386		include_once($config['base_path'] . '/lib/utility.php');
+dynamic_include	./lib/api_automation.php:3080					include_once($config['base_path'] . '/plugins/thold/thold-functions.php');
+dynamic_include	./lib/api_automation.php:3083					include_once($config['base_path'] . '/plugins/thold/thold_functions.php');
 dynamic_include	./lib/api_device.php:946		include_once($config['base_path'] . '/lib/utility.php');
 dynamic_include	./lib/api_device.php:947		include_once($config['base_path'] . '/lib/variables.php');
 dynamic_include	./lib/api_device.php:948		include_once($config['base_path'] . '/lib/data_query.php');
@@ -367,6 +395,7 @@ dynamic_include	./lib/dsstats.php:1009			include_once($config['library_path'] . 
 dynamic_include	./lib/dsstats.php:967			include_once($config['base_path'] . '/lib/rrd.php');
 dynamic_include	./lib/export.php:465		include_once($config['library_path'] . '/vdef.php');
 dynamic_include	./lib/functions.php:421		include_once($config['base_path'] . '/lib/poller.php');
+<<<<<<< fix/loop-scoped-oid-script-path-leak-1.2.x
 dynamic_include	./lib/functions.php:4823		include_once($config['base_path'] . '/include/global_session.php');
 dynamic_include	./lib/functions.php:4826			include_once($config['base_path'] . '/include/bottom_footer.php');
 dynamic_include	./lib/functions.php:4851			include_once($config['base_path'] . '/include/top_header.php');
@@ -378,6 +407,19 @@ dynamic_include	./lib/functions.php:5029		require_once($config['include_path'] .
 dynamic_include	./lib/functions.php:5516	    require_once($config['include_path'] . '/vendor/phpmailer/src/Exception.php');
 dynamic_include	./lib/functions.php:5517	    require_once($config['include_path'] . '/vendor/phpmailer/src/PHPMailer.php');
 dynamic_include	./lib/functions.php:5518	    require_once($config['include_path'] . '/vendor/phpmailer/src/SMTP.php');
+=======
+dynamic_include	./lib/functions.php:4816		include_once($config['base_path'] . '/include/global_session.php');
+dynamic_include	./lib/functions.php:4819			include_once($config['base_path'] . '/include/bottom_footer.php');
+dynamic_include	./lib/functions.php:4844			include_once($config['base_path'] . '/include/top_header.php');
+dynamic_include	./lib/functions.php:4851			include_once($config['base_path'] . '/include/top_graph_header.php');
+dynamic_include	./lib/functions.php:4858			include_once($config['base_path'] . '/include/top_general_header.php');
+dynamic_include	./lib/functions.php:5020		require_once($config['include_path'] . '/vendor/phpmailer/src/Exception.php');
+dynamic_include	./lib/functions.php:5021		require_once($config['include_path'] . '/vendor/phpmailer/src/PHPMailer.php');
+dynamic_include	./lib/functions.php:5022		require_once($config['include_path'] . '/vendor/phpmailer/src/SMTP.php');
+dynamic_include	./lib/functions.php:5509	    require_once($config['include_path'] . '/vendor/phpmailer/src/Exception.php');
+dynamic_include	./lib/functions.php:5510	    require_once($config['include_path'] . '/vendor/phpmailer/src/PHPMailer.php');
+dynamic_include	./lib/functions.php:5511	    require_once($config['include_path'] . '/vendor/phpmailer/src/SMTP.php');
+>>>>>>> 1.2.x
 dynamic_include	./lib/graph_variables.php:65		include_once($config['library_path'] . '/rrd.php');
 dynamic_include	./lib/html.php:1243		include($config['include_path'] . '/global_arrays.php');
 dynamic_include	./lib/html_tree.php:479		include_once($config['base_path'] . '/lib/data_query.php');

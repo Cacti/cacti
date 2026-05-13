@@ -1957,6 +1957,20 @@ function reports() {
 
 	$total_rows = get_total_row_data($_SESSION['sess_user_id'], "SELECT COUNT(reports.id) FROM reports $sql_join $sql_where", $params);
 
+	$sort_columns = array(
+		'name'            => 'reports.name',
+		'full_name'       => 'user_auth.full_name',
+		'cint'            => 'cint',
+		'lastsent'        => 'reports.lastsent',
+		'mailtime'        => 'reports.mailtime',
+		'from_name'       => 'reports.from_name',
+		'attachment_type' => 'reports.attachment_type',
+		'enabled'         => 'reports.enabled'
+	);
+
+	$sort_column = cacti_validate_sort_column(get_request_var('sort_column'), array_keys($sort_columns), 'name');
+	$sortby      = $sort_columns[$sort_column];
+
 	$reports_list = db_fetch_assoc_prepared("SELECT
 		user_auth.full_name, user_auth.username,
 		reports.*,
@@ -1964,8 +1978,9 @@ function reports() {
 		FROM reports
 		$sql_join
 		$sql_where
-		" . get_order_string() . "
-		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows, $params);
+		ORDER BY $sortby " .
+		(strtoupper(get_request_var('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') .
+		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows, $params);
 
 	form_start(get_reports_page(), 'chk');
 
