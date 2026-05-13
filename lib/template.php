@@ -437,6 +437,11 @@ function change_data_template(int $local_data_id, int $data_template_id, array $
 	}
 
 	// make sure to copy down script data (data_input_data) as well
+	$host_id = db_fetch_cell_prepared('SELECT host_id
+		FROM data_local
+		WHERE id = ?',
+		[$local_data_id]);
+
 	$data_input_data = db_fetch_assoc_prepared('SELECT *
 		FROM data_input_data
 		WHERE data_template_data_id = ?',
@@ -457,9 +462,9 @@ function change_data_template(int $local_data_id, int $data_template_id, array $
 					[
 						$item['data_input_field_id'],
 						$data_template_data_id,
-						$item['data_template_id'],
-						$item['local_data_id'],
-						$item['host_id'],
+						$data_template_id,
+						$local_data_id,
+						$host_id,
 						$item['t_value'],
 						$item['value']
 					]

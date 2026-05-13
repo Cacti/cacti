@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.3.0-dev
+-issue#7131: Fix data_input_data column-expansion bugs in change_data_template and api_data_source_duplicate
 -issue#7137: Fix eleven PHPStan Level 6 errors in form_save error-redirect URLs and lib/html.php right-tab block
 -issue#6762: Harden lib/ping.php: apply cacti_escapeshellarg() to hostname in native ping and fping shell commands
 -issue#6760: Harden link.php: apply sanitize_uri() to HTTP_REFERER before redirect
