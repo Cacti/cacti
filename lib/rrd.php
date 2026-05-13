@@ -136,7 +136,7 @@ function __rrd_proxy_init(string $logopt = 'WEBLOG') : mixed {
 		cacti_log('CACTI2RRDP ERROR: Unable to connect to RRDtool Proxy Server #' . $rrdp_id, false, $logopt, POLLER_VERBOSITY_LOW);
 
 		if ($load_balancing) {
-			$rrdp_id = ($rrdp_id + 1) % 2;
+			$rrdp_id = ($rrdp_id % 2) + 1;
 			$server  = ($rrdp_id == 1) ? $servera : $serverb;
 			$port    = ($rrdp_id == 1) ? $portp : $portb;
 
