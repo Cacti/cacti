@@ -5610,39 +5610,21 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 			return __('No OAuth2 refresh token is specified. Configure OAuth2 correctly.');
 		}
 
-		switch (read_config_option('settings_oauth2_provider')) {
-			case 'google':
-				$provider = new League\OAuth2\Client\Provider\Google([
-					'clientId'     => $clientId,
-					'clientSecret' => $clientSecret,
-				]);
+		require_once(CACTI_PATH_LIBRARY . '/CactiOAuth.php');
 
-				break;
-			case 'azure':
-				$provider = new Greew\OAuth2\Client\Provider\Azure([
-					'clientId'     => $clientId,
-					'clientSecret' => $clientSecret,
-					'tenantId'     => $tenantId,
-				]);
+		$providerName = read_config_option('settings_oauth2_provider');
+		$params       = [
+			'clientId'     => $clientId,
+			'clientSecret' => $clientSecret,
+		];
 
-				break;
-			case 'yahoo':
-				$provider = new Hayageek\OAuth2\Client\Provider\Yahoo([
-					'clientId'     => $clientId,
-					'clientSecret' => $clientSecret,
-				]);
-
-				break;
-			case 'microsoft':
-				$provider = new Stevenmaguire\OAuth2\Client\Provider\Microsoft([
-					'clientId'     => $clientId,
-					'clientSecret' => $clientSecret,
-				]);
-
-				break;
+		if ($providerName == 'azure') {
+			$params['tenantId'] = $tenantId;
 		}
 
-		if ($provider !== false) {
+		$provider = CactiOAuth::getProvider($providerName, $params);
+
+		if ($provider !== null) {
 			$mail->setOAuth(
 				new PHPMailer\PHPMailer\OAuth([
 					'provider'     => $provider,
