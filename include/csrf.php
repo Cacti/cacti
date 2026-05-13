@@ -48,8 +48,8 @@ function csrf_error_callback() {
 	session_regenerate_id();
 	raise_message('csrf_timeout');
 	ob_end_clean();
-	header('Location: ' . sanitize_uri($_SERVER['REQUEST_URI']));
-	csrf_log(__FUNCTION__, 'Timeout, redirecting to ' . sanitize_uri($_SERVER['REQUEST_URI']));
+	header('Location: ' . validate_redirect_url($_SERVER['REQUEST_URI']));
+	csrf_log(__FUNCTION__, 'Timeout, redirecting to ' . validate_redirect_url($_SERVER['REQUEST_URI']));
 	exit;
 }
 
