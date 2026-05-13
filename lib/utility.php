@@ -50,11 +50,7 @@ function repopulate_poller_cache() {
 		LEFT JOIN host AS h
 		ON dl.host_id=h.id
 		WHERE dl.snmp_query_id = 0 OR (dl.snmp_query_id > 0 AND dl.snmp_index != "")
-<<<<<<< fix/loop-scoped-oid-script-path-leak-1.2.x
-		ORDER BY poller_id ASC, dl.host_id ASC');
-=======
 		ORDER BY COALESCE(h.poller_id, 1) ASC, h.id ASC');
->>>>>>> 1.2.x
 
 	$poller_items   = array();
 	$local_data_ids = array();
@@ -215,14 +211,6 @@ function update_poller_cache($data_source, $commit = false) {
 		WHERE dtd.local_data_id = ?',
 		array($data_source['id']));
 
-<<<<<<< fix/loop-scoped-oid-script-path-leak-1.2.x
-		/* Whitelist failures skip item generation, but commit=true still
-		 * falls through to the buffer flush so stale poller_item rows are removed. */
-		if (cacti_sizeof($data_input) && data_input_whitelist_check($data_input['id'])) {
-			/* we have to perform some additional sql queries if this is a 'query' */
-			if (($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) ||
-				($data_input['type_id'] == DATA_INPUT_TYPE_SCRIPT_QUERY) ||
-=======
 	if (cacti_sizeof($data_input) && data_input_whitelist_check($data_input['id'])) {
 		/* Whitelist failure must NOT generate poller_items for this
 		 * data source, but on $commit=true we still fall through to
@@ -236,7 +224,6 @@ function update_poller_cache($data_source, $commit = false) {
 		/* we have to perform some additional sql queries if this is a 'query' */
 		if (($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) ||
 			($data_input['type_id'] == DATA_INPUT_TYPE_SCRIPT_QUERY) ||
->>>>>>> 1.2.x
 			($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER)){
 			$field = data_query_field_list($data_input['data_template_data_id']);
 
@@ -582,15 +569,10 @@ function update_poller_cache($data_source, $commit = false) {
 					$poller_items = $arguments['poller_items'];
 				}
 			}
-<<<<<<< fix/loop-scoped-oid-script-path-leak-1.2.x
-			}
-		} elseif (!cacti_sizeof($data_input)) {
-=======
 		}
 	} elseif (cacti_sizeof($data_input) && !data_input_whitelist_check($data_input['id'])) {
 		cacti_log('WARNING: Repopulate Poller Cache found DI[' . $data_input['id'] . '] not Passing Input Whitelist Validation for DS[' . $data_source['id'] . '].  Database may be corrupted', false, 'PCACHE');
 	} else {
->>>>>>> 1.2.x
 		$data_template_data = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' *
 			FROM data_template_data
 			WHERE local_data_id = ?',
@@ -629,11 +611,7 @@ function push_out_data_input_method($data_input_id) {
 		LEFT JOIN host AS h
 		ON h.id = dl.host_id
 		WHERE dl.snmp_query_id = 0 OR (dl.snmp_query_id > 0 AND dl.snmp_index != "")
-<<<<<<< fix/loop-scoped-oid-script-path-leak-1.2.x
-		ORDER BY poller_id ASC',
-=======
 		ORDER BY COALESCE(h.poller_id, 1) ASC',
->>>>>>> 1.2.x
 		array($data_input_id));
 
 	$poller_items = array();
