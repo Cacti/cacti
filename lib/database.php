@@ -693,7 +693,13 @@ function db_fetch_cell_return($query, $col_name = '') {
 	$r = $query->fetchAll(PDO::FETCH_BOTH);
 	if (isset($r[0]) && is_array($r[0])) {
 		if ($col_name != '') {
-			return $r[0][$col_name];
+			if (array_key_exists($col_name, $r[0])) {
+				return $r[0][$col_name];
+			}
+
+			cacti_log('WARNING: Requested column not found in SQL result: "' . $col_name . '"', false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
+
+			return false;
 		} else {
 			return reset($r[0]);
 		}
