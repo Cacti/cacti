@@ -195,9 +195,9 @@ function update_poller_cache($data_source, $commit = false) {
 		return $poller_items;
 	}
 
-	$poller_id = db_fetch_cell_prepared('SELECT poller_id
-		FROM host AS h
-		INNER JOIN data_local AS dl
+	$poller_id = db_fetch_cell_prepared('SELECT COALESCE(h.poller_id, 1) AS poller_id
+		FROM data_local AS dl
+		LEFT JOIN host AS h
 		ON h.id = dl.host_id
 		WHERE dl.id = ?',
 		array($data_source['id']));
@@ -434,6 +434,12 @@ function update_poller_cache($data_source, $commit = false) {
 
 				if (cacti_sizeof($outputs) && cacti_sizeof($snmp_queries)) {
 					foreach ($outputs as $output) {
+						/* Reset between iterations: an output without an
+						 * 'oid' mapping must not inherit the previous
+						 * iteration's value and emit a poller_item with
+						 * the wrong OID. */
+						unset($oid);
+
 						if (isset($snmp_queries['fields'][$output['snmp_field_name']]['oid'])) {
 							$oid = $snmp_queries['fields'][$output['snmp_field_name']]['oid'] . '.' . $data_source['snmp_index'];
 
@@ -516,6 +522,14 @@ function update_poller_cache($data_source, $commit = false) {
 
 				if (cacti_sizeof($outputs) && cacti_sizeof($script_queries)) {
 					foreach ($outputs as $output) {
+						/* Reset between iterations: an output without a
+						 * 'query_name' mapping must not inherit the
+						 * previous iteration's $script_path / $action
+						 * and emit a poller_item built for a different
+						 * output. */
+						unset($script_path);
+						unset($action);
+
 						if (isset($script_queries['fields'][$output['snmp_field_name']]['query_name'])) {
 							$identifier = $script_queries['fields'][$output['snmp_field_name']]['query_name'];
 
@@ -1006,7 +1020,8 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 			poller_update_poller_cache_from_buffer($local_data_ids, $poller_items, $poller_id);
 		}
 	} elseif (cacti_sizeof($local_data_ids)) {
-		/* Map each local_data_id to its host's poller. */
+		/* Map each local_data_id to its host's poller. Data sources
+		 * without a device have host_id=0 and belong to the main poller. */
 		$safe_ids = array_map('intval', $local_data_ids);
 		$rows     = db_fetch_assoc('SELECT dl.id AS local_data_id, COALESCE(h.poller_id, 1) AS poller_id
 			FROM data_local AS dl
