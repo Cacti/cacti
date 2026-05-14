@@ -196,7 +196,7 @@ $settings['path'] = [
 		'file_type'     => 'binary',
 		'max_length'    => '255',
 		'constraints'   => [
-			fn () => new Assert\Length(min: 1, max: 255),
+			fn () => new Assert\Length(min: 1, max: 255, minMessage: __('must not be empty.'), maxMessage: __('must be 255 characters or fewer.')),
 		],
 	],
 	'path_snmpget' => [
@@ -206,7 +206,7 @@ $settings['path'] = [
 		'file_type'     => 'binary',
 		'max_length'    => '255',
 		'constraints'   => [
-			fn () => new Assert\Length(min: 1, max: 255),
+			fn () => new Assert\Length(min: 1, max: 255, minMessage: __('must not be empty.'), maxMessage: __('must be 255 characters or fewer.')),
 		],
 	],
 	'path_snmpbulkwalk' => [
@@ -237,8 +237,8 @@ $settings['path'] = [
 		'file_type'     => 'binary',
 		'max_length'    => '255',
 		'constraints'   => [
-			fn () => new Assert\NotBlank(),
-			fn () => new Assert\Length(min: 1, max: 255),
+			fn () => new Assert\NotBlank(message: __('must not be empty.')),
+			fn () => new Assert\Length(min: 1, max: 255, minMessage: __('must not be empty.'), maxMessage: __('must be 255 characters or fewer.')),
 		],
 	],
 	'path_php_binary' => [
@@ -248,8 +248,8 @@ $settings['path'] = [
 		'file_type'     => 'binary',
 		'max_length'    => '255',
 		'constraints'   => [
-			fn () => new Assert\NotBlank(),
-			fn () => new Assert\Length(min: 1, max: 255),
+			fn () => new Assert\NotBlank(message: __('must not be empty.')),
+			fn () => new Assert\Length(min: 1, max: 255, minMessage: __('must not be empty.'), maxMessage: __('must be 255 characters or fewer.')),
 		],
 	],
 	'path_fping' => [
@@ -1028,7 +1028,7 @@ $settings['snmp'] = [
 		'size'          => '5',
 		'constraints'   => [
 			fn () => new Assert\Regex(pattern: '/^\d+$/', message: __('must be a positive integer (milliseconds).')),
-			fn () => new Assert\Range(min: 1, max: 600000),
+			fn () => new Assert\Range(min: 1, max: 600000, notInRangeMessage: __('must be between {{ min }} and {{ max }}.')),
 		],
 	],
 	'snmp_retries' => [
@@ -1040,7 +1040,7 @@ $settings['snmp'] = [
 		'size'          => '5',
 		'constraints'   => [
 			fn () => new Assert\Regex(pattern: '/^\d+$/', message: __('must be a non-negative integer.')),
-			fn () => new Assert\Range(min: 0, max: 100),
+			fn () => new Assert\Range(min: 0, max: 100, notInRangeMessage: __('must be between {{ min }} and {{ max }}.')),
 		],
 	],
 	'snmp_bulk_walk_size' => [
@@ -1421,9 +1421,9 @@ $settings['visual'] = [
 		'max_length'    => 255,
 		'size'          => 40,
 		'constraints'   => [
-			fn () => new Assert\NotBlank(),
+			fn () => new Assert\NotBlank(message: __('must not be empty.')),
 			fn () => new Assert\Regex(pattern: '#^([A-Za-z]:\\\\|/)#', message: __('must be an absolute path.')),
-			fn () => new Assert\Length(max: 255),
+			fn () => new Assert\Length(max: 255, maxMessage: __('must be 255 characters or fewer.')),
 		],
 	],
 	'rrdtool_header' => [
@@ -1568,10 +1568,13 @@ $settings['poller'] = [
 		// Both string and int forms are accepted because $_POST values arrive
 		// as strings while the canonical keys are int.
 		'constraints'   => [
-			fn () => new Assert\Choice(choices: array_merge(
-				array_keys($GLOBALS['poller_intervals']),
-				array_map('strval', array_keys($GLOBALS['poller_intervals']))
-			)),
+			fn () => new Assert\Choice(
+				choices: array_merge(
+					array_keys($GLOBALS['poller_intervals']),
+					array_map('strval', array_keys($GLOBALS['poller_intervals']))
+				),
+				message: __('is not a valid choice.')
+			),
 		],
 	],
 	'cron_interval' => [
@@ -1582,10 +1585,13 @@ $settings['poller'] = [
 		'array'         => $cron_intervals,
 		// Choices derive from $cron_intervals (keys are interval seconds).
 		'constraints'   => [
-			fn () => new Assert\Choice(choices: array_merge(
-				array_keys($GLOBALS['cron_intervals']),
-				array_map('strval', array_keys($GLOBALS['cron_intervals']))
-			)),
+			fn () => new Assert\Choice(
+				choices: array_merge(
+					array_keys($GLOBALS['cron_intervals']),
+					array_map('strval', array_keys($GLOBALS['cron_intervals']))
+				),
+				message: __('is not a valid choice.')
+			),
 		],
 	],
 	'process_leveling' => [
@@ -2326,7 +2332,7 @@ $settings['mail'] = [
 		// PHP's mail() / sendmail can leave this empty without harm.
 		// Length cap is still enforced to keep DB inserts well-formed.
 		'constraints'   => [
-			fn () => new Assert\Length(max: 255),
+			fn () => new Assert\Length(max: 255, maxMessage: __('must be 255 characters or fewer.')),
 		],
 	],
 	'settings_smtp_port' => [
@@ -2338,7 +2344,7 @@ $settings['mail'] = [
 		'size'          => 5,
 		'constraints'   => [
 			fn () => new Assert\Regex(pattern: '/^\d+$/', message: __('must be a positive integer.')),
-			fn () => new Assert\Range(min: 1, max: 65535),
+			fn () => new Assert\Range(min: 1, max: 65535, notInRangeMessage: __('must be between {{ min }} and {{ max }}.')),
 		],
 	],
 	'settings_smtp_username' => [
@@ -3197,7 +3203,7 @@ $settings_user = [
 			'default'       => '1',
 			'constraints'   => [
 				fn () => new Assert\Regex(pattern: '/^\d+$/', message: __('must be a positive integer id.')),
-				fn () => new Assert\Positive(),
+				fn () => new Assert\Positive(message: __('must be a positive number.')),
 			],
 		],
 		'default_timespan' => [

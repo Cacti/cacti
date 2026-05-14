@@ -21,6 +21,14 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class CactiValidator {
 	private static ?ValidatorInterface $validator = null;
 
+	/**
+	 * The validator is built without a Symfony Translator. Cacti uses its
+	 * own gettext-based __() pipeline, so call sites are expected to pass
+	 * already-translated strings via each constraint's message option
+	 * (e.g. message: __('...'), notInRangeMessage: __('...')). Default
+	 * Symfony constraint messages render in English; if a constraint
+	 * requires localization, supply an explicit __() message argument.
+	 */
 	private static function getValidator(): ValidatorInterface {
 		if (self::$validator === null) {
 			self::$validator = Validation::createValidator();
