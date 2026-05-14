@@ -2502,7 +2502,13 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 				foreach ($outputs as $output) {
 					/* Reset between iterations: an output without a
 					 * 'query_name' mapping must not validate against a
-					 * stale $script_path from the previous iteration. */
+					 * stale $script_path from the previous iteration.
+					 * $action is write-only in this loop (the post-guard
+					 * read at isset($script_path) does not consult it),
+					 * so it does not need a reset here.
+					 * update_poller_cache() in lib/utility.php builds a
+					 * poller_item that reads $action and therefore does
+					 * reset it. */
 					unset($script_path);
 
 					if (isset($script_queries['fields'][$output['snmp_field_name']]['query_name'])) {

@@ -37,6 +37,15 @@ test('update_poller_cache wraps build code in whitelist guard, not early return'
 	expect($utility)->toContain('if (cacti_sizeof($data_input) && data_input_whitelist_check($data_input[\'id\'])) {');
 });
 
+test('update_poller_cache logs the whitelist failure on the elseif branch', function () use ($utility) {
+	/* Whitelist failure must not silently drop the data source. The
+	 * elseif branch is what tells the operator the DI failed the
+	 * whitelist; if a future merge collapses it back into the positive
+	 * guard the WARNING disappears and corruption goes undiagnosed. */
+	expect($utility)->toContain('} elseif (cacti_sizeof($data_input) && !data_input_whitelist_check($data_input[\'id\'])) {');
+	expect($utility)->toContain("not Passing Input Whitelist Validation for DS[' . \$data_source['id'] . '].  Database may be corrupted");
+});
+
 test('push_out_data_input_method always-appends after boundary flush', function () use ($utility) {
 	$start = strpos($utility, 'function push_out_data_input_method');
 	$slice = substr($utility, $start, 1500);
