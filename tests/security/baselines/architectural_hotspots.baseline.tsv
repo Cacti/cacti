@@ -25,16 +25,16 @@ cmd_exec	./lib/database.php:2285		$process = proc_open(trim($cmd_string), $descr
 cmd_exec	./lib/dsstats.php:1060		$process = proc_open($command, $fds, $pipes);
 cmd_exec	./lib/functions.php:2234					$output = shell_exec($script_path);
 cmd_exec	./lib/functions.php:2249						$output = shell_exec($php . ' -q ' . $script);
-cmd_exec	./lib/functions.php:2527							$output = shell_exec($script_path);
-cmd_exec	./lib/functions.php:3028			return exec('whoami');
-cmd_exec	./lib/functions.php:3687		exec($command_line,$out,$err);
-cmd_exec	./lib/functions.php:6945				$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v');
-cmd_exec	./lib/functions.php:6947				$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v 2>&1');
-cmd_exec	./lib/functions.php:7146				exec('id -nu', $o, $r);
-cmd_exec	./lib/functions.php:7156				exec(sprintf('grep :%s: /etc/passwd | cut -d: -f1', (int) $uid), $o, $r);
-cmd_exec	./lib/functions.php:7448	 * shell_exec() callers that already assemble the command string.
-cmd_exec	./lib/functions.php:7488		$process = proc_open($argv, $descriptors, $pipes);
-cmd_exec	./lib/functions.php:7560	 * shell_exec() and expect a string return value.
+cmd_exec	./lib/functions.php:2533							$output = shell_exec($script_path);
+cmd_exec	./lib/functions.php:3034			return exec('whoami');
+cmd_exec	./lib/functions.php:3693		exec($command_line,$out,$err);
+cmd_exec	./lib/functions.php:6951				$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v');
+cmd_exec	./lib/functions.php:6953				$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v 2>&1');
+cmd_exec	./lib/functions.php:7152				exec('id -nu', $o, $r);
+cmd_exec	./lib/functions.php:7162				exec(sprintf('grep :%s: /etc/passwd | cut -d: -f1', (int) $uid), $o, $r);
+cmd_exec	./lib/functions.php:7454	 * shell_exec() callers that already assemble the command string.
+cmd_exec	./lib/functions.php:7494		$process = proc_open($argv, $descriptors, $pipes);
+cmd_exec	./lib/functions.php:7566	 * shell_exec() and expect a string return value.
 cmd_exec	./lib/installer.php:3288				$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 cmd_exec	./lib/installer.php:3320						shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 cmd_exec	./lib/installer.php:3376						$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
@@ -368,17 +368,17 @@ dynamic_include	./lib/dsstats.php:1009			include_once($config['library_path'] . 
 dynamic_include	./lib/dsstats.php:967			include_once($config['base_path'] . '/lib/rrd.php');
 dynamic_include	./lib/export.php:465		include_once($config['library_path'] . '/vdef.php');
 dynamic_include	./lib/functions.php:421		include_once($config['base_path'] . '/lib/poller.php');
-dynamic_include	./lib/functions.php:4827		include_once($config['base_path'] . '/include/global_session.php');
-dynamic_include	./lib/functions.php:4830			include_once($config['base_path'] . '/include/bottom_footer.php');
-dynamic_include	./lib/functions.php:4855			include_once($config['base_path'] . '/include/top_header.php');
-dynamic_include	./lib/functions.php:4862			include_once($config['base_path'] . '/include/top_graph_header.php');
-dynamic_include	./lib/functions.php:4869			include_once($config['base_path'] . '/include/top_general_header.php');
-dynamic_include	./lib/functions.php:5031		require_once($config['include_path'] . '/vendor/phpmailer/src/Exception.php');
-dynamic_include	./lib/functions.php:5032		require_once($config['include_path'] . '/vendor/phpmailer/src/PHPMailer.php');
-dynamic_include	./lib/functions.php:5033		require_once($config['include_path'] . '/vendor/phpmailer/src/SMTP.php');
-dynamic_include	./lib/functions.php:5520	    require_once($config['include_path'] . '/vendor/phpmailer/src/Exception.php');
-dynamic_include	./lib/functions.php:5521	    require_once($config['include_path'] . '/vendor/phpmailer/src/PHPMailer.php');
-dynamic_include	./lib/functions.php:5522	    require_once($config['include_path'] . '/vendor/phpmailer/src/SMTP.php');
+dynamic_include	./lib/functions.php:4833		include_once($config['base_path'] . '/include/global_session.php');
+dynamic_include	./lib/functions.php:4836			include_once($config['base_path'] . '/include/bottom_footer.php');
+dynamic_include	./lib/functions.php:4861			include_once($config['base_path'] . '/include/top_header.php');
+dynamic_include	./lib/functions.php:4868			include_once($config['base_path'] . '/include/top_graph_header.php');
+dynamic_include	./lib/functions.php:4875			include_once($config['base_path'] . '/include/top_general_header.php');
+dynamic_include	./lib/functions.php:5037		require_once($config['include_path'] . '/vendor/phpmailer/src/Exception.php');
+dynamic_include	./lib/functions.php:5038		require_once($config['include_path'] . '/vendor/phpmailer/src/PHPMailer.php');
+dynamic_include	./lib/functions.php:5039		require_once($config['include_path'] . '/vendor/phpmailer/src/SMTP.php');
+dynamic_include	./lib/functions.php:5526	    require_once($config['include_path'] . '/vendor/phpmailer/src/Exception.php');
+dynamic_include	./lib/functions.php:5527	    require_once($config['include_path'] . '/vendor/phpmailer/src/PHPMailer.php');
+dynamic_include	./lib/functions.php:5528	    require_once($config['include_path'] . '/vendor/phpmailer/src/SMTP.php');
 dynamic_include	./lib/graph_variables.php:65		include_once($config['library_path'] . '/rrd.php');
 dynamic_include	./lib/html.php:1243		include($config['include_path'] . '/global_arrays.php');
 dynamic_include	./lib/html_tree.php:479		include_once($config['base_path'] . '/lib/data_query.php');
