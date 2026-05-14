@@ -444,7 +444,7 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 		$local_db_cnn_id = new Cacti_TestDbSentinel();
 	}
 
-	if (!(defined('PHP_TESTING') && getenv('CACTI_TEST_BOOTSTRAP') === '1')) {
+	if (!$is_test_bootstrap) {
 		if (!db_table_exists('settings') || !db_table_exists('version')) {
 			print $ps . 'FATAL: Connection to Cacti database succeeded but `settings` table not found. Please ensure: ' . $ul;
 			print $li . 'the PHP MySQL module is installed and enabled.' . $il;
@@ -466,8 +466,10 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 		}
 	}
 
-	// gather the existing cactidb version
-	$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1');
+	// gather the existing cactidb version (skip when running under the test sentinel)
+	if (!$is_test_bootstrap) {
+		$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1');
+	}
 }
 
 define('CACTI_CONNECTION', $config['connection']);
