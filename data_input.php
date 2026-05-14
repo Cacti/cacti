@@ -64,6 +64,17 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'whitelist_update':
+		/* csrf-magic only validates the token on POST. A GET to this
+		 * action would bypass the token check and let a CSRF gadget
+		 * trigger the shell_exec below. The UI uses loadPageUsingPost
+		 * so a POST is the only legitimate caller. */
+		if (!isset($_SERVER['REQUEST_METHOD']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
+			cacti_log('WARNING: Rejected non-POST request to data_input.php?action=whitelist_update', false, 'AUTH');
+
+			header('Location: data_input.php?header=false&action=edit&id=' . get_filter_request_var('id'));
+			exit;
+		}
+
 		$id = get_filter_request_var('id');
 
 		$php        = cacti_escapeshellcmd(read_config_option('path_php_binary'));
