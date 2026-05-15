@@ -988,31 +988,41 @@ function api_plugin_moveup($plugin) {
 		array($plugin));
 
 	if (!empty($id)) {
-		$temp_id = db_fetch_cell('SELECT MAX(id) FROM plugin_config')+1;
-
 		$prior_id = db_fetch_cell_prepared('SELECT MAX(id)
 			FROM plugin_config
 			WHERE id < ?',
 			array($id));
 
-		/* update the above plugin to the prior temp id */
-		db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($temp_id, $prior_id));
-		db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($prior_id, $id));
-		db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($id, $temp_id));
+		/* MAX() on an empty set returns NULL; without a guard, the UPDATE
+		 * below would set id = NULL on the current plugin, which non-strict
+		 * MariaDB/MySQL silently stores as 0, corrupting the primary key. */
+		if (!empty($prior_id)) {
+			$temp_id = db_fetch_cell('SELECT MAX(id) FROM plugin_config') + 1;
+
+			db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($temp_id, $prior_id));
+			db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($prior_id, $id));
+			db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($id, $temp_id));
+		}
 	}
 
 	api_plugin_replicate_config();
 }
 
 function api_plugin_movedown($plugin) {
-	$id      = db_fetch_cell_prepared('SELECT id FROM plugin_config WHERE directory = ?', array($plugin));
-	$temp_id = db_fetch_cell('SELECT MAX(id) FROM plugin_config')+1;
-	$next_id = db_fetch_cell_prepared('SELECT MIN(id) FROM plugin_config WHERE id > ?', array($id));
+	$id = db_fetch_cell_prepared('SELECT id FROM plugin_config WHERE directory = ?', array($plugin));
 
-	/* update the above plugin to the prior temp id */
-	db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($temp_id, $next_id));
-	db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($next_id, $id));
-	db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($id, $temp_id));
+	if (!empty($id)) {
+		$next_id = db_fetch_cell_prepared('SELECT MIN(id) FROM plugin_config WHERE id > ?', array($id));
+
+		/* MIN() on an empty set returns NULL; same NULL->0 corruption risk as moveup. */
+		if (!empty($next_id)) {
+			$temp_id = db_fetch_cell('SELECT MAX(id) FROM plugin_config') + 1;
+
+			db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($temp_id, $next_id));
+			db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($next_id, $id));
+			db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($id, $temp_id));
+		}
+	}
 
 	api_plugin_replicate_config();
 }

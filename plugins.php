@@ -235,7 +235,15 @@ function plugins_load_temp_table() {
 
 			db_execute("CREATE TEMPORARY TABLE IF NOT EXISTS $table LIKE plugin_config");
 			db_execute("TRUNCATE $table");
+
+			/* Cacti strips NO_AUTO_VALUE_ON_ZERO on connect (database.php). Without it,
+			 * a row with id=0 in plugin_config (e.g. from a plugin upgrade script) is
+			 * reassigned by AUTO_INCREMENT to the next sequence value, causing a 1062
+			 * collision when another row already holds that id. */
+			$orig_sql_mode = db_fetch_cell('SELECT @@SESSION.sql_mode');
+			db_execute("SET SESSION sql_mode = CONCAT_WS(',', @@SESSION.sql_mode, 'NO_AUTO_VALUE_ON_ZERO')");
 			db_execute("INSERT INTO $table SELECT * FROM plugin_config");
+			db_execute_prepared('SET SESSION sql_mode = ?', array($orig_sql_mode));
 
 			break;
 		} else {
