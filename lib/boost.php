@@ -850,8 +850,7 @@ function boost_get_arch_table_names(mixed $latest_table = '') : mixed {
 			db_fetch_assoc("SELECT TABLE_NAME AS name
 				FROM information_schema.TABLES
 				WHERE TABLE_SCHEMA = SCHEMA()
-				AND TABLE_NAME LIKE 'poller_output_boost_arch_%'
-				AND TABLE_ROWS > 0"),
+				AND TABLE_NAME LIKE 'poller_output_boost_arch_%'"),
 			'name', 'name'
 		);
 	}
@@ -889,9 +888,8 @@ function boost_get_arch_table_names(mixed $latest_table = '') : mixed {
  * @return int
  */
 function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = []) : int {
-	global $database_default, $boost_sock, $boost_timeout, $get_memory, $memory_used;
+	global $database_default, $boost_sock, $boost_timeout, $get_memory, $memory_used, $archive_table;
 
-	static $archive_table = false;
 	static $warning_issued;
 	static $rrdtool_version = null;
 
@@ -1186,6 +1184,8 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 						$unused_data_source_names = array_rekey(
 							db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
 								FROM data_template_rrd AS dtr
+								LEFT JOIN graph_templates_item AS gti
+								ON dtr.id = gti.task_item_id
 								WHERE dtr.local_data_id = ? AND gti.task_item_id IS NULL',
 								[$item['local_data_id']]),
 							'data_source_name', 'data_source_name'
@@ -1283,6 +1283,8 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 						$unused_data_source_names = array_rekey(
 							db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
 								FROM data_template_rrd AS dtr
+								LEFT JOIN graph_templates_item AS gti
+								ON dtr.id = gti.task_item_id
 								WHERE dtr.local_data_id = ? AND gti.task_item_id IS NULL',
 								[$item['local_data_id']]),
 							'data_source_name', 'data_source_name'

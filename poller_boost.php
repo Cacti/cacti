@@ -70,6 +70,12 @@ if (cacti_sizeof($parms)) {
 				$child = intval($value);
 
 				break;
+			case '--archive-table':
+				if (preg_match('/^poller_output_boost_arch_\d+$/', $value)) {
+					$archive_table = $value;
+				}
+
+				break;
 			case '-d':
 			case '--debug':
 				$debug = true;
@@ -213,6 +219,15 @@ if ($child == false) {
 			cacti_log('INFO: Boost spawning child processes ...', true, 'BOOST');
 			boost_launch_children();
 
+			// Wait until at least one child has registered before entering
+			// the monitoring loop. exec_background() is non-blocking; children
+			// need a moment to call register_process_start(). Without this
+			// barrier the while-loop below sees 0 and exits immediately.
+			$startup_deadline = time() + 30;
+			while (boost_processes_running() < 1 && time() < $startup_deadline) {
+				sleep(1);
+			}
+
 			// Wait for all processes to continue
 			while ($running = boost_processes_running()) {
 				boost_debug(sprintf('%s Processes Running, Sleeping for 2 seconds.', $running));
@@ -318,8 +333,10 @@ function sig_handler(int $signo) : void {
 		case SIGINT:
 			cacti_log('WARNING: Boost Poller terminated by user', true, 'BOOST');
 
-			// tell the main poller that we are done
-			set_config_option('boost_poller_status', 'terminated - end time:' . date('Y-m-d H:i:s'));
+			// only the parent tracks overall poller status
+			if (!$child) {
+				set_config_option('boost_poller_status', 'terminated - end time:' . date('Y-m-d H:i:s'));
+			}
 
 			// release any held GET_LOCK() before exiting; rrdtool >= 1.5 does
 			// not use these locks, so skip on modern installs
@@ -434,11 +451,7 @@ function boost_prepare_process_table() : bool {
 	cacti_log('INFO: Boost counting entries in archive tables ...', true, 'BOOST');
 
 	foreach ($arch_tables as $table) {
-		$table_rows = db_fetch_cell_prepared('SELECT TABLE_ROWS
-			FROM information_schema.TABLES
-			WHERE TABLE_SCHEMA = SCHEMA()
-			AND TABLE_NAME = ?',
-			[$table]);
+		$table_rows = (int) db_fetch_cell("SELECT COUNT(*) FROM $table");
 
 		$total_rows += $table_rows;
 
@@ -449,6 +462,11 @@ function boost_prepare_process_table() : bool {
 		boost_debug('ERROR: Failed to retrieve any rows from archive tables');
 
 		cacti_log('ERROR: Failed to retrieve any rows from archive tables', true, 'BOOST');
+
+		// Drop orphaned arch tables so the next run does not pick them up.
+		foreach ($arch_tables as $table) {
+			db_execute("DROP TABLE IF EXISTS $table");
+		}
 
 		return false;
 	} else {
@@ -475,7 +493,11 @@ function boost_prepare_process_table() : bool {
 		COUNT(local_data_id)
 		FROM poller_output_boost_local_data_ids');
 
-	$processes = read_config_option('boost_parallel');
+	$processes = intval(read_config_option('boost_parallel'));
+
+	if ($processes <= 0) {
+		$processes = 1;
+	}
 
 	boost_debug("Data Sources:$data_ids, Concurrent Processes:$processes");
 
@@ -508,7 +530,7 @@ function boost_prune_memstats() : void {
 }
 
 function boost_launch_children() : void {
-	global $debug, $boost_log, $boost_debug, $cacti_log;
+	global $debug, $archive_table, $boost_log, $boost_debug, $cacti_log;
 
 	$processes = read_config_option('boost_parallel');
 
@@ -536,7 +558,7 @@ function boost_launch_children() : void {
 
 		cacti_log('NOTE: Launching Boost Process Number ' . $i, true, 'BOOST', POLLER_VERBOSITY_MEDIUM);
 
-		exec_background($php_binary, CACTI_PATH_BASE . '/poller_boost.php --child=' . $i . ($debug ? ' --debug' : ''), $redirect_args);
+		exec_background($php_binary, CACTI_PATH_BASE . '/poller_boost.php --child=' . $i . ' --archive-table=' . $archive_table . ($debug ? ' --debug' : ''), $redirect_args);
 	}
 
 	sleep(2);
@@ -658,12 +680,16 @@ function boost_output_rrd_data(int $child) : mixed {
 	}
 
 	if ($total_rows == 0) {
-		return false;
+		return 0;
 	}
 
 	boost_debug("Processes:$child, TotalRows:$total_rows");
 
 	$max_per_select = intval(read_config_option('boost_rrd_update_max_records_per_select'));
+
+	if ($max_per_select <= 0) {
+		$max_per_select = 1000;
+	}
 
 	$data_ids = db_fetch_cell_prepared('SELECT
 		COUNT(local_data_id)
@@ -1465,7 +1491,10 @@ function display_help() : void {
 	print "Cacti's performance boosting poller.  This poller will purge the boost cache periodically.  You may\n";
 	print "force the processing of the boost cache by using the --force option.\n\n";
 	print "Optional:\n";
-	print "    --verbose - Show details logs at the command line\n";
-	print "    --force   - Force the execution of a update process\n";
-	print "    --debug   - Display verbose output during execution\n\n";
+	print "    --verbose          - Show details logs at the command line\n";
+	print "    --force            - Force the execution of a update process\n";
+	print "    --debug            - Display verbose output during execution\n\n";
+	print "Child process (internal use only):\n";
+	print "    --child=N          - Run as child worker process N\n";
+	print "    --archive-table=T  - Name of the archive table created by the parent\n\n";
 }
