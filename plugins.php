@@ -397,7 +397,7 @@ function plugins_load_temp_table() : string {
 			$orig_sql_mode = db_fetch_cell('SELECT @@SESSION.sql_mode');
 			db_execute("SET SESSION sql_mode = CONCAT_WS(',', @@SESSION.sql_mode, 'NO_AUTO_VALUE_ON_ZERO')");
 			db_execute("INSERT INTO $table SELECT * FROM plugin_config");
-			db_execute_prepared("SET SESSION sql_mode = ?", [$orig_sql_mode]);
+			db_execute_prepared('SET SESSION sql_mode = ?', [$orig_sql_mode]);
 
 			break;
 		} else {
