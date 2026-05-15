@@ -33,10 +33,10 @@ Cacti CHANGELOG
 -security#GHSA-mjvw-mhj5-9jcj: CVE-2026-40084 Arbitrary File Read via path traversal in Report format_file parameter
 -security#GHSA-274c-97hj-pv2v: CVE-2026-40941 Package Import Signature Validation Bypass allows self-signed packages
 -security#GHSA-g37j-39f4-6r4j: CVE-2026-41884 Arbitrary File Read via Reports format_file path traversal
--security#GHSA-3vj5-jqr9-q8hg: CVE-2026-XXXXX Pre-auth Open Redirect via link.php Referer header
+-security#GHSA-3vj5-jqr9-q8hg: CVE-2026-44481  Pre-auth Open Redirect via link.php Referer header
+-security#GHSA-37jj-rx8x-4wf2: CVE-2026-XXXXX - SQL Injection in automation_tree_rules.php
 -security: CVE-2026-1513 billboard.js before 3.18.0 Improper Input Sanitization Allows Remote JavaScript Execution
 -security: CVE-2026-40194, CVE-2026-32935 in phpseclib - This is breaking change for RRDProxy
--security: CVE-2026-XXXXX - SQL Injection in automation_tree_rules.php
 -issue#6168: When purging RRD files, paths are not correctly handled
 -issue#6202: When using automation, devices may not be added as expected
 -issue#6204: Attempting to match a field in automation may cause unexpected errors
