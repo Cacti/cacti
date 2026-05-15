@@ -277,6 +277,10 @@ if ($child == false) {
 
 				api_plugin_hook('boost_poller_bottom');
 			}
+		} else {
+			// boost_prepare_process_table() set status to 'running' before returning
+			// false; clear it now so the next run does not trigger a false Overrun warning.
+			set_config_option('boost_poller_status', 'complete - end time:' . date('Y-m-d H:i:s'));
 		}
 
 		cacti_log('INFO: Boost unregistering master process', true, 'BOOST');
@@ -665,7 +669,7 @@ function boost_output_rrd_data(int $child) : mixed {
 	if (!cacti_sizeof($arch_tables)) {
 		cacti_log('ERROR: Failed to retrieve archive table name', true, 'BOOST');
 
-		return false;
+		return 0;
 	}
 
 	$total_rows = 0;
@@ -1178,6 +1182,8 @@ function boost_process_local_data_ids(int $last_id, int $child, mixed $rrdtool_p
 						$unused_data_source_names = array_rekey(
 							db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
 								FROM data_template_rrd AS dtr
+								LEFT JOIN graph_templates_item AS gti
+								ON dtr.id = gti.task_item_id
 								WHERE dtr.local_data_id = ? AND gti.task_item_id IS NULL',
 								[$item['local_data_id']]),
 							'data_source_name', 'data_source_name'

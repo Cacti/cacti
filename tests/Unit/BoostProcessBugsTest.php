@@ -296,3 +296,76 @@ test('non-templated data source query joins graph_templates_item before filterin
 	// Three occurrences: the pre-existing correct one (templated path) plus the two fixes.
 	expect($count)->toBeGreaterThanOrEqual(3);
 });
+
+test('boost_process_local_data_ids non-templated reset_template branch joins gti', function () use ($boostPollerPath) {
+	$contents = file_get_contents($boostPollerPath);
+
+	$func_pos = strpos($contents, 'function boost_process_local_data_ids(');
+	expect($func_pos)->not->toBeFalse();
+
+	$func_end  = strpos($contents, "\nfunction ", $func_pos + 1);
+	$func_body = substr($contents, $func_pos, $func_end - $func_pos);
+
+	// The non-templated else branch in boost_process_local_data_ids must not reference
+	// gti.task_item_id without a JOIN — MySQL raises "Unknown column" without the JOIN.
+	expect($func_body)->not->toMatch(
+		'/FROM data_template_rrd AS dtr\s+WHERE dtr\.local_data_id = \? AND gti\.task_item_id IS NULL/'
+	);
+
+	// The LEFT JOIN must be present in at least the two corrected sites.
+	$join_needle = 'LEFT JOIN graph_templates_item AS gti';
+	expect(substr_count($func_body, $join_needle))->toBeGreaterThanOrEqual(2);
+});
+
+test('boost_output_rrd_data returns 0 not false when arch tables are not found', function () use ($boostPollerPath) {
+	$contents = file_get_contents($boostPollerPath);
+
+	$func_pos = strpos($contents, 'function boost_output_rrd_data(');
+	expect($func_pos)->not->toBeFalse();
+
+	$func_end  = strpos($contents, "\nfunction ", $func_pos + 1);
+	$func_body = substr($contents, $func_pos, $func_end - $func_pos);
+
+	// The arch_tables-not-found early return must use 0, not false, so the value
+	// inserted into poller_output_boost_processes.status stays numeric throughout.
+	$arch_check_pos = strpos($func_body, '!cacti_sizeof($arch_tables)');
+	expect($arch_check_pos)->not->toBeFalse();
+
+	$after_arch = substr($func_body, $arch_check_pos, 120);
+	expect($after_arch)->toContain('return 0;');
+	expect($after_arch)->not->toContain('return false;');
+});
+
+test('boost_poller_status is set to complete when $continue is false', function () use ($boostPollerPath) {
+	$contents = file_get_contents($boostPollerPath);
+
+	// When boost_prepare_process_table() returns false it already set
+	// boost_poller_status to 'running'. Without an explicit reset in the else
+	// branch, the next run treats it as an overrun and emits a false warning.
+	$launch_pos = strpos($contents, 'boost_launch_children()');
+	expect($launch_pos)->not->toBeFalse();
+
+	// Find the else branch that follows the if ($continue) block.
+	$else_pos = strpos($contents, "} else {\n\t\t\t// boost_prepare_process_table()", $launch_pos);
+	expect($else_pos)->not->toBeFalse();
+
+	$else_segment = substr($contents, $else_pos, 400);
+	expect($else_segment)->toContain("'boost_poller_status', 'complete");
+});
+
+test('boost_get_total_rows uses exact COUNT(*) not TABLE_ROWS estimate', function () use ($boostLibPath) {
+	$contents = file_get_contents($boostLibPath);
+
+	$func_pos = strpos($contents, 'function boost_get_total_rows()');
+	expect($func_pos)->not->toBeFalse();
+
+	$func_end  = strpos($contents, "\nfunction ", $func_pos + 1);
+	$func_body = substr($contents, $func_pos, $func_end - $func_pos);
+
+	// TABLE_ROWS in information_schema is an InnoDB estimate; it can report 0
+	// immediately after the poller flushes data, causing boost to skip the run.
+	expect($func_body)->not->toContain('TABLE_ROWS');
+
+	// The replacement iterates real tables and uses COUNT(*) for accuracy.
+	expect($func_body)->toContain('COUNT(*)');
+});

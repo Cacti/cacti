@@ -100,11 +100,19 @@ function boost_file_size_display(float|int $file_size, int $digits = 2) : string
  * @return int The total number of rows from the matching tables.
  */
 function boost_get_total_rows() : int {
-	return (int) db_fetch_cell("SELECT SUM(TABLE_ROWS)
-		FROM information_schema.tables
-		WHERE table_schema = SCHEMA()
-		AND (table_name LIKE 'poller_output_boost_arch_%'
-		OR table_name LIKE 'poller_output_boost')");
+	$tables = db_fetch_assoc("SELECT TABLE_NAME AS name
+		FROM information_schema.TABLES
+		WHERE TABLE_SCHEMA = SCHEMA()
+		AND (TABLE_NAME LIKE 'poller_output_boost_arch_%'
+		OR TABLE_NAME = 'poller_output_boost')");
+
+	$total = 0;
+
+	foreach ($tables as $table) {
+		$total += (int) db_fetch_cell("SELECT COUNT(*) FROM `{$table['name']}`");
+	}
+
+	return $total;
 }
 
 /**
