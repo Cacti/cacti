@@ -91,12 +91,16 @@ test('child validation regex rejects injection attempts', function () {
 	}
 });
 
-test('poller_boost.php contains --archive-table in exec_background call', function () use ($boostPollerPath) {
+test('poller_boost.php passes --archive-table to exec_background via $child_args', function () use ($boostPollerPath) {
 	$contents = file_get_contents($boostPollerPath);
 
-	// Case label (switch arm) and the exec_background argument both present.
+	// The case label handles the incoming argument on the child side.
 	expect($contents)->toContain("case '--archive-table':");
-	expect($contents)->toMatch('/exec_background\b[^;]*--archive-table=/');
+
+	// The parent builds $child_args with --archive-table= and passes the array
+	// to exec_background so each element is individually shell-escaped.
+	expect($contents)->toContain("'--archive-table=' . \$archive_table");
+	expect($contents)->toContain('exec_background($php_binary, $child_args, $redirect_args)');
 });
 
 test('poller_boost.php child arg block handles --archive-table', function () use ($boostPollerPath) {

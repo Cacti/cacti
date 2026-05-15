@@ -138,8 +138,10 @@ test('boost_launch_children passes --archive-table to child processes', function
 
 	// Children need the archive table name so boost_get_arch_table_names has
 	// a concrete fallback when SHOW TABLES returns nothing (e.g. replication lag).
-	expect($contents)->toContain('--archive-table=');
-	expect($contents)->toMatch('/exec_background[^;]+--archive-table=/');
+	// --archive-table= is now an element in $child_args passed to exec_background,
+	// giving each argument individual shell-escaping via cacti_escapeshellarg().
+	expect($contents)->toContain("'--archive-table=' . \$archive_table");
+	expect($contents)->toContain('exec_background($php_binary, $child_args, $redirect_args)');
 });
 
 test('boost_launch_children declares $archive_table as global', function () use ($boostPollerPath) {

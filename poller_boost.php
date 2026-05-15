@@ -268,7 +268,7 @@ if ($child == false) {
 					foreach ($tables as $table) {
 						cacti_log('INFO: Boost removing archive table: ' . $table['name'], true, 'BOOST');
 
-						db_execute('DROP TABLE IF EXISTS ' . $table['name']);
+						db_execute('DROP TABLE IF EXISTS `' . $table['name'] . '`');
 					}
 				}
 
@@ -437,9 +437,9 @@ function boost_prepare_process_table() : bool {
 	$interim_table = 'poller_output_boost_' . $time;
 
 	cacti_log('INFO: Boost rotating poller_output_boost into archive table: ' . $archive_table, true, 'BOOST');
-	db_execute("CREATE TABLE $interim_table LIKE poller_output_boost");
-	db_execute("RENAME TABLE poller_output_boost TO $archive_table, $interim_table TO poller_output_boost");
-	db_execute("ANALYZE TABLE $archive_table");
+	db_execute("CREATE TABLE `{$interim_table}` LIKE poller_output_boost");
+	db_execute("RENAME TABLE `poller_output_boost` TO `{$archive_table}`, `{$interim_table}` TO `poller_output_boost`");
+	db_execute("ANALYZE TABLE `{$archive_table}`");
 	cacti_log('INFO: Boost done rotating poller_output_boost', true, 'BOOST');
 
 	$arch_tables = boost_get_arch_table_names($archive_table);
@@ -455,7 +455,7 @@ function boost_prepare_process_table() : bool {
 	cacti_log('INFO: Boost counting entries in archive tables ...', true, 'BOOST');
 
 	foreach ($arch_tables as $table) {
-		$table_rows = (int) db_fetch_cell("SELECT COUNT(*) FROM $table");
+		$table_rows = (int) db_fetch_cell("SELECT COUNT(*) FROM `{$table}`");
 
 		$total_rows += $table_rows;
 
@@ -469,7 +469,7 @@ function boost_prepare_process_table() : bool {
 
 		// Drop orphaned arch tables so the next run does not pick them up.
 		foreach ($arch_tables as $table) {
-			db_execute("DROP TABLE IF EXISTS $table");
+			db_execute("DROP TABLE IF EXISTS `{$table}`");
 		}
 
 		return false;
@@ -546,7 +546,10 @@ function boost_launch_children() : void {
 	$redirect_args = '';
 
 	if ($boost_debug && $boost_log != '') {
-		if (!is_writable($boost_log)) {
+		// Reject paths with shell metacharacters; redirect_args bypass shell escaping.
+		if (preg_match('/[^A-Za-z0-9_.\/\-]/', $boost_log)) {
+			cacti_log("WARNING: Boost log path contains unsafe characters; redirect disabled.", true, 'BOOST');
+		} elseif (!is_writable($boost_log)) {
 			boost_debug("WARNING: Boost log '$boost_log' is not writable!");
 
 			cacti_log("WARNING: Boost log '$boost_log' is not writable!", true, 'BOOST');
@@ -562,7 +565,17 @@ function boost_launch_children() : void {
 
 		cacti_log('NOTE: Launching Boost Process Number ' . $i, true, 'BOOST', POLLER_VERBOSITY_MEDIUM);
 
-		exec_background($php_binary, CACTI_PATH_BASE . '/poller_boost.php --child=' . $i . ' --archive-table=' . $archive_table . ($debug ? ' --debug' : ''), $redirect_args);
+		$child_args = [
+			CACTI_PATH_BASE . '/poller_boost.php',
+			'--child=' . $i,
+			'--archive-table=' . $archive_table,
+		];
+
+		if ($debug) {
+			$child_args[] = '--debug';
+		}
+
+		exec_background($php_binary, $child_args, $redirect_args);
 	}
 
 	sleep(2);

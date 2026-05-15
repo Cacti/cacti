@@ -275,11 +275,12 @@ function boost_poller_on_demand(array &$results) : bool {
 
 				foreach ($results as $result) {
 					$tmp_buffer =
-						"('" .
-						$result['local_data_id'] . "','" .
-						$result['rrd_name'] . "','" .
-						$result['time'] . "','" .
-						$result['output'] . "')";
+						'(' .
+						(int) $result['local_data_id'] . ',' .
+						db_qstr($result['rrd_name'], $conn) . ',' .
+						db_qstr($result['time'], $conn) . ',' .
+						db_qstr($result['output'], $conn) .
+						')';
 
 					$tmp_length = strlen($tmp_buffer);
 
@@ -752,7 +753,7 @@ function boost_graph_set_file(string|null &$output, int $local_graph_id, int|nul
 						if ($fileptr = fopen($cache_file, 'w')) {
 							fwrite($fileptr, $output, strlen($output));
 							fclose($fileptr);
-							chmod($cache_file, 0666);
+							chmod($cache_file, 0644);
 
 							// count the number of images that had to be cached
 							$mc->object('boostStatsTotalsImagesCacheWrites')->count();
@@ -942,21 +943,21 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 	$temp_table          = false;
 
 	if (cacti_count($archive_tables)) {
-		$temp_table = 'poller_output_boost_temp_' . $local_data_id . '_' . mt_rand();
+		$temp_table = 'poller_output_boost_temp_' . $local_data_id . '_' . random_int(0, PHP_INT_MAX);
 
-		db_execute("CREATE TEMPORARY TABLE $temp_table LIKE poller_output_boost");
+		db_execute("CREATE TEMPORARY TABLE `{$temp_table}` LIKE poller_output_boost");
 
 		foreach ($archive_tables as $table) {
-			db_execute_prepared("INSERT INTO $temp_table
+			db_execute_prepared("INSERT INTO `{$temp_table}`
 				SELECT *
-				FROM $table
+				FROM `{$table}`
 				WHERE local_data_id = ?",
 				[$local_data_id], false);
 		}
 	}
 
 	if ($temp_table !== false) {
-		db_execute_prepared("INSERT INTO $temp_table
+		db_execute_prepared("INSERT INTO `{$temp_table}`
 			SELECT *
 			FROM poller_output_boost
 			WHERE local_data_id = ?
@@ -965,7 +966,7 @@ function boost_process_poller_output(int $local_data_id, mixed $rrdtool_pipe = [
 
 		$query_string = "SELECT po.local_data_id, dl.data_template_id,
 			UNIX_TIMESTAMP(po.time) AS timestamp, po.rrd_name, po.output
-			FROM $temp_table AS po
+			FROM `{$temp_table}` AS po
 			INNER JOIN data_local AS dl
 			ON po.local_data_id = dl.id
 			WHERE po.local_data_id = ?
