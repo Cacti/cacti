@@ -648,8 +648,7 @@ function boost_get_arch_table_names($latest_table = '') {
 			db_fetch_assoc("SELECT TABLE_NAME AS name
 				FROM information_schema.TABLES
 				WHERE TABLE_SCHEMA = SCHEMA()
-				AND TABLE_NAME LIKE 'poller_output_boost_arch_%'
-				AND TABLE_ROWS > 0"),
+				AND TABLE_NAME LIKE 'poller_output_boost_arch_%'",
 			'name', 'name'
 		);
 	}
