@@ -305,6 +305,8 @@ function install_unlink(string $file) : void {
 
 	if (!str_contains($full_file, CACTI_PATH_BASE)) {
 		log_install_high('file', "Not Unlinking file: $full_file due to it not being in the Cacti base path.");
+
+		return;
 	}
 
 	if (file_exists($full_file) && is_writable($full_file)) {
@@ -323,6 +325,8 @@ function install_rmdir(string $directory) : void {
 
 	if (!str_contains($directory, CACTI_PATH_BASE)) {
 		log_install_high('file', "Not Unlinking directory: $directory due to it not being in the Cacti base path.");
+
+		return;
 	}
 
 	if (file_exists($directory) && is_writable($directory)) {
@@ -350,6 +354,8 @@ function install_rmdir_recursive(string $directory, bool $del_parent = false) : 
 
 	if (!str_contains($directory, CACTI_PATH_BASE)) {
 		log_install_high('file', "Not Unlinking directory: $directory due to it not being in the Cacti base path.");
+
+		return;
 	}
 
 	$files = glob($directory . '/{,.}[!.,!..]*',GLOB_MARK | GLOB_BRACE);
@@ -1384,12 +1390,16 @@ function import_colors() : bool {
 			$hex     = $parts[1];
 			$name    = $parts[2];
 
-			$id = db_fetch_cell("SELECT hex FROM colors WHERE hex='$hex'");
+			if (!preg_match('/^[0-9a-fA-F]{6}$/', $hex)) {
+				continue;
+			}
+
+			$id = db_fetch_cell_prepared('SELECT hex FROM colors WHERE hex = ?', [$hex]);
 
 			if (!empty($id)) {
-				db_execute("UPDATE colors SET name='$name', read_only='on' WHERE hex='$hex'");
+				db_execute_prepared('UPDATE colors SET name = ?, read_only = \'on\' WHERE hex = ?', [$name, $hex]);
 			} else {
-				db_execute("INSERT IGNORE INTO colors (name, hex, read_only) VALUES ('$name', '$hex', 'on')");
+				db_execute_prepared('INSERT IGNORE INTO colors (name, hex, read_only) VALUES (?, ?, \'on\')', [$name, $hex]);
 			}
 		}
 	}

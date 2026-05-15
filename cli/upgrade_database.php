@@ -175,7 +175,7 @@ foreach ($cacti_version_codes as $cacti_upgrade_version => $hash_code) {
 	db_execute_prepared('UPDATE version SET cacti = ?', [$cacti_upgrade_version]);
 
 	if (cacti_version_compare(CACTI_VERSION, $cacti_upgrade_version, '=')) {
-		db_execute("UPDATE version SET cacti = '" . CACTI_VERSION_FULL . "'");
+		db_execute_prepared('UPDATE version SET cacti = ?', [CACTI_VERSION_FULL]);
 
 		break;
 	}
