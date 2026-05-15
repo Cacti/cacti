@@ -355,7 +355,7 @@ test('boost_poller_status is set to complete when $continue is false', function 
 	expect($else_segment)->toContain("'boost_poller_status', 'complete");
 });
 
-test('boost_get_total_rows uses exact COUNT(*) not TABLE_ROWS estimate', function () use ($boostLibPath) {
+test('boost_get_total_rows uses information_schema SUM(TABLE_ROWS) for O(1) row estimation', function () use ($boostLibPath) {
 	$contents = file_get_contents($boostLibPath);
 
 	$func_pos = strpos($contents, 'function boost_get_total_rows()');
@@ -364,10 +364,15 @@ test('boost_get_total_rows uses exact COUNT(*) not TABLE_ROWS estimate', functio
 	$func_end  = strpos($contents, "\nfunction ", $func_pos + 1);
 	$func_body = substr($contents, $func_pos, $func_end - $func_pos);
 
-	// TABLE_ROWS in information_schema is an InnoDB estimate; it can report 0
-	// immediately after the poller flushes data, causing boost to skip the run.
-	expect($func_body)->not->toContain('TABLE_ROWS');
+	// boost_get_total_rows() is called from the monitoring loop for display
+	// purposes. Per-table COUNT(*) would add a full-table scan for every arch
+	// table on every monitoring tick. TABLE_ROWS from information_schema is an
+	// O(1) estimate that is accurate here because ANALYZE TABLE is called in
+	// boost_prepare_process_table() before the monitoring loop starts.
+	expect($func_body)->toContain('TABLE_ROWS');
+	expect($func_body)->toContain('information_schema');
 
-	// The replacement iterates real tables and uses COUNT(*) for accuracy.
-	expect($func_body)->toContain('COUNT(*)');
+	// The exact per-table COUNT(*) path lives in boost_prepare_process_table(),
+	// not here; this function must not do per-table full scans.
+	expect($func_body)->not->toContain('foreach');
 });

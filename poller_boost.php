@@ -450,7 +450,8 @@ function boost_prepare_process_table() : bool {
 		return false;
 	}
 
-	$total_rows = 0;
+	$total_rows    = 0;
+	$per_table_rows = [];
 
 	cacti_log('INFO: Boost counting entries in archive tables ...', true, 'BOOST');
 
@@ -458,6 +459,7 @@ function boost_prepare_process_table() : bool {
 		$table_rows = (int) db_fetch_cell("SELECT COUNT(*) FROM `{$table}`");
 
 		$total_rows += $table_rows;
+		$per_table_rows[$table] = $table_rows;
 
 		cacti_log('INFO: Boost archive table ' . $table . ' has ' . $table_rows . ' entries.', true, 'BOOST');
 	}
@@ -467,9 +469,13 @@ function boost_prepare_process_table() : bool {
 
 		cacti_log('ERROR: Failed to retrieve any rows from archive tables', true, 'BOOST');
 
-		// Drop orphaned arch tables so the next run does not pick them up.
-		foreach ($arch_tables as $table) {
-			db_execute("DROP TABLE IF EXISTS `{$table}`");
+		// Drop only confirmed-empty arch tables; skip any whose COUNT(*) was
+		// non-zero to avoid data loss if boost_get_arch_table_names returned
+		// a table from a prior run that still holds unprocessed rows.
+		foreach ($per_table_rows as $table => $rows) {
+			if ($rows === 0) {
+				db_execute("DROP TABLE IF EXISTS `{$table}`");
+			}
 		}
 
 		return false;
@@ -535,6 +541,12 @@ function boost_prune_memstats() : void {
 
 function boost_launch_children() : void {
 	global $debug, $archive_table, $boost_log, $boost_debug, $cacti_log;
+
+	if (empty($archive_table) || !preg_match('/^poller_output_boost_arch_\d+$/', $archive_table)) {
+		cacti_log('ERROR: Boost refusing to launch children: archive table not set or invalid', true, 'BOOST');
+
+		return;
+	}
 
 	$processes = read_config_option('boost_parallel');
 
