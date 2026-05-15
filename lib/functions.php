@@ -4860,7 +4860,7 @@ function general_header() {
 }
 
 function appendHeaderSuppression($url) {
-	if (strpos($url, 'header=false') < 0) {
+	if (strpos($url, 'header=false') === false) {
 		return $url . (strpos($url, '?') ? '&':'?') . 'header=false';
 	}
 

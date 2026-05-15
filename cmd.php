@@ -815,6 +815,12 @@ function ping_and_reindex_check(&$item, $mibs) {
 
 			foreach ($reindex as $index_item) {
 				$assert_fail = false;
+				/* Reset between iterations: a reindex action that
+				 * is not handled by the switch below (default branch
+				 * logs but does not set $output) must not inherit the
+				 * previous iteration's $output and feed the wrong value
+				 * into the assert comparison further down. */
+				unset($output);
 
 				switch ($index_item['action']) {
 					case POLLER_ACTION_SNMP:
