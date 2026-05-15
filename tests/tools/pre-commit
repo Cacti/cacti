@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+# +-------------------------------------------------------------------------+
+# | Copyright (C) 2004-2026 The Cacti Group                                 |
+# |                                                                         |
+# | This program is free software; you can redistribute it and/or           |
+# | modify it under the terms of the GNU General Public License             |
+# | as published by the Free Software Foundation; either version 2          |
+# | of the License, or (at your option) any later version.                  |
+# +-------------------------------------------------------------------------+
+# | Cacti: The Complete RRDtool-based Graphing Solution                     |
+# +-------------------------------------------------------------------------+
+#
+# Pre-commit hook: runs Cacti code-quality guard-rails on staged PHP files.
+#
+# Install once:
+#   composer run-script install-hooks
+#
+# The hook skips the plugins/ directory (third-party code) and include/vendor/.
+# Only staged files trigger the checks; unstaged changes are not inspected.
+
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT"
+
+# Collect staged PHP files outside excluded directories.
+STAGED=$(git diff --cached --name-only --diff-filter=ACMR | \
+    grep '\.php$' | \
+    grep -v '^plugins/' | \
+    grep -v '^include/vendor/' || true)
+
+if [ -z "$STAGED" ]; then
+    exit 0
+fi
+
+echo "Running guard-rails on staged files..."
+
+# Syntax check (phplint equivalent: php -l on each file).
+FAIL=0
+
+for FILE in $STAGED; do
+    if ! php -l "$FILE" > /dev/null 2>&1; then
+        echo "SYNTAX ERROR: $FILE"
+        FAIL=1
+    fi
+done
+
+if [ "$FAIL" -ne 0 ]; then
+    echo "Fix syntax errors before committing."
+    exit 1
+fi
+
+# PHP-CS-FIXER dry-run (style check, no auto-fix).
+# Runs only if php-cs-fixer is available via Composer.
+if [ -x "include/vendor/bin/php-cs-fixer" ]; then
+    if ! include/vendor/bin/php-cs-fixer fix \
+            --allow-unsupported-php-version=yes \
+            --dry-run \
+            --diff \
+            --config=./.php-cs-fixer.php \
+            --path-mode=intersection \
+            $STAGED 2>/dev/null; then
+        echo ""
+        echo "Style violations found. Run: composer run-script php-cs-fixit"
+        exit 1
+    fi
+fi
+
+echo "Guard-rails passed."

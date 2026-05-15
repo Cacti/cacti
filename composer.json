@@ -70,11 +70,12 @@
         "rector/rector": "^2.1.2"
     },
     "scripts": {
-        "lint": "phplint --no-cache --exclude=include/vendor ",
+        "lint": "phplint --no-cache --exclude=include/vendor --exclude=plugins ",
         "phpstan": "phpstan analyse --level 6 ",
         "php-cs-fixer": "php-cs-fixer fix --allow-unsupported-php-version=yes --dry-run --diff --config=./.php-cs-fixer.php ",
         "phpcsfixer": "@php-cs-fixer",
         "php-cs-fixit": "php-cs-fixer fix ",
+        "install-hooks": "install -m 755 tests/tools/pre-commit .git/hooks/pre-commit",
         "test": "include/vendor/bin/pest --display-warnings"
     },
     "authors": [
