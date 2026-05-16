@@ -48,19 +48,20 @@ if (in_array('-v', $parms, true) || in_array('-V', $parms, true) || in_array('--
 	print 'WARNING: Deprecated script push_out_hosts.php. Please use rebuild_poller_cache.php.' . PHP_EOL;
 
 	// Pass through with no shell interpretation; deprecated wrapper just
-	// forwards argv to the real script. runStreaming() emits child stderr
-	// to STDERR internally, matching the prior passthru() behaviour. We
-	// also intentionally exit 0 like the original passthru() call did,
-	// so existing cron jobs keep their exit-code expectations.
+	// forwards argv to the real script.
 	$argv_forward = array_merge([$php_binary, CACTI_PATH_CLI . '/rebuild_poller_cache.php'], $parms);
 
-	CactiProcess::runStreaming(
+	// propagates child exit status, unlike the prior passthru() approach
+	$exit = CactiProcess::runStreaming(
 		$argv_forward,
 		['timeout' => null, 'expected_exit_codes' => range(0, 255)],
 		static function ($line) {
 			print $line . PHP_EOL;
+		},
+		static function ($chunk) {
+			fwrite(STDERR, $chunk);
 		}
 	);
 
-	exit(0);
+	exit($exit);
 }
