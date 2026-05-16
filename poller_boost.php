@@ -224,6 +224,7 @@ if ($child == false) {
 			// need a moment to call register_process_start(). Without this
 			// barrier the while-loop below sees 0 and exits immediately.
 			$startup_deadline = time() + 30;
+
 			while (boost_processes_running() < 1 && time() < $startup_deadline) {
 				sleep(1);
 			}
@@ -450,7 +451,7 @@ function boost_prepare_process_table() : bool {
 		return false;
 	}
 
-	$total_rows    = 0;
+	$total_rows     = 0;
 	$per_table_rows = [];
 
 	cacti_log('INFO: Boost counting entries in archive tables ...', true, 'BOOST');
@@ -560,7 +561,7 @@ function boost_launch_children() : void {
 	if ($boost_debug && $boost_log != '') {
 		// Reject paths with shell metacharacters; redirect_args bypass shell escaping.
 		if (preg_match('/[^A-Za-z0-9_.\/\-]/', $boost_log)) {
-			cacti_log("WARNING: Boost log path contains unsafe characters; redirect disabled.", true, 'BOOST');
+			cacti_log('WARNING: Boost log path contains unsafe characters; redirect disabled.', true, 'BOOST');
 		} elseif (!is_writable($boost_log)) {
 			boost_debug("WARNING: Boost log '$boost_log' is not writable!");
 
