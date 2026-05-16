@@ -3308,7 +3308,7 @@ function create_all_header_nodes(int $item_id, array $rule) : int {
 				// for a fixed string, use the given text
 				$sql    = '';
 				$target = $automation_tree_header_types[AUTOMATION_TREE_ITEM_TYPE_STRING];
-			} else {
+			} elseif (api_automation_column_exists($tree_item['field'], ['host', 'host_template', 'graph_local', 'graph_templates_graph', 'graph_templates'])) {
 				$sql_field = $tree_item['field'] . ' AS source ';
 
 				// now we build up a new query for counting the rows
@@ -3318,6 +3318,9 @@ function create_all_header_nodes(int $item_id, array $rule) : int {
 				$sql_where . ' AND (' . $sql_filter . ')';
 
 				$target = db_fetch_cell($sql, '', false);
+			} else {
+				cacti_log($function . " SECURITY: Skipped automation tree item with invalid field '{$tree_item['field']}'.", false, 'AUTOM8');
+				continue;
 			}
 
 			cacti_log($function . ' Item ' . $item_id . ' - sql: ' . str_replace("\m",'',$sql) . ' matches: ' . $target, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);

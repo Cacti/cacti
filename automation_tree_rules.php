@@ -360,6 +360,13 @@ function form_save() : void {
 		$save['search_pattern']    = isrv('search_pattern') ? form_input_validate(gnrv('search_pattern'), 'search_pattern', '', false, 3) : '';
 		$save['replace_pattern']   = isrv('replace_pattern') ? form_input_validate(gnrv('replace_pattern'), 'replace_pattern', '', true, 3) : '';
 
+		if ($save['field'] !== AUTOMATION_TREE_ITEM_TYPE_STRING && $save['field'] !== '') {
+			if (!api_automation_column_exists($save['field'], ['host', 'host_template', 'graph_local', 'graph_templates_graph', 'graph_templates'])) {
+				raise_message('field_invalid', __('Invalid field name specified for Tree Rule Item.'), MESSAGE_LEVEL_ERROR);
+				cacti_log(sprintf("SECURITY: Blocked invalid automation tree rule field '%s' from client '%s'", $save['field'], get_client_addr()), false, 'AUTOM8');
+			}
+		}
+
 		$automation_graph_rule_item_id = null;
 
 		if (!is_error_message()) {
