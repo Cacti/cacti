@@ -4967,14 +4967,6 @@ function debug_log_return(string $type) : string {
 }
 
 /**
- * sanitize_search_string - cleans up a search string submitted by the user to be passed
- * to the database. NOTE: some of the code for this function came from the phpBB project.
- *
- * @param string $string The original raw search string
- *
- * @return string The sanitized search string
- */
-/**
  * Strips any character that cannot safely appear in a SQL identifier.
  * Allows word characters, dots (table.column), parentheses and INET_ATON-style
  * wrappers already used by the sort helpers.  Use before concatenating a
@@ -4988,6 +4980,14 @@ function sanitize_sql_column(string $column) : string {
 	return preg_replace('/[^a-zA-Z0-9_().]/', '', $column) ?? '';
 }
 
+/**
+ * sanitize_search_string - cleans up a search string submitted by the user to be passed
+ * to the database. NOTE: some of the code for this function came from the phpBB project.
+ *
+ * @param string $string The original raw search string
+ *
+ * @return string The sanitized search string
+ */
 function sanitize_search_string(string $string) : string {
 	static $drop_char_match   = ['(', ')', '^', '$', '<', '>', '`', '\'', '"', '|', ',', '?', '+', '[', ']', '{', '}', '#', ';', '!', '=', '*'];
 	static $drop_char_replace = ['', '', ' ', ' ', ' ', ' ', '', '', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '];
