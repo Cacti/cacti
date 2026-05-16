@@ -241,7 +241,11 @@ function plugins_load_temp_table() {
 			 * reassigned by AUTO_INCREMENT to the next sequence value, causing a 1062
 			 * collision when another row already holds that id. */
 			$orig_sql_mode = db_fetch_cell('SELECT @@SESSION.sql_mode');
-			db_execute("SET SESSION sql_mode = CONCAT_WS(',', @@SESSION.sql_mode, 'NO_AUTO_VALUE_ON_ZERO')");
+			$modes = array_filter(array_map('trim', explode(',', (string)$orig_sql_mode)));
+			if (!in_array('NO_AUTO_VALUE_ON_ZERO', $modes, true)) {
+				$modes[] = 'NO_AUTO_VALUE_ON_ZERO';
+			}
+			db_execute_prepared('SET SESSION sql_mode = ?', [implode(',', $modes)]);
 			db_execute("INSERT INTO $table SELECT * FROM plugin_config");
 			db_execute_prepared('SET SESSION sql_mode = ?', array($orig_sql_mode));
 

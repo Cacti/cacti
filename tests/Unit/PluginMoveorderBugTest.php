@@ -39,26 +39,26 @@ $pluginsPath    = __DIR__ . '/../../plugins.php';
 // api_plugin_moveup
 // ---------------------------------------------------------------------------
 
-test('api_plugin_moveup has !empty($prior_id) guard around the three-step swap', function () use ($libPluginsPath) {
+test('api_plugin_moveup has $prior_id !== null guard around the three-step swap', function () use ($libPluginsPath) {
 	$source = file_get_contents($libPluginsPath);
 
 	$fn_pos    = strpos($source, 'function api_plugin_moveup(');
-	$guard_pos = strpos($source, 'if (!empty($prior_id))', $fn_pos);
+	$guard_pos = strpos($source, 'if ($prior_id !== null)', $fn_pos);
 
 	expect($fn_pos)->not->toBeFalse('api_plugin_moveup not found');
-	expect($guard_pos)->not->toBeFalse('!empty($prior_id) guard missing from api_plugin_moveup');
+	expect($guard_pos)->not->toBeFalse('$prior_id !== null guard missing from api_plugin_moveup');
 });
 
 test('api_plugin_moveup swap executes only after the prior_id guard, not before', function () use ($libPluginsPath) {
 	$source = file_get_contents($libPluginsPath);
 
 	$fn_pos    = strpos($source, 'function api_plugin_moveup(');
-	$guard_pos = strpos($source, 'if (!empty($prior_id))', $fn_pos);
+	$guard_pos = strpos($source, 'if ($prior_id !== null)', $fn_pos);
 	$swap_pos  = strpos($source, 'UPDATE plugin_config SET id = ? WHERE id = ?', $fn_pos);
 
 	expect($guard_pos)->not->toBeFalse();
 	expect($swap_pos)->not->toBeFalse();
-	// The first UPDATE must come after the empty() guard.
+	// The first UPDATE must come after the null guard.
 	expect($swap_pos)->toBeGreaterThan($guard_pos);
 });
 
@@ -66,7 +66,7 @@ test('api_plugin_moveup temp_id computation is inside the prior_id guard', funct
 	$source = file_get_contents($libPluginsPath);
 
 	$fn_pos      = strpos($source, 'function api_plugin_moveup(');
-	$guard_pos   = strpos($source, 'if (!empty($prior_id))', $fn_pos);
+	$guard_pos   = strpos($source, 'if ($prior_id !== null)', $fn_pos);
 	$temp_id_pos = strpos($source, '$temp_id = db_fetch_cell(\'SELECT MAX(id) FROM plugin_config\')', $fn_pos);
 
 	expect($guard_pos)->not->toBeFalse();
@@ -75,11 +75,11 @@ test('api_plugin_moveup temp_id computation is inside the prior_id guard', funct
 	expect($temp_id_pos)->toBeGreaterThan($guard_pos);
 });
 
-test('api_plugin_moveup does not assign $prior_id to any id column before the empty guard', function () use ($libPluginsPath) {
+test('api_plugin_moveup does not assign $prior_id to any id column before the null guard', function () use ($libPluginsPath) {
 	$source = file_get_contents($libPluginsPath);
 
 	$fn_pos    = strpos($source, 'function api_plugin_moveup(');
-	$guard_pos = strpos($source, 'if (!empty($prior_id))', $fn_pos);
+	$guard_pos = strpos($source, 'if ($prior_id !== null)', $fn_pos);
 
 	// Extract the slice between function start and the guard; it must contain
 	// no UPDATE statement, because any UPDATE before the guard would set id
@@ -92,31 +92,31 @@ test('api_plugin_moveup does not assign $prior_id to any id column before the em
 // api_plugin_movedown
 // ---------------------------------------------------------------------------
 
-test('api_plugin_movedown has outer !empty($id) guard', function () use ($libPluginsPath) {
+test('api_plugin_movedown has outer $id !== false guard', function () use ($libPluginsPath) {
 	$source = file_get_contents($libPluginsPath);
 
 	$fn_pos   = strpos($source, 'function api_plugin_movedown(');
-	$id_guard = strpos($source, 'if (!empty($id))', $fn_pos);
+	$id_guard = strpos($source, 'if ($id !== false)', $fn_pos);
 
 	expect($fn_pos)->not->toBeFalse();
-	expect($id_guard)->not->toBeFalse('!empty($id) guard missing from api_plugin_movedown');
+	expect($id_guard)->not->toBeFalse('$id !== false guard missing from api_plugin_movedown');
 });
 
-test('api_plugin_movedown has !empty($next_id) guard around the three-step swap', function () use ($libPluginsPath) {
+test('api_plugin_movedown has $next_id !== null guard around the three-step swap', function () use ($libPluginsPath) {
 	$source = file_get_contents($libPluginsPath);
 
 	$fn_pos    = strpos($source, 'function api_plugin_movedown(');
-	$guard_pos = strpos($source, 'if (!empty($next_id))', $fn_pos);
+	$guard_pos = strpos($source, 'if ($next_id !== null)', $fn_pos);
 
 	expect($fn_pos)->not->toBeFalse();
-	expect($guard_pos)->not->toBeFalse('!empty($next_id) guard missing from api_plugin_movedown');
+	expect($guard_pos)->not->toBeFalse('$next_id !== null guard missing from api_plugin_movedown');
 });
 
 test('api_plugin_movedown swap executes only after the next_id guard, not before', function () use ($libPluginsPath) {
 	$source = file_get_contents($libPluginsPath);
 
 	$fn_pos    = strpos($source, 'function api_plugin_movedown(');
-	$guard_pos = strpos($source, 'if (!empty($next_id))', $fn_pos);
+	$guard_pos = strpos($source, 'if ($next_id !== null)', $fn_pos);
 	$swap_pos  = strpos($source, 'UPDATE plugin_config SET id = ? WHERE id = ?', $fn_pos);
 
 	expect($guard_pos)->not->toBeFalse();
@@ -124,11 +124,11 @@ test('api_plugin_movedown swap executes only after the next_id guard, not before
 	expect($swap_pos)->toBeGreaterThan($guard_pos);
 });
 
-test('api_plugin_movedown does not assign $next_id to any id column before the empty guard', function () use ($libPluginsPath) {
+test('api_plugin_movedown does not assign $next_id to any id column before the null guard', function () use ($libPluginsPath) {
 	$source = file_get_contents($libPluginsPath);
 
 	$fn_pos    = strpos($source, 'function api_plugin_movedown(');
-	$guard_pos = strpos($source, 'if (!empty($next_id))', $fn_pos);
+	$guard_pos = strpos($source, 'if ($next_id !== null)', $fn_pos);
 
 	$pre_guard = substr($source, $fn_pos, $guard_pos - $fn_pos);
 	expect($pre_guard)->not->toContain('UPDATE plugin_config SET id');
@@ -143,15 +143,15 @@ test('plugins_load_temp_table saves @@SESSION.sql_mode before adding NO_AUTO_VAL
 
 	$fn_pos   = strpos($source, 'function plugins_load_temp_table()');
 	$save_pos = strpos($source, '$orig_sql_mode = db_fetch_cell(\'SELECT @@SESSION.sql_mode\')', $fn_pos);
-	// Use the SET SESSION statement (not the comment above it) as the anchor so
-	// the order check is not confused by the explanatory comment that also mentions
-	// NO_AUTO_VALUE_ON_ZERO and appears before the save line.
-	$set_pos  = strpos($source, 'db_execute("SET SESSION sql_mode = CONCAT_WS', $fn_pos);
+	// Anchor on the PHP-side mode append, not the SET SESSION statement, so
+	// the order check is not confused by the restore call that also contains
+	// 'SET SESSION sql_mode'.
+	$set_pos  = strpos($source, "\$modes[] = 'NO_AUTO_VALUE_ON_ZERO'", $fn_pos);
 
 	expect($fn_pos)->not->toBeFalse();
 	expect($save_pos)->not->toBeFalse('$orig_sql_mode save not found in plugins_load_temp_table');
-	expect($set_pos)->not->toBeFalse('SET SESSION sql_mode = CONCAT_WS not found in plugins_load_temp_table');
-	// Save must come before the SET that adds NO_AUTO_VALUE_ON_ZERO.
+	expect($set_pos)->not->toBeFalse('NO_AUTO_VALUE_ON_ZERO mode append not found in plugins_load_temp_table');
+	// Save must come before the mode append.
 	expect($save_pos)->toBeLessThan($set_pos);
 });
 

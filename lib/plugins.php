@@ -987,7 +987,7 @@ function api_plugin_moveup($plugin) {
 		WHERE directory = ?',
 		array($plugin));
 
-	if (!empty($id)) {
+	if ($id !== false) {
 		$prior_id = db_fetch_cell_prepared('SELECT MAX(id)
 			FROM plugin_config
 			WHERE id < ?',
@@ -996,7 +996,7 @@ function api_plugin_moveup($plugin) {
 		/* MAX() on an empty set returns NULL; without a guard, the UPDATE
 		 * below would set id = NULL on the current plugin, which non-strict
 		 * MariaDB/MySQL silently stores as 0, corrupting the primary key. */
-		if (!empty($prior_id)) {
+		if ($prior_id !== null) {
 			$temp_id = db_fetch_cell('SELECT MAX(id) FROM plugin_config') + 1;
 
 			db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($temp_id, $prior_id));
@@ -1011,11 +1011,11 @@ function api_plugin_moveup($plugin) {
 function api_plugin_movedown($plugin) {
 	$id = db_fetch_cell_prepared('SELECT id FROM plugin_config WHERE directory = ?', array($plugin));
 
-	if (!empty($id)) {
+	if ($id !== false) {
 		$next_id = db_fetch_cell_prepared('SELECT MIN(id) FROM plugin_config WHERE id > ?', array($id));
 
 		/* MIN() on an empty set returns NULL; same NULL->0 corruption risk as moveup. */
-		if (!empty($next_id)) {
+		if ($next_id !== null) {
 			$temp_id = db_fetch_cell('SELECT MAX(id) FROM plugin_config') + 1;
 
 			db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($temp_id, $next_id));
