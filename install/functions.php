@@ -303,7 +303,10 @@ function install_unlink(string $file) : void {
 		$full_file = $file;
 	}
 
-	if (!str_contains($full_file, CACTI_PATH_BASE)) {
+	$real_base = realpath(CACTI_PATH_BASE);
+	$real_file = realpath($full_file);
+
+	if ($real_base === false || $real_file === false || !str_starts_with($real_file, $real_base . DIRECTORY_SEPARATOR)) {
 		log_install_high('file', "Not Unlinking file: $full_file due to it not being in the Cacti base path.");
 
 		return;
@@ -323,7 +326,10 @@ function install_rmdir(string $directory) : void {
 		$directory = CACTI_PATH_BASE . '/' . $directory;
 	}
 
-	if (!str_contains($directory, CACTI_PATH_BASE)) {
+	$real_base = realpath(CACTI_PATH_BASE);
+	$real_dir  = realpath($directory);
+
+	if ($real_base === false || $real_dir === false || !str_starts_with($real_dir, $real_base . DIRECTORY_SEPARATOR)) {
 		log_install_high('file', "Not Unlinking directory: $directory due to it not being in the Cacti base path.");
 
 		return;
@@ -352,7 +358,10 @@ function install_rmdir_recursive(string $directory, bool $del_parent = false) : 
 		$directory = CACTI_PATH_BASE . '/' . $directory;
 	}
 
-	if (!str_contains($directory, CACTI_PATH_BASE)) {
+	$real_base = realpath(CACTI_PATH_BASE);
+	$real_dir  = realpath($directory);
+
+	if ($real_base === false || $real_dir === false || !str_starts_with($real_dir, $real_base . DIRECTORY_SEPARATOR)) {
 		log_install_high('file', "Not Unlinking directory: $directory due to it not being in the Cacti base path.");
 
 		return;
