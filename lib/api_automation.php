@@ -356,7 +356,7 @@ function automation_get_matching_device_sql(array &$rule, int $rule_type) : arra
 	$rows_query = $sql_query . $sql_where . $sql_filter;
 	$total_rows = cacti_sizeof(db_fetch_assoc($rows_query, false));
 
-	$sortby = grv('sort_column');
+	$sortby = sanitize_sql_column(grv('sort_column'));
 
 	if ($sortby == 'hostname') {
 		$sortby = 'INET_ATON(hostname)';
@@ -466,7 +466,7 @@ function automation_get_matching_graphs_sql(array $rule, int $rule_type) : array
 		LEFT JOIN host_template AS ht
 		ON h.host_template_id = ht.id
 		$sql_where
-		ORDER BY " . grv('sort_column') . ' ' . grv('sort_direction') . '
+		ORDER BY " . sanitize_sql_column(grv('sort_column')) . ' ' . (strtoupper(grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') . '
 		LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows;
 
 	return [
@@ -1203,14 +1203,14 @@ function display_matching_trees(int $rule_id, int $rule_type, array $item, strin
 
 	$total_rows = cacti_sizeof(db_fetch_assoc($rows_query, false));
 
-	$sortby = grv('sort_column');
+	$sortby = sanitize_sql_column(grv('sort_column'));
 
 	if ($sortby == 'h.hostname') {
 		$sortby = 'INET_ATON(h.hostname)';
 	}
 
 	$sql_query = "$rows_query ORDER BY $sortby " .
-		grv('sort_direction') . ' LIMIT ' .
+		(strtoupper(grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') . ' LIMIT ' .
 		($rows * (grv('page') - 1)) . ',' . $rows;
 
 	$templates = db_fetch_assoc($sql_query, false);

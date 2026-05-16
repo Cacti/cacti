@@ -4974,6 +4974,20 @@ function debug_log_return(string $type) : string {
  *
  * @return string The sanitized search string
  */
+/**
+ * Strips any character that cannot safely appear in a SQL identifier.
+ * Allows word characters, dots (table.column), parentheses and INET_ATON-style
+ * wrappers already used by the sort helpers.  Use before concatenating a
+ * user-supplied sort column into an ORDER BY clause.
+ *
+ * @param string $column Raw sort-column value from user input.
+ *
+ * @return string Sanitized column name safe to embed in ORDER BY.
+ */
+function sanitize_sql_column(string $column) : string {
+	return preg_replace('/[^a-zA-Z0-9_().]/', '', $column) ?? '';
+}
+
 function sanitize_search_string(string $string) : string {
 	static $drop_char_match   = ['(', ')', '^', '$', '<', '>', '`', '\'', '"', '|', ',', '?', '+', '[', ']', '{', '}', '#', ';', '!', '=', '*'];
 	static $drop_char_replace = ['', '', ' ', ' ', ' ', ' ', '', '', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '];
