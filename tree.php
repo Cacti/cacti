@@ -316,6 +316,10 @@ function get_host_sort_type() {
 						WHERE id = ?',
 						array($branch));
 
+					if ($sort_type === false) {
+						return;
+					}
+
 					if ($sort_type == HOST_GROUPING_GRAPH_TEMPLATE) {
 						print 'hsgt';
 					} else {
@@ -384,6 +388,11 @@ function get_branch_sort_type() {
 					FROM graph_tree_items
 					WHERE id = ?',
 					array($branch));
+
+				if ($sort_type === false) {
+					print '';
+					break;
+				}
 
 				switch($sort_type) {
 				case TREE_ORDERING_INHERIT:

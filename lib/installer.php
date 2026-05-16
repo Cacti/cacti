@@ -1085,7 +1085,7 @@ class Installer implements JsonSerializable {
 	private function getModules() {
 		global $config;
 
-		if (isset($this->extensions) || empty($this->extensions)) {
+		if (!isset($this->extensions) || empty($this->extensions)) {
 			$extensions = utility_php_extensions();
 
 			foreach ($extensions as $name => $e) {

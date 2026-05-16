@@ -374,6 +374,12 @@ function api_data_source_disable_multi($local_data_ids) {
 	$ids_to_disable = '';
 	$i = 0;
 
+	/* Accumulate poller_ids across every chunk so the trailing CRC update
+	 * below covers every poller this batch ever touched, not only the
+	 * pollers seen in the last chunk. The `+` union preserves keys and
+	 * dedupes when array_rekey hands back poller_id => poller_id pairs. */
+	$all_poller_ids = array();
+
 	/* build the array */
 	if (cacti_sizeof($local_data_ids)) {
 		foreach ($local_data_ids as $local_data_id) {
@@ -389,6 +395,8 @@ function api_data_source_disable_multi($local_data_ids) {
 				$poller_ids = array_rekey(db_fetch_assoc('SELECT poller_id
 					FROM poller_item
 					WHERE local_data_id IN(' . $ids_to_disable . ')'), 'poller_id', 'poller_id');
+
+				$all_poller_ids = $all_poller_ids + $poller_ids;
 
 				db_execute("DELETE FROM poller_item WHERE local_data_id IN ($ids_to_disable)");
 				db_execute("UPDATE data_template_data SET active='' WHERE local_data_id IN ($ids_to_disable)");
@@ -415,6 +423,8 @@ function api_data_source_disable_multi($local_data_ids) {
 				'poller_id', 'poller_id'
 			);
 
+			$all_poller_ids = $all_poller_ids + $poller_ids;
+
 			db_execute("DELETE FROM poller_item WHERE local_data_id IN ($ids_to_disable)");
 			db_execute("UPDATE data_template_data SET active='' WHERE local_data_id IN ($ids_to_disable)");
 
@@ -429,8 +439,8 @@ function api_data_source_disable_multi($local_data_ids) {
 		}
 	}
 
-	if (cacti_sizeof($poller_ids)) {
-		foreach ($poller_ids as $poller_id) {
+	if (cacti_sizeof($all_poller_ids)) {
+		foreach ($all_poller_ids as $poller_id) {
 			api_data_source_cache_crc_update($poller_id);
 		}
 	}
