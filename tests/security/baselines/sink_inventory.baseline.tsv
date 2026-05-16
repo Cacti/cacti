@@ -91,7 +91,7 @@ cmd_exec	./lib/utility.php:2114		$json     = shell_exec($php . ' -q ' . $php_fil
 cmd_exec	./poller_realtime.php:145	shell_exec("$command_string $extra_args");
 cmd_exec	./poller_realtime.php:229					shell_exec($command);
 cmd_exec	./poller_spikekill.php:247				$response = exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
-cmd_exec	./remote_agent.php:483								$cactiphp = proc_open($php_bin . ' -q ' . $srv_path . ' realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);
+cmd_exec	./remote_agent.php:499								$cactiphp = proc_open($php_bin . ' -q ' . $srv_path . ' realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);
 cmd_exec	./script_server.php:185					exec("TASKLIST /FO LIST /FI \"PID eq $parent_pid\"", $out);
 cmd_exec	./snmpagent_mibcache.php:50			popen('start "CactiSNMPCacheChild" /I ' . $php . ' ' . $extra_args, 'r');
 cmd_exec	./snmpagent_mibcache.php:52			exec($php . ' ' . $extra_args . ' > /dev/null &');
@@ -944,10 +944,10 @@ header_redirect	./tree.php:100			header('Location: tree.php?header=false');
 header_redirect	./tree.php:243		header('Location: tree.php?header=false');
 header_redirect	./tree.php:271		header('Location: tree.php?header=false');
 header_redirect	./tree.php:299		header('Location: tree.php?header=false');
-header_redirect	./tree.php:500				header('Location: tree.php');
-header_redirect	./tree.php:555			header("Location: tree.php?header=false&action=edit&id=$tree_id");
-header_redirect	./tree.php:675			header('Location: tree.php?header=false');
-header_redirect	./tree.php:742			header('Location: tree.php?header=false');
+header_redirect	./tree.php:509				header('Location: tree.php');
+header_redirect	./tree.php:564			header("Location: tree.php?header=false&action=edit&id=$tree_id");
+header_redirect	./tree.php:684			header('Location: tree.php?header=false');
+header_redirect	./tree.php:751			header('Location: tree.php?header=false');
 header_redirect	./tree.php:96			header('Location: tree.php?header=false');
 header_redirect	./user_admin.php:1038				header('Location: user_admin.php&header=false');
 header_redirect	./user_admin.php:1203				header('Location: user_admin.php&header=false');
