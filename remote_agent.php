@@ -330,8 +330,16 @@ function get_snmp_data() {
 		return;
 	}
 
+	$output = '';
+
 	if (!empty($host_id)) {
 		$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($host_id));
+
+		if (!cacti_sizeof($host)) {
+			print 'U';
+			return;
+		}
+
 		$session = cacti_snmp_session($host['hostname'], $host['snmp_community'], $host['snmp_version'],
 			$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'], $host['snmp_priv_passphrase'],
 			$host['snmp_priv_protocol'], $host['snmp_context'], $host['snmp_engine_id'], $host['snmp_port'],
@@ -357,8 +365,16 @@ function get_snmp_data_walk() {
 		return;
 	}
 
+	$output = array();
+
 	if (!empty($host_id)) {
 		$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($host_id));
+
+		if (!cacti_sizeof($host)) {
+			print 'U';
+			return;
+		}
+
 		$session = cacti_snmp_session($host['hostname'], $host['snmp_community'], $host['snmp_version'],
 			$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'], $host['snmp_priv_passphrase'],
 			$host['snmp_priv_protocol'], $host['snmp_context'], $host['snmp_engine_id'], $host['snmp_port'],
