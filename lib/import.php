@@ -2259,19 +2259,17 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 			if (!$preview_only) {
 				$data_input_field_id = sql_save($save, 'data_input_fields');
 
+				/* update field use counter cache if possible */
+				if (isset($save['input_string']) && $save['input_string'] != '' && $data_input_id > 0) {
+					generate_data_input_field_sequences($save['input_string'], $data_input_id);
+				}
+
 				$hash_cache['data_input_field'][$parsed_hash['hash']] = $data_input_field_id;
 
 				update_replication_crc(0, 'poller_replicate_data_input_fields_crc');
 			} else {
 				$hash_cache['data_input_field'][$parsed_hash['hash']] = $_data_input_field_id;
 			}
-		}
-	}
-
-	/* update field use counter cache if possible */
-	if (!$preview_only) {
-		if ((isset($xml_array['input_string'])) && (!empty($data_input_id))) {
-			generate_data_input_field_sequences($save['input_string'], $data_input_id);
 		}
 	}
 
