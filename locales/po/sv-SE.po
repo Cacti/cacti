@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-05-10 10:12-0400\n"
+"POT-Creation-Date: 2026-05-26 07:05-0400\n"
 "PO-Revision-Date: 2026-03-16 13:18+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\n"
@@ -88,18 +88,18 @@ msgstr "Detta program distribueras i hopp om att det ska vara användbart, men U
 #: automation_snmp.php:29 automation_snmp.php:590 automation_templates.php:30
 #: automation_tree_rules.php:32 cdef.php:29 cdef.php:624 color.php:28
 #: color_templates.php:28 color_templates.php:123 data_input.php:32
-#: data_input.php:618 data_input.php:660 data_queries.php:31
+#: data_input.php:657 data_input.php:699 data_queries.php:31
 #: data_queries.php:823 data_queries.php:930 data_queries.php:1190
 #: data_source_profiles.php:30 data_source_profiles.php:670 data_sources.php:37
 #: data_sources.php:1088 data_templates.php:34 data_templates.php:748
 #: gprint_presets.php:28 graph_templates.php:37 graph_templates.php:515
 #: graphs.php:46 host.php:41 host_templates.php:35 host_templates.php:478
 #: host_templates.php:535 include/global_arrays.php:1664
-#: include/global_settings.php:248 lib/api_automation.php:1345
-#: lib/api_automation.php:1407 lib/api_automation.php:1475 lib/html.php:1390
-#: lib/html_form.php:1397 lib/html_reports.php:1802 links.php:28
-#: managers.php:28 pollers.php:33 sites.php:28 tree.php:1633 tree.php:1786
-#: tree.php:1846 tree.php:1867 user_admin.php:28 user_domains.php:30
+#: include/global_settings.php:248 lib/api_automation.php:1369
+#: lib/api_automation.php:1431 lib/api_automation.php:1499 lib/html.php:1390
+#: lib/html_form.php:1398 lib/html_reports.php:1802 links.php:28
+#: managers.php:28 pollers.php:33 sites.php:28 tree.php:1642 tree.php:1795
+#: tree.php:1855 tree.php:1876 user_admin.php:28 user_domains.php:30
 #: user_group_admin.php:30 vdef.php:29
 msgid "Delete"
 msgstr "Ta bort"
@@ -146,7 +146,7 @@ msgstr "Klicka på \"Fortsätt\" för att radera följande aggregerade diagram."
 #: automation_templates.php:167 automation_tree_rules.php:319 cdef.php:276
 #: cdef.php:287 cdef.php:343 color.php:192 color_templates.php:243
 #: color_templates.php:255 color_templates.php:264
-#: color_templates_items.php:299 data_input.php:269 data_input.php:321
+#: color_templates_items.php:299 data_input.php:298 data_input.php:350
 #: data_queries.php:412 data_queries.php:426 data_queries.php:590
 #: data_source_profiles.php:305 data_source_profiles.php:315
 #: data_source_profiles.php:423 data_sources.php:535 data_sources.php:545
@@ -161,12 +161,12 @@ msgstr "Klicka på \"Fortsätt\" för att radera följande aggregerade diagram."
 #: host.php:471 host.php:480 host.php:494 host.php:508 host.php:517
 #: host.php:546 host.php:558 host_templates.php:228 host_templates.php:242
 #: host_templates.php:253 host_templates.php:305 host_templates.php:374
-#: lib/clog_webapi.php:232 lib/html.php:2640 lib/html_form.php:1396
-#: lib/html_form.php:1412 lib/html_form.php:1423 lib/html_reports.php:584
+#: lib/clog_webapi.php:232 lib/html.php:2640 lib/html_form.php:1397
+#: lib/html_form.php:1413 lib/html_form.php:1424 lib/html_reports.php:584
 #: links.php:202 links.php:211 links.php:220 managers.php:1036
-#: managers.php:1097 plugins.php:674 pollers.php:564 pollers.php:573
+#: managers.php:1097 plugins.php:686 pollers.php:564 pollers.php:573
 #: pollers.php:582 pollers.php:591 pollers.php:600 sites.php:383 sites.php:393
-#: tree.php:711 tree.php:720 tree.php:729 tree.php:738 user_admin.php:343
+#: tree.php:720 tree.php:729 tree.php:738 tree.php:747 user_admin.php:343
 #: user_admin.php:383 user_admin.php:394 user_admin.php:405 user_admin.php:428
 #: user_domains.php:235 user_domains.php:244 user_domains.php:253
 #: user_domains.php:262 user_group_admin.php:449 user_group_admin.php:468
@@ -184,7 +184,7 @@ msgstr "Avbryt"
 #: automation_templates.php:167 automation_tree_rules.php:319 cdef.php:276
 #: cdef.php:287 cdef.php:344 color.php:192 color_templates.php:243
 #: color_templates.php:255 color_templates.php:264
-#: color_templates_items.php:300 data_input.php:269 data_input.php:322
+#: color_templates_items.php:300 data_input.php:298 data_input.php:351
 #: data_queries.php:412 data_queries.php:426 data_queries.php:591
 #: data_source_profiles.php:305 data_source_profiles.php:315
 #: data_source_profiles.php:424 data_sources.php:535 data_sources.php:545
@@ -202,7 +202,7 @@ msgstr "Avbryt"
 #: lib/html_reports.php:526 links.php:202 links.php:211 links.php:220
 #: managers.php:1036 managers.php:1097 pollers.php:564 pollers.php:573
 #: pollers.php:582 pollers.php:591 pollers.php:600 sites.php:383 sites.php:393
-#: tree.php:711 tree.php:720 tree.php:729 tree.php:738 user_admin.php:343
+#: tree.php:720 tree.php:729 tree.php:738 tree.php:747 user_admin.php:343
 #: user_admin.php:383 user_admin.php:394 user_admin.php:405 user_admin.php:428
 #: user_domains.php:235 user_domains.php:244 user_domains.php:253
 #: user_domains.php:262 user_group_admin.php:449 user_group_admin.php:468
@@ -228,7 +228,7 @@ msgstr "För att migrera Aggregatgraferna nedan till ett Mallbaserat aggregat m�
 #: auth_changepassword.php:379 auth_profile.php:443 automation_networks.php:402
 #: automation_snmp.php:255 graphs.php:1195 graphs.php:1245 graphs.php:1248
 #: graphs.php:1290 graphs.php:1832 host.php:549 include/auth.php:283
-#: lib/api_aggregate.php:1635 lib/api_aggregate.php:1650 lib/html_form.php:1421
+#: lib/api_aggregate.php:1635 lib/api_aggregate.php:1650 lib/html_form.php:1422
 #: lib/html_reports.php:584 managers.php:1100 permission_denied.php:31
 #: permission_denied.php:33
 msgid "Return"
@@ -280,7 +280,7 @@ msgid "Click 'Continue' to add the selected Graphs to the Report below."
 msgstr "Klicka på \"Fortsätt\" för att lägga till de valda graferna till rapporten nedan."
 
 #: aggregate_graphs.php:472 graph_view.php:883 graphs.php:1275 host.php:534
-#: lib/html_reports.php:35 lib/html_reports.php:1980
+#: lib/html_reports.php:35 lib/html_reports.php:1995
 msgid "Report Name"
 msgstr "Rapportnamn"
 
@@ -446,18 +446,18 @@ msgstr "Matchande grafer"
 #: automation_graph_rules.php:789 automation_networks.php:1195
 #: automation_networks.php:1239 automation_snmp.php:700
 #: automation_templates.php:393 automation_tree_rules.php:837 cdef.php:747
-#: color.php:529 color_templates.php:538 data_debug.php:1123 data_input.php:759
+#: color.php:529 color_templates.php:538 data_debug.php:1123 data_input.php:815
 #: data_queries.php:1308 data_source_profiles.php:913 data_sources.php:1461
 #: data_templates.php:1042 gprint_presets.php:271 graph_templates.php:713
 #: graph_view.php:654 graphs.php:2047 graphs_new.php:461 host.php:1682
-#: host_templates.php:782 lib/api_automation.php:144 lib/api_automation.php:472
-#: lib/api_automation.php:706 lib/api_automation.php:1069
+#: host_templates.php:782 lib/api_automation.php:144 lib/api_automation.php:485
+#: lib/api_automation.php:719 lib/api_automation.php:1082
 #: lib/clog_webapi.php:608 lib/html.php:266 lib/html_filter.php:64
 #: lib/html_graph.php:203 lib/html_reports.php:1887 lib/html_tree.php:136
 #: lib/html_tree.php:984 links.php:323 managers.php:153 managers.php:503
-#: managers.php:745 plugins.php:463 pollers.php:884 rrdcheck.php:228
+#: managers.php:745 plugins.php:475 pollers.php:884 rrdcheck.php:228
 #: rrdcleaner.php:511 settings.php:556 settings.php:573 settings.php:632
-#: sites.php:509 tree.php:884 tree.php:919 tree.php:954 tree.php:2156
+#: sites.php:509 tree.php:893 tree.php:928 tree.php:963 tree.php:2165
 #: user_admin.php:2159 user_admin.php:2608 user_admin.php:2727
 #: user_admin.php:2825 user_admin.php:2940 user_admin.php:3037
 #: user_admin.php:3134 user_domains.php:658 user_group_admin.php:1938
@@ -474,9 +474,9 @@ msgstr "Sök"
 #: data_sources.php:1776 graph_view.php:492 graph_view.php:724
 #: graph_view.php:785 graphs.php:2064 graphs.php:2229 host.php:1793
 #: include/global_arrays.php:1006 include/global_arrays.php:1241
-#: include/global_arrays.php:2024 lib/api_automation.php:282 lib/html.php:1818
+#: include/global_arrays.php:2024 lib/api_automation.php:295 lib/html.php:1818
 #: lib/html.php:1820 lib/html.php:1898 lib/html_graph.php:209
-#: lib/html_tree.php:1039 lib/html_tree.php:1395 tree.php:863 tree.php:2302
+#: lib/html_tree.php:1039 lib/html_tree.php:1395 tree.php:872 tree.php:2311
 #: user_admin.php:873 user_admin.php:1140 user_admin.php:2636
 #: user_group_admin.php:874 user_group_admin.php:1028 user_group_admin.php:2298
 #: utilities.php:320
@@ -488,16 +488,16 @@ msgstr "Diagram"
 #: automation_graph_rules.php:831 automation_networks.php:1205
 #: automation_snmp.php:710 automation_templates.php:403
 #: automation_tree_rules.php:857 cdef.php:757 color.php:539
-#: color_templates.php:554 data_debug.php:1133 data_input.php:769
+#: color_templates.php:554 data_debug.php:1133 data_input.php:825
 #: data_queries.php:1318 data_source_profiles.php:923
 #: data_source_profiles.php:1042 data_sources.php:1471 data_templates.php:1068
 #: gprint_presets.php:281 graph_templates.php:723 graph_view.php:728
 #: graphs.php:2068 graphs_new.php:471 host.php:1707 host_templates.php:792
 #: include/global_form.php:256 lib/api_automation.php:187
-#: lib/api_automation.php:482 lib/api_automation.php:716
-#: lib/api_automation.php:1112 lib/html_reports.php:1907 links.php:333
-#: managers.php:163 managers.php:513 plugins.php:487 pollers.php:894
-#: rrdcheck.php:251 rrdcleaner.php:537 sites.php:519 tree.php:2166
+#: lib/api_automation.php:495 lib/api_automation.php:729
+#: lib/api_automation.php:1125 lib/html_reports.php:1907 links.php:333
+#: managers.php:163 managers.php:513 plugins.php:499 pollers.php:894
+#: rrdcheck.php:251 rrdcleaner.php:537 sites.php:519 tree.php:2175
 #: user_admin.php:2217 user_admin.php:2640 user_admin.php:2737
 #: user_admin.php:2853 user_admin.php:2950 user_admin.php:3047
 #: user_admin.php:3144 user_domains.php:33 user_domains.php:668
@@ -518,16 +518,16 @@ msgstr "Del av aggregat"
 #: automation_graph_rules.php:843 automation_networks.php:1239
 #: automation_snmp.php:722 automation_templates.php:415
 #: automation_tree_rules.php:869 cdef.php:775 color.php:563
-#: color_templates.php:576 data_debug.php:1051 data_input.php:781
+#: color_templates.php:576 data_debug.php:1051 data_input.php:837
 #: data_queries.php:1330 data_source_profiles.php:941 data_sources.php:1414
 #: data_templates.php:1086 gprint_presets.php:299 graph_templates.php:741
 #: graph_view.php:662 graphs.php:2038 graphs_new.php:450 host.php:1672
-#: host_templates.php:773 lib/api_automation.php:199 lib/api_automation.php:463
-#: lib/api_automation.php:728 lib/api_automation.php:1124
+#: host_templates.php:773 lib/api_automation.php:199 lib/api_automation.php:476
+#: lib/api_automation.php:741 lib/api_automation.php:1137
 #: lib/clog_webapi.php:533 lib/html.php:1666 lib/html_filter.php:81
 #: lib/html_graph.php:190 lib/html_reports.php:1918 lib/html_tree.php:1026
 #: links.php:343 managers.php:175 managers.php:525 managers.php:765
-#: plugins.php:499 pollers.php:929 sites.php:531 tree.php:2178
+#: plugins.php:511 pollers.php:929 sites.php:531 tree.php:2187
 #: user_admin.php:2229 user_admin.php:2658 user_admin.php:2755
 #: user_admin.php:2871 user_admin.php:2968 user_admin.php:3065
 #: user_admin.php:3162
@@ -537,12 +537,12 @@ msgstr "Start"
 #: aggregate_graphs.php:1267 aggregate_graphs.php:1561
 #: automation_devices.php:510 automation_snmp.php:722
 #: automation_templates.php:415 cdef.php:775 color.php:563 data_debug.php:1051
-#: data_input.php:781 data_queries.php:1330 data_source_profiles.php:941
+#: data_input.php:837 data_queries.php:1330 data_source_profiles.php:941
 #: data_sources.php:1414 data_templates.php:1086 gprint_presets.php:299
 #: graph_templates.php:741 graph_view.php:662 graphs.php:2038
 #: graphs_new.php:450 host.php:1672 host_templates.php:773
 #: lib/html_graph.php:190 managers.php:175 managers.php:525 managers.php:765
-#: plugins.php:499 pollers.php:929 sites.php:531 tree.php:2178
+#: plugins.php:511 pollers.php:929 sites.php:531 tree.php:2187
 #: user_admin.php:2229 user_admin.php:2658 user_admin.php:2755
 #: user_admin.php:2871 user_admin.php:2968 user_admin.php:3065
 #: user_admin.php:3162 user_domains.php:680 user_group_admin.php:1960
@@ -558,16 +558,16 @@ msgstr "Ställ in/uppdatera filter"
 #: automation_graph_rules.php:844 automation_networks.php:1240
 #: automation_snmp.php:723 automation_templates.php:416
 #: automation_tree_rules.php:870 cdef.php:776 color.php:564
-#: color_templates.php:577 data_debug.php:1052 data_input.php:782
+#: color_templates.php:577 data_debug.php:1052 data_input.php:838
 #: data_queries.php:1331 data_source_profiles.php:942 data_sources.php:1415
 #: data_templates.php:1087 gprint_presets.php:300 graph_templates.php:742
 #: graph_view.php:663 graphs.php:2039 graphs_new.php:451 host.php:1673
-#: host_templates.php:774 lib/api_automation.php:200 lib/api_automation.php:464
-#: lib/api_automation.php:729 lib/api_automation.php:1125
+#: host_templates.php:774 lib/api_automation.php:200 lib/api_automation.php:477
+#: lib/api_automation.php:742 lib/api_automation.php:1138
 #: lib/clog_webapi.php:534 lib/html_filter.php:86 lib/html_graph.php:191
 #: lib/html_graph.php:308 lib/html_reports.php:1919 lib/html_tree.php:1027
 #: lib/html_tree.php:1138 links.php:344 managers.php:176 managers.php:526
-#: managers.php:766 plugins.php:500 pollers.php:930 sites.php:532 tree.php:2179
+#: managers.php:766 plugins.php:512 pollers.php:930 sites.php:532 tree.php:2188
 #: user_admin.php:2230 user_admin.php:2659 user_admin.php:2756
 #: user_admin.php:2872 user_admin.php:2969 user_admin.php:3066
 #: user_admin.php:3163 user_domains.php:681
@@ -576,13 +576,13 @@ msgstr "Rensa"
 
 #: aggregate_graphs.php:1268 aggregate_graphs.php:1562 automation_snmp.php:723
 #: automation_templates.php:416 cdef.php:776 color.php:564 data_debug.php:1052
-#: data_input.php:782 data_queries.php:1331 data_source_profiles.php:942
+#: data_input.php:838 data_queries.php:1331 data_source_profiles.php:942
 #: data_sources.php:1415 data_templates.php:1087 gprint_presets.php:300
 #: graph_templates.php:742 graph_view.php:663 graphs.php:2039
 #: graphs_new.php:451 host.php:1673 host_templates.php:774
 #: lib/html_graph.php:191 lib/html_tree.php:1027 managers.php:176
-#: managers.php:526 managers.php:766 plugins.php:500 pollers.php:930
-#: sites.php:532 tree.php:2179 user_admin.php:2230 user_admin.php:2659
+#: managers.php:526 managers.php:766 plugins.php:512 pollers.php:930
+#: sites.php:532 tree.php:2188 user_admin.php:2230 user_admin.php:2659
 #: user_admin.php:2756 user_admin.php:2872 user_admin.php:2969
 #: user_admin.php:3066 user_admin.php:3163 user_domains.php:681
 #: user_group_admin.php:1961 user_group_admin.php:2321
@@ -594,16 +594,16 @@ msgid "Clear Filters"
 msgstr "Töm filter"
 
 #: aggregate_graphs.php:1293 aggregate_graphs.php:1627 graphs.php:1222
-#: lib/api_automation.php:573 user_admin.php:881 user_group_admin.php:882
+#: lib/api_automation.php:586 user_admin.php:881 user_group_admin.php:882
 msgid "Graph Title"
 msgstr "Grafens titel"
 
 #: aggregate_graphs.php:1294 aggregate_graphs.php:1628
 #: automation_graph_rules.php:944 automation_tree_rules.php:963
-#: data_debug.php:459 data_input.php:868 data_queries.php:1416
+#: data_debug.php:459 data_input.php:924 data_queries.php:1416
 #: data_sources.php:1636 data_templates.php:1195 graph_templates.php:847
 #: graphs.php:2245 host.php:1787 host_templates.php:933
-#: lib/api_automation.php:281 pollers.php:1010 sites.php:611 tree.php:2242
+#: lib/api_automation.php:294 pollers.php:1010 sites.php:611 tree.php:2251
 #: user_admin.php:881 user_admin.php:995 user_admin.php:1140
 #: user_admin.php:1287 user_admin.php:1426 user_group_admin.php:680
 #: user_group_admin.php:882 user_group_admin.php:1028 user_group_admin.php:1173
@@ -622,12 +622,12 @@ msgstr "Storlek"
 
 #: aggregate_graphs.php:1312 aggregate_templates.php:725
 #: automation_tree_rules.php:716 cdef.php:902 color.php:722 color.php:724
-#: color_templates.php:682 data_input.php:912 data_queries.php:1468
+#: color_templates.php:682 data_input.php:969 data_queries.php:1468
 #: data_source_profiles.php:1122 data_source_profiles.php:1123
 #: data_sources.php:1723 data_sources.php:1724 data_templates.php:1256
 #: gprint_presets.php:446 graph_templates.php:904 host_templates.php:981
 #: include/global_settings.php:892 include/global_settings.php:1915
-#: lib/api_automation.php:1456 links.php:417 tree.php:2335 tree.php:2336
+#: lib/api_automation.php:1480 links.php:417 tree.php:2344 tree.php:2345
 #: user_admin.php:2345 user_domains.php:773 user_group_admin.php:2028
 #: vdef.php:934
 msgid "No"
@@ -636,20 +636,20 @@ msgstr "Nej"
 #: aggregate_graphs.php:1312 aggregate_templates.php:725
 #: automation_tree_rules.php:709 cdef.php:902 color.php:722 color.php:724
 #: color_templates.php:682 data_debug.php:699 data_debug.php:704
-#: data_debug.php:709 data_input.php:912 data_queries.php:1468
+#: data_debug.php:709 data_input.php:969 data_queries.php:1468
 #: data_source_profiles.php:1121 data_source_profiles.php:1122
 #: data_source_profiles.php:1123 data_sources.php:1723 data_sources.php:1724
 #: data_templates.php:1256 gprint_presets.php:446 graph_templates.php:904
 #: host_templates.php:981 include/global_settings.php:891
-#: include/global_settings.php:1914 lib/api_automation.php:1456
+#: include/global_settings.php:1914 lib/api_automation.php:1480
 #: lib/installer.php:1962 lib/installer.php:1990 lib/installer.php:3583
-#: links.php:417 tree.php:2335 tree.php:2336 user_admin.php:2343
+#: links.php:417 tree.php:2344 tree.php:2345 user_admin.php:2343
 #: user_domains.php:769 user_domains.php:773 user_group_admin.php:2026
 #: vdef.php:934
 msgid "Yes"
 msgstr "Ja"
 
-#: aggregate_graphs.php:1318 graphs.php:2305 lib/api_automation.php:600
+#: aggregate_graphs.php:1318 graphs.php:2305 lib/api_automation.php:613
 msgid "No Graphs Found"
 msgstr "Inga grafer hittades"
 
@@ -665,7 +665,7 @@ msgstr "Aggregerade grafer"
 #: aggregate_graphs.php:1523 data_debug.php:1025 data_sources.php:1388
 #: graph_view.php:686 graphs.php:2003 host.php:1624
 #: include/global_arrays.php:2904 include/global_settings.php:626
-#: lib/api_automation.php:441 lib/html_graph.php:153 lib/html_tree.php:990
+#: lib/api_automation.php:454 lib/html_graph.php:153 lib/html_tree.php:990
 #: rrdcleaner.php:383 user_admin.php:2614 user_admin.php:2831
 #: user_group_admin.php:2276 user_group_admin.php:2396 utilities.php:2030
 msgid "Template"
@@ -678,9 +678,9 @@ msgstr "Mall"
 #: data_debug.php:1029 data_sources.php:1392 graph_templates_items.php:543
 #: graphs.php:2007 graphs_items.php:357 host.php:1593 host.php:1611
 #: host.php:1628 host.php:1692 lib/api_automation.php:154
-#: lib/api_automation.php:172 lib/api_automation.php:428
-#: lib/api_automation.php:445 lib/api_automation.php:1079
-#: lib/api_automation.php:1097 lib/auth.php:3245 lib/auth.php:3293
+#: lib/api_automation.php:172 lib/api_automation.php:441
+#: lib/api_automation.php:458 lib/api_automation.php:1092
+#: lib/api_automation.php:1110 lib/auth.php:3255 lib/auth.php:3303
 #: lib/html.php:2182 lib/html.php:2205 lib/html.php:2243 lib/html.php:2273
 #: lib/html_reports.php:920 lib/html_reports.php:924 lib/html_reports.php:1039
 #: lib/html_reports.php:1049 lib/html_reports.php:1897 managers.php:492
@@ -710,10 +710,10 @@ msgstr "Alla"
 #: include/global_form.php:2191 include/global_settings.php:630
 #: include/global_settings.php:638 include/global_settings.php:646
 #: include/global_settings.php:1326 include/global_settings.php:1989
-#: lib/api_automation.php:155 lib/api_automation.php:429
-#: lib/api_automation.php:446 lib/api_automation.php:588
-#: lib/api_automation.php:1080 lib/auth.php:3248 lib/auth.php:3296
-#: lib/auth.php:3341 lib/html.php:226 lib/html.php:2183 lib/html.php:2203
+#: lib/api_automation.php:155 lib/api_automation.php:442
+#: lib/api_automation.php:459 lib/api_automation.php:601
+#: lib/api_automation.php:1093 lib/auth.php:3258 lib/auth.php:3306
+#: lib/auth.php:3351 lib/html.php:226 lib/html.php:2183 lib/html.php:2203
 #: lib/html.php:2244 lib/html.php:2274 lib/html_form.php:404
 #: lib/html_reports.php:931 lib/html_reports.php:935 lib/html_reports.php:965
 #: lib/html_reports.php:1039 lib/html_reports.php:1045
@@ -797,7 +797,7 @@ msgid "Aggregate Templates that are in use can not be Deleted.  In use is define
 msgstr "Aggregatmallar som är i bruk kan inte tas bort.  Används definieras som att de refereras till av ett Aggregat."
 
 #: aggregate_templates.php:708 cdef.php:885 color.php:699
-#: color_templates.php:653 data_input.php:874 data_queries.php:1422
+#: color_templates.php:653 data_input.php:930 data_queries.php:1422
 #: data_source_profiles.php:1047 data_sources.php:1654 data_templates.php:1201
 #: gprint_presets.php:406 graph_templates.php:853 host_templates.php:939
 #: vdef.php:916
@@ -813,7 +813,7 @@ msgstr "Grafer med hjälp av"
 #: aggregate_templates.php:710 graphs.php:2059 host_templates.php:719
 #: include/global_arrays.php:971 include/global_arrays.php:1373
 #: include/global_form.php:1420 include/global_form.php:1656
-#: lib/html_reports.php:1063 tree.php:1889
+#: lib/html_reports.php:1063 tree.php:1898
 msgid "Graph Template"
 msgstr "Grafmall"
 
@@ -872,7 +872,7 @@ msgid "There are problems with the Change Password page.  Contact your Cacti adm
 msgstr "Det är problem med sidan Ändra lösenord.  Kontakta genast din Cacti-administratör."
 
 #: auth_changepassword.php:334 auth_changepassword.php:341
-#: include/global_form.php:1573 lib/functions.php:3734 lib/html.php:2575
+#: include/global_form.php:1573 lib/functions.php:3751 lib/html.php:2575
 msgid "Change Password"
 msgstr "Ändra lösenord"
 
@@ -885,7 +885,7 @@ msgid "Please enter your new Cacti password."
 msgstr "Vänligen ange ditt nya lösenord för Cacti."
 
 #: auth_changepassword.php:361 auth_login.php:328 auth_login.php:331
-#: include/global_settings.php:1823 lib/functions.php:5589
+#: include/global_settings.php:1823 lib/functions.php:5610
 msgid "Username"
 msgstr "Användarnamn"
 
@@ -902,7 +902,7 @@ msgid "Confirm new password"
 msgstr "Bekräfta nytt lösenord"
 
 #: auth_changepassword.php:377 auth_profile.php:560 graphs_new.php:452
-#: lib/html_form.php:1418 lib/html_form.php:1427 lib/html_graph.php:193
+#: lib/html_form.php:1419 lib/html_form.php:1428 lib/html_graph.php:193
 #: lib/html_tree.php:1029 settings.php:511
 msgid "Save"
 msgstr "Spara"
@@ -971,17 +971,17 @@ msgstr "Logga in"
 msgid "Enter your Username and Password below"
 msgstr "Ange ditt användarnamn och lösenord nedan"
 
-#: auth_login.php:336 include/global_form.php:1540 lib/functions.php:5590
+#: auth_login.php:336 include/global_form.php:1540 lib/functions.php:5611
 msgid "Password"
 msgstr "Lösenord"
 
-#: auth_login.php:348 include/global_settings.php:2312 lib/auth.php:559
-#: lib/auth.php:581 lib/auth.php:591 lib/auth.php:596 user_admin.php:2206
+#: auth_login.php:348 include/global_settings.php:2312 lib/auth.php:569
+#: lib/auth.php:591 lib/auth.php:601 lib/auth.php:606 user_admin.php:2206
 msgid "Local"
 msgstr "Lokal"
 
-#: auth_login.php:352 include/global_arrays.php:886 lib/auth.php:592
-#: lib/auth.php:597
+#: auth_login.php:352 include/global_arrays.php:886 lib/auth.php:602
+#: lib/auth.php:607
 msgid "LDAP"
 msgstr "LDAP"
 
@@ -1110,7 +1110,7 @@ msgstr "Ta bort enhet"
 #: automation_devices.php:54 automation_devices.php:305
 #: automation_devices.php:415 automation_devices.php:426
 #: automation_devices.php:667 automation_devices.php:668 host.php:1697
-#: lib/api_automation.php:177 lib/api_automation.php:1102
+#: lib/api_automation.php:177 lib/api_automation.php:1115
 #: lib/html_utility.php:1219 pollers.php:47
 msgid "Down"
 msgstr "Ner"
@@ -1118,7 +1118,7 @@ msgstr "Ner"
 #: automation_devices.php:55 automation_devices.php:305
 #: automation_devices.php:417 automation_devices.php:428
 #: automation_devices.php:667 automation_devices.php:668 host.php:1696
-#: lib/api_automation.php:176 lib/api_automation.php:1101
+#: lib/api_automation.php:176 lib/api_automation.php:1114
 #: lib/html_utility.php:1225
 msgid "Up"
 msgstr "Upp"
@@ -1173,10 +1173,10 @@ msgstr "Ta bort enhet (er)"
 #: automation_devices.php:273 automation_devices.php:570 host.php:1579
 #: host.php:1703 host.php:1853 include/global_arrays.php:1003
 #: include/global_arrays.php:1059 include/global_arrays.php:2338
-#: lib/api_automation.php:183 lib/api_automation.php:270
-#: lib/api_automation.php:478 lib/api_automation.php:562
-#: lib/api_automation.php:1215 pollers.php:1046 sites.php:612 tree.php:862
-#: tree.php:2296 user_admin.php:1132 user_admin.php:2849
+#: lib/api_automation.php:183 lib/api_automation.php:283
+#: lib/api_automation.php:491 lib/api_automation.php:575
+#: lib/api_automation.php:1239 pollers.php:1046 sites.php:612 tree.php:871
+#: tree.php:2305 user_admin.php:1132 user_admin.php:2849
 #: user_group_admin.php:1020 user_group_admin.php:2414 utilities.php:315
 msgid "Devices"
 msgstr "Enheter"
@@ -1204,8 +1204,8 @@ msgstr "Kontakt"
 
 #: automation_devices.php:287 include/global_form.php:1154
 #: include/global_form.php:1190 include/global_form.php:1384
-#: include/global_form.php:1760 lib/api_automation.php:277
-#: lib/api_automation.php:1222 lib/installer.php:1882 lib/installer.php:2571
+#: include/global_form.php:1760 lib/api_automation.php:290
+#: lib/api_automation.php:1246 lib/installer.php:1882 lib/installer.php:2571
 #: managers.php:220 user_admin.php:995 user_admin.php:1140
 #: user_group_admin.php:1028 user_group_admin.php:2014
 msgid "Description"
@@ -1229,11 +1229,11 @@ msgstr "SNMP"
 #: automation_tree_rules.php:843 data_debug.php:465 data_debug.php:1078
 #: data_sources.php:1440 data_templates.php:1224 host.php:780 host.php:905
 #: host.php:1688 host.php:1805 lib/api_automation.php:168
-#: lib/api_automation.php:279 lib/api_automation.php:572
-#: lib/api_automation.php:1093 lib/api_automation.php:1225
+#: lib/api_automation.php:292 lib/api_automation.php:585
+#: lib/api_automation.php:1106 lib/api_automation.php:1249
 #: lib/html_reports.php:1893 lib/installer.php:1882 managers.php:222
-#: package_import.php:554 package_import.php:639 plugins.php:469
-#: plugins.php:592 pollers.php:1022 templates_import.php:224
+#: package_import.php:554 package_import.php:639 plugins.php:481
+#: plugins.php:604 pollers.php:1022 templates_import.php:224
 #: templates_import.php:263 user_admin.php:1140 user_group_admin.php:1028
 #: utilities.php:2075
 msgid "Status"
@@ -1264,7 +1264,7 @@ msgid "Reset fields to defaults"
 msgstr "Återställ fält till standardvärden"
 
 #: automation_devices.php:516 color.php:570 host.php:1674
-#: lib/html_form.php:1435
+#: lib/html_form.php:1436
 msgid "Export"
 msgstr "Exportera"
 
@@ -1285,14 +1285,14 @@ msgstr "Rensning av upptäckta enheter"
 #: automation_snmp.php:568 automation_snmp.php:569 automation_snmp.php:570
 #: automation_snmp.php:571 automation_snmp.php:572 automation_snmp.php:573
 #: data_debug.php:624 data_source_profiles.php:73 host.php:1880
-#: lib/functions.php:5936 lib/functions.php:5940 lib/html.php:1278
+#: lib/functions.php:5957 lib/functions.php:5961 lib/html.php:1278
 #: lib/html.php:1350 lib/html_reports.php:1683 lib/html_reports.php:1709
 #: lib/html_reports.php:1780 lib/html_reports.php:1781
 #: lib/html_reports.php:1782 lib/spikekill.php:1069 lib/spikekill.php:1070
 #: lib/spikekill.php:1071 lib/spikekill.php:1072 lib/spikekill.php:1073
 #: lib/spikekill.php:1074 lib/spikekill.php:1075 lib/spikekill.php:1076
 #: lib/spikekill.php:1077 lib/spikekill.php:1078 lib/spikekill.php:1079
-#: plugins.php:736 pollers.php:1130 user_admin.php:2337 utilities.php:738
+#: plugins.php:748 pollers.php:1130 user_admin.php:2337 utilities.php:738
 #: utilities.php:1187 utilities.php:2655 utilities.php:2783 utilities.php:2791
 #: utilities.php:2802 utilities.php:2813 utilities.php:2836 utilities.php:2882
 #: utilities.php:3116
@@ -1425,9 +1425,9 @@ msgstr "Datafrågeställning"
 #: automation_tree_rules.php:986 data_debug.php:1084 data_sources.php:1445
 #: host.php:1693 include/global_arrays.php:930 include/global_form.php:1548
 #: include/global_settings.php:361 include/global_settings.php:377
-#: lib/api_automation.php:173 lib/api_automation.php:1098
-#: lib/html_reports.php:1898 lib/html_reports.php:1988
-#: lib/html_reports.php:1999 lib/html_reports.php:2035 links.php:396
+#: lib/api_automation.php:173 lib/api_automation.php:1111
+#: lib/html_reports.php:1898 lib/html_reports.php:2003
+#: lib/html_reports.php:2014 lib/html_reports.php:2050 links.php:396
 #: links.php:574 managers.php:247 managers.php:608 user_admin.php:995
 #: user_admin.php:1007 user_admin.php:2324 user_domains.php:350
 #: user_domains.php:758 user_group_admin.php:87 user_group_admin.php:680
@@ -1446,8 +1446,8 @@ msgstr "Aktiverad"
 #: include/global_settings.php:1632 include/global_settings.php:1645
 #: include/global_settings.php:1670 include/global_settings.php:1684
 #: include/global_settings.php:1774 include/global_settings.php:2538
-#: lib/api_automation.php:174 lib/api_automation.php:1099 lib/html.php:2665
-#: lib/html_reports.php:1899 lib/html_reports.php:2035
+#: lib/api_automation.php:174 lib/api_automation.php:1112 lib/html.php:2665
+#: lib/html_reports.php:1899 lib/html_reports.php:2050
 #: lib/html_utility.php:1209 links.php:513 managers.php:247 managers.php:608
 #: pollers.php:48 user_admin.php:1007 user_domains.php:412
 #: user_group_admin.php:695 utilities.php:2081 utilities.php:2597
@@ -1539,11 +1539,11 @@ msgstr "Kör upptäcka i felsökningsläge"
 msgid "Click 'Continue' to cancel on going Network Discovery(s)."
 msgstr "Klicka på \"Fortsätt\" för att avbryta pågående Network Discovery(s)."
 
-#: automation_networks.php:416 data_input.php:524 include/global_arrays.php:522
+#: automation_networks.php:416 data_input.php:555 include/global_arrays.php:522
 msgid "SNMP Get"
 msgstr "SNMP Hämta"
 
-#: automation_networks.php:423 automation_networks.php:1078 tree.php:1669
+#: automation_networks.php:423 automation_networks.php:1078 tree.php:1678
 msgid "Manual"
 msgstr "Manuell"
 
@@ -1587,8 +1587,8 @@ msgstr "Network Discovery Range [ny]"
 msgid "General Settings"
 msgstr "Allmänna inställningar"
 
-#: automation_networks.php:454 automation_snmp.php:509 data_input.php:569
-#: data_input.php:630 data_queries.php:777 data_queries.php:882
+#: automation_networks.php:454 automation_snmp.php:509 data_input.php:608
+#: data_input.php:669 data_queries.php:777 data_queries.php:882
 #: data_queries.php:1149 data_source_profiles.php:635 graph_templates.php:498
 #: include/global_form.php:215 include/global_form.php:281
 #: include/global_form.php:338 include/global_form.php:358
@@ -2138,7 +2138,7 @@ msgstr "Overksam"
 
 #: automation_networks.php:1165 include/global_arrays.php:904
 #: include/global_arrays.php:1222 include/global_settings.php:2564
-#: lib/html_reports.php:2030 user_admin.php:2197
+#: lib/html_reports.php:2045 user_admin.php:2197
 msgid "Never"
 msgstr "Aldrig"
 
@@ -2237,8 +2237,8 @@ msgstr "SNMP-alternativ [ny]"
 
 #: automation_snmp.php:453 include/global_form.php:1093
 #: include/global_form.php:2169 include/global_form.php:2211
-#: include/global_form.php:2362 lib/api_automation.php:1306
-#: lib/api_automation.php:1368 lib/api_automation.php:1434
+#: include/global_form.php:2362 lib/api_automation.php:1330
+#: lib/api_automation.php:1392 lib/api_automation.php:1458
 #: lib/html_reports.php:1127 lib/html_reports.php:1661
 msgid "Sequence"
 msgstr "Sekvens"
@@ -2264,14 +2264,14 @@ msgstr "Fyll i namnet på denna SNMP Option Set."
 msgid "Automation SNMP Options"
 msgstr "Automatisering SNMP-alternativ"
 
-#: automation_snmp.php:538 cdef.php:585 lib/api_automation.php:1305
-#: lib/api_automation.php:1367 lib/api_automation.php:1433
+#: automation_snmp.php:538 cdef.php:585 lib/api_automation.php:1329
+#: lib/api_automation.php:1391 lib/api_automation.php:1457
 #: lib/html_reports.php:1660 vdef.php:607
 msgid "Item"
 msgstr "Artikel"
 
 #: automation_snmp.php:539 include/auth.php:315 include/global_settings.php:695
-#: package_import.php:516 permission_denied.php:60 plugins.php:610
+#: package_import.php:516 permission_denied.php:60 plugins.php:622
 msgid "Version"
 msgstr "Version"
 
@@ -2279,7 +2279,7 @@ msgstr "Version"
 msgid "Community"
 msgstr "Gemenskap"
 
-#: automation_snmp.php:541 lib/functions.php:5585
+#: automation_snmp.php:541 lib/functions.php:5606
 msgid "Port"
 msgstr "Port"
 
@@ -2323,8 +2323,8 @@ msgstr "Sammanhang"
 msgid "Action"
 msgstr "Åtgärd"
 
-#: automation_snmp.php:561 lib/api_automation.php:1322
-#: lib/api_automation.php:1384 lib/api_automation.php:1452
+#: automation_snmp.php:561 lib/api_automation.php:1346
+#: lib/api_automation.php:1408 lib/api_automation.php:1476
 #, php-format
 msgid "Item#%d"
 msgstr "Artikel#%d"
@@ -2335,17 +2335,17 @@ msgstr "ingen"
 
 #: automation_snmp.php:578 automation_templates.php:528 cdef.php:612
 #: color_templates.php:111 data_queries.php:809 data_queries.php:916
-#: lib/api_automation.php:1332 lib/api_automation.php:1394
-#: lib/api_automation.php:1462 lib/html.php:1377 lib/html_reports.php:1795
-#: lib/html_reports.php:1797 tree.php:2320 tree.php:2327 vdef.php:636
+#: lib/api_automation.php:1356 lib/api_automation.php:1418
+#: lib/api_automation.php:1486 lib/html.php:1377 lib/html_reports.php:1795
+#: lib/html_reports.php:1797 tree.php:2329 tree.php:2336 vdef.php:636
 msgid "Move Down"
 msgstr "Flytta ner"
 
 #: automation_snmp.php:584 automation_templates.php:534 cdef.php:618
 #: color_templates.php:117 data_queries.php:814 data_queries.php:921
-#: lib/api_automation.php:1338 lib/api_automation.php:1400
-#: lib/api_automation.php:1468 lib/html.php:1383 lib/html_reports.php:1797
-#: lib/html_reports.php:1799 tree.php:2324 tree.php:2328 vdef.php:642
+#: lib/api_automation.php:1362 lib/api_automation.php:1424
+#: lib/api_automation.php:1492 lib/html.php:1383 lib/html_reports.php:1797
+#: lib/html_reports.php:1799 tree.php:2333 tree.php:2337 vdef.php:642
 msgid "Move Up"
 msgstr "Flytta upp"
 
@@ -2466,7 +2466,7 @@ msgid "System ObjectId Match"
 msgstr "Matchning av systemets ObjectId"
 
 #: automation_templates.php:503 data_queries.php:778 data_queries.php:883
-#: links.php:397 tree.php:2266
+#: links.php:397 tree.php:2275
 msgid "Order"
 msgstr "Ordning"
 
@@ -2577,8 +2577,8 @@ msgstr "ROT"
 msgid "No Tree Rules Found"
 msgstr "Inga trädregler hittades"
 
-#: cactid.php:44 help.php:44 lib/functions.php:6217 lib/functions.php:6286
-#: lib/functions.php:6376 lib/functions.php:6983 poller.php:394 poller.php:544
+#: cactid.php:44 help.php:44 lib/functions.php:6238 lib/functions.php:6307
+#: lib/functions.php:6397 lib/functions.php:7004 poller.php:394 poller.php:544
 #: poller.php:609 poller.php:649 poller.php:791 poller.php:897
 #: poller_automation.php:53 poller_boost.php:376
 msgid "Cacti System Warning"
@@ -2711,7 +2711,7 @@ msgstr "CDEF:er som är i bruk kan inte raderas.  Används definieras som att de
 msgid "The number of Graphs using this CDEF."
 msgstr "Antalet grafer som använder denna CDEF."
 
-#: cdef.php:887 color.php:701 data_input.php:885 data_queries.php:1433
+#: cdef.php:887 color.php:701 data_input.php:941 data_queries.php:1433
 #: data_source_profiles.php:1075 gprint_presets.php:417 vdef.php:918
 msgid "Templates Using"
 msgstr "Mallar med hjälp av"
@@ -2806,7 +2806,7 @@ msgstr "Färger"
 msgid "Named Colors"
 msgstr "Namngivna färger"
 
-#: color.php:569 lib/html_form.php:1433
+#: color.php:569 lib/html_form.php:1434
 msgid "Import"
 msgstr "Importera"
 
@@ -3087,7 +3087,7 @@ msgid "Determines if the Data Source is located in the Poller Cache."
 msgstr "Avgör om datakällan finns i Poller Cache."
 
 #: data_debug.php:483 data_sources.php:1660 data_templates.php:1260
-#: plugins.php:39 plugins.php:475
+#: plugins.php:39 plugins.php:487
 msgid "Active"
 msgstr "Aktiv"
 
@@ -3130,7 +3130,7 @@ msgstr "Sammanfattning av problem som hittats för datakällan."
 #: data_debug.php:572 data_debug.php:1129 data_sources.php:1467
 #: data_sources.php:1620 host.php:1799 include/global_arrays.php:1007
 #: include/global_arrays.php:1053 include/global_arrays.php:2320
-#: lib/api_automation.php:283 user_admin.php:1140 user_group_admin.php:1028
+#: lib/api_automation.php:296 user_admin.php:1140 user_group_admin.php:1028
 #: utilities.php:325
 msgid "Data Sources"
 msgstr "Källor"
@@ -3143,7 +3143,7 @@ msgstr "Inte felsökning"
 msgid "No Checks"
 msgstr "Inga kontroller"
 
-#: data_debug.php:686 lib/api_automation.php:760 lib/graphs.php:79
+#: data_debug.php:686 lib/api_automation.php:773 lib/graphs.php:79
 #: lib/graphs.php:103 templates_import.php:238
 msgid "Not Found"
 msgstr "Hittades inte"
@@ -3324,8 +3324,8 @@ msgstr "Profil"
 #: data_sources.php:1427 data_sources.php:1444 data_templates.php:1052
 #: graphs.php:2057 graphs_new.php:428 host.php:1649 host_templates.php:708
 #: host_templates.php:723 lib/clog_webapi.php:549 lib/html.php:225
-#: lib/html_reports.php:1020 lib/html_reports.php:2126 plugins.php:473
-#: settings.php:548 settings.php:570 settings.php:601 tree.php:860
+#: lib/html_reports.php:1020 lib/html_reports.php:2141 plugins.php:485
+#: settings.php:548 settings.php:570 settings.php:601 tree.php:869
 #: user_admin.php:2169 user_admin.php:2191 user_admin.php:2205
 #: utilities.php:1039 utilities.php:1453
 msgid "All"
@@ -3339,190 +3339,209 @@ msgstr "Misslyckades"
 msgid "Debugging"
 msgstr "Felsökning"
 
-#: data_input.php:100
+#: data_input.php:123
 msgid "Input string contains dangerous shell characters"
 msgstr ""
 
-#: data_input.php:255
+#: data_input.php:131
+msgid "Input Whitelisting is in effect.  Changes in this Data Input Method require rerunning of the Input Whitelist CLI script (cli/input_whitelist.php) using both the --audit and --update options before Data Source will be queried again."
+msgstr ""
+
+#: data_input.php:284
 msgid "Click 'Continue' to delete the following Data Input Method"
 msgid_plural "Click 'Continue' to delete the following Data Input Method"
 msgstr[0] "Klicka på 'Fortsätt' för att radera följande datainmatningsmetod"
 msgstr[1] "Klicka på 'Fortsätt' för att radera följande datainmatningsmetoder"
 
-#: data_input.php:262
+#: data_input.php:291
 msgid "Click 'Continue' to duplicate the following Data Input Method(s). You can optionally change the title format for the new Data Input Method(s)."
 msgstr "Klicka på \"Fortsätt\" för att duplicera följande datainmatningsmetod. Du kan valfritt ändra titelformat för den nya datainmatningsmetoden."
 
-#: data_input.php:264
+#: data_input.php:293
 msgid "Input Name:"
 msgstr "Inmatningsnamn:"
 
-#: data_input.php:269
+#: data_input.php:298
 msgid "Delete Data Input Method"
 msgid_plural "Delete Data Input Methods"
 msgstr[0] "Ta bort datainmatningsmetod"
 msgstr[1] "Ta bort datainmatningsmetoder"
 
-#: data_input.php:314
+#: data_input.php:343
 msgid "Click 'Continue' to delete the following Data Input Field."
 msgstr "Klicka på \"Fortsätt\" för att ta bort följande datainmatningsfält."
 
-#: data_input.php:315
+#: data_input.php:344
 #, php-format
 msgid "Field Name: %s"
 msgstr "Fältets namn: %s"
 
-#: data_input.php:316
+#: data_input.php:345
 #, php-format
 msgid "Friendly Name: %s"
 msgstr "Vänligt namn: %s"
 
-#: data_input.php:322 host_templates.php:306 host_templates.php:375
+#: data_input.php:351 host_templates.php:306 host_templates.php:375
 msgid "Remove Data Input Field"
 msgstr "Ta bort fält för datainmatning"
 
-#: data_input.php:433
+#: data_input.php:462
 msgid "This script appears to have no input values, therefore there is nothing to add."
 msgstr "Detta skript verkar inte ha några ingångsvärden, därför finns det inget att lägga till."
 
-#: data_input.php:439
+#: data_input.php:468
 #, php-format
 msgid "Output Fields [edit: %s]"
 msgstr "Utmatningsfält [redigera: %s]"
 
-#: data_input.php:440 include/global_form.php:661
+#: data_input.php:469 include/global_form.php:661
 msgid "Output Field"
 msgstr "Utmatningsfält"
 
-#: data_input.php:442
+#: data_input.php:471
 #, php-format
 msgid "Input Fields [edit: %s]"
 msgstr "Inmatningsfält [redigera: %s]"
 
-#: data_input.php:443
+#: data_input.php:472
 msgid "Input Field"
 msgstr "Inmatningsfält"
 
-#: data_input.php:506
+#: data_input.php:535
 #, php-format
 msgid "Data Input Method [edit: %s]"
 msgstr "Metod för datainmatning [redigera: %s]"
 
-#: data_input.php:510
+#: data_input.php:539
 msgid "Data Input Method [new]"
 msgstr "Metod för datainmatning [ny]"
 
-#: data_input.php:527 include/global_arrays.php:523
+#: data_input.php:558 include/global_arrays.php:523
 msgid "SNMP Query"
 msgstr "SNMP-förfrågan"
 
-#: data_input.php:530 include/global_arrays.php:525
+#: data_input.php:561 include/global_arrays.php:525
 msgid "Script Query"
 msgstr "Skriptfråga"
 
-#: data_input.php:533 include/global_arrays.php:527
+#: data_input.php:564 include/global_arrays.php:527
 msgid "Script Server Query"
 msgstr "Skriptserverförfrågan"
 
-#: data_input.php:541
+#: data_input.php:572
 msgid "White List Verification Succeeded."
 msgstr "Vitlistverifiering lyckades."
 
-#: data_input.php:543
+#: data_input.php:574
 msgid "White List Verification Failed.  Run CLI script input_whitelist.php to correct."
 msgstr "Verifiering av vit lista misslyckades.  Kör CLI-skriptet input_whitelist.php för att korrigera."
 
-#: data_input.php:545
+#: data_input.php:580
 msgid "Input String does not exist in White List.  Run CLI script input_whitelist.php to correct."
 msgstr "Inmatningssträngen finns inte i vitlistan.  Kör CLI-skriptet input_whitelist.php för att korrigera."
 
-#: data_input.php:566
+#: data_input.php:605
 msgid "Input Fields"
 msgstr "Inmatningsfält"
 
-#: data_input.php:570 data_input.php:631 include/global_form.php:465
+#: data_input.php:609 data_input.php:670 include/global_form.php:465
 msgid "Friendly Name"
 msgstr "Vänligt namn"
 
-#: data_input.php:571
+#: data_input.php:610
 msgid "Field Order"
 msgstr "Fältordning"
 
-#: data_input.php:615
+#: data_input.php:654
 msgid "(Not In Use)"
 msgstr "(Används inte)"
 
-#: data_input.php:624
+#: data_input.php:663
 msgid "No Input Fields"
 msgstr "Inga inmatningsfält"
 
-#: data_input.php:628
+#: data_input.php:667
 msgid "Output Fields"
 msgstr "Utmatningsfält"
 
-#: data_input.php:632
+#: data_input.php:671
 msgid "Update RRA"
 msgstr "Uppdatering RRA"
 
-#: data_input.php:658
+#: data_input.php:697
 msgid "Output Fields can not be removed when Data Sources are present"
 msgstr "Utdatafält kan inte tas bort när datakällor finns"
 
-#: data_input.php:667
+#: data_input.php:706
 msgid "No Output Fields"
 msgstr "Inga utmatningsfält"
 
-#: data_input.php:693
+#: data_input.php:734
 msgid "Delete Data Input Field"
 msgstr "Ta bort fält för datainmatning"
 
-#: data_input.php:750 include/global_arrays.php:1013
+#: data_input.php:747
+#, fuzzy
+#| msgid "Update this Field"
+msgid "Update Whitelist"
+msgstr "Uppdatera detta fält"
+
+#: data_input.php:806 include/global_arrays.php:1013
 #: include/global_arrays.php:1237 include/global_arrays.php:2374
 msgid "Data Input Methods"
 msgstr "Metoder för datainmatning"
 
-#: data_input.php:765 data_input.php:857
+#: data_input.php:821 data_input.php:913
 msgid "Input Methods"
 msgstr "Inmatningsmetoder"
 
-#: data_input.php:866
+#: data_input.php:922
 msgid "Data Input Name"
 msgstr "Namn på datainmatning"
 
-#: data_input.php:866
+#: data_input.php:922
 msgid "The name of this Data Input Method."
 msgstr "Namnet på denna metod för datainmatning."
 
-#: data_input.php:871
+#: data_input.php:927
 msgid "The internal database ID for this Data Input Method.  Useful when performing automation or debugging."
 msgstr "Det interna databas-ID:t för denna datainmatningsmetod.  Användbart vid automatisering eller felsökning."
 
-#: data_input.php:876
+#: data_input.php:932
 msgid "Data Inputs that are in use cannot be Deleted. In use is defined as being referenced either by a Data Source or a Data Template."
 msgstr "Data Inputs som är i bruk kan inte raderas. Används definieras som att det refereras till antingen av en datakälla eller en datamall."
 
-#: data_input.php:879 data_source_profiles.php:1069 data_templates.php:1206
+#: data_input.php:935 data_source_profiles.php:1069 data_templates.php:1206
 msgid "Data Sources Using"
 msgstr "Datakällor med hjälp av"
 
-#: data_input.php:882
+#: data_input.php:938
 msgid "The number of Data Sources that use this Data Input Method."
 msgstr "Antalet datakällor som använder denna metod för datainmatning."
 
-#: data_input.php:888
+#: data_input.php:944
 msgid "The number of Data Templates that use this Data Input Method."
 msgstr "Antalet datamallar som använder denna metod för datainmatning."
 
-#: data_input.php:891 data_queries.php:1439 include/global_arrays.php:1369
+#: data_input.php:947 data_queries.php:1439 include/global_arrays.php:1369
 #: include/global_form.php:584 include/global_form.php:1401
 msgid "Data Input Method"
 msgstr "Metod för datainmatning"
 
-#: data_input.php:894
+#: data_input.php:950
 msgid "The method used to gather information for this Data Input Method."
 msgstr "Den metod som används för att samla in information för denna Data Input Method."
 
-#: data_input.php:920
+#: data_input.php:972 host.php:1699 lib/api_automation.php:179
+#: lib/api_automation.php:1117 lib/auth.php:2454 lib/clog_webapi.php:846
+#: lib/html_utility.php:1231 lib/import.php:349 lib/plugins.php:1350
+#: lib/plugins.php:1351 lib/rrd.php:3300 lib/rrd.php:3312 lib/spikekill.php:281
+#: package_import.php:534 package_import.php:612 utilities.php:211
+#: utilities.php:212 utilities.php:2651
+msgid "Unknown"
+msgstr "Okänd"
+
+#: data_input.php:977
 msgid "No Data Input Methods Found"
 msgstr "Inga metoder för datainmatning hittades"
 
@@ -3602,7 +3621,7 @@ msgid "No Suggested Values Found"
 msgstr "Inga föreslagna värden hittades"
 
 #: data_queries.php:841 data_queries.php:949 include/global_form.php:2145
-#: include/global_form.php:2187 lib/api_automation.php:1435 utilities.php:1879
+#: include/global_form.php:2187 lib/api_automation.php:1459 utilities.php:1879
 msgid "Field Name"
 msgstr "Fältnamn"
 
@@ -3656,7 +3675,7 @@ msgid "Associated Graph Templates"
 msgstr "Associerade grafmallar"
 
 #: data_queries.php:1150 graph_templates.php:841 graphs_new.php:569
-#: host.php:779 lib/api_automation.php:575
+#: host.php:779 lib/api_automation.php:588
 msgid "Graph Template Name"
 msgstr "Grafmallens namn"
 
@@ -3682,7 +3701,7 @@ msgstr "Ta bort associerad graf"
 
 #: data_queries.php:1299 data_queries.php:1314 data_queries.php:1446
 #: include/global_arrays.php:1012 include/global_arrays.php:1238
-#: include/global_arrays.php:2410 lib/api_automation.php:1108
+#: include/global_arrays.php:2410 lib/api_automation.php:1121
 msgid "Data Queries"
 msgstr "Frågor om data"
 
@@ -4138,7 +4157,7 @@ msgstr "Namnet som ges till denna datamall.  Observera att du endast kan ändra 
 #: data_sources.php:950 graph_view.php:799 graphs.php:1593
 #: include/global_arrays.php:967 include/global_arrays.php:1016
 #: include/global_arrays.php:1700 include/global_arrays.php:1869
-#: lib/api_automation.php:424 lib/functions.php:5584 lib/html.php:2178
+#: lib/api_automation.php:437 lib/functions.php:5605 lib/html.php:2178
 #: lib/html.php:2210 lib/html_reports.php:1052 utilities.php:1879
 msgid "Device"
 msgstr "Enhet"
@@ -4812,7 +4831,7 @@ msgid "Not Templated"
 msgstr "Ej templat"
 
 #: graph_view.php:794 graph_view.php:822 graphs.php:2239
-#: include/global_form.php:1905 lib/html_reports.php:1083 tree.php:967
+#: include/global_form.php:1905 lib/html_reports.php:1083 tree.php:976
 msgid "Graph Name"
 msgstr "Grafens namn"
 
@@ -4882,7 +4901,7 @@ msgstr "Steg"
 msgid "Total Rows"
 msgstr "Summeringsrader"
 
-#: graph_xport.php:127 graph_xport.php:192 lib/api_automation.php:574
+#: graph_xport.php:127 graph_xport.php:192 lib/api_automation.php:587
 msgid "Graph ID"
 msgstr "Graf-ID"
 
@@ -5214,8 +5233,8 @@ msgid "(Select a graph type to create)"
 msgstr "(Välj en graftyp som ska skapas)"
 
 #: graphs_new.php:560 include/global_arrays.php:998
-#: include/global_arrays.php:1075 lib/html_form.php:1416 lib/html_form.php:1429
-#: tree.php:1607
+#: include/global_arrays.php:1075 lib/html_form.php:1417 lib/html_form.php:1430
+#: tree.php:1616
 msgid "Create"
 msgstr "Skapa"
 
@@ -5488,7 +5507,7 @@ msgstr "Grafiska listan"
 msgid "Contacting Device"
 msgstr "Kontakta enhet"
 
-#: host.php:838 tree.php:1727 tree.php:1801 tree.php:1909
+#: host.php:838 tree.php:1736 tree.php:1810 tree.php:1918
 msgid "Edit"
 msgstr "Redigera"
 
@@ -5520,8 +5539,8 @@ msgstr "Lägg till grafmall till enhet"
 msgid "Data Query Debug Information"
 msgstr "Felsökningsinformation för datafrågor"
 
-#: host.php:883 lib/functions.php:4353 tree.php:1749 tree.php:1823
-#: tree.php:1931 user_admin.php:29 user_group_admin.php:31
+#: host.php:883 lib/functions.php:4370 tree.php:1758 tree.php:1832
+#: tree.php:1940 user_admin.php:29 user_group_admin.php:31
 msgid "Copy"
 msgstr "Kopiera"
 
@@ -5545,9 +5564,9 @@ msgstr "Metod för återindexering"
 #: include/global_arrays.php:2542 include/global_arrays.php:2746
 #: include/global_arrays.php:2770 include/global_arrays.php:2788
 #: include/global_arrays.php:2806 include/global_arrays.php:2830
-#: lib/api_automation.php:1311 lib/api_automation.php:1373
-#: lib/api_automation.php:1440 lib/html_reports.php:1667 links.php:392
-#: plugins.php:574
+#: lib/api_automation.php:1335 lib/api_automation.php:1397
+#: lib/api_automation.php:1464 lib/html_reports.php:1667 links.php:392
+#: plugins.php:586
 msgid "Actions"
 msgstr "Åtgärder"
 
@@ -5560,7 +5579,7 @@ msgstr " [%d objekt, %d rader]"
 msgid "Fail"
 msgstr "Misslyckad"
 
-#: host.php:967 lib/functions.php:5599 lib/functions.php:5604
+#: host.php:967 lib/functions.php:5620 lib/functions.php:5625
 msgid "Success"
 msgstr "Lyckades"
 
@@ -5629,24 +5648,16 @@ msgstr "Plats"
 msgid "Export Devices"
 msgstr "Exportera enheter"
 
-#: host.php:1695 lib/api_automation.php:175 lib/api_automation.php:1100
+#: host.php:1695 lib/api_automation.php:175 lib/api_automation.php:1113
 msgid "Not Up"
 msgstr "Inte uppe"
 
-#: host.php:1698 lib/api_automation.php:178 lib/api_automation.php:1103
+#: host.php:1698 lib/api_automation.php:178 lib/api_automation.php:1116
 #: lib/html.php:81 lib/html_utility.php:1222 pollers.php:49
 msgid "Recovering"
 msgstr "Återhämtar"
 
-#: host.php:1699 lib/api_automation.php:179 lib/api_automation.php:1104
-#: lib/auth.php:2444 lib/html_utility.php:1231 lib/import.php:349
-#: lib/plugins.php:1340 lib/plugins.php:1341 lib/rrd.php:3300 lib/rrd.php:3312
-#: lib/spikekill.php:281 package_import.php:534 package_import.php:612
-#: utilities.php:211 utilities.php:212 utilities.php:2651
-msgid "Unknown"
-msgstr "Okänd"
-
-#: host.php:1775 lib/api_automation.php:569 tree.php:933 utilities.php:2220
+#: host.php:1775 lib/api_automation.php:582 tree.php:942 utilities.php:2220
 msgid "Device Description"
 msgstr "Beskrivning av enhet"
 
@@ -5655,8 +5666,8 @@ msgid "The name by which this Device will be referred to."
 msgstr "Det namn som denna enhet kommer att refereras till."
 
 #: host.php:1781 include/global_form.php:1197 include/global_form.php:1768
-#: lib/api_automation.php:278 lib/api_automation.php:570
-#: lib/api_automation.php:883 lib/api_automation.php:1223 managers.php:223
+#: lib/api_automation.php:291 lib/api_automation.php:583
+#: lib/api_automation.php:896 lib/api_automation.php:1247 managers.php:223
 #: pollers.php:130 pollers.php:1016 user_admin.php:1140
 #: user_group_admin.php:1028
 msgid "Hostname"
@@ -5814,8 +5825,8 @@ msgstr "Klass"
 msgid "Has Devices"
 msgstr "Har enheter"
 
-#: host_templates.php:921 lib/api_automation.php:280 lib/api_automation.php:571
-#: lib/api_automation.php:1224
+#: host_templates.php:921 lib/api_automation.php:293 lib/api_automation.php:584
+#: lib/api_automation.php:1248
 msgid "Device Template Name"
 msgstr "Namn på enhetsmall"
 
@@ -5867,21 +5878,21 @@ msgstr "Du måste vara inloggad för att komma åt denna del av Cacti."
 msgid "FATAL: You must be logged in to access this area of Cacti."
 msgstr "FATAL: Du måste vara inloggad för att komma åt denna del av Cacti."
 
-#: include/auth.php:283 include/auth.php:285 lib/auth.php:4668
+#: include/auth.php:283 include/auth.php:285 lib/auth.php:4678
 #: permission_denied.php:31 permission_denied.php:33
 msgid "Login Again"
 msgstr "Logga in igen"
 
-#: include/auth.php:290 lib/functions.php:7574 permission_denied.php:46
+#: include/auth.php:290 lib/functions.php:7605 permission_denied.php:46
 #: permission_denied.php:53
 msgid "Permission Denied"
 msgstr "Åtkomst nekad"
 
-#: include/auth.php:291 lib/functions.php:7575 permission_denied.php:55
+#: include/auth.php:291 lib/functions.php:7606 permission_denied.php:55
 msgid "If you feel that this is an error. Please contact your Cacti Administrator."
 msgstr "Om du känner att detta är ett fel. Vänligen kontakta din Cacti-administratör."
 
-#: include/auth.php:291 lib/functions.php:7575 permission_denied.php:55
+#: include/auth.php:291 lib/functions.php:7606 permission_denied.php:55
 msgid "You are not permitted to access this section of Cacti."
 msgstr "Du har inte tillåtelse att besöka denna del av Cacti."
 
@@ -6352,7 +6363,7 @@ msgstr "Upp -> Ner"
 msgid "Bottom -> Up"
 msgstr "Botten -> Upp"
 
-#: include/global_arrays.php:607 tree.php:1711
+#: include/global_arrays.php:607 tree.php:1720
 msgid "Numeric"
 msgstr "﻿Numerisk"
 
@@ -6617,8 +6628,8 @@ msgid "Enabled (strict mode)"
 msgstr "Aktiverad (strikt läge)"
 
 #: include/global_arrays.php:936 include/global_form.php:2153
-#: include/global_form.php:2195 lib/api_automation.php:1309
-#: lib/api_automation.php:1371
+#: include/global_form.php:2195 lib/api_automation.php:1333
+#: lib/api_automation.php:1395
 msgid "Operator"
 msgstr "Operatör"
 
@@ -6656,7 +6667,7 @@ msgstr "Sidhuvud"
 msgid "Graph"
 msgstr "Diagram"
 
-#: include/global_arrays.php:972 tree.php:1898
+#: include/global_arrays.php:972 tree.php:1907
 msgid "Data Query Index"
 msgstr "Index för datafrågor"
 
@@ -6735,12 +6746,12 @@ msgid "Management"
 msgstr "Hantering"
 
 #: include/global_arrays.php:1004 sites.php:500 sites.php:515 sites.php:601
-#: tree.php:861 tree.php:2284
+#: tree.php:870 tree.php:2293
 msgid "Sites"
 msgstr "Webbplatser"
 
-#: include/global_arrays.php:1005 include/global_arrays.php:1242 tree.php:2147
-#: tree.php:2162 tree.php:2226 user_admin.php:1418 user_admin.php:3043
+#: include/global_arrays.php:1005 include/global_arrays.php:1242 tree.php:2156
+#: tree.php:2171 tree.php:2235 user_admin.php:1418 user_admin.php:3043
 #: user_admin.php:3140 user_group_admin.php:1297 user_group_admin.php:2608
 msgid "Trees"
 msgstr "Träd"
@@ -6806,7 +6817,7 @@ msgid "Export Templates"
 msgstr "Exportera mallar"
 
 #: include/global_arrays.php:1042 include/global_arrays.php:1064
-#: include/global_arrays.php:1082 lib/plugins.php:1295
+#: include/global_arrays.php:1082 lib/plugins.php:1305
 msgid "Configuration"
 msgstr "Konfiguration"
 
@@ -7832,7 +7843,7 @@ msgid "List Mode"
 msgstr "List läget"
 
 #: include/global_arrays.php:2074 include/global_arrays.php:2080
-#: lib/functions.php:3941 lib/html.php:1809 lib/html.php:1886 lib/html.php:2585
+#: lib/functions.php:3958 lib/html.php:1809 lib/html.php:1886 lib/html.php:2585
 #: links.php:357 user_admin.php:1547 user_group_admin.php:1433
 msgid "Console"
 msgstr "Konsol"
@@ -9026,7 +9037,7 @@ msgid "A useful name for this graph tree."
 msgstr "Ett användbart namn för detta grafträd."
 
 #: include/global_form.php:1485 include/global_form.php:2330
-#: lib/api_automation.php:1436 tree.php:1882
+#: lib/api_automation.php:1460 tree.php:1891
 msgid "Sorting Type"
 msgstr "Typ av sortering"
 
@@ -9054,7 +9065,7 @@ msgstr "Ange lösenordet för den här användaren två gånger. Kom ihåg att l
 msgid "Determines if user is able to login."
 msgstr "Avgör om användaren har möjlighet att logga in."
 
-#: include/global_form.php:1555 tree.php:2254
+#: include/global_form.php:1555 tree.php:2263
 msgid "Locked"
 msgstr "Låst"
 
@@ -9342,7 +9353,7 @@ msgid "A useful name for this Template."
 msgstr "Ett användbart namn för denna mall."
 
 #: include/global_form.php:2137 include/global_form.php:2179
-#: lib/api_automation.php:1307 lib/api_automation.php:1369
+#: lib/api_automation.php:1331 lib/api_automation.php:1393
 msgid "Operation"
 msgstr "Operation"
 
@@ -9484,7 +9495,7 @@ msgstr "Data"
 msgid "Visual"
 msgstr "Visuell"
 
-#: include/global_settings.php:44 lib/functions.php:5588 lib/functions.php:5593
+#: include/global_settings.php:44 lib/functions.php:5609 lib/functions.php:5614
 msgid "Authentication"
 msgstr "Autentisering"
 
@@ -9520,11 +9531,11 @@ msgstr "Grafiska typsnitt"
 msgid "PHP Mail() Function"
 msgstr "PHP Mail()-funktion"
 
-#: include/global_settings.php:85 lib/functions.php:5569
+#: include/global_settings.php:85 lib/functions.php:5590
 msgid "Sendmail"
 msgstr "Sendmail"
 
-#: include/global_settings.php:86 lib/functions.php:5575
+#: include/global_settings.php:86 lib/functions.php:5596
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -9977,7 +9988,7 @@ msgid "Allow Unsafe Metacharacters in Data Input Methods"
 msgstr "Namnet på denna metod för datainmatning."
 
 #: include/global_settings.php:508
-msgid "Historically, Cacti administrators created simple Data Input Methods that include commands like \"ps -ef | grep something | wc -l\" to represent a numeric values for use in Cacti Graphs.  In earlier versions of Cacti, this was permitted.  However, this is an unsafe practice as it is a gateway for third party users to publish insecure Data Templates.  In modern Cacti, these types of practices should be avoided.  However, we provide this option if you have older Data Input Methods that contain these unsafe Meta Characters and have not converted them to local scripts in the 'scripts' directory.  Unsafe metacharacters for use in web applications include blank spaces, quotation marks, less-than signs (<), greater-than signs (>), percent signs (%), left curly brackets ({), right curly brackets (}), vertical bars (|), backslashes (\\), circumflex or caret (^), and backticks (`).  Cacti continues to allow greater-than and less-than signs for things like <path_cacti> and for input parameters but if this option is unchecked, that is the limit of their permitted use."
+msgid "Historically, Cacti administrators created simple Data Input Methods that include commands like \"ps -ef | grep something | wc -l\" to represent a numeric value for use in Cacti Graphs.  In earlier versions of Cacti, this was permitted.  However, this is an unsafe practice as it is a gateway for third party users to publish insecure Data Templates.  In modern Cacti, these types of practices should be avoided.  However, we provide this option if you have older Data Input Methods that contain these unsafe Meta Characters and have not converted them to local scripts in the 'scripts' directory.  When this option is unchecked, Cacti restricts shell-style metacharacters such as quotation marks, curly brackets, vertical bars, backslashes, and backticks.  Cacti continues to allow greater-than and less-than signs for things like <path_cacti> and for input parameters, but if this option is unchecked, that is the limit of their permitted use."
 msgstr ""
 
 #: include/global_settings.php:514
@@ -11424,7 +11435,7 @@ msgstr "Här anges hur många tecken som tillåts innan en rad i e-postmeddeland
 msgid "Sendmail Options"
 msgstr "Alternativ för Sendmail"
 
-#: include/global_settings.php:1944 lib/functions.php:5569
+#: include/global_settings.php:1944 lib/functions.php:5590
 msgid "Sendmail Path"
 msgstr "Sendmail sökväg"
 
@@ -12463,126 +12474,126 @@ msgstr "Åsidosätt detta värde"
 msgid "Matching Devices"
 msgstr "Matchande enheter"
 
-#: lib/api_automation.php:150 lib/api_automation.php:1075
+#: lib/api_automation.php:150 lib/api_automation.php:1088
 #: lib/clog_webapi.php:543 lib/html_reports.php:999 lib/html_reports.php:1662
-#: lib/html_reports.php:1987 lib/html_reports.php:1998 lib/rrd.php:3270
+#: lib/html_reports.php:2002 lib/html_reports.php:2013 lib/rrd.php:3270
 #: utilities.php:356 utilities.php:1449 utilities.php:3096
 msgid "Type"
 msgstr "Typ"
 
-#: lib/api_automation.php:307
+#: lib/api_automation.php:320
 msgid "No Matching Devices"
 msgstr "Inga matchande enheter"
 
-#: lib/api_automation.php:415 lib/api_automation.php:697
-#: lib/api_automation.php:871
+#: lib/api_automation.php:428 lib/api_automation.php:710
+#: lib/api_automation.php:884
 msgid "Matching Objects"
 msgstr "Matchande objekt"
 
-#: lib/api_automation.php:712
+#: lib/api_automation.php:725
 msgid "Objects"
 msgstr "Objekt"
 
-#: lib/api_automation.php:875
+#: lib/api_automation.php:888
 msgid "A blue font color indicates that the rule will be applied to the objects in question.  Other objects will not be subject to the rule."
 msgstr "En blå teckensnittsfärg anger att regeln kommer att tillämpas på objekten i fråga.  Andra objekt kommer inte att omfattas av regeln."
 
-#: lib/api_automation.php:875
+#: lib/api_automation.php:888
 #, php-format
 msgid "Matching Objects [ %s ]"
 msgstr "Matchande objekt [ %s]"
 
-#: lib/api_automation.php:884
+#: lib/api_automation.php:897
 msgid "Device Status"
 msgstr "Status för enhet"
 
-#: lib/api_automation.php:906
+#: lib/api_automation.php:919
 msgid "There are no Objects that match this rule."
 msgstr "Det finns inga objekt som matchar den här regeln."
 
-#: lib/api_automation.php:953
+#: lib/api_automation.php:966
 msgid "Error in data query"
 msgstr "Fel i datafrågan"
 
-#: lib/api_automation.php:1061
+#: lib/api_automation.php:1074
 msgid "Matching Items"
 msgstr "Matchande föremål"
 
-#: lib/api_automation.php:1227
+#: lib/api_automation.php:1251
 msgid "Resulting Branch"
 msgstr "Resulterande gren"
 
-#: lib/api_automation.php:1266
+#: lib/api_automation.php:1290
 msgid "No Items Found"
 msgstr "Inga föremål hittades"
 
-#: lib/api_automation.php:1308 lib/api_automation.php:1370
+#: lib/api_automation.php:1332 lib/api_automation.php:1394
 msgid "Field"
 msgstr "Fält"
 
-#: lib/api_automation.php:1310 lib/api_automation.php:1372
+#: lib/api_automation.php:1334 lib/api_automation.php:1396
 msgid "Pattern"
 msgstr "Mönster"
 
-#: lib/api_automation.php:1353
+#: lib/api_automation.php:1377
 msgid "No Device Selection Criteria"
 msgstr "Ingen enhet Urvalskriterier"
 
-#: lib/api_automation.php:1414
+#: lib/api_automation.php:1438
 msgid "No Graph Creation Criteria"
 msgstr "Inga kriterier för skapande av grafer"
 
-#: lib/api_automation.php:1437
+#: lib/api_automation.php:1461
 msgid "Propagate Change"
 msgstr "Sprida förändring"
 
-#: lib/api_automation.php:1438
+#: lib/api_automation.php:1462
 msgid "Search Pattern"
 msgstr "Sök mönster"
 
-#: lib/api_automation.php:1439
+#: lib/api_automation.php:1463
 msgid "Replace Pattern"
 msgstr "Byt ut mönstret"
 
-#: lib/api_automation.php:1483
+#: lib/api_automation.php:1507
 msgid "No Tree Creation Criteria"
 msgstr "Inga kriterier för skapande av träd"
 
-#: lib/api_automation.php:1989 lib/api_automation.php:2054
+#: lib/api_automation.php:2013 lib/api_automation.php:2078
 msgid "Device Match Rule"
 msgstr "Matchningsregel för enhet"
 
-#: lib/api_automation.php:2010
+#: lib/api_automation.php:2034
 msgid "Create Graph Rule"
 msgstr "Skapa grafregel"
 
-#: lib/api_automation.php:2057
+#: lib/api_automation.php:2081
 msgid "Graph Match Rule"
 msgstr "Graf Matchningsregel"
 
-#: lib/api_automation.php:2089
+#: lib/api_automation.php:2113
 msgid "Create Tree Rule (Device)"
 msgstr "Skapa trädregel (enhet)"
 
-#: lib/api_automation.php:2092
+#: lib/api_automation.php:2116
 msgid "Create Tree Rule (Graph)"
 msgstr "Skapa trädregel (graf)"
 
-#: lib/api_automation.php:2138
+#: lib/api_automation.php:2162
 #, php-format
 msgid "Rule Item [edit rule item for %s: %s]"
 msgstr "Regelobjekt [redigera regelobjekt för %s: %s]"
 
-#: lib/api_automation.php:2140
+#: lib/api_automation.php:2164
 #, php-format
 msgid "Rule Item [new rule item for %s: %s]"
 msgstr "Regelobjekt [nytt regelobjekt för %s: %s]"
 
-#: lib/api_automation.php:3027
+#: lib/api_automation.php:3051
 msgid "Added by Cacti Automation"
 msgstr "Tillagd av Cacti Automation"
 
-#: lib/api_automation.php:3289
+#: lib/api_automation.php:3313
 msgid "ERROR: IP ranges in the form of range1-range2 are no longer supported."
 msgstr "ERROR: IP-intervall i form av intervall1-intervall2 stöds inte längre."
 
@@ -12597,9 +12608,9 @@ msgstr "ERROR: IP-intervall i form av intervall1-intervall2 stöds inte längre.
 #: lib/api_device.php:1098 lib/api_device.php:1267 lib/api_device.php:1271
 #: lib/api_device.php:1298 lib/api_device.php:1302 lib/api_device.php:1334
 #: lib/api_device.php:1338 lib/api_device.php:1390 lib/api_device.php:1394
-#: lib/utility.php:646 lib/utility.php:650 lib/utility.php:726
-#: lib/utility.php:730 lib/utility.php:752 lib/utility.php:756
-#: lib/utility.php:779 lib/utility.php:782
+#: lib/utility.php:680 lib/utility.php:684 lib/utility.php:760
+#: lib/utility.php:764 lib/utility.php:786 lib/utility.php:790
+#: lib/utility.php:813 lib/utility.php:816
 #, php-format
 msgid "Remote Poller %s is Down, you will need to perform a FullSync once it is up again"
 msgstr "Remote Poller %s är nere, du måste utföra en FullSync när den är uppe igen"
@@ -12664,8 +12675,8 @@ msgstr "Plats:"
 msgid "Contact:"
 msgstr "Kontakt:"
 
-#: lib/api_device.php:1638 lib/functions.php:5602 lib/functions.php:5604
-#: lib/functions.php:5608
+#: lib/api_device.php:1638 lib/functions.php:5623 lib/functions.php:5625
+#: lib/functions.php:5629
 msgid "Ping Results"
 msgstr "Ping-resultat"
 
@@ -12677,142 +12688,138 @@ msgstr "Ingen Ping- eller SNMP-tillgänglighetskontroll används"
 msgid "New Branch"
 msgstr "Ny filial"
 
-#: lib/auth.php:598
+#: lib/auth.php:608
 msgid "Web Basic"
 msgstr "Webb grundläggande"
 
-#: lib/auth.php:2273
+#: lib/auth.php:2283
 msgid "Device:(Hide Disabled)"
 msgstr "Enhet:(Dölj inaktiverad)"
 
-#: lib/auth.php:2291 lib/auth.php:2293 lib/auth.php:2299 lib/auth.php:2301
+#: lib/auth.php:2301 lib/auth.php:2303 lib/auth.php:2309 lib/auth.php:2311
 #, php-format
 msgid "Graph:(%s%s)"
 msgstr "Graf:(%s%s)"
 
-#: lib/auth.php:2314 lib/auth.php:2320 lib/auth.php:2387 lib/auth.php:2389
-#: lib/auth.php:2393 lib/auth.php:2395
+#: lib/auth.php:2324 lib/auth.php:2330 lib/auth.php:2397 lib/auth.php:2399
+#: lib/auth.php:2403 lib/auth.php:2405
 #, php-format
 msgid "Device:(%s%s)"
 msgstr "Enhet:(%s%s)"
 
-#: lib/auth.php:2328 lib/auth.php:2334 lib/auth.php:2403 lib/auth.php:2405
-#: lib/auth.php:2409 lib/auth.php:2411
+#: lib/auth.php:2338 lib/auth.php:2344 lib/auth.php:2413 lib/auth.php:2415
+#: lib/auth.php:2419 lib/auth.php:2421
 #, php-format
 msgid "Template:(%s%s)"
 msgstr "Mall:(%s%s)"
 
-#: lib/auth.php:2341
+#: lib/auth.php:2351
 #, php-format
 msgid "Graph+Device+Template:(%s%s)"
 msgstr "Graf+Anordning+Mall:(%s%s)"
 
-#: lib/auth.php:2378 lib/auth.php:2380
+#: lib/auth.php:2388 lib/auth.php:2390
 #, php-format
 msgid "Device+Template:(%s%s)"
 msgstr "Enhet+Template:(%s%s)"
 
-#: lib/auth.php:2424 lib/auth.php:2431 lib/auth.php:2440
+#: lib/auth.php:2434 lib/auth.php:2441 lib/auth.php:2450
 msgid "Restricted By: "
 msgstr "Begränsad av: "
 
-#: lib/auth.php:2428
+#: lib/auth.php:2438
 msgid "Granted By: "
 msgstr "Beviljas av: "
 
-#: lib/auth.php:2435
+#: lib/auth.php:2445
 msgid "Granted"
 msgstr "Beviljade"
 
-#: lib/auth.php:2437 lib/auth.php:2442
+#: lib/auth.php:2447 lib/auth.php:2452
 msgid "Restricted"
 msgstr "Begränsat"
 
-#: lib/auth.php:2672 lib/auth.php:2707
+#: lib/auth.php:2682 lib/auth.php:2717
 msgid "Branch:"
 msgstr "Filial:"
 
-#: lib/auth.php:2681 lib/auth.php:2715 lib/html_tree.php:966
+#: lib/auth.php:2691 lib/auth.php:2725 lib/html_tree.php:966
 #: lib/reports.php:1046
 msgid "Device:"
 msgstr "Enhet:"
 
-#: lib/auth.php:3550 lib/auth.php:3630
+#: lib/auth.php:3560 lib/auth.php:3640
 msgid "Your account has been locked.  Please contact your Administrator."
 msgstr "Ditt konto har blivit låst.  Vänligen kontakta din administratör."
 
-#: lib/auth.php:3595
+#: lib/auth.php:3605
 msgid "Access Denied!  Login Disabled."
 msgstr "Åtkomst nekad!  Inloggning avaktiverad."
 
-#: lib/auth.php:3635 lib/auth.php:3641 lib/auth.php:3758 lib/auth.php:3843
-#: lib/auth.php:4200 lib/auth.php:4230 lib/auth.php:4264
+#: lib/auth.php:3645 lib/auth.php:3651 lib/auth.php:3768 lib/auth.php:3853
+#: lib/auth.php:4210 lib/auth.php:4240 lib/auth.php:4266 lib/auth.php:4274
 msgid "Access Denied!  Login Failed."
 msgstr "Åtkomst nekad!  Inloggning misslyckades."
 
-#: lib/auth.php:3663
+#: lib/auth.php:3673
 msgid "Web Basic Authentication configured, but no username was passed from the web server. Please make sure you have authentication enabled on the web server."
 msgstr "Web Basic Authentication konfigurerad, men inget användarnamn skickades från webbservern. Kontrollera att du har aktiverat autentisering på webbservern."
 
-#: lib/auth.php:3677
+#: lib/auth.php:3687
 #, php-format
 msgid "%s authenticated by Web Server, but both Template and Guest Users are not defined in Cacti."
 msgstr "%s autentiserad av webbservern, men både Template och Guest Users är inte definierade i Cacti."
 
-#: lib/auth.php:3783
+#: lib/auth.php:3793
 #, php-format
 msgid "Access Denied!  LDAP Search Error: %s"
 msgstr "Åtkomst nekad!  Fel vid LDAP-sökning: %s"
 
-#: lib/auth.php:3804 lib/auth.php:3967
+#: lib/auth.php:3814 lib/auth.php:3977
 #, php-format
 msgid "Access Denied!  LDAP Error: %s"
 msgstr "Åtkomst nekad!  LDAP-fel: %s"
 
-#: lib/auth.php:3816 lib/auth.php:3979 lib/auth.php:4240
+#: lib/auth.php:3826 lib/auth.php:3989 lib/auth.php:4250
 msgid "Access Denied!  No password provided by user."
 msgstr "Åtkomst nekad!  Användaren har inte angett något lösenord."
 
-#: lib/auth.php:3866
+#: lib/auth.php:3876
 #, php-format
 msgid "LDAP Search Error: %s"
 msgstr "Fel vid LDAP-sökning: %s"
 
-#: lib/auth.php:3959 lib/auth.php:4866
+#: lib/auth.php:3969 lib/auth.php:4876
 #, php-format
 msgid "Access Denied!  Template user id %s does not exist.  Please contact your Administrator."
 msgstr "Åtkomst nekad!  Mallens användar-ID %s finns inte.  Vänligen kontakta din administratör."
 
-#: lib/auth.php:4256
-msgid "Access Denied! Login failed."
-msgstr "Åtkomst nekad! Inloggningen misslyckades."
-
-#: lib/auth.php:4285
+#: lib/auth.php:4295
 msgid "Your Cacti administrator has forced complex passwords for logins and your current Cacti password does not match the new requirements.  Therefore, you must change your password now."
 msgstr "Din Cacti-administratör har tvingat fram komplexa lösenord för inloggningar och ditt nuvarande Cacti-lösenord uppfyller inte de nya kraven.  Därför måste du ändra ditt lösenord nu."
 
-#: lib/auth.php:4316
+#: lib/auth.php:4326
 #, php-format
 msgid "Password must be at least %d characters!"
 msgstr "Lösenordet måste innehålla minst %d tecken!"
 
-#: lib/auth.php:4322
+#: lib/auth.php:4332
 msgid "Your password must contain at least 1 numerical character!"
 msgstr "Ditt lösenord måste innehålla minst 1 numeriskt tecken!"
 
-#: lib/auth.php:4326
+#: lib/auth.php:4336
 msgid "Your password must contain a mix of lower case and upper case characters!"
 msgstr "Ditt lösenord måste innehålla en blandning av små och stora bokstäver!"
 
-#: lib/auth.php:4332
+#: lib/auth.php:4342
 msgid "Your password must contain at least 1 special character!"
 msgstr "Ditt lösenord måste innehålla minst 1 specialtecken!"
 
-#: lib/auth.php:4661
+#: lib/auth.php:4671
 msgid "Cacti Login Failure"
 msgstr "Felaktig inloggning för Cacti"
 
-#: lib/auth.php:4944
+#: lib/auth.php:4954
 msgid "Authentication was previously not set.  Attempted to set to Local Authentication, but no Administrative account was found."
 msgstr "Autentisering var tidigare inte inställd.  Försökte ställa in lokal autentisering, men inget administrativt konto hittades."
 
@@ -12931,7 +12938,7 @@ msgstr "Återvinningar"
 msgid "Threshold"
 msgstr "Tröskelvärde"
 
-#: lib/clog_webapi.php:579 tree.php:857
+#: lib/clog_webapi.php:579 tree.php:866
 msgid "Display"
 msgstr "Visa"
 
@@ -12951,7 +12958,7 @@ msgstr "Matcher"
 msgid "Does Not Match"
 msgstr "Matchar inte"
 
-#: lib/clog_webapi.php:739
+#: lib/clog_webapi.php:740
 msgid "System Device"
 msgstr "System Enhet"
 
@@ -13382,11 +13389,11 @@ msgstr "Du måste välja en XML-utdatakolumn för datakällan '%s' och växla kr
 msgid "Your Graph Template has not Data Templates in use.  Please correct your Graph Template"
 msgstr "Din Graph Template har inte Data Templates i bruk.  Vänligen korrigera din grafmall"
 
-#: lib/database.php:2107
+#: lib/database.php:2113
 msgid "Failed to determine password field length, can not continue as may corrupt password"
 msgstr "Misslyckades med att bestämma lösenordsfältets längd, kan inte fortsätta eftersom lösenordet kan skadas"
 
-#: lib/database.php:2114
+#: lib/database.php:2120
 msgid "Failed to alter password field length, can not continue as may corrupt password"
 msgstr "Misslyckades med att ändra lösenordsfältets längd, kan inte fortsätta eftersom lösenordet kan skadas"
 
@@ -13460,167 +13467,167 @@ msgstr "Meddelandet hittades inte."
 msgid "Error %s is not readable"
 msgstr "Fel %s är inte läsbart"
 
-#: lib/functions.php:3712
+#: lib/functions.php:3729
 msgid "Logged in a Guest"
 msgstr "Loggade in som gäst"
 
-#: lib/functions.php:3712 lib/functions.php:3728
+#: lib/functions.php:3729 lib/functions.php:3745
 msgid "Logged in as"
 msgstr "Inloggad som"
 
-#: lib/functions.php:3712
+#: lib/functions.php:3729
 msgid "Login as Regular User"
 msgstr "Logga in som vanlig användare"
 
-#: lib/functions.php:3712
+#: lib/functions.php:3729
 msgid "guest"
 msgstr "gäst"
 
-#: lib/functions.php:3715 lib/functions.php:3738 lib/html.php:2591
+#: lib/functions.php:3732 lib/functions.php:3755 lib/html.php:2591
 msgid "User Community"
 msgstr "Användargemenskap"
 
-#: lib/functions.php:3716 lib/functions.php:3739 lib/html.php:2593
-#: lib/utility.php:1403
+#: lib/functions.php:3733 lib/functions.php:3756 lib/html.php:2593
+#: lib/utility.php:1492
 msgid "Documentation"
 msgstr "Dokumentation"
 
-#: lib/functions.php:3731
+#: lib/functions.php:3748
 #, php-format
 msgid "Logged in as %s"
 msgstr "Inloggad som %s"
 
-#: lib/functions.php:3733 lib/html.php:2572
+#: lib/functions.php:3750 lib/html.php:2572
 msgid "Edit Profile"
 msgstr "Redigera profil"
 
-#: lib/functions.php:3743 lib/html.php:2576
+#: lib/functions.php:3760 lib/html.php:2576
 msgid "Logout"
 msgstr "Logga ut"
 
-#: lib/functions.php:3888
+#: lib/functions.php:3905
 msgid "Leaf"
 msgstr "Blad"
 
-#: lib/functions.php:3908 lib/html_tree.php:665 lib/html_tree.php:701
+#: lib/functions.php:3925 lib/html_tree.php:665 lib/html_tree.php:701
 #: lib/html_tree.php:930 lib/html_tree.php:938 lib/html_tree.php:1539
 msgid "Non Query Based"
 msgstr "Icke-frågebaserad"
 
-#: lib/functions.php:3944
+#: lib/functions.php:3961
 #, php-format
 msgid "Link %s"
 msgstr "Länk %s"
 
-#: lib/functions.php:5165
+#: lib/functions.php:5186
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
 msgstr "Fel i utskicket: Ingen mottagaradress angiven!!!<br>Om du använder <i>Test Mail</i> -länken, vänligen ställ in <b>e-postinställningen för Alert</b>."
 
-#: lib/functions.php:5533
+#: lib/functions.php:5554
 #, php-format
 msgid "Authentication failed: %s"
 msgstr "Autentiseringen misslyckades: %s"
 
-#: lib/functions.php:5537
+#: lib/functions.php:5558
 #, php-format
 msgid "HELO failed: %s"
 msgstr "HELO misslyckades: %s"
 
-#: lib/functions.php:5540
+#: lib/functions.php:5561
 #, php-format
 msgid "Connect failed: %s"
 msgstr "Anslutningen misslyckades: %s"
 
-#: lib/functions.php:5543
+#: lib/functions.php:5564
 msgid "SMTP error: "
 msgstr "SMTP-fel: "
 
-#: lib/functions.php:5556
+#: lib/functions.php:5577
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
 msgstr "Detta är ett testmeddelande som genererats från Cacti.  Det här meddelandet skickades för att testa konfigurationen av dina e-postinställningar."
 
-#: lib/functions.php:5557
+#: lib/functions.php:5578
 msgid "Your email settings are currently set as follows"
 msgstr "Dina e-postinställningar är för närvarande inställda enligt följande"
 
-#: lib/functions.php:5558
+#: lib/functions.php:5579
 msgid "Method"
 msgstr "Metod"
 
-#: lib/functions.php:5560
+#: lib/functions.php:5581
 msgid "Checking Configuration...<br>"
 msgstr "Kontrollerar konfigurationen...<br>"
 
-#: lib/functions.php:5567
+#: lib/functions.php:5588
 msgid "PHP's Mailer Class"
 msgstr "PHP:s Mailer-klass"
 
-#: lib/functions.php:5573
+#: lib/functions.php:5594
 msgid "Method: SMTP"
 msgstr "Metod: SMTP"
 
-#: lib/functions.php:5590
+#: lib/functions.php:5611
 msgid "Not Shown for Security Reasons"
 msgstr "Visas inte av säkerhetsskäl"
 
-#: lib/functions.php:5591
+#: lib/functions.php:5612
 msgid "Security"
 msgstr "Säkerhet"
 
-#: lib/functions.php:5599
+#: lib/functions.php:5620
 msgid "Ping Results:"
 msgstr "Ping resultat:"
 
-#: lib/functions.php:5608
+#: lib/functions.php:5629
 msgid "Bypassed"
 msgstr "Förbikopplad"
 
-#: lib/functions.php:5617
+#: lib/functions.php:5638
 msgid "Creating Message Text..."
 msgstr "Skapa meddelandetext..."
 
-#: lib/functions.php:5620
+#: lib/functions.php:5641
 msgid "Sending Message..."
 msgstr "Sänder meddelande..."
 
-#: lib/functions.php:5624
+#: lib/functions.php:5645
 msgid "Cacti Test Message"
 msgstr "Testmeddelande för Cacti"
 
-#: lib/functions.php:5626
+#: lib/functions.php:5647
 msgid "Success!"
 msgstr "Klart!"
 
-#: lib/functions.php:5629
+#: lib/functions.php:5650
 msgid "Message Not Sent due to ping failure."
 msgstr "Meddelande ej skickat på grund av ping-fel."
 
-#: lib/functions.php:6217 lib/functions.php:6286
+#: lib/functions.php:6238 lib/functions.php:6307
 #, php-format
 msgid "Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details."
 msgstr "Cacti inaktiverade insticksmodul %s på grund av följande fel: %s!  Se Cactis loggfil för mer information."
 
-#: lib/functions.php:6376
+#: lib/functions.php:6397
 #, php-format
 msgid "WARNING: PollerID:%s has an invalid hostname:%s.  Is it not reachable via DNS!"
 msgstr "VARNING: PollerID:%s har ett ogiltigt värdnamn:%s.  Är det inte nåbart via DNS!"
 
-#: lib/functions.php:6767 lib/functions.php:6769
+#: lib/functions.php:6788 lib/functions.php:6790
 #, php-format
 msgid "- Beta %s"
 msgstr "- Beta %s"
 
-#: lib/functions.php:6767
+#: lib/functions.php:6788
 #, php-format
 msgid "Version %s %s"
 msgstr "Version %s %s"
 
-#: lib/functions.php:6769
+#: lib/functions.php:6790
 #, php-format
 msgid "%s %s"
 msgstr "%s %s"
 
-#: lib/functions.php:6983
+#: lib/functions.php:7004
 #, php-format
 msgid "WARNING:  Key Cacti Include File %s missing.  Please locate and replace this file"
 msgstr "VARNING:  Key Cacti Include File %s saknas.  Vänligen hitta och ersätt den här filen"
@@ -14070,7 +14077,7 @@ msgstr "Börja med"
 msgid "End with"
 msgstr "Avsluta med"
 
-#: lib/html.php:2666 lib/html_form.php:1431
+#: lib/html.php:2666 lib/html_form.php:1432
 msgid "Close"
 msgstr "Stäng"
 
@@ -14127,15 +14134,15 @@ msgstr "Cacti-färg (%s)"
 msgid "NO FONT VERIFICATION POSSIBLE"
 msgstr "INGEN VERIFIERING AV TECKENSNITT MÖJLIG"
 
-#: lib/html_form.php:1525
+#: lib/html_form.php:1526
 msgid "Warning Unsaved Form Data"
 msgstr "Varning för osparade formulärdata"
 
-#: lib/html_form.php:1527
+#: lib/html_form.php:1528
 msgid "Unsaved Changes Detected"
 msgstr "Osparade ändringar upptäckta"
 
-#: lib/html_form.php:1528
+#: lib/html_form.php:1529
 msgid "You have unsaved changes on this form.  If you press 'Continue' these changes will be discarded.  Press 'Cancel' to continue editing the form."
 msgstr "Du har osparade ändringar i detta formulär.  Om du trycker på \"Fortsätt\" kommer dessa ändringar att raderas.  Tryck på \"Avbryt\" för att fortsätta redigera formuläret."
 
@@ -14174,7 +14181,7 @@ msgstr "%d kolumn"
 msgid "Custom"
 msgstr "Anpassad"
 
-#: lib/html_graph.php:271 lib/html_reports.php:1985 lib/html_reports.php:1996
+#: lib/html_graph.php:271 lib/html_reports.php:2000 lib/html_reports.php:2011
 #: lib/html_tree.php:1101
 msgid "From"
 msgstr "Från"
@@ -14183,7 +14190,7 @@ msgstr "Från"
 msgid "Start Date Selector"
 msgstr "Välj startdatum"
 
-#: lib/html_graph.php:280 lib/html_reports.php:1986 lib/html_reports.php:1997
+#: lib/html_graph.php:280 lib/html_reports.php:2001 lib/html_reports.php:2012
 #: lib/html_tree.php:1110
 msgid "To"
 msgstr "Till"
@@ -14674,47 +14681,47 @@ msgstr "Rapporter [%s]"
 msgid "User Level"
 msgstr "Användarnivå"
 
-#: lib/html_reports.php:1903 lib/html_reports.php:1972
+#: lib/html_reports.php:1903 lib/html_reports.php:1987
 msgid "Reports"
 msgstr "Rapporter"
 
-#: lib/html_reports.php:1981 tree.php:2260
+#: lib/html_reports.php:1996 tree.php:2269
 msgid "Owner"
 msgstr "Ägare"
 
-#: lib/html_reports.php:1982 lib/html_reports.php:1993
+#: lib/html_reports.php:1997 lib/html_reports.php:2008
 msgid "Frequency"
 msgstr "Frekvens"
 
-#: lib/html_reports.php:1983 lib/html_reports.php:1994
+#: lib/html_reports.php:1998 lib/html_reports.php:2009
 msgid "Last Run"
 msgstr "Sista körningen"
 
-#: lib/html_reports.php:1984 lib/html_reports.php:1995
+#: lib/html_reports.php:1999 lib/html_reports.php:2010
 msgid "Next Run"
 msgstr "Nästa körning"
 
-#: lib/html_reports.php:1992
+#: lib/html_reports.php:2007
 msgid "Report Title"
 msgstr "Rapporttitel"
 
-#: lib/html_reports.php:2023
+#: lib/html_reports.php:2038
 msgid "Report Disabled - No Owner"
 msgstr "Rapport avaktiverad - Ingen ägare"
 
-#: lib/html_reports.php:2027
+#: lib/html_reports.php:2042
 msgid "Every"
 msgstr "Varje"
 
-#: lib/html_reports.php:2033
+#: lib/html_reports.php:2048
 msgid "Multiple"
 msgstr "Flera"
 
-#: lib/html_reports.php:2034
+#: lib/html_reports.php:2049
 msgid "Invalid"
 msgstr "Ogiltig"
 
-#: lib/html_reports.php:2041
+#: lib/html_reports.php:2056
 msgid "No Reports Found"
 msgstr "Inga rapporter hittades"
 
@@ -15178,7 +15185,7 @@ msgstr "Följande PHP-tillägg är obligatoriska och MÅSTE installeras innan du
 msgid "Required PHP Modules"
 msgstr "Nödvändiga PHP-moduler"
 
-#: lib/installer.php:1955 lib/installer.php:1985 plugins.php:42 plugins.php:476
+#: lib/installer.php:1955 lib/installer.php:1985 plugins.php:42 plugins.php:488
 msgid "Installed"
 msgstr "Installerade"
 
@@ -15564,7 +15571,7 @@ msgstr "Det är inte tillrådligt att uppdatera mallar som du redan har gjort ä
 msgid "Please select the Device Templates that you wish to use after the Install.  If you Operating System is Windows, you need to ensure that you select the 'Windows Device' Template.  If your Operating System is Linux/UNIX, make sure you select the 'Local Linux Machine' Device Template."
 msgstr "Välj de enhetsmallar som du vill använda efter installationen.  Om du har Windows som operativsystem måste du se till att du väljer mallen \"Windows Device\".  Om ditt operativsystem är Linux/UNIX ska du se till att du väljer enhetsmallen \"Local Linux Machine\"."
 
-#: lib/installer.php:2571 package_import.php:504 plugins.php:598
+#: lib/installer.php:2571 package_import.php:504 plugins.php:610
 msgid "Author"
 msgstr "Upphovsperson"
 
@@ -16135,20 +16142,20 @@ msgstr "Insticksmodulen i katalogen '%s' innehåller inte en versionsfunktion '%
 msgid "The Plugin in the directory '%s' does not include an install function '%s()'.  This function must exist for the plugin to be installed."
 msgstr "Insticksmodul-programmet i katalogen '%s' innehåller inte installationsfunktionen '%s()'.  Denna funktion måste finnas för att insticksprogrammet ska kunna installeras."
 
-#: lib/plugins.php:1295 lib/plugins.php:1302 plugins.php:483 plugins.php:564
+#: lib/plugins.php:1305 lib/plugins.php:1312 plugins.php:495 plugins.php:576
 msgid "Plugins"
 msgstr "Tillägg"
 
-#: lib/plugins.php:1314 lib/plugins.php:1320
+#: lib/plugins.php:1324 lib/plugins.php:1330
 #, php-format
 msgid "Requires: Cacti >= %s"
 msgstr "Kräver: Cacti >= %s"
 
-#: lib/plugins.php:1317
+#: lib/plugins.php:1327
 msgid "Legacy Plugin"
 msgstr "Föråldrat tillägg"
 
-#: lib/plugins.php:1342
+#: lib/plugins.php:1352
 msgid "Not Stated"
 msgstr "Ej angiven"
 
@@ -16672,192 +16679,192 @@ msgstr "Graf skapades inte för %s på grund av dåliga data"
 msgid "NOTE: Graph not added for Data Query %s and index %s due to Data Source verification failure"
 msgstr "OBS: Graf läggs inte till för Data Query %s och index %s på grund av fel i verifieringen av datakällan"
 
-#: lib/utility.php:1111
+#: lib/utility.php:1200
 msgid "MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions to choose. Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability."
 msgstr "MySQL 5.6+ och MariaDB 10.0+ är fantastiska releaser och är mycket bra versioner att välja. Se dock till att du kör den allra senaste versionen som åtgärdar ett långvarigt nätverksproblem på låg nivå som orsakade många problem med tillförlitligheten."
 
-#: lib/utility.php:1123
+#: lib/utility.php:1212
 #, php-format
 msgid "It is STRONGLY recommended that you enable InnoDB in any %s version greater than 5.5.3."
 msgstr "Det rekommenderas starkt att du aktiverar InnoDB i alla %s-versioner som är större än 5.5.3."
 
-#: lib/utility.php:1136 lib/utility.php:1173
+#: lib/utility.php:1225 lib/utility.php:1262
 msgid "When using Cacti with languages other than English, it is important to use the utf8mb4_unicode_ci collation type as some characters take more than a single byte."
 msgstr "När du använder Cacti med andra språk än engelska är det viktigt att använda kollationeringstypen utf8mb4_unicode_ci eftersom vissa tecken tar mer än en enda byte."
 
-#: lib/utility.php:1142 lib/utility.php:1148 lib/utility.php:1179
-#: lib/utility.php:1185
+#: lib/utility.php:1231 lib/utility.php:1237 lib/utility.php:1268
+#: lib/utility.php:1274
 msgid "When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte."
 msgstr "När du använder Cacti med andra språk än engelska är det viktigt att använda teckenuppsättningen utf8mb4 eftersom vissa tecken tar mer än en byte."
 
-#: lib/utility.php:1161
+#: lib/utility.php:1250
 #, php-format
 msgid "It is recommended that you enable InnoDB in any %s version greater than 5.1."
 msgstr "Vi rekommenderar att du aktiverar InnoDB i alla %s-versioner som är större än 5.1."
 
-#: lib/utility.php:1194
+#: lib/utility.php:1283
 #, php-format
 msgid "Depending on the number of logins and use of spine data collector, %s will need many connections.  The calculation for spine is: total_connections = total_processes * (total_threads + script_servers + 1), then you must leave headroom for user connections, which will change depending on the number of concurrent login accounts."
 msgstr "Beroende på antalet inloggningar och användningen av spine-datainsamlaren kommer %s att behöva många anslutningar.  Beräkningen för spine är: total_connections = total_processes * (total_threads + script_servers + 1), sedan måste du lämna utrymme för användaranslutningar, vilket kommer att ändras beroende på antalet samtidiga inloggningskonton."
 
-#: lib/utility.php:1199
+#: lib/utility.php:1288
 msgid "Keeping the table cache larger means less file open/close operations when using innodb_file_per_table."
 msgstr "Om tabellcachen hålls större innebär det färre filöppningar/stängningar när innodb_file_per_table används."
 
-#: lib/utility.php:1204
+#: lib/utility.php:1293
 msgid "With Remote polling capabilities, large amounts of data will be synced from the main server to the remote pollers.  Therefore, keep this value at or above 16M."
 msgstr "Med Remote polling-funktioner kommer stora mängder data att synkroniseras från huvudservern till Remote pollers.  Håll därför detta värde på eller över 16M."
 
-#: lib/utility.php:1210
+#: lib/utility.php:1299
 #, php-format
 msgid "If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10%% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status."
 msgstr "Om du använder Cacti Performance Booster och väljer en minneslagringsmotor måste du vara noga med att tömma Performance Booster-bufferten innan systemet får slut på utrymme i minnestabellen.  Detta görs på två sätt, först genom att minska storleken på din utdatakolumn till precis rätt storlek.  Den här kolumnen finns i tabellerna poller_output och poller_output_boost.  Det andra du kan göra är att allokera mer minne till minnestabellerna.  Vi har godtyckligt valt ett rekommenderat värde på 10%% av systemminnet, men om du använder SSD-diskar eller har ett mindre system kan du ignorera denna rekommendation eller välja en annan lagringsmotor.  Du kan se den förväntade förbrukningen av Performance Booster-tabellerna under Console -> System Utilities -> View Boost Status."
 
-#: lib/utility.php:1216
+#: lib/utility.php:1305
 msgid "When executing subqueries, having a larger temporary table size, keep those temporary tables in memory."
 msgstr "När du kör underfrågor, som har en större storlek på temporära tabeller, behåller du dessa temporära tabeller i minnet."
 
-#: lib/utility.php:1222 lib/utility.php:1228
+#: lib/utility.php:1311 lib/utility.php:1317
 msgid "When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.  As this is a per connection memory allocation, care must be taken not to increase it too high.  The sum of the join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB memory should be below 80%.  If the recommendation is negative, you must decrease this and or the sort_buffer_size until the recommendation fits within the allowable memory."
 msgstr "När du utför sammankopplingar kommer de, om de är mindre än denna storlek, att sparas i minnet och aldrig skrivas till en temporär fil.  Eftersom detta är en minnesallokering per anslutning måste man vara försiktig så att den inte blir för hög.  Summan av join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB-minne bör vara under 80%.  Om rekommendationen är negativ måste du minska denna och eller sort_buffer_size tills rekommendationen passar inom det tillåtna minnet."
 
-#: lib/utility.php:1234
+#: lib/utility.php:1323
 #, php-format
 msgid "When using InnoDB storage it is important to keep your table spaces separate.  This makes managing the tables simpler for long time users of %s.  If you are running with this currently off, you can migrate to the per file storage by enabling the feature, and then running an alter statement on all InnoDB tables."
 msgstr "När du använder InnoDB-lagring är det viktigt att hålla dina tabellutrymmen separata.  Detta gör hanteringen av tabellerna enklare för långvariga användare av %s.  Om du kör med detta för närvarande avstängt kan du migrera till lagring per fil genom att aktivera funktionen och sedan köra en alter-sats på alla InnoDB-tabeller."
 
-#: lib/utility.php:1240
+#: lib/utility.php:1329
 msgid "When using innodb_file_per_table, it is important to set the innodb_file_format to Barracuda.  This setting will allow longer indexes important for certain Cacti tables."
 msgstr "När du använder innodb_file_per_table är det viktigt att ställa in innodb_file_format till Barracuda.  Denna inställning tillåter längre index som är viktiga för vissa Cacti-tabeller."
 
-#: lib/utility.php:1246
+#: lib/utility.php:1335
 msgid "If your tables have very large indexes, you must operate with the Barracuda innodb_file_format and the innodb_large_prefix equal to 1.  Failure to do this may result in plugins that can not properly create tables."
 msgstr "Om dina tabeller har mycket stora index måste du använda Barracuda innodb_file_format och innodb_large_prefix som är lika med 1.  Om du inte gör det kan det leda till att insticksprogram inte kan skapa tabeller på rätt sätt."
 
-#: lib/utility.php:1252
+#: lib/utility.php:1341
 #, php-format
 msgid "InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size."
 msgstr "InnoDB kommer att hålla så mycket tabeller och index i systemminnet som möjligt. Därför borde du göra innodb_buffer_pool stor nog att hålla så mycket av tabellerna och indexera i minnet. Att kontrollera storleken på katalogen / var / lib / mysql / cacti hjälper till att bestämma detta värde. Vi rekommenderar 25 %% av systemets totala minne, men dina krav varierar beroende på din systemstorlek."
 
-#: lib/utility.php:1258
+#: lib/utility.php:1347
 #, fuzzy
 #| msgid "This settings should remain ON unless your Cacti instances is running on either ZFS or FusionI/O which both have internal journaling to accomodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance."
 msgid "This settings should remain ON unless your Cacti instances is running on either ZFS or FusionI/O which both have internal journaling to accommodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance."
 msgstr "Dessa inställningar bör förbli PÅ om inte dina Cacti-instanser körs på antingen ZFS eller FusionI / O, som båda har intern journalföring för att hantera plötsliga systemkrasch. Men om du har väldigt bra ström och dina system sällan går ner och du har säkerhetskopieringar, kan du stänga av denna inställning till OFF för nästan 50% ökning av databasprestanda."
 
-#: lib/utility.php:1263
+#: lib/utility.php:1352
 msgid "This is where metadata is stored. If you had a lot of tables, it would be useful to increase this."
 msgstr "Det är här som metadata lagras. Om du har många tabeller skulle det vara bra att öka detta."
 
-#: lib/utility.php:1268
+#: lib/utility.php:1357
 msgid "Rogue queries should not for the database to go offline to others.  Kill these queries before they kill your system."
 msgstr "Oseriösa frågor bör inte leda till att databasen går offline för andra.  Döda dessa frågor innan de dödar ditt system."
 
-#: lib/utility.php:1273
+#: lib/utility.php:1362
 msgid "Maximum I/O performance happens when you use the O_DIRECT method to flush pages."
 msgstr "Maximal I/O-prestanda uppnås när du använder metoden O_DIRECT för att spola sidor."
 
-#: lib/utility.php:1283
+#: lib/utility.php:1372
 #, php-format
 msgid "Setting this value to 2 means that you will flush all transactions every second rather than at commit.  This allows %s to perform writing less often."
 msgstr "Om du ställer in värdet på 2 innebär det att du rensar alla transaktioner varje sekund i stället för vid commit.  Detta gör att %s kan utföra skrivningar mindre ofta."
 
-#: lib/utility.php:1288
+#: lib/utility.php:1377
 msgid "With modern SSD type storage, having multiple io threads is advantageous for applications with high io characteristics."
 msgstr "Med modern lagring av SSD-typ är det fördelaktigt att ha flera io-trådar för applikationer med höga io-egenskaper."
 
-#: lib/utility.php:1296 lib/utility.php:1338
+#: lib/utility.php:1385 lib/utility.php:1427
 #, php-format
 msgid "As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential"
 msgstr "Från och med %s %s kan du styra hur ofta %s rensar transaktioner till disk.  Standardvärdet är 1 sekund, men i system med hög I/O-frekvens kan ett värde större än 1 göra att disk-I/O kan vara mer sekventiellt"
 
-#: lib/utility.php:1301
+#: lib/utility.php:1390
 msgid "With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics.  Depending on your MariaDB/MySQL versions, this value can go as high as 64.  But try to keep the number less than your total SMT threads on the database server."
 msgstr "Med modern lagring av SSD-typ är det fördelaktigt att ha flera läs-IO-trådar för applikationer med höga IO-egenskaper.  Beroende på dina MariaDB / MySQL-versioner kan detta värde gå så högt som 64.  Men försök att hålla antalet mindre än dina totala SMT-trådar på databasservern."
 
-#: lib/utility.php:1306
+#: lib/utility.php:1395
 msgid "With modern SSD type storage, having multiple write io threads is advantageous for applications with high io characteristics.  Depending on your MariaDB/MySQL versions, this value can go as high as 64.  But try to keep the number less than your total SMT threads on the database server."
 msgstr "Med modern lagring av SSD-typ är det fördelaktigt att ha flera skriv-IO-trådar för applikationer med höga IO-egenskaper.  Beroende på dina MariaDB / MySQL-versioner kan detta värde gå så högt som 64.  Men försök att hålla antalet mindre än dina totala SMT-trådar på databasservern."
 
-#: lib/utility.php:1312
+#: lib/utility.php:1401
 #, php-format
 msgid "%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MariaDB less than 10.5.  The max value is 64, but should not exceed more than the number of CPU cores/threads.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation up to the max the number of CPU cores or 64."
 msgstr "%s delar upp innodb_buffer_pool i minnesregioner för att förbättra prestandan för versioner av MariaDB mindre än 10.5.  Maxvärdet är 64, men bör inte överstiga mer än antalet processorkärnor/trådar.  När din innodb_buffer_pool är mindre än 1 GB bör du använda poolstorleken dividerad med 128 MB.  Fortsätt att använda den här ekvationen upp till maxantalet processorkärnor eller 64."
 
-#: lib/utility.php:1312
+#: lib/utility.php:1401
 #, php-format
 msgid "%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MySQL upto and including MySQL 8.0.  The max value is 64, but should not exceed more than the number of CPU cores/threads.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation up to the max of the number of CPU cores or 64."
 msgstr "%s kommer att dela upp innodb_buffer_pool i minnesregioner för att förbättra prestandan för versioner av MySQL till och med MySQL 8.0.  Maxvärdet är 64, men bör inte överstiga mer än antalet CPU-kärnor/trådar.  När din innodb_buffer_pool är mindre än 1 GB bör du använda poolstorleken dividerad med 128 MB.  Fortsätt att använda den här ekvationen upp till maxvärdet för antalet processorkärnor eller 64."
 
-#: lib/utility.php:1318 lib/utility.php:1354
+#: lib/utility.php:1407 lib/utility.php:1443
 msgid "If you have SSD disks, use this suggestion.  If you have physical hard drives, use 200 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 100000 can be used."
 msgstr "Om du har SSD-diskar använder du detta förslag.  Om du har fysiska hårddiskar använder du 200 * antalet aktiva enheter i matrisen.  Om du använder NVMe eller PCIe Flash kan mycket större tal, så höga som 100000, användas."
 
-#: lib/utility.php:1324 lib/utility.php:1360
+#: lib/utility.php:1413 lib/utility.php:1449
 msgid "If you have SSD disks, use this suggestion.  If you have physical hard drives, use 2000 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 200000 can be used."
 msgstr "Om du har SSD-diskar använder du detta förslag.  Om du har fysiska hårddiskar använder du 2000 * antalet aktiva enheter i matrisen.  Om du använder NVMe eller PCIe Flash kan mycket större tal, så höga som 200000, användas."
 
-#: lib/utility.php:1330 lib/utility.php:1366
+#: lib/utility.php:1419 lib/utility.php:1455
 msgid "If you have SSD disks, use this suggestion. Otherwise, do not set this setting."
 msgstr "Om du har SSD-diskar kan du använda detta förslag. Annars ska du inte göra den här inställningen."
 
-#: lib/utility.php:1343
+#: lib/utility.php:1432
 msgid "With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics."
 msgstr "Med modern lagring av SSD-typ är det fördelaktigt att ha flera read io-trådar för applikationer med höga io-egenskaper."
 
-#: lib/utility.php:1348
+#: lib/utility.php:1437
 msgid "With modern SSD type storage, having multiple write io threads is advantageous for applications with high io characteristics."
 msgstr "Med modern lagring av SSD-typ är det fördelaktigt att ha flera skriv-IO-trådar för applikationer med höga IO-egenskaper."
 
-#: lib/utility.php:1379
+#: lib/utility.php:1468
 msgid "When using MariaDB 10.2.4 and above, this setting should be off if atomic writes are enabled.  Therefore, please enable atomic writes instead of the double write buffer as it will increase performance."
 msgstr "När du använder MariaDB 10.2.4 och senare ska den här inställningen vara av om atomiska skrivningar är aktiverade.  Aktivera därför atomiska skrivningar istället för den dubbla skrivbufferten eftersom det kommer att öka prestandan."
 
-#: lib/utility.php:1386
+#: lib/utility.php:1475
 msgid "When using MariaDB 10.2.4 and above, you can use atomic writes over the doublewrite buffer to increase performance."
 msgstr "När du använder MariaDB 10.2.4 och senare kan du använda atomic writes över doublewrite-bufferten för att öka prestandan."
 
-#: lib/utility.php:1403
+#: lib/utility.php:1492
 #, php-format
 msgid "%s Tuning"
 msgstr "%s Inställning"
 
-#: lib/utility.php:1403
+#: lib/utility.php:1492
 msgid "Note: Many changes below require a database restart"
 msgstr "Obs: Många ändringar nedan kräver en omstart av databasen"
 
-#: lib/utility.php:1411
+#: lib/utility.php:1500
 msgid "Variable"
 msgstr "Variabel"
 
-#: lib/utility.php:1412
+#: lib/utility.php:1501
 msgid "Current Value"
 msgstr "Nuvarande värde"
 
-#: lib/utility.php:1414
+#: lib/utility.php:1503
 msgid "Recommended Value"
 msgstr "Rekommenderat värde"
 
-#: lib/utility.php:1415
+#: lib/utility.php:1504
 msgid "Comments"
 msgstr "Kommentarer"
 
-#: lib/utility.php:1997
+#: lib/utility.php:2086
 #, php-format
 msgid "PHP %s is the minimum version"
 msgstr "PHP %s är den lägsta versionen"
 
-#: lib/utility.php:1999
+#: lib/utility.php:2088
 #, php-format
 msgid "A minimum of %s memory limit"
 msgstr "Ett minimum av %s minnesgräns"
 
-#: lib/utility.php:2001
+#: lib/utility.php:2090
 #, php-format
 msgid "A minimum of %s m execution time"
 msgstr "Minst %s m körtid"
 
-#: lib/utility.php:2003
+#: lib/utility.php:2092
 msgid "A valid timezone that matches MySQL and the system"
 msgstr "En giltig tidszon som matchar MySQL och systemet"
 
@@ -17331,7 +17338,7 @@ msgstr "Ersätt poster med föreslagna värden för datakällor och grafmallar. 
 msgid "Package Import"
 msgstr "Paket Import"
 
-#: plugins.php:33 plugins.php:681
+#: plugins.php:33 plugins.php:693
 msgid "Uninstall"
 msgstr "Avinstallera"
 
@@ -17339,7 +17346,7 @@ msgstr "Avinstallera"
 msgid "Not Compatible"
 msgstr "Ej kompatibel"
 
-#: plugins.php:38 plugins.php:479 utilities.php:749
+#: plugins.php:38 plugins.php:491 utilities.php:749
 msgid "Not Installed"
 msgstr "Inte installerad"
 
@@ -17351,160 +17358,160 @@ msgstr "Väntar på konfiguration"
 msgid "Awaiting Upgrade"
 msgstr "Väntar på uppgradering"
 
-#: plugins.php:454
+#: plugins.php:466
 msgid "Plugin Management"
 msgstr "Insticksmodul-hantering"
 
-#: plugins.php:474 plugins.php:720 plugins.php:731
+#: plugins.php:486 plugins.php:732 plugins.php:743
 msgid "Plugin Error"
 msgstr "Fel i insticksmodul"
 
-#: plugins.php:477
+#: plugins.php:489
 msgid "Active/Installed"
 msgstr "Aktiv / Installerad"
 
-#: plugins.php:478
+#: plugins.php:490
 msgid "Configuration Issues"
 msgstr "Konfigurationsproblem"
 
-#: plugins.php:577
+#: plugins.php:589
 msgid "Actions available include 'Install', 'Activate', 'Disable', 'Enable', 'Uninstall'."
 msgstr "Tillgängliga åtgärder är \"Installera\", \"Aktivera\", \"Inaktivera\", \"Aktivera\", \"Avinstallera\"."
 
-#: plugins.php:580
+#: plugins.php:592
 msgid "Plugin Name"
 msgstr "Tilläggets namn"
 
-#: plugins.php:583
+#: plugins.php:595
 msgid "The name for this Plugin.  The name is controlled by the directory it resides in."
 msgstr "Namnet på detta Insticksmodul.  Namnet styrs av den katalog som det finns i."
 
-#: plugins.php:586
+#: plugins.php:598
 msgid "Plugin Description"
 msgstr "Tilläggets beskrivning"
 
-#: plugins.php:589
+#: plugins.php:601
 msgid "A description that the Plugins author has given to the Plugin."
 msgstr "En beskrivning som Insticksmoduler författare har gett till Insticksmodul."
 
-#: plugins.php:592
+#: plugins.php:604
 msgid "Main / Remote Status"
 msgstr "Huvud- / fjärrstatus"
 
-#: plugins.php:595
+#: plugins.php:607
 msgid "The status of this Plugin."
 msgstr "Status för detta insticksmodul."
 
-#: plugins.php:601
+#: plugins.php:613
 msgid "The author of this Plugin."
 msgstr "Författaren till detta Insticksmodul."
 
-#: plugins.php:604
+#: plugins.php:616
 msgid "Requires"
 msgstr "Kräver"
 
-#: plugins.php:607
+#: plugins.php:619
 msgid "This Plugin requires the following Plugins be installed first."
 msgstr "Detta Insticksmodul kräver att följande Insticksmoduler installeras först."
 
-#: plugins.php:613
+#: plugins.php:625
 msgid "The version of this Plugin."
 msgstr "Versionen av detta Insticksmodul."
 
-#: plugins.php:616
+#: plugins.php:628
 msgid "Load Order"
 msgstr "Ladda order"
 
-#: plugins.php:619
+#: plugins.php:631
 msgid "The load order of the Plugin.  You can change the load order by first sorting by it, then moving a Plugin either up or down."
 msgstr "Pluginets laddningsordning.  Du kan ändra laddningsordningen genom att först sortera efter den och sedan flytta ett Insticksmodul antingen uppåt eller nedåt."
 
-#: plugins.php:649
+#: plugins.php:661
 msgid "No Plugins Found"
 msgstr "Inga insticksmoduler hittades"
 
-#: plugins.php:660
+#: plugins.php:672
 msgid "Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'"
 msgstr "Avinstallation av det här pluginet tar bort alla plugindata och inställningar. Om du verkligen vill avinstallera pluggen klickar du på \"Avinstallera\" nedan. Annars klickar du på \"Avbryt\""
 
-#: plugins.php:661
+#: plugins.php:673
 msgid "Are you sure you want to Uninstall?"
 msgstr "Är du säker på att du vill avinstallera?"
 
-#: plugins.php:718 plugins.php:729
+#: plugins.php:730 plugins.php:741
 #, php-format
 msgid "Not Compatible, %s"
 msgstr "Ej kompatibel, %s"
 
-#: plugins.php:760
+#: plugins.php:772
 msgid "Order Before Previous Plugin"
 msgstr "Insticksmodul för beställning före tidigare"
 
-#: plugins.php:765
+#: plugins.php:777
 msgid "Order After Next Plugin"
 msgstr "Insticksmodul för beställning efter nästa"
 
-#: plugins.php:815
+#: plugins.php:827
 #, php-format
 msgid "Unable to Install Plugin.  The following Plugins must be installed first: %s"
 msgstr "Det gick inte att installera plugin. Följande plugins måste installeras först: %s"
 
-#: plugins.php:817
+#: plugins.php:829
 msgid "Install Plugin"
 msgstr "Installera tillägg"
 
-#: plugins.php:824 plugins.php:836
+#: plugins.php:836 plugins.php:848
 #, php-format
 msgid "Unable to Uninstall.  This Plugin is required by: %s"
 msgstr "Kan inte avinstallera. Detta plugin krävs av: %s"
 
-#: plugins.php:826 plugins.php:831 plugins.php:838
+#: plugins.php:838 plugins.php:843 plugins.php:850
 msgid "Uninstall Plugin"
 msgstr "Avinstallera insticksmodul"
 
-#: plugins.php:828
+#: plugins.php:840
 msgid "Disable Plugin"
 msgstr "Inaktivera insticksmodul"
 
-#: plugins.php:840
+#: plugins.php:852
 msgid "Enable Plugin"
 msgstr "Aktivera tillägg"
 
-#: plugins.php:843
+#: plugins.php:855
 msgid "Plugin directory is missing!"
 msgstr "Insticksmodul-katalogen saknas!"
 
-#: plugins.php:846
+#: plugins.php:858
 msgid "Plugin is not compatible (Pre-1.x)"
 msgstr "Insticksmodul är inte kompatibelt (Pre-1.x)"
 
-#: plugins.php:849
+#: plugins.php:861
 msgid "Plugin directories can not include spaces"
 msgstr "Insticksmodul-kataloger får inte innehålla mellanslag"
 
-#: plugins.php:852
+#: plugins.php:864
 #, php-format
 msgid "Plugin directory is not correct.  Should be '%s' but is '%s'"
 msgstr "Insticksmodul-katalogen är inte korrekt.  Borde vara '%s' men är '%s'"
 
-#: plugins.php:860
+#: plugins.php:872
 #, php-format
 msgid "Plugin directory '%s' is missing setup.php"
 msgstr "Insticksmodul-katalogen '%s' saknar setup.php"
 
-#: plugins.php:862
+#: plugins.php:874
 msgid "Plugin is lacking an INFO file"
 msgstr "Insticksmodul saknar en INFO-fil"
 
-#: plugins.php:864
+#: plugins.php:876
 msgid "Plugin is integrated into Cacti core"
 msgstr "Insticksmodul är integrerat i Cacti-kärnan"
 
-#: plugins.php:866
+#: plugins.php:878
 msgid "Plugin is not compatible"
 msgstr "Insticksmodul är inte kompatibelt"
 
-#: plugins.php:880
+#: plugins.php:892
 msgid "Enable Plugin Locally"
 msgstr "Aktivera tillägget lokalt"
 
@@ -18317,7 +18324,7 @@ msgstr[1] "Duplicera"
 msgid "Site not found."
 msgstr "Filen hittades inte"
 
-#: sites.php:610 tree.php:898
+#: sites.php:610 tree.php:907
 msgid "Site Name"
 msgstr "Webbplatsnamn"
 
@@ -18494,248 +18501,248 @@ msgctxt "dropdown action"
 msgid "Un-Lock"
 msgstr "Lås upp"
 
-#: tree.php:390
+#: tree.php:399
 msgctxt "ordering of tree items"
 msgid "inherit"
 msgstr "ärva"
 
-#: tree.php:393
+#: tree.php:402
 msgctxt "ordering of tree items"
 msgid "manual"
 msgstr "manuell"
 
-#: tree.php:396
+#: tree.php:405
 msgctxt "ordering of tree items"
 msgid "alpha"
 msgstr "alfa"
 
-#: tree.php:399
+#: tree.php:408
 msgctxt "ordering of tree items"
 msgid "natural"
 msgstr "naturlig"
 
-#: tree.php:402
+#: tree.php:411
 msgctxt "ordering of tree items"
 msgid "numeric"
 msgstr "numeriska"
 
-#: tree.php:499
+#: tree.php:508
 #, fuzzy
 #| msgid "Permission Denied.  You do not have permission to the requested action."
 msgid "You do not have permission to modify this tree."
 msgstr "Tillstånd nekat.  Du har inte behörighet att utföra den begärda åtgärden."
 
-#: tree.php:706
+#: tree.php:715
 msgid "Click 'Continue' to delete the following Tree."
 msgid_plural "Click 'Continue' to delete following Trees."
 msgstr[0] "Klicka på 'Fortsätt' för att radera följande träd."
 msgstr[1] "Klicka på 'Fortsätt' för att radera följande träd."
 
-#: tree.php:711
+#: tree.php:720
 msgid "Delete Tree"
 msgid_plural "Delete Trees"
 msgstr[0] "Ta bort träd"
 msgstr[1] "Ta bort träd"
 
-#: tree.php:715
+#: tree.php:724
 msgid "Click 'Continue' to publish the following Tree."
 msgid_plural "Click 'Continue' to publish following Trees."
 msgstr[0] "Klicka på 'Fortsätt' för att publicera följande träd."
 msgstr[1] "Klicka på 'Fortsätt' för att publicera följande träd."
 
-#: tree.php:720
+#: tree.php:729
 msgid "Publish Tree"
 msgid_plural "Publish Trees"
 msgstr[0] "Publicera träd"
 msgstr[1] "Publicera träd"
 
-#: tree.php:724
+#: tree.php:733
 msgid "Click 'Continue' to un-publish the following Tree."
 msgid_plural "Click 'Continue' to un-publish following Trees."
 msgstr[0] "Klicka på 'Fortsätt' för att avpublicera följande träd."
 msgstr[1] "Klicka på 'Fortsätt' för att avpublicera följande träd."
 
-#: tree.php:729
+#: tree.php:738
 msgid "Un-publish Tree"
 msgid_plural "Un-publish Trees"
 msgstr[0] "Un-publicera Tree"
 msgstr[1] "Un-publicera Trees"
 
-#: tree.php:733
+#: tree.php:742
 msgid "Click 'Continue' to un-lock the following Tree."
 msgid_plural "Click 'Continue' to un-lock following Trees."
 msgstr[0] "Klicka på 'Fortsätt' för att låsa upp följande träd."
 msgstr[1] "Klicka på 'Fortsätt' för att låsa upp följande träd."
 
-#: tree.php:738
+#: tree.php:747
 msgid "Un-lock Tree"
 msgid_plural "Un-lock Trees"
 msgstr[0] "Un-publicera Tree"
 msgstr[1] "Un-publicera Trees"
 
-#: tree.php:782
+#: tree.php:791
 #, php-format
 msgid "Trees [edit: %s]"
 msgstr "Träd [redigera: %s]"
 
-#: tree.php:795
+#: tree.php:804
 msgid "Trees [new]"
 msgstr "Träd [ny]"
 
-#: tree.php:824
+#: tree.php:833
 msgid "Edit Tree"
 msgstr "Redigera träd"
 
-#: tree.php:824
+#: tree.php:833
 msgid "To Edit this tree, you must first lock it by pressing the Edit Tree button."
 msgstr "Om du vill redigera trädet måste du först låsa det genom att trycka på knappen Edit Tree."
 
-#: tree.php:827
+#: tree.php:836
 msgid "Add Root Branch"
 msgstr "Lägg till Root Branch"
 
-#: tree.php:827
+#: tree.php:836
 msgid "Finish Editing Tree"
 msgstr "Avsluta redigering av träd"
 
-#: tree.php:827
+#: tree.php:836
 #, php-format
 msgid "This tree has been locked for Editing on %s by %s."
 msgstr "Detta träd har blivit låst för redigering den %s av %s."
 
-#: tree.php:832
+#: tree.php:841
 msgid "To edit the tree, you must first unlock it and then lock it as yourself"
 msgstr "För att redigera trädet måste du först låsa upp det och sedan låsa det som dig själv"
 
-#: tree.php:868
+#: tree.php:877
 msgid "Tree Items"
 msgstr "Trädföremål"
 
-#: tree.php:876
+#: tree.php:885
 msgid "Available Sites"
 msgstr "Tillgängliga platser"
 
-#: tree.php:911
+#: tree.php:920
 msgid "Available Devices"
 msgstr "Tillgängliga enheter"
 
-#: tree.php:946
+#: tree.php:955
 msgid "Available Graphs"
 msgstr "Tillgängliga grafer"
 
-#: tree.php:1005 tree.php:1297
+#: tree.php:1014 tree.php:1306
 msgid "New Node"
 msgstr "Ny nod"
 
-#: tree.php:1621
+#: tree.php:1630
 msgid "Rename"
 msgstr "Byt namn"
 
-#: tree.php:1648
+#: tree.php:1657
 msgid "Branch Sorting"
 msgstr "Sortering av grenar"
 
-#: tree.php:1655
+#: tree.php:1664
 msgid "Inherit"
 msgstr "Ärv"
 
-#: tree.php:1683
+#: tree.php:1692
 msgid "Alphabetic"
 msgstr "Alfabetisk"
 
-#: tree.php:1697
+#: tree.php:1706
 msgid "Natural"
 msgstr "Naturligt"
 
-#: tree.php:1734 tree.php:1808 tree.php:1916
+#: tree.php:1743 tree.php:1817 tree.php:1925
 msgid "Cut"
 msgstr "Klipp ut"
 
-#: tree.php:1767
+#: tree.php:1776
 msgid "Paste"
 msgstr "Klistra in"
 
-#: tree.php:2130
+#: tree.php:2139
 msgid "Add Tree"
 msgstr "Lägg till träd"
 
-#: tree.php:2136 tree.php:2180
+#: tree.php:2145 tree.php:2189
 msgid "Sort Trees Ascending"
 msgstr "Sortera träd stigande"
 
-#: tree.php:2142 tree.php:2181
+#: tree.php:2151 tree.php:2190
 msgid "Sort Trees Descending"
 msgstr "Sortera träd fallande"
 
-#: tree.php:2236 user_admin.php:1426 user_group_admin.php:1305
+#: tree.php:2245 user_admin.php:1426 user_group_admin.php:1305
 msgid "Tree Name"
 msgstr "Trädets namn"
 
-#: tree.php:2239
+#: tree.php:2248
 msgid "The name by which this Tree will be referred to as."
 msgstr "Det namn som detta träd kommer att refereras till som."
 
-#: tree.php:2245
+#: tree.php:2254
 msgid "The internal database ID for this Tree.  Useful when performing automation or debugging."
 msgstr "Det interna databas-ID:t för detta träd.  Användbart vid automatisering eller felsökning."
 
-#: tree.php:2248
+#: tree.php:2257
 msgid "Published"
 msgstr "Publicerad"
 
-#: tree.php:2251
+#: tree.php:2260
 msgid "Unpublished Trees cannot be viewed from the Graph tab"
 msgstr "Opublicerade träd kan inte visas på fliken Graph"
 
-#: tree.php:2257
+#: tree.php:2266
 msgid "A Tree must be locked in order to be edited."
 msgstr "Ett träd måste vara låst för att kunna redigeras."
 
-#: tree.php:2263
+#: tree.php:2272
 msgid "The original author of this Tree."
 msgstr "Den ursprungliga författaren till detta träd."
 
-#: tree.php:2269
+#: tree.php:2278
 msgid "To change the order of the trees, first sort by this column, press the up or down arrows once they appear."
 msgstr "För att ändra ordningen på träden, sortera först efter denna kolumn, tryck på upp- eller nedpilarna när de visas."
 
-#: tree.php:2272
+#: tree.php:2281
 msgid "Last Edited"
 msgstr "Senast redigerat"
 
-#: tree.php:2275
+#: tree.php:2284
 msgid "The date that this Tree was last edited."
 msgstr "Det datum då detta träd senast redigerades."
 
-#: tree.php:2278
+#: tree.php:2287
 msgid "Edited By"
 msgstr "Redigerad av"
 
-#: tree.php:2281
+#: tree.php:2290
 msgid "The last user to have modified this Tree."
 msgstr "Den senaste användaren som har ändrat detta träd."
 
-#: tree.php:2287
+#: tree.php:2296
 msgid "The total number of Site Branches in this Tree."
 msgstr "Det totala antalet Site Branches i det här trädet."
 
-#: tree.php:2290
+#: tree.php:2299
 msgid "Branches"
 msgstr "Avdelningar"
 
-#: tree.php:2293
+#: tree.php:2302
 msgid "The total number of Branches in this Tree."
 msgstr "Det totala antalet grenar i detta träd."
 
-#: tree.php:2299
+#: tree.php:2308
 msgid "The total number of individual Devices in this Tree."
 msgstr "Det totala antalet enskilda enheter i detta träd."
 
-#: tree.php:2305
+#: tree.php:2314
 msgid "The total number of individual Graphs in this Tree."
 msgstr "Det totala antalet enskilda grafer i detta träd."
 
-#: tree.php:2351
+#: tree.php:2360
 msgid "No Trees Found"
 msgstr "Inga träd hittades"
 
@@ -20371,6 +20378,9 @@ msgstr "Antalet grafmallar som använder denna VDEF."
 #: vdef.php:941
 msgid "No VDEFs"
 msgstr "Inga VDEF:er"
+
+#~ msgid "Access Denied! Login failed."
+#~ msgstr "Åtkomst nekad! Inloggningen misslyckades."
 
 #, fuzzy
 #~| msgid "Data Input Field"
