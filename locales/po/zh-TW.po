@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2026-05-10 10:12-0400\n"
+"POT-Creation-Date: 2026-05-26 07:05-0400\n"
 "PO-Revision-Date: 2026-01-16 03:18+0000\n"
 "Last-Translator: sucharlie <su.charlie@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hant/>\n"
@@ -101,18 +101,18 @@ msgstr "本程序的發布是希望它有用，但沒有任何擔保;甚至沒�
 #: automation_snmp.php:29 automation_snmp.php:590 automation_templates.php:30
 #: automation_tree_rules.php:32 cdef.php:29 cdef.php:624 color.php:28
 #: color_templates.php:28 color_templates.php:123 data_input.php:32
-#: data_input.php:618 data_input.php:660 data_queries.php:31
+#: data_input.php:657 data_input.php:699 data_queries.php:31
 #: data_queries.php:823 data_queries.php:930 data_queries.php:1190
 #: data_source_profiles.php:30 data_source_profiles.php:670 data_sources.php:37
 #: data_sources.php:1088 data_templates.php:34 data_templates.php:748
 #: gprint_presets.php:28 graph_templates.php:37 graph_templates.php:515
 #: graphs.php:46 host.php:41 host_templates.php:35 host_templates.php:478
 #: host_templates.php:535 include/global_arrays.php:1664
-#: include/global_settings.php:248 lib/api_automation.php:1345
-#: lib/api_automation.php:1407 lib/api_automation.php:1475 lib/html.php:1390
-#: lib/html_form.php:1397 lib/html_reports.php:1802 links.php:28
-#: managers.php:28 pollers.php:33 sites.php:28 tree.php:1633 tree.php:1786
-#: tree.php:1846 tree.php:1867 user_admin.php:28 user_domains.php:30
+#: include/global_settings.php:248 lib/api_automation.php:1369
+#: lib/api_automation.php:1431 lib/api_automation.php:1499 lib/html.php:1390
+#: lib/html_form.php:1398 lib/html_reports.php:1802 links.php:28
+#: managers.php:28 pollers.php:33 sites.php:28 tree.php:1642 tree.php:1795
+#: tree.php:1855 tree.php:1876 user_admin.php:28 user_domains.php:30
 #: user_group_admin.php:30 vdef.php:29
 #, fuzzy
 msgid "Delete"
@@ -166,7 +166,7 @@ msgstr "單擊“繼續”以刪除以下聚合圖。"
 #: automation_templates.php:167 automation_tree_rules.php:319 cdef.php:276
 #: cdef.php:287 cdef.php:343 color.php:192 color_templates.php:243
 #: color_templates.php:255 color_templates.php:264
-#: color_templates_items.php:299 data_input.php:269 data_input.php:321
+#: color_templates_items.php:299 data_input.php:298 data_input.php:350
 #: data_queries.php:412 data_queries.php:426 data_queries.php:590
 #: data_source_profiles.php:305 data_source_profiles.php:315
 #: data_source_profiles.php:423 data_sources.php:535 data_sources.php:545
@@ -181,12 +181,12 @@ msgstr "單擊“繼續”以刪除以下聚合圖。"
 #: host.php:471 host.php:480 host.php:494 host.php:508 host.php:517
 #: host.php:546 host.php:558 host_templates.php:228 host_templates.php:242
 #: host_templates.php:253 host_templates.php:305 host_templates.php:374
-#: lib/clog_webapi.php:232 lib/html.php:2640 lib/html_form.php:1396
-#: lib/html_form.php:1412 lib/html_form.php:1423 lib/html_reports.php:584
+#: lib/clog_webapi.php:232 lib/html.php:2640 lib/html_form.php:1397
+#: lib/html_form.php:1413 lib/html_form.php:1424 lib/html_reports.php:584
 #: links.php:202 links.php:211 links.php:220 managers.php:1036
-#: managers.php:1097 plugins.php:674 pollers.php:564 pollers.php:573
+#: managers.php:1097 plugins.php:686 pollers.php:564 pollers.php:573
 #: pollers.php:582 pollers.php:591 pollers.php:600 sites.php:383 sites.php:393
-#: tree.php:711 tree.php:720 tree.php:729 tree.php:738 user_admin.php:343
+#: tree.php:720 tree.php:729 tree.php:738 tree.php:747 user_admin.php:343
 #: user_admin.php:383 user_admin.php:394 user_admin.php:405 user_admin.php:428
 #: user_domains.php:235 user_domains.php:244 user_domains.php:253
 #: user_domains.php:262 user_group_admin.php:449 user_group_admin.php:468
@@ -205,7 +205,7 @@ msgstr "取消"
 #: automation_templates.php:167 automation_tree_rules.php:319 cdef.php:276
 #: cdef.php:287 cdef.php:344 color.php:192 color_templates.php:243
 #: color_templates.php:255 color_templates.php:264
-#: color_templates_items.php:300 data_input.php:269 data_input.php:322
+#: color_templates_items.php:300 data_input.php:298 data_input.php:351
 #: data_queries.php:412 data_queries.php:426 data_queries.php:591
 #: data_source_profiles.php:305 data_source_profiles.php:315
 #: data_source_profiles.php:424 data_sources.php:535 data_sources.php:545
@@ -223,7 +223,7 @@ msgstr "取消"
 #: lib/html_reports.php:526 links.php:202 links.php:211 links.php:220
 #: managers.php:1036 managers.php:1097 pollers.php:564 pollers.php:573
 #: pollers.php:582 pollers.php:591 pollers.php:600 sites.php:383 sites.php:393
-#: tree.php:711 tree.php:720 tree.php:729 tree.php:738 user_admin.php:343
+#: tree.php:720 tree.php:729 tree.php:738 tree.php:747 user_admin.php:343
 #: user_admin.php:383 user_admin.php:394 user_admin.php:405 user_admin.php:428
 #: user_domains.php:235 user_domains.php:244 user_domains.php:253
 #: user_domains.php:262 user_group_admin.php:449 user_group_admin.php:468
@@ -251,7 +251,7 @@ msgstr "為了將下面的聚合圖遷移到基於模板的聚合，它們只能
 #: auth_changepassword.php:379 auth_profile.php:443 automation_networks.php:402
 #: automation_snmp.php:255 graphs.php:1195 graphs.php:1245 graphs.php:1248
 #: graphs.php:1290 graphs.php:1832 host.php:549 include/auth.php:283
-#: lib/api_aggregate.php:1635 lib/api_aggregate.php:1650 lib/html_form.php:1421
+#: lib/api_aggregate.php:1635 lib/api_aggregate.php:1650 lib/html_form.php:1422
 #: lib/html_reports.php:584 managers.php:1100 permission_denied.php:31
 #: permission_denied.php:33
 #, fuzzy
@@ -307,7 +307,7 @@ msgid "Click 'Continue' to add the selected Graphs to the Report below."
 msgstr "點擊“繼續”將選定的圖表添加到下面的報告中。"
 
 #: aggregate_graphs.php:472 graph_view.php:883 graphs.php:1275 host.php:534
-#: lib/html_reports.php:35 lib/html_reports.php:1980
+#: lib/html_reports.php:35 lib/html_reports.php:1995
 #, fuzzy
 msgid "Report Name"
 msgstr "報告名稱"
@@ -495,18 +495,18 @@ msgstr "匹配圖"
 #: automation_graph_rules.php:789 automation_networks.php:1195
 #: automation_networks.php:1239 automation_snmp.php:700
 #: automation_templates.php:393 automation_tree_rules.php:837 cdef.php:747
-#: color.php:529 color_templates.php:538 data_debug.php:1123 data_input.php:759
+#: color.php:529 color_templates.php:538 data_debug.php:1123 data_input.php:815
 #: data_queries.php:1308 data_source_profiles.php:913 data_sources.php:1461
 #: data_templates.php:1042 gprint_presets.php:271 graph_templates.php:713
 #: graph_view.php:654 graphs.php:2047 graphs_new.php:461 host.php:1682
-#: host_templates.php:782 lib/api_automation.php:144 lib/api_automation.php:472
-#: lib/api_automation.php:706 lib/api_automation.php:1069
+#: host_templates.php:782 lib/api_automation.php:144 lib/api_automation.php:485
+#: lib/api_automation.php:719 lib/api_automation.php:1082
 #: lib/clog_webapi.php:608 lib/html.php:266 lib/html_filter.php:64
 #: lib/html_graph.php:203 lib/html_reports.php:1887 lib/html_tree.php:136
 #: lib/html_tree.php:984 links.php:323 managers.php:153 managers.php:503
-#: managers.php:745 plugins.php:463 pollers.php:884 rrdcheck.php:228
+#: managers.php:745 plugins.php:475 pollers.php:884 rrdcheck.php:228
 #: rrdcleaner.php:511 settings.php:556 settings.php:573 settings.php:632
-#: sites.php:509 tree.php:884 tree.php:919 tree.php:954 tree.php:2156
+#: sites.php:509 tree.php:893 tree.php:928 tree.php:963 tree.php:2165
 #: user_admin.php:2159 user_admin.php:2608 user_admin.php:2727
 #: user_admin.php:2825 user_admin.php:2940 user_admin.php:3037
 #: user_admin.php:3134 user_domains.php:658 user_group_admin.php:1938
@@ -524,9 +524,9 @@ msgstr "搜尋"
 #: data_sources.php:1776 graph_view.php:492 graph_view.php:724
 #: graph_view.php:785 graphs.php:2064 graphs.php:2229 host.php:1793
 #: include/global_arrays.php:1006 include/global_arrays.php:1241
-#: include/global_arrays.php:2024 lib/api_automation.php:282 lib/html.php:1818
+#: include/global_arrays.php:2024 lib/api_automation.php:295 lib/html.php:1818
 #: lib/html.php:1820 lib/html.php:1898 lib/html_graph.php:209
-#: lib/html_tree.php:1039 lib/html_tree.php:1395 tree.php:863 tree.php:2302
+#: lib/html_tree.php:1039 lib/html_tree.php:1395 tree.php:872 tree.php:2311
 #: user_admin.php:873 user_admin.php:1140 user_admin.php:2636
 #: user_group_admin.php:874 user_group_admin.php:1028 user_group_admin.php:2298
 #: utilities.php:320
@@ -539,16 +539,16 @@ msgstr "圖表"
 #: automation_graph_rules.php:831 automation_networks.php:1205
 #: automation_snmp.php:710 automation_templates.php:403
 #: automation_tree_rules.php:857 cdef.php:757 color.php:539
-#: color_templates.php:554 data_debug.php:1133 data_input.php:769
+#: color_templates.php:554 data_debug.php:1133 data_input.php:825
 #: data_queries.php:1318 data_source_profiles.php:923
 #: data_source_profiles.php:1042 data_sources.php:1471 data_templates.php:1068
 #: gprint_presets.php:281 graph_templates.php:723 graph_view.php:728
 #: graphs.php:2068 graphs_new.php:471 host.php:1707 host_templates.php:792
 #: include/global_form.php:256 lib/api_automation.php:187
-#: lib/api_automation.php:482 lib/api_automation.php:716
-#: lib/api_automation.php:1112 lib/html_reports.php:1907 links.php:333
-#: managers.php:163 managers.php:513 plugins.php:487 pollers.php:894
-#: rrdcheck.php:251 rrdcleaner.php:537 sites.php:519 tree.php:2166
+#: lib/api_automation.php:495 lib/api_automation.php:729
+#: lib/api_automation.php:1125 lib/html_reports.php:1907 links.php:333
+#: managers.php:163 managers.php:513 plugins.php:499 pollers.php:894
+#: rrdcheck.php:251 rrdcleaner.php:537 sites.php:519 tree.php:2175
 #: user_admin.php:2217 user_admin.php:2640 user_admin.php:2737
 #: user_admin.php:2853 user_admin.php:2950 user_admin.php:3047
 #: user_admin.php:3144 user_domains.php:33 user_domains.php:668
@@ -571,16 +571,16 @@ msgstr "聚合的一部分"
 #: automation_graph_rules.php:843 automation_networks.php:1239
 #: automation_snmp.php:722 automation_templates.php:415
 #: automation_tree_rules.php:869 cdef.php:775 color.php:563
-#: color_templates.php:576 data_debug.php:1051 data_input.php:781
+#: color_templates.php:576 data_debug.php:1051 data_input.php:837
 #: data_queries.php:1330 data_source_profiles.php:941 data_sources.php:1414
 #: data_templates.php:1086 gprint_presets.php:299 graph_templates.php:741
 #: graph_view.php:662 graphs.php:2038 graphs_new.php:450 host.php:1672
-#: host_templates.php:773 lib/api_automation.php:199 lib/api_automation.php:463
-#: lib/api_automation.php:728 lib/api_automation.php:1124
+#: host_templates.php:773 lib/api_automation.php:199 lib/api_automation.php:476
+#: lib/api_automation.php:741 lib/api_automation.php:1137
 #: lib/clog_webapi.php:533 lib/html.php:1666 lib/html_filter.php:81
 #: lib/html_graph.php:190 lib/html_reports.php:1918 lib/html_tree.php:1026
 #: links.php:343 managers.php:175 managers.php:525 managers.php:765
-#: plugins.php:499 pollers.php:929 sites.php:531 tree.php:2178
+#: plugins.php:511 pollers.php:929 sites.php:531 tree.php:2187
 #: user_admin.php:2229 user_admin.php:2658 user_admin.php:2755
 #: user_admin.php:2871 user_admin.php:2968 user_admin.php:3065
 #: user_admin.php:3162
@@ -591,12 +591,12 @@ msgstr "送出"
 #: aggregate_graphs.php:1267 aggregate_graphs.php:1561
 #: automation_devices.php:510 automation_snmp.php:722
 #: automation_templates.php:415 cdef.php:775 color.php:563 data_debug.php:1051
-#: data_input.php:781 data_queries.php:1330 data_source_profiles.php:941
+#: data_input.php:837 data_queries.php:1330 data_source_profiles.php:941
 #: data_sources.php:1414 data_templates.php:1086 gprint_presets.php:299
 #: graph_templates.php:741 graph_view.php:662 graphs.php:2038
 #: graphs_new.php:450 host.php:1672 host_templates.php:773
 #: lib/html_graph.php:190 managers.php:175 managers.php:525 managers.php:765
-#: plugins.php:499 pollers.php:929 sites.php:531 tree.php:2178
+#: plugins.php:511 pollers.php:929 sites.php:531 tree.php:2187
 #: user_admin.php:2229 user_admin.php:2658 user_admin.php:2755
 #: user_admin.php:2871 user_admin.php:2968 user_admin.php:3065
 #: user_admin.php:3162 user_domains.php:680 user_group_admin.php:1960
@@ -613,16 +613,16 @@ msgstr "設置/刷新過濾器"
 #: automation_graph_rules.php:844 automation_networks.php:1240
 #: automation_snmp.php:723 automation_templates.php:416
 #: automation_tree_rules.php:870 cdef.php:776 color.php:564
-#: color_templates.php:577 data_debug.php:1052 data_input.php:782
+#: color_templates.php:577 data_debug.php:1052 data_input.php:838
 #: data_queries.php:1331 data_source_profiles.php:942 data_sources.php:1415
 #: data_templates.php:1087 gprint_presets.php:300 graph_templates.php:742
 #: graph_view.php:663 graphs.php:2039 graphs_new.php:451 host.php:1673
-#: host_templates.php:774 lib/api_automation.php:200 lib/api_automation.php:464
-#: lib/api_automation.php:729 lib/api_automation.php:1125
+#: host_templates.php:774 lib/api_automation.php:200 lib/api_automation.php:477
+#: lib/api_automation.php:742 lib/api_automation.php:1138
 #: lib/clog_webapi.php:534 lib/html_filter.php:86 lib/html_graph.php:191
 #: lib/html_graph.php:308 lib/html_reports.php:1919 lib/html_tree.php:1027
 #: lib/html_tree.php:1138 links.php:344 managers.php:176 managers.php:526
-#: managers.php:766 plugins.php:500 pollers.php:930 sites.php:532 tree.php:2179
+#: managers.php:766 plugins.php:512 pollers.php:930 sites.php:532 tree.php:2188
 #: user_admin.php:2230 user_admin.php:2659 user_admin.php:2756
 #: user_admin.php:2872 user_admin.php:2969 user_admin.php:3066
 #: user_admin.php:3163 user_domains.php:681
@@ -632,13 +632,13 @@ msgstr "清除"
 
 #: aggregate_graphs.php:1268 aggregate_graphs.php:1562 automation_snmp.php:723
 #: automation_templates.php:416 cdef.php:776 color.php:564 data_debug.php:1052
-#: data_input.php:782 data_queries.php:1331 data_source_profiles.php:942
+#: data_input.php:838 data_queries.php:1331 data_source_profiles.php:942
 #: data_sources.php:1415 data_templates.php:1087 gprint_presets.php:300
 #: graph_templates.php:742 graph_view.php:663 graphs.php:2039
 #: graphs_new.php:451 host.php:1673 host_templates.php:774
 #: lib/html_graph.php:191 lib/html_tree.php:1027 managers.php:176
-#: managers.php:526 managers.php:766 plugins.php:500 pollers.php:930
-#: sites.php:532 tree.php:2179 user_admin.php:2230 user_admin.php:2659
+#: managers.php:526 managers.php:766 plugins.php:512 pollers.php:930
+#: sites.php:532 tree.php:2188 user_admin.php:2230 user_admin.php:2659
 #: user_admin.php:2756 user_admin.php:2872 user_admin.php:2969
 #: user_admin.php:3066 user_admin.php:3163 user_domains.php:681
 #: user_group_admin.php:1961 user_group_admin.php:2321
@@ -651,17 +651,17 @@ msgid "Clear Filters"
 msgstr "清除過濾器"
 
 #: aggregate_graphs.php:1293 aggregate_graphs.php:1627 graphs.php:1222
-#: lib/api_automation.php:573 user_admin.php:881 user_group_admin.php:882
+#: lib/api_automation.php:586 user_admin.php:881 user_group_admin.php:882
 #, fuzzy
 msgid "Graph Title"
 msgstr "圖標題"
 
 #: aggregate_graphs.php:1294 aggregate_graphs.php:1628
 #: automation_graph_rules.php:944 automation_tree_rules.php:963
-#: data_debug.php:459 data_input.php:868 data_queries.php:1416
+#: data_debug.php:459 data_input.php:924 data_queries.php:1416
 #: data_sources.php:1636 data_templates.php:1195 graph_templates.php:847
 #: graphs.php:2245 host.php:1787 host_templates.php:933
-#: lib/api_automation.php:281 pollers.php:1010 sites.php:611 tree.php:2242
+#: lib/api_automation.php:294 pollers.php:1010 sites.php:611 tree.php:2251
 #: user_admin.php:881 user_admin.php:995 user_admin.php:1140
 #: user_admin.php:1287 user_admin.php:1426 user_group_admin.php:680
 #: user_group_admin.php:882 user_group_admin.php:1028 user_group_admin.php:1173
@@ -683,12 +683,12 @@ msgstr "尺寸"
 
 #: aggregate_graphs.php:1312 aggregate_templates.php:725
 #: automation_tree_rules.php:716 cdef.php:902 color.php:722 color.php:724
-#: color_templates.php:682 data_input.php:912 data_queries.php:1468
+#: color_templates.php:682 data_input.php:969 data_queries.php:1468
 #: data_source_profiles.php:1122 data_source_profiles.php:1123
 #: data_sources.php:1723 data_sources.php:1724 data_templates.php:1256
 #: gprint_presets.php:446 graph_templates.php:904 host_templates.php:981
 #: include/global_settings.php:892 include/global_settings.php:1915
-#: lib/api_automation.php:1456 links.php:417 tree.php:2335 tree.php:2336
+#: lib/api_automation.php:1480 links.php:417 tree.php:2344 tree.php:2345
 #: user_admin.php:2345 user_domains.php:773 user_group_admin.php:2028
 #: vdef.php:934
 #, fuzzy
@@ -698,21 +698,21 @@ msgstr "否"
 #: aggregate_graphs.php:1312 aggregate_templates.php:725
 #: automation_tree_rules.php:709 cdef.php:902 color.php:722 color.php:724
 #: color_templates.php:682 data_debug.php:699 data_debug.php:704
-#: data_debug.php:709 data_input.php:912 data_queries.php:1468
+#: data_debug.php:709 data_input.php:969 data_queries.php:1468
 #: data_source_profiles.php:1121 data_source_profiles.php:1122
 #: data_source_profiles.php:1123 data_sources.php:1723 data_sources.php:1724
 #: data_templates.php:1256 gprint_presets.php:446 graph_templates.php:904
 #: host_templates.php:981 include/global_settings.php:891
-#: include/global_settings.php:1914 lib/api_automation.php:1456
+#: include/global_settings.php:1914 lib/api_automation.php:1480
 #: lib/installer.php:1962 lib/installer.php:1990 lib/installer.php:3583
-#: links.php:417 tree.php:2335 tree.php:2336 user_admin.php:2343
+#: links.php:417 tree.php:2344 tree.php:2345 user_admin.php:2343
 #: user_domains.php:769 user_domains.php:773 user_group_admin.php:2026
 #: vdef.php:934
 #, fuzzy
 msgid "Yes"
 msgstr "是"
 
-#: aggregate_graphs.php:1318 graphs.php:2305 lib/api_automation.php:600
+#: aggregate_graphs.php:1318 graphs.php:2305 lib/api_automation.php:613
 #, fuzzy
 msgid "No Graphs Found"
 msgstr "找不到圖表"
@@ -731,7 +731,7 @@ msgstr "聚合圖"
 #: aggregate_graphs.php:1523 data_debug.php:1025 data_sources.php:1388
 #: graph_view.php:686 graphs.php:2003 host.php:1624
 #: include/global_arrays.php:2904 include/global_settings.php:626
-#: lib/api_automation.php:441 lib/html_graph.php:153 lib/html_tree.php:990
+#: lib/api_automation.php:454 lib/html_graph.php:153 lib/html_tree.php:990
 #: rrdcleaner.php:383 user_admin.php:2614 user_admin.php:2831
 #: user_group_admin.php:2276 user_group_admin.php:2396 utilities.php:2030
 #, fuzzy
@@ -745,9 +745,9 @@ msgstr "模板"
 #: data_debug.php:1029 data_sources.php:1392 graph_templates_items.php:543
 #: graphs.php:2007 graphs_items.php:357 host.php:1593 host.php:1611
 #: host.php:1628 host.php:1692 lib/api_automation.php:154
-#: lib/api_automation.php:172 lib/api_automation.php:428
-#: lib/api_automation.php:445 lib/api_automation.php:1079
-#: lib/api_automation.php:1097 lib/auth.php:3245 lib/auth.php:3293
+#: lib/api_automation.php:172 lib/api_automation.php:441
+#: lib/api_automation.php:458 lib/api_automation.php:1092
+#: lib/api_automation.php:1110 lib/auth.php:3255 lib/auth.php:3303
 #: lib/html.php:2182 lib/html.php:2205 lib/html.php:2243 lib/html.php:2273
 #: lib/html_reports.php:920 lib/html_reports.php:924 lib/html_reports.php:1039
 #: lib/html_reports.php:1049 lib/html_reports.php:1897 managers.php:492
@@ -778,10 +778,10 @@ msgstr "任何"
 #: include/global_form.php:2191 include/global_settings.php:630
 #: include/global_settings.php:638 include/global_settings.php:646
 #: include/global_settings.php:1326 include/global_settings.php:1989
-#: lib/api_automation.php:155 lib/api_automation.php:429
-#: lib/api_automation.php:446 lib/api_automation.php:588
-#: lib/api_automation.php:1080 lib/auth.php:3248 lib/auth.php:3296
-#: lib/auth.php:3341 lib/html.php:226 lib/html.php:2183 lib/html.php:2203
+#: lib/api_automation.php:155 lib/api_automation.php:442
+#: lib/api_automation.php:459 lib/api_automation.php:601
+#: lib/api_automation.php:1093 lib/auth.php:3258 lib/auth.php:3306
+#: lib/auth.php:3351 lib/html.php:226 lib/html.php:2183 lib/html.php:2203
 #: lib/html.php:2244 lib/html.php:2274 lib/html_form.php:404
 #: lib/html_reports.php:931 lib/html_reports.php:935 lib/html_reports.php:965
 #: lib/html_reports.php:1039 lib/html_reports.php:1045
@@ -876,7 +876,7 @@ msgid "Aggregate Templates that are in use can not be Deleted.  In use is define
 msgstr "無法刪除正在使用的聚合模板。在使用中定義為由Aggregate引用。"
 
 #: aggregate_templates.php:708 cdef.php:885 color.php:699
-#: color_templates.php:653 data_input.php:874 data_queries.php:1422
+#: color_templates.php:653 data_input.php:930 data_queries.php:1422
 #: data_source_profiles.php:1047 data_sources.php:1654 data_templates.php:1201
 #: gprint_presets.php:406 graph_templates.php:853 host_templates.php:939
 #: vdef.php:916
@@ -894,7 +894,7 @@ msgstr "圖表使用"
 #: aggregate_templates.php:710 graphs.php:2059 host_templates.php:719
 #: include/global_arrays.php:971 include/global_arrays.php:1373
 #: include/global_form.php:1420 include/global_form.php:1656
-#: lib/html_reports.php:1063 tree.php:1889
+#: lib/html_reports.php:1063 tree.php:1898
 #, fuzzy
 msgid "Graph Template"
 msgstr "圖模板"
@@ -964,7 +964,7 @@ msgid "There are problems with the Change Password page.  Contact your Cacti adm
 msgstr ""
 
 #: auth_changepassword.php:334 auth_changepassword.php:341
-#: include/global_form.php:1573 lib/functions.php:3734 lib/html.php:2575
+#: include/global_form.php:1573 lib/functions.php:3751 lib/html.php:2575
 #, fuzzy
 msgid "Change Password"
 msgstr "更改密碼"
@@ -980,7 +980,7 @@ msgid "Please enter your new Cacti password."
 msgstr "請輸入您當前的密碼和新密碼<br>仙人掌密碼。"
 
 #: auth_changepassword.php:361 auth_login.php:328 auth_login.php:331
-#: include/global_settings.php:1823 lib/functions.php:5589
+#: include/global_settings.php:1823 lib/functions.php:5610
 #, fuzzy
 msgid "Username"
 msgstr "用戶名"
@@ -1000,7 +1000,7 @@ msgid "Confirm new password"
 msgstr "確認新密碼"
 
 #: auth_changepassword.php:377 auth_profile.php:560 graphs_new.php:452
-#: lib/html_form.php:1418 lib/html_form.php:1427 lib/html_graph.php:193
+#: lib/html_form.php:1419 lib/html_form.php:1428 lib/html_graph.php:193
 #: lib/html_tree.php:1029 settings.php:511
 #, fuzzy
 msgid "Save"
@@ -1075,19 +1075,19 @@ msgstr "用戶登錄"
 msgid "Enter your Username and Password below"
 msgstr "在下面輸入您的用戶名和密碼"
 
-#: auth_login.php:336 include/global_form.php:1540 lib/functions.php:5590
+#: auth_login.php:336 include/global_form.php:1540 lib/functions.php:5611
 #, fuzzy
 msgid "Password"
 msgstr "密碼"
 
-#: auth_login.php:348 include/global_settings.php:2312 lib/auth.php:559
-#: lib/auth.php:581 lib/auth.php:591 lib/auth.php:596 user_admin.php:2206
+#: auth_login.php:348 include/global_settings.php:2312 lib/auth.php:569
+#: lib/auth.php:591 lib/auth.php:601 lib/auth.php:606 user_admin.php:2206
 #, fuzzy
 msgid "Local"
 msgstr "本地"
 
-#: auth_login.php:352 include/global_arrays.php:886 lib/auth.php:592
-#: lib/auth.php:597
+#: auth_login.php:352 include/global_arrays.php:886 lib/auth.php:602
+#: lib/auth.php:607
 #, fuzzy
 msgid "LDAP"
 msgstr "LDAP"
@@ -1245,7 +1245,7 @@ msgstr "刪除設備"
 #: automation_devices.php:54 automation_devices.php:305
 #: automation_devices.php:415 automation_devices.php:426
 #: automation_devices.php:667 automation_devices.php:668 host.php:1697
-#: lib/api_automation.php:177 lib/api_automation.php:1102
+#: lib/api_automation.php:177 lib/api_automation.php:1115
 #: lib/html_utility.php:1219 pollers.php:47
 #, fuzzy
 msgid "Down"
@@ -1254,7 +1254,7 @@ msgstr "向下"
 #: automation_devices.php:55 automation_devices.php:305
 #: automation_devices.php:417 automation_devices.php:428
 #: automation_devices.php:667 automation_devices.php:668 host.php:1696
-#: lib/api_automation.php:176 lib/api_automation.php:1101
+#: lib/api_automation.php:176 lib/api_automation.php:1114
 #: lib/html_utility.php:1225
 #, fuzzy
 msgid "Up"
@@ -1313,10 +1313,10 @@ msgstr "刪除設備"
 #: automation_devices.php:273 automation_devices.php:570 host.php:1579
 #: host.php:1703 host.php:1853 include/global_arrays.php:1003
 #: include/global_arrays.php:1059 include/global_arrays.php:2338
-#: lib/api_automation.php:183 lib/api_automation.php:270
-#: lib/api_automation.php:478 lib/api_automation.php:562
-#: lib/api_automation.php:1215 pollers.php:1046 sites.php:612 tree.php:862
-#: tree.php:2296 user_admin.php:1132 user_admin.php:2849
+#: lib/api_automation.php:183 lib/api_automation.php:283
+#: lib/api_automation.php:491 lib/api_automation.php:575
+#: lib/api_automation.php:1239 pollers.php:1046 sites.php:612 tree.php:871
+#: tree.php:2305 user_admin.php:1132 user_admin.php:2849
 #: user_group_admin.php:1020 user_group_admin.php:2414 utilities.php:315
 #, fuzzy
 msgid "Devices"
@@ -1350,8 +1350,8 @@ msgstr "聯絡"
 
 #: automation_devices.php:287 include/global_form.php:1154
 #: include/global_form.php:1190 include/global_form.php:1384
-#: include/global_form.php:1760 lib/api_automation.php:277
-#: lib/api_automation.php:1222 lib/installer.php:1882 lib/installer.php:2571
+#: include/global_form.php:1760 lib/api_automation.php:290
+#: lib/api_automation.php:1246 lib/installer.php:1882 lib/installer.php:2571
 #: managers.php:220 user_admin.php:995 user_admin.php:1140
 #: user_group_admin.php:1028 user_group_admin.php:2014
 #, fuzzy
@@ -1379,11 +1379,11 @@ msgstr "SNMP"
 #: automation_tree_rules.php:843 data_debug.php:465 data_debug.php:1078
 #: data_sources.php:1440 data_templates.php:1224 host.php:780 host.php:905
 #: host.php:1688 host.php:1805 lib/api_automation.php:168
-#: lib/api_automation.php:279 lib/api_automation.php:572
-#: lib/api_automation.php:1093 lib/api_automation.php:1225
+#: lib/api_automation.php:292 lib/api_automation.php:585
+#: lib/api_automation.php:1106 lib/api_automation.php:1249
 #: lib/html_reports.php:1893 lib/installer.php:1882 managers.php:222
-#: package_import.php:554 package_import.php:639 plugins.php:469
-#: plugins.php:592 pollers.php:1022 templates_import.php:224
+#: package_import.php:554 package_import.php:639 plugins.php:481
+#: plugins.php:604 pollers.php:1022 templates_import.php:224
 #: templates_import.php:263 user_admin.php:1140 user_group_admin.php:1028
 #: utilities.php:2075
 #, fuzzy
@@ -1421,7 +1421,7 @@ msgid "Reset fields to defaults"
 msgstr "將字段重置為默認值"
 
 #: automation_devices.php:516 color.php:570 host.php:1674
-#: lib/html_form.php:1435
+#: lib/html_form.php:1436
 #, fuzzy
 msgid "Export"
 msgstr "匯出"
@@ -1446,14 +1446,14 @@ msgstr "清除發現的設備"
 #: automation_snmp.php:568 automation_snmp.php:569 automation_snmp.php:570
 #: automation_snmp.php:571 automation_snmp.php:572 automation_snmp.php:573
 #: data_debug.php:624 data_source_profiles.php:73 host.php:1880
-#: lib/functions.php:5936 lib/functions.php:5940 lib/html.php:1278
+#: lib/functions.php:5957 lib/functions.php:5961 lib/html.php:1278
 #: lib/html.php:1350 lib/html_reports.php:1683 lib/html_reports.php:1709
 #: lib/html_reports.php:1780 lib/html_reports.php:1781
 #: lib/html_reports.php:1782 lib/spikekill.php:1069 lib/spikekill.php:1070
 #: lib/spikekill.php:1071 lib/spikekill.php:1072 lib/spikekill.php:1073
 #: lib/spikekill.php:1074 lib/spikekill.php:1075 lib/spikekill.php:1076
 #: lib/spikekill.php:1077 lib/spikekill.php:1078 lib/spikekill.php:1079
-#: plugins.php:736 pollers.php:1130 user_admin.php:2337 utilities.php:738
+#: plugins.php:748 pollers.php:1130 user_admin.php:2337 utilities.php:738
 #: utilities.php:1187 utilities.php:2655 utilities.php:2783 utilities.php:2791
 #: utilities.php:2802 utilities.php:2813 utilities.php:2836 utilities.php:2882
 #: utilities.php:3116
@@ -1597,9 +1597,9 @@ msgstr "數據查詢"
 #: automation_tree_rules.php:986 data_debug.php:1084 data_sources.php:1445
 #: host.php:1693 include/global_arrays.php:930 include/global_form.php:1548
 #: include/global_settings.php:361 include/global_settings.php:377
-#: lib/api_automation.php:173 lib/api_automation.php:1098
-#: lib/html_reports.php:1898 lib/html_reports.php:1988
-#: lib/html_reports.php:1999 lib/html_reports.php:2035 links.php:396
+#: lib/api_automation.php:173 lib/api_automation.php:1111
+#: lib/html_reports.php:1898 lib/html_reports.php:2003
+#: lib/html_reports.php:2014 lib/html_reports.php:2050 links.php:396
 #: links.php:574 managers.php:247 managers.php:608 user_admin.php:995
 #: user_admin.php:1007 user_admin.php:2324 user_domains.php:350
 #: user_domains.php:758 user_group_admin.php:87 user_group_admin.php:680
@@ -1619,8 +1619,8 @@ msgstr "啟用"
 #: include/global_settings.php:1632 include/global_settings.php:1645
 #: include/global_settings.php:1670 include/global_settings.php:1684
 #: include/global_settings.php:1774 include/global_settings.php:2538
-#: lib/api_automation.php:174 lib/api_automation.php:1099 lib/html.php:2665
-#: lib/html_reports.php:1899 lib/html_reports.php:2035
+#: lib/api_automation.php:174 lib/api_automation.php:1112 lib/html.php:2665
+#: lib/html_reports.php:1899 lib/html_reports.php:2050
 #: lib/html_utility.php:1209 links.php:513 managers.php:247 managers.php:608
 #: pollers.php:48 user_admin.php:1007 user_domains.php:412
 #: user_group_admin.php:695 utilities.php:2081 utilities.php:2597
@@ -1721,12 +1721,12 @@ msgstr "在調試模式下運行discover"
 msgid "Click 'Continue' to cancel on going Network Discovery(s)."
 msgstr "點擊“繼續”以取消進行網絡發現。"
 
-#: automation_networks.php:416 data_input.php:524 include/global_arrays.php:522
+#: automation_networks.php:416 data_input.php:555 include/global_arrays.php:522
 #, fuzzy
 msgid "SNMP Get"
 msgstr "SNMP獲取"
 
-#: automation_networks.php:423 automation_networks.php:1078 tree.php:1669
+#: automation_networks.php:423 automation_networks.php:1078 tree.php:1678
 #, fuzzy
 msgid "Manual"
 msgstr "手動"
@@ -1776,8 +1776,8 @@ msgstr "網絡發現範圍[新]"
 msgid "General Settings"
 msgstr "一般設定"
 
-#: automation_networks.php:454 automation_snmp.php:509 data_input.php:569
-#: data_input.php:630 data_queries.php:777 data_queries.php:882
+#: automation_networks.php:454 automation_snmp.php:509 data_input.php:608
+#: data_input.php:669 data_queries.php:777 data_queries.php:882
 #: data_queries.php:1149 data_source_profiles.php:635 graph_templates.php:498
 #: include/global_form.php:215 include/global_form.php:281
 #: include/global_form.php:338 include/global_form.php:358
@@ -2438,7 +2438,7 @@ msgstr "閒置"
 
 #: automation_networks.php:1165 include/global_arrays.php:904
 #: include/global_arrays.php:1222 include/global_settings.php:2564
-#: lib/html_reports.php:2030 user_admin.php:2197
+#: lib/html_reports.php:2045 user_admin.php:2197
 #, fuzzy
 msgid "Never"
 msgstr "從不"
@@ -2548,8 +2548,8 @@ msgstr "SNMP選項[新]"
 
 #: automation_snmp.php:453 include/global_form.php:1093
 #: include/global_form.php:2169 include/global_form.php:2211
-#: include/global_form.php:2362 lib/api_automation.php:1306
-#: lib/api_automation.php:1368 lib/api_automation.php:1434
+#: include/global_form.php:2362 lib/api_automation.php:1330
+#: lib/api_automation.php:1392 lib/api_automation.php:1458
 #: lib/html_reports.php:1127 lib/html_reports.php:1661
 #, fuzzy
 msgid "Sequence"
@@ -2579,15 +2579,15 @@ msgstr "填寫此SNMP選項集的名稱。"
 msgid "Automation SNMP Options"
 msgstr "自動化SNMP選項"
 
-#: automation_snmp.php:538 cdef.php:585 lib/api_automation.php:1305
-#: lib/api_automation.php:1367 lib/api_automation.php:1433
+#: automation_snmp.php:538 cdef.php:585 lib/api_automation.php:1329
+#: lib/api_automation.php:1391 lib/api_automation.php:1457
 #: lib/html_reports.php:1660 vdef.php:607
 #, fuzzy
 msgid "Item"
 msgstr "項目"
 
 #: automation_snmp.php:539 include/auth.php:315 include/global_settings.php:695
-#: package_import.php:516 permission_denied.php:60 plugins.php:610
+#: package_import.php:516 permission_denied.php:60 plugins.php:622
 #, fuzzy
 msgid "Version"
 msgstr "版本"
@@ -2597,7 +2597,7 @@ msgstr "版本"
 msgid "Community"
 msgstr "社群"
 
-#: automation_snmp.php:541 lib/functions.php:5585
+#: automation_snmp.php:541 lib/functions.php:5606
 #, fuzzy
 msgid "Port"
 msgstr "端口"
@@ -2652,8 +2652,8 @@ msgstr "上下文"
 msgid "Action"
 msgstr "動作"
 
-#: automation_snmp.php:561 lib/api_automation.php:1322
-#: lib/api_automation.php:1384 lib/api_automation.php:1452
+#: automation_snmp.php:561 lib/api_automation.php:1346
+#: lib/api_automation.php:1408 lib/api_automation.php:1476
 #, php-format
 msgid "Item#%d"
 msgstr "項目＃％d"
@@ -2665,18 +2665,18 @@ msgstr "無"
 
 #: automation_snmp.php:578 automation_templates.php:528 cdef.php:612
 #: color_templates.php:111 data_queries.php:809 data_queries.php:916
-#: lib/api_automation.php:1332 lib/api_automation.php:1394
-#: lib/api_automation.php:1462 lib/html.php:1377 lib/html_reports.php:1795
-#: lib/html_reports.php:1797 tree.php:2320 tree.php:2327 vdef.php:636
+#: lib/api_automation.php:1356 lib/api_automation.php:1418
+#: lib/api_automation.php:1486 lib/html.php:1377 lib/html_reports.php:1795
+#: lib/html_reports.php:1797 tree.php:2329 tree.php:2336 vdef.php:636
 #, fuzzy
 msgid "Move Down"
 msgstr "下移"
 
 #: automation_snmp.php:584 automation_templates.php:534 cdef.php:618
 #: color_templates.php:117 data_queries.php:814 data_queries.php:921
-#: lib/api_automation.php:1338 lib/api_automation.php:1400
-#: lib/api_automation.php:1468 lib/html.php:1383 lib/html_reports.php:1797
-#: lib/html_reports.php:1799 tree.php:2324 tree.php:2328 vdef.php:642
+#: lib/api_automation.php:1362 lib/api_automation.php:1424
+#: lib/api_automation.php:1492 lib/html.php:1383 lib/html_reports.php:1797
+#: lib/html_reports.php:1799 tree.php:2333 tree.php:2337 vdef.php:642
 #, fuzzy
 msgid "Move Up"
 msgstr "上移"
@@ -2817,7 +2817,7 @@ msgid "System ObjectId Match"
 msgstr "系統ObjectId匹配"
 
 #: automation_templates.php:503 data_queries.php:778 data_queries.php:883
-#: links.php:397 tree.php:2266
+#: links.php:397 tree.php:2275
 #, fuzzy
 msgid "Order"
 msgstr "訂單"
@@ -2946,8 +2946,8 @@ msgstr "根部"
 msgid "No Tree Rules Found"
 msgstr "找不到樹規則"
 
-#: cactid.php:44 help.php:44 lib/functions.php:6217 lib/functions.php:6286
-#: lib/functions.php:6376 lib/functions.php:6983 poller.php:394 poller.php:544
+#: cactid.php:44 help.php:44 lib/functions.php:6238 lib/functions.php:6307
+#: lib/functions.php:6397 lib/functions.php:7004 poller.php:394 poller.php:544
 #: poller.php:609 poller.php:649 poller.php:791 poller.php:897
 #: poller_automation.php:53 poller_boost.php:376
 #, fuzzy
@@ -3094,7 +3094,7 @@ msgstr "正在使用的CDEF無法刪除。使用中定義為由圖形或圖形�
 msgid "The number of Graphs using this CDEF."
 msgstr "使用此CDEF的圖表數量。"
 
-#: cdef.php:887 color.php:701 data_input.php:885 data_queries.php:1433
+#: cdef.php:887 color.php:701 data_input.php:941 data_queries.php:1433
 #: data_source_profiles.php:1075 gprint_presets.php:417 vdef.php:918
 #, fuzzy
 msgid "Templates Using"
@@ -3206,7 +3206,7 @@ msgstr "顏色"
 msgid "Named Colors"
 msgstr "命名顏色"
 
-#: color.php:569 lib/html_form.php:1433
+#: color.php:569 lib/html_form.php:1434
 #, fuzzy
 msgid "Import"
 msgstr "匯入"
@@ -3526,7 +3526,7 @@ msgid "Determines if the Data Source is located in the Poller Cache."
 msgstr "確定數據源是否位於輪詢器高速緩存中。"
 
 #: data_debug.php:483 data_sources.php:1660 data_templates.php:1260
-#: plugins.php:39 plugins.php:475
+#: plugins.php:39 plugins.php:487
 #, fuzzy
 msgid "Active"
 msgstr "啟用"
@@ -3578,7 +3578,7 @@ msgstr "發現數據源的任何摘要問題。"
 #: data_debug.php:572 data_debug.php:1129 data_sources.php:1467
 #: data_sources.php:1620 host.php:1799 include/global_arrays.php:1007
 #: include/global_arrays.php:1053 include/global_arrays.php:2320
-#: lib/api_automation.php:283 user_admin.php:1140 user_group_admin.php:1028
+#: lib/api_automation.php:296 user_admin.php:1140 user_group_admin.php:1028
 #: utilities.php:325
 #, fuzzy
 msgid "Data Sources"
@@ -3594,7 +3594,7 @@ msgstr "調試"
 msgid "No Checks"
 msgstr "沒有檢查"
 
-#: data_debug.php:686 lib/api_automation.php:760 lib/graphs.php:79
+#: data_debug.php:686 lib/api_automation.php:773 lib/graphs.php:79
 #: lib/graphs.php:103 templates_import.php:238
 #, fuzzy
 msgid "Not Found"
@@ -3809,8 +3809,8 @@ msgstr "個人資料"
 #: data_sources.php:1427 data_sources.php:1444 data_templates.php:1052
 #: graphs.php:2057 graphs_new.php:428 host.php:1649 host_templates.php:708
 #: host_templates.php:723 lib/clog_webapi.php:549 lib/html.php:225
-#: lib/html_reports.php:1020 lib/html_reports.php:2126 plugins.php:473
-#: settings.php:548 settings.php:570 settings.php:601 tree.php:860
+#: lib/html_reports.php:1020 lib/html_reports.php:2141 plugins.php:485
+#: settings.php:548 settings.php:570 settings.php:601 tree.php:869
 #: user_admin.php:2169 user_admin.php:2191 user_admin.php:2205
 #: utilities.php:1039 utilities.php:1453
 #, fuzzy
@@ -3827,221 +3827,240 @@ msgstr "失敗"
 msgid "Debugging"
 msgstr "調試"
 
-#: data_input.php:100
+#: data_input.php:123
 msgid "Input string contains dangerous shell characters"
 msgstr ""
 
-#: data_input.php:255
+#: data_input.php:131
+msgid "Input Whitelisting is in effect.  Changes in this Data Input Method require rerunning of the Input Whitelist CLI script (cli/input_whitelist.php) using both the --audit and --update options before Data Source will be queried again."
+msgstr ""
+
+#: data_input.php:284
 msgid "Click 'Continue' to delete the following Data Input Method"
 msgid_plural "Click 'Continue' to delete the following Data Input Method"
 msgstr[0] "單擊“繼續”以刪除以下數據輸入方法"
 
-#: data_input.php:262
+#: data_input.php:291
 msgid "Click 'Continue' to duplicate the following Data Input Method(s). You can optionally change the title format for the new Data Input Method(s)."
 msgstr "單擊“繼續”以復制以下數據輸入方法。您可以選擇更改新數據輸入法的標題格式。"
 
-#: data_input.php:264
+#: data_input.php:293
 msgid "Input Name:"
 msgstr "輸入名稱："
 
-#: data_input.php:269
+#: data_input.php:298
 msgid "Delete Data Input Method"
 msgid_plural "Delete Data Input Methods"
 msgstr[0] "刪除數據輸入法"
 
-#: data_input.php:314
+#: data_input.php:343
 #, fuzzy
 msgid "Click 'Continue' to delete the following Data Input Field."
 msgstr "單擊“繼續”以刪除以下數據輸入字段。"
 
-#: data_input.php:315
+#: data_input.php:344
 #, fuzzy, php-format
 msgid "Field Name: %s"
 msgstr "字段名稱：%s"
 
-#: data_input.php:316
+#: data_input.php:345
 #, fuzzy, php-format
 msgid "Friendly Name: %s"
 msgstr "友好名稱：%s"
 
-#: data_input.php:322 host_templates.php:306 host_templates.php:375
+#: data_input.php:351 host_templates.php:306 host_templates.php:375
 #, fuzzy
 msgid "Remove Data Input Field"
 msgstr "刪除數據輸入字段"
 
-#: data_input.php:433
+#: data_input.php:462
 #, fuzzy
 msgid "This script appears to have no input values, therefore there is nothing to add."
 msgstr "此腳本似乎沒有輸入值，因此無需添加任何內容。"
 
-#: data_input.php:439
+#: data_input.php:468
 #, fuzzy, php-format
 msgid "Output Fields [edit: %s]"
 msgstr "輸出字段[編輯：%s]"
 
-#: data_input.php:440 include/global_form.php:661
+#: data_input.php:469 include/global_form.php:661
 #, fuzzy
 msgid "Output Field"
 msgstr "輸出字段"
 
-#: data_input.php:442
+#: data_input.php:471
 #, fuzzy, php-format
 msgid "Input Fields [edit: %s]"
 msgstr "輸入字段[編輯：%s]"
 
-#: data_input.php:443
+#: data_input.php:472
 #, fuzzy
 msgid "Input Field"
 msgstr "輸入欄"
 
-#: data_input.php:506
+#: data_input.php:535
 #, fuzzy, php-format
 msgid "Data Input Method [edit: %s]"
 msgstr "數據輸入方法[編輯：%s]"
 
-#: data_input.php:510
+#: data_input.php:539
 #, fuzzy
 msgid "Data Input Method [new]"
 msgstr "數據輸入方法[新]"
 
-#: data_input.php:527 include/global_arrays.php:523
+#: data_input.php:558 include/global_arrays.php:523
 #, fuzzy
 msgid "SNMP Query"
 msgstr "SNMP查詢"
 
-#: data_input.php:530 include/global_arrays.php:525
+#: data_input.php:561 include/global_arrays.php:525
 #, fuzzy
 msgid "Script Query"
 msgstr "腳本查詢"
 
-#: data_input.php:533 include/global_arrays.php:527
+#: data_input.php:564 include/global_arrays.php:527
 #, fuzzy
 msgid "Script Server Query"
 msgstr "腳本服務器"
 
-#: data_input.php:541
+#: data_input.php:572
 #, fuzzy
 msgid "White List Verification Succeeded."
 msgstr "白名單驗證成功。"
 
-#: data_input.php:543
+#: data_input.php:574
 #, fuzzy
 msgid "White List Verification Failed.  Run CLI script input_whitelist.php to correct."
 msgstr "白名單驗證失敗。運行CLI腳本input_whitelist.php進行更正。"
 
-#: data_input.php:545
+#: data_input.php:580
 #, fuzzy
 msgid "Input String does not exist in White List.  Run CLI script input_whitelist.php to correct."
 msgstr "白名單中不存在輸入字符串。運行CLI腳本input_whitelist.php進行更正。"
 
-#: data_input.php:566
+#: data_input.php:605
 #, fuzzy
 msgid "Input Fields"
 msgstr "輸入欄位"
 
-#: data_input.php:570 data_input.php:631 include/global_form.php:465
+#: data_input.php:609 data_input.php:670 include/global_form.php:465
 #, fuzzy
 msgid "Friendly Name"
 msgstr "友好名稱"
 
-#: data_input.php:571
+#: data_input.php:610
 #, fuzzy
 msgid "Field Order"
 msgstr "欄位順序"
 
-#: data_input.php:615
+#: data_input.php:654
 #, fuzzy
 msgid "(Not In Use)"
 msgstr "（未使用）"
 
-#: data_input.php:624
+#: data_input.php:663
 #, fuzzy
 msgid "No Input Fields"
 msgstr "輸入欄位"
 
-#: data_input.php:628
+#: data_input.php:667
 #, fuzzy
 msgid "Output Fields"
 msgstr "輸出字段"
 
-#: data_input.php:632
+#: data_input.php:671
 #, fuzzy
 msgid "Update RRA"
 msgstr "更新RRA"
 
-#: data_input.php:658
+#: data_input.php:697
 #, fuzzy
 msgid "Output Fields can not be removed when Data Sources are present"
 msgstr "存在數據源時，無法刪除輸出字段"
 
-#: data_input.php:667
+#: data_input.php:706
 #, fuzzy
 msgid "No Output Fields"
 msgstr "沒有輸出字段"
 
-#: data_input.php:693
+#: data_input.php:734
 #, fuzzy
 msgid "Delete Data Input Field"
 msgstr "刪除數據輸入字段"
 
-#: data_input.php:750 include/global_arrays.php:1013
+#: data_input.php:747
+#, fuzzy
+msgid "Update Whitelist"
+msgstr "更新此字段"
+
+#: data_input.php:806 include/global_arrays.php:1013
 #: include/global_arrays.php:1237 include/global_arrays.php:2374
 #, fuzzy
 msgid "Data Input Methods"
 msgstr "數據輸入方法"
 
-#: data_input.php:765 data_input.php:857
+#: data_input.php:821 data_input.php:913
 #, fuzzy
 msgid "Input Methods"
 msgstr "輸入法"
 
-#: data_input.php:866
+#: data_input.php:922
 #, fuzzy
 msgid "Data Input Name"
 msgstr "數據輸入名稱"
 
-#: data_input.php:866
+#: data_input.php:922
 #, fuzzy
 msgid "The name of this Data Input Method."
 msgstr "此數據輸入法的名稱。"
 
-#: data_input.php:871
+#: data_input.php:927
 #, fuzzy
 msgid "The internal database ID for this Data Input Method.  Useful when performing automation or debugging."
 msgstr "此數據模板的內部數據庫ID。在執行自動化或調試時很有用。"
 
-#: data_input.php:876
+#: data_input.php:932
 #, fuzzy
 msgid "Data Inputs that are in use cannot be Deleted. In use is defined as being referenced either by a Data Source or a Data Template."
 msgstr "正在使用的數據輸入無法刪除。使用中定義為由數據源或數據模板引用。"
 
-#: data_input.php:879 data_source_profiles.php:1069 data_templates.php:1206
+#: data_input.php:935 data_source_profiles.php:1069 data_templates.php:1206
 #, fuzzy
 msgid "Data Sources Using"
 msgstr "數據源使用"
 
-#: data_input.php:882
+#: data_input.php:938
 #, fuzzy
 msgid "The number of Data Sources that use this Data Input Method."
 msgstr "使用此數據輸入方法的數據源的數量。"
 
-#: data_input.php:888
+#: data_input.php:944
 #, fuzzy
 msgid "The number of Data Templates that use this Data Input Method."
 msgstr "使用此數據輸入方法的數據模板的數量。"
 
-#: data_input.php:891 data_queries.php:1439 include/global_arrays.php:1369
+#: data_input.php:947 data_queries.php:1439 include/global_arrays.php:1369
 #: include/global_form.php:584 include/global_form.php:1401
 #, fuzzy
 msgid "Data Input Method"
 msgstr "數據輸入法"
 
-#: data_input.php:894
+#: data_input.php:950
 #, fuzzy
 msgid "The method used to gather information for this Data Input Method."
 msgstr "用於收集此數據輸入方法的信息的方法。"
 
-#: data_input.php:920
+#: data_input.php:972 host.php:1699 lib/api_automation.php:179
+#: lib/api_automation.php:1117 lib/auth.php:2454 lib/clog_webapi.php:846
+#: lib/html_utility.php:1231 lib/import.php:349 lib/plugins.php:1350
+#: lib/plugins.php:1351 lib/rrd.php:3300 lib/rrd.php:3312 lib/spikekill.php:281
+#: package_import.php:534 package_import.php:612 utilities.php:211
+#: utilities.php:212 utilities.php:2651
+#, fuzzy
+msgid "Unknown"
+msgstr "未知"
+
+#: data_input.php:977
 #, fuzzy
 msgid "No Data Input Methods Found"
 msgstr "找不到數據輸入方法"
@@ -4127,7 +4146,7 @@ msgid "No Suggested Values Found"
 msgstr "未找到建議值"
 
 #: data_queries.php:841 data_queries.php:949 include/global_form.php:2145
-#: include/global_form.php:2187 lib/api_automation.php:1435 utilities.php:1879
+#: include/global_form.php:2187 lib/api_automation.php:1459 utilities.php:1879
 #, fuzzy
 msgid "Field Name"
 msgstr "字段名稱"
@@ -4191,7 +4210,7 @@ msgid "Associated Graph Templates"
 msgstr "關聯圖模板"
 
 #: data_queries.php:1150 graph_templates.php:841 graphs_new.php:569
-#: host.php:779 lib/api_automation.php:575
+#: host.php:779 lib/api_automation.php:588
 #, fuzzy
 msgid "Graph Template Name"
 msgstr "圖形模板名稱"
@@ -4223,7 +4242,7 @@ msgstr "刪除關聯圖表"
 
 #: data_queries.php:1299 data_queries.php:1314 data_queries.php:1446
 #: include/global_arrays.php:1012 include/global_arrays.php:1238
-#: include/global_arrays.php:2410 lib/api_automation.php:1108
+#: include/global_arrays.php:2410 lib/api_automation.php:1121
 #, fuzzy
 msgid "Data Queries"
 msgstr "數據查詢"
@@ -4718,7 +4737,7 @@ msgstr "為此數據模板指定的名稱。請注意，您只能將圖形模板
 #: data_sources.php:950 graph_view.php:799 graphs.php:1593
 #: include/global_arrays.php:967 include/global_arrays.php:1016
 #: include/global_arrays.php:1700 include/global_arrays.php:1869
-#: lib/api_automation.php:424 lib/functions.php:5584 lib/html.php:2178
+#: lib/api_automation.php:437 lib/functions.php:5605 lib/html.php:2178
 #: lib/html.php:2210 lib/html_reports.php:1052 utilities.php:1879
 #, fuzzy
 msgid "Device"
@@ -5493,7 +5512,7 @@ msgid "Not Templated"
 msgstr "沒有模板化"
 
 #: graph_view.php:794 graph_view.php:822 graphs.php:2239
-#: include/global_form.php:1905 lib/html_reports.php:1083 tree.php:967
+#: include/global_form.php:1905 lib/html_reports.php:1083 tree.php:976
 #, fuzzy
 msgid "Graph Name"
 msgstr "圖名稱"
@@ -5579,7 +5598,7 @@ msgstr "步驟"
 msgid "Total Rows"
 msgstr "總行數"
 
-#: graph_xport.php:127 graph_xport.php:192 lib/api_automation.php:574
+#: graph_xport.php:127 graph_xport.php:192 lib/api_automation.php:587
 #, fuzzy
 msgid "Graph ID"
 msgstr "圖表ID"
@@ -5959,8 +5978,8 @@ msgid "(Select a graph type to create)"
 msgstr "（選擇要創建的圖表類型）"
 
 #: graphs_new.php:560 include/global_arrays.php:998
-#: include/global_arrays.php:1075 lib/html_form.php:1416 lib/html_form.php:1429
-#: tree.php:1607
+#: include/global_arrays.php:1075 lib/html_form.php:1417 lib/html_form.php:1430
+#: tree.php:1616
 #, fuzzy
 msgid "Create"
 msgstr "創建"
@@ -6263,7 +6282,7 @@ msgstr "圖表列表"
 msgid "Contacting Device"
 msgstr "聯繫設備"
 
-#: host.php:838 tree.php:1727 tree.php:1801 tree.php:1909
+#: host.php:838 tree.php:1736 tree.php:1810 tree.php:1918
 #, fuzzy
 msgid "Edit"
 msgstr "編輯"
@@ -6303,8 +6322,8 @@ msgstr "將圖形模板添加到設備"
 msgid "Data Query Debug Information"
 msgstr "數據查詢調試信息"
 
-#: host.php:883 lib/functions.php:4353 tree.php:1749 tree.php:1823
-#: tree.php:1931 user_admin.php:29 user_group_admin.php:31
+#: host.php:883 lib/functions.php:4370 tree.php:1758 tree.php:1832
+#: tree.php:1940 user_admin.php:29 user_group_admin.php:31
 #, fuzzy
 msgid "Copy"
 msgstr "複製"
@@ -6332,9 +6351,9 @@ msgstr "重新索引方法"
 #: include/global_arrays.php:2542 include/global_arrays.php:2746
 #: include/global_arrays.php:2770 include/global_arrays.php:2788
 #: include/global_arrays.php:2806 include/global_arrays.php:2830
-#: lib/api_automation.php:1311 lib/api_automation.php:1373
-#: lib/api_automation.php:1440 lib/html_reports.php:1667 links.php:392
-#: plugins.php:574
+#: lib/api_automation.php:1335 lib/api_automation.php:1397
+#: lib/api_automation.php:1464 lib/html_reports.php:1667 links.php:392
+#: plugins.php:586
 #, fuzzy
 msgid "Actions"
 msgstr "動作"
@@ -6349,7 +6368,7 @@ msgstr " [%d項目，%d行]"
 msgid "Fail"
 msgstr "失敗"
 
-#: host.php:967 lib/functions.php:5599 lib/functions.php:5604
+#: host.php:967 lib/functions.php:5620 lib/functions.php:5625
 #, fuzzy
 msgid "Success"
 msgstr "成功"
@@ -6434,27 +6453,18 @@ msgstr "網站"
 msgid "Export Devices"
 msgstr "導出設備"
 
-#: host.php:1695 lib/api_automation.php:175 lib/api_automation.php:1100
+#: host.php:1695 lib/api_automation.php:175 lib/api_automation.php:1113
 #, fuzzy
 msgid "Not Up"
 msgstr "不起來"
 
-#: host.php:1698 lib/api_automation.php:178 lib/api_automation.php:1103
+#: host.php:1698 lib/api_automation.php:178 lib/api_automation.php:1116
 #: lib/html.php:81 lib/html_utility.php:1222 pollers.php:49
 #, fuzzy
 msgid "Recovering"
 msgstr "正在復原"
 
-#: host.php:1699 lib/api_automation.php:179 lib/api_automation.php:1104
-#: lib/auth.php:2444 lib/html_utility.php:1231 lib/import.php:349
-#: lib/plugins.php:1340 lib/plugins.php:1341 lib/rrd.php:3300 lib/rrd.php:3312
-#: lib/spikekill.php:281 package_import.php:534 package_import.php:612
-#: utilities.php:211 utilities.php:212 utilities.php:2651
-#, fuzzy
-msgid "Unknown"
-msgstr "未知"
-
-#: host.php:1775 lib/api_automation.php:569 tree.php:933 utilities.php:2220
+#: host.php:1775 lib/api_automation.php:582 tree.php:942 utilities.php:2220
 #, fuzzy
 msgid "Device Description"
 msgstr "設備描述"
@@ -6465,8 +6475,8 @@ msgid "The name by which this Device will be referred to."
 msgstr "引用此設備的名稱。"
 
 #: host.php:1781 include/global_form.php:1197 include/global_form.php:1768
-#: lib/api_automation.php:278 lib/api_automation.php:570
-#: lib/api_automation.php:883 lib/api_automation.php:1223 managers.php:223
+#: lib/api_automation.php:291 lib/api_automation.php:583
+#: lib/api_automation.php:896 lib/api_automation.php:1247 managers.php:223
 #: pollers.php:130 pollers.php:1016 user_admin.php:1140
 #: user_group_admin.php:1028
 #, fuzzy
@@ -6652,8 +6662,8 @@ msgstr "經典"
 msgid "Has Devices"
 msgstr "有設備"
 
-#: host_templates.php:921 lib/api_automation.php:280 lib/api_automation.php:571
-#: lib/api_automation.php:1224
+#: host_templates.php:921 lib/api_automation.php:293 lib/api_automation.php:584
+#: lib/api_automation.php:1248
 #, fuzzy
 msgid "Device Template Name"
 msgstr "設備模板名稱"
@@ -6715,24 +6725,24 @@ msgstr "您必須登錄才能訪問Cacti的這個區域。"
 msgid "FATAL: You must be logged in to access this area of Cacti."
 msgstr "致命：您必須登錄才能訪問Cacti的這個區域。"
 
-#: include/auth.php:283 include/auth.php:285 lib/auth.php:4668
+#: include/auth.php:283 include/auth.php:285 lib/auth.php:4678
 #: permission_denied.php:31 permission_denied.php:33
 #, fuzzy
 msgid "Login Again"
 msgstr "再次登錄"
 
-#: include/auth.php:290 lib/functions.php:7574 permission_denied.php:46
+#: include/auth.php:290 lib/functions.php:7605 permission_denied.php:46
 #: permission_denied.php:53
 #, fuzzy
 msgid "Permission Denied"
 msgstr "存取被拒"
 
-#: include/auth.php:291 lib/functions.php:7575 permission_denied.php:55
+#: include/auth.php:291 lib/functions.php:7606 permission_denied.php:55
 #, fuzzy
 msgid "If you feel that this is an error. Please contact your Cacti Administrator."
 msgstr "如果你覺得這是一個錯誤。請聯繫您的Cacti管理員。"
 
-#: include/auth.php:291 lib/functions.php:7575 permission_denied.php:55
+#: include/auth.php:291 lib/functions.php:7606 permission_denied.php:55
 #, fuzzy
 msgid "You are not permitted to access this section of Cacti."
 msgstr "您無權訪問此Cacti部分。"
@@ -7314,7 +7324,7 @@ msgstr "頂部 - &gt;下來"
 msgid "Bottom -> Up"
 msgstr "底部 - &gt;向上"
 
-#: include/global_arrays.php:607 tree.php:1711
+#: include/global_arrays.php:607 tree.php:1720
 #, fuzzy
 msgid "Numeric"
 msgstr "数字"
@@ -7621,8 +7631,8 @@ msgid "Enabled (strict mode)"
 msgstr "啟用（嚴格模式）"
 
 #: include/global_arrays.php:936 include/global_form.php:2153
-#: include/global_form.php:2195 lib/api_automation.php:1309
-#: lib/api_automation.php:1371
+#: include/global_form.php:2195 lib/api_automation.php:1333
+#: lib/api_automation.php:1395
 #, fuzzy
 msgid "Operator"
 msgstr "客服人員"
@@ -7669,7 +7679,7 @@ msgstr "頁首"
 msgid "Graph"
 msgstr "圖表"
 
-#: include/global_arrays.php:972 tree.php:1898
+#: include/global_arrays.php:972 tree.php:1907
 #, fuzzy
 msgid "Data Query Index"
 msgstr "數據查詢索引"
@@ -7767,13 +7777,13 @@ msgid "Management"
 msgstr "管理"
 
 #: include/global_arrays.php:1004 sites.php:500 sites.php:515 sites.php:601
-#: tree.php:861 tree.php:2284
+#: tree.php:870 tree.php:2293
 #, fuzzy
 msgid "Sites"
 msgstr "網站"
 
-#: include/global_arrays.php:1005 include/global_arrays.php:1242 tree.php:2147
-#: tree.php:2162 tree.php:2226 user_admin.php:1418 user_admin.php:3043
+#: include/global_arrays.php:1005 include/global_arrays.php:1242 tree.php:2156
+#: tree.php:2171 tree.php:2235 user_admin.php:1418 user_admin.php:3043
 #: user_admin.php:3140 user_group_admin.php:1297 user_group_admin.php:2608
 #, fuzzy
 msgid "Trees"
@@ -7852,7 +7862,7 @@ msgid "Export Templates"
 msgstr "導出模板"
 
 #: include/global_arrays.php:1042 include/global_arrays.php:1064
-#: include/global_arrays.php:1082 lib/plugins.php:1295
+#: include/global_arrays.php:1082 lib/plugins.php:1305
 #, fuzzy
 msgid "Configuration"
 msgstr "組態"
@@ -9072,7 +9082,7 @@ msgid "List Mode"
 msgstr "列表模式"
 
 #: include/global_arrays.php:2074 include/global_arrays.php:2080
-#: lib/functions.php:3941 lib/html.php:1809 lib/html.php:1886 lib/html.php:2585
+#: lib/functions.php:3958 lib/html.php:1809 lib/html.php:1886 lib/html.php:2585
 #: links.php:357 user_admin.php:1547 user_group_admin.php:1433
 #, fuzzy
 msgid "Console"
@@ -10534,7 +10544,7 @@ msgid "A useful name for this graph tree."
 msgstr "此圖樹的有用名稱。"
 
 #: include/global_form.php:1485 include/global_form.php:2330
-#: lib/api_automation.php:1436 tree.php:1882
+#: lib/api_automation.php:1460 tree.php:1891
 #, fuzzy
 msgid "Sorting Type"
 msgstr "排序類型"
@@ -10569,7 +10579,7 @@ msgstr "輸入該用戶的密碼兩次。請記住，密碼區分大小寫！"
 msgid "Determines if user is able to login."
 msgstr "確定用戶是否能夠登錄。"
 
-#: include/global_form.php:1555 tree.php:2254
+#: include/global_form.php:1555 tree.php:2263
 #, fuzzy
 msgid "Locked"
 msgstr "已上鎖"
@@ -10918,7 +10928,7 @@ msgid "A useful name for this Template."
 msgstr "此模板的有用名稱。"
 
 #: include/global_form.php:2137 include/global_form.php:2179
-#: lib/api_automation.php:1307 lib/api_automation.php:1369
+#: lib/api_automation.php:1331 lib/api_automation.php:1393
 #, fuzzy
 msgid "Operation"
 msgstr "手術"
@@ -11095,7 +11105,7 @@ msgstr "數據"
 msgid "Visual"
 msgstr "視覺"
 
-#: include/global_settings.php:44 lib/functions.php:5588 lib/functions.php:5593
+#: include/global_settings.php:44 lib/functions.php:5609 lib/functions.php:5614
 #, fuzzy
 msgid "Authentication"
 msgstr "認證"
@@ -11139,12 +11149,12 @@ msgstr "圖形字體"
 msgid "PHP Mail() Function"
 msgstr "PHP Mail（）函數"
 
-#: include/global_settings.php:85 lib/functions.php:5569
+#: include/global_settings.php:85 lib/functions.php:5590
 #, fuzzy
 msgid "Sendmail"
 msgstr "發郵件"
 
-#: include/global_settings.php:86 lib/functions.php:5575
+#: include/global_settings.php:86 lib/functions.php:5596
 #, fuzzy
 msgid "SMTP"
 msgstr "SMTP"
@@ -11691,7 +11701,7 @@ msgid "Allow Unsafe Metacharacters in Data Input Methods"
 msgstr "此數據輸入法的名稱。"
 
 #: include/global_settings.php:508
-msgid "Historically, Cacti administrators created simple Data Input Methods that include commands like \"ps -ef | grep something | wc -l\" to represent a numeric values for use in Cacti Graphs.  In earlier versions of Cacti, this was permitted.  However, this is an unsafe practice as it is a gateway for third party users to publish insecure Data Templates.  In modern Cacti, these types of practices should be avoided.  However, we provide this option if you have older Data Input Methods that contain these unsafe Meta Characters and have not converted them to local scripts in the 'scripts' directory.  Unsafe metacharacters for use in web applications include blank spaces, quotation marks, less-than signs (<), greater-than signs (>), percent signs (%), left curly brackets ({), right curly brackets (}), vertical bars (|), backslashes (\\), circumflex or caret (^), and backticks (`).  Cacti continues to allow greater-than and less-than signs for things like <path_cacti> and for input parameters but if this option is unchecked, that is the limit of their permitted use."
+msgid "Historically, Cacti administrators created simple Data Input Methods that include commands like \"ps -ef | grep something | wc -l\" to represent a numeric value for use in Cacti Graphs.  In earlier versions of Cacti, this was permitted.  However, this is an unsafe practice as it is a gateway for third party users to publish insecure Data Templates.  In modern Cacti, these types of practices should be avoided.  However, we provide this option if you have older Data Input Methods that contain these unsafe Meta Characters and have not converted them to local scripts in the 'scripts' directory.  When this option is unchecked, Cacti restricts shell-style metacharacters such as quotation marks, curly brackets, vertical bars, backslashes, and backticks.  Cacti continues to allow greater-than and less-than signs for things like <path_cacti> and for input parameters, but if this option is unchecked, that is the limit of their permitted use."
 msgstr ""
 
 #: include/global_settings.php:514
@@ -13397,7 +13407,7 @@ msgstr "這是在電子郵件中的一行自動換行之前允許的字符數。
 msgid "Sendmail Options"
 msgstr "Sendmail選項"
 
-#: include/global_settings.php:1944 lib/functions.php:5569
+#: include/global_settings.php:1944 lib/functions.php:5590
 #, fuzzy
 msgid "Sendmail Path"
 msgstr "Sendmail路徑"
@@ -14640,151 +14650,151 @@ msgstr "覆蓋此值"
 msgid "Matching Devices"
 msgstr "匹配設備"
 
-#: lib/api_automation.php:150 lib/api_automation.php:1075
+#: lib/api_automation.php:150 lib/api_automation.php:1088
 #: lib/clog_webapi.php:543 lib/html_reports.php:999 lib/html_reports.php:1662
-#: lib/html_reports.php:1987 lib/html_reports.php:1998 lib/rrd.php:3270
+#: lib/html_reports.php:2002 lib/html_reports.php:2013 lib/rrd.php:3270
 #: utilities.php:356 utilities.php:1449 utilities.php:3096
 #, fuzzy
 msgid "Type"
 msgstr "類型"
 
-#: lib/api_automation.php:307
+#: lib/api_automation.php:320
 #, fuzzy
 msgid "No Matching Devices"
 msgstr "沒有匹配的設備"
 
-#: lib/api_automation.php:415 lib/api_automation.php:697
-#: lib/api_automation.php:871
+#: lib/api_automation.php:428 lib/api_automation.php:710
+#: lib/api_automation.php:884
 #, fuzzy
 msgid "Matching Objects"
 msgstr "匹配對象"
 
-#: lib/api_automation.php:712
+#: lib/api_automation.php:725
 #, fuzzy
 msgid "Objects"
 msgstr "各式物品"
 
-#: lib/api_automation.php:875
+#: lib/api_automation.php:888
 #, fuzzy
 msgid "A blue font color indicates that the rule will be applied to the objects in question.  Other objects will not be subject to the rule."
 msgstr "藍色字體顏色表示該規則將應用於相關對象。其他對像不受此規則約束。"
 
-#: lib/api_automation.php:875
+#: lib/api_automation.php:888
 #, php-format
 msgid "Matching Objects [ %s ]"
 msgstr "匹配對象[％s]"
 
-#: lib/api_automation.php:884
+#: lib/api_automation.php:897
 #, fuzzy
 msgid "Device Status"
 msgstr "設備狀態"
 
-#: lib/api_automation.php:906
+#: lib/api_automation.php:919
 #, fuzzy
 msgid "There are no Objects that match this rule."
 msgstr "沒有符合此規則的對象。"
 
-#: lib/api_automation.php:953
+#: lib/api_automation.php:966
 #, fuzzy
 msgid "Error in data query"
 msgstr "數據查詢錯誤"
 
-#: lib/api_automation.php:1061
+#: lib/api_automation.php:1074
 #, fuzzy
 msgid "Matching Items"
 msgstr "匹配項目"
 
-#: lib/api_automation.php:1227
+#: lib/api_automation.php:1251
 #, fuzzy
 msgid "Resulting Branch"
 msgstr "結果分支"
 
-#: lib/api_automation.php:1266
+#: lib/api_automation.php:1290
 #, fuzzy
 msgid "No Items Found"
 msgstr "找不到任何項目"
 
-#: lib/api_automation.php:1308 lib/api_automation.php:1370
+#: lib/api_automation.php:1332 lib/api_automation.php:1394
 #, fuzzy
 msgid "Field"
 msgstr "欄位"
 
-#: lib/api_automation.php:1310 lib/api_automation.php:1372
+#: lib/api_automation.php:1334 lib/api_automation.php:1396
 #, fuzzy
 msgid "Pattern"
 msgstr "模式"
 
-#: lib/api_automation.php:1353
+#: lib/api_automation.php:1377
 #, fuzzy
 msgid "No Device Selection Criteria"
 msgstr "沒有設備選擇標準"
 
-#: lib/api_automation.php:1414
+#: lib/api_automation.php:1438
 #, fuzzy
 msgid "No Graph Creation Criteria"
 msgstr "沒有圖表創建標準"
 
-#: lib/api_automation.php:1437
+#: lib/api_automation.php:1461
 #, fuzzy
 msgid "Propagate Change"
 msgstr "宣傳變革"
 
-#: lib/api_automation.php:1438
+#: lib/api_automation.php:1462
 #, fuzzy
 msgid "Search Pattern"
 msgstr "搜索模式"
 
-#: lib/api_automation.php:1439
+#: lib/api_automation.php:1463
 #, fuzzy
 msgid "Replace Pattern"
 msgstr "替換模式"
 
-#: lib/api_automation.php:1483
+#: lib/api_automation.php:1507
 #, fuzzy
 msgid "No Tree Creation Criteria"
 msgstr "沒有樹創建標準"
 
-#: lib/api_automation.php:1989 lib/api_automation.php:2054
+#: lib/api_automation.php:2013 lib/api_automation.php:2078
 #, fuzzy
 msgid "Device Match Rule"
 msgstr "設備匹配規則"
 
-#: lib/api_automation.php:2010
+#: lib/api_automation.php:2034
 #, fuzzy
 msgid "Create Graph Rule"
 msgstr "創建圖規則"
 
-#: lib/api_automation.php:2057
+#: lib/api_automation.php:2081
 #, fuzzy
 msgid "Graph Match Rule"
 msgstr "圖匹配規則"
 
-#: lib/api_automation.php:2089
+#: lib/api_automation.php:2113
 #, fuzzy
 msgid "Create Tree Rule (Device)"
 msgstr "創建樹規則（設備）"
 
-#: lib/api_automation.php:2092
+#: lib/api_automation.php:2116
 #, fuzzy
 msgid "Create Tree Rule (Graph)"
 msgstr "創建樹規則（圖）"
 
-#: lib/api_automation.php:2138
+#: lib/api_automation.php:2162
 #, fuzzy, php-format
 msgid "Rule Item [edit rule item for %s: %s]"
 msgstr "規則項[編輯%s的規則項：%s]"
 
-#: lib/api_automation.php:2140
+#: lib/api_automation.php:2164
 #, fuzzy, php-format
 msgid "Rule Item [new rule item for %s: %s]"
 msgstr "規則項[%s的新規則項：%s]"
 
-#: lib/api_automation.php:3027
+#: lib/api_automation.php:3051
 #, fuzzy
 msgid "Added by Cacti Automation"
 msgstr "由Cacti Automation添加"
 
-#: lib/api_automation.php:3289
+#: lib/api_automation.php:3313
 msgid "ERROR: IP ranges in the form of range1-range2 are no longer supported."
 msgstr "錯誤：不再支持採用 range1-range2 形式的 IP 範圍。"
 
@@ -14799,9 +14809,9 @@ msgstr "錯誤：不再支持採用 range1-range2 形式的 IP 範圍。"
 #: lib/api_device.php:1098 lib/api_device.php:1267 lib/api_device.php:1271
 #: lib/api_device.php:1298 lib/api_device.php:1302 lib/api_device.php:1334
 #: lib/api_device.php:1338 lib/api_device.php:1390 lib/api_device.php:1394
-#: lib/utility.php:646 lib/utility.php:650 lib/utility.php:726
-#: lib/utility.php:730 lib/utility.php:752 lib/utility.php:756
-#: lib/utility.php:779 lib/utility.php:782
+#: lib/utility.php:680 lib/utility.php:684 lib/utility.php:760
+#: lib/utility.php:764 lib/utility.php:786 lib/utility.php:790
+#: lib/utility.php:813 lib/utility.php:816
 #, php-format
 msgid "Remote Poller %s is Down, you will need to perform a FullSync once it is up again"
 msgstr ""
@@ -14881,8 +14891,8 @@ msgstr "地點:"
 msgid "Contact:"
 msgstr "聯繫方式："
 
-#: lib/api_device.php:1638 lib/functions.php:5602 lib/functions.php:5604
-#: lib/functions.php:5608
+#: lib/api_device.php:1638 lib/functions.php:5623 lib/functions.php:5625
+#: lib/functions.php:5629
 #, fuzzy
 msgid "Ping Results"
 msgstr "Ping結果"
@@ -14897,155 +14907,151 @@ msgstr "無Ping或SNMP可用性檢查正在使用中"
 msgid "New Branch"
 msgstr "新科"
 
-#: lib/auth.php:598
+#: lib/auth.php:608
 #, fuzzy
 msgid "Web Basic"
 msgstr "Web Basic"
 
-#: lib/auth.php:2273
+#: lib/auth.php:2283
 #, fuzzy
 msgid "Device:(Hide Disabled)"
 msgstr "設備已禁用"
 
-#: lib/auth.php:2291 lib/auth.php:2293 lib/auth.php:2299 lib/auth.php:2301
+#: lib/auth.php:2301 lib/auth.php:2303 lib/auth.php:2309 lib/auth.php:2311
 #, fuzzy, php-format
 msgid "Graph:(%s%s)"
 msgstr "圖表 :"
 
-#: lib/auth.php:2314 lib/auth.php:2320 lib/auth.php:2387 lib/auth.php:2389
-#: lib/auth.php:2393 lib/auth.php:2395
+#: lib/auth.php:2324 lib/auth.php:2330 lib/auth.php:2397 lib/auth.php:2399
+#: lib/auth.php:2403 lib/auth.php:2405
 #, fuzzy, php-format
 msgid "Device:(%s%s)"
 msgstr "裝置："
 
-#: lib/auth.php:2328 lib/auth.php:2334 lib/auth.php:2403 lib/auth.php:2405
-#: lib/auth.php:2409 lib/auth.php:2411
+#: lib/auth.php:2338 lib/auth.php:2344 lib/auth.php:2413 lib/auth.php:2415
+#: lib/auth.php:2419 lib/auth.php:2421
 #, fuzzy, php-format
 msgid "Template:(%s%s)"
 msgstr "模板"
 
-#: lib/auth.php:2341
+#: lib/auth.php:2351
 #, fuzzy, php-format
 msgid "Graph+Device+Template:(%s%s)"
 msgstr "設備模板："
 
-#: lib/auth.php:2378 lib/auth.php:2380
+#: lib/auth.php:2388 lib/auth.php:2390
 #, fuzzy, php-format
 msgid "Device+Template:(%s%s)"
 msgstr "設備模板："
 
-#: lib/auth.php:2424 lib/auth.php:2431 lib/auth.php:2440
+#: lib/auth.php:2434 lib/auth.php:2441 lib/auth.php:2450
 #, fuzzy
 msgid "Restricted By: "
 msgstr "受限 "
 
-#: lib/auth.php:2428
+#: lib/auth.php:2438
 #, fuzzy
 msgid "Granted By: "
 msgstr "授予方： "
 
-#: lib/auth.php:2435
+#: lib/auth.php:2445
 #, fuzzy
 msgid "Granted"
 msgstr "已授權權限數"
 
-#: lib/auth.php:2437 lib/auth.php:2442
+#: lib/auth.php:2447 lib/auth.php:2452
 #, fuzzy
 msgid "Restricted"
 msgstr "受限"
 
-#: lib/auth.php:2672 lib/auth.php:2707
+#: lib/auth.php:2682 lib/auth.php:2717
 #, fuzzy
 msgid "Branch:"
 msgstr "科："
 
-#: lib/auth.php:2681 lib/auth.php:2715 lib/html_tree.php:966
+#: lib/auth.php:2691 lib/auth.php:2725 lib/html_tree.php:966
 #: lib/reports.php:1046
 #, fuzzy
 msgid "Device:"
 msgstr "裝置："
 
-#: lib/auth.php:3550 lib/auth.php:3630
+#: lib/auth.php:3560 lib/auth.php:3640
 msgid "Your account has been locked.  Please contact your Administrator."
 msgstr "訪問被拒絕，請與您聯繫Cacti管理員。"
 
-#: lib/auth.php:3595
+#: lib/auth.php:3605
 msgid "Access Denied!  Login Disabled."
 msgstr "拒絕訪問，禁用用戶帳戶。"
 
-#: lib/auth.php:3635 lib/auth.php:3641 lib/auth.php:3758 lib/auth.php:3843
-#: lib/auth.php:4200 lib/auth.php:4230 lib/auth.php:4264
+#: lib/auth.php:3645 lib/auth.php:3651 lib/auth.php:3768 lib/auth.php:3853
+#: lib/auth.php:4210 lib/auth.php:4240 lib/auth.php:4266 lib/auth.php:4274
 msgid "Access Denied!  Login Failed."
 msgstr "拒絕訪問，禁用用戶帳戶。"
 
-#: lib/auth.php:3663
+#: lib/auth.php:3673
 #, fuzzy
 msgid "Web Basic Authentication configured, but no username was passed from the web server. Please make sure you have authentication enabled on the web server."
 msgstr "已配置Web基本身份驗證，但未從Web服務器傳遞用戶名。請確保您在Web服務器上啟用了身份驗證。"
 
-#: lib/auth.php:3677
+#: lib/auth.php:3687
 #, fuzzy, php-format
 msgid "%s authenticated by Web Server, but both Template and Guest Users are not defined in Cacti."
 msgstr "%s由Web Server進行身份驗證，但模板和來賓用戶都未在Cacti中定義。"
 
-#: lib/auth.php:3783
+#: lib/auth.php:3793
 #, fuzzy, php-format
 msgid "Access Denied!  LDAP Search Error: %s"
 msgstr "LDAP搜索錯誤：%s"
 
-#: lib/auth.php:3804 lib/auth.php:3967
+#: lib/auth.php:3814 lib/auth.php:3977
 #, fuzzy, php-format
 msgid "Access Denied!  LDAP Error: %s"
 msgstr "LDAP錯誤：%s"
 
-#: lib/auth.php:3816 lib/auth.php:3979 lib/auth.php:4240
+#: lib/auth.php:3826 lib/auth.php:3989 lib/auth.php:4250
 msgid "Access Denied!  No password provided by user."
 msgstr "拒絕訪問！用戶未提供密碼。"
 
-#: lib/auth.php:3866
+#: lib/auth.php:3876
 #, fuzzy, php-format
 msgid "LDAP Search Error: %s"
 msgstr "LDAP搜索錯誤：%s"
 
-#: lib/auth.php:3959 lib/auth.php:4866
+#: lib/auth.php:3969 lib/auth.php:4876
 #, php-format
 msgid "Access Denied!  Template user id %s does not exist.  Please contact your Administrator."
 msgstr "訪問被拒絕，請與您聯繫Cacti管理員。"
 
-#: lib/auth.php:4256
-msgid "Access Denied! Login failed."
-msgstr "拒絕訪問，禁用用戶帳戶。"
-
-#: lib/auth.php:4285
+#: lib/auth.php:4295
 #, fuzzy
 msgid "Your Cacti administrator has forced complex passwords for logins and your current Cacti password does not match the new requirements.  Therefore, you must change your password now."
 msgstr "您的Cacti管理員已強制使用複雜的密碼登錄，而您當前的Cacti密碼不符合新要求。因此，您必須立即更改密碼。"
 
-#: lib/auth.php:4316
+#: lib/auth.php:4326
 #, fuzzy, php-format
 msgid "Password must be at least %d characters!"
 msgstr "密碼必須至少為%d個字符！"
 
-#: lib/auth.php:4322
+#: lib/auth.php:4332
 #, fuzzy
 msgid "Your password must contain at least 1 numerical character!"
 msgstr "您的密碼必須至少包含1個數字字符！"
 
-#: lib/auth.php:4326
+#: lib/auth.php:4336
 #, fuzzy
 msgid "Your password must contain a mix of lower case and upper case characters!"
 msgstr "您的密碼必須包含小寫和大寫字符的混合！"
 
-#: lib/auth.php:4332
+#: lib/auth.php:4342
 #, fuzzy
 msgid "Your password must contain at least 1 special character!"
 msgstr "您的密碼必須包含至少1個特殊字符！"
 
-#: lib/auth.php:4661
+#: lib/auth.php:4671
 msgid "Cacti Login Failure"
 msgstr "Cacti Log清除"
 
-#: lib/auth.php:4944
+#: lib/auth.php:4954
 msgid "Authentication was previously not set.  Attempted to set to Local Authentication, but no Administrative account was found."
 msgstr "之前未設置身份驗證。嘗試設置為本地身份驗證，但未找到管理員帳戶。"
 
@@ -15179,7 +15185,7 @@ msgstr "符合"
 msgid "Threshold"
 msgstr "閾值"
 
-#: lib/clog_webapi.php:579 tree.php:857
+#: lib/clog_webapi.php:579 tree.php:866
 #, fuzzy
 msgid "Display"
 msgstr "顯示"
@@ -15203,7 +15209,7 @@ msgstr "符合"
 msgid "Does Not Match"
 msgstr "密碼不匹配"
 
-#: lib/clog_webapi.php:739
+#: lib/clog_webapi.php:740
 msgid "System Device"
 msgstr "同步設備"
 
@@ -15664,12 +15670,12 @@ msgstr "您必須為數據源'%s'選擇XML輸出列，並將復選框切換到�
 msgid "Your Graph Template has not Data Templates in use.  Please correct your Graph Template"
 msgstr "您的圖表模板尚未使用數據模板。請更正您的圖表模板"
 
-#: lib/database.php:2107
+#: lib/database.php:2113
 #, fuzzy
 msgid "Failed to determine password field length, can not continue as may corrupt password"
 msgstr "無法確定密碼字段長度，無法繼續，因為可能會損壞密碼"
 
-#: lib/database.php:2114
+#: lib/database.php:2120
 #, fuzzy
 msgid "Failed to alter password field length, can not continue as may corrupt password"
 msgstr "無法更改密碼字段長度，無法繼續，因為可能會損壞密碼"
@@ -15753,193 +15759,193 @@ msgstr "未找到信息。"
 msgid "Error %s is not readable"
 msgstr "錯誤%s無法讀取"
 
-#: lib/functions.php:3712
+#: lib/functions.php:3729
 msgid "Logged in a Guest"
 msgstr "登入"
 
-#: lib/functions.php:3712 lib/functions.php:3728
+#: lib/functions.php:3729 lib/functions.php:3745
 #, fuzzy
 msgid "Logged in as"
 msgstr "登入"
 
-#: lib/functions.php:3712
+#: lib/functions.php:3729
 #, fuzzy
 msgid "Login as Regular User"
 msgstr "以普通用戶身份登錄"
 
-#: lib/functions.php:3712
+#: lib/functions.php:3729
 #, fuzzy
 msgid "guest"
 msgstr "客人"
 
-#: lib/functions.php:3715 lib/functions.php:3738 lib/html.php:2591
+#: lib/functions.php:3732 lib/functions.php:3755 lib/html.php:2591
 #, fuzzy
 msgid "User Community"
 msgstr "用戶社區"
 
-#: lib/functions.php:3716 lib/functions.php:3739 lib/html.php:2593
-#: lib/utility.php:1403
+#: lib/functions.php:3733 lib/functions.php:3756 lib/html.php:2593
+#: lib/utility.php:1492
 #, fuzzy
 msgid "Documentation"
 msgstr "文件"
 
-#: lib/functions.php:3731
+#: lib/functions.php:3748
 #, fuzzy, php-format
 msgid "Logged in as %s"
 msgstr "已使用 %s 名義登入"
 
-#: lib/functions.php:3733 lib/html.php:2572
+#: lib/functions.php:3750 lib/html.php:2572
 #, fuzzy
 msgid "Edit Profile"
 msgstr "編輯個人資料"
 
-#: lib/functions.php:3743 lib/html.php:2576
+#: lib/functions.php:3760 lib/html.php:2576
 #, fuzzy
 msgid "Logout"
 msgstr "登出"
 
-#: lib/functions.php:3888
+#: lib/functions.php:3905
 #, fuzzy
 msgid "Leaf"
 msgstr "葉子"
 
-#: lib/functions.php:3908 lib/html_tree.php:665 lib/html_tree.php:701
+#: lib/functions.php:3925 lib/html_tree.php:665 lib/html_tree.php:701
 #: lib/html_tree.php:930 lib/html_tree.php:938 lib/html_tree.php:1539
 #, fuzzy
 msgid "Non Query Based"
 msgstr "非查詢"
 
-#: lib/functions.php:3944
+#: lib/functions.php:3961
 #, fuzzy, php-format
 msgid "Link %s"
 msgstr "連結 %s"
 
-#: lib/functions.php:5165
+#: lib/functions.php:5186
 #, fuzzy
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
 msgstr "郵件程序錯誤：沒有<b>TO</b>地址集！ <br>如果使用“ <i>測試郵件”</i>鏈接，請設置“ <b>警報電子郵件”</b>設置。"
 
-#: lib/functions.php:5533
+#: lib/functions.php:5554
 #, fuzzy, php-format
 msgid "Authentication failed: %s"
 msgstr "身份驗證失敗：%s"
 
-#: lib/functions.php:5537
+#: lib/functions.php:5558
 #, fuzzy, php-format
 msgid "HELO failed: %s"
 msgstr "HELO失敗了：%s"
 
-#: lib/functions.php:5540
+#: lib/functions.php:5561
 #, fuzzy, php-format
 msgid "Connect failed: %s"
 msgstr "連接失敗：%s"
 
-#: lib/functions.php:5543
+#: lib/functions.php:5564
 #, fuzzy
 msgid "SMTP error: "
 msgstr "SMTP錯誤： "
 
-#: lib/functions.php:5556
+#: lib/functions.php:5577
 #, fuzzy
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
 msgstr "這是Cacti生成的測試消息。發送此消息是為了測試郵件設置的配置。"
 
-#: lib/functions.php:5557
+#: lib/functions.php:5578
 #, fuzzy
 msgid "Your email settings are currently set as follows"
 msgstr "您的電子郵件設置目前設置如下"
 
-#: lib/functions.php:5558
+#: lib/functions.php:5579
 #, fuzzy
 msgid "Method"
 msgstr "方法"
 
-#: lib/functions.php:5560
+#: lib/functions.php:5581
 #, fuzzy
 msgid "Checking Configuration...<br>"
 msgstr "檢查配置...... <br>"
 
-#: lib/functions.php:5567
+#: lib/functions.php:5588
 #, fuzzy
 msgid "PHP's Mailer Class"
 msgstr "PHP的郵件程序類"
 
-#: lib/functions.php:5573
+#: lib/functions.php:5594
 #, fuzzy
 msgid "Method: SMTP"
 msgstr "方法：SMTP"
 
-#: lib/functions.php:5590
+#: lib/functions.php:5611
 #, fuzzy
 msgid "Not Shown for Security Reasons"
 msgstr "未顯示安全原因"
 
-#: lib/functions.php:5591
+#: lib/functions.php:5612
 #, fuzzy
 msgid "Security"
 msgstr "安全性"
 
-#: lib/functions.php:5599
+#: lib/functions.php:5620
 #, fuzzy
 msgid "Ping Results:"
 msgstr "Ping結果"
 
-#: lib/functions.php:5608
+#: lib/functions.php:5629
 #, fuzzy
 msgid "Bypassed"
 msgstr "旁路"
 
-#: lib/functions.php:5617
+#: lib/functions.php:5638
 #, fuzzy
 msgid "Creating Message Text..."
 msgstr "創建消息文本..."
 
-#: lib/functions.php:5620
+#: lib/functions.php:5641
 #, fuzzy
 msgid "Sending Message..."
 msgstr "發送消息......"
 
-#: lib/functions.php:5624
+#: lib/functions.php:5645
 #, fuzzy
 msgid "Cacti Test Message"
 msgstr "仙人掌測試消息"
 
-#: lib/functions.php:5626
+#: lib/functions.php:5647
 #, fuzzy
 msgid "Success!"
 msgstr "成功！"
 
-#: lib/functions.php:5629
+#: lib/functions.php:5650
 #, fuzzy
 msgid "Message Not Sent due to ping failure."
 msgstr "由於ping失敗而未發送消息。"
 
-#: lib/functions.php:6217 lib/functions.php:6286
+#: lib/functions.php:6238 lib/functions.php:6307
 #, fuzzy, php-format
 msgid "Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details."
 msgstr "由於以下錯誤，Cacti禁用了插件%s：%s！有關更多詳細信息，請參閱Cacti日誌文件。"
 
-#: lib/functions.php:6376
+#: lib/functions.php:6397
 #, php-format
 msgid "WARNING: PollerID:%s has an invalid hostname:%s.  Is it not reachable via DNS!"
 msgstr ""
 
-#: lib/functions.php:6767 lib/functions.php:6769
+#: lib/functions.php:6788 lib/functions.php:6790
 #, fuzzy, php-format
 msgid "- Beta %s"
 msgstr "-  Beta%s"
 
-#: lib/functions.php:6767
+#: lib/functions.php:6788
 #, fuzzy, php-format
 msgid "Version %s %s"
 msgstr "版本%s%s"
 
-#: lib/functions.php:6769
+#: lib/functions.php:6790
 #, php-format
 msgid "%s %s"
 msgstr "%s - %s"
 
-#: lib/functions.php:6983
+#: lib/functions.php:7004
 #, php-format
 msgid "WARNING:  Key Cacti Include File %s missing.  Please locate and replace this file"
 msgstr ""
@@ -16485,7 +16491,7 @@ msgstr "首先"
 msgid "End with"
 msgstr "結束日期"
 
-#: lib/html.php:2666 lib/html_form.php:1431
+#: lib/html.php:2666 lib/html_form.php:1432
 #, fuzzy
 msgid "Close"
 msgstr "關閉"
@@ -16555,17 +16561,17 @@ msgstr "仙人掌顏色（%s）"
 msgid "NO FONT VERIFICATION POSSIBLE"
 msgstr "沒有字體驗證可能"
 
-#: lib/html_form.php:1525
+#: lib/html_form.php:1526
 #, fuzzy
 msgid "Warning Unsaved Form Data"
 msgstr "警告未保存的表單數據"
 
-#: lib/html_form.php:1527
+#: lib/html_form.php:1528
 #, fuzzy
 msgid "Unsaved Changes Detected"
 msgstr "檢測到未保存的更改"
 
-#: lib/html_form.php:1528
+#: lib/html_form.php:1529
 #, fuzzy
 msgid "You have unsaved changes on this form.  If you press 'Continue' these changes will be discarded.  Press 'Cancel' to continue editing the form."
 msgstr "您在此表單上有未保存的更改。如果按“繼續”，這些更改將被丟棄。按“取消”繼續編輯表單。"
@@ -16608,7 +16614,7 @@ msgstr "%d列"
 msgid "Custom"
 msgstr "自訂"
 
-#: lib/html_graph.php:271 lib/html_reports.php:1985 lib/html_reports.php:1996
+#: lib/html_graph.php:271 lib/html_reports.php:2000 lib/html_reports.php:2011
 #: lib/html_tree.php:1101
 #, fuzzy
 msgid "From"
@@ -16619,7 +16625,7 @@ msgstr "從"
 msgid "Start Date Selector"
 msgstr "開始日期選擇器"
 
-#: lib/html_graph.php:280 lib/html_reports.php:1986 lib/html_reports.php:1997
+#: lib/html_graph.php:280 lib/html_reports.php:2001 lib/html_reports.php:2012
 #: lib/html_tree.php:1110
 #, fuzzy
 msgid "To"
@@ -17186,57 +17192,57 @@ msgstr "報告[%s]"
 msgid "User Level"
 msgstr "用戶等級"
 
-#: lib/html_reports.php:1903 lib/html_reports.php:1972
+#: lib/html_reports.php:1903 lib/html_reports.php:1987
 #, fuzzy
 msgid "Reports"
 msgstr "報告"
 
-#: lib/html_reports.php:1981 tree.php:2260
+#: lib/html_reports.php:1996 tree.php:2269
 #, fuzzy
 msgid "Owner"
 msgstr "所有者"
 
-#: lib/html_reports.php:1982 lib/html_reports.php:1993
+#: lib/html_reports.php:1997 lib/html_reports.php:2008
 #, fuzzy
 msgid "Frequency"
 msgstr "頻率"
 
-#: lib/html_reports.php:1983 lib/html_reports.php:1994
+#: lib/html_reports.php:1998 lib/html_reports.php:2009
 #, fuzzy
 msgid "Last Run"
 msgstr "最近執行"
 
-#: lib/html_reports.php:1984 lib/html_reports.php:1995
+#: lib/html_reports.php:1999 lib/html_reports.php:2010
 #, fuzzy
 msgid "Next Run"
 msgstr "下次執行"
 
-#: lib/html_reports.php:1992
+#: lib/html_reports.php:2007
 #, fuzzy
 msgid "Report Title"
 msgstr "報告標題"
 
-#: lib/html_reports.php:2023
+#: lib/html_reports.php:2038
 #, fuzzy
 msgid "Report Disabled - No Owner"
 msgstr "報告已禁用 - 沒有所有者"
 
-#: lib/html_reports.php:2027
+#: lib/html_reports.php:2042
 #, fuzzy
 msgid "Every"
 msgstr "每"
 
-#: lib/html_reports.php:2033
+#: lib/html_reports.php:2048
 #, fuzzy
 msgid "Multiple"
 msgstr "多"
 
-#: lib/html_reports.php:2034
+#: lib/html_reports.php:2049
 #, fuzzy
 msgid "Invalid"
 msgstr "無效"
 
-#: lib/html_reports.php:2041
+#: lib/html_reports.php:2056
 #, fuzzy
 msgid "No Reports Found"
 msgstr "沒有找到報告"
@@ -17786,7 +17792,7 @@ msgstr "以下PHP擴展是必需的，必須在繼續Cacti安裝之前安裝。"
 msgid "Required PHP Modules"
 msgstr "必需的PHP模塊"
 
-#: lib/installer.php:1955 lib/installer.php:1985 plugins.php:42 plugins.php:476
+#: lib/installer.php:1955 lib/installer.php:1985 plugins.php:42 plugins.php:488
 #, fuzzy
 msgid "Installed"
 msgstr "已安裝"
@@ -18254,7 +18260,7 @@ msgstr "不建議更新您已經修改過的模板。模板的升級不會刪除
 msgid "Please select the Device Templates that you wish to use after the Install.  If you Operating System is Windows, you need to ensure that you select the 'Windows Device' Template.  If your Operating System is Linux/UNIX, make sure you select the 'Local Linux Machine' Device Template."
 msgstr "請在安裝後選擇您要使用的設備模板。如果操作系統是Windows，則需要確保選擇“Windows設備”模板。如果您的操作系統是Linux / UNIX，請確保選擇“本地Linux計算機”設備模板。"
 
-#: lib/installer.php:2571 package_import.php:504 plugins.php:598
+#: lib/installer.php:2571 package_import.php:504 plugins.php:610
 #, fuzzy
 msgid "Author"
 msgstr "作者"
@@ -18891,22 +18897,22 @@ msgstr ""
 msgid "The Plugin in the directory '%s' does not include an install function '%s()'.  This function must exist for the plugin to be installed."
 msgstr ""
 
-#: lib/plugins.php:1295 lib/plugins.php:1302 plugins.php:483 plugins.php:564
+#: lib/plugins.php:1305 lib/plugins.php:1312 plugins.php:495 plugins.php:576
 #, fuzzy
 msgid "Plugins"
 msgstr "外掛"
 
-#: lib/plugins.php:1314 lib/plugins.php:1320
+#: lib/plugins.php:1324 lib/plugins.php:1330
 #, fuzzy, php-format
 msgid "Requires: Cacti >= %s"
 msgstr "需要：Cacti&gt; =%s"
 
-#: lib/plugins.php:1317
+#: lib/plugins.php:1327
 #, fuzzy
 msgid "Legacy Plugin"
 msgstr "傳統插件"
 
-#: lib/plugins.php:1342
+#: lib/plugins.php:1352
 #, fuzzy
 msgid "Not Stated"
 msgstr "沒有說明"
@@ -19470,216 +19476,216 @@ msgstr "圖形創建"
 msgid "NOTE: Graph not added for Data Query %s and index %s due to Data Source verification failure"
 msgstr ""
 
-#: lib/utility.php:1111
+#: lib/utility.php:1200
 #, fuzzy
 msgid "MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions to choose. Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability."
 msgstr "MySQL 5.6+和MariaDB 10.0+是很棒的版本，是非常好的版本。確保你運行最新的版本，雖然它解決了一個長期存在的低級別網絡問題，這個問題導致脊柱出現許多可靠性問題。"
 
-#: lib/utility.php:1123
+#: lib/utility.php:1212
 #, fuzzy, php-format
 msgid "It is STRONGLY recommended that you enable InnoDB in any %s version greater than 5.5.3."
 msgstr "建議您在大於5.1的任何%s版本中啟用InnoDB。"
 
-#: lib/utility.php:1136 lib/utility.php:1173
+#: lib/utility.php:1225 lib/utility.php:1262
 #, fuzzy
 msgid "When using Cacti with languages other than English, it is important to use the utf8mb4_unicode_ci collation type as some characters take more than a single byte."
 msgstr "將Cacti與英語以外的語言一起使用時，使用utf8mb4_unicode_ci校對類型非常重要，因為某些字符需要多個字節。"
 
-#: lib/utility.php:1142 lib/utility.php:1148 lib/utility.php:1179
-#: lib/utility.php:1185
+#: lib/utility.php:1231 lib/utility.php:1237 lib/utility.php:1268
+#: lib/utility.php:1274
 #, fuzzy
 msgid "When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte."
 msgstr "將Cacti與英語以外的語言一起使用時，使用utf8mb4字符集非常重要，因為某些字符需要多個字節。"
 
-#: lib/utility.php:1161
+#: lib/utility.php:1250
 #, fuzzy, php-format
 msgid "It is recommended that you enable InnoDB in any %s version greater than 5.1."
 msgstr "建議您在大於5.1的任何%s版本中啟用InnoDB。"
 
-#: lib/utility.php:1194
+#: lib/utility.php:1283
 #, fuzzy, php-format
 msgid "Depending on the number of logins and use of spine data collector, %s will need many connections.  The calculation for spine is: total_connections = total_processes * (total_threads + script_servers + 1), then you must leave headroom for user connections, which will change depending on the number of concurrent login accounts."
 msgstr "根據登錄次數和使用脊椎數據收集器，%s將需要許多連接。 spine的計算是：total_connections = total_processes *（total_threads + script_servers + 1），然後您必須為用戶連接留出空間，這將根據並發登錄帳戶的數量而變化。"
 
-#: lib/utility.php:1199
+#: lib/utility.php:1288
 #, fuzzy
 msgid "Keeping the table cache larger means less file open/close operations when using innodb_file_per_table."
 msgstr "使用innodb_file_per_table時，保持表緩存更大意味著更少的文件打開/關閉操作。"
 
-#: lib/utility.php:1204
+#: lib/utility.php:1293
 #, fuzzy
 msgid "With Remote polling capabilities, large amounts of data will be synced from the main server to the remote pollers.  Therefore, keep this value at or above 16M."
 msgstr "使用遠程輪詢功能，大量數據將從主服務器同步到遠程輪詢器。因此，請將此值保持在16M或以上。"
 
-#: lib/utility.php:1210
+#: lib/utility.php:1299
 #, fuzzy, php-format
 msgid "If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10%% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status."
 msgstr "如果使用Cacti Performance Booster並選擇內存存儲引擎，則必須小心在系統內存表空間耗盡之前刷新Performance Booster緩衝區。這有兩種方法，首先將輸出列的大小減小到恰當的大小。此列位於表poller_output和poller_output_boost中。您可以做的第二件事是為內存表分配更多內存。我們已經任意選擇了10 %%系統內存的推薦值，但如果您使用的是SSD磁盤驅動器，或者係統較小，則可以忽略此建議或選擇其他存儲引擎。您可能會在Console  - &gt; System Utilities  - &gt; View Boost Status下看到Performance Booster表的預期消耗。"
 
-#: lib/utility.php:1216
+#: lib/utility.php:1305
 #, fuzzy
 msgid "When executing subqueries, having a larger temporary table size, keep those temporary tables in memory."
 msgstr "執行子查詢時，臨時表大小較大時，請將這些臨時表保留在內存中。"
 
-#: lib/utility.php:1222 lib/utility.php:1228
+#: lib/utility.php:1311 lib/utility.php:1317
 msgid "When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.  As this is a per connection memory allocation, care must be taken not to increase it too high.  The sum of the join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB memory should be below 80%.  If the recommendation is negative, you must decrease this and or the sort_buffer_size until the recommendation fits within the allowable memory."
 msgstr ""
 
-#: lib/utility.php:1234
+#: lib/utility.php:1323
 #, fuzzy, php-format
 msgid "When using InnoDB storage it is important to keep your table spaces separate.  This makes managing the tables simpler for long time users of %s.  If you are running with this currently off, you can migrate to the per file storage by enabling the feature, and then running an alter statement on all InnoDB tables."
 msgstr "使用InnoDB存儲時，將表空間分開是很重要的。這使得對於%s的長時間用戶來說，管理表更簡單。如果您當前正在運行此服務，則可以通過啟用該功能，然後在所有InnoDB表上運行alter語句來遷移到每個文件存儲。"
 
-#: lib/utility.php:1240
+#: lib/utility.php:1329
 #, fuzzy
 msgid "When using innodb_file_per_table, it is important to set the innodb_file_format to Barracuda.  This setting will allow longer indexes important for certain Cacti tables."
 msgstr "使用innodb_file_per_table時，將innodb_file_format設置為Barracuda非常重要。此設置將允許更長的索引對某些Cacti表很重要。"
 
-#: lib/utility.php:1246
+#: lib/utility.php:1335
 #, fuzzy
 msgid "If your tables have very large indexes, you must operate with the Barracuda innodb_file_format and the innodb_large_prefix equal to 1.  Failure to do this may result in plugins that can not properly create tables."
 msgstr "如果表的索引很大，則必須使用梭子魚的innodb_file_format和innodb_large_prefix等於1的操作。否則可能導致插件無法正確創建表。"
 
-#: lib/utility.php:1252
+#: lib/utility.php:1341
 #, php-format
 msgid "InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size."
 msgstr "InnoDB將盡可能多地保存系統內存中的表和索引。因此，你應該使innodb_buffer_pool足夠大，以便在內存中保存盡可能多的表和索引。檢查/ var / lib / mysql / cacti目錄的大小將有助於確定此值。我們建議您的系統總內存佔25 %%，但您的要求會因係統大小而異。"
 
-#: lib/utility.php:1258
+#: lib/utility.php:1347
 #, fuzzy
 #| msgid "This settings should remain ON unless your Cacti instances is running on either ZFS or FusionI/O which both have internal journaling to accomodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance."
 msgid "This settings should remain ON unless your Cacti instances is running on either ZFS or FusionI/O which both have internal journaling to accommodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance."
 msgstr "除非您的Cacti實例在ZFS或FusionI / O上運行，並且兩者都具有內部日記功能以適應突然的系統崩潰，否則此設置應保持為ON。但是，如果您的電源非常好，並且系統很少宕機並且有備份，那麼將此設置設置為OFF可以使數據庫性能提高近50％。"
 
-#: lib/utility.php:1263
+#: lib/utility.php:1352
 #, fuzzy
 msgid "This is where metadata is stored. If you had a lot of tables, it would be useful to increase this."
 msgstr "這是存儲元數據的地方。如果你有很多表，那麼增加它會很有用。"
 
-#: lib/utility.php:1268
+#: lib/utility.php:1357
 #, fuzzy
 msgid "Rogue queries should not for the database to go offline to others.  Kill these queries before they kill your system."
 msgstr "Rogue查詢不應該讓數據庫脫機到其他人。在殺死您的系統之前殺死這些查詢。"
 
-#: lib/utility.php:1273
+#: lib/utility.php:1362
 #, fuzzy
 msgid "Maximum I/O performance happens when you use the O_DIRECT method to flush pages."
 msgstr "使用O_DIRECT方法刷新頁面時，會發生最大I / O性能。"
 
-#: lib/utility.php:1283
+#: lib/utility.php:1372
 #, fuzzy, php-format
 msgid "Setting this value to 2 means that you will flush all transactions every second rather than at commit.  This allows %s to perform writing less often."
 msgstr "將此值設置為2意味著您將每秒刷新所有事務而不是提交。這允許%s更少地執行寫入。"
 
-#: lib/utility.php:1288
+#: lib/utility.php:1377
 #, fuzzy
 msgid "With modern SSD type storage, having multiple io threads is advantageous for applications with high io characteristics."
 msgstr "使用現代SSD類型存儲，具有多個io線程對於具有高io特性的應用是有利的。"
 
-#: lib/utility.php:1296 lib/utility.php:1338
+#: lib/utility.php:1385 lib/utility.php:1427
 #, fuzzy, php-format
 msgid "As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential"
 msgstr "從%s%s開始，您可以控制%s將事務刷新到磁盤的頻率。默認值為1秒，但在高I / O系統中設置為大於1的值可以允許磁盤I / O更順序"
 
-#: lib/utility.php:1301
+#: lib/utility.php:1390
 #, fuzzy
 msgid "With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics.  Depending on your MariaDB/MySQL versions, this value can go as high as 64.  But try to keep the number less than your total SMT threads on the database server."
 msgstr "使用現代SSD類型存儲，具有多個讀取io線程對於具有高io特性的應用是有利的。"
 
-#: lib/utility.php:1306
+#: lib/utility.php:1395
 #, fuzzy
 msgid "With modern SSD type storage, having multiple write io threads is advantageous for applications with high io characteristics.  Depending on your MariaDB/MySQL versions, this value can go as high as 64.  But try to keep the number less than your total SMT threads on the database server."
 msgstr "使用現代SSD類型存儲，具有多個寫入io線程對於具有高io特性的應用是有利的。"
 
-#: lib/utility.php:1312
+#: lib/utility.php:1401
 #, fuzzy, php-format
 msgid "%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MariaDB less than 10.5.  The max value is 64, but should not exceed more than the number of CPU cores/threads.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation up to the max the number of CPU cores or 64."
 msgstr "%s會將innodb_buffer_pool劃分為內存區域以提高性能。最大值為64.當你的innodb_buffer_pool小於1GB時，你應該使用池大小除以128MB。繼續使用此公式，最大值為64。"
 
-#: lib/utility.php:1312
+#: lib/utility.php:1401
 #, fuzzy, php-format
 msgid "%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MySQL upto and including MySQL 8.0.  The max value is 64, but should not exceed more than the number of CPU cores/threads.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation up to the max of the number of CPU cores or 64."
 msgstr "%s會將innodb_buffer_pool劃分為內存區域以提高性能。最大值為64.當你的innodb_buffer_pool小於1GB時，你應該使用池大小除以128MB。繼續使用此公式，最大值為64。"
 
-#: lib/utility.php:1318 lib/utility.php:1354
+#: lib/utility.php:1407 lib/utility.php:1443
 #, fuzzy
 msgid "If you have SSD disks, use this suggestion.  If you have physical hard drives, use 200 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 100000 can be used."
 msgstr "如果您有SSD磁盤，請使用此建議。如果您有物理硬盤驅動器，請使用200 *陣列中的活動驅動器數量。如果使用NVMe或PCIe閃存，可以使用高達100000的更大數字。"
 
-#: lib/utility.php:1324 lib/utility.php:1360
+#: lib/utility.php:1413 lib/utility.php:1449
 #, fuzzy
 msgid "If you have SSD disks, use this suggestion.  If you have physical hard drives, use 2000 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 200000 can be used."
 msgstr "如果您有SSD磁盤，請使用此建議。如果您有物理硬盤驅動器，請使用2000 *陣列中的活動驅動器數量。如果使用NVMe或PCIe Flash，則可以使用高達200000的更大數字。"
 
-#: lib/utility.php:1330 lib/utility.php:1366
+#: lib/utility.php:1419 lib/utility.php:1455
 #, fuzzy
 msgid "If you have SSD disks, use this suggestion. Otherwise, do not set this setting."
 msgstr "如果您有SSD磁盤，請使用此建議。否則，請勿設置此設置。"
 
-#: lib/utility.php:1343
+#: lib/utility.php:1432
 #, fuzzy
 msgid "With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics."
 msgstr "使用現代SSD類型存儲，具有多個讀取io線程對於具有高io特性的應用是有利的。"
 
-#: lib/utility.php:1348
+#: lib/utility.php:1437
 #, fuzzy
 msgid "With modern SSD type storage, having multiple write io threads is advantageous for applications with high io characteristics."
 msgstr "使用現代SSD類型存儲，具有多個寫入io線程對於具有高io特性的應用是有利的。"
 
-#: lib/utility.php:1379
+#: lib/utility.php:1468
 msgid "When using MariaDB 10.2.4 and above, this setting should be off if atomic writes are enabled.  Therefore, please enable atomic writes instead of the double write buffer as it will increase performance."
 msgstr "使用 MariaDB 10.2.4 及更高版本時，如果啟用了原子寫入，則應關閉此設置。因此，請啟用原子寫入而不是雙寫入緩衝區，因為它會提高性能。"
 
-#: lib/utility.php:1386
+#: lib/utility.php:1475
 msgid "When using MariaDB 10.2.4 and above, you can use atomic writes over the doublewrite buffer to increase performance."
 msgstr "使用 MariaDB 10.2.4 及更高版本時，您可以在雙寫緩衝區上使用原子寫入來提高性能。"
 
-#: lib/utility.php:1403
+#: lib/utility.php:1492
 #, fuzzy, php-format
 msgid "%s Tuning"
 msgstr "%s調整"
 
-#: lib/utility.php:1403
+#: lib/utility.php:1492
 #, fuzzy
 msgid "Note: Many changes below require a database restart"
 msgstr "注意：以下許多更改都需要重新啟動數據庫"
 
-#: lib/utility.php:1411
+#: lib/utility.php:1500
 #, fuzzy
 msgid "Variable"
 msgstr "变数"
 
-#: lib/utility.php:1412
+#: lib/utility.php:1501
 #, fuzzy
 msgid "Current Value"
 msgstr "當前的數值"
 
-#: lib/utility.php:1414
+#: lib/utility.php:1503
 #, fuzzy
 msgid "Recommended Value"
 msgstr "推薦值"
 
-#: lib/utility.php:1415
+#: lib/utility.php:1504
 #, fuzzy
 msgid "Comments"
 msgstr "評論"
 
-#: lib/utility.php:1997
+#: lib/utility.php:2086
 #, fuzzy, php-format
 msgid "PHP %s is the minimum version"
 msgstr "PHP%s是最小版本"
 
-#: lib/utility.php:1999
+#: lib/utility.php:2088
 #, fuzzy, php-format
 msgid "A minimum of %s memory limit"
 msgstr "至少%s MB內存限制"
 
-#: lib/utility.php:2001
+#: lib/utility.php:2090
 #, fuzzy, php-format
 msgid "A minimum of %s m execution time"
 msgstr "至少%sm執行時間"
 
-#: lib/utility.php:2003
+#: lib/utility.php:2092
 #, fuzzy
 msgid "A valid timezone that matches MySQL and the system"
 msgstr "與MySQL和系統匹配的有效時區"
@@ -20203,7 +20209,7 @@ msgstr ""
 msgid "Package Import"
 msgstr "匯入"
 
-#: plugins.php:33 plugins.php:681
+#: plugins.php:33 plugins.php:693
 #, fuzzy
 msgid "Uninstall"
 msgstr "解除安裝"
@@ -20213,7 +20219,7 @@ msgstr "解除安裝"
 msgid "Not Compatible"
 msgstr "不兼容"
 
-#: plugins.php:38 plugins.php:479 utilities.php:749
+#: plugins.php:38 plugins.php:491 utilities.php:749
 #, fuzzy
 msgid "Not Installed"
 msgstr "未安裝"
@@ -20227,189 +20233,189 @@ msgstr "等待配置"
 msgid "Awaiting Upgrade"
 msgstr "等待升級"
 
-#: plugins.php:454
+#: plugins.php:466
 #, fuzzy
 msgid "Plugin Management"
 msgstr "插件管理"
 
-#: plugins.php:474 plugins.php:720 plugins.php:731
+#: plugins.php:486 plugins.php:732 plugins.php:743
 #, fuzzy
 msgid "Plugin Error"
 msgstr "插件錯誤"
 
-#: plugins.php:477
+#: plugins.php:489
 msgid "Active/Installed"
 msgstr "主動/安裝"
 
-#: plugins.php:478
+#: plugins.php:490
 #, fuzzy
 msgid "Configuration Issues"
 msgstr "配置問題"
 
-#: plugins.php:577
+#: plugins.php:589
 #, fuzzy
 msgid "Actions available include 'Install', 'Activate', 'Disable', 'Enable', 'Uninstall'."
 msgstr "可用的操作包括“安裝”，“激活”，“禁用”，“啟用”，“卸載”。"
 
-#: plugins.php:580
+#: plugins.php:592
 #, fuzzy
 msgid "Plugin Name"
 msgstr "外掛名稱"
 
-#: plugins.php:583
+#: plugins.php:595
 #, fuzzy
 msgid "The name for this Plugin.  The name is controlled by the directory it resides in."
 msgstr "這個插件的名稱。名稱由它所在的目錄控制。"
 
-#: plugins.php:586
+#: plugins.php:598
 #, fuzzy
 msgid "Plugin Description"
 msgstr "外掛描述"
 
-#: plugins.php:589
+#: plugins.php:601
 #, fuzzy
 msgid "A description that the Plugins author has given to the Plugin."
 msgstr "插件作者給插件的描述。"
 
-#: plugins.php:592
+#: plugins.php:604
 msgid "Main / Remote Status"
 msgstr ""
 
-#: plugins.php:595
+#: plugins.php:607
 #, fuzzy
 msgid "The status of this Plugin."
 msgstr "這個插件的狀態。"
 
-#: plugins.php:601
+#: plugins.php:613
 #, fuzzy
 msgid "The author of this Plugin."
 msgstr "這個插件的作者。"
 
-#: plugins.php:604
+#: plugins.php:616
 #, fuzzy
 msgid "Requires"
 msgstr "版本要求"
 
-#: plugins.php:607
+#: plugins.php:619
 #, fuzzy
 msgid "This Plugin requires the following Plugins be installed first."
 msgstr "此插件需要首先安裝以下插件。"
 
-#: plugins.php:613
+#: plugins.php:625
 #, fuzzy
 msgid "The version of this Plugin."
 msgstr "這個插件的版本。"
 
-#: plugins.php:616
+#: plugins.php:628
 #, fuzzy
 msgid "Load Order"
 msgstr "加載訂單"
 
-#: plugins.php:619
+#: plugins.php:631
 #, fuzzy
 msgid "The load order of the Plugin.  You can change the load order by first sorting by it, then moving a Plugin either up or down."
 msgstr "插件的加載順序。您可以通過先對其進行排序，然後向上或向下移動插件來更改加載順序。"
 
-#: plugins.php:649
+#: plugins.php:661
 #, fuzzy
 msgid "No Plugins Found"
 msgstr "找不到插件"
 
-#: plugins.php:660
+#: plugins.php:672
 msgid "Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click 'Uninstall' below.  Otherwise click 'Cancel'"
 msgstr "卸載此插件將刪除所有插件數據和設置。如果您確實要卸載插件，請單擊下面的“卸載”。否則點擊“取消”"
 
-#: plugins.php:661
+#: plugins.php:673
 #, fuzzy
 msgid "Are you sure you want to Uninstall?"
 msgstr "您確定要卸載嗎？"
 
-#: plugins.php:718 plugins.php:729
+#: plugins.php:730 plugins.php:741
 #, php-format
 msgid "Not Compatible, %s"
 msgstr "不兼容，％s"
 
-#: plugins.php:760
+#: plugins.php:772
 #, fuzzy
 msgid "Order Before Previous Plugin"
 msgstr "在上一個插件之前訂購"
 
-#: plugins.php:765
+#: plugins.php:777
 #, fuzzy
 msgid "Order After Next Plugin"
 msgstr "下一個插件後的訂單"
 
-#: plugins.php:815
+#: plugins.php:827
 #, php-format
 msgid "Unable to Install Plugin.  The following Plugins must be installed first: %s"
 msgstr "無法安裝插件。必須首先安裝以下插件：％s"
 
-#: plugins.php:817
+#: plugins.php:829
 #, fuzzy
 msgid "Install Plugin"
 msgstr "安裝外掛"
 
-#: plugins.php:824 plugins.php:836
+#: plugins.php:836 plugins.php:848
 #, php-format
 msgid "Unable to Uninstall.  This Plugin is required by: %s"
 msgstr "無法卸載。此插件需要：％s"
 
-#: plugins.php:826 plugins.php:831 plugins.php:838
+#: plugins.php:838 plugins.php:843 plugins.php:850
 #, fuzzy
 msgid "Uninstall Plugin"
 msgstr "卸載插件"
 
-#: plugins.php:828
+#: plugins.php:840
 #, fuzzy
 msgid "Disable Plugin"
 msgstr "停用外掛程式"
 
-#: plugins.php:840
+#: plugins.php:852
 #, fuzzy
 msgid "Enable Plugin"
 msgstr "啟用外掛程式"
 
-#: plugins.php:843
+#: plugins.php:855
 #, fuzzy
 msgid "Plugin directory is missing!"
 msgstr "插件目錄丟失了！"
 
-#: plugins.php:846
+#: plugins.php:858
 #, fuzzy
 msgid "Plugin is not compatible (Pre-1.x)"
 msgstr "插件不兼容（Pre-1.x）"
 
-#: plugins.php:849
+#: plugins.php:861
 #, fuzzy
 msgid "Plugin directories can not include spaces"
 msgstr "插件目錄不能包含空格"
 
-#: plugins.php:852
+#: plugins.php:864
 #, fuzzy, php-format
 msgid "Plugin directory is not correct.  Should be '%s' but is '%s'"
 msgstr "插件目錄不正確。應該是&#39;%s&#39;但是&#39;%s&#39;"
 
-#: plugins.php:860
+#: plugins.php:872
 #, fuzzy, php-format
 msgid "Plugin directory '%s' is missing setup.php"
 msgstr "插件目錄&#39;%s&#39;缺少setup.php"
 
-#: plugins.php:862
+#: plugins.php:874
 #, fuzzy
 msgid "Plugin is lacking an INFO file"
 msgstr "插件缺少INFO文件"
 
-#: plugins.php:864
+#: plugins.php:876
 #, fuzzy
 msgid "Plugin is integrated into Cacti core"
 msgstr "插件已集成到Cacti核心中"
 
-#: plugins.php:866
+#: plugins.php:878
 #, fuzzy
 msgid "Plugin is not compatible"
 msgstr "插件不兼容"
 
-#: plugins.php:880
+#: plugins.php:892
 msgid "Enable Plugin Locally"
 msgstr "啟用外掛程式"
 
@@ -21346,7 +21352,7 @@ msgstr[0] "複製"
 msgid "Site not found."
 msgstr "找不到檔案"
 
-#: sites.php:610 tree.php:898
+#: sites.php:610 tree.php:907
 #, fuzzy
 msgid "Site Name"
 msgstr "網站名稱"
@@ -21550,282 +21556,282 @@ msgctxt "dropdown action"
 msgid "Un-Lock"
 msgstr "已上鎖"
 
-#: tree.php:390
+#: tree.php:399
 #, fuzzy
 msgctxt "ordering of tree items"
 msgid "inherit"
 msgstr "繼承"
 
-#: tree.php:393
+#: tree.php:402
 #, fuzzy
 msgctxt "ordering of tree items"
 msgid "manual"
 msgstr "手動"
 
-#: tree.php:396
+#: tree.php:405
 #, fuzzy
 msgctxt "ordering of tree items"
 msgid "alpha"
 msgstr "α"
 
-#: tree.php:399
+#: tree.php:408
 #, fuzzy
 msgctxt "ordering of tree items"
 msgid "natural"
 msgstr "自然"
 
-#: tree.php:402
+#: tree.php:411
 #, fuzzy
 msgctxt "ordering of tree items"
 msgid "numeric"
 msgstr "數字"
 
-#: tree.php:499
+#: tree.php:508
 #, fuzzy
 msgid "You do not have permission to modify this tree."
 msgstr "沒有權限。您無權執行所請求的操作。"
 
-#: tree.php:706
+#: tree.php:715
 msgid "Click 'Continue' to delete the following Tree."
 msgid_plural "Click 'Continue' to delete following Trees."
 msgstr[0] "單擊“繼續”以刪除以下樹。"
 
-#: tree.php:711
+#: tree.php:720
 msgid "Delete Tree"
 msgid_plural "Delete Trees"
 msgstr[0] "刪除樹"
 
-#: tree.php:715
+#: tree.php:724
 msgid "Click 'Continue' to publish the following Tree."
 msgid_plural "Click 'Continue' to publish following Trees."
 msgstr[0] "單擊“繼續”以發布以下樹。"
 
-#: tree.php:720
+#: tree.php:729
 msgid "Publish Tree"
 msgid_plural "Publish Trees"
 msgstr[0] "發布樹"
 
-#: tree.php:724
+#: tree.php:733
 msgid "Click 'Continue' to un-publish the following Tree."
 msgid_plural "Click 'Continue' to un-publish following Trees."
 msgstr[0] "單擊“繼續”以取消發布以下樹。"
 
-#: tree.php:729
+#: tree.php:738
 msgid "Un-publish Tree"
 msgid_plural "Un-publish Trees"
 msgstr[0] "取消發布樹"
 
-#: tree.php:733
+#: tree.php:742
 msgid "Click 'Continue' to un-lock the following Tree."
 msgid_plural "Click 'Continue' to un-lock following Trees."
 msgstr[0] "單擊“繼續”以取消發布以下樹。"
 
-#: tree.php:738
+#: tree.php:747
 msgid "Un-lock Tree"
 msgid_plural "Un-lock Trees"
 msgstr[0] "取消發布樹"
 
-#: tree.php:782
+#: tree.php:791
 #, fuzzy, php-format
 msgid "Trees [edit: %s]"
 msgstr "樹木[編輯：%s]"
 
-#: tree.php:795
+#: tree.php:804
 #, fuzzy
 msgid "Trees [new]"
 msgstr "樹木[新]"
 
-#: tree.php:824
+#: tree.php:833
 #, fuzzy
 msgid "Edit Tree"
 msgstr "編輯樹"
 
-#: tree.php:824
+#: tree.php:833
 #, fuzzy
 msgid "To Edit this tree, you must first lock it by pressing the Edit Tree button."
 msgstr "要編輯此樹，必須先按“編輯樹”按鈕將其鎖定。"
 
-#: tree.php:827
+#: tree.php:836
 #, fuzzy
 msgid "Add Root Branch"
 msgstr "添加根分支"
 
-#: tree.php:827
+#: tree.php:836
 #, fuzzy
 msgid "Finish Editing Tree"
 msgstr "完成編輯樹"
 
-#: tree.php:827
+#: tree.php:836
 #, php-format
 msgid "This tree has been locked for Editing on %s by %s."
 msgstr "此樹已被%2$s s鎖定在%1$s上編輯。"
 
-#: tree.php:832
+#: tree.php:841
 #, fuzzy
 msgid "To edit the tree, you must first unlock it and then lock it as yourself"
 msgstr "要編輯樹，必須先將其解鎖然後將其鎖定為自己"
 
-#: tree.php:868
+#: tree.php:877
 #, fuzzy
 msgid "Tree Items"
 msgstr "樹項目"
 
-#: tree.php:876
+#: tree.php:885
 #, fuzzy
 msgid "Available Sites"
 msgstr "可用站點"
 
-#: tree.php:911
+#: tree.php:920
 #, fuzzy
 msgid "Available Devices"
 msgstr "可用設備"
 
-#: tree.php:946
+#: tree.php:955
 #, fuzzy
 msgid "Available Graphs"
 msgstr "可用圖表"
 
-#: tree.php:1005 tree.php:1297
+#: tree.php:1014 tree.php:1306
 #, fuzzy
 msgid "New Node"
 msgstr "新節點"
 
-#: tree.php:1621
+#: tree.php:1630
 #, fuzzy
 msgid "Rename"
 msgstr "重新命名"
 
-#: tree.php:1648
+#: tree.php:1657
 #, fuzzy
 msgid "Branch Sorting"
 msgstr "分支排序"
 
-#: tree.php:1655
+#: tree.php:1664
 #, fuzzy
 msgid "Inherit"
 msgstr "繼承"
 
-#: tree.php:1683
+#: tree.php:1692
 #, fuzzy
 msgid "Alphabetic"
 msgstr "按字母順序"
 
-#: tree.php:1697
+#: tree.php:1706
 #, fuzzy
 msgid "Natural"
 msgstr "自然"
 
-#: tree.php:1734 tree.php:1808 tree.php:1916
+#: tree.php:1743 tree.php:1817 tree.php:1925
 #, fuzzy
 msgid "Cut"
 msgstr "剪下"
 
-#: tree.php:1767
+#: tree.php:1776
 #, fuzzy
 msgid "Paste"
 msgstr "貼上"
 
-#: tree.php:2130
+#: tree.php:2139
 #, fuzzy
 msgid "Add Tree"
 msgstr "添加樹"
 
-#: tree.php:2136 tree.php:2180
+#: tree.php:2145 tree.php:2189
 #, fuzzy
 msgid "Sort Trees Ascending"
 msgstr "排序樹升序"
 
-#: tree.php:2142 tree.php:2181
+#: tree.php:2151 tree.php:2190
 #, fuzzy
 msgid "Sort Trees Descending"
 msgstr "排序樹降序"
 
-#: tree.php:2236 user_admin.php:1426 user_group_admin.php:1305
+#: tree.php:2245 user_admin.php:1426 user_group_admin.php:1305
 #, fuzzy
 msgid "Tree Name"
 msgstr "樹名"
 
-#: tree.php:2239
+#: tree.php:2248
 #, fuzzy
 msgid "The name by which this Tree will be referred to as."
 msgstr "此樹將被稱為的名稱。"
 
-#: tree.php:2245
+#: tree.php:2254
 #, fuzzy
 msgid "The internal database ID for this Tree.  Useful when performing automation or debugging."
 msgstr "此樹的內部數據庫ID。在執行自動化或調試時很有用。"
 
-#: tree.php:2248
+#: tree.php:2257
 #, fuzzy
 msgid "Published"
 msgstr "已發佈"
 
-#: tree.php:2251
+#: tree.php:2260
 #, fuzzy
 msgid "Unpublished Trees cannot be viewed from the Graph tab"
 msgstr "無法從“圖形”選項卡查看未發布的樹"
 
-#: tree.php:2257
+#: tree.php:2266
 #, fuzzy
 msgid "A Tree must be locked in order to be edited."
 msgstr "必須鎖定樹才能進行編輯。"
 
-#: tree.php:2263
+#: tree.php:2272
 #, fuzzy
 msgid "The original author of this Tree."
 msgstr "這棵樹的原作者。"
 
-#: tree.php:2269
+#: tree.php:2278
 #, fuzzy
 msgid "To change the order of the trees, first sort by this column, press the up or down arrows once they appear."
 msgstr "要更改樹的順序，請先按此列排序，然後在出現時按向上或向下箭頭。"
 
-#: tree.php:2272
+#: tree.php:2281
 #, fuzzy
 msgid "Last Edited"
 msgstr "最後編輯"
 
-#: tree.php:2275
+#: tree.php:2284
 #, fuzzy
 msgid "The date that this Tree was last edited."
 msgstr "上次編輯此樹的日期。"
 
-#: tree.php:2278
+#: tree.php:2287
 #, fuzzy
 msgid "Edited By"
 msgstr "已編輯由"
 
-#: tree.php:2281
+#: tree.php:2290
 #, fuzzy
 msgid "The last user to have modified this Tree."
 msgstr "修改此樹的最後一個用戶。"
 
-#: tree.php:2287
+#: tree.php:2296
 #, fuzzy
 msgid "The total number of Site Branches in this Tree."
 msgstr "此樹中的“站點分支”總數。"
 
-#: tree.php:2290
+#: tree.php:2299
 #, fuzzy
 msgid "Branches"
 msgstr "分行"
 
-#: tree.php:2293
+#: tree.php:2302
 #, fuzzy
 msgid "The total number of Branches in this Tree."
 msgstr "此樹中的分支總數。"
 
-#: tree.php:2299
+#: tree.php:2308
 #, fuzzy
 msgid "The total number of individual Devices in this Tree."
 msgstr "此樹中單個設備的總數。"
 
-#: tree.php:2305
+#: tree.php:2314
 #, fuzzy
 msgid "The total number of individual Graphs in this Tree."
 msgstr "此樹中單個圖的總數。"
 
-#: tree.php:2351
+#: tree.php:2360
 #, fuzzy
 msgid "No Trees Found"
 msgstr "找不到樹木"
@@ -23726,6 +23732,9 @@ msgstr "使用此VDEF的圖表模板數。"
 #, fuzzy
 msgid "No VDEFs"
 msgstr "沒有VDEF"
+
+#~ msgid "Access Denied! Login failed."
+#~ msgstr "拒絕訪問，禁用用戶帳戶。"
 
 #, fuzzy
 #~ msgid "Data Input Field not found."
