@@ -4263,7 +4263,7 @@ function secpass_login_process($username) {
 
 			if (!$error) {
 				$error     = true;
-				$error_msg = __('Access Denied! Login failed.');
+				$error_msg = __('Access Denied!  Login Failed.');
 			}
 
 			return array();
