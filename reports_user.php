@@ -22,7 +22,6 @@
  +-------------------------------------------------------------------------+
 */
 
-$guest_account = true;
 include('./include/auth.php');
 include_once($config['library_path'] . '/reports.php');
 include_once($config['library_path'] . '/html_reports.php');
