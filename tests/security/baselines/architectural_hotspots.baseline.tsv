@@ -521,12 +521,12 @@ dynamic_include	./remote_agent.php:36	require_once($config['base_path'] . '/lib/
 dynamic_include	./remote_agent.php:37	require_once($config['base_path'] . '/lib/sort.php');
 dynamic_include	./remote_agent.php:38	require_once($config['base_path'] . '/lib/template.php');
 dynamic_include	./remote_agent.php:39	require_once($config['base_path'] . '/lib/utility.php');
-dynamic_include	./reports_admin.php:27	include_once($config['library_path'] . '/reports.php');
-dynamic_include	./reports_admin.php:28	include_once($config['library_path'] . '/html_reports.php');
-dynamic_include	./reports_admin.php:29	include_once($config['library_path'] . '/timespan_settings.php');
-dynamic_include	./reports_user.php:27	include_once($config['library_path'] . '/reports.php');
-dynamic_include	./reports_user.php:28	include_once($config['library_path'] . '/html_reports.php');
-dynamic_include	./reports_user.php:29	include_once($config['library_path'] . '/timespan_settings.php');
+dynamic_include	./reports_admin.php:26	include_once($config['library_path'] . '/reports.php');
+dynamic_include	./reports_admin.php:27	include_once($config['library_path'] . '/html_reports.php');
+dynamic_include	./reports_admin.php:28	include_once($config['library_path'] . '/timespan_settings.php');
+dynamic_include	./reports_user.php:26	include_once($config['library_path'] . '/reports.php');
+dynamic_include	./reports_user.php:27	include_once($config['library_path'] . '/html_reports.php');
+dynamic_include	./reports_user.php:28	include_once($config['library_path'] . '/timespan_settings.php');
 dynamic_include	./rrdcheck.php:26	include_once ($config['library_path'] . '/functions.php');
 dynamic_include	./rrdcleaner.php:26	include_once ($config['library_path'] . '/functions.php');
 dynamic_include	./rrdcleaner.php:27	include_once ($config['library_path'] . '/rrd.php');
