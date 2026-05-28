@@ -160,7 +160,13 @@ function remote_client_authorized() : bool {
 		return false;
 	}
 
-	$pollers = db_fetch_assoc('SELECT * FROM poller WHERE disabled = ""', true, $poller_db_cnn_id);
+	$pollers = db_fetch_assoc_prepared('SELECT *
+		FROM poller
+		WHERE disabled = ?',
+		[''],
+		true,
+		$poller_db_cnn_id
+	);
 
 	if (cacti_sizeof($pollers) <= 1) {
 		cacti_log("Unauthorized remote agent access attempt from $client_addr", false, 'SECURITY');
@@ -186,7 +192,20 @@ function remote_client_authorized() : bool {
 		}
 
 		if (!filter_var($poller_host, FILTER_VALIDATE_IP)) {
-			$allowed_hostnames[] = cacti_strtolower(rtrim($poller_host, '.'));
+			$normalized_host      = cacti_strtolower(rtrim($poller_host, '.'));
+			$allowed_hostnames[]  = $normalized_host;
+
+			$poller_forward_records = @dns_get_record($poller_host, DNS_A | DNS_AAAA);
+
+			if (is_array($poller_forward_records)) {
+				foreach ($poller_forward_records as $record) {
+					$ip = isset($record['ip']) ? $record['ip'] : (isset($record['ipv6']) ? $record['ipv6'] : '');
+
+					if ($ip === $client_addr) {
+						return true;
+					}
+				}
+			}
 		}
 	}
 
@@ -197,7 +216,15 @@ function remote_client_authorized() : bool {
 	}
 
 	sort($allowed_hostnames);
-	$cache_key = 'remote_agent_auth:' . md5($client_addr . '|' . implode(',', $allowed_hostnames));
+	$cache_seed = $client_addr . '|' . implode(',', $allowed_hostnames);
+	if (function_exists('md5')) {
+		$cache_hash = md5($cache_seed);
+	} elseif (function_exists('hash')) {
+		$cache_hash = hash('sha256', $cache_seed);
+	} else {
+		$cache_hash = $cache_seed;
+	}
+	$cache_key = 'remote_agent_auth:' . $cache_hash;
 	$cached    = remote_agent_auth_cache_get($cache_key);
 
 	if ($cached !== null) {
