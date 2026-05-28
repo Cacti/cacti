@@ -444,9 +444,9 @@ function reports_form_actions() : void {
 			foreach ($selected_items as $report) {
 				[$type, $report_id] = explode('_', $report);
 
-				$report_id = intval($report_id);
+				input_validate_input_number($report_id, 'report_id');
 
-				if (!$can_manage_report($type, $report_id)) {
+				if (!$can_manage_report($type, (int) $report_id)) {
 					continue;
 				}
 

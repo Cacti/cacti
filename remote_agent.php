@@ -179,6 +179,8 @@ function remote_client_authorized() : bool {
 	}
 
 	$allowed_hostnames = [];
+	$poller_hostnames  = [];
+	$direct_match      = false;
 
 	foreach ($pollers as $poller) {
 		$poller_host = trim($poller['hostname']);
@@ -188,24 +190,15 @@ function remote_client_authorized() : bool {
 		}
 
 		if ($poller_host === $client_addr) {
-			return true;
+			$direct_match = true;
+
+			continue;
 		}
 
 		if (!filter_var($poller_host, FILTER_VALIDATE_IP)) {
-			$normalized_host      = cacti_strtolower(rtrim($poller_host, '.'));
-			$allowed_hostnames[]  = $normalized_host;
-
-			$poller_forward_records = @dns_get_record($poller_host, DNS_A | DNS_AAAA);
-
-			if (is_array($poller_forward_records)) {
-				foreach ($poller_forward_records as $record) {
-					$ip = isset($record['ip']) ? $record['ip'] : (isset($record['ipv6']) ? $record['ipv6'] : '');
-
-					if ($ip === $client_addr) {
-						return true;
-					}
-				}
-			}
+			$normalized_host     = cacti_strtolower(rtrim($poller_host, '.'));
+			$allowed_hostnames[] = $normalized_host;
+			$poller_hostnames[]  = $poller_host;
 		}
 	}
 
@@ -229,6 +222,28 @@ function remote_client_authorized() : bool {
 
 	if ($cached !== null) {
 		return $cached;
+	}
+
+	if ($direct_match) {
+		remote_agent_auth_cache_set($cache_key, true);
+
+		return true;
+	}
+
+	foreach ($poller_hostnames as $poller_host) {
+		$poller_forward_records = @dns_get_record($poller_host, DNS_A | DNS_AAAA);
+
+		if (is_array($poller_forward_records)) {
+			foreach ($poller_forward_records as $record) {
+				$ip = isset($record['ip']) ? $record['ip'] : (isset($record['ipv6']) ? $record['ipv6'] : '');
+
+				if ($ip === $client_addr) {
+					remote_agent_auth_cache_set($cache_key, true);
+
+					return true;
+				}
+			}
+		}
 	}
 
 	$client_name = gethostbyaddr($client_addr);
@@ -336,7 +351,7 @@ function get_graph_data() : bool {
 
 	// set the effective user
 	if (isrv('effective_user')) {
-		$user = (int) grv('effective_user');
+		$user = grv('effective_user');
 	} else {
 		$user = 0;
 	}
