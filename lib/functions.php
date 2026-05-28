@@ -806,6 +806,50 @@ function get_selected_theme() : string {
 }
 
 /**
+ * Returns a validated theme name for graph rendering.
+ *
+ * @param string $requested Requested theme from input
+ *
+ * @return string
+ */
+function cacti_validate_theme(string $requested) : string {
+	static $valid_themes = null;
+
+	$default = read_config_option('selected_theme');
+
+	if ($default === '') {
+		$default = 'modern';
+	}
+
+	if ($valid_themes === null) {
+		$valid_themes = [];
+		$themes_dir   = CACTI_PATH_INCLUDE . '/themes';
+
+		if (is_dir($themes_dir)) {
+			$entries = scandir($themes_dir);
+
+			if ($entries !== false) {
+				foreach ($entries as $entry) {
+					if ($entry === '.' || $entry === '..') {
+						continue;
+					}
+
+					$full = $themes_dir . '/' . $entry;
+
+					if (is_dir($full) && is_file($full . '/rrdtheme.php')) {
+						$valid_themes[$entry] = true;
+					}
+				}
+			}
+		}
+	}
+
+	$requested = basename($requested);
+
+	return isset($valid_themes[$requested]) ? $requested : $default;
+}
+
+/**
  * Returns true if a theme is valid
  *
  * @param mixed $theme
