@@ -2939,7 +2939,7 @@ function get_full_test_script_path(int $data_template_id, int $host_id) : mixed 
 			} elseif ($item['data_name'] == 'host_id' || $item['data_name'] == 'hostid') {
 				$value = cacti_escapeshellarg($host['id']);
 			} else {
-				$value = "'" . $item['value'] . "'";
+				$value = cacti_escapeshellarg((string) $item['value']);
 			}
 
 			$full_path = str_replace('<' . $item['data_name'] . '>', $value, $full_path);
