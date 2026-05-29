@@ -444,7 +444,9 @@ function reports_form_actions() : void {
 			foreach ($selected_items as $report) {
 				[$type, $report_id] = explode('_', $report);
 
-				input_validate_input_number($report_id, 'report_id');
+				if (!is_numeric($report_id) || (int) $report_id <= 0) {
+					continue;
+				}
 
 				if (!$can_manage_report($type, (int) $report_id)) {
 					continue;
@@ -473,7 +475,7 @@ function reports_form_actions() : void {
 					}
 				} elseif (gnrv('drp_action') == REPORTS_DUPLICATE) { // duplicate
 					if ($type == 'reports') {
-						duplicate_reports($report_id, gnrv('name_format'));
+						duplicate_reports((int) $report_id, gnrv('name_format'));
 					} elseif ($type == 'reportit') {
 						if (function_exists('api_reportit_duplicate_report')) {
 							api_reportit_duplicate_report($report_id);
@@ -505,7 +507,7 @@ function reports_form_actions() : void {
 					}
 				} elseif (gnrv('drp_action') == REPORTS_SEND_NOW) { // send now
 					if ($type == 'reports') {
-						reports_send($report_id);
+						reports_send((int) $report_id);
 					} elseif ($type == 'reportit') {
 						if (function_exists('api_reportit_run_report')) {
 							api_reportit_run_report($report_id);
