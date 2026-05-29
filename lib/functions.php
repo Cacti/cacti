@@ -8432,12 +8432,18 @@ function cacti_validate_sort_column(string $column, array $allowed, string $defa
  * substitute labels that contain HTML.
  *
  * @param array  $actions     Associative array mapping drp_action values to labels.
- * @param string $drp_action  The drp_action key to look up.
+ * @param mixed  $drp_action  The drp_action key to look up. Read straight from the
+ *                            request on most pages, so it may be an array; non-scalar
+ *                            keys yield $default rather than a fatal type error.
  * @param string $default     Label to return when the key is absent from the array.
  *
  * @return string  The matched label, or $default. Always html_escape() the return value before output.
  */
-function cacti_form_action_label(array $actions, string $drp_action, string $default = ''): string {
+function cacti_form_action_label(array $actions, $drp_action, string $default = ''): string {
+	if (!is_string($drp_action) && !is_int($drp_action)) {
+		return $default;
+	}
+
 	return isset($actions[$drp_action]) ? (string) $actions[$drp_action] : $default;
 }
 
