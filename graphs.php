@@ -1008,7 +1008,7 @@ function form_actions() {
 				print "<td class='textArea'>
 					<p>" . __('Click \'Continue\' to create an Aggregate Graph from the selected Graph(s).'). "</p>
 					<div class='itemlist'><ul>$graph_list</ul></div>
-				</td></tr>';
+				</td></tr>";
 
 				/* list affected data sources */
 				print '<tr>';
