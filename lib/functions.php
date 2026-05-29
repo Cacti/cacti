@@ -8261,7 +8261,9 @@ function cacti_validate_sort_column(string $column, array $allowed, string $defa
  * @return int The exit code or process ID.
  */
 function cacti_process_execute(array $args, $background = false, &$out = array()) {
-	if (empty($args)) return -1;
+	if (cacti_sizeof($args) === 0) {
+		return -1;
+	}
 
 	$binary = $args[0];
 
@@ -8276,15 +8278,20 @@ function cacti_process_execute(array $args, $background = false, &$out = array()
 		// on some OSs, but we force-escape everything here.
 		$command = implode(' ', array_map('cacti_escapeshellarg', $args));
 		if (cacti_strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-			$p = pclose(popen('start /B ' . $command, 'r'));
+			pclose(popen('start /B ' . $command, 'r'));
 			return 0;
 		} else {
+			$exit_code = 0;
+			$dummy     = array();
 			exec($command . ' > /dev/null 2>&1 &', $dummy, $exit_code);
 			return (int)$exit_code;
 		}
 	}
 
-	$descriptorspec = [1 => ['pipe', 'w'], 2 => ['pipe', 'w']];
+	$descriptorspec = array(
+		1 => array('pipe', 'w'),
+		2 => array('pipe', 'w')
+	);
 
 	// PHP 7.4+ supports array-based proc_open (Inherently Safe)
 	if (version_compare(PHP_VERSION, '7.4.0', '>=')) {
@@ -8294,7 +8301,9 @@ function cacti_process_execute(array $args, $background = false, &$out = array()
 		$process = proc_open($command, $descriptorspec, $pipes);
 	}
 
-	if (!is_resource($process)) return -1;
+	if (!is_resource($process)) {
+		return -1;
+	}
 
 	$stdout = stream_get_contents($pipes[1]);
 	fclose($pipes[1]);
