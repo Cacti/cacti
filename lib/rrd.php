@@ -935,14 +935,39 @@ function rrdtool_function_tune($rrd_tune_array) {
 
 	if ($rrd_tune != '') {
 		if (file_exists($data_source_path) == true) {
-			if (is_file(read_config_option('path_rrdtool')) && is_executable(read_config_option('path_rrdtool'))) {
-				$rrdtool_cmd = cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' tune ' . cacti_escapeshellarg($data_source_path) . $rrd_tune;
-				$fp = popen($rrdtool_cmd, 'r');
-				pclose($fp);
+			$rrd_path = read_config_option('path_rrdtool');
+			if (is_file($rrd_path) && is_executable($rrd_path)) {
+				// Refactor to use hardened cacti_exec with array args
+				$args = array('tune', $data_source_path);
+				
+				// Parse the $rrd_tune string back into array elements
+				// Since we know $rrd_tune was built via cacti_escapeshellarg, 
+				// we can safely split it or just rebuild the array from source.
+				// For now, we manually rebuild the array from the tune components.
+				if ($rrd_tune_array['heartbeat'] != '') {
+					$args[] = '--heartbeat';
+					$args[] = $data_source_name . ':' . $rrd_tune_array['heartbeat'];
+				}
+				if ($rrd_tune_array['minimum'] != '') {
+					$args[] = '--minimum';
+					$args[] = $data_source_name . ':' . $rrd_tune_array['minimum'];
+				}
+				if ($rrd_tune_array['maximum'] != '') {
+					$args[] = '--maximum';
+					$args[] = $data_source_name . ':' . $rrd_tune_array['maximum'];
+				}
+				if ($rrd_tune_array['data-source-type'] != '') {
+					$args[] = '--data-source-type';
+					$args[] = $data_source_name . ':' . $data_source_type;
+				}
+				if ($rrd_tune_array['data-source-rename'] != '') {
+					$args[] = '--data-source-rename';
+					$args[] = $data_source_name . ':' . $rrd_tune_array['data-source-rename'];
+				}
 
-				cacti_log('CACTI2RRD: ' . $rrdtool_cmd, false, 'WEBLOG', POLLER_VERBOSITY_DEBUG);
+				cacti_exec($rrd_path, $args);
 			} else {
-				cacti_log("ERROR: RRDtool executable not found, not executable or error in path '" . read_config_option('path_rrdtool') . "'.  No output written to RRDfile.");
+				cacti_log("ERROR: RRDtool executable not found, not executable or error in path '" . $rrd_path . "'.  No output written to RRDfile.");
 			}
 		}
 	}
