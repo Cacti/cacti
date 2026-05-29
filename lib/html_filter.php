@@ -146,6 +146,12 @@ class CactiTableFilter {
 		return true;
 	}
 
+	public function filter_sanitize() {
+		$this->sanitize_filter_variables();
+
+		return true;
+	}
+
 	private function create_filter() {
 		if (!cacti_sizeof($this->filter_array)) {
 			$this->filter_array = $this->default_filter;

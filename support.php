@@ -343,9 +343,9 @@ function draw_database_process_filter(bool $render = false) : void {
 	$pageFilter->set_filter_array($filters);
 
 	if ($render) {
-		$pageFilter->render();
+		$pageFilter->filter_render();
 	} else {
-		$pageFilter->sanitize();
+		$pageFilter->filter_sanitize();
 	}
 }
 
@@ -366,7 +366,7 @@ function show_database_processes() : void {
 	// form the 'where' clause for our main sql query
 	if (grv('filter') != '') {
 		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') .
-			'(command LIKE ? OR info LIKE ?';
+			'(command LIKE ? OR info LIKE ?)';
 
 		$sql_params[] = '%' . grv('filter') . '%';
 		$sql_params[] = '%' . grv('filter') . '%';
@@ -572,9 +572,9 @@ function draw_cacti_process_filter(bool $render = false, array $tables = []) : v
 	$pageFilter->set_filter_array($filters);
 
 	if ($render) {
-		$pageFilter->render();
+		$pageFilter->filter_render();
 	} else {
-		$pageFilter->sanitize();
+		$pageFilter->filter_sanitize();
 	}
 }
 
