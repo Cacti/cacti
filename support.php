@@ -923,7 +923,7 @@ function show_cacti_poller() : void {
 
 		foreach ($problematic as $host) {
 			form_alternate_row();
-			print '<td>' . $host['description'] . '</td>';
+			print '<td>' . htmle($host['description']) . '</td>';
 			print '<td class="right">' . $host['id'] . '</td>';
 			print '<td class="right">' . number_format_i18n($host['ratio'],3) . '</td>';
 			form_end_row();

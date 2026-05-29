@@ -1362,6 +1362,20 @@ function utilities_get_mysql_recommendations() : int {
 		];
 	}
 
+	if ($database == 'MariaDB' && version_compare($version, '11.8', '>=')) {
+		// MariaDB 11.8 enabled innodb_snapshot_isolation=ON by default (MDEV-39628).
+		// Under this mode, concurrent UPDATE statements on any InnoDB table can block
+		// for tens of thousands of seconds even when the table has only a handful of
+		// rows. Cacti's poller cycle issues many rapid UPDATEs; this setting makes
+		// those updates contend in ways that can freeze the entire poller.
+		$recommendations['innodb_snapshot_isolation'] = [
+			'value'   => 'OFF',
+			'measure' => 'equalint',
+			'class'   => 'error',
+			'comment' => __('MariaDB 11.8 enabled innodb_snapshot_isolation=ON by default. This causes severe lock contention: UPDATE statements can block for tens of thousands of seconds on small tables under concurrent load, which stalls the Cacti poller. Set innodb_snapshot_isolation=OFF in your [mysqld] configuration. See MDEV-39628.')
+		];
+	}
+
 	if (file_exists('/etc/my.cnf.d/server.cnf')) {
 		$location = '/etc/my.cnf.d/server.cnf';
 	} else {

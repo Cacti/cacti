@@ -177,7 +177,7 @@ function stopRealtime() {
 			return false;
 		});
 
-		$('graph_'+graph_id).zoom({
+		$('#graph_'+graph_id).zoom({
 			inputfieldStartTime : 'date1',
 			inputfieldEndTime : 'date2',
 			serverTimeOffset : timeOffset

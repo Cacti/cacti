@@ -36,6 +36,49 @@ if (!isset($called_by_script_server)) {
 	include_once(__DIR__ . '/../lib/snmp.php');
 }
 
+if (!function_exists('ss_counter_step')) {
+	/**
+	 * Apply a Counter32/Counter64 wrap-corrected delta to a running total.
+	 *
+	 * Counter32 (2^32) fits in PHP_INT_MAX on 64-bit but saturates on 32-bit;
+	 * Counter64 (2^64) overflows PHP_INT on every supported runtime. ext-gmp
+	 * is a Cacti dependency, so prefer arbitrary-precision arithmetic and
+	 * fall back to float (with documented precision loss) only when gmp is
+	 * unavailable.
+	 *
+	 * Returns a numeric string ('U' is sticky once set).
+	 * @param mixed $running
+	 */
+	function ss_counter_step($running, string $current, string $previous, string $modulus) : string {
+		if (!function_exists('gmp_init')) {
+			$cur   = (float) $current;
+			$prev  = (float) $previous;
+			$delta = ($cur >= $prev) ? ($cur - $prev) : ($cur + (float) $modulus - $prev);
+
+			if ($running === 'U' || !is_numeric($running)) {
+				return (string) $delta;
+			}
+
+			return (string) ((float) $running + $delta);
+		}
+
+		$cur  = gmp_init($current);
+		$prev = gmp_init($previous);
+
+		if (gmp_cmp($cur, $prev) >= 0) {
+			$delta = gmp_sub($cur, $prev);
+		} else {
+			$delta = gmp_sub(gmp_add($cur, gmp_init($modulus)), $prev);
+		}
+
+		if ($running === 'U' || !is_numeric((string) $running)) {
+			return gmp_strval($delta);
+		}
+
+		return gmp_strval(gmp_add(gmp_init((string) $running), $delta));
+	}
+}
+
 function ss_net_snmp_disk_io(mixed $host_id_or_hostname = '') : string {
 	global $environ, $poller_id, $config;
 
@@ -197,18 +240,8 @@ function ss_net_snmp_disk_io(mixed $host_id_or_hostname = '') : string {
 					$reads = 'U';
 				} elseif (!isset($previous["dr$index"])) {
 					$reads = 'U';
-				} elseif ($previous["dr$index"] > $measure['value']) {
-					if ($reads != 'U') {
-						$reads += intval($measure['value']) + 4294967296 - intval($previous["dr$index"]);
-					} else {
-						$reads = intval($measure['value']) + 4294967296 - intval($previous["dr$index"]);
-					}
 				} else {
-					if ($reads != 'U') {
-						$reads += $measure['value'] - $previous["dr$index"];
-					} else {
-						$reads = $measure['value'] - $previous["dr$index"];
-					}
+					$reads = ss_counter_step($reads, (string) $measure['value'], (string) $previous["dr$index"], '4294967296');
 				}
 
 				$current["dr$index"] = $measure['value'];
@@ -243,18 +276,8 @@ function ss_net_snmp_disk_io(mixed $host_id_or_hostname = '') : string {
 					$writes = 'U';
 				} elseif (!isset($previous["dw$index"])) {
 					$writes = 'U';
-				} elseif ($previous["dw$index"] > $measure['value']) {
-					if ($writes != 'U') {
-						$writes += $measure['value'] + 4294967296 - $previous["dw$index"];
-					} else {
-						$writes = $measure['value'] + 4294967296 - $previous["dw$index"];
-					}
 				} else {
-					if ($writes != 'U') {
-						$writes += $measure['value'] - $previous["dw$index"];
-					} else {
-						$writes = $measure['value'] - $previous["dw$index"];
-					}
+					$writes = ss_counter_step($writes, (string) $measure['value'], (string) $previous["dw$index"], '4294967296');
 				}
 
 				$current["dw$index"] = $measure['value'];
