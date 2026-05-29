@@ -398,7 +398,7 @@ function form_actions() {
 
 	form_start('data_queries.php');
 
-	html_start_box(cacti_form_action_label($dq_actions), '60%', '', '3', 'center', '');
+	html_start_box(cacti_form_action_label($dq_actions, get_nfilter_request_var('drp_action')), '60%', '', '3', 'center', '');
 
 	if (isset($dq_array) && cacti_sizeof($dq_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */

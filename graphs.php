@@ -1007,7 +1007,7 @@ function form_actions() {
 				print '<tr>';
 				print "<td class='textArea'>
 					<p>" . __('Click \'Continue\' to create an Aggregate Graph from the selected Graph(s).'). "</p>
-					<div class='itemlist'><ul>" . html_escape(get_nfilter_request_var('graph_list')) . '</ul></div>
+					<div class='itemlist'><ul>$graph_list</ul></div>
 				</td></tr>';
 
 				/* list affected data sources */

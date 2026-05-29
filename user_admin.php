@@ -329,7 +329,7 @@ function form_actions() {
 
 	form_start('user_admin.php');
 
-	html_start_box(cacti_form_action_label($user_actions), '60%', '', '3', 'center', '');
+	html_start_box(cacti_form_action_label($user_actions, get_nfilter_request_var('drp_action')), '60%', '', '3', 'center', '');
 
 	if (isset($user_array) && cacti_sizeof($user_array)) {
 		if ((get_nfilter_request_var('drp_action') == '1') && (cacti_sizeof($user_array))) { // delete

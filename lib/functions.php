@@ -8413,24 +8413,19 @@ function cacti_validate_sort_column(string $column, array $allowed, string $defa
 }
 
 /**
- * cacti_form_action_label - Validate drp_action and return its label.
+ * cacti_form_action_label - Look up a validated drp_action value in an actions array.
  *
- * Using get_nfilter_request_var('drp_action') directly as an array key causes
- * PHP to emit an "Undefined array key" warning whose message contains the raw
- * key value. With display_errors enabled that warning appears as literal HTML
- * in the response, producing reflected XSS. This helper validates drp_action
- * via get_filter_request_var before the lookup, so the array access always
- * receives a clean alphanumeric string.
+ * Callers pass the already-read drp_action value so this function has no
+ * side effects on $_REQUEST and cannot call die_html_input_error().
  *
- * @param array  $actions  Associative array mapping drp_action values to labels.
- * @param string $default  Label to return when the action is absent from the array.
+ * @param array  $actions     Associative array mapping drp_action values to labels.
+ * @param string $drp_action  The validated drp_action string from the caller.
+ * @param string $default     Label to return when the action is absent from the array.
  *
  * @return string  The matched label, or $default.
  */
-function cacti_form_action_label(array $actions, $default = '') {
-	$drp_action = get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP,
-		array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
-	return isset($actions[$drp_action]) ? $actions[$drp_action] : $default;
+function cacti_form_action_label(array $actions, string $drp_action, string $default = ''): string {
+	return isset($actions[$drp_action]) ? (string) $actions[$drp_action] : $default;
 }
 
 /**

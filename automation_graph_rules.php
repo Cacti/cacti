@@ -294,7 +294,7 @@ function automation_graph_rules_form_actions() {
 
 	form_start('automation_graph_rules.php', 'automation_graph_rules');
 
-	html_start_box(cacti_form_action_label($automation_graph_rules_actions), '60%', '', '3', 'center', '');
+	html_start_box(cacti_form_action_label($automation_graph_rules_actions, get_nfilter_request_var('drp_action')), '60%', '', '3', 'center', '');
 
 	if (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_GRAPH_DELETE) { /* delete */
 		print "<tr>
