@@ -109,8 +109,8 @@ switch (grv('action')) {
 	case 'ajax_hosts':
 		$sql_where = '';
 
-		if (grv('site_id') > 0) {
-			$sql_where = 'site_id = ' . grv('site_id');
+		if (gfrv('site_id') > 0) {
+			$sql_where = 'site_id = ' . gfrv('site_id');
 		}
 
 		get_allowed_ajax_hosts(true, true, $sql_where);
@@ -119,8 +119,8 @@ switch (grv('action')) {
 	case 'ajax_hosts_noany':
 		$sql_where = '';
 
-		if (grv('site_id') > 0) {
-			$sql_where = 'site_id = ' . grv('site_id');
+		if (gfrv('site_id') > 0) {
+			$sql_where = 'site_id = ' . gfrv('site_id');
 		}
 
 		get_allowed_ajax_hosts(false, true, $sql_where);

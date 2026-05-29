@@ -448,6 +448,9 @@ function automation_get_matching_graphs_sql(array $rule, int $rule_type) : array
 		$sdisabled = "'' AS site_disabled,";
 	}
 
+	$sort_column    = api_automation_column_exists(grv('sort_column'), ['host', 'graph_local', 'sites', 'graph_templates', 'graph_templates_graph', 'host_template']) ? grv('sort_column') : 'title_cache';
+	$sort_direction = in_array(strtoupper((string) grv('sort_direction')), ['ASC', 'DESC'], true) ? strtoupper((string) grv('sort_direction')) : 'ASC';
+
 	$rows_query = "SELECT h.id AS host_id, h.hostname, h.description,
 		h.disabled AS disabled, $sdisabled
 		h.status, ht.name AS host_template_name,
@@ -466,7 +469,7 @@ function automation_get_matching_graphs_sql(array $rule, int $rule_type) : array
 		LEFT JOIN host_template AS ht
 		ON h.host_template_id = ht.id
 		$sql_where
-		ORDER BY " . grv('sort_column') . ' ' . grv('sort_direction') . '
+		ORDER BY " . $sort_column . ' ' . $sort_direction . '
 		LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows;
 
 	return [
@@ -3308,7 +3311,7 @@ function create_all_header_nodes(int $item_id, array $rule) : int {
 				// for a fixed string, use the given text
 				$sql    = '';
 				$target = $automation_tree_header_types[AUTOMATION_TREE_ITEM_TYPE_STRING];
-			} else {
+			} elseif (api_automation_column_exists($tree_item['field'], ['host', 'host_template', 'graph_local', 'graph_templates_graph', 'graph_templates'])) {
 				$sql_field = $tree_item['field'] . ' AS source ';
 
 				// now we build up a new query for counting the rows
@@ -3318,6 +3321,12 @@ function create_all_header_nodes(int $item_id, array $rule) : int {
 				$sql_where . ' AND (' . $sql_filter . ')';
 
 				$target = db_fetch_cell($sql, '', false);
+			} else {
+				cacti_log("Attempted SQL Injection found in Tree Automation for the field variable {$tree_item['field']}.", false, 'AUTOM8');
+				raise_message('sql_injection', __("Attempted SQL Injection found in Tree Automation for the field variable {$tree_item['field']}."), MESSAGE_LEVEL_ERROR);
+
+				$sql    = '';
+				$target = '';
 			}
 
 			cacti_log($function . ' Item ' . $item_id . ' - sql: ' . str_replace("\m",'',$sql) . ' matches: ' . $target, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
