@@ -22,36 +22,39 @@
  +-------------------------------------------------------------------------+
 */
 
-/** update_replication_crc - update hash stored in settings table to inform
- * remote pollers to replicate tables
- *
- * @param int    $poller_id
- * @param string $variable
- *
- * @return void
- */
-function update_replication_crc(int $poller_id, string $variable) : void {
-	$hash = hash('ripemd160', date('Y-m-d H:i:s') . random_int(0, mt_getrandmax()) . $poller_id);
+/* update_replication_crc - update hash stored in settings table to inform
+   remote pollers to replicate tables
+   @arg $poller_id - the id of the poller impacted by hash update
+   @arg $variable  - the variable name to store in the settings table */
+function update_replication_crc($poller_id, $variable) {
+	try {
+		$entropy = bin2hex(random_bytes(16));
+	} catch (Exception $e) {
+		$entropy = md5(uniqid('', true) . mt_rand());
+	}
 
-	db_execute_prepared("REPLACE INTO settings
-		SET value = ?, name='$variable" . ($poller_id > 0 ? '_' . "$poller_id'" : "'"),
-		[$hash]);
+	$hash         = hash('ripemd160', date('Y-m-d H:i:s') . $entropy . $poller_id);
+	$setting_name = $variable . ($poller_id > 0 ? '_' . $poller_id : '');
+
+	db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)',
+		array($setting_name, $hash));
 }
 
-function repopulate_poller_cache() : void {
-	include_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
+function repopulate_poller_cache() {
+	global $config;
 
-	$poller_data = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . ' dl.*, h.poller_id
+	include_once($config['library_path'] . '/api_data_source.php');
+
+	$poller_data = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . ' dl.*, COALESCE(h.poller_id, 1) AS poller_id
 		FROM data_local AS dl
-		INNER JOIN host AS h
+		LEFT JOIN host AS h
 		ON dl.host_id=h.id
 		WHERE dl.snmp_query_id = 0 OR (dl.snmp_query_id > 0 AND dl.snmp_index != "")
-		ORDER BY h.poller_id ASC, h.id ASC');
+		ORDER BY COALESCE(h.poller_id, 1) ASC, h.id ASC');
 
-	$poller_items   = [];
-	$local_data_ids = [];
+	$poller_items   = array();
+	$local_data_ids = array();
 	$poller_prev    = 1;
-	$poller_id      = 1;
 
 	$i = 0;
 	$j = 0;
@@ -69,8 +72,8 @@ function repopulate_poller_cache() : void {
 
 				$i = 0;
 
-				$local_data_ids = [];
-				$poller_items   = [];
+				$local_data_ids = array();
+				$poller_items   = array();
 			}
 
 			$poller_prev      = $poller_id;
@@ -98,7 +101,7 @@ function repopulate_poller_cache() : void {
 		}
 	}
 
-	// update the field mappings for the poller
+	/* update the field mappings for the poller */
 	db_execute('TRUNCATE TABLE poller_data_template_field_mappings');
 	db_execute('INSERT IGNORE INTO poller_data_template_field_mappings
 		SELECT dtr.data_template_id, dif.data_name,
@@ -112,31 +115,36 @@ function repopulate_poller_cache() : void {
 		AND gti.local_graph_id = 0
 		GROUP BY dtr.data_template_id, dif.data_name');
 
-	if (isset($_SESSION[SESS_USER_ID])) {
-		cacti_log('NOTE: Poller Cache repopulated by user ' . get_username($_SESSION[SESS_USER_ID]), false, 'PCACHE');
+	if (isset($_SESSION['sess_user_id'])) {
+		cacti_log('NOTE: Poller Cache repopulated by user ' . get_username($_SESSION['sess_user_id']), false, 'PCACHE');
 	} else {
 		cacti_log('NOTE: Poller Cache repopulated by cli script', false, 'PCACHE');
 	}
 }
 
-function update_poller_cache_from_query(int $host_id, int $data_query_id, array $local_data_ids) : void {
-	include_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
+function update_poller_cache_from_query($host_id, $data_query_id, $local_data_ids) {
+	global $config;
+
+	include_once($config['library_path'] . '/api_data_source.php');
+
+	/* SECURITY: Cast all elements to integers to prevent SQL Injection */
+	$safe_ids = array_map('intval', $local_data_ids);
 
 	$poller_data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' *
 		FROM data_local
 		WHERE host_id = ?
 		AND snmp_query_id = ?
-		AND id IN(' . implode(', ', $local_data_ids) . ')
+		AND id IN(' . implode(', ', $safe_ids) . ')
 		AND snmp_index != ""',
-		[$host_id, $data_query_id]);
+		array($host_id, $data_query_id));
 
 	$poller_id = db_fetch_cell_prepared('SELECT poller_id
 		FROM host
 		WHERE id = ?',
-		[$host_id]);
+		array($host_id));
 
-	$i            = 0;
-	$poller_items = $local_data_ids = [];
+	$i = 0;
+	$poller_items = $local_data_ids = array();
 
 	if (cacti_sizeof($poller_data)) {
 		foreach ($poller_data as $data) {
@@ -147,8 +155,8 @@ function update_poller_cache_from_query(int $host_id, int $data_query_id, array 
 			if ($i > 500) {
 				$i = 0;
 				poller_update_poller_cache_from_buffer($local_data_ids, $poller_items, $poller_id);
-				$local_data_ids = [];
-				$poller_items   = [];
+				$local_data_ids = array();
+				$poller_items   = array();
 			}
 		}
 
@@ -162,36 +170,37 @@ function update_poller_cache_from_query(int $host_id, int $data_query_id, array 
 	}
 }
 
-function update_poller_cache(mixed $data_source, bool $commit = false) : array {
-	include_once(CACTI_PATH_LIBRARY . '/data_query.php');
-	include_once(CACTI_PATH_LIBRARY . '/api_poller.php');
+function update_poller_cache($data_source, $commit = false) {
+	global $config;
 
-	static $template_data_id_data    = [];
-	static $host_field_data          = [];
-	static $data_template_field_data = [];
-	static $num_outfields_data       = [];
+	static $template_data_id_data    = array();
+	static $host_field_data          = array();
+	static $data_template_field_data = array();
+	static $num_outfields_data       = array();
+
+	include_once($config['library_path'] . '/data_query.php');
+	include_once($config['library_path'] . '/api_poller.php');
 
 	if (!is_array($data_source)) {
 		$data_source = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' *
 			FROM data_local AS dl
 			WHERE id = ?
 			AND (dl.snmp_query_id = 0 OR (dl.snmp_query_id > 0 AND dl.snmp_index != ""))',
-			[$data_source]);
+			array($data_source));
 	}
 
-	$poller_items = [];
-	$outputs      = [];
+	$poller_items = array();
 
 	if (!cacti_sizeof($data_source)) {
 		return $poller_items;
 	}
 
-	$poller_id = db_fetch_cell_prepared('SELECT poller_id
-		FROM host AS h
-		INNER JOIN data_local AS dl
+	$poller_id = db_fetch_cell_prepared('SELECT COALESCE(h.poller_id, 1) AS poller_id
+		FROM data_local AS dl
+		LEFT JOIN host AS h
 		ON h.id = dl.host_id
 		WHERE dl.id = ?',
-		[$data_source['id']]);
+		array($data_source['id']));
 
 	$data_input = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . '
 		di.id, di.type_id, dtd.id AS data_template_data_id,
@@ -200,22 +209,25 @@ function update_poller_cache(mixed $data_source, bool $commit = false) : array {
 		INNER JOIN data_input AS di
 		ON dtd.data_input_id = di.id
 		WHERE dtd.local_data_id = ?',
-		[$data_source['id']]);
+		array($data_source['id']));
 
-	if (cacti_sizeof($data_input)) {
-		// Check whitelist for input validation
-		if (!data_input_whitelist_check($data_input['id'])) {
-			return $poller_items;
-		}
+	if (cacti_sizeof($data_input) && data_input_whitelist_check($data_input['id'])) {
+		/* Whitelist failure must NOT generate poller_items for this
+		 * data source, but on $commit=true we still fall through to
+		 * the buffer flush so the present=0 / DELETE pass cleans up
+		 * rows that used to pass the whitelist. The pre-fix early
+		 * `return $poller_items;` skipped that pass and stranded stale
+		 * rows whenever an existing data input started failing
+		 * validation. The outer if-else still owns the "Data Input
+		 * Missing" warning so that diagnostic stays specific. */
 
-		// we have to perform some additional sql queries if this is a 'query'
+		/* we have to perform some additional sql queries if this is a 'query' */
 		if (($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) ||
 			($data_input['type_id'] == DATA_INPUT_TYPE_SCRIPT_QUERY) ||
-			($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER)) {
+			($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER)){
 			$field = data_query_field_list($data_input['data_template_data_id']);
 
-			$params = [];
-
+			$params = array();
 			if (cacti_sizeof($field) && $field['output_type'] != '') {
 				$output_type_sql = ' AND sqgr.snmp_query_graph_id = ' . $field['output_type'];
 			} else {
@@ -240,10 +252,10 @@ function update_poller_cache(mixed $data_source, bool $commit = false) : array {
 			if (($data_input['type_id'] == DATA_INPUT_TYPE_SCRIPT) ||
 				($data_input['type_id'] == DATA_INPUT_TYPE_PHP_SCRIPT_SERVER)) {
 				if ($data_input['type_id'] == DATA_INPUT_TYPE_PHP_SCRIPT_SERVER) {
-					$action      = POLLER_ACTION_SCRIPT_PHP;
+					$action = POLLER_ACTION_SCRIPT_PHP;
 					$script_path = get_full_script_path($data_source['id']);
 				} else {
-					$action      = POLLER_ACTION_SCRIPT;
+					$action = POLLER_ACTION_SCRIPT;
 					$script_path = get_full_script_path($data_source['id']);
 				}
 
@@ -253,7 +265,7 @@ function update_poller_cache(mixed $data_source, bool $commit = false) : array {
 						WHERE data_input_id = ?
 						AND input_output = "out"
 						AND update_rra = "on"',
-						[$data_input['id']]));
+						array($data_input['id'])));
 
 					$num_outfields_data[$data_input['id']] = $num_output_fields;
 				} else {
@@ -264,21 +276,21 @@ function update_poller_cache(mixed $data_source, bool $commit = false) : array {
 					$data_template_rrd_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' id
 						FROM data_template_rrd
 						WHERE local_data_id = ?',
-						[$data_source['id']]);
+						array($data_source['id']));
 
 					$data_source_item_name = get_data_source_item_name($data_template_rrd_id);
 				} else {
 					$data_source_item_name = '';
 				}
 
-				$poller_items[] = api_poller_cache_item_add($data_source['host_id'], [], $data_source['id'], $data_input['rrd_step'], $action, $data_source_item_name, 1, $script_path);
+				$poller_items[] = api_poller_cache_item_add($data_source['host_id'], array(), $data_source['id'], $data_input['rrd_step'], $action, $data_source_item_name, 1, $script_path);
 			} elseif ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP) {
-				// get the host override fields
+				/* get the host override fields */
 				if (!isset($data_source['data_template_id'])) {
 					$data_template_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' data_template_id
 						FROM data_template_data
 						WHERE local_data_id = ?',
-						[$data_source['id']]);
+						array($data_source['id']));
 				} else {
 					$data_template_id = $data_source['data_template_id'];
 				}
@@ -288,14 +300,14 @@ function update_poller_cache(mixed $data_source, bool $commit = false) : array {
 						FROM data_template_data
 						WHERE data_template_id = ?
 						AND local_data_id = 0',
-						[$data_template_id]);
+						array($data_template_id));
 
 					$template_data_id_data[$data_template_id] = $template_data_template_data_id;
 				} else {
 					$template_data_template_data_id = $template_data_id_data[$data_template_id];
 				}
 
-				// get host fields first
+				/* get host fields first */
 				if (!isset($host_field_data[$data_input['data_template_data_id']])) {
 					$host_fields = array_rekey(
 						db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
@@ -304,7 +316,7 @@ function update_poller_cache(mixed $data_source, bool $commit = false) : array {
 							ON dif.id = did.data_input_field_id
 							WHERE (type_code LIKE "snmp_%" OR type_code IN("hostname", "host_id"))
 							AND did.data_template_data_id = ?
-							AND did.value != ""', [$data_input['data_template_data_id']]),
+							AND did.value != ""', array($data_input['data_template_data_id'])),
 						'type_code', 'value'
 					);
 
@@ -321,7 +333,7 @@ function update_poller_cache(mixed $data_source, bool $commit = false) : array {
 							ON dif.id = did.data_input_field_id
 							WHERE (type_code LIKE "snmp_%" OR type_code = "hostname")
 							AND did.data_template_data_id = ?
-							AND did.value != ""', [$template_data_template_data_id]),
+							AND did.value != ""', array($template_data_template_data_id)),
 						'type_code', 'value'
 					);
 
@@ -332,7 +344,7 @@ function update_poller_cache(mixed $data_source, bool $commit = false) : array {
 
 				if (cacti_sizeof($host_fields)) {
 					if (cacti_sizeof($data_template_fields)) {
-						foreach ($data_template_fields as $key => $value) {
+						foreach($data_template_fields as $key => $value) {
 							if (!isset($host_fields[$key])) {
 								$host_fields[$key] = $value;
 							}
@@ -345,18 +357,18 @@ function update_poller_cache(mixed $data_source, bool $commit = false) : array {
 				$data_template_rrd_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' id
 					FROM data_template_rrd
 					WHERE local_data_id = ?',
-					[$data_source['id']]);
+					array($data_source['id']));
 
-				$poller_items[] = api_poller_cache_item_add($data_source['host_id'], $host_fields, $data_source['id'], $data_input['rrd_step'], 0, get_data_source_item_name($data_template_rrd_id), 1, ($host_fields['snmp_oid'] ?? ''));
+				$poller_items[] = api_poller_cache_item_add($data_source['host_id'], $host_fields, $data_source['id'], $data_input['rrd_step'], 0, get_data_source_item_name($data_template_rrd_id), 1, (isset($host_fields['snmp_oid']) ? $host_fields['snmp_oid'] : ''));
 			} elseif ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) {
 				$snmp_queries = get_data_query_array($data_source['snmp_query_id']);
 
-				// get the host override fields
+				/* get the host override fields */
 				if (!isset($data_source['data_template_id'])) {
 					$data_template_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' data_template_id
 						FROM data_template_data
 						WHERE local_data_id = ?',
-						[$data_source['id']]);
+						array($data_source['id']));
 				} else {
 					$data_template_id = $data_source['data_template_id'];
 				}
@@ -366,14 +378,14 @@ function update_poller_cache(mixed $data_source, bool $commit = false) : array {
 						FROM data_template_data
 						WHERE data_template_id = ?
 						AND local_data_id = 0',
-						[$data_template_id]);
+						array($data_template_id));
 
 					$template_data_id_data[$data_template_id] = $template_data_template_data_id;
 				} else {
 					$template_data_template_data_id = $template_data_id_data[$data_template_id];
 				}
 
-				// get host fields first
+				/* get host fields first */
 				if (!isset($host_field_data[$data_input['data_template_data_id']])) {
 					$host_fields = array_rekey(
 						db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
@@ -382,7 +394,7 @@ function update_poller_cache(mixed $data_source, bool $commit = false) : array {
 							ON dif.id = did.data_input_field_id
 							WHERE (type_code LIKE "snmp_%" OR type_code IN("hostname", "host_id"))
 							AND did.data_template_data_id = ?
-							AND did.value != ""', [$data_input['data_template_data_id']]),
+							AND did.value != ""', array($data_input['data_template_data_id'])),
 						'type_code', 'value'
 					);
 
@@ -399,7 +411,7 @@ function update_poller_cache(mixed $data_source, bool $commit = false) : array {
 							ON dif.id = did.data_input_field_id
 							WHERE (type_code LIKE "snmp_%" OR type_code = "hostname")
 							AND did.data_template_data_id = ?
-							AND did.value != ""', [$template_data_template_data_id]),
+							AND did.value != ""', array($template_data_template_data_id)),
 						'type_code', 'value'
 					);
 
@@ -422,6 +434,12 @@ function update_poller_cache(mixed $data_source, bool $commit = false) : array {
 
 				if (cacti_sizeof($outputs) && cacti_sizeof($snmp_queries)) {
 					foreach ($outputs as $output) {
+						/* Reset between iterations: an output without an
+						 * 'oid' mapping must not inherit the previous
+						 * iteration's value and emit a poller_item with
+						 * the wrong OID. */
+						unset($oid);
+
 						if (isset($snmp_queries['fields'][$output['snmp_field_name']]['oid'])) {
 							$oid = $snmp_queries['fields'][$output['snmp_field_name']]['oid'] . '.' . $data_source['snmp_index'];
 
@@ -439,12 +457,12 @@ function update_poller_cache(mixed $data_source, bool $commit = false) : array {
 				($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER)) {
 				$script_queries = get_data_query_array($data_source['snmp_query_id']);
 
-				// get the host override fields
+				/* get the host override fields */
 				if (!isset($data_source['data_template_id'])) {
 					$data_template_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' data_template_id
 						FROM data_template_data
 						WHERE local_data_id = ?',
-						[$data_source['id']]);
+						array($data_source['id']));
 				} else {
 					$data_template_id = $data_source['data_template_id'];
 				}
@@ -453,9 +471,9 @@ function update_poller_cache(mixed $data_source, bool $commit = false) : array {
 					FROM data_template_data
 					WHERE data_template_id = ?
 					AND local_data_id = 0',
-					[$data_template_id]);
+					array($data_template_id));
 
-				// get host fields first
+				/* get host fields first */
 				if (!isset($host_field_data[$data_input['data_template_data_id']])) {
 					$host_fields = array_rekey(
 						db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
@@ -464,7 +482,7 @@ function update_poller_cache(mixed $data_source, bool $commit = false) : array {
 							ON dif.id = did.data_input_field_id
 							WHERE (type_code LIKE "snmp_%" OR type_code IN("hostname", "host_id"))
 							AND did.data_template_data_id = ?
-							AND did.value != ""', [$data_input['data_template_data_id']]),
+							AND did.value != ""', array($data_input['data_template_data_id'])),
 						'type_code', 'value'
 					);
 
@@ -481,7 +499,7 @@ function update_poller_cache(mixed $data_source, bool $commit = false) : array {
 							ON dif.id = did.data_input_field_id
 							WHERE (type_code LIKE "snmp_%" OR type_code = "hostname")
 							AND did.data_template_data_id = ?
-							AND did.value != ""', [$template_data_template_data_id]),
+							AND did.value != ""', array($template_data_template_data_id)),
 						'type_code', 'value'
 					);
 
@@ -504,7 +522,13 @@ function update_poller_cache(mixed $data_source, bool $commit = false) : array {
 
 				if (cacti_sizeof($outputs) && cacti_sizeof($script_queries)) {
 					foreach ($outputs as $output) {
-						$action = POLLER_ACTION_NONE;
+						/* Reset between iterations: an output without a
+						 * 'query_name' mapping must not inherit the
+						 * previous iteration's $script_path / $action
+						 * and emit a poller_item built for a different
+						 * output. */
+						unset($script_path);
+						unset($action);
 
 						if (isset($script_queries['fields'][$output['snmp_field_name']]['query_name'])) {
 							$identifier = $script_queries['fields'][$output['snmp_field_name']]['query_name'];
@@ -513,15 +537,14 @@ function update_poller_cache(mixed $data_source, bool $commit = false) : array {
 								$action = POLLER_ACTION_SCRIPT_PHP;
 
 								$prepend = '';
-
 								if (isset($script_queries['arg_prepend']) && $script_queries['arg_prepend'] != '') {
 									$prepend = $script_queries['arg_prepend'];
 								}
 
 								$script_path = get_script_query_path(trim($prepend . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' "' . $data_source['snmp_index'] . '"'), $script_queries['script_path'] . ' ' . $script_queries['script_function'], $data_source['host_id']);
 							} else {
-								$action      = POLLER_ACTION_SCRIPT;
-								$script_path = get_script_query_path(trim(($script_queries['arg_prepend'] ?? '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' "' . $data_source['snmp_index'] . '"'), $script_queries['script_path'], $data_source['host_id']);
+								$action = POLLER_ACTION_SCRIPT;
+								$script_path = get_script_query_path(trim((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] : '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' "' . $data_source['snmp_index'] . '"'), $script_queries['script_path'], $data_source['host_id']);
 							}
 						}
 
@@ -531,11 +554,11 @@ function update_poller_cache(mixed $data_source, bool $commit = false) : array {
 					}
 				}
 			} else {
-				$arguments = [
+				$arguments = array(
 					'poller_items' => $poller_items,
 					'data_source'  => $data_source,
 					'data_input'   => $data_input
-				];
+				);
 
 				$arguments = api_plugin_hook_function('data_source_to_poller_items', $arguments);
 
@@ -547,28 +570,36 @@ function update_poller_cache(mixed $data_source, bool $commit = false) : array {
 				}
 			}
 		}
+	} elseif (cacti_sizeof($data_input) && !data_input_whitelist_check($data_input['id'])) {
+		cacti_log('WARNING: Repopulate Poller Cache found DI[' . $data_input['id'] . '] not Passing Input Whitelist Validation for DS[' . $data_source['id'] . '].  Database may be corrupted', false, 'PCACHE');
 	} else {
 		$data_template_data = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' *
 			FROM data_template_data
 			WHERE local_data_id = ?',
-			[$data_source['id']]);
+			array($data_source['id']));
 
 		if (cacti_sizeof($data_template_data) && $data_template_data['data_input_id'] > 0) {
 			cacti_log('WARNING: Repopulate Poller Cache found Data Input Missing for Data Source ' . $data_source['id'] . '.  Database may be corrupted', false, 'PCACHE');
 		}
 	}
 
-	if ($commit && cacti_sizeof($poller_items)) {
-		poller_update_poller_cache_from_buffer([$data_source['id']], $poller_items, $poller_id);
-	} elseif (!$commit) {
+	if ($commit) {
+		/* Always flush on commit, even when $poller_items is empty. The
+		 * buffer pass marks existing rows present=0 then DELETEs whatever
+		 * is still present=0 at the end, which is how a data source that
+		 * just lost its data input / went inactive / failed the
+		 * whitelist gets its stale poller_item rows cleaned out. The
+		 * earlier `cacti_sizeof($poller_items)` guard skipped the flush
+		 * for that case, so callers like data_sources.php form_save
+		 * silently left stale rows behind. */
+		poller_update_poller_cache_from_buffer((array)$data_source['id'], $poller_items, $poller_id);
+	} else {
 		return $poller_items;
 	}
-
-	return [];
 }
 
-function push_out_data_input_method(int $data_input_id) : void {
-	$data_sources = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dl.*, h.poller_id
+function push_out_data_input_method($data_input_id) {
+	$data_sources = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dl.*, COALESCE(h.poller_id, 1) AS poller_id
 		FROM data_local AS dl
 		INNER JOIN (
 			SELECT DISTINCT local_data_id
@@ -577,27 +608,32 @@ function push_out_data_input_method(int $data_input_id) : void {
 			AND local_data_id > 0
 		) AS dtd
 		ON dtd.local_data_id = dl.id
-		INNER JOIN host AS h
+		LEFT JOIN host AS h
 		ON h.id = dl.host_id
 		WHERE dl.snmp_query_id = 0 OR (dl.snmp_query_id > 0 AND dl.snmp_index != "")
-		ORDER BY h.poller_id ASC',
-		[$data_input_id]);
+		ORDER BY COALESCE(h.poller_id, 1) ASC',
+		array($data_input_id));
 
-	$poller_items       = [];
-	$_my_local_data_ids = [];
+	$poller_items = array();
+	$_my_local_data_ids = array();
 
 	if (cacti_sizeof($data_sources)) {
 		$prev_poller = -1;
-
 		foreach ($data_sources as $data_source) {
+			/* Flush the previous poller's buffer when crossing a poller
+			 * boundary, then ALWAYS append the current data source. The
+			 * previous shape put the append in an `else` branch, so the
+			 * first data source for every non-first poller was dropped:
+			 * it never made it into the new buffer and never got
+			 * rebuilt. */
 			if ($prev_poller > 0 && $data_source['poller_id'] != $prev_poller) {
 				poller_update_poller_cache_from_buffer($_my_local_data_ids, $poller_items, $prev_poller);
-				$_my_local_data_ids = [];
-				$poller_items       = [];
-			} else {
-				$_my_local_data_ids[] = $data_source['id'];
-				$poller_items         = array_merge($poller_items, update_poller_cache($data_source));
+				$_my_local_data_ids = array();
+				$poller_items = array();
 			}
+
+			$_my_local_data_ids[] = $data_source['id'];
+			$poller_items = array_merge($poller_items, update_poller_cache($data_source));
 
 			$prev_poller = $data_source['poller_id'];
 		}
@@ -608,29 +644,29 @@ function push_out_data_input_method(int $data_input_id) : void {
 	}
 }
 
-/**
- * mass update of poller cache - can run in parallel to poller
- *
- * @param array $local_data_ids Either a scalar (all ids) or an array of data source to act on
- * @param array $poller_items   The new items for poller cache
- * @param int   $poller_id      The poller_id of the buffer
- *
- * @return void
+/** mass update of poller cache - can run in parallel to poller
+ * @param array/int $local_data_ids - either a scalar (all ids) or an array of data source to act on
+ * @param array $poller_items - the new items for poller cache
+ * @param int $poller_id - the poller_id of the buffer
  */
-function poller_update_poller_cache_from_buffer(array $local_data_ids, array &$poller_items, int $poller_id = 1) : void {
+function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items, $poller_id = 1) {
+	global $config;
+
 	$ids    = '';
 	$raised = false;
 
-	// set all fields present value to 0, to mark the outliers when we are all done
+	/* set all fields present value to 0, to mark the outliers when we are all done */
 	if (cacti_sizeof($local_data_ids)) {
-		$ids = implode(', ', $local_data_ids);
+		/* SECURITY: Cast all elements to integers to prevent SQL Injection */
+		$safe_ids = array_map('intval', $local_data_ids);
+		$ids      = implode(', ', $safe_ids);
 
 		if ($ids != '') {
 			db_execute_prepared("UPDATE poller_item
 				SET present = 0
 				WHERE poller_id = ?
 				AND local_data_id IN ($ids)",
-				[$poller_id]);
+				array($poller_id));
 
 			if ($poller_id > 1) {
 				if (remote_poller_up($poller_id)) {
@@ -639,7 +675,7 @@ function poller_update_poller_cache_from_buffer(array $local_data_ids, array &$p
 							SET present = 0
 							WHERE poller_id = ?
 							AND local_data_id IN ($ids)",
-							[$poller_id], true, $rcnn_id);
+							array($poller_id), true, $rcnn_id);
 					} else {
 						raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 						$raised = true;
@@ -655,9 +691,9 @@ function poller_update_poller_cache_from_buffer(array $local_data_ids, array &$p
 		 *this would flush the whole table at bottom of this function */
 	}
 
-	// setup the database call
+	/* setup the database call */
 	$sql_prefix = 'INSERT INTO poller_item (local_data_id, poller_id, host_id, action, hostname, ' .
-		'snmp_community, snmp_version, snmp_timeout, snmp_retries, snmp_username, snmp_password, ' .
+		'snmp_community, snmp_version, snmp_timeout, snmp_username, snmp_password, ' .
 		'snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context, snmp_engine_id, ' .
 		'snmp_port, rrd_name, rrd_path, rrd_num, rrd_step, rrd_next_step, arg1, arg2, arg3, present) ' .
 		'VALUES';
@@ -670,7 +706,6 @@ function poller_update_poller_cache_from_buffer(array $local_data_ids, array &$p
 		snmp_community = VALUES(snmp_community),
 		snmp_version = VALUES(snmp_version),
 		snmp_timeout = VALUES(snmp_timeout),
-		snmp_retries = VALUES(snmp_retries),
 		snmp_username = VALUES(snmp_username),
 		snmp_password = VALUES(snmp_password),
 		snmp_auth_protocol = VALUES(snmp_auth_protocol),
@@ -688,10 +723,10 @@ function poller_update_poller_cache_from_buffer(array $local_data_ids, array &$p
 		arg3 = VALUES(arg3),
 		present = 1';
 
-	// use a reasonable insert buffer, the default is 1MByte
+	/* use a reasonable insert buffer, the default is 1MByte */
 	$max_packet   = 256000;
 
-	// setup some defaults
+	/* setup some defaults */
 	$overhead     = strlen($sql_prefix) + strlen($sql_suffix);
 	$buf_len      = 0;
 	$buf_count    = 0;
@@ -699,7 +734,7 @@ function poller_update_poller_cache_from_buffer(array $local_data_ids, array &$p
 
 	if (cacti_sizeof($poller_items)) {
 		foreach ($poller_items as $record) {
-			// take care of invalid entries
+			/* take care of invalid entries */
 			if ($record == '') {
 				continue;
 			}
@@ -758,13 +793,13 @@ function poller_update_poller_cache_from_buffer(array $local_data_ids, array &$p
 		}
 	}
 
-	// remove stale records FROM the poller cache
+	/* remove stale records FROM the poller cache */
 	if ($ids != '') {
 		db_execute_prepared("DELETE FROM poller_item
 			WHERE present = 0
 			AND poller_id = ?
 			AND local_data_id IN ($ids)",
-			[$poller_id]);
+			array($poller_id));
 
 		if ($poller_id > 1) {
 			if (remote_poller_up($poller_id)) {
@@ -773,7 +808,7 @@ function poller_update_poller_cache_from_buffer(array $local_data_ids, array &$p
 						WHERE present = 0
 						AND poller_id = ?
 						AND local_data_id IN ($ids)",
-						[$poller_id], true, $rcnn_id);
+						array($poller_id), true, $rcnn_id);
 				} elseif (!$raised) {
 					raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 				}
@@ -790,51 +825,49 @@ function poller_update_poller_cache_from_buffer(array $local_data_ids, array &$p
 	set_config_option('time_last_change_poller_item', time());
 }
 
-/**
- * for a given data template, update all input data and the poller cache
- *
- * @param int $host_id          The id of host, if any
- * @param int $local_data_id    The id of a single data source, if any
- * @param int $data_template_id The id of data template
- *                              works on table data_input_data and poller cache
- *
- * @return void
+/** for a given data template, update all input data and the poller cache
+ * @param int $host_id - id of host, if any
+ * @param int $local_data_id - id of a single data source, if any
+ * @param int $data_template_id - id of data template
+ * works on table data_input_data and poller cache
  */
-function push_out_host(int $host_id, int $local_data_id = 0, int $data_template_id = 0) : void {
-	include_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
+function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
+	global $config;
+
+	include_once($config['library_path'] . '/api_data_source.php');
 
 	/* ok here's the deal: first we need to find every data source that uses this host.
 	then we go through each of those data sources, finding each one using a data input method
 	with "special fields". if we find one, fill it will the data here FROM this host */
-	// setup the poller items array
-	$poller_items    = [];
-	$local_data_ids  = [];
-	$hosts           = [];
-	$template_fields = [];
+	/* setup the poller items array */
+	$poller_items    = array();
+	$local_data_ids  = array();
+	$hosts           = array();
+	$template_fields = array();
 	$sql_where       = '';
 	$sql_where_p     = '';
 
-	// setup the sql where, and if using a host, get it's host information
+	/* setup the sql where, and if using a host, get it's host information */
 	if ($host_id > 0) {
-		// get all information about this host so we can write it to the data source
+		/* get all information about this host so we can write it to the data source */
 		$hosts[$host_id] = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' id AS host_id, host.*
 			FROM host WHERE id = ?',
-			[$host_id]);
+			array($host_id));
 
-		$sql_where .= ' AND dl.host_id=' . $host_id;
+		$sql_where   .= ' AND dl.host_id=' . $host_id;
 		$sql_where_p .= ' dl.host_id=' . $host_id;
 	}
 
-	// sql WHERE for local_data_id
+	/* sql WHERE for local_data_id */
 	if ($local_data_id > 0) {
-		$sql_where .= ' AND dl.id = ' . $local_data_id;
-		$sql_where_p .= ($sql_where_p != '' ? ' AND' : '') . ' dl.id = ' . $local_data_id;
+		$sql_where   .= ' AND dl.id = ' . $local_data_id;
+		$sql_where_p .= ($sql_where_p != '' ? ' AND':'') . ' dl.id = ' . $local_data_id;
 	}
 
-	// sql WHERE for data_template_id
+	/* sql WHERE for data_template_id */
 	if ($data_template_id > 0) {
-		$sql_where .= ' AND dtd.data_template_id = ' . $data_template_id;
-		$sql_where_p .= ($sql_where_p != '' ? ' AND' : '') . ' dtd.data_template_id = ' . $data_template_id;
+		$sql_where   .= ' AND dtd.data_template_id = ' . $data_template_id;
+		$sql_where_p .= ($sql_where_p != '' ? ' AND':'') . ' dtd.data_template_id = ' . $data_template_id;
 	}
 
 	$data_sources = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . " dtd.id,
@@ -860,15 +893,15 @@ function push_out_host(int $host_id, int $local_data_id = 0, int $data_template_
 		SET pi.present = 0
 		WHERE $sql_where_p");
 
-	// loop through each matching data source
+	/* loop through each matching data source */
 	if (cacti_sizeof($data_sources)) {
 		foreach ($data_sources as $data_source) {
-			// set the host information
+			/* set the host information */
 			if (!isset($hosts[$data_source['host_id']])) {
 				$hosts[$data_source['host_id']] = db_fetch_row_prepared('SELECT *
 					FROM host
 					WHERE id = ?',
-					[$data_source['host_id']]);
+					array($data_source['host_id']));
 			}
 			$host = $hosts[$data_source['host_id']];
 
@@ -885,7 +918,7 @@ function push_out_host(int $host_id, int $local_data_id = 0, int $data_template_
 					AND did.data_template_data_id = ?
 					AND (did.t_value = "" OR did.t_value IS NULL OR (did.t_value = "on" AND did.value = ""))
 					AND dif.input_output = "in"',
-					[$data_source['data_input_id'], $data_source['local_data_template_data_id']]);
+					array($data_source['data_input_id'], $data_source['local_data_template_data_id']));
 			}
 
 			/**
@@ -923,24 +956,18 @@ function push_out_host(int $host_id, int $local_data_id = 0, int $data_template_
 								FROM data_input_data
 								WHERE data_input_field_id = ?
 								AND data_template_data_id = ?',
-								[$template_field['id'], $data_source['id']]);
+								array($template_field['id'], $data_source['id']));
 
-							if (isset($old_value['value']) && $old_data['value'] != $host[$field]) {
-								cacti_log("WARNING: Poller Cache updated Device[{$host['id']}], Field[$field], Old[{$old_data['value']}], New[{$host[$field]}]", false, 'PCACHE', POLLER_VERBOSITY_MEDIUM);
+							if (isset($old_data['value']) && $old_data['value'] != $host[$field]) {
+								$old_log = cacti_redact_value($field, $old_data['value']);
+								$new_log = cacti_redact_value($field, $host[$field]);
+								cacti_log("WARNING: Poller Cache updated Device[{$host['id']}], Field[$field], Old[$old_log], New[$new_log]", false, 'PCACHE', POLLER_VERBOSITY_MEDIUM);
 							}
 
 							db_execute_prepared('REPLACE INTO data_input_data
-								(data_input_field_id, data_template_data_id, data_template_id, local_data_id, host_id, value)
-								VALUES (?, ?, ?, ?, ?, ?)',
-								[
-									$template_field['id'],
-									$data_source['id'],
-									$data_source['data_template_id'],
-									$data_source['local_data_id'],
-									$data_source['host_id'],
-									$host[$field]
-								]
-							);
+								(data_input_field_id, data_template_data_id, value)
+								VALUES (?, ?, ?)',
+								array($template_field['id'], $data_source['id'], $host[$field]));
 						}
 					}
 				}
@@ -951,8 +978,8 @@ function push_out_host(int $host_id, int $local_data_id = 0, int $data_template_
 			 */
 			$local_data_ids[] = $data_source['local_data_id'];
 
-			// create a new compatible structure
-			$data       = $data_source;
+			/* create a new compatible structure */
+			$data = $data_source;
 			$data['id'] = $data['local_data_id'];
 
 			$poller_items = array_merge($poller_items, update_poller_cache($data));
@@ -960,9 +987,9 @@ function push_out_host(int $host_id, int $local_data_id = 0, int $data_template_
 	}
 
 	if (cacti_sizeof($hosts)) {
-		$poller_ids = [];
+		$poller_ids = array();
 
-		foreach ($hosts as $host) {
+		foreach($hosts as $host) {
 			if (isset($host['poller_id'])) {
 				$poller_ids[$host['poller_id']] = $host['poller_id'];
 			}
@@ -973,19 +1000,72 @@ function push_out_host(int $host_id, int $local_data_id = 0, int $data_template_
 		}
 	}
 
-	$poller_id = db_fetch_cell_prepared('SELECT poller_id
-		FROM host
-		WHERE id = ?',
-		[$host_id]);
+	/* Flush the buffer. push_out_host() is documented as single-host
+	 * scoped, but accepts $host_id = 0 with either a non-zero
+	 * $local_data_id (data_sources.php save_component_data_source path)
+	 * or a $data_template_id (template-wide push). The host-scoped
+	 * branch knows its poller from $host_id; the host_id=0 branch may
+	 * collect data sources spanning multiple pollers, so group by
+	 * poller_id and flush each group separately. The pre-fix code did
+	 * a single SELECT poller_id WHERE id=$host_id which returned NULL
+	 * for $host_id=0 and silently flushed every collected row to
+	 * poller 0. */
+	if ($host_id > 0) {
+		$poller_id = db_fetch_cell_prepared('SELECT poller_id
+			FROM host
+			WHERE id = ?',
+			array($host_id));
 
-	if (cacti_sizeof($local_data_ids)) {
-		poller_update_poller_cache_from_buffer($local_data_ids, $poller_items, $poller_id);
+		if (cacti_sizeof($local_data_ids)) {
+			poller_update_poller_cache_from_buffer($local_data_ids, $poller_items, $poller_id);
+		}
+	} elseif (cacti_sizeof($local_data_ids)) {
+		/* Map each local_data_id to its host's poller. Data sources
+		 * without a device have host_id=0 and belong to the main poller. */
+		$safe_ids = array_map('intval', $local_data_ids);
+		$rows     = db_fetch_assoc('SELECT dl.id AS local_data_id, COALESCE(h.poller_id, 1) AS poller_id
+			FROM data_local AS dl
+			LEFT JOIN host AS h
+			ON h.id = dl.host_id
+			WHERE dl.id IN (' . implode(',', $safe_ids) . ')');
+
+		$ids_by_poller = array();
+		foreach ($rows as $row) {
+			$ids_by_poller[$row['poller_id']][(int) $row['local_data_id']] = true;
+		}
+
+		/* Group $poller_items by their leading local_data_id column.
+		 * api_poller_cache_item_add() emits each entry as a SQL VALUES
+		 * tuple starting with `($local_data_id, ...)`. */
+		$items_by_poller = array();
+		foreach ($poller_items as $item) {
+			if (!preg_match('/^\((\d+),/', $item, $m)) {
+				continue;
+			}
+			$ldid = (int) $m[1];
+			foreach ($ids_by_poller as $pid => $ldid_set) {
+				if (isset($ldid_set[$ldid])) {
+					$items_by_poller[$pid][] = $item;
+					break;
+				}
+			}
+		}
+
+		foreach ($ids_by_poller as $pid => $ldid_set) {
+			$pid_local_data_ids = array_keys($ldid_set);
+			$pid_items          = isset($items_by_poller[$pid]) ? $items_by_poller[$pid] : array();
+			poller_update_poller_cache_from_buffer($pid_local_data_ids, $pid_items, $pid);
+		}
+
+		$poller_id = cacti_sizeof($ids_by_poller) === 1 ? array_key_first($ids_by_poller) : 1;
+	} else {
+		$poller_id = 1;
 	}
 
 	/**
 	 * Remove orphaned entries now
 	 */
-	$sql_where_p .= ($sql_where_p != '' ? ' AND ' : '') . ' present = 0';
+	$sql_where_p .= ($sql_where_p != '' ? ' AND ':'') . ' present = 0';
 
 	db_execute_prepared("DELETE pi
 		FROM poller_item AS pi
@@ -998,18 +1078,20 @@ function push_out_host(int $host_id, int $local_data_id = 0, int $data_template_
 	api_data_source_cache_crc_update($poller_id);
 }
 
-function data_input_whitelist_check(int $data_input_id) : bool {
+function data_input_whitelist_check($data_input_id) {
+	global $config;
+
 	static $data_input_whitelist = null;
 	static $validated_input_ids  = null;
-	static $notified             = [];
+	static $notified = array();
 
 	// no whitelist file defined, everything whitelisted
-	if (!defined('CACTI_WHITELIST')) {
+	if (!isset($config['input_whitelist'])) {
 		return true;
 	}
 
 	// whitelist is configured but does not exist, means nothing whitelisted
-	if (!file_exists(CACTI_WHITELIST)) {
+	if (!file_exists($config['input_whitelist'])) {
 		return false;
 	}
 
@@ -1017,14 +1099,12 @@ function data_input_whitelist_check(int $data_input_id) : bool {
 	if ($data_input_whitelist == null) {
 		$data_input_ids = array_rekey(
 			db_fetch_assoc('SELECT * FROM data_input'),
-			'hash', ['id', 'name', 'input_string']
+			'hash', array('id', 'name', 'input_string')
 		);
 
-		$data_input_whitelist = json_decode(file_get_contents(CACTI_WHITELIST), true);
-
+		$data_input_whitelist = json_decode(file_get_contents($config['input_whitelist']), true);
 		if ($data_input_whitelist === null) {
-			cacti_log('ERROR: Failed to parse input whitelist file: ' . CACTI_WHITELIST);
-
+			cacti_log('ERROR: Failed to parse input whitelist file: ' . $config['input_whitelist']);
 			return true;
 		}
 
@@ -1035,11 +1115,11 @@ function data_input_whitelist_check(int $data_input_id) : bool {
 						if ($data_input_whitelist[$hash] == $id['input_string']) {
 							$validated_input_ids[$id['id']] = true;
 						} else {
-							cacti_log('ERROR: Whitelist entry failed validation for Data Input: ' . $id['name'] . '[ ' . $id['id'] . ' ].  Data Collection will not run.  Run CLI command input_whitelist.php --audit and --update to remediate.');
+							cacti_log('ERROR: Whitelist entry failed validation for Data Input: ' . $id['name'] . ' DI[' . $id['id'] . '].  Data Collection will not run.  Run CLI command input_whitelist.php --audit and --update to remediate.');
 							$validated_input_ids[$id['id']] = false;
 						}
 					} else {
-						cacti_log('WARNING: Whitelist entry missing for Data Input: ' . $id['name'] . '[ ' . $id['id'] . ' ].  Run CLI command input_whitelist.php --update to remediate.');
+						cacti_log('WARNING: Whitelist entry missing for Data Input: ' . $id['name'] . ' DI[' . $id['id'] . '].  Run CLI command input_whitelist.php --update to remediate.');
 						$validated_input_ids[$id['id']] = true;
 					}
 				} else {
@@ -1052,10 +1132,11 @@ function data_input_whitelist_check(int $data_input_id) : bool {
 	if (isset($validated_input_ids[$data_input_id])) {
 		if ($validated_input_ids[$data_input_id] == true) {
 			return true;
-		} else {
+		} elseif (!isset($notified[$data_input_id])) {
 			cacti_log('WARNING: Data Input ' . $data_input_id . ' failing validation check.');
 			$notified[$data_input_id] = true;
-
+			return false;
+		} else {
 			return false;
 		}
 	} else {
@@ -1063,8 +1144,40 @@ function data_input_whitelist_check(int $data_input_id) : bool {
 	}
 }
 
-function utilities_get_mysql_recommendations() : int {
+function utilities_get_mysql_info($poller_id = 1) {
 	global $local_db_cnn_id;
+
+	if ($poller_id == 1) {
+		$variables = array_rekey(db_fetch_assoc('SHOW GLOBAL VARIABLES'), 'Variable_name', 'Value');
+	} else {
+		$variables = array_rekey(db_fetch_assoc('SHOW GLOBAL VARIABLES', false, $local_db_cnn_id), 'Variable_name', 'Value');
+	}
+
+	if (strpos($variables['version'], 'MariaDB') !== false) {
+		$database = 'MariaDB';
+		$version  = str_replace('-MariaDB', '', $variables['version']);
+
+		if (isset($variables['innodb_version'])) {
+			$link_ver = substr($variables['innodb_version'], 0, 3);
+		} else {
+			$link_ver = $version;
+		}
+	} else {
+		$database = 'MySQL';
+		$version  = $variables['version'];
+		$link_ver = substr($variables['version'], 0, 3);
+	}
+
+	return array(
+		'database'  => $database,
+		'version'   => $version,
+		'link_ver'  => $link_ver,
+		'variables' => $variables
+	);
+}
+
+function utilities_get_mysql_recommendations() {
+	global $config, $local_db_cnn_id;
 
 	// MySQL/MariaDB Important Variables
 	// Assume we are successfully, until we aren't!
@@ -1072,308 +1185,295 @@ function utilities_get_mysql_recommendations() : int {
 
 	$memInfo = utilities_get_system_memory();
 
-	$mysql_info = get_mysql_info(POLLER_ID);
+	$mysql_info = utilities_get_mysql_info($config['poller_id']);
 
 	$database  = $mysql_info['database'];
 	$version   = $mysql_info['version'];
 	$link_ver  = $mysql_info['link_ver'];
 	$variables = $mysql_info['variables'];
 
-	$recommendations = [
-		'version' => [
-			'value'   => '5.6',
-			'class'   => 'warning',
+	$recommendations = array(
+		'version' => array(
+			'value' => '5.6',
+			'class' => 'warning',
 			'measure' => 'ge',
 			'comment' => __('MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions to choose. Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability.')
-		]
-	];
+		)
+	);
 
 	if (isset($variables['innodb_version']) && version_compare($variables['innodb_version'], '5.6', '<')) {
 		if (version_compare($link_ver, '5.5', '>=')) {
 			if (!isset($variables['innodb_version'])) {
-				$recommendations += [
-					'innodb' => [
-						'value'   => 'ON',
-						'class'   => 'warning',
+				$recommendations += array(
+					'innodb' => array(
+						'value' => 'ON',
+						'class' => 'warning',
 						'measure' => 'equalint',
 						'comment' => __('It is STRONGLY recommended that you enable InnoDB in any %s version greater than 5.5.3.', $database)
-					]
-				];
+					)
+				);
 
 				$variables['innodb'] = 'UNSET';
 			}
 		}
 
-		$recommendations += [
-			'collation_server' => [
-				'value'   => 'utf8mb4_unicode_ci',
-				'class'   => 'warning',
+		$recommendations += array(
+			'collation_server' => array(
+				'value' => 'utf8mb4_unicode_ci',
+				'class' => 'warning',
 				'measure' => 'equal',
 				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4_unicode_ci collation type as some characters take more than a single byte.')
-			],
-			'character_set_server' => [
-				'value'   => 'utf8mb4',
-				'class'   => 'warning',
+				),
+			'character_set_server' => array(
+				'value' => 'utf8mb4',
+				'class' => 'warning',
 				'measure' => 'equal',
 				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte.')
-			],
-			'character_set_client' => [
-				'value'   => 'utf8mb4',
-				'class'   => 'warning',
+				),
+			'character_set_client' => array(
+				'value' => 'utf8mb4',
+				'class' => 'warning',
 				'measure' => 'equal',
 				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte.')
-			]
-		];
+				)
+		);
 	} else {
 		if (version_compare($link_ver, '5.2', '>=')) {
 			if (!isset($variables['innodb_version']) &&
-				($database == 'MySQL' || ($database == 'MariaDB' && version_compare($link_ver, '10.10', '<')))) {
-				$recommendations += [
-					'innodb' => [
-						'value'   => 'ON',
-						'class'   => 'warning',
+				($database == 'MySQL' || ($database == 'MariaDB' && version_compare($link_ver, '10.7', '<')))) {
+
+				$recommendations += array(
+					'innodb' => array(
+						'value' => 'ON',
+						'class' => 'warning',
 						'measure' => 'equalint',
 						'comment' => __('It is recommended that you enable InnoDB in any %s version greater than 5.1.', $database)
-					]
-				];
+					)
+				);
 
 				$variables['innodb'] = 'UNSET';
 			}
 		}
 
-		$recommendations += [
-			'collation_server' => [
-				'value'   => 'utf8mb4_unicode_ci',
+		$recommendations += array(
+			'collation_server' => array(
+				'value' => 'utf8mb4_unicode_ci',
 				'measure' => 'equal',
 				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4_unicode_ci collation type as some characters take more than a single byte.')
-			],
-			'character_set_server' => [
-				'value'   => 'utf8mb4',
-				'class'   => 'warning',
+				),
+			'character_set_server' => array(
+				'value' => 'utf8mb4',
+				'class' => 'warning',
 				'measure' => 'equal',
 				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte.')
-			],
-			'character_set_client' => [
-				'value'   => 'utf8mb4',
-				'class'   => 'warning',
+				),
+			'character_set_client' => array(
+				'value' => 'utf8mb4',
+				'class' => 'warning',
 				'measure' => 'equal',
 				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte.')
-			]
-		];
+				)
+		);
 	}
 
-	$recommendations += [
-		'max_connections' => [
+	$recommendations += array(
+		'max_connections' => array(
 			'value'   => '100',
 			'measure' => 'ge',
 			'comment' => __('Depending on the number of logins and use of spine data collector, %s will need many connections.  The calculation for spine is: total_connections = total_processes * (total_threads + script_servers + 1), then you must leave headroom for user connections, which will change depending on the number of concurrent login accounts.', $database)
-		],
-		'table_cache' => [
+			),
+		'table_cache' => array(
 			'value'   => '200',
 			'measure' => 'ge',
 			'comment' => __('Keeping the table cache larger means less file open/close operations when using innodb_file_per_table.')
-		],
-		'max_allowed_packet' => [
+			),
+		'max_allowed_packet' => array(
 			'value'   => 16777216,
 			'measure' => 'ge',
 			'comment' => __('With Remote polling capabilities, large amounts of data will be synced from the main server to the remote pollers.  Therefore, keep this value at or above 16M.')
-		],
-		'max_heap_table_size' => [
+			),
+		'max_heap_table_size' => array(
 			'value'   => '1.6',
 			'measure' => 'pmem',
 			'class'   => 'warning',
 			'comment' => __('If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10%% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status.')
-		],
-		'tmp_table_size' => [
+			),
+		'tmp_table_size' => array(
 			'value'   => '1.6',
 			'measure' => 'pmem',
 			'class'   => 'warning',
 			'comment' => __('When executing subqueries, having a larger temporary table size, keep those temporary tables in memory.')
-		],
-		'join_buffer_size' => [
-			'value'   => '262144',
-			'measure' => 'ge',
+			),
+		'join_buffer_size' => array(
+			'value'   => '80',
+			'measure' => 'cmem',
 			'class'   => 'warning',
-			'comment' => __('If this number is negative, reduce the innodb_buffer_pool_size until the join_buffer_size turns positive, but allocate approximately from between 25%-50% of memory to the innodb_buffer_pool_size if the database is hosted on the Cacti server, or upto 80% of the systems memory if the database is separate from the Cacti web server.  However, try to not go below the default of 262,144.  When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.  As this is a per connection memory allocation, care must be taken not to increase it too high.  The sum of the join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB memory should be below 80% if the database is hosted on the Cacti web server and less if you intend to have very large RRDfiles or hundreds of thousands to millions long term.')
-		],
-		'sort_buffer_size' => [
-			'value'   => '2097152',
-			'measure' => 'ge',
+			'comment' => __('When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.  As this is a per connection memory allocation, care must be taken not to increase it too high.  The sum of the join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB memory should be below 80%.  If the recommendation is negative, you must decrease this and or the sort_buffer_size until the recommendation fits within the allowable memory.')
+			),
+		'sort_buffer_size' => array(
+			'value'   => '80',
+			'measure' => 'cmem',
 			'class'   => 'warning',
-			'comment' => __('If this number is negative, reduce the innodb_buffer_pool_size until the sort_buffer_size turns positive, but allocate approximately from between 25%-50% of memory to the innodb_buffer_pool_size if the database is hosted on the Cacti server, or upto 80% of the system memory if the database is separate from the Cacti web server.  However, try to not go below the default setting of 2,097,152.  A sort buffer performs sorts for some queries using ORDER BY or GROUP BY. Configuring sort_buffer_size decides how much memory will be allocated for sort queries.  The sort_buffer_size may need to be adjusted from the default if the workload requires a significant number of sort queries. The sort_buffer_size is defined on a per-session variable.  Use the same equation as that of the join_buffer_size to determine the per connection possible memory.')
-		],
-		'innodb_file_per_table' => [
+			'comment' => __('When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.  As this is a per connection memory allocation, care must be taken not to increase it too high.  The sum of the join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB memory should be below 80%.  If the recommendation is negative, you must decrease this and or the sort_buffer_size until the recommendation fits within the allowable memory.')
+			),
+		'innodb_file_per_table' => array(
 			'value'   => 'ON',
 			'measure' => 'equalint',
 			'class'   => 'error',
 			'comment' => __('When using InnoDB storage it is important to keep your table spaces separate.  This makes managing the tables simpler for long time users of %s.  If you are running with this currently off, you can migrate to the per file storage by enabling the feature, and then running an alter statement on all InnoDB tables.', $database)
-		],
-		'innodb_file_format' => [
+			),
+		'innodb_file_format' => array(
 			'value'   => 'Barracuda',
 			'measure' => 'equal',
 			'class'   => 'error',
 			'comment' => __('When using innodb_file_per_table, it is important to set the innodb_file_format to Barracuda.  This setting will allow longer indexes important for certain Cacti tables.')
-		],
-		'innodb_large_prefix' => [
+			),
+		'innodb_large_prefix' => array(
 			'value'   => '1',
 			'measure' => 'equalint',
 			'class'   => 'error',
 			'comment' => __('If your tables have very large indexes, you must operate with the Barracuda innodb_file_format and the innodb_large_prefix equal to 1.  Failure to do this may result in plugins that can not properly create tables.')
-		],
-		'innodb_buffer_pool_size' => [
+			),
+		'innodb_buffer_pool_size' => array(
 			'value'   => '25',
 			'measure' => 'pmem',
-			'class'   => 'warning',
-			'comment' => __('InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size.  If you database is very large or remote, you can consider increasing this size.  If remote, it can by as high as 80% of the systems memory.  However, cautions must be taken to reduce the swappiness of the system, or to remove swap to keep the system from swapping.')
-		],
-		'innodb_doublewrite' => [
+			'class' => 'warning',
+			'comment' => __('InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size.')
+			),
+		'innodb_doublewrite' => array(
 			'value'   => 'ON',
 			'measure' => 'equalint',
-			'class'   => 'error',
-			'comment' => __('This setting should remain ON unless your Cacti instances are running on either ZFS or FusionI/O which both have internal journaling to accommodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance.')
-		],
-		'innodb_additional_mem_pool_size' => [
+			'class' => 'error',
+			'comment' => __('This settings should remain ON unless your Cacti instances is running on either ZFS or FusionI/O which both have internal journaling to accommodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance.')
+			),
+		'innodb_additional_mem_pool_size' => array(
 			'value'   => '80M',
 			'measure' => 'gem',
 			'comment' => __('This is where metadata is stored. If you had a lot of tables, it would be useful to increase this.')
-		],
-		'innodb_lock_wait_timeout' => [
+			),
+		'innodb_lock_wait_timeout' => array(
 			'value'   => '50',
 			'measure' => 'ge',
 			'comment' => __('Rogue queries should not for the database to go offline to others.  Kill these queries before they kill your system.')
-		],
-		'innodb_flush_method' => [
+			),
+		'innodb_flush_method' => array(
 			'value'   => 'O_DIRECT',
 			'measure' => 'eq',
 			'comment' => __('Maximum I/O performance happens when you use the O_DIRECT method to flush pages.')
-		]
-	];
+			)
+	);
 
 	if (isset($variables['innodb_version'])) {
 		if (version_compare($variables['innodb_version'], '5.6', '<')) {
-			$recommendations += [
-				'innodb_flush_log_at_trx_commit' => [
+			$recommendations += array(
+				'innodb_flush_log_at_trx_commit' => array(
 					'value'   => '2',
 					'measure' => 'equal',
 					'comment' => __('Setting this value to 2 means that you will flush all transactions every second rather than at commit.  This allows %s to perform writing less often.', $database)
-				],
-				'innodb_file_io_threads' => [
+				),
+				'innodb_file_io_threads' => array(
 					'value'   => '16',
 					'measure' => 'ge',
 					'comment' => __('With modern SSD type storage, having multiple io threads is advantageous for applications with high io characteristics.')
-				]
-			];
+					)
+			);
 		} elseif ($database == 'MariaDB' && version_compare($variables['innodb_version'], '10.5', '<') || $database == 'MySQL') {
-			$recommendations += [
-				'innodb_flush_log_at_timeout' => [
-					'value'    => '3',
+			$recommendations += array(
+				'innodb_flush_log_at_timeout' => array(
+					'value'   => '3',
 					'measure'  => 'ge',
 					'comment'  => __('As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential', $database, $version, $database),
-				],
-				'innodb_read_io_threads' => [
+					),
+				'innodb_read_io_threads' => array(
 					'value'   => '32',
 					'measure' => 'ge',
 					'comment' => __('With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics.  Depending on your MariaDB/MySQL versions, this value can go as high as 64.  But try to keep the number less than your total SMT threads on the database server.')
-				],
-				'innodb_write_io_threads' => [
+					),
+				'innodb_write_io_threads' => array(
 					'value'   => '16',
 					'measure' => 'ge',
 					'comment' => __('With modern SSD type storage, having multiple write io threads is advantageous for applications with high io characteristics.  Depending on your MariaDB/MySQL versions, this value can go as high as 64.  But try to keep the number less than your total SMT threads on the database server.')
-				],
-				'innodb_buffer_pool_instances' => [
-					'value'   => '16',
+					),
+				'innodb_buffer_pool_instances' => array(
+					'value' => '16',
 					'measure' => 'pinst',
-					'class'   => 'warning',
-					'comment' => ($database == 'MySQL' ? __('%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MySQL upto and including MySQL 8.0.  The max value is 64, but should not exceed more than the number of CPU cores/threads.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation up to the max of the number of CPU cores or 64.', $database) : __('%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MariaDB less than 10.5.  The max value is 64, but should not exceed more than the number of CPU cores/threads.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation up to the max the number of CPU cores or 64.', $database))
-				],
-				'innodb_io_capacity' => [
-					'value'   => '5000',
+					'class' => 'warning',
+					'comment' => ($database == 'MySQL' ? __('%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MySQL upto and including MySQL 8.0.  The max value is 64, but should not exceed more than the number of CPU cores/threads.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation up to the max of the number of CPU cores or 64.', $database): __('%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MariaDB less than 10.5.  The max value is 64, but should not exceed more than the number of CPU cores/threads.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation up to the max the number of CPU cores or 64.', $database))
+					),
+				'innodb_io_capacity' => array(
+					'value' => '5000',
 					'measure' => 'ge',
-					'class'   => 'warning',
+					'class' => 'warning',
 					'comment' => __('If you have SSD disks, use this suggestion.  If you have physical hard drives, use 200 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 100000 can be used.')
-				],
-				'innodb_io_capacity_max' => [
-					'value'   => '10000',
+					),
+				'innodb_io_capacity_max' => array(
+					'value' => '10000',
 					'measure' => 'ge',
-					'class'   => 'warning',
+					'class' => 'warning',
 					'comment' => __('If you have SSD disks, use this suggestion.  If you have physical hard drives, use 2000 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 200000 can be used.')
-				],
-				'innodb_flush_neighbor_pages' => [
-					'value'   => 'none',
+					),
+				'innodb_flush_neighbor_pages' => array(
+					'value' => 'none',
 					'measure' => 'eq',
-					'class'   => 'warning',
+					'class' => 'warning',
 					'comment' => __('If you have SSD disks, use this suggestion. Otherwise, do not set this setting.')
-				]
-			];
+					)
+			);
 		} else {
-			$recommendations += [
-				'innodb_flush_log_at_timeout' => [
-					'value'    => '3',
+			$recommendations += array(
+				'innodb_flush_log_at_timeout' => array(
+					'value'   => '3',
 					'measure'  => 'ge',
 					'comment'  => __('As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential', $database, $version, $database),
-				],
-				'innodb_read_io_threads' => [
+					),
+				'innodb_read_io_threads' => array(
 					'value'   => '32',
 					'measure' => 'ge',
 					'comment' => __('With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics.')
-				],
-				'innodb_write_io_threads' => [
+					),
+				'innodb_write_io_threads' => array(
 					'value'   => '16',
 					'measure' => 'ge',
 					'comment' => __('With modern SSD type storage, having multiple write io threads is advantageous for applications with high io characteristics.')
-				],
-				'innodb_io_capacity' => [
-					'value'   => '5000',
+					),
+				'innodb_io_capacity' => array(
+					'value' => '5000',
 					'measure' => 'ge',
-					'class'   => 'warning',
+					'class' => 'warning',
 					'comment' => __('If you have SSD disks, use this suggestion.  If you have physical hard drives, use 200 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 100000 can be used.')
-				],
-				'innodb_io_capacity_max' => [
-					'value'   => '10000',
+					),
+				'innodb_io_capacity_max' => array(
+					'value' => '10000',
 					'measure' => 'ge',
-					'class'   => 'warning',
+					'class' => 'warning',
 					'comment' => __('If you have SSD disks, use this suggestion.  If you have physical hard drives, use 2000 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 200000 can be used.')
-				],
-				'innodb_flush_neighbor_pages' => [
-					'value'   => 'none',
+					),
+				'innodb_flush_neighbor_pages' => array(
+					'value' => 'none',
 					'measure' => 'eq',
-					'class'   => 'warning',
+					'class' => 'warning',
 					'comment' => __('If you have SSD disks, use this suggestion. Otherwise, do not set this setting.')
-				]
-			];
+					)
+			);
 
 			unset($recommendations['innodb_additional_mem_pool_size']);
 		}
 	}
 
 	if ($database == 'MariaDB' && version_compare($version, '10.2.4', '>')) {
-		$recommendations['innodb_doublewrite'] = [
+		$recommendations['innodb_doublewrite'] = array(
 			'value'   => 'OFF',
 			'measure' => 'equalint',
-			'class'   => 'error',
+			'class' => 'error',
 			'comment' => __('When using MariaDB 10.2.4 and above, this setting should be off if atomic writes are enabled.  Therefore, please enable atomic writes instead of the double write buffer as it will increase performance.')
-		];
+		);
 
-		$recommendations['innodb_use_atomic_writes'] = [
+		$recommendations['innodb_use_atomic_writes'] = array(
 			'value'   => 'ON',
 			'measure' => 'equalint',
-			'class'   => 'error',
+			'class' => 'error',
 			'comment' => __('When using MariaDB 10.2.4 and above, you can use atomic writes over the doublewrite buffer to increase performance.')
-		];
-	}
-
-	if ($database == 'MariaDB' && version_compare($version, '11.8', '>=')) {
-		// MariaDB 11.8 enabled innodb_snapshot_isolation=ON by default (MDEV-39628).
-		// Under this mode, concurrent UPDATE statements on any InnoDB table can block
-		// for tens of thousands of seconds even when the table has only a handful of
-		// rows. Cacti's poller cycle issues many rapid UPDATEs; this setting makes
-		// those updates contend in ways that can freeze the entire poller.
-		$recommendations['innodb_snapshot_isolation'] = [
-			'value'   => 'OFF',
-			'measure' => 'equalint',
-			'class'   => 'error',
-			'comment' => __('MariaDB 11.8 enabled innodb_snapshot_isolation=ON by default. This causes severe lock contention: UPDATE statements can block for tens of thousands of seconds on small tables under concurrent load, which stalls the Cacti poller. Set innodb_snapshot_isolation=OFF in your [mysqld] configuration. See MDEV-39628.')
-		];
+		);
 	}
 
 	if (file_exists('/etc/my.cnf.d/server.cnf')) {
@@ -1385,28 +1485,27 @@ function utilities_get_mysql_recommendations() : int {
 	if ($database == 'MariaDB') {
 		$variables_url = 'https://mariadb.com/kb/en/server-system-variables/';
 	} else {
-		$variables_url = htmle('https://dev.mysql.com/doc/refman/' . $link_ver . '/en/server-system-variables.html');
+		$variables_url = html_escape('https://dev.mysql.com/doc/refman/' . $link_ver . '/en/server-system-variables.html');
 	}
 
 	print '<tr class="tableHeader tableFixed">';
-	print '<th colspan="2">' . __('%s Tuning', $database) . ' (' . $location . ') - [ <a class="linkOverDark" target="_blank" href="' . $variables_url . '">' . __('Documentation') . '</a> ] ' . __('Note: Many changes below require a database restart') . '</th>';
+	print '<th colspan="2">' . __('%s Tuning', $database) . ' (' . $location . ') - [ <a class="linkOverDark" target="_blank" href="' . $variables_url . '">' .  __('Documentation') . '</a> ] ' . __('Note: Many changes below require a database restart') . '</th>';
 	print '</tr>';
 
 	form_alternate_row();
 	print "<td colspan='2' style='text-align:left;padding:0px'>";
 	print "<table id='mysql' class='cactiTable' style='width:100%'>";
-	print '<thead>';
+	print "<thead>";
 	print "<tr class='tableHeader'>";
-	print "  <th class='tableSubHeaderColumn'>" . __('Variable') . '</th>';
-	print "  <th class='tableSubHeaderColumn right'>" . __('Current Value') . '</th>';
+	print "  <th class='tableSubHeaderColumn'>" . __('Variable')          . "</th>";
+	print "  <th class='tableSubHeaderColumn right'>" . __('Current Value'). "</th>";
 	print "  <th class='tableSubHeaderColumn center'>&nbsp;</th>";
-	print "  <th class='tableSubHeaderColumn'>" . __('Recommended Value') . '</th>';
-	print "  <th class='tableSubHeaderColumn'>" . __('Comments') . '</th>';
-	print '</tr>';
-	print '</thead>';
+	print "  <th class='tableSubHeaderColumn'>" . __('Recommended Value') . "</th>";
+	print "  <th class='tableSubHeaderColumn'>" . __('Comments')          . "</th>";
+	print "</tr>";
+	print "</thead>";
 
 	$innodb_pool_size = 0;
-
 	foreach ($recommendations as $name => $r) {
 		if (isset($variables[$name])) {
 			$class = '';
@@ -1414,84 +1513,77 @@ function utilities_get_mysql_recommendations() : int {
 			// Unset $passed so that we only display fields that we checked
 			unset($passed);
 
-			$compare         = '';
-			$value_recommend = $r['value'];
-			$value_current   = $variables[$name] ?? '<unset>';
+			$compare = '';
+			$value_recommend = isset($r['value']) ? $r['value'] : '<unset>';
+			$value_current   = isset($variables[$name]) ? $variables[$name] : '<unset>';
 			$value_display   = $value_current;
 
 			switch($r['measure']) {
-				case 'gem':
-					$compare       = '>=';
-					$value_display = ($variables[$name] / 1024 / 1024) . ' M';
-					$value         = intval(trim($r['value'], 'M')) * 1024 * 1024;
-
-					if ($variables[$name] < $value) {
-						$passed = false;
+			case 'gem':
+				$compare = '>=';
+				$value_display = ($variables[$name]/1024/1024) . ' M';
+				$value = trim($r['value'], 'M') * 1024 * 1024;
+				if ($variables[$name] < $value) {
+					$passed = false;
+				}
+				break;
+			case 'ge':
+				$compare = '>=';
+				$passed = (version_compare($value_current, $value_recommend, '>='));
+				break;
+			case 'eq':
+			case 'equalint':
+			case 'equal':
+				$compare = '=';
+				if (!isset($variables[$name])) {
+					$passed = false;
+				} else {
+					$e_var = $variables[$name];
+					$e_rec = $value_recommend;
+					if ($r['measure'] == 'equalint') {
+						$e_var = (!strcasecmp('on', $e_var) ? 1 : (!strcasecmp('off', $e_var) ? 0 : $e_var));
+						$e_rec = (!strcasecmp('on', $e_rec) ? 1 : (!strcasecmp('off', $e_rec) ? 0 : $e_rec));
 					}
-
+					$passed = $e_var == $e_rec;
+				}
+				break;
+			case 'pmem':
+				if (isset($memInfo['MemTotal'])) {
+					$totalMem = $memInfo['MemTotal'];
+				} elseif (isset($memInfo['TotalVisibleMemorySize'])) {
+					$totalMem = $memInfo['TotalVisibleMemorySize'];
+				} else {
 					break;
-				case 'ge':
-					$compare = '>=';
-					$passed  = (version_compare($value_current, $value_recommend, '>='));
+				}
 
+				if ($name == 'innodb_buffer_pool_size') {
+					$innodb_pool_size = $variables[$name];
+				}
+
+				$compare = '>=';
+				$passed = ($variables[$name] >= ($r['value']*$totalMem/100));
+				$value_display = round($variables[$name]/1024/1024, 2) . ' M';
+				$value_recommend = round($r['value']*$totalMem/100/1024/1024, 2) . ' M';
+				break;
+			case 'cmem':
+				if (isset($memInfo['MemTotal'])) {
+					$totalMem = $memInfo['MemTotal'];
+				} elseif (isset($memInfo['TotalVisibleMemorySize'])) {
+					$totalMem = $memInfo['TotalVisibleMemorySize'];
+				} else {
 					break;
-				case 'eq':
-				case 'equalint':
-				case 'equal':
-					$compare = '=';
+				}
 
-					if (!isset($variables[$name])) {
-						$passed = false;
-					} else {
-						$e_var = $variables[$name];
-						$e_rec = $value_recommend;
+				if ($config['poller_id'] == 1) {
+					$maxConnections = db_fetch_cell('SELECT @@GLOBAL.max_connections');
+				} else {
+					$maxConnections = db_fetch_cell('SELECT @@GLOBAL.max_connections', '', false, $local_db_cnn_id);
+				}
 
-						if ($r['measure'] == 'equalint') {
-							$e_var = (!strcasecmp('on', $e_var) ? 1 : (!strcasecmp('off', $e_var) ? 0 : $e_var));
-							$e_rec = (!strcasecmp('on', $e_rec) ? 1 : (!strcasecmp('off', $e_rec) ? 0 : $e_rec));
-						}
-						$passed = $e_var == $e_rec;
-					}
-
-					break;
-				case 'pmem':
-					if (isset($memInfo['MemTotal'])) {
-						$totalMem = $memInfo['MemTotal'];
-					} elseif (isset($memInfo['TotalVisibleMemorySize'])) {
-						$totalMem = $memInfo['TotalVisibleMemorySize'];
-					} else {
-						break;
-					}
-
-					if ($name == 'innodb_buffer_pool_size') {
-						$innodb_pool_size = $variables[$name];
-					}
-
-					$compare         = '>=';
-					$passed          = ($variables[$name] >= ($r['value'] * $totalMem / 100));
-					$value_display   = round($variables[$name] / 1024 / 1024, 2) . ' M';
-					$value_recommend = round($r['value'] * $totalMem / 100 / 1024 / 1024, 2) . ' M';
-
-					break;
-				case 'cmem':
-					if (isset($memInfo['MemTotal'])) {
-						$totalMem = $memInfo['MemTotal'];
-					} elseif (isset($memInfo['TotalVisibleMemorySize'])) {
-						$totalMem = $memInfo['TotalVisibleMemorySize'];
-					} else {
-						break;
-					}
-
-					if (POLLER_ID == 1) {
-						$maxConnections = db_fetch_cell('SELECT @@GLOBAL.max_connections');
-					} else {
-						$maxConnections = db_fetch_cell('SELECT @@GLOBAL.max_connections', '', false, $local_db_cnn_id);
-					}
-
-					if ($name == 'sort_buffer_size') {
-						if (POLLER_ID == 1) {
-							if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
-								$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
+				if ($name == 'sort_buffer_size') {
+					if ($config['poller_id'] == 1) {
+						if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
+							$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
 								@@GLOBAL.query_cache_size +
 								@@GLOBAL.tmp_table_size +
 								@@GLOBAL.innodb_buffer_pool_size +
@@ -1502,22 +1594,8 @@ function utilities_get_mysql_recommendations() : int {
 									@@GLOBAL.read_rnd_buffer_size +
 									@@GLOBAL.thread_stack +
 									@@GLOBAL.binlog_cache_size)');
-							} else {
-								$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
-								@@GLOBAL.tmp_table_size +
-								@@GLOBAL.innodb_buffer_pool_size +
-								@@GLOBAL.innodb_log_buffer_size
-								+ @@GLOBAL.max_connections * (
-									@@GLOBAL.join_buffer_size +
-									@@GLOBAL.read_buffer_size +
-									@@GLOBAL.read_rnd_buffer_size +
-									@@GLOBAL.thread_stack +
-									@@GLOBAL.binlog_cache_size)');
-							}
 						} else {
-							if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
-								$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
-								@@GLOBAL.query_cache_size +
+							$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
 								@@GLOBAL.tmp_table_size +
 								@@GLOBAL.innodb_buffer_pool_size +
 								@@GLOBAL.innodb_log_buffer_size
@@ -1526,49 +1604,63 @@ function utilities_get_mysql_recommendations() : int {
 									@@GLOBAL.read_buffer_size +
 									@@GLOBAL.read_rnd_buffer_size +
 									@@GLOBAL.thread_stack +
-									@@GLOBAL.binlog_cache_size)', '', false, $local_db_cnn_id);
-							} else {
-								$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
-								@@GLOBAL.tmp_table_size +
-								@@GLOBAL.innodb_buffer_pool_size +
-								@@GLOBAL.innodb_log_buffer_size
-								+ @@GLOBAL.max_connections * (
-									@@GLOBAL.join_buffer_size +
-									@@GLOBAL.read_buffer_size +
-									@@GLOBAL.read_rnd_buffer_size +
-									@@GLOBAL.thread_stack +
-									@@GLOBAL.binlog_cache_size)', '', false, $local_db_cnn_id);
-							}
+									@@GLOBAL.binlog_cache_size)');
 						}
 					} else {
-						if (POLLER_ID == 1) {
-							if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
-								$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
+						if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
+							$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
 								@@GLOBAL.query_cache_size +
 								@@GLOBAL.tmp_table_size +
 								@@GLOBAL.innodb_buffer_pool_size +
 								@@GLOBAL.innodb_log_buffer_size
 								+ @@GLOBAL.max_connections * (
-									@@GLOBAL.sort_buffer_size +
+									@@GLOBAL.join_buffer_size +
 									@@GLOBAL.read_buffer_size +
 									@@GLOBAL.read_rnd_buffer_size +
 									@@GLOBAL.thread_stack +
-									@@GLOBAL.binlog_cache_size)');
-							} else {
-								$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
-								@@GLOBAL.tmp_table_size +
-								@@GLOBAL.innodb_buffer_pool_size +
-								@@GLOBAL.innodb_log_buffer_size
-								+ @@GLOBAL.max_connections * (
-									@@GLOBAL.sort_buffer_size +
-									@@GLOBAL.read_buffer_size +
-									@@GLOBAL.read_rnd_buffer_size +
-									@@GLOBAL.thread_stack +
-									@@GLOBAL.binlog_cache_size)');
-							}
+									@@GLOBAL.binlog_cache_size)', '', false, $local_db_cnn_id);
 						} else {
-							if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
-								$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
+							$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
+								@@GLOBAL.tmp_table_size +
+								@@GLOBAL.innodb_buffer_pool_size +
+								@@GLOBAL.innodb_log_buffer_size
+								+ @@GLOBAL.max_connections * (
+									@@GLOBAL.join_buffer_size +
+									@@GLOBAL.read_buffer_size +
+									@@GLOBAL.read_rnd_buffer_size +
+									@@GLOBAL.thread_stack +
+									@@GLOBAL.binlog_cache_size)', '', false, $local_db_cnn_id);
+						}
+					}
+				} else {
+					if ($config['poller_id'] == 1) {
+						if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
+							$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
+								@@GLOBAL.query_cache_size +
+								@@GLOBAL.tmp_table_size +
+								@@GLOBAL.innodb_buffer_pool_size +
+								@@GLOBAL.innodb_log_buffer_size
+								+ @@GLOBAL.max_connections * (
+									@@GLOBAL.sort_buffer_size +
+									@@GLOBAL.read_buffer_size +
+									@@GLOBAL.read_rnd_buffer_size +
+									@@GLOBAL.thread_stack +
+									@@GLOBAL.binlog_cache_size)');
+						} else {
+							$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
+								@@GLOBAL.tmp_table_size +
+								@@GLOBAL.innodb_buffer_pool_size +
+								@@GLOBAL.innodb_log_buffer_size
+								+ @@GLOBAL.max_connections * (
+									@@GLOBAL.sort_buffer_size +
+									@@GLOBAL.read_buffer_size +
+									@@GLOBAL.read_rnd_buffer_size +
+									@@GLOBAL.thread_stack +
+									@@GLOBAL.binlog_cache_size)');
+						}
+					} else {
+						if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
+							$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
 								@@GLOBAL.query_cache_size +
 								@@GLOBAL.tmp_table_size +
 								@@GLOBAL.innodb_buffer_pool_size +
@@ -1579,8 +1671,8 @@ function utilities_get_mysql_recommendations() : int {
 									@@GLOBAL.read_rnd_buffer_size +
 									@@GLOBAL.thread_stack +
 									@@GLOBAL.binlog_cache_size)', '', false, $local_db_cnn_id);
-							} else {
-								$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
+						} else {
+							$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
 								@@GLOBAL.tmp_table_size +
 								@@GLOBAL.innodb_buffer_pool_size +
 								@@GLOBAL.innodb_log_buffer_size
@@ -1590,62 +1682,59 @@ function utilities_get_mysql_recommendations() : int {
 									@@GLOBAL.read_rnd_buffer_size +
 									@@GLOBAL.thread_stack +
 									@@GLOBAL.binlog_cache_size)', '', false, $local_db_cnn_id);
-							}
 						}
 					}
+				}
 
-					$remainingMem = ($totalMem * 0.8) - $totalMemorySans;
+				$remainingMem = ($totalMem * 0.8) - $totalMemorySans;
 
-					$recommendation = $remainingMem / $maxConnections;
+				$recommendation = $remainingMem / $maxConnections;
 
-					$compare         = '<=';
-					$passed          = ($variables[$name] >= ($recommendation / 1024 / 1024)) && $recommendation > 0;
-					$value_display   = round($variables[$name] / 1024 / 1024, 2) . ' M';
-					$value_recommend = round($recommendation / 1024 / 1024, 2) . ' M';
+				$compare = '<=';
+				$passed = ($variables[$name] >= ($recommendation/1024/1024)) && $recommendation > 0;
+				$value_display = round($variables[$name]/1024/1024, 2) . ' M';
+				$value_recommend = round($recommendation/1024/1024, 2) . ' M';
 
-					break;
-				case 'pinst':
-					$compare = '>=';
+				break;
+			case 'pinst':
+				$compare = '>=';
 
-					// Divide the buffer pool size by 128MB, and ensure 1 or more
-					$pool_instances = round(($innodb_pool_size / 1024 / 1024 / 128) + 0.5);
+				// Divide the buffer pool size by 128MB, and ensure 1 or more
+				$pool_instances = round(($innodb_pool_size / 1024 / 1024 / 128) + 0.5);
 
-					if (CACTI_SERVER_OS == 'win32') {
-						$nproc = getenv('NUMBER_OF_PROCESSORS');
-					} else {
-						$nproc = system('nproc');
-					}
+				if ($config['cacti_server_os'] == 'win32') {
+					$nproc = getenv('NUMBER_OF_PROCESSORS');
+				} else {
+					$nproc = system('nproc');
+				}
 
-					if ($pool_instances > $nproc) {
-						$pool_instances = $nproc;
-					}
+				if ($pool_instances > $nproc) {
+					$pool_instances = $nproc;
+				}
 
-					if ($pool_instances < 1) {
-						$pool_instances = 1;
-					} elseif ($pool_instances > 64) {
-						$pool_instances = 64;
-					}
+				if ($pool_instances < 1) {
+					$pool_instances = 1;
+				} elseif ($pool_instances > 64) {
+					$pool_instances = 64;
+				}
 
-					$passed          = ($variables[$name] >= $pool_instances);
-					$value_recommend = $pool_instances;
-
-					break;
-				default:
-					$compare = $r['measure'];
-					$passed  = true;
+				$passed = ($variables[$name] >= $pool_instances);
+				$value_recommend = $pool_instances;
+				break;
+			default:
+				$compare = $r['measure'];
+				$passed = true;
 			}
 
 			if (isset($passed)) {
 				if (!$passed) {
 					if (isset($r['class']) && $r['class'] == 'warning') {
 						$class = 'textWarning';
-
 						if ($result == DB_STATUS_SUCCESS) {
 							$result = DB_STATUS_WARNING;
 						}
 					} else {
 						$class = 'textError';
-
 						if ($result != DB_STATUS_ERROR) {
 							$result = DB_STATUS_ERROR;
 						}
@@ -1654,24 +1743,24 @@ function utilities_get_mysql_recommendations() : int {
 
 				form_alternate_row();
 
-				print '<td>' . $name . '</td>';
-				print "<td class='right $class'>$value_display</td>";
-				print "<td class='center'>$compare</td>";
-				print "<td>$value_recommend</td>";
-				print "<td class='$class'>" . $r['comment'] . '</td>';
+				print '<td>' . html_escape($name) . '</td>';
+				print "<td class='right $class'>" . html_escape($value_display) . '</td>';
+				print "<td class='center'>" . html_escape($compare) . '</td>';
+				print '<td>' . html_escape($value_recommend) . '</td>';
+				print "<td class='$class'>" . html_escape($r['comment']) . '</td>';
 
 				form_end_row();
 			}
+
 		}
 	}
-	print '</table>';
-	print '</td>';
+	print "</table>";
+	print "</td>";
 	form_end_row();
-
 	return $result;
 }
 
-function utilities_php_modules() : string {
+function utilities_php_modules() {
 	/*
 	   Gather phpinfo into a string variable - This has to be done before
 	   any headers are sent to the browser, as we are going to do some
@@ -1683,7 +1772,7 @@ function utilities_php_modules() : string {
 	$php_info = ob_get_contents();
 	ob_end_clean();
 
-	// Remove nasty style sheets, links and other junk
+	/* Remove nasty style sheets, links and other junk */
 	$php_info = str_replace("\n", '', $php_info);
 	$php_info = preg_replace('/^.*\<body\>/', '', $php_info);
 	$php_info = preg_replace('/\<\/body\>.*$/', '', $php_info);
@@ -1695,11 +1784,10 @@ function utilities_php_modules() : string {
 	return $php_info;
 }
 
-function memory_bytes(mixed $val) : mixed {
+function memory_bytes($val) {
 	$val  = trim($val);
-	$last = cacti_strtolower($val[strlen($val) - 1]);
-	$val  = (float) trim($val, 'GMKgmk');
-
+	$last = strtolower($val[strlen($val)-1]);
+	$val  = trim($val, 'GMKgmk');
 	switch($last) {
 		case 'g':
 			$val *= 1024;
@@ -1712,7 +1800,7 @@ function memory_bytes(mixed $val) : mixed {
 	return $val;
 }
 
-function memory_readable(mixed $val) : string {
+function memory_readable($val) {
 	if ($val < 1024) {
 		$val_label = 'bytes';
 	} elseif ($val < 1048576) {
@@ -1729,76 +1817,70 @@ function memory_readable(mixed $val) : string {
 	return $val . $val_label;
 }
 
-function utilities_get_system_memory() : array {
-	$memInfo = [];
+function utilities_get_system_memory() {
+	global $config;
 
-	if (CACTI_SERVER_OS == 'win32') {
+	$memInfo = array();
+
+	if ($config['cacti_server_os'] == 'win32') {
 		exec('wmic os get FreePhysicalMemory', $memInfo['FreePhysicalMemory']);
 		exec('wmic os get FreeSpaceInPagingFiles', $memInfo['FreeSpaceInPagingFiles']);
 		exec('wmic os get FreeVirtualMemory', $memInfo['FreeVirtualMemory']);
 		exec('wmic os get SizeStoredInPagingFiles', $memInfo['SizeStoredInPagingFiles']);
 		exec('wmic os get TotalVirtualMemorySize', $memInfo['TotalVirtualMemorySize']);
 		exec('wmic os get TotalVisibleMemorySize', $memInfo['TotalVisibleMemorySize']);
-
 		if (cacti_sizeof($memInfo)) {
 			foreach ($memInfo as $key => $values) {
-				$memInfo[$key] = intval($values[1]) * 1000;
+				$memInfo[$key] = $values[1] * 1000;
 			}
 		}
 	} else {
 		$file = '';
-
 		if (file_exists('/proc/meminfo')) {
 			$file = '/proc/meminfo';
-		} elseif (file_exists('/linux/proc/meminfo')) {
+		} elseif(file_exists('/linux/proc/meminfo')) {
 			$file = '/linux/proc/meminfo';
-		} elseif (file_exists('/compat/linux/proc/meminfo')) {
+		} elseif(file_exists('/compat/linux/proc/meminfo')) {
 			$file = '/compat/linux/proc/meminfo';
-		} elseif (file_exists('/usr/compat/linux/proc/meminfo')) {
+		} elseif(file_exists('/usr/compat/linux/proc/meminfo')) {
 			$file = '/usr/compat/linux/proc/meminfo';
 		}
 
 		if ($file != '') {
 			$data = explode("\n", file_get_contents($file));
-
 			foreach ($data as $l) {
 				if (trim($l) != '') {
-					[$key, $val]     = explode(':', $l);
-					$val             = intval(trim($val, " kBb\r\n"));
-					$memInfo[$key]   = round($val * 1000,0);
+					list($key, $val) = explode(':', $l);
+					$val = trim($val, " kBb\r\n");
+					$memInfo[$key] = round($val * 1000,0);
 				}
 			}
 		} elseif (file_exists('/usr/bin/free')) {
-			$menInfo   = [];
-			$output    = [];
+			$menInfo   = array();
+			$output    = array();
 			$exit_code = 0;
 
 			exec('/usr/bin/free', $output, $exit_code);
-
 			if ($exit_code == 0) {
 				foreach ($output as $line) {
 					$parts = preg_split('/\s+/', $line);
-
 					switch ($parts[0]) {
-						case 'Mem:':
-							$memInfo['MemTotal']  = (isset($parts[1]) ? intval($parts[1]) * 1000 : 0);
-							$memInfo['MemUsed']   = (isset($parts[2]) ? intval($parts[2]) * 1000 : 0);
-							$memInfo['MemFree']   = (isset($parts[3]) ? intval($parts[3]) * 1000 : 0);
-							$memInfo['MemShared'] = (isset($parts[4]) ? intval($parts[4]) * 1000 : 0);
-							$memInfo['Buffers']   = (isset($parts[5]) ? intval($parts[5]) * 1000 : 0);
-							$memInfo['Cached']    = (isset($parts[6]) ? intval($parts[6]) * 1000 : 0);
-
-							break;
-						case '-/+':
-							$memInfo['Active']    = (isset($parts[2]) ? intval($parts[3]) * 1000 : 0);
-							$memInfo['Inactive']  = (isset($parts[3]) ? intval($parts[3]) * 1000 : 0);
-
-							break;
-						case 'Swap:':
-							$memInfo['SwapTotal'] = (isset($parts[1]) ? intval($parts[1]) * 1000 : 0);
-							$memInfo['SwapUsed']  = (isset($parts[2]) ? intval($parts[2]) * 1000 : 0);
-
-							break;
+					case 'Mem:':
+						$memInfo['MemTotal']  = (isset($parts[1]) ? $parts[1]*1000:0);
+						$memInfo['MemUsed']   = (isset($parts[2]) ? $parts[2]*1000:0);
+						$memInfo['MemFree']   = (isset($parts[3]) ? $parts[3]*1000:0);
+						$memInfo['MemShared'] = (isset($parts[4]) ? $parts[4]*1000:0);
+						$memInfo['Buffers']   = (isset($parts[5]) ? $parts[5]*1000:0);
+						$memInfo['Cached']    = (isset($parts[6]) ? $parts[6]*1000:0);
+						break;
+					case '-/+':
+						$memInfo['Active']    = (isset($parts[2]) ? $parts[3]*1000:0);
+						$memInfo['Inactive']  = (isset($parts[3]) ? $parts[3]*1000:0);
+						break;
+					case 'Swap:':
+						$memInfo['SwapTotal'] = (isset($parts[1]) ? $parts[1]*1000:0);
+						$memInfo['SwapUsed']  = (isset($parts[2]) ? $parts[2]*1000:0);
+						break;
 					}
 				}
 			}
@@ -1808,23 +1890,29 @@ function utilities_get_system_memory() : array {
 	return $memInfo;
 }
 
-function utility_php_sort_extensions(mixed $a, mixed $b) : int {
-	$name_a = $a['name'] ?? '';
-	$name_b = $b['name'] ?? '';
-
+function utility_php_sort_extensions($a, $b) {
+	$name_a = isset($a['name']) ? $a['name'] : '';
+	$name_b = isset($b['name']) ? $b['name'] : '';
 	return strcasecmp($name_a, $name_b);
 }
 
-function utility_php_extensions() : array {
-	$php      = cacti_escapeshellcmd(read_config_option('path_php_binary', true));
-	$php_file = cacti_escapeshellarg(CACTI_PATH_INSTALL . '/cli_check.php') . ' extensions';
-	$json     = shell_exec($php . ' -q ' . $php_file);
 
-	$ext      = [];
+function utility_php_extensions() {
+	global $config;
 
-	if ($json != '') {
-		$ext = @json_decode($json, true);
+	$php_binary = read_config_option('path_php_binary', true);
+
+	/* SECURITY: Validate the binary path prevents RCE if the database is compromised */
+	if (empty($php_binary) || !is_executable($php_binary) || !preg_match('/^php[0-9.]*(?:-cgi|-fpm)?(?:\.exe)?$/i', basename($php_binary))) {
+		cacti_log('ERROR: Invalid or non-executable PHP binary path configured: ' . $php_binary, false, 'SYSTEM');
+
+		return array();
 	}
+
+	$php      = cacti_escapeshellcmd($php_binary);
+	$php_file = cacti_escapeshellarg($config['base_path'] . '/install/cli_check.php') . ' extensions';
+	$json     = shell_exec($php . ' -q ' . $php_file);
+	$ext = @json_decode($json, true);
 
 	utility_php_verify_extensions($ext, 'web');
 	utility_php_set_installed($ext);
@@ -1832,55 +1920,67 @@ function utility_php_extensions() : array {
 	return $ext;
 }
 
-function utility_php_verify_extensions(mixed &$extensions, string $source) : void {
-	if (empty($extensions)) {
-		$extensions = [
-			'ctype'     => ['cli' => false, 'web' => false],
-			'curl'      => ['cli' => false, 'web' => false],
-			'date'      => ['cli' => false, 'web' => false],
-			'filter'    => ['cli' => false, 'web' => false],
-			'gd'        => ['cli' => false, 'web' => false],
-			'gmp'       => ['cli' => false, 'web' => false],
-			'hash'      => ['cli' => false, 'web' => false],
-			'intl'      => ['cli' => false, 'web' => false],
-			'json'      => ['cli' => false, 'web' => false],
-			'ldap'      => ['cli' => false, 'web' => false],
-			'mbstring'  => ['cli' => false, 'web' => false],
-			'openssl'   => ['cli' => false, 'web' => false],
-			'pcre'      => ['cli' => false, 'web' => false],
-			'PDO'       => ['cli' => false, 'web' => false],
-			'pdo_mysql' => ['cli' => false, 'web' => false],
-			'session'   => ['cli' => false, 'web' => false],
-			'simplexml' => ['cli' => false, 'web' => false],
-			'sockets'   => ['cli' => false, 'web' => false],
-			'spl'       => ['cli' => false, 'web' => false],
-			'standard'  => ['cli' => false, 'web' => false],
-			'xml'       => ['cli' => false, 'web' => false],
-			'zlib'      => ['cli' => false, 'web' => false]
-		];
+function utility_php_verify_extensions(&$extensions, $source) {
+	global $config;
 
-		if (CACTI_SERVER_OS == 'unix') {
-			$extensions['posix'] = ['cli' => false, 'web' => false];
-			$extensions['pcntl'] = ['cli' => false, 'web' => true];
+	if (empty($extensions)) {
+		$extensions = array(
+			'ctype'     => array('cli' => false, 'web' => false),
+			'date'      => array('cli' => false, 'web' => false),
+			'filter'    => array('cli' => false, 'web' => false),
+			'gd'        => array('cli' => false, 'web' => false),
+			'gmp'       => array('cli' => false, 'web' => false),
+			'hash'      => array('cli' => false, 'web' => false),
+			'intl'      => array('cli' => false, 'web' => false),
+			'json'      => array('cli' => false, 'web' => false),
+			'ldap'      => array('cli' => false, 'web' => false),
+			'mbstring'  => array('cli' => false, 'web' => false),
+			'openssl'   => array('cli' => false, 'web' => false),
+			'pcre'      => array('cli' => false, 'web' => false),
+			'PDO'       => array('cli' => false, 'web' => false),
+			'pdo_mysql' => array('cli' => false, 'web' => false),
+			'session'   => array('cli' => false, 'web' => false),
+			'simplexml' => array('cli' => false, 'web' => false),
+			'sockets'   => array('cli' => false, 'web' => false),
+			'spl'       => array('cli' => false, 'web' => false),
+			'standard'  => array('cli' => false, 'web' => false),
+			'xml'       => array('cli' => false, 'web' => false),
+			'zlib'      => array('cli' => false, 'web' => false)
+		);
+
+		if ($config['cacti_server_os'] == 'unix') {
+			$extensions['posix'] = array('cli' => false, 'web' => false);
+			$extensions['pcntl'] = array('cli' => false, 'web' => true);
 		} else {
-			$extensions['com_dotnet'] = ['cli' => false, 'web' => false];
+			$extensions['com_dotnet'] = array('cli' => false, 'web' => false);
 		}
 	}
 
 	uksort($extensions, 'utility_php_sort_extensions');
 
 	foreach ($extensions as $name=>$extension) {
-		if (extension_loaded($name)) {
+		if (extension_loaded($name)){
 			$extensions[$name][$source] = true;
 		}
 	}
 }
 
-function utility_php_recommends() : array {
-	$php        = cacti_escapeshellcmd(read_config_option('path_php_binary', true));
-	$php_file   = cacti_escapeshellarg(CACTI_PATH_INSTALL . '/cli_check.php') . ' recommends';
-	$json       = shell_exec($php . ' -q ' . $php_file);
-	$ext        = ['web' => '', 'cli' => ''];
+function utility_php_recommends() {
+	global $config;
+
+	$php_binary = read_config_option('path_php_binary', true);
+
+	/* SECURITY: Validate the binary path prevents RCE if the database is compromised */
+	if (empty($php_binary) || !is_executable($php_binary) || !preg_match('/^php[0-9.]*(?:-cgi|-fpm)?(?:\.exe)?$/i', basename($php_binary))) {
+		cacti_log('ERROR: Invalid or non-executable PHP binary path configured: ' . $php_binary, false, 'SYSTEM');
+
+		return array();
+	}
+
+	$php      = cacti_escapeshellcmd($php_binary);
+	$php_file = cacti_escapeshellarg($config['base_path'] . '/install/cli_check.php') . ' recommends';
+	$json     = shell_exec($php . ' -q ' . $php_file);
+	$ext = array('web' => '', 'cli' => '');
 	$ext['cli'] = @json_decode($json, true);
 
 	utility_php_verify_recommends($ext['web'], 'web');
@@ -1889,24 +1989,24 @@ function utility_php_recommends() : array {
 	return $ext;
 }
 
-function utility_get_formatted_bytes(mixed $input_value, string $wanted_type, mixed &$output_value, string $default_type = 'B') : mixed {
-	$default_type = cacti_strtoupper($default_type);
-	$multiplier   = [
+function utility_get_formatted_bytes($input_value, $wanted_type, &$output_value, $default_type = 'B') {
+
+	$default_type = strtoupper($default_type);
+	$multiplier = array(
 		'B' => 1,
 		'K' => 1024,
-		'M' => 1048576,
-		'G' => 1073741824,
-	];
+		'M' => 1024*1024,
+		'G' => 1024*1024*1024,
+	);
 
 	if ($input_value > 0 && preg_match('/([0-9.]+)([BKMG]){0,1}/i',$input_value,$matches)) {
-		$input_value = floatval($matches[1]);
-
+		$input_value = $matches[1];
 		if (isset($matches[2])) {
 			$default_type = $matches[2];
 		}
 
 		if (isset($multiplier[$default_type])) {
-			$input_value *= $multiplier[$default_type];
+			$input_value = $input_value * $multiplier[$default_type];
 		}
 	}
 
@@ -1919,19 +2019,16 @@ function utility_get_formatted_bytes(mixed $input_value, string $wanted_type, mi
 	} else {
 		$output_value = $input_value . 'B';
 	}
-
-	cacti_log("Input values $input_value, Wanted Type $wanted_type, Output Value $output_value");
-
 	return $input_value;
 }
 
-function utility_php_verify_recommends(mixed &$recommends, string $source) : void {
+function utility_php_verify_recommends(&$recommends, $source) {
 	global $original_memory_limit;
 
-	$rec_version    = '7.4.0';
-	$rec_memory_mb  = 800;
+	$rec_version    = '5.4.0';
+	$rec_memory_mb  = (version_compare(PHP_VERSION, '7.0.0', '<') ? 800 : 400);
 	$rec_execute_m  = 1;
-	$memory_ini     = ($original_memory_limit ?? ini_get('memory_limit'));
+	$memory_ini     = (isset($original_memory_limit) ? $original_memory_limit : ini_get('memory_limit'));
 
 	// adjust above appropriately (used in configs)
 	$rec_execute    = $rec_execute_m * 60;
@@ -1946,44 +2043,41 @@ function utility_php_verify_recommends(mixed &$recommends, string $source) : voi
 	$cfg_timezone   = empty($cfg_values['date.timezone']) ? '' : $cfg_values['date.timezone'];
 	$cfg_max_exec   = empty($cfg_values['max_execution_time']) ? '' : $cfg_values['max_execution_time'];
 
-	// moving into local variable for phpstan
-	$php_version    = PHP_VERSION;
-
-	$recommends = [
-		[
+	$recommends = array(
+		array(
 			'name'        => 'location',
 			'value'       => get_cfg_var('cfg_file_path'),
 			'current'     => get_cfg_var('cfg_file_path'),
 			'status'      => 2,
-		],
-		[
+		),
+		array(
 			'name'        => 'version',
 			'value'       => $rec_version,
 			'current'     => PHP_VERSION,
-			'status'      => version_compare($php_version, $rec_version, '>=') ? DB_STATUS_SUCCESS : DB_STATUS_ERROR,
-		],
-		[
+			'status'      => version_compare(PHP_VERSION, $rec_version, '>=') ? DB_STATUS_SUCCESS : DB_STATUS_ERROR,
+		),
+		array(
 			'name'        => 'memory_limit',
 			'value'       => $rec_memory_mb,
 			'current'     => $memory_ini,
-			'status'      => (($memory_limit <= 0 || $memory_limit >= $rec_memory) ? DB_STATUS_SUCCESS : ($memory_limit != $cfg_mem_limit ? DB_STATUS_RESTART : DB_STATUS_WARNING)),
-		],
-		[
+			'status'      => (($memory_limit <= 0 || $memory_limit >= $rec_memory) ? DB_STATUS_SUCCESS :($memory_limit != $cfg_mem_limit ? DB_STATUS_RESTART :  DB_STATUS_WARNING)),
+		),
+		array(
 			'name'        => 'max_execution_time',
 			'value'       => $rec_execute,
 			'current'     => $execute_time,
 			'status'      => (($execute_time <= 0 || $execute_time >= $rec_execute) ? DB_STATUS_SUCCESS : ($execute_time != $cfg_max_exec ? DB_STATUS_RESTART : DB_STATUS_WARNING)),
-		],
-		[
+		),
+		array(
 			'name'        => 'date.timezone',
 			'value'       => '<timezone>',
 			'current'     => $timezone,
 			'status'      => ($timezone ? DB_STATUS_SUCCESS : ($timezone != $cfg_timezone ? DB_STATUS_RESTART : DB_STATUS_ERROR)),
-		],
-	];
+		),
+	);
 }
 
-function utility_php_set_recommends_text(mixed &$recs) : void {
+function utility_php_set_recommends_text(&$recs) {
 	if (is_array($recs) && cacti_sizeof($recs)) {
 		foreach ($recs as $name => $recommends) {
 			if (cacti_sizeof($recommends)) {
@@ -2003,15 +2097,22 @@ function utility_php_set_recommends_text(mixed &$recs) : void {
 	}
 }
 
-function utility_php_optionals() : array {
-	$php      = cacti_escapeshellcmd(read_config_option('path_php_binary', true));
-	$php_file = cacti_escapeshellarg(CACTI_PATH_INSTALL . '/cli_check.php') . ' optionals';
-	$json     = shell_exec($php . ' -q ' . $php_file);
-	$opt      = [];
+function utility_php_optionals() {
+	global $config;
 
-	if ($json != '') {
-		$opt = json_decode($json, true);
+	$php_binary = read_config_option('path_php_binary', true);
+
+	/* SECURITY: Validate the binary path prevents RCE if the database is compromised */
+	if (empty($php_binary) || !is_executable($php_binary) || !preg_match('/^php[0-9.]*(?:-cgi|-fpm)?(?:\.exe)?$/i', basename($php_binary))) {
+		cacti_log('ERROR: Invalid or non-executable PHP binary path configured: ' . $php_binary, false, 'SYSTEM');
+
+		return array();
 	}
+
+	$php      = cacti_escapeshellcmd($php_binary);
+	$php_file = cacti_escapeshellarg($config['base_path'] . '/install/cli_check.php') . ' optionals';
+	$json     = shell_exec($php . ' -q ' . $php_file);
+	$opt = @json_decode($json, true);
 
 	utility_php_verify_optionals($opt, 'web');
 	utility_php_set_installed($opt);
@@ -2019,1263 +2120,28 @@ function utility_php_optionals() : array {
 	return $opt;
 }
 
-function utility_php_verify_optionals(mixed &$optionals, string $source) : void {
+function utility_php_verify_optionals(&$optionals, $source) {
 	if (empty($optionals)) {
-		$optionals = [
-			'snmp'          => ['web' => false, 'cli' => false],
-			'gettext'       => ['web' => false, 'cli' => false],
-			'TrueType Box'  => ['web' => false, 'cli' => false],
-			'TrueType Text' => ['web' => false, 'cli' => false],
-		];
+		$optionals = array(
+			'snmp'          => array('web' => false, 'cli' => false),
+			'gettext'       => array('web' => false, 'cli' => false),
+			'TrueType Box'  => array('web' => false, 'cli' => false),
+			'TrueType Text' => array('web' => false, 'cli' => false),
+		);
 	}
 
 	foreach ($optionals as $name => $optional) {
-		if (extension_loaded($name)) {
+		if (extension_loaded($name)){
 			$optionals[$name][$source] = true;
 		}
 	}
 
-	$optionals['TrueType Box'][$source]  = function_exists('imagettfbbox');
+	$optionals['TrueType Box'][$source] = function_exists('imagettfbbox');
 	$optionals['TrueType Text'][$source] = function_exists('imagettftext');
 }
 
-function utility_php_set_installed(array &$extensions) : void {
+function utility_php_set_installed(&$extensions) {
 	foreach ($extensions as $name=>$extension) {
 		$extensions[$name]['installed'] = $extension['web'] && $extension['cli'];
-	}
-}
-
-/**
- * object_cache_get_totals - This function gets the count of objects
- *   for a set of object types.  The object types include:
- *
- *   - device_state  - Load the object database with the current state
- *                     This is to be used for diff updates.
- *   - device_delete - Delete devices Delete Graphs and Data Sources
- *   - device_leave  - Delete devices Leave Graphs and Data Sources
- *   - graph_delete  - Delete Graphs Delete Data Sources
- *   - graph_leave   - Delete Graphs Leave Data Sources
- *   - data_source   - Delete Data Sources
- *
- * This function is used to prime the previous values for processing
- * by object removal functions.
- *
- * @param string $class      The class of object as above
- * @param mixed  $object_ids The ids for the object class
- * @param bool   $diff       Load the objects into the diff array
- *
- * @return void
- */
-function object_cache_get_totals(string $class, mixed $object_ids, bool $diff = false) : void {
-	global $object_totals, $object_totals_diff;
-
-	if (!is_array($object_ids)) {
-		$object_ids = explode(',', $object_ids);
-	}
-
-	// temp variable for object array
-	$variable = [];
-
-	// object totals loaded already
-	if (cacti_sizeof($object_totals) && $diff === false) {
-		return;
-	}
-
-	// avoid an error if there are no objects
-	if (!cacti_sizeof($object_ids)) {
-		return;
-	}
-
-	switch($class) {
-		case 'device_state':
-		case 'device_delete':
-			$data = db_fetch_assoc('SELECT host_id AS id, COUNT(*) AS totals
-				FROM data_local AS dl
-				WHERE host_id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY host_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['host_data_sources'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT host_id AS id, COUNT(*) AS totals
-				FROM graph_local AS gl
-				WHERE host_id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY host_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['host_graphs'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT site_id AS id, COUNT(*) AS totals
-				FROM host AS h
-				WHERE id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY site_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['sites'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT host_template_id AS id, COUNT(*) AS totals
-				FROM host AS h
-				WHERE id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY host_template_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['host_templates'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT graph_template_id AS id, COUNT(*) AS totals
-				FROM graph_local AS gl
-				WHERE host_id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY graph_template_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['graph_templates'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT data_template_id AS id, COUNT(*) AS totals
-				FROM data_local AS dl
-				WHERE host_id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY data_template_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['data_templates'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT snmp_query_id AS id, COUNT(*) AS totals
-				FROM data_local AS dl
-				WHERE host_id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY snmp_query_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['data_queries'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT cdef_id AS id, COUNT(DISTINCT local_graph_id) AS totals
-				FROM graph_templates_item AS gti
-				INNER JOIN graph_local AS gl
-				ON gl.id = gti.local_graph_id
-				WHERE cdef_id > 0
-				AND host_id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY cdef_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['cdefs'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT vdef_id AS id, COUNT(DISTINCT local_graph_id) AS totals
-				FROM graph_templates_item AS gti
-				INNER JOIN graph_local AS gl
-				ON gl.id = gti.local_graph_id
-				WHERE vdef_id > 0
-				AND host_id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY vdef_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['vdefs'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT color_id AS id, COUNT(DISTINCT local_graph_id) AS totals
-				FROM graph_templates_item AS gti
-				INNER JOIN graph_local AS gl
-				ON gl.id = gti.local_graph_id
-				WHERE color_id > 0
-				AND host_id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY color_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['colors'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT gprint_id AS id, COUNT(DISTINCT local_graph_id) AS totals
-				FROM graph_templates_item AS gti
-				INNER JOIN graph_local AS gl
-				ON gl.id = gti.local_graph_id
-				WHERE gprint_id > 0
-				AND host_id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY gprint_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['gprints'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT data_input_id AS id, COUNT(DISTINCT local_data_id) AS totals
-				FROM data_template_data AS dtd
-				INNER JOIN data_local AS dl
-				ON dl.id = dtd.local_data_id
-				WHERE data_input_id > 0
-				AND host_id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY data_input_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['data_inputs'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT data_source_profile_id AS id, COUNT(DISTINCT local_data_id) AS totals
-				FROM data_template_data AS dtd
-				INNER JOIN data_local AS dl
-				ON dl.id = dtd.local_data_id
-				WHERE data_source_profile_id > 0
-				AND host_id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY data_source_profile_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['data_profiles'] = array_rekey($data, 'id', 'totals');
-			}
-
-			break;
-		case 'device_leave':
-			$data = db_fetch_assoc('SELECT host_id AS id, COUNT(*) AS totals
-				FROM data_local AS dl
-				WHERE host_id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY host_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['host_data_sources'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT host_id AS id, COUNT(*) AS totals
-				FROM graph_local AS gl
-				WHERE host_id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY host_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['host_graphs'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT site_id AS id, COUNT(*) AS totals
-				FROM host AS h
-				WHERE id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY site_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['sites'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT host_template_id AS id, COUNT(*) AS totals
-				FROM host AS h
-				WHERE id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY host_template_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['host_templates'] = array_rekey($data, 'id', 'totals');
-			}
-
-			break;
-		case 'graph_delete':
-			$data = db_fetch_assoc('SELECT host_id AS id, COUNT(*) AS totals
-				FROM graph_local AS gl
-				WHERE id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY host_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['host_graphs'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT host_id AS id, COUNT(DISTINCT local_data_id) AS totals
-				FROM data_local AS dl
-				INNER JOIN data_template_rrd AS dtr
-				ON dl.id = dtr.local_data_id
-				INNER JOIN graph_templates_item AS gti
-				ON dtr.id = gti.task_item_id
-				WHERE local_graph_id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY host_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['host_data_sources'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT graph_template_id AS id, COUNT(*) AS totals
-				FROM graph_local AS gl
-				WHERE id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY graph_template_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['graph_templates'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT data_template_id AS id, COUNT(DISTINCT local_data_id) AS totals
-				FROM data_template_rrd AS dtr
-				INNER JOIN graph_templates_item AS gti
-				ON dtr.id = gti.task_item_id
-				WHERE local_graph_id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY data_template_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['data_templates'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT snmp_query_id AS id, COUNT(DISTINCT local_data_id) AS totals
-				FROM data_local AS dl
-				INNER JOIN data_template_rrd AS dtr
-				ON dl.id = dtr.local_data_id
-				INNER JOIN graph_templates_item AS gti
-				ON dtr.id = gti.task_item_id
-				WHERE local_graph_id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY snmp_query_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['data_queries'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT cdef_id AS id, COUNT(DISTINCT local_graph_id) AS totals
-				FROM graph_templates_item AS gti
-				INNER JOIN graph_local AS gl
-				ON gl.id = gti.local_graph_id
-				WHERE cdef_id > 0
-				AND local_graph_id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY cdef_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['cdefs'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT vdef_id AS id, COUNT(DISTINCT local_graph_id) AS totals
-				FROM graph_templates_item AS gti
-				INNER JOIN graph_local AS gl
-				ON gl.id = gti.local_graph_id
-				WHERE vdef_id > 0
-				AND local_graph_id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY vdef_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['vdefs'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT color_id AS id, COUNT(DISTINCT local_graph_id) AS totals
-				FROM graph_templates_item AS gti
-				INNER JOIN graph_local AS gl
-				ON gl.id = gti.local_graph_id
-				WHERE color_id > 0
-				AND local_graph_id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY color_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['colors'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT gprint_id AS id, COUNT(DISTINCT local_graph_id) AS totals
-				FROM graph_templates_item AS gti
-				INNER JOIN graph_local AS gl
-				ON gl.id = gti.local_graph_id
-				WHERE gprint_id > 0
-				AND local_graph_id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY gprint_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['gprints'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT data_input_id AS id, COUNT(DISTINCT local_data_id) AS totals
-				FROM data_template_data AS dtd
-				INNER JOIN data_local AS dl
-				ON dl.id = dtd.local_data_id
-				INNER JOIN graph_templates_item AS gti
-				ON dtd.id = gti.task_item_id
-				WHERE data_input_id > 0
-				AND local_graph_id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY data_input_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['data_inputs'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT data_source_profile_id AS id, COUNT(DISTINCT local_data_id) AS totals
-				FROM data_template_data AS dtd
-				INNER JOIN data_local AS dl
-				ON dl.id = dtd.local_data_id
-				INNER JOIN graph_templates_item AS gti
-				ON dtd.id = gti.task_item_id
-				WHERE data_input_id > 0
-				AND local_graph_id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY data_source_profile_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['data_profiles'] = array_rekey($data, 'id', 'totals');
-			}
-
-			break;
-		case 'graph_leave':
-			$data = db_fetch_assoc('SELECT host_id AS id, COUNT(*) AS totals
-				FROM graph_local AS gl
-				WHERE id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY host_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['host_graphs'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT graph_template_id AS id, COUNT(*) AS totals
-				FROM graph_local AS gl
-				WHERE id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY graph_template_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['graph_templates'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT cdef_id AS id, COUNT(DISTINCT local_graph_id) AS totals
-				FROM graph_templates_item AS gti
-				INNER JOIN graph_local AS gl
-				ON gl.id = gti.local_graph_id
-				WHERE cdef_id > 0
-				AND local_graph_id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY cdef_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['cdefs'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT vdef_id AS id, COUNT(DISTINCT local_graph_id) AS totals
-				FROM graph_templates_item AS gti
-				INNER JOIN graph_local AS gl
-				ON gl.id = gti.local_graph_id
-				WHERE vdef_id > 0
-				AND local_graph_id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY vdef_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['vdefs'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT color_id AS id, COUNT(DISTINCT local_graph_id) AS totals
-				FROM graph_templates_item AS gti
-				INNER JOIN graph_local AS gl
-				ON gl.id = gti.local_graph_id
-				WHERE color_id > 0
-				AND local_graph_id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY color_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['colors'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT gprint_id AS id, COUNT(DISTINCT local_graph_id) AS totals
-				FROM graph_templates_item AS gti
-				INNER JOIN graph_local AS gl
-				ON gl.id = gti.local_graph_id
-				WHERE gprint_id > 0
-				AND local_graph_id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY gprint_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['gprints'] = array_rekey($data, 'id', 'totals');
-			}
-
-			break;
-		case 'data_source':
-			$data = db_fetch_assoc('SELECT host_id AS id, COUNT(*) AS totals
-				FROM data_local AS dl
-				WHERE id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY host_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['host_data_sources'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT data_template_id AS id, COUNT(*) AS totals
-				FROM data_template_data AS dtd
-				WHERE local_data_id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY data_template_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['data_templates'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT snmp_query_id AS id, COUNT(*) AS totals
-				FROM data_local AS dl
-				WHERE id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY snmp_query_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['data_queries'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT data_input_id AS id, COUNT(*) AS totals
-				FROM data_template_data AS dtd
-				WHERE data_input_id > 0
-				AND local_data_id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY data_input_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['data_inputs'] = array_rekey($data, 'id', 'totals');
-			}
-
-			$data = db_fetch_assoc('SELECT data_source_profile_id AS id, COUNT(*) AS totals
-				FROM data_template_data AS dtd
-				WHERE data_source_profile_id > 0
-				AND local_data_id IN(' . implode(', ', $object_ids) . ')
-				GROUP BY data_source_profile_id');
-
-			if (cacti_sizeof($data)) {
-				$variable['data_profiles'] = array_rekey($data, 'id', 'totals');
-			}
-
-			break;
-	}
-
-	if ($diff) {
-		$object_totals_diff = $variable;
-	} else {
-		$object_totals = $variable;
-	}
-}
-
-function object_cache_update_totals(string $direction) : bool {
-	global $object_totals, $object_totals_diff;
-
-	if ($direction == 'add') {
-		$operator = '+';
-	} elseif ($direction == 'delete') {
-		$operator = '-';
-	} elseif ($direction != 'diff') {
-		cacti_log("WARNING: Object cache direction $direction not known", false, 'WEBUI');
-
-		return false;
-	} elseif (!cacti_sizeof($object_totals_diff)) {
-		cacti_log('WARNING: Unable to perform diff if the diff array is not loaded', false, 'WEBUI');
-
-		return false;
-	} else {
-		// scan the changes and then construct a new array with the deltas
-		$prev_object_totals = $object_totals;
-		$object_totals      = [];
-		$operator           = '+';
-
-		foreach ($object_totals_diff as $object_id => $data) {
-			foreach ($data as $id => $value) {
-				if (isset($prev_object_totals[$object_id][$id])) {
-					$object_totals[$object_id][$id] = $value - $prev_object_totals[$object_id][$id];
-				} else {
-					$object_totals[$object_id][$id] = $value;
-				}
-			}
-		}
-	}
-
-	if (cacti_sizeof($object_totals)) {
-		foreach ($object_totals as $object_id => $data) {
-			foreach ($data as $id => $value) {
-				switch($object_id) {
-					case 'host_graphs':
-						db_execute_prepared("UPDATE host
-							SET graphs = graphs $operator ?
-							WHERE id = ?
-							AND graphs $operator ? >= 0",
-							[$value, $id, $value]);
-
-						break;
-					case 'host_data_sources':
-						db_execute_prepared("UPDATE host
-							SET data_sources = data_sources $operator ?
-							WHERE id = ?
-							AND data_sources $operator ? >= 0",
-							[$value, $id, $value]);
-
-						break;
-					case 'host_templates':
-						db_execute_prepared("UPDATE host_template
-							SET devices = devices $operator ?
-							WHERE id = ?
-							AND devices $operator ? >= 0",
-							[$value, $id, $value]);
-
-						break;
-					case 'graph_templates':
-						db_execute_prepared("UPDATE graph_templates
-							SET graphs = graphs $operator ?
-							WHERE id = ?
-							AND graphs $operator ? >= 0",
-							[$value, $id, $value]);
-
-						break;
-					case 'data_templates':
-						db_execute_prepared("UPDATE data_template
-							SET data_sources = data_sources $operator ?
-							WHERE id = ?
-							AND data_sources $operator ? >= 0",
-							[$value, $id, $value]);
-
-						break;
-					case 'cdefs':
-						db_execute_prepared("UPDATE cdef
-							SET graphs = graphs $operator ?
-							WHERE id = ?
-							AND graphs $operator ? >= 0",
-							[$value, $id, $value]);
-
-						break;
-					case 'vdefs':
-						db_execute_prepared("UPDATE vdef
-							SET graphs = graphs $operator ?
-							WHERE id = ?
-							AND graphs $operator ? >= 0",
-							[$value, $id, $value]);
-
-						break;
-					case 'colors':
-						db_execute_prepared("UPDATE colors
-							SET graphs = graphs $operator ?
-							WHERE id = ?
-							AND graphs $operator ? >= 0",
-							[$value, $id, $value]);
-
-						break;
-					case 'gprints':
-						db_execute_prepared("UPDATE graph_templates_gprint
-							SET graphs = graphs $operator ?
-							WHERE id = ?
-							AND graphs $operator ? >= 0",
-							[$value, $id, $value]);
-
-						break;
-					case 'data_inputs':
-						db_execute_prepared("UPDATE data_input
-							SET data_sources = data_sources $operator ?
-							WHERE id = ?
-							AND data_sources $operator ? >= 0",
-							[$value, $id, $value]);
-
-						break;
-					case 'data_queries':
-						db_execute_prepared("UPDATE snmp_query
-							SET graphs = graphs $operator ?
-							WHERE id = ?
-							AND graphs $operator ? >= 0",
-							[$value, $id, $value]);
-
-						break;
-					case 'data_profiles':
-						db_execute_prepared("UPDATE data_source_profiles
-							SET data_sources = data_sources $operator ?
-							WHERE id = ?
-							AND data_sources $operator ? >= 0",
-							[$value, $id, $value]);
-
-						break;
-					case 'sites':
-						db_execute_prepared("UPDATE sites
-							SET devices = devices $operator ?
-							WHERE id = ?
-							AND devices $operator ? >= 0",
-							[$value, $id, $value]);
-
-						break;
-				}
-			}
-		}
-	}
-
-	unset($object_totals);
-	unset($object_totals_diff);
-
-	return true;
-}
-
-function object_cache_update_device_totals() : void {
-	$tables = [
-		'host',
-		'host_template',
-		'poller',
-		'sites',
-	];
-
-	foreach ($tables as $table) {
-		switch($table) {
-			case 'host':
-				$data_sources = array_rekey(
-					db_fetch_assoc('SELECT host_id AS id, COUNT(*) AS drows
-						FROM data_local GROUP
-						BY host_id'),
-					'id', 'drows'
-				);
-
-				$graphs = array_rekey(
-					db_fetch_assoc('SELECT host_id AS id, COUNT(*) AS grows
-						FROM graph_local GROUP
-						BY host_id'),
-					'id', 'grows'
-				);
-
-				$devices = db_fetch_assoc('SELECT id FROM host');
-
-				if (cacti_sizeof($devices)) {
-					foreach ($devices as $d) {
-						$gcount = 0;
-						$dcount = 0;
-
-						if (isset($graphs[$d['id']])) {
-							$gcount = $graphs[$d['id']];
-						}
-
-						if (isset($data_sources[$d['id']])) {
-							$dcount = $data_sources[$d['id']];
-						}
-
-						db_execute_prepared('UPDATE host
-							SET graphs = ?, data_sources = ?
-							WHERE id = ?',
-							[
-								$gcount,
-								$dcount,
-								$d['id']
-							]
-						);
-					}
-				}
-
-				break;
-			case 'host_template':
-				// 'devices'
-				$items = array_rekey(
-					db_fetch_assoc('SELECT host_template_id AS id, COUNT(*) AS devices
-						FROM host
-						GROUP BY host_template_id'),
-					'id', 'devices'
-				);
-
-				$templates = db_fetch_assoc('SELECT id FROM host_template');
-
-				if (cacti_sizeof($templates)) {
-					foreach ($templates as $t) {
-						if (!isset($items[$t['id']])) {
-							db_execute_prepared('UPDATE host_template
-								SET devices = 0
-								WHERE id = ?',
-								[$t['id']]);
-						} else {
-							db_execute_prepared('UPDATE host_template
-								SET devices = ?
-								WHERE id = ?',
-								[
-									$items[$t['id']],
-									$t['id']
-								]
-							);
-						}
-					}
-				}
-
-				break;
-			case 'poller':
-				// 'devices'
-				$items = array_rekey(
-					db_fetch_assoc('SELECT poller_id AS id, COUNT(*) AS devices
-						FROM host
-						GROUP BY poller_id'),
-					'id', 'devices'
-				);
-
-				$pollers = db_fetch_assoc('SELECT id FROM poller');
-
-				if (cacti_sizeof($pollers)) {
-					foreach ($pollers as $p) {
-						if (!isset($items[$p['id']])) {
-							db_execute_prepared('UPDATE poller
-								SET devices = 0
-								WHERE id = ?',
-								[$p['id']]);
-						} else {
-							db_execute_prepared('UPDATE poller
-								SET devices = ?
-								WHERE id = ?',
-								[
-									$items[$p['id']],
-									$p['id']
-								]
-							);
-						}
-					}
-				}
-
-				break;
-			case 'sites':
-				// 'devices'
-				$items = array_rekey(
-					db_fetch_assoc('SELECT site_id AS id, COUNT(*) AS devices
-						FROM host
-						GROUP BY site_id'),
-					'id', 'devices'
-				);
-
-				$sites = db_fetch_assoc('SELECT id FROM sites');
-
-				if (cacti_sizeof($sites)) {
-					foreach ($sites as $s) {
-						if (!isset($items[$s['id']])) {
-							db_execute_prepared('UPDATE sites
-								SET devices = 0
-								WHERE id = ?',
-								[$s['id']]);
-						} else {
-							db_execute_prepared('UPDATE sites
-								SET devices = ?
-								WHERE id = ?',
-								[
-									$items[$s['id']],
-									$s['id']
-								]
-							);
-						}
-					}
-				}
-
-				break;
-		}
-	}
-}
-
-function object_cache_update_data_source_totals() : void {
-	$tables = [
-		'data_input',
-		'data_source_profiles',
-		'data_template',
-	];
-
-	foreach ($tables as $table) {
-		switch($table) {
-			case 'data_input':
-				// 'data_sources', 'templates'
-				$items = array_rekey(
-					db_fetch_assoc('SELECT data_input_id AS id,
-						SUM(CASE WHEN local_data_id > 0 THEN 1 ELSE 0 END) AS data_sources,
-						SUM(CASE WHEN local_data_id = 0 THEN 1 ELSE 0 END) AS templates
-						FROM (SELECT DISTINCT data_input_id, local_data_id FROM data_template_data WHERE data_input_id > 0) AS rs
-						GROUP BY data_input_id'),
-					'id', ['data_sources', 'templates']
-				);
-
-				$inputs = db_fetch_assoc('SELECT id FROM data_input');
-
-				if (cacti_sizeof($inputs)) {
-					foreach ($inputs as $i) {
-						if (!isset($items[$i['id']])) {
-							db_execute_prepared('UPDATE data_input
-								SET data_sources = 0, templates = 0
-								WHERE id = ?',
-								[$i['id']]);
-						} else {
-							db_execute_prepared('UPDATE data_input
-								SET data_sources = ?, templates = ?
-								WHERE id = ?',
-								[
-									$items[$i['id']]['data_sources'],
-									$items[$i['id']]['templates'],
-									$i['id']
-								]
-							);
-						}
-					}
-				}
-
-				break;
-			case 'data_source_profiles':
-				// 'data_sources', 'templates'
-				$items = array_rekey(
-					db_fetch_assoc('SELECT data_source_profile_id AS id,
-						SUM(CASE WHEN local_data_id > 0 THEN 1 ELSE 0 END) AS data_sources,
-						SUM(CASE WHEN local_data_id = 0 THEN 1 ELSE 0 END) AS templates
-						FROM (SELECT DISTINCT data_source_profile_id, local_data_id FROM data_template_data WHERE data_source_profile_id > 0) AS rs
-						GROUP BY data_source_profile_id'),
-					'id', ['data_sources', 'templates']
-				);
-
-				$profiles = db_fetch_assoc('SELECT id FROM data_source_profiles');
-
-				if (cacti_sizeof($profiles)) {
-					foreach ($profiles as $p) {
-						if (!isset($items[$p['id']])) {
-							db_execute_prepared('UPDATE data_source_profiles
-								SET data_sources = 0, templates = 0
-								WHERE id = ?',
-								[$p['id']]);
-						} else {
-							db_execute_prepared('UPDATE data_source_profiles
-								SET data_sources = ?, templates = ?
-								WHERE id = ?',
-								[
-									$items[$p['id']]['data_sources'],
-									$items[$p['id']]['templates'],
-									$p['id']
-								]
-							);
-						}
-					}
-				}
-
-				break;
-			case 'data_template':
-				// 'data_sources'
-				$items = array_rekey(
-					db_fetch_assoc('SELECT data_template_id AS id, COUNT(*) AS data_sources
-						FROM data_local
-						GROUP BY data_template_id'),
-					'id', 'data_sources'
-				);
-
-				$templates = db_fetch_assoc('SELECT id FROM data_template');
-
-				if (cacti_sizeof($templates)) {
-					foreach ($templates as $t) {
-						if (!isset($items[$t['id']])) {
-							db_execute_prepared('UPDATE data_template
-								SET data_sources = 0
-								WHERE id = ?',
-								[$t['id']]);
-						} else {
-							db_execute_prepared('UPDATE data_template
-								SET data_sources = ?
-								WHERE id = ?',
-								[
-									$items[$t['id']],
-									$t['id']
-								]
-							);
-						}
-					}
-				}
-
-				break;
-		}
-	}
-}
-
-function object_cache_update_graph_totals() : void {
-	$tables = [
-		'cdef',
-		'colors',
-		'graph_templates',
-		'graph_templates_gprint',
-		'snmp_query',
-		'vdef'
-	];
-
-	foreach ($tables as $table) {
-		switch($table) {
-			case 'cdef':
-				// 'graphs', 'templates'
-				$items = array_rekey(
-					db_fetch_assoc('SELECT cdef_id AS id,
-						SUM(CASE WHEN local_graph_id > 0 THEN 1 ELSE 0 END) AS graphs,
-						SUM(CASE WHEN local_graph_id = 0 THEN 1 ELSE 0 END) AS templates
-						FROM (
-							SELECT DISTINCT cdef_id, graph_template_id, local_graph_id
-							FROM graph_templates_item WHERE cdef_id > 0
-						) AS rs
-						GROUP BY cdef_id'),
-					'id', ['graphs', 'templates']
-				);
-
-				$cdefs = db_fetch_assoc('SELECT id FROM cdef');
-
-				if (cacti_sizeof($cdefs)) {
-					foreach ($cdefs as $c) {
-						if (!isset($items[$c['id']])) {
-							db_execute_prepared('UPDATE cdef
-								SET graphs = 0, templates = 0
-								WHERE id = ?',
-								[$c['id']]);
-						} else {
-							db_execute_prepared('UPDATE cdef
-								SET graphs = ?, templates = ?
-								WHERE id = ?',
-								[
-									$items[$c['id']]['graphs'],
-									$items[$c['id']]['templates'],
-									$c['id']
-								]
-							);
-						}
-					}
-				}
-
-				break;
-			case 'colors':
-				// 'graphs', 'templates'
-				$items = array_rekey(
-					db_fetch_assoc('SELECT color_id AS id,
-						SUM(CASE WHEN local_graph_id > 0 THEN 1 ELSE 0 END) AS graphs,
-						SUM(CASE WHEN local_graph_id = 0 THEN 1 ELSE 0 END) AS templates
-						FROM (
-							SELECT DISTINCT color_id, graph_template_id, local_graph_id
-							FROM graph_templates_item
-							WHERE color_id > 0
-						) AS rs
-						GROUP BY color_id'),
-					'id', ['graphs', 'templates']
-				);
-
-				$colors = db_fetch_assoc('SELECT id FROM colors');
-
-				if (cacti_sizeof($colors)) {
-					foreach ($colors as $c) {
-						if (!isset($items[$c['id']])) {
-							db_execute_prepared('UPDATE colors
-								SET graphs = 0, templates = 0
-								WHERE id = ?',
-								[$c['id']]);
-						} else {
-							db_execute_prepared('UPDATE colors
-								SET graphs = ?, templates = ?
-								WHERE id = ?',
-								[
-									$items[$c['id']]['graphs'],
-									$items[$c['id']]['templates'],
-									$c['id']
-								]
-							);
-						}
-					}
-				}
-
-				break;
-			case 'graph_templates':
-				// 'graph'
-				$items = array_rekey(
-					db_fetch_assoc('SELECT graph_template_id AS id, COUNT(*) AS graphs
-						FROM graph_local
-						GROUP BY graph_template_id'),
-					'id', 'graphs'
-				);
-
-				$templates = db_fetch_assoc('SELECT id FROM graph_templates');
-
-				if (cacti_sizeof($templates)) {
-					foreach ($templates as $t) {
-						if (!isset($items[$t['id']])) {
-							db_execute_prepared('UPDATE graph_templates
-								SET graphs = 0
-								WHERE id = ?',
-								[$t['id']]);
-						} else {
-							db_execute_prepared('UPDATE graph_templates
-								SET graphs = ?
-								WHERE id = ?',
-								[
-									$items[$t['id']],
-									$t['id']
-								]
-							);
-						}
-					}
-				}
-
-				break;
-			case 'graph_templates_gprint':
-				// 'graphs', 'templates'
-				$items = array_rekey(
-					db_fetch_assoc('SELECT gprint_id AS id,
-						SUM(CASE WHEN local_graph_id > 0 THEN 1 ELSE 0 END) AS graphs,
-						SUM(CASE WHEN local_graph_id = 0 THEN 1 ELSE 0 END) AS templates
-						FROM (
-							SELECT DISTINCT gprint_id, graph_template_id, local_graph_id
-							FROM graph_templates_item
-							WHERE gprint_id > 0) AS rs
-						GROUP BY gprint_id'),
-					'id', ['graphs', 'templates']
-				);
-
-				$gprints = db_fetch_assoc('SELECT id FROM graph_templates_gprint');
-
-				if (cacti_sizeof($gprints)) {
-					foreach ($gprints as $g) {
-						if (!isset($items[$g['id']])) {
-							db_execute_prepared('UPDATE graph_templates_gprint
-								SET graphs = 0, templates = 0
-								WHERE id = ?',
-								[$g['id']]);
-						} else {
-							db_execute_prepared('UPDATE graph_templates_gprint
-								SET graphs = ?, templates = ?
-								WHERE id = ?',
-								[
-									$items[$g['id']]['graphs'],
-									$items[$g['id']]['templates'],
-									$g['id']
-								]
-							);
-						}
-					}
-				}
-
-				break;
-			case 'snmp_query':
-				// 'graphs', 'templates'
-				$items = array_rekey(
-					db_fetch_assoc('SELECT sq.id,
-						COUNT(DISTINCT gl.id) AS graphs,
-						COUNT(DISTINCT sqg.graph_template_id) AS templates
-						FROM snmp_query AS sq
-						LEFT JOIN snmp_query_graph AS sqg
-						ON sq.id = sqg.snmp_query_id
-						LEFT JOIN data_input AS di
-						ON sq.data_input_id = di.id
-						LEFT JOIN graph_local AS gl
-						ON gl.snmp_query_id = sq.id
-						GROUP BY sq.id'),
-					'id', ['graphs', 'templates']
-				);
-
-				$data_queries = db_fetch_assoc('SELECT id FROM snmp_query');
-
-				if (cacti_sizeof($data_queries)) {
-					foreach ($data_queries as $q) {
-						if (!isset($items[$q['id']])) {
-							db_execute_prepared('UPDATE snmp_query
-								SET graphs = 0, templates = 0
-								WHERE id = ?',
-								[$q['id']]);
-						} else {
-							db_execute_prepared('UPDATE snmp_query
-								SET graphs = ?, templates = ?
-								WHERE id = ?',
-								[
-									$items[$q['id']]['graphs'],
-									$items[$q['id']]['templates'],
-									$q['id']
-								]
-							);
-						}
-					}
-				}
-
-				break;
-			case 'vdef':
-				// 'graphs', 'templates'
-				$items = array_rekey(
-					db_fetch_assoc('SELECT vdef_id AS id,
-						SUM(CASE WHEN local_graph_id > 0 THEN 1 ELSE 0 END) AS graphs,
-						SUM(CASE WHEN local_graph_id = 0 THEN 1 ELSE 0 END) AS templates
-						FROM (
-							SELECT DISTINCT vdef_id, graph_template_id, local_graph_id
-							FROM graph_templates_item
-							WHERE vdef_id > 0
-						) AS rs
-						GROUP BY vdef_id'),
-					'id', ['graphs', 'templates']
-				);
-
-				$vdefs = db_fetch_assoc('SELECT id FROM vdef');
-
-				if (cacti_sizeof($vdefs)) {
-					foreach ($vdefs as $v) {
-						if (!isset($items[$v['id']])) {
-							db_execute_prepared('UPDATE vdef
-								SET graphs = 0, templates = 0
-								WHERE id = ?',
-								[$v['id']]);
-						} else {
-							db_execute_prepared('UPDATE vdef
-								SET graphs = ?, templates = ?
-								WHERE id = ?',
-								[
-									$items[$v['id']]['graphs'],
-									$items[$v['id']]['templates'],
-									$v['id']
-								]
-							);
-						}
-					}
-				}
-
-				break;
-		}
-	}
-}
-
-function object_cache_update_aggregate_totals() : void {
-	$tables = [
-		'aggregate_graph_templates',
-		'color_templates',
-	];
-
-	foreach ($tables as $table) {
-		switch($table) {
-			case 'aggregate_graph_templates':
-				// 'graphs'
-				$items = array_rekey(
-					db_fetch_assoc('SELECT aggregate_template_id AS id, COUNT(*) AS graphs
-						FROM aggregate_graphs
-						WHERE aggregate_template_id > 0
-						GROUP BY aggregate_template_id'),
-					'id', 'graphs'
-				);
-
-				$templates = db_fetch_assoc('SELECT id FROM aggregate_graph_templates');
-
-				if (cacti_sizeof($templates)) {
-					foreach ($templates as $t) {
-						$graphs = 0;
-
-						if (isset($items[$t['id']])) {
-							$graphs = $items[$t['id']];
-						}
-
-						db_execute_prepared('UPDATE aggregate_graph_templates
-							SET graphs = ?
-							WHERE id = ?',
-							[
-								$graphs,
-								$t['id']
-							]
-						);
-					}
-				}
-
-				break;
-			case 'color_templates':
-				// 'graphs', 'templates'
-				$gitems = array_rekey(
-					db_fetch_assoc('SELECT color_template AS id, COUNT(*) AS graphs
-						FROM (
-							SELECT DISTINCT color_template, aggregate_graph_id
-							FROM aggregate_graphs_graph_item
-							WHERE color_template > 0
-						) AS rs
-						GROUP BY color_template'),
-					'id', 'graphs'
-				);
-
-				$titems = array_rekey(
-					db_fetch_assoc('SELECT aggregate_template_id AS id, COUNT(*) AS templates
-						FROM (
-							SELECT DISTINCT color_template, aggregate_template_id
-							FROM aggregate_graph_templates_item
-							WHERE color_template > 0
-						) AS rs
-						GROUP BY color_template'),
-					'id', 'templates'
-				);
-
-				$templates = db_fetch_assoc('SELECT color_template_id AS id FROM color_templates');
-
-				if (cacti_sizeof($templates)) {
-					foreach ($templates as $t) {
-						$graphs    = 0;
-						$templates = 0;
-
-						if (isset($gitems[$t['id']])) {
-							$graphs = $gitems[$t['id']];
-						}
-
-						if (isset($titems[$t['id']])) {
-							$templates = $titems[$t['id']];
-						}
-
-						db_execute_prepared('UPDATE color_templates
-							SET graphs = ?, templates = ?
-							WHERE color_template_id = ?',
-							[
-								$graphs,
-								$templates,
-								$t['id']
-							]
-						);
-					}
-				}
-
-				break;
-		}
 	}
 }

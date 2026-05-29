@@ -446,7 +446,7 @@ function form_actions() {
 				</td>
 			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete User Group', 'Delete User Groups', cacti_sizeof($group_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete User Group', 'Delete User Groups', cacti_sizeof($group_array)) . "'>";
 		}
 
 		$group_id = '';
@@ -465,7 +465,7 @@ function form_actions() {
 			print "</p></td>
 				</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Copy User Group', 'Copy User Groups', cacti_sizeof($group_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Copy User Group', 'Copy User Groups', cacti_sizeof($group_array)) . "'>";
 		}
 
 		if ((get_nfilter_request_var('drp_action') == '3') && (cacti_sizeof($group_array))) { /* enable */
@@ -476,7 +476,7 @@ function form_actions() {
 				</td>
 			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Enable User Group', 'Enable User Groups', cacti_sizeof($group_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Enable User Group', 'Enable User Groups', cacti_sizeof($group_array)) . "'>";
 		}
 
 		if ((get_nfilter_request_var('drp_action') == '4') && (cacti_sizeof($group_array))) { /* disable */
@@ -487,7 +487,7 @@ function form_actions() {
 				</td>
 			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Disable User Group', 'Disable User Groups', cacti_sizeof($group_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Disable User Group', 'Disable User Groups', cacti_sizeof($group_array)) . "'>";
 		}
 	} else {
 		raise_message(40);
@@ -919,7 +919,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		}
 
 		?>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 		$(function() {
 			$(document).tooltip({
 				items: '[data-tooltip]',
@@ -1379,7 +1379,7 @@ function user_group_realms_edit($header_label) {
 	print "<div class='cactiTable' style='width:100%;text-align:left;'>
 		<div>
 			<div class='cactiTableTitle'><span style='padding:3px;'>" . __('User Permissions') . ' ' . html_escape($header_label) . "</span></div>
-			<div class='cactiTableButton'><span style='padding:3px;'><input class='checkbox' type='checkbox' id='all' name='all' title='" . __esc('Select All') . "' onClick='selectAllRealms(this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All') . "' for='all'></label></a></span></div>
+			<div class='cactiTableButton'><span style='padding:3px;'><input class='checkbox selectAllRealms' type='checkbox' id='all' name='all' title='" . __esc('Select All') . "'><label class='formCheckboxLabel' title='" . __esc('Select All') . "' for='all'></label></a></span></div>
 		</div>
 	</div>";
 
@@ -1560,7 +1560,7 @@ function user_group_realms_edit($header_label) {
 
 	print '</table></td></tr>';
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function selectAllRealms(checked) {
 		if (checked) {
 			$('input[id^=\"section\"]').prop('checked', true);
@@ -1641,7 +1641,7 @@ function user_group_settings_edit($header_label) {
 	form_save_button('user_group_admin.php', 'return');
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	var themeFonts=<?php print read_config_option('font_method');?>;
 
@@ -1773,7 +1773,7 @@ function group_edit() {
 		form_save_button('user_group_admin.php', 'return');
 
 		?>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 		var consoleAllowed=<?php print is_user_group_realm_allowed(8, (isset($group) ? $group['id'] : 0)) ? 'true':'false';?>;
 
 		$(function() {
@@ -1882,7 +1882,7 @@ function user_group() {
 	/* ================= input validation ================= */
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL  = 'user_group_admin.php'
@@ -1899,19 +1899,19 @@ function user_group() {
 	}
 
 	$(function() {
-		$('#associated').click(function() {
+		$('#associated').on('click', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#rows').change(function() {
+		$('#rows').on('change', function() {
 			applyFilter();
 		});
 
-		$('#forms').submit(function(event) {
+		$('#forms').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -1978,36 +1978,27 @@ function user_group() {
 	}
 
 	/* form the 'where' clause for our main sql query */
+	$params = array();
 	if (get_request_var('filter') != '') {
-		$sql_where = 'WHERE (
-			name LIKE '           . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
+		$sql_where = 'WHERE (name LIKE ? OR description LIKE ?)';
+		$params[] = '%' . get_request_var('filter') . '%';
+		$params[] = '%' . get_request_var('filter') . '%';
 	} else {
 		$sql_where = '';
 	}
 
-	$total_rows = db_fetch_cell("SELECT
-		COUNT(*)
-		FROM user_auth_group
-		$sql_where");
+	$total_rows = get_total_row_data($_SESSION['sess_user_id'], "SELECT COUNT(*) FROM user_auth_group $sql_where", $params);
 
-	$sort_col = cacti_validate_sort_column(
-		get_request_var('sort_column'),
-		array('name', 'members', 'description', 'policy_graphs', 'policy_hosts', 'policy_graph_templates', 'enabled'),
-		'name'
-	);
-	$sort_dir = (get_request_var('sort_direction') === 'DESC' ? 'DESC' : 'ASC');
-
-	$group_list = db_fetch_assoc("SELECT uag.id, uag.name, uag.description,
+	$group_list = db_fetch_assoc_prepared("SELECT uag.id, uag.name, uag.description,
 		uag.policy_graphs, uag.policy_hosts, uag.policy_graph_templates,
 		uag.enabled, count(uagm.group_id) AS members
 		FROM user_auth_group AS uag
-			LEFT JOIN user_auth_group_members AS uagm
-			ON uag.id = uagm.group_id
-			$sql_where
-			GROUP BY uag.id
-			ORDER BY " . $sort_col . ' ' . $sort_dir .
-			' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows);
+		LEFT JOIN user_auth_group_members AS uagm
+		ON uag.id = uagm.group_id
+		$sql_where
+		GROUP BY uag.id
+		" . get_order_string() . "
+		LIMIT " . ($rows * (get_request_var('page') - 1)) . ',' . $rows, $params);
 
 	$nav = html_nav_bar('user_group_admin.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('Groups'), 'page', 'main');
 
@@ -2227,7 +2218,7 @@ function graph_filter($header_label) {
 	global $config, $item_rows;
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL  = 'user_group_admin.php?action=edit&tab=permsg&id=<?php print get_request_var('id');?>'
@@ -2246,19 +2237,19 @@ function graph_filter($header_label) {
 	}
 
 	$(function() {
-		$('#associated').click(function() {
+		$('#associated').on('click', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#rows, #graph_template_id').change(function() {
+		$('#rows, #graph_template_id').on('change', function() {
 			applyFilter();
 		});
 
-		$('#forms').submit(function(event) {
+		$('#forms').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -2347,7 +2338,7 @@ function device_filter($header_label) {
 	global $config, $item_rows;
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL  = 'user_group_admin.php?action=edit&tab=permsd&id=<?php print get_request_var('id');?>'
@@ -2366,19 +2357,19 @@ function device_filter($header_label) {
 	}
 
 	$(function() {
-		$('#associated').click(function() {
+		$('#associated').on('click', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#rows, #host_template_id').change(function() {
+		$('#rows, #host_template_id').on('change', function() {
 			applyFilter();
 		});
 
-		$('#forms').submit(function(event) {
+		$('#forms').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -2463,7 +2454,7 @@ function template_filter($header_label) {
 	global $config, $item_rows;
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL  = 'user_group_admin.php?action=edit&tab=permste&id=<?php print get_request_var('id');?>'
@@ -2481,19 +2472,19 @@ function template_filter($header_label) {
 	}
 
 	$(function() {
-		$('#associated').click(function() {
+		$('#associated').on('click', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#rows').change(function() {
+		$('#rows').on('change', function() {
 			applyFilter();
 		});
 
-		$('#forms').submit(function(event) {
+		$('#forms').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -2560,7 +2551,7 @@ function tree_filter($header_label) {
 	global $config, $item_rows;
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL  = 'user_group_admin.php?action=edit&tab=permstr&id=<?php print get_request_var('id');?>'
@@ -2578,19 +2569,19 @@ function tree_filter($header_label) {
 	}
 
 	$(function() {
-		$('#associated').click(function() {
+		$('#associated').on('click', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#rows').change(function() {
+		$('#rows').on('change', function() {
 			applyFilter();
 		});
 
-		$('#forms').submit(function(event) {
+		$('#forms').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -2657,7 +2648,7 @@ function member_filter($header_label) {
 	global $config, $item_rows;
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 
 	function applyFilter() {
 		strURL  = 'user_group_admin.php?action=edit&tab=members&id=<?php print get_request_var('id');?>'
@@ -2675,19 +2666,19 @@ function member_filter($header_label) {
 	}
 
 	$(function() {
-		$('#associated').click(function() {
+		$('#associated').on('click', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#rows').change(function() {
+		$('#rows').on('change', function() {
 			applyFilter();
 		});
 
-		$('#forms').submit(function(event) {
+		$('#forms').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});

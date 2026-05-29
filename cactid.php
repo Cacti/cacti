@@ -31,13 +31,31 @@ if (function_exists('pcntl_async_signals')) {
 
 ini_set('output_buffering', 'Off');
 
-// let's report all errors
+/* sig_handler - provides a generic means to catch exceptions to the Cacti log.
+   @arg $signo - (int) the signal that was thrown by the interface.
+   @returns - null */
+function sig_handler($signo) {
+	global $config, $hostname;
+
+	switch ($signo) {
+	case SIGTERM:
+	case SIGINT:
+		cacti_log('WARNING: Cacti Daemon PID[' . getmypid() . '] Terminated on Device[' . gethostname() . ']', true, 'CACTID');
+		admin_email(__('Cacti System Warning'), __('WARNING: Cacti Daemon PID[' . getmypid() . '] Terminated on Device[' . gethostname() . ']', true, 'CACTID'));
+		exit(1);
+		break;
+	default:
+		/* ignore all other signals */
+	}
+}
+
+/* let's report all errors */
 error_reporting(E_ALL);
 
-// allow the script to hang around waiting for connections.
+/* allow the script to hang around waiting for connections. */
 set_time_limit(0);
 
-// we do not need so much memory
+/* we do not need so much memory */
 ini_set('memory_limit', '-1');
 ini_set('max_execution_time', '0');
 
@@ -48,15 +66,15 @@ $foreground = false;
 $logrecon   = false;
 
 chdir(__DIR__);
-require_once('./include/cli_check.php');
+include_once('./include/cli_check.php');
 
-// install signal handlers for Linux/UNIX only
+/* install signal handlers for Linux/UNIX only */
 if (function_exists('pcntl_signal')) {
 	pcntl_signal(SIGTERM, 'sig_handler');
 	pcntl_signal(SIGINT, 'sig_handler');
 }
 
-global $hostname, $debug;
+global $config, $hostname, $debug;
 
 // process calling arguments
 $options = get_options();
@@ -85,7 +103,6 @@ if (DIRECTORY_SEPARATOR != '\\') {
 
 	if (sizeof($output) >= 2) {
 		print 'The Cacti Daemon is still running' . PHP_EOL;
-
 		return;
 	}
 } else {
@@ -108,9 +125,7 @@ if (!$foreground) {
 			print '[FAILED]' . PHP_EOL;
 
 			exit(1);
-		}
-
-		if ($pid == 0) {
+		} elseif ($pid == 0) {
 			// We are the child
 		} else {
 			cacti_log('NOTE: Cacti Daemon PID[' . getmypid() . '] Started on Device[' . gethostname() . ']');
@@ -125,7 +140,7 @@ if (!$foreground) {
 		print '[OK]' . PHP_EOL . '[NOTE] This system does not support forking.' . PHP_EOL;
 	}
 } else {
-	print '[OK]' . PHP_EOL . '[NOTE] The Cacti Daemon is running in foreground mode.' . PHP_EOL;
+	print  '[OK]' . PHP_EOL . '[NOTE] The Cacti Daemon is running in foreground mode.' . PHP_EOL;
 }
 
 sleep(2);
@@ -142,38 +157,9 @@ while (true) {
 	$logrecon  = true;
 }
 
-/**
- * sig_handler - provides a generic means to catch exceptions to the Cacti log.
- *
- * @param int $signo The signal that was thrown by the interface.
- *
- * @return void
- */
-function sig_handler(int $signo) : void {
-	global $hostname;
-
-	switch ($signo) {
-		case SIGTERM:
-		case SIGINT:
-			cacti_log('WARNING: Cacti Daemon PID[' . getmypid() . '] Terminated on Device[' . gethostname() . ']', true, 'CACTID');
-			admin_email(__('Cacti System Warning'), __('WARNING: Cacti Daemon PID[' . getmypid() . '] Terminated on Device[' . gethostname() . ']', true, 'CACTID'));
-
-			exit(1);
-		default:
-			// ignore all other signals
-	}
-}
-
-/**
- * wait_for_start
- *
- * @param int $frequency
- *
- * @return int
- */
-function wait_for_start(int $frequency = -1) : int {
+function wait_for_start($frequency = -1) {
 	$prev_time = -1;
-	$i         = 0;
+	$i = 0;
 
 	while (true) {
 		if ($frequency <= 0) {
@@ -194,7 +180,6 @@ function wait_for_start(int $frequency = -1) : int {
 		if ($prev_time > 0) {
 			if ($offset < $prev_time) {
 				debug('Time to Run Poller');
-
 				break;
 			}
 		}
@@ -208,57 +193,37 @@ function wait_for_start(int $frequency = -1) : int {
 	return $frequency;
 }
 
-/**
- * run_poller
- *
- * @return void
- */
-function run_poller() : void {
-	global $debug;
+function run_poller() {
+	global $config, $debug;
 
 	debug('Cacti Data Collector');
 
-	$command = ' -q ' . CACTI_PATH_BASE . '/poller.php --force' . ($debug ? ' --debug' : '');
-
-	$php_binary = read_config_option('path_php_binary');
-
-	if (empty($php_binary)) {
-		if (CACTI_SERVER_OS == 'win32') {
-			$php_binary = 'php';
-		} else {
-			$php_binary = '/usr/bin/php';
-		}
-	}
+	$command = ' -q ' . $config['base_path'] . '/poller.php --force' . ($debug ? ' --debug':'');
 
 	debug('Command Line is: ' . $command);
 
-	exec_background($php_binary, $command);
+	exec_background(read_config_option('path_php_binary'), $command);
 }
 
-/**
- * get_options
- *
- * @return array
- */
-function get_options() : array {
+function get_options() {
 	$parms = $_SERVER['argv'];
 	array_shift($parms);
 
-	$options = [];
+	$options = array();
 
 	if (sizeof($parms)) {
 		$shortopts = 'VvHh';
 
-		$longopts = [
+		$longopts = array(
 			'foreground',
 			'debug',
 			'version',
 			'help'
-		];
+		);
 
 		$options = getopt($shortopts, $longopts);
 
-		foreach ($options as $arg => $value) {
+		foreach($options as $arg => $value) {
 			switch($arg) {
 				case 'foreground':
 				case 'debug':
@@ -267,19 +232,15 @@ function get_options() : array {
 				case 'V':
 				case 'v':
 					display_version();
-
 					exit(0);
 				case 'help':
 				case 'H':
 				case 'h':
 					display_help();
-
 					exit(0);
-
 				default:
 					print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
 					display_help();
-
 					exit(1);
 			}
 		}
@@ -288,14 +249,7 @@ function get_options() : array {
 	return $options;
 }
 
-/**
- * debug
- *
- * @param string $string
- *
- * @return void
- */
-function debug(string $string) : void {
+function debug($string) {
 	global $debug;
 
 	if ($debug) {
@@ -305,22 +259,14 @@ function debug(string $string) : void {
 	}
 }
 
-/**
- * display_version
- *
- * @return void
- */
-function display_version() : void {
-	$version = get_cacti_cli_version();
-	print 'The Cacti Daemon (cactid), Version ' . $version . ', ' . COPYRIGHT_YEARS . PHP_EOL;
+function display_version() {
+	global $config;
+
+	print 'The Cacti Daemon (cactid), Version ' . CACTI_VERSION . ', ' . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-/**
- * display_help - displays the usage of the function
- *
- * @return void
- */
-function display_help() : void {
+/*	display_help - displays the usage of the function */
+function display_help () {
 	display_version();
 
 	print PHP_EOL . 'usage: cactid.php [ --foreground ] [ --debug ]' . PHP_EOL . PHP_EOL;
@@ -329,3 +275,4 @@ function display_help() : void {
 	print '  --foreground       Run cactid in foreground mode, otherwise this is a forking daemon.' . PHP_EOL;
 	print '  --debug            Used for debugging in --foreground mode.' . PHP_EOL;
 }
+

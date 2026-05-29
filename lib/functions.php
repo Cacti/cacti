@@ -1052,7 +1052,7 @@ function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVE
  */
 function raise_message_javascript($title, $header, $message) {
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	var mixedReasonTitle = DOMPurify.sanitize(<?php print json_encode($title, JSON_THROW_ON_ERROR);?>);
 	var mixedOnPage      = DOMPurify.sanitize(<?php print json_encode($header, JSON_THROW_ON_ERROR);?>);
 	sessionMessage   = {
@@ -1413,96 +1413,22 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
  * @param $total_rows   - (int) the total number of rows in the logfile
  * @param $matches      - (bool) match or does not match the filter
  */
-<<<<<<< Updated upstream
 function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '', &$page_nr = 1, &$total_rows = 0, $matches = true) {
 	if (!file_exists($file_name)) {
 		touch($file_name);
 		return array();
-||||||| Stash base
-function tail_file(string $file_name, int $line_cnt, mixed $message_type = -1, mixed $filter = '', mixed &$page_nr = 1, mixed &$total_rows = 0, mixed $matches = true, mixed $expand_text = false, int $reverse = 1) : array {
-	if (!file_exists($file_name)) {
-		touch($file_name);
-
-		return [];
-=======
-function tail_file(string $file_name, int $line_cnt, mixed $message_type = -1, mixed $filter = '', mixed &$page_nr = 1, mixed &$total_rows = 0, mixed $matches = true, mixed $expand_text = false, int $reverse = 1) : array {
-	$log_path = read_config_option('log_path');
-	if (empty($log_path)) {
-		$log_path = dirname($file_name); // Best effort if not set
->>>>>>> Stashed changes
 	}
 
-<<<<<<< Updated upstream
 	if (!is_readable($file_name)) {
 		return array(__('Error %s is not readable', $file_name));
-||||||| Stash base
-	if (!is_readable($file_name)) {
-		return [__('Error %s is not readable', $file_name)];
-=======
-	$verified_path = cacti_path_verify($file_name, $log_path);
-	if ($verified_path === false) {
-		return array(__('Error: Unauthorized file access attempt.'));
-	}
-
-	if (!file_exists($verified_path)) {
-		touch($verified_path);
-
-		return array();
-	}
-
-	if (!is_readable($verified_path)) {
-		return array(__('Error %s is not readable', $verified_path));
->>>>>>> Stashed changes
 	}
 
 	$filter = strtolower($filter);
 
-	$fp = fopen($verified_path, 'r');
+	$fp = fopen($file_name, 'r');
 
-<<<<<<< Updated upstream
 	/* Count all lines in the logfile */
 	$total_rows = 0;
-||||||| Stash base
-	if ($fp === false) {
-		return [];
-	}
-
-	// Count all lines in the logfile
-	$total_rows    = 0;
-	$line_no       = 0;
-	$display_line  = [];
-	$should_expand = read_config_option('log_expand') == LOG_EXPAND_FULL;
-
-	if ($should_expand) {
-		$should_expand = !empty($filter) && !empty($expand_text);
-	}
-
-	/**
-	 * Read the entire file into a display buffer checking the match
-	 * status along the way and oddly enough returning true and false
-	 * instead of the line number from time to time for some reason.
-	 */
-=======
-	if ($fp === false) {
-		return array();
-	}
-
-	// Count all lines in the logfile
-	$total_rows    = 0;
-	$line_no       = 0;
-	$display_line  = array();
-	$should_expand = read_config_option('log_expand') == LOG_EXPAND_FULL;
-
-	if ($should_expand) {
-		$should_expand = !empty($filter) && !empty($expand_text);
-	}
-
-	/**
-	 * Read the entire file into a display buffer checking the match
-	 * status along the way and oddly enough returning true and false
-	 * instead of the line number from time to time for some reason.
-	 */
->>>>>>> Stashed changes
 	while (($line = fgets($fp)) !== false) {
 		if (determine_display_log_entry($message_type, $line, $filter, $matches)) {
 			++$total_rows;
@@ -2114,70 +2040,18 @@ function strip_alpha($string) {
 }
 
 /**
- * cacti_path_verify - Enforces that a path resolves to a location inside an authorized directory.
- * This is the primary architectural defense against directory traversal vulnerabilities.
- *
- * @param string $path            The path to verify.
- * @param string $authorized_base The base directory that must contain the path.
- * @return string|false           The resolved absolute path if safe, or false if unsafe.
- */
-function cacti_path_verify($path, $authorized_base) {
-	if (empty($path) || empty($authorized_base)) {
-		return false;
-	}
-
-	$real_path = realpath($path);
-	$real_base = realpath($authorized_base);
-
-	// If the file or base doesn't exist, we can't verify via realpath.
-	// We fall back to a string-based containment check for non-existent files.
-	if ($real_path === false || $real_base === false) {
-		// Clean up the path for best-effort string check
-		$clean_path = str_replace('\', '/', $path);
-		$clean_base = str_replace('\', '/', $authorized_base);
-
-		// Fail if it contains traversal sequences
-		if (strpos($clean_path, '..') !== false) {
-			cacti_log("SECURITY: Blocked attempted directory traversal in path: $path", false, 'WEBUI');
-			return false;
-		}
-
-		return false; // Safest to return false if we can't resolve it.
-	}
-
-	// Verify that the path starts with the authorized base
-	if (strpos($real_path, $real_base) === 0) {
-		return $real_path;
-	}
-
-	cacti_log("SECURITY: Path validation failed. Path '$path' is outside authorized base '$authorized_base'.", false, 'WEBUI');
-	return false;
-}
-
-/**
- * is_valid_pathname - check for a valid pathname
+ * is_valid_pathname - takes a pathname are verifies it matches file name rules
  *
  * @param $path - the pathname to be tested
  *
  * @return - either true or false
 */
 function is_valid_pathname($path) {
-	$path = trim((string)$path);
-	if ($path === '') {
-		return false;
-	}
-
-	// 1. Block directory traversal sequences strictly
-	if (strpos($path, '..') !== false) {
-		return false;
-	}
-
-	// 2. Original regex check for safe characters
-	if (preg_match('/^([a-zA-Z0-9\_\.\-\\:\/]+)$/', $path)) {
+	if (preg_match('/^([a-zA-Z0-9\_\.\-\\\:\/]+)$/', trim($path))) {
 		return true;
+	} else {
+		return false;
 	}
-
-	return false;
 }
 
 /**
@@ -2526,6 +2400,12 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 
 			if (cacti_sizeof($outputs) && cacti_sizeof($snmp_queries)) {
 				foreach ($outputs as $output) {
+					/* Reset between iterations: an output without an
+					 * 'oid' mapping must not inherit the previous
+					 * iteration's value and validate against a stale
+					 * OID. */
+					unset($oid);
+
 					if (isset($snmp_queries['fields'][$output['snmp_field_name']]['oid'])) {
 						$oid = $snmp_queries['fields'][$output['snmp_field_name']]['oid'] . '.' . $snmp_index;
 
@@ -2620,6 +2500,17 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 
 			if (cacti_sizeof($outputs) && cacti_sizeof($script_queries)) {
 				foreach ($outputs as $output) {
+					/* Reset between iterations: an output without a
+					 * 'query_name' mapping must not validate against a
+					 * stale $script_path from the previous iteration.
+					 * $action is write-only in this loop (the post-guard
+					 * read at isset($script_path) does not consult it),
+					 * so it does not need a reset here.
+					 * update_poller_cache() in lib/utility.php builds a
+					 * poller_item that reads $action and therefore does
+					 * reset it. */
+					unset($script_path);
+
 					if (isset($script_queries['fields'][$output['snmp_field_name']]['query_name'])) {
 						$identifier = $script_queries['fields'][$output['snmp_field_name']]['query_name'];
 
@@ -3140,9 +3031,7 @@ function get_execution_user() {
 
 		return $user_info['name'];
 	} else {
-		$out = array();
-		cacti_exec('whoami', array(), $out);
-		return (isset($out[0]) ? trim($out[0]) : '');
+		return exec('whoami');
 	}
 }
 
@@ -3800,10 +3689,8 @@ function move_item_up($table_name, $current_id, $group_query = '') {
  */
 function exec_into_array($command_line) {
 	$out = array();
-	// Since we only have a command string, we split it for the core.
-	// In a future refactor, callers should pass an array.
-	$args = explode(' ', $command_line);
-	cacti_process_execute($args, false, $out);
+	$err = 0;
+	exec($command_line,$out,$err);
 
 	return array_values($out);
 }
@@ -4625,10 +4512,14 @@ function sanitize_uri($uri) {
 		']', '{',
 		'}', ';',
 		'!', '(',
-		')'
+		')', "\\",
+		"\0", "\r",
+		"\n"
 	);
 
 	static $drop_char_replace = array(
+		'', '',
+		'', '',
 		'', '',
 		'', '',
 		'', '',
@@ -4986,7 +4877,7 @@ function general_header() {
 }
 
 function appendHeaderSuppression($url) {
-	if (strpos($url, 'header=false') < 0) {
+	if (strpos($url, 'header=false') === false) {
 		return $url . (strpos($url, '?') ? '&':'?') . 'header=false';
 	}
 
@@ -5249,10 +5140,12 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 		} else {
 			$from['email'] = 'Cacti@cacti.net';
 		}
+	}
 
-		if (empty($from['name'])) {
-			$from['name'] = 'Cacti';
-		}
+	// Ensure name is never null — PHPMailer passes it to preg_replace()
+	// which is deprecated for null in PHP 8.x.
+	if (empty($from['name'])) {
+		$from['name'] = 'Cacti';
 	}
 
 	$result = null;
@@ -5485,7 +5378,7 @@ function add_email_details($emails, &$result, callable $addFunc) {
 		if (!empty($e['email'])) {
 			//if (is_callable($addFunc)) {
 			if (!empty($addFunc)) {
-				$result = $addFunc($e['email'], $e['name']);
+				$result = $addFunc($e['email'], (string) $e['name']);
 				if (!$result) {
 					return '';
 				}
@@ -7055,13 +6948,9 @@ function get_installed_rrdtool_version() {
 
 	if ($version == '') {
 		if ($config['cacti_server_os'] == 'win32') {
-			$out = array();
-			cacti_exec(read_config_option('path_rrdtool'), array('-v'), $out);
-			$shell = implode("\n", $out);
+			$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v');
 		} else {
-			$out = array();
-			cacti_exec(read_config_option('path_rrdtool'), array('-v'), $out);
-			$shell = implode("\n", $out);
+			$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v 2>&1');
 		}
 
 		$version = false;
@@ -7127,9 +7016,9 @@ function get_md5_include_js($path, $async = false) {
 	}
 
 	if ($async) {
-		return '<script type=\'text/javascript\' src=\'' . $config['url_path'] . $relpath . '?' . get_md5_hash($path) . '\' async></script>' . PHP_EOL;
+		return '<script type=\'text/javascript\' ' . CactiSecureHeaders::getNonceAttribute() . ' src=\'' . $config['url_path'] . $relpath . '?' . get_md5_hash($path) . '\' async></script>' . PHP_EOL;
 	} else {
-		return '<script type=\'text/javascript\' src=\'' . $config['url_path'] . $relpath . '?' . get_md5_hash($path) . '\'></script>' . PHP_EOL;
+		return '<script type=\'text/javascript\' ' . CactiSecureHeaders::getNonceAttribute() . ' src=\'' . $config['url_path'] . $relpath . '?' . get_md5_hash($path) . '\'></script>' . PHP_EOL;
 	}
 }
 
@@ -7260,11 +7149,9 @@ function get_running_user() {
 		}
 
 		if (empty($tmp_user)) {
-			$out = array();
-			$r   = cacti_exec('id', array('-nu'), $out);
-
-			if ($r == 0 && isset($out[0])) {
-				$tmp_user = trim($out[0]);
+			exec('id -nu', $o, $r);
+			if ($r == 0) {
+				$tmp_user = trim($o['0']);
 			}
 		}
 
@@ -7316,14 +7203,6 @@ function get_debug_prefix() {
 function get_client_addr() {
 	global $config, $allowed_proxy_headers;
 
-	$remote_addr = $_SERVER['REMOTE_ADDR'];
-	$trusted_proxies = (isset($config['trusted_proxies']) ? $config['trusted_proxies'] : []);
-
-	// If no proxies are trusted, or the sender is not in the list, ignore headers.
-	if (empty($trusted_proxies) || !in_array($remote_addr, $trusted_proxies)) {
-		return $remote_addr;
-	}
-
 	$proxy_headers = (isset($config['proxy_headers']) ? $config['proxy_headers'] : []);
 
 	if ($proxy_headers === true) {
@@ -7336,19 +7215,29 @@ function get_client_addr() {
 		$proxy_headers = [];
 	}
 
-	foreach ($proxy_headers as $header) {
-		if ($header === 'REMOTE_ADDR') continue;
+	if (!in_array('REMOTE_ADDR', $proxy_headers)) {
+		$proxy_headers[] = 'REMOTE_ADDR';
+	}
 
+	$client_addr = false;
+	foreach ($proxy_headers as $header) {
 		if (!empty($_SERVER[$header])) {
 			$header_ips = explode(',', $_SERVER[$header]);
-			$client_addr = trim(end($header_ips)); // Closest to the proxy
-			if (filter_var($client_addr, FILTER_VALIDATE_IP)) {
-				return $client_addr;
+			foreach ($header_ips as $header_ip) {
+				if (!empty($header_ip)) {
+					if (!filter_var($header_ip, FILTER_VALIDATE_IP)) {
+						cacti_log('ERROR: Invalid remote client IP Address found in header (' . $header . ').', false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+					} else {
+						$client_addr = $header_ip;
+						cacti_log('DEBUG: Using remote client IP Address found in header (' . $header . '): ' . $client_addr . ' (' . $_SERVER[$header] . ')', false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+						break 2;
+					}
+				}
 			}
 		}
 	}
 
-	return $remote_addr;
+	return $client_addr;
 }
 
 /**
@@ -7498,23 +7387,195 @@ function cacti_csv_safe($value) {
 /**
  * cacti_input_string_is_safe - guard against shell metacharacters smuggled
  *   into a data_input.input_string template. The placeholder syntax is
- *   <field_name>, never <;rm -rf /;>, so any of [;&|`$\\\r\n] outside a
- *   placeholder is taken as a command-injection attempt. The same regex
- *   gates both the GUI save path (data_input.php) and XML/package import
- *   (lib/import.php) so the two cannot drift.
+ *   <field_name>, never <;rm -rf /;>, so any character outside a placeholder
+ *   that could be interpreted by a shell is taken as a command-injection
+ *   attempt. The same regex gates both the GUI save path (data_input.php)
+ *   and XML/package import (lib/import.php) so the two cannot drift.
  *
- * @param $input_string - (string) The candidate input_string template
+ *   However, for backward compatibility, we check the setting of
+ *   allow unsafe metacharacters for administrators that may have historically
+ *   used simple commands for data input methods including things like
+ *   ps -ef | grep string | wc -l which have been historically allowed,
+ *   but are unsafe for web applications.
  *
- * @returns - (bool) true if the value is safe to persist
+ *   Otherwise, the following are blocked: ; & | ` $ \ \n \r ' " < > ( ) { }
+ *
+ *   These cover the original set plus single-quote, double-quote, redirect
+ *   operators (<>), and subshell delimiters ((){}), which were absent before
+ *   and allowed bypass payloads such as /bin/sh -c 'id' or cmd > /tmp/x.
+ *
+ *   Placeholder names match [a-zA-Z0-9_]+, the same grammar that
+ *   generate_data_input_field_sequences() and get_full_script_path()
+ *   use, so digit-suffixed tokens such as <arg1> and <host_id2> are
+ *   recognised. Paired surrounding quotes ("<x>" or '<x>') are stripped
+ *   together with the placeholder so that legitimate shell-arg quoting
+ *   in templates such as
+ *     <path_cacti>/scripts/x.php "<reason>"
+ *   is preserved.
+ *
+ * @param string $input_string The candidate input_string template
+ *
+ * @return bool True if the value is safe to persist
  */
 function cacti_input_string_is_safe($input_string) {
 	if ($input_string === '' || $input_string === null) {
 		return true;
 	}
 
-	$bare = preg_replace('/<[a-zA-Z_]+>/', '', $input_string);
+	$bare = preg_replace(
+		'/"<[a-zA-Z0-9_]+>"|\'<[a-zA-Z0-9_]+>\'|<[a-zA-Z0-9_]+>/',
+		'',
+		$input_string
+	);
 
-	return !preg_match('/[;&|`$\\\\\n\r]/', $bare);
+	// Never allow redirects regardless of metachars setting
+	if (str_contains($bare, '>') || str_contains($bare, '<')) {
+		return false;
+	}
+
+	// If the Cacti admin permit's unsafe metachars short circuit here
+	if (read_config_option('allow_unsafe_metachars') == 'on') {
+		return true;
+	}
+
+	return !preg_match('/[;&|`$\\\\\n\r\'"<>()\{\}]/', $bare);
+}
+
+/**
+ * cacti_exec - run an external command via proc_open with a discrete argv array.
+ *
+ * No shell is involved: the argv array is passed directly to execve(), so shell
+ * metacharacters in argument values are inert. Callers must still validate
+ * argument semantics (e.g. rrdtool DEF lines) themselves.
+ *
+ * This is the argv-array counterpart to exec_with_timeout() in lib/poller.php,
+ * which accepts a pre-built shell string. Use cacti_exec() when the binary and
+ * arguments are known separately; use exec_with_timeout() when migrating legacy
+ * shell_exec() callers that already assemble the command string.
+ *
+ * Requires PHP 7.4+ (array form of proc_open). The 1.2.x branch targets PHP 7.4
+ * as its minimum, so no version gate is needed.
+ *
+ * @param string $binary   Path to the executable. Must not start with '-'.
+ * @param array  $args     Ordered argument strings (not shell-escaped).
+ * @param array  &$output  Receives stdout lines on success; empty array on empty output.
+ * @param mixed  $timeout  False for 4 hour timeout or seconds before the process is killed (default 30).
+ *
+ * @return int Exit code, or 255 on spawn failure, error with binary or timeout.
+ */
+function cacti_exec($binary, array $args = array(), array &$output = array(), $timeout = 30) {
+	// Ensure buffers flush automatically
+	if (PHP_SAPI === 'cli') {
+		ini_set('implicit_flush', true);
+	}
+
+	// Blocking assumes a timeout of 4 hours
+	if ($timeout === false) {
+		$timeout  = 3600 * 4;
+	}
+
+	if (!is_string($binary) || trim($binary) === '') {
+		return 255;
+	}
+
+	if (strpos(trim($binary), '-') === 0) {
+		cacti_log('ERROR: cacti_exec() rejected binary starting with dash: ' . $binary, false, 'SYSTEM');
+		return 255;
+	}
+
+	$argv = array_merge(array($binary), array_values($args));
+
+	$descriptors = array(
+		0 => array('pipe', 'r'),
+		1 => array('pipe', 'w'),
+		2 => array('pipe', 'w'),
+	);
+
+	$process = proc_open($argv, $descriptors, $pipes);
+
+	if (!is_resource($process)) {
+		cacti_log('ERROR: cacti_exec() failed to spawn: ' . $binary, false, 'SYSTEM');
+		return 255;
+	}
+
+	fclose($pipes[0]);
+	stream_set_blocking($pipes[1], false);
+	stream_set_blocking($pipes[2], false);
+
+	$stdout    = '';
+	$stderr    = '';
+	$remaining = (int) $timeout * 1000000;
+	$exit      = false;
+
+	while ($remaining > 0) {
+		$start  = microtime(true);
+		$read   = array($pipes[1], $pipes[2]);
+		$write  = array();
+		$except = array();
+		stream_select($read, $write, $except, 0, $remaining);
+
+		usleep(50000);
+
+		$status  = proc_get_status($process);
+		$stdout .= stream_get_contents($pipes[1]);
+		$stderr .= stream_get_contents($pipes[2]);
+
+		if (!$status['running']) {
+			$exit = $status['exit_code'];
+
+			break;
+		}
+
+		$remaining -= (int) ((microtime(true) - $start) * 1000000);
+	}
+
+	fclose($pipes[1]);
+	fclose($pipes[2]);
+
+	$status = proc_get_status($process);
+
+	if ($status['running']) {
+		if (isset($status['pid']) && function_exists('posix_kill')) {
+			posix_kill($status['pid'], 9);
+		}
+
+		proc_terminate($process, 9);
+		proc_close($process);
+
+		cacti_log('ERROR: cacti_exec() timed out after ' . $timeout . 's: ' . $binary, false, 'SYSTEM');
+
+		return 1;
+	}
+
+	proc_close($process);
+
+	if (!empty($stderr)) {
+		cacti_log('WARNING: cacti_exec() stderr: ' . trim($stderr), false, 'SYSTEM');
+	}
+
+	$stdout  = rtrim($stdout, "\n");
+	$output  = ($stdout === '') ? array() : explode("\n", $stdout);
+
+	return $exit;
+}
+
+/**
+ * cacti_exec_string - run a command and return stdout as a single string.
+ *
+ * Convenience wrapper around cacti_exec() for callers that previously used
+ * shell_exec() and expect a string return value.
+ *
+ * @param string $binary
+ * @param array  $args
+ * @param int    $timeout
+ *
+ * @return string|false stdout on exit code 0, false on failure.
+ */
+function cacti_exec_string($binary, array $args = array(), $timeout = 30) {
+	$output = array();
+	$exit   = cacti_exec($binary, $args, $output, $timeout);
+
+	return ($exit === 0) ? implode("\n", $output) : false;
 }
 
 function cacti_sizeof($array) {
@@ -8352,125 +8413,6 @@ function cacti_validate_sort_column(string $column, array $allowed, string $defa
 }
 
 /**
- * cacti_exec - Run a shell command with strict argument separation.
- *
- * The binary is passed through cacti_escapeshellcmd and each argument
- * through cacti_escapeshellarg. Callers must pass the binary as its own
- * parameter and arguments as an array; mixing them in one string is
- * rejected so a reviewer can tell at a glance that no unescaped user
- * input reaches the shell.
- *
- * Callers should still restrict the binary to a known-safe value: a
- * hardcoded path, a path allowlist, or a path_* config option that
- * itself is admin-only.
- *
- * @param string $binary  Path or name of the executable. Must not contain spaces
- *                        and must not begin with '-'. A leading dash can be
- *                        interpreted as an option by shell/process wrappers.
- * @param array  $args    Arguments. Each is escaped independently.
- * @param array  $out     By-ref slot for captured stdout (one line per entry).
- *
- * @return int  Process exit code. 0 usually means success.
- *
- * @throws InvalidArgumentException  If the binary contains whitespace.
- */
-/**
- * cacti_process_execute - Hardened system command execution using array contracts.
- *
- * This is the central architectural anchor for system calls. By enforcing
- * an array of arguments, we eliminate command injection by design on PHP 7.4+.
- *
- * @param array $args The command and its arguments. [0] is the binary.
- * @param bool $background Whether to run the process in the background.
- * @param array &$out Reference to output lines (only for foreground).
- *
- * @return int The exit code or process ID.
- */
-function cacti_process_execute(array $args, $background = false, &$out = array()) {
-	if (cacti_sizeof($args) === 0) {
-		return -1;
-	}
-
-	$binary = $args[0];
-
-	// 1. Audit Logging
-	if (defined('CACTI_DEBUG') && CACTI_DEBUG) {
-		cacti_log('SECURE_EXEC: ' . implode(' ', array_map('cacti_escapeshellarg', $args)), false, 'DEBUG');
-	}
-
-	// 2. Execution logic
-	if ($background) {
-		// Background execution requires a string for legacy proc_open compatibility
-		// on some OSs, but we force-escape everything here.
-		$command = implode(' ', array_map('cacti_escapeshellarg', $args));
-		if (cacti_strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-			pclose(popen('start /B ' . $command, 'r'));
-			return 0;
-		} else {
-			$exit_code = 0;
-			$dummy     = array();
-			exec($command . ' > /dev/null 2>&1 &', $dummy, $exit_code);
-			return (int)$exit_code;
-		}
-	}
-
-	$descriptorspec = array(
-		1 => array('pipe', 'w'),
-		2 => array('pipe', 'w')
-	);
-
-	// PHP 7.4+ supports array-based proc_open (Inherently Safe)
-	if (version_compare(PHP_VERSION, '7.4.0', '>=')) {
-		$process = proc_open($args, $descriptorspec, $pipes);
-	} else {
-		$command = implode(' ', array_map('cacti_escapeshellarg', $args));
-		$process = proc_open($command, $descriptorspec, $pipes);
-	}
-
-	if (!is_resource($process)) {
-		return -1;
-	}
-
-	$stdout = stream_get_contents($pipes[1]);
-	fclose($pipes[1]);
-	fclose($pipes[2]);
-
-	$out = explode("\n", rtrim($stdout));
-	return proc_close($process);
-}
-
-function cacti_exec($binary, array $args = array(), array &$out = array()) {
-	$binary = trim((string) $binary);
-
-	if ($binary === '' || preg_match('/\s/', $binary)) {
-		throw new InvalidArgumentException('cacti_exec(): binary must be a single token with no whitespace. Arguments go in $args.');
-	}
-
-	if ($binary[0] === '-') {
-		throw new InvalidArgumentException('cacti_exec(): binary must not begin with "-".');
-	}
-
-	array_unshift($args, $binary);
-	return cacti_process_execute($args, false, $out);
-}
-
-/**
- * cacti_exec_string - Run a shell command via cacti_exec and return the
- * combined stdout as a single newline-joined string.
- *
- * @param string $binary
- * @param array  $args
- *
- * @return string
- */
-function cacti_exec_string($binary, array $args = array()) {
-	$out = array();
-	cacti_exec($binary, $args, $out);
-
-	return implode("\n", $out);
-}
-
-/**
  * cacti_http - SSRF-hardened HTTP GET.
  *
  * Wraps file_get_contents() with a stream context that enables TLS peer
@@ -8577,4 +8519,21 @@ function cacti_plugin_path($plugin, $relative = '') {
 	$resolved = validate_relative_path_within((string) $relative, $plugin_base);
 
 	return $resolved !== false ? $resolved : false;
+}
+
+/**
+ * sanitize_sql_column - sanitizes a column name to prevent SQL injection
+ *
+ * @param string $column - the column name to sanitize
+ *
+ * @return string - the sanitized column name
+ */
+function sanitize_sql_column($column) {
+	if (is_array($column)) {
+		return '';
+	}
+	if (!is_scalar($column)) {
+		return '';
+	}
+	return preg_replace('/[^a-zA-Z0-9_.]/', '', (string)$column);
 }

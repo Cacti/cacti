@@ -24,30 +24,30 @@
 */
 
 require(__DIR__ . '/include/cli_check.php');
-require_once(CACTI_PATH_LIBRARY . '/poller.php');
-require_once(CACTI_PATH_LIBRARY . '/data_query.php');
-require_once(CACTI_PATH_LIBRARY . '/rrd.php');
+require_once($config['base_path'] . '/lib/poller.php');
+require_once($config['base_path'] . '/lib/data_query.php');
+require_once($config['base_path'] . '/lib/rrd.php');
 
-// force Cacti to store realtime data locally
+/* force Cacti to store realtime data locally */
 $config['force_storage_location_local'] = true;
 
-// initialize some additional variables
+/* initialize some additional variables */
 $force     = false;
 $debug     = false;
 $graph_id  = false;
 $interval  = false;
 $poller_id = '';
 
-// process calling arguments
+/* process calling arguments */
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (cacti_sizeof($parms)) {
-	foreach ($parms as $parameter) {
-		if (str_contains($parameter, '=')) {
-			[$arg, $value] = explode('=', $parameter, 2);
+	foreach($parms as $parameter) {
+		if (strpos($parameter, '=')) {
+			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg   = $parameter;
+			$arg = $parameter;
 			$value = '';
 		}
 
@@ -59,37 +59,30 @@ if (cacti_sizeof($parms)) {
 				break;
 			case '--force':
 				$force = true;
-
 				break;
 			case '--graph':
-				$graph_id = intval($value);
-
+				$graph_id = (int)$value;
 				break;
 			case '--interval':
-				$interval = intval($value);
-
+				$interval = (int)$value;
 				break;
 			case '--poller_id':
-				$poller_id = (string) $value;
-
+				/* Web caller passes a hex session hash; reject anything else to keep shell-safe */
+				$poller_id = preg_match('/^[a-zA-Z0-9_-]{1,64}$/', $value) ? $value : '';
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
-
 				exit;
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
-
 				exit;
-
 			default:
 				print "ERROR: Invalid Argument: ($arg)\n\n";
 				display_help();
-
 				exit(1);
 		}
 	}
@@ -98,92 +91,78 @@ if (cacti_sizeof($parms)) {
 if ($graph_id === false || $graph_id < 0) {
 	print "ERROR: No --graph=ID specified\n\n";
 	display_help();
-
 	exit(1);
 }
 
 if ($interval === false || $interval < 0) {
 	print "ERROR: No --interval=SEC specified\n\n";
 	display_help();
-
 	exit(1);
 }
 
-if (!preg_match('/^(?:[0-9]+|[A-Fa-f0-9]{64})$/', $poller_id)) {
-	print "ERROR: No valid --poller_id=ID specified\n\n";
-	display_help();
-
-	exit(1);
-}
-
-// record the start time
+/* record the start time */
 $poller_start         = microtime(true);
 
-// get number of polling items from the database
+/* get number of polling items from the database */
 $poller_interval = 1;
 
-// retrieve the last time the poller ran
+/* retrieve the last time the poller ran */
 $poller_lastrun = read_config_option('poller_lastrun');
 
-// get the current cron interval from the database
+/* get the current cron interval from the database */
 $cron_interval = read_config_option('cron_interval');
 
 if ($cron_interval != 60) {
 	$cron_interval = 300;
 }
 
-// assume a scheduled task of either 60 or 300 seconds
+/* assume a scheduled task of either 60 or 300 seconds */
 define('MAX_POLLER_RUNTIME', 298);
 
-// let PHP only run 1 second longer than the max runtime, plus the poller needs lots of memory
+/* let PHP only run 1 second longer than the max runtime, plus the poller needs lots of memory */
 ini_set('max_execution_time', MAX_POLLER_RUNTIME + 1);
 
-// initialize file creation flags
+/* initialize file creation flags */
 $change_files = false;
 
-// obtain some defaults from the database
+/* obtain some defaults from the database */
 $max_threads = read_config_option('max_threads');
 
-// Determine Command Name
+/* Determine Command Name */
 $command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
-$extra_args     = '-q ' . cacti_escapeshellarg(CACTI_PATH_BASE . '/cmd_realtime.php') . ' ' . cacti_escapeshellarg($poller_id) . " $graph_id $interval";
+$extra_args     = '-q ' . cacti_escapeshellarg($config['base_path'] . '/cmd_realtime.php') . ' ' . cacti_escapeshellarg($poller_id) . ' ' . (int)$graph_id . ' ' . (int)$interval;
 
-// Determine if Realtime will work or not
+/* Determine if Realtime will work or not */
 $cache_dir = read_config_option('realtime_cache_path');
-
 if (!is_dir($cache_dir)) {
 	cacti_log("FATAL: Realtime Cache Directory '$cache_dir' Does Not Exist!");
-
 	return -1;
-}
-
-if (!is_writable($cache_dir)) {
+} elseif (!is_writable($cache_dir)) {
 	cacti_log("FATAL: Realtime Cache Directory '$cache_dir' is Not Writable!");
-
 	return -2;
 }
 
 shell_exec("$command_string $extra_args");
 
-// open a pipe to rrdtool for writing
+/* open a pipe to rrdtool for writing */
 $rrdtool_pipe = rrd_init();
 
-// process poller output
+/* process poller output */
 process_poller_output_rt($rrdtool_pipe, $poller_id, $interval);
 
-// close rrd
+/* close rrd */
 rrd_close($rrdtool_pipe);
 
-// close db
+/* close db */
 db_close();
 
-// display_version - displays version information
-function display_version() : void {
-	$version = get_cacti_cli_version();
+/*  display_version - displays version information */
+function display_version() {
+	$version = get_cacti_version();
 	print "Cacti Realtime Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-function display_help() : void {
+function display_help() {
 	display_version();
 
 	print "\nusage: poller_realtime.php --graph=ID [--interval=SEC] [--force] [--debug]\n\n";
@@ -198,80 +177,78 @@ function display_help() : void {
 	print "    --debug|-d     Output debug information.  Similar to cacti's DEBUG logging level.\n\n";
 }
 
-// process_poller_output REAL TIME MODIFIED
-function process_poller_output_rt(mixed $rrdtool_pipe, string $poller_id, int $interval) : int {
-	require_once(CACTI_PATH_LIBRARY . '/rrd.php');
+/* process_poller_output REAL TIME MODIFIED */
+function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
+	global $config;
 
-	// let's count the number of rrd files we processed
-	$rrds_processed   = 0;
-	$rrd_update_array = [];
+	include_once($config['library_path'] . '/rrd.php');
 
-	// create/update the rrd files
+	/* let's count the number of rrd files we processed */
+	$rrds_processed = 0;
+
+	/* create/update the rrd files */
 	$results = db_fetch_assoc_prepared('SELECT port.output, port.time, port.local_data_id,
-		poller_item.rrd_path, poller_item.rrd_name, poller_item.rrd_num
-		FROM (poller_output_realtime AS port, poller_item)
-		WHERE (port.local_data_id=poller_item.local_data_id
-		AND port.rrd_name=poller_item.rrd_name)
-		AND port.poller_id = ?',
-		[$poller_id]);
+		pi.rrd_path, pi.rrd_name, pi.rrd_num, dl.data_template_id
+		FROM poller_output_realtime AS port
+		INNER JOIN poller_item AS pi
+		ON port.local_data_id = pi.local_data_id
+		AND port.rrd_name = pi.rrd_name
+		INNER JOIN data_local AS dl
+		ON dl.id = port.local_data_id
+		WHERE port.poller_id = ?',
+		array($poller_id));
 
-	if (cacti_sizeof($results) > 0) {
-		// create an array keyed off of each .rrd file
+	if (cacti_sizeof($results)) {
+		/* create an array keyed off of each .rrd file */
 		foreach ($results as $item) {
 			$rt_graph_path    = read_config_option('realtime_cache_path') . '/user_' . $poller_id . '_' . $item['local_data_id'] . '.rrd';
 			$data_source_path = get_data_source_path($item['local_data_id'], true);
 
-			// create rt rrd
+			/* create rt rrd */
 			if (!file_exists($rt_graph_path)) {
-				// get the syntax
+				/* get the syntax */
 				$command = @rrdtool_function_create($item['local_data_id'], true);
 
-				// replace path
+				/* replace path */
 				$command = str_replace($data_source_path, $rt_graph_path, $command);
 
-				/**
-				 * minimum refresh interval - this will always have a value of 1
-				 * so that at the one second realtime interval, good numbers are
-				 * returned to the user.  We ignore the user setting.
-				 *
-				 * $step = read_config_option('realtime_interval');
-				 *
-				 */
+				/* minimum refresh interval */
+				$step = read_config_option('realtime_interval');
 
-				// replace step
-				$command = preg_replace('/--step\s(\d+)/', '--step 1', $command);
+				/* replace step */
+				$command = preg_replace('/--step\s(\d+)/', '--step ' . $step, $command);
 
 				/* WIN32: before sending this command off to rrdtool, get rid
 				of all of the '\' characters. Unix does not care; win32 does.
 				Also make sure to replace all of the fancy "\"s at the end of the line,
 				but make sure not to get rid of the "\n"s that are supposed to be
 				in there (text format) */
-				$command = str_replace("\\\n", ' ', $command);
+				$command = str_replace("\\\n", " ", $command);
 
-				// create the rrdfile
+				/* create the rrdfile */
 				shell_exec($command);
 
-				// change permissions so that the poller can clear
+				/* change permissions so that the poller can clear */
 				@chmod($rt_graph_path, 0644);
 			} else {
-				// change permissions so that the poller can clear
+				/* change permissions so that the poller can clear */
 				@chmod($rt_graph_path, 0644);
 			}
 
-			// now, let's update the path to keep the RRDs updated
+			/* now, let's update the path to keep the RRDs updated */
 			$item['rrd_path'] = $rt_graph_path;
 
-			// cleanup the value
+			/* cleanup the value */
 			$value     = trim($item['output']);
 			$unix_time = strtotime($item['time']);
 
 			$rrd_update_array[$item['rrd_path']]['local_data_id'] = $item['local_data_id'];
 
-			// single one value output
+			/* single one value output */
 			if ((is_numeric($value)) || ($value == 'U')) {
 				$rrd_update_array[$item['rrd_path']]['times'][$unix_time][$item['rrd_name']] = $value;
 			} else {
-				// multiple value output
+				/* multiple value output */
 				$values = preg_split('/\s+/', $value);
 
 				$rrd_field_names = array_rekey(
@@ -282,12 +259,12 @@ function process_poller_output_rt(mixed $rrdtool_pipe, string $poller_id, int $i
 						INNER JOIN data_input_fields AS dif
 						ON dtr.data_input_field_id = dif.id
 						AND dtr.local_data_id = ?',
-						[$item['local_data_id']]),
+						array($item['local_data_id'])),
 					'data_name', 'data_source_name'
 				);
 
 				if (cacti_sizeof($values)) {
-					foreach ($values as $value) {
+					foreach($values as $value) {
 						$matches = explode(':', $value);
 
 						if (isset($rrd_field_names[$matches[0]])) {
@@ -297,22 +274,22 @@ function process_poller_output_rt(mixed $rrdtool_pipe, string $poller_id, int $i
 				}
 			}
 
-			// fallback values
+			/* fallback values */
 			if ((!isset($rrd_update_array[$item['rrd_path']]['times'][$unix_time])) && ($item['rrd_name'] != '')) {
 				$rrd_update_array[$item['rrd_path']]['times'][$unix_time][$item['rrd_name']] = 'U';
-			} elseif ((!isset($rrd_update_array[$item['rrd_path']]['times'][$unix_time])) && ($item['rrd_name'] == '')) {
+			}else if ((!isset($rrd_update_array[$item['rrd_path']]['times'][$unix_time])) && ($item['rrd_name'] == '')) {
 				unset($rrd_update_array[$item['rrd_path']]);
 			}
 		}
 
-		// make sure each .rrd file has complete data
+		/* make sure each .rrd file has complete data */
 		foreach ($results as $item) {
 			db_execute_prepared('DELETE FROM poller_output_realtime
 				WHERE local_data_id = ?
 				AND rrd_name = ?
 				AND time = ?
 				AND poller_id = ?',
-				[$item['local_data_id'], $item['rrd_name'], $item['time'], $poller_id]);
+				array($item['local_data_id'], $item['rrd_name'], $item['time'], $poller_id));
 		}
 
 		$rrds_processed = rrdtool_function_update($rrd_update_array, $rrdtool_pipe);

@@ -316,6 +316,10 @@ function get_host_sort_type() {
 						WHERE id = ?',
 						array($branch));
 
+					if ($sort_type === false) {
+						return;
+					}
+
 					if ($sort_type == HOST_GROUPING_GRAPH_TEMPLATE) {
 						print 'hsgt';
 					} else {
@@ -384,6 +388,11 @@ function get_branch_sort_type() {
 					FROM graph_tree_items
 					WHERE id = ?',
 					array($branch));
+
+				if ($sort_type === false) {
+					print '';
+					break;
+				}
 
 				switch($sort_type) {
 				case TREE_ORDERING_INHERIT:
@@ -708,7 +717,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Tree', 'Delete Trees', cacti_sizeof($tree_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Tree', 'Delete Trees', cacti_sizeof($tree_array)) . "'>";
 		} elseif (get_nfilter_request_var('drp_action') == '2') { // publish
 			print "<tr>
 				<td class='textArea' class='odd'>
@@ -717,7 +726,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Publish Tree', 'Publish Trees', cacti_sizeof($tree_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Publish Tree', 'Publish Trees', cacti_sizeof($tree_array)) . "'>";
 		} elseif (get_nfilter_request_var('drp_action') == '3') { // un-publish
 			print "<tr>
 				<td class='textArea' class='odd'>
@@ -726,7 +735,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Un-publish Tree', 'Un-publish Trees', cacti_sizeof($tree_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Un-publish Tree', 'Un-publish Trees', cacti_sizeof($tree_array)) . "'>";
 		} elseif (get_nfilter_request_var('drp_action') == '4') { // un-lock
 			print "<tr>
 				<td class='textArea' class='odd'>
@@ -735,7 +744,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Un-lock Tree', 'Un-lock Trees', cacti_sizeof($tree_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Cancel') . "'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Un-lock Tree', 'Un-lock Trees', cacti_sizeof($tree_array)) . "'>";
 		}
 	} else {
 		raise_message(40);
@@ -978,7 +987,7 @@ function tree_edit($partial = false) {
 		print "</td></tr></table>\n";
 
 		?>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 		<?php
 		if ($select_first) {
 			print "var reset=true;\n";
@@ -1127,7 +1136,7 @@ function tree_edit($partial = false) {
 		}
 
 		function initializeTreeEdit() {
-			$('#lock').click(function() {
+			$('#lock').on('click', function() {
 				strURL = 'tree.php?action=lock&id=<?php print $tree['id'];?>';
 
 				loadTreeEdit(strURL);
@@ -1152,7 +1161,7 @@ function tree_edit($partial = false) {
 				enableKeyups();
 			});
 
-			$('#unlock').click(function() {
+			$('#unlock').on('click', function() {
 				strURL = 'tree.php?action=unlock&id=<?php print $tree['id'];?>';
 
 				loadTreeEdit(strURL);
@@ -1345,17 +1354,17 @@ function tree_edit($partial = false) {
 		}
 
 		function enableKeyups() {
-			$('#gfilter').keyup(function(data) {
+			$('#gfilter').on('keyup', function(data) {
 				graphMeTimer && clearTimeout(graphMeTimer);
 				graphMeTimer = setTimeout(getGraphData, 300);
 			});
 
-			$('#hfilter').keyup(function(data) {
+			$('#hfilter').on('keyup', function(data) {
 				hostMeTimer && clearTimeout(hostMeTimer);
 				hostMeTimer = setTimeout(getHostData, 300);
 			});
 
-			$('#sfilter').keyup(function(data) {
+			$('#sfilter').on('keyup', function(data) {
 				siteMeTimer && clearTimeout(siteMeTimer);
 				siteMeTimer = setTimeout(getSiteData, 300);
 			});
@@ -1441,7 +1450,7 @@ function tree_edit($partial = false) {
 				});
 			}
 
-			$('form').unbind().submit(function(event) {
+			$('form').on('submit', function(event) {
 				event.preventDefault();
 
 				if ($(this).attr('id') == 'tree_edit') {
@@ -1468,11 +1477,11 @@ function tree_edit($partial = false) {
 			var hheight = parseInt($(window).height()-$('#hosts').offset().top-10)+'px';
 			var gheight = parseInt($(window).height()-$('#graphs').offset().top-10)+'px';
 
-			$('#element').change(function() {
+			$('#element').on('change', function() {
 				resizer();
 			});
 
-			$(window).resize(function() {
+			$(window).on('resize', function() {
 				resizer();
 			});
 
@@ -2080,7 +2089,7 @@ function tree() {
 	}
 
 	?>
-	<script type='text/javascript'>
+	<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 	function applyFilter() {
 		strURL  = 'tree.php?rows=' + $('#rows').val();
 		strURL += '&filter=' + $('#filter').val();
@@ -2094,23 +2103,27 @@ function tree() {
 	}
 
 	$(function() {
-		$('#refresh').click(function() {
+		$('#refresh').on('click', function() {
 			applyFilter();
 		});
 
-		$('#clear').click(function() {
+		$('#rows').on('change', function() {
+			applyFilter();
+		});
+
+		$('#clear').on('click', function() {
 			clearFilter();
 		});
 
-		$('#sorta').click(function() {
+		$('#sorta').on('click', function() {
 			loadPageNoHeader('tree.php?action=sortasc');
 		});
 
-		$('#sortd').click(function() {
+		$('#sortd').on('click', function() {
 			loadPageNoHeader('tree.php?action=sortdesc');
 		});
 
-		$('#form_tree').submit(function(event) {
+		$('#form_tree').on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -2158,7 +2171,7 @@ function tree() {
 						<?php print __('Trees'); ?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
@@ -2359,7 +2372,7 @@ function tree() {
 
 	if (get_request_var('sort_column') == 'sequence' && get_request_var('sort_direction') == 'ASC') {
 		?>
-		<script type='text/javascript'>
+		<script type='text/javascript' <?php print CactiSecureHeaders::getNonceAttribute();?>>
 		$(function() {
 			$('#tree2_child').attr('id', 'tree_ids');
 
