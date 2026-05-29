@@ -1301,7 +1301,7 @@ function display_matching_trees(int $rule_id, int $rule_type, array $item, strin
  * @return bool   Returns true if the column exists in any of the tables, false otherwise.
  */
 function api_automation_column_exists(string $column, array $tables) : bool {
-	$column = str_replace(['h.', 'ht.', 'gt.', 'gl.', 'gtg.'], ['', '', '', '', ''], $column);
+	$column = preg_replace('/^(h|ht|gt|gl|gtg)\./', '', $column);
 
 	if (cacti_sizeof($tables)) {
 		foreach ($tables as $table) {
@@ -1771,6 +1771,13 @@ function duplicate_automation_tree_rules(int $_id, string $_title) : void {
 	// create new action rule items
 	if (cacti_sizeof($rule_items) > 0) {
 		foreach ($rule_items as $rule_item) {
+			if (isset($rule_item['field']) && $rule_item['field'] !== '' && $rule_item['field'] !== AUTOMATION_TREE_ITEM_TYPE_STRING) {
+				if (!api_automation_column_exists($rule_item['field'], ['host', 'host_template', 'graph_local', 'graph_templates_graph', 'graph_templates'])) {
+					cacti_log("SECURITY: Blocked duplication of automation_tree_rule_item with invalid field '" . $rule_item['field'] . "'", false, 'AUTOMATION');
+					continue;
+				}
+			}
+
 			$save = $rule_item;
 			// make sure, that regexp is correctly masked
 			$save['search_pattern']  = form_input_validate($rule_item['search_pattern'], 'search_pattern', '', false, 3);
@@ -1945,6 +1952,10 @@ function build_rule_item_filter(array $automation_rule_items, string $prefix = '
 
 			// field name
 			if ($automation_rule_item['field'] != '') {
+				if (!api_automation_column_exists($automation_rule_item['field'], ['host', 'host_template', 'graph_local', 'graph_templates_graph', 'graph_templates'])) {
+					continue;
+				}
+
 				$sql_filter .= ' ' . $prefix . '`' . implode('`.`', explode('.', $automation_rule_item['field'])) . '`';
 				$sql_filter .= ' ' . $automation_op_array['op'][$automation_rule_item['operator']] . ' ';
 
@@ -3323,7 +3334,7 @@ function create_all_header_nodes(int $item_id, array $rule) : int {
 				continue;
 			}
 
-			cacti_log($function . ' Item ' . $item_id . ' - sql: ' . str_replace("\m",'',$sql) . ' matches: ' . $target, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
+			cacti_log($function . ' Item ' . $item_id . ' - sql: ' . str_replace("\n", '', $sql) . ' matches: ' . $target, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
 
 			$parent_tree_item_id = (int) create_multi_header_node($target, $rule, $tree_item, $parent_tree_item_id);
 		}
@@ -5874,6 +5885,13 @@ function automation_tree_rule_import(mixed $json_data, bool $tree_branches = fal
 			if (cacti_sizeof($rule['tree_rule_items'])) {
 				foreach ($rule['tree_rule_items'] as $rule_item) {
 					$hash = $rule_item['hash'];
+
+					if (isset($rule_item['field']) && $rule_item['field'] !== '' && $rule_item['field'] !== AUTOMATION_TREE_ITEM_TYPE_STRING) {
+						if (!api_automation_column_exists($rule_item['field'], ['host', 'host_template', 'graph_local', 'graph_templates_graph', 'graph_templates'])) {
+							cacti_log("SECURITY: Blocked import of automation_tree_rule_item with invalid field '" . $rule_item['field'] . "'", false, 'AUTOMATION');
+							continue;
+						}
+					}
 
 					$save = $rule_item;
 
