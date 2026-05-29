@@ -64,28 +64,36 @@ $smi_base_datatypes = [
 	'storagetype'       => 'INTEGER',
 	'tdomain'           => 'OBJECT IDENTIFIER',
 	'taddress'          => 'OCTET STRING'
-];
+);
 
 $data               = false;
 $eol                = "\n";
-$cache              = [];
+$cache              = array();
 $cache_last_refresh = false;
 
 // process command line options
 get_options();
 
 // start background caching process if not running
-$php            = cacti_escapeshellcmd(read_config_option('path_php_binary'));
-$extra_args     = '-q ' . cacti_escapeshellarg('./snmpagent_mibcache.php');
+$php_binary = read_config_option('path_php_binary');
+$script     = './snmpagent_mibcache.php';
 
 if (cacti_strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-	// windows part missing
-	pclose(popen('start "CactiSNMPCache" /I /B ' . $php . ' ' . $extra_args, 'r'));
+	cacti_process_execute(array($php_binary, '-q', $script), true);
 } else {
-	exec('ps -ef | grep -v grep | grep -v "sh -c" | grep snmpagent_mibcache.php', $output);
+	$output = array();
+	cacti_exec('pgrep', array('-a', 'php'), $output);
+	
+	$running = false;
+	foreach ($output as $line) {
+		if (strpos($line, 'snmpagent_mibcache.php') !== false) {
+			$running = true;
+			break;
+		}
+	}
 
-	if (!cacti_sizeof($output)) {
-		exec($php . ' ' . $extra_args . ' > /dev/null &');
+	if (!$running) {
+		cacti_process_execute(array($php_binary, '-q', $script), true);
 	}
 }
 
@@ -183,17 +191,17 @@ function get_options() : array {
 	$parms = $_SERVER['argv'];
 	array_shift($parms);
 
-	$options = [];
+	$options = array();
 
 	if (sizeof($parms)) {
 		$shortopts = 'VvHh';
 
-		$longopts = [
+		$longopts = array(
 			'foreground',
 			'debug',
 			'version',
 			'help'
-		];
+		);
 
 		$options = getopt($shortopts, $longopts);
 

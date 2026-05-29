@@ -182,15 +182,16 @@ while (1) {
 	$input_string    = fgets(STDIN, 1024);
 	$function        = '';
 	$parameters      = '';
-	$parameter_array = [];
+	$parameter_array = array();
 
 	$isParentRunning = true;
 
 	if (empty($input_string)) {
 		if (!empty($parent_pid)) {
 			if (cacti_strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-				$out = [];
-				exec("TASKLIST /FO LIST /FI \"PID eq $parent_pid\"", $out);
+				$out = array();
+				$args = array('/FO', 'LIST', '/FI', 'PID eq ' . (int)$parent_pid);
+				cacti_exec('TASKLIST', $args, $out);
 
 				$isParentRunning = (cacti_count($out) > 1);
 			} elseif (function_exists('posix_kill')) {
