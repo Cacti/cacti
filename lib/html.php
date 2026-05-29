@@ -101,7 +101,7 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 	if ($title != '') {
 		print "<div id='$table_id' class='cactiTable' style='width:$width;text-align:$align;'>";
 		print '<div>';
-		print "<div class='cactiTableTitle'><span>" . ($title != '' ? $title:'') . '</span></div>';
+		print "<div class='cactiTableTitle'><span>" . ($title != '' ? html_escape($title) : '') . '</span></div>';
 		print "<div class='cactiTableButton'>";
 
 		$page      = get_current_page();
@@ -797,7 +797,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		}
 
 		if (($db_column == '') || (substr_count($db_column, 'nosort'))) {
-			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'":'') . " class='$nohide $align' " . ((($i+1) == cacti_count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . $display_text . '</th>';
+			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'":'') . " class='$nohide $align' " . ((($i+1) == cacti_count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . html_escape($display_text) . '</th>';
 		} else {
 			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'":'') . " class='sortable $align $nohide $isSort'>";
 			print "<div class='sortinfo' sort-return='" . ($return_to == '' ? 'main':$return_to) . "' sort-page='" . ($url == '' ? html_escape(get_current_page(false)):$url) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>";
@@ -1145,6 +1145,35 @@ function html_escape($string) {
 	if ($charset == '') {
 		$charset = ini_get('default_charset');
 	}
+
+	if ($charset == '') {
+		$charset = 'UTF-8';
+	}
+
+	if ($string !== null) {
+		// Mandatory replacement for grave accent (XSS vector in older browsers)
+		$string = str_replace('`', '&#96;', (string)$string);
+		// Force ENT_QUOTES and ENT_HTML5 for maximum safety
+		return htmlspecialchars($string, ENT_QUOTES | ENT_HTML5, $charset, false);
+	}
+
+	return '';
+}
+
+/**
+ * __safe - Combined translation and HTML escaping.
+ * Standardizes the idiomatic pattern of trans(data) + escape.
+ */
+function __safe($text) {
+	return html_escape(__($text));
+}
+
+/**
+ * echo_safe - Authoritative helper for echoing database-sourced content.
+ */
+function echo_safe($text) {
+	echo html_escape($text);
+}
 
 	if ($charset == '') {
 		$charset = 'UTF-8';
