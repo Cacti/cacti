@@ -465,8 +465,16 @@ function automation_get_matching_graphs_sql(array $rule, int $rule_type) : array
 		ON gl.id = gtg.local_graph_id
 		LEFT JOIN host_template AS ht
 		ON h.host_template_id = ht.id
-		$sql_where
-		ORDER BY " . sanitize_sql_column(grv('sort_column')) . ' ' . (strtoupper(grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') . '
+		$sql_where";
+
+	$sortby = sanitize_sql_column(grv('sort_column'));
+
+	if ($sortby == 'h.hostname') {
+		$sortby = 'INET_ATON(h.hostname)';
+	}
+
+	$rows_query .= '
+		ORDER BY ' . $sortby . ' ' . (strtoupper(grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') . '
 		LIMIT ' . ($rows * (grv('page') - 1)) . ',' . $rows;
 
 	return [
