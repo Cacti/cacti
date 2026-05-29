@@ -1834,11 +1834,7 @@ function utilities_view_snmp_cache() {
 	/* filter by search string */
 	if (get_request_var('filter') != '') {
 		$sql_where .= ' AND (
-			h.description LIKE '      . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR sq.name LIKE '         . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR hsc.field_name LIKE '  . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR hsc.field_value LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR hsc.oid LIKE '         . db_qstr('%' . get_request_var('filter') . '%');
+			h.description LIKE ? OR sq.name LIKE ? OR hsc.field_name LIKE ? OR hsc.field_value LIKE ? OR hsc.oid LIKE ?;
 
 		if (get_request_var('with_index') == 1) {
 			$sql_where .= ' OR hsc.snmp_index LIKE ' . db_qstr('%' . get_request_var('filter') . '%');

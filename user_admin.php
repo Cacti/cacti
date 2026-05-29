@@ -953,10 +953,11 @@ function graph_perms_edit($tab, $header_label) {
 		}
 
 		/* form the 'where' clause for our main sql query */
+		$params = array();
 		if (get_request_var('filter') != '') {
-			$sql_where = 'WHERE (
-				uag.name LIKE '           . db_qstr('%' . get_request_var('filter') . '%') . '
-				OR uag.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
+			$sql_where = 'WHERE (uag.name LIKE ? OR uag.description LIKE ?)';
+			$params[] = '%' . get_request_var('filter') . '%';
+			$params[] = '%' . get_request_var('filter') . '%';
 		} else {
 			$sql_where = '';
 		}
@@ -964,15 +965,16 @@ function graph_perms_edit($tab, $header_label) {
 		if (get_request_var('associated') != 'false') {
 			/* Show all items */
 		} else {
-			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' uagm.user_id=' . get_request_var('id');
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' uagm.user_id = ?';
+			$params[] = get_request_var('id');
 		}
 
-		$total_rows = db_fetch_cell("SELECT
+		$total_rows = db_fetch_cell_prepared("SELECT
 			COUNT(DISTINCT uag.id)
 			FROM user_auth_group AS uag
-			LEFT JOIN (SELECT user_id, group_id FROM user_auth_group_members WHERE user_id=" . get_request_var('id') . ") AS uagm
+			LEFT JOIN (SELECT user_id, group_id FROM user_auth_group_members WHERE user_id = ?) AS uagm
 			ON uag.id = uagm.group_id
-			$sql_where");
+			$sql_where", array_merge(array(get_request_var('id')), $params));
 
 		$sql_query = "SELECT DISTINCT uag.*, uagm.user_id
 			FROM user_auth_group AS uag

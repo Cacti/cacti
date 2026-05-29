@@ -640,24 +640,26 @@ function user_group_members_edit($header_label) {
 	}
 
 	/* form the 'where' clause for our main sql query */
+	$params = array();
 	if (get_request_var('filter') != '') {
-		$sql_where = 'WHERE (
-			username LIKE '     . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR full_name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
+		$sql_where = 'WHERE (username LIKE ? OR full_name LIKE ?)';
+		$params[] = '%' . get_request_var('filter') . '%';
+		$params[] = '%' . get_request_var('filter') . '%';
 	} else {
 		$sql_where = '';
 	}
 
 	if (get_request_var('associated') != 'false') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (user_auth_group_members.group_id=' . get_request_var('id', 0) . ')';
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (user_auth_group_members.group_id = ?)';
+		$params[] = get_request_var('id', 0);
 	}
 
-	$total_rows = db_fetch_cell("SELECT
+	$total_rows = db_fetch_cell_prepared("SELECT
 		COUNT(ua.id)
 		FROM user_auth AS ua
 		LEFT JOIN user_auth_group_members
 		ON (ua.id = user_auth_group_members.user_id)
-		$sql_where");
+		$sql_where", $params);
 
 	$sql_query = "SELECT DISTINCT ua.id, ua.username, ua.full_name, ua.enabled, ua.realm
 		FROM user_auth AS ua

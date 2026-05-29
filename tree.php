@@ -1958,12 +1958,13 @@ function tree_edit($partial = false) {
 }
 
 function display_sites() {
+	$params = array();
 	if (get_nfilter_request_var('filter') != '') {
-		$sql_where = 'WHERE
-			name LIKE '       . db_qstr('%' . get_nfilter_request_var('filter') . '%') . '
-			OR city LIKE '    . db_qstr('%' . get_nfilter_request_var('filter') . '%') . '
-			OR state LIKE '   . db_qstr('%' . get_nfilter_request_var('filter') . '%') . '
-			OR country LIKE ' . db_qstr('%' . get_nfilter_request_var('filter') . '%');
+		$sql_where = 'WHERE (name LIKE ? OR city LIKE ? OR state LIKE ? OR country LIKE ?)';
+		$params[] = '%' . get_nfilter_request_var('filter') . '%';
+		$params[] = '%' . get_nfilter_request_var('filter') . '%';
+		$params[] = '%' . get_nfilter_request_var('filter') . '%';
+		$params[] = '%' . get_nfilter_request_var('filter') . '%';
 	} else {
 		$sql_where = '';
 	}
