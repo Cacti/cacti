@@ -2764,7 +2764,7 @@ function create_all_header_nodes($item_id, $rule) {
 				LEFT JOIN host_template AS ht
 				ON h.host_template_id=ht.id ';
 
-			$sql_where = 'WHERE h.id='. $item_id . ' AND h.deleted = "" ';
+			$sql_where = 'WHERE h.id=? AND h.deleted = "" ';
 		} elseif ($rule['leaf_type'] == TREE_ITEM_TYPE_GRAPH) {
 			/* graphs require a different set of tables to be joined */
 			$sql_tables = 'FROM host AS h
@@ -2777,7 +2777,7 @@ function create_all_header_nodes($item_id, $rule) {
 				LEFT JOIN graph_templates_graph AS gtg
 				ON gl.id=gtg.local_graph_id ';
 
-			$sql_where = 'WHERE gl.id=' . $item_id . ' AND h.deleted = "" ';
+			$sql_where = 'WHERE gl.id=? AND h.deleted = "" ';
 		}
 
 		/* get the WHERE clause for matching hosts */
