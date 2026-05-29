@@ -188,7 +188,7 @@ function form_actions() {
 
 	form_start('links.php');
 
-	html_start_box($link_actions[get_request_var_post('drp_action')], '60%', '', '3', 'center', '');
+	html_start_box(cacti_form_action_label($link_actions, get_nfilter_request_var('drp_action')), '60%', '', '3', 'center', '');
 
 	if (isset($pages) && cacti_sizeof($pages)) {
 		if (get_request_var('drp_action') == '3') { // Enable Pages

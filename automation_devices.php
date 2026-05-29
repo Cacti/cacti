@@ -166,7 +166,7 @@ function form_actions() {
 
 	form_start('automation_devices.php', 'chk');
 
-	html_start_box($device_actions[get_request_var('drp_action')], '60%', '', '3', 'center', '');
+	html_start_box(cacti_form_action_label($device_actions, get_nfilter_request_var('drp_action')), '60%', '', '3', 'center', '');
 
 	$available_host_templates = db_fetch_assoc_prepared('SELECT id, name FROM host_template ORDER BY name');
 
