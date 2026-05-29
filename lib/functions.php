@@ -7126,7 +7126,10 @@ function get_running_user() {
 		}
 
 		if (empty($tmp_user)) {
-			exec('id -nu', $o, $r);
+		$out = array();
+		cacti_exec('id -nu', array(), $out);
+		$r = 0;
+		$o = $out;
 			if ($r == 0) {
 				$tmp_user = trim($o['0']);
 			}
