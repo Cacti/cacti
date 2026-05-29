@@ -179,7 +179,7 @@ function display_matching_hosts(array $rule, int $rule_type, string $url) : void
 	$total_rows = cacti_sizeof(db_fetch_assoc($details['rows_query'], false));
 	$sortby     = $details['sortby'];
 	$sql_query  = $details['rows_query'] .
-		' ORDER BY ' . $sortby . ' ' . grv('sort_direction') .
+		' ORDER BY ' . $sortby . ' ' . (strtoupper(grv('sort_direction')) === 'DESC' ? 'DESC' : 'ASC') .
 		' LIMIT ' . ($details['rows'] * (grv('page') - 1)) . ',' . $details['rows'];
 
 	$hosts = db_fetch_assoc($sql_query, false);
