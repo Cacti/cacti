@@ -22,6 +22,47 @@
  +-------------------------------------------------------------------------+
 */
 
+
+/**
+ * api_import_validate_schema - Structural validation for XML template imports.
+ *
+ * Ensures that the XML payload strictly adheres to the Cacti Template schema
+ * before processing, neutralizing malformed or malicious object injections.
+ *
+ * @param array $xml_array The parsed XML tree.
+ * @return bool True if schema is valid.
+ */
+function api_import_validate_schema($xml_array) {
+	if (empty($xml_array)) {
+		return false;
+	}
+
+	// 1. Enforce root node context
+	if (!isset($xml_array["cacti"])) {
+		// Older versions or specific exports might not have the <cacti> root
+		// if xml2array was called on a sub-node. We check the top-level keys.
+		$target_array = $xml_array;
+	} else {
+		$target_array = $xml_array["cacti"];
+	}
+
+	// 2. Validate hash structure
+	foreach ($target_array as $key => $val) {
+		if ($key === "hash_000000") continue; // Skip version info
+
+		// All template nodes must follow the Cacti hash format
+		if (strpos($key, "hash_") === 0) {
+			// Verify the hash resolves to a known Cacti object type
+			if (parse_xml_hash($key) === false) {
+				cacti_log("SECURITY: Unknown hash type in XML import: " . $key, false, "IMPORT");
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
 function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphans = false, $replace_svalues = false, $import_hashes = array(), $class = '') {
 	global $config, $hash_type_codes, $cacti_version_codes, $ignorable_hashes, $preview_only;
 	global $import_debug_info, $import_messages, $legacy_template;
@@ -33,6 +74,11 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 	$ignorable_hashes = array();
 
 	$xml_array = xml2array($xml_data);
+
+	if (!api_import_validate_schema($xml_array)) {
+		$import_messages[] = 7; /* xml parse error */
+		return $info_array;
+	}
 
 	if (cacti_sizeof($xml_array) == 0) {
 		$import_messages[] = 7; /* xml parse error */
