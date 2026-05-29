@@ -3014,7 +3014,9 @@ function get_execution_user() {
 
 		return $user_info['name'];
 	} else {
-		return exec('whoami');
+		$out = array();
+		cacti_exec('whoami', array(), $out);
+		return (isset($out[0]) ? trim($out[0]) : '');
 	}
 }
 
@@ -3672,8 +3674,10 @@ function move_item_up($table_name, $current_id, $group_query = '') {
  */
 function exec_into_array($command_line) {
 	$out = array();
-	$err = 0;
-	exec($command_line,$out,$err);
+	// Since we only have a command string, we split it for the core.
+	// In a future refactor, callers should pass an array.
+	$args = explode(' ', $command_line);
+	cacti_process_execute($args, false, $out);
 
 	return array_values($out);
 }
@@ -6925,9 +6929,13 @@ function get_installed_rrdtool_version() {
 
 	if ($version == '') {
 		if ($config['cacti_server_os'] == 'win32') {
-			$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v');
+			$out = array();
+			cacti_exec(read_config_option('path_rrdtool'), array('-v'), $out);
+			$shell = implode("\n", $out);
 		} else {
-			$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v 2>&1');
+			$out = array();
+			cacti_exec(read_config_option('path_rrdtool'), array('-v'), $out);
+			$shell = implode("\n", $out);
 		}
 
 		$version = false;
@@ -7126,12 +7134,11 @@ function get_running_user() {
 		}
 
 		if (empty($tmp_user)) {
-		$out = array();
-		cacti_exec('id -nu', array(), $out);
-		$r = 0;
-		$o = $out;
-			if ($r == 0) {
-				$tmp_user = trim($o['0']);
+			$out = array();
+			$r   = cacti_exec('id', array('-nu'), $out);
+
+			if ($r == 0 && isset($out[0])) {
+				$tmp_user = trim($out[0]);
 			}
 		}
 
