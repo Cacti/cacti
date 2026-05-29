@@ -34,6 +34,13 @@ test('graph_realtime.php casts local_graph_id to int', function () use ($graphRe
 	expect($contents)->toMatch('/\(int\)\s+gfrv\s*\(\s*[\'"]local_graph_id[\'"]\s*\)/');
 });
 
+test('graph_realtime.php quotes the realtime poller token', function () use ($graphRealtimePath) {
+	$contents = file_get_contents($graphRealtimePath);
+
+	expect($contents)->toContain('cacti_escapeshellarg($poller_id)');
+	expect($contents)->toContain("hash('sha256', session_id())");
+});
+
 test('graph_realtime.php does not pass raw grv local_graph_id to sprintf for shell', function () use ($graphRealtimePath) {
 	$contents = file_get_contents($graphRealtimePath);
 
@@ -57,4 +64,13 @@ test('graph_realtime.php disables the default process timeout for realtime polle
 	$contents = file_get_contents($graphRealtimePath);
 
 	expect($contents)->toMatch("/CactiProcess::run\\s*\\([\\s\\S]*'timeout'\\s*=>\\s*null[\\s\\S]*'expected_exit_codes'/");
+});
+
+test('poller_realtime.php keeps poller_id as a validated string token', function () {
+	$contents = file_get_contents(__DIR__ . '/../../poller_realtime.php');
+
+	expect($contents)->toContain('$poller_id = (string) $value;');
+	expect($contents)->toContain("preg_match('/^(?:[0-9]+|[A-Fa-f0-9]{64})$/', \$poller_id)");
+	expect($contents)->toContain('function process_poller_output_rt(mixed $rrdtool_pipe, string $poller_id, int $interval) : int');
+	expect($contents)->not->toContain('$poller_id = intval($value);');
 });

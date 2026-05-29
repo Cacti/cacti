@@ -41,7 +41,7 @@ function upgrade_to_1_3_0() : void {
 	db_install_add_column('host', ['name' => 'snmp_retries', 'type' => 'tinyint(3) unsigned', 'NULL' => false, 'default' => '3', 'after' => 'snmp_timeout']);
 	db_install_add_column('host', ['name' => 'current_errors', 'type' => 'int(10)', 'unsigned' => true, 'default' => '0', 'after' => 'polling_time']);
 
-	db_add_index('host', 'INDEX', 'current_errors', ['current_errors']);
+	db_install_add_key('host', 'INDEX', 'current_errors', ['current_errors']);
 
 	db_install_add_column('poller_item', ['name' => 'snmp_retries', 'type' => 'tinyint(3) unsigned', 'NULL' => false, 'default' => '3', 'after' => 'snmp_timeout']);
 
@@ -82,11 +82,11 @@ function upgrade_to_1_3_0() : void {
 	db_install_add_column('data_template', ['name' => 'last_updated', 'type' => 'timestamp', 'null' => false, 'default' => 'CURRENT_TIMESTAMP']);
 	db_install_add_column('snmp_query', ['name' => 'last_updated', 'type' => 'timestamp', 'null' => false, 'default' => 'CURRENT_TIMESTAMP']);
 
-	db_add_index('data_input_data', 'INDEX', 'data_template_id', ['data_template_id']);
-	db_add_index('data_input_data', 'INDEX', 'local_data_id', ['local_data_id']);
-	db_add_index('data_input_data', 'INDEX', 'host_id', ['host_id']);
+	db_install_add_key('data_input_data', 'INDEX', 'data_template_id', ['data_template_id']);
+	db_install_add_key('data_input_data', 'INDEX', 'local_data_id', ['local_data_id']);
+	db_install_add_key('data_input_data', 'INDEX', 'host_id', ['host_id']);
 
-	db_add_index('poller_output_boost', 'INDEX', 'time', ['time']);
+	db_install_add_key('poller_output_boost', 'INDEX', 'time', ['time']);
 
 	db_install_add_column('host_snmp_query', ['name' => 'reindex_last_runtime', 'type' => 'timestamp', 'null' => false, 'default' => 'CURRENT_TIMESTAMP']);
 	db_install_add_column('host_snmp_query', ['name' => 'reindex_last_duration', 'type' => 'double', 'unsigned' => true, 'null' => false, 'default' => '0']);
@@ -288,8 +288,8 @@ function upgrade_to_1_3_0() : void {
 			ADD INDEX last_updated(last_updated)');
 	}
 
-	db_install_execute("ALTER TABLE `settings` MODIFY `name` varchar(75) not null default ''");
-	db_install_execute("ALTER TABLE `settings_user` MODIFY `name` varchar(75) not null default ''");
+	db_install_execute("ALTER TABLE `settings` MODIFY `name` varchar(255) not null default ''");
+	db_install_execute("ALTER TABLE `settings_user` MODIFY `name` varchar(255) not null default ''");
 
 	$tables = [
 		'aggregate_graph_templates' => [
@@ -687,10 +687,10 @@ function upgrade_reports() : void {
 						);
 
 						break;
-					case 10: // Hours
+					case 11: // Hours
 						db_execute_prepared('UPDATE reports
 							SET sched_type = ?,
-							enabled = ?
+							enabled = ?,
 							recur_every = ?,
 							next_start = ?,
 							last_started = ?

@@ -96,12 +96,12 @@ switch (grv('action')) {
 
 		$sql_where = '';
 
-		if (grv('site_id') > 0) {
-			$sql_where .= ($sql_where != '' ? ' AND ' : '') . 'h.site_id = ' . grv('site_id');
+		if (gfrv('site_id') > 0) {
+			$sql_where .= ($sql_where != '' ? ' AND ' : '') . 'h.site_id = ' . gfrv('site_id');
 		}
 
-		if (grv('host_template_id') > 0) {
-			$sql_where .= ($sql_where != '' ? ' AND ' : '') . 'h.host_template_id = ' . grv('host_template_id');
+		if (gfrv('host_template_id') > 0) {
+			$sql_where .= ($sql_where != '' ? ' AND ' : '') . 'h.host_template_id = ' . gfrv('host_template_id');
 		}
 
 		get_allowed_ajax_hosts(true, true, $sql_where);
