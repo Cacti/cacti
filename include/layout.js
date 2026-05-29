@@ -570,6 +570,18 @@ function applySelectorVisibilityAndActions() {
 	$('tr[id^="line"].selectable').filter(':not(.disabled_row)').off('click').on('click', function(event) {
 		selectUpdateRow(event, $(this));
 	});
+
+	// Select-All checkbox in table headers
+	$('#selectall').off('click').on('click', function() {
+		selectAll($(this).attr('data-prefix'), $(this).is(':checked'));
+	});
+
+	// Select-All checkbox on the realm permission pages
+	$('.selectAllRealms').off('click').on('click', function() {
+		if (typeof selectAllRealms == 'function') {
+			selectAllRealms($(this).is(':checked'));
+		}
+	});
 }
 
 function disableSelection() {
@@ -785,6 +797,31 @@ function applySkin() {
 	$('.helpPage').off('click').on('click', function(event) {
 		event.stopPropagation();
 		getCactiHelp($(this).attr('data-page'));
+	});
+
+	// Pagination previous/next links carry the target url in data-url
+	$('a[data-url]').off('click').on('click', function(event) {
+		event.preventDefault();
+		var href = $(this).attr('data-url');
+		var ret  = $(this).attr('data-return');
+		if (typeof url_graph === 'function') {
+			href += url_graph('');
+		}
+		href += (href.indexOf('?') >= 0 ? '&':'?') + 'header=false';
+		if (ret != undefined && ret != '') {
+			$.get(href).done(function(data) {
+				$('#' + ret).html(data);
+				applySkin();
+			});
+		} else {
+			loadPageNoHeader(href);
+		}
+	});
+
+	// Cancel buttons return to the previous page
+	$('.cactiReturnTo').off('click').on('click', function(event) {
+		event.preventDefault();
+		cactiReturnTo($(this).attr('data-url'));
 	});
 
 	if (typeof themeReady == 'function') {
