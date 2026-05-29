@@ -160,7 +160,13 @@ function remote_client_authorized() : bool {
 		return false;
 	}
 
-	$pollers = db_fetch_assoc_prepared('SELECT *
+	// Whitelist check runs before the poller-count guard so single-poller
+	// installs that rely on the whitelist are not incorrectly rejected.
+	if (is_array($remote_agent_whitelist) && in_array($client_addr, $remote_agent_whitelist, true)) {
+		return true;
+	}
+
+	$pollers = db_fetch_assoc_prepared('SELECT hostname
 		FROM poller
 		WHERE disabled = ?',
 		[''],
@@ -172,10 +178,6 @@ function remote_client_authorized() : bool {
 		cacti_log("Unauthorized remote agent access attempt from $client_addr", false, 'SECURITY');
 
 		return false;
-	}
-
-	if (is_array($remote_agent_whitelist) && in_array($client_addr, $remote_agent_whitelist, true)) {
-		return true;
 	}
 
 	$allowed_hostnames = [];
@@ -210,14 +212,8 @@ function remote_client_authorized() : bool {
 
 	sort($allowed_hostnames);
 	$cache_seed = $client_addr . '|' . implode(',', $allowed_hostnames);
-	if (function_exists('md5')) {
-		$cache_hash = md5($cache_seed);
-	} elseif (function_exists('hash')) {
-		$cache_hash = hash('sha256', $cache_seed);
-	} else {
-		$cache_hash = $cache_seed;
-	}
-	$cache_key = 'remote_agent_auth:' . $cache_hash;
+	$cache_hash = md5($cache_seed);
+	$cache_key  = 'remote_agent_auth:' . $cache_hash;
 	$cached    = remote_agent_auth_cache_get($cache_key);
 
 	if ($cached !== null) {
