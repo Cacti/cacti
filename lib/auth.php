@@ -545,10 +545,7 @@ function get_auth_realms($login = false) {
 					);
 				}
 
-				$default_realm = db_fetch_cell('SELECT domain_id
-					FROM user_domains
-					WHERE defdomain=1
-					AND enabled="on"');
+				$default_realm = db_fetch_cell_prepared('SELECT domain_id FROM user_domains WHERE defdomain = ? AND enabled = ?', array(1, 'on'));
 
 				if (!empty($default_realm)) {
 					$new_realms[1000+$default_realm]['selected'] = true;
