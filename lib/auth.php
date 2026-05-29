@@ -362,12 +362,22 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 		}
 	} else {
 		/* new user */
+		try {
+			$random_password = bin2hex(random_bytes(16));
+		} catch (Exception $e) {
+			cacti_log('FATAL: CSPRNG failed. Cannot generate secure placeholder password for user copy.', false, 'AUTH');
+
+			return false;
+		}
+
 		$user_auth['id']            = 0;
 		$user_auth['username']      = $new_user;
 		$user_auth['enabled']       = 'on';
-		$user_auth['password']      = mt_rand(100000, 10000000);
+		$user_auth['password']      = compat_password_hash($random_password, PASSWORD_DEFAULT);
 		$user_auth['email_address'] = '';
  		$user_auth['realm']         = $new_realm;
+
+		$user_auth['must_change_password'] = 'on';
 	}
 
 	/* Update data_override fields */
