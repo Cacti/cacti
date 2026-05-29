@@ -978,13 +978,13 @@ function graph_perms_edit($tab, $header_label) {
 
 		$sql_query = "SELECT DISTINCT uag.*, uagm.user_id
 			FROM user_auth_group AS uag
-			LEFT JOIN (SELECT user_id, group_id FROM user_auth_group_members WHERE user_id=" . get_request_var('id') . ") AS uagm
+			LEFT JOIN (SELECT user_id, group_id FROM user_auth_group_members WHERE user_id = ?) AS uagm
 			ON uag.id = uagm.group_id
 			$sql_where
 			ORDER BY name
 			LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-		$groups = db_fetch_assoc($sql_query);
+		$groups = db_fetch_assoc_prepared($sql_query, array_merge(array(get_request_var('id')), $params));
 
 		$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permsgr&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Groups'), 'page', 'main');
 

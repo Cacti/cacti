@@ -669,7 +669,7 @@ function user_group_members_edit($header_label) {
 		ORDER BY username, full_name
 		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-	$members = db_fetch_assoc($sql_query);
+	$members = db_fetch_assoc_prepared($sql_query, $params);
 
 	$nav = html_nav_bar('user_group_admin.php?action=edit&tab=members&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Users'), 'page', 'main');
 

@@ -1969,7 +1969,7 @@ function display_sites() {
 		$sql_where = '';
 	}
 
-	$sites = db_fetch_assoc("SELECT * FROM sites $sql_where");
+	$sites = db_fetch_assoc_prepared("SELECT * FROM sites $sql_where", $params);
 
 	if (cacti_sizeof($sites)) {
 		foreach($sites as $s) {
