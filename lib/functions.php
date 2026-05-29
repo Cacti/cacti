@@ -815,7 +815,7 @@ function get_selected_theme() : string {
 function cacti_validate_theme(string $requested) : string {
 	static $valid_themes = null;
 
-	$default = read_config_option('selected_theme');
+	$default = (string) read_config_option('selected_theme');
 
 	if ($default === '') {
 		$default = 'modern';
