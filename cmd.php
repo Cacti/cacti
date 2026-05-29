@@ -729,6 +729,8 @@ function collect_device_data(&$item, &$error_ds) {
 					if (read_config_option('spine_log_level') == 2) {
 						cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] SCRIPT: " . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER');
 					}
+
+					$output = 'U';
 				}
 			}
 
@@ -753,6 +755,8 @@ function collect_device_data(&$item, &$error_ds) {
 					if (read_config_option('spine_log_level') == 2) {
 						cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] SERVER: " . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER');
 					}
+
+					$output = 'U';
 				}
 			}
 
