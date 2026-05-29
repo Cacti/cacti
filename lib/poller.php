@@ -130,45 +130,20 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
  * @return (void)
  */
 function exec_background($filename, $args = '', $redirect_args = '') {
-	global $config, $debug;
+	global $config;
 
-	if (is_array($args)) {
-		$args = implode(' ', array_map('cacti_escapeshellarg', $args));
+	if (!is_array($args)) {
+		// If legacy string args are passed, we split them roughly for compatibility
+		// but this is discouraged. Proper usage should pass an array.
+		$args_array = $args === '' ? [] : explode(' ', $args);
 	} else {
-		/* SECURITY: If args are passed as a string, strip shell operators to
-		 * prevent background command chaining if a caller forgot to escape */
-		$args = preg_replace('/[&;|]+/', '', $args);
+		$args_array = $args;
 	}
 
-	if (is_array($redirect_args)) {
-		$redirect_args = '';
-	}
+	array_unshift($args_array, $filename);
 
-	cacti_log("DEBUG: About to Spawn a Remote Process [CMD: $filename, ARGS: $args]", true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_DEBUG));
-
-	if (file_exists($filename)) {
-		if ($config['cacti_server_os'] == 'win32') {
-			if (!file_escaped($filename)) {
-				$filename = cacti_escapeshellcmd($filename);
-			}
-
-			if ($redirect_args == '') {
-				pclose(popen('start "Cactiplus" /I ' . $filename . ' ' . $args, 'r'));
-			} else {
-				pclose(popen('start "Cactiplus" /I ' . $filename . ' ' . $args . ' ' . $redirect_args, 'r'));
-			}
-		} elseif ($redirect_args == '') {
-			exec($filename . ' ' . $args . ' > /dev/null 2>&1 &');
-		} else {
-			exec($filename . ' ' . $args . ' ' . $redirect_args . ' &');
-		}
-	} elseif (file_exists_2gb($filename)) {
-		if ($redirect_args == '') {
-			exec($filename . ' ' . $args . ' > /dev/null 2>&1 &');
-		} else {
-			exec($filename . ' ' . $args . ' ' . $redirect_args . ' &');
-		}
-	}
+	// cacti_process_execute handles the backgrounding and escaping system-wide.
+	return cacti_process_execute($args_array, true);
 }
 
 /**

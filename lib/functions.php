@@ -7180,6 +7180,14 @@ function get_debug_prefix() {
 function get_client_addr() {
 	global $config, $allowed_proxy_headers;
 
+	$remote_addr = $_SERVER['REMOTE_ADDR'];
+	$trusted_proxies = (isset($config['trusted_proxies']) ? $config['trusted_proxies'] : []);
+
+	// If no proxies are trusted, or the sender is not in the list, ignore headers.
+	if (empty($trusted_proxies) || !in_array($remote_addr, $trusted_proxies)) {
+		return $remote_addr;
+	}
+
 	$proxy_headers = (isset($config['proxy_headers']) ? $config['proxy_headers'] : []);
 
 	if ($proxy_headers === true) {
@@ -7192,29 +7200,19 @@ function get_client_addr() {
 		$proxy_headers = [];
 	}
 
-	if (!in_array('REMOTE_ADDR', $proxy_headers)) {
-		$proxy_headers[] = 'REMOTE_ADDR';
-	}
-
-	$client_addr = false;
 	foreach ($proxy_headers as $header) {
+		if ($header === 'REMOTE_ADDR') continue;
+
 		if (!empty($_SERVER[$header])) {
 			$header_ips = explode(',', $_SERVER[$header]);
-			foreach ($header_ips as $header_ip) {
-				if (!empty($header_ip)) {
-					if (!filter_var($header_ip, FILTER_VALIDATE_IP)) {
-						cacti_log('ERROR: Invalid remote client IP Address found in header (' . $header . ').', false, 'AUTH', POLLER_VERBOSITY_DEBUG);
-					} else {
-						$client_addr = $header_ip;
-						cacti_log('DEBUG: Using remote client IP Address found in header (' . $header . '): ' . $client_addr . ' (' . $_SERVER[$header] . ')', false, 'AUTH', POLLER_VERBOSITY_DEBUG);
-						break 2;
-					}
-				}
+			$client_addr = trim(end($header_ips)); // Closest to the proxy
+			if (filter_var($client_addr, FILTER_VALIDATE_IP)) {
+				return $client_addr;
 			}
 		}
 	}
 
-	return $client_addr;
+	return $remote_addr;
 }
 
 /**
@@ -8240,6 +8238,62 @@ function cacti_validate_sort_column(string $column, array $allowed, string $defa
  *
  * @throws InvalidArgumentException  If the binary contains whitespace.
  */
+/**
+ * cacti_process_execute - Hardened system command execution using array contracts.
+ *
+ * This is the central architectural anchor for system calls. By enforcing
+ * an array of arguments, we eliminate command injection by design on PHP 7.4+.
+ *
+ * @param array $args The command and its arguments. [0] is the binary.
+ * @param bool $background Whether to run the process in the background.
+ * @param array &$out Reference to output lines (only for foreground).
+ *
+ * @return int The exit code or process ID.
+ */
+function cacti_process_execute(array $args, $background = false, &$out = array()) {
+	if (empty($args)) return -1;
+
+	$binary = $args[0];
+
+	// 1. Audit Logging
+	if (defined('CACTI_DEBUG') && CACTI_DEBUG) {
+		cacti_log('SECURE_EXEC: ' . implode(' ', array_map('cacti_escapeshellarg', $args)), false, 'DEBUG');
+	}
+
+	// 2. Execution logic
+	if ($background) {
+		// Background execution requires a string for legacy proc_open compatibility
+		// on some OSs, but we force-escape everything here.
+		$command = implode(' ', array_map('cacti_escapeshellarg', $args));
+		if (cacti_strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+			$p = pclose(popen('start /B ' . $command, 'r'));
+			return 0;
+		} else {
+			exec($command . ' > /dev/null 2>&1 &', $dummy, $exit_code);
+			return (int)$exit_code;
+		}
+	}
+
+	$descriptorspec = [1 => ['pipe', 'w'], 2 => ['pipe', 'w']];
+
+	// PHP 7.4+ supports array-based proc_open (Inherently Safe)
+	if (version_compare(PHP_VERSION, '7.4.0', '>=')) {
+		$process = proc_open($args, $descriptorspec, $pipes);
+	} else {
+		$command = implode(' ', array_map('cacti_escapeshellarg', $args));
+		$process = proc_open($command, $descriptorspec, $pipes);
+	}
+
+	if (!is_resource($process)) return -1;
+
+	$stdout = stream_get_contents($pipes[1]);
+	fclose($pipes[1]);
+	fclose($pipes[2]);
+
+	$out = explode("\n", rtrim($stdout));
+	return proc_close($process);
+}
+
 function cacti_exec($binary, array $args = array(), array &$out = array()) {
 	$binary = trim((string) $binary);
 
@@ -8251,16 +8305,8 @@ function cacti_exec($binary, array $args = array(), array &$out = array()) {
 		throw new InvalidArgumentException('cacti_exec(): binary must not begin with "-".');
 	}
 
-	$command = cacti_escapeshellcmd($binary);
-
-	foreach ($args as $arg) {
-		$command .= ' ' . cacti_escapeshellarg((string) $arg);
-	}
-
-	$exit_code = 0;
-	exec($command, $out, $exit_code);
-
-	return (int) $exit_code;
+	array_unshift($args, $binary);
+	return cacti_process_execute($args, false, $out);
 }
 
 /**
