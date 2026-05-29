@@ -7429,7 +7429,7 @@ function cacti_input_string_is_safe($input_string) {
 	);
 
 	// Never allow redirects regardless of metachars setting
-	if (str_contains($bare, '>') || str_contains($bare, '<')) {
+	if (strpos($bare, '>') !== false || strpos($bare, '<') !== false) {
 		return false;
 	}
 

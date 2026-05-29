@@ -72,10 +72,10 @@ function cacti_snmp_session($hostname, $community, $version, $auth_user = '', $a
 	$timeout_us = (int) ($timeout_ms * 1000);
 
 	/* Encapsulate IPv6 addresses in brackets to prevent the SNMP library
-	   from interpreting the port as an IPv6 hextet */
+	 * from interpreting the colon-separated port as an IPv6 hextet. */
 	$snmp_hostname = $hostname;
-	if (strpos($snmp_hostname, ':') !== false && strpos($snmp_hostname, '[') === false) {
-		$snmp_hostname = '[' . $snmp_hostname . ']';
+	if (filter_var($hostname, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+		$snmp_hostname = '[' . $hostname . ']';
 	}
 
 	try {

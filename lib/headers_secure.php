@@ -62,6 +62,7 @@ class CactiSecureHeaders {
 		/* Last resort: non-CSPRNG. Acceptable only when both CSPRNGs are
 		 * unavailable; warns operators so they can investigate the environment. */
 		if ($bytes === false) {
+			error_log('Cacti: CSPRNG unavailable, CSP nonce entropy degraded');
 			if (function_exists('cacti_log')) {
 				cacti_log('CSP nonce falling back to non-CSPRNG source; check PHP entropy configuration', false, 'SYSTEM');
 			}
@@ -114,6 +115,10 @@ class CactiSecureHeaders {
 	 * @return string            Full CSP value, suitable for use after the header name.
 	 */
 	public static function buildCspPolicy($mode, $nonce, $alternates, $report_uri = '') {
+		/* Produce " host1 host2" (leading space) when alternates are present,
+		 * or '' when empty, so directives never end with a trailing space. */
+		$alternates_part = ($alternates !== '') ? ' ' . trim($alternates) : '';
+
 		if ($mode === 'nonce' || $mode === 'nonce-report') {
 			/* 'strict-dynamic' lets a nonced page script transitively trust
 			 * scripts it inserts via DOM (jQuery .html(), .append(), etc).
@@ -122,28 +127,28 @@ class CactiSecureHeaders {
 			 * Browsers that honour strict-dynamic (Chrome 52+, Firefox 60+,
 			 * Safari 15.4+) ignore the 'self' source list once strict-dynamic
 			 * is present; the nonce becomes the sole script trust anchor. */
-			$script_src = "script-src 'self' 'nonce-{$nonce}' 'strict-dynamic' 'unsafe-eval' {$alternates}";
+			$script_src = "script-src 'self' 'nonce-{$nonce}' 'strict-dynamic' 'unsafe-eval'{$alternates_part}";
 			/* Style-src keeps 'unsafe-inline' on purpose: jQuery .css(),
 			 * setAttribute('style', ...), and the dozens of legacy inline
 			 * style="" attributes scattered across Cacti pages all rely on
 			 * inline-style execution. Style XSS is a much narrower attack
 			 * surface than script XSS; the trade-off is operator-friendly. */
-			$style_src  = "style-src 'self' 'unsafe-inline' {$alternates}";
+			$style_src  = "style-src 'self' 'unsafe-inline'{$alternates_part}";
 		} else {
 			$eval_token = ($mode === 'unsafe-eval') ? " 'unsafe-eval'" : '';
-			$script_src = "script-src 'self'{$eval_token} 'unsafe-inline' {$alternates}";
-			$style_src  = "style-src 'self' 'unsafe-inline' {$alternates}";
+			$script_src = "script-src 'self'{$eval_token} 'unsafe-inline'{$alternates_part}";
+			$style_src  = "style-src 'self' 'unsafe-inline'{$alternates_part}";
 		}
 
 		$policy = "default-src 'self'; "
 			. "{$script_src}; "
 			. "{$style_src}; "
-			. "img-src 'self' {$alternates} data: blob:; "
-			. "font-src 'self' {$alternates}; "
-			. "connect-src 'self' {$alternates}; "
-			. "frame-src 'self'; "
+			. "img-src 'self'{$alternates_part} data: blob:; "
+			. "font-src 'self'{$alternates_part}; "
+			. "connect-src 'self'{$alternates_part}; "
+			. "frame-src 'self'{$alternates_part}; "
 			. "frame-ancestors 'self'; "
-			. "worker-src 'self' {$alternates}; "
+			. "worker-src 'self'{$alternates_part}; "
 			. "object-src 'none'; "
 			. "base-uri 'self'; "
 			. "form-action 'self'; "
