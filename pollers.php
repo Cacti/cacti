@@ -550,7 +550,7 @@ function form_actions() {
 
 	form_start('pollers.php');
 
-	html_start_box(cacti_form_action_label($poller_actions, get_nfilter_request_var('drp_action')), '60%', '', '3', 'center', '');
+	html_start_box(html_escape(cacti_form_action_label($poller_actions, get_nfilter_request_var('drp_action'))), '60%', '', '3', 'center', '');
 
 	if (isset($poller_array) && cacti_sizeof($poller_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { // delete

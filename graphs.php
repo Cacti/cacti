@@ -826,7 +826,7 @@ function form_actions() {
 
 	form_start('graphs.php');
 
-	html_start_box(cacti_form_action_label($graph_actions, get_nfilter_request_var('drp_action')), '60%', '', '3', 'center', '');
+	html_start_box(html_escape(cacti_form_action_label($graph_actions, get_nfilter_request_var('drp_action'))), '60%', '', '3', 'center', '');
 
 	if (isset($graph_array) && cacti_sizeof($graph_array)) {
 		if (get_request_var('drp_action') == '1') { // delete
@@ -1290,7 +1290,7 @@ function form_actions() {
 				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget cactiReturnTo' value='" . __esc('Return') . "'>";
 			}
 		} else {
-			$save['drp_action'] = get_nfilter_request_var('drp_action');
+			$save['drp_action'] = get_request_var('drp_action');
 			$save['graph_list'] = $graph_list;
 			$save['graph_array'] = (isset($graph_array) ? $graph_array : array());
 
@@ -1308,7 +1308,7 @@ function form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($graph_array) ? serialize($graph_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_request_var('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . html_escape(get_request_var('drp_action')) . "'>
 			$save_html
 		</td>
 	</tr>";

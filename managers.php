@@ -1015,7 +1015,7 @@ function form_actions() {
 
 			form_start('managers.php');
 
-			html_start_box(cacti_form_action_label($manager_actions, get_nfilter_request_var('drp_action')), '60%', '', '3', 'center', '');
+			html_start_box(html_escape(cacti_form_action_label($manager_actions, get_nfilter_request_var('drp_action'))), '60%', '', '3', 'center', '');
 
 			if (cacti_sizeof($selected_items)) {
 				if (get_nfilter_request_var('drp_action') == '1') { // delete
@@ -1080,7 +1080,7 @@ function form_actions() {
 
 			form_start('managers.php');
 
-			html_start_box(cacti_form_action_label($manager_notification_actions, get_nfilter_request_var('drp_action')), '60%', '', '3', 'center', '');
+			html_start_box(html_escape(cacti_form_action_label($manager_notification_actions, get_nfilter_request_var('drp_action'))), '60%', '', '3', 'center', '');
 
 			if (cacti_sizeof($selected_items)) {
 				$msg = (get_nfilter_request_var('drp_action') == 2)

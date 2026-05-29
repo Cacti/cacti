@@ -188,7 +188,7 @@ function form_actions() {
 
 	form_start('links.php');
 
-	html_start_box(cacti_form_action_label($link_actions, get_nfilter_request_var('drp_action')), '60%', '', '3', 'center', '');
+	html_start_box(html_escape(cacti_form_action_label($link_actions, get_request_var('drp_action'))), '60%', '', '3', 'center', '');
 
 	if (isset($pages) && cacti_sizeof($pages)) {
 		if (get_request_var('drp_action') == '3') { // Enable Pages
@@ -229,7 +229,7 @@ function form_actions() {
 		<td>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($pages) ? serialize($pages) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_request_var('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . html_escape(get_request_var('drp_action')) . "'>
 			$save_html
 		</td>
 	</tr>";

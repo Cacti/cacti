@@ -8413,16 +8413,29 @@ function cacti_validate_sort_column(string $column, array $allowed, string $defa
 }
 
 /**
- * cacti_form_action_label - Look up a validated drp_action value in an actions array.
+ * cacti_form_action_label - Look up a drp_action key in an actions array and
+ * return the corresponding server-defined label.
  *
- * Callers pass the already-read drp_action value so this function has no
- * side effects on $_REQUEST and cannot call die_html_input_error().
+ * Safety comes from the return value: the function always returns a label
+ * from $actions (a server-controlled array), never the key itself. The key
+ * is used only for an array lookup, so a malicious key value cannot inject
+ * HTML through this function's return value.
+ *
+ * Input validation on $action_key is not required for XSS safety here, but
+ * callers should prefer get_request_var() over get_nfilter_request_var()
+ * when a prior get_filter_request_var() guard has already run, to read from
+ * the already-sanitized $_CACTI_REQUEST cache.
+ *
+ * Callers that pass the return value to html_start_box() or any other
+ * function that outputs to HTML MUST wrap the return value with
+ * html_escape(), because plugin hooks (api_plugin_hook_function) may
+ * substitute labels that contain HTML.
  *
  * @param array  $actions     Associative array mapping drp_action values to labels.
- * @param string $drp_action  The validated drp_action string from the caller.
- * @param string $default     Label to return when the action is absent from the array.
+ * @param string $drp_action  The drp_action key to look up.
+ * @param string $default     Label to return when the key is absent from the array.
  *
- * @return string  The matched label, or $default.
+ * @return string  The matched label, or $default. Always html_escape() the return value before output.
  */
 function cacti_form_action_label(array $actions, string $drp_action, string $default = ''): string {
 	return isset($actions[$drp_action]) ? (string) $actions[$drp_action] : $default;
