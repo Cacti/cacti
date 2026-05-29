@@ -858,10 +858,56 @@ function api_plugin_check_config($plugin) {
 	return false;
 }
 
+
+/**
+ * api_plugin_security_scan - Performs a lightweight security audit of a plugin.
+ *
+ * This helper scans the plugin directory for raw execution sinks (exec, system, etc.)
+ * that bypass the Cacti architectural hardening.
+ *
+ * @param string $plugin The plugin directory name.
+ * @return array A list of security warnings.
+ */
+function api_plugin_security_scan($plugin) {
+	global $config;
+	$plugin_path = $config['base_path'] . '/plugins/' . $plugin;
+	$warnings    = array();
+
+	if (!is_dir($plugin_path)) {
+		return $warnings;
+	}
+
+	$files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($plugin_path));
+	$regex = '/(?<!cacti_)(exec|system|shell_exec|passthru|proc_open|popen)\s*\(/i';
+
+	foreach ($files as $file) {
+		if ($file->isDir()) continue;
+		if ($file->getExtension() === 'php') {
+			$content = file_get_contents($file->getRealPath());
+			if (preg_match_all($regex, $content, $matches)) {
+				$warnings[] = sprintf(
+					'Insecure sink(s) found in %s: %s. Use cacti_exec() instead.',
+					str_replace($config['base_path'], '', $file->getRealPath()),
+					implode(', ', array_unique($matches[1]))
+				);
+			}
+		}
+	}
+
+	return $warnings;
+}
+
 function api_plugin_enable($plugin) {
 	$ready = api_plugin_check_config($plugin);
 
 	if ($ready) {
+		$security_warnings = api_plugin_security_scan($plugin);
+		if (cacti_sizeof($security_warnings)) {
+			foreach($security_warnings as $warning) {
+				cacti_log('SECURITY_AUDIT_WARNING: ' . $warning, false, 'WEBUI');
+			}
+		}
+
 		api_plugin_enable_hooks($plugin);
 
 		db_execute_prepared('UPDATE plugin_config
