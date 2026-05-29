@@ -50,7 +50,7 @@ $php_binary = read_config_option('path_php_binary');
 $script     = './snmpagent_mibcachechild.php';
 
 while (true) {
-	cacti_process_execute(array($php_binary, $script), true);
+	exec_background($php_binary, array($script));
 
 	sleep(30 - time() % 30);
 }

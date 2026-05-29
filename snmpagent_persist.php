@@ -33,7 +33,7 @@ set_time_limit(0);
 chdir(__DIR__);
 
 // translate well-known textual conventions and SNMP base types to net-snmp
-$smi_base_datatypes = [
+$smi_base_datatypes = array(
 	'integer'           => 'INTEGER',
 	'integer32'         => 'Integer32',
 	'unsigned32'        => 'Unsigned32',
@@ -79,7 +79,7 @@ $php_binary = read_config_option('path_php_binary');
 $script     = './snmpagent_mibcache.php';
 
 if (cacti_strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-	cacti_process_execute(array($php_binary, '-q', $script), true);
+	exec_background($php_binary, array('-q', $script));
 } else {
 	$output = array();
 	cacti_exec('pgrep', array('-a', 'php'), $output);
@@ -93,7 +93,7 @@ if (cacti_strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
 	}
 
 	if (!$running) {
-		cacti_process_execute(array($php_binary, '-q', $script), true);
+		exec_background($php_binary, array('-q', $script));
 	}
 }
 
