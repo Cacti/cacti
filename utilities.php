@@ -234,7 +234,9 @@ function utilities_view_tech() {
 
 		/* Get SNMP cli version */
 		if ((file_exists(read_config_option('path_snmpget'))) && ((function_exists('is_executable')) && (is_executable(read_config_option('path_snmpget'))))) {
-			$snmp_version = shell_exec(cacti_escapeshellcmd(read_config_option('path_snmpget')) . ' -V 2>&1');
+			$out = array();
+			cacti_exec(read_config_option('path_snmpget'), array('-V'), $out);
+			$snmp_version = implode("\n", $out);
 		} else {
 			$snmp_version = "<span class='deviceDown'>" . __('NET-SNMP Not Installed or its paths are not set.  Please install if you wish to monitor SNMP enabled devices.') . "</span>";
 		}

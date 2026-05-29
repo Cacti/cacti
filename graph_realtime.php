@@ -216,7 +216,7 @@ case 'countdown':
 	$script_path    = cacti_escapeshellarg($config['base_path'] . '/poller_realtime.php');
 	$args           = '--graph=' . $local_graph_id . ' --interval=' . $graph_data_array['ds_step'] . ' --poller_id=' . $hash;
 
-	shell_exec($php_binary . ' -q ' . $script_path . ' ' . $args);
+	cacti_exec($php_binary, array('-q', $script_path, $args));
 
 	/* construct the image name  */
 	$graph_data_array['export_realtime'] = $graph_rrd;

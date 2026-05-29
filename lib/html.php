@@ -1175,19 +1175,6 @@ function echo_safe($text) {
 	echo html_escape($text);
 }
 
-	if ($charset == '') {
-		$charset = 'UTF-8';
-	}
-
-	// Grave Accent character can lead to xss
-	if ($string !== null) {
-		$string = str_replace('`', '&#96;', $string);
-		return htmlspecialchars($string, ENT_QUOTES|ENT_HTML5, $charset, false);
-	} else {
-		return $string;
-	}
-}
-
 /* html_split_string - takes a string and breaks it into a number of <br> separated segments
    @arg $string - string to be modified and returned
    @arg $length - the maximal string length to split to

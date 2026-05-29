@@ -142,7 +142,7 @@ if (!is_dir($cache_dir)) {
 	return -2;
 }
 
-shell_exec("$command_string $extra_args");
+cacti_process_execute(array($command_string, $extra_args), true);
 
 /* open a pipe to rrdtool for writing */
 $rrdtool_pipe = rrd_init();
@@ -226,7 +226,7 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 				$command = str_replace("\\\n", " ", $command);
 
 				/* create the rrdfile */
-				shell_exec($command);
+				cacti_process_execute(array($command), true);
 
 				/* change permissions so that the poller can clear */
 				@chmod($rt_graph_path, 0644);
