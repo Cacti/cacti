@@ -27,7 +27,7 @@ require(__DIR__ . '/include/cli_check.php');
 
 ini_set('memory_limit', '-1');
 
-/* process calling arguments */
+// process calling arguments
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
@@ -39,11 +39,11 @@ $templates = false;
 $kills     = 0;
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
-		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter);
+	foreach ($parms as $parameter) {
+		if (str_contains($parameter, '=')) {
+			[$arg, $value] = explode('=', $parameter, 2);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -51,41 +51,51 @@ if (cacti_sizeof($parms)) {
 			case '-d':
 			case '--debug':
 				$debug = true;
+
 				break;
 			case '--templates':
 				$templates = $value;
+
 				break;
 			case '-f':
 			case '--force':
 				$forcerun = true;
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
+
 			default:
-				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 				display_help();
+
 				exit(1);
 		}
 	}
 }
 
-/* silently end if the registered process is still running, or process table missing */
-if (!register_process_start('spikekill', 'master', 0, read_config_option('spikekill_timeout'))) {
+$timeout = intval(read_config_option('spikekill_timeout'));
+
+// silently end if the registered process is still running, or process table missing
+if (!register_process_start('spikekill', 'master', 0, $timeout)) {
 	exit(0);
 }
 
-print "NOTE: SpikeKill Running\n";
+print 'NOTE: SpikeKill Running' . PHP_EOL;
 
 if (!$templates) {
 	$templates = db_fetch_cell("SELECT value FROM settings WHERE name='spikekill_templates'");
+
 	if ($templates != '') {
 		$templates = explode(',', $templates);
 	}
@@ -94,14 +104,16 @@ if (!$templates) {
 }
 
 if (!cacti_sizeof($templates)) {
-	print "ERROR: No valid Graph Templates selected\n\n";
+	print 'ERROR: No valid Graph Templates selected' . PHP_EOL . PHP_EOL;
 	unregister_process('spikekill', 'master', 0);
+
 	exit(1);
 } else {
-	foreach($templates as $template) {
+	foreach ($templates as $template) {
 		if (!is_numeric($template)) {
-			print "ERROR: Graph Template '" . $template . "' Invalid\n\n";
+			print "ERROR: Graph Template '" . $template . "' Invalid" . PHP_EOL . PHP_EOL;
 			unregister_process('spikekill', 'master', 0);
+
 			exit(1);
 		}
 	}
@@ -115,36 +127,37 @@ if (timeToRun()) {
 	$graphs = kill_spikes($templates, $kills);
 
 	$purges = 0;
+
 	if (read_config_option('spikekill_purge') > 0) {
 		$purges = purge_spike_backups();
 	}
 
 	$end  = microtime(true);
 
-    $cacti_stats = sprintf(
-        'Time:%01.4f ' .
-        'Graphs:%s ' .
-        'Purges:%s ' .
+	$cacti_stats = sprintf(
+		'Time:%01.4f ' .
+		'Graphs:%s ' .
+		'Purges:%s ' .
 		'Kills:%s',
-        round($end-$start,2),
-        $graphs,
-        $purges,
+		round($end - $start,2),
+		$graphs,
+		$purges,
 		$kills);
 
-    /* log to the database */
-    db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("stats_spikekill", ?)', array($cacti_stats));
+	// log to the database
+	db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("stats_spikekill", ?)', [$cacti_stats]);
 
-    /* log to the logfile */
-    cacti_log('SPIKEKILL STATS: ' . $cacti_stats , true, 'SYSTEM');
+	// log to the logfile
+	cacti_log('SPIKEKILL STATS: ' . $cacti_stats , true, 'SYSTEM');
 }
 
-print "NOTE: SpikeKill Finished\n";
+print 'NOTE: SpikeKill Finished' . PHP_EOL;
 
 unregister_process('spikekill', 'master', 0);
 
 exit(0);
 
-function timeToRun() {
+function timeToRun() : bool {
 	global $forcerun;
 
 	$lastrun   = read_config_option('spikekill_lastrun');
@@ -161,38 +174,44 @@ function timeToRun() {
 
 		if (empty($lastrun) && ($now < $baseupper) && ($now > $baselower)) {
 			debug('Time to Run');
-			db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("spikekill_lastrun", ?)', array(time()));
+			db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("spikekill_lastrun", ?)', [time()]);
+
 			return true;
-		} elseif (($now - $lastrun > $frequency) && ($now < $baseupper) && ($now > $baselower)) {
+		}
+
+		if (($now - $lastrun > $frequency) && ($now < $baseupper) && ($now > $baselower)) {
 			debug('Time to Run');
-			db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("spikekill_lastrun", ?)', array(time()));
+			db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("spikekill_lastrun", ?)', [time()]);
+
 			return true;
 		} else {
 			debug('Not Time to Run');
+
 			return false;
 		}
 	} elseif ($forcerun) {
 		debug('Force to Run');
-		db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("spikekill_lastrun", ?)', array(time()));
+		db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("spikekill_lastrun", ?)', [time()]);
+
 		return true;
 	} else {
 		debug('Not time to Run');
+
 		return false;
 	}
 }
 
-function debug($message) {
+function debug(string $message) : void {
 	global $debug;
 
 	if ($debug) {
-		print 'DEBUG: ' . trim($message) . "\n";
+		print 'DEBUG: ' . trim($message) . PHP_EOL;
 	}
 }
 
-
-function purge_spike_backups() {
+function purge_spike_backups() : mixed {
 	$directory = read_config_option('spikekill_backupdir');
-	$retention = read_config_option('spikekill_purge');
+	$retention = intval(read_config_option('spikekill_purge'));
 
 	$purges = 0;
 
@@ -203,13 +222,13 @@ function purge_spike_backups() {
 	$earlytime = time() - $retention;
 
 	if ($directory != '' && is_dir($directory) && is_writable($directory)) {
-		$files = array_diff(scandir($directory), array('.', '..'));
+		$files = array_diff(scandir($directory), ['.', '..']);
 
 		if (cacti_sizeof($files)) {
-			foreach($files as $file) {
+			foreach ($files as $file) {
 				$filepath = $directory . '/' . $file;
 
-				if (is_file($filepath) && strpos($filepath, 'rrd') !== false) {
+				if (is_file($filepath) && str_contains($filepath, 'rrd')) {
 					$mtime = filemtime($filepath);
 
 					if ($mtime < $earlytime) {
@@ -217,7 +236,7 @@ function purge_spike_backups() {
 							unlink($filepath);
 							$purges++;
 						} else {
-							cacti_log('Unable to remove ' . $filepath . ' due to write permissions', 'SPIKES');
+							cacti_log('Unable to remove ' . $filepath . ' due to write permissions', false, 'SPIKES');
 						}
 					}
 				}
@@ -228,24 +247,35 @@ function purge_spike_backups() {
 	return $purges;
 }
 
-function kill_spikes($templates, &$found) {
-	global $debug, $config;
+function kill_spikes(array $templates, int &$found) : int {
+	global $debug;
 
-	$rrdfiles = array_rekey(db_fetch_assoc('SELECT DISTINCT rrd_path
-		FROM graph_templates AS gt
-		INNER JOIN graph_templates_item AS gti
-		ON gt.id=gti.graph_template_id
-		INNER JOIN data_template_rrd AS dtr
-		ON gti.task_item_id=dtr.id
-		INNER JOIN poller_item AS pi ON pi.local_data_id=dtr.local_data_id
-		WHERE gt.id IN (' . implode(',', $templates) . ')'), 'rrd_path', 'rrd_path');
+	$templates_sanitized = array_map('intval', $templates);
+	if (cacti_sizeof($templates_sanitized)) {
+		$rrdfiles = array_rekey(db_fetch_assoc('SELECT DISTINCT rrd_path
+			FROM graph_templates AS gt
+			INNER JOIN graph_templates_item AS gti
+			ON gt.id=gti.graph_template_id
+			INNER JOIN data_template_rrd AS dtr
+			ON gti.task_item_id=dtr.id
+			INNER JOIN poller_item AS pi ON pi.local_data_id=dtr.local_data_id
+			WHERE gt.id IN (' . implode(',', $templates_sanitized) . ')'), 'rrd_path', 'rrd_path');
+	} else {
+		$rrdfiles = array();
+	}
 
 	if (cacti_sizeof($rrdfiles)) {
-		foreach($rrdfiles as $f) {
+		foreach ($rrdfiles as $f) {
 			debug("Removing Spikes from '$f'");
 
-			$response = exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
-				cacti_escapeshellarg($config['base_path'] . '/cli/removespikes.php') . ' --rrdfile=' . $f . ($debug ? ' --debug':''));
+			$args = array('-q', CACTI_PATH_CLI . '/removespikes.php', '--rrdfile=' . $f);
+			if ($debug) {
+				$args[] = '--debug';
+			}
+
+			$out = array();
+			cacti_exec(read_config_option('path_php_binary'), $args, $out);
+			$response = (isset($out[0]) ? $out[0] : '');
 
 			if (substr_count($response, 'Spikes Found and Remediated')) {
 				$found++;
@@ -258,20 +288,20 @@ function kill_spikes($templates, &$found) {
 	return cacti_sizeof($rrdfiles);
 }
 
-/*  display_version - displays version information */
-function display_version() {
-	$version = get_cacti_version();
-	print "Cacti SpikeKiller Batch Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
+// display_version - displays version information
+function display_version() : void {
+	$version = get_cacti_cli_version();
+	print "Cacti SpikeKiller Batch Poller, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-function display_help() {
+function display_help() : void {
 	display_version();
 
-	print "\nusage: poller_spikekill.php [--templates=N,N,...] [--force] [--debug]\n\n";
-	print "Cacti's SpikeKill batch removal poller.  This poller will remove spikes\n";
-	print "in Cacti's RRDfiles based upon the settings maintained in Cacti's database.\n\n";
-	print "Optional:\n";
-	print "    --templates=N,N,... - Only despike the templates provided.\n";
-	print "    --force             - Force running the despiking immediately.\n";
-	print "    --debug             - Display verbose output during execution.\n";
+	print PHP_EOL . 'usage: poller_spikekill.php [--templates=N,N,...] [--force] [--debug]' . PHP_EOL . PHP_EOL;
+	print "Cacti's SpikeKill batch removal poller.  This poller will remove spikes" . PHP_EOL;
+	print "in Cacti's RRDfiles based upon the settings maintained in Cacti's database." . PHP_EOL . PHP_EOL;
+	print 'Optional:' . PHP_EOL;
+	print '    --templates=N,N,... - Only despike the templates provided.' . PHP_EOL;
+	print '    --force             - Force running the despiking immediately.' . PHP_EOL;
+	print '    --debug             - Display verbose output during execution.' . PHP_EOL;
 }
