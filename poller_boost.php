@@ -457,6 +457,10 @@ function boost_prepare_process_table() {
 
 	$processes = read_config_option('boost_parallel');
 
+	if (empty($processes)) {
+		$processes = 1;
+	}
+
 	boost_debug("Data Sources:$data_ids, Concurrent Processes:$processes");
 
 	$data_ids_per_process = ceil($data_ids / $processes);
@@ -644,6 +648,10 @@ function boost_output_rrd_data($child) {
 
 	$max_per_select = read_config_option('boost_rrd_update_max_records_per_select');
 
+	if (empty($max_per_select)) {
+		$max_per_select = 50000;
+	}
+
 	$data_ids = db_fetch_cell_prepared("SELECT
 		COUNT(local_data_id)
 		FROM poller_output_boost_local_data_ids
@@ -745,6 +753,10 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 	$upd_string_len		 = read_config_option('boost_rrd_update_string_length');
 	$rrd_update_interval = read_config_option('boost_rrd_update_interval');
 	$data_ids_to_get     = read_config_option('boost_rrd_update_max_records_per_select');
+
+	if (empty($data_ids_to_get)) {
+		$data_ids_to_get = 50000;
+	}
 
 	if ($archive_tables === false) {
 		$archive_tables = boost_get_arch_table_names($archive_table);
