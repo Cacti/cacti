@@ -273,7 +273,7 @@ function form_actions() {
 
 	form_start('data_input.php');
 
-	html_start_box($di_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
+	html_start_box(cacti_form_action_label($di_actions), '60%', '', '3', 'center', '');
 
 	if (isset($di_array) && cacti_sizeof($di_array)) {
 		if (get_request_var('drp_action') == '1') { // delete
