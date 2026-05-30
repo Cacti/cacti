@@ -23,6 +23,9 @@
 */
 
 require('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/CactiValidator.php');
+
+use Symfony\Component\Validator\Constraints as Assert;
 
 $actions = [
 	1 => __('Delete'),
@@ -700,20 +703,20 @@ function form_save() : void {
 			break;
 		default:
 			$save['id']             = grv('id');
-			$save['description']    = form_input_validate(trim(gnrv('description')), 'description', '', false, 3);
-			$save['hostname']       = form_input_validate(trim(gnrv('hostname')), 'hostname', '', false, 3);
-			$save['disabled']       = form_input_validate(gnrv('disabled'), 'disabled', '^on$', true, 3);
+			$save['description']    = CactiValidator::validateInput(trim(gnrv('description')), 'description', [new Assert\NotBlank()], 3);
+			$save['hostname']       = CactiValidator::validateInput(trim(gnrv('hostname')), 'hostname', [new Assert\NotBlank()], 3);
+			$save['disabled']       = CactiValidator::validateInput(gnrv('disabled'), 'disabled', [new Assert\Regex('/^(on)?$/')], 3);
 			$save['max_log_size']   = gnrv('max_log_size');
-			$save['snmp_version']   = form_input_validate(gnrv('snmp_version'), 'snmp_version', '^[1-3]$', false, 3);
-			$save['snmp_community'] = form_input_validate(gnrv('snmp_community'), 'snmp_community', '', true, 3);
+			$save['snmp_version']   = CactiValidator::validateInput(gnrv('snmp_version'), 'snmp_version', [new Assert\NotBlank(), new Assert\Regex('/^[1-3]$/')], 3);
+			$save['snmp_community'] = CactiValidator::validateInput(gnrv('snmp_community'), 'snmp_community', [], 3);
 
 			if ($save['snmp_version'] == 3) {
-				$save['snmp_username']        = form_input_validate(gnrv('snmp_username'), 'snmp_username', '', true, 3);
-				$save['snmp_password']        = form_input_validate(gnrv('snmp_password'), 'snmp_password', '', true, 3);
-				$save['snmp_auth_protocol']   = form_input_validate(gnrv('snmp_auth_protocol'), 'snmp_auth_protocol', "^\[None\]|MD5|SHA|SHA224|SHA256|SHA392|SHA512$", true, 3);
-				$save['snmp_priv_passphrase'] = form_input_validate(gnrv('snmp_priv_passphrase'), 'snmp_priv_passphrase', '', true, 3);
-				$save['snmp_priv_protocol']   = form_input_validate(gnrv('snmp_priv_protocol'), 'snmp_priv_protocol', "^\[None\]|DES|AES|AES128|AES192|AES192C|AES256|AES256C$", true, 3);
-				$save['snmp_engine_id']       = form_input_validate(get_request_var_post('snmp_engine_id'), 'snmp_engine_id', '', false, 3);
+				$save['snmp_username']        = CactiValidator::validateInput(gnrv('snmp_username'), 'snmp_username', [], 3);
+				$save['snmp_password']        = CactiValidator::validateInput(gnrv('snmp_password'), 'snmp_password', [], 3);
+				$save['snmp_auth_protocol']   = CactiValidator::validateInput(gnrv('snmp_auth_protocol'), 'snmp_auth_protocol', [new Assert\Regex('/^(\[None\]|MD5|SHA|SHA224|SHA256|SHA392|SHA512)?$/')], 3);
+				$save['snmp_priv_passphrase'] = CactiValidator::validateInput(gnrv('snmp_priv_passphrase'), 'snmp_priv_passphrase', [], 3);
+				$save['snmp_priv_protocol']   = CactiValidator::validateInput(gnrv('snmp_priv_protocol'), 'snmp_priv_protocol', [new Assert\Regex('/^(\[None\]|DES|AES|AES128|AES192|AES192C|AES256|AES256C)?$/')], 3);
+				$save['snmp_engine_id']       = CactiValidator::validateInput(get_request_var_post('snmp_engine_id'), 'snmp_engine_id', [new Assert\NotBlank()], 3);
 			} else {
 				$save['snmp_username']        = '';
 				$save['snmp_password']        = '';
@@ -723,9 +726,9 @@ function form_save() : void {
 				$save['snmp_engine_id']       = '';
 			}
 
-			$save['snmp_port']         = form_input_validate(gnrv('snmp_port'), 'snmp_port', '^[0-9]+$', false, 3);
-			$save['snmp_message_type'] = form_input_validate(gnrv('snmp_message_type'), 'snmp_message_type', '^[1-2]$', false, 3);
-			$save['notes']             = form_input_validate(gnrv('notes'), 'notes', '', true, 3);
+			$save['snmp_port']         = CactiValidator::validateInput(gnrv('snmp_port'), 'snmp_port', [new Assert\NotBlank(), new Assert\Regex('/^[0-9]+$/')], 3);
+			$save['snmp_message_type'] = CactiValidator::validateInput(gnrv('snmp_message_type'), 'snmp_message_type', [new Assert\NotBlank(), new Assert\Regex('/^[1-2]$/')], 3);
+			$save['notes']             = CactiValidator::validateInput(gnrv('notes'), 'notes', [], 3);
 
 			if ($save['snmp_version'] == 3 && ($save['snmp_password'] != gnrv('snmp_password_confirm'))) {
 				raise_message(4);
